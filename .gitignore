@@ -1,0 +1,27 @@
+# original game data — never commit
+Snobow Kids Plus (Japan)/
+Snobow Kids Plus (Japan).zip
+__MACOSX/
+disc/
+*.bin
+*.cue
+*.iso
+
+# generated
+build/
+asm/
+expected/
+.venv/
+*.d
+slps_018.23.d
+linkers/slps_018.23.ld
+linkers/undefined_funcs_auto.txt
+linkers/undefined_syms_auto.txt
+include/include_asm.h
+include/macro.inc
+include/labels.inc
+include/gte_macros.inc
+
+# vendored toolchain binaries (re-fetch: see README / decompals/old-gcc 0.17)
+tools/gcc/
+__pycache__/

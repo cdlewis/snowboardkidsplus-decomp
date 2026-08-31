@@ -1,0 +1,69 @@
+name: SLPS_018.23
+sha1: 3f1a7abc267ea29bafed1653121613ea467c1ac8
+options:
+  basename: slps_018.23
+  target_path: disc/SLPS_018.23
+  elf_path: build/slps_018.23.elf
+  base_path: ..
+  platform: psx
+  compiler: PSYQ
+
+  asm_path: asm
+  src_path: src
+  build_path: build
+
+  ld_script_path: linkers/slps_018.23.ld
+  ld_dependencies: True
+  # The original exe has unaligned section boundaries (.text starts at
+  # 0x800131B4); default ALIGN(., 16) at section ends breaks matching.
+  ld_align_section_vram_end: False
+  ld_align_segment_vram_end: False
+
+  find_file_boundaries: False
+  gp_value: 0x8013AE48
+  # ld_gp_expression: main_SCOMMON_START + 0x7FF0
+
+  o_as_suffix: True
+  use_legacy_include_asm: False
+  # INCLUDE_ASM wrapped in __maspsx_include_asm_hack_* functions so the
+  # cc1 -> maspsx -> GNU as pipeline keeps included asm verbatim.
+  include_asm_macro_style: maspsx_hack
+
+  section_order: [".rodata", ".text", ".data", ".bss"]
+
+  symbol_addrs_path:
+    - configs/symbol_addrs.txt
+  reloc_addrs_path:
+    - configs/reloc_addrs.txt
+
+  undefined_funcs_auto_path: linkers/undefined_funcs_auto.txt
+  undefined_syms_auto_path: linkers/undefined_syms_auto.txt
+
+  extensions_path: tools/splat_ext
+
+  subalign: 2
+
+  # SJIS decoding breaks matching: GNU as re-encodes the .s file as UTF-8.
+  # Keep ASCII so Japanese text is emitted as raw bytes.
+  string_encoding: ASCII
+  data_string_encoding: ASCII
+  rodata_string_guesser_level: 2
+  data_string_guesser_level: 2
+
+segments:
+  - name: header
+    type: header
+    start: 0x0
+
+  - name: main
+    type: code
+    start: 0x800
+    vram: 0x80010000
+    # bss_size: Please fill out this value when you figure out the bss size
+    subsegments:
+      - [0x800, rodata, 800]
+      # main .text as a mixed C/asm unit: per-function .s in
+      # asm/nonmatchings/main/, INCLUDE_ASM skeleton in src/main.c
+      - [0x39B4, c, main]
+      - [0xC78E8, data, C78E8] # estimated
+  - [0x12C000]
