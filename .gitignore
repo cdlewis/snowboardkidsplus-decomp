@@ -25,3 +25,4 @@ include/gte_macros.inc
 # vendored toolchain binaries (re-fetch: see README / decompals/old-gcc 0.17)
 tools/gcc/
 __pycache__/
+tools/psx_psyq_signatures/

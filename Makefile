@@ -13,7 +13,7 @@ expected:
 	$(PY) tools/build.py --update-expected
 
 split:
-	cd configs && ../$(SPLAT) split slps_018.23.yaml
+	$(SPLAT) split snowboardkidsplus.yaml
 
 extract:
 	$(PY) tools/extract_iso.py "Snobow Kids Plus (Japan)/Snobow Kids Plus (Japan).bin" disc

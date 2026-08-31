@@ -141,15 +141,30 @@ def link_and_verify():
 
 def update_expected():
     """Snapshot build/src objects as objdiff targets (run from a verified
-    all-asm or byte-matching build)."""
+    byte-matching build) and regenerate objdiff.json's unit list."""
+    import json
+
     src_objs = sorted((OUT / "src").rglob("*.o"))
     if not src_objs:
         sys.exit("no build/src objects; run a full build first")
+    units = []
     for obj in src_objs:
-        dst = ROOT / "expected" / obj.relative_to(OUT)
+        rel = obj.relative_to(OUT)
+        dst = ROOT / "expected" / rel
         dst.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(obj, dst)
-        print(f"expected/{obj.relative_to(OUT)}")
+        unit = rel.relative_to("src").with_suffix("").as_posix()
+        units.append({
+            "name": unit,
+            "target_path": f"expected/{rel.as_posix()}",
+            "base_path": f"build/{rel.as_posix()}",
+            "metadata": {"source_path": f"src/{unit}.c"},
+        })
+    cfg_path = ROOT / "objdiff.json"
+    cfg = json.loads(cfg_path.read_text())
+    cfg["units"] = units
+    cfg_path.write_text(json.dumps(cfg, indent=2) + "\n")
+    print(f"expected/: {len(units)} units snapshotted; objdiff.json updated")
 
 
 def main():

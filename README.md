@@ -40,7 +40,7 @@ make           # full build + byte-verify   -> "build/slps_018.23.exe: OK"
 
 | Path | Purpose |
 |---|---|
-| `configs/slps_018.23.yaml` | splat configuration |
+| `snowboardkidsplus.yaml` | splat configuration |
 | `configs/symbol_addrs.txt` | known symbols (grows as functions are named) |
 | `linkers/` | generated linker script + undefined-syms files |
 | `asm/nonmatchings/main/` | per-function disassembly (the oracle; regenerated) |
