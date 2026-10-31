@@ -69,6 +69,7 @@ AS_FLAGS = ["-EL", "-march=r3000", "-mtune=r3000", "-no-pad-sections",
 
 # Per-TU overrides, NFSHS-style (flags proven per translation unit go here).
 PER_TU_FLAGS: dict = {
+    "src/main_remaining.c": {"g_value": "8"},
     "src/engine/game_options.c": {"g_value": "8"},
     # Proven against the RNG function bytes; the game-wide compiler and -G
     # setting are still unpinned. Keep these choices local to the carved units.
@@ -79,6 +80,32 @@ PER_TU_FLAGS: dict = {
         "function_flags": {"resetGameplayRng": ["-fno-delayed-branch"]},
     },
 }
+
+
+# Verified SDK imports only: preserve assembler-scheduled slots and object padding.
+# This lane is independent of the single compiler used by game C.
+SDK_CC1 = ROOT / "tools/gcc/gcc-2.7.2-psx/cc1"
+for _sdk_unit in (
+    "libsnd/vs_mono", "libsnd/vm_doff", "libsnd/vm_don",
+    "libspu/s_it", "libspu/s_stm", "libetc/vmode",
+    "libspu/s_snv", "libspu/s_srv", "libsnd/ssstart", "libpress/libpress",
+):
+    PER_TU_FLAGS[f"src/syslib/{_sdk_unit}.c"] = {
+        "cc1": SDK_CC1, "g_value": "0", "gas_reorder": True,
+        "pad_sections": True,
+    }
+
+PER_TU_FLAGS["src/syslib/libcd/sys.c"] = {
+    "gas_reorder": True,
+    "function_flags": {
+        name: ["-fno-delayed-branch"]
+        for name in ("CdFlush", "CdSync", "CdReady", "CdDataSync")
+    }
+}
+PER_TU_FLAGS["src/syslib/libcd/sys.c"]["function_flags"].update({
+    name: ["-mno-split-addresses"]
+    for name in ("CdSetDebug", "CdSyncCallback", "CdReadyCallback")
+})
 
 
 def run(cmd, **kw):
@@ -119,6 +146,10 @@ def compile_c(src: Path, skip_asm: bool, *, output_root: Path = None,
                  for flag in CC1_FLAGS]
     as_flags = [f"-G{g_value}" if flag.startswith("-G") else flag
                 for flag in AS_FLAGS]
+    if overrides.get("gas_reorder"):
+        as_flags.append("-O2")
+    if overrides.get("pad_sections"):
+        as_flags.remove("-no-pad-sections")
     obj = (output_root if output_root is not None else OUT) / rel.with_suffix(".o")
     obj.parent.mkdir(parents=True, exist_ok=True)
     i_file = obj.with_suffix(".i")
@@ -147,8 +178,9 @@ def compile_c(src: Path, skip_asm: bool, *, output_root: Path = None,
         assembly = replace_compiler_function(assembly, alternate.read_text(), name)
     s_file.write_text(assembly)
 
+    scheduler_flags = ["--gas-reorder"] if overrides.get("gas_reorder") else []
     r = run([PY, MASPSX, f"--aspsx-version={ASPSX_VERSION}", "--expand-div",
-             f"-G{g_value}"],
+             f"-G{g_value}", *scheduler_flags],
             input=assembly, cwd=ROOT)
     if r.returncode:
         sys.exit(f"[maspsx] {rel}\n{r.stderr}")

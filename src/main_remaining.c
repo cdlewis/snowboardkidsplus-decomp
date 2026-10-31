@@ -1,4 +1,9 @@
 #include "common.h"
+#include "game/graphics.h"
+#include "game/linear_random.h"
+#include "game/offset_archive.h"
+
+s32 gLinearRandomState = 1;
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80015EE0);
 
@@ -1118,7 +1123,26 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80049D34);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80049D48);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8004A0D0);
+void initSprite(GsSPRITE *sprite) {
+    sprite->r = 0x80;
+    sprite->g = 0x80;
+    sprite->b = 0x80;
+    sprite->attribute = 0;
+    sprite->x = 0;
+    sprite->y = 0;
+    sprite->w = 0;
+    sprite->h = 0;
+    sprite->tpage = 0;
+    sprite->u = 0;
+    sprite->v = 0;
+    sprite->cx = 0;
+    sprite->cy = 0;
+    sprite->mx = 0;
+    sprite->my = 0;
+    sprite->scalex = 0x1000;
+    sprite->scaley = 0x1000;
+    sprite->rotate = 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8004A124);
 
@@ -1452,9 +1476,15 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80060D40);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80060DC8);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80060E28);
+s32 randomNextLinear(void) {
+    gLinearRandomState = gLinearRandomState * 1103515245 + 12345;
+    return ((u32)gLinearRandomState >> 16) & 0x7FFF;
+}
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80060E50);
+s32 randomLinearFromValue(s32 value) {
+    value = value * 1103515245 + 12345;
+    return (value / 65536) & 0x7FFF;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80060E80);
 
@@ -1600,7 +1630,9 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8006A194);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8006A2F8);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8006A424);
+void *getOffsetArchiveEntry(OffsetArchive *archive, s32 index) {
+    return (u8 *)archive + archive->offsets[index];
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8006A438);
 

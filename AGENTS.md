@@ -37,3 +37,20 @@ See the README's matching tools section for candidate ranking, structural
 search, isolated compilation, data diffs, and tool checks. Scratch attempts
 belong in ignored `nonmatchings/`; never use them to replace live build or
 expected objects. These tools do not change the full-image gate requirement.
+
+## Commit validation
+
+Install the tracked validation hook with `make hooks`. Never bypass a failed
+hook: fix its reported input, build, or checksum failure. Stage the complete
+build-input change before committing; unrelated local files can stay unstaged.
+The hook regenerates splits, runs the regression checks, and requires the
+full executable to match the original bytes. It does not stage generated files
+or update expected objects.
+
+The protected executable SHA1 is `3f1a7abc267ea29bafed1653121613ea467c1ac8`.
+Agents must not change the expected checksums in `tools/build.py`,
+`snowboardkidsplus.yaml`, or `decomp.yaml`, weaken validation, or bypass the
+hook to make a failing build pass. The hook rejects checksum-value changes
+and independently hashes both the disc executable and rebuilt image against
+the committed checksum. This value was verified against a fresh read from
+the original MODE2 disc BIN and the initial project history.

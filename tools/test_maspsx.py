@@ -1,6 +1,9 @@
-"""Regression checks for external small-data load hazards (no SDK needed)."""
+"""Regression checks for small-data hazards and SDK assembler scheduling."""
 
 import sys
+import shutil
+import subprocess
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -40,6 +43,31 @@ class ExternalSmallDataTests(unittest.TestCase):
         self.assertFalse(any(".space" in line or ".section .sbss" in line
                              for line in result))
         self.assertNotIn("index:", result)
+
+
+class SdkReorderTests(unittest.TestCase):
+    @unittest.skipUnless(shutil.which("mips-linux-gnu-as"), "MIPS assembler required")
+    def test_macro_store_fills_return_slot(self):
+        from decomp import Elf32
+        source = [".text", ".globl probe", ".ent\tprobe", "probe:",
+                  "li\t$2,1", "sh\t$2,0x80123456", "j\t$31", ".end\tprobe"]
+        assembly = MaspsxProcessor(source, gas_reorder=True).process_lines()
+        with tempfile.TemporaryDirectory() as directory:
+            obj = Path(directory) / "probe.o"
+            subprocess.run(["mips-linux-gnu-as", "-EL", "-march=r3000", "-O2",
+                            "-no-pad-sections", "-o", str(obj), "-"],
+                           input="\n".join(assembly) + "\n", text=True,
+                           check=True, capture_output=True)
+            self.assertEqual(Elf32(obj).read_symbol("probe"),
+                             bytes.fromhex("010002241280013c0800e003563422a4"))
+
+    def test_explicit_compiler_delay_slot_is_preserved(self):
+        source = [".text", ".ent\tprobe", "probe:", ".set\tnoreorder",
+                  "j\t$31", "addu\t$2,$4,$0", ".set\treorder", ".end\tprobe"]
+        assembly = MaspsxProcessor(source, gas_reorder=True).process_lines()
+        jump = assembly.index("j\t$31")
+        self.assertEqual(assembly[jump + 1], "addu\t$2,$4,$0")
+        self.assertIn(".set\tnoreorder", assembly)
 
 
 if __name__ == "__main__":

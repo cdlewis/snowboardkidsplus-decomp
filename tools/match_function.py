@@ -116,6 +116,8 @@ def main():
               "source_sha1": hashlib.sha1(source.read_bytes()).hexdigest(),
               "preprocessed_sha1": hashlib.sha1(obj.with_suffix(".i").read_bytes()).hexdigest(),
               "aspsx_version": build.ASPSX_VERSION,
+              "gas_reorder": settings.get("gas_reorder", False),
+              "pad_sections": settings.get("pad_sections", False),
               "address": address, "target_size": len(target), "candidate_size": len(data),
               "exact": equal, "first_byte_difference": first_difference(target, data)}
     (output / "result.json").write_text(json.dumps(report, indent=2) + "\n")

@@ -1,30 +1,59 @@
 #include "common.h"
+#include "libcd_private.h"
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libcd/sys", CdStatus);
+/* Wrappers and BCD conversions adapted from PsyZ decomp; see THIRD_PARTY.md. */
+int CdStatus(void) { return CD_status; }
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libcd/sys", CdMode);
+int CdMode(void) { return CD_mode; }
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libcd/sys", CdLastCom);
+int CdLastCom(void) { return CD_com; }
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libcd/sys", CdLastPos);
+CdlLOC* CdLastPos(void) { return &CD_pos; }
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libcd/sys", CdReset);
+int CdReset(int mode) {
+    if (mode == CdlModeAP) {
+        CD_initintr();
+        return 1;
+    }
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libcd/sys", CdFlush);
+    if (CD_init()) {
+        return 0;
+    }
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libcd/sys", CdSetDebug);
+    if (mode == CdlModeDA && CD_initvol()) {
+        return 0;
+    }
+
+    return 1;
+}
+
+void CdFlush(void) { CD_flush(); }
+
+int CdSetDebug(int level) {
+    int prev = CD_debug;
+    CD_debug = level;
+    return prev;
+}
 
 INCLUDE_ASM("asm/nonmatchings/syslib/libcd/sys", CdComstr);
 
 INCLUDE_ASM("asm/nonmatchings/syslib/libcd/sys", CdIntstr);
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libcd/sys", CdSync);
+s32 CdSync(s32 mode, u8 *result) { return CD_sync(mode, result); }
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libcd/sys", CdReady);
+s32 CdReady(s32 mode, u8 *result) { return CD_ready(mode, result); }
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libcd/sys", CdSyncCallback);
+CdlCB CdSyncCallback(CdlCB func) {
+    CdlCB prev = CD_cbsync;
+    CD_cbsync = func;
+    return prev;
+}
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libcd/sys", CdReadyCallback);
+CdlCB CdReadyCallback(CdlCB func) {
+    CdlCB prev = CD_cbready;
+    CD_cbready = func;
+    return prev;
+}
 
 INCLUDE_ASM("asm/nonmatchings/syslib/libcd/sys", CdControl);
 
@@ -32,16 +61,31 @@ INCLUDE_ASM("asm/nonmatchings/syslib/libcd/sys", CdControlF);
 
 INCLUDE_ASM("asm/nonmatchings/syslib/libcd/sys", CdControlB);
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libcd/sys", CdMix);
+s32 CdMix(CdlATV *vol) { CD_vol(vol); return 1; }
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libcd/sys", CdGetSector);
+s32 CdGetSector(void *madr, s32 size) { return CD_getsector(madr, size) == 0; }
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libcd/sys", CdGetSector2);
+s32 CdGetSector2(void *madr, s32 size) { return CD_getsector2(madr, size) == 0; }
 
 INCLUDE_ASM("asm/nonmatchings/syslib/libcd/sys", CdDataCallback);
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libcd/sys", CdDataSync);
+s32 CdDataSync(s32 mode) { return CD_datasync(mode); }
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libcd/sys", CdIntToPos);
+static inline int ENCODE_BCD(int n) { return ((n / 10) << 4) + (n % 10); }
+CdlLOC* CdIntToPos(int i, CdlLOC* p) {
+    i += 150;
+    p->sector = ENCODE_BCD(i % 75);
+    p->second = ENCODE_BCD(i / 75 % 60);
+    p->minute = ENCODE_BCD(i / 75 / 60);
+    return p;
+}
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libcd/sys", CdPosToInt);
+int CdPosToInt(CdlLOC* p) {
+#define DECODE_BCD(x) (((x) >> 4) * 10 + ((x) & 0xF))
+    u8 sector = p->sector;
+    u8 second = p->second;
+    u8 minute = p->minute;
+
+    return (DECODE_BCD(minute) * 60 + DECODE_BCD(second)) * 75 +
+           DECODE_BCD(sector) - 150;
+}

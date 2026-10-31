@@ -1,5 +1,6 @@
-#include "common.h"
+/* Adapted from PsyZ decomp; see THIRD_PARTY.md and licenses/psyz-decomp.txt. */
+#include "libsnd_private.h"
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libsnd/vs_mono", SsSetMono);
+void SsSetMono(void) { _svm_stereo_mono = 1; }
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libsnd/vs_mono", SsSetStereo);
+void SsSetStereo(void) { _svm_stereo_mono = 0; }

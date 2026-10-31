@@ -530,10 +530,12 @@ class MaspsxProcessor:
         use_comm_for_lcomm=False,
         jtbl_at_fusion=False,
         nop_before_label=False,
+        gas_reorder=False,
     ):
         self.lines = [x.strip() for x in lines]
         self.jtbl_at_fusion = jtbl_at_fusion
         self.nop_before_label = nop_before_label
+        self.use_gas_reorder = gas_reorder
 
         self.sdata_limit = sdata_limit
 
@@ -1052,10 +1054,17 @@ class MaspsxProcessor:
                 self.file_num += 1
 
             elif line.startswith(".ent\t"):
-                # enforce noreorder for each function
-                self.gas_reorder_passthrough = False
                 res.append(line)
-                res.append(".set\tnoreorder")
+                if self.use_gas_reorder:
+                    # SDK cc1 2.7.2 leaves macro stores and jumps in reorder
+                    # mode. Delegate their scheduling to GNU as -O2; keep
+                    # maspsx's pseudo-op normalization (notably move = addu).
+                    self.gas_reorder_passthrough = True
+                    self.is_reorder = False
+                    res.append(".set\treorder")
+                else:
+                    self.gas_reorder_passthrough = False
+                    res.append(".set\tnoreorder")
 
             elif line.startswith(".comm") or line.startswith(".lcomm"):
                 # already handled via preprocess_lines

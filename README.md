@@ -49,14 +49,15 @@ python3 -m venv .venv
 
 Install the native Linux PSX GCC binaries from
 [decompals/old-gcc](https://github.com/decompals/old-gcc/releases/tag/0.17)
-under `tools/gcc/`. The current build requires this path:
+under `tools/gcc/`. The current build requires these paths:
 
 ```text
 tools/gcc/gcc-2.8.1-psx/cc1
+tools/gcc/gcc-2.7.2-psx/cc1
 ```
 
-GCC 2.7.2 and 2.8.0 are optional matching candidates at
-`tools/gcc/gcc-2.7.2-psx/cc1` and `tools/gcc/gcc-2.8.0-psx/cc1`.
+Game C uses GCC 2.8.1; selected SDK units use GCC 2.7.2.
+GCC 2.8.0 is an optional matching candidate at `tools/gcc/gcc-2.8.0-psx/cc1`.
 The compiler binaries are ignored by Git;
 maspsx is included in the repository.
 
@@ -151,6 +152,29 @@ are generated. Update the configuration and regenerate them with `make split`
 or `make expected` rather than editing them by hand. The per-function
 disassembly in `asm/nonmatchings/` is the reference for matching.
 
+## SDK source imports
+
+The linked PSY-Q 4.2 libraries have reusable C in the public
+[PsyZ decompilation](https://github.com/Xeeynamo/psyz/tree/main/decomp), which
+targets PSY-Q 4.0. It is incomplete, and versions differ, so imports must still
+match this executable exactly. Its native porting implementation is a separate
+reference and is not a substitute for matching SDK source.
+
+Imported functions cover CD wrappers and BCD position conversion, mono/stereo
+selection, sound startup, damper control, and SPU transfer state/mode. The main
+MDEC decoder module is entirely C, including its tables, register pointers, and
+diagnostic strings. Video-mode accessors are
+also reconstructed, including their owned four-byte state. See
+[THIRD_PARTY.md](THIRD_PARTY.md) for source provenance and the preserved license.
+Shared VM/SPU state remains with the existing data objects; consumers use
+canonical `extern` declarations. The libc BIOS trampolines and many GTE routines
+were assembly, so replacing them with C implementations would change the code.
+
+Selected SDK units have verified local GCC 2.7.2 settings in `tools/build.py`.
+Their reorder-mode assembly uses maspsx normalization plus GNU as `-O2` delay
+slot scheduling and original object padding. These are scoped settings, not
+proof of the compiler for every SDK object. The game compiler is unchanged.
+
 ## Matching tools
 
 [DECOMPILATION_LEARNINGS.md](DECOMPILATION_LEARNINGS.md) collects techniques
@@ -209,6 +233,28 @@ Run their regression checks, including the assembler and build-driver checks:
 ```sh
 make check
 ```
+
+## Commit validation
+
+Install the tracked Git hook once per clone:
+
+```sh
+make hooks
+```
+
+The hook rejects changes to the expected SHA1 in the build script and YAML
+metadata, regenerates splits, runs `make check`,
+and rebuilds the full executable. A commit proceeds only when the image matches
+`disc/SLPS_018.23` byte for byte. It also independently hashes both files
+against the committed checksum. It does not refresh `expected/` or stage files.
+
+Stage all changed build inputs before committing. The hook rejects unstaged or
+untracked files under `src/`, `include/`, `configs/`, and `tools/`, plus unstaged
+build configuration, so validation covers what will actually be committed.
+Unrelated notes and local files such as `.envrc` can remain unstaged. Generated
+assembly, linker outputs, and build/expected objects must remain unstaged.
+If `core.hooksPath` already points elsewhere, the installer leaves it intact;
+chain `tools/git-hooks/pre-commit` from that hook setup.
 
 ## Contributing
 

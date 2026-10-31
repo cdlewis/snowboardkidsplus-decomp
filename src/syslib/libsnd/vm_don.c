@@ -1,3 +1,4 @@
-#include "common.h"
+/* Counterpart of PsyZ vm_doff.c; value verified against this SDK object. */
+#include "libsnd_private.h"
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libsnd/vm_don", _SsVmDamperOn);
+void _SsVmDamperOn(void) { _svm_damper = 2; }

@@ -2,7 +2,7 @@
 PY ?= .venv/bin/python
 SPLAT ?= .venv/bin/splat
 
-.PHONY: all skipasm expected split extract clean check
+.PHONY: all skipasm expected split extract clean check hooks
 all:
 	$(PY) tools/build.py
 
@@ -23,3 +23,6 @@ clean:
 
 check:
 	$(PY) -m unittest discover -s tools -p 'test_*.py'
+
+hooks:
+	tools/install-git-hooks.sh

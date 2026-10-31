@@ -43,6 +43,21 @@ full technique catalog — same toolchain family, techniques transfer).
   label collisions, and verify the full image. This is a matching workaround;
   it does not establish the original flags or translation-unit boundaries.
 
+### SDK assembler scheduling
+
+Some imported SDK units use GCC 2.7.2 with `gas_reorder` and `pad_sections`
+settings in `PER_TU_FLAGS`. That compiler can emit an absolute store macro
+followed by a return in reorder mode. Maspsx normally adds a nop after the
+return; delegating reorder scheduling to GNU as `-O2` lets the store fill the
+slot after address expansion. Maspsx still normalizes pseudo-ops, and explicit
+compiler `noreorder` regions retain their slots. This reproduces selected SDK
+objects without rewriting instructions; verify each new unit against its oracle.
+
+Object text padding matters too. Enabling assembler section padding may pad a
+four-byte `.data` input to sixteen bytes. Keep data in a separately named section
+when necessary, map it through yaml's `linker_section`, and verify addresses and
+sizes as well as code bytes. Neither setting is enabled globally for game code.
+
 ## Per-function workflow
 
 1. Pick an active `INCLUDE_ASM` from a game unit; prefer small leaf functions

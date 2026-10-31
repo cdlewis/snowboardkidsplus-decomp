@@ -1,3 +1,4 @@
-#include "common.h"
+/* Adapted from PsyZ decomp; see THIRD_PARTY.md and licenses/psyz-decomp.txt. */
+#include "libsnd_private.h"
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libsnd/vm_doff", _SsVmDamperOff);
+void _SsVmDamperOff(void) { _svm_damper = 0; }

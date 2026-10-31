@@ -62,6 +62,8 @@ segments:
     # bss_size: Please fill out this value when you figure out the bss size
     subsegments:
       - [0x800, rodata, 800]
+      - {start: 0x36D0, type: .rodata, name: syslib/libpress/libpress, linker_section: .rodata.mdec}
+      - [0x3720, rodata, 3720]
       # game code as a mixed C/asm unit: per-function .s in
       # asm/nonmatchings/main/, INCLUDE_ASM skeleton in src/main.c
       - [0x39B4, c, main]
@@ -470,11 +472,17 @@ segments:
       - [0xC78E8, data, C78E8] # estimated
       - [0xDAD9C, .data, engine/random]
       - [0xDAE9C, data, DAE9C]
+      - {start: 0x12510C, type: .data, name: syslib/libetc/vmode, linker_section: .data.vmode}
+      - [0x125110, data, 125110]
+      - {start: 0x12A59C, type: .data, name: syslib/libpress/libpress, linker_section: .data.mdec}
+      - [0x12A6E8, data, 12A6E8]
       # Small-data inputs retain their original position within the data image.
       - {start: 0x12B710, type: .sdata, name: engine/random, linker_section_order: .data}
       - [0x12B714, data, 12B714]
       - [0x12B7AC, .data, engine/game_task_scheduler]
       - [0x12B7B0, data, 12B7B0]
+      - {start: 0x12BAFC, type: .sdata, name: main_remaining, linker_section_order: .data}
+      - [0x12BB00, data, 12BB00]
       - [0x12BD70, .data, engine/game_options]
       - [0x12BD78, data, 12BD78]
   - [0x12C000]

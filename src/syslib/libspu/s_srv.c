@@ -1,3 +1,6 @@
-#include "common.h"
+/* Adapted from PsyZ decomp; see THIRD_PARTY.md. */
+#include "libspu_private.h"
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libspu/s_srv", SpuSetReverbVoice);
+u32 SpuSetReverbVoice(s32 on_off, u32 voice_bit) {
+    return _SpuSetAnyVoice(on_off, voice_bit, 0xCC, 0xCD);
+}

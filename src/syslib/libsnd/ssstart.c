@@ -1,10 +1,13 @@
 #include "common.h"
+#include "libsnd_private.h"
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libsnd/ssstart", func_800AC4E4);
+/* Start wrappers adapted from PsyZ decomp; see THIRD_PARTY.md. */
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libsnd/ssstart", SsStart);
+INCLUDE_ASM("asm/nonmatchings/syslib/libsnd/ssstart", _SsStart);
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libsnd/ssstart", SsStart2);
+void SsStart(void) { _SsStart(1); }
+
+void SsStart2(void) { _SsStart(0); }
 
 INCLUDE_ASM("asm/nonmatchings/syslib/libsnd/ssstart", func_800AC754);
 

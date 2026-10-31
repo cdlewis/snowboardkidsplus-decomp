@@ -1,35 +1,201 @@
-#include "common.h"
+/* Adapted from PsyZ decomp; see THIRD_PARTY.md and licenses/psyz-decomp.txt. */
+#include "libpress_private.h"
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libpress/libpress", DecDCTReset);
+#define MDEC_DATA __attribute__((section(".data.mdec"), aligned(4)))
+#define MDEC_RODATA __attribute__((section(".rodata.mdec"), aligned(4)))
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libpress/libpress", DecDCTGetEnv);
+u32 mdec_iq[] MDEC_DATA = {
+    0x40000001, 0x13101002, 0x16161310, 0x16161616, 0x1B1A181A, 0x1A1A1B1B,
+    0x1B1B1A1A, 0x1D1D1D1B, 0x1D222222, 0x1B1B1D1D, 0x20201D1D, 0x26252222,
+    0x22232325, 0x28262623, 0x30302828, 0x38382E2E, 0x5345453A, 0x13101002,
+    0x16161310, 0x16161616, 0x1B1A181A, 0x1A1A1B1B, 0x1B1B1A1A, 0x1D1D1D1B,
+    0x1D222222, 0x1B1B1D1D, 0x20201D1D, 0x26252222, 0x22232325, 0x28262623,
+    0x30302828, 0x38382E2E, 0x5345453A};
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libpress/libpress", DecDCTPutEnv);
+u32 mdec_coef[] MDEC_DATA = {
+    0x60000000, 0x5A825A82, 0x5A825A82, 0x5A825A82, 0x5A825A82, 0x6A6D7D8A,
+    0x18F8471C, 0xB8E3E707, 0x82759592, 0x30FB7641, 0x89BECF04, 0xCF0489BE,
+    0x764130FB, 0xE7076A6D, 0xB8E38275, 0x7D8A471C, 0x959218F8, 0xA57D5A82,
+    0x5A82A57D, 0xA57D5A82, 0x5A82A57D, 0x8275471C, 0x6A6D18F8, 0xE7079592,
+    0xB8E37D8A, 0x89BE30FB, 0xCF047641, 0x7641CF04, 0x30FB89BE, 0xB8E318F8,
+    0x82756A6D, 0x95927D8A, 0xE707471C};
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libpress/libpress", DecDCTBufSize);
+u32 sMdecUnusedWords[2] MDEC_DATA = {0x210E7350, 0x004246AD};
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libpress/libpress", DecDCTin);
+volatile u32 *mdec_d0_madr MDEC_DATA = (volatile u32 *)0x1F801080;
+volatile u32 *mdec_d0_bcr MDEC_DATA = (volatile u32 *)0x1F801084;
+volatile u32 *mdec_d0_chcr MDEC_DATA = (volatile u32 *)0x1F801088;
+volatile u32 *mdec_d1_madr MDEC_DATA = (volatile u32 *)0x1F801090;
+volatile u32 *mdec_d1_bcr MDEC_DATA = (volatile u32 *)0x1F801094;
+volatile u32 *mdec_d1_chcr MDEC_DATA = (volatile u32 *)0x1F801098;
+volatile u32 *mdec_d2_madr MDEC_DATA = (volatile u32 *)0x1F8010A0;
+volatile u32 *mdec_d2_bcr MDEC_DATA = (volatile u32 *)0x1F8010A4;
+volatile u32 *mdec_d2_chcr MDEC_DATA = (volatile u32 *)0x1F8010A8;
+volatile u32 *mdec_d3_madr MDEC_DATA = (volatile u32 *)0x1F8010B0;
+volatile u32 *mdec_d3_bcr MDEC_DATA = (volatile u32 *)0x1F8010B4;
+volatile u32 *mdec_d3_chcr MDEC_DATA = (volatile u32 *)0x1F8010B8;
+volatile u32 *mdec0 MDEC_DATA = (volatile u32 *)0x1F801820;
+volatile u32 *mdec1 MDEC_DATA = (volatile u32 *)0x1F801824;
+volatile u32 *mdec_d_pcr MDEC_DATA = (volatile u32 *)0x1F8010F0;
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libpress/libpress", DecDCTout);
+/* The first string's alignment also preserves the original rodata tail padding. */
+const char sMdecResetError[] __attribute__((section(".rodata.mdec"), aligned(16))) =
+    "MDEC_rest:bad option(%d)\n";
+const char sMdecInSyncName[] MDEC_RODATA = "MDEC_in_sync";
+const char sMdecOutSyncName[] MDEC_RODATA = "MDEC_out_sync";
+const char sMdecTimeoutFormat[] MDEC_RODATA = "%s timeout:\n";
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libpress/libpress", DecDCTinSync);
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libpress/libpress", DecDCToutSync);
+void DecDCTReset(int mode) {
+    if (mode == 0)
+        ResetCallback();
+    MDEC_reset(mode);
+}
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libpress/libpress", DecDCTinCallback);
+DECDCTENV* DecDCTGetEnv(DECDCTENV* env) {
+    int i;
+    u32 *dst, *src;
+    dst = (u32*)env->iq_y;
+    src = &mdec_iq[1];
+    for (i = 15; i != -1; i--)
+        *dst++ = *src++;
+    dst = (u32*)env->iq_c;
+    src = &mdec_iq[17];
+    for (i = 15; i != -1; i--)
+        *dst++ = *src++;
+    dst = (u32*)env->dct;
+    src = &mdec_coef[1];
+    for (i = 31; i != -1; i--)
+        *dst++ = *src++;
+    return env;
+}
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libpress/libpress", DecDCToutCallback);
+DECDCTENV* DecDCTPutEnv(DECDCTENV* env) {
+    int i;
+    u32 *dst1, *src1, *dst2, *src2;
+    dst1 = &mdec_iq[1];
+    src1 = (u32*)env->iq_y;
+    for (i = 15; i != -1; i--)
+        *dst1++ = *src1++;
+    dst2 = &mdec_iq[17];
+    src2 = (u32*)env->iq_c;
+    for (i = 15; i != -1; i--)
+        *dst2++ = *src2++;
+    MDEC_in((u32*)mdec_iq, 32);
+    MDEC_in((u32*)mdec_coef, 32);
+    return env;
+}
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libpress/libpress", func_800D0578);
+int DecDCTBufSize(u32* bs) { return *(u16*)bs; }
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libpress/libpress", func_800D0668);
+void DecDCTin(u32* buf, int mode) {
+    if (mode & 1)
+        *(u32*)buf &= ~0x08000000;
+    else
+        *(u32*)buf |= 0x08000000;
+    if (mode & 2)
+        *(u32*)buf |= 0x02000000;
+    else
+        *(u32*)buf &= ~0x02000000;
+    MDEC_in(buf, *(u16*)buf);
+}
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libpress/libpress", func_800D06F8);
+void DecDCTout(u32* buf, int size) { MDEC_out(buf, size); }
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libpress/libpress", func_800D0784);
+int DecDCTinSync(int mode) {
+    int result;
+    if (mode == 0)
+        result = MDEC_in_sync();
+    else
+        result = (MDEC_status() >> 29) & 1;
+    return result;
+}
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libpress/libpress", func_800D0818);
+int DecDCToutSync(int mode) {
+    int result;
+    if (mode == 0)
+        result = MDEC_out_sync();
+    else
+        result = (MDEC_status() >> 24) & 1;
+    return result;
+}
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libpress/libpress", func_800D08AC);
+DecDCCb DecDCTinCallback(DecDCCb cb) { return DMACallback(0, cb); }
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libpress/libpress", func_800D08C4);
+DecDCCb DecDCToutCallback(DecDCCb cb) { return DMACallback(1, cb); }
+
+void MDEC_reset(int mode) {
+    switch (mode) {
+    case 0:
+        MDEC_CONTROL(0x80000000);
+        MDEC_DMA_WRITE(0, chcr, 0);
+        MDEC_DMA_WRITE(1, chcr, 0);
+        MDEC_CONTROL(0x60000000);
+        MDEC_in((u32*)mdec_iq, 32);
+        MDEC_in((u32*)mdec_coef, 32);
+        return;
+    case 1:
+        MDEC_CONTROL(0x80000000);
+        MDEC_DMA_WRITE(0, chcr, 0);
+        MDEC_DMA_WRITE(1, chcr, 0);
+        MDEC_DMA_READ(1, chcr);
+        MDEC_CONTROL(0x60000000);
+        return;
+    default:
+        printf(sMdecResetError, mode);
+        return;
+    }
+}
+
+void MDEC_in(u32* buf, int size) {
+    MDEC_in_sync();
+    MDEC_DMA_ENABLE();
+    MDEC_DMA_WRITE(0, madr, MDEC_ADDRESS(buf) + 4);
+    MDEC_DMA_WRITE(0, bcr, (((u32)size >> 5) << 16) | 0x20);
+    MDEC_COMMAND(*(u32*)buf);
+    MDEC_DMA_WRITE(0, chcr, 0x01000201);
+}
+
+void MDEC_out(u32* buf, int size) {
+    MDEC_out_sync();
+    MDEC_DMA_ENABLE();
+    MDEC_DMA_WRITE(1, chcr, 0);
+    MDEC_DMA_WRITE(1, madr, MDEC_ADDRESS(buf));
+    MDEC_DMA_WRITE(1, bcr, (((u32)size >> 5) << 16) | 0x20);
+    MDEC_DMA_WRITE(1, chcr, 0x01000200);
+}
+
+int MDEC_in_sync(void) {
+    volatile int retries = 0x100000;
+    while (MDEC_READ_STATUS() & 0x20000000) {
+        if (--retries == -1) {
+            mdecTimeout(sMdecInSyncName);
+            return -1;
+        }
+    }
+    return 0;
+}
+
+int MDEC_out_sync(void) {
+    volatile int retries = 0x100000;
+    while (MDEC_DMA_READ(1, chcr) & 0x01000000) {
+        if (--retries == -1) {
+            mdecTimeout(sMdecOutSyncName);
+            return -1;
+        }
+    }
+    return 0;
+}
+
+u32 MDEC_status(void) { return MDEC_READ_STATUS(); }
+
+/* The 4.2 object omits the 4.0 reference's extra DMA/FIFO diagnostics. */
+s32 mdecTimeout(const char *name) {
+    printf(sMdecTimeoutFormat, name);
+    MDEC_CONTROL(0x80000000);
+    MDEC_DMA_WRITE(0, chcr, 0);
+    MDEC_DMA_WRITE(1, chcr, 0);
+    MDEC_DMA_READ(1, chcr);
+    MDEC_CONTROL(0x60000000);
+    return 0;
+}
