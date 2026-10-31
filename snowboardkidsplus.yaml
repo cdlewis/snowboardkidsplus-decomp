@@ -67,6 +67,8 @@ segments:
       - [0x39B4, c, main]
       - [0x6604, c, engine/random]
       - [0x66E0, c, main_remaining]
+      - [0x7CE30, c, engine/game_options]
+      - [0x7CF08, c, main_tail]
       # --- PSY-Q 4.2 static libraries (0x800A8204..0x800D7098) ---
       # per-OBJ units, bootstrapped once from a signature scan
       # (tools/find_psyq.py, lab313ru/psx_psyq_signatures) and maintained
@@ -473,4 +475,6 @@ segments:
       - [0x12B714, data, 12B714]
       - [0x12B7AC, .data, engine/game_task_scheduler]
       - [0x12B7B0, data, 12B7B0]
+      - [0x12BD70, .data, engine/game_options]
+      - [0x12BD78, data, 12BD78]
   - [0x12C000]

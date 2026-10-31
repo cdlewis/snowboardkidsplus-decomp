@@ -8,7 +8,7 @@ full technique catalog — same toolchain family, techniques transfer).
 
 1. **Target = 100% byte-match only.** A function is done at 100%, not 99%.
    The full-image gate (`make` → sha1 `OK`) must stay green on every commit.
-2. **The disassembly oracle is splat's output** (`asm/nonmatchings/main/*.s`,
+2. **The disassembly oracle is splat's output** (`asm/nonmatchings/<unit>/*.s`,
    regenerate with `make split`). When in doubt about what a function does,
    read it there — it carries file offset, vram, and raw bytes per line.
 3. **When a function matches, name it** — add the real name to
@@ -45,20 +45,33 @@ full technique catalog — same toolchain family, techniques transfer).
 
 ## Per-function workflow
 
-1. Pick a function from `src/main.c` (an `INCLUDE_ASM` line); prefer small
-   leaf functions until the compiler version is pinned.
+1. Pick an active `INCLUDE_ASM` from a game unit; prefer small leaf functions
+   until the compiler version is pinned. `tools/score_functions.py` ranks live
+   candidates; `tools/find_similar_functions.py` finds structural references.
 2. Draft C: read the asm oracle; `m2c` or decomp.me scratch as a starting
    point. Types/globals go in `include/` headers; symbol names in
    `configs/symbol_addrs.txt`.
-3. Replace the `INCLUDE_ASM` line with the C body, then:
+3. First test a single-body attempt in ignored `nonmatchings/` with real
+   project headers using `tools/match_function.py FUNCTION attempt.c`. It
+   inherits the owning unit's settings and checks linked bytes in isolation;
+   it requires a fresh verified image and supports extern-only data. Owned
+   data and jump tables need full-TU objdiff. See the README for commands.
+   Replace the `INCLUDE_ASM` line with the matching C body, then:
    - `make skipasm` + **objdiff** (`objdiff.json` is wired: base =
-     `build/src/main.o`, target = `expected/src/main.o`) for per-function diff;
+     the owning `build/src/<unit>.o`, target = `expected/src/<unit>.o`)
+     for per-function diff;
    - `make` for the full-image byte gate.
 4. Stuck on register-allocation residuals? It's source *shape* — try the
    standard idioms (temp for expr, reordered statements, `do{}while(0)`,
    split/chained assignment) or decomp-permuter. Don't invent flags.
 5. After matching: refresh `expected/` **only from a verified build**
    (`make` prints OK, then `make expected`).
+
+Read [DECOMPILATION_LEARNINGS.md](DECOMPILATION_LEARNINGS.md) for source and
+layout techniques adapted from both N64 sibling projects. The repo-local
+skills indexed in AGENTS cover function/data matching, renaming, and optional
+permuter experiments. After shared-header edits, check every consumer. Check
+owned data with `tools/data_diff.py` as well as the full-image gate.
 
 ## Reference projects
 

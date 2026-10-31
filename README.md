@@ -119,8 +119,7 @@ cause matched functions to remain counted as unmatched.
 ## Reverse-engineering notes
 
 Read [METHODOLOGY.md](METHODOLOGY.md) before doing matching work. It documents
-the matching rules, compiler selection, per-function workflow, and current
-status. The full-image byte verification must stay green; functions are
+the matching rules, compiler selection, and per-function workflow. The full-image byte verification must stay green; functions are
 considered matched only at 100%.
 
 - The game-wide compiler version and `-G` value are not yet pinned. The five
@@ -152,6 +151,65 @@ are generated. Update the configuration and regenerate them with `make split`
 or `make expected` rather than editing them by hand. The per-function
 disassembly in `asm/nonmatchings/` is the reference for matching.
 
+## Matching tools
+
+[DECOMPILATION_LEARNINGS.md](DECOMPILATION_LEARNINGS.md) collects techniques
+adapted from both N64 sibling repos, with the PSX differences called out.
+[AGENTS.md](AGENTS.md) indexes four repo-local skills for function matching,
+data matching, symbol renaming, and optional permuter experiments.
+
+After `make split`, rank live game functions and find structural references:
+
+```sh
+python3 tools/score_functions.py --limit 20
+python3 tools/find_similar_functions.py func_8008C670 --top 10
+# Include an explicit sibling reference tree if available:
+python3 tools/find_similar_functions.py func_8008C670 --asm-dir ../snowboardkids-decomp/asm/nonmatchings
+```
+
+SDK functions are excluded by default; add `--sdk` to include them. Ranking
+uses a transparent complexity heuristic; similarity compares normalized MIPS
+instructions. Neither score proves a match. Discovery follows active source
+includes, so stale local assembly files do not become candidates.
+
+Keep a single-function attempt in ignored `nonmatchings/`, including real
+project headers and declaring referenced data `extern`. With a fresh green
+build, compile and compare it without changing live build/expected objects:
+
+```sh
+make
+python3 tools/match_function.py FUNCTION nonmatchings/FUNCTION/attempt.c
+```
+
+The helper inherits the owning unit's compiler and flags; use
+`--unit src/path.c` if ownership is ambiguous. It writes linked byte checks,
+disassembly, a diff, and provenance in `result.json` under the scratch folder.
+`EXACT` requires equal bytes, size, and address. Integrate the C and run the
+normal full build afterward. Owned data and jump tables require full-TU
+objdiff instead of this single-body helper.
+
+Verify a data symbol's address and bytes, or locate a full-image difference:
+
+```sh
+python3 tools/data_diff.py gRandomTable
+python3 tools/data_diff.py SYMBOL --size 0x100
+python3 tools/data_diff.py --find-first-mismatch
+```
+
+Data checks derive PSX load addresses from the executable header and read
+little-endian ELF symbols. They reject stale builds and non-file-backed BSS.
+An explicit size can fill missing symbol metadata. Comparisons return 0 for
+an exact match, 1 for a mismatch, and 2 for unsupported or missing input.
+`make` remains the full-image gate.
+
+These tools use only the Python standard library and the existing compiler
+pipeline; the N64 difficulty model and its Python dependencies are not needed.
+Run their regression checks, including the assembler and build-driver checks:
+
+```sh
+make check
+```
+
 ## Contributing
 
 Contributions are welcome! Useful areas include:
@@ -170,7 +228,8 @@ must not be based on leaked source code or proprietary knowledge about the game.
 This project builds on the tools and knowledge of the decompilation community,
 including [NFSHS-PSX-decomp](https://github.com/Caesar0007/NFSHS-PSX-decomp),
 [silent-hill-decomp](https://github.com/Vatuu/silent-hill-decomp), and the sibling
-[Snowboard Kids decompilation](https://github.com/cdlewis/snowboardkids-decomp).
+[Snowboard Kids decompilation](https://github.com/cdlewis/snowboardkids-decomp)
+and [Snowboard Kids 2 decompilation](https://github.com/cdlewis/snowboardkids2-decomp).
 Thanks also to the developers of [splat](https://github.com/ethteck/splat),
 [maspsx](https://github.com/mkst/maspsx),
 [old-gcc](https://github.com/decompals/old-gcc),

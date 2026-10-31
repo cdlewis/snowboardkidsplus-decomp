@@ -69,6 +69,7 @@ AS_FLAGS = ["-EL", "-march=r3000", "-mtune=r3000", "-no-pad-sections",
 
 # Per-TU overrides, NFSHS-style (flags proven per translation unit go here).
 PER_TU_FLAGS: dict = {
+    "src/engine/game_options.c": {"g_value": "8"},
     # Proven against the RNG function bytes; the game-wide compiler and -G
     # setting are still unpinned. Keep these choices local to the carved units.
     "src/engine/random.c": {
@@ -106,9 +107,11 @@ def replace_compiler_function(normal: str, alternate: str, name: str) -> str:
     return normal[:start] + replacement[0].group() + normal[end:]
 
 
-def compile_c(src: Path, skip_asm: bool) -> Path:
+def compile_c(src: Path, skip_asm: bool, *, output_root: Path = None,
+              unit_path: Path = None, only_function: str = None,
+              extra_flags=()) -> Path:
     """cpp -> cc1 -> maspsx -> as => build/<rel>.o (path from linker script)."""
-    rel = src.relative_to(ROOT)
+    rel = unit_path if unit_path is not None else src.relative_to(ROOT)
     overrides = PER_TU_FLAGS.get(rel.as_posix(), {})
     cc1 = overrides.get("cc1", CC1)
     g_value = overrides.get("g_value", G_VALUE)
@@ -116,7 +119,7 @@ def compile_c(src: Path, skip_asm: bool) -> Path:
                  for flag in CC1_FLAGS]
     as_flags = [f"-G{g_value}" if flag.startswith("-G") else flag
                 for flag in AS_FLAGS]
-    obj = OUT / rel.with_suffix(".o")
+    obj = (output_root if output_root is not None else OUT) / rel.with_suffix(".o")
     obj.parent.mkdir(parents=True, exist_ok=True)
     i_file = obj.with_suffix(".i")
     s_file = obj.with_suffix(".s")
@@ -124,19 +127,21 @@ def compile_c(src: Path, skip_asm: bool) -> Path:
     cpp = [CPP, *CPP_FLAGS]
     if skip_asm:
         cpp.append("-DSKIP_ASM")
-    cpp += [src, "-o", i_file]
+    cpp += [f"-I{(ROOT / rel).parent}", src, "-o", i_file]
     r = run(cpp)
     if r.returncode:
         sys.exit(f"[cpp] {rel}\n{r.stderr}")
 
-    r = run([cc1, *cc1_flags, i_file, "-o", s_file])
+    r = run([cc1, *cc1_flags, *extra_flags, i_file, "-o", s_file])
     if r.returncode:
         sys.exit(f"[cc1] {rel}\n{r.stdout}{r.stderr}")
 
     assembly = s_file.read_text()
     for name, flags in overrides.get("function_flags", {}).items():
+        if only_function is not None and name != only_function:
+            continue
         alternate = obj.with_suffix(f".{name}.s")
-        r = run([cc1, *cc1_flags, *flags, i_file, "-o", alternate])
+        r = run([cc1, *cc1_flags, *extra_flags, *flags, i_file, "-o", alternate])
         if r.returncode:
             sys.exit(f"[cc1] {rel} ({name}: {' '.join(flags)})\n{r.stdout}{r.stderr}")
         assembly = replace_compiler_function(assembly, alternate.read_text(), name)

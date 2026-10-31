@@ -15,6 +15,14 @@
   ],
   "units": [
     {
+      "name": "engine/game_options",
+      "target_path": "expected/src/engine/game_options.o",
+      "base_path": "build/src/engine/game_options.o",
+      "metadata": {
+        "source_path": "src/engine/game_options.c"
+      }
+    },
+    {
       "name": "engine/game_task_scheduler",
       "target_path": "expected/src/engine/game_task_scheduler.o",
       "base_path": "build/src/engine/game_task_scheduler.o",
@@ -44,6 +52,14 @@
       "base_path": "build/src/main_remaining.o",
       "metadata": {
         "source_path": "src/main_remaining.c"
+      }
+    },
+    {
+      "name": "main_tail",
+      "target_path": "expected/src/main_tail.o",
+      "base_path": "build/src/main_tail.o",
+      "metadata": {
+        "source_path": "src/main_tail.c"
       }
     },
     {

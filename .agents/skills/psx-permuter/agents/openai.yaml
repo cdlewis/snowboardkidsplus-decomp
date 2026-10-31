@@ -1,0 +1,4 @@
+interface:
+  display_name: "psx-permuter"
+  short_description: "Prepare and review bounded compiler permutation experiments for"
+  default_prompt: "Use $psx-permuter to work on this PSX decompilation."

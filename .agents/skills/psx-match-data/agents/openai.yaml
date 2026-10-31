@@ -1,0 +1,4 @@
+interface:
+  display_name: "psx-match-data"
+  short_description: "Match PSX initialized data and verify storage ownership and layo"
+  default_prompt: "Use $psx-match-data to work on this PSX decompilation."

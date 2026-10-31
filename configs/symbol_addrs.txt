@@ -8,6 +8,16 @@ gRandomTable = 0x800EA59C; // size:0x100 defined:true
 gMainRngIndex = 0x8013AF10; // size:0x2 defined:true
 gSecondaryRngIndex = 0x8013AF12; // size:0x2 defined:true
 gFrameCounter = 0x8013AFAC; // size:0x2 defined:true
+
+// Runtime options and the notification mask used by the unlock-message flow.
+getStereoSoundFlag = 0x8008C630; // type:func
+getGameOptionFlag0 = 0x8008C640; // type:func
+getPlayerOptionFlag = 0x8008C650; // type:func
+getUnlockNotificationFlag = 0x8008C6BC; // type:func
+setUnlockNotificationFlag = 0x8008C6DC; // type:func
+hasUnlockNotificationFlag = 0x800A4F78; // type:func
+gGameOptionFlags = 0x8013B570; // size:0x4 defined:true
+gUnlockNotificationFlags = 0x8013B574; // size:0x2 defined:true
 // PSY-Q 4.2 library functions, identified by signature scan
 // (tools/find_psyq.py 420 --syms; psx_psyq_signatures)
 __divsf3 = 0x800A8204; // type:func

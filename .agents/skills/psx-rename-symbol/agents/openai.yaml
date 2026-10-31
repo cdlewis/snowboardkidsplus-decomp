@@ -1,0 +1,4 @@
+interface:
+  display_name: "psx-rename-symbol"
+  short_description: "Rename a PSX symbol or unit consistently through generated outpu"
+  default_prompt: "Use $psx-rename-symbol to work on this PSX decompilation."

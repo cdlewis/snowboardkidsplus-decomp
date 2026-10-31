@@ -36,6 +36,7 @@ tools:
             - engine/
             - main
             - main_remaining
+            - main_tail
         - id: sdk
           name: PSY-Q SDK
           paths:

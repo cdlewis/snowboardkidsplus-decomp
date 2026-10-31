@@ -1,0 +1,4 @@
+interface:
+  display_name: "psx-match-function"
+  short_description: "Match a PSX game function using the real compiler and byte gate"
+  default_prompt: "Use $psx-match-function to work on this PSX decompilation."
