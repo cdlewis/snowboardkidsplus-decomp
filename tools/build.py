@@ -24,6 +24,7 @@ tools/gcc/). Override with SKP_CC1=<path to cc1>.
 
 import hashlib
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -67,7 +68,16 @@ AS_FLAGS = ["-EL", "-march=r3000", "-mtune=r3000", "-no-pad-sections",
             "-I", str(ROOT / "build")]
 
 # Per-TU overrides, NFSHS-style (flags proven per translation unit go here).
-PER_TU_FLAGS: dict = {}
+PER_TU_FLAGS: dict = {
+    # Proven against the RNG function bytes; the game-wide compiler and -G
+    # setting are still unpinned. Keep these choices local to the carved units.
+    "src/engine/random.c": {
+        "g_value": "8",
+        # Same compiler for the entire game. The wrapper needs an unfilled
+        # return delay slot; the other four functions need normal scheduling.
+        "function_flags": {"resetGameplayRng": ["-fno-delayed-branch"]},
+    },
+}
 
 
 def run(cmd, **kw):
@@ -75,9 +85,37 @@ def run(cmd, **kw):
                           text=True, **kw)
 
 
+def replace_compiler_function(normal: str, alternate: str, name: str) -> str:
+    """Select one complete .ent/.end region from the same compiler's flag run.
+
+    No instructions are rewritten. The original data, declarations, and other
+    functions remain in the normal compilation. The RNG wrapper has no local
+    labels, so moving its region cannot collide with another function's labels.
+    """
+    symbol = re.escape(name)
+    pattern = re.compile(
+        rf"^[ \t]*\.ent[ \t]+{symbol}[ \t]*\n"
+        rf".*?^[ \t]*\.end[ \t]+{symbol}[ \t]*(?:\n|$)",
+        re.MULTILINE | re.DOTALL,
+    )
+    original = list(pattern.finditer(normal))
+    replacement = list(pattern.finditer(alternate))
+    if len(original) != 1 or len(replacement) != 1:
+        raise ValueError(f"expected one compiler function region for {name}")
+    start, end = original[0].span()
+    return normal[:start] + replacement[0].group() + normal[end:]
+
+
 def compile_c(src: Path, skip_asm: bool) -> Path:
     """cpp -> cc1 -> maspsx -> as => build/<rel>.o (path from linker script)."""
     rel = src.relative_to(ROOT)
+    overrides = PER_TU_FLAGS.get(rel.as_posix(), {})
+    cc1 = overrides.get("cc1", CC1)
+    g_value = overrides.get("g_value", G_VALUE)
+    cc1_flags = [f"-G{g_value}" if flag.startswith("-G") else flag
+                 for flag in CC1_FLAGS]
+    as_flags = [f"-G{g_value}" if flag.startswith("-G") else flag
+                for flag in AS_FLAGS]
     obj = OUT / rel.with_suffix(".o")
     obj.parent.mkdir(parents=True, exist_ok=True)
     i_file = obj.with_suffix(".i")
@@ -91,18 +129,28 @@ def compile_c(src: Path, skip_asm: bool) -> Path:
     if r.returncode:
         sys.exit(f"[cpp] {rel}\n{r.stderr}")
 
-    r = run([CC1, *CC1_FLAGS, i_file, "-o", s_file])
+    r = run([cc1, *cc1_flags, i_file, "-o", s_file])
     if r.returncode:
         sys.exit(f"[cc1] {rel}\n{r.stdout}{r.stderr}")
 
-    r = run([PY, MASPSX, f"--aspsx-version={ASPSX_VERSION}", "--expand-div"],
-            input=s_file.read_text(), cwd=ROOT)
+    assembly = s_file.read_text()
+    for name, flags in overrides.get("function_flags", {}).items():
+        alternate = obj.with_suffix(f".{name}.s")
+        r = run([cc1, *cc1_flags, *flags, i_file, "-o", alternate])
+        if r.returncode:
+            sys.exit(f"[cc1] {rel} ({name}: {' '.join(flags)})\n{r.stdout}{r.stderr}")
+        assembly = replace_compiler_function(assembly, alternate.read_text(), name)
+    s_file.write_text(assembly)
+
+    r = run([PY, MASPSX, f"--aspsx-version={ASPSX_VERSION}", "--expand-div",
+             f"-G{g_value}"],
+            input=assembly, cwd=ROOT)
     if r.returncode:
         sys.exit(f"[maspsx] {rel}\n{r.stderr}")
     masp_s = obj.with_suffix(".masp.s")
     masp_s.write_text(r.stdout)
 
-    r = run([AS, *AS_FLAGS, "-o", obj, masp_s], cwd=ROOT)
+    r = run([AS, *as_flags, "-o", obj, masp_s], cwd=ROOT)
     if r.returncode:
         sys.exit(f"[as] {rel}\n{r.stderr}")
     return obj
@@ -144,9 +192,17 @@ def update_expected():
     byte-matching build) and regenerate objdiff.json's unit list."""
     import json
 
-    src_objs = sorted((OUT / "src").rglob("*.o"))
+    # Removed or merged source files must not remain as stale objdiff units.
+    src_objs = [OUT / src.relative_to(ROOT).with_suffix(".o")
+                for src in sorted((ROOT / "src").rglob("*.c"))]
     if not src_objs:
         sys.exit("no build/src objects; run a full build first")
+    if any(not obj.exists() for obj in src_objs):
+        sys.exit("missing build/src objects; run a full build first")
+    active = {obj.relative_to(OUT) for obj in src_objs}
+    for stale in (ROOT / "expected" / "src").rglob("*.o"):
+        if stale.relative_to(ROOT / "expected") not in active:
+            stale.unlink()
     units = []
     for obj in src_objs:
         rel = obj.relative_to(OUT)

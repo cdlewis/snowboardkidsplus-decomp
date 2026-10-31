@@ -1,4 +1,13 @@
-
+// Shared with the N64 JP game; verified against the PSX assembly oracle.
+randomNextMain = 0x80015E04; // type:func
+randomNextSecondary = 0x80015E4C; // type:func
+resetSecondaryRng = 0x80015E7C; // type:func
+randomNextObject = 0x80015E88; // type:func
+resetGameplayRng = 0x80015EB4; // type:func
+gRandomTable = 0x800EA59C; // size:0x100 defined:true
+gMainRngIndex = 0x8013AF10; // size:0x2 defined:true
+gSecondaryRngIndex = 0x8013AF12; // size:0x2 defined:true
+gFrameCounter = 0x8013AFAC; // size:0x2 defined:true
 // PSY-Q 4.2 library functions, identified by signature scan
 // (tools/find_psyq.py 420 --syms; psx_psyq_signatures)
 __divsf3 = 0x800A8204; // type:func

@@ -14,6 +14,13 @@ full technique catalog — same toolchain family, techniques transfer).
 3. **When a function matches, name it** — add the real name to
    `configs/symbol_addrs.txt` (`Name = 0xADDR; // type:func`) and re-split so
    asm, C, and the map all agree.
+4. **Migrate owned data with the function.** Define its tables and mutable
+   globals in the owning C module, carve the corresponding data subsegments
+   in the yaml, and verify the original bytes and addresses. Shared globals
+   belong to their owning module; consumer declarations remain `extern`.
+5. **Keep game code on one compiler.** Do not use a different compiler version
+   for a difficult game function. Investigate source shape, flags, and assembler
+   behavior instead. The separately linked SDK libraries may use other versions.
 
 ## Toolchain
 
@@ -27,6 +34,14 @@ full technique catalog — same toolchain family, techniques transfer).
 - `-G` value also unconfirmed (`SKP_G_VALUE`, default 0). The exe has a live
   `$gp` (0x8013AE48) so there IS an sdata zone — mapping it (yaml `sdata`/`sbss`
   subsegments + correct `-G`) is early real work.
+- Pass the same `-G` setting to cc1, maspsx, and GNU as. External small-data
+  declarations (`.extern symbol,size`) affect load-delay scheduling too.
+- Function-scoped flags can be tested without splitting a logical module:
+  compile the same preprocessed TU with the same compiler and the candidate
+  flag, then select the function's complete `.ent`/`.end` region before
+  assembling. Preserve the normal data and other functions, check for local
+  label collisions, and verify the full image. This is a matching workaround;
+  it does not establish the original flags or translation-unit boundaries.
 
 ## Per-function workflow
 

@@ -15,11 +15,35 @@
   ],
   "units": [
     {
+      "name": "engine/game_task_scheduler",
+      "target_path": "expected/src/engine/game_task_scheduler.o",
+      "base_path": "build/src/engine/game_task_scheduler.o",
+      "metadata": {
+        "source_path": "src/engine/game_task_scheduler.c"
+      }
+    },
+    {
+      "name": "engine/random",
+      "target_path": "expected/src/engine/random.o",
+      "base_path": "build/src/engine/random.o",
+      "metadata": {
+        "source_path": "src/engine/random.c"
+      }
+    },
+    {
       "name": "main",
       "target_path": "expected/src/main.o",
       "base_path": "build/src/main.o",
       "metadata": {
         "source_path": "src/main.c"
+      }
+    },
+    {
+      "name": "main_remaining",
+      "target_path": "expected/src/main_remaining.o",
+      "base_path": "build/src/main_remaining.o",
+      "metadata": {
+        "source_path": "src/main_remaining.c"
       }
     },
     {

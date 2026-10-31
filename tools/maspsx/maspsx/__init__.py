@@ -627,6 +627,14 @@ class MaspsxProcessor:
 
             if line.startswith(".extern"):
                 in_sdata = False
+                # GCC records the size of external small-data objects here.
+                # Account for their single-instruction $gp accesses when
+                # deciding whether a dependent load needs a delay-slot nop.
+                match = re.match(r"\.extern\s+([^,]+),\s*(\d+)$", line)
+                if match:
+                    size = int(match.group(2))
+                    if 0 < size <= self.sdata_limit:
+                        self.sdata_entries[match.group(1)] = size
                 continue
 
             if line.startswith(".comm") or line.startswith(".lcomm"):

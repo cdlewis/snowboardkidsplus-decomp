@@ -3,7 +3,7 @@
 Before matching, build, or asm-interpretation work in this repo:
 
 1. Read [METHODOLOGY.md](METHODOLOGY.md) in full — the hard rules (100%-only,
-   the asm oracle, symbol naming) and the per-function workflow.
+   the asm oracle, symbol naming) and the per-function workflow. Do not update methodology unless you're changing the methodology. Status updates are not helpful.
 2. The full-image byte gate (`make` → `build/slps_018.23.exe: OK`) must be
    green before AND after your change. Never commit a red gate.
 3. `asm/`, `linkers/*.ld`, `linkers/undefined_*` and `expected/` are

@@ -65,6 +65,8 @@ segments:
       # game code as a mixed C/asm unit: per-function .s in
       # asm/nonmatchings/main/, INCLUDE_ASM skeleton in src/main.c
       - [0x39B4, c, main]
+      - [0x6604, c, engine/random]
+      - [0x66E0, c, main_remaining]
       # --- PSY-Q 4.2 static libraries (0x800A8204..0x800D7098) ---
       # per-OBJ units, bootstrapped once from a signature scan
       # (tools/find_psyq.py, lab313ru/psx_psyq_signatures) and maintained
@@ -464,4 +466,11 @@ segments:
       - [0xC7828, c, syslib/libapi/chclrpad]
       - [0xC7898, asm, syslib/unk_800D7098]
       - [0xC78E8, data, C78E8] # estimated
+      - [0xDAD9C, .data, engine/random]
+      - [0xDAE9C, data, DAE9C]
+      # Small-data inputs retain their original position within the data image.
+      - {start: 0x12B710, type: .sdata, name: engine/random, linker_section_order: .data}
+      - [0x12B714, data, 12B714]
+      - [0x12B7AC, .data, engine/game_task_scheduler]
+      - [0x12B7B0, data, 12B7B0]
   - [0x12C000]
