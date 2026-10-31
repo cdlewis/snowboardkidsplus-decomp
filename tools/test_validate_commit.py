@@ -1,11 +1,13 @@
 """Exercise the commit gate in disposable Git repos without any game data."""
 
 import hashlib
+import os
 import shutil
 import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 
 from validate_commit import check_inputs, validate
@@ -17,6 +19,15 @@ SHA1 = hashlib.sha1(PAYLOAD).hexdigest()
 
 class CommitValidationTests(unittest.TestCase):
     def setUp(self):
+        # Hooks export repository/index settings. A fixture must never inherit
+        # an active commit's index (especially an absolute temporary index).
+        local_names = subprocess.check_output(
+            ["git", "rev-parse", "--local-env-vars"], text=True).splitlines()
+        environment = patch.dict(os.environ, {
+            key: value for key, value in os.environ.items() if key not in local_names
+        }, clear=True)
+        environment.start()
+        self.addCleanup(environment.stop)
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
