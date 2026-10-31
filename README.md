@@ -1,6 +1,6 @@
 # Snowboard Kids Plus
 
-![Snobow Kids Plus title screen](Snobow_Kids_Plus_Title.jpg)
+<img src="Snobow_Kids_Plus_Title.jpg" alt="Snobow Kids Plus title screen" width="256">
 
 A matching decompilation of **Snobow Kids Plus (Japan)** for the PlayStation
 (`SLPS-01823`), the PlayStation version of
