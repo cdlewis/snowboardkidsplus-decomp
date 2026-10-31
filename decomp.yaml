@@ -1,0 +1,42 @@
+name: Snowboard Kids Plus
+repo: https://github.com/cdlewis/snowboardkidsplus-decomp
+platform: psx
+build_system: make
+versions:
+  - name: jp
+    fullname: Japan (SLPS-01823)
+    sha1: 3f1a7abc267ea29bafed1653121613ea467c1ac8
+    paths:
+      target: disc/SLPS_018.23
+      build_dir: build
+      map: build/slps_018.23.map
+      compiled_target: build/slps_018.23.exe
+      elf: build/slps_018.23.elf
+      expected_dir: expected
+      asm: asm
+      nonmatchings: asm/nonmatchings
+tools:
+  mapfile_parser:
+    progress_report:
+      output: build/report.json
+      # INCLUDE_ASM has no .NON_MATCHING markers; inspect the split asm paths.
+      check_asm_paths: true
+      # Data lacks matching markers, so do not count it as decompiled.
+      report_data: false
+      path_index: 2
+      prefixes_to_trim:
+        - build/src/
+        - build/asm/data/
+        - build/asm/
+        - build/
+      categories:
+        - id: game
+          name: Game
+          paths:
+            - engine/
+            - main
+            - main_remaining
+        - id: sdk
+          name: PSY-Q SDK
+          paths:
+            - syslib/

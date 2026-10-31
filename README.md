@@ -44,7 +44,7 @@ Install Python dependencies in a virtual environment:
 
 ```sh
 python3 -m venv .venv
-.venv/bin/pip install pycdlib 'splat64[mips]'
+.venv/bin/pip install pycdlib 'splat64[mips]' 'mapfile-parser>=2.13.2,<3'
 ```
 
 Install the native Linux PSX GCC binaries from
@@ -99,6 +99,22 @@ Additional build commands:
 | `make skipasm` | Compile C objects with `-DSKIP_ASM` for objdiff comparison |
 | `make expected` | Run a full verified build, snapshot target objects to `expected/`, and update `objdiff.json` |
 | `make clean` | Remove `build/` |
+
+To generate a progress report after a successful build, activate the virtual
+environment and run:
+
+```sh
+source .venv/bin/activate
+python3 -m mapfile_parser objdiff_report
+```
+
+`decomp.yaml` supplies the map and assembly paths and writes the report to
+`build/report.json`. The command prints overall, game, and PSY-Q SDK code
+progress. Assembly functions remain unmatched even though the executable
+rebuilds byte-perfectly; data progress is excluded because it has no matching
+markers. Re-run `make` after source changes to refresh the map before reporting.
+Detection uses assembly files on disk, so stale nonmatching `.s` files can
+cause matched functions to remain counted as unmatched.
 
 ## Reverse-engineering notes
 
