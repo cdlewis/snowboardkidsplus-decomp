@@ -476,6 +476,8 @@ segments:
       - [0x125110, data, 125110]
       - {start: 0x12A59C, type: .data, name: syslib/libpress/libpress, linker_section: .data.mdec}
       - [0x12A6E8, data, 12A6E8]
+      - {start: 0x12B53C, type: .data, name: syslib/libapi/counter, linker_section: .data.counter}
+      - [0x12B554, data, 12B554]
       # Small-data inputs retain their original position within the data image.
       - {start: 0x12B710, type: .sdata, name: engine/random, linker_section_order: .data}
       - [0x12B714, data, 12B714]

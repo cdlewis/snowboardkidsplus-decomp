@@ -89,6 +89,8 @@ for _sdk_unit in (
     "libsnd/vs_mono", "libsnd/vm_doff", "libsnd/vm_don",
     "libspu/s_it", "libspu/s_stm", "libetc/vmode",
     "libspu/s_snv", "libspu/s_srv", "libsnd/ssstart", "libpress/libpress",
+    "libetc/intr", "libapi/counter",
+    "libsnd/ssclose", "libsnd/ssstop", "libsnd/ssplay", "libsnd/vs_vh", "libsnd/vs_vtc",
 ):
     PER_TU_FLAGS[f"src/syslib/{_sdk_unit}.c"] = {
         "cc1": SDK_CC1, "g_value": "0", "gas_reorder": True,

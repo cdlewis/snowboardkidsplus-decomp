@@ -1,5 +1,8 @@
 #include "common.h"
+#include "libsnd_private.h"
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libsnd/ssplay", SsSeqPlay);
+/* SDK wrappers adapted from PsyZ decomp; see THIRD_PARTY.md. */
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libsnd/ssplay", SsSepPlay);
+void SsSeqPlay(s16 id,s8 mode,s16 count) { Snd_SetPlayMode(id,0,mode,count); }
+
+void SsSepPlay(s16 id,s16 sequence,s8 mode,s16 count) { Snd_SetPlayMode(id,sequence,mode,count); }

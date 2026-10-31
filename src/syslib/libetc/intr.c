@@ -1,24 +1,27 @@
 #include "common.h"
+#include "libetc_private.h"
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libetc/intr", ResetCallback);
+/* SDK dispatch wrappers adapted from PsyZ decomp; see THIRD_PARTY.md. */
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libetc/intr", InterruptCallback);
+s32 ResetCallback(void) { return gInterruptDispatch->start(); }
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libetc/intr", DMACallback);
+DmaCallback InterruptCallback(s32 channel, DmaCallback cb) { return gInterruptDispatch->interrupt(channel, cb); }
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libetc/intr", VSyncCallback);
+DmaCallback DMACallback(s32 channel, DmaCallback cb) { return gInterruptDispatch->dma(channel, cb); }
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libetc/intr", VSyncCallbacks);
+DmaCallback VSyncCallback(DmaCallback cb) { return gInterruptDispatch->vsync(4, cb); }
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libetc/intr", StopCallback);
+DmaCallback VSyncCallbacks(s32 channel, DmaCallback cb) { return gInterruptDispatch->vsync(channel, cb); }
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libetc/intr", RestartCallback);
+s32 StopCallback(void) { return gInterruptDispatch->stop(); }
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libetc/intr", CheckCallback);
+s32 RestartCallback(void) { return gInterruptDispatch->restart(); }
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libetc/intr", GetIntrMask);
+s32 CheckCallback(void) { return gInterruptCallbackContext; }
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libetc/intr", SetIntrMask);
+s32 GetIntrMask(void) { return *gInterruptMaskRegister; }
+
+s32 SetIntrMask(s32 mask) { s32 prev = *gInterruptMaskRegister; *gInterruptMaskRegister = mask; return prev; }
 
 INCLUDE_ASM("asm/nonmatchings/syslib/libetc/intr", func_800B595C);
 

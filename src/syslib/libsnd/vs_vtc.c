@@ -1,3 +1,7 @@
 #include "common.h"
+#include "libsnd_private.h"
+#include "psx/libspu.h"
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libsnd/vs_vtc", SsVabTransCompleted);
+/* SDK wrappers adapted from PsyZ decomp; see THIRD_PARTY.md. */
+
+s16 SsVabTransCompleted(s16 immediate) { return SpuIsTransferCompleted(immediate); }

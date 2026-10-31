@@ -1,9 +1,12 @@
 #include "common.h"
+#include "libsnd_private.h"
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libsnd/vs_vh", SsVabOpenHead);
+/* SDK wrappers adapted from PsyZ decomp; see THIRD_PARTY.md. */
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libsnd/vs_vh", SsVabOpenHeadSticky);
+s16 SsVabOpenHead(u8 *address,s16 id) { return SsVabOpenHeadWithMode(address,id,0,0); }
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libsnd/vs_vh", SsVabFakeHead);
+s16 SsVabOpenHeadSticky(u8 *address,s16 id,u32 start) { return SsVabOpenHeadWithMode(address,id,1,start); }
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libsnd/vs_vh", func_800B4A64);
+s16 SsVabFakeHead(u8 *address,s16 id,u32 start) { return SsVabOpenHeadWithMode(address,id,1,start); }
+
+INCLUDE_ASM("asm/nonmatchings/syslib/libsnd/vs_vh", SsVabOpenHeadWithMode);

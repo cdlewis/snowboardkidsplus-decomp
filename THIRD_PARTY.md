@@ -6,6 +6,12 @@ PSY-Q SDK C was adapted from [Xeeynamo/psyz](https://github.com/Xeeynamo/psyz),
 
 Imported source bodies:
 
+- Sequence/SEP close, stop and play wrappers from `decomp/src/libsnd/ssclose.c`,
+  `ssstop.c`, `ssplay.c`; VAB wrappers from `vs_vh.c`, `vs_vtc.c`
+
+- Public callback and interrupt-mask wrappers from `decomp/src/libetc/intr.c`
+- Root-counter accessors and setup from `decomp/src/libapi/counter.c`
+
 - `decomp/src/libsnd/vs_mono.c`, `vm_doff.c`, and start wrappers from `ssstart.c`
 - `decomp/src/libspu/s_it.c`, `s_stm.c`, `s_snv.c`, `s_srv.c`
 - The complete decoder module, tables and register pointers from
@@ -30,3 +36,7 @@ Decoder differences verified against this executable:
 - The two otherwise unused words after the cosine table are `0x210E7350` and
   `0x004246AD`, taken from this executable rather than the 4.0 reference.
 - The diagnostic strings and their original alignment/padding are preserved.
+
+The sequence play-mode argument uses signed byte extension in this executable.
+Its public wrapper and internal callee declarations preserve that observed
+signedness rather than copying the reference private header's unsigned type.

@@ -1,7 +1,10 @@
 #include "common.h"
+#include "libsnd_private.h"
+
+/* SDK wrappers adapted from PsyZ decomp; see THIRD_PARTY.md. */
 
 INCLUDE_ASM("asm/nonmatchings/syslib/libsnd/ssstop", _SsSndStop);
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libsnd/ssstop", SsSeqStop);
+void SsSeqStop(s16 id) { _SsSndStop(id, 0); }
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libsnd/ssstop", SsSepStop);
+void SsSepStop(s16 id,s16 sequence) { _SsSndStop(id, sequence); }

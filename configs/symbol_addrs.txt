@@ -68,6 +68,14 @@ sMdecResetError = 0x80012ED0; // size:0x1A defined:true
 sMdecInSyncName = 0x80012EEC; // size:0xD defined:true
 sMdecOutSyncName = 0x80012EFC; // size:0xE defined:true
 sMdecTimeoutFormat = 0x80012F0C; // size:0xD defined:true
+gInterruptDispatch = 0x8013488C; // size:0x4
+gInterruptMaskRegister = 0x80134894; // size:0x4
+gInterruptCallbackContext = 0x80133806; // size:0x2
+gCounterInterruptStatus = 0x8013AD3C; // size:0x4 defined:true
+gRootCounters = 0x8013AD40; // size:0x4 defined:true
+gCounterInterruptMasks = 0x8013AD44; // size:0x10 defined:true
+_SsClose = 0x800A8684; // type:func
+SsVabOpenHeadWithMode = 0x800B4A64; // type:func
 // PSY-Q 4.2 library functions, identified by signature scan
 // (tools/find_psyq.py 420 --syms; psx_psyq_signatures)
 __divsf3 = 0x800A8204; // type:func

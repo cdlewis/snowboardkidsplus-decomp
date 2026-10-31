@@ -1,7 +1,10 @@
 #include "common.h"
+#include "libsnd_private.h"
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libsnd/ssclose", func_800A8684);
+/* SDK wrappers adapted from PsyZ decomp; see THIRD_PARTY.md. */
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libsnd/ssclose", SsSeqClose);
+INCLUDE_ASM("asm/nonmatchings/syslib/libsnd/ssclose", _SsClose);
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libsnd/ssclose", SsSepClose);
+void SsSeqClose(s16 id) { _SsClose(id); }
+
+void SsSepClose(s16 id) { _SsClose(id); }

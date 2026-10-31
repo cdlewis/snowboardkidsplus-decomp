@@ -1,6 +1,19 @@
 #ifndef PSX_LIBSND_H
 #define PSX_LIBSND_H
 
+#include "decomp/types.h"
+
+void SsSeqClose(s16 id);
+void SsSepClose(s16 id);
+void SsSeqStop(s16 id);
+void SsSepStop(s16 id, s16 sequence);
+void SsSeqPlay(s16 id, s8 mode, s16 count);
+void SsSepPlay(s16 id, s16 sequence, s8 mode, s16 count);
+s16 SsVabOpenHead(u8 *address, s16 id);
+s16 SsVabOpenHeadSticky(u8 *address, s16 id, u32 start);
+s16 SsVabFakeHead(u8 *address, s16 id, u32 start);
+s16 SsVabTransCompleted(s16 immediate);
+
 void SsStart(void);
 void SsStart2(void);
 void SsSetMono(void);
