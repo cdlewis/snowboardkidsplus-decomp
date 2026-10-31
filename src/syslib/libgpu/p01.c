@@ -1,3 +1,4 @@
-#include "common.h"
+/* GPU address encoding reconstructed from the local SDK oracle. */
+#include "psx/libgpu.h"
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/p01", GetClut);
+u16 GetClut(s32 x,s32 y) { return getClut(x,y); }

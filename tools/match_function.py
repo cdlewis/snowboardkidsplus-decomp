@@ -111,6 +111,7 @@ def main():
     report = {"function": args.function, "unit": str(unit), "source": str(source),
               "compiler": str(settings.get("cc1", build.CC1)),
               "g_value": settings.get("g_value", build.G_VALUE),
+              "unit_cc_flags": settings.get("cc1_flags", []),
               "function_flags": settings.get("function_flags", {}).get(args.function, []),
               "extra_flags": args.cc_flag, "target_sha1": hashlib.sha1(original.data).hexdigest(),
               "source_sha1": hashlib.sha1(source.read_bytes()).hexdigest(),

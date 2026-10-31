@@ -76,6 +76,13 @@ gRootCounters = 0x8013AD40; // size:0x4 defined:true
 gCounterInterruptMasks = 0x8013AD44; // size:0x10 defined:true
 _SsClose = 0x800A8684; // type:func
 SsVabOpenHeadWithMode = 0x800B4A64; // type:func
+gGpuDispatch = 0x80139C44; // size:0x4
+gGpuInfo = 0x80139C4C; // size:0x80
+gpuGetMode = 0x800CE7F4; // type:func
+gpuGetClipStart = 0x800CE814; // type:func
+gpuGetClipEnd = 0x800CE8AC; // type:func
+gpuGetOffset = 0x800CE944; // type:func
+gpuGetTextureWindow = 0x800CE960; // type:func
 // PSY-Q 4.2 library functions, identified by signature scan
 // (tools/find_psyq.py 420 --syms; psx_psyq_signatures)
 __divsf3 = 0x800A8204; // type:func

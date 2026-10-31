@@ -1,3 +1,4 @@
-#include "common.h"
+/* GPU address encoding reconstructed from the local SDK oracle. */
+#include "psx/libgpu.h"
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/p00", GetTPage);
+u16 GetTPage(s32 tp,s32 abr,s32 x,s32 y) { return getTPage(tp,abr,x,y); }

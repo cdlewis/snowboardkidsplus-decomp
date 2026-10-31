@@ -91,11 +91,14 @@ for _sdk_unit in (
     "libspu/s_snv", "libspu/s_srv", "libsnd/ssstart", "libpress/libpress",
     "libetc/intr", "libapi/counter",
     "libsnd/ssclose", "libsnd/ssstop", "libsnd/ssplay", "libsnd/vs_vh", "libsnd/vs_vtc",
+    "libgpu/ext", "libgpu/sys", "libgpu/p00", "libgpu/p01", "libgs/gs_122",
 ):
     PER_TU_FLAGS[f"src/syslib/{_sdk_unit}.c"] = {
         "cc1": SDK_CC1, "g_value": "0", "gas_reorder": True,
         "pad_sections": True,
     }
+
+PER_TU_FLAGS["src/syslib/libgpu/sys.c"]["cc1_flags"] = ["-fno-builtin"]
 
 PER_TU_FLAGS["src/syslib/libcd/sys.c"] = {
     "gas_reorder": True,
@@ -145,7 +148,7 @@ def compile_c(src: Path, skip_asm: bool, *, output_root: Path = None,
     cc1 = overrides.get("cc1", CC1)
     g_value = overrides.get("g_value", G_VALUE)
     cc1_flags = [f"-G{g_value}" if flag.startswith("-G") else flag
-                 for flag in CC1_FLAGS]
+                 for flag in CC1_FLAGS] + overrides.get("cc1_flags", [])
     as_flags = [f"-G{g_value}" if flag.startswith("-G") else flag
                 for flag in AS_FLAGS]
     if overrides.get("gas_reorder"):

@@ -6,6 +6,10 @@ PSY-Q SDK C was adapted from [Xeeynamo/psyz](https://github.com/Xeeynamo/psyz),
 
 Imported source bodies:
 
+- Texture loading and environment defaults from `decomp/src/libgpu/ext.c`
+- Environment getters, primitive dispatch and packet builders from
+  `decomp/src/libgpu/sys.c`
+
 - Sequence/SEP close, stop and play wrappers from `decomp/src/libsnd/ssclose.c`,
   `ssstop.c`, `ssplay.c`; VAB wrappers from `vs_vh.c`, `vs_vtc.c`
 
@@ -40,3 +44,11 @@ Decoder differences verified against this executable:
 The sequence play-mode argument uses signed byte extension in this executable.
 Its public wrapper and internal callee declarations preserve that observed
 signedness rather than copying the reference private header's unsigned type.
+
+The GPU packet mode/offset builders use this executable's 4.2 encoding, which
+omits the 4.0 reference's legacy GPU-version branches. Texture-page and CLUT
+address encoders are reconstructed from the local assembly. Layouts are checked
+against loads/stores and copy sizes in this executable; `DRAWENV` is 0x5C bytes.
+
+`GsGetTimInfo` is reconstructed directly from this game's SDK object, including
+its separate palette-present and palette-absent paths and word-based TIM cursor.

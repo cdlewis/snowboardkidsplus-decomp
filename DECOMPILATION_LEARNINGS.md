@@ -31,6 +31,10 @@ technique reference, not a progress log.
   A scratch match must still pass integration and the full-image gate.
 - The isolated helper accepts extern-only data references. Owned data, local
   static data, and jump tables need a full translation-unit build and objdiff.
+- SDK units may require `-fno-builtin` to retain an actual `memcpy` call.
+  Otherwise a constant-size copy can become an inline loop despite correct C.
+  Preserve verified options in the unit's `cc1_flags` setting; isolated reports
+  record those options too.
 - Refresh captures after changing a header, flags, compiler, or unit boundary.
   A permuter winner from an old prelude is not proof for today's source.
 
@@ -41,6 +45,9 @@ technique reference, not a progress log.
 - Make one source-shape change per experiment. Try a named intermediate,
   expression grouping, loop form, or assignment order when the remaining
   difference is allocation or scheduling. Keep the C meaningful.
+- Cross-check SDK type comments against actual copy lengths and member access.
+  This executable copies 0x5C bytes for `DRAWENV`; a reference header's 0x58
+  comment is insufficient evidence for its size.
 - Prefer typed canonical structures/unions over invented byte offsets or
   `void *` arithmetic. Infer layouts from multiple consumers, then verify
   target `sizeof` and offsets using the PSX compiler; host layouts differ.

@@ -1,4 +1,7 @@
 #include "common.h"
+#include "libgpu_private.h"
+
+/* C routines adapted from PsyZ decomp; see THIRD_PARTY.md. */
 
 INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/sys", ResetGraph);
 
@@ -6,7 +9,7 @@ INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/sys", SetGraphDebug);
 
 INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/sys", SetGraphQueue);
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/sys", GetGraphDebug);
+int GetGraphDebug(void) { return gGpuInfo.level; }
 
 INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/sys", DrawSyncCallback);
 
@@ -30,7 +33,11 @@ INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/sys", ClearOTag);
 
 INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/sys", ClearOTagR);
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/sys", DrawPrim);
+void DrawPrim(void* p) {
+    int len = getlen(p);
+    gGpuDispatch->sync(0);
+    gGpuDispatch->cwb((u32*)&((P_TAG*)p)->r0, len);
+}
 
 INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/sys", DrawOTag);
 
@@ -38,39 +45,83 @@ INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/sys", PutDrawEnv);
 
 INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/sys", DrawOTagEnv);
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/sys", GetDrawEnv);
+DRAWENV* GetDrawEnv(DRAWENV* env) {
+    memcpy(env, &gGpuInfo.draw, sizeof(DRAWENV));
+    return env;
+}
 
 INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/sys", PutDispEnv);
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/sys", GetDispEnv);
+DISPENV* GetDispEnv(DISPENV* env) {
+    memcpy(env, &gGpuInfo.disp, sizeof(DISPENV));
+    return env;
+}
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/sys", GetODE);
+int GetODE(void) { return gGpuDispatch->status() >> 0x1F; }
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/sys", SetTexWindow);
+void SetTexWindow(DR_TWIN* p, RECT* tw) {
+    setlen(p, 2);
+    p->code[0] = gpuGetTextureWindow(tw);
+    p->code[1] = 0;
+}
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/sys", SetDrawArea);
+void SetDrawArea(DR_AREA* p, RECT* r) {
+    setlen(p, 2);
+    p->code[0] = gpuGetClipStart(r->x, r->y);
+    p->code[1] = gpuGetClipEnd(r->x + r->w - 1, r->y + r->h - 1);
+}
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/sys", SetDrawOffset);
+void SetDrawOffset(DR_OFFSET* p, u16* ofs) {
+    setlen(p, 2);
+    p->code[0] = gpuGetOffset(ofs[0], ofs[1]);
+    p->code[1] = 0;
+}
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/sys", SetPriority);
+void SetPriority(DR_PRIO* p, int pbc, int pbw) {
+    u32 data;
+    setlen(p, 2);
+    data = 0xE6000000;
+    if (pbc) {
+        data = 0xE6000002;
+    }
+    p->code[0] = data | (pbw != 0);
+    p->code[1] = 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/sys", SetDrawStp);
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/sys", SetDrawMode);
+void SetDrawMode(DR_MODE* p, int dfe, int dtd, int tpage, RECT* tw) {
+    setlen(p, 2);
+    p->code[0] = gpuGetMode(dfe, dtd, tpage);
+    p->code[1] = gpuGetTextureWindow(tw);
+}
 
 INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/sys", SetDrawEnv);
 
 INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/sys", func_800CE584);
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/sys", func_800CE7F4);
+u32 gpuGetMode(int dfe, int dtd, u16 tpage) {
+    return (dtd ? 0xE1000200 : 0xE1000000) | (dfe ? 0x400 : 0) | (tpage & 0x9FF);
+}
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/sys", func_800CE814);
+INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/sys", gpuGetClipStart);
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/sys", func_800CE8AC);
+INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/sys", gpuGetClipEnd);
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/sys", func_800CE944);
+u32 gpuGetOffset(s16 x, s16 y) { return 0xE5000000 | ((y & 0x7FF) << 11) | (x & 0x7FF); }
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/sys", func_800CE960);
+u32 gpuGetTextureWindow(RECT* rect) {
+    u32 code[4];
+    if (rect) {
+        code[0] = (rect->x & 0xFF) >> 3;
+        code[2] = (-rect->w & 0xFF) >> 3;
+        code[1] = (rect->y & 0xFF) >> 3;
+        code[3] = (-rect->h & 0xFF) >> 3;
+        return 0xE2000000 | (code[1] << 15) | (code[0] << 10) | (code[3] << 5) |
+               code[2];
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/sys", func_800CE9E0);
 
