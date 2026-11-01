@@ -854,3 +854,4 @@ gDMAInterruptControl = 0x801348DC; // size:0x4
 dma_cb = 0x801348E0; // size:0x20
 SpuWrite = 0x800B51C4; // type:func
 _spu_transferCallback = 0x80132EBC; // size:0x4
+func_80013278 = 0x80013278; // type:func

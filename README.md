@@ -114,9 +114,14 @@ python3 -m mapfile_parser objdiff_report
 `build/report.json`. The command prints overall, game, and PSY-Q SDK code
 progress. Assembly functions remain unmatched even though the executable
 rebuilds byte-perfectly; data progress is excluded because it has no matching
-markers. Re-run `make` after source changes to refresh the map before reporting.
-Detection uses assembly files on disk, so stale nonmatching `.s` files can
-cause matched functions to remain counted as unmatched.
+markers. After replacing an `INCLUDE_ASM` with matched C, run `make split`
+to refresh the classification files. Then run `make` to refresh the map and
+verify the executable before reporting; `make` alone does not regenerate
+the classification files.
+`make split` clears and regenerates the function disassemblies: assembly
+fallbacks go in `asm/nonmatchings/`, while the original instructions for
+matched functions go in `asm/matchings/`. The report uses those paths to
+distinguish matched C from assembly-backed functions.
 
 ## Reverse-engineering notes
 

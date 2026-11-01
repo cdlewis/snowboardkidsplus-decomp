@@ -575,6 +575,10 @@ def update_expected():
     print(f"expected/: {len(units)} units snapshotted; objdiff.json updated")
 
 
+def is_function_disassembly(path: Path) -> bool:
+    return "nonmatchings" in path.parts or "matchings" in path.parts
+
+
 def main():
     args = sys.argv[1:]
     if "clean" in args:
@@ -589,8 +593,8 @@ def main():
         return  # objdiff base objects only; no link
 
     for src in sorted((ROOT / "asm").rglob("*.s")):
-        if "nonmatchings" in src.parts:
-            continue  # pulled in via INCLUDE_ASM
+        if is_function_disassembly(src):
+            continue  # included by C or retained as a matching oracle
         assemble_s(src)
     link_and_verify()
 

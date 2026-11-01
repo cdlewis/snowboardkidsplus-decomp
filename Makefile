@@ -13,6 +13,7 @@ expected:
 	$(PY) tools/build.py --update-expected
 
 split:
+	$(PY) tools/clean_split_asm.py
 	$(SPLAT) split snowboardkidsplus.yaml
 
 extract:

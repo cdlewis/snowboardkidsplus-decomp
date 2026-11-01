@@ -11,8 +11,9 @@ full technique catalog — same toolchain family, techniques transfer).
    Preserve promising partial C under `#ifdef NON_MATCHING`, with the original
    `INCLUDE_ASM` in the `#else` branch. Record the best observed instruction
    similarity and word counts beside it; this is a search aid, not a match.
-2. **The disassembly oracle is splat's output** (`asm/nonmatchings/<unit>/*.s`,
-   regenerate with `make split`). When in doubt about what a function does,
+2. **The disassembly oracle is splat's output** (`asm/nonmatchings/<unit>/*.s`
+   for assembly-backed functions and `asm/matchings/<unit>/*.s` for matched
+   functions; regenerate both with `make split`). When in doubt about what a function does,
    read it there — it carries file offset, vram, and raw bytes per line.
 3. **When a function matches, name it** — add the real name to
    `configs/symbol_addrs.txt` (`Name = 0xADDR; // type:func`) and re-split so

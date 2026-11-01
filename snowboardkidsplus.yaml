@@ -25,6 +25,9 @@ options:
 
   o_as_suffix: True
   use_legacy_include_asm: False
+  # Keep original instructions for matched functions separately from the
+  # assembly fallbacks still included by C sources.
+  disassemble_all: True
   # INCLUDE_ASM wrapped in __maspsx_include_asm_hack_* functions so the
   # cc1 -> maspsx -> GNU as pipeline keeps included asm verbatim.
   include_asm_macro_style: maspsx_hack
