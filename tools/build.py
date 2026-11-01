@@ -87,6 +87,7 @@ PER_TU_FLAGS: dict = {
 SDK_CC1 = ROOT / "tools/gcc/gcc-2.7.2-psx/cc1"
 for _sdk_unit in (
     "libsnd/vs_mono", "libsnd/vm_doff", "libsnd/vm_don",
+    "libspu/s_m_init", "libspu/s_m_util", "libspu/s_gvv", "libspu/spu",
     "libspu/s_it", "libspu/s_stm", "libetc/vmode",
     "libspu/s_snv", "libspu/s_srv", "libsnd/ssstart", "libpress/libpress",
     "libetc/intr", "libapi/counter",

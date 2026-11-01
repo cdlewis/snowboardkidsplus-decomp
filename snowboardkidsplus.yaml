@@ -472,6 +472,14 @@ segments:
       - [0xC78E8, data, C78E8] # estimated
       - [0xDAD9C, .data, engine/random]
       - [0xDAE9C, data, DAE9C]
+      - {start: 0x123684, type: .data, name: syslib/libspu/spu, linker_section: .data.spu_registers}
+      - [0x123688, data, 123688]
+      - {start: 0x123694, type: .data, name: syslib/libspu/spu, linker_section: .data.spu_bus}
+      - [0x12369C, data, 12369C]
+      - {start: 0x1236AC, type: .data, name: syslib/libspu/spu, linker_section: .data.spu_shift}
+      - [0x1236B0, data, 1236B0]
+      - {start: 0x1236E4, type: .data, name: syslib/libspu/s_m_init, linker_section: .data.spu_allocator}
+      - [0x1236F0, data, 1236F0]
       - {start: 0x12510C, type: .data, name: syslib/libetc/vmode, linker_section: .data.vmode}
       - [0x125110, data, 125110]
       - {start: 0x12A59C, type: .data, name: syslib/libpress/libpress, linker_section: .data.mdec}

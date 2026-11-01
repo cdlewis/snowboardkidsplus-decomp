@@ -720,3 +720,14 @@ EnablePAD = 0x800D6F88; // type:func
 DisablePAD = 0x800D6F9C; // type:func
 _patch_pad = 0x800D6FB0; // type:func
 _remove_ChgclrPAD = 0x800D7028; // type:func
+
+// SPU register pointer, address shift and sound-memory allocator metadata.
+_spu_RXX = 0x80132E84; // size:0x4 defined:true
+_spu_mem_mode_plus = 0x80132EAC; // size:0x4 defined:true
+_spu_AllocBlockNum = 0x80132EE4; // size:0x4 defined:true
+_spu_AllocLastNum = 0x80132EE8; // size:0x4 defined:true
+_spu_memList = 0x80132EEC; // size:0x4 defined:true
+dma_dpcr = 0x80132E94; // size:0x4 defined:true
+spu_delay = 0x80132E98; // size:0x4 defined:true
+_spu_FsetDelayW = 0x800A962C; // type:func
+_spu_FsetDelayR = 0x800A9654; // type:func

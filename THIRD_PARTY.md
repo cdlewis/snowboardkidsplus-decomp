@@ -17,6 +17,9 @@ Imported source bodies:
 - Root-counter accessors and setup from `decomp/src/libapi/counter.c`
 
 - `decomp/src/libsnd/vs_mono.c`, `vm_doff.c`, and start wrappers from `ssstart.c`
+- SPU allocator initialization and allocation queries from `decomp/src/libspu/s_m_init.c`,
+  `s_m_util.c`; voice-volume reads from `s_gvv.c`; register writes, bus-delay
+  setters and shared register/address-shift data from `spu.c`
 - `decomp/src/libspu/s_it.c`, `s_stm.c`, `s_snv.c`, `s_srv.c`
 - The complete decoder module, tables and register pointers from
   `decomp/src/libpress/libpress.c`
@@ -52,3 +55,8 @@ against loads/stores and copy sizes in this executable; `DRAWENV` is 0x5C bytes.
 
 `GsGetTimInfo` is reconstructed directly from this game's SDK object, including
 its separate palette-present and palette-absent paths and word-based TIM cursor.
+
+The SPU address-register reader and DMA-priority setter are reconstructed from
+this executable's assembly. SPU allocator metadata, register and bus-control
+pointers, and the address-unit shift are defined in their C owners with their
+original initial values. Other SPU controller state retains its split-data owner.
