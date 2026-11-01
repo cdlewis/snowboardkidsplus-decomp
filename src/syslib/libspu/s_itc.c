@@ -1,3 +1,27 @@
-#include "common.h"
+/* Adapted from PsyZ decomp; see THIRD_PARTY.md and licenses/psyz-decomp.txt. */
+#include "libspu_private.h"
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libspu/s_itc", SpuIsTransferCompleted);
+extern s32 D_80132E0C;
+extern s32 TestEvent(s32 event);
+
+s32 SpuIsTransferCompleted(s32 immediateFlag) {
+    s32 in_transfer;
+
+    if (_spu_trans_mode == 1 || _spu_inTransfer == 1) {
+        return 1;
+    }
+    in_transfer = TestEvent(D_80132E0C);
+    if (immediateFlag == 1) {
+        if (in_transfer == 0) {
+            do {
+            } while (TestEvent(D_80132E0C) == 0);
+        }
+        in_transfer = 1;
+        _spu_inTransfer = in_transfer;
+        return in_transfer;
+    }
+    if (in_transfer == 1) {
+        _spu_inTransfer = in_transfer;
+    }
+    return in_transfer;
+}

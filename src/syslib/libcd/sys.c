@@ -1,5 +1,6 @@
 #include "common.h"
 #include "libcd_private.h"
+#include "psx/libetc.h"
 
 /* Wrappers and BCD conversions adapted from PsyZ decomp; see THIRD_PARTY.md. */
 int CdStatus(void) { return CD_status; }
@@ -35,9 +36,22 @@ int CdSetDebug(int level) {
     return prev;
 }
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libcd/sys", CdComstr);
+extern char *D_801349DC[], *D_80134A5C[];
+extern char D_800125B0[];
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libcd/sys", CdIntstr);
+char *CdComstr(u8 index) {
+    char *result;
+    if (index <= 27) result = D_801349DC[index];
+    else result = D_800125B0;
+    return result;
+}
+
+char *CdIntstr(u8 index) {
+    char *result;
+    if (index <= 6) result = D_80134A5C[index];
+    else result = D_800125B0;
+    return result;
+}
 
 s32 CdSync(s32 mode, u8 *result) { return CD_sync(mode, result); }
 
@@ -55,11 +69,66 @@ CdlCB CdReadyCallback(CdlCB func) {
     return prev;
 }
 
+#ifdef NON_MATCHING
+extern int D_8013492C[];
+extern int CD_cw(u8, u8 *, u8 *, int);
+
+/* Best observed instruction-sequence similarity: 83.54% (66/79 words). */
+int CdControl(u8 com, u8 *param, u8 *response) {
+    int retries = 3;
+    int result = 0;
+    CdlCB callback = CD_cbsync;
+    do {
+        CD_cbsync = 0;
+        if (com != 1 && (CD_status & 0x10)) CD_cw(1, 0, 0, 0);
+        if (!param || !D_8013492C[com] || !CD_cw(2, param, response, 0)) {
+            CD_cbsync = callback;
+            if (!CD_cw(com, param, response, 0)) break;
+        }
+    } while (retries--);
+    if (retries < 0) { CD_cbsync = callback; result = -1; }
+    return result + 1;
+}
+
+/* Best observed instruction-sequence similarity: 77.92% (60/77 words). */
+int CdControlF(u8 com, u8 *param) {
+    int retries = 3;
+    int result = 0;
+    CdlCB callback = CD_cbsync;
+    do {
+        CD_cbsync = 0;
+        if (com != 1 && (CD_status & 0x10)) CD_cw(1, 0, 0, 0);
+        if (!param || !D_8013492C[com] || !CD_cw(2, param, 0, 0)) {
+            CD_cbsync = callback;
+            if (!CD_cw(com, param, 0, 1)) break;
+        }
+    } while (retries--);
+    if (retries < 0) { CD_cbsync = callback; result = -1; }
+    return result + 1;
+}
+
+/* Best observed instruction-sequence similarity: 81.18% (69/85 words). */
+int CdControlB(u8 com, u8 *param, u8 *response) {
+    int retries = 3;
+    int result = 0;
+    CdlCB callback = CD_cbsync;
+    do {
+        CD_cbsync = 0;
+        if (com != 1 && (CD_status & 0x10)) CD_cw(1, 0, 0, 0);
+        if (!param || !D_8013492C[com] || !CD_cw(2, param, response, 0)) {
+            CD_cbsync = callback;
+            if (!CD_cw(com, param, response, 0)) break;
+        }
+    } while (retries--);
+    if (retries < 0) { CD_cbsync = callback; result = -1; }
+    if (!result) return CD_sync(0, response) == 2;
+    return 0;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/syslib/libcd/sys", CdControl);
-
 INCLUDE_ASM("asm/nonmatchings/syslib/libcd/sys", CdControlF);
-
 INCLUDE_ASM("asm/nonmatchings/syslib/libcd/sys", CdControlB);
+#endif
 
 s32 CdMix(CdlATV *vol) { CD_vol(vol); return 1; }
 
@@ -67,7 +136,7 @@ s32 CdGetSector(void *madr, s32 size) { return CD_getsector(madr, size) == 0; }
 
 s32 CdGetSector2(void *madr, s32 size) { return CD_getsector2(madr, size) == 0; }
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libcd/sys", CdDataCallback);
+DmaCallback CdDataCallback(DmaCallback cb) { return DMACallback(3, cb); }
 
 s32 CdDataSync(s32 mode) { return CD_datasync(mode); }
 

@@ -1,3 +1,3 @@
-#include "common.h"
+#include "psx/libetc.h"
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libspu/s_dcb", _SpuDataCallback);
+void _SpuDataCallback(DmaCallback callback) { DMACallback(4, callback); }

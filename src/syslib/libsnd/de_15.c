@@ -1,3 +1,7 @@
-#include "common.h"
+#include "libsnd_private.h"
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libsnd/de_15", func_800AB1B4);
+extern s16 SsUtSetReverbType(s16 type);
+
+void _SsSetNrpnVabAttr15(s16 a, s16 b, s16 c, VagAtr attr, s16 d, u8 value) {
+    SsUtSetReverbType(value);
+}

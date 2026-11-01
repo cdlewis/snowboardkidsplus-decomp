@@ -2967,14 +2967,6 @@
       }
     },
     {
-      "name": "syslib/libspu/s_r",
-      "target_path": "expected/src/syslib/libspu/s_r.o",
-      "base_path": "build/src/syslib/libspu/s_r.o",
-      "metadata": {
-        "source_path": "src/syslib/libspu/s_r.c"
-      }
-    },
-    {
       "name": "syslib/libspu/s_sav",
       "target_path": "expected/src/syslib/libspu/s_sav.o",
       "base_path": "build/src/syslib/libspu/s_sav.o",
@@ -3068,6 +3060,14 @@
       "base_path": "build/src/syslib/libspu/s_sva.o",
       "metadata": {
         "source_path": "src/syslib/libspu/s_sva.c"
+      }
+    },
+    {
+      "name": "syslib/libspu/s_w",
+      "target_path": "expected/src/syslib/libspu/s_w.o",
+      "base_path": "build/src/syslib/libspu/s_w.o",
+      "metadata": {
+        "source_path": "src/syslib/libspu/s_w.c"
       }
     },
     {

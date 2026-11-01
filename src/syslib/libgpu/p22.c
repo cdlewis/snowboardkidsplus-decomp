@@ -1,3 +1,3 @@
-#include "common.h"
+#include "psx/libgpu.h"
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/p22", SetSprt);
+void SetSprt(P_TAG *packet) { setlen(packet, 4); packet->code = 0x64; }

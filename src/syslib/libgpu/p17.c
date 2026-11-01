@@ -1,3 +1,3 @@
-#include "common.h"
+#include "psx/libgpu.h"
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/p17", SetPolyFT4);
+void SetPolyFT4(P_TAG *packet) { setlen(packet, 9); packet->code = 0x2c; }

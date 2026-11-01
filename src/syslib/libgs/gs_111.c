@@ -1,3 +1,5 @@
-#include "common.h"
+#include "libgs_private.h"
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libgs/gs_111", func_800BECD8);
+extern void DrawOTag(u32 *tag);
+
+void GsDrawOt(GsOT *ot) { DrawOTag(ot->tag); }

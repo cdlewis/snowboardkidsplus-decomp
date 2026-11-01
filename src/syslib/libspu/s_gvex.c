@@ -1,3 +1,3 @@
-#include "common.h"
+#include "libspu_private.h"
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libspu/s_gvex", SpuGetVoiceEnvelope);
+void SpuGetVoiceEnvelope(s32 voice, s16 *envelope) { *envelope = SPURV(voice, volumex); }

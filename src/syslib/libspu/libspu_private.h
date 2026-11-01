@@ -80,6 +80,8 @@ typedef struct {
 } SPU_MALLOC;
 
 extern union SpuUnion *_spu_RXX;
+extern u16 _spu_tsa;
+extern u32 _spu_FsetRXXa(s32, u32);
 extern s32 _spu_mem_mode_plus;
 extern s32 _spu_AllocBlockNum, _spu_AllocLastNum;
 extern SPU_MALLOC *_spu_memList;

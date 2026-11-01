@@ -1,3 +1,3 @@
-#include "common.h"
+#include "psx/libgpu.h"
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/p26", SetTile);
+void SetTile(P_TAG *packet) { setlen(packet, 3); packet->code = 0x60; }

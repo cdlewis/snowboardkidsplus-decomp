@@ -1,3 +1,8 @@
-#include "common.h"
+#include "libsnd_private.h"
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libsnd/replay", _SsSndReplay);
+void _SsSndReplay(s16 id, s16 sequence) {
+    struct SeqStruct *score = &D_8013BF10[id][sequence];
+
+    score->play_mode = 1;
+    D_8013BF10[id][sequence].flags &= ~8;
+}

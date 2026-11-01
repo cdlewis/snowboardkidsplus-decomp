@@ -3,13 +3,14 @@
 
 Uses real project headers and resolves relocations against a verified image.
 Artifacts stay in nonmatchings/, never build/ or expected/. This is a byte
-check, not a fuzzy scorer; use objdiff for ranking near misses.
+check. The reported instruction similarity is a search aid, not proof of a match.
 """
 
 import argparse
 import difflib
 import hashlib
 import json
+import os
 import re
 import subprocess
 import sys
@@ -18,6 +19,18 @@ from pathlib import Path
 import build
 from decomp import (ROOT, Elf32, PsxImage, active_functions, configured_symbols,
                     first_difference, require_fresh, uncomment)
+
+
+def instruction_similarity(target, candidate):
+    """Compare ordered four-byte words, including any target padding."""
+    if len(target) % 4 or len(candidate) % 4:
+        raise ValueError("instruction streams must contain complete four-byte words")
+    left = [target[i:i + 4] for i in range(0, len(target), 4)]
+    right = [candidate[i:i + 4] for i in range(0, len(candidate), 4)]
+    total = max(len(left), len(right))
+    matched = sum(block.size for block in
+                  difflib.SequenceMatcher(None, left, right, autojunk=False).get_matching_blocks())
+    return matched, total, 100.0 * matched / total if total else 100.0
 
 
 def owning_unit(name, functions):
@@ -107,12 +120,20 @@ def main():
         fromfile="target", tofile="candidate"))
     (output / "diff.txt").write_text(difference)
     equal = data == target and final.symbols[args.function].address == address
+    matched_words, total_words, similarity = instruction_similarity(target, data)
     settings = build.PER_TU_FLAGS.get(unit.as_posix(), {})
+    function_flags = settings.get("function_flags", {}).get(args.function, [])
+    compiler = settings.get("function_compilers", {}).get(args.function, settings.get("cc1", build.CC1))
+    if os.environ.get("NON_MATCHING") == "1":
+        function_flags = build.NON_MATCHING_FUNCTION_FLAGS.get(unit.as_posix(), {}).get(
+            args.function, function_flags)
+        compiler = build.NON_MATCHING_FUNCTION_COMPILERS.get(unit.as_posix(), {}).get(
+            args.function, compiler)
     report = {"function": args.function, "unit": str(unit), "source": str(source),
-              "compiler": str(settings.get("cc1", build.CC1)),
+              "compiler": str(compiler),
               "g_value": settings.get("g_value", build.G_VALUE),
               "unit_cc_flags": settings.get("cc1_flags", []),
-              "function_flags": settings.get("function_flags", {}).get(args.function, []),
+              "function_flags": function_flags,
               "extra_flags": args.cc_flag, "target_sha1": hashlib.sha1(original.data).hexdigest(),
               "source_sha1": hashlib.sha1(source.read_bytes()).hexdigest(),
               "preprocessed_sha1": hashlib.sha1(obj.with_suffix(".i").read_bytes()).hexdigest(),
@@ -120,10 +141,13 @@ def main():
               "gas_reorder": settings.get("gas_reorder", False),
               "pad_sections": settings.get("pad_sections", False),
               "address": address, "target_size": len(target), "candidate_size": len(data),
-              "exact": equal, "first_byte_difference": first_difference(target, data)}
+              "exact": equal, "first_byte_difference": first_difference(target, data),
+              "instruction_similarity_percent": round(similarity, 2),
+              "matching_instruction_words": matched_words, "comparison_words": total_words}
     (output / "result.json").write_text(json.dumps(report, indent=2) + "\n")
     print(f"{args.function}: {'EXACT' if equal else 'DIFFERENT'}; "
-          f"{len(data)} candidate bytes / {len(target)} target bytes")
+          f"{len(data)} candidate bytes / {len(target)} target bytes; "
+          f"{similarity:.2f}% instruction similarity ({matched_words}/{total_words} words)")
     print(f"Artifacts: {output}")
     return 0 if equal else 1
 

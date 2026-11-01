@@ -1,3 +1,11 @@
-#include "common.h"
+#include "psx/libgpu.h"
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/p10", SetSemiTrans);
+void SetSemiTrans(void *primitive, s32 enable) {
+    P_TAG *p = primitive;
+
+    if (enable) {
+        p->code |= 2;
+    } else {
+        p->code &= ~2;
+    }
+}

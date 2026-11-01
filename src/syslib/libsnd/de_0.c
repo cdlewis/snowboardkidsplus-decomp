@@ -1,3 +1,6 @@
-#include "common.h"
-
-INCLUDE_ASM("asm/nonmatchings/syslib/libsnd/de_0", _SsSetNrpnVabAttr0);
+#include "libsnd_private.h"
+void _SsSetNrpnVabAttr0(s16 a, s16 b, s16 c, VagAtr attr, s16 d, unsigned int value) {
+    SsUtGetVagAtr(a, b, c, &attr);
+    attr.prior = value;
+    SsUtSetVagAtr(a, b, c, &attr);
+}

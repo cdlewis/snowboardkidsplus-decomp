@@ -1,7 +1,14 @@
 #include "common.h"
 
+typedef struct { s16 m[3][3]; s32 t[3]; } MATRIX;
+extern MATRIX D_8013F820;
+extern void SetColorMatrix(MATRIX *m);
+
 INCLUDE_ASM("asm/nonmatchings/syslib/libgs/gs_107", GsSetFlatLight);
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libgs/gs_107", func_800BEBA0);
+void gte_set_lc(MATRIX *m) {
+    D_8013F820 = *m;
+    SetColorMatrix(m);
+}
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libgs/gs_107", func_800BEC04);
+void gte_read_lc(MATRIX *m) { *m = D_8013F820; }

@@ -1,3 +1,7 @@
-#include "common.h"
+#include "libsnd_private.h"
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libsnd/vm_noff", vmNoiseOff);
+void vmNoiseOff(u8 voice) {
+    D_8013C7C8[voice].field1d = 0;
+    D_8013C7C8[voice].field0 = 0;
+    D_8013C7C8[voice].field4 = 0;
+}

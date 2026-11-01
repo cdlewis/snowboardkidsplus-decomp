@@ -62,6 +62,19 @@ segments:
     # bss_size: Please fill out this value when you figure out the bss size
     subsegments:
       - [0x800, rodata, 800]
+      - {start: 0x2D90, type: .rodata, name: syslib/libcd/event, linker_section: .rodata.cdinit}
+      - [0x2DB0, rodata, 2DB0]
+      - {start: 0x32B0, type: .rodata, name: syslib/libgs/matrix, linker_section: .rodata.gs_matrix_print}
+      - [0x32E0, rodata, 32E0]
+      - {start: 0x3518, type: .rodata, name: syslib/libgpu/sys, linker_section: .rodata.gpu_graph_debug}
+      - [0x3544, rodata, 3544]
+      - {start: 0x3558, type: .rodata, name: syslib/libgpu/sys, linker_section: .rodata.gpu_sync_callback}
+      - {start: 0x359C, type: .rodata, name: syslib/libgpu/sys, linker_section: .rodata.gpu_rect_debug}
+      - {start: 0x35C0, type: .rodata, name: syslib/libgpu/sys, linker_section: .rodata.gpu_image_names}
+      - [0x35F0, rodata, 35F0]
+      - {start: 0x362C, type: .rodata, name: syslib/libgpu/sys, linker_section: .rodata.gpu_draw_otag}
+      - [0x3674, rodata, 3674]
+      - {start: 0x36C0, type: .rodata, name: syslib/libgpu/sys, linker_section: .rodata.gpu_load_image2}
       - {start: 0x36D0, type: .rodata, name: syslib/libpress/libpress, linker_section: .rodata.mdec}
       - [0x3720, rodata, 3720]
       # game code as a mixed C/asm unit: per-function .s in
@@ -205,7 +218,7 @@ segments:
       - [0xA51D4, c, syslib/libsnd/vs_vh]
       - [0xA5634, c, syslib/libspu/s_m_m]
       - [0xA5904, c, syslib/libsnd/vs_vtb]
-      - [0xA59C4, c, syslib/libspu/s_r] # ambiguous, same bytes as LIBSPU.LIB:S_W.OBJ
+      - [0xA59C4, c, syslib/libspu/s_w] # LIBSPU.LIB:S_W.OBJ
       - [0xA5A24, c, syslib/libspu/s_stsa]
       - [0xA5A84, c, syslib/libspu/s_stm]
       - [0xA5AB4, c, syslib/libsnd/vs_vtc]
@@ -472,20 +485,47 @@ segments:
       - [0xC78E8, data, C78E8] # estimated
       - [0xDAD9C, .data, engine/random]
       - [0xDAE9C, data, DAE9C]
+      - {start: 0x1235BC, type: .data, name: syslib/libmath/ferr, linker_section: .data.math_error}
+      - [0x1235C4, data, 1235C4]
+      - {start: 0x123674, type: .data, name: syslib/libspu/s_ini, linker_section: .data.spu_started}
+      - [0x123678, data, 123678]
       - {start: 0x123684, type: .data, name: syslib/libspu/spu, linker_section: .data.spu_registers}
-      - [0x123688, data, 123688]
+      - {start: 0x123688, type: .data, name: syslib/libspu/spu, linker_section: .data.spu_dma}
       - {start: 0x123694, type: .data, name: syslib/libspu/spu, linker_section: .data.spu_bus}
-      - [0x12369C, data, 12369C]
+      - {start: 0x12369C, type: .data, name: syslib/libspu/spu, linker_section: .data.spu_transfer_addr}
+      - [0x1236A0, data, 1236A0]
       - {start: 0x1236AC, type: .data, name: syslib/libspu/spu, linker_section: .data.spu_shift}
       - [0x1236B0, data, 1236B0]
+      - {start: 0x1236D4, type: .data, name: syslib/libspu/spu, linker_section: .data.spu_dma_busy}
+      - [0x1236D8, data, 1236D8]
       - {start: 0x1236E4, type: .data, name: syslib/libspu/s_m_init, linker_section: .data.spu_allocator}
       - [0x1236F0, data, 1236F0]
+      - {start: 0x123724, type: .data, name: syslib/libsnd/ssstart, linker_section: .data.snd_seq_tick_env}
+      - [0x12373C, data, 12373C]
+      - {start: 0x1250AC, type: .data, name: syslib/libetc/intr_vb, linker_section: .data.vsync_callbacks}
+      - [0x1250D4, data, 1250D4]
+      - {start: 0x1250DC, type: .data, name: syslib/libetc/intr_dma, linker_section: .data.dma_callbacks}
+      - [0x125100, data, 125100]
       - {start: 0x12510C, type: .data, name: syslib/libetc/vmode, linker_section: .data.vmode}
       - [0x125110, data, 125110]
+      - {start: 0x1253FC, type: .data, name: syslib/libcd/bios, linker_section: .data.cd_command_params}
+      - {start: 0x12547C, type: .data, name: syslib/libcd/bios, linker_section: .data.cd_registers}
+      - {start: 0x125494, type: .data, name: syslib/libcd/bios, linker_section: .data.cd_interrupt_state}
+      - [0x125498, data, 125498]
+      - {start: 0x1254DC, type: .data, name: syslib/libcd/cdread, linker_section: .data.cd_read_callback}
+      - [0x1254E0, data, 1254E0]
+      - {start: 0x12A448, type: .data, name: syslib/libgpu/sys, linker_section: .data.gpu_printf}
+      - [0x12A44C, data, 12A44C]
+      - {start: 0x12A550, type: .data, name: syslib/libgpu/sys, linker_section: .data.gpu_registers}
+      - [0x12A574, data, 12A574]
+      - {start: 0x12A588, type: .data, name: syslib/libgpu/sys, linker_section: .data.gpu_alarm}
+      - [0x12A590, data, 12A590]
       - {start: 0x12A59C, type: .data, name: syslib/libpress/libpress, linker_section: .data.mdec}
       - [0x12A6E8, data, 12A6E8]
       - {start: 0x12B53C, type: .data, name: syslib/libapi/counter, linker_section: .data.counter}
       - [0x12B554, data, 12B554]
+      - {start: 0x12B638, type: .data, name: syslib/libapi/pad, linker_section: .data.pad_state}
+      - [0x12B644, data, 12B644]
       # Small-data inputs retain their original position within the data image.
       - {start: 0x12B710, type: .sdata, name: engine/random, linker_section_order: .data}
       - [0x12B714, data, 12B714]

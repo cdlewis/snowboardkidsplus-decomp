@@ -10,6 +10,7 @@ from data_diff import compare_symbol
 from decomp import (Elf32, PsxImage, Symbol, active_functions,
                     first_difference, require_fresh, uncomment)
 from find_similar_functions import normalize_instruction
+from match_function import instruction_similarity
 
 
 def image(payload, address=0x80010000):
@@ -46,6 +47,14 @@ def elf_fixture(path):
 
 
 class ImageTests(unittest.TestCase):
+    def test_instruction_similarity_counts_insertions_and_replacements(self):
+        target = bytes.fromhex("01000000 02000000 03000000")
+        candidate = bytes.fromhex("01000000 04000000 03000000 05000000")
+        self.assertEqual(instruction_similarity(target, candidate), (2, 4, 50.0))
+        self.assertEqual(instruction_similarity(b"", b""), (0, 0, 100.0))
+        with self.assertRaises(ValueError):
+            instruction_similarity(b"x", b"")
+
     def test_header_mapping_and_little_endian_value(self):
         target = image(bytes.fromhex("78563412"))
         self.assertEqual(target.offset(0x80010002), 0x802)

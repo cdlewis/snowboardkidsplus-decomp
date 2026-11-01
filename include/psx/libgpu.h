@@ -17,6 +17,9 @@ typedef struct DR_AREA { u32 tag; u32 code[2]; } DR_AREA;
 typedef struct DR_OFFSET { u32 tag; u32 code[2]; } DR_OFFSET;
 typedef struct DR_PRIO { u32 tag; u32 code[2]; } DR_PRIO;
 typedef struct DR_MODE { u32 tag; u32 code[2]; } DR_MODE;
+typedef struct DR_STP { u32 tag; u32 code[2]; } DR_STP;
+typedef struct DR_TPAGE { u32 tag; u32 code[1]; } DR_TPAGE;
+typedef struct DR_MOVE { u32 tag; u32 code[5]; } DR_MOVE;
 
 /* GetDrawEnv copies 0x5C bytes in this SDK, including the packed commands. */
 typedef struct DRAWENV {
@@ -42,6 +45,8 @@ typedef struct DISPENV {
 
 u16 GetTPage(s32 tp, s32 abr, s32 x, s32 y);
 u16 GetClut(s32 x, s32 y);
+void AddPrim(void *ordering_table, void *primitive);
+void SetSemiTrans(void *primitive, s32 enable);
 s32 LoadImage(RECT *rect, u32 *pixels);
 u16 LoadTPage(u32 *pixels, s32 tp, s32 abr, s32 x, s32 y, s32 w, s32 h);
 u16 LoadClut(u32 *clut, s32 x, s32 y);
@@ -57,6 +62,9 @@ void SetTexWindow(DR_TWIN *packet, RECT *window);
 void SetDrawArea(DR_AREA *packet, RECT *area);
 void SetDrawOffset(DR_OFFSET *packet, u16 *offset);
 void SetPriority(DR_PRIO *packet, s32 pbc, s32 pbw);
+void SetDrawStp(DR_STP *packet, s32 stp);
+void SetDrawTPage(DR_TPAGE *packet, s32 dfe, s32 dtd, s32 tpage);
+void SetDrawMove(DR_MOVE *packet, RECT *rect, s32 x, s32 y);
 void SetDrawMode(DR_MODE *packet, s32 dfe, s32 dtd, s32 tpage, RECT *window);
 
 #endif

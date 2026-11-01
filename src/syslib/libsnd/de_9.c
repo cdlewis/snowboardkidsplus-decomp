@@ -1,3 +1,10 @@
-#include "common.h"
-
-INCLUDE_ASM("asm/nonmatchings/syslib/libsnd/de_9", _SsSetNrpnVabAttr9);
+#include "libsnd_private.h"
+void _SsSetNrpnVabAttr9(s16 a, s16 b, s16 c, VagAtr attr, s16 d, u8 value) {
+    Envelope envelope;
+    SsUtGetVagAtr(a, b, c, &attr);
+    _SsUtResolveADSR(attr.adsr1, attr.adsr2, &envelope);
+    envelope.sustain_mode = 1;
+    envelope.sustain_rate = value;
+    _SsUtBuildADSR(&envelope, &attr.adsr1, &attr.adsr2);
+    SsUtSetVagAtr(a, b, c, &attr);
+}

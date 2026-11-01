@@ -1,3 +1,9 @@
-#include "common.h"
+#include "psx/libgpu.h"
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/p06", AddPrim);
+void AddPrim(void *ordering_table, void *primitive) {
+    P_TAG *ot = ordering_table;
+    P_TAG *p = primitive;
+
+    p->addr = ot->addr;
+    ot->addr = (u32)p;
+}

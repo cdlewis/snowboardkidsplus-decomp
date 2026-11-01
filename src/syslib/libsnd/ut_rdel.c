@@ -1,3 +1,9 @@
 #include "common.h"
+#include "reverb_private.h"
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libsnd/ut_rdel", SsUtSetReverbDelay);
+void SsUtSetReverbDelay(s16 delay) {
+    SpuReverbAttr *attr = &D_8013CEC8;
+    attr->mask = 8;
+    attr->delay = delay;
+    SpuSetReverbModeParam(attr);
+}

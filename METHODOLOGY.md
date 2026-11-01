@@ -8,6 +8,9 @@ full technique catalog — same toolchain family, techniques transfer).
 
 1. **Target = 100% byte-match only.** A function is done at 100%, not 99%.
    The full-image gate (`make` → sha1 `OK`) must stay green on every commit.
+   Preserve promising partial C under `#ifdef NON_MATCHING`, with the original
+   `INCLUDE_ASM` in the `#else` branch. Record the best observed instruction
+   similarity and word counts beside it; this is a search aid, not a match.
 2. **The disassembly oracle is splat's output** (`asm/nonmatchings/<unit>/*.s`,
    regenerate with `make split`). When in doubt about what a function does,
    read it there — it carries file offset, vram, and raw bytes per line.
@@ -42,6 +45,10 @@ full technique catalog — same toolchain family, techniques transfer).
   assembling. Preserve the normal data and other functions, check for local
   label collisions, and verify the full image. This is a matching workaround;
   it does not establish the original flags or translation-unit boundaries.
+- SDK units may select a different vendored SDK compiler for an individual
+  function using the same preprocessed TU and function extraction. Keep game
+  code on its single compiler, preserve the normal data and other functions,
+  and require the full-image gate. This does not establish original compilers.
 
 ### SDK assembler scheduling
 
@@ -71,6 +78,9 @@ sizes as well as code bytes. Neither setting is enabled globally for game code.
    inherits the owning unit's settings and checks linked bytes in isolation;
    it requires a fresh verified image and supports extern-only data. Owned
    data and jump tables need full-TU objdiff. See the README for commands.
+   Preserve a useful partial attempt in its owning source under `NON_MATCHING`,
+   including its best measured similarity. Use `NON_MATCHING=1 make skipasm`
+   to compile these attempts for objdiff; ordinary builds always use the asm.
    Replace the `INCLUDE_ASM` line with the matching C body, then:
    - `make skipasm` + **objdiff** (`objdiff.json` is wired: base =
      the owning `build/src/<unit>.o`, target = `expected/src/<unit>.o`)

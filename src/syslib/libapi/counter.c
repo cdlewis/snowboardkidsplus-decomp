@@ -51,7 +51,16 @@ s32 StartRCnt(s32 spec) {
     return i < 3;
 }
 
+#ifdef NON_MATCHING
+/* Best observed instruction-sequence similarity: 76.92% (10/13 words). */
+s32 StopRCnt(s32 spec) {
+    s32 i = spec & 0xFFFF;
+    gCounterInterruptStatus[1] &= ~gCounterInterruptMasks[i];
+    return 1;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/syslib/libapi/counter", StopRCnt);
+#endif
 
 s32 ResetRCnt(s32 spec) {
     s32 i = spec & 0xFFFF;

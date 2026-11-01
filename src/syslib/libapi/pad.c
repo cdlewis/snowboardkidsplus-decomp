@@ -1,21 +1,130 @@
 #include "common.h"
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libapi/pad", SetInitPadFlag);
+#define PAD_DATA __attribute__((section(".data.pad_state"), aligned(4)))
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libapi/pad", ReadInitPadFlag);
+int is_pad_init PAD_DATA = 0;
+volatile int pad_data_port PAD_DATA = 0x1F801040;
+volatile int pad_interrupt_status PAD_DATA = 0x1F801070;
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libapi/pad", PAD_init);
+void SetInitPadFlag(int value) { is_pad_init = value; }
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libapi/pad", InitPAD);
+int ReadInitPadFlag(void) { return is_pad_init; }
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libapi/pad", StartPAD);
+extern void StartPAD2(void);
+extern void ChangeClearPAD(int);
+extern void EnablePAD(void);
+extern void DisablePAD(void);
+extern void StopPAD2(void);
+extern int func_800D6E64(void);
+extern void _remove_ChgclrPAD(void);
+extern void EnterCriticalSection(void);
+extern void _patch_pad(void);
+extern void ExitCriticalSection(void);
+extern int func_800D6DEC(void);
+extern void PAD_init2(char *, int, char *, int);
+extern void InitPAD2(char *, int, char *, int);
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libapi/pad", StopPAD);
+int PAD_init(char *a, int alen, char *b, int blen) {
+    _remove_ChgclrPAD();
+    EnterCriticalSection();
+    _patch_pad();
+    ExitCriticalSection();
+    ChangeClearPAD(0);
+    func_800D6DEC();
+    PAD_init2(a, alen, b, blen);
+    is_pad_init = 1;
+    return 1;
+}
 
+int InitPAD(char *a, int alen, char *b, int blen) {
+    _remove_ChgclrPAD();
+    EnterCriticalSection();
+    _patch_pad();
+    ExitCriticalSection();
+    ChangeClearPAD(0);
+    func_800D6DEC();
+    InitPAD2(a, alen, b, blen);
+    is_pad_init = 1;
+    return 1;
+}
+
+int StartPAD(void) {
+    StartPAD2();
+    ChangeClearPAD(0);
+    EnablePAD();
+    return 1;
+}
+
+int StopPAD(void) {
+    int result;
+
+    DisablePAD();
+    StopPAD2();
+    result = func_800D6E64();
+    is_pad_init = 0;
+    return result;
+}
+
+typedef struct {
+    void *next;
+    int (*handler)(void);
+    int (*test)(void);
+    void *unused;
+} PadIntrEntry;
+extern PadIntrEntry D_80141658;
+extern void SysDeqIntRP(int, void *);
+
+#ifdef NON_MATCHING
+extern int func_800D6E9C(void), func_800D6F04(void);
+extern void SysEnqIntRP(int, void *);
+/* Best observed instruction-sequence similarity: 93.33% (28/30 words;
+ * GCC 2.7.2). */
+int func_800D6DEC(void) {
+    EnterCriticalSection();
+    D_80141658.handler = func_800D6E9C;
+    D_80141658.test = func_800D6F04;
+    D_80141658.next = 0;
+    D_80141658.unused = 0;
+    SysDeqIntRP(1, &D_80141658);
+    SysEnqIntRP(1, &D_80141658);
+    ExitCriticalSection();
+    return 1;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/syslib/libapi/pad", func_800D6DEC);
+#endif
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libapi/pad", func_800D6E64);
+int func_800D6E64(void) {
+    EnterCriticalSection();
+    SysDeqIntRP(1, &D_80141658);
+    ExitCriticalSection();
+    return 1;
+}
 
+#ifdef NON_MATCHING
+/* Best observed instruction-sequence similarity: 92.31% (24/26 words;
+ * GCC 2.7.2). */
+int func_800D6E9C(void) {
+    volatile int delay;
+    *(volatile u16 *)(pad_data_port + 10) = 0;
+    delay = 10;
+    while (delay-- != 0) { }
+    return 0;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/syslib/libapi/pad", func_800D6E9C);
+#endif
 
+#ifdef NON_MATCHING
+/* Best observed instruction-sequence similarity: 58.82% (10/17 words;
+ * GCC 2.8.0). */
+int func_800D6F04(void) {
+    volatile u32 *regs = (volatile u32 *)pad_interrupt_status;
+    if (regs[1] & 1) {
+        if (regs[0] & 1) return 1;
+    }
+    return 0;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/syslib/libapi/pad", func_800D6F04);
+#endif

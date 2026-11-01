@@ -98,6 +98,7 @@ Additional build commands:
 | Command | Purpose |
 | --- | --- |
 | `make skipasm` | Compile C objects with `-DSKIP_ASM` for objdiff comparison |
+| `NON_MATCHING=1 make skipasm` | Also compile guarded partial C implementations for comparison |
 | `make expected` | Run a full verified build, snapshot target objects to `expected/`, and update `objdiff.json` |
 | `make clean` | Remove `build/` |
 
@@ -228,6 +229,16 @@ an exact match, 1 for a mismatch, and 2 for unsupported or missing input.
 
 These tools use only the Python standard library and the existing compiler
 pipeline; the N64 difficulty model and its Python dependencies are not needed.
+
+Partial implementations use `#ifdef NON_MATCHING` with the original assembly
+in the default branch. Their comments record the best observed instruction
+similarity from `tools/match_function.py`: its ordered matching four-byte words
+divided by the larger instruction-stream length, including any padding in the
+target extent. This is a reproducible search aid, not objdiff's percentage or
+proof of correctness. Only a byte-exact comparison and the full executable gate
+establish a match. Normal and expected-object builds do not enable the define.
+Comparison-only settings may select a different SDK compiler for a partial
+function; they do not change the compiler or bytes used by the normal build.
 Run their regression checks, including the assembler and build-driver checks:
 
 ```sh

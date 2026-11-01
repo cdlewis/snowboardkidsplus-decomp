@@ -1,23 +1,114 @@
 #include "common.h"
+#include "libpad_private.h"
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libpad/padentry", PadChkVsync);
+extern int func_800D2200(void);
+extern void func_800D2214(void);
+extern void func_800D22E0(void);
+extern PadCommand *(*D_8013AD78)(int);
+extern int _padSetActAlign(PadCommand *, u8 *);
+extern int _padSetMainMode(PadCommand *, u8, u8);
+extern void _padSetAct(PadCommand *, u8 *, int);
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libpad/padentry", PadStartCom);
+int PadChkVsync(void) { return func_800D2200(); }
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libpad/padentry", PadStopCom);
+void PadStartCom(void) { func_800D2214(); }
 
+void PadStopCom(void) { func_800D22E0(); }
+
+#ifdef NON_MATCHING
+extern int D_8013ADB0;
+extern PadCommand *D_8013AD98;
+/* Best observed instruction-sequence similarity: 84.21% (16/19 words). */
+int PadChkMtap(int port) {
+    if (!D_8013ADB0)
+        return 0;
+    return D_8013AD98[port >> 4].unknownE5[3] == 8;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/syslib/libpad/padentry", PadChkMtap);
+#endif
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libpad/padentry", PadGetState);
+int PadGetState(int port) {
+    PadCommand *p = D_8013AD78(port);
+    if ((*(u32 *)((u8 *)p + 0x34) & 0xffff0000) ||
+        ((p != *(PadCommand **)((u8 *)p + 0x10) && *((u8 *)p + 0x38)) ||
+         **(u8 **)((u8 *)p + 0x30))) {
+        switch (p->unknown49[0]) {
+        case 2: return 1;
+        case 3: return 1;
+        case 6: return 4;
+        }
+    }
+    return p->unknown49[0];
+}
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libpad/padentry", PadInfoMode);
+int PadInfoMode(int port, int mode, int index) {
+    PadCommand *p = D_8013AD78(port);
+    switch (mode) {
+    case 1: return *((u8 *)p + 0xe8);
+    case 2: return *(u16 *)((u8 *)p + 0xe6);
+    case 3: return p->mode_index;
+    case 4:
+        if (index < 0) return p->mode_count;
+        if (index < p->mode_count) return (*(u16 **)p)[index];
+        else return 0;
+    case 100: return *(int *)((u8 *)p + 0x4c);
+    default: return 0;
+    }
+}
 
+#ifdef NON_MATCHING
+typedef struct { u8 a, b, c, d, e; } ActInfo;
+/* Best observed instruction-sequence similarity: 59.26% (32/54 words;
+ * GCC 2.7.2). The original uses a jump table. */
+int PadInfoAct(int port, int index, int request) {
+    PadCommand *p = D_8013AD78(port);
+    ActInfo *a;
+    if (index < 0) return p->actuator_count;
+    if (index < p->actuator_count) {
+        a = &(*(ActInfo **)((u8 *)p + 4))[index];
+        if (request == 1) return a->a;
+        if (request == 2) return a->b;
+        if (request == 3) return a->c;
+        if (request == 4) return a->d;
+        if (request == 5) return a->e;
+    }
+    return 0;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/syslib/libpad/padentry", PadInfoAct);
+#endif
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libpad/padentry", PadInfoComb);
+typedef struct {
+    u8 count, pad[3];
+    u8 *items;
+} PadComb;
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libpad/padentry", PadSetActAlign);
+int PadInfoComb(int port, int index, int entry) {
+    PadCommand *p = D_8013AD78(port);
+    PadComb *comb;
+    if (index < 0)
+        return p->unknownEA[0];
+    if (index < p->unknownEA[0]) {
+        comb = &((PadComb **)((u8 *)p + 8))[0][index];
+        if (entry < 0)
+            return comb->count;
+        if (entry < comb->count)
+            return comb->items[entry];
+        return 0;
+    } else {
+        return 0;
+    }
+}
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libpad/padentry", PadSetMainMode);
+int PadSetActAlign(int port, u8 *data) {
+    return _padSetActAlign(D_8013AD78(port), data);
+}
 
-INCLUDE_ASM("asm/nonmatchings/syslib/libpad/padentry", PadSetAct);
+int PadSetMainMode(int port, int mode, int lock) {
+    return _padSetMainMode(D_8013AD78(port), mode, lock);
+}
+
+void PadSetAct(int port, u8 *data, int size) {
+    _padSetAct(D_8013AD78(port), data, size);
+}
