@@ -23,7 +23,7 @@ def paths(output):
 def build_input(path):
     return (path in {"Makefile", "snowboardkidsplus.yaml", "decomp.yaml",
                          "symbol_addrs.txt", "reloc_addrs.txt"}
-            or path.startswith(("src/", "include/", "tools/")))
+            or path.startswith(("src/", "include/", "tools/", "config/")))
 
 
 def checksum(path, data):

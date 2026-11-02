@@ -10,7 +10,6 @@ import argparse
 import difflib
 import hashlib
 import json
-import os
 import re
 import subprocess
 import sys
@@ -121,26 +120,21 @@ def main():
     (output / "diff.txt").write_text(difference)
     equal = data == target and final.symbols[args.function].address == address
     matched_words, total_words, similarity = instruction_similarity(target, data)
-    settings = build.PER_TU_FLAGS.get(unit.as_posix(), {})
-    function_flags = settings.get("function_flags", {}).get(args.function, [])
-    compiler = settings.get("function_compilers", {}).get(args.function, settings.get("cc1", build.CC1))
-    if os.environ.get("NON_MATCHING") == "1":
-        function_flags = build.NON_MATCHING_FUNCTION_FLAGS.get(unit.as_posix(), {}).get(
-            args.function, function_flags)
-        compiler = build.NON_MATCHING_FUNCTION_COMPILERS.get(unit.as_posix(), {}).get(
-            args.function, compiler)
+    settings = build.get_settings(unit, args.function, comparison=True)
+    function_flags = settings["FUNCTION_FLAGS"]
+    compiler = settings["FUNCTION_CC1"]
     report = {"function": args.function, "unit": str(unit), "source": str(source),
               "compiler": str(compiler),
-              "g_value": settings.get("g_value", build.G_VALUE),
-              "unit_cc_flags": settings.get("cc1_flags", []),
+              "g_value": settings["G_VALUE"],
+              "unit_cc_flags": settings["UNIT_CC_FLAGS"],
               "function_flags": function_flags,
               "extra_flags": args.cc_flag, "target_sha1": hashlib.sha1(original.data).hexdigest(),
               "source_sha1": hashlib.sha1(source.read_bytes()).hexdigest(),
               "preprocessed_sha1": hashlib.sha1(obj.with_suffix(".i").read_bytes()).hexdigest(),
               "aspsx_version": build.ASPSX_VERSION,
-              "gas_reorder": settings.get("gas_reorder", False),
-              "gas_indexed_loads": settings.get("gas_indexed_loads", False),
-              "pad_sections": settings.get("pad_sections", False),
+              "gas_reorder": settings["REORDER"] == "1",
+              "gas_indexed_loads": settings["INDEXED"] == "1",
+              "pad_sections": settings["PAD"] == "1",
               "address": address, "target_size": len(target), "candidate_size": len(data),
               "exact": equal, "first_byte_difference": first_difference(target, data),
               "instruction_similarity_percent": round(similarity, 2),

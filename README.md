@@ -97,9 +97,20 @@ headers, or split configuration.
 | `./tools/build-and-verify.sh --expected` | Also snapshot verified targets to `expected/` and update `objdiff.json` |
 | `./tools/build-and-verify.sh --objects` | Also prepare comparison objects for objdiff after verification |
 | `./tools/build-and-verify.sh --objects --non-matching` | Include guarded partial C in the comparison objects |
+| `./tools/build-and-verify.sh --jobs 8` | Clean build with eight parallel Make jobs |
+| `./tools/build-and-verify.sh --incremental --jobs 8` | Rebuild changed inputs and verify the full executable |
 
 `--expected` and `--objects` can be combined; targets are snapshotted before
 comparison objects are compiled. Comparison builds do not establish new matches.
+
+The Makefile owns preprocessing, compilation, assembly, linking, conversion,
+and checksum verification. Header and assembler include dependencies are tracked;
+unchanged objects are reused with `--incremental`. Compiler settings are declared
+in `config/compiler.mk`, including the existing per-function selections.
+Comparison objects live in `build/compare/`, separate from the verified image's
+objects. Objdiff builds those objects through Make. `tools/build.py` only adapts
+isolated matching attempts to the same Make rules and retains the protected
+checksum used by validation.
 
 Agents must use the wrapper instead of direct make, splat, build-driver, or
 progress-report commands. The Makefile remains an internal build interface.
@@ -134,17 +145,16 @@ load and branch delay slots.
 The current game compiler is GCC 2.8.1, but the historical compiler version and
 game-wide `-G` value remain unconfirmed. Keep all game code on one compiler.
 `SKP_CC1` and `SKP_G_VALUE` select the default lane; per-unit settings live in
-`tools/build.py`. The default is `-G0`; the matched RNG unit has verified local
+`config/compiler.mk`. The default is `-G0`; the matched RNG unit has verified local
 `-G8` settings. `$gp` is `0x8013AE48`. Pass the same `-G` value to cc1, maspsx,
 and GNU as; small-data declarations also affect load-delay scheduling.
 
-Separately linked SDK units may use other vendored compilers. `SDK_272_FLAGS`
-provides the shared GCC 2.7.2 settings with GNU as `-O2` reorder scheduling and
-original section padding. `SDK_272_GAS_FLAGS` also delegates symbolic indexed
-loads to GNU as, allowing its load-destination temporary instead of ASPSX's
-`$at`. These are explicit compatibility settings, not proof of the original
-compiler or assembler. Copy the shared settings for local overrides and verify
-the complete affected unit.
+Separately linked SDK units may use other vendored compilers. The shared
+GCC 2.7.2 profiles in `config/compiler.mk` preserve GNU as `-O2` reorder
+scheduling and original section padding. Profiles with `INDEXED` also delegate
+symbolic indexed loads to GNU as, allowing its load-destination temporary instead
+of ASPSX's `$at`. These compatibility settings do not establish the original
+compiler or assembler. Verify the complete affected unit after changing them.
 
 Function-scoped flags or SDK compiler overrides compile the same preprocessed
 translation unit and select the complete `.ent`/`.end` region. Preserve its
@@ -173,7 +183,8 @@ unaligned section boundaries.
 | `src/syslib/` | PSY-Q library units |
 | `include/` | Project headers; `common.h` is the master include |
 | `tools/build-and-verify.sh` | Supported build, verification, and progress entry point |
-| `tools/build.py` | Internal compiler/linker driver used by the Makefile |
+| `Makefile`, `config/compiler.mk` | Build rules and verified compiler settings |
+| `tools/build.py` | Scratch-build adapter to Make and protected checksum |
 | `objdiff.json` | Per-function comparison configuration |
 
 `asm/`, linker scripts and undefined-symbol files in `linkers/`, and `expected/`

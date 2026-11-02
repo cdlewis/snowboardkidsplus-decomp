@@ -46,7 +46,7 @@ u8 randomNextObject(RacePlayer *player) {
     return gRandomTable[player->randomIndex];
 }
 
-/* tools/build.py applies -fno-delayed-branch to this wrapper with the same
+/* config/compiler.mk applies -fno-delayed-branch to this wrapper with the same
  * compiler, preserving the original stack restore before the return jump.
  */
 void resetGameplayRng(void) {

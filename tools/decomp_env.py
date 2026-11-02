@@ -52,9 +52,8 @@ def resolve_function(value, requested_unit):
 def assemble_target(workspace, oracle):
     source = workspace / "target.s"
     source.write_text('.include "include/macro.inc"\n.set noreorder\n.set noat\n.text\n' + oracle.path.read_text())
-    settings = build.PER_TU_FLAGS.get(oracle.unit.as_posix(), {})
-    flags = [f'-G{settings.get("g_value", build.G_VALUE)}' if f.startswith("-G") else f
-             for f in build.AS_FLAGS]
+    settings = build.get_settings(oracle.unit)
+    flags = settings["ORACLE_AS_FLAGS"]
     obj = workspace / "target.o"
     subprocess.run([build.AS, *flags, "-o", str(obj), str(source)], cwd=ROOT, check=True)
     reference = Elf32(ROOT / "build/slps_018.23.elf")

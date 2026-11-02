@@ -42,7 +42,7 @@ Change source/configuration and regenerate them; never edit them by hand.
 - `./tools/install-git-hooks.sh`: install the tracked commit validation hook.
 
 Use the wrapper for every full build, split regeneration, and progress report.
-Do not invoke `make`, splat, `tools/clean_split_asm.py`, or `tools/build.py`
+Do not invoke `make`, splat, or `tools/build.py`
 directly, or report progress from stale output. Isolated scratch tools and
 objdiff's configured object builder are supported; comparison objects do not
 prove an executable match. Codex and Claude command hooks enforce this policy;
