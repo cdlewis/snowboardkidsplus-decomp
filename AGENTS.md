@@ -4,17 +4,33 @@ Before matching, build, or asm-interpretation work in this repo:
 
 1. Read [METHODOLOGY.md](METHODOLOGY.md) in full — the hard rules (100%-only,
    the asm oracle, symbol naming) and the per-function workflow. Do not update methodology unless you're changing the methodology. Status updates are not helpful.
-2. The full-image byte gate (`make` → `build/slps_018.23.exe: OK`) must be
+2. The full-image byte gate (`./tools/build-and-verify.sh` → `build/slps_018.23.exe: OK`) must be
    green before AND after your change. Never commit a red gate.
 3. `asm/`, `linkers/*.ld`, `linkers/undefined_*` and `expected/` are
    generated — never hand-edit them; change `configs/` and re-run
-   `make split` / `make expected` instead.
+   `./tools/build-and-verify.sh` / `./tools/build-and-verify.sh --expected` instead.
 4. The deep technique catalog (symptom → source-shape fix, permuter usage,
    per-TU flag overrides) lives in the sibling clone
    `../NFSHS-PSX-decomp/METHODOLOGY.md` — same toolchain family; consult it
    when stuck on a near-miss.
 
 ## Local matching resources
+
+Use `./tools/build-and-verify.sh` for every full build, split regeneration,
+and progress report. It cleans the build, regenerates function disassemblies,
+checks live includes, builds and independently verifies the image,
+then generates fresh progress. Missing disc extraction is performed first.
+Agents must not invoke `make`, splat, `tools/clean_split_asm.py`, or
+`tools/build.py` directly, or run the progress reporter on stale output.
+Use `--expected` to snapshot verified targets and `--objects` (optionally
+`--non-matching`) to prepare comparison objects after the full gate.
+Isolated scratch tools and objdiff's configured object builder remain supported.
+Never treat comparison objects as proof of an executable match.
+
+Codex and Claude PreToolUse hooks enforce the command policy. For Codex,
+review and trust the project hook in `/hooks`; new or changed hooks do not
+run until trusted. These hooks guide agent commands; the tracked Git hook
+independently enforces validation when committing.
 
 Read [DECOMPILATION_LEARNINGS.md](DECOMPILATION_LEARNINGS.md) for techniques
 adapted from the two N64 sibling projects, including PSX-specific limits.
@@ -40,10 +56,10 @@ expected objects. These tools do not change the full-image gate requirement.
 
 ## Commit validation
 
-Install the tracked validation hook with `make hooks`. Never bypass a failed
+Install the tracked validation hook with `./tools/install-git-hooks.sh`. Never bypass a failed
 hook: fix its reported input, build, or checksum failure. Stage the complete
 build-input change before committing; unrelated local files can stay unstaged.
-The hook regenerates splits, runs the regression checks, and requires the
+The hook regenerates splits, checks live includes, and requires the
 full executable to match the original bytes. It does not stage generated files
 or update expected objects.
 

@@ -72,7 +72,7 @@ def main():
         raise ValueError("original function extent unknown; split the function or add size metadata")
     target = original.read(address, size)
     if oracle and target != oracle.data:
-        raise ValueError("assembly oracle disagrees with the original executable; run make split")
+        raise ValueError("assembly oracle disagrees with the original executable; run ./tools/build-and-verify.sh")
     if any(f.startswith("-G") for f in args.cc_flag):
         raise ValueError("-G must agree across cc1, maspsx and as; use the owning unit's setting")
     source = args.source.resolve()

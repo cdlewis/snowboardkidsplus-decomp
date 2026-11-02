@@ -69,13 +69,19 @@ Place your MODE2/2352 disc dump at:
 Snobow Kids Plus (Japan)/Snobow Kids Plus (Japan).bin
 ```
 
-Extract the boot executable, generate the disassembly, then build and verify:
+Build and verify through the same entry point used by the sibling Snowboard
+Kids projects:
 
 ```sh
-make extract
-make split
-make
+./tools/build-and-verify.sh
 ```
+
+The wrapper extracts the boot executable if missing, cleans the build,
+regenerates split assembly, checks every source `INCLUDE_ASM`, builds the full
+executable, and independently verifies both the original and rebuilt images
+against the committed checksum. It then
+writes a fresh progress report to `build/report.json`. Any failed step fails
+the command.
 
 The supported executable is:
 
@@ -83,45 +89,32 @@ The supported executable is:
 | --- | --- | --- |
 | Japan (`SLPS-01823`) | `disc/SLPS_018.23` | `3f1a7abc267ea29bafed1653121613ea467c1ac8` |
 
-A successful build prints:
-
-```text
-build/slps_018.23.exe: OK
-```
-
-This confirms that the rebuilt executable's SHA1 matches the original. Run
-`make` for subsequent builds; run `make split` again after changing the splat
-configuration or symbol names.
-
-Additional build commands:
+A successful build prints `build/slps_018.23.exe: OK` and ends with
+`BUILD SUCCEEDED`. Run the wrapper again after changing sources, symbols,
+headers, or split configuration.
 
 | Command | Purpose |
 | --- | --- |
-| `make skipasm` | Compile C objects with `-DSKIP_ASM` for objdiff comparison |
-| `NON_MATCHING=1 make skipasm` | Also compile guarded partial C implementations for comparison |
-| `make expected` | Run a full verified build, snapshot target objects to `expected/`, and update `objdiff.json` |
-| `make clean` | Remove `build/` |
+| `./tools/build-and-verify.sh` | Clean, regenerate, verify the executable, and report progress |
+| `./tools/build-and-verify.sh --expected` | Also snapshot verified targets to `expected/` and update `objdiff.json` |
+| `./tools/build-and-verify.sh --objects` | Also prepare `SKIP_ASM` C objects for objdiff after verification |
+| `./tools/build-and-verify.sh --objects --non-matching` | Include guarded partial C in the comparison objects |
 
-To generate a progress report after a successful build, activate the virtual
-environment and run:
+`--expected` and `--objects` can be combined; targets are snapshotted before
+comparison objects are compiled. Comparison builds do not establish new matches.
 
-```sh
-source .venv/bin/activate
-python3 -m mapfile_parser objdiff_report
-```
+Agents must use the wrapper instead of direct make, splat, build-driver, or
+progress-report commands. The Makefile remains an internal build interface.
+Codex and Claude command hooks enforce this policy. Codex users must review
+and trust the project hook using `/hooks` before it runs; see the
+[official hook documentation](https://learn.chatgpt.com/docs/hooks).
 
-`decomp.yaml` supplies the map and assembly paths and writes the report to
-`build/report.json`. The command prints overall, game, and PSY-Q SDK code
-progress. Assembly functions remain unmatched even though the executable
-rebuilds byte-perfectly; data progress is excluded because it has no matching
-markers. After replacing an `INCLUDE_ASM` with matched C, run `make split`
-to refresh the classification files. Then run `make` to refresh the map and
-verify the executable before reporting; `make` alone does not regenerate
-the classification files.
-`make split` clears and regenerates the function disassemblies: assembly
-fallbacks go in `asm/nonmatchings/`, while the original instructions for
-matched functions go in `asm/matchings/`. The report uses those paths to
-distinguish matched C from assembly-backed functions.
+Progress counts assembly-backed functions as unmatched even when the executable
+rebuilds exactly. Data progress is excluded because it has no matching markers.
+Each wrapper run clears and regenerates the function disassemblies:
+`asm/nonmatchings/` contains assembly fallbacks, and `asm/matchings/` retains
+original instructions for matched C functions. Regenerating these files before
+reporting prevents stale assembly from undercounting matched C.
 
 ## Reverse-engineering notes
 
@@ -132,8 +125,7 @@ considered matched only at 100%.
 - The game-wide compiler version and `-G` value are not yet pinned. The five
   matched RNG functions shared with the N64 Japanese game have verified local
   `-G8` and function-scoped scheduling flags in `tools/build.py`; all game C
-  uses the same compiler. Run `python3 tools/test_maspsx.py` and
-  `python3 tools/test_build.py` to check the assembler and flag-selection logic.
+  uses the same compiler.
 - The linked SDK has been identified as PSY-Q 4.2. Its library units are split
   under `src/syslib/`.
 - Splat uses `string_encoding: ASCII` to preserve Japanese string bytes, and
@@ -150,12 +142,13 @@ Key project files:
 | `src/engine/game_task_scheduler.c` | Shared frame-counter storage; scheduler code remains in assembly |
 | `src/syslib/` | PSY-Q library units |
 | `include/` | Project headers; `common.h` is the master include |
-| `tools/build.py` | Build driver used by the Makefile |
+| `tools/build-and-verify.sh` | Supported build, verification, and progress entry point |
+| `tools/build.py` | Internal compiler/linker driver used by the Makefile |
 | `objdiff.json` | Per-function comparison configuration |
 
 `asm/`, linker scripts and undefined-symbol files in `linkers/`, and `expected/`
-are generated. Update the configuration and regenerate them with `make split`
-or `make expected` rather than editing them by hand. The per-function
+are generated. Update the configuration and regenerate them with `./tools/build-and-verify.sh`
+or `./tools/build-and-verify.sh --expected` rather than editing them by hand. The per-function
 disassembly in `asm/nonmatchings/` is the reference for matching.
 
 ## SDK source imports
@@ -188,7 +181,7 @@ adapted from both N64 sibling repos, with the PSX differences called out.
 [AGENTS.md](AGENTS.md) indexes four repo-local skills for function matching,
 data matching, symbol renaming, and optional permuter experiments.
 
-After `make split`, rank live game functions and find structural references:
+After `./tools/build-and-verify.sh`, rank live game functions and find structural references:
 
 ```sh
 python3 tools/score_functions.py --limit 20
@@ -207,7 +200,7 @@ project headers and declaring referenced data `extern`. With a fresh green
 build, compile and compare it without changing live build/expected objects:
 
 ```sh
-make
+./tools/build-and-verify.sh
 python3 tools/match_function.py FUNCTION nonmatchings/FUNCTION/attempt.c
 ```
 
@@ -230,7 +223,7 @@ Data checks derive PSX load addresses from the executable header and read
 little-endian ELF symbols. They reject stale builds and non-file-backed BSS.
 An explicit size can fill missing symbol metadata. Comparisons return 0 for
 an exact match, 1 for a mismatch, and 2 for unsupported or missing input.
-`make` remains the full-image gate.
+`./tools/build-and-verify.sh` remains the full-image gate.
 
 These tools use only the Python standard library and the existing compiler
 pipeline; the N64 difficulty model and its Python dependencies are not needed.
@@ -244,23 +237,18 @@ proof of correctness. Only a byte-exact comparison and the full executable gate
 establish a match. Normal and expected-object builds do not enable the define.
 Comparison-only settings may select a different SDK compiler for a partial
 function; they do not change the compiler or bytes used by the normal build.
-Run their regression checks, including the assembler and build-driver checks:
-
-```sh
-make check
-```
-
 ## Commit validation
 
 Install the tracked Git hook once per clone:
 
 ```sh
-make hooks
+./tools/install-git-hooks.sh
 ```
 
 The hook rejects changes to the expected SHA1 in the build script and YAML
-metadata, regenerates splits, runs `make check`,
-and rebuilds the full executable. A commit proceeds only when the image matches
+metadata and runs the same clean build-and-verify workflow, including fresh
+splits, live include checks, independent image verification, and progress reporting.
+A commit proceeds only when the image matches
 `disc/SLPS_018.23` byte for byte. It also independently hashes both files
 against the committed checksum. It does not refresh `expected/` or stage files.
 

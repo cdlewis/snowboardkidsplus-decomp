@@ -13,6 +13,7 @@ Pipeline (PSY-Q-faithful):
              --objcopy--> flat PS-EXE, sha1-compared to disc/SLPS_018.23
 
 Usage:
+    Internal driver; agents use ./tools/build-and-verify.sh instead.
     python tools/build.py                  # full build + verify
     python tools/build.py --skip-asm       # -DSKIP_ASM C objects (objdiff base)
     python tools/build.py --update-expected  # snapshot build objs to expected/

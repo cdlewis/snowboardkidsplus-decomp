@@ -61,7 +61,7 @@ def parse_asm(path, unit=Path(), name=None):
 
 
 def active_functions(root=ROOT, sdk=False):
-    """Use live source includes, not stale files left behind by make split."""
+    """Use live source includes rather than scanning generated files."""
     for source in sorted((root / "src").rglob("*.c")):
         unit = source.relative_to(root)
         if not sdk and unit.parts[:2] == ("src", "syslib"):
@@ -69,7 +69,7 @@ def active_functions(root=ROOT, sdk=False):
         for match in INCLUDE.finditer(uncomment(source.read_text())):
             path = root / match[1] / (match[2] + ".s")
             if not path.exists():
-                raise ValueError(f"missing active assembly {path}; run make split")
+                raise ValueError(f"missing active assembly {path}; run ./tools/build-and-verify.sh")
             yield parse_asm(path, unit, match[2])
 
 
@@ -162,7 +162,7 @@ def require_fresh(root=ROOT):
     output = root / "build/slps_018.23.exe"
     elf = root / "build/slps_018.23.elf"
     if not output.exists() or not elf.exists():
-        raise ValueError("build artifacts missing; run make first")
+        raise ValueError("build artifacts missing; run ./tools/build-and-verify.sh first")
     inputs = [root / "snowboardkidsplus.yaml", root / "tools/build.py"]
     for folder, pattern in [("src", "*.c"), ("include", "*.h"),
                             ("configs", "*.txt"), ("tools/maspsx", "*.py")]:
@@ -170,7 +170,7 @@ def require_fresh(root=ROOT):
     oldest = min(output.stat().st_mtime_ns, elf.stat().st_mtime_ns)
     newer = next((p for p in inputs if p.exists() and p.stat().st_mtime_ns > oldest), None)
     if newer:
-        raise ValueError(f"build artifacts older than {newer.relative_to(root)}; run make first")
+        raise ValueError(f"build artifacts older than {newer.relative_to(root)}; run ./tools/build-and-verify.sh first")
 
 
 def first_difference(expected, actual):

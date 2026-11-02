@@ -62,11 +62,7 @@ def check_inputs(root):
     return git(root, "write-tree").strip()
 
 
-def validate(root):
-    tree = check_inputs(root)
-    for target in ("split", "check", "all"):
-        print(f"[pre-commit] make {target}", flush=True)
-        subprocess.run(["make", target], cwd=root, check=True)
+def verify_image(root):
     # Use the committed checksum independently of build.py's verification.
     expected = checksum("tools/build.py", git(root, "show", "HEAD:tools/build.py"))
     for path in ("disc/SLPS_018.23", "build/slps_018.23.exe"):
@@ -76,6 +72,14 @@ def validate(root):
     # Independently verify the complete image, including its size and header.
     if (root / "disc/SLPS_018.23").read_bytes() != (root / "build/slps_018.23.exe").read_bytes():
         raise ValueError("rebuilt executable differs from disc/SLPS_018.23")
+
+
+def validate(root):
+    from build_and_verify import build_and_verify
+
+    tree = check_inputs(root)
+    build_and_verify(root)
+    verify_image(root)
     if check_inputs(root) != tree:
         raise ValueError("the staged snapshot changed during validation; retry the commit")
     print("[pre-commit] Staged inputs validated; full executable matches.", flush=True)

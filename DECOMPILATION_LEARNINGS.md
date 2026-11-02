@@ -70,7 +70,7 @@ technique reference, not a progress log.
   address. It checks freshness and rejects identical bytes moved elsewhere.
   Supply `--size` when neither config nor ELF has reliable size metadata.
 - Use `--find-first-mismatch` to locate executable differences, including
-  header changes and missing/extra trailing bytes. Use `make` as the gate.
+  header changes and missing/extra trailing bytes. Use `./tools/build-and-verify.sh` as the gate.
 - BSS has no original file bytes. Establish its address, allocation size,
   alignment, and references separately; a file-byte tool cannot prove it.
 

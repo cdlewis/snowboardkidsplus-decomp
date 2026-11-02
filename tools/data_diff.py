@@ -46,7 +46,7 @@ def main():
     if bool(args.symbol) == args.find_first_mismatch:
         parser.error("choose a symbol or --find-first-mismatch")
     if args.rebuild:
-        subprocess.run(["make"], cwd=ROOT, check=True)
+        subprocess.run([str(ROOT / "tools/build-and-verify.sh")], cwd=ROOT, check=True)
     require_fresh()
     expected, actual = PsxImage(args.target.read_bytes()), PsxImage(args.built.read_bytes())
     configured = configured_symbols()
