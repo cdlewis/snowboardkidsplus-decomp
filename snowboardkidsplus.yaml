@@ -549,6 +549,8 @@ segments:
       - [0x125DFC, data, 125DFC]
       - {start: 0x12A448, type: .data, name: syslib/libgpu/sys, linker_section: .data.gpu_printf}
       - [0x12A44C, data, 12A44C]
+      - {start: 0x12A4E4, type: .data, name: syslib/libgpu/sys, linker_section: .data.gpu_move_packet}
+      - [0x12A4F8, data, 12A4F8]
       - {start: 0x12A550, type: .data, name: syslib/libgpu/sys, linker_section: .data.gpu_registers}
       - [0x12A574, data, 12A574]
       - {start: 0x12A588, type: .data, name: syslib/libgpu/sys, linker_section: .data.gpu_alarm}

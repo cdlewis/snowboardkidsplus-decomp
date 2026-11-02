@@ -3,6 +3,20 @@
 #include "psx/libetc.h"
 
 
+/* Linked-list VRAM copy packet; this path omits SetDrawMove's cache flush. */
+#define GPU_COPY_COMMAND 0x80000000
+#define GPU_COPY_TAG 0x04FFFFFF
+
+typedef struct GpuCopyPacket {
+    u32 tag, command;
+    u32 source, destination, size;
+} GpuCopyPacket;
+
+static GpuCopyPacket sGpuMovePacket
+    __attribute__((section(".data.gpu_move_packet"), aligned(4))) = {
+        GPU_COPY_TAG, GPU_COPY_COMMAND, 0, 0, 0
+    };
+
 #define GPU_REGISTERS __attribute__((section(".data.gpu_registers"), aligned(4)))
 volatile u32 *GPU_DATA GPU_REGISTERS = (volatile u32 *)0x1F801810;
 volatile u32 *GPU_STATUS GPU_REGISTERS = (volatile u32 *)0x1F801814;
@@ -198,23 +212,18 @@ s32 StoreImage(RECT *rect, u32 *pixels) {
                                  (u32)rect, 8, (u32)pixels);
 }
 
-#ifdef NON_MATCHING
-extern u32 D_80139CEC[];
-/* Best observed instruction-sequence similarity: 63.04% (29/46 words,
- * GCC 2.8.0, -mno-split-addresses). */
 s32 MoveImage(RECT *rect, int x, int y) {
+    u32 source;
     func_800CD4CC(D_80012DF0, rect);
     if (rect->w == 0 || rect->h == 0)
         return -1;
-    D_80139CEC[1] = (x & 0xffff) | (y << 16);
-    D_80139CEC[0] = *(u32 *)rect;
-    D_80139CEC[2] = *((u32 *)rect + 1);
+    source = *(u32 *)&rect->x;
+    sGpuMovePacket.source = source;
+    sGpuMovePacket.destination = ((u32)y << 16) | (x & 0xffff);
+    sGpuMovePacket.size = *(u32 *)&rect->w;
     return gGpuDispatch->addque2((s32 (*)(u32, u32))gGpuDispatch->cwc,
-                                 (u32)(D_80139CEC - 2), 20, 0);
+                                 (u32)&sGpuMovePacket, sizeof(sGpuMovePacket), 0);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/sys", MoveImage);
-#endif
 
 #ifdef NON_MATCHING
 extern u32 D_80139CF8, D_80139D0C;
@@ -735,10 +744,8 @@ s32 StoreImage2(RECT *rect, u32 *pixels) {
     return 0;
 }
 
-#ifdef NON_MATCHING
-/* Best observed instruction-sequence similarity: 85.19% (69/81 words,
- * GCC 2.8.0, -mno-split-addresses). */
 s32 MoveImage2(RECT *rect, int x, int y) {
+    u32 source;
     func_800CD4CC(D_80012DF0, rect);
     D_80139D88 = VSync(-1) + 240;
     D_80139D8C = 0;
@@ -748,15 +755,13 @@ s32 MoveImage2(RECT *rect, int x, int y) {
     DMACallback(2, (DmaCallback)gpu_install_dma_callback);
     if (rect->w == 0 || rect->h == 0)
         return -1;
-    D_80139CEC[1] = (x & 0xffff) | (y << 16);
-    D_80139CEC[0] = *(u32 *)rect;
-    D_80139CEC[2] = *((u32 *)rect + 1);
-    gGpuDispatch->cwc(D_80139CEC - 2);
+    source = *(u32 *)&rect->x;
+    sGpuMovePacket.source = source;
+    sGpuMovePacket.destination = ((u32)y << 16) | (x & 0xffff);
+    sGpuMovePacket.size = *(u32 *)&rect->w;
+    gGpuDispatch->cwc((u32 *)&sGpuMovePacket);
     return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/sys", MoveImage2);
-#endif
 
 s32 DrawOTag2(u32 *ot) {
     if (gGpuInfo.level >= 2)

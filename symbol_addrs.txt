@@ -78,6 +78,7 @@ _SsClose = 0x800A8684; // type:func
 SsVabOpenHeadWithMode = 0x800B4A64; // type:func
 gGpuDispatch = 0x80139C44; // size:0x4
 gGpuInfo = 0x80139C4C; // size:0x80
+sGpuMovePacket = 0x80139CE4; // size:0x14 defined:true
 gpuGetMode = 0x800CE7F4; // type:func
 gpuGetClipStart = 0x800CE814; // type:func
 gpuGetClipEnd = 0x800CE8AC; // type:func
