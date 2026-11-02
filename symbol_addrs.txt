@@ -866,3 +866,4 @@ D_80012DFC = 0x80012DFC; // size:0x18 defined:true
 D_80012E14 = 0x80012E14; // size:0x18 defined:true
 D_80012E74 = 0x80012E74; // size:0x18 defined:true
 D_80012E8C = 0x80012E8C; // size:0x34 defined:true
+_getctl = 0x800CF1E8; // type:func

@@ -506,14 +506,9 @@ void func_800CF1C4(u32 value) {
     D_8013F948[value >> 24] = value;
 }
 
-#ifdef NON_MATCHING
-/* Best observed instruction-sequence similarity: 40.00% (2/5 words). */
-u32 func_800CF1E8(s32 index) {
+s32 _getctl(s32 index) {
     return D_8013F948[index];
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/sys", func_800CF1E8);
-#endif
 
 int _cwb(u32 *data, s32 n) {
     int i = n - 1;

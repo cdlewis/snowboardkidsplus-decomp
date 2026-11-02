@@ -37,6 +37,7 @@ typedef struct GpuVtable {
 extern GpuInfo gGpuInfo;
 extern GpuVtable *gGpuDispatch;
 void *memcpy(void *destination, const void *source, u32 size);
+s32 _getctl(s32 index);
 u32 gpuGetMode(s32 dfe, s32 dtd, u16 tpage);
 u32 gpuGetClipStart(s16 x, s16 y);
 u32 gpuGetClipEnd(s16 x, s16 y);

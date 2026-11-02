@@ -157,6 +157,7 @@ $(foreach unit,$(REORDER_PAD_UNITS),$(eval UNIT_REORDER_$(unit) := 1))
 $(foreach unit,$(REORDER_PAD_UNITS),$(eval UNIT_PAD_$(unit) := 1))
 
 GCC272_G0_INDEXED_REORDER_PAD_UNITS := \
+    src/syslib/libsnd/cc_0.c \
     src/syslib/libsnd/vs_vab.c \
     src/syslib/libsnd/vs_vtb.c \
     src/syslib/libsnd/vm_seq.c \
@@ -193,16 +194,16 @@ $(foreach unit,$(GCC281_G0_REORDER_PAD_UNITS),$(eval UNIT_G_$(unit) := 0))
 $(foreach unit,$(GCC281_G0_REORDER_PAD_UNITS),$(eval UNIT_REORDER_$(unit) := 1))
 $(foreach unit,$(GCC281_G0_REORDER_PAD_UNITS),$(eval UNIT_PAD_$(unit) := 1))
 
-GCC272_FNO_BUILTIN_G0_REORDER_PAD_UNITS := \
+GCC272_FNO_BUILTIN_G0_INDEXED_REORDER_PAD_UNITS := \
     src/syslib/libgpu/sys.c
-$(foreach unit,$(GCC272_FNO_BUILTIN_G0_REORDER_PAD_UNITS),$(eval UNIT_CC1_$(unit) := tools/gcc/gcc-2.7.2-psx/cc1))
-$(foreach unit,$(GCC272_FNO_BUILTIN_G0_REORDER_PAD_UNITS),$(eval UNIT_CCFLAGS_$(unit) := -fno-builtin))
-$(foreach unit,$(GCC272_FNO_BUILTIN_G0_REORDER_PAD_UNITS),$(eval UNIT_G_$(unit) := 0))
-$(foreach unit,$(GCC272_FNO_BUILTIN_G0_REORDER_PAD_UNITS),$(eval UNIT_REORDER_$(unit) := 1))
-$(foreach unit,$(GCC272_FNO_BUILTIN_G0_REORDER_PAD_UNITS),$(eval UNIT_PAD_$(unit) := 1))
+$(foreach unit,$(GCC272_FNO_BUILTIN_G0_INDEXED_REORDER_PAD_UNITS),$(eval UNIT_CC1_$(unit) := tools/gcc/gcc-2.7.2-psx/cc1))
+$(foreach unit,$(GCC272_FNO_BUILTIN_G0_INDEXED_REORDER_PAD_UNITS),$(eval UNIT_CCFLAGS_$(unit) := -fno-builtin))
+$(foreach unit,$(GCC272_FNO_BUILTIN_G0_INDEXED_REORDER_PAD_UNITS),$(eval UNIT_G_$(unit) := 0))
+$(foreach unit,$(GCC272_FNO_BUILTIN_G0_INDEXED_REORDER_PAD_UNITS),$(eval UNIT_INDEXED_$(unit) := 1))
+$(foreach unit,$(GCC272_FNO_BUILTIN_G0_INDEXED_REORDER_PAD_UNITS),$(eval UNIT_REORDER_$(unit) := 1))
+$(foreach unit,$(GCC272_FNO_BUILTIN_G0_INDEXED_REORDER_PAD_UNITS),$(eval UNIT_PAD_$(unit) := 1))
 
 GCC280_G0_REORDER_PAD_UNITS := \
-    src/syslib/libsnd/cc_0.c \
     src/syslib/libsnd/cc_10.c \
     src/syslib/libsnd/ssend.c \
     src/syslib/libsnd/miditime.c \

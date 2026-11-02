@@ -143,6 +143,8 @@ changes to the reference.
 
 ## Code Quality Standards
 
+Do not write unit tests unless directly instructed by the user.
+
 ### Use C and proper SDK macros
 
 Use meaningful C types, expressions, and control flow. Do not force a match with
