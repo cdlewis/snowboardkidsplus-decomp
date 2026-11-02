@@ -31,7 +31,6 @@ GCC272_G0_REORDER_PAD_UNITS := \
     src/syslib/libsnd/vm_n2p.c \
     src/syslib/libsnd/cc_98.c \
     src/syslib/libsnd/cc_99.c \
-    src/syslib/libsnd/midibend.c \
     src/syslib/libsnd/ssinit_c.c \
     src/syslib/libsnd/ut_keyv.c \
     src/syslib/libgs/gs_001.c \
@@ -87,7 +86,6 @@ GCC272_G0_REORDER_PAD_UNITS := \
     src/syslib/libsnd/replay.c \
     src/syslib/libsnd/next.c \
     src/syslib/libsnd/de_0.c \
-    src/syslib/libsnd/de_1.c \
     src/syslib/libsnd/de_2.c \
     src/syslib/libsnd/de_3.c \
     src/syslib/libsnd/de_4.c \
@@ -157,6 +155,7 @@ $(foreach unit,$(REORDER_PAD_UNITS),$(eval UNIT_REORDER_$(unit) := 1))
 $(foreach unit,$(REORDER_PAD_UNITS),$(eval UNIT_PAD_$(unit) := 1))
 
 GCC272_G0_INDEXED_REORDER_PAD_UNITS := \
+    src/syslib/libsnd/midibend.c \
     src/syslib/libsnd/cc_0.c \
     src/syslib/libsnd/vs_vab.c \
     src/syslib/libsnd/vs_vtb.c \
@@ -204,6 +203,7 @@ $(foreach unit,$(GCC272_FNO_BUILTIN_G0_INDEXED_REORDER_PAD_UNITS),$(eval UNIT_RE
 $(foreach unit,$(GCC272_FNO_BUILTIN_G0_INDEXED_REORDER_PAD_UNITS),$(eval UNIT_PAD_$(unit) := 1))
 
 GCC280_G0_REORDER_PAD_UNITS := \
+    src/syslib/libsnd/de_1.c \
     src/syslib/libsnd/cc_10.c \
     src/syslib/libsnd/ssend.c \
     src/syslib/libsnd/miditime.c \

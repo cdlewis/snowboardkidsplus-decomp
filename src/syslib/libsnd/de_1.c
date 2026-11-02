@@ -1,18 +1,14 @@
-#ifdef NON_MATCHING
+#include "common.h"
 #include "libsnd_private.h"
+
 extern void func_800B0604(void), func_800B0624(void);
-/* Best observed instruction-sequence similarity: 58.33% (28/48 words,
- * including target padding). */
-void _SsSetNrpnVabAttr1(s16 a, s16 b, s16 c, VagAtr attr, s16 d, unsigned int value) {
-    SsUtGetVagAtr(a, b, c, &attr);
+
+void _SsSetNrpnVabAttr1(s16 vab_id, s16 program, s16 tone, VagAtr attr, s16 function, u8 value) {
+    SsUtGetVagAtr(vab_id, program, tone, &attr);
     attr.mode = value;
-    SsUtSetVagAtr(a, b, c, &attr);
-    if ((u8)value == 0)
+    SsUtSetVagAtr(vab_id, program, tone, &attr);
+    if (value == 0)
         func_800B0604();
-    else if ((u8)value == 4)
+    else if (value == 4)
         func_800B0624();
 }
-#else
-#include "common.h"
-INCLUDE_ASM("asm/nonmatchings/syslib/libsnd/de_1", _SsSetNrpnVabAttr1);
-#endif

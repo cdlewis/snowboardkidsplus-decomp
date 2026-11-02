@@ -105,6 +105,7 @@ extern struct SeqStruct *D_8013BF10[];
 /* Shared VM state belongs to the SDK's vm_g data object, still in split data. */
 extern s16 _svm_stereo_mono;
 extern s16 _svm_damper;
+int _SsVmPitchBend(s16 id, s16 vab, s16 program, u16 bend);
 s16 _SsVmGetSeqVol(s16 id, s16 *left, s16 *right);
 void _SsClose(s16 id);
 void _SsSndStop(s16 id, s16 sequence);
