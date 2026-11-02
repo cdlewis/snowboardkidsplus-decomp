@@ -53,6 +53,12 @@ full technique catalog — same toolchain family, techniques transfer).
 
 ### SDK assembler scheduling
 
+`SDK_272_FLAGS` is the shared GCC 2.7.2 configuration;
+`SDK_272_GAS_FLAGS` adds GNU indexed-load macro expansion. Unit entries copy
+these dictionaries so local overrides remain local. Other compiler, flag,
+or section-layout exceptions stay explicit until their complete units have
+been verified with the shared settings.
+
 Some imported SDK units use GCC 2.7.2 with `gas_reorder` and `pad_sections`
 settings in `PER_TU_FLAGS`. That compiler can emit an absolute store macro
 followed by a return in reorder mode. Maspsx normally adds a nop after the
@@ -60,6 +66,14 @@ return; delegating reorder scheduling to GNU as `-O2` lets the store fill the
 slot after address expansion. Maspsx still normalizes pseudo-ops, and explicit
 compiler `noreorder` regions retain their slots. This reproduces selected SDK
 objects without rewriting instructions; verify each new unit against its oracle.
+
+The complete `libapi/counter` and `libsnd/ut_vvol` modules also select
+`gas_indexed_loads`. This leaves symbolic indexed-load pseudo-ops for GNU as
+to expand, while maspsx retains its other normalizations. GNU as can use the
+load destination as the address temporary; ASPSX 2.77 uses `$at` instead.
+The option is an explicit assembler compatibility choice, not evidence that
+all SDK objects used GNU as. Both complete modules reproduce with GCC 2.7.2,
+`-O2 -G0`, this load expansion, and the existing GNU reorder scheduling.
 
 Object text padding matters too. Enabling assembler section padding may pad a
 four-byte `.data` input to sixteen bytes. Keep data in a separately named section

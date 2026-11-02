@@ -80,6 +80,8 @@ segments:
       - {start: 0x36C0, type: .rodata, name: syslib/libgpu/sys, linker_section: .rodata.gpu_load_image2}
       - {start: 0x36D0, type: .rodata, name: syslib/libpress/libpress, linker_section: .rodata.mdec}
       - [0x3720, rodata, 3720]
+      - [0x3800, .rodata, syslib/libpad/padentry]
+      - [0x3818, rodata, 3818]
       # game code as a mixed C/asm unit: per-function .s in
       # asm/nonmatchings/main/, INCLUDE_ASM skeleton in src/main.c
       - [0x39B4, c, main]
@@ -517,6 +519,8 @@ segments:
       - [0x125498, data, 125498]
       - {start: 0x1254DC, type: .data, name: syslib/libcd/cdread, linker_section: .data.cd_read_callback}
       - [0x1254E0, data, 1254E0]
+      - [0x1255EC, .data, syslib/libgte/sincos]
+      - [0x125DFC, data, 125DFC]
       - {start: 0x12A448, type: .data, name: syslib/libgpu/sys, linker_section: .data.gpu_printf}
       - [0x12A44C, data, 12A44C]
       - {start: 0x12A550, type: .data, name: syslib/libgpu/sys, linker_section: .data.gpu_registers}

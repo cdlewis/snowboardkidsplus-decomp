@@ -1,10 +1,6 @@
-#include "common.h"
-
-#ifdef NON_MATCHING
+/* Adapted from PsyZ decomp; see THIRD_PARTY.md. */
 #include "libspu_private.h"
 
-/* Best observed instruction-sequence similarity: 85.00% (17/20 words,
- * -fno-delayed-branch; target extent includes two padding words). */
 s32 SpuSetNoiseClock(s32 clock) {
     s32 clamped;
     u16 control;
@@ -18,6 +14,3 @@ s32 SpuSetNoiseClock(s32 clock) {
     _spu_RXX->rxx.spucnt = control;
     return clamped;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/syslib/libspu/s_snc", SpuSetNoiseClock);
-#endif

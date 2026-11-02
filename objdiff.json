@@ -1895,6 +1895,14 @@
       }
     },
     {
+      "name": "syslib/libgte/sincos",
+      "target_path": "expected/src/syslib/libgte/sincos.o",
+      "base_path": "build/src/syslib/libgte/sincos.o",
+      "metadata": {
+        "source_path": "src/syslib/libgte/sincos.c"
+      }
+    },
+    {
       "name": "syslib/libgte/smp",
       "target_path": "expected/src/syslib/libgte/smp.o",
       "base_path": "build/src/syslib/libgte/smp.o",

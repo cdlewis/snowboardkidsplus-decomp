@@ -139,6 +139,7 @@ def main():
               "preprocessed_sha1": hashlib.sha1(obj.with_suffix(".i").read_bytes()).hexdigest(),
               "aspsx_version": build.ASPSX_VERSION,
               "gas_reorder": settings.get("gas_reorder", False),
+              "gas_indexed_loads": settings.get("gas_indexed_loads", False),
               "pad_sections": settings.get("pad_sections", False),
               "address": address, "target_size": len(target), "candidate_size": len(data),
               "exact": equal, "first_byte_difference": first_difference(target, data),

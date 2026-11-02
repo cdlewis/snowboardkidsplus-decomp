@@ -1,11 +1,9 @@
+/* Adapted from PsyZ decomp; see THIRD_PARTY.md. */
 #include "common.h"
 
-#ifdef NON_MATCHING
 #include "../libspu/libspu_private.h"
 extern u8 D_8013CFE0[];
 extern u32 D_8013D040[], D_8013CFF8[];
-/* Best observed instruction-sequence similarity: 77.08% (37/48 words,
- * including target padding). */
 s16 SsVabTransBody(u8 *body, s16 id) {
     if ((u16)id <= 16 && D_8013CFE0[id] == 2) {
         u32 addr = D_8013D040[id];
@@ -18,6 +16,3 @@ s16 SsVabTransBody(u8 *body, s16 id) {
     _spu_setInTransfer(0);
     return -1;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/syslib/libsnd/vs_vtb", SsVabTransBody);
-#endif

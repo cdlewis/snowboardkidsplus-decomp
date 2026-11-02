@@ -35,6 +35,11 @@ technique reference, not a progress log.
   Otherwise a constant-size copy can become an inline loop despite correct C.
   Preserve verified options in the unit's `cc1_flags` setting; isolated reports
   record those options too.
+- An isolated function's ELF size can exclude padding that splat includes
+  in its oracle extent. `sin_1` has a four-byte tail and `SpuSetNoiseClock`
+  has an eight-byte tail: exact instruction bodies can therefore score below
+  100%. Compare the complete linked unit, including original section padding,
+  then require the full-image gate; do not discard the padding to claim a match.
 - Refresh captures after changing a header, flags, compiler, or unit boundary.
   A permuter winner from an old prelude is not proof for today's source.
 
@@ -45,6 +50,40 @@ technique reference, not a progress log.
 - Make one source-shape change per experiment. Try a named intermediate,
   expression grouping, loop form, or assignment order when the remaining
   difference is allocation or scheduling. Keep the C meaningful.
+- For the SDK trig routines, early returns and explicit branch arms matter.
+  GCC 2.7.2 reproduced `sin_1` after restoring its final `if/else` order and
+  `rcos` after replacing the shared result local with early returns. The same
+  compiler and assembler settings reproduce both complete units; a blanket
+  compiler-version change was unnecessary.
+- Separate compiler output differences from assembler scheduling. In the
+  remaining `memmove` attempt, cc1 itself emits a direct return instead of
+  the original shared-epilogue jump. In `SsUtSetReverbFeedback`, cc1 reuses
+  the mask constant 16 for variable-count shifts where the original uses
+  immediate shifts. Changing section padding cannot fix either body difference.
+- Check indexed-load macro expansion before changing C or the compiler.
+  `StopRCnt` and both voice-volume setters had matching compiler structure,
+  but ASPSX-style expansion used `$at` where the executable used the load
+  destination. The real ASPSX 2.77 executable confirmed that the emulator's
+  default was correct. Delegating these macros to GNU as reproduced the
+  complete counter and voice-volume modules with one GCC 2.7.2 configuration
+  and no function-specific overrides. Compare whole modules: switching to
+  GCC 2.8.x made already-matched functions differ.
+- The same indexed-load setting reproduces the volume/expression, damper,
+  reverb-depth and RPN sequence controllers, program changes, and VAB
+  close/transfer objects without changing their C logic. Apply it per unit
+  only after comparing the entire object; other partial modules retain
+  genuine control-flow and register-allocation differences.
+- With those assembler differences removed, small source-shape residuals
+  become visible: an `int` local for the current channel reproduces the
+  base/index operand order in `_SsContResetAll`, and the original success
+  branch in `SsUtGetProgAtr` reproduces its return layout. Neither requires
+  register pinning, inline instructions, or compiler changes.
+- Audit real compiled C before preserving a compiler override: both controller
+  units reproduce with the standard GCC 2.7.2 configuration, making their
+  earlier per-function compiler and scheduling selections unnecessary.
+  In `PadInfoAct`, a five-case `switch` reproduces the original dispatch and
+  its owned jump table; an `if` chain cannot establish that match. Preserve
+  the table's address and trailing alignment bytes when carving it into C.
 - Cross-check SDK type comments against actual copy lengths and member access.
   This executable copies 0x5C bytes for `DRAWENV`; a reference header's 0x58
   comment is insufficient evidence for its size.

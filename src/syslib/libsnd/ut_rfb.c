@@ -4,7 +4,9 @@
 #include "reverb_private.h"
 
 /* Best observed instruction-sequence similarity: 81.25% (13/16 words,
- * -mno-split-addresses -fno-delayed-branch; target includes one padding word). */
+ * -mno-split-addresses -fno-delayed-branch; target includes one padding word).
+ * The compiler reuses mask=16 for variable-count sign-extension shifts;
+ * the original uses immediate shifts. */
 void SsUtSetReverbFeedback(s16 feedback) {
     SpuReverbAttr *attr = &D_8013CEC8;
     attr->mask = 16;

@@ -15,12 +15,16 @@ Imported source bodies:
 
 - Public callback and interrupt-mask wrappers from `decomp/src/libetc/intr.c`
 - Root-counter accessors and setup from `decomp/src/libapi/counter.c`
+- Voice-volume getters and setters from `decomp/src/libsnd/ut_vvol.c`
+- Program-attribute reads from `decomp/src/libsnd/ut_gpa.c`
 
 - `decomp/src/libsnd/vs_mono.c`, `vm_doff.c`, and start wrappers from `ssstart.c`
 - SPU allocator initialization and allocation queries from `decomp/src/libspu/s_m_init.c`,
   `s_m_util.c`; voice-volume reads from `s_gvv.c`; register writes, bus-delay
   setters and shared register/address-shift data from `spu.c`
 - `decomp/src/libspu/s_it.c`, `s_stm.c`, `s_snv.c`, `s_srv.c`
+- Sine/cosine routines and their shared table from `decomp/src/libgte/geo_00.c`,
+  `geo_01.c`, and `sincos.c`; the noise-clock setter from `decomp/src/libspu/s_snc.c`
 - The complete decoder module, tables and register pointers from
   `decomp/src/libpress/libpress.c`
 - CD reset, accessors, callback setters, wrappers and BCD position conversions from `decomp/src/libcd/sys.c`
@@ -47,6 +51,15 @@ Decoder differences verified against this executable:
 The sequence play-mode argument uses signed byte extension in this executable.
 Its public wrapper and internal callee declarations preserve that observed
 signedness rather than copying the reference private header's unsigned type.
+
+The sequence control-change handlers (`cc_7`, `cc_11`, `cc_64`, `cc_91`,
+`cc_100`, `cc_101`, `cc_121`) and `midiprog` are reconstructed from this
+executable. Those routines remain assembly placeholders in the reference.
+
+The controller multitap check and actuator-info query (`PadChkMtap` and
+`PadInfoAct`) are reconstructed from this executable, including the query's
+five-entry switch table. The actuator-info records have a five-byte stride;
+their pointer occupies offset 4 in the existing controller-command structure.
 
 The GPU packet mode/offset builders use this executable's 4.2 encoding, which
 omits the 4.0 reference's legacy GPU-version branches. Texture-page and CLUT

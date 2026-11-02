@@ -1,11 +1,4 @@
-#include "common.h"
-
-typedef struct {
-    u8 tones, mvol, prior, mode, mpan;
-    s8 reserved0;
-    s16 attr;
-    u32 reserved1, reserved2;
-} ProgAtr;
+#include "libsnd_private.h"
 
 extern ProgAtr *D_8013CFAC;
 extern int _SsVmVSetUp(s16 vab, s16 program);

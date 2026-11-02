@@ -174,6 +174,52 @@ Their reorder-mode assembly uses maspsx normalization plus GNU as `-O2` delay
 slot scheduling and original object padding. These are scoped settings, not
 proof of the compiler for every SDK object. The game compiler is unchanged.
 
+### Local SDK references
+
+Keep reference repositories beside this checkout, outside the project tree.
+From this repository's root, create the same local layout with:
+
+```sh
+git clone --depth 1 https://github.com/Xeeynamo/psyz.git ../psyz
+git clone --depth 1 https://github.com/Xeeynamo/sotn-decomp.git ../sotn-decomp
+git clone --depth 1 https://github.com/hansbonini/psx_tomba.git ../psx_tomba
+git clone --depth 1 https://github.com/sozud/psy-q-decomp.git ../psy-q-decomp
+git clone --depth 1 https://github.com/khasinski/rage-racer-decomp.git ../rage-racer-decomp
+```
+
+These are optional source references, not build dependencies. Their paths below
+are relative to this repository's root.
+
+| Repository | Local SDK source path | How to use it |
+| --- | --- | --- |
+| [PsyZ](https://github.com/Xeeynamo/psyz) | `../psyz/decomp/src/` | Existing import baseline targeting PSY-Q 4.0; use the decompilation tree rather than the native port. Its README documents unresolved compiler/flag differences for 4.1 and later. |
+| [Symphony of the Night](https://github.com/Xeeynamo/sotn-decomp) | `../sotn-decomp/src/main/psxsdk/` | Additional C bodies, including `libc/memmove.c` and `libetc/intr_dma.c`. Check SDK headers under `../sotn-decomp/include/` and each source file's license notice. |
+| [Tomba](https://github.com/hansbonini/psx_tomba) | `../psx_tomba/src/psyq/` | Broad controller and sound references. Its README describes mixed SDK versions, including libpad 4.2; its Makefile has GNU-as scheduling settings for controller units and counters. |
+| [Sozud's psy-q-decomp](https://github.com/sozud/psy-q-decomp) | `../psy-q-decomp/src/` | Original-object matching reference targeting PSY-Q 3.5; useful for comparing older implementations and toolchain behavior. |
+| [Rage Racer](https://github.com/khasinski/rage-racer-decomp) | `../rage-racer-decomp/src/main/PAL/lib/` | Additional implementation references. Some solutions use fixed registers or inline assembly and cannot be adopted under this project's C matching rules. |
+
+Search several implementations before choosing a source shape, for example:
+
+```sh
+rg -n '\bmemmove\b' ../psyz/decomp/src ../sotn-decomp/src/main/psxsdk ../psx_tomba/src/psyq ../psy-q-decomp/src ../rage-racer-decomp/src/main/PAL/lib
+rg -n 'GNU_AS_UNITS|LIBPAD 4\.2' ../psx_tomba/Makefile
+git -C ../sotn-decomp rev-parse HEAD
+```
+
+Record the reference commit and source path in [THIRD_PARTY.md](THIRD_PARTY.md)
+when adapting code, preserving applicable license notices. PsyZ's decompilation
+and Sozud's project have MIT notices; the SotN SDK examples above are individually
+marked MIT, which does not describe the entire SotN repository. Tomba's checkout
+has no top-level reuse license, and Rage Racer's `LICENSE.md` explicitly says no
+open-source license has been selected; establish reuse permission before copying
+from those projects.
+
+Update an individual reference explicitly with, for example,
+`git -C ../sotn-decomp pull --ff-only`. Updating a checkout does not change the
+recorded provenance of existing imports. Reference matches are specific to their
+own SDK versions and build settings: verify this game's types, data layouts,
+instruction bytes, and full executable before accepting an implementation.
+
 ## Matching tools
 
 [DECOMPILATION_LEARNINGS.md](DECOMPILATION_LEARNINGS.md) collects techniques

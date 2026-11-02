@@ -54,6 +54,9 @@ search, isolated compilation, data diffs, and tool checks. Scratch attempts
 belong in ignored `nonmatchings/`; never use them to replace live build or
 expected objects. These tools do not change the full-image gate requirement.
 
+For SDK matching, consult the README's [local SDK references](README.md#local-sdk-references)
+for sibling checkout paths, source coverage, toolchain clues, and reuse limits.
+
 ## Commit validation
 
 Install the tracked validation hook with `./tools/install-git-hooks.sh`. Never bypass a failed

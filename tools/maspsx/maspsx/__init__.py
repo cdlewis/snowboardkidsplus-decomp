@@ -531,11 +531,13 @@ class MaspsxProcessor:
         jtbl_at_fusion=False,
         nop_before_label=False,
         gas_reorder=False,
+        gas_indexed_loads=False,
     ):
         self.lines = [x.strip() for x in lines]
         self.jtbl_at_fusion = jtbl_at_fusion
         self.nop_before_label = nop_before_label
         self.use_gas_reorder = gas_reorder
+        self.gas_indexed_loads = gas_indexed_loads
 
         self.sdata_limit = sdata_limit
 
@@ -1143,7 +1145,11 @@ class MaspsxProcessor:
 
             elif is_addend and r_source:
                 # e.g. lw	$2,test_sym($4)
-                if self.addiu_at:
+                if self.gas_indexed_loads:
+                    # GNU as may use the load destination as its address
+                    # temporary. ASPSX uses $at instead; retain that default.
+                    res.append(line)
+                elif self.addiu_at:
                     res.extend(
                         [
                             "# EXPAND_AT START",

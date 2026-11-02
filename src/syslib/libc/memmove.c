@@ -2,7 +2,9 @@
 
 #ifdef NON_MATCHING
 /* Best observed instruction-sequence similarity: 92.86% (26/28 words;
- * GCC 2.8.0, -fno-builtin). */
+ * GCC 2.8.0, -fno-builtin). The remaining body difference is a direct
+ * return where the original jumps to its shared return instruction;
+ * the oracle also includes one trailing padding word. */
 void *memmove(void *dest, const void *src, int len) {
     u8 *d = dest;
     const u8 *s = src;

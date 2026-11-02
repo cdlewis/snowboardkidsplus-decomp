@@ -25,6 +25,13 @@ typedef struct {
 } VagAtr;
 
 typedef struct {
+    u8 tones, mvol, prior, mode, mpan;
+    s8 reserved0;
+    s16 attr;
+    u32 reserved1, reserved2;
+} ProgAtr; /* size: 0x10 */
+
+typedef struct {
     u16 attack_rate, decay_rate, sustain_level, sustain_rate, release_rate;
     s16 attack_mode, sustain_mode;
     u16 release_mode;
@@ -33,6 +40,7 @@ typedef struct {
 
 s16 SsUtGetVagAtr(s16 vab, s16 program, s16 tone, VagAtr *attr);
 s16 SsUtSetVagAtr(s16 vab, s16 program, s16 tone, VagAtr *attr);
+s16 SsUtGetProgAtr(s16 vab, s16 program, ProgAtr *attr);
 void _SsUtResolveADSR(u16 adsr1, u16 adsr2, Envelope *env);
 void _SsUtBuildADSR(Envelope *env, u16 *adsr1, u16 *adsr2);
 

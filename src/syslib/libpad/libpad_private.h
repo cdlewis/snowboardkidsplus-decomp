@@ -5,8 +5,14 @@
 
 typedef struct PadCommand PadCommand;
 
+typedef struct {
+    u8 data[5];
+} PadActuatorInfo;
+
 struct PadCommand {
-    u8 unknown[0x14];
+    u8 unknown00[4];
+    PadActuatorInfo *actuator_info; /* 0x04 */
+    u8 unknown08[0xC];
     void (*send)(PadCommand *);
     int (*receive)(PadCommand *);
     u8 unknown1c[4];
