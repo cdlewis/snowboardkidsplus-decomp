@@ -257,7 +257,34 @@ techniques.
 [AGENTS.md](AGENTS.md) indexes four repo-local skills for function matching,
 data matching, symbol renaming, and optional permuter experiments.
 
-After `./tools/build-and-verify.sh`, rank live game functions and find structural references:
+When choosing a new target, prioritise unmatched SDK functions that resemble
+already matched library C:
+
+```sh
+python3 tools/rank_library_functions.py --limit 20
+python3 tools/rank_library_functions.py --minimum 60 --limit 20
+python3 tools/rank_library_functions.py --include-game --json
+```
+
+The ranking pairs `asm/matchings/syslib/` with actual C definitions in
+`src/syslib/`. It excludes stale or assembly-backed reference functions and
+checks local assembly against the verified executable. Scores compare ordered,
+normalised instructions, retaining constants and return delay slots while
+ignoring symbol relocations, register-number differences within register classes,
+and section padding. A 100% score means identical normalised sequences, not
+identical bytes or proven library identity.
+
+Candidates sort by similarity, then by whether another reference is within
+three percentage points, then by the existing complexity heuristic. The report
+links the best C implementation and up to two alternatives. Tiny stubs are
+excluded by default (`--min-words 8`). SDK fallbacks are the default scope;
+`--include-game` also finds game functions with similar instruction shapes.
+Additional source-backed library trees can be supplied with
+`--reference MATCHING_ASM_DIR C_SOURCE_DIR`; their relative unit paths must match.
+External references are user-supplied evidence rather than verified local matches.
+
+If no suitable library candidate remains, rank game functions by complexity
+and find other structural references:
 
 ```sh
 python3 tools/score_functions.py --limit 20

@@ -59,6 +59,12 @@ Read the relevant repo-local skill when using its workflow:
 
 ### Decompile assembly to C
 
+When choosing a target rather than working on a requested function, run
+`python3 tools/rank_library_functions.py --limit 20` first. Prefer high-similarity
+candidates with a clear C reference and no tied alternatives; use complexity
+ranking when no suitable library reference remains. Structural similarity does
+not establish function identity or a byte match.
+
 #### Step 1: Prepare and match the function
 
 Start with a green `./tools/build-and-verify.sh`. Find the live `INCLUDE_ASM`
