@@ -87,6 +87,10 @@ technique reference, not a progress log.
 - Cross-check SDK type comments against actual copy lengths and member access.
   This executable copies 0x5C bytes for `DRAWENV`; a reference header's 0x58
   comment is insufficient evidence for its size.
+- A cast inside a zero test may disappear because signedness cannot change
+  whether the value is zero. The ADSR builder's `lh` for `release_mode` required
+  correcting the shared field to `s16`; casting the existing `u16` field still
+  emitted `lhu`. Verify every consumer after correcting the declaration.
 - Prefer typed canonical structures/unions over invented byte offsets or
   `void *` arithmetic. Infer layouts from multiple consumers, then verify
   target `sizeof` and offsets using the PSX compiler; host layouts differ.

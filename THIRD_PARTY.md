@@ -61,6 +61,22 @@ The controller multitap check and actuator-info query (`PadChkMtap` and
 five-entry switch table. The actuator-info records have a five-byte stride;
 their pointer occupies offset 4 in the existing controller-command structure.
 
+`_SsUtBuildADSR` is adapted from the MIT-marked
+[`src/main/psxsdk/libsnd/adsr.c`](https://github.com/Xeeynamo/sotn-decomp/blob/0bb77822d1cbd6d22f39253ea6ba8303efdf8d28/src/main/psxsdk/libsnd/adsr.c)
+in Xeeynamo/sotn-decomp at commit
+`0bb77822d1cbd6d22f39253ea6ba8303efdf8d28`. Its SPDX notice is retained in
+`ccadsr.c`; the MIT terms and SotN contributor notice are preserved in
+[licenses/psyz-decomp.txt](licenses/psyz-decomp.txt). This executable also encodes
+the release-mode bit, which the reference builder omits. The signed release-mode
+field and both completed envelope words reproduce the original loads and stores.
+Both functions in the ADSR module verify with GCC 2.8.1; this does not establish
+the historical compiler version.
+
+The three sequence-volume getters are reconstructed from this executable.
+They preserve the shared current-sequence state, the 0xB0-byte sequence stride,
+and signed single-channel return values without changing the unsigned stored
+volume fields.
+
 The GPU packet mode/offset builders use this executable's 4.2 encoding, which
 omits the 4.0 reference's legacy GPU-version branches. Texture-page and CLUT
 address encoders are reconstructed from the local assembly. Layouts are checked

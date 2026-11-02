@@ -137,6 +137,17 @@ for _unit in (
     PER_TU_FLAGS[_unit] = SDK_272_GAS_FLAGS.copy()
 
 PER_TU_FLAGS["src/syslib/libgpu/sys.c"]["cc1_flags"] = ["-fno-builtin"]
+PER_TU_FLAGS["src/syslib/libsnd/vm_seq.c"] = {
+    **SDK_272_GAS_FLAGS,
+    "function_flags": {
+        "_SsVmGetSeqLVol": ["-O1"], "_SsVmGetSeqRVol": ["-O1"],
+    },
+}
+# Both ADSR functions reproduce with this compiler; do not change other SDK units.
+PER_TU_FLAGS["src/syslib/libsnd/ccadsr.c"] = {
+    "cc1": ROOT / "tools/gcc/gcc-2.8.1-psx/cc1", "g_value": "0",
+    "gas_reorder": True, "pad_sections": True,
+}
 PER_TU_FLAGS["src/syslib/libetc/intr.c"]["function_flags"] = {
     "func_800B5DEC": ["-mno-split-addresses"],
 }
@@ -283,10 +294,6 @@ NON_MATCHING_FUNCTION_FLAGS = {
     "src/syslib/libsnd/ssstart.c": {"func_800AC754": ["-O1"], "_SsStart": ["-mno-split-addresses"]},
     "src/syslib/libsnd/ut_rfb.c": {
         "SsUtSetReverbFeedback": ["-mno-split-addresses", "-fno-delayed-branch"],
-    },
-    "src/syslib/libsnd/vm_seq.c": {
-        name: ["-O1"] for name in
-        ("_SsVmGetSeqVol", "_SsVmGetSeqLVol", "_SsVmGetSeqRVol")
     },
 }
 

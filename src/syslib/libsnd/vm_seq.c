@@ -3,36 +3,31 @@
 
 INCLUDE_ASM("asm/nonmatchings/syslib/libsnd/vm_seq", _SsVmSetSeqVol);
 
-#ifdef NON_MATCHING
 extern s16 D_8013CFD6;
 
-/* Best observed instruction-sequence similarity: 56.00% (14/25 words, -O1). */
 s16 _SsVmGetSeqVol(s16 id, s16 *left, s16 *right) {
     struct SeqStruct *score = D_8013BF10[id & 0xFF];
-    D_8013CFD6 = id;
-    *left = score[(id & 0xFF00) >> 8].voll;
-    *right = score[(id & 0xFF00) >> 8].volr;
-    return D_8013CFD6;
+    s16 *current = &D_8013CFD6;
+    *current = id;
+    score += (id & 0xFF00) >> 8;
+    *left = score->voll;
+    *right = score->volr;
+    return *current;
 }
 
-/* Best observed instruction-sequence similarity: 72.22% (13/18 words, -O1). */
 s16 _SsVmGetSeqLVol(s16 id) {
     struct SeqStruct *score = D_8013BF10[id & 0xFF];
     D_8013CFD6 = id;
-    return score[(id & 0xFF00) >> 8].voll;
+    score += (id & 0xFF00) >> 8;
+    return (s16)score->voll;
 }
 
-/* Best observed instruction-sequence similarity: 72.22% (13/18 words, -O1). */
 s16 _SsVmGetSeqRVol(s16 id) {
     struct SeqStruct *score = D_8013BF10[id & 0xFF];
     D_8013CFD6 = id;
-    return score[(id & 0xFF00) >> 8].volr;
+    score += (id & 0xFF00) >> 8;
+    return (s16)score->volr;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/syslib/libsnd/vm_seq", _SsVmGetSeqVol);
-INCLUDE_ASM("asm/nonmatchings/syslib/libsnd/vm_seq", _SsVmGetSeqLVol);
-INCLUDE_ASM("asm/nonmatchings/syslib/libsnd/vm_seq", _SsVmGetSeqRVol);
-#endif
 
 extern s8 D_8013CFBC;
 extern u32 D_80132DC4;

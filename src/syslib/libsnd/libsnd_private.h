@@ -34,7 +34,7 @@ typedef struct {
 typedef struct {
     u16 attack_rate, decay_rate, sustain_level, sustain_rate, release_rate;
     s16 attack_mode, sustain_mode;
-    u16 release_mode;
+    s16 release_mode;
     s16 sustain_direction;
 } Envelope;
 
