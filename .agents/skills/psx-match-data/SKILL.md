@@ -1,17 +1,38 @@
 ---
 name: psx-match-data
-description: Migrate tables, rodata, mutable globals, or BSS declarations into C in Snowboard Kids Plus. Use for data ownership, section placement, alignment, and symbol byte comparisons.
+description: Move tables, rodata, mutable globals, or BSS into C in Snowboard Kids Plus and verify storage layout.
 ---
 
-# Match PSX initialized data and verify storage ownership and layout
+# Match data
 
-Run commands from the repository root. Paths below are relative to that root.
+## Identify the data owner
 
-1. Read root `METHODOLOGY.md` and the data section of `DECOMPILATION_LEARNINGS.md`. Start with a full green `./tools/build-and-verify.sh`.
-2. Establish original addresses, sizes, consumers, and owner from config, splat, and code. Distinguish private tables from shared objects. Put shared definitions in their owning unit and declarations in canonical headers.
-3. Decode PSX data as little endian. Do not reuse N64 big-endian subword offsets. Preserve actual string bytes, terminators, padding, table dimensions, and relocations rather than guessing from display text.
-4. Define C data in original order. Inspect object sections, map addresses, sizes, and alignment. Explicit zero initialization and `-G` affect `.data`, `.sdata`, `.bss`, and `.sbss`; small-data externs can also change instruction scheduling. Use section attributes only when supported by placement evidence.
-5. Change yaml/config ownership and symbol metadata. Never hand-edit generated asm, linker files, undefined-symbol files, or expected objects. Confirm no duplicate definitions or holes.
-6. Run `./tools/build-and-verify.sh`, then `python3 tools/data_diff.py SYMBOL` (or `--size 0xSIZE` if size metadata is unavailable). It checks the original address as well as bytes. Use `python3 tools/data_diff.py --find-first-mismatch` to locate whole-image differences, including header and EOF changes. Freshness errors mean rebuild first.
-7. BSS is not file-backed and cannot be byte-matched against the disc. Check target address, allocation size, alignment, boundaries, and all references separately. Do not report a byte MATCH for BSS.
-8. Recheck affected code and require the full-image gate. Update expected objects with `./tools/build-and-verify.sh --expected` after verification.
+Start with a green `./tools/build-and-verify.sh`. Read the generated data assembly
+and its consumers. Establish addresses, sizes, section, alignment, and ownership.
+PSX data is little endian. Shared objects stay with their owning module and
+have declarations in the appropriate header.
+
+## Update the layout and C
+
+Change the data subsegment in `snowboardkidsplus.yaml` to belong to its C unit,
+for example from `data` to `.data` with the owning unit's name. Add definitions
+in original data order, preserving bytes, relocations, dimensions, padding,
+and section placement. Update `symbol_addrs.txt` metadata as needed.
+
+Keep explicit zero initialization, small-data placement, and compiler alignment
+in mind. Use section attributes only when the layout requires them. Never
+edit generated assembly or linker files.
+
+## Validate
+
+Run `./tools/build-and-verify.sh`, then:
+
+```sh
+python3 tools/data_diff.py SYMBOL --size 0xSIZE
+python3 tools/data_diff.py --find-first-mismatch
+```
+
+The first command checks bytes and address; omit `--size` when symbol metadata
+provides it. BSS has no file bytes: check its address, size, alignment, and
+references instead. Fix all layout differences and recheck affected consumers.
+Refresh verified targets with `./tools/build-and-verify.sh --expected`.

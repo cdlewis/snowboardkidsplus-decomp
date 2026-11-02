@@ -1,4 +1,3 @@
-/* Adapted from PsyZ decomp; see THIRD_PARTY.md and licenses/psyz-decomp.txt. */
 #include "libspu_private.h"
 
 s32 SpuSetTransferMode(s32 mode) {

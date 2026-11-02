@@ -1,4 +1,3 @@
-/* Adapted from PsyZ decomp; see THIRD_PARTY.md and licenses/psyz-decomp.txt. */
 #include "libpress_private.h"
 
 #define MDEC_DATA __attribute__((section(".data.mdec"), aligned(4)))

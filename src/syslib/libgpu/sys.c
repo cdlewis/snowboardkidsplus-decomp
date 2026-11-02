@@ -2,7 +2,6 @@
 #include "libgpu_private.h"
 #include "psx/libetc.h"
 
-/* C routines adapted from PsyZ decomp; see THIRD_PARTY.md. */
 
 #define GPU_REGISTERS __attribute__((section(".data.gpu_registers"), aligned(4)))
 volatile u32 *GPU_DATA GPU_REGISTERS = (volatile u32 *)0x1F801810;
@@ -22,6 +21,25 @@ volatile s32 D_80139D8C GPU_ALARM = 0;
 extern int printf(const char *, ...);
 int (*D_80139C48)(const char *, ...)
     __attribute__((section(".data.gpu_printf"), aligned(4))) = printf;
+
+const char D_80012CB0[52] __attribute__((section(".rodata.gpu_reset_graph"), aligned(4))) =
+    "$Id: sys.c,v 1.140 1998/01/12 07:52:27 noda Exp $";
+const char D_80012CE4[32] __attribute__((section(".rodata.gpu_reset_graph"), aligned(4))) =
+    "ResetGraph:jtb=%08x,env=%08x\n";
+const char D_80012D04[20] __attribute__((section(".rodata.gpu_reset_graph"), aligned(4))) =
+    "ResetGraph(%d)...\n";
+const char D_80012D44[20] __attribute__((section(".rodata.gpu_graph_queue"), aligned(4))) =
+    "SetGrapQue(%d)...\n";
+const char D_80012DF0[12] __attribute__((section(".rodata.gpu_clear_otag"), aligned(4))) =
+    "MoveImage";
+const char D_80012DFC[24] __attribute__((section(".rodata.gpu_clear_otag"), aligned(4))) =
+    "ClearOTag(%08x,%d)...\n";
+const char D_80012E14[24] __attribute__((section(".rodata.gpu_clear_otag"), aligned(4))) =
+    "ClearOTagR(%08x,%d)...\n";
+const char D_80012E74[24] __attribute__((section(".rodata.gpu_disp_env"), aligned(4))) =
+    "PutDispEnv(%08x)...\n";
+const char D_80012E8C[52] __attribute__((section(".rodata.gpu_disp_env"), aligned(4))) =
+    "GPU timeout:que=%d,stat=%08x,chcr=%08x,madr=%08x\n";
 
 #define GPU_IMAGE_NAME __attribute__((section(".rodata.gpu_image_names"), aligned(4)))
 const char D_80012DC0[12] GPU_IMAGE_NAME = "ClearImage";
@@ -55,7 +73,7 @@ extern int _exeque(void);
 extern u8 D_8013F948[];
 
 #ifdef NON_MATCHING
-extern const char D_80012CE4[], D_80012D04[], D_80139C04[];
+extern const char D_80139C04[];
 extern u16 D_80139CCC[], D_80139CD8[];
 extern int GPU_cw(u32), func_800CF7E8(int);
 extern void gpu_memset(u8 *, int, int);
@@ -95,7 +113,6 @@ int SetGraphDebug(int level) {
 }
 
 #ifdef NON_MATCHING
-extern const char D_80012D44[];
 /* Best observed instruction-sequence similarity: 92.86% (39/42 words). */
 int SetGraphQueue(int mode) {
     int old = gGpuInfo.unk1;
@@ -182,7 +199,6 @@ s32 StoreImage(RECT *rect, u32 *pixels) {
 }
 
 #ifdef NON_MATCHING
-extern const char D_80012DF0[];
 extern u32 D_80139CEC[];
 /* Best observed instruction-sequence similarity: 63.04% (29/46 words,
  * GCC 2.8.0, -mno-split-addresses). */
@@ -201,7 +217,6 @@ INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/sys", MoveImage);
 #endif
 
 #ifdef NON_MATCHING
-extern const char D_80012DFC[], D_80012E14[];
 extern u32 D_80139CF8, D_80139D0C;
 
 /* Best observed instruction-sequence similarity: 82.35% (42/51 words). */
@@ -664,7 +679,6 @@ void set_alarm(void) {
 
 #ifdef NON_MATCHING
 extern s32 D_80139D84;
-extern char D_80012E8C[];
 extern int printf(const char *, ...);
 
 /* Best observed instruction-sequence similarity: 90.12% (73/81 words). */

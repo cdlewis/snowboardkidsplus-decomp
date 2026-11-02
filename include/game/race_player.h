@@ -1,12 +1,9 @@
-#ifndef GAME_RACE_PLAYER_H
-#define GAME_RACE_PLAYER_H
+#pragma once
 
 #include "game/random.h"
 
-/* Partial PSX layout. The N64 RacePlayer layout cannot be used here. */
+/* Partial PSX layout. */
 struct RacePlayer {
     u8 unk000[0x944];
     u8 randomIndex;
 };
-
-#endif

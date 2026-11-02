@@ -2,7 +2,6 @@
 #include "psx/libcd.h"
 #include "psx/libetc.h"
 
-/* Command parameter counts adapted from PsyZ decomp; see THIRD_PARTY.md. */
 s32 D_80134BFC[32]
     __attribute__((section(".data.cd_command_params"), aligned(4))) = {
         0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 0,

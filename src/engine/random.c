@@ -22,7 +22,6 @@ u8 gRandomTable[256] = {
 u16 gMainRngIndex = 0;
 u16 gSecondaryRngIndex = 0;
 
-/* Logic shared with snowboardkids-decomp/src/engine/asset_manager.c (JP). */
 s32 randomNextMain(void) {
     gMainRngIndex++;
     if (gFrameCounter == 0) {

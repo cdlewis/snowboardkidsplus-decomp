@@ -1,4 +1,3 @@
-/* Adapted from PsyZ decomp; see THIRD_PARTY.md. */
 #include "../libspu/libspu_private.h"
 
 extern SPU_VOICE_REG D_8013CCF8[];

@@ -1,5 +1,4 @@
-#ifndef LIBPAD_PRIVATE_H
-#define LIBPAD_PRIVATE_H
+#pragma once
 
 #include "decomp/types.h"
 
@@ -43,5 +42,3 @@ struct PadCommand {
     u8 unknownEA[2];
     int actuator_size;
 };
-
-#endif

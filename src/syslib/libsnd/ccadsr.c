@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: MIT
-/* ADSR builder adapted from SotN's SDK decompilation; see THIRD_PARTY.md. */
 #include "common.h"
 #include "libsnd_private.h"
 

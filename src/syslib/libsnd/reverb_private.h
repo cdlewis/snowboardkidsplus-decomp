@@ -1,5 +1,4 @@
-#ifndef LIBSND_REVERB_PRIVATE_H
-#define LIBSND_REVERB_PRIVATE_H
+#pragma once
 
 #include "psx/libspu.h"
 
@@ -12,5 +11,3 @@ typedef struct {
 
 extern SpuReverbAttr D_8013CEC8;
 extern s32 SpuSetReverbModeParam(SpuReverbAttr *attr);
-
-#endif

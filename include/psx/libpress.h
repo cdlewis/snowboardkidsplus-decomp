@@ -1,5 +1,4 @@
-#ifndef PSX_LIBPRESS_H
-#define PSX_LIBPRESS_H
+#pragma once
 
 #include "psx/libetc.h"
 
@@ -20,5 +19,3 @@ s32 DecDCTBufSize(u32 *bitstream);
 void DecDCTout(u32 *buffer, s32 size);
 DecDCCb DecDCTinCallback(DecDCCb callback);
 DecDCCb DecDCToutCallback(DecDCCb callback);
-
-#endif

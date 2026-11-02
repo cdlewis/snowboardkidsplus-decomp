@@ -1,19 +1,7 @@
 #include "common.h"
+#include "first_private.h"
 
 #ifdef NON_MATCHING
-typedef int (*FirstHandler)(void *, void *, void *);
-typedef struct {
-    char *name;
-    u8 unknown[0x30];
-    FirstHandler first;
-    u8 rest[0x18];
-} Device;
-extern FirstHandler D_80141578;
-extern char D_80141580[];
-extern int strcmp(const char *, const char *);
-extern int func_800D6010(int *, void *, void *);
-extern void *firstfile2(const char *, void *);
-
 /* Best observed instruction-sequence similarity: 77.67% (80/103 words;
  * GCC 2.7.2). */
 void *firstfile(const char *path, void *entry) {
@@ -23,8 +11,8 @@ void *firstfile(const char *path, void *entry) {
     int found = 0;
     while (*s >= ';') *out++ = *s++;
     *out = 0;
-    device = *(Device **)0x150;
-    end = device + (*(unsigned *)0x154 / 80);
+    device = BIOS_DCB_BASE;
+    end = device + (BIOS_DCB_BYTES / sizeof(Device));
     while (device < end) {
         if (device->name && !strcmp(device->name, D_80141580)) {
             D_80141578 = device->first;
@@ -34,11 +22,11 @@ void *firstfile(const char *path, void *entry) {
         device++;
     }
     if (!found) return 0;
-    device = *(Device **)0x150;
-    end = device + (*(unsigned *)0x154 / 80);
+    device = BIOS_DCB_BASE;
+    end = device + (BIOS_DCB_BYTES / sizeof(Device));
     while (device < end) {
         if (device->name && !strcmp(device->name, D_80141580)) {
-            device->first = (FirstHandler)func_800D6010;
+            device->first = (FirstHandler)firstfileDeviceCallback;
             break;
         }
         device++;
@@ -49,25 +37,22 @@ void *firstfile(const char *path, void *entry) {
 INCLUDE_ASM("asm/nonmatchings/syslib/libapi/first", firstfile);
 #endif
 
-#ifdef NON_MATCHING
-/* Best observed instruction-sequence similarity: 90.77% (59/65 words;
- * GCC 2.7.2). */
-int func_800D6010(int *context, void *name, void *entry) {
+int firstfileDeviceCallback(int *context, void *name, void *entry) {
     Device *device, *end;
     FirstHandler handler;
     if (!*context) *context = 1;
-    device = *(Device **)0x150;
-    end = device + (*(unsigned *)0x154 / 80);
+    device = BIOS_DCB_BASE;
+    end = device + (BIOS_DCB_BYTES / sizeof(Device));
     handler = D_80141578;
-    while (device < end) {
-        if (device->name && !strcmp(device->name, D_80141580)) {
-            device->first = handler;
-            break;
-        }
-        device++;
+    if (device < end) {
+        Device *limit = end;
+        do {
+            if (device->name && !strcmp(device->name, D_80141580)) {
+                device->first = handler;
+                break;
+            }
+            device++;
+        } while (device < limit);
     }
     return D_80141578(context, name, entry);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/syslib/libapi/first", func_800D6010);
-#endif

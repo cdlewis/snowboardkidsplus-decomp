@@ -1,5 +1,4 @@
-#ifndef PSX_LIBCD_H
-#define PSX_LIBCD_H
+#pragma once
 
 #include "decomp/types.h"
 
@@ -34,5 +33,3 @@ s32 CdGetSector2(void *destination, s32 size);
 s32 CdDataSync(s32 mode);
 CdlLOC *CdIntToPos(s32 sector, CdlLOC *position);
 s32 CdPosToInt(CdlLOC *position);
-
-#endif

@@ -1,7 +1,6 @@
 #include "common.h"
 #include "libsnd_private.h"
 
-/* SDK wrappers adapted from PsyZ decomp; see THIRD_PARTY.md. */
 
 s16 SsVabOpenHead(u8 *address,s16 id) { return SsVabOpenHeadWithMode(address,id,0,0); }
 

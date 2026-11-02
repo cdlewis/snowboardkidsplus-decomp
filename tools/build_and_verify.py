@@ -42,13 +42,13 @@ def build_and_verify(root, *, expected=False, objects=False, non_matching=False)
         subprocess.run([sys.executable, "-c", "from build import update_expected; update_expected()"],
                        cwd=root / "tools", env=environment, check=True)
     if objects:
-        make("skipasm", NON_MATCHING="1" if non_matching else "0")
+        make("objects", NON_MATCHING="1" if non_matching else "0")
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--expected", action="store_true", help="snapshot verified target objects")
-    parser.add_argument("--objects", action="store_true", help="prepare SKIP_ASM comparison objects after verification")
+    parser.add_argument("--objects", action="store_true", help="prepare comparison objects after verification")
     parser.add_argument("--non-matching", action="store_true", help="also compile partial C (requires --objects)")
     args = parser.parse_args()
     if args.non_matching and not args.objects:
@@ -59,8 +59,6 @@ def main():
         print(f"BUILD HAS FAILED. {error}", file=sys.stderr)
         return 1
     print("BUILD SUCCEEDED. Full executable matches the protected SHA1; progress is fresh.", flush=True)
-    if args.objects:
-        print("Comparison objects prepared; they are not proof of additional matches.", flush=True)
     return 0
 
 

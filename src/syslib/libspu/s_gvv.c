@@ -1,4 +1,3 @@
-/* Adapted from PsyZ decomp; see THIRD_PARTY.md and licenses/psyz-decomp.txt. */
 #include "libspu_private.h"
 
 static inline void assign(u16 val, s16* out) {

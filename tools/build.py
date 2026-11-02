@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 """Snowboard Kids Plus (SLPS-01823) matching-decomp build driver.
 
-Modeled on NFSHS-PSX-decomp's tools/build.py, trimmed to this project's
-needs and Linux toolchain.
-
 Pipeline (PSY-Q-faithful):
 
     src/*.c  --cpp-->  *.i  --cc1 (real gcc 2.x PSX build)-->  *.s
@@ -15,7 +12,7 @@ Pipeline (PSY-Q-faithful):
 Usage:
     Internal driver; agents use ./tools/build-and-verify.sh instead.
     python tools/build.py                  # full build + verify
-    python tools/build.py --skip-asm       # -DSKIP_ASM C objects (objdiff base)
+    python tools/build.py --objects        # comparison objects only; no link
     python tools/build.py --update-expected  # snapshot build objs to expected/
     python tools/build.py clean
 
@@ -68,7 +65,7 @@ AS_FLAGS = ["-EL", "-march=r3000", "-mtune=r3000", "-no-pad-sections",
             f"-G{G_VALUE}", "-I", str(ROOT / "include"), "-I", str(ROOT / "src"),
             "-I", str(ROOT / "build")]
 
-# Per-TU overrides, NFSHS-style (flags proven per translation unit go here).
+# Per-TU overrides (flags proven per translation unit go here).
 PER_TU_FLAGS: dict = {
     "src/main_remaining.c": {"g_value": "8"},
     "src/engine/game_options.c": {"g_value": "8"},
@@ -430,7 +427,7 @@ def select_function_compiler(unit: Path, name: str, cc1: Path, overrides: dict,
     return selected
 
 
-def compile_c(src: Path, skip_asm: bool, *, output_root: Path = None,
+def compile_c(src: Path, comparison: bool, *, output_root: Path = None,
               unit_path: Path = None, only_function: str = None,
               extra_flags=()) -> Path:
     """cpp -> cc1 -> maspsx -> as => build/<rel>.o (path from linker script)."""
@@ -452,8 +449,7 @@ def compile_c(src: Path, skip_asm: bool, *, output_root: Path = None,
     s_file = obj.with_suffix(".s")
 
     cpp = [CPP, *CPP_FLAGS]
-    if skip_asm:
-        cpp.append("-DSKIP_ASM")
+    if comparison:
         if os.environ.get("NON_MATCHING") == "1":
             cpp.append("-DNON_MATCHING")
     cpp += [f"-I{(ROOT / rel).parent}", src, "-o", i_file]
@@ -467,14 +463,14 @@ def compile_c(src: Path, skip_asm: bool, *, output_root: Path = None,
 
     assembly = s_file.read_text()
     function_flags = dict(overrides.get("function_flags", {}))
-    if skip_asm and os.environ.get("NON_MATCHING") == "1":
+    if comparison and os.environ.get("NON_MATCHING") == "1":
         function_flags.update(NON_MATCHING_FUNCTION_FLAGS.get(rel.as_posix(), {}))
     for name, flags in function_flags.items():
         if only_function is not None and name != only_function:
             continue
         alternate = obj.with_suffix(f".{name}.s")
         comparison_cc1 = select_function_compiler(
-            rel, name, cc1, overrides, skip_asm and os.environ.get("NON_MATCHING") == "1")
+            rel, name, cc1, overrides, comparison and os.environ.get("NON_MATCHING") == "1")
         r = run([comparison_cc1, *cc1_flags, *extra_flags, *flags, i_file, "-o", alternate])
         if r.returncode:
             sys.exit(f"[cc1] {rel} ({name}: {' '.join(flags)})\n{r.stdout}{r.stderr}")
@@ -574,12 +570,12 @@ def main():
     if "clean" in args:
         shutil.rmtree(OUT, ignore_errors=True)
         return
-    skip_asm = "--skip-asm" in args
+    comparison = "--objects" in args
 
     for src in sorted((ROOT / "src").rglob("*.c")):
-        compile_c(src, skip_asm)
+        compile_c(src, comparison)
         print(f"[cc] {src.relative_to(ROOT)}")
-    if skip_asm:
+    if comparison:
         return  # objdiff base objects only; no link
 
     for src in sorted((ROOT / "asm").rglob("*.s")):

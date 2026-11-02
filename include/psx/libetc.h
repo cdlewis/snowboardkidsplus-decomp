@@ -1,5 +1,4 @@
-#ifndef PSX_LIBETC_H
-#define PSX_LIBETC_H
+#pragma once
 
 #include "decomp/types.h"
 
@@ -18,5 +17,3 @@ s32 SetIntrMask(s32 mask);
 
 s32 SetVideoMode(s32 mode);
 s32 GetVideoMode(void);
-
-#endif

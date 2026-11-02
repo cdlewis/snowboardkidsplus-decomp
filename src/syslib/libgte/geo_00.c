@@ -1,4 +1,3 @@
-/* Adapted from PsyZ decomp; see THIRD_PARTY.md. */
 #include "libgte_private.h"
 
 extern s32 sin_1(s32);

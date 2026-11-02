@@ -1,5 +1,4 @@
-#ifndef LIBGPU_PRIVATE_H
-#define LIBGPU_PRIVATE_H
+#pragma once
 
 #include "psx/libgpu.h"
 #include "psx/libetc.h"
@@ -43,5 +42,3 @@ u32 gpuGetClipStart(s16 x, s16 y);
 u32 gpuGetClipEnd(s16 x, s16 y);
 u32 gpuGetOffset(s16 x, s16 y);
 u32 gpuGetTextureWindow(RECT *rect);
-
-#endif

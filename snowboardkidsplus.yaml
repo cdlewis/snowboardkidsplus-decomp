@@ -14,20 +14,17 @@ options:
 
   ld_script_path: linkers/slps_018.23.ld
   ld_dependencies: True
-  # The original exe has unaligned section boundaries (.text starts at
-  # 0x800131B4); default ALIGN(., 16) at section ends breaks matching.
   ld_align_section_vram_end: False
   ld_align_segment_vram_end: False
 
   find_file_boundaries: False
   gp_value: 0x8013AE48
-  # ld_gp_expression: main_SCOMMON_START + 0x7FF0
 
   o_as_suffix: True
   use_legacy_include_asm: False
-  # Keep original instructions for matched functions separately from the
-  # assembly fallbacks still included by C sources.
   disassemble_all: True
+  # Keep unmatched rodata as standalone assembly while recording its C-unit owner.
+  migrate_rodata_to_functions: False
   # INCLUDE_ASM wrapped in __maspsx_include_asm_hack_* functions so the
   # cc1 -> maspsx -> GNU as pipeline keeps included asm verbatim.
   include_asm_macro_style: maspsx_hack
@@ -35,9 +32,9 @@ options:
   section_order: [".rodata", ".text", ".data", ".bss"]
 
   symbol_addrs_path:
-    - configs/symbol_addrs.txt
+    - symbol_addrs.txt
   reloc_addrs_path:
-    - configs/reloc_addrs.txt
+    - reloc_addrs.txt
 
   undefined_funcs_auto_path: linkers/undefined_funcs_auto.txt
   undefined_syms_auto_path: linkers/undefined_syms_auto.txt
@@ -62,39 +59,51 @@ segments:
     type: code
     start: 0x800
     vram: 0x80010000
-    # bss_size: Please fill out this value when you figure out the bss size
+    bss_size: 0x5E88
     subsegments:
-      - [0x800, rodata, 800]
+      - [0x800, rodata, main]
+      - [0xB88, rodata, main_remaining]
+      - [0x2520, rodata, main_tail]
+      - [0x2B80, rodata, syslib/libspu/spu]
+      - [0x2BD0, rodata, syslib/libsnd/ssopenq]
+      - [0x2C00, rodata, syslib/libsnd/seqinit]
+      - [0x2C40, rodata, syslib/libspu/s_sca]
+      - [0x2C80, rodata, syslib/libsnd/sstick]
+      - [0x2CA0, rodata, syslib/libspu/s_sva]
+      - [0x2CE0, rodata, syslib/libetc/vsync]
+      - [0x2CF0, rodata, syslib/libetc/intr]
+      - [0x2D60, rodata, syslib/libetc/intr_dma]
       - {start: 0x2D90, type: .rodata, name: syslib/libcd/event, linker_section: .rodata.cdinit}
-      - [0x2DB0, rodata, 2DB0]
+      - [0x2DB0, rodata, syslib/libcd/bios]
+      - [0x3010, rodata, syslib/libcd/iso9660]
+      - [0x3200, rodata, syslib/libcd/cdread]
+      - [0x3250, rodata, syslib/libcd/cdreade]
+      - [0x3260, rodata, syslib/libcd/c_011]
+      - [0x3280, rodata, syslib/libgs/2d_com1]
       - {start: 0x32B0, type: .rodata, name: syslib/libgs/matrix, linker_section: .rodata.gs_matrix_print}
-      - [0x32E0, rodata, 32E0]
+      - [0x32E0, rodata, syslib/libgs/gs_123]
+      - [0x3370, rodata, syslib/libgs/objt]
+      - [0x3410, rodata, syslib/libgs/objt2]
+      - {start: 0x34B0, type: .rodata, name: syslib/libgpu/sys, linker_section: .rodata.gpu_reset_graph}
       - {start: 0x3518, type: .rodata, name: syslib/libgpu/sys, linker_section: .rodata.gpu_graph_debug}
-      - [0x3544, rodata, 3544]
+      - {start: 0x3544, type: .rodata, name: syslib/libgpu/sys, linker_section: .rodata.gpu_graph_queue}
       - {start: 0x3558, type: .rodata, name: syslib/libgpu/sys, linker_section: .rodata.gpu_sync_callback}
       - {start: 0x359C, type: .rodata, name: syslib/libgpu/sys, linker_section: .rodata.gpu_rect_debug}
       - {start: 0x35C0, type: .rodata, name: syslib/libgpu/sys, linker_section: .rodata.gpu_image_names}
-      - [0x35F0, rodata, 35F0]
+      - {start: 0x35F0, type: .rodata, name: syslib/libgpu/sys, linker_section: .rodata.gpu_clear_otag}
       - {start: 0x362C, type: .rodata, name: syslib/libgpu/sys, linker_section: .rodata.gpu_draw_otag}
-      - [0x3674, rodata, 3674]
+      - {start: 0x3674, type: .rodata, name: syslib/libgpu/sys, linker_section: .rodata.gpu_disp_env}
       - {start: 0x36C0, type: .rodata, name: syslib/libgpu/sys, linker_section: .rodata.gpu_load_image2}
       - {start: 0x36D0, type: .rodata, name: syslib/libpress/libpress, linker_section: .rodata.mdec}
-      - [0x3720, rodata, 3720]
+      - [0x3720, rodata, syslib/libc/sprintf]
       - [0x3800, .rodata, syslib/libpad/padentry]
-      - [0x3818, rodata, 3818]
-      # game code as a mixed C/asm unit: per-function .s in
-      # asm/nonmatchings/main/, INCLUDE_ASM skeleton in src/main.c
+      - [0x3818, rodata, syslib/unk_800D4518]
+      - [0x3998, rodata, syslib/unk_800D6124]
       - [0x39B4, c, main]
       - [0x6604, c, engine/random]
       - [0x66E0, c, main_remaining]
       - [0x7CE30, c, engine/game_options]
       - [0x7CF08, c, main_tail]
-      # --- PSY-Q 4.2 static libraries (0x800A8204..0x800D7098) ---
-      # per-OBJ units, bootstrapped once from a signature scan
-      # (tools/find_psyq.py, lab313ru/psx_psyq_signatures) and maintained
-      # HERE — this yaml is the source of truth for the file structure.
-      # unk_* fillers = modules the 4.2 signatures did not claim; when one
-      # is identified, rename/retype it here.
       - [0x98A04, c, syslib/libmath/divsf3]
       - [0x98B54, c, syslib/libmath/fixsfsi]
       - [0x98C14, c, syslib/libmath/fltsisf]
@@ -533,7 +542,6 @@ segments:
       - [0x12B554, data, 12B554]
       - {start: 0x12B638, type: .data, name: syslib/libapi/pad, linker_section: .data.pad_state}
       - [0x12B644, data, 12B644]
-      # Small-data inputs retain their original position within the data image.
       - {start: 0x12B710, type: .sdata, name: engine/random, linker_section_order: .data}
       - [0x12B714, data, 12B714]
       - [0x12B7AC, .data, engine/game_task_scheduler]
@@ -542,4 +550,5 @@ segments:
       - [0x12BB00, data, 12BB00]
       - [0x12BD70, .data, engine/game_options]
       - [0x12BD78, data, 12BD78]
+
   - [0x12C000]

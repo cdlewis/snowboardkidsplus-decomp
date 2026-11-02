@@ -1,5 +1,4 @@
-#ifndef LIBSND_PRIVATE_H
-#define LIBSND_PRIVATE_H
+#pragma once
 
 #include "psx/libsnd.h"
 #include "decomp/types.h"
@@ -44,7 +43,6 @@ s16 SsUtGetProgAtr(s16 vab, s16 program, ProgAtr *attr);
 void _SsUtResolveADSR(u16 adsr1, u16 adsr2, Envelope *env);
 void _SsUtBuildADSR(Envelope *env, u16 *adsr1, u16 *adsr2);
 
-/* Sequence layout adapted from PsyZ; see THIRD_PARTY.md. */
 struct SeqStruct {
     /* 0x00 */ u8* seq_ptr;
     /* 0x04 */ u8* read_pos;
@@ -116,5 +114,3 @@ s16 SsVabOpenHeadWithMode(u8 *address, s16 id, s16 mode, u32 start);
 void _SsStart(s32 use_vsync);
 void _SsVmDamperOff(void);
 void _SsVmDamperOn(void);
-
-#endif

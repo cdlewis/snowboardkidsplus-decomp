@@ -3,7 +3,7 @@
   "custom_make": ".venv/bin/python",
   "custom_args": [
     "tools/build.py",
-    "--skip-asm"
+    "--objects"
   ],
   "build_target": false,
   "build_base": true,

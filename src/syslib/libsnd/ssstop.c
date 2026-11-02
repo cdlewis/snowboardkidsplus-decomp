@@ -1,7 +1,6 @@
 #include "common.h"
 #include "libsnd_private.h"
 
-/* SDK wrappers adapted from PsyZ decomp; see THIRD_PARTY.md. */
 
 extern void _SsVmSeqKeyOff(s16 id);
 

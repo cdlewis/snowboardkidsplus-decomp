@@ -2,7 +2,6 @@
 #include "libcd_private.h"
 #include "psx/libetc.h"
 
-/* Wrappers and BCD conversions adapted from PsyZ decomp; see THIRD_PARTY.md. */
 int CdStatus(void) { return CD_status; }
 
 int CdMode(void) { return CD_mode; }

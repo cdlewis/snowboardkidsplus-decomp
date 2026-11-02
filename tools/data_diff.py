@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """Compare original PS-X EXE data and symbol placement with a fresh build.
 
-Adapted from both sibling data-differ workflows. PSX load addresses come from
-the executable header, and values are little endian. BSS is never byte-scored.
+PSX load addresses come from the executable header; values are little endian. BSS is never byte-scored.
 Exit codes: 0 equal, 1 mismatch, 2 missing/unsupported/stale input.
 """
 
@@ -25,7 +24,7 @@ def compare_symbol(name, expected, actual, symbols, configured, size=None):
         raise ValueError(f"original address unknown for {name}; add symbol metadata first")
     size = size if size is not None else spec.size if spec and spec.size else linked.size
     if not size:
-        raise ValueError(f"size unknown for {name}; provide --size or configs/symbol_addrs.txt metadata")
+        raise ValueError(f"size unknown for {name}; provide --size or symbol_addrs.txt metadata")
     target = expected.read(address, size)
     built = actual.read(linked.address, size)
     size_matches = not linked.size or linked.size == size

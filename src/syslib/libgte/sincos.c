@@ -1,4 +1,3 @@
-/* Adapted from PsyZ decomp; see THIRD_PARTY.md. */
 #include "libgte_private.h"
 
 /* The final three entries and the assembler section padding preserve the

@@ -1,5 +1,4 @@
-#ifndef COUNTER_PRIVATE_H
-#define COUNTER_PRIVATE_H
+#pragma once
 
 #include "psx/libapi.h"
 
@@ -13,5 +12,3 @@ typedef struct RootCounterRegisters {
     s16 pad0A;
     s32 pad0C;
 } RootCounterRegisters;
-
-#endif

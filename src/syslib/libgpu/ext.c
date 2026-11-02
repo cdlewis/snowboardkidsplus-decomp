@@ -1,4 +1,3 @@
-/* Adapted from PsyZ decomp; see THIRD_PARTY.md and licenses/psyz-decomp.txt. */
 #include "psx/libgpu.h"
 #include "psx/libetc.h"
 

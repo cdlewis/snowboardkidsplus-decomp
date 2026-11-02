@@ -1,9 +1,4 @@
-"""Shared PSX inspection helpers for matching tools (standard library only).
-
-Adapted workflow ideas: snowboardkids{,2}-decomp's score_functions,
-find_similar_functions, and data-differ. Original N64 offsets/byte order and
-trained difficulty weights are deliberately not used here.
-"""
+"""Shared PSX inspection helpers for matching tools (standard library only)."""
 
 import re
 import struct
@@ -84,7 +79,7 @@ class Symbol:
 
 def configured_symbols(root=ROOT):
     result = {}
-    for line in (root / "configs/symbol_addrs.txt").read_text().splitlines():
+    for line in (root / "symbol_addrs.txt").read_text().splitlines():
         m = re.match(r'\s*(\w+)\s*=\s*(0x[\da-fA-F]+);(.*)', line)
         if m:
             size = re.search(r'\bsize:(0x[\da-fA-F]+|\d+)\b', m[3])
@@ -163,9 +158,10 @@ def require_fresh(root=ROOT):
     elf = root / "build/slps_018.23.elf"
     if not output.exists() or not elf.exists():
         raise ValueError("build artifacts missing; run ./tools/build-and-verify.sh first")
-    inputs = [root / "snowboardkidsplus.yaml", root / "tools/build.py"]
+    inputs = [root / "snowboardkidsplus.yaml", root / "tools/build.py",
+              root / "symbol_addrs.txt", root / "reloc_addrs.txt"]
     for folder, pattern in [("src", "*.c"), ("include", "*.h"),
-                            ("configs", "*.txt"), ("tools/maspsx", "*.py")]:
+                            ("tools/maspsx", "*.py")]:
         inputs.extend((root / folder).rglob(pattern))
     oldest = min(output.stat().st_mtime_ns, elf.stat().st_mtime_ns)
     newer = next((p for p in inputs if p.exists() and p.stat().st_mtime_ns > oldest), None)

@@ -1,5 +1,4 @@
-#ifndef PSX_LIBAPI_H
-#define PSX_LIBAPI_H
+#pragma once
 
 #include "decomp/types.h"
 
@@ -8,5 +7,3 @@ s32 GetRCnt(s32 specification);
 s32 StartRCnt(s32 specification);
 s32 StopRCnt(s32 specification);
 s32 ResetRCnt(s32 specification);
-
-#endif

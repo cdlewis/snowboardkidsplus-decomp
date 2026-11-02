@@ -1,5 +1,4 @@
-#ifndef PSX_LIBGPU_H
-#define PSX_LIBGPU_H
+#pragma once
 
 #include "decomp/types.h"
 
@@ -66,5 +65,3 @@ void SetDrawStp(DR_STP *packet, s32 stp);
 void SetDrawTPage(DR_TPAGE *packet, s32 dfe, s32 dtd, s32 tpage);
 void SetDrawMove(DR_MOVE *packet, RECT *rect, s32 x, s32 y);
 void SetDrawMode(DR_MODE *packet, s32 dfe, s32 dtd, s32 tpage, RECT *window);
-
-#endif

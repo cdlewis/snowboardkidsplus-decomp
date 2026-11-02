@@ -1,5 +1,4 @@
-#ifndef PSX_LIBGS_H
-#define PSX_LIBGS_H
+#pragma once
 
 #include "decomp/types.h"
 
@@ -15,5 +14,3 @@ typedef struct GsIMAGE {
 
 /* Input begins at the TIM flags word, immediately after the magic word. */
 void GsGetTimInfo(u32 *tim, GsIMAGE *image);
-
-#endif

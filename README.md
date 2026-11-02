@@ -3,8 +3,7 @@
 <img src="Snobow_Kids_Plus_Title.jpg" alt="Snobow Kids Plus title screen" width="256">
 
 A matching decompilation of **Snobow Kids Plus (Japan)** for the PlayStation
-(`SLPS-01823`), the PlayStation version of
-[Snowboard Kids](https://github.com/cdlewis/snowboardkids-decomp).
+(`SLPS-01823`).
 
 **An existing copy of the game is required. This repository does not include
 game disc data or extracted assembly. This project is not a port to PC
@@ -69,8 +68,7 @@ Place your MODE2/2352 disc dump at:
 Snobow Kids Plus (Japan)/Snobow Kids Plus (Japan).bin
 ```
 
-Build and verify through the same entry point used by the sibling Snowboard
-Kids projects:
+Build and verify:
 
 ```sh
 ./tools/build-and-verify.sh
@@ -97,7 +95,7 @@ headers, or split configuration.
 | --- | --- |
 | `./tools/build-and-verify.sh` | Clean, regenerate, verify the executable, and report progress |
 | `./tools/build-and-verify.sh --expected` | Also snapshot verified targets to `expected/` and update `objdiff.json` |
-| `./tools/build-and-verify.sh --objects` | Also prepare `SKIP_ASM` C objects for objdiff after verification |
+| `./tools/build-and-verify.sh --objects` | Also prepare comparison objects for objdiff after verification |
 | `./tools/build-and-verify.sh --objects --non-matching` | Include guarded partial C in the comparison objects |
 
 `--expected` and `--objects` can be combined; targets are snapshotted before
@@ -105,7 +103,18 @@ comparison objects are compiled. Comparison builds do not establish new matches.
 
 Agents must use the wrapper instead of direct make, splat, build-driver, or
 progress-report commands. The Makefile remains an internal build interface.
-Codex and Claude command hooks enforce this policy. Codex users must review
+Codex and Claude hooks enforce this policy. Shared Python guards live in
+`tools/agent-hooks/`. They also reject edits to assembly, generated `ctx.c`,
+reference `.sha1` files, and the expected SHA1 fields in `tools/build.py`,
+`snowboardkidsplus.yaml`, and `decomp.yaml`. Shell writes to those files and
+Git hook bypasses (`--no-verify` and `git commit -n`) are blocked; assembly
+reads and wrapper regeneration remain available. These guards inspect visible
+tool arguments, including literal commands in Codex orchestration calls; they
+are mistake guards, not a sandbox for arbitrary programs or dynamic paths.
+Run their regression checks with
+`python3 -m unittest discover -s tools/agent-hooks -p 'test_*.py'`.
+
+Codex users must review
 and trust the project hook using `/hooks` before it runs; see the
 [official hook documentation](https://learn.chatgpt.com/docs/hooks).
 
@@ -116,27 +125,48 @@ Each wrapper run clears and regenerates the function disassemblies:
 original instructions for matched C functions. Regenerating these files before
 reporting prevents stale assembly from undercounting matched C.
 
-## Reverse-engineering notes
+## Compiler and assembler settings
 
-Read [METHODOLOGY.md](METHODOLOGY.md) before doing matching work. It documents
-the matching rules, compiler selection, and per-function workflow. The full-image byte verification must stay green; functions are
-considered matched only at 100%.
+The pipeline is host `cpp` → PSX GCC `cc1` → maspsx (ASPSX 2.77 emulation) →
+GNU MIPS assembler/linker → objcopy. PS1 code is little endian and has R3000
+load and branch delay slots.
 
-- The game-wide compiler version and `-G` value are not yet pinned. The five
-  matched RNG functions shared with the N64 Japanese game have verified local
-  `-G8` and function-scoped scheduling flags in `tools/build.py`; all game C
-  uses the same compiler.
-- The linked SDK has been identified as PSY-Q 4.2. Its library units are split
-  under `src/syslib/`.
-- Splat uses `string_encoding: ASCII` to preserve Japanese string bytes, and
-  `ld_align_section_vram_end: False` to preserve unaligned section boundaries.
+The current game compiler is GCC 2.8.1, but the historical compiler version and
+game-wide `-G` value remain unconfirmed. Keep all game code on one compiler.
+`SKP_CC1` and `SKP_G_VALUE` select the default lane; per-unit settings live in
+`tools/build.py`. The default is `-G0`; the matched RNG unit has verified local
+`-G8` settings. `$gp` is `0x8013AE48`. Pass the same `-G` value to cc1, maspsx,
+and GNU as; small-data declarations also affect load-delay scheduling.
 
-Key project files:
+Separately linked SDK units may use other vendored compilers. `SDK_272_FLAGS`
+provides the shared GCC 2.7.2 settings with GNU as `-O2` reorder scheduling and
+original section padding. `SDK_272_GAS_FLAGS` also delegates symbolic indexed
+loads to GNU as, allowing its load-destination temporary instead of ASPSX's
+`$at`. These are explicit compatibility settings, not proof of the original
+compiler or assembler. Copy the shared settings for local overrides and verify
+the complete affected unit.
+
+Function-scoped flags or SDK compiler overrides compile the same preprocessed
+translation unit and select the complete `.ent`/`.end` region. Preserve its
+other functions and data, check local labels, and require the full-image gate;
+keep logical modules intact. Section padding can also change data placement:
+use separately named data sections and YAML `linker_section` mappings where
+needed, checking bytes and addresses together.
+
+The linked SDK is PSY-Q 4.2, identified by `tools/find_psyq.py` using
+[psx_psyq_signatures](https://github.com/lab313ru/psx_psyq_signatures). The library
+block begins at `0x800A8204`; game code starts at `0x800131B4` and precedes it.
+The signature scan bootstrapped the layout; `snowboardkidsplus.yaml` is now the
+source of truth for unit boundaries. Its `string_encoding: ASCII` preserves
+Japanese string bytes, and `ld_align_section_vram_end: False` preserves
+unaligned section boundaries.
+
+## Project structure
 
 | Path | Purpose |
 | --- | --- |
 | `snowboardkidsplus.yaml` | Splat configuration and executable layout |
-| `configs/symbol_addrs.txt` | Known function and data symbols |
+| `symbol_addrs.txt` | Known function and data symbols |
 | `src/main.c`, `src/main_remaining.c` | Mixed C/assembly game units |
 | `src/engine/random.c` | Five matched RNG functions, table, and indices |
 | `src/engine/game_task_scheduler.c` | Shared frame-counter storage; scheduler code remains in assembly |
@@ -151,28 +181,11 @@ are generated. Update the configuration and regenerate them with `./tools/build-
 or `./tools/build-and-verify.sh --expected` rather than editing them by hand. The per-function
 disassembly in `asm/nonmatchings/` is the reference for matching.
 
-## SDK source imports
+## SDK references
 
-The linked PSY-Q 4.2 libraries have reusable C in the public
-[PsyZ decompilation](https://github.com/Xeeynamo/psyz/tree/main/decomp), which
-targets PSY-Q 4.0. It is incomplete, and versions differ, so imports must still
-match this executable exactly. Its native porting implementation is a separate
-reference and is not a substitute for matching SDK source.
-
-Imported functions cover CD wrappers and BCD position conversion, mono/stereo
-selection, sound startup, damper control, and SPU transfer state/mode. The main
-MDEC decoder module is entirely C, including its tables, register pointers, and
-diagnostic strings. Video-mode accessors are
-also reconstructed, including their owned four-byte state. See
-[THIRD_PARTY.md](THIRD_PARTY.md) for source provenance and the preserved license.
-Shared VM/SPU state remains with the existing data objects; consumers use
-canonical `extern` declarations. The libc BIOS trampolines and many GTE routines
-were assembly, so replacing them with C implementations would change the code.
-
-Selected SDK units have verified local GCC 2.7.2 settings in `tools/build.py`.
-Their reorder-mode assembly uses maspsx normalization plus GNU as `-O2` delay
-slot scheduling and original object padding. These are scoped settings, not
-proof of the compiler for every SDK object. The game compiler is unchanged.
+The linked SDK is PSY-Q 4.2. Reference SDK code must still match this
+executable's instructions, data, and types. Native porting implementations
+serve a different purpose from matching SDK sources.
 
 ### Local SDK references
 
@@ -192,7 +205,7 @@ are relative to this repository's root.
 
 | Repository | Local SDK source path | How to use it |
 | --- | --- | --- |
-| [PsyZ](https://github.com/Xeeynamo/psyz) | `../psyz/decomp/src/` | Existing import baseline targeting PSY-Q 4.0; use the decompilation tree rather than the native port. Its README documents unresolved compiler/flag differences for 4.1 and later. |
+| [PsyZ](https://github.com/Xeeynamo/psyz) | `../psyz/decomp/src/` | Matching SDK reference targeting PSY-Q 4.0; use the decompilation tree rather than the native port. Its README documents unresolved compiler/flag differences for 4.1 and later. |
 | [Symphony of the Night](https://github.com/Xeeynamo/sotn-decomp) | `../sotn-decomp/src/main/psxsdk/` | Additional C bodies, including `libc/memmove.c` and `libetc/intr_dma.c`. Check SDK headers under `../sotn-decomp/include/` and each source file's license notice. |
 | [Tomba](https://github.com/hansbonini/psx_tomba) | `../psx_tomba/src/psyq/` | Broad controller and sound references. Its README describes mixed SDK versions, including libpad 4.2; its Makefile has GNU-as scheduling settings for controller units and counters. |
 | [Sozud's psy-q-decomp](https://github.com/sozud/psy-q-decomp) | `../psy-q-decomp/src/` | Original-object matching reference targeting PSY-Q 3.5; useful for comparing older implementations and toolchain behavior. |
@@ -206,24 +219,30 @@ rg -n 'GNU_AS_UNITS|LIBPAD 4\.2' ../psx_tomba/Makefile
 git -C ../sotn-decomp rev-parse HEAD
 ```
 
-Record the reference commit and source path in [THIRD_PARTY.md](THIRD_PARTY.md)
-when adapting code, preserving applicable license notices. PsyZ's decompilation
-and Sozud's project have MIT notices; the SotN SDK examples above are individually
-marked MIT, which does not describe the entire SotN repository. Tomba's checkout
-has no top-level reuse license, and Rage Racer's `LICENSE.md` explicitly says no
-open-source license has been selected; establish reuse permission before copying
-from those projects.
-
-Update an individual reference explicitly with, for example,
-`git -C ../sotn-decomp pull --ff-only`. Updating a checkout does not change the
-recorded provenance of existing imports. Reference matches are specific to their
-own SDK versions and build settings: verify this game's types, data layouts,
-instruction bytes, and full executable before accepting an implementation.
+Preserve applicable license notices when using reference code. Reference
+matches depend on their SDK version and build settings; verify this game's
+types, data layouts, instructions, and full executable before integrating C.
 
 ## Matching tools
 
-[DECOMPILATION_LEARNINGS.md](DECOMPILATION_LEARNINGS.md) collects techniques
-adapted from both N64 sibling repos, with the PSX differences called out.
+After a verified build, create a function workspace:
+
+```sh
+./tools/codex --bootstrap-only FUNCTION
+```
+
+Enter the printed directory under `nonmatchings/` and run `./build.sh base.c`
+and `./diff.sh`. The workspace includes original target assembly and a verified
+target object, preprocessed source context, and an existing C attempt or m2c
+output when available. Install `m2c` separately if you want automatic initial C
+for functions without an existing attempt. Add `--id ID` to reuse a workspace
+without overwriting source. Omit `--bootstrap-only` to launch Codex there.
+Each build retains its comparison artifacts under `attempts/` and uses the
+owning unit's compiler settings. Exact scratch results still require integration
+and full executable verification.
+
+[DECOMPILATION_LEARNINGS.md](DECOMPILATION_LEARNINGS.md) collects PSX matching
+techniques.
 [AGENTS.md](AGENTS.md) indexes four repo-local skills for function matching,
 data matching, symbol renaming, and optional permuter experiments.
 
@@ -232,8 +251,6 @@ After `./tools/build-and-verify.sh`, rank live game functions and find structura
 ```sh
 python3 tools/score_functions.py --limit 20
 python3 tools/find_similar_functions.py func_8008C670 --top 10
-# Include an explicit sibling reference tree if available:
-python3 tools/find_similar_functions.py func_8008C670 --asm-dir ../snowboardkids-decomp/asm/nonmatchings
 ```
 
 SDK functions are excluded by default; add `--sdk` to include them. Ranking
@@ -272,7 +289,7 @@ an exact match, 1 for a mismatch, and 2 for unsupported or missing input.
 `./tools/build-and-verify.sh` remains the full-image gate.
 
 These tools use only the Python standard library and the existing compiler
-pipeline; the N64 difficulty model and its Python dependencies are not needed.
+pipeline.
 
 Partial implementations use `#ifdef NON_MATCHING` with the original assembly
 in the default branch. Their comments record the best observed instruction
@@ -283,6 +300,7 @@ proof of correctness. Only a byte-exact comparison and the full executable gate
 establish a match. Normal and expected-object builds do not enable the define.
 Comparison-only settings may select a different SDK compiler for a partial
 function; they do not change the compiler or bytes used by the normal build.
+
 ## Commit validation
 
 Install the tracked Git hook once per clone:
@@ -299,8 +317,8 @@ A commit proceeds only when the image matches
 against the committed checksum. It does not refresh `expected/` or stage files.
 
 Stage all changed build inputs before committing. The hook rejects unstaged or
-untracked files under `src/`, `include/`, `configs/`, and `tools/`, plus unstaged
-build configuration, so validation covers what will actually be committed.
+untracked files under `src/`, `include/`, and `tools/`, plus unstaged root symbol,
+relocation, and build configuration files, so validation covers what will actually be committed.
 Unrelated notes and local files such as `.envrc` can remain unstaged. Generated
 assembly, linker outputs, and build/expected objects must remain unstaged.
 If `core.hooksPath` already points elsewhere, the installer leaves it intact;
@@ -321,12 +339,7 @@ must not be based on leaked source code or proprietary knowledge about the game.
 
 ## Acknowledgements
 
-This project builds on the tools and knowledge of the decompilation community,
-including [NFSHS-PSX-decomp](https://github.com/Caesar0007/NFSHS-PSX-decomp),
-[silent-hill-decomp](https://github.com/Vatuu/silent-hill-decomp), and the sibling
-[Snowboard Kids decompilation](https://github.com/cdlewis/snowboardkids-decomp)
-and [Snowboard Kids 2 decompilation](https://github.com/cdlewis/snowboardkids2-decomp).
-Thanks also to the developers of [splat](https://github.com/ethteck/splat),
+Thanks to the developers of [splat](https://github.com/ethteck/splat),
 [maspsx](https://github.com/mkst/maspsx),
 [old-gcc](https://github.com/decompals/old-gcc),
 [objdiff](https://github.com/encounter/objdiff), and

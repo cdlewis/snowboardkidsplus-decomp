@@ -1,4 +1,3 @@
-/* Adapted from PsyZ decomp; see THIRD_PARTY.md. */
 #include "libgte_private.h"
 
 s32 rcos(s32 a) {

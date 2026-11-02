@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """Find structural assembly references, not byte matches or proven ports.
 
-Adapted from snowboardkids2-decomp's register normalization, instruction
-comparison, and control-flow reference search. No embeddings/cache dependency.
+Compares normalized instructions and control flow.
 """
 
 import argparse
@@ -41,7 +40,7 @@ def main():
     parser.add_argument("--top", type=int, default=10)
     parser.add_argument("--sdk", action="store_true")
     parser.add_argument("--asm-dir", action="append", type=Path, default=[],
-                        help="explicit additional reference directory, e.g. a sibling's asm tree")
+                        help="explicit additional assembly reference directory")
     args = parser.parse_args()
     functions = list(active_functions(sdk=args.sdk))
     query = next((f for f in functions if f.name == args.function), None)

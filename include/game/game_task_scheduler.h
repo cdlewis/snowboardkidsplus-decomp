@@ -1,5 +1,4 @@
-#ifndef GAME_GAME_TASK_SCHEDULER_H
-#define GAME_GAME_TASK_SCHEDULER_H
+#pragma once
 
 #include "decomp/types.h"
 
@@ -7,5 +6,3 @@
  * use absolute addressing even though the scheduler itself accesses it via $gp.
  */
 extern s16 gFrameCounter __attribute__((section(".data")));
-
-#endif

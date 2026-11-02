@@ -1,5 +1,4 @@
-#ifndef PSX_SPRITE_H
-#define PSX_SPRITE_H
+#pragma once
 
 #include "decomp/types.h"
 
@@ -14,5 +13,3 @@ typedef struct GsSPRITE {
     s16 mx, my, scalex, scaley;
     s32 rotate;
 } GsSPRITE;
-
-#endif

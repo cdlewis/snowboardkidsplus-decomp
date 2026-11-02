@@ -1,5 +1,4 @@
-#ifndef GAME_GAME_OPTIONS_H
-#define GAME_GAME_OPTIONS_H
+#pragma once
 
 #include "decomp/types.h"
 
@@ -23,5 +22,3 @@ s32 getPlayerOptionFlag(s16 playerIndex);
 s32 getUnlockNotificationFlag(s16 index);
 void setUnlockNotificationFlag(s16 index);
 s32 hasUnlockNotificationFlag(s16 index);
-
-#endif

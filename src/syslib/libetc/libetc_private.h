@@ -1,5 +1,4 @@
-#ifndef LIBETC_PRIVATE_H
-#define LIBETC_PRIVATE_H
+#pragma once
 
 #include "psx/libetc.h"
 
@@ -21,5 +20,3 @@ extern InterruptDispatch *gInterruptDispatch;
 extern volatile u16 *gInterruptMaskRegister;
 /* The context flag is at offset 2 in the shared interrupt-state object. */
 extern u16 gInterruptCallbackContext;
-
-#endif

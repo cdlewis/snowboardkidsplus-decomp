@@ -1,7 +1,6 @@
 #include "common.h"
 #include "libsnd_private.h"
 
-/* SDK wrappers adapted from PsyZ decomp; see THIRD_PARTY.md. */
 
 #ifdef NON_MATCHING
 extern s16 D_8013C792;

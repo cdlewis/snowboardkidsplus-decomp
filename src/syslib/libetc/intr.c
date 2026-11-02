@@ -1,7 +1,6 @@
 #include "common.h"
 #include "libetc_private.h"
 
-/* SDK dispatch wrappers adapted from PsyZ decomp; see THIRD_PARTY.md. */
 
 s32 ResetCallback(void) { return gInterruptDispatch->start(); }
 

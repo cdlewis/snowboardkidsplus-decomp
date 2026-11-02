@@ -1,4 +1,3 @@
-/* Adapted from PsyZ decomp; see THIRD_PARTY.md. */
 #include "libsnd_private.h"
 
 extern u8 D_8013CFE0[];

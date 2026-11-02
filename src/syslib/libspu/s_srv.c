@@ -1,4 +1,3 @@
-/* Adapted from PsyZ decomp; see THIRD_PARTY.md. */
 #include "libspu_private.h"
 
 u32 SpuSetReverbVoice(s32 on_off, u32 voice_bit) {

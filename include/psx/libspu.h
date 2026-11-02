@@ -1,5 +1,4 @@
-#ifndef PSX_LIBSPU_H
-#define PSX_LIBSPU_H
+#pragma once
 
 #include "decomp/types.h"
 
@@ -29,5 +28,3 @@ u32 SpuSetReverbVoice(s32 on_off, u32 voice_bit);
 s32 SpuIsTransferCompleted(s32 immediate);
 s32 SpuSetTransferMode(s32 mode);
 u32 SpuWrite(u8 *address, u32 size);
-
-#endif

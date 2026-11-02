@@ -1,5 +1,4 @@
-#ifndef GAME_OFFSET_ARCHIVE_H
-#define GAME_OFFSET_ARCHIVE_H
+#pragma once
 
 #include "decomp/types.h"
 
@@ -12,5 +11,3 @@ typedef struct OffsetArchive {
 } OffsetArchive;
 
 void *getOffsetArchiveEntry(OffsetArchive *archive, s32 index);
-
-#endif

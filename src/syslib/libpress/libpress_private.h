@@ -1,5 +1,4 @@
-#ifndef LIBPRESS_PRIVATE_H
-#define LIBPRESS_PRIVATE_H
+#pragma once
 
 #include "psx/libpress.h"
 
@@ -20,5 +19,3 @@ s32 mdecTimeout(const char *name);
 #define MDEC_DMA_WRITE(channel, reg, value) (*mdec_d##channel##_##reg = (value))
 #define MDEC_DMA_ENABLE() (*mdec_d_pcr |= 0x88)
 #define MDEC_ADDRESS(buffer) ((u32)(buffer))
-
-#endif

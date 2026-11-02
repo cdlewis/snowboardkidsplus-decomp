@@ -1,4 +1,3 @@
-/* Adapted from PsyZ decomp; see THIRD_PARTY.md. */
 #include "libspu_private.h"
 
 s32 SpuSetNoiseClock(s32 clock) {

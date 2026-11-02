@@ -1,4 +1,3 @@
-/* Adapted from PsyZ decomp; see THIRD_PARTY.md and licenses/psyz-decomp.txt. */
 #include "libspu_private.h"
 
 void _spu_setInTransfer(s32 arg0) {

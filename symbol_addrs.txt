@@ -1,4 +1,4 @@
-// Shared with the N64 JP game; verified against the PSX assembly oracle.
+// RNG symbols verified against the PSX assembly oracle.
 randomNextMain = 0x80015E04; // type:func
 randomNextSecondary = 0x80015E4C; // type:func
 resetSecondaryRng = 0x80015E7C; // type:func
@@ -731,6 +731,7 @@ format = 0x800D5E44; // type:func
 nextfile = 0x800D5E54; // type:func
 erase = 0x800D5E64; // type:func
 firstfile = 0x800D5E74; // type:func
+firstfileDeviceCallback = 0x800D6010; // type:func
 firstfile2 = 0x800D6114; // type:func
 _bu_init = 0x800D68D8; // type:func
 InitCARD = 0x800D68E8; // type:func
@@ -856,3 +857,12 @@ SpuWrite = 0x800B51C4; // type:func
 _spu_transferCallback = 0x80132EBC; // size:0x4
 func_80013278 = 0x80013278; // type:func
 rsin_tbl = 0x80134DEC; // size:0x808
+D_80012CB0 = 0x80012CB0; // size:0x34 defined:true
+D_80012CE4 = 0x80012CE4; // size:0x20 defined:true
+D_80012D04 = 0x80012D04; // size:0x14 defined:true
+D_80012D44 = 0x80012D44; // size:0x14 defined:true
+D_80012DF0 = 0x80012DF0; // size:0xC defined:true
+D_80012DFC = 0x80012DFC; // size:0x18 defined:true
+D_80012E14 = 0x80012E14; // size:0x18 defined:true
+D_80012E74 = 0x80012E74; // size:0x18 defined:true
+D_80012E8C = 0x80012E8C; // size:0x34 defined:true

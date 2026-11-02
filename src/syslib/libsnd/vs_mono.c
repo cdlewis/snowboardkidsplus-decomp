@@ -1,4 +1,3 @@
-/* Adapted from PsyZ decomp; see THIRD_PARTY.md and licenses/psyz-decomp.txt. */
 #include "libsnd_private.h"
 
 void SsSetMono(void) { _svm_stereo_mono = 1; }

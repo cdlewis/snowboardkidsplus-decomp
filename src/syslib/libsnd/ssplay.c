@@ -1,7 +1,6 @@
 #include "common.h"
 #include "libsnd_private.h"
 
-/* SDK wrappers adapted from PsyZ decomp; see THIRD_PARTY.md. */
 
 void SsSeqPlay(s16 id,s8 mode,s16 count) { Snd_SetPlayMode(id,0,mode,count); }
 

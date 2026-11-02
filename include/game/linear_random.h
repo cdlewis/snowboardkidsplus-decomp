@@ -1,5 +1,4 @@
-#ifndef GAME_LINEAR_RANDOM_H
-#define GAME_LINEAR_RANDOM_H
+#pragma once
 
 #include "decomp/types.h"
 
@@ -7,5 +6,3 @@
 extern s32 gLinearRandomState;
 s32 randomNextLinear(void);
 s32 randomLinearFromValue(s32 value);
-
-#endif

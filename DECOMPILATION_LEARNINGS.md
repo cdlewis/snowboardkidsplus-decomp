@@ -1,23 +1,21 @@
 # Matching learnings
 
-Stable techniques adapted from the sibling Snowboard Kids projects. For hard
-rules and the build pipeline, read [METHODOLOGY.md](METHODOLOGY.md). This is a
-technique reference, not a progress log.
+PSX matching techniques. Build commands are documented in [README.md](README.md#building).
 
 ## Start from evidence
 
 - Use the active `INCLUDE_ASM` and splat's original bytes as the function
   oracle. Splitting or renaming leaves stale assembly on disk; directory scans
   alone can rank functions that are already matched.
-- Use JP sibling C to identify algorithms, names, ownership, and likely types.
-  Read the PSX assembly before importing it: ports change layouts, APIs,
-  integer widths, signedness, and instruction scheduling.
+- Use reference C to identify algorithms, names, ownership, and likely types.
+  Verify layouts, APIs, integer widths, signedness, and scheduling against
+  the original assembly.
 - Rank simple candidates with `tools/score_functions.py`. Its score measures
   instruction count, control flow, calls, stack, and undecoded words. It is a
   transparent search aid, not a learned probability or a match percentage.
 - `tools/find_similar_functions.py` compares normalized MIPS instructions.
   Its structural similarity can find related routines across split files and
-  explicit sibling asm directories. It does not establish equivalent behavior.
+  explicit reference asm directories. It does not establish equivalent behavior.
 
 ## Keep the experiment reproducible
 
@@ -104,6 +102,11 @@ technique reference, not a progress log.
 
 ## Match data as carefully as code
 
+- Represent fixed BIOS ABI locations with named pointer macros in the owning
+  header. For example,
+  `BIOS_DCB_BASE` and `BIOS_DCB_BYTES` access the BIOS-owned variables at
+  `0x150` and `0x154`; their storage is supplied by the BIOS. This preserves
+  the original zero-base loads with the normal assembler pipeline.
 - Preserve ownership, section, address, size, order, and alignment together.
   Inspect the object and linked map instead of inferring placement from C.
 - Explicit zero initialization can land in `.data`, `.sdata`, or BSS depending
@@ -117,25 +120,12 @@ technique reference, not a progress log.
 - BSS has no original file bytes. Establish its address, allocation size,
   alignment, and references separately; a file-byte tool cannot prove it.
 
-## Port the workflow, not the N64 assumptions
+## PSX compiler and layout
 
-- PSX is little endian: the low byte of a word is at offset zero. N64
-  big-endian narrow-load offsets do not transfer.
-- This project uses GCC PSX, maspsx, and R3000 load/branch delays. IDO/KMC
-  pragmas, N64 microcode tools, cache assumptions, and N64-trained difficulty
-  weights do not transfer automatically.
+- PSX is little endian: the low byte of a word is at offset zero.
+- This project uses GCC PSX, maspsx, and R3000 load/branch delays.
 - All game C uses one compiler version. SDK objects may have another origin.
   Verify suspected flags with multiple functions and the whole image; one
   lucky leaf match does not identify the original build configuration.
 - Function-scoped scheduling overrides are a documented build workaround,
   not evidence that a logical module was originally split into many files.
-
-## Sources
-
-Adapted from local `../snowboardkids-decomp/DECOMPILATION_LEARNINGS.md`, its
-`decompile-function` and `decomp-permuter` skills, and
-`../snowboardkids2-decomp/DECOMPILATION_LEARNINGS.md`, its data-matching and
-symbol-renaming skills, and both repos' candidate/similarity/data tools.
-The corresponding upstream projects are
-[Snowboard Kids](https://github.com/cdlewis/snowboardkids-decomp) and
-[Snowboard Kids 2](https://github.com/cdlewis/snowboardkids2-decomp).

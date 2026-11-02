@@ -1,5 +1,4 @@
-#ifndef LIBGS_PRIVATE_H
-#define LIBGS_PRIVATE_H
+#pragma once
 
 #include "decomp/types.h"
 
@@ -9,5 +8,3 @@ typedef struct {
     u32 offset, point;
     u32 *tag;
 } GsOT;
-
-#endif

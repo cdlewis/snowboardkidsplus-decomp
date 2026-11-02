@@ -1,7 +1,6 @@
 #include "common.h"
 #include "libsnd_private.h"
 
-/* Start wrappers adapted from PsyZ decomp; see THIRD_PARTY.md. */
 
 struct SndSeqTickEnv {
     s32 tick_mode;

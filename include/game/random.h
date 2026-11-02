@@ -1,5 +1,4 @@
-#ifndef GAME_RANDOM_H
-#define GAME_RANDOM_H
+#pragma once
 
 #include "decomp/types.h"
 #include "game/game_task_scheduler.h"
@@ -15,5 +14,3 @@ s32 randomNextSecondary(void);
 void resetSecondaryRng(void);
 u8 randomNextObject(RacePlayer *player);
 void resetGameplayRng(void);
-
-#endif
