@@ -69,8 +69,11 @@ include linkers/slps_018.23.d
 endif
 endif
 
+# Splat preserves unchanged outputs; refresh the included .d timestamp so Make
+# does not restart forever after an input change that leaves its contents intact.
 $(SPLIT_OUTPUTS) &: $(SPLIT_INPUTS)
 	$(SPLAT) split snowboardkidsplus.yaml
+	@touch $(SPLIT_OUTPUTS)
 
 split: $(SPLIT_OUTPUTS)
 

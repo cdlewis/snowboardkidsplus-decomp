@@ -264,7 +264,12 @@ already matched library C:
 python3 tools/rank_library_functions.py --limit 20
 python3 tools/rank_library_functions.py --minimum 60 --limit 20
 python3 tools/rank_library_functions.py --include-game --json
+python3 tools/rank_library_functions.py --include-game --unattempted --minimum 60
 ```
+
+Candidates include assembly fallbacks with no C attempt. Use `--unattempted`
+to focus on those functions, excluding existing `NON_MATCHING` implementations;
+add `--include-game` to search game code as well as SDK units.
 
 The ranking pairs `asm/matchings/syslib/` with actual C definitions in
 `src/syslib/`. It excludes stale or assembly-backed reference functions and

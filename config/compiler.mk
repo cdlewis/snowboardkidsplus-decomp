@@ -3,10 +3,14 @@
 # establish different original compilers or alter translation-unit boundaries.
 
 G8_UNITS := \
+    src/main.c \
     src/main_remaining.c \
     src/engine/game_options.c \
     src/engine/random.c
 $(foreach unit,$(G8_UNITS),$(eval UNIT_G_$(unit) := 8))
+
+GAME_TEXT_UNITS := src/main.c src/main_remaining.c
+$(foreach unit,$(GAME_TEXT_UNITS),$(eval UNIT_REORDER_$(unit) := 1))
 
 GCC272_G0_REORDER_PAD_UNITS := \
     src/syslib/libcard/card.c \
@@ -243,6 +247,10 @@ $(foreach unit,$(GCC281_MNO_SPLIT_ADDRESSES_G0_REORDER_PAD_UNITS),$(eval UNIT_G_
 $(foreach unit,$(GCC281_MNO_SPLIT_ADDRESSES_G0_REORDER_PAD_UNITS),$(eval UNIT_REORDER_$(unit) := 1))
 $(foreach unit,$(GCC281_MNO_SPLIT_ADDRESSES_G0_REORDER_PAD_UNITS),$(eval UNIT_PAD_$(unit) := 1))
 
+UNIT_FUNCTIONS_src/main.c := deleteCurrentTask
+FN_FLAGS_src/main.c/deleteCurrentTask := -fno-delayed-branch
+UNIT_FUNCTIONS_src/main_remaining.c := stopMusicSequence pauseMusicSequence resumeMusicSequence initPrimitiveTemplates
+$(foreach function,$(UNIT_FUNCTIONS_src/main_remaining.c),$(eval FN_FLAGS_src/main_remaining.c/$(function) := -fno-delayed-branch))
 UNIT_FUNCTIONS_src/engine/random.c := resetGameplayRng
 FN_FLAGS_src/engine/random.c/resetGameplayRng := -fno-delayed-branch
 UNIT_FUNCTIONS_src/syslib/libsnd/vm_seq.c := _SsVmGetSeqLVol _SsVmGetSeqRVol

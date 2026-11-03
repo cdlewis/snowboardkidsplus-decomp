@@ -64,6 +64,8 @@ When choosing a target rather than working on a requested function, run
 candidates with a clear C reference and no tied alternatives; use complexity
 ranking when no suitable library reference remains. Structural similarity does
 not establish function identity or a byte match.
+Also scan `--include-game --unattempted`: functions without C attempts can
+resemble matched SDK routines and must be considered alongside near matches.
 
 #### Step 1: Prepare and match the function
 

@@ -5,6 +5,8 @@
 void SsSeqClose(s16 id);
 void SsSepClose(s16 id);
 void SsSeqStop(s16 id);
+void SsSeqPause(s16 id);
+void SsSeqReplay(s16 id);
 void SsSepStop(s16 id, s16 sequence);
 void SsSeqPlay(s16 id, s8 mode, s16 count);
 void SsSepPlay(s16 id, s16 sequence, s8 mode, s16 count);

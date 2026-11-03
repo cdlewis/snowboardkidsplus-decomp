@@ -1,4 +1,5 @@
 #include "common.h"
+#include "game/task.h"
 
 void func_800131B4(void) {
 }
@@ -63,11 +64,15 @@ INCLUDE_ASM("asm/nonmatchings/main", func_80014A2C);
 
 INCLUDE_ASM("asm/nonmatchings/main", func_80014B14);
 
-INCLUDE_ASM("asm/nonmatchings/main", func_80014B4C);
+void setCurrentTaskCallback(TaskCallback callback) {
+    D_8013AE88->callback = callback;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main", func_80014B58);
 
-INCLUDE_ASM("asm/nonmatchings/main", func_80014B8C);
+void deleteCurrentTask(void) {
+    func_800149A8();
+}
 
 INCLUDE_ASM("asm/nonmatchings/main", func_80014BAC);
 

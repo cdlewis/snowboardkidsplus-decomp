@@ -868,3 +868,13 @@ D_80012E14 = 0x80012E14; // size:0x18 defined:true
 D_80012E74 = 0x80012E74; // size:0x18 defined:true
 D_80012E8C = 0x80012E8C; // size:0x34 defined:true
 _getctl = 0x800CF1E8; // type:func
+
+// Game task and audio wrappers recovered through SDK assembly similarity.
+setCurrentTaskCallback = 0x80014B4C; // type:func
+deleteCurrentTask = 0x80014B8C; // type:func
+stopMusicSequence = 0x80017F64; // type:func
+pauseMusicSequence = 0x80017F90; // type:func
+resumeMusicSequence = 0x80017FB4; // type:func
+initPrimitiveTemplates = 0x8006BDDC; // type:func
+gMusicSequenceId = 0x8013AF2A; // size:0x2
+gMusicSequenceActive = 0x8013AF2C; // size:0x1

@@ -2,8 +2,13 @@
 #include "game/graphics.h"
 #include "game/linear_random.h"
 #include "game/offset_archive.h"
+#include "game/music.h"
+#include "psx/libsnd.h"
 
 s32 gLinearRandomState = 1;
+
+void func_8006BE04(void);
+void func_8006C848(void);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80015EE0);
 
@@ -61,11 +66,18 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80017ED4);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80017F44);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80017F64);
+void stopMusicSequence(void) {
+    if (gMusicSequenceActive)
+        SsSeqStop(gMusicSequenceId);
+}
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80017F90);
+void pauseMusicSequence(void) {
+    SsSeqPause(gMusicSequenceId);
+}
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80017FB4);
+void resumeMusicSequence(void) {
+    SsSeqReplay(gMusicSequenceId);
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80017FD8);
 
@@ -1672,7 +1684,10 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8006BA4C);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8006BD3C);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8006BDDC);
+void initPrimitiveTemplates(void) {
+    func_8006BE04();
+    func_8006C848();
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8006BE04);
 

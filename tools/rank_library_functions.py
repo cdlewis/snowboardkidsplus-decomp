@@ -35,9 +35,9 @@ def instruction_tokens(function):
     return tuple(normalize_instruction(line) for line in function.instructions[:words])
 
 
-def source_definition(source, name):
+def source_definition(source, name, *, allow_fallback=False):
     text = uncomment(source)
-    if any(match[2] == name for match in INCLUDE.finditer(text)):
+    if not allow_fallback and any(match[2] == name for match in INCLUDE.finditer(text)):
         return None
     # Strings can contain example code; do not treat it as a C definition.
     text = re.sub(r'"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'',
@@ -166,13 +166,19 @@ def print_ranking(rows, *, as_json=False, limit=20):
                   f'{alternative["name"]} ({alternative["source"]}:{alternative["line"]})')
 
 
-def project_ranking(*, include_game=False, extra_references=(), minimum=0.75, min_words=8):
+def project_ranking(*, include_game=False, extra_references=(), minimum=0.75, min_words=8,
+                    unattempted=False):
     require_fresh()
     image = PsxImage((ROOT / "disc/SLPS_018.23").read_bytes())
     pairs = [(ROOT / "asm/matchings/syslib", ROOT / "src/syslib"), *extra_references]
     references = load_references(pairs, image)
     candidates = [function for function in active_functions(sdk=True)
                   if include_game or function.unit.parts[:2] == ("src", "syslib")]
+    if unattempted:
+        sources = {unit: (ROOT / unit).read_text() for unit in {f.unit for f in candidates}}
+        candidates = [function for function in candidates
+                      if source_definition(sources[function.unit], function.name,
+                                           allow_fallback=True) is None]
     for function in candidates:
         if image.read(function.address, len(function.data)) != function.data:
             raise ValueError(f"candidate differs from the verified image: {function.path}")
@@ -182,6 +188,8 @@ def project_ranking(*, include_game=False, extra_references=(), minimum=0.75, mi
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--include-game", action="store_true", help="also rank game fallbacks; default: SDK only")
+    parser.add_argument("--unattempted", action="store_true",
+                        help="exclude functions with existing C, including NON_MATCHING attempts")
     parser.add_argument("--reference", nargs=2, action="append", type=Path, default=[],
                         metavar=("MATCHING_ASM_DIR", "C_SOURCE_DIR"),
                         help="additional library trees with matching relative unit paths")
@@ -193,7 +201,8 @@ def main():
     if not 0 < args.minimum <= 100 or args.min_words < 1 or args.limit < 1:
         parser.error("minimum must be in (0, 100]; min-words and limit must be positive")
     rows = project_ranking(include_game=args.include_game, extra_references=args.reference,
-                           minimum=args.minimum / 100, min_words=args.min_words)
+                           minimum=args.minimum / 100, min_words=args.min_words,
+                           unattempted=args.unattempted)
     print_ranking(rows, as_json=args.json, limit=args.limit)
 
 
