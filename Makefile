@@ -122,6 +122,8 @@ FORCE:
 C_SOURCES := $(if $(UNIT),$(UNIT),$(shell find src -name '*.c' -type f | sort))
 LINK_OBJECTS := $(shell sed -n 's/^[[:space:]]*\(build\/[^[:space:]]*\.o\).*/\1/p' linkers/slps_018.23.d 2>/dev/null)
 C_OBJECTS := $(addprefix $(BUILD_DIR)/,$(C_SOURCES:.c=.o))
+HASM_SOURCES := $(shell find src -name '*.s' -type f | sort)
+HASM_OBJECTS := $(addprefix $(BUILD_DIR)/,$(HASM_SOURCES:.s=.o))
 ASM_OBJECTS := $(filter build/asm/%,$(LINK_OBJECTS))
 
 # Alternate compilations are separate targets. The merger selects existing
@@ -159,8 +161,13 @@ $(BUILD_DIR)/asm/%.o: asm/%.s Makefile config/compiler.mk $(BUILD_DIR)/.config
 	$(PRINTF) "[$(GREEN)   as   $(NO_COL)]  $<\n"
 	$(AS) $(AS_FLAGS) -no-pad-sections -G$(G_VALUE) --MD $@.d -o $@ $<
 
+$(BUILD_DIR)/src/%.o: src/%.s Makefile config/compiler.mk $(BUILD_DIR)/.config
+	@mkdir -p $(@D)
+	$(PRINTF) "[$(GREEN)  hasm  $(NO_COL)]  $<\n"
+	$(AS) $(AS_FLAGS) -no-pad-sections -G$(G_VALUE) --MD $@.d -o $@ $<
+
 ifneq ($(COMPARISON),1)
-build/slps_018.23.elf: $(C_OBJECTS) $(ASM_OBJECTS) linkers/slps_018.23.ld linkers/undefined_funcs_auto.txt linkers/undefined_syms_auto.txt
+build/slps_018.23.elf: $(C_OBJECTS) $(HASM_OBJECTS) $(ASM_OBJECTS) linkers/slps_018.23.ld linkers/undefined_funcs_auto.txt linkers/undefined_syms_auto.txt
 	$(PRINTF) "[$(PINK) linker $(NO_COL)]  Linking $@\n"
 	$(LD) -EL -nostdlib -T linkers/slps_018.23.ld -T linkers/undefined_funcs_auto.txt -T linkers/undefined_syms_auto.txt -Map build/slps_018.23.map -o $@
 
@@ -177,7 +184,7 @@ endif
 # Comparison objects cannot overwrite the objects used by the verified image.
 objects:
 	+$(MAKE) COMPARISON=1 BUILD_DIR=build/compare all-objects
-all-objects: $(C_OBJECTS)
+all-objects: $(C_OBJECTS) $(HASM_OBJECTS)
 scratch: $(C_OBJECTS)
 
 ifneq ($(COMPARISON),1)
@@ -205,4 +212,4 @@ report:
 	$(PRINTF) "[$(CYAN) report $(NO_COL)]  Generating progress report\n"
 	$(PY) -m mapfile_parser objdiff_report
 
--include $(C_OBJECTS:.o=.d) $(C_OBJECTS:.o=.as.d) $(addsuffix .d,$(ASM_OBJECTS))
+-include $(C_OBJECTS:.o=.d) $(C_OBJECTS:.o=.as.d) $(addsuffix .d,$(HASM_OBJECTS) $(ASM_OBJECTS))

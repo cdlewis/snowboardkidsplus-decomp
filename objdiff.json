@@ -69,7 +69,7 @@
       "target_path": "expected/src/syslib/libapi/a07.o",
       "base_path": "build/compare/src/syslib/libapi/a07.o",
       "metadata": {
-        "source_path": "src/syslib/libapi/a07.c"
+        "source_path": "src/syslib/libapi/a07.s"
       }
     },
     {
@@ -77,7 +77,7 @@
       "target_path": "expected/src/syslib/libapi/a08.o",
       "base_path": "build/compare/src/syslib/libapi/a08.o",
       "metadata": {
-        "source_path": "src/syslib/libapi/a08.c"
+        "source_path": "src/syslib/libapi/a08.s"
       }
     },
     {
@@ -85,7 +85,7 @@
       "target_path": "expected/src/syslib/libapi/a09.o",
       "base_path": "build/compare/src/syslib/libapi/a09.o",
       "metadata": {
-        "source_path": "src/syslib/libapi/a09.c"
+        "source_path": "src/syslib/libapi/a09.s"
       }
     },
     {
@@ -93,7 +93,7 @@
       "target_path": "expected/src/syslib/libapi/a10.o",
       "base_path": "build/compare/src/syslib/libapi/a10.o",
       "metadata": {
-        "source_path": "src/syslib/libapi/a10.c"
+        "source_path": "src/syslib/libapi/a10.s"
       }
     },
     {
@@ -101,7 +101,7 @@
       "target_path": "expected/src/syslib/libapi/a11.o",
       "base_path": "build/compare/src/syslib/libapi/a11.o",
       "metadata": {
-        "source_path": "src/syslib/libapi/a11.c"
+        "source_path": "src/syslib/libapi/a11.s"
       }
     },
     {
@@ -109,7 +109,7 @@
       "target_path": "expected/src/syslib/libapi/a12.o",
       "base_path": "build/compare/src/syslib/libapi/a12.o",
       "metadata": {
-        "source_path": "src/syslib/libapi/a12.c"
+        "source_path": "src/syslib/libapi/a12.s"
       }
     },
     {
@@ -133,7 +133,7 @@
       "target_path": "expected/src/syslib/libapi/a20.o",
       "base_path": "build/compare/src/syslib/libapi/a20.o",
       "metadata": {
-        "source_path": "src/syslib/libapi/a20.c"
+        "source_path": "src/syslib/libapi/a20.s"
       }
     },
     {
@@ -141,7 +141,7 @@
       "target_path": "expected/src/syslib/libapi/a21.o",
       "base_path": "build/compare/src/syslib/libapi/a21.o",
       "metadata": {
-        "source_path": "src/syslib/libapi/a21.c"
+        "source_path": "src/syslib/libapi/a21.s"
       }
     },
     {
@@ -149,7 +149,7 @@
       "target_path": "expected/src/syslib/libapi/a23.o",
       "base_path": "build/compare/src/syslib/libapi/a23.o",
       "metadata": {
-        "source_path": "src/syslib/libapi/a23.c"
+        "source_path": "src/syslib/libapi/a23.s"
       }
     },
     {
@@ -157,7 +157,7 @@
       "target_path": "expected/src/syslib/libapi/a24.o",
       "base_path": "build/compare/src/syslib/libapi/a24.o",
       "metadata": {
-        "source_path": "src/syslib/libapi/a24.c"
+        "source_path": "src/syslib/libapi/a24.s"
       }
     },
     {
@@ -165,7 +165,7 @@
       "target_path": "expected/src/syslib/libapi/a25.o",
       "base_path": "build/compare/src/syslib/libapi/a25.o",
       "metadata": {
-        "source_path": "src/syslib/libapi/a25.c"
+        "source_path": "src/syslib/libapi/a25.s"
       }
     },
     {
@@ -173,7 +173,7 @@
       "target_path": "expected/src/syslib/libapi/a36.o",
       "base_path": "build/compare/src/syslib/libapi/a36.o",
       "metadata": {
-        "source_path": "src/syslib/libapi/a36.c"
+        "source_path": "src/syslib/libapi/a36.s"
       }
     },
     {
@@ -181,7 +181,7 @@
       "target_path": "expected/src/syslib/libapi/a37.o",
       "base_path": "build/compare/src/syslib/libapi/a37.o",
       "metadata": {
-        "source_path": "src/syslib/libapi/a37.c"
+        "source_path": "src/syslib/libapi/a37.s"
       }
     },
     {
@@ -197,7 +197,7 @@
       "target_path": "expected/src/syslib/libapi/a50.o",
       "base_path": "build/compare/src/syslib/libapi/a50.o",
       "metadata": {
-        "source_path": "src/syslib/libapi/a50.c"
+        "source_path": "src/syslib/libapi/a50.s"
       }
     },
     {
@@ -205,7 +205,7 @@
       "target_path": "expected/src/syslib/libapi/a51.o",
       "base_path": "build/compare/src/syslib/libapi/a51.o",
       "metadata": {
-        "source_path": "src/syslib/libapi/a51.c"
+        "source_path": "src/syslib/libapi/a51.s"
       }
     },
     {
@@ -213,7 +213,7 @@
       "target_path": "expected/src/syslib/libapi/a52.o",
       "base_path": "build/compare/src/syslib/libapi/a52.o",
       "metadata": {
-        "source_path": "src/syslib/libapi/a52.c"
+        "source_path": "src/syslib/libapi/a52.s"
       }
     },
     {
@@ -221,7 +221,7 @@
       "target_path": "expected/src/syslib/libapi/a53.o",
       "base_path": "build/compare/src/syslib/libapi/a53.o",
       "metadata": {
-        "source_path": "src/syslib/libapi/a53.c"
+        "source_path": "src/syslib/libapi/a53.s"
       }
     },
     {
@@ -229,7 +229,7 @@
       "target_path": "expected/src/syslib/libapi/a54.o",
       "base_path": "build/compare/src/syslib/libapi/a54.o",
       "metadata": {
-        "source_path": "src/syslib/libapi/a54.c"
+        "source_path": "src/syslib/libapi/a54.s"
       }
     },
     {
@@ -237,7 +237,7 @@
       "target_path": "expected/src/syslib/libapi/a65.o",
       "base_path": "build/compare/src/syslib/libapi/a65.o",
       "metadata": {
-        "source_path": "src/syslib/libapi/a65.c"
+        "source_path": "src/syslib/libapi/a65.s"
       }
     },
     {
@@ -245,7 +245,7 @@
       "target_path": "expected/src/syslib/libapi/a66.o",
       "base_path": "build/compare/src/syslib/libapi/a66.o",
       "metadata": {
-        "source_path": "src/syslib/libapi/a66.c"
+        "source_path": "src/syslib/libapi/a66.s"
       }
     },
     {
@@ -253,7 +253,7 @@
       "target_path": "expected/src/syslib/libapi/a67.o",
       "base_path": "build/compare/src/syslib/libapi/a67.o",
       "metadata": {
-        "source_path": "src/syslib/libapi/a67.c"
+        "source_path": "src/syslib/libapi/a67.s"
       }
     },
     {
@@ -261,7 +261,7 @@
       "target_path": "expected/src/syslib/libapi/a69.o",
       "base_path": "build/compare/src/syslib/libapi/a69.o",
       "metadata": {
-        "source_path": "src/syslib/libapi/a69.c"
+        "source_path": "src/syslib/libapi/a69.s"
       }
     },
     {
@@ -269,7 +269,7 @@
       "target_path": "expected/src/syslib/libapi/a91.o",
       "base_path": "build/compare/src/syslib/libapi/a91.o",
       "metadata": {
-        "source_path": "src/syslib/libapi/a91.c"
+        "source_path": "src/syslib/libapi/a91.s"
       }
     },
     {
@@ -277,7 +277,7 @@
       "target_path": "expected/src/syslib/libapi/c112.o",
       "base_path": "build/compare/src/syslib/libapi/c112.o",
       "metadata": {
-        "source_path": "src/syslib/libapi/c112.c"
+        "source_path": "src/syslib/libapi/c112.s"
       }
     },
     {
@@ -293,7 +293,7 @@
       "target_path": "expected/src/syslib/libapi/c114.o",
       "base_path": "build/compare/src/syslib/libapi/c114.o",
       "metadata": {
-        "source_path": "src/syslib/libapi/c114.c"
+        "source_path": "src/syslib/libapi/c114.s"
       }
     },
     {
@@ -301,7 +301,7 @@
       "target_path": "expected/src/syslib/libapi/c57.o",
       "base_path": "build/compare/src/syslib/libapi/c57.o",
       "metadata": {
-        "source_path": "src/syslib/libapi/c57.c"
+        "source_path": "src/syslib/libapi/c57.s"
       }
     },
     {
@@ -309,7 +309,7 @@
       "target_path": "expected/src/syslib/libapi/c68.o",
       "base_path": "build/compare/src/syslib/libapi/c68.o",
       "metadata": {
-        "source_path": "src/syslib/libapi/c68.c"
+        "source_path": "src/syslib/libapi/c68.s"
       }
     },
     {
@@ -317,7 +317,7 @@
       "target_path": "expected/src/syslib/libapi/c73.o",
       "base_path": "build/compare/src/syslib/libapi/c73.o",
       "metadata": {
-        "source_path": "src/syslib/libapi/c73.c"
+        "source_path": "src/syslib/libapi/c73.s"
       }
     },
     {
@@ -349,7 +349,7 @@
       "target_path": "expected/src/syslib/libapi/l02.o",
       "base_path": "build/compare/src/syslib/libapi/l02.o",
       "metadata": {
-        "source_path": "src/syslib/libapi/l02.c"
+        "source_path": "src/syslib/libapi/l02.s"
       }
     },
     {
@@ -357,7 +357,7 @@
       "target_path": "expected/src/syslib/libapi/l03.o",
       "base_path": "build/compare/src/syslib/libapi/l03.o",
       "metadata": {
-        "source_path": "src/syslib/libapi/l03.c"
+        "source_path": "src/syslib/libapi/l03.s"
       }
     },
     {
@@ -365,7 +365,7 @@
       "target_path": "expected/src/syslib/libapi/l10.o",
       "base_path": "build/compare/src/syslib/libapi/l10.o",
       "metadata": {
-        "source_path": "src/syslib/libapi/l10.c"
+        "source_path": "src/syslib/libapi/l10.s"
       }
     },
     {
@@ -389,7 +389,7 @@
       "target_path": "expected/src/syslib/libc/a63.o",
       "base_path": "build/compare/src/syslib/libc/a63.o",
       "metadata": {
-        "source_path": "src/syslib/libc/a63.c"
+        "source_path": "src/syslib/libc/a63.s"
       }
     },
     {
@@ -405,7 +405,7 @@
       "target_path": "expected/src/syslib/libc/c19.o",
       "base_path": "build/compare/src/syslib/libc/c19.o",
       "metadata": {
-        "source_path": "src/syslib/libc/c19.c"
+        "source_path": "src/syslib/libc/c19.s"
       }
     },
     {
@@ -413,7 +413,7 @@
       "target_path": "expected/src/syslib/libc/c21.o",
       "base_path": "build/compare/src/syslib/libc/c21.o",
       "metadata": {
-        "source_path": "src/syslib/libc/c21.c"
+        "source_path": "src/syslib/libc/c21.s"
       }
     },
     {
@@ -421,7 +421,7 @@
       "target_path": "expected/src/syslib/libc/c23.o",
       "base_path": "build/compare/src/syslib/libc/c23.o",
       "metadata": {
-        "source_path": "src/syslib/libc/c23.c"
+        "source_path": "src/syslib/libc/c23.s"
       }
     },
     {
@@ -429,7 +429,7 @@
       "target_path": "expected/src/syslib/libc/c24.o",
       "base_path": "build/compare/src/syslib/libc/c24.o",
       "metadata": {
-        "source_path": "src/syslib/libc/c24.c"
+        "source_path": "src/syslib/libc/c24.s"
       }
     },
     {
@@ -437,7 +437,7 @@
       "target_path": "expected/src/syslib/libc/c25.o",
       "base_path": "build/compare/src/syslib/libc/c25.o",
       "metadata": {
-        "source_path": "src/syslib/libc/c25.c"
+        "source_path": "src/syslib/libc/c25.s"
       }
     },
     {
@@ -445,7 +445,7 @@
       "target_path": "expected/src/syslib/libc/c27.o",
       "base_path": "build/compare/src/syslib/libc/c27.o",
       "metadata": {
-        "source_path": "src/syslib/libc/c27.c"
+        "source_path": "src/syslib/libc/c27.s"
       }
     },
     {
@@ -461,7 +461,7 @@
       "target_path": "expected/src/syslib/libc/c42.o",
       "base_path": "build/compare/src/syslib/libc/c42.o",
       "metadata": {
-        "source_path": "src/syslib/libc/c42.c"
+        "source_path": "src/syslib/libc/c42.s"
       }
     },
     {
@@ -469,7 +469,7 @@
       "target_path": "expected/src/syslib/libc/c46.o",
       "base_path": "build/compare/src/syslib/libc/c46.o",
       "metadata": {
-        "source_path": "src/syslib/libc/c46.c"
+        "source_path": "src/syslib/libc/c46.s"
       }
     },
     {
@@ -477,7 +477,7 @@
       "target_path": "expected/src/syslib/libc/c47.o",
       "base_path": "build/compare/src/syslib/libc/c47.o",
       "metadata": {
-        "source_path": "src/syslib/libc/c47.c"
+        "source_path": "src/syslib/libc/c47.s"
       }
     },
     {
@@ -485,7 +485,7 @@
       "target_path": "expected/src/syslib/libc/c63.o",
       "base_path": "build/compare/src/syslib/libc/c63.o",
       "metadata": {
-        "source_path": "src/syslib/libc/c63.c"
+        "source_path": "src/syslib/libc/c63.s"
       }
     },
     {
@@ -509,7 +509,7 @@
       "target_path": "expected/src/syslib/libcard/a74.o",
       "base_path": "build/compare/src/syslib/libcard/a74.o",
       "metadata": {
-        "source_path": "src/syslib/libcard/a74.c"
+        "source_path": "src/syslib/libcard/a74.s"
       }
     },
     {
@@ -517,7 +517,7 @@
       "target_path": "expected/src/syslib/libcard/a75.o",
       "base_path": "build/compare/src/syslib/libcard/a75.o",
       "metadata": {
-        "source_path": "src/syslib/libcard/a75.c"
+        "source_path": "src/syslib/libcard/a75.s"
       }
     },
     {
@@ -525,7 +525,7 @@
       "target_path": "expected/src/syslib/libcard/a76.o",
       "base_path": "build/compare/src/syslib/libcard/a76.o",
       "metadata": {
-        "source_path": "src/syslib/libcard/a76.c"
+        "source_path": "src/syslib/libcard/a76.s"
       }
     },
     {
@@ -533,7 +533,7 @@
       "target_path": "expected/src/syslib/libcard/a78.o",
       "base_path": "build/compare/src/syslib/libcard/a78.o",
       "metadata": {
-        "source_path": "src/syslib/libcard/a78.c"
+        "source_path": "src/syslib/libcard/a78.s"
       }
     },
     {
@@ -541,7 +541,7 @@
       "target_path": "expected/src/syslib/libcard/a80.o",
       "base_path": "build/compare/src/syslib/libcard/a80.o",
       "metadata": {
-        "source_path": "src/syslib/libcard/a80.c"
+        "source_path": "src/syslib/libcard/a80.s"
       }
     },
     {
@@ -549,7 +549,7 @@
       "target_path": "expected/src/syslib/libcard/c171.o",
       "base_path": "build/compare/src/syslib/libcard/c171.o",
       "metadata": {
-        "source_path": "src/syslib/libcard/c171.c"
+        "source_path": "src/syslib/libcard/c171.s"
       }
     },
     {
@@ -557,7 +557,7 @@
       "target_path": "expected/src/syslib/libcard/c172.o",
       "base_path": "build/compare/src/syslib/libcard/c172.o",
       "metadata": {
-        "source_path": "src/syslib/libcard/c172.c"
+        "source_path": "src/syslib/libcard/c172.s"
       }
     },
     {
@@ -585,11 +585,35 @@
       }
     },
     {
+      "name": "syslib/libcard/memcard_patch_copy",
+      "target_path": "expected/src/syslib/libcard/memcard_patch_copy.o",
+      "base_path": "build/compare/src/syslib/libcard/memcard_patch_copy.o",
+      "metadata": {
+        "source_path": "src/syslib/libcard/memcard_patch_copy.c"
+      }
+    },
+    {
       "name": "syslib/libcard/patch",
       "target_path": "expected/src/syslib/libcard/patch.o",
       "base_path": "build/compare/src/syslib/libcard/patch.o",
       "metadata": {
         "source_path": "src/syslib/libcard/patch.c"
+      }
+    },
+    {
+      "name": "syslib/libcard/patch_card",
+      "target_path": "expected/src/syslib/libcard/patch_card.o",
+      "base_path": "build/compare/src/syslib/libcard/patch_card.o",
+      "metadata": {
+        "source_path": "src/syslib/libcard/patch_card.s"
+      }
+    },
+    {
+      "name": "syslib/libcard/patch_card2",
+      "target_path": "expected/src/syslib/libcard/patch_card2.o",
+      "base_path": "build/compare/src/syslib/libcard/patch_card2.o",
+      "metadata": {
+        "source_path": "src/syslib/libcard/patch_card2.s"
       }
     },
     {
@@ -1629,7 +1653,7 @@
       "target_path": "expected/src/syslib/libgte/fgo_05.o",
       "base_path": "build/compare/src/syslib/libgte/fgo_05.o",
       "metadata": {
-        "source_path": "src/syslib/libgte/fgo_05.c"
+        "source_path": "src/syslib/libgte/fgo_05.s"
       }
     },
     {
@@ -1709,7 +1733,7 @@
       "target_path": "expected/src/syslib/libgte/msc00.o",
       "base_path": "build/compare/src/syslib/libgte/msc00.o",
       "metadata": {
-        "source_path": "src/syslib/libgte/msc00.c"
+        "source_path": "src/syslib/libgte/msc00.s"
       }
     },
     {
@@ -1717,7 +1741,7 @@
       "target_path": "expected/src/syslib/libgte/msc01.o",
       "base_path": "build/compare/src/syslib/libgte/msc01.o",
       "metadata": {
-        "source_path": "src/syslib/libgte/msc01.c"
+        "source_path": "src/syslib/libgte/msc01.s"
       }
     },
     {
@@ -1725,7 +1749,7 @@
       "target_path": "expected/src/syslib/libgte/mtx_000.o",
       "base_path": "build/compare/src/syslib/libgte/mtx_000.o",
       "metadata": {
-        "source_path": "src/syslib/libgte/mtx_000.c"
+        "source_path": "src/syslib/libgte/mtx_000.s"
       }
     },
     {
@@ -1733,7 +1757,7 @@
       "target_path": "expected/src/syslib/libgte/mtx_004.o",
       "base_path": "build/compare/src/syslib/libgte/mtx_004.o",
       "metadata": {
-        "source_path": "src/syslib/libgte/mtx_004.c"
+        "source_path": "src/syslib/libgte/mtx_004.s"
       }
     },
     {
@@ -1765,7 +1789,7 @@
       "target_path": "expected/src/syslib/libgte/mtx_05.o",
       "base_path": "build/compare/src/syslib/libgte/mtx_05.o",
       "metadata": {
-        "source_path": "src/syslib/libgte/mtx_05.c"
+        "source_path": "src/syslib/libgte/mtx_05.s"
       }
     },
     {
@@ -1773,7 +1797,7 @@
       "target_path": "expected/src/syslib/libgte/mtx_06.o",
       "base_path": "build/compare/src/syslib/libgte/mtx_06.o",
       "metadata": {
-        "source_path": "src/syslib/libgte/mtx_06.c"
+        "source_path": "src/syslib/libgte/mtx_06.s"
       }
     },
     {
@@ -1789,7 +1813,7 @@
       "target_path": "expected/src/syslib/libgte/mtx_08.o",
       "base_path": "build/compare/src/syslib/libgte/mtx_08.o",
       "metadata": {
-        "source_path": "src/syslib/libgte/mtx_08.c"
+        "source_path": "src/syslib/libgte/mtx_08.s"
       }
     },
     {
@@ -1829,7 +1853,15 @@
       "target_path": "expected/src/syslib/libgte/patchgte.o",
       "base_path": "build/compare/src/syslib/libgte/patchgte.o",
       "metadata": {
-        "source_path": "src/syslib/libgte/patchgte.c"
+        "source_path": "src/syslib/libgte/patchgte.s"
+      }
+    },
+    {
+      "name": "syslib/libgte/patchgte_handler",
+      "target_path": "expected/src/syslib/libgte/patchgte_handler.o",
+      "base_path": "build/compare/src/syslib/libgte/patchgte_handler.o",
+      "metadata": {
+        "source_path": "src/syslib/libgte/patchgte_handler.c"
       }
     },
     {

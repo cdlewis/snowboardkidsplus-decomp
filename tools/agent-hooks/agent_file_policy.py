@@ -41,6 +41,15 @@ def relative_path(path, cwd=None):
 def file_reason(path):
     parts = PurePosixPath(path).parts
     name = PurePosixPath(path).name
+    # Only explicitly registered source hasm units are authored assembly.
+    # Generated asm/ output and all other assembly paths stay protected.
+    if path.startswith("src/") and name.endswith(".s"):
+        layout = (ROOT / "snowboardkidsplus.yaml").read_text()
+        unit = re.escape(path[len("src/"):-2])
+        if (re.search(r"^\s*hasm_in_src_path:\s*True\s*$", layout, re.M)
+                and re.search(r"^\s*-\s*\[0x[0-9a-fA-F]+,\s*hasm,\s*"
+                              + unit + r"\s*\]", layout, re.M)):
+            return None
     if "asm" in parts or name.endswith((".s", ".S", ".asm")):
         return "assembly is generated; edit source/configuration and regenerate with ./tools/build-and-verify.sh"
     if name == "ctx.c":
@@ -107,6 +116,11 @@ def shell_reason(command, cwd=None):
         reason = patch_reason(command[command.index("*** Begin Patch"):], cwd)
         if reason:
             return reason
+        # A patch payload is not a shell program. Keep inspecting real shell
+        # commands that merely contain a patch string or have trailing commands.
+        if (command.lstrip().startswith("*** Begin Patch\n")
+                and command.rstrip().endswith("*** End Patch")):
+            return None
     lexer = shlex.shlex(command, posix=True, punctuation_chars=";&|()<>\n")
     lexer.whitespace_split = True
     lexer.whitespace = " \t\r"

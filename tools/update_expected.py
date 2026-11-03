@@ -17,8 +17,9 @@ def update_expected():
     import json
 
     # Removed or merged source files must not remain as stale objdiff units.
-    src_objs = [OUT / src.relative_to(ROOT).with_suffix(".o")
-                for src in sorted((ROOT / "src").rglob("*.c"))]
+    sources = sorted(src for src in (ROOT / "src").rglob("*")
+                     if src.is_file() and src.suffix in (".c", ".s"))
+    src_objs = [OUT / src.relative_to(ROOT).with_suffix(".o") for src in sources]
     if not src_objs:
         sys.exit("no build/src objects; run a full build first")
     if any(not obj.exists() for obj in src_objs):
@@ -28,7 +29,7 @@ def update_expected():
         if stale.relative_to(ROOT / "expected") not in active:
             stale.unlink()
     units = []
-    for obj in src_objs:
+    for source, obj in zip(sources, src_objs):
         rel = obj.relative_to(OUT)
         dst = ROOT / "expected" / rel
         dst.parent.mkdir(parents=True, exist_ok=True)
@@ -38,7 +39,7 @@ def update_expected():
             "name": unit,
             "target_path": f"expected/{rel.as_posix()}",
             "base_path": f"build/compare/{rel.as_posix()}",
-            "metadata": {"source_path": f"src/{unit}.c"},
+            "metadata": {"source_path": source.relative_to(ROOT).as_posix()},
         })
     cfg_path = ROOT / "objdiff.json"
     cfg = json.loads(cfg_path.read_text())

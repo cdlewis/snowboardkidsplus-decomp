@@ -149,6 +149,12 @@ Do not write unit tests unless directly instructed by the user.
 
 ### Use C and proper SDK macros
 
+Use authored SDK assembly only when an established PSX decomp explicitly treats
+the corresponding routine as handwritten assembly. Cite that source at a pinned
+revision in the assembly file. Keep authored assembly under `src/`, registered as
+`hasm` with `hasm_in_src_path: True`; `asm/` remains generated. Instruction-pattern
+heuristics and unmatched `INCLUDE_ASM` fallbacks alone do not establish eligibility.
+
 Use meaningful C types, expressions, and control flow. Do not force a match with
 inline assembly, empty assembly barriers, register bindings, dummy side effects,
 or manually encoded instructions. Use the existing PSY-Q graphics macros and
