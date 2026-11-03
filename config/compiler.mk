@@ -41,6 +41,7 @@ GCC272_G0_REORDER_PAD_UNITS := \
     src/syslib/libgs/gs_010.c \
     src/syslib/libgs/gs_101.c \
     src/syslib/libgs/gs_121.c \
+    src/syslib/libgs/gs_127.c \
     src/syslib/libgs/2d_com0.c \
     src/syslib/libspu/s_ini.c \
     src/syslib/libmath/ferr.c \
@@ -144,6 +145,7 @@ $(foreach unit,$(GCC272_G0_REORDER_PAD_UNITS),$(eval UNIT_CC1_$(unit) := tools/g
 $(foreach unit,$(GCC272_G0_REORDER_PAD_UNITS),$(eval UNIT_G_$(unit) := 0))
 $(foreach unit,$(GCC272_G0_REORDER_PAD_UNITS),$(eval UNIT_REORDER_$(unit) := 1))
 $(foreach unit,$(GCC272_G0_REORDER_PAD_UNITS),$(eval UNIT_PAD_$(unit) := 1))
+UNIT_CCFLAGS_src/syslib/libgs/gs_127.c := -fno-delayed-branch
 
 PAD_UNITS := \
     src/syslib/libgte/sincos.c
@@ -375,8 +377,6 @@ UNIT_FUNCTIONS_src/syslib/libpad/padportd.c := func_800D3CF4
 FN_FLAGS_src/syslib/libpad/padportd.c/func_800D3CF4 :=
 UNIT_FUNCTIONS_src/syslib/libgs/gs_005.c := GsSetClip
 FN_FLAGS_src/syslib/libgs/gs_005.c/GsSetClip := -mno-split-addresses
-UNIT_FUNCTIONS_src/syslib/libgs/gs_127.c := GsDefDispBuff2
-FN_FLAGS_src/syslib/libgs/gs_127.c/GsDefDispBuff2 := -mno-split-addresses -fno-delayed-branch
 UNIT_FUNCTIONS_src/syslib/libgs/gs_104.c := GsInit3D
 FN_FLAGS_src/syslib/libgs/gs_104.c/GsInit3D := -mno-split-addresses -fno-delayed-branch
 UNIT_FUNCTIONS_src/syslib/libcd/c_009.c := StGetNext
