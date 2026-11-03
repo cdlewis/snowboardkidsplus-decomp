@@ -74,7 +74,7 @@ Build and verify:
 ./tools/build-and-verify.sh
 ```
 
-The wrapper extracts the boot executable if missing, cleans the build,
+The wrapper extracts the boot executable and `SNB/SNB.DAT` if either is missing, cleans the build,
 regenerates split assembly, checks every source `INCLUDE_ASM`, builds the full
 executable, and independently verifies both the original and rebuilt images
 against the committed checksum. It then

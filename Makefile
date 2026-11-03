@@ -96,7 +96,7 @@ $(SPLIT_OUTPUTS) &: $(SPLIT_INPUTS)
 split: $(SPLIT_OUTPUTS)
 
 extract:
-	$(PRINTF) "[$(CYAN)extract $(NO_COL)]  Extracting disc executable\n"
+	$(PRINTF) "[$(CYAN)extract $(NO_COL)]  Extracting disc executable and SNB/SNB.DAT\n"
 	$(PY) tools/extract_iso.py "Snobow Kids Plus (Japan)/Snobow Kids Plus (Japan).bin" disc
 
 disc/SLPS_018.23:

@@ -1,6 +1,7 @@
 """Clean, regenerate, build, verify, and report through one entry point."""
 
 import argparse
+import fcntl
 import os
 from pathlib import Path
 import subprocess
@@ -23,6 +24,17 @@ def check_includes(root):
 
 def build_and_verify(root, *, expected=False, objects=False, non_matching=False,
                      incremental=False, jobs=1):
+    # Keep clean, split, compilation, and verification in one exclusive run.
+    # The lock lives outside build/ so cleaning cannot remove it.
+    with (root / ".build-and-verify.lock").open("a") as lock:
+        print("[verify] Waiting for exclusive build access...", flush=True)
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        _build_and_verify(root, expected=expected, objects=objects, non_matching=non_matching,
+                          incremental=incremental, jobs=jobs)
+
+
+def _build_and_verify(root, *, expected=False, objects=False, non_matching=False,
+                      incremental=False, jobs=1):
     environment = dict(os.environ)
     environment.pop("NON_MATCHING", None)
 
@@ -30,7 +42,7 @@ def build_and_verify(root, *, expected=False, objects=False, non_matching=False,
         print(f"[verify] make {target}", flush=True)
         subprocess.run(["make", f"-j{jobs}", target], cwd=root, env=environment | extra, check=True)
 
-    if not (root / "disc/SLPS_018.23").exists():
+    if any(not (root / path).exists() for path in ("disc/SLPS_018.23", "disc/SNB/SNB.DAT")):
         make("extract")
     if not incremental:
         make("clean")

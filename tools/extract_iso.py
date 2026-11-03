@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Convert MODE2/2352 bin to 2048-byte-sector iso, then extract SYSTEM.CNF and the boot exe."""
+"""Convert MODE2/2352 bin to ISO, then read SYSTEM.CNF and extract the boot exe and SNB.DAT."""
 import io
 import pathlib
 import sys
@@ -37,4 +37,7 @@ exe_name = boot.split("=")[1].strip().replace("cdrom:", "").lstrip("\\/").split(
 print("exe:", exe_name)
 with (OUT / exe_name.replace("\\", "_").replace("/", "_")).open("wb") as f:
     iso.get_file_from_iso_fp(f, iso_path="/" + exe_name + ";1")
+(OUT / "SNB").mkdir(parents=True, exist_ok=True)
+with (OUT / "SNB/SNB.DAT").open("wb") as f:
+    iso.get_file_from_iso_fp(f, iso_path="/SNB/SNB.DAT;1")
 iso.close()

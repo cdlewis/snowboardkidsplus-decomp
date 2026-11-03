@@ -3,6 +3,7 @@ Snobow Kids Plus (Japan)/
 Snobow Kids Plus (Japan).zip
 __MACOSX/
 disc/
+.build-and-verify.lock
 *.bin
 *.cue
 *.iso
