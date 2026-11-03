@@ -86,13 +86,11 @@ extern int VSync(int mode);
 extern int _exeque(void);
 extern u8 gpuControlCache[];
 
-#ifdef NON_MATCHING
 extern const char gpuDispatchTable[];
 extern u16 gpuDefaultWidths[], gpuDefaultHeights[];
 extern int GPU_cw(u32), func_800CF7E8(int);
 extern void gpu_memset(u8 *, int, int);
-/* Best observed instruction-sequence similarity: 96.77% (90/93 words;
- * GCC 2.8.0, -mno-split-addresses). */
+
 int ResetGraph(int mode) {
     switch (mode & 7) {
     case 0:
@@ -114,9 +112,6 @@ int ResetGraph(int mode) {
         return gGpuDispatch->reset(1);
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/sys", ResetGraph);
-#endif
 
 int SetGraphDebug(int level) {
     int old = gGpuInfo.level;
@@ -127,12 +122,14 @@ int SetGraphDebug(int level) {
 }
 
 #ifdef NON_MATCHING
-/* Best observed instruction-sequence similarity: 92.86% (39/42 words). */
+/* Best observed instruction-sequence similarity: 95.24% (40/42 words;
+ * GCC 2.7.2). The debug-level load is hoisted before the prologue rather
+ * than using the saved queue-state address, adding one instruction. */
 int SetGraphQueue(int mode) {
-    int old = gGpuInfo.unk1;
+    u8 old = gGpuInfo.unk1;
     if (gGpuInfo.level >= 2)
         GPU_printf(gpuGraphQueueFormat, mode);
-    if (gGpuInfo.unk1 != mode) {
+    if (mode != gGpuInfo.unk1) {
         gGpuDispatch->reset(1);
         gGpuInfo.unk1 = mode;
         DMACallback(2, 0);
