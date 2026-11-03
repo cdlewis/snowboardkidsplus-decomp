@@ -11,8 +11,8 @@ typedef struct GsCOORDINATE2 {
     struct GsCOORDINATE2 *super, *sub;
 } GsCOORDINATE2;
 
-extern MATRIX D_8013F870;
-extern MATRIX D_8013F800;
+extern MATRIX GsIDMATRIX;
+extern MATRIX GsLIGHTWSMATRIX;
 extern void SetRotMatrix(MATRIX *m);
 extern void SetTransMatrix(MATRIX *m);
 extern void SetLightMatrix(MATRIX *m);
@@ -24,13 +24,13 @@ extern MATRIX *MulMatrix0(MATRIX *left, MATRIX *right, MATRIX *out);
 extern VECTOR *ApplyMatrixLV(MATRIX *m, VECTOR *in, VECTOR *out);
 extern int printf(const char *, ...);
 
-const char D_80012AB0[36] __attribute__((section(".rodata.gs_matrix_print"), aligned(4))) =
+const char gsMatrixRotationFormat[36] __attribute__((section(".rodata.gs_matrix_print"), aligned(4))) =
     "(%d %d %d) (%d %d %d) (%d %d %d)\n";
-const char D_80012AD4[12] __attribute__((section(".rodata.gs_matrix_print"), aligned(4))) =
+const char gsMatrixTranslationFormat[12] __attribute__((section(".rodata.gs_matrix_print"), aligned(4))) =
     "(%d %d %d)\n";
 
 void GsInitCoordinate2(GsCOORDINATE2 *super, GsCOORDINATE2 *coord) {
-    coord->coord = D_8013F870;
+    coord->coord = GsIDMATRIX;
     coord->super = super;
     coord->flg = 0;
     if ((u32)super >= 2) {
@@ -50,7 +50,7 @@ void GsSetLsMatrix(MATRIX *m) {
 }
 
 void GsSetLightMatrix(MATRIX *m) {
-    MATRIX light = D_8013F800;
+    MATRIX light = GsLIGHTWSMATRIX;
 
     PushMatrix();
     MulMatrix(&light, m);
@@ -59,7 +59,7 @@ void GsSetLightMatrix(MATRIX *m) {
 }
 
 void GsSetLightMatrix2(MATRIX *m) {
-    SetLightMatrix(MulMatrix2(&D_8013F800, m));
+    SetLightMatrix(MulMatrix2(&GsLIGHTWSMATRIX, m));
 }
 
 void GsMulCoord0(MATRIX *a, MATRIX *b, MATRIX *out) {
@@ -91,11 +91,11 @@ void GsMulCoord3(MATRIX *a, MATRIX *b) {
 }
 
 void print_matrix(MATRIX *m) {
-    printf(D_80012AB0, m->m[0][0], m->m[0][1], m->m[0][2],
+    printf(gsMatrixRotationFormat, m->m[0][0], m->m[0][1], m->m[0][2],
            m->m[1][0], m->m[1][1], m->m[1][2],
            m->m[2][0], m->m[2][1], m->m[2][2]);
 }
 
 void print_vector(MATRIX *m) {
-    printf(D_80012AD4, m->t[0], m->t[1], m->t[2]);
+    printf(gsMatrixTranslationFormat, m->t[0], m->t[1], m->t[2]);
 }

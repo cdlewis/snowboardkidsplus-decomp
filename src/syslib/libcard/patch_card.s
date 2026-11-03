@@ -9,8 +9,8 @@
 .section .text, "ax"
 
 glabel _patch_card
-      lui        $at, %hi(D_80141638)
-      sw         $ra, %lo(D_80141638)($at)
+      lui        $at, %hi(cardPatchSavedRa)
+      sw         $ra, %lo(cardPatchSavedRa)($at)
       jal        EnterCriticalSection
        nop
       addiu      $t1, $zero, 0x56
@@ -42,8 +42,8 @@ glabel _patch_card
       lui        $at, (0x10000 >> 16)
       jal        FlushCache
        sw        $v0, -0x2004($at)
-      lui        $ra, %hi(D_80141638)
-      lw         $ra, %lo(D_80141638)($ra)
+      lui        $ra, %hi(cardPatchSavedRa)
+      lw         $ra, %lo(cardPatchSavedRa)($ra)
       nop
       jr         $ra
        nop

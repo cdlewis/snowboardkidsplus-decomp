@@ -29,66 +29,66 @@ volatile u32 *DMA6_CHCR GPU_REGISTERS = (volatile u32 *)0x1F8010E8;
 volatile u32 *DPCR GPU_REGISTERS = (volatile u32 *)0x1F8010F0;
 
 #define GPU_ALARM __attribute__((section(".data.gpu_alarm"), aligned(4)))
-s32 D_80139D88 GPU_ALARM = 0;
-volatile s32 D_80139D8C GPU_ALARM = 0;
+s32 gpuAlarmDeadline GPU_ALARM = 0;
+volatile s32 gpuAlarmPollCount GPU_ALARM = 0;
 
 extern int printf(const char *, ...);
-int (*D_80139C48)(const char *, ...)
+int (*GPU_printf)(const char *, ...)
     __attribute__((section(".data.gpu_printf"), aligned(4))) = printf;
 
-const char D_80012CB0[52] __attribute__((section(".rodata.gpu_reset_graph"), aligned(4))) =
+const char gpuSourceVersion[52] __attribute__((section(".rodata.gpu_reset_graph"), aligned(4))) =
     "$Id: sys.c,v 1.140 1998/01/12 07:52:27 noda Exp $";
-const char D_80012CE4[32] __attribute__((section(".rodata.gpu_reset_graph"), aligned(4))) =
+const char gpuResetStateFormat[32] __attribute__((section(".rodata.gpu_reset_graph"), aligned(4))) =
     "ResetGraph:jtb=%08x,env=%08x\n";
-const char D_80012D04[20] __attribute__((section(".rodata.gpu_reset_graph"), aligned(4))) =
+const char gpuResetGraphFormat[20] __attribute__((section(".rodata.gpu_reset_graph"), aligned(4))) =
     "ResetGraph(%d)...\n";
-const char D_80012D44[20] __attribute__((section(".rodata.gpu_graph_queue"), aligned(4))) =
+const char gpuGraphQueueFormat[20] __attribute__((section(".rodata.gpu_graph_queue"), aligned(4))) =
     "SetGrapQue(%d)...\n";
-const char D_80012DF0[12] __attribute__((section(".rodata.gpu_clear_otag"), aligned(4))) =
+const char gpuMoveImageName[12] __attribute__((section(".rodata.gpu_clear_otag"), aligned(4))) =
     "MoveImage";
-const char D_80012DFC[24] __attribute__((section(".rodata.gpu_clear_otag"), aligned(4))) =
+const char gpuClearOTagFormat[24] __attribute__((section(".rodata.gpu_clear_otag"), aligned(4))) =
     "ClearOTag(%08x,%d)...\n";
-const char D_80012E14[24] __attribute__((section(".rodata.gpu_clear_otag"), aligned(4))) =
+const char gpuClearOTagReverseFormat[24] __attribute__((section(".rodata.gpu_clear_otag"), aligned(4))) =
     "ClearOTagR(%08x,%d)...\n";
-const char D_80012E74[24] __attribute__((section(".rodata.gpu_disp_env"), aligned(4))) =
+const char gpuPutDispEnvFormat[24] __attribute__((section(".rodata.gpu_disp_env"), aligned(4))) =
     "PutDispEnv(%08x)...\n";
-const char D_80012E8C[52] __attribute__((section(".rodata.gpu_disp_env"), aligned(4))) =
+const char gpuQueueTimeoutFormat[52] __attribute__((section(".rodata.gpu_disp_env"), aligned(4))) =
     "GPU timeout:que=%d,stat=%08x,chcr=%08x,madr=%08x\n";
 
 #define GPU_IMAGE_NAME __attribute__((section(".rodata.gpu_image_names"), aligned(4)))
-const char D_80012DC0[12] GPU_IMAGE_NAME = "ClearImage";
-const char D_80012DCC[12] GPU_IMAGE_NAME = "ClearImage2";
-const char D_80012DD8[12] GPU_IMAGE_NAME = "LoadImage";
-const char D_80012DE4[12] __attribute__((section(".rodata.gpu_image_names"), aligned(4))) = "StoreImage";
-const char D_80012E2C[20] __attribute__((section(".rodata.gpu_draw_otag"), aligned(4))) =
+const char gpuClearImageName[12] GPU_IMAGE_NAME = "ClearImage";
+const char gpuClearImage2Name[12] GPU_IMAGE_NAME = "ClearImage2";
+const char gpuLoadImageName[12] GPU_IMAGE_NAME = "LoadImage";
+const char gpuStoreImageName[12] __attribute__((section(".rodata.gpu_image_names"), aligned(4))) = "StoreImage";
+const char gpuDrawOTagFormat[20] __attribute__((section(".rodata.gpu_draw_otag"), aligned(4))) =
     "DrawOTag(%08x)...\n";
-const char D_80012E40[24] __attribute__((section(".rodata.gpu_draw_otag"), aligned(4))) =
+const char gpuPutDrawEnvFormat[24] __attribute__((section(".rodata.gpu_draw_otag"), aligned(4))) =
     "PutDrawEnv(%08x)...\n";
-const char D_80012E58[28] __attribute__((section(".rodata.gpu_draw_otag"), aligned(4))) =
+const char gpuDrawOTagEnvFormat[28] __attribute__((section(".rodata.gpu_draw_otag"), aligned(4))) =
     "DrawOTagEnv(%08x,&08x)...\n";
-const char D_80012D18[44] __attribute__((section(".rodata.gpu_graph_debug"), aligned(4))) =
+const char gpuGraphDebugFormat[44] __attribute__((section(".rodata.gpu_graph_debug"), aligned(4))) =
     "SetGraphDebug:level:%d,type:%d reverse:%d\n";
-const char D_80012D58[28] __attribute__((section(".rodata.gpu_sync_callback"), aligned(4))) =
+const char gpuDrawSyncCallbackFormat[28] __attribute__((section(".rodata.gpu_sync_callback"), aligned(4))) =
     "DrawSyncCallback(%08x)...\n";
-const char D_80012D74[20] __attribute__((section(".rodata.gpu_sync_callback"), aligned(4))) =
+const char gpuDisplayMaskFormat[20] __attribute__((section(".rodata.gpu_sync_callback"), aligned(4))) =
     "SetDispMask(%d)...\n";
-const char D_80012D88[20] __attribute__((section(".rodata.gpu_sync_callback"), aligned(4))) =
+const char gpuDrawSyncFormat[20] __attribute__((section(".rodata.gpu_sync_callback"), aligned(4))) =
     "DrawSync(%d)...\n";
-const char D_80012D9C[12] __attribute__((section(".rodata.gpu_rect_debug"), aligned(4))) = "%s:bad RECT";
-const char D_80012DA8[20] __attribute__((section(".rodata.gpu_rect_debug"), aligned(4))) = "(%d,%d)-(%d,%d)\n";
-const char D_80012DBC[4] __attribute__((section(".rodata.gpu_rect_debug"), aligned(4))) = "%s:";
-const char D_80012EC0[16] __attribute__((section(".rodata.gpu_load_image2"), aligned(4))) =
+const char gpuInvalidRectangleFormat[12] __attribute__((section(".rodata.gpu_rect_debug"), aligned(4))) = "%s:bad RECT";
+const char gpuRectangleCoordinatesFormat[20] __attribute__((section(".rodata.gpu_rect_debug"), aligned(4))) = "(%d,%d)-(%d,%d)\n";
+const char gpuOperationPrefixFormat[4] __attribute__((section(".rodata.gpu_rect_debug"), aligned(4))) = "%s:";
+const char gpuLoadImage2Name[16] __attribute__((section(".rodata.gpu_load_image2"), aligned(4))) =
     "LoadImage2";
 
 extern void set_alarm(void);
 extern int get_alarm(void);
 extern int VSync(int mode);
 extern int _exeque(void);
-extern u8 D_8013F948[];
+extern u8 gpuControlCache[];
 
 #ifdef NON_MATCHING
-extern const char D_80139C04[];
-extern u16 D_80139CCC[], D_80139CD8[];
+extern const char gpuDispatchTable[];
+extern u16 gpuDefaultWidths[], gpuDefaultHeights[];
 extern int GPU_cw(u32), func_800CF7E8(int);
 extern void gpu_memset(u8 *, int, int);
 /* Best observed instruction-sequence similarity: 96.77% (90/93 words;
@@ -97,20 +97,20 @@ int ResetGraph(int mode) {
     switch (mode & 7) {
     case 0:
     case 3:
-        printf(D_80012CE4, D_80139C04, &gGpuInfo);
+        printf(gpuResetStateFormat, gpuDispatchTable, &gGpuInfo);
     case 5:
         gpu_memset((u8 *)&gGpuInfo, 0, 0x80);
         ResetCallback();
         GPU_cw((u32)gGpuDispatch & 0xffffff);
         gGpuInfo.version = func_800CF7E8(mode);
         gGpuInfo.unk1 = 1;
-        gGpuInfo.w = D_80139CCC[(*(volatile u8 *)&gGpuInfo.version) * 2];
-        gGpuInfo.h = D_80139CD8[(*(volatile u8 *)&gGpuInfo.version) * 2];
+        gGpuInfo.w = gpuDefaultWidths[(*(volatile u8 *)&gGpuInfo.version) * 2];
+        gGpuInfo.h = gpuDefaultHeights[(*(volatile u8 *)&gGpuInfo.version) * 2];
         gpu_memset((u8 *)&gGpuInfo.draw, -1, 0x5c);
         gpu_memset((u8 *)&gGpuInfo.disp, -1, 0x14);
         return gGpuInfo.version;
     default:
-        if (gGpuInfo.level >= 2) D_80139C48(D_80012D04, mode);
+        if (gGpuInfo.level >= 2) GPU_printf(gpuResetGraphFormat, mode);
         return gGpuDispatch->reset(1);
     }
 }
@@ -122,7 +122,7 @@ int SetGraphDebug(int level) {
     int old = gGpuInfo.level;
     gGpuInfo.level = level;
     if ((u8)level)
-        D_80139C48(D_80012D18, gGpuInfo.level, gGpuInfo.version, gGpuInfo.reverse);
+        GPU_printf(gpuGraphDebugFormat, gGpuInfo.level, gGpuInfo.version, gGpuInfo.reverse);
     return old;
 }
 
@@ -131,7 +131,7 @@ int SetGraphDebug(int level) {
 int SetGraphQueue(int mode) {
     int old = gGpuInfo.unk1;
     if (gGpuInfo.level >= 2)
-        D_80139C48(D_80012D44, mode);
+        GPU_printf(gpuGraphQueueFormat, mode);
     if (gGpuInfo.unk1 != mode) {
         gGpuDispatch->reset(1);
         gGpuInfo.unk1 = mode;
@@ -148,7 +148,7 @@ int GetGraphDebug(void) { return gGpuInfo.level; }
 DmaCallback DrawSyncCallback(DmaCallback cb) {
     DmaCallback old;
     if (gGpuInfo.level >= 2)
-        D_80139C48(D_80012D58, cb);
+        GPU_printf(gpuDrawSyncCallbackFormat, cb);
     old = gGpuInfo.drawSyncCb;
     gGpuInfo.drawSyncCb = cb;
     return old;
@@ -158,7 +158,7 @@ extern void gpu_memset(u8 *, int, int);
 
 void SetDispMask(int mask) {
     if (gGpuInfo.level >= 2)
-        D_80139C48(D_80012D74, mask);
+        GPU_printf(gpuDisplayMaskFormat, mask);
     if (!mask)
         gpu_memset((u8 *)&gGpuInfo.disp, -1, 20);
     gGpuDispatch->ctl(mask ? 0x03000000 : 0x03000001);
@@ -166,7 +166,7 @@ void SetDispMask(int mask) {
 
 int DrawSync(int mode) {
     if (gGpuInfo.level >= 2)
-        D_80139C48(D_80012D88, mode);
+        GPU_printf(gpuDrawSyncFormat, mode);
     return gGpuDispatch->sync(mode);
 }
 
@@ -175,13 +175,13 @@ void func_800CD4CC(const char *name, RECT *r) {
     case 1:
         if (r->w > gGpuInfo.w || r->w + r->x > gGpuInfo.w || r->y > gGpuInfo.h ||
             r->y + r->h > gGpuInfo.h || r->w <= 0 || r->x < 0 || r->y < 0 || r->h <= 0) {
-            D_80139C48(D_80012D9C, name);
-            D_80139C48(D_80012DA8, r->x, r->y, r->w, r->h);
+            GPU_printf(gpuInvalidRectangleFormat, name);
+            GPU_printf(gpuRectangleCoordinatesFormat, r->x, r->y, r->w, r->h);
         }
         break;
     case 2:
-        D_80139C48(D_80012DBC, name);
-        D_80139C48(D_80012DA8, r->x, r->y, r->w, r->h);
+        GPU_printf(gpuOperationPrefixFormat, name);
+        GPU_printf(gpuRectangleCoordinatesFormat, r->x, r->y, r->w, r->h);
         break;
     }
 }
@@ -189,32 +189,32 @@ void func_800CD4CC(const char *name, RECT *r) {
 extern void func_800CD4CC(const char *, RECT *);
 
 s32 ClearImage(RECT *rect, u8 r, u8 g, u8 b) {
-    func_800CD4CC(D_80012DC0, rect);
+    func_800CD4CC(gpuClearImageName, rect);
     return gGpuDispatch->addque2((s32 (*)(u32, u32))gGpuDispatch->clr,
                                  (u32)rect, 8, (b << 16) | (g << 8) | r);
 }
 
 s32 ClearImage2(RECT *rect, u8 r, u8 g, u8 b) {
-    func_800CD4CC(D_80012DCC, rect);
+    func_800CD4CC(gpuClearImage2Name, rect);
     return gGpuDispatch->addque2((s32 (*)(u32, u32))gGpuDispatch->clr,
                                  (u32)rect, 8, 0x80000000 | (b << 16) | (g << 8) | r);
 }
 
 s32 LoadImage(RECT *rect, u32 *pixels) {
-    func_800CD4CC(D_80012DD8, rect);
+    func_800CD4CC(gpuLoadImageName, rect);
     return gGpuDispatch->addque2((s32 (*)(u32, u32))gGpuDispatch->dws,
                                  (u32)rect, 8, (u32)pixels);
 }
 
 s32 StoreImage(RECT *rect, u32 *pixels) {
-    func_800CD4CC(D_80012DE4, rect);
+    func_800CD4CC(gpuStoreImageName, rect);
     return gGpuDispatch->addque2((s32 (*)(u32, u32))gGpuDispatch->drs,
                                  (u32)rect, 8, (u32)pixels);
 }
 
 s32 MoveImage(RECT *rect, int x, int y) {
     u32 source;
-    func_800CD4CC(D_80012DF0, rect);
+    func_800CD4CC(gpuMoveImageName, rect);
     if (rect->w == 0 || rect->h == 0)
         return -1;
     source = *(u32 *)&rect->x;
@@ -226,30 +226,30 @@ s32 MoveImage(RECT *rect, int x, int y) {
 }
 
 #ifdef NON_MATCHING
-extern u32 D_80139CF8, D_80139D0C;
+extern u32 gpuOTagTerminatorPacket, gpuOTagLinkPacket;
 
 /* Best observed instruction-sequence similarity: 82.35% (42/51 words). */
 u32 *ClearOTag(u32 *ot, int count) {
     if (gGpuInfo.level >= 2)
-        D_80139C48(D_80012DFC, ot, count);
+        GPU_printf(gpuClearOTagFormat, ot, count);
     if (--count) do {
         P_TAG *tag = (P_TAG *)ot;
         tag->len = 0;
         tag->addr = (u32)(ot + 1) & 0xffffff;
         ot++;
     } while (--count);
-    D_80139D0C = ((u32)&D_80139CF8 & 0xffffff) | 0x04000000;
-    *ot = (u32)&D_80139D0C & 0xffffff;
+    gpuOTagLinkPacket = ((u32)&gpuOTagTerminatorPacket & 0xffffff) | 0x04000000;
+    *ot = (u32)&gpuOTagLinkPacket & 0xffffff;
     return ot;
 }
 
 /* Best observed instruction-sequence similarity: 79.55% (35/44 words). */
 u32 *ClearOTagR(u32 *ot, int count) {
     if (gGpuInfo.level >= 2)
-        D_80139C48(D_80012E14, ot, count);
+        GPU_printf(gpuClearOTagReverseFormat, ot, count);
     gGpuDispatch->otc(ot, count);
-    D_80139D0C = ((u32)&D_80139CF8 & 0xffffff) | 0x04000000;
-    *ot = (u32)&D_80139D0C & 0xffffff;
+    gpuOTagLinkPacket = ((u32)&gpuOTagTerminatorPacket & 0xffffff) | 0x04000000;
+    *ot = (u32)&gpuOTagLinkPacket & 0xffffff;
     return ot;
 }
 #else
@@ -265,7 +265,7 @@ void DrawPrim(void* p) {
 
 s32 DrawOTag(u32 *ot) {
     if (gGpuInfo.level >= 2)
-        D_80139C48(D_80012E2C, ot);
+        GPU_printf(gpuDrawOTagFormat, ot);
     return gGpuDispatch->addque2((s32 (*)(u32, u32))gGpuDispatch->cwc,
                                  (u32)ot, 0, 0);
 }
@@ -275,7 +275,7 @@ extern void func_800CE584(DR_ENV *, DRAWENV *);
 DRAWENV *PutDrawEnv(DRAWENV *env) {
     DR_ENV *packet;
     if (gGpuInfo.level >= 2)
-        D_80139C48(D_80012E40, env);
+        GPU_printf(gpuPutDrawEnvFormat, env);
     packet = &env->dr_env;
     func_800CE584(packet, env);
     packet->tag |= 0xffffff;
@@ -288,7 +288,7 @@ DRAWENV *PutDrawEnv(DRAWENV *env) {
 void DrawOTagEnv(u32 *ot, DRAWENV *env) {
     DR_ENV *packet;
     if (gGpuInfo.level >= 2)
-        D_80139C48(D_80012E58, ot, env);
+        GPU_printf(gpuDrawOTagEnvFormat, ot, env);
     packet = &env->dr_env;
     func_800CE584(packet, env);
     packet->tag = (packet->tag & 0xff000000) | ((u32)ot & 0xffffff);
@@ -434,7 +434,7 @@ int _otc(u32 *ot, int n) {
 }
 
 #ifdef NON_MATCHING
-extern u32 D_8013F900[], D_8013F928[];
+extern u32 gpuClearPacket[], gpuRestoreDrawAreaPacket[];
 extern int _param(int);
 extern void _cwc(u32 *);
 /* Best observed instruction-sequence similarity: 86.43% (121/140 words;
@@ -445,28 +445,28 @@ int func_800CEAD8(RECT *r, u32 color) {
     if (r->h < 0) r->h = 0;
     else if (r->h > gGpuInfo.h - 1) r->h = gGpuInfo.h - 1;
     if ((r->x & 63) || (r->w & 63)) {
-        D_8013F900[0] = ((u32)D_8013F928 & 0xffffff) | 0x08000000;
-        D_8013F900[1] = 0xe3000000;
-        D_8013F900[2] = 0xe4ffffff;
-        D_8013F900[3] = 0xe5000000;
-        D_8013F900[4] = 0xe6000000;
-        D_8013F900[5] = 0xe1000000 | (*GPU_STATUS & 0x7ff) | ((color >> 31) << 10);
-        D_8013F900[6] = 0x60000000 | (color & 0xffffff);
-        D_8013F900[7] = ((u32 *)r)[0];
-        D_8013F900[8] = ((u32 *)r)[1];
-        D_8013F928[0] = 0x03ffffff;
-        D_8013F928[1] = _param(3) | 0xe3000000;
-        D_8013F928[2] = _param(4) | 0xe4000000;
-        D_8013F928[3] = _param(5) | 0xe5000000;
+        gpuClearPacket[0] = ((u32)gpuRestoreDrawAreaPacket & 0xffffff) | 0x08000000;
+        gpuClearPacket[1] = 0xe3000000;
+        gpuClearPacket[2] = 0xe4ffffff;
+        gpuClearPacket[3] = 0xe5000000;
+        gpuClearPacket[4] = 0xe6000000;
+        gpuClearPacket[5] = 0xe1000000 | (*GPU_STATUS & 0x7ff) | ((color >> 31) << 10);
+        gpuClearPacket[6] = 0x60000000 | (color & 0xffffff);
+        gpuClearPacket[7] = ((u32 *)r)[0];
+        gpuClearPacket[8] = ((u32 *)r)[1];
+        gpuRestoreDrawAreaPacket[0] = 0x03ffffff;
+        gpuRestoreDrawAreaPacket[1] = _param(3) | 0xe3000000;
+        gpuRestoreDrawAreaPacket[2] = _param(4) | 0xe4000000;
+        gpuRestoreDrawAreaPacket[3] = _param(5) | 0xe5000000;
     } else {
-        D_8013F900[0] = 0x05ffffff;
-        D_8013F900[1] = 0xe6000000;
-        D_8013F900[2] = 0xe1000000 | (*GPU_STATUS & 0x7ff) | ((color >> 31) << 10);
-        D_8013F900[3] = 0x02000000 | (color & 0xffffff);
-        D_8013F900[4] = ((u32 *)r)[0];
-        D_8013F900[5] = ((u32 *)r)[1];
+        gpuClearPacket[0] = 0x05ffffff;
+        gpuClearPacket[1] = 0xe6000000;
+        gpuClearPacket[2] = 0xe1000000 | (*GPU_STATUS & 0x7ff) | ((color >> 31) << 10);
+        gpuClearPacket[3] = 0x02000000 | (color & 0xffffff);
+        gpuClearPacket[4] = ((u32 *)r)[0];
+        gpuClearPacket[5] = ((u32 *)r)[1];
     }
-    _cwc(D_8013F900);
+    _cwc(gpuClearPacket);
     return 0;
 }
 #else
@@ -512,11 +512,11 @@ INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/sys", func_800CEF44);
 
 void func_800CF1C4(u32 value) {
     *GPU_STATUS = value;
-    D_8013F948[value >> 24] = value;
+    gpuControlCache[value >> 24] = value;
 }
 
 s32 _getctl(s32 index) {
-    return D_8013F948[index];
+    return gpuControlCache[index];
 }
 
 int _cwb(u32 *data, s32 n) {
@@ -551,40 +551,40 @@ int _addque(int (*exec)(u32, u32), u32 p1, u32 p2) {
 
 #ifdef NON_MATCHING
 typedef struct { int (*execute)(u32, u32); u32 first, second; u32 buffer[21]; } GpuAddQueueEntry;
-extern volatile s32 D_80139D74, D_80139D78;
-extern s32 D_80139D7C;
-extern u8 D_8013FA50[];
+extern volatile s32 _qin, _qout;
+extern s32 gpuAddQueueSavedMask;
+extern u8 gpuCommandQueue[];
 extern void set_alarm(void);
 extern int get_alarm(void), _exeque(void);
 /* Best observed instruction-sequence similarity: 65.70% (113/172 words;
  * GCC 2.7.2). */
 int _addque2(int (*execute)(u32, u32), u32 data, int size, u32 second) {
-    GpuAddQueueEntry *queue = (GpuAddQueueEntry *)D_8013FA50;
+    GpuAddQueueEntry *queue = (GpuAddQueueEntry *)gpuCommandQueue;
     int i;
     set_alarm();
-    while (((D_80139D74 + 1) & 63) == D_80139D78) {
+    while (((_qin + 1) & 63) == _qout) {
         if (get_alarm()) return -1;
         _exeque();
     }
-    D_80139D7C = SetIntrMask(0);
+    gpuAddQueueSavedMask = SetIntrMask(0);
     *(u32 *)gGpuInfo.unk8 = 1;
-    if (!gGpuInfo.unk1 || (D_80139D74 == D_80139D78 && !(*DMA2_CHCR & 0x01000000) && !gGpuInfo.drawSyncCb)) {
+    if (!gGpuInfo.unk1 || (_qin == _qout && !(*DMA2_CHCR & 0x01000000) && !gGpuInfo.drawSyncCb)) {
         while (!(*GPU_STATUS & 0x04000000)) {}
         execute(data, second);
-        SetIntrMask(D_80139D7C);
+        SetIntrMask(gpuAddQueueSavedMask);
         return 0;
     }
     DMACallback(2, (DmaCallback)_exeque);
     if (size) {
-        for (i = 0; i < size / 4; i++) queue[D_80139D74].buffer[i] = ((u32 *)data)[i];
-        queue[D_80139D74].first = (u32)queue[D_80139D74].buffer;
-    } else queue[D_80139D74].first = data;
-    queue[D_80139D74].second = second;
-    queue[D_80139D74].execute = execute;
-    D_80139D74 = (D_80139D74 + 1) & 63;
-    SetIntrMask(D_80139D7C);
+        for (i = 0; i < size / 4; i++) queue[_qin].buffer[i] = ((u32 *)data)[i];
+        queue[_qin].first = (u32)queue[_qin].buffer;
+    } else queue[_qin].first = data;
+    queue[_qin].second = second;
+    queue[_qin].execute = execute;
+    _qin = (_qin + 1) & 63;
+    SetIntrMask(gpuAddQueueSavedMask);
     _exeque();
-    return (D_80139D74 - D_80139D78) & 63;
+    return (_qin - _qout) & 63;
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/sys", _addque2);
@@ -592,50 +592,50 @@ INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/sys", _addque2);
 
 #ifdef NON_MATCHING
 typedef struct { int (*execute)(u32, u32); u32 first, second; u8 padding[84]; } GpuQueueEntry;
-extern volatile s32 D_80139D74, D_80139D78;
-extern s32 D_80139D80;
-extern u8 D_8013FA50[];
+extern volatile s32 _qin, _qout;
+extern s32 gpuExecuteQueueSavedMask;
+extern u8 gpuCommandQueue[];
 /* Best observed instruction-sequence similarity: 75.00% (114/152 words;
  * GCC 2.7.2). */
 int _exeque(void) {
-    GpuQueueEntry *queue = (GpuQueueEntry *)D_8013FA50;
+    GpuQueueEntry *queue = (GpuQueueEntry *)gpuCommandQueue;
     if (*DMA2_CHCR & 0x01000000) return 1;
-    D_80139D80 = SetIntrMask(0);
-    while (D_80139D74 != D_80139D78 && !(*DMA2_CHCR & 0x01000000)) {
-        if (((D_80139D78 + 1) & 63) == D_80139D74 && !gGpuInfo.drawSyncCb) DMACallback(2, 0);
+    gpuExecuteQueueSavedMask = SetIntrMask(0);
+    while (_qin != _qout && !(*DMA2_CHCR & 0x01000000)) {
+        if (((_qout + 1) & 63) == _qin && !gGpuInfo.drawSyncCb) DMACallback(2, 0);
         while (!(*GPU_STATUS & 0x04000000)) {}
-        queue[D_80139D78].execute(queue[D_80139D78].first, queue[D_80139D78].second);
-        D_80139D78 = (D_80139D78 + 1) & 63;
+        queue[_qout].execute(queue[_qout].first, queue[_qout].second);
+        _qout = (_qout + 1) & 63;
     }
-    SetIntrMask(D_80139D80);
-    if (D_80139D74 == D_80139D78 && !(*DMA2_CHCR & 0x01000000) &&
+    SetIntrMask(gpuExecuteQueueSavedMask);
+    if (_qin == _qout && !(*DMA2_CHCR & 0x01000000) &&
         *(u32 *)gGpuInfo.unk8 && gGpuInfo.drawSyncCb) {
         *(u32 *)gGpuInfo.unk8 = 0;
         gGpuInfo.drawSyncCb();
     }
-    return (D_80139D74 - D_80139D78) & 63;
+    return (_qin - _qout) & 63;
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/sys", _exeque);
 #endif
 
 #ifdef NON_MATCHING
-extern volatile s32 D_80139D74, D_80139D78;
-extern s32 D_80139D84;
-extern u8 D_8013FA50[];
+extern volatile s32 _qin, _qout;
+extern s32 gpuTimeoutSavedMask;
+extern u8 gpuCommandQueue[];
 extern int _version(int);
 /* Best observed instruction-sequence similarity: 86.21% (75/87 words). */
 int func_800CF7E8(int mode) {
-    D_80139D84 = SetIntrMask(0);
-    D_80139D78 = 0;
-    D_80139D74 = D_80139D78;
+    gpuTimeoutSavedMask = SetIntrMask(0);
+    _qout = 0;
+    _qin = _qout;
     switch (mode & 7) {
     case 0:
         *DMA2_CHCR = 0x401;
         *DPCR |= 0x800;
         *GPU_STATUS = 0;
-        gpu_memset(D_8013F948, 0, 0x100);
-        gpu_memset(D_8013FA50, 0, 0x1800);
+        gpu_memset(gpuControlCache, 0, 0x100);
+        gpu_memset(gpuCommandQueue, 0, 0x1800);
         break;
     case 1:
     case 3:
@@ -646,7 +646,7 @@ int func_800CF7E8(int mode) {
         *GPU_STATUS = 0x01000000;
         break;
     }
-    SetIntrMask(D_80139D84);
+    SetIntrMask(gpuTimeoutSavedMask);
     if ((mode & 7) == 0) return _version(mode);
     return 0;
 }
@@ -654,13 +654,13 @@ int func_800CF7E8(int mode) {
 INCLUDE_ASM("asm/nonmatchings/syslib/libgpu/sys", func_800CF7E8);
 #endif
 
-extern volatile s32 D_80139D74, D_80139D78;
+extern volatile s32 _qin, _qout;
 
 int func_800CF938(int mode) {
     int count;
     if (!mode) {
         set_alarm();
-        while (D_80139D74 != D_80139D78) {
+        while (_qin != _qout) {
             _exeque();
             if (get_alarm()) return -1;
         }
@@ -668,7 +668,7 @@ int func_800CF938(int mode) {
             if (get_alarm()) return -1;
         return 0;
     }
-    count = (D_80139D74 - D_80139D78) & 0x3f;
+    count = (_qin - _qout) & 0x3f;
     if (count) _exeque();
     if ((*DMA2_CHCR & 0x01000000) || !(*GPU_STATUS & 0x04000000)) {
         if (!count) return 1;
@@ -677,27 +677,27 @@ int func_800CF938(int mode) {
 }
 
 void set_alarm(void) {
-    D_80139D88 = VSync(-1) + 0xF0;
-    D_80139D8C = 0;
+    gpuAlarmDeadline = VSync(-1) + 0xF0;
+    gpuAlarmPollCount = 0;
 }
 
 #ifdef NON_MATCHING
-extern s32 D_80139D84;
+extern s32 gpuTimeoutSavedMask;
 extern int printf(const char *, ...);
 
 /* Best observed instruction-sequence similarity: 90.12% (73/81 words). */
 int get_alarm(void) {
-    if (VSync(-1) > D_80139D88 || D_80139D8C++ > 0xF0000) {
+    if (VSync(-1) > gpuAlarmDeadline || gpuAlarmPollCount++ > 0xF0000) {
         *GPU_STATUS;
-        printf(D_80012E8C, (D_80139D74 - D_80139D78) & 0x3F,
+        printf(gpuQueueTimeoutFormat, (_qin - _qout) & 0x3F,
                *GPU_STATUS, *DMA2_CHCR, *DMA2_MADR);
-        D_80139D84 = SetIntrMask(0);
-        D_80139D74 = D_80139D78 = 0;
+        gpuTimeoutSavedMask = SetIntrMask(0);
+        _qin = _qout = 0;
         *DMA2_CHCR = 0x401;
         *DPCR |= 0x800;
         *GPU_STATUS = 0x02000000;
         *GPU_STATUS = 0x01000000;
-        SetIntrMask(D_80139D84);
+        SetIntrMask(gpuTimeoutSavedMask);
         return -1;
     }
     return 0;
@@ -721,9 +721,9 @@ int _version(int mode) {
 extern DmaCallback gpu_install_dma_callback(void);
 
 s32 LoadImage2(RECT *rect, u32 *pixels) {
-    func_800CD4CC(D_80012EC0, rect);
-    D_80139D88 = VSync(-1) + 240;
-    D_80139D8C = 0;
+    func_800CD4CC(gpuLoadImage2Name, rect);
+    gpuAlarmDeadline = VSync(-1) + 240;
+    gpuAlarmPollCount = 0;
     while ((*DMA2_CHCR & 0x01000000) || !(*GPU_STATUS & 0x04000000))
         if (get_alarm())
             return -1;
@@ -733,9 +733,9 @@ s32 LoadImage2(RECT *rect, u32 *pixels) {
 }
 
 s32 StoreImage2(RECT *rect, u32 *pixels) {
-    func_800CD4CC(D_80012DE4, rect);
-    D_80139D88 = VSync(-1) + 240;
-    D_80139D8C = 0;
+    func_800CD4CC(gpuStoreImageName, rect);
+    gpuAlarmDeadline = VSync(-1) + 240;
+    gpuAlarmPollCount = 0;
     while ((*DMA2_CHCR & 0x01000000) || !(*GPU_STATUS & 0x04000000))
         if (get_alarm())
             return -1;
@@ -746,9 +746,9 @@ s32 StoreImage2(RECT *rect, u32 *pixels) {
 
 s32 MoveImage2(RECT *rect, int x, int y) {
     u32 source;
-    func_800CD4CC(D_80012DF0, rect);
-    D_80139D88 = VSync(-1) + 240;
-    D_80139D8C = 0;
+    func_800CD4CC(gpuMoveImageName, rect);
+    gpuAlarmDeadline = VSync(-1) + 240;
+    gpuAlarmPollCount = 0;
     while ((*DMA2_CHCR & 0x01000000) || !(*GPU_STATUS & 0x04000000))
         if (get_alarm())
             return -1;
@@ -765,9 +765,9 @@ s32 MoveImage2(RECT *rect, int x, int y) {
 
 s32 DrawOTag2(u32 *ot) {
     if (gGpuInfo.level >= 2)
-        D_80139C48(D_80012E2C, ot);
-    D_80139D88 = VSync(-1) + 240;
-    D_80139D8C = 0;
+        GPU_printf(gpuDrawOTagFormat, ot);
+    gpuAlarmDeadline = VSync(-1) + 240;
+    gpuAlarmPollCount = 0;
     while ((*DMA2_CHCR & 0x01000000) || !(*GPU_STATUS & 0x04000000))
         if (get_alarm())
             return -1;

@@ -6,7 +6,7 @@ extern s16 _SsVmSetSeqVol(s16, u16, u16, s16);
 /* Best observed instruction-sequence similarity: 83.33% (30/36 words;
  * GCC 2.8.0, -mno-split-addresses). */
 void _SsSndSetVol(s16 id, s16 seq, u16 left, u16 right) {
-    struct SeqStruct *s = &D_8013BF10[id][seq];
+    struct SeqStruct *s = &_ss_score[id][seq];
     if (s->flags != 1) {
         s->voll = left;
         s->volr = right;
@@ -23,7 +23,7 @@ extern s16 _SsVmSetSeqVol(s16, u16, u16, s16);
 
 /* Best observed instruction-sequence similarity: 65.38% (17/26 words). */
 void SsSeqSetVol(s16 id, int left, int right) {
-    struct SeqStruct *score = &D_8013BF10[id][0];
+    struct SeqStruct *score = &_ss_score[id][0];
 
     if (score->flags != 1) {
         score->voll = left;
@@ -40,7 +40,7 @@ INCLUDE_ASM("asm/nonmatchings/syslib/libsnd/ssvol", SsSeqSetVol);
 /* Best observed instruction-sequence similarity: 83.33% (30/36 words;
  * GCC 2.8.0, -mno-split-addresses). */
 void SsSepSetVol(s16 id, s16 seq, u16 left, u16 right) {
-    struct SeqStruct *s = &D_8013BF10[id][seq];
+    struct SeqStruct *s = &_ss_score[id][seq];
     if (s->flags != 1) {
         s->voll = left;
         s->volr = right;

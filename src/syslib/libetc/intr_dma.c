@@ -17,8 +17,8 @@ void *startIntrDMA(void) {
 }
 
 typedef struct { volatile u32 madr, bcr, chcr, pad; } DmaChannel;
-extern DmaChannel *D_80134900;
-extern const char D_80012560[], D_8001257C[];
+extern DmaChannel *dmaChannelRegisters;
+extern const char dmaBusErrorFormat[], dmaChannelAddressFormat[];
 extern int printf(const char *, ...);
 
 void trapIntrDMA(void) {
@@ -35,8 +35,8 @@ void trapIntrDMA(void) {
         flags = (*gDMAInterruptControl >> 24) & 0x7f;
     }
     if ((*gDMAInterruptControl & 0xff000000) == 0x80000000 || (*gDMAInterruptControl & 0x8000)) {
-        printf(D_80012560, *gDMAInterruptControl);
-        for (i = 0; i < 7; i++) printf(D_8001257C, i, D_80134900[i].madr);
+        printf(dmaBusErrorFormat, *gDMAInterruptControl);
+        for (i = 0; i < 7; i++) printf(dmaChannelAddressFormat, i, dmaChannelRegisters[i].madr);
     }
 }
 

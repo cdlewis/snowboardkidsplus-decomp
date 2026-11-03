@@ -2,7 +2,7 @@
 
 #ifdef NON_MATCHING
 #include "libspu_private.h"
-extern int D_80132E18, D_80132E1C, D_80132E20;
+extern int _spu_rev_flag, _spu_rev_reserve_wa, _spu_rev_offsetaddr;
 
 /* Best observed instruction-sequence similarity: 42.31% (22/52 words;
  * GCC 2.7.2). */
@@ -11,22 +11,22 @@ int SpuSetReverb(int on) {
     switch (on) {
     case 0:
         cnt = _spu_RXX->rxx.spucnt;
-        D_80132E18 = 0;
+        _spu_rev_flag = 0;
         _spu_RXX->rxx.spucnt = cnt & ~0x80;
         break;
     case 1:
-        if (D_80132E1C != 1 && _SpuIsInAllocateArea_(D_80132E20)) {
+        if (_spu_rev_reserve_wa != 1 && _SpuIsInAllocateArea_(_spu_rev_offsetaddr)) {
             cnt = _spu_RXX->rxx.spucnt;
-            D_80132E18 = 0;
+            _spu_rev_flag = 0;
             _spu_RXX->rxx.spucnt = cnt & ~0x80;
         } else {
             cnt = _spu_RXX->rxx.spucnt;
-            D_80132E18 = 1;
+            _spu_rev_flag = 1;
             _spu_RXX->rxx.spucnt = cnt | 0x80;
         }
         break;
     }
-    return D_80132E18;
+    return _spu_rev_flag;
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/syslib/libspu/s_sr", SpuSetReverb);

@@ -4,7 +4,7 @@
 extern s32 _SsReadDeltaValue(s16, s16);
 
 void _SsContBankChange(s16 id, s16 seq) {
-    struct SeqStruct *s = &D_8013BF10[id][seq];
+    struct SeqStruct *s = &_ss_score[id][seq];
     u8 bank = *s->seq_ptr;
     s->seq_ptr++;
     s->vab_id = bank;

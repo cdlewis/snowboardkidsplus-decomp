@@ -5,7 +5,7 @@
 /* Best observed instruction-sequence similarity: 75.00% (33/44 words,
  * including target padding). */
 s32 _SsReadDeltaValue(s16 id, s16 seq) {
-    struct SeqStruct *s = &D_8013BF10[id][seq];
+    struct SeqStruct *s = &_ss_score[id][seq];
     u32 value = *s->seq_ptr++;
     if (value) {
         if (value & 0x80) {

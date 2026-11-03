@@ -71,7 +71,7 @@ typedef struct {
     int (*test)(void);
     void *unused;
 } PadIntrEntry;
-extern PadIntrEntry D_80141658;
+extern PadIntrEntry padInterruptEntry;
 extern void SysDeqIntRP(int, void *);
 
 #ifdef NON_MATCHING
@@ -81,12 +81,12 @@ extern void SysEnqIntRP(int, void *);
  * GCC 2.7.2). */
 int func_800D6DEC(void) {
     EnterCriticalSection();
-    D_80141658.handler = func_800D6E9C;
-    D_80141658.test = func_800D6F04;
-    D_80141658.next = 0;
-    D_80141658.unused = 0;
-    SysDeqIntRP(1, &D_80141658);
-    SysEnqIntRP(1, &D_80141658);
+    padInterruptEntry.handler = func_800D6E9C;
+    padInterruptEntry.test = func_800D6F04;
+    padInterruptEntry.next = 0;
+    padInterruptEntry.unused = 0;
+    SysDeqIntRP(1, &padInterruptEntry);
+    SysEnqIntRP(1, &padInterruptEntry);
     ExitCriticalSection();
     return 1;
 }
@@ -96,7 +96,7 @@ INCLUDE_ASM("asm/nonmatchings/syslib/libapi/pad", func_800D6DEC);
 
 int func_800D6E64(void) {
     EnterCriticalSection();
-    SysDeqIntRP(1, &D_80141658);
+    SysDeqIntRP(1, &padInterruptEntry);
     ExitCriticalSection();
     return 1;
 }

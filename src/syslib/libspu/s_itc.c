@@ -1,6 +1,6 @@
 #include "libspu_private.h"
 
-extern s32 D_80132E0C;
+extern s32 _spu_EVdma;
 extern s32 TestEvent(s32 event);
 
 s32 SpuIsTransferCompleted(s32 immediateFlag) {
@@ -9,11 +9,11 @@ s32 SpuIsTransferCompleted(s32 immediateFlag) {
     if (_spu_trans_mode == 1 || _spu_inTransfer == 1) {
         return 1;
     }
-    in_transfer = TestEvent(D_80132E0C);
+    in_transfer = TestEvent(_spu_EVdma);
     if (immediateFlag == 1) {
         if (in_transfer == 0) {
             do {
-            } while (TestEvent(D_80132E0C) == 0);
+            } while (TestEvent(_spu_EVdma) == 0);
         }
         in_transfer = 1;
         _spu_inTransfer = in_transfer;

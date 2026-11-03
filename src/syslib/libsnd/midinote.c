@@ -7,7 +7,7 @@ extern int _SsVmKeyOff(s16, s16, s16, u16);
 /* Best observed instruction-sequence similarity: 75.00% (42/56 words;
  * target includes padding). */
 void _SsNoteOn(s16 id, s16 seq, u8 note, u8 velocity) {
-    struct SeqStruct *s = &D_8013BF10[id][seq];
+    struct SeqStruct *s = &_ss_score[id][seq];
     int channel = s->channel_idx;
     u8 pan = s->panpot[channel];
     if (velocity) {

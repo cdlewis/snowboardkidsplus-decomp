@@ -4,7 +4,7 @@
 extern s32 _SsReadDeltaValue(s16, s16);
 extern void func_800B0604(void), _SsVmDamperOff(void);
 void _SsContResetAll(s16 id, s16 seq) {
-    struct SeqStruct *s = &D_8013BF10[id][seq];
+    struct SeqStruct *s = &_ss_score[id][seq];
     func_800B0604();
     _SsVmDamperOff();
     {

@@ -4,7 +4,7 @@
 extern int func_800D2200(void);
 extern void func_800D2214(void);
 extern void func_800D22E0(void);
-extern PadCommand *(*D_8013AD78)(int);
+extern PadCommand *(*_padFuncPort2Info)(int);
 extern int _padSetActAlign(PadCommand *, u8 *);
 extern int _padSetMainMode(PadCommand *, u8, u8);
 extern void _padSetAct(PadCommand *, u8 *, int);
@@ -15,18 +15,18 @@ void PadStartCom(void) { func_800D2214(); }
 
 void PadStopCom(void) { func_800D22E0(); }
 
-extern int D_8013ADB0;
-extern PadCommand *D_8013AD98;
+extern int _padModeMtap;
+extern PadCommand *_padInfoDir;
 
 int PadChkMtap(int port) {
-    if (D_8013ADB0) {
-        return D_8013AD98[port >> 4].unknownE5[3] == 8;
+    if (_padModeMtap) {
+        return _padInfoDir[port >> 4].unknownE5[3] == 8;
     }
     return 0;
 }
 
 int PadGetState(int port) {
-    PadCommand *p = D_8013AD78(port);
+    PadCommand *p = _padFuncPort2Info(port);
     if ((*(u32 *)((u8 *)p + 0x34) & 0xffff0000) ||
         ((p != *(PadCommand **)((u8 *)p + 0x10) && *((u8 *)p + 0x38)) ||
          **(u8 **)((u8 *)p + 0x30))) {
@@ -40,7 +40,7 @@ int PadGetState(int port) {
 }
 
 int PadInfoMode(int port, int mode, int index) {
-    PadCommand *p = D_8013AD78(port);
+    PadCommand *p = _padFuncPort2Info(port);
     switch (mode) {
     case 1: return *((u8 *)p + 0xe8);
     case 2: return *(u16 *)((u8 *)p + 0xe6);
@@ -55,7 +55,7 @@ int PadInfoMode(int port, int mode, int index) {
 }
 
 int PadInfoAct(int port, int index, int request) {
-    PadCommand *p = D_8013AD78(port);
+    PadCommand *p = _padFuncPort2Info(port);
     PadActuatorInfo *a;
     if (index < 0) return p->actuator_count;
     if (index < p->actuator_count) {
@@ -77,7 +77,7 @@ typedef struct {
 } PadComb;
 
 int PadInfoComb(int port, int index, int entry) {
-    PadCommand *p = D_8013AD78(port);
+    PadCommand *p = _padFuncPort2Info(port);
     PadComb *comb;
     if (index < 0)
         return p->unknownEA[0];
@@ -94,13 +94,13 @@ int PadInfoComb(int port, int index, int entry) {
 }
 
 int PadSetActAlign(int port, u8 *data) {
-    return _padSetActAlign(D_8013AD78(port), data);
+    return _padSetActAlign(_padFuncPort2Info(port), data);
 }
 
 int PadSetMainMode(int port, int mode, int lock) {
-    return _padSetMainMode(D_8013AD78(port), mode, lock);
+    return _padSetMainMode(_padFuncPort2Info(port), mode, lock);
 }
 
 void PadSetAct(int port, u8 *data, int size) {
-    _padSetAct(D_8013AD78(port), data, size);
+    _padSetAct(_padFuncPort2Info(port), data, size);
 }

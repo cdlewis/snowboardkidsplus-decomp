@@ -4,7 +4,7 @@
 extern s32 _SsReadDeltaValue(s16, s16);
 
 void _SsSetPitchBend(s16 id, s16 seq) {
-    struct SeqStruct *s = &D_8013BF10[id][seq];
+    struct SeqStruct *s = &_ss_score[id][seq];
     u8 bend = *s->seq_ptr;
     s->seq_ptr++;
     _SsVmPitchBend(id | (seq << 8), (s8)s->vab_id,

@@ -1,11 +1,12 @@
 #include "common.h"
+#include "vm_g.h"
 
 #ifdef NON_MATCHING
 #include "libsnd_private.h"
 typedef struct { u32 voice, mask; u8 rest[56]; } VoiceAttr;
-extern s8 D_8013CFBC;
-extern u32 D_80132DC4;
-extern s16 D_8013CFDA;
+extern s8 _SsVmMaxVoice;
+extern u32 svmReservedVoiceMask;
+
 extern void SpuSetVoiceAttr(VoiceAttr *), _SsVmKeyOffNow(int);
 /* Best observed instruction-sequence similarity: 47.50% (38/80 words). */
 void SsUtAllKeyOff(void) {
@@ -18,10 +19,10 @@ void SsUtAllKeyOff(void) {
     *(u32 *)(attr.rest + 20) = 0x1000;
     *(u16 *)(attr.rest + 50) = 0x80ff;
     *(u16 *)(attr.rest + 52) = 0x4000;
-    for (i = 0; i < D_8013CFBC; i++) {
-        u8 *v = (u8 *)&D_8013C7C8[i];
+    for (i = 0; i < _SsVmMaxVoice; i++) {
+        u8 *v = (u8 *)&_svm_voice[i];
         u32 bit = 1 << i;
-        if (!(D_80132DC4 & bit)) {
+        if (!(svmReservedVoiceMask & bit)) {
             *(s16 *)(v + 2) = 24;
             *(s16 *)(v + 6) = 0;
             *(s16 *)(v + 16) = 255;
@@ -30,7 +31,7 @@ void SsUtAllKeyOff(void) {
             *(s16 *)(v + 22) = 255;
             attr.voice = bit;
             SpuSetVoiceAttr(&attr);
-            D_8013CFDA = i;
+            _svm_cur.voice = i;
             _SsVmKeyOffNow(1);
         }
     }

@@ -2,13 +2,13 @@
 
 #ifdef NON_MATCHING
 #include "libsnd_private.h"
-extern u32 D_8013BF0C;
-extern const char D_80012400[], D_80012418[];
+extern u32 VBLANK_MINUS;
+extern const char sndInvalidSequenceMessage[], sndOldSequenceFormatMessage[];
 extern int printf(const char *, ...), _SsReadDeltaValue(s16, s16);
 /* Best observed instruction-sequence similarity: 46.23% (98/212 words;
  * GCC 2.7.2, assembler reordering; target includes padding). */
 int _SsInitSoundSeq(s16 id, s16 vab, u8 *data) {
-    struct SeqStruct *s = D_8013BF10[id];
+    struct SeqStruct *s = _ss_score[id];
     int i, us, bpm, remainder;
     u32 rate, product, q, rem;
     s->vab_id = vab;
@@ -22,9 +22,9 @@ int _SsInitSoundSeq(s16 id, s16 vab, u8 *data) {
     for (i = 0; i < 16; i++) { s->programs[i] = i; s->panpot[i] = 64; s->vol[i] = 127; }
     s->unk52 = 1;
     s->seq_ptr = data;
-    if (*data != 'S' && *data != 'p') { printf(D_80012418); return 0; }
+    if (*data != 'S' && *data != 'p') { printf(sndOldSequenceFormatMessage); return 0; }
     s->seq_ptr = data + 7;
-    if (*s->seq_ptr++ != 1) { printf(D_80012400); return -1; }
+    if (*s->seq_ptr++ != 1) { printf(sndInvalidSequenceMessage); return -1; }
     s->resolution = *s->seq_ptr++ << 8;
     s->resolution |= *s->seq_ptr++;
     us = *s->seq_ptr++ << 16;
@@ -41,16 +41,16 @@ int _SsInitSoundSeq(s16 id, s16 vab, u8 *data) {
     s->next_sep_pos = s->loop_pos = s->read_pos = s->seq_ptr;
     s->unk10 = 0;
     product = s->resolution * s->tempo;
-    rate = D_8013BF0C * 60;
+    rate = VBLANK_MINUS * 60;
     if (product * 10 < rate) {
-        s->unk52 = D_8013BF0C * 600 / product;
+        s->unk52 = VBLANK_MINUS * 600 / product;
         s->unk54 = s->unk52;
     } else {
         q = (s->resolution * s->tempo * 10) / rate;
         rem = (s->resolution * s->tempo * 10) % rate;
         s->unk52 = -1;
         s->unk54 = q;
-        if (rem > D_8013BF0C * 30) s->unk54 = q + 1;
+        if (rem > VBLANK_MINUS * 30) s->unk54 = q + 1;
     }
     s->unk56 = s->unk54;
     return 0;

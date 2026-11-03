@@ -8,12 +8,12 @@ void _SsSndStop(short sep_access_num, short seq_num) {
     struct SeqStruct* score;
     int i;
 
-    score = &D_8013BF10[sep_access_num][seq_num];
-    D_8013BF10[sep_access_num][seq_num].flags &= ~1;
-    D_8013BF10[sep_access_num][seq_num].flags &= ~2;
-    D_8013BF10[sep_access_num][seq_num].flags &= ~8;
-    D_8013BF10[sep_access_num][seq_num].flags &= ~0x400;
-    D_8013BF10[sep_access_num][seq_num].flags |= 4;
+    score = &_ss_score[sep_access_num][seq_num];
+    _ss_score[sep_access_num][seq_num].flags &= ~1;
+    _ss_score[sep_access_num][seq_num].flags &= ~2;
+    _ss_score[sep_access_num][seq_num].flags &= ~8;
+    _ss_score[sep_access_num][seq_num].flags &= ~0x400;
+    _ss_score[sep_access_num][seq_num].flags |= 4;
     _SsVmSeqKeyOff(sep_access_num | (seq_num << 8));
     _SsVmDamperOff();
     score->play_mode = 0;

@@ -6,7 +6,7 @@ extern s32 _SsReadDeltaValue(s16, s16);
 /* Best observed instruction-sequence similarity: 73.75% (59/80 words,
  * including target padding). */
 void _SsContNrpn2(s16 id, s16 seq, u8 value) {
-    struct SeqStruct *s = &D_8013BF10[id][seq];
+    struct SeqStruct *s = &_ss_score[id][seq];
     if (value == 20) {
         s->unk1B = value;
         s->unk1C = 1;

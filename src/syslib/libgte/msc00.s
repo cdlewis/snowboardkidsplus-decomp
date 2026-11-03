@@ -1,5 +1,6 @@
 # Handwritten assembly reference:
 # https://github.com/hansbonini/psx_tomba/blob/b0aab7ef43785b257f66fb007df36b222e1a3665/src/psyq/libgte/msc00.s
+# https://github.com/ser-pounce/rood-reverse/blob/8bd7908d878824d6cfa02ce65e887dfaf586f11f/src/SLUS_010.40/libgte/MSC00.s
 .include "macro.inc"
 .include "gte_macros.inc"
 
@@ -14,12 +15,12 @@ dlabel func_800BEF98
 enddlabel func_800BEF98
 
 glabel InitGeom
-      lui        $at, %hi(D_80139AAC)
-      sw         $ra, %lo(D_80139AAC)($at)
+      lui        $at, %hi(SAVERA)
+      sw         $ra, %lo(SAVERA)($at)
       jal        _patch_gte
        nop
-      lui        $ra, %hi(D_80139AAC)
-      lw         $ra, %lo(D_80139AAC)($ra)
+      lui        $ra, %hi(SAVERA)
+      lw         $ra, %lo(SAVERA)($ra)
       nop
       mfc0       $v0, $12
       lui        $v1, (0x40000000 >> 16)

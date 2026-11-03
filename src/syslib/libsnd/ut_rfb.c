@@ -8,7 +8,7 @@
  * The compiler reuses mask=16 for variable-count sign-extension shifts;
  * the original uses immediate shifts. */
 void SsUtSetReverbFeedback(s16 feedback) {
-    SpuReverbAttr *attr = &D_8013CEC8;
+    SpuReverbAttr *attr = &_svm_rattr;
     attr->mask = 16;
     attr->feedback = feedback;
     SpuSetReverbModeParam(attr);

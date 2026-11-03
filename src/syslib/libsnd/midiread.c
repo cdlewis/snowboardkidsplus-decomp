@@ -6,7 +6,7 @@ extern void _SsGetSeqData(s16, s16);
 /* Best observed instruction-sequence similarity: 54.29% (38/70 words;
  * GCC 2.8.0, -mno-split-addresses). */
 void _SsSeqPlay(s16 id, s16 seq) {
-    struct SeqStruct *s = &D_8013BF10[id][seq];
+    struct SeqStruct *s = &_ss_score[id][seq];
     int remaining = s->delta_value - s->unk54;
     if (remaining > 0) {
         if (s->unk52 > 0) s->unk52--;
@@ -31,27 +31,27 @@ extern void _SsSndNextSep(s16, s16), _SsVmSeqKeyOff(s16);
 /* Best observed instruction-sequence similarity: 86.21% (125/145 words;
  * GCC 2.8.0). */
 void _SsSeqGetEof(s16 id, s16 seq) {
-    struct SeqStruct *s = &D_8013BF10[id][seq];
+    struct SeqStruct *s = &_ss_score[id][seq];
     s->unk21++;
     if (!(s8)s->l_count) {
         s->unk88 = 0;
         s->unk1C = 0;
         s->delta_value = 0;
-        s->seq_ptr = (D_8013BF10[id][seq].flags & 0x400) ? s->loop_pos : s->read_pos;
+        s->seq_ptr = (_ss_score[id][seq].flags & 0x400) ? s->loop_pos : s->read_pos;
     } else if ((s8)s->unk21 < (s8)s->l_count) {
         s->unk88 = 0;
         s->unk1C = 0;
         s->delta_value = 0;
-        if (D_8013BF10[id][seq].flags & 0x400) s->seq_ptr = s->next_sep_pos = s->loop_pos;
+        if (_ss_score[id][seq].flags & 0x400) s->seq_ptr = s->next_sep_pos = s->loop_pos;
         else s->seq_ptr = s->next_sep_pos = s->read_pos;
     } else {
-        D_8013BF10[id][seq].flags &= ~1;
-        D_8013BF10[id][seq].flags &= ~8;
-        D_8013BF10[id][seq].flags &= ~2;
-        D_8013BF10[id][seq].flags |= 0x200;
-        D_8013BF10[id][seq].flags |= 4;
+        _ss_score[id][seq].flags &= ~1;
+        _ss_score[id][seq].flags &= ~8;
+        _ss_score[id][seq].flags &= ~2;
+        _ss_score[id][seq].flags |= 0x200;
+        _ss_score[id][seq].flags |= 4;
         s->play_mode = 0;
-        s->next_sep_pos = (D_8013BF10[id][seq].flags & 0x400) ? s->loop_pos : s->read_pos;
+        s->next_sep_pos = (_ss_score[id][seq].flags & 0x400) ? s->loop_pos : s->read_pos;
         if ((s8)s->unk22 != -1) {
             s->play_mode = 0;
             _SsSndNextSep((s8)s->unk22, (s8)s->unk23);

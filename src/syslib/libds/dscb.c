@@ -3,25 +3,25 @@
 
 #ifdef NON_MATCHING
 typedef void (*DsCallback)(void);
-extern DsCallback D_8013F698, D_8013F69C, D_8013F6A0;
+extern DsCallback dsSyncCallback, dsReadyCallback, dsStartCallback;
 
 /* Each: best observed instruction-sequence similarity 40.00% (2/5 words;
  * GCC 2.8.0). */
 DsCallback DsSyncCallback(DsCallback callback) {
-    DsCallback previous = D_8013F698;
-    D_8013F698 = callback;
+    DsCallback previous = dsSyncCallback;
+    dsSyncCallback = callback;
     return previous;
 }
 
 DsCallback DsReadyCallback(DsCallback callback) {
-    DsCallback previous = D_8013F69C;
-    D_8013F69C = callback;
+    DsCallback previous = dsReadyCallback;
+    dsReadyCallback = callback;
     return previous;
 }
 
 DsCallback DsStartCallback(DsCallback callback) {
-    DsCallback previous = D_8013F6A0;
-    D_8013F6A0 = callback;
+    DsCallback previous = dsStartCallback;
+    dsStartCallback = callback;
     return previous;
 }
 #else

@@ -6,7 +6,7 @@
  * GCC 2.7.2). */
 void *firstfile(const char *path, void *entry) {
     const signed char *s = (const signed char *)path;
-    char *out = D_80141580;
+    char *out = firstFileDeviceName;
     Device *device, *end;
     int found = 0;
     while (*s >= ';') *out++ = *s++;
@@ -14,8 +14,8 @@ void *firstfile(const char *path, void *entry) {
     device = BIOS_DCB_BASE;
     end = device + (BIOS_DCB_BYTES / sizeof(Device));
     while (device < end) {
-        if (device->name && !strcmp(device->name, D_80141580)) {
-            D_80141578 = device->first;
+        if (device->name && !strcmp(device->name, firstFileDeviceName)) {
+            firstFileHandler = device->first;
             found = 1;
             break;
         }
@@ -25,7 +25,7 @@ void *firstfile(const char *path, void *entry) {
     device = BIOS_DCB_BASE;
     end = device + (BIOS_DCB_BYTES / sizeof(Device));
     while (device < end) {
-        if (device->name && !strcmp(device->name, D_80141580)) {
+        if (device->name && !strcmp(device->name, firstFileDeviceName)) {
             device->first = (FirstHandler)firstfileDeviceCallback;
             break;
         }
@@ -43,16 +43,16 @@ int firstfileDeviceCallback(int *context, void *name, void *entry) {
     if (!*context) *context = 1;
     device = BIOS_DCB_BASE;
     end = device + (BIOS_DCB_BYTES / sizeof(Device));
-    handler = D_80141578;
+    handler = firstFileHandler;
     if (device < end) {
         Device *limit = end;
         do {
-            if (device->name && !strcmp(device->name, D_80141580)) {
+            if (device->name && !strcmp(device->name, firstFileDeviceName)) {
                 device->first = handler;
                 break;
             }
             device++;
         } while (device < limit);
     }
-    return D_80141578(context, name, entry);
+    return firstFileHandler(context, name, entry);
 }

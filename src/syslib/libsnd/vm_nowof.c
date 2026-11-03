@@ -1,9 +1,9 @@
 #include "libsnd_private.h"
 
-extern u16 D_8013CFDA, D_8013CEC0, D_8013CEC2, D_8013C7B8, D_8013C7BA;
+extern u16 _svm_okof1, _svm_okof2, _svm_okon1, _svm_okon2;
 void _SsVmKeyOffNow(int mode) {
     int upper, lower;
-    u16 voice = D_8013CFDA;
+    u16 voice = _svm_cur.voice;
     if (voice < 16) {
         lower = 1 << voice;
         upper = 0;
@@ -11,11 +11,11 @@ void _SsVmKeyOffNow(int mode) {
         lower = 0;
         upper = 1 << (voice - 16);
     }
-    D_8013C7C8[voice].field1d = 0;
-    D_8013C7C8[voice].field4 = 0;
-    D_8013C7C8[voice].field0 = 0;
-    D_8013CEC0 |= lower;
-    D_8013CEC2 |= upper;
-    D_8013C7B8 &= ~D_8013CEC0;
-    D_8013C7BA &= ~D_8013CEC2;
+    _svm_voice[voice].field1d = 0;
+    _svm_voice[voice].field4 = 0;
+    _svm_voice[voice].field0 = 0;
+    _svm_okof1 |= lower;
+    _svm_okof2 |= upper;
+    _svm_okon1 &= ~_svm_okof1;
+    _svm_okon2 &= ~_svm_okof2;
 }

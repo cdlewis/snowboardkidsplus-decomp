@@ -72,7 +72,7 @@ resemble matched SDK routines and must be considered alongside near matches.
 Start with a green `./tools/build-and-verify.sh`. Find the live `INCLUDE_ASM`
 and read its regenerated assembly, including addresses and raw bytes. Search
 callers and existing declarations to establish argument types and data layouts.
-Consult the README's [local SDK references](README.md#local-sdk-references)
+Consult the function-matching skill's local SDK references
 before inventing an implementation.
 
 Run `./tools/codex --bootstrap-only FUNCTION` and enter the printed workspace.
@@ -146,14 +146,26 @@ changes to the reference.
 ## Code Quality Standards
 
 Do not write unit tests unless directly instructed by the user.
+Do not edit README files unless directly instructed by the user.
 
 ### Use C and proper SDK macros
 
 Use authored SDK assembly only when an established PSX decomp explicitly treats
-the corresponding routine as handwritten assembly. Cite that source at a pinned
-revision in the assembly file. Keep authored assembly under `src/`, registered as
+the corresponding routine as handwritten assembly, or the
+[Psy-Q archive](https://github.com/sozud/psy-q) supplies its original handwritten
+source. See the function-matching skill for the sibling reference clone.
+Compiler-generated SDK assembly listings do not establish eligibility.
+Cite the qualifying source at a pinned revision in the assembly file.
+Keep authored assembly under `src/`, registered as
 `hasm` with `hasm_in_src_path: True`; `asm/` remains generated. Instruction-pattern
 heuristics and unmatched `INCLUDE_ASM` fallbacks alone do not establish eligibility.
+
+Resolve syslib data names from SDK object symbols and reference implementations
+instead of retaining `D_` placeholders. Use relocations from matching named
+functions to establish identity, and update the symbol map and all consumers
+together. An address inside a named SDK object should use its typed field or
+array element rather than a separate invented global. Do not claim an original
+name when the SDK and reference sources leave it unnamed.
 
 Use meaningful C types, expressions, and control flow. Do not force a match with
 inline assembly, empty assembly barriers, register bindings, dummy side effects,

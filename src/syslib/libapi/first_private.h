@@ -15,8 +15,8 @@ typedef struct {
 #define BIOS_DCB_BASE (*(Device **)0x150)
 #define BIOS_DCB_BYTES (*(u32 *)0x154)
 
-extern FirstHandler D_80141578;
-extern char D_80141580[];
+extern FirstHandler firstFileHandler;
+extern char firstFileDeviceName[];
 extern int strcmp(const char *, const char *);
 extern int firstfileDeviceCallback(int *, void *, void *);
 extern void *firstfile2(const char *, void *);

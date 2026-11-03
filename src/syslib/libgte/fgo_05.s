@@ -18,9 +18,9 @@ glabel RotMatrixY
        andi      $t7, $t7, 0xFFF
   .L800BBAC4:
       sll        $t8, $t7, 2
-      lui        $t9, %hi(D_8013577C)
+      lui        $t9, %hi(rcossin_tbl)
       addu       $t9, $t9, $t8
-      lw         $t9, %lo(D_8013577C)($t9)
+      lw         $t9, %lo(rcossin_tbl)($t9)
       nop
       sll        $t6, $t9, 16
       sra        $t1, $t6, 16
@@ -28,9 +28,9 @@ glabel RotMatrixY
        sra       $t0, $t9, 16
   .L800BBAE8:
       sll        $t8, $t9, 2
-      lui        $t9, %hi(D_8013577C)
+      lui        $t9, %hi(rcossin_tbl)
       addu       $t9, $t9, $t8
-      lw         $t9, %lo(D_8013577C)($t9)
+      lw         $t9, %lo(rcossin_tbl)($t9)
       nop
       sll        $t8, $t9, 16
       sra        $t7, $t8, 16

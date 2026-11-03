@@ -7,14 +7,11 @@ prompt: >-
   Create the workspace with ./tools/codex --bootstrap-only --id $TASK_ID $INPUT.
   Before inventing an implementation, search these three local SDK source
   libraries for the target function and related routines:
-  PsyZ at ../psyz/decomp/src/ (matching PSY-Q 4.0 reference; use the decompilation
-  tree rather than the native port; later SDK versions have compiler/flag
-  differences), Symphony of the Night at ../sotn-decomp/src/main/psxsdk/ (C
-  implementations including libc and libetc; SDK headers are under
-  ../sotn-decomp/include/), and Tomba at ../psx_tomba/src/psyq/ (broad controller
-  and sound references, including libpad 4.2; inspect GNU_AS_UNITS and controller
-  scheduling settings in ../psx_tomba/Makefile). Paths are relative to this
-  repository root. This game's linked SDK is PSY-Q 4.2, so compare several
+    * PsyZ at ../psyz/decomp;
+    * Symphony of the Night at ../sotn-decomp;
+    * Tomba at ../psx_tomba; and
+    * psy-q-decomp at ../psy-q-decomp.
+  Paths are relative to this repository root. This game's linked SDK might be PSY-Q 4.2, so compare several
   implementations against the actual assembly instead of assuming a reference
   matches. See README.md's Local SDK references section for further sources
   and preserve applicable license notices. Run

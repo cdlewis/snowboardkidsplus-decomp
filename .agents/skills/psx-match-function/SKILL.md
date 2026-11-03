@@ -5,6 +5,19 @@ description: Match an assembly-backed function in Snowboard Kids Plus or diagnos
 
 # Match a function
 
+## Local SDK references
+
+For SDK work, consult the [Psy-Q archive](https://github.com/sozud/psy-q),
+cloned at `../psy-q` beside this repository and pinned to
+`2266d676f8de8a7e7a96d9cbb92854f0a55a86a1`.
+The sparse checkout includes the `3.5/PSYQ/SRC` and `3.6/PSYQ/SRC`
+directories. `LIBSN` contains original assembly for debugger file I/O;
+`READ.S` and `WRITE.S` are compiler listings of the adjacent C sources,
+so do not classify those wrappers as handwritten from their extension.
+Use the archive to inform implementation and classification; the game's
+executable remains the byte-match target. Cite qualifying source at a pinned
+revision in each authored assembly file.
+
 ## Prepare an attempt
 
 Run `./tools/build-and-verify.sh` and require a green image. Find the function's

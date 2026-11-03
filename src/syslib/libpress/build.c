@@ -1,11 +1,11 @@
 #include "common.h"
 
 #ifdef NON_MATCHING
-extern u8 D_80139F1C[];
+extern u8 vlcCompressedTable[];
 /* Best observed instruction-sequence similarity: 61.67% (37/60 words;
  * GCC 2.8.0, -mno-split-addresses; target includes padding). */
 void DecDCTvlcBuild(u16 *table) {
-    u8 *out = (u8 *)table, *src = D_80139F1C;
+    u8 *out = (u8 *)table, *src = vlcCompressedTable;
     int distance = 0, count, i;
     do {
         count = *src++;

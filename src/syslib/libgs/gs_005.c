@@ -2,17 +2,17 @@
 
 #ifdef NON_MATCHING
 #include "psx/libgpu.h"
-extern s16 D_8013F764, D_8013F6C8[], D_8013F6CC[];
-extern DRAWENV D_8013F6E0;
+extern s16 PSDIDX, PSDOFSX[], PSDOFSY[];
+extern DRAWENV GsDRAWENV;
 extern DRAWENV *PutDrawEnv(DRAWENV *);
 /* Best observed instruction-sequence similarity: 62.50% (20/32 words,
  * -mno-split-addresses; target includes padding). */
 void GsSetClip(RECT *rect) {
-    D_8013F6E0.clip.x = rect->x + D_8013F6C8[D_8013F764];
-    D_8013F6E0.clip.y = rect->y + D_8013F6CC[D_8013F764];
-    D_8013F6E0.clip.w = rect->w;
-    D_8013F6E0.clip.h = rect->h;
-    PutDrawEnv(&D_8013F6E0);
+    GsDRAWENV.clip.x = rect->x + PSDOFSX[PSDIDX];
+    GsDRAWENV.clip.y = rect->y + PSDOFSY[PSDIDX];
+    GsDRAWENV.clip.w = rect->w;
+    GsDRAWENV.clip.h = rect->h;
+    PutDrawEnv(&GsDRAWENV);
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/syslib/libgs/gs_005", GsSetClip);

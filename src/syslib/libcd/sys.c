@@ -35,20 +35,20 @@ int CdSetDebug(int level) {
     return prev;
 }
 
-extern char *D_801349DC[], *D_80134A5C[];
-extern char D_800125B0[];
+extern char *CD_comstr[], *CD_intstr[];
+extern char cdUnknownCommandName[];
 
 char *CdComstr(u8 index) {
     char *result;
-    if (index <= 27) result = D_801349DC[index];
-    else result = D_800125B0;
+    if (index <= 27) result = CD_comstr[index];
+    else result = cdUnknownCommandName;
     return result;
 }
 
 char *CdIntstr(u8 index) {
     char *result;
-    if (index <= 6) result = D_80134A5C[index];
-    else result = D_800125B0;
+    if (index <= 6) result = CD_intstr[index];
+    else result = cdUnknownCommandName;
     return result;
 }
 
@@ -69,7 +69,7 @@ CdlCB CdReadyCallback(CdlCB func) {
 }
 
 #ifdef NON_MATCHING
-extern int D_8013492C[];
+extern int cdCommandHasLocation[];
 extern int CD_cw(u8, u8 *, u8 *, int);
 
 /* Best observed instruction-sequence similarity: 83.54% (66/79 words). */
@@ -80,7 +80,7 @@ int CdControl(u8 com, u8 *param, u8 *response) {
     do {
         CD_cbsync = 0;
         if (com != 1 && (CD_status & 0x10)) CD_cw(1, 0, 0, 0);
-        if (!param || !D_8013492C[com] || !CD_cw(2, param, response, 0)) {
+        if (!param || !cdCommandHasLocation[com] || !CD_cw(2, param, response, 0)) {
             CD_cbsync = callback;
             if (!CD_cw(com, param, response, 0)) break;
         }
@@ -97,7 +97,7 @@ int CdControlF(u8 com, u8 *param) {
     do {
         CD_cbsync = 0;
         if (com != 1 && (CD_status & 0x10)) CD_cw(1, 0, 0, 0);
-        if (!param || !D_8013492C[com] || !CD_cw(2, param, 0, 0)) {
+        if (!param || !cdCommandHasLocation[com] || !CD_cw(2, param, 0, 0)) {
             CD_cbsync = callback;
             if (!CD_cw(com, param, 0, 1)) break;
         }
@@ -114,7 +114,7 @@ int CdControlB(u8 com, u8 *param, u8 *response) {
     do {
         CD_cbsync = 0;
         if (com != 1 && (CD_status & 0x10)) CD_cw(1, 0, 0, 0);
-        if (!param || !D_8013492C[com] || !CD_cw(2, param, response, 0)) {
+        if (!param || !cdCommandHasLocation[com] || !CD_cw(2, param, response, 0)) {
             CD_cbsync = callback;
             if (!CD_cw(com, param, response, 0)) break;
         }

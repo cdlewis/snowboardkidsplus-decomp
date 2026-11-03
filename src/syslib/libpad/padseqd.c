@@ -8,13 +8,13 @@ extern int func_800D40CC(PadCommand *);
 extern void func_800D40CC(void);
 #endif
 extern int func_800D44E0(PadCommand *);
-extern void (*D_8013AD7C)(void), (*D_8013AD84)(void);
-extern int (*D_8013AD80)(PadCommand *);
+extern void (*_padFuncSendAuto)(void), (*_padFuncRecvAuto)(void);
+extern int (*_padFuncChkEng)(PadCommand *);
 
 void _padInitDirSeq(void) {
-    D_8013AD7C = (void (*)(void))func_800D40CC;
-    D_8013AD80 = func_800D44E0;
-    D_8013AD84 = func_800D41A0;
+    _padFuncSendAuto = (void (*)(void))func_800D40CC;
+    _padFuncChkEng = func_800D44E0;
+    _padFuncRecvAuto = func_800D41A0;
 }
 
 #ifdef NON_MATCHING
@@ -43,7 +43,7 @@ INCLUDE_ASM("asm/nonmatchings/syslib/libpad/padseqd", func_800D40CC);
 
 INCLUDE_ASM("asm/nonmatchings/syslib/libpad/padseqd", func_800D41A0);
 
-extern void (*D_8013AD68)(PadCommand *);
+extern void (*_padFuncClrInfo)(PadCommand *);
 
 void _dirFailAuto(PadCommand *p) {
     (*(int *)((u8 *)p + 0x4c))++;
@@ -55,7 +55,7 @@ void _dirFailAuto(PadCommand *p) {
             return;
         } else {
             if (p->unknown49[1] < 4) { p->unknown49[1]++; return; }
-            if (p->unknown49[0]) D_8013AD68(p);
+            if (p->unknown49[0]) _padFuncClrInfo(p);
         }
     }
     if (**(u8 **)((u8 *)p + 0x3c) != 0xf3) {

@@ -2,8 +2,8 @@
 
 #ifdef NON_MATCHING
 #include "libspu_private.h"
-extern int D_80132E1C, D_80132E20;
-extern u32 D_80132EB4;
+extern int _spu_rev_reserve_wa, _spu_rev_offsetaddr;
+extern u32 _spu_mem_mode_unitM;
 extern void _spu_gcSPU(void);
 /* Best observed instruction-sequence similarity: 43.24% (80/185 words;
  * GCC 2.7.2, assembler reordering). */
@@ -11,9 +11,9 @@ s32 SpuMalloc(s32 size) {
     int i, index = -1;
     s32 reserve;
     SPU_MALLOC last;
-    if (D_80132E1C) reserve = (0x10000 - D_80132E20) << _spu_mem_mode_plus;
+    if (_spu_rev_reserve_wa) reserve = (0x10000 - _spu_rev_offsetaddr) << _spu_mem_mode_plus;
     else reserve = 0;
-    if (size & ~D_80132EB4) size += D_80132EB4;
+    if (size & ~_spu_mem_mode_unitM) size += _spu_mem_mode_unitM;
     size = (size >> _spu_mem_mode_plus) << _spu_mem_mode_plus;
     if (_spu_memList[0].addr & 0x40000000) index = 0;
     else {

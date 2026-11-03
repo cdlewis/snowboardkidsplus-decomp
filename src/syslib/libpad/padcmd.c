@@ -82,7 +82,7 @@ int _padGetActSize(PadCommand *p) {
 }
 
 #ifdef NON_MATCHING
-extern int (*D_8013AD80)(PadCommand *);
+extern int (*_padFuncChkEng)(PadCommand *);
 extern void _padLoadActInfo_snd(PadCommand *);
 extern int func_800D2E88(PadCommand *);
 /* Best observed instruction-sequence similarity: 61.11% (33/54 words;
@@ -91,7 +91,7 @@ int _padLoadActInfo(PadCommand *p, void *memory) {
     u32 base;
     if (memory) {
         if (*(u32 *)((u8 *)p + 4)) return 0;
-        if (!D_8013AD80(p)) {
+        if (!_padFuncChkEng(p)) {
             p->unknown49[0] = 4;
             p->state = 1;
             p->send = _padLoadActInfo_snd;
@@ -137,7 +137,7 @@ typedef struct {
     u8 state, index, remaining, status; u8 pad4a[0x99];
     u8 mode_count; u8 padE4[5]; u8 actuator_count, block_count;
 } PadLoad;
-extern u8 *D_80141270;
+extern u8 *padCommandWriteCursor;
 /* Best observed instruction-sequence similarity: 78.34% (123/157 words;
  * GCC 2.8.0, -O2). */
 int func_800D2E88(PadCommand *command) {
@@ -165,12 +165,12 @@ int func_800D2E88(PadCommand *command) {
             block->size = p->remaining;
             if (!p->index) block->data = (u8 *)(p->blocks + p->block_count);
             else block->data = block[-1].data + ((block[-1].size + 3) & 0x1fc);
-            D_80141270 = block->data;
+            padCommandWriteCursor = block->data;
             src = p->reply + 5; n = 4;
         } else { src = p->reply + 2; n = 6; }
         while (n--) {
             if (!p->remaining) break;
-            *D_80141270++ = *src++;
+            *padCommandWriteCursor++ = *src++;
             p->remaining--;
         }
         if (p->remaining) return 0;
@@ -184,11 +184,11 @@ int func_800D2E88(PadCommand *command) {
 INCLUDE_ASM("asm/nonmatchings/syslib/libpad/padcmd", func_800D2E88);
 #endif
 
-extern int (*D_8013AD80)(PadCommand *);
+extern int (*_padFuncChkEng)(PadCommand *);
 extern void _padSetActAlign_snd(PadCommand *);
 extern int func_800D3180(PadCommand *);
 int _padSetActAlign(PadCommand *p, u8 *data) {
-    if (D_8013AD80(p) == 0) {
+    if (_padFuncChkEng(p) == 0) {
         p->state = 1;
         p->send = _padSetActAlign_snd;
         p->alignment = data;
@@ -236,7 +236,7 @@ extern void _padSetMainMode_snd(PadCommand *);
 extern int _padSetMainMode_rcv(PadCommand *);
 /* Best observed instruction-sequence similarity: 76.32% (29/38 words, -O2). */
 int _padSetMainMode(PadCommand *p, u8 mode, u8 lock) {
-    if (D_8013AD80(p) == 0) {
+    if (_padFuncChkEng(p) == 0) {
         p->state = 1;
         p->send = _padSetMainMode_snd;
         p->receive = _padSetMainMode_rcv;
@@ -268,7 +268,7 @@ case3:
 end: ;
 }
 
-extern void (*D_8013AD68)(PadCommand *);
+extern void (*_padFuncClrInfo)(PadCommand *);
 
 int _padSetMainMode_rcv(PadCommand *p) {
     if (p->mode_status != 0) {
@@ -277,7 +277,7 @@ int _padSetMainMode_rcv(PadCommand *p) {
         p->state = 0xfe;
         return 0;
     }
-    D_8013AD68(p);
+    _padFuncClrInfo(p);
     return 0;
 }
 

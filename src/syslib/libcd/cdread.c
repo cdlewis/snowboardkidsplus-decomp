@@ -13,19 +13,19 @@ struct CdReadState {
     s32 mode;
     u8 *result;
 };
-extern struct CdReadState D_80134CE0;
+extern struct CdReadState cdReadState;
 
-CdlCB D_80134CDC __attribute__((section(".data.cd_read_callback"), aligned(4))) = 0;
+CdlCB cdReadCallback __attribute__((section(".data.cd_read_callback"), aligned(4))) = 0;
 
 extern DmaCallback CdDataCallback(DmaCallback);
 extern s32 CdControlF(u8, u8 *);
 #ifdef NON_MATCHING
-extern const char D_80012A00[];
+extern const char cdReadSectorErrorMessage[];
 extern int puts(const char *), VSync(int), func_800B8F34(int);
 extern void func_800B8E68(void);
 /* Best observed instruction-sequence similarity: 75.66% (115/152 words). */
 void func_800B8C08(u8 intr, u8 *result) {
-    volatile struct CdReadState *s = &D_80134CE0;
+    volatile struct CdReadState *s = &cdReadState;
     u32 header[3];
     s->result = result;
     if (intr == 1) {
@@ -38,7 +38,7 @@ void func_800B8C08(u8 intr, u8 *result) {
                     CdDataCallback(func_800B8E68);
                 } else CdGetSector(header, 3);
                 if (CdPosToInt((CdlLOC *)header) != s->completed) {
-                    puts(D_80012A00);
+                    puts(cdReadSectorErrorMessage);
                     s->active = -1;
                 }
             }
@@ -59,7 +59,7 @@ void func_800B8C08(u8 intr, u8 *result) {
         CdReadyCallback(s->ready);
         if (s->mode & 1) CdDataCallback(s->data);
         CdControlF(9, 0);
-        if (D_80134CDC) D_80134CDC(s->active ? 5 : 2, result);
+        if (cdReadCallback) cdReadCallback(s->active ? 5 : 2, result);
     }
 }
 #else
@@ -70,7 +70,7 @@ extern DmaCallback CdDataCallback(DmaCallback);
 extern s32 CdControlF(u8, u8 *);
 
 void func_800B8E68(void) {
-    volatile struct CdReadState *s = &D_80134CE0;
+    volatile struct CdReadState *s = &cdReadState;
     s->next += s->sectorsize * 4;
     s->active--;
     s->completed++;
@@ -79,30 +79,30 @@ void func_800B8E68(void) {
         CdReadyCallback(s->ready);
         if (s->mode & 1) CdDataCallback(s->data);
         CdControlF(9, 0);
-        if (D_80134CDC) D_80134CDC(2, s->result);
+        if (cdReadCallback) cdReadCallback(2, s->result);
     }
 }
 
 #ifdef NON_MATCHING
-extern const char D_80012A18[], D_80012A30[];
+extern const char cdReadShellOpenMessage[], cdReadRetryMessage[];
 extern int puts(const char *), VSync(int), CdControl(u8, u8 *, u8 *);
 extern void func_800B8C08(u8, u8 *);
 /* Best observed instruction-sequence similarity: 71.77% (89/124 words). */
 int func_800B8F34(int retry) {
-    volatile struct CdReadState *s = &D_80134CE0;
+    volatile struct CdReadState *s = &cdReadState;
     u8 mode;
     CdSyncCallback(0);
     CdReadyCallback(0);
     if (s->mode & 1) CdDataCallback(0);
     if (CdStatus() & 0x10) {
-        if (!(VSync(-1) & 0x3f)) puts(D_80012A18);
+        if (!(VSync(-1) & 0x3f)) puts(cdReadShellOpenMessage);
         CdControlF(1, 0);
         s->start = VSync(-1);
         s->active = -1;
         return s->active;
     }
     if (retry) {
-        puts(D_80012A30);
+        puts(cdReadRetryMessage);
         CdControl(9, 0, 0);
         if (!CdControl(2, (u8 *)CdLastPos(), 0)) { s->active = -1; return s->count; }
     }
@@ -130,7 +130,7 @@ extern s32 CdControlF(u8, u8 *);
 /* Best observed instruction-sequence similarity: 54.05% (20/37 words;
  * GCC 2.8.0, -mno-split-addresses). */
 s32 CdReadBreak(void) {
-    struct CdReadState *s = &D_80134CE0;
+    struct CdReadState *s = &cdReadState;
     if (s->mode & 1)
         CdDataSync(0);
     s->active = 0;
@@ -148,7 +148,7 @@ INCLUDE_ASM("asm/nonmatchings/syslib/libcd/cdread", CdReadBreak);
 extern int CdControlB(u8, u8 *, u8 *), VSync(int), CdStatus(void), func_800B8F34(int);
 /* Best observed instruction-sequence similarity: 62.50% (40/64 words). */
 s32 CdRead(s32 sectors, u32 *buffer, s32 mode) {
-    volatile struct CdReadState *s = &D_80134CE0;
+    volatile struct CdReadState *s = &cdReadState;
     s->readmode = mode;
     switch (s->readmode & 0x30) {
     case 0: s->sectorsize = 0x200; break;
@@ -172,7 +172,7 @@ INCLUDE_ASM("asm/nonmatchings/syslib/libcd/cdread", CdRead);
 extern int VSync(int), func_800B8F34(int);
 
 s32 CdReadSync(s32 mode, u8 *result) {
-    s32 *s = &D_80134CE0.start;
+    s32 *s = &cdReadState.start;
     int remaining;
     do {
         if (VSync(-1) > s[0] + 1200) remaining = -1;
@@ -186,8 +186,8 @@ s32 CdReadSync(s32 mode, u8 *result) {
 }
 
 CdlCB CdReadCallback(CdlCB cb) {
-    CdlCB prev = D_80134CDC;
-    D_80134CDC = cb;
+    CdlCB prev = cdReadCallback;
+    cdReadCallback = cb;
     return prev;
 }
 
@@ -195,8 +195,8 @@ CdlCB CdReadCallback(CdlCB cb) {
 /* Best observed instruction-sequence similarity: 44.44% (4/9 words,
  * including target padding). */
 s32 CdReadMode(s32 mode) {
-    s32 old = D_80134CE0.mode;
-    D_80134CE0.mode = mode;
+    s32 old = cdReadState.mode;
+    cdReadState.mode = mode;
     return old;
 }
 #else

@@ -1,10 +1,10 @@
 #include "common.h"
+#include "sscall.h"
 
 #ifdef NON_MATCHING
-extern u32 D_8013BF08;
-extern const char D_800123D0[];
+extern u32 _snd_openflag;
+extern const char sndSequenceSlotsFullMessage[];
 extern int printf(const char *, ...), _SsInitSoundSeq(s16, s16, void *);
-extern void (*D_8013BE70[])(void);
 extern void _SsNoteOn(void);
 extern void _SsSetProgramChange(void);
 extern void _SsGetMetaEvent(void);
@@ -47,52 +47,52 @@ extern void func_800AB274(void);
 s16 SsSeqOpen(void *data, s16 vab) {
     int i, found = 0;
     s16 slot = 0, result;
-    if (D_8013BF08 == 0xffffffff) { printf(D_800123D0); return -1; }
+    if (_snd_openflag == 0xffffffff) { printf(sndSequenceSlotsFullMessage); return -1; }
     for (i = 0; i < 32;) {
-        if (!(D_8013BF08 & (1U << i))) { slot = i; found = 1; }
+        if (!(_snd_openflag & (1U << i))) { slot = i; found = 1; }
         i++;
-        if (i >= 32) { printf(D_800123D0); return -1; }
+        if (i >= 32) { printf(sndSequenceSlotsFullMessage); return -1; }
         if (found) break;
     }
-    D_8013BF08 |= 1U << slot;
+    _snd_openflag |= 1U << slot;
     result = _SsInitSoundSeq(slot, vab, data);
-    D_8013BE70[0] = _SsNoteOn;
-    D_8013BE70[1] = _SsSetProgramChange;
-    D_8013BE70[3] = _SsGetMetaEvent;
-    D_8013BE70[2] = _SsSetPitchBend;
-    D_8013BE70[4] = _SsSetControlChange;
-    D_8013BE70[5] = _SsContBankChange;
-    D_8013BE70[7] = _SsContMainVol;
-    D_8013BE70[8] = _SsContPanpot;
-    D_8013BE70[9] = _SsContExpression;
-    D_8013BE70[10] = _SsContDamper;
-    D_8013BE70[11] = _SsContNrpn1;
-    D_8013BE70[12] = _SsContNrpn2;
-    D_8013BE70[13] = _SsContRpn1;
-    D_8013BE70[14] = _SsContRpn2;
-    D_8013BE70[15] = _SsContExternal;
-    D_8013BE70[16] = _SsContResetAll;
-    D_8013BE70[6] = _SsContDataEntry;
-    D_8013BE70[17] = _SsSetNrpnVabAttr0;
-    D_8013BE70[18] = _SsSetNrpnVabAttr1;
-    D_8013BE70[19] = _SsSetNrpnVabAttr2;
-    D_8013BE70[20] = _SsSetNrpnVabAttr3;
-    D_8013BE70[21] = _SsSetNrpnVabAttr4;
-    D_8013BE70[22] = _SsSetNrpnVabAttr5;
-    D_8013BE70[23] = _SsSetNrpnVabAttr6;
-    D_8013BE70[24] = _SsSetNrpnVabAttr7;
-    D_8013BE70[25] = _SsSetNrpnVabAttr8;
-    D_8013BE70[26] = _SsSetNrpnVabAttr9;
-    D_8013BE70[27] = _SsSetNrpnVabAttr10;
-    D_8013BE70[28] = _SsSetNrpnVabAttr11;
-    D_8013BE70[29] = _SsSetNrpnVabAttr12;
-    D_8013BE70[30] = _SsSetNrpnVabAttr13;
-    D_8013BE70[31] = _SsSetNrpnVabAttr14;
-    D_8013BE70[32] = _SsSetNrpnVabAttr15;
-    D_8013BE70[33] = _SsSetNrpnVabAttr16;
-    D_8013BE70[34] = func_800AB214;
-    D_8013BE70[35] = func_800AB244;
-    D_8013BE70[36] = func_800AB274;
+    SsFCALL.noteon = _SsNoteOn;
+    SsFCALL.programchange = _SsSetProgramChange;
+    SsFCALL.metaevent = _SsGetMetaEvent;
+    SsFCALL.pitchbend = _SsSetPitchBend;
+    SsFCALL.control[CC_NUMBER] = _SsSetControlChange;
+    SsFCALL.control[CC_BANKCHANGE] = _SsContBankChange;
+    SsFCALL.control[CC_MAINVOL] = _SsContMainVol;
+    SsFCALL.control[CC_PANPOT] = _SsContPanpot;
+    SsFCALL.control[CC_EXPRESSION] = _SsContExpression;
+    SsFCALL.control[CC_DAMPER] = _SsContDamper;
+    SsFCALL.control[CC_NRPN1] = _SsContNrpn1;
+    SsFCALL.control[CC_NRPN2] = _SsContNrpn2;
+    SsFCALL.control[CC_RPN1] = _SsContRpn1;
+    SsFCALL.control[CC_RPN2] = _SsContRpn2;
+    SsFCALL.control[CC_EXTERNAL] = _SsContExternal;
+    SsFCALL.control[CC_RESETALL] = _SsContResetAll;
+    SsFCALL.control[CC_DATAENTRY] = _SsContDataEntry;
+    SsFCALL.ccentry[0] = _SsSetNrpnVabAttr0;
+    SsFCALL.ccentry[1] = _SsSetNrpnVabAttr1;
+    SsFCALL.ccentry[2] = _SsSetNrpnVabAttr2;
+    SsFCALL.ccentry[3] = _SsSetNrpnVabAttr3;
+    SsFCALL.ccentry[4] = _SsSetNrpnVabAttr4;
+    SsFCALL.ccentry[5] = _SsSetNrpnVabAttr5;
+    SsFCALL.ccentry[6] = _SsSetNrpnVabAttr6;
+    SsFCALL.ccentry[7] = _SsSetNrpnVabAttr7;
+    SsFCALL.ccentry[8] = _SsSetNrpnVabAttr8;
+    SsFCALL.ccentry[9] = _SsSetNrpnVabAttr9;
+    SsFCALL.ccentry[10] = _SsSetNrpnVabAttr10;
+    SsFCALL.ccentry[11] = _SsSetNrpnVabAttr11;
+    SsFCALL.ccentry[12] = _SsSetNrpnVabAttr12;
+    SsFCALL.ccentry[13] = _SsSetNrpnVabAttr13;
+    SsFCALL.ccentry[14] = _SsSetNrpnVabAttr14;
+    SsFCALL.ccentry[15] = _SsSetNrpnVabAttr15;
+    SsFCALL.ccentry[16] = _SsSetNrpnVabAttr16;
+    SsFCALL.ccentry[17] = func_800AB214;
+    SsFCALL.ccentry[18] = func_800AB244;
+    SsFCALL.ccentry[19] = func_800AB274;
     if (result == -1) return -1;
     return slot;
 }

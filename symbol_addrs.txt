@@ -327,15 +327,15 @@ CD_datasync = 0x800B7E60; // type:func
 CD_getsector = 0x800B7FC8; // type:func
 CD_getsector2 = 0x800B80C8; // type:func
 CD_set_test_parmnum = 0x800B81B4; // type:func
-D_80134BFC = 0x80134BFC; // size:0x80
-D_80134C7C = 0x80134C7C; // size:0x4
-D_80134C80 = 0x80134C80; // size:0x4
-D_80134C84 = 0x80134C84; // size:0x4
-D_80134C88 = 0x80134C88; // size:0x4
-D_80134C8C = 0x80134C8C; // size:0x4
-D_80134C90 = 0x80134C90; // size:0x4
-D_80134C94 = 0x80134C94; // size:0x4
-D_80134CDC = 0x80134CDC; // size:0x4
+cdCommandParameterCount = 0x80134BFC; // size:0x80
+cdIndexRegister = 0x80134C7C; // size:0x4
+cdRegister1 = 0x80134C80; // size:0x4
+cdRegister2 = 0x80134C84; // size:0x4
+cdRegister3 = 0x80134C88; // size:0x4
+cdCommonDelayRegister = 0x80134C8C; // size:0x4
+cdSpuRegisters = 0x80134C90; // size:0x4
+cdInterruptState = 0x80134C94; // size:0x4
+cdReadCallback = 0x80134CDC; // size:0x4
 GPU_DATA = 0x80139D50; // size:0x4
 GPU_STATUS = 0x80139D54; // size:0x4
 DMA2_MADR = 0x80139D58; // size:0x4
@@ -345,8 +345,8 @@ DMA6_MADR = 0x80139D64; // size:0x4
 DMA6_BCR = 0x80139D68; // size:0x4
 DMA6_CHCR = 0x80139D6C; // size:0x4
 DPCR = 0x80139D70; // size:0x4
-D_80139D88 = 0x80139D88; // size:0x4
-D_80139D8C = 0x80139D8C; // size:0x4
+gpuAlarmDeadline = 0x80139D88; // size:0x4
+gpuAlarmPollCount = 0x80139D8C; // size:0x4
 _status = 0x800CE9E0; // type:func
 _otc = 0x800CE9F8; // type:func
 set_alarm = 0x800CFA74; // type:func
@@ -808,16 +808,16 @@ StRingAddr = 0x8013D1D0; // size:0x4
 StEmu_Addr = 0x8013D1C0; // size:0x4
 StFunc1 = 0x8013F680; // size:0x4
 StFunc2 = 0x8013F684; // size:0x4
-D_8013F698 = 0x8013F698; // size:0x4
-D_8013F69C = 0x8013F69C; // size:0x4
-D_8013F6A0 = 0x8013F6A0; // size:0x4
-D_80141658 = 0x80141658; // size:0x10
-D_80141578 = 0x80141578; // size:0x4
-D_80141580 = 0x80141580;
-D_80141280 = 0x80141280; // size:0x46
-D_80141270 = 0x80141270; // size:0x4
-D_801412C8 = 0x801412C8; // size:0x46
-D_80141310 = 0x80141310; // size:0x1e0
+dsSyncCallback = 0x8013F698; // size:0x4
+dsReadyCallback = 0x8013F69C; // size:0x4
+dsStartCallback = 0x8013F6A0; // size:0x4
+padInterruptEntry = 0x80141658; // size:0x10
+firstFileHandler = 0x80141578; // size:0x4
+firstFileDeviceName = 0x80141580;
+padSendBuffers = 0x80141280; // size:0x46
+padCommandWriteCursor = 0x80141270; // size:0x4
+padReceiveBuffers = 0x801412C8; // size:0x46
+padPorts = 0x80141310; // size:0x1e0
 StRgb24 = 0x8013D198; // size:0x4
 CChannel = 0x8013D1A8; // size:0x4
 StCHANNEL = 0x8013D1A0; // size:0x4
@@ -832,23 +832,22 @@ setIntrVSync = 0x800B5F4C; // type:func
 vsync_cb = 0x801348AC; // size:0x20
 trapIntrVSync = 0x800B5EE0; // type:func
 Vcount = 0x801348CC; // size:0x4
-D_80133794 = 0x80133794; // size:0x4
-D_80133798 = 0x80133798; // size:0x4
-D_8013379C = 0x8013379C; // size:0x4
-D_801337A0 = 0x801337A0; // size:0x4
-D_800124E0 = 0x800124E0; // type:asciz
-D_80012A50 = 0x80012A50; // type:asciz
-D_8013F610 = 0x8013F610; // size:0x18
-D_8013F6A8 = 0x8013F6A8; // size:0x20
-D_8013F751 = 0x8013F751; // size:0x1
-D_8013F7E8 = 0x8013F7E8; // size:0x4
-D_8013F7EC = 0x8013F7EC; // size:0x4
-D_8013D1F0 = 0x8013D1F0; // size:0x4
-D_8013D1F4 = 0x8013D1F4; // size:0x4
-D_8013D1F8 = 0x8013D1F8; // size:0x4
-D_800126FC = 0x800126FC; // type:asciz
-D_8001270C = 0x8001270C; // type:asciz
-D_80012804 = 0x80012804; // type:asciz
+vsyncGpuStatusRegister = 0x80133794; // size:0x4
+vsyncCounter1Register = 0x80133798; // size:0x4
+Hcount = 0x8013379C; // size:0x4
+prevVcount = 0x801337A0; // size:0x4
+vsyncTimeoutMessage = 0x800124E0; // type:asciz
+cdIsoVersionSuffix = 0x80012A50; // type:asciz
+cdCurrentFile = 0x8013F610; // size:0x18
+gsClearTiles = 0x8013F6A8; // size:0x20
+HWD0 = 0x8013F7E8; // size:0x4
+VWD0 = 0x8013F7EC; // size:0x4
+cdAlarmDeadline = 0x8013D1F0; // size:0x4
+cdAlarmPollCount = 0x8013D1F4; // size:0x4
+cdAlarmOperationName = 0x8013D1F8; // size:0x4
+cdTimeoutMessage = 0x800126FC; // type:asciz
+cdTimeoutStateFormat = 0x8001270C; // type:asciz
+cdDataSyncOperationName = 0x80012804; // type:asciz
 gVSyncCounterMode = 0x801348D0; // size:0x4
 trapIntrDMA = 0x800B5FF4; // type:func
 setIntrDMA = 0x800B6174; // type:func
@@ -858,15 +857,15 @@ SpuWrite = 0x800B51C4; // type:func
 _spu_transferCallback = 0x80132EBC; // size:0x4
 func_80013278 = 0x80013278; // type:func
 rsin_tbl = 0x80134DEC; // size:0x808
-D_80012CB0 = 0x80012CB0; // size:0x34 defined:true
-D_80012CE4 = 0x80012CE4; // size:0x20 defined:true
-D_80012D04 = 0x80012D04; // size:0x14 defined:true
-D_80012D44 = 0x80012D44; // size:0x14 defined:true
-D_80012DF0 = 0x80012DF0; // size:0xC defined:true
-D_80012DFC = 0x80012DFC; // size:0x18 defined:true
-D_80012E14 = 0x80012E14; // size:0x18 defined:true
-D_80012E74 = 0x80012E74; // size:0x18 defined:true
-D_80012E8C = 0x80012E8C; // size:0x34 defined:true
+gpuSourceVersion = 0x80012CB0; // size:0x34 defined:true
+gpuResetStateFormat = 0x80012CE4; // size:0x20 defined:true
+gpuResetGraphFormat = 0x80012D04; // size:0x14 defined:true
+gpuGraphQueueFormat = 0x80012D44; // size:0x14 defined:true
+gpuMoveImageName = 0x80012DF0; // size:0xC defined:true
+gpuClearOTagFormat = 0x80012DFC; // size:0x18 defined:true
+gpuClearOTagReverseFormat = 0x80012E14; // size:0x18 defined:true
+gpuPutDispEnvFormat = 0x80012E74; // size:0x18 defined:true
+gpuQueueTimeoutFormat = 0x80012E8C; // size:0x34 defined:true
 _getctl = 0x800CF1E8; // type:func
 
 // Game task and audio wrappers recovered through SDK assembly similarity.
@@ -878,3 +877,294 @@ resumeMusicSequence = 0x80017FB4; // type:func
 initPrimitiveTemplates = 0x8006BDDC; // type:func
 gMusicSequenceId = 0x8013AF2A; // size:0x2
 gMusicSequenceActive = 0x8013AF2C; // size:0x1
+
+// Recovered SDK data names.
+_svm_cur = 0x8013CFC0; // size:0x20
+// PSY-Q 4.7: LIBMATH.LIB/FERR.OBJ
+math_errno = 0x80132DBC;
+// PSY-Q 4.7: LIBMATH.LIB/FERR.OBJ
+math_err_point = 0x80132DC0;
+// PSY-Q 4.7: LIBSPU.LIB/S_INI.OBJ
+_spu_EVdma = 0x80132E0C;
+// PSY-Q 4.7: LIBSPU.LIB/S_INI.OBJ
+_spu_keystat = 0x80132E10;
+// PSY-Q 4.7: LIBSPU.LIB/S_INI.OBJ
+_spu_rev_flag = 0x80132E18;
+// PSY-Q 4.7: LIBSPU.LIB/S_INI.OBJ
+_spu_rev_reserve_wa = 0x80132E1C;
+// PSY-Q 4.7: LIBSPU.LIB/S_INI.OBJ
+_spu_rev_offsetaddr = 0x80132E20;
+// PSY-Q 4.7: LIBSPU.LIB/S_INI.OBJ
+_spu_RQvoice = 0x80132E38;
+// PSY-Q 4.7: LIBSPU.LIB/S_INI.OBJ
+_spu_RQmask = 0x80132E3C;
+// PSY-Q 4.7: LIBSPU.LIB/S_INI.OBJ
+_spu_voice_centerNote = 0x80132E40;
+// PSY-Q 4.7: LIBSPU.LIB/S_INI.OBJ
+_spu_env = 0x80132E70;
+// PSY-Q 4.7: LIBSPU.LIB/S_INI.OBJ
+_spu_isCalled = 0x80132E74;
+// PSY-Q 4.7: LIBSPU.LIB/SPU.OBJ
+_spu_addrMode = 0x80132EA4;
+// PSY-Q 4.7: LIBSPU.LIB/SPU.OBJ
+_spu_mem_mode = 0x80132EA8;
+// PSY-Q 4.7: LIBSPU.LIB/SPU.OBJ
+_spu_mem_mode_unit = 0x80132EB0;
+// PSY-Q 4.7: LIBSPU.LIB/SPU.OBJ
+_spu_mem_mode_unitM = 0x80132EB4;
+// PSY-Q 4.7: LIBSPU.LIB/SPU.OBJ
+_spu_IRQCallback = 0x80132EC0;
+// PSY-Q 4.7: LIBSPU.LIB/S_INI.OBJ
+_spu_rev_startaddr = 0x80132EF4;
+// PSY-Q 4.7: LIBSPU.LIB/S_CRWA.OBJ
+_spu_zerobuf = 0x80132F44;
+// PSY-Q 4.7: LIBCD.LIB/ISO9660.OBJ
+CD_nopen = 0x801349CC;
+// PSY-Q 4.7: LIBGTE.LIB/MSC01.OBJ
+SQRT = 0x801355FC;
+// PSY-Q 4.0: LIBGTE.LIB/FGO_01.OBJ
+rcossin_tbl = 0x8013577C;
+// PSY-Q 4.7: LIBSND.LIB/MIDICC.OBJ
+SsFCALL = 0x8013BE70; // size:0x94
+// PSY-Q 4.7: LIBSND.LIB/SSCALL.OBJ
+_snd_ev_flag = 0x8013BF04;
+// PSY-Q 4.7: LIBSND.LIB/SSCALL.OBJ
+_snd_openflag = 0x8013BF08;
+// PSY-Q 4.7: LIBSND.LIB/MIDIMETA.OBJ
+VBLANK_MINUS = 0x8013BF0C;
+// PSY-Q 4.0: LIBSND.LIB/NEXT.OBJ
+_ss_score = 0x8013BF10;
+// PSY-Q 4.7: LIBSND.LIB/CC_98.OBJ
+_SsMarkCallback = 0x8013BF90;
+// PSY-Q 4.7: LIBSND.LIB/SSCALL.OBJ
+_snd_seq_s_max = 0x8013C790;
+// PSY-Q 4.7: LIBSND.LIB/SSCALL.OBJ
+_snd_seq_t_max = 0x8013C792;
+// PSY-Q 4.7: LIBSPU.LIB/SPU.OBJ
+_spu_RQ = 0x8013C798;
+// PSY-Q 4.7: LIBSND.LIB/UT_RDEL.OBJ
+_svm_rattr = 0x8013CEC8;
+// PSY-Q 4.7: LIBSND.LIB/VM_VSU.OBJ
+_svm_vab_pg = 0x8013CEE0;
+// PSY-Q 4.7: LIBSND.LIB/VM_VSU.OBJ
+_svm_vab_vh = 0x8013CF20;
+// PSY-Q 4.7: LIBSND.LIB/VM_VSU.OBJ
+_svm_vab_tn = 0x8013CF68;
+// PSY-Q 4.7: LIBSND.LIB/VM_VSU.OBJ
+kMaxPrograms = 0x8013CFAA;
+// PSY-Q 4.7: LIBSND.LIB/UT_GPA.OBJ
+_svm_pg = 0x8013CFAC;
+// PSY-Q 4.7: LIBSND.LIB/VM_VSU.OBJ
+_svm_vh = 0x8013CFB4;
+// PSY-Q 4.7: LIBSND.LIB/UT_GVA.OBJ
+_svm_tn = 0x8013CFB8;
+// PSY-Q 4.7: LIBSND.LIB/UT_GPA.OBJ
+_svm_vab_used = 0x8013CFE0;
+// PSY-Q 4.7: LIBGS.LIB/GS_0022.OBJ
+PSDOFSX = 0x8013F6C8;
+// PSY-Q 4.7: LIBGS.LIB/GS_0022.OBJ
+PSDOFSY = 0x8013F6CC;
+// PSY-Q 4.7: LIBGS.LIB/GS_103.OBJ
+PSDBASEX = 0x8013F6D0;
+// PSY-Q 4.7: LIBGS.LIB/GS_103.OBJ
+PSDBASEY = 0x8013F6D4;
+// PSY-Q 4.7: LIBGS.LIB/GS_0022.OBJ
+POSITION = 0x8013F6D8;
+// PSY-Q 4.7: LIBGS.LIB/GS_0022.OBJ
+GsDRAWENV = 0x8013F6E0; // size:0x5C
+// PSY-Q 4.7: LIBGS.LIB/GS_010.OBJ
+GsDISPENV = 0x8013F740; // size:0x14
+// PSY-Q 4.0: LIBGS.LIB/2D_PRIM.OBJ
+GsORGOFSX = 0x8013F754;
+// PSY-Q 4.0: LIBGS.LIB/2D_PRIM.OBJ
+GsORGOFSY = 0x8013F756;
+// PSY-Q 4.7: LIBGS.LIB/GS_003.OBJ
+CLIP2 = 0x8013F758;
+// PSY-Q 4.7: LIBGS.LIB/GS_010.OBJ
+PSDCNT = 0x8013F760;
+// PSY-Q 4.7: LIBGS.LIB/GS_0022.OBJ
+PSDIDX = 0x8013F764;
+// PSY-Q 4.7: LIBGS.LIB/GS_0022.OBJ
+PSDGPU = 0x8013F766;
+// PSY-Q 4.7: LIBGS.LIB/GS_001.OBJ
+GsLIGHTWSMATRIX = 0x8013F800;
+// PSY-Q 4.7: LIBGS.LIB/GS_001.OBJ
+_LC = 0x8013F820;
+// PSY-Q 4.7: LIBGS.LIB/2D_BG0.OBJ
+GsIDMATRIX = 0x8013F870;
+// PSY-Q 4.0: LIBGS.LIB/2D_PRIM.OBJ
+GsOUT_PACKET_P = 0x8013F8E8;
+// Rood Reverse: SLUS_010.40/libgte/MSC00.s
+SAVERA = 0x80139AAC;
+// Rood Reverse: SLUS_010.40/libgte/PATCHGTE.s
+SAVERA2 = 0x8013F840;
+// Rood Reverse: TITLE/TITLE.PRG/libpress/VLC_C.s
+decodeSize = 0x80139EEC;
+
+// PSY-Q 4.0: LIBCD.LIB/BIOS.OBJ
+CD_status1 = 0x801349C8;
+// PSY-Q 4.0: LIBCD.LIB/SYS.OBJ
+CD_comstr = 0x801349DC;
+// PSY-Q 4.0: LIBCD.LIB/SYS.OBJ
+CD_intstr = 0x80134A5C;
+// PSY-Q 4.7: LIBPAD.LIB/PDENT3.OBJ
+_padFuncPort2Info = 0x8013AD78;
+// PSY-Q 4.7: LIBPAD.LIB/PDENT1.OBJ
+_padInfoDir = 0x8013AD98;
+// PSY-Q 4.7: LIBPAD.LIB/PDENT1.OBJ
+_padModeMtap = 0x8013ADB0;
+// PSY-Q 4.7: LIBSND.LIB/UT_VVOL2.OBJ
+_svm_sreg_dirty = 0x8013CCD8;
+// PSY-Q 4.7: LIBSND.LIB/UT_VVOL2.OBJ
+_svm_sreg_buf = 0x8013CCF8; // size:0x180
+// PSY-Q 4.7: LIBSND.LIB/VM_PB.OBJ
+_SsVmMaxVoice = 0x8013CFBC;
+
+// SotN: src/main/psxsdk/libgpu/sys.c
+GPU_printf = 0x80139C48;
+// SotN: src/main/psxsdk/libgpu/sys.c
+_qin = 0x80139D74;
+// SotN: src/main/psxsdk/libgpu/sys.c
+_qout = 0x80139D78;
+
+// Private SDK symbols named from reference implementations, contents and consumers.
+spuTimeoutFormat = 0x80012380;
+spuResetWaitName = 0x80012390;
+spuWriteReadyWaitName = 0x800123A0;
+spuDmaWriteWaitName = 0x800123B4;
+sndSequenceSlotsFullMessage = 0x800123D0;
+sndInvalidSequenceMessage = 0x80012400;
+sndOldSequenceFormatMessage = 0x80012418;
+unexpectedInterruptFormat = 0x80012524;
+interruptTimeoutFormat = 0x80012540;
+dmaBusErrorFormat = 0x80012560;
+dmaChannelAddressFormat = 0x8001257C;
+cdUnknownCommandName = 0x800125B0;
+cdSyncOperationName = 0x80012784;
+cdReadyOperationName = 0x8001278C;
+cdInitMessage = 0x800127EC;
+cdInitAddressFormat = 0x800127F8;
+cdPathDepthErrorFormat = 0x80012810;
+cdDirectoryNotFoundFormat = 0x8001282C;
+cdSearchDiscErrorMessage = 0x80012844;
+cdSearchProgressFormat = 0x80012860;
+cdSearchFoundFormat = 0x80012880;
+cdSearchNotFoundFormat = 0x8001288C;
+cdReadSectorErrorMessage = 0x80012A00;
+cdReadShellOpenMessage = 0x80012A18;
+cdReadRetryMessage = 0x80012A30;
+streamDmaStatusErrorFormat = 0x80012A60;
+gsSpriteDepthOverflowMessage = 0x80012A80;
+gsMatrixRotationFormat = 0x80012AB0;
+gsMatrixTranslationFormat = 0x80012AD4;
+gpuGraphDebugFormat = 0x80012D18;
+gpuDrawSyncCallbackFormat = 0x80012D58;
+gpuDisplayMaskFormat = 0x80012D74;
+gpuDrawSyncFormat = 0x80012D88;
+gpuInvalidRectangleFormat = 0x80012D9C;
+gpuRectangleCoordinatesFormat = 0x80012DA8;
+gpuOperationPrefixFormat = 0x80012DBC;
+gpuClearImageName = 0x80012DC0;
+gpuClearImage2Name = 0x80012DCC;
+gpuLoadImageName = 0x80012DD8;
+gpuStoreImageName = 0x80012DE4;
+gpuDrawOTagFormat = 0x80012E2C;
+gpuPutDrawEnvFormat = 0x80012E40;
+gpuDrawOTagEnvFormat = 0x80012E58;
+gpuLoadImage2Name = 0x80012EC0;
+gteExceptionPatchReplacement = 0x800BF0EC; // type:alabel
+gteExceptionPatchEnd = 0x800BF104; // type:alabel
+svmReservedVoiceMask = 0x80132DC4;
+svmInitialVoiceRegisters = 0x80132DD0;
+svmInitialGlobalRegisters = 0x80132DE0;
+spuInitialState = 0x80132E28;
+spuDmaAddressRegister = 0x80132E88;
+spuDmaBlockRegister = 0x80132E8C;
+spuDmaControlRegister = 0x80132E90;
+spuTransferScratch = 0x80132EC4;
+spuDmaDirection = 0x80132ED4;
+spuPendingDmaAddress = 0x80132ED8;
+spuPendingDmaBlocks = 0x80132EDC;
+svmPitchTable = 0x801335F4;
+interruptState = 0x80133804;
+interruptStatusRegister = 0x80134890;
+interruptDmaPriorityRegister = 0x80134898;
+interruptRetryCount = 0x8013489C;
+dmaChannelRegisters = 0x80134900;
+cdCommandHasLocation = 0x8013492C;
+cdInitInfo = 0x80134C98;
+cdBusDelayRegister = 0x80134CB0;
+cdDmaPriorityRegister = 0x80134CB4;
+cdDmaAddressRegister = 0x80134CB8;
+cdDmaBlockRegister = 0x80134CBC;
+cdDmaControlRegister = 0x80134CC0;
+cdCachedDiscGeneration = 0x80134CD0;
+cdReadState = 0x80134CE0;
+streamCdIndexRegister = 0x80134D2C;
+streamCdRequestRegister = 0x80134D38;
+streamCdStatusRegister = 0x80134D9C;
+streamDmaPriorityRegister = 0x80134DB4;
+streamDmaInterruptRegister = 0x80134DB8;
+matrixStackSavedRa = 0x8013979C;
+matrixStackOffset = 0x801397A8;
+matrixStack = 0x801397AC;
+matrixStackOverflowMessage = 0x80139A2C;
+matrixStackUnderflowMessage = 0x80139A5D;
+gpuDispatchTable = 0x80139C04;
+gpuDefaultWidths = 0x80139CCC;
+gpuDefaultHeights = 0x80139CD8;
+gpuOTagTerminatorPacket = 0x80139CF8;
+gpuOTagLinkPacket = 0x80139D0C;
+gpuAddQueueSavedMask = 0x80139D7C;
+gpuExecuteQueueSavedMask = 0x80139D80;
+gpuTimeoutSavedMask = 0x80139D84;
+vlcSavedRegisters = 0x80139EF0;
+vlcOutputEnd = 0x80139F14;
+vlcCompressedTable = 0x80139F1C;
+_padFuncNextPort = 0x8013AD64;
+_padFuncClrInfo = 0x8013AD68;
+_padFuncGetTxd = 0x8013AD6C;
+_padFuncCurrLimit = 0x8013AD70;
+_padFuncPtr2Port = 0x8013AD74;
+_padFuncSendAuto = 0x8013AD7C;
+_padFuncChkEng = 0x8013AD80;
+_padFuncRecvAuto = 0x8013AD84;
+_padFuncClrCmdNo = 0x8013AD88;
+_padIntExec = 0x8013AD9C;
+padCurrentChannel = 0x8013ADA4;
+padSequenceState = 0x8013ADA8;
+_padTotalCurr = 0x8013ADAC;
+padLastChannel = 0x8013ADB8;
+padChannelResults = 0x8013ADBC;
+padSerialRegisters = 0x8013ADFC;
+_svm_okon1 = 0x8013C7B8;
+_svm_okon2 = 0x8013C7BA;
+svmNoiseVoiceMaskLow = 0x8013C7BC;
+svmNoiseVoiceMaskHigh = 0x8013C7BE;
+_svm_orev1 = 0x8013C7C0;
+_svm_orev2 = 0x8013C7C2;
+_svm_voice = 0x8013C7C8; // size:0x510
+svmVabVoiceMasks = 0x8013CE80;
+_svm_okof1 = 0x8013CEC0;
+_svm_okof2 = 0x8013CEC2;
+_svm_auto_kof_mode = 0x8013CFF0;
+_svm_vab_total = 0x8013CFF8;
+_svm_vab_count = 0x8013D038;
+_svm_vab_start = 0x8013D040;
+svmSpuAllocationRecords = 0x8013D088;
+cdSyncResult = 0x8013D1D8;
+cdReadyResult = 0x8013D1E0;
+cdAsyncResult = 0x8013D1E8;
+cdDirectoryFiles = 0x8013D210;
+cdPathTable = 0x8013D814;
+cdExecutableHeader = 0x8013F628;
+gsProjectionLimit = 0x8013F7F0;
+GsLIGHT_MODE = 0x8013F7F4;
+gsProjectionShift = 0x8013F7F8;
+gpuClearPacket = 0x8013F900;
+gpuRestoreDrawAreaPacket = 0x8013F928;
+gpuControlCache = 0x8013F948;
+gpuCommandQueue = 0x8013FA50;
+cardPatchSavedRa = 0x80141638;
+padPatchSavedRa = 0x80141668;
+changeClearPadSavedRa = 0x80141678;

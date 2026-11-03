@@ -2,27 +2,27 @@
 
 #ifdef NON_MATCHING
 #include "psx/libgpu.h"
-extern s16 D_8013F766, D_8013F764, D_8013F754, D_8013F756;
-extern s16 D_8013F6C8[], D_8013F6CC[];
-extern DRAWENV D_8013F6E0;
+extern s16 PSDGPU, PSDIDX, GsORGOFSX, GsORGOFSY;
+extern s16 PSDOFSX[], PSDOFSY[];
+extern DRAWENV GsDRAWENV;
 extern DRAWENV *PutDrawEnv(DRAWENV *);
 extern void SetGeomOffset(int, int);
 /* Best observed instruction-sequence similarity: 65.00% (39/60 words;
  * GCC 2.8.0, -mno-split-addresses; target includes padding). */
 void GsSetOffset(int x, int y) {
     int ox, oy;
-    if (D_8013F766) {
-        D_8013F756 = 0;
-        D_8013F754 = 0;
-        D_8013F6E0.ofs[0] = x + D_8013F6C8[D_8013F764];
-        D_8013F6E0.ofs[1] = y + D_8013F6CC[D_8013F764];
-        PutDrawEnv(&D_8013F6E0);
+    if (PSDGPU) {
+        GsORGOFSY = 0;
+        GsORGOFSX = 0;
+        GsDRAWENV.ofs[0] = x + PSDOFSX[PSDIDX];
+        GsDRAWENV.ofs[1] = y + PSDOFSY[PSDIDX];
+        PutDrawEnv(&GsDRAWENV);
     } else {
-        ox = x + D_8013F6C8[D_8013F764 ? 0 : 1];
-        oy = y + D_8013F6CC[D_8013F764 ? 0 : 1];
+        ox = x + PSDOFSX[PSDIDX ? 0 : 1];
+        oy = y + PSDOFSY[PSDIDX ? 0 : 1];
         SetGeomOffset(ox, oy);
-        D_8013F754 = ox;
-        D_8013F756 = oy;
+        GsORGOFSX = ox;
+        GsORGOFSY = oy;
     }
 }
 #else

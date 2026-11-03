@@ -2,7 +2,7 @@
 #include "reverb_private.h"
 
 void SsUtSetReverbDelay(s16 delay) {
-    SpuReverbAttr *attr = &D_8013CEC8;
+    SpuReverbAttr *attr = &_svm_rattr;
     attr->mask = 8;
     attr->delay = delay;
     SpuSetReverbModeParam(attr);

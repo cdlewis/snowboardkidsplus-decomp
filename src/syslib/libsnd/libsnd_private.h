@@ -2,19 +2,8 @@
 
 #include "psx/libsnd.h"
 #include "decomp/types.h"
-
-/* Shared voice-record view beginning at the first field accessed here. */
-typedef struct {
-    s16 field0;
-    u8 reserved02[2];
-    s16 field4;
-    u8 reserved06[10];
-    s16 seq_id;
-    u8 reserved12[11];
-    u8 field1d;
-    u8 reserved1e[24];
-} VoiceSlice;
-extern VoiceSlice D_8013C7C8[];
+#include "vm_g.h"
+#include "vm_voice.h"
 
 typedef struct {
     u8 prior, mode, vol, pan, center, shift, min, max;
@@ -100,7 +89,7 @@ struct SeqStruct {
     /* 0xAC */ s32 unkAC;
 };
 
-extern struct SeqStruct *D_8013BF10[];
+extern struct SeqStruct *_ss_score[];
 
 /* Shared VM state belongs to the SDK's vm_g data object, still in split data. */
 extern s16 _svm_stereo_mono;

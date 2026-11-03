@@ -1,18 +1,18 @@
 #include "libsnd_private.h"
 
-extern u8 D_8013CFE0[];
-extern ProgAtr *volatile D_8013CFAC;
+extern u8 _svm_vab_used[];
+extern ProgAtr *volatile _svm_pg;
 extern int _SsVmVSetUp(s16, s16);
 
 s16 SsUtGetProgAtr(s16 vab, s16 program, ProgAtr *attr) {
-    if (D_8013CFE0[vab] == 1) {
+    if (_svm_vab_used[vab] == 1) {
         _SsVmVSetUp(vab, program);
-        attr->tones = D_8013CFAC[program].tones;
-        attr->mvol = D_8013CFAC[program].mvol;
-        attr->prior = D_8013CFAC[program].prior;
-        attr->mode = D_8013CFAC[program].mode;
-        attr->mpan = D_8013CFAC[program].mpan;
-        attr->attr = D_8013CFAC[program].attr;
+        attr->tones = _svm_pg[program].tones;
+        attr->mvol = _svm_pg[program].mvol;
+        attr->prior = _svm_pg[program].prior;
+        attr->mode = _svm_pg[program].mode;
+        attr->mpan = _svm_pg[program].mpan;
+        attr->attr = _svm_pg[program].attr;
         return 0;
     }
     return -1;

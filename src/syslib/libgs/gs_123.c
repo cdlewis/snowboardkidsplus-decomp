@@ -2,11 +2,11 @@
 
 #ifdef NON_MATCHING
 typedef struct { s16 m[3][3]; s16 pad; s32 t[3]; } Matrix;
-extern Matrix D_8013F870;
+extern Matrix GsIDMATRIX;
 /* Best observed instruction-sequence similarity: 11.54% (6/52 words;
  * GCC 2.8.0, -mno-split-addresses; original uses a jump table). */
 void Gssub_make_matrix(Matrix *m, int s, int c, s8 axis) {
-    *m = D_8013F870;
+    *m = GsIDMATRIX;
     if (axis == 'X' || axis == 'x') {
         m->m[1][1] = c;
         m->m[2][2] = c;

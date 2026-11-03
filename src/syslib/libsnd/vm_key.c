@@ -1,4 +1,5 @@
 #include "common.h"
+#include "vm_g.h"
 
 extern s32 _SsVmKeyOff(s16 id, s16 vab, s16 program, u16 note);
 
@@ -7,19 +8,19 @@ INCLUDE_ASM("asm/nonmatchings/syslib/libsnd/vm_key", _SsVmKeyOn);
 #ifdef NON_MATCHING
 /* Best observed instruction-sequence similarity: 62.22% (56/90 words; GCC 2.8.0, -mno-split-addresses). */
 #include "libsnd_private.h"
-extern s8 D_8013CFBC;
-extern s16 D_8013CFDA;
-extern u32 D_80132DC4;
+extern s8 _SsVmMaxVoice;
+
+extern u32 svmReservedVoiceMask;
 extern void vmNoiseOff(int), _SsVmKeyOffNow(int);
 s32 _SsVmKeyOff(s16 id, s16 vab, s16 program, u16 note) {
     u8 i;
     int count = 0;
-    for (i = 0; i < D_8013CFBC; i++) {
-        u8 *v = (u8 *)&D_8013C7C8[i];
-        if (!(D_80132DC4 & (1 << i)) && *(s16 *)(v + 14) == note &&
+    for (i = 0; i < _SsVmMaxVoice; i++) {
+        u8 *v = (u8 *)&_svm_voice[i];
+        if (!(svmReservedVoiceMask & (1 << i)) && *(s16 *)(v + 14) == note &&
             *(s16 *)(v + 20) == program && *(s16 *)(v + 16) == id && *(s16 *)(v + 24) == vab) {
             if (*(s16 *)v == 255) vmNoiseOff(i);
-            else { D_8013CFDA = i; _SsVmKeyOffNow(0); }
+            else { _svm_cur.voice = i; _SsVmKeyOffNow(0); }
             count++;
         }
     }

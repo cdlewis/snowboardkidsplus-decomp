@@ -1,13 +1,13 @@
 #include "common.h"
 
-extern u8 D_8013CFE0[];
-extern u32 D_8013D040[];
-extern u16 D_8013D038;
+extern u8 _svm_vab_used[];
+extern u32 _svm_vab_start[];
+extern u16 _svm_vab_count;
 extern void SpuFree(u32);
 void SsVabClose(s16 id) {
-    if (id >= 0 && id < 16 && D_8013CFE0[id] == 1) {
-        SpuFree(D_8013D040[id]);
-        D_8013CFE0[id] = 0;
-        D_8013D038--;
+    if (id >= 0 && id < 16 && _svm_vab_used[id] == 1) {
+        SpuFree(_svm_vab_start[id]);
+        _svm_vab_used[id] = 0;
+        _svm_vab_count--;
     }
 }

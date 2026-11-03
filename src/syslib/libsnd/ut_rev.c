@@ -12,15 +12,15 @@ s16 SsUtSetReverbType(s16 type) {
     }
     if (type < 0 || type >= 10)
         return -1;
-    D_8013CEC8.mask = 1;
-    D_8013CEC8.mode = clear ? (s16)(type | 0x100) : type;
+    _svm_rattr.mask = 1;
+    _svm_rattr.mode = clear ? (s16)(type | 0x100) : type;
     if (type == 0)
         SpuSetReverb(0);
-    SpuSetReverbModeParam(&D_8013CEC8);
+    SpuSetReverbModeParam(&_svm_rattr);
     return type;
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/syslib/libsnd/ut_rev", SsUtSetReverbType);
 #endif
 
-s16 SsUtGetReverbType(void) { return D_8013CEC8.mode; }
+s16 SsUtGetReverbType(void) { return _svm_rattr.mode; }

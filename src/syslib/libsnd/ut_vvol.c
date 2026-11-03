@@ -1,7 +1,7 @@
 #include "../libspu/libspu_private.h"
+#include "vm_registers.h"
 
-extern SPU_VOICE_REG D_8013CCF8[];
-extern u8 D_8013CCD8[];
+extern u8 _svm_sreg_dirty[];
 
 s16 SsUtGetDetVVol(s16 voice, s16 *left, s16 *right) {
     if (voice >= 0 && voice < 24) {
@@ -13,9 +13,9 @@ s16 SsUtGetDetVVol(s16 voice, s16 *left, s16 *right) {
 
 s16 SsUtSetDetVVol(s16 voice, s16 left, s16 right) {
     if (voice >= 0 && voice < 24) {
-        D_8013CCF8[voice].volume.right = right;
-        D_8013CCF8[voice].volume.left = left;
-        D_8013CCD8[voice] |= 3;
+        _svm_sreg_buf[voice].volume.right = right;
+        _svm_sreg_buf[voice].volume.left = left;
+        _svm_sreg_dirty[voice] |= 3;
         return 0;
     }
     return -1;
@@ -35,9 +35,9 @@ s16 SsUtGetVVol(s16 voice, s16 *left, s16 *right) {
 s16 SsUtSetVVol(s16 voice, s16 left, s16 right) {
     if (voice >= 0 && voice < 24) {
         s32 scaled_right = right * 129;
-        D_8013CCF8[voice].volume.right = scaled_right;
-        D_8013CCF8[voice].volume.left = left * 129;
-        D_8013CCD8[voice] |= 3;
+        _svm_sreg_buf[voice].volume.right = scaled_right;
+        _svm_sreg_buf[voice].volume.left = left * 129;
+        _svm_sreg_dirty[voice] |= 3;
         return 0;
     }
     return -1;

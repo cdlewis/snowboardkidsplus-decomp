@@ -9,5 +9,5 @@ typedef struct {
     s32 delay, feedback;
 } SpuReverbAttr;
 
-extern SpuReverbAttr D_8013CEC8;
+extern SpuReverbAttr _svm_rattr;
 extern s32 SpuSetReverbModeParam(SpuReverbAttr *attr);

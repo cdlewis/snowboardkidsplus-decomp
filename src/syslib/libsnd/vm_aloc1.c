@@ -1,16 +1,17 @@
 #include "common.h"
+#include "vm_g.h"
 
 #ifdef NON_MATCHING
 /* Best observed instruction-sequence similarity: 39.02% (64/164 words; GCC 2.8.0, -mno-split-addresses). */
 #include "libsnd_private.h"
-extern s8 D_8013CFBC, D_8013CFCF;
-extern u32 D_80132DC4;
+extern s8 _SsVmMaxVoice;
+extern u32 svmReservedVoiceMask;
 u8 _SsVmAlloc(void) {
     u8 chosen = 99, best = 99, count = 0, i;
-    u16 level = 0xffff, age = 0, priority = D_8013CFCF;
-    for (i = 0; i < D_8013CFBC; i++) {
-        u8 *v = (u8 *)&D_8013C7C8[i];
-        if (D_80132DC4 & (1 << i)) continue;
+    u16 level = 0xffff, age = 0, priority = _svm_cur.tone_prior;
+    for (i = 0; i < _SsVmMaxVoice; i++) {
+        u8 *v = (u8 *)&_svm_voice[i];
+        if (svmReservedVoiceMask & (1 << i)) continue;
         if (!*(s8 *)(v + 29) && !*(u16 *)(v + 6)) { chosen = i; break; }
         if (*(s16 *)(v + 26) < priority) {
             priority = *(u16 *)(v + 26);
@@ -30,14 +31,14 @@ u8 _SsVmAlloc(void) {
             }
         }
     }
-    if (chosen == 99) chosen = count ? best : D_8013CFBC;
-    if (chosen < D_8013CFBC) {
-        for (i = 0; i < D_8013CFBC; i++)
-            if (!(D_80132DC4 & (1 << i))) (*(u16 *)((u8 *)&D_8013C7C8[i] + 2))++;
-        *(u16 *)((u8 *)&D_8013C7C8[chosen] + 2) = 0;
-        *(u16 *)((u8 *)&D_8013C7C8[chosen] + 42) = 0;
-        *(u16 *)((u8 *)&D_8013C7C8[chosen] + 30) = 0;
-        *(s16 *)((u8 *)&D_8013C7C8[chosen] + 26) = D_8013CFCF;
+    if (chosen == 99) chosen = count ? best : _SsVmMaxVoice;
+    if (chosen < _SsVmMaxVoice) {
+        for (i = 0; i < _SsVmMaxVoice; i++)
+            if (!(svmReservedVoiceMask & (1 << i))) (*(u16 *)((u8 *)&_svm_voice[i] + 2))++;
+        *(u16 *)((u8 *)&_svm_voice[chosen] + 2) = 0;
+        *(u16 *)((u8 *)&_svm_voice[chosen] + 42) = 0;
+        *(u16 *)((u8 *)&_svm_voice[chosen] + 30) = 0;
+        *(s16 *)((u8 *)&_svm_voice[chosen] + 26) = _svm_cur.tone_prior;
     }
     return chosen;
 }
