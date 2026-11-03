@@ -2,6 +2,23 @@
 .DELETE_ON_ERROR:
 .SECONDARY:
 
+# Compact, colored output, matching snowboardkids-decomp.
+ifndef QUIET
+PRINTF = @printf
+else
+PRINTF = @true
+endif
+VERBOSE ?= 0
+ifeq ($(VERBOSE),0)
+.SILENT:
+endif
+
+NO_COL := \033[0m
+GREEN := \033[0;32m
+YELLOW := \033[0;33m
+PINK := \033[0;35m
+CYAN := \033[0;36m
+
 ROOT := $(CURDIR)
 PY ?= .venv/bin/python
 SPLAT ?= .venv/bin/splat
@@ -72,12 +89,14 @@ endif
 # Splat preserves unchanged outputs; refresh the included .d timestamp so Make
 # does not restart forever after an input change that leaves its contents intact.
 $(SPLIT_OUTPUTS) &: $(SPLIT_INPUTS)
+	$(PRINTF) "[$(CYAN) splat  $(NO_COL)]  Extracting snowboardkidsplus.yaml\n"
 	$(SPLAT) split snowboardkidsplus.yaml
 	@touch $(SPLIT_OUTPUTS)
 
 split: $(SPLIT_OUTPUTS)
 
 extract:
+	$(PRINTF) "[$(CYAN)extract $(NO_COL)]  Extracting disc executable\n"
 	$(PY) tools/extract_iso.py "Snobow Kids Plus (Japan)/Snobow Kids Plus (Japan).bin" disc
 
 disc/SLPS_018.23:
@@ -115,6 +134,7 @@ endef
 define c_rule
 $(call unit_output,$(1)).i: $(call unit_source,$(1)) Makefile config/compiler.mk $(BUILD_DIR)/.config
 	@mkdir -p $$(@D)
+	$(PRINTF) "[$(GREEN)   c    $(NO_COL)]  $(call unit_source,$(1))\n"
 	$(CPP) $(CPP_FLAGS) -I$(ROOT)/$(dir $(1)) -MMD -MP -MT $$@ -MF $(call unit_output,$(1)).d $(abspath $(call unit_source,$(1))) -o $$@
 
 $(call unit_output,$(1)).base.s: $(call unit_output,$(1)).i $(call unit_cc1,$(1))
@@ -136,16 +156,20 @@ $(foreach unit,$(C_SOURCES),$(eval $(call c_rule,$(unit))))
 
 $(BUILD_DIR)/asm/%.o: asm/%.s Makefile config/compiler.mk $(BUILD_DIR)/.config
 	@mkdir -p $(@D)
+	$(PRINTF) "[$(GREEN)   as   $(NO_COL)]  $<\n"
 	$(AS) $(AS_FLAGS) -no-pad-sections -G$(G_VALUE) --MD $@.d -o $@ $<
 
 ifneq ($(COMPARISON),1)
 build/slps_018.23.elf: $(C_OBJECTS) $(ASM_OBJECTS) linkers/slps_018.23.ld linkers/undefined_funcs_auto.txt linkers/undefined_syms_auto.txt
+	$(PRINTF) "[$(PINK) linker $(NO_COL)]  Linking $@\n"
 	$(LD) -EL -nostdlib -T linkers/slps_018.23.ld -T linkers/undefined_funcs_auto.txt -T linkers/undefined_syms_auto.txt -Map build/slps_018.23.map -o $@
 
 build/slps_018.23.exe: build/slps_018.23.elf
+	$(PRINTF) "[$(CYAN) objcpy $(NO_COL)]  $<\n"
 	$(OBJCOPY) -O binary $< $@
 
 verify: build/slps_018.23.exe
+	$(PRINTF) "[$(GREEN) verify $(NO_COL)]  Checking executable SHA1\n"
 	$(PY) tools/verify_image.py
 
 endif
@@ -158,6 +182,7 @@ scratch: $(C_OBJECTS)
 
 ifneq ($(COMPARISON),1)
 expected: verify
+	$(PRINTF) "[$(CYAN) expect $(NO_COL)]  Updating verified target objects\n"
 	$(PY) tools/update_expected.py
 else
 verify expected:
@@ -168,13 +193,16 @@ print-settings:
 	@printf '%s\n' 'CC1=$(call unit_cc1,$(UNIT))' 'CPP=$(CPP)' 'AS=$(AS)' 'LD=$(LD)' 'CROSS=$(CROSS)' 'CPP_FLAGS=$(CPP_FLAGS)' 'AS_FLAGS=$(call unit_asflags,$(UNIT))' 'ORACLE_AS_FLAGS=$(AS_FLAGS) -no-pad-sections -G$(call unit_g,$(UNIT))' 'CC1_FLAGS=$(call unit_ccflags,$(UNIT))' 'G_VALUE=$(call unit_g,$(UNIT))' 'UNIT_CC_FLAGS=$(UNIT_CCFLAGS_$(UNIT))' 'FUNCTION_FLAGS=$(FN_FLAGS_$(UNIT)/$(ONLY_FUNCTION))' 'FUNCTION_CC1=$(call function_cc1,$(UNIT),$(ONLY_FUNCTION))' 'ASPSX_VERSION=$(ASPSX_VERSION)' 'REORDER=$(UNIT_REORDER_$(UNIT))' 'INDEXED=$(UNIT_INDEXED_$(UNIT))' 'PAD=$(UNIT_PAD_$(UNIT))'
 
 clean:
+	$(PRINTF) "[$(YELLOW) clean  $(NO_COL)]  Removing generated files\n"
 	rm -rf build asm
 	rm -f $(SPLIT_OUTPUTS)
 
 hooks:
+	$(PRINTF) "[$(CYAN) hooks  $(NO_COL)]  Installing Git hooks\n"
 	tools/install-git-hooks.sh
 
 report:
+	$(PRINTF) "[$(CYAN) report $(NO_COL)]  Generating progress report\n"
 	$(PY) -m mapfile_parser objdiff_report
 
 -include $(C_OBJECTS:.o=.d) $(C_OBJECTS:.o=.as.d) $(addsuffix .d,$(ASM_OBJECTS))

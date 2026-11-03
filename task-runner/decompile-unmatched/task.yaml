@@ -1,0 +1,14 @@
+candidate_source: python3 tools/task_candidates.py decompile-unmatched
+prompt: >-
+  Decompile the function $INPUT. Follow AGENTS.md and the repo-local
+  .agents/skills/psx-match-function/SKILL.md workflow, including the library
+  reference ranking and the --include-game --unattempted scan. Create the
+  workspace with ./tools/codex --bootstrap-only --id $TASK_ID $INPUT. Try
+  meaningful C source-shape changes and bounded permuter experiments when
+  appropriate. Preserve useful attempts and obey tool stop instructions. Only
+  integrate exact C and verify the complete executable with
+  ./tools/build-and-verify.sh --expected --objects before declaring a match.
+  The task runner handles committing successful work.
+agent: claude
+agent_flags: --effort xhigh
+timeout: 120m

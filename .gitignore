@@ -27,3 +27,6 @@ include/gte_macros.inc
 tools/gcc/
 __pycache__/
 tools/psx_psyq_signatures/
+
+# task-runner history and agent output
+task-runner/**/*.log

@@ -1,0 +1,15 @@
+candidate_source: python3 tools/task_candidates.py decompile-similar
+prompt: >-
+  Decompile the function $INPUT[0]. These matched C functions may provide useful
+  references: $INPUT[1:]. Structural similarity does not establish function
+  identity or a byte match. Follow AGENTS.md and the repo-local
+  .agents/skills/psx-match-function/SKILL.md workflow. Create the workspace with
+  ./tools/codex --bootstrap-only --id $TASK_ID $INPUT[0]. Consider the purpose of
+  the function and compare its assembly with the references. Preserve useful
+  attempts, obey tool stop instructions, and only integrate exact C. Verify the
+  complete executable with ./tools/build-and-verify.sh --expected --objects
+  before declaring a match. The task runner handles committing successful work.
+agent: codex
+agent_flags: --config model_reasoning_effort='"xhigh"'
+success_command: 'git add -A && git commit -m "matched $CANDIDATE"'
+timeout: 180m

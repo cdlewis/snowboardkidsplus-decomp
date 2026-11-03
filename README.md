@@ -344,6 +344,39 @@ establish a match. Normal and expected-object builds do not enable the define.
 Comparison-only settings may select a different SDK compiler for a partial
 function; they do not change the compiler or bytes used by the normal build.
 
+## Task runner
+
+`task-runner/` follows the configuration pattern in `../snowboardkids-decomp`:
+shared commands live in `config.yaml`, and each task has its own `task.yaml`.
+Use an external task-runner installation that supports this YAML format, from
+the repository root, after a green `./tools/build-and-verify.sh`.
+
+- `decompile-similar` uses Codex and ranks game and SDK fallbacks against matched
+  SDK C, excluding ambiguous references. Each candidate contains the target name
+  followed by reference names and C source locations.
+- `decompile-unmatched` uses Claude and ranks all live game and SDK fallbacks by
+  complexity. Each candidate is a function name.
+- `decompile-library` uses Codex and selects only SDK fallbacks, prioritizing
+  unambiguous matched-library references before falling back to complexity.
+  Each candidate is a function name. Its prompt includes the local PsyZ,
+  Symphony of the Night, and Tomba SDK source paths and version notes from
+  [Local SDK references](#local-sdk-references).
+
+Preview candidate inputs without launching an agent:
+
+```sh
+python3 tools/task_candidates.py decompile-similar --limit 20
+python3 tools/task_candidates.py decompile-unmatched --limit 20
+python3 tools/task_candidates.py decompile-library --limit 20
+```
+
+The commands used by the runner emit the full candidate list so ignored entries
+do not hide later targets. Candidate generation requires fresh build artifacts.
+Task history and agent logs are ignored by Git. The copied configuration uses
+`~/.local/bin/glaude` for Claude, commits successful work through the tracked
+validation hook, and resets failed attempts with `git clean -f` and
+`git reset --hard HEAD`; run it in a dedicated clean checkout or worktree.
+
 ## Commit validation
 
 Install the tracked Git hook once per clone:
