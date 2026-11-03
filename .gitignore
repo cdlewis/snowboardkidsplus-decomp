@@ -12,6 +12,7 @@ disc/
 build/
 asm/
 expected/
+objdiff.json
 nonmatchings/
 .venv/
 *.d
@@ -28,6 +29,7 @@ include/gte_macros.inc
 tools/gcc/
 __pycache__/
 tools/psx_psyq_signatures/
+tools/psyq-sdk/
 
 # task-runner history and agent output
 task-runner/**/*.log

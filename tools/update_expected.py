@@ -42,7 +42,12 @@ def update_expected():
             "metadata": {"source_path": source.relative_to(ROOT).as_posix()},
         })
     cfg_path = ROOT / "objdiff.json"
-    cfg = json.loads(cfg_path.read_text())
+    cfg = json.loads(cfg_path.read_text()) if cfg_path.exists() else {
+        "$schema": "https://raw.githubusercontent.com/encounter/objdiff/main/config.schema.json",
+        "build_target": False,
+        "build_base": True,
+        "watch_patterns": ["*.c", "*.h", "*.s", "*.inc"],
+    }
     cfg["custom_make"] = "make"
     cfg["custom_args"] = ["COMPARISON=1", "BUILD_DIR=build/compare"]
     for pattern in ("Makefile", "*.mk"):

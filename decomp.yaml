@@ -41,3 +41,4 @@ tools:
           name: PSY-Q SDK
           paths:
             - syslib/
+            - sdk/psyq42/

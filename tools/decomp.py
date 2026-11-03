@@ -80,7 +80,7 @@ class Symbol:
 def configured_symbols(root=ROOT):
     result = {}
     for line in (root / "symbol_addrs.txt").read_text().splitlines():
-        m = re.match(r'\s*(\w+)\s*=\s*(0x[\da-fA-F]+);(.*)', line)
+        m = re.match(r'\s*([\w.$]+)\s*=\s*(0x[\da-fA-F]+);(.*)', line)
         if m:
             size = re.search(r'\bsize:(0x[\da-fA-F]+|\d+)\b', m[3])
             result[m[1]] = Symbol(m[1], int(m[2], 16), int(size[1], 0) if size else 0,

@@ -1,0 +1,3 @@
+[submodule "lib/psyq-sdk"]
+	path = lib/psyq-sdk
+	url = https://github.com/cdlewis/psyq-sdk.git

@@ -12,13 +12,15 @@ options:
   src_path: src
   hasm_in_src_path: True
   build_path: build
+  lib_path: build/sdk/psyq42
 
   ld_script_path: linkers/slps_018.23.ld
   ld_dependencies: True
+  ld_dependencies_include: False
   ld_align_section_vram_end: False
   ld_align_segment_vram_end: False
 
-  find_file_boundaries: False
+  find_file_boundaries: True
   gp_value: 0x8013AE48
 
   o_as_suffix: True
@@ -82,70 +84,73 @@ segments:
       - [0x2964, rodata]
       - [0x2A58, rodata]
       - [0x2B54, rodata]
-      - [0x2B80, rodata, syslib/libspu/spu]
-      - [0x2BD0, rodata, syslib/libsnd/ssopenq]
-      - [0x2C00, rodata, syslib/libsnd/seqinit]
-      - [0x2C40, rodata, syslib/libspu/s_sca]
-      - [0x2C80, rodata, syslib/libsnd/sstick]
-      - [0x2CA0, rodata, syslib/libspu/s_sva]
+      - [0x2B80, lib, libspu, spu, .rdata]
+      - [0x2BD0, lib, libsnd, ssopenq, .rdata]
+      - [0x2C00, lib, libsnd, seqinit, .rdata]
+      - [0x2C40, lib, libspu, s_sca, .rdata]
+      - [0x2C80, lib, libsnd, sstick, .rdata]
+      - [0x2CA0, lib, libspu, s_sva, .rdata]
       - [0x2CE0, rodata, syslib/libetc/vsync]
-      - [0x2CF0, rodata, syslib/libetc/intr]
-      - [0x2D60, rodata, syslib/libetc/intr_dma]
+      - [0x2CF0, lib, libetc, intr, .rdata]
+      - [0x2D60, lib, libetc, intr_dma, .rdata]
       - {start: 0x2D90, type: .rodata, name: syslib/libcd/event, linker_section: .rodata.cdinit}
-      - [0x2DB0, rodata, syslib/libcd/bios]
-      - [0x3010, rodata, syslib/libcd/iso9660]
-      - [0x3200, rodata, syslib/libcd/cdread]
-      - [0x3250, rodata, syslib/libcd/cdreade]
-      - [0x3260, rodata, syslib/libcd/c_011]
-      - [0x3280, rodata, syslib/libgs/2d_com1]
+      - [0x2DB0, lib, libcd, sys, .rdata]
+      - [0x2DC0, lib, libcd, bios, .rdata]
+      - [0x3010, lib, libcd, iso9660, .rdata]
+      - [0x3200, lib, libcd, cdread, .rdata]
+      - [0x3250, lib, libcd, cdreade, .rdata]
+      - [0x3260, lib, libcd, c_011, .rdata]
+      - [0x3280, lib, libgs, 2d_com1, .rdata]
       - {start: 0x32B0, type: .rodata, name: syslib/libgs/matrix, linker_section: .rodata.gs_matrix_print}
-      - [0x32E0, rodata, syslib/libgs/gs_123]
-      - [0x3370, rodata, syslib/libgs/objt]
-      - [0x3410, rodata, syslib/libgs/objt2]
-      - {start: 0x34B0, type: .rodata, name: syslib/libgpu/sys, linker_section: .rodata.gpu_reset_graph}
-      - {start: 0x3518, type: .rodata, name: syslib/libgpu/sys, linker_section: .rodata.gpu_graph_debug}
-      - {start: 0x3544, type: .rodata, name: syslib/libgpu/sys, linker_section: .rodata.gpu_graph_queue}
-      - {start: 0x3558, type: .rodata, name: syslib/libgpu/sys, linker_section: .rodata.gpu_sync_callback}
-      - {start: 0x359C, type: .rodata, name: syslib/libgpu/sys, linker_section: .rodata.gpu_rect_debug}
-      - {start: 0x35C0, type: .rodata, name: syslib/libgpu/sys, linker_section: .rodata.gpu_image_names}
-      - {start: 0x35F0, type: .rodata, name: syslib/libgpu/sys, linker_section: .rodata.gpu_clear_otag}
-      - {start: 0x362C, type: .rodata, name: syslib/libgpu/sys, linker_section: .rodata.gpu_draw_otag}
-      - {start: 0x3674, type: .rodata, name: syslib/libgpu/sys, linker_section: .rodata.gpu_disp_env}
-      - {start: 0x36C0, type: .rodata, name: syslib/libgpu/sys, linker_section: .rodata.gpu_load_image2}
+      - [0x32E0, lib, libgs, gs_123, .rdata]
+      - [0x3370, lib, libgs, objt, .rdata]
+      - [0x3410, lib, libgs, objt2, .rdata]
+      - [0x34B0, lib, libgpu, sys, .rdata]
       - {start: 0x36D0, type: .rodata, name: syslib/libpress/libpress, linker_section: .rodata.mdec}
-      - [0x3720, rodata, syslib/libc/sprintf]
+      - [0x3720, lib, libc, sprintf, .rdata]
       - [0x3800, .rodata, syslib/libpad/padentry]
-      - [0x3818, rodata, syslib/unk_800D4518]
-      - [0x3998, rodata, syslib/unk_800D6124]
+      - [0x3818, rodata]
+      - [0x3820, lib, libmcrd421, libmcrd, .rdata]
+      - [0x3996, pad]
+      - [0x3998, lib, libmcrd421, userfunc, .rdata]
+      - [0x39B1, pad]
       - [0x39B4, c, main]
       - [0x6604, c, engine/random]
       - [0x66E0, c, main_remaining]
+      # Working groups based on rodata consumers; original object boundaries are unknown.
+      - [0xEE3C, c, game/unk_8001E63C]
+      - [0x1BBF4, c, game/unk_8002B3F4]
+      - [0x39FB8, c, game/unk_800497B8]
+      - [0x60A74, c, game/unk_80070274]
+      - [0x6C69C, c, game/unk_8007BE9C]
+      - [0x6D478, c, game/unk_8007CC78]
       - [0x7CE30, c, engine/game_options]
       - [0x7CF08, c, main_tail]
-      - [0x98A04, c, syslib/libmath/divsf3]
-      - [0x98B54, c, syslib/libmath/fixsfsi]
-      - [0x98C14, c, syslib/libmath/fltsisf]
-      - [0x98CD4, c, syslib/libmath/mulsf3]
+      - [0x98A04, lib, libmath, divsf3, .text]
+      - [0x98B54, lib, libmath, fixsfsi, .text]
+      - [0x98C14, lib, libmath, fltsisf, .text]
+      - [0x98CD4, lib, libmath, mulsf3, .text]
       - [0x98E14, c, syslib/libmath/ferr]
-      - [0x98E84, c, syslib/libsnd/ssclose]
-      - [0x99054, c, syslib/libsnd/ssend]
-      - [0x99104, c, syslib/libsnd/ssinit]
+      - [0x98E84, lib, libsnd, ssclose, .text]
+      - [0x99054, lib, libsnd, ssend, .text]
+      - [0x99104, lib, libsnd, ssinit, .text]
       - [0x991F4, c, syslib/libsnd/ssinit_c] # ambiguous, same bytes as LIBSND.LIB:SSINIT_H.OBJ
-      - [0x99224, asm, syslib/unk_800A8A24]
-      - [0x99244, c, syslib/libspu/s_ini]
-      - [0x993A4, c, syslib/libspu/spu]
+      - [0x99224, lib, libspu, s_i, .text]
+      - [0x99244, lib, libspu, s_ini, .text]
+      - [0x993A4, lib, libspu, spu, .text]
       - [0x99EE4, c, syslib/libspu/s_dcb]
-      - [0x99F14, asm, syslib/unk_800A9714]
-      - [0x99F64, c, syslib/libsnd/ssopenq]
+      - [0x99F14, lib, libsnd, ssinit_h, .text]
+      - [0x99F44, lib, libspu, s_ih, .text]
+      - [0x99F64, lib, libsnd, ssopenq, .text]
       - [0x9A204, c, syslib/libsnd/cc_0]
-      - [0x9A284, c, syslib/libsnd/cc_6]
+      - [0x9A284, lib, libsnd, cc_6, .text]
       - [0x9A6D4, c, syslib/libsnd/cc_7]
-      - [0x9A7A4, c, syslib/libsnd/cc_10]
+      - [0x9A7A4, lib, libsnd, cc_10, .text]
       - [0x9A874, c, syslib/libsnd/cc_11]
       - [0x9A964, c, syslib/libsnd/cc_64]
       - [0x9AA14, c, syslib/libsnd/cc_91]
       - [0x9AAA4, c, syslib/libsnd/cc_98]
-      - [0x9ABA4, c, syslib/libsnd/cc_99]
+      - [0x9ABA4, lib, libsnd, cc_99, .text]
       - [0x9ACE4, c, syslib/libsnd/cc_100]
       - [0x9AD54, c, syslib/libsnd/cc_101]
       - [0x9ADC4, c, syslib/libsnd/cc_121]
@@ -167,267 +172,269 @@ segments:
       - [0x9B914, c, syslib/libsnd/de_14]
       - [0x9B9B4, c, syslib/libsnd/de_15] # ambiguous, same bytes as LIBSND.LIB:DE_17.OBJ, LIBSND.LIB:DE_18.OBJ, LIBSND.LIB:DE_19.OBJ
       - [0x9B9E4, c, syslib/libsnd/de_16]
-      - [0x9BA14, asm, syslib/unk_800AB214]
+      - [0x9BA14, lib, libsnd, de_17, .text]
+      - [0x9BA44, lib, libsnd, de_18, .text]
+      - [0x9BA74, lib, libsnd, de_19, .text]
       - [0x9BAA4, c, syslib/libsnd/midibend]
-      - [0x9BB54, c, syslib/libsnd/midicc]
-      - [0x9BD84, c, syslib/libsnd/midimeta]
-      - [0x9BF54, c, syslib/libsnd/midinote]
+      - [0x9BB54, lib, libsnd, midicc, .text]
+      - [0x9BD84, lib, libsnd, midimeta, .text]
+      - [0x9BF54, lib, libsnd, midinote, .text]
       - [0x9C034, c, syslib/libsnd/midiprog]
-      - [0x9C0A4, c, syslib/libsnd/miditime]
-      - [0x9C154, c, syslib/libsnd/seqinit]
+      - [0x9C0A4, lib, libsnd, miditime, .text]
+      - [0x9C154, lib, libsnd, seqinit, .text]
       - [0x9C4A4, c, syslib/libsnd/sspause]
       - [0x9C5C4, c, syslib/libsnd/ssplay]
       - [0x9C644, c, syslib/libsnd/ssreplay]
-      - [0x9C734, c, syslib/libsnd/playmode]
+      - [0x9C734, lib, libsnd, playmode, .text]
       - [0x9C854, c, syslib/libsnd/sssattr]
-      - [0x9C914, c, syslib/libspu/s_sca]
+      - [0x9C914, lib, libspu, s_sca, .text]
       - [0x9CC94, c, syslib/libsnd/sssmv]
-      - [0x9CCE4, c, syslib/libsnd/ssstart]
-      - [0x9CFF4, c, syslib/libsnd/sscall]
-      - [0x9D264, c, syslib/libsnd/cres]
-      - [0x9D574, c, syslib/libsnd/decres]
+      - [0x9CCE4, lib, libsnd, ssstart, .text]
+      - [0x9CFF4, lib, libsnd, sscall, .text]
+      - [0x9D264, lib, libsnd, cres, .text]
+      - [0x9D574, lib, libsnd, decres, .text]
       - [0x9D914, c, syslib/libsnd/pause]
       - [0x9D9B4, c, syslib/libsnd/play]
-      - [0x9D9E4, c, syslib/libsnd/midiread]
+      - [0x9D9E4, lib, libsnd, midiread, .text]
       - [0x9E0D4, c, syslib/libsnd/next]
       - [0x9E1D4, c, syslib/libsnd/replay]
       - [0x9E234, c, syslib/libsnd/ssstop]
       - [0x9E414, c, syslib/libsnd/sssv]
-      - [0x9E524, c, syslib/libsnd/sstable]
-      - [0x9E744, c, syslib/libsnd/sstick]
-      - [0x9E894, c, syslib/libsnd/ssvol]
-      - [0x9EA54, c, syslib/libsnd/tempo]
-      - [0x9EC74, c, syslib/libsnd/ut_ako]
-      - [0x9EDB4, c, syslib/libspu/s_sva]
-      - [0x9F3B4, c, syslib/libspu/s_n2p]
-      - [0x9F6A4, c, syslib/libsnd/ut_cp]
+      - [0x9E524, lib, libsnd, sstable, .text]
+      - [0x9E744, lib, libsnd, sstick, .text]
+      - [0x9E894, lib, libsnd, ssvol, .text]
+      - [0x9EA54, lib, libsnd, tempo, .text]
+      - [0x9EC74, lib, libsnd, ut_ako, .text]
+      - [0x9EDB4, lib, libspu, s_sva, .text]
+      - [0x9F3B4, lib, libspu, s_n2p, .text]
+      - [0x9F6A4, lib, libsnd, ut_cp, .text]
       - [0x9F7E4, c, syslib/libsnd/ut_gpa]
-      - [0x9F8F4, c, syslib/libsnd/ut_gva]
-      - [0x9FB34, c, syslib/libsnd/ut_keyv]
+      - [0x9F8F4, lib, libsnd, ut_gva, .text]
+      - [0x9FB34, lib, libsnd, ut_keyv, .text]
       - [0x9FF14, c, syslib/libsnd/ut_rdel]
-      - [0x9FF54, c, syslib/libspu/s_srmp]
+      - [0x9FF54, lib, libspu, s_srmp, .text]
       - [0xA0434, c, syslib/libspu/s_m_util]
-      - [0xA0544, c, syslib/libspu/s_sra]
-      - [0xA0A14, c, syslib/libspu/s_crwa]
+      - [0xA0544, lib, libspu, s_sra, .text]
+      - [0xA0A14, lib, libspu, s_crwa, .text]
       - [0xA0BB4, c, syslib/libsnd/ut_rdep]
-      - [0xA0C44, c, syslib/libsnd/ut_rev]
-      - [0xA0CF4, c, syslib/libspu/s_sr]
-      - [0xA0DC4, c, syslib/libsnd/ut_rfb]
-      - [0xA0E04, asm, syslib/unk_800B0604]
-      - [0xA0E44, c, syslib/libsnd/ut_sva]
+      - [0xA0C44, lib, libsnd, ut_rev, .text]
+      - [0xA0CF4, lib, libspu, s_sr, .text]
+      - [0xA0DC4, lib, libsnd, ut_rfb, .text]
+      - [0xA0E04, lib, libsnd, ut_roff, .text]
+      - [0xA0E24, lib, libsnd, ut_ron, .text]
+      - [0xA0E44, lib, libsnd, ut_sva, .text]
       - [0xA1014, c, syslib/libsnd/ut_vvol]
       - [0xA11E4, c, syslib/libspu/s_gvv]
-      - [0xA1244, c, syslib/libsnd/vm_aloc2]
+      - [0xA1244, lib, libsnd, vm_aloc2, .text]
       - [0xA1424, c, syslib/libsnd/vm_doff]
       - [0xA1434, c, syslib/libsnd/vm_don]
-      - [0xA1444, c, syslib/libsnd/vm_f]
+      - [0xA1444, lib, libsnd, vm_f, .text]
       - [0xA18D4, c, syslib/libspu/s_snv]
-      - [0xA1904, c, syslib/libspu/s_sav]
+      - [0xA1904, lib, libspu, s_sav, .text]
       - [0xA1BC4, c, syslib/libspu/s_srv]
-      - [0xA1BF4, c, syslib/libspu/s_sk]
+      - [0xA1BF4, lib, libspu, s_sk, .text]
       - [0xA1DB4, c, syslib/libspu/s_gvex]
-      - [0xA1DD4, c, syslib/libsnd/vm_init]
+      - [0xA1DD4, lib, libsnd, vm_init, .text]
       - [0xA2124, c, syslib/libspu/s_m_init]
       - [0xA2184, c, syslib/libspu/s_it]
-      - [0xA21C4, c, syslib/libsnd/vm_key]
-      - [0xA29D4, c, syslib/libsnd/vm_aloc1]
-      - [0xA2C64, c, syslib/libsnd/vm_n2p]
-      - [0xA2F24, c, syslib/libsnd/vm_no1]
+      - [0xA21C4, lib, libsnd, vm_key, .text]
+      - [0xA29D4, lib, libsnd, vm_aloc1, .text]
+      - [0xA2C64, lib, libsnd, vm_n2p, .text]
+      - [0xA2F24, lib, libsnd, vm_no1, .text]
       - [0xA34A4, c, syslib/libspu/s_snc]
       - [0xA34F4, c, syslib/libsnd/vm_noff]
       - [0xA3534, c, syslib/libsnd/vm_nowof]
-      - [0xA3604, c, syslib/libsnd/vm_nowon]
-      - [0xA3AD4, c, syslib/libsnd/vm_pb]
+      - [0xA3604, lib, libsnd, vm_nowon, .text]
+      - [0xA3AD4, lib, libsnd, vm_pb, .text]
       - [0xA3DB4, c, syslib/libsnd/vm_prog]
-      - [0xA3F34, c, syslib/libsnd/vm_seq]
-      - [0xA4664, c, syslib/libsnd/vm_stav]
-      - [0xA4734, c, syslib/libsnd/vm_vol]
-      - [0xA4CF4, c, syslib/libsnd/vm_vsu]
+      - [0xA3F34, lib, libsnd, vm_seq, .text]
+      - [0xA4664, lib, libsnd, vm_stav, .text]
+      - [0xA4734, lib, libsnd, vm_vol, .text]
+      - [0xA4CF4, lib, libsnd, vm_vsu, .text]
       - [0xA4DB4, c, syslib/libsnd/vs_mono]
       - [0xA4DD4, c, syslib/libsnd/vs_vab]
-      - [0xA4E54, c, syslib/libspu/s_m_f]
-      - [0xA4ED4, c, syslib/libspu/s_m_int]
-      - [0xA51D4, c, syslib/libsnd/vs_vh]
-      - [0xA5634, c, syslib/libspu/s_m_m]
+      - [0xA4E54, lib, libspu, s_m_f, .text]
+      - [0xA4ED4, lib, libspu, s_m_int, .text]
+      - [0xA51D4, lib, libsnd, vs_vh, .text]
+      - [0xA5634, lib, libspu, s_m_m, .text]
       - [0xA5904, c, syslib/libsnd/vs_vtb]
       - [0xA59C4, c, syslib/libspu/s_w] # LIBSPU.LIB:S_W.OBJ
       - [0xA5A24, c, syslib/libspu/s_stsa]
       - [0xA5A84, c, syslib/libspu/s_stm]
       - [0xA5AB4, c, syslib/libsnd/vs_vtc]
       - [0xA5AE4, c, syslib/libspu/s_itc]
-      - [0xA5B94, hasm, syslib/libsn/open]
-      - [0xA5BB4, hasm, syslib/libsn/close]
-      - [0xA5BC4, hasm, syslib/libsn/lseek]
-      - [0xA5BE8, hasm, syslib/libsn/creat]
-      - [0xA5C08, c, syslib/libsn/read] # ambiguous, same bytes as LIBSN.LIB:WRITE.OBJ
-      - [0xA5CC8, hasm, syslib/libsn/snread]
-      - [0xA5CE0, asm, syslib/unk_800B54E0]
-      - [0xA5DA0, hasm, syslib/libsn/snwrite]
+      - [0xA5B94, lib, libsn, open, .text]
+      - [0xA5BB4, lib, libsn, close, .text]
+      - [0xA5BC4, lib, libsn, lseek, .text]
+      - [0xA5BE8, lib, libsn, creat, .text]
+      - [0xA5C08, lib, libsn, read, .text]
+      - [0xA5CC8, lib, libsn, snread, .text]
+      - [0xA5CE0, lib, libsn, write, .text]
+      - [0xA5DA0, lib, libsn, snwrite, .text]
       - [0xA5DB8, c, syslib/libetc/vsync]
-      - [0xA5FC8, c, syslib/libetc/intr]
+      - [0xA5FC8, lib, libetc, intr, .text]
       - [0xA6688, c, syslib/libetc/intr_vb]
-      - [0xA67A8, c, syslib/libetc/intr_dma]
+      - [0xA67A8, lib, libetc, intr_dma, .text]
       - [0xA6A48, c, syslib/libetc/vmode]
       - [0xA6A78, c, syslib/libcd/cdrom]
       - [0xA6AA8, c, syslib/libcd/event]
-      - [0xA6BA8, c, syslib/libcd/sys]
-      - [0xA7338, c, syslib/libcd/bios]
-      - [0xA8A98, c, syslib/libcd/iso9660]
-      - [0xA9408, c, syslib/libcd/cdread]
+      - [0xA6BA8, lib, libcd, sys, .text]
+      - [0xA7338, lib, libcd, bios, .text]
+      - [0xA8A98, lib, libcd, iso9660, .text]
+      - [0xA9408, lib, libcd, cdread, .text]
       - [0xA9BB8, c, syslib/libcd/cdread2]
-      - [0xA9C68, c, syslib/libcd/cdreade]
+      - [0xA9C68, lib, libcd, cdreade, .text]
       - [0xA9EB8, c, syslib/libcd/c_002]
       - [0xA9F18, c, syslib/libcd/c_003]
-      - [0xA9F98, c, syslib/libcd/c_004]
+      - [0xA9F98, lib, libcd, c_004, .text]
       - [0xAA088, c, syslib/libcd/c_005]
       - [0xAA118, c, syslib/libcd/c_007]
       - [0xAA1C8, c, syslib/libcd/c_008]
-      - [0xAA208, c, syslib/libcd/c_009]
+      - [0xAA208, lib, libcd, c_009, .text]
       - [0xAA2C8, c, syslib/libcd/c_010]
-      - [0xAA2E8, c, syslib/libcd/c_011]
-      - [0xAADD8, c, syslib/libds/dscb]
+      - [0xAA2E8, lib, libcd, c_011, .text]
+      - [0xAADD8, lib, libds, dscb, .text]
       - [0xAAE38, c, syslib/libgte/geo_00]
       - [0xAAF08, c, syslib/libgte/geo_01]
-      - [0xAAFA8, c, syslib/libgte/fog_02]
-      - [0xAB0B8, hasm, syslib/libgte/msc01]
-      - [0xAB148, hasm, syslib/libgte/mtx_004]
-      - [0xAB2A8, hasm, syslib/libgte/mtx_05]
-      - [0xAB2F8, hasm, syslib/libgte/mtx_06]
-      - [0xAB358, hasm, syslib/libgte/mtx_08]
-      - [0xAB498, c, syslib/libgte/reg03]
-      - [0xAB5A8, c, syslib/libgte/reg11]
-      - [0xAB5C8, c, syslib/libgte/smp]
-      - [0xAB7A8, c, syslib/libgte/smp_00]
-      - [0xAB9B8, hasm, syslib/libgte/smp_02]
-      - [0xAB9E8, c, syslib/libgte/smp_03]
-      - [0xABA48, c, syslib/libgte/smp_05]
-      - [0xABA78, hasm, syslib/libgte/cmb_00]
-      - [0xABAF8, c, syslib/libgte/fgo_01]
-      - [0xABD88, c, syslib/libgte/fgo_02]
-      - [0xAC018, c, syslib/libgte/fgo_03]
-      - [0xAC2A8, hasm, syslib/libgte/fgo_05]
-      - [0xAC448, c, syslib/libgs/2d_bg0]
-      - [0xACC98, c, syslib/libgs/2d_com0]
-      - [0xAD208, c, syslib/libgs/2d_prim]
-      - [0xAD3D8, c, syslib/libgs/2d_com1]
-      - [0xAD478, c, syslib/libgs/2d_sp0]
-      - [0xAD978, hasm, syslib/libgte/mtx_07]
-      - [0xAD9A8, c, syslib/libgte/mtx_09]
-      - [0xAD9D8, c, syslib/libgte/mtx_12]
-      - [0xAD9F8, c, syslib/libgte/reg09]
-      - [0xADA08, c, syslib/libgs/2d_sp1]
-      - [0xADB88, c, syslib/libgs/gs_001]
-      - [0xAE0D8, c, syslib/libgs/gs_002]
-      - [0xAE1F8, c, syslib/libgte/reg12]
-      - [0xAE218, c, syslib/libgs/gs_003]
-      - [0xAE298, c, syslib/libgs/gs_004]
-      - [0xAE388, c, syslib/libgs/gs_005]
-      - [0xAE408, c, syslib/libgs/gs_010]
+      - [0xAAFA8, lib, libgte, fog_02, .text]
+      - [0xAB0B8, lib, libgte, msc01, .text]
+      - [0xAB148, lib, libgte, mtx_004, .text]
+      - [0xAB2A8, lib, libgte, mtx_05, .text]
+      - [0xAB2F8, lib, libgte, mtx_06, .text]
+      - [0xAB358, lib, libgte, mtx_08, .text]
+      - [0xAB498, lib, libgte, reg03, .text]
+      - [0xAB5A8, lib, libgte, reg11, .text]
+      - [0xAB5C8, lib, libgte, smp, .text]
+      - [0xAB7A8, lib, libgte, smp_00, .text]
+      - [0xAB9B8, lib, libgte, smp_02, .text]
+      - [0xAB9E8, lib, libgte, smp_03, .text]
+      - [0xABA48, lib, libgte, smp_05, .text]
+      - [0xABA78, lib, libgte, cmb_00, .text]
+      - [0xABAF8, lib, libgte, fgo_01, .text]
+      - [0xABD88, lib, libgte, fgo_02, .text]
+      - [0xAC018, lib, libgte, fgo_03, .text]
+      - [0xAC2A8, lib, libgte, fgo_05, .text]
+      - [0xAC448, lib, libgs, 2d_bg0, .text]
+      - [0xACC98, lib, libgs, 2d_com0, .text]
+      - [0xAD208, lib, libgs, 2d_prim, .text]
+      - [0xAD3D8, lib, libgs, 2d_com1, .text]
+      - [0xAD478, lib, libgs, 2d_sp0, .text]
+      - [0xAD978, lib, libgte, mtx_07, .text]
+      - [0xAD9A8, lib, libgte, mtx_09, .text]
+      - [0xAD9D8, lib, libgte, mtx_12, .text]
+      - [0xAD9F8, lib, libgte, reg09, .text]
+      - [0xADA08, lib, libgs, 2d_sp1, .text]
+      - [0xADB88, lib, libgs, gs_001, .text]
+      - [0xAE0D8, lib, libgs, gs_002, .text]
+      - [0xAE1F8, lib, libgte, reg12, .text]
+      - [0xAE218, lib, libgs, gs_003, .text]
+      - [0xAE298, lib, libgs, gs_004, .text]
+      - [0xAE388, lib, libgs, gs_005, .text]
+      - [0xAE408, lib, libgs, gs_010, .text]
       - [0xAE4B8, c, syslib/libgs/matrix]
-      - [0xAE878, hasm, syslib/libgte/mtx_000]
-      - [0xAE988, hasm, syslib/libgte/mtx_006]
-      - [0xAEAD8, c, syslib/libgte/mtx_03]
-      - [0xAEBE8, c, syslib/libgte/mtx_04]
-      - [0xAECF8, c, syslib/libgte/mtx_10]
+      - [0xAE878, lib, libgte, mtx_000, .text]
+      - [0xAE988, lib, libgte, mtx_006, .text]
+      - [0xAEAD8, lib, libgte, mtx_03, .text]
+      - [0xAEBE8, lib, libgte, mtx_04, .text]
+      - [0xAECF8, lib, libgte, mtx_10, .text]
       - [0xAED28, c, syslib/libgs/gs_103]
-      - [0xAEDC8, c, syslib/libgs/gs_104]
-      - [0xAEE48, c, syslib/libgs/gs_105]
-      - [0xAEEB8, asm, syslib/unk_800BE6B8]
-      - [0xAEED8, c, syslib/libgte/reg13]
-      - [0xAEEE8, c, syslib/libgs/gs_107]
-      - [0xAF458, c, syslib/libgte/mtx_11]
+      - [0xAEDC8, lib, libgs, gs_104, .text]
+      - [0xAEE48, lib, libgs, gs_105, .text]
+      - [0xAEEB8, lib, libgs, gs_106, .text]
+      - [0xAEED8, lib, libgte, reg13, .text]
+      - [0xAEEE8, lib, libgs, gs_107, .text]
+      - [0xAF458, lib, libgte, mtx_11, .text]
       - [0xAF488, c, syslib/libgs/gs_110]
-      - [0xAF4B8, c, syslib/libgte/reg10]
+      - [0xAF4B8, lib, libgte, reg10, .text]
       - [0xAF4D8, c, syslib/libgs/gs_111] # ambiguous, same bytes as LIBGS.LIB:GS_112.OBJ
       - [0xAF508, c, syslib/libgs/gs_113]
       - [0xAF568, c, syslib/libgs/gs_119]
-      - [0xAF628, c, syslib/libgs/gs_120]
+      - [0xAF628, lib, libgs, gs_120, .text]
       - [0xAF748, c, syslib/libgs/gs_121]
-      - [0xAF798, hasm, syslib/libgte/msc00]
-      - [0xAF828, hasm, syslib/libgte/patchgte]
-      - [0xAF8D4, hasm, syslib/libgte/patchgte_handler]
+      - [0xAF798, lib, libgte, msc00, .text]
+      - [0xAF828, lib, libgte, patchgte, .text]
       - [0xAF908, c, syslib/libgs/gs_122]
-      - [0xAF9F8, c, syslib/libgs/gs_123]
+      - [0xAF9F8, lib, libgs, gs_123, .text]
       - [0xAFAC8, c, syslib/libgs/gs_101] # ambiguous, same bytes as LIBGS.LIB:GS_102.OBJ, LIBGS.LIB:GS_124.OBJ
-      - [0xAFAD8, asm, syslib/unk_800BF2D8]
+      - [0xAFAD8, lib, libgs, gs_125, .text]
       - [0xAFAE8, c, syslib/libgs/gs_127]
-      - [0xAFB68, c, syslib/libgs/gs_133]
-      - [0xAFE28, c, syslib/libgs/gs_134]
-      - [0xB00F8, c, syslib/libgs/gs_137] # ambiguous, same bytes as LIBGS.LIB:RVWLUNIT.OBJ
-      - [0xB0708, c, syslib/libgte/cor_05]
-      - [0xB08F8, c, syslib/libgte/fgo_00]
-      - [0xB0938, c, syslib/libgs/objt]
-      - [0xB0AC8, c, syslib/libgs/objt2] # ambiguous, same bytes as LIBGS.LIB:OBJT3.OBJ
-      - [0xB1358, c, syslib/libgte/f3]
-      - [0xB1868, c, syslib/libgte/f4]
-      - [0xB1E38, c, syslib/libgte/g3]
-      - [0xB23E8, c, syslib/libgte/g4]
-      - [0xB2AA8, c, syslib/libgte/ft3]
-      - [0xB3058, c, syslib/libgte/ft4]
-      - [0xB36F8, c, syslib/libgte/gt3]
-      - [0xB3D38, c, syslib/libgte/gt4]
-      - [0xB44A8, c, syslib/libgte/dvf3_00] # ambiguous, same bytes as LIBGTE.LIB:DVF3_01.OBJ
-      - [0xB46E8, c, syslib/libgte/reg04]
-      - [0xB4708, c, syslib/libgte/cmb_09]
-      - [0xB47D8, asm, syslib/unk_800C3FD8]
-      - [0xB4A18, c, syslib/libgte/cmb_08]
-      - [0xB4AE8, c, syslib/libgte/dvf3_02]
-      - [0xB4CD8, c, syslib/libgte/cmb_06]
-      - [0xB4D68, c, syslib/libgte/dvf3_03]
-      - [0xB4F58, c, syslib/libgte/dvft3_00]
-      - [0xB5288, c, syslib/libgte/cmb_01]
-      - [0xB52E8, c, syslib/libgte/dvft3_01]
-      - [0xB5618, c, syslib/libgte/dvft3_02]
-      - [0xB58C8, c, syslib/libgte/dvft3_03]
-      - [0xB5B78, c, syslib/libgte/dvg3_00] # ambiguous, same bytes as LIBGTE.LIB:DVG3_01.OBJ
-      - [0xB5DB8, asm, syslib/unk_800C55B8]
-      - [0xB5FF8, c, syslib/libgte/cmb_18]
-      - [0xB60F8, c, syslib/libgte/dvg3_02]
-      - [0xB62F8, c, syslib/libgte/dvg3_03]
-      - [0xB64F8, c, syslib/libgte/dvgt3_00] # ambiguous, same bytes as LIBGTE.LIB:DVGT3_01.OBJ
-      - [0xB6778, asm, syslib/unk_800C5F78]
-      - [0xB69F8, c, syslib/libgte/dvgt3_02]
-      - [0xB6C28, c, syslib/libgte/dvgt3_03]
-      - [0xB6E68, c, syslib/libgte/dvf4_00]
-      - [0xB70D8, c, syslib/libgte/reg05]
-      - [0xB70F8, c, syslib/libgte/cmb_07]
-      - [0xB71A8, c, syslib/libgte/dvf4_01]
-      - [0xB7418, c, syslib/libgte/dvf4_02]
-      - [0xB7658, c, syslib/libgte/dvf4_03]
-      - [0xB7898, c, syslib/libgte/dvft4_00]
-      - [0xB7B38, c, syslib/libgte/dvft4_01]
-      - [0xB7DD8, c, syslib/libgte/dvft4_02]
-      - [0xB8058, c, syslib/libgte/dvft4_03]
-      - [0xB82D8, c, syslib/libgte/dvg4_00]
-      - [0xB8588, c, syslib/libgte/dvg4_01]
-      - [0xB8848, c, syslib/libgte/dvg4_02]
-      - [0xB8AA8, c, syslib/libgte/dvg4_03]
-      - [0xB8D08, c, syslib/libgte/dvgt4_00]
-      - [0xB8FF8, c, syslib/libgte/dvgt4_01]
-      - [0xB92F8, c, syslib/libgte/dvgt4_02]
-      - [0xB9588, c, syslib/libgte/dvgt4_03]
-      - [0xB9838, c, syslib/libgte/divf3a]
-      - [0xB9BA8, c, syslib/libgte/divft3a]
-      - [0xB9FA8, c, syslib/libgte/divg3a]
-      - [0xBA3B8, c, syslib/libgte/divgt3a]
-      - [0xBA858, c, syslib/libgte/divf4a]
-      - [0xBACD8, c, syslib/libgte/divft4a]
-      - [0xBB1F8, c, syslib/libgte/divg4a]
-      - [0xBB748, c, syslib/libgte/divgt4a]
-      - [0xBBD68, c, syslib/libgs/dag3gf00]
-      - [0xBBF68, c, syslib/libgs/dag3gf01]
-      - [0xBC168, c, syslib/libgs/dag3gf02]
-      - [0xBC2D8, c, syslib/libgs/daf3gf00]
-      - [0xBC4F8, c, syslib/libgs/daf3gf01]
-      - [0xBC718, c, syslib/libgs/daf3gf02]
-      - [0xBC898, c, syslib/libgs/daf4gf00]
-      - [0xBCB28, c, syslib/libgs/daf4gf01]
-      - [0xBCDB8, c, syslib/libgs/daf4gf02]
-      - [0xBCF88, c, syslib/libgs/dag4gf00]
-      - [0xBD208, c, syslib/libgs/dag4gf01]
-      - [0xBD488, c, syslib/libgs/dag4gf02]
+      - [0xAFB68, lib, libgs, gs_133, .text]
+      - [0xAFE28, lib, libgs, gs_134, .text]
+      - [0xB00F8, lib, libgs, gs_137, .text]
+      - [0xB0708, lib, libgte, cor_05, .text]
+      - [0xB08F8, lib, libgte, fgo_00, .text]
+      - [0xB0938, lib, libgs, objt, .text]
+      - [0xB0AC8, lib, libgs, objt2, .text]
+      - [0xB1358, lib, libgte, f3, .text]
+      - [0xB1868, lib, libgte, f4, .text]
+      - [0xB1E38, lib, libgte, g3, .text]
+      - [0xB23E8, lib, libgte, g4, .text]
+      - [0xB2AA8, lib, libgte, ft3, .text]
+      - [0xB3058, lib, libgte, ft4, .text]
+      - [0xB36F8, lib, libgte, gt3, .text]
+      - [0xB3D38, lib, libgte, gt4, .text]
+      - [0xB44A8, lib, libgte, dvf3_00, .text]
+      - [0xB46E8, lib, libgte, reg04, .text]
+      - [0xB4708, lib, libgte, cmb_09, .text]
+      - [0xB47D8, lib, libgte, dvf3_01, .text]
+      - [0xB4A18, lib, libgte, cmb_08, .text]
+      - [0xB4AE8, lib, libgte, dvf3_02, .text]
+      - [0xB4CD8, lib, libgte, cmb_06, .text]
+      - [0xB4D68, lib, libgte, dvf3_03, .text]
+      - [0xB4F58, lib, libgte, dvft3_00, .text]
+      - [0xB5288, lib, libgte, cmb_01, .text]
+      - [0xB52E8, lib, libgte, dvft3_01, .text]
+      - [0xB5618, lib, libgte, dvft3_02, .text]
+      - [0xB58C8, lib, libgte, dvft3_03, .text]
+      - [0xB5B78, lib, libgte, dvg3_00, .text]
+      - [0xB5DB8, lib, libgte, dvg3_01, .text]
+      - [0xB5FF8, lib, libgte, cmb_18, .text]
+      - [0xB60F8, lib, libgte, dvg3_02, .text]
+      - [0xB62F8, lib, libgte, dvg3_03, .text]
+      - [0xB64F8, lib, libgte, dvgt3_00, .text]
+      - [0xB6778, lib, libgte, dvgt3_01, .text]
+      - [0xB69F8, lib, libgte, dvgt3_02, .text]
+      - [0xB6C28, lib, libgte, dvgt3_03, .text]
+      - [0xB6E68, lib, libgte, dvf4_00, .text]
+      - [0xB70D8, lib, libgte, reg05, .text]
+      - [0xB70F8, lib, libgte, cmb_07, .text]
+      - [0xB71A8, lib, libgte, dvf4_01, .text]
+      - [0xB7418, lib, libgte, dvf4_02, .text]
+      - [0xB7658, lib, libgte, dvf4_03, .text]
+      - [0xB7898, lib, libgte, dvft4_00, .text]
+      - [0xB7B38, lib, libgte, dvft4_01, .text]
+      - [0xB7DD8, lib, libgte, dvft4_02, .text]
+      - [0xB8058, lib, libgte, dvft4_03, .text]
+      - [0xB82D8, lib, libgte, dvg4_00, .text]
+      - [0xB8588, lib, libgte, dvg4_01, .text]
+      - [0xB8848, lib, libgte, dvg4_02, .text]
+      - [0xB8AA8, lib, libgte, dvg4_03, .text]
+      - [0xB8D08, lib, libgte, dvgt4_00, .text]
+      - [0xB8FF8, lib, libgte, dvgt4_01, .text]
+      - [0xB92F8, lib, libgte, dvgt4_02, .text]
+      - [0xB9588, lib, libgte, dvgt4_03, .text]
+      - [0xB9838, lib, libgte, divf3a, .text]
+      - [0xB9BA8, lib, libgte, divft3a, .text]
+      - [0xB9FA8, lib, libgte, divg3a, .text]
+      - [0xBA3B8, lib, libgte, divgt3a, .text]
+      - [0xBA858, lib, libgte, divf4a, .text]
+      - [0xBACD8, lib, libgte, divft4a, .text]
+      - [0xBB1F8, lib, libgte, divg4a, .text]
+      - [0xBB748, lib, libgte, divgt4a, .text]
+      - [0xBBD68, lib, libgs, dag3gf00, .text]
+      - [0xBBF68, lib, libgs, dag3gf01, .text]
+      - [0xBC168, lib, libgs, dag3gf02, .text]
+      - [0xBC2D8, lib, libgs, daf3gf00, .text]
+      - [0xBC4F8, lib, libgs, daf3gf01, .text]
+      - [0xBC718, lib, libgs, daf3gf02, .text]
+      - [0xBC898, lib, libgs, daf4gf00, .text]
+      - [0xBCB28, lib, libgs, daf4gf01, .text]
+      - [0xBCDB8, lib, libgs, daf4gf02, .text]
+      - [0xBCF88, lib, libgs, dag4gf00, .text]
+      - [0xBD208, lib, libgs, dag4gf01, .text]
+      - [0xBD488, lib, libgs, dag4gf02, .text]
       - [0xBD648, c, syslib/libgpu/ext]
-      - [0xBD8E8, c, syslib/libgpu/sys]
+      - [0xBD8E8, lib, libgpu, sys, .text]
       - [0xC08F8, c, syslib/libgpu/p00]
       - [0xC0938, c, syslib/libgpu/p01]
       - [0xC0958, c, syslib/libgpu/p06]
@@ -438,134 +445,138 @@ segments:
       - [0xC0A28, c, syslib/libgpu/p33]
       - [0xC0A58, c, syslib/libgpu/p34]
       - [0xC0AB8, c, syslib/libpress/libpress]
-      - [0xC1148, hasm, syslib/libpress/vlc_c]
-      - [0xC14D8, c, syslib/libpress/build]
-      - [0xC15C8, hasm, syslib/libc/a63]
-      - [0xC15E8, c, syslib/libc/c14]
-      - [0xC15F8, hasm, syslib/libc/c19]
-      - [0xC1608, hasm, syslib/libc/c21]
-      - [0xC1618, hasm, syslib/libc/c23]
-      - [0xC1628, hasm, syslib/libc/c24]
-      - [0xC1638, hasm, syslib/libc/c25]
-      - [0xC1648, hasm, syslib/libc/c27]
-      - [0xC1658, hasm, syslib/libc/c42]
-      - [0xC1668, hasm, syslib/libc/c47]
-      - [0xC1678, hasm, syslib/libc/c63]
-      - [0xC1688, c, syslib/libc/sprintf]
-      - [0xC1F18, hasm, syslib/libc/c46]
-      - [0xC1F28, c, syslib/libc/memmove] # ambiguous, same bytes as LIBC2.LIB:MEMMOVE.OBJ
-      - [0xC1F98, hasm, syslib/libapi/c57]
-      - [0xC1FA8, hasm, syslib/libapi/c68]
-      - [0xC1FB8, hasm, syslib/libapi/c73]
-      - [0xC1FC8, c, syslib/libapi/c113]
-      - [0xC1FD8, hasm, syslib/libapi/c114]
-      - [0xC1FF8, hasm, syslib/libapi/a07]
-      - [0xC2008, hasm, syslib/libapi/a08]
-      - [0xC2018, hasm, syslib/libapi/a10]
-      - [0xC2028, hasm, syslib/libapi/a11]
-      - [0xC2038, hasm, syslib/libapi/a12]
-      - [0xC2048, hasm, syslib/libapi/a23]
-      - [0xC2058, hasm, syslib/libapi/a24]
-      - [0xC2068, hasm, syslib/libapi/a25]
-      - [0xC2078, hasm, syslib/libapi/a36]
-      - [0xC2088, hasm, syslib/libapi/a37]
-      - [0xC2098, c, syslib/libapi/a39]
-      - [0xC20A8, hasm, syslib/libapi/a91]
-      - [0xC20B8, hasm, syslib/libapi/l10]
+      - [0xC1148, lib, libpress, vlc_c, .text]
+      - [0xC14D8, lib, libpress, build, .text]
+      - [0xC15C8, lib, libc, a63, .text]
+      - [0xC15E8, lib, libc, c14, .text]
+      - [0xC15F8, lib, libc, c19, .text]
+      - [0xC1608, lib, libc, c21, .text]
+      - [0xC1618, lib, libc, c23, .text]
+      - [0xC1628, lib, libc, c24, .text]
+      - [0xC1638, lib, libc, c25, .text]
+      - [0xC1648, lib, libc, c27, .text]
+      - [0xC1658, lib, libc, c42, .text]
+      - [0xC1668, lib, libc, c47, .text]
+      - [0xC1678, lib, libc, c63, .text]
+      - [0xC1688, lib, libc, sprintf, .text]
+      - [0xC1F18, lib, libc, c46, .text]
+      - [0xC1F28, lib, libc, memmove, .text]
+      - [0xC1F98, lib, libapi, c57, .text]
+      - [0xC1FA8, lib, libapi, c68, .text]
+      - [0xC1FB8, lib, libapi, c73, .text]
+      - [0xC1FC8, lib, libapi, c113, .text]
+      - [0xC1FD8, lib, libapi, c114, .text]
+      - [0xC1FF8, lib, libapi, a07, .text]
+      - [0xC2008, lib, libapi, a08, .text]
+      - [0xC2018, lib, libapi, a10, .text]
+      - [0xC2028, lib, libapi, a11, .text]
+      - [0xC2038, lib, libapi, a12, .text]
+      - [0xC2048, lib, libapi, a23, .text]
+      - [0xC2058, lib, libapi, a24, .text]
+      - [0xC2068, lib, libapi, a25, .text]
+      - [0xC2078, lib, libapi, a36, .text]
+      - [0xC2088, lib, libapi, a37, .text]
+      - [0xC2098, lib, libapi, a39, .text]
+      - [0xC20A8, lib, libapi, a91, .text]
+      - [0xC20B8, lib, libapi, l10, .text]
       - [0xC20C8, c, syslib/libapi/counter]
       - [0xC2238, c, syslib/libpad/padentry]
-      - [0xC26E8, asm, syslib/unk_800D1EE8]
-      - [0xC32C8, hasm, syslib/libapi/l02]
-      - [0xC32D8, hasm, syslib/libapi/l03]
-      - [0xC32E8, c, syslib/libpad/padcmd]
-      - [0xC3C48, asm, syslib/unk_800D3448]
-      - [0xC4228, c, syslib/libpad/padportd]
-      - [0xC4888, c, syslib/libc/c40]
-      - [0xC4898, c, syslib/libpad/padseqd]
-      - [0xC4D18, asm, syslib/unk_800D4518]
-      - [0xC6574, hasm, syslib/libcard/c171]
-      - [0xC6584, hasm, syslib/libcard/c172]
-      - [0xC6594, hasm, syslib/libcard/a78]
-      - [0xC65A4, hasm, syslib/libcard/a80]
+      - [0xC26E8, lib, libpad421, padmain, .text]
+      - [0xC32C8, lib, libapi, l02, .text]
+      - [0xC32D8, lib, libapi, l03, .text]
+      - [0xC32E8, lib, libpad, padcmd, .text]
+      - [0xC3C48, lib, libpad421, padif, .text]
+      - [0xC4228, lib, libpad, padportd, .text]
+      - [0xC4888, lib, libc, c40, .text]
+      - [0xC4898, lib, libpad, padseqd, .text]
+      - [0xC4D18, lib, libpad421, waitrc2, .text]
+      - [0xC4DD8, lib, libmcrd421, libmcrd, .text]
+      - [0xC6574, lib, libcard, c171, .text]
+      - [0xC6584, lib, libcard, c172, .text]
+      - [0xC6594, lib, libcard, a78, .text]
+      - [0xC65A4, lib, libcard, a80, .text]
       - [0xC65B4, c, syslib/libcard/card]
-      - [0xC65F4, hasm, syslib/libapi/a50]
-      - [0xC6604, hasm, syslib/libapi/a51]
-      - [0xC6614, hasm, syslib/libapi/a52]
-      - [0xC6624, hasm, syslib/libapi/a53]
-      - [0xC6634, hasm, syslib/libapi/a54]
-      - [0xC6644, hasm, syslib/libapi/a65]
-      - [0xC6654, hasm, syslib/libapi/a67]
-      - [0xC6664, hasm, syslib/libapi/a69]
-      - [0xC6674, c, syslib/libapi/first]
-      - [0xC6914, hasm, syslib/libapi/a66]
-      - [0xC6924, asm, syslib/unk_800D6124]
-      - [0xC70D8, hasm, syslib/libapi/c112] # ambiguous, same bytes as LIBCARD.LIB:C112.OBJ
+      - [0xC65F4, lib, libapi, a50, .text]
+      - [0xC6604, lib, libapi, a51, .text]
+      - [0xC6614, lib, libapi, a52, .text]
+      - [0xC6624, lib, libapi, a53, .text]
+      - [0xC6634, lib, libapi, a54, .text]
+      - [0xC6644, lib, libapi, a65, .text]
+      - [0xC6654, lib, libapi, a67, .text]
+      - [0xC6664, lib, libapi, a69, .text]
+      - [0xC6674, lib, libapi, first, .text]
+      - [0xC6914, lib, libapi, a66, .text]
+      - [0xC6924, lib, libmcrd421, userfunc, .text]
+      - [0xC6A38, lib, libmcrd421, bios, .text]
+      - [0xC70D8, lib, libapi, c112, .text]
       - [0xC70E8, c, syslib/libcard/init]
-      - [0xC71B8, hasm, syslib/libcard/a74]
-      - [0xC71C8, hasm, syslib/libcard/a75]
-      - [0xC71D8, hasm, syslib/libcard/a76]
-      - [0xC71E8, c, syslib/libcard/patch]
-      - [0xC7280, hasm, syslib/libcard/patch_card]
-      - [0xC7314, hasm, syslib/libcard/patch_card2]
-      - [0xC7384, c, syslib/libcard/memcard_patch_copy]
-      - [0xC73B8, c, syslib/libcard/end]
-      - [0xC7438, hasm, syslib/libapi/a09]
-      - [0xC7448, c, syslib/libapi/pad]
-      - [0xC7748, c, syslib/libapi/a18]
-      - [0xC7758, c, syslib/libapi/a19]
-      - [0xC7768, hasm, syslib/libapi/a20]
-      - [0xC7778, hasm, syslib/libapi/a21]
-      - [0xC7788, hasm, syslib/libapi/patch]
-      - [0xC7828, hasm, syslib/libapi/chclrpad]
-      - [0xC7898, asm, syslib/unk_800D7098]
+      - [0xC71B8, lib, libcard, a74, .text]
+      - [0xC71C8, lib, libcard, a75, .text]
+      - [0xC71D8, lib, libcard, a76, .text]
+      - [0xC71E8, lib, libcard, patch, .text]
+      - [0xC73B8, lib, libcard, end, .text]
+      - [0xC7438, lib, libapi, a09, .text]
+      - [0xC7448, lib, libapi, pad, .text]
+      - [0xC7748, lib, libapi, a18, .text]
+      - [0xC7758, lib, libapi, a19, .text]
+      - [0xC7768, lib, libapi, a20, .text]
+      - [0xC7778, lib, libapi, a21, .text]
+      - [0xC7788, lib, libapi, patch, .text]
+      - [0xC7828, lib, libapi, chclrpad, .text]
+      - [0xC7898, data, C7898]
       - [0xC78E8, data, C78E8] # estimated
       - [0xDAD9C, .data, engine/random]
       - [0xDAE9C, data, DAE9C]
       - {start: 0x1235BC, type: .data, name: syslib/libmath/ferr, linker_section: .data.math_error}
-      - [0x1235C4, data, 1235C4]
-      - {start: 0x123674, type: .data, name: syslib/libspu/s_ini, linker_section: .data.spu_started}
-      - [0x123678, data, 123678]
-      - {start: 0x123684, type: .data, name: syslib/libspu/spu, linker_section: .data.spu_registers}
-      - {start: 0x123688, type: .data, name: syslib/libspu/spu, linker_section: .data.spu_dma}
-      - {start: 0x123694, type: .data, name: syslib/libspu/spu, linker_section: .data.spu_bus}
-      - {start: 0x12369C, type: .data, name: syslib/libspu/spu, linker_section: .data.spu_transfer_addr}
-      - [0x1236A0, data, 1236A0]
-      - {start: 0x1236AC, type: .data, name: syslib/libspu/spu, linker_section: .data.spu_shift}
-      - [0x1236B0, data, 1236B0]
-      - {start: 0x1236D4, type: .data, name: syslib/libspu/spu, linker_section: .data.spu_dma_busy}
-      - [0x1236D8, data, 1236D8]
+      - [0x1235C4, lib, libsnd, ssinit, .data]
+      - [0x123604, lib, libspu, s_ini, .data]
+      - [0x123684, lib, libspu, spu, .data]
       - {start: 0x1236E4, type: .data, name: syslib/libspu/s_m_init, linker_section: .data.spu_allocator}
       - [0x1236F0, data, 1236F0]
-      - {start: 0x123724, type: .data, name: syslib/libsnd/ssstart, linker_section: .data.snd_seq_tick_env}
-      - [0x12373C, data, 12373C]
+      - [0x123724, lib, libsnd, ssstart, .data]
+      - [0x123744, data]
+      - [0x123DF4, lib, libsnd, vm_n2p, .data]
+      - [0x123F84, data]
+      - [0x123FAC, lib, libetc, intr, .data]
       - {start: 0x1250AC, type: .data, name: syslib/libetc/intr_vb, linker_section: .data.vsync_callbacks}
       - [0x1250D4, data, 1250D4]
-      - {start: 0x1250DC, type: .data, name: syslib/libetc/intr_dma, linker_section: .data.dma_callbacks}
-      - [0x125100, data, 125100]
+      - [0x1250DC, lib, libetc, intr_dma, .data]
       - {start: 0x12510C, type: .data, name: syslib/libetc/vmode, linker_section: .data.vmode}
-      - [0x125110, data, 125110]
-      - {start: 0x1253FC, type: .data, name: syslib/libcd/bios, linker_section: .data.cd_command_params}
-      - {start: 0x12547C, type: .data, name: syslib/libcd/bios, linker_section: .data.cd_registers}
-      - {start: 0x125494, type: .data, name: syslib/libcd/bios, linker_section: .data.cd_interrupt_state}
-      - [0x125498, data, 125498]
-      - {start: 0x1254DC, type: .data, name: syslib/libcd/cdread, linker_section: .data.cd_read_callback}
-      - [0x1254E0, data, 1254E0]
+      - [0x125110, data]
+      - [0x12512C, lib, libcd, sys, .data]
+      - [0x1251AC, lib, libcd, bios, .data]
+      - [0x1254CC, lib, libcd, iso9660, .data]
+      - [0x1254DC, lib, libcd, cdread, .data]
+      - [0x12551C, data]
+      - [0x12553C, lib, libcd, c_004, .data]
+      - [0x12554C, data]
+      - [0x12557C, lib, libcd, c_009, .data]
+      - [0x12558C, data]
+      - [0x12559C, lib, libcd, c_011, .data]
       - [0x1255EC, .data, syslib/libgte/sincos]
-      - [0x125DFC, data, 125DFC]
-      - {start: 0x12A448, type: .data, name: syslib/libgpu/sys, linker_section: .data.gpu_printf}
-      - [0x12A44C, data, 12A44C]
-      - {start: 0x12A4E4, type: .data, name: syslib/libgpu/sys, linker_section: .data.gpu_move_packet}
-      - [0x12A4F8, data, 12A4F8]
-      - {start: 0x12A550, type: .data, name: syslib/libgpu/sys, linker_section: .data.gpu_registers}
-      - [0x12A574, data, 12A574]
-      - {start: 0x12A588, type: .data, name: syslib/libgpu/sys, linker_section: .data.gpu_alarm}
-      - [0x12A590, data, 12A590]
+      - [0x125DFC, data]
+      - [0x129F7C, lib, libgs, 2d_bg0, .data]
+      - [0x129F8C, lib, libgs, gs_001, .data]
+      - [0x129F9C, lib, libgte, mtx_006, .data]
+      - [0x12A2AC, lib, libgte, msc00, .data]
+      - [0x12A2BC, data]
+      - [0x12A2CC, lib, libgs, objt2, .data]
+      - [0x12A3FC, lib, libgpu, sys, .data]
       - {start: 0x12A59C, type: .data, name: syslib/libpress/libpress, linker_section: .data.mdec}
-      - [0x12A6E8, data, 12A6E8]
+      - [0x12A6E8, data]
+      - [0x12A6EC, lib, libpress, vlc_c, .data]
+      - [0x12A71C, lib, libpress, build, .data]
+      - [0x12B52C, lib, libc, sprintf, .data]
       - {start: 0x12B53C, type: .data, name: syslib/libapi/counter, linker_section: .data.counter}
-      - [0x12B554, data, 12B554]
-      - {start: 0x12B638, type: .data, name: syslib/libapi/pad, linker_section: .data.pad_state}
-      - [0x12B644, data, 12B644]
+      - [0x12B554, data]
+      - [0x12B55C, lib, libpad421, padmain, .data]
+      - [0x12B5DC, lib, libpad421, padif, .data]
+      - [0x12B5FC, lib, libpad, padportd, .data]
+      - [0x12B60C, lib, libmcrd421, libmcrd, .data]
+      - [0x12B624, lib, libmcrd421, userfunc, .data]
+      - [0x12B628, data]
+      - [0x12B638, lib, libapi, pad, .data]
+      - [0x12B648, data]
       - {start: 0x12B710, type: .sdata, name: engine/random, linker_section_order: .data}
       - [0x12B714, data, 12B714]
       - [0x12B7AC, .data, engine/game_task_scheduler]
@@ -574,5 +585,745 @@ segments:
       - [0x12BB00, data, 12BB00]
       - [0x12BD70, .data, engine/game_options]
       - [0x12BD78, data, 12BD78]
+
+  - name: sdk_libsnd_ssinit_bss_common_SsFCALL
+    type: code
+    start: 0x12C000
+    vram: 0x8013BE70
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libsnd, object: ssinit, section: .bss.common_SsFCALL, linker_section_order: .bss}
+
+  - name: sdk_libsnd_ssinit_bss_common__snd_ev_flag
+    type: code
+    start: 0x12C000
+    vram: 0x8013BF04
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libsnd, object: ssinit, section: .bss.common__snd_ev_flag, linker_section_order: .bss}
+
+  - name: sdk_libsnd_ssinit_bss_common__snd_openflag
+    type: code
+    start: 0x12C000
+    vram: 0x8013BF08
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libsnd, object: ssinit, section: .bss.common__snd_openflag, linker_section_order: .bss}
+
+  - name: sdk_libsnd_ssinit_bss_common_VBLANK_MINUS
+    type: code
+    start: 0x12C000
+    vram: 0x8013BF0C
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libsnd, object: ssinit, section: .bss.common_VBLANK_MINUS, linker_section_order: .bss}
+
+  - name: sdk_libsnd_ssinit_bss_common__ss_score
+    type: code
+    start: 0x12C000
+    vram: 0x8013BF10
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libsnd, object: ssinit, section: .bss.common__ss_score, linker_section_order: .bss}
+
+  - name: sdk_libsnd_ssinit_bss_common__SsMarkCallback
+    type: code
+    start: 0x12C000
+    vram: 0x8013BF90
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libsnd, object: ssinit, section: .bss.common__SsMarkCallback, linker_section_order: .bss}
+
+  - name: sdk_libsnd_ssinit_bss_common__snd_seq_s_max
+    type: code
+    start: 0x12C000
+    vram: 0x8013C790
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libsnd, object: ssinit, section: .bss.common__snd_seq_s_max, linker_section_order: .bss}
+
+  - name: sdk_libsnd_ssinit_bss_common__snd_seq_t_max
+    type: code
+    start: 0x12C000
+    vram: 0x8013C792
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libsnd, object: ssinit, section: .bss.common__snd_seq_t_max, linker_section_order: .bss}
+
+  - name: sdk_libspu_spu_bss_common__spu_RQ
+    type: code
+    start: 0x12C000
+    vram: 0x8013C798
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libspu, object: spu, section: .bss.common__spu_RQ, linker_section_order: .bss}
+
+  - name: sdk_libsnd_vm_f_bss_common__svm_okon1
+    type: code
+    start: 0x12C000
+    vram: 0x8013C7B8
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libsnd, object: vm_f, section: .bss.common__svm_okon1, linker_section_order: .bss}
+
+  - name: sdk_libsnd_vm_f_bss_common__svm_okon2
+    type: code
+    start: 0x12C000
+    vram: 0x8013C7BA
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libsnd, object: vm_f, section: .bss.common__svm_okon2, linker_section_order: .bss}
+
+  - name: sdk_libsnd_vm_f_bss_common__svm_orev1
+    type: code
+    start: 0x12C000
+    vram: 0x8013C7BC
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libsnd, object: vm_f, section: .bss.common__svm_orev1, linker_section_order: .bss}
+
+  - name: sdk_libsnd_vm_f_bss_common__svm_orev2
+    type: code
+    start: 0x12C000
+    vram: 0x8013C7BE
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libsnd, object: vm_f, section: .bss.common__svm_orev2, linker_section_order: .bss}
+
+  - name: sdk_libsnd_vm_f_bss_common__svm_onos1
+    type: code
+    start: 0x12C000
+    vram: 0x8013C7C0
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libsnd, object: vm_f, section: .bss.common__svm_onos1, linker_section_order: .bss}
+
+  - name: sdk_libsnd_vm_f_bss_common__svm_onos2
+    type: code
+    start: 0x12C000
+    vram: 0x8013C7C2
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libsnd, object: vm_f, section: .bss.common__svm_onos2, linker_section_order: .bss}
+
+  - name: sdk_libsnd_vm_f_bss_common__svm_voice
+    type: code
+    start: 0x12C000
+    vram: 0x8013C7C8
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libsnd, object: vm_f, section: .bss.common__svm_voice, linker_section_order: .bss}
+
+  - name: sdk_libsnd_vm_f_bss_common__svm_sreg_dirty
+    type: code
+    start: 0x12C000
+    vram: 0x8013CCD8
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libsnd, object: vm_f, section: .bss.common__svm_sreg_dirty, linker_section_order: .bss}
+
+  - name: sdk_libsnd_vm_f_bss_common__autopan
+    type: code
+    start: 0x12C000
+    vram: 0x8013CCF0
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libsnd, object: vm_f, section: .bss.common__autopan, linker_section_order: .bss}
+
+  - name: sdk_libsnd_vm_f_bss_common__svm_sreg_buf
+    type: code
+    start: 0x12C000
+    vram: 0x8013CCF8
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libsnd, object: vm_f, section: .bss.common__svm_sreg_buf, linker_section_order: .bss}
+
+  - name: sdk_libsnd_vm_f_bss_common__autovol
+    type: code
+    start: 0x12C000
+    vram: 0x8013CE78
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libsnd, object: vm_f, section: .bss.common__autovol, linker_section_order: .bss}
+
+  - name: sdk_libsnd_vm_f_bss_common__svm_envx_ptr
+    type: code
+    start: 0x12C000
+    vram: 0x8013CE7C
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libsnd, object: vm_f, section: .bss.common__svm_envx_ptr, linker_section_order: .bss}
+
+  - name: sdk_libsnd_vm_f_bss_common__svm_envx_hist
+    type: code
+    start: 0x12C000
+    vram: 0x8013CE80
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libsnd, object: vm_f, section: .bss.common__svm_envx_hist, linker_section_order: .bss}
+
+  - name: sdk_libsnd_vm_f_bss_common__svm_okof1
+    type: code
+    start: 0x12C000
+    vram: 0x8013CEC0
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libsnd, object: vm_f, section: .bss.common__svm_okof1, linker_section_order: .bss}
+
+  - name: sdk_libsnd_vm_f_bss_common__svm_okof2
+    type: code
+    start: 0x12C000
+    vram: 0x8013CEC2
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libsnd, object: vm_f, section: .bss.common__svm_okof2, linker_section_order: .bss}
+
+  - name: sdk_libsnd_vm_init_bss
+    type: code
+    start: 0x12C000
+    vram: 0x8013D080
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libsnd, object: vm_init, section: .bss, linker_section_order: .bss}
+
+  - name: sdk_libcd_bios_bss
+    type: code
+    start: 0x12C000
+    vram: 0x8013D1D8
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libcd, object: bios, section: .bss, linker_section_order: .bss}
+
+  - name: sdk_libcd_bios_bss_common_StMode
+    type: code
+    start: 0x12C000
+    vram: 0x8013D208
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libcd, object: bios, section: .bss.common_StMode, linker_section_order: .bss}
+
+  - name: sdk_libcd_iso9660_bss
+    type: code
+    start: 0x12C000
+    vram: 0x8013D210
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libcd, object: iso9660, section: .bss, linker_section_order: .bss}
+
+  - name: sdk_libcd_cdreade_bss
+    type: code
+    start: 0x12C000
+    vram: 0x8013F610
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libcd, object: cdreade, section: .bss, linker_section_order: .bss}
+
+  - name: sdk_libcd_c_004_bss
+    type: code
+    start: 0x12C000
+    vram: 0x8013F670
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libcd, object: c_004, section: .bss, linker_section_order: .bss}
+
+  - name: sdk_libcd_c_011_bss
+    type: code
+    start: 0x12C000
+    vram: 0x8013F688
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libcd, object: c_011, section: .bss, linker_section_order: .bss}
+
+  - name: sdk_libds_dscb_bss_common_GlobalCallback
+    type: code
+    start: 0x12C000
+    vram: 0x8013F698
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libds, object: dscb, section: .bss.common_GlobalCallback, linker_section_order: .bss}
+
+  - name: sdk_libgs_gs_001_bss
+    type: code
+    start: 0x12C000
+    vram: 0x8013F6A8
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libgs, object: gs_001, section: .bss, linker_section_order: .bss}
+
+  - name: sdk_libgs_gs_001_bss_common_PSDOFSX
+    type: code
+    start: 0x12C000
+    vram: 0x8013F6C8
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libgs, object: gs_001, section: .bss.common_PSDOFSX, linker_section_order: .bss}
+
+  - name: sdk_libgs_gs_001_bss_common_PSDOFSY
+    type: code
+    start: 0x12C000
+    vram: 0x8013F6CC
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libgs, object: gs_001, section: .bss.common_PSDOFSY, linker_section_order: .bss}
+
+  - name: sdk_libgs_gs_001_bss_common_PSDBASEX
+    type: code
+    start: 0x12C000
+    vram: 0x8013F6D0
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libgs, object: gs_001, section: .bss.common_PSDBASEX, linker_section_order: .bss}
+
+  - name: sdk_libgs_gs_001_bss_common_PSDBASEY
+    type: code
+    start: 0x12C000
+    vram: 0x8013F6D4
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libgs, object: gs_001, section: .bss.common_PSDBASEY, linker_section_order: .bss}
+
+  - name: sdk_libgs_gs_001_bss_common_POSITION
+    type: code
+    start: 0x12C000
+    vram: 0x8013F6D8
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libgs, object: gs_001, section: .bss.common_POSITION, linker_section_order: .bss}
+
+  - name: sdk_libgs_gs_001_bss_common_GsDRAWENV
+    type: code
+    start: 0x12C000
+    vram: 0x8013F6E0
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libgs, object: gs_001, section: .bss.common_GsDRAWENV, linker_section_order: .bss}
+
+  - name: sdk_libgs_gs_001_bss_common_GsDISPENV
+    type: code
+    start: 0x12C000
+    vram: 0x8013F740
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libgs, object: gs_001, section: .bss.common_GsDISPENV, linker_section_order: .bss}
+
+  - name: sdk_libgs_gs_001_bss_common_GsORGOFSX
+    type: code
+    start: 0x12C000
+    vram: 0x8013F754
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libgs, object: gs_001, section: .bss.common_GsORGOFSX, linker_section_order: .bss}
+
+  - name: sdk_libgs_gs_001_bss_common_GsORGOFSY
+    type: code
+    start: 0x12C000
+    vram: 0x8013F756
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libgs, object: gs_001, section: .bss.common_GsORGOFSY, linker_section_order: .bss}
+
+  - name: sdk_libgs_gs_001_bss_common_CLIP2
+    type: code
+    start: 0x12C000
+    vram: 0x8013F758
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libgs, object: gs_001, section: .bss.common_CLIP2, linker_section_order: .bss}
+
+  - name: sdk_libgs_gs_001_bss_common_PSDCNT
+    type: code
+    start: 0x12C000
+    vram: 0x8013F760
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libgs, object: gs_001, section: .bss.common_PSDCNT, linker_section_order: .bss}
+
+  - name: sdk_libgs_gs_001_bss_common_PSDIDX
+    type: code
+    start: 0x12C000
+    vram: 0x8013F764
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libgs, object: gs_001, section: .bss.common_PSDIDX, linker_section_order: .bss}
+
+  - name: sdk_libgs_gs_001_bss_common_PSDGPU
+    type: code
+    start: 0x12C000
+    vram: 0x8013F766
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libgs, object: gs_001, section: .bss.common_PSDGPU, linker_section_order: .bss}
+
+  - name: sdk_libgs_gs_104_bss_common_HWD0
+    type: code
+    start: 0x12C000
+    vram: 0x8013F7E8
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libgs, object: gs_104, section: .bss.common_HWD0, linker_section_order: .bss}
+
+  - name: sdk_libgs_gs_104_bss_common_VWD0
+    type: code
+    start: 0x12C000
+    vram: 0x8013F7EC
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libgs, object: gs_104, section: .bss.common_VWD0, linker_section_order: .bss}
+
+  - name: sdk_libgs_gs_104_bss_common_GsCLIP3far
+    type: code
+    start: 0x12C000
+    vram: 0x8013F7F0
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libgs, object: gs_104, section: .bss.common_GsCLIP3far, linker_section_order: .bss}
+
+  - name: sdk_libgs_gs_104_bss_common_GsLIGHT_MODE
+    type: code
+    start: 0x12C000
+    vram: 0x8013F7F4
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libgs, object: gs_104, section: .bss.common_GsLIGHT_MODE, linker_section_order: .bss}
+
+  - name: sdk_libgs_gs_104_bss_common_GsCLIP3near
+    type: code
+    start: 0x12C000
+    vram: 0x8013F7F8
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libgs, object: gs_104, section: .bss.common_GsCLIP3near, linker_section_order: .bss}
+
+  - name: sdk_libgs_gs_107_bss_common_GsLIGHTWSMATRIX
+    type: code
+    start: 0x12C000
+    vram: 0x8013F800
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libgs, object: gs_107, section: .bss.common_GsLIGHTWSMATRIX, linker_section_order: .bss}
+
+  - name: sdk_libgs_gs_107_bss_common__LC
+    type: code
+    start: 0x12C000
+    vram: 0x8013F820
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libgs, object: gs_107, section: .bss.common__LC, linker_section_order: .bss}
+
+  - name: sdk_libgte_patchgte_bss
+    type: code
+    start: 0x12C000
+    vram: 0x8013F840
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libgte, object: patchgte, section: .bss, linker_section_order: .bss}
+
+  - name: sdk_libgs_gs_123_bss_common_GsWSMATRIX_ORG
+    type: code
+    start: 0x12C000
+    vram: 0x8013F850
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libgs, object: gs_123, section: .bss.common_GsWSMATRIX_ORG, linker_section_order: .bss}
+
+  - name: sdk_libgs_gs_123_bss_common_GsIDMATRIX
+    type: code
+    start: 0x12C000
+    vram: 0x8013F870
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libgs, object: gs_123, section: .bss.common_GsIDMATRIX, linker_section_order: .bss}
+
+  - name: sdk_libgs_gs_123_bss_common_GsWSMATRIX
+    type: code
+    start: 0x12C000
+    vram: 0x8013F890
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libgs, object: gs_123, section: .bss.common_GsWSMATRIX, linker_section_order: .bss}
+
+  - name: sdk_libgs_gs_123_bss_common_GsIDMATRIX2
+    type: code
+    start: 0x12C000
+    vram: 0x8013F8B0
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libgs, object: gs_123, section: .bss.common_GsIDMATRIX2, linker_section_order: .bss}
+
+  - name: sdk_libgpu_sys_bss
+    type: code
+    start: 0x12C000
+    vram: 0x8013F900
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libgpu, object: sys, section: .bss, linker_section_order: .bss}
+
+  - name: sdk_libgpu_sys_bss_common__que
+    type: code
+    start: 0x12C000
+    vram: 0x8013FA50
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libgpu, object: sys, section: .bss.common__que, linker_section_order: .bss}
+
+  - name: sdk_libpad421_padmain_bss
+    type: code
+    start: 0x12C000
+    vram: 0x80141250
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libpad421, object: padmain, section: .bss, linker_section_order: .bss}
+
+  - name: sdk_libpad_padcmd_bss
+    type: code
+    start: 0x12C000
+    vram: 0x80141270
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libpad, object: padcmd, section: .bss, linker_section_order: .bss}
+
+  - name: sdk_libpad_padportd_bss
+    type: code
+    start: 0x12C000
+    vram: 0x80141280
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libpad, object: padportd, section: .bss, linker_section_order: .bss}
+
+  - name: sdk_libpad421_waitrc2_bss_common__startTime
+    type: code
+    start: 0x12C000
+    vram: 0x801414F0
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libpad421, object: waitrc2, section: .bss.common__startTime, linker_section_order: .bss}
+
+  - name: sdk_libpad421_waitrc2_bss_common__waitTime
+    type: code
+    start: 0x12C000
+    vram: 0x801414F4
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libpad421, object: waitrc2, section: .bss.common__waitTime, linker_section_order: .bss}
+
+  - name: sdk_libmcrd421_libmcrd_bss
+    type: code
+    start: 0x12C000
+    vram: 0x801414F8
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libmcrd421, object: libmcrd, section: .bss, linker_section_order: .bss}
+
+  - name: sdk_libapi_first_bss
+    type: code
+    start: 0x12C000
+    vram: 0x80141578
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libapi, object: first, section: .bss, linker_section_order: .bss}
+
+  - name: sdk_libmcrd421_userfunc_bss
+    type: code
+    start: 0x12C000
+    vram: 0x801415A8
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libmcrd421, object: userfunc, section: .bss, linker_section_order: .bss}
+
+  - name: sdk_libmcrd421_bios_bss
+    type: code
+    start: 0x12C000
+    vram: 0x801415F8
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libmcrd421, object: bios, section: .bss, linker_section_order: .bss}
+
+  - name: sdk_libcard_patch_bss
+    type: code
+    start: 0x12C000
+    vram: 0x80141638
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libcard, object: patch, section: .bss, linker_section_order: .bss}
+
+  - name: sdk_libcard_end_bss
+    type: code
+    start: 0x12C000
+    vram: 0x80141648
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libcard, object: end, section: .bss, linker_section_order: .bss}
+
+  - name: sdk_libapi_pad_bss
+    type: code
+    start: 0x12C000
+    vram: 0x80141658
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libapi, object: pad, section: .bss, linker_section_order: .bss}
+
+  - name: sdk_libapi_patch_bss
+    type: code
+    start: 0x12C000
+    vram: 0x80141668
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libapi, object: patch, section: .bss, linker_section_order: .bss}
+
+  - name: sdk_libapi_chclrpad_bss
+    type: code
+    start: 0x12C000
+    vram: 0x80141678
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: lib, name: libapi, object: chclrpad, section: .bss, linker_section_order: .bss}
 
   - [0x12C000]

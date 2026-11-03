@@ -34,7 +34,7 @@ typedef struct GpuVtable {
     s32 (*sync)(s32 mode);
 } GpuVtable;
 
-extern GpuInfo gGpuInfo;
+extern GpuInfo GEnv;
 extern GpuVtable *gGpuDispatch;
 void *memcpy(void *destination, const void *source, u32 size);
 s32 _getctl(s32 index);

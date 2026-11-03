@@ -26,6 +26,7 @@ CROSS := $(or $(SKP_CROSS),mips-linux-gnu-)
 AS := $(CROSS)as
 LD := $(CROSS)ld
 OBJCOPY := $(CROSS)objcopy
+AR := $(CROSS)ar
 CPP := $(or $(SKP_CPP),cpp)
 CC1 := $(or $(SKP_CC1),tools/gcc/gcc-2.8.1-psx/cc1)
 MASPSX := $(or $(SKP_MASPSX),tools/maspsx/maspsx.py)
@@ -63,7 +64,7 @@ endif
 
 # Splat supplies exact linker inputs. Remaking this included dependency file
 # restarts Make, discovering newly generated assembly after a clean checkout.
-SPLIT_INPUTS := snowboardkidsplus.yaml symbol_addrs.txt reloc_addrs.txt disc/SLPS_018.23
+SPLIT_INPUTS := snowboardkidsplus.yaml symbol_addrs.txt reloc_addrs.txt disc/SLPS_018.23 Makefile
 SPLIT_OUTPUTS := linkers/slps_018.23.ld linkers/slps_018.23.d linkers/undefined_funcs_auto.txt linkers/undefined_syms_auto.txt include/include_asm.h include/macro.inc include/labels.inc include/gte_macros.inc
 .PHONY: all verify objects all-objects expected split extract clean hooks report scratch print-settings FORCE
 ifeq ($(COMPARISON),1)
@@ -91,6 +92,8 @@ endif
 $(SPLIT_OUTPUTS) &: $(SPLIT_INPUTS)
 	$(PRINTF) "[$(CYAN) splat  $(NO_COL)]  Extracting snowboardkidsplus.yaml\n"
 	$(SPLAT) split snowboardkidsplus.yaml
+	# Make depends on archives; archive:member selectors are only valid for ld.
+	sed -i -E 's/(\.a):[^[:space:]:]+/\1/g' linkers/slps_018.23.d
 	@touch $(SPLIT_OUTPUTS)
 
 split: $(SPLIT_OUTPUTS)
@@ -120,11 +123,27 @@ endef
 FORCE:
 
 C_SOURCES := $(if $(UNIT),$(UNIT),$(shell find src -name '*.c' -type f | sort))
-LINK_OBJECTS := $(shell sed -n 's/^[[:space:]]*\(build\/[^[:space:]]*\.o\).*/\1/p' linkers/slps_018.23.d 2>/dev/null)
+LINK_OBJECTS := $(shell sed -n 's/^[[:space:]]*\(build\/[^[:space:]]*\.[oa]\).*/\1/p' linkers/slps_018.23.d 2>/dev/null)
+SDK_LIBRARIES := $(sort $(filter %.a,$(LINK_OBJECTS)))
 C_OBJECTS := $(addprefix $(BUILD_DIR)/,$(C_SOURCES:.c=.o))
 HASM_SOURCES := $(shell find src -name '*.s' -type f | sort)
 HASM_OBJECTS := $(addprefix $(BUILD_DIR)/,$(HASM_SOURCES:.s=.o))
 ASM_OBJECTS := $(filter build/asm/%,$(LINK_OBJECTS))
+
+# Splat selects each archive member and section in snowboardkidsplus.yaml.
+SDK_OBJECT_NAMES := $(shell $(PY) tools/psyq_sdk.py --list-objects)
+SDK_LIBRARY_INPUTS := $(shell $(PY) tools/psyq_sdk.py --list-library-inputs)
+SDK_NAMES := $(sort $(foreach object,$(SDK_OBJECT_NAMES),$(firstword $(subst /, ,$(object)))))
+build/sdk/psyq42/%.o: tools/psyq_sdk.py tools/decomp.py snowboardkidsplus.yaml lib/psyq-sdk/PROVENANCE.json symbol_addrs.txt $(wildcard $(SDK_LIBRARY_INPUTS) tools/psyq-sdk/psyq-obj-parser)
+	$(PY) tools/psyq_sdk.py --object $* --output $@ --objcopy $(OBJCOPY)
+
+define sdk_archive_rule
+build/sdk/psyq42/$(1).a: $(addprefix build/sdk/psyq42/,$(addsuffix .o,$(filter $(1)/%,$(SDK_OBJECT_NAMES)))) snowboardkidsplus.yaml lib/psyq-sdk/PROVENANCE.json
+	rm -f $$@.tmp
+	$(AR) rcsD $$@.tmp $$(filter %.o,$$^)
+	mv $$@.tmp $$@
+endef
+$(foreach library,$(SDK_NAMES),$(eval $(call sdk_archive_rule,$(library))))
 
 # Alternate compilations are separate targets. The merger selects existing
 # .ent/.end regions without invoking compilers or changing instructions.
@@ -169,7 +188,7 @@ $(BUILD_DIR)/src/%.o: src/%.s Makefile config/compiler.mk $(BUILD_DIR)/.config
 ifneq ($(COMPARISON),1)
 build/slps_018.23.elf: $(C_OBJECTS) $(HASM_OBJECTS) $(ASM_OBJECTS) linkers/slps_018.23.ld linkers/undefined_funcs_auto.txt linkers/undefined_syms_auto.txt
 	$(PRINTF) "[$(PINK) linker $(NO_COL)]  Linking $@\n"
-	$(LD) -EL -nostdlib -T linkers/slps_018.23.ld -T linkers/undefined_funcs_auto.txt -T linkers/undefined_syms_auto.txt -Map build/slps_018.23.map -o $@
+	$(LD) -EL -nostdlib -T linkers/slps_018.23.ld -T linkers/undefined_funcs_auto.txt -T linkers/undefined_syms_auto.txt -Map build/slps_018.23.map -o $@ --whole-archive --start-group $(SDK_LIBRARIES) --end-group --no-whole-archive
 
 build/slps_018.23.exe: build/slps_018.23.elf
 	$(PRINTF) "[$(CYAN) objcpy $(NO_COL)]  $<\n"
@@ -178,6 +197,7 @@ build/slps_018.23.exe: build/slps_018.23.elf
 verify: build/slps_018.23.exe
 	$(PRINTF) "[$(GREEN) verify $(NO_COL)]  Checking executable SHA1\n"
 	$(PY) tools/verify_image.py
+	$(PY) tools/psyq_sdk.py --verify
 
 endif
 
@@ -208,7 +228,7 @@ hooks:
 	$(PRINTF) "[$(CYAN) hooks  $(NO_COL)]  Installing Git hooks\n"
 	tools/install-git-hooks.sh
 
-report:
+report: verify
 	$(PRINTF) "[$(CYAN) report $(NO_COL)]  Generating progress report\n"
 	$(PY) -m mapfile_parser objdiff_report
 

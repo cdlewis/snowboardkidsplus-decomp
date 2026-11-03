@@ -1,19 +1,19 @@
 #include "common.h"
 #include "libpad_private.h"
 
-extern int func_800D2200(void);
-extern void func_800D2214(void);
-extern void func_800D22E0(void);
+extern int _padChkVsync(void);
+extern void _padStartCom(void);
+extern void _padStopCom(void);
 extern PadCommand *(*_padFuncPort2Info)(int);
 extern int _padSetActAlign(PadCommand *, u8 *);
 extern int _padSetMainMode(PadCommand *, u8, u8);
 extern void _padSetAct(PadCommand *, u8 *, int);
 
-int PadChkVsync(void) { return func_800D2200(); }
+int PadChkVsync(void) { return _padChkVsync(); }
 
-void PadStartCom(void) { func_800D2214(); }
+void PadStartCom(void) { _padStartCom(); }
 
-void PadStopCom(void) { func_800D22E0(); }
+void PadStopCom(void) { _padStopCom(); }
 
 extern int _padModeMtap;
 extern PadCommand *_padInfoDir;

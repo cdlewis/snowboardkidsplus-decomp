@@ -2,10 +2,10 @@
 
 #include "libsnd_private.h"
 extern s32 _SsReadDeltaValue(s16, s16);
-extern void func_800B0604(void), _SsVmDamperOff(void);
+extern void SsUtReverbOff(void), _SsVmDamperOff(void);
 void _SsContResetAll(s16 id, s16 seq) {
     struct SeqStruct *s = &_ss_score[id][seq];
-    func_800B0604();
+    SsUtReverbOff();
     _SsVmDamperOff();
     {
         int channel = s->channel_idx;
