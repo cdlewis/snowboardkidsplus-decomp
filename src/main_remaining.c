@@ -5,6 +5,7 @@
 #include "game/music.h"
 #include "game/race_player.h"
 #include "psx/libsnd.h"
+#include "psx/libgpu.h"
 
 typedef struct SavedImageEntry {
     u32 flags;
@@ -27,7 +28,12 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001604C);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80016244);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001628C);
+void resetPaletteRecords(void) {
+    u16 i;
+    for (i = 0; i < 32; i++) {
+        gSavedImageEntries[i].flags = 0;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_800162C8);
 
