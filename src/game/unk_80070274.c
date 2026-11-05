@@ -1,5 +1,6 @@
 #include "common.h"
 #include "game/graphics.h"
+#include "game/game_task_scheduler.h"
 #include "game/linear_random.h"
 #include "game/offset_archive.h"
 #include "game/music.h"
@@ -12,6 +13,18 @@ typedef struct TaskResource {
     const u16 *unk08;
     u8 unk0C[0xF4];
 } TaskResource;
+
+typedef struct TimedSequenceEntry {
+    s32 unk00;
+    s32 duration;
+} TimedSequenceEntry;
+
+typedef struct TimedSequence {
+    const TimedSequenceEntry *entries;
+    s16 index;
+    s16 count;
+    s32 nextFrame;
+} TimedSequence;
 
 /* Storage remains in the shared data object. */
 extern TaskResource D_800D9504[];
@@ -172,7 +185,12 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80076C20);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80076E18);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_800770D4);
+void initTimedSequence(TimedSequence *sequence, const TimedSequenceEntry *entries, s16 index, s16 count) {
+    sequence->index = index;
+    sequence->entries = entries;
+    sequence->count = count;
+    sequence->nextFrame = (gFrameCounter + sequence->entries[index].duration) & 0xFFF;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80077110);
 
