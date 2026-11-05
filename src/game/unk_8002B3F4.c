@@ -19,6 +19,7 @@ typedef struct UnpackedWordBytes {
 
 void func_8003E60C(u16 index);
 void func_8003EE70(void);
+void func_8002F5F8(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002B3F4);
 
@@ -160,7 +161,10 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002F584);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002F5F8);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002F628);
+void beginMode2TaskSequence(void) {
+    func_80070274(2, 0, 30);
+    setCurrentTaskCallback(func_8002F5F8);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002F65C);
 

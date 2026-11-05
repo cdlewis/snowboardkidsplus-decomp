@@ -56,3 +56,4 @@ void clearControllerFlag5(u16 controller);
 s16 hasTaskResource16Value(GameTask *task);
 
 s32 hasTaskStateValue6(s32 id);
+void func_80070274(s32 mode, s32 id, u16 duration);
