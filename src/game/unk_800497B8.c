@@ -192,7 +192,6 @@ extern s32 D_8013B368;
 extern s32 D_8013B36C;
 extern u16 D_8013B376 __attribute__((section(".sdata")));
 
-const char gNoProcessMessage[16] = "NO PROCESS...";
 
 s32 func_80060DC8(u32 *tim);
 void func_800692E8(void);
@@ -200,6 +199,13 @@ void func_8006999C(void);
 void func_800618A0(void);
 void func_8006624C(void);
 void func_800659F0(void);
+extern SVECTOR D_8012A5C0[];
+extern GsCOORDINATE2 D_80129C60[];
+
+const char gNoProcessMessage[16] = "NO PROCESS...";
+
+void func_8001E3E4(SVECTOR *rotation, GsCOORDINATE2 *coordinate);
+void func_800592DC(u16 index);
 void func_80049D48(s32 x, s32 y, const char *format, ...);
 void func_8006BE50(s32 textureIndex, s32 clutOffset);
 void func_8006BF14(s16 x, s16 y, s32 frameIndex, GsOT *ot, u16 depth);
@@ -587,7 +593,11 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005E728);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005EBC4);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005EE64);
+void updateAndDrawCurrentTaskObject(void) {
+    func_8001E3E4(&D_8012A5C0[D_8013AE88->data18],
+                  &D_80129C60[D_8013AE88->data18]);
+    func_800592DC(D_8013AE88->data18);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005EECC);
 

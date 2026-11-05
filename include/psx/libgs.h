@@ -1,6 +1,7 @@
 #pragma once
 
 #include "decomp/types.h"
+#include "psx/libgte.h"
 
 typedef struct GsOT {
     u32 length;
@@ -8,6 +9,15 @@ typedef struct GsOT {
     u32 offset, point;
     u32 *tag;
 } GsOT;
+typedef struct { s16 vx, vy, vz, pad; } SVECTOR;
+typedef struct { VECTOR scale; SVECTOR rotate; VECTOR trans; } GsCOORD2PARAM;
+typedef struct { s16 m[3][3]; s32 t[3]; } MATRIX;
+typedef struct GsCOORDINATE2 {
+    u32 flg;
+    MATRIX coord, workm;
+    GsCOORD2PARAM *param;
+    struct GsCOORDINATE2 *super, *sub;
+} GsCOORDINATE2;
 
 #ifdef GS_PACKET_ABSOLUTE_ADDRESSING
 extern u32 GsOUT_PACKET_P __attribute__((section(".data")));
