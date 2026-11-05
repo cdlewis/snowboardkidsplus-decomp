@@ -1680,3 +1680,6 @@ addFlatRectangle = 0x80060AA8; // type:func
 addTexturedRectangle = 0x80060BD4; // type:func
 
 unusedVariadicStub = 0x80060D30; // type:func
+
+// Test player flags outside state 14; otherwise raise the shared state to 15.
+checkCurrentPlayerFlags345001 = 0x8002D164; // type:func

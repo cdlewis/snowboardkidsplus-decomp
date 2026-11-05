@@ -17,6 +17,8 @@ typedef struct UnpackedWordBytes {
 } UnpackedWordBytes;
 
 
+extern s16 D_8013B0E4;
+
 void func_8003E60C(u16 index);
 void func_8003EE70(void);
 void func_8002F5F8(void);
@@ -70,7 +72,16 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002D090);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002D120);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002D164);
+s32 checkCurrentPlayerFlags345001(void) {
+    RacePlayer *player = D_8013B0D8;
+    if (player->unk12C != 14 && (player->unk128 & 0x345001)) {
+        return 1;
+    }
+    if (D_8013B0E4 < 15) {
+        D_8013B0E4 = 15;
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002D1B8);
 
