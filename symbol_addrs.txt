@@ -1924,3 +1924,5 @@ drawPaletteMappedIcon = 0x800403C8; // type:func
 gMappedIconPalettes = 0x8013B163; // type:u8 size:0x9
 
 prepareUnlockSelectionResume = 0x800A5204; // type:func
+
+playMusicSequence = 0x800A61E0; // type:func

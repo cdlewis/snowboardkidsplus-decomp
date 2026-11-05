@@ -8,6 +8,7 @@ void SsSeqStop(s16 id);
 void SsSeqPause(s16 id);
 void SsSeqReplay(s16 id);
 void SsSepStop(s16 id, s16 sequence);
+void SsSeqSetVol(s16 id, s16 left, s16 right);
 void SsSeqPlay(s16 id, s8 mode, s16 count);
 void SsSepPlay(s16 id, s16 sequence, s8 mode, s16 count);
 s16 SsVabOpenHead(u8 *address, s16 id);

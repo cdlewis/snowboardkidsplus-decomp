@@ -3,18 +3,27 @@
 #include "decomp/types.h"
 
 /* Shared with the sequence loading and playback routines still in assembly. */
-extern s16 gMusicSequenceId;
 /* Presentation tasks use absolute addressing; other callers use $gp. */
 #ifdef MUSIC_STATE_ABSOLUTE_ADDRESSING
 extern s16 D_8013B106 __attribute__((section(".data")));
 #else
 extern s16 D_8013B106;
 #endif
-extern u8 gMusicSequenceActive;
+#ifdef MUSIC_ABSOLUTE_ADDRESSING
+#define MUSIC_DATA __attribute__((section(".data")))
+#else
+#define MUSIC_DATA
+#endif
+extern s16 gMusicSequenceId MUSIC_DATA;
+extern u8 gMusicSequenceActive MUSIC_DATA;
+/* Signed volume with eight fractional bits, shared with the fade updater. */
+extern s16 D_8013AF30 MUSIC_DATA;
+#undef MUSIC_DATA
 extern s8 gSoundSystemActive;
 extern u8 gMusicFadeMode;
 extern s16 gMusicFadeStep;
 
+void playMusicSequence(s16 count, u8 left, u8 right);
 void fadeOutMusicSequence(s16 step);
 void func_80017E7C(s16 repeatCount);
 void setMusicSequenceEnabled(s16 enabled);

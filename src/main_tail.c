@@ -6,6 +6,9 @@
 #include "game/cd_queue.h"
 #include "game/game_options.h"
 #include "game/graphics.h"
+#define MUSIC_ABSOLUTE_ADDRESSING
+#include "game/music.h"
+#include "psx/libsnd.h"
 #define RACE_PLAYER_ABSOLUTE_ADDRESSING
 #define TASK_ABSOLUTE_ADDRESSING
 #include "game/race_player.h"
@@ -628,7 +631,13 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A5FE8);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A60FC);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A61E0);
+void playMusicSequence(s16 count, u8 left, u8 right) {
+    if (gMusicSequenceActive) {
+        D_8013AF30 = left << 8;
+        SsSeqSetVol(gMusicSequenceId, left, right);
+        SsSeqPlay(gMusicSequenceId, 1, count);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A624C);
 
