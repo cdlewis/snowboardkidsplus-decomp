@@ -37,6 +37,7 @@ void func_800A499C(void);
 void func_8001D97C(void);
 void func_8001DFDC(void);
 void func_8001B858(void);
+void func_8001B7F0(void);
 void func_800A1F50(void);
 void func_8009B5A0(s16 playerIndex, s32 unused, s32 paletteRow, u16 mode);
 
@@ -297,7 +298,11 @@ void selectTaskBySelectedRecordMatch(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A24B0);
+void startMode1TaskTransition(void) {
+    func_800719A8(1);
+    func_80070274(1, 0, 30);
+    setCurrentTaskCallback(func_8001B7F0);
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A24EC);
 
