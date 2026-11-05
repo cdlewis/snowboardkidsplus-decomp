@@ -1,6 +1,7 @@
 #include "common.h"
 #include "game/controller.h"
 #include "game/task.h"
+#include "game/controller_effects.h"
 
 u16 gTaskResourceFreeBits[16] __attribute__((section(".data.task_resource_bitmap"))) = {0};
 

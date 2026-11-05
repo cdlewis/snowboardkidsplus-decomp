@@ -1,4 +1,6 @@
 #include "common.h"
+#define CONTROLLER_EFFECTS_ABSOLUTE_ADDRESSING
+#include "game/controller_effects.h"
 #include "game/graphics.h"
 #include "game/linear_random.h"
 #include "game/offset_archive.h"
@@ -15,6 +17,24 @@ typedef struct SelectedRecord {
     s32 unk0C;
     s32 unk10;
 } SelectedRecord;
+typedef struct ControllerEffectStep {
+    u8 value;
+    s8 delta;
+    u8 pad[2];
+    s32 duration;
+} ControllerEffectStep;
+typedef struct ControllerEffectState {
+    u8 effect;
+    u8 priority;
+    u8 pad[2];
+    ControllerEffectStep *step;
+    s32 elapsed;
+    s32 stepEnd;
+    s32 effectEnd;
+} ControllerEffectState;
+
+ControllerEffectState gControllerEffectStates[2] = {0};
+
 u16 gTextClut = 0;
 
 extern SelectedRecord *D_8012C6F4[];
@@ -609,7 +629,18 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006B4A0);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006B9EC);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006B9FC);
+void resetControllerEffects(void) {
+    s32 i;
+    for (i = 0; i < 2; i++) {
+        D_8013AF08[i] = -1;
+        gControllerEffectStates[i].effect = 0;
+        gControllerEffectStates[i].priority = 0;
+        gControllerEffectStates[i].step = 0;
+        gControllerEffectStates[i].elapsed = 0;
+        gControllerEffectStates[i].stepEnd = 0;
+        gControllerEffectStates[i].effectEnd = 0;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006BA4C);
 

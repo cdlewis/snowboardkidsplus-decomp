@@ -1644,3 +1644,7 @@ D_8012F13C = 0x8012F13C; // size:0x40
 setPaletteRecordColor = 0x80016420; // type:func
 
 beginTask60TickCountdown = 0x8001C0A8; // type:func
+
+// Reset both controller effect sequences and pending requests.
+resetControllerEffects = 0x8006B9FC; // type:func
+gControllerEffectStates = 0x8012D438; // size:0x28 defined:true

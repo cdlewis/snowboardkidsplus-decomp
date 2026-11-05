@@ -534,6 +534,8 @@ segments:
       - [0xDB89C, data, DB89C]
       - [0x11109C, .data, game/unk_8001E63C]
       - [0x111134, data, 111134]
+      - [0x11DC38, .data, game/unk_800497B8]
+      - [0x11DC60, data, 11DC60]
       - [0x11F0E4, .data, game/sprite_templates]
       - [0x11F0FC, data, 11F0FC]
       - [0x11F93C, .data, game/unk_8007CC78]
