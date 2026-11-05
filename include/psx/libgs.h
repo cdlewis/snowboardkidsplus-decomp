@@ -2,6 +2,12 @@
 
 #include "decomp/types.h"
 
+#ifdef GS_PACKET_ABSOLUTE_ADDRESSING
+extern u32 GsOUT_PACKET_P __attribute__((section(".data")));
+#else
+extern u32 GsOUT_PACKET_P;
+#endif
+
 typedef struct GsIMAGE {
     u32 pmode;
     s16 px, py;

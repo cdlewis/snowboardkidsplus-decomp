@@ -35,6 +35,11 @@ typedef struct POLY_FT4 {
     u8 u3, v3;
     u16 pad2;
 } POLY_FT4;
+typedef struct LINE_F2 {
+    u32 tag;
+    u8 r0, g0, b0, code;
+    s16 x0, y0, x1, y1;
+} LINE_F2;
 
 typedef struct DR_ENV { u32 tag; u32 code[15]; } DR_ENV;
 typedef struct DR_TWIN { u32 tag; u32 code[2]; } DR_TWIN;
@@ -62,7 +67,13 @@ typedef struct DISPENV {
 } DISPENV;
 
 #define setlen(p, length) (((P_TAG *)(p))->len = (u8)(length))
+#define setcode(p, value) (((P_TAG *)(p))->code = (u8)(value))
+#define getaddr(p) (((P_TAG *)(p))->addr)
+#define setaddr(p, address) (((P_TAG *)(p))->addr = (u32)(address))
+#define addPrim(ot, p) (setaddr(p, getaddr(ot)), setaddr(ot, p))
 #define setRGB0(p, r, g, b) ((p)->r0 = (r), (p)->g0 = (g), (p)->b0 = (b))
+#define setXY2(p, x_0, y_0, x_1, y_1) \
+    ((p)->x0 = (x_0), (p)->y0 = (y_0), (p)->x1 = (x_1), (p)->y1 = (y_1))
 #define getlen(p) ((u8)(((P_TAG *)(p))->len))
 #define getTPage(tp, abr, x, y) \
     ((((tp) & 3) << 7) | (((abr) & 3) << 5) | (((y) & 0x100) >> 4) | \

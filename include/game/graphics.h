@@ -34,6 +34,8 @@ typedef struct GameBackground GameBackground;
 typedef struct GameBackgroundMap GameBackgroundMap;
 
 u32 packTextureColor(TextureColor *color);
+void addFlatLine(u32 *orderingTable, s32 x0, s32 y0, s32 x1, s32 y1,
+                 s32 r, s32 g, s32 b);
 void initSprite(GsSPRITE *sprite);
 void unpackPsxColor(u32 color, UnpackedPsxColor *out);
 void setTextPalette(s32 palette);

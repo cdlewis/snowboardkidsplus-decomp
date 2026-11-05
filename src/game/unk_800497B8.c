@@ -10,6 +10,9 @@
 #define SELECTED_RECORD_GP_ADDRESSING
 #include "game/selected_record.h"
 #include "psx/libsnd.h"
+#include "psx/libgpu.h"
+#define GS_PACKET_ABSOLUTE_ADDRESSING
+#include "psx/libgs.h"
 
 typedef struct SelectedStateRecord {
     s16 state;
@@ -441,7 +444,17 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80060740);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006081C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80060978);
+void addFlatLine(u32 *orderingTable, s32 x0, s32 y0, s32 x1, s32 y1,
+                 s32 r, s32 g, s32 b) {
+    LINE_F2 *line = (LINE_F2 *)GsOUT_PACKET_P;
+
+    line->tag = (sizeof(LINE_F2) / sizeof(u32) - 1) << 24;
+    setcode(line, 0x40);
+    setXY2(line, x0, y0, x1, y1);
+    setRGB0(line, r, g, b);
+    addPrim(orderingTable, line);
+    GsOUT_PACKET_P = (u32)(line + 1);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80060A04);
 
