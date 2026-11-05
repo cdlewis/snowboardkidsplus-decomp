@@ -26,6 +26,12 @@ typedef struct ByteTriplet {
     u8 bytes[3];
 } ByteTriplet;
 
+typedef struct IndexedHalfwordRecord {
+    s16 value;
+    s16 unk_02;
+    s16 unk_04;
+} IndexedHalfwordRecord;
+
 typedef struct StateValueHistory {
     s32 unk_00;
     s16 activeIndex;
@@ -147,7 +153,17 @@ s16 getGroupedIndexOffsetPlus216(s16 index) {
     return result;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80081380);
+s16 findIndexedHalfwordRecord(IndexedHalfwordRecord *records, u8 *indices, s16 count, s16 value) {
+    s16 result = 0;
+    s16 i;
+    for (i = 0; i < count; i++) {
+        if (records[indices[i]].value == value) {
+            result = i;
+            break;
+        }
+    }
+    return result;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80081400);
 
