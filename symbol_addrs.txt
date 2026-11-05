@@ -1974,3 +1974,5 @@ begin30TickTransitionOnFlag10 = 0x8001CD00; // type:func
 initializeTaskMenuFade = 0x80038010; // type:func
 
 getPlayerRecordFlagMode = 0x80080BC0; // type:func
+
+getTaskResourceGroupedIndex = 0x8008104C; // type:func

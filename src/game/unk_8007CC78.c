@@ -10,6 +10,12 @@
 #include "game/task.h"
 #include "game/race_player.h"
 
+typedef struct GroupedIndexResource {
+    u8 unk00[0x48];
+    const u8 *values;
+    u8 unk4C[0xB4];
+} GroupedIndexResource;
+
 typedef struct SaveRecord {
     u8 unk_000[0x3AC];
     u32 flags_3AC;
@@ -130,7 +136,25 @@ s32 getSaveRecordFlagGroupIndex(s16 recordIndex, s16 groupIndex) {
     return 0;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8008104C);
+s16 getTaskResourceGroupedIndex(GameTask *task, s16 index) {
+    s16 result;
+    s32 base = 0;
+    GroupedIndexResource *resource = (GroupedIndexResource *)&D_800D9504[task->resource14];
+    switch (resource->values[index]) {
+    case 1: result = base; break;
+    case 2: result = base + 1; break;
+    case 3: result = base + 2; break;
+    case 4: result = base + 9; break;
+    case 5:
+    case 14: result = 12; break;
+    case 6:
+    case 15: result = 13; break;
+    case 7:
+    case 16: result = 14; break;
+    default: result = -1; break;
+    }
+    return result;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_800810F0);
 

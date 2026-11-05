@@ -91,3 +91,5 @@ extern u32 D_8013AFE4;
 
 void func_80070274(s32 mode, s32 id, u16 duration);
 void begin30TickTransitionOnFlag10(void);
+
+s16 getTaskResourceGroupedIndex(GameTask *task, s16 index);
