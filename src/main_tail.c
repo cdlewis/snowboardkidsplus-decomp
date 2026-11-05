@@ -23,6 +23,7 @@ extern u8 D_8013B55E __attribute__((section(".data")));
 
 void func_800A39AC(void);
 void func_800A499C(void);
+void func_8009B5A0(s16 playerIndex, s32 unused, s32 paletteRow, u16 mode);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_8008C708);
 
@@ -166,7 +167,10 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009B2D8);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009B5A0);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009B6A8);
+void copyPlayerPaletteRow(s16 playerIndex) {
+    func_8009B5A0(playerIndex, D_80120E90[playerIndex].unk009,
+                  D_80120E90[playerIndex].unk00D, 0);
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009B700);
 

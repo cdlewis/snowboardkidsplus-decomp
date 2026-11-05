@@ -10,7 +10,11 @@ typedef struct RacePlayerVector {
 /* Partial fields, with the 0x9DC-byte stride used by the player loops. */
 struct RacePlayer {
     GameTask *task;
-    u8 unk004[0xBE];
+    u8 unk004[5];
+    u8 unk009;
+    u8 unk00A[3];
+    u8 unk00D;
+    u8 unk00E[0xB4];
     u16 unk0C2;
     u8 unk0C4[6];
     s16 unk0CA[6];
@@ -47,6 +51,7 @@ s16 isFirstPlayerUsingCallback26D10(void);
 void clearCurrentPlayerSequenceState(void);
 
 void setCurrentPlayerFinalPartTranslations(const s16 *values);
+void copyPlayerPaletteRow(s16 playerIndex);
 void clearCurrentPlayerTaskState(void);
 
 void copySelectedRecordToCurrentPlayer(void);
