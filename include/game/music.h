@@ -14,3 +14,6 @@ void stopMusicSequence(void);
 void pauseMusicSequence(void);
 void resumeMusicSequence(void);
 void endSoundSystem(void);
+
+/* Returns the allocated voice, or 0xFF when the bank is unavailable. */
+s32 func_800181B0(u8 bank, u16 programAndTone, s16 volume);
