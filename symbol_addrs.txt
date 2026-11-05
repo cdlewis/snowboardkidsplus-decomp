@@ -1515,3 +1515,5 @@ fev10 = 0x80141628; // defined:true
 fev11 = 0x8014162C; // defined:true
 fev12 = 0x80141630; // defined:true
 fev13 = 0x80141634; // defined:true
+
+hasTaskReference = 0x80071910; // type:func
