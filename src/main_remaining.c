@@ -13,6 +13,14 @@
 #include "psx/libgs.h"
 #include "psx/libmcrd.h"
 
+/* The first word holds the count; later words hold tagged byte offsets.
+ * words includes that header word, so the first image uses word index 1.
+ */
+typedef union TimArchive {
+    u16 count;
+    s32 words[1];
+} TimArchive;
+
 typedef struct MemoryCardSaveHeader {
     u8 magic[2];
     u8 iconDisplay;
@@ -98,6 +106,7 @@ extern void *D_8013AF4C;
 
 void func_8001D044(void);
 void func_8001D42C(void);
+void uploadTimArchive(TimArchive *archive, s16 *position);
 void func_80018D80(u8 slot, void *destination);
 void func_80019980(void);
 void func_8001C0DC(void);
@@ -112,7 +121,22 @@ void func_800180F4(s16 bankId);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80015EE0);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80015FC4);
+void uploadTimArchive(TimArchive *archive, s16 *position) {
+    u16 i = 0;
+    u32 count = archive->count;
+    /* Keep the archive index signed, as in the on-disc table lookup. */
+    while (1) {
+        s32 offset;
+        s32 index;
+        if (i >= count) {
+            break;
+        }
+        index = (u16)i + 1;
+        offset = archive->words[(s16)index];
+        func_80015EE0((u32 *)((u8 *)archive + ((offset >> 1) << 1)), position);
+        i++;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001604C);
 

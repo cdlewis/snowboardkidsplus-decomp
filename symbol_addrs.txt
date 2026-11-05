@@ -26,6 +26,7 @@ uploadBufferedTexturePair = 0x8002F264; // type:func
 beginSound601TaskSequence = 0x800330CC; // type:func
 beginMemoryCardBufferRead = 0x8001993C; // type:func
 startClearedStateValueHistoryTask = 0x800873DC; // type:func
+uploadTimArchive = 0x80015FC4; // type:func
 createPlayerNumberDisplayTask = 0x80034BC0; // type:func
 createNineIndexedChildTasks = 0x80044E38; // type:func
 setCoordinateRotationZYX = 0x8001E484; // type:func
