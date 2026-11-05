@@ -102,6 +102,7 @@ void func_8001B858(void);
 void func_8001B7F0(void);
 void func_800A1F50(void);
 void func_8009B5A0(s16 playerIndex, s32 unused, s32 paletteRow, u16 mode);
+void func_800A6A8C(void);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_8008C708);
 
@@ -630,7 +631,15 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A6684);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A68B4);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A6A28);
+void initializeSecondaryResourceTask(void) {
+    if (D_8013AE98->resource16 == 0xFFFF) {
+        while (1) {
+        }
+    }
+    D_8013AE88->data18 = 0;
+    setCurrentTaskCallback(func_800A6A8C);
+    D_8013AE88->unk10 |= 2;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A6A8C);
 
