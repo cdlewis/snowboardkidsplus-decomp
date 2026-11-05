@@ -23,6 +23,14 @@ u16 gCdRequestPhase = 0;
 u16 gCdRequestWriteIndex = 0;
 u16 gCdRequestReadIndex = 0;
 u16 D_8013AE76 = 0;
+typedef struct ControllerReceiveBuffer {
+    u8 status;
+    u8 deviceId;
+    u8 payload[32];
+} ControllerReceiveBuffer;
+
+extern ControllerReceiveBuffer D_800E9558[2];
+
 u8 gCdVolumeFadeActive __attribute__((section(".sdata.cd_volume_fade"))) = 0;
 u8 gCdVolumeFadeInterval __attribute__((section(".sdata.cd_volume_fade"))) = 0;
 s16 gCdVolumeFadeCurrent __attribute__((section(".sdata.cd_volume_fade"))) = 0;
@@ -240,7 +248,22 @@ INCLUDE_ASM("asm/nonmatchings/main", func_80015154);
 
 INCLUDE_ASM("asm/nonmatchings/main", func_800153EC);
 
-INCLUDE_ASM("asm/nonmatchings/main", func_800154D0);
+s16 isControllerInputSupported(u16 controller) {
+    ControllerReceiveBuffer *buffer = D_800E9558;
+    ControllerReceiveBuffer *device;
+    buffer += controller;
+    device = buffer;
+    if (buffer->status != 0) {
+        return 0;
+    }
+    switch (device->deviceId) {
+    case 0x41:
+    case 0x53:
+    case 0x73:
+        return 1;
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main", func_8001553C);
 

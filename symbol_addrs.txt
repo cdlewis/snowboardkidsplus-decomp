@@ -1915,3 +1915,5 @@ gQuadShrinkVertices = 0x8012CABC; // type:SVECTOR size:0x20
 createRightQuadShrinkTask = 0x800695E0; // type:func
 gRightQuadShrinkVertices = 0x8012CAFC; // type:SVECTOR size:0x20
 gRightQuadShrinkPacket = 0x8012CB44; // type:POLY_FT4 size:0x28
+
+isControllerInputSupported = 0x800154D0; // type:func
