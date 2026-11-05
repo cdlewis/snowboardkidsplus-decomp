@@ -853,7 +853,18 @@ void drawMenuKindSprite(s16 x, s16 y, s16 kind, s32 frame, GsOT *ot, u16 depth) 
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800402C8);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800403C8);
+void drawPaletteMappedIcon(s16 x, s16 y, s16 index, struct GsOT *ot, u16 depth) {
+    s16 sprite;
+    s16 palette;
+    if (index == 0) {
+        palette = 5;
+        sprite = 446;
+    } else {
+        palette = gMenuSpritePaletteGroups.unk0B[index];
+        sprite = index + 461;
+    }
+    func_8006C998(x, y, sprite, palette, -1, ot, depth);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80040440);
 
