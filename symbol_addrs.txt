@@ -36,6 +36,7 @@ createCountdownTask = 0x80076158; // type:func
 closeMusicSequence = 0x80017E38; // type:func
 stopPlayerSound = 0x8003DE64; // type:func
 findIndexedHalfwordRecord = 0x80081380; // type:func
+adjustGroupedIndexForMode = 0x800811E0; // type:func
 getGroupedIndexBase = 0x80081244; // type:func
 
 startPlayerTimerTask = 0x8002E5D8; // type:func

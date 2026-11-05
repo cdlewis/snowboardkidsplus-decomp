@@ -115,7 +115,24 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8008104C);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_800810F0);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_800811E0);
+void adjustGroupedIndexForMode(s16 mode, u8 *index) {
+    s32 value = *index;
+    switch (mode) {
+    case 2:
+    case 5:
+        if (value < 12) {
+            value = 12;
+        }
+        break;
+    case 0:
+    case 1:
+        if (value >= 12) {
+            value = 0;
+        }
+        break;
+    }
+    *index = value;
+}
 
 s16 getGroupedIndexBase(s16 index) {
     s16 result;
