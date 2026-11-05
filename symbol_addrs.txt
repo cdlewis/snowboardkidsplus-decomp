@@ -1,3 +1,4 @@
+drawDefaultTexturedPanel = 0x800700F8; // type:func
 startTimedSpriteSequence = 0x8006AAAC; // type:func
 addCopiedPrimitive = 0x8005FB34; // type:func
 isCdRequestQueueReady = 0x8001383C; // type:func

@@ -86,6 +86,8 @@ void func_8006B1F4(void);
 void func_80069F64(void);
 void func_80069C04(void);
 void func_8006A9CC(void);
+void func_8006FE68(s16 x, s16 y, s16 w, s16 h, s16 borderW, s16 borderH,
+                   s16 style, s16 clutOffset, s16 blendMode, GsOT *ot, u16 depth);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800497B8);
 
@@ -904,7 +906,11 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006FDE4);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006FE68);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800700F8);
+/* Style 0 uses an eight-pixel border on each side. */
+void drawDefaultTexturedPanel(s16 x, s16 y, s16 w, s16 h, s16 clutOffset,
+                              s16 blendMode, GsOT *ot, u16 depth) {
+    func_8006FE68(x, y, w, h, 8, 8, 0, clutOffset, blendMode, ot, depth);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80070174);
 

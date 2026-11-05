@@ -32,6 +32,7 @@ typedef struct TextureColor {
 
 typedef struct GameBackground GameBackground;
 typedef struct GameBackgroundMap GameBackgroundMap;
+struct GsOT;
 
 u32 packTextureColor(TextureColor *color);
 void addFlatLine(u32 *orderingTable, s32 x0, s32 y0, s32 x1, s32 y1,
@@ -53,6 +54,8 @@ void initPrimitiveTemplates(void);
 void initTexturedQuadTemplate(void);
 void setTexturedQuadColor(s32 r, s32 g, s32 b);
 void setSpriteColor(s32 r, s32 g, s32 b);
+void drawDefaultTexturedPanel(s16 x, s16 y, s16 w, s16 h, s16 clutOffset,
+                              s16 blendMode, struct GsOT *ot, u16 depth);
 void startPrimaryValueTransition(s32 duration, s32 start, s32 end);
 
 void readVram16Pixels(s32 x, s32 y, u32 *pixels);
@@ -72,6 +75,5 @@ void func_80015EE0(u32 *tim, s16 *position);
 void uploadBufferedTexturePair(void);
 
 /* Add a full-screen semi-transparent tile to an ordering table. */
-struct GsOT;
 void func_80070C5C(s32 intensity, struct GsOT *ot, u16 depth);
 void startThreeFrameScreenBlend(void);
