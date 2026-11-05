@@ -656,7 +656,7 @@ segments:
   - name: game_sprite_template_bss
     type: code
     start: 0x12C000
-    vram: 0x8013BDF0
+    vram: 0x8013BDE8
     align: 1
     subalign: 1
     section_order: [".bss"]

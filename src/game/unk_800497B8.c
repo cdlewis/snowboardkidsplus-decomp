@@ -275,7 +275,6 @@ void func_8006BF14(s16 x, s16 y, s32 frameIndex, GsOT *ot, u16 depth);
 void func_8006C5F4(s16 x, s16 y, s32 frameIndex, GsOT *ot, u16 depth);
 void func_80063B58(void);
 void func_800692E8(void);
-void func_8006C848(void);
 void func_8006B1F4(void);
 void func_80013DD0(s16 request, s16 mode);
 void func_8006AB8C(void);
@@ -1248,7 +1247,7 @@ void updateLegacyControllerActuators(u16 controller) {
 
 void initPrimitiveTemplates(void) {
     initTexturedQuadTemplate();
-    func_8006C848();
+    initSpritePrimitiveTemplate();
 }
 
 void initTexturedQuadTemplate(void) {
@@ -1301,7 +1300,12 @@ void drawInclusiveTexturedQuadByIndex(s16 x, s16 y, s32 index, GsOT *ot, u16 dep
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006C798);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006C848);
+void initSpritePrimitiveTemplate(void) {
+    SPRT *sprite = &gSpritePrimitiveTemplate.sprite;
+    SetSprt((P_TAG *)sprite);
+    SetDrawTPage(&gSpritePrimitiveTemplate.drawPage, 1, 1, GetTPage(0, 0, 0, 0));
+    setRGB0(sprite, 0x80, 0x80, 0x80);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006C8B0);
 

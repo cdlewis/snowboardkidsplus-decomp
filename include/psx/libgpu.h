@@ -141,6 +141,7 @@ void SetDrawArea(DR_AREA *packet, RECT *area);
 void SetDrawOffset(DR_OFFSET *packet, u16 *offset);
 void SetPriority(DR_PRIO *packet, s32 pbc, s32 pbw);
 void SetDrawStp(DR_STP *packet, s32 stp);
+void SetSprt(P_TAG *packet);
 void SetDrawTPage(DR_TPAGE *packet, s32 dfe, s32 dtd, s32 tpage);
 void SetDrawMove(DR_MOVE *packet, RECT *rect, s32 x, s32 y);
 void SetDrawMode(DR_MODE *packet, s32 dfe, s32 dtd, s32 tpage, RECT *window);

@@ -62,7 +62,13 @@ extern GsOT D_800EBFF0[2];
 extern u16 D_8013AF78 __attribute__((section(".data")));
 
 extern POLY_FT4 gTexturedQuadTemplate;
-extern SPRT gSpriteTemplate;
+typedef struct SpritePrimitiveTemplate {
+    DR_TPAGE drawPage;
+    SPRT sprite;
+} SpritePrimitiveTemplate;
+
+extern SpritePrimitiveTemplate gSpritePrimitiveTemplate;
+#define gSpriteTemplate (gSpritePrimitiveTemplate.sprite)
 extern TexturedSpritePacket gTexturedSpriteTemplate;
 
 void drawNoProcessMessage(void);
@@ -115,6 +121,7 @@ void setTextPalette(s32 palette);
 void addTextCharacter(s32 x, s32 y, u32 character);
 void initPrimitiveTemplates(void);
 void initTexturedQuadTemplate(void);
+void initSpritePrimitiveTemplate(void);
 void setTexturedQuadTexture(s32 index, s32 palette);
 void setTexturedQuadColor(s32 r, s32 g, s32 b);
 void drawTexturedQuadByIndex(s16 x, s16 y, s32 index, GsOT *ot, u16 depth);

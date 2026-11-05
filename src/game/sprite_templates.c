@@ -1,6 +1,6 @@
 #include "game/graphics.h"
 
-SPRT gSpriteTemplate;
+SpritePrimitiveTemplate gSpritePrimitiveTemplate;
 
 TexturedSpritePacket gTexturedSpriteTemplate = {
     0x05000000, 0xE1000000,
