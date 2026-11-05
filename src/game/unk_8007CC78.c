@@ -8,6 +8,7 @@
 #include "psx/libsnd.h"
 #define TASK_ABSOLUTE_ADDRESSING
 #include "game/task.h"
+#include "game/race_player.h"
 
 typedef struct SaveRecord {
     u8 unk_000[0x3AC];
@@ -91,7 +92,25 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80080114);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_800801A0);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80080BC0);
+s32 getPlayerRecordFlagMode(s16 index) {
+    s32 result;
+    SaveRecord *record;
+    s16 playerIndex = index;
+    if (index >= 10) {
+        record = (SaveRecord *)&D_8013101C;
+        playerIndex = index - 10;
+    } else {
+        record = &((SaveRecord *)&D_8013080C)[index];
+    }
+    if (D_80120E90[playerIndex].unk009 == 8) {
+        result = 2;
+    } else if (D_80120E90[playerIndex].unk009 == 9) {
+        result = 5;
+    } else {
+        result = (record->flags_3AC & 0x3800) != 0;
+    }
+    return result;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80080C64);
 
