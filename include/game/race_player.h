@@ -22,9 +22,9 @@ struct RacePlayer {
     s32 unk020;
     s8 unk024;
     u8 unk025[0xB];
-    s32 unk030;
-    s32 unk034;
-    s32 unk038;
+    s32 x;
+    s32 y;
+    s32 z;
     u8 unk03C[0x26];
     s16 unk062;
     u8 unk064[0x14];

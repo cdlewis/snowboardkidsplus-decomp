@@ -312,9 +312,9 @@ void updateCurrentPlayerFromTaskPhase(void) {
     D_8013B0D8->unk946 = 0;
     player = D_8013B0D8;
     player->unk110 = player->unk0B6 + 0x400;
-    player->unk8E4 = player->unk030 >> 8;
-    player->unk8E8 = player->unk034 >> 8;
-    player->unk8EC = player->unk038 >> 8;
+    player->unk8E4 = player->x >> 8;
+    player->unk8E8 = player->y >> 8;
+    player->unk8EC = player->z >> 8;
 }
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80025840);

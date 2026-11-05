@@ -3,6 +3,7 @@
 #define RACE_PLAYER_ABSOLUTE_ADDRESSING
 #include "game/task.h"
 #include "game/race_player.h"
+#include "game/race_camera.h"
 #include "game/graphics.h"
 #include "game/linear_random.h"
 #include "game/offset_archive.h"
@@ -103,6 +104,8 @@ extern u8 D_8013AFCD __attribute__((section(".data")));
 void func_80037850(const MenuTimeValue *value, s16 x, s16 y, s16 mode, GsOT *ot, u16 depth);
 
 void func_8002F3C8(s16 x, s16 y, s16 clutX, s16 clutY, u32 *tim);
+s16 func_8004A124(s32 x1, s32 z1, s32 x2, s32 z2);
+void func_8003E1D0(u16 playerIndex);
 void func_8003E60C(u16 index);
 void func_8003EE70(void);
 void func_8002F5F8(void);
@@ -880,7 +883,14 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003E050);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003E1D0);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003E360);
+void updatePlayerCameraAngles(u16 playerIndex) {
+    PlayerCamera *cameras = D_801241E8;
+    PlayerCamera *camera = &cameras[playerIndex];
+    RacePlayer *players = D_80120E90;
+    RacePlayer *player = &players[playerIndex];
+    camera->yaw = func_8004A124(camera->x, camera->z, player->x, player->z);
+    func_8003E1D0(playerIndex);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003E3F0);
 
