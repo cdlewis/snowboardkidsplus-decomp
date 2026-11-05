@@ -1935,3 +1935,5 @@ initializeMemoryCardSaveHeader = 0x80018A34; // type:func
 gMemoryCardSaveHeader = 0x800EB564; // size:0x60
 
 waitForMovieOutput = 0x8001A3DC; // type:func
+
+updateLegacyControllerActuators = 0x8006BD3C; // type:func

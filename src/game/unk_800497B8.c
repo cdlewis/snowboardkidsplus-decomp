@@ -1201,7 +1201,18 @@ void resetControllerEffects(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006BA4C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006BD3C);
+void updateLegacyControllerActuators(u16 controller) {
+    if (D_8013AFD3) {
+        D_8013AF00[controller].control = 0x40;
+        D_8013AF00[controller].value = 0;
+    } else if (D_8013AEF0[controller] >= 25) {
+        D_8013AF00[controller].control = 0x40;
+        D_8013AF00[controller].value = 1;
+    } else {
+        D_8013AF00[controller].control = 0x40;
+        D_8013AF00[controller].value = 0;
+    }
+}
 
 void initPrimitiveTemplates(void) {
     initTexturedQuadTemplate();
