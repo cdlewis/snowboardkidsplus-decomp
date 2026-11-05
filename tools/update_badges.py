@@ -44,13 +44,13 @@ def main():
     )
     readme = ROOT / "README.md"
     text = readme.read_text()
-    pattern = r"<!-- progress-badges:start -->.*?<!-- progress-badges:end -->"
-    replacement = (
-        "<!-- progress-badges:start -->\n" + badges + "\n<!-- progress-badges:end -->"
+    pattern = (
+        r"^\[!\[Code\]\(https://img\.shields\.io/badge/[^\n]+\n"
+        r"\[!\[Data\]\(https://img\.shields\.io/badge/[^\n]+$"
     )
-    updated, count = re.subn(pattern, lambda _: replacement, text, flags=re.DOTALL)
+    updated, count = re.subn(pattern, lambda _: badges, text, flags=re.MULTILINE)
     if count != 1:
-        raise ValueError("README must contain exactly one progress-badges block")
+        raise ValueError("README must contain exactly one adjacent Code/Data badge pair")
     if updated != text:
         readme.write_text(updated)
     print(f"README badges: Code {code:.2f}%, Data {data:.2f}%")
