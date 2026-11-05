@@ -5,6 +5,7 @@
 #include "game/linear_random.h"
 #include "game/offset_archive.h"
 #include "game/music.h"
+#define TASK_ABSOLUTE_ADDRESSING
 #include "game/task.h"
 #include "game/selected_records.h"
 #define SELECTED_RECORD_GP_ADDRESSING
@@ -50,6 +51,7 @@ void func_80049D48(s32 x, s32 y, const char *format, ...);
 void func_8006BE50(s32 textureIndex, s32 clutOffset);
 void func_8006C848(void);
 void func_8006B1F4(void);
+void func_80069F64(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800497B8);
 
@@ -639,7 +641,13 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80069F1C);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80069F64);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006A010);
+void startPrimaryValueTransition(s32 duration, s32 start, s32 end) {
+    func_80014930(D_8013AE88, func_80069F64);
+    D_8013AE8C->data18 = 0;
+    D_8013AE8C->data1A = duration;
+    D_8013AE8C->data1C = start;
+    D_8013AE8C->data1E = end;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006A07C);
 

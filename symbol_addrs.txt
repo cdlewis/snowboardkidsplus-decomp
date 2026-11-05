@@ -1712,3 +1712,5 @@ isCdReading = 0x80013798; // type:func
 initTexturedQuadTemplate = 0x8006BE04; // type:func
 
 getStateMaskPair = 0x8008C1E0; // type:func
+
+startPrimaryValueTransition = 0x8006A010; // type:func

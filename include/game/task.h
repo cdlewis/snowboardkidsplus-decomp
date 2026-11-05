@@ -28,8 +28,10 @@ extern u16 gTaskResourceFreeBits[16];
 /* Some task flows address this pointer absolutely; the scheduler uses $gp. */
 #ifdef TASK_ABSOLUTE_ADDRESSING
 extern GameTask *D_8013AE88 __attribute__((section(".data")));
+extern GameTask *D_8013AE8C __attribute__((section(".data")));
 #else
 extern GameTask *D_8013AE88;
+extern GameTask *D_8013AE8C;
 #endif
 extern GameTask D_800D7C84;
 /* The resource allocator supplies 256-byte records to task-specific users. */
