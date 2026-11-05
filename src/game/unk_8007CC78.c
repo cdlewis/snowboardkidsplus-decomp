@@ -7,6 +7,11 @@
 #include "game/music.h"
 #include "psx/libsnd.h"
 
+typedef struct HalfwordPair {
+    s16 unk_00;
+    s16 unk_02;
+} HalfwordPair;
+
 typedef struct ByteTriplet {
     u8 bytes[3];
 } ByteTriplet;
@@ -20,6 +25,8 @@ typedef struct StateValueHistory {
     s16 unk_12[2];
     s16 unk_16[2];
 } StateValueHistory;
+
+HalfwordPair D_8012F13C[16] __attribute__((section(".data"))) = {0};
 
 extern StateValueHistory D_8013BE30;
 extern u8 D_8013AFCD __attribute__((section(".data")));
@@ -45,7 +52,14 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8007E8F0);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8007EE68);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8007F42C);
+void clearHalfwordPairTable(void) {
+    s16 i;
+
+    for (i = 0; i < 16; i++) {
+        D_8012F13C[i].unk_00 = 0;
+        D_8012F13C[i].unk_02 = 0;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8007F46C);
 

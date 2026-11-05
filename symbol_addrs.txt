@@ -1636,3 +1636,7 @@ gMusicFadeMode = 0x8013AF2D; // size:0x1
 gMusicFadeStep = 0x8013AF2E; // size:0x2
 
 resetPaletteRecords = 0x8001628C; // type:func
+
+// Clear both halfwords in each of the 16 table records.
+clearHalfwordPairTable = 0x8007F42C; // type:func
+D_8012F13C = 0x8012F13C; // size:0x40
