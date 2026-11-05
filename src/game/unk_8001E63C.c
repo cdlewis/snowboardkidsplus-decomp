@@ -165,7 +165,19 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80027918);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80028234);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80028608);
+/* Average angles on the 4096-unit circle, taking the shorter arc. */
+s32 averageWrappedAngle(s16 first, u16 second) {
+    s16 difference = first - second;
+    s16 midpoint;
+    if (difference > -0x800 && difference < 0x800) {
+        return first - difference / 2;
+    }
+    midpoint = (s16)(first + second) / 2 - 0x800;
+    if (midpoint & 0x800) {
+        return midpoint | 0xF000;
+    }
+    return midpoint & 0x7FF;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80028680);
 

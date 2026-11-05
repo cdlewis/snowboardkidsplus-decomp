@@ -1734,3 +1734,4 @@ getModeFilteredGameOptionFlag2 = 0x8008C568; // type:func
 setStateGridFlag = 0x80095EB4; // type:func
 
 selectTaskCallbackFromModeState = 0x800A09FC; // type:func
+averageWrappedAngle = 0x80028608; // type:func
