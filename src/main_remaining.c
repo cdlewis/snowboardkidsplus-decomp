@@ -234,7 +234,13 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80018FBC);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001907C);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80019244);
+s32 tryAcceptMemoryCard(void) {
+    if (MemCardSync(1, 0, 0) == -1) {
+        MemCardAccept(D_8013AF34);
+        return 1;
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80019288);
 
