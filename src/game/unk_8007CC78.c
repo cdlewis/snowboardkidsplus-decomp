@@ -151,7 +151,18 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80086584);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8008690C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80086BCC);
+s16 mapGroupedValueToTableIndex(s16 value) {
+    s16 result;
+
+    if (value < 9) {
+        result = value / 3 + 231;
+    } else if ((u16)(value - 9) < 3) {
+        result = value + 225;
+    } else if (value >= 12) {
+        result = value + 219;
+    }
+    return result;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80086C34);
 

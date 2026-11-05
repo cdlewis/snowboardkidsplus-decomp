@@ -1655,6 +1655,7 @@ clearControllerFlag5 = 0x80014D04; // type:func
 resetGameOptionState = 0x8002F1A4; // type:func
 
 lookupByteTriplet = 0x8008315C; // type:func
+mapGroupedValueToTableIndex = 0x80086BCC; // type:func
 
 hasStateValueChanged = 0x80087004; // type:func
 
