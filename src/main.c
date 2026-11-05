@@ -129,7 +129,22 @@ void deleteCurrentTask(void) {
     func_800149A8();
 }
 
-INCLUDE_ASM("asm/nonmatchings/main", func_80014BAC);
+u32 allocateTaskResource(void) {
+    u16 i, bit;
+    u32 mask;
+    for (i = 0; i < 16; i++) {
+        if (gTaskResourceFreeBits[i]) {
+            for (mask = 1, bit = 0; bit < 16; bit++) {
+                if (gTaskResourceFreeBits[i] & mask) {
+                    gTaskResourceFreeBits[i] ^= mask;
+                    return i * 16 + bit;
+                }
+                mask = (u16)mask << 1;
+            }
+        }
+    }
+    return 0;
+}
 
 void releaseTaskResource(u16 resource) {
     u32 index = resource >> 4;

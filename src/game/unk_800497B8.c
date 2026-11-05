@@ -703,7 +703,7 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800618A0);
 void startIndexedRenderTask(s32 index) {
     TaskResourceRecord *resource;
     func_80014930(D_8013B304, func_800618A0);
-    D_8013AE8C->resource14 = func_80014BAC();
+    D_8013AE8C->resource14 = allocateTaskResource();
     D_8013AE8C->data18 = index;
     resource = &D_800D9504[D_8013AE8C->resource14];
     resource->unk00 = 0;
@@ -763,7 +763,7 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006624C);
 void startPositionEffectTask(const PositionEffectOrigin *position) {
     PositionEffectOrigin *resource;
     func_80014930(D_8013B304, func_8006624C);
-    D_8013AE8C->resource14 = func_80014BAC();
+    D_8013AE8C->resource14 = allocateTaskResource();
     D_8013AE8C->data18 = 3;
     resource = (PositionEffectOrigin *)&D_800D9504[D_8013AE8C->resource14];
     *resource = *position;
@@ -811,7 +811,7 @@ void startMiddleQuadShrinkTask(void) {
     ShrinkingQuadResource *resource;
 
     func_80014930(&D_800D7C84, func_800692E8);
-    D_8013AE8C->resource14 = func_80014BAC();
+    D_8013AE8C->resource14 = allocateTaskResource();
     resource = (ShrinkingQuadResource *)&D_800D9504[D_8013AE8C->resource14];
     resource->countdown = 5;
     resource->vertices = gMiddleShrinkQuadVertices;
@@ -829,7 +829,7 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006999C);
 void startSlidingQuadTask(s32 index) {
     SlidingQuadResource *resource;
     func_80014930(&D_800D7C84, func_8006999C);
-    D_8013AE8C->resource14 = func_80014BAC();
+    D_8013AE8C->resource14 = allocateTaskResource();
     D_8013AE8C->data18 = index;
     resource = (SlidingQuadResource *)&D_800D9504[D_8013AE8C->resource14];
     resource->countdown = 10;
@@ -901,7 +901,7 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006A9CC);
 void startTimedSpriteSequence(const TimedSpriteStep *steps) {
     TimedSpriteSequenceResource *resource;
     func_80014930(D_8013AE88, func_8006A9CC);
-    D_8013AE8C->resource14 = func_80014BAC();
+    D_8013AE8C->resource14 = allocateTaskResource();
     resource = (TimedSpriteSequenceResource *)&D_800D9504[D_8013AE8C->resource14];
     resource->step = steps;
     resource->frame = 0;
