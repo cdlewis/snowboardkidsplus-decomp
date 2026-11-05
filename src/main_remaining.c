@@ -25,6 +25,17 @@ s8 gSoundSystemActive = 0;
 u8 D_8013AF29 = 0;
 s16 gMusicSequenceId = 0;
 s32 gLinearRandomState __attribute__((section(".data.linear_random_state"))) = 1;
+typedef struct MovieDecodeState {
+    u32 *vlcBuffers[2];
+    s32 vlcBufferIndex;
+    u32 *imageBuffers[2];
+    s32 imageBufferIndex;
+    RECT frames[2];
+    s32 frameIndex;
+    RECT slice;
+    s32 outputComplete;
+} MovieDecodeState;
+
 
 void func_8001C0DC(void);
 
@@ -224,7 +235,23 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80019CB8);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80019D3C);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001A018);
+void initMovieDecodeState(MovieDecodeState *state, s16 x0, s16 y0, s16 x1, s16 y1) {
+    state->vlcBuffers[0] = (u32 *)0x801A1000;
+    state->vlcBuffers[1] = (u32 *)0x801C9000;
+    state->vlcBufferIndex = 0;
+    state->imageBuffers[0] = (u32 *)0x801F1000;
+    state->imageBuffers[1] = (u32 *)0x801F4000;
+    state->imageBufferIndex = 0;
+    state->frames[0].x = x0;
+    state->frames[0].y = y0;
+    state->frames[1].x = x1;
+    state->frameIndex = 0;
+    state->slice.x = x0;
+    state->slice.y = y0;
+    state->slice.w = 24;
+    state->outputComplete = 0;
+    state->frames[1].y = y1;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001A080);
 
