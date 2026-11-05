@@ -64,6 +64,14 @@ typedef struct ShrinkingQuadResource {
     u8 pad0C[0xF4];
 } ShrinkingQuadResource;
 
+typedef struct SlidingQuadResource {
+    s32 countdown;
+    s32 unk04;
+    const POLY_FT4 *packet;
+    s32 textureV;
+    u8 pad10[0xF0];
+} SlidingQuadResource;
+
 typedef struct TimedSpriteStep {
     s32 frame;
     s32 duration;
@@ -99,6 +107,15 @@ POLY_FT4 gMiddleShrinkQuadPacket
     0, 0, 79, 31, 0,
 };
 
+POLY_FT4 gSlidingQuadPacket
+    __attribute__((section(".data.sliding_quad_packet"))) = {
+    TEXTURED_QUAD_PACKET_WORDS << 24, 128, 128, 128, TEXTURED_QUAD_CODE,
+    160, 24, 0, 0, 0,
+    320, 24, 159, 0, getTPage(0, 0, 960, 0),
+    160, 39, 0, 0, 0,
+    159, 39, 159, 0, 0,
+};
+
 extern GameTask *D_8013B304 __attribute__((section(".data")));
 extern SelectedStateRecord *D_8012C6F4[];
 extern s8 *D_8012BBB4[][4];
@@ -116,6 +133,7 @@ extern u16 D_8013B376 __attribute__((section(".sdata")));
 const char gNoProcessMessage[16] = "NO PROCESS...";
 
 void func_800692E8(void);
+void func_8006999C(void);
 void func_800618A0(void);
 void func_80049D48(s32 x, s32 y, const char *format, ...);
 void func_8006BE50(s32 textureIndex, s32 clutOffset);
@@ -794,7 +812,16 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800697DC);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006999C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80069B24);
+void startSlidingQuadTask(s32 index) {
+    SlidingQuadResource *resource;
+    func_80014930(&D_800D7C84, func_8006999C);
+    D_8013AE8C->resource14 = func_80014BAC();
+    D_8013AE8C->data18 = index;
+    resource = (SlidingQuadResource *)&D_800D9504[D_8013AE8C->resource14];
+    resource->countdown = 10;
+    resource->packet = &gSlidingQuadPacket;
+    resource->textureV = (index << 4) + 32;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80069BAC);
 

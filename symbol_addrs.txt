@@ -1781,3 +1781,6 @@ finishTimedSpriteSequence = 0x8006A958; // type:func
 
 startStateValueHistoryTask = 0x80089E34; // type:func
 initializeMode1Task = 0x800A0A4C; // type:func
+
+startSlidingQuadTask = 0x80069B24; // type:func
+gSlidingQuadPacket = 0x8012CB6C; // size:0x28
