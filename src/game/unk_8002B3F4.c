@@ -122,6 +122,8 @@ void func_80033404(void);
 void func_80044990(void);
 void func_80034F1C(void);
 void func_800342FC(void);
+void func_8002FCF8(void);
+void func_8002FE18(void);
 void func_80032E94(void);
 void func_80034AE8(void);
 void func_80033100(void);
@@ -409,7 +411,13 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002FCF8);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002FE18);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002FF64);
+void initializeMode11TransitionTask(void) {
+    func_80070274(11, 0, 30);
+    func_800719A8(1);
+    func_8002FCF8();
+    setCurrentTaskCallback(func_8002FE18);
+    D_8013AE88->unk10 |= 2;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002FFC0);
 
