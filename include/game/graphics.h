@@ -67,6 +67,7 @@ extern TexturedSpritePacket gTexturedSpriteTemplate;
 
 void drawNoProcessMessage(void);
 void createResourceLoadTask(void);
+void createPlayerNumberDisplayTask(s32 value, s32 showExtraValue, s32 player);
 void createQuadShrinkTask(void);
 void createRightQuadShrinkTask(void);
 typedef struct TextureColor {

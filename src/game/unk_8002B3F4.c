@@ -38,6 +38,19 @@ typedef struct MenuSpritePaletteGroups {
     u8 kind[8];
     u8 unk0B[9];
 } MenuSpritePaletteGroups;
+typedef struct PlayerNumberResource {
+    u16 timer;
+    u16 unk02;
+    s32 x;
+    s32 y;
+    u8 unk0C[8];
+    s32 speed;
+    s32 value;
+    s16 showExtraValue;
+    s16 player;
+    u8 unk20[0xE0];
+} PlayerNumberResource;
+
 
 typedef struct TaskMotionResource {
     s32 position;
@@ -84,6 +97,7 @@ void func_80044990(void);
 void func_80034F1C(void);
 void func_800342FC(void);
 void func_80032E94(void);
+void func_80034AE8(void);
 void func_80033100(void);
 void func_80048668(void);
 void func_8004531C(void);
@@ -532,7 +546,15 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80034A48);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80034AE8);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80034BC0);
+void createPlayerNumberDisplayTask(s32 value, s32 showExtraValue, s32 player) {
+    PlayerNumberResource *resource;
+    func_80014874(func_80034AE8);
+    D_8013AE8C->resource14 = func_80014BAC();
+    resource = (PlayerNumberResource *)&D_800D9504[D_8013AE8C->resource14];
+    resource->value = value;
+    resource->showExtraValue = showExtraValue;
+    resource->player = player;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80034C40);
 
