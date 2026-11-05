@@ -57,3 +57,7 @@ void func_80071300(s16 mode, s16 unused, GameBackground *background,
                    GameBackgroundMap *map, u8 *cells, u8 *tiles);
 void initDefaultBackground(s16 mode, s16 unused, GameBackground *background,
                            GameBackgroundMap *map);
+
+/* Upload a TIM image, optionally offsetting its pixel and CLUT positions. */
+void func_80015EE0(u32 *tim, s16 *position);
+void uploadBufferedTexturePair(void);

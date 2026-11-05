@@ -161,7 +161,10 @@ void resetGameOptionState(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002F1C8);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002F264);
+void uploadBufferedTexturePair(void) {
+    func_80015EE0((u32 *)0x80187800, NULL);
+    func_80015EE0((u32 *)0x80181000, NULL);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002F29C);
 
