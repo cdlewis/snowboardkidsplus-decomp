@@ -40,3 +40,4 @@ s16 getStateMaskTier(s16 stateIndex, s16 maskIndex);
 s32 getStateMaskPair(s16 stateIndex, s16 maskIndex, s16 pairIndex);
 
 void setStateGridFlag(GlobalFlagStatePrefix *state, s16 row, s16 column);
+s16 getSaveRecordFlagPair(s16 recordIndex, s16 maskIndex, s16 pairIndex);

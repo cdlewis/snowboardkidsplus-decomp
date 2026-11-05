@@ -325,7 +325,25 @@ s16 getStateMaskTier(s16 stateIndex, s16 maskIndex) {
     return result;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8008C05C);
+s16 getSaveRecordFlagPair(s16 recordIndex, s16 maskIndex, s16 pairIndex) {
+    u32 first;
+    u32 second;
+    s16 result;
+    SaveRecord *records = (SaveRecord *)&D_8013080C;
+
+    first = records[recordIndex].flags_3B0[maskIndex] & (1U << (pairIndex * 2));
+    second = records[recordIndex].flags_3B0[maskIndex] & (2U << (pairIndex * 2));
+    if (first && second) {
+        result = 3;
+    } else if (second) {
+        result = 2;
+    } else if (first) {
+        result = 1;
+    } else {
+        result = 0;
+    }
+    return result;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8008C0CC);
 
