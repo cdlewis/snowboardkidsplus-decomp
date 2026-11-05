@@ -29,9 +29,19 @@ typedef struct TimedSequence {
 
 /* Storage remains in the shared data object. */
 extern TaskResource D_800D9504[];
+typedef struct TaskValueState {
+    GameTask *task;
+    u16 unk04;
+    u16 unk06;
+} TaskValueState;
+
+/* Storage remains in the shared data object. */
+extern TaskValueState D_8012D4A4[3];
 extern GameTask *D_8013B378;
 extern GameTask *D_8013B37C;
 extern GameTask *D_8013BDA8[4];
+
+s16 func_80070794(s32 id);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80070274);
 
@@ -39,7 +49,9 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80070448);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80070794);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_800707B8);
+s32 hasTaskStateValue6(s32 id) {
+    return D_8012D4A4[func_80070794(id)].unk06 != 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_800707F0);
 

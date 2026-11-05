@@ -53,3 +53,5 @@ void setTaskSecondaryResourceData(GameTask *task, const u16 *data);
 s32 isTaskResourceTransitionComplete(s16 index);
 void clearControllerFlag5(u16 controller);
 s16 hasTaskResource16Value(GameTask *task);
+
+s32 hasTaskStateValue6(s32 id);

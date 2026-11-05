@@ -1648,3 +1648,5 @@ beginTask60TickCountdown = 0x8001C0A8; // type:func
 // Reset both controller effect sequences and pending requests.
 resetControllerEffects = 0x8006B9FC; // type:func
 gControllerEffectStates = 0x8012D438; // size:0x28 defined:true
+
+hasTaskStateValue6 = 0x800707B8; // type:func
