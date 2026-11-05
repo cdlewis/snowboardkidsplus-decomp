@@ -1540,3 +1540,11 @@ gTexturedSpriteTemplate = 0x8012E8E4; // size:0x18 defined:true
 setTaskSecondaryResourceData = 0x8007494C; // type:func
 
 isControllerFlag5Clear = 0x80014D3C; // type:func
+
+// Reads one byte from the globally selected lookup table.
+readSelectedByteTable = 0x8001EC58; // type:func
+D_8012089C = 0x8012089C; // size:0x1C defined:true
+D_801208B8 = 0x801208B8; // size:0x1C defined:true
+D_801208D4 = 0x801208D4; // size:0x1C defined:true
+D_801208F0 = 0x801208F0; // size:0x1C defined:true
+D_8012090C = 0x8012090C; // size:0x28 defined:true

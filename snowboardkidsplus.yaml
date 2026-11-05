@@ -527,6 +527,8 @@ segments:
       - [0xC78E8, data, C78E8] # estimated
       - [0xDAD9C, .data, engine/random]
       - [0xDAE9C, data, DAE9C]
+      - [0x11109C, .data, game/unk_8001E63C]
+      - [0x111134, data, 111134]
       - [0x11F0E4, .data, game/sprite_templates]
       - [0x11F0FC, data, 11F0FC]
       - {start: 0x1235BC, type: .data, name: syslib/libmath/ferr, linker_section: .data.math_error}
