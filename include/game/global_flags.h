@@ -8,6 +8,9 @@ typedef struct GlobalFlagStatePrefix {
     u32 flags;
     u32 masks[10];
     u32 combinedMask;
+    u32 unk_3DC;
+    u32 unk_3E0;
+    u32 unk_3E4;
 } GlobalFlagStatePrefix;
 
 extern GlobalFlagStatePrefix D_8013080C;
@@ -19,3 +22,5 @@ u32 getGlobalFlagMask(s16 bitIndex);
 void setPairedStateIndexedFlag(s16 index);
 
 void rebuildCombinedStateMask(GlobalFlagStatePrefix *state);
+
+void copyGlobalFlagState(GlobalFlagStatePrefix *source, GlobalFlagStatePrefix *destination);

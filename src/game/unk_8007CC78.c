@@ -150,7 +150,16 @@ void repeatByteStore(u8 *destination, s32 value, s32 count) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_800897D0);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_800898CC);
+void copyGlobalFlagState(GlobalFlagStatePrefix *source, GlobalFlagStatePrefix *destination) {
+    s16 i;
+
+    destination->flags = source->flags;
+    for (i = 0; i < 10; i++) {
+        i[destination->masks] = i[source->masks];
+    }
+    destination->combinedMask = source->combinedMask;
+    destination->unk_3E4 = source->unk_3E4;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80089924);
 
