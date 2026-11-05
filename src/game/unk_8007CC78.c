@@ -1,6 +1,7 @@
 #include "common.h"
 #include "game/global_flags.h"
 #include "game/graphics.h"
+#include "game/game_options.h"
 #include "game/linear_random.h"
 #include "game/offset_archive.h"
 #include "game/music.h"
@@ -21,6 +22,8 @@ typedef struct StateValueHistory {
 } StateValueHistory;
 
 extern StateValueHistory D_8013BE30;
+extern u8 D_8013AFCD __attribute__((section(".data")));
+extern u8 D_8013B47C;
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8007CC78);
 
@@ -148,7 +151,12 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80087464);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_800875D0);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_800879A4);
+void resetUnlockNotificationStateForMode2(void) {
+    if (D_8013AFCD == 2) {
+        gUnlockNotificationFlags = 0;
+        D_8013B47C = 0;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_800879CC);
 

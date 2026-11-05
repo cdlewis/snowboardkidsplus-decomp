@@ -39,6 +39,7 @@ gSecondaryRngIndex = 0x8013AF12; // size:0x2 defined:true
 gFrameCounter = 0x8013AFAC; // size:0x2 defined:true
 
 // Runtime options and the notification mask used by the unlock-message flow.
+resetUnlockNotificationStateForMode2 = 0x800879A4; // type:func
 getStereoSoundFlag = 0x8008C630; // type:func
 getGameOptionFlag0 = 0x8008C640; // type:func
 getPlayerOptionFlag = 0x8008C650; // type:func
