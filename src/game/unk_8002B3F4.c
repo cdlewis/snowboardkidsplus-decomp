@@ -786,7 +786,18 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003D940);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003DB94);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003DE64);
+void stopPlayerSound(u16 playerIndex) {
+    RacePlayer *players = D_80120E90;
+    RacePlayer *player = &players[playerIndex];
+
+    player->unk96C = 0;
+    if (player->soundVoice != 0xFF) {
+        func_800187B8(player->soundVoice);
+        player->soundVoice = 0xFF;
+        player->unk96E = 0xFFFF;
+        player->unk970 = 0xFFFF;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003DEE0);
 

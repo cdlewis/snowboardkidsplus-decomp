@@ -87,7 +87,12 @@ struct RacePlayer {
     u8 unk954;
     u8 unk955[0x10];
     s8 unk965;
-    u8 unk966[0x76];
+    u8 unk966[5];
+    u8 soundVoice;
+    s16 unk96C;
+    u16 unk96E;
+    u16 unk970;
+    u8 unk972[0x6A];
 };
 
 extern RacePlayer D_80120E90[];
@@ -111,6 +116,7 @@ void setCurrentPlayerFinalPartTranslations(const s16 *values);
 void copyPlayerPaletteRow(s16 playerIndex);
 void clearCurrentPlayerTaskState(void);
 void startPlayerTimerTask(RacePlayer *player);
+void stopPlayerSound(u16 playerIndex);
 s32 requestCurrentPlayerAction17(void);
 
 void copySelectedRecordToCurrentPlayer(void);
