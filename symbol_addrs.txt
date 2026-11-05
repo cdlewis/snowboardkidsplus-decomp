@@ -1575,3 +1575,6 @@ setPairedStateIndexedFlag = 0x8008C528; // type:func
 repeatByteStore = 0x800897A4; // type:func
 
 resetUnlockMenuOffsets = 0x800A495C;
+
+drawNoProcessMessage = 0x80052504; // type:func
+gNoProcessMessage = 0x80010CC4; // type:char size:0x10

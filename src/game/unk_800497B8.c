@@ -5,6 +5,9 @@
 #include "game/music.h"
 #include "psx/libsnd.h"
 
+const char gNoProcessMessage[16] = "NO PROCESS...";
+
+void func_80049D48(s32 x, s32 y, const char *format, ...);
 void func_8006BE04(void);
 void func_8006C848(void);
 
@@ -132,7 +135,9 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800520E8);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80052314);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80052504);
+void drawNoProcessMessage(void) {
+    func_80049D48(0, 30, gNoProcessMessage);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80052530);
 

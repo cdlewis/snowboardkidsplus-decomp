@@ -71,6 +71,8 @@ segments:
       - [0xE34, rodata]
       - [0x1460, rodata]
       - [0x149C, rodata]
+      - [0x14C4, .rodata, game/unk_800497B8]
+      - [0x14D4, rodata]
       - [0x1A38, rodata]
       - [0x1C3C, rodata]
       - [0x1C68, rodata]

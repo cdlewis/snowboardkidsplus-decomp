@@ -187,8 +187,10 @@ $(foreach unit,$(GCC281_MNO_SPLIT_ADDRESSES_G0_REORDER_PAD_UNITS),$(eval UNIT_PA
 UNIT_FUNCTIONS_src/main.c := deleteCurrentTask
 FN_FLAGS_src/main.c/deleteCurrentTask := -fno-delayed-branch
 UNIT_FUNCTIONS_src/main_remaining.c := stopMusicSequence pauseMusicSequence resumeMusicSequence
-UNIT_FUNCTIONS_src/game/unk_800497B8.c := initPrimitiveTemplates
+UNIT_FUNCTIONS_src/game/unk_800497B8.c := initPrimitiveTemplates drawNoProcessMessage
 FN_FLAGS_src/game/unk_800497B8.c/initPrimitiveTemplates := -fno-delayed-branch
+# Preserve the message wrapper prologue and return scheduling.
+FN_FLAGS_src/game/unk_800497B8.c/drawNoProcessMessage := -fno-schedule-insns2 -fno-delayed-branch
 $(foreach function,$(UNIT_FUNCTIONS_src/main_remaining.c),$(eval FN_FLAGS_src/main_remaining.c/$(function) := -fno-delayed-branch))
 UNIT_FUNCTIONS_src/engine/random.c := resetGameplayRng
 FN_FLAGS_src/engine/random.c/resetGameplayRng := -fno-delayed-branch

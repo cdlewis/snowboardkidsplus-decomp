@@ -23,6 +23,7 @@ extern POLY_FT4 gTexturedQuadTemplate;
 extern SPRT gSpriteTemplate;
 extern TexturedSpritePacket gTexturedSpriteTemplate;
 
+void drawNoProcessMessage(void);
 void initSprite(GsSPRITE *sprite);
 void unpackPsxColor(u32 color, UnpackedPsxColor *out);
 void initPrimitiveTemplates(void);
