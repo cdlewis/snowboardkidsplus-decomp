@@ -4,6 +4,7 @@
 #include "game/linear_random.h"
 #include "game/offset_archive.h"
 #include "game/music.h"
+#include "game/movement.h"
 #include "game/task.h"
 #include "psx/libsnd.h"
 
@@ -67,7 +68,15 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80070D48);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80070E34);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80070EF0);
+void initMovement2D(Movement2D *movement, s32 x, s32 y) {
+    movement->x = x;
+    movement->y = y;
+    movement->remainingX = 0;
+    movement->remainingY = 0;
+    movement->stepX = 0;
+    movement->stepY = 0;
+    movement->delay = 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80070F10);
 
