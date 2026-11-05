@@ -111,7 +111,12 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800515A8);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005162C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80051694);
+void unpackPsxColor(u32 color, UnpackedPsxColor *out) {
+    out->r = color & 0x1F;
+    out->g = (color & 0x3E0) >> 5;
+    out->b = (color & 0x7C00) >> 10;
+    out->stp = (color & 0x8000) >> 15;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800516C4);
 

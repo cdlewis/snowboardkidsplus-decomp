@@ -3,6 +3,11 @@
 #include "psx/sprite.h"
 #include "psx/libgpu.h"
 
+/* Unscaled 5-bit RGB channels and the PSX color's semi-transparency bit. */
+typedef struct UnpackedPsxColor {
+    u8 r, g, b, stp;
+} UnpackedPsxColor;
+
 /* A draw-mode command and sprite share a single DMA packet tag. */
 typedef struct TexturedSpritePacket {
     u32 tag;
@@ -19,6 +24,7 @@ extern SPRT gSpriteTemplate;
 extern TexturedSpritePacket gTexturedSpriteTemplate;
 
 void initSprite(GsSPRITE *sprite);
+void unpackPsxColor(u32 color, UnpackedPsxColor *out);
 void initPrimitiveTemplates(void);
 void setTexturedQuadColor(s32 r, s32 g, s32 b);
 void setSpriteColor(s32 r, s32 g, s32 b);
