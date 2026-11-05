@@ -95,6 +95,9 @@ void func_800A0AA8(void);
 void func_800A3750(void);
 void func_800A5AFC(void);
 void func_800A6548(void);
+extern s16 D_8013B10C __attribute__((section(".data")));
+
+void func_8002FA58(s16 resource);
 void func_800A39AC(void);
 void func_800A42CC(void);
 void func_800A499C(void);
@@ -484,7 +487,13 @@ void resumeUnlockSelectionTask(void) {
     setCurrentTaskCallback(func_800A499C);
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A5204);
+void prepareUnlockSelectionResume(void) {
+    func_800719A8(3);
+    D_8013B10C = -1;
+    func_8002FA58(2);
+    setCurrentTaskCallback(resumeUnlockSelectionTask);
+    D_8013AE88->unk10 |= 2;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A525C);
 

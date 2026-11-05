@@ -1922,3 +1922,5 @@ isControllerInputSupported = 0x800154D0; // type:func
 
 drawPaletteMappedIcon = 0x800403C8; // type:func
 gMappedIconPalettes = 0x8013B163; // type:u8 size:0x9
+
+prepareUnlockSelectionResume = 0x800A5204; // type:func
