@@ -66,7 +66,7 @@ endif
 # restarts Make, discovering newly generated assembly after a clean checkout.
 SPLIT_INPUTS := snowboardkidsplus.yaml symbol_addrs.txt reloc_addrs.txt disc/SLPS_018.23 Makefile
 SPLIT_OUTPUTS := linkers/slps_018.23.ld linkers/slps_018.23.d linkers/undefined_funcs_auto.txt linkers/undefined_syms_auto.txt include/include_asm.h include/macro.inc include/labels.inc include/gte_macros.inc
-.PHONY: all verify objects all-objects expected split extract clean hooks report scratch print-settings FORCE
+.PHONY: all verify objects all-objects expected split extract clean hooks report badges scratch print-settings FORCE
 ifeq ($(COMPARISON),1)
 ifeq ($(abspath $(BUILD_DIR)),$(ROOT)/build)
 $(error comparison objects require a separate BUILD_DIR, such as build/compare)
@@ -82,7 +82,7 @@ all: verify
 endif
 
 ifneq ($(COMPARISON),1)
-ifeq ($(filter clean extract hooks print-settings scratch objects,$(MAKECMDGOALS)),)
+ifeq ($(filter clean extract hooks print-settings scratch objects badges,$(MAKECMDGOALS)),)
 include linkers/slps_018.23.d
 endif
 endif
@@ -231,5 +231,9 @@ hooks:
 report: verify
 	$(PRINTF) "[$(CYAN) report $(NO_COL)]  Generating progress report\n"
 	$(PY) -m mapfile_parser objdiff_report
+
+badges:
+	./tools/build-and-verify.sh
+	$(PY) tools/update_badges.py
 
 -include $(C_OBJECTS:.o=.d) $(C_OBJECTS:.o=.as.d) $(addsuffix .d,$(HASM_OBJECTS) $(ASM_OBJECTS))
