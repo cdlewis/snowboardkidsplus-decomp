@@ -197,7 +197,7 @@ FN_FLAGS_src/main_tail.c/resumeUnlockSelectionTask := -fno-delayed-branch -fno-s
 
 UNIT_FUNCTIONS_src/main.c := deleteCurrentTask
 FN_FLAGS_src/main.c/deleteCurrentTask := -fno-delayed-branch
-UNIT_FUNCTIONS_src/main_remaining.c := stopMusicSequence pauseMusicSequence resumeMusicSequence endSoundSystem readVram16Pixels beginTask60TickCountdown
+UNIT_FUNCTIONS_src/main_remaining.c := uploadImage64x256 stopMusicSequence pauseMusicSequence resumeMusicSequence endSoundSystem readVram16Pixels beginTask60TickCountdown
 UNIT_FUNCTIONS_src/game/unk_800497B8.c := initPrimitiveTemplates drawNoProcessMessage createResourceLoadTask
 UNIT_FUNCTIONS_src/game/unk_8002B3F4.c += initDefaultBackground
 FN_FLAGS_src/game/unk_8002B3F4.c/initDefaultBackground := -fno-delayed-branch

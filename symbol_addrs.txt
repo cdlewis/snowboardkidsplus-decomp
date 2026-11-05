@@ -1643,6 +1643,7 @@ fadeOutMusicSequence = 0x80017F44; // type:func
 gMusicFadeMode = 0x8013AF2D; // size:0x1
 gMusicFadeStep = 0x8013AF2E; // size:0x2
 
+uploadImage64x256 = 0x80016244; // type:func
 resetPaletteRecords = 0x8001628C; // type:func
 
 // Clear both halfwords in each of the 16 table records.

@@ -45,7 +45,15 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80015FC4);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001604C);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80016244);
+void uploadImage64x256(u32 *pixels, s16 x, s16 y) {
+    RECT rect;
+    rect.x = x;
+    rect.y = y;
+    rect.w = 64;
+    rect.h = 256;
+    LoadImage(&rect, pixels);
+    DrawSync(0);
+}
 
 void resetPaletteRecords(void) {
     u16 i;
