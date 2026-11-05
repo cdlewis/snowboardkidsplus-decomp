@@ -252,7 +252,20 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8008BEA4);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8008BF20);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8008BFF0);
+s16 getStateMaskTier(s16 stateIndex, s16 maskIndex) {
+    s16 result = 0;
+    s16 i;
+    u32 mask;
+
+    mask = D_8013B484[stateIndex]->masks[maskIndex];
+    for (i = 3; i >= 0; i--) {
+        if (mask & (0x1000000 << i)) {
+            result = i + 1;
+            break;
+        }
+    }
+    return result;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8008C05C);
 
