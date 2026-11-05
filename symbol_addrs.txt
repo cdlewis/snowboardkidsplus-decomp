@@ -1769,3 +1769,5 @@ startIndexedRenderTask = 0x80061DD8; // type:func
 startMiddleQuadShrinkTask = 0x8006956C; // type:func
 gMiddleShrinkQuadVertices = 0x8012CADC; // size:0x20
 gMiddleShrinkQuadPacket = 0x8012CB1C; // size:0x28
+
+resetTaskVisualState = 0x80044DC4; // type:func

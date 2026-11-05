@@ -18,3 +18,6 @@ void endSoundSystem(void);
 
 /* Returns the allocated voice, or 0xFF when the bank is unavailable. */
 s32 func_800181B0(u8 bank, u16 programAndTone, s16 volume);
+
+/* Positional counterpart of func_800181B0; returns the voice or 0xFF. */
+s32 func_80018538(s32 x, s32 y, s32 z, u8 bank, u16 programAndTone, s16 volume);

@@ -16,6 +16,20 @@ typedef struct Position3D {
     s32 x, y, z;
 } Position3D;
 
+/* Partial view of the 0x100-byte task resource used by the visual tasks.
+ * The renderer copies the color and command bytes into its textured quad.
+ */
+typedef struct TaskVisualResource {
+    u8 unk00[0x50];
+    Position3D position;
+    u8 unk5C[0x6A];
+    s16 unkC6;
+    s16 unkC8;
+    s16 unkCA;
+    u8 r0, g0, b0, code;
+    u8 unkD0[0x30];
+} TaskVisualResource;
+
 typedef struct UnpackedWordBytes {
     u8 unk0;
     u8 unk1;
@@ -31,6 +45,7 @@ void func_8003EE70(void);
 void func_8002F5F8(void);
 void func_80032F84(void);
 void func_80033404(void);
+void func_80044990(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002B3F4);
 
@@ -743,7 +758,16 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80044A38);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80044BC0);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80044DC4);
+void resetTaskVisualState(TaskVisualResource *resource) {
+    resource->unkC6 = 0x400;
+    resource->unkC8 = 0x80;
+    resource->r0 = resource->g0 = resource->b0 = 0x80;
+    resource->code = POLY_FT4_CODE;
+    resource->unkCA = 0;
+    func_80018538(resource->position.x, resource->position.y, resource->position.z,
+                  1, 0x700, 0x20);
+    setCurrentTaskCallback(func_80044990);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80044E38);
 

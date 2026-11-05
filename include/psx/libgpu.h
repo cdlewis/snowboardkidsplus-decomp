@@ -46,6 +46,8 @@ typedef struct POLY_FT4 {
     u8 u3, v3;
     u16 pad2;
 } POLY_FT4;
+#define POLY_FT4_CODE 0x2C
+
 typedef struct LINE_F2 {
     u32 tag;
     u8 r0, g0, b0, code;
