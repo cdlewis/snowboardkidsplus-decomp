@@ -87,7 +87,21 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80080BC0);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80080C64);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80080FB4);
+s32 getSaveRecordFlagGroupIndex(s16 recordIndex, s16 groupIndex) {
+    SaveRecord *record;
+    s16 i;
+    if (recordIndex >= 10) {
+        record = (SaveRecord *)&D_8013101C;
+    } else {
+        record = &((SaveRecord *)&D_8013080C)[recordIndex];
+    }
+    for (i = 0; i < 3; i++) {
+        if (record->flags_3AC & (0x800 << (groupIndex * 3 + i))) {
+            return i;
+        }
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8008104C);
 
