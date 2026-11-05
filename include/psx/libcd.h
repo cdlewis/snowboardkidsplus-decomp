@@ -11,11 +11,15 @@ typedef struct CdlATV {
     u8 val0, val1, val2, val3;
 } CdlATV;
 
+#define CdlNop 0x01
+#define CdlStatRead 0x20
+
 #define CdlModeDA 1
 #define CdlModeAP 2
 
 typedef void (*CdlCB)(u8 interrupt, u8 *result);
 
+s32 CdControlB(u8 command, u8 *param, u8 *result);
 s32 CdStatus(void);
 s32 CdMode(void);
 s32 CdLastCom(void);

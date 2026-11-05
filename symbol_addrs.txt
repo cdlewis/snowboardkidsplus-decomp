@@ -1707,3 +1707,5 @@ readMemoryCardDirectory = 0x80018F58; // type:func
 
 getStateMaskTier = 0x8008BFF0; // type:func
 selectTaskBySelectedRecordMatch = 0x800A2460; // type:func
+
+isCdReading = 0x80013798; // type:func

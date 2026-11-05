@@ -1,4 +1,5 @@
 #include "common.h"
+#include "psx/libcd.h"
 #include "game/controller.h"
 #include "game/task.h"
 #include "game/controller_effects.h"
@@ -8,6 +9,8 @@ u16 gTaskResourceFreeBits[16] __attribute__((section(".data.task_resource_bitmap
 u8 gControllerFlags[4] __attribute__((section(".data"))) = {0, 0, 0, 0};
 
 s16 D_8013AF08[2] __attribute__((section(".data.controller_values"))) = {0, 0};
+
+extern s16 D_8013AE78;
 
 void func_800131B4(void) {
 }
@@ -30,7 +33,17 @@ INCLUDE_ASM("asm/nonmatchings/main", func_80013540);
 
 INCLUDE_ASM("asm/nonmatchings/main", func_800136DC);
 
-INCLUDE_ASM("asm/nonmatchings/main", func_80013798);
+s32 isCdReading(void) {
+    u8 result[8];
+
+    if (D_8013AE78) {
+        CdControlB(CdlNop, 0, result);
+        if (result[0] & CdlStatRead) {
+            return 1;
+        }
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main", func_800137E0);
 
