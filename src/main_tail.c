@@ -485,7 +485,19 @@ TextEntry *findKeyedListNode(u32 key, u32 value) {
     return result;
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A5F90);
+TextEntry *findTextEntryInsertionPoint(u32 key, u32 value) {
+    TextEntry *node = D_8013B5D4;
+    while (node != NULL) {
+        if (key == (u32)node->text && value < node->unk04) {
+            break;
+        }
+        if (key < (u32)node->text) {
+            break;
+        }
+        node = node->next;
+    }
+    return node;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A5FE8);
 

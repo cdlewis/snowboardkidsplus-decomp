@@ -20,3 +20,5 @@ void resetTextEntryPool(void);
 void initializeLoadedTextEntries(void);
 
 s16 parseDecimalS16(const u8 *text, s16 *result);
+
+TextEntry *findTextEntryInsertionPoint(u32 key, u32 value);
