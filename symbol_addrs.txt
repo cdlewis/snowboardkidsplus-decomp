@@ -1955,3 +1955,5 @@ setTexturedQuadTexture = 0x8006BE50; // type:func
 initSpritePrimitiveTemplate = 0x8006C848; // type:func
 
 setTexturedQuadTextureBlend = 0x8006FDE4; // type:func
+
+hasStateGridFlag = 0x80095E24; // type:func

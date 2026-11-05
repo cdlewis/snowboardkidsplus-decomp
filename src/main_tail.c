@@ -6,6 +6,7 @@
 #include "game/cd_queue.h"
 #include "game/game_options.h"
 #include "game/graphics.h"
+#include "game/global_flags.h"
 #define MUSIC_ABSOLUTE_ADDRESSING
 #include "game/music.h"
 #include "psx/libsnd.h"
@@ -179,7 +180,18 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_80095674);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_80095A58);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_80095E24);
+s32 hasStateGridFlag(GlobalFlagStatePrefix *state, s16 row, s16 column) {
+    if (row < 5) {
+        if (state->unk_3DC & (1 << (row * 5 + column))) {
+            return 1;
+        }
+    } else if (row < 10) {
+        if (state->unk_3E0 & (1 << ((row - 5) * 5 + column))) {
+            return 1;
+        }
+    }
+    return 0;
+}
 
 void setStateGridFlag(GlobalFlagStatePrefix *state, s16 row, s16 column) {
     if (row < 5) {
