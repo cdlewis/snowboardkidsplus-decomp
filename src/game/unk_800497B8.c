@@ -15,6 +15,17 @@
 #define GS_PACKET_ABSOLUTE_ADDRESSING
 #include "psx/libgs.h"
 
+#define FLAT_RECTANGLE_CODE 0x60
+#define DRAW_MODE_COMMAND_HIGH 0xE100
+
+/* Draw mode and a flat rectangle share a single DMA packet tag. */
+typedef struct FlatRectanglePacket {
+    u32 tag;
+    u16 tpage, drawModeCommand;
+    u8 r0, g0, b0, code;
+    s16 x0, y0, w, h;
+} FlatRectanglePacket;
+
 typedef struct SelectedStateRecord {
     s16 state;
     s16 unk02;
@@ -472,7 +483,19 @@ void addFlatRectangle(u32 *orderingTable, s32 x, s32 y, s32 w, s32 h,
     GsOUT_PACKET_P = (u32)(tile + 1);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80060B34);
+void addFlatRectangleWithDrawMode(u32 *orderingTable, s32 tpage, s32 flags,
+                  s32 x, s32 y, s32 w, s32 h, s32 r, s32 g, s32 b) {
+    FlatRectanglePacket *tile = (FlatRectanglePacket *)GsOUT_PACKET_P;
+    tile->tag = (sizeof(FlatRectanglePacket) / sizeof(u32) - 1) << 24;
+    tile->code = FLAT_RECTANGLE_CODE | flags;
+    tile->tpage = tpage;
+    tile->drawModeCommand = DRAW_MODE_COMMAND_HIGH;
+    setXY0(tile, x, y);
+    setWH(tile, w, h);
+    setRGB0(tile, r, g, b);
+    addPrim(orderingTable, tile);
+    GsOUT_PACKET_P = (u32)(tile + 1);
+}
 
 void addTexturedRectangle(u32 *orderingTable, s32 clut, s32 x, s32 y,
                    s32 w, s32 h, s32 r, s32 g, s32 b) {
