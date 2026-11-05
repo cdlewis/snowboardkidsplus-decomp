@@ -538,6 +538,10 @@ segments:
       - [0xDB89C, data, DB89C]
       - [0x11109C, .data, game/unk_8001E63C]
       - [0x111134, data, 111134]
+      - {start: 0x11D2DC, type: .data, name: game/unk_800497B8, linker_section: .data.middle_shrink_vertices}
+      - [0x11D2FC, data, 11D2FC]
+      - {start: 0x11D31C, type: .data, name: game/unk_800497B8, linker_section: .data.middle_shrink_packet}
+      - [0x11D344, data, 11D344]
       - [0x11DC38, .data, game/unk_800497B8]
       - [0x11DC60, data, 11DC60]
       - [0x11F0E4, .data, game/sprite_templates]

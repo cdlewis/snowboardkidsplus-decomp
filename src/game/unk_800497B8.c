@@ -16,6 +16,8 @@
 #include "psx/libgs.h"
 
 #define FLAT_RECTANGLE_CODE 0x60
+#define TEXTURED_QUAD_CODE 0x2C
+#define TEXTURED_QUAD_PACKET_WORDS 9
 #define DRAW_MODE_COMMAND_HIGH 0xE100
 
 /* Draw mode and a flat rectangle share a single DMA packet tag. */
@@ -50,6 +52,17 @@ typedef struct ControllerEffectState {
     s32 effectEnd;
 } ControllerEffectState;
 
+typedef struct QuadVertex {
+    s16 x, y, z, pad;
+} QuadVertex;
+
+typedef struct ShrinkingQuadResource {
+    s32 countdown;
+    const QuadVertex *vertices;
+    const POLY_FT4 *packet;
+    u8 pad0C[0xF4];
+} ShrinkingQuadResource;
+
 typedef struct TimedSpriteStep {
     s32 frame;
     s32 duration;
@@ -70,6 +83,21 @@ ControllerEffectState gControllerEffectStates[2] = {0};
 
 u16 gTextClut = 0;
 
+QuadVertex gMiddleShrinkQuadVertices[4]
+    __attribute__((section(".data.middle_shrink_vertices"))) = {
+    {-104, 24, 0, 0}, {-64, 24, 0, 0},
+    {-104, 39, 0, 0}, {-64, 39, 0, 0},
+};
+
+POLY_FT4 gMiddleShrinkQuadPacket
+    __attribute__((section(".data.middle_shrink_packet"))) = {
+    TEXTURED_QUAD_PACKET_WORDS << 24, 128, 128, 128, TEXTURED_QUAD_CODE,
+    0, 0, 40, 16, getClut(944, 240),
+    0, 0, 79, 16, getTPage(0, 0, 960, 0),
+    0, 0, 40, 31, 0,
+    0, 0, 79, 31, 0,
+};
+
 extern GameTask *D_8013B304 __attribute__((section(".data")));
 extern SelectedStateRecord *D_8012C6F4[];
 /* Shared palette storage and capture rectangle remain in their data owners. */
@@ -80,6 +108,7 @@ extern u16 D_8013B376 __attribute__((section(".sdata")));
 
 const char gNoProcessMessage[16] = "NO PROCESS...";
 
+void func_800692E8(void);
 void func_800618A0(void);
 void func_80049D48(s32 x, s32 y, const char *format, ...);
 void func_8006BE50(s32 textureIndex, s32 clutOffset);
@@ -689,7 +718,16 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800692E8);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800694F8);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006956C);
+void startMiddleQuadShrinkTask(void) {
+    ShrinkingQuadResource *resource;
+
+    func_80014930(&D_800D7C84, func_800692E8);
+    D_8013AE8C->resource14 = func_80014BAC();
+    resource = (ShrinkingQuadResource *)&D_800D9504[D_8013AE8C->resource14];
+    resource->countdown = 5;
+    resource->vertices = gMiddleShrinkQuadVertices;
+    resource->packet = &gMiddleShrinkQuadPacket;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800695E0);
 
