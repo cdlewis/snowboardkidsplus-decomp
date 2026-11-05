@@ -52,6 +52,7 @@ typedef struct TaskResourceRecord {
 
 extern TaskResourceRecord D_800D9504[256];
 
+s32 func_80014874(TaskCallback callback);
 s16 func_80014930(GameTask *parent, TaskCallback callback);
 s32 func_80014874(TaskCallback callback);
 void func_800149A8(void);
@@ -76,3 +77,4 @@ void func_80070274(s32 mode, s32 id, u16 duration);
 void startIndexedRenderTask(s32 index);
 void initializeMode1Task(void);
 void resetTaskControlState(void);
+GameTask *createCountdownTask(u32 frames);

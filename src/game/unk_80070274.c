@@ -8,6 +8,7 @@
 #include "game/offset_archive.h"
 #include "game/music.h"
 #include "game/movement.h"
+#define TASK_ABSOLUTE_ADDRESSING
 #include "game/task.h"
 #include "psx/libsnd.h"
 
@@ -43,6 +44,7 @@ void func_80072340(s32 x, s32 y, s32 width, s32 height, s32 r, s32 g, s32 b,
 void func_80070274(s32 mode, s32 id, u16 duration);
 void func_80071490(s32 mode, s32 value1, s32 value2);
 void func_8007197C(void);
+void func_800761CC(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80070274);
 
@@ -245,7 +247,19 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80075F80);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80076034);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80076158);
+GameTask *createCountdownTask(u32 frames) {
+    GameTask *task;
+    TaskResourceRecord *resource;
+
+    func_80014874(func_800761CC);
+    D_8013AE8C->data18 = 0;
+    D_8013AE8C->data1A = 0;
+    D_8013AE8C->resource14 = func_80014BAC();
+    task = D_8013AE8C;
+    resource = &D_800D9504[task->resource14];
+    resource->unk04 = frames;
+    return task;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_800761CC);
 
