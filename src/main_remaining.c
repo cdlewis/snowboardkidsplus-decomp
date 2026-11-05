@@ -8,6 +8,7 @@
 #include "game/race_player.h"
 #include "psx/libsnd.h"
 #include "psx/libgpu.h"
+#include "psx/libmcrd.h"
 
 typedef struct PaletteRecordColor {
     u8 r, g, b, unk3;
@@ -37,6 +38,11 @@ typedef struct MovieDecodeState {
 } MovieDecodeState;
 
 
+extern s32 D_8013AF34;
+extern s16 D_8013AF38;
+extern char D_8013AF3C[];
+extern s32 D_8013B600[];
+extern struct DIRENTRY D_8013B700[][15];
 extern u32 D_8013AFE4;
 extern s16 D_8013AF3E;
 extern u16 D_8013AFAA __attribute__((section(".data")));
@@ -205,7 +211,10 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80018D80);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80018EC4);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80018F58);
+void readMemoryCardDirectory(void) {
+    MemCardGetDirentry(D_8013AF34, D_8013AF3C, D_8013B700[D_8013AF38],
+                       &D_8013B600[D_8013AF38], 0, 15);
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80018FBC);
 
