@@ -2,6 +2,7 @@
 #define TASK_ABSOLUTE_ADDRESSING
 #include "game/task.h"
 #include "game/graphics.h"
+#include "game/coordinate.h"
 #include "game/linear_random.h"
 #include "game/offset_archive.h"
 #include "game/music.h"
@@ -590,6 +591,13 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001E244);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001E3E4);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001E484);
+void setCoordinateRotationZYX(SVECTOR *rotation, GsCOORDINATE2 *coordinate) {
+    D_8013AF98->t[0] = coordinate->coord.t[0];
+    D_8013AF98->t[1] = coordinate->coord.t[1];
+    D_8013AF98->t[2] = coordinate->coord.t[2];
+    RotMatrixZYX(rotation, D_8013AF98);
+    coordinate->coord = *D_8013AF98;
+    coordinate->flg = 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001E524);

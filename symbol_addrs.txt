@@ -26,6 +26,7 @@ uploadBufferedTexturePair = 0x8002F264; // type:func
 beginSound601TaskSequence = 0x800330CC; // type:func
 beginMemoryCardBufferRead = 0x8001993C; // type:func
 startClearedStateValueHistoryTask = 0x800873DC; // type:func
+setCoordinateRotationZYX = 0x8001E484; // type:func
 D_8013BE30 = 0x8013BE30; // size:0x1C defined:true
 createCountdownTask = 0x80076158; // type:func
 closeMusicSequence = 0x80017E38; // type:func
