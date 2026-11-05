@@ -84,9 +84,12 @@ extern u8 D_8013AFD6;
 extern u16 D_8013AFE8;
 /* Two state values; an incomplete array preserves absolute addressing. */
 extern u16 D_8013AEEC[];
+extern void *D_8013AF4C;
 
 void func_8001D044(void);
 void func_8001D42C(void);
+void func_80018D80(u8 slot, void *destination);
+void func_80019980(void);
 void func_8001C0DC(void);
 void func_8001B7F0(void);
 void func_80019A70(void);
@@ -316,7 +319,12 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_800198C4);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_800198EC);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001993C);
+void beginMemoryCardBufferRead(void) {
+    if (tryAcceptMemoryCard() == 1) {
+        func_80018D80(0, D_8013AF4C);
+        setCurrentTaskCallback(func_80019980);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80019980);
 
