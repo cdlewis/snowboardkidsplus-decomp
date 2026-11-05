@@ -1,5 +1,8 @@
 #include "common.h"
+#include "game/controller.h"
 #include "game/task.h"
+
+u8 gControllerFlags[4] __attribute__((section(".data"))) = {0, 0, 0, 0};
 
 void func_800131B4(void) {
 }
@@ -78,7 +81,9 @@ INCLUDE_ASM("asm/nonmatchings/main", func_80014BAC);
 
 INCLUDE_ASM("asm/nonmatchings/main", func_80014C40);
 
-INCLUDE_ASM("asm/nonmatchings/main", func_80014C74);
+void setControllerFlag0(u16 controller) {
+    gControllerFlags[controller] |= 1;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main", func_80014C98);
 

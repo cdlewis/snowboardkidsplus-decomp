@@ -577,6 +577,8 @@ segments:
       - [0x12B628, data]
       - [0x12B638, lib, libapi, pad, .data]
       - [0x12B648, data]
+      - [0x12B6B8, .data, main]
+      - [0x12B6BC, data]
       - {start: 0x12B710, type: .sdata, name: engine/random, linker_section_order: .data}
       - [0x12B714, data, 12B714]
       - [0x12B7AC, .data, engine/game_task_scheduler]

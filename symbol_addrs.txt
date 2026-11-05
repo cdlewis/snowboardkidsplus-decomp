@@ -1,3 +1,7 @@
+// Per-controller flag-byte update; bit 0 semantics remain unknown.
+setControllerFlag0 = 0x80014C74; // type:func
+gControllerFlags = 0x8013AEB8; // size:0x4 defined:true
+
 // Masked bit lookup in the shared flag word; game-specific meaning is unknown.
 getGlobalFlagMask = 0x8008C49C; // type:func
 
