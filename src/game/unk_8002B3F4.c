@@ -87,7 +87,19 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002D1B8);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002D1FC);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002D260);
+s32 checkCurrentPlayerFlags275000OrField134(void) {
+    RacePlayer *player = D_8013B0D8;
+    if (player->unk128 & 0x275000) {
+        return 1;
+    }
+    if (player->unk134) {
+        return 1;
+    }
+    if (D_8013B0E4 < 18) {
+        D_8013B0E4 = 18;
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002D2B4);
 

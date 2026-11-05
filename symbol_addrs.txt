@@ -1683,3 +1683,4 @@ unusedVariadicStub = 0x80060D30; // type:func
 
 // Test player flags outside state 14; otherwise raise the shared state to 15.
 checkCurrentPlayerFlags345001 = 0x8002D164; // type:func
+checkCurrentPlayerFlags275000OrField134 = 0x8002D260; // type:func
