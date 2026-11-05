@@ -35,3 +35,5 @@ void deleteCurrentTask(void);
 void releaseTaskResource(u16 resource);
 
 void setTaskSecondaryResourceData(GameTask *task, const u16 *data);
+
+s32 isTaskResourceTransitionComplete(s16 index);

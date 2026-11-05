@@ -30,6 +30,7 @@ typedef struct TimedSequence {
 extern TaskResource D_800D9504[];
 extern GameTask *D_8013B378;
 extern GameTask *D_8013B37C;
+extern GameTask *D_8013BDA8[4];
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80070274);
 
@@ -49,7 +50,14 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80070A2C);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80070B64);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80070BCC);
+s32 isTaskResourceTransitionComplete(s16 index) {
+    GameTask *task;
+    task = *(index + D_8013BDA8);
+    if (task != NULL && task->data1E == 1) {
+        return 1;
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80070C0C);
 

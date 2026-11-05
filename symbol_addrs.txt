@@ -1581,3 +1581,5 @@ gNoProcessMessage = 0x80010CC4; // type:char size:0x10
 createResourceLoadTask = 0x8006B2B8; // type:func
 
 rebuildCombinedStateMask = 0x8008C248; // type:func
+
+isTaskResourceTransitionComplete = 0x80070BCC; // type:func
