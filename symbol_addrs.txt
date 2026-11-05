@@ -18,6 +18,9 @@ isFirstPlayerUsingCallback26D10 = 0x800442D4; // type:func
 // Extract bits 8-31 into a byte, byte, halfword layout.
 unpackUpperWordBytes = 0x8004052C; // type:func
 
+// Test the word at offset 0x08 in a task's resource16 record.
+hasTaskResource16Value = 0x80074968; // type:func
+
 // Equality predicate; the argument's game-specific meaning is unknown.
 isValue16 = 0x80086FF8; // type:func
 

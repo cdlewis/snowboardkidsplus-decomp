@@ -174,7 +174,10 @@ void setTaskSecondaryResourceData(GameTask *task, const u16 *data) {
     resource->unk08 = data;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80074968);
+s16 hasTaskResource16Value(GameTask *task) {
+    TaskResourceRecord *resource = task->resource16 + D_800D9504;
+    return resource->unk08 != 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80074988);
 

@@ -32,6 +32,15 @@ extern GameTask *D_8013AE88 __attribute__((section(".data")));
 extern GameTask *D_8013AE88;
 #endif
 extern GameTask D_800D7C84;
+/* The resource allocator supplies 256-byte records to task-specific users. */
+typedef struct TaskResourceRecord {
+    u32 unk00;
+    u32 unk04;
+    u32 unk08;
+    u8 unk0C[0xF4];
+} TaskResourceRecord;
+
+extern TaskResourceRecord D_800D9504[256];
 
 s16 func_80014930(GameTask *parent, TaskCallback callback);
 void func_800149A8(void);
@@ -42,3 +51,4 @@ void releaseTaskResource(u16 resource);
 void setTaskSecondaryResourceData(GameTask *task, const u16 *data);
 
 s32 isTaskResourceTransitionComplete(s16 index);
+s16 hasTaskResource16Value(GameTask *task);
