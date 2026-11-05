@@ -28,6 +28,8 @@ void rebuildCombinedStateMask(GlobalFlagStatePrefix *state);
 
 void copyGlobalFlagState(GlobalFlagStatePrefix *source, GlobalFlagStatePrefix *destination);
 
+s16 getSaveRecordMaskTier(s16 recordIndex, s16 maskIndex);
+
 s16 getStateMaskTier(s16 stateIndex, s16 maskIndex);
 
 s32 getStateMaskPair(s16 stateIndex, s16 maskIndex, s16 pairIndex);

@@ -248,7 +248,20 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8008B178);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8008BCDC);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8008BEA4);
+s16 getSaveRecordMaskTier(s16 recordIndex, s16 maskIndex) {
+    s16 result = 0;
+    s16 i = 3;
+    SaveRecord *records;
+
+    for (; i >= 0; i--) {
+        records = (SaveRecord *)&D_8013080C;
+        if (records[recordIndex].flags_3B0[maskIndex] & (0x1000000 << i)) {
+            result = i + 1;
+            break;
+        }
+    }
+    return result;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8008BF20);
 
