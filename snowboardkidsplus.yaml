@@ -546,9 +546,9 @@ segments:
       - [0x11D1F4, data, 11D1F4]
       - {start: 0x11D294, type: .data, name: game/unk_800497B8, linker_section: .data.quad_shrink}
       - {start: 0x11D2DC, type: .data, name: game/unk_800497B8, linker_section: .data.middle_shrink_vertices}
-      - [0x11D2FC, data, 11D2FC]
+      - {start: 0x11D2FC, type: .data, name: game/unk_800497B8, linker_section: .data.right_quad_vertices}
       - {start: 0x11D31C, type: .data, name: game/unk_800497B8, linker_section: .data.middle_shrink_packet}
-      - [0x11D344, data, 11D344]
+      - {start: 0x11D344, type: .data, name: game/unk_800497B8, linker_section: .data.right_quad_packet}
       - {start: 0x11D36C, type: .data, name: game/unk_800497B8, linker_section: .data.sliding_quad_packet}
       - [0x11D394, data, 11D394]
       - [0x11DC38, .data, game/unk_800497B8]

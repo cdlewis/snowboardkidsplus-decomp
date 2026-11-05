@@ -152,6 +152,18 @@ SVECTOR gQuadShrinkVertices[4] __attribute__((section(".data.quad_shrink"))) = {
     {-144, 39, 0, 0}, {-104, 39, 0, 0}
 };
 
+SVECTOR gRightQuadShrinkVertices[4] __attribute__((section(".data.right_quad_vertices"))) = {
+    {-64, 24, 0, 0}, {-24, 24, 0, 0},
+    {-64, 39, 0, 0}, {-24, 39, 0, 0}
+};
+POLY_FT4 gRightQuadShrinkPacket __attribute__((section(".data.right_quad_packet"))) = {
+    0x09000000, 0x80, 0x80, 0x80, 0x2C,
+    0, 0, 0x50, 0x10, getClut(944, 240),
+    0, 0, 0x77, 0x10, getTPage(0, 0, 960, 0),
+    0, 0, 0x50, 0x1F, 0,
+    0, 0, 0x77, 0x1F, 0
+};
+
 u16 gTextClut = 0;
 
 QuadAnimationStep gAlternateQuadAnimationSteps[5]
@@ -994,7 +1006,16 @@ void startMiddleQuadShrinkTask(void) {
     resource->packet = &gMiddleShrinkQuadPacket;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800695E0);
+void createRightQuadShrinkTask(void) {
+    QuadTransitionResource *resource;
+
+    func_80014930(&D_800D7C84, func_800692E8);
+    D_8013AE8C->resource14 = func_80014BAC();
+    resource = (QuadTransitionResource *)&D_800D9504[D_8013AE8C->resource14];
+    resource->frames = 5;
+    resource->vertices = gRightQuadShrinkVertices;
+    resource->packet = &gRightQuadShrinkPacket;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80069654);
 

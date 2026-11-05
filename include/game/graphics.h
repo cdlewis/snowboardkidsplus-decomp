@@ -68,6 +68,7 @@ extern TexturedSpritePacket gTexturedSpriteTemplate;
 void drawNoProcessMessage(void);
 void createResourceLoadTask(void);
 void createQuadShrinkTask(void);
+void createRightQuadShrinkTask(void);
 typedef struct TextureColor {
     u8 r, g, b;
     u8 stp; /* Low bit becomes the texture color's semi-transparency bit. */
