@@ -55,6 +55,7 @@ s32 func_80014874(TaskCallback callback);
 void func_800149A8(void);
 void func_800149E0(void);
 void setCurrentTaskCallback(TaskCallback callback);
+void resetTaskCallbackOnFlag4(void);
 void func_800719A8(s16 mode);
 void deleteCurrentTask(void);
 u32 allocateTaskResource(void);

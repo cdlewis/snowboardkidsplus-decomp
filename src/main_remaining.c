@@ -89,6 +89,7 @@ void func_80019A70(void);
 void func_8001E0C0(void);
 void func_80018AA4(void);
 void func_80019B94(void);
+void func_8001E148(void);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80015EE0);
 
@@ -508,7 +509,12 @@ void processTaskWhenFlagAFAABit7Set(void) {
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001E148);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001E17C);
+void resetTaskCallbackOnFlag4(void) {
+    if (D_8013AFAA & 0x10) {
+        func_800149E0();
+        setCurrentTaskCallback(func_8001E148);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001E1B8);
 

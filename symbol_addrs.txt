@@ -954,6 +954,7 @@ _getctl = 0x800CF1E8; // type:func defined:true
 
 // Game task and audio wrappers recovered through SDK assembly similarity.
 setCurrentTaskCallback = 0x80014B4C; // type:func
+resetTaskCallbackOnFlag4 = 0x8001E17C; // type:func
 deleteCurrentTask = 0x80014B8C; // type:func
 stopMusicSequence = 0x80017F64; // type:func
 pauseMusicSequence = 0x80017F90; // type:func
