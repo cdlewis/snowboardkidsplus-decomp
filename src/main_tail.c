@@ -8,6 +8,13 @@
 #include "game/text_entries.h"
 #include "game/task.h"
 
+#define INDEXED_SECTOR_READ_DESTINATION ((void *)0x801F2080)
+
+typedef struct ResourceSectorRange {
+    s16 sector;
+    s16 sectorCount;
+} ResourceSectorRange;
+
 typedef struct UnlockMenuState {
     s16 selection, previousSelection;
     s32 unk04[7];
@@ -23,9 +30,37 @@ typedef struct TextEntryListHeader {
     TextEntry *activeEntries;
 } TextEntryListHeader;
 
+ResourceSectorRange gMode1SectorRanges[10] __attribute__((section(".data.indexed_sector_ranges"))) = {
+    {0x236E, 1},
+    {0x236F, 1},
+    {0x2370, 1},
+    {0x2371, 1},
+    {0x2372, 1},
+    {0x2373, 1},
+    {0x2374, 1},
+    {0x2375, 1},
+    {0x2376, 1},
+    {0x2377, 1}
+};
+ResourceSectorRange gOtherModeSectorRanges[11] __attribute__((section(".data.indexed_sector_ranges"))) = {
+    {0x2363, 1},
+    {0x2364, 1},
+    {0x2366, 1},
+    {0x2365, 1},
+    {0x2367, 1},
+    {0x2368, 1},
+    {0x236A, 1},
+    {0x2369, 1},
+    {0x236C, 1},
+    {0x236B, 1},
+    {0x236D, 1}
+};
+
 extern u8 D_8013B55E __attribute__((section(".data")));
 extern s16 D_8013B560;
 extern u8 D_8013B562;
+
+s32 func_800136DC(s16 command, s16 sector, s16 sectorCount, void *destination, s32 flags);
 
 void func_800A0AA8(void);
 void func_800A3750(void);
@@ -272,7 +307,17 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A12E4);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A1510);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A1604);
+void queueModeIndexedSectorRead(s16 mode, s16 index) {
+    if (mode == 1) {
+        func_800136DC(0, gMode1SectorRanges[index].sector,
+                      gMode1SectorRanges[index].sectorCount,
+                      INDEXED_SECTOR_READ_DESTINATION, 0);
+    } else {
+        func_800136DC(0, gOtherModeSectorRanges[index].sector,
+                      gOtherModeSectorRanges[index].sectorCount,
+                      INDEXED_SECTOR_READ_DESTINATION, 0);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A1670);
 

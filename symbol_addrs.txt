@@ -1750,3 +1750,7 @@ capturePaletteForColorCycle = 0x80069DC8; // type:func
 processTaskWhenFlagAFAABit7Set = 0x8001E0F4; // type:func
 
 addPlayerCappedCounters = 0x8002E3C8; // type:func
+
+queueModeIndexedSectorRead = 0x800A1604; // type:func
+gMode1SectorRanges = 0x80132738; // size:0x28 defined:true
+gOtherModeSectorRanges = 0x80132760; // size:0x2C defined:true
