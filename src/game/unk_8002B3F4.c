@@ -182,7 +182,23 @@ s32 checkCurrentPlayerFlags345001(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002D1B8);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002D1FC);
+s32 requestCurrentPlayerAction17(void) {
+    RacePlayer *player = D_8013B0D8;
+
+    if (player->unk128 & 0x275000) {
+        return 1;
+    }
+    if (player->unk0F6 != 0) {
+        return 1;
+    }
+    if (player->unk134 != 0) {
+        return 1;
+    }
+    if (D_8013B0E4 < 17) {
+        D_8013B0E4 = 17;
+    }
+    return 0;
+}
 
 s32 checkCurrentPlayerFlags275000OrField134(void) {
     RacePlayer *player = D_8013B0D8;

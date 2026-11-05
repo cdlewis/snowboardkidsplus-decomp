@@ -24,6 +24,9 @@ advanceTaskWhenFlagAFE4Bit8Set = 0x8001CE2C; // type:func
 startMemoryCardReadTask = 0x80019A2C; // type:func
 uploadBufferedTexturePair = 0x8002F264; // type:func
 beginSound601TaskSequence = 0x800330CC; // type:func
+// Raise the shared action request to 17 unless the current player blocks it.
+requestCurrentPlayerAction17 = 0x8002D1FC; // type:func
+
 restoreSavedStateAndHandleFlag4 = 0x8001E1EC; // type:func
 getSaveRecordFlagPair = 0x8008C05C; // type:func
 startUnlockNotification0Task = 0x80032E44; // type:func

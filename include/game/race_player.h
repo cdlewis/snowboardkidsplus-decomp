@@ -44,7 +44,9 @@ struct RacePlayer {
     u8 unk0C4[6];
     s16 unk0CA[6];
     s16 unk0D6[6];
-    u8 unk0E2[0x2E];
+    u8 unk0E2[0x14];
+    s16 unk0F6;
+    u8 unk0F8[0x18];
     u16 unk110;
     u8 unk112[4];
     s16 unk116;
@@ -84,6 +86,7 @@ struct RacePlayer {
 };
 
 extern RacePlayer D_80120E90[];
+extern s16 D_8013B0E4;
 /* Two declarations preserve the original GP-relative and absolute accesses
  * to this shared pointer. The absolute alias is resolved by the symbol map. */
 extern RacePlayer *D_8013B0D8;
@@ -102,6 +105,7 @@ void updateCurrentPlayerFromTaskPhase(void);
 void setCurrentPlayerFinalPartTranslations(const s16 *values);
 void copyPlayerPaletteRow(s16 playerIndex);
 void clearCurrentPlayerTaskState(void);
+s32 requestCurrentPlayerAction17(void);
 
 void copySelectedRecordToCurrentPlayer(void);
 
