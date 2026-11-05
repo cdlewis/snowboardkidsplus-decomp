@@ -93,7 +93,14 @@ INCLUDE_ASM("asm/nonmatchings/main", func_80014CCC);
 
 INCLUDE_ASM("asm/nonmatchings/main", func_80014D04);
 
-INCLUDE_ASM("asm/nonmatchings/main", func_80014D3C);
+s32 isControllerFlag5Clear(u16 controller) {
+    s32 flags = gControllerFlags[controller];
+    flags &= 0x20;
+    if (flags) {
+        return 0;
+    }
+    return 1;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main", func_80014D60);
 
