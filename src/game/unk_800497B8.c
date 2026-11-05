@@ -924,4 +924,8 @@ void drawDefaultTexturedPanel(s16 x, s16 y, s16 w, s16 h, s16 clutOffset,
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80070174);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800701F4);
+/* Style 0x20D uses a sixteen-pixel border on each side. */
+void drawStyle20DTexturedPanel(s16 x, s16 y, s16 w, s16 h, s16 clutOffset,
+                              s16 blendMode, GsOT *ot, u16 depth) {
+    func_8006FE68(x, y, w, h, 16, 16, 0x20D, clutOffset, blendMode, ot, depth);
+}
