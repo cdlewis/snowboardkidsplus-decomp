@@ -458,7 +458,17 @@ void addFlatLine(u32 *orderingTable, s32 x0, s32 y0, s32 x1, s32 y1,
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80060A04);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80060AA8);
+void addFlatRectangle(u32 *orderingTable, s32 x, s32 y, s32 w, s32 h,
+                   s32 r, s32 g, s32 b) {
+    TILE *tile = (TILE *)GsOUT_PACKET_P;
+    tile->tag = (sizeof(TILE) / sizeof(u32) - 1) << 24;
+    setcode(tile, 0x60);
+    setXY0(tile, x, y);
+    setWH(tile, w, h);
+    setRGB0(tile, r, g, b);
+    addPrim(orderingTable, tile);
+    GsOUT_PACKET_P = (u32)(tile + 1);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80060B34);
 

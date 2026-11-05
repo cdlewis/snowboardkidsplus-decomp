@@ -41,6 +41,12 @@ typedef struct LINE_F2 {
     s16 x0, y0, x1, y1;
 } LINE_F2;
 
+typedef struct TILE {
+    u32 tag;
+    u8 r0, g0, b0, code;
+    s16 x0, y0, w, h;
+} TILE;
+
 typedef struct DR_ENV { u32 tag; u32 code[15]; } DR_ENV;
 typedef struct DR_TWIN { u32 tag; u32 code[2]; } DR_TWIN;
 typedef struct DR_AREA { u32 tag; u32 code[2]; } DR_AREA;
@@ -72,6 +78,8 @@ typedef struct DISPENV {
 #define setaddr(p, address) (((P_TAG *)(p))->addr = (u32)(address))
 #define addPrim(ot, p) (setaddr(p, getaddr(ot)), setaddr(ot, p))
 #define setRGB0(p, r, g, b) ((p)->r0 = (r), (p)->g0 = (g), (p)->b0 = (b))
+#define setXY0(p, x, y) ((p)->x0 = (x), (p)->y0 = (y))
+#define setWH(p, width, height) ((p)->w = (width), (p)->h = (height))
 #define setXY2(p, x_0, y_0, x_1, y_1) \
     ((p)->x0 = (x_0), (p)->y0 = (y_0), (p)->x1 = (x_1), (p)->y1 = (y_1))
 #define getlen(p) ((u8)(((P_TAG *)(p))->len))
