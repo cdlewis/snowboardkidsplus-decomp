@@ -43,6 +43,7 @@ typedef struct TextResourceState {
     u32 unk04[5];
     s16 unk18[5];
 } TextResourceState;
+extern u32 D_8013AFE4 __attribute__((section(".data")));
 
 typedef struct TextEntryListHeader {
     TextEntry *freeEntries;
@@ -662,7 +663,12 @@ void stopTextSoundVoices(void) {
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A7B9C);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A7C8C);
+void signalFlag9WhenTaskCountdownExpires(void) {
+    if (--D_8013AE88->data18 == 0) {
+        D_8013AFE4 |= 0x200;
+        func_800149A8();
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A7CE8);
 
