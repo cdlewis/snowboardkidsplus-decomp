@@ -75,3 +75,4 @@ void func_80070274(s32 mode, s32 id, u16 duration);
 
 void startIndexedRenderTask(s32 index);
 void initializeMode1Task(void);
+void resetTaskControlState(void);
