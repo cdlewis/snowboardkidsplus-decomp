@@ -156,7 +156,23 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002E368);
 void func_8002E3C0(void) {
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002E3C8);
+void addPlayerCappedCounters(u16 playerIndex, s32 amount) {
+    RacePlayer *players = D_80120E90;
+    RacePlayer *player;
+    players += playerIndex;
+    player = players;
+    if (player->unk024) {
+        players = player;
+        players->unk01C += amount;
+        if (players->unk01C > 99999) {
+            player->unk01C = 99999;
+        }
+        player->unk020 += amount;
+        if (players->unk020 > 99999) {
+            player->unk020 = 99999;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002E44C);
 

@@ -14,7 +14,11 @@ struct RacePlayer {
     u8 unk009;
     u8 unk00A[3];
     u8 unk00D;
-    u8 unk00E[0xB4];
+    u8 unk00E[0xE];
+    s32 unk01C;
+    s32 unk020;
+    s8 unk024;
+    u8 unk025[0x9D];
     u16 unk0C2;
     u8 unk0C4[6];
     s16 unk0CA[6];
@@ -59,3 +63,5 @@ void copySelectedRecordToCurrentPlayer(void);
 s32 checkCurrentPlayerFlags345001(void);
 
 s32 checkCurrentPlayerFlags275000OrField134(void);
+
+void addPlayerCappedCounters(u16 playerIndex, s32 amount);

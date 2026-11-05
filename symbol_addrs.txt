@@ -1748,3 +1748,5 @@ startThreeFrameScreenBlend = 0x8001D4C8; // type:func
 
 capturePaletteForColorCycle = 0x80069DC8; // type:func
 processTaskWhenFlagAFAABit7Set = 0x8001E0F4; // type:func
+
+addPlayerCappedCounters = 0x8002E3C8; // type:func
