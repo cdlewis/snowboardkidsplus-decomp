@@ -19,6 +19,19 @@ typedef struct UnpackedWordBytes {
 } UnpackedWordBytes;
 
 
+typedef struct MenuSpritePaletteGroups {
+    u8 unk00[3];
+    u8 kind[8];
+    u8 unk0B[9];
+} MenuSpritePaletteGroups;
+
+MenuSpritePaletteGroups gMenuSpritePaletteGroups
+    __attribute__((section(".data.menu_sprite_palettes"))) = {
+        {2, 2, 3},
+        {3, 5, 6, 5, 5, 4, 0, 0},
+        {0, 5, 0, 1, 4, 0, 5, 0, 0}
+    };
+
 extern s16 D_8013B0E4;
 extern u8 D_8013AFCD __attribute__((section(".data")));
 
@@ -657,7 +670,20 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80040140);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800401DC);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8004023C);
+void drawMenuKindSprite(s16 x, s16 y, s16 kind, s32 frame, GsOT *ot, u16 depth) {
+    s32 frameIndex = frame;
+    s32 sprite;
+    if (kind == 0) {
+        frame = 5;
+        sprite = 0x1BE;
+    } else {
+        s32 baseSprite = 0x1BE;
+        u8 *palettes = gMenuSpritePaletteGroups.kind;
+        frame = palettes[kind];
+        sprite = (kind - 1) * 3 + (frameIndex + baseSprite);
+    }
+    func_8006C998(x, y, sprite, frame, -1, ot, depth);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800402C8);
 

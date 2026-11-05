@@ -1786,3 +1786,6 @@ initializeMode1Task = 0x800A0A4C; // type:func
 
 startSlidingQuadTask = 0x80069B24; // type:func
 gSlidingQuadPacket = 0x8012CB6C; // size:0x28
+
+drawMenuKindSprite = 0x8004023C; // type:func
+gMenuSpritePaletteGroups = 0x8013B158; // size:0x14 defined:true

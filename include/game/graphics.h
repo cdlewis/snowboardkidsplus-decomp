@@ -120,3 +120,7 @@ void uploadBufferedTexturePair(void);
 /* Add a full-screen semi-transparent tile to an ordering table. */
 void func_80070C5C(s32 intensity, struct GsOT *ot, u16 depth);
 void startThreeFrameScreenBlend(void);
+
+void func_8006C998(s16 x, s16 y, s16 sprite, s32 palette, s32 blendMode,
+                   GsOT *ot, u16 depth);
+void drawMenuKindSprite(s16 x, s16 y, s16 kind, s32 frame, GsOT *ot, u16 depth);
