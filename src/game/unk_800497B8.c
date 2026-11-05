@@ -72,6 +72,12 @@ typedef struct SlidingQuadResource {
     u8 pad10[0xF0];
 } SlidingQuadResource;
 
+/* The effect callback uses the first three words as world coordinates. */
+typedef struct PositionEffectOrigin {
+    s32 x, y, z;
+    s32 pad;
+} PositionEffectOrigin;
+
 typedef struct TimedSpriteStep {
     s32 frame;
     s32 duration;
@@ -135,6 +141,7 @@ const char gNoProcessMessage[16] = "NO PROCESS...";
 void func_800692E8(void);
 void func_8006999C(void);
 void func_800618A0(void);
+void func_8006624C(void);
 void func_80049D48(s32 x, s32 y, const char *format, ...);
 void func_8006BE50(s32 textureIndex, s32 clutOffset);
 void func_8006C848(void);
@@ -753,7 +760,14 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80065EC8);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006624C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800663E8);
+void startPositionEffectTask(const PositionEffectOrigin *position) {
+    PositionEffectOrigin *resource;
+    func_80014930(D_8013B304, func_8006624C);
+    D_8013AE8C->resource14 = func_80014BAC();
+    D_8013AE8C->data18 = 3;
+    resource = (PositionEffectOrigin *)&D_800D9504[D_8013AE8C->resource14];
+    *resource = *position;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80066474);
 
