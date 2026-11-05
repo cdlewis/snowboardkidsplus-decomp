@@ -1926,3 +1926,6 @@ gMappedIconPalettes = 0x8013B163; // type:u8 size:0x9
 prepareUnlockSelectionResume = 0x800A5204; // type:func
 
 playMusicSequence = 0x800A61E0; // type:func
+
+initializeMemoryCardSaveHeader = 0x80018A34; // type:func
+gMemoryCardSaveHeader = 0x800EB564; // size:0x60

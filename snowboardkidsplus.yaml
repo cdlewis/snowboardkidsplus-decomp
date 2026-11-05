@@ -537,6 +537,8 @@ segments:
       - [0xDAD9C, .data, engine/random]
       - {start: 0xDAE9C, type: .data, name: main_remaining, linker_section: .data.saved_image_entries}
       - [0xDB89C, data, DB89C]
+      - {start: 0xDBD64, type: .data, name: main_remaining, linker_section: .data.memory_card_save_header}
+      - [0xDBDC4, data, DBDC4]
       - {start: 0x110A00, type: .data, name: main_remaining, linker_section: .data.player_model_parts}
       - [0x110BEC, data, player_model_parts_tail]
       - [0x11109C, .data, game/unk_8001E63C]

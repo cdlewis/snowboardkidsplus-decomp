@@ -12,6 +12,14 @@
 #include "psx/libgs.h"
 #include "psx/libmcrd.h"
 
+typedef struct MemoryCardSaveHeader {
+    u8 magic[2];
+    u8 iconDisplay;
+    u8 blockCount;
+    u8 title[64];
+    u8 reserved[28];
+} MemoryCardSaveHeader;
+
 typedef struct PaletteRecordColor {
     u8 r, g, b, unk3;
 } PaletteRecordColor;
@@ -54,6 +62,7 @@ s16 D_80120370[42] __attribute__((section(".data.player_model_parts"))) = {
 s16 *D_801203C4[10] __attribute__((section(".data.player_model_parts"))) = {
     D_80120220, D_80120274, D_80120220, D_80120370, D_801202C8, D_80120220, D_80120220, D_801202C8, D_8012031C, D_8012031C
 };
+MemoryCardSaveHeader gMemoryCardSaveHeader __attribute__((section(".data.memory_card_save_header"))) = {0};
 
 SavedImageEntry gSavedImageEntries[32] __attribute__((section(".data.saved_image_entries"))) = {0};
 s8 gSoundSystemActive = 0;
@@ -278,7 +287,17 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80018804);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001890C);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80018A34);
+void initializeMemoryCardSaveHeader(void) {
+    u16 i;
+    MemCardInit(0);
+    MemCardStart();
+    gMemoryCardSaveHeader.magic[0] = 'S';
+    gMemoryCardSaveHeader.magic[1] = 'C';
+    gMemoryCardSaveHeader.iconDisplay = 0x13;
+    for (i = 0; i < 28; i++) {
+        gMemoryCardSaveHeader.reserved[i] = 0;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80018AA4);
 
