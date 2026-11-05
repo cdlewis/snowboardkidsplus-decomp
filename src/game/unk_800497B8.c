@@ -78,6 +78,13 @@ typedef struct QuadTransitionResource {
     u8 pad[0xF4];
 } QuadTransitionResource;
 
+/* One 256-byte task resource; the remaining fields belong to the effect callbacks. */
+typedef struct PositionedEffectResource {
+    s32 unk00;
+    s32 x, y, z;
+    u8 pad[0xF0];
+} PositionedEffectResource;
+
 typedef struct ControllerEffectStep {
     u8 value;
     s8 delta;
@@ -251,6 +258,7 @@ void func_80049D48(s32 x, s32 y, const char *format, ...);
 void func_8006BE50(s32 textureIndex, s32 clutOffset);
 void func_8006BF14(s16 x, s16 y, s32 frameIndex, GsOT *ot, u16 depth);
 void func_8006C5F4(s16 x, s16 y, s32 frameIndex, GsOT *ot, u16 depth);
+void func_80063B58(void);
 void func_800692E8(void);
 void func_8006C848(void);
 void func_8006B1F4(void);
@@ -922,7 +930,16 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80063890);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80063B58);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80063D70);
+void createPositionedEffectTask(s32 x, s32 y, s32 z) {
+    PositionedEffectResource *resource;
+
+    func_80014874(func_80063B58);
+    D_8013AE8C->resource14 = func_80014BAC();
+    resource = (PositionedEffectResource *)&D_800D9504[D_8013AE8C->resource14];
+    resource->x = x >> 8;
+    resource->y = y >> 8;
+    resource->z = z >> 8;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80063DF4);
 
