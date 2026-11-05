@@ -101,7 +101,17 @@ INCLUDE_ASM("asm/nonmatchings/main", func_80013DD0);
 
 INCLUDE_ASM("asm/nonmatchings/main", func_80013EA4);
 
-INCLUDE_ASM("asm/nonmatchings/main", func_80013ED8);
+void resetPendingCdRequests(void) {
+    if (D_8013AE78 != 0) {
+        D_8013AE50 &= 7;
+        D_8013AE4E &= 7;
+        if (D_8013AE50 != D_8013AE4E) {
+            D_8013AE50 = 0;
+            D_8013AE4E = 0;
+        }
+        func_80013DD0(-1, 0);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main", func_80013F28);
 
