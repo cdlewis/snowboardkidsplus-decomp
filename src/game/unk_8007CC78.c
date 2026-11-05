@@ -186,7 +186,14 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8008C0CC);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8008C1E0);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8008C248);
+void rebuildCombinedStateMask(GlobalFlagStatePrefix *state) {
+    s16 i;
+
+    state->combinedMask = 0;
+    for (i = 0; i < 10; i++) {
+        state->combinedMask |= i[state->masks];
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8008C290);
 
