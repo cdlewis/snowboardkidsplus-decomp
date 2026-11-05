@@ -1694,3 +1694,5 @@ runTaskResource14Update = 0x800A3D5C; // type:func
 arePositionsWithinXZRange = 0x8002BF3C; // type:func
 
 resetUnlockMenuAnimation = 0x800A3CE0; // type:func
+
+parseDecimalS16 = 0x800A5DA0; // type:func

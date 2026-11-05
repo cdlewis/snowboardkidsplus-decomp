@@ -17,3 +17,5 @@ extern TextEntry *D_8013B5D0;
 extern TextEntry *D_8013B5D4;
 
 void resetTextEntryPool(void);
+
+s16 parseDecimalS16(const u8 *text, s16 *result);

@@ -389,7 +389,18 @@ void func_800A5AF4(void) {
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A5AFC);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A5DA0);
+s16 parseDecimalS16(const u8 *text, s16 *result) {
+    s16 value = 0;
+    s16 count = 0;
+    u16 digit;
+    while ((u32)(*text - '0') < 10) {
+        count++;
+        digit = *text++;
+        value = value * 10 + (digit - (u16)'0');
+    }
+    *result = value;
+    return count;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A5E0C);
 
