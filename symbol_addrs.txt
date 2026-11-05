@@ -116,6 +116,7 @@ calculateByteSum = 0x80089B04; // type:func
 randomNextMain = 0x80015E04; // type:func
 randomNextSecondary = 0x80015E4C; // type:func
 resetSecondaryRng = 0x80015E7C; // type:func
+initializeRaceTaskState = 0x8001DFDC; // type:func
 randomNextObject = 0x80015E88; // type:func
 resetGameplayRng = 0x80015EB4; // type:func
 gRandomTable = 0x800EA59C; // size:0x100 defined:true

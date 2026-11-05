@@ -102,6 +102,7 @@ extern u16 D_8013AEE8 __attribute__((section(".data")));
 extern s16 D_8013AF3E;
 extern u16 D_8013AFAA __attribute__((section(".data")));
 extern u8 D_8013AFD6;
+extern u8 D_8013AFE2;
 extern u16 D_8013AFE8;
 /* Two state values; an incomplete array preserves absolute addressing. */
 extern u16 D_8013AEEC[];
@@ -122,6 +123,8 @@ void func_8001D100(void);
 void func_8001E148(void);
 void func_8001E1B8(void);
 void func_800180F4(s16 bankId);
+void func_80029168(void);
+void func_80040A60(void);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80015EE0);
 
@@ -600,7 +603,15 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001D97C);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001DB7C);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001DFDC);
+void initializeRaceTaskState(void) {
+    D_8013AFE4 = 1;
+    if (D_8013AFE2 == 2) {
+        resetSecondaryRng();
+    }
+    func_80029168();
+    func_80040A60();
+    func_800149A8();
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001E028);
 
