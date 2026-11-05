@@ -1,6 +1,7 @@
 #define TASK_ABSOLUTE_ADDRESSING
 #define MUSIC_STATE_ABSOLUTE_ADDRESSING
 #include "common.h"
+#include "game/byte_search.h"
 #include "game/graphics.h"
 #include "game/game_task_scheduler.h"
 #include "game/linear_random.h"
@@ -188,7 +189,20 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_8007373C);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80073760);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_800737A0);
+s16 findByteIndexOrZero(const u8 *data, s16 value, s16 count) {
+    s16 result = 0;
+    s16 i;
+
+    if (data != NULL) {
+        for (i = 0; i < count; i++) {
+            if (data[i] == value) {
+                result = i;
+                break;
+            }
+        }
+    }
+    return result;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80073810);
 
