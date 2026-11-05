@@ -3,6 +3,7 @@
 #include "game/linear_random.h"
 #include "game/offset_archive.h"
 #include "game/music.h"
+#include "game/race_player.h"
 #include "psx/libsnd.h"
 
 
@@ -579,7 +580,9 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80043F84);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80043FBC);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800442D4);
+s16 isFirstPlayerUsingCallback26D10(void) {
+    return D_80120E90[0].task->callback == func_80026D10;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800442F4);
 

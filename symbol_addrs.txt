@@ -1,3 +1,6 @@
+// First player's task callback comparison; callback semantics remain unknown.
+isFirstPlayerUsingCallback26D10 = 0x800442D4; // type:func
+
 // Equality predicate; the argument's game-specific meaning is unknown.
 isValue16 = 0x80086FF8; // type:func
 
