@@ -12,6 +12,11 @@ extern u16 gUnlockNotificationFlags __attribute__((section(".data")));
  * audio in func_80017BAC. The purpose of option bit 0 is still unidentified.
  * The per-player option occupies bit (4 + playerIndex).
  */
+extern u8 D_8013B108;
+extern u8 D_8013B109;
+extern u8 D_8013B10A;
+
+void resetGameOptionState(void);
 s32 getStereoSoundFlag(void);
 s32 getGameOptionFlag0(void);
 s32 getPlayerOptionFlag(s16 playerIndex);

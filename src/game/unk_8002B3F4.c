@@ -7,8 +7,7 @@
 #include "game/linear_random.h"
 #include "game/offset_archive.h"
 #include "game/music.h"
-#include "game/race_player.h"
-#include "game/task.h"
+#include "game/game_options.h"
 #include "psx/libsnd.h"
 
 typedef struct UnpackedWordBytes {
@@ -128,7 +127,12 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002ED00);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002EE0C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002F1A4);
+void resetGameOptionState(void) {
+    D_8013B108 = 2;
+    D_8013B109 = 0;
+    D_8013B10A = 0;
+    gGameOptionFlags = 0x3E;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002F1C8);
 
