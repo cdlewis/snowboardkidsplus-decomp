@@ -19,6 +19,9 @@ $(foreach unit,$(G8_UNITS),$(eval UNIT_G_$(unit) := 8))
 GAME_TEXT_UNITS := $(MAIN_GAME_UNITS)
 $(foreach unit,$(GAME_TEXT_UNITS),$(eval UNIT_REORDER_$(unit) := 1))
 
+# Preserve the task-reference reset's store before its return (PSY-Q scheduling).
+UNIT_REORDER_src/game/unk_80070274.c := 0
+
 GCC272_G0_REORDER_PAD_UNITS := \
     src/syslib/libcard/card.c \
     src/syslib/libgte/geo_00.c \

@@ -3,8 +3,12 @@
 #include "game/linear_random.h"
 #include "game/offset_archive.h"
 #include "game/music.h"
+#include "game/task.h"
 #include "psx/libsnd.h"
 
+/* Storage remains in the shared data object. */
+extern GameTask *D_8013B378;
+extern GameTask *D_8013B37C;
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80070274);
 
@@ -44,7 +48,9 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80071300);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_800713B0);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80071484);
+void clearTaskReference(void) {
+    D_8013B378 = NULL;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80071490);
 
@@ -54,7 +60,9 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80071700);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_800717E8);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80071910);
+s32 hasTaskReference(void) {
+    return D_8013B378 != NULL;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_8007191C);
 
@@ -62,7 +70,9 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_8007195C);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_8007197C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_8007199C);
+void clearSecondaryTaskReference(void) {
+    D_8013B37C = NULL;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_800719A8);
 

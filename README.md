@@ -1,6 +1,11 @@
 Snowboard Kids Plus
 ===================
 
+<!-- progress-badges:start -->
+[![Code](https://img.shields.io/badge/Code-24.06%25-blue)](#building)
+[![Data](https://img.shields.io/badge/Data-3.47%25-blue)](#building)
+<!-- progress-badges:end -->
+
 <img src="Snobow_Kids_Plus_Title.jpg" alt="Snobow Kids Plus title screen" width="256">
 
 A matching decompilation of **Snobow Kids Plus (Japan)** for the PlayStation

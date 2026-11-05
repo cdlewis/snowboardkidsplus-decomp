@@ -19,6 +19,8 @@ hasUnlockNotificationFlag = 0x800A4F78; // type:func
 gGameOptionFlags = 0x8013B570; // size:0x4 defined:true
 gUnlockNotificationFlags = 0x8013B574; // size:0x2 defined:true
 // Sprite initialization, offset archives, and a separate arithmetic RNG.
+clearTaskReference = 0x80071484; // type:func
+clearSecondaryTaskReference = 0x8007199C; // type:func
 initSprite = 0x8004A0D0; // type:func
 randomNextLinear = 0x80060E28; // type:func
 randomLinearFromValue = 0x80060E50; // type:func
@@ -1514,3 +1516,5 @@ fev10 = 0x80141628; // defined:true
 fev11 = 0x8014162C; // defined:true
 fev12 = 0x80141630; // defined:true
 fev13 = 0x80141634; // defined:true
+
+hasTaskReference = 0x80071910; // type:func
