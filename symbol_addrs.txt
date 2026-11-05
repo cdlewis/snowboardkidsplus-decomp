@@ -1733,6 +1733,7 @@ startPrimaryValueTransition = 0x8006A010; // type:func
 startPaletteCycle = 0x80016470; // type:func
 
 tryAcceptMemoryCard = 0x80019244; // type:func
+waitForMemoryCardAcceptTask = 0x80019B54; // type:func
 
 beginMode2SequenceAndFadeMusic = 0x8002FA14; // type:func
 

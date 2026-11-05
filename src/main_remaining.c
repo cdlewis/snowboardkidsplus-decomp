@@ -55,6 +55,8 @@ void func_8001C0DC(void);
 void func_8001B7F0(void);
 void func_80019A70(void);
 void func_8001E0C0(void);
+void func_80018AA4(void);
+void func_80019B94(void);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80015EE0);
 
@@ -278,7 +280,12 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80019A70);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80019AF4);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80019B54);
+void waitForMemoryCardAcceptTask(void) {
+    if (tryAcceptMemoryCard() == 1) {
+        func_80018AA4();
+        setCurrentTaskCallback(func_80019B94);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80019B94);
 
