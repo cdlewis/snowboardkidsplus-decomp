@@ -596,6 +596,9 @@ segments:
       - [0x12B72C, data, 12B72C]
       - [0x12B7AC, .data, engine/game_task_scheduler]
       - [0x12B7B0, data, 12B7B0]
+      - {start: 0x12B9D8, type: .sdata, name: game/unk_800497B8, linker_section_order: .data}
+      - [0x12B9DA, pad]
+      - [0x12B9DC, data, 12B9DC]
       - {start: 0x12BAFC, type: .data, name: main_remaining, linker_section: .data.linear_random_state}
       - [0x12BB00, data, 12BB00]
       - [0x12BD70, .data, engine/game_options]

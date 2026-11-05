@@ -15,6 +15,7 @@ typedef struct SelectedRecord {
     s32 unk0C;
     s32 unk10;
 } SelectedRecord;
+u16 gTextClut = 0;
 
 extern SelectedRecord *D_8012C6F4[];
 
@@ -29,7 +30,9 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800497B8);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80049CDC);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80049D34);
+void setTextPalette(s32 palette) {
+    gTextClut = (u8)palette + 0xF0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80049D48);
 
