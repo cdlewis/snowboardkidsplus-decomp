@@ -534,7 +534,21 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005FFF8);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800600A8);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800601C4);
+void addFlatQuad(u32 *orderingTable, s32 x0, s32 y0, s32 x1, s32 y1,
+                 s32 x2, s32 y2, s32 x3, s32 y3, s32 r, s32 g, s32 b) {
+    POLY_F4 *poly = (POLY_F4 *)GsOUT_PACKET_P;
+
+    poly->tag = (sizeof(POLY_F4) / sizeof(u32) - 1) << 24;
+    setcode(poly, POLY_F4_CODE);
+    setXY2(poly, x0, y0, x1, y1);
+    poly->x2 = x2;
+    poly->y2 = y2;
+    poly->x3 = x3;
+    poly->y3 = y3;
+    setRGB0(poly, r, g, b);
+    addPrim(orderingTable, poly);
+    GsOUT_PACKET_P = (u32)(poly + 1);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80060284);
 

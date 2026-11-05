@@ -54,6 +54,13 @@ typedef struct LINE_F2 {
     s16 x0, y0, x1, y1;
 } LINE_F2;
 
+typedef struct POLY_F4 {
+    u32 tag;
+    u8 r0, g0, b0, code;
+    s16 x0, y0, x1, y1, x2, y2, x3, y3;
+} POLY_F4;
+#define POLY_F4_CODE 0x28
+
 typedef struct TILE {
     u32 tag;
     u8 r0, g0, b0, code;

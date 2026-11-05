@@ -37,6 +37,8 @@ struct GsOT;
 u32 packTextureColor(TextureColor *color);
 void addFlatLine(u32 *orderingTable, s32 x0, s32 y0, s32 x1, s32 y1,
                  s32 r, s32 g, s32 b);
+void addFlatQuad(u32 *orderingTable, s32 x0, s32 y0, s32 x1, s32 y1,
+                 s32 x2, s32 y2, s32 x3, s32 y3, s32 r, s32 g, s32 b);
 void addFlatRectangle(u32 *orderingTable, s32 x, s32 y, s32 w, s32 h,
                       s32 r, s32 g, s32 b);
 void addFlatRectangleWithDrawMode(u32 *orderingTable, s32 tpage, s32 flags,
