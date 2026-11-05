@@ -1557,3 +1557,5 @@ gTaskResourceFreeBits = 0x800E9504; // size:0x20 defined:true
 
 setControllerFlag5 = 0x80014CCC; // type:func
 D_8013AF08 = 0x8013AF08; // size:0x4 defined:true
+
+clearCurrentPlayerSequenceState = 0x8001E610; // type:func

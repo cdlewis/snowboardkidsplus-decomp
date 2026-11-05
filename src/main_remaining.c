@@ -3,6 +3,7 @@
 #include "game/linear_random.h"
 #include "game/offset_archive.h"
 #include "game/music.h"
+#include "game/race_player.h"
 #include "psx/libsnd.h"
 
 s32 gLinearRandomState = 1;
@@ -273,4 +274,10 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001E484);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001E524);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001E610);
+void clearCurrentPlayerSequenceState(void) {
+    s32 i;
+    for (i = 0; i < 6; i++) {
+        D_8013B0D8->unk0CA[i] = 0;
+        D_8013B0D8->unk0D6[i] = 0;
+    }
+}
