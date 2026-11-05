@@ -12,6 +12,7 @@ MAIN_GAME_UNITS := src/main.c src/main_remaining.c \
 
 G8_UNITS := \
     $(MAIN_GAME_UNITS) \
+    src/main_tail.c \
     src/engine/game_options.c \
     src/engine/random.c
 $(foreach unit,$(G8_UNITS),$(eval UNIT_G_$(unit) := 8))

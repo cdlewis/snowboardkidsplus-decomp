@@ -1591,3 +1591,5 @@ isTaskResourceTransitionComplete = 0x80070BCC; // type:func
 resetSelectedRecordStates = 0x8005F6E4; // type:func
 
 copyGlobalFlagState = 0x800898CC; // type:func
+
+resetTextEntryPool = 0x800A5EA4; // type:func

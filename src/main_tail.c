@@ -1,5 +1,6 @@
 #include "common.h"
 #include "game/game_options.h"
+#include "game/text_entries.h"
 
 typedef struct UnlockMenuState {
     s16 selection;
@@ -344,7 +345,24 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A5DA0);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A5E0C);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A5EA4);
+void resetTextEntryPool(void) {
+    TextEntry *previous = NULL;
+    TextEntry *entry = (TextEntry *)0x80180008;
+    u16 i;
+    D_8013B5D0 = entry;
+    for (i = 0; i < 295; i++) {
+        entry->previous = previous;
+        previous = entry;
+        previous->unk04 = 0;
+        previous->unk06 = 0;
+        previous->unk08 = 0;
+        previous->unk0A = 0;
+        previous->next = previous + 1;
+        entry++;
+    }
+    entry[-1].next = NULL;
+    D_8013B5D4 = NULL;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A5F00);
 

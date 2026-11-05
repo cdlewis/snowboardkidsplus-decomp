@@ -1,0 +1,19 @@
+#pragma once
+
+#include "decomp/types.h"
+
+typedef struct TextEntry {
+    const char *text;
+    u16 unk04;
+    u16 unk06;
+    u16 unk08;
+    u16 unk0A;
+    struct TextEntry *previous;
+    struct TextEntry *next;
+    u16 unk14;
+    u16 unk16;
+} TextEntry;
+extern TextEntry *D_8013B5D0;
+extern TextEntry *D_8013B5D4;
+
+void resetTextEntryPool(void);
