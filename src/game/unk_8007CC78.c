@@ -114,7 +114,9 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80086C34);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80086DEC);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80086FF8);
+s32 isValue16(s32 value) {
+    return value == 16;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80087004);
 

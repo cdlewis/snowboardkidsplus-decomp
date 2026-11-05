@@ -1,3 +1,6 @@
+// Equality predicate; the argument's game-specific meaning is unknown.
+isValue16 = 0x80086FF8; // type:func
+
 // RNG symbols verified against the PSX assembly oracle.
 randomNextMain = 0x80015E04; // type:func
 randomNextSecondary = 0x80015E4C; // type:func
