@@ -47,14 +47,6 @@ typedef struct TILE {
     s16 x0, y0, w, h;
 } TILE;
 
-typedef struct SPRT {
-    u32 tag;
-    u8 r0, g0, b0, code;
-    s16 x0, y0;
-    u8 u0, v0;
-    u16 clut;
-    s16 w, h;
-} SPRT;
 
 typedef struct DR_ENV { u32 tag; u32 code[15]; } DR_ENV;
 typedef struct DR_TWIN { u32 tag; u32 code[2]; } DR_TWIN;

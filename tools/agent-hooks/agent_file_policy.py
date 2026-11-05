@@ -167,6 +167,8 @@ def shell_reason(command, cwd=None):
             read_only = read_only and not re.search(r"[;\s][we]\s|^[we]\s|/[^/]*w(?:\s|$)", text)
         if name == "git":
             read_only = any(arg in {"diff", "show", "log", "status", "ls-files", "grep"} for arg in args[1:])
+            # Staging updates the index, without writing protected worktree files.
+            read_only = read_only or (len(args) > 1 and args[1] == "add")
         if writes or not read_only:
             return "shell writes to assembly, ctx.c, or checksum sources are blocked; use source/configuration edits (preserving SHA1 fields)"
     return None

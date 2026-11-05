@@ -36,7 +36,7 @@ extern GameTask D_800D7C84;
 typedef struct TaskResourceRecord {
     u32 unk00;
     u32 unk04;
-    u32 unk08;
+    const u16 *unk08;
     u8 unk0C[0xF4];
 } TaskResourceRecord;
 

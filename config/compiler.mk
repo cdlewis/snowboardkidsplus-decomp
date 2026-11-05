@@ -20,7 +20,7 @@ G8_UNITS := \
     src/engine/random.c
 $(foreach unit,$(G8_UNITS),$(eval UNIT_G_$(unit) := 8))
 
-GAME_TEXT_UNITS := $(MAIN_GAME_UNITS) src/main_tail.c
+GAME_TEXT_UNITS := $(MAIN_GAME_UNITS)
 $(foreach unit,$(GAME_TEXT_UNITS),$(eval UNIT_REORDER_$(unit) := 1))
 
 # Preserve the task-reference reset's store before its return (PSY-Q scheduling).
@@ -28,6 +28,8 @@ UNIT_REORDER_src/game/unk_80070274.c := 0
 
 # Preserve the text palette setter's store before its return.
 UNIT_REORDER_src/game/unk_800497B8.c := 0
+UNIT_GAS_REORDER_FUNCTIONS_src/game/unk_800497B8.c := drawNoProcessMessage createResourceLoadTask
+UNIT_GAS_REORDER_FUNCTIONS_src/main_tail.c := resumeUnlockSelectionTask
 
 GCC272_G0_REORDER_PAD_UNITS := \
     src/syslib/libcard/card.c \
@@ -219,5 +221,5 @@ ifeq ($(COMPARISON):$(NON_MATCHING),1:1)
 endif
 
 # Preserve the player-zero task wrapper call and return scheduling.
-UNIT_FUNCTIONS_src/game/unk_8002B3F4.c := initPlayerZeroTask
+UNIT_FUNCTIONS_src/game/unk_8002B3F4.c += initPlayerZeroTask
 FN_FLAGS_src/game/unk_8002B3F4.c/initPlayerZeroTask := -fno-schedule-insns2 -fno-delayed-branch

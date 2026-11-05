@@ -8,12 +8,6 @@
 #include "game/task.h"
 #include "psx/libsnd.h"
 
-/* Resource records have a 0x100-byte stride; unmodeled fields stay opaque. */
-typedef struct TaskResource {
-    u8 unk00[8];
-    const u16 *unk08;
-    u8 unk0C[0xF4];
-} TaskResource;
 
 typedef struct TimedSequenceEntry {
     s32 unk00;
@@ -28,7 +22,6 @@ typedef struct TimedSequence {
 } TimedSequence;
 
 /* Storage remains in the shared data object. */
-extern TaskResource D_800D9504[];
 typedef struct TaskValueState {
     GameTask *task;
     u16 unk04;
@@ -187,7 +180,7 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80074448);
 
 void setTaskSecondaryResourceData(GameTask *task, const u16 *data) {
     u32 index = task->resource16;
-    TaskResource *resource = &D_800D9504[index];
+    TaskResourceRecord *resource = &D_800D9504[index];
     resource->unk08 = data;
 }
 

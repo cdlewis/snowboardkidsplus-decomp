@@ -1,4 +1,5 @@
 #include "common.h"
+#define RACE_PLAYER_ABSOLUTE_ADDRESSING
 #include "game/race_player.h"
 #include "game/selected_record.h"
 #include "game/graphics.h"
