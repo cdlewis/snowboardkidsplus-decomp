@@ -1,4 +1,5 @@
 #include "common.h"
+#include "game/controller.h"
 #include "game/game_options.h"
 #include "game/global_flags.h"
 #include "game/selected_records.h"
@@ -59,6 +60,7 @@ ResourceSectorRange gOtherModeSectorRanges[11] __attribute__((section(".data.ind
 extern u8 D_8013B55E __attribute__((section(".data")));
 extern s16 D_8013B560;
 extern u8 D_8013B562;
+extern u8 D_8013B0F0 __attribute__((section(".data")));
 
 s32 func_800136DC(s16 command, s16 sector, s16 sectorCount, void *destination, s32 flags);
 
@@ -281,7 +283,15 @@ void selectTaskCallbackFromModeState(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A0A4C);
+void initializeMode1Task(void) {
+    D_8013AFD8 = 1;
+    D_8013AFCE = -1;
+    D_8013B560 = 99;
+    setControllerFlag5(0);
+    setControllerFlag5(1);
+    D_8013B0F0 = 0;
+    setCurrentTaskCallback(func_800A0AA8);
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A0AA8);
 
