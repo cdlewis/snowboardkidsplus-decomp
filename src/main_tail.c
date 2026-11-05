@@ -7,16 +7,13 @@
 #include "game/task.h"
 
 typedef struct UnlockMenuState {
-    s16 selection;
-    s16 previousSelection;
-    s32 unk04[6];
-    s32 unk1C;
-    s32 unk20[6];
-    s32 unk38;
-    s32 unk3C[6];
-    s32 unk54;
-    s32 unk58[6];
-    u8 unk70[0x90];
+    s16 selection, previousSelection;
+    s32 unk04[7];
+    s32 unk20[7];
+    s32 unk3C[7];
+    s32 unk58[7];
+    s16 unk74[4];
+    u8 unk7C[0x84];
 } UnlockMenuState;
 
 extern u8 D_8013B55E __attribute__((section(".data")));
@@ -296,7 +293,20 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A3AA4);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A3C3C);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A3CE0);
+void resetUnlockMenuAnimation(UnlockMenuState *state) {
+    s16 i;
+    state->unk04[0] = state->unk20[0] = 0;
+    for (i = 1; i < 7; i++) {
+        state->unk04[i] = state->unk3C[i] = state->unk04[0];
+        state->unk20[i] = state->unk58[i] = state->unk20[0];
+    }
+    state->unk3C[0] = state->unk04[0];
+    state->unk58[0] = state->unk20[0];
+    state->unk74[0] = 0;
+    state->unk74[1] = 1;
+    state->unk74[2] = 2;
+    state->unk74[3] = 3;
+}
 
 void runTaskResource14Update(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
