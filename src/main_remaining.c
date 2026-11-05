@@ -349,7 +349,12 @@ void advanceTaskWhenFlagAFE4Bit8Set(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001CE74);
+void startResourceLoadWhenFlagAFE4Bit9Set(void) {
+    if (D_8013AFE4 & 0x200) {
+        createResourceLoadTask();
+        setCurrentTaskCallback(advanceTaskWhenFlagAFE4Bit8Set);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001CEAC);
 
