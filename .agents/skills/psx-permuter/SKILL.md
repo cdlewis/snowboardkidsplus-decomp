@@ -11,7 +11,22 @@ Start with a green `./tools/build-and-verify.sh`. Confirm the candidate already
 has correct calls, control flow, types, offsets, and expressions. Try localized
 source changes before random search.
 
-Use an installed decomp-permuter, such as `../decomp-permuter/`, and read its
+The project launcher prepares a fresh experiment, smoke-tests its compiler
+wrapper, and runs a bounded local search:
+
+```sh
+./tools/permuter FUNCTION -s nonmatchings/FUNCTION/attempt.c -j 2 --seconds 300
+```
+
+Use `--prepare-only` to inspect the imported files before searching. Experiments
+live under a new `nonmatchings/FUNCTION[-N]/permuter/`; the input is preserved as
+`original.c`. The default dependency is `../decomp-permuter`; override it with
+`--permuter-dir` or `DECOMP_PERMUTER`. Install its Python dependencies in the
+project's `.venv` (`toml`, optionally `Levenshtein` for `--algorithm levenshtein`).
+Timeout returns 124 and Ctrl-C returns 130, preserving candidate outputs.
+A zero score is not proof of linked bytes matching.
+
+For manual setup, use an installed decomp-permuter, such as `../decomp-permuter/`, and read its
 usage instructions. Keep the experiment under `nonmatchings/` with `base.c`,
 an original `target.o`, an executable `compile.sh`, and optional settings.
 Use real project headers. Verify the target object's original text bytes.
