@@ -106,6 +106,11 @@ extern s8 *D_8012BBB4[][4];
 extern u32 D_8012CB94[8];
 extern RECT D_8013B330 __attribute__((section(".data")));
 extern u32 *D_8013AF6C __attribute__((section(".data")));
+extern s32 D_8013B35C;
+extern s32 D_8013B360;
+extern s32 D_8013B364;
+extern s32 D_8013B368;
+extern s32 D_8013B36C;
 extern u16 D_8013B376 __attribute__((section(".sdata")));
 
 const char gNoProcessMessage[16] = "NO PROCESS...";
@@ -116,6 +121,8 @@ void func_80049D48(s32 x, s32 y, const char *format, ...);
 void func_8006BE50(s32 textureIndex, s32 clutOffset);
 void func_8006C848(void);
 void func_8006B1F4(void);
+void func_80013DD0(s16 request, s16 mode);
+void func_8006AB8C(void);
 void func_80069F64(void);
 void func_80069C04(void);
 void func_8006A9CC(void);
@@ -834,7 +841,17 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006AB18);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006AB8C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006B19C);
+void initializeTimedSpritePresentation(void) {
+    func_800719A8(0);
+    func_80013DD0(6, 1);
+    D_8013B35C = 0;
+    D_8013B360 = 0;
+    D_8013B364 = 0;
+    D_8013B368 = 0;
+    D_8013B36C = 0;
+    D_8013AE88->data18 = 0;
+    setCurrentTaskCallback(func_8006AB8C);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006B1F4);
 
