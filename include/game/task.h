@@ -27,3 +27,5 @@ extern GameTask *D_8013AE88;
 void func_800149A8(void);
 void setCurrentTaskCallback(TaskCallback callback);
 void deleteCurrentTask(void);
+
+void setTaskSecondaryResourceData(GameTask *task, const u16 *data);
