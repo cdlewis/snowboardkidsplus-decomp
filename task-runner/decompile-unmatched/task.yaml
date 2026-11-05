@@ -8,6 +8,5 @@ prompt: >-
   appropriate. Preserve useful attempts and obey tool stop instructions. Only
   integrate exact C and verify the complete executable with
   ./tools/build-and-verify.sh --expected --objects before declaring a match.
-  The task runner handles committing successful work.
 agent: codex
 timeout: 20m
