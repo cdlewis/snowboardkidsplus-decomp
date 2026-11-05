@@ -27,6 +27,8 @@ extern u8 D_8013B55E __attribute__((section(".data")));
 extern s16 D_8013B560;
 extern u8 D_8013B562;
 
+void func_800A0AA8(void);
+void func_800A3750(void);
 void func_800A5AFC(void);
 void func_800A6548(void);
 void func_800A39AC(void);
@@ -235,7 +237,13 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A050C);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A05C0);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A09FC);
+void selectTaskCallbackFromModeState(void) {
+    if (D_8013AFD8 != 0) {
+        setCurrentTaskCallback(func_800A0AA8);
+    } else if (D_8013AFD9 != 0) {
+        setCurrentTaskCallback(func_800A3750);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A0A4C);
 

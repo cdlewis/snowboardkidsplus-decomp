@@ -13,6 +13,9 @@ typedef struct GlobalFlagStatePrefix {
     u32 unk_3E4;
 } GlobalFlagStatePrefix;
 
+extern u8 D_8013AFD8 __attribute__((section(".data")));
+extern u8 D_8013AFD9 __attribute__((section(".data")));
+
 extern GlobalFlagStatePrefix D_8013080C;
 extern GlobalFlagStatePrefix D_8013101C;
 extern u32 D_801313C8[];

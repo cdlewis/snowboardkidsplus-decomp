@@ -38,8 +38,6 @@ HalfwordPair D_8012F13C[16] __attribute__((section(".data"))) = {0};
 
 extern StateValueHistory D_8013BE30;
 extern u8 D_8013AFCD __attribute__((section(".data")));
-extern u8 D_8013AFD8 __attribute__((section(".data")));
-extern u8 D_8013AFD9 __attribute__((section(".data")));
 extern u8 D_8013B47C;
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8007CC78);
