@@ -406,7 +406,26 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005A660);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005A788);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005AB84);
+void setTaskVisualFrame(TaskVisualResource *resource, TaskVisualFrame *frames, s32 scale) {
+    u16 index;
+    resource->scaleX = scale;
+    resource->scaleY = scale;
+    resource->scaleZ = scale;
+    index = resource->framePosition >> 8;
+    resource->vertices[0].x = (-frames[index].width - 1) / 2;
+    resource->vertices[0].y = -frames[index].height;
+    resource->vertices[0].z = 0;
+    resource->vertices[1].x = (frames[index].width - 1) / 2;
+    resource->vertices[1].y = -frames[index].height;
+    resource->vertices[1].z = 0;
+    resource->vertices[2].x = (-frames[index].width - 1) / 2;
+    resource->vertices[2].y = -1;
+    resource->vertices[2].z = 0;
+    resource->vertices[3].x = (frames[index].width - 1) / 2;
+    resource->vertices[3].y = -1;
+    resource->vertices[3].z = 0;
+    resource->frame = &frames[index];
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005AC4C);
 

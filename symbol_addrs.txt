@@ -1774,3 +1774,5 @@ gMiddleShrinkQuadPacket = 0x8012CB1C; // size:0x28
 
 resetTaskVisualState = 0x80044DC4; // type:func
 updatePlayerField94CFromSelectedTable = 0x8005F640; // type:func
+
+setTaskVisualFrame = 0x8005AB84; // type:func

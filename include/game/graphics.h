@@ -19,6 +19,36 @@ typedef struct TexturedSpritePacket {
     s16 w, h;
 } TexturedSpritePacket;
 
+typedef struct Position3D {
+    s32 x, y, z;
+} Position3D;
+
+/* UV bounds and GPU texture attributes for one animated quad frame. */
+typedef struct TaskVisualFrame {
+    u8 u, v, width, height;
+    u16 tpage, clut;
+} TaskVisualFrame;
+
+typedef struct TaskVisualVertex {
+    s16 x, y, z, pad;
+} TaskVisualVertex;
+
+/* The visual tasks use one 0x100-byte task resource. */
+typedef struct TaskVisualResource {
+    u8 unk00[0x50];
+    Position3D position;
+    u8 unk5C[4];
+    s32 scaleX, scaleY, scaleZ;
+    u8 unk6C[0x14];
+    TaskVisualVertex vertices[4];
+    TaskVisualVertex transformedVertices[4];
+    TaskVisualFrame *frame;
+    s16 unkC4, unkC6, unkC8;
+    s16 framePosition; /* Signed 8.8 frame index. */
+    u8 r0, g0, b0, code;
+    u8 unkD0[0x30];
+} TaskVisualResource;
+
 extern POLY_FT4 gTexturedQuadTemplate;
 extern SPRT gSpriteTemplate;
 extern TexturedSpritePacket gTexturedSpriteTemplate;
@@ -49,6 +79,8 @@ void addTexturedRectangle(u32 *orderingTable, s32 clut, s32 x, s32 y,
 /* Copy a tagged packet into the current buffer and link it into the table. */
 void addCopiedPrimitive(u32 *orderingTable, u32 *packet);
 void initSprite(GsSPRITE *sprite);
+void setTaskVisualFrame(TaskVisualResource *resource, TaskVisualFrame *frames,
+                        s32 scale);
 void unpackPsxColor(u32 color, UnpackedPsxColor *out);
 void setTextPalette(s32 palette);
 void addTextCharacter(s32 x, s32 y, u32 character);
