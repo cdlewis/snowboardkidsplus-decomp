@@ -1875,3 +1875,5 @@ queueStartupSectorReads = 0x8002F348; // type:func
 
 addFlatTriangle = 0x8005FBC0; // type:func
 startValueInterpolationTask = 0x8006A128; // type:func
+
+addSemiTransparentTriangle = 0x8005FFF8; // type:func

@@ -46,6 +46,12 @@ typedef struct GeometryPlacement {
     u16 angle;
     s16 unk14[4];
 } GeometryPlacement;
+typedef struct SemiTransparentTrianglePacket {
+    u32 tag;
+    u16 tpage, drawModeCode;
+    u8 r0, g0, b0, code;
+    s16 x0, y0, x1, y1, x2, y2;
+} SemiTransparentTrianglePacket;
 
 typedef struct SelectedStateRecord {
     s16 state;
@@ -645,7 +651,18 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005FD5C);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005FE7C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005FFF8);
+void addSemiTransparentTriangle(u32 *orderingTable, s32 tpage, s32 x0, s32 y0,
+                   s32 x1, s32 y1, s32 x2, s32 y2, s32 r, s32 g, s32 b) {
+    SemiTransparentTrianglePacket *triangle = (SemiTransparentTrianglePacket *)GsOUT_PACKET_P;
+    triangle->tag = (sizeof(*triangle) / sizeof(u32) - 1) << 24;
+    triangle->code = 0x22;
+    triangle->tpage = tpage & 0xFF;
+    triangle->drawModeCode = 0xE100;
+    setXY3(triangle, x0, y0, x1, y1, x2, y2);
+    setRGB0(triangle, r, g, b);
+    addPrim(orderingTable, triangle);
+    GsOUT_PACKET_P = (u32)(triangle + 1);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800600A8);
 
