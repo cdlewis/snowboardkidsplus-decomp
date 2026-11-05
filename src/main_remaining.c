@@ -1,4 +1,6 @@
 #include "common.h"
+#define GAME_TASK_ABSOLUTE_ADDRESSING
+#include "game/task.h"
 #include "game/graphics.h"
 #include "game/linear_random.h"
 #include "game/offset_archive.h"
@@ -23,6 +25,8 @@ s8 gSoundSystemActive = 0;
 u8 D_8013AF29 = 0;
 s16 gMusicSequenceId = 0;
 s32 gLinearRandomState __attribute__((section(".data.linear_random_state"))) = 1;
+
+void func_8001C0DC(void);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80015EE0);
 
@@ -261,7 +265,10 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001B858);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001BD50);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001C0A8);
+void beginTask60TickCountdown(void) {
+    D_8013AE88->data1A = 60;
+    setCurrentTaskCallback(func_8001C0DC);
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001C0DC);
 
