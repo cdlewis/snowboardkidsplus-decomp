@@ -7,6 +7,14 @@
 #include "game/music.h"
 #include "psx/libsnd.h"
 
+typedef struct SaveRecord {
+    u8 unk_000[0x3AC];
+    u32 flags_3AC;
+    u32 flags_3B0[10];
+    u32 flags_3D8;
+    u8 unk_3DC[0x2C];
+} SaveRecord;
+
 typedef struct HalfwordPair {
     s16 unk_00;
     s16 unk_02;
@@ -202,7 +210,14 @@ void copyGlobalFlagState(GlobalFlagStatePrefix *source, GlobalFlagStatePrefix *d
     destination->unk_3E4 = source->unk_3E4;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80089924);
+void mergeSaveRecordFlags(SaveRecord *source, SaveRecord *destination) {
+    s16 i;
+    destination->flags_3AC |= source->flags_3AC;
+    for (i = 0; i < 10; i++) {
+        i[destination->flags_3B0] |= i[source->flags_3B0];
+    }
+    destination->flags_3D8 |= source->flags_3D8;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80089990);
 

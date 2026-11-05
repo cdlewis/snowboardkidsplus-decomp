@@ -1661,3 +1661,5 @@ initMovieDecodeState = 0x8001A018; // type:func
 
 // Bind the vertex, selected-record, and region sections of packed geometry data.
 bindGeometryRecordData = 0x8004A454; // type:func
+
+mergeSaveRecordFlags = 0x80089924; // type:func
