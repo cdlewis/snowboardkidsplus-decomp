@@ -62,6 +62,14 @@ typedef struct TaskFadeResource {
     u8 unk08[0xF8];
 } TaskFadeResource;
 
+typedef struct TaskMenuFadeResource {
+    s16 unk00;
+    s16 brightness;
+    s16 secondaryBrightness;
+    s16 timer;
+    u8 unk08[0xF8];
+} TaskMenuFadeResource;
+
 
 typedef struct TaskMotionResource {
     s32 position;
@@ -98,6 +106,9 @@ extern u8 D_8013AFCD __attribute__((section(".data")));
 
 void func_80037850(const MenuTimeValue *value, s16 x, s16 y, s16 mode, GsOT *ot, u16 depth);
 
+/* Only the first byte of this shared state is used by this task flow. */
+extern u8 D_80120F90[];
+
 RaceTime gRaceElapsedTime = {0, 0, 0};
 
 void func_8002F3C8(s16 x, s16 y, s16 clutX, s16 clutY, u32 *tim);
@@ -117,6 +128,7 @@ void func_80033100(void);
 void func_80048668(void);
 void func_8004531C(void);
 void func_8003772C(void);
+void func_80037F74(void);
 void func_80038090(TaskResourceRecord *resource);
 void func_80038574(TaskResourceRecord *resource);
 
@@ -707,7 +719,19 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80037EC8);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80037F74);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80038010);
+void initializeTaskMenuFade(void) {
+    TaskMenuFadeResource *resource;
+
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource14 = func_80014BAC();
+    resource = (TaskMenuFadeResource *)&D_800D9504[D_8013AE88->resource14];
+    resource->unk00 = D_80120F90[0];
+    resource->brightness = 0;
+    resource->secondaryBrightness = 0;
+    setCurrentTaskCallback(func_80037F74);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80038090);
 
