@@ -1608,3 +1608,5 @@ resetTextEntryPool = 0x800A5EA4; // type:func
 setCurrentPlayerFinalPartTranslations = 0x800975FC; // type:func
 
 initPlayerZeroTask = 0x8003E768; // type:func
+
+clearControllerFlag0 = 0x80014C98; // type:func

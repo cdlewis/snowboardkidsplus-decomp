@@ -93,7 +93,10 @@ void setControllerFlag0(u16 controller) {
     gControllerFlags[controller] |= 1;
 }
 
-INCLUDE_ASM("asm/nonmatchings/main", func_80014C98);
+void clearControllerFlag0(u16 controller) {
+    u8 *flags = controller + gControllerFlags;
+    *flags &= ~1;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main", func_80014CBC);
 
