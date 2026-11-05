@@ -28,6 +28,21 @@ typedef struct UnlockMenuState {
     u8 unk7C[0x84];
 } UnlockMenuState;
 
+typedef struct TextControlState {
+    s16 unk00;
+    s16 unk02;
+    s32 unk04;
+    s32 unk08;
+    s32 unk0C;
+    u8 unk10[8];
+    s16 unk18[5];
+} TextControlState;
+typedef struct TextResourceState {
+    TextEntry *currentEntry;
+    u32 unk04[5];
+    s16 unk18[5];
+} TextResourceState;
+
 typedef struct TextEntryListHeader {
     TextEntry *freeEntries;
     TextEntry *activeEntries;
@@ -518,7 +533,25 @@ s16 parseDecimalS16(const u8 *text, s16 *result) {
     return count;
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A5E0C);
+void resetTextEntryStates(TextControlState *control, TextResourceState *resource) {
+    s16 i;
+    if (control != NULL) {
+        control->unk00 = 0;
+        control->unk02 = 1;
+        control->unk04 = 0;
+        control->unk08 = 0;
+        control->unk0C = 0;
+        for (i = 0; i < 5; i++) {
+            control->unk18[i] = 0;
+        }
+    }
+    if (resource != NULL) {
+        for (i = 0; i < 5; i++) {
+            resource->unk04[i] = 0;
+            resource->unk18[i] = 0;
+        }
+    }
+}
 
 void resetTextEntryPool(void) {
     TextEntry *previous = NULL;

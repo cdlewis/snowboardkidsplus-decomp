@@ -1719,6 +1719,7 @@ arePositionsWithinXZRange = 0x8002BF3C; // type:func
 resetUnlockMenuAnimation = 0x800A3CE0; // type:func
 
 parseDecimalS16 = 0x800A5DA0; // type:func
+resetTextEntryStates = 0x800A5E0C; // type:func
 
 initializeLoadedTextEntries = 0x800A6508; // type:func
 preparePlayerResourcesTask = 0x800A0D10; // type:func
