@@ -231,7 +231,14 @@ void resumeMusicSequence(void) {
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80017FD8);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80018084);
+void startSoundSystem(void) {
+    if (!gSoundSystemActive) {
+        SsSetStereo();
+        SsStart();
+    }
+    SsSetMVol(127, 127);
+    gSoundSystemActive = 1;
+}
 
 void endSoundSystem(void) {
     if (gSoundSystemActive) {

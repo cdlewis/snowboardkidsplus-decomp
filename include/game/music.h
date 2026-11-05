@@ -22,6 +22,7 @@ void stopMusicSequence(void);
 void closeMusicSequence(void);
 void pauseMusicSequence(void);
 void resumeMusicSequence(void);
+void startSoundSystem(void);
 void endSoundSystem(void);
 
 /* Returns the allocated voice, or 0xFF when the bank is unavailable. */
