@@ -10,6 +10,10 @@
 #include "game/game_options.h"
 #include "psx/libsnd.h"
 
+typedef struct Position3D {
+    s32 x, y, z;
+} Position3D;
+
 typedef struct UnpackedWordBytes {
     u8 unk0;
     u8 unk1;
@@ -30,7 +34,21 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002B820);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002BC2C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002BF3C);
+s16 arePositionsWithinXZRange(const Position3D *a, const Position3D *b, s32 threshold) {
+    s32 dx = a->x - b->x;
+    s32 dz = a->z - b->z;
+
+    if (dx < 0) {
+        dx = -dx;
+    }
+    if (dz < 0) {
+        dz = -dz;
+    }
+    if (dx < threshold && dz < threshold) {
+        return 1;
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002BF88);
 
