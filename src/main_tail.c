@@ -393,7 +393,19 @@ void resetTextEntryPool(void) {
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A5F00);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A5F48);
+TextEntry *findKeyedListNode(u32 key, u32 value) {
+    TextEntry *node = D_8013B5D4;
+    TextEntry *result = NULL;
+    while (node != NULL) {
+        if (key == (u32)node->text && value == node->unk04) {
+            result = node;
+            break;
+        }
+        node = node->next;
+        result = NULL;
+    }
+    return result;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A5F90);
 

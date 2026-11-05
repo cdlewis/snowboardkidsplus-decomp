@@ -15,6 +15,9 @@ getGlobalFlagMask = 0x8008C49C; // type:func
 
 // First player's task callback comparison; callback semantics remain unknown.
 isFirstPlayerUsingCallback26D10 = 0x800442D4; // type:func
+// Find the first list node matching its word key and field at offset 0x04.
+findKeyedListNode = 0x800A5F48; // type:func
+
 selectGeometryRecord = 0x8004A6F0; // type:func
 // Copy the selected record halfwords to current player fields 0x116 and 0x11A.
 copySelectedRecordToCurrentPlayer = 0x8002A560; // type:func
