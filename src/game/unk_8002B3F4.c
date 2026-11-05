@@ -83,6 +83,7 @@ void func_80033404(void);
 void func_80044990(void);
 void func_80034F1C(void);
 void func_800342FC(void);
+void func_80032E94(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002B3F4);
 
@@ -379,7 +380,15 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80032C14);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80032D48);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80032E44);
+void startUnlockNotification0Task(void) {
+    GameTask *task = D_8013AE88;
+    GameTask *parent = D_8013AE98;
+
+    task->data18 = 1;
+    parent->data1C++;
+    func_800A7CE8(0);
+    setCurrentTaskCallback(func_80032E94);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80032E94);
 

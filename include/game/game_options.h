@@ -28,3 +28,4 @@ s32 getPlayerOptionFlag(s16 playerIndex);
 s32 getUnlockNotificationFlag(s16 index);
 void setUnlockNotificationFlag(s16 index);
 s32 hasUnlockNotificationFlag(s16 index);
+void func_800A7CE8(s16 index);
