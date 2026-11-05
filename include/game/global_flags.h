@@ -19,6 +19,8 @@ extern u32 D_801313C8[];
 
 u32 getGlobalFlagMask(s16 bitIndex);
 
+void updatePairedStateFlag(s16 index);
+
 void setPairedStateIndexedFlag(s16 index);
 
 void rebuildCombinedStateMask(GlobalFlagStatePrefix *state);

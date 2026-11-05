@@ -18,6 +18,7 @@ gControllerFlags = 0x8013AEB8; // size:0x4 defined:true
 
 // Masked bit lookup in the shared flag word; game-specific meaning is unknown.
 getGlobalFlagMask = 0x8008C49C; // type:func
+updatePairedStateFlag = 0x8008C4BC; // type:func
 
 // First player's task callback comparison; callback semantics remain unknown.
 isFirstPlayerUsingCallback26D10 = 0x800442D4; // type:func

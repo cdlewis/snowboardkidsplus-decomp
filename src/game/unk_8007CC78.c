@@ -275,7 +275,15 @@ u32 getGlobalFlagMask(s16 bitIndex) {
     return D_801313C8[0] & (1U << bitIndex);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8008C4BC);
+void updatePairedStateFlag(s16 index) {
+    if (index < 0) {
+        D_8013080C.flags &= ~3U;
+        D_8013101C.flags &= ~3U;
+    } else {
+        D_8013080C.flags |= 1U << index;
+        D_8013101C.flags |= 1U << index;
+    }
+}
 
 void setPairedStateIndexedFlag(s16 index) {
     GlobalFlagStatePrefix *first = &D_8013080C;
