@@ -111,7 +111,17 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_800811E0);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80081244);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_800812B4);
+s16 getGroupedIndexOffset(s16 index) {
+    s16 result;
+    if (index < 9) {
+        result = index / 3;
+    } else if ((u16)(index - 9) < 3) {
+        result = index - 9;
+    } else if (index >= 12) {
+        result = index - 12;
+    }
+    return result;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80081318);
 

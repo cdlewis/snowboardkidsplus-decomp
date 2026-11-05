@@ -24,6 +24,9 @@ advanceTaskWhenFlagAFE4Bit8Set = 0x8001CE2C; // type:func
 startMemoryCardReadTask = 0x80019A2C; // type:func
 uploadBufferedTexturePair = 0x8002F264; // type:func
 beginSound601TaskSequence = 0x800330CC; // type:func
+// Convert indices below 9 by division by 3, 9..11 by subtracting 9, and 12+ by subtracting 12.
+getGroupedIndexOffset = 0x800812B4; // type:func
+
 // Raise the shared action request to 17 unless the current player blocks it.
 requestCurrentPlayerAction17 = 0x8002D1FC; // type:func
 
