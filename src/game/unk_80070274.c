@@ -118,7 +118,12 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80071A80);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80071E20);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80071E58);
+void markSecondaryTaskAndClearReference(void) {
+    if (D_8013B37C != NULL) {
+        D_8013B37C->data18 = 99;
+        D_8013B37C = NULL;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80071E78);
 

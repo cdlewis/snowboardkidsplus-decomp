@@ -51,6 +51,8 @@ gUnlockNotificationFlags = 0x8013B574; // size:0x2 defined:true
 initMovement2D = 0x80070EF0; // type:func
 clearTaskReference = 0x80071484; // type:func
 clearSecondaryTaskReference = 0x8007199C; // type:func
+// Set the secondary task's data18 to 99, then clear its reference.
+markSecondaryTaskAndClearReference = 0x80071E58; // type:func
 initSprite = 0x8004A0D0; // type:func
 setTextPalette = 0x80049D34; // type:func
 gTextClut = 0x8013B1D8; // size:0x2 defined:true
