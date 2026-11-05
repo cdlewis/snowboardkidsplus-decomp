@@ -2,6 +2,8 @@
 #include "game/controller.h"
 #include "game/task.h"
 
+u16 gTaskResourceFreeBits[16] __attribute__((section(".data.task_resource_bitmap"))) = {0};
+
 u8 gControllerFlags[4] __attribute__((section(".data"))) = {0, 0, 0, 0};
 
 void func_800131B4(void) {
@@ -79,7 +81,11 @@ void deleteCurrentTask(void) {
 
 INCLUDE_ASM("asm/nonmatchings/main", func_80014BAC);
 
-INCLUDE_ASM("asm/nonmatchings/main", func_80014C40);
+void releaseTaskResource(u16 resource) {
+    u32 index = resource >> 4;
+    resource %= 16;
+    gTaskResourceFreeBits[index] |= 1 << resource;
+}
 
 void setControllerFlag0(u16 controller) {
     gControllerFlags[controller] |= 1;

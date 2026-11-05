@@ -1550,3 +1550,7 @@ D_801208B8 = 0x801208B8; // size:0x1C defined:true
 D_801208D4 = 0x801208D4; // size:0x1C defined:true
 D_801208F0 = 0x801208F0; // size:0x1C defined:true
 D_8012090C = 0x8012090C; // size:0x28 defined:true
+
+// Task resource IDs index a 256-bit availability bitmap.
+releaseTaskResource = 0x80014C40; // type:func
+gTaskResourceFreeBits = 0x800E9504; // size:0x20 defined:true
