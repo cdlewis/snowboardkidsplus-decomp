@@ -25,6 +25,12 @@ extern TexturedSpritePacket gTexturedSpriteTemplate;
 
 void drawNoProcessMessage(void);
 void createResourceLoadTask(void);
+typedef struct TextureColor {
+    u8 r, g, b;
+    u8 stp; /* Low bit becomes the texture color's semi-transparency bit. */
+} TextureColor;
+
+u32 packTextureColor(TextureColor *color);
 void initSprite(GsSPRITE *sprite);
 void unpackPsxColor(u32 color, UnpackedPsxColor *out);
 void setTextPalette(s32 palette);

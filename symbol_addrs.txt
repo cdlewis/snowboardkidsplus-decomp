@@ -55,6 +55,7 @@ clearSecondaryTaskReference = 0x8007199C; // type:func
 // Set the secondary task's data18 to 99, then clear its reference.
 markSecondaryTaskAndClearReference = 0x80071E58; // type:func
 initSprite = 0x8004A0D0; // type:func
+packTextureColor = 0x800516C4; // type:func
 setTextPalette = 0x80049D34; // type:func
 gTextClut = 0x8013B1D8; // size:0x2 defined:true
 randomNextLinear = 0x80060E28; // type:func

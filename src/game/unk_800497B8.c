@@ -138,7 +138,17 @@ void unpackPsxColor(u32 color, UnpackedPsxColor *out) {
     out->stp = (color & 0x8000) >> 15;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800516C4);
+u32 packTextureColor(TextureColor *color) {
+    u32 rgb = color->r >> 3;
+    u32 stp = color->stp & 1;
+    u32 g = (color->g & 0xF8) << 2;
+    u32 b;
+    rgb |= g;
+    b = (color->b & 0xF8) << 7;
+    rgb |= b;
+    stp <<= 15;
+    return stp | rgb;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80051700);
 
