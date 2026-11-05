@@ -205,3 +205,7 @@ FN_FLAGS_src/syslib/libsnd/ut_rdep.c/SsUtSetReverbDepth := -mno-split-addresses 
 # Partial implementations apply only to separate comparison/scratch objects.
 ifeq ($(COMPARISON):$(NON_MATCHING),1:1)
 endif
+
+# Preserve the player-zero task wrapper call and return scheduling.
+UNIT_FUNCTIONS_src/game/unk_8002B3F4.c := initPlayerZeroTask
+FN_FLAGS_src/game/unk_8002B3F4.c/initPlayerZeroTask := -fno-schedule-insns2 -fno-delayed-branch

@@ -1595,3 +1595,5 @@ copyGlobalFlagState = 0x800898CC; // type:func
 resetTextEntryPool = 0x800A5EA4; // type:func
 
 setCurrentPlayerFinalPartTranslations = 0x800975FC; // type:func
+
+initPlayerZeroTask = 0x8003E768; // type:func

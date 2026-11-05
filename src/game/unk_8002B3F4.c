@@ -4,8 +4,12 @@
 #include "game/offset_archive.h"
 #include "game/music.h"
 #include "game/race_player.h"
+#include "game/task.h"
 #include "psx/libsnd.h"
 
+
+void func_8003E60C(u16 index);
+void func_8003EE70(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002B3F4);
 
@@ -510,7 +514,10 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003E55C);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003E60C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003E768);
+void initPlayerZeroTask(void) {
+    func_8003E60C(0);
+    setCurrentTaskCallback(func_8003EE70);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003E794);
 
