@@ -1,4 +1,5 @@
 #include "common.h"
+#include "game/global_flags.h"
 #include "game/graphics.h"
 #include "game/linear_random.h"
 #include "game/offset_archive.h"
@@ -182,7 +183,9 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8008C248);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8008C290);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8008C49C);
+u32 getGlobalFlagMask(s16 bitIndex) {
+    return D_801313C8[0] & (1U << bitIndex);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8008C4BC);
 
