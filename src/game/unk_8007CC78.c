@@ -10,6 +10,17 @@ typedef struct ByteTriplet {
     u8 bytes[3];
 } ByteTriplet;
 
+typedef struct StateValueHistory {
+    s32 unk_00;
+    s16 activeIndex;
+    s16 current[2];
+    s16 previous[2];
+    s16 unk_0E[2];
+    s16 unk_12[2];
+    s16 unk_16[2];
+} StateValueHistory;
+
+extern StateValueHistory D_8013BE30;
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8007CC78);
 
@@ -125,7 +136,9 @@ s32 isValue16(s32 value) {
     return value == 16;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80087004);
+s16 hasStateValueChanged(s16 index) {
+    return D_8013BE30.current[index] != D_8013BE30.previous[index];
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80087030);
 
