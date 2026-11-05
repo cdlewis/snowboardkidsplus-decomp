@@ -102,6 +102,9 @@ void addTexturedRectangle(u32 *orderingTable, s32 clut, s32 x, s32 y,
                           s32 w, s32 h, s32 r, s32 g, s32 b);
 /* Copy a tagged packet into the current buffer and link it into the table. */
 void addCopiedPrimitive(u32 *orderingTable, u32 *packet);
+void addTexturedSprite(u32 *orderingTable, s32 tpage, s32 clut, s32 x,
+                       s32 y, s32 w, s32 h, u16 u, u16 v,
+                       s32 r, s32 g, s32 b);
 void initSprite(GsSPRITE *sprite);
 void setTaskVisualFrame(TaskVisualResource *resource, TaskVisualFrame *frames,
                         s32 scale);

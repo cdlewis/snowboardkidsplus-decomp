@@ -53,6 +53,16 @@ typedef struct SemiTransparentTrianglePacket {
     s16 x0, y0, x1, y1, x2, y2;
 } SemiTransparentTrianglePacket;
 
+typedef struct DrawModeSpritePacket {
+    u32 tag;
+    u16 tpage, drawModeCode;
+    u8 r0, g0, b0, code;
+    s16 x0, y0;
+    u8 u0, v0;
+    u16 clut;
+    s16 w, h;
+} DrawModeSpritePacket;
+
 typedef struct SelectedStateRecord {
     s16 state;
     s16 unk02;
@@ -820,7 +830,24 @@ void addTexturedRectangle(u32 *orderingTable, s32 clut, s32 x, s32 y,
     GsOUT_PACKET_P = (u32)(sprite + 1);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80060C68);
+void addTexturedSprite(u32 *orderingTable, s32 tpage, s32 clut, s32 x,
+                   s32 y, s32 w, s32 h, u16 u, u16 v,
+                   s32 r, s32 g, s32 b) {
+    DrawModeSpritePacket *sprite = (DrawModeSpritePacket *)GsOUT_PACKET_P;
+    sprite->tag = (sizeof(*sprite) / sizeof(u32) - 1) << 24;
+    sprite->code = 0x64;
+    sprite->tpage = tpage;
+    sprite->drawModeCode = 0xE100;
+    sprite->x0 = x;
+    sprite->clut = clut;
+    sprite->y0 = y;
+    setWH(sprite, w, h);
+    sprite->u0 = u;
+    sprite->v0 = v;
+    setRGB0(sprite, r, g, b);
+    addPrim(orderingTable, sprite);
+    GsOUT_PACKET_P = (u32)(sprite + 1);
+}
 
 /* No callers are known; only the variadic argument layout is established. */
 void unusedVariadicStub(s32 unused0, s32 unused1, s32 unused2, ...) {

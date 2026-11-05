@@ -1753,6 +1753,7 @@ addFlatRectangle = 0x80060AA8; // type:func
 addFlatRectangleWithDrawMode = 0x80060B34; // type:func
 
 addTexturedRectangle = 0x80060BD4; // type:func
+addTexturedSprite = 0x80060C68; // type:func
 
 unusedVariadicStub = 0x80060D30; // type:func
 
