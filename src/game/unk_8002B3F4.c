@@ -1,4 +1,8 @@
 #include "common.h"
+#define TASK_ABSOLUTE_ADDRESSING
+#define RACE_PLAYER_ABSOLUTE_ADDRESSING
+#include "game/task.h"
+#include "game/race_player.h"
 #include "game/graphics.h"
 #include "game/linear_random.h"
 #include "game/offset_archive.h"
@@ -87,7 +91,15 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002DD70);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002DDF4);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002DE80);
+void clearCurrentPlayerTaskState(void) {
+    GameTask *task = D_8013AE88;
+    RacePlayer *player = D_8013B0D8;
+
+    task->data1A = 0;
+    task->data1C = 0;
+    task->data1E = 0;
+    player->unk0C2 = 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002DEA4);
 
