@@ -472,7 +472,18 @@ void addFlatRectangle(u32 *orderingTable, s32 x, s32 y, s32 w, s32 h,
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80060B34);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80060BD4);
+void addTexturedRectangle(u32 *orderingTable, s32 clut, s32 x, s32 y,
+                   s32 w, s32 h, s32 r, s32 g, s32 b) {
+    SPRT *sprite = (SPRT *)GsOUT_PACKET_P;
+    sprite->tag = (sizeof(SPRT) / sizeof(u32) - 1) << 24;
+    setcode(sprite, 0x64);
+    sprite->clut = clut;
+    setXY0(sprite, x, y);
+    setWH(sprite, w, h);
+    setRGB0(sprite, r, g, b);
+    addPrim(orderingTable, sprite);
+    GsOUT_PACKET_P = (u32)(sprite + 1);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80060C68);
 

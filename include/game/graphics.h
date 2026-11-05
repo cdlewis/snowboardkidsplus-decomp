@@ -38,6 +38,8 @@ void addFlatLine(u32 *orderingTable, s32 x0, s32 y0, s32 x1, s32 y1,
                  s32 r, s32 g, s32 b);
 void addFlatRectangle(u32 *orderingTable, s32 x, s32 y, s32 w, s32 h,
                       s32 r, s32 g, s32 b);
+void addTexturedRectangle(u32 *orderingTable, s32 clut, s32 x, s32 y,
+                          s32 w, s32 h, s32 r, s32 g, s32 b);
 void initSprite(GsSPRITE *sprite);
 void unpackPsxColor(u32 color, UnpackedPsxColor *out);
 void setTextPalette(s32 palette);

@@ -1670,3 +1670,5 @@ mergeSaveRecordFlags = 0x80089924; // type:func
 addFlatLine = 0x80060978; // type:func
 
 addFlatRectangle = 0x80060AA8; // type:func
+
+addTexturedRectangle = 0x80060BD4; // type:func
