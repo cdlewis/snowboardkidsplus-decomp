@@ -403,7 +403,18 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001A22C);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001A2B8);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001A3DC);
+void waitForMovieOutput(MovieDecodeState *state) {
+    volatile s32 timeout = 0x800000;
+    while (state->outputComplete == 0) {
+        if (--timeout == 0) {
+            state->outputComplete = 1;
+            state->frameIndex = !state->frameIndex;
+            state->slice.x = state->frames[state->frameIndex].x;
+            state->slice.y = state->frames[state->frameIndex].y;
+        }
+    }
+    state->outputComplete = 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001A474);
 
