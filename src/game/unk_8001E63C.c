@@ -3,6 +3,7 @@
 #include "game/linear_random.h"
 #include "game/offset_archive.h"
 #include "game/music.h"
+#include "game/selected_records.h"
 #include "psx/libsnd.h"
 
 
@@ -26,7 +27,6 @@ u8 *D_8012090C[10] = {
     D_8012089C, D_8012089C, D_8012089C, D_801208D4, D_801208B8, D_801208F0, D_8012089C, D_8012089C, D_801208F0, D_8012089C
 };
 
-extern s16 D_8013AFCE __attribute__((section(".data")));
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8001E63C);
 

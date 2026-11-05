@@ -4,7 +4,19 @@
 #include "game/offset_archive.h"
 #include "game/music.h"
 #include "game/task.h"
+#include "game/selected_records.h"
 #include "psx/libsnd.h"
+
+typedef struct SelectedRecord {
+    s16 state;
+    s16 unk02;
+    s32 unk04;
+    s32 unk08;
+    s32 unk0C;
+    s32 unk10;
+} SelectedRecord;
+
+extern SelectedRecord *D_8012C6F4[];
 
 const char gNoProcessMessage[16] = "NO PROCESS...";
 
@@ -329,7 +341,17 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005F46C);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005F640);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005F6E4);
+void resetSelectedRecordStates(void) {
+    SelectedRecord *record = D_8012C6F4[D_8013AFCE];
+
+    for (;;) {
+        if (record->state == -2) {
+            return;
+        }
+        record->state = -1;
+        record++;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005F730);
 
