@@ -1,4 +1,6 @@
 #include "common.h"
+#include "game/race_player.h"
+#include "game/selected_record.h"
 #include "game/graphics.h"
 #include "game/linear_random.h"
 #include "game/offset_archive.h"
@@ -188,7 +190,11 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8002A3A4);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8002A454);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8002A560);
+void copySelectedRecordToCurrentPlayer(void) {
+    RacePlayer *player = D_8013B0D8;
+    player->unk116 = D_8013B1F0[D_8013B1FE].unk8;
+    player->unk11A = D_8013B1F0[D_8013B1FE].unkA;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8002A5A0);
 

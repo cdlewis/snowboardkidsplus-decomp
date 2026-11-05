@@ -15,7 +15,11 @@ struct RacePlayer {
     u8 unk0C4[6];
     s16 unk0CA[6];
     s16 unk0D6[6];
-    u8 unk0E2[0x54A];
+    u8 unk0E2[0x34];
+    s16 unk116;
+    s16 unk118;
+    s16 unk11A;
+    u8 unk11C[0x510];
     RacePlayerVector unk62C[14];
     u8 unk69C[0x28C];
     u8 modelPartCount;
@@ -39,3 +43,5 @@ void clearCurrentPlayerSequenceState(void);
 
 void setCurrentPlayerFinalPartTranslations(const s16 *values);
 void clearCurrentPlayerTaskState(void);
+
+void copySelectedRecordToCurrentPlayer(void);

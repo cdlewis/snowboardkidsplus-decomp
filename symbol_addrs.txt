@@ -15,6 +15,9 @@ getGlobalFlagMask = 0x8008C49C; // type:func
 
 // First player's task callback comparison; callback semantics remain unknown.
 isFirstPlayerUsingCallback26D10 = 0x800442D4; // type:func
+// Copy the selected record halfwords to current player fields 0x116 and 0x11A.
+copySelectedRecordToCurrentPlayer = 0x8002A560; // type:func
+
 // Clear current task state fields and the current player's halfword at 0xC2.
 clearCurrentPlayerTaskState = 0x8002DE80; // type:func
 
