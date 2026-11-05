@@ -38,6 +38,13 @@ typedef struct MenuSpritePaletteGroups {
     u8 kind[8];
     u8 unk0B[9];
 } MenuSpritePaletteGroups;
+/* Centiseconds are stored with eight fractional bits. */
+typedef struct RaceTime {
+    s8 minutes;
+    s8 seconds;
+    s16 centiseconds;
+} RaceTime;
+
 typedef struct PlayerNumberResource {
     u16 timer;
     u16 unk02;
@@ -827,7 +834,20 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003C74C);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003C7F0);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003C9A4);
+s16 compareRaceTimes(const RaceTime *a, const RaceTime *b) {
+    s32 first = (a->centiseconds & 0xFF00) + a->seconds * 25600 + a->minutes * 1536000;
+    s32 second = (b->centiseconds & 0xFF00) + b->seconds * 25600 + b->minutes * 1536000;
+    s32 result;
+
+    if (first > second) {
+        result = 1;
+    } else if (first < second) {
+        result = -1;
+    } else {
+        result = 0;
+    }
+    return result;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003CA58);
 
