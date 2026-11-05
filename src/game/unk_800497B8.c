@@ -627,7 +627,16 @@ void addCopiedPrimitive(u32 *orderingTable, u32 *packet) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005FBC0);
+void addFlatTriangle(u32 *orderingTable, s32 x0, s32 y0, s32 x1, s32 y1,
+                   s32 x2, s32 y2, s32 r, s32 g, s32 b) {
+    POLY_F3 *triangle = (POLY_F3 *)GsOUT_PACKET_P;
+    triangle->tag = (sizeof(POLY_F3) / sizeof(u32) - 1) << 24;
+    setcode(triangle, 0x20);
+    setXY3(triangle, x0, y0, x1, y1, x2, y2);
+    setRGB0(triangle, r, g, b);
+    addPrim(orderingTable, triangle);
+    GsOUT_PACKET_P = (u32)(triangle + 1);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005FC5C);
 
