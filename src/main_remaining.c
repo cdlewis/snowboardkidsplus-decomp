@@ -14,7 +14,10 @@ typedef struct SavedImageEntry {
 } SavedImageEntry;
 
 SavedImageEntry gSavedImageEntries[32] __attribute__((section(".data.saved_image_entries"))) = {0};
-s32 gLinearRandomState = 1;
+s8 gSoundSystemActive = 0;
+u8 D_8013AF29 = 0;
+s16 gMusicSequenceId = 0;
+s32 gLinearRandomState __attribute__((section(".data.linear_random_state"))) = 1;
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80015EE0);
 
@@ -97,7 +100,14 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80017FD8);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80018084);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_800180C8);
+void endSoundSystem(void) {
+    if (gSoundSystemActive) {
+        SsEnd();
+        gSoundSystemActive = 0;
+    } else {
+        gSoundSystemActive = 0;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_800180F4);
 

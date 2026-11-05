@@ -16,6 +16,7 @@ s16 SsVabFakeHead(u8 *address, s16 id, u32 start);
 s16 SsVabTransCompleted(s16 immediate);
 
 void SsStart(void);
+void SsEnd(void);
 void SsStart2(void);
 void SsSetMono(void);
 void SsSetStereo(void);

@@ -893,7 +893,10 @@ stopMusicSequence = 0x80017F64; // type:func
 pauseMusicSequence = 0x80017F90; // type:func
 resumeMusicSequence = 0x80017FB4; // type:func
 initPrimitiveTemplates = 0x8006BDDC; // type:func
-gMusicSequenceId = 0x8013AF2A; // size:0x2
+endSoundSystem = 0x800180C8; // type:func
+gSoundSystemActive = 0x8013AF28; // size:0x1 defined:true
+D_8013AF29 = 0x8013AF29; // size:0x1 defined:true
+gMusicSequenceId = 0x8013AF2A; // size:0x2 defined:true
 gMusicSequenceActive = 0x8013AF2C; // size:0x1
 
 // Recovered SDK data names.

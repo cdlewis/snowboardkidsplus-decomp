@@ -592,9 +592,11 @@ segments:
       - [0x12B70C, data]
       - {start: 0x12B710, type: .sdata, name: engine/random, linker_section_order: .data}
       - [0x12B714, data, 12B714]
+      - {start: 0x12B728, type: .sdata, name: main_remaining, linker_section_order: .data}
+      - [0x12B72C, data, 12B72C]
       - [0x12B7AC, .data, engine/game_task_scheduler]
       - [0x12B7B0, data, 12B7B0]
-      - {start: 0x12BAFC, type: .sdata, name: main_remaining, linker_section_order: .data}
+      - {start: 0x12BAFC, type: .data, name: main_remaining, linker_section: .data.linear_random_state}
       - [0x12BB00, data, 12BB00]
       - [0x12BD70, .data, engine/game_options]
       - [0x12BD78, data, 12BD78]
