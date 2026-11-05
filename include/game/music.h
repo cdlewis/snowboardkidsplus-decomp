@@ -28,6 +28,7 @@ void fadeOutMusicSequence(s16 step);
 void func_80017E7C(s16 repeatCount);
 void setMusicSequenceEnabled(s16 enabled);
 void stopMusicSequence(void);
+void openMusicSequence(s16 bankId, u32 *sequence);
 void closeMusicSequence(void);
 void pauseMusicSequence(void);
 void resumeMusicSequence(void);

@@ -2,6 +2,8 @@
 
 #include "decomp/types.h"
 
+s16 SsSeqOpen(u32 *sequence, s16 bankId);
+void SsUtSetReverbDepth(s16 left, s16 right);
 void SsSeqClose(s16 id);
 void SsSepClose(s16 id);
 void SsSeqStop(s16 id);

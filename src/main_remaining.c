@@ -235,7 +235,14 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80017C20);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80017D20);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80017DD0);
+void openMusicSequence(s16 bankId, u32 *sequence) {
+    if (gMusicSequenceActive) {
+        closeMusicSequence();
+    }
+    gMusicSequenceId = SsSeqOpen(sequence, bankId);
+    SsUtSetReverbDepth(48, 48);
+    gMusicSequenceActive = 1;
+}
 
 void closeMusicSequence(void) {
     if (gMusicSequenceActive) {
