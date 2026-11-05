@@ -25,8 +25,6 @@ def main() -> None:
     parser.add_argument("--nop-before-label", action="store_true")
     parser.add_argument("--gas-reorder", action="store_true",
                         help="delegate SDK reorder-mode scheduling to GNU as -O2")
-    parser.add_argument("--gas-reorder-function", action="append", default=[],
-                        help="delegate reorder-mode scheduling for one function")
     parser.add_argument("--gas-indexed-loads", action="store_true",
                         help="delegate symbolic indexed-load macros to GNU as")
     # decomp.me debugging
@@ -140,7 +138,6 @@ def main() -> None:
         jtbl_at_fusion=args.jtbl_at_fusion,
         nop_before_label=args.nop_before_label,
         gas_reorder=args.gas_reorder,
-        gas_reorder_functions=args.gas_reorder_function,
         gas_indexed_loads=args.gas_indexed_loads,
     )
     try:

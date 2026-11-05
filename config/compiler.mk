@@ -23,13 +23,9 @@ $(foreach unit,$(G8_UNITS),$(eval UNIT_G_$(unit) := 8))
 GAME_TEXT_UNITS := $(MAIN_GAME_UNITS)
 $(foreach unit,$(GAME_TEXT_UNITS),$(eval UNIT_REORDER_$(unit) := 1))
 
-# Preserve the task-reference reset's store before its return (PSY-Q scheduling).
-UNIT_REORDER_src/game/unk_80070274.c := 0
-
-# Preserve the text palette setter's store before its return.
+# These modules retain stores before returns in the original instruction stream.
 UNIT_REORDER_src/game/unk_800497B8.c := 0
-UNIT_GAS_REORDER_FUNCTIONS_src/game/unk_800497B8.c := drawNoProcessMessage createResourceLoadTask
-UNIT_GAS_REORDER_FUNCTIONS_src/main_tail.c := resumeUnlockSelectionTask
+UNIT_REORDER_src/game/unk_80070274.c := 0
 
 GCC272_G0_REORDER_PAD_UNITS := \
     src/syslib/libcard/card.c \
@@ -193,33 +189,7 @@ $(foreach unit,$(GCC281_MNO_SPLIT_ADDRESSES_G0_REORDER_PAD_UNITS),$(eval UNIT_G_
 $(foreach unit,$(GCC281_MNO_SPLIT_ADDRESSES_G0_REORDER_PAD_UNITS),$(eval UNIT_REORDER_$(unit) := 1))
 $(foreach unit,$(GCC281_MNO_SPLIT_ADDRESSES_G0_REORDER_PAD_UNITS),$(eval UNIT_PAD_$(unit) := 1))
 
-# Leave the unlock-selection wrapper's scheduling to the assembler.
-UNIT_FUNCTIONS_src/main_tail.c := resumeUnlockSelectionTask
-FN_FLAGS_src/main_tail.c/resumeUnlockSelectionTask := -fno-delayed-branch -fno-schedule-insns2
-
-UNIT_FUNCTIONS_src/main.c := deleteCurrentTask
-FN_FLAGS_src/main.c/deleteCurrentTask := -fno-delayed-branch
-UNIT_FUNCTIONS_src/main_remaining.c := uploadImage64x256 stopMusicSequence pauseMusicSequence resumeMusicSequence endSoundSystem readVram16Pixels beginTask60TickCountdown
-UNIT_FUNCTIONS_src/game/unk_800497B8.c := initPrimitiveTemplates drawNoProcessMessage createResourceLoadTask
-UNIT_FUNCTIONS_src/game/unk_8002B3F4.c += initDefaultBackground
-FN_FLAGS_src/game/unk_8002B3F4.c/initDefaultBackground := -fno-delayed-branch
-FN_FLAGS_src/game/unk_800497B8.c/initPrimitiveTemplates := -fno-delayed-branch
-# Preserve the message wrapper prologue and return scheduling.
-FN_FLAGS_src/game/unk_800497B8.c/drawNoProcessMessage := -fno-schedule-insns2 -fno-delayed-branch
-# Preserve the resource-load wrapper prologue and return scheduling.
-FN_FLAGS_src/game/unk_800497B8.c/createResourceLoadTask := -fno-schedule-insns2 -fno-delayed-branch
-$(foreach function,$(UNIT_FUNCTIONS_src/main_remaining.c),$(eval FN_FLAGS_src/main_remaining.c/$(function) := -fno-delayed-branch))
-UNIT_FUNCTIONS_src/engine/random.c := resetGameplayRng
-FN_FLAGS_src/engine/random.c/resetGameplayRng := -fno-delayed-branch
 UNIT_FUNCTIONS_src/syslib/libsnd/ut_rdel.c := SsUtSetReverbDelay
 FN_FLAGS_src/syslib/libsnd/ut_rdel.c/SsUtSetReverbDelay := -mno-split-addresses -fno-delayed-branch
 UNIT_FUNCTIONS_src/syslib/libsnd/ut_rdep.c := SsUtSetReverbDepth
 FN_FLAGS_src/syslib/libsnd/ut_rdep.c/SsUtSetReverbDepth := -mno-split-addresses -fno-delayed-branch
-
-# Partial implementations apply only to separate comparison/scratch objects.
-ifeq ($(COMPARISON):$(NON_MATCHING),1:1)
-endif
-
-# Preserve the player-zero task wrapper call and return scheduling.
-UNIT_FUNCTIONS_src/game/unk_8002B3F4.c += initPlayerZeroTask
-FN_FLAGS_src/game/unk_8002B3F4.c/initPlayerZeroTask := -fno-schedule-insns2 -fno-delayed-branch

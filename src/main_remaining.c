@@ -1,5 +1,5 @@
 #include "common.h"
-#define GAME_TASK_ABSOLUTE_ADDRESSING
+#define TASK_ABSOLUTE_ADDRESSING
 #include "game/task.h"
 #include "game/graphics.h"
 #include "game/linear_random.h"

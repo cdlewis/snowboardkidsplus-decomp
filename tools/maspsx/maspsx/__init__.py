@@ -531,14 +531,12 @@ class MaspsxProcessor:
         jtbl_at_fusion=False,
         nop_before_label=False,
         gas_reorder=False,
-        gas_reorder_functions=(),
         gas_indexed_loads=False,
     ):
         self.lines = [x.strip() for x in lines]
         self.jtbl_at_fusion = jtbl_at_fusion
         self.nop_before_label = nop_before_label
         self.use_gas_reorder = gas_reorder
-        self.gas_reorder_functions = set(gas_reorder_functions)
         self.gas_indexed_loads = gas_indexed_loads
 
         self.sdata_limit = sdata_limit
@@ -1059,7 +1057,7 @@ class MaspsxProcessor:
 
             elif line.startswith(".ent\t"):
                 res.append(line)
-                if self.use_gas_reorder or line.split()[1] in self.gas_reorder_functions:
+                if self.use_gas_reorder:
                     # SDK cc1 2.7.2 leaves macro stores and jumps in reorder
                     # mode. Delegate their scheduling to GNU as -O2; keep
                     # maspsx's pseudo-op normalization (notably move = addu).
@@ -1068,7 +1066,6 @@ class MaspsxProcessor:
                     res.append(".set\treorder")
                 else:
                     self.gas_reorder_passthrough = False
-                    self.is_reorder = True
                     res.append(".set\tnoreorder")
 
             elif line.startswith(".comm") or line.startswith(".lcomm"):
