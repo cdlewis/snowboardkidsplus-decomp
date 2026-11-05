@@ -7,9 +7,13 @@
 #include "psx/libsnd.h"
 #include "psx/libgpu.h"
 
+typedef struct PaletteRecordColor {
+    u8 r, g, b, unk3;
+} PaletteRecordColor;
+
 typedef struct SavedImageEntry {
     u32 flags;
-    u8 r, g, b, unk07;
+    PaletteRecordColor color;
     RECT rect;
     u16 pixels[32];
 } SavedImageEntry;
@@ -54,7 +58,16 @@ void readVram16Pixels(s32 x, s32 y, u32 *pixels) {
     StoreImage(&rect, pixels);
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80016420);
+void setPaletteRecordColor(u16 index, u8 r, u8 g, u8 b) {
+    PaletteRecordColor *color;
+    if (index != 32) {
+        color = &gSavedImageEntries[index].color;
+        color->r = r;
+        color->g = g;
+        color->b = b;
+        gSavedImageEntries[index].flags |= 4;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80016470);
 
