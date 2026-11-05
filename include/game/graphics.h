@@ -76,6 +76,7 @@ typedef struct GameBackground GameBackground;
 typedef struct GameBackgroundMap GameBackgroundMap;
 struct GsOT;
 
+void readVramPixelColor(s32 x, s32 y, TextureColor *out);
 u32 packTextureColor(TextureColor *color);
 void addFlatTriangle(u32 *orderingTable, s32 x0, s32 y0, s32 x1, s32 y1,
                      s32 x2, s32 y2, s32 r, s32 g, s32 b);

@@ -174,6 +174,11 @@ POLY_FT4 gSlidingQuadPacket
 };
 
 extern GameTask *D_8013B304 __attribute__((section(".data")));
+RECT gReadPixelRect __attribute__((section(".data.read_pixel_rect"))) = {0, 0, 1, 1};
+
+/* The original stores coordinates through GP but passes an absolute address. */
+extern RECT readPixelRectGp;
+
 extern SelectedStateRecord *D_8012C6F4[];
 extern s8 *D_8012BBB4[][4];
 /* Shared palette storage and capture rectangle remain in their data owners. */
@@ -337,7 +342,16 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800512E8);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005143C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800515A8);
+void readVramPixelColor(s32 x, s32 y, TextureColor *out) {
+    u16 pixel;
+    readPixelRectGp.x = x;
+    readPixelRectGp.y = y;
+    StoreImage(&gReadPixelRect, (u32 *)&pixel);
+    out->r = pixel << 3;
+    out->g = (pixel >> 2) & 0xF8;
+    out->b = (pixel >> 7) & 0xF8;
+    out->stp = pixel >> 15;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005162C);
 
