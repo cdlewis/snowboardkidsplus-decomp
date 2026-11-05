@@ -186,7 +186,7 @@ $(foreach unit,$(GCC281_MNO_SPLIT_ADDRESSES_G0_REORDER_PAD_UNITS),$(eval UNIT_PA
 
 UNIT_FUNCTIONS_src/main.c := deleteCurrentTask
 FN_FLAGS_src/main.c/deleteCurrentTask := -fno-delayed-branch
-UNIT_FUNCTIONS_src/main_remaining.c := stopMusicSequence pauseMusicSequence resumeMusicSequence endSoundSystem
+UNIT_FUNCTIONS_src/main_remaining.c := stopMusicSequence pauseMusicSequence resumeMusicSequence endSoundSystem readVram16Pixels
 UNIT_FUNCTIONS_src/game/unk_800497B8.c := initPrimitiveTemplates drawNoProcessMessage createResourceLoadTask
 FN_FLAGS_src/game/unk_800497B8.c/initPrimitiveTemplates := -fno-delayed-branch
 # Preserve the message wrapper prologue and return scheduling.

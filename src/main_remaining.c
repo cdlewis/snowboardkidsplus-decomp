@@ -39,7 +39,14 @@ void releaseSavedImageEntry(u16 index) {
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80016344);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_800163E4);
+void readVram16Pixels(s32 x, s32 y, u32 *pixels) {
+    RECT rect;
+    rect.x = x;
+    rect.y = y;
+    rect.w = 16;
+    rect.h = 1;
+    StoreImage(&rect, pixels);
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80016420);
 

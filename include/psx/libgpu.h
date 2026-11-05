@@ -74,6 +74,7 @@ u16 GetClut(s32 x, s32 y);
 void AddPrim(void *ordering_table, void *primitive);
 void SetSemiTrans(void *primitive, s32 enable);
 s32 LoadImage(RECT *rect, u32 *pixels);
+s32 StoreImage(RECT *rect, u32 *pixels);
 u16 LoadTPage(u32 *pixels, s32 tp, s32 abr, s32 x, s32 y, s32 w, s32 h);
 u16 LoadClut(u32 *clut, s32 x, s32 y);
 u16 LoadClut2(u32 *clut, s32 x, s32 y);

@@ -31,5 +31,6 @@ void initPrimitiveTemplates(void);
 void setTexturedQuadColor(s32 r, s32 g, s32 b);
 void setSpriteColor(s32 r, s32 g, s32 b);
 
+void readVram16Pixels(s32 x, s32 y, u32 *pixels);
 void releaseSavedImageEntry(u16 index);
 void requestSavedImageRestore(u16 index);
