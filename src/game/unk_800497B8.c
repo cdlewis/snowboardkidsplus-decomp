@@ -20,6 +20,7 @@
 #define TEXTURED_QUAD_CODE 0x2C
 #define TEXTURED_QUAD_PACKET_WORDS 9
 #define DRAW_MODE_COMMAND_HIGH 0xE100
+#define SEMI_TRANSPARENT_FLAG 2
 
 /* Draw mode and a flat rectangle share a single DMA packet tag. */
 typedef struct FlatRectanglePacket {
@@ -28,6 +29,14 @@ typedef struct FlatRectanglePacket {
     u8 r0, g0, b0, code;
     s16 x0, y0, w, h;
 } FlatRectanglePacket;
+
+/* Draw mode and a flat quad share a single DMA packet tag. */
+typedef struct FlatQuadPacket {
+    u32 tag;
+    u16 tpage, drawModeCommand;
+    u8 r0, g0, b0, code;
+    s16 x0, y0, x1, y1, x2, y2, x3, y3;
+} FlatQuadPacket;
 
 typedef struct SelectedStateRecord {
     s16 state;
@@ -607,7 +616,24 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800603C4);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80060518);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80060740);
+void addSemiTransparentFlatQuadWithDrawMode(u32 *orderingTable, s32 tpage,
+                                          s32 x0, s32 y0, s32 x1, s32 y1,
+                                          s32 x2, s32 y2, s32 x3, s32 y3,
+                                          s32 r, s32 g, s32 b) {
+    FlatQuadPacket *poly = (FlatQuadPacket *)GsOUT_PACKET_P;
+    poly->tag = (sizeof(FlatQuadPacket) / sizeof(u32) - 1) << 24;
+    poly->code = POLY_F4_CODE | SEMI_TRANSPARENT_FLAG;
+    poly->tpage = tpage & 0xFF;
+    poly->drawModeCommand = DRAW_MODE_COMMAND_HIGH;
+    setXY2(poly, x0, y0, x1, y1);
+    poly->x2 = x2;
+    poly->y2 = y2;
+    poly->x3 = x3;
+    poly->y3 = y3;
+    setRGB0(poly, r, g, b);
+    addPrim(orderingTable, poly);
+    GsOUT_PACKET_P = (u32)(poly + 1);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006081C);
 
