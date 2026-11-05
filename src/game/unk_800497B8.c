@@ -1368,7 +1368,13 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006F8A4);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006FC40);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006FDE4);
+void setTexturedQuadTextureBlend(s32 index, s32 palette, s32 blend) {
+    TextureRegionSet *texture = &D_8012DDA4[index];
+    POLY_FT4 *quad = &gTexturedQuadTemplate;
+    quad->tpage = GetTPage(texture->depth, blend, texture->x, texture->y);
+    quad->clut = GetClut(texture->clutX, texture->clutY + palette);
+    D_8013B6AC = texture->regions;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006FE68);
 
