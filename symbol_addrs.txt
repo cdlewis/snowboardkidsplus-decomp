@@ -1564,3 +1564,6 @@ initTimedSequence = 0x800770D4; // type:func
 
 releaseSavedImageEntry = 0x80016314; // type:func
 gSavedImageEntries = 0x800EA69C; // size:0xA00 defined:true
+
+// Sets bit index + 14 in both state flag words; game-specific meaning is unknown.
+setPairedStateIndexedFlag = 0x8008C528; // type:func

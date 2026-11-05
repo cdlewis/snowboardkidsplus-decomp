@@ -189,7 +189,14 @@ u32 getGlobalFlagMask(s16 bitIndex) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8008C4BC);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8008C528);
+void setPairedStateIndexedFlag(s16 index) {
+    GlobalFlagStatePrefix *first = &D_8013080C;
+    u32 mask = 0x800U << (index + 3);
+    GlobalFlagStatePrefix *second = &D_8013101C;
+
+    first->flags |= mask;
+    second->flags |= mask;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8008C568);
 
