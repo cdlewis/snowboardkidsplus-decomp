@@ -1903,6 +1903,7 @@ addSemiTransparentTriangle = 0x8005FFF8; // type:func
 // GP-relative alias for the single-pixel read rectangle.
 readPixelRectGp = 0x8013B240; // size:0x8 allow_duplicated:true
 gReadPixelRect = 0x8013B240; // size:0x8 defined:true allow_duplicated:true
+drawCyanBackgroundAndSetFog = 0x8004EF70; // type:func
 readVramPixelColor = 0x800515A8; // type:func
 
 updateAndDrawCurrentTaskObject = 0x8005EE64; // type:func

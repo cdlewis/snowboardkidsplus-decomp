@@ -268,6 +268,7 @@ extern RECT readPixelRectGp;
 /* Shared texture metadata remains in its original data owner. */
 extern TextureRegionSet D_8012DDA4[];
 extern TextureRegion *D_8013B6AC;
+extern u32 *D_8013AF6C __attribute__((section(".data")));
 
 extern SelectedStateRecord *D_8012C6F4[];
 extern s8 *D_8012BBB4[][4];
@@ -295,6 +296,8 @@ extern GsCOORDINATE2 D_80129C60[];
 const char gNoProcessMessage[16] = "NO PROCESS...";
 
 void func_8001E3E4(SVECTOR *rotation, GsCOORDINATE2 *coordinate);
+void SetFarColor(s32 r, s32 g, s32 b);
+void SetFogNearFar(s32 near, s32 far, s32 h);
 void func_800592DC(u16 index);
 void func_80049D48(s32 x, s32 y, const char *format, ...);
 void func_8006BF14(s16 x, s16 y, s32 frameIndex, GsOT *ot, u16 depth);
@@ -409,7 +412,11 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8004E718);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8004EBF8);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8004EF70);
+void drawCyanBackgroundAndSetFog(void) {
+    addFlatRectangle(&D_8013AF6C[4095], -160, -120, 320, 240, 0, 235, 230);
+    SetFarColor(80, 128, 104);
+    SetFogNearFar(5500, 10000, 400);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8004EFE0);
 
