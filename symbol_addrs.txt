@@ -1573,3 +1573,5 @@ gSavedImageEntries = 0x800EA69C; // size:0xA00 defined:true
 setPairedStateIndexedFlag = 0x8008C528; // type:func
 
 repeatByteStore = 0x800897A4; // type:func
+
+resetUnlockMenuOffsets = 0x800A495C;

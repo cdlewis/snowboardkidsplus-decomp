@@ -1,6 +1,19 @@
 #include "common.h"
 #include "game/game_options.h"
 
+typedef struct UnlockMenuState {
+    s16 selection;
+    s16 previousSelection;
+    s32 unk04[6];
+    s32 unk1C;
+    s32 unk20[6];
+    s32 unk38;
+    s32 unk3C[6];
+    s32 unk54;
+    s32 unk58[6];
+    u8 unk70[0x90];
+} UnlockMenuState;
+
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_8008C708);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_8008C8BC);
@@ -265,7 +278,15 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A46E0);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A48E4);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A495C);
+void resetUnlockMenuOffsets(UnlockMenuState *state) {
+    s16 i;
+    for (i = 0; i < 6; i++) {
+        i[state->unk3C] = 0;
+        i[state->unk04] = 0;
+        i[state->unk58] = 0;
+        i[state->unk20] = 0;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A499C);
 
