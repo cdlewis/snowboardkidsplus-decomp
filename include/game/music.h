@@ -4,6 +4,7 @@
 
 /* Shared with the sequence loading and playback routines still in assembly. */
 extern s16 gMusicSequenceId;
+extern s16 D_8013B106;
 extern u8 gMusicSequenceActive;
 extern s8 gSoundSystemActive;
 extern u8 gMusicFadeMode;

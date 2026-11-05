@@ -216,7 +216,13 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002F65C);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002F698);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002FA14);
+void beginMode2SequenceAndFadeMusic(void) {
+    func_80070274(2, 0, 30);
+    if (D_8013B106 == 1) {
+        fadeOutMusicSequence(0x200);
+        D_8013B106 = 0;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002FA58);
 
