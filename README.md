@@ -1,7 +1,7 @@
 Snowboard Kids Plus  
 [![Build](https://github.com/cdlewis/snowboardkidsplus-decomp/actions/workflows/build.yaml/badge.svg?branch=main)](https://github.com/cdlewis/snowboardkidsplus-decomp/actions/workflows/build.yaml?query=branch%3Amain)
-[![Code](https://img.shields.io/badge/Code-24.06%25-blue)](#building)
-[![Data](https://img.shields.io/badge/Data-3.47%25-blue)](#building)
+[![Code](https://img.shields.io/badge/Code-24.53%25-blue)](#building)
+[![Data](https://img.shields.io/badge/Data-4.16%25-blue)](#building)
 [![Chat](https://img.shields.io/discord/729856662357278750?color=%237289DA&logo=discord&logoColor=%23FFFFFF)](https://discord.gg/PJzG4F8SpF)
 ===================
 
