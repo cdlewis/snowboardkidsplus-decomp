@@ -16,6 +16,24 @@
 #include "psx/libsnd.h"
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
+#include "game/quad_animation.h"
+
+typedef struct QuadAnimationFrame {
+    s32 duration;
+    s32 scale;
+    u8 r, g, b, blend;
+    u16 tpage, clut;
+    u8 u, v, w, h;
+} QuadAnimationFrame;
+
+typedef struct PrimaryQuadAnimationResource {
+    s32 x, y, z;
+    s32 unk0C;
+    s32 elapsed;
+    s32 frame;
+    QuadAnimationFrame *frames;
+    u8 pad[0xE4];
+} PrimaryQuadAnimationResource;
 
 #define FLAT_RECTANGLE_CODE 0x60
 #define TEXTURED_QUAD_CODE 0x2C
@@ -193,6 +211,14 @@ POLY_FT4 gRightQuadShrinkPacket __attribute__((section(".data.right_quad_packet"
     0, 0, 0x77, 0x1F, 0
 };
 
+QuadAnimationFrame gQuadAnimationFrames[5] __attribute__((section(".data.quad_animation"))) = {
+    {2, 8092, 128, 128, 128, 2, getTPage(0, 0, 832, 0), getClut(912, 244), 0, 184, 31, 31},
+    {2, 8092, 128, 128, 128, 2, getTPage(0, 0, 832, 0), getClut(912, 244), 32, 184, 31, 31},
+    {2, 8092, 128, 128, 128, 2, getTPage(0, 0, 832, 0), getClut(912, 244), 64, 184, 31, 31},
+    {2, 8092, 128, 128, 128, 2, getTPage(0, 0, 832, 0), getClut(912, 244), 96, 184, 31, 31},
+    {-1, 8092, 128, 128, 128, 2, getTPage(0, 0, 832, 0), getClut(912, 244), 96, 184, 31, 31}
+};
+
 u16 gTextClut = 0;
 
 QuadAnimationStep gAlternateQuadAnimationSteps[5]
@@ -274,6 +300,7 @@ void func_80049D48(s32 x, s32 y, const char *format, ...);
 void func_8006BF14(s16 x, s16 y, s32 frameIndex, GsOT *ot, u16 depth);
 void func_8006C5F4(s16 x, s16 y, s32 frameIndex, GsOT *ot, u16 depth);
 void func_80063B58(void);
+void func_800659F0(void);
 void func_800692E8(void);
 void func_8006B1F4(void);
 void func_80013DD0(s16 request, s16 mode);
@@ -975,7 +1002,19 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80065818);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800659F0);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80065DA0);
+GameTask *createQuadAnimationTask(u16 unusedId, VECTOR *position) {
+    PrimaryQuadAnimationResource *resource;
+    func_80014930(D_8013B304, func_800659F0);
+    D_8013AE8C->resource14 = func_80014BAC();
+    resource = (PrimaryQuadAnimationResource *)&D_800D9504[D_8013AE8C->resource14];
+    resource->x = position->vx;
+    resource->y = position->vy;
+    resource->z = position->vz;
+    resource->elapsed = 0;
+    resource->frame = 0;
+    resource->frames = gQuadAnimationFrames;
+    return D_8013AE8C;
+}
 
 GameTask *startAlternateQuadAnimationTask(s32 unused, const PositionEffectOrigin *position) {
     QuadAnimationResource *resource;

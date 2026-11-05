@@ -30,10 +30,12 @@ extern u16 gTaskResourceFreeBits[16];
 extern GameTask *D_8013AE88 __attribute__((section(".data")));
 extern GameTask *D_8013AE8C __attribute__((section(".data")));
 extern GameTask *D_8013AE98 __attribute__((section(".data")));
+extern GameTask *D_8013B304 __attribute__((section(".data")));
 #else
 extern GameTask *D_8013AE88;
 extern GameTask *D_8013AE8C;
 extern GameTask *D_8013AE98;
+extern GameTask *D_8013B304;
 #endif
 /* Task transition flags consumed by the main presentation flow. */
 #ifdef TASK_TRANSITION_FLAGS_ABSOLUTE_ADDRESSING
