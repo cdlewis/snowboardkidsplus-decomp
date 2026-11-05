@@ -1,6 +1,7 @@
 #include "common.h"
 #define CONTROLLER_EFFECTS_ABSOLUTE_ADDRESSING
 #include "game/controller_effects.h"
+#define GS_PACKET_ABSOLUTE_ADDRESSING
 #include "game/graphics.h"
 #include "game/linear_random.h"
 #include "game/offset_archive.h"
@@ -13,7 +14,6 @@
 #include "game/selected_record.h"
 #include "psx/libsnd.h"
 #include "psx/libgpu.h"
-#define GS_PACKET_ABSOLUTE_ADDRESSING
 #include "psx/libgs.h"
 
 #define FLAT_RECTANGLE_CODE 0x60

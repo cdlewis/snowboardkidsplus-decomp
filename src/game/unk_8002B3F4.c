@@ -258,7 +258,11 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80030270);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800302F8);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80030974);
+void drawFullScreenTexturedBackground(void) {
+    setSpriteColor(128, 128, 128);
+    func_800A7D8C(-160, -120, 320, 240, 0x85, 0x39F0,
+                  &D_800EBFF0[D_8013AF78], 0xFFF);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800309EC);
 

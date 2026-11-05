@@ -39,8 +39,6 @@ typedef struct MovieDecodeState {
 } MovieDecodeState;
 
 
-extern GsOT D_800EBFF0[2];
-extern u16 D_8013AF78 __attribute__((section(".data")));
 extern s32 D_8013AF34;
 extern s16 D_8013AF38;
 extern char D_8013AF3C[];

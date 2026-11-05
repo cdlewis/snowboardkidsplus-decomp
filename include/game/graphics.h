@@ -2,6 +2,7 @@
 
 #include "psx/sprite.h"
 #include "psx/libgpu.h"
+#include "psx/libgs.h"
 
 /* Unscaled 5-bit RGB channels and the PSX color's semi-transparency bit. */
 typedef struct UnpackedPsxColor {
@@ -49,6 +50,9 @@ typedef struct TaskVisualResource {
     u8 unkD0[0x30];
 } TaskVisualResource;
 
+extern GsOT D_800EBFF0[2];
+extern u16 D_8013AF78 __attribute__((section(".data")));
+
 extern POLY_FT4 gTexturedQuadTemplate;
 extern SPRT gSpriteTemplate;
 extern TexturedSpritePacket gTexturedSpriteTemplate;
@@ -88,6 +92,9 @@ void initPrimitiveTemplates(void);
 void initTexturedQuadTemplate(void);
 void setTexturedQuadColor(s32 r, s32 g, s32 b);
 void setSpriteColor(s32 r, s32 g, s32 b);
+void func_800A7D8C(s16 x, s16 y, s16 width, s16 height, s16 tpage,
+                   s16 clut, GsOT *ot, u16 depth);
+void drawFullScreenTexturedBackground(void);
 void drawDefaultTexturedPanel(s16 x, s16 y, s16 w, s16 h, s16 clutOffset,
                               s16 blendMode, struct GsOT *ot, u16 depth);
 void drawStyle20DTexturedPanel(s16 x, s16 y, s16 w, s16 h, s16 clutOffset,
