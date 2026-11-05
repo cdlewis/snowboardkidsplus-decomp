@@ -95,6 +95,7 @@ void func_80018AA4(void);
 void func_80019B94(void);
 void func_8001E148(void);
 void func_8001E1B8(void);
+void func_800180F4(s16 bankId);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80015EE0);
 
@@ -195,7 +196,14 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80017D20);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80017DD0);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80017E38);
+void closeMusicSequence(void) {
+    if (gMusicSequenceActive) {
+        SsSeqStop(gMusicSequenceId);
+        SsSeqClose(gMusicSequenceId);
+        func_800180F4(2);
+        gMusicSequenceActive = 0;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80017E7C);
 
