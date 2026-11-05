@@ -1845,3 +1845,9 @@ loadTimArchive = 0x80060D40; // type:func
 setMusicSequenceEnabled = 0x8007255C; // type:func
 
 animateAlternatingVramRow = 0x8001D8D4; // type:func
+callCurrentPlayerStateCallbackIfDifferent = 0x80020328; // type:func
+currentPlayerStateCallbacks = 0x80120934; // size:0x128 defined:true
+
+// Absolute-addressing alias for the shared player pointer.
+currentPlayerAbsolute = 0x8013B0D8; // size:0x4 allow_duplicated:true
+D_8013B0D8 = 0x8013B0D8; // size:0x4 defined:true allow_duplicated:true

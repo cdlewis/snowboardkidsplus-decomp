@@ -84,12 +84,13 @@ struct RacePlayer {
 };
 
 extern RacePlayer D_80120E90[];
-/* Model code addresses this shared pointer absolutely; other player code
- * uses the small-data declaration. Both refer to the same storage. */
-#ifdef RACE_PLAYER_ABSOLUTE_ADDRESSING
-extern RacePlayer *D_8013B0D8 __attribute__((section(".data")));
-#else
+/* Two declarations preserve the original GP-relative and absolute accesses
+ * to this shared pointer. The absolute alias is resolved by the symbol map. */
 extern RacePlayer *D_8013B0D8;
+extern RacePlayer *currentPlayerAbsolute
+    __attribute__((section(".data")));
+#ifdef RACE_PLAYER_ABSOLUTE_ADDRESSING
+#define D_8013B0D8 currentPlayerAbsolute
 #endif
 
 
@@ -122,3 +123,4 @@ void func_8002E5A0(u16 index, s16 value);
 void func_80016E80(u8 index, u8 flags);
 
 void initCurrentPlayerModelParts(void);
+s32 callCurrentPlayerStateCallbackIfDifferent(u16 state);

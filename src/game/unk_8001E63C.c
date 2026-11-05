@@ -8,6 +8,7 @@
 #include "game/music.h"
 #include "game/selected_records.h"
 #include "psx/libsnd.h"
+#include "unk_8001E63C.h"
 
 
 u8 D_8012089C[28] = {
@@ -53,6 +54,83 @@ TaskCallback gCurrentPlayerTaskPhaseCallbacks[8]
 };
 
 
+void (*currentPlayerStateCallbacks[74])(void) = {
+    func_8001F0C4,
+    func_8001F130,
+    func_8001F258,
+    func_8001F2D4,
+    func_8001F388,
+    func_8001F444,
+    func_8001F6D8,
+    func_8001FEE0,
+    func_8001F718,
+    func_8001F6F8,
+    func_8001F7A0,
+    func_8001F8E4,
+    func_8001F970,
+    func_8001F130,
+    func_8001F874,
+    func_8001F130,
+    func_8001F130,
+    func_8001F130,
+    func_8001F130,
+    func_8001F130,
+    func_8001F130,
+    func_8001F130,
+    func_8001F1B4,
+    func_8001FDEC,
+    func_8001FAC4,
+    func_8001FC00,
+    func_8001FCB4,
+    func_8001FD70,
+    NULL,
+    func_8001FFA8,
+    func_80020018,
+    func_8001F130,
+    func_8001F130,
+    func_8001F130,
+    func_8001F130,
+    func_8001F130,
+    func_8001F130,
+    func_8001F130,
+    func_8001F130,
+    func_8001F130,
+    func_8001FA38,
+    func_8001F130,
+    func_8001F130,
+    func_8001F130,
+    func_8001F130,
+    func_8001F130,
+    func_8001F130,
+    func_8001F130,
+    func_8001F130,
+    func_8001F130,
+    func_8001F130,
+    func_8001F130,
+    func_8001F130,
+    func_8001F130,
+    func_8001F130,
+    func_8001F130,
+    func_8001F130,
+    func_8001F130,
+    func_8001F130,
+    func_8001F130,
+    func_8001F130,
+    func_8001F130,
+    func_8001F130,
+    func_8001F130,
+    func_8001F130,
+    func_8001F130,
+    func_8001F130,
+    func_8001F130,
+    func_8001F130,
+    func_8001F130,
+    func_8001F130,
+    func_8001F130,
+    func_8001F130,
+    func_800200F8,
+};
+
 void clearCurrentPlayerSequenceState(void) {
     s32 i;
     for (i = 0; i < 6; i++) {
@@ -60,6 +138,8 @@ void clearCurrentPlayerSequenceState(void) {
         D_8013B0D8->unk0D6[i] = 0;
     }
 }
+
+
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8001E63C);
 
@@ -175,7 +255,16 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80020018);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_800200F8);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80020328);
+s32 callCurrentPlayerStateCallbackIfDifferent(u16 state) {
+    s32 result;
+    if (D_8013B0D8->unk12C == state) {
+        result = 0;
+    } else {
+        currentPlayerStateCallbacks[D_8013B0D8->unk12C]();
+        result = 1;
+    }
+    return result;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80020380);
 
