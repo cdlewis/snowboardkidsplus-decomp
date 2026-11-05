@@ -27,6 +27,7 @@ void func_8003E60C(u16 index);
 void func_8003EE70(void);
 void func_8002F5F8(void);
 void func_80032F84(void);
+void func_80033404(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002B3F4);
 
@@ -284,7 +285,16 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800332F8);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80033404);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80033528);
+void waitThenStartSpriteScaleTransition(void) {
+    GameTask *task = D_8013AE88;
+
+    if (--task->data1A == 0) {
+        task->data1E = 0x200;
+        task->data1C = 0;
+        task->data1A = 60;
+        setCurrentTaskCallback(func_80033404);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80033580);
 
