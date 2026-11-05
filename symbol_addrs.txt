@@ -1959,3 +1959,5 @@ setTexturedQuadTextureBlend = 0x8006FDE4; // type:func
 hasStateGridFlag = 0x80095E24; // type:func
 
 initializeCurrentPlayerState14 = 0x8001F874; // type:func
+
+begin30TickTransitionOnFlag10 = 0x8001CD00; // type:func

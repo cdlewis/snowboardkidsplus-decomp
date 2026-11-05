@@ -6,12 +6,12 @@
 #include "game/cd_queue.h"
 #include "game/game_options.h"
 #include "game/graphics.h"
-#include "game/global_flags.h"
 #define MUSIC_ABSOLUTE_ADDRESSING
 #include "game/music.h"
 #include "psx/libsnd.h"
 #define RACE_PLAYER_ABSOLUTE_ADDRESSING
 #define TASK_ABSOLUTE_ADDRESSING
+#define TASK_FLAGS_ABSOLUTE_ADDRESSING
 #include "game/race_player.h"
 #include "game/text_entries.h"
 #include "game/task.h"
@@ -49,7 +49,8 @@ typedef struct TextResourceState {
     u32 unk04[5];
     s16 unk18[5];
 } TextResourceState;
-extern u32 D_8013AFE4 __attribute__((section(".data")));
+extern s16 D_8013B10C __attribute__((section(".data")));
+extern u8 D_8013B55E __attribute__((section(".data")));
 
 typedef struct TextEntryListHeader {
     TextEntry *freeEntries;
@@ -86,7 +87,6 @@ POLY_F3 gNumberAdjustmentArrow __attribute__((section(".data.number_adjustment_a
     4U << 24, 0, 0, 0, POLY_F3_CODE, 0, 0, 0, 0, 0, 0
 };
 
-extern u8 D_8013B55E __attribute__((section(".data")));
 extern s16 D_8013B560;
 extern u8 D_8013B562;
 extern u8 D_8013B0F0 __attribute__((section(".data")));
@@ -99,7 +99,6 @@ void func_800A0AA8(void);
 void func_800A3750(void);
 void func_800A5AFC(void);
 void func_800A6548(void);
-extern s16 D_8013B10C __attribute__((section(".data")));
 
 void func_8002FA58(s16 resource);
 void func_800A39AC(void);

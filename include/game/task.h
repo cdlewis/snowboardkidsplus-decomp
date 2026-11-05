@@ -79,3 +79,13 @@ void startIndexedRenderTask(s32 index);
 void initializeMode1Task(void);
 void resetTaskControlState(void);
 GameTask *createCountdownTask(u32 frames);
+
+/* Shared task-flow flags; some consumers use absolute addressing. */
+#ifdef TASK_FLAGS_ABSOLUTE_ADDRESSING
+extern u32 D_8013AFE4 __attribute__((section(".data")));
+#else
+extern u32 D_8013AFE4;
+#endif
+
+void func_80070274(s32 mode, s32 id, u16 duration);
+void begin30TickTransitionOnFlag10(void);

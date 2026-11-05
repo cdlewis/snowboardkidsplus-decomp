@@ -7,6 +7,7 @@
 #include "game/offset_archive.h"
 #include "game/music.h"
 #define RACE_PLAYER_ABSOLUTE_ADDRESSING
+#include "game/cd_queue.h"
 #include "game/race_player.h"
 #include "psx/libsnd.h"
 #include "psx/libgpu.h"
@@ -117,6 +118,7 @@ void func_80019A70(void);
 void func_8001E0C0(void);
 void func_80018AA4(void);
 void func_80019B94(void);
+void func_8001D100(void);
 void func_8001E148(void);
 void func_8001E1B8(void);
 void func_800180F4(s16 bankId);
@@ -509,7 +511,14 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001C85C);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001C9F0);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001CD00);
+void begin30TickTransitionOnFlag10(void) {
+    if (D_8013AFE4 & 0x10) {
+        D_8013AE88->data18 = 30;
+        func_80070274(2, 0, 30);
+        startCdVolumeFade(103, 26, 0, 1);
+        setCurrentTaskCallback(func_8001D100);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001CD64);
 
