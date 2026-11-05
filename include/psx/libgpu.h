@@ -19,6 +19,17 @@ typedef struct SPRT {
     s16 w, h;
 } SPRT;
 
+/* Fixed-size 8 by 8 textured sprite. */
+typedef struct SPRT_8 {
+    u32 tag;
+    u8 r0, g0, b0, code;
+    s16 x0, y0;
+    u8 u0, v0;
+    u16 clut;
+} SPRT_8;
+
+#define SPRT_8_CODE 0x74
+
 typedef struct POLY_FT4 {
     u32 tag;
     u8 r0, g0, b0, code;

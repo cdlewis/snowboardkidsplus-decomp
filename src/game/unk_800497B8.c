@@ -55,6 +55,8 @@ ControllerEffectState gControllerEffectStates[2] = {0};
 u16 gTextClut = 0;
 
 extern SelectedStateRecord *D_8012C6F4[];
+extern u32 *D_8013AF6C __attribute__((section(".data")));
+extern u16 D_8013B376 __attribute__((section(".sdata")));
 
 const char gNoProcessMessage[16] = "NO PROCESS...";
 
@@ -711,7 +713,19 @@ void createResourceLoadTask(void) {
     func_80014930(&D_800D7C84, func_8006B1F4);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006B2E4);
+void addTextCharacter(s32 x, s32 y, u32 character) {
+    SPRT_8 *sprite = (SPRT_8 *)GsOUT_PACKET_P;
+
+    setcode(sprite, SPRT_8_CODE);
+    setRGB0(sprite, 255, 255, 255);
+    sprite->u0 = (character & 31) << 3;
+    sprite->v0 = (character >> 3) & 24;
+    setXY0(sprite, x, y);
+    sprite->tag = (sizeof(SPRT_8) / sizeof(u32) - 1) << 24;
+    sprite->clut = getClut(0x300, D_8013B376 + 0xF0);
+    addPrim(D_8013AF6C, sprite);
+    GsOUT_PACKET_P = (u32)(sprite + 1);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006B38C);
 

@@ -46,6 +46,7 @@ void addTexturedRectangle(u32 *orderingTable, s32 clut, s32 x, s32 y,
 void initSprite(GsSPRITE *sprite);
 void unpackPsxColor(u32 color, UnpackedPsxColor *out);
 void setTextPalette(s32 palette);
+void addTextCharacter(s32 x, s32 y, u32 character);
 void initPrimitiveTemplates(void);
 void initTexturedQuadTemplate(void);
 void setTexturedQuadColor(s32 r, s32 g, s32 b);
