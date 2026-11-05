@@ -46,6 +46,18 @@ typedef struct GeometryPlacement {
     u16 angle;
     s16 unk14[4];
 } GeometryPlacement;
+typedef struct TextureRegion {
+    u8 u, v, w, h;
+} TextureRegion;
+
+typedef struct TextureRegionSet {
+    s16 x, y;
+    TextureRegion *regions;
+    s16 depth;
+    s16 clutX, clutY;
+    s16 unk0E;
+} TextureRegionSet;
+
 typedef struct SemiTransparentTrianglePacket {
     u32 tag;
     u16 tpage, drawModeCode;
@@ -227,6 +239,10 @@ RECT gReadPixelRect __attribute__((section(".data.read_pixel_rect"))) = {0, 0, 1
 /* The original stores coordinates through GP but passes an absolute address. */
 extern RECT readPixelRectGp;
 
+/* Shared texture metadata remains in its original data owner. */
+extern TextureRegionSet D_8012DDA4[];
+extern TextureRegion *D_8013B6AC;
+
 extern SelectedStateRecord *D_8012C6F4[];
 extern s8 *D_8012BBB4[][4];
 /* Shared palette storage and capture rectangle remain in their data owners. */
@@ -255,7 +271,6 @@ const char gNoProcessMessage[16] = "NO PROCESS...";
 void func_8001E3E4(SVECTOR *rotation, GsCOORDINATE2 *coordinate);
 void func_800592DC(u16 index);
 void func_80049D48(s32 x, s32 y, const char *format, ...);
-void func_8006BE50(s32 textureIndex, s32 clutOffset);
 void func_8006BF14(s16 x, s16 y, s32 frameIndex, GsOT *ot, u16 depth);
 void func_8006C5F4(s16 x, s16 y, s32 frameIndex, GsOT *ot, u16 depth);
 void func_80063B58(void);
@@ -1238,11 +1253,17 @@ void initPrimitiveTemplates(void) {
 
 void initTexturedQuadTemplate(void) {
     SetPolyFT4((P_TAG *)&gTexturedQuadTemplate);
-    func_8006BE50(0, 0);
+    setTexturedQuadTexture(0, 0);
     setRGB0(&gTexturedQuadTemplate, 0x80, 0x80, 0x80);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006BE50);
+void setTexturedQuadTexture(s32 index, s32 palette) {
+    TextureRegionSet *texture = &D_8012DDA4[index];
+    POLY_FT4 *quad = &gTexturedQuadTemplate;
+    quad->tpage = GetTPage(texture->depth, 1, texture->x, texture->y);
+    quad->clut = GetClut(texture->clutX, texture->clutY + palette);
+    D_8013B6AC = texture->regions;
+}
 
 void setTexturedQuadColor(s32 r, s32 g, s32 b) {
     setRGB0(&gTexturedQuadTemplate, r, g, b);
@@ -1257,7 +1278,7 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006C018);
 void drawTexturedQuadByIndex(s16 x, s16 y, s32 index, GsOT *ot, u16 depth) {
     TexturedQuadFrame *frame = &D_8012DFF4[index];
 
-    func_8006BE50(frame->textureIndex, 0);
+    setTexturedQuadTexture(frame->textureIndex, 0);
     func_8006BF14(x, y, frame->frameIndex, ot, depth);
 }
 
@@ -1274,7 +1295,7 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006C5F4);
 void drawInclusiveTexturedQuadByIndex(s16 x, s16 y, s32 index, GsOT *ot, u16 depth) {
     TexturedQuadFrame *frame = &D_8012DFF4[index];
 
-    func_8006BE50(frame->textureIndex, 0);
+    setTexturedQuadTexture(frame->textureIndex, 0);
     func_8006C5F4(x, y, frame->frameIndex, ot, depth);
 }
 
