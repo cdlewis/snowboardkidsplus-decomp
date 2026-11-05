@@ -30,3 +30,4 @@ void setTexturedQuadColor(s32 r, s32 g, s32 b);
 void setSpriteColor(s32 r, s32 g, s32 b);
 
 void releaseSavedImageEntry(u16 index);
+void requestSavedImageRestore(u16 index);

@@ -44,7 +44,11 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80016470);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_800164E8);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_800165EC);
+void requestSavedImageRestore(u16 index) {
+    if (index != 32) {
+        gSavedImageEntries[index].flags |= 0x40;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80016628);
 
