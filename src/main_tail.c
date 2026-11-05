@@ -16,8 +16,15 @@ typedef struct UnlockMenuState {
     u8 unk7C[0x84];
 } UnlockMenuState;
 
+typedef struct TextEntryListHeader {
+    TextEntry *freeEntries;
+    TextEntry *activeEntries;
+} TextEntryListHeader;
+
 extern u8 D_8013B55E __attribute__((section(".data")));
 
+void func_800A5AFC(void);
+void func_800A6548(void);
 void func_800A39AC(void);
 void func_800A42CC(void);
 void func_800A499C(void);
@@ -449,7 +456,15 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A61E0);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A624C);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A6508);
+void initializeLoadedTextEntries(void) {
+    TextEntryListHeader *header = (TextEntryListHeader *)0x80180000;
+    TextEntry *freeEntries = header->freeEntries;
+    TextEntry *activeEntries = header->activeEntries;
+    D_8013B5D0 = freeEntries;
+    D_8013B5D4 = activeEntries;
+    func_800A5AFC();
+    setCurrentTaskCallback(func_800A6548);
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A6548);
 
