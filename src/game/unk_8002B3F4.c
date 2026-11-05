@@ -84,6 +84,7 @@ void func_80044990(void);
 void func_80034F1C(void);
 void func_800342FC(void);
 void func_80032E94(void);
+void func_80033100(void);
 void func_80048668(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002B3F4);
@@ -430,7 +431,17 @@ void beginSound601TaskSequence(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80033100);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80033280);
+void initializePlayerPromptTask(void) {
+    if (D_8013AFCD == 1) {
+        D_8013AE88->data1C = 0;
+        D_8013AE88->data1E = 0;
+    } else {
+        D_8013AE88->data1C = -32;
+        D_8013AE88->data1E = D_8013AE88->data18 * 112 - 48;
+    }
+    setCurrentTaskCallback(func_80033100);
+}
+
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800332F8);
 
