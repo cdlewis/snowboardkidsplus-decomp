@@ -22,6 +22,7 @@ typedef struct UnpackedWordBytes {
 
 
 extern s16 D_8013B0E4;
+extern u8 D_8013AFCD __attribute__((section(".data")));
 
 void func_8003E60C(u16 index);
 void func_8003EE70(void);
@@ -302,7 +303,15 @@ void waitThenStartSpriteScaleTransition(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80033580);
+void beginSpriteScaleTransitionDelay(void) {
+    if (D_8013AFCD == 1) {
+        D_8013AE88->data18 = 0;
+    } else {
+        D_8013AE88->data18 = -30;
+    }
+    D_8013AE88->data1A = 45;
+    setCurrentTaskCallback(waitThenStartSpriteScaleTransition);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800335E4);
 
