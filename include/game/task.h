@@ -51,6 +51,7 @@ void func_800149E0(void);
 void setCurrentTaskCallback(TaskCallback callback);
 void func_800719A8(s16 mode);
 void deleteCurrentTask(void);
+u32 func_80014BAC(void);
 void releaseTaskResource(u16 resource);
 
 void setTaskSecondaryResourceData(GameTask *task, const u16 *data);

@@ -50,6 +50,22 @@ typedef struct ControllerEffectState {
     s32 effectEnd;
 } ControllerEffectState;
 
+typedef struct TimedSpriteStep {
+    s32 frame;
+    s32 duration;
+    s16 x, y;
+    s32 unk0C;
+    s16 palette;
+    s16 pad12;
+} TimedSpriteStep;
+
+typedef struct TimedSpriteSequenceResource {
+    s32 frame;
+    s32 duration;
+    const TimedSpriteStep *step;
+    u8 pad0C[0xF4];
+} TimedSpriteSequenceResource;
+
 ControllerEffectState gControllerEffectStates[2] = {0};
 
 u16 gTextClut = 0;
@@ -69,6 +85,7 @@ void func_8006C848(void);
 void func_8006B1F4(void);
 void func_80069F64(void);
 void func_80069C04(void);
+void func_8006A9CC(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800497B8);
 
@@ -723,7 +740,14 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006A958);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006A9CC);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006AAAC);
+void startTimedSpriteSequence(const TimedSpriteStep *steps) {
+    TimedSpriteSequenceResource *resource;
+    func_80014930(D_8013AE88, func_8006A9CC);
+    D_8013AE8C->resource14 = func_80014BAC();
+    resource = (TimedSpriteSequenceResource *)&D_800D9504[D_8013AE8C->resource14];
+    resource->step = steps;
+    resource->frame = 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006AB18);
 

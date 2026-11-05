@@ -1,3 +1,4 @@
+startTimedSpriteSequence = 0x8006AAAC; // type:func
 addCopiedPrimitive = 0x8005FB34; // type:func
 isCdRequestQueueReady = 0x8001383C; // type:func
 gCdRequests = 0x800D7484; // size:0x700 defined:true
