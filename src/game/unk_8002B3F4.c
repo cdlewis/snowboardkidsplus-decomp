@@ -86,6 +86,7 @@ void func_800342FC(void);
 void func_80032E94(void);
 void func_80033100(void);
 void func_80048668(void);
+void func_8004531C(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002B3F4);
 
@@ -958,7 +959,16 @@ void resetTaskVisualState(TaskVisualResource *resource) {
     setCurrentTaskCallback(func_80044990);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80044E38);
+void createNineIndexedChildTasks(u16 value, u16 mode) {
+    u16 i;
+    for (i = 0; i < 9; i++) {
+        func_800148B4(func_8004531C);
+        D_8013AE8C->data18 = D_8013AE88->data18;
+        D_8013AE8C->data1A = i;
+        D_8013AE8C->data1C = value;
+        D_8013AE8C->data1E = mode;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80044EC0);
 

@@ -53,6 +53,7 @@ typedef struct TaskResourceRecord {
 extern TaskResourceRecord D_800D9504[256];
 
 s32 func_80014874(TaskCallback callback);
+s32 func_800148B4(TaskCallback callback);
 s16 func_80014930(GameTask *parent, TaskCallback callback);
 s32 func_80014874(TaskCallback callback);
 void func_800149A8(void);
