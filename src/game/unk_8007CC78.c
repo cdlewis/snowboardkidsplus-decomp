@@ -139,7 +139,14 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80088EB4);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_800895DC);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_800897A4);
+void repeatByteStore(u8 *destination, s32 value, s32 count) {
+    s16 i;
+
+    /* The original loop writes repeatedly to the same byte. */
+    for (i = 0; i < count; i++) {
+        *destination = value;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_800897D0);
 
