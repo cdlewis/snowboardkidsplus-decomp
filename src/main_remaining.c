@@ -9,6 +9,7 @@
 #define RACE_PLAYER_ABSOLUTE_ADDRESSING
 #include "game/cd_queue.h"
 #include "game/race_player.h"
+#include "game/game_options.h"
 #include "psx/libsnd.h"
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
@@ -102,6 +103,7 @@ extern u16 D_8013AEE8 __attribute__((section(".data")));
 extern s16 D_8013AF3E;
 extern u16 D_8013AFAA __attribute__((section(".data")));
 extern u8 D_8013AFD6;
+extern u8 D_80120EA4[];
 extern u8 D_8013AFE2;
 extern u16 D_8013AFE8;
 /* Two state values; an incomplete array preserves absolute addressing. */
@@ -120,6 +122,8 @@ void func_8001E0C0(void);
 void func_80018AA4(void);
 void func_80019B94(void);
 void func_8001D100(void);
+void func_8001CE2C(void);
+void func_8001CE74(void);
 void func_8001E148(void);
 void func_8001E1B8(void);
 void func_800180F4(s16 bankId);
@@ -547,7 +551,16 @@ void startResourceLoadWhenFlagAFE4Bit9Set(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001CEAC);
+void beginResourceLoadOrUnlockNotification(void) {
+    D_8013AFAA |= 0x48;
+    if (D_8013AFE4 & 0x200) {
+        createResourceLoadTask();
+        setCurrentTaskCallback(func_8001CE2C);
+    } else {
+        func_800A7CE8(D_80120EA4[0] + 1);
+        setCurrentTaskCallback(func_8001CE74);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001CF18);
 
