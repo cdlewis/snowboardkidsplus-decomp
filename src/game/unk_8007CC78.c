@@ -271,7 +271,12 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8008C05C);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8008C0CC);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8008C1E0);
+s32 getStateMaskPair(s16 stateIndex, s16 maskIndex, s16 pairIndex) {
+    u32 mask = D_8013B484[stateIndex]->masks[maskIndex];
+    u32 low = mask & (1 << (pairIndex * 2));
+    u32 high = mask & (2 << (pairIndex * 2));
+    return low && high ? 3 : high ? 2 : low ? 1 : 0;
+}
 
 void rebuildCombinedStateMask(GlobalFlagStatePrefix *state) {
     s16 i;

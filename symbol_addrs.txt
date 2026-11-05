@@ -1710,3 +1710,5 @@ selectTaskBySelectedRecordMatch = 0x800A2460; // type:func
 
 isCdReading = 0x80013798; // type:func
 initTexturedQuadTemplate = 0x8006BE04; // type:func
+
+getStateMaskPair = 0x8008C1E0; // type:func
