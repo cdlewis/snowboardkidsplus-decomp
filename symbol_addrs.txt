@@ -1619,3 +1619,7 @@ resetGameOptionState = 0x8002F1A4; // type:func
 lookupByteTriplet = 0x8008315C; // type:func
 
 hasStateValueChanged = 0x80087004; // type:func
+
+fadeOutMusicSequence = 0x80017F44; // type:func
+gMusicFadeMode = 0x8013AF2D; // size:0x1
+gMusicFadeStep = 0x8013AF2E; // size:0x2

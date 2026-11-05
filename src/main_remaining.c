@@ -88,7 +88,12 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80017E7C);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80017ED4);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80017F44);
+void fadeOutMusicSequence(s16 step) {
+    if (gMusicSequenceActive) {
+        gMusicFadeMode = 2;
+        gMusicFadeStep = step;
+    }
+}
 
 void stopMusicSequence(void) {
     if (gMusicSequenceActive)
