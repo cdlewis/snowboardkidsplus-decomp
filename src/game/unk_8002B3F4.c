@@ -7,6 +7,12 @@
 #include "game/task.h"
 #include "psx/libsnd.h"
 
+typedef struct UnpackedWordBytes {
+    u8 unk0;
+    u8 unk1;
+    u16 unk2;
+} UnpackedWordBytes;
+
 
 void func_8003E60C(u16 index);
 void func_8003EE70(void);
@@ -543,7 +549,17 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800403C8);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80040440);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8004052C);
+void unpackUpperWordBytes(u32 packed, UnpackedWordBytes *out) {
+    u32 byte;
+
+    packed >>= 8;
+    byte = packed & 0xFF;
+    packed >>= 8;
+    out->unk1 = packed;
+    packed >>= 8;
+    out->unk2 = byte;
+    out->unk0 = packed;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8004054C);
 

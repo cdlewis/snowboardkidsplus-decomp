@@ -15,6 +15,8 @@ getGlobalFlagMask = 0x8008C49C; // type:func
 
 // First player's task callback comparison; callback semantics remain unknown.
 isFirstPlayerUsingCallback26D10 = 0x800442D4; // type:func
+// Extract bits 8-31 into a byte, byte, halfword layout.
+unpackUpperWordBytes = 0x8004052C; // type:func
 
 // Equality predicate; the argument's game-specific meaning is unknown.
 isValue16 = 0x80086FF8; // type:func
