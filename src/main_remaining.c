@@ -80,6 +80,10 @@ extern struct DIRENTRY D_8013B700[][15];
 extern u16 D_8013AEE8 __attribute__((section(".data")));
 extern s16 D_8013AF3E;
 extern u16 D_8013AFAA __attribute__((section(".data")));
+extern u8 D_8013AFD6;
+extern u16 D_8013AFE8;
+/* Two state values; an incomplete array preserves absolute addressing. */
+extern u16 D_8013AEEC[];
 
 void func_8001D044(void);
 void func_8001D42C(void);
@@ -90,6 +94,7 @@ void func_8001E0C0(void);
 void func_80018AA4(void);
 void func_80019B94(void);
 void func_8001E148(void);
+void func_8001E1B8(void);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80015EE0);
 
@@ -518,7 +523,15 @@ void resetTaskCallbackOnFlag4(void) {
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001E1B8);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001E1EC);
+void restoreSavedStateAndHandleFlag4(void) {
+    if (D_8013AFD6) {
+        D_8013AEEC[0] = D_8013AFE8;
+    }
+    if (D_8013AFAA & 0x10) {
+        D_8013AFAA &= ~0x18;
+        setCurrentTaskCallback(func_8001E1B8);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001E244);
 
