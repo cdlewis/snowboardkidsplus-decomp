@@ -1,4 +1,5 @@
 advanceTaskWhenFlagAFE4Bit8Set = 0x8001CE2C; // type:func
+startMemoryCardReadTask = 0x80019A2C; // type:func
 uploadBufferedTexturePair = 0x8002F264; // type:func
 beginSound601TaskSequence = 0x800330CC; // type:func
 unpackPsxColor = 0x80051694; // type:func

@@ -38,10 +38,12 @@ typedef struct MovieDecodeState {
 
 
 extern u32 D_8013AFE4;
+extern s16 D_8013AF3E;
 extern u16 D_8013AFAA __attribute__((section(".data")));
 
 void func_8001C0DC(void);
 void func_8001B7F0(void);
+void func_80019A70(void);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80015EE0);
 
@@ -229,7 +231,14 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001993C);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80019980);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80019A2C);
+s32 startMemoryCardReadTask(void) {
+    if (D_8013AF3E == 5) {
+        func_80014874(func_80019A70);
+        D_8013AF3E = 3;
+        return 1;
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80019A70);
 
