@@ -12,5 +12,7 @@ extern u16 D_8013AE4E;
 extern u16 D_8013AE50;
 
 s32 isCdCommandQueueIdle(void);
+s32 func_800136DC(s16 command, s16 sector, s16 count, void *destination, s32 value);
+void queueStartupSectorReads(void);
 void func_80013DD0(s16 command, s16 value);
 void resetPendingCdRequests(void);

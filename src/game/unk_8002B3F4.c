@@ -10,6 +10,7 @@
 #include "game/game_options.h"
 #include "game/controller.h"
 #include "game/controller_effects.h"
+#include "game/cd_queue.h"
 #include "psx/libsnd.h"
 
 typedef struct MenuTimeResource {
@@ -294,7 +295,10 @@ void initDefaultBackground(s16 mode, s16 unused, GameBackground *background,
                   (u8 *)0x80180000, (u8 *)0x80180800);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002F348);
+void queueStartupSectorReads(void) {
+    func_800136DC(0, 1, 5, (u8 *)0x8017D000, 0);
+    func_800136DC(0, 6, 18, (u8 *)0x801F0000, 0);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002F394);
 
