@@ -202,6 +202,7 @@ void func_80069C04(void);
 void func_8006A9CC(void);
 void func_8006FE68(s16 x, s16 y, s16 w, s16 h, s16 borderW, s16 borderH,
                    s16 style, s16 clutOffset, s16 blendMode, GsOT *ot, u16 depth);
+void func_8006A07C(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800497B8);
 
@@ -968,7 +969,13 @@ void startPrimaryValueTransition(s32 duration, s32 start, s32 end) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006A07C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006A128);
+void startValueInterpolationTask(s32 duration, s32 start, s32 end) {
+    func_80014930(D_8013AE88, func_8006A07C);
+    D_8013AE8C->data18 = 0;
+    D_8013AE8C->data1A = duration;
+    D_8013AE8C->data1C = start;
+    D_8013AE8C->data1E = end;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006A194);
 
