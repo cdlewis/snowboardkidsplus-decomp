@@ -105,7 +105,11 @@ void setControllerFlag5(u16 controller) {
     D_8013AF08[controller] = -1;
 }
 
-INCLUDE_ASM("asm/nonmatchings/main", func_80014D04);
+void clearControllerFlag5(u16 controller) {
+    u8 *flags = controller + gControllerFlags;
+    *flags &= ~0x20;
+    D_8013AF08[controller] = -1;
+}
 
 s32 isControllerFlag5Clear(u16 controller) {
     s32 flags = gControllerFlags[controller];

@@ -1615,6 +1615,7 @@ setCurrentPlayerFinalPartTranslations = 0x800975FC; // type:func
 initPlayerZeroTask = 0x8003E768; // type:func
 
 clearControllerFlag0 = 0x80014C98; // type:func
+clearControllerFlag5 = 0x80014D04; // type:func
 
 resetGameOptionState = 0x8002F1A4; // type:func
 
