@@ -6,6 +6,8 @@ u16 gTaskResourceFreeBits[16] __attribute__((section(".data.task_resource_bitmap
 
 u8 gControllerFlags[4] __attribute__((section(".data"))) = {0, 0, 0, 0};
 
+s16 D_8013AF08[2] __attribute__((section(".data.controller_values"))) = {0, 0};
+
 void func_800131B4(void) {
 }
 
@@ -95,7 +97,10 @@ INCLUDE_ASM("asm/nonmatchings/main", func_80014C98);
 
 INCLUDE_ASM("asm/nonmatchings/main", func_80014CBC);
 
-INCLUDE_ASM("asm/nonmatchings/main", func_80014CCC);
+void setControllerFlag5(u16 controller) {
+    gControllerFlags[controller] |= 0x20;
+    D_8013AF08[controller] = -1;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main", func_80014D04);
 
