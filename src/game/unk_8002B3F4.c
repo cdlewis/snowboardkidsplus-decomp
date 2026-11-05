@@ -73,6 +73,7 @@ extern u8 D_8013AFCD __attribute__((section(".data")));
 
 void func_80037850(const MenuTimeValue *value, s16 x, s16 y, s16 mode, GsOT *ot, u16 depth);
 
+void func_8002F3C8(s16 x, s16 y, s16 clutX, s16 clutY, u32 *tim);
 void func_8003E60C(u16 index);
 void func_8003EE70(void);
 void func_8002F5F8(void);
@@ -276,7 +277,16 @@ void uploadBufferedTexturePair(void) {
     func_80015EE0((u32 *)0x80181000, NULL);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002F29C);
+void uploadTextureArchiveEntry(s16 x, s16 y, s16 clutX, s16 clutY, s32 index) {
+    OffsetArchive *archive = (OffsetArchive *)0x80189800;
+    s32 offset;
+    /* The archive word index includes the count and wraps as a signed halfword. */
+    index = (s16)index + 1;
+    index = (s16)index;
+    offset = (s32)archive->offsets[index - 1];
+    func_8002F3C8(x, y, clutX, clutY,
+                  (u32 *)((s16 *)archive + (offset >> 1)));
+}
 
 void initDefaultBackground(s16 mode, s16 unused, GameBackground *background,
                            GameBackgroundMap *map) {

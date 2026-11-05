@@ -125,6 +125,7 @@ void setPaletteRecordColor(u16 index, u8 r, u8 g, u8 b);
 void startPaletteCycle(u16 direction, u16 index, u8 first, u8 last, u8 interval);
 void func_80071300(s16 mode, s16 unused, GameBackground *background,
                    GameBackgroundMap *map, u8 *cells, u8 *tiles);
+void uploadTextureArchiveEntry(s16 x, s16 y, s16 clutX, s16 clutY, s32 index);
 void initDefaultBackground(s16 mode, s16 unused, GameBackground *background,
                            GameBackgroundMap *map);
 
