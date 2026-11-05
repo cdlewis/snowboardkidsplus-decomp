@@ -11,7 +11,7 @@ void func_8001F6D8(void);
 void func_8001F6F8(void);
 void func_8001F718(void);
 void func_8001F7A0(void);
-void func_8001F874(void);
+void initializeCurrentPlayerState14(void);
 void func_8001F8E4(void);
 void func_8001F970(void);
 void func_8001FA38(void);
@@ -24,3 +24,5 @@ void func_8001FEE0(void);
 void func_8001FFA8(void);
 void func_80020018(void);
 void func_800200F8(void);
+
+void func_800273D4(void);

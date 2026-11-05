@@ -140,3 +140,4 @@ void func_80016E80(u8 index, u8 flags);
 
 void initCurrentPlayerModelParts(void);
 s32 callCurrentPlayerStateCallbackIfDifferent(u16 state);
+
