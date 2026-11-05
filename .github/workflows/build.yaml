@@ -1,0 +1,102 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          submodules: recursive
+          persist-credentials: false
+
+      - name: Checkout encrypted disc
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          repository: cdlewis/snowboardkidsplus-private
+          ref: ebe2078df43326c4920350f418df8078480f8829
+          ssh-key: ${{ secrets.PRIVATE_REPO_SSH_KEY }}
+          persist-credentials: false
+          path: baserom
+
+      - name: Decrypt disc
+        env:
+          BASEROM_KEY: ${{ secrets.BASEROM_KEY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd baserom
+          sha256sum --check SHA256SUMS
+          cat baserom.zip.gpg.part-* > "$RUNNER_TEMP/baserom.zip.gpg"
+          trap 'rm -f "$RUNNER_TEMP/baserom.zip" "$RUNNER_TEMP/baserom.zip.gpg"' EXIT
+          printf '%s' "$BASEROM_KEY" | gpg --batch --quiet --pinentry-mode loopback \
+            --passphrase-fd 0 --output "$RUNNER_TEMP/baserom.zip" \
+            --decrypt "$RUNNER_TEMP/baserom.zip.gpg"
+          cd "$GITHUB_WORKSPACE"
+          unzip -q "$RUNNER_TEMP/baserom.zip" \
+            'Snobow Kids Plus (Japan)/Snobow Kids Plus (Japan).bin'
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y binutils-mips-linux-gnu
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.13'
+
+      - name: Install Python dependencies
+        run: |
+          python -m venv .venv
+          .venv/bin/pip install pycdlib 'splat64[mips]' 'mapfile-parser>=2.13.2,<3'
+
+      - name: Install PSX compilers
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP"
+          for version in 2.7.2 2.8.0 2.8.1; do
+            curl --fail --location --retry 3 --output "gcc-$version-psx.tar.gz" \
+              "https://github.com/decompals/old-gcc/releases/download/0.17/gcc-$version-psx.tar.gz"
+          done
+          sha256sum --check <<'CHECKSUMS'
+          500a459b3485e885a8d302cac23c2a4632f3900e03a09153f6190699fd723571  gcc-2.7.2-psx.tar.gz
+          1a3c956fe8aea5ebdb251749d95de2c84f023530584d7bd663744b5ec24050b7  gcc-2.8.0-psx.tar.gz
+          f6f6e883942d4d3289d048236c672e71ed410e546aaae8ff655952f1567e1be0  gcc-2.8.1-psx.tar.gz
+          CHECKSUMS
+          for version in 2.7.2 2.8.0 2.8.1; do
+            destination="$GITHUB_WORKSPACE/tools/gcc/gcc-$version-psx"
+            mkdir -p "$destination"
+            tar -xzf "gcc-$version-psx.tar.gz" -C "$destination" cc1
+          done
+
+      - name: Fetch SDK converter
+        run: .venv/bin/python tools/psyq_sdk.py --fetch
+
+      - name: Build and verify executable
+        run: ./tools/build-and-verify.sh --jobs 2
+
+      - name: Upload progress report
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: jp_report
+          path: build/report.json
+          if-no-files-found: error
+
+      - name: Remove disc data
+        if: always()
+        run: rm -rf baserom disc 'Snobow Kids Plus (Japan)'
