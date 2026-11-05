@@ -1,9 +1,11 @@
 #include "common.h"
 #include "main_tail_sound_slots.h"
 #include "game/controller.h"
-#include "game/game_options.h"
 #include "game/global_flags.h"
 #include "game/selected_records.h"
+#include "game/cd_queue.h"
+#include "game/game_options.h"
+#include "game/graphics.h"
 #define RACE_PLAYER_ABSOLUTE_ADDRESSING
 #define TASK_ABSOLUTE_ADDRESSING
 #include "game/race_player.h"
@@ -102,6 +104,7 @@ void func_8001B858(void);
 void func_8001B7F0(void);
 void func_800A1F50(void);
 void func_8009B5A0(s16 playerIndex, s32 unused, s32 paletteRow, u16 mode);
+void func_800A525C(void);
 void func_800A6A8C(void);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_8008C708);
@@ -485,7 +488,12 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A5204);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A525C);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A528C);
+void startUnlockResourceLoad(void) {
+    resetPendingCdRequests();
+    D_8013AFE4 &= ~0x100;
+    createResourceLoadTask();
+    setCurrentTaskCallback(func_800A525C);
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A52D8);
 

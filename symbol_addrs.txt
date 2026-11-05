@@ -116,6 +116,7 @@ getUnlockNotificationFlag = 0x8008C6BC; // type:func
 setUnlockNotificationFlag = 0x8008C6DC; // type:func
 hasUnlockNotificationFlag = 0x800A4F78; // type:func
 resumeUnlockSelectionTask = 0x800A51D8; // type:func
+startUnlockResourceLoad = 0x800A528C; // type:func
 gGameOptionFlags = 0x8013B570; // size:0x4 defined:true
 gUnlockNotificationFlags = 0x8013B574; // size:0x2 defined:true
 // Sprite initialization, offset archives, and a separate arithmetic RNG.
