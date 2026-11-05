@@ -104,7 +104,21 @@ void setPaletteRecordColor(u16 index, u8 r, u8 g, u8 b) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80016470);
+void startPaletteCycle(u16 direction, u16 index, u8 first, u8 last, u8 interval) {
+    PaletteRecordColor *color;
+    if (index != 32) {
+        color = &gSavedImageEntries[index].color;
+        color->r = first;
+        color->g = last;
+        color->unk3 = interval;
+        color->b = interval;
+        if (direction == 0) {
+            gSavedImageEntries[index].flags |= 0xA;
+        } else {
+            gSavedImageEntries[index].flags |= 0x12;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_800164E8);
 

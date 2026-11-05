@@ -1721,3 +1721,5 @@ initTexturedQuadTemplate = 0x8006BE04; // type:func
 getStateMaskPair = 0x8008C1E0; // type:func
 
 startPrimaryValueTransition = 0x8006A010; // type:func
+
+startPaletteCycle = 0x80016470; // type:func
