@@ -46,7 +46,9 @@ struct RacePlayer {
     u8 modelPartCount;
     u8 unk929[0x1B];
     u8 randomIndex;
-    u8 unk945[0xF];
+    u8 unk945[7];
+    s32 unk94C;
+    u8 unk950[4];
     u8 unk954;
     u8 unk955[0x87];
 };

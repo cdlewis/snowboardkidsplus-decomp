@@ -7,6 +7,7 @@
 #include "game/music.h"
 #define TASK_ABSOLUTE_ADDRESSING
 #include "game/task.h"
+#include "game/race_player.h"
 #include "game/selected_records.h"
 #define SELECTED_RECORD_GP_ADDRESSING
 #include "game/selected_record.h"
@@ -100,6 +101,7 @@ POLY_FT4 gMiddleShrinkQuadPacket
 
 extern GameTask *D_8013B304 __attribute__((section(".data")));
 extern SelectedStateRecord *D_8012C6F4[];
+extern s8 *D_8012BBB4[][4];
 /* Shared palette storage and capture rectangle remain in their data owners. */
 extern u32 D_8012CB94[8];
 extern RECT D_8013B330 __attribute__((section(".data")));
@@ -467,7 +469,22 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005EFA0);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005F46C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005F640);
+void updatePlayerField94CFromSelectedTable(u16 tableIndex, s16 sampleIndex,
+                                          u16 playerIndex) {
+    s32 delta;
+    RacePlayer *player;
+
+    delta = D_8012BBB4[D_8013AFCE][tableIndex][sampleIndex] * 20;
+    player = &D_80120E90[playerIndex];
+    delta -= player->unk94C;
+    if (delta > 30) {
+        delta = 30;
+    }
+    if (delta < -30) {
+        delta = -30;
+    }
+    player->unk94C += delta;
+}
 
 void resetSelectedRecordStates(void) {
     SelectedStateRecord *record = D_8012C6F4[D_8013AFCE];
