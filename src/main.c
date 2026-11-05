@@ -4,6 +4,24 @@
 #include "game/task.h"
 #include "game/controller_effects.h"
 
+typedef struct CdRequest {
+    s32 unk_00;
+    void *destination;
+    char *filename;
+    s32 sector;
+    s32 sectorCount;
+    s16 command;
+    s16 unk_16;
+    s32 unk_18;
+} CdRequest;
+
+CdRequest gCdRequests[64] __attribute__((section(".data.cd_requests"))) = {0};
+
+u16 gCdRequestPhase = 0;
+u16 gCdRequestWriteIndex = 0;
+u16 gCdRequestReadIndex = 0;
+u16 D_8013AE76 = 0;
+
 u16 gTaskResourceFreeBits[16] __attribute__((section(".data.task_resource_bitmap"))) = {0};
 
 u8 gControllerFlags[4] __attribute__((section(".data"))) = {0, 0, 0, 0};
@@ -47,7 +65,23 @@ s32 isCdReading(void) {
 
 INCLUDE_ASM("asm/nonmatchings/main", func_800137E0);
 
-INCLUDE_ASM("asm/nonmatchings/main", func_8001383C);
+// Ready when empty, or when the current search request reaches phase 7.
+s32 isCdRequestQueueReady(void) {
+    s32 result;
+    u16 index, end;
+    index = gCdRequestReadIndex & 63;
+    end = gCdRequestWriteIndex & 63;
+    gCdRequestReadIndex = index;
+    gCdRequestWriteIndex = end;
+    if (index == end) {
+        result = 1;
+    } else if (gCdRequests[index].command == 15) {
+        result = gCdRequestPhase >= 7;
+    } else {
+        result = 0;
+    }
+    return result;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main", func_800138AC);
 

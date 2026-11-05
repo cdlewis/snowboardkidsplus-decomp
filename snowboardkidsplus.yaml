@@ -527,6 +527,8 @@ segments:
       - [0xC7828, lib, libapi, chclrpad, .text]
       - [0xC7898, data, C7898]
       - [0xC78E8, data, C78E8] # estimated
+      - {start: 0xC7C84, type: .data, name: main, linker_section: .data.cd_requests}
+      - [0xC8384, data]
       - {start: 0xD9D04, type: .data, name: main, linker_section: .data.task_resource_bitmap}
       - [0xD9D24, data, D9D24]
       - [0xDAD9C, .data, engine/random]
@@ -590,6 +592,8 @@ segments:
       - [0x12B628, data]
       - [0x12B638, lib, libapi, pad, .data]
       - [0x12B648, data]
+      - {start: 0x12B670, type: .sdata, name: main, linker_section_order: .data}
+      - [0x12B678, data]
       - [0x12B6B8, .data, main]
       - [0x12B6BC, data]
       - {start: 0x12B708, type: .data, name: main, linker_section: .data.controller_values}
