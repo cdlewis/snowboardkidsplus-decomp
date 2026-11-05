@@ -1950,6 +1950,8 @@ initializeTaskFade = 0x800377E0; // type:func
 drawCurrentTaskMenu = 0x80038A28; // type:func
 
 compareRaceTimes = 0x8003C9A4; // type:func
+advanceRaceElapsedTime = 0x800439AC; // type:func
+gRaceElapsedTime = 0x8013B180; // type:RaceTime size:0x4
 
 setTexturedQuadTexture = 0x8006BE50; // type:func
 

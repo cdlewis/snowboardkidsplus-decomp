@@ -4,14 +4,15 @@
 #include "game/task.h"
 #include "game/race_player.h"
 #include "game/race_camera.h"
+#include "game/race_time.h"
 #include "game/graphics.h"
 #include "game/linear_random.h"
 #include "game/offset_archive.h"
 #include "game/music.h"
 #include "game/game_options.h"
 #include "game/controller.h"
-#include "game/controller_effects.h"
 #include "game/cd_queue.h"
+#include "game/controller_effects.h"
 #include "psx/libsnd.h"
 
 typedef struct MenuTimeResource {
@@ -39,12 +40,6 @@ typedef struct MenuSpritePaletteGroups {
     u8 kind[8];
     u8 unk0B[9];
 } MenuSpritePaletteGroups;
-/* Centiseconds are stored with eight fractional bits. */
-typedef struct RaceTime {
-    s8 minutes;
-    s8 seconds;
-    s16 centiseconds;
-} RaceTime;
 
 typedef struct PlayerNumberResource {
     u16 timer;
@@ -102,6 +97,8 @@ extern s32 D_8013B0E8;
 extern u8 D_8013AFCD __attribute__((section(".data")));
 
 void func_80037850(const MenuTimeValue *value, s16 x, s16 y, s16 mode, GsOT *ot, u16 depth);
+
+RaceTime gRaceElapsedTime = {0, 0, 0};
 
 void func_8002F3C8(s16 x, s16 y, s16 clutX, s16 clutY, u32 *tim);
 s16 func_8004A124(s32 x1, s32 z1, s32 x2, s32 z2);
@@ -991,7 +988,24 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800435AC);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80043810);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800439AC);
+void advanceRaceElapsedTime(void) {
+    if (!D_8013AFD3) {
+        gRaceElapsedTime.centiseconds += 0x358;
+        if (gRaceElapsedTime.centiseconds > 0x6400) {
+            gRaceElapsedTime.centiseconds = 0;
+            gRaceElapsedTime.seconds++;
+            if (gRaceElapsedTime.seconds >= 60) {
+                gRaceElapsedTime.seconds = 0;
+                gRaceElapsedTime.minutes++;
+                if (gRaceElapsedTime.minutes >= 99) {
+                    gRaceElapsedTime.centiseconds = 0x6300;
+                    gRaceElapsedTime.seconds = 59;
+                    gRaceElapsedTime.minutes = 99;
+                }
+            }
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80043A4C);
 

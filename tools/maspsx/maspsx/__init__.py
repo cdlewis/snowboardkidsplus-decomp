@@ -1230,6 +1230,14 @@ class MaspsxProcessor:
                     symbol in self.sdata_entries or symbol in self.sbss_entries
                 ):
                     res.append(f"{op}\t{r_dest},{gp_rel}")
+                elif op == "la" and not gp_allowed and (
+                    symbol in self.sdata_entries or symbol in self.sbss_entries
+                ):
+                    # GNU as can relax a bare la to a GP-relative addiu when
+                    # -G is enabled. Preserve the ASPSX version's absolute
+                    # address choice even for a small-data symbol.
+                    res.append(f"lui\t{r_dest},%hi({operand})")
+                    res.append(f"addiu\t{r_dest},{r_dest},%lo({operand})")
                 else:
                     res.append(line)
             elif is_addend and r_source:

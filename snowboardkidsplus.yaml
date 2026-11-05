@@ -631,6 +631,8 @@ segments:
       - [0x12B7B4, data, 12B7B4]
       - {start: 0x12B958, type: .data, name: game/unk_8002B3F4, linker_section: .data.menu_sprite_palettes}
       - [0x12B96C, data, 12B96C]
+      - {start: 0x12B980, type: .sdata, name: game/unk_8002B3F4, linker_section_order: .data}
+      - [0x12B984, data, 12B984]
       - {start: 0x12B9D8, type: .sdata, name: game/unk_800497B8, linker_section_order: .data}
       - [0x12B9DA, pad]
       - [0x12B9DC, data, 12B9DC]
