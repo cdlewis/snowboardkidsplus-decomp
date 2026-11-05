@@ -1706,3 +1706,4 @@ preparePlayerResourcesTask = 0x800A0D10; // type:func
 readMemoryCardDirectory = 0x80018F58; // type:func
 
 getStateMaskTier = 0x8008BFF0; // type:func
+selectTaskBySelectedRecordMatch = 0x800A2460; // type:func

@@ -1,5 +1,6 @@
 #include "common.h"
 #include "game/game_options.h"
+#include "game/selected_records.h"
 #define RACE_PLAYER_ABSOLUTE_ADDRESSING
 #define TASK_ABSOLUTE_ADDRESSING
 #include "game/race_player.h"
@@ -22,6 +23,8 @@ typedef struct TextEntryListHeader {
 } TextEntryListHeader;
 
 extern u8 D_8013B55E __attribute__((section(".data")));
+extern s16 D_8013B560;
+extern u8 D_8013B562;
 
 void func_800A5AFC(void);
 void func_800A6548(void);
@@ -30,6 +33,8 @@ void func_800A42CC(void);
 void func_800A499C(void);
 void func_8001D97C(void);
 void func_8001DFDC(void);
+void func_8001B858(void);
+void func_800A1F50(void);
 void func_8009B5A0(s16 playerIndex, s32 unused, s32 paletteRow, u16 mode);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_8008C708);
@@ -267,7 +272,15 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A2210);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A2324);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A2460);
+void selectTaskBySelectedRecordMatch(void) {
+    if (D_8013B560 != D_8013AFCE) {
+        D_8013B562 = 0;
+        setCurrentTaskCallback(func_8001B858);
+    } else {
+        D_8013B562 = 1;
+        setCurrentTaskCallback(func_800A1F50);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A24B0);
 
