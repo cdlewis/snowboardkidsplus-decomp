@@ -16,10 +16,15 @@ extern s16 *D_8013B1F4;
 extern s16 D_8013B1F8;
 extern s16 D_8013B1FA;
 extern s16 D_8013B1FC;
+extern s16 D_8013B1FE;
+extern s16 *D_8013B200;
+extern s16 *D_8013B204;
+extern s16 *D_8013B208;
 #else
 extern SelectedRecord *D_8013B1F0 __attribute__((section(".data")));
-#endif
 extern s16 D_8013B1FE __attribute__((section(".data")));
+#endif
 
 
 void bindGeometryRecordData(s16 *data);
+void selectGeometryRecord(s16 index);

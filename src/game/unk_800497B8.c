@@ -99,7 +99,14 @@ void bindGeometryRecordData(s16 *data) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8004A4C4);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8004A6F0);
+void selectGeometryRecord(s16 index) {
+    s16 *vertices;
+    D_8013B1FE = index;
+    vertices = D_8013B1EC;
+    D_8013B200 = &vertices[D_8013B1F0[index].vertexIndices[0] * 3];
+    D_8013B204 = &vertices[D_8013B1F0[index].vertexIndices[1] * 3];
+    D_8013B208 = &vertices[D_8013B1F0[index].vertexIndices[2] * 3];
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8004A764);
 
