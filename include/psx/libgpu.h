@@ -10,6 +10,23 @@ typedef struct P_TAG {
     u8 r0, g0, b0, code;
 } P_TAG;
 
+typedef struct POLY_FT4 {
+    u32 tag;
+    u8 r0, g0, b0, code;
+    s16 x0, y0;
+    u8 u0, v0;
+    u16 clut;
+    s16 x1, y1;
+    u8 u1, v1;
+    u16 tpage;
+    s16 x2, y2;
+    u8 u2, v2;
+    u16 pad1;
+    s16 x3, y3;
+    u8 u3, v3;
+    u16 pad2;
+} POLY_FT4;
+
 typedef struct DR_ENV { u32 tag; u32 code[15]; } DR_ENV;
 typedef struct DR_TWIN { u32 tag; u32 code[2]; } DR_TWIN;
 typedef struct DR_AREA { u32 tag; u32 code[2]; } DR_AREA;
@@ -36,6 +53,7 @@ typedef struct DISPENV {
 } DISPENV;
 
 #define setlen(p, length) (((P_TAG *)(p))->len = (u8)(length))
+#define setRGB0(p, r, g, b) ((p)->r0 = (r), (p)->g0 = (g), (p)->b0 = (b))
 #define getlen(p) ((u8)(((P_TAG *)(p))->len))
 #define getTPage(tp, abr, x, y) \
     ((((tp) & 3) << 7) | (((abr) & 3) << 5) | (((y) & 0x100) >> 4) | \

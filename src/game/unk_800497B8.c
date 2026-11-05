@@ -5,7 +5,6 @@
 #include "game/music.h"
 #include "psx/libsnd.h"
 
-
 void func_8006BE04(void);
 void func_8006C848(void);
 
@@ -575,7 +574,9 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006BE04);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006BE50);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006BED4);
+void setTexturedQuadColor(s32 r, s32 g, s32 b) {
+    setRGB0(&gTexturedQuadTemplate, r, g, b);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006BEEC);
 

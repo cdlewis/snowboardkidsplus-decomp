@@ -586,6 +586,16 @@ segments:
       - [0x12BD70, .data, engine/game_options]
       - [0x12BD78, data, 12BD78]
 
+  - name: game_textured_quad_template_bss
+    type: code
+    start: 0x12C000
+    vram: 0x8013BDB8
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: .bss, name: game/primitive_templates}
+
   - name: sdk_libsnd_ssinit_bss_common_SsFCALL
     type: code
     start: 0x12C000
