@@ -19,6 +19,7 @@ options:
   ld_dependencies_include: False
   ld_align_section_vram_end: False
   ld_align_segment_vram_end: False
+  ld_bss_is_noload: True
 
   find_file_boundaries: True
   gp_value: 0x8013AE48
@@ -658,6 +659,16 @@ segments:
     section_order: [".bss"]
     subsegments:
       - {start: 0x12C000, type: .bss, name: game/sprite_templates}
+
+  - name: game_state_value_history_bss
+    type: code
+    start: 0x12C000
+    vram: 0x8013BE30
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: .bss, name: game/unk_8007CC78, linker_section: .bss.state_value_history}
 
   - name: game_text_sound_slots_bss
     type: code

@@ -44,12 +44,13 @@ typedef struct StateValueHistory {
 
 HalfwordPair D_8012F13C[16] __attribute__((section(".data"))) = {0};
 
-extern StateValueHistory D_8013BE30;
+StateValueHistory D_8013BE30 __attribute__((section(".bss.state_value_history")));
 extern u8 D_8013AFD8 __attribute__((section(".data")));
 extern u8 D_8013AFD9 __attribute__((section(".data")));
 extern u8 D_8013B47C;
 
 void func_80089B30(void);
+void func_80087030(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8007CC78);
 
@@ -243,7 +244,21 @@ s16 hasStateValueChanged(s16 index) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80087030);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_800873DC);
+void startClearedStateValueHistoryTask(void) {
+    s16 i;
+
+    func_80014874(func_80087030);
+    D_8013AE8C->data18 = 0;
+    D_8013BE30.unk_00 = 16;
+    D_8013BE30.activeIndex = 1;
+    for (i = 0; i < 2; i++) {
+        D_8013BE30.current[i] = 0;
+        D_8013BE30.previous[i] = 0;
+        D_8013BE30.unk_0E[i] = 0;
+        D_8013BE30.unk_12[i] = 0;
+        D_8013BE30.unk_16[i] = 0;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80087464);
 
