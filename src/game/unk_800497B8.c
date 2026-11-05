@@ -433,7 +433,23 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005F944);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005FAE0);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005FB34);
+void addCopiedPrimitive(u32 *orderingTable, u32 *packet) {
+    u32 length = ((P_TAG *)packet)->len;
+    u32 *out = (u32 *)GsOUT_PACKET_P;
+    u8 remaining = length;
+
+    if (length != 0xFF) {
+        do {
+            *out++ = *packet++;
+        } while (--remaining != 0xFF);
+    }
+    {
+        u32 *start = (u32 *)GsOUT_PACKET_P;
+
+        GsOUT_PACKET_P = (u32)out;
+        addPrim(orderingTable, start);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005FBC0);
 

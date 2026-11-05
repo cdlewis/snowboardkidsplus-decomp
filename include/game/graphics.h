@@ -43,6 +43,8 @@ void addFlatRectangleWithDrawMode(u32 *orderingTable, s32 tpage, s32 flags,
                                   s32 r, s32 g, s32 b);
 void addTexturedRectangle(u32 *orderingTable, s32 clut, s32 x, s32 y,
                           s32 w, s32 h, s32 r, s32 g, s32 b);
+/* Copy a tagged packet into the current buffer and link it into the table. */
+void addCopiedPrimitive(u32 *orderingTable, u32 *packet);
 void initSprite(GsSPRITE *sprite);
 void unpackPsxColor(u32 color, UnpackedPsxColor *out);
 void setTextPalette(s32 palette);
