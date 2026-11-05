@@ -552,6 +552,8 @@ segments:
       - [0x11F97C, data, 11F97C]
       - {start: 0x122F38, type: .data, name: main_tail, linker_section: .data.indexed_sector_ranges}
       - [0x122F8C, data, 122F8C]
+      - {start: 0x123100, type: .data, name: main_tail, linker_section: .data.number_adjustment_arrow}
+      - [0x123114, data, 123114]
       - {start: 0x1235BC, type: .data, name: syslib/libmath/ferr, linker_section: .data.math_error}
       - [0x1235C4, lib, libsnd, ssinit, .data]
       - [0x123604, lib, libspu, s_ini, .data]

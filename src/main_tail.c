@@ -8,6 +8,8 @@
 #include "game/race_player.h"
 #include "game/text_entries.h"
 #include "game/task.h"
+#include "psx/libgpu.h"
+#include "psx/libgs.h"
 
 #define INDEXED_SECTOR_READ_DESTINATION ((void *)0x801F2080)
 
@@ -55,6 +57,10 @@ ResourceSectorRange gOtherModeSectorRanges[11] __attribute__((section(".data.ind
     {0x236C, 1},
     {0x236B, 1},
     {0x236D, 1}
+};
+
+POLY_F3 gNumberAdjustmentArrow __attribute__((section(".data.number_adjustment_arrow"))) = {
+    4U << 24, 0, 0, 0, POLY_F3_CODE, 0, 0, 0, 0, 0, 0
 };
 
 extern u8 D_8013B55E __attribute__((section(".data")));
@@ -467,7 +473,16 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A53BC);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A5418);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A55A0);
+void drawNumberAdjustmentArrow(s16 direction, GsOT *ot, u16 depth) {
+    POLY_F3 *triangle = &gNumberAdjustmentArrow;
+    setRGB0(triangle, 0xC0, 0x20, 0);
+    if (direction == 0) {
+        setXY3(triangle, -46, -32, -40, -44, -34, -32);
+    } else {
+        setXY3(triangle, -46, -8, -40, 4, -34, -8);
+    }
+    GsSortPoly(triangle, ot, depth);
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A5630);
 

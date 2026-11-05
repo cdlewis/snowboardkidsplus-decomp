@@ -61,6 +61,13 @@ typedef struct POLY_F4 {
 } POLY_F4;
 #define POLY_F4_CODE 0x28
 
+typedef struct POLY_F3 {
+    u32 tag;
+    u8 r0, g0, b0, code;
+    s16 x0, y0, x1, y1, x2, y2;
+} POLY_F3;
+#define POLY_F3_CODE 0x20
+
 typedef struct TILE {
     u32 tag;
     u8 r0, g0, b0, code;
@@ -103,6 +110,9 @@ typedef struct DISPENV {
 #define setWH(p, width, height) ((p)->w = (width), (p)->h = (height))
 #define setXY2(p, x_0, y_0, x_1, y_1) \
     ((p)->x0 = (x_0), (p)->y0 = (y_0), (p)->x1 = (x_1), (p)->y1 = (y_1))
+#define setXY3(p, x_0, y_0, x_1, y_1, x_2, y_2) \
+    ((p)->x0 = (x_0), (p)->y0 = (y_0), (p)->x1 = (x_1), (p)->y1 = (y_1), \
+     (p)->x2 = (x_2), (p)->y2 = (y_2))
 #define getlen(p) ((u8)(((P_TAG *)(p))->len))
 #define getTPage(tp, abr, x, y) \
     ((((tp) & 3) << 7) | (((abr) & 3) << 5) | (((y) & 0x100) >> 4) | \
