@@ -55,6 +55,9 @@ ControllerEffectState gControllerEffectStates[2] = {0};
 u16 gTextClut = 0;
 
 extern SelectedStateRecord *D_8012C6F4[];
+/* Shared palette storage and capture rectangle remain in their data owners. */
+extern u32 D_8012CB94[8];
+extern RECT D_8013B330 __attribute__((section(".data")));
 extern u32 *D_8013AF6C __attribute__((section(".data")));
 extern u16 D_8013B376 __attribute__((section(".sdata")));
 
@@ -65,6 +68,7 @@ void func_8006BE50(s32 textureIndex, s32 clutOffset);
 void func_8006C848(void);
 void func_8006B1F4(void);
 void func_80069F64(void);
+void func_80069C04(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800497B8);
 
@@ -672,7 +676,11 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80069BAC);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80069C04);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80069DC8);
+void capturePaletteForColorCycle(void) {
+    StoreImage(&D_8013B330, D_8012CB94);
+    DrawSync(0);
+    setCurrentTaskCallback(func_80069C04);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80069E08);
 
