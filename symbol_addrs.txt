@@ -1609,6 +1609,7 @@ D_8013AF08 = 0x8013AF08; // size:0x4 defined:true
 clearCurrentPlayerSequenceState = 0x8001E610; // type:func
 
 initTimedSequence = 0x800770D4; // type:func
+updateTimedSequence = 0x80077110; // type:func
 
 releaseSavedImageEntry = 0x80016314; // type:func
 readVram16Pixels = 0x800163E4; // type:func

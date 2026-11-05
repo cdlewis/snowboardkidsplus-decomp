@@ -222,7 +222,15 @@ void initTimedSequence(TimedSequence *sequence, const TimedSequenceEntry *entrie
     sequence->nextFrame = (gFrameCounter + sequence->entries[index].duration) & 0xFFF;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80077110);
+void updateTimedSequence(TimedSequence *sequence) {
+    if (sequence->nextFrame == gFrameCounter) {
+        sequence->index++;
+        if (sequence->index >= sequence->count) {
+            sequence->index = 0;
+        }
+        sequence->nextFrame = (gFrameCounter + sequence->entries[sequence->index].duration) & 0xFFF;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80077184);
 
