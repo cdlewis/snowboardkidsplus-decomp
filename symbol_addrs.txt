@@ -1729,3 +1729,5 @@ startPaletteCycle = 0x80016470; // type:func
 tryAcceptMemoryCard = 0x80019244; // type:func
 
 beginMode2SequenceAndFadeMusic = 0x8002FA14; // type:func
+
+getModeFilteredGameOptionFlag2 = 0x8008C568; // type:func

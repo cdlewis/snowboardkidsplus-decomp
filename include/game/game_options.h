@@ -19,6 +19,7 @@ extern u8 D_8013B10A;
 void resetGameOptionState(void);
 s32 getStereoSoundFlag(void);
 s32 getGameOptionFlag0(void);
+s32 getModeFilteredGameOptionFlag2(void);
 s32 getPlayerOptionFlag(s16 playerIndex);
 
 /* The unlock-message launcher (func_800A7CE8) tests and sets this mask to
