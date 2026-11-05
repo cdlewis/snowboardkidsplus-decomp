@@ -6,6 +6,10 @@
 #include "game/music.h"
 #include "psx/libsnd.h"
 
+typedef struct ByteTriplet {
+    u8 bytes[3];
+} ByteTriplet;
+
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8007CC78);
 
@@ -81,7 +85,9 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80082CE0);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80083028);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8008315C);
+ByteTriplet *lookupByteTriplet(ByteTriplet *records, u8 *indices, s16 index) {
+    return &records[indices[index]];
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80083180);
 
