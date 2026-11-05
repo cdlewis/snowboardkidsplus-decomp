@@ -24,6 +24,9 @@ advanceTaskWhenFlagAFE4Bit8Set = 0x8001CE2C; // type:func
 startMemoryCardReadTask = 0x80019A2C; // type:func
 uploadBufferedTexturePair = 0x8002F264; // type:func
 beginSound601TaskSequence = 0x800330CC; // type:func
+// CD command processor is inactive and its 64-entry queue is empty.
+isCdCommandQueueIdle = 0x800137E0; // type:func
+
 unpackPsxColor = 0x80051694; // type:func
 signalFlag9WhenTaskCountdownExpires = 0x800A7C8C; // type:func
 

@@ -1,5 +1,6 @@
 #include "common.h"
 #include "psx/libcd.h"
+#include "game/cd_queue.h"
 #include "game/controller.h"
 #include "game/task.h"
 #include "game/controller_effects.h"
@@ -63,7 +64,18 @@ s32 isCdReading(void) {
     return 0;
 }
 
-INCLUDE_ASM("asm/nonmatchings/main", func_800137E0);
+s32 isCdCommandQueueIdle(void) {
+    if (D_8013AE78 == 0 || D_8013AE4C == -1) {
+        if (gCdRequestPhase == 0) {
+            gCdRequestReadIndex &= 0x3F;
+            gCdRequestWriteIndex &= 0x3F;
+            if (gCdRequestReadIndex == gCdRequestWriteIndex) {
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
 
 // Ready when empty, or when the current search request reaches phase 7.
 s32 isCdRequestQueueReady(void) {
