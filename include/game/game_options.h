@@ -20,6 +20,8 @@ void resetGameOptionState(void);
 s32 getStereoSoundFlag(void);
 s32 getGameOptionFlag0(void);
 s32 getModeFilteredGameOptionFlag2(void);
+/* State overrides return 0 or 1; otherwise returns the raw option bit 1 mask. */
+s32 getStateAdjustedGameOptionFlag1(void);
 s32 getPlayerOptionFlag(s16 playerIndex);
 
 /* The unlock-message launcher (func_800A7CE8) tests and sets this mask to

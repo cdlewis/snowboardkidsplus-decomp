@@ -40,6 +40,8 @@ HalfwordPair D_8012F13C[16] __attribute__((section(".data"))) = {0};
 
 extern StateValueHistory D_8013BE30;
 extern u8 D_8013AFCD __attribute__((section(".data")));
+extern u8 D_8013AFD8 __attribute__((section(".data")));
+extern u8 D_8013AFD9 __attribute__((section(".data")));
 extern u8 D_8013B47C;
 
 void func_80089B30(void);
@@ -411,4 +413,15 @@ s32 getModeFilteredGameOptionFlag2(void) {
     return gGameOptionFlags & 4;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8008C5CC);
+s32 getStateAdjustedGameOptionFlag1(void) {
+    if (D_8013AFD8 != 0) {
+        return (u32)(D_8013AFD8 - 7) < 2;
+    }
+    if (D_8013AFD9 != 0) {
+        return 0;
+    }
+    if (D_8013AFCD < 2) {
+        return 1;
+    }
+    return gGameOptionFlags & 2;
+}
