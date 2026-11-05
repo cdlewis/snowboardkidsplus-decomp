@@ -1533,6 +1533,9 @@ fev13 = 0x80141634; // defined:true
 hasTaskReference = 0x80071910; // type:func
 setTexturedQuadColor = 0x8006BED4; // type:func
 gTexturedQuadTemplate = 0x8013BDB8; // size:0x28 defined:true
+setSpriteColor = 0x8006C944; // type:func
+gSpriteTemplate = 0x8013BDF0; // size:0x14 defined:true
+gTexturedSpriteTemplate = 0x8012E8E4; // size:0x18 defined:true
 
 setTaskSecondaryResourceData = 0x8007494C; // type:func
 

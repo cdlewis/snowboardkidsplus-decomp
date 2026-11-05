@@ -604,7 +604,10 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006C848);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006C8B0);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006C944);
+void setSpriteColor(s32 r, s32 g, s32 b) {
+    setRGB0(&gSpriteTemplate, r, g, b);
+    setRGB0(&gTexturedSpriteTemplate, r, g, b);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006C970);
 

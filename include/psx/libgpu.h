@@ -10,6 +10,15 @@ typedef struct P_TAG {
     u8 r0, g0, b0, code;
 } P_TAG;
 
+typedef struct SPRT {
+    u32 tag;
+    u8 r0, g0, b0, code;
+    s16 x0, y0;
+    u8 u0, v0;
+    u16 clut;
+    s16 w, h;
+} SPRT;
+
 typedef struct POLY_FT4 {
     u32 tag;
     u8 r0, g0, b0, code;
