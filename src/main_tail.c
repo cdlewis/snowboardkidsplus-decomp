@@ -1,5 +1,6 @@
 #include "common.h"
 #include "game/game_options.h"
+#include "game/global_flags.h"
 #include "game/selected_records.h"
 #define RACE_PLAYER_ABSOLUTE_ADDRESSING
 #define TASK_ABSOLUTE_ADDRESSING
@@ -105,7 +106,13 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_80095A58);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_80095E24);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_80095EB4);
+void setStateGridFlag(GlobalFlagStatePrefix *state, s16 row, s16 column) {
+    if (row < 5) {
+        state->unk_3DC |= 1 << (row * 5 + column);
+    } else if (row < 10) {
+        state->unk_3E0 |= 1 << ((row - 5) * 5 + column);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_80095F30);
 
