@@ -7,16 +7,18 @@
 #include "game/music.h"
 #include "game/task.h"
 #include "game/selected_records.h"
+#define SELECTED_RECORD_GP_ADDRESSING
+#include "game/selected_record.h"
 #include "psx/libsnd.h"
 
-typedef struct SelectedRecord {
+typedef struct SelectedStateRecord {
     s16 state;
     s16 unk02;
     s32 unk04;
     s32 unk08;
     s32 unk0C;
     s32 unk10;
-} SelectedRecord;
+} SelectedStateRecord;
 typedef struct ControllerEffectStep {
     u8 value;
     s8 delta;
@@ -37,7 +39,7 @@ ControllerEffectState gControllerEffectStates[2] = {0};
 
 u16 gTextClut = 0;
 
-extern SelectedRecord *D_8012C6F4[];
+extern SelectedStateRecord *D_8012C6F4[];
 
 const char gNoProcessMessage[16] = "NO PROCESS...";
 
@@ -79,7 +81,21 @@ void initSprite(GsSPRITE *sprite) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8004A124);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8004A454);
+void bindGeometryRecordData(s16 *data) {
+    s16 count;
+
+    count = *data++;
+    D_8013B1EC = data;
+    /* Section lengths wrap as signed 16-bit halfword counts. */
+    data += (s16)(count * 3);
+    D_8013B1F8 = count;
+    count = *data++;
+    D_8013B1F0 = (SelectedRecord *)data;
+    data += (s16)(count * 6);
+    D_8013B1FA = count;
+    D_8013B1FC = *data++;
+    D_8013B1F4 = data;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8004A4C4);
 
@@ -375,7 +391,7 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005F46C);
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005F640);
 
 void resetSelectedRecordStates(void) {
-    SelectedRecord *record = D_8012C6F4[D_8013AFCE];
+    SelectedStateRecord *record = D_8012C6F4[D_8013AFCE];
 
     for (;;) {
         if (record->state == -2) {
