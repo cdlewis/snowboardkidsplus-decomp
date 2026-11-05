@@ -30,6 +30,9 @@ typedef struct TextureColor {
     u8 stp; /* Low bit becomes the texture color's semi-transparency bit. */
 } TextureColor;
 
+typedef struct GameBackground GameBackground;
+typedef struct GameBackgroundMap GameBackgroundMap;
+
 u32 packTextureColor(TextureColor *color);
 void initSprite(GsSPRITE *sprite);
 void unpackPsxColor(u32 color, UnpackedPsxColor *out);
@@ -43,3 +46,7 @@ void releaseSavedImageEntry(u16 index);
 void requestSavedImageRestore(u16 index);
 void resetPaletteRecords(void);
 void setPaletteRecordColor(u16 index, u8 r, u8 g, u8 b);
+void func_80071300(s16 mode, s16 unused, GameBackground *background,
+                   GameBackgroundMap *map, u8 *cells, u8 *tiles);
+void initDefaultBackground(s16 mode, s16 unused, GameBackground *background,
+                           GameBackgroundMap *map);

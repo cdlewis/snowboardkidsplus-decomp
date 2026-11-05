@@ -140,7 +140,11 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002F264);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002F29C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002F308);
+void initDefaultBackground(s16 mode, s16 unused, GameBackground *background,
+                           GameBackgroundMap *map) {
+    func_80071300(mode, unused, background, map,
+                  (u8 *)0x80180000, (u8 *)0x80180800);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002F348);
 
