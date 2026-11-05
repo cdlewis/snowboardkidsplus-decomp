@@ -11,6 +11,7 @@
 #include "psx/libsnd.h"
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
+#include "psx/libetc.h"
 #include "psx/libmcrd.h"
 
 /* The first word holds the count; later words hold tagged byte offsets.
@@ -74,6 +75,7 @@ s16 *D_801203C4[10] __attribute__((section(".data.player_model_parts"))) = {
 MemoryCardSaveHeader gMemoryCardSaveHeader __attribute__((section(".data.memory_card_save_header"))) = {0};
 
 SavedImageEntry gSavedImageEntries[32] __attribute__((section(".data.saved_image_entries"))) = {0};
+u32 gSynchronizedFrameCount __attribute__((section(".sdata.synchronized_frame_count"))) = 0;
 s8 gSoundSystemActive = 0;
 u8 D_8013AF29 = 0;
 s16 gMusicSequenceId = 0;
@@ -443,7 +445,13 @@ void waitForMovieOutput(MovieDecodeState *state) {
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001A474);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001A4E8);
+void waitForFrameHcount(u32 minimumHcount) {
+    DrawSync(0);
+    while ((u32)VSync(1) < minimumHcount) {
+    }
+    VSync(0);
+    gSynchronizedFrameCount++;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001A540);
 

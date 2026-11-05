@@ -17,3 +17,5 @@ s32 SetIntrMask(s32 mask);
 
 s32 SetVideoMode(s32 mode);
 s32 GetVideoMode(void);
+
+s32 VSync(s32 mode);
