@@ -44,6 +44,7 @@ void initSprite(GsSPRITE *sprite);
 void unpackPsxColor(u32 color, UnpackedPsxColor *out);
 void setTextPalette(s32 palette);
 void initPrimitiveTemplates(void);
+void initTexturedQuadTemplate(void);
 void setTexturedQuadColor(s32 r, s32 g, s32 b);
 void setSpriteColor(s32 r, s32 g, s32 b);
 

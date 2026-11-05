@@ -92,6 +92,7 @@ typedef struct DISPENV {
 u16 GetTPage(s32 tp, s32 abr, s32 x, s32 y);
 u16 GetClut(s32 x, s32 y);
 void AddPrim(void *ordering_table, void *primitive);
+void SetPolyFT4(P_TAG *packet);
 void SetSemiTrans(void *primitive, s32 enable);
 s32 LoadImage(RECT *rect, u32 *pixels);
 s32 StoreImage(RECT *rect, u32 *pixels);

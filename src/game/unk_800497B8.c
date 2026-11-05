@@ -47,7 +47,7 @@ extern SelectedStateRecord *D_8012C6F4[];
 const char gNoProcessMessage[16] = "NO PROCESS...";
 
 void func_80049D48(s32 x, s32 y, const char *format, ...);
-void func_8006BE04(void);
+void func_8006BE50(s32 textureIndex, s32 clutOffset);
 void func_8006C848(void);
 void func_8006B1F4(void);
 
@@ -706,11 +706,15 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006BA4C);
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006BD3C);
 
 void initPrimitiveTemplates(void) {
-    func_8006BE04();
+    initTexturedQuadTemplate();
     func_8006C848();
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006BE04);
+void initTexturedQuadTemplate(void) {
+    SetPolyFT4((P_TAG *)&gTexturedQuadTemplate);
+    func_8006BE50(0, 0);
+    setRGB0(&gTexturedQuadTemplate, 0x80, 0x80, 0x80);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006BE50);
 

@@ -1709,3 +1709,4 @@ getStateMaskTier = 0x8008BFF0; // type:func
 selectTaskBySelectedRecordMatch = 0x800A2460; // type:func
 
 isCdReading = 0x80013798; // type:func
+initTexturedQuadTemplate = 0x8006BE04; // type:func
