@@ -45,6 +45,7 @@ extern TaskResourceRecord D_800D9504[256];
 s16 func_80014930(GameTask *parent, TaskCallback callback);
 void func_800149A8(void);
 void setCurrentTaskCallback(TaskCallback callback);
+void func_800719A8(s16 mode);
 void deleteCurrentTask(void);
 void releaseTaskResource(u16 resource);
 

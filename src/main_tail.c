@@ -4,6 +4,7 @@
 #define TASK_ABSOLUTE_ADDRESSING
 #include "game/race_player.h"
 #include "game/text_entries.h"
+#include "game/task.h"
 
 typedef struct UnlockMenuState {
     s16 selection;
@@ -21,6 +22,7 @@ typedef struct UnlockMenuState {
 extern u8 D_8013B55E __attribute__((section(".data")));
 
 void func_800A39AC(void);
+void func_800A499C(void);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_8008C708);
 
@@ -326,7 +328,10 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A4FB8);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A5050);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A51D8);
+void resumeUnlockSelectionTask(void) {
+    func_800719A8(0);
+    setCurrentTaskCallback(func_800A499C);
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A5204);
 

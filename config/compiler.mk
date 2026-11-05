@@ -20,7 +20,7 @@ G8_UNITS := \
     src/engine/random.c
 $(foreach unit,$(G8_UNITS),$(eval UNIT_G_$(unit) := 8))
 
-GAME_TEXT_UNITS := $(MAIN_GAME_UNITS)
+GAME_TEXT_UNITS := $(MAIN_GAME_UNITS) src/main_tail.c
 $(foreach unit,$(GAME_TEXT_UNITS),$(eval UNIT_REORDER_$(unit) := 1))
 
 # Preserve the task-reference reset's store before its return (PSY-Q scheduling).
@@ -190,6 +190,10 @@ $(foreach unit,$(GCC281_MNO_SPLIT_ADDRESSES_G0_REORDER_PAD_UNITS),$(eval UNIT_CC
 $(foreach unit,$(GCC281_MNO_SPLIT_ADDRESSES_G0_REORDER_PAD_UNITS),$(eval UNIT_G_$(unit) := 0))
 $(foreach unit,$(GCC281_MNO_SPLIT_ADDRESSES_G0_REORDER_PAD_UNITS),$(eval UNIT_REORDER_$(unit) := 1))
 $(foreach unit,$(GCC281_MNO_SPLIT_ADDRESSES_G0_REORDER_PAD_UNITS),$(eval UNIT_PAD_$(unit) := 1))
+
+# Leave the unlock-selection wrapper's scheduling to the assembler.
+UNIT_FUNCTIONS_src/main_tail.c := resumeUnlockSelectionTask
+FN_FLAGS_src/main_tail.c/resumeUnlockSelectionTask := -fno-delayed-branch -fno-schedule-insns2
 
 UNIT_FUNCTIONS_src/main.c := deleteCurrentTask
 FN_FLAGS_src/main.c/deleteCurrentTask := -fno-delayed-branch
