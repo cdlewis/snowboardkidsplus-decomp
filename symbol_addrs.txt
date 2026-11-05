@@ -1941,3 +1941,5 @@ updateLegacyControllerActuators = 0x8006BD3C; // type:func
 
 waitForFrameHcount = 0x8001A4E8; // type:func
 gSynchronizedFrameCount = 0x8013AFB0; // type:u32 size:0x4
+
+initializeTaskFade = 0x800377E0; // type:func

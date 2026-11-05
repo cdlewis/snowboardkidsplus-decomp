@@ -51,6 +51,14 @@ typedef struct PlayerNumberResource {
     u8 unk20[0xE0];
 } PlayerNumberResource;
 
+/* The fade callbacks use a full task resource record. */
+typedef struct TaskFadeResource {
+    s16 brightness;
+    s16 timer;
+    s8 playerOrder[4];
+    u8 unk08[0xF8];
+} TaskFadeResource;
+
 
 typedef struct TaskMotionResource {
     s32 position;
@@ -101,6 +109,7 @@ void func_80034AE8(void);
 void func_80033100(void);
 void func_80048668(void);
 void func_8004531C(void);
+void func_8003772C(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002B3F4);
 
@@ -652,7 +661,17 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003763C);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003772C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800377E0);
+void initializeTaskFade(void) {
+    TaskFadeResource *resource;
+
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource14 = func_80014BAC();
+    resource = (TaskFadeResource *)&D_800D9504[D_8013AE88->resource14];
+    resource->brightness = 0;
+    setCurrentTaskCallback(func_8003772C);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80037850);
 
