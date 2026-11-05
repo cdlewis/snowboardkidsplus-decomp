@@ -70,6 +70,7 @@ ControllerEffectState gControllerEffectStates[2] = {0};
 
 u16 gTextClut = 0;
 
+extern GameTask *D_8013B304 __attribute__((section(".data")));
 extern SelectedStateRecord *D_8012C6F4[];
 /* Shared palette storage and capture rectangle remain in their data owners. */
 extern u32 D_8012CB94[8];
@@ -79,6 +80,7 @@ extern u16 D_8013B376 __attribute__((section(".sdata")));
 
 const char gNoProcessMessage[16] = "NO PROCESS...";
 
+void func_800618A0(void);
 void func_80049D48(s32 x, s32 y, const char *format, ...);
 void func_8006BE50(s32 textureIndex, s32 clutOffset);
 void func_8006C848(void);
@@ -587,7 +589,15 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80061594);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800618A0);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80061DD8);
+void startIndexedRenderTask(s32 index) {
+    TaskResourceRecord *resource;
+    func_80014930(D_8013B304, func_800618A0);
+    D_8013AE8C->resource14 = func_80014BAC();
+    D_8013AE8C->data18 = index;
+    resource = &D_800D9504[D_8013AE8C->resource14];
+    resource->unk00 = 0;
+    resource->unk04 = 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80061E48);
 
