@@ -61,6 +61,13 @@ typedef struct SelectedStateRecord {
     s32 unk0C;
     s32 unk10;
 } SelectedStateRecord;
+typedef struct QuadTransitionResource {
+    s32 frames;
+    SVECTOR *vertices;
+    POLY_FT4 *packet;
+    u8 pad[0xF4];
+} QuadTransitionResource;
+
 typedef struct ControllerEffectStep {
     u8 value;
     s8 delta;
@@ -132,6 +139,18 @@ typedef struct TimedSpriteSequenceResource {
 } TimedSpriteSequenceResource;
 
 ControllerEffectState gControllerEffectStates[2] = {0};
+
+POLY_FT4 gQuadShrinkPacket __attribute__((section(".data.quad_shrink"))) = {
+    0x09000000, 0x80, 0x80, 0x80, 0x2C,
+    0, 0, 0, 0x10, getClut(944, 240),
+    0, 0, 0x27, 0x10, getTPage(0, 0, 960, 0),
+    0, 0, 0, 0x1F, 0,
+    0, 0, 0x27, 0x1F, 0
+};
+SVECTOR gQuadShrinkVertices[4] __attribute__((section(".data.quad_shrink"))) = {
+    {-144, 24, 0, 0}, {-104, 24, 0, 0},
+    {-144, 39, 0, 0}, {-104, 39, 0, 0}
+};
 
 u16 gTextClut = 0;
 
@@ -210,6 +229,7 @@ void func_80049D48(s32 x, s32 y, const char *format, ...);
 void func_8006BE50(s32 textureIndex, s32 clutOffset);
 void func_8006BF14(s16 x, s16 y, s32 frameIndex, GsOT *ot, u16 depth);
 void func_8006C5F4(s16 x, s16 y, s32 frameIndex, GsOT *ot, u16 depth);
+void func_800692E8(void);
 void func_8006C848(void);
 void func_8006B1F4(void);
 void func_80013DD0(s16 request, s16 mode);
@@ -952,7 +972,16 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800690C8);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800692E8);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800694F8);
+void createQuadShrinkTask(void) {
+    QuadTransitionResource *resource;
+
+    func_80014930(&D_800D7C84, func_800692E8);
+    D_8013AE8C->resource14 = allocateTaskResource();
+    resource = (QuadTransitionResource *)&D_800D9504[D_8013AE8C->resource14];
+    resource->frames = 5;
+    resource->vertices = gQuadShrinkVertices;
+    resource->packet = &gQuadShrinkPacket;
+}
 
 void startMiddleQuadShrinkTask(void) {
     ShrinkingQuadResource *resource;

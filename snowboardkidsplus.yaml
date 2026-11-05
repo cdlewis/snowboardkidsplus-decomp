@@ -544,6 +544,7 @@ segments:
       - [0x11128C, data, player_task_phases_tail]
       - {start: 0x11D190, type: .data, name: game/unk_800497B8, linker_section: .data.alternate_quad_steps}
       - [0x11D1F4, data, 11D1F4]
+      - {start: 0x11D294, type: .data, name: game/unk_800497B8, linker_section: .data.quad_shrink}
       - {start: 0x11D2DC, type: .data, name: game/unk_800497B8, linker_section: .data.middle_shrink_vertices}
       - [0x11D2FC, data, 11D2FC]
       - {start: 0x11D31C, type: .data, name: game/unk_800497B8, linker_section: .data.middle_shrink_packet}

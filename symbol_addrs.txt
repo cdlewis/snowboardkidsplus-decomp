@@ -1906,3 +1906,7 @@ findByteIndexOrZero = 0x800737A0; // type:func
 initializePlayerPromptTask = 0x80033280; // type:func
 
 drawTexturedFrameStyle9 = 0x80070174; // type:func
+
+createQuadShrinkTask = 0x800694F8; // type:func
+gQuadShrinkPacket = 0x8012CA94; // type:POLY_FT4 size:0x28
+gQuadShrinkVertices = 0x8012CABC; // type:SVECTOR size:0x20
