@@ -1776,3 +1776,4 @@ resetTaskVisualState = 0x80044DC4; // type:func
 updatePlayerField94CFromSelectedTable = 0x8005F640; // type:func
 
 setTaskVisualFrame = 0x8005AB84; // type:func
+finishTimedSpriteSequence = 0x8006A958; // type:func

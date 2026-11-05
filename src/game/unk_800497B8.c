@@ -843,7 +843,17 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006A7B4);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006A8A8);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006A958);
+void finishTimedSpriteSequence(void) {
+    TimedSpriteSequenceResource *resource;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (TimedSpriteSequenceResource *)&D_800D9504[D_8013AE88->resource14];
+    if (--resource->duration < 0) {
+        func_800149A8();
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006A9CC);
 
