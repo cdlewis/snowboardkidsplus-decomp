@@ -25,7 +25,12 @@ typedef struct GameTask {
 extern u16 gTaskResourceFreeBits[16];
 
 /* Scheduler storage remains in its original data object. */
+/* Some task flows address this pointer absolutely; the scheduler uses $gp. */
+#ifdef TASK_ABSOLUTE_ADDRESSING
+extern GameTask *D_8013AE88 __attribute__((section(".data")));
+#else
 extern GameTask *D_8013AE88;
+#endif
 extern GameTask D_800D7C84;
 
 s16 func_80014930(GameTask *parent, TaskCallback callback);

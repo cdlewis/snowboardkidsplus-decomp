@@ -1,6 +1,7 @@
 #include "common.h"
 #include "game/game_options.h"
 #define RACE_PLAYER_ABSOLUTE_ADDRESSING
+#define TASK_ABSOLUTE_ADDRESSING
 #include "game/race_player.h"
 #include "game/text_entries.h"
 
@@ -16,6 +17,10 @@ typedef struct UnlockMenuState {
     s32 unk58[6];
     u8 unk70[0x90];
 } UnlockMenuState;
+
+extern u8 D_8013B55E __attribute__((section(".data")));
+
+void func_800A39AC(void);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_8008C708);
 
@@ -271,7 +276,12 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A31C0);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A3750);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A3970);
+void advanceTaskWhenFlagB55ESet(void) {
+    if (D_8013B55E != 0) {
+        D_8013AE88->data18 = 0;
+        setCurrentTaskCallback(func_800A39AC);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A39AC);
 

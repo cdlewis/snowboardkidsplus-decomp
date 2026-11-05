@@ -65,24 +65,7 @@ jobs:
           .venv/bin/pip install pycdlib 'splat64[mips]' 'mapfile-parser>=2.13.2,<3'
 
       - name: Install PSX compilers
-        shell: bash
-        run: |
-          set -euo pipefail
-          cd "$RUNNER_TEMP"
-          for version in 2.7.2 2.8.0 2.8.1; do
-            curl --fail --location --retry 3 --output "gcc-$version-psx.tar.gz" \
-              "https://github.com/decompals/old-gcc/releases/download/0.17/gcc-$version-psx.tar.gz"
-          done
-          sha256sum --check <<'CHECKSUMS'
-          500a459b3485e885a8d302cac23c2a4632f3900e03a09153f6190699fd723571  gcc-2.7.2-psx.tar.gz
-          1a3c956fe8aea5ebdb251749d95de2c84f023530584d7bd663744b5ec24050b7  gcc-2.8.0-psx.tar.gz
-          f6f6e883942d4d3289d048236c672e71ed410e546aaae8ff655952f1567e1be0  gcc-2.8.1-psx.tar.gz
-          CHECKSUMS
-          for version in 2.7.2 2.8.0 2.8.1; do
-            destination="$GITHUB_WORKSPACE/tools/gcc/gcc-$version-psx"
-            mkdir -p "$destination"
-            tar -xzf "gcc-$version-psx.tar.gz" -C "$destination" cc1
-          done
+        run: python tools/fetch-gcc.py
 
       - name: Fetch SDK converter
         run: .venv/bin/python tools/psyq_sdk.py --fetch

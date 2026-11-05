@@ -73,7 +73,7 @@ def main():
     if oracle and target != oracle.data:
         raise ValueError("assembly oracle disagrees with the original executable; run ./tools/build-and-verify.sh")
     if any(f.startswith("-G") for f in args.cc_flag):
-        raise ValueError("-G must agree across cc1, maspsx and as; use the owning unit's setting")
+        raise ValueError("set compiler/assembler -G through the owning unit's UNIT_CC_G/UNIT_G settings")
     source = args.source.resolve()
     output = (args.output or ROOT / "nonmatchings" / args.function / source.stem).resolve()
     if output.is_relative_to(ROOT) and not output.is_relative_to(ROOT / "nonmatchings"):
@@ -126,12 +126,13 @@ def main():
     report = {"function": args.function, "unit": str(unit), "source": str(source),
               "compiler": str(compiler),
               "g_value": settings["G_VALUE"],
+              "cc_g_value": settings["CC_G_VALUE"],
               "unit_cc_flags": settings["UNIT_CC_FLAGS"],
               "function_flags": function_flags,
               "extra_flags": args.cc_flag, "target_sha1": hashlib.sha1(original.data).hexdigest(),
               "source_sha1": hashlib.sha1(source.read_bytes()).hexdigest(),
               "preprocessed_sha1": hashlib.sha1(obj.with_suffix(".i").read_bytes()).hexdigest(),
-              "aspsx_version": build.ASPSX_VERSION,
+              "aspsx_version": settings["ASPSX_VERSION"],
               "gas_reorder": settings["REORDER"] == "1",
               "gas_indexed_loads": settings["INDEXED"] == "1",
               "pad_sections": settings["PAD"] == "1",

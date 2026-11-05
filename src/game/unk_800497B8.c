@@ -558,7 +558,8 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006A194);
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006A2F8);
 
 void *getOffsetArchiveEntry(OffsetArchive *archive, s32 index) {
-    return (u8 *)archive + archive->offsets[index];
+    u32 *offsets = archive->offsets;
+    return (u8 *)archive + offsets[index];
 }
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006A438);

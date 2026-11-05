@@ -1,5 +1,8 @@
 unpackPsxColor = 0x80051694; // type:func
 
+// Clear the task counter and advance its callback when the shared flag is set.
+advanceTaskWhenFlagB55ESet = 0x800A3970; // type:func
+
 // Return the selection byte when it is in 0..4, otherwise zero.
 getValidatedSelectionIndex = 0x8007C79C; // type:func
 

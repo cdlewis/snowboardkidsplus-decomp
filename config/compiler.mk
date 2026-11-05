@@ -1,6 +1,9 @@
 # Verified compiler and assembler settings. The Makefile owns the build rules.
-# SDK function selections preserve the existing matches; this refactor does not
-# establish different original compilers or alter translation-unit boundaries.
+# All game C uses GCC 2.7.2-cdk (cygnus-2.7.2-970404) and maspsx 2.67.
+# SDK selections retain their independently verified compiler/assembler settings.
+# UNIT_CC_G may differ from UNIT_G to reproduce CCPSX's compiler -G8 and
+# assembler -G0 defaults. Explicit .data externs also retain absolute addressing
+# through tools/cc1psx.py, including in units that otherwise use small data.
 
 MAIN_GAME_UNITS := src/main.c src/main_remaining.c \
     src/game/unk_8001E63C.c \
