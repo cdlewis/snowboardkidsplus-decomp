@@ -1687,3 +1687,5 @@ unusedVariadicStub = 0x80060D30; // type:func
 checkCurrentPlayerFlags345001 = 0x8002D164; // type:func
 checkCurrentPlayerFlags275000OrField134 = 0x8002D260; // type:func
 copyPlayerPaletteRow = 0x8009B6A8; // type:func
+
+runTaskResource14Update = 0x800A3D5C; // type:func

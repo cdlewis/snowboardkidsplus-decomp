@@ -22,6 +22,7 @@ typedef struct UnlockMenuState {
 extern u8 D_8013B55E __attribute__((section(".data")));
 
 void func_800A39AC(void);
+void func_800A42CC(void);
 void func_800A499C(void);
 void func_8009B5A0(s16 playerIndex, s32 unused, s32 paletteRow, u16 mode);
 
@@ -297,7 +298,13 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A3C3C);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A3CE0);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A3D5C);
+void runTaskResource14Update(void) {
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        for (;;) {
+        }
+    }
+    func_800A42CC();
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A3D9C);
 
