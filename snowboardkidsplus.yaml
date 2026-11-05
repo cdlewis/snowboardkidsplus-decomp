@@ -528,7 +528,8 @@ segments:
       - {start: 0xD9D04, type: .data, name: main, linker_section: .data.task_resource_bitmap}
       - [0xD9D24, data, D9D24]
       - [0xDAD9C, .data, engine/random]
-      - [0xDAE9C, data, DAE9C]
+      - {start: 0xDAE9C, type: .data, name: main_remaining, linker_section: .data.saved_image_entries}
+      - [0xDB89C, data, DB89C]
       - [0x11109C, .data, game/unk_8001E63C]
       - [0x111134, data, 111134]
       - [0x11F0E4, .data, game/sprite_templates]

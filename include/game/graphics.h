@@ -28,3 +28,5 @@ void unpackPsxColor(u32 color, UnpackedPsxColor *out);
 void initPrimitiveTemplates(void);
 void setTexturedQuadColor(s32 r, s32 g, s32 b);
 void setSpriteColor(s32 r, s32 g, s32 b);
+
+void releaseSavedImageEntry(u16 index);

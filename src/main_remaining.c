@@ -6,6 +6,14 @@
 #include "game/race_player.h"
 #include "psx/libsnd.h"
 
+typedef struct SavedImageEntry {
+    u32 flags;
+    u8 r, g, b, unk07;
+    RECT rect;
+    u16 pixels[32];
+} SavedImageEntry;
+
+SavedImageEntry gSavedImageEntries[32] __attribute__((section(".data.saved_image_entries"))) = {0};
 s32 gLinearRandomState = 1;
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80015EE0);
@@ -20,7 +28,11 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001628C);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_800162C8);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80016314);
+void releaseSavedImageEntry(u16 index) {
+    if (index != 0xFF) {
+        gSavedImageEntries[index].flags = 0;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80016344);
 
