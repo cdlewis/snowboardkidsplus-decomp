@@ -26,7 +26,9 @@ extern u16 gTaskResourceFreeBits[16];
 
 /* Scheduler storage remains in its original data object. */
 extern GameTask *D_8013AE88;
+extern GameTask D_800D7C84;
 
+s16 func_80014930(GameTask *parent, TaskCallback callback);
 void func_800149A8(void);
 void setCurrentTaskCallback(TaskCallback callback);
 void deleteCurrentTask(void);

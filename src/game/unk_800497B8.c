@@ -3,6 +3,7 @@
 #include "game/linear_random.h"
 #include "game/offset_archive.h"
 #include "game/music.h"
+#include "game/task.h"
 #include "psx/libsnd.h"
 
 const char gNoProcessMessage[16] = "NO PROCESS...";
@@ -10,6 +11,7 @@ const char gNoProcessMessage[16] = "NO PROCESS...";
 void func_80049D48(s32 x, s32 y, const char *format, ...);
 void func_8006BE04(void);
 void func_8006C848(void);
+void func_8006B1F4(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800497B8);
 
@@ -559,7 +561,9 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006B19C);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006B1F4);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006B2B8);
+void createResourceLoadTask(void) {
+    func_80014930(&D_800D7C84, func_8006B1F4);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006B2E4);
 

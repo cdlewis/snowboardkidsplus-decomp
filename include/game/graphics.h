@@ -24,6 +24,7 @@ extern SPRT gSpriteTemplate;
 extern TexturedSpritePacket gTexturedSpriteTemplate;
 
 void drawNoProcessMessage(void);
+void createResourceLoadTask(void);
 void initSprite(GsSPRITE *sprite);
 void unpackPsxColor(u32 color, UnpackedPsxColor *out);
 void initPrimitiveTemplates(void);

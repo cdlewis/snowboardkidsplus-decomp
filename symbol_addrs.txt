@@ -1578,3 +1578,4 @@ resetUnlockMenuOffsets = 0x800A495C;
 
 drawNoProcessMessage = 0x80052504; // type:func
 gNoProcessMessage = 0x80010CC4; // type:char size:0x10
+createResourceLoadTask = 0x8006B2B8; // type:func
