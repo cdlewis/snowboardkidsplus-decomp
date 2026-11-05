@@ -146,3 +146,7 @@ void startThreeFrameScreenBlend(void);
 void func_8006C998(s16 x, s16 y, s16 sprite, s32 palette, s32 blendMode,
                    GsOT *ot, u16 depth);
 void drawMenuKindSprite(s16 x, s16 y, s16 kind, s32 frame, GsOT *ot, u16 depth);
+struct GsOT;
+
+void drawTexturedFrameStyle9(s16 x, s16 y, s16 w, s16 h, s16 palette,
+                             s16 blend, struct GsOT *ot, u16 depth);

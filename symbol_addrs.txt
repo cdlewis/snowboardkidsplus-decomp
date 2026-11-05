@@ -1901,3 +1901,5 @@ gCdVolumeFadeTimer = 0x8013B5F8; // type:s16 size:0x2
 findByteIndexOrZero = 0x800737A0; // type:func
 
 initializePlayerPromptTask = 0x80033280; // type:func
+
+drawTexturedFrameStyle9 = 0x80070174; // type:func

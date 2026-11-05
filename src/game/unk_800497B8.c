@@ -220,6 +220,8 @@ void func_8006A9CC(void);
 void func_8006FE68(s16 x, s16 y, s16 w, s16 h, s16 borderW, s16 borderH,
                    s16 style, s16 clutOffset, s16 blendMode, GsOT *ot, u16 depth);
 void func_8006A07C(void);
+void func_8006FE68(s16 x, s16 y, s16 w, s16 h, s16 borderW, s16 borderH,
+                   s16 style, s16 palette, s16 blend, GsOT *ot, u16 depth);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800497B8);
 
@@ -1246,7 +1248,10 @@ void drawDefaultTexturedPanel(s16 x, s16 y, s16 w, s16 h, s16 clutOffset,
     func_8006FE68(x, y, w, h, 8, 8, 0, clutOffset, blendMode, ot, depth);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80070174);
+void drawTexturedFrameStyle9(s16 x, s16 y, s16 w, s16 h, s16 palette,
+                             s16 blend, GsOT *ot, u16 depth) {
+    func_8006FE68(x, y, w, h, 8, 8, 9, palette, blend, ot, depth);
+}
 
 /* Style 0x20D uses a sixteen-pixel border on each side. */
 void drawStyle20DTexturedPanel(s16 x, s16 y, s16 w, s16 h, s16 clutOffset,

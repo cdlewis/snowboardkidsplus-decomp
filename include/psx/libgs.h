@@ -25,6 +25,13 @@ extern u32 GsOUT_PACKET_P __attribute__((section(".data")));
 extern u32 GsOUT_PACKET_P;
 #endif
 
+typedef struct GsOT {
+    u32 length;
+    u32 *org;
+    u32 offset, point;
+    u32 *tag;
+} GsOT;
+
 typedef struct GsIMAGE {
     u32 pmode;
     s16 px, py;
