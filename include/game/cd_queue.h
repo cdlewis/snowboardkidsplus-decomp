@@ -24,4 +24,5 @@ extern s16 gCdVolumeFadeTarget;
 extern s16 gCdVolumeFadeStep;
 extern s16 gCdVolumeFadeTimer;
 
+void resetCdVolumeFade(void);
 void startCdVolumeFade(s16 startVolume, s16 step, s16 targetVolume, u8 interval);

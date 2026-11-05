@@ -44,7 +44,13 @@ void func_800131B4(void) {
 
 INCLUDE_ASM("asm/nonmatchings/main", func_800131BC);
 
-INCLUDE_ASM("asm/nonmatchings/main", func_80013278);
+void resetCdVolumeFade(void) {
+    gCdVolumeFadeInterval = 0;
+    gCdVolumeFadeActive = 0;
+    gCdVolumeFadeCurrent = 0;
+    gCdVolumeFadeTarget = 0;
+    gCdVolumeFadeStep = 0;
+}
 
 void startCdVolumeFade(s16 startVolume, s16 step, s16 targetVolume, u8 interval) {
     gCdVolumeFadeTimer = 0;
