@@ -6,6 +6,8 @@
 #include "game/offset_archive.h"
 #include "game/music.h"
 #include "psx/libsnd.h"
+#define TASK_ABSOLUTE_ADDRESSING
+#include "game/task.h"
 
 typedef struct SaveRecord {
     u8 unk_000[0x3AC];
@@ -39,6 +41,8 @@ HalfwordPair D_8012F13C[16] __attribute__((section(".data"))) = {0};
 extern StateValueHistory D_8013BE30;
 extern u8 D_8013AFCD __attribute__((section(".data")));
 extern u8 D_8013B47C;
+
+void func_80089B30(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8007CC78);
 
@@ -252,7 +256,20 @@ u32 calculateByteSum(const u8 *data, u32 size) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80089B30);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80089E34);
+void startStateValueHistoryTask(void) {
+    s16 i;
+    func_80014874(func_80089B30);
+    D_8013AE8C->data18 = 0;
+    D_8013BE30.unk_00 = 16;
+    D_8013BE30.activeIndex = 1;
+    for (i = 0; i < 2; i++) {
+        D_8013BE30.current[i] = 0;
+        D_8013BE30.previous[i] = 0;
+        D_8013BE30.unk_0E[i] = 0;
+        D_8013BE30.unk_12[i] = 0;
+        D_8013BE30.unk_16[i] = 1;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80089EC0);
 
