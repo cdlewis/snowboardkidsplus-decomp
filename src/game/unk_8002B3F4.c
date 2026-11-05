@@ -8,6 +8,8 @@
 #include "game/offset_archive.h"
 #include "game/music.h"
 #include "game/game_options.h"
+#include "game/controller.h"
+#include "game/controller_effects.h"
 #include "psx/libsnd.h"
 
 typedef struct Position3D {
@@ -712,7 +714,12 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80043C28);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80043C5C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80043F84);
+void resetControllersAndDeleteCurrentTask(void) {
+    setControllerFlag5(0);
+    setControllerFlag5(1);
+    resetControllerEffects();
+    func_800149A8();
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80043FBC);
 
