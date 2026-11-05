@@ -487,7 +487,9 @@ void addTexturedRectangle(u32 *orderingTable, s32 clut, s32 x, s32 y,
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80060C68);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80060D30);
+/* No callers are known; only the variadic argument layout is established. */
+void unusedVariadicStub(s32 unused0, s32 unused1, s32 unused2, ...) {
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80060D40);
 
