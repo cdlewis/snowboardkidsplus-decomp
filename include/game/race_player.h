@@ -18,7 +18,12 @@ struct RacePlayer {
     s32 unk01C;
     s32 unk020;
     s8 unk024;
-    u8 unk025[0x9D];
+    u8 unk025[0x67];
+    s32 unk08C;
+    s32 unk090;
+    u8 unk094[0x2A];
+    u16 unk0BE;
+    u8 unk0C0[2];
     u16 unk0C2;
     u8 unk0C4[6];
     s16 unk0CA[6];
@@ -27,18 +32,23 @@ struct RacePlayer {
     s16 unk116;
     s16 unk118;
     s16 unk11A;
-    u8 unk11C[0xC];
+    u8 unk11C[0xA];
+    u16 unk126;
     u32 unk128;
     u16 unk12C;
     u8 unk12E[6];
     s16 unk134;
-    u8 unk136[0x4F6];
+    u8 unk136[2];
+    u16 unk138;
+    u8 unk13A[0x4F2];
     RacePlayerVector unk62C[14];
     u8 unk69C[0x28C];
     u8 modelPartCount;
     u8 unk929[0x1B];
     u8 randomIndex;
-    u8 unk945[0x97];
+    u8 unk945[0xF];
+    u8 unk954;
+    u8 unk955[0x87];
 };
 
 extern RacePlayer D_80120E90[];
@@ -65,3 +75,7 @@ s32 checkCurrentPlayerFlags345001(void);
 s32 checkCurrentPlayerFlags275000OrField134(void);
 
 void addPlayerCappedCounters(u16 playerIndex, s32 amount);
+
+void resetCurrentPlayerForCallback240D0(void);
+
+void func_80016E80(u8 index, u8 flags);

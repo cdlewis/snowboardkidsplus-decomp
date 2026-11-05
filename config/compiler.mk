@@ -7,6 +7,7 @@
 
 MAIN_GAME_UNITS := src/main.c src/main_remaining.c \
     src/game/unk_8001E63C.c \
+    src/game/unk_8002A560.c \
     src/game/unk_8002B3F4.c \
     src/game/unk_800497B8.c \
     src/game/unk_80070274.c \

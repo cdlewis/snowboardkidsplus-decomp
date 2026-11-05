@@ -121,6 +121,8 @@ segments:
       - [0x66E0, c, main_remaining]
       # Working groups based on rodata consumers; original object boundaries are unknown.
       - [0xEE3C, c, game/unk_8001E63C]
+      # Absolute-addressed player helpers begin here.
+      - [0x1AD60, c, game/unk_8002A560]
       - [0x1BBF4, c, game/unk_8002B3F4]
       - [0x39FB8, c, game/unk_800497B8]
       - [0x60A74, c, game/unk_80070274]

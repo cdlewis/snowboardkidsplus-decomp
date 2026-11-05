@@ -1,5 +1,5 @@
 #include "common.h"
-#define RACE_PLAYER_ABSOLUTE_ADDRESSING
+#define TASK_ABSOLUTE_ADDRESSING
 #include "game/race_player.h"
 #include "game/selected_record.h"
 #include "game/graphics.h"
@@ -30,6 +30,8 @@ u8 *D_8012090C[10] = {
     D_8012089C, D_8012089C, D_8012089C, D_801208D4, D_801208B8, D_801208F0, D_8012089C, D_8012089C, D_801208F0, D_8012089C
 };
 
+
+void func_800240D0(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8001E63C);
 
@@ -85,7 +87,21 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8001FDEC);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8001FEE0);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8001FFA8);
+void resetCurrentPlayerForCallback240D0(void) {
+    RacePlayer *player = D_8013B0D8;
+    GameTask *task = D_8013AE88;
+
+    player->unk08C = 0;
+    player->unk090 = 0;
+    player->unk128 &= ~0x201;
+    task->data1A = 0;
+    task->data1C = 0;
+    player->unk954 = 0;
+    player->unk126 = 0;
+    D_8013B0D8->unk0BE = D_8013B0D8->unk138;
+    func_80016E80(0x22, 2);
+    setCurrentTaskCallback(func_800240D0);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80020018);
 
@@ -202,21 +218,3 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80029FE4);
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8002A3A4);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8002A454);
-
-void copySelectedRecordToCurrentPlayer(void) {
-    RacePlayer *player = D_8013B0D8;
-    player->unk116 = D_8013B1F0[D_8013B1FE].unk8;
-    player->unk11A = D_8013B1F0[D_8013B1FE].unkA;
-}
-
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8002A5A0);
-
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8002A6AC);
-
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8002A7B4);
-
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8002A8E4);
-
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8002AE38);
-
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8002AE6C);
