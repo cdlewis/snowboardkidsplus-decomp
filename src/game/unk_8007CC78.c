@@ -230,7 +230,10 @@ void mergeSaveRecordFlags(SaveRecord *source, SaveRecord *destination) {
     destination->flags_3D8 |= source->flags_3D8;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80089990);
+void copySaveRecordAndMergeFlags(void) {
+    *(SaveRecord *)&D_8013101C = *(SaveRecord *)&D_8013080C;
+    mergeSaveRecordFlags(&((SaveRecord *)&D_8013080C)[1], (SaveRecord *)&D_8013101C);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80089A0C);
 

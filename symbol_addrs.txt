@@ -1756,3 +1756,5 @@ addPlayerCappedCounters = 0x8002E3C8; // type:func
 queueModeIndexedSectorRead = 0x800A1604; // type:func
 gMode1SectorRanges = 0x80132738; // size:0x28 defined:true
 gOtherModeSectorRanges = 0x80132760; // size:0x2C defined:true
+
+copySaveRecordAndMergeFlags = 0x80089990; // type:func
