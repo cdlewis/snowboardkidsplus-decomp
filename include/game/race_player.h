@@ -11,7 +11,8 @@ typedef struct RacePlayerVector {
 struct RacePlayer {
     GameTask *task;
     u16 playerIndex;
-    u8 unk006[3];
+    u8 unk006[2];
+    u8 unk008;
     u8 unk009;
     u8 unk00A[3];
     u8 unk00D;
@@ -118,6 +119,7 @@ void clearCurrentPlayerTaskState(void);
 void startPlayerTimerTask(RacePlayer *player);
 void stopPlayerSound(u16 playerIndex);
 s32 requestCurrentPlayerAction17(void);
+s16 countCurrentPlayerInputGroups(void);
 
 void copySelectedRecordToCurrentPlayer(void);
 

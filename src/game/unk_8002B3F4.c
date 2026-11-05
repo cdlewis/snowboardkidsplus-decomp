@@ -13,6 +13,7 @@
 #include "game/controller.h"
 #include "game/cd_queue.h"
 #include "game/controller_effects.h"
+#include "game/controller.h"
 #include "psx/libsnd.h"
 
 typedef struct MenuTimeResource {
@@ -275,7 +276,21 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002D3C4);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002DD70);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002DDF4);
+s16 countCurrentPlayerInputGroups(void) {
+    s32 count = 0;
+    u16 buttons;
+    if (D_8013B0D8->unk008) {
+        return (randomNextMain() & 3) == 0;
+    }
+    buttons = D_8013AEE8[D_8013AE88->data18];
+    if (buttons & 0xF000) {
+        count = 1;
+    }
+    if (buttons & 0x40) {
+        count++;
+    }
+    return count;
+}
 
 void clearCurrentPlayerTaskState(void) {
     GameTask *task = D_8013AE88;

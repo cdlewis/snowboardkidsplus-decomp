@@ -2,6 +2,8 @@
 
 #include "decomp/types.h"
 
+extern u16 D_8013AEE8[];
+
 extern u8 gControllerFlags[4] __attribute__((section(".data")));
 
 extern s16 D_8013AF08[2] __attribute__((section(".data.controller_values")));
