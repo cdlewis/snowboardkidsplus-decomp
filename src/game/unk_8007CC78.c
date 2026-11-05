@@ -196,7 +196,16 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80089A0C);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80089A98);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80089B04);
+u32 calculateByteSum(const u8 *data, u32 size) {
+    u32 sum;
+    u32 i;
+
+    sum = 0;
+    for (i = 0; i < size; i++) {
+        sum += *data++;
+    }
+    return sum;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80089B30);
 
