@@ -1,5 +1,7 @@
 #include "common.h"
 #include "game/game_options.h"
+#define RACE_PLAYER_ABSOLUTE_ADDRESSING
+#include "game/race_player.h"
 #include "game/text_entries.h"
 
 typedef struct UnlockMenuState {
@@ -103,7 +105,17 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_800972B8);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009747C);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800975FC);
+void setCurrentPlayerFinalPartTranslations(const s16 *values) {
+    RacePlayer *player = D_8013B0D8;
+    s32 index = player->modelPartCount - 2;
+    player->unk62C[index].x = *values++;
+    player->unk62C[index].y = *values++;
+    player->unk62C[index].z = *values++;
+    index = player->modelPartCount - 1;
+    player->unk62C[index].x = *values++;
+    player->unk62C[index].y = *values++;
+    player->unk62C[index].z = *values++;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009766C);
 
