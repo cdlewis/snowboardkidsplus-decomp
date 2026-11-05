@@ -1,6 +1,7 @@
 #include "common.h"
 #include "psx/libcd.h"
 #include "game/cd_queue.h"
+#include "psx/libsnd.h"
 #include "game/controller.h"
 #include "game/task.h"
 #include "game/controller_effects.h"
@@ -22,6 +23,13 @@ u16 gCdRequestPhase = 0;
 u16 gCdRequestWriteIndex = 0;
 u16 gCdRequestReadIndex = 0;
 u16 D_8013AE76 = 0;
+u8 gCdVolumeFadeActive __attribute__((section(".sdata.cd_volume_fade"))) = 0;
+u8 gCdVolumeFadeInterval __attribute__((section(".sdata.cd_volume_fade"))) = 0;
+s16 gCdVolumeFadeCurrent __attribute__((section(".sdata.cd_volume_fade"))) = 0;
+s16 gCdVolumeFadeTarget __attribute__((section(".sdata.cd_volume_fade"))) = 0;
+s16 gCdVolumeFadeStep __attribute__((section(".sdata.cd_volume_fade"))) = 0;
+s16 gCdVolumeFadeTimer __attribute__((section(".sdata.cd_volume_fade_timer"))) = 0;
+static u16 sCdVolumeFadeTimerPadding __attribute__((section(".sdata.cd_volume_fade_timer"))) = 0;
 
 u16 gTaskResourceFreeBits[16] __attribute__((section(".data.task_resource_bitmap"))) = {0};
 
@@ -38,7 +46,18 @@ INCLUDE_ASM("asm/nonmatchings/main", func_800131BC);
 
 INCLUDE_ASM("asm/nonmatchings/main", func_80013278);
 
-INCLUDE_ASM("asm/nonmatchings/main", func_80013294);
+void startCdVolumeFade(s16 startVolume, s16 step, s16 targetVolume, u8 interval) {
+    gCdVolumeFadeTimer = 0;
+    gCdVolumeFadeActive = 1;
+    gCdVolumeFadeInterval = interval;
+    gCdVolumeFadeCurrent = startVolume;
+    gCdVolumeFadeTarget = targetVolume;
+    gCdVolumeFadeStep = step;
+    SsSetSerialVol(0, startVolume, startVolume);
+    if (startVolume == targetVolume) {
+        gCdVolumeFadeActive = 0;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main", func_8001330C);
 

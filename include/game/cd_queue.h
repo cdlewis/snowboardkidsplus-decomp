@@ -16,3 +16,12 @@ s32 func_800136DC(s16 command, s16 sector, s16 count, void *destination, s32 val
 void queueStartupSectorReads(void);
 void func_80013DD0(s16 command, s16 value);
 void resetPendingCdRequests(void);
+
+extern u8 gCdVolumeFadeActive;
+extern u8 gCdVolumeFadeInterval;
+extern s16 gCdVolumeFadeCurrent;
+extern s16 gCdVolumeFadeTarget;
+extern s16 gCdVolumeFadeStep;
+extern s16 gCdVolumeFadeTimer;
+
+void startCdVolumeFade(s16 startVolume, s16 step, s16 targetVolume, u8 interval);

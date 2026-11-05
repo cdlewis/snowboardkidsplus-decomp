@@ -1886,3 +1886,11 @@ gReadPixelRect = 0x8013B240; // size:0x8 defined:true allow_duplicated:true
 readVramPixelColor = 0x800515A8; // type:func
 
 updateAndDrawCurrentTaskObject = 0x8005EE64; // type:func
+
+startCdVolumeFade = 0x80013294; // type:func
+gCdVolumeFadeActive = 0x8013AE80; // type:u8 size:0x1
+gCdVolumeFadeInterval = 0x8013AE81; // type:u8 size:0x1
+gCdVolumeFadeCurrent = 0x8013AE82; // type:s16 size:0x2
+gCdVolumeFadeTarget = 0x8013AE84; // type:s16 size:0x2
+gCdVolumeFadeStep = 0x8013AE86; // type:s16 size:0x2
+gCdVolumeFadeTimer = 0x8013B5F8; // type:s16 size:0x2

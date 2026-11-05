@@ -20,3 +20,5 @@ void SsEnd(void);
 void SsStart2(void);
 void SsSetMono(void);
 void SsSetStereo(void);
+
+void SsSetSerialVol(s8 serial, s16 left, s16 right);

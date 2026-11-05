@@ -25,6 +25,7 @@ GAME_TEXT_UNITS := $(MAIN_GAME_UNITS)
 $(foreach unit,$(GAME_TEXT_UNITS),$(eval UNIT_REORDER_$(unit) := 1))
 
 # These modules retain stores and stack restores before returns in the original instruction stream.
+UNIT_REORDER_src/main.c := 0
 UNIT_REORDER_src/game/unk_8002B3F4.c := 0
 UNIT_REORDER_src/game/unk_800497B8.c := 0
 UNIT_REORDER_src/game/unk_80070274.c := 0
