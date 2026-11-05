@@ -8,6 +8,7 @@
 
 /* Storage remains in the shared data object. */
 extern GameTask *D_8013B378;
+extern GameTask *D_8013B37C;
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80070274);
 
@@ -69,7 +70,9 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_8007195C);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_8007197C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_8007199C);
+void clearSecondaryTaskReference(void) {
+    D_8013B37C = NULL;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_800719A8);
 
