@@ -146,6 +146,15 @@ typedef struct SpriteMotionResource {
     u8 padding[0xE6];
 } SpriteMotionResource;
 
+typedef struct PlayerCameraView {
+    s32 x, y, z;
+    s32 targetX, targetY, targetZ;
+    s32 unk18, unk1C;
+} PlayerCameraView;
+
+PlayerCameraView gPlayerCameraViews[2]
+    __attribute__((section(".data.player_camera_views"))) = {0};
+
 MenuSpritePaletteGroups gMenuSpritePaletteGroups
     __attribute__((section(".data.menu_sprite_palettes"))) = {
         {2, 2, 3},
@@ -1392,7 +1401,13 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003E794);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003EA20);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003ED6C);
+void updateCurrentPlayerCameraTarget(void) {
+    PlayerCameraView *targets = gPlayerCameraViews;
+    RacePlayer *players = D_80120E90;
+    targets[D_8013AE88->data18].targetX = players[D_8013AE88->data18].unk8E4 + players[D_8013AE88->data18].unk084;
+    targets[D_8013AE88->data18].targetY = players[D_8013AE88->data18].unk8E8 + (s16)(D_801241E8[D_8013AE88->data18].unk14 / 8 - 120) + players[D_8013AE88->data18].unk086;
+    targets[D_8013AE88->data18].targetZ = players[D_8013AE88->data18].unk8EC + players[D_8013AE88->data18].unk088;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003EE70);
 
