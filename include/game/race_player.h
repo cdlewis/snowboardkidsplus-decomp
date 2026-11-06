@@ -111,6 +111,7 @@ struct RacePlayer {
 extern u8 D_800EB09C[10][40];
 
 extern RacePlayer D_80120E90[];
+extern s8 D_8013AFD2 __attribute__((section(".data")));
 extern s16 D_8013B0E4;
 /* Two declarations preserve the original GP-relative and absolute accesses
  * to this shared pointer. The absolute alias is resolved by the symbol map. */
@@ -158,3 +159,4 @@ void func_80016E80(u8 index, u8 flags);
 void initCurrentPlayerModelParts(void);
 s32 callCurrentPlayerStateCallbackIfDifferent(u16 state);
 
+void initializeActiveRacePlayers(void);

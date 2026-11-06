@@ -2002,3 +2002,5 @@ gMemoryCardLoadDestination = 0x8013AF44; // size:0x4
 initializeCurrentPlayerDefaultState = 0x8001F130; // type:func
 
 initializeCurrentPlayerState2 = 0x8001F258; // type:func
+
+initializeActiveRacePlayers = 0x80029168; // type:func

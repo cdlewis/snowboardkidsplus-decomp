@@ -141,6 +141,8 @@ void clearCurrentPlayerSequenceState(void) {
 
 
 
+void func_800293F0(void);
+
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8001E63C);
 
 u8 readSelectedByteTable(s32 index) {
@@ -396,7 +398,17 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80028680);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80028C80);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80029168);
+void initializeActiveRacePlayers(void) {
+    u16 i;
+    for (i = 0; i < D_8013AFD2; i++) {
+        RacePlayer *player = &D_80120E90[i];
+        player->playerIndex = i;
+        if (player->unk024) {
+            currentPlayerAbsolute = player;
+            func_800293F0();
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80029208);
 

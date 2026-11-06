@@ -135,7 +135,6 @@ void func_8001CE74(void);
 void func_8001E148(void);
 void func_8001E1B8(void);
 void func_800180F4(s16 bankId);
-void func_80029168(void);
 void func_80040A60(void);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80015EE0);
@@ -647,7 +646,7 @@ void initializeRaceTaskState(void) {
     if (D_8013AFE2 == 2) {
         resetSecondaryRng();
     }
-    func_80029168();
+    initializeActiveRacePlayers();
     func_80040A60();
     func_800149A8();
 }
