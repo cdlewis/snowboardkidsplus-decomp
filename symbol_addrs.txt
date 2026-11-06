@@ -2723,3 +2723,5 @@ initializeOrbitingPlayerVisualTask = 0x800489A0; // type:func
 
 drawLimitedText8x8 = 0x8006D41C; // type:func
 drawPaletteCyclingStripTask = 0x80069654; // type:func
+
+updateFadingTextTask = 0x8006A7B4; // type:func

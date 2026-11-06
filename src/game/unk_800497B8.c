@@ -757,7 +757,8 @@ void func_8006D538(s16 x, s16 y, s16 width, s16 height, const char *text,
 void func_80063B58(void);
 void func_80063DF4(void);
 void drawFullScreenSpriteTask(void);
-void func_8006A7B4(void);
+void updateFadingTextTask(void);
+void func_8006A4E8(FadingTextResource *resource);
 void func_8006B1F4(void);
 void func_8006AB8C(void);
 void updatePrimaryValueTransition(void);
@@ -2779,11 +2780,31 @@ void uploadTimImageAndPaletteAt(u32 *tim, s32 x, s32 y, s32 clutX, s32 clutY) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006A4E8);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006A7B4);
+void updateFadingTextTask(void) {
+    FadingTextResource *resource;
+    s32 remaining;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (FadingTextResource *)&D_800D9504[D_8013AE88->resource14];
+    setSpriteColor(255, 255, 255);
+    remaining = resource->elapsed;
+    if (remaining < 30 || (remaining = resource->duration - remaining) < 30) {
+        resource->brightness = remaining * 255 / 30;
+    } else {
+        resource->brightness = 255;
+    }
+    func_8006A4E8(resource);
+    D_8013B368 = 0;
+    if (++resource->elapsed == resource->duration) {
+        func_800149A8();
+        D_8013B368 = 1;
+    }
+}
 
 void createFadingTextTask(s32 duration, s32 x, s32 y, const char *text, s32 palette) {
     FadingTextResource *resource;
-    func_80014930(D_8013AE88, func_8006A7B4);
+    func_80014930(D_8013AE88, updateFadingTextTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     resource = (FadingTextResource *)&D_800D9504[D_8013AE8C->resource14];
     resource->duration = duration;
