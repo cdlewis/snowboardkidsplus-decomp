@@ -92,6 +92,7 @@ void func_800245C4(void);
 void func_80024804(void);
 void func_80026DAC(void);
 void func_800205B8(void);
+void func_80028680(void);
 void func_800255C4(void);
 void func_8002AE6C(void);
 s32 func_80017268(void);
@@ -554,7 +555,29 @@ s32 callCurrentPlayerStateCallbackIfDifferent(u16 state) {
     return result;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80020380);
+void initializeCurrentPlayerModelAndHeight(void) {
+    RacePlayer *player;
+    if (D_8013AFE2 == 0) {
+        func_80014930(&gGameTasks[4], initializeTaskCoordinateResource);
+        D_8013AE8C->data18 = D_8013AE88->data18;
+    }
+    player = &D_80120E90[D_8013AE88->data18];
+    player->unk0B6 = -0x400;
+    player->unk0B4 = 0;
+    player->unk0B8 = 0;
+    player->unk962 = -1;
+    D_8013B0D8 = player;
+    func_8001E244(((u32 (*)[4096])0x8016B000)[D_8013AE88->data18]);
+    if (!D_8013AFD8 && !D_8013AFD9) {
+        D_8013B0D8->unk92E = 0;
+    } else {
+        D_8013B0D8->unk0B6 = D_8013B0D8->unk110 - 0x400;
+    }
+    D_8013B0D8->y = D_8013B0D8->unk054 = func_8004A764(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8) << 8;
+    func_80028680();
+    startCurrentPlayerAnimation(1, 1);
+    setCurrentTaskCallback(updateCurrentPlayerAndResetState);
+}
 
 void updateCurrentPlayerAndResetState(void) {
     func_8002AE6C();

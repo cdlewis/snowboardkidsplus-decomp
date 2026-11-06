@@ -37,7 +37,7 @@ struct RacePlayer {
     s32 z;
     u8 unk03C[0x14];
     s32 unk050;
-    u8 unk054[4];
+    s32 unk054;
     s32 unk058;
     u8 unk05C[4];
     s16 unk060;
@@ -57,7 +57,7 @@ struct RacePlayer {
     s32 unk0AC;
     u8 unk0B0[4];
     u16 unk0B4;
-    u16 unk0B6;
+    s16 unk0B6;
     s16 unk0B8;
     u8 unk0BA[2];
     s16 unk0BC;
@@ -130,7 +130,9 @@ struct RacePlayer {
     s32 unk94C;
     u8 unk950[4];
     u8 unk954;
-    u8 unk955[0x10];
+    u8 unk955[0xD];
+    s16 unk962;
+    u8 unk964;
     s8 unk965;
     u8 unk966[5];
     u8 soundVoice;
@@ -205,6 +207,8 @@ void func_8002E5A0(u16 index, s16 value);
 
 void startCurrentPlayerAnimation(u8 animation, u8 mode);
 
+void func_8001E244(u32 *model);
+void initializeCurrentPlayerModelAndHeight(void);
 void initCurrentPlayerModelParts(void);
 s32 callCurrentPlayerStateCallbackIfDifferent(u16 state);
 

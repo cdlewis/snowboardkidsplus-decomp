@@ -1,3 +1,4 @@
+initializeCurrentPlayerModelAndHeight = 0x80020380; // type:func
 debugPositionXFormatAbsolute = 0x8013B214; // size:0x8 allow_duplicated:true
 debugPositionYFormatAbsolute = 0x8013B21C; // size:0x8 allow_duplicated:true
 debugPositionZFormatAbsolute = 0x8013B224; // size:0x8 allow_duplicated:true
