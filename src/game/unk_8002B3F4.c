@@ -513,7 +513,7 @@ void dispatchMode11TransitionTask(void);
 void func_80030108(void);
 void func_8002F468(void);
 void func_800302F8(void);
-void func_80032C14(void);
+void updateRepeatedSoundTask(void);
 void waitUnlockNotification0TransitionTask(void);
 void func_80032F3C(void);
 void queueBackgroundTextureSectorCommands(void);
@@ -1305,7 +1305,7 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003288C);
 void createRepeatedSoundTask(s32 sound, s32 delay, s32 interval, s32 count) {
     RepeatedSoundResource *resource;
 
-    func_80014874(func_80032C14);
+    func_80014874(updateRepeatedSoundTask);
     D_8013AE8C->data18 = delay;
     D_8013AE8C->data1A = interval;
     D_8013AE8C->data1C = 0;
@@ -1315,7 +1315,41 @@ void createRepeatedSoundTask(s32 sound, s32 delay, s32 interval, s32 count) {
     resource->sound = sound;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80032C14);
+void updateRepeatedSoundTask(void) {
+    RepeatedSoundResource *resource;
+    s16 sound;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (RepeatedSoundResource *)&D_800D9504[D_8013AE88->resource14];
+    sound = resource->sound;
+    if (D_8013AE88->data1E == 0) {
+        func_800149A8();
+    } else if (D_8013AE88->data18 != 0) {
+        D_8013AE88->data18--;
+    } else {
+        if (D_8013AE88->data1C == 0) {
+            switch (sound) {
+            case 0:
+                playSoundEffect(0, 0x200, 0x20);
+                break;
+            case 1:
+                playSoundEffect(0, 0x500, 0x20);
+                break;
+            case 2:
+                playSoundEffect(0, 0x300, 0x20);
+                break;
+            }
+            D_8013AE88->data1E--;
+            D_8013AE88->data1C = D_8013AE88->data1A;
+            if (D_8013AE88->data1C == 0) {
+                return;
+            }
+        }
+        D_8013AE88->data1C--;
+    }
+}
 
 void drawPlayerModeMessagePanelTask(void) {
     if (D_8013AE88->data18 == 99) {
