@@ -2388,3 +2388,5 @@ addTexturedQuad = 0x800603C4; // type:func
 updateTimedSpriteSequence = 0x8006A9CC; // type:func
 
 addTilePacket = 0x80072340; // type:func
+
+initializeUnlockMenuResourceTask = 0x800A3C3C; // type:func

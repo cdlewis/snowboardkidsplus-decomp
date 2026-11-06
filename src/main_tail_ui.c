@@ -25,7 +25,9 @@ typedef struct UnlockMenuState {
     s32 unk3C[7];
     s32 unk58[7];
     s16 unk74[4];
-    u8 unk7C[0x84];
+    u8 unk7C[0x10];
+    s16 unk8C;
+    u8 unk8E[0x72];
 } UnlockMenuState;
 
 typedef struct TextControlState {
@@ -78,6 +80,9 @@ void func_8001B858(void);
 void func_800A1F50(void);
 void func_800A4C28(void);
 void resetUnlockMenuOffsets(UnlockMenuState *state);
+void resetUnlockMenuAnimation(UnlockMenuState *state);
+void func_8007BBAC(s16 index);
+void func_800A3D9C(void);
 void func_800A525C(void);
 void func_800A6A8C(void);
 void func_800A6E88(void);
@@ -159,7 +164,21 @@ INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A39AC);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A3AA4);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A3C3C);
+void initializeUnlockMenuResourceTask(void) {
+    UnlockMenuState *state;
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        for (;;) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    state = (UnlockMenuState *)&D_800D9504[D_8013AE88->resource14];
+    state->selection = 0;
+    state->previousSelection = 0;
+    resetUnlockMenuAnimation(state);
+    state->unk8C = 0;
+    func_80070274(1, 0, 30);
+    func_8007BBAC(0);
+    setCurrentTaskCallback(func_800A3D9C);
+}
 
 void resetUnlockMenuAnimation(UnlockMenuState *state) {
     s16 i;
