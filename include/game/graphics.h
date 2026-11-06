@@ -166,6 +166,11 @@ void func_8006C998(s16 x, s16 y, s16 sprite, s32 palette, s32 blendMode,
                    GsOT *ot, u16 depth);
 void drawMenuKindSprite(s16 x, s16 y, s16 kind, s32 frame, GsOT *ot, u16 depth);
 struct GsOT;
+extern struct GsOT D_800EBFF0[2];
+extern u16 D_8013AF78 __attribute__((section(".data")));
+
+void func_8006D41C(s16 x, s16 y, s16 limit, const char *text,
+                   s16 palette, s16 blend, struct GsOT *ot, u16 depth);
 void addDrawPagePacket(DR_TPAGE *source, struct GsOT *ot, u16 depth);
 
 void drawTexturedFrameStyle9(s16 x, s16 y, s16 w, s16 h, s16 palette,

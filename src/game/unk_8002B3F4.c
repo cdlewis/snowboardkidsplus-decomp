@@ -145,6 +145,7 @@ void func_80037850(const MenuTimeValue *value, s16 x, s16 y, s16 mode, GsOT *ot,
 
 /* Only the first byte of this shared state is used by this task flow. */
 extern u8 D_80120F90[];
+extern const char D_80010A94[];
 
 RaceTime gRaceElapsedTime = {0, 0, 0};
 
@@ -178,7 +179,7 @@ void func_8003772C(void);
 void func_80037F74(void);
 void func_80037BF8(TaskResourceRecord *resource);
 void func_800379B8(TaskResourceRecord *resource);
-void func_80037C80(TaskResourceRecord *resource);
+void drawLapTimeLabel(TaskMenuFadeResource *resource);
 void func_80038090(TaskResourceRecord *resource);
 void func_80038574(TaskResourceRecord *resource);
 void func_8003BE58(TaskResourceRecord *resource);
@@ -836,7 +837,17 @@ void drawMenuTimeWithBrightness(MenuTimeResource *resource) {
     func_80037850(&D_8013B180, -108, -48, 1, &D_800EBFF0[D_8013AF78], 1);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80037C80);
+void drawLapTimeLabel(TaskMenuFadeResource *resource) {
+    if (resource->brightness != 128) {
+        setSpriteColor((u8)resource->brightness,
+                       (u8)resource->brightness,
+                       (u8)resource->brightness);
+    } else {
+        setSpriteColor(128, 128, 128);
+    }
+    func_8006D41C(-116, -60, 20, D_80010A94, 5, -1,
+                 &D_800EBFF0[D_8013AF78], 1);
+}
 
 void drawCurrentTaskTimeMenu(void) {
     TaskResourceRecord *resource;
@@ -847,7 +858,7 @@ void drawCurrentTaskTimeMenu(void) {
     resource = &D_800D9504[D_8013AE88->resource14];
     func_80037BF8(resource);
     func_800379B8(resource);
-    func_80037C80(resource);
+    drawLapTimeLabel((TaskMenuFadeResource *)resource);
 }
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80037D90);
