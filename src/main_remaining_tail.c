@@ -101,7 +101,7 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining_tail", func_80019AF4);
 
 void waitForMemoryCardAcceptTask(void) {
     if (tryAcceptMemoryCard() == 1) {
-        func_80018AA4();
+        captureMemoryCardSaveIcon();
         setCurrentTaskCallback(pollMemoryCardStatusTask);
     }
 }

@@ -7,6 +7,7 @@
 #include "game/linear_random.h"
 #include "game/offset_archive.h"
 #include "game/music.h"
+#include "game/global_flags.h"
 #define RACE_PLAYER_ABSOLUTE_ADDRESSING
 #include "game/cd_queue.h"
 #include "game/controller.h"
@@ -608,7 +609,41 @@ void initializeMemoryCardSaveHeader(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80018AA4);
+void captureMemoryCardSaveIcon(void) {
+    RECT paletteRect;
+    RECT iconRect;
+    s16 icon;
+
+    if ((s16)getGlobalFlagMask(0)) {
+        icon = 2;
+    } else if ((s16)getGlobalFlagMask(1)) {
+        icon = 1;
+    } else {
+        icon = 0;
+    }
+    switch (icon) {
+    case 0:
+        paletteRect.y = 0xF4;
+        iconRect.x = 0x34C;
+        break;
+    case 1:
+        paletteRect.y = 0xF5;
+        iconRect.x = 0x350;
+        break;
+    case 2:
+        paletteRect.y = 0xF6;
+        iconRect.x = 0x354;
+        break;
+    }
+    paletteRect.x = 0x310;
+    paletteRect.w = 16;
+    paletteRect.h = 1;
+    iconRect.y = 0x1D0;
+    iconRect.w = 4;
+    iconRect.h = 48;
+    StoreImage(&paletteRect, (u32 *)gMemoryCardSaveHeader.iconPalette);
+    StoreImage(&iconRect, (u32 *)gMemoryCardSaveHeader.icons);
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80018BA4);
 

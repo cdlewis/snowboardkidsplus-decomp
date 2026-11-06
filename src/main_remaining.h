@@ -69,7 +69,7 @@ void func_8001B858(void);
 void func_8002FFC0(void);
 s32 func_80014838(TaskCallback callback);
 void pollMemoryCardReadTask(void);
-void func_80018AA4(void);
+void captureMemoryCardSaveIcon(void);
 s32 func_80019288(void);
 s32 func_80019670(void);
 void pollMemoryCardStatusTask(void);
