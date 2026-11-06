@@ -10,6 +10,7 @@
 #include "game/game_task_scheduler.h"
 #include "game/race_player.h"
 #include "game/race_camera.h"
+#include "game/coordinate.h"
 #include "game/race_time.h"
 #include "game/selected_records.h"
 #include "game/selected_record.h"
@@ -3189,7 +3190,31 @@ void initPlayerCamera(u16 index) {
     GsSetRefView2L(view);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003E050);
+void updatePlayerCameraPosition(u16 index) {
+    PlayerCamera *cameras = D_801241E8;
+    PlayerCamera *camera = &cameras[index];
+    RacePlayer *players;
+    RacePlayer *player;
+    GsRVIEW2 *views;
+    GsRVIEW2 *view;
+    RotMatrixYXZ((D_8013AF90->vx = camera->pitch & 0xFFF,
+                  D_8013AF90->vy = camera->yaw & 0xFFF,
+                  D_8013AF90->vz = 0, D_8013AF90), D_8013AF98);
+    D_8013AF94->vx = 0;
+    D_8013AF94->vy = 0;
+    D_8013AF94->vz = camera->unk10 - camera->unk12 + camera->unk14;
+    ApplyMatrix(D_8013AF98, D_8013AF94, D_8013AF88);
+    players = D_80120E90;
+    player = &players[index];
+    camera->x = player->x + (D_8013AF88->vx << 8);
+    camera->y = player->y + (D_8013AF88->vy << 8);
+    camera->z = player->z + (D_8013AF88->vz << 8);
+    views = gPlayerCameraViews;
+    view = &views[index];
+    view->vpx = camera->x / 256;
+    view->vpy = camera->y / 256 - 120;
+    view->vpz = camera->z / 256;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003E1D0);
 

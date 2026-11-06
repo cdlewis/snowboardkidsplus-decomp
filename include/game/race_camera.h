@@ -21,7 +21,7 @@ s32 isPositionInCameraRange(s32 x, s32 z, s16 playerIndex);
 
 void initPlayerCamera(u16 index);
 void initPlayerCameraAndTarget(u16 index);
-void func_8003E050(u16 index);
+void updatePlayerCameraPosition(u16 index);
 void updatePlayerCameraAngles(u16 playerIndex);
 
 void updateCurrentPlayerCameraTarget(void);

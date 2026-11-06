@@ -1123,5 +1123,5 @@ void updateTaskViewAndCheckPlayerLimit(void) {
         }
         func_800149A8();
     }
-    func_8003E050(D_8013AE88->data18);
+    updatePlayerCameraPosition(D_8013AE88->data18);
 }
