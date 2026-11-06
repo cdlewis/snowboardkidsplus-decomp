@@ -136,6 +136,7 @@ extern u16 D_8013AFE8;
 extern void *D_8013AF4C;
 extern void *gMemoryCardLoadDestination;
 
+u32 *func_8001A2B8(MovieDecodeState *state);
 void func_8001A474(CdlLOC *location);
 void func_8002EE0C(void);
 void func_8001D044(void);
@@ -627,7 +628,21 @@ void startMovieStream(CdlLOC *location, DecDCCb outputCallback) {
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001A0EC);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001A22C);
+s32 decodeNextMovieFrame(MovieDecodeState *state) {
+    u32 *frame;
+    s32 timeout = 2000;
+    while (timeout != 0) {
+        frame = func_8001A2B8(state);
+        if (frame != 0) {
+            state->vlcBufferIndex = !state->vlcBufferIndex;
+            DecDCTvlc2(frame, state->vlcBuffers[state->vlcBufferIndex], (u16 *)0x80190000);
+            StFreeRing(frame);
+            return 0;
+        }
+        timeout--;
+    }
+    return -1;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001A2B8);
 

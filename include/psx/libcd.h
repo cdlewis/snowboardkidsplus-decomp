@@ -40,3 +40,5 @@ s32 CdPosToInt(CdlLOC *position);
 
 void StSetRing(u8 *addr, s32 size);
 void StSetStream(u32 mode, u32 start, u32 end, void (*func1)(void), void (*func2)(void));
+
+u32 StFreeRing(u32 *base);

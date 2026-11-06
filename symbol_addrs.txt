@@ -2281,3 +2281,5 @@ initializeScaledTaskCoordinateResource = 0x80045868; // type:func
 updateValueInterpolationTask = 0x8006A07C; // type:func
 
 startMovieStream = 0x8001A080; // type:func
+
+decodeNextMovieFrame = 0x8001A22C; // type:func
