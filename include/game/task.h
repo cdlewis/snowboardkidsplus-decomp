@@ -124,3 +124,5 @@ void func_8001DB7C(void);
 void initializeViewAndSelectTaskCallback(void);
 
 void initializeGameOptionViewTask(void);
+
+void initializeDualResourceTaskAndNotifyParent(void);

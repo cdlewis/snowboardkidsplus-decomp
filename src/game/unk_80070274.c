@@ -63,6 +63,7 @@ void updateCountdownTask(void);
 void func_80076034(void);
 void func_8007724C(void);
 void func_80077770(void);
+void func_8007BE9C(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80070274);
 
@@ -447,4 +448,19 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_8007BBAC);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_8007BD04);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_8007BDE0);
+void initializeDualResourceTaskAndNotifyParent(void) {
+    GameTask *task = D_8013AE88;
+    GameTask *parent = D_8013AE98;
+    task->data18 = 0;
+    parent->data1C++;
+    if (task->resource14 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    if (D_8013AE88->resource16 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource16 = allocateTaskResource();
+    setCurrentTaskCallback(func_8007BE9C);
+    D_8013AE88->unk10 |= 2;
+}
