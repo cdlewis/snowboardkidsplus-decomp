@@ -48,6 +48,12 @@ typedef struct TaskValueState {
     u16 unk06;
 } TaskValueState;
 
+u16 gTextPanelMessage[] __attribute__((section(".data.text_panel_message"))) = {
+    0xC00F, 0x0049, 0x0040, 0x0069, 0x004A, 0x0052,
+    0x0158, 0x00BF, 0x0096, 0x00B9, 0x00C0, 0x00CE,
+    0x009A, 0x00CB, 0x009D, 0x0094, 0x0033, 0x0000
+};
+
 /* Storage remains in the shared data object. */
 extern TaskValueState D_8012D4A4[3];
 extern GameTask *D_8013B378;
@@ -67,6 +73,9 @@ DR_TPAGE gAnimatedSprite16DrawPage __attribute__((section(".sdata.animated_sprit
 s16 func_80070794(s32 id);
 void addTilePacket(s32 x, s32 y, s32 width, s32 height, s32 r, s32 g, s32 b,
                    GsOT *ot, u16 depth);
+void func_80071490(s32 mode, s32 value1, s32 value2);
+void func_8006EF30(s32 x, s32 y, s16 columns, const u16 *text,
+                   s32 palette, s16 blendMode, GsOT *ot, u16 depth);
 void func_8007197C(void);
 void updateCountdownTask(void);
 void func_80076034(void);
@@ -483,7 +492,14 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_8007B890);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_8007BBAC);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_8007BD04);
+void drawTextMessagePanel(void) {
+    setSpriteColor(128, 128, 128);
+    setTexturedQuadColor(128, 128, 128);
+    func_8006EF30(-112, -24, 14, gTextPanelMessage, 8, -1,
+                  &D_800EBFF0[D_8013AF78], 3);
+    drawDefaultTexturedPanel(-120, -32, 240, 64, 5, 0,
+                            &D_800EBFF0[D_8013AF78], 3);
+}
 
 void initializeDualResourceTaskAndNotifyParent(void) {
     GameTask *task = D_8013AE88;
