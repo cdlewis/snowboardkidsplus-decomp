@@ -430,7 +430,24 @@ void moveTaskChildrenWithSpacing(s32 mode, GameTask *task, s32 x, s32 y, s32 spe
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80073B0C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80073CB4);
+void initializeSpacedTaskGridPositions(s32 mode, GameTask *task, s32 x, s32 y, s32 spacingX, s32 spacingY) {
+    TaskGridState *state;
+    TaskGridEntry *entries;
+    s16 i, end;
+    state = (TaskGridState *)&D_800D9504[task->resource14];
+    entries = (TaskGridEntry *)&D_800D9504[task->resource16];
+    if (mode == 1) {
+        i = state->selectedIndex;
+        end = i + 1;
+    } else {
+        i = 0;
+        end = state->count;
+    }
+    for (; i < end; i++) {
+        if (mode == 2 && i == state->selectedIndex) continue;
+        initMovement2D((Movement2D *)&D_800D9504[entries[i].task->resource14], x + spacingX * i, y + spacingY * i);
+    }
+}
 
 void drawSelectedTaskSprite(void) {
     SelectedSpriteResource *state;

@@ -198,3 +198,6 @@ void initializePlayerModeSelectionTask(void);
 
 void configureTaskGridMovement(s32 mode, GameTask *task, s32 x, s32 y,
                                s32 stepX, s32 stepY, s32 delay);
+
+void initializeSpacedTaskGridPositions(s32 mode, GameTask *task, s32 x, s32 y,
+                                 s32 spacingX, s32 spacingY);
