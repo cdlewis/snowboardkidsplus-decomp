@@ -202,3 +202,5 @@ void configureTaskGridMovement(s32 mode, GameTask *task, s32 x, s32 y,
 
 void initializeSpacedTaskGridPositions(s32 mode, GameTask *task, s32 x, s32 y,
                                  s32 spacingX, s32 spacingY);
+
+void updateColorCycleTask(void);

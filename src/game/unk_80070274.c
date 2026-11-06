@@ -20,6 +20,9 @@ typedef struct ChildMovementGroup {
     u8 unk34[0x22];
     s16 spacingX, spacingY, count;
 } ChildMovementGroup;
+typedef struct ColorCycleResource {
+    u8 value, step, minimum, maximum;
+} ColorCycleResource;
 
 typedef struct ValueTransitionResource {
     u32 *value;
@@ -116,6 +119,7 @@ extern TaskValueState D_8012D4A4[3];
 extern GameTask *D_8013B378;
 extern GameTask *D_8013B37C;
 extern GameTask *D_8013BDA8[4];
+extern u8 D_8013B3A4, D_8013B3A5, D_8013B3A6;
 
 s8 gTaskImageSourceRows[12] = {8, 1, 2, 3, 4, 5, 6, 7, 9, 0, 0, 0};
 
@@ -162,7 +166,36 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80070830);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80070870);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80070A2C);
+void updateColorCycleTask(void) {
+    ColorCycleResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    resource = (ColorCycleResource *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->data18 == 0) {
+        D_8013BDA8[D_8013AE88->data1A] = NULL;
+        func_800149A8();
+    } else {
+        D_8013AE88->data1E = 0;
+        switch (D_8013AE88->data18) {
+        case 1:
+            if (resource->step >= resource->maximum - resource->value) {
+                resource->value = resource->maximum;
+                D_8013AE88->data1E = 1;
+                D_8013AE88->data18 = 2;
+            } else { resource->value += resource->step; }
+            break;
+        case 2:
+            if (resource->step >= resource->value - resource->minimum) {
+                resource->value = resource->minimum;
+                D_8013AE88->data1E = 1;
+                D_8013AE88->data18 = 1;
+            } else { resource->value -= resource->step; }
+            break;
+        }
+        D_8013B3A4 = resource->value;
+        D_8013B3A5 = resource->value;
+        D_8013B3A6 = resource->value;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80070B64);
 
