@@ -2392,3 +2392,5 @@ addTilePacket = 0x80072340; // type:func
 initializeUnlockMenuResourceTask = 0x800A3C3C; // type:func
 
 updateOneShotTaskVisual = 0x80044990; // type:func
+
+initializeModeDependentDualResourceTask = 0x8009F900; // type:func

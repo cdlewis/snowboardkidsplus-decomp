@@ -129,3 +129,5 @@ void initializeGameOptionViewTask(void);
 void initializeDualResourceTaskAndNotifyParent(void);
 
 void initializeMainTailDualResourceTask(void);
+
+void initializeModeDependentDualResourceTask(void);

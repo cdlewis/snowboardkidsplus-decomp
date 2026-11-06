@@ -184,6 +184,7 @@ void func_800A3750(void);
 void func_800A5AFC(void);
 void func_800A6548(void);
 void func_8009BDB8(void);
+void func_8009F9B8(void);
 
 void func_8002FA58(s16 resource);
 void func_800A39AC(void);
@@ -577,7 +578,24 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009F158);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009F224);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009F900);
+void initializeModeDependentDualResourceTask(void) {
+    GameTask *task = D_8013AE88;
+    task->data18 = 0;
+    if (D_8013AFCD == 1) {
+        task->data1A = 1;
+    } else {
+        task->data1A = 3;
+    }
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    if (D_8013AE88->resource16 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource16 = allocateTaskResource();
+    setCurrentTaskCallback(func_8009F9B8);
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009F9B8);
 
