@@ -1,3 +1,4 @@
+finishTimedSpritePresentation = 0x8006AB18; // type:func
 drawMenuTimeWithBrightness = 0x80037BF8; // type:func
 resetCurrentPlayerForCallback255C4 = 0x8001FD70; // type:func
 initializeSpriteMotionTask = 0x80034FBC; // type:func

@@ -6,6 +6,7 @@
 #include "game/linear_random.h"
 #include "game/offset_archive.h"
 #include "game/music.h"
+#define TASK_TRANSITION_FLAGS_ABSOLUTE_ADDRESSING
 #define TASK_ABSOLUTE_ADDRESSING
 #include "game/task.h"
 #include "game/race_player.h"
@@ -990,7 +991,14 @@ void startTimedSpriteSequence(const TimedSpriteStep *steps) {
     resource->frame = 0;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006AB18);
+void finishTimedSpritePresentation(void) {
+    if (D_8013AE88->data18++ >= 30) {
+        func_80013294(103, 20, 0, 1);
+        D_8013AFE4 |= 0x100;
+        func_800149E0();
+        func_800149A8();
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006AB8C);
 

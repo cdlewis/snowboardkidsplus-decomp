@@ -77,7 +77,6 @@ extern s16 D_8013AF38;
 extern char D_8013AF3C[];
 extern s32 D_8013B600[];
 extern struct DIRENTRY D_8013B700[][15];
-extern u32 D_8013AFE4;
 extern u16 D_8013AEE8 __attribute__((section(".data")));
 extern s16 D_8013AF3E;
 extern u16 D_8013AFAA __attribute__((section(".data")));
