@@ -207,7 +207,7 @@ void queueTaskModeSectorRead(void);
 void queueModeIndexedSectorRead(s16 mode, s16 index);
 void func_800A3750(void);
 void func_800A5AFC(void);
-void func_800A6548(void);
+void initializeTextPlaybackTask(void);
 void func_8009BDB8(void);
 void func_8009CA90(void);
 void func_8009F9B8(void);

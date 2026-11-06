@@ -67,6 +67,18 @@ typedef struct TextResourceState {
     u32 unk04[5];
     s16 unk18[5];
 } TextResourceState;
+typedef struct TextPlaybackState {
+    TextEntry *currentEntry;
+    u32 unk04[5];
+    s16 unk18[5];
+    u8 unk22[2];
+    s32 tick;
+    u16 flags, unk2A;
+    GameTask *tasks[5];
+    u32 unk40;
+    u8 unk44[0xBC];
+} TextPlaybackState;
+
 typedef struct TextTaskResource {
     TextEntry *entry;
     u8 unk04[0x2C];
@@ -247,6 +259,8 @@ extern s16 D_8013B10C __attribute__((section(".data")));
 extern u8 D_8013B55E __attribute__((section(".data")));
 
 extern u8 D_8013B564;
+extern s16 D_8013B59C;
+extern u8 D_8013B59E;
 extern u8 D_8013B59F;
 
 extern s16 D_8013B560;
@@ -268,7 +282,8 @@ void func_800A2C40(void);
 void func_800A25F8(void);
 void func_800A3750(void);
 void func_800A5AFC(void);
-void func_800A6548(void);
+void initializeTextPlaybackTask(void);
+void func_800A6684(void);
 void func_800A624C(void);
 
 void func_80040D5C(void);
@@ -899,10 +914,40 @@ void initializeLoadedTextEntries(void) {
     D_8013B5D0 = freeEntries;
     D_8013B5D4 = activeEntries;
     func_800A5AFC();
-    setCurrentTaskCallback(func_800A6548);
+    setCurrentTaskCallback(initializeTextPlaybackTask);
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A6548);
+void initializeTextPlaybackTask(void) {
+    TextPlaybackState *state;
+    s16 i;
+
+    if (D_8013AE88->resource16 == 0xFFFF) {
+        while (1) {}
+    }
+    state = (TextPlaybackState *)&D_800D9504[D_8013AE88->resource16];
+    state->currentEntry = findKeyedListNode(0, 0);
+    if (state->currentEntry == NULL) {
+        state->currentEntry = findTextEntryInsertionPoint(0, 0);
+    }
+    for (i = 0; i < 5; i++) {
+        state->unk04[i] = 0;
+        state->unk18[i] = 0;
+    }
+    state->tick = -1;
+    state->flags = 0;
+    state->unk2A = 0xFFFF;
+    state->unk40 = 0;
+    for (i = 0; i < 8; i++) {
+        gTextSoundSlots[i].voice = 0xFF;
+        gTextSoundSlots[i].soundKey = 0;
+    }
+    setSecondaryDisplayTaskMode(0);
+    func_80070274(2, 5, 30);
+    D_8013B59C = 0;
+    D_8013B59E = 0;
+    D_8013B59F = 0;
+    setCurrentTaskCallback(func_800A6684);
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A6684);
 
@@ -1051,7 +1096,7 @@ void beginAudioFadeCountdownTask(void) {
     for (i = 0; i < 5; i++) {
         state->unk2C[i] = 0;
     }
-    D_8013B6C0 = NULL;
+    gSecondaryResourceDisplayTask = NULL;
     func_8001814C();
     SsSeqSetVol(gMusicSequenceId, 64, 64);
     fadeOutMusicSequence(0x200);

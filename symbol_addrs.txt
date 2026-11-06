@@ -2820,3 +2820,5 @@ updatePlayerResultOrder = 0x80037424; // type:func
 updateQuadTransitionSequenceTask = 0x80069E54; // type:func
 
 drawWrappedText8x8 = 0x8006D134; // type:func
+
+initializeTextPlaybackTask = 0x800A6548; // type:func
