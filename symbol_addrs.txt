@@ -2453,3 +2453,5 @@ updateMenuExitInputTask = 0x80038BAC; // type:func
 updateRaceResultsExitInputTask = 0x8003A094; // type:func
 
 createFullScreenSpriteTask = 0x8006A2F8; // type:func
+
+finishTaskTransitionAfterCountdown = 0x8001D044; // type:func

@@ -142,6 +142,7 @@ extern char *D_8013AF40;
 extern s16 D_8013AF3E;
 extern u16 D_8013AFAA __attribute__((section(".data")));
 extern s32 D_8013B20C __attribute__((section(".data")));
+extern u32 D_8013B20C[2] __attribute__((section(".data")));
 extern u8 D_8013B562 __attribute__((section(".data")));
 extern u8 D_80120EA4[];
 extern s16 D_8013B104 __attribute__((section(".data")));
@@ -165,6 +166,8 @@ void func_8002EE0C(void);
 void func_8001D044(void);
 void func_8001D42C(void);
 void func_8001DB7C(void);
+void finishTaskTransitionAfterCountdown(void);
+void func_8001CF18(u8 loadResources);
 void func_8001CD64(void);
 void updateThreeFrameScreenBlend(void);
 void uploadTimArchive(TimArchive *archive, s16 *position);
@@ -969,14 +972,31 @@ void startTaskTransitionWhenFlagAEE8Set(void) {
         if (D_8013AEE8[0] & 0xB0) {
             D_8013AE88->data18 = 30;
             func_80070274(2, 0, 30);
-            setCurrentTaskCallback(func_8001D044);
+            setCurrentTaskCallback(finishTaskTransitionAfterCountdown);
         }
     } else {
         D_8013AE88->data18--;
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001D044);
+void finishTaskTransitionAfterCountdown(void) {
+    if (D_8013AE88->data18 == 0) {
+        resetPendingCdRequests();
+        D_8013AFAA |= 0x90;
+        D_8013AFD6 = 0;
+        D_8013B20C[0] = 0;
+        D_8013AFE4 &= ~0x10;
+        resetPaletteRecords();
+        func_800149E0();
+        if (D_8013AE88->data1A == 3) {
+            func_8001CF18(0);
+        } else {
+            setCurrentTaskCallback(initializeGameOptionViewTask);
+        }
+    } else {
+        D_8013AE88->data18--;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001D100);
 
