@@ -327,6 +327,7 @@ void func_80032F84(void);
 void func_80033404(void);
 void func_80033C2C(void);
 void func_80044990(void);
+void updateOneShotTaskVisual(void);
 void func_80034C40(SpriteMotionResource *resource);
 void slideInSpriteMotionTask(void);
 void waitSpriteExitMotionTask(void);
@@ -2434,7 +2435,20 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8004463C);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80044768);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80044990);
+void updateOneShotTaskVisual(void) {
+    TaskVisualResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    setTaskVisualFrame(resource, D_80124304, 0x2000);
+    func_8005AC4C(resource, 1);
+    if (!D_8013AFD3) {
+        if (!func_80059290(resource)) {
+            func_800149A8();
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80044A38);
 
@@ -2448,7 +2462,7 @@ void resetTaskVisualState(TaskVisualResource *resource) {
     resource->framePosition = 0;
     func_80018538(resource->position.x, resource->position.y, resource->position.z,
                   1, 0x700, 0x20);
-    setCurrentTaskCallback(func_80044990);
+    setCurrentTaskCallback(updateOneShotTaskVisual);
 }
 
 void createNineIndexedChildTasks(u16 value, u16 mode) {

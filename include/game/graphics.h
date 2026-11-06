@@ -170,6 +170,9 @@ void addTexturedSprite(u32 *orderingTable, s32 tpage, s32 clut, s32 x,
                        s32 r, s32 g, s32 b);
 void initSprite(GsSPRITE *sprite);
 void prepareTaskVisualQuad(TaskVisualResource *resource, TaskVisualFrame *frame, u8 usePitch);
+extern TaskVisualFrame D_80124304[];
+void func_8005AC4C(TaskVisualResource *resource, u8 mode);
+s16 func_80059290(TaskVisualResource *resource);
 void setTaskVisualFrame(TaskVisualResource *resource, TaskVisualFrame *frames,
                         s32 scale);
 void unpackPsxColor(u32 color, UnpackedPsxColor *out);
