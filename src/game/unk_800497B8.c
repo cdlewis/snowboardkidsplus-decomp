@@ -183,6 +183,7 @@ extern u16 D_8013B376 __attribute__((section(".sdata")));
 
 const char gNoProcessMessage[16] = "NO PROCESS...";
 
+s32 func_80060DC8(u32 *tim);
 void func_800692E8(void);
 void func_8006999C(void);
 void func_800618A0(void);
@@ -740,7 +741,16 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80060C68);
 void unusedVariadicStub(s32 unused0, s32 unused1, s32 unused2, ...) {
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80060D40);
+s32 loadTimArchive(OffsetArchive *archive) {
+    u32 i;
+    u32 count = archive->count;
+    for (i = 1; i < count + 1; i++) {
+        if (!func_80060DC8((u32 *)((u8 *)archive + archive->offsets[i - 1]))) {
+            return 0;
+        }
+    }
+    return 1;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80060DC8);
 

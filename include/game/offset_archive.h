@@ -11,3 +11,6 @@ typedef struct OffsetArchive {
 } OffsetArchive;
 
 void *getOffsetArchiveEntry(OffsetArchive *archive, s32 index);
+
+/* Load each TIM entry into VRAM; stop and return zero for an invalid TIM. */
+s32 loadTimArchive(OffsetArchive *archive);

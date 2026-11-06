@@ -1831,3 +1831,5 @@ D_801202C8 = 0x801202C8; // size:0x54 defined:true
 D_8012031C = 0x8012031C; // size:0x54 defined:true
 D_80120370 = 0x80120370; // size:0x54 defined:true
 D_801203C4 = 0x801203C4; // size:0x28 defined:true
+
+loadTimArchive = 0x80060D40; // type:func
