@@ -109,6 +109,13 @@ typedef struct MovingLineResource {
     u8 pad[0xF4];
 } MovingLineResource;
 
+/* Positions and animation phase used by the falling-particle render task. */
+typedef struct FallingParticleResource {
+    s16 x[40];
+    s16 y[40];
+    s32 frame;
+} FallingParticleResource;
+
 typedef struct FadingTextResource {
     s32 duration;
     s32 elapsed;
@@ -508,6 +515,7 @@ void func_8004F46C(void);
 void func_80068D1C(void);
 void func_800692E8(void);
 void func_8006999C(void);
+void func_80062B24(void);
 void func_800618A0(void);
 void func_80061E48(void);
 void func_80062354(void);
@@ -1562,7 +1570,18 @@ void startIndexedRenderTaskPair(s32 index) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80062B24);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80062DA8);
+void createFallingParticleTask(void) {
+    FallingParticleResource *resource;
+    s32 i;
+    func_80014930(&D_800D7C84, func_80062B24);
+    D_8013AE8C->resource14 = allocateTaskResource();
+    resource = (FallingParticleResource *)&D_800D9504[D_8013AE8C->resource14];
+    for (i = 0; i < 40; i++) {
+        resource->x[i] = randomNextLinear() % 320;
+        resource->y[i] = -(randomNextLinear() % 244);
+    }
+    resource->frame = 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80062EA0);
 
