@@ -16,6 +16,7 @@ s32 queueCdSectorCommand(s16 command, s16 sector, s16 count, void *destination, 
 void queueStartupSectorReads(void);
 void func_80013DD0(s16 command, s16 value);
 void resetPendingCdRequests(void);
+void resetCdCommandState(void);
 
 extern u8 gCdVolumeFadeActive;
 extern u8 gCdVolumeFadeInterval;

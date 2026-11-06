@@ -50,7 +50,19 @@ u8 gControllerRepeatInterval __attribute__((section(".sdata.controller_repeat_ti
 
 s16 D_8013AF08[2] __attribute__((section(".data.controller_values"))) = {0, 0};
 
-extern s16 D_8013AE78;
+u16 D_8013AE48 __attribute__((section(".sdata.cd_command_state"))) = 0;
+s16 D_8013AE4A __attribute__((section(".sdata.cd_command_state"))) = 0;
+s16 D_8013AE4C __attribute__((section(".sdata.cd_command_state"))) = 0;
+u16 D_8013AE4E __attribute__((section(".sdata.cd_command_state"))) = 0;
+u16 D_8013AE50 __attribute__((section(".sdata.cd_command_state"))) = 0;
+static u16 sCdCommandStatePadding __attribute__((section(".sdata.cd_command_state"))) = 0;
+s32 D_8013AE54 __attribute__((section(".sdata.cd_command_state"))) = 0;
+s32 D_8013AE58 __attribute__((section(".sdata.cd_command_state"))) = 0;
+s32 D_8013AE5C __attribute__((section(".sdata.cd_command_state"))) = 0;
+s32 D_8013AE60 __attribute__((section(".sdata.cd_command_state"))) = 0;
+s32 D_8013AE64 __attribute__((section(".sdata.cd_command_state"))) = 0;
+s16 D_8013AE78 __attribute__((section(".sdata.cd_command_active"))) = 0;
+static u16 sCdCommandActivePadding __attribute__((section(".sdata.cd_command_active"))) = 0;
 
 void func_800131B4(void) {
 }
@@ -153,7 +165,19 @@ INCLUDE_ASM("asm/nonmatchings/main", func_800138AC);
 
 INCLUDE_ASM("asm/nonmatchings/main", func_80013DD0);
 
-INCLUDE_ASM("asm/nonmatchings/main", func_80013EA4);
+void resetCdCommandState(void) {
+    D_8013AE78 = 0;
+    D_8013AE50 = 0;
+    D_8013AE4E = 0;
+    D_8013AE48 = 0;
+    D_8013AE64 = 0;
+    D_8013AE60 = 0;
+    D_8013AE5C = 0;
+    D_8013AE58 = 0;
+    D_8013AE54 = 0;
+    D_8013AE4C = 0;
+    D_8013AE4A = 0;
+}
 
 void resetPendingCdRequests(void) {
     if (D_8013AE78 != 0) {

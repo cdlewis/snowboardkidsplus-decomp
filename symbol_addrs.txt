@@ -2030,3 +2030,5 @@ setControllerRepeatTiming = 0x80014CBC; // type:func
 gControllerRepeatInitialDelay = 0x8013AEC2; // size:0x1 defined:true
 gControllerRepeatInterval = 0x8013AEC3; // size:0x1 defined:true
 gControllerHorizontalRepeatTimers = 0x8013AEC0; // size:0x2 defined:true
+
+resetCdCommandState = 0x80013EA4; // type:func
