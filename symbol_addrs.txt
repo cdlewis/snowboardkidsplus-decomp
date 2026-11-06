@@ -2493,3 +2493,5 @@ startPaletteTransition = 0x800164E8; // type:func
 updateCdVolumeFade = 0x8001330C; // type:func
 
 initializeCurrentPlayerState23 = 0x8001FDEC; // type:func
+
+emitProjectedFlatQuad = 0x80052C1C; // type:func

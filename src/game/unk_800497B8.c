@@ -96,9 +96,14 @@ typedef struct TriangleScratchpad {
 typedef struct QuadScratchpad {
     u32 unk00;
     void (*emitQuad)(TriangleScratchVertex *);
-    u8 unk08[0x5C];
-    u8 r, g, b;
-    u8 unk67[9];
+    s32 depth, depthCue;
+    u8 unk10[0x40];
+    struct { u16 x, y; } screen[4];
+    u8 unk60[4];
+    u8 r, g, b, code;
+    u8 unk68[2];
+    u8 fogEnabled;
+    u8 unk6B[5];
     TriangleScratchVertex vertices[4];
 } QuadScratchpad;
 
@@ -514,7 +519,7 @@ void func_8005D828(RacePlayer *player, PlayerCollisionRegion *region);
 void func_8005B460(void);
 void func_8005B6C0(void);
 void emitProjectedFlatTriangle(TriangleScratchVertex *vertices);
-void func_80052C1C(TriangleScratchVertex *vertices);
+void emitProjectedFlatQuad(TriangleScratchVertex *vertices);
 void func_800542BC(TriangleScratchVertex *vertices, s32 flags);
 void func_8004F46C(void);
 void func_8004F780(void);
@@ -821,7 +826,28 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80052840);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800529FC);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80052C1C);
+void emitProjectedFlatQuad(TriangleScratchVertex *vertices) {
+    QuadScratchpad *scratch = QUAD_SCRATCHPAD;
+    POLY_F4 *packet = (POLY_F4 *)GsOUT_PACKET_P;
+    if (scratch->fogEnabled) {
+        gte_stdp(&scratch->depthCue);
+        DpqColor((CVECTOR *)&scratch->r, scratch->depthCue, (CVECTOR *)&packet->r0);
+    } else {
+        setRGB0(packet, scratch->r, scratch->g, scratch->b);
+    }
+    packet->tag = 5 << 24;
+    setcode(packet, scratch->code | POLY_F4_CODE);
+    packet->x0 = scratch->screen[0].x;
+    packet->x1 = scratch->screen[1].x;
+    packet->x2 = scratch->screen[2].x;
+    packet->x3 = scratch->screen[3].x;
+    packet->y0 = scratch->screen[0].y;
+    packet->y1 = scratch->screen[1].y;
+    packet->y2 = scratch->screen[2].y;
+    packet->y3 = scratch->screen[3].y;
+    addPrim(&D_8013B670->org[(scratch->depth >> D_8013B69C) + 6], packet);
+    GsOUT_PACKET_P = (u32)(packet + 1);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80052D84);
 
@@ -883,7 +909,7 @@ void drawIndexedFlatQuad(void) {
     QUAD_SCRATCHPAD->r = primitive->r;
     QUAD_SCRATCHPAD->g = primitive->g;
     QUAD_SCRATCHPAD->b = primitive->b;
-    QUAD_SCRATCHPAD->emitQuad = func_80052C1C;
+    QUAD_SCRATCHPAD->emitQuad = emitProjectedFlatQuad;
     QUAD_SCRATCHPAD->vertices[0].position = D_8013B688[primitive->vertexIndices[0]];
     QUAD_SCRATCHPAD->vertices[1].position = D_8013B688[primitive->vertexIndices[1]];
     QUAD_SCRATCHPAD->vertices[2].position = D_8013B688[primitive->vertexIndices[2]];
