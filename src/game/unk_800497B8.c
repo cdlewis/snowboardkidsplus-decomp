@@ -166,6 +166,19 @@ typedef struct QuadTransitionResource {
     u8 pad[0xF4];
 } QuadTransitionResource;
 
+/* Coordinate, position, and color for a quad with an oscillating Z rotation. */
+typedef struct OscillatingQuadResource {
+    GsCOORDINATE2 coordinate;
+    SVECTOR rotation;
+    s32 x, y, z;
+    s32 elapsed;
+    s16 unk68;
+    s16 pad6A;
+    s32 amplitude;
+    u8 r, g, b;
+    u8 pad73[0x8D];
+} OscillatingQuadResource;
+
 /* A coordinate and emission countdown in one 256-byte task resource. */
 typedef struct ProximityEmitterResource {
     GsCOORDINATE2 coordinate;
@@ -379,6 +392,7 @@ extern GsCOORDINATE2 D_80129C60[];
 
 const char gNoProcessMessage[16] = "NO PROCESS...";
 
+void func_8004EFE0(void);
 void func_8001E3E4(SVECTOR *rotation, GsCOORDINATE2 *coordinate);
 void SetFarColor(s32 r, s32 g, s32 b);
 void SetFogNearFar(s32 near, s32 far, s32 h);
@@ -508,7 +522,25 @@ void drawCyanBackgroundAndSetFog(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8004EFE0);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8004F374);
+void createOscillatingQuadTask(s32 value, VECTOR *position, s32 amplitude, s32 r, s32 g, s32 b) {
+    OscillatingQuadResource *resource;
+    func_80014930(&gGameTasks[4], func_8004EFE0);
+    D_8013AE8C->resource14 = allocateTaskResource();
+    resource = (OscillatingQuadResource *)&D_800D9504[D_8013AE8C->resource14];
+    resource->unk68 = value;
+    resource->r = r;
+    resource->g = g;
+    resource->b = b;
+    resource->rotation.vx = 0;
+    resource->rotation.vy = 0;
+    resource->rotation.vz = 0;
+    resource->elapsed = 0;
+    resource->amplitude = amplitude;
+    GsInitCoordinate2(0, &resource->coordinate);
+    resource->x = position->vx;
+    resource->y = position->vy;
+    resource->z = position->vz;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8004F46C);
 
