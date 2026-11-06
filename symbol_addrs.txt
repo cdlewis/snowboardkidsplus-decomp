@@ -2054,3 +2054,6 @@ createActivePlayerSlidingNumberTask = 0x80035528; // type:func
 initializeTaskCoordinateResource = 0x8004449C; // type:func
 
 pollMemoryCardReadTask = 0x80019A70; // type:func
+
+pollMemoryCardStatusTask = 0x80019B94; // type:func
+pollMemoryCardWriteTask = 0x80019CB8; // type:func

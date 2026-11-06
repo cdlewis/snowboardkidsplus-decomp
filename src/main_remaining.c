@@ -144,7 +144,9 @@ s32 func_80019520(void);
 void pollMemoryCardReadTask(void);
 void func_8001E0C0(void);
 void func_80018AA4(void);
-void func_80019B94(void);
+s32 func_80019288(void);
+s32 func_80019670(void);
+void pollMemoryCardStatusTask(void);
 void func_8001D100(void);
 void advanceTaskWhenFlagAFE4Bit8Set(void);
 void startResourceLoadWhenFlagAFE4Bit9Set(void);
@@ -500,17 +502,43 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80019AF4);
 void waitForMemoryCardAcceptTask(void) {
     if (tryAcceptMemoryCard() == 1) {
         func_80018AA4();
-        setCurrentTaskCallback(func_80019B94);
+        setCurrentTaskCallback(pollMemoryCardStatusTask);
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80019B94);
+void pollMemoryCardStatusTask(void) {
+    switch (func_80019288()) {
+    case 0: D_8013AF3E = 1; return;
+    case 5: D_8013AF3E = 2; return;
+    case 2: D_8013AF3E = 6; break;
+    case 8: D_8013AF3E = 11; break;
+    case 1: D_8013AF3E = 5; break;
+    case 3: D_8013AF3E = 7; break;
+    case 4: D_8013AF3E = 8; break;
+    case 6: D_8013AF3E = 9; break;
+    case 7: D_8013AF3E = 10; break;
+    }
+    func_800149A8();
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80019C40);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80019C84);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80019CB8);
+void pollMemoryCardWriteTask(void) {
+    s32 result = func_80019670();
+    if (result != 0) {
+        switch (result) {
+        case 1: D_8013AF3E = 0; break;
+        case 2: D_8013AF3E = 7; break;
+        case 3: D_8013AF3E = 8; break;
+        case 4: D_8013AF3E = 9; break;
+        case 5: D_8013AF3E = 10; break;
+        }
+        func_800149A8();
+    }
+}
+
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80019D3C);
 
