@@ -1,4 +1,5 @@
 #define TASK_ABSOLUTE_ADDRESSING
+#define MUSIC_STATE_ABSOLUTE_ADDRESSING
 #include "common.h"
 #include "game/graphics.h"
 #include "game/game_task_scheduler.h"
@@ -152,7 +153,17 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80072340);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_8007240C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_8007255C);
+void setMusicSequenceEnabled(s16 enabled) {
+    if (enabled == 0) {
+        if (D_8013B106 == 1) {
+            fadeOutMusicSequence(0x200);
+            D_8013B106 = 0;
+        }
+    } else if (D_8013B106 == 0) {
+        func_80017E7C(0);
+        D_8013B106 = 1;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_800725D0);
 

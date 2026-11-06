@@ -4,13 +4,20 @@
 
 /* Shared with the sequence loading and playback routines still in assembly. */
 extern s16 gMusicSequenceId;
+/* Presentation tasks use absolute addressing; other callers use $gp. */
+#ifdef MUSIC_STATE_ABSOLUTE_ADDRESSING
+extern s16 D_8013B106 __attribute__((section(".data")));
+#else
 extern s16 D_8013B106;
+#endif
 extern u8 gMusicSequenceActive;
 extern s8 gSoundSystemActive;
 extern u8 gMusicFadeMode;
 extern s16 gMusicFadeStep;
 
 void fadeOutMusicSequence(s16 step);
+void func_80017E7C(s16 repeatCount);
+void setMusicSequenceEnabled(s16 enabled);
 void stopMusicSequence(void);
 void pauseMusicSequence(void);
 void resumeMusicSequence(void);

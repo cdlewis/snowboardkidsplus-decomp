@@ -1834,3 +1834,4 @@ D_80120370 = 0x80120370; // size:0x54 defined:true
 D_801203C4 = 0x801203C4; // size:0x28 defined:true
 
 loadTimArchive = 0x80060D40; // type:func
+setMusicSequenceEnabled = 0x8007255C; // type:func
