@@ -1053,7 +1053,19 @@ void drawFallingSpriteEffect(FallingSpriteEffect *effect) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80033A24);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80033B5C);
+void updateSwayingFallingSpriteEffect(FallingSpriteEffect *effect) {
+    effect->frame = (effect->frame + 1) & 3;
+    effect->y += effect->velocityY;
+    effect->x += rsin(effect->unk0E = (effect->unk0E + 32) & 0xFFF) * (effect->unk08 + 48) / 4096;
+    if (effect->unk0E == 0 || effect->unk0E == 0x800) {
+        effect->unk08 = randomNextMain() & 15;
+    }
+    if (effect->y > 1760) {
+        effect->active = 0;
+    } else {
+        drawFallingSpriteEffect(effect);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80033C2C);
 
