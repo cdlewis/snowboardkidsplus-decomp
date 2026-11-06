@@ -106,6 +106,8 @@ typedef struct TextEntryListHeader {
     TextEntry *activeEntries;
 } TextEntryListHeader;
 
+u32 gPlayerPaletteTransitionPixels[8] __attribute__((section(".data.player_palette_transition_pixels"))) = {0};
+
 ResourceSectorRange gMode1SectorRanges[10] __attribute__((section(".data.indexed_sector_ranges"))) = {
     {0x236E, 1},
     {0x236F, 1},
@@ -166,7 +168,6 @@ void initializeRaceTaskState(void);
 void func_8001B858(void);
 void func_8001B7F0(void);
 void func_800A1F50(void);
-void func_8009B5A0(s16 playerIndex, s32 unused, s32 paletteRow, u16 mode);
 void func_800A4C28(void);
 void resetUnlockMenuOffsets(UnlockMenuState *state);
 void func_800A525C(void);
@@ -441,10 +442,28 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009B0E8);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009B2D8);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009B5A0);
+void copyPlayerPaletteRowWithTransition(s16 playerIndex, s32 unused, s32 paletteRow, u16 mode) {
+    RECT rect;
+    PlayerTextureOrigin *origin = &D_801204D4[playerIndex];
+    if (mode == 0) {
+        rect.x = origin->x + 0x210;
+        rect.y = origin->y + (s16)(paletteRow + 0x70);
+        rect.w = 16;
+        rect.h = 1;
+        MoveImage(&rect, origin->x + 0x200, origin->y + 0x70);
+    } else {
+        mode++;
+        rect.x = origin->x + 0x210;
+        rect.y = origin->y + (s16)(paletteRow + 0x70);
+        rect.w = 16;
+        rect.h = 1;
+        StoreImage(&rect, gPlayerPaletteTransitionPixels);
+        func_800164E8(origin->x + 0x200, origin->y + 0x70, gPlayerPaletteTransitionPixels, mode);
+    }
+}
 
 void copyPlayerPaletteRow(s16 playerIndex) {
-    func_8009B5A0(playerIndex, D_80120E90[playerIndex].unk009,
+    copyPlayerPaletteRowWithTransition(playerIndex, D_80120E90[playerIndex].unk009,
                   D_80120E90[playerIndex].unk00D, 0);
 }
 

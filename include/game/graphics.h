@@ -4,6 +4,12 @@
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
 
+typedef struct PlayerTextureOrigin {
+    s16 x, y;
+} PlayerTextureOrigin;
+
+extern PlayerTextureOrigin D_801204D4[4];
+
 /* A DMA packet containing four GPU command words. */
 typedef struct GpuPacket4 {
     u32 tag;
@@ -178,6 +184,7 @@ void drawStyle20DTexturedPanel(s16 x, s16 y, s16 w, s16 h, s16 clutOffset,
                               s16 blendMode, struct GsOT *ot, u16 depth);
 void startPrimaryValueTransition(s32 duration, s32 start, s32 end);
 
+s32 func_800164E8(s16 x, s16 y, u32 *pixels, u16 duration);
 u16 saveVram16Pixels(s32 x, s32 y);
 void readVram16Pixels(s32 x, s32 y, u32 *pixels);
 void releaseSavedImageEntry(u16 index);

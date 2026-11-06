@@ -155,6 +155,7 @@ void clearCurrentPlayerSequenceState(void);
 void updateCurrentPlayerFromTaskPhase(void);
 
 void setCurrentPlayerFinalPartTranslations(const s16 *values);
+void copyPlayerPaletteRowWithTransition(s16 playerIndex, s32 unused, s32 paletteRow, u16 mode);
 void copyPlayerPaletteRow(s16 playerIndex);
 void clearCurrentPlayerTaskState(void);
 void startPlayerTimerTask(RacePlayer *player);
