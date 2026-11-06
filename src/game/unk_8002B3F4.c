@@ -169,6 +169,8 @@ void func_800350AC(SlidingNumberResource *resource);
 void func_8003452C(void);
 void func_800341DC(void);
 void func_80034090(SlidingDisplayResource *resource);
+void func_80033700(void);
+void func_800335E4(SpriteMotionResource *resource);
 void func_80033100(void);
 void func_80048714(void);
 void func_8004531C(void);
@@ -646,7 +648,18 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800335E4);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80033700);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80033794);
+void waitSpriteMotionTask(void) {
+    SpriteMotionResource *resource;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (SpriteMotionResource *)&D_800D9504[D_8013AE88->resource14];
+    if (--resource->timer == 0) {
+        setCurrentTaskCallback(func_80033700);
+    }
+    func_800335E4(resource);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80033820);
 
