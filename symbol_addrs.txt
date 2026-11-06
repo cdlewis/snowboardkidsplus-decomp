@@ -2191,3 +2191,5 @@ waitTaskMenuCountdownAndPlaySound = 0x80039210; // type:func
 waitTaskTimeRecordCountdownAndPlaySound = 0x8003A814; // type:func
 
 waitTaskStatsCountdownAndPlaySound = 0x8003BC18; // type:func
+
+getTaskResourceAdjustedGroupedIndex = 0x800810F0; // type:func

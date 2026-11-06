@@ -156,7 +156,33 @@ s16 getTaskResourceGroupedIndex(GameTask *task, s16 index) {
     return result;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_800810F0);
+s16 getTaskResourceAdjustedGroupedIndex(s16 value, GameTask *task, s16 index) {
+    s16 result;
+    s32 base;
+    GroupedIndexResource *resource = (GroupedIndexResource *)&D_800D9504[task->resource14];
+    switch (resource->values[index]) {
+    case 8: base = 0; break;
+    case 9: base = 3; break;
+    case 10: base = 6; break;
+    case 11: base = 0; break;
+    case 12: base = 1; break;
+    case 13: base = 2; break;
+    default: base = 0; break;
+    }
+    switch (value) {
+    case 1: result = base; break;
+    case 2: result = base + 1; break;
+    case 3: result = base + 2; break;
+    case 4: result = base + 9; break;
+    case 5:
+    case 14: result = 12; break;
+    case 6:
+    case 15: result = 13; break;
+    case 7:
+    case 16: result = 14; break;
+    }
+    return result;
+}
 
 void adjustGroupedIndexForMode(s16 mode, u8 *index) {
     s32 value = *index;
