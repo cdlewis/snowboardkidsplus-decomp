@@ -25,6 +25,14 @@ typedef struct MenuSpritePaletteGroups {
     u8 unk0B[9];
 } MenuSpritePaletteGroups;
 
+typedef struct TaskMotionResource {
+    s32 position;
+    u8 unk04[12];
+    s32 velocity;
+    u16 delay;
+    u8 unk16[0xEA];
+} TaskMotionResource;
+
 typedef struct SpriteMotionResource {
     u16 timer;
     s16 unk02;
@@ -56,6 +64,7 @@ void func_80032F84(void);
 void func_80033404(void);
 void func_80044990(void);
 void func_80034F1C(void);
+void func_800342FC(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002B3F4);
 
@@ -416,7 +425,18 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80034270);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800342FC);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800343B0);
+void initializeTaskMotionResource(void) {
+    TaskMotionResource *resource;
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    resource = (TaskMotionResource *)&D_800D9504[D_8013AE88->resource14];
+    resource->velocity = 60;
+    resource->position = -480;
+    resource->delay = 10;
+    setCurrentTaskCallback(func_800342FC);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80034434);
 
