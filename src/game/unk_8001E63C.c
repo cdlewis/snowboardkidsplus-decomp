@@ -55,7 +55,7 @@ TaskCallback gCurrentPlayerTaskPhaseCallbacks[8]
 
 
 void (*currentPlayerStateCallbacks[74])(void) = {
-    func_8001F0C4,
+    resetCurrentPlayerForCallback205B8,
     initializeCurrentPlayerDefaultState,
     initializeCurrentPlayerState2,
     func_8001F2D4,
@@ -63,7 +63,7 @@ void (*currentPlayerStateCallbacks[74])(void) = {
     func_8001F444,
     func_8001F6D8,
     func_8001FEE0,
-    func_8001F718,
+    resetCurrentPlayerForCallback26DAC,
     func_8001F6F8,
     func_8001F7A0,
     func_8001F8E4,
@@ -82,9 +82,9 @@ void (*currentPlayerStateCallbacks[74])(void) = {
     func_8001FAC4,
     func_8001FC00,
     func_8001FCB4,
-    func_8001FD70,
+    resetCurrentPlayerForCallback255C4,
     NULL,
-    func_8001FFA8,
+    resetCurrentPlayerForCallback240D0,
     func_80020018,
     initializeCurrentPlayerDefaultState,
     initializeCurrentPlayerDefaultState,

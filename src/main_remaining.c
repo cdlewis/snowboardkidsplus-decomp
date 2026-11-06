@@ -47,6 +47,12 @@ typedef struct PaletteRecordColor {
     u8 r, g, b, unk3;
 } PaletteRecordColor;
 
+typedef struct SoundVoiceRecord {
+    u8 owner;
+    u8 bank;
+    u16 note;
+} SoundVoiceRecord;
+
 typedef struct SavedImageEntry {
     u32 flags;
     PaletteRecordColor color;
@@ -85,6 +91,8 @@ s16 D_80120370[42] __attribute__((section(".data.player_model_parts"))) = {
 s16 *D_801203C4[10] __attribute__((section(".data.player_model_parts"))) = {
     D_80120220, D_80120274, D_80120220, D_80120370, D_801202C8, D_80120220, D_80120220, D_801202C8, D_8012031C, D_8012031C
 };
+SoundVoiceRecord gSoundVoiceRecords[8] __attribute__((section(".data.sound_voice_records"))) = {0};
+
 MemoryCardSaveHeader gMemoryCardSaveHeader __attribute__((section(".data.memory_card_save_header"))) = {0};
 
 SavedImageEntry gSavedImageEntries[32] __attribute__((section(".data.saved_image_entries"))) = {0};
@@ -110,7 +118,6 @@ extern s16 D_8013AF38;
 extern char D_8013AF3C[];
 extern s32 D_8013B600[];
 extern struct DIRENTRY D_8013B700[][15];
-extern u16 D_8013AEE8 __attribute__((section(".data")));
 extern s16 D_8013AF3E;
 extern u16 D_8013AFAA __attribute__((section(".data")));
 extern u8 D_8013AFD6;
@@ -135,8 +142,8 @@ void func_8001E0C0(void);
 void func_80018AA4(void);
 void func_80019B94(void);
 void func_8001D100(void);
-void func_8001CE2C(void);
-void func_8001CE74(void);
+void advanceTaskWhenFlagAFE4Bit8Set(void);
+void startResourceLoadWhenFlagAFE4Bit9Set(void);
 void func_8001E148(void);
 void func_8001E1B8(void);
 void func_800180F4(s16 bankId);
@@ -362,7 +369,18 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80018538);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80018624);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80018720);
+void stopMatchingSoundVoice(u8 owner, u8 bank, u16 note) {
+    u8 i;
+    SoundVoiceRecord *voice;
+    for (i = 0; i < 8; i++) {
+        voice = &gSoundVoiceRecords[i];
+        if (voice->owner == owner && voice->bank == bank && voice->note == note) {
+            SsUtKeyOffV(i + 12);
+            voice->owner = 0xFF;
+            break;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_800187B8);
 
@@ -613,10 +631,10 @@ void beginResourceLoadOrUnlockNotification(void) {
     D_8013AFAA |= 0x48;
     if (D_8013AFE4 & 0x200) {
         createResourceLoadTask();
-        setCurrentTaskCallback(func_8001CE2C);
+        setCurrentTaskCallback(advanceTaskWhenFlagAFE4Bit8Set);
     } else {
         func_800A7CE8(D_80120EA4[0] + 1);
-        setCurrentTaskCallback(func_8001CE74);
+        setCurrentTaskCallback(startResourceLoadWhenFlagAFE4Bit9Set);
     }
 }
 
@@ -624,7 +642,7 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001CF18);
 
 void startTaskTransitionWhenFlagAEE8Set(void) {
     if (D_8013AE88->data18 == 0) {
-        if (D_8013AEE8 & 0xB0) {
+        if (D_8013AEE8[0] & 0xB0) {
             D_8013AE88->data18 = 30;
             func_80070274(2, 0, 30);
             setCurrentTaskCallback(func_8001D044);

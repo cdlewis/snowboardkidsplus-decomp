@@ -24,11 +24,6 @@ typedef struct MenuTimeResource {
     u8 unk06[0xFA];
 } MenuTimeResource;
 
-typedef struct MenuTimeValue {
-    s8 minutes;
-    s8 seconds;
-    u16 unk02;
-} MenuTimeValue;
 typedef struct RepeatedSoundResource {
     s16 sound;
     u8 unk02[0xFE];
@@ -135,13 +130,15 @@ MenuSpritePaletteGroups gMenuSpritePaletteGroups
         {0, 5, 0, 1, 4, 0, 5, 0, 0}
     };
 
-extern MenuTimeValue D_8013B180 __attribute__((section(".data")));
+/* Assembly and C consumers address this palette subtable directly. */
+extern u8 gMappedIconPalettes[9];
+
 extern s16 D_8013B0E4;
 extern u16 D_8013B0E6;
 extern s32 D_8013B0E8;
 extern u8 D_8013AFCD __attribute__((section(".data")));
 
-void func_80037850(const MenuTimeValue *value, s16 x, s16 y, s16 mode, GsOT *ot, u16 depth);
+void func_80037850(const RaceTime *value, s16 x, s16 y, s16 mode, GsOT *ot, u16 depth);
 
 /* Only the first byte of this shared state is used by this task flow. */
 extern u8 D_80120F90[];
@@ -177,7 +174,7 @@ void func_80048714(void);
 void func_8004531C(void);
 void func_8003772C(void);
 void func_80037F74(void);
-void func_80037BF8(TaskResourceRecord *resource);
+void drawMenuTimeWithBrightness(MenuTimeResource *resource);
 void func_800379B8(TaskResourceRecord *resource);
 void drawLapTimeLabel(TaskMenuFadeResource *resource);
 void func_80038090(TaskResourceRecord *resource);
@@ -576,7 +573,7 @@ void createRepeatedSoundTask(s32 sound, s32 delay, s32 interval, s32 count) {
     D_8013AE8C->data1A = interval;
     D_8013AE8C->data1C = 0;
     D_8013AE8C->data1E = count;
-    D_8013AE8C->resource14 = func_80014BAC();
+    D_8013AE8C->resource14 = allocateTaskResource();
     resource = (RepeatedSoundResource *)&D_800D9504[D_8013AE8C->resource14];
     resource->sound = sound;
 }
@@ -710,7 +707,7 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003452C);
 void createPlayerSpriteAnimationTask(s32 x, s32 y, s32 player, s32 checkPlayer, u16 alternateLayer) {
     SpriteAnimationResource *resource;
     func_80014874(func_8003452C);
-    D_8013AE8C->resource14 = func_80014BAC();
+    D_8013AE8C->resource14 = allocateTaskResource();
     resource = (SpriteAnimationResource *)&D_800D9504[D_8013AE8C->resource14];
     resource->x = x - 8;
     resource->y = y - 8;
@@ -744,7 +741,7 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80034AE8);
 void createPlayerNumberDisplayTask(s32 value, s32 showExtraValue, s32 player) {
     PlayerNumberResource *resource;
     func_80014874(func_80034AE8);
-    D_8013AE8C->resource14 = func_80014BAC();
+    D_8013AE8C->resource14 = allocateTaskResource();
     resource = (PlayerNumberResource *)&D_800D9504[D_8013AE8C->resource14];
     resource->value = value;
     resource->showExtraValue = showExtraValue;
@@ -864,7 +861,7 @@ void initializeTaskFade(void) {
     if (D_8013AE88->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = func_80014BAC();
+    D_8013AE88->resource14 = allocateTaskResource();
     resource = (TaskFadeResource *)&D_800D9504[D_8013AE88->resource14];
     resource->brightness = 0;
     setCurrentTaskCallback(func_8003772C);
@@ -880,7 +877,7 @@ void drawMenuTimeWithBrightness(MenuTimeResource *resource) {
     } else {
         setSpriteColor(128, 128, 128);
     }
-    func_80037850(&D_8013B180, -108, -48, 1, &D_800EBFF0[D_8013AF78], 1);
+    func_80037850(&gRaceElapsedTime, -108, -48, 1, &D_800EBFF0[D_8013AF78], 1);
 }
 
 void drawLapTimeLabel(TaskMenuFadeResource *resource) {
@@ -902,7 +899,7 @@ void drawCurrentTaskTimeMenu(void) {
         while (1) {}
     }
     resource = &D_800D9504[D_8013AE88->resource14];
-    func_80037BF8(resource);
+    drawMenuTimeWithBrightness((MenuTimeResource *)resource);
     func_800379B8(resource);
     drawLapTimeLabel((TaskMenuFadeResource *)resource);
 }
@@ -921,7 +918,7 @@ void initializeTaskMenuFade(void) {
     if (D_8013AE88->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = func_80014BAC();
+    D_8013AE88->resource14 = allocateTaskResource();
     resource = (TaskMenuFadeResource *)&D_800D9504[D_8013AE88->resource14];
     resource->unk00 = D_80120F90[0];
     resource->brightness = 0;
@@ -1181,7 +1178,7 @@ void drawPaletteMappedIcon(s16 x, s16 y, s16 index, struct GsOT *ot, u16 depth) 
         palette = 5;
         sprite = 446;
     } else {
-        palette = gMenuSpritePaletteGroups.unk0B[index];
+        palette = gMappedIconPalettes[index];
         sprite = index + 461;
     }
     func_8006C998(x, y, sprite, palette, -1, ot, depth);

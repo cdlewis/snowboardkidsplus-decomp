@@ -91,7 +91,7 @@ extern s16 D_8013B560;
 extern u8 D_8013B562;
 extern u8 D_8013B0F0 __attribute__((section(".data")));
 
-s32 func_800136DC(s16 command, s16 sector, s16 sectorCount, void *destination, s32 flags);
+s32 queueCdSectorCommand(s16 command, s16 sector, s16 sectorCount, void *destination, s32 flags);
 
 void func_800187B8(u8 voice);
 
@@ -105,7 +105,7 @@ void func_800A39AC(void);
 void func_800A42CC(void);
 void func_800A499C(void);
 void func_8001D97C(void);
-void func_8001DFDC(void);
+void initializeRaceTaskState(void);
 void func_8001B858(void);
 void func_8001B7F0(void);
 void func_800A1F50(void);
@@ -347,7 +347,7 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A0C6C);
 
 void preparePlayerResourcesTask(void) {
     func_8001D97C();
-    setCurrentTaskCallback(func_8001DFDC);
+    setCurrentTaskCallback(initializeRaceTaskState);
     D_8013AE88->unk10 |= 2;
 }
 
@@ -367,11 +367,11 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A1510);
 
 void queueModeIndexedSectorRead(s16 mode, s16 index) {
     if (mode == 1) {
-        func_800136DC(0, gMode1SectorRanges[index].sector,
+        queueCdSectorCommand(0, gMode1SectorRanges[index].sector,
                       gMode1SectorRanges[index].sectorCount,
                       INDEXED_SECTOR_READ_DESTINATION, 0);
     } else {
-        func_800136DC(0, gOtherModeSectorRanges[index].sector,
+        queueCdSectorCommand(0, gOtherModeSectorRanges[index].sector,
                       gOtherModeSectorRanges[index].sectorCount,
                       INDEXED_SECTOR_READ_DESTINATION, 0);
     }

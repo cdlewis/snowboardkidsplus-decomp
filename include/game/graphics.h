@@ -177,8 +177,6 @@ void addDrawPagePacket(DR_TPAGE *source, struct GsOT *ot, u16 depth);
 void drawTexturedFrameStyle9(s16 x, s16 y, s16 w, s16 h, s16 palette,
                              s16 blend, struct GsOT *ot, u16 depth);
 
-void func_8006C998(s16 x, s16 y, s16 sprite, s16 palette, s16 blend,
-                   struct GsOT *ot, u16 depth);
 void drawPaletteMappedIcon(s16 x, s16 y, s16 index, struct GsOT *ot, u16 depth);
 
 extern u32 gSynchronizedFrameCount;

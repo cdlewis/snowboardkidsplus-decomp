@@ -38,7 +38,7 @@ extern GameTask *D_8013AE98;
 extern GameTask *D_8013B304;
 #endif
 /* Task transition flags consumed by the main presentation flow. */
-#ifdef TASK_TRANSITION_FLAGS_ABSOLUTE_ADDRESSING
+#if defined(TASK_TRANSITION_FLAGS_ABSOLUTE_ADDRESSING) || defined(TASK_FLAGS_ABSOLUTE_ADDRESSING)
 extern u32 D_8013AFE4 __attribute__((section(".data")));
 #else
 extern u32 D_8013AFE4;
@@ -57,7 +57,6 @@ extern TaskResourceRecord D_800D9504[256];
 s32 func_80014874(TaskCallback callback);
 s32 func_800148B4(TaskCallback callback);
 s16 func_80014930(GameTask *parent, TaskCallback callback);
-s32 func_80014874(TaskCallback callback);
 void func_800149A8(void);
 void func_800149E0(void);
 void setCurrentTaskCallback(TaskCallback callback);
@@ -82,14 +81,7 @@ void initializeMode1Task(void);
 void resetTaskControlState(void);
 GameTask *createCountdownTask(u32 frames);
 
-/* Shared task-flow flags; some consumers use absolute addressing. */
-#ifdef TASK_FLAGS_ABSOLUTE_ADDRESSING
-extern u32 D_8013AFE4 __attribute__((section(".data")));
-#else
-extern u32 D_8013AFE4;
-#endif
 
-void func_80070274(s32 mode, s32 id, u16 duration);
 void begin30TickTransitionOnFlag10(void);
 
 s16 getTaskResourceGroupedIndex(GameTask *task, s16 index);

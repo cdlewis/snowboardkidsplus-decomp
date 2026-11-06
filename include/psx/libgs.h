@@ -3,12 +3,6 @@
 #include "decomp/types.h"
 #include "psx/libgte.h"
 
-typedef struct GsOT {
-    u32 length;
-    u32 *org;
-    u32 offset, point;
-    u32 *tag;
-} GsOT;
 typedef struct { s16 vx, vy, vz, pad; } SVECTOR;
 typedef struct { VECTOR scale; SVECTOR rotate; VECTOR trans; } GsCOORD2PARAM;
 typedef struct { s16 m[3][3]; s32 t[3]; } MATRIX;

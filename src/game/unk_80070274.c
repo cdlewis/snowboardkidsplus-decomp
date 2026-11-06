@@ -253,7 +253,7 @@ GameTask *createCountdownTask(u32 frames) {
     func_80014874(func_800761CC);
     D_8013AE8C->data18 = 0;
     D_8013AE8C->data1A = 0;
-    D_8013AE8C->resource14 = func_80014BAC();
+    D_8013AE8C->resource14 = allocateTaskResource();
     task = D_8013AE8C;
     resource = &D_800D9504[task->resource14];
     resource->unk04 = frames;

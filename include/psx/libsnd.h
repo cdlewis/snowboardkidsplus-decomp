@@ -26,3 +26,5 @@ void SsSetStereo(void);
 void SsSetMVol(s16 left, s16 right);
 
 void SsSetSerialVol(s8 serial, s16 left, s16 right);
+
+s16 SsUtKeyOffV(s16 voice);
