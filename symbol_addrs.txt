@@ -2247,3 +2247,5 @@ initializePlayerDualResourceEffectTask = 0x80046BEC; // type:func
 initializeDualResource4C80EffectTask = 0x80047538; // type:func
 
 resetTaskStatsCountdown = 0x8003BB64; // type:func
+
+startTaskMenuCountdownAndPlaySound = 0x80038FD4; // type:func

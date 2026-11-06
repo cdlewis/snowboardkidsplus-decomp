@@ -1488,7 +1488,22 @@ void resetTaskMenuCountdown(void) {
     func_8003881C((TaskResourceRecord *)resource);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80038FD4);
+void startTaskMenuCountdownAndPlaySound(void) {
+    MenuCountdownResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (MenuCountdownResource *)&D_800D9504[D_8013AE88->resource14];
+    resource->unk06 = 2;
+    if (--resource->timer == 0) {
+        func_800181B0(0, 0x700, 0x20);
+        resource->timer = 20;
+        setCurrentTaskCallback(resetTaskMenuCountdown);
+    }
+    func_80038090((TaskResourceRecord *)resource);
+    func_80038270((TaskResourceRecord *)resource);
+    func_8003881C((TaskResourceRecord *)resource);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003908C);
 
