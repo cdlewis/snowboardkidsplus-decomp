@@ -2100,3 +2100,5 @@ fadeInCurrentTaskPanel = 0x8003C74C; // type:func
 updatePrimaryValueTransition = 0x80069F64; // type:func
 
 playbackControllerInput = 0x80015CF8; // type:func
+
+initializeFallingSpriteEffectsTask = 0x80033F00; // type:func

@@ -199,6 +199,7 @@ void func_8003EE70(void);
 void func_8002F5F8(void);
 void func_80032F84(void);
 void func_80033404(void);
+void func_80033C2C(void);
 void func_80044990(void);
 void func_80034C40(SpriteMotionResource *resource);
 void slideInSpriteMotionTask(void);
@@ -781,7 +782,19 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80033B5C);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80033C2C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80033F00);
+void initializeFallingSpriteEffectsTask(void) {
+    FallingSpriteEffect *effects;
+    s16 i;
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    effects = (FallingSpriteEffect *)&D_800D9504[D_8013AE88->resource14];
+    for (i = 0; i < 10; i++) {
+        effects[i].active = 0;
+    }
+    setCurrentTaskCallback(func_80033C2C);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80033FAC);
 
