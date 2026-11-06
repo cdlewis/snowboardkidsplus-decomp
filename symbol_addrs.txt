@@ -2218,3 +2218,5 @@ initializeModeDependentTaskResourcePair = 0x8009D29C; // type:func
 
 initializeSlidingVisualSequenceTask = 0x800496EC; // type:func
 createOscillatingQuadTask = 0x8004F374; // type:func
+
+initializeModeDependentDualResourceTask = 0x8007D50C; // type:func

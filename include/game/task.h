@@ -91,6 +91,7 @@ void initializeTaskCoordinateResource(void);
 void initializePlayerCoordinateEffectTask(void);
 void initializeSlidingVisualSequenceTask(void);
 void initializeDualResourceSequenceTask(void);
+void initializeModeDependentDualResourceTask(void);
 GameTask *createCountdownTask(u32 frames);
 GameTask *createTimedSpriteB5Task(s16 x, s16 y, u32 frames);
 GameTask *createValueTransitionTask(u32 *value, u32 target, u32 step);
