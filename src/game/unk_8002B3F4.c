@@ -1505,7 +1505,22 @@ void waitTimeMenuDisplayTask(void) {
     drawLapTimeLabel(resource);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80037EC8);
+void fadeInTimeMenuTask(void) {
+    TaskMenuFadeResource *resource;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (TaskMenuFadeResource *)&D_800D9504[D_8013AE88->resource14];
+    resource->secondaryBrightness += 8;
+    if (resource->secondaryBrightness > 128) {
+        resource->timer = 30;
+        resource->secondaryBrightness = 128;
+        setCurrentTaskCallback(waitTimeMenuDisplayTask);
+    }
+    drawMenuTimeWithBrightness((MenuTimeResource *)resource);
+    drawLapTimeLabel(resource);
+}
 
 void fadeInLapTimeLabelTask(void) {
     TaskMenuFadeResource *resource;
