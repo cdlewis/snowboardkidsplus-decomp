@@ -2195,3 +2195,5 @@ waitTaskStatsCountdownAndPlaySound = 0x8003BC18; // type:func
 getTaskResourceAdjustedGroupedIndex = 0x800810F0; // type:func
 
 finishMusicTaskAtDeadline = 0x800A7590; // type:func
+
+initializeCurrentPlayerState12 = 0x8001F970; // type:func

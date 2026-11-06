@@ -13,7 +13,7 @@ void resetCurrentPlayerForCallback26DAC(void);
 void initializeCurrentPlayerState10(void);
 void initializeCurrentPlayerState14(void);
 void initializeCurrentPlayerState11(void);
-void func_8001F970(void);
+void initializeCurrentPlayerState12(void);
 void initializeCurrentPlayerState40(void);
 void func_8001FAC4(void);
 void initializeCurrentPlayerState25(void);
