@@ -81,6 +81,7 @@ void initializeMode1Task(void);
 void resetTaskControlState(void);
 void initializeTaskCoordinateResource(void);
 GameTask *createCountdownTask(u32 frames);
+GameTask *createValueTransitionTask(u32 *value, u32 target, u32 step);
 
 
 void begin30TickTransitionOnFlag10(void);

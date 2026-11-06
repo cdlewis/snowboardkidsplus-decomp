@@ -13,6 +13,13 @@
 #include "psx/libsnd.h"
 
 
+typedef struct ValueTransitionResource {
+    u32 *value;
+    u32 target;
+    u32 step;
+    s16 direction;
+} ValueTransitionResource;
+
 typedef struct TimedSequenceEntry {
     s32 unk00;
     s32 duration;
@@ -44,6 +51,7 @@ void func_80072340(s32 x, s32 y, s32 width, s32 height, s32 r, s32 g, s32 b,
 void func_80071490(s32 mode, s32 value1, s32 value2);
 void func_8007197C(void);
 void updateCountdownTask(void);
+void func_80076034(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80070274);
 
@@ -242,7 +250,23 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_800750E0);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_800757E0);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80075F80);
+GameTask *createValueTransitionTask(u32 *value, u32 target, u32 step) {
+    ValueTransitionResource *resource;
+    func_80014874(func_80076034);
+    D_8013AE8C->data18 = 0;
+    D_8013AE8C->data1A = 0;
+    D_8013AE8C->resource14 = allocateTaskResource();
+    resource = (ValueTransitionResource *)&D_800D9504[D_8013AE8C->resource14];
+    resource->value = value;
+    resource->target = target;
+    resource->step = step;
+    if (*value < target) {
+        resource->direction = 1;
+    } else {
+        resource->direction = 2;
+    }
+    return D_8013AE8C;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80076034);
 
