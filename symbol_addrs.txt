@@ -2283,3 +2283,5 @@ updateValueInterpolationTask = 0x8006A07C; // type:func
 startMovieStream = 0x8001A080; // type:func
 
 decodeNextMovieFrame = 0x8001A22C; // type:func
+
+initializeDualResourceTask = 0x8008573C; // type:func

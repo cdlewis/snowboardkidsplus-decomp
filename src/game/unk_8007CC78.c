@@ -59,6 +59,7 @@ extern u8 D_8013B47C;
 void func_8007D5C8(void);
 void func_80089B30(void);
 void func_80087030(void);
+void func_800857C4(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8007CC78);
 
@@ -312,7 +313,17 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_800846F4);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80084970);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8008573C);
+void initializeDualResourceTask(void) {
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    if (D_8013AE88->resource16 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource16 = allocateTaskResource();
+    setCurrentTaskCallback(func_800857C4);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_800857C4);
 
