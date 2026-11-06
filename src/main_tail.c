@@ -226,7 +226,6 @@ void startUnlockResourceLoad(void);
 void prepareUnlockSelectionResume(void);
 void func_8003D940(void);
 void func_8003EE70(void);
-void func_8003E050(u16 index);
 void updateTaskViewAndCheckPlayerLimit(void);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_8008C708);
@@ -785,7 +784,7 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A1774);
 void initializeTaskPlayerCamera(void) {
     PlayerCamera *cameras;
     D_8013B0D8 = &D_80120E90[D_8013AE88->data18];
-    func_8003E60C(D_8013AE88->data18);
+    initPlayerCameraAndTarget(D_8013AE88->data18);
     cameras = D_801241E8;
     cameras[D_8013AE88->data18].yaw = D_8013B0D8->unk110;
     cameras[D_8013AE88->data18].pitch = 0;

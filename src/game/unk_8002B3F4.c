@@ -2606,10 +2606,24 @@ void clampPlayerCameraHeight(u16 playerIndex) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003E60C);
+void initPlayerCameraAndTarget(u16 index) {
+    GsRVIEW2 *targets;
+    RacePlayer *players;
+    PlayerCamera *cameras;
+    initPlayerCamera(index);
+    cameras = D_801241E8;
+    cameras[index].unk18 = 0;
+    func_8003E050(index);
+    clampPlayerCameraHeight(index);
+    targets = gPlayerCameraViews;
+    players = D_80120E90;
+    targets[D_8013AE88->data18].vrx = players[D_8013AE88->data18].position8E4[0] + players[D_8013AE88->data18].unk084;
+    targets[D_8013AE88->data18].vry = players[D_8013AE88->data18].position8E4[1] + (s16)(cameras[D_8013AE88->data18].unk14 / 8 - 120) + players[D_8013AE88->data18].unk086;
+    targets[D_8013AE88->data18].vrz = players[D_8013AE88->data18].position8E4[2] + players[D_8013AE88->data18].unk088;
+}
 
 void initPlayerZeroTask(void) {
-    func_8003E60C(0);
+    initPlayerCameraAndTarget(0);
     setCurrentTaskCallback(func_8003EE70);
 }
 
