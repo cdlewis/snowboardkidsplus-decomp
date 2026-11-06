@@ -2817,3 +2817,4 @@ drawSemiTransparentTextureRect = 0x8007202C; // type:func
 drawSizedTextGlyph = 0x8006D538; // type:func
 
 updatePlayerResultOrder = 0x80037424; // type:func
+updateQuadTransitionSequenceTask = 0x80069E54; // type:func

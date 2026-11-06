@@ -735,6 +735,7 @@ void func_80068D1C(void);
 void func_800692E8(void);
 void func_800697DC(void);
 void drawSlidingQuadTask(void);
+void func_80069E08(s32 duration);
 void func_80062B24(void);
 void func_800632C4(void);
 void func_800618A0(void);
@@ -2754,7 +2755,17 @@ void capturePaletteForColorCycle(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80069E08);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80069E54);
+void updateQuadTransitionSequenceTask(void) {
+    s32 frame = D_8013B338;
+    if (frame == 0) createRotatingQuadTrailTask();
+    if (frame == 25) createQuadShrinkTask();
+    if (frame == 30) startMiddleQuadShrinkTask();
+    if (frame == 35) createRightQuadShrinkTask();
+    if (frame == 40) startSlidingQuadTask(D_8013AE88->data1A);
+    if (frame == 50) func_80069E08(10);
+    D_8013B338++;
+    if (D_8013B338 == 100) func_800149A8();
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80069F1C);
 
