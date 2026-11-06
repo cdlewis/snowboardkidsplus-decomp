@@ -152,6 +152,7 @@ void func_8008DDC0(void);
 void func_8008EC50(void);
 void func_80090450(void);
 void func_80092090(void);
+void func_80092A50(void);
 void func_800A0AA8(void);
 void func_800A0EE8(void);
 void queueModeIndexedSectorRead(s16 mode, s16 index);
@@ -294,7 +295,18 @@ void initializeCountedSelectionBoundsTask(void) {
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_80092090);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800929C4);
+void initializeTaskResourcesAndClearData18(void) {
+    D_8013AE88->data18 = 0;
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    if (D_8013AE88->resource16 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource16 = allocateTaskResource();
+    setCurrentTaskCallback(func_80092A50);
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_80092A50);
 
