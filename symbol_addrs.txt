@@ -2096,3 +2096,4 @@ drawCurrentTaskTimeRecords = 0x80039EE8; // type:func
 drawCurrentTaskStatsSelection = 0x8003B434; // type:func
 
 fadeInCurrentTaskPanel = 0x8003C74C; // type:func
+updatePrimaryValueTransition = 0x80069F64; // type:func

@@ -327,7 +327,7 @@ void func_8006A7B4(void);
 void func_8006B1F4(void);
 void func_80013DD0(s16 request, s16 mode);
 void func_8006AB8C(void);
-void func_80069F64(void);
+void updatePrimaryValueTransition(void);
 void func_80069C04(void);
 void func_8006A9CC(void);
 void func_8006FE68(s16 x, s16 y, s16 w, s16 h, s16 borderW, s16 borderH,
@@ -1205,10 +1205,22 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80069E54);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80069F1C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80069F64);
+void updatePrimaryValueTransition(void) {
+    s32 value;
+    value = D_8013AE88->data1C +
+        (D_8013AE88->data1E - D_8013AE88->data1C) *
+        D_8013AE88->data18 / D_8013AE88->data1A;
+    D_8013B35C = value;
+    D_8013AE88->data18++;
+    D_8013B364 = 0;
+    if (D_8013AE88->data18 >= D_8013AE88->data1A) {
+        func_800149A8();
+        D_8013B364 = 1;
+    }
+}
 
 void startPrimaryValueTransition(s32 duration, s32 start, s32 end) {
-    func_80014930(D_8013AE88, func_80069F64);
+    func_80014930(D_8013AE88, updatePrimaryValueTransition);
     D_8013AE8C->data18 = 0;
     D_8013AE8C->data1A = duration;
     D_8013AE8C->data1C = start;
