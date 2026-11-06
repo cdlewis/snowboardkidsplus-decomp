@@ -2484,6 +2484,7 @@ gAutoPilotLabel = 0x80010A58; // type:char size:0xC
 waitResultDisplayTaskFlagsTask = 0x800362FC; // type:func
 
 emitProjectedFlatTriangle = 0x80052530; // type:func
+emitProjectedGouraudTriangle = 0x80052680; // type:func
 
 createFallingParticleTask = 0x80062DA8; // type:func
 

@@ -648,7 +648,7 @@ extern u16 D_8013B376 __attribute__((section(".sdata")));
 
 void updateProximityEmitterTask(void);
 
-void func_80052680(TriangleScratchVertex *);
+void emitProjectedGouraudTriangle(TriangleScratchVertex *);
 void emitProjectedTexturedTriangle(TriangleScratchVertex *);
 void func_80052D84(TriangleScratchVertex *);
 void func_80052F90(TriangleScratchVertex *);
@@ -1010,7 +1010,30 @@ void emitProjectedFlatTriangle(TriangleScratchVertex *vertices) {
     GsOUT_PACKET_P = (u32)(packet + 1);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80052680);
+void emitProjectedGouraudTriangle(TriangleScratchVertex *vertices) {
+    TriangleScratchpad *scratch = TRIANGLE_SCRATCHPAD;
+    POLY_G3 *packet = (POLY_G3 *)GsOUT_PACKET_P;
+    if (scratch->fogEnabled) {
+        gte_stdp(&scratch->depthCue);
+        DpqColor((CVECTOR *)&vertices[0].color, scratch->depthCue, (CVECTOR *)&packet->r0);
+        DpqColor((CVECTOR *)&vertices[1].color, scratch->depthCue, (CVECTOR *)&packet->r1);
+        DpqColor((CVECTOR *)&vertices[2].color, scratch->depthCue, (CVECTOR *)&packet->r2);
+    } else {
+        setRGB0(packet, vertices[0].color.r, vertices[0].color.g, vertices[0].color.b);
+        setRGB1(packet, vertices[1].color.r, vertices[1].color.g, vertices[1].color.b);
+        setRGB2(packet, vertices[2].color.r, vertices[2].color.g, vertices[2].color.b);
+    }
+    packet->tag = 6 << 24;
+    setcode(packet, scratch->code | POLY_G3_CODE);
+    packet->x0 = scratch->screen[0].x;
+    packet->x1 = scratch->screen[1].x;
+    packet->x2 = scratch->screen[2].x;
+    packet->y0 = scratch->screen[0].y;
+    packet->y1 = scratch->screen[1].y;
+    packet->y2 = scratch->screen[2].y;
+    addPrim(&D_8013B670->org[(scratch->depth >> D_8013B69C) + 6], packet);
+    GsOUT_PACKET_P = (u32)(packet + 1);
+}
 
 void emitProjectedTexturedTriangle(TriangleScratchVertex *vertices) {
     TexturedTriangleScratchpad *scratch = (TexturedTriangleScratchpad *)0x1F800000;
@@ -1092,7 +1115,7 @@ void drawIndexedFlatTriangle(void) {
 
 void processGouraudTrianglePrimitive(void) {
     GouraudTrianglePrimitive *primitive = (GouraudTrianglePrimitive *)D_8013B680;
-    *(void (**)(TriangleScratchVertex *))0x1F800004 = func_80052680;
+    *(void (**)(TriangleScratchVertex *))0x1F800004 = emitProjectedGouraudTriangle;
     ((TriangleScratchVertex *)0x1F800070)->position = D_8013B688[primitive->vertexIndices[0]];
     ((TriangleScratchVertex *)0x1F800080)->position = D_8013B688[primitive->vertexIndices[1]];
     ((TriangleScratchVertex *)0x1F800090)->position = D_8013B688[primitive->vertexIndices[2]];
