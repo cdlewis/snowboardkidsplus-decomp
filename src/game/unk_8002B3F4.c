@@ -461,6 +461,10 @@ const char gTotalMoneyLabel[16] __attribute__((section(".rodata.money_labels"), 
 const char gTrickPrizeLabel[16] __attribute__((section(".rodata.money_labels"), aligned(4))) = "  -TRICK PRIZE-";
 const char gMakeBonusLabel[16] __attribute__((section(".rodata.money_labels"), aligned(4))) = "  -MAKE BONUS-";
 
+const char gResultRankPrizeLabel[16] __attribute__((section(".rodata.result_prize_labels"), aligned(4))) = "-RANK PRIZE-";
+const char gResultGetCoinLabel[16] __attribute__((section(".rodata.result_prize_labels"), aligned(4))) = "  -GET COIN-";
+const char gResultTotalMoneyLabel[16] __attribute__((section(".rodata.result_prize_labels"), aligned(4))) = "-TOTAL MONEY-";
+
 RaceTime gRaceElapsedTime = {0, 0, 0};
 
 extern int rand(void);
@@ -541,7 +545,7 @@ void func_8002BC2C(void);
 void func_8002B820(void);
 void drawResultDisplayLabels(ResultDisplayResource *resource);
 void func_800401DC(s16 x, s16 y, s16 kind, GsOT *ot, u16 depth);
-void func_800361C4(ResultDisplayResource *resource);
+void drawResultPrizeLabels(ResultDisplayResource *resource);
 void drawFirstPlayerResultCounterAndIcon(ResultDisplayResource *resource);
 void drawMenuTimeWithBrightness(MenuTimeResource *resource);
 void func_800379B8(TaskResourceRecord *resource);
@@ -2032,7 +2036,20 @@ void drawFirstPlayerResultNumberAndIcon(ResultDisplayResource *resource) {
     func_8006C998(72, 33, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800361C4);
+void drawResultPrizeLabels(ResultDisplayResource *resource) {
+    if (resource->brightness != 128) {
+        setSpriteColor((u8)resource->brightness, (u8)resource->brightness,
+                       (u8)resource->brightness);
+    } else {
+        setSpriteColor(128, 128, 128);
+    }
+    drawLimitedText8x8(8, -72, 12, gResultRankPrizeLabel, 3, -1,
+                      &D_800EBFF0[D_8013AF78], 1);
+    drawLimitedText8x8(0, -24, 12, gResultGetCoinLabel, 3, -1,
+                      &D_800EBFF0[D_8013AF78], 1);
+    drawLimitedText8x8(4, 24, 13, gResultTotalMoneyLabel, 3, -1,
+                      &D_800EBFF0[D_8013AF78], 1);
+}
 
 void waitResultDisplayTaskFlagsTask(void) {
     ResultDisplayResource *resource;
@@ -2047,7 +2064,7 @@ void waitResultDisplayTaskFlagsTask(void) {
     drawResultNumberAndIcon(resource);
     drawFirstPlayerResultCounterAndIcon(resource);
     drawFirstPlayerResultNumberAndIcon(resource);
-    func_800361C4(resource);
+    drawResultPrizeLabels(resource);
 }
 
 void waitResultDisplayInputTask(void) {
@@ -2064,7 +2081,7 @@ void waitResultDisplayInputTask(void) {
     drawResultNumberAndIcon(resource);
     drawFirstPlayerResultCounterAndIcon(resource);
     drawFirstPlayerResultNumberAndIcon(resource);
-    func_800361C4(resource);
+    drawResultPrizeLabels(resource);
 }
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80036454);
@@ -2087,7 +2104,7 @@ void waitResultDisplayInputTask(void) {
     drawResultNumberAndIcon(resource);
     drawFirstPlayerResultCounterAndIcon(resource);
     drawFirstPlayerResultNumberAndIcon(resource);
-    func_800361C4(resource);
+    drawResultPrizeLabels(resource);
 }
 
 void waitResultDisplayConfirmationTask(void) {
@@ -2108,7 +2125,7 @@ void waitResultDisplayConfirmationTask(void) {
     drawResultDisplayLabels(resource);
     drawResultNumberAndIcon(resource);
     drawFirstPlayerResultCounterAndIcon(resource);
-    func_800361C4(resource);
+    drawResultPrizeLabels(resource);
 }
 
 void waitResultNumberDisplayTask(void) {
@@ -2128,7 +2145,7 @@ void waitResultNumberDisplayTask(void) {
     }
     drawResultDisplayLabels(resource);
     drawResultNumberAndIcon(resource);
-    func_800361C4(resource);
+    drawResultPrizeLabels(resource);
 }
 
 void waitResultDisplayTask(void) {
@@ -2147,7 +2164,7 @@ void waitResultDisplayTask(void) {
         setCurrentTaskCallback(waitResultNumberDisplayTask);
     }
     drawResultDisplayLabels(resource);
-    func_800361C4(resource);
+    drawResultPrizeLabels(resource);
 }
 
 void fadeInResultDisplayTask(void) {
@@ -2164,7 +2181,7 @@ void fadeInResultDisplayTask(void) {
         setCurrentTaskCallback(waitResultDisplayTask);
     }
     drawResultDisplayLabels(resource);
-    func_800361C4(resource);
+    drawResultPrizeLabels(resource);
 }
 
 void initializeResultDisplayTask(void) {

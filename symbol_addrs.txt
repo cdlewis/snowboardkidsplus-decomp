@@ -2763,3 +2763,8 @@ gFallingPairedVisualAnimation = 0x8013B114; // size:0x6 defined:true
 updateAcceleratingTaskVisualCountdown = 0x80047BAC; // type:func
 
 initializeBackgroundCameraTask = 0x8002F468; // type:func
+
+drawResultPrizeLabels = 0x800361C4; // type:func
+gResultRankPrizeLabel = 0x80010A64; // type:char size:0x10
+gResultGetCoinLabel = 0x80010A74; // type:char size:0x10
+gResultTotalMoneyLabel = 0x80010A84; // type:char size:0x10
