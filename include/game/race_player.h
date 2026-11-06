@@ -228,3 +228,6 @@ void updatePlayerRenderSnapshots(void);
 
 void assignCurrentPlayerFinishSlot(s32 taskValue);
 void updateRacePlayerFinishSlotsTask(void);
+
+struct Position3D;
+u16 func_8002C8BC(struct Position3D *position, s32 radius, s16 flags, u16 playerIndex);

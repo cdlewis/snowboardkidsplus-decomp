@@ -297,7 +297,7 @@ typedef struct PickupResource {
 typedef struct FallingTaskResource {
     GsCOORDINATE2 coordinate;
     u8 unk50[0x50];
-    s32 position[3];
+    Position3D position;
     u8 unkAC[0x14];
     SVECTOR rotation;
     u8 unkC8[8];
@@ -735,7 +735,7 @@ u16 func_80059254(void);
 s32 func_8005143C(s32 x, s32 z, s16 player);
 void func_8005CCEC(void);
 void func_8005DF98(void);
-void func_8005E454(void);
+void updateLandedTaskObject(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800497B8);
 
@@ -1647,14 +1647,14 @@ void updateFallingTaskObject(void) {
     resource = (FallingTaskResource *)&D_800D9504[D_8013AE88->resource14];
     if (!D_8013AFD3) {
         resource->verticalVelocity += 0x180;
-        resource->position[1] += resource->verticalVelocity;
-        if (resource->position[1] > resource->groundHeight) {
-            resource->position[1] = resource->groundHeight;
+        resource->position.y += resource->verticalVelocity;
+        if (resource->position.y > resource->groundHeight) {
+            resource->position.y = resource->groundHeight;
             resource->rotation.vx = resource->groundPitch;
             resource->rotation.vz = resource->groundRoll;
             landed = 1;
         }
-        resource->coordinate.coord.t[1] = resource->position[1] >> 8;
+        resource->coordinate.coord.t[1] = resource->position.y >> 8;
     }
     if (func_8005143C(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
         D_80129A80[9].coord2 = &resource->coordinate;
@@ -1663,11 +1663,35 @@ void updateFallingTaskObject(void) {
     }
     if (landed) {
         D_8013AE88->data1A = 0x708;
-        setCurrentTaskCallback(func_8005E454);
+        setCurrentTaskCallback(updateLandedTaskObject);
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005E454);
+void updateLandedTaskObject(void) {
+    FallingTaskResource *resource;
+    u16 i;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (FallingTaskResource *)&D_800D9504[D_8013AE88->resource14];
+    if (!D_8013AFD3) {
+        if (--D_8013AE88->data1A == 0) {
+            func_800149A8();
+            return;
+        }
+        for (i = 0; i < D_8013AFD2; i++) {
+            if (func_8002C8BC(&resource->position, 0xC00, 4, i)) {
+                func_800149A8();
+                return;
+            }
+        }
+    }
+    if (func_8005143C(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
+        D_80129A80[9].coord2 = &resource->coordinate;
+        func_8001E3E4(&resource->rotation, &resource->coordinate);
+        drawTaskObject(9);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005E578);
 

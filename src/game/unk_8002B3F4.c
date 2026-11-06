@@ -352,7 +352,6 @@ extern s32 D_8013AF84 __attribute__((section(".data")));
 extern u8 D_8013AFE0 __attribute__((section(".data")));
 extern u8 D_8013AFE2 __attribute__((section(".data")));
 
-u16 func_8002C8BC(Position3D *position, s32 radius, s16 flags, u16 playerIndex);
 
 void func_80046404(TaskVisualResource *resource, VECTOR *vectors, s32 value, s32 scale);
 void func_80046EF8(void);
