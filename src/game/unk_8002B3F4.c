@@ -12,6 +12,19 @@
 #include "game/controller_effects.h"
 #include "psx/libsnd.h"
 
+typedef struct MenuTimeResource {
+    s16 selection;
+    s16 unk02;
+    s16 brightness;
+    u8 unk06[0xFA];
+} MenuTimeResource;
+
+typedef struct MenuTimeValue {
+    s8 minutes;
+    s8 seconds;
+    u16 unk02;
+} MenuTimeValue;
+
 typedef struct UnpackedWordBytes {
     u8 unk0;
     u8 unk1;
@@ -52,10 +65,13 @@ MenuSpritePaletteGroups gMenuSpritePaletteGroups
         {0, 5, 0, 1, 4, 0, 5, 0, 0}
     };
 
+extern MenuTimeValue D_8013B180 __attribute__((section(".data")));
 extern s16 D_8013B0E4;
 extern u16 D_8013B0E6;
 extern s32 D_8013B0E8;
 extern u8 D_8013AFCD __attribute__((section(".data")));
+
+void func_80037850(const MenuTimeValue *value, s16 x, s16 y, s16 mode, GsOT *ot, u16 depth);
 
 void func_8003E60C(u16 index);
 void func_8003EE70(void);
@@ -558,7 +574,14 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80037850);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800379B8);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80037BF8);
+void drawMenuTimeWithBrightness(MenuTimeResource *resource) {
+    if (resource->brightness != 128) {
+        setSpriteColor((u8)resource->brightness, (u8)resource->brightness, (u8)resource->brightness);
+    } else {
+        setSpriteColor(128, 128, 128);
+    }
+    func_80037850(&D_8013B180, -108, -48, 1, &D_800EBFF0[D_8013AF78], 1);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80037C80);
 
