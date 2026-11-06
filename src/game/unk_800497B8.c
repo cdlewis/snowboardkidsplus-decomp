@@ -1371,7 +1371,23 @@ void *getOffsetArchiveEntry(OffsetArchive *archive, s32 index) {
     return (u8 *)archive + offsets[index];
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006A438);
+void uploadTimImageAndPaletteAt(u32 *tim, s32 x, s32 y, s32 clutX, s32 clutY) {
+    GsIMAGE image;
+    RECT rect;
+
+    GsGetTimInfo(tim + 1, &image);
+    rect.x = x;
+    rect.y = y;
+    rect.w = image.pw;
+    rect.h = image.ph;
+    LoadImage(&rect, image.pixel);
+    rect.x = clutX;
+    rect.y = clutY;
+    rect.w = image.cw;
+    rect.h = image.ch;
+    LoadImage(&rect, image.clut);
+    DrawSync(0);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006A4E8);
 
