@@ -2100,7 +2100,7 @@ void resetControllersAndDeleteCurrentTask(void) {
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80043FBC);
 
 s16 isFirstPlayerUsingCallback26D10(void) {
-    return D_80120E90[0].task->callback == func_80026D10;
+    return D_80120E90[0].task->callback == updateCurrentPlayerTaskCountdown;
 }
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800442F4);

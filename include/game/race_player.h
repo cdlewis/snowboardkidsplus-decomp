@@ -149,7 +149,7 @@ extern RacePlayer *currentPlayerAbsolute
 #endif
 
 
-void func_80026D10(void);
+void updateCurrentPlayerTaskCountdown(void);
 s16 isFirstPlayerUsingCallback26D10(void);
 void clearCurrentPlayerSequenceState(void);
 void updateCurrentPlayerFromTaskPhase(void);
