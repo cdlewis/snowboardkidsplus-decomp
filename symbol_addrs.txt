@@ -2425,3 +2425,5 @@ updateSwayingFallingSpriteEffect = 0x80033B5C; // type:func
 initializePlayerVisualPairTask = 0x80046E30; // type:func
 initializePlayerVisualPairTask5E80 = 0x80047074; // type:func
 initializePlayerVisualPairTask6780 = 0x800472B8; // type:func
+
+updateScrollingBackgroundTask = 0x80071700; // type:func

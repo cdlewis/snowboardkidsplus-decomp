@@ -19,6 +19,21 @@ typedef struct ValueTransitionResource {
     u32 step;
     s16 direction;
 } ValueTransitionResource;
+struct GameBackground {
+    u32 attribute;
+    s16 x, y, w, h;
+    s16 scrollX, scrollY;
+    u8 r, g, b, pad;
+    GameBackgroundMap *map;
+    s16 mx, my, scalex, scaley;
+    s32 rotate;
+};
+typedef struct ScrollingBackgroundResource {
+    GameBackground background;
+    u8 map[0x10];
+    s32 x, y;
+    s32 stepX, stepY;
+} ScrollingBackgroundResource;
 
 typedef struct TimedSequenceEntry {
     s32 unk00;
@@ -81,6 +96,7 @@ void updateCountdownTask(void);
 void func_80076034(void);
 void func_8007724C(void);
 void func_80077770(void);
+void GsSortBg(GameBackground *background, GsOT *ot, u16 depth);
 void func_8007BE9C(void);
 void func_8007B10C(void);
 
@@ -182,7 +198,22 @@ void drawBlackScreenTask(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80071700);
+void updateScrollingBackgroundTask(void) {
+    ScrollingBackgroundResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (ScrollingBackgroundResource *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->data18 == 0) {
+        func_800149A8();
+    } else {
+        GsSortBg(&resource->background, &D_800EBFF0[D_8013AF78], 0xFFE);
+        resource->x += resource->stepX;
+        resource->y += resource->stepY;
+        resource->background.scrollX = resource->x / 4096;
+        resource->background.scrollY = resource->y / 4096;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_800717E8);
 
