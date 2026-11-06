@@ -34,6 +34,7 @@ u8 *D_8012090C[10] = {
 
 
 void func_800240D0(void);
+void func_80024288(void);
 void func_80026DAC(void);
 void func_800205B8(void);
 void func_800255C4(void);
@@ -68,7 +69,7 @@ void (*currentPlayerStateCallbacks[74])(void) = {
     resetCurrentPlayerForCallback205B8,
     initializeCurrentPlayerDefaultState,
     initializeCurrentPlayerState2,
-    func_8001F2D4,
+    initializeCurrentPlayerState3,
     func_8001F388,
     func_8001F444,
     func_8001F6D8,
@@ -204,7 +205,21 @@ void initializeCurrentPlayerState2(void) {
     setCurrentTaskCallback(func_80021258);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8001F2D4);
+void initializeCurrentPlayerState3(void) {
+    D_8013B0D8->unk128 = (D_8013B0D8->unk128 & 0xFF0C1FFB) | 0x2000;
+    if (((D_8013B0D8->unk102 - (s16)D_8013B0D8->unk110) & 0xFFF) > 0x800) {
+        startCurrentPlayerAnimation(0x18, 2);
+    } else {
+        startCurrentPlayerAnimation(0x17, 2);
+    }
+
+    D_8013B0D8->unk060 = D_8013B0D8->unk104;
+    D_8013B0D8->unk064 = D_8013B0D8->unk108;
+    D_8013B0D8->unk050 = D_8013B0D8->x - D_8013B0D8->unk060;
+    D_8013B0D8->unk058 = D_8013B0D8->z - D_8013B0D8->unk064;
+    func_8002E5A0(D_8013AE88->data18, 8);
+    setCurrentTaskCallback(func_80024288);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8001F388);
 
