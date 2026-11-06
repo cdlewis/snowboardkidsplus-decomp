@@ -2285,3 +2285,5 @@ startMovieStream = 0x8001A080; // type:func
 decodeNextMovieFrame = 0x8001A22C; // type:func
 
 initializeDualResourceTask = 0x8008573C; // type:func
+
+memoryCardFileExists = 0x80018FBC; // type:func

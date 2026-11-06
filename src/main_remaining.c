@@ -122,8 +122,9 @@ typedef struct MovieDecodeState {
 extern s32 D_8013AF34;
 extern s16 D_8013AF38;
 extern char D_8013AF3C[];
-extern s32 D_8013B600[];
-extern struct DIRENTRY D_8013B700[][15];
+extern s32 D_8013B600[2];
+extern struct DIRENTRY D_8013B700[2][15];
+extern char *D_8013AF40;
 extern s16 D_8013AF3E;
 extern u16 D_8013AFAA __attribute__((section(".data")));
 extern u8 D_8013AFD6;
@@ -135,6 +136,8 @@ extern s16 D_8013B104 __attribute__((section(".data")));
 extern u16 D_8013AFE8;
 extern void *D_8013AF4C;
 extern void *gMemoryCardLoadDestination;
+
+int strcmp(const char *, const char *);
 
 u32 *func_8001A2B8(MovieDecodeState *state);
 void func_8001A474(CdlLOC *location);
@@ -495,7 +498,15 @@ void readMemoryCardDirectory(void) {
                        &D_8013B600[D_8013AF38], 0, 15);
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80018FBC);
+s32 memoryCardFileExists(void) {
+    s32 i;
+    for (i = 0; i < D_8013B600[D_8013AF38]; i++) {
+        if (strcmp(D_8013B700[D_8013AF38][i].name, D_8013AF40) == 0) {
+            return 1;
+        }
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001907C);
 
