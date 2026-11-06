@@ -2136,3 +2136,5 @@ setSaveRecordMaskTier = 0x8008BF20; // type:func
 queueTaskModeSectorRead = 0x800A0E28; // type:func
 
 slideInSlidingDisplayTask = 0x800342FC; // type:func
+
+drawCurrentTaskPlayerResults = 0x800375B0; // type:func
