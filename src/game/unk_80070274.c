@@ -2,6 +2,7 @@
 #define MUSIC_STATE_ABSOLUTE_ADDRESSING
 #include "common.h"
 #include "game/byte_search.h"
+#include "game/controller.h"
 #include "game/graphics.h"
 #include "game/game_task_scheduler.h"
 #include "game/linear_random.h"
@@ -140,9 +141,9 @@ void func_8007197C(void);
 void func_80071A80(void);
 void initTimedSequence(TimedSequence *sequence, const TimedSequenceEntry *entries, s16 index, s16 count);
 void updateCountdownTask(void);
-void func_80076034(void);
 void func_80076E18(void);
 void updateTimedSpriteB5Task(void);
+void updateValueTransitionTask(void);
 void func_80077770(void);
 void GsSortBg(GameBackground *background, GsOT *ot, u16 depth);
 void func_8007BE9C(void);
@@ -537,7 +538,7 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_800757E0);
 
 GameTask *createValueTransitionTask(u32 *value, u32 target, u32 step) {
     ValueTransitionResource *resource;
-    func_80014874(func_80076034);
+    func_80014874(updateValueTransitionTask);
     D_8013AE8C->data18 = 0;
     D_8013AE8C->data1A = 0;
     D_8013AE8C->resource14 = allocateTaskResource();
@@ -553,7 +554,42 @@ GameTask *createValueTransitionTask(u32 *value, u32 target, u32 step) {
     return D_8013AE8C;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80076034);
+void updateValueTransitionTask(void) {
+    ValueTransitionResource *resource;
+    u32 value;
+    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    resource = (ValueTransitionResource *)&D_800D9504[D_8013AE88->resource14];
+    value = *resource->value;
+    if (D_8013AE88->data18 != 0) {
+        func_800149A8();
+    } else {
+        switch (resource->direction) {
+        case 1:
+            if (resource->step >= resource->target - value) {
+                value = resource->target;
+                D_8013AE88->data1A = 1;
+            } else {
+                value += resource->step;
+                D_8013AE88->data1A = 0;
+            }
+            break;
+        case 2:
+            if (resource->step >= value - resource->target) {
+                value = resource->target;
+                D_8013AE88->data1A = 1;
+            } else {
+                value -= resource->step;
+                D_8013AE88->data1A = 0;
+            }
+            break;
+        }
+        if (D_8013AEE8[0] != 0 || D_8013AEE8[1] != 0) {
+            value = resource->target;
+            D_8013AE88->data1A = 1;
+        }
+        *resource->value = value;
+    }
+}
 
 GameTask *createCountdownTask(u32 frames) {
     GameTask *task;
