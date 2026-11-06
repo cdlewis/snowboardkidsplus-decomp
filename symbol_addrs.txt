@@ -2534,3 +2534,5 @@ D_8013AF0C = 0x8013AF0C; // type:u16 size:0x4
 
 updateRacePlayerFinishSlotsTask = 0x8002CB8C; // type:func
 D_8013B1D4 = 0x8013B1D4; // size:0x2
+
+waitResultDisplayInputTask = 0x800366C0; // type:func

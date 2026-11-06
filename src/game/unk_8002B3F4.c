@@ -398,6 +398,8 @@ void func_8003A158(void);
 void drawTaskTimeRecordsAndSetFlag10OnInput(void);
 void drawCurrentTaskTimeRecordDetails(void);
 void func_8003686C(void);
+void func_80036454(void);
+void waitResultDisplayInputTask(void);
 void waitResultDisplayTask(void);
 void func_8002BC2C(void);
 void func_8002B820(void);
@@ -1558,7 +1560,26 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800363A0);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80036454);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800366C0);
+void waitResultDisplayInputTask(void) {
+    ResultDisplayResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (ResultDisplayResource *)&D_800D9504[D_8013AE88->resource14];
+    resource->timer--;
+    if (D_8013AEE8[0] & 0xB0) {
+        resource->timer = 0;
+    }
+    if (resource->timer == 0) {
+        resource->timer = 0;
+        setCurrentTaskCallback(func_80036454);
+    }
+    func_80035D5C(resource);
+    drawResultNumberAndIcon(resource);
+    func_80035FAC(resource);
+    drawFirstPlayerResultNumberAndIcon(resource);
+    func_800361C4(resource);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80036790);
 
