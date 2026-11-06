@@ -25,6 +25,18 @@ typedef struct MenuSpritePaletteGroups {
     u8 unk0B[9];
 } MenuSpritePaletteGroups;
 
+typedef struct SpriteMotionResource {
+    u16 timer;
+    s16 unk02;
+    s32 unk04;
+    s32 unk08;
+    s32 unk0C;
+    s32 unk10;
+    s32 unk14;
+    s16 variant;
+    u8 padding[0xE6];
+} SpriteMotionResource;
+
 MenuSpritePaletteGroups gMenuSpritePaletteGroups
     __attribute__((section(".data.menu_sprite_palettes"))) = {
         {2, 2, 3},
@@ -41,6 +53,7 @@ void func_8002F5F8(void);
 void func_80032F84(void);
 void func_80033404(void);
 void func_80044990(void);
+void func_80034F1C(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002B3F4);
 
@@ -407,7 +420,21 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80034E90);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80034F1C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80034FBC);
+void initializeSpriteMotionTask(void) {
+    SpriteMotionResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (SpriteMotionResource *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AFCD == 1) {
+        resource->unk08 = 8;
+    } else {
+        resource->unk08 = -8;
+    }
+    resource->unk14 = 0x38;
+    resource->unk04 = 0x1A4;
+    setCurrentTaskCallback(func_80034F1C);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003504C);
 
