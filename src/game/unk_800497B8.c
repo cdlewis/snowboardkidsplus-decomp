@@ -3394,7 +3394,37 @@ void drawRotatedSpriteByIndex(s32 x, s32 y, s32 index, s32 paletteIndex, s16 ble
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006CF38);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006D134);
+void drawWrappedText8x8(s16 x, s16 y, s16 columns, const char *text,
+                   s16 palette, s16 blend, GsOT *ot, u16 depth) {
+    s16 currentX = x;
+    s16 currentY = y;
+    s16 count = 0;
+    s16 defaultPalette = palette;
+    while (*(const s8 *)text) {
+        if (count >= columns) {
+            currentX = x;
+            currentY += 8;
+            count = 0;
+        }
+        if ((s8)*text == '\n') {
+            count = columns;
+            text++;
+        } else {
+            if ((s8)*text == 'c') {
+                if ((u32)((u8)text[1] - '0') < 10) {
+                    palette = (s8)text[1] - '0';
+                } else {
+                    palette = defaultPalette;
+                }
+            } else {
+                func_8006D29C(currentX, currentY, 8, 8, text, palette, blend, ot, depth);
+                currentX += 8;
+                count++;
+            }
+            text += 2;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006D29C);
 

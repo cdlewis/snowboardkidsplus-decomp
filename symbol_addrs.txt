@@ -2818,3 +2818,5 @@ drawSizedTextGlyph = 0x8006D538; // type:func
 
 updatePlayerResultOrder = 0x80037424; // type:func
 updateQuadTransitionSequenceTask = 0x80069E54; // type:func
+
+drawWrappedText8x8 = 0x8006D134; // type:func
