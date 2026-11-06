@@ -110,7 +110,9 @@ struct RacePlayer {
     u8 animationIndex;
     u8 animationFlags;
     u8 animationStep;
-    u8 unk92C[9];
+    u8 unk92C[2];
+    s16 unk92E;
+    u8 unk930[5];
     s8 unk935;
     u8 unk936[0xE];
     u8 randomIndex;
@@ -171,6 +173,7 @@ void copySelectedRecordToCurrentPlayer(void);
 
 s32 checkCurrentPlayerFlags43040OrAngleRange(void);
 s32 checkCurrentPlayerFlags345001(void);
+s16 checkCurrentPlayerSurfaceType(void);
 
 s32 checkCurrentPlayerFlags275000OrField134(void);
 

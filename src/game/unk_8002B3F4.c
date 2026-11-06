@@ -277,6 +277,8 @@ RaceTime gRaceElapsedTime = {0, 0, 0};
 extern int rand(void);
 
 void uploadTimImageAt(s16 x, s16 y, s16 clutX, s16 clutY, u32 *tim);
+s16 func_8004A124(s32 x1, s32 z1, s32 x2, s32 z2);
+u8 func_8004AAA0(s16 index, s32 x, s32 z);
 void func_8003E1D0(u16 playerIndex);
 void func_8003E60C(u16 index);
 void func_8003EE70(void);
@@ -564,7 +566,15 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002D380);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002D3C4);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002DD70);
+s16 checkCurrentPlayerSurfaceType(void) {
+    RacePlayer *player = D_8013B0D8;
+    u8 surface = func_8004AAA0(player->unk92E, player->x >> 8, player->z >> 8);
+    if (surface == 3 || surface == 6 || surface == 7 || surface == 8 ||
+        surface == 12 || surface == 14 || surface == 15 || surface == 16) {
+        return 0;
+    }
+    return 1;
+}
 
 s16 countCurrentPlayerInputGroups(void) {
     s32 count = 0;
