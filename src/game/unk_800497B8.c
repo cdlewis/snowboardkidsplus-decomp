@@ -48,6 +48,12 @@ typedef struct TexturedTrianglePrimitive {
     u8 r, g, b, code;
     u16 vertexIndices[3];
 } TexturedTrianglePrimitive;
+typedef struct TexturedGouraudTrianglePrimitive {
+    u32 command;
+    TextureUV uv[3];
+    TriangleColor colors[3];
+    u16 vertexIndices[3];
+} TexturedGouraudTrianglePrimitive;
 typedef struct TriangleTextureState {
     u32 reserved0;
     void (*callback)(TriangleScratchVertex *);
@@ -547,6 +553,7 @@ void updateProximityEmitterTask(void);
 void func_80052680(TriangleScratchVertex *);
 void func_80052840(TriangleScratchVertex *);
 void func_80052D84(TriangleScratchVertex *);
+void func_800529FC(TriangleScratchVertex *);
 void func_80053A34(TriangleScratchVertex *, s32);
 void func_80066474(void);
 void func_8005D828(RacePlayer *player, PlayerCollisionRegion *region);
@@ -937,7 +944,22 @@ void processTexturedTrianglePrimitive(void) {
     func_80053A34((TriangleScratchVertex *)0x1F800070, 0);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80055200);
+void processTexturedGouraudTrianglePrimitive(void) {
+    TexturedGouraudTrianglePrimitive *primitive = (TexturedGouraudTrianglePrimitive *)D_8013B680;
+    ((TriangleTextureState *)0x1F800000)->tpage = primitive->uv[1].attribute;
+    ((TriangleTextureState *)0x1F800000)->clut = primitive->uv[0].attribute;
+    ((TriangleTextureState *)0x1F800000)->callback = func_800529FC;
+    ((TriangleScratchVertex *)0x1F800070)->position = D_8013B688[primitive->vertexIndices[0]];
+    ((TriangleScratchVertex *)0x1F800080)->position = D_8013B688[primitive->vertexIndices[1]];
+    ((TriangleScratchVertex *)0x1F800090)->position = D_8013B688[primitive->vertexIndices[2]];
+    *(UVPair *)0x1F800078 = primitive->uv[0].coords;
+    *(UVPair *)0x1F800088 = primitive->uv[1].coords;
+    *(UVPair *)0x1F800098 = primitive->uv[2].coords;
+    ((TriangleScratchVertex *)0x1F800070)->color = primitive->colors[0];
+    ((TriangleScratchVertex *)0x1F800080)->color = primitive->colors[1];
+    ((TriangleScratchVertex *)0x1F800090)->color = primitive->colors[2];
+    func_80053A34((TriangleScratchVertex *)0x1F800070, 0);
+}
 
 void drawIndexedFlatQuad(void) {
     ModelFlatQuad *primitive = (ModelFlatQuad *)D_8013B680;

@@ -2248,6 +2248,7 @@ gControllerInputSequences = 0x801240B0; // size:0x9C defined:true
 
 processGouraudTrianglePrimitive = 0x80054F70; // type:func
 processTexturedTrianglePrimitive = 0x800550A8; // type:func
+processTexturedGouraudTrianglePrimitive = 0x80055200; // type:func
 
 fadeInPlayerResultsTask = 0x8003772C; // type:func
 
