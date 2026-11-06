@@ -32,6 +32,16 @@ typedef struct ByteMappingDescriptor {
     u8 unk07[13];
 } ByteMappingDescriptor;
 
+typedef struct TaskGridState {
+    u8 unk00[0x5A];
+    s16 count;
+} TaskGridState;
+
+typedef struct TaskGridEntry {
+    GameTask *task;
+    u32 unk04;
+} TaskGridEntry;
+
 typedef struct ModeSectorReadState {
     u8 unk00[0xA];
     s16 sectorIndex;
@@ -408,7 +418,22 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009A560);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009A87C);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009ADAC);
+void initializeTaskGridPositions(s32 unused, GameTask *task, s32 x, s32 y) {
+    s32 i;
+    TaskGridState *state;
+    TaskGridEntry *entry;
+    state = (TaskGridState *)&D_800D9504[task->resource14];
+    entry = (TaskGridEntry *)&D_800D9504[task->resource16];
+    for (i = 0; i < state->count; i++) {
+        if (i < 8) {
+            initMovement2D((Movement2D *)&D_800D9504[entry[i].task->resource14],
+                           x + (i % 4) * 0x20000, y + (i / 4) * 0x28000);
+        } else {
+            initMovement2D((Movement2D *)&D_800D9504[entry[i].task->resource14],
+                           x + 0xC000, y + 0x50000);
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009AEC0);
 
