@@ -29,6 +29,14 @@ typedef struct ByteMappingDescriptor {
     u8 unk07[13];
 } ByteMappingDescriptor;
 
+typedef struct ModeSectorReadState {
+    u8 unk00[0xA];
+    s16 sectorIndex;
+    u8 unk0C[0x2C];
+    s16 mode;
+    u8 unk3A[0xC6];
+} ModeSectorReadState;
+
 typedef struct ResourceSectorRange {
     s16 sector;
     s16 sectorCount;
@@ -107,6 +115,8 @@ void func_800187B8(u8 voice);
 
 void func_80090450(void);
 void func_800A0AA8(void);
+void func_800A0EE8(void);
+void queueModeIndexedSectorRead(s16 mode, s16 index);
 void func_800A3750(void);
 void func_800A5AFC(void);
 void func_800A6548(void);
@@ -389,7 +399,21 @@ void preparePlayerResourcesTask(void) {
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A0D54);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A0E28);
+void queueTaskModeSectorRead(void) {
+    ModeSectorReadState *state;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        for (;;) {}
+    }
+    state = (ModeSectorReadState *)&D_800D9504[D_8013AE88->resource14];
+    if (state->mode == 1) {
+        state->sectorIndex = D_8013AFD8 - 1;
+    } else {
+        state->sectorIndex = D_8013AFD9 - 1;
+    }
+    queueModeIndexedSectorRead(state->mode, state->sectorIndex);
+    setCurrentTaskCallback(func_800A0EE8);
+    D_8013AE88->unk10 |= 2;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A0EE8);
 
