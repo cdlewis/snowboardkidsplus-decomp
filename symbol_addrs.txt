@@ -2034,3 +2034,5 @@ gControllerHorizontalRepeatTimers = 0x8013AEC0; // size:0x2 defined:true
 resetCdCommandState = 0x80013EA4; // type:func
 
 waitSpriteMotionTask = 0x80033794; // type:func
+
+waitSpriteExitMotionTask = 0x80034E90; // type:func
