@@ -293,6 +293,8 @@ void func_80048714(void);
 void func_8004531C(void);
 void func_80044524(void);
 void func_80046044(void);
+void func_80046404(TaskResourceRecord *resource, TaskResourceRecord *secondary, s32 value, s32 scale);
+void func_80046CB4(void);
 void func_80037424(TaskResourceRecord *resource);
 void func_80036BA4(TaskResourceRecord *resource);
 void func_80037354(TaskResourceRecord *resource);
@@ -2071,7 +2073,20 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80046894);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80046AEC);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80046BEC);
+void initializePlayerDualResourceEffectTask(void) {
+    TaskResourceRecord *resource;
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    resource = &D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource16 = allocateTaskResource();
+    func_80046404(resource, &D_800D9504[D_8013AE88->resource16], 300, 0x5580);
+    setCurrentTaskCallback(func_80046CB4);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80046CB4);
 
