@@ -445,7 +445,7 @@ void func_8003EE70(void);
 void func_8002F5F8(void);
 void func_8003DEE0(void);
 void drawSound601SequenceSpriteTask(void);
-void func_80033404(void);
+void drawGrowingSprite178Task(void);
 void func_80033C2C(void);
 void updateOneShotTaskVisual(void);
 void func_80034C40(SpriteMotionResource *resource);
@@ -1273,7 +1273,25 @@ void drawGrowingSprite179Task(void) {
         (s16)D_8013AE88->data1C, 0, &D_800EBFF0[D_8013AF78], 1);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80033404);
+void drawGrowingSprite178Task(void) {
+    GameTask *task = D_8013AE88;
+    if (task->data1C < 0x1000) {
+        task->data1C += task->data1E;
+        if (task->data1C >= 0x1000) {
+            task->data1C = 0x1000;
+        }
+    }
+    if (--D_8013AE88->data1A == 0) {
+        D_8013AE88->data1E = 0x400;
+        D_8013AE88->data1C = 0;
+        D_8013AE88->data1A = 30;
+        setCurrentTaskCallback(drawGrowingSprite179Task);
+    }
+    setSpriteColor(128, 128, 128);
+    func_8006CF38((s16)D_8013AE88->data18, 0, 0x178, 6, -1,
+        0x7FFF, 0x7FFF, (s16)D_8013AE88->data1C,
+        (s16)D_8013AE88->data1C, 0, &D_800EBFF0[D_8013AF78], 1);
+}
 
 void waitThenStartSpriteScaleTransition(void) {
     GameTask *task = D_8013AE88;
@@ -1282,7 +1300,7 @@ void waitThenStartSpriteScaleTransition(void) {
         task->data1E = 0x200;
         task->data1C = 0;
         task->data1A = 60;
-        setCurrentTaskCallback(func_80033404);
+        setCurrentTaskCallback(drawGrowingSprite178Task);
     }
 }
 
