@@ -35,7 +35,6 @@ u8 *D_8012090C[10] = {
 };
 
 
-s32 func_800183FC(u16 playerIndex, u8 bank, u16 sound, s16 volume);
 void func_80045868(void);
 void func_800252CC(void);
 void func_800240D0(void);

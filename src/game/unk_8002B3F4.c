@@ -17,6 +17,14 @@
 #include "game/controller.h"
 #include "psx/libsnd.h"
 
+typedef struct PlayerEffectResource {
+    GsCOORDINATE2 coordinate;
+    u8 unk50[0x60];
+    VECTOR scale;
+    SVECTOR rotation;
+    u8 unkC8[0x38];
+} PlayerEffectResource;
+
 typedef struct FallingSpriteEffect {
     s16 active;
     s16 x, y;
@@ -246,6 +254,7 @@ void func_80033100(void);
 void func_80048714(void);
 void func_8004531C(void);
 void func_80044524(void);
+void func_80046044(void);
 void func_80037424(TaskResourceRecord *resource);
 void func_80036BA4(TaskResourceRecord *resource);
 void func_80037354(TaskResourceRecord *resource);
@@ -1881,7 +1890,20 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80045B4C);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80045C7C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80045F8C);
+void initializePlayerCoordinateEffectTask(void) {
+    PlayerEffectResource *resource;
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    resource = (PlayerEffectResource *)&D_800D9504[D_8013AE88->resource14];
+    GsInitCoordinate2(0, &resource->coordinate);
+    D_8013AE88->data1A = 0;
+    resource->rotation.vx = resource->rotation.vy = resource->rotation.vz = 0;
+    resource->scale.vx = resource->scale.vy = resource->scale.vz = 0;
+    func_800183FC(D_8013AE88->data18, 1, 0x800, 0x20);
+    setCurrentTaskCallback(func_80046044);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80046044);
 

@@ -2177,3 +2177,5 @@ initializeCountedTaskResourcePairEC50 = 0x8008EB94; // type:func
 advanceCurrentPlayerInputSequence = 0x8001E524; // type:func
 
 updateTaskTimeRecordDetailCountdown = 0x8003A478; // type:func
+
+initializePlayerCoordinateEffectTask = 0x80045F8C; // type:func

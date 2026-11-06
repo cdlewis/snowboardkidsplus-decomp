@@ -82,6 +82,7 @@ void startIndexedRenderTask(s32 index);
 void initializeMode1Task(void);
 void resetTaskControlState(void);
 void initializeTaskCoordinateResource(void);
+void initializePlayerCoordinateEffectTask(void);
 GameTask *createCountdownTask(u32 frames);
 GameTask *createValueTransitionTask(u32 *value, u32 target, u32 step);
 
