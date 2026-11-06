@@ -946,7 +946,7 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80032F3C);
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80032F84);
 
 void beginSound601TaskSequence(void) {
-    func_800181B0(0, 0x601, 0x20);
+    playSoundEffect(0, 0x601, 0x20);
     setCurrentTaskCallback(func_80032F84);
 }
 

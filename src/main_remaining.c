@@ -455,7 +455,20 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001814C);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001816C);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_800181B0);
+s32 playSoundEffect(u8 bank, u16 programAndTone, s16 volume) {
+    u16 note = programAndTone;
+    if (gSoundBankLoaded[bank]) {
+        D_8013AF29++;
+        if ((s8)D_8013AF29 >= 12) {
+            D_8013AF29 = 0;
+        }
+        SsUtKeyOffV((s8)D_8013AF29);
+        SsUtKeyOnV((s8)D_8013AF29, bank, programAndTone & 0xFF,
+                   note >> 8, note >> 8, 0, volume, volume);
+        return (s8)D_8013AF29;
+    }
+    return 0xFF;
+}
 
 s32 getNearestCameraManhattanDistance(s32 x, s32 y, s32 z) {
     s32 dx, dy, dz;
