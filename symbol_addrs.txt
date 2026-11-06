@@ -2265,3 +2265,5 @@ initializeDualResource5100EffectTask = 0x80047CC0; // type:func
 computeSelectedTriangleAngles = 0x8005A4D0; // type:func
 
 initializeDelayedPlayerRiseEffectTask = 0x80049168; // type:func
+
+drawRisingTexturedStripTask = 0x80068BC0; // type:func

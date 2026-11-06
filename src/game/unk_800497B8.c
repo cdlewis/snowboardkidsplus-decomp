@@ -392,6 +392,7 @@ extern s8 *D_8012BBB4[][4];
 extern u32 D_8012CB94[8];
 extern RECT D_8013B330 __attribute__((section(".data")));
 extern u32 *D_8013AF6C __attribute__((section(".data")));
+extern s32 D_8013B338;
 extern s32 D_8013B35C;
 extern s32 D_8013B360;
 extern s32 D_8013B364;
@@ -1437,7 +1438,45 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800689EC);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80068A10);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80068BC0);
+void drawRisingTexturedStripTask(void) {
+    POLY_FT4 *packet;
+    RotatingQuadTrailResource *resource;
+    s32 y;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (RotatingQuadTrailResource *)&D_800D9504[D_8013AE88->resource14];
+    packet = (POLY_FT4 *)GsOUT_PACKET_P;
+    packet->tag = 9 << 24;
+    setcode(packet, POLY_FT4_CODE);
+    packet->clut = getClut(0x3B0, 0xF0);
+    packet->tpage = getTPage(0, 0, 0x3C0, 0);
+    packet->u0 = 0;
+    packet->v0 = 0;
+    packet->v1 = 0;
+    packet->u2 = 0;
+    packet->v2 = 15;
+    packet->u1 = 215;
+    packet->u3 = 215;
+    packet->v3 = 15;
+    packet->x0 = -108;
+    packet->x1 = 108;
+    packet->x2 = -108;
+    packet->x3 = 108;
+    y = -8 - resource->countdown * 8;
+    setRGB0(packet, 128, 128, 128);
+    packet->y1 = y;
+    packet->y0 = y;
+    packet->y3 = y + 15;
+    packet->y2 = y + 15;
+    addPrim(D_8013AF6C, packet);
+    GsOUT_PACKET_P = (u32)(packet + 1);
+    if (D_8013B338 >= 50) {
+        if (++resource->countdown > 10) {
+            resource->countdown = 10;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80068D1C);
 
