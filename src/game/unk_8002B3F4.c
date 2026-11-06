@@ -56,9 +56,10 @@ typedef struct FallingVisualResource {
     u8 unk78[0x50];
     s16 unkC8, framePosition;
     u8 r0, g0, b0, code;
-    u8 unkD0[0xC];
+    s32 unkD0, velocity, unkD8;
     s32 animationTick;
-    u8 unkE0[0x20];
+    s32 delay, triggered;
+    u8 unkE8[0x18];
 } FallingVisualResource;
 
 typedef struct PlayerModeSelectionResource {
@@ -1845,7 +1846,33 @@ void drawFallingPairedVisualTask(void) {
     func_8005AC4C((TaskVisualResource *)resource, 0);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800356FC);
+void updateFallingPairedVisualTask(void) {
+    FallingVisualResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (FallingVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    if (!D_8013AFD3) {
+        if (resource->delay > 0) {
+            resource->delay--;
+        } else {
+            resource->height += resource->velocity;
+            resource->velocity -= 30;
+            if (resource->height <= -48000 && resource->velocity < 0) {
+                if (!resource->triggered) {
+                    playSoundEffect(1, 0x600, 0x20);
+                    resource->triggered = 1;
+                }
+            }
+            if (resource->triggered) {
+                if (resource->animationTick < 11) {
+                    resource->animationTick++;
+                }
+            }
+        }
+    }
+    drawFallingPairedVisualTask();
+}
 
 void initializeBouncingVisualTask(void) {
     BouncingVisualResource *resource;
