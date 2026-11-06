@@ -18,6 +18,16 @@
 #include "psx/libgs.h"
 #include "game/quad_animation.h"
 
+typedef struct FadingTextResource {
+    s32 duration;
+    s32 elapsed;
+    s16 x, y;
+    const char *text;
+    u16 clut;
+    u16 brightness;
+    u8 pad[0xEC];
+} FadingTextResource;
+
 typedef struct QuadAnimationFrame {
     s32 duration;
     s32 scale;
@@ -305,6 +315,7 @@ void func_8006C5F4(s16 x, s16 y, s32 frameIndex, GsOT *ot, u16 depth);
 void func_80063B58(void);
 void func_800659F0(void);
 void func_800692E8(void);
+void func_8006A7B4(void);
 void func_8006B1F4(void);
 void func_80013DD0(s16 request, s16 mode);
 void func_8006AB8C(void);
@@ -990,7 +1001,7 @@ void createPositionedEffectTask(s32 x, s32 y, s32 z) {
     PositionedEffectResource *resource;
 
     func_80014874(func_80063B58);
-    D_8013AE8C->resource14 = func_80014BAC();
+    D_8013AE8C->resource14 = allocateTaskResource();
     resource = (PositionedEffectResource *)&D_800D9504[D_8013AE8C->resource14];
     resource->x = x >> 8;
     resource->y = y >> 8;
@@ -1020,7 +1031,7 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800659F0);
 GameTask *createQuadAnimationTask(u16 unusedId, VECTOR *position) {
     PrimaryQuadAnimationResource *resource;
     func_80014930(D_8013B304, func_800659F0);
-    D_8013AE8C->resource14 = func_80014BAC();
+    D_8013AE8C->resource14 = allocateTaskResource();
     resource = (PrimaryQuadAnimationResource *)&D_800D9504[D_8013AE8C->resource14];
     resource->x = position->vx;
     resource->y = position->vy;
@@ -1122,7 +1133,7 @@ void createRightQuadShrinkTask(void) {
     QuadTransitionResource *resource;
 
     func_80014930(&D_800D7C84, func_800692E8);
-    D_8013AE8C->resource14 = func_80014BAC();
+    D_8013AE8C->resource14 = allocateTaskResource();
     resource = (QuadTransitionResource *)&D_800D9504[D_8013AE8C->resource14];
     resource->frames = 5;
     resource->vertices = gRightQuadShrinkVertices;
@@ -1197,7 +1208,18 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006A4E8);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006A7B4);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006A8A8);
+void createFadingTextTask(s32 duration, s32 x, s32 y, const char *text, s32 palette) {
+    FadingTextResource *resource;
+    func_80014930(D_8013AE88, func_8006A7B4);
+    D_8013AE8C->resource14 = allocateTaskResource();
+    resource = (FadingTextResource *)&D_800D9504[D_8013AE8C->resource14];
+    resource->duration = duration;
+    resource->elapsed = 0;
+    resource->x = x;
+    resource->y = y;
+    resource->text = text;
+    resource->clut = getClut(768, palette + 240);
+}
 
 void finishTimedSpriteSequence(void) {
     TimedSpriteSequenceResource *resource;
