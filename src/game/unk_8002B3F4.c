@@ -296,6 +296,7 @@ extern u8 D_8013AFCD __attribute__((section(".data")));
 
 void func_80046404(TaskVisualResource *resource, VECTOR *vectors, s32 value, s32 scale);
 void func_80046EF8(void);
+void func_8004713C(void);
 
 void func_800335E4(SlidingTimeResource *resource);
 void func_800497B8(void);
@@ -2622,7 +2623,20 @@ void initializePlayerVisualPairTask(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80046EF8);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80047074);
+void initializePlayerVisualPairTask5E80(void) {
+    TaskVisualResource *resource;
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource16 = allocateTaskResource();
+    func_80046404(resource, (VECTOR *)&D_800D9504[D_8013AE88->resource16], 300, 0x5E80);
+    setCurrentTaskCallback(func_8004713C);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8004713C);
 

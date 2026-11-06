@@ -2423,3 +2423,4 @@ D_80010218 = 0x80010218;
 updateSwayingFallingSpriteEffect = 0x80033B5C; // type:func
 
 initializePlayerVisualPairTask = 0x80046E30; // type:func
+initializePlayerVisualPairTask5E80 = 0x80047074; // type:func

@@ -134,3 +134,4 @@ void initializeMainTailDualResourceTask(void);
 void initializeModeDependentDualResourceTask(void);
 
 void initializePlayerVisualPairTask(void);
+void initializePlayerVisualPairTask5E80(void);
