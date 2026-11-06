@@ -2395,7 +2395,23 @@ void drawPaletteMappedIcon(s16 x, s16 y, s16 index, struct GsOT *ot, u16 depth) 
     func_8006C998(x, y, sprite, palette, -1, ot, depth);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80040440);
+void drawScaledPaletteMappedIcon(s16 x, s16 y, s16 index, s16 scaleX, s16 scaleY, GsOT *ot, u16 depth) {
+    s16 sprite;
+    s16 palette;
+    if (index == 0) {
+        palette = 5;
+        sprite = 446;
+    } else {
+        palette = gMappedIconPalettes[index];
+        sprite = index + 461;
+    }
+    if (scaleX > 0 && scaleY > 0) {
+        func_8006CF38((s16)(x + 16), (s16)(y + 16), sprite, palette, -1,
+                       0x7FFF, 0x7FFF, scaleX, scaleY, 0, ot, depth);
+    } else {
+        func_8006C998(x, y, sprite, palette, -1, ot, depth);
+    }
+}
 
 void unpackUpperWordBytes(u32 packed, UnpackedWordBytes *out) {
     u32 byte;
