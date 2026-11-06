@@ -372,7 +372,8 @@ void func_80048714(void);
 void func_80049240(void);
 void func_800458F8(void);
 void func_8004531C(void);
-void func_80044524(void);
+void updatePlayerFlagTaskVisual(void);
+void func_800442F4(TaskVisualResource *resource);
 void func_80046044(void);
 void func_80047600(void);
 void func_80047D94(void);
@@ -2692,10 +2693,35 @@ void initializeTaskCoordinateResource(void) {
     GsInitCoordinate2(0, (GsCOORDINATE2 *)&D_800D9504[D_8013AE88->resource14]);
     D_8013AE88->data1A = 0;
     D_8013AE88->data1C = 1;
-    setCurrentTaskCallback(func_80044524);
+    setCurrentTaskCallback(updatePlayerFlagTaskVisual);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80044524);
+void updatePlayerFlagTaskVisual(void) {
+    TaskVisualResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    if (D_80120E90[D_8013AE88->data18].unk946) {
+        if (!D_8013AE88->data1A) {
+            resource->unkC6 = 0x600;
+            resource->unkC8 = 0x100;
+            resource->r0 = resource->g0 = resource->b0 = 0x80;
+            resource->code = POLY_FT4_CODE;
+            resource->framePosition = 0;
+            D_8013AE88->data1A = 1;
+            D_8013AE88->data1C = 7;
+        }
+        func_800442F4(resource);
+    } else if (D_8013AE88->data1A) {
+        D_8013AE88->data1C--;
+        if (D_8013AE88->data1C == 0) {
+            D_8013AE88->data1A = 0;
+        } else {
+            func_800442F4(resource);
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8004463C);
 
