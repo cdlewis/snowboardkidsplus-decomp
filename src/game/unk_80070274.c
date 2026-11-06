@@ -395,7 +395,36 @@ void drawSemiTransparentTextureRect(s16 x, s16 y, s16 width, s16 height,
     GsSortPoly(quad, ot, depth);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_8007219C);
+void drawSemiTransparentTextureRectUV(s16 x, s16 y, s16 width, s16 height,
+                   s16 textureDepth, s16 blendMode, s16 pageX, s16 pageY,
+                   u16 u, u16 v, s16 clutX, s16 clutY, GsOT *ot, u16 depth) {
+    POLY_FT4 *quad = &gTexturedQuadTemplate;
+    s32 left, top;
+
+    SetSemiTrans(quad, 1);
+    quad->clut = GetClut(clutX, clutY);
+    left = x;
+    top = y;
+    setRGB0(quad, 128, 128, 128);
+    quad->tpage = GetTPage(textureDepth, blendMode, pageX, pageY);
+    quad->x0 = left;
+    quad->y0 = top;
+    quad->x1 = width + left;
+    quad->y1 = top;
+    quad->x2 = left;
+    quad->y2 = height + top;
+    quad->x3 = width + left;
+    quad->y3 = height + top;
+    quad->u0 = u;
+    quad->v0 = v;
+    quad->u1 = u + width;
+    quad->v1 = v;
+    quad->u2 = u;
+    quad->v2 = v + height;
+    quad->u3 = u + width;
+    quad->v3 = v + height;
+    GsSortPoly(quad, ot, depth);
+}
 
 void addTilePacket(s32 x, s32 y, s32 width, s32 height, s32 r, s32 g, s32 b,
                    GsOT *ot, u16 depth) {

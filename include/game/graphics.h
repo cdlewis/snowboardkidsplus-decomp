@@ -339,3 +339,7 @@ void drawRotatedSpriteByIndex(s32 x, s32 y, s32 index, s32 paletteIndex,
 void drawSemiTransparentTextureRect(s16 x, s16 y, s16 width, s16 height,
                                     s16 textureDepth, s16 blendMode, s16 pageX, s16 pageY,
                                     s16 clutX, s16 clutY, GsOT *ot, u16 depth);
+
+void drawSemiTransparentTextureRectUV(s16 x, s16 y, s16 width, s16 height,
+                                      s16 textureDepth, s16 blendMode, s16 pageX, s16 pageY,
+                                      u16 u, u16 v, s16 clutX, s16 clutY, GsOT *ot, u16 depth);
