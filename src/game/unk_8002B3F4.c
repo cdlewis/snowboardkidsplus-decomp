@@ -206,7 +206,8 @@ void func_80048714(void);
 void func_8004531C(void);
 void func_80044524(void);
 void func_8003772C(void);
-void func_80037F74(void);
+void fadeInLapTimeLabelTask(void);
+void func_80037EC8(void);
 void drawMenuTimeWithBrightness(MenuTimeResource *resource);
 void func_800379B8(TaskResourceRecord *resource);
 void drawLapTimeLabel(TaskMenuFadeResource *resource);
@@ -1104,7 +1105,20 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80037E34);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80037EC8);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80037F74);
+void fadeInLapTimeLabelTask(void) {
+    TaskMenuFadeResource *resource;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (TaskMenuFadeResource *)&D_800D9504[D_8013AE88->resource14];
+    resource->brightness += 8;
+    if (resource->brightness > 128) {
+        resource->brightness = 128;
+        setCurrentTaskCallback(func_80037EC8);
+    }
+    drawLapTimeLabel(resource);
+}
 
 void initializeTaskMenuFade(void) {
     TaskMenuFadeResource *resource;
@@ -1117,7 +1131,7 @@ void initializeTaskMenuFade(void) {
     resource->unk00 = D_80120F90[0];
     resource->brightness = 0;
     resource->secondaryBrightness = 0;
-    setCurrentTaskCallback(func_80037F74);
+    setCurrentTaskCallback(fadeInLapTimeLabelTask);
 }
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80038090);

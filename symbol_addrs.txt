@@ -2074,3 +2074,5 @@ startUnlockActionAfterCountdown = 0x800A4FB8; // type:func
 slideRaceTimeDisplayOut = 0x80033700; // type:func
 
 slideOutSlidingDisplayTask = 0x800341DC; // type:func
+
+fadeInLapTimeLabelTask = 0x80037F74; // type:func
