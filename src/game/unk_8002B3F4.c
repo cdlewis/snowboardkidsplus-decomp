@@ -2468,7 +2468,19 @@ void initPlayerTimerTask(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80048714);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800488B8);
+void fadeOutPlayerTimerTask(void) {
+    if (!D_8013AFD3) {
+        if (D_80120E90[D_8013AE88->data18].unk0FC == 0) {
+            D_80120E90[D_8013AE88->data18].timer.unk60 -= 0x200;
+            if (D_80120E90[D_8013AE88->data18].timer.unk60 > 0) {
+                return;
+            }
+            D_80120E90[D_8013AE88->data18].timer.unk60 = 0;
+            D_80120E90[D_8013AE88->data18].unk0FE = 0;
+        }
+        func_800149A8();
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800489A0);
 

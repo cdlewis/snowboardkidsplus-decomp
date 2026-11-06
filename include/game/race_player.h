@@ -162,6 +162,7 @@ void copyPlayerPaletteRow(s16 playerIndex);
 void clearCurrentPlayerTaskState(void);
 void startPlayerTimerTask(RacePlayer *player);
 void initPlayerTimerTask(void);
+void fadeOutPlayerTimerTask(void);
 void stopPlayerSound(u16 playerIndex);
 s32 requestCurrentPlayerAction6(void);
 s32 requestCurrentPlayerAction6NarrowAngle(void);
