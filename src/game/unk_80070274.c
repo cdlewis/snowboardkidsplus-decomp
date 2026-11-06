@@ -99,7 +99,18 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80070C5C);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80070D48);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80070E34);
+void addDrawAreaPacket(s32 x, s32 y, s32 width, s32 height, GsOT *ot, u16 depth) {
+    RECT area;
+    DR_AREA *packet = (DR_AREA *)GsGetWorkBase();
+
+    area.x = x;
+    area.w = width;
+    area.h = height;
+    area.y = y + ((D_8013AF78 ^ 1) << 8);
+    SetDrawArea(packet, &area);
+    AddPrim(ot->org + depth, packet);
+    func_800BF2C8((u32)(packet + 1));
+}
 
 void initMovement2D(Movement2D *movement, s32 x, s32 y) {
     movement->x = x;

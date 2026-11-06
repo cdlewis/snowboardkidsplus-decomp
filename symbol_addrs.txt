@@ -794,6 +794,7 @@ GetDispEnv = 0x800CE18C; // type:func defined:true
 GetODE = 0x800CE1C0; // type:func defined:true
 SetTexWindow = 0x800CE1F0; // type:func defined:true
 SetDrawArea = 0x800CE228; // type:func defined:true
+addDrawAreaPacket = 0x80070E34; // type:func
 SetDrawOffset = 0x800CE2A8; // type:func defined:true
 SetPriority = 0x800CE2E8; // type:func defined:true
 SetDrawStp = 0x800CE310; // type:func defined:true
