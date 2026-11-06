@@ -2868,3 +2868,5 @@ litObjectDrawAreaDepths = 0x8013B460; // size:0x8 defined:true
 updateSplitScreenTransitionTask = 0x8001C128; // type:func
 
 updatePlayerCameraPitch = 0x8003E1D0; // type:func
+
+drawLoweringTexturedQuadTask = 0x800690C8; // type:func

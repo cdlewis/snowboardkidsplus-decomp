@@ -2795,7 +2795,27 @@ void createRotatingQuadTrailTask(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800690C8);
+void drawLoweringTexturedQuadTask(void) {
+    POLY_FT4 *packet;
+    ShrinkingQuadResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    resource = (ShrinkingQuadResource *)&D_800D9504[D_8013AE88->resource14];
+    packet = (POLY_FT4 *)GsOUT_PACKET_P;
+    *packet = *resource->packet;
+    packet->x0 = resource->vertices[0].x;
+    packet->y0 = resource->vertices[0].y + (resource->countdown << 6) / 10;
+    packet->x1 = resource->vertices[1].x;
+    packet->y1 = resource->vertices[1].y + (resource->countdown << 6) / 10;
+    packet->x2 = resource->vertices[2].x;
+    packet->y2 = resource->vertices[2].y + (resource->countdown << 6) / 10;
+    packet->x3 = resource->vertices[3].x;
+    packet->y3 = resource->vertices[3].y + (resource->countdown << 6) / 10;
+    addPrim(D_8013AF6C, packet);
+    GsOUT_PACKET_P = (u32)(packet + 1);
+    if (D_8013B338 >= 50) {
+        if (++resource->countdown > 10) { resource->countdown = 10; }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800692E8);
 
