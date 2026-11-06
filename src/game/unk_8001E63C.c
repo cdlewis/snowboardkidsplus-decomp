@@ -32,6 +32,7 @@ u8 *D_8012090C[10] = {
 
 
 void func_800240D0(void);
+void func_80026DAC(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8001E63C);
 
@@ -63,7 +64,23 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8001F6D8);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8001F6F8);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8001F718);
+void resetCurrentPlayerForCallback26DAC(void) {
+    RacePlayer *player;
+    if (D_8013B0D8->unk128 & 0x10000) {
+        func_80016E80(8, 2);
+    } else {
+        func_80016E80(7, 2);
+    }
+    player = D_8013B0D8;
+    player->unk078 = 0x400;
+    player->unk0BC = 0;
+    player->unk094 = 0;
+    player->unk128 &= 0xFF0C1FFB;
+    player->unk128 &= ~0x200;
+    player->unk128 |= 0xA000;
+    D_8013AE88->data1A = 0;
+    setCurrentTaskCallback(func_80026DAC);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8001F7A0);
 
