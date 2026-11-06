@@ -176,6 +176,10 @@ typedef struct FlickeringDotsResource {
     FlickeringDotPosition positions[25];
     s32 frame;
 } FlickeringDotsResource;
+/* Packed positions for the player-relative particle render task. */
+typedef struct PlayerParticlePosition {
+    s16 x, y, z;
+} PlayerParticlePosition;
 
 /* Positions and animation phase used by the falling-particle render task. */
 typedef struct FallingParticleResource {
@@ -725,6 +729,7 @@ void func_800692E8(void);
 void func_800697DC(void);
 void drawSlidingQuadTask(void);
 void func_80062B24(void);
+void func_800632C4(void);
 void func_800618A0(void);
 void func_80061E48(void);
 void func_80062354(void);
@@ -2306,7 +2311,20 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80062EA0);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800632C4);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80063788);
+void createPlayerParticleTask(s32 playerIndex) {
+    PlayerParticlePosition *position;
+    s32 i;
+    func_80014930(&gGameTasks[4], func_800632C4);
+    D_8013AE8C->resource14 = allocateTaskResource();
+    position = (PlayerParticlePosition *)&D_800D9504[D_8013AE8C->resource14];
+    for (i = 0; i < 40; i++) {
+        position[i].x = randomNextLinear() % 1024;
+        position[i].y = randomNextLinear() % 512;
+        position[i].z = randomNextLinear() % 1024;
+    }
+    D_8013AE8C->data18 = playerIndex;
+    D_8013AE8C->data1A = 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80063890);
 

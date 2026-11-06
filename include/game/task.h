@@ -106,6 +106,7 @@ void createMovingLineTask(s32 index);
 void createFlickeringDotsTask(s32 playerIndex);
 void startIndexedRenderTask(s32 index);
 void startIndexedRenderTaskPair(s32 index);
+void createPlayerParticleTask(s32 playerIndex);
 void initializeMode1Task(void);
 void resetTaskControlState(void);
 void initializeTaskCoordinateResource(void);
