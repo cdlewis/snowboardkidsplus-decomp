@@ -236,6 +236,9 @@ void updateActivePlayerRegionCollisions(void);
 /* Advance a directional input sequence and return its completed entry result. */
 u16 advanceCurrentPlayerInputSequence(u8 sequence[][2], s16 slot);
 void createPlayerPositionTrailTask(s32 playerIndex);
+void createPlayerRingEffectTask(s32 playerIndex);
+
+s32 func_8004A764(s16 index, s32 x, s32 z);
 
 void updatePlayerRenderSnapshots(void);
 

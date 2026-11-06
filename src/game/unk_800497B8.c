@@ -378,6 +378,13 @@ typedef struct PlayerPositionTrailResource {
     u8 pad50[0xB0];
 } PlayerPositionTrailResource;
 
+typedef struct PlayerRingEffectResource {
+    s32 position[3];
+    s32 unk0C;
+    s32 elapsed;
+    SVECTOR rotations[6];
+} PlayerRingEffectResource;
+
 typedef struct RotatingQuadTrailResource {
     s32 countdown;
     s16 angles[8];
@@ -735,6 +742,7 @@ void func_80061E48(void);
 void func_80062354(void);
 void func_8006624C(void);
 void func_80066D18(void);
+void func_80067DD0(void);
 void func_800659F0(void);
 extern SVECTOR D_8012A5C0[];
 extern GsCOORDINATE2 D_80129C60[];
@@ -2522,7 +2530,28 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80067D88);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80067DD0);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80068230);
+void createPlayerRingEffectTask(s32 playerIndex) {
+    RacePlayer *player;
+    PlayerRingEffectResource *resource;
+    s32 i;
+    player = &D_80120E90[playerIndex];
+    if (D_8013AFCE != 3) {
+        func_80014930(D_8013B304, func_80067DD0);
+        D_8013AE8C->resource14 = allocateTaskResource();
+        resource = (PlayerRingEffectResource *)&D_800D9504[D_8013AE8C->resource14];
+        for (i = 0; i < 3; i++) {
+            resource->position[i] = player->position8E4[i];
+        }
+        resource->position[1] = func_8004A764(player->unk92E, resource->position[0], resource->position[2]);
+        for (i = 0; i < 6; i++) {
+            resource->rotations[i].vy = 0;
+            resource->rotations[i].vx = 0;
+            resource->rotations[i].vz = randomNextLinear() % 4096;
+        }
+        resource->elapsed = 0;
+        D_8013AE8C->data18 = playerIndex;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006836C);
 
