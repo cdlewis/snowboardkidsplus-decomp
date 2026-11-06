@@ -337,7 +337,6 @@ s32 func_8004A4C4(s16 index, s32 x, s32 z);
 s32 func_8004A764(s16 index, s32 x, s32 z);
 u8 func_8004AAA0(s16 index, s32 x, s32 z);
 void func_8003E1D0(u16 playerIndex);
-void func_8003E60C(u16 index);
 void func_8003EE70(void);
 void func_8002F5F8(void);
 void func_8003DEE0(void);

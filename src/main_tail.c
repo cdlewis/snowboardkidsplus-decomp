@@ -15,6 +15,7 @@
 #define TASK_ABSOLUTE_ADDRESSING
 #define TASK_FLAGS_ABSOLUTE_ADDRESSING
 #include "game/race_player.h"
+#include "game/race_camera.h"
 #include "game/text_entries.h"
 #include "game/task.h"
 #include "game/movement.h"
@@ -226,6 +227,7 @@ void prepareUnlockSelectionResume(void);
 void func_8003D940(void);
 void func_8003EE70(void);
 void func_8003E050(u16 index);
+void updateTaskViewAndCheckPlayerLimit(void);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_8008C708);
 
@@ -780,7 +782,19 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A1670);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A1774);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A1DA0);
+void initializeTaskPlayerCamera(void) {
+    PlayerCamera *cameras;
+    D_8013B0D8 = &D_80120E90[D_8013AE88->data18];
+    func_8003E60C(D_8013AE88->data18);
+    cameras = D_801241E8;
+    cameras[D_8013AE88->data18].yaw = D_8013B0D8->unk110;
+    cameras[D_8013AE88->data18].pitch = 0;
+    cameras[D_8013AE88->data18].unk18 = D_8013B0D8->unk92E;
+    func_8003E050(D_8013AE88->data18);
+    clampPlayerCameraHeight(D_8013AE88->data18);
+    cameras[D_8013AE88->data18].unk10 = -0x230;
+    setCurrentTaskCallback(updateTaskViewAndCheckPlayerLimit);
+}
 
 void updateTaskViewAndCheckPlayerLimit(void) {
     func_8003D940();

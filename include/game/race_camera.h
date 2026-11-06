@@ -15,6 +15,7 @@ typedef struct PlayerCamera {
 extern PlayerCamera D_801241E8[];
 
 void initPlayerCamera(u16 index);
+void func_8003E60C(u16 index);
 void updatePlayerCameraAngles(u16 playerIndex);
 
 void updateCurrentPlayerCameraTarget(void);
