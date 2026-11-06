@@ -461,6 +461,14 @@ typedef struct ShrinkingQuadResource {
     u8 pad0C[0xF4];
 } ShrinkingQuadResource;
 
+typedef struct PaletteStripResource {
+    s32 frame;
+    s32 unk04;
+    const POLY_FT4 *packet;
+    s32 textureV;
+    u8 pad10[0xF0];
+} PaletteStripResource;
+
 typedef struct SlidingQuadResource {
     s32 countdown;
     s32 unk04;
@@ -2568,7 +2576,31 @@ void createRightQuadShrinkTask(void) {
     resource->packet = &gRightQuadShrinkPacket;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80069654);
+void drawPaletteCyclingStripTask(void) {
+    POLY_FT4 *packet;
+    PaletteStripResource *resource;
+    s32 paletteRow;
+    s32 paletteOffset;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (PaletteStripResource *)&D_800D9504[D_8013AE88->resource14];
+    packet = (POLY_FT4 *)GsOUT_PACKET_P;
+    *packet = *resource->packet;
+    packet->v0 = packet->v1 = resource->textureV;
+    packet->v2 = packet->v3 = resource->textureV + 15;
+    packet->x0 = packet->x2 = -16;
+    packet->x1 = packet->x3 = 143;
+    packet->y0 = packet->y1 = 88;
+    packet->y2 = packet->y3 = 103;
+    paletteOffset = D_8013AE88->data18 * 3;
+    paletteRow = resource->frame % 3 + 242;
+    packet->clut = getClut(944, paletteOffset + paletteRow);
+    addPrim(D_8013AF6C, packet);
+    GsOUT_PACKET_P = (u32)(packet + 1);
+    resource->frame++;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800697DC);
 
