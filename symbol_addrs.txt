@@ -2090,3 +2090,5 @@ createValueTransitionTask = 0x80075F80; // type:func
 initializeCurrentPlayerState11 = 0x8001F8E4; // type:func
 
 initializeCurrentPlayerState40 = 0x8001FA38; // type:func
+
+drawCurrentTaskTimeRecords = 0x80039EE8; // type:func

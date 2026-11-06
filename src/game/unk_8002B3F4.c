@@ -223,6 +223,8 @@ void drawLapTimeLabel(TaskMenuFadeResource *resource);
 void func_80038090(TaskResourceRecord *resource);
 void func_80038574(TaskResourceRecord *resource);
 void func_8003BE58(TaskResourceRecord *resource);
+void func_80039484(TaskResourceRecord *resource);
+void func_800398F4(TaskResourceRecord *resource);
 void func_8003AAE0(TaskResourceRecord *resource);
 void func_8003AD48(TaskResourceRecord *resource);
 void func_8003B2BC(TaskResourceRecord *resource);
@@ -1222,7 +1224,19 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800398F4);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80039B34);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80039EE8);
+void drawCurrentTaskTimeRecords(void) {
+    TaskResourceRecord *resource;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = &D_800D9504[D_8013AE88->resource14];
+    if (!(D_8013AFE4 & 0x10)) {
+        func_800149A8();
+    }
+    func_80039484(resource);
+    func_800398F4(resource);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80039F6C);
 
