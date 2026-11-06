@@ -422,6 +422,8 @@ EmitterPlacement gProximityEmitterPlacements[2]
 
 u32 gObjectSortSavedStackPointer
     __attribute__((section(".sdata.object_sort_saved_stack"))) = 0;
+u32 gAlternateObjectSortSavedStackPointer
+    __attribute__((section(".sdata.alternate_object_sort_saved_stack"))) = 0;
 
 ControllerEffectState gControllerEffectStates[2] = {0};
 
@@ -1036,7 +1038,21 @@ void drawTaskObject(u16 index) {
     SetSp(gObjectSortSavedStackPointer);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800593B0);
+void drawTaskObjectAlternateLayer(u16 index) {
+    GsDOBJ2 *object;
+    GsDOBJ2 *objects;
+    gAlternateObjectSortSavedStackPointer = SetSp(0x1F8003FC);
+    objects = D_80129A80;
+    object = &objects[index];
+    GsGetLs(object->coord2, D_8013AF98);
+    GsSetLsMatrix(D_8013AF98);
+    if (func_80059254()) {
+        GsSortObject4(object, &D_800EC130[D_8013AF78], 2, (u32 *)0x1F800000);
+    } else {
+        GsSortObject4(object, &D_800EC090[D_8013AF78], 2, (u32 *)0x1F800000);
+    }
+    SetSp(gAlternateObjectSortSavedStackPointer);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80059484);
 

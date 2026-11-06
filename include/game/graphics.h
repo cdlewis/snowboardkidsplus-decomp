@@ -84,6 +84,10 @@ typedef struct TaskVisualResource {
 extern GsOT D_800EBFF0[2];
 extern GsOT D_800EC018[2];
 extern GsOT D_800EC0B8[2];
+extern GsOT D_800EC090[2];
+extern GsOT D_800EC130[2];
+
+void drawTaskObjectAlternateLayer(u16 index);
 
 extern GsDOBJ2 D_80129A80[30];
 void sortLitObject(GsDOBJ2 *object);
