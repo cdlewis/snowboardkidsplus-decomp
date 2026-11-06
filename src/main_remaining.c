@@ -597,7 +597,19 @@ void stopMatchingSoundVoice(u8 owner, u8 bank, u16 note) {
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_800187B8);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80018804);
+void playPlayerPositionalSoundEffect(u8 playerIndex, u8 bank, u16 programAndTone, s16 volume) {
+    u16 note;
+    volume = attenuateSoundVolume(getNearestCameraManhattanDistance(
+        D_80120E90[playerIndex].x, D_80120E90[playerIndex].y,
+        D_80120E90[playerIndex].z), volume);
+    note = programAndTone;
+    if (volume == 0) return;
+    if (gSoundBankLoaded[bank]) {
+        SsUtKeyOffV(playerIndex + 20);
+        SsUtKeyOnV(playerIndex + 20, bank, programAndTone & 0xFF,
+                   note >> 8, note >> 8, 0, volume, volume);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001890C);
 

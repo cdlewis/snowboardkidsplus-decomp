@@ -58,3 +58,6 @@ void func_800187B8(u8 voice);
 s32 playOwnedSoundEffect(u8 owner, u8 bank, u16 note, s16 volume);
 
 void stopMatchingSoundVoice(u8 owner, u8 bank, u16 note);
+
+/* Replaces voice playerIndex + 20 using the player position for attenuation. */
+void playPlayerPositionalSoundEffect(u8 playerIndex, u8 bank, u16 programAndTone, s16 volume);
