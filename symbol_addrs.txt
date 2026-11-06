@@ -2759,3 +2759,5 @@ drawFallingPairedVisualTask = 0x800355D4; // type:func
 updateFallingPairedVisualTask = 0x800356FC; // type:func
 gFallingPairedVisualFrames = 0x80124078; // size:0x38 defined:true
 gFallingPairedVisualAnimation = 0x8013B114; // size:0x6 defined:true
+
+updateAcceleratingTaskVisualCountdown = 0x80047BAC; // type:func

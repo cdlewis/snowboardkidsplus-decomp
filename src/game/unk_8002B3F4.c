@@ -3695,7 +3695,32 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8004777C);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80047A3C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80047BAC);
+void updateAcceleratingTaskVisualCountdown(void) {
+    TaskVisualResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    setTaskVisualFrame(resource, D_80124354, 0x1A00);
+    func_8005AC4C(resource, 1);
+    if (!D_8013AFD3) {
+        if (resource->unkDC >= 5) {
+            resource->unkC8 += 8;
+            if (resource->unkC8 > 0x80) {
+                resource->unkC8 = 0x80;
+            }
+            resource->framePosition += resource->unkC8;
+            if (resource->framePosition >= resource->unkC6) {
+                resource->framePosition &= 0xFF;
+            }
+        } else {
+            resource->framePosition = 0x100;
+        }
+        if (--resource->unkDC == 0) {
+            func_80044A38();
+        }
+    }
+}
 
 void initializeDualResource5100EffectTask(void) {
     TaskResourceRecord *resource;
