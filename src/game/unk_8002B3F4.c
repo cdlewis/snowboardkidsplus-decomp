@@ -991,7 +991,21 @@ void waitSlidingNumberDisplayTask(void) {
     func_800350AC(resource);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003539C);
+void slideInSlidingNumberDisplayTask(void) {
+    SlidingNumberResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (SlidingNumberResource *)&D_800D9504[D_8013AE88->resource14];
+    resource->x -= resource->speed;
+    resource->speed -= 4;
+    if (resource->speed <= 0) {
+        resource->speed = 0;
+        resource->timer = 45;
+        setCurrentTaskCallback(waitSlidingNumberDisplayTask);
+    }
+    func_800350AC(resource);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003543C);
 

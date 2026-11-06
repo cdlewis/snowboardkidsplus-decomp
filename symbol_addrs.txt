@@ -2079,3 +2079,5 @@ slideOutSlidingDisplayTask = 0x800341DC; // type:func
 fadeInLapTimeLabelTask = 0x80037F74; // type:func
 
 slideInPlayerNumberDisplayTask = 0x80034A48; // type:func
+
+slideInSlidingNumberDisplayTask = 0x8003539C; // type:func
