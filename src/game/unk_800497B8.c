@@ -20,6 +20,18 @@
 #include "psx/libgs.h"
 #include "game/quad_animation.h"
 
+typedef struct TriangleColor { u8 r, g, b, code; } TriangleColor;
+typedef struct GouraudTrianglePrimitive {
+    u32 command;
+    TriangleColor colors[3];
+    s16 vertexIndices[3];
+} GouraudTrianglePrimitive;
+typedef struct TriangleScratchVertex {
+    SVECTOR position;
+    s32 unk08;
+    TriangleColor color;
+} TriangleScratchVertex;
+
 /* Sixteen world positions followed by per-position state words. */
 typedef struct TrailPosition {
     s32 x, y, z;
@@ -231,6 +243,8 @@ typedef struct TimedSpriteSequenceResource {
     u8 pad0C[0xF4];
 } TimedSpriteSequenceResource;
 
+extern GouraudTrianglePrimitive *D_8013B680;
+extern SVECTOR *D_8013B688;
 extern SVECTOR *D_8013AF90 __attribute__((section(".data")));
 extern MATRIX D_8012A6B0, D_8012A6D0;
 
@@ -336,6 +350,8 @@ extern s32 D_8013B36C;
 extern u16 D_8013B376 __attribute__((section(".sdata")));
 
 
+void func_80052680(TriangleScratchVertex *);
+void func_80053A34(TriangleScratchVertex *, s32);
 void func_80066474(void);
 void func_8005D828(RacePlayer *player, PlayerCollisionRegion *region);
 void func_8005B460(void);
@@ -580,7 +596,17 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800542BC);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80054E70);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80054F70);
+void processGouraudTrianglePrimitive(void) {
+    GouraudTrianglePrimitive *primitive = D_8013B680;
+    *(void (**)(TriangleScratchVertex *))0x1F800004 = func_80052680;
+    ((TriangleScratchVertex *)0x1F800070)->position = D_8013B688[primitive->vertexIndices[0]];
+    ((TriangleScratchVertex *)0x1F800080)->position = D_8013B688[primitive->vertexIndices[1]];
+    ((TriangleScratchVertex *)0x1F800090)->position = D_8013B688[primitive->vertexIndices[2]];
+    ((TriangleScratchVertex *)0x1F800070)->color = primitive->colors[0];
+    ((TriangleScratchVertex *)0x1F800080)->color = primitive->colors[1];
+    ((TriangleScratchVertex *)0x1F800090)->color = primitive->colors[2];
+    func_80053A34((TriangleScratchVertex *)0x1F800070, 0);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800550A8);
 
