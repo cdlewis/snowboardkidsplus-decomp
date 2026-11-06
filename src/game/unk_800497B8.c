@@ -597,7 +597,7 @@ void func_80049D48(s32 x, s32 y, const char *format, ...);
 void func_8006BEEC(s32 enabled);
 void func_80063B58(void);
 void func_80063DF4(void);
-void func_8006A194(void);
+void drawFullScreenSpriteTask(void);
 void func_8006A7B4(void);
 void func_8006B1F4(void);
 void func_8006AB8C(void);
@@ -2125,14 +2125,34 @@ void startValueInterpolationTask(s32 duration, s32 start, s32 end) {
     D_8013AE8C->data1E = end;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006A194);
+void drawFullScreenSpriteTask(void) {
+    ScreenSpriteResource *resource;
+    DrawModeSpritePacket *packets;
+    s32 i;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    packets = (DrawModeSpritePacket *)GsOUT_PACKET_P;
+    resource = (ScreenSpriteResource *)&D_800D9504[D_8013AE88->resource14];
+    for (i = 0; i < 2; i++) {
+        resource->sprites[i].r0 = resource->sprites[i].g0 = resource->sprites[i].b0 = *(const u8 *)resource->brightness;
+    }
+    for (i = 0; i < 2; i++) {
+        packets[i] = resource->sprites[i];
+        addPrim(&D_8013AF6C[1], &packets[i]);
+    }
+    GsOUT_PACKET_P = (u32)(packets + 2);
+    if (++resource->elapsed >= resource->duration || (D_8013AFE4 & 0x100)) {
+        func_800149A8();
+    }
+}
 
 void createFullScreenSpriteTask(s32 duration, s32 tpage, u16 clut, u16 u, u16 v,
                   const s32 *brightness) {
     ScreenSpriteResource *resource;
     s32 i;
 
-    func_80014930(&gGameTasks[4], func_8006A194);
+    func_80014930(&gGameTasks[4], drawFullScreenSpriteTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     resource = (ScreenSpriteResource *)&D_800D9504[D_8013AE8C->resource14];
     for (i = 0; i < 2; i++) {
