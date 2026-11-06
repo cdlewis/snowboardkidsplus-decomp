@@ -9,7 +9,7 @@ extern u32 gGameOptionFlags __attribute__((section(".data")));
 extern u16 gUnlockNotificationFlags __attribute__((section(".data")));
 
 /* These getters return raw masks, not normalized booleans. Bit 3 selects stereo
- * audio in func_80017BAC. The purpose of option bit 0 is still unidentified.
+ * audio in applyStereoSoundOption. The purpose of option bit 0 is still unidentified.
  * The per-player option occupies bit (4 + playerIndex).
  */
 #ifdef GAME_OPTIONS_GP_ADDRESSING

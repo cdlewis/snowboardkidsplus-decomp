@@ -15,6 +15,7 @@
 #define SELECTED_RECORDS_GP_ADDRESSING
 #include "game/selected_records.h"
 #include "psx/libsnd.h"
+#include "psx/libcd.h"
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
 #include "psx/libetc.h"
@@ -294,7 +295,24 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80017268);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001758C);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80017BAC);
+void applyStereoSoundOption(void) {
+    CdlATV volume;
+    if ((s16)getStereoSoundFlag()) {
+        volume.val0 = 128;
+        volume.val1 = 0;
+        volume.val2 = 128;
+        volume.val3 = 0;
+        CdMix(&volume);
+        SsSetStereo();
+    } else {
+        volume.val0 = 128;
+        volume.val1 = 128;
+        volume.val2 = 128;
+        volume.val3 = 128;
+        CdMix(&volume);
+        SsSetMono();
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80017C20);
 

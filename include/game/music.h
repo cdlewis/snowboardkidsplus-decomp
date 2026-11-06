@@ -32,6 +32,7 @@ void openMusicSequence(s16 bankId, u32 *sequence);
 void closeMusicSequence(void);
 void pauseMusicSequence(void);
 void resumeMusicSequence(void);
+void applyStereoSoundOption(void);
 void startSoundSystem(void);
 void endSoundSystem(void);
 
