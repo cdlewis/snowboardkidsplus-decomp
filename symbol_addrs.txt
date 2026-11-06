@@ -1923,6 +1923,7 @@ addFlatTriangle = 0x8005FBC0; // type:func
 startValueInterpolationTask = 0x8006A128; // type:func
 
 addSemiTransparentTriangle = 0x8005FFF8; // type:func
+addSemiTransparentGouraudTriangle = 0x800600A8; // type:func
 
 // GP-relative alias for the single-pixel read rectangle.
 readPixelRectGp = 0x8013B240; // size:0x8 allow_duplicated:true

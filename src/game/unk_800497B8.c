@@ -52,6 +52,17 @@ typedef struct PrimaryQuadAnimationResource {
     u8 pad[0xE4];
 } PrimaryQuadAnimationResource;
 
+typedef struct SemiTransparentGouraudTrianglePacket {
+    u32 tag;
+    u16 tpage, drawModeCommand;
+    u8 r0, g0, b0, code;
+    s16 x0, y0;
+    u8 r1, g1, b1, pad1;
+    s16 x1, y1;
+    u8 r2, g2, b2, pad2;
+    s16 x2, y2;
+} SemiTransparentGouraudTrianglePacket;
+
 #define FLAT_RECTANGLE_CODE 0x60
 #define TEXTURED_QUAD_CODE 0x2C
 #define TEXTURED_QUAD_PACKET_WORDS 9
@@ -854,7 +865,22 @@ void addSemiTransparentTriangle(u32 *orderingTable, s32 tpage, s32 x0, s32 y0,
     GsOUT_PACKET_P = (u32)(triangle + 1);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800600A8);
+void addSemiTransparentGouraudTriangle(u32 *orderingTable, s32 tpage, s32 x0, s32 y0,
+                  s32 x1, s32 y1, s32 x2, s32 y2,
+                  s32 r0, s32 g0, s32 b0, s32 r1, s32 g1, s32 b1,
+                  s32 r2, s32 g2, s32 b2) {
+    SemiTransparentGouraudTrianglePacket *triangle = (SemiTransparentGouraudTrianglePacket *)GsOUT_PACKET_P;
+    triangle->tag = (sizeof(*triangle) / sizeof(u32) - 1) << 24;
+    triangle->code = POLY_G3_CODE | SEMI_TRANSPARENT_FLAG;
+    triangle->drawModeCommand = DRAW_MODE_COMMAND_HIGH;
+    triangle->tpage = tpage & 0xFF;
+    setXY3(triangle, x0, y0, x1, y1, x2, y2);
+    setRGB0(triangle, r0, g0, b0);
+    setRGB1(triangle, r1, g1, b1);
+    setRGB2(triangle, r2, g2, b2);
+    addPrim(orderingTable, triangle);
+    GsOUT_PACKET_P = (u32)(triangle + 1);
+}
 
 void addFlatQuad(u32 *orderingTable, s32 x0, s32 y0, s32 x1, s32 y1,
                  s32 x2, s32 y2, s32 x3, s32 y3, s32 r, s32 g, s32 b) {
