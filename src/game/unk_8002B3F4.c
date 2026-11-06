@@ -8,6 +8,7 @@
 #include "game/race_player.h"
 #include "game/race_camera.h"
 #include "game/race_time.h"
+#include "game/selected_records.h"
 #include "game/graphics.h"
 #include "game/linear_random.h"
 #include "game/offset_archive.h"
@@ -267,6 +268,7 @@ extern u8 D_8013AFCD __attribute__((section(".data")));
 
 void func_800335E4(SlidingTimeResource *resource);
 void func_800497B8(void);
+s32 func_80043ACC(const RaceTime *a, const RaceTime *b, RaceTime *difference);
 
 void func_80037850(const RaceTime *value, s16 x, s16 y, s16 mode, GsOT *ot, u16 depth);
 
@@ -950,7 +952,19 @@ void slideRaceTimeDisplayIn(void) {
     func_800335E4(resource);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800338BC);
+void initializeRaceTimeDifferenceDisplay(void) {
+    SlidingTimeResource *resource;
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    resource = (SlidingTimeResource *)&D_800D9504[D_8013AE88->resource14];
+    resource->y = -44;
+    resource->x = 420;
+    resource->speed = 56;
+    resource->hasExtraTime = func_80043ACC(&D_8013B188, &D_80124050[D_8013AFCE], &resource->time);
+    setCurrentTaskCallback(slideRaceTimeDisplayIn);
+}
 
 void drawFallingSpriteEffect(FallingSpriteEffect *effect) {
     setSpriteColor(128, 128, 128);
