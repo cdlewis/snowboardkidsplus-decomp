@@ -2168,3 +2168,5 @@ drawCurrentTaskSpriteBA = 0x8009448C; // type:func
 drawCurrentTaskSpriteB7 = 0x80098F38; // type:func
 
 initializeCountedTaskResourcePair = 0x8008D144; // type:func
+
+initializeAlternateCountedTaskResourcePair = 0x8008DD04; // type:func
