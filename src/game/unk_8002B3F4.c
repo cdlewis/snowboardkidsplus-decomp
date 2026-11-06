@@ -372,6 +372,9 @@ typedef struct SlidingVisualResource {
 } SlidingVisualResource;
 
 
+u16 gPlayerSoundVariantsA[2] __attribute__((section(".data.player_sound_variants"))) = {0x100, 0x200};
+u16 gPlayerSoundVariantsB[2] __attribute__((section(".data.player_sound_variants"))) = {0x300, 0x400};
+
 const char gDemonstrationText[16]
     __attribute__((section(".rodata.demonstration_overlay"), aligned(4))) = "DEMONSTRATION";
 const char gDemonstrationStartText[12]
@@ -918,7 +921,34 @@ void addPlayerCappedCounters(u16 playerIndex, s32 amount) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002E44C);
+void playCurrentPlayerSoundEffect(s16 index) {
+    switch (index) {
+    case 0:
+        func_80018804(D_8013AE88->data18, D_8013AE88->data18 + 2, 0, 64);
+        break;
+    case 1:
+        func_80018804(D_8013AE88->data18, D_8013AE88->data18 + 2, gPlayerSoundVariantsA[randomNextMain() & 1], 64);
+        break;
+    case 2:
+        func_80018804(D_8013AE88->data18, D_8013AE88->data18 + 2, gPlayerSoundVariantsB[randomNextMain() & 1], 64);
+        break;
+    case 3:
+        playPlayerPositionalSoundEffect(D_8013AE88->data18, D_8013AE88->data18 + 2, gPlayerSoundVariantsB[randomNextMain() & 1], 64);
+        break;
+    case 4:
+        func_80018804(D_8013AE88->data18, D_8013AE88->data18 + 2, 0x500, 64);
+        break;
+    case 5:
+        func_80018804(D_8013AE88->data18, D_8013AE88->data18 + 2, 0x600, 64);
+        break;
+    case 6:
+        func_80018804(D_8013AE88->data18, D_8013AE88->data18 + 2, 0x700, 64);
+        break;
+    case 7:
+        func_80018804(D_8013AE88->data18, D_8013AE88->data18 + 2, 0x800, 64);
+        break;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002E5A0);
 

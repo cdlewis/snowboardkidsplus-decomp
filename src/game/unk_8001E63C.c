@@ -232,7 +232,7 @@ void resetCurrentPlayerForCallback205B8(void) {
     D_8013B0D8->unk096 = 0;
     if (D_8013B0D8->unk965 != 0) {
         D_8013B0D8->unk965 = 0;
-        func_8002E44C(7);
+        playCurrentPlayerSoundEffect(7);
         startCurrentPlayerAnimation(0x12, 2);
     }
     setCurrentTaskCallback(func_800205B8);
@@ -790,7 +790,7 @@ void updateCurrentPlayerTaskCountdown(void) {
     func_80017268();
     if (D_8013AE88->data18 == 0) {
         if (--D_8013AE88->data1A == 0) {
-            func_8002E44C(6);
+            playCurrentPlayerSoundEffect(6);
         }
     }
 }

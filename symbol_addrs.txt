@@ -2835,3 +2835,7 @@ drawLoweringQuadStripTask = 0x800697DC; // type:func
 isPlayerNearSelectedRecord = 0x80029C30; // type:func
 
 initializeRaceResultsTask = 0x8003A96C; // type:func
+
+playCurrentPlayerSoundEffect = 0x8002E44C; // type:func
+gPlayerSoundVariantsA = 0x8013B0DC; // size:0x4
+gPlayerSoundVariantsB = 0x8013B0E0; // size:0x4

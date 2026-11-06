@@ -218,7 +218,7 @@ void resetCurrentPlayerForCallback240D0(void);
 void resetCurrentPlayerForCallback26DAC(void);
 void resetCurrentPlayerForCallback205B8(void);
 
-void func_8002E44C(s16 index);
+void playCurrentPlayerSoundEffect(s16 index);
 void func_8002E5A0(u16 index, s16 value);
 
 void startCurrentPlayerAnimation(u8 animation, u8 mode);

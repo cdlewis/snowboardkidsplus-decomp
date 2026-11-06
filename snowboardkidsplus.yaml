@@ -74,6 +74,8 @@ segments:
       - [0xC7C, rodata]
       - [0xCB0, rodata]
       - [0xE34, rodata]
+      - [0xEAC, .rodata, game/unk_8002B3F4]
+      - [0xECC, rodata]
       - [0x1024, .rodata, game/unk_8002B3F4]
       - [0x1090, rodata]
       - {start: 0x123C, type: .rodata, name: game/unk_8002B3F4, linker_section: .rodata.demonstration_overlay}
@@ -714,6 +716,8 @@ segments:
       - [0x12B7AC, .data, engine/game_task_scheduler]
       - {start: 0x12B7B0, type: .sdata, name: main_remaining, linker_section: .sdata.synchronized_frame_count, linker_section_order: .data}
       - [0x12B7B4, data, 12B7B4]
+      - {start: 0x12B8DC, type: .data, name: game/unk_8002B3F4, linker_section: .data.player_sound_variants}
+      - [0x12B8E4, data, 12B8E4]
       - {start: 0x12B914, type: .data, name: game/unk_8002B3F4, linker_section: .data.falling_paired_visual_animation}
       - [0x12B91A, data, falling_paired_visual_animation_tail]
       - {start: 0x12B91C, type: .data, name: game/unk_8002B3F4, linker_section: .data.result_icon_palettes}
