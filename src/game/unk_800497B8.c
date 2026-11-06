@@ -358,8 +358,20 @@ extern SVECTOR *D_8013AF90 __attribute__((section(".data")));
 extern MATRIX D_8012A6B0, D_8012A6D0;
 extern MATRIX *D_8013AF9C __attribute__((section(".data")));
 extern POLY_FT4 D_8012967C;
+/* Current and previous state used by player rendering effects. */
+typedef struct PlayerRenderSnapshot {
+    VECTOR position;
+    u16 unk10, unk12, unk14, unk16, unk18, unk1A;
+} PlayerRenderSnapshot;
 
 ControllerEffectState gControllerEffectStates[2] = {0};
+
+PlayerRenderSnapshot gPlayerRenderSnapshots[4]
+    __attribute__((section(".data.player_render_snapshots"))) = {0};
+PlayerRenderSnapshot gPreviousPlayerRenderSnapshots[4]
+    __attribute__((section(".data.player_render_snapshots"))) = {0};
+MATRIX gPlayerRenderIdentityMatrix
+    __attribute__((section(".data.player_render_snapshots"))) = {0};
 
 POLY_FT4 gQuadShrinkPacket __attribute__((section(".data.quad_shrink"))) = {
     0x09000000, 0x80, 0x80, 0x80, 0x2C,
@@ -1445,7 +1457,24 @@ s32 randomLinearFromValue(s32 value) {
     return (value / 65536) & 0x7FFF;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80060E80);
+void updatePlayerRenderSnapshots(void) {
+    GsCOORDINATE2 coordinate;
+    u32 i;
+    RacePlayer *player;
+    GsInitCoordinate2(0, &coordinate);
+    GsGetLs(&coordinate, &gPlayerRenderIdentityMatrix);
+    for (i = 0; i < 2; i++) {
+        player = &D_80120E90[i];
+        gPreviousPlayerRenderSnapshots[i] = gPlayerRenderSnapshots[i];
+        gPlayerRenderSnapshots[i].position.vx = player->x >> 8;
+        gPlayerRenderSnapshots[i].position.vy = player->y >> 8;
+        gPlayerRenderSnapshots[i].position.vz = player->z >> 8;
+        gPlayerRenderSnapshots[i].unk10 = player->unk0B4;
+        gPlayerRenderSnapshots[i].unk12 = player->unk0B6;
+        gPlayerRenderSnapshots[i].unk14 = player->unk0B8;
+        gPlayerRenderSnapshots[i].unk18 = player->unk0BE;
+    }
+}
 
 void startRacePlayerTasks(void) {
     s32 playerIndex;

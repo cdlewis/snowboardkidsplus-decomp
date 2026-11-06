@@ -568,6 +568,8 @@ segments:
       - [0x11494C, data, controller_input_sequences_tail]
       - {start: 0x1149A8, type: .data, name: game/unk_8002B3F4, linker_section: .data.player_camera_views}
       - [0x1149E8, data, player_camera_state_tail]
+      - {start: 0x11CF2C, type: .data, name: game/unk_800497B8, linker_section: .data.player_render_snapshots}
+      - [0x11D02C, data, player_render_snapshots_tail]
       - {start: 0x11D12C, type: .data, name: game/unk_800497B8, linker_section: .data.quad_animation}
       - {start: 0x11D190, type: .data, name: game/unk_800497B8, linker_section: .data.alternate_quad_steps}
       - [0x11D1F4, data, 11D1F4]

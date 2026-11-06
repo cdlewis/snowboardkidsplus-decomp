@@ -37,6 +37,7 @@ int GsSetRefView2L(GsRVIEW2 *view);
 void GsMapModelingData(u32 *data);
 
 void GsInitCoordinate2(GsCOORDINATE2 *super, GsCOORDINATE2 *coord);
+void GsGetLs(GsCOORDINATE2 *coord, MATRIX *matrix);
 
 #ifdef GS_PACKET_ABSOLUTE_ADDRESSING
 extern u32 GsOUT_PACKET_P __attribute__((section(".data")));
