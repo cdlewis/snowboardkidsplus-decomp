@@ -631,7 +631,42 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002C520);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002C738);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002C8BC);
+u16 addPlayerFlagsIfWithinRadius(Position3D *position, s32 radius, s16 flags, u16 playerIndex) {
+    RacePlayer *player;
+    RacePlayer *players;
+    s32 x, y, z, range;
+    if (D_80120E90[playerIndex].unk024) {
+        if (flags != 4 && D_80120E90[playerIndex].unk134 != 0) {
+            return 0;
+        }
+        players = D_80120E90;
+        player = &players[playerIndex];
+        x = player->x - position->x;
+        range = radius + player->unk0AC;
+        if (x < 0) {
+            x = -x;
+        }
+        if (x < range) {
+            y = player->unk074 - player->unk0AC - position->y;
+            if (y < 0) {
+                y = -y;
+            }
+            if (y < range) {
+                z = player->z - position->z;
+                if (z < 0) {
+                    z = -z;
+                }
+                if (z < range) {
+                    if (SquareRoot0(x * x + y * y + z * z) < range) {
+                        player->unk0E8 |= flags;
+                        return 1;
+                    }
+                }
+            }
+        }
+    }
+    return 0;
+}
 
 void addPlayerFlagsWithinRadius(const Position3D *position, s32 radius, u16 flags) {
     RacePlayer *player;
@@ -3904,7 +3939,7 @@ void checkTaskVisualOtherPlayerCollision(TaskVisualResource *resource, s16 flags
         if (i != D_8013AE88->data18) {
             player = &D_80120E90[i];
             if (player->unk946 != 0) {
-                if (func_8002C8BC(&resource->position, 0xF00, flags, i) != 0) {
+                if (addPlayerFlagsIfWithinRadius(&resource->position, 0xF00, flags, i) != 0) {
                     player->unk0F4 = D_8013AE88->data18;
                     resource->unkDC = 0;
                     break;
