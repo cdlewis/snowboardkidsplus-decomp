@@ -2347,3 +2347,5 @@ drawResultNumberAndIcon = 0x80035EDC; // type:func
 drawFirstPlayerResultNumberAndIcon = 0x800360F4; // type:func
 
 createPlayerPositionTrailTask = 0x80067620; // type:func
+
+initializeDualResourceTaskAndResetByteState = 0x8008432C; // type:func

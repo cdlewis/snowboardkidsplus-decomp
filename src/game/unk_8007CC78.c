@@ -55,11 +55,14 @@ StateValueHistory D_8013BE30 __attribute__((section(".bss.state_value_history"))
 extern u8 D_8013AFD8 __attribute__((section(".data")));
 extern u8 D_8013AFD9 __attribute__((section(".data")));
 extern u8 D_8013B47C;
+extern u8 D_8013B6B8[1];
+extern u8 D_8013B6B9[7];
 
 void func_8007D5C8(void);
 void func_80089B30(void);
 void func_80087030(void);
 void func_800857C4(void);
+void func_800843DC(void);
 void func_800801A0(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8007CC78);
@@ -317,7 +320,21 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80083C3C);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80084254);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8008432C);
+void initializeDualResourceTaskAndResetByteState(void) {
+    D_8013AE88->data18 = 1;
+    D_8013B6B8[0] = 0;
+    D_8013B6B9[0] = 0;
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    if (D_8013AE88->resource16 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource16 = allocateTaskResource();
+    setCurrentTaskCallback(func_800843DC);
+    D_8013AE88->unk10 |= 2;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_800843DC);
 
