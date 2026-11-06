@@ -300,7 +300,8 @@ extern u16 D_8013B0E6;
 extern s32 D_8013B0E8;
 extern u16 D_8013AFAA __attribute__((section(".data")));
 extern s32 D_8013AF84 __attribute__((section(".data")));
-extern u8 D_8013AFCD __attribute__((section(".data")));
+extern u8 D_8013AFE0 __attribute__((section(".data")));
+extern u8 D_8013AFE2 __attribute__((section(".data")));
 
 u16 func_8002C8BC(Position3D *position, s32 radius, s16 flags, u16 playerIndex);
 
@@ -354,7 +355,8 @@ void initializePlayerNumberDisplayTask(void);
 void slideOutPlayerNumberDisplayTask(void);
 void func_80034664(PlayerNumberResource *resource);
 void slideOutSlidingNumberDisplayTask(void);
-void func_8003543C(void);
+void initializeSlidingNumberDisplayTask(void);
+void func_8003539C(void);
 void func_800350AC(SlidingNumberResource *resource);
 void advancePlayerSpriteAnimationTask(void);
 void func_80034434(SpriteAnimationResource *resource);
@@ -1381,12 +1383,32 @@ void slideInSlidingNumberDisplayTask(void) {
     func_800350AC(resource);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003543C);
+void initializeSlidingNumberDisplayTask(void) {
+    SlidingNumberResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (SlidingNumberResource *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AFCD == 1) {
+        resource->y = -36;
+    } else {
+        resource->y = -22;
+    }
+    resource->speed = 56;
+    if (D_8013AFE2 == 0 && D_8013AFCD == 2) {
+        resource->x = 452;
+    } else if (D_8013AFE2 == 1 && D_8013AFE0 == 2 && D_8013AFCD == 2) {
+        resource->x = 460;
+    } else {
+        resource->x = 420;
+    }
+    setCurrentTaskCallback(func_8003539C);
+}
 
 void createActivePlayerSlidingNumberTask(s32 value, s16 player) {
     SlidingNumberResource *resource;
     if (D_80120E90[player].unk024 != 0) {
-        func_80014874(func_8003543C);
+        func_80014874(initializeSlidingNumberDisplayTask);
         D_8013AE8C->resource14 = allocateTaskResource();
         resource = (SlidingNumberResource *)&D_800D9504[D_8013AE8C->resource14];
         resource->value = value;
