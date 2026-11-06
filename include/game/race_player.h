@@ -1,6 +1,7 @@
 #pragma once
 
 #include "game/random.h"
+#include "game/graphics.h"
 #include "game/task.h"
 #include "psx/libgs.h"
 
@@ -43,7 +44,8 @@ struct RacePlayer {
     s16 unk060;
     s16 unk062;
     s16 unk064;
-    u8 unk066[0x12];
+    u8 unk066[0xE];
+    s32 unk074;
     s32 unk078;
     u8 unk07C[8];
     s16 unk084, unk086, unk088;
@@ -68,7 +70,9 @@ struct RacePlayer {
     s16 unk0C8;
     s16 unk0CA[6];
     s16 unk0D6[6];
-    u8 unk0E2[0x12];
+    u8 unk0E2[6];
+    u16 unk0E8;
+    u8 unk0EA[0xA];
     u16 unk0F4;
     s16 unk0F6;
     s16 unk0F8;
@@ -240,3 +244,5 @@ void updateRacePlayerFinishSlotsTask(void);
 
 struct Position3D;
 u16 func_8002C8BC(struct Position3D *position, s32 radius, s16 flags, u16 playerIndex);
+
+void addPlayerFlagsWithinRadius(const Position3D *position, s32 radius, u16 flags);

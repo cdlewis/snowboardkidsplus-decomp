@@ -24,6 +24,7 @@
 #include "game/controller_effects.h"
 #include "game/controller.h"
 #include "psx/libsnd.h"
+#include "psx/libgte.h"
 
 typedef struct SelectedTaskSpriteResource {
     u8 unk00[0x30];
@@ -624,7 +625,39 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002C738);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002C8BC);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002CA48);
+void addPlayerFlagsWithinRadius(const Position3D *position, s32 radius, u16 flags) {
+    RacePlayer *player;
+    s32 i;
+    s32 x, y, z, range;
+
+    for (i = 0; i < 4; i++) {
+        player = &D_80120E90[i];
+        if (player->unk024) {
+            x = player->x - position->x;
+            range = radius + player->unk0AC;
+            if (x < 0) {
+                x = -x;
+            }
+            if (x < range) {
+                y = player->unk074 - player->unk0AC - position->y;
+                if (y < 0) {
+                    y = -y;
+                }
+                if (y < range) {
+                    z = player->z - position->z;
+                    if (z < 0) {
+                        z = -z;
+                    }
+                    if (z < range) {
+                        if (SquareRoot0(x * x + y * y + z * z) < range) {
+                            player->unk0E8 |= flags;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
 void updateRacePlayerFinishSlotsTask(void) {
     u16 i;
