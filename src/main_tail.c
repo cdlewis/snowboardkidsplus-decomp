@@ -185,6 +185,8 @@ void func_800A5AFC(void);
 void func_800A6548(void);
 void func_8009BDB8(void);
 void func_8009F9B8(void);
+void func_8009F224(void);
+s32 func_8007D47C(void);
 
 void func_8002FA58(s16 resource);
 void func_800A39AC(void);
@@ -574,7 +576,25 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009E848);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009ECCC);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009F158);
+void initializeFlagSelectedDualResourceTask(void) {
+    GameTask *task;
+    GameTask *parent;
+    D_8013AE88->data18 = 0;
+    D_8013AE88->data1A = func_8007D47C();
+    task = D_8013AE88;
+    parent = D_8013AE98;
+    parent->data1C++;
+    if (task->resource14 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    if (D_8013AE88->resource16 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource16 = allocateTaskResource();
+    setCurrentTaskCallback(func_8009F224);
+    D_8013AE88->unk10 |= 2;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009F224);
 

@@ -137,3 +137,5 @@ void initializeModeDependentDualResourceTask(void);
 void initializePlayerVisualPairTask(void);
 void initializePlayerVisualPairTask5E80(void);
 void initializePlayerVisualPairTask6780(void);
+
+void initializeFlagSelectedDualResourceTask(void);

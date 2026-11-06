@@ -2431,3 +2431,5 @@ initializePlayerVisualPairTask6780 = 0x800472B8; // type:func
 updateScrollingBackgroundTask = 0x80071700; // type:func
 
 createAnimatedSpriteTask = 0x80077390; // type:func
+
+initializeFlagSelectedDualResourceTask = 0x8009F158; // type:func
