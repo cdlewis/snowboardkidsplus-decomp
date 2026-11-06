@@ -107,6 +107,31 @@ typedef struct TextEntryListHeader {
 } TextEntryListHeader;
 
 u32 gPlayerPaletteTransitionPixels[8] __attribute__((section(".data.player_palette_transition_pixels"))) = {0};
+ResourceSectorRange gGridResourceSecondSectorRanges[10][5] __attribute__((section(".data.grid_resource_sector_ranges"))) = {
+    {{0x4CA, 8}, {0x4DA, 8}, {0x4EA, 8}, {0x4FA, 8}, {0x50A, 8}},
+    {{0x51A, 8}, {0x529, 8}, {0x538, 8}, {0x548, 8}, {0x558, 8}},
+    {{0x567, 8}, {0x577, 8}, {0x587, 8}, {0x597, 8}, {0x5A7, 8}},
+    {{0x5B6, 8}, {0x5C5, 8}, {0x5D4, 8}, {0x5E3, 8}, {0x5F2, 8}},
+    {{0x601, 8}, {0x610, 8}, {0x61F, 8}, {0x62E, 8}, {0x63D, 8}},
+    {{0x64C, 8}, {0x65C, 8}, {0x66C, 8}, {0x67C, 8}, {0x68C, 8}},
+    {{0x69C, 8}, {0x6AC, 8}, {0x6BC, 8}, {0x6CC, 8}, {0x6DC, 8}},
+    {{0x6EC, 8}, {0x6FB, 8}, {0x70A, 8}, {0x719, 8}, {0x728, 8}},
+    {{0x737, 8}, {0x745, 8}, {0x753, 8}, {0x761, 8}, {0x76F, 8}},
+    {{0x77D, 8}, {0x78D, 8}, {0x79D, 8}, {0x7AD, 8}, {0x7BD, 8}}
+};
+
+ResourceSectorRange gGridResourceFirstSectorRanges[10][5] __attribute__((section(".data.grid_resource_sector_ranges"))) = {
+    {{0x4D2, 8}, {0x4E2, 8}, {0x4F2, 8}, {0x502, 8}, {0x512, 8}},
+    {{0x522, 7}, {0x531, 7}, {0x540, 8}, {0x550, 8}, {0x560, 7}},
+    {{0x56F, 8}, {0x57F, 8}, {0x58F, 8}, {0x59F, 8}, {0x5AF, 7}},
+    {{0x5BE, 7}, {0x5CD, 7}, {0x5DC, 7}, {0x5EB, 7}, {0x5FA, 7}},
+    {{0x609, 7}, {0x618, 7}, {0x627, 7}, {0x636, 7}, {0x645, 7}},
+    {{0x654, 8}, {0x664, 8}, {0x674, 8}, {0x684, 8}, {0x694, 8}},
+    {{0x6A4, 8}, {0x6B4, 8}, {0x6C4, 8}, {0x6D4, 8}, {0x6E4, 8}},
+    {{0x6F4, 7}, {0x703, 7}, {0x712, 7}, {0x721, 7}, {0x730, 7}},
+    {{0x73F, 6}, {0x74D, 6}, {0x75B, 6}, {0x769, 6}, {0x777, 6}},
+    {{0x785, 8}, {0x795, 8}, {0x7A5, 8}, {0x7B5, 8}, {0x7C5, 8}}
+};
 
 ResourceSectorRange gMode1SectorRanges[10] __attribute__((section(".data.indexed_sector_ranges"))) = {
     {0x236E, 1},
@@ -143,7 +168,6 @@ extern u8 D_8013B562;
 extern u8 D_8013B0F0 __attribute__((section(".data")));
 extern u8 D_8013AF3A __attribute__((section(".data")));
 
-s32 queueCdSectorCommand(s16 command, s16 sector, s16 sectorCount, void *destination, s32 flags);
 
 void func_800187B8(u8 voice);
 
@@ -364,7 +388,18 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_800960BC);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_80096238);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800964B0);
+void queueGridResourceSectorReads(s16 slot, s16 row, s16 column) {
+    if (row < 10) {
+        queueCdSectorCommand(0, gGridResourceFirstSectorRanges[row][column].sector,
+                            gGridResourceFirstSectorRanges[row][column].sectorCount,
+                            (u8 *)0x801BC800 + slot * 0x4000, 0);
+        queueCdSectorCommand(0, gGridResourceSecondSectorRanges[row][column].sector,
+                            gGridResourceSecondSectorRanges[row][column].sectorCount,
+                            (u8 *)0x801D0800 + slot * 0x4000, 0);
+    } else {
+        queueCdSectorCommand(0, 0xC89, 1, (u8 *)0x801BC800 + slot * 0x4000, 0);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_80096590);
 

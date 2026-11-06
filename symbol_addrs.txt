@@ -2349,3 +2349,7 @@ drawFirstPlayerResultNumberAndIcon = 0x800360F4; // type:func
 createPlayerPositionTrailTask = 0x80067620; // type:func
 
 initializeDualResourceTaskAndResetByteState = 0x8008432C; // type:func
+
+queueGridResourceSectorReads = 0x800964B0; // type:func
+gGridResourceSecondSectorRanges = 0x801204E4; // size:0xC8 defined:true
+gGridResourceFirstSectorRanges = 0x801205AC; // size:0xC8 defined:true

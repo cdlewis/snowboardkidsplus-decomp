@@ -13,6 +13,7 @@ extern u16 D_8013AE50;
 
 s32 isCdCommandQueueIdle(void);
 s32 queueCdSectorCommand(s16 command, s16 sector, s16 count, void *destination, s32 value);
+void queueGridResourceSectorReads(s16 slot, s16 row, s16 column);
 void queueStartupSectorReads(void);
 void queueCdCommand(s16 command, s16 value);
 void queueBackgroundTextureSectorCommands(void);

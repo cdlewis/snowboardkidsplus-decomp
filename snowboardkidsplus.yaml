@@ -557,6 +557,8 @@ segments:
       - [0xDC7E4, data, DC7E4]
       - {start: 0x110A00, type: .data, name: main_remaining, linker_section: .data.player_model_parts}
       - [0x110BEC, data, player_model_parts_tail]
+      - {start: 0x110CE4, type: .data, name: main_tail, linker_section: .data.grid_resource_sector_ranges}
+      - [0x110E74, data, grid_resource_sector_ranges_tail]
       - [0x11109C, .data, game/unk_8001E63C]
       - [0x11125C, data, 11125C]
       - {start: 0x11126C, type: .data, name: game/unk_8001E63C, linker_section: .data.player_task_phases}
