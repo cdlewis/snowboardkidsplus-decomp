@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common.h"
+#include "psx/libgs.h"
 
 /* Per-player camera position and angles; records have a 0x1C-byte stride. */
 typedef struct PlayerCamera {
@@ -13,6 +14,10 @@ typedef struct PlayerCamera {
 } PlayerCamera;
 
 extern PlayerCamera D_801241E8[];
+extern GsRVIEW2 gPlayerCameraViews[2];
+
+/* X/Z are fixed point with eight fractional bits. */
+s32 isPositionInCameraRange(s32 x, s32 z, s16 playerIndex);
 
 void initPlayerCamera(u16 index);
 void initPlayerCameraAndTarget(u16 index);

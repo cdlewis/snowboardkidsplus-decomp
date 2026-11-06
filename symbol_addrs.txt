@@ -2605,3 +2605,5 @@ initializeCollectibleTask = 0x8005DE2C; // type:func
 updateDriftingFallingSpriteEffect = 0x80033A24; // type:func
 
 updateFallingTaskObject = 0x8005E338; // type:func
+
+isPositionInCameraRange = 0x800512E8; // type:func

@@ -620,6 +620,7 @@ extern SVECTOR *D_8013B688 __attribute__((section(".sdata")));
 
 extern GsOT *D_8013B670;
 extern s32 D_8013B69C;
+extern s32 D_8013B660;
 
 extern u16 D_8013B376 __attribute__((section(".sdata")));
 
@@ -902,7 +903,18 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80050F84);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800512A4);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800512E8);
+s32 isPositionInCameraRange(s32 x, s32 z, s16 playerIndex) {
+    s32 centerX, centerZ;
+    s32 scaledX, scaledZ;
+    centerX = gPlayerCameraViews[playerIndex].vpx / 256 +
+        ((D_8013B660 / 2) * rsin(D_801241E8[playerIndex].yaw)) / 4096;
+    centerZ = gPlayerCameraViews[playerIndex].vpz / 256 +
+        ((D_8013B660 / 2) * rcos(D_801241E8[playerIndex].yaw)) / 4096;
+    scaledX = x / 256;
+    scaledZ = z / 256;
+    return SquareRoot0((centerX - scaledX) * (centerX - scaledX) +
+        (centerZ - scaledZ) * (centerZ - scaledZ)) < D_8013B660;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005143C);
 
