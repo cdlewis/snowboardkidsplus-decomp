@@ -2639,3 +2639,9 @@ drawCurrentTaskTextPanel = 0x800960BC; // type:func
 gCurrentTaskPanelText = 0x80131D64; // size:0x10 defined:true
 
 drawSelectedTaskSprite = 0x80073E04; // type:func
+
+drawStatsMenuMoneyLabels = 0x8003B2BC; // type:func
+gCompleteBonusLabel = 0x80010AE4; // size:0x14 defined:true
+gTotalMoneyLabel = 0x80010B60; // size:0x10 defined:true
+gTrickPrizeLabel = 0x80010B70; // size:0x10 defined:true
+gMakeBonusLabel = 0x80010B80; // size:0x10 defined:true

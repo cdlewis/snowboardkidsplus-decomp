@@ -77,6 +77,10 @@ segments:
       - {start: 0x123C, type: .rodata, name: game/unk_8002B3F4, linker_section: .rodata.demonstration_overlay}
       - {start: 0x1258, type: .rodata, name: game/unk_8002B3F4, linker_section: .rodata.auto_pilot_label}
       - [0x1264, rodata]
+      - {start: 0x12E4, type: .rodata, name: game/unk_8002B3F4, linker_section: .rodata.complete_bonus_label}
+      - [0x12F8, rodata]
+      - {start: 0x1360, type: .rodata, name: game/unk_8002B3F4, linker_section: .rodata.money_labels}
+      - [0x1390, rodata]
       - [0x1460, rodata]
       - [0x149C, rodata]
       - [0x14C4, .rodata, game/unk_800497B8]

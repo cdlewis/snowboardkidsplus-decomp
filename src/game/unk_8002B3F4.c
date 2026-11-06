@@ -344,6 +344,11 @@ extern const char D_80010A94[];
 
 const char gAutoPilotLabel[] __attribute__((section(".rodata.auto_pilot_label"), aligned(4))) = "AUTO PILOT";
 
+const char gCompleteBonusLabel[20] __attribute__((section(".rodata.complete_bonus_label"), aligned(4))) = "-COMPLETE BONUS-";
+const char gTotalMoneyLabel[16] __attribute__((section(".rodata.money_labels"), aligned(4))) = "  -TOTAL MONEY-";
+const char gTrickPrizeLabel[16] __attribute__((section(".rodata.money_labels"), aligned(4))) = "  -TRICK PRIZE-";
+const char gMakeBonusLabel[16] __attribute__((section(".rodata.money_labels"), aligned(4))) = "  -MAKE BONUS-";
+
 RaceTime gRaceElapsedTime = {0, 0, 0};
 
 extern int rand(void);
@@ -446,7 +451,7 @@ void func_800398F4(TaskResourceRecord *resource);
 void func_8003AAE0(TaskResourceRecord *resource);
 void func_8003AD48(TaskResourceRecord *resource);
 void func_8003B020(TaskResourceRecord *resource);
-void func_8003B2BC(TaskResourceRecord *resource);
+void drawStatsMenuMoneyLabels(StatsMenuFadeResource *resource);
 void waitForStatsScoreCountStartTask(void);
 void advanceTaskStatsCountdownAndPlaySound(void);
 void resetTaskStatsCountdown(void);
@@ -2399,7 +2404,18 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003AD48);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003B020);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003B2BC);
+void drawStatsMenuMoneyLabels(StatsMenuFadeResource *resource) {
+    u8 padding[0x10];
+    if (resource->brightness != 128) {
+        setSpriteColor((u8)resource->brightness, (u8)resource->brightness, (u8)resource->brightness);
+    } else {
+        setSpriteColor(128, 128, 128);
+    }
+    func_8006D41C(-12, -80, 20, gTrickPrizeLabel, 5, -1, &D_800EBFF0[D_8013AF78], 1);
+    func_8006D41C(-8, -40, 20, gMakeBonusLabel, 5, -1, &D_800EBFF0[D_8013AF78], 1);
+    func_8006D41C(-8, 0, 20, gCompleteBonusLabel, 5, -1, &D_800EBFF0[D_8013AF78], 1);
+    func_8006D41C(-12, 40, 20, gTotalMoneyLabel, 5, -1, &D_800EBFF0[D_8013AF78], 1);
+}
 
 void drawCurrentTaskStatsSelection(void) {
     TaskResourceRecord *resource;
@@ -2439,7 +2455,7 @@ void drawCurrentTaskStatsMenu(void) {
     resource = &D_800D9504[D_8013AE88->resource14];
     func_8003AAE0(resource);
     func_8003AD48(resource);
-    func_8003B2BC(resource);
+    drawStatsMenuMoneyLabels((StatsMenuFadeResource *)resource);
 }
 
 void updateStatsMenuPostCountInputTask(void) {
@@ -2459,7 +2475,7 @@ void updateStatsMenuPostCountInputTask(void) {
     }
     func_8003AAE0((TaskResourceRecord *)resource);
     func_8003AD48((TaskResourceRecord *)resource);
-    func_8003B2BC((TaskResourceRecord *)resource);
+    drawStatsMenuMoneyLabels((StatsMenuFadeResource *)resource);
 }
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003B690);
@@ -2477,7 +2493,7 @@ void waitForStatsScoreCountTask(void) {
     }
     func_8003AAE0((TaskResourceRecord *)resource);
     func_8003AD48((TaskResourceRecord *)resource);
-    func_8003B2BC((TaskResourceRecord *)resource);
+    drawStatsMenuMoneyLabels((StatsMenuFadeResource *)resource);
 }
 
 void waitForStatsScoreCountStartTask(void) {
@@ -2494,7 +2510,7 @@ void waitForStatsScoreCountStartTask(void) {
     }
     func_8003AAE0((TaskResourceRecord *)resource);
     func_8003AD48((TaskResourceRecord *)resource);
-    func_8003B2BC((TaskResourceRecord *)resource);
+    drawStatsMenuMoneyLabels((StatsMenuFadeResource *)resource);
 }
 
 void startTaskStatsCountdownAndPlaySound(void) {
@@ -2511,7 +2527,7 @@ void startTaskStatsCountdownAndPlaySound(void) {
     }
     func_8003AAE0((TaskResourceRecord *)resource);
     func_8003AD48((TaskResourceRecord *)resource);
-    func_8003B2BC((TaskResourceRecord *)resource);
+    drawStatsMenuMoneyLabels((StatsMenuFadeResource *)resource);
 }
 
 void advanceTaskStatsCountdownAndPlaySound(void) {
@@ -2528,7 +2544,7 @@ void advanceTaskStatsCountdownAndPlaySound(void) {
     }
     func_8003AAE0((TaskResourceRecord *)resource);
     func_8003AD48((TaskResourceRecord *)resource);
-    func_8003B2BC((TaskResourceRecord *)resource);
+    drawStatsMenuMoneyLabels((StatsMenuFadeResource *)resource);
 }
 
 void resetTaskStatsCountdown(void) {
@@ -2545,7 +2561,7 @@ void resetTaskStatsCountdown(void) {
     }
     func_8003AAE0((TaskResourceRecord *)resource);
     func_8003AD48((TaskResourceRecord *)resource);
-    func_8003B2BC((TaskResourceRecord *)resource);
+    drawStatsMenuMoneyLabels((StatsMenuFadeResource *)resource);
 }
 
 void waitTaskStatsCountdownAndPlaySound(void) {
@@ -2560,7 +2576,7 @@ void waitTaskStatsCountdownAndPlaySound(void) {
         setCurrentTaskCallback(resetTaskStatsCountdown);
     }
     func_8003AAE0((TaskResourceRecord *)resource);
-    func_8003B2BC((TaskResourceRecord *)resource);
+    drawStatsMenuMoneyLabels((StatsMenuFadeResource *)resource);
 }
 
 void fadeInStatsMenuTask(void) {
@@ -2577,7 +2593,7 @@ void fadeInStatsMenuTask(void) {
         setCurrentTaskCallback(waitTaskStatsCountdownAndPlaySound);
     }
     func_8003AAE0((TaskResourceRecord *)resource);
-    func_8003B2BC((TaskResourceRecord *)resource);
+    drawStatsMenuMoneyLabels((StatsMenuFadeResource *)resource);
 }
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003BD70);
