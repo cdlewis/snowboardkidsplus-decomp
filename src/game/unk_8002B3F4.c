@@ -489,8 +489,9 @@ void func_80047D94(void);
 void func_80046CB4(void);
 void func_80037424(TaskResourceRecord *resource);
 void func_80036BA4(TaskResourceRecord *resource);
-void func_80037354(TaskResourceRecord *resource);
 void waitPlayerResultsInputTask(void);
+void func_80037074(s16 row, s16 x, s16 y, TaskFadeResource *resource);
+void drawPlayerResultRows(TaskFadeResource *resource);
 void fadeInPlayerResultsTask(void);
 void fadeInLapTimeLabelTask(void);
 void fadeInTimeMenuTask(void);
@@ -2091,7 +2092,25 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80036BA4);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80037074);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80037354);
+void drawPlayerResultRows(TaskFadeResource *resource) {
+    if (resource->brightness != 128) {
+        setSpriteColor((u8)resource->brightness, (u8)resource->brightness, (u8)resource->brightness);
+    } else {
+        setSpriteColor(128, 128, 128);
+    }
+    if (resource->playerOrder[0] != -1) {
+        func_80037074(0, -136, -80, resource);
+    }
+    if (resource->playerOrder[1] != -1) {
+        func_80037074(1, 8, -48, resource);
+    }
+    if (resource->playerOrder[2] != -1) {
+        func_80037074(2, -136, -16, resource);
+    }
+    if (resource->playerOrder[3] != -1) {
+        func_80037074(3, 8, 16, resource);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80037424);
 
@@ -2107,7 +2126,7 @@ void drawCurrentTaskPlayerResults(void) {
     }
     func_80037424(resource);
     func_80036BA4(resource);
-    func_80037354(resource);
+    drawPlayerResultRows((TaskFadeResource *)resource);
 }
 
 void waitPlayerResultsInputTask(void) {
@@ -2125,7 +2144,7 @@ void waitPlayerResultsInputTask(void) {
     }
     func_80037424(resource);
     func_80036BA4(resource);
-    func_80037354(resource);
+    drawPlayerResultRows((TaskFadeResource *)resource);
 }
 
 void fadeInPlayerResultsTask(void) {
@@ -2142,7 +2161,7 @@ void fadeInPlayerResultsTask(void) {
     }
     func_80037424((TaskResourceRecord *)resource);
     func_80036BA4((TaskResourceRecord *)resource);
-    func_80037354((TaskResourceRecord *)resource);
+    drawPlayerResultRows(resource);
 }
 
 void initializeTaskFade(void) {
