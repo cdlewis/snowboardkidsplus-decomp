@@ -2061,3 +2061,5 @@ pollMemoryCardStatusTask = 0x80019B94; // type:func
 pollMemoryCardWriteTask = 0x80019CB8; // type:func
 
 slideOutSpriteMotionTask = 0x80034DFC; // type:func
+
+slideOutSlidingNumberDisplayTask = 0x8003527C; // type:func
