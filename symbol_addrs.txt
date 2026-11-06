@@ -2483,3 +2483,5 @@ selectedCourseIndexAbsolute = 0x8013AFCE; // allow_duplicated:true
 selectedFinishLapCountAbsolute = 0x8013AFD0; // allow_duplicated:true
 D_8013AFCE = 0x8013AFCE; // size:0x2 allow_duplicated:true
 D_8013AFD0 = 0x8013AFD0; // size:0x2 allow_duplicated:true
+
+createFlickeringDotsTask = 0x8004FA74; // type:func
