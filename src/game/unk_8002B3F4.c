@@ -45,6 +45,8 @@ MenuSpritePaletteGroups gMenuSpritePaletteGroups
     };
 
 extern s16 D_8013B0E4;
+extern u16 D_8013B0E6;
+extern s32 D_8013B0E8;
 extern u8 D_8013AFCD __attribute__((section(".data")));
 
 void func_8003E60C(u16 index);
@@ -113,7 +115,29 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002CFF0);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002D040);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002D090);
+s32 checkCurrentPlayerFlags43040OrAngleRange(void) {
+    RacePlayer *player = D_8013B0D8;
+    s32 difference;
+    s32 angle;
+    if (player->unk128 & 0x43040) {
+        return 1;
+    }
+    difference = D_8013B0E6 - player->unk110;
+    if (player->unk128 & 0x400) {
+        angle = difference;
+    } else {
+        angle = 0x800;
+        angle += difference;
+    }
+    angle = (angle + 0x400) & 0xFFF;
+    if ((D_8013B0E8 < 0x500) || (angle > 0x800)) {
+        return 1;
+    }
+    if (D_8013B0E4 < 2) {
+        D_8013B0E4 = 2;
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002D120);
 

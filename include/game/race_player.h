@@ -37,7 +37,9 @@ struct RacePlayer {
     u8 unk0C4[6];
     s16 unk0CA[6];
     s16 unk0D6[6];
-    u8 unk0E2[0x34];
+    u8 unk0E2[0x2E];
+    u16 unk110;
+    u8 unk112[4];
     s16 unk116;
     s16 unk118;
     s16 unk11A;
@@ -83,6 +85,7 @@ void clearCurrentPlayerTaskState(void);
 
 void copySelectedRecordToCurrentPlayer(void);
 
+s32 checkCurrentPlayerFlags43040OrAngleRange(void);
 s32 checkCurrentPlayerFlags345001(void);
 
 s32 checkCurrentPlayerFlags275000OrField134(void);

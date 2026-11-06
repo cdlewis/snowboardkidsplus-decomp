@@ -1812,3 +1812,5 @@ stopTextSoundVoices = 0x800A7B0C; // type:func
 gTextSoundSlots = 0x8013BE50; // size:0x20 defined:true
 
 startTaskTransitionWhenFlagAEE8Set = 0x8001CFD0; // type:func
+
+checkCurrentPlayerFlags43040OrAngleRange = 0x8002D090; // type:func
