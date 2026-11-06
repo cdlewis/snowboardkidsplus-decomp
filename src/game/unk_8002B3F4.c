@@ -345,7 +345,7 @@ void func_8003E1D0(u16 playerIndex);
 void func_8003EE70(void);
 void func_8002F5F8(void);
 void func_8003DEE0(void);
-void func_80032F84(void);
+void drawSound601SequenceSpriteTask(void);
 void func_80033404(void);
 void func_80033C2C(void);
 void updateOneShotTaskVisual(void);
@@ -987,11 +987,26 @@ void waitUnlockNotification0TransitionTask(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80032F3C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80032F84);
+void drawSound601SequenceSpriteTask(void) {
+    if (gameOptionPlayerModeAbsolute == 1) {
+        func_8006C998(-48, -12, 0x1E0, 6, -1, &D_800EC018[D_8013AF78], 1);
+    } else if (D_8013AE88->data18 == 0) {
+        if (func_8003D904(0)) {
+            func_8006C998(-40, -12, 0x1E0, 6, -1, &D_800EC018[D_8013AF78], 1);
+        }
+    } else {
+        if (func_8003D904(1)) {
+            func_8006C998(-40, -12, 0x1E0, 6, -1, &D_800EC0B8[D_8013AF78], 1);
+        }
+    }
+    if (D_8013AFE4 & 8) {
+        func_800149A8();
+    }
+}
 
 void beginSound601TaskSequence(void) {
     playSoundEffect(0, 0x601, 0x20);
-    setCurrentTaskCallback(func_80032F84);
+    setCurrentTaskCallback(drawSound601SequenceSpriteTask);
 }
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80033100);
