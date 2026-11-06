@@ -1377,7 +1377,12 @@ void addFourWordGpuPacket(GpuPacket4 *source, GsOT *ot, u16 depth) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800400C4);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80040140);
+void addTexturedSpritePacket(TexturedSpritePacket *source, GsOT *ot, u16 depth) {
+    TexturedSpritePacket *packet = (TexturedSpritePacket *)GsGetWorkBase();
+    *packet = *source;
+    AddPrim(&ot->org[depth], packet);
+    func_800BF2C8((u32)(packet + 1));
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800401DC);
 

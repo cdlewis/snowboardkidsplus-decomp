@@ -1,5 +1,6 @@
 findIdentityMappedIndexOrZero = 0x800A046C; // type:func
 addFourWordGpuPacket = 0x8004002C; // type:func
+addTexturedSpritePacket = 0x80040140; // type:func
 initializeGameOptionTask = 0x8001B778; // type:func
 slideOutPlayerNumberDisplayTask = 0x80034928; // type:func
 updateControllers = 0x80015924; // type:func
