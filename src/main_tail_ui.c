@@ -246,6 +246,8 @@ extern s16 D_8013B10C __attribute__((section(".data")));
 extern u8 D_8013B55E __attribute__((section(".data")));
 
 extern u8 D_8013B564;
+extern u8 D_8013B59F;
+
 extern s16 D_8013B560;
 extern s16 selectionMenuRecordAbsolute __attribute__((section(".data")));
 extern u8 D_8013B562;
@@ -280,6 +282,7 @@ void func_800A3D9C(void);
 void func_800A525C(void);
 void initializeSecondaryResourceTask(void);
 void func_800A6A8C(void);
+void drawSecondaryTextBackgroundTask(void);
 void func_800A6E88(void);
 
 typedef struct NumberPanelState {
@@ -915,7 +918,18 @@ void initializeSecondaryResourceTask(void) {
 
 INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A6A8C);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A6CC4);
+void drawSecondaryTextBackgroundTask(void) {
+    if (gSecondaryResourceDisplayTask != D_8013AE88) {
+        func_800149A8();
+    } else {
+        if (D_8013B59F) {
+            setSpriteColor(128, 128, 128);
+            func_8007240C(-140, 44, 280, 56, 128, 128, 128, 2, &D_800EBFF0[D_8013AF78], 8);
+        }
+        setSpriteColor(128, 128, 128);
+        func_800A7D8C(-160, -120, 320, 240, 149, 0x3AB0, &D_800EBFF0[D_8013AF78], 8);
+    }
+}
 
 void setSecondaryTextEntryTask(TextEntry *entry) {
     TextTaskResource *resource;

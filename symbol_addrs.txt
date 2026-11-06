@@ -2777,3 +2777,5 @@ drawNumberSelectionPanel = 0x800A29A4; // type:func
 
 updateControllerPlaybackUntilFade = 0x800A39AC; // type:func
 gControllerPlaybackDurations = 0x8013283C; // size:0x18
+
+drawSecondaryTextBackgroundTask = 0x800A6CC4; // type:func
