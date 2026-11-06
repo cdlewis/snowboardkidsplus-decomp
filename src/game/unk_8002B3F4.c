@@ -207,6 +207,7 @@ void waitSpriteExitMotionTask(void);
 void func_800342FC(void);
 void func_8002FCF8(void);
 void func_8002FE18(void);
+void func_800302F8(void);
 void func_80032C14(void);
 void func_80032E94(void);
 void func_80034AE8(void);
@@ -615,7 +616,20 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80030108);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003012C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80030270);
+void waitMode2TransitionTask(void) {
+    switch (D_8013AE88->data18) {
+    case 0:
+        func_80070274(2, 0, 30);
+        D_8013AE88->data18 = 1;
+        break;
+    case 1:
+        if (func_800707F0(0) == 0) {
+            D_8013AE88->data18 = 0;
+            setCurrentTaskCallback(func_800302F8);
+        }
+        break;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800302F8);
 
