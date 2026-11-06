@@ -2491,3 +2491,5 @@ createFlickeringDotsTask = 0x8004FA74; // type:func
 startPaletteTransition = 0x800164E8; // type:func
 
 updateCdVolumeFade = 0x8001330C; // type:func
+
+initializeCurrentPlayerState23 = 0x8001FDEC; // type:func

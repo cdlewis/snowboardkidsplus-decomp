@@ -93,6 +93,7 @@ void initializeMode1Task(void);
 void resetTaskControlState(void);
 void initializeTaskCoordinateResource(void);
 void initializePlayerCoordinateEffectTask(void);
+void func_80044EC0(void);
 void initializePlayerDualResourceEffectTask(void);
 void initializeDualResource4C80EffectTask(void);
 void initializeDualResource5100EffectTask(void);
