@@ -53,8 +53,6 @@ cc1_dependencies = $(1) $(if $(filter tools/cc1psx.py,$(1)),tools/gcc/gcc-2.7.2-
 unit_ccflags = -quiet -O2 -G$(call unit_cc_g,$(1)) -fgnu-linker -mcpu=3000 $(UNIT_CCFLAGS_$(1)) $(EXTRA_CC_FLAGS)
 unit_asflags = $(AS_FLAGS) $(if $(filter 1,$(UNIT_PAD_$(1))),,-no-pad-sections) -G$(call unit_g,$(1)) $(if $(filter 1,$(UNIT_REORDER_$(1))),-O2)
 unit_maspsx = --aspsx-version=$(call unit_aspsx,$(1)) --expand-div -G$(call unit_g,$(1)) $(if $(filter 1,$(UNIT_REORDER_$(1))),--gas-reorder) $(if $(filter 1,$(UNIT_INDEXED_$(1))),--gas-indexed-loads)
-unit_functions = $(if $(ONLY_FUNCTION),$(filter $(ONLY_FUNCTION),$(UNIT_FUNCTIONS_$(1))),$(UNIT_FUNCTIONS_$(1)))
-function_cc1 = $(or $(FN_CC1_$(1)/$(2)),$(call unit_cc1,$(1)))
 unit_source = $(if $(SOURCE),$(SOURCE),$(1))
 unit_output = $(BUILD_DIR)/$(patsubst %.c,%,$(1))
 
@@ -112,7 +110,7 @@ disc/SLPS_018.23:
 
 # Invalidate objects when resolved environment/command-line settings change.
 # Preserve the timestamp on repeated invocations with the same configuration.
-CONFIG_VARIABLES = PY CPP CC1 SDK_CC1 AS LD OBJCOPY MASPSX ASPSX_VERSION SDK_ASPSX_VERSION G_VALUE CPP_FLAGS AS_FLAGS COMPARISON NON_MATCHING SOURCE ONLY_FUNCTION EXTRA_CC_FLAGS $(sort $(filter UNIT_% FN_%,$(.VARIABLES)))
+CONFIG_VARIABLES = PY CPP CC1 SDK_CC1 AS LD OBJCOPY MASPSX ASPSX_VERSION SDK_ASPSX_VERSION G_VALUE CPP_FLAGS AS_FLAGS COMPARISON NON_MATCHING SOURCE ONLY_FUNCTION EXTRA_CC_FLAGS $(sort $(filter UNIT_%,$(.VARIABLES)))
 $(BUILD_DIR)/.directory:
 	@mkdir -p $(@D)
 	@touch $@
@@ -150,13 +148,6 @@ build/sdk/psyq42/$(1).a: $(addprefix build/sdk/psyq42/,$(addsuffix .o,$(filter $
 endef
 $(foreach library,$(SDK_NAMES),$(eval $(call sdk_archive_rule,$(library))))
 
-# Alternate compilations are separate targets. The merger selects existing
-# .ent/.end regions without invoking compilers or changing instructions.
-define alternate_rule
-$(call unit_output,$(1)).$(2).s: $(call unit_output,$(1)).i $(call cc1_dependencies,$(call function_cc1,$(1),$(2)))
-	$(call function_cc1,$(1),$(2)) $(call unit_ccflags,$(1)) $(FN_FLAGS_$(1)/$(2)) $$< -o $$@
-endef
-
 define c_rule
 $(call unit_output,$(1)).i: $(call unit_source,$(1)) Makefile config/compiler.mk $(BUILD_DIR)/.config
 	@mkdir -p $$(@D)
@@ -166,8 +157,8 @@ $(call unit_output,$(1)).i: $(call unit_source,$(1)) Makefile config/compiler.mk
 $(call unit_output,$(1)).base.s: $(call unit_output,$(1)).i $(call cc1_dependencies,$(call unit_cc1,$(1)))
 	$(call unit_cc1,$(1)) $(call unit_ccflags,$(1)) $$< -o $$@
 
-$(call unit_output,$(1)).s: $(call unit_output,$(1)).base.s $(foreach name,$(call unit_functions,$(1)),$(call unit_output,$(1)).$(name).s) $(if $(call unit_functions,$(1)),tools/merge_functions.py)
-	$(if $(call unit_functions,$(1)),$(PY) tools/merge_functions.py $$< $$@ $(foreach name,$(call unit_functions,$(1)),$(name)=$(call unit_output,$(1)).$(name).s),cp $$< $$@)
+$(call unit_output,$(1)).s: $(call unit_output,$(1)).base.s
+	cp $$< $$@
 
 $(call unit_output,$(1)).masp.s: $(call unit_output,$(1)).s $(MASPSX) $(wildcard tools/maspsx/maspsx/*.py)
 	$(PY) $(MASPSX) $(call unit_maspsx,$(1)) < $$< > $$@
@@ -175,9 +166,7 @@ $(call unit_output,$(1)).masp.s: $(call unit_output,$(1)).s $(MASPSX) $(wildcard
 $(call unit_output,$(1)).o: $(call unit_output,$(1)).masp.s
 	$(AS) $(call unit_asflags,$(1)) --MD $(call unit_output,$(1)).as.d -o $$@ $$<
 
-$(foreach name,$(call unit_functions,$(1)),$(eval $(call alternate_rule,$(1),$(name))))
 endef
-$(foreach unit,$(filter-out src/syslib/%,$(C_SOURCES)),$(foreach name,$(call unit_functions,$(unit)),$(if $(filter-out $(call unit_cc1,$(unit)),$(call function_cc1,$(unit),$(name))),$(error function-specific compiler selection is restricted to SDK units))))
 $(foreach unit,$(filter-out src/syslib/%,$(C_SOURCES)),$(if $(filter-out $(CC1),$(call unit_cc1,$(unit))),$(error game units must share CC1; $(unit) selects $(call unit_cc1,$(unit)))))
 $(foreach unit,$(C_SOURCES),$(eval $(call c_rule,$(unit))))
 
@@ -223,7 +212,7 @@ verify expected:
 endif
 
 print-settings:
-	@printf '%s\n' 'CC1=$(call unit_cc1,$(UNIT))' 'CPP=$(CPP)' 'AS=$(AS)' 'LD=$(LD)' 'CROSS=$(CROSS)' 'CPP_FLAGS=$(CPP_FLAGS)' 'AS_FLAGS=$(call unit_asflags,$(UNIT))' 'ORACLE_AS_FLAGS=$(AS_FLAGS) -no-pad-sections -G$(call unit_g,$(UNIT))' 'CC1_FLAGS=$(call unit_ccflags,$(UNIT))' 'G_VALUE=$(call unit_g,$(UNIT))' 'UNIT_CC_FLAGS=$(UNIT_CCFLAGS_$(UNIT))' 'FUNCTION_FLAGS=$(FN_FLAGS_$(UNIT)/$(ONLY_FUNCTION))' 'FUNCTION_CC1=$(call function_cc1,$(UNIT),$(ONLY_FUNCTION))' 'CC_G_VALUE=$(call unit_cc_g,$(UNIT))' 'ASPSX_VERSION=$(call unit_aspsx,$(UNIT))' 'REORDER=$(UNIT_REORDER_$(UNIT))' 'INDEXED=$(UNIT_INDEXED_$(UNIT))' 'PAD=$(UNIT_PAD_$(UNIT))'
+	@printf '%s\n' 'CC1=$(call unit_cc1,$(UNIT))' 'CPP=$(CPP)' 'AS=$(AS)' 'LD=$(LD)' 'CROSS=$(CROSS)' 'CPP_FLAGS=$(CPP_FLAGS)' 'AS_FLAGS=$(call unit_asflags,$(UNIT))' 'ORACLE_AS_FLAGS=$(AS_FLAGS) -no-pad-sections -G$(call unit_g,$(UNIT))' 'CC1_FLAGS=$(call unit_ccflags,$(UNIT))' 'G_VALUE=$(call unit_g,$(UNIT))' 'UNIT_CC_FLAGS=$(UNIT_CCFLAGS_$(UNIT))' 'CC_G_VALUE=$(call unit_cc_g,$(UNIT))' 'ASPSX_VERSION=$(call unit_aspsx,$(UNIT))' 'REORDER=$(UNIT_REORDER_$(UNIT))' 'INDEXED=$(UNIT_INDEXED_$(UNIT))' 'PAD=$(UNIT_PAD_$(UNIT))'
 
 clean:
 	$(PRINTF) "[$(YELLOW) clean  $(NO_COL)]  Removing generated files\n"

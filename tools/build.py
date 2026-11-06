@@ -23,7 +23,7 @@ def get_settings(unit=None, function=None, *, comparison=False):
     output = subprocess.check_output(command, cwd=ROOT, text=True)
     values = dict(line.split("=", 1) for line in output.splitlines())
     for name in ("CPP_FLAGS", "AS_FLAGS", "ORACLE_AS_FLAGS", "CC1_FLAGS",
-                 "UNIT_CC_FLAGS", "FUNCTION_FLAGS"):
+                 "UNIT_CC_FLAGS"):
         values[name] = shlex.split(values[name])
     return values
 

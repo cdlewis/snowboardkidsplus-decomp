@@ -121,14 +121,12 @@ def main():
     equal = data == target and final.symbols[args.function].address == address
     matched_words, total_words, similarity = instruction_similarity(target, data)
     settings = build.get_settings(unit, args.function, comparison=True)
-    function_flags = settings["FUNCTION_FLAGS"]
-    compiler = settings["FUNCTION_CC1"]
+    compiler = settings["CC1"]
     report = {"function": args.function, "unit": str(unit), "source": str(source),
               "compiler": str(compiler),
               "g_value": settings["G_VALUE"],
               "cc_g_value": settings["CC_G_VALUE"],
               "unit_cc_flags": settings["UNIT_CC_FLAGS"],
-              "function_flags": function_flags,
               "extra_flags": args.cc_flag, "target_sha1": hashlib.sha1(original.data).hexdigest(),
               "source_sha1": hashlib.sha1(source.read_bytes()).hexdigest(),
               "preprocessed_sha1": hashlib.sha1(obj.with_suffix(".i").read_bytes()).hexdigest(),

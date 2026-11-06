@@ -20,7 +20,7 @@ class MakeBuildTests(unittest.TestCase):
         self.root = Path(self.workspace.name)
         for directory in ("src", "include", "config", "tools"):
             (self.root / directory).mkdir()
-        for filename in ("Makefile", "config/compiler.mk", "tools/merge_functions.py"):
+        for filename in ("Makefile", "config/compiler.mk"):
             shutil.copy2(ROOT / filename, self.root / filename)
         (self.root / "src/value.h").write_text("#define VALUE 1\n")
         (self.root / "src/alpha.c").write_text(

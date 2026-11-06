@@ -109,7 +109,7 @@ def is_c_candidate(function):
         return False
     if is_store_only_stub(words):
         settings = get_settings(function.unit, function.name, comparison=True)
-        flags = settings["CC1_FLAGS"] + settings["UNIT_CC_FLAGS"] + settings["FUNCTION_FLAGS"]
+        flags = settings["CC1_FLAGS"] + settings["UNIT_CC_FLAGS"]
         # Verified C also has this shape when scheduling is disabled. Restrict
         # the heuristic to the game's normal optimizing/reordering pipeline.
         if (settings["REORDER"] == "1" and "-O2" in flags

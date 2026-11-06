@@ -194,7 +194,6 @@ $(foreach unit,$(GCC281_MNO_SPLIT_ADDRESSES_G0_REORDER_PAD_UNITS),$(eval UNIT_G_
 $(foreach unit,$(GCC281_MNO_SPLIT_ADDRESSES_G0_REORDER_PAD_UNITS),$(eval UNIT_REORDER_$(unit) := 1))
 $(foreach unit,$(GCC281_MNO_SPLIT_ADDRESSES_G0_REORDER_PAD_UNITS),$(eval UNIT_PAD_$(unit) := 1))
 
-UNIT_FUNCTIONS_src/syslib/libsnd/ut_rdel.c := SsUtSetReverbDelay
-FN_FLAGS_src/syslib/libsnd/ut_rdel.c/SsUtSetReverbDelay := -mno-split-addresses -fno-delayed-branch
-UNIT_FUNCTIONS_src/syslib/libsnd/ut_rdep.c := SsUtSetReverbDepth
-FN_FLAGS_src/syslib/libsnd/ut_rdep.c/SsUtSetReverbDepth := -mno-split-addresses -fno-delayed-branch
+# Apply these settings to each complete SDK unit in one compiler invocation.
+UNIT_CCFLAGS_src/syslib/libsnd/ut_rdel.c := -mno-split-addresses -fno-delayed-branch
+UNIT_CCFLAGS_src/syslib/libsnd/ut_rdep.c := -mno-split-addresses -fno-delayed-branch

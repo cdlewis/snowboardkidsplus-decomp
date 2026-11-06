@@ -21,8 +21,6 @@ def main() -> None:
     parser.add_argument("--force-stdin", action="store_true")
     parser.add_argument("--use-comm-section", action="store_true")
     parser.add_argument("--use-comm-for-lcomm", action="store_true")
-    parser.add_argument("--jtbl-at-fusion", action="store_true")
-    parser.add_argument("--nop-before-label", action="store_true")
     parser.add_argument("--gas-reorder", action="store_true",
                         help="delegate SDK reorder-mode scheduling to GNU as -O2")
     parser.add_argument("--gas-indexed-loads", action="store_true",
@@ -135,8 +133,6 @@ def main() -> None:
         gp_allow_la=gp_allow_la,
         use_comm_section=args.use_comm_section,
         use_comm_for_lcomm=args.use_comm_for_lcomm,
-        jtbl_at_fusion=args.jtbl_at_fusion,
-        nop_before_label=args.nop_before_label,
         gas_reorder=args.gas_reorder,
         gas_indexed_loads=args.gas_indexed_loads,
     )
