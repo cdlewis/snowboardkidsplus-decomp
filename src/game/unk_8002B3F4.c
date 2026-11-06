@@ -1243,7 +1243,21 @@ void drawCurrentTaskTimeMenu(void) {
     drawLapTimeLabel((TaskMenuFadeResource *)resource);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80037D90);
+void drawTaskTimeMenuAndSetFlag10OnInput(void) {
+    TaskResourceRecord *resource;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = &D_800D9504[D_8013AE88->resource14];
+    if (D_8013AEE8[0] & 0xB0) {
+        D_8013AFE4 |= 0x10;
+        setCurrentTaskCallback(drawCurrentTaskTimeMenu);
+    }
+    drawMenuTimeWithBrightness((MenuTimeResource *)resource);
+    func_800379B8(resource);
+    drawLapTimeLabel((TaskMenuFadeResource *)resource);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80037E34);
 
