@@ -6,6 +6,15 @@
 #include "game/task.h"
 #include "game/controller_effects.h"
 
+typedef struct ControllerInputRecord {
+    u8 repeatCount;
+    u8 horizontal;
+    u8 vertical;
+    u8 unk_03;
+    u16 buttons;
+    u16 pressedButtons;
+} ControllerInputRecord;
+
 typedef struct CdRequest {
     s32 unk_00;
     void *destination;
@@ -30,6 +39,9 @@ typedef struct ControllerReceiveBuffer {
 } ControllerReceiveBuffer;
 
 extern ControllerReceiveBuffer D_800E9558[2];
+extern ControllerInputRecord *D_8013AED4[];
+extern u16 D_8013AEDC[];
+extern u8 D_8013AEE0[];
 
 
 u8 gCdVolumeFadeActive __attribute__((section(".sdata.cd_volume_fade"))) = 0;
@@ -343,4 +355,14 @@ INCLUDE_ASM("asm/nonmatchings/main", func_80015A30);
 
 INCLUDE_ASM("asm/nonmatchings/main", func_80015C94);
 
-INCLUDE_ASM("asm/nonmatchings/main", func_80015CF8);
+void playbackControllerInput(u16 controller) {
+    u8 *counter;
+    D_8013AEEC[controller] = D_8013AED4[controller][D_8013AEDC[controller]].buttons;
+    D_8013AEE8[controller] = D_8013AED4[controller][D_8013AEDC[controller]].pressedButtons;
+    D_8013AEF8[controller] = (s8)D_8013AED4[controller][D_8013AEDC[controller]].horizontal;
+    D_8013AEFC[controller] = (s8)D_8013AED4[controller][D_8013AEDC[controller]].vertical;
+    counter = &D_8013AEE0[controller];
+    *counter = *counter ? *counter - 1 :
+        (D_8013AEDC[controller]++,
+         D_8013AED4[controller][D_8013AEDC[controller]].repeatCount);
+}

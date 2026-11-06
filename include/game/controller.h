@@ -33,3 +33,6 @@ void func_8001553C(u16 controller);
 void func_80014D60(u16 controller);
 void func_800157DC(u16 controller);
 void updateControllers(void);
+
+/* Apply the current recorded input and advance its repeat counter. */
+void playbackControllerInput(u16 controller);

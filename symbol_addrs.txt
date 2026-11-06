@@ -2097,3 +2097,5 @@ drawCurrentTaskStatsSelection = 0x8003B434; // type:func
 
 fadeInCurrentTaskPanel = 0x8003C74C; // type:func
 updatePrimaryValueTransition = 0x80069F64; // type:func
+
+playbackControllerInput = 0x80015CF8; // type:func
