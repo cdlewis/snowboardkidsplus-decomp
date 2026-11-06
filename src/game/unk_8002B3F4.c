@@ -237,6 +237,7 @@ extern u8 D_8013B11A;
 /* Assembly and C consumers address this palette subtable directly. */
 extern u8 gMappedIconPalettes[9];
 
+extern s16 D_8013B10C;
 extern s16 D_8013B0E4;
 extern u16 D_8013B0E6;
 extern s32 D_8013B0E8;
@@ -272,7 +273,10 @@ void func_8002FCF8(void);
 void func_8002FE18(void);
 void func_800302F8(void);
 void func_80032C14(void);
-void func_80032E94(void);
+void waitUnlockNotification0TransitionTask(void);
+void func_80032F3C(void);
+void func_8002F1C8(void);
+void func_8002FA58(s16 resource);
 void initializePlayerNumberDisplayTask(void);
 void slideOutPlayerNumberDisplayTask(void);
 void func_80034664(PlayerNumberResource *resource);
@@ -775,10 +779,22 @@ void startUnlockNotification0Task(void) {
     task->data18 = 1;
     parent->data1C++;
     func_800A7CE8(0);
-    setCurrentTaskCallback(func_80032E94);
+    setCurrentTaskCallback(waitUnlockNotification0TransitionTask);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80032E94);
+void waitUnlockNotification0TransitionTask(void) {
+    if (D_8013AFE4 & 0x200) {
+        D_8013AE98->data18 = 5;
+        func_80070274(11, 0, 30);
+        func_800719A8(1);
+        D_8013B10C = -1;
+        func_8002FCF8();
+        func_8002F1C8();
+        func_8002FA58((s16)D_8013AE98->data18);
+        setCurrentTaskCallback(func_80032F3C);
+        D_8013AE88->unk10 |= 2;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80032F3C);
 

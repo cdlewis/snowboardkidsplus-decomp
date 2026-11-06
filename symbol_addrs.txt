@@ -2239,3 +2239,5 @@ gAnimatedSprite16Template = 0x8012F17C; // size:0x10
 gAnimatedSprite16DrawPage = 0x8013B3B4; // size:0x8
 
 initializeCountedSelectionBoundsTask = 0x80091FAC; // type:func
+
+waitUnlockNotification0TransitionTask = 0x80032E94; // type:func
