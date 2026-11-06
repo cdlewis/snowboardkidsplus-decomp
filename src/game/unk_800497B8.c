@@ -11,6 +11,7 @@
 #define TASK_ABSOLUTE_ADDRESSING
 #include "game/task.h"
 #include "game/race_player.h"
+#include "game/race_camera.h"
 #include "game/selected_records.h"
 #define SELECTED_RECORD_GP_ADDRESSING
 #include "game/selected_record.h"
@@ -221,6 +222,9 @@ typedef struct TimedSpriteSequenceResource {
     u8 pad0C[0xF4];
 } TimedSpriteSequenceResource;
 
+extern SVECTOR *D_8013AF90 __attribute__((section(".data")));
+extern MATRIX D_8012A6B0, D_8012A6D0;
+
 ControllerEffectState gControllerEffectStates[2] = {0};
 
 POLY_FT4 gQuadShrinkPacket __attribute__((section(".data.quad_shrink"))) = {
@@ -360,6 +364,8 @@ void func_8006FE68(s16 x, s16 y, s16 w, s16 h, s16 borderW, s16 borderH,
 void func_8006A07C(void);
 void func_8006FE68(s16 x, s16 y, s16 w, s16 h, s16 borderW, s16 borderH,
                    s16 style, s16 palette, s16 blend, GsOT *ot, u16 depth);
+
+u16 func_80059254(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800497B8);
 
@@ -650,7 +656,18 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005A360);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005A4D0);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005A598);
+void updateCameraRotationMatrices(u16 playerIndex) {
+    PlayerCamera *cameras = D_801241E8;
+    D_8013AF90->vx = 0;
+    D_8013AF90->vy = cameras[playerIndex].yaw;
+    D_8013AF90->vz = 0;
+    RotMatrix(D_8013AF90, &D_8012A6B0);
+    D_8013AF90->vx = cameras[func_80059254()].pitch;
+    D_8013AF90->vy = cameras[func_80059254()].yaw;
+    D_8013AF90->vz = 0;
+    RotMatrixYXZ(D_8013AF90, &D_8012A6D0);
+}
+
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005A660);
 

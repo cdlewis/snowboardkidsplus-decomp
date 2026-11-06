@@ -16,3 +16,5 @@ extern PlayerCamera D_801241E8[];
 void updatePlayerCameraAngles(u16 playerIndex);
 
 void updateCurrentPlayerCameraTarget(void);
+
+void updateCameraRotationMatrices(u16 playerIndex);
