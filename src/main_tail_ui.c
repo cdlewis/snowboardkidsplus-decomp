@@ -80,6 +80,9 @@ extern char D_8001232C[];
 void func_800187B8(u8 voice);
 int printf(const char *format, ...);
 
+void func_80040D5C(void);
+void func_800A2510(void);
+void func_800A2324(void);
 void func_800A2D68(void);
 void func_800A3750(void);
 void func_800A5AFC(void);
@@ -125,7 +128,42 @@ void prepareUnlockSelectionResume(void);
 extern u8 D_8013AF3A __attribute__((section(".data")));
 INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A1F50);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A2210);
+void advanceTaskAtModeCoursePosition(void) {
+    s16 reached = 0;
+
+    switch (D_8013AFD8) {
+    case 1:
+        if (D_80120E90[0].unk92E == 80) reached = 1;
+        break;
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+        if (D_80120E90[0].unk92E == 156) reached = 1;
+        break;
+    case 6:
+        if (D_80120E90[0].unk92E == 180) reached = 1;
+        break;
+    case 7:
+        if (D_80120E90[0].unk92E == 22) reached = 1;
+        break;
+    case 8:
+        if (D_80120E90[0].unk92E == 29) reached = 1;
+        break;
+    case 9:
+        if (D_80120E90[0].unk92E == 54) reached = 1;
+        break;
+    }
+    func_80040D5C();
+    if (reached) {
+        stopPlayerSound(0);
+        stopPlayerSound(1);
+        startCdVolumeFade(103, 20, 0, 1);
+        taskTransitionFlagGp = 0;
+        func_80014874(func_800A2510);
+        setCurrentTaskCallback(func_800A2324);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A2324);
 

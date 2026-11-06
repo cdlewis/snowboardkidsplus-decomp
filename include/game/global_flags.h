@@ -14,6 +14,9 @@ typedef struct GlobalFlagStatePrefix {
 } GlobalFlagStatePrefix;
 
 extern u8 D_8013AFD8 __attribute__((section(".data")));
+/* GP-relative view of the shared task transition flag at D_8013B55E. */
+extern u8 taskTransitionFlagGp;
+
 extern u8 D_8013AFD9 __attribute__((section(".data")));
 
 extern GlobalFlagStatePrefix D_8013080C;

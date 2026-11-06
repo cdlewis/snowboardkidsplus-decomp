@@ -2616,3 +2616,7 @@ drawRaceTime = 0x80037850; // type:func
 updateAnimatedSpriteTask = 0x8007747C; // type:func
 
 initializePickupVisualTask = 0x8005AF0C; // type:func
+
+advanceTaskAtModeCoursePosition = 0x800A2210; // type:func
+taskTransitionFlagGp = 0x8013B55E; // size:0x1 allow_duplicated:true
+D_8013B55E = 0x8013B55E; // size:0x1 allow_duplicated:true

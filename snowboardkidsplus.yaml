@@ -92,6 +92,8 @@ segments:
       - [0x288C, rodata]
       - [0x28D0, rodata]
       - [0x2964, rodata]
+      - [0x2A0C, .rodata, main_tail_ui]
+      - [0x2A30, rodata]
       - [0x2A58, rodata]
       - [0x2B54, rodata]
       - [0x2B80, lib, libspu, spu, .rdata]
