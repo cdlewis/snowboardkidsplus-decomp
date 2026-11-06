@@ -2121,3 +2121,6 @@ advanceCurrentTaskPanelTimer = 0x8003C69C; // type:func
 setControllerAxesFromButtons = 0x80014FCC; // type:func
 
 updateTaskMenuFadeIn = 0x800392BC;
+
+queueCdCommand = 0x80013DD0; // type:func
+gCdCommands = 0x800D7B84; // size:0x20

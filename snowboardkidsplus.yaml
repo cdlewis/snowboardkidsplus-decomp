@@ -535,7 +535,8 @@ segments:
       - [0xC7898, data, C7898]
       - [0xC78E8, data, C78E8] # estimated
       - {start: 0xC7C84, type: .data, name: main, linker_section: .data.cd_requests}
-      - [0xC8384, data]
+      - {start: 0xC8384, type: .data, name: main, linker_section: .data.cd_commands}
+      - [0xC83A4, data]
       - {start: 0xD9D04, type: .data, name: main, linker_section: .data.task_resource_bitmap}
       - [0xD9D24, data, D9D24]
       - [0xDAD9C, .data, engine/random]

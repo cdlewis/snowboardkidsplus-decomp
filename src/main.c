@@ -6,6 +6,11 @@
 #include "game/task.h"
 #include "game/controller_effects.h"
 
+typedef struct CdCommand {
+    s16 command;
+    s16 value;
+} CdCommand;
+
 typedef struct ControllerInputRecord {
     u8 repeatCount;
     u8 horizontal;
@@ -27,6 +32,8 @@ typedef struct CdRequest {
 } CdRequest;
 
 CdRequest gCdRequests[64] __attribute__((section(".data.cd_requests"))) = {0};
+
+CdCommand gCdCommands[8] __attribute__((section(".data.cd_commands"))) = {0};
 
 u16 gCdRequestPhase = 0;
 u16 gCdRequestWriteIndex = 0;
@@ -175,7 +182,27 @@ s32 isCdRequestQueueReady(void) {
 
 INCLUDE_ASM("asm/nonmatchings/main", func_800138AC);
 
-INCLUDE_ASM("asm/nonmatchings/main", func_80013DD0);
+void queueCdCommand(s16 command, s16 value) {
+    s32 index = D_8013AE4E & 7;
+    D_8013AE4E = index;
+    if (command == -1) {
+        if (D_8013AE78 != 0 && D_8013AE4C == -1) return;
+        gCdVolumeFadeActive = 0;
+        gCdRequestReadIndex = 0;
+        gCdRequestWriteIndex = 0;
+        gCdRequestPhase = 0;
+        D_8013AE50 = 0;
+        D_8013AE4E = 0;
+        D_8013AE4C = -1;
+        D_8013AE48 = 0;
+        D_8013AE78 = 1;
+    } else {
+        SsSetSerialVol(0, 103, 103);
+        gCdCommands[index].command = command;
+        gCdCommands[index].value = value;
+        D_8013AE4E++;
+    }
+}
 
 void resetCdCommandState(void) {
     D_8013AE78 = 0;
@@ -199,7 +226,7 @@ void resetPendingCdRequests(void) {
             D_8013AE50 = 0;
             D_8013AE4E = 0;
         }
-        func_80013DD0(-1, 0);
+        queueCdCommand(-1, 0);
     }
 }
 

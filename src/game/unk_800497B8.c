@@ -1,4 +1,5 @@
 #include "common.h"
+#include "game/cd_queue.h"
 #define CONTROLLER_EFFECTS_ABSOLUTE_ADDRESSING
 #include "game/controller_effects.h"
 #define GS_PACKET_ABSOLUTE_ADDRESSING
@@ -348,7 +349,6 @@ void func_800659F0(void);
 void func_800692E8(void);
 void func_8006A7B4(void);
 void func_8006B1F4(void);
-void func_80013DD0(s16 request, s16 mode);
 void func_8006AB8C(void);
 void updatePrimaryValueTransition(void);
 void func_80069C04(void);
@@ -1373,7 +1373,7 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006AB8C);
 
 void initializeTimedSpritePresentation(void) {
     func_800719A8(0);
-    func_80013DD0(6, 1);
+    queueCdCommand(6, 1);
     D_8013B35C = 0;
     D_8013B360 = 0;
     D_8013B364 = 0;
