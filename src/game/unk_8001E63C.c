@@ -58,6 +58,7 @@ void func_80026754(void);
 void func_80026AA8(void);
 void func_80026BAC(void);
 void func_80027624(void);
+s16 func_80028234(void);
 
 TaskCallback gCurrentPlayerTaskPhaseCallbacks[8]
     __attribute__((section(".data.player_task_phases"))) = {
@@ -391,7 +392,7 @@ void resetCurrentPlayerForCallback25508(void) {
     func_8002E5A0(D_8013AE88->data18, 3);
     func_80014930(&D_800D7C84, func_80045B4C);
     D_8013AE8C->data18 = D_8013AE88->data18;
-    setCurrentTaskCallback(func_80025508);
+    setCurrentTaskCallback(updateCurrentPlayerVerticalMotionUntilLanding);
 }
 
 void resetCurrentPlayerForCallback255C4(void) {
@@ -483,7 +484,26 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80025014);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_800252CC);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80025508);
+void updateCurrentPlayerVerticalMotionUntilLanding(void) {
+    RacePlayer *player;
+    func_8002AE6C();
+    player = D_8013B0D8;
+    player->unk062 += 0x1C0;
+    player->y += player->unk062;
+    player->position8E4[0] = player->x >> 8;
+    player->position8E4[1] = player->y >> 8;
+    player->position8E4[2] = player->z >> 8;
+    if (player->unk062 > 0) {
+        if (func_80028234() != 0) {
+            D_8013B0D8->unk12C = 12;
+            currentPlayerStateCallbacks[12]();
+            return;
+        }
+    } else {
+        player->unk946 = 0;
+    }
+    func_80017268();
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_800255C4);
 
