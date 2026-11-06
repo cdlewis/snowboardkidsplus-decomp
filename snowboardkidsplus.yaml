@@ -584,6 +584,10 @@ segments:
       - {start: 0x113E80, type: .data, name: game/unk_8001E63C, linker_section: .data.player_variant_attributes}
       - {start: 0x113F90, type: .data, name: game/unk_8001E63C, linker_section: .data.player_character_attributes}
       - [0x11401C, data, player_attributes_tail]
+      - {start: 0x114434, type: .data, name: game/unk_8002B3F4, linker_section: .data.player_mode_messages}
+      - [0x11447C, data, player_mode_messages_tail]
+      - {start: 0x114488, type: .data, name: game/unk_8002B3F4, linker_section: .data.player_mode_message_texts}
+      - [0x114490, data, player_mode_message_texts_tail]
       - {start: 0x1148B0, type: .data, name: game/unk_8002B3F4, linker_section: .data.controller_input_sequences}
       - {start: 0x11494C, type: .data, name: game/unk_8002B3F4, linker_section: .data.result_label_tables}
       - [0x114964, data, controller_input_sequences_tail]

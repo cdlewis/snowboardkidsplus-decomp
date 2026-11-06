@@ -376,6 +376,15 @@ u8 gResultLabelXOffsets[12]
     };
 u8 gResultIconPalettes[4]
     __attribute__((section(".data.result_icon_palettes"))) = {2, 2, 3, 3};
+const u16 gPlayerModeMessageText[] __attribute__((section(".data.player_mode_messages"))) = {
+    0xC00F, 0x0064, 0x0065, 0x006A, 0x002C, 0x0048, 0x002C, 0x007F, 0x00BF, 0x0053, 0x003D, 0x003F, 0x004A, 0x009E, 0x00B1, 0x009F, 0x0033, 0x0000
+};
+const u16 gPlayerModeAlternateMessageText[] __attribute__((section(".data.player_mode_messages"))) = {
+    0xC00F, 0x0049, 0x0040, 0x0069, 0x004A, 0x0052, 0x0158, 0x00BF, 0x0096, 0x00B9, 0x00C0, 0x00CE, 0x009A, 0x00CB, 0x009D, 0x0094, 0x0033, 0x0000
+};
+const u16 *gPlayerModeMessageTexts[] __attribute__((section(".data.player_mode_message_texts"))) = {
+    gPlayerModeMessageText, gPlayerModeAlternateMessageText
+};
 
 extern u8 D_8013B11A;
 extern u8 D_8013B18D __attribute__((section(".data")));
@@ -1173,7 +1182,17 @@ void createRepeatedSoundTask(s32 sound, s32 delay, s32 interval, s32 count) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80032C14);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80032D48);
+void drawPlayerModeMessagePanelTask(void) {
+    if (D_8013AE88->data18 == 99) {
+        func_800149A8();
+    }
+    setSpriteColor(128, 128, 128);
+    setTexturedQuadColor(128, 128, 128);
+    func_8006EF30(-112, -24, 14, gPlayerModeMessageTexts[0], 8, -1,
+                  &D_800EBFF0[D_8013AF78], 3);
+    drawDefaultTexturedPanel(-120, -32, 240, 64, 5, 0,
+                            &D_800EBFF0[D_8013AF78], 3);
+}
 
 void startUnlockNotification0Task(void) {
     GameTask *task = D_8013AE88;
