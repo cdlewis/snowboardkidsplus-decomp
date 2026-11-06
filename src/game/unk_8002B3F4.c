@@ -37,6 +37,12 @@ typedef struct FallingSpriteEffect {
     s16 palette;
 } FallingSpriteEffect;
 
+typedef struct TimeRecordHeaderResource {
+    u8 unk00[6];
+    s16 brightness;
+    u8 unk08[0xF8];
+} TimeRecordHeaderResource;
+
 typedef struct TimeRecordDetailCountdownResource {
     u8 unk00[8];
     s16 timer;
@@ -305,7 +311,7 @@ void func_8003C5D8(void);
 void advanceCurrentTaskPanelTimer(void);
 void func_8003A3D8(void);
 void func_8003A760(void);
-void func_80039484(TaskResourceRecord *resource);
+void drawTimeRecordHeader(TimeRecordHeaderResource *resource);
 void func_80039564(TaskResourceRecord *resource);
 void func_80039B34(TaskResourceRecord *resource);
 void func_800398F4(TaskResourceRecord *resource);
@@ -1501,7 +1507,18 @@ void updateTaskMenuFadeIn(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80039360);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80039484);
+void drawTimeRecordHeader(TimeRecordHeaderResource *resource) {
+    u8 padding[0x20];
+    if (resource->brightness != 128) {
+        setSpriteColor((u8)resource->brightness, (u8)resource->brightness, (u8)resource->brightness);
+    } else {
+        setSpriteColor(128, 128, 128);
+    }
+    func_8006D41C(-112, -64, 20, D_80010A94, 5, -1,
+                 &D_800EBFF0[D_8013AF78], 1);
+    func_80037850(&gRaceElapsedTime, -104, -55, 1,
+                 &D_800EBFF0[D_8013AF78], 1);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80039564);
 
@@ -1519,7 +1536,7 @@ void drawCurrentTaskTimeRecords(void) {
     if (!(D_8013AFE4 & 0x10)) {
         func_800149A8();
     }
-    func_80039484(resource);
+    drawTimeRecordHeader((TimeRecordHeaderResource *)resource);
     func_800398F4(resource);
 }
 
@@ -1534,7 +1551,7 @@ void drawTaskTimeRecordsAndSetFlag10OnInput(void) {
         D_8013AFE4 |= 0x10;
         setCurrentTaskCallback(drawCurrentTaskTimeRecords);
     }
-    func_80039484(resource);
+    drawTimeRecordHeader((TimeRecordHeaderResource *)resource);
     func_800398F4(resource);
 }
 
@@ -1548,7 +1565,7 @@ void drawCurrentTaskTimeRecordDetails(void) {
     if (!(D_8013AFE4 & 0x10)) {
         func_800149A8();
     }
-    func_80039484(resource);
+    drawTimeRecordHeader((TimeRecordHeaderResource *)resource);
     func_80039564(resource);
     func_80039B34(resource);
 }
@@ -1570,7 +1587,7 @@ void updateTaskTimeRecordDetailCountdown(void) {
         resource->timer = 10;
         setCurrentTaskCallback(func_8003A3D8);
     }
-    func_80039484((TaskResourceRecord *)resource);
+    drawTimeRecordHeader((TimeRecordHeaderResource *)resource);
     func_80039564((TaskResourceRecord *)resource);
     func_80039B34((TaskResourceRecord *)resource);
 }
@@ -1594,7 +1611,7 @@ void waitTaskTimeRecordCountdownAndPlaySound(void) {
         func_800181B0(0, 0x700, 0x20);
         setCurrentTaskCallback(func_8003A760);
     }
-    func_80039484((TaskResourceRecord *)resource);
+    drawTimeRecordHeader((TimeRecordHeaderResource *)resource);
     func_80039B34((TaskResourceRecord *)resource);
 }
 
