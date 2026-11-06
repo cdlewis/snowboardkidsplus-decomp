@@ -32,6 +32,15 @@ typedef struct TimedSequence {
     s32 nextFrame;
 } TimedSequence;
 
+typedef struct SpriteZoomResource {
+    s32 scale;
+    u8 unk04[0x10];
+    s32 step;
+    u8 unk18[0xE8];
+} SpriteZoomResource;
+
+typedef s16 SpriteMotionResource[128];
+
 /* Storage remains in the shared data object. */
 typedef struct TaskValueState {
     GameTask *task;
@@ -64,6 +73,7 @@ void func_80076034(void);
 void func_8007724C(void);
 void func_80077770(void);
 void func_8007BE9C(void);
+void func_8007B10C(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80070274);
 
@@ -436,7 +446,25 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_8007AA58);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_8007AC0C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_8007B034);
+GameTask *createShrinkingSpriteTask(s16 motionEnabled, u16 spriteIndex) {
+    SpriteZoomResource *resource;
+    TaskResourceRecord *resources;
+    func_80014874(func_8007B10C);
+    D_8013AE8C->data18 = 1;
+    D_8013AE8C->data1A = 1;
+    D_8013AE8C->data1C = spriteIndex;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resources = D_800D9504;
+    D_8013AE8C->resource14 = allocateTaskResource();
+    resource = (SpriteZoomResource *)&resources[D_8013AE8C->resource14];
+    resource->scale = 0x8000;
+    resource->step = 0x400;
+    D_8013AE8C->resource16 = allocateTaskResource();
+    (*(SpriteMotionResource *)&resources[D_8013AE8C->resource16])[0] = motionEnabled;
+    return D_8013AE8C;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_8007B10C);
 
