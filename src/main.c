@@ -138,7 +138,31 @@ void startCdVolumeFade(s16 startVolume, s16 step, s16 targetVolume, u8 interval)
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/main", func_8001330C);
+void updateCdVolumeFade(void) {
+    if (gCdVolumeFadeActive) {
+        if (--gCdVolumeFadeTimer <= 0) {
+            gCdVolumeFadeTimer = gCdVolumeFadeInterval;
+            if (gCdVolumeFadeTarget == gCdVolumeFadeCurrent) {
+                gCdVolumeFadeActive = 0;
+            }
+            if (gCdVolumeFadeTarget < gCdVolumeFadeCurrent) {
+                gCdVolumeFadeCurrent -= gCdVolumeFadeStep;
+                if (gCdVolumeFadeCurrent < gCdVolumeFadeTarget) {
+                    gCdVolumeFadeActive = 0;
+                    if (gCdVolumeFadeTarget == 0) {
+                        resetPendingCdRequests();
+                    }
+                }
+            } else {
+                gCdVolumeFadeCurrent += gCdVolumeFadeStep;
+                if (gCdVolumeFadeCurrent > gCdVolumeFadeTarget) {
+                    gCdVolumeFadeActive = 0;
+                }
+            }
+            SsSetSerialVol(0, gCdVolumeFadeCurrent, gCdVolumeFadeCurrent);
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main", func_800133EC);
 
