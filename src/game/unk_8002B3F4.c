@@ -49,6 +49,15 @@ typedef struct ExpandingCoordinateEffectResource {
     s16 pitch, unkCA, yaw, unkCE, selectedIndex;
     u8 unkD2[0x2E];
 } ExpandingCoordinateEffectResource;
+typedef struct PlayerModeSelectionResource {
+    u16 unk00;
+    u16 selection;
+    u16 initialSelection;
+    u16 unk06;
+    u16 unk08;
+    u8 unk0A[0xF6];
+} PlayerModeSelectionResource;
+
 typedef struct OrbitingPlayerVisualResource {
     GsCOORDINATE2 coordinate;
     u8 unk50[0x20];
@@ -385,6 +394,7 @@ extern u8 D_8013AFE2 __attribute__((section(".data")));
 
 
 void func_80048340(void);
+void func_80031C98(void);
 void func_80048AA4(void);
 void func_80046404(TaskVisualResource *resource, VECTOR *vectors, s32 value, s32 scale);
 void func_80046EF8(void);
@@ -1083,7 +1093,32 @@ void drawSelectedTaskSideMarkerSprite(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800318C4);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80031B90);
+void initializePlayerModeSelectionTask(void) {
+    PlayerModeSelectionResource *resource;
+
+    D_8013AE88->data18 = 1;
+    D_8013AE88->data1A = 0;
+    D_8013AE98->data1C++;
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    resource = (PlayerModeSelectionResource *)&D_800D9504[D_8013AE88->resource14];
+    resource->unk00 = 0;
+    if (gameOptionPlayerModeAbsolute == 2) {
+        resource->selection = gameOptionPlayerModeAbsolute - 1;
+    } else {
+        resource->selection = 0;
+    }
+    resource->initialSelection = resource->selection;
+    resource->unk06 = 0;
+    resource->unk08 = 0;
+    if (D_8013AE88->resource16 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource16 = allocateTaskResource();
+    setCurrentTaskCallback(func_80031C98);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80031C98);
 

@@ -181,3 +181,4 @@ void initializeExpandingCoordinateEffectTask(void);
 void createPlayerPairedQuadEffectTask(s32 playerIndex, s32 variant);
 
 void createPaletteRotationTask(s32 x, s32 y, s32 first, s32 last, s32 steps, s32 interval, s32 index);
+void initializePlayerModeSelectionTask(void);
