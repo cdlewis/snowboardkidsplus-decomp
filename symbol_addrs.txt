@@ -2197,6 +2197,7 @@ advanceCurrentPlayerTaskOnAnimationFlag = 0x80025A38; // type:func
 
 setSaveRecordMaskTier = 0x8008BF20; // type:func
 
+initializeModeSectorReadResourcesTask = 0x800A0D54; // type:func
 queueTaskModeSectorRead = 0x800A0E28; // type:func
 
 slideInSlidingDisplayTask = 0x800342FC; // type:func

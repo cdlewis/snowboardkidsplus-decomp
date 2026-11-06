@@ -207,6 +207,7 @@ void initializeMode1RacePlayers(void);
 void prepareRaceResourcesIfSelectionChanged(void);
 void SetFogNearFar(s32 near, s32 far, s32 h);
 void func_800A0EE8(void);
+void queueTaskModeSectorRead(void);
 void queueModeIndexedSectorRead(s16 mode, s16 index);
 void func_800A3750(void);
 void func_800A5AFC(void);
@@ -920,7 +921,27 @@ void preparePlayerResourcesTask(void) {
     D_8013AE88->unk10 |= 2;
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A0D54);
+void initializeModeSectorReadResourcesTask(void) {
+    ModeSectorReadState *state;
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        for (;;) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    state = (ModeSectorReadState *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 != 0xFFFF) {
+        for (;;) {}
+    }
+    D_8013AE88->resource16 = allocateTaskResource();
+    D_8013B55E = 0;
+    if (D_8013AFD8 != 0) {
+        state->mode = 1;
+    } else {
+        state->mode = 2;
+    }
+    stopPlayerSound(0);
+    stopPlayerSound(1);
+    setCurrentTaskCallback(queueTaskModeSectorRead);
+}
 
 void queueTaskModeSectorRead(void) {
     ModeSectorReadState *state;
