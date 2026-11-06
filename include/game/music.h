@@ -19,6 +19,7 @@ extern u8 gMusicSequenceActive MUSIC_DATA;
 /* Signed volume with eight fractional bits, shared with the fade updater. */
 extern s16 D_8013AF30 MUSIC_DATA;
 #undef MUSIC_DATA
+extern s8 gSoundBankLoaded[12];
 extern s8 gSoundSystemActive;
 extern u8 gMusicFadeMode;
 extern s16 gMusicFadeStep;
@@ -29,6 +30,7 @@ void updateMusicSequenceFade(void);
 void func_80017E7C(s16 repeatCount);
 void setMusicSequenceEnabled(s16 enabled);
 void stopMusicSequence(void);
+void loadSoundBank(s16 bankId, u8 *header, u8 *body);
 void openMusicSequence(s16 bankId, u32 *sequence);
 void closeMusicSequence(void);
 void pauseMusicSequence(void);

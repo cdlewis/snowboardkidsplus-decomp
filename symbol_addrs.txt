@@ -2329,3 +2329,6 @@ fadeInTimeMenuTask = 0x80037EC8; // type:func
 fadeInRaceResultsTask = 0x8003A8C0; // type:func
 
 fadeInStatsMenuTask = 0x8003BCC4; // type:func
+
+loadSoundBank = 0x80017D20; // type:func
+gSoundBankLoaded = 0x800EB2AC; // size:0xC defined:true

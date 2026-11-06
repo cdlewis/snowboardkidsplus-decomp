@@ -97,6 +97,9 @@ s16 D_80120370[42] __attribute__((section(".data.player_model_parts"))) = {
 s16 *D_801203C4[10] __attribute__((section(".data.player_model_parts"))) = {
     D_80120220, D_80120274, D_80120220, D_80120370, D_801202C8, D_80120220, D_80120220, D_801202C8, D_8012031C, D_8012031C
 };
+/* Nine bank flags with the original three trailing padding bytes. */
+s8 gSoundBankLoaded[12] __attribute__((section(".data.sound_bank_loaded"), aligned(4))) = {0};
+
 SoundVoiceRecord gSoundVoiceRecords[8] __attribute__((section(".data.sound_voice_records"))) = {0};
 
 MemoryCardSaveHeader gMemoryCardSaveHeader __attribute__((section(".data.memory_card_save_header"))) = {0};
@@ -351,7 +354,15 @@ void applyStereoSoundOption(void) {
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80017C20);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80017D20);
+void loadSoundBank(s16 bankId, u8 *header, u8 *body) {
+    if (gSoundBankLoaded[bankId] == 0) {
+        while (bankId != SsVabOpenHead(header, bankId)) {
+        }
+        SsVabTransBody(body, bankId);
+        SsVabTransCompleted(1);
+        gSoundBankLoaded[bankId] = 1;
+    }
+}
 
 void openMusicSequence(s16 bankId, u32 *sequence) {
     if (gMusicSequenceActive) {
