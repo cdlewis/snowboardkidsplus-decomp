@@ -65,6 +65,12 @@ typedef struct TexturedGouraudTrianglePrimitive {
     TriangleColor colors[3];
     u16 vertexIndices[3];
 } TexturedGouraudTrianglePrimitive;
+typedef struct TexturedGouraudQuadPrimitive {
+    u32 command;
+    TextureUV uv[4];
+    TriangleColor colors[4];
+    s16 vertexIndices[4];
+} TexturedGouraudQuadPrimitive;
 typedef struct TriangleTextureState {
     u32 reserved0;
     void (*callback)(TriangleScratchVertex *);
@@ -631,6 +637,7 @@ void func_80052680(TriangleScratchVertex *);
 void emitProjectedTexturedTriangle(TriangleScratchVertex *);
 void func_80052D84(TriangleScratchVertex *);
 void func_80052F90(TriangleScratchVertex *);
+void func_80053180(TriangleScratchVertex *);
 void func_800529FC(TriangleScratchVertex *);
 void func_80053A34(TriangleScratchVertex *, s32);
 void func_8006479C(void);
@@ -1159,7 +1166,25 @@ void processTexturedQuadPrimitive(void) {
     func_800542BC((TriangleScratchVertex *)0x1F800070, 0);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800557F8);
+void processTexturedGouraudQuadPrimitive(void) {
+    TexturedGouraudQuadPrimitive *primitive = (TexturedGouraudQuadPrimitive *)D_8013B680;
+    ((TriangleTextureState *)0x1F800000)->tpage = primitive->uv[1].attribute;
+    ((TriangleTextureState *)0x1F800000)->clut = primitive->uv[0].attribute;
+    ((TriangleTextureState *)0x1F800000)->callback = func_80053180;
+    ((TriangleScratchVertex *)0x1F800070)->position = D_8013B688[primitive->vertexIndices[0]];
+    ((TriangleScratchVertex *)0x1F800080)->position = D_8013B688[primitive->vertexIndices[1]];
+    ((TriangleScratchVertex *)0x1F800090)->position = D_8013B688[primitive->vertexIndices[2]];
+    ((TriangleScratchVertex *)0x1F8000A0)->position = D_8013B688[primitive->vertexIndices[3]];
+    *(UVPair *)0x1F800078 = primitive->uv[0].coords;
+    *(UVPair *)0x1F800088 = primitive->uv[1].coords;
+    *(UVPair *)0x1F800098 = primitive->uv[2].coords;
+    *(UVPair *)0x1F8000A8 = primitive->uv[3].coords;
+    ((TriangleScratchVertex *)0x1F800070)->color = primitive->colors[0];
+    ((TriangleScratchVertex *)0x1F800080)->color = primitive->colors[1];
+    ((TriangleScratchVertex *)0x1F800090)->color = primitive->colors[2];
+    ((TriangleScratchVertex *)0x1F8000A0)->color = primitive->colors[3];
+    func_800542BC((TriangleScratchVertex *)0x1F800070, 0);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800559F4);
 
