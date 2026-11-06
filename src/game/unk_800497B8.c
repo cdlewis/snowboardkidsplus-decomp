@@ -447,7 +447,6 @@ void SetFogNearFar(s32 near, s32 far, s32 h);
 void func_800592DC(u16 index);
 void func_80049D48(s32 x, s32 y, const char *format, ...);
 void func_8006BEEC(s32 enabled);
-void func_8006C5F4(s16 x, s16 y, s32 frameIndex, GsOT *ot, u16 depth);
 void func_80063B58(void);
 void func_80063DF4(void);
 void func_800659F0(void);
@@ -1966,13 +1965,40 @@ void drawTexturedQuadList(s16 x, s16 y, TexturedQuadListEntry *entry, s16 blend,
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006C428);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006C5F4);
+void drawInclusiveTexturedQuad(s16 x, s16 y, s32 index, GsOT *ot, u16 depth) {
+    POLY_FT4 *quad = &gTexturedQuadTemplate;
+    TextureRegion *region = &D_8013B6AC[index];
+    u16 extent;
+
+    /* Inclusive edges use a wrapping 16-bit decrement of each dimension. */
+    quad->x0 = x;
+    quad->y0 = y;
+    extent = region->w + (u16)-1;
+    quad->x1 = x + extent;
+    quad->y1 = y;
+    quad->x2 = x;
+    extent = region->h + (u16)-1;
+    quad->y2 = y + extent;
+    extent = region->w + (u16)-1;
+    quad->x3 = x + extent;
+    extent = region->h + (u16)-1;
+    quad->y3 = y + extent;
+    quad->u0 = region->u;
+    quad->v0 = region->v;
+    quad->u1 = (u8)(region->u - 1) + region->w;
+    quad->v1 = region->v;
+    quad->u2 = region->u;
+    quad->v2 = (u8)(region->v - 1) + region->h;
+    quad->u3 = (u8)(region->u - 1) + region->w;
+    quad->v3 = (u8)(region->v - 1) + region->h;
+    GsSortPoly(quad, ot, depth);
+}
 
 void drawInclusiveTexturedQuadByIndex(s16 x, s16 y, s32 index, GsOT *ot, u16 depth) {
     TexturedQuadFrame *frame = &D_8012DFF4[index];
 
     setTexturedQuadTexture(frame->textureIndex, 0);
-    func_8006C5F4(x, y, frame->frameIndex, ot, depth);
+    drawInclusiveTexturedQuad(x, y, frame->frameIndex, ot, depth);
 }
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006C798);

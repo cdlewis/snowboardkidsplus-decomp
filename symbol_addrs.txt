@@ -1909,6 +1909,7 @@ drawTexturedQuad = 0x8006BF14; // type:func
 drawStretchedTexturedQuad = 0x8006C018; // type:func
 drawTexturedQuadByIndex = 0x8006C104; // type:func
 drawTexturedQuadByIndexWithBlend = 0x8006C190; // type:func
+drawInclusiveTexturedQuad = 0x8006C5F4; // type:func
 drawInclusiveTexturedQuadByIndex = 0x8006C70C; // type:func
 
 stopTextSoundVoices = 0x800A7B0C; // type:func
