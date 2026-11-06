@@ -553,6 +553,8 @@ segments:
       - {start: 0x11126C, type: .data, name: game/unk_8001E63C, linker_section: .data.player_task_phases}
       - {start: 0x11128C, type: .data, name: game/unk_8001E63C, linker_section: .data.player_state30_task_phases}
       - [0x111298, data, player_task_phases_tail]
+      - {start: 0x1148B0, type: .data, name: game/unk_8002B3F4, linker_section: .data.controller_input_sequences}
+      - [0x11494C, data, controller_input_sequences_tail]
       - {start: 0x1149A8, type: .data, name: game/unk_8002B3F4, linker_section: .data.player_camera_views}
       - [0x1149E8, data, player_camera_state_tail]
       - {start: 0x11D12C, type: .data, name: game/unk_800497B8, linker_section: .data.quad_animation}

@@ -200,6 +200,15 @@ MenuSpritePaletteGroups gMenuSpritePaletteGroups
         {0, 5, 0, 1, 4, 0, 5, 0, 0}
     };
 
+/* Each input sequence ends with 0xFFFF. */
+u16 gControllerInputSequences[3][26]
+    __attribute__((section(".data.controller_input_sequences"))) = {
+    {0x0004, 0x0008, 0x0002, 0x0001, 0x0004, 0x0008, 0x0002, 0x0001, 0x0100, 0xFFFF, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000},
+    {0x1000, 0x4000, 0x8000, 0x2000, 0x0001, 0x0001, 0x0001, 0x0001, 0x0001, 0x0001, 0x0001, 0x0001, 0x0001, 0x0001, 0x0002, 0x0002, 0x0002, 0x0002, 0x0002, 0x0002, 0x0002, 0x0002, 0x0002, 0x0002, 0x0100, 0xFFFF},
+    {0x8000, 0x1000, 0x2000, 0x4000, 0x1000, 0x1000, 0x1000, 0x4000, 0x4000, 0x4000, 0x0100, 0xFFFF, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000}
+};
+
+extern u8 D_8013B11A;
 /* Assembly and C consumers address this palette subtable directly. */
 extern u8 gMappedIconPalettes[9];
 
@@ -1155,7 +1164,20 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80035A38);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80035B24);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80035C18);
+void checkControllerInputSequenceTask(void) {
+    if (D_8013AEE8[0] != 0) {
+        if (D_8013AEE8[0] == gControllerInputSequences[D_8013AE88->data18][D_8013AE88->data1A]) {
+            D_8013AE88->data1A++;
+            if (gControllerInputSequences[D_8013AE88->data18][D_8013AE88->data1A] == 0xFFFF) {
+                D_8013B11A |= 1 << D_8013AE88->data18;
+                func_800181B0(0, 0, 0x20);
+                func_800149A8();
+            }
+        } else {
+            D_8013AE88->data1A = 0;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80035CF8);
 
