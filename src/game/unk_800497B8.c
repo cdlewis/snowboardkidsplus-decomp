@@ -20,6 +20,8 @@
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
 #include "game/quad_animation.h"
+#include "game/coordinate.h"
+#include "psx/libapi.h"
 
 typedef struct TriangleColor { u8 r, g, b, code; } TriangleColor;
 typedef struct GouraudTrianglePrimitive {
@@ -418,6 +420,9 @@ EmitterPlacement gProximityEmitterPlacements[2]
     {0x65E0, 0xAB40, 0xEFA0, 0x52, 0},
 };
 
+u32 gObjectSortSavedStackPointer
+    __attribute__((section(".sdata.object_sort_saved_stack"))) = 0;
+
 ControllerEffectState gControllerEffectStates[2] = {0};
 
 PlayerRenderSnapshot gPlayerRenderSnapshots[4]
@@ -571,7 +576,7 @@ void func_8004EFE0(void);
 void func_8001E3E4(SVECTOR *rotation, GsCOORDINATE2 *coordinate);
 void SetFarColor(s32 r, s32 g, s32 b);
 void SetFogNearFar(s32 near, s32 far, s32 h);
-void func_800592DC(u16 index);
+void drawTaskObject(u16 index);
 void func_80049D48(s32 x, s32 y, const char *format, ...);
 void func_8006BEEC(s32 enabled);
 void func_80063B58(void);
@@ -1015,7 +1020,21 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80059254);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80059290);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800592DC);
+void drawTaskObject(u16 index) {
+    GsDOBJ2 *object;
+    GsDOBJ2 *objects;
+    gObjectSortSavedStackPointer = SetSp(0x1F8003FC);
+    objects = D_80129A80;
+    object = &objects[index];
+    GsGetLs(object->coord2, D_8013AF98);
+    GsSetLsMatrix(D_8013AF98);
+    if (func_80059254()) {
+        GsSortObject4(object, &D_800EC0B8[D_8013AF78], 2, (u32 *)0x1F800000);
+    } else {
+        GsSortObject4(object, &D_800EC018[D_8013AF78], 2, (u32 *)0x1F800000);
+    }
+    SetSp(gObjectSortSavedStackPointer);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800593B0);
 
@@ -1270,7 +1289,7 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005EBC4);
 void updateAndDrawCurrentTaskObject(void) {
     func_8001E3E4(&D_8012A5C0[D_8013AE88->data18],
                   &D_80129C60[D_8013AE88->data18]);
-    func_800592DC(D_8013AE88->data18);
+    drawTaskObject(D_8013AE88->data18);
 }
 
 void copySlot26TransformToCurrentTaskObject(void) {

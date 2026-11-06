@@ -2509,3 +2509,6 @@ gProximityEmitterPlacements = 0x80129744; // size:0x20
 drawPlayerSpriteAnimation = 0x80034434; // type:func
 
 processGouraudQuadPrimitive = 0x800554C4; // type:func
+
+drawTaskObject = 0x800592DC; // type:func
+gObjectSortSavedStackPointer = 0x8013B6A4; // type:u32 size:0x4

@@ -85,6 +85,7 @@ extern GsOT D_800EBFF0[2];
 extern GsOT D_800EC018[2];
 extern GsOT D_800EC0B8[2];
 
+extern GsDOBJ2 D_80129A80[30];
 void sortLitObject(GsDOBJ2 *object);
 extern u32 *D_8013AF6C __attribute__((section(".data")));
 extern u16 D_8013AF7A __attribute__((section(".data")));

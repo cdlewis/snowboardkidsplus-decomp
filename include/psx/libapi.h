@@ -7,3 +7,5 @@ s32 GetRCnt(s32 specification);
 s32 StartRCnt(s32 specification);
 s32 StopRCnt(s32 specification);
 s32 ResetRCnt(s32 specification);
+
+u32 SetSp(u32 stack);
