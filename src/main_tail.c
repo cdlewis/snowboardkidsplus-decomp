@@ -105,6 +105,7 @@ typedef struct TextResourceState {
 } TextResourceState;
 extern s16 D_8013B10C __attribute__((section(".data")));
 extern u8 D_8013B55E;
+extern u8 D_8013B527 __attribute__((section(".data")));
 
 typedef struct MusicOwnerState {
     u8 unk00[0x24];
@@ -199,6 +200,7 @@ void func_800A3750(void);
 void func_800A5AFC(void);
 void func_800A6548(void);
 void func_8009BDB8(void);
+void func_8009CA90(void);
 void func_8009F9B8(void);
 void func_8009F224(void);
 s32 func_8007D47C(void);
@@ -560,7 +562,26 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009BDB8);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009C568);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009C9A0);
+void initializeSelectionIndexedDualResourceTask(void) {
+    GameTask *task = D_8013AE88;
+    task->data18 = 0;
+    if (D_8013B527 != 0) {
+        task->data1A = D_8013B527 - 1;
+    } else {
+        task->data1A = D_8013B527;
+    }
+    D_8013AE98->data1C++;
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        for (;;) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    if (D_8013AE88->resource16 != 0xFFFF) {
+        for (;;) {}
+    }
+    D_8013AE88->resource16 = allocateTaskResource();
+    setCurrentTaskCallback(func_8009CA90);
+    D_8013AE88->unk10 |= 2;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009CA90);
 
