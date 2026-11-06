@@ -132,6 +132,8 @@ extern s32 D_8013B20C __attribute__((section(".data")));
 extern u8 D_8013B562 __attribute__((section(".data")));
 extern u8 D_80120EA4[];
 extern s16 D_8013B104 __attribute__((section(".data")));
+extern u8 D_8013AFE2;
+extern u8 D_8013B1AB __attribute__((section(".data")));
 extern u16 D_8013AFE8;
 extern void *D_8013AF4C;
 extern void *gMemoryCardLoadDestination;
@@ -144,6 +146,8 @@ void func_8002EE0C(void);
 void func_8001D044(void);
 void func_8001D42C(void);
 void func_8001DB7C(void);
+void func_8001CD64(void);
+void updateThreeFrameScreenBlend(void);
 void uploadTimArchive(TimArchive *archive, s16 *position);
 void *memcpy(void *destination, const void *source, unsigned int size);
 u16 func_800162C8(void);
@@ -841,12 +845,22 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001D044);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001D100);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001D42C);
+void updateThreeFrameScreenBlend(void) {
+    if (--D_8013AE88->data18 == 0) {
+        if (D_8013B1AB) {
+            setCurrentTaskCallback(func_8001CD64);
+        } else {
+            setCurrentTaskCallback(initializeGameOptionViewTask);
+        }
+    } else {
+        func_80070C5C(255, &D_800EBFF0[D_8013AF78], 0);
+    }
+}
 
 void startThreeFrameScreenBlend(void) {
     func_80070C5C(255, &D_800EBFF0[D_8013AF78], 0);
     D_8013AE88->data18 = 3;
-    setCurrentTaskCallback(func_8001D42C);
+    setCurrentTaskCallback(updateThreeFrameScreenBlend);
 }
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001D528);
