@@ -2291,3 +2291,5 @@ initializeDualResourceTask = 0x8008573C; // type:func
 memoryCardFileExists = 0x80018FBC; // type:func
 
 waitTimeMenuDisplayTask = 0x80037E34; // type:func
+
+initializeDualResourceTaskAndClearState = 0x80080114; // type:func
