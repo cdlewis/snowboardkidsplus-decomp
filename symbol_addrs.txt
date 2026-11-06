@@ -2162,3 +2162,5 @@ advanceTaskMenuCountdown = 0x80038E8C; // type:func
 updateCameraRotationMatrices = 0x8005A598; // type:func
 
 drawCurrentTaskSpriteBA = 0x8009448C; // type:func
+
+drawCurrentTaskSpriteB7 = 0x80098F38; // type:func

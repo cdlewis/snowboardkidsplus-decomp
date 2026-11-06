@@ -290,7 +290,17 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_80097FF4);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_80098D68);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_80098F38);
+void drawCurrentTaskSpriteB7(void) {
+    Movement2D *position;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        for (;;) {}
+    }
+    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->data1A != 0) {
+        func_8006C998(position->x / 4096 + 8, position->y / 4096 - 22,
+                      0xB7, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_80099010);
 
