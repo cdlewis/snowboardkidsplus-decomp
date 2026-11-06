@@ -26,6 +26,20 @@
 
 #include "main_remaining.h"
 
+typedef struct MovieStreamHeader {
+    u16 id, type;
+    u16 sectorIndex, sectorCount;
+    u32 frameNumber, frameSize;
+    u16 width, height;
+} MovieStreamHeader;
+typedef struct MovieInfo { s16 endFrame; u8 x, y; } MovieInfo;
+extern MovieInfo D_800EBFE4[];
+extern s16 D_8013AF60, D_8013AF54, D_8013AF56;
+extern u8 D_8013B610;
+s32 StGetNext(u32 **data, MovieStreamHeader **header);
+
+
+
 INCLUDE_ASM("asm/nonmatchings/main_remaining_tail", func_80019670);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining_tail", func_8001983C);
@@ -182,7 +196,7 @@ s32 decodeNextMovieFrame(MovieDecodeState *state) {
     u32 *frame;
     s32 timeout = 2000;
     while (timeout != 0) {
-        frame = func_8001A2B8(state);
+        frame = getNextMovieStreamFrame(state);
         if (frame != 0) {
             state->vlcBufferIndex = !state->vlcBufferIndex;
             DecDCTvlc2(frame, state->vlcBuffers[state->vlcBufferIndex], (u16 *)0x80190000);
@@ -194,7 +208,28 @@ s32 decodeNextMovieFrame(MovieDecodeState *state) {
     return -1;
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining_tail", func_8001A2B8);
+u32 *getNextMovieStreamFrame(MovieDecodeState *state) {
+    u32 *data;
+    MovieStreamHeader *header;
+    s32 timeout = 2000;
+    while (StGetNext(&data, &header)) {
+        if (--timeout == 0) return 0;
+    }
+    if (header->frameNumber >= D_800EBFE4[D_8013AF60].endFrame) D_8013B610 = 1;
+    if (D_8013AF54 != header->width || D_8013AF56 != header->height) {
+        RECT rect;
+        rect.x = 0;
+        rect.y = 0;
+        rect.w = 480;
+        rect.h = 480;
+        ClearImage(&rect, 0, 0, 0);
+        D_8013AF54 = header->width;
+        D_8013AF56 = header->height;
+    }
+    state->frames[0].w = state->frames[1].w = D_8013AF54 * 3 / 2;
+    state->slice.h = state->frames[0].h = state->frames[1].h = D_8013AF56;
+    return data;
+}
 
 void waitForMovieOutput(MovieDecodeState *state) {
     volatile s32 timeout = 0x800000;

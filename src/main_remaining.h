@@ -45,7 +45,7 @@ int strcmp(const char *, const char *);
 
 void func_800A89F4(void);
 void StCdInterrupt(void);
-u32 *func_8001A2B8(MovieDecodeState *state);
+u32 *getNextMovieStreamFrame(MovieDecodeState *state);
 void func_800131B4(void);
 void func_8001AB3C(void);
 void func_80019D3C(s32 movieIndex);
