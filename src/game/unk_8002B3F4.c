@@ -234,7 +234,8 @@ void drawLapTimeLabel(TaskMenuFadeResource *resource);
 void func_80038090(TaskResourceRecord *resource);
 void func_80038574(TaskResourceRecord *resource);
 void func_8003BE58(TaskResourceRecord *resource);
-void func_8003C69C(void);
+void func_8003C5D8(void);
+void advanceCurrentTaskPanelTimer(void);
 void func_80039484(TaskResourceRecord *resource);
 void func_800398F4(TaskResourceRecord *resource);
 void func_8003AAE0(TaskResourceRecord *resource);
@@ -1401,7 +1402,23 @@ void drawCurrentTaskPanel(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003C5D8);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003C69C);
+void advanceCurrentTaskPanelTimer(void) {
+    PanelResource *resource;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (PanelResource *)&D_800D9504[D_8013AE88->resource14];
+    if (--resource->timer == 20) {
+        resource->unk0C = 1;
+    }
+    if (resource->timer == 0) {
+        resource->timer = 20;
+        resource->unk0C = 2;
+        setCurrentTaskCallback(func_8003C5D8);
+    }
+    func_8003BE58((TaskResourceRecord *)resource);
+}
 
 void fadeInCurrentTaskPanel(void) {
     PanelResource *resource;
@@ -1414,7 +1431,7 @@ void fadeInCurrentTaskPanel(void) {
     if (resource->brightness > 128) {
         resource->timer = 40;
         resource->brightness = 128;
-        setCurrentTaskCallback(func_8003C69C);
+        setCurrentTaskCallback(advanceCurrentTaskPanelTimer);
     }
     func_8003BE58((TaskResourceRecord *)resource);
 }
