@@ -168,7 +168,8 @@ void func_80034928(void);
 void func_80034664(PlayerNumberResource *resource);
 void func_8003527C(void);
 void func_800350AC(SlidingNumberResource *resource);
-void func_8003452C(void);
+void advancePlayerSpriteAnimationTask(void);
+void func_80034434(SpriteAnimationResource *resource);
 void func_800341DC(void);
 void func_80034090(SlidingDisplayResource *resource);
 void func_80033700(void);
@@ -740,11 +741,22 @@ void initializeTaskMotionResource(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80034434);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003452C);
+void advancePlayerSpriteAnimationTask(void) {
+    SpriteAnimationResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (SpriteAnimationResource *)&D_800D9504[D_8013AE88->resource14];
+    if (++resource->frame >= 16) {
+        func_800149A8();
+    } else {
+        func_80034434(resource);
+    }
+}
 
 void createPlayerSpriteAnimationTask(s32 x, s32 y, s32 player, s32 checkPlayer, u16 alternateLayer) {
     SpriteAnimationResource *resource;
-    func_80014874(func_8003452C);
+    func_80014874(advancePlayerSpriteAnimationTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     resource = (SpriteAnimationResource *)&D_800D9504[D_8013AE8C->resource14];
     resource->x = x - 8;
