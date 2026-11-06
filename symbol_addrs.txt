@@ -1993,3 +1993,5 @@ drawCurrentTaskTimeMenu = 0x80037D18; // type:func
 drawCurrentTaskStatsMenu = 0x8003B554; // type:func
 
 initializeUnlockMenuTask = 0x800A48E4; // type:func
+
+updateControllerAxesFromButtons = 0x800150A4; // type:func

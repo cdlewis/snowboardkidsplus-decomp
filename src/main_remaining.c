@@ -8,6 +8,7 @@
 #include "game/music.h"
 #define RACE_PLAYER_ABSOLUTE_ADDRESSING
 #include "game/cd_queue.h"
+#include "game/controller.h"
 #include "game/race_player.h"
 #include "game/game_options.h"
 #include "psx/libsnd.h"
@@ -106,8 +107,6 @@ extern u8 D_8013AFD6;
 extern u8 D_80120EA4[];
 extern u8 D_8013AFE2;
 extern u16 D_8013AFE8;
-/* Two state values; an incomplete array preserves absolute addressing. */
-extern u16 D_8013AEEC[];
 extern void *D_8013AF4C;
 
 void func_8001D044(void);
