@@ -170,6 +170,13 @@ typedef struct ResultDisplayResource {
     u8 unk0A[0xF6];
 } ResultDisplayResource;
 
+typedef struct RaceResultsFadeResource {
+    u8 unk00[6];
+    s16 brightness;
+    s16 timer;
+    u8 unk0A[0xF6];
+} RaceResultsFadeResource;
+
 typedef struct TaskMenuFadeResource {
     s16 unk00;
     s16 brightness;
@@ -346,6 +353,9 @@ void fadeInPlayerResultsTask(void);
 void fadeInLapTimeLabelTask(void);
 void func_80037EC8(void);
 void drawTaskTimeMenuAndSetFlag10OnInput(void);
+void func_8003A814(void);
+void func_80039484(RaceResultsFadeResource *resource);
+void func_80039B34(RaceResultsFadeResource *resource);
 void func_80036940(void);
 void func_80035D5C(ResultDisplayResource *resource);
 void func_800361C4(ResultDisplayResource *resource);
@@ -1814,7 +1824,22 @@ void waitTaskTimeRecordCountdownAndPlaySound(void) {
     func_80039B34((TaskResourceRecord *)resource);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003A8C0);
+void fadeInRaceResultsTask(void) {
+    RaceResultsFadeResource *resource;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (RaceResultsFadeResource *)&D_800D9504[D_8013AE88->resource14];
+    resource->brightness += 8;
+    if (resource->brightness > 128) {
+        resource->timer = 20;
+        resource->brightness = 128;
+        setCurrentTaskCallback(func_8003A814);
+    }
+    func_80039484(resource);
+    func_80039B34(resource);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003A96C);
 
