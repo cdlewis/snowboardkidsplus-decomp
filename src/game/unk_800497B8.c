@@ -1435,7 +1435,12 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006C998);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006CB70);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006CC90);
+void addSpritePacket(SPRT *source, GsOT *ot, u16 depth) {
+    SPRT *packet = (SPRT *)GsGetWorkBase();
+    *packet = *source;
+    AddPrim(&ot->org[depth], packet);
+    func_800BF2C8((u32)(packet + 1));
+}
 
 void addDrawPagePacket(DR_TPAGE *source, GsOT *ot, u16 depth) {
     DR_TPAGE *packet = (DR_TPAGE *)GsGetWorkBase();
