@@ -768,8 +768,7 @@ void drawTaskObject(u16 index);
 void func_80049D48(s32 x, s32 y, const char *format, ...);
 void func_8006B4A0(s32 x, s32 y, const char *format, ...);
 void func_8006BEEC(s32 enabled);
-void func_8006D538(s16 x, s16 y, s16 width, s16 height, const char *text,
-                   s16 palette, s16 blend, GsOT *ot, u16 depth);
+void func_8006C970(s32 enabled);
 void func_80063B58(void);
 void func_80063DF4(void);
 void drawFullScreenSpriteTask(void);
@@ -3396,7 +3395,7 @@ void drawLimitedText8x8(s16 x, s16 y, s16 limit, const char *text,
         if ((s8)*text == '\n') {
             count = limit;
         } else {
-            func_8006D538(x, startY, 8, 8, text, palette, blend, ot, depth);
+            drawSizedTextGlyph(x, startY, 8, 8, text, palette, blend, ot, depth);
             x += 8;
             count++;
         }
@@ -3404,7 +3403,35 @@ void drawLimitedText8x8(s16 x, s16 y, s16 limit, const char *text,
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006D538);
+void drawSizedTextGlyph(s16 x, s16 y, s16 width, s16 height, const char *text,
+                   s16 palette, s16 blend, GsOT *ot, u16 depth) {
+    s32 semiTrans;
+    s16 u, v;
+    s32 blendMode;
+    SPRT *sprite;
+    if (blend >= 0) {
+        blendMode = blend;
+        semiTrans = 1;
+    } else {
+        blendMode = 0;
+        semiTrans = 0;
+    }
+    u = (((s8)*text - 32) % 32) * 8;
+    v = (((s8)*text - 32) / 32) * 8;
+    if (u >= 0 && v >= 0) {
+        setSpriteTextureBlend(0, palette, blendMode);
+        func_8006C970(semiTrans);
+        sprite = &gSpriteTemplate;
+        sprite->x0 = x;
+        sprite->y0 = y;
+        sprite->u0 = u;
+        sprite->v0 = v;
+        sprite->w = width;
+        sprite->h = height;
+        addSpritePacket(sprite, ot, depth);
+        addDrawPagePacket(&gSpritePrimitiveTemplate.drawPage, ot, depth);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006D66C);
 
