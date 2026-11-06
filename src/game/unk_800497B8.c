@@ -767,7 +767,7 @@ void func_8004F780(void);
 
 void func_80068D1C(void);
 void func_800692E8(void);
-void func_800697DC(void);
+void drawLoweringQuadStripTask(void);
 void drawSlidingQuadTask(void);
 void func_80069E08(s32 duration);
 void func_80062B24(void);
@@ -2731,7 +2731,34 @@ void drawPaletteCyclingStripTask(void) {
     resource->frame++;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800697DC);
+void drawLoweringQuadStripTask(void) {
+    POLY_FT4 *packet;
+    SlidingQuadResource *resource;
+    s32 offset;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (SlidingQuadResource *)&D_800D9504[D_8013AE88->resource14];
+    packet = (POLY_FT4 *)GsOUT_PACKET_P;
+    *packet = *resource->packet;
+    packet->v0 = packet->v1 = resource->textureV;
+    packet->v2 = packet->v3 = resource->textureV + 15;
+    packet->x0 = packet->x2 = -16;
+    packet->x1 = packet->x3 = 143;
+    offset = (resource->countdown << 6) / 10;
+    packet->y0 = packet->y1 = offset + 24;
+    packet->y2 = packet->y3 = offset + 39;
+    packet->clut = getClut(944, D_8013AE88->data18 * 3 + 242);
+    addPrim(D_8013AF6C, packet);
+    GsOUT_PACKET_P = (u32)(packet + 1);
+    if (D_8013B338 >= 50) {
+        if (++resource->countdown > 10) {
+            setCurrentTaskCallback(drawPaletteCyclingStripTask);
+            resource->countdown = 0;
+        }
+    }
+}
 
 void drawSlidingQuadTask(void) {
     POLY_FT4 *packet;
@@ -2753,7 +2780,7 @@ void drawSlidingQuadTask(void) {
     addPrim(D_8013AF6C, packet);
     GsOUT_PACKET_P = (u32)(packet + 1);
     if (--resource->countdown <= 0) {
-        setCurrentTaskCallback(func_800697DC);
+        setCurrentTaskCallback(drawLoweringQuadStripTask);
         resource->countdown = 0;
     }
 }

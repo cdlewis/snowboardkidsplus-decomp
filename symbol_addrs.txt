@@ -2828,3 +2828,5 @@ gScreenCopyPlusBuffer1 = 0x80124F14; // size:0x30
 gScreenCopyPlusBuffer0 = 0x80124F44; // size:0x30
 gScreenCopyMinusBuffer1 = 0x80124F74; // size:0x30
 gScreenCopyMinusBuffer0 = 0x80124FA4; // size:0x30
+
+drawLoweringQuadStripTask = 0x800697DC; // type:func
