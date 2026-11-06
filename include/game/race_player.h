@@ -195,3 +195,6 @@ void assignTwoPlayerResultSlots(s16 result);
 s16 func_8002A5A0(s32 magnitude, s32 target);
 
 void updateActivePlayerRegionCollisions(void);
+
+/* Advance a directional input sequence and return its completed entry result. */
+u16 advanceCurrentPlayerInputSequence(u8 sequence[][2], s16 slot);

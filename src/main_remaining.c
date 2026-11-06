@@ -849,4 +849,26 @@ void setCoordinateRotationZYX(SVECTOR *rotation, GsCOORDINATE2 *coordinate) {
     coordinate->flg = 0;
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001E524);
+/* This routine accesses the shared player pointer through GP. */
+#undef D_8013B0D8
+
+u16 advanceCurrentPlayerInputSequence(u8 sequence[][2], s16 slot) {
+    u8 input = D_8013AEEC[D_8013AE88->data18] >> 12;
+    switch (D_8013B0D8->unk0CA[slot]) {
+    case 0:
+        if (input != sequence[D_8013B0D8->unk0D6[slot]][0]) {
+            D_8013B0D8->unk0D6[slot] = 0;
+            break;
+        }
+        if (sequence[D_8013B0D8->unk0D6[slot]][1] != 0)
+            return sequence[D_8013B0D8->unk0D6[slot]][1];
+        D_8013B0D8->unk0CA[slot]++;
+    case 1:
+        if (input != sequence[D_8013B0D8->unk0D6[slot]][0] && input != 0) {
+            D_8013B0D8->unk0CA[slot] = 0;
+            D_8013B0D8->unk0D6[slot]++;
+        }
+        break;
+    }
+    return 0;
+}
