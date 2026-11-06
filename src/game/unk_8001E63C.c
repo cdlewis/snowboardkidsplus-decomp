@@ -37,6 +37,7 @@ u8 *D_8012090C[10] = {
 s32 func_800183FC(u16 playerIndex, u8 bank, u16 sound, s16 volume);
 void func_800240D0(void);
 void func_80024288(void);
+void func_800245C4(void);
 void func_80026DAC(void);
 void func_800205B8(void);
 void func_800255C4(void);
@@ -72,7 +73,7 @@ void (*currentPlayerStateCallbacks[74])(void) = {
     initializeCurrentPlayerDefaultState,
     initializeCurrentPlayerState2,
     initializeCurrentPlayerState3,
-    func_8001F388,
+    initializeCurrentPlayerState4,
     func_8001F444,
     func_8001F6D8,
     initializeCurrentPlayerState7,
@@ -223,7 +224,20 @@ void initializeCurrentPlayerState3(void) {
     setCurrentTaskCallback(func_80024288);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8001F388);
+void initializeCurrentPlayerState4(void) {
+    startCurrentPlayerAnimation(12, 2);
+    D_8013B0D8->unk0B8 = 0;
+    D_8013B0D8->unk128 = (D_8013B0D8->unk128 & 0xFF0C1FFB) | 0x12204;
+    func_8002A5A0(0, 0);
+    D_8013B0D8->unk060 = D_8013B0D8->unk104;
+    D_8013B0D8->unk062 = -0x600;
+    D_8013B0D8->unk064 = D_8013B0D8->unk108;
+    D_8013B0D8->unk078 = 0;
+    D_8013B0D8->unk050 = D_8013B0D8->x - D_8013B0D8->unk060;
+    D_8013B0D8->unk058 = D_8013B0D8->z - D_8013B0D8->unk064;
+    func_8002E5A0(D_8013AE88->data18, 4);
+    setCurrentTaskCallback(func_800245C4);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8001F444);
 

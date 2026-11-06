@@ -5,7 +5,7 @@ void initializeCurrentPlayerDefaultState(void);
 void func_8001F1B4(void);
 void initializeCurrentPlayerState2(void);
 void initializeCurrentPlayerState3(void);
-void func_8001F388(void);
+void initializeCurrentPlayerState4(void);
 void func_8001F444(void);
 void func_8001F6D8(void);
 void func_8001F6F8(void);
