@@ -34,6 +34,17 @@ typedef struct RepeatedSoundResource {
     u8 unk02[0xFE];
 } RepeatedSoundResource;
 
+typedef struct SpriteAnimationResource {
+    s16 x;
+    s16 y;
+    u16 frame;
+    u16 unk06;
+    u8 player;
+    u8 checkPlayer;
+    u8 alternateLayer;
+    u8 unk0B[0xF5];
+} SpriteAnimationResource;
+
 typedef struct UnpackedWordBytes {
     u8 unk0;
     u8 unk1;
@@ -133,6 +144,7 @@ void func_8002FE18(void);
 void func_80032C14(void);
 void func_80032E94(void);
 void func_80034AE8(void);
+void func_8003452C(void);
 void func_80033100(void);
 void func_80048668(void);
 void func_8004531C(void);
@@ -605,7 +617,18 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80034434);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003452C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800345BC);
+void createPlayerSpriteAnimationTask(s32 x, s32 y, s32 player, s32 checkPlayer, u16 alternateLayer) {
+    SpriteAnimationResource *resource;
+    func_80014874(func_8003452C);
+    D_8013AE8C->resource14 = func_80014BAC();
+    resource = (SpriteAnimationResource *)&D_800D9504[D_8013AE8C->resource14];
+    resource->x = x - 8;
+    resource->y = y - 8;
+    resource->player = player;
+    resource->checkPlayer = checkPlayer;
+    resource->alternateLayer = alternateLayer;
+    resource->frame = 0xFFFF;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80034664);
 

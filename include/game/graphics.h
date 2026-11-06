@@ -74,6 +74,7 @@ extern TexturedSpritePacket gTexturedSpriteTemplate;
 void drawNoProcessMessage(void);
 void drawCyanBackgroundAndSetFog(void);
 void createResourceLoadTask(void);
+void createPlayerSpriteAnimationTask(s32 x, s32 y, s32 player, s32 checkPlayer, u16 alternateLayer);
 void createPlayerNumberDisplayTask(s32 value, s32 showExtraValue, s32 player);
 void createPositionedEffectTask(s32 x, s32 y, s32 z);
 void createQuadShrinkTask(void);
