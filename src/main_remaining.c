@@ -151,7 +151,11 @@ s32 func_80017268(void);
 void func_80018D80(u8 slot, void *destination);
 void func_80019980(void);
 void func_8001C0DC(void);
-void func_8001B7F0(void);
+void func_8003DF3C(u16 index);
+void func_8003DEE0(void);
+void func_8001B858(void);
+void func_8002FFC0(void);
+s32 func_80014838(TaskCallback callback);
 s32 func_80019520(void);
 void pollMemoryCardReadTask(void);
 void func_80018AA4(void);
@@ -732,11 +736,19 @@ void initializeGameOptionTask(void) {
     D_8013AE88->data18 = 0;
     func_8002EE0C();
     resetGameOptionState();
-    setCurrentTaskCallback(func_8001B7F0);
+    setCurrentTaskCallback(initializeGameOptionViewTask);
     D_8013AE88->unk10 |= 2;
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001B7F0);
+void initializeGameOptionViewTask(void) {
+    func_8003DF3C(0);
+    func_8003DEE0();
+    setControllerFlag0(0);
+    setControllerFlag0(1);
+    setCurrentTaskCallback(func_8001B858);
+    func_80014838(func_8002FFC0);
+    D_8013AE88->unk10 |= 1;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001B858);
 
@@ -772,7 +784,7 @@ void advanceTaskWhenFlagAFE4Bit8Set(void) {
     if (D_8013AFE4 & 0x100) {
         D_8013AFE4 = 0;
         D_8013AFAA |= 0x90;
-        setCurrentTaskCallback(func_8001B7F0);
+        setCurrentTaskCallback(initializeGameOptionViewTask);
     }
 }
 

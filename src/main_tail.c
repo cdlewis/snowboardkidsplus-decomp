@@ -167,7 +167,6 @@ void func_800A499C(void);
 void func_8001D97C(void);
 void initializeRaceTaskState(void);
 void func_8001B858(void);
-void func_8001B7F0(void);
 void func_800A1F50(void);
 void func_800A4C28(void);
 void resetUnlockMenuOffsets(UnlockMenuState *state);
@@ -658,7 +657,7 @@ void selectTaskBySelectedRecordMatch(void) {
 void startMode1TaskTransition(void) {
     func_800719A8(1);
     func_80070274(1, 0, 30);
-    setCurrentTaskCallback(func_8001B7F0);
+    setCurrentTaskCallback(initializeGameOptionViewTask);
 }
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A24EC);

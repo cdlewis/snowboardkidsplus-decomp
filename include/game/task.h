@@ -121,3 +121,5 @@ extern u8 D_8013AFD7;
 
 void func_8001DB7C(void);
 void initializeViewAndSelectTaskCallback(void);
+
+void initializeGameOptionViewTask(void);
