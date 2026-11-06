@@ -2597,3 +2597,5 @@ D_8013B644 = 0x8013B644; // size:0x4
 D_8013B648 = 0x8013B648; // size:0x4
 D_8013B64C = 0x8013B64C; // size:0x4
 D_8013B650 = 0x8013B650; // size:0x4
+
+updateTimedSpriteB5Task = 0x8007724C; // type:func

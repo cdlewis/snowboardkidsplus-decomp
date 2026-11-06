@@ -109,7 +109,7 @@ void func_80071A80(void);
 void initTimedSequence(TimedSequence *sequence, const TimedSequenceEntry *entries, s16 index, s16 count);
 void updateCountdownTask(void);
 void func_80076034(void);
-void func_8007724C(void);
+void updateTimedSpriteB5Task(void);
 void func_80077770(void);
 void GsSortBg(GameBackground *background, GsOT *ot, u16 depth);
 void func_8007BE9C(void);
@@ -466,7 +466,7 @@ void updateTimedSequence(TimedSequence *sequence) {
 GameTask *createTimedSpriteB5Task(s16 x, s16 y, u32 frames) {
     GameTask *task;
     TaskResourceRecord *resource;
-    func_80014874(func_8007724C);
+    func_80014874(updateTimedSpriteB5Task);
     D_8013AE8C->data18 = 0;
     D_8013AE8C->data1A = 0;
     D_8013AE8C->resource14 = allocateTaskResource();
@@ -478,7 +478,25 @@ GameTask *createTimedSpriteB5Task(s16 x, s16 y, u32 frames) {
     return task;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_8007724C);
+void updateTimedSpriteB5Task(void) {
+    Movement2D *movement;
+    TaskResourceRecord *lifetime;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    movement = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) {
+        while (1) {}
+    }
+    lifetime = &D_800D9504[D_8013AE88->resource16];
+    if (lifetime->unk04 == 0) {
+        func_800149A8();
+    }
+    setSpriteColor(128, 128, 128);
+    func_8006C998(movement->x / 4096, movement->y / 4096, 0xB5, 0, -1,
+                 &D_800EBFF0[D_8013AF78], 3);
+    lifetime->unk04--;
+}
 
 GameTask *createAnimatedSpriteTask(s16 x, s16 y, s16 unk02, s16 repeats, u16 depth) {
     GameTask *task;
