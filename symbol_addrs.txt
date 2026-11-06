@@ -2144,3 +2144,5 @@ drawCurrentTaskTimeRecordDetails = 0x8003A008; // type:func
 drawTexturedQuadList = 0x8006C34C; // type:func
 
 initializeCurrentPlayerState7 = 0x8001FEE0; // type:func
+
+uploadTimImageAt = 0x8002F3C8; // type:func

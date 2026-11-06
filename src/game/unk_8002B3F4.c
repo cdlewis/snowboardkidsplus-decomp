@@ -198,7 +198,7 @@ RaceTime gRaceElapsedTime = {0, 0, 0};
 
 extern int rand(void);
 
-void func_8002F3C8(s16 x, s16 y, s16 clutX, s16 clutY, u32 *tim);
+void uploadTimImageAt(s16 x, s16 y, s16 clutX, s16 clutY, u32 *tim);
 s16 func_8004A124(s32 x1, s32 z1, s32 x2, s32 z2);
 void func_8003E1D0(u16 playerIndex);
 void func_8003E60C(u16 index);
@@ -567,7 +567,7 @@ void uploadTextureArchiveEntry(s16 x, s16 y, s16 clutX, s16 clutY, s32 index) {
     index = (s16)index + 1;
     index = (s16)index;
     offset = (s32)archive->offsets[index - 1];
-    func_8002F3C8(x, y, clutX, clutY,
+    uploadTimImageAt(x, y, clutX, clutY,
                   (u32 *)((s16 *)archive + (offset >> 1)));
 }
 
@@ -584,7 +584,20 @@ void queueStartupSectorReads(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002F394);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002F3C8);
+void uploadTimImageAt(s16 x, s16 y, s16 clutX, s16 clutY, u32 *tim) {
+    GsIMAGE image;
+    if (*tim == 0x10) {
+        GsGetTimInfo(tim + 1, &image);
+        image.px = x;
+        image.py = y;
+        LoadImage((RECT *)&image.px, image.pixel);
+        if ((image.pmode >> 3) & 1) {
+            image.cx = clutX;
+            image.cy = clutY;
+            LoadImage((RECT *)&image.cx, image.clut);
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002F468);
 
