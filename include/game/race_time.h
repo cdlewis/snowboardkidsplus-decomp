@@ -12,6 +12,7 @@ typedef struct RaceTime {
 extern RaceTime gRaceElapsedTime;
 extern RaceTime D_8013B188;
 extern RaceTime D_80124050[];
+extern RaceTime D_80124220[];
 
 s16 compareRaceTimes(const RaceTime *a, const RaceTime *b);
 void advanceRaceElapsedTime(void);

@@ -262,11 +262,16 @@ typedef struct StatsMenuFadeResource {
 
 typedef struct RaceResultsFadeResource {
     s16 unk00;
-    u8 unk02[4];
+    RaceTime difference;
     s16 brightness;
     s16 timer;
     s16 unk0A;
-    u8 unk0C[0xF4];
+    s16 timeBonus;
+    s16 bonusTimer;
+    s16 displayTimer;
+    s16 scoreBonus;
+    s16 hasBonus;
+    u8 unk16[0xEA];
 } RaceResultsFadeResource;
 
 typedef struct MenuSoundDelayResource {
@@ -2898,7 +2903,36 @@ void fadeInRaceResultsTask(void) {
     func_80039B34((TaskResourceRecord *)resource);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003A96C);
+void initializeRaceResultsTask(void) {
+    u8 padding[8];
+    RaceResultsFadeResource *resource;
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    resource = (RaceResultsFadeResource *)&D_800D9504[D_8013AE88->resource14];
+    resource->brightness = 0;
+    resource->hasBonus = 0;
+    resource->bonusTimer = 0;
+    resource->displayTimer = 300;
+    if (D_8013AFCE == 9) {
+        resource->displayTimer = 100;
+    }
+    calculateRaceTimeDifference(&D_80124220[D_8013AFCE], &gRaceElapsedTime, &resource->difference);
+    if (D_8013B18D) {
+        resource->timeBonus = 0;
+    } else {
+        resource->timeBonus = (resource->difference.minutes * 60 + resource->difference.seconds) * 20;
+        if (D_80120E90[0].unk95A == D_80120E90[0].unk95C) {
+            resource->hasBonus = 1;
+            resource->bonusTimer = 300;
+        }
+    }
+    resource->scoreBonus = D_80120E90[0].unk95A * 10;
+    resource->unk00 = D_80120E90[0].unk100[0];
+    D_80120E90[0].unk010 = D_80130BF0[0];
+    setCurrentTaskCallback(fadeInRaceResultsTask);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003AAE0);
 
