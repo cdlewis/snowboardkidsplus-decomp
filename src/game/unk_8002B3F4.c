@@ -50,6 +50,15 @@ typedef struct ExpandingCoordinateEffectResource {
     s16 pitch, unkCA, yaw, unkCE, selectedIndex;
     u8 unkD2[0x2E];
 } ExpandingCoordinateEffectResource;
+typedef struct PlayerParticleEntry {
+    Position3D position;
+    s32 framePosition;
+} PlayerParticleEntry;
+
+typedef struct PlayerParticleResource {
+    PlayerParticleEntry entries[16];
+} PlayerParticleResource;
+
 typedef struct FallingVisualResource {
     GsCOORDINATE2 coordinate;
     u8 unk50[0x24];
@@ -439,6 +448,7 @@ void func_80048340(void);
 void func_80031C98(void);
 void func_80048AA4(void);
 void func_80044768(void);
+void func_80045C7C(void);
 void func_80046404(TaskVisualResource *resource, VECTOR *vectors, s32 value, s32 scale);
 void func_80046EF8(void);
 void func_8004713C(void);
@@ -3646,7 +3656,34 @@ void initializeScaledTaskCoordinateResource(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800458F8);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80045B4C);
+void initializePlayerParticleHistoryTask(void) {
+    TaskVisualResource *resource;
+    PlayerParticleResource *trail;
+    u16 i;
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource16 = allocateTaskResource();
+    trail = (PlayerParticleResource *)&D_800D9504[D_8013AE88->resource16];
+    GsInitCoordinate2(0, &resource->coordinate);
+    D_8013AE88->data1A = 0;
+    D_8013AE88->data1C = 0;
+    D_8013AE88->data1E = 0;
+    for (i = 0; i < 16; i++) {
+        trail->entries[i].framePosition = 0xFFFF;
+    }
+    resource->r0 = resource->g0 = resource->b0 = 0x80;
+    resource->unkC6 = 0;
+    resource->unkC8 = 0;
+    resource->framePosition = 0;
+    resource->code = POLY_FT4_CODE;
+    setCurrentTaskCallback(func_80045C7C);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80045C7C);
 

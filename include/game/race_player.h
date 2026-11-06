@@ -181,7 +181,7 @@ void copyPlayerPaletteRow(s16 playerIndex);
 void clearCurrentPlayerTaskState(void);
 void startPlayerTimerTask(RacePlayer *player);
 void initPlayerTimerTask(void);
-void func_80045B4C(void);
+void initializePlayerParticleHistoryTask(void);
 void fadeOutPlayerTimerTask(void);
 void stopPlayerSound(u16 playerIndex);
 s32 requestCurrentPlayerAction6(void);

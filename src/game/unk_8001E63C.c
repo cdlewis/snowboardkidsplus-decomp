@@ -470,7 +470,7 @@ void resetCurrentPlayerForCallback25508(void) {
     D_8013B0D8->unk0BC = 0;
     D_8013B0D8->unk094 = 0;
     func_8002E5A0(D_8013AE88->data18, 3);
-    func_80014930(&gGameTasks[4], func_80045B4C);
+    func_80014930(&gGameTasks[4], initializePlayerParticleHistoryTask);
     D_8013AE8C->data18 = D_8013AE88->data18;
     setCurrentTaskCallback(updateCurrentPlayerVerticalMotionUntilLanding);
 }
