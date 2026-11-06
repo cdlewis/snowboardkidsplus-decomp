@@ -350,3 +350,10 @@ void drawSemiTransparentTextureRect(s16 x, s16 y, s16 width, s16 height,
 void drawSemiTransparentTextureRectUV(s16 x, s16 y, s16 width, s16 height,
                                       s16 textureDepth, s16 blendMode, s16 pageX, s16 pageY,
                                       u16 u, u16 v, s16 clutX, s16 clutY, GsOT *ot, u16 depth);
+
+/* Full-screen rectangle followed by the two animated player view rectangles. */
+extern RECT D_800EC158[3];
+extern s16 D_8013AF7E __attribute__((section(".data")));
+extern s16 D_8013AF80 __attribute__((section(".data")));
+
+void updateSplitScreenTransitionTask(void);

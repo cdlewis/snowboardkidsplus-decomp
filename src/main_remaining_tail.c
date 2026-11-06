@@ -342,7 +342,38 @@ void beginTask60TickCountdown(void) {
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining_tail", func_8001C0DC);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining_tail", func_8001C128);
+void updateSplitScreenTransitionTask(void) {
+    D_8013AF7E -= 4;
+    D_801241E8[D_8013AE88->data18].unk10 += 16;
+    D_8013AF80 -= 4;
+    if (D_8013AF80 < 0) D_8013AF80 = 0;
+    if (D_8013AE88->data18 == 0) {
+        D_800EC158[1].h += 8;
+        if (D_800EC158[1].h > 240) D_800EC158[1].h = 240;
+        D_800EC158[1].w = D_8013AF7A - D_8013AF7E;
+        D_800EC158[2].y += 8;
+        D_800EC158[2].h -= 8;
+        if (D_800EC158[2].h < 0) {
+            D_800EC158[2].y = 240;
+            D_800EC158[2].h = 0;
+            D_8013AFAA |= 0x1000;
+        }
+    } else {
+        D_800EC158[2].y -= 8;
+        D_800EC158[2].h += 8;
+        if (D_800EC158[2].h > 240) {
+            D_800EC158[2].y = 0;
+            D_800EC158[2].h = 240;
+        }
+        D_800EC158[2].w = D_8013AF7A - D_8013AF7E;
+        D_800EC158[1].h -= 8;
+        if (D_800EC158[1].h < 0) {
+            D_800EC158[1].h = 0;
+            D_8013AFAA |= 0x5000;
+        }
+    }
+    if (--D_8013AE88->data1A == 0) func_800149A8();
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining_tail", func_8001C2E0);
 

@@ -2862,3 +2862,5 @@ drawSemiTransparentTextureRectUV = 0x8007219C; // type:func
 
 sortLitObjectWithDrawArea = 0x80083028; // type:func
 litObjectDrawAreaDepths = 0x8013B460; // size:0x8 defined:true
+
+updateSplitScreenTransitionTask = 0x8001C128; // type:func
