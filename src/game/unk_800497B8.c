@@ -319,7 +319,7 @@ typedef struct TimedSpriteStep {
     s32 frame;
     s32 duration;
     s16 x, y;
-    s32 unk0C;
+    const char *text;
     s16 palette;
     s16 pad12;
 } TimedSpriteStep;
@@ -483,7 +483,7 @@ void func_8006B1F4(void);
 void func_8006AB8C(void);
 void updatePrimaryValueTransition(void);
 void func_80069C04(void);
-void func_8006A9CC(void);
+void updateTimedSpriteSequence(void);
 void func_8006FE68(s16 x, s16 y, s16 w, s16 h, s16 borderW, s16 borderH,
                    s16 style, s16 clutOffset, s16 blendMode, GsOT *ot, u16 depth);
 void updateValueInterpolationTask(void);
@@ -1833,11 +1833,27 @@ void finishTimedSpriteSequence(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006A9CC);
+void updateTimedSpriteSequence(void) {
+    TimedSpriteSequenceResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (TimedSpriteSequenceResource *)&D_800D9504[D_8013AE88->resource14];
+    if (resource->frame >= resource->step->frame) {
+        createFadingTextTask(resource->step->duration, resource->step->x,
+            resource->step->y, resource->step->text, resource->step->palette);
+        resource->duration = resource->step->duration;
+        resource->step++;
+    }
+    resource->frame++;
+    if (resource->step->frame == -1) {
+        setCurrentTaskCallback(finishTimedSpriteSequence);
+    }
+}
 
 void startTimedSpriteSequence(const TimedSpriteStep *steps) {
     TimedSpriteSequenceResource *resource;
-    func_80014930(D_8013AE88, func_8006A9CC);
+    func_80014930(D_8013AE88, updateTimedSpriteSequence);
     D_8013AE8C->resource14 = allocateTaskResource();
     resource = (TimedSpriteSequenceResource *)&D_800D9504[D_8013AE8C->resource14];
     resource->step = steps;
