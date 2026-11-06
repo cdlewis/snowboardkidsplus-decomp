@@ -15,6 +15,8 @@ s32 isCdCommandQueueIdle(void);
 s32 queueCdSectorCommand(s16 command, s16 sector, s16 count, void *destination, s32 value);
 void queueStartupSectorReads(void);
 void queueCdCommand(s16 command, s16 value);
+void queueBackgroundTextureSectorCommands(void);
+void func_80013DD0(s16 command, s16 value);
 void resetPendingCdRequests(void);
 void resetCdCommandState(void);
 

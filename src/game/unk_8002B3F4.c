@@ -703,7 +703,13 @@ void resetGameOptionState(void) {
     gGameOptionFlags = 0x3E;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002F1C8);
+void queueBackgroundTextureSectorCommands(void) {
+    queueCdSectorCommand(2, 0x480, 0x4A, (u8 *)0x80180000, 0);
+    queueCdSectorCommand(0, 0xC9B, 1, (u8 *)0x80180000, 0);
+    queueCdSectorCommand(0, 0xC9C, 1, (u8 *)0x80180800, 0);
+    queueCdSectorCommand(0, 0xC78, 13, (u8 *)0x80181000, 0);
+    queueCdSectorCommand(0, 0xC85, 4, (u8 *)0x80187800, 0);
+}
 
 void uploadBufferedTexturePair(void) {
     uploadTimImageWithOffset((u32 *)0x80187800, NULL);
