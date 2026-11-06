@@ -95,7 +95,7 @@ void (*currentPlayerStateCallbacks[74])(void) = {
     initializeCurrentPlayerDefaultState,
     initializeCurrentPlayerDefaultState,
     initializeCurrentPlayerDefaultState,
-    func_8001F1B4,
+    initializeCurrentPlayerState22,
     func_8001FDEC,
     func_8001FAC4,
     initializeCurrentPlayerState25,
@@ -196,7 +196,19 @@ void initializeCurrentPlayerDefaultState(void) {
     setCurrentTaskCallback(func_80021B20);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8001F1B4);
+void initializeCurrentPlayerState22(void) {
+    D_8013B0D8->unk078 = 0;
+    D_8013B0D8->unk128 |= 0x200;
+    clearCurrentPlayerTaskState();
+    D_8013B0D8->unk0C8 = 0;
+    if (D_8013B0D8->animationIndex == D_800EB09C[D_8013B0D8->unk014][6] ||
+        D_8013B0D8->animationIndex == D_800EB09C[D_8013B0D8->unk014][5]) {
+        startCurrentPlayerAnimation(1, 5);
+    } else {
+        D_8013B0D8->animationFlags |= 4;
+    }
+    setCurrentTaskCallback(func_80021B20);
+}
 
 void initializeCurrentPlayerState2(void) {
     D_8013B0D8->unk08C = 0xB84;
