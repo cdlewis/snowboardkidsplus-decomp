@@ -65,6 +65,7 @@ typedef struct PlayerCollisionRegion {
     s16 pitch, yaw;
 } PlayerCollisionRegion;
 #define TRIANGLE_SCRATCHPAD ((TriangleScratchpad *)0x1F800000)
+#define QUAD_SCRATCHPAD ((QuadScratchpad *)0x1F800000)
 
 /* Indexed flat triangle in the current model primitive stream. */
 typedef struct ModelFlatTriangle {
@@ -72,6 +73,12 @@ typedef struct ModelFlatTriangle {
     u8 r, g, b, code;
     s16 vertexIndices[3];
 } ModelFlatTriangle;
+/* Indexed flat quad in the current model primitive stream. */
+typedef struct ModelFlatQuad {
+    u32 unk00;
+    u8 r, g, b, code;
+    u16 vertexIndices[4];
+} ModelFlatQuad;
 typedef struct TriangleScratchpad {
     u32 unk00;
     void (*emitTriangle)(TriangleScratchVertex *);
@@ -80,6 +87,15 @@ typedef struct TriangleScratchpad {
     u8 unk67[9];
     TriangleScratchVertex vertices[3];
 } TriangleScratchpad;
+
+typedef struct QuadScratchpad {
+    u32 unk00;
+    void (*emitQuad)(TriangleScratchVertex *);
+    u8 unk08[0x5C];
+    u8 r, g, b;
+    u8 unk67[9];
+    TriangleScratchVertex vertices[4];
+} QuadScratchpad;
 
 typedef struct FadingTextResource {
     s32 duration;
@@ -434,6 +450,8 @@ void func_8005D828(RacePlayer *player, PlayerCollisionRegion *region);
 void func_8005B460(void);
 void func_8005B6C0(void);
 void func_80052530(TriangleScratchVertex *vertices);
+void func_80052C1C(TriangleScratchVertex *vertices);
+void func_800542BC(TriangleScratchVertex *vertices, s32 flags);
 
 void func_80068D1C(void);
 void func_800692E8(void);
@@ -753,7 +771,18 @@ void processTexturedTrianglePrimitive(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80055200);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80055390);
+void drawIndexedFlatQuad(void) {
+    ModelFlatQuad *primitive = (ModelFlatQuad *)D_8013B680;
+    QUAD_SCRATCHPAD->r = primitive->r;
+    QUAD_SCRATCHPAD->g = primitive->g;
+    QUAD_SCRATCHPAD->b = primitive->b;
+    QUAD_SCRATCHPAD->emitQuad = func_80052C1C;
+    QUAD_SCRATCHPAD->vertices[0].position = D_8013B688[primitive->vertexIndices[0]];
+    QUAD_SCRATCHPAD->vertices[1].position = D_8013B688[primitive->vertexIndices[1]];
+    QUAD_SCRATCHPAD->vertices[2].position = D_8013B688[primitive->vertexIndices[2]];
+    QUAD_SCRATCHPAD->vertices[3].position = D_8013B688[primitive->vertexIndices[3]];
+    func_800542BC(QUAD_SCRATCHPAD->vertices, 0);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800554C4);
 
