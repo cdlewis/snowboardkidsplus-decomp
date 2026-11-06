@@ -2382,3 +2382,5 @@ waitForStatsScoreCountStartTask = 0x8003B94C; // type:func
 initializeResultDisplayTask = 0x80036AB8; // type:func
 
 createShrinkingSpriteTask = 0x8007B034; // type:func
+
+addTexturedQuad = 0x800603C4; // type:func

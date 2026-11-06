@@ -1232,7 +1232,30 @@ void addGouraudQuad(u32 *orderingTable, s32 x0, s32 y0, s32 x1, s32 y1,
     GsOUT_PACKET_P = (u32)(poly + 1);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800603C4);
+void addTexturedQuad(u32 *orderingTable, s32 x0, s32 y0, s32 x1, s32 y1,
+                  s32 x2, s32 y2, s32 x3, s32 y3, s32 flags, u8 tpage, s32 clut,
+                  s32 u0, s32 v0, s32 u1, s32 v1, s32 u2, s32 v2,
+                  s32 u3, s32 v3, s32 r, s32 g, s32 b) {
+    POLY_FT4 *poly = (POLY_FT4 *)GsOUT_PACKET_P;
+    poly->tag = (sizeof(*poly) / sizeof(u32) - 1) << 24;
+    setcode(poly, POLY_FT4_CODE | flags);
+    poly->tpage = tpage;
+    poly->clut = clut;
+    setXY3(poly, x0, y0, x1, y1, x2, y2);
+    poly->x3 = x3;
+    poly->y3 = y3;
+    poly->u0 = u0;
+    poly->v0 = v0;
+    poly->u1 = u1;
+    poly->v1 = v1;
+    poly->u2 = u2;
+    poly->v2 = v2;
+    poly->u3 = u3;
+    poly->v3 = v3;
+    setRGB0(poly, r, g, b);
+    addPrim(orderingTable, poly);
+    GsOUT_PACKET_P = (u32)(poly + 1);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80060518);
 
