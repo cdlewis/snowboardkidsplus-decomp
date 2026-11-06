@@ -2808,3 +2808,6 @@ beginAudioFadeCountdownTask = 0x800A7B9C; // type:func
 updateCurrentPlayerState23MotionAndTimer = 0x80024F10; // type:func
 
 createPlayerRingEffectTask = 0x80068230; // type:func
+
+drawRotatedSpriteByIndex = 0x8006CDA4; // type:func
+gRotatedSpriteTemplate = 0x8013BE08; // size:0x24 defined:true

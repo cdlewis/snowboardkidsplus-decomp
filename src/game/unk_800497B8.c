@@ -3338,7 +3338,49 @@ void addDrawPagePacket(DR_TPAGE *source, GsOT *ot, u16 depth) {
     func_800BF2C8((u32)(packet + 1));
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006CDA4);
+void drawRotatedSpriteByIndex(s32 x, s32 y, s32 index, s32 paletteIndex, s16 blendMode, s16 angle, GsOT *ot, u16 depth) {
+    s32 palette = paletteIndex;
+    s32 blend;
+    s32 transparent;
+    TexturedQuadFrame *frame;
+    TextureRegionSet *texture;
+    TextureRegion *region;
+    GsSPRITE *sprite;
+    if (blendMode >= 0) {
+        blend = blendMode;
+        transparent = 1;
+    } else {
+        blend = 0;
+        transparent = 0;
+    }
+    frame = &D_8012DFF4[index];
+    texture = &D_8012DDA4[frame->textureIndex];
+    region = &texture->regions[frame->frameIndex];
+    sprite = &gRotatedSpriteTemplate;
+    sprite->attribute = 0;
+    if (transparent == 1) {
+        sprite->attribute = 0x40000000;
+        sprite->attribute |= blend << 28;
+    }
+    sprite->x = x;
+    sprite->y = y;
+    sprite->w = region->w;
+    sprite->h = region->h;
+    sprite->tpage = GetTPage(texture->depth, blend, texture->x, texture->y);
+    sprite->u = region->u;
+    sprite->v = region->v;
+    sprite->cx = texture->clutX;
+    sprite->cy = texture->clutY + palette;
+    sprite->r = gTexturedSpriteTemplate.r0;
+    sprite->g = gTexturedSpriteTemplate.g0;
+    sprite->b = gTexturedSpriteTemplate.b0;
+    sprite->mx = region->w / 2;
+    sprite->my = region->h / 2;
+    sprite->scalex = 0x1000;
+    sprite->scaley = 0x1000;
+    sprite->rotate = -(angle << 12);
+    GsSortSprite(sprite, ot, depth);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006CF38);
 

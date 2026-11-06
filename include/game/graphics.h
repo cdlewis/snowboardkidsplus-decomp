@@ -105,6 +105,7 @@ typedef struct SpritePrimitiveTemplate {
 } SpritePrimitiveTemplate;
 
 extern SpritePrimitiveTemplate gSpritePrimitiveTemplate;
+extern GsSPRITE gRotatedSpriteTemplate;
 #define gSpriteTemplate (gSpritePrimitiveTemplate.sprite)
 extern TexturedSpritePacket gTexturedSpriteTemplate;
 
@@ -316,3 +317,6 @@ void drawWrappedText16x16(s16 x, s16 y, s16 columns, const char *text,
                           s16 palette, s16 blend, GsOT *ot, u16 depth);
 void func_8006F8A4(s16 x, s16 y, s16 w, s16 h, const char *text,
                    s16 palette, s16 blend, GsOT *ot, u16 depth);
+
+void drawRotatedSpriteByIndex(s32 x, s32 y, s32 index, s32 paletteIndex,
+                              s16 blendMode, s16 angle, GsOT *ot, u16 depth);

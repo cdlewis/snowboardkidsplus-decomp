@@ -792,6 +792,16 @@ segments:
     subsegments:
       - {start: 0x12C000, type: .bss, name: game/sprite_templates}
 
+  - name: game_rotated_sprite_template_bss
+    type: code
+    start: 0x12C000
+    vram: 0x8013BE08
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: .bss, name: game/sprite_templates, linker_section: .bss.rotated_sprite}
+
   - name: game_state_value_history_bss
     type: code
     start: 0x12C000
