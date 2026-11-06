@@ -2138,3 +2138,5 @@ queueTaskModeSectorRead = 0x800A0E28; // type:func
 slideInSlidingDisplayTask = 0x800342FC; // type:func
 
 drawCurrentTaskPlayerResults = 0x800375B0; // type:func
+
+drawCurrentTaskTimeRecordDetails = 0x8003A008; // type:func
