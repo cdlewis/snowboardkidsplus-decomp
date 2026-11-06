@@ -156,6 +156,8 @@ selectGeometryRecord = 0x8004A6F0; // type:func
 copySelectedRecordToCurrentPlayer = 0x8002A560; // type:func
 smoothAndScaleCurrentPlayerInput = 0x8002A5A0; // type:func
 clampCurrentPlayerHorizontalVector = 0x8002A7B4; // type:func
+// Clamp a vector's X/Z length to the current player's signed limit at 0x130.
+clampVectorToCurrentPlayerLimit = 0x8002A6AC; // type:func
 
 // Initialize a background using the fixed cell and tile buffers.
 initDefaultBackground = 0x8002F308; // type:func

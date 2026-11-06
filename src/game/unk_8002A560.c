@@ -35,7 +35,13 @@ s16 smoothAndScaleCurrentPlayerInput(s32 magnitude, s16 input) {
     return input * factor / 496;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002A560", func_8002A6AC);
+void clampVectorToCurrentPlayerLimit(VECTOR *vector) {
+    s32 length = SquareRoot0(vector->vx * vector->vx + vector->vz * vector->vz);
+    if (length > D_8013B0D8->unk130) {
+        vector->vx = vector->vx * D_8013B0D8->unk130 / length;
+        vector->vz = vector->vz * D_8013B0D8->unk130 / length;
+    }
+}
 
 void clampCurrentPlayerHorizontalVector(VECTOR *vector) {
     s32 magnitude;
