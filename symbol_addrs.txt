@@ -2065,6 +2065,7 @@ drawCurrentTaskPanel = 0x8003C55C; // type:func
 drawSpriteTextureRegion = 0x8006CB70; // type:func
 addSpritePacket = 0x8006CC90; // type:func
 addDrawPagePacket = 0x8006CD28; // type:func
+drawWrappedDoubleByteText = 0x8006E998; // type:func
 
 drawCurrentTaskTimeMenu = 0x80037D18; // type:func
 drawTaskTimeMenuAndSetFlag10OnInput = 0x80037D90; // type:func

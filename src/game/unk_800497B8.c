@@ -2848,7 +2848,38 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006E5E0);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006E814);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006E998);
+void drawWrappedDoubleByteText(s16 x, s16 y, s16 columns, s8 *text, s16 palette, s16 blend, GsOT *ot, u16 depth) {
+    s16 startX = x;
+    s16 savedColumns = columns;
+    s16 column;
+    s16 currentPalette = palette;
+    s16 originalPalette = palette;
+    column = 0;
+    while (*text) {
+        if (column >= columns) {
+            x = startX;
+            y += 16;
+            column = 0;
+        }
+        if (*text == '\n') {
+            column = savedColumns;
+            text++;
+            continue;
+        }
+        if (*text == 'c') {
+            if ((u32)((u8)text[1] - '0') < 10) {
+                currentPalette = text[1] - '0';
+            } else {
+                currentPalette = originalPalette;
+            }
+        } else {
+            func_8006EB00(x, y, 8, 16, text, currentPalette, blend, ot, depth);
+            x += 8;
+            column++;
+        }
+        text += 2;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006EB00);
 

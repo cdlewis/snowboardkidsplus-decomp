@@ -290,3 +290,8 @@ void func_8006F57C(s16 x, s16 y, s16 count, const char *text, s32 palette,
 void drawAnimatedSprite16(s16 frame, s16 x, s16 y, s16 unused, GsOT *ot, u16 depth);
 void drawIndexedFlatTriangle(void);
 void drawIndexedFlatQuad(void);
+
+void drawWrappedDoubleByteText(s16 x, s16 y, s16 columns, s8 *text,
+                               s16 palette, s16 blend, GsOT *ot, u16 depth);
+void func_8006EB00(s16 x, s16 y, s16 w, s16 h, s8 *text, s16 palette,
+                   s16 blend, GsOT *ot, u16 depth);
