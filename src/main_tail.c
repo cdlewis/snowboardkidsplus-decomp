@@ -189,6 +189,7 @@ extern u8 D_8013B562;
 extern u8 D_8013AF3A __attribute__((section(".data")));
 
 
+void func_8009766C(void);
 void func_8009488C(void);
 void func_800187B8(u8 voice);
 
@@ -513,7 +514,34 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_80096EC8);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800972B8);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009747C);
+void loadCurrentPlayerModelPose(const s16 *values) {
+    RacePlayer *player;
+    s16 i;
+    initCurrentPlayerModelParts();
+    player = D_8013B0D8;
+    for (i = 0; i < player->modelPartCount; i++) {
+        player->unk5BC[i].x = *values++;
+        player->unk5BC[i].y = *values++;
+        player->unk5BC[i].z = *values++;
+    }
+    {
+        RacePlayer *translationPlayer = D_8013B0D8;
+        translationPlayer->unk62C[0].x = (*values + 2) / 4;
+        values++;
+        translationPlayer->unk62C[0].y = (*values + 2) / 4;
+        values++;
+        translationPlayer->unk62C[0].z = (*values + 2) / 4;
+        values++;
+        translationPlayer->unk62C[1].z = -(*values + 2) / 4;
+        values++;
+        translationPlayer->unk62C[1].y = (*values + 2) / 4;
+        values++;
+        translationPlayer->unk62C[1].x = (*values + 2) / 4;
+        values++;
+    }
+    setCurrentPlayerFinalPartTranslations(values);
+    func_8009766C();
+}
 
 void setCurrentPlayerFinalPartTranslations(const s16 *values) {
     RacePlayer *player = D_8013B0D8;

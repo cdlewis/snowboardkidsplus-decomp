@@ -170,6 +170,7 @@ s16 isFirstPlayerUsingCallback26D10(void);
 void clearCurrentPlayerSequenceState(void);
 void updateCurrentPlayerFromTaskPhase(void);
 
+void loadCurrentPlayerModelPose(const s16 *values);
 void setCurrentPlayerFinalPartTranslations(const s16 *values);
 void copyPlayerPaletteRowWithTransition(s16 playerIndex, s32 unused, s32 paletteRow, u16 mode);
 void copyPlayerPaletteRow(s16 playerIndex);
