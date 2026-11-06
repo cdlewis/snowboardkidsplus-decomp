@@ -20,6 +20,7 @@
 #include "game/movement.h"
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
+#include "game/menu_selection_state.h"
 
 #define INDEXED_SECTOR_READ_DESTINATION ((void *)0x801F2080)
 
@@ -138,6 +139,7 @@ void func_8008D200(void);
 void func_8008DDC0(void);
 void func_8008EC50(void);
 void func_80090450(void);
+void func_80092090(void);
 void func_800A0AA8(void);
 void func_800A0EE8(void);
 void queueModeIndexedSectorRead(s16 mode, s16 index);
@@ -256,7 +258,28 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_800916F4);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_80091B80);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_80091FAC);
+void initializeCountedSelectionBoundsTask(void) {
+    RECT *bounds;
+    D_8013AE98->data1C++;
+    D_8013AE88->data18 = 0;
+    D_8013AE88->data1A = 0;
+    if (D_8013AE88->resource14 != 0xFFFF) { for (;;) {} }
+    D_8013AE88->resource14 = allocateTaskResource();
+    if (D_8013AE88->resource16 != 0xFFFF) { for (;;) {} }
+    D_8013AE88->resource16 = allocateTaskResource();
+    D_801300AC.selection = 0;
+    D_801300AC.previousSelection = 0;
+    D_801300B8[0].x = 0;
+    D_801300B8[0].y = 0;
+    D_801300B8[0].w = -1;
+    D_801300B8[0].h = -1;
+    D_801300B8[1].x = 0;
+    bounds = &D_801300B8[1];
+    bounds->y = 0;
+    bounds->w = -1;
+    bounds->h = -1;
+    setCurrentTaskCallback(func_80092090);
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_80092090);
 
