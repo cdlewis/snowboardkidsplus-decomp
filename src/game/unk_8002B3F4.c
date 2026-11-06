@@ -28,6 +28,13 @@ typedef struct FallingSpriteEffect {
     s16 palette;
 } FallingSpriteEffect;
 
+typedef struct TimeRecordDetailCountdownResource {
+    u8 unk00[8];
+    s16 timer;
+    s16 unk0A;
+    u8 unk0C[0xF4];
+} TimeRecordDetailCountdownResource;
+
 typedef struct MenuTimeResource {
     s16 selection;
     s16 unk02;
@@ -257,6 +264,7 @@ void func_80039210(void);
 void func_8003BE58(TaskResourceRecord *resource);
 void func_8003C5D8(void);
 void advanceCurrentTaskPanelTimer(void);
+void func_8003A3D8(void);
 void func_80039484(TaskResourceRecord *resource);
 void func_80039564(TaskResourceRecord *resource);
 void func_80039B34(TaskResourceRecord *resource);
@@ -1447,7 +1455,21 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003A158);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003A3D8);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003A478);
+void updateTaskTimeRecordDetailCountdown(void) {
+    TimeRecordDetailCountdownResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (TimeRecordDetailCountdownResource *)&D_800D9504[D_8013AE88->resource14];
+    resource->unk0A = 4;
+    if (--resource->timer == 0) {
+        resource->timer = 10;
+        setCurrentTaskCallback(func_8003A3D8);
+    }
+    func_80039484((TaskResourceRecord *)resource);
+    func_80039564((TaskResourceRecord *)resource);
+    func_80039B34((TaskResourceRecord *)resource);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003A520);
 
