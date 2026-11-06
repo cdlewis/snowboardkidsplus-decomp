@@ -19,6 +19,8 @@ typedef struct GsCOORDINATE2 {
     struct GsCOORDINATE2 *super, *sub;
 } GsCOORDINATE2;
 
+void GsInitCoordinate2(GsCOORDINATE2 *super, GsCOORDINATE2 *coord);
+
 #ifdef GS_PACKET_ABSOLUTE_ADDRESSING
 extern u32 GsOUT_PACKET_P __attribute__((section(".data")));
 #else

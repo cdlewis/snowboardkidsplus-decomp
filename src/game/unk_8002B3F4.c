@@ -146,7 +146,7 @@ void func_80032E94(void);
 void func_80034AE8(void);
 void func_8003452C(void);
 void func_80033100(void);
-void func_80048668(void);
+void func_80048714(void);
 void func_8004531C(void);
 void func_8003772C(void);
 void func_80037F74(void);
@@ -367,7 +367,7 @@ void startPlayerTimerTask(RacePlayer *player) {
     } else {
         player->unk0FF = 0;
     }
-    func_80014930(player->task, func_80048668);
+    func_80014930(player->task, initPlayerTimerTask);
     D_8013AE8C->data18 = player->playerIndex;
 }
 
@@ -1255,7 +1255,14 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800481A8);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80048340);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80048668);
+void initPlayerTimerTask(void) {
+    PlayerTimerState *timer = &D_80120E90[D_8013AE88->data18].timer;
+
+    GsInitCoordinate2(0, &timer->coordinate);
+    timer->unk60 = 0;
+    D_80120E90[D_8013AE88->data18].unk0FE = 1;
+    setCurrentTaskCallback(func_80048714);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80048714);
 

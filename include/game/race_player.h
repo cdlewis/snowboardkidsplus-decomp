@@ -2,6 +2,14 @@
 
 #include "game/random.h"
 #include "game/task.h"
+#include "psx/libgs.h"
+
+typedef struct PlayerTimerState {
+    GsCOORDINATE2 coordinate;
+    u8 unk50[0x10];
+    s16 unk60;
+    u8 unk62[6];
+} PlayerTimerState;
 
 typedef struct RacePlayerVector {
     s16 x, y, z, pad;
@@ -93,7 +101,8 @@ struct RacePlayer {
     s16 unk96C;
     u16 unk96E;
     u16 unk970;
-    u8 unk972[0x6A];
+    u8 unk972[2];
+    PlayerTimerState timer;
 };
 
 extern RacePlayer D_80120E90[];
@@ -117,6 +126,7 @@ void setCurrentPlayerFinalPartTranslations(const s16 *values);
 void copyPlayerPaletteRow(s16 playerIndex);
 void clearCurrentPlayerTaskState(void);
 void startPlayerTimerTask(RacePlayer *player);
+void initPlayerTimerTask(void);
 void stopPlayerSound(u16 playerIndex);
 s32 requestCurrentPlayerAction17(void);
 s16 countCurrentPlayerInputGroups(void);

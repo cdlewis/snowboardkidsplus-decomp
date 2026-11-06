@@ -48,6 +48,7 @@ adjustGroupedIndexForMode = 0x800811E0; // type:func
 getGroupedIndexBase = 0x80081244; // type:func
 
 startPlayerTimerTask = 0x8002E5D8; // type:func
+initPlayerTimerTask = 0x80048668; // type:func
 
 getGroupedIndexOffsetPlus216 = 0x80081318; // type:func
 // Convert indices below 9 by division by 3, 9..11 by subtracting 9, and 12+ by subtracting 12.
