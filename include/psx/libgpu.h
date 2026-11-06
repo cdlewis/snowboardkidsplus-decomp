@@ -175,3 +175,5 @@ void SetDrawMove(DR_MOVE *packet, RECT *rect, s32 x, s32 y);
 void SetDrawMode(DR_MODE *packet, s32 dfe, s32 dtd, s32 tpage, RECT *window);
 
 s32 DrawSync(s32 mode);
+
+int MoveImage(RECT *rect, int x, int y);

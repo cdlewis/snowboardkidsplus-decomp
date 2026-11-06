@@ -45,6 +45,8 @@ extern GameTask *D_8013B378;
 extern GameTask *D_8013B37C;
 extern GameTask *D_8013BDA8[4];
 
+s8 gTaskImageSourceRows[12] = {8, 1, 2, 3, 4, 5, 6, 7, 9, 0, 0, 0};
+
 s16 func_80070794(s32 id);
 void func_80072340(s32 x, s32 y, s32 width, s32 height, s32 r, s32 g, s32 b,
                    GsOT *ot, u16 depth);
@@ -105,7 +107,24 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_8007102C);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80071300);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_800713B0);
+void copyIndexedTaskImagesToVram(s16 index) {
+    RECT rect;
+    rect.x = 422;
+    rect.y = 0;
+    rect.w = 26;
+    rect.h = 32;
+    MoveImage(&rect, 960, 192);
+    rect.x = 422;
+    rect.y = 32;
+    rect.w = 16;
+    rect.h = 32;
+    MoveImage(&rect, 986, 192);
+    rect.x = 384;
+    rect.y = gTaskImageSourceRows[index] * 24;
+    rect.w = 38;
+    rect.h = 24;
+    MoveImage(&rect, 960, 168);
+}
 
 void clearTaskReference(void) {
     D_8013B378 = NULL;

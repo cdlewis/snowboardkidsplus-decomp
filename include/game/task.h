@@ -89,3 +89,5 @@ GameTask *createValueTransitionTask(u32 *value, u32 target, u32 step);
 void begin30TickTransitionOnFlag10(void);
 
 s16 getTaskResourceGroupedIndex(GameTask *task, s16 index);
+
+void copyIndexedTaskImagesToVram(s16 index);

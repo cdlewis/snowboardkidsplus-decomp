@@ -569,6 +569,8 @@ segments:
       - [0x11DC60, data, 11DC60]
       - [0x11F0E4, .data, game/sprite_templates]
       - [0x11F0FC, data, 11F0FC]
+      - [0x11F900, .data, game/unk_80070274]
+      - [0x11F90C, data, 11F90C]
       - [0x11F93C, .data, game/unk_8007CC78]
       - [0x11F97C, data, 11F97C]
       - {start: 0x122F38, type: .data, name: main_tail, linker_section: .data.indexed_sector_ranges}
