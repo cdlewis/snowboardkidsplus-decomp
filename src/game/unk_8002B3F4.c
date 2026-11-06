@@ -405,7 +405,7 @@ void func_8002BC2C(void);
 void func_8002B820(void);
 void func_80035D5C(ResultDisplayResource *resource);
 void func_800361C4(ResultDisplayResource *resource);
-void func_80035FAC(ResultDisplayResource *resource);
+void drawFirstPlayerResultCounterAndIcon(ResultDisplayResource *resource);
 void drawMenuTimeWithBrightness(MenuTimeResource *resource);
 void func_800379B8(TaskResourceRecord *resource);
 void drawLapTimeLabel(TaskMenuFadeResource *resource);
@@ -1540,7 +1540,19 @@ void drawResultNumberAndIcon(ResultDisplayResource *resource) {
     func_8006C998(72, -63, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80035FAC);
+void drawFirstPlayerResultCounterAndIcon(ResultDisplayResource *resource) {
+    s32 palette = 1;
+    if (resource->unk06 == 3) {
+        palette = 4;
+    }
+    setSpriteColor(128, 128, 128);
+    if (resource->unk06 == 3) {
+        func_8006C998(24, -11, 397, 5, -1, &D_800EBFF0[D_8013AF78], 1);
+    }
+    func_8006DFB4(32, -15, 5, 0, D_80120E90[0].unk01C, palette, -1,
+                  &D_800EBFF0[D_8013AF78], 1);
+    func_8006C998(72, -15, 26, palette, -1, &D_800EBFF0[D_8013AF78], 1);
+}
 
 void drawFirstPlayerResultNumberAndIcon(ResultDisplayResource *resource) {
     setSpriteColor(128, 128, 128);
@@ -1562,7 +1574,7 @@ void waitResultDisplayTaskFlagsTask(void) {
     }
     func_80035D5C(resource);
     drawResultNumberAndIcon(resource);
-    func_80035FAC(resource);
+    drawFirstPlayerResultCounterAndIcon(resource);
     drawFirstPlayerResultNumberAndIcon(resource);
     func_800361C4(resource);
 }
@@ -1587,7 +1599,7 @@ void waitResultDisplayInputTask(void) {
     }
     func_80035D5C(resource);
     drawResultNumberAndIcon(resource);
-    func_80035FAC(resource);
+    drawFirstPlayerResultCounterAndIcon(resource);
     drawFirstPlayerResultNumberAndIcon(resource);
     func_800361C4(resource);
 }
@@ -1609,7 +1621,7 @@ void waitResultDisplayConfirmationTask(void) {
     }
     func_80035D5C(resource);
     drawResultNumberAndIcon(resource);
-    func_80035FAC(resource);
+    drawFirstPlayerResultCounterAndIcon(resource);
     func_800361C4(resource);
 }
 
