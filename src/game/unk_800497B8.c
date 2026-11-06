@@ -1804,7 +1804,31 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006BEEC);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006BF14);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006C018);
+void drawStretchedTexturedQuad(s16 x, s16 y, s16 width, s16 height, s32 index, GsOT *ot, u16 depth) {
+    POLY_FT4 *quad = &gTexturedQuadTemplate;
+    TextureRegion *region;
+    s16 right;
+    quad->y0 = y;
+    quad->y1 = y;
+    y += height;
+    quad->y2 = y;
+    quad->y3 = y;
+    right = x + width;
+    quad->x0 = x;
+    quad->x1 = right;
+    quad->x2 = x;
+    quad->x3 = right;
+    region = &D_8013B6AC[index];
+    quad->u0 = region->u;
+    quad->v0 = region->v;
+    quad->u1 = region->u + region->w;
+    quad->v1 = region->v;
+    quad->u2 = region->u;
+    quad->v2 = region->v + region->h;
+    quad->u3 = region->u + region->w;
+    quad->v3 = region->v + region->h;
+    GsSortPoly(quad, ot, depth);
+}
 
 void drawTexturedQuadByIndex(s16 x, s16 y, s32 index, GsOT *ot, u16 depth) {
     TexturedQuadFrame *frame = &D_8012DFF4[index];
