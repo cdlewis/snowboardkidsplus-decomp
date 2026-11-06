@@ -1,5 +1,7 @@
 #pragma once
 
+void advanceCurrentPlayerTaskPhaseMovement(void);
+
 void resetCurrentPlayerForCallback205B8(void);
 void initializeCurrentPlayerDefaultState(void);
 void func_8001F1B4(void);

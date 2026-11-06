@@ -5,6 +5,7 @@
 #include "game/race_camera.h"
 #include "game/selected_record.h"
 #include "game/graphics.h"
+#include "game/coordinate.h"
 #include "game/linear_random.h"
 #include "game/random.h"
 #include "game/offset_archive.h"
@@ -51,7 +52,6 @@ void advanceCurrentPlayerTaskOnAnimationFlag(void);
 void func_80025B08(void);
 void func_80025DD8(void);
 void func_80025FAC(void);
-void func_80026010(void);
 void func_800260E4(void);
 void func_80026500(void);
 void func_80026754(void);
@@ -62,7 +62,7 @@ void func_80027624(void);
 TaskCallback gCurrentPlayerTaskPhaseCallbacks[8]
     __attribute__((section(".data.player_task_phases"))) = {
     func_80025840, advanceCurrentPlayerTaskOnAnimationFlag, func_80025B08, func_80025DD8,
-    func_80025FAC, func_80026010, func_800260E4, func_80026500
+    func_80025FAC, advanceCurrentPlayerTaskPhaseMovement, func_800260E4, func_80026500
 };
 
 
@@ -501,7 +501,24 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80025DD8);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80025FAC);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80026010);
+void advanceCurrentPlayerTaskPhaseMovement(void) {
+    RacePlayer *player;
+    D_8013AF90->vx = 0;
+    D_8013AF90->vy = D_8013B0D8->unk110;
+    D_8013AF90->vz = 0;
+    RotMatrix(D_8013AF90, D_8013AF98);
+    D_8013AF90->vx = 0;
+    D_8013AF90->vy = 0;
+    D_8013AF90->vz = D_8013B0D8->unk090;
+    ApplyMatrix(D_8013AF98, D_8013AF90, D_8013AF88);
+    player = D_8013B0D8;
+    player->x += D_8013AF88->vx;
+    player->z += D_8013AF88->vz;
+    if (--player->unk08C == 0) {
+        D_8013AE88->data1A++;
+        player->unk08C = 100;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_800260E4);
 
