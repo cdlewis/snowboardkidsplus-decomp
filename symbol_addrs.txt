@@ -2130,3 +2130,5 @@ gCdCommands = 0x800D7B84; // size:0x20
 applyStereoSoundOption = 0x80017BAC; // type:func
 
 advanceCurrentPlayerTaskOnAnimationFlag = 0x80025A38; // type:func
+
+setSaveRecordMaskTier = 0x8008BF20; // type:func

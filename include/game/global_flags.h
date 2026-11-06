@@ -35,6 +35,8 @@ s32 getSaveRecordFlagGroupIndex(s16 recordIndex, s16 groupIndex);
 
 s16 getSaveRecordMaskTier(s16 recordIndex, s16 maskIndex);
 
+void setSaveRecordMaskTier(s16 recordIndex, s16 maskIndex, s16 tier);
+
 s16 getStateMaskTier(s16 stateIndex, s16 maskIndex);
 
 s32 getStateMaskPair(s16 stateIndex, s16 maskIndex, s16 pairIndex);
