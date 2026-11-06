@@ -1,6 +1,7 @@
 #pragma once
 
 #include "decomp/types.h"
+#include "psx/libgte.h"
 
 typedef struct SelectedRecord {
     u16 vertexIndices[3];
@@ -23,10 +24,14 @@ extern s16 *D_8013B208;
 #else
 extern SelectedRecord *D_8013B1F0 __attribute__((section(".data")));
 extern s16 D_8013B1FE __attribute__((section(".data")));
+extern s16 *D_8013B200 __attribute__((section(".data")));
+extern s16 *D_8013B204 __attribute__((section(".data")));
+extern s16 *D_8013B208 __attribute__((section(".data")));
 #endif
 
 
 void bindGeometryRecordData(s16 *data);
 void selectGeometryRecord(s16 index);
+void computeSelectedTriangleNormal(VECTOR *normal);
 
 void getGeometryPlacementTransform(s16 index, s32 *x, s32 *y, s32 *z, u16 *angle);

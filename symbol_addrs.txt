@@ -506,6 +506,7 @@ Square0 = 0x800BB080; // type:func defined:true
 AverageZ3 = 0x800BB0A8; // type:func defined:true
 AverageZ4 = 0x800BB0C8; // type:func defined:true
 OuterProduct12 = 0x800BB0EC; // type:func defined:true
+computeSelectedTriangleNormal = 0x8002A3A4; // type:func
 OuterProduct0 = 0x800BB144; // type:func defined:true
 Lzc = 0x800BB19C; // type:func defined:true
 RotTransPers = 0x800BB1B8; // type:func defined:true

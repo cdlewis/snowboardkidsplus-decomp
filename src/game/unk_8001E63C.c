@@ -266,6 +266,16 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80029EE4);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80029FE4);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8002A3A4);
+void computeSelectedTriangleNormal(VECTOR *normal) {
+    VECTOR first, second;
+
+    first.vx = D_8013B204[0] - D_8013B200[0];
+    first.vy = D_8013B204[1] - D_8013B200[1];
+    first.vz = D_8013B204[2] - D_8013B200[2];
+    second.vx = D_8013B208[0] - D_8013B204[0];
+    second.vy = D_8013B208[1] - D_8013B204[1];
+    second.vz = D_8013B208[2] - D_8013B204[2];
+    OuterProduct0(&first, &second, normal);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8002A454);
