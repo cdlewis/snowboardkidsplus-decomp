@@ -137,6 +137,8 @@ segments:
       - [0x6D478, c, game/unk_8007CC78]
       - [0x7CE30, c, engine/game_options]
       - [0x7CF08, c, main_tail]
+      # The UI continuation accesses the transition flag absolutely.
+      - [0x92750, c, main_tail_ui]
       - [0x98A04, lib, libmath, divsf3, .text]
       - [0x98B54, lib, libmath, fixsfsi, .text]
       - [0x98C14, lib, libmath, fltsisf, .text]

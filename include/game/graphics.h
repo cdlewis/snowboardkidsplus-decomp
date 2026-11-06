@@ -9,6 +9,7 @@ typedef struct PlayerTextureOrigin {
 } PlayerTextureOrigin;
 
 extern PlayerTextureOrigin D_801204D4[4];
+extern POLY_F3 gNumberAdjustmentArrow;
 
 /* A DMA packet containing four GPU command words. */
 typedef struct GpuPacket4 {
