@@ -327,7 +327,7 @@ void func_8003AD48(TaskResourceRecord *resource);
 void func_8003B020(TaskResourceRecord *resource);
 void func_8003B2BC(TaskResourceRecord *resource);
 void func_8003B94C(void);
-void func_8003BAAC(void);
+void advanceTaskStatsCountdownAndPlaySound(void);
 void resetTaskStatsCountdown(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002B3F4);
@@ -1746,7 +1746,22 @@ void startTaskStatsCountdownAndPlaySound(void) {
     func_8003B2BC((TaskResourceRecord *)resource);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003BAAC);
+void advanceTaskStatsCountdownAndPlaySound(void) {
+    MenuCountdownResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (MenuCountdownResource *)&D_800D9504[D_8013AE88->resource14];
+    resource->unk06 = 1;
+    if (--resource->timer == 0) {
+        func_800181B0(0, 0x700, 0x20);
+        resource->timer = 20;
+        setCurrentTaskCallback(startTaskStatsCountdownAndPlaySound);
+    }
+    func_8003AAE0((TaskResourceRecord *)resource);
+    func_8003AD48((TaskResourceRecord *)resource);
+    func_8003B2BC((TaskResourceRecord *)resource);
+}
 
 void resetTaskStatsCountdown(void) {
     MenuCountdownResource *resource;
@@ -1758,7 +1773,7 @@ void resetTaskStatsCountdown(void) {
     if (--resource->timer == 0) {
         func_800181B0(0, 0x700, 0x20);
         resource->timer = 20;
-        setCurrentTaskCallback(func_8003BAAC);
+        setCurrentTaskCallback(advanceTaskStatsCountdownAndPlaySound);
     }
     func_8003AAE0((TaskResourceRecord *)resource);
     func_8003AD48((TaskResourceRecord *)resource);

@@ -2254,3 +2254,5 @@ updateTaskTimeRecordCountdownAndPlaySound = 0x8003A520; // type:func
 updateTaskTimeRecordCountdownPhase2AndPlaySound = 0x8003A5D8; // type:func
 
 startTaskStatsCountdownAndPlaySound = 0x8003B9F4; // type:func
+
+advanceTaskStatsCountdownAndPlaySound = 0x8003BAAC; // type:func
