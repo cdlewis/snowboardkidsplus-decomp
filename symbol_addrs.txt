@@ -2443,3 +2443,5 @@ tickMenuSoundDelayStage1Task = 0x8003908C; // type:func
 initializeTextSequenceTask = 0x800A0F14; // type:func
 
 deletePendingTaskSubtree = 0x80014A2C; // type:func
+
+waitResultDisplayTask = 0x80036940; // type:func

@@ -388,7 +388,8 @@ void func_8003A158(void);
 void func_80039484(RaceResultsFadeResource *resource);
 void func_80039564(RaceResultsFadeResource *resource);
 void func_80039B34(RaceResultsFadeResource *resource);
-void func_80036940(void);
+void func_8003686C(void);
+void waitResultDisplayTask(void);
 void func_80035D5C(ResultDisplayResource *resource);
 void func_800361C4(ResultDisplayResource *resource);
 void func_8003772C(void);
@@ -1489,7 +1490,24 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80036790);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003686C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80036940);
+void waitResultDisplayTask(void) {
+    ResultDisplayResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (ResultDisplayResource *)&D_800D9504[D_8013AE88->resource14];
+    resource->timer--;
+    if (D_8013AEE8[0] & 0xB0) {
+        resource->timer = 0;
+    }
+    if (resource->timer == 0) {
+        resource->timer = 20;
+        playSoundEffect(0, 0x700, 0x20);
+        setCurrentTaskCallback(func_8003686C);
+    }
+    func_80035D5C(resource);
+    func_800361C4(resource);
+}
 
 void fadeInResultDisplayTask(void) {
     ResultDisplayResource *resource;
@@ -1502,7 +1520,7 @@ void fadeInResultDisplayTask(void) {
     if (resource->brightness > 128) {
         resource->timer = 20;
         resource->brightness = 128;
-        setCurrentTaskCallback(func_80036940);
+        setCurrentTaskCallback(waitResultDisplayTask);
     }
     func_80035D5C(resource);
     func_800361C4(resource);
