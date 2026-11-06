@@ -1,3 +1,10 @@
+debugPositionXFormatAbsolute = 0x8013B214; // size:0x8 allow_duplicated:true
+debugPositionYFormatAbsolute = 0x8013B21C; // size:0x8 allow_duplicated:true
+debugPositionZFormatAbsolute = 0x8013B224; // size:0x8 allow_duplicated:true
+adjustDebugPositionAndDisplay = 0x8004D7F8; // type:func
+gDebugPositionXFormat = 0x8013B214; // size:0x8 defined:true allow_duplicated:true
+gDebugPositionYFormat = 0x8013B21C; // size:0x8 defined:true allow_duplicated:true
+gDebugPositionZFormat = 0x8013B224; // size:0x8 defined:true allow_duplicated:true
 initializeCourseVisualTask = 0x8005B978; // type:func
 gCourseVisualFrames = 0x8013B2C8; // size:0x4 defined:true
 D_8013B2CC = 0x8013B2CC; // size:0x4

@@ -8,3 +8,5 @@ extern SVECTOR *D_8013AF94 __attribute__((section(".data")));
 extern MATRIX *D_8013AF98 __attribute__((section(".data")));
 
 void setCoordinateRotationZYX(SVECTOR *rotation, GsCOORDINATE2 *coordinate);
+
+void adjustDebugPositionAndDisplay(VECTOR *position);

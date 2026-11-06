@@ -3,6 +3,7 @@
 #include "game/cd_queue.h"
 #define CONTROLLER_EFFECTS_ABSOLUTE_ADDRESSING
 #include "game/controller_effects.h"
+#include "game/controller.h"
 #define GS_PACKET_ABSOLUTE_ADDRESSING
 #include "game/graphics.h"
 #include "game/linear_random.h"
@@ -547,6 +548,15 @@ POLY_FT4 gSlidingQuadPacket
     159, 39, 159, 0, 0,
 };
 
+char gDebugPositionXFormat[8] __attribute__((section(".data.debug_position_formats"))) = "vx:%8d";
+char gDebugPositionYFormat[8] __attribute__((section(".data.debug_position_formats"))) = "vy:%8d";
+char gDebugPositionZFormat[8] __attribute__((section(".data.debug_position_formats"))) = "vz:%8d";
+
+/* Incomplete declarations retain the original absolute address loads. */
+extern char debugPositionXFormatAbsolute[];
+extern char debugPositionYFormatAbsolute[];
+extern char debugPositionZFormatAbsolute[];
+
 extern GameTask *D_8013B304 __attribute__((section(".data")));
 RECT gReadPixelRect __attribute__((section(".data.read_pixel_rect"))) = {0, 0, 1, 1};
 
@@ -624,6 +634,7 @@ void SetFarColor(s32 r, s32 g, s32 b);
 void SetFogNearFar(s32 near, s32 far, s32 h);
 void drawTaskObject(u16 index);
 void func_80049D48(s32 x, s32 y, const char *format, ...);
+void func_8006B4A0(s32 x, s32 y, const char *format, ...);
 void func_8006BEEC(s32 enabled);
 void func_80063B58(void);
 void func_80063DF4(void);
@@ -744,7 +755,17 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8004C968);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8004D330);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8004D7F8);
+void adjustDebugPositionAndDisplay(VECTOR *position) {
+    if (D_8013AEEC[1] & 0x1000) position->vx += 32;
+    if (D_8013AEEC[1] & 0x4000) position->vx -= 32;
+    if (D_8013AEEC[1] & 0x8000) position->vz += 32;
+    if (D_8013AEEC[1] & 0x2000) position->vz -= 32;
+    if (D_8013AEEC[1] & 8) position->vy += 32;
+    if (D_8013AEEC[1] & 2) position->vy -= 32;
+    func_8006B4A0(0, 10, debugPositionXFormatAbsolute, position->vx);
+    func_8006B4A0(0, 11, debugPositionYFormatAbsolute, position->vy);
+    func_8006B4A0(0, 12, debugPositionZFormatAbsolute, position->vz);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8004D93C);
 
