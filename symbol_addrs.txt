@@ -2548,3 +2548,7 @@ initPlayerCameraAndTarget = 0x8003E60C; // type:func
 
 handleMovieOutput = 0x8001A0EC; // type:func
 gMovieDecodeState = 0x8013BBB0; // size:0x38 defined:true
+
+initializeCurrentPlayerAttributes = 0x80029208; // type:func
+gPlayerVariantAttributes = 0x80123680; // size:0x110
+gPlayerCharacterAttributes = 0x80123790; // type:u16 size:0x8C
