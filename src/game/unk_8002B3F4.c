@@ -1627,7 +1627,22 @@ void updateTaskTimeRecordDetailCountdown(void) {
     func_80039B34((TaskResourceRecord *)resource);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003A520);
+void updateTaskTimeRecordCountdownAndPlaySound(void) {
+    TimeRecordDetailCountdownResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (TimeRecordDetailCountdownResource *)&D_800D9504[D_8013AE88->resource14];
+    resource->unk0A = 3;
+    if (--resource->timer == 0) {
+        func_800181B0(0, 0x700, 0x20);
+        resource->timer = 20;
+        setCurrentTaskCallback(updateTaskTimeRecordDetailCountdown);
+    }
+    drawTimeRecordHeader((TimeRecordHeaderResource *)resource);
+    func_80039564((TaskResourceRecord *)resource);
+    func_80039B34((TaskResourceRecord *)resource);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003A5D8);
 

@@ -2249,3 +2249,5 @@ initializeDualResource4C80EffectTask = 0x80047538; // type:func
 resetTaskStatsCountdown = 0x8003BB64; // type:func
 
 startTaskMenuCountdownAndPlaySound = 0x80038FD4; // type:func
+
+updateTaskTimeRecordCountdownAndPlaySound = 0x8003A520; // type:func
