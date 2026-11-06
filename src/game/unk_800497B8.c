@@ -64,6 +64,22 @@ typedef struct PlayerCollisionRegion {
     s16 minHeight, maxHeight;
     s16 pitch, yaw;
 } PlayerCollisionRegion;
+#define TRIANGLE_SCRATCHPAD ((TriangleScratchpad *)0x1F800000)
+
+/* Indexed flat triangle in the current model primitive stream. */
+typedef struct ModelFlatTriangle {
+    u32 unk00;
+    u8 r, g, b, code;
+    s16 vertexIndices[3];
+} ModelFlatTriangle;
+typedef struct TriangleScratchpad {
+    u32 unk00;
+    void (*emitTriangle)(TriangleScratchVertex *);
+    u8 unk08[0x5C];
+    u8 r, g, b;
+    u8 unk67[9];
+    TriangleScratchVertex vertices[3];
+} TriangleScratchpad;
 
 typedef struct FadingTextResource {
     s32 duration;
@@ -396,6 +412,9 @@ extern s32 D_8013B360;
 extern s32 D_8013B364;
 extern s32 D_8013B368;
 extern s32 D_8013B36C;
+extern ModelFlatTriangle *D_8013B680 __attribute__((section(".sdata")));
+extern SVECTOR *D_8013B688 __attribute__((section(".sdata")));
+
 extern u16 D_8013B376 __attribute__((section(".sdata")));
 
 
@@ -406,6 +425,7 @@ void func_80066474(void);
 void func_8005D828(RacePlayer *player, PlayerCollisionRegion *region);
 void func_8005B460(void);
 void func_8005B6C0(void);
+void func_80052530(TriangleScratchVertex *vertices);
 
 s32 func_80060DC8(u32 *tim);
 void func_80068D1C(void);
@@ -666,7 +686,17 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80053A34);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800542BC);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80054E70);
+void drawIndexedFlatTriangle(void) {
+    ModelFlatTriangle *primitive = D_8013B680;
+    TRIANGLE_SCRATCHPAD->emitTriangle = func_80052530;
+    TRIANGLE_SCRATCHPAD->r = primitive->r;
+    TRIANGLE_SCRATCHPAD->g = primitive->g;
+    TRIANGLE_SCRATCHPAD->b = primitive->b;
+    TRIANGLE_SCRATCHPAD->vertices[0].position = D_8013B688[primitive->vertexIndices[0]];
+    TRIANGLE_SCRATCHPAD->vertices[1].position = D_8013B688[primitive->vertexIndices[1]];
+    TRIANGLE_SCRATCHPAD->vertices[2].position = D_8013B688[primitive->vertexIndices[2]];
+    func_80053A34(TRIANGLE_SCRATCHPAD->vertices, 0);
+}
 
 void processGouraudTrianglePrimitive(void) {
     GouraudTrianglePrimitive *primitive = D_8013B680;

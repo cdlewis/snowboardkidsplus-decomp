@@ -12,6 +12,7 @@ updateCurrentPlayerAndRequestState30 = 0x800266A8; // type:func
 gCurrentPlayerState30TaskPhaseCallbacks = 0x80120A8C; // size:0xC defined:true
 updateActivePlayerRegionCollisions = 0x8005DD70; // type:func
 findIdentityMappedIndexOrZero = 0x800A046C; // type:func
+drawIndexedFlatTriangle = 0x80054E70; // type:func
 initializeViewAndSelectTaskCallback = 0x8002F584; // type:func
 updateCurrentPlayerTaskCountdown = 0x80026D10; // type:func
 drawFixedSpriteAndBottomBarTask = 0x8003597C; // type:func
