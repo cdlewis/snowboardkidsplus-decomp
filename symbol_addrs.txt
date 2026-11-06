@@ -2072,3 +2072,5 @@ slideInSpriteMotionTask = 0x80034F1C; // type:func
 startUnlockActionAfterCountdown = 0x800A4FB8; // type:func
 
 slideRaceTimeDisplayOut = 0x80033700; // type:func
+
+slideOutSlidingDisplayTask = 0x800341DC; // type:func
