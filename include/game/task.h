@@ -90,6 +90,7 @@ void resetTaskControlState(void);
 void initializeTaskCoordinateResource(void);
 void initializePlayerCoordinateEffectTask(void);
 void initializePlayerDualResourceEffectTask(void);
+void initializeDualResource4C80EffectTask(void);
 void initializeSlidingVisualSequenceTask(void);
 void initializeDualResourceSequenceTask(void);
 void initializeModeDependentDualResourceTask(void);
