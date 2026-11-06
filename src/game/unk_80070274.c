@@ -295,7 +295,17 @@ void updateScrollingBackgroundTask(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_800717E8);
+void drawTaskImagesOnBlackBackground(void) {
+    if (D_8013AE88->data18 == 0) {
+        func_800149A8();
+    } else {
+        setSpriteColor(128, 128, 128);
+        func_8006C998(-76, -11, 296, 0, -1, &D_800EBFF0[D_8013AF78], 1);
+        func_8006C998(-84, -16, 295, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+        addTilePacket(-160, -120, 320, 240, 0, 0, 0,
+                      &D_800EBFF0[D_8013AF78], 0xFFE);
+    }
+}
 
 s32 hasTaskReference(void) {
     return D_8013B378 != NULL;

@@ -2461,6 +2461,7 @@ initializePlayerVisualPairTask5E80 = 0x80047074; // type:func
 initializePlayerVisualPairTask6780 = 0x800472B8; // type:func
 
 updateScrollingBackgroundTask = 0x80071700; // type:func
+drawTaskImagesOnBlackBackground = 0x800717E8; // type:func
 
 createAnimatedSpriteTask = 0x80077390; // type:func
 
