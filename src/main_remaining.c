@@ -395,7 +395,25 @@ void resumeMusicSequence(void) {
     SsSeqReplay(gMusicSequenceId);
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80017FD8);
+void updateMusicSequenceFade(void) {
+    if (gMusicFadeMode != 0) {
+        if (gMusicFadeMode & 1) {
+            D_8013AF30 += gMusicFadeStep;
+            if (D_8013AF30 > 0x4000) {
+                D_8013AF30 = 0x4000;
+                gMusicFadeMode = 0;
+            }
+        } else {
+            D_8013AF30 -= gMusicFadeStep;
+            if (D_8013AF30 < 0) {
+                D_8013AF30 = 0;
+                gMusicFadeMode = 0;
+                stopMusicSequence();
+            }
+        }
+        SsSeqSetVol(gMusicSequenceId, D_8013AF30 >> 8, D_8013AF30 >> 8);
+    }
+}
 
 void startSoundSystem(void) {
     if (!gSoundSystemActive) {
