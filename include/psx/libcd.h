@@ -12,13 +12,21 @@ typedef struct CdlATV {
 } CdlATV;
 
 #define CdlNop 0x01
+#define CdlSetloc 0x02
+#define CdlSetmode 0x0E
 #define CdlStatRead 0x20
 
 #define CdlModeDA 1
 #define CdlModeAP 2
+#define CdlModeSize1 0x20
+#define CdlModeRT 0x40
+#define CdlModeSpeed 0x80
+#define CdlModeStream 0x100
 
 typedef void (*CdlCB)(u8 interrupt, u8 *result);
 
+s32 CdControl(u8 command, u8 *param, u8 *result);
+s32 CdRead2(s32 mode);
 s32 CdControlB(u8 command, u8 *param, u8 *result);
 s32 CdStatus(void);
 s32 CdMode(void);

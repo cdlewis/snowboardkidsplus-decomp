@@ -139,7 +139,7 @@ extern void *gMemoryCardLoadDestination;
 int strcmp(const char *, const char *);
 
 u32 *func_8001A2B8(MovieDecodeState *state);
-void func_8001A474(CdlLOC *location);
+void startMovieCdRead(CdlLOC *location);
 void func_8002EE0C(void);
 void func_8001D044(void);
 void func_8001D42C(void);
@@ -633,7 +633,7 @@ void startMovieStream(CdlLOC *location, DecDCCb outputCallback) {
     DecDCToutCallback(outputCallback);
     StSetRing((u8 *)0x80180000, 32);
     StSetStream(1, 1, -1, 0, 0);
-    func_8001A474(location);
+    startMovieCdRead(location);
 }
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001A0EC);
@@ -669,7 +669,14 @@ void waitForMovieOutput(MovieDecodeState *state) {
     state->outputComplete = 0;
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001A474);
+void startMovieCdRead(CdlLOC *location) {
+    u8 mode = CdlModeSpeed;
+    do {
+        while (!CdControl(CdlSetloc, (u8 *)location, 0)) {}
+        while (!CdControl(CdlSetmode, &mode, 0)) {}
+        VSync(3);
+    } while (!CdRead2(CdlModeStream | CdlModeSpeed | CdlModeRT | CdlModeSize1));
+}
 
 void waitForFrameHcount(u32 minimumHcount) {
     DrawSync(0);

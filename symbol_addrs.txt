@@ -2303,3 +2303,5 @@ initializeDualResourceTaskAndClearState = 0x80080114; // type:func
 initializeTaskResourcesAndClearData18 = 0x800929C4; // type:func
 
 advanceCurrentPlayerTaskPhaseMovement = 0x80026010; // type:func
+
+startMovieCdRead = 0x8001A474; // type:func

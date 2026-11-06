@@ -3,7 +3,6 @@
 #include "psx/libetc.h"
 
 extern s32 StMode;
-extern int CdControl(u8 command, u8 *param, u8 *result);
 extern DmaCallback CdDataCallback(DmaCallback callback);
 extern void data_ready_callback(void);
 extern void StCdInterrupt2(u8 intr, u8 *result);
