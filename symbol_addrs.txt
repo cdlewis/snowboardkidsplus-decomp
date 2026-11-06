@@ -2570,3 +2570,7 @@ emitProjectedTexturedTriangle = 0x80052840; // type:func
 initializeCurrentPlayerState24 = 0x8001FAC4; // type:func
 
 drawFirstPlayerResultCounterAndIcon = 0x80035FAC; // type:func
+
+initializeSelectionMenuTask = 0x800A2C74; // type:func
+selectionMenuRecordAbsolute = 0x8013B560; // allow_duplicated:true
+D_8013B560 = 0x8013B560; // size:0x2 allow_duplicated:true

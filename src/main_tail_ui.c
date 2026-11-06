@@ -20,6 +20,12 @@
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
 
+typedef struct SelectionMenuState {
+    s16 selection, previousSelection;
+    s16 unk04, unk06, unk08, unk0A;
+    u8 unk0C[0xF4];
+} SelectionMenuState;
+
 typedef struct UnlockMenuState {
     s16 selection, previousSelection;
     s32 unk04[7];
@@ -63,7 +69,9 @@ extern u8 D_8013AF3A __attribute__((section(".data")));
 extern s16 D_8013B10C __attribute__((section(".data")));
 extern u8 D_8013B55E __attribute__((section(".data")));
 
+extern u8 D_8013B564;
 extern s16 D_8013B560;
+extern s16 selectionMenuRecordAbsolute __attribute__((section(".data")));
 extern u8 D_8013B562;
 extern char D_80012310[];
 extern char D_8001232C[];
@@ -72,6 +80,7 @@ extern char D_8001232C[];
 void func_800187B8(u8 voice);
 int printf(const char *format, ...);
 
+void func_800A2D68(void);
 void func_800A3750(void);
 void func_800A5AFC(void);
 void func_800A6548(void);
@@ -148,7 +157,29 @@ INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A2AB0);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A2C40);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A2C74);
+void initializeSelectionMenuTask(void) {
+    SelectionMenuState *state;
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        for (;;) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    state = (SelectionMenuState *)&D_800D9504[D_8013AE88->resource14];
+    state->previousSelection = state->selection = D_8013AFD9 - 1;
+    state->unk04 = 0;
+    state->unk06 = 16;
+    state->unk08 = 0;
+    setControllerFlag5(0);
+    setControllerFlag5(1);
+    D_8013AFCE = -1;
+    selectionMenuRecordAbsolute = 99;
+    setSecondaryDisplayTaskMode(0);
+    func_80070274(1, 0, 30);
+    if (D_8013B564 == 0) {
+        queueCdCommand(3, 0);
+        D_8013B564 = 1;
+    }
+    setCurrentTaskCallback(func_800A2D68);
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A2D68);
 
