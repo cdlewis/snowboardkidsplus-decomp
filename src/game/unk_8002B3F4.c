@@ -1592,7 +1592,26 @@ void waitResultDisplayInputTask(void) {
     func_800361C4(resource);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80036790);
+void waitResultDisplayConfirmationTask(void) {
+    ResultDisplayResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (ResultDisplayResource *)&D_800D9504[D_8013AE88->resource14];
+    resource->timer--;
+    if (D_8013AEE8[0] & 0xB0) {
+        resource->timer = 0;
+    }
+    if (resource->timer == 0) {
+        resource->timer = 20;
+        playSoundEffect(0, 0x700, 0x20);
+        setCurrentTaskCallback(waitResultDisplayInputTask);
+    }
+    func_80035D5C(resource);
+    drawResultNumberAndIcon(resource);
+    func_80035FAC(resource);
+    func_800361C4(resource);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003686C);
 
