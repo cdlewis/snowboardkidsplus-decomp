@@ -412,8 +412,8 @@ void initDefaultBackground(s16 mode, s16 unused, GameBackground *background,
 }
 
 void queueStartupSectorReads(void) {
-    func_800136DC(0, 1, 5, (u8 *)0x8017D000, 0);
-    func_800136DC(0, 6, 18, (u8 *)0x801F0000, 0);
+    queueCdSectorCommand(0, 1, 5, (u8 *)0x8017D000, 0);
+    queueCdSectorCommand(0, 6, 18, (u8 *)0x801F0000, 0);
 }
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002F394);

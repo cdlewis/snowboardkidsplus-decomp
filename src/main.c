@@ -31,6 +31,7 @@ typedef struct ControllerReceiveBuffer {
 
 extern ControllerReceiveBuffer D_800E9558[2];
 
+
 u8 gCdVolumeFadeActive __attribute__((section(".sdata.cd_volume_fade"))) = 0;
 u8 gCdVolumeFadeInterval __attribute__((section(".sdata.cd_volume_fade"))) = 0;
 s16 gCdVolumeFadeCurrent __attribute__((section(".sdata.cd_volume_fade"))) = 0;
@@ -83,7 +84,23 @@ INCLUDE_ASM("asm/nonmatchings/main", func_8001351C);
 
 INCLUDE_ASM("asm/nonmatchings/main", func_80013540);
 
-INCLUDE_ASM("asm/nonmatchings/main", func_800136DC);
+s32 queueCdSectorCommand(s16 command, s16 sector, s16 count, void *destination, s32 value) {
+    CdRequest *entry;
+    if (gCdVolumeFadeActive) {
+        resetPendingCdRequests();
+        gCdVolumeFadeActive = 0;
+    }
+    entry = &gCdRequests[gCdRequestWriteIndex & 0x3F];
+    entry->unk_16 = 1;
+    entry->command = command;
+    entry->sector = sector;
+    entry->sectorCount = count;
+    entry->destination = destination;
+    gCdRequestWriteIndex &= 0x3F;
+    entry->unk_18 = value;
+    gCdRequestWriteIndex++;
+    return 1;
+}
 
 s32 isCdReading(void) {
     u8 result[8];
