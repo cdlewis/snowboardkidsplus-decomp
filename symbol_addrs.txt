@@ -2637,3 +2637,5 @@ gResultIconPalettes = 0x8013B11C; // type:u8 size:0x4
 
 drawCurrentTaskTextPanel = 0x800960BC; // type:func
 gCurrentTaskPanelText = 0x80131D64; // size:0x10 defined:true
+
+drawSelectedTaskSprite = 0x80073E04; // type:func

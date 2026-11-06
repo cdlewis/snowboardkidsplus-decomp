@@ -61,6 +61,21 @@ typedef struct AnimatedSpriteResource {
     u16 depth;
 } AnimatedSpriteResource;
 
+typedef struct SelectedSpriteResource {
+    u8 unk00[0x30];
+    s16 mode;
+    s16 selectedIndex;
+    u8 unk34[0x1C];
+    u16 depth;
+    u8 unk52[0xE];
+    s16 sprite;
+    u8 r, g, b;
+} SelectedSpriteResource;
+typedef struct SelectedSpriteChild {
+    GameTask *task;
+    s32 unk04;
+} SelectedSpriteChild;
+
 typedef s16 SpriteMotionResource[128];
 
 /* Storage remains in the shared data object. */
@@ -356,7 +371,31 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80073B0C);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80073CB4);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80073E04);
+void drawSelectedTaskSprite(void) {
+    SelectedSpriteResource *state;
+    SelectedSpriteChild *children;
+    Movement2D *position;
+    u16 mode;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    state = (SelectedSpriteResource *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) {
+        while (1) {}
+    }
+    children = (SelectedSpriteChild *)&D_800D9504[D_8013AE88->resource16];
+    mode = state->mode;
+    if ((s16)mode > 0) {
+        if ((u32)(mode - 1) < 2) {
+            setSpriteColor(state->r, state->g, state->b);
+        } else {
+            setSpriteColor(128, 128, 128);
+        }
+        position = (Movement2D *)&D_800D9504[children[state->selectedIndex].task->resource14];
+        func_8006C998(position->x / 4096, position->y / 4096, state->sprite, 0, -1,
+                     &D_800EBFF0[D_8013AF78], state->depth - 1);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80073F84);
 
