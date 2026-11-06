@@ -438,6 +438,7 @@ extern u8 D_8013AFE2 __attribute__((section(".data")));
 void func_80048340(void);
 void func_80031C98(void);
 void func_80048AA4(void);
+void func_80044768(void);
 void func_80046404(TaskVisualResource *resource, VECTOR *vectors, s32 value, s32 scale);
 void func_80046EF8(void);
 void func_8004713C(void);
@@ -3525,7 +3526,28 @@ void updatePlayerFlagTaskVisual(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8004463C);
+void initializePlayerSideVisualTask(void) {
+    OrbitingPlayerVisualResource *resource;
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    resource = (OrbitingPlayerVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    GsInitCoordinate2(0, &resource->coordinate);
+    resource->frameLimit = 0x400;
+    resource->frameStep = 0x80;
+    resource->r0 = resource->g0 = resource->b0 = 0x80;
+    resource->code = POLY_FT4_CODE;
+    resource->framePosition = 0;
+    func_800183FC(D_8013AE88->data18, 1, 0x600, 0x20);
+    func_8002E5A0(D_8013AE88->data18, 12);
+    if (D_80120E90[D_8013AE88->data18].unk128 & 0x400) {
+        resource->radius = -52;
+    } else {
+        resource->radius = 52;
+    }
+    setCurrentTaskCallback(func_80044768);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80044768);
 
