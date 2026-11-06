@@ -1,6 +1,7 @@
 #include "common.h"
 #include "game/angles.h"
 #include "game/coordinate.h"
+#include "game/movement.h"
 #define RACE_FINISH_ABSOLUTE_ADDRESSING
 #define TASK_ABSOLUTE_ADDRESSING
 #define TASK_FLAGS_ABSOLUTE_ADDRESSING
@@ -22,6 +23,22 @@
 #include "game/controller_effects.h"
 #include "game/controller.h"
 #include "psx/libsnd.h"
+
+typedef struct SelectedTaskSpriteResource {
+    u8 unk00[0x30];
+    u16 state;
+    s16 selection;
+    u8 unk34[0x1C];
+    u16 depth;
+    u8 unk52[0x10];
+    u8 r, g, b;
+    u8 unk65[0x9B];
+} SelectedTaskSpriteResource;
+
+typedef struct SelectedTaskEntry {
+    GameTask *task;
+    s16 unk04, unk06;
+} SelectedTaskEntry;
 
 typedef struct RisingPlayerEffectResource {
     GsCOORDINATE2 coordinate;
@@ -1009,7 +1026,32 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80032280);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003240C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800326FC);
+void drawSelectedTaskMarkerSprite(void) {
+    SelectedTaskSpriteResource *resource;
+    SelectedTaskEntry *entries;
+    Movement2D *position;
+    u16 state;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (SelectedTaskSpriteResource *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) {
+        while (1) {}
+    }
+    entries = (SelectedTaskEntry *)&D_800D9504[D_8013AE88->resource16];
+    state = resource->state;
+    if ((s16)resource->state > 0) {
+        if ((u32)(state - 1) < 2) {
+            setSpriteColor(resource->r, resource->g, resource->b);
+        } else {
+            setSpriteColor(128, 128, 128);
+        }
+        position = (Movement2D *)&D_800D9504[entries[resource->selection].task->resource14];
+        func_8006C998(position->x / 4096 - 30, position->y / 4096 + 20,
+                      0x44, 0, -1, &D_800EBFF0[D_8013AF78], (u16)(resource->depth - 1));
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003288C);
 
