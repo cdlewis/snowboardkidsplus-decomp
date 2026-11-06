@@ -49,6 +49,18 @@ typedef struct ExpandingCoordinateEffectResource {
     s16 pitch, unkCA, yaw, unkCE, selectedIndex;
     u8 unkD2[0x2E];
 } ExpandingCoordinateEffectResource;
+typedef struct FallingVisualResource {
+    GsCOORDINATE2 coordinate;
+    u8 unk50[0x24];
+    s32 height;
+    u8 unk78[0x50];
+    s16 unkC8, framePosition;
+    u8 r0, g0, b0, code;
+    u8 unkD0[0xC];
+    s32 animationTick;
+    u8 unkE0[0x20];
+} FallingVisualResource;
+
 typedef struct PlayerModeSelectionResource {
     u16 unk00;
     u16 selection;
@@ -384,6 +396,21 @@ const u16 gPlayerModeAlternateMessageText[] __attribute__((section(".data.player
 };
 const u16 *gPlayerModeMessageTexts[] __attribute__((section(".data.player_mode_message_texts"))) = {
     gPlayerModeMessageText, gPlayerModeAlternateMessageText
+};
+
+TaskVisualFrame gFallingPairedVisualFrames[7]
+    __attribute__((section(".data.falling_paired_visual_frames"), aligned(4))) = {
+    {0, 0, 48, 40, 13, 0x3C79},
+    {0, 40, 48, 40, 13, 0x3C39},
+    {48, 0, 48, 40, 13, 0x3C39},
+    {96, 0, 48, 40, 13, 0x3C39},
+    {144, 0, 48, 40, 13, 0x3C39},
+    {192, 0, 48, 40, 13, 0x3C39},
+    {0, 80, 48, 40, 13, 0x3C39}
+};
+u8 gFallingPairedVisualAnimation[6]
+    __attribute__((section(".data.falling_paired_visual_animation"), aligned(2))) = {
+    1, 2, 3, 4, 5, 6
 };
 
 extern u8 D_8013B11A;
@@ -1795,7 +1822,28 @@ void createActivePlayerSlidingNumberTask(s32 value, s16 player) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800355D4);
+void drawFallingPairedVisualTask(void) {
+    FallingVisualResource *resource;
+    GsCOORDINATE2 *base;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (FallingVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) {
+        while (1) {}
+    }
+    base = (GsCOORDINATE2 *)&D_800D9504[D_8013AE88->resource16];
+    resource->coordinate.coord.t[0] = base->coord.t[0];
+    resource->coordinate.coord.t[1] = base->coord.t[1] + (resource->height >> 8);
+    resource->coordinate.coord.t[2] = base->coord.t[2];
+    resource->framePosition = 0;
+    setTaskVisualFrame((TaskVisualResource *)resource, gFallingPairedVisualFrames, 0x1E00);
+    func_8005AC4C((TaskVisualResource *)resource, 0);
+    resource->coordinate.coord.t[1] += 0x49;
+    resource->framePosition = gFallingPairedVisualAnimation[resource->animationTick >> 1] << 8;
+    setTaskVisualFrame((TaskVisualResource *)resource, gFallingPairedVisualFrames, 0x1E00);
+    func_8005AC4C((TaskVisualResource *)resource, 0);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800356FC);
 

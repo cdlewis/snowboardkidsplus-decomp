@@ -2754,3 +2754,7 @@ configureTaskGridMovement = 0x80073810; // type:func
 initializeSpacedTaskGridPositions = 0x80073CB4; // type:func
 
 restoreSelectedPlayerState = 0x8005F944; // type:func
+
+drawFallingPairedVisualTask = 0x800355D4; // type:func
+gFallingPairedVisualFrames = 0x80124078; // size:0x38 defined:true
+gFallingPairedVisualAnimation = 0x8013B114; // size:0x6 defined:true
