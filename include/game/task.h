@@ -76,6 +76,7 @@ void func_8001E0C0(void);
 void func_8001E148(void);
 void func_8001E1B8(void);
 
+s32 func_80014838(TaskCallback callback);
 s32 func_80014874(TaskCallback callback);
 s32 func_800148B4(TaskCallback callback);
 s16 func_80014930(GameTask *parent, TaskCallback callback);

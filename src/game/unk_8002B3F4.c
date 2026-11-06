@@ -420,6 +420,7 @@ extern u8 D_8013B18D __attribute__((section(".data")));
 extern u8 gMappedIconPalettes[9];
 
 extern s16 D_8013B10C;
+extern s16 D_8013B10E;
 extern u8 D_80123640[];
 
 extern s16 D_8013B0E4;
@@ -471,6 +472,8 @@ u8 func_8004AAA0(s16 index, s32 x, s32 z);
 void func_8003E1D0(u16 playerIndex);
 void func_8003EE70(void);
 void func_8002F5F8(void);
+void func_8002F548(void);
+void func_8002F65C(void);
 void func_8003DEE0(void);
 void drawSound601SequenceSpriteTask(void);
 void drawGrowingSprite178Task(void);
@@ -975,7 +978,26 @@ void uploadTimImageAt(s16 x, s16 y, s16 clutX, s16 clutY, u32 *tim) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002F468);
+void initializeBackgroundCameraTask(void) {
+    D_8013AF7A = 320;
+    D_8013AF7C = 240;
+    D_8013B10C = -1;
+    D_8013B10E = -1;
+    D_8013B106 = 0;
+    func_80070274(11, 0, 30);
+    setSecondaryDisplayTaskMode(1);
+    queueBackgroundTextureSectorCommands();
+    D_8013AF84 = 400;
+    initPlayerCamera(0);
+    func_8003DEE0();
+    func_80014838(func_8002F65C);
+    D_8013AE8C->data18 = D_8013AE88->data18;
+    D_8013AE8C->data1C = 0;
+    func_8002FA58((s16)D_8013AE8C->data18);
+    D_8013AE88->data1E = 0;
+    setCurrentTaskCallback(func_8002F548);
+    D_8013AE88->unk10 |= 2;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002F548);
 
