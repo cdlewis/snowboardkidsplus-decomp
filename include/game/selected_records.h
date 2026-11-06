@@ -7,7 +7,10 @@
 typedef struct SelectedCourseRecord {
     u16 unk00;
     u16 unk02;
-    u32 unk04[17];
+    u32 unk04[4];
+    u16 unk14;
+    u16 unk16;
+    u32 unk18[12];
 } SelectedCourseRecord;
 
 extern SelectedCourseRecord D_80123D80[];

@@ -1,4 +1,5 @@
 #include "common.h"
+#define TASK_TRANSITION_FLAGS_ABSOLUTE_ADDRESSING
 #define TASK_ABSOLUTE_ADDRESSING
 #include "game/race_player.h"
 #include "game/selected_record.h"
@@ -74,7 +75,7 @@ void (*currentPlayerStateCallbacks[74])(void) = {
     func_8001F388,
     func_8001F444,
     func_8001F6D8,
-    func_8001FEE0,
+    initializeCurrentPlayerState7,
     resetCurrentPlayerForCallback26DAC,
     func_8001F6F8,
     func_8001F7A0,
@@ -311,7 +312,21 @@ void resetCurrentPlayerForCallback255C4(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8001FDEC);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8001FEE0);
+void initializeCurrentPlayerState7(void) {
+    RacePlayer *player = D_8013B0D8;
+    D_8013AE88->data1A = 0;
+    player->unk08C = 20;
+    player->unk090 = 10;
+    player->unk126 = D_80123D80[D_8013AFCE].unk16;
+    if (player->unk128 & 0x400) {
+        player->unk126 += 0x800;
+    }
+    D_8013B0D8->unk134 = 0;
+    D_8013AFE4 |= 4;
+    startCurrentPlayerAnimation(1, 1);
+    func_800183FC(D_8013AE88->data18, 1, 0x401, 0x20);
+    setCurrentTaskCallback(updateCurrentPlayerFromTaskPhase);
+}
 
 void resetCurrentPlayerForCallback240D0(void) {
     RacePlayer *player = D_8013B0D8;
@@ -396,8 +411,8 @@ void advanceCurrentPlayerTaskOnAnimationFlag(void) {
         func_800183FC(D_8013AE88->data18, 1, 0x601, 0x20);
         player = D_8013B0D8;
         player->unk0B6 = player->unk126;
-        player->x = D_80123D80[D_8013AFCE].unk04[5];
-        player->z = D_80123D80[D_8013AFCE].unk04[7];
+        player->x = D_80123D80[D_8013AFCE].unk18[0];
+        player->z = D_80123D80[D_8013AFCE].unk18[2];
         player->unk062 = -0xC00;
         player->unk08C = 30;
         startCurrentPlayerAnimation(4, 2);

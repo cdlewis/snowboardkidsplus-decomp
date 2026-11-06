@@ -20,7 +20,7 @@ void func_8001FC00(void);
 void func_8001FCB4(void);
 void resetCurrentPlayerForCallback255C4(void);
 void func_8001FDEC(void);
-void func_8001FEE0(void);
+void initializeCurrentPlayerState7(void);
 void resetCurrentPlayerForCallback240D0(void);
 void func_80020018(void);
 void func_800200F8(void);
