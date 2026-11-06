@@ -66,7 +66,7 @@ void (*currentPlayerStateCallbacks[74])(void) = {
     resetCurrentPlayerForCallback26DAC,
     func_8001F6F8,
     func_8001F7A0,
-    func_8001F8E4,
+    initializeCurrentPlayerState11,
     func_8001F970,
     initializeCurrentPlayerDefaultState,
     initializeCurrentPlayerState14,
@@ -236,7 +236,19 @@ void initializeCurrentPlayerState14(void) {
     setCurrentTaskCallback(func_800273D4);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8001F8E4);
+void initializeCurrentPlayerState11(void) {
+    RacePlayer *player;
+    startCurrentPlayerAnimation(11, 2);
+    player = D_8013B0D8;
+    player->unk0B8 = 0;
+    player->unk128 &= 0xFF0C1FFB;
+    player->unk128 |= 0x22201;
+    player->unk062 -= 0x800;
+    func_8002A5A0(0, 0);
+    D_8013B0D8->unk078 = 0;
+    func_8002E5A0(D_8013AE88->data18, 9);
+    setCurrentTaskCallback(func_80027014);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8001F970);
 
