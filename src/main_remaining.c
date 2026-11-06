@@ -451,7 +451,9 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80019670);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001983C);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_800198B8);
+void resetMemoryCardTaskState(void) {
+    D_8013AF3E = 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_800198C4);
 

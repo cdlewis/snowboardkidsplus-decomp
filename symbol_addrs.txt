@@ -22,6 +22,7 @@ beginSpriteScaleTransitionDelay = 0x80033580; // type:func
 startResourceLoadWhenFlagAFE4Bit9Set = 0x8001CE74; // type:func
 advanceTaskWhenFlagAFE4Bit8Set = 0x8001CE2C; // type:func
 startMemoryCardReadTask = 0x80019A2C; // type:func
+resetMemoryCardTaskState = 0x800198B8; // type:func
 uploadBufferedTexturePair = 0x8002F264; // type:func
 beginSound601TaskSequence = 0x800330CC; // type:func
 beginMemoryCardBufferRead = 0x8001993C; // type:func
