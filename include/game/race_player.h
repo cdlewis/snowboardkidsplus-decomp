@@ -110,7 +110,9 @@ struct RacePlayer {
     u8 animationIndex;
     u8 animationFlags;
     u8 animationStep;
-    u8 unk92C[0x18];
+    u8 unk92C[9];
+    s8 unk935;
+    u8 unk936[0xE];
     u8 randomIndex;
     u8 unk945;
     u8 unk946;

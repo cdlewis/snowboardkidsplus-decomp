@@ -36,6 +36,8 @@ u8 *D_8012090C[10] = {
 
 
 s32 func_800183FC(u16 playerIndex, u8 bank, u16 sound, s16 volume);
+void func_80045868(void);
+void func_800252CC(void);
 void func_800240D0(void);
 void func_80024288(void);
 void func_800245C4(void);
@@ -95,7 +97,7 @@ void (*currentPlayerStateCallbacks[74])(void) = {
     func_8001F1B4,
     func_8001FDEC,
     func_8001FAC4,
-    func_8001FC00,
+    initializeCurrentPlayerState25,
     func_8001FCB4,
     resetCurrentPlayerForCallback255C4,
     NULL,
@@ -321,7 +323,19 @@ void initializeCurrentPlayerState40(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8001FAC4);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8001FC00);
+void initializeCurrentPlayerState25(void) {
+    RacePlayer *player = D_8013B0D8;
+    s32 reduction;
+    player->unk08C = 240;
+    reduction = player->unk935 * player->unk08C;
+    player->unk128 = (player->unk128 & 0xFF0C1FFB) | 0x400000;
+    player->unk08C = 240 - reduction / 8;
+    startCurrentPlayerAnimation(1, 1);
+    func_80014930(&D_800D7C84, func_80045868);
+    D_8013AE8C->data18 = D_8013AE88->data18;
+    func_8002E5A0(D_8013AE88->data18, 6);
+    setCurrentTaskCallback(func_800252CC);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8001FCB4);
 
