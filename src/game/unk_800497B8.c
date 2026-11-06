@@ -427,7 +427,6 @@ void func_8005B460(void);
 void func_8005B6C0(void);
 void func_80052530(TriangleScratchVertex *vertices);
 
-s32 func_80060DC8(u32 *tim);
 void func_80068D1C(void);
 void func_800692E8(void);
 void func_8006999C(void);
@@ -1268,14 +1267,25 @@ s32 loadTimArchive(OffsetArchive *archive) {
     u32 i;
     u32 count = archive->count;
     for (i = 1; i < count + 1; i++) {
-        if (!func_80060DC8((u32 *)((u8 *)archive + archive->offsets[i - 1]))) {
+        if (!loadTimImage((u32 *)((u8 *)archive + archive->offsets[i - 1]))) {
             return 0;
         }
     }
     return 1;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80060DC8);
+s32 loadTimImage(u32 *tim) {
+    GsIMAGE image;
+    if (*tim != 0x10) {
+        return 0;
+    }
+    GsGetTimInfo(tim + 1, &image);
+    LoadImage((RECT *)&image.px, image.pixel);
+    DrawSync(0);
+    LoadImage((RECT *)&image.cx, image.clut);
+    DrawSync(0);
+    return 1;
+}
 
 s32 randomNextLinear(void) {
     gLinearRandomState = gLinearRandomState * 1103515245 + 12345;
