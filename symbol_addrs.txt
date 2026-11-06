@@ -1924,6 +1924,7 @@ initializeTaskMotionResource = 0x800343B0; // type:func
 getGeometryPlacementSignedDistance = 0x8004AC38; // type:func
 getGeometryPlacementTransform = 0x8004AD10; // type:func
 
+runMovieAndGameLoop = 0x8001AE40; // type:func
 initCurrentPlayerModelParts = 0x8001AE98; // type:func
 D_80120200 = 0x80120200; // size:0x10 defined:true
 D_80120210 = 0x80120210; // size:0x10 defined:true

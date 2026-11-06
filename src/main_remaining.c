@@ -144,6 +144,10 @@ extern void *gMemoryCardLoadDestination;
 int strcmp(const char *, const char *);
 
 u32 *func_8001A2B8(MovieDecodeState *state);
+void func_800131B4(void);
+void func_8001AB3C(void);
+void func_80019D3C(s32 movieIndex);
+void func_8001A540(void);
 void startMovieCdRead(CdlLOC *location);
 void func_8002EE0C(void);
 void func_8001D044(void);
@@ -743,7 +747,17 @@ void func_8001AB34(void) {
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001AB3C);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001AE40);
+void runMovieAndGameLoop(void) {
+    func_800131B4();
+    while (1) {
+        func_8001AB3C();
+        func_80019D3C(0);
+        func_80019D3C(1);
+        func_8001A540();
+        ResetGraph(3);
+        StopCallback();
+    }
+}
 
 void initCurrentPlayerModelParts(void) {
     s32 i;
