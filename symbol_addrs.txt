@@ -2052,6 +2052,7 @@ beginResourceLoadOrUnlockNotification = 0x8001CEAC; // type:func
 
 drawCurrentTaskPanel = 0x8003C55C; // type:func
 
+drawSpriteTextureRegion = 0x8006CB70; // type:func
 addSpritePacket = 0x8006CC90; // type:func
 addDrawPagePacket = 0x8006CD28; // type:func
 

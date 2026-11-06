@@ -2467,7 +2467,24 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006C970);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006C998);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006CB70);
+void drawSpriteTextureRegion(s16 x, s16 y, s32 index, GsOT *ot, u16 depth) {
+    SPRT *sprite = (SPRT *)GsGetWorkBase();
+    DR_TPAGE *page;
+    TextureRegion *region;
+    *sprite = gSpritePrimitiveTemplate.sprite;
+    region = &D_8013B6AC[index];
+    sprite->x0 = x;
+    sprite->y0 = y;
+    sprite->u0 = region->u;
+    sprite->v0 = region->v;
+    sprite->w = region->w;
+    sprite->h = region->h;
+    AddPrim(&ot->org[depth], sprite++);
+    page = (DR_TPAGE *)sprite;
+    *page = gSpritePrimitiveTemplate.drawPage;
+    AddPrim(&ot->org[depth], page);
+    func_800BF2C8((u32)(page + 1));
+}
 
 void addSpritePacket(SPRT *source, GsOT *ot, u16 depth) {
     SPRT *packet = (SPRT *)GsGetWorkBase();
