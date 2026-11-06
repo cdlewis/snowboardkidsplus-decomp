@@ -11,6 +11,7 @@
 #include "game/race_camera.h"
 #include "game/race_time.h"
 #include "game/selected_records.h"
+#include "game/selected_record.h"
 #include "game/graphics.h"
 #include "game/linear_random.h"
 #include "game/offset_archive.h"
@@ -339,7 +340,6 @@ extern int rand(void);
 void uploadTimImageAt(s16 x, s16 y, s16 clutX, s16 clutY, u32 *tim);
 s16 func_8004A124(s32 x1, s32 z1, s32 x2, s32 z2);
 s32 func_8004A4C4(s16 index, s32 x, s32 z);
-s32 func_8004A764(s16 index, s32 x, s32 z);
 u8 func_8004AAA0(s16 index, s32 x, s32 z);
 void func_8003E1D0(u16 playerIndex);
 void func_8003EE70(void);

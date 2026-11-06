@@ -9,6 +9,7 @@
 #include "game/linear_random.h"
 #include "game/offset_archive.h"
 #include "game/music.h"
+#include "game/game_options.h"
 #define TASK_TRANSITION_FLAGS_ABSOLUTE_ADDRESSING
 #define TASK_ABSOLUTE_ADDRESSING
 #include "game/task.h"
@@ -251,6 +252,24 @@ typedef struct GouraudQuadPacket {
     u8 r3, g3, b3, pad3;
     s16 x3, y3;
 } GouraudQuadPacket;
+
+/* Collectible placements use 0x10-byte records. */
+typedef struct PickupPlacement {
+    u16 unk00;
+    s16 geometryIndex;
+    s32 x, y, z;
+} PickupPlacement;
+typedef struct PickupResource {
+    GsCOORDINATE2 coordinate;
+    u8 unk50[0x50];
+    s32 position[3];
+    u8 unkAC[0x14];
+    SVECTOR rotation;
+    u8 unkC8[8];
+    s16 geometryIndex;
+    u8 unkD2[6];
+    s32 collisionRange;
+} PickupResource;
 
 /* Geometry entries have a 0x1C-byte stride; the origin references a vertex. */
 typedef struct GeometryPlacement {
@@ -565,6 +584,7 @@ extern RECT readPixelRectGp;
 
 /* Shared collision regions remain in player_camera_state_tail. */
 extern PlayerCollisionRegion D_80129A18[2];
+extern PickupPlacement *D_8013B2C0;
 
 /* Shared texture metadata remains in its original data owner. */
 extern TextureRegionSet D_8012DDA4[];
@@ -669,6 +689,7 @@ void func_8006FE68(s16 x, s16 y, s16 w, s16 h, s16 borderW, s16 borderH,
 u16 func_80059254(void);
 s32 func_8005143C(s32 x, s32 z, s16 player);
 void func_8005CCEC(void);
+void func_8005DF98(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800497B8);
 
@@ -1432,7 +1453,34 @@ void updateActivePlayerRegionCollisions(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005DE2C);
+void initializeCollectibleTask(void) {
+    PickupResource *resource;
+    s32 height;
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    resource = (PickupResource *)&D_800D9504[D_8013AE88->resource14];
+    GsInitCoordinate2(0, &resource->coordinate);
+    resource->geometryIndex = D_8013B2C0[D_8013AE88->data18].geometryIndex;
+    resource->rotation.vx = 0;
+    resource->rotation.vy = ((GeometryPlacement *)geometryPlacementDataAbsolute)[resource->geometryIndex].angle;
+    resource->rotation.vz = 0;
+    resource->coordinate.coord.t[0] = D_8013B2C0[D_8013AE88->data18].x;
+    resource->coordinate.coord.t[2] = D_8013B2C0[D_8013AE88->data18].z;
+    height = func_8004A764(resource->geometryIndex, resource->coordinate.coord.t[0], resource->coordinate.coord.t[2]);
+    D_8013B2C0[D_8013AE88->data18].y = height;
+    resource->coordinate.coord.t[1] = height;
+    resource->position[0] = resource->coordinate.coord.t[0] << 8;
+    resource->position[1] = resource->coordinate.coord.t[1] << 8;
+    resource->position[2] = resource->coordinate.coord.t[2] << 8;
+    if (gameOptionPlayerModeAbsolute == 1) {
+        resource->collisionRange = 0x2C00;
+    } else {
+        resource->collisionRange = 0x3400;
+    }
+    setCurrentTaskCallback(func_8005DF98);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005DF98);
 
