@@ -1275,7 +1275,20 @@ void drawCurrentTaskTimeRecords(void) {
     func_800398F4(resource);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80039F6C);
+void drawTaskTimeRecordsAndSetFlag10OnInput(void) {
+    TaskResourceRecord *resource;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = &D_800D9504[D_8013AE88->resource14];
+    if (D_8013AEE8[0] & 0xB0) {
+        D_8013AFE4 |= 0x10;
+        setCurrentTaskCallback(drawCurrentTaskTimeRecords);
+    }
+    func_80039484(resource);
+    func_800398F4(resource);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003A008);
 
