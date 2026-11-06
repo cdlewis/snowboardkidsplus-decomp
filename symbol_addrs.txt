@@ -1404,6 +1404,7 @@ _SsSetNrpnVabAttr19 = 0x800AB274; // type:func defined:true
 func_800AC754 = 0x800AC754; // type:func defined:true
 PCread = 0x800B5408; // type:func defined:true
 PCwrite = 0x800B54E0; // type:func defined:true
+writePcHostFile = 0x800A8044; // type:func
 func_800B595C = 0x800B595C; // type:func defined:true
 func_800B5A34 = 0x800B5A34; // type:func defined:true
 func_800B5C04 = 0x800B5C04; // type:func defined:true

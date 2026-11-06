@@ -21,6 +21,7 @@
 #include "game/movement.h"
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
+#include "psx/libsn.h"
 
 typedef struct CdAudioOwner {
     u8 unk00[0x24];
@@ -1006,6 +1007,22 @@ int readHostFile(char *path, char *buffer) {
     return -1;
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A8044);
+int writePcHostFile(char *name, char *buffer, int length) {
+    int fd;
+    fd = PCopen(name, 1, 0);
+    if (fd == -1) {
+        fd = PCcreat(name, 0);
+        if (fd == -1) {
+            printf(D_80012310, name);
+            return -1;
+        }
+    }
+    if (PCwrite(fd, buffer, length) != length) {
+        printf(D_8001232C, name);
+        return -1;
+    }
+    PCclose(fd);
+    return 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A8104);
