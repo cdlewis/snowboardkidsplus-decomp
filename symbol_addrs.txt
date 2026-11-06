@@ -2460,3 +2460,5 @@ drawAutoPilotLabelTask = 0x80035B24; // type:func
 gAutoPilotLabel = 0x80010A58; // type:char size:0xC
 
 waitResultDisplayTaskFlagsTask = 0x800362FC; // type:func
+
+emitProjectedFlatTriangle = 0x80052530; // type:func

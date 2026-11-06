@@ -82,9 +82,14 @@ typedef struct ModelFlatQuad {
 typedef struct TriangleScratchpad {
     u32 unk00;
     void (*emitTriangle)(TriangleScratchVertex *);
-    u8 unk08[0x5C];
-    u8 r, g, b;
-    u8 unk67[9];
+    s32 depth, depthCue;
+    u8 unk10[0x40];
+    struct { u16 x, y; } screen[3];
+    u8 unk5C[8];
+    u8 r, g, b, code;
+    u8 unk68[2];
+    u8 fogEnabled;
+    u8 unk6B[5];
     TriangleScratchVertex vertices[3];
 } TriangleScratchpad;
 
@@ -482,6 +487,9 @@ extern s32 D_8013B36C;
 extern ModelFlatTriangle *D_8013B680 __attribute__((section(".sdata")));
 extern SVECTOR *D_8013B688 __attribute__((section(".sdata")));
 
+extern GsOT *D_8013B670;
+extern s32 D_8013B69C;
+
 extern u16 D_8013B376 __attribute__((section(".sdata")));
 
 
@@ -492,14 +500,10 @@ void func_80066474(void);
 void func_8005D828(RacePlayer *player, PlayerCollisionRegion *region);
 void func_8005B460(void);
 void func_8005B6C0(void);
-void func_80052530(TriangleScratchVertex *vertices);
+void emitProjectedFlatTriangle(TriangleScratchVertex *vertices);
 void func_80052C1C(TriangleScratchVertex *vertices);
 void func_800542BC(TriangleScratchVertex *vertices, s32 flags);
 void func_8004F46C(void);
-void func_80052530(ScratchVertex *vertices);
-void func_80052C1C(ScratchVertex *vertices);
-void func_800542BC(ScratchVertex *vertices, s32 flags);
-void func_80053A34(ScratchVertex *vertices, s32 flags);
 
 void func_80068D1C(void);
 void func_800692E8(void);
@@ -524,8 +528,6 @@ void func_80049D48(s32 x, s32 y, const char *format, ...);
 void func_8006BEEC(s32 enabled);
 void func_80063B58(void);
 void func_80063DF4(void);
-void func_800659F0(void);
-void func_800692E8(void);
 void func_8006A194(void);
 void func_8006A7B4(void);
 void func_8006B1F4(void);
@@ -765,7 +767,26 @@ void drawNoProcessMessage(void) {
     func_80049D48(0, 30, gNoProcessMessage);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80052530);
+void emitProjectedFlatTriangle(TriangleScratchVertex *vertices) {
+    TriangleScratchpad *scratch = TRIANGLE_SCRATCHPAD;
+    POLY_F3 *packet = (POLY_F3 *)GsOUT_PACKET_P;
+    if (scratch->fogEnabled) {
+        gte_stdp(&scratch->depthCue);
+        DpqColor((CVECTOR *)&scratch->r, scratch->depthCue, (CVECTOR *)&packet->r0);
+    } else {
+        setRGB0(packet, scratch->r, scratch->g, scratch->b);
+    }
+    packet->tag = 4 << 24;
+    setcode(packet, scratch->code | POLY_F3_CODE);
+    packet->x0 = scratch->screen[0].x;
+    packet->x1 = scratch->screen[1].x;
+    packet->x2 = scratch->screen[2].x;
+    packet->y0 = scratch->screen[0].y;
+    packet->y1 = scratch->screen[1].y;
+    packet->y2 = scratch->screen[2].y;
+    addPrim(&D_8013B670->org[(scratch->depth >> D_8013B69C) + 6], packet);
+    GsOUT_PACKET_P = (u32)(packet + 1);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80052680);
 
@@ -789,7 +810,7 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800542BC);
 
 void drawIndexedFlatTriangle(void) {
     ModelFlatTriangle *primitive = D_8013B680;
-    TRIANGLE_SCRATCHPAD->emitTriangle = func_80052530;
+    TRIANGLE_SCRATCHPAD->emitTriangle = emitProjectedFlatTriangle;
     TRIANGLE_SCRATCHPAD->r = primitive->r;
     TRIANGLE_SCRATCHPAD->g = primitive->g;
     TRIANGLE_SCRATCHPAD->b = primitive->b;
