@@ -2279,3 +2279,5 @@ D_801204D4 = 0x801204D4; // size:0x10
 initializeScaledTaskCoordinateResource = 0x80045868; // type:func
 
 updateValueInterpolationTask = 0x8006A07C; // type:func
+
+startMovieStream = 0x8001A080; // type:func

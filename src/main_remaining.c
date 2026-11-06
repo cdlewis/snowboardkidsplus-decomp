@@ -20,6 +20,8 @@
 #include "psx/libgs.h"
 #include "psx/libetc.h"
 #include "psx/libmcrd.h"
+#include "psx/libcd.h"
+#include "psx/libpress.h"
 
 #define PLAYER_ANIMATION_ARCHIVE ((u8 *)0x80180000)
 #define PLAYER_ANIMATION_OFFSETS ((u32 *)0x80180004)
@@ -134,6 +136,7 @@ extern u16 D_8013AFE8;
 extern void *D_8013AF4C;
 extern void *gMemoryCardLoadDestination;
 
+void func_8001A474(CdlLOC *location);
 void func_8002EE0C(void);
 void func_8001D044(void);
 void func_8001D42C(void);
@@ -614,7 +617,13 @@ void initMovieDecodeState(MovieDecodeState *state, s16 x0, s16 y0, s16 x1, s16 y
     state->frames[1].y = y1;
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001A080);
+void startMovieStream(CdlLOC *location, DecDCCb outputCallback) {
+    DecDCTReset(0);
+    DecDCToutCallback(outputCallback);
+    StSetRing((u8 *)0x80180000, 32);
+    StSetStream(1, 1, -1, 0, 0);
+    func_8001A474(location);
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001A0EC);
 
