@@ -99,9 +99,7 @@ struct RacePlayer {
     RacePlayerVector unk5BC[14];
     RacePlayerVector unk62C[14];
     u8 unk69C[0x248];
-    s32 unk8E4;
-    s32 unk8E8;
-    s32 unk8EC;
+    s32 position8E4[3];
     u8 unk8F0[0x2C];
     u16 *animationStream;
     u16 *animationFrame;
@@ -204,3 +202,4 @@ void updateActivePlayerRegionCollisions(void);
 
 /* Advance a directional input sequence and return its completed entry result. */
 u16 advanceCurrentPlayerInputSequence(u8 sequence[][2], s16 slot);
+void createPlayerPositionTrailTask(s32 playerIndex);

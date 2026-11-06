@@ -480,9 +480,9 @@ void updateCurrentPlayerFromTaskPhase(void) {
     D_8013B0D8->unk946 = 0;
     player = D_8013B0D8;
     player->unk110 = player->unk0B6 + 0x400;
-    player->unk8E4 = player->x >> 8;
-    player->unk8E8 = player->y >> 8;
-    player->unk8EC = player->z >> 8;
+    player->position8E4[0] = player->x >> 8;
+    player->position8E4[1] = player->y >> 8;
+    player->position8E4[2] = player->z >> 8;
 }
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80025840);
@@ -562,9 +562,9 @@ void updateCurrentPlayerTaskCountdown(void) {
     func_8002AE6C();
     D_8013B0D8->unk946 = 0;
     player = D_8013B0D8;
-    player->unk8E4 = player->x >> 8;
-    player->unk8E8 = player->y >> 8;
-    player->unk8EC = player->z >> 8;
+    player->position8E4[0] = player->x >> 8;
+    player->position8E4[1] = player->y >> 8;
+    player->position8E4[2] = player->z >> 8;
     func_80017268();
     if (D_8013AE88->data18 == 0) {
         if (--D_8013AE88->data1A == 0) {

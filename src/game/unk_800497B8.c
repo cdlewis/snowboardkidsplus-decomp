@@ -185,6 +185,14 @@ typedef struct SelectedStateRecord {
     s32 unk0C;
     s32 unk10;
 } SelectedStateRecord;
+typedef struct PlayerPositionTrailResource {
+    s32 positions[3][3];
+    s32 unk24[3][3];
+    u8 unk48[6];
+    s16 unk4E;
+    u8 pad50[0xB0];
+} PlayerPositionTrailResource;
+
 typedef struct RotatingQuadTrailResource {
     s32 countdown;
     s16 angles[8];
@@ -434,6 +442,7 @@ void func_800618A0(void);
 void func_80061E48(void);
 void func_80062354(void);
 void func_8006624C(void);
+void func_80066D18(void);
 void func_800659F0(void);
 extern SVECTOR D_8012A5C0[];
 extern GsCOORDINATE2 D_80129C60[];
@@ -1494,7 +1503,23 @@ void createPlayerTrailTask(s32 playerIndex) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80066D18);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80067620);
+void createPlayerPositionTrailTask(s32 playerIndex) {
+    RacePlayer *player;
+    PlayerPositionTrailResource *resource;
+    s32 i, j;
+
+    player = &D_80120E90[playerIndex];
+    func_80014930(D_8013B304, func_80066D18);
+    D_8013AE8C->resource14 = allocateTaskResource();
+    D_8013AE8C->data18 = playerIndex;
+    resource = (PlayerPositionTrailResource *)&D_800D9504[D_8013AE8C->resource14];
+    for (i = 0; i < 3; i++) {
+        for (j = 0; j < 3; j++) {
+            resource->positions[i][j] = player->position8E4[j];
+        }
+    }
+    resource->unk4E = 1;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800676FC);
 
