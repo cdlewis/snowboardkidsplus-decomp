@@ -2538,3 +2538,5 @@ D_8013B1D4 = 0x8013B1D4; // size:0x2
 waitResultDisplayInputTask = 0x800366C0; // type:func
 
 processTexturedQuadPrimitive = 0x80055650; // type:func
+
+countWrappedTextLines = 0x800A5FE8; // type:func

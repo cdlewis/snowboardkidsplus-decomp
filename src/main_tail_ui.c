@@ -422,7 +422,39 @@ TextEntry *findTextEntryInsertionPoint(u32 key, u32 value) {
     return node;
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A5FE8);
+s16 countWrappedTextLines(const s8 *text, s16 width, s16 limit) {
+    s16 count = 0;
+    s16 column = 0;
+    s16 lines = 1;
+    while (*text != 0) {
+        if (count >= limit) break;
+        if (column >= width) {
+            if (*text == '\r' && text[1] == '\n') text += 2;
+            lines++;
+            column = 0;
+        }
+        if (*text == '\r' && text[1] == '\n') {
+            lines++;
+            column = 0;
+            text += 2;
+        }
+        if (*text & 0x80) {
+            column++;
+            count++;
+            text += 2;
+        } else if (*text == ' ') {
+            column++;
+            text++;
+            count++;
+            if (*text != ' ') continue;
+            text++;
+            continue;
+        } else {
+            text += 2;
+        }
+    }
+    return lines;
+}
 
 s16 advanceTextLine(const s8 **text, s16 limit) {
     const s8 *p = *text;
