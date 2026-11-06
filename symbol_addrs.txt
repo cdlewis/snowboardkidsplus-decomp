@@ -2518,3 +2518,5 @@ drawTaskObjectAlternateLayer = 0x800593B0; // type:func
 gAlternateObjectSortSavedStackPointer = 0x8013B6A8; // type:u32 size:0x4
 
 initializeTaskPlayerCamera = 0x800A1DA0; // type:func
+
+updateTaskTimeRecordCountdownPhase1AndPlaySound = 0x8003A690; // type:func

@@ -69,7 +69,9 @@ typedef struct TimeRecordDetailCountdownResource {
     u8 unk00[8];
     s16 timer;
     s16 unk0A;
-    u8 unk0C[0xF4];
+    u8 unk0C[8];
+    s16 unk14;
+    u8 unk16[0xEA];
 } TimeRecordDetailCountdownResource;
 
 typedef struct MenuTimeResource {
@@ -389,7 +391,7 @@ void fadeInLapTimeLabelTask(void);
 void fadeInTimeMenuTask(void);
 void drawTaskTimeMenuAndSetFlag10OnInput(void);
 void waitTaskTimeRecordCountdownAndPlaySound(void);
-void func_8003A690(void);
+void updateTaskTimeRecordCountdownPhase1AndPlaySound(void);
 void func_8003A158(void);
 void drawTaskTimeRecordsAndSetFlag10OnInput(void);
 void drawCurrentTaskTimeRecordDetails(void);
@@ -2090,7 +2092,26 @@ void updateTaskTimeRecordCountdownPhase2AndPlaySound(void) {
     func_80039B34((TaskResourceRecord *)resource);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003A690);
+void updateTaskTimeRecordCountdownPhase1AndPlaySound(void) {
+    TimeRecordDetailCountdownResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (TimeRecordDetailCountdownResource *)&D_800D9504[D_8013AE88->resource14];
+    resource->unk0A = 1;
+    if (--resource->timer == 0) {
+        playSoundEffect(0, 0x700, 0x20);
+        resource->timer = 20;
+        if (resource->unk14 != 0) {
+            setCurrentTaskCallback(updateTaskTimeRecordCountdownPhase2AndPlaySound);
+        } else {
+            setCurrentTaskCallback(updateTaskTimeRecordCountdownAndPlaySound);
+        }
+    }
+    drawTimeRecordHeader((TimeRecordHeaderResource *)resource);
+    func_80039564((TaskResourceRecord *)resource);
+    func_80039B34((TaskResourceRecord *)resource);
+}
 
 void tickRaceResultsSoundDelayTask(void) {
     RaceResultsFadeResource *resource;
@@ -2103,7 +2124,7 @@ void tickRaceResultsSoundDelayTask(void) {
     if (--resource->timer == 0) {
         playSoundEffect(0, 0x700, 0x20);
         resource->timer = 20;
-        setCurrentTaskCallback(func_8003A690);
+        setCurrentTaskCallback(updateTaskTimeRecordCountdownPhase1AndPlaySound);
     }
     drawTimeRecordHeader((TimeRecordHeaderResource *)resource);
     func_80039564((TaskResourceRecord *)resource);
