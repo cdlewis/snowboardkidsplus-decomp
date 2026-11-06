@@ -227,6 +227,7 @@ void func_80039484(TaskResourceRecord *resource);
 void func_800398F4(TaskResourceRecord *resource);
 void func_8003AAE0(TaskResourceRecord *resource);
 void func_8003AD48(TaskResourceRecord *resource);
+void func_8003B020(TaskResourceRecord *resource);
 void func_8003B2BC(TaskResourceRecord *resource);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002B3F4);
@@ -1272,7 +1273,19 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003B020);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003B2BC);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003B434);
+void drawCurrentTaskStatsSelection(void) {
+    TaskResourceRecord *resource;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = &D_800D9504[D_8013AE88->resource14];
+    if (!(D_8013AFE4 & 0x10)) {
+        func_800149A8();
+    }
+    func_8003AAE0(resource);
+    func_8003B020(resource);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003B4B8);
 
