@@ -2258,3 +2258,5 @@ startTaskStatsCountdownAndPlaySound = 0x8003B9F4; // type:func
 advanceTaskStatsCountdownAndPlaySound = 0x8003BAAC; // type:func
 
 initializeCurrentPlayerState5 = 0x8001F444; // type:func
+
+initializeDualResource5100EffectTask = 0x80047CC0; // type:func
