@@ -140,6 +140,7 @@ void drawStyle20DTexturedPanel(s16 x, s16 y, s16 w, s16 h, s16 clutOffset,
                               s16 blendMode, struct GsOT *ot, u16 depth);
 void startPrimaryValueTransition(s32 duration, s32 start, s32 end);
 
+u16 saveVram16Pixels(s32 x, s32 y);
 void readVram16Pixels(s32 x, s32 y, u32 *pixels);
 void releaseSavedImageEntry(u16 index);
 void requestSavedImageRestore(u16 index);

@@ -2011,3 +2011,5 @@ waitSlidingDisplayTask = 0x80034270; // type:func
 waitPlayerNumberDisplayTask = 0x800349BC; // type:func
 
 waitSlidingNumberDisplayTask = 0x80035310; // type:func
+
+saveVram16Pixels = 0x80016344; // type:func

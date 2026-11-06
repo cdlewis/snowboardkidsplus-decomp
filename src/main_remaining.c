@@ -121,6 +121,7 @@ void func_8001D044(void);
 void func_8001D42C(void);
 void uploadTimArchive(TimArchive *archive, s16 *position);
 void *memcpy(void *destination, const void *source, unsigned int size);
+u16 func_800162C8(void);
 void func_80018D80(u8 slot, void *destination);
 void func_80019980(void);
 void func_8001C0DC(void);
@@ -183,7 +184,22 @@ void releaseSavedImageEntry(u16 index) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80016344);
+u16 saveVram16Pixels(s32 x, s32 y) {
+    u16 index = func_800162C8();
+    if (index != 32) {
+        SavedImageEntry *entries = gSavedImageEntries;
+        SavedImageEntry *entry = entries;
+        entry += index;
+        entry->rect.w = 16;
+        entry->rect.x = x;
+        entry->rect.y = y;
+        entry->rect.h = 1;
+        StoreImage(&gSavedImageEntries[index].rect, (u32 *)gSavedImageEntries[index].pixels);
+        entry->flags = 1;
+        return index;
+    }
+    return 32;
+}
 
 void readVram16Pixels(s32 x, s32 y, u32 *pixels) {
     RECT rect;
