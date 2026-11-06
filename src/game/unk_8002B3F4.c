@@ -267,7 +267,8 @@ void func_80046044(void);
 void func_80037424(TaskResourceRecord *resource);
 void func_80036BA4(TaskResourceRecord *resource);
 void func_80037354(TaskResourceRecord *resource);
-void func_8003772C(void);
+void func_8003763C(void);
+void fadeInPlayerResultsTask(void);
 void fadeInLapTimeLabelTask(void);
 void func_80037EC8(void);
 void drawMenuTimeWithBrightness(MenuTimeResource *resource);
@@ -1234,7 +1235,22 @@ void drawCurrentTaskPlayerResults(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003763C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003772C);
+void fadeInPlayerResultsTask(void) {
+    TaskFadeResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (TaskFadeResource *)&D_800D9504[D_8013AE88->resource14];
+    resource->brightness += 8;
+    if (resource->brightness > 128) {
+        resource->timer = 150;
+        resource->brightness = 128;
+        setCurrentTaskCallback(func_8003763C);
+    }
+    func_80037424((TaskResourceRecord *)resource);
+    func_80036BA4((TaskResourceRecord *)resource);
+    func_80037354((TaskResourceRecord *)resource);
+}
 
 void initializeTaskFade(void) {
     TaskFadeResource *resource;
@@ -1245,7 +1261,7 @@ void initializeTaskFade(void) {
     D_8013AE88->resource14 = allocateTaskResource();
     resource = (TaskFadeResource *)&D_800D9504[D_8013AE88->resource14];
     resource->brightness = 0;
-    setCurrentTaskCallback(func_8003772C);
+    setCurrentTaskCallback(fadeInPlayerResultsTask);
 }
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80037850);
