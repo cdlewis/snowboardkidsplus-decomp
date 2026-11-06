@@ -17,6 +17,9 @@
 #include "psx/libetc.h"
 #include "psx/libmcrd.h"
 
+#define PLAYER_ANIMATION_ARCHIVE ((u8 *)0x80180000)
+#define PLAYER_ANIMATION_OFFSETS ((u32 *)0x80180004)
+
 /* The first word holds the count; later words hold tagged byte offsets.
  * words includes that header word, so the first image uses word index 1.
  */
@@ -122,6 +125,7 @@ void func_8001D42C(void);
 void uploadTimArchive(TimArchive *archive, s16 *position);
 void *memcpy(void *destination, const void *source, unsigned int size);
 u16 func_800162C8(void);
+s32 func_80017268(void);
 void func_80018D80(u8 slot, void *destination);
 void func_80019980(void);
 void func_8001C0DC(void);
@@ -251,7 +255,20 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80016A7C);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80016CBC);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80016E80);
+void startCurrentPlayerAnimation(u8 animation, u8 mode) {
+    RacePlayer *player;
+    currentPlayerAbsolute->animationIndex = D_800EB09C[currentPlayerAbsolute->unk014][animation];
+    currentPlayerAbsolute->animationFlags = mode;
+    currentPlayerAbsolute->animationStep = 0;
+    player = currentPlayerAbsolute;
+    player->animationStream = (u16 *)(PLAYER_ANIMATION_ARCHIVE + PLAYER_ANIMATION_OFFSETS[player->animationIndex]);
+    player->animationFrameCount = *player->animationStream;
+    player->animationStream++;
+    player->animationTicks = *player->animationStream;
+    player->animationStream++;
+    func_80017268();
+    currentPlayerAbsolute->animationFlags |= 0x20;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80016F5C);
 

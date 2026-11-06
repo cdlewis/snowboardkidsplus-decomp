@@ -86,9 +86,16 @@ struct RacePlayer {
     s32 unk8E4;
     s32 unk8E8;
     s32 unk8EC;
-    u8 unk8F0[0x38];
+    u8 unk8F0[0x2C];
+    u16 *animationStream;
+    u16 *animationFrame;
+    u16 animationFrameCount;
+    u16 animationTicks;
     u8 modelPartCount;
-    u8 unk929[0x1B];
+    u8 animationIndex;
+    u8 animationFlags;
+    u8 animationStep;
+    u8 unk92C[0x18];
     u8 randomIndex;
     u8 unk945;
     u8 unk946;
@@ -154,7 +161,7 @@ void resetCurrentPlayerForCallback205B8(void);
 void func_8002E44C(s16 index);
 void func_8002E5A0(u16 index, s16 value);
 
-void func_80016E80(u8 index, u8 flags);
+void startCurrentPlayerAnimation(u8 animation, u8 mode);
 
 void initCurrentPlayerModelParts(void);
 s32 callCurrentPlayerStateCallbackIfDifferent(u16 state);

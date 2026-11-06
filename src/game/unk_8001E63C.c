@@ -162,14 +162,14 @@ void resetCurrentPlayerForCallback205B8(void) {
     if (D_8013B0D8->unk965 != 0) {
         D_8013B0D8->unk965 = 0;
         func_8002E44C(7);
-        func_80016E80(0x12, 2);
+        startCurrentPlayerAnimation(0x12, 2);
     }
     setCurrentTaskCallback(func_800205B8);
 }
 
 void initializeCurrentPlayerDefaultState(void) {
-    if (D_8013B0D8->unk929[0] != D_800EB09C[D_8013B0D8->unk014][4]) {
-        func_80016E80(4, 2);
+    if (D_8013B0D8->animationIndex != D_800EB09C[D_8013B0D8->unk014][4]) {
+        startCurrentPlayerAnimation(4, 2);
     }
     D_8013B0D8->unk078 = 0;
     D_8013B0D8->unk08C = 0;
@@ -184,9 +184,9 @@ void initializeCurrentPlayerState2(void) {
     D_8013B0D8->unk08C = 0xB84;
     D_8013B0D8->unk128 |= 0x10;
     if (D_8013AE88->data1A) {
-        func_80016E80(3, 6);
+        startCurrentPlayerAnimation(3, 6);
     } else {
-        func_80016E80(3, 2);
+        startCurrentPlayerAnimation(3, 2);
     }
     clearCurrentPlayerSequenceState();
     D_8013B0D8->unk0C8 = 0;
@@ -209,9 +209,9 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8001F6F8);
 void resetCurrentPlayerForCallback26DAC(void) {
     RacePlayer *player;
     if (D_8013B0D8->unk128 & 0x10000) {
-        func_80016E80(8, 2);
+        startCurrentPlayerAnimation(8, 2);
     } else {
-        func_80016E80(7, 2);
+        startCurrentPlayerAnimation(7, 2);
     }
     player = D_8013B0D8;
     player->unk078 = 0x400;
@@ -231,7 +231,7 @@ void initializeCurrentPlayerState14(void) {
     player->unk128 = (player->unk128 & 0xFF0C1FFB) | 0x6000;
     player->unk08C = 15;
     player->unk078 = 0;
-    func_80016E80(15, 1);
+    startCurrentPlayerAnimation(15, 1);
     func_8002E5A0(D_8013AE88->data18, 5);
     setCurrentTaskCallback(func_800273D4);
 }
@@ -250,7 +250,7 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8001FCB4);
 
 void resetCurrentPlayerForCallback255C4(void) {
     RacePlayer *player;
-    func_80016E80(0xB, 2);
+    startCurrentPlayerAnimation(0xB, 2);
     player = D_8013B0D8;
     player->unk0B8 = 0;
     player->unk078 = 0;
@@ -278,7 +278,7 @@ void resetCurrentPlayerForCallback240D0(void) {
     player->unk954 = 0;
     player->unk126 = 0;
     D_8013B0D8->unk0BE = D_8013B0D8->unk138;
-    func_80016E80(0x22, 2);
+    startCurrentPlayerAnimation(0x22, 2);
     setCurrentTaskCallback(func_800240D0);
 }
 
