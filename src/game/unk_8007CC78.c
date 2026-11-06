@@ -573,7 +573,20 @@ s16 getSaveRecordFlagPair(s16 recordIndex, s16 maskIndex, s16 pairIndex) {
     return result;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8008C0CC);
+void setSaveRecordFlagPair(s16 recordIndex, s16 maskIndex, s16 pairIndex, s16 value) {
+    GlobalFlagStatePrefix *state = &D_8013080C;
+
+    ((SaveRecord *)state)[recordIndex].flags_3B0[maskIndex] &= ~(3 << (pairIndex * 2));
+    if (value == 1 || value == 3) {
+        ((SaveRecord *)&D_8013080C)[recordIndex].flags_3B0[maskIndex] |= 1 << (pairIndex * 2);
+    }
+    if (value == 2 || value == 3) {
+        GlobalFlagStatePrefix *secondState = &D_8013080C;
+        ((SaveRecord *)secondState)[recordIndex].flags_3B0[maskIndex] |= 2 << (pairIndex * 2);
+    }
+    rebuildCombinedStateMask((GlobalFlagStatePrefix *)&((SaveRecord *)&D_8013080C)[recordIndex]);
+    copySaveRecordAndMergeFlags();
+}
 
 s32 getStateMaskPair(s16 stateIndex, s16 maskIndex, s16 pairIndex) {
     u32 mask = D_8013B484[stateIndex]->masks[maskIndex];
