@@ -21,3 +21,6 @@ void updateCurrentPlayerCameraTarget(void);
 
 void updateCameraRotationMatrices(u16 playerIndex);
 void clampPlayerCameraHeight(u16 playerIndex);
+
+/* Nearest camera distance in whole units, using the sum of axis distances. */
+s32 getNearestCameraManhattanDistance(s32 x, s32 y, s32 z);

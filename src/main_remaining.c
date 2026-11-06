@@ -3,6 +3,7 @@
 #include "game/task.h"
 #include "game/graphics.h"
 #include "game/coordinate.h"
+#include "game/race_camera.h"
 #include "game/linear_random.h"
 #include "game/offset_archive.h"
 #include "game/music.h"
@@ -456,7 +457,29 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001816C);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_800181B0);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80018288);
+s32 getNearestCameraManhattanDistance(s32 x, s32 y, s32 z) {
+    s32 dx, dy, dz;
+    s32 distance, other;
+    PlayerCamera *cameras = D_801241E8;
+    dx = x - cameras[0].x;
+    if (dx < 0) dx = -dx;
+    dy = y - cameras[0].y;
+    if (dy < 0) dy = -dy;
+    dz = z - cameras[0].z;
+    if (dz < 0) dz = -dz;
+    distance = (dx + dy + dz) >> 8;
+    if (D_8013AFCD == 2) {
+        dx = x - cameras[1].x;
+        if (dx < 0) dx = -dx;
+        dy = y - cameras[1].y;
+        if (dy < 0) dy = -dy;
+        dz = z - cameras[1].z;
+        if (dz < 0) dz = -dz;
+        other = (dx + dy + dz) >> 8;
+        if (other < distance) distance = other;
+    }
+    return distance;
+}
 
 s32 attenuateSoundVolume(s32 distance, s16 volume) {
     s32 result;
