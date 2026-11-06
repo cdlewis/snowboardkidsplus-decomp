@@ -2075,7 +2075,7 @@ void drawLapTimeLabel(TaskMenuFadeResource *resource) {
     } else {
         setSpriteColor(128, 128, 128);
     }
-    func_8006D41C(-116, -60, 20, D_80010A94, 5, -1,
+    drawLimitedText8x8(-116, -60, 20, D_80010A94, 5, -1,
                  &D_800EBFF0[D_8013AF78], 1);
 }
 
@@ -2350,7 +2350,7 @@ void drawTimeRecordHeader(TimeRecordHeaderResource *resource) {
     } else {
         setSpriteColor(128, 128, 128);
     }
-    func_8006D41C(-112, -64, 20, D_80010A94, 5, -1,
+    drawLimitedText8x8(-112, -64, 20, D_80010A94, 5, -1,
                  &D_800EBFF0[D_8013AF78], 1);
     drawRaceTime(&gRaceElapsedTime, -104, -55, 1,
                  &D_800EBFF0[D_8013AF78], 1);
