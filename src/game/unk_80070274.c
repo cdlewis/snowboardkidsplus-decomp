@@ -10,6 +10,7 @@
 #include "game/movement.h"
 #define TASK_ABSOLUTE_ADDRESSING
 #include "game/task.h"
+#include "game/selected_sprite.h"
 #include "psx/libsnd.h"
 
 
@@ -60,21 +61,6 @@ typedef struct AnimatedSpriteResource {
     s16 repeats;
     u16 depth;
 } AnimatedSpriteResource;
-
-typedef struct SelectedSpriteResource {
-    u8 unk00[0x30];
-    s16 mode;
-    s16 selectedIndex;
-    u8 unk34[0x1C];
-    u16 depth;
-    u8 unk52[0xE];
-    s16 sprite;
-    u8 r, g, b;
-} SelectedSpriteResource;
-typedef struct SelectedSpriteChild {
-    GameTask *task;
-    s32 unk04;
-} SelectedSpriteChild;
 
 typedef s16 SpriteMotionResource[128];
 

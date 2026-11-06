@@ -2657,3 +2657,5 @@ finishNumberAdjustmentTask = 0x800A59B8; // type:func
 
 initializeBouncingVisualTask = 0x80035808; // type:func
 drawSelectedTaskMarkerSprite = 0x800326FC; // type:func
+
+drawOffsetSelectedTaskSprite = 0x800A2AB0; // type:func

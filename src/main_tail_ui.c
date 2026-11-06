@@ -17,6 +17,8 @@
 #include "game/race_player.h"
 #include "game/text_entries.h"
 #include "game/task.h"
+#include "game/selected_sprite.h"
+#include "game/movement.h"
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
 
@@ -193,7 +195,31 @@ INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A25F8);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A29A4);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A2AB0);
+void drawOffsetSelectedTaskSprite(void) {
+    SelectedSpriteResource *state;
+    SelectedSpriteChild *children;
+    Movement2D *position;
+    u16 mode;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    state = (SelectedSpriteResource *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) {
+        while (1) {}
+    }
+    children = (SelectedSpriteChild *)&D_800D9504[D_8013AE88->resource16];
+    mode = state->mode;
+    if ((s16)mode > 0) {
+        if ((u32)(mode - 1) < 2) {
+            setSpriteColor(state->r, state->g, state->b);
+        } else {
+            setSpriteColor(128, 128, 128);
+        }
+        position = (Movement2D *)&D_800D9504[children[state->selectedIndex].task->resource14];
+        func_8006C998(position->x / 4096 - 8, position->y / 4096 + 2, state->sprite, 0, -1,
+                     &D_800EBFF0[D_8013AF78], state->depth - 1);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A2C40);
 
