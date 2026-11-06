@@ -2233,3 +2233,7 @@ initializeNumberAdjustmentTask = 0x800A52D8; // type:func
 startRotatingQuadEffectTask = 0x8006435C; // type:func
 
 drawTimeRecordHeader = 0x80039484; // type:func
+
+drawAnimatedSprite16 = 0x800775C8; // type:func
+gAnimatedSprite16Template = 0x8012F17C; // size:0x10
+gAnimatedSprite16DrawPage = 0x8013B3B4; // size:0x8

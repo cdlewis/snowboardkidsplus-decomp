@@ -47,6 +47,14 @@ extern GameTask *D_8013BDA8[4];
 
 s8 gTaskImageSourceRows[12] = {8, 1, 2, 3, 4, 5, 6, 7, 9, 0, 0, 0};
 
+SPRT_16 gAnimatedSprite16Template __attribute__((section(".data.animated_sprite16"))) = {
+    0x03000000, 0x80, 0x80, 0x80, SPRT_16_CODE,
+    0, 0, 0x70, 0x50, 0x3EB2
+};
+DR_TPAGE gAnimatedSprite16DrawPage __attribute__((section(".sdata.animated_sprite16_page"))) = {
+    0x01000000, {0xE1000000 | getTPage(0, 0, 832, 256)}
+};
+
 s16 func_80070794(s32 id);
 void func_80072340(s32 x, s32 y, s32 width, s32 height, s32 r, s32 g, s32 b,
                    GsOT *ot, u16 depth);
@@ -367,7 +375,17 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80077390);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_8007747C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_800775C8);
+void drawAnimatedSprite16(s16 frame, s16 x, s16 y, s16 unused, GsOT *ot, u16 depth) {
+    SPRT_16 *packet = (SPRT_16 *)GsGetWorkBase();
+    *packet = gAnimatedSprite16Template;
+    packet->v0 = frame * 16 + 0x50;
+    setXY0(packet, x, y);
+    AddPrim(&ot->org[depth], packet);
+    packet++;
+    *(DR_TPAGE *)packet = gAnimatedSprite16DrawPage;
+    AddPrim(&ot->org[depth], packet);
+    func_800BF2C8((u32)((DR_TPAGE *)packet + 1));
+}
 
 void initializeDualResourceSequenceTask(void) {
     D_8013AE88->data18 = 1;

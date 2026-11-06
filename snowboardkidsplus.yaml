@@ -579,7 +579,8 @@ segments:
       - [0x11F900, .data, game/unk_80070274]
       - [0x11F90C, data, 11F90C]
       - [0x11F93C, .data, game/unk_8007CC78]
-      - [0x11F97C, data, 11F97C]
+      - {start: 0x11F97C, type: .data, name: game/unk_80070274, linker_section: .data.animated_sprite16}
+      - [0x11F98C, data, 11F98C]
       - {start: 0x122F38, type: .data, name: main_tail, linker_section: .data.indexed_sector_ranges}
       - [0x122F8C, data, 122F8C]
       - {start: 0x123100, type: .data, name: main_tail, linker_section: .data.number_adjustment_arrow}
@@ -664,6 +665,8 @@ segments:
       - [0x12BA48, data, 12BA48]
       - {start: 0x12BAFC, type: .data, name: main_remaining, linker_section: .data.linear_random_state}
       - [0x12BB00, data, 12BB00]
+      - {start: 0x12BBB4, type: .sdata, name: game/unk_80070274, linker_section: .sdata.animated_sprite16_page, linker_section_order: .data}
+      - [0x12BBBC, data, 12BBBC]
       - [0x12BD70, .data, engine/game_options]
       - [0x12BD78, data, 12BD78]
       - {start: 0x12BDF8, type: .sdata, name: main, linker_section: .sdata.cd_volume_fade_timer, linker_section_order: .data}
