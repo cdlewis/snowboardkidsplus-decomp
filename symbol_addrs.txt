@@ -30,6 +30,7 @@ beginMemoryCardBufferRead = 0x8001993C; // type:func
 startClearedStateValueHistoryTask = 0x800873DC; // type:func
 requestCurrentPlayerAction6NarrowAngle = 0x8002CD18; // type:func
 requestCurrentPlayerAction6 = 0x8002CC78; // type:func
+requestCurrentPlayerAction7 = 0x8002CDB8; // type:func
 drawLapTimeLabel = 0x80037C80; // type:func
 queueCdSectorCommand = 0x800136DC; // type:func
 createPlayerSpriteAnimationTask = 0x800345BC; // type:func
