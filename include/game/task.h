@@ -95,3 +95,5 @@ s16 getTaskResourceGroupedIndex(GameTask *task, s16 index);
 s16 getTaskResourceAdjustedGroupedIndex(s16 value, GameTask *task, s16 index);
 
 void copyIndexedTaskImagesToVram(s16 index);
+
+void finishMusicTaskAtDeadline(void);

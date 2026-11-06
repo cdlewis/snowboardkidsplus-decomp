@@ -70,6 +70,15 @@ typedef struct TextResourceState {
 extern s16 D_8013B10C __attribute__((section(".data")));
 extern u8 D_8013B55E __attribute__((section(".data")));
 
+typedef struct MusicOwnerState {
+    u8 unk00[0x24];
+    u32 tick;
+    u8 unk28[0xC];
+    GameTask *musicTask;
+    u8 unk38[8];
+    u32 completionTick;
+} MusicOwnerState;
+
 typedef struct TextEntryListHeader {
     TextEntry *freeEntries;
     TextEntry *activeEntries;
@@ -834,7 +843,28 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A6E88);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A73BC);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A7590);
+void finishMusicTaskAtDeadline(void) {
+    MusicOwnerState *owner;
+    TaskResourceRecord *state;
+    if (D_8013AE98->resource16 == 0xFFFF) {
+        while (1) {}
+    }
+    owner = (MusicOwnerState *)&D_800D9504[D_8013AE98->resource16];
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    state = &D_800D9504[D_8013AE88->resource14];
+    if (owner->musicTask == D_8013AE88) {
+        if (owner->tick < state->unk04) {
+            return;
+        }
+        owner->musicTask = NULL;
+        if (owner->completionTick < state->unk04) {
+            owner->completionTick = state->unk04;
+        }
+    }
+    func_800149A8();
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A7664);
 
