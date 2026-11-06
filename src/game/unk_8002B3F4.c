@@ -1367,7 +1367,12 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80035CF8);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80035D5C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80035EDC);
+void drawResultNumberAndIcon(ResultDisplayResource *resource) {
+    setSpriteColor(128, 128, 128);
+    func_8006DFB4(32, -63, 5, 0, resource->unk04, 1, -1,
+                  &D_800EBFF0[D_8013AF78], 1);
+    func_8006C998(72, -63, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80035FAC);
 
