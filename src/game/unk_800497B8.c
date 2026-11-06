@@ -699,7 +699,15 @@ void updateAndDrawCurrentTaskObject(void) {
     func_800592DC(D_8013AE88->data18);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005EECC);
+void copySlot26TransformToCurrentTaskObject(void) {
+    D_80129C60[D_8013AE88->data18].coord.t[0] = D_80129C60[26].coord.t[0];
+    D_80129C60[D_8013AE88->data18].coord.t[1] = D_80129C60[26].coord.t[1];
+    D_80129C60[D_8013AE88->data18].coord.t[2] = D_80129C60[26].coord.t[2];
+    D_8012A5C0[D_8013AE88->data18].vx = D_8012A5C0[26].vx;
+    D_8012A5C0[D_8013AE88->data18].vy = D_8012A5C0[26].vy;
+    D_8012A5C0[D_8013AE88->data18].vz = D_8012A5C0[26].vz;
+    setCurrentTaskCallback(updateAndDrawCurrentTaskObject);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005EFA0);
 
