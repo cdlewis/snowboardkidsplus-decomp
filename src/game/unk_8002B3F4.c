@@ -184,6 +184,19 @@ typedef struct SpriteMotionResource {
     u8 padding[0xE6];
 } SpriteMotionResource;
 
+typedef struct SlidingVisualResource {
+    GsCOORDINATE2 coordinate;
+    u8 unk50[0x24];
+    s32 unk74;
+    u8 unk78[0x50];
+    s16 timer;
+    s16 framePosition;
+    u8 r0, g0, b0, code;
+    s32 step;
+    s32 velocity;
+    u8 unkD8[0x28];
+} SlidingVisualResource;
+
 typedef struct PlayerCameraView {
     s32 x, y, z;
     s32 targetX, targetY, targetZ;
@@ -217,6 +230,7 @@ extern u16 D_8013B0E6;
 extern s32 D_8013B0E8;
 
 void func_800335E4(SlidingTimeResource *resource);
+void func_800497B8(void);
 
 void func_80037850(const RaceTime *value, s16 x, s16 y, s16 mode, GsOT *ot, u16 depth);
 
@@ -2069,4 +2083,22 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80049240);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80049404);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800496EC);
+void initializeSlidingVisualSequenceTask(void) {
+    SlidingVisualResource *resource;
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    resource = (SlidingVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    GsInitCoordinate2(0, &resource->coordinate);
+    resource->r0 = resource->g0 = resource->b0 = 128;
+    resource->code = POLY_FT4_CODE;
+    resource->step = 0;
+    resource->timer = 0;
+    resource->framePosition = 0;
+    resource->unk74 = -352;
+    resource->velocity = 0;
+    func_800181B0(1, 0xD01, 0x20);
+    D_8013AE88->data1C = 0;
+    setCurrentTaskCallback(func_800497B8);
+}

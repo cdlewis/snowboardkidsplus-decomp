@@ -2215,3 +2215,5 @@ initializePlayerNumberDisplayTask = 0x80034AE8; // type:func
 prepareTaskVisualQuad = 0x8005A660; // type:func
 
 initializeModeDependentTaskResourcePair = 0x8009D29C; // type:func
+
+initializeSlidingVisualSequenceTask = 0x800496EC; // type:func
