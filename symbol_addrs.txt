@@ -2558,3 +2558,5 @@ drawFullScreenSpriteTask = 0x8006A194; // type:func
 initializeCountedDisplayBoundsTask = 0x80094760; // type:func
 
 prepareRaceResourcesIfSelectionChanged = 0x800A0C6C; // type:func
+
+initializeDelayedEightEntryEffectTask = 0x80065330; // type:func

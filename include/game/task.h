@@ -148,3 +148,5 @@ void beginSound601TaskSequence(void);
 void initializeSelectionIndexedDualResourceTask(void);
 
 void initializeProximityEmitterTask(void);
+
+void initializeDelayedEightEntryEffectTask(void);

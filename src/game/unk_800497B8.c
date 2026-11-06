@@ -147,6 +147,19 @@ typedef struct FallingParticleResource {
     s32 frame;
 } FallingParticleResource;
 
+typedef struct EightEntryEffectResource {
+    VECTOR positions[8];
+    SVECTOR rotations[8];
+    s32 values[8];
+    s32 elapsed;
+} EightEntryEffectResource;
+typedef struct EightEntryEffectSecondaryResource {
+    SVECTOR vectors[8];
+    s16 values40[8];
+    s16 values50[8];
+    u8 values60[8];
+} EightEntryEffectSecondaryResource;
+
 typedef struct FadingTextResource {
     s32 duration;
     s32 elapsed;
@@ -562,6 +575,7 @@ void func_80052D84(TriangleScratchVertex *);
 void func_80052F90(TriangleScratchVertex *);
 void func_800529FC(TriangleScratchVertex *);
 void func_80053A34(TriangleScratchVertex *, s32);
+void func_8006479C(void);
 void func_80066474(void);
 void func_8005D828(RacePlayer *player, PlayerCollisionRegion *region);
 void func_8005B460(void);
@@ -1844,7 +1858,39 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80064754);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006479C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80065330);
+void initializeDelayedEightEntryEffectTask(void) {
+    EightEntryEffectResource *primary;
+    EightEntryEffectSecondaryResource *secondary;
+    s32 i;
+    if (D_8013AE88->data18 == 0) {
+        func_80014930(D_8013B304, func_8006479C);
+        D_8013AE8C->resource14 = allocateTaskResource();
+        primary = (EightEntryEffectResource *)&D_800D9504[D_8013AE8C->resource14];
+        D_8013AE8C->resource16 = allocateTaskResource();
+        secondary = (EightEntryEffectSecondaryResource *)&D_800D9504[D_8013AE8C->resource16];
+        D_8013AE8C->data18 = D_8013AE88->data1A;
+        D_8013AE8C->data1A = 0;
+        for (i = 0; i < 8; i++) {
+            primary->positions[i].vx = 0;
+            primary->positions[i].vy = 0;
+            primary->positions[i].vz = 0;
+            secondary->vectors[i].vx = 0;
+            secondary->vectors[i].vy = 0;
+            secondary->vectors[i].vz = 0;
+            primary->rotations[i].vx = 0;
+            primary->rotations[i].vy = 0;
+            primary->rotations[i].vz = 0;
+            secondary->values40[i] = 0;
+            secondary->values50[i] = 0;
+            secondary->values60[i] = 0;
+            primary->values[i] = 32;
+        }
+        primary->elapsed = 0;
+        func_800149A8();
+    } else {
+        D_8013AE88->data18--;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80065464);
 
