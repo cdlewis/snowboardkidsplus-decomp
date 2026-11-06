@@ -385,7 +385,7 @@ void func_80046CB4(void);
 void func_80037424(TaskResourceRecord *resource);
 void func_80036BA4(TaskResourceRecord *resource);
 void func_80037354(TaskResourceRecord *resource);
-void func_8003763C(void);
+void waitPlayerResultsInputTask(void);
 void fadeInPlayerResultsTask(void);
 void fadeInLapTimeLabelTask(void);
 void fadeInTimeMenuTask(void);
@@ -1622,7 +1622,23 @@ void drawCurrentTaskPlayerResults(void) {
     func_80037354(resource);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003763C);
+void waitPlayerResultsInputTask(void) {
+    s32 player;
+    TaskResourceRecord *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = &D_800D9504[D_8013AE88->resource14];
+    for (player = 0; player < gameOptionPlayerModeAbsolute; player++) {
+        if (D_8013AEE8[player] & 0xB0) {
+            D_8013AFE4 |= 0x10;
+            setCurrentTaskCallback(drawCurrentTaskPlayerResults);
+        }
+    }
+    func_80037424(resource);
+    func_80036BA4(resource);
+    func_80037354(resource);
+}
 
 void fadeInPlayerResultsTask(void) {
     TaskFadeResource *resource;
@@ -1634,7 +1650,7 @@ void fadeInPlayerResultsTask(void) {
     if (resource->brightness > 128) {
         resource->timer = 150;
         resource->brightness = 128;
-        setCurrentTaskCallback(func_8003763C);
+        setCurrentTaskCallback(waitPlayerResultsInputTask);
     }
     func_80037424((TaskResourceRecord *)resource);
     func_80036BA4((TaskResourceRecord *)resource);
