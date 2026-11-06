@@ -194,6 +194,16 @@ typedef struct PositionedEffectResource {
     u8 pad[0xF0];
 } PositionedEffectResource;
 
+typedef struct RotatingEffectResource {
+    s32 elapsed;
+    s32 x, y, z;
+    s32 unk10;
+    SVECTOR rotation;
+    SVECTOR parentRotation;
+    s16 clut;
+    s16 textureU;
+} RotatingEffectResource;
+
 typedef struct ControllerEffectStep {
     u8 value;
     s8 delta;
@@ -401,6 +411,7 @@ void func_80049D48(s32 x, s32 y, const char *format, ...);
 void func_8006BF14(s16 x, s16 y, s32 frameIndex, GsOT *ot, u16 depth);
 void func_8006C5F4(s16 x, s16 y, s32 frameIndex, GsOT *ot, u16 depth);
 void func_80063B58(void);
+void func_80063DF4(void);
 void func_800659F0(void);
 void func_800692E8(void);
 void func_8006A7B4(void);
@@ -1261,7 +1272,24 @@ void createPositionedEffectTask(s32 x, s32 y, s32 z) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80063DF4);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006435C);
+void startRotatingQuadEffectTask(s32 variant, const VECTOR *position, s32 pitch, s32 yaw, s32 roll) {
+    RotatingEffectResource *resource;
+    func_80014874(func_80063DF4);
+    D_8013AE8C->resource14 = allocateTaskResource();
+    resource = (RotatingEffectResource *)&D_800D9504[D_8013AE8C->resource14];
+    resource->x = position->vx >> 8;
+    resource->y = position->vy >> 8;
+    resource->z = position->vz >> 8;
+    resource->rotation.vx = 0;
+    resource->rotation.vy = yaw;
+    resource->rotation.vz = 0;
+    resource->parentRotation.vx = pitch;
+    resource->parentRotation.vy = 0;
+    resource->parentRotation.vz = roll;
+    resource->elapsed = 0;
+    resource->clut = variant == 0 ? 0x3EA8 : 0x3EE8;
+    resource->textureU = variant == 0 ? 0x40 : 0x80;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80064454);
 
