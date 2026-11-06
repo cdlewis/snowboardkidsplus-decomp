@@ -4,6 +4,7 @@
 #include "game/global_flags.h"
 #include "game/selected_records.h"
 #include "game/cd_queue.h"
+#include "game/byte_search.h"
 #include "game/game_options.h"
 #include "game/graphics.h"
 #define MUSIC_ABSOLUTE_ADDRESSING
@@ -19,6 +20,14 @@
 #include "psx/libgs.h"
 
 #define INDEXED_SECTOR_READ_DESTINATION ((void *)0x801F2080)
+
+/* Menu descriptors have a 0x14-byte stride in the callers' tables. */
+typedef struct ByteMappingDescriptor {
+    const u8 *mapping;
+    u8 unk04[2];
+    u8 count;
+    u8 unk07[13];
+} ByteMappingDescriptor;
 
 typedef struct ResourceSectorRange {
     s16 sector;
@@ -317,7 +326,18 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009F9B8);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A008C);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A046C);
+s16 findIdentityMappedIndexOrZero(ByteMappingDescriptor *descriptor, s16 value) {
+    s16 result = 0;
+    s16 i;
+
+    for (i = 0; i < descriptor->count; i++) {
+        if (value == (s16)func_8007373C(descriptor->mapping, value)) {
+            result = i;
+            break;
+        }
+    }
+    return result;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A050C);
 
