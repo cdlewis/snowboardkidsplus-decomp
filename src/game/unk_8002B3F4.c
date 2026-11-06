@@ -1459,7 +1459,23 @@ void fadeInResultDisplayTask(void) {
     func_800361C4(resource);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80036AB8);
+void initializeResultDisplayTask(void) {
+    ResultDisplayResource *resource;
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    resource = (ResultDisplayResource *)&D_800D9504[D_8013AE88->resource14];
+    resource->brightness = 0;
+    resource->unk06 = (s8)D_80120E90[0].unk935;
+    resource->unk04 = 0;
+    if (resource->unk06 < 3) {
+        resource->unk04 = D_8012FC6C[D_8013AFCE][resource->unk06];
+    }
+    D_80120E90[0].unk010 = D_80130BF0[0];
+    resource->unk08 = D_80120E90[0].unk014;
+    setCurrentTaskCallback(fadeInResultDisplayTask);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80036BA4);
 

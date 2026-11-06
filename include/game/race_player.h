@@ -136,6 +136,8 @@ struct RacePlayer {
 extern u8 D_800EB09C[10][40];
 
 extern RacePlayer D_80120E90[];
+/* Shared result state; task code accesses the first word. */
+extern s32 D_80130BF0[];
 extern s8 D_8013AFD2 __attribute__((section(".data")));
 extern s16 D_8013B0E4;
 extern u16 D_8013B0E6;

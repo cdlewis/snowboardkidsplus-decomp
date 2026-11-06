@@ -2375,3 +2375,5 @@ initializeDualResourceTaskAndNotifyParent = 0x8007BDE0; // type:func
 initializeMainTailDualResourceTask = 0x8009BCFC; // type:func
 
 waitForStatsScoreCountStartTask = 0x8003B94C; // type:func
+
+initializeResultDisplayTask = 0x80036AB8; // type:func
