@@ -10,7 +10,30 @@ void copySelectedRecordToCurrentPlayer(void) {
     player->unk11A = D_8013B1F0[D_8013B1FE].unkA;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002A560", func_8002A5A0);
+s16 smoothAndScaleCurrentPlayerInput(s32 magnitude, s16 input) {
+    s16 current;
+    s16 factor;
+    if (magnitude < 0) {
+        magnitude = -magnitude;
+    }
+    current = D_8013B0D8->unk122;
+    input = (input << 4) - current;
+    if (input > 128) {
+        input = 128;
+    }
+    if (input < -128) {
+        input = -128;
+    }
+    current += input;
+    input = current * D_8013B0D8->unk124 / 63;
+    D_8013B0D8->unk122 = current;
+    if (magnitude > 4096) {
+        factor = 279;
+    } else {
+        factor = magnitude * 279 / 4096;
+    }
+    return input * factor / 496;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002A560", func_8002A6AC);
 

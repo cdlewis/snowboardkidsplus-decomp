@@ -135,6 +135,7 @@ findKeyedListNode = 0x800A5F48; // type:func
 selectGeometryRecord = 0x8004A6F0; // type:func
 // Copy the selected record halfwords to current player fields 0x116 and 0x11A.
 copySelectedRecordToCurrentPlayer = 0x8002A560; // type:func
+smoothAndScaleCurrentPlayerInput = 0x8002A5A0; // type:func
 
 // Initialize a background using the fixed cell and tile buffers.
 initDefaultBackground = 0x8002F308; // type:func

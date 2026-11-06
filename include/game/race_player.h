@@ -83,7 +83,9 @@ struct RacePlayer {
     s16 unk116;
     s16 unk118;
     s16 unk11A;
-    u8 unk11C[0xA];
+    u8 unk11C[6];
+    s16 unk122;
+    s16 unk124;
     u16 unk126;
     u32 unk128;
     u16 unk12C;
@@ -172,6 +174,7 @@ s32 requestCurrentPlayerAction17(void);
 s16 countCurrentPlayerInputGroups(void);
 
 void copySelectedRecordToCurrentPlayer(void);
+s16 smoothAndScaleCurrentPlayerInput(s32 magnitude, s16 input);
 
 s32 checkCurrentPlayerFlags43040OrAngleRange(void);
 s32 checkCurrentPlayerFlags345001(void);
