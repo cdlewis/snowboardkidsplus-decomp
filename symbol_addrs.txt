@@ -2645,3 +2645,9 @@ gCompleteBonusLabel = 0x80010AE4; // size:0x14 defined:true
 gTotalMoneyLabel = 0x80010B60; // size:0x10 defined:true
 gTrickPrizeLabel = 0x80010B70; // size:0x10 defined:true
 gMakeBonusLabel = 0x80010B80; // size:0x10 defined:true
+
+updatePaletteWhitePulse = 0x80069C04; // type:func
+gCapturedColorCyclePalette = 0x8012CB94; // size:0x20 defined:true
+gWhitePulsePalette = 0x8013BD88; // size:0x20 defined:true
+gWhitePulsePaletteRect = 0x8013B328; // size:0x8 defined:true
+gColorCycleCaptureRect = 0x8013B330; // size:0x8 defined:true

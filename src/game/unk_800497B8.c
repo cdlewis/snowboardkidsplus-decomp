@@ -25,6 +25,11 @@
 #include "game/coordinate.h"
 #include "psx/libapi.h"
 
+typedef union PaletteColor {
+    u16 value;
+    u8 bytes[2];
+} PaletteColor;
+
 typedef struct CourseOffsetResource {
     GsCOORDINATE2 coordinate;
     VECTOR position;
@@ -627,9 +632,14 @@ TaskVisualFrame *gCourseVisualFrames
     __attribute__((section(".sdata.course_visual_frames"))) = 0;
 
 extern s8 *D_8012BBB4[][4];
-/* Shared palette storage and capture rectangle remain in their data owners. */
-extern u32 D_8012CB94[8];
-extern RECT D_8013B330 __attribute__((section(".data")));
+PaletteColor gCapturedColorCyclePalette[16]
+    __attribute__((section(".data.color_cycle_palette"), aligned(4))) = {0};
+u16 gWhitePulsePalette[16]
+    __attribute__((section(".bss.white_pulse_palette"), aligned(4)));
+RECT gWhitePulsePaletteRect
+    __attribute__((section(".data.color_cycle_rects"))) = {944, 240, 8, 1};
+RECT gColorCycleCaptureRect
+    __attribute__((section(".data.color_cycle_rects"))) = {944, 240, 8, 1};
 extern s32 D_8013B338;
 extern s32 D_8013B35C;
 extern s32 D_8013B360;
@@ -708,7 +718,7 @@ void func_8006A7B4(void);
 void func_8006B1F4(void);
 void func_8006AB8C(void);
 void updatePrimaryValueTransition(void);
-void func_80069C04(void);
+void updatePaletteWhitePulse(void);
 void updateTimedSpriteSequence(void);
 void func_8006FE68(s16 x, s16 y, s16 w, s16 h, s16 borderW, s16 borderH,
                    s16 style, s16 clutOffset, s16 blendMode, GsOT *ot, u16 depth);
@@ -2416,12 +2426,37 @@ void startSlidingQuadTask(s32 index) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80069BAC);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80069C04);
+void updatePaletteWhitePulse(void) {
+    s32 amount, i;
+    u8 r, g, b;
+
+    if (D_8013AE88->data18 < 10) {
+        amount = D_8013AE88->data18;
+    } else if (D_8013AE88->data18 < 20) {
+        amount = 20 - D_8013AE88->data18;
+    } else {
+        amount = 0;
+    }
+    for (i = 0; i < 16; i++) {
+        r = (gCapturedColorCyclePalette[i].bytes[0] & 31);
+        g = ((gCapturedColorCyclePalette[i].value >> 5) & 31);
+        b = ((gCapturedColorCyclePalette[i].value >> 10) & 31);
+        if (i != 0) {
+            r += (31 - r) * amount / 10;
+            g += (31 - g) * amount / 10;
+            b += (31 - b) * amount / 10;
+        }
+        gWhitePulsePalette[i] = (u8)r | ((u8)g << 5) | ((u8)b << 10);
+    }
+    LoadImage(&gWhitePulsePaletteRect, (u32 *)gWhitePulsePalette);
+    DrawSync(0);
+    D_8013AE88->data18 = (D_8013AE88->data18 + 1) % 60;
+}
 
 void capturePaletteForColorCycle(void) {
-    StoreImage(&D_8013B330, D_8012CB94);
+    StoreImage(&gColorCycleCaptureRect, (u32 *)gCapturedColorCyclePalette);
     DrawSync(0);
-    setCurrentTaskCallback(func_80069C04);
+    setCurrentTaskCallback(updatePaletteWhitePulse);
 }
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80069E08);

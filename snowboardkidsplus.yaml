@@ -598,7 +598,8 @@ segments:
       - {start: 0x11D31C, type: .data, name: game/unk_800497B8, linker_section: .data.middle_shrink_packet}
       - {start: 0x11D344, type: .data, name: game/unk_800497B8, linker_section: .data.right_quad_packet}
       - {start: 0x11D36C, type: .data, name: game/unk_800497B8, linker_section: .data.sliding_quad_packet}
-      - [0x11D394, data, 11D394]
+      - {start: 0x11D394, type: .data, name: game/unk_800497B8, linker_section: .data.color_cycle_palette}
+      - [0x11D3B4, data, color_cycle_palette_tail]
       - [0x11DC38, .data, game/unk_800497B8]
       - [0x11DC60, data, 11DC60]
       - [0x11F0E4, .data, game/sprite_templates]
@@ -708,6 +709,8 @@ segments:
       - [0x12BACC, data, 12BACC]
       - {start: 0x12BAFC, type: .data, name: main_remaining, linker_section: .data.linear_random_state}
       - [0x12BB00, data, 12BB00]
+      - {start: 0x12BB28, type: .data, name: game/unk_800497B8, linker_section: .data.color_cycle_rects}
+      - [0x12BB38, data, color_cycle_rects_tail]
       - {start: 0x12BBB4, type: .sdata, name: game/unk_80070274, linker_section: .sdata.animated_sprite16_page, linker_section_order: .data}
       - [0x12BBBC, data, 12BBBC]
       - [0x12BD70, .data, engine/game_options]
@@ -729,6 +732,16 @@ segments:
     section_order: [".bss"]
     subsegments:
       - {start: 0x12C000, type: .bss, name: main_remaining, linker_section: .bss.movie_decode_state}
+
+  - name: white_pulse_palette_bss
+    type: code
+    start: 0x12C000
+    vram: 0x8013BD88
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: .bss, name: game/unk_800497B8, linker_section: .bss.white_pulse_palette}
 
   - name: game_textured_quad_template_bss
     type: code
