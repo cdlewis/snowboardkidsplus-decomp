@@ -2181,3 +2181,5 @@ updateTaskTimeRecordDetailCountdown = 0x8003A478; // type:func
 initializePlayerCoordinateEffectTask = 0x80045F8C; // type:func
 
 createPlayerTrailTask = 0x80066C3C; // type:func
+
+createTimedSpriteB5Task = 0x80077184; // type:func

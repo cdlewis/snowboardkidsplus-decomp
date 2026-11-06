@@ -53,6 +53,7 @@ void func_80072340(s32 x, s32 y, s32 width, s32 height, s32 r, s32 g, s32 b,
 void func_8007197C(void);
 void updateCountdownTask(void);
 void func_80076034(void);
+void func_8007724C(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80070274);
 
@@ -344,7 +345,20 @@ void updateTimedSequence(TimedSequence *sequence) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80077184);
+GameTask *createTimedSpriteB5Task(s16 x, s16 y, u32 frames) {
+    GameTask *task;
+    TaskResourceRecord *resource;
+    func_80014874(func_8007724C);
+    D_8013AE8C->data18 = 0;
+    D_8013AE8C->data1A = 0;
+    D_8013AE8C->resource14 = allocateTaskResource();
+    initMovement2D((Movement2D *)&D_800D9504[D_8013AE8C->resource14], x << 12, y << 12);
+    D_8013AE8C->resource16 = allocateTaskResource();
+    task = D_8013AE8C;
+    resource = &D_800D9504[task->resource16];
+    resource->unk04 = frames;
+    return task;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_8007724C);
 
