@@ -458,6 +458,11 @@ void func_8006A9CC(void);
 void func_8006FE68(s16 x, s16 y, s16 w, s16 h, s16 borderW, s16 borderH,
                    s16 style, s16 clutOffset, s16 blendMode, GsOT *ot, u16 depth);
 void updateValueInterpolationTask(void);
+void func_80064754(s32 playerIndex);
+s32 func_80065464(s32 playerIndex);
+void func_80066C3C(s32 playerIndex);
+void func_80067D88(s32 playerIndex);
+void func_800688C0(s32 playerIndex);
 void func_8006FE68(s16 x, s16 y, s16 w, s16 h, s16 borderW, s16 borderH,
                    s16 style, s16 palette, s16 blend, GsOT *ot, u16 depth);
 
@@ -1308,7 +1313,16 @@ s32 randomLinearFromValue(s32 value) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80060E80);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80060F74);
+void startRacePlayerTasks(void) {
+    s32 playerIndex;
+    for (playerIndex = 0; playerIndex < D_8013AFD2; playerIndex++) {
+        func_80064754(playerIndex);
+        func_80065464(playerIndex);
+        func_80066C3C(playerIndex);
+        func_80067D88(playerIndex);
+        func_800688C0(playerIndex);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80060FE4);
 
