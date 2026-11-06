@@ -291,10 +291,20 @@ typedef struct OscillatingQuadResource {
     u8 pad73[0x8D];
 } OscillatingQuadResource;
 
+/* World position and geometry placement index for each proximity emitter. */
+typedef struct EmitterPlacement {
+    s32 x, y, z;
+    s16 geometryIndex, pad;
+} EmitterPlacement;
+
 /* A coordinate and emission countdown in one 256-byte task resource. */
 typedef struct ProximityEmitterResource {
     GsCOORDINATE2 coordinate;
-    u8 unk50[0x88];
+    u8 unk50[0x70];
+    s16 unkC0, angle, unkC4;
+    u8 unkC6[0xA];
+    s16 geometryIndex;
+    u8 unkD2[6];
     s32 countdown;
     u8 unkDC[0x24];
 } ProximityEmitterResource;
@@ -396,6 +406,12 @@ typedef struct PlayerRenderSnapshot {
     VECTOR position;
     u16 unk10, unk12, unk14, unk16, unk18, unk1A;
 } PlayerRenderSnapshot;
+
+EmitterPlacement gProximityEmitterPlacements[2]
+    __attribute__((section(".data.proximity_emitter_placements"))) = {
+    {0x2D8, 0x66D0, 0xA4E8, 0x2C, 0},
+    {0x65E0, 0xAB40, 0xEFA0, 0x52, 0},
+};
 
 ControllerEffectState gControllerEffectStates[2] = {0};
 
@@ -513,6 +529,8 @@ extern s32 D_8013B69C;
 
 extern u16 D_8013B376 __attribute__((section(".sdata")));
 
+
+void updateProximityEmitterTask(void);
 
 void func_80052680(TriangleScratchVertex *);
 void func_80052840(TriangleScratchVertex *);
@@ -1153,7 +1171,24 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005C7AC);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005C8BC);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005CB08);
+void initializeProximityEmitterTask(void) {
+    ProximityEmitterResource *resource;
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    resource = (ProximityEmitterResource *)&D_800D9504[D_8013AE88->resource14];
+    GsInitCoordinate2(0, &resource->coordinate);
+    resource->coordinate.coord.t[0] = gProximityEmitterPlacements[D_8013AE88->data18].x;
+    resource->coordinate.coord.t[1] = gProximityEmitterPlacements[D_8013AE88->data18].y;
+    resource->coordinate.coord.t[2] = gProximityEmitterPlacements[D_8013AE88->data18].z;
+    resource->geometryIndex = gProximityEmitterPlacements[D_8013AE88->data18].geometryIndex;
+    resource->unkC0 = 0;
+    resource->angle = ((GeometryPlacement *)geometryPlacementDataAbsolute)[resource->geometryIndex].angle + 0x400;
+    resource->unkC4 = 0;
+    resource->countdown = 1;
+    setCurrentTaskCallback(updateProximityEmitterTask);
+}
 
 void updateProximityEmitterTask(void) {
     ProximityEmitterResource *resource;

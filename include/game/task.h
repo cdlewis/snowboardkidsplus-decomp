@@ -146,3 +146,5 @@ void initializeFlagSelectedDualResourceTask(void);
 void beginSound601TaskSequence(void);
 
 void initializeSelectionIndexedDualResourceTask(void);
+
+void initializeProximityEmitterTask(void);

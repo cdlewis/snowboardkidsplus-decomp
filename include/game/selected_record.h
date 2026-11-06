@@ -30,6 +30,9 @@ extern s16 *D_8013B208 __attribute__((section(".data")));
 #endif
 
 
+/* Absolute-addressed view of the placement data used by task effects. */
+extern s16 *geometryPlacementDataAbsolute __attribute__((section(".data")));
+
 void bindGeometryRecordData(s16 *data);
 void selectGeometryRecord(s16 index);
 void computeSelectedTriangleNormal(VECTOR *normal);

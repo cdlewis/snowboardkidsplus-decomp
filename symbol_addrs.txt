@@ -2498,3 +2498,8 @@ updateCdVolumeFade = 0x8001330C; // type:func
 initializeCurrentPlayerState23 = 0x8001FDEC; // type:func
 
 emitProjectedFlatQuad = 0x80052C1C; // type:func
+
+geometryPlacementDataAbsolute = 0x8013B1F4; // allow_duplicated:true
+D_8013B1F4 = 0x8013B1F4; // allow_duplicated:true
+initializeProximityEmitterTask = 0x8005CB08; // type:func
+gProximityEmitterPlacements = 0x80129744; // size:0x20
