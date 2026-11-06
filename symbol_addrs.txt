@@ -2036,3 +2036,5 @@ resetCdCommandState = 0x80013EA4; // type:func
 waitSpriteMotionTask = 0x80033794; // type:func
 
 waitSpriteExitMotionTask = 0x80034E90; // type:func
+
+createRotatingQuadTrailTask = 0x80069024; // type:func

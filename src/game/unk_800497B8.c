@@ -111,6 +111,13 @@ typedef struct SelectedStateRecord {
     s32 unk0C;
     s32 unk10;
 } SelectedStateRecord;
+typedef struct RotatingQuadTrailResource {
+    s32 countdown;
+    s16 angles[8];
+    s16 scales[8];
+    u8 pad[0xDC];
+} RotatingQuadTrailResource;
+
 typedef struct QuadTransitionResource {
     s32 frames;
     SVECTOR *vertices;
@@ -295,6 +302,7 @@ extern u16 D_8013B376 __attribute__((section(".sdata")));
 
 
 s32 func_80060DC8(u32 *tim);
+void func_80068D1C(void);
 void func_800692E8(void);
 void func_8006999C(void);
 void func_800618A0(void);
@@ -1101,7 +1109,19 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80068BC0);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80068D1C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80069024);
+void createRotatingQuadTrailTask(void) {
+    RotatingQuadTrailResource *resource;
+    s32 i;
+
+    func_80014930(&D_800D7C84, func_80068D1C);
+    D_8013AE8C->resource14 = allocateTaskResource();
+    resource = (RotatingQuadTrailResource *)&D_800D9504[D_8013AE8C->resource14];
+    resource->countdown = 30;
+    for (i = 0; i < 8; i++) {
+        resource->angles[i] = resource->countdown * 256;
+        resource->scales[i] = resource->countdown * 400 + 0x1000;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800690C8);
 
