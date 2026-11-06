@@ -4,6 +4,7 @@
 #include "psx/libsnd.h"
 #include "game/controller.h"
 #include "game/task.h"
+#include "game/game_options.h"
 #include "game/controller_effects.h"
 
 typedef struct CdCommand {
@@ -30,6 +31,22 @@ typedef struct CdRequest {
     s16 unk_16;
     s32 unk_18;
 } CdRequest;
+
+GameTask gGameTasks[200] __attribute__((section(".data.game_tasks"))) = {0};
+
+GameTask *D_8013AE88 __attribute__((section(".sdata.task_scheduler"))) = 0;
+GameTask *D_8013AE8C __attribute__((section(".sdata.task_scheduler"))) = 0;
+GameTask *D_8013AE90 __attribute__((section(".sdata.task_scheduler"))) = 0;
+GameTask *D_8013AE94 __attribute__((section(".sdata.task_scheduler"))) = 0;
+GameTask *D_8013AE98 __attribute__((section(".sdata.task_scheduler"))) = 0;
+GameTask *D_8013AE9C __attribute__((section(".sdata.task_scheduler"))) = 0;
+GameTask *D_8013AEA0 __attribute__((section(".sdata.task_scheduler"))) = 0;
+GameTask *D_8013AEA4 __attribute__((section(".sdata.task_scheduler"))) = 0;
+GameTask *D_8013AEA8 __attribute__((section(".sdata.task_scheduler"))) = 0;
+GameTask *D_8013AEAC __attribute__((section(".sdata.task_scheduler"))) = 0;
+GameTask *D_8013AEB0 __attribute__((section(".sdata.task_scheduler"))) = 0;
+u16 D_8013AEB4 __attribute__((section(".sdata.task_scheduler"))) = 0;
+static u16 sTaskSchedulerPadding __attribute__((section(".sdata.task_scheduler"))) = 0;
 
 CdRequest gCdRequests[64] __attribute__((section(".data.cd_requests"))) = {0};
 
@@ -82,6 +99,11 @@ s32 D_8013AE60 __attribute__((section(".sdata.cd_command_state"))) = 0;
 s32 D_8013AE64 __attribute__((section(".sdata.cd_command_state"))) = 0;
 s16 D_8013AE78 __attribute__((section(".sdata.cd_command_active"))) = 0;
 static u16 sCdCommandActivePadding __attribute__((section(".sdata.cd_command_active"))) = 0;
+
+TaskCallback gInitialTaskCallbacks[6] __attribute__((section(".data.initial_task_callbacks"))) = {
+    initializeGameOptionTask, func_8001E0C0, func_8001E0C0,
+    func_8001E148, func_8001E148, func_8001E1B8,
+};
 
 void func_800131B4(void) {
 }
@@ -234,7 +256,39 @@ INCLUDE_ASM("asm/nonmatchings/main", func_80013F28);
 
 INCLUDE_ASM("asm/nonmatchings/main", func_80013F98);
 
-INCLUDE_ASM("asm/nonmatchings/main", func_8001467C);
+void initializeTaskScheduler(void) {
+    u16 i;
+    for (i = 0; i < 6; i++) {
+        gGameTasks[i].next = &gGameTasks[i + 1];
+        gGameTasks[i].previous = &gGameTasks[i - 1];
+        gGameTasks[i].parent = 0;
+        gGameTasks[i].callback = gInitialTaskCallbacks[i];
+        gGameTasks[i].unk10 = 0;
+        gGameTasks[i].depth = 0;
+        gGameTasks[i].resource16 = -1;
+        gGameTasks[i].resource14 = -1;
+    }
+    gGameTasks[0].previous = 0;
+    gGameTasks[5].next = 0;
+    D_8013AE90 = &gGameTasks[1];
+    D_8013AE94 = &gGameTasks[2];
+    D_8013AE9C = &gGameTasks[6];
+    for (i = 6; i < 200; i++) {
+        gGameTasks[i].next = &gGameTasks[i + 1];
+        gGameTasks[i].previous = 0;
+        gGameTasks[i].parent = 0;
+        gGameTasks[i].callback = 0;
+        gGameTasks[i].unk10 = -1;
+        gGameTasks[i].depth = 0;
+        gGameTasks[i].resource16 = -1;
+        gGameTasks[i].resource14 = -1;
+    }
+    D_8013AEA0 = &gGameTasks[199];
+    D_8013AEB4 = 193;
+    for (i = 0; i < 16; i++) {
+        gTaskResourceFreeBits[i] = -1;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main", func_800147B8);
 

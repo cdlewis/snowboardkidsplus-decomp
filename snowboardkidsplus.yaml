@@ -537,6 +537,9 @@ segments:
       - {start: 0xC7C84, type: .data, name: main, linker_section: .data.cd_requests}
       - {start: 0xC8384, type: .data, name: main, linker_section: .data.cd_commands}
       - [0xC83A4, data]
+      - {start: 0xC83EC, type: .data, name: main, linker_section: .data.initial_task_callbacks}
+      - {start: 0xC8404, type: .data, name: main, linker_section: .data.game_tasks}
+      - [0xC9D04, data]
       - {start: 0xD9D04, type: .data, name: main, linker_section: .data.task_resource_bitmap}
       - [0xD9D24, data, D9D24]
       - [0xDAD9C, .data, engine/random]
@@ -634,7 +637,7 @@ segments:
       - {start: 0x12B678, type: .sdata, name: main, linker_section: .sdata.cd_command_active, linker_section_order: .data}
       - [0x12B67C, data]
       - {start: 0x12B680, type: .sdata, name: main, linker_section: .sdata.cd_volume_fade, linker_section_order: .data}
-      - [0x12B688, data]
+      - {start: 0x12B688, type: .sdata, name: main, linker_section: .sdata.task_scheduler, linker_section_order: .data}
       - [0x12B6B8, .data, main]
       - [0x12B6BC, data]
       - {start: 0x12B6C0, type: .sdata, name: main, linker_section: .sdata.controller_repeat_timing, linker_section_order: .data}

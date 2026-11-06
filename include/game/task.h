@@ -43,7 +43,7 @@ extern u32 D_8013AFE4 __attribute__((section(".data")));
 #else
 extern u32 D_8013AFE4;
 #endif
-extern GameTask D_800D7C84;
+extern GameTask gGameTasks[200];
 /* The resource allocator supplies 256-byte records to task-specific users. */
 typedef struct TaskResourceRecord {
     u32 unk00;
@@ -53,6 +53,12 @@ typedef struct TaskResourceRecord {
 } TaskResourceRecord;
 
 extern TaskResourceRecord D_800D9504[256];
+
+void initializeTaskScheduler(void);
+/* Initial scheduler callbacks implemented by the main presentation flow. */
+void func_8001E0C0(void);
+void func_8001E148(void);
+void func_8001E1B8(void);
 
 s32 func_80014874(TaskCallback callback);
 s32 func_800148B4(TaskCallback callback);

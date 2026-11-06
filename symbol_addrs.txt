@@ -1,3 +1,6 @@
+initializeTaskScheduler = 0x8001467C; // type:func
+gInitialTaskCallbacks = 0x800D7BEC; // size:0x18 defined:true
+gGameTasks = 0x800D7C04; // size:0x1900 defined:true
 sortLitObject = 0x8001B450; // type:func
 initializeInteractionVisualTask = 0x8005B608; // type:func
 initializeObjectVisualTask = 0x8005B3A8; // type:func

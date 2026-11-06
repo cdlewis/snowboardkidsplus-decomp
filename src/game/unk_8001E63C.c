@@ -344,7 +344,7 @@ void initializeCurrentPlayerState25(void) {
     player->unk128 = (player->unk128 & 0xFF0C1FFB) | 0x400000;
     player->unk08C = 240 - reduction / 8;
     startCurrentPlayerAnimation(1, 1);
-    func_80014930(&D_800D7C84, func_80045868);
+    func_80014930(&gGameTasks[4], func_80045868);
     D_8013AE8C->data18 = D_8013AE88->data18;
     func_8002E5A0(D_8013AE88->data18, 6);
     setCurrentTaskCallback(func_800252CC);

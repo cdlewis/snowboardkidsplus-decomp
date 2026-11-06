@@ -21,6 +21,7 @@ extern u8 D_8013B108;
 extern u8 D_8013B109;
 extern u8 D_8013B10A;
 
+void initializeGameOptionTask(void);
 void resetGameOptionState(void);
 s32 getStereoSoundFlag(void);
 s32 getGameOptionFlag0(void);

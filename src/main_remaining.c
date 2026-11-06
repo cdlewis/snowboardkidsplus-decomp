@@ -148,7 +148,6 @@ void func_8001C0DC(void);
 void func_8001B7F0(void);
 s32 func_80019520(void);
 void pollMemoryCardReadTask(void);
-void func_8001E0C0(void);
 void func_80018AA4(void);
 s32 func_80019288(void);
 s32 func_80019670(void);
@@ -156,8 +155,6 @@ void pollMemoryCardStatusTask(void);
 void func_8001D100(void);
 void advanceTaskWhenFlagAFE4Bit8Set(void);
 void startResourceLoadWhenFlagAFE4Bit9Set(void);
-void func_8001E148(void);
-void func_8001E1B8(void);
 void func_800180F4(s16 bankId);
 void func_80040A60(void);
 

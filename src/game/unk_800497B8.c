@@ -1326,7 +1326,7 @@ void createRotatingQuadTrailTask(void) {
     RotatingQuadTrailResource *resource;
     s32 i;
 
-    func_80014930(&D_800D7C84, func_80068D1C);
+    func_80014930(&gGameTasks[4], func_80068D1C);
     D_8013AE8C->resource14 = allocateTaskResource();
     resource = (RotatingQuadTrailResource *)&D_800D9504[D_8013AE8C->resource14];
     resource->countdown = 30;
@@ -1343,7 +1343,7 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800692E8);
 void createQuadShrinkTask(void) {
     QuadTransitionResource *resource;
 
-    func_80014930(&D_800D7C84, func_800692E8);
+    func_80014930(&gGameTasks[4], func_800692E8);
     D_8013AE8C->resource14 = allocateTaskResource();
     resource = (QuadTransitionResource *)&D_800D9504[D_8013AE8C->resource14];
     resource->frames = 5;
@@ -1354,7 +1354,7 @@ void createQuadShrinkTask(void) {
 void startMiddleQuadShrinkTask(void) {
     ShrinkingQuadResource *resource;
 
-    func_80014930(&D_800D7C84, func_800692E8);
+    func_80014930(&gGameTasks[4], func_800692E8);
     D_8013AE8C->resource14 = allocateTaskResource();
     resource = (ShrinkingQuadResource *)&D_800D9504[D_8013AE8C->resource14];
     resource->countdown = 5;
@@ -1365,7 +1365,7 @@ void startMiddleQuadShrinkTask(void) {
 void createRightQuadShrinkTask(void) {
     QuadTransitionResource *resource;
 
-    func_80014930(&D_800D7C84, func_800692E8);
+    func_80014930(&gGameTasks[4], func_800692E8);
     D_8013AE8C->resource14 = allocateTaskResource();
     resource = (QuadTransitionResource *)&D_800D9504[D_8013AE8C->resource14];
     resource->frames = 5;
@@ -1381,7 +1381,7 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006999C);
 
 void startSlidingQuadTask(s32 index) {
     SlidingQuadResource *resource;
-    func_80014930(&D_800D7C84, func_8006999C);
+    func_80014930(&gGameTasks[4], func_8006999C);
     D_8013AE8C->resource14 = allocateTaskResource();
     D_8013AE8C->data18 = index;
     resource = (SlidingQuadResource *)&D_800D9504[D_8013AE8C->resource14];
@@ -1531,7 +1531,7 @@ void initializeTimedSpritePresentation(void) {
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006B1F4);
 
 void createResourceLoadTask(void) {
-    func_80014930(&D_800D7C84, func_8006B1F4);
+    func_80014930(&gGameTasks[4], func_8006B1F4);
 }
 
 void addTextCharacter(s32 x, s32 y, u32 character) {
