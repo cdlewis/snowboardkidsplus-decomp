@@ -526,7 +526,7 @@ void copyPlayerPaletteRowWithTransition(s16 playerIndex, s32 unused, s32 palette
         rect.w = 16;
         rect.h = 1;
         StoreImage(&rect, gPlayerPaletteTransitionPixels);
-        func_800164E8(origin->x + 0x200, origin->y + 0x70, gPlayerPaletteTransitionPixels, mode);
+        startPaletteTransition(origin->x + 0x200, origin->y + 0x70, gPlayerPaletteTransitionPixels, mode);
     }
 }
 

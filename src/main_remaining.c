@@ -50,6 +50,10 @@ typedef struct MemoryCardSaveHeader {
     u8 payload[0x870];
 } MemoryCardSaveHeader;
 
+typedef struct PaletteTransitionResource {
+    u32 *pixels;
+} PaletteTransitionResource;
+
 typedef struct PaletteRecordColor {
     u8 r, g, b, unk3;
 } PaletteRecordColor;
@@ -173,6 +177,7 @@ void updateThreeFrameScreenBlend(void);
 void uploadTimArchive(TimArchive *archive, s16 *position);
 void *memcpy(void *destination, const void *source, unsigned int size);
 u16 func_800162C8(void);
+void func_80016A7C(void);
 s32 func_80017268(void);
 void selectMemoryCardLoadFile(u8 slot, void *destination);
 void pollMemoryCardBufferReadTask(void);
@@ -316,7 +321,26 @@ void startPaletteCycle(u16 direction, u16 index, u8 first, u8 last, u8 interval)
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_800164E8);
+s32 startPaletteTransition(s16 x, s16 y, u32 *pixels, u16 duration) {
+    u16 index = saveVram16Pixels(x, y);
+    GameTask *task;
+    PaletteTransitionResource *resource;
+    if (index != 32) {
+        if ((s16)func_800148B4(func_80016A7C) != 0) {
+            D_8013AE8C->resource14 = allocateTaskResource();
+            task = D_8013AE8C;
+            resource = (PaletteTransitionResource *)&D_800D9504[task->resource14];
+            resource->pixels = pixels;
+            task->data1C = 1;
+            task->data18 = duration;
+            task->data1A = index;
+            gSavedImageEntries[index].flags |= 2;
+            return 1;
+        }
+        gSavedImageEntries[index].flags = 0;
+    }
+    return 0;
+}
 
 void requestSavedImageRestore(u16 index) {
     if (index != 32) {
