@@ -2370,3 +2370,5 @@ drawTaskOffsetSpriteB8 = 0x80084254; // type:func
 loadCurrentPlayerModelBlock = 0x8002ED00; // type:func
 
 initializeDualResourceTaskAndNotifyParent = 0x8007BDE0; // type:func
+
+initializeMainTailDualResourceTask = 0x8009BCFC; // type:func

@@ -183,6 +183,7 @@ void queueModeIndexedSectorRead(s16 mode, s16 index);
 void func_800A3750(void);
 void func_800A5AFC(void);
 void func_800A6548(void);
+void func_8009BDB8(void);
 
 void func_8002FA58(s16 resource);
 void func_800A39AC(void);
@@ -517,7 +518,22 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009B700);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009BB68);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009BCFC);
+void initializeMainTailDualResourceTask(void) {
+    GameTask *task = D_8013AE88;
+    GameTask *parent = D_8013AE98;
+    task->data18 = 0;
+    parent->data1C++;
+    if (task->resource14 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    if (D_8013AE88->resource16 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource16 = allocateTaskResource();
+    setCurrentTaskCallback(func_8009BDB8);
+    D_8013AE88->unk10 |= 2;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009BDB8);
 
