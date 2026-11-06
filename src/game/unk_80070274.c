@@ -48,7 +48,6 @@ extern GameTask *D_8013BDA8[4];
 s16 func_80070794(s32 id);
 void func_80072340(s32 x, s32 y, s32 width, s32 height, s32 r, s32 g, s32 b,
                    GsOT *ot, u16 depth);
-void func_80071490(s32 mode, s32 value1, s32 value2);
 void func_8007197C(void);
 void updateCountdownTask(void);
 void func_80076034(void);

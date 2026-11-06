@@ -10,7 +10,10 @@
 #include "game/cd_queue.h"
 #include "game/controller.h"
 #include "game/race_player.h"
+#define GAME_OPTIONS_GP_ADDRESSING
 #include "game/game_options.h"
+#define SELECTED_RECORDS_GP_ADDRESSING
+#include "game/selected_records.h"
 #include "psx/libsnd.h"
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
@@ -125,6 +128,7 @@ extern u8 D_8013AFD7;
 extern u8 D_8013B562 __attribute__((section(".data")));
 extern u8 D_80120EA4[];
 extern u8 D_8013AFE2;
+extern s16 D_8013B104 __attribute__((section(".data")));
 extern u16 D_8013AFE8;
 extern void *D_8013AF4C;
 extern void *gMemoryCardLoadDestination;
@@ -132,6 +136,7 @@ extern void *gMemoryCardLoadDestination;
 void func_8002EE0C(void);
 void func_8001D044(void);
 void func_8001D42C(void);
+void func_8001DB7C(void);
 void uploadTimArchive(TimArchive *archive, s16 *position);
 void *memcpy(void *destination, const void *source, unsigned int size);
 u16 func_800162C8(void);
@@ -767,7 +772,14 @@ void initializeRaceTaskState(void) {
     func_800149A8();
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001E028);
+void initializeSelectedCourseTransition(void) {
+    D_8013AFD0 = D_80123D80[D_8013AFCE].unk02;
+    if (D_8013AFE2 != 0 || D_8013AFCD == 1 || D_8013AFDA == 0) {
+        func_80070274(1, 0, 30);
+        func_80071490(3, D_8013B104, 0);
+        setCurrentTaskCallback(func_8001DB7C);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001E0C0);
 

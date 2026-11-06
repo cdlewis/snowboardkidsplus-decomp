@@ -75,6 +75,7 @@ s16 hasTaskResource16Value(GameTask *task);
 
 s32 hasTaskStateValue6(s32 id);
 void func_80070274(s32 mode, s32 id, u16 duration);
+void func_80071490(s32 mode, s32 value1, s32 value2);
 
 void startIndexedRenderTask(s32 index);
 void initializeMode1Task(void);
