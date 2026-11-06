@@ -1,5 +1,7 @@
 #pragma once
 
+#include "common.h"
+
 void advanceCurrentPlayerTaskPhaseMovement(void);
 
 void resetCurrentPlayerForCallback205B8(void);
@@ -47,3 +49,5 @@ void updateCurrentPlayerAndResetState(void);
 void advanceCurrentPlayerState30TaskOnResult(void);
 
 void updateCurrentPlayerState23MotionAndTimer(void);
+
+s16 isPlayerNearSelectedRecord(s16 index);

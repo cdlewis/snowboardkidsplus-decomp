@@ -2830,3 +2830,5 @@ gScreenCopyMinusBuffer1 = 0x80124F74; // size:0x30
 gScreenCopyMinusBuffer0 = 0x80124FA4; // size:0x30
 
 drawLoweringQuadStripTask = 0x800697DC; // type:func
+
+isPlayerNearSelectedRecord = 0x80029C30; // type:func

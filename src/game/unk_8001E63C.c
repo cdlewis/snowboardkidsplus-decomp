@@ -856,7 +856,22 @@ void initializeCurrentPlayerAttributes(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_800293F0);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80029C30);
+s16 isPlayerNearSelectedRecord(s16 index) {
+    s16 i;
+    s32 distance;
+    if (D_80120E90[index].unk92E != (s16)D_80123D80[D_8013AFCE].unk00) return 0;
+    if (D_80120E90[index].unk128 & 0x40) return 0;
+    for (i = 0; i < 4; i++) {
+        if (D_80120E90[i].unk024 && D_80120E90[i].playerIndex != index &&
+            (D_80120E90[i].unk128 & 0x20)) return 0;
+    }
+    distance = D_80120E90[index].x - D_80123D80[D_8013AFCE].unk18[0];
+    if (distance < 0) distance = -distance;
+    if (distance > 0x6000) return 0;
+    distance = D_80120E90[index].z - D_80123D80[D_8013AFCE].unk18[2];
+    if (distance < 0) distance = -distance;
+    return distance <= 0x6000;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80029DD0);
 
