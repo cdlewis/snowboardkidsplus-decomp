@@ -1,5 +1,6 @@
 #include "common.h"
 #define TASK_ABSOLUTE_ADDRESSING
+#define TASK_FLAGS_ABSOLUTE_ADDRESSING
 #define RACE_PLAYER_ABSOLUTE_ADDRESSING
 #include "game/task.h"
 #include "game/race_player.h"
@@ -139,6 +140,7 @@ void func_8003772C(void);
 void func_80037F74(void);
 void func_80038090(TaskResourceRecord *resource);
 void func_80038574(TaskResourceRecord *resource);
+void func_8003BE58(TaskResourceRecord *resource);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002B3F4);
 
@@ -887,7 +889,18 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003BD70);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003BE58);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003C55C);
+void drawCurrentTaskPanel(void) {
+    TaskResourceRecord *resource;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = &D_800D9504[D_8013AE88->resource14];
+    if (!(D_8013AFE4 & 0x10)) {
+        func_800149A8();
+    }
+    func_8003BE58(resource);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003C5D8);
 
