@@ -158,7 +158,31 @@ void startResourceLoadWhenFlagAFE4Bit9Set(void);
 void func_800180F4(s16 bankId);
 void func_80040A60(void);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80015EE0);
+void uploadTimImageWithOffset(u32 *tim, s16 *position) {
+    RECT rect;
+    GsIMAGE image;
+    GsGetTimInfo(tim + 1, &image);
+    rect.x = image.px;
+    rect.y = image.py;
+    rect.w = image.pw;
+    rect.h = image.ph;
+    if (position != NULL) {
+        rect.x += position[0];
+        rect.y += position[1];
+    }
+    LoadImage(&rect, image.pixel);
+    if (image.pmode & 8) {
+        rect.x = image.cx;
+        rect.y = image.cy;
+        rect.w = image.cw;
+        rect.h = image.ch;
+        if (position != NULL) {
+            rect.x += position[0];
+            rect.y += position[1];
+        }
+        LoadImage(&rect, image.clut);
+    }
+}
 
 void uploadTimArchive(TimArchive *archive, s16 *position) {
     u16 i = 0;
@@ -172,7 +196,7 @@ void uploadTimArchive(TimArchive *archive, s16 *position) {
         }
         index = (u16)i + 1;
         offset = archive->words[(s16)index];
-        func_80015EE0((u32 *)((u8 *)archive + ((offset >> 1) << 1)), position);
+        uploadTimImageWithOffset((u32 *)((u8 *)archive + ((offset >> 1) << 1)), position);
         i++;
     }
 }

@@ -193,7 +193,7 @@ void initDefaultBackground(s16 mode, s16 unused, GameBackground *background,
                            GameBackgroundMap *map);
 
 /* Upload a TIM image, optionally offsetting its pixel and CLUT positions. */
-void func_80015EE0(u32 *tim, s16 *position);
+void uploadTimImageWithOffset(u32 *tim, s16 *position);
 void uploadBufferedTexturePair(void);
 
 /* Add a full-screen semi-transparent tile to an ordering table. */

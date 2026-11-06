@@ -61,6 +61,7 @@ createQuadAnimationTask = 0x80065DA0; // type:func
 gQuadAnimationFrames = 0x8012C92C; // size:0x64
 updatePlayerCameraAngles = 0x8003E360; // type:func
 createPositionedEffectTask = 0x80063D70; // type:func
+uploadTimImageWithOffset = 0x80015EE0; // type:func
 uploadTimArchive = 0x80015FC4; // type:func
 createPlayerNumberDisplayTask = 0x80034BC0; // type:func
 createNineIndexedChildTasks = 0x80044E38; // type:func

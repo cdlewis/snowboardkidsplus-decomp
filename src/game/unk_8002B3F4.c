@@ -630,8 +630,8 @@ void resetGameOptionState(void) {
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002F1C8);
 
 void uploadBufferedTexturePair(void) {
-    func_80015EE0((u32 *)0x80187800, NULL);
-    func_80015EE0((u32 *)0x80181000, NULL);
+    uploadTimImageWithOffset((u32 *)0x80187800, NULL);
+    uploadTimImageWithOffset((u32 *)0x80181000, NULL);
 }
 
 void uploadTextureArchiveEntry(s16 x, s16 y, s16 clutX, s16 clutY, s32 index) {
