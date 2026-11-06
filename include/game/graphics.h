@@ -20,6 +20,14 @@ typedef struct TexturedSpritePacket {
     s16 w, h;
 } TexturedSpritePacket;
 
+/* Texture resource and frame indices shared by quad and sprite drawing. */
+typedef struct TexturedQuadFrame {
+    s16 textureIndex;
+    s16 frameIndex;
+} TexturedQuadFrame;
+
+extern TexturedQuadFrame D_8012DFF4[];
+
 typedef struct Position3D {
     s32 x, y, z;
 } Position3D;
@@ -95,6 +103,7 @@ void addTextCharacter(s32 x, s32 y, u32 character);
 void initPrimitiveTemplates(void);
 void initTexturedQuadTemplate(void);
 void setTexturedQuadColor(s32 r, s32 g, s32 b);
+void drawTexturedQuadByIndex(s16 x, s16 y, s32 index, GsOT *ot, u16 depth);
 void setSpriteColor(s32 r, s32 g, s32 b);
 void func_800A7D8C(s16 x, s16 y, s16 width, s16 height, s16 tpage,
                    s16 clut, GsOT *ot, u16 depth);

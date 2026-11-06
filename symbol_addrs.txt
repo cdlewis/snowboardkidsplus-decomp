@@ -1802,3 +1802,5 @@ startAlternateQuadAnimationTask = 0x80065E34; // type:func
 gAlternateQuadAnimationSteps = 0x8012C990; // size:0x64
 
 resetCurrentPlayerForCallback26DAC = 0x8001F718; // type:func
+
+drawTexturedQuadByIndex = 0x8006C104; // type:func

@@ -181,6 +181,7 @@ void func_8006624C(void);
 void func_800659F0(void);
 void func_80049D48(s32 x, s32 y, const char *format, ...);
 void func_8006BE50(s32 textureIndex, s32 clutOffset);
+void func_8006BF14(s16 x, s16 y, s32 frameIndex, GsOT *ot, u16 depth);
 void func_8006C848(void);
 void func_8006B1F4(void);
 void func_80013DD0(s16 request, s16 mode);
@@ -1057,7 +1058,12 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006BF14);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006C018);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006C104);
+void drawTexturedQuadByIndex(s16 x, s16 y, s32 index, GsOT *ot, u16 depth) {
+    TexturedQuadFrame *frame = &D_8012DFF4[index];
+
+    func_8006BE50(frame->textureIndex, 0);
+    func_8006BF14(x, y, frame->frameIndex, ot, depth);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006C190);
 
