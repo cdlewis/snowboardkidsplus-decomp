@@ -125,6 +125,7 @@ extern struct DIRENTRY D_8013B700[][15];
 extern s16 D_8013AF3E;
 extern u16 D_8013AFAA __attribute__((section(".data")));
 extern u8 D_8013AFD6;
+extern s32 D_8013B20C __attribute__((section(".data")));
 extern u8 D_8013AFD7;
 extern u8 D_8013B562 __attribute__((section(".data")));
 extern u8 D_80120EA4[];
@@ -728,7 +729,24 @@ void beginResourceLoadOrUnlockNotification(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001CF18);
+void resetStateAndBeginResourceLoadTransition(u8 requestLoad) {
+    GameTask *savedTask;
+    resetPendingCdRequests();
+    D_8013AFD6 = 0;
+    D_8013B20C = 0;
+    resetPaletteRecords();
+    func_800149E0();
+    savedTask = D_8013AE88;
+    D_8013AE88 = D_8013B304;
+    func_800149E0();
+    D_8013AE88 = savedTask;
+    D_8013AFAA |= 0x90;
+    if (requestLoad) {
+        D_8013AFE4 |= 0x200;
+    }
+    D_8013AFE4 |= 0x80;
+    setCurrentTaskCallback(beginResourceLoadOrUnlockNotification);
+}
 
 void startTaskTransitionWhenFlagAEE8Set(void) {
     if (D_8013AE88->data18 == 0) {
