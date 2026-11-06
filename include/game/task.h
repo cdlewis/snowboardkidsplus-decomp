@@ -83,6 +83,7 @@ void initializeMode1Task(void);
 void resetTaskControlState(void);
 void initializeTaskCoordinateResource(void);
 void initializePlayerCoordinateEffectTask(void);
+void initializeDualResourceSequenceTask(void);
 GameTask *createCountdownTask(u32 frames);
 GameTask *createTimedSpriteB5Task(s16 x, s16 y, u32 frames);
 GameTask *createValueTransitionTask(u32 *value, u32 target, u32 step);

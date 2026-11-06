@@ -2183,3 +2183,5 @@ initializePlayerCoordinateEffectTask = 0x80045F8C; // type:func
 createPlayerTrailTask = 0x80066C3C; // type:func
 
 createTimedSpriteB5Task = 0x80077184; // type:func
+
+initializeDualResourceSequenceTask = 0x800776B0; // type:func
