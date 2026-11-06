@@ -185,6 +185,7 @@ extern u8 D_8013B0F0 __attribute__((section(".data")));
 extern u8 D_8013AF3A __attribute__((section(".data")));
 
 
+void func_8009488C(void);
 void func_800187B8(u8 voice);
 
 void func_8008D200(void);
@@ -378,7 +379,40 @@ void drawCurrentTaskSpriteBA(void) {
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_80094564);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_80094760);
+void initializeCountedDisplayBoundsTask(void) {
+    RECT *bounds;
+    RECT *view;
+    RECT *last;
+    D_8013AE98->data1C++;
+    D_8013AE88->data18 = 0;
+    D_8013AE88->data1A = 0;
+    if (D_8013AE88->resource14 != 0xFFFF) { for (;;) {} }
+    D_8013AE88->resource14 = allocateTaskResource();
+    if (D_8013AE88->resource16 != 0xFFFF) { for (;;) {} }
+    D_8013AE88->resource16 = allocateTaskResource();
+    setSecondaryDisplayTaskMode(2);
+    D_801300B8[0].x = 0;
+    D_801300B8[0].y = 0;
+    D_801300B8[0].w = -1;
+    D_801300B8[0].h = -1;
+    D_801300B8[1].x = 0;
+    bounds = &D_801300B8[1];
+    bounds->y = 0;
+    bounds->w = -1;
+    bounds->h = -1;
+    D_801300B8[2].x = 24;
+    view = &D_801300B8[2];
+    view->y = 132;
+    view->w = 120;
+    view->h = 84;
+    D_801300B8[3].x = 0;
+    last = &D_801300B8[3];
+    last->y = 0;
+    last->w = -1;
+    last->h = -1;
+    setCurrentTaskCallback(func_8009488C);
+    D_8013AE88->unk10 |= 2;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009488C);
 
