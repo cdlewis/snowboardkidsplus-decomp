@@ -25,6 +25,12 @@
 #include "game/coordinate.h"
 #include "psx/libapi.h"
 
+typedef struct CourseOffsetResource {
+    GsCOORDINATE2 coordinate;
+    VECTOR position;
+    SVECTOR rotation;
+} CourseOffsetResource;
+
 typedef struct TriangleColor { u8 r, g, b, code; } TriangleColor;
 typedef struct GouraudTrianglePrimitive {
     u32 command;
@@ -687,6 +693,7 @@ s32 D_8013B650 __attribute__((section(".sdata.geometry_edge_projection"))) = 0;
 const char gNoProcessMessage[16] = "NO PROCESS...";
 
 void func_8004EFE0(void);
+void func_80059DBC(void);
 void func_8001E3E4(SVECTOR *rotation, GsCOORDINATE2 *coordinate);
 void SetFarColor(s32 r, s32 g, s32 b);
 void SetFogNearFar(s32 near, s32 far, s32 h);
@@ -1283,7 +1290,34 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80059484);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80059958);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80059C3C);
+void initializeSelectedCourseOffsetTask(void) {
+    CourseOffsetResource *resource;
+    SelectedCourseRecord *records;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (CourseOffsetResource *)&D_800D9504[D_8013AE88->resource14];
+    GsInitCoordinate2(0, &resource->coordinate);
+    records = D_80123D80;
+    resource->rotation.vx = 0;
+    resource->rotation.vy = records[D_8013AFCE].unk16;
+    resource->rotation.vz = 0;
+    D_8013AF94->vx = 0;
+    D_8013AF94->vy = 0;
+    D_8013AF94->vz = -0x330;
+    RotMatrix(&resource->rotation, D_8013AF98);
+    ApplyMatrix(D_8013AF98, D_8013AF94, D_8013AF88);
+    resource->position.vx = records[D_8013AFCE].unk18[3] + (D_8013AF88->vx << 8);
+    resource->position.vy = records[D_8013AFCE].unk18[4];
+    resource->position.vz = records[D_8013AFCE].unk18[5] + (D_8013AF88->vz << 8);
+    if (D_8013AFCE != 8) {
+        D_8013AE88->data1C = 4;
+    } else {
+        D_8013AE88->data1C = 0x19;
+    }
+    D_8013AE88->data1E = 0x16;
+    setCurrentTaskCallback(func_80059DBC);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80059DBC);
 
