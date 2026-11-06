@@ -180,6 +180,7 @@ void func_80034AE8(void);
 void func_80034928(void);
 void func_80034664(PlayerNumberResource *resource);
 void func_8003527C(void);
+void func_8003543C(void);
 void func_800350AC(SlidingNumberResource *resource);
 void advancePlayerSpriteAnimationTask(void);
 void func_80034434(SpriteAnimationResource *resource);
@@ -873,7 +874,16 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003539C);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003543C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80035528);
+void createActivePlayerSlidingNumberTask(s32 value, s16 player) {
+    SlidingNumberResource *resource;
+    if (D_80120E90[player].unk024 != 0) {
+        func_80014874(func_8003543C);
+        D_8013AE8C->resource14 = allocateTaskResource();
+        resource = (SlidingNumberResource *)&D_800D9504[D_8013AE8C->resource14];
+        resource->value = value;
+        resource->player = player;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800355D4);
 
