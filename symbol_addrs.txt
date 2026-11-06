@@ -2209,3 +2209,5 @@ processGouraudTrianglePrimitive = 0x80054F70; // type:func
 fadeInPlayerResultsTask = 0x8003772C; // type:func
 
 updateProximityEmitterTask = 0x8005CC38; // type:func
+
+initializePlayerNumberDisplayTask = 0x80034AE8; // type:func

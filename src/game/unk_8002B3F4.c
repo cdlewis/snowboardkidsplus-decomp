@@ -215,7 +215,6 @@ extern u8 gMappedIconPalettes[9];
 extern s16 D_8013B0E4;
 extern u16 D_8013B0E6;
 extern s32 D_8013B0E8;
-extern u8 D_8013AFCD __attribute__((section(".data")));
 
 void func_800335E4(SlidingTimeResource *resource);
 
@@ -248,7 +247,7 @@ void func_8002FE18(void);
 void func_800302F8(void);
 void func_80032C14(void);
 void func_80032E94(void);
-void func_80034AE8(void);
+void initializePlayerNumberDisplayTask(void);
 void slideOutPlayerNumberDisplayTask(void);
 void func_80034664(PlayerNumberResource *resource);
 void slideOutSlidingNumberDisplayTask(void);
@@ -1019,11 +1018,27 @@ void slideInPlayerNumberDisplayTask(void) {
     func_80034664(resource);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80034AE8);
+void initializePlayerNumberDisplayTask(void) {
+    PlayerNumberResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (PlayerNumberResource *)&D_800D9504[D_8013AE88->resource14];
+    resource->y = -44;
+    resource->speed = 56;
+    if (D_8013AFE2 == 0 && D_8013AFCD == 2) {
+        resource->x = 452;
+    } else if (D_8013AFE2 == 1 && D_8013AFE0 == 2 && D_8013AFCD == 2) {
+        resource->x = 460;
+    } else {
+        resource->x = 420;
+    }
+    setCurrentTaskCallback(slideInPlayerNumberDisplayTask);
+}
 
 void createPlayerNumberDisplayTask(s32 value, s32 showExtraValue, s32 player) {
     PlayerNumberResource *resource;
-    func_80014874(func_80034AE8);
+    func_80014874(initializePlayerNumberDisplayTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     resource = (PlayerNumberResource *)&D_800D9504[D_8013AE8C->resource14];
     resource->value = value;
