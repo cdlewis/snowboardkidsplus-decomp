@@ -2117,3 +2117,5 @@ drawTaskTimeRecordsAndSetFlag10OnInput = 0x80039F6C; // type:func
 waitMode2TransitionTask = 0x80030270; // type:func
 
 advanceCurrentTaskPanelTimer = 0x8003C69C; // type:func
+
+setControllerAxesFromButtons = 0x80014FCC; // type:func

@@ -300,7 +300,22 @@ s32 isControllerFlag5Clear(u16 controller) {
 
 INCLUDE_ASM("asm/nonmatchings/main", func_80014D60);
 
-INCLUDE_ASM("asm/nonmatchings/main", func_80014FCC);
+void setControllerAxesFromButtons(u16 controller) {
+    if (D_8013AEEC[controller] & 0x2000) {
+        D_8013AEF8[controller] = 31;
+    } else if (D_8013AEEC[controller] & 0x8000) {
+        D_8013AEF8[controller] = -31;
+    } else {
+        D_8013AEF8[controller] = 0;
+    }
+    if (D_8013AEEC[controller] & 0x4000) {
+        D_8013AEFC[controller] = 31;
+    } else if (D_8013AEEC[controller] & 0x1000) {
+        D_8013AEFC[controller] = -31;
+    } else {
+        D_8013AEFC[controller] = 0;
+    }
+}
 
 void updateControllerAxesFromButtons(u16 controller) {
     if (D_8013AEEC[controller] & 0x2000) {

@@ -26,6 +26,9 @@ s32 isControllerFlag5Clear(u16 controller);
 /* Accept standard digital and analog controller input packets. */
 s16 isControllerInputSupported(u16 controller);
 
+/* Set digital axes, clearing each axis when neither direction is held. */
+void setControllerAxesFromButtons(u16 controller);
+
 /* Map digital directional buttons to signed controller axes. */
 void updateControllerAxesFromButtons(u16 controller);
 
