@@ -42,14 +42,21 @@ typedef struct TextResourceState {
     u32 unk04[5];
     s16 unk18[5];
 } TextResourceState;
-extern s16 D_8013B10C __attribute__((section(".data")));
-extern u8 D_8013B55E __attribute__((section(".data")));
+typedef struct TextTaskResource {
+    TextEntry *entry;
+    u8 unk04[0x2C];
+    GameTask *task;
+    u8 unk34[0xCC];
+} TextTaskResource;
 
 typedef struct TextEntryListHeader {
     TextEntry *freeEntries;
     TextEntry *activeEntries;
 } TextEntryListHeader;
 
+
+extern s16 D_8013B10C __attribute__((section(".data")));
+extern u8 D_8013B55E __attribute__((section(".data")));
 
 extern s16 D_8013B560;
 extern u8 D_8013B562;
@@ -71,6 +78,7 @@ void func_800A4C28(void);
 void resetUnlockMenuOffsets(UnlockMenuState *state);
 void func_800A525C(void);
 void func_800A6A8C(void);
+void func_800A6E88(void);
 
 typedef struct NumberAdjustmentState {
     s16 value;
@@ -432,7 +440,22 @@ INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A6A8C);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A6CC4);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A6DD0);
+void setSecondaryTextEntryTask(TextEntry *entry) {
+    TextTaskResource *resource;
+    if (D_8013AE88->resource16 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (TextTaskResource *)&D_800D9504[D_8013AE88->resource16];
+    if (entry == NULL) {
+        resource->task = NULL;
+    } else {
+        func_80014874(func_800A6E88);
+        D_8013AE8C->resource14 = allocateTaskResource();
+        ((TextTaskResource *)&D_800D9504[D_8013AE8C->resource14])->entry = entry;
+        D_8013AE8C->data18 = 0;
+        resource->task = D_8013AE8C;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A6E88);
 
