@@ -257,6 +257,8 @@ extern char D_8001232C[];
 
 
 void func_800187B8(u8 voice);
+void func_8001814C(void);
+void signalFlag9WhenTaskCountdownExpires(void);
 int printf(const char *format, ...);
 
 void func_80040D5C(void);
@@ -286,6 +288,11 @@ void initializeSecondaryResourceTask(void);
 void func_800A6A8C(void);
 void drawSecondaryTextBackgroundTask(void);
 void func_800A6E88(void);
+
+typedef struct AudioTransitionState {
+    u8 unk00[0x2C];
+    s32 unk2C[5];
+} AudioTransitionState;
 
 typedef struct NumberPanelState {
     u16 unk00[5];
@@ -1034,7 +1041,26 @@ void stopTextSoundVoices(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A7B9C);
+void beginAudioFadeCountdownTask(void) {
+    AudioTransitionState *state;
+    s16 i;
+    if (D_8013AE88->resource16 == 0xFFFF) {
+        while (1) {}
+    }
+    state = (AudioTransitionState *)&D_800D9504[D_8013AE88->resource16];
+    for (i = 0; i < 5; i++) {
+        state->unk2C[i] = 0;
+    }
+    D_8013B6C0 = NULL;
+    func_8001814C();
+    SsSeqSetVol(gMusicSequenceId, 64, 64);
+    fadeOutMusicSequence(0x200);
+    resetPendingCdRequests();
+    SsSetSerialVol(0, 103, 103);
+    func_80070274(0, 5, 0);
+    D_8013AE88->data18 = 10;
+    setCurrentTaskCallback(signalFlag9WhenTaskCountdownExpires);
+}
 
 void signalFlag9WhenTaskCountdownExpires(void) {
     if (--D_8013AE88->data18 == 0) {

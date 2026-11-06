@@ -2801,3 +2801,5 @@ advanceModeAfterTextSequenceFadeTask = 0x800A1510; // type:func
 initializePlayerSideVisualTask = 0x8004463C; // type:func
 
 initializePlayerParticleHistoryTask = 0x80045B4C; // type:func
+
+beginAudioFadeCountdownTask = 0x800A7B9C; // type:func
