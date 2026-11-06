@@ -87,6 +87,14 @@ typedef struct TaskMenuFadeResource {
     u8 unk08[0xF8];
 } TaskMenuFadeResource;
 
+typedef struct SlidingDisplayResource {
+    s32 position;
+    u8 unk04[0xC];
+    s32 velocity;
+    u16 timer;
+    u8 unk16[0xEA];
+} SlidingDisplayResource;
+
 
 typedef struct TaskMotionResource {
     s32 position;
@@ -145,6 +153,8 @@ void func_80032C14(void);
 void func_80032E94(void);
 void func_80034AE8(void);
 void func_8003452C(void);
+void func_800341DC(void);
+void func_80034090(SlidingDisplayResource *resource);
 void func_80033100(void);
 void func_80048714(void);
 void func_8004531C(void);
@@ -602,7 +612,18 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80034090);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800341DC);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80034270);
+void waitSlidingDisplayTask(void) {
+    SlidingDisplayResource *resource;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (SlidingDisplayResource *)&D_800D9504[D_8013AE88->resource14];
+    if (--resource->timer == 0) {
+        setCurrentTaskCallback(func_800341DC);
+    }
+    func_80034090(resource);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800342FC);
 
