@@ -648,6 +648,16 @@ segments:
     subsegments:
       - {start: 0x12C000, type: .bss, name: game/sprite_templates}
 
+  - name: game_text_sound_slots_bss
+    type: code
+    start: 0x12C000
+    vram: 0x8013BE50
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: .bss, name: main_tail_sound_slots}
+
   - name: sdk_libsnd_ssinit_bss_common_SsFCALL
     type: code
     start: 0x12C000

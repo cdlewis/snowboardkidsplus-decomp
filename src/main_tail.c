@@ -1,4 +1,5 @@
 #include "common.h"
+#include "main_tail_sound_slots.h"
 #include "game/controller.h"
 #include "game/game_options.h"
 #include "game/global_flags.h"
@@ -84,6 +85,8 @@ extern u8 D_8013B562;
 extern u8 D_8013B0F0 __attribute__((section(".data")));
 
 s32 func_800136DC(s16 command, s16 sector, s16 sectorCount, void *destination, s32 flags);
+
+void func_800187B8(u8 voice);
 
 void func_800A0AA8(void);
 void func_800A3750(void);
@@ -646,7 +649,16 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A77B0);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A7928);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A7B0C);
+void stopTextSoundVoices(void) {
+    s16 i;
+    for (i = 0; i < 8; i++) {
+        if (gTextSoundSlots[i].voice != 0xFF) {
+            func_800187B8(gTextSoundSlots[i].voice);
+            gTextSoundSlots[i].voice = 0xFF;
+            gTextSoundSlots[i].soundKey = 0;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A7B9C);
 
