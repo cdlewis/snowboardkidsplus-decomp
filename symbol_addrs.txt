@@ -2622,3 +2622,5 @@ taskTransitionFlagGp = 0x8013B55E; // size:0x1 allow_duplicated:true
 D_8013B55E = 0x8013B55E; // size:0x1 allow_duplicated:true
 
 drawSound601SequenceSpriteTask = 0x80032F84; // type:func
+
+updatePaletteTransition = 0x80016CBC; // type:func

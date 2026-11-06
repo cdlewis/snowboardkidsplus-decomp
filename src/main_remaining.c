@@ -54,6 +54,12 @@ typedef struct PaletteTransitionResource {
     u32 *pixels;
 } PaletteTransitionResource;
 
+typedef struct PaletteTransitionState {
+    u16 *pixels;
+    u16 red[16], green[16], blue[16];
+    u16 redStep[16], greenStep[16], blueStep[16];
+    u16 mask[16];
+} PaletteTransitionState;
 typedef struct PaletteRecordColor {
     u8 r, g, b, unk3;
 } PaletteRecordColor;
@@ -68,7 +74,8 @@ typedef struct SavedImageEntry {
     u32 flags;
     PaletteRecordColor color;
     RECT rect;
-    u16 pixels[32];
+    u16 pixels[16];
+    u16 transitionPixels[16];
 } SavedImageEntry;
 
 extern char D_800101B8[];
@@ -357,7 +364,30 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80016628);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80016A7C);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80016CBC);
+void updatePaletteTransition(void) {
+    PaletteTransitionState *resource;
+    u16 i;
+    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    resource = (PaletteTransitionState *)&D_800D9504[D_8013AE88->resource14];
+    if (--D_8013AE88->data18 != 0) {
+        for (i = 0; i < 16; i++) {
+            resource->red[i] += resource->redStep[i];
+            resource->green[i] += resource->greenStep[i];
+            resource->blue[i] += resource->blueStep[i];
+            gSavedImageEntries[D_8013AE88->data1A].transitionPixels[i] =
+                ((resource->red[i] & 0x1F00) >> 8) |
+                ((resource->green[i] & 0x1F00) >> 3) |
+                ((resource->blue[i] & 0x1F00) << 2) | resource->mask[i];
+        }
+        gSavedImageEntries[D_8013AE88->data1A].flags |= 0x20;
+    } else {
+        for (i = 0; i < 16; i++) {
+            gSavedImageEntries[D_8013AE88->data1A].transitionPixels[i] = resource->pixels[i];
+        }
+        gSavedImageEntries[D_8013AE88->data1A].flags = 0x20;
+        func_800149A8();
+    }
+}
 
 void startCurrentPlayerAnimation(u8 animation, u8 mode) {
     RacePlayer *player;
