@@ -102,8 +102,6 @@ s16 func_80070794(s32 id);
 void addTilePacket(s32 x, s32 y, s32 width, s32 height, s32 r, s32 g, s32 b,
                    GsOT *ot, u16 depth);
 void func_80071490(s32 mode, s32 value1, s32 value2);
-void func_8006EF30(s32 x, s32 y, s16 columns, const u16 *text,
-                   s32 palette, s16 blendMode, GsOT *ot, u16 depth);
 void func_8007197C(void);
 void func_80071A80(void);
 void initTimedSequence(TimedSequence *sequence, const TimedSequenceEntry *entries, s16 index, s16 count);

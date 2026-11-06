@@ -123,6 +123,10 @@ typedef struct TextEntryListHeader {
     TextEntry *activeEntries;
 } TextEntryListHeader;
 
+u16 gCurrentTaskPanelText[8] __attribute__((section(".data.current_task_panel_text"))) = {
+    0xFA, 0x94, 0xB1, 0x9F, 0x98, 0x31, 0, 0
+};
+
 u32 gPlayerPaletteTransitionPixels[8] __attribute__((section(".data.player_palette_transition_pixels"))) = {0};
 ResourceSectorRange gGridResourceSecondSectorRanges[10][5] __attribute__((section(".data.grid_resource_sector_ranges"))) = {
     {{0x4CA, 8}, {0x4DA, 8}, {0x4EA, 8}, {0x4FA, 8}, {0x50A, 8}},
@@ -471,7 +475,20 @@ void setStateGridFlag(GlobalFlagStatePrefix *state, s16 row, s16 column) {
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_80095F30);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800960BC);
+void drawCurrentTaskTextPanel(void) {
+    Movement2D *position;
+    s32 x, y;
+    if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
+    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    x = position->x / 4096;
+    y = position->y / 4096;
+    setSpriteColor(128, 128, 128);
+    setTexturedQuadColor(128, 128, 128);
+    func_8006EF30((s16)(x + 16), (s16)(y + 12), 10, gCurrentTaskPanelText,
+                 8, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    drawDefaultTexturedPanel(x, y, 144, 48, 5, 0,
+                            &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_80096238);
 

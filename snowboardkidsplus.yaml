@@ -606,6 +606,8 @@ segments:
       - [0x11F98C, data, 11F98C]
       - {start: 0x11FBDC, type: .data, name: game/unk_80070274, linker_section: .data.text_panel_message}
       - [0x11FC00, data, 11FC00]
+      - {start: 0x122564, type: .data, name: main_tail, linker_section: .data.current_task_panel_text}
+      - [0x122574, data, 122574]
       - {start: 0x1226E8, type: .data, name: main_tail, linker_section: .data.player_palette_transition_pixels}
       - [0x122708, data, player_palette_transition_tail]
       - {start: 0x122F38, type: .data, name: main_tail, linker_section: .data.indexed_sector_ranges}

@@ -2634,3 +2634,6 @@ drawResultDisplayLabels = 0x80035D5C; // type:func
 gResultLabelPalettes = 0x8012414C; // type:u8 size:0xC
 gResultLabelXOffsets = 0x80124158; // type:u8 size:0xC
 gResultIconPalettes = 0x8013B11C; // type:u8 size:0x4
+
+drawCurrentTaskTextPanel = 0x800960BC; // type:func
+gCurrentTaskPanelText = 0x80131D64; // size:0x10 defined:true
