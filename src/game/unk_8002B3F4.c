@@ -1,5 +1,6 @@
 #include "common.h"
 #include "game/angles.h"
+#define RACE_FINISH_ABSOLUTE_ADDRESSING
 #define TASK_ABSOLUTE_ADDRESSING
 #define TASK_FLAGS_ABSOLUTE_ADDRESSING
 #define RACE_PLAYER_ABSOLUTE_ADDRESSING
@@ -311,6 +312,7 @@ void func_80046EF8(void);
 void func_8004713C(void);
 void func_80047380(void);
 
+
 void func_800335E4(SlidingTimeResource *resource);
 void func_800497B8(void);
 s32 func_80043ACC(const RaceTime *a, const RaceTime *b, RaceTime *difference);
@@ -320,6 +322,8 @@ void func_80037850(const RaceTime *value, s16 x, s16 y, s16 mode, GsOT *ot, u16 
 /* Only the first byte of this shared state is used by this task flow. */
 extern u8 D_80120F90[];
 extern const char D_80010A94[];
+
+const char gAutoPilotLabel[] = "AUTO PILOT";
 
 RaceTime gRaceElapsedTime = {0, 0, 0};
 
@@ -1444,7 +1448,28 @@ void drawDemonstrationOverlay(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80035B24);
+void drawAutoPilotLabelTask(void) {
+    s32 frame;
+    if (!(D_8013B0D8->unk128 & 0x40) && !D_8013AFD6) {
+        setSpriteColor(128, 128, 128);
+        if (D_8013AFCD == 1) {
+            frame = gFrameCounter & 2;
+            func_8006F57C(-40, -18, 20, gAutoPilotLabel,
+                         (frame / 2) + 1, -1,
+                         &D_800EBFF0[D_8013AF78], 3);
+        } else if (D_8013AE88->data18 == 0) {
+            frame = gFrameCounter & 2;
+            func_8006F57C(-72, -66, 20, gAutoPilotLabel,
+                         (frame / 2) + 1, -1,
+                         &D_800EBFF0[D_8013AF78], 3);
+        } else {
+            frame = gFrameCounter & 2;
+            func_8006F57C(-72, 46, 20, gAutoPilotLabel,
+                         (frame / 2) + 1, -1,
+                         &D_800EBFF0[D_8013AF78], 3);
+        }
+    }
+}
 
 void checkControllerInputSequenceTask(void) {
     if (D_8013AEE8[0] != 0) {
