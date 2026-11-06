@@ -161,6 +161,15 @@ typedef struct TaskFadeResource {
     u8 unk08[0xF8];
 } TaskFadeResource;
 
+typedef struct ResultDisplayResource {
+    s16 brightness;
+    s16 timer;
+    s16 unk04;
+    s16 unk06;
+    s16 unk08;
+    u8 unk0A[0xF6];
+} ResultDisplayResource;
+
 typedef struct TaskMenuFadeResource {
     s16 unk00;
     s16 brightness;
@@ -337,6 +346,12 @@ void fadeInPlayerResultsTask(void);
 void fadeInLapTimeLabelTask(void);
 void func_80037EC8(void);
 void drawTaskTimeMenuAndSetFlag10OnInput(void);
+void func_80036940(void);
+void func_80035D5C(ResultDisplayResource *resource);
+void func_800361C4(ResultDisplayResource *resource);
+void func_8003772C(void);
+void func_80037F74(void);
+void func_80037D90(void);
 void drawMenuTimeWithBrightness(MenuTimeResource *resource);
 void func_800379B8(TaskResourceRecord *resource);
 void drawLapTimeLabel(TaskMenuFadeResource *resource);
@@ -1350,7 +1365,22 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003686C);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80036940);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80036A0C);
+void fadeInResultDisplayTask(void) {
+    ResultDisplayResource *resource;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (ResultDisplayResource *)&D_800D9504[D_8013AE88->resource14];
+    resource->brightness += 8;
+    if (resource->brightness > 128) {
+        resource->timer = 20;
+        resource->brightness = 128;
+        setCurrentTaskCallback(func_80036940);
+    }
+    func_80035D5C(resource);
+    func_800361C4(resource);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80036AB8);
 
