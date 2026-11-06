@@ -18,6 +18,13 @@
 #include "psx/libgs.h"
 #include "game/quad_animation.h"
 
+/* Two endpoints, height bounds, and rotation; each record occupies 0x28 bytes. */
+typedef struct PlayerCollisionRegion {
+    VECTOR endpoints[2];
+    s16 minHeight, maxHeight;
+    s16 pitch, yaw;
+} PlayerCollisionRegion;
+
 typedef struct FadingTextResource {
     s32 duration;
     s32 elapsed;
@@ -282,6 +289,9 @@ RECT gReadPixelRect __attribute__((section(".data.read_pixel_rect"))) = {0, 0, 1
 /* The original stores coordinates through GP but passes an absolute address. */
 extern RECT readPixelRectGp;
 
+/* Shared collision regions remain in player_camera_state_tail. */
+extern PlayerCollisionRegion D_80129A18[2];
+
 /* Shared texture metadata remains in its original data owner. */
 extern TextureRegionSet D_8012DDA4[];
 extern TextureRegion *D_8013B6AC;
@@ -300,6 +310,8 @@ extern s32 D_8013B368;
 extern s32 D_8013B36C;
 extern u16 D_8013B376 __attribute__((section(".sdata")));
 
+
+void func_8005D828(RacePlayer *player, PlayerCollisionRegion *region);
 
 s32 func_80060DC8(u32 *tim);
 void func_80068D1C(void);
@@ -694,7 +706,22 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005D394);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005D828);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005DD70);
+void updateActivePlayerRegionCollisions(void) {
+    u16 i;
+    PlayerCollisionRegion *region;
+    RacePlayer *players;
+    if (!D_8013AFD3) {
+        i = 0;
+        region = &D_80129A18[D_8013AE88->data18];
+        players = D_80120E90;
+        do {
+            if (players[i].unk024 != 0) {
+                func_8005D828(&players[i], region);
+            }
+            i++;
+        } while (i < 4);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005DE2C);
 

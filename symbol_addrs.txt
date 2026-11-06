@@ -1,3 +1,4 @@
+updateActivePlayerRegionCollisions = 0x8005DD70; // type:func
 findIdentityMappedIndexOrZero = 0x800A046C; // type:func
 addFourWordGpuPacket = 0x8004002C; // type:func
 addTexturedSpritePacket = 0x80040140; // type:func

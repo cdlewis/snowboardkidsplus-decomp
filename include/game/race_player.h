@@ -178,3 +178,5 @@ void initializeActiveRacePlayers(void);
 void assignTwoPlayerResultSlots(s16 result);
 
 s16 func_8002A5A0(s32 magnitude, s32 target);
+
+void updateActivePlayerRegionCollisions(void);
