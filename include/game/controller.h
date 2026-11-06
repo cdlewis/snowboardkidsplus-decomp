@@ -28,3 +28,8 @@ s16 isControllerInputSupported(u16 controller);
 
 /* Map digital directional buttons to signed controller axes. */
 void updateControllerAxesFromButtons(u16 controller);
+
+void func_8001553C(u16 controller);
+void func_80014D60(u16 controller);
+void func_800157DC(u16 controller);
+void updateControllers(void);

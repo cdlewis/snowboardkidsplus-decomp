@@ -328,7 +328,14 @@ INCLUDE_ASM("asm/nonmatchings/main", func_8001553C);
 
 INCLUDE_ASM("asm/nonmatchings/main", func_800157DC);
 
-INCLUDE_ASM("asm/nonmatchings/main", func_80015924);
+void updateControllers(void) {
+    func_8001553C(0);
+    func_80014D60(0);
+    func_800157DC(0);
+    func_8001553C(1);
+    func_80014D60(1);
+    func_800157DC(1);
+}
 
 INCLUDE_ASM("asm/nonmatchings/main", func_8001596C);
 
