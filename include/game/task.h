@@ -132,3 +132,5 @@ void initializeDualResourceTaskAndNotifyParent(void);
 void initializeMainTailDualResourceTask(void);
 
 void initializeModeDependentDualResourceTask(void);
+
+void initializePlayerVisualPairTask(void);
