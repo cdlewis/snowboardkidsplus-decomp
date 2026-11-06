@@ -9,6 +9,7 @@
 #define TASK_ABSOLUTE_ADDRESSING
 #include "game/task.h"
 #include "game/race_player.h"
+#include "game/movement.h"
 
 typedef struct GroupedIndexResource {
     u8 unk00[0x48];
@@ -318,7 +319,17 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80083968);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80083C3C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80084254);
+void drawTaskOffsetSpriteB8(void) {
+    Movement2D *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->data1A != 0) {
+        func_8006C998(resource->x / 4096 + 8, resource->y / 4096 - 22,
+                      0xB8, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    }
+}
 
 void initializeDualResourceTaskAndResetByteState(void) {
     D_8013AE88->data18 = 1;
