@@ -20,6 +20,15 @@
 #include "psx/libgs.h"
 #include "game/quad_animation.h"
 
+/* Sixteen world positions followed by per-position state words. */
+typedef struct TrailPosition {
+    s32 x, y, z;
+} TrailPosition;
+typedef struct PlayerTrailResource {
+    TrailPosition positions[16];
+    s32 state[16];
+} PlayerTrailResource;
+
 /* Two endpoints, height bounds, and rotation; each record occupies 0x28 bytes. */
 typedef struct PlayerCollisionRegion {
     VECTOR endpoints[2];
@@ -327,6 +336,7 @@ extern s32 D_8013B36C;
 extern u16 D_8013B376 __attribute__((section(".sdata")));
 
 
+void func_80066474(void);
 void func_8005D828(RacePlayer *player, PlayerCollisionRegion *region);
 void func_8005B460(void);
 void func_8005B6C0(void);
@@ -1218,7 +1228,23 @@ void startPositionEffectTask(const PositionEffectOrigin *position) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80066474);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80066C3C);
+void createPlayerTrailTask(s32 playerIndex) {
+    PlayerTrailResource *first;
+    PlayerTrailResource *second;
+    s32 i;
+    func_80014930(D_8013B304, func_80066474);
+    D_8013AE8C->resource14 = allocateTaskResource();
+    first = (PlayerTrailResource *)&D_800D9504[D_8013AE8C->resource14];
+    D_8013AE8C->resource16 = allocateTaskResource();
+    second = (PlayerTrailResource *)&D_800D9504[D_8013AE8C->resource16];
+    for (i = 0; i < 16; i++) {
+        first->positions[i].x = first->positions[i].y = first->positions[i].z = 0;
+        second->positions[i].x = second->positions[i].y = second->positions[i].z = 0;
+        second->state[i] = 0;
+    }
+    first->state[0] = 0;
+    D_8013AE8C->data18 = playerIndex;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80066D18);
 

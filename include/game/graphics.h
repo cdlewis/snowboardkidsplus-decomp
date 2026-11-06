@@ -97,6 +97,7 @@ void createPlayerSpriteAnimationTask(s32 x, s32 y, s32 player, s32 checkPlayer, 
 void createPlayerNumberDisplayTask(s32 value, s32 showExtraValue, s32 player);
 void createActivePlayerSlidingNumberTask(s32 value, s16 player);
 void createPositionedEffectTask(s32 x, s32 y, s32 z);
+void createPlayerTrailTask(s32 playerIndex);
 void createRotatingQuadTrailTask(void);
 void createQuadShrinkTask(void);
 void createRightQuadShrinkTask(void);
