@@ -577,7 +577,8 @@ segments:
       - {start: 0x113F90, type: .data, name: game/unk_8001E63C, linker_section: .data.player_character_attributes}
       - [0x11401C, data, player_attributes_tail]
       - {start: 0x1148B0, type: .data, name: game/unk_8002B3F4, linker_section: .data.controller_input_sequences}
-      - [0x11494C, data, controller_input_sequences_tail]
+      - {start: 0x11494C, type: .data, name: game/unk_8002B3F4, linker_section: .data.result_label_tables}
+      - [0x114964, data, controller_input_sequences_tail]
       - {start: 0x1149A8, type: .data, name: game/unk_8002B3F4, linker_section: .data.player_camera_views}
       - [0x1149E8, data, player_camera_state_tail]
       - {start: 0x119F44, type: .data, name: game/unk_800497B8, linker_section: .data.proximity_emitter_placements}
@@ -682,6 +683,8 @@ segments:
       - [0x12B7AC, .data, engine/game_task_scheduler]
       - {start: 0x12B7B0, type: .sdata, name: main_remaining, linker_section: .sdata.synchronized_frame_count, linker_section_order: .data}
       - [0x12B7B4, data, 12B7B4]
+      - {start: 0x12B91C, type: .data, name: game/unk_8002B3F4, linker_section: .data.result_icon_palettes}
+      - [0x12B920, data, 12B920]
       - {start: 0x12B958, type: .data, name: game/unk_8002B3F4, linker_section: .data.menu_sprite_palettes}
       - [0x12B96C, data, 12B96C]
       - {start: 0x12B980, type: .sdata, name: game/unk_8002B3F4, linker_section_order: .data}

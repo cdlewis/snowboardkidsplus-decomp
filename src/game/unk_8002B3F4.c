@@ -296,6 +296,17 @@ u16 gControllerInputSequences[3][26]
     {0x8000, 0x1000, 0x2000, 0x4000, 0x1000, 0x1000, 0x1000, 0x4000, 0x4000, 0x4000, 0x0100, 0xFFFF, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000}
 };
 
+u8 gResultLabelPalettes[12]
+    __attribute__((section(".data.result_label_tables"))) = {
+        0, 1, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0
+    };
+u8 gResultLabelXOffsets[12]
+    __attribute__((section(".data.result_label_tables"))) = {
+        0, 0, 0, 0, 8, 0, 16, 0, 8, 0, 0, 0
+    };
+u8 gResultIconPalettes[4]
+    __attribute__((section(".data.result_icon_palettes"))) = {2, 2, 3, 3};
+
 extern u8 D_8013B11A;
 /* Assembly and C consumers address this palette subtable directly. */
 extern u8 gMappedIconPalettes[9];
@@ -406,7 +417,8 @@ void waitResultDisplayInputTask(void);
 void waitResultDisplayTask(void);
 void func_8002BC2C(void);
 void func_8002B820(void);
-void func_80035D5C(ResultDisplayResource *resource);
+void drawResultDisplayLabels(ResultDisplayResource *resource);
+void func_800401DC(s16 x, s16 y, s16 kind, GsOT *ot, u16 depth);
 void func_800361C4(ResultDisplayResource *resource);
 void drawFirstPlayerResultCounterAndIcon(ResultDisplayResource *resource);
 void drawMenuTimeWithBrightness(MenuTimeResource *resource);
@@ -1630,7 +1642,20 @@ void checkControllerInputSequenceTask(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80035CF8);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80035D5C);
+void drawResultDisplayLabels(ResultDisplayResource *resource) {
+    if (resource->brightness != 128) {
+        setSpriteColor((u8)resource->brightness, (u8)resource->brightness, (u8)resource->brightness);
+    } else {
+        setSpriteColor(128, 128, 128);
+    }
+    func_8006C998(-104, -44, 392, 6, -1, &D_800EBFF0[D_8013AF78], 1);
+    func_8006C998((s16)(-104 - gResultLabelXOffsets[resource->unk08]), 6,
+                  resource->unk08 + 382, gResultLabelPalettes[resource->unk08], -1,
+                  &D_800EBFF0[D_8013AF78], 1);
+    func_800401DC(-66, -12, resource->unk06, &D_800EBFF0[D_8013AF78], 1);
+    func_8006C998(-34, 4, resource->unk06 + 393, gResultIconPalettes[resource->unk06], -1,
+                  &D_800EBFF0[D_8013AF78], 1);
+}
 
 void drawResultNumberAndIcon(ResultDisplayResource *resource) {
     setSpriteColor(128, 128, 128);
@@ -1671,7 +1696,7 @@ void waitResultDisplayTaskFlagsTask(void) {
     if ((D_8013AFE4 & 0x50) != 0x10) {
         func_800149A8();
     }
-    func_80035D5C(resource);
+    drawResultDisplayLabels(resource);
     drawResultNumberAndIcon(resource);
     drawFirstPlayerResultCounterAndIcon(resource);
     drawFirstPlayerResultNumberAndIcon(resource);
@@ -1696,7 +1721,7 @@ void waitResultDisplayInputTask(void) {
         resource->timer = 0;
         setCurrentTaskCallback(func_80036454);
     }
-    func_80035D5C(resource);
+    drawResultDisplayLabels(resource);
     drawResultNumberAndIcon(resource);
     drawFirstPlayerResultCounterAndIcon(resource);
     drawFirstPlayerResultNumberAndIcon(resource);
@@ -1718,7 +1743,7 @@ void waitResultDisplayConfirmationTask(void) {
         playSoundEffect(0, 0x700, 0x20);
         setCurrentTaskCallback(waitResultDisplayInputTask);
     }
-    func_80035D5C(resource);
+    drawResultDisplayLabels(resource);
     drawResultNumberAndIcon(resource);
     drawFirstPlayerResultCounterAndIcon(resource);
     func_800361C4(resource);
@@ -1741,7 +1766,7 @@ void waitResultDisplayTask(void) {
         playSoundEffect(0, 0x700, 0x20);
         setCurrentTaskCallback(func_8003686C);
     }
-    func_80035D5C(resource);
+    drawResultDisplayLabels(resource);
     func_800361C4(resource);
 }
 
@@ -1758,7 +1783,7 @@ void fadeInResultDisplayTask(void) {
         resource->brightness = 128;
         setCurrentTaskCallback(waitResultDisplayTask);
     }
-    func_80035D5C(resource);
+    drawResultDisplayLabels(resource);
     func_800361C4(resource);
 }
 
