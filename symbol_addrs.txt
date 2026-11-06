@@ -1,5 +1,6 @@
 addFourWordGpuPacket = 0x8004002C; // type:func
 initializeGameOptionTask = 0x8001B778; // type:func
+slideRaceTimeDisplayIn = 0x80033820; // type:func
 updateCurrentPlayerFromTaskPhase = 0x800257AC; // type:func
 gCurrentPlayerTaskPhaseCallbacks = 0x80120A6C; // size:0x20 defined:true
 finishTimedSpritePresentation = 0x8006AB18; // type:func

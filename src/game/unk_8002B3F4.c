@@ -51,6 +51,18 @@ typedef struct SpriteAnimationResource {
     u8 unk0B[0xF5];
 } SpriteAnimationResource;
 
+typedef struct SlidingTimeResource {
+    u16 timer;
+    u16 unk02;
+    s32 x;
+    s32 y;
+    u8 unk0C[8];
+    s32 speed;
+    RaceTime time;
+    s8 hasExtraTime;
+    u8 unk1D[0xE3];
+} SlidingTimeResource;
+
 typedef struct SlidingNumberResource {
     u16 timer;
     u16 unk02;
@@ -148,6 +160,9 @@ extern s16 D_8013B0E4;
 extern u16 D_8013B0E6;
 extern s32 D_8013B0E8;
 extern u8 D_8013AFCD __attribute__((section(".data")));
+
+void func_800335E4(SlidingTimeResource *resource);
+void func_80033794(void);
 
 void func_80037850(const RaceTime *value, s16 x, s16 y, s16 mode, GsOT *ot, u16 depth);
 
@@ -702,7 +717,20 @@ void waitSpriteMotionTask(void) {
     func_800335E4(resource);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80033820);
+void slideRaceTimeDisplayIn(void) {
+    SlidingTimeResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (SlidingTimeResource *)&D_800D9504[D_8013AE88->resource14];
+    resource->x -= resource->speed;
+    resource->speed -= 4;
+    if (resource->speed == 0) {
+        resource->timer = 90;
+        setCurrentTaskCallback(func_80033794);
+    }
+    func_800335E4(resource);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800338BC);
 
