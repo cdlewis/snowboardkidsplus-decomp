@@ -152,6 +152,11 @@ void addSemiTransparentFlatQuadWithDrawMode(u32 *orderingTable, s32 tpage,
                                           s32 x0, s32 y0, s32 x1, s32 y1,
                                           s32 x2, s32 y2, s32 x3, s32 y3,
                                           s32 r, s32 g, s32 b);
+void addSemiTransparentGouraudQuadWithDrawMode(u32 *orderingTable, s32 tpage,
+                  s32 x0, s32 y0, s32 x1, s32 y1,
+                  s32 x2, s32 y2, s32 x3, s32 y3,
+                  s32 r0, s32 g0, s32 b0, s32 r1, s32 g1, s32 b1,
+                  s32 r2, s32 g2, s32 b2, s32 r3, s32 g3, s32 b3);
 void addFlatRectangle(u32 *orderingTable, s32 x, s32 y, s32 w, s32 h,
                       s32 r, s32 g, s32 b);
 void addFlatRectangleWithDrawMode(u32 *orderingTable, s32 tpage, s32 flags,

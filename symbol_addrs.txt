@@ -1805,6 +1805,7 @@ mergeSaveRecordFlags = 0x80089924; // type:func
 
 addFlatQuad = 0x800601C4; // type:func
 addSemiTransparentFlatQuadWithDrawMode = 0x80060740; // type:func
+addSemiTransparentGouraudQuadWithDrawMode = 0x8006081C; // type:func
 addFlatLine = 0x80060978; // type:func
 
 addFlatRectangle = 0x80060AA8; // type:func
