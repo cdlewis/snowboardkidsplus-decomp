@@ -2772,3 +2772,5 @@ gResultTotalMoneyLabel = 0x80010A84; // type:char size:0x10
 drawSlidingQuadTask = 0x8006999C; // type:func
 
 updateColorCycleTask = 0x80070A2C; // type:func
+
+drawNumberSelectionPanel = 0x800A29A4; // type:func

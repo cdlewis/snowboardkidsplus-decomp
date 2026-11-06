@@ -277,6 +277,11 @@ void initializeSecondaryResourceTask(void);
 void func_800A6A8C(void);
 void func_800A6E88(void);
 
+typedef struct NumberPanelState {
+    u16 unk00[5];
+    u16 number;
+} NumberPanelState;
+
 typedef struct NumberAdjustmentState {
     s16 value;
     s16 countdown;
@@ -365,7 +370,15 @@ INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A2510);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A25F8);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A29A4);
+void drawNumberSelectionPanel(NumberPanelState *state) {
+    GsOT *ot = &D_800EBFF0[D_8013AF78];
+    setSpriteColor(128, 128, 128);
+    setTexturedQuadColor(128, 128, 128);
+    func_8006D984(23, -39, 1, 0, state->number + 1, 5, -1, ot, 2);
+    func_8006C998(-40, -36, 404, 8, -1, ot, 2);
+    drawDefaultTexturedPanel(-56, -48, 112, 96, 5, 0, ot, 2);
+    func_80070C5C(128, ot, 2);
+}
 
 void drawOffsetSelectedTaskSprite(void) {
     SelectedSpriteResource *state;
