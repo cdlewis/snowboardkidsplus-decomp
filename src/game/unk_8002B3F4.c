@@ -170,6 +170,12 @@ typedef struct ResultDisplayResource {
     u8 unk0A[0xF6];
 } ResultDisplayResource;
 
+typedef struct PanelInputResource {
+    u8 unk00[0xA];
+    s16 timer;
+    u8 unk0C[0xF4];
+} PanelInputResource;
+
 typedef struct StatsMenuFadeResource {
     s16 unk00;
     s16 brightness;
@@ -2024,7 +2030,21 @@ void drawCurrentTaskPanel(void) {
     func_8003BE58(resource);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003C5D8);
+void updatePanelExitInputTask(void) {
+    PanelInputResource *resource;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (PanelInputResource *)&D_800D9504[D_8013AE88->resource14];
+    if (resource->timer > 0) {
+        resource->timer--;
+    } else if ((D_8013AEE8[0] | D_8013AEE8[1]) & 0xB0) {
+        D_8013AFE4 |= 0x10;
+        setCurrentTaskCallback(drawCurrentTaskPanel);
+    }
+    func_8003BE58((TaskResourceRecord *)resource);
+}
 
 void advanceCurrentTaskPanelTimer(void) {
     PanelResource *resource;
