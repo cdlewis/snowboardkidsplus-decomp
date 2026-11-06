@@ -22,3 +22,5 @@ void initializeLoadedTextEntries(void);
 s16 parseDecimalS16(const u8 *text, s16 *result);
 
 TextEntry *findTextEntryInsertionPoint(u32 key, u32 value);
+
+s16 advanceTextLine(const s8 **text, s16 limit);

@@ -419,7 +419,38 @@ TextEntry *findTextEntryInsertionPoint(u32 key, u32 value) {
 
 INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A5FE8);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A60FC);
+s16 advanceTextLine(const s8 **text, s16 limit) {
+    const s8 *p = *text;
+    s16 count = 0;
+    while (*p != 0) {
+        if (count >= limit) {
+            if (*p == '\r' && p[1] == '\n') {
+                p += 2;
+            }
+            break;
+        }
+        if (*p == '\r' && p[1] == '\n') {
+            p += 2;
+            break;
+        }
+        if (*p & 0x80) {
+            count++;
+            p += 2;
+        } else if (*p == ' ') {
+            p++;
+            count++;
+            if (*p != ' ') {
+                continue;
+            }
+            p++;
+            continue;
+        } else {
+            p += 2;
+        }
+    }
+    *text = p;
+    return count;
+}
 
 void playMusicSequence(s16 count, u8 left, u8 right) {
     if (gMusicSequenceActive) {

@@ -2467,3 +2467,5 @@ createFallingParticleTask = 0x80062DA8; // type:func
 
 setSecondaryDisplayTaskMode = 0x800719A8; // type:func
 gSecondaryTaskSequenceEntries = 0x8012F10C; // size:0x30
+
+advanceTextLine = 0x800A60FC; // type:func
