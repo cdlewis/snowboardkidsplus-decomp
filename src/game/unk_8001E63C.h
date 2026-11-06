@@ -44,3 +44,4 @@ void updateCurrentPlayerVerticalMotionUntilLanding(void);
 void initializeCurrentPlayerAttributes(void);
 
 void updateCurrentPlayerAndResetState(void);
+void advanceCurrentPlayerState30TaskOnResult(void);

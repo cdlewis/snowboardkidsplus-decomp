@@ -107,7 +107,7 @@ void func_80025FAC(void);
 void func_800260E4(void);
 void func_80026500(void);
 void func_80026754(void);
-void func_80026AA8(void);
+void func_80028680(void);
 void func_80026BAC(void);
 void func_80027624(void);
 s16 func_80028234(void);
@@ -121,7 +121,7 @@ TaskCallback gCurrentPlayerTaskPhaseCallbacks[8]
 
 TaskCallback gCurrentPlayerState30TaskPhaseCallbacks[3]
     __attribute__((section(".data.player_state30_task_phases"))) = {
-    func_80026754, func_80026AA8, func_80026BAC
+    func_80026754, advanceCurrentPlayerState30TaskOnResult, func_80026BAC
 };
 
 
@@ -723,7 +723,33 @@ void updateCurrentPlayerAndRequestState30(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80026754);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80026AA8);
+void advanceCurrentPlayerState30TaskOnResult(void) {
+    if (D_8013AFE1 != 0) {
+        if (D_8013AFE2 == 0) {
+            if (D_8013B0D8->unk935 == 0) {
+                D_8013AE88->data1C = 0;
+                startCurrentPlayerAnimation(0x13, 2);
+            } else {
+                D_8013AE88->data1C = 2;
+                startCurrentPlayerAnimation(0x15, 2);
+            }
+        } else {
+            if (D_8013AE88->data18 + 1 == D_8013AFE1) {
+                D_8013AE88->data1C = 0;
+                startCurrentPlayerAnimation(0x13, 2);
+            } else {
+                D_8013AE88->data1C = 2;
+                startCurrentPlayerAnimation(0x15, 2);
+            }
+        }
+        D_8013AE88->data1A++;
+        D_8013B0D8->unk08C = 0;
+    } else {
+        smoothAndScaleCurrentPlayerInput(0, 0);
+        func_80028680();
+        func_80017268();
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80026BAC);
 

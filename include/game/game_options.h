@@ -15,10 +15,12 @@ extern u16 gUnlockNotificationFlags __attribute__((section(".data")));
 #ifdef GAME_OPTIONS_GP_ADDRESSING
 extern u8 D_8013AFCD;
 extern u8 D_8013AFE0;
+extern u8 D_8013AFE1;
 extern u8 D_8013AFE2;
 #else
 extern u8 D_8013AFCD __attribute__((section(".data")));
 extern u8 D_8013AFE0 __attribute__((section(".data")));
+extern u8 D_8013AFE1 __attribute__((section(".data")));
 extern u8 D_8013AFE2 __attribute__((section(".data")));
 #endif
 /* GP-relative alias of D_8013AFCD used by race restart task code. */
