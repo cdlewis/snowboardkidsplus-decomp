@@ -2742,3 +2742,5 @@ gPlayerModeMessageText = 0x80123C34; // size:0x24
 gPlayerModeAlternateMessageText = 0x80123C58; // size:0x24
 
 drawStretchedTexturedQuadByIndexWithBlend = 0x8006C240; // type:func
+
+computeVectorYawAndPitch = 0x8002A454; // type:func

@@ -13,3 +13,4 @@ extern MATRIX *D_8013AF98 __attribute__((section(".data")));
 void setCoordinateRotationZYX(SVECTOR *rotation, GsCOORDINATE2 *coordinate);
 
 void adjustDebugPositionAndDisplay(VECTOR *position);
+void computeVectorYawAndPitch(VECTOR *vector, s16 *yaw, s16 *pitch);

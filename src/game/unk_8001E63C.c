@@ -9,6 +9,7 @@
 #include "game/graphics.h"
 #include "game/coordinate.h"
 #include "game/quad_animation.h"
+#include "game/angles.h"
 #include "game/linear_random.h"
 #include "game/random.h"
 #include "game/offset_archive.h"
@@ -840,4 +841,19 @@ void computeSelectedTriangleNormal(VECTOR *normal) {
     OuterProduct0(&first, &second, normal);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8002A454);
+void computeVectorYawAndPitch(VECTOR *vector, s16 *yaw, s16 *pitch) {
+    s32 x, y, z;
+    s16 angle;
+    x = vector->vx;
+    y = vector->vy;
+    z = vector->vz;
+    angle = func_8004A124(0, 0, x, z);
+    if (angle >= 0x800) angle -= 0x1000;
+    *yaw = angle;
+    x /= 16;
+    y /= 16;
+    z /= 16;
+    angle = func_8004A124(0, 0, SquareRoot0(x*x + z*z), y);
+    if (angle >= 0x800) angle -= 0x1000;
+    *pitch = angle;
+}
