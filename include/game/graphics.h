@@ -4,6 +4,12 @@
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
 
+/* A DMA packet containing four GPU command words. */
+typedef struct GpuPacket4 {
+    u32 tag;
+    u32 commands[4];
+} GpuPacket4;
+
 /* Unscaled 5-bit RGB channels and the PSX color's semi-transparency bit. */
 typedef struct UnpackedPsxColor {
     u8 r, g, b, stp;
@@ -174,6 +180,7 @@ extern u16 D_8013AF78 __attribute__((section(".data")));
 void func_8006D41C(s16 x, s16 y, s16 limit, const char *text,
                    s16 palette, s16 blend, struct GsOT *ot, u16 depth);
 void addDrawPagePacket(DR_TPAGE *source, struct GsOT *ot, u16 depth);
+void addFourWordGpuPacket(GpuPacket4 *source, GsOT *ot, u16 depth);
 
 void drawTexturedFrameStyle9(s16 x, s16 y, s16 w, s16 h, s16 palette,
                              s16 blend, struct GsOT *ot, u16 depth);

@@ -1222,7 +1222,12 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003ED6C);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003EE70);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8004002C);
+void addFourWordGpuPacket(GpuPacket4 *source, GsOT *ot, u16 depth) {
+    GpuPacket4 *packet = (GpuPacket4 *)GsGetWorkBase();
+    *packet = *source;
+    AddPrim(&ot->org[depth], packet);
+    func_800BF2C8((u32)(packet + 1));
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800400C4);
 
