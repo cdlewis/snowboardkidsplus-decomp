@@ -91,6 +91,7 @@ void drawTaskObjectAlternateLayer(u16 index);
 
 extern GsDOBJ2 D_80129A80[30];
 void sortLitObject(GsDOBJ2 *object);
+void sortLitObjectWithDrawArea(GsDOBJ2 *object, u16 index, RECT *bounds);
 extern u32 *D_8013AF6C __attribute__((section(".data")));
 extern u16 D_8013AF7A __attribute__((section(".data")));
 extern u16 D_8013AF7C __attribute__((section(".data")));

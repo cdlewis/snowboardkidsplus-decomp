@@ -2859,3 +2859,6 @@ drawTaskVisualPositionHistory = 0x80046708; // type:func
 isPointWithinCameraForwardRange = 0x8005143C; // type:func
 
 drawSemiTransparentTextureRectUV = 0x8007219C; // type:func
+
+sortLitObjectWithDrawArea = 0x80083028; // type:func
+litObjectDrawAreaDepths = 0x8013B460; // size:0x8 defined:true

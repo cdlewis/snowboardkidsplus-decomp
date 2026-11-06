@@ -748,6 +748,8 @@ segments:
       - [0x12BB38, data, color_cycle_rects_tail]
       - {start: 0x12BBB4, type: .sdata, name: game/unk_80070274, linker_section: .sdata.animated_sprite16_page, linker_section_order: .data}
       - [0x12BBBC, data, 12BBBC]
+      - {start: 0x12BC60, type: .data, name: game/unk_8007CC78, linker_section: .data.lit_object_draw_area_depths}
+      - [0x12BC68, data, 12BC68]
       - {start: 0x12BD14, type: .sdata, name: main_tail, linker_section: .sdata.four_bounds_task_flag, linker_section_order: .data}
       - [0x12BD18, data, 12BD18]
       - [0x12BD70, .data, engine/game_options]

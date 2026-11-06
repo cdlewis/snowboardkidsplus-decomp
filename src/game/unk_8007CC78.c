@@ -67,6 +67,10 @@ typedef struct StateValueHistory {
     s16 unk_16[2];
 } StateValueHistory;
 
+u16 litObjectDrawAreaDepths[4] __attribute__((section(".data.lit_object_draw_area_depths"))) = {
+    0x30, 0x20, 0x50, 0x3E
+};
+
 HalfwordPair D_8012F13C[16] __attribute__((section(".data"))) = {0};
 
 u16 gTaskShadowedText[14] __attribute__((section(".data.task_shadowed_text"))) = {
@@ -361,7 +365,23 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80082A30);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80082CE0);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80083028);
+void sortLitObjectWithDrawArea(GsDOBJ2 *object, u16 index, RECT *bounds) {
+    MATRIX matrix;
+    GsGetLw(object->coord2, &matrix);
+    GsSetLightMatrix(&matrix);
+    GsGetLs(object->coord2, &matrix);
+    GsSetLsMatrix(&matrix);
+    {
+        u32 depthIndex = index;
+        GsSortObject4(object, &D_800EBFF0[D_8013AF78], (depthIndex & 1) + 1,
+                      (u32 *)0x1F800000);
+        if (bounds->w >= 0 && bounds->h >= 0) {
+            addDrawAreaPacket(bounds->x, bounds->y, bounds->w, bounds->h,
+                              &D_800EBFF0[D_8013AF78], litObjectDrawAreaDepths[depthIndex]);
+            addDrawAreaPacket(0, 0, 320, 240, &D_800EBFF0[D_8013AF78], 14);
+        }
+    }
+}
 
 ByteTriplet *lookupByteTriplet(ByteTriplet *records, u8 *indices, s16 index) {
     return &records[indices[index]];
