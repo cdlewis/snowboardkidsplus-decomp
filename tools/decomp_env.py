@@ -10,6 +10,8 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
+from urllib.error import URLError
+from urllib.request import Request, urlopen
 
 import build
 from decomp import ROOT, Elf32, PsxImage, active_functions, parse_asm, require_fresh, uncomment
@@ -17,6 +19,41 @@ from match_function import owning_unit
 from validate_commit import verify_image
 
 TEMPLATES = ROOT / "tools/decomp-env"
+
+
+def scratch_id(value):
+    url = re.fullmatch(r"https://(?:www\.)?decomp\.me/scratch/([A-Za-z0-9]+)/?(?:[?#].*)?", value)
+    if url:
+        return url[1]
+    # Prefer local symbols over the sibling wrapper's scratch-ID heuristic.
+    if re.fullmatch(r"[0-9]+|[A-Za-z0-9]{5,10}", value):
+        if value not in Elf32(ROOT / "build/slps_018.23.elf").symbols:
+            return value
+    return None
+
+
+def fetch_scratch(identifier):
+    headers = {"User-Agent": "snowboard-kids-plus-decomp"}
+    secret = ROOT / ".decomp_dev_secret"
+    if secret.is_file():
+        lines = secret.read_text().splitlines()
+        if lines and lines[0].strip():
+            headers["User-Agent"] = lines[0].strip()
+    request = Request(f"https://decomp.me/api/scratch/{identifier}", headers=headers)
+    try:
+        with urlopen(request, timeout=30) as response:
+            scratch = json.load(response)
+    except (URLError, ValueError) as error:
+        raise ValueError(f"could not fetch decomp.me scratch {identifier}: {error}") from error
+    if not isinstance(scratch, dict):
+        raise ValueError("decomp.me returned an invalid scratch")
+    label = scratch.get("diff_label")
+    source = scratch.get("source_code")
+    if not isinstance(label, str) or not re.fullmatch(r"[A-Za-z_]\w*(?:\.s)?", label):
+        raise ValueError("decomp.me scratch has no valid function diff_label")
+    if not isinstance(source, str) or not source.strip():
+        raise ValueError("decomp.me scratch has no source_code")
+    return label.removesuffix(".s"), source
 
 
 def check_image():
@@ -93,14 +130,14 @@ def existing_body(source, name):
     raise ValueError(f"cannot find end of {name}")
 
 
-def seed_source(workspace, oracle):
+def seed_source(workspace, oracle, imported_source=None):
     source = ROOT / oracle.unit
     original = source.read_text()
     includes = "\n".join(re.findall(r'^\s*#include[^\n]+', original, re.M)).strip() + "\n\n"
     context = workspace / "context.c"
     subprocess.run([build.CPP, *build.CPP_FLAGS, "-DM2CTX", "-DNON_MATCHING", "-P",
                     str(source), "-o", str(context)], cwd=ROOT, check=True)
-    body = existing_body(original, oracle.name)
+    body = imported_source if imported_source is not None else existing_body(original, oracle.name)
     if body is None:
         m2c = shutil.which("m2c")
         if m2c:
@@ -116,7 +153,7 @@ def seed_source(workspace, oracle):
     (workspace / "base.c").write_text(includes + (body or ""))
 
 
-def bootstrap(oracle, identifier):
+def bootstrap(oracle, identifier, imported_source=None):
     stem = oracle.name
     if identifier is not None:
         if not re.fullmatch(r"[A-Za-z0-9_-]+", identifier):
@@ -136,7 +173,7 @@ def bootstrap(oracle, identifier):
     workspace.mkdir(parents=True)
     try:
         assemble_target(workspace, oracle)
-        seed_source(workspace, oracle)
+        seed_source(workspace, oracle, imported_source)
         (workspace / "project").symlink_to(ROOT, target_is_directory=True)
         for name in ["build.sh", "diff.sh"]:
             (workspace / name).symlink_to(TEMPLATES / name)
@@ -185,7 +222,7 @@ def compare_attempt(workspace, source):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("function", nargs="?", help="function name or generated assembly path")
+    parser.add_argument("function", nargs="?", help="function name, generated assembly path, or decomp.me scratch ID/URL")
     parser.add_argument("--bootstrap", action="store_true", help="create a workspace before launching Codex (default)")
     parser.add_argument("--bootstrap-only", action="store_true", help="create the workspace without launching Codex")
     parser.add_argument("--id", help="reuse nonmatchings/FUNCTION-ID without overwriting attempts")
@@ -208,8 +245,16 @@ def main():
     if args.build or args.diff or not args.function:
         parser.error("provide a function, or use build.sh/diff.sh inside a workspace")
     check_image()
-    oracle = resolve_function(args.function, args.unit)
-    workspace = bootstrap(oracle, args.id)
+    imported_source = None
+    function = args.function
+    scratch = scratch_id(function)
+    if scratch:
+        if args.id is not None:
+            parser.error("--id cannot be used when importing a decomp.me scratch")
+        function, imported_source = fetch_scratch(scratch)
+        imported_source = f"// Imported from https://decomp.me/scratch/{scratch}\n\n" + imported_source
+    oracle = resolve_function(function, args.unit)
+    workspace = bootstrap(oracle, args.id, imported_source)
     print(f"Environment ready: {workspace.relative_to(ROOT)}", flush=True)
     if args.bootstrap_only:
         return 0
