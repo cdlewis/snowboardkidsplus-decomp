@@ -2584,3 +2584,5 @@ selectionMenuRecordAbsolute = 0x8013B560; // allow_duplicated:true
 D_8013B560 = 0x8013B560; // size:0x2 allow_duplicated:true
 
 updateCurrentPlayerAndResetState = 0x800204D8; // type:func
+
+drawSlidingDisplaySprite = 0x80034090; // type:func
