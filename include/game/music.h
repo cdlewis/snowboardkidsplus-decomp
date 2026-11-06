@@ -35,6 +35,9 @@ void resumeMusicSequence(void);
 void startSoundSystem(void);
 void endSoundSystem(void);
 
+/* Apply distance attenuation to a sound volume. */
+s32 attenuateSoundVolume(s32 distance, s16 volume);
+
 /* Returns the allocated voice, or 0xFF when the bank is unavailable. */
 s32 func_800181B0(u8 bank, u16 programAndTone, s16 volume);
 

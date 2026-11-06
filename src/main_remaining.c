@@ -367,7 +367,17 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_800181B0);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80018288);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80018358);
+s32 attenuateSoundVolume(s32 distance, s16 volume) {
+    s32 result;
+    if (distance > 0x2400) {
+        result = 0;
+    } else if (distance <= 0x400) {
+        result = volume;
+    } else {
+        result = volume - distance / (0x2000 / volume);
+    }
+    return result;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_800183FC);
 
