@@ -1,4 +1,5 @@
 #include "common.h"
+#include "game/angles.h"
 #include "game/cd_queue.h"
 #define CONTROLLER_EFFECTS_ABSOLUTE_ADDRESSING
 #include "game/controller_effects.h"
@@ -777,7 +778,19 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005A1C4);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005A360);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005A4D0);
+void computeSelectedTriangleAngles(s16 *pitch, s16 *yaw) {
+    VECTOR normal;
+    s32 x, y, z;
+    computeSelectedTriangleNormal(&normal);
+    *yaw = func_8004A124(0, 0, normal.vx, normal.vy);
+    x = normal.vx;
+    y = normal.vy;
+    z = normal.vz;
+    x /= 16;
+    y /= 16;
+    z /= 16;
+    *pitch = -func_8004A124(0, 0, z, SquareRoot0(x*x + y*y));
+}
 
 void updateCameraRotationMatrices(u16 playerIndex) {
     PlayerCamera *cameras = D_801241E8;

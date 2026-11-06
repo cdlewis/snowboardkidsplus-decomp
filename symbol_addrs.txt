@@ -2260,3 +2260,5 @@ advanceTaskStatsCountdownAndPlaySound = 0x8003BAAC; // type:func
 initializeCurrentPlayerState5 = 0x8001F444; // type:func
 
 initializeDualResource5100EffectTask = 0x80047CC0; // type:func
+
+computeSelectedTriangleAngles = 0x8005A4D0; // type:func

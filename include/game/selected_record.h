@@ -33,5 +33,6 @@ extern s16 *D_8013B208 __attribute__((section(".data")));
 void bindGeometryRecordData(s16 *data);
 void selectGeometryRecord(s16 index);
 void computeSelectedTriangleNormal(VECTOR *normal);
+void computeSelectedTriangleAngles(s16 *pitch, s16 *yaw);
 
 void getGeometryPlacementTransform(s16 index, s32 *x, s32 *y, s32 *z, u16 *angle);

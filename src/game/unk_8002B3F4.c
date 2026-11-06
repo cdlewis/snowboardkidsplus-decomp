@@ -1,4 +1,5 @@
 #include "common.h"
+#include "game/angles.h"
 #define TASK_ABSOLUTE_ADDRESSING
 #define TASK_FLAGS_ABSOLUTE_ADDRESSING
 #define RACE_PLAYER_ABSOLUTE_ADDRESSING
@@ -256,7 +257,6 @@ RaceTime gRaceElapsedTime = {0, 0, 0};
 extern int rand(void);
 
 void uploadTimImageAt(s16 x, s16 y, s16 clutX, s16 clutY, u32 *tim);
-s16 func_8004A124(s32 x1, s32 z1, s32 x2, s32 z2);
 void func_8003E1D0(u16 playerIndex);
 void func_8003E60C(u16 index);
 void func_8003EE70(void);
