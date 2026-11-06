@@ -315,7 +315,7 @@ void func_80047380(void);
 
 void func_800335E4(SlidingTimeResource *resource);
 void func_800497B8(void);
-s32 func_80043ACC(const RaceTime *a, const RaceTime *b, RaceTime *difference);
+s32 calculateRaceTimeDifference(const RaceTime *a, const RaceTime *b, RaceTime *difference);
 
 void func_80037850(const RaceTime *value, s16 x, s16 y, s16 mode, GsOT *ot, u16 depth);
 
@@ -342,7 +342,6 @@ void func_8003DEE0(void);
 void func_80032F84(void);
 void func_80033404(void);
 void func_80033C2C(void);
-void func_80044990(void);
 void updateOneShotTaskVisual(void);
 void func_80034C40(SpriteMotionResource *resource);
 void slideInSpriteMotionTask(void);
@@ -354,14 +353,14 @@ void func_800302F8(void);
 void func_80032C14(void);
 void waitUnlockNotification0TransitionTask(void);
 void func_80032F3C(void);
-void func_8002F1C8(void);
+void queueBackgroundTextureSectorCommands(void);
 void func_8002FA58(s16 resource);
 void initializePlayerNumberDisplayTask(void);
 void slideOutPlayerNumberDisplayTask(void);
 void func_80034664(PlayerNumberResource *resource);
 void slideOutSlidingNumberDisplayTask(void);
 void initializeSlidingNumberDisplayTask(void);
-void func_8003539C(void);
+void slideInSlidingNumberDisplayTask(void);
 void func_800350AC(SlidingNumberResource *resource);
 void advancePlayerSpriteAnimationTask(void);
 void func_80034434(SpriteAnimationResource *resource);
@@ -375,7 +374,6 @@ void func_800458F8(void);
 void func_8004531C(void);
 void func_80044524(void);
 void func_80046044(void);
-void func_80046404(TaskResourceRecord *resource, TaskResourceRecord *secondary, s32 value, s32 scale);
 void func_80047600(void);
 void func_80047D94(void);
 void func_80046CB4(void);
@@ -385,24 +383,18 @@ void func_80037354(TaskResourceRecord *resource);
 void func_8003763C(void);
 void fadeInPlayerResultsTask(void);
 void fadeInLapTimeLabelTask(void);
-void func_80037EC8(void);
+void fadeInTimeMenuTask(void);
 void drawTaskTimeMenuAndSetFlag10OnInput(void);
-void func_8003A814(void);
+void waitTaskTimeRecordCountdownAndPlaySound(void);
 void func_8003A690(void);
 void func_8003A158(void);
-void func_80039F6C(void);
-void func_8003A008(void);
-void func_80039484(RaceResultsFadeResource *resource);
-void func_80039564(RaceResultsFadeResource *resource);
-void func_80039B34(RaceResultsFadeResource *resource);
+void drawTaskTimeRecordsAndSetFlag10OnInput(void);
+void drawCurrentTaskTimeRecordDetails(void);
 void func_8003686C(void);
 void waitResultDisplayTask(void);
 void func_80035D5C(ResultDisplayResource *resource);
 void func_800361C4(ResultDisplayResource *resource);
 void func_80035FAC(ResultDisplayResource *resource);
-void func_8003772C(void);
-void func_80037F74(void);
-void func_80037D90(void);
 void drawMenuTimeWithBrightness(MenuTimeResource *resource);
 void func_800379B8(TaskResourceRecord *resource);
 void drawLapTimeLabel(TaskMenuFadeResource *resource);
@@ -413,16 +405,14 @@ void func_80038574(TaskResourceRecord *resource);
 void func_8003881C(TaskResourceRecord *resource);
 void func_80039144(void);
 void waitTaskMenuCountdownAndPlaySound(void);
-void func_80038270(TaskResourceRecord *resource);
-void func_8003881C(TaskResourceRecord *resource);
-void func_80038A98(void);
+void drawTaskMenuAndSetFlag10OnInput(void);
 void func_80038B34(void);
-void func_80038FD4(void);
+void startTaskMenuCountdownAndPlaySound(void);
 void func_8003BE58(TaskResourceRecord *resource);
-void func_8003C5D8(void);
+void updatePanelExitInputTask(void);
 void advanceCurrentTaskPanelTimer(void);
-void func_8003A3D8(void);
-void func_8003A760(void);
+void tickRaceResultsDelayTask(void);
+void tickRaceResultsSoundDelayTask(void);
 void drawTimeRecordHeader(TimeRecordHeaderResource *resource);
 void func_80039564(TaskResourceRecord *resource);
 void func_80039B34(TaskResourceRecord *resource);
@@ -431,13 +421,12 @@ void func_8003AAE0(TaskResourceRecord *resource);
 void func_8003AD48(TaskResourceRecord *resource);
 void func_8003B020(TaskResourceRecord *resource);
 void func_8003B2BC(TaskResourceRecord *resource);
-void func_8003B94C(void);
+void waitForStatsScoreCountStartTask(void);
 void advanceTaskStatsCountdownAndPlaySound(void);
 void resetTaskStatsCountdown(void);
-void func_8003B020(TaskResourceRecord *resource);
 void func_8003B690(void);
-void func_8003B434(void);
-void func_8003BC18(void);
+void drawCurrentTaskStatsSelection(void);
+void waitTaskStatsCountdownAndPlaySound(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002B3F4);
 
@@ -959,10 +948,10 @@ void waitUnlockNotification0TransitionTask(void) {
     if (D_8013AFE4 & 0x200) {
         D_8013AE98->data18 = 5;
         func_80070274(11, 0, 30);
-        func_800719A8(1);
+        setSecondaryDisplayTaskMode(1);
         D_8013B10C = -1;
         func_8002FCF8();
-        func_8002F1C8();
+        queueBackgroundTextureSectorCommands();
         func_8002FA58((s16)D_8013AE98->data18);
         setCurrentTaskCallback(func_80032F3C);
         D_8013AE88->unk10 |= 2;
@@ -1413,7 +1402,7 @@ void initializeSlidingNumberDisplayTask(void) {
     } else {
         resource->x = 420;
     }
-    setCurrentTaskCallback(func_8003539C);
+    setCurrentTaskCallback(slideInSlidingNumberDisplayTask);
 }
 
 void createActivePlayerSlidingNumberTask(s32 value, s16 player) {
@@ -1478,7 +1467,7 @@ void checkControllerInputSequenceTask(void) {
             D_8013AE88->data1A++;
             if (gControllerInputSequences[D_8013AE88->data18][D_8013AE88->data1A] == 0xFFFF) {
                 D_8013B11A |= 1 << D_8013AE88->data18;
-                func_800181B0(0, 0, 0x20);
+                playSoundEffect(0, 0, 0x20);
                 func_800149A8();
             }
         } else {
@@ -1737,7 +1726,7 @@ void fadeInLapTimeLabelTask(void) {
     resource->brightness += 8;
     if (resource->brightness > 128) {
         resource->brightness = 128;
-        setCurrentTaskCallback(func_80037EC8);
+        setCurrentTaskCallback(fadeInTimeMenuTask);
     }
     drawLapTimeLabel(resource);
 }
@@ -1800,7 +1789,7 @@ void updateMenuExitInputTask(void) {
     resource = (TaskMenuFadeResource *)&D_800D9504[D_8013AE88->resource14];
     if (D_8013AEE8[0] & 0xB0) {
         if (resource->unk00 < 5) {
-            setCurrentTaskCallback(func_80038A98);
+            setCurrentTaskCallback(drawTaskMenuAndSetFlag10OnInput);
         } else {
             D_8013AFE4 |= 0x10;
             setCurrentTaskCallback(func_80038B34);
@@ -1852,7 +1841,7 @@ void startTaskMenuCountdownAndPlaySound(void) {
     resource = (MenuCountdownResource *)&D_800D9504[D_8013AE88->resource14];
     resource->unk06 = 2;
     if (--resource->timer == 0) {
-        func_800181B0(0, 0x700, 0x20);
+        playSoundEffect(0, 0x700, 0x20);
         resource->timer = 20;
         setCurrentTaskCallback(resetTaskMenuCountdown);
     }
@@ -1871,7 +1860,7 @@ void tickMenuSoundDelayStage1Task(void) {
     if (--resource->timer == 0) {
         playSoundEffect(0, 0x700, 0x20);
         resource->timer = 20;
-        setCurrentTaskCallback(func_80038FD4);
+        setCurrentTaskCallback(startTaskMenuCountdownAndPlaySound);
     }
     func_80038090((TaskResourceRecord *)resource);
     func_80038270((TaskResourceRecord *)resource);
@@ -1888,7 +1877,7 @@ void waitTaskMenuCountdownAndPlaySound(void) {
     resource = (MenuFadeInResource *)&D_800D9504[D_8013AE88->resource14];
     if (--resource->timer == 0) {
         resource->timer = 20;
-        func_800181B0(0, 0x700, 0x20);
+        playSoundEffect(0, 0x700, 0x20);
         setCurrentTaskCallback(func_80039144);
     }
     func_80038090((TaskResourceRecord *)resource);
@@ -1972,8 +1961,8 @@ void drawCurrentTaskTimeRecordDetails(void) {
         func_800149A8();
     }
     drawTimeRecordHeader((TimeRecordHeaderResource *)resource);
-    func_80039564(resource);
-    func_80039B34(resource);
+    func_80039564((TaskResourceRecord *)resource);
+    func_80039B34((TaskResourceRecord *)resource);
 }
 
 void updateRaceResultsExitInputTask(void) {
@@ -1984,15 +1973,15 @@ void updateRaceResultsExitInputTask(void) {
     resource = (RaceResultsFadeResource *)&D_800D9504[D_8013AE88->resource14];
     if (D_8013AEE8[0] & 0xB0) {
         if (resource->unk00 < 5) {
-            setCurrentTaskCallback(func_80039F6C);
+            setCurrentTaskCallback(drawTaskTimeRecordsAndSetFlag10OnInput);
         } else {
             D_8013AFE4 |= 0x10;
-            setCurrentTaskCallback(func_8003A008);
+            setCurrentTaskCallback(drawCurrentTaskTimeRecordDetails);
         }
     }
-    func_80039484(resource);
-    func_80039564(resource);
-    func_80039B34(resource);
+    drawTimeRecordHeader((TimeRecordHeaderResource *)resource);
+    func_80039564((TaskResourceRecord *)resource);
+    func_80039B34((TaskResourceRecord *)resource);
 }
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003A158);
@@ -2008,9 +1997,9 @@ void tickRaceResultsDelayTask(void) {
     if (--resource->timer == 0) {
         setCurrentTaskCallback(func_8003A158);
     }
-    func_80039484(resource);
-    func_80039564(resource);
-    func_80039B34(resource);
+    drawTimeRecordHeader((TimeRecordHeaderResource *)resource);
+    func_80039564((TaskResourceRecord *)resource);
+    func_80039B34((TaskResourceRecord *)resource);
 }
 
 void updateTaskTimeRecordDetailCountdown(void) {
@@ -2022,7 +2011,7 @@ void updateTaskTimeRecordDetailCountdown(void) {
     resource->unk0A = 4;
     if (--resource->timer == 0) {
         resource->timer = 10;
-        setCurrentTaskCallback(func_8003A3D8);
+        setCurrentTaskCallback(tickRaceResultsDelayTask);
     }
     drawTimeRecordHeader((TimeRecordHeaderResource *)resource);
     func_80039564((TaskResourceRecord *)resource);
@@ -2037,7 +2026,7 @@ void updateTaskTimeRecordCountdownAndPlaySound(void) {
     resource = (TimeRecordDetailCountdownResource *)&D_800D9504[D_8013AE88->resource14];
     resource->unk0A = 3;
     if (--resource->timer == 0) {
-        func_800181B0(0, 0x700, 0x20);
+        playSoundEffect(0, 0x700, 0x20);
         resource->timer = 20;
         setCurrentTaskCallback(updateTaskTimeRecordDetailCountdown);
     }
@@ -2054,7 +2043,7 @@ void updateTaskTimeRecordCountdownPhase2AndPlaySound(void) {
     resource = (TimeRecordDetailCountdownResource *)&D_800D9504[D_8013AE88->resource14];
     resource->unk0A = 2;
     if (--resource->timer == 0) {
-        func_800181B0(0, 0x700, 0x20);
+        playSoundEffect(0, 0x700, 0x20);
         resource->timer = 20;
         setCurrentTaskCallback(updateTaskTimeRecordCountdownAndPlaySound);
     }
@@ -2078,9 +2067,9 @@ void tickRaceResultsSoundDelayTask(void) {
         resource->timer = 20;
         setCurrentTaskCallback(func_8003A690);
     }
-    func_80039484(resource);
-    func_80039564(resource);
-    func_80039B34(resource);
+    drawTimeRecordHeader((TimeRecordHeaderResource *)resource);
+    func_80039564((TaskResourceRecord *)resource);
+    func_80039B34((TaskResourceRecord *)resource);
 }
 
 void waitTaskTimeRecordCountdownAndPlaySound(void) {
@@ -2091,8 +2080,8 @@ void waitTaskTimeRecordCountdownAndPlaySound(void) {
     resource = (TimeRecordDetailCountdownResource *)&D_800D9504[D_8013AE88->resource14];
     if (--resource->timer == 0) {
         resource->timer = 20;
-        func_800181B0(0, 0x700, 0x20);
-        setCurrentTaskCallback(func_8003A760);
+        playSoundEffect(0, 0x700, 0x20);
+        setCurrentTaskCallback(tickRaceResultsSoundDelayTask);
     }
     drawTimeRecordHeader((TimeRecordHeaderResource *)resource);
     func_80039B34((TaskResourceRecord *)resource);
@@ -2109,10 +2098,10 @@ void fadeInRaceResultsTask(void) {
     if (resource->brightness > 128) {
         resource->timer = 20;
         resource->brightness = 128;
-        setCurrentTaskCallback(func_8003A814);
+        setCurrentTaskCallback(waitTaskTimeRecordCountdownAndPlaySound);
     }
-    func_80039484(resource);
-    func_80039B34(resource);
+    drawTimeRecordHeader((TimeRecordHeaderResource *)resource);
+    func_80039B34((TaskResourceRecord *)resource);
 }
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003A96C);
@@ -2148,7 +2137,7 @@ void updateStatsMenuExitInputTask(void) {
     resource = &D_800D9504[D_8013AE88->resource14];
     if (D_8013AEE8[0] & 0xB0) {
         D_8013AFE4 |= 0x10;
-        setCurrentTaskCallback(func_8003B434);
+        setCurrentTaskCallback(drawCurrentTaskStatsSelection);
     }
     func_8003AAE0(resource);
     func_8003B020(resource);
@@ -2229,9 +2218,9 @@ void startTaskStatsCountdownAndPlaySound(void) {
     resource = (MenuCountdownResource *)&D_800D9504[D_8013AE88->resource14];
     resource->unk06 = 2;
     if (--resource->timer == 0) {
-        func_800181B0(0, 0x700, 0x20);
+        playSoundEffect(0, 0x700, 0x20);
         resource->timer = 20;
-        setCurrentTaskCallback(func_8003B94C);
+        setCurrentTaskCallback(waitForStatsScoreCountStartTask);
     }
     func_8003AAE0((TaskResourceRecord *)resource);
     func_8003AD48((TaskResourceRecord *)resource);
@@ -2246,7 +2235,7 @@ void advanceTaskStatsCountdownAndPlaySound(void) {
     resource = (MenuCountdownResource *)&D_800D9504[D_8013AE88->resource14];
     resource->unk06 = 1;
     if (--resource->timer == 0) {
-        func_800181B0(0, 0x700, 0x20);
+        playSoundEffect(0, 0x700, 0x20);
         resource->timer = 20;
         setCurrentTaskCallback(startTaskStatsCountdownAndPlaySound);
     }
@@ -2263,7 +2252,7 @@ void resetTaskStatsCountdown(void) {
     resource = (MenuCountdownResource *)&D_800D9504[D_8013AE88->resource14];
     resource->unk06 = 0;
     if (--resource->timer == 0) {
-        func_800181B0(0, 0x700, 0x20);
+        playSoundEffect(0, 0x700, 0x20);
         resource->timer = 20;
         setCurrentTaskCallback(advanceTaskStatsCountdownAndPlaySound);
     }
@@ -2280,7 +2269,7 @@ void waitTaskStatsCountdownAndPlaySound(void) {
     resource = (MenuFadeInResource *)&D_800D9504[D_8013AE88->resource14];
     if (--resource->timer == 0) {
         resource->timer = 20;
-        func_800181B0(0, 0x700, 0x20);
+        playSoundEffect(0, 0x700, 0x20);
         setCurrentTaskCallback(resetTaskStatsCountdown);
     }
     func_8003AAE0((TaskResourceRecord *)resource);
@@ -2298,7 +2287,7 @@ void fadeInStatsMenuTask(void) {
     if (resource->brightness > 128) {
         resource->timer = 20;
         resource->brightness = 128;
-        setCurrentTaskCallback(func_8003BC18);
+        setCurrentTaskCallback(waitTaskStatsCountdownAndPlaySound);
     }
     func_8003AAE0((TaskResourceRecord *)resource);
     func_8003B2BC((TaskResourceRecord *)resource);
@@ -2350,7 +2339,7 @@ void advanceCurrentTaskPanelTimer(void) {
     if (resource->timer == 0) {
         resource->timer = 20;
         resource->unk0C = 2;
-        setCurrentTaskCallback(func_8003C5D8);
+        setCurrentTaskCallback(updatePanelExitInputTask);
     }
     func_8003BE58((TaskResourceRecord *)resource);
 }
@@ -2505,9 +2494,9 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003EA20);
 void updateCurrentPlayerCameraTarget(void) {
     GsRVIEW2 *targets = gPlayerCameraViews;
     RacePlayer *players = D_80120E90;
-    targets[D_8013AE88->data18].vrx = players[D_8013AE88->data18].unk8E4 + players[D_8013AE88->data18].unk084;
-    targets[D_8013AE88->data18].vry = players[D_8013AE88->data18].unk8E8 + (s16)(D_801241E8[D_8013AE88->data18].unk14 / 8 - 120) + players[D_8013AE88->data18].unk086;
-    targets[D_8013AE88->data18].vrz = players[D_8013AE88->data18].unk8EC + players[D_8013AE88->data18].unk088;
+    targets[D_8013AE88->data18].vrx = players[D_8013AE88->data18].position8E4[0] + players[D_8013AE88->data18].unk084;
+    targets[D_8013AE88->data18].vry = players[D_8013AE88->data18].position8E4[1] + (s16)(D_801241E8[D_8013AE88->data18].unk14 / 8 - 120) + players[D_8013AE88->data18].unk086;
+    targets[D_8013AE88->data18].vrz = players[D_8013AE88->data18].position8E4[2] + players[D_8013AE88->data18].unk088;
 }
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003EE70);
@@ -2814,7 +2803,7 @@ void initializePlayerDualResourceEffectTask(void) {
         while (1) {}
     }
     D_8013AE88->resource16 = allocateTaskResource();
-    func_80046404(resource, &D_800D9504[D_8013AE88->resource16], 300, 0x5580);
+    func_80046404((TaskVisualResource *)resource, (VECTOR *)&D_800D9504[D_8013AE88->resource16], 300, 0x5580);
     setCurrentTaskCallback(func_80046CB4);
 }
 
@@ -2882,7 +2871,7 @@ void initializeDualResource4C80EffectTask(void) {
         while (1) {}
     }
     D_8013AE88->resource16 = allocateTaskResource();
-    func_80046404(resource, &D_800D9504[D_8013AE88->resource16], 300, 0x4C80);
+    func_80046404((TaskVisualResource *)resource, (VECTOR *)&D_800D9504[D_8013AE88->resource16], 300, 0x4C80);
     setCurrentTaskCallback(func_80047600);
 }
 
@@ -2905,7 +2894,7 @@ void initializeDualResource5100EffectTask(void) {
         while (1) {}
     }
     D_8013AE88->resource16 = allocateTaskResource();
-    func_80046404(resource, &D_800D9504[D_8013AE88->resource16], 300, 0x5100);
+    func_80046404((TaskVisualResource *)resource, (VECTOR *)&D_800D9504[D_8013AE88->resource16], 300, 0x5100);
     D_8013AE88->data1A = 0;
     setCurrentTaskCallback(func_80047D94);
 }
@@ -2960,7 +2949,7 @@ void initializeDelayedPlayerRiseEffectTask(void) {
         resource->velocity = 0;
         resource->rotation.vx = resource->rotation.vy = resource->rotation.vz = 0;
         resource->scale.vx = resource->scale.vy = resource->scale.vz = 0;
-        func_800181B0(1, 0xA00, 0x30);
+        playSoundEffect(1, 0xA00, 0x30);
         setCurrentTaskCallback(func_80049240);
     } else {
         D_8013AE88->data1C--;
@@ -2986,7 +2975,7 @@ void initializeSlidingVisualSequenceTask(void) {
     resource->framePosition = 0;
     resource->unk74 = -352;
     resource->velocity = 0;
-    func_800181B0(1, 0xD01, 0x20);
+    playSoundEffect(1, 0xD01, 0x20);
     D_8013AE88->data1C = 0;
     setCurrentTaskCallback(func_800497B8);
 }

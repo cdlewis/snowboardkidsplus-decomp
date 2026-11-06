@@ -37,7 +37,7 @@ u8 *D_8012090C[10] = {
 };
 
 
-void func_80045868(void);
+void initializeScaledTaskCoordinateResource(void);
 void func_800252CC(void);
 void func_800240D0(void);
 void func_80024288(void);
@@ -246,7 +246,7 @@ void initializeCurrentPlayerState4(void) {
     startCurrentPlayerAnimation(12, 2);
     D_8013B0D8->unk0B8 = 0;
     D_8013B0D8->unk128 = (D_8013B0D8->unk128 & 0xFF0C1FFB) | 0x12204;
-    func_8002A5A0(0, 0);
+    smoothAndScaleCurrentPlayerInput(0, 0);
     D_8013B0D8->unk060 = D_8013B0D8->unk104;
     D_8013B0D8->unk062 = -0x600;
     D_8013B0D8->unk064 = D_8013B0D8->unk108;
@@ -299,7 +299,7 @@ void resetCurrentPlayerForCallback26DAC(void) {
 
 void initializeCurrentPlayerState10(void) {
     RacePlayer *player;
-    D_801241E8[D_8013AE88->data18].unk16[0] = 4;
+    D_801241E8[D_8013AE88->data18].unk16 = 4;
     player = D_8013B0D8;
     player->unk128 &= ~0x200;
     player->unk128 &= 0xFF0C1FFB;
@@ -331,7 +331,7 @@ void initializeCurrentPlayerState11(void) {
     player->unk128 &= 0xFF0C1FFB;
     player->unk128 |= 0x22201;
     player->unk062 -= 0x800;
-    func_8002A5A0(0, 0);
+    smoothAndScaleCurrentPlayerInput(0, 0);
     D_8013B0D8->unk078 = 0;
     func_8002E5A0(D_8013AE88->data18, 9);
     setCurrentTaskCallback(func_80027014);
@@ -373,7 +373,7 @@ void initializeCurrentPlayerState25(void) {
     player->unk128 = (player->unk128 & 0xFF0C1FFB) | 0x400000;
     player->unk08C = 240 - reduction / 8;
     startCurrentPlayerAnimation(1, 1);
-    func_80014930(&gGameTasks[4], func_80045868);
+    func_80014930(&gGameTasks[4], initializeScaledTaskCoordinateResource);
     D_8013AE8C->data18 = D_8013AE88->data18;
     func_8002E5A0(D_8013AE88->data18, 6);
     setCurrentTaskCallback(func_800252CC);
@@ -391,7 +391,7 @@ void resetCurrentPlayerForCallback25508(void) {
     D_8013B0D8->unk0BC = 0;
     D_8013B0D8->unk094 = 0;
     func_8002E5A0(D_8013AE88->data18, 3);
-    func_80014930(&D_800D7C84, func_80045B4C);
+    func_80014930(&gGameTasks[4], func_80045B4C);
     D_8013AE8C->data18 = D_8013AE88->data18;
     setCurrentTaskCallback(updateCurrentPlayerVerticalMotionUntilLanding);
 }
@@ -581,9 +581,9 @@ void updateCurrentPlayerAndRequestState30(void) {
     }
     player = D_8013B0D8;
     player->unk110 = player->unk0B6 + 0x400;
-    player->unk8E4 = player->x >> 8;
-    player->unk8E8 = player->y >> 8;
-    player->unk8EC = player->z >> 8;
+    player->position8E4[0] = player->x >> 8;
+    player->position8E4[1] = player->y >> 8;
+    player->position8E4[2] = player->z >> 8;
     callCurrentPlayerStateCallbackIfDifferent(30);
 }
 
@@ -666,8 +666,8 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80029E6C);
 void assignCurrentPlayerFinishSlot(s32 value) {
     RacePlayer *player = currentPlayerAbsolute;
     u32 flags = player->unk128;
-    if (!(flags & 0x40) && player->unk934 >= D_8013AFD0 - 1 &&
-        player->unk92E == D_80123D80[D_8013AFCE].unk00 && !(flags & 0x1000)) {
+    if (!(flags & 0x40) && player->unk934 >= selectedFinishLapCountAbsolute - 1 &&
+        player->unk92E == (s16)D_80123D80[D_8013AFCE].unk00 && !(flags & 0x1000)) {
         player->unk128 = flags | 0x40;
         if (!D_8013AFD6) {
             if (!player->unk008) {

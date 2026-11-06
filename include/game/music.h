@@ -47,7 +47,6 @@ s32 playSoundEffect(u8 bank, u16 programAndTone, s16 volume);
 
 s32 func_800183FC(u16 playerIndex, u8 bank, u16 sound, s16 volume);
 
-/* Positional counterpart of func_800181B0; returns the voice or 0xFF. */
 /* Positional counterpart of playSoundEffect; returns the voice or 0xFF. */
 s32 func_80018538(s32 x, s32 y, s32 z, u8 bank, u16 programAndTone, s16 volume);
 

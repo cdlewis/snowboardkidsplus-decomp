@@ -141,7 +141,6 @@ extern struct DIRENTRY D_8013B700[2][15];
 extern char *D_8013AF40;
 extern s16 D_8013AF3E;
 extern u16 D_8013AFAA __attribute__((section(".data")));
-extern s32 D_8013B20C __attribute__((section(".data")));
 extern u32 D_8013B20C[2] __attribute__((section(".data")));
 extern u8 D_8013B562 __attribute__((section(".data")));
 extern u8 D_80120EA4[];
@@ -163,12 +162,13 @@ void func_80019D3C(s32 movieIndex);
 void func_8001A540(void);
 void startMovieCdRead(CdlLOC *location);
 void func_8002EE0C(void);
-void func_8001D044(void);
-void func_8001D42C(void);
+void finishTaskTransitionAfterCountdown(void);
+void updateThreeFrameScreenBlend(void);
 void func_8001DB7C(void);
 void finishTaskTransitionAfterCountdown(void);
-void func_8001CF18(u8 loadResources);
-void func_8001CD64(void);
+void resetStateAndBeginResourceLoadTransition(u8 loadResources);
+void initializeRaceRestartTask(void);
+void func_8001BD50(void);
 void updateThreeFrameScreenBlend(void);
 void uploadTimArchive(TimArchive *archive, s16 *position);
 void *memcpy(void *destination, const void *source, unsigned int size);
@@ -494,7 +494,7 @@ s32 getNearestCameraManhattanDistance(s32 x, s32 y, s32 z) {
     dz = z - cameras[0].z;
     if (dz < 0) dz = -dz;
     distance = (dx + dy + dz) >> 8;
-    if (D_8013AFCD == 2) {
+    if (gameOptionPlayerModeAbsolute == 2) {
         dx = x - cameras[1].x;
         if (dx < 0) dx = -dx;
         dy = y - cameras[1].y;
@@ -582,8 +582,8 @@ void selectMemoryCardLoadFile(u8 slot, void *destination) {
     case 1:
     case 2:
     case 3:
-        gMemoryCardFileNames[slot][18] = (D_8013AFCE / 10) | 0x30;
-        gMemoryCardFileNames[slot][19] = (D_8013AFCE % 10) | 0x30;
+        gMemoryCardFileNames[slot][18] = (selectedCourseIndexAbsolute / 10) | 0x30;
+        gMemoryCardFileNames[slot][19] = (selectedCourseIndexAbsolute % 10) | 0x30;
         break;
     case 4:
         gMemoryCardFileNames[4][18] = (D_8013AF3A / 10) | 0x30;
@@ -920,7 +920,22 @@ void begin30TickTransitionOnFlag10(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001CD64);
+void initializeRaceRestartTask(void) {
+    u16 i;
+    D_8013AF08[1] = 0;
+    D_8013AF08[0] = 0;
+    D_8013AFE4 = 1;
+    stopPlayerSound(0);
+    if (gameOptionPlayerModeGp == 2) {
+        stopPlayerSound(1);
+    }
+    for (i = 0; i < activeRacePlayerCountGp; i++) {
+        D_80120E90[i].unk024 = 1;
+    }
+    initializeActiveRacePlayers();
+    func_80040A60();
+    setCurrentTaskCallback(func_8001BD50);
+}
 
 void advanceTaskWhenFlagAFE4Bit8Set(void) {
     if (D_8013AFE4 & 0x100) {
@@ -952,7 +967,7 @@ void resetStateAndBeginResourceLoadTransition(u8 requestLoad) {
     GameTask *savedTask;
     resetPendingCdRequests();
     D_8013AFD6 = 0;
-    D_8013B20C = 0;
+    D_8013B20C[0] = 0;
     resetPaletteRecords();
     func_800149E0();
     savedTask = D_8013AE88;
@@ -989,7 +1004,7 @@ void finishTaskTransitionAfterCountdown(void) {
         resetPaletteRecords();
         func_800149E0();
         if (D_8013AE88->data1A == 3) {
-            func_8001CF18(0);
+            resetStateAndBeginResourceLoadTransition(0);
         } else {
             setCurrentTaskCallback(initializeGameOptionViewTask);
         }
@@ -1003,7 +1018,7 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001D100);
 void updateThreeFrameScreenBlend(void) {
     if (--D_8013AE88->data18 == 0) {
         if (D_8013B1AB) {
-            setCurrentTaskCallback(func_8001CD64);
+            setCurrentTaskCallback(initializeRaceRestartTask);
         } else {
             setCurrentTaskCallback(initializeGameOptionViewTask);
         }

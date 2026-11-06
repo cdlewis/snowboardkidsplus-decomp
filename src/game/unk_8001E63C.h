@@ -38,5 +38,4 @@ void func_80027014(void);
 void updateCurrentPlayerAndRequestState30(void);
 
 void func_800271D0(void);
-void func_80025508(void);
 void updateCurrentPlayerVerticalMotionUntilLanding(void);

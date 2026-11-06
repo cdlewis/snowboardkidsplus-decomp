@@ -144,6 +144,8 @@ extern RacePlayer D_80120E90[];
 /* Shared result state; task code accesses the first word. */
 extern s32 D_80130BF0[];
 extern s8 D_8013AFD2 __attribute__((section(".data")));
+/* GP-relative alias of D_8013AFD2. */
+extern s8 activeRacePlayerCountGp;
 extern s16 D_8013B0E4;
 extern u16 D_8013B0E6;
 extern s32 D_8013B0E8;
@@ -205,7 +207,6 @@ void initializeActiveRacePlayers(void);
 
 void assignTwoPlayerResultSlots(s16 result);
 
-s16 func_8002A5A0(s32 magnitude, s32 target);
 
 void updateActivePlayerRegionCollisions(void);
 

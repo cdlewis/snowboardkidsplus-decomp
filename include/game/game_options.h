@@ -21,6 +21,8 @@ extern u8 D_8013AFCD __attribute__((section(".data")));
 extern u8 D_8013AFE0 __attribute__((section(".data")));
 extern u8 D_8013AFE2 __attribute__((section(".data")));
 #endif
+/* GP-relative alias of D_8013AFCD used by race restart task code. */
+extern u8 gameOptionPlayerModeGp;
 extern u8 D_8013B108;
 extern u8 D_8013B109;
 extern u8 D_8013B10A;
@@ -41,3 +43,5 @@ s32 getUnlockNotificationFlag(s16 index);
 void setUnlockNotificationFlag(s16 index);
 s32 hasUnlockNotificationFlag(s16 index);
 void startUnlockNotification(s16 index);
+
+extern u8 gameOptionPlayerModeAbsolute __attribute__((section(".data")));

@@ -2,6 +2,7 @@
 #include "main_tail_sound_slots.h"
 #include "game/controller.h"
 #include "game/global_flags.h"
+#define SELECTED_RECORDS_ABSOLUTE_ADDRESSING
 #include "game/selected_records.h"
 #include "game/cd_queue.h"
 #include "game/game_options.h"

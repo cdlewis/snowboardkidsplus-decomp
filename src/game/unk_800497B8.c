@@ -374,7 +374,6 @@ typedef struct TimedSpriteSequenceResource {
     u8 pad0C[0xF4];
 } TimedSpriteSequenceResource;
 
-extern GouraudTrianglePrimitive *D_8013B680;
 extern SVECTOR *D_8013B688;
 extern SVECTOR *D_8013AF90 __attribute__((section(".data")));
 extern MATRIX D_8012A6B0, D_8012A6D0;
@@ -548,7 +547,7 @@ void func_8006FE68(s16 x, s16 y, s16 w, s16 h, s16 borderW, s16 borderH,
 void updateValueInterpolationTask(void);
 void func_80064754(s32 playerIndex);
 s32 func_80065464(s32 playerIndex);
-void func_80066C3C(s32 playerIndex);
+void createPlayerTrailTask(s32 playerIndex);
 void func_80067D88(s32 playerIndex);
 void func_800688C0(s32 playerIndex);
 void func_8006FE68(s16 x, s16 y, s16 w, s16 h, s16 borderW, s16 borderH,
@@ -695,7 +694,7 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8004F46C);
 
 void createMovingLineTask(s32 index) {
     MovingLineResource *resource;
-    func_80014930(&D_800D7C84, func_8004F46C);
+    func_80014930(&gGameTasks[4], func_8004F46C);
     D_8013AE8C->resource14 = allocateTaskResource();
     D_8013AE8C->data18 = index;
     resource = (MovingLineResource *)&D_800D9504[D_8013AE8C->resource14];
@@ -829,7 +828,7 @@ void drawIndexedFlatTriangle(void) {
 }
 
 void processGouraudTrianglePrimitive(void) {
-    GouraudTrianglePrimitive *primitive = D_8013B680;
+    GouraudTrianglePrimitive *primitive = (GouraudTrianglePrimitive *)D_8013B680;
     *(void (**)(TriangleScratchVertex *))0x1F800004 = func_80052680;
     ((TriangleScratchVertex *)0x1F800070)->position = D_8013B688[primitive->vertexIndices[0]];
     ((TriangleScratchVertex *)0x1F800080)->position = D_8013B688[primitive->vertexIndices[1]];
@@ -1521,7 +1520,7 @@ void startRacePlayerTasks(void) {
     for (playerIndex = 0; playerIndex < D_8013AFD2; playerIndex++) {
         func_80064754(playerIndex);
         func_80065464(playerIndex);
-        func_80066C3C(playerIndex);
+        createPlayerTrailTask(playerIndex);
         func_80067D88(playerIndex);
         func_800688C0(playerIndex);
     }
@@ -1573,7 +1572,7 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80062B24);
 void createFallingParticleTask(void) {
     FallingParticleResource *resource;
     s32 i;
-    func_80014930(&D_800D7C84, func_80062B24);
+    func_80014930(&gGameTasks[4], func_80062B24);
     D_8013AE8C->resource14 = allocateTaskResource();
     resource = (FallingParticleResource *)&D_800D9504[D_8013AE8C->resource14];
     for (i = 0; i < 40; i++) {
@@ -1919,7 +1918,7 @@ void createFullScreenSpriteTask(s32 duration, s32 tpage, u16 clut, u16 u, u16 v,
     ScreenSpriteResource *resource;
     s32 i;
 
-    func_80014930(&D_800D7C84, func_8006A194);
+    func_80014930(&gGameTasks[4], func_8006A194);
     D_8013AE8C->resource14 = allocateTaskResource();
     resource = (ScreenSpriteResource *)&D_800D9504[D_8013AE8C->resource14];
     for (i = 0; i < 2; i++) {

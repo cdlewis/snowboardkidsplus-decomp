@@ -2402,7 +2402,7 @@ initializeUnlockMenuResourceTask = 0x800A3C3C; // type:func
 
 updateOneShotTaskVisual = 0x80044990; // type:func
 
-initializeModeDependentDualResourceTask = 0x8009F900; // type:func
+initializeModeDependentTailResourcePairTask = 0x8009F900; // type:func
 
 calculateRaceTimeDifference = 0x80043ACC; // type:func
 
@@ -2469,3 +2469,16 @@ setSecondaryDisplayTaskMode = 0x800719A8; // type:func
 gSecondaryTaskSequenceEntries = 0x8012F10C; // size:0x30
 
 advanceTextLine = 0x800A60FC; // type:func
+
+// GP-relative aliases used by the race restart task.
+gameOptionPlayerModeGp = 0x8013AFCD; // size:0x1 allow_duplicated:true
+activeRacePlayerCountGp = 0x8013AFD2; // size:0x1 allow_duplicated:true
+D_8013AFCD = 0x8013AFCD; // size:0x1 allow_duplicated:true
+D_8013AFD2 = 0x8013AFD2; // size:0x1 allow_duplicated:true
+initializeRaceRestartTask = 0x8001CD64; // type:func
+
+gameOptionPlayerModeAbsolute = 0x8013AFCD; // allow_duplicated:true
+selectedCourseIndexAbsolute = 0x8013AFCE; // allow_duplicated:true
+selectedFinishLapCountAbsolute = 0x8013AFD0; // allow_duplicated:true
+D_8013AFCE = 0x8013AFCE; // size:0x2 allow_duplicated:true
+D_8013AFD0 = 0x8013AFD0; // size:0x2 allow_duplicated:true

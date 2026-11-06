@@ -257,7 +257,7 @@ void setSecondaryDisplayTaskMode(s16 mode) {
         if (D_8013B37C != NULL) {
             D_8013B37C->data18 = 0;
         }
-        func_80014930(&D_800D7C64, func_80071A80);
+        func_80014930(&gGameTasks[3], func_80071A80);
         D_8013B37C = D_8013AE8C;
         D_8013AE8C->data18 = mode;
         D_8013AE8C->data1C = 0;

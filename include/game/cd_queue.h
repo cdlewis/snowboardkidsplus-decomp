@@ -17,7 +17,6 @@ void queueGridResourceSectorReads(s16 slot, s16 row, s16 column);
 void queueStartupSectorReads(void);
 void queueCdCommand(s16 command, s16 value);
 void queueBackgroundTextureSectorCommands(void);
-void func_80013DD0(s16 command, s16 value);
 void resetPendingCdRequests(void);
 void resetCdCommandState(void);
 

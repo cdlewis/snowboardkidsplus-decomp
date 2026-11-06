@@ -104,7 +104,7 @@ typedef struct TextResourceState {
     s16 unk18[5];
 } TextResourceState;
 extern s16 D_8013B10C __attribute__((section(".data")));
-extern u8 D_8013B55E __attribute__((section(".data")));
+extern u8 D_8013B55E;
 
 typedef struct MusicOwnerState {
     u8 unk00[0x24];
@@ -221,6 +221,9 @@ void func_8009D354(void);
 void func_800A05C0(void);
 void startUnlockResourceLoad(void);
 void prepareUnlockSelectionResume(void);
+void func_8003D940(void);
+void func_8003EE70(void);
+void func_8003E050(u16 index);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_8008C708);
 
@@ -613,7 +616,7 @@ void initializeFlagSelectedDualResourceTask(void) {
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009F224);
 
-void initializeModeDependentDualResourceTask(void) {
+void initializeModeDependentTailResourcePairTask(void) {
     GameTask *task = D_8013AE88;
     task->data18 = 0;
     if (D_8013AFCD == 1) {
@@ -729,7 +732,7 @@ void initializeTextSequenceTask(void) {
     setSecondaryDisplayTaskMode(0);
     func_80070274(1, 0, 30);
     if (resource->mode != 1 || resource->unk0A != 9) {
-        func_80013DD0(3, 0);
+        queueCdCommand(3, 0);
     }
     setCurrentTaskCallback(func_800A0FDC);
 }
