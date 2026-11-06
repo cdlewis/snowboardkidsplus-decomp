@@ -114,7 +114,7 @@ void func_80077770(void);
 void GsSortBg(GameBackground *background, GsOT *ot, u16 depth);
 void func_8007BE9C(void);
 void func_8007B10C(void);
-void func_8007747C(void);
+void updateAnimatedSpriteTask(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80070274);
 
@@ -501,7 +501,7 @@ void updateTimedSpriteB5Task(void) {
 GameTask *createAnimatedSpriteTask(s16 x, s16 y, s16 unk02, s16 repeats, u16 depth) {
     GameTask *task;
     AnimatedSpriteResource *resource;
-    func_80014874(func_8007747C);
+    func_80014874(updateAnimatedSpriteTask);
     D_8013AE8C->data18 = 0;
     D_8013AE8C->data1A = 0;
     D_8013AE8C->resource14 = allocateTaskResource();
@@ -516,7 +516,32 @@ GameTask *createAnimatedSpriteTask(s16 x, s16 y, s16 unk02, s16 repeats, u16 dep
     return task;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_8007747C);
+void updateAnimatedSpriteTask(void) {
+    Movement2D *movement;
+    AnimatedSpriteResource *sprite;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    movement = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) {
+        while (1) {}
+    }
+    sprite = (AnimatedSpriteResource *)&D_800D9504[D_8013AE88->resource16];
+    if (sprite->repeats == 0) {
+        func_800149A8();
+    } else {
+        drawAnimatedSprite16(sprite->frame, movement->x / 4096, movement->y / 4096,
+                             sprite->unk02, &D_800EBFF0[D_8013AF78], sprite->depth);
+        if (sprite->frame < 4) {
+            sprite->frame++;
+        } else {
+            sprite->frame = 0;
+            if (sprite->repeats > 0) {
+                sprite->repeats--;
+            }
+        }
+    }
+}
 
 void drawAnimatedSprite16(s16 frame, s16 x, s16 y, s16 unused, GsOT *ot, u16 depth) {
     SPRT_16 *packet = (SPRT_16 *)GsGetWorkBase();

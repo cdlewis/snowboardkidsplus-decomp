@@ -2612,3 +2612,5 @@ isPositionInCameraRange = 0x800512E8; // type:func
 processTexturedGouraudQuadPrimitive = 0x800557F8; // type:func
 
 drawRaceTime = 0x80037850; // type:func
+
+updateAnimatedSpriteTask = 0x8007747C; // type:func
