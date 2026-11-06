@@ -2245,3 +2245,5 @@ waitUnlockNotification0TransitionTask = 0x80032E94; // type:func
 
 initializePlayerDualResourceEffectTask = 0x80046BEC; // type:func
 initializeDualResource4C80EffectTask = 0x80047538; // type:func
+
+resetTaskStatsCountdown = 0x8003BB64; // type:func
