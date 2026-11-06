@@ -131,6 +131,7 @@ s16 func_80070794(s32 id);
 void addTilePacket(s32 x, s32 y, s32 width, s32 height, s32 r, s32 g, s32 b,
                    GsOT *ot, u16 depth);
 void func_80071490(s32 mode, s32 value1, s32 value2);
+void func_80070F10(Movement2D *movement, s32 x, s32 y, s32 stepX, s32 stepY, s32 delay);
 void func_8007197C(void);
 void func_80071A80(void);
 void initTimedSequence(TimedSequence *sequence, const TimedSequenceEntry *entries, s16 index, s16 count);
@@ -379,7 +380,24 @@ s16 findByteIndexOrZero(const u8 *data, s16 value, s16 count) {
     return result;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80073810);
+void configureTaskGridMovement(s32 mode, GameTask *task, s32 x, s32 y, s32 stepX, s32 stepY, s32 delay) {
+    TaskGridState *state;
+    TaskGridEntry *entries;
+    s16 i, end;
+    state = (TaskGridState *)&D_800D9504[task->resource14];
+    entries = (TaskGridEntry *)&D_800D9504[task->resource16];
+    if (mode == 1) {
+        i = state->selectedIndex;
+        end = i + 1;
+    } else {
+        i = 0;
+        end = state->count;
+    }
+    for (; i < end; i++) {
+        if (mode == 2 && i == state->selectedIndex) continue;
+        func_80070F10((Movement2D *)&D_800D9504[entries[i].task->resource14], x, y, stepX, stepY, delay);
+    }
+}
 
 void moveTaskChildrenWithSpacing(s32 mode, GameTask *task, s32 x, s32 y, s32 speedX, s32 speedY, s32 delay) {
     ChildMovementGroup *state;

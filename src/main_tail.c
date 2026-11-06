@@ -36,16 +36,6 @@ typedef struct ByteMappingDescriptor {
     u8 unk07[13];
 } ByteMappingDescriptor;
 
-typedef struct TaskGridState {
-    u8 unk00[0x5A];
-    s16 count;
-} TaskGridState;
-
-typedef struct TaskGridEntry {
-    GameTask *task;
-    u32 unk04;
-} TaskGridEntry;
-
 typedef struct ModeSectorReadState {
     u8 unk00[0xA];
     s16 sectorIndex;

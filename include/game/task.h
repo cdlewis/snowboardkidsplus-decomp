@@ -21,6 +21,19 @@ typedef struct GameTask {
     u16 data1E;
 } GameTask;
 
+/* Grid selection state in resource14; resource16 holds 8-byte entries. */
+typedef struct TaskGridState {
+    u8 unk00[0x32];
+    s16 selectedIndex;
+    u8 unk34[0x26];
+    s16 count;
+} TaskGridState;
+
+typedef struct TaskGridEntry {
+    GameTask *task;
+    u32 unk04;
+} TaskGridEntry;
+
 /* One set bit for each available task resource. */
 extern u16 gTaskResourceFreeBits[16];
 
@@ -182,3 +195,6 @@ void createPlayerPairedQuadEffectTask(s32 playerIndex, s32 variant);
 
 void createPaletteRotationTask(s32 x, s32 y, s32 first, s32 last, s32 steps, s32 interval, s32 index);
 void initializePlayerModeSelectionTask(void);
+
+void configureTaskGridMovement(s32 mode, GameTask *task, s32 x, s32 y,
+                               s32 stepX, s32 stepY, s32 delay);
