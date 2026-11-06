@@ -2140,3 +2140,5 @@ slideInSlidingDisplayTask = 0x800342FC; // type:func
 drawCurrentTaskPlayerResults = 0x800375B0; // type:func
 
 drawCurrentTaskTimeRecordDetails = 0x8003A008; // type:func
+
+drawTexturedQuadList = 0x8006C34C; // type:func

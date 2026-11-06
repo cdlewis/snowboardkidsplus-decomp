@@ -32,6 +32,14 @@ typedef struct TexturedQuadFrame {
     s16 frameIndex;
 } TexturedQuadFrame;
 
+/* Entries end when palette is at least 255. */
+typedef struct TexturedQuadListEntry {
+    s16 quadIndex;
+    s16 palette;
+    s16 x, y;
+    s16 width, height;
+} TexturedQuadListEntry;
+
 extern TexturedQuadFrame D_8012DFF4[];
 
 typedef struct Position3D {
@@ -208,3 +216,6 @@ void drawPaletteMappedIcon(s16 x, s16 y, s16 index, struct GsOT *ot, u16 depth);
 
 extern u32 gSynchronizedFrameCount;
 void waitForFrameHcount(u32 minimumHcount);
+
+void func_8006C240(s16 x, s16 y, s16 width, s16 height, s16 index, s16 palette, s16 blend, GsOT *ot, u16 depth);
+void drawTexturedQuadList(s16 x, s16 y, TexturedQuadListEntry *entry, s16 blend, GsOT *ot, u16 depth);

@@ -1513,7 +1513,13 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006C190);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006C240);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006C34C);
+void drawTexturedQuadList(s16 x, s16 y, TexturedQuadListEntry *entry, s16 blend, GsOT *ot, u16 depth) {
+    while (entry->palette < 255) {
+        func_8006C240(x + entry->x, y + entry->y, entry->width, entry->height,
+                     entry->quadIndex, entry->palette, blend, ot, depth);
+        entry++;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006C428);
 
