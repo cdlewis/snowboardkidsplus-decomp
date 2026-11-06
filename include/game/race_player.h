@@ -24,7 +24,8 @@ struct RacePlayer {
     s32 unk08C;
     s32 unk090;
     s16 unk094;
-    u8 unk096[0x26];
+    s16 unk096;
+    u8 unk098[0x24];
     s16 unk0BC;
     u16 unk0BE;
     u8 unk0C0[2];
@@ -54,7 +55,9 @@ struct RacePlayer {
     s32 unk94C;
     u8 unk950[4];
     u8 unk954;
-    u8 unk955[0x87];
+    u8 unk955[0x10];
+    s8 unk965;
+    u8 unk966[0x76];
 };
 
 extern RacePlayer D_80120E90[];
@@ -84,5 +87,8 @@ void addPlayerCappedCounters(u16 playerIndex, s32 amount);
 
 void resetCurrentPlayerForCallback240D0(void);
 void resetCurrentPlayerForCallback26DAC(void);
+void resetCurrentPlayerForCallback205B8(void);
+
+void func_8002E44C(s16 index);
 
 void func_80016E80(u8 index, u8 flags);
