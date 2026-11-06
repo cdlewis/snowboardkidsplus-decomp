@@ -302,6 +302,8 @@ extern u16 D_8013AFAA __attribute__((section(".data")));
 extern s32 D_8013AF84 __attribute__((section(".data")));
 extern u8 D_8013AFCD __attribute__((section(".data")));
 
+u16 func_8002C8BC(Position3D *position, s32 radius, s16 flags, u16 playerIndex);
+
 void func_80046404(TaskVisualResource *resource, VECTOR *vectors, s32 value, s32 scale);
 void func_80046EF8(void);
 void func_8004713C(void);
@@ -2647,7 +2649,22 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80046708);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80046894);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80046AEC);
+void checkTaskVisualOtherPlayerCollision(TaskVisualResource *resource, s16 flags) {
+    u16 i;
+    RacePlayer *player;
+    for (i = 0; i < D_8013AFD2; i++) {
+        if (i != D_8013AE88->data18) {
+            player = &D_80120E90[i];
+            if (player->unk946 != 0) {
+                if (func_8002C8BC(&resource->position, 0xF00, flags, i) != 0) {
+                    player->unk0F4 = D_8013AE88->data18;
+                    resource->unkDC = 0;
+                    break;
+                }
+            }
+        }
+    }
+}
 
 void initializePlayerDualResourceEffectTask(void) {
     TaskResourceRecord *resource;
