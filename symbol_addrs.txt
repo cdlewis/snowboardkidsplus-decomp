@@ -2273,3 +2273,4 @@ initializeTaskGridPositions = 0x8009ADAC; // type:func
 copyPlayerPaletteRowWithTransition = 0x8009B5A0; // type:func
 gPlayerPaletteTransitionPixels = 0x80131EE8; // size:0x20 defined:true
 D_801204D4 = 0x801204D4; // size:0x10
+initializeScaledTaskCoordinateResource = 0x80045868; // type:func

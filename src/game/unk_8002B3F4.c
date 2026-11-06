@@ -38,6 +38,12 @@ typedef struct PlayerEffectResource {
     SVECTOR rotation;
     u8 unkC8[0x38];
 } PlayerEffectResource;
+typedef struct ScaledCoordinateResource {
+    GsCOORDINATE2 coordinate;
+    u8 unk50[0x60];
+    VECTOR scale;
+    u8 unkC0[0x40];
+} ScaledCoordinateResource;
 
 typedef struct FallingSpriteEffect {
     s16 active;
@@ -303,6 +309,7 @@ void slideRaceTimeDisplayOut(void);
 void func_80033100(void);
 void func_80048714(void);
 void func_80049240(void);
+void func_800458F8(void);
 void func_8004531C(void);
 void func_80044524(void);
 void func_80046044(void);
@@ -2145,7 +2152,17 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8004531C);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800456DC);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80045868);
+void initializeScaledTaskCoordinateResource(void) {
+    ScaledCoordinateResource *resource;
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    resource = (ScaledCoordinateResource *)&D_800D9504[D_8013AE88->resource14];
+    GsInitCoordinate2(0, &resource->coordinate);
+    resource->scale.vx = resource->scale.vy = resource->scale.vz = 0xC00;
+    setCurrentTaskCallback(func_800458F8);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800458F8);
 
