@@ -120,6 +120,8 @@ extern u8 D_800EB09C[10][40];
 extern RacePlayer D_80120E90[];
 extern s8 D_8013AFD2 __attribute__((section(".data")));
 extern s16 D_8013B0E4;
+extern u16 D_8013B0E6;
+extern s32 D_8013B0E8;
 /* Two declarations preserve the original GP-relative and absolute accesses
  * to this shared pointer. The absolute alias is resolved by the symbol map. */
 extern RacePlayer *D_8013B0D8;
@@ -141,6 +143,7 @@ void clearCurrentPlayerTaskState(void);
 void startPlayerTimerTask(RacePlayer *player);
 void initPlayerTimerTask(void);
 void stopPlayerSound(u16 playerIndex);
+s32 requestCurrentPlayerAction6(void);
 s32 requestCurrentPlayerAction17(void);
 s16 countCurrentPlayerInputGroups(void);
 

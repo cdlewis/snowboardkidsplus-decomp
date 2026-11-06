@@ -223,7 +223,30 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002CA48);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002CB8C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002CC78);
+s32 requestCurrentPlayerAction6(void) {
+    RacePlayer *player = D_8013B0D8;
+    s16 angle;
+    s32 difference;
+
+    if (player->unk128 & 0x379000) {
+        return 1;
+    }
+    if (!(player->unk128 & 0x400000)) {
+        difference = D_8013B0E6 - player->unk110;
+        angle = difference;
+        if (!(player->unk128 & 0x400)) {
+            angle += 0x800;
+        }
+        angle = (angle + 0x200) & 0xFFF;
+        if (D_8013B0E8 < 0xC00 || angle > 0x400) {
+            return 1;
+        }
+    }
+    if (D_8013B0E4 < 6) {
+        D_8013B0E4 = 6;
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002CD18);
 
