@@ -192,6 +192,14 @@ typedef struct RaceResultsFadeResource {
     u8 unk0C[0xF4];
 } RaceResultsFadeResource;
 
+typedef struct MenuSoundDelayResource {
+    s16 unk00;
+    s16 brightness;
+    s16 timer;
+    s16 unk06;
+    u8 unk08[0xF8];
+} MenuSoundDelayResource;
+
 typedef struct TaskMenuFadeResource {
     s16 unk00;
     s16 brightness;
@@ -392,6 +400,9 @@ void func_80038574(TaskResourceRecord *resource);
 void func_8003881C(TaskResourceRecord *resource);
 void func_80039144(void);
 void waitTaskMenuCountdownAndPlaySound(void);
+void func_80038270(TaskResourceRecord *resource);
+void func_8003881C(TaskResourceRecord *resource);
+void func_80038FD4(void);
 void func_8003BE58(TaskResourceRecord *resource);
 void func_8003C5D8(void);
 void advanceCurrentTaskPanelTimer(void);
@@ -1746,7 +1757,22 @@ void startTaskMenuCountdownAndPlaySound(void) {
     func_8003881C((TaskResourceRecord *)resource);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003908C);
+void tickMenuSoundDelayStage1Task(void) {
+    MenuSoundDelayResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (MenuSoundDelayResource *)&D_800D9504[D_8013AE88->resource14];
+    resource->unk06 = 1;
+    if (--resource->timer == 0) {
+        playSoundEffect(0, 0x700, 0x20);
+        resource->timer = 20;
+        setCurrentTaskCallback(func_80038FD4);
+    }
+    func_80038090((TaskResourceRecord *)resource);
+    func_80038270((TaskResourceRecord *)resource);
+    func_8003881C((TaskResourceRecord *)resource);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80039144);
 
