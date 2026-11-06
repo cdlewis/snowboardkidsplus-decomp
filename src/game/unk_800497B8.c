@@ -166,6 +166,14 @@ typedef struct QuadTransitionResource {
     u8 pad[0xF4];
 } QuadTransitionResource;
 
+/* A coordinate and emission countdown in one 256-byte task resource. */
+typedef struct ProximityEmitterResource {
+    GsCOORDINATE2 coordinate;
+    u8 unk50[0x88];
+    s32 countdown;
+    u8 unkDC[0x24];
+} ProximityEmitterResource;
+
 /* One 256-byte task resource; the remaining fields belong to the effect callbacks. */
 typedef struct PositionedEffectResource {
     s32 unk00;
@@ -392,6 +400,8 @@ void func_8006FE68(s16 x, s16 y, s16 w, s16 h, s16 borderW, s16 borderH,
                    s16 style, s16 palette, s16 blend, GsOT *ot, u16 depth);
 
 u16 func_80059254(void);
+s32 func_8005143C(s32 x, s32 z, s16 player);
+void func_8005CCEC(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800497B8);
 
@@ -794,7 +804,21 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005C8BC);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005CB08);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005CC38);
+void updateProximityEmitterTask(void) {
+    ProximityEmitterResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (ProximityEmitterResource *)&D_800D9504[D_8013AE88->resource14];
+    if (!D_8013AFD3) {
+        if (func_8005143C(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
+            if (--resource->countdown == 0) {
+                resource->countdown = 0x20;
+                func_800148B4(func_8005CCEC);
+            }
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005CCEC);
 
