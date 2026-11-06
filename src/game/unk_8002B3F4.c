@@ -290,6 +290,7 @@ extern u8 D_8013B11A;
 extern u8 gMappedIconPalettes[9];
 
 extern s16 D_8013B10C;
+extern u8 D_80123640[];
 
 extern s16 D_8013B0E4;
 extern u16 D_8013B0E6;
@@ -703,7 +704,38 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002E644);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002EA0C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002ED00);
+void loadCurrentPlayerModelBlock(void) {
+    u32 *offsets = (u32 *)0x8017D004;
+    u8 *archive = (u8 *)0x8017D000;
+    u32 (*buffers)[512] = (u32 (*)[512])0x8017B000;
+    u32 i = 0;
+    u16 player = D_8013AE88->data18;
+    u32 *dest;
+    u32 offset;
+    u32 *source;
+    u32 *model;
+    offset = offsets[D_80123640[D_80120E90[player].unk015[1]]];
+    model = buffers[player];
+    source = (u32 *)(offset + archive);
+    dest = model;
+    for (; i < 512; i++) {
+        *dest++ = *source++;
+    }
+    GsMapModelingData((u32 *)((u32)model | 4));
+    {
+        u32 (*largeBuffers)[4096] = (u32 (*)[4096])0x8016B000;
+        i = 3;
+        dest = model;
+        model = largeBuffers[D_8013AE88->data18];
+        {
+            u32 *secondSource = dest + 3;
+            dest = model + 3;
+            for (; i < 10; i++) {
+                *dest++ = *secondSource++;
+            }
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002EE0C);
 

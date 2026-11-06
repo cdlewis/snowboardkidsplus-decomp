@@ -24,6 +24,7 @@ void GsGetLw(GsCOORDINATE2 *coordinate, MATRIX *out);
 void GsGetLs(GsCOORDINATE2 *coordinate, MATRIX *out);
 void GsSetLightMatrix(MATRIX *matrix);
 void GsSetLsMatrix(MATRIX *matrix);
+void GsMapModelingData(u32 *data);
 
 void GsInitCoordinate2(GsCOORDINATE2 *super, GsCOORDINATE2 *coord);
 

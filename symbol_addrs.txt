@@ -2365,3 +2365,5 @@ tickRaceResultsDelayTask = 0x8003A3D8; // type:func
 waitForStatsScoreCountTask = 0x8003B8AC; // type:func
 
 drawTaskOffsetSpriteB8 = 0x80084254; // type:func
+
+loadCurrentPlayerModelBlock = 0x8002ED00; // type:func
