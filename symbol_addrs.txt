@@ -2373,3 +2373,5 @@ loadCurrentPlayerModelBlock = 0x8002ED00; // type:func
 initializeDualResourceTaskAndNotifyParent = 0x8007BDE0; // type:func
 
 initializeMainTailDualResourceTask = 0x8009BCFC; // type:func
+
+waitForStatsScoreCountStartTask = 0x8003B94C; // type:func

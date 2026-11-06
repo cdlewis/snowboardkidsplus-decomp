@@ -1993,7 +1993,22 @@ void waitForStatsScoreCountTask(void) {
     func_8003B2BC((TaskResourceRecord *)resource);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003B94C);
+void waitForStatsScoreCountStartTask(void) {
+    StatsMenuFadeResource *resource;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (StatsMenuFadeResource *)&D_800D9504[D_8013AE88->resource14];
+    resource->unk06 = 3;
+    if (--resource->timer == 0) {
+        resource->timer = 10;
+        setCurrentTaskCallback(waitForStatsScoreCountTask);
+    }
+    func_8003AAE0((TaskResourceRecord *)resource);
+    func_8003AD48((TaskResourceRecord *)resource);
+    func_8003B2BC((TaskResourceRecord *)resource);
+}
 
 void startTaskStatsCountdownAndPlaySound(void) {
     MenuCountdownResource *resource;
