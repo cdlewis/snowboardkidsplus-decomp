@@ -431,6 +431,8 @@ void func_80068D1C(void);
 void func_800692E8(void);
 void func_8006999C(void);
 void func_800618A0(void);
+void func_80061E48(void);
+void func_80062354(void);
 void func_8006624C(void);
 void func_800659F0(void);
 extern SVECTOR D_8012A5C0[];
@@ -1351,7 +1353,20 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80061E48);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80062354);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80062A70);
+void startIndexedRenderTaskPair(s32 index) {
+    TaskResourceRecord *resource;
+    func_80014930(D_8013B304, func_80061E48);
+    D_8013AE8C->resource14 = allocateTaskResource();
+    D_8013AE8C->data18 = index;
+    resource = &D_800D9504[D_8013AE8C->resource14];
+    resource->unk00 = 0;
+    resource->unk04 = 0;
+    func_80014930(D_8013B304, func_80062354);
+    D_8013AE8C->resource14 = allocateTaskResource();
+    D_8013AE8C->data18 = index;
+    resource = &D_800D9504[D_8013AE8C->resource14];
+    resource->unk00 = 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80062B24);
 

@@ -2334,3 +2334,5 @@ loadSoundBank = 0x80017D20; // type:func
 gSoundBankLoaded = 0x800EB2AC; // size:0xC defined:true
 
 fadeOutPlayerTimerTask = 0x800488B8; // type:func
+
+startIndexedRenderTaskPair = 0x80062A70; // type:func
