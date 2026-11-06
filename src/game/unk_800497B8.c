@@ -27,6 +27,11 @@ typedef struct GouraudTrianglePrimitive {
     TriangleColor colors[3];
     s16 vertexIndices[3];
 } GouraudTrianglePrimitive;
+typedef struct GouraudQuadPrimitive {
+    u32 command;
+    TriangleColor colors[4];
+    u16 vertexIndices[4];
+} GouraudQuadPrimitive;
 typedef struct TriangleScratchVertex {
     SVECTOR position;
     s32 unk08;
@@ -534,6 +539,7 @@ void updateProximityEmitterTask(void);
 
 void func_80052680(TriangleScratchVertex *);
 void func_80052840(TriangleScratchVertex *);
+void func_80052D84(TriangleScratchVertex *);
 void func_80053A34(TriangleScratchVertex *, s32);
 void func_80066474(void);
 void func_8005D828(RacePlayer *player, PlayerCollisionRegion *region);
@@ -939,7 +945,19 @@ void drawIndexedFlatQuad(void) {
     func_800542BC(QUAD_SCRATCHPAD->vertices, 0);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800554C4);
+void processGouraudQuadPrimitive(void) {
+    GouraudQuadPrimitive *primitive = (GouraudQuadPrimitive *)D_8013B680;
+    QUAD_SCRATCHPAD->emitQuad = func_80052D84;
+    ((TriangleScratchVertex *)0x1F800070)->position = D_8013B688[primitive->vertexIndices[0]];
+    ((TriangleScratchVertex *)0x1F800080)->position = D_8013B688[primitive->vertexIndices[1]];
+    ((TriangleScratchVertex *)0x1F800090)->position = D_8013B688[primitive->vertexIndices[2]];
+    ((TriangleScratchVertex *)0x1F8000A0)->position = D_8013B688[primitive->vertexIndices[3]];
+    ((TriangleScratchVertex *)0x1F800070)->color = primitive->colors[0];
+    ((TriangleScratchVertex *)0x1F800080)->color = primitive->colors[1];
+    ((TriangleScratchVertex *)0x1F800090)->color = primitive->colors[2];
+    ((TriangleScratchVertex *)0x1F8000A0)->color = primitive->colors[3];
+    func_800542BC((TriangleScratchVertex *)0x1F800070, 0);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80055650);
 
