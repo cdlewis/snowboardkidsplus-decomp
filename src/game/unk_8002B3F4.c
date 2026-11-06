@@ -535,7 +535,7 @@ void func_80046044(void);
 void func_80047600(void);
 void func_80047D94(void);
 void func_80046CB4(void);
-void func_80037424(TaskResourceRecord *resource);
+void updatePlayerResultOrder(TaskFadeResource *resource);
 void func_80036BA4(TaskResourceRecord *resource);
 void waitPlayerResultsInputTask(void);
 void func_80037074(s16 row, s16 x, s16 y, TaskFadeResource *resource);
@@ -2271,7 +2271,28 @@ void drawPlayerResultRows(TaskFadeResource *resource) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80037424);
+void updatePlayerResultOrder(TaskFadeResource *resource) {
+    s32 i, j;
+    s32 temp;
+    for (i = 0; i < D_8013AFD2; i++) {
+        resource->playerOrder[i] = i;
+    }
+    for (i = 0; i < D_8013AFD2 - 1; i++) {
+        for (j = i + 1; j < D_8013AFD2; j++) {
+            if (D_80120E90[resource->playerOrder[i]].unk935 >
+                D_80120E90[resource->playerOrder[j]].unk935) {
+                temp = resource->playerOrder[i];
+                resource->playerOrder[i] = resource->playerOrder[j];
+                resource->playerOrder[j] = temp;
+            }
+        }
+    }
+    for (i = 0; i < 4; i++) {
+        if (!(D_80120E90[resource->playerOrder[i]].unk128 & 0x40)) {
+            resource->playerOrder[i] = -1;
+        }
+    }
+}
 
 void drawCurrentTaskPlayerResults(void) {
     TaskResourceRecord *resource;
@@ -2283,7 +2304,7 @@ void drawCurrentTaskPlayerResults(void) {
     if (!(D_8013AFE4 & 0x10)) {
         func_800149A8();
     }
-    func_80037424(resource);
+    updatePlayerResultOrder((TaskFadeResource *)resource);
     func_80036BA4(resource);
     drawPlayerResultRows((TaskFadeResource *)resource);
 }
@@ -2318,7 +2339,7 @@ void fadeInPlayerResultsTask(void) {
         resource->brightness = 128;
         setCurrentTaskCallback(waitPlayerResultsInputTask);
     }
-    func_80037424((TaskResourceRecord *)resource);
+    updatePlayerResultOrder(resource);
     func_80036BA4((TaskResourceRecord *)resource);
     drawPlayerResultRows(resource);
 }
