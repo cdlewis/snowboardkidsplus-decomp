@@ -104,6 +104,7 @@ void initPrimitiveTemplates(void);
 void initTexturedQuadTemplate(void);
 void setTexturedQuadColor(s32 r, s32 g, s32 b);
 void drawTexturedQuadByIndex(s16 x, s16 y, s32 index, GsOT *ot, u16 depth);
+void drawInclusiveTexturedQuadByIndex(s16 x, s16 y, s32 index, GsOT *ot, u16 depth);
 void setSpriteColor(s32 r, s32 g, s32 b);
 void func_800A7D8C(s16 x, s16 y, s16 width, s16 height, s16 tpage,
                    s16 clut, GsOT *ot, u16 depth);
