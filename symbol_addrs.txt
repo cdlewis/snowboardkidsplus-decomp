@@ -2678,3 +2678,5 @@ captureSelectedPlayerStates = 0x8005F730; // type:func
 drawSkewedTexturedQuadByIndexWithBlend = 0x8006C428; // type:func
 
 drawCurrentTaskFramedSprite20C = 0x80095F30; // type:func
+
+drawCurrentTaskFramedSprite20B = 0x80099010; // type:func
