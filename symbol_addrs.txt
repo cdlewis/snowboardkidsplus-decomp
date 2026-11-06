@@ -2853,3 +2853,5 @@ drawCurrentTaskTextPanel144x48 = 0x8009919C; // type:func
 gTaskPanel144x48Text = 0x80131DBC; // size:0x10
 
 drawTaskVisualPositionHistory = 0x80046708; // type:func
+
+isPointWithinCameraForwardRange = 0x8005143C; // type:func

@@ -842,6 +842,7 @@ void func_8006624C(void);
 void func_80066D18(void);
 void func_80067DD0(void);
 void func_800659F0(void);
+extern s32 D_8013B660;
 extern SVECTOR D_8012A5C0[];
 extern GsCOORDINATE2 D_80129C60[];
 
@@ -889,7 +890,7 @@ void func_8006FE68(s16 x, s16 y, s16 w, s16 h, s16 borderW, s16 borderH,
                    s16 style, s16 palette, s16 blend, GsOT *ot, u16 depth);
 
 u16 func_80059254(void);
-s32 func_8005143C(s32 x, s32 z, s16 player);
+s32 isPointWithinCameraForwardRange(s32 x, s32 z, s16 player);
 void func_8005CCEC(void);
 void func_8005DF98(void);
 void updateLandedTaskObject(void);
@@ -1106,7 +1107,15 @@ s32 isPositionInCameraRange(s32 x, s32 z, s16 playerIndex) {
         (centerZ - scaledZ) * (centerZ - scaledZ)) < D_8013B660;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005143C);
+s32 isPointWithinCameraForwardRange(s32 x, s32 z, s16 player) {
+    s32 cameraX, cameraZ;
+    s32 scaledX, scaledZ;
+    cameraX = gPlayerCameraViews[player].vpx / 256 + ((D_8013B660 / 2) * rsin(D_801241E8[player].yaw)) / 4096;
+    cameraZ = gPlayerCameraViews[player].vpz / 256 + ((D_8013B660 / 2) * rcos(D_801241E8[player].yaw)) / 4096;
+    scaledX = x / 256;
+    scaledZ = z / 256;
+    return SquareRoot0((cameraX - scaledX) * (cameraX - scaledX) + (cameraZ - scaledZ) * (cameraZ - scaledZ)) < (D_8013B660 * 3) / 4;
+}
 
 void readVramPixelColor(s32 x, s32 y, TextureColor *out) {
     u16 pixel;
@@ -1809,7 +1818,7 @@ void updateProximityEmitterTask(void) {
     }
     resource = (ProximityEmitterResource *)&D_800D9504[D_8013AE88->resource14];
     if (!D_8013AFD3) {
-        if (func_8005143C(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
+        if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
             if (--resource->countdown == 0) {
                 resource->countdown = 0x20;
                 func_800148B4(func_8005CCEC);
