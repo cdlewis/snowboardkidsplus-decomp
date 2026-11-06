@@ -1,6 +1,7 @@
 #include "common.h"
 #define TASK_TRANSITION_FLAGS_ABSOLUTE_ADDRESSING
 #define TASK_ABSOLUTE_ADDRESSING
+#define RACE_FINISH_ABSOLUTE_ADDRESSING
 #include "game/race_player.h"
 #include "game/race_camera.h"
 #include "game/selected_record.h"
@@ -662,7 +663,22 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80029DD0);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80029E6C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80029EE4);
+void assignCurrentPlayerFinishSlot(s32 value) {
+    RacePlayer *player = currentPlayerAbsolute;
+    u32 flags = player->unk128;
+    if (!(flags & 0x40) && player->unk934 >= D_8013AFD0 - 1 &&
+        player->unk92E == D_80123D80[D_8013AFCE].unk00 && !(flags & 0x1000)) {
+        player->unk128 = flags | 0x40;
+        if (!D_8013AFD6) {
+            if (!player->unk008) {
+                func_80014874(beginSound601TaskSequence);
+                D_8013AE8C->data18 = value;
+            }
+            currentPlayerAbsolute->unk100[0] = D_8013AFDB;
+            D_8013AFDB++;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80029FE4);
 

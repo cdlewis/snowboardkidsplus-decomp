@@ -141,7 +141,6 @@ extern struct DIRENTRY D_8013B700[2][15];
 extern char *D_8013AF40;
 extern s16 D_8013AF3E;
 extern u16 D_8013AFAA __attribute__((section(".data")));
-extern u8 D_8013AFD6;
 extern s32 D_8013B20C __attribute__((section(".data")));
 extern u8 D_8013B562 __attribute__((section(".data")));
 extern u8 D_80120EA4[];

@@ -139,3 +139,5 @@ void initializePlayerVisualPairTask5E80(void);
 void initializePlayerVisualPairTask6780(void);
 
 void initializeFlagSelectedDualResourceTask(void);
+
+void beginSound601TaskSequence(void);

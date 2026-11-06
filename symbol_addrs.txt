@@ -2433,3 +2433,5 @@ updateScrollingBackgroundTask = 0x80071700; // type:func
 createAnimatedSpriteTask = 0x80077390; // type:func
 
 initializeFlagSelectedDualResourceTask = 0x8009F158; // type:func
+
+assignCurrentPlayerFinishSlot = 0x80029EE4; // type:func

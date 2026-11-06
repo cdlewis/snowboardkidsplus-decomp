@@ -114,7 +114,8 @@ struct RacePlayer {
     u8 animationStep;
     u8 unk92C[2];
     s16 unk92E;
-    u8 unk930[5];
+    u8 unk930[4];
+    s8 unk934;
     s8 unk935;
     u8 unk936[0xE];
     u8 randomIndex;
@@ -212,3 +213,5 @@ u16 advanceCurrentPlayerInputSequence(u8 sequence[][2], s16 slot);
 void createPlayerPositionTrailTask(s32 playerIndex);
 
 void updatePlayerRenderSnapshots(void);
+
+void assignCurrentPlayerFinishSlot(s32 taskValue);
