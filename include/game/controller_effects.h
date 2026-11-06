@@ -2,6 +2,24 @@
 
 #include "decomp/types.h"
 
+typedef struct ControllerEffectStep {
+    u8 value;
+    s8 delta;
+    u8 pad[2];
+    s32 duration;
+} ControllerEffectStep;
+typedef struct ControllerEffectState {
+    u8 effect;
+    u8 priority;
+    u8 pad[2];
+    ControllerEffectStep *step;
+    s32 elapsed;
+    s32 stepEnd;
+    s32 effectEnd;
+} ControllerEffectState;
+
+extern ControllerEffectState gControllerEffectStates[2];
+
 typedef struct ControllerActuatorOutput {
     u8 control;
     u8 value;

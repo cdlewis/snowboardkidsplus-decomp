@@ -532,7 +532,7 @@ void slideOutSlidingDisplayTask(void);
 void drawSlidingDisplaySprite(SlidingDisplayResource *resource);
 void slideRaceTimeDisplayOut(void);
 void func_80033100(void);
-void func_80048714(void);
+void updatePlayerTimerTask(void);
 void func_80049240(void);
 void func_800458F8(void);
 void func_8004531C(void);
@@ -4087,10 +4087,29 @@ void initPlayerTimerTask(void) {
     GsInitCoordinate2(0, &timer->coordinate);
     timer->unk60 = 0;
     D_80120E90[D_8013AE88->data18].unk0FE = 1;
-    setCurrentTaskCallback(func_80048714);
+    setCurrentTaskCallback(updatePlayerTimerTask);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80048714);
+void updatePlayerTimerTask(void) {
+    if (!D_8013AFD3) {
+        if (D_80120E90[D_8013AE88->data18].unk128 & 0x3040) {
+            D_80120E90[D_8013AE88->data18].unk0FC = 0;
+        }
+        if (D_80120E90[D_8013AE88->data18].unk0FC != 0) {
+            D_80120E90[D_8013AE88->data18].unk0FC--;
+        }
+        if (D_80120E90[D_8013AE88->data18].unk0FC == 0) {
+            if (!D_80120E90[D_8013AE88->data18].unk008 &&
+                gControllerEffectStates[D_8013AE88->data18].effect == 13 &&
+                !(D_80120E90[D_8013AE88->data18].unk128 & 0x2000)) {
+                D_8013AF08[D_8013AE88->data18] = 0;
+            }
+            setCurrentTaskCallback(fadeOutPlayerTimerTask);
+        } else if (D_80120E90[D_8013AE88->data18].timer.unk60 < 0x1000) {
+            D_80120E90[D_8013AE88->data18].timer.unk60 += 0x100;
+        }
+    }
+}
 
 void fadeOutPlayerTimerTask(void) {
     if (!D_8013AFD3) {

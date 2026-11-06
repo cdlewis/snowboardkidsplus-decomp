@@ -468,22 +468,6 @@ typedef struct RotatingEffectResource {
     s16 textureU;
 } RotatingEffectResource;
 
-typedef struct ControllerEffectStep {
-    u8 value;
-    s8 delta;
-    u8 pad[2];
-    s32 duration;
-} ControllerEffectStep;
-typedef struct ControllerEffectState {
-    u8 effect;
-    u8 priority;
-    u8 pad[2];
-    ControllerEffectStep *step;
-    s32 elapsed;
-    s32 stepEnd;
-    s32 effectEnd;
-} ControllerEffectState;
-
 typedef struct QuadVertex {
     s16 x, y, z, pad;
 } QuadVertex;
