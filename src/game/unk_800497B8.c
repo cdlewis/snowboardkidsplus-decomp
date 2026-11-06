@@ -87,6 +87,19 @@ typedef struct PositionEffectOrigin {
     s32 pad;
 } PositionEffectOrigin;
 
+typedef struct QuadAnimationStep {
+    s32 duration, scale;
+    u8 r, g, b, flags;
+    u16 tpage, clut;
+    u8 u, v, w, h;
+} QuadAnimationStep;
+
+typedef struct QuadAnimationResource {
+    PositionEffectOrigin position;
+    s32 elapsed, frame;
+    const QuadAnimationStep *steps;
+} QuadAnimationResource;
+
 typedef struct TimedSpriteStep {
     s32 frame;
     s32 duration;
@@ -106,6 +119,20 @@ typedef struct TimedSpriteSequenceResource {
 ControllerEffectState gControllerEffectStates[2] = {0};
 
 u16 gTextClut = 0;
+
+QuadAnimationStep gAlternateQuadAnimationSteps[5]
+    __attribute__((section(".data.alternate_quad_steps"))) = {
+    {2, 8192, 128, 128, 128, 0,
+     getTPage(0, 0, 704, 0), getClut(880, 250), 0, 192, 63, 63},
+    {2, 8192, 128, 128, 128, 0,
+     getTPage(0, 0, 704, 0), getClut(880, 250), 64, 192, 63, 63},
+    {2, 8192, 255, 255, 255, SEMI_TRANSPARENT_FLAG,
+     getTPage(0, 0, 704, 0), getClut(880, 250), 128, 192, 63, 63},
+    {2, 8192, 255, 255, 255, SEMI_TRANSPARENT_FLAG,
+     getTPage(0, 0, 704, 0), getClut(880, 250), 192, 192, 63, 63},
+    {-1, 8192, 255, 255, 255, SEMI_TRANSPARENT_FLAG,
+     getTPage(0, 0, 704, 0), getClut(880, 250), 96, 192, 63, 63},
+};
 
 QuadVertex gMiddleShrinkQuadVertices[4]
     __attribute__((section(".data.middle_shrink_vertices"))) = {
@@ -151,6 +178,7 @@ void func_800692E8(void);
 void func_8006999C(void);
 void func_800618A0(void);
 void func_8006624C(void);
+void func_800659F0(void);
 void func_80049D48(s32 x, s32 y, const char *format, ...);
 void func_8006BE50(s32 textureIndex, s32 clutOffset);
 void func_8006C848(void);
@@ -780,7 +808,21 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800659F0);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80065DA0);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80065E34);
+GameTask *startAlternateQuadAnimationTask(s32 unused, const PositionEffectOrigin *position) {
+    QuadAnimationResource *resource;
+    GameTask *task;
+    func_80014930(D_8013B304, func_800659F0);
+    D_8013AE8C->resource14 = allocateTaskResource();
+    task = D_8013AE8C;
+    resource = (QuadAnimationResource *)&D_800D9504[task->resource14];
+    resource->position.x = position->x;
+    resource->position.y = position->y;
+    resource->position.z = position->z;
+    resource->elapsed = 0;
+    resource->frame = 0;
+    resource->steps = gAlternateQuadAnimationSteps;
+    return task;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80065EC8);
 
