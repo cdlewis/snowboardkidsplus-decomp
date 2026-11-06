@@ -474,7 +474,17 @@ void setStateGridFlag(GlobalFlagStatePrefix *state, s16 row, s16 column) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_80095F30);
+void drawCurrentTaskFramedSprite20C(void) {
+    Movement2D *position;
+    if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
+    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    setTexturedQuadColor(128, 128, 128);
+    setSpriteColor(128, 128, 128);
+    drawTexturedFrameStyle9(position->x / 4096 - 140, position->y / 4096 + 8,
+                           128, 92, 5, 1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    func_8006C998(position->x / 4096 - 136, position->y / 4096 + 12,
+                  0x20C, 1, 0, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+}
 
 void drawCurrentTaskTextPanel(void) {
     Movement2D *position;

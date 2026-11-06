@@ -2676,3 +2676,5 @@ updateLandedTaskObject = 0x8005E454; // type:func
 captureSelectedPlayerStates = 0x8005F730; // type:func
 
 drawSkewedTexturedQuadByIndexWithBlend = 0x8006C428; // type:func
+
+drawCurrentTaskFramedSprite20C = 0x80095F30; // type:func
