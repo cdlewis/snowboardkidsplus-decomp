@@ -492,6 +492,9 @@ extern TextureRegionSet D_8012DDA4[];
 extern TextureRegion *D_8013B6AC;
 
 extern SelectedStateRecord *D_8012C6F4[];
+TaskVisualFrame *gCourseVisualFrames
+    __attribute__((section(".sdata.course_visual_frames"))) = 0;
+
 extern s8 *D_8012BBB4[][4];
 /* Shared palette storage and capture rectangle remain in their data owners. */
 extern u32 D_8012CB94[8];
@@ -518,6 +521,7 @@ void func_80066474(void);
 void func_8005D828(RacePlayer *player, PlayerCollisionRegion *region);
 void func_8005B460(void);
 void func_8005B6C0(void);
+void func_8005BA8C(void);
 void emitProjectedFlatTriangle(TriangleScratchVertex *vertices);
 void emitProjectedFlatQuad(TriangleScratchVertex *vertices);
 void func_800542BC(TriangleScratchVertex *vertices, s32 flags);
@@ -1105,7 +1109,37 @@ void initializeInteractionVisualTask(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005B6C0);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005B978);
+void initializeCourseVisualTask(void) {
+    TaskVisualResource *resource;
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    GsInitCoordinate2(0, &resource->coordinate);
+    if (D_8013AFCE == 2) {
+        resource->r0 = resource->g0 = resource->b0 = 0x80;
+        resource->code = POLY_FT4_CODE;
+        resource->scaleX = 0x6000;
+        resource->scaleY = 0x6000;
+        resource->scaleZ = 0x6000;
+        resource->unkC6 = 0;
+        resource->unkC8 = 0;
+        resource->framePosition = 0;
+        gCourseVisualFrames = D_8013B29C;
+    } else {
+        resource->unkC6 = 0x200;
+        resource->unkC8 = 0x40;
+        resource->r0 = resource->g0 = resource->b0 = 0x80;
+        resource->code = POLY_FT4_CODE;
+        resource->scaleX = 0x2000;
+        resource->scaleY = 0x2000;
+        resource->scaleZ = 0x2000;
+        resource->framePosition = 0;
+        gCourseVisualFrames = D_801294AC;
+    }
+    setCurrentTaskCallback(func_8005BA8C);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005BA8C);
 

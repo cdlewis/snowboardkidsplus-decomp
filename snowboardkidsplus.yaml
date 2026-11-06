@@ -678,6 +678,8 @@ segments:
       - [0x12B9DC, data, 12B9DC]
       - {start: 0x12BA40, type: .data, name: game/unk_800497B8, linker_section: .data.read_pixel_rect}
       - [0x12BA48, data, 12BA48]
+      - {start: 0x12BAC8, type: .sdata, name: game/unk_800497B8, linker_section: .sdata.course_visual_frames, linker_section_order: .data}
+      - [0x12BACC, data, 12BACC]
       - {start: 0x12BAFC, type: .data, name: main_remaining, linker_section: .data.linear_random_state}
       - [0x12BB00, data, 12BB00]
       - {start: 0x12BBB4, type: .sdata, name: game/unk_80070274, linker_section: .sdata.animated_sprite16_page, linker_section_order: .data}
