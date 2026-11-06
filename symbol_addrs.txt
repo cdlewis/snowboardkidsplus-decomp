@@ -2846,3 +2846,5 @@ gCourseResourceSectors = 0x80125114; // size:0x78 defined:true
 gCourseMetadataSectors = 0x8012518C; // size:0x28 defined:true
 gCourseOptionalResourceSectors = 0x801251B4; // size:0x28 defined:true
 gCourseMetadataBuffer = 0x801251DC; // size:0x800 defined:true
+
+drawPackedTime = 0x8006E814; // type:func

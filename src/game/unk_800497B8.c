@@ -3669,7 +3669,19 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006E2C4);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006E5E0);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006E814);
+void drawPackedTime(s16 x, s16 y, u32 value, s16 palette, s16 blend, GsOT *ot, u16 depth) {
+    s32 field;
+    value >>= 8;
+    field = value & 255;
+    func_8006DFB4(x + 48, y, 2, 1, field, palette, blend, ot, depth);
+    value >>= 8;
+    func_8006C998(x + 40, y, 24, palette, blend, ot, depth);
+    field = value & 255;
+    func_8006DFB4(x + 24, y, 2, 1, field, 1, -1, ot, depth);
+    func_8006C998(x + 16, y, 25, palette, blend, ot, depth);
+    value >>= 8;
+    func_8006DFB4(x, y, 2, 1, value, 1, -1, ot, depth);
+}
 
 void drawWrappedDoubleByteText(s16 x, s16 y, s16 columns, s8 *text, s16 palette, s16 blend, GsOT *ot, u16 depth) {
     s16 startX = x;
