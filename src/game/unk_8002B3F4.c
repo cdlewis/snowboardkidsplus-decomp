@@ -45,6 +45,18 @@ typedef struct SpriteAnimationResource {
     u8 unk0B[0xF5];
 } SpriteAnimationResource;
 
+typedef struct SlidingNumberResource {
+    u16 timer;
+    u16 unk02;
+    s32 x;
+    s32 y;
+    u8 unk0C[8];
+    s32 speed;
+    s32 value;
+    s16 player;
+    u8 unk1E[0xE2];
+} SlidingNumberResource;
+
 typedef struct UnpackedWordBytes {
     u8 unk0;
     u8 unk1;
@@ -154,6 +166,8 @@ void func_80032E94(void);
 void func_80034AE8(void);
 void func_80034928(void);
 void func_80034664(PlayerNumberResource *resource);
+void func_8003527C(void);
+void func_800350AC(SlidingNumberResource *resource);
 void func_8003452C(void);
 void func_800341DC(void);
 void func_80034090(SlidingDisplayResource *resource);
@@ -720,7 +734,18 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800350AC);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003527C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80035310);
+void waitSlidingNumberDisplayTask(void) {
+    SlidingNumberResource *resource;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (SlidingNumberResource *)&D_800D9504[D_8013AE88->resource14];
+    if (--resource->timer == 0) {
+        setCurrentTaskCallback(func_8003527C);
+    }
+    func_800350AC(resource);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003539C);
 
