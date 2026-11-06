@@ -625,6 +625,8 @@ segments:
       - [0x12B688, data]
       - [0x12B6B8, .data, main]
       - [0x12B6BC, data]
+      - {start: 0x12B6C0, type: .sdata, name: main, linker_section: .sdata.controller_repeat_timing, linker_section_order: .data}
+      - [0x12B6C4, data]
       - {start: 0x12B708, type: .data, name: main, linker_section: .data.controller_values}
       - [0x12B70C, data]
       - {start: 0x12B710, type: .sdata, name: engine/random, linker_section_order: .data}

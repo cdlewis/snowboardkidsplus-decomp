@@ -44,6 +44,10 @@ u16 gTaskResourceFreeBits[16] __attribute__((section(".data.task_resource_bitmap
 
 u8 gControllerFlags[4] __attribute__((section(".data"))) = {0, 0, 0, 0};
 
+u8 gControllerHorizontalRepeatTimers[2] __attribute__((section(".sdata.controller_repeat_timing"))) = {0, 0};
+u8 gControllerRepeatInitialDelay __attribute__((section(".sdata.controller_repeat_timing"))) = 12;
+u8 gControllerRepeatInterval __attribute__((section(".sdata.controller_repeat_timing"))) = 2;
+
 s16 D_8013AF08[2] __attribute__((section(".data.controller_values"))) = {0, 0};
 
 extern s16 D_8013AE78;
@@ -233,7 +237,10 @@ void clearControllerFlag0(u16 controller) {
     *flags &= ~1;
 }
 
-INCLUDE_ASM("asm/nonmatchings/main", func_80014CBC);
+void setControllerRepeatTiming(u8 initialDelay, u8 repeatInterval) {
+    gControllerRepeatInitialDelay = initialDelay;
+    gControllerRepeatInterval = repeatInterval;
+}
 
 void setControllerFlag5(u16 controller) {
     gControllerFlags[controller] |= 0x20;

@@ -12,6 +12,13 @@ extern u8 gControllerFlags[4] __attribute__((section(".data")));
 
 extern s16 D_8013AF08[2] __attribute__((section(".data.controller_values")));
 
+extern u8 gControllerHorizontalRepeatTimers[2];
+extern u8 gControllerRepeatInitialDelay;
+extern u8 gControllerRepeatInterval;
+
+/* Configure the initial delay and interval for held directional input. */
+void setControllerRepeatTiming(u8 initialDelay, u8 repeatInterval);
+
 void setControllerFlag5(u16 controller);
 void setControllerFlag0(u16 controller);
 s32 isControllerFlag5Clear(u16 controller);
