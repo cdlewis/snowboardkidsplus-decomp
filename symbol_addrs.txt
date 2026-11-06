@@ -2344,3 +2344,4 @@ pollMemoryCardBufferReadTask = 0x80019980; // type:func
 queueBackgroundTextureSectorCommands = 0x8002F1C8; // type:func
 
 drawResultNumberAndIcon = 0x80035EDC; // type:func
+drawFirstPlayerResultNumberAndIcon = 0x800360F4; // type:func

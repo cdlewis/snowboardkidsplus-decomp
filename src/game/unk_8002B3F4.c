@@ -1376,7 +1376,12 @@ void drawResultNumberAndIcon(ResultDisplayResource *resource) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80035FAC);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800360F4);
+void drawFirstPlayerResultNumberAndIcon(void) {
+    setSpriteColor(128, 128, 128);
+    func_8006DFB4(24, 33, 6, 0, D_80120E90[0].unk010, 1, -1,
+                  &D_800EBFF0[D_8013AF78], 1);
+    func_8006C998(72, 33, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800361C4);
 
