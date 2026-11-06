@@ -103,6 +103,10 @@ void addFlatTriangle(u32 *orderingTable, s32 x0, s32 y0, s32 x1, s32 y1,
 void addGouraudTriangle(u32 *orderingTable, s32 x0, s32 y0, s32 x1, s32 y1,
                   s32 x2, s32 y2, s32 r0, s32 g0, s32 b0,
                   s32 r1, s32 g1, s32 b1, s32 r2, s32 g2, s32 b2);
+void addTexturedTriangle(u32 *orderingTable, s32 x0, s32 y0, s32 x1, s32 y1,
+                         s32 x2, s32 y2, u8 tpage, s32 clut,
+                         s32 u0, s32 v0, s32 u1, s32 v1, s32 u2, s32 v2,
+                         s32 r, s32 g, s32 b);
 void addSemiTransparentTriangle(u32 *orderingTable, s32 tpage, s32 x0, s32 y0,
                                 s32 x1, s32 y1, s32 x2, s32 y2,
                                 s32 r, s32 g, s32 b);

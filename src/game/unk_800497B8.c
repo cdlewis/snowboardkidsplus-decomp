@@ -848,7 +848,26 @@ void addGouraudTriangle(u32 *orderingTable, s32 x0, s32 y0, s32 x1, s32 y1,
     GsOUT_PACKET_P = (u32)(triangle + 1);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005FD5C);
+void addTexturedTriangle(u32 *orderingTable, s32 x0, s32 y0, s32 x1, s32 y1,
+                   s32 x2, s32 y2, u8 tpage, s32 clut,
+                   s32 u0, s32 v0, s32 u1, s32 v1, s32 u2, s32 v2,
+                   s32 r, s32 g, s32 b) {
+    POLY_FT3 *triangle = (POLY_FT3 *)GsOUT_PACKET_P;
+    triangle->tag = (sizeof(*triangle) / sizeof(u32) - 1) << 24;
+    setcode(triangle, POLY_FT3_CODE);
+    triangle->tpage = tpage;
+    triangle->clut = clut;
+    setXY3(triangle, x0, y0, x1, y1, x2, y2);
+    triangle->u0 = u0;
+    triangle->v0 = v0;
+    triangle->u1 = u1;
+    triangle->v1 = v1;
+    triangle->u2 = u2;
+    triangle->v2 = v2;
+    setRGB0(triangle, r, g, b);
+    addPrim(orderingTable, triangle);
+    GsOUT_PACKET_P = (u32)(triangle + 1);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005FE7C);
 

@@ -30,6 +30,21 @@ typedef struct SPRT_8 {
 
 #define SPRT_8_CODE 0x74
 
+typedef struct POLY_FT3 {
+    u32 tag;
+    u8 r0, g0, b0, code;
+    s16 x0, y0;
+    u8 u0, v0;
+    u16 clut;
+    s16 x1, y1;
+    u8 u1, v1;
+    u16 tpage;
+    s16 x2, y2;
+    u8 u2, v2;
+    u16 pad1;
+} POLY_FT3;
+#define POLY_FT3_CODE 0x24
+
 typedef struct POLY_FT4 {
     u32 tag;
     u8 r0, g0, b0, code;

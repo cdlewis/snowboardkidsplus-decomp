@@ -2061,6 +2061,7 @@ advancePlayerSpriteAnimationTask = 0x8003452C; // type:func
 assignTwoPlayerResultSlots = 0x8003CA58; // type:func
 
 addGouraudTriangle = 0x8005FC5C; // type:func
+addTexturedTriangle = 0x8005FD5C; // type:func
 drawFallingSpriteEffect = 0x80033974; // type:func
 
 createActivePlayerSlidingNumberTask = 0x80035528; // type:func
