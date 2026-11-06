@@ -15,3 +15,4 @@ extern RaceTime D_80124050[];
 
 s16 compareRaceTimes(const RaceTime *a, const RaceTime *b);
 void advanceRaceElapsedTime(void);
+s32 calculateRaceTimeDifference(const RaceTime *a, const RaceTime *b, RaceTime *difference);

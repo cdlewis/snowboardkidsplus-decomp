@@ -1045,7 +1045,7 @@ void initializeRaceTimeDifferenceDisplay(void) {
     resource->y = -44;
     resource->x = 420;
     resource->speed = 56;
-    resource->hasExtraTime = func_80043ACC(&D_8013B188, &D_80124050[D_8013AFCE], &resource->time);
+    resource->hasExtraTime = calculateRaceTimeDifference(&D_8013B188, &D_80124050[D_8013AFCE], &resource->time);
     setCurrentTaskCallback(slideRaceTimeDisplayIn);
 }
 
@@ -2397,7 +2397,24 @@ void advanceRaceElapsedTime(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80043A4C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80043ACC);
+s32 calculateRaceTimeDifference(const RaceTime *a, const RaceTime *b, RaceTime *difference) {
+    s32 first = (a->centiseconds & 0xFF00) + a->seconds * 25600 + a->minutes * 1536000;
+    s32 second = (b->centiseconds & 0xFF00) + b->seconds * 25600 + b->minutes * 1536000;
+    s32 smaller;
+    if (first >= second) {
+        smaller = 0;
+        first -= second;
+    } else {
+        smaller = 1;
+        first = second - first;
+    }
+    difference->centiseconds = first % 25600;
+    first /= 25600;
+    difference->seconds = first % 60;
+    first /= 60;
+    difference->minutes = first % 100;
+    return smaller;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80043C28);
 
