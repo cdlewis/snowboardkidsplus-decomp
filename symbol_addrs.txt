@@ -2822,3 +2822,9 @@ updateQuadTransitionSequenceTask = 0x80069E54; // type:func
 drawWrappedText8x8 = 0x8006D134; // type:func
 
 initializeTextPlaybackTask = 0x800A6548; // type:func
+
+queueOffsetScreenCopySprites = 0x80052314; // type:func
+gScreenCopyPlusBuffer1 = 0x80124F14; // size:0x30
+gScreenCopyPlusBuffer0 = 0x80124F44; // size:0x30
+gScreenCopyMinusBuffer1 = 0x80124F74; // size:0x30
+gScreenCopyMinusBuffer0 = 0x80124FA4; // size:0x30

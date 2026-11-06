@@ -536,6 +536,40 @@ u8 gUppercaseGlyphMetrics[52] __attribute__((section(".data.uppercase_glyph_metr
     0xE0, 0x0A, 0xEC, 0x08,
 };
 
+/* Semi-transparent screen copies displaced one pixel horizontally. */
+TexturedSpritePacket gScreenCopyPlusBuffer1[2] __attribute__((section(".data.offset_screen_copy_sprites"))) = {
+    {5 << 24, ((u32)DRAW_MODE_COMMAND_HIGH << 16) | getTPage(2, 0, 0, 0),
+     128, 128, 128, TEXTURED_SPRITE_CODE | SEMI_TRANSPARENT_FLAG,
+     -159, -120, 0, 0, 0, 256, 240},
+    {5 << 24, ((u32)DRAW_MODE_COMMAND_HIGH << 16) | getTPage(2, 0, 256, 0),
+     128, 128, 128, TEXTURED_SPRITE_CODE | SEMI_TRANSPARENT_FLAG,
+     97, -120, 0, 0, 0, 64, 240}
+};
+TexturedSpritePacket gScreenCopyPlusBuffer0[2] __attribute__((section(".data.offset_screen_copy_sprites"))) = {
+    {5 << 24, ((u32)DRAW_MODE_COMMAND_HIGH << 16) | getTPage(2, 0, 0, 256),
+     128, 128, 128, TEXTURED_SPRITE_CODE | SEMI_TRANSPARENT_FLAG,
+     -159, -120, 0, 0, 0, 256, 240},
+    {5 << 24, ((u32)DRAW_MODE_COMMAND_HIGH << 16) | getTPage(2, 0, 256, 256),
+     128, 128, 128, TEXTURED_SPRITE_CODE | SEMI_TRANSPARENT_FLAG,
+     97, -120, 0, 0, 0, 64, 240}
+};
+TexturedSpritePacket gScreenCopyMinusBuffer1[2] __attribute__((section(".data.offset_screen_copy_sprites"))) = {
+    {5 << 24, ((u32)DRAW_MODE_COMMAND_HIGH << 16) | getTPage(2, 0, 0, 0),
+     128, 128, 128, TEXTURED_SPRITE_CODE | SEMI_TRANSPARENT_FLAG,
+     -161, -120, 0, 0, 0, 256, 240},
+    {5 << 24, ((u32)DRAW_MODE_COMMAND_HIGH << 16) | getTPage(2, 0, 256, 0),
+     128, 128, 128, TEXTURED_SPRITE_CODE | SEMI_TRANSPARENT_FLAG,
+     95, -120, 0, 0, 0, 64, 240}
+};
+TexturedSpritePacket gScreenCopyMinusBuffer0[2] __attribute__((section(".data.offset_screen_copy_sprites"))) = {
+    {5 << 24, ((u32)DRAW_MODE_COMMAND_HIGH << 16) | getTPage(2, 0, 0, 256),
+     128, 128, 128, TEXTURED_SPRITE_CODE | SEMI_TRANSPARENT_FLAG,
+     -161, -120, 0, 0, 0, 256, 240},
+    {5 << 24, ((u32)DRAW_MODE_COMMAND_HIGH << 16) | getTPage(2, 0, 256, 256),
+     128, 128, 128, TEXTURED_SPRITE_CODE | SEMI_TRANSPARENT_FLAG,
+     95, -120, 0, 0, 0, 64, 240}
+};
+
 extern SVECTOR *D_8013B688;
 extern SVECTOR *D_8013AF90 __attribute__((section(".data")));
 extern MATRIX D_8012A6B0, D_8012A6D0;
@@ -1053,7 +1087,24 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80051D3C);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800520E8);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80052314);
+void queueOffsetScreenCopySprites(void) {
+    DR_STP *packet;
+    if (D_8013AF78) {
+        addPrim(&D_8013AF6C[2], &gScreenCopyPlusBuffer1[0]);
+        addPrim(&D_8013AF6C[2], &gScreenCopyPlusBuffer1[1]);
+        addPrim(&D_8013AF6C[2], &gScreenCopyMinusBuffer1[0]);
+        addPrim(&D_8013AF6C[2], &gScreenCopyMinusBuffer1[1]);
+    } else {
+        addPrim(&D_8013AF6C[2], &gScreenCopyPlusBuffer0[0]);
+        addPrim(&D_8013AF6C[2], &gScreenCopyPlusBuffer0[1]);
+        addPrim(&D_8013AF6C[2], &gScreenCopyMinusBuffer0[0]);
+        addPrim(&D_8013AF6C[2], &gScreenCopyMinusBuffer0[1]);
+    }
+    packet = (DR_STP *)GsOUT_PACKET_P;
+    SetDrawStp(packet, 1);
+    addPrim(&D_8013AF6C[4095], packet);
+    GsOUT_PACKET_P = (u32)(packet + 1);
+}
 
 void drawNoProcessMessage(void) {
     func_80049D48(0, 30, gNoProcessMessage);

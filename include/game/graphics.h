@@ -251,6 +251,8 @@ void initDefaultBackground(s16 mode, s16 unused, GameBackground *background,
 /* Upload a TIM image, optionally offsetting its pixel and CLUT positions. */
 void uploadTimImageWithOffset(u32 *tim, s16 *position);
 void uploadBufferedTexturePair(void);
+/* Queue the buffered screen sprites shifted one pixel in each direction. */
+void queueOffsetScreenCopySprites(void);
 
 /* Add a full-screen semi-transparent tile to an ordering table. */
 void func_80070C5C(s32 intensity, struct GsOT *ot, u16 depth);
