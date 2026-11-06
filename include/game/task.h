@@ -25,7 +25,8 @@ typedef struct GameTask {
 typedef struct TaskGridState {
     u8 unk00[0x32];
     s16 selectedIndex;
-    u8 unk34[0x26];
+    u8 unk34[0x24];
+    s16 spacingY;
     s16 count;
 } TaskGridState;
 
@@ -200,6 +201,9 @@ void initializePlayerModeSelectionTask(void);
 
 void configureTaskGridMovement(s32 mode, GameTask *task, s32 x, s32 y,
                                s32 stepX, s32 stepY, s32 delay);
+
+void configureVerticalTaskGridMovement(s32 mode, GameTask *task, s32 x, s32 y,
+                                      s32 stepX, s32 stepY, s32 delay);
 
 void initializeSpacedTaskGridPositions(s32 mode, GameTask *task, s32 x, s32 y,
                                  s32 spacingX, s32 spacingY);

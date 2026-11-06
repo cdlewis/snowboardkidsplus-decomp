@@ -530,7 +530,32 @@ void moveTaskChildrenWithSpacing(s32 mode, GameTask *task, s32 x, s32 y, s32 spe
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80073B0C);
+void configureVerticalTaskGridMovement(s32 mode, GameTask *task, s32 x, s32 y, s32 stepX, s32 stepY, s32 delay) {
+    TaskGridState *state;
+    TaskGridEntry *entries;
+    Movement2D *movement;
+    s16 i, end;
+    s32 nextIndex;
+    state = (TaskGridState *)&D_800D9504[task->resource14];
+    entries = (TaskGridEntry *)&D_800D9504[task->resource16];
+    if (mode == 1) {
+        i = state->selectedIndex;
+        end = i + 1;
+    } else {
+        i = 0;
+        end = state->count;
+    }
+    for (; i < end; i++) {
+        if (mode == 2 && i == state->selectedIndex) continue;
+        movement = (Movement2D *)&D_800D9504[entries[i].task->resource14];
+        if (delay == -1000) {
+            func_80070F10(movement, x, y + ((state->spacingY * i) << 12), stepX, stepY, delay);
+        } else {
+            nextIndex = i + 1;
+            func_80070F10(movement, x, y + ((state->spacingY * i) << 12), stepX, stepY, delay * (state->count - nextIndex));
+        }
+    }
+}
 
 void initializeSpacedTaskGridPositions(s32 mode, GameTask *task, s32 x, s32 y, s32 spacingX, s32 spacingY) {
     TaskGridState *state;
