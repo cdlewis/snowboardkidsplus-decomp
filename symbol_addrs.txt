@@ -2768,3 +2768,5 @@ drawResultPrizeLabels = 0x800361C4; // type:func
 gResultRankPrizeLabel = 0x80010A64; // type:char size:0x10
 gResultGetCoinLabel = 0x80010A74; // type:char size:0x10
 gResultTotalMoneyLabel = 0x80010A84; // type:char size:0x10
+
+drawSlidingQuadTask = 0x8006999C; // type:func

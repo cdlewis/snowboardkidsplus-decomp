@@ -722,7 +722,8 @@ void func_8004F780(void);
 
 void func_80068D1C(void);
 void func_800692E8(void);
-void func_8006999C(void);
+void func_800697DC(void);
+void drawSlidingQuadTask(void);
 void func_80062B24(void);
 void func_800618A0(void);
 void func_80061E48(void);
@@ -2634,11 +2635,34 @@ void drawPaletteCyclingStripTask(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800697DC);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006999C);
+void drawSlidingQuadTask(void) {
+    POLY_FT4 *packet;
+    SlidingQuadResource *resource;
+    s32 offset;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (SlidingQuadResource *)&D_800D9504[D_8013AE88->resource14];
+    packet = (POLY_FT4 *)GsOUT_PACKET_P;
+    *packet = *resource->packet;
+    packet->v0 = packet->v1 = resource->textureV;
+    packet->v2 = packet->v3 = resource->textureV + 15;
+    offset = resource->countdown * resource->countdown;
+    packet->x0 = packet->x2 = offset - 16;
+    packet->x1 = packet->x3 = offset + 143;
+    packet->clut = getClut(944, D_8013AE88->data18 * 3 + 242);
+    addPrim(D_8013AF6C, packet);
+    GsOUT_PACKET_P = (u32)(packet + 1);
+    if (--resource->countdown <= 0) {
+        setCurrentTaskCallback(func_800697DC);
+        resource->countdown = 0;
+    }
+}
 
 void startSlidingQuadTask(s32 index) {
     SlidingQuadResource *resource;
-    func_80014930(&gGameTasks[4], func_8006999C);
+    func_80014930(&gGameTasks[4], drawSlidingQuadTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     D_8013AE8C->data18 = index;
     resource = (SlidingQuadResource *)&D_800D9504[D_8013AE8C->resource14];
