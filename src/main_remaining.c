@@ -121,12 +121,15 @@ extern struct DIRENTRY D_8013B700[][15];
 extern s16 D_8013AF3E;
 extern u16 D_8013AFAA __attribute__((section(".data")));
 extern u8 D_8013AFD6;
+extern u8 D_8013AFD7;
+extern u8 D_8013B562 __attribute__((section(".data")));
 extern u8 D_80120EA4[];
 extern u8 D_8013AFE2;
 extern u16 D_8013AFE8;
 extern void *D_8013AF4C;
 extern void *gMemoryCardLoadDestination;
 
+void func_8002EE0C(void);
 void func_8001D044(void);
 void func_8001D42C(void);
 void uploadTimArchive(TimArchive *archive, s16 *position);
@@ -580,7 +583,16 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001B450);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001B4EC);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001B778);
+void initializeGameOptionTask(void) {
+    queueCdSectorCommand(2, 0x130, 0x32, (void *)0x80180000, 0);
+    D_8013B562 = 0;
+    D_8013AFD7 = 0;
+    D_8013AE88->data18 = 0;
+    func_8002EE0C();
+    resetGameOptionState();
+    setCurrentTaskCallback(func_8001B7F0);
+    D_8013AE88->unk10 |= 2;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001B7F0);
 
