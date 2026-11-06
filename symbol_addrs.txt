@@ -2458,3 +2458,5 @@ finishTaskTransitionAfterCountdown = 0x8001D044; // type:func
 
 drawAutoPilotLabelTask = 0x80035B24; // type:func
 gAutoPilotLabel = 0x80010A58; // type:char size:0xC
+
+waitResultDisplayTaskFlagsTask = 0x800362FC; // type:func

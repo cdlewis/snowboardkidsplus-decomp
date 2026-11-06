@@ -399,6 +399,7 @@ void func_8003686C(void);
 void waitResultDisplayTask(void);
 void func_80035D5C(ResultDisplayResource *resource);
 void func_800361C4(ResultDisplayResource *resource);
+void func_80035FAC(ResultDisplayResource *resource);
 void func_8003772C(void);
 void func_80037F74(void);
 void func_80037D90(void);
@@ -1499,7 +1500,7 @@ void drawResultNumberAndIcon(ResultDisplayResource *resource) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80035FAC);
 
-void drawFirstPlayerResultNumberAndIcon(void) {
+void drawFirstPlayerResultNumberAndIcon(ResultDisplayResource *resource) {
     setSpriteColor(128, 128, 128);
     func_8006DFB4(24, 33, 6, 0, D_80120E90[0].unk010, 1, -1,
                   &D_800EBFF0[D_8013AF78], 1);
@@ -1508,7 +1509,21 @@ void drawFirstPlayerResultNumberAndIcon(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800361C4);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800362FC);
+void waitResultDisplayTaskFlagsTask(void) {
+    ResultDisplayResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (ResultDisplayResource *)&D_800D9504[D_8013AE88->resource14];
+    if ((D_8013AFE4 & 0x50) != 0x10) {
+        func_800149A8();
+    }
+    func_80035D5C(resource);
+    drawResultNumberAndIcon(resource);
+    func_80035FAC(resource);
+    drawFirstPlayerResultNumberAndIcon(resource);
+    func_800361C4(resource);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800363A0);
 
