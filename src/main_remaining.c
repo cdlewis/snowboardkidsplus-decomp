@@ -45,9 +45,11 @@ extern char D_8013AF3C[];
 extern s32 D_8013B600[];
 extern struct DIRENTRY D_8013B700[][15];
 extern u32 D_8013AFE4;
+extern u16 D_8013AEE8 __attribute__((section(".data")));
 extern s16 D_8013AF3E;
 extern u16 D_8013AFAA __attribute__((section(".data")));
 
+void func_8001D044(void);
 void func_8001D42C(void);
 void func_8001C0DC(void);
 void func_8001B7F0(void);
@@ -390,7 +392,17 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001CEAC);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001CF18);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001CFD0);
+void startTaskTransitionWhenFlagAEE8Set(void) {
+    if (D_8013AE88->data18 == 0) {
+        if (D_8013AEE8 & 0xB0) {
+            D_8013AE88->data18 = 30;
+            func_80070274(2, 0, 30);
+            setCurrentTaskCallback(func_8001D044);
+        }
+    } else {
+        D_8013AE88->data18--;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001D044);
 
