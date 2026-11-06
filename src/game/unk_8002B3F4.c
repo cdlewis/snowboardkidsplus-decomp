@@ -259,6 +259,17 @@ typedef struct SpriteMotionResource {
     u8 padding[0xE6];
 } SpriteMotionResource;
 
+typedef struct BouncingVisualResource {
+    GsCOORDINATE2 coordinate;
+    u8 unk50[0x24];
+    s32 offsetY;
+    u8 unk78[0x50];
+    s16 timer, framePosition;
+    u8 r0, g0, b0, code;
+    s32 unkD0, velocity, unkD8, frame, delay, soundPlayed;
+    u8 unkE8[0x18];
+} BouncingVisualResource;
+
 typedef struct SlidingVisualResource {
     GsCOORDINATE2 coordinate;
     u8 unk50[0x24];
@@ -334,6 +345,7 @@ void func_80047380(void);
 
 void drawSlidingRaceTimeDisplay(SlidingTimeResource *resource);
 void func_800497B8(void);
+void func_800356FC(void);
 s32 calculateRaceTimeDifference(const RaceTime *a, const RaceTime *b, RaceTime *difference);
 
 void drawRaceTime(const RaceTime *value, s32 x, s32 y, s16 mode, GsOT *ot, u16 depth);
@@ -1589,7 +1601,42 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800355D4);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800356FC);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80035808);
+void initializeBouncingVisualTask(void) {
+    BouncingVisualResource *resource;
+    GsCOORDINATE2 *position;
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    resource = (BouncingVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource16 = allocateTaskResource();
+    position = (GsCOORDINATE2 *)&D_800D9504[D_8013AE88->resource16];
+    GsInitCoordinate2(0, &resource->coordinate);
+    resource->r0 = resource->g0 = resource->b0 = 128;
+    resource->code = POLY_FT4_CODE;
+    resource->timer = 0;
+    resource->framePosition = 0;
+    if (D_8013AFD2 == 1) {
+        position->coord.t[0] = D_80120E90[0].position8E4[0];
+    } else {
+        position->coord.t[0] = 0;
+    }
+    position->coord.t[1] = D_80120E90[0].position8E4[1];
+    position->coord.t[2] = D_80120E90[0].position8E4[2] + 50;
+    resource->offsetY = -37120;
+    resource->velocity = 0;
+    resource->frame = 0;
+    do {
+        resource->velocity += 30;
+        resource->offsetY -= resource->velocity;
+    } while (resource->offsetY > -89600);
+    resource->soundPlayed = 0;
+    resource->delay = 15;
+    setCurrentTaskCallback(func_800356FC);
+}
 
 void drawFixedSpriteAndBottomBarTask(void) {
     addTexturedSprite(D_8013AF6C, 0x1C, 0x3DFE, 0x28, 0x52,

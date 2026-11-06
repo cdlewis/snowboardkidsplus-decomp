@@ -2654,3 +2654,5 @@ gWhitePulsePaletteRect = 0x8013B328; // size:0x8 defined:true
 gColorCycleCaptureRect = 0x8013B330; // size:0x8 defined:true
 
 finishNumberAdjustmentTask = 0x800A59B8; // type:func
+
+initializeBouncingVisualTask = 0x80035808; // type:func

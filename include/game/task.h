@@ -171,3 +171,5 @@ extern u8 D_8013B0F0;
 #endif
 
 void drawSelectedTaskSprite(void);
+
+void initializeBouncingVisualTask(void);
