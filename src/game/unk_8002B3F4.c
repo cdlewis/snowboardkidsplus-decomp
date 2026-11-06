@@ -326,6 +326,7 @@ void func_8003AAE0(TaskResourceRecord *resource);
 void func_8003AD48(TaskResourceRecord *resource);
 void func_8003B020(TaskResourceRecord *resource);
 void func_8003B2BC(TaskResourceRecord *resource);
+void func_8003B94C(void);
 void func_8003BAAC(void);
 void resetTaskStatsCountdown(void);
 
@@ -1728,7 +1729,22 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003B8AC);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003B94C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003B9F4);
+void startTaskStatsCountdownAndPlaySound(void) {
+    MenuCountdownResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (MenuCountdownResource *)&D_800D9504[D_8013AE88->resource14];
+    resource->unk06 = 2;
+    if (--resource->timer == 0) {
+        func_800181B0(0, 0x700, 0x20);
+        resource->timer = 20;
+        setCurrentTaskCallback(func_8003B94C);
+    }
+    func_8003AAE0((TaskResourceRecord *)resource);
+    func_8003AD48((TaskResourceRecord *)resource);
+    func_8003B2BC((TaskResourceRecord *)resource);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003BAAC);
 
