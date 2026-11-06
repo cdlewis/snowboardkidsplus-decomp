@@ -25,6 +25,10 @@ errors and inspect each diff before changing the next attempt.
 Resolve the function's callers, types, field layouts, and purpose first. Use
 natural C, typed fields, array indexing, and SDK macros. Do not use assembly,
 register bindings, dummy operations, or fake memory layouts to force a match.
+If you are having trouble matching the stack-frame size, consider using an
+unused local padding array, such as `u8 padding[0x20];`. Its original purpose
+does not need to be known. Verify the resulting frame size with the target
+compiler.
 A stale-image error means running `./tools/build-and-verify.sh` from `project/`.
 
 ## Integration

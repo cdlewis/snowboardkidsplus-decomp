@@ -176,6 +176,11 @@ named constants for GPU packets. A passing checksum does not excuse poor C.
 Fixed BIOS ABI variables use named pointer macros such as `BIOS_DCB_BASE` and
 `BIOS_DCB_BYTES`.
 
+If you are having trouble matching the stack-frame size, consider using an
+unused local padding array, such as `u8 padding[0x20];`. Its original purpose
+does not need to be known. Verify the resulting frame size with the target
+compiler.
+
 ### Avoid raw pointer offsets
 
 For accesses such as `*(type *)((u8 *)ptr + offset)`, identify the containing
