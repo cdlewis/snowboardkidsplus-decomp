@@ -38,6 +38,7 @@ typedef struct PlayerEffectResource {
     SVECTOR rotation;
     u8 unkC8[0x38];
 } PlayerEffectResource;
+
 typedef struct ScaledCoordinateResource {
     GsCOORDINATE2 coordinate;
     u8 unk50[0x60];
@@ -257,6 +258,7 @@ extern u8 D_8013B11A;
 extern u8 gMappedIconPalettes[9];
 
 extern s16 D_8013B10C;
+
 extern s16 D_8013B0E4;
 extern u16 D_8013B0E6;
 extern s32 D_8013B0E8;
@@ -278,6 +280,8 @@ extern int rand(void);
 
 void uploadTimImageAt(s16 x, s16 y, s16 clutX, s16 clutY, u32 *tim);
 s16 func_8004A124(s32 x1, s32 z1, s32 x2, s32 z2);
+s32 func_8004A4C4(s16 index, s32 x, s32 z);
+s32 func_8004A764(s16 index, s32 x, s32 z);
 u8 func_8004AAA0(s16 index, s32 x, s32 z);
 void func_8003E1D0(u16 playerIndex);
 void func_8003E60C(u16 index);
@@ -2006,7 +2010,20 @@ void updatePlayerCameraAngles(u16 playerIndex) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003E3F0);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003E55C);
+void clampPlayerCameraHeight(u16 playerIndex) {
+    PlayerCamera *cameras = D_801241E8;
+    PlayerCamera *camera = &cameras[playerIndex];
+    PlayerCameraView *views = gPlayerCameraViews;
+    PlayerCameraView *view = &views[playerIndex];
+    s32 height;
+    camera->unk18 = func_8004A4C4(camera->unk18, view->x, view->z);
+    height = func_8004A764(camera->unk18, view->x, view->z);
+    if (height - 120 < view->y) {
+        view->y = height - 120;
+        camera->y = height << 8;
+        func_8003E1D0(playerIndex);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003E60C);
 
@@ -2020,7 +2037,7 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003E794);
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003EA20);
 
 void updateCurrentPlayerCameraTarget(void) {
-    PlayerCameraView *targets = gPlayerCameraViews;
+    PlayerPlayerCameraView *targets = gPlayerCameraViews;
     RacePlayer *players = D_80120E90;
     targets[D_8013AE88->data18].targetX = players[D_8013AE88->data18].unk8E4 + players[D_8013AE88->data18].unk084;
     targets[D_8013AE88->data18].targetY = players[D_8013AE88->data18].unk8E8 + (s16)(D_801241E8[D_8013AE88->data18].unk14 / 8 - 120) + players[D_8013AE88->data18].unk086;

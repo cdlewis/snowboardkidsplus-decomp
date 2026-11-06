@@ -8,7 +8,9 @@ typedef struct PlayerCamera {
     s16 yaw, pitch;
     u8 unk10[4];
     s16 unk14;
-    u8 unk16[6];
+    u8 unk16[2];
+    s16 unk18;
+    s16 unk1A;
 } PlayerCamera;
 
 extern PlayerCamera D_801241E8[];
@@ -18,3 +20,4 @@ void updatePlayerCameraAngles(u16 playerIndex);
 void updateCurrentPlayerCameraTarget(void);
 
 void updateCameraRotationMatrices(u16 playerIndex);
+void clampPlayerCameraHeight(u16 playerIndex);
