@@ -183,6 +183,7 @@ void func_8002F5F8(void);
 void func_80032F84(void);
 void func_80033404(void);
 void func_80044990(void);
+void func_80034C40(SpriteMotionResource *resource);
 void func_80034F1C(void);
 void func_80034DFC(void);
 void func_80034C40(SpriteMotionResource *resource);
@@ -861,7 +862,20 @@ void createPlayerNumberDisplayTask(s32 value, s32 showExtraValue, s32 player) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80034C40);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80034DFC);
+void slideOutSpriteMotionTask(void) {
+    SpriteMotionResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (SpriteMotionResource *)&D_800D9504[D_8013AE88->resource14];
+    resource->unk04 += resource->unk14;
+    resource->unk14 += 4;
+    if (resource->unk14 >= 56) {
+        func_800149A8();
+    } else {
+        func_80034C40(resource);
+    }
+}
 
 void waitSpriteExitMotionTask(void) {
     SpriteMotionResource *resource;
