@@ -49,6 +49,20 @@ typedef struct ModeSectorReadState {
     s16 mode;
     u8 unk3A[0xC6];
 } ModeSectorReadState;
+typedef struct TextSequenceResource {
+    u8 unk00[0xA];
+    u16 unk0A;
+    u16 entryIndex;
+    u8 unk0E[0x22];
+    u16 progress;
+    u16 duration;
+    s16 state;
+    u8 intensity;
+    u8 unk37;
+    s16 mode;
+    u16 unk3A;
+    u8 unk3C[0xC4];
+} TextSequenceResource;
 
 typedef struct ResourceSectorRange {
     s16 sector;
@@ -176,6 +190,7 @@ void func_8008DDC0(void);
 void func_8008EC50(void);
 void func_80090450(void);
 void func_80092090(void);
+void func_800A0FDC(void);
 void func_80092A50(void);
 void func_800A0AA8(void);
 void func_800A0EE8(void);
@@ -699,7 +714,25 @@ void queueTaskModeSectorRead(void) {
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A0EE8);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A0F14);
+void initializeTextSequenceTask(void) {
+    TextSequenceResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (TextSequenceResource *)&D_800D9504[D_8013AE88->resource14];
+    resource->state = 2;
+    resource->entryIndex = 0;
+    resource->progress = 0;
+    resource->duration = 0;
+    resource->intensity = 0x80;
+    resource->unk3A = 0;
+    func_800719A8(0);
+    func_80070274(1, 0, 30);
+    if (resource->mode != 1 || resource->unk0A != 9) {
+        func_80013DD0(3, 0);
+    }
+    setCurrentTaskCallback(func_800A0FDC);
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A0FDC);
 
