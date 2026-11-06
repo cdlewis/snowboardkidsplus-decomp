@@ -2126,7 +2126,25 @@ void drawCurrentTaskStatsMenu(void) {
     func_8003B2BC(resource);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003B5CC);
+void updateStatsMenuPostCountInputTask(void) {
+    StatsMenuFadeResource *resource;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (StatsMenuFadeResource *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AEE8[0] & 0xB0) {
+        if (resource->unk00 < 5) {
+            setCurrentTaskCallback(updateStatsMenuExitInputTask);
+        } else {
+            D_8013AFE4 |= 0x10;
+            setCurrentTaskCallback(drawCurrentTaskStatsMenu);
+        }
+    }
+    func_8003AAE0((TaskResourceRecord *)resource);
+    func_8003AD48((TaskResourceRecord *)resource);
+    func_8003B2BC((TaskResourceRecord *)resource);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003B690);
 

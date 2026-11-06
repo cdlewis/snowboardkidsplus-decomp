@@ -2053,6 +2053,7 @@ drawTaskTimeMenuAndSetFlag10OnInput = 0x80037D90; // type:func
 
 updateStatsMenuExitInputTask = 0x8003B4B8; // type:func
 drawCurrentTaskStatsMenu = 0x8003B554; // type:func
+updateStatsMenuPostCountInputTask = 0x8003B5CC; // type:func
 
 initializeUnlockMenuTask = 0x800A48E4; // type:func
 
