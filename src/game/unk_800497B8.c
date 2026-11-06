@@ -1383,7 +1383,14 @@ void initSpritePrimitiveTemplate(void) {
     setRGB0(sprite, 0x80, 0x80, 0x80);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006C8B0);
+void setSpriteTextureBlend(s32 index, s32 palette, s32 blend) {
+    TextureRegionSet *texture = &D_8012DDA4[index];
+    SpritePrimitiveTemplate *sprite = &gSpritePrimitiveTemplate;
+    SetDrawTPage(&sprite->drawPage, 1, 1,
+                 GetTPage(texture->depth, blend, texture->x, texture->y));
+    sprite->sprite.clut = GetClut(texture->clutX, texture->clutY + palette);
+    D_8013B6AC = texture->regions;
+}
 
 void setSpriteColor(s32 r, s32 g, s32 b) {
     setRGB0(&gSpriteTemplate, r, g, b);

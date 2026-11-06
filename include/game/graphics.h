@@ -124,6 +124,7 @@ void addTextCharacter(s32 x, s32 y, u32 character);
 void initPrimitiveTemplates(void);
 void initTexturedQuadTemplate(void);
 void initSpritePrimitiveTemplate(void);
+void setSpriteTextureBlend(s32 index, s32 palette, s32 blend);
 void setTexturedQuadTexture(s32 index, s32 palette);
 void setTexturedQuadTextureBlend(s32 index, s32 palette, s32 blend);
 void setTexturedQuadColor(s32 r, s32 g, s32 b);

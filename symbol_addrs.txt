@@ -1969,6 +1969,7 @@ gRaceElapsedTime = 0x8013B180; // type:RaceTime size:0x4
 setTexturedQuadTexture = 0x8006BE50; // type:func
 
 initSpritePrimitiveTemplate = 0x8006C848; // type:func
+setSpriteTextureBlend = 0x8006C8B0; // type:func
 
 setTexturedQuadTextureBlend = 0x8006FDE4; // type:func
 
