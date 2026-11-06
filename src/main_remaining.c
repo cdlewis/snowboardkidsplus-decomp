@@ -156,7 +156,7 @@ void *memcpy(void *destination, const void *source, unsigned int size);
 u16 func_800162C8(void);
 s32 func_80017268(void);
 void func_80018D80(u8 slot, void *destination);
-void func_80019980(void);
+void pollMemoryCardBufferReadTask(void);
 void func_8001C0DC(void);
 void func_8003DF3C(u16 index);
 void func_8003DEE0(void);
@@ -573,11 +573,24 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_800198EC);
 void beginMemoryCardBufferRead(void) {
     if (tryAcceptMemoryCard() == 1) {
         func_80018D80(0, D_8013AF4C);
-        setCurrentTaskCallback(func_80019980);
+        setCurrentTaskCallback(pollMemoryCardBufferReadTask);
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80019980);
+void pollMemoryCardBufferReadTask(void) {
+    switch (func_80019288()) {
+    case 0: D_8013AF3E = 1; return;
+    case 5: D_8013AF3E = 2; return;
+    case 2: D_8013AF3E = 6; break;
+    case 1: D_8013AF3E = 5; break;
+    case 3: D_8013AF3E = 7; break;
+    case 4: D_8013AF3E = 8; break;
+    case 6: D_8013AF3E = 9; break;
+    case 7: D_8013AF3E = 10; break;
+    case 8: D_8013AF3E = 11; break;
+    }
+    func_800149A8();
+}
 
 s32 startMemoryCardReadTask(void) {
     if (D_8013AF3E == 5) {
