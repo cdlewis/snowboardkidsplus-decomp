@@ -47,11 +47,20 @@ void func_80025FAC(void);
 void func_80026010(void);
 void func_800260E4(void);
 void func_80026500(void);
+void func_80026754(void);
+void func_80026AA8(void);
+void func_80026BAC(void);
 
 TaskCallback gCurrentPlayerTaskPhaseCallbacks[8]
     __attribute__((section(".data.player_task_phases"))) = {
     func_80025840, func_80025A38, func_80025B08, func_80025DD8,
     func_80025FAC, func_80026010, func_800260E4, func_80026500
+};
+
+
+TaskCallback gCurrentPlayerState30TaskPhaseCallbacks[3]
+    __attribute__((section(".data.player_state30_task_phases"))) = {
+    func_80026754, func_80026AA8, func_80026BAC
 };
 
 
@@ -378,7 +387,20 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_800260E4);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80026500);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_800266A8);
+void updateCurrentPlayerAndRequestState30(void) {
+    RacePlayer *player;
+    func_8002AE6C();
+    gCurrentPlayerState30TaskPhaseCallbacks[D_8013AE88->data1A]();
+    if (D_8013B0D8->unk0AC < 0x3C00) {
+        D_8013B0D8->unk0AC += 0x200;
+    }
+    player = D_8013B0D8;
+    player->unk110 = player->unk0B6 + 0x400;
+    player->unk8E4 = player->x >> 8;
+    player->unk8E8 = player->y >> 8;
+    player->unk8EC = player->z >> 8;
+    callCurrentPlayerStateCallbackIfDifferent(30);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80026754);
 

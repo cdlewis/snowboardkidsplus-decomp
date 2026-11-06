@@ -32,3 +32,5 @@ void func_80021B20(void);
 void func_80021258(void);
 
 void func_80027014(void);
+
+void updateCurrentPlayerAndRequestState30(void);
