@@ -325,7 +325,7 @@ void drawSlidingRaceTimeDisplay(SlidingTimeResource *resource);
 void func_800497B8(void);
 s32 calculateRaceTimeDifference(const RaceTime *a, const RaceTime *b, RaceTime *difference);
 
-void func_80037850(const RaceTime *value, s32 x, s32 y, s16 mode, GsOT *ot, u16 depth);
+void drawRaceTime(const RaceTime *value, s32 x, s32 y, s16 mode, GsOT *ot, u16 depth);
 
 /* Only the first byte of this shared state is used by this task flow. */
 extern u8 D_80120F90[];
@@ -1039,10 +1039,10 @@ void drawSlidingRaceTimeDisplay(SlidingTimeResource *resource) {
     setSpriteColor(128, 128, 128);
     if (resource->hasExtraTime) {
         func_8006C998(resource->x - 102, resource->y, 0x1AE, 0, -1, ot, 1);
-        func_80037850(&resource->time, resource->x + 38, resource->y, 1, ot, 1);
+        drawRaceTime(&resource->time, resource->x + 38, resource->y, 1, ot, 1);
     } else {
         func_8006C998(resource->x - 98, resource->y, 0x1AD, 4, -1, ot, 1);
-        func_80037850(&resource->time, resource->x + 34, resource->y, 2, ot, 1);
+        drawRaceTime(&resource->time, resource->x + 34, resource->y, 2, ot, 1);
     }
 }
 
@@ -1795,7 +1795,13 @@ void initializeTaskFade(void) {
     setCurrentTaskCallback(fadeInPlayerResultsTask);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80037850);
+void drawRaceTime(const RaceTime *value, s32 x, s32 y, s16 mode, GsOT *ot, u16 depth) {
+    func_8006DFB4(x, y, 2, 1, value->minutes, mode, -1, ot, depth);
+    func_8006DFB4(x + 24, y, 2, 1, value->seconds, mode, -1, ot, depth);
+    func_8006DFB4(x + 48, y, 2, 1, value->centiseconds >> 8, mode, -1, ot, depth);
+    func_8006C998(x + 16, y, 25, mode, -1, ot, depth);
+    func_8006C998(x + 40, y, 24, mode, -1, ot, depth);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800379B8);
 
@@ -1805,7 +1811,7 @@ void drawMenuTimeWithBrightness(MenuTimeResource *resource) {
     } else {
         setSpriteColor(128, 128, 128);
     }
-    func_80037850(&gRaceElapsedTime, -108, -48, 1, &D_800EBFF0[D_8013AF78], 1);
+    drawRaceTime(&gRaceElapsedTime, -108, -48, 1, &D_800EBFF0[D_8013AF78], 1);
 }
 
 void drawLapTimeLabel(TaskMenuFadeResource *resource) {
@@ -2093,7 +2099,7 @@ void drawTimeRecordHeader(TimeRecordHeaderResource *resource) {
     }
     func_8006D41C(-112, -64, 20, D_80010A94, 5, -1,
                  &D_800EBFF0[D_8013AF78], 1);
-    func_80037850(&gRaceElapsedTime, -104, -55, 1,
+    drawRaceTime(&gRaceElapsedTime, -104, -55, 1,
                  &D_800EBFF0[D_8013AF78], 1);
 }
 
