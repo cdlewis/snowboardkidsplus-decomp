@@ -149,6 +149,7 @@ void resetUnlockMenuOffsets(UnlockMenuState *state);
 void func_800A525C(void);
 void func_800A6A8C(void);
 void func_800A624C(void);
+void func_8009D354(void);
 void startUnlockResourceLoad(void);
 void prepareUnlockSelectionResume(void);
 
@@ -400,7 +401,23 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009C9A0);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009CA90);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009D29C);
+void initializeModeDependentTaskResourcePair(void) {
+    D_8013AE88->data18 = 0;
+    if (D_8013AFCD == 1) {
+        D_8013AE88->data1A = 1;
+    } else {
+        D_8013AE88->data1A = 3;
+    }
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        for (;;) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    if (D_8013AE88->resource16 != 0xFFFF) {
+        for (;;) {}
+    }
+    D_8013AE88->resource16 = allocateTaskResource();
+    setCurrentTaskCallback(func_8009D354);
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009D354);
 
