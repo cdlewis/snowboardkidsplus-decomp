@@ -57,7 +57,7 @@ TaskCallback gCurrentPlayerTaskPhaseCallbacks[8]
 void (*currentPlayerStateCallbacks[74])(void) = {
     func_8001F0C4,
     initializeCurrentPlayerDefaultState,
-    func_8001F258,
+    initializeCurrentPlayerState2,
     func_8001F2D4,
     func_8001F388,
     func_8001F444,
@@ -178,7 +178,19 @@ void initializeCurrentPlayerDefaultState(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8001F1B4);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8001F258);
+void initializeCurrentPlayerState2(void) {
+    D_8013B0D8->unk08C = 0xB84;
+    D_8013B0D8->unk128 |= 0x10;
+    if (D_8013AE88->data1A) {
+        func_80016E80(3, 6);
+    } else {
+        func_80016E80(3, 2);
+    }
+    clearCurrentPlayerSequenceState();
+    D_8013B0D8->unk0C8 = 0;
+    D_8013B0D8->unk13C = 0;
+    setCurrentTaskCallback(func_80021258);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8001F2D4);
 

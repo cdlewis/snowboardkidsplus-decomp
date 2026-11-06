@@ -3,7 +3,7 @@
 void func_8001F0C4(void);
 void initializeCurrentPlayerDefaultState(void);
 void func_8001F1B4(void);
-void func_8001F258(void);
+void initializeCurrentPlayerState2(void);
 void func_8001F2D4(void);
 void func_8001F388(void);
 void func_8001F444(void);
@@ -28,3 +28,5 @@ void func_800200F8(void);
 void func_800273D4(void);
 
 void func_80021B20(void);
+
+void func_80021258(void);
