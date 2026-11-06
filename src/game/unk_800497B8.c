@@ -3056,11 +3056,30 @@ void drawTexturedQuadByIndexWithBlend(s16 x, s16 y, s32 index, s16 palette, s16 
     drawTexturedQuad(x, y, frame->frameIndex, ot, depth);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006C240);
+void drawStretchedTexturedQuadByIndexWithBlend(s16 x, s16 y, s16 width, s16 height, s16 index, s16 palette, s16 blendMode, GsOT *ot, u16 depth) {
+    TexturedQuadFrame *frame;
+    TextureRegion *region;
+    s32 semiTrans;
+    s32 blend;
+    if (blendMode >= 0) {
+        blend = blendMode;
+        semiTrans = 1;
+    } else {
+        blend = 0;
+        semiTrans = 0;
+    }
+    frame = &D_8012DFF4[index];
+    setTexturedQuadTextureBlend(frame->textureIndex, palette, blend);
+    func_8006BEEC(semiTrans);
+    region = &D_8013B6AC[frame->frameIndex];
+    if (width == 0) width = region->w;
+    if (height == 0) height = region->h;
+    drawStretchedTexturedQuad(x, y, width, height, frame->frameIndex, ot, depth);
+}
 
 void drawTexturedQuadList(s16 x, s16 y, TexturedQuadListEntry *entry, s16 blend, GsOT *ot, u16 depth) {
     while (entry->palette < 255) {
-        func_8006C240(x + entry->x, y + entry->y, entry->width, entry->height,
+        drawStretchedTexturedQuadByIndexWithBlend(x + entry->x, y + entry->y, entry->width, entry->height,
                      entry->quadIndex, entry->palette, blend, ot, depth);
         entry++;
     }

@@ -2739,3 +2739,5 @@ drawPlayerModeMessagePanelTask = 0x80032D48; // type:func
 gPlayerModeMessageTexts = 0x80123C88; // size:0x8
 gPlayerModeMessageText = 0x80123C34; // size:0x24
 gPlayerModeAlternateMessageText = 0x80123C58; // size:0x24
+
+drawStretchedTexturedQuadByIndexWithBlend = 0x8006C240; // type:func

@@ -282,7 +282,7 @@ void waitForFrameHcount(u32 minimumHcount);
 
 void drawSkewedTexturedQuadByIndexWithBlend(s16 x, s16 y, s16 width, s16 height, s16 unused,
                                                s16 index, s16 palette, s16 blendMode, GsOT *ot, u16 depth);
-void func_8006C240(s16 x, s16 y, s16 width, s16 height, s16 index, s16 palette, s16 blend, GsOT *ot, u16 depth);
+void drawStretchedTexturedQuadByIndexWithBlend(s16 x, s16 y, s16 width, s16 height, s16 index, s16 palette, s16 blend, GsOT *ot, u16 depth);
 void drawTexturedQuadList(s16 x, s16 y, TexturedQuadListEntry *entry, s16 blend, GsOT *ot, u16 depth);
 
 void drawDemonstrationOverlay(void);
