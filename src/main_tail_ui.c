@@ -1,6 +1,7 @@
 #include "common.h"
 #include "main_tail_sound_slots.h"
 #include "game/controller.h"
+#include "game/controller_effects.h"
 #include "game/global_flags.h"
 #define SELECTED_RECORDS_ABSOLUTE_ADDRESSING
 #include "game/selected_records.h"
@@ -259,9 +260,10 @@ void func_800187B8(u8 voice);
 int printf(const char *format, ...);
 
 void func_80040D5C(void);
-void func_800A2510(void);
 void func_800A2324(void);
 void func_800A2D68(void);
+void func_800A2C40(void);
+void func_800A25F8(void);
 void func_800A3750(void);
 void func_800A5AFC(void);
 void func_800A6548(void);
@@ -374,7 +376,26 @@ void startMode1TaskTransition(void) {
 
 INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A24EC);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A2510);
+void initializeNumberSelectionTask(void) {
+    NumberPanelState *state;
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        for (;;) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    state = (NumberPanelState *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 != 0xFFFF) {
+        for (;;) {}
+    }
+    D_8013AE88->resource16 = allocateTaskResource();
+    D_8013AFD3 = 1;
+    state->number = D_8013AFD8 - 1;
+    D_8013AE88->data18 = 0;
+    setControllerFlag5(0);
+    setControllerFlag5(1);
+    resetPendingCdRequests();
+    func_80014874(func_800A2C40);
+    setCurrentTaskCallback(func_800A25F8);
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A25F8);
 
