@@ -199,7 +199,9 @@ typedef struct MenuSoundDelayResource {
     s16 brightness;
     s16 timer;
     s16 unk06;
-    u8 unk08[0xF8];
+    u8 unk08[6];
+    s16 unk0E;
+    u8 unk10[0xF0];
 } MenuSoundDelayResource;
 
 typedef struct TaskMenuFadeResource {
@@ -405,7 +407,7 @@ void func_80038270(TaskResourceRecord *resource);
 void func_80038C70(void);
 void func_80038574(TaskResourceRecord *resource);
 void func_8003881C(TaskResourceRecord *resource);
-void func_80039144(void);
+void tickMenuSoundDelayStage0Task(void);
 void waitTaskMenuCountdownAndPlaySound(void);
 void drawTaskMenuAndSetFlag10OnInput(void);
 void func_80038B34(void);
@@ -1885,7 +1887,26 @@ void tickMenuSoundDelayStage1Task(void) {
     func_8003881C((TaskResourceRecord *)resource);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80039144);
+void tickMenuSoundDelayStage0Task(void) {
+    MenuSoundDelayResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (MenuSoundDelayResource *)&D_800D9504[D_8013AE88->resource14];
+    resource->unk06 = 0;
+    if (--resource->timer == 0) {
+        playSoundEffect(0, 0x700, 0x20);
+        resource->timer = 20;
+        if (resource->unk0E != 0) {
+            setCurrentTaskCallback(tickMenuSoundDelayStage1Task);
+        } else {
+            setCurrentTaskCallback(startTaskMenuCountdownAndPlaySound);
+        }
+    }
+    func_80038090((TaskResourceRecord *)resource);
+    func_80038270((TaskResourceRecord *)resource);
+    func_8003881C((TaskResourceRecord *)resource);
+}
 
 void waitTaskMenuCountdownAndPlaySound(void) {
     MenuFadeInResource *resource;
@@ -1896,7 +1917,7 @@ void waitTaskMenuCountdownAndPlaySound(void) {
     if (--resource->timer == 0) {
         resource->timer = 20;
         playSoundEffect(0, 0x700, 0x20);
-        setCurrentTaskCallback(func_80039144);
+        setCurrentTaskCallback(tickMenuSoundDelayStage0Task);
     }
     func_80038090((TaskResourceRecord *)resource);
     func_8003881C((TaskResourceRecord *)resource);

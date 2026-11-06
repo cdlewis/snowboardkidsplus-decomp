@@ -2447,6 +2447,7 @@ initializeFlagSelectedDualResourceTask = 0x8009F158; // type:func
 
 assignCurrentPlayerFinishSlot = 0x80029EE4; // type:func
 
+tickMenuSoundDelayStage0Task = 0x80039144; // type:func
 tickMenuSoundDelayStage1Task = 0x8003908C; // type:func
 
 initializeTextSequenceTask = 0x800A0F14; // type:func
