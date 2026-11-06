@@ -870,7 +870,21 @@ void waitPlayerNumberDisplayTask(void) {
     func_80034664(resource);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80034A48);
+void slideInPlayerNumberDisplayTask(void) {
+    PlayerNumberResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (PlayerNumberResource *)&D_800D9504[D_8013AE88->resource14];
+    resource->x -= resource->speed;
+    resource->speed -= 4;
+    if (resource->speed <= 0) {
+        resource->speed = 0;
+        resource->timer = 45;
+        setCurrentTaskCallback(waitPlayerNumberDisplayTask);
+    }
+    func_80034664(resource);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80034AE8);
 
