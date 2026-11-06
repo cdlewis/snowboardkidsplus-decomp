@@ -105,6 +105,7 @@ s32 queueCdSectorCommand(s16 command, s16 sector, s16 sectorCount, void *destina
 
 void func_800187B8(u8 voice);
 
+void func_80090450(void);
 void func_800A0AA8(void);
 void func_800A3750(void);
 void func_800A5AFC(void);
@@ -158,7 +159,18 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_8008F970);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_8008FA8C);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800903C4);
+void initializeTaskResourcePair(void) {
+    D_8013AE88->data18 = 0;
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        for (;;) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    if (D_8013AE88->resource16 != 0xFFFF) {
+        for (;;) {}
+    }
+    D_8013AE88->resource16 = allocateTaskResource();
+    setCurrentTaskCallback(func_80090450);
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_80090450);
 

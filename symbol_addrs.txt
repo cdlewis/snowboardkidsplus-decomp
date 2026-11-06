@@ -1,3 +1,4 @@
+initializeTaskResourcePair = 0x800903C4; // type:func
 updateCurrentPlayerAndRequestState30 = 0x800266A8; // type:func
 gCurrentPlayerState30TaskPhaseCallbacks = 0x80120A8C; // size:0xC defined:true
 updateActivePlayerRegionCollisions = 0x8005DD70; // type:func
