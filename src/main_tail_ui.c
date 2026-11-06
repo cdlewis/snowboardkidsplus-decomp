@@ -122,6 +122,8 @@ typedef struct MusicOwnerState {
     u32 completionTick;
 } MusicOwnerState;
 void func_800A53BC(void);
+void func_800A5630(void);
+void beginMode2SequenceAndFadeMusic(void);
 void func_800A624C(void);
 void startUnlockResourceLoad(void);
 void prepareUnlockSelectionResume(void);
@@ -390,7 +392,33 @@ void drawNumberAdjustmentArrow(s16 direction, GsOT *ot, u16 depth) {
 
 INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A5630);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A59B8);
+void finishNumberAdjustmentTask(void) {
+    NumberAdjustmentState *state;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        for (;;) {}
+    }
+    state = (NumberAdjustmentState *)&D_800D9504[D_8013AE88->resource14];
+    switch (D_8013AE88->data18) {
+    case 0:
+        if (state->countdown == 0) {
+            if (D_8013AE98->data18 == 0x17) {
+                beginMode2SequenceAndFadeMusic();
+                D_8013AE88->data18 = 1;
+            } else {
+                D_8013AE88->data18 = 2;
+            }
+        }
+        break;
+    case 1:
+        if (func_800707F0(0) != 0) break;
+    case 2:
+        D_8013AE98->data1C--;
+        func_800149A8();
+        return;
+    }
+    func_800A5630();
+}
+
 
 void func_800A5AD4(void) {
 }
