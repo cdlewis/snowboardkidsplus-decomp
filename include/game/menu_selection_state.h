@@ -16,3 +16,5 @@ void initializeCountedSelectionBoundsTask(void);
 void initializeCountedDisplayBoundsTask(void);
 
 void initializeCountedGroupedSelectionBoundsTask(void);
+
+void initializeCountedFourBoundsTask(void);

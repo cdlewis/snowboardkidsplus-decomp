@@ -176,6 +176,9 @@ POLY_F3 gNumberAdjustmentArrow __attribute__((section(".data.number_adjustment_a
     4U << 24, 0, 0, 0, POLY_F3_CODE, 0, 0, 0, 0, 0, 0
 };
 
+u8 D_8013B514[3] __attribute__((section(".sdata.four_bounds_task_flag"))) = {0x82, 0x66, 0};
+u8 D_8013B517 __attribute__((section(".sdata.four_bounds_task_flag"))) = 0;
+
 extern s16 D_8013B560;
 extern u8 D_8013B562;
 extern u8 D_8013AF3A __attribute__((section(".data")));
@@ -191,6 +194,7 @@ void func_8008DDC0(void);
 void func_8008EC50(void);
 void func_80090450(void);
 void func_80092090(void);
+void func_80099880(void);
 void func_800A0FDC(void);
 void func_80092A50(void);
 void initializeMode1RacePlayers(void);
@@ -603,7 +607,47 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_800995A8);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800996F8);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009974C);
+void initializeCountedFourBoundsTask(void) {
+    D_8013AE98->data1C++;
+    D_8013AE88->data18 = 0;
+    D_8013AE88->data1A = 0;
+    if (D_8013AE88->resource14 != 0xFFFF) { for (;;) {} }
+    D_8013AE88->resource14 = allocateTaskResource();
+    if (D_8013AE88->resource16 != 0xFFFF) { for (;;) {} }
+    D_8013AE88->resource16 = allocateTaskResource();
+    setSecondaryDisplayTaskMode(2);
+    {
+        RECT *bounds = &D_801300B8[0];
+        bounds->x = 0;
+        bounds->y = 0;
+        bounds->w = -1;
+        bounds->h = -1;
+    }
+    {
+        RECT *bounds = &D_801300B8[1];
+        bounds->x = 0;
+        bounds->y = 0;
+        bounds->w = -1;
+        bounds->h = -1;
+    }
+    {
+        RECT *bounds = &D_801300B8[2];
+        bounds->x = 24;
+        bounds->y = 132;
+        bounds->w = 120;
+        bounds->h = 84;
+    }
+    {
+        RECT *bounds = &D_801300B8[3];
+        bounds->x = 0;
+        bounds->y = 0;
+        bounds->w = -1;
+        bounds->h = -1;
+    }
+    D_8013B517 = 1;
+    setCurrentTaskCallback(func_80099880);
+    D_8013AE88->unk10 |= 2;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_80099880);
 
