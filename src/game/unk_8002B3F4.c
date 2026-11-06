@@ -494,7 +494,6 @@ void uploadTimImageAt(s16 x, s16 y, s16 clutX, s16 clutY, u32 *tim);
 s16 func_8004A124(s32 x1, s32 z1, s32 x2, s32 z2);
 s32 func_8004A4C4(s16 index, s32 x, s32 z);
 u8 func_8004AAA0(s16 index, s32 x, s32 z);
-void func_8003E1D0(u16 playerIndex);
 void func_8003EE70(void);
 void func_8002F5F8(void);
 void func_8002F548(void);
@@ -3414,7 +3413,25 @@ void updatePlayerCameraPosition(u16 index) {
     view->vpz = camera->z / 256;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003E1D0);
+void updatePlayerCameraPitch(u16 playerIndex) {
+    RacePlayer *players = D_80120E90;
+    RacePlayer *player = &players[playerIndex];
+    PlayerCamera *cameras = D_801241E8;
+    PlayerCamera *camera = &cameras[playerIndex];
+    s32 x = (player->x - camera->x) / 8;
+    s32 y = (player->y - camera->y) / 8;
+    s32 z = (player->z - camera->z) / 8;
+    s32 scale = 1;
+    while (1) {
+        if ((u32)(x + 32767) <= 65534 && (u32)(z + 32767) <= 65534) {
+            break;
+        }
+        scale *= 2;
+        x /= 2;
+        z /= 2;
+    }
+    D_801241E8[playerIndex].pitch = func_8004A124(0, 0, SquareRoot0(x * x + z * z), y / scale) - 0x400;
+}
 
 void updatePlayerCameraAngles(u16 playerIndex) {
     PlayerCamera *cameras = D_801241E8;
@@ -3422,7 +3439,7 @@ void updatePlayerCameraAngles(u16 playerIndex) {
     RacePlayer *players = D_80120E90;
     RacePlayer *player = &players[playerIndex];
     camera->yaw = func_8004A124(camera->x, camera->z, player->x, player->z);
-    func_8003E1D0(playerIndex);
+    updatePlayerCameraPitch(playerIndex);
 }
 
 void clampPlayerCameraDistance(u16 playerIndex) {
@@ -3463,7 +3480,7 @@ void clampPlayerCameraHeight(u16 playerIndex) {
     if (height - 120 < view->vpy) {
         view->vpy = height - 120;
         camera->y = height << 8;
-        func_8003E1D0(playerIndex);
+        updatePlayerCameraPitch(playerIndex);
     }
 }
 

@@ -23,6 +23,7 @@ void initPlayerCamera(u16 index);
 void initPlayerCameraAndTarget(u16 index);
 void updatePlayerCameraPosition(u16 index);
 void updatePlayerCameraAngles(u16 playerIndex);
+void updatePlayerCameraPitch(u16 playerIndex);
 
 void updateCurrentPlayerCameraTarget(void);
 
