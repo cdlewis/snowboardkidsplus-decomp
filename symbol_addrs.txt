@@ -2732,3 +2732,5 @@ drawGrowingSprite179Task = 0x800332F8; // type:func
 waitResultNumberDisplayTask = 0x8003686C; // type:func
 
 initializePlayerModeSelectionTask = 0x80031B90; // type:func
+
+initializeTaskMenuFadeIn = 0x80039360; // type:func

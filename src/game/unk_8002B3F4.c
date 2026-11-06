@@ -274,7 +274,9 @@ typedef struct MenuFadeInResource {
     s16 unk00;
     s16 brightness;
     s16 timer;
-    u8 unk06[0xFA];
+    s16 unk06;
+    s16 unk08, unk0A, unk0C, unk0E;
+    u8 unk10[0xF0];
 } MenuFadeInResource;
 
 typedef struct SlidingDisplayResource {
@@ -376,6 +378,7 @@ u8 gResultIconPalettes[4]
     __attribute__((section(".data.result_icon_palettes"))) = {2, 2, 3, 3};
 
 extern u8 D_8013B11A;
+extern u8 D_8013B18D __attribute__((section(".data")));
 /* Assembly and C consumers address this palette subtable directly. */
 extern u8 gMappedIconPalettes[9];
 
@@ -2410,7 +2413,33 @@ void updateTaskMenuFadeIn(void) {
     func_8003881C((TaskResourceRecord *)resource);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80039360);
+void initializeTaskMenuFadeIn(void) {
+    MenuFadeInResource *resource;
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    resource = (MenuFadeInResource *)&D_800D9504[D_8013AE88->resource14];
+    resource->unk0C = 300;
+    resource->brightness = 0;
+    resource->unk0E = 0;
+    resource->unk0A = 0;
+    if (D_8013AFCE == 9) {
+        resource->unk0C = 100;
+    }
+    if (D_8013B18D) {
+        resource->unk08 = D_80120E90[0].unk95E;
+    } else {
+        resource->unk08 = D_80120E90[0].unk95E * 50;
+        if (D_80120E90[0].unk95E == D_80120E90[0].unk960) {
+            resource->unk0E = 1;
+            resource->unk0A = 1000;
+        }
+    }
+    resource->unk00 = D_80120E90[0].unk100[0];
+    D_80120E90[0].unk010 = D_80130BF0[0];
+    setCurrentTaskCallback(updateTaskMenuFadeIn);
+}
 
 void drawTimeRecordHeader(TimeRecordHeaderResource *resource) {
     u8 padding[0x20];
