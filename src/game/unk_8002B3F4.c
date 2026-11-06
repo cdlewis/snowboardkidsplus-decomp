@@ -19,6 +19,18 @@
 #include "game/controller.h"
 #include "psx/libsnd.h"
 
+typedef struct RisingPlayerEffectResource {
+    GsCOORDINATE2 coordinate;
+    u8 unk50[0x50];
+    Position3D offset;
+    u8 unkAC[4];
+    VECTOR scale;
+    SVECTOR rotation;
+    u8 unkC8[0x14];
+    s32 velocity;
+    u8 unkE0[0x20];
+} RisingPlayerEffectResource;
+
 typedef struct PlayerEffectResource {
     GsCOORDINATE2 coordinate;
     u8 unk50[0x60];
@@ -290,6 +302,7 @@ void func_80034090(SlidingDisplayResource *resource);
 void slideRaceTimeDisplayOut(void);
 void func_80033100(void);
 void func_80048714(void);
+void func_80049240(void);
 void func_8004531C(void);
 void func_80044524(void);
 void func_80046044(void);
@@ -2258,7 +2271,27 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800489A0);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80048AA4);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80049168);
+void initializeDelayedPlayerRiseEffectTask(void) {
+    RisingPlayerEffectResource *resource;
+    if (D_8013AE88->data1C == 0) {
+        if (D_8013AE88->resource14 != 0xFFFF) {
+            while (1) {}
+        }
+        D_8013AE88->resource14 = allocateTaskResource();
+        resource = (RisingPlayerEffectResource *)&D_800D9504[D_8013AE88->resource14];
+        GsInitCoordinate2(0, &resource->coordinate);
+        resource->offset.x = 0;
+        resource->offset.y = -64;
+        resource->offset.z = 0;
+        resource->velocity = 0;
+        resource->rotation.vx = resource->rotation.vy = resource->rotation.vz = 0;
+        resource->scale.vx = resource->scale.vy = resource->scale.vz = 0;
+        func_800181B0(1, 0xA00, 0x30);
+        setCurrentTaskCallback(func_80049240);
+    } else {
+        D_8013AE88->data1C--;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80049240);
 

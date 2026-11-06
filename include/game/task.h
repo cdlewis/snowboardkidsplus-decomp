@@ -93,6 +93,7 @@ void initializePlayerDualResourceEffectTask(void);
 void initializeDualResource4C80EffectTask(void);
 void initializeDualResource5100EffectTask(void);
 void initializeSlidingVisualSequenceTask(void);
+void initializeDelayedPlayerRiseEffectTask(void);
 void initializeDualResourceSequenceTask(void);
 void initializeModeDependentDualResourceTask(void);
 GameTask *createCountdownTask(u32 frames);
