@@ -150,6 +150,7 @@ void func_800A525C(void);
 void func_800A6A8C(void);
 void func_800A624C(void);
 void func_8009D354(void);
+void func_800A05C0(void);
 void startUnlockResourceLoad(void);
 void prepareUnlockSelectionResume(void);
 
@@ -454,7 +455,20 @@ s16 findIdentityMappedIndexOrZero(ByteMappingDescriptor *descriptor, s16 value) 
     return result;
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A050C);
+void initializeTaskResourcePairWithOneTickTransition(void) {
+    D_8013AE88->data18 = 0;
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        for (;;) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    if (D_8013AE88->resource16 != 0xFFFF) {
+        for (;;) {}
+    }
+    D_8013AE88->resource16 = allocateTaskResource();
+    func_80070274(2, 0, 1);
+    setCurrentTaskCallback(func_800A05C0);
+    D_8013AE88->unk10 |= 2;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A05C0);
 
