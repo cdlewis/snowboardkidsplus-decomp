@@ -13,6 +13,18 @@ typedef struct GsCOORDINATE2 {
     struct GsCOORDINATE2 *super, *sub;
 } GsCOORDINATE2;
 
+typedef struct GsDOBJ2 {
+    u32 attribute;
+    GsCOORDINATE2 *coord2;
+    u32 *tmd;
+    u32 id;
+} GsDOBJ2;
+
+void GsGetLw(GsCOORDINATE2 *coordinate, MATRIX *out);
+void GsGetLs(GsCOORDINATE2 *coordinate, MATRIX *out);
+void GsSetLightMatrix(MATRIX *matrix);
+void GsSetLsMatrix(MATRIX *matrix);
+
 void GsInitCoordinate2(GsCOORDINATE2 *super, GsCOORDINATE2 *coord);
 
 #ifdef GS_PACKET_ABSOLUTE_ADDRESSING
@@ -40,6 +52,7 @@ typedef struct GsIMAGE {
 
 /* Input begins at the TIM flags word, immediately after the magic word. */
 void GsGetTimInfo(u32 *tim, GsIMAGE *image);
+void GsSortObject4(GsDOBJ2 *object, GsOT *ot, s32 shift, u32 *scratch);
 void GsSortPoly(void *packet, GsOT *ot, u16 depth);
 u32 *GsGetWorkBase(void);
 void func_800BF2C8(u32 value);

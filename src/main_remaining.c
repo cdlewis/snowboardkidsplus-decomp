@@ -653,7 +653,13 @@ void initCurrentPlayerModelParts(void) {
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001AF64);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001B450);
+void sortLitObject(GsDOBJ2 *object) {
+    GsGetLw(object->coord2, D_8013AF98);
+    GsSetLightMatrix(D_8013AF98);
+    GsGetLs(object->coord2, D_8013AF98);
+    GsSetLsMatrix(D_8013AF98);
+    GsSortObject4(object, &D_800EC018[D_8013AF78], 2, (u32 *)0x1F800000);
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001B4EC);
 

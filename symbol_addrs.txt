@@ -1,3 +1,4 @@
+sortLitObject = 0x8001B450; // type:func
 initializeInteractionVisualTask = 0x8005B608; // type:func
 initializeObjectVisualTask = 0x8005B3A8; // type:func
 initializeSelectedCourseTransition = 0x8001E028; // type:func

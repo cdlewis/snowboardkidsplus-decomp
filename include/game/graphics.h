@@ -73,6 +73,9 @@ typedef struct TaskVisualResource {
 } TaskVisualResource;
 
 extern GsOT D_800EBFF0[2];
+extern GsOT D_800EC018[2];
+
+void sortLitObject(GsDOBJ2 *object);
 extern u16 D_8013AF78 __attribute__((section(".data")));
 
 extern POLY_FT4 gTexturedQuadTemplate;
