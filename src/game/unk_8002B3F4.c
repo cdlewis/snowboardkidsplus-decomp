@@ -180,7 +180,8 @@ typedef struct StatsMenuFadeResource {
     s16 unk00;
     s16 brightness;
     s16 timer;
-    u8 unk06[0xFA];
+    s16 unk06;
+    u8 unk08[0xF8];
 } StatsMenuFadeResource;
 
 typedef struct RaceResultsFadeResource {
@@ -405,6 +406,7 @@ void func_8003B94C(void);
 void advanceTaskStatsCountdownAndPlaySound(void);
 void resetTaskStatsCountdown(void);
 void func_8003B020(TaskResourceRecord *resource);
+void func_8003B690(void);
 void func_8003B434(void);
 void func_8003BC18(void);
 
@@ -1943,7 +1945,21 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003B5CC);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003B690);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003B8AC);
+void waitForStatsScoreCountTask(void) {
+    StatsMenuFadeResource *resource;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (StatsMenuFadeResource *)&D_800D9504[D_8013AE88->resource14];
+    resource->unk06 = 3;
+    if (--resource->timer == 0) {
+        setCurrentTaskCallback(func_8003B690);
+    }
+    func_8003AAE0((TaskResourceRecord *)resource);
+    func_8003AD48((TaskResourceRecord *)resource);
+    func_8003B2BC((TaskResourceRecord *)resource);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003B94C);
 
