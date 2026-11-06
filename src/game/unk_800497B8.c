@@ -259,6 +259,12 @@ typedef struct GouraudQuadPacket {
     s16 x3, y3;
 } GouraudQuadPacket;
 
+typedef struct VisualPlacement {
+    u8 flags, unk01;
+    s16 geometryIndex;
+    s32 x, y, z;
+} VisualPlacement;
+
 /* Collectible placements use 0x10-byte records. */
 typedef struct PickupPlacement {
     u16 unk00;
@@ -601,6 +607,9 @@ extern RECT readPixelRectGp;
 
 /* Shared collision regions remain in player_camera_state_tail. */
 extern PlayerCollisionRegion D_80129A18[2];
+extern u8 D_8013B2B5, D_8013B2B6;
+extern VisualPlacement *D_8013B2BC;
+void func_8005B038(void);
 extern PickupPlacement *D_8013B2C0;
 
 /* Shared texture metadata remains in its original data owner. */
@@ -1350,7 +1359,34 @@ void setTaskVisualFrame(TaskVisualResource *resource, TaskVisualFrame *frames, s
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005AC4C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005AF0C);
+void initializePickupVisualTask(void) {
+    TaskVisualResource *resource;
+    u16 i;
+    if ((s16)getModeFilteredGameOptionFlag2() == 0) {
+        func_800149A8();
+    } else {
+        for (i = D_8013B2B5; i < D_8013B2B5 + D_8013B2B6; i++) {
+            if (D_8013B2BC[i].flags & 0x40) {
+                D_8013B2BC[i].flags &= 0xBF;
+            }
+        }
+        if (D_8013AE88->resource14 != 0xFFFF) {
+            while (1) {}
+        }
+        D_8013AE88->resource14 = allocateTaskResource();
+        resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+        GsInitCoordinate2(0, &resource->coordinate);
+        resource->unkC6 = 0x600;
+        resource->unkC8 = 0x80;
+        resource->r0 = resource->g0 = resource->b0 = 0x80;
+        resource->code = POLY_FT4_CODE;
+        resource->framePosition = 0;
+        resource->scaleX = 0x1800;
+        resource->scaleY = 0x1800;
+        resource->scaleZ = 0x1800;
+        setCurrentTaskCallback(func_8005B038);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005B038);
 

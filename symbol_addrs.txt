@@ -2614,3 +2614,5 @@ processTexturedGouraudQuadPrimitive = 0x800557F8; // type:func
 drawRaceTime = 0x80037850; // type:func
 
 updateAnimatedSpriteTask = 0x8007747C; // type:func
+
+initializePickupVisualTask = 0x8005AF0C; // type:func
