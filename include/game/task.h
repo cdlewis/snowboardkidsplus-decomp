@@ -112,3 +112,12 @@ void copyIndexedTaskImagesToVram(s16 index);
 void finishMusicTaskAtDeadline(void);
 
 void resetStateAndBeginResourceLoadTransition(u8 requestLoad);
+
+#if defined(TASK_FLAGS_ABSOLUTE_ADDRESSING)
+extern u8 D_8013AFD7 __attribute__((section(".data")));
+#else
+extern u8 D_8013AFD7;
+#endif
+
+void func_8001DB7C(void);
+void initializeViewAndSelectTaskCallback(void);

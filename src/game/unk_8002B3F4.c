@@ -260,6 +260,8 @@ extern s16 D_8013B10C;
 extern s16 D_8013B0E4;
 extern u16 D_8013B0E6;
 extern s32 D_8013B0E8;
+extern s32 D_8013AF84 __attribute__((section(".data")));
+extern u8 D_8013AFCD __attribute__((section(".data")));
 
 void func_800335E4(SlidingTimeResource *resource);
 void func_800497B8(void);
@@ -279,6 +281,8 @@ void func_8003E1D0(u16 playerIndex);
 void func_8003E60C(u16 index);
 void func_8003EE70(void);
 void func_8002F5F8(void);
+void func_8003DF3C(u16 index);
+void func_8003DEE0(void);
 void func_80032F84(void);
 void func_80033404(void);
 void func_80033C2C(void);
@@ -697,7 +701,21 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002F468);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002F548);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002F584);
+void initializeViewAndSelectTaskCallback(void) {
+    if (D_8013AE88->data1E != 0) {
+        D_8013AF84 = 0x100;
+        func_8003DF3C(0);
+        func_8003DEE0();
+        if (D_8013AFD7 != 0) {
+            goto restore;
+        }
+    } else {
+restore:
+        func_800149A8();
+        return;
+    }
+    setCurrentTaskCallback(func_8001DB7C);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002F5F8);
 
