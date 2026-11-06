@@ -1846,6 +1846,7 @@ selectTaskCallbackFromModeState = 0x800A09FC; // type:func
 averageWrappedAngle = 0x80028608; // type:func
 
 addTextCharacter = 0x8006B2E4; // type:func
+addStretchedTextCharacter = 0x8006B38C; // type:func
 
 findTextEntryInsertionPoint = 0x800A5F90; // type:func
 

@@ -1706,7 +1706,34 @@ void addTextCharacter(s32 x, s32 y, u32 character) {
     GsOUT_PACKET_P = (u32)(sprite + 1);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006B38C);
+void addStretchedTextCharacter(s32 x, s32 y, s32 width, u32 character) {
+    POLY_FT4 *quad;
+    width = x + width - 1;
+    quad = (POLY_FT4 *)GsOUT_PACKET_P;
+    quad->tag = (sizeof(POLY_FT4) / sizeof(u32) - 1) << 24;
+    setcode(quad, POLY_FT4_CODE);
+    quad->clut = getClut(768, D_8013B376 + 240);
+    quad->tpage = getTPage(0, 0, 960, 256);
+    setRGB0(quad, 255, 255, 255);
+    quad->y0 = y;
+    quad->y1 = y;
+    quad->y2 = y + 7;
+    quad->y3 = y + 7;
+    quad->x1 = width;
+    quad->x3 = width;
+    quad->u0 = (character & 31) << 3;
+    quad->v0 = (character >> 3) & 24;
+    quad->x0 = x;
+    quad->x2 = x;
+    quad->u1 = quad->u0 + 7;
+    quad->v1 = quad->v0;
+    quad->u2 = quad->u0;
+    quad->v2 = quad->v0 + 7;
+    quad->u3 = quad->u0 + 7;
+    quad->v3 = quad->v0 + 7;
+    addPrim(D_8013AF6C, quad);
+    GsOUT_PACKET_P = (u32)(quad + 1);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006B4A0);
 
