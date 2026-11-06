@@ -43,7 +43,7 @@ void func_80072340(s32 x, s32 y, s32 width, s32 height, s32 r, s32 g, s32 b,
                    GsOT *ot, u16 depth);
 void func_80071490(s32 mode, s32 value1, s32 value2);
 void func_8007197C(void);
-void func_800761CC(void);
+void updateCountdownTask(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80070274);
 
@@ -250,7 +250,7 @@ GameTask *createCountdownTask(u32 frames) {
     GameTask *task;
     TaskResourceRecord *resource;
 
-    func_80014874(func_800761CC);
+    func_80014874(updateCountdownTask);
     D_8013AE8C->data18 = 0;
     D_8013AE8C->data1A = 0;
     D_8013AE8C->resource14 = allocateTaskResource();
@@ -260,7 +260,22 @@ GameTask *createCountdownTask(u32 frames) {
     return task;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_800761CC);
+void updateCountdownTask(void) {
+    TaskResourceRecord *resource;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = &D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->data18 != 0) {
+        func_800149A8();
+    } else if (resource->unk04 != 0) {
+        resource->unk04--;
+        D_8013AE88->data1A = 0;
+    } else {
+        D_8013AE88->data1A = 1;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80076258);
 
