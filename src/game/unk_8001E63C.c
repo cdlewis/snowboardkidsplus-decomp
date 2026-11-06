@@ -33,6 +33,7 @@ u8 *D_8012090C[10] = {
 };
 
 
+s32 func_800183FC(u16 playerIndex, u8 bank, u16 sound, s16 volume);
 void func_800240D0(void);
 void func_80024288(void);
 void func_80026DAC(void);
@@ -41,7 +42,7 @@ void func_800255C4(void);
 void func_8002AE6C(void);
 s32 func_80017268(void);
 void func_80025840(void);
-void func_80025A38(void);
+void advanceCurrentPlayerTaskOnAnimationFlag(void);
 void func_80025B08(void);
 void func_80025DD8(void);
 void func_80025FAC(void);
@@ -54,7 +55,7 @@ void func_80026BAC(void);
 
 TaskCallback gCurrentPlayerTaskPhaseCallbacks[8]
     __attribute__((section(".data.player_task_phases"))) = {
-    func_80025840, func_80025A38, func_80025B08, func_80025DD8,
+    func_80025840, advanceCurrentPlayerTaskOnAnimationFlag, func_80025B08, func_80025DD8,
     func_80025FAC, func_80026010, func_800260E4, func_80026500
 };
 
@@ -388,7 +389,25 @@ void updateCurrentPlayerFromTaskPhase(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80025840);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80025A38);
+void advanceCurrentPlayerTaskOnAnimationFlag(void) {
+    RacePlayer *player;
+    if (D_8013B0D8->animationFlags & 0x10) {
+        D_8013AE88->data1A++;
+        func_800183FC(D_8013AE88->data18, 1, 0x601, 0x20);
+        player = D_8013B0D8;
+        player->unk0B6 = player->unk126;
+        player->x = D_80123D80[D_8013AFCE].unk04[5];
+        player->z = D_80123D80[D_8013AFCE].unk04[7];
+        player->unk062 = -0xC00;
+        player->unk08C = 30;
+        startCurrentPlayerAnimation(4, 2);
+        if (D_8013B0D8->unk128 & 0x400) {
+            D_8013B0D8->unk090 = -0x800;
+        } else {
+            D_8013B0D8->unk090 = 0x800;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80025B08);
 

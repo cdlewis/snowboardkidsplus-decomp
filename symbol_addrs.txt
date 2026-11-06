@@ -2126,3 +2126,5 @@ queueCdCommand = 0x80013DD0; // type:func
 gCdCommands = 0x800D7B84; // size:0x20
 
 applyStereoSoundOption = 0x80017BAC; // type:func
+
+advanceCurrentPlayerTaskOnAnimationFlag = 0x80025A38; // type:func
