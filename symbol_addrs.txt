@@ -2665,3 +2665,8 @@ loadCurrentPlayerModelPose = 0x8009747C; // type:func
 moveTaskChildrenWithSpacing = 0x80073950; // type:func
 
 createValuePanelTask = 0x8007AA58;
+
+setSecondaryResourceEntryTask = 0x800A68B4; // type:func
+gSecondaryResourceLocations = 0x80132B98; // size:0x1B0 defined:true
+gSecondaryResourceModeOffsets = 0x80132D48; // size:0xC defined:true
+gSecondaryResourceDisplayTask = 0x8013B6C0; // size:0x4 defined:true

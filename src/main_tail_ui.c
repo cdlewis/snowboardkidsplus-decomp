@@ -61,11 +61,143 @@ typedef struct TextTaskResource {
     u8 unk34[0xCC];
 } TextTaskResource;
 
+typedef struct SecondaryOwner {
+    u8 unk00[0x24];
+    u32 tick;
+    u16 flags;
+    u16 resource;
+    GameTask *task;
+} SecondaryOwner;
+typedef struct SecondaryResource {
+    TextEntry *entry;
+    u32 deadline;
+} SecondaryResource;
+typedef struct CdResourceLocation {
+    s16 sector;
+    s16 count;
+} CdResourceLocation;
+
 typedef struct TextEntryListHeader {
     TextEntry *freeEntries;
     TextEntry *activeEntries;
 } TextEntryListHeader;
 
+
+CdResourceLocation gSecondaryResourceLocations[108] __attribute__((section(".data.secondary_resource_tables"))) = {
+    {0x1B49, 0x0026},
+    {0x136B, 0x0026},
+    {0x1391, 0x0026},
+    {0x13B7, 0x0026},
+    {0x13DD, 0x0026},
+    {0x1403, 0x0026},
+    {0x1429, 0x0026},
+    {0x144F, 0x0026},
+    {0x1475, 0x0026},
+    {0x149B, 0x0026},
+    {0x14C1, 0x0026},
+    {0x14E7, 0x0026},
+    {0x150D, 0x0026},
+    {0x1533, 0x0026},
+    {0x1559, 0x0026},
+    {0x157F, 0x0026},
+    {0x15A5, 0x0026},
+    {0x15CB, 0x0026},
+    {0x15F1, 0x0026},
+    {0x1617, 0x0026},
+    {0x163D, 0x0026},
+    {0x1663, 0x0026},
+    {0x1689, 0x0026},
+    {0x16AF, 0x0026},
+    {0x16D5, 0x0026},
+    {0x16FB, 0x0026},
+    {0x1721, 0x0026},
+    {0x1747, 0x0026},
+    {0x176D, 0x0026},
+    {0x1793, 0x0026},
+    {0x17B9, 0x0026},
+    {0x17DF, 0x0026},
+    {0x1805, 0x0026},
+    {0x182B, 0x0026},
+    {0x1851, 0x0026},
+    {0x1877, 0x0026},
+    {0x189D, 0x0026},
+    {0x18C3, 0x0026},
+    {0x18E9, 0x0026},
+    {0x190F, 0x0026},
+    {0x1935, 0x0026},
+    {0x195B, 0x0026},
+    {0x1981, 0x0026},
+    {0x19A7, 0x0026},
+    {0x19CD, 0x0026},
+    {0x19F3, 0x0026},
+    {0x1A19, 0x0026},
+    {0x1A3F, 0x0026},
+    {0x1A65, 0x0026},
+    {0x1A8B, 0x0026},
+    {0x1AB1, 0x0026},
+    {0x1AD7, 0x0026},
+    {0x1AFD, 0x0026},
+    {0x1B23, 0x0026},
+    {0x1B49, 0x0026},
+    {0x1B6F, 0x0026},
+    {0x1B95, 0x0026},
+    {0x1BBB, 0x0026},
+    {0x1BE1, 0x0026},
+    {0x1C07, 0x0026},
+    {0x1C2D, 0x0026},
+    {0x1C53, 0x0026},
+    {0x1C79, 0x0026},
+    {0x1C9F, 0x0026},
+    {0x1CC5, 0x0026},
+    {0x1CEB, 0x0026},
+    {0x1D11, 0x0026},
+    {0x1D37, 0x0026},
+    {0x1D5D, 0x0026},
+    {0x1D83, 0x0026},
+    {0x1DA9, 0x0026},
+    {0x1DCF, 0x0026},
+    {0x1DF5, 0x0026},
+    {0x1E1B, 0x0026},
+    {0x1E41, 0x0026},
+    {0x1E67, 0x0026},
+    {0x1E8D, 0x0026},
+    {0x1EB3, 0x0026},
+    {0x1ED9, 0x0026},
+    {0x1EFF, 0x0026},
+    {0x1F25, 0x0026},
+    {0x1F4B, 0x0026},
+    {0x1F71, 0x0026},
+    {0x1F97, 0x0026},
+    {0x1FBD, 0x0026},
+    {0x1FE3, 0x0026},
+    {0x2009, 0x0026},
+    {0x202F, 0x0026},
+    {0x2055, 0x0026},
+    {0x207B, 0x0026},
+    {0x20A1, 0x0026},
+    {0x20C7, 0x0026},
+    {0x20ED, 0x0026},
+    {0x2113, 0x0026},
+    {0x2139, 0x0026},
+    {0x215F, 0x0026},
+    {0x2185, 0x0026},
+    {0x21AB, 0x0026},
+    {0x21D1, 0x0026},
+    {0x21F7, 0x0026},
+    {0x221D, 0x0026},
+    {0x2243, 0x0026},
+    {0x2269, 0x0026},
+    {0x228F, 0x0026},
+    {0x22B5, 0x0026},
+    {0x22DB, 0x0026},
+    {0x2301, 0x0026},
+    {0x2327, 0x0026},
+};
+u8 gSecondaryResourceModeOffsets[12] __attribute__((section(".data.secondary_resource_tables"))) = {
+    0, 31, 40, 46, 53, 62, 67, 78, 85, 93, 101, 108
+};
+
+GameTask *gSecondaryResourceDisplayTask __attribute__((section(".sdata.secondary_resource_display_task"))) = NULL;
 
 extern u8 D_8013AF3A __attribute__((section(".data")));
 extern s16 D_8013B10C __attribute__((section(".data")));
@@ -103,6 +235,7 @@ void resetUnlockMenuAnimation(UnlockMenuState *state);
 void func_8007BBAC(s16 index);
 void func_800A3D9C(void);
 void func_800A525C(void);
+void initializeSecondaryResourceTask(void);
 void func_800A6A8C(void);
 void func_800A6E88(void);
 
@@ -636,7 +769,33 @@ INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A6548);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A6684);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A68B4);
+void setSecondaryResourceEntryTask(TextEntry *entry) {
+    SecondaryOwner *owner;
+    SecondaryResource *resource;
+    s16 index;
+    if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
+    owner = (SecondaryOwner *)&D_800D9504[D_8013AE88->resource16];
+    if (entry == NULL || entry->unk06 == 0) {
+        owner->task = NULL;
+        gSecondaryResourceDisplayTask = NULL;
+    } else {
+        func_80014874(initializeSecondaryResourceTask);
+        D_8013AE8C->resource14 = allocateTaskResource();
+        resource = (SecondaryResource *)&D_800D9504[D_8013AE8C->resource14];
+        resource->entry = entry;
+        owner->task = D_8013AE8C;
+        if (entry->unk08 == 0) resource->deadline = 0;
+        else resource->deadline = owner->tick + entry->unk0A;
+        owner->flags |= 1;
+        if (entry->unk06 != owner->resource) {
+            owner->resource = entry->unk06;
+            index = gSecondaryResourceModeOffsets[D_8013AF3A] + entry->unk06 - 1;
+            resetPendingCdRequests();
+            queueCdSectorCommand(0, gSecondaryResourceLocations[index].sector, gSecondaryResourceLocations[index].count, (void *)0x80184060, 0);
+        }
+    }
+}
+
 
 void initializeSecondaryResourceTask(void) {
     if (D_8013AE98->resource16 == 0xFFFF) {

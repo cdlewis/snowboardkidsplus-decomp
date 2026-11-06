@@ -619,6 +619,8 @@ segments:
       - [0x122F8C, data, 122F8C]
       - {start: 0x123100, type: .data, name: main_tail, linker_section: .data.number_adjustment_arrow}
       - [0x123114, data, 123114]
+      - {start: 0x123398, type: .data, name: main_tail_ui, linker_section: .data.secondary_resource_tables}
+      - [0x123554, data, secondary_resource_tables_tail]
       - {start: 0x1235BC, type: .data, name: syslib/libmath/ferr, linker_section: .data.math_error}
       - [0x1235C4, lib, libsnd, ssinit, .data]
       - [0x123604, lib, libspu, s_ini, .data]
@@ -722,6 +724,8 @@ segments:
       - {start: 0x12BEA4, type: .sdata, name: game/unk_800497B8, linker_section: .sdata.object_sort_saved_stack, linker_section_order: .data}
       - {start: 0x12BEA8, type: .sdata, name: game/unk_800497B8, linker_section: .sdata.alternate_object_sort_saved_stack, linker_section_order: .data}
       - [0x12BEAC, data]
+      - {start: 0x12BEC0, type: .sdata, name: main_tail_ui, linker_section: .sdata.secondary_resource_display_task, linker_section_order: .data}
+      - [0x12BEC4, data, secondary_resource_display_task_tail]
 
   - name: movie_decode_state_bss
     type: code
