@@ -2357,3 +2357,5 @@ gGridResourceFirstSectorRanges = 0x801205AC; // size:0xC8 defined:true
 getNearestCameraManhattanDistance = 0x80018288; // type:func
 
 updatePanelExitInputTask = 0x8003C5D8; // type:func
+
+addGouraudQuad = 0x80060284; // type:func
