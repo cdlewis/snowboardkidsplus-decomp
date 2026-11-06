@@ -45,5 +45,7 @@ typedef struct GsIMAGE {
 /* Input begins at the TIM flags word, immediately after the magic word. */
 void GsGetTimInfo(u32 *tim, GsIMAGE *image);
 void GsSortPoly(void *packet, GsOT *ot, u16 depth);
+u32 *GsGetWorkBase(void);
+void func_800BF2C8(u32 value);
 
 MATRIX *RotMatrixZYX(SVECTOR *rotation, MATRIX *matrix);
