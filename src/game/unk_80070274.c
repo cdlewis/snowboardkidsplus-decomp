@@ -70,6 +70,12 @@ typedef struct TaskValueState {
     u16 unk06;
 } TaskValueState;
 
+TimedSequenceEntry gSecondaryTaskSequenceEntries[6]
+    __attribute__((section(".data.secondary_task_sequence"))) = {
+    {0x000C0172, 6}, {0x000C0173, 6}, {0x000C0174, 6},
+    {0x000C0175, 6}, {0x000C0176, 6}, {0x000C0177, 6}
+};
+
 u16 gTextPanelMessage[] __attribute__((section(".data.text_panel_message"))) = {
     0xC00F, 0x0049, 0x0040, 0x0069, 0x004A, 0x0052,
     0x0158, 0x00BF, 0x0096, 0x00B9, 0x00C0, 0x00CE,
@@ -99,6 +105,8 @@ void func_80071490(s32 mode, s32 value1, s32 value2);
 void func_8006EF30(s32 x, s32 y, s16 columns, const u16 *text,
                    s32 palette, s16 blendMode, GsOT *ot, u16 depth);
 void func_8007197C(void);
+void func_80071A80(void);
+void initTimedSequence(TimedSequence *sequence, const TimedSequenceEntry *entries, s16 index, s16 count);
 void updateCountdownTask(void);
 void func_80076034(void);
 void func_8007724C(void);
@@ -243,7 +251,29 @@ void clearSecondaryTaskReference(void) {
     D_8013B37C = NULL;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_800719A8);
+void setSecondaryDisplayTaskMode(s16 mode) {
+    switch (mode) {
+    case 1: case 2: case 3:
+        if (D_8013B37C != NULL) {
+            D_8013B37C->data18 = 0;
+        }
+        func_80014930(&D_800D7C64, func_80071A80);
+        D_8013B37C = D_8013AE8C;
+        D_8013AE8C->data18 = mode;
+        D_8013AE8C->data1C = 0;
+        D_8013AE8C->data1E = 0;
+        D_8013AE8C->resource14 = allocateTaskResource();
+        initTimedSequence((TimedSequence *)&D_800D9504[D_8013AE8C->resource14], gSecondaryTaskSequenceEntries, 0, 6);
+        break;
+    case 0:
+    default:
+        if (D_8013B37C != NULL) {
+            D_8013B37C->data18 = 0;
+            D_8013B37C = NULL;
+        }
+        break;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80071A80);
 

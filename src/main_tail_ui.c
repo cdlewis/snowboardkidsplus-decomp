@@ -126,7 +126,7 @@ void selectTaskBySelectedRecordMatch(void) {
 }
 
 void startMode1TaskTransition(void) {
-    func_800719A8(1);
+    setSecondaryDisplayTaskMode(1);
     func_80070274(1, 0, 30);
     setCurrentTaskCallback(initializeGameOptionViewTask);
 }
@@ -258,12 +258,12 @@ void startUnlockActionAfterCountdown(void) {
 INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A5050);
 
 void resumeUnlockSelectionTask(void) {
-    func_800719A8(0);
+    setSecondaryDisplayTaskMode(0);
     setCurrentTaskCallback(func_800A499C);
 }
 
 void prepareUnlockSelectionResume(void) {
-    func_800719A8(3);
+    setSecondaryDisplayTaskMode(3);
     D_8013B10C = -1;
     func_8002FA58(2);
     setCurrentTaskCallback(resumeUnlockSelectionTask);

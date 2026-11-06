@@ -69,7 +69,7 @@ void deletePendingTaskSubtree(void);
 void setCurrentTaskCallback(TaskCallback callback);
 void resetTaskCallbackOnFlag4(void);
 void restoreSavedStateAndHandleFlag4(void);
-void func_800719A8(s16 mode);
+void setSecondaryDisplayTaskMode(s16 mode);
 void deleteCurrentTask(void);
 u32 allocateTaskResource(void);
 void releaseTaskResource(u16 resource);

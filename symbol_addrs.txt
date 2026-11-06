@@ -2464,3 +2464,6 @@ waitResultDisplayTaskFlagsTask = 0x800362FC; // type:func
 emitProjectedFlatTriangle = 0x80052530; // type:func
 
 createFallingParticleTask = 0x80062DA8; // type:func
+
+setSecondaryDisplayTaskMode = 0x800719A8; // type:func
+gSecondaryTaskSequenceEntries = 0x8012F10C; // size:0x30

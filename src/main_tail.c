@@ -726,7 +726,7 @@ void initializeTextSequenceTask(void) {
     resource->duration = 0;
     resource->intensity = 0x80;
     resource->unk3A = 0;
-    func_800719A8(0);
+    setSecondaryDisplayTaskMode(0);
     func_80070274(1, 0, 30);
     if (resource->mode != 1 || resource->unk0A != 9) {
         func_80013DD0(3, 0);

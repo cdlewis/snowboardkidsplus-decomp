@@ -873,7 +873,7 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002FE18);
 
 void initializeMode11TransitionTask(void) {
     func_80070274(11, 0, 30);
-    func_800719A8(1);
+    setSecondaryDisplayTaskMode(1);
     func_8002FCF8();
     setCurrentTaskCallback(func_8002FE18);
     D_8013AE88->unk10 |= 2;

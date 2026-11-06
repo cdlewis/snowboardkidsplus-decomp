@@ -2035,7 +2035,7 @@ void finishTimedSpritePresentation(void) {
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006AB8C);
 
 void initializeTimedSpritePresentation(void) {
-    func_800719A8(0);
+    setSecondaryDisplayTaskMode(0);
     queueCdCommand(6, 1);
     D_8013B35C = 0;
     D_8013B360 = 0;
