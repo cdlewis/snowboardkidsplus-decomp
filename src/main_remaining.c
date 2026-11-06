@@ -545,7 +545,23 @@ s32 attenuateSoundVolume(s32 distance, s16 volume) {
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_800183FC);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80018538);
+s32 playPositionalSoundEffect(s32 x, s32 y, s32 z, u8 bank, u16 programAndTone, s16 volume) {
+    u16 note;
+    volume = attenuateSoundVolume(getNearestCameraManhattanDistance(x, y, z), volume);
+    note = programAndTone;
+    if (volume == 0) return 0xFF;
+    if (gSoundBankLoaded[bank]) {
+        D_8013AF29++;
+        if ((s8)D_8013AF29 >= 12) {
+            D_8013AF29 = 0;
+        }
+        SsUtKeyOffV((s8)D_8013AF29);
+        SsUtKeyOnV((s8)D_8013AF29, bank, programAndTone & 0xFF,
+                   note >> 8, note >> 8, 0, volume, volume);
+        return (s8)D_8013AF29;
+    }
+    return 0xFF;
+}
 
 s32 playOwnedSoundEffect(u8 owner, u8 bank, u16 note, s16 volume) {
     u8 i;

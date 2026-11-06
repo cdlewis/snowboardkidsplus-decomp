@@ -2752,7 +2752,7 @@ void resetTaskVisualState(TaskVisualResource *resource) {
     resource->r0 = resource->g0 = resource->b0 = 0x80;
     resource->code = POLY_FT4_CODE;
     resource->framePosition = 0;
-    func_80018538(resource->position.x, resource->position.y, resource->position.z,
+    playPositionalSoundEffect(resource->position.x, resource->position.y, resource->position.z,
                   1, 0x700, 0x20);
     setCurrentTaskCallback(updateOneShotTaskVisual);
 }

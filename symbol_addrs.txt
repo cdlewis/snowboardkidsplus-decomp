@@ -22,6 +22,7 @@ updateCurrentPlayerVerticalMotionUntilLanding = 0x80025508; // type:func
 resetCurrentPlayerForCallback25508 = 0x8001FCB4; // type:func
 drawIndexedFlatQuad = 0x80055390; // type:func
 playSoundEffect = 0x800181B0; // type:func
+playPositionalSoundEffect = 0x80018538; // type:func
 initializeGameOptionViewTask = 0x8001B7F0; // type:func
 checkCurrentPlayerSurfaceType = 0x8002DD70; // type:func
 drawIndexedFlatTriangle = 0x80054E70; // type:func

@@ -48,7 +48,7 @@ s32 playSoundEffect(u8 bank, u16 programAndTone, s16 volume);
 s32 func_800183FC(u16 playerIndex, u8 bank, u16 sound, s16 volume);
 
 /* Positional counterpart of playSoundEffect; returns the voice or 0xFF. */
-s32 func_80018538(s32 x, s32 y, s32 z, u8 bank, u16 programAndTone, s16 volume);
+s32 playPositionalSoundEffect(s32 x, s32 y, s32 z, u8 bank, u16 programAndTone, s16 volume);
 
 /* Fade the serial audio volume from start toward end by step per update. */
 void startCdVolumeFade(s16 start, s16 step, s16 end, u8 mode);
