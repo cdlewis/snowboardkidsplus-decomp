@@ -67,6 +67,16 @@ typedef struct SavedImageEntry {
     u16 pixels[32];
 } SavedImageEntry;
 
+extern char D_800101B8[];
+extern char D_800101D0[];
+extern char D_800101E8[];
+extern char D_80010200[];
+extern char D_80010218[];
+
+char *gMemoryCardFileNames[5] __attribute__((section(".data.memory_card_file_names"))) = {
+    D_800101B8, D_800101D0, D_800101E8, D_80010200, D_80010218
+};
+
 u8 D_80120200[16] __attribute__((section(".data.player_model_parts"))) = {
     255, 0, 1, 2, 1, 4, 1, 6, 6, 8, 6, 10, 0, 0, 0, 0
 };
@@ -141,6 +151,8 @@ extern u8 D_8013B1AB __attribute__((section(".data")));
 extern u16 D_8013AFE8;
 extern void *D_8013AF4C;
 extern void *gMemoryCardLoadDestination;
+extern u8 D_8013AF3A;
+extern u8 D_8013AF48;
 
 int strcmp(const char *, const char *);
 
@@ -160,7 +172,7 @@ void uploadTimArchive(TimArchive *archive, s16 *position);
 void *memcpy(void *destination, const void *source, unsigned int size);
 u16 func_800162C8(void);
 s32 func_80017268(void);
-void func_80018D80(u8 slot, void *destination);
+void selectMemoryCardLoadFile(u8 slot, void *destination);
 void pollMemoryCardBufferReadTask(void);
 void func_8001C0DC(void);
 void func_8003DEE0(void);
@@ -563,7 +575,23 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80018AA4);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80018BA4);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80018D80);
+void selectMemoryCardLoadFile(u8 slot, void *destination) {
+    switch (slot) {
+    case 1:
+    case 2:
+    case 3:
+        gMemoryCardFileNames[slot][18] = (D_8013AFCE / 10) | 0x30;
+        gMemoryCardFileNames[slot][19] = (D_8013AFCE % 10) | 0x30;
+        break;
+    case 4:
+        gMemoryCardFileNames[4][18] = (D_8013AF3A / 10) | 0x30;
+        gMemoryCardFileNames[4][19] = (D_8013AF3A % 10) | 0x30;
+        break;
+    }
+    gMemoryCardLoadDestination = destination;
+    D_8013AF48 = slot;
+    D_8013AF40 = gMemoryCardFileNames[slot];
+}
 
 s16 validateAndCopyMemoryCardSave(void) {
     u32 i;
@@ -628,7 +656,7 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_800198EC);
 
 void beginMemoryCardBufferRead(void) {
     if (tryAcceptMemoryCard() == 1) {
-        func_80018D80(0, D_8013AF4C);
+        selectMemoryCardLoadFile(0, D_8013AF4C);
         setCurrentTaskCallback(pollMemoryCardBufferReadTask);
     }
 }

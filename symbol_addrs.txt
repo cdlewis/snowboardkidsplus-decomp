@@ -2411,3 +2411,11 @@ updatePlayerRenderSnapshots = 0x80060E80; // type:func
 gPlayerRenderSnapshots = 0x8012C72C; // size:0x70 defined:true
 gPreviousPlayerRenderSnapshots = 0x8012C79C; // size:0x70 defined:true
 gPlayerRenderIdentityMatrix = 0x8012C80C; // size:0x20 defined:true
+
+selectMemoryCardLoadFile = 0x80018D80; // type:func
+gMemoryCardFileNames = 0x800EB528; // size:0x14 defined:true
+D_800101B8 = 0x800101B8;
+D_800101D0 = 0x800101D0;
+D_800101E8 = 0x800101E8;
+D_80010200 = 0x80010200;
+D_80010218 = 0x80010218;
