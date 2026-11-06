@@ -1978,6 +1978,7 @@ gSynchronizedFrameCount = 0x8013AFB0; // type:u32 size:0x4
 
 initializeTaskFade = 0x800377E0; // type:func
 drawCurrentTaskMenu = 0x80038A28; // type:func
+drawTaskMenuAndSetFlag10OnInput = 0x80038A98; // type:func
 
 compareRaceTimes = 0x8003C9A4; // type:func
 advanceRaceElapsedTime = 0x800439AC; // type:func
