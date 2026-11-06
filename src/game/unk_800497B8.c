@@ -38,6 +38,8 @@ typedef struct CourseOffsetResource {
     SVECTOR rotation;
 } CourseOffsetResource;
 
+typedef struct CourseSectorRange { s16 sector, count; } CourseSectorRange;
+
 typedef struct TriangleColor { u8 r, g, b, code; } TriangleColor;
 typedef struct GouraudTrianglePrimitive {
     u32 command;
@@ -554,6 +556,48 @@ u8 gUppercaseGlyphMetrics[52] __attribute__((section(".data.uppercase_glyph_metr
     0xB4, 0x08, 0xBC, 0x09, 0xC8, 0x0A, 0xD4, 0x09,
     0xE0, 0x0A, 0xEC, 0x08,
 };
+
+/* Sector ranges for the selected course and its one-sector metadata block. */
+CourseSectorRange gCourseResourceSectors[10][3] __attribute__((section(".data.course_sector_resources"))) = {
+    {{0x0C9D, 0x000F}, {0x0CAC, 0x003E}, {0x0CEA, 0x005A}},
+    {{0x0D48, 0x0010}, {0x0D58, 0x004E}, {0x0DA6, 0x0060}},
+    {{0x0E09, 0x000B}, {0x0E14, 0x0037}, {0x0E4B, 0x0060}},
+    {{0x0EAC, 0x0011}, {0x0EBD, 0x0055}, {0x0F12, 0x0060}},
+    {{0x0F73, 0x000C}, {0x0F7F, 0x0039}, {0x0FB8, 0x0060}},
+    {{0x101C, 0x0011}, {0x102D, 0x0055}, {0x1082, 0x0060}},
+    {{0x10E3, 0x000C}, {0x10EF, 0x003F}, {0x112E, 0x0062}},
+    {{0x11A4, 0x0005}, {0x11A9, 0x0018}, {0x11C1, 0x003C}},
+    {{0x11FE, 0x0004}, {0x1202, 0x0017}, {0x1219, 0x0046}},
+    {{0x1265, 0x0005}, {0x126A, 0x0019}, {0x1283, 0x005E}}
+};
+
+CourseSectorRange gCourseMetadataSectors[10] __attribute__((section(".data.course_sector_resources"))) = {
+    {0x0D44, 0x0001},
+    {0x0E06, 0x0001},
+    {0x0EAB, 0x0001},
+    {0x0F72, 0x0001},
+    {0x1018, 0x0001},
+    {0x10E2, 0x0001},
+    {0x1190, 0x0001},
+    {0x11FD, 0x0001},
+    {0x1264, 0x0001},
+    {0x12E4, 0x0001}
+};
+
+CourseSectorRange gCourseOptionalResourceSectors[10] __attribute__((section(".data.course_sector_resources"))) = {
+    {0x0D45, 0x0003},
+    {0x0E07, 0x0002},
+    {0x0000, 0x0000},
+    {0x0000, 0x0000},
+    {0x1019, 0x0003},
+    {0x0000, 0x0000},
+    {0x1191, 0x0003},
+    {0x0000, 0x0000},
+    {0x125F, 0x0005},
+    {0x12E1, 0x0003}
+};
+
+u8 gCourseMetadataBuffer[0x800] __attribute__((section(".data.course_sector_resources"), aligned(4))) = {0};
 
 /* Semi-transparent screen copies displaced one pixel horizontally. */
 TexturedSpritePacket gScreenCopyPlusBuffer1[2] __attribute__((section(".data.offset_screen_copy_sprites"))) = {
@@ -1440,7 +1484,18 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80058844);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800589F0);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80058A78);
+void queueCourseResourceSectorReads(void) {
+    queueCdSectorCommand(0, gCourseResourceSectors[D_8013AFCE][0].sector, gCourseResourceSectors[D_8013AFCE][0].count, (void *)0x801C0000, 0);
+    queueCdSectorCommand(0, gCourseResourceSectors[D_8013AFCE][1].sector, gCourseResourceSectors[D_8013AFCE][1].count, (void *)0x801C8800, 0);
+    queueCdSectorCommand(2, gCourseResourceSectors[D_8013AFCE][2].sector, gCourseResourceSectors[D_8013AFCE][2].count, (void *)0x80180000, 0);
+    queueCdSectorCommand(0, gCourseMetadataSectors[D_8013AFCE].sector, gCourseMetadataSectors[D_8013AFCE].count, gCourseMetadataBuffer, 0);
+    if ((u16)gCourseOptionalResourceSectors[D_8013AFCE].sector != 0) {
+        queueCdSectorCommand(0, gCourseOptionalResourceSectors[D_8013AFCE].sector, gCourseOptionalResourceSectors[D_8013AFCE].count, (void *)0x801F0800, 0);
+    }
+    if (D_8013AFCE == 6) {
+        queueCdSectorCommand(16, 0x1194, 16, (void *)0x80180000, 0);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80058BD4);
 

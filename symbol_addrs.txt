@@ -2840,3 +2840,9 @@ initializeRaceResultsTask = 0x8003A96C; // type:func
 playCurrentPlayerSoundEffect = 0x8002E44C; // type:func
 gPlayerSoundVariantsA = 0x8013B0DC; // size:0x4
 gPlayerSoundVariantsB = 0x8013B0E0; // size:0x4
+
+queueCourseResourceSectorReads = 0x80058A78; // type:func
+gCourseResourceSectors = 0x80125114; // size:0x78 defined:true
+gCourseMetadataSectors = 0x8012518C; // size:0x28 defined:true
+gCourseOptionalResourceSectors = 0x801251B4; // size:0x28 defined:true
+gCourseMetadataBuffer = 0x801251DC; // size:0x800 defined:true
