@@ -109,6 +109,7 @@ void setSpriteColor(s32 r, s32 g, s32 b);
 void func_800A7D8C(s16 x, s16 y, s16 width, s16 height, s16 tpage,
                    s16 clut, GsOT *ot, u16 depth);
 void drawFullScreenTexturedBackground(void);
+void drawBlackScreenTask(void);
 void drawDefaultTexturedPanel(s16 x, s16 y, s16 w, s16 h, s16 clutOffset,
                               s16 blendMode, struct GsOT *ot, u16 depth);
 void drawStyle20DTexturedPanel(s16 x, s16 y, s16 w, s16 h, s16 clutOffset,
