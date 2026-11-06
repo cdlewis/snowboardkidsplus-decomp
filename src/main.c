@@ -104,6 +104,13 @@ TaskCallback gInitialTaskCallbacks[6] __attribute__((section(".data.initial_task
     initializeGameOptionTask, func_8001E0C0, func_8001E0C0,
     func_8001E148, func_8001E148, func_8001E1B8,
 };
+/* Scratch links used while removing a subtree from the task list. */
+extern GameTask *D_8013AEA0;
+extern GameTask *D_8013AEA4;
+extern GameTask *D_8013AEA8;
+extern GameTask *D_8013AEAC;
+extern GameTask *D_8013AEB0;
+extern u16 D_8013AEB4;
 
 void func_800131B4(void) {
 }
@@ -308,7 +315,33 @@ INCLUDE_ASM("asm/nonmatchings/main", func_800149A8);
 
 INCLUDE_ASM("asm/nonmatchings/main", func_800149E0);
 
-INCLUDE_ASM("asm/nonmatchings/main", func_80014A2C);
+void deletePendingTaskSubtree(void) {
+    u32 depth = D_8013AE88->depth;
+    while (1) {
+        D_8013AEB4++;
+        if (D_8013AEB0->resource14 != 0xFFFF) {
+            releaseTaskResource(D_8013AEB0->resource14);
+        }
+        if (D_8013AEB0->resource16 != 0xFFFF) {
+            releaseTaskResource(D_8013AEB0->resource16);
+        }
+        D_8013AEB0->unk10 = 0xFFFF;
+        D_8013AEA4 = D_8013AEB0->next;
+        if (D_8013AEA4 != 0 && D_8013AEA4->depth > depth) {
+            D_8013AEB0 = D_8013AEA4;
+        } else {
+            break;
+        }
+    }
+    D_8013AEA0->next = D_8013AEAC;
+    D_8013AEA4 = D_8013AEB0->next;
+    D_8013AEA8 = D_8013AEAC->previous;
+    D_8013AEA0 = D_8013AEB0;
+    D_8013AEA8->next = D_8013AEA4;
+    if (D_8013AEA4 != 0) {
+        D_8013AEA4->previous = D_8013AEA8;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main", func_80014B14);
 

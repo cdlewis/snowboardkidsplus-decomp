@@ -2440,3 +2440,5 @@ assignCurrentPlayerFinishSlot = 0x80029EE4; // type:func
 tickMenuSoundDelayStage1Task = 0x8003908C; // type:func
 
 initializeTextSequenceTask = 0x800A0F14; // type:func
+
+deletePendingTaskSubtree = 0x80014A2C; // type:func
