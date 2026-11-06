@@ -529,7 +529,17 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8004A764);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8004AAA0);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8004AC38);
+s32 getGeometryPlacementSignedDistance(s16 index, s32 x, s32 z) {
+    s32 vertexIndex;
+    s32 dx, dz;
+    s32 sine, cosine;
+    vertexIndex = ((GeometryPlacement *)D_8013B1F4)[index].vertexIndex * 3;
+    dx = x - D_8013B1EC[vertexIndex] * 5;
+    dz = z - D_8013B1EC[vertexIndex + 2] * 5;
+    sine = rsin((s16)((GeometryPlacement *)D_8013B1F4)[index].angle);
+    cosine = rcos((s16)((GeometryPlacement *)D_8013B1F4)[index].angle);
+    return (-sine * dx + cosine * -dz) / 4096;
+}
 
 void getGeometryPlacementTransform(s16 index, s32 *x, s32 *y, s32 *z, u16 *angle) {
     *x = D_8013B1EC[((GeometryPlacement *)D_8013B1F4)[index].vertexIndex * 3] * 1280;
