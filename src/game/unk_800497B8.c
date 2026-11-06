@@ -255,6 +255,8 @@ extern GouraudTrianglePrimitive *D_8013B680;
 extern SVECTOR *D_8013B688;
 extern SVECTOR *D_8013AF90 __attribute__((section(".data")));
 extern MATRIX D_8012A6B0, D_8012A6D0;
+extern MATRIX *D_8013AF9C __attribute__((section(".data")));
+extern POLY_FT4 D_8012967C;
 
 ControllerEffectState gControllerEffectStates[2] = {0};
 
@@ -715,7 +717,19 @@ void updateCameraRotationMatrices(u16 playerIndex) {
 }
 
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005A660);
+void prepareTaskVisualQuad(TaskVisualResource *resource, TaskVisualFrame *frame, u8 usePitch) {
+    if (usePitch == 0) {
+        *D_8013AF9C = D_8012A6B0;
+    } else {
+        *D_8013AF9C = D_8012A6D0;
+    }
+    resource->frame = frame;
+    ScaleMatrix(D_8013AF9C, (VECTOR *)&resource->scaleX);
+    D_8012967C.r0 = resource->r0;
+    D_8012967C.g0 = resource->g0;
+    D_8012967C.b0 = resource->b0;
+    D_8012967C.tpage = resource->frame->tpage;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005A788);
 

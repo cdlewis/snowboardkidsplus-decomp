@@ -61,3 +61,5 @@ MATRIX *RotMatrixZYX(SVECTOR *rotation, MATRIX *matrix);
 
 MATRIX *RotMatrix(SVECTOR *rotation, MATRIX *matrix);
 MATRIX *RotMatrixYXZ(SVECTOR *rotation, MATRIX *matrix);
+
+MATRIX *ScaleMatrix(MATRIX *matrix, VECTOR *scale);
