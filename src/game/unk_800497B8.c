@@ -38,6 +38,14 @@ typedef struct FlatQuadPacket {
     s16 x0, y0, x1, y1, x2, y2, x3, y3;
 } FlatQuadPacket;
 
+/* Geometry entries have a 0x1C-byte stride; the origin references a vertex. */
+typedef struct GeometryPlacement {
+    s16 unk00[8];
+    s16 vertexIndex;
+    u16 angle;
+    s16 unk14[4];
+} GeometryPlacement;
+
 typedef struct SelectedStateRecord {
     s16 state;
     s16 unk02;
@@ -259,7 +267,12 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8004AAA0);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8004AC38);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8004AD10);
+void getGeometryPlacementTransform(s16 index, s32 *x, s32 *y, s32 *z, u16 *angle) {
+    *x = D_8013B1EC[((GeometryPlacement *)D_8013B1F4)[index].vertexIndex * 3] * 1280;
+    *y = D_8013B1EC[((GeometryPlacement *)D_8013B1F4)[index].vertexIndex * 3 + 1] * 1280;
+    *z = D_8013B1EC[((GeometryPlacement *)D_8013B1F4)[index].vertexIndex * 3 + 2] * 1280;
+    *angle = ((GeometryPlacement *)D_8013B1F4)[index].angle;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8004ADF8);
 
