@@ -547,6 +547,8 @@ segments:
       - [0xC9D04, data]
       - {start: 0xD9D04, type: .data, name: main, linker_section: .data.task_resource_bitmap}
       - [0xD9D24, data, D9D24]
+      - {start: 0xD9D58, type: .data, name: main, linker_section: .data.controller_receive_buffers}
+      - [0xD9D9C, data, D9D9C]
       - [0xDAD9C, .data, engine/random]
       - {start: 0xDAE9C, type: .data, name: main_remaining, linker_section: .data.saved_image_entries}
       - [0xDB89C, data, DB89C]
@@ -662,8 +664,10 @@ segments:
       - [0x12B6BC, data]
       - {start: 0x12B6C0, type: .sdata, name: main, linker_section: .sdata.controller_repeat_timing, linker_section_order: .data}
       - [0x12B6C4, data]
+      - {start: 0x12B6E4, type: .sdata, name: main, linker_section: .sdata.controller_input_state, linker_section_order: .data}
+      - {start: 0x12B6E8, type: .data, name: main, linker_section: .data.controller_input_arrays}
       - {start: 0x12B708, type: .data, name: main, linker_section: .data.controller_values}
-      - [0x12B70C, data]
+      - {start: 0x12B70C, type: .sdata, name: main, linker_section: .sdata.controller_previous_buttons, linker_section_order: .data}
       - {start: 0x12B710, type: .sdata, name: engine/random, linker_section_order: .data}
       - [0x12B714, data, 12B714]
       - {start: 0x12B728, type: .sdata, name: main_remaining, linker_section_order: .data}

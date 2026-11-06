@@ -1,5 +1,6 @@
 #include "common.h"
 #include "psx/libcd.h"
+#include "psx/libpad.h"
 #include "game/cd_queue.h"
 #include "psx/libsnd.h"
 #include "game/controller.h"
@@ -32,6 +33,12 @@ typedef struct CdRequest {
     s32 unk_18;
 } CdRequest;
 
+typedef struct ControllerReceiveBuffer {
+    u8 status;
+    u8 deviceId;
+    u8 payload[32];
+} ControllerReceiveBuffer;
+
 GameTask gGameTasks[200] __attribute__((section(".data.game_tasks"))) = {0};
 
 GameTask *D_8013AE88 __attribute__((section(".sdata.task_scheduler"))) = 0;
@@ -56,17 +63,25 @@ u16 gCdRequestPhase = 0;
 u16 gCdRequestWriteIndex = 0;
 u16 gCdRequestReadIndex = 0;
 u16 D_8013AE76 = 0;
-typedef struct ControllerReceiveBuffer {
-    u8 status;
-    u8 deviceId;
-    u8 payload[32];
-} ControllerReceiveBuffer;
 
-extern ControllerReceiveBuffer D_800E9558[2];
+ControllerReceiveBuffer D_800E9558[2] __attribute__((section(".data.controller_receive_buffers"))) = {0};
 extern ControllerInputRecord *D_8013AED4[];
 extern u16 D_8013AEDC[];
 extern u8 D_8013AEE0[];
 
+u8 D_8013AEE4 __attribute__((section(".sdata.controller_input_state"))) = 0;
+static u8 sControllerInputStatePadding0 __attribute__((section(".sdata.controller_input_state"))) = 0;
+static u8 sControllerInputStatePadding1 __attribute__((section(".sdata.controller_input_state"))) = 0;
+static u8 sControllerInputStatePadding2 __attribute__((section(".sdata.controller_input_state"))) = 0;
+u16 D_8013AEE8[2] __attribute__((section(".data.controller_input_arrays"))) = {0};
+u16 D_8013AEEC[2] __attribute__((section(".data.controller_input_arrays"))) = {0};
+s16 D_8013AEF0[2] __attribute__((section(".data.controller_input_arrays"))) = {0};
+s16 D_8013AEF4[2] __attribute__((section(".data.controller_input_arrays"))) = {0};
+s16 D_8013AEF8[2] __attribute__((section(".data.controller_input_arrays"))) = {0};
+s16 D_8013AEFC[2] __attribute__((section(".data.controller_input_arrays"))) = {0};
+ControllerActuatorOutput D_8013AF00[2] __attribute__((section(".data.controller_input_arrays"))) = {0};
+static u16 sControllerActuatorPadding __attribute__((section(".data.controller_input_arrays"))) = 0;
+u16 D_8013AF0C[2] __attribute__((section(".sdata.controller_previous_buttons"))) = {0};
 
 u8 gCdVolumeFadeActive __attribute__((section(".sdata.cd_volume_fade"))) = 0;
 u8 gCdVolumeFadeInterval __attribute__((section(".sdata.cd_volume_fade"))) = 0;
@@ -470,7 +485,30 @@ void updateControllerAxesFromButtons(u16 controller) {
 
 INCLUDE_ASM("asm/nonmatchings/main", func_80015154);
 
-INCLUDE_ASM("asm/nonmatchings/main", func_800153EC);
+void initializeControllers(void) {
+    PadInitDirect((u8 *)&D_800E9558[0], (u8 *)&D_800E9558[1]);
+    PadSetAct(0, &D_8013AF00[0].control, 2);
+    PadSetAct(0x10, &D_8013AF00[1].control, 2);
+    PadStartCom();
+    D_8013AF0C[0] = 0;
+    D_8013AEE8[0] = 0;
+    D_8013AEEC[0] = 0;
+    D_8013AEE8[1] = 0;
+    D_8013AEEC[1] = 0;
+    D_8013AF0C[1] = 0;
+    D_8013AEFC[0] = 0;
+    D_8013AEF8[0] = 0;
+    D_8013AEF4[0] = 0;
+    D_8013AEF0[0] = 0;
+    D_8013AEFC[1] = 0;
+    D_8013AEF8[1] = 0;
+    D_8013AEF4[1] = 0;
+    D_8013AEF0[1] = 0;
+    setControllerAxesFromButtons(0);
+    setControllerAxesFromButtons(1);
+    resetControllerEffects();
+    D_8013AEE4 = 0;
+}
 
 s16 isControllerInputSupported(u16 controller) {
     ControllerReceiveBuffer *buffer = D_800E9558;

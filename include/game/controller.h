@@ -7,6 +7,11 @@ extern u16 D_8013AEE8[];
 extern u16 D_8013AEEC[];
 extern s16 D_8013AEF8[];
 extern s16 D_8013AEFC[];
+extern s16 D_8013AEF4[];
+extern u16 D_8013AF0C[2];
+extern u8 D_8013AEE4;
+
+void initializeControllers(void);
 
 extern u8 gControllerFlags[4] __attribute__((section(".data")));
 
