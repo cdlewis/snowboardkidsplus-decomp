@@ -99,7 +99,7 @@ void (*currentPlayerStateCallbacks[74])(void) = {
     func_8001FDEC,
     func_8001FAC4,
     initializeCurrentPlayerState25,
-    func_8001FCB4,
+    resetCurrentPlayerForCallback25508,
     resetCurrentPlayerForCallback255C4,
     NULL,
     resetCurrentPlayerForCallback240D0,
@@ -377,7 +377,22 @@ void initializeCurrentPlayerState25(void) {
     setCurrentTaskCallback(func_800252CC);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8001FCB4);
+void resetCurrentPlayerForCallback25508(void) {
+    startCurrentPlayerAnimation(15, 1);
+    D_8013B0D8->unk0B8 = 0;
+    D_8013B0D8->unk128 = (D_8013B0D8->unk128 & 0xFF0C1FFB) | 0x6204;
+    smoothAndScaleCurrentPlayerInput(0, 0);
+    D_8013B0D8->unk078 = 0;
+    D_8013B0D8->unk062 = -0x2000;
+    D_8013B0D8->unk064 = 0;
+    D_8013B0D8->unk060 = 0;
+    D_8013B0D8->unk0BC = 0;
+    D_8013B0D8->unk094 = 0;
+    func_8002E5A0(D_8013AE88->data18, 3);
+    func_80014930(&D_800D7C84, func_80045B4C);
+    D_8013AE8C->data18 = D_8013AE88->data18;
+    setCurrentTaskCallback(func_80025508);
+}
 
 void resetCurrentPlayerForCallback255C4(void) {
     RacePlayer *player;

@@ -19,7 +19,7 @@ void initializeCurrentPlayerState12(void);
 void initializeCurrentPlayerState40(void);
 void func_8001FAC4(void);
 void initializeCurrentPlayerState25(void);
-void func_8001FCB4(void);
+void resetCurrentPlayerForCallback25508(void);
 void resetCurrentPlayerForCallback255C4(void);
 void func_8001FDEC(void);
 void initializeCurrentPlayerState7(void);
@@ -38,3 +38,4 @@ void func_80027014(void);
 void updateCurrentPlayerAndRequestState30(void);
 
 void func_800271D0(void);
+void func_80025508(void);
