@@ -1,5 +1,6 @@
 #include "common.h"
 #include "game/angles.h"
+#include "game/coordinate.h"
 #define RACE_FINISH_ABSOLUTE_ADDRESSING
 #define TASK_ABSOLUTE_ADDRESSING
 #define TASK_FLAGS_ABSOLUTE_ADDRESSING
@@ -2620,7 +2621,32 @@ void updatePlayerCameraAngles(u16 playerIndex) {
     func_8003E1D0(playerIndex);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003E3F0);
+void clampPlayerCameraDistance(u16 playerIndex) {
+    GsRVIEW2 *views = gPlayerCameraViews;
+    GsRVIEW2 *view = &views[playerIndex];
+    s32 dx = view->vpx - view->vrx;
+    s32 dz = view->vpz - view->vrz;
+    s32 dy = view->vpy - view->vry;
+    s32 distance = SquareRoot0(dx * dx + dz * dz);
+    PlayerCamera *cameras;
+    PlayerCamera *camera;
+    distance = SquareRoot0(distance * distance + dy * dy);
+    if (distance < 320) {
+        cameras = D_801241E8;
+        camera = &cameras[playerIndex];
+        D_8013AF90->vx = camera->pitch & 0xFFF;
+        D_8013AF90->vy = camera->yaw & 0xFFF;
+        D_8013AF90->vz = 0;
+        RotMatrixYXZ(D_8013AF90, D_8013AF98);
+        D_8013AF94->vx = 0;
+        D_8013AF94->vy = 0;
+        D_8013AF94->vz = -320;
+        ApplyMatrix(D_8013AF98, D_8013AF94, D_8013AF88);
+        view->vpx = view->vrx + D_8013AF88->vx;
+        view->vpy = view->vry + D_8013AF88->vy;
+        view->vpz = view->vrz + D_8013AF88->vz;
+    }
+}
 
 void clampPlayerCameraHeight(u16 playerIndex) {
     PlayerCamera *cameras = D_801241E8;

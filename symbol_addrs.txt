@@ -77,6 +77,7 @@ openMusicSequence = 0x80017DD0; // type:func
 createQuadAnimationTask = 0x80065DA0; // type:func
 gQuadAnimationFrames = 0x8012C92C; // size:0x64
 updatePlayerCameraAngles = 0x8003E360; // type:func
+clampPlayerCameraDistance = 0x8003E3F0; // type:func
 clampPlayerCameraHeight = 0x8003E55C; // type:func
 createPositionedEffectTask = 0x80063D70; // type:func
 uploadTimImageWithOffset = 0x80015EE0; // type:func
