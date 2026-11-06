@@ -304,6 +304,8 @@ extern u8 D_80123640[];
 extern s16 D_8013B0E4;
 extern u16 D_8013B0E6;
 extern s32 D_8013B0E8;
+s16 D_8013B1D4 __attribute__((section(".data.finish_slot_state"))) = 0;
+
 extern u16 D_8013AFAA __attribute__((section(".data")));
 extern s32 D_8013AF84 __attribute__((section(".data")));
 extern u8 D_8013AFE0 __attribute__((section(".data")));
@@ -397,6 +399,8 @@ void drawTaskTimeRecordsAndSetFlag10OnInput(void);
 void drawCurrentTaskTimeRecordDetails(void);
 void func_8003686C(void);
 void waitResultDisplayTask(void);
+void func_8002BC2C(void);
+void func_8002B820(void);
 void func_80035D5C(ResultDisplayResource *resource);
 void func_800361C4(ResultDisplayResource *resource);
 void func_80035FAC(ResultDisplayResource *resource);
@@ -467,7 +471,22 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002C8BC);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002CA48);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002CB8C);
+void updateRacePlayerFinishSlotsTask(void) {
+    u16 i;
+    if (D_8013AFE4 & 0x40) {
+        func_800149A8();
+    } else {
+        if (D_8013AFE2 == 1 && D_8013AFE0 == 1) {
+            D_8013B1D4 = 0;
+        }
+        func_8002BC2C();
+        func_8002B820();
+        for (i = 0; i < D_8013AFD2; i++) {
+            D_8013B0D8 = &D_80120E90[i];
+            assignCurrentPlayerFinishSlot(i);
+        }
+    }
+}
 
 s32 requestCurrentPlayerAction6(void) {
     RacePlayer *player = D_8013B0D8;

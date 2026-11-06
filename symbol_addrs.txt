@@ -2531,3 +2531,6 @@ initializeControllers = 0x800153EC; // type:func
 D_800E9558 = 0x800E9558; // type:u8 size:0x44
 D_8013AEE8 = 0x8013AEE8; // type:u16 size:0x4
 D_8013AF0C = 0x8013AF0C; // type:u16 size:0x4
+
+updateRacePlayerFinishSlotsTask = 0x8002CB8C; // type:func
+D_8013B1D4 = 0x8013B1D4; // size:0x2

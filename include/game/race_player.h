@@ -220,3 +220,4 @@ void createPlayerPositionTrailTask(s32 playerIndex);
 void updatePlayerRenderSnapshots(void);
 
 void assignCurrentPlayerFinishSlot(s32 taskValue);
+void updateRacePlayerFinishSlotsTask(void);
