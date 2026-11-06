@@ -18,14 +18,18 @@ struct RacePlayer {
     s32 unk01C;
     s32 unk020;
     s8 unk024;
-    u8 unk025[0x53];
+    u8 unk025[0x3D];
+    s16 unk062;
+    u8 unk064[0x14];
     s32 unk078;
     u8 unk07C[0x10];
     s32 unk08C;
     s32 unk090;
     s16 unk094;
     s16 unk096;
-    u8 unk098[0x24];
+    u8 unk098[0x20];
+    s16 unk0B8;
+    u8 unk0BA[2];
     s16 unk0BC;
     u16 unk0BE;
     u8 unk0C0[2];
@@ -85,10 +89,12 @@ s32 checkCurrentPlayerFlags275000OrField134(void);
 
 void addPlayerCappedCounters(u16 playerIndex, s32 amount);
 
+void resetCurrentPlayerForCallback255C4(void);
 void resetCurrentPlayerForCallback240D0(void);
 void resetCurrentPlayerForCallback26DAC(void);
 void resetCurrentPlayerForCallback205B8(void);
 
 void func_8002E44C(s16 index);
+void func_8002E5A0(u16 index, s16 value);
 
 void func_80016E80(u8 index, u8 flags);

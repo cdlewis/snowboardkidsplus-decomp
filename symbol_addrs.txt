@@ -1,3 +1,4 @@
+resetCurrentPlayerForCallback255C4 = 0x8001FD70; // type:func
 initializeSpriteMotionTask = 0x80034FBC; // type:func
 drawFullScreenTexturedBackground = 0x80030974; // type:func
 initializeTimedSpritePresentation = 0x8006B19C; // type:func
