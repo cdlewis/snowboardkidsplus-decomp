@@ -28,6 +28,10 @@ typedef struct MenuTimeValue {
     s8 seconds;
     u16 unk02;
 } MenuTimeValue;
+typedef struct RepeatedSoundResource {
+    s16 sound;
+    u8 unk02[0xFE];
+} RepeatedSoundResource;
 
 typedef struct UnpackedWordBytes {
     u8 unk0;
@@ -125,6 +129,7 @@ void func_80034F1C(void);
 void func_800342FC(void);
 void func_8002FCF8(void);
 void func_8002FE18(void);
+void func_80032C14(void);
 void func_80032E94(void);
 void func_80034AE8(void);
 void func_80033100(void);
@@ -470,7 +475,18 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800326FC);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003288C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80032B78);
+void createRepeatedSoundTask(s32 sound, s32 delay, s32 interval, s32 count) {
+    RepeatedSoundResource *resource;
+
+    func_80014874(func_80032C14);
+    D_8013AE8C->data18 = delay;
+    D_8013AE8C->data1A = interval;
+    D_8013AE8C->data1C = 0;
+    D_8013AE8C->data1E = count;
+    D_8013AE8C->resource14 = func_80014BAC();
+    resource = (RepeatedSoundResource *)&D_800D9504[D_8013AE8C->resource14];
+    resource->sound = sound;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80032C14);
 
