@@ -2447,3 +2447,5 @@ deletePendingTaskSubtree = 0x80014A2C; // type:func
 waitResultDisplayTask = 0x80036940; // type:func
 
 updateMenuExitInputTask = 0x80038BAC; // type:func
+
+updateRaceResultsExitInputTask = 0x8003A094; // type:func

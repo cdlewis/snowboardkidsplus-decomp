@@ -185,7 +185,8 @@ typedef struct StatsMenuFadeResource {
 } StatsMenuFadeResource;
 
 typedef struct RaceResultsFadeResource {
-    u8 unk00[6];
+    s16 unk00;
+    u8 unk02[4];
     s16 brightness;
     s16 timer;
     s16 unk0A;
@@ -385,6 +386,8 @@ void drawTaskTimeMenuAndSetFlag10OnInput(void);
 void func_8003A814(void);
 void func_8003A690(void);
 void func_8003A158(void);
+void func_80039F6C(void);
+void func_8003A008(void);
 void func_80039484(RaceResultsFadeResource *resource);
 void func_80039564(RaceResultsFadeResource *resource);
 void func_80039B34(RaceResultsFadeResource *resource);
@@ -1933,7 +1936,24 @@ void drawCurrentTaskTimeRecordDetails(void) {
     func_80039B34(resource);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003A094);
+void updateRaceResultsExitInputTask(void) {
+    RaceResultsFadeResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (RaceResultsFadeResource *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AEE8[0] & 0xB0) {
+        if (resource->unk00 < 5) {
+            setCurrentTaskCallback(func_80039F6C);
+        } else {
+            D_8013AFE4 |= 0x10;
+            setCurrentTaskCallback(func_8003A008);
+        }
+    }
+    func_80039484(resource);
+    func_80039564(resource);
+    func_80039B34(resource);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003A158);
 
