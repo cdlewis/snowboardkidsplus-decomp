@@ -2545,3 +2545,6 @@ countWrappedTextLines = 0x800A5FE8; // type:func
 drawSlidingRaceTimeDisplay = 0x800335E4; // type:func
 
 initPlayerCameraAndTarget = 0x8003E60C; // type:func
+
+handleMovieOutput = 0x8001A0EC; // type:func
+gMovieDecodeState = 0x8013BBB0; // size:0x38 defined:true

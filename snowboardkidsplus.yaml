@@ -700,6 +700,16 @@ segments:
       - {start: 0x12BEA8, type: .sdata, name: game/unk_800497B8, linker_section: .sdata.alternate_object_sort_saved_stack, linker_section_order: .data}
       - [0x12BEAC, data]
 
+  - name: movie_decode_state_bss
+    type: code
+    start: 0x12C000
+    vram: 0x8013BBB0
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: .bss, name: main_remaining, linker_section: .bss.movie_decode_state}
+
   - name: game_textured_quad_template_bss
     type: code
     start: 0x12C000

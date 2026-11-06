@@ -136,6 +136,11 @@ typedef struct MovieDecodeState {
     s32 outputComplete;
 } MovieDecodeState;
 
+MovieDecodeState gMovieDecodeState __attribute__((section(".bss.movie_decode_state")));
+
+
+extern s32 StCdIntrFlag __attribute__((section(".data")));
+extern u8 D_8013B611;
 
 extern s32 D_8013AF34;
 extern s16 D_8013AF38;
@@ -159,6 +164,7 @@ extern u8 D_8013AF48;
 
 int strcmp(const char *, const char *);
 
+void StCdInterrupt(void);
 u32 *func_8001A2B8(MovieDecodeState *state);
 void func_800131B4(void);
 void func_8001AB3C(void);
@@ -824,7 +830,29 @@ void startMovieStream(CdlLOC *location, DecDCCb outputCallback) {
     startMovieCdRead(location);
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001A0EC);
+void handleMovieOutput(void) {
+    RECT slice;
+    s32 imageIndex;
+    if (StCdIntrFlag) {
+        StCdInterrupt();
+        StCdIntrFlag = 0;
+    }
+    imageIndex = gMovieDecodeState.imageBufferIndex;
+    slice = gMovieDecodeState.slice;
+    gMovieDecodeState.imageBufferIndex = !gMovieDecodeState.imageBufferIndex;
+    gMovieDecodeState.slice.x += gMovieDecodeState.slice.w;
+    if (gMovieDecodeState.slice.x < gMovieDecodeState.frames[gMovieDecodeState.frameIndex].x + gMovieDecodeState.frames[gMovieDecodeState.frameIndex].w) {
+        DecDCTout(gMovieDecodeState.imageBuffers[gMovieDecodeState.imageBufferIndex], gMovieDecodeState.slice.w * gMovieDecodeState.slice.h / 2);
+    } else {
+        gMovieDecodeState.outputComplete = 1;
+        gMovieDecodeState.frameIndex = !gMovieDecodeState.frameIndex;
+        gMovieDecodeState.slice.x = gMovieDecodeState.frames[gMovieDecodeState.frameIndex].x;
+        gMovieDecodeState.slice.y = gMovieDecodeState.frames[gMovieDecodeState.frameIndex].y;
+    }
+    if (D_8013B611 > 1) {
+        LoadImage(&slice, gMovieDecodeState.imageBuffers[imageIndex]);
+    }
+}
 
 s32 decodeNextMovieFrame(MovieDecodeState *state) {
     u32 *frame;
