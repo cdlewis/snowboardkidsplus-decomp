@@ -141,6 +141,9 @@ void setTexturedQuadColor(s32 r, s32 g, s32 b);
 void drawTexturedQuadByIndex(s16 x, s16 y, s32 index, GsOT *ot, u16 depth);
 void drawInclusiveTexturedQuadByIndex(s16 x, s16 y, s32 index, GsOT *ot, u16 depth);
 void setSpriteColor(s32 r, s32 g, s32 b);
+void func_8006CF38(s32 x, s32 y, s32 frame, s32 palette, s32 blend,
+                   s32 pivotX, s32 pivotY, s32 scaleX, s32 scaleY,
+                   s32 rotation, GsOT *ot, s32 depth);
 void func_800A7D8C(s16 x, s16 y, s16 width, s16 height, s16 tpage,
                    s16 clut, GsOT *ot, u16 depth);
 void drawFullScreenTexturedBackground(void);

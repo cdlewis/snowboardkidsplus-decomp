@@ -17,6 +17,17 @@
 #include "game/controller.h"
 #include "psx/libsnd.h"
 
+typedef struct FallingSpriteEffect {
+    s16 active;
+    s16 x, y;
+    s16 frame;
+    s16 unk08;
+    s16 velocityX, velocityY;
+    s16 unk0E, unk10;
+    s16 scale;
+    s16 palette;
+} FallingSpriteEffect;
+
 typedef struct MenuTimeResource {
     s16 selection;
     s16 unk02;
@@ -693,7 +704,12 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80033820);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800338BC);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80033974);
+void drawFallingSpriteEffect(FallingSpriteEffect *effect) {
+    setSpriteColor(128, 128, 128);
+    func_8006CF38(effect->x >> 4, effect->y >> 4, effect->frame + 378,
+                  effect->palette, -1, 0x7FFF, 0x7FFF, effect->scale,
+                  effect->scale, 0, &D_800EBFF0[D_8013AF78], 2);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80033A24);
 

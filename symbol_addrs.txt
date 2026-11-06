@@ -2048,3 +2048,4 @@ advancePlayerSpriteAnimationTask = 0x8003452C; // type:func
 assignTwoPlayerResultSlots = 0x8003CA58; // type:func
 
 addGouraudTriangle = 0x8005FC5C; // type:func
+drawFallingSpriteEffect = 0x80033974; // type:func
