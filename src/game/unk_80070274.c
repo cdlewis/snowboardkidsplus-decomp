@@ -54,6 +54,13 @@ typedef struct SpriteZoomResource {
     u8 unk18[0xE8];
 } SpriteZoomResource;
 
+typedef struct AnimatedSpriteResource {
+    s16 frame;
+    s16 unk02;
+    s16 repeats;
+    u16 depth;
+} AnimatedSpriteResource;
+
 typedef s16 SpriteMotionResource[128];
 
 /* Storage remains in the shared data object. */
@@ -99,6 +106,7 @@ void func_80077770(void);
 void GsSortBg(GameBackground *background, GsOT *ot, u16 depth);
 void func_8007BE9C(void);
 void func_8007B10C(void);
+void func_8007747C(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80070274);
 
@@ -442,7 +450,23 @@ GameTask *createTimedSpriteB5Task(s16 x, s16 y, u32 frames) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_8007724C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80077390);
+GameTask *createAnimatedSpriteTask(s16 x, s16 y, s16 unk02, s16 repeats, u16 depth) {
+    GameTask *task;
+    AnimatedSpriteResource *resource;
+    func_80014874(func_8007747C);
+    D_8013AE8C->data18 = 0;
+    D_8013AE8C->data1A = 0;
+    D_8013AE8C->resource14 = allocateTaskResource();
+    initMovement2D((Movement2D *)&D_800D9504[D_8013AE8C->resource14], x << 12, y << 12);
+    D_8013AE8C->resource16 = allocateTaskResource();
+    task = D_8013AE8C;
+    resource = (AnimatedSpriteResource *)&D_800D9504[task->resource16];
+    resource->frame = 0;
+    resource->unk02 = unk02;
+    resource->depth = depth;
+    resource->repeats = repeats;
+    return task;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_8007747C);
 

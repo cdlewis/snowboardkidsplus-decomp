@@ -102,6 +102,7 @@ void initializeScaledTaskCoordinateResource(void);
 GameTask *createCountdownTask(u32 frames);
 GameTask *createTimedSpriteB5Task(s16 x, s16 y, u32 frames);
 GameTask *createValueTransitionTask(u32 *value, u32 target, u32 step);
+GameTask *createAnimatedSpriteTask(s16 x, s16 y, s16 unk02, s16 repeats, u16 depth);
 GameTask *createShrinkingSpriteTask(s16 motionEnabled, u16 spriteIndex);
 
 
