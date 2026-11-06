@@ -2326,3 +2326,5 @@ fadeInResultDisplayTask = 0x80036A0C; // type:func
 fadeInTimeMenuTask = 0x80037EC8; // type:func
 
 fadeInRaceResultsTask = 0x8003A8C0; // type:func
+
+fadeInStatsMenuTask = 0x8003BCC4; // type:func
