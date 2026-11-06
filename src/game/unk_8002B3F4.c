@@ -200,7 +200,7 @@ void advancePlayerSpriteAnimationTask(void);
 void func_80034434(SpriteAnimationResource *resource);
 void func_800341DC(void);
 void func_80034090(SlidingDisplayResource *resource);
-void func_80033700(void);
+void slideRaceTimeDisplayOut(void);
 void func_80033100(void);
 void func_80048714(void);
 void func_8004531C(void);
@@ -700,7 +700,20 @@ void beginSpriteScaleTransitionDelay(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800335E4);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80033700);
+void slideRaceTimeDisplayOut(void) {
+    SlidingTimeResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (SlidingTimeResource *)&D_800D9504[D_8013AE88->resource14];
+    resource->x -= resource->speed;
+    resource->speed += 4;
+    if (resource->speed == 56) {
+        func_800149A8();
+    } else {
+        func_800335E4(resource);
+    }
+}
 
 void waitSpriteMotionTask(void) {
     SlidingTimeResource *resource;
@@ -710,7 +723,7 @@ void waitSpriteMotionTask(void) {
     }
     resource = (SlidingTimeResource *)&D_800D9504[D_8013AE88->resource14];
     if (--resource->timer == 0) {
-        setCurrentTaskCallback(func_80033700);
+        setCurrentTaskCallback(slideRaceTimeDisplayOut);
     }
     func_800335E4(resource);
 }
