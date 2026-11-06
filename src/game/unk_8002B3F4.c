@@ -211,7 +211,7 @@ void func_80044990(void);
 void func_80034C40(SpriteMotionResource *resource);
 void slideInSpriteMotionTask(void);
 void waitSpriteExitMotionTask(void);
-void func_800342FC(void);
+void slideInSlidingDisplayTask(void);
 void func_8002FCF8(void);
 void func_8002FE18(void);
 void func_800302F8(void);
@@ -856,7 +856,24 @@ void waitSlidingDisplayTask(void) {
     func_80034090(resource);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800342FC);
+void slideInSlidingDisplayTask(void) {
+    SlidingDisplayResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (SlidingDisplayResource *)&D_800D9504[D_8013AE88->resource14];
+    if (resource->timer != 0) {
+        resource->timer--;
+    } else {
+        resource->position += resource->velocity;
+        resource->velocity -= 4;
+        if (resource->velocity == 0) {
+            resource->timer = 30;
+            setCurrentTaskCallback(waitSlidingDisplayTask);
+        }
+    }
+    func_80034090(resource);
+}
 
 void initializeTaskMotionResource(void) {
     TaskMotionResource *resource;
@@ -868,7 +885,7 @@ void initializeTaskMotionResource(void) {
     resource->velocity = 60;
     resource->position = -480;
     resource->delay = 10;
-    setCurrentTaskCallback(func_800342FC);
+    setCurrentTaskCallback(slideInSlidingDisplayTask);
 }
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80034434);
