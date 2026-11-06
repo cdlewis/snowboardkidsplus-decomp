@@ -1948,7 +1948,7 @@ prepareUnlockSelectionResume = 0x800A5204; // type:func
 playMusicSequence = 0x800A61E0; // type:func
 
 initializeMemoryCardSaveHeader = 0x80018A34; // type:func
-gMemoryCardSaveHeader = 0x800EB564; // size:0x60
+gMemoryCardSaveHeader = 0x800EB564; // size:0xA80
 
 waitForMovieOutput = 0x8001A3DC; // type:func
 
@@ -1995,3 +1995,6 @@ drawCurrentTaskStatsMenu = 0x8003B554; // type:func
 initializeUnlockMenuTask = 0x800A48E4; // type:func
 
 updateControllerAxesFromButtons = 0x800150A4; // type:func
+
+validateAndCopyMemoryCardSave = 0x80018EC4; // type:func
+gMemoryCardLoadDestination = 0x8013AF44; // size:0x4

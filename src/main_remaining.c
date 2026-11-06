@@ -31,6 +31,13 @@ typedef struct MemoryCardSaveHeader {
     u8 blockCount;
     u8 title[64];
     u8 reserved[28];
+    u16 iconPalette[16];
+    u8 icons[3][128];
+    u32 version;
+    u32 payloadSize;
+    u32 checksum;
+    u32 unk20C;
+    u8 payload[0x870];
 } MemoryCardSaveHeader;
 
 typedef struct PaletteRecordColor {
@@ -108,10 +115,12 @@ extern u8 D_80120EA4[];
 extern u8 D_8013AFE2;
 extern u16 D_8013AFE8;
 extern void *D_8013AF4C;
+extern void *gMemoryCardLoadDestination;
 
 void func_8001D044(void);
 void func_8001D42C(void);
 void uploadTimArchive(TimArchive *archive, s16 *position);
+void *memcpy(void *destination, const void *source, unsigned int size);
 void func_80018D80(u8 slot, void *destination);
 void func_80019980(void);
 void func_8001C0DC(void);
@@ -347,7 +356,25 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80018BA4);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80018D80);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80018EC4);
+s16 validateAndCopyMemoryCardSave(void) {
+    u32 i;
+    u32 checksum;
+
+    if (gMemoryCardSaveHeader.version != 0) {
+        return 0;
+    }
+    i = 0;
+    checksum = 0;
+    for (; i < gMemoryCardSaveHeader.payloadSize; i++) {
+        checksum += gMemoryCardSaveHeader.payload[i];
+    }
+    if (gMemoryCardSaveHeader.checksum != checksum) {
+        return 0;
+    }
+    memcpy(gMemoryCardLoadDestination, gMemoryCardSaveHeader.payload,
+           gMemoryCardSaveHeader.payloadSize);
+    return 1;
+}
 
 void readMemoryCardDirectory(void) {
     MemCardGetDirentry(D_8013AF34, D_8013AF3C, D_8013B700[D_8013AF38],
