@@ -206,7 +206,6 @@ void func_8009BDB8(void);
 void func_8009CA90(void);
 void func_8009F9B8(void);
 void func_8009F224(void);
-s32 func_8007D47C(void);
 
 void func_8002FA58(s16 resource);
 void func_800A39AC(void);

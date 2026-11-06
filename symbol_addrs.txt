@@ -2562,3 +2562,5 @@ prepareRaceResourcesIfSelectionChanged = 0x800A0C6C; // type:func
 initializeDelayedEightEntryEffectTask = 0x80065330; // type:func
 
 initializeCountedGroupedSelectionBoundsTask = 0x8008F970; // type:func
+
+initializeFlagSelectedCdAwareTask = 0x8007CB90; // type:func
