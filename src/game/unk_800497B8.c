@@ -3431,7 +3431,29 @@ void drawUppercaseProportionalText(s16 x, s16 y, s16 count, const char *text, s1
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006F754);
+void drawWrappedText16x16(s16 x, s16 y, s16 columns, const char *text,
+                   s16 palette, s16 blend, GsOT *ot, u16 depth) {
+    s16 count = 0;
+    s16 startX = x;
+    while (*(const s8 *)text) {
+        if ((s8)*text == 'c') {
+            if ((u32)((u8)text[1] - '0') < 10) {
+                palette = (s8)text[1] - '0' + 8;
+            }
+            text += 2;
+            if (!*(const s8 *)text) break;
+        }
+        if (count >= columns) {
+            x = startX;
+            y += 16;
+            count = 0;
+        }
+        func_8006F8A4(x, y, 16, 16, text, palette, blend, ot, depth);
+        x += 16;
+        text += 2;
+        count++;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006F8A4);
 
