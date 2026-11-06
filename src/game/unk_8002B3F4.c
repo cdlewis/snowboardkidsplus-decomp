@@ -319,11 +319,11 @@ void func_8004713C(void);
 void func_80047380(void);
 
 
-void func_800335E4(SlidingTimeResource *resource);
+void drawSlidingRaceTimeDisplay(SlidingTimeResource *resource);
 void func_800497B8(void);
 s32 calculateRaceTimeDifference(const RaceTime *a, const RaceTime *b, RaceTime *difference);
 
-void func_80037850(const RaceTime *value, s16 x, s16 y, s16 mode, GsOT *ot, u16 depth);
+void func_80037850(const RaceTime *value, s32 x, s32 y, s16 mode, GsOT *ot, u16 depth);
 
 /* Only the first byte of this shared state is used by this task flow. */
 extern u8 D_80120F90[];
@@ -1032,7 +1032,18 @@ void beginSpriteScaleTransitionDelay(void) {
     setCurrentTaskCallback(waitThenStartSpriteScaleTransition);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800335E4);
+void drawSlidingRaceTimeDisplay(SlidingTimeResource *resource) {
+    u8 padding[0x20];
+    GsOT *ot = &D_800EBFF0[D_8013AF78];
+    setSpriteColor(128, 128, 128);
+    if (resource->hasExtraTime) {
+        func_8006C998(resource->x - 102, resource->y, 0x1AE, 0, -1, ot, 1);
+        func_80037850(&resource->time, resource->x + 38, resource->y, 1, ot, 1);
+    } else {
+        func_8006C998(resource->x - 98, resource->y, 0x1AD, 4, -1, ot, 1);
+        func_80037850(&resource->time, resource->x + 34, resource->y, 2, ot, 1);
+    }
+}
 
 void slideRaceTimeDisplayOut(void) {
     SlidingTimeResource *resource;
@@ -1045,7 +1056,7 @@ void slideRaceTimeDisplayOut(void) {
     if (resource->speed == 56) {
         func_800149A8();
     } else {
-        func_800335E4(resource);
+        drawSlidingRaceTimeDisplay(resource);
     }
 }
 
@@ -1059,7 +1070,7 @@ void waitSpriteMotionTask(void) {
     if (--resource->timer == 0) {
         setCurrentTaskCallback(slideRaceTimeDisplayOut);
     }
-    func_800335E4(resource);
+    drawSlidingRaceTimeDisplay(resource);
 }
 
 void slideRaceTimeDisplayIn(void) {
@@ -1074,7 +1085,7 @@ void slideRaceTimeDisplayIn(void) {
         resource->timer = 90;
         setCurrentTaskCallback(waitSpriteMotionTask);
     }
-    func_800335E4(resource);
+    drawSlidingRaceTimeDisplay(resource);
 }
 
 void initializeRaceTimeDifferenceDisplay(void) {
