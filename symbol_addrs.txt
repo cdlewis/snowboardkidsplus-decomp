@@ -2751,3 +2751,5 @@ computeVectorYawAndPitch = 0x8002A454; // type:func
 loadTimedSpritePresentationResources = 0x8006B1F4; // type:func
 
 configureTaskGridMovement = 0x80073810; // type:func
+
+restoreSelectedPlayerState = 0x8005F944; // type:func

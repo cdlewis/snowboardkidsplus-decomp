@@ -11,8 +11,15 @@ typedef struct ControllerInputRecord {
     u16 pressedButtons;
 } ControllerInputRecord;
 
+#ifdef CONTROLLER_INPUT_ABSOLUTE_ADDRESSING
+extern ControllerInputRecord *D_8013AED4[] __attribute__((section(".data")));
+extern u16 D_8013AEDC[] __attribute__((section(".data")));
+extern u8 D_8013AEE0[] __attribute__((section(".data")));
+#else
 extern ControllerInputRecord *D_8013AED4[];
 extern u16 D_8013AEDC[];
+extern u8 D_8013AEE0[];
+#endif
 
 extern u16 D_8013AEE8[];
 /* Two state values; an incomplete array preserves absolute addressing. */

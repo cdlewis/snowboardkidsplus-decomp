@@ -30,7 +30,6 @@ extern s32 D_8013B600[2];
 extern struct DIRENTRY D_8013B700[2][15];
 extern s16 D_8013AF3E;
 extern u16 D_8013AFAA __attribute__((section(".data")));
-extern u32 D_8013B20C[2] __attribute__((section(".data")));
 extern u8 D_8013B562 __attribute__((section(".data")));
 extern u8 D_80120EA4[];
 extern s16 D_8013B104 __attribute__((section(".data")));

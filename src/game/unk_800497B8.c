@@ -1,5 +1,7 @@
 #include "common.h"
 #include "game/angles.h"
+#define CONTROLLER_INPUT_ABSOLUTE_ADDRESSING
+#include "game/controller.h"
 #include "game/cd_queue.h"
 #define CONTROLLER_EFFECTS_ABSOLUTE_ADDRESSING
 #include "game/controller_effects.h"
@@ -1875,7 +1877,34 @@ done:
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005F944);
+s32 restoreSelectedPlayerState(void) {
+    s32 i = 0;
+    SelectedStateRecord *record = D_8012C6F4[D_8013AFCE];
+    for (;;) {
+        if (record->state == -2) return 0;
+        if (record->state != -1) {
+            GameTask *task = D_80120E90[0].task;
+            D_80120E90[0] = D_8013B2E8[i];
+            D_80120E90[0].task = task;
+            task->callback = D_8013B2E4[i].callback;
+            task->data18 = D_8013B2E4[i].data18;
+            task->data1A = D_8013B2E4[i].data1A;
+            task->data1C = D_8013B2E4[i].data1C;
+            task->data1E = D_8013B2E4[i].data1E;
+            D_8013AEDC[0] = record->state;
+            D_8013AEE0[0] = D_8013AED4[0][D_8013AEDC[0]].repeatCount;
+            record->state = -1;
+            D_801241E8[0].x = record->unk04;
+            D_801241E8[0].y = record->unk08;
+            D_801241E8[0].z = record->unk0C;
+            D_8013B20C = record->unk10;
+            D_801241E8[0].unk16 = 8;
+            return 1;
+        }
+        record++;
+        i++;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005FAE0);
 

@@ -406,7 +406,7 @@ void resetStateAndBeginResourceLoadTransition(u8 requestLoad) {
     GameTask *savedTask;
     resetPendingCdRequests();
     D_8013AFD6 = 0;
-    D_8013B20C[0] = 0;
+    D_8013B20C = 0;
     resetPaletteRecords();
     func_800149E0();
     savedTask = D_8013AE88;
@@ -438,7 +438,7 @@ void finishTaskTransitionAfterCountdown(void) {
         resetPendingCdRequests();
         D_8013AFAA |= 0x90;
         D_8013AFD6 = 0;
-        D_8013B20C[0] = 0;
+        D_8013B20C = 0;
         D_8013AFE4 &= ~0x10;
         resetPaletteRecords();
         func_800149E0();

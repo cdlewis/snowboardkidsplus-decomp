@@ -43,3 +43,7 @@ extern s16 selectedFinishLapCountAbsolute __attribute__((section(".data")));
 
 /* Save player 0 at selected course segments and split its recorded input run. */
 void captureSelectedPlayerStates(void);
+/* Camera-related state saved alongside selected player snapshots. */
+extern u32 D_8013B20C __attribute__((section(".data")));
+
+s32 restoreSelectedPlayerState(void);
