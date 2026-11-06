@@ -1,5 +1,6 @@
 #include "common.h"
 #define TASK_TRANSITION_FLAGS_ABSOLUTE_ADDRESSING
+#define TASK_FLAGS_ABSOLUTE_ADDRESSING
 #define TASK_ABSOLUTE_ADDRESSING
 #define RACE_FINISH_ABSOLUTE_ADDRESSING
 #include "game/race_player.h"
@@ -12,6 +13,8 @@
 #include "game/random.h"
 #include "game/offset_archive.h"
 #include "game/music.h"
+#include "game/global_flags.h"
+#include "game/game_options.h"
 #include "game/selected_records.h"
 #include "psx/libsnd.h"
 #include "unk_8001E63C.h"
@@ -92,6 +95,8 @@ void func_800205B8(void);
 void func_800255C4(void);
 void func_8002AE6C(void);
 s32 func_80017268(void);
+void func_80015C94(u16 playerIndex);
+void func_8001596C(u16 playerIndex);
 void func_80025840(void);
 void advanceCurrentPlayerTaskOnAnimationFlag(void);
 void func_80025B08(void);
@@ -551,7 +556,22 @@ s32 callCurrentPlayerStateCallbackIfDifferent(u16 state) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80020380);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_800204D8);
+void updateCurrentPlayerAndResetState(void) {
+    func_8002AE6C();
+    func_80017268();
+    if (D_8013AFE4 == 0) {
+        if (D_8013B0D8->unk008 == 0) {
+            if (D_8013AFD7 || D_8013AFD9) {
+                func_80015C94(D_8013AE88->data18);
+            } else if (D_8013AFE2 == 2 && D_8013AFD6 == 0) {
+                func_8001596C(0);
+                resetSelectedRecordStates();
+            }
+        }
+        D_8013B0D8->unk12C = 0;
+        resetCurrentPlayerForCallback205B8();
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_800205B8);
 

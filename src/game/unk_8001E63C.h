@@ -42,3 +42,5 @@ void func_800271D0(void);
 void updateCurrentPlayerVerticalMotionUntilLanding(void);
 
 void initializeCurrentPlayerAttributes(void);
+
+void updateCurrentPlayerAndResetState(void);
