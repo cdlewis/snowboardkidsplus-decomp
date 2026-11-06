@@ -191,6 +191,7 @@ void func_800335E4(SpriteMotionResource *resource);
 void func_80033100(void);
 void func_80048714(void);
 void func_8004531C(void);
+void func_80044524(void);
 void func_8003772C(void);
 void func_80037F74(void);
 void drawMenuTimeWithBrightness(MenuTimeResource *resource);
@@ -1375,7 +1376,16 @@ s16 isFirstPlayerUsingCallback26D10(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800442F4);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8004449C);
+void initializeTaskCoordinateResource(void) {
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    GsInitCoordinate2(0, (GsCOORDINATE2 *)&D_800D9504[D_8013AE88->resource14]);
+    D_8013AE88->data1A = 0;
+    D_8013AE88->data1C = 1;
+    setCurrentTaskCallback(func_80044524);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80044524);
 

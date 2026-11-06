@@ -2051,3 +2051,4 @@ addGouraudTriangle = 0x8005FC5C; // type:func
 drawFallingSpriteEffect = 0x80033974; // type:func
 
 createActivePlayerSlidingNumberTask = 0x80035528; // type:func
+initializeTaskCoordinateResource = 0x8004449C; // type:func
