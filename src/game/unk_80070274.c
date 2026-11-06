@@ -65,7 +65,7 @@ DR_TPAGE gAnimatedSprite16DrawPage __attribute__((section(".sdata.animated_sprit
 };
 
 s16 func_80070794(s32 id);
-void func_80072340(s32 x, s32 y, s32 width, s32 height, s32 r, s32 g, s32 b,
+void addTilePacket(s32 x, s32 y, s32 width, s32 height, s32 r, s32 g, s32 b,
                    GsOT *ot, u16 depth);
 void func_8007197C(void);
 void updateCountdownTask(void);
@@ -168,7 +168,7 @@ void drawBlackScreenTask(void) {
     if (D_8013AE88->data18 == 0) {
         func_800149A8();
     } else {
-        func_80072340(-160, -120, 320, 240, 0, 0, 0,
+        addTilePacket(-160, -120, 320, 240, 0, 0, 0,
                      &D_800EBFF0[D_8013AF78], 0xFFE);
     }
 }
@@ -216,7 +216,16 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_8007202C);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_8007219C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80072340);
+void addTilePacket(s32 x, s32 y, s32 width, s32 height, s32 r, s32 g, s32 b,
+                   GsOT *ot, u16 depth) {
+    TILE *packet = (TILE *)GsGetWorkBase();
+    SetTile(packet);
+    setXY0(packet, x, y);
+    setWH(packet, width, height);
+    setRGB0(packet, r, g, b);
+    AddPrim(ot->org + depth, packet);
+    func_800BF2C8((u32)(packet + 1));
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_8007240C);
 
