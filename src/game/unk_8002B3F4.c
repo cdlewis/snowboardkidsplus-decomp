@@ -192,7 +192,7 @@ void func_8002FE18(void);
 void func_80032C14(void);
 void func_80032E94(void);
 void func_80034AE8(void);
-void func_80034928(void);
+void slideOutPlayerNumberDisplayTask(void);
 void func_80034664(PlayerNumberResource *resource);
 void func_8003527C(void);
 void func_8003543C(void);
@@ -817,7 +817,20 @@ void createPlayerSpriteAnimationTask(s32 x, s32 y, s32 player, s32 checkPlayer, 
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80034664);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80034928);
+void slideOutPlayerNumberDisplayTask(void) {
+    PlayerNumberResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (PlayerNumberResource *)&D_800D9504[D_8013AE88->resource14];
+    resource->x += resource->speed;
+    resource->speed += 4;
+    if (resource->speed >= 56) {
+        func_800149A8();
+    } else {
+        func_80034664(resource);
+    }
+}
 
 void waitPlayerNumberDisplayTask(void) {
     PlayerNumberResource *resource;
@@ -827,7 +840,7 @@ void waitPlayerNumberDisplayTask(void) {
     }
     resource = (PlayerNumberResource *)&D_800D9504[D_8013AE88->resource14];
     if (--resource->timer == 0) {
-        setCurrentTaskCallback(func_80034928);
+        setCurrentTaskCallback(slideOutPlayerNumberDisplayTask);
     }
     func_80034664(resource);
 }
