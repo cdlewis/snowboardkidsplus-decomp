@@ -197,6 +197,7 @@ void func_80092090(void);
 void func_80097FF4(void);
 void func_80099880(void);
 void func_800A0FDC(void);
+void func_800A1774(TextSequenceResource *resource);
 void func_80092A50(void);
 void initializeMode1RacePlayers(void);
 void prepareRaceResourcesIfSelectionChanged(void);
@@ -1059,7 +1060,29 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A0FDC);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A12E4);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A1510);
+void advanceModeAfterTextSequenceFadeTask(void) {
+    TextSequenceResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        for (;;) {}
+    }
+    resource = (TextSequenceResource *)&D_800D9504[D_8013AE88->resource14];
+    switch (D_8013AE88->data18) {
+    case 1:
+        func_80070274(2, 0, 30);
+        startCdVolumeFade(103, 20, 0, 1);
+        resource->intensity = 0;
+        D_8013AE88->data18 = 2;
+        break;
+    case 2:
+        if (func_800707F0(0) == 0) {
+            D_8013B55E = 2;
+            D_8013AFD8++;
+            func_800149A8();
+        }
+        break;
+    }
+    func_800A1774(resource);
+}
 
 void queueModeIndexedSectorRead(s16 mode, s16 index) {
     if (mode == 1) {

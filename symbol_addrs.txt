@@ -2792,3 +2792,5 @@ D_8013B514 = 0x8013B514; // size:0x3 defined:true
 drawWrappedText16x16 = 0x8006F754; // type:func
 
 updateValueTransitionTask = 0x80076034; // type:func
+
+advanceModeAfterTextSequenceFadeTask = 0x800A1510; // type:func
