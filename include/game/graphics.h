@@ -180,6 +180,12 @@ void addTexturedQuad(u32 *orderingTable, s32 x0, s32 y0, s32 x1, s32 y1,
                   s32 x2, s32 y2, s32 x3, s32 y3, s32 flags, u8 tpage, s32 clut,
                   s32 u0, s32 v0, s32 u1, s32 v1, s32 u2, s32 v2,
                   s32 u3, s32 v3, s32 r, s32 g, s32 b);
+void addGouraudTexturedQuad(u32 *orderingTable, s16 x0, s16 y0, s16 x1, s16 y1,
+                  s16 x2, s16 y2, s16 x3, s16 y3, u8 tpage, s16 clut,
+                  u8 u0, u8 v0, u8 u1, u8 v1, u8 u2, u8 v2,
+                  u8 u3, u8 v3, u8 r0, u8 g0, u8 b0,
+                  u8 r1, u8 g1, u8 b1, u8 r2, u8 g2, u8 b2,
+                  u8 r3, u8 g3, u8 b3);
 void addTexturedRectangle(u32 *orderingTable, s32 clut, s32 x, s32 y,
                           s32 w, s32 h, s32 r, s32 g, s32 b);
 /* Copy a tagged packet into the current buffer and link it into the table. */
