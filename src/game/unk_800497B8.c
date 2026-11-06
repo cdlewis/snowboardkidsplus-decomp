@@ -2918,7 +2918,52 @@ void drawTexturedQuadList(s16 x, s16 y, TexturedQuadListEntry *entry, s16 blend,
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006C428);
+void drawSkewedTexturedQuadByIndexWithBlend(s16 x, s16 y, s16 width, s16 height, s16 unused, s16 index, s16 palette, s16 blendMode, GsOT *ot, u16 depth) {
+    TexturedQuadFrame *frame;
+    TextureRegion *region;
+    POLY_FT4 *quad;
+    s32 semiTrans;
+    s32 blend;
+    if (blendMode >= 0) {
+        blend = blendMode;
+        semiTrans = 1;
+    } else {
+        blend = 0;
+        semiTrans = 0;
+    }
+    frame = &D_8012DFF4[index];
+    setTexturedQuadTextureBlend(frame->textureIndex, palette, blend);
+    func_8006BEEC(semiTrans);
+    region = &D_8013B6AC[frame->frameIndex];
+    if (width == 0) width = region->w;
+    if (height == 0) height = region->h;
+    quad = &gTexturedQuadTemplate;
+    /* Start with a rectangle, then skew its corners by eight pixels. */
+    setXY0(quad, x, y);
+    quad->x1 = x + width;
+    quad->y1 = y;
+    quad->x2 = x;
+    quad->y2 = y + height;
+    quad->x3 = x + width;
+    quad->y3 = y + height;
+    quad->x0 = x - 8;
+    quad->y0 = y + 8;
+    quad->x1 = x + width - 8;
+    quad->y1 = y - 8;
+    quad->x2 = x + 8;
+    quad->y2 = y + height + 8;
+    quad->x3 = x + width + 8;
+    quad->y3 = y + height - 8;
+    quad->u0 = region->u;
+    quad->v0 = region->v;
+    quad->u1 = region->u + region->w;
+    quad->v1 = region->v;
+    quad->u2 = region->u;
+    quad->v2 = region->v + region->h;
+    quad->u3 = region->u + region->w;
+    quad->v3 = region->v + region->h;
+    GsSortPoly(quad, ot, depth);
+}
 
 void drawInclusiveTexturedQuad(s16 x, s16 y, s32 index, GsOT *ot, u16 depth) {
     POLY_FT4 *quad = &gTexturedQuadTemplate;

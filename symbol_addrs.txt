@@ -2674,3 +2674,5 @@ gSecondaryResourceDisplayTask = 0x8013B6C0; // size:0x4 defined:true
 updateLandedTaskObject = 0x8005E454; // type:func
 
 captureSelectedPlayerStates = 0x8005F730; // type:func
+
+drawSkewedTexturedQuadByIndexWithBlend = 0x8006C428; // type:func
