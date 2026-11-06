@@ -7,6 +7,7 @@
 #include "game/selected_record.h"
 #include "game/graphics.h"
 #include "game/coordinate.h"
+#include "game/quad_animation.h"
 #include "game/linear_random.h"
 #include "game/random.h"
 #include "game/offset_archive.h"
@@ -79,6 +80,8 @@ u8 *D_8012090C[10] = {
 
 
 void initializeScaledTaskCoordinateResource(void);
+void func_8001EEBC(void);
+void func_80025014(void);
 void func_800252CC(void);
 void func_800240D0(void);
 void func_80024288(void);
@@ -140,7 +143,7 @@ void (*currentPlayerStateCallbacks[74])(void) = {
     initializeCurrentPlayerDefaultState,
     initializeCurrentPlayerState22,
     initializeCurrentPlayerState23,
-    func_8001FAC4,
+    initializeCurrentPlayerState24,
     initializeCurrentPlayerState25,
     resetCurrentPlayerForCallback25508,
     resetCurrentPlayerForCallback255C4,
@@ -404,7 +407,35 @@ void initializeCurrentPlayerState40(void) {
     setCurrentTaskCallback(func_800273D4);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8001FAC4);
+void initializeCurrentPlayerState24(void) {
+    RacePlayer *player;
+    u16 i;
+    D_8013B0D8->unk0F8 = 1;
+    D_8013B0D8->unk128 = (D_8013B0D8->unk128 & 0xFF0C1FFB) | 0x202000;
+    startCurrentPlayerAnimation(1, 1);
+    for (i = 0; i < 12; i++) {
+        D_8013B0D8->unk5BC[i].z = 0;
+        D_8013B0D8->unk5BC[i].x = 0;
+    }
+    func_8001EEBC();
+    D_8013AE88->data1A = 0;
+    D_8013AE88->data1C = 0;
+    player = D_8013B0D8;
+    player->unk08C = 90;
+    player->unk078 = 0;
+    player->unk064 = 0;
+    player->unk062 = 0;
+    player->unk060 = 0;
+    player->unk0BC = 0;
+    player->unk094 = 0;
+    player->unk08C = 90 - (player->unk08C * player->unk935) / 8;
+    func_8002E5A0(D_8013AE88->data18, 7);
+    D_8013AF88->vx = D_8013B0D8->position8E4[0];
+    D_8013AF88->vy = D_8013B0D8->position8E4[1] - 32;
+    D_8013AF88->vz = D_8013B0D8->position8E4[2];
+    createQuadAnimationTask(D_8013AE88->data18, D_8013AF88);
+    setCurrentTaskCallback(func_80025014);
+}
 
 void initializeCurrentPlayerState25(void) {
     RacePlayer *player = D_8013B0D8;

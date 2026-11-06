@@ -17,7 +17,7 @@ void initializeCurrentPlayerState14(void);
 void initializeCurrentPlayerState11(void);
 void initializeCurrentPlayerState12(void);
 void initializeCurrentPlayerState40(void);
-void func_8001FAC4(void);
+void initializeCurrentPlayerState24(void);
 void initializeCurrentPlayerState25(void);
 void resetCurrentPlayerForCallback25508(void);
 void resetCurrentPlayerForCallback255C4(void);

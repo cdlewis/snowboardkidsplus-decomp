@@ -2566,3 +2566,5 @@ initializeCountedGroupedSelectionBoundsTask = 0x8008F970; // type:func
 initializeFlagSelectedCdAwareTask = 0x8007CB90; // type:func
 
 emitProjectedTexturedTriangle = 0x80052840; // type:func
+
+initializeCurrentPlayerState24 = 0x8001FAC4; // type:func
