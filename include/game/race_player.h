@@ -172,3 +172,5 @@ void initCurrentPlayerModelParts(void);
 s32 callCurrentPlayerStateCallbackIfDifferent(u16 state);
 
 void initializeActiveRacePlayers(void);
+
+void assignTwoPlayerResultSlots(s16 result);

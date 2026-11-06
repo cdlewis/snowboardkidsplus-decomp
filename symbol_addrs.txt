@@ -2043,3 +2043,5 @@ waitSpriteExitMotionTask = 0x80034E90; // type:func
 createRotatingQuadTrailTask = 0x80069024; // type:func
 
 advancePlayerSpriteAnimationTask = 0x8003452C; // type:func
+
+assignTwoPlayerResultSlots = 0x8003CA58; // type:func

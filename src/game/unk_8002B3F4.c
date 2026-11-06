@@ -146,6 +146,8 @@ extern const char D_80010A94[];
 
 RaceTime gRaceElapsedTime = {0, 0, 0};
 
+extern int rand(void);
+
 void func_8002F3C8(s16 x, s16 y, s16 clutX, s16 clutY, u32 *tim);
 s16 func_8004A124(s32 x1, s32 z1, s32 x2, s32 z2);
 void func_8003E1D0(u16 playerIndex);
@@ -1147,7 +1149,21 @@ s16 compareRaceTimes(const RaceTime *a, const RaceTime *b) {
     return result;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003CA58);
+void assignTwoPlayerResultSlots(s16 result) {
+    if (result == 1) {
+        D_80120E90[0].unk100[0] = 0;
+        D_80120E90[1].unk100[0] = 1;
+    } else if (result == 2) {
+        D_80120E90[0].unk100[0] = 1;
+        D_80120E90[1].unk100[0] = 0;
+    } else if ((rand() & 1) == 0) {
+        D_80120E90[0].unk100[0] = 2;
+        D_80120E90[1].unk100[0] = 3;
+    } else {
+        D_80120E90[0].unk100[0] = 3;
+        D_80120E90[1].unk100[0] = 2;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003CAF0);
 
