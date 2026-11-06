@@ -271,6 +271,17 @@ typedef struct PickupResource {
     s32 collisionRange;
 } PickupResource;
 
+typedef struct FallingTaskResource {
+    GsCOORDINATE2 coordinate;
+    u8 unk50[0x50];
+    s32 position[3];
+    u8 unkAC[0x14];
+    SVECTOR rotation;
+    u8 unkC8[8];
+    s16 geometryIndex, groundPitch, groundRoll, unkD6;
+    s32 verticalVelocity, groundHeight;
+} FallingTaskResource;
+
 /* Geometry entries have a 0x1C-byte stride; the origin references a vertex. */
 typedef struct GeometryPlacement {
     s16 unk00[8];
@@ -690,6 +701,7 @@ u16 func_80059254(void);
 s32 func_8005143C(s32 x, s32 z, s16 player);
 void func_8005CCEC(void);
 void func_8005DF98(void);
+void func_8005E454(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800497B8);
 
@@ -1486,7 +1498,34 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005DF98);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005E174);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005E338);
+void updateFallingTaskObject(void) {
+    FallingTaskResource *resource;
+    u8 landed = 0;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (FallingTaskResource *)&D_800D9504[D_8013AE88->resource14];
+    if (!D_8013AFD3) {
+        resource->verticalVelocity += 0x180;
+        resource->position[1] += resource->verticalVelocity;
+        if (resource->position[1] > resource->groundHeight) {
+            resource->position[1] = resource->groundHeight;
+            resource->rotation.vx = resource->groundPitch;
+            resource->rotation.vz = resource->groundRoll;
+            landed = 1;
+        }
+        resource->coordinate.coord.t[1] = resource->position[1] >> 8;
+    }
+    if (func_8005143C(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
+        D_80129A80[9].coord2 = &resource->coordinate;
+        func_8001E3E4(&resource->rotation, &resource->coordinate);
+        drawTaskObject(9);
+    }
+    if (landed) {
+        D_8013AE88->data1A = 0x708;
+        setCurrentTaskCallback(func_8005E454);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005E454);
 

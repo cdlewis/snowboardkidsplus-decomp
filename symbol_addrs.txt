@@ -2603,3 +2603,5 @@ updateTimedSpriteB5Task = 0x8007724C; // type:func
 initializeCollectibleTask = 0x8005DE2C; // type:func
 
 updateDriftingFallingSpriteEffect = 0x80033A24; // type:func
+
+updateFallingTaskObject = 0x8005E338; // type:func
