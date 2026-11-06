@@ -32,6 +32,22 @@ typedef struct TriangleScratchVertex {
     TriangleColor color;
 } TriangleScratchVertex;
 
+typedef struct UVPair { s8 u, v; } UVPair;
+typedef struct TextureUV { UVPair coords; u16 attribute; } TextureUV;
+typedef struct TexturedTrianglePrimitive {
+    u32 command;
+    TextureUV uv[3];
+    u8 r, g, b, code;
+    u16 vertexIndices[3];
+} TexturedTrianglePrimitive;
+typedef struct TriangleTextureState {
+    u32 reserved0;
+    void (*callback)(TriangleScratchVertex *);
+    u8 reserved[0x58];
+    u16 tpage, clut;
+    u8 r, g, b;
+} TriangleTextureState;
+
 /* Sixteen world positions followed by per-position state words. */
 typedef struct TrailPosition {
     s32 x, y, z;
@@ -384,6 +400,7 @@ extern u16 D_8013B376 __attribute__((section(".sdata")));
 
 
 void func_80052680(TriangleScratchVertex *);
+void func_80052840(TriangleScratchVertex *);
 void func_80053A34(TriangleScratchVertex *, s32);
 void func_80066474(void);
 void func_8005D828(RacePlayer *player, PlayerCollisionRegion *region);
@@ -663,7 +680,22 @@ void processGouraudTrianglePrimitive(void) {
     func_80053A34((TriangleScratchVertex *)0x1F800070, 0);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800550A8);
+void processTexturedTrianglePrimitive(void) {
+    TexturedTrianglePrimitive *primitive = (TexturedTrianglePrimitive *)D_8013B680;
+    ((TriangleTextureState *)0x1F800000)->tpage = primitive->uv[1].attribute;
+    ((TriangleTextureState *)0x1F800000)->clut = primitive->uv[0].attribute;
+    ((TriangleTextureState *)0x1F800000)->r = primitive->r;
+    ((TriangleTextureState *)0x1F800000)->g = primitive->g;
+    ((TriangleTextureState *)0x1F800000)->b = primitive->b;
+    ((TriangleTextureState *)0x1F800000)->callback = func_80052840;
+    ((TriangleScratchVertex *)0x1F800070)->position = D_8013B688[primitive->vertexIndices[0]];
+    ((TriangleScratchVertex *)0x1F800080)->position = D_8013B688[primitive->vertexIndices[1]];
+    ((TriangleScratchVertex *)0x1F800090)->position = D_8013B688[primitive->vertexIndices[2]];
+    *(UVPair *)0x1F800078 = primitive->uv[0].coords;
+    *(UVPair *)0x1F800088 = primitive->uv[1].coords;
+    *(UVPair *)0x1F800098 = primitive->uv[2].coords;
+    func_80053A34((TriangleScratchVertex *)0x1F800070, 0);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80055200);
 
