@@ -105,6 +105,9 @@ struct RacePlayer {
     PlayerTimerState timer;
 };
 
+/* Per-character animation indices; each row has the original 40-byte stride. */
+extern u8 D_800EB09C[10][40];
+
 extern RacePlayer D_80120E90[];
 extern s16 D_8013B0E4;
 /* Two declarations preserve the original GP-relative and absolute accesses

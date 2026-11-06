@@ -1,7 +1,7 @@
 #pragma once
 
 void func_8001F0C4(void);
-void func_8001F130(void);
+void initializeCurrentPlayerDefaultState(void);
 void func_8001F1B4(void);
 void func_8001F258(void);
 void func_8001F2D4(void);
@@ -26,3 +26,5 @@ void func_80020018(void);
 void func_800200F8(void);
 
 void func_800273D4(void);
+
+void func_80021B20(void);
