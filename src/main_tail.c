@@ -99,6 +99,7 @@ POLY_F3 gNumberAdjustmentArrow __attribute__((section(".data.number_adjustment_a
 extern s16 D_8013B560;
 extern u8 D_8013B562;
 extern u8 D_8013B0F0 __attribute__((section(".data")));
+extern u8 D_8013AF3A __attribute__((section(".data")));
 
 s32 queueCdSectorCommand(s16 command, s16 sector, s16 sectorCount, void *destination, s32 flags);
 
@@ -123,6 +124,9 @@ void func_800A4C28(void);
 void resetUnlockMenuOffsets(UnlockMenuState *state);
 void func_800A525C(void);
 void func_800A6A8C(void);
+void func_800A624C(void);
+void startUnlockResourceLoad(void);
+void prepareUnlockSelectionResume(void);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_8008C708);
 
@@ -525,7 +529,17 @@ s32 hasUnlockNotificationFlag(s16 index) {
     return (s16)getUnlockNotificationFlag(index) != 0;
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A4FB8);
+void startUnlockActionAfterCountdown(void) {
+    if (--D_8013AE88->data18 == 0) {
+        if (D_8013AF3A < 11) {
+            func_80014874(func_800A624C);
+        } else {
+            func_80014874(startUnlockResourceLoad);
+        }
+        setCurrentTaskCallback(prepareUnlockSelectionResume);
+        D_8013AE88->unk10 |= 1;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A5050);
 
