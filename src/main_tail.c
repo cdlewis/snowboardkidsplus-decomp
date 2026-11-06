@@ -110,6 +110,8 @@ void func_8001B858(void);
 void func_8001B7F0(void);
 void func_800A1F50(void);
 void func_8009B5A0(s16 playerIndex, s32 unused, s32 paletteRow, u16 mode);
+void func_800A4C28(void);
+void resetUnlockMenuOffsets(UnlockMenuState *state);
 void func_800A525C(void);
 void func_800A6A8C(void);
 
@@ -469,7 +471,18 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A42CC);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A46E0);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A48E4);
+void initializeUnlockMenuTask(void) {
+    UnlockMenuState *state;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        for (;;) {}
+    }
+    state = (UnlockMenuState *)&D_800D9504[D_8013AE88->resource14];
+    state->selection = 0;
+    state->previousSelection = 0;
+    resetUnlockMenuOffsets(state);
+    func_800A4C28();
+    setCurrentTaskCallback(func_800A499C);
+}
 
 void resetUnlockMenuOffsets(UnlockMenuState *state) {
     s16 i;
