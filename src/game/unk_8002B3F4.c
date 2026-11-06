@@ -1242,7 +1242,13 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800356FC);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80035808);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003597C);
+void drawFixedSpriteAndBottomBarTask(void) {
+    addTexturedSprite(D_8013AF6C, 0x1C, 0x3DFE, 0x28, 0x52,
+                      0x68, 0x18, 8, 0xD8, 0x80, 0x80, 0x80);
+    addFlatRectangle(D_8013AF6C + 1, -(D_8013AF7A >> 1),
+                     (s16)((D_8013AF7C >> 1) - 0x20),
+                     (s16)D_8013AF7A, 0x20, 0, 0, 0);
+}
 
 void drawDemonstrationOverlay(void) {
     setSpriteColor(128, 128, 128);

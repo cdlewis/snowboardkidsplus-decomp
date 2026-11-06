@@ -384,14 +384,12 @@ extern PlayerCollisionRegion D_80129A18[2];
 /* Shared texture metadata remains in its original data owner. */
 extern TextureRegionSet D_8012DDA4[];
 extern TextureRegion *D_8013B6AC;
-extern u32 *D_8013AF6C __attribute__((section(".data")));
 
 extern SelectedStateRecord *D_8012C6F4[];
 extern s8 *D_8012BBB4[][4];
 /* Shared palette storage and capture rectangle remain in their data owners. */
 extern u32 D_8012CB94[8];
 extern RECT D_8013B330 __attribute__((section(".data")));
-extern u32 *D_8013AF6C __attribute__((section(".data")));
 extern s32 D_8013B338;
 extern s32 D_8013B35C;
 extern s32 D_8013B360;
