@@ -10,6 +10,7 @@
 #define MUSIC_ABSOLUTE_ADDRESSING
 #include "game/music.h"
 #include "psx/libsnd.h"
+#include "psx/libsn.h"
 #define RACE_PLAYER_ABSOLUTE_ADDRESSING
 #define TASK_ABSOLUTE_ADDRESSING
 #define TASK_FLAGS_ABSOLUTE_ADDRESSING
@@ -64,9 +65,12 @@ extern u8 D_8013B55E __attribute__((section(".data")));
 
 extern s16 D_8013B560;
 extern u8 D_8013B562;
+extern char D_80012310[];
+extern char D_8001232C[];
 
 
 void func_800187B8(u8 voice);
+int printf(const char *format, ...);
 
 void func_800A3750(void);
 void func_800A5AFC(void);
@@ -576,7 +580,24 @@ void startUnlockNotification(s16 index) {
 
 INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A7D8C);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A7F84);
+int readHostFile(char *path, char *buffer) {
+    int length;
+    int fd;
+
+    fd = PCopen(path, 0, 0);
+    if (fd == -1) {
+        printf(D_80012310, path);
+    } else {
+        length = PClseek(fd, 0, 2);
+        PClseek(fd, 0, 0);
+        if (PCread(fd, buffer, length) == length) {
+            PCclose(fd);
+            return 0;
+        }
+        printf(D_8001232C, path);
+    }
+    return -1;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A8044);
 

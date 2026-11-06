@@ -449,6 +449,7 @@ SpuSetTransferStartAddr = 0x800B5224; // type:func
 SpuSetTransferMode = 0x800B5284; // type:func
 SsVabTransCompleted = 0x800B52B4; // type:func
 SpuIsTransferCompleted = 0x800B52E4; // type:func
+readHostFile = 0x800A7F84; // type:func
 PCopen = 0x800B5394; // type:func defined:true
 PCclose = 0x800B53B4; // type:func defined:true
 PClseek = 0x800B53C4; // type:func defined:true
