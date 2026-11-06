@@ -2221,3 +2221,7 @@ initializeSlidingVisualSequenceTask = 0x800496EC; // type:func
 createOscillatingQuadTask = 0x8004F374; // type:func
 
 initializeModeDependentDualResourceTask = 0x8007D50C; // type:func
+
+drawDemonstrationOverlay = 0x80035A38; // type:func
+gDemonstrationText = 0x80010A3C; // size:0x10 defined:true
+gDemonstrationStartText = 0x80010A4C; // size:0xC defined:true

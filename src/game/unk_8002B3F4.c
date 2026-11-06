@@ -3,6 +3,7 @@
 #define TASK_FLAGS_ABSOLUTE_ADDRESSING
 #define RACE_PLAYER_ABSOLUTE_ADDRESSING
 #include "game/task.h"
+#include "game/game_task_scheduler.h"
 #include "game/race_player.h"
 #include "game/race_camera.h"
 #include "game/race_time.h"
@@ -202,6 +203,11 @@ typedef struct PlayerCameraView {
     s32 targetX, targetY, targetZ;
     s32 unk18, unk1C;
 } PlayerCameraView;
+
+const char gDemonstrationText[16]
+    __attribute__((section(".rodata.demonstration_overlay"), aligned(4))) = "DEMONSTRATION";
+const char gDemonstrationStartText[12]
+    __attribute__((section(".rodata.demonstration_overlay"), aligned(4))) = "PUSH START";
 
 PlayerCameraView gPlayerCameraViews[2]
     __attribute__((section(".data.player_camera_views"))) = {0};
@@ -1190,7 +1196,13 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80035808);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003597C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80035A38);
+void drawDemonstrationOverlay(void) {
+    setSpriteColor(128, 128, 128);
+    func_8006F57C(-52, -8, 20, gDemonstrationText, 1, -1, &D_800EBFF0[D_8013AF78], 3);
+    if (gFrameCounter & 8) {
+        func_8006F57C(-40, 28, 20, gDemonstrationStartText, 2, -1, &D_800EBFF0[D_8013AF78], 3);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80035B24);
 
