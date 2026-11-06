@@ -84,6 +84,7 @@ void func_80070274(s32 mode, s32 id, u16 duration);
 s32 func_800707F0(s32 id);
 void func_80071490(s32 mode, s32 value1, s32 value2);
 
+void createMovingLineTask(s32 index);
 void startIndexedRenderTask(s32 index);
 void startIndexedRenderTaskPair(s32 index);
 void initializeMode1Task(void);

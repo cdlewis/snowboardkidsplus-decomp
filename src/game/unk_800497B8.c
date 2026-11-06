@@ -97,6 +97,13 @@ typedef struct QuadScratchpad {
     TriangleScratchVertex vertices[4];
 } QuadScratchpad;
 
+typedef struct MovingLineResource {
+    s16 x, y;
+    u32 elapsed;
+    u32 duration;
+    u8 pad[0xF4];
+} MovingLineResource;
+
 typedef struct FadingTextResource {
     s32 duration;
     s32 elapsed;
@@ -466,6 +473,11 @@ void func_8005B6C0(void);
 void func_80052530(TriangleScratchVertex *vertices);
 void func_80052C1C(TriangleScratchVertex *vertices);
 void func_800542BC(TriangleScratchVertex *vertices, s32 flags);
+void func_8004F46C(void);
+void func_80052530(ScratchVertex *vertices);
+void func_80052C1C(ScratchVertex *vertices);
+void func_800542BC(ScratchVertex *vertices, s32 flags);
+void func_80053A34(ScratchVertex *vertices, s32 flags);
 
 void func_80068D1C(void);
 void func_800692E8(void);
@@ -648,7 +660,17 @@ void createOscillatingQuadTask(s32 value, VECTOR *position, s32 amplitude, s32 r
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8004F46C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8004F69C);
+void createMovingLineTask(s32 index) {
+    MovingLineResource *resource;
+    func_80014930(&D_800D7C84, func_8004F46C);
+    D_8013AE8C->resource14 = allocateTaskResource();
+    D_8013AE8C->data18 = index;
+    resource = (MovingLineResource *)&D_800D9504[D_8013AE8C->resource14];
+    resource->x = randomNextLinear() % 320;
+    resource->y = 0;
+    resource->elapsed = 0;
+    resource->duration = randomNextLinear() % 15 + 15;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8004F780);
 
