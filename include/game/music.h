@@ -31,6 +31,7 @@ void func_80017E7C(s16 repeatCount);
 void setMusicSequenceEnabled(s16 enabled);
 void stopMusicSequence(void);
 void loadSoundBank(s16 bankId, u8 *header, u8 *body);
+void func_800180F4(s16 bankId);
 void openMusicSequence(s16 bankId, u32 *sequence);
 void closeMusicSequence(void);
 void pauseMusicSequence(void);

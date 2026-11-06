@@ -201,7 +201,6 @@ void pollMemoryCardStatusTask(void);
 void func_8001D100(void);
 void advanceTaskWhenFlagAFE4Bit8Set(void);
 void startResourceLoadWhenFlagAFE4Bit9Set(void);
-void func_800180F4(s16 bankId);
 void func_80040A60(void);
 
 void uploadTimImageWithOffset(u32 *tim, s16 *position) {

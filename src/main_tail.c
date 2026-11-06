@@ -212,6 +212,7 @@ void func_800A39AC(void);
 void func_800A42CC(void);
 void func_800A499C(void);
 void func_8001D97C(void);
+void preparePlayerResourcesTask(void);
 void initializeRaceTaskState(void);
 void func_8001B858(void);
 void func_800A1F50(void);
@@ -745,7 +746,21 @@ void initializeMode1Task(void) {
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A0AA8);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A0C6C);
+void prepareRaceResourcesIfSelectionChanged(void) {
+    func_80070274(1, 0, 30);
+    setSecondaryDisplayTaskMode(1);
+    if (D_8013B560 != D_8013AFCE) {
+        func_800180F4(2);
+        func_800180F4(3);
+        func_800180F4(4);
+        func_800180F4(5);
+        queueStartupSectorReads();
+        setCurrentTaskCallback(preparePlayerResourcesTask);
+        D_8013AE88->unk10 |= 2;
+    } else {
+        setCurrentTaskCallback(initializeRaceTaskState);
+    }
+}
 
 void preparePlayerResourcesTask(void) {
     func_8001D97C();
