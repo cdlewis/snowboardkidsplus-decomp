@@ -126,6 +126,13 @@ typedef struct TaskMenuFadeResource {
     u8 unk08[0xF8];
 } TaskMenuFadeResource;
 
+typedef struct MenuCountdownResource {
+    s16 unk00, unk02;
+    s16 timer;
+    s16 unk06;
+    u8 unk08[0xF8];
+} MenuCountdownResource;
+
 typedef struct MenuFadeInResource {
     s16 unk00;
     s16 brightness;
@@ -242,6 +249,8 @@ void drawMenuTimeWithBrightness(MenuTimeResource *resource);
 void func_800379B8(TaskResourceRecord *resource);
 void drawLapTimeLabel(TaskMenuFadeResource *resource);
 void func_80038090(TaskResourceRecord *resource);
+void func_80038270(TaskResourceRecord *resource);
+void func_80038C70(void);
 void func_80038574(TaskResourceRecord *resource);
 void func_8003881C(TaskResourceRecord *resource);
 void func_80039210(void);
@@ -1309,7 +1318,20 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80038BAC);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80038C70);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80038E8C);
+void advanceTaskMenuCountdown(void) {
+    MenuCountdownResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (MenuCountdownResource *)&D_800D9504[D_8013AE88->resource14];
+    resource->unk06 = 3;
+    if (--resource->timer == 0) {
+        setCurrentTaskCallback(func_80038C70);
+    }
+    func_80038090((TaskResourceRecord *)resource);
+    func_80038270((TaskResourceRecord *)resource);
+    func_8003881C((TaskResourceRecord *)resource);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80038F2C);
 
