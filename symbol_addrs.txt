@@ -2404,3 +2404,5 @@ createMovingLineTask = 0x8004F69C; // type:func
 
 drawTextMessagePanel = 0x8007BD04; // type:func
 gTextPanelMessage = 0x8012F3DC; // size:0x24
+
+initPlayerCamera = 0x8003DF3C; // type:func

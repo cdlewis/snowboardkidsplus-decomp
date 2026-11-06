@@ -24,6 +24,16 @@ void GsGetLw(GsCOORDINATE2 *coordinate, MATRIX *out);
 void GsGetLs(GsCOORDINATE2 *coordinate, MATRIX *out);
 void GsSetLightMatrix(MATRIX *matrix);
 void GsSetLsMatrix(MATRIX *matrix);
+typedef struct GsRVIEW2 {
+    s32 vpx, vpy, vpz;
+    s32 vrx, vry, vrz;
+    s32 rz;
+    GsCOORDINATE2 *super;
+} GsRVIEW2;
+
+void GsSetProjection(s32 projection);
+int GsSetRefView2L(GsRVIEW2 *view);
+
 void GsMapModelingData(u32 *data);
 
 void GsInitCoordinate2(GsCOORDINATE2 *super, GsCOORDINATE2 *coord);

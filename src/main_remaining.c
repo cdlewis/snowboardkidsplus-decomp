@@ -163,7 +163,6 @@ s32 func_80017268(void);
 void func_80018D80(u8 slot, void *destination);
 void pollMemoryCardBufferReadTask(void);
 void func_8001C0DC(void);
-void func_8003DF3C(u16 index);
 void func_8003DEE0(void);
 void func_8001B858(void);
 void func_8002FFC0(void);
@@ -854,7 +853,7 @@ void initializeGameOptionTask(void) {
 }
 
 void initializeGameOptionViewTask(void) {
-    func_8003DF3C(0);
+    initPlayerCamera(0);
     func_8003DEE0();
     setControllerFlag0(0);
     setControllerFlag0(1);

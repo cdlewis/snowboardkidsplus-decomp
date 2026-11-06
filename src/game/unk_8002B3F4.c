@@ -256,18 +256,13 @@ typedef struct SlidingVisualResource {
     u8 unkD8[0x28];
 } SlidingVisualResource;
 
-typedef struct PlayerCameraView {
-    s32 x, y, z;
-    s32 targetX, targetY, targetZ;
-    s32 unk18, unk1C;
-} PlayerCameraView;
 
 const char gDemonstrationText[16]
     __attribute__((section(".rodata.demonstration_overlay"), aligned(4))) = "DEMONSTRATION";
 const char gDemonstrationStartText[12]
     __attribute__((section(".rodata.demonstration_overlay"), aligned(4))) = "PUSH START";
 
-PlayerCameraView gPlayerCameraViews[2]
+GsRVIEW2 gPlayerCameraViews[2]
     __attribute__((section(".data.player_camera_views"))) = {0};
 
 MenuSpritePaletteGroups gMenuSpritePaletteGroups
@@ -295,6 +290,7 @@ extern u8 D_80123640[];
 extern s16 D_8013B0E4;
 extern u16 D_8013B0E6;
 extern s32 D_8013B0E8;
+extern u16 D_8013AFAA __attribute__((section(".data")));
 extern s32 D_8013AF84 __attribute__((section(".data")));
 extern u8 D_8013AFCD __attribute__((section(".data")));
 
@@ -321,7 +317,6 @@ void func_8003E1D0(u16 playerIndex);
 void func_8003E60C(u16 index);
 void func_8003EE70(void);
 void func_8002F5F8(void);
-void func_8003DF3C(u16 index);
 void func_8003DEE0(void);
 void func_80032F84(void);
 void func_80033404(void);
@@ -806,7 +801,7 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002F548);
 void initializeViewAndSelectTaskCallback(void) {
     if (D_8013AE88->data1E != 0) {
         D_8013AF84 = 0x100;
-        func_8003DF3C(0);
+        initPlayerCamera(0);
         func_8003DEE0();
         if (D_8013AFD7 != 0) {
             goto restore;
@@ -2233,7 +2228,39 @@ void stopPlayerSound(u16 playerIndex) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003DEE0);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003DF3C);
+void initPlayerCamera(u16 index) {
+    GsRVIEW2 *view;
+    GsRVIEW2 *initialView;
+    PlayerCamera *camera;
+    GsRVIEW2 *views;
+    GsRVIEW2 *initialViews;
+    PlayerCamera *cameras;
+    RacePlayer *players;
+    GsSetProjection(D_8013AF84);
+    initialViews = gPlayerCameraViews;
+    initialView = &initialViews[index];
+    initialView->vpx = 0;
+    initialView->vpy = 0;
+    initialView->vpz = 0;
+    initialView->vrx = 0;
+    initialView->vry = 0;
+    if (!(D_8013AFAA & 0xC00)) initialView->vrz = 320;
+    else initialView->vrz = 576;
+    views = gPlayerCameraViews;
+    view = &views[index];
+    cameras = D_801241E8;
+    camera = &cameras[index];
+    players = D_80120E90;
+    view->rz = 0;
+    view->super = 0;
+    camera->yaw = players[index].unk0B6 + 0x400;
+    camera->pitch = -16;
+    camera->unk10 = view->vpz - view->vrz;
+    camera->unk12 = camera->unk14 = 0;
+    camera->unk16 = 1;
+    camera->unk1A = 0;
+    GsSetRefView2L(view);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003E050);
 
@@ -2253,13 +2280,13 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003E3F0);
 void clampPlayerCameraHeight(u16 playerIndex) {
     PlayerCamera *cameras = D_801241E8;
     PlayerCamera *camera = &cameras[playerIndex];
-    PlayerCameraView *views = gPlayerCameraViews;
-    PlayerCameraView *view = &views[playerIndex];
+    GsRVIEW2 *views = gPlayerCameraViews;
+    GsRVIEW2 *view = &views[playerIndex];
     s32 height;
-    camera->unk18 = func_8004A4C4(camera->unk18, view->x, view->z);
-    height = func_8004A764(camera->unk18, view->x, view->z);
-    if (height - 120 < view->y) {
-        view->y = height - 120;
+    camera->unk18 = func_8004A4C4(camera->unk18, view->vpx, view->vpz);
+    height = func_8004A764(camera->unk18, view->vpx, view->vpz);
+    if (height - 120 < view->vpy) {
+        view->vpy = height - 120;
         camera->y = height << 8;
         func_8003E1D0(playerIndex);
     }
@@ -2277,11 +2304,11 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003E794);
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003EA20);
 
 void updateCurrentPlayerCameraTarget(void) {
-    PlayerPlayerCameraView *targets = gPlayerCameraViews;
+    GsRVIEW2 *targets = gPlayerCameraViews;
     RacePlayer *players = D_80120E90;
-    targets[D_8013AE88->data18].targetX = players[D_8013AE88->data18].unk8E4 + players[D_8013AE88->data18].unk084;
-    targets[D_8013AE88->data18].targetY = players[D_8013AE88->data18].unk8E8 + (s16)(D_801241E8[D_8013AE88->data18].unk14 / 8 - 120) + players[D_8013AE88->data18].unk086;
-    targets[D_8013AE88->data18].targetZ = players[D_8013AE88->data18].unk8EC + players[D_8013AE88->data18].unk088;
+    targets[D_8013AE88->data18].vrx = players[D_8013AE88->data18].unk8E4 + players[D_8013AE88->data18].unk084;
+    targets[D_8013AE88->data18].vry = players[D_8013AE88->data18].unk8E8 + (s16)(D_801241E8[D_8013AE88->data18].unk14 / 8 - 120) + players[D_8013AE88->data18].unk086;
+    targets[D_8013AE88->data18].vrz = players[D_8013AE88->data18].unk8EC + players[D_8013AE88->data18].unk088;
 }
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003EE70);
