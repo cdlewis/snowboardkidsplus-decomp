@@ -2534,7 +2534,25 @@ void drawMenuKindSprite(s16 x, s16 y, s16 kind, s32 frame, GsOT *ot, u16 depth) 
     func_8006C998(x, y, sprite, frame, -1, ot, depth);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800402C8);
+void drawScaledMenuKindSprite(s16 x, s16 y, s16 kind, s32 frame, s16 scaleX, s16 scaleY, GsOT *ot, u16 depth) {
+    s32 frameIndex = frame;
+    s32 sprite;
+    if (kind == 0) {
+        frame = 5;
+        sprite = 0x1BE;
+    } else {
+        s32 baseSprite = 0x1BE;
+        u8 *palettes = gMenuSpritePaletteGroups.kind;
+        frame = palettes[kind];
+        sprite = (kind - 1) * 3 + (frameIndex + baseSprite);
+    }
+    if (scaleX > 0 && scaleY > 0) {
+        func_8006CF38((s16)(x + 16), (s16)(y + 16), (s16)sprite, frame, -1,
+                     0x7FFF, 0x7FFF, scaleX, scaleY, 0, ot, depth);
+    } else {
+        func_8006C998(x, y, (s16)sprite, frame, -1, ot, depth);
+    }
+}
 
 void drawPaletteMappedIcon(s16 x, s16 y, s16 index, struct GsOT *ot, u16 depth) {
     s16 sprite;

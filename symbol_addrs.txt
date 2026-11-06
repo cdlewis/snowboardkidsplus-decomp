@@ -1903,6 +1903,7 @@ startSlidingQuadTask = 0x80069B24; // type:func
 gSlidingQuadPacket = 0x8012CB6C; // size:0x28
 
 drawMenuKindSprite = 0x8004023C; // type:func
+drawScaledMenuKindSprite = 0x800402C8; // type:func
 gMenuSpritePaletteGroups = 0x8013B158; // size:0x14 defined:true
 
 startPositionEffectTask = 0x800663E8; // type:func
