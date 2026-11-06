@@ -45,3 +45,5 @@ void initializeCurrentPlayerAttributes(void);
 
 void updateCurrentPlayerAndResetState(void);
 void advanceCurrentPlayerState30TaskOnResult(void);
+
+void updateCurrentPlayerState23MotionAndTimer(void);

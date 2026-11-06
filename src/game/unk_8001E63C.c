@@ -285,8 +285,8 @@ void initializeCurrentPlayerState3(void) {
         startCurrentPlayerAnimation(0x17, 2);
     }
 
-    D_8013B0D8->unk060 = D_8013B0D8->unk104;
-    D_8013B0D8->unk064 = D_8013B0D8->unk108;
+    D_8013B0D8->unk060 = D_8013B0D8->unk104.half[0];
+    D_8013B0D8->unk064 = D_8013B0D8->unk108.half[0];
     D_8013B0D8->unk050 = D_8013B0D8->x - D_8013B0D8->unk060;
     D_8013B0D8->unk058 = D_8013B0D8->z - D_8013B0D8->unk064;
     func_8002E5A0(D_8013AE88->data18, 8);
@@ -298,9 +298,9 @@ void initializeCurrentPlayerState4(void) {
     D_8013B0D8->unk0B8 = 0;
     D_8013B0D8->unk128 = (D_8013B0D8->unk128 & 0xFF0C1FFB) | 0x12204;
     smoothAndScaleCurrentPlayerInput(0, 0);
-    D_8013B0D8->unk060 = D_8013B0D8->unk104;
+    D_8013B0D8->unk060 = D_8013B0D8->unk104.half[0];
     D_8013B0D8->unk062 = -0x600;
-    D_8013B0D8->unk064 = D_8013B0D8->unk108;
+    D_8013B0D8->unk064 = D_8013B0D8->unk108.half[0];
     D_8013B0D8->unk078 = 0;
     D_8013B0D8->unk050 = D_8013B0D8->x - D_8013B0D8->unk060;
     D_8013B0D8->unk058 = D_8013B0D8->z - D_8013B0D8->unk064;
@@ -613,7 +613,33 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80024804);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8002497C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80024F10);
+void updateCurrentPlayerState23MotionAndTimer(void) {
+    RacePlayer *player;
+    func_8002AE6C();
+    player = D_8013B0D8;
+    if (!(player->unk128 & 1)) {
+        player->unk128 &= ~0x200;
+        func_80028680();
+    } else {
+        player->unk128 |= 0x200;
+        player->unk062 += 0x240;
+        if (player->unk062 > 0x7800) {
+            player->unk062 = 0x7800;
+        }
+        D_8013B0D8->y += D_8013B0D8->unk062;
+        func_80028234();
+    }
+    D_8013B0D8->unk08C -= 1 + countCurrentPlayerInputGroups();
+    if (D_8013B0D8->unk08C < 0) {
+        D_8013B0D8->unk08C = 0;
+    }
+    if (D_8013B0D8->unk08C == 0 && D_8013B0D8->unk12C != 24) {
+        D_8013B0D8->unk12C = 4;
+        D_8013B0D8->unk108.word = 0;
+        D_8013B0D8->unk104.word = 0;
+    }
+    callCurrentPlayerStateCallbackIfDifferent(23);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80025014);
 

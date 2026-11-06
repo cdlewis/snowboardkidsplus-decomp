@@ -2803,3 +2803,5 @@ initializePlayerSideVisualTask = 0x8004463C; // type:func
 initializePlayerParticleHistoryTask = 0x80045B4C; // type:func
 
 beginAudioFadeCountdownTask = 0x800A7B9C; // type:func
+
+updateCurrentPlayerState23MotionAndTimer = 0x80024F10; // type:func
