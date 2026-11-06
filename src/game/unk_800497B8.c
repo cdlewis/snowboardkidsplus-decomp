@@ -759,7 +759,7 @@ void func_80063DF4(void);
 void drawFullScreenSpriteTask(void);
 void updateFadingTextTask(void);
 void func_8006A4E8(FadingTextResource *resource);
-void func_8006B1F4(void);
+void loadTimedSpritePresentationResources(void);
 void func_8006AB8C(void);
 void updatePrimaryValueTransition(void);
 void updatePaletteWhitePulse(void);
@@ -2877,10 +2877,20 @@ void initializeTimedSpritePresentation(void) {
     setCurrentTaskCallback(func_8006AB8C);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006B1F4);
+void loadTimedSpritePresentationResources(void) {
+    setSecondaryDisplayTaskMode(1);
+    queueCdSectorCommand(1, 0xC56, 0x11, (void *)0x80180000, 0);
+    queueCdSectorCommand(1, 0xC67, 0x11, (void *)0x80180000, 0);
+    queueCdSectorCommand(1, 0x12E5, 0x26, (void *)0x80180000, 0);
+    queueCdSectorCommand(1, 0x130B, 0x26, (void *)0x80180000, 0);
+    DrawSync(0);
+    queueCdSectorCommand(0, 0x1EF, 0xE3, (void *)0x80180000, 0);
+    setCurrentTaskCallback(initializeTimedSpritePresentation);
+    D_8013AE88->unk10 |= 2;
+}
 
 void createResourceLoadTask(void) {
-    func_80014930(&gGameTasks[4], func_8006B1F4);
+    func_80014930(&gGameTasks[4], loadTimedSpritePresentationResources);
 }
 
 void addTextCharacter(s32 x, s32 y, u32 character) {
