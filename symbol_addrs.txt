@@ -2504,3 +2504,5 @@ geometryPlacementDataAbsolute = 0x8013B1F4; // allow_duplicated:true
 D_8013B1F4 = 0x8013B1F4; // allow_duplicated:true
 initializeProximityEmitterTask = 0x8005CB08; // type:func
 gProximityEmitterPlacements = 0x80129744; // size:0x20
+
+drawPlayerSpriteAnimation = 0x80034434; // type:func

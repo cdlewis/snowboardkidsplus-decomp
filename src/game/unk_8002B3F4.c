@@ -363,7 +363,8 @@ void initializeSlidingNumberDisplayTask(void);
 void slideInSlidingNumberDisplayTask(void);
 void func_800350AC(SlidingNumberResource *resource);
 void advancePlayerSpriteAnimationTask(void);
-void func_80034434(SpriteAnimationResource *resource);
+void drawPlayerSpriteAnimation(SpriteAnimationResource *resource);
+s16 func_8003D904(u16 player);
 void slideOutSlidingDisplayTask(void);
 void func_80034090(SlidingDisplayResource *resource);
 void slideRaceTimeDisplayOut(void);
@@ -1173,7 +1174,23 @@ void initializeTaskMotionResource(void) {
     setCurrentTaskCallback(slideInSlidingDisplayTask);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80034434);
+void drawPlayerSpriteAnimation(SpriteAnimationResource *resource) {
+    GsOT *ot;
+    s32 palette;
+    if (resource->checkPlayer == 1) {
+        if (!func_8003D904(resource->player)) return;
+    }
+    if (resource->player == 0) {
+        ot = &D_800EC018[D_8013AF78];
+    } else {
+        ot = &D_800EC0B8[D_8013AF78];
+    }
+    setSpriteColor(128, 128, 128);
+    palette = 3;
+    if (!resource->alternateLayer) palette = 2;
+    func_8006C998(resource->x, resource->y, (resource->frame >> 1) + 0x1E2,
+                 palette, -1, ot, 0);
+}
 
 void advancePlayerSpriteAnimationTask(void) {
     SpriteAnimationResource *resource;
@@ -1184,7 +1201,7 @@ void advancePlayerSpriteAnimationTask(void) {
     if (++resource->frame >= 16) {
         func_800149A8();
     } else {
-        func_80034434(resource);
+        drawPlayerSpriteAnimation(resource);
     }
 }
 
@@ -2532,7 +2549,7 @@ void drawMenuKindSprite(s16 x, s16 y, s16 kind, s32 frame, GsOT *ot, u16 depth) 
         frame = palettes[kind];
         sprite = (kind - 1) * 3 + (frameIndex + baseSprite);
     }
-    func_8006C998(x, y, sprite, frame, -1, ot, depth);
+    func_8006C998(x, y, (s16)sprite, frame, -1, ot, depth);
 }
 
 void drawScaledMenuKindSprite(s16 x, s16 y, s16 kind, s32 frame, s16 scaleX, s16 scaleY, GsOT *ot, u16 depth) {

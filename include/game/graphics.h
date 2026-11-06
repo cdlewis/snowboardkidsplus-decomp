@@ -83,6 +83,7 @@ typedef struct TaskVisualResource {
 
 extern GsOT D_800EBFF0[2];
 extern GsOT D_800EC018[2];
+extern GsOT D_800EC0B8[2];
 
 void sortLitObject(GsDOBJ2 *object);
 extern u32 *D_8013AF6C __attribute__((section(".data")));
@@ -244,7 +245,7 @@ void uploadBufferedTexturePair(void);
 void func_80070C5C(s32 intensity, struct GsOT *ot, u16 depth);
 void startThreeFrameScreenBlend(void);
 
-void func_8006C998(s16 x, s16 y, s16 sprite, s32 palette, s32 blendMode,
+void func_8006C998(s16 x, s16 y, s32 sprite, s32 palette, s32 blendMode,
                    GsOT *ot, u16 depth);
 void func_8006DFB4(s16 x, s16 y, s16 digits, s16 zeroFill, s32 value,
                    s16 palette, s16 blendMode, GsOT *ot, u16 depth);
