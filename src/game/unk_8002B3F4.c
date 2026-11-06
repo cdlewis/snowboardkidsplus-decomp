@@ -3860,7 +3860,40 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80046228);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80046404);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80046708);
+void drawTaskVisualPositionHistory(TaskVisualResource *resource, VECTOR *history, TaskVisualFrame *frames) {
+    u16 i;
+    s32 phase;
+    VECTOR *entry;
+    resource->code = POLY_FT4_CODE;
+    resource->scaleX = 0x1A00;
+    resource->scaleY = 0x1A00;
+    resource->scaleZ = 0x1A00;
+    resource->coordinate.coord.t[0] = resource->position.x >> 8;
+    resource->coordinate.coord.t[1] = resource->position.y >> 8;
+    resource->coordinate.coord.t[2] = resource->position.z >> 8;
+    prepareTaskVisualQuad(resource, frames, 1);
+    func_8005A788(resource, frames, 0);
+    resource->code = POLY_FT4_CODE | 2;
+    for (i = 0; i < 4; i++) {
+        entry = history;
+        entry += i;
+        if (entry->pad != 0) {
+            resource->coordinate.coord.t[0] = entry->vx >> 8;
+            resource->coordinate.coord.t[1] = entry->vy >> 8;
+            resource->coordinate.coord.t[2] = entry->vz >> 8;
+            phase = (D_8013AE88->data1A - i) & 3;
+            resource->r0 = resource->g0 = resource->b0 = 0x80 - (phase << 3);
+            resource->scaleX = 0x1A00 + (phase << 9);
+            resource->scaleY = 0x1A00 + (phase << 9);
+            resource->scaleZ = 0x1A00 + (phase << 9);
+            prepareTaskVisualQuad(resource, frames, 1);
+            func_8005A788(resource, frames, 0);
+        }
+    }
+    if (D_8013AFD3 == 0) {
+        D_8013AE88->data1A = (D_8013AE88->data1A + 1) & 3;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80046894);
 
