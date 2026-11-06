@@ -470,7 +470,23 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001D678);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001D89C);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001D8D4);
+void animateAlternatingVramRow(void) {
+    RECT rect;
+    if (--D_8013AE88->data1A == 0) {
+        rect.x = 640;
+        if (D_8013AE88->data18 == 0) {
+            rect.y = 503;
+            D_8013AE88->data1A = 4;
+        } else {
+            rect.y = 504;
+            D_8013AE88->data1A = 6;
+        }
+        rect.w = 16;
+        rect.h = 1;
+        MoveImage(&rect, 640, 502);
+        D_8013AE88->data18 ^= 1;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001D97C);
 
