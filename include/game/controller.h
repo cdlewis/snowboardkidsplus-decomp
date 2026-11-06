@@ -2,6 +2,18 @@
 
 #include "decomp/types.h"
 
+typedef struct ControllerInputRecord {
+    u8 repeatCount;
+    u8 horizontal;
+    u8 vertical;
+    u8 unk_03;
+    u16 buttons;
+    u16 pressedButtons;
+} ControllerInputRecord;
+
+extern ControllerInputRecord *D_8013AED4[];
+extern u16 D_8013AEDC[];
+
 extern u16 D_8013AEE8[];
 /* Two state values; an incomplete array preserves absolute addressing. */
 extern u16 D_8013AEEC[];

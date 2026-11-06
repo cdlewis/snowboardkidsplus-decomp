@@ -13,15 +13,6 @@ typedef struct CdCommand {
     s16 value;
 } CdCommand;
 
-typedef struct ControllerInputRecord {
-    u8 repeatCount;
-    u8 horizontal;
-    u8 vertical;
-    u8 unk_03;
-    u16 buttons;
-    u16 pressedButtons;
-} ControllerInputRecord;
-
 typedef struct CdRequest {
     s32 unk_00;
     void *destination;
@@ -65,8 +56,6 @@ u16 gCdRequestReadIndex = 0;
 u16 D_8013AE76 = 0;
 
 ControllerReceiveBuffer D_800E9558[2] __attribute__((section(".data.controller_receive_buffers"))) = {0};
-extern ControllerInputRecord *D_8013AED4[];
-extern u16 D_8013AEDC[];
 extern u8 D_8013AEE0[];
 
 u8 D_8013AEE4 __attribute__((section(".sdata.controller_input_state"))) = 0;

@@ -40,3 +40,6 @@ void updatePlayerField94CFromSelectedTable(u16 tableIndex, s16 sampleIndex,
 
 extern s16 selectedCourseIndexAbsolute __attribute__((section(".data")));
 extern s16 selectedFinishLapCountAbsolute __attribute__((section(".data")));
+
+/* Save player 0 at selected course segments and split its recorded input run. */
+void captureSelectedPlayerStates(void);

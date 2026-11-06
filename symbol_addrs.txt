@@ -2672,3 +2672,5 @@ gSecondaryResourceModeOffsets = 0x80132D48; // size:0xC defined:true
 gSecondaryResourceDisplayTask = 0x8013B6C0; // size:0x4 defined:true
 
 updateLandedTaskObject = 0x8005E454; // type:func
+
+captureSelectedPlayerStates = 0x8005F730; // type:func

@@ -350,6 +350,12 @@ typedef struct ScreenSpriteResource {
     u8 pad[0xC4];
 } ScreenSpriteResource;
 
+/* Callback and task data restored alongside a saved player state. */
+typedef struct TaskSnapshot {
+    TaskCallback callback;
+    u16 data18, data1A, data1C, data1E;
+} TaskSnapshot;
+
 typedef struct SelectedStateRecord {
     s16 state;
     s16 unk02;
@@ -627,6 +633,8 @@ extern PickupPlacement *D_8013B2C0;
 extern TextureRegionSet D_8012DDA4[];
 extern TextureRegion *D_8013B6AC;
 
+extern TaskSnapshot *D_8013B2E4;
+extern RacePlayer *D_8013B2E8;
 extern SelectedStateRecord *D_8012C6F4[];
 TaskVisualFrame *gCourseVisualFrames
     __attribute__((section(".sdata.course_visual_frames"))) = 0;
@@ -1748,7 +1756,41 @@ void resetSelectedRecordStates(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005F730);
+void captureSelectedPlayerStates(void) {
+    s8 split = 0;
+    s32 i = 0;
+    SelectedStateRecord *record = D_8012C6F4[D_8013AFCE];
+    for (;; record++, i++) {
+        GameTask *task;
+        u16 inputIndex;
+        if (record->state == -2) goto done;
+        if (record->state == -1 && record->unk02 == D_80120E90[0].unk92E) {
+            inputIndex = D_8013AEDC[0];
+            record->state = inputIndex - 1;
+            if (D_8013AED4[0][D_8013AEDC[0]-1].repeatCount) {
+                record->state = inputIndex;
+                split = 1;
+            }
+            D_8013B2E8[i] = D_80120E90[0];
+            task = D_80120E90[0].task;
+            D_8013B2E4[i].callback = task->callback;
+            D_8013B2E4[i].data18 = task->data18;
+            D_8013B2E4[i].data1A = task->data1A;
+            D_8013B2E4[i].data1C = task->data1C;
+            D_8013B2E4[i].data1E = task->data1E;
+        }
+    }
+done:
+    if (split) {
+        D_8013AED4[0][D_8013AEDC[0]-1].repeatCount--;
+        D_8013AED4[0][D_8013AEDC[0]].repeatCount = 0;
+        D_8013AED4[0][D_8013AEDC[0]].horizontal = D_8013AED4[0][D_8013AEDC[0]-1].horizontal;
+        D_8013AED4[0][D_8013AEDC[0]].vertical = D_8013AED4[0][D_8013AEDC[0]-1].vertical;
+        D_8013AED4[0][D_8013AEDC[0]].buttons = D_8013AED4[0][D_8013AEDC[0]-1].buttons;
+        D_8013AED4[0][D_8013AEDC[0]].pressedButtons = D_8013AED4[0][D_8013AEDC[0]-1].pressedButtons;
+        D_8013AEDC[0]++;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005F944);
 
