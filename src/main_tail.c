@@ -188,6 +188,7 @@ extern u8 D_8013AF3A __attribute__((section(".data")));
 void func_8009488C(void);
 void func_800187B8(u8 voice);
 
+void func_8008FA8C(void);
 void func_8008D200(void);
 void func_8008DDC0(void);
 void func_8008EC50(void);
@@ -295,7 +296,34 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_8008EC50);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_8008F474);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_8008F970);
+void initializeCountedGroupedSelectionBoundsTask(void) {
+    RECT *bounds;
+    s16 selection;
+    D_8013AE98->data1C++;
+    D_8013AE88->data18 = 0;
+    if (D_8013080C.flags & 0x1C000) {
+        D_8013AE88->data1A = 1;
+    } else {
+        D_8013AE88->data1A = 0;
+    }
+    if (D_8013AE88->resource14 != 0xFFFF) { for (;;) {} }
+    D_8013AE88->resource14 = allocateTaskResource();
+    if (D_8013AE88->resource16 != 0xFFFF) { for (;;) {} }
+    D_8013AE88->resource16 = allocateTaskResource();
+    selection = getGroupedIndexBase(0);
+    D_801300AC.selection = selection;
+    D_801300AC.previousSelection = selection;
+    D_801300B8[0].x = 0;
+    D_801300B8[0].y = 0;
+    D_801300B8[0].w = -1;
+    D_801300B8[0].h = -1;
+    D_801300B8[1].x = 0;
+    bounds = &D_801300B8[1];
+    bounds->y = 0;
+    bounds->w = -1;
+    bounds->h = -1;
+    setCurrentTaskCallback(func_8008FA8C);
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_8008FA8C);
 

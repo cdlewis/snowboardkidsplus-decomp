@@ -14,3 +14,5 @@ extern RECT D_801300B8[4];
 
 void initializeCountedSelectionBoundsTask(void);
 void initializeCountedDisplayBoundsTask(void);
+
+void initializeCountedGroupedSelectionBoundsTask(void);

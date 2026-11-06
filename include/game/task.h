@@ -111,6 +111,7 @@ GameTask *createShrinkingSpriteTask(s16 motionEnabled, u16 spriteIndex);
 
 void begin30TickTransitionOnFlag10(void);
 
+s16 getGroupedIndexBase(s16 index);
 s16 getTaskResourceGroupedIndex(GameTask *task, s16 index);
 s16 getTaskResourceAdjustedGroupedIndex(s16 value, GameTask *task, s16 index);
 
