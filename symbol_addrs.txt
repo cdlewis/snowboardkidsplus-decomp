@@ -2119,3 +2119,5 @@ waitMode2TransitionTask = 0x80030270; // type:func
 advanceCurrentTaskPanelTimer = 0x8003C69C; // type:func
 
 setControllerAxesFromButtons = 0x80014FCC; // type:func
+
+updateTaskMenuFadeIn = 0x800392BC;

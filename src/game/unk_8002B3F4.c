@@ -126,6 +126,13 @@ typedef struct TaskMenuFadeResource {
     u8 unk08[0xF8];
 } TaskMenuFadeResource;
 
+typedef struct MenuFadeInResource {
+    s16 unk00;
+    s16 brightness;
+    s16 timer;
+    u8 unk06[0xFA];
+} MenuFadeInResource;
+
 typedef struct SlidingDisplayResource {
     s32 position;
     u8 unk04[0xC];
@@ -233,6 +240,8 @@ void func_800379B8(TaskResourceRecord *resource);
 void drawLapTimeLabel(TaskMenuFadeResource *resource);
 void func_80038090(TaskResourceRecord *resource);
 void func_80038574(TaskResourceRecord *resource);
+void func_8003881C(TaskResourceRecord *resource);
+void func_80039210(void);
 void func_8003BE58(TaskResourceRecord *resource);
 void func_8003C5D8(void);
 void advanceCurrentTaskPanelTimer(void);
@@ -1264,7 +1273,21 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80039144);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80039210);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800392BC);
+void updateTaskMenuFadeIn(void) {
+    MenuFadeInResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (MenuFadeInResource *)&D_800D9504[D_8013AE88->resource14];
+    resource->brightness += 8;
+    if (resource->brightness != 128) {
+        resource->timer = 20;
+        resource->brightness = 128;
+        setCurrentTaskCallback(func_80039210);
+    }
+    func_80038090((TaskResourceRecord *)resource);
+    func_8003881C((TaskResourceRecord *)resource);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80039360);
 
