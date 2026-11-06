@@ -626,6 +626,16 @@ void func_800659F0(void);
 extern SVECTOR D_8012A5C0[];
 extern GsCOORDINATE2 D_80129C60[];
 
+s32 D_8013B630 __attribute__((section(".sdata.geometry_edge_projection"))) = 0;
+s32 D_8013B634 __attribute__((section(".sdata.geometry_edge_projection"))) = 0;
+s32 D_8013B638 __attribute__((section(".sdata.geometry_edge_projection"))) = 0;
+s32 D_8013B63C __attribute__((section(".sdata.geometry_edge_projection"))) = 0;
+s32 D_8013B640 __attribute__((section(".sdata.geometry_edge_projection"))) = 0;
+s32 D_8013B644 __attribute__((section(".sdata.geometry_edge_projection"))) = 0;
+s32 D_8013B648 __attribute__((section(".sdata.geometry_edge_projection"))) = 0;
+s32 D_8013B64C __attribute__((section(".sdata.geometry_edge_projection"))) = 0;
+s32 D_8013B650 __attribute__((section(".sdata.geometry_edge_projection"))) = 0;
+
 const char gNoProcessMessage[16] = "NO PROCESS...";
 
 void func_8004EFE0(void);
@@ -749,7 +759,19 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8004B044);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8004BC3C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8004C81C);
+void enforceGeometryEdgeDistance(s32 limit) {
+    s32 length, nx, nz, perpendicularX;
+    length = SquareRoot0(D_8013B63C * D_8013B63C + D_8013B644 * D_8013B644);
+    nx = (D_8013B644 << 12) / length;
+    nz = (D_8013B63C << 12) / length;
+    perpendicularX = -nx;
+    D_8013B638 = (perpendicularX * D_8013B630 + nz * D_8013B638) / 4096;
+    if (D_8013B638 < limit) {
+        D_8013B644 = limit - D_8013B638;
+        D_8013B648 += perpendicularX * D_8013B644 / 4096;
+        D_8013B650 += nz * D_8013B644 / 4096;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8004C968);
 

@@ -2586,3 +2586,14 @@ D_8013B560 = 0x8013B560; // size:0x2 allow_duplicated:true
 updateCurrentPlayerAndResetState = 0x800204D8; // type:func
 
 drawSlidingDisplaySprite = 0x80034090; // type:func
+
+enforceGeometryEdgeDistance = 0x8004C81C; // type:func
+D_8013B630 = 0x8013B630; // size:0x4
+D_8013B634 = 0x8013B634; // size:0x4
+D_8013B638 = 0x8013B638; // size:0x4
+D_8013B63C = 0x8013B63C; // size:0x4
+D_8013B640 = 0x8013B640; // size:0x4
+D_8013B644 = 0x8013B644; // size:0x4
+D_8013B648 = 0x8013B648; // size:0x4
+D_8013B64C = 0x8013B64C; // size:0x4
+D_8013B650 = 0x8013B650; // size:0x4

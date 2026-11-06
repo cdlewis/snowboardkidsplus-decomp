@@ -701,6 +701,8 @@ segments:
       - [0x12BD78, data, 12BD78]
       - {start: 0x12BDF8, type: .sdata, name: main, linker_section: .sdata.cd_volume_fade_timer, linker_section_order: .data}
       - [0x12BDFC, data]
+      - {start: 0x12BE30, type: .sdata, name: game/unk_800497B8, linker_section: .sdata.geometry_edge_projection, linker_section_order: .data}
+      - [0x12BE54, data]
       - {start: 0x12BEA4, type: .sdata, name: game/unk_800497B8, linker_section: .sdata.object_sort_saved_stack, linker_section_order: .data}
       - {start: 0x12BEA8, type: .sdata, name: game/unk_800497B8, linker_section: .sdata.alternate_object_sort_saved_stack, linker_section_order: .data}
       - [0x12BEAC, data]
