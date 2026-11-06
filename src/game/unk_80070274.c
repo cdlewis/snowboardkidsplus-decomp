@@ -364,7 +364,36 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80071E78);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80071EF8);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_8007202C);
+void drawSemiTransparentTextureRect(s16 x, s16 y, s16 width, s16 height,
+                   s16 textureDepth, s16 blendMode, s16 pageX, s16 pageY,
+                   s16 clutX, s16 clutY, GsOT *ot, u16 depth) {
+    POLY_FT4 *quad = &gTexturedQuadTemplate;
+    s32 left, top;
+
+    SetSemiTrans(quad, 1);
+    quad->clut = GetClut(clutX, clutY);
+    left = x;
+    top = y;
+    setRGB0(quad, 128, 128, 128);
+    quad->tpage = GetTPage(textureDepth, blendMode, pageX, pageY);
+    quad->x0 = left;
+    quad->y0 = top;
+    quad->x1 = width + left;
+    quad->y1 = top;
+    quad->x2 = left;
+    quad->y2 = height + top;
+    quad->x3 = width + left;
+    quad->y3 = height + top;
+    quad->u0 = 0;
+    quad->v0 = 0;
+    quad->u1 = width;
+    quad->v1 = 0;
+    quad->u2 = 0;
+    quad->v2 = height;
+    quad->u3 = width;
+    quad->v3 = height;
+    GsSortPoly(quad, ot, depth);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_8007219C);
 
