@@ -324,6 +324,7 @@ extern u16 D_8013B376 __attribute__((section(".sdata")));
 
 
 void func_8005D828(RacePlayer *player, PlayerCollisionRegion *region);
+void func_8005B460(void);
 
 s32 func_80060DC8(u32 *tim);
 void func_80068D1C(void);
@@ -681,7 +682,24 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005AF0C);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005B038);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005B3A8);
+void initializeObjectVisualTask(void) {
+    TaskVisualResource *resource;
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    GsInitCoordinate2(0, &resource->coordinate);
+    resource->unkC6 = 0x100;
+    resource->r0 = resource->g0 = resource->b0 = 0x80;
+    resource->code = POLY_FT4_CODE;
+    resource->unkC8 = 0;
+    resource->framePosition = 0;
+    resource->scaleX = 0x3800;
+    resource->scaleY = 0x3800;
+    resource->scaleZ = 0x3800;
+    setCurrentTaskCallback(func_8005B460);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005B460);
 
