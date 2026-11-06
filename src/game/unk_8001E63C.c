@@ -4,6 +4,7 @@
 #include "game/selected_record.h"
 #include "game/graphics.h"
 #include "game/linear_random.h"
+#include "game/random.h"
 #include "game/offset_archive.h"
 #include "game/music.h"
 #include "game/selected_records.h"
@@ -95,7 +96,7 @@ void (*currentPlayerStateCallbacks[74])(void) = {
     initializeCurrentPlayerDefaultState,
     initializeCurrentPlayerDefaultState,
     initializeCurrentPlayerDefaultState,
-    func_8001FA38,
+    initializeCurrentPlayerState40,
     initializeCurrentPlayerDefaultState,
     initializeCurrentPlayerDefaultState,
     initializeCurrentPlayerDefaultState,
@@ -252,7 +253,16 @@ void initializeCurrentPlayerState11(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8001F970);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8001FA38);
+void initializeCurrentPlayerState40(void) {
+    RacePlayer *player = D_8013B0D8;
+    player->unk128 = (player->unk128 & 0xFF0C1FFB) | 0x6000;
+    player->unk08C = 30;
+    D_8013B0D8->unk08C += ((u32)randomNextMain() & 0xFF) >> 4;
+    D_8013B0D8->unk078 = 0;
+    startCurrentPlayerAnimation(15, 1);
+    func_8002E5A0(D_8013AE88->data18, 5);
+    setCurrentTaskCallback(func_800273D4);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8001FAC4);
 

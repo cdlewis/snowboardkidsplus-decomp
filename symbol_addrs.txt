@@ -2088,3 +2088,5 @@ gPlayerCameraViews = 0x801241A8; // size:0x40
 createValueTransitionTask = 0x80075F80; // type:func
 
 initializeCurrentPlayerState11 = 0x8001F8E4; // type:func
+
+initializeCurrentPlayerState40 = 0x8001FA38; // type:func

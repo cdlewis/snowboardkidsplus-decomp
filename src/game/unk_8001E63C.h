@@ -14,7 +14,7 @@ void func_8001F7A0(void);
 void initializeCurrentPlayerState14(void);
 void initializeCurrentPlayerState11(void);
 void func_8001F970(void);
-void func_8001FA38(void);
+void initializeCurrentPlayerState40(void);
 void func_8001FAC4(void);
 void func_8001FC00(void);
 void func_8001FCB4(void);
