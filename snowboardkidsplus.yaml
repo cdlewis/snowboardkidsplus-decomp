@@ -72,8 +72,10 @@ segments:
       - [0xC7C, rodata]
       - [0xCB0, rodata]
       - [0xE34, rodata]
+      - [0x1024, .rodata, game/unk_8002B3F4]
+      - [0x1090, rodata]
       - {start: 0x123C, type: .rodata, name: game/unk_8002B3F4, linker_section: .rodata.demonstration_overlay}
-      - [0x1258, .rodata, game/unk_8002B3F4]
+      - {start: 0x1258, type: .rodata, name: game/unk_8002B3F4, linker_section: .rodata.auto_pilot_label}
       - [0x1264, rodata]
       - [0x1460, rodata]
       - [0x149C, rodata]

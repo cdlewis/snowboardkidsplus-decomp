@@ -12,6 +12,7 @@
 #include "game/music.h"
 #include "psx/libsnd.h"
 #define RACE_PLAYER_ABSOLUTE_ADDRESSING
+#define TASK_MODE_STATE_ABSOLUTE_ADDRESSING
 #define TASK_ABSOLUTE_ADDRESSING
 #define TASK_FLAGS_ABSOLUTE_ADDRESSING
 #include "game/race_player.h"
@@ -181,7 +182,6 @@ POLY_F3 gNumberAdjustmentArrow __attribute__((section(".data.number_adjustment_a
 
 extern s16 D_8013B560;
 extern u8 D_8013B562;
-extern u8 D_8013B0F0 __attribute__((section(".data")));
 extern u8 D_8013AF3A __attribute__((section(".data")));
 
 

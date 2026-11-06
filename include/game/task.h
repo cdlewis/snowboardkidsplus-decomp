@@ -159,3 +159,13 @@ s32 func_8007D47C(void);
 void func_8007CC78(void);
 
 void initializeSelectedCourseOffsetTask(void);
+
+void initializeTaskResourcePairWithOneTickTransition(void);
+void initializeSelectionMenuTask(void);
+void initializeUnlockMenuResourceTask(void);
+
+#ifdef TASK_MODE_STATE_ABSOLUTE_ADDRESSING
+extern u8 D_8013B0F0 __attribute__((section(".data")));
+#else
+extern u8 D_8013B0F0;
+#endif

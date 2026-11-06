@@ -331,7 +331,7 @@ void drawRaceTime(const RaceTime *value, s32 x, s32 y, s16 mode, GsOT *ot, u16 d
 extern u8 D_80120F90[];
 extern const char D_80010A94[];
 
-const char gAutoPilotLabel[] = "AUTO PILOT";
+const char gAutoPilotLabel[] __attribute__((section(".rodata.auto_pilot_label"), aligned(4))) = "AUTO PILOT";
 
 RaceTime gRaceElapsedTime = {0, 0, 0};
 
@@ -354,7 +354,9 @@ void slideInSpriteMotionTask(void);
 void waitSpriteExitMotionTask(void);
 void slideInSlidingDisplayTask(void);
 void func_8002FCF8(void);
-void func_8002FE18(void);
+void dispatchMode11TransitionTask(void);
+void func_80030108(void);
+void func_8002F468(void);
 void func_800302F8(void);
 void func_80032C14(void);
 void waitUnlockNotification0TransitionTask(void);
@@ -885,13 +887,51 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002FA58);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002FCF8);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002FE18);
+void dispatchMode11TransitionTask(void) {
+    if (D_8013B109 != 1) {
+        func_800149A8();
+        return;
+    }
+    switch (D_8013B108) {
+    case 2:
+        func_80014874(func_80030108);
+        D_8013AE88->unk10 |= 1;
+        break;
+    case 25:
+        func_80014874(initializeTaskResourcePairWithOneTickTransition);
+        D_8013AE88->unk10 |= 1;
+        break;
+    case 27:
+        func_80014874(initializeMode1Task);
+        D_8013AE88->unk10 |= 1;
+        D_8013B109 = 3;
+        D_8013AFD7 = 0;
+        break;
+    case 28:
+        func_80014874(initializeSelectionMenuTask);
+        D_8013AE88->unk10 |= 1;
+        D_8013B109 = 3;
+        D_8013AFD7 = 0;
+        break;
+    case 26:
+        func_80014874(initializeUnlockMenuResourceTask);
+        D_8013AE88->unk10 |= 1;
+        D_8013B108 = 2;
+        break;
+    default:
+        func_80014874(func_8002F468);
+        D_8013AE8C->data18 = D_8013B108;
+        D_8013AE88->unk10 |= 1;
+        D_8013B0F0 = 0;
+        break;
+    }
+}
 
 void initializeMode11TransitionTask(void) {
     func_80070274(11, 0, 30);
     setSecondaryDisplayTaskMode(1);
     func_8002FCF8();
-    setCurrentTaskCallback(func_8002FE18);
+    setCurrentTaskCallback(dispatchMode11TransitionTask);
     D_8013AE88->unk10 |= 2;
 }
 
