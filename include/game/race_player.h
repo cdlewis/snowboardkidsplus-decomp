@@ -144,6 +144,7 @@ void startPlayerTimerTask(RacePlayer *player);
 void initPlayerTimerTask(void);
 void stopPlayerSound(u16 playerIndex);
 s32 requestCurrentPlayerAction6(void);
+s32 requestCurrentPlayerAction6NarrowAngle(void);
 s32 requestCurrentPlayerAction17(void);
 s16 countCurrentPlayerInputGroups(void);
 
