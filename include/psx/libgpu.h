@@ -68,6 +68,17 @@ typedef struct POLY_F3 {
 } POLY_F3;
 #define POLY_F3_CODE 0x20
 
+typedef struct POLY_G3 {
+    u32 tag;
+    u8 r0, g0, b0, code;
+    s16 x0, y0;
+    u8 r1, g1, b1, pad1;
+    s16 x1, y1;
+    u8 r2, g2, b2, pad2;
+    s16 x2, y2;
+} POLY_G3;
+#define POLY_G3_CODE 0x30
+
 typedef struct TILE {
     u32 tag;
     u8 r0, g0, b0, code;
@@ -106,6 +117,8 @@ typedef struct DISPENV {
 #define setaddr(p, address) (((P_TAG *)(p))->addr = (u32)(address))
 #define addPrim(ot, p) (setaddr(p, getaddr(ot)), setaddr(ot, p))
 #define setRGB0(p, r, g, b) ((p)->r0 = (r), (p)->g0 = (g), (p)->b0 = (b))
+#define setRGB1(p, r, g, b) ((p)->r1 = (r), (p)->g1 = (g), (p)->b1 = (b))
+#define setRGB2(p, r, g, b) ((p)->r2 = (r), (p)->g2 = (g), (p)->b2 = (b))
 #define setXY0(p, x, y) ((p)->x0 = (x), (p)->y0 = (y))
 #define setWH(p, width, height) ((p)->w = (width), (p)->h = (height))
 #define setXY2(p, x_0, y_0, x_1, y_1) \
