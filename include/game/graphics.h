@@ -179,6 +179,9 @@ void drawTexturedQuad(s16 x, s16 y, s32 index, GsOT *ot, u16 depth);
 void drawStretchedTexturedQuad(s16 x, s16 y, s16 width, s16 height, s32 index,
                                 GsOT *ot, u16 depth);
 void drawTexturedQuadByIndex(s16 x, s16 y, s32 index, GsOT *ot, u16 depth);
+/* A negative blend mode selects opaque drawing. */
+void drawTexturedQuadByIndexWithBlend(s16 x, s16 y, s32 index, s16 palette,
+                                      s16 blendMode, GsOT *ot, u16 depth);
 void drawInclusiveTexturedQuadByIndex(s16 x, s16 y, s32 index, GsOT *ot, u16 depth);
 void setSpriteColor(s32 r, s32 g, s32 b);
 void func_8006CF38(s32 x, s32 y, s32 frame, s32 palette, s32 blend,

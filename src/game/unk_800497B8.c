@@ -444,6 +444,7 @@ void SetFarColor(s32 r, s32 g, s32 b);
 void SetFogNearFar(s32 near, s32 far, s32 h);
 void func_800592DC(u16 index);
 void func_80049D48(s32 x, s32 y, const char *format, ...);
+void func_8006BEEC(s32 enabled);
 void func_8006C5F4(s16 x, s16 y, s32 frameIndex, GsOT *ot, u16 depth);
 void func_80063B58(void);
 void func_80063DF4(void);
@@ -1920,7 +1921,23 @@ void drawTexturedQuadByIndex(s16 x, s16 y, s32 index, GsOT *ot, u16 depth) {
     drawTexturedQuad(x, y, frame->frameIndex, ot, depth);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006C190);
+void drawTexturedQuadByIndexWithBlend(s16 x, s16 y, s32 index, s16 palette, s16 blendMode, GsOT *ot, u16 depth) {
+    TexturedQuadFrame *frame;
+    s32 semiTrans;
+    s32 blend;
+
+    if (blendMode >= 0) {
+        blend = blendMode;
+        semiTrans = 1;
+    } else {
+        blend = 0;
+        semiTrans = 0;
+    }
+    frame = &D_8012DFF4[index];
+    setTexturedQuadTextureBlend(frame->textureIndex, palette, blend);
+    func_8006BEEC(semiTrans);
+    drawTexturedQuad(x, y, frame->frameIndex, ot, depth);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006C240);
 

@@ -1908,6 +1908,7 @@ resetCurrentPlayerForCallback205B8 = 0x8001F0C4; // type:func
 drawTexturedQuad = 0x8006BF14; // type:func
 drawStretchedTexturedQuad = 0x8006C018; // type:func
 drawTexturedQuadByIndex = 0x8006C104; // type:func
+drawTexturedQuadByIndexWithBlend = 0x8006C190; // type:func
 drawInclusiveTexturedQuadByIndex = 0x8006C70C; // type:func
 
 stopTextSoundVoices = 0x800A7B0C; // type:func
