@@ -150,6 +150,9 @@ void func_80048668(void);
 void func_8004531C(void);
 void func_8003772C(void);
 void func_80037F74(void);
+void func_80037BF8(TaskResourceRecord *resource);
+void func_800379B8(TaskResourceRecord *resource);
+void func_80037C80(TaskResourceRecord *resource);
 void func_80038090(TaskResourceRecord *resource);
 void func_80038574(TaskResourceRecord *resource);
 void func_8003BE58(TaskResourceRecord *resource);
@@ -773,7 +776,17 @@ void drawMenuTimeWithBrightness(MenuTimeResource *resource) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80037C80);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80037D18);
+void drawCurrentTaskTimeMenu(void) {
+    TaskResourceRecord *resource;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = &D_800D9504[D_8013AE88->resource14];
+    func_80037BF8(resource);
+    func_800379B8(resource);
+    func_80037C80(resource);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80037D90);
 
