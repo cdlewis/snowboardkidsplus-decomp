@@ -36,7 +36,10 @@ typedef struct GouraudQuadPrimitive {
 } GouraudQuadPrimitive;
 typedef struct TriangleScratchVertex {
     SVECTOR position;
-    s32 unk08;
+    union {
+        s32 unk08;
+        struct { u8 u, v; u16 attribute; } uv;
+    } texture;
     TriangleColor color;
 } TriangleScratchVertex;
 
@@ -67,6 +70,19 @@ typedef struct TriangleTextureState {
     u16 tpage, clut;
     u8 r, g, b;
 } TriangleTextureState;
+
+typedef struct TexturedTriangleScratchpad {
+    u32 reserved0;
+    void (*callback)(TriangleScratchVertex *);
+    s32 depth, depthCue;
+    u8 reserved10[0x40];
+    struct { u16 x, y; } screen[3];
+    u8 reserved5C[4];
+    u16 tpage, clut;
+    u8 r, g, b, code;
+    u8 reserved68[3];
+    u8 fogEnabled;
+} TexturedTriangleScratchpad;
 
 /* Sixteen world positions followed by per-position state words. */
 typedef struct TrailPosition {
@@ -570,7 +586,7 @@ extern u16 D_8013B376 __attribute__((section(".sdata")));
 void updateProximityEmitterTask(void);
 
 void func_80052680(TriangleScratchVertex *);
-void func_80052840(TriangleScratchVertex *);
+void emitProjectedTexturedTriangle(TriangleScratchVertex *);
 void func_80052D84(TriangleScratchVertex *);
 void func_80052F90(TriangleScratchVertex *);
 void func_800529FC(TriangleScratchVertex *);
@@ -885,7 +901,34 @@ void emitProjectedFlatTriangle(TriangleScratchVertex *vertices) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80052680);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80052840);
+void emitProjectedTexturedTriangle(TriangleScratchVertex *vertices) {
+    TexturedTriangleScratchpad *scratch = (TexturedTriangleScratchpad *)0x1F800000;
+    POLY_FT3 *packet = (POLY_FT3 *)GsOUT_PACKET_P;
+    if (scratch->fogEnabled) {
+        gte_stdp(&scratch->depthCue);
+        DpqColor((CVECTOR *)&scratch->r, scratch->depthCue, (CVECTOR *)&packet->r0);
+    } else {
+        setRGB0(packet, scratch->r, scratch->g, scratch->b);
+    }
+    packet->tag = 7 << 24;
+    setcode(packet, scratch->code | POLY_FT3_CODE);
+    packet->tpage = scratch->tpage;
+    packet->clut = scratch->clut;
+    packet->u0 = vertices[0].texture.uv.u;
+    packet->u1 = vertices[1].texture.uv.u;
+    packet->u2 = vertices[2].texture.uv.u;
+    packet->v0 = vertices[0].texture.uv.v;
+    packet->v1 = vertices[1].texture.uv.v;
+    packet->v2 = vertices[2].texture.uv.v;
+    packet->x0 = scratch->screen[0].x;
+    packet->x1 = scratch->screen[1].x;
+    packet->x2 = scratch->screen[2].x;
+    packet->y0 = scratch->screen[0].y;
+    packet->y1 = scratch->screen[1].y;
+    packet->y2 = scratch->screen[2].y;
+    addPrim(&D_8013B670->org[(scratch->depth >> D_8013B69C) + 6], packet);
+    GsOUT_PACKET_P = (u32)(packet + 1);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800529FC);
 
@@ -955,7 +998,7 @@ void processTexturedTrianglePrimitive(void) {
     ((TriangleTextureState *)0x1F800000)->r = primitive->r;
     ((TriangleTextureState *)0x1F800000)->g = primitive->g;
     ((TriangleTextureState *)0x1F800000)->b = primitive->b;
-    ((TriangleTextureState *)0x1F800000)->callback = func_80052840;
+    ((TriangleTextureState *)0x1F800000)->callback = emitProjectedTexturedTriangle;
     ((TriangleScratchVertex *)0x1F800070)->position = D_8013B688[primitive->vertexIndices[0]];
     ((TriangleScratchVertex *)0x1F800080)->position = D_8013B688[primitive->vertexIndices[1]];
     ((TriangleScratchVertex *)0x1F800090)->position = D_8013B688[primitive->vertexIndices[2]];
