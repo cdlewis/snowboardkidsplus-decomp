@@ -62,6 +62,18 @@ typedef struct SpriteZoomResource {
     u8 unk18[0xE8];
 } SpriteZoomResource;
 
+typedef struct ValuePanelResource {
+    s32 x, y;
+    u8 unk08[0x24];
+    s16 *values;
+} ValuePanelResource;
+
+typedef struct ValuePanelEntry {
+    GameTask *task;
+    s16 flags;
+    s16 active;
+} ValuePanelEntry;
+
 typedef struct AnimatedSpriteResource {
     s16 frame;
     s16 unk02;
@@ -120,6 +132,7 @@ void func_80077770(void);
 void GsSortBg(GameBackground *background, GsOT *ot, u16 depth);
 void func_8007BE9C(void);
 void func_8007B10C(void);
+void func_8007AC0C(void);
 void updateAnimatedSpriteTask(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80070274);
@@ -645,7 +658,38 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80079DB0);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80079FE8);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_8007AA58);
+void createValuePanelTask(s16 x, s16 y, s16 *values, s32 depth, s32 index) {
+    ValuePanelResource *resource;
+    ValuePanelEntry *entry;
+
+    func_80014874(func_8007AC0C);
+    D_8013AE8C->data1C = depth;
+    D_8013AE8C->data1E = index;
+    D_8013AE8C->resource14 = allocateTaskResource();
+    resource = (ValuePanelResource *)&D_800D9504[D_8013AE8C->resource14];
+    resource->values = values;
+    resource->x = x << 12;
+    resource->y = y << 12;
+    D_8013AE8C->resource16 = allocateTaskResource();
+    if (index % 10 == 0) {
+        ValuePanelEntry *table;
+        if (D_8013AE88->resource14 == 0xFFFF) {
+            while (1) {}
+        }
+        table = (ValuePanelEntry *)&D_800D9504[D_8013AE88->resource14];
+        entry = table + index / 10;
+    } else {
+        ValuePanelEntry *table;
+        if (D_8013AE88->resource16 == 0xFFFF) {
+            while (1) {}
+        }
+        table = (ValuePanelEntry *)&D_800D9504[D_8013AE88->resource16];
+        entry = table + index / 10;
+    }
+    entry->flags = 1;
+    entry->active = 1;
+    entry->task = D_8013AE8C;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_8007AC0C);
 

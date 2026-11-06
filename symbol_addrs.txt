@@ -2663,3 +2663,5 @@ drawOffsetSelectedTaskSprite = 0x800A2AB0; // type:func
 loadCurrentPlayerModelPose = 0x8009747C; // type:func
 
 moveTaskChildrenWithSpacing = 0x80073950; // type:func
+
+createValuePanelTask = 0x8007AA58;
