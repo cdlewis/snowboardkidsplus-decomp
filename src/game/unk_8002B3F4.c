@@ -269,7 +269,8 @@ void func_80038270(TaskResourceRecord *resource);
 void func_80038C70(void);
 void func_80038574(TaskResourceRecord *resource);
 void func_8003881C(TaskResourceRecord *resource);
-void func_80039210(void);
+void func_80039144(void);
+void waitTaskMenuCountdownAndPlaySound(void);
 void func_8003BE58(TaskResourceRecord *resource);
 void func_8003C5D8(void);
 void advanceCurrentTaskPanelTimer(void);
@@ -1386,7 +1387,20 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003908C);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80039144);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80039210);
+void waitTaskMenuCountdownAndPlaySound(void) {
+    MenuFadeInResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (MenuFadeInResource *)&D_800D9504[D_8013AE88->resource14];
+    if (--resource->timer == 0) {
+        resource->timer = 20;
+        func_800181B0(0, 0x700, 0x20);
+        setCurrentTaskCallback(func_80039144);
+    }
+    func_80038090((TaskResourceRecord *)resource);
+    func_8003881C((TaskResourceRecord *)resource);
+}
 
 void updateTaskMenuFadeIn(void) {
     MenuFadeInResource *resource;
@@ -1398,7 +1412,7 @@ void updateTaskMenuFadeIn(void) {
     if (resource->brightness != 128) {
         resource->timer = 20;
         resource->brightness = 128;
-        setCurrentTaskCallback(func_80039210);
+        setCurrentTaskCallback(waitTaskMenuCountdownAndPlaySound);
     }
     func_80038090((TaskResourceRecord *)resource);
     func_8003881C((TaskResourceRecord *)resource);
