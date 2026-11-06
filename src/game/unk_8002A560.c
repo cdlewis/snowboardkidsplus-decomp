@@ -37,7 +37,15 @@ s16 smoothAndScaleCurrentPlayerInput(s32 magnitude, s16 input) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002A560", func_8002A6AC);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002A560", func_8002A7B4);
+void clampCurrentPlayerHorizontalVector(VECTOR *vector) {
+    s32 magnitude;
+
+    magnitude = SquareRoot0(vector->vx * vector->vx + vector->vz * vector->vz);
+    if (magnitude > D_8013B0D8->unk130 / 2) {
+        vector->vx = vector->vx * (D_8013B0D8->unk130 / 2) / magnitude;
+        vector->vz = vector->vz * (D_8013B0D8->unk130 / 2) / magnitude;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002A560", func_8002A8E4);
 

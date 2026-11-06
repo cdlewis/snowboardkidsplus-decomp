@@ -17,3 +17,4 @@ typedef struct {
 } VECTOR;
 
 VECTOR *OuterProduct0(VECTOR *first, VECTOR *second, VECTOR *result);
+long SquareRoot0(long value);
