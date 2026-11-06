@@ -19,7 +19,11 @@ extern s16 D_8013AFCE;
 #else
 extern s16 D_8013AFCE __attribute__((section(".data")));
 #endif
+#ifdef SELECTED_RECORDS_ABSOLUTE_ADDRESSING
+extern u16 D_8013AFD0 __attribute__((section(".data")));
+#else
 extern u16 D_8013AFD0;
+#endif
 extern u8 D_8013AFDA;
 
 void resetSelectedRecordStates(void);

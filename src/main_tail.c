@@ -2,6 +2,7 @@
 #include "main_tail_sound_slots.h"
 #include "game/controller.h"
 #include "game/global_flags.h"
+#define SELECTED_RECORDS_ABSOLUTE_ADDRESSING
 #include "game/selected_records.h"
 #include "game/cd_queue.h"
 #include "game/byte_search.h"
@@ -52,6 +53,16 @@ typedef struct UnlockMenuState {
     s16 unk74[4];
     u8 unk7C[0x84];
 } UnlockMenuState;
+
+typedef struct NumberAdjustmentState {
+    s16 value;
+    s16 countdown;
+    s16 active;
+    u8 unk06[0x1A];
+    s32 unk20[3];
+    s32 unk2C[3];
+    u8 unk38[0xC8];
+} NumberAdjustmentState;
 
 typedef struct TextControlState {
     s16 unk00;
@@ -147,6 +158,7 @@ void func_8009B5A0(s16 playerIndex, s32 unused, s32 paletteRow, u16 mode);
 void func_800A4C28(void);
 void resetUnlockMenuOffsets(UnlockMenuState *state);
 void func_800A525C(void);
+void func_800A53BC(void);
 void func_800A6A8C(void);
 void func_800A624C(void);
 void func_8009D354(void);
@@ -704,7 +716,25 @@ void startUnlockResourceLoad(void) {
     setCurrentTaskCallback(func_800A525C);
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A52D8);
+void initializeNumberAdjustmentTask(void) {
+    NumberAdjustmentState *state;
+    s16 i;
+    D_8013AE98->data1C++;
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        for (;;) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    state = (NumberAdjustmentState *)&D_800D9504[D_8013AE88->resource14];
+    state->value = D_8013AFD0;
+    for (i = 0; i < 3; i++) {
+        state->unk20[i] = 0;
+        state->unk2C[i] = 0;
+    }
+    state->active = 1;
+    func_8002FA58(0x17);
+    setCurrentTaskCallback(func_800A53BC);
+    D_8013AE88->unk10 |= 2;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A53BC);
 
