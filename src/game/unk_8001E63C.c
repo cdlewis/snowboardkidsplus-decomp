@@ -36,6 +36,14 @@ void func_80026DAC(void);
 void func_800205B8(void);
 void func_800255C4(void);
 
+void clearCurrentPlayerSequenceState(void) {
+    s32 i;
+    for (i = 0; i < 6; i++) {
+        D_8013B0D8->unk0CA[i] = 0;
+        D_8013B0D8->unk0D6[i] = 0;
+    }
+}
+
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8001E63C);
 
 u8 readSelectedByteTable(s32 index) {

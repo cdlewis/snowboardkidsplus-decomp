@@ -120,7 +120,7 @@ segments:
       - [0x6604, c, engine/random]
       - [0x66E0, c, main_remaining]
       # Working groups based on rodata consumers; original object boundaries are unknown.
-      - [0xEE3C, c, game/unk_8001E63C]
+      - [0xEE10, c, game/unk_8001E63C]
       # Absolute-addressed player helpers begin here.
       - [0x1AD60, c, game/unk_8002A560]
       - [0x1BBF4, c, game/unk_8002B3F4]
@@ -536,6 +536,8 @@ segments:
       - [0xDAD9C, .data, engine/random]
       - {start: 0xDAE9C, type: .data, name: main_remaining, linker_section: .data.saved_image_entries}
       - [0xDB89C, data, DB89C]
+      - {start: 0x110A00, type: .data, name: main_remaining, linker_section: .data.player_model_parts}
+      - [0x110BEC, data, player_model_parts_tail]
       - [0x11109C, .data, game/unk_8001E63C]
       - [0x111134, data, 111134]
       - {start: 0x11D190, type: .data, name: game/unk_800497B8, linker_section: .data.alternate_quad_steps}

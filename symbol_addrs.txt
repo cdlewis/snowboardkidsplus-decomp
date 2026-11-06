@@ -1818,3 +1818,13 @@ checkCurrentPlayerFlags43040OrAngleRange = 0x8002D090; // type:func
 initializeTaskMotionResource = 0x800343B0; // type:func
 
 getGeometryPlacementTransform = 0x8004AD10; // type:func
+
+initCurrentPlayerModelParts = 0x8001AE98; // type:func
+D_80120200 = 0x80120200; // size:0x10 defined:true
+D_80120210 = 0x80120210; // size:0x10 defined:true
+D_80120220 = 0x80120220; // size:0x54 defined:true
+D_80120274 = 0x80120274; // size:0x54 defined:true
+D_801202C8 = 0x801202C8; // size:0x54 defined:true
+D_8012031C = 0x8012031C; // size:0x54 defined:true
+D_80120370 = 0x80120370; // size:0x54 defined:true
+D_801203C4 = 0x801203C4; // size:0x28 defined:true

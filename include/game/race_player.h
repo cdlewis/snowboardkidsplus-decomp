@@ -14,7 +14,9 @@ struct RacePlayer {
     u8 unk009;
     u8 unk00A[3];
     u8 unk00D;
-    u8 unk00E[0xE];
+    u8 unk00E[6];
+    u8 unk014;
+    u8 unk015[7];
     s32 unk01C;
     s32 unk020;
     s8 unk024;
@@ -51,7 +53,11 @@ struct RacePlayer {
     s16 unk134;
     u8 unk136[2];
     u16 unk138;
-    u8 unk13A[0x4F2];
+    u8 unk13A[4];
+    u8 unk13E[14];
+    u8 unk14C[14];
+    u8 unk15A[0x462];
+    RacePlayerVector unk5BC[14];
     RacePlayerVector unk62C[14];
     u8 unk69C[0x28C];
     u8 modelPartCount;
@@ -74,6 +80,7 @@ extern RacePlayer *D_8013B0D8 __attribute__((section(".data")));
 #else
 extern RacePlayer *D_8013B0D8;
 #endif
+
 
 void func_80026D10(void);
 s16 isFirstPlayerUsingCallback26D10(void);
@@ -101,3 +108,5 @@ void func_8002E44C(s16 index);
 void func_8002E5A0(u16 index, s16 value);
 
 void func_80016E80(u8 index, u8 flags);
+
+void initCurrentPlayerModelParts(void);

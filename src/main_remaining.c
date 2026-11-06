@@ -5,6 +5,7 @@
 #include "game/linear_random.h"
 #include "game/offset_archive.h"
 #include "game/music.h"
+#define RACE_PLAYER_ABSOLUTE_ADDRESSING
 #include "game/race_player.h"
 #include "psx/libsnd.h"
 #include "psx/libgpu.h"
@@ -21,6 +22,38 @@ typedef struct SavedImageEntry {
     RECT rect;
     u16 pixels[32];
 } SavedImageEntry;
+
+u8 D_80120200[16] __attribute__((section(".data.player_model_parts"))) = {
+    255, 0, 1, 2, 1, 4, 1, 6, 6, 8, 6, 10, 0, 0, 0, 0
+};
+
+u8 D_80120210[16] __attribute__((section(".data.player_model_parts"))) = {
+    0, 1, 4, 5, 2, 3, 6, 7, 10, 11, 8, 9, 0, 0, 0, 0
+};
+
+s16 D_80120220[42] __attribute__((section(".data.player_model_parts"))) = {
+    0, 0, 0, 0, 40, 0, -6, -3, 0, 0, -12, 0, 6, -3, 0, 0, -12, 0, 0, 3, 0, 0, 16, 0, -12, 12, 0, 0, -17, 0, 12, 12, 0, 0, -17, 0, -15, 11, 0, 15, 11, 0
+};
+
+s16 D_80120274[42] __attribute__((section(".data.player_model_parts"))) = {
+    0, 0, 0, 0, 40, 0, -6, -3, 0, 0, -12, 0, 6, -3, 0, 0, -12, 0, 0, 3, 0, 0, 14, 0, -10, 12, 0, 0, -17, 0, 10, 12, 0, 0, -17, 0, -15, 11, 0, 15, 11, 0
+};
+
+s16 D_801202C8[42] __attribute__((section(".data.player_model_parts"))) = {
+    0, 0, 0, 0, 50, 0, -8, -8, 0, 0, -16, 0, 8, -8, 0, 0, -16, 0, 0, 5, 0, 0, 31, 0, -24, 24, 0, 0, -28, 0, 24, 24, 0, 0, -28, 0, -17, 13, 0, 17, 13, 0
+};
+
+s16 D_8012031C[42] __attribute__((section(".data.player_model_parts"))) = {
+    0, 0, 0, 0, 40, 0, -6, -3, 0, 0, -12, 0, 6, -3, 0, 0, -12, 0, 0, 3, 0, 0, 16, 0, -12, 12, 0, 0, -17, 0, 12, 12, 0, 0, -17, 0, -10, 11, 0, 10, 11, 0
+};
+
+s16 D_80120370[42] __attribute__((section(".data.player_model_parts"))) = {
+    0, 0, 0, 0, 40, 0, -6, -3, 0, 0, -12, 0, 6, -3, 0, 0, -12, 0, 0, 3, 0, 0, 15, 0, -10, 12, 0, 0, -17, 0, 10, 12, 0, 0, -17, 0, -15, 11, 0, 15, 11, 0
+};
+
+s16 *D_801203C4[10] __attribute__((section(".data.player_model_parts"))) = {
+    D_80120220, D_80120274, D_80120220, D_80120370, D_801202C8, D_80120220, D_80120220, D_801202C8, D_8012031C, D_8012031C
+};
 
 SavedImageEntry gSavedImageEntries[32] __attribute__((section(".data.saved_image_entries"))) = {0};
 s8 gSoundSystemActive = 0;
@@ -338,7 +371,23 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001AB3C);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001AE40);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001AE98);
+void initCurrentPlayerModelParts(void) {
+    s32 i;
+    s16 *values;
+    RacePlayer *player;
+    for (i = 0; i < 14; i++) {
+        D_8013B0D8->unk13E[i] = D_80120200[i];
+        D_8013B0D8->unk14C[i] = D_80120210[i];
+    }
+    values = D_801203C4[D_8013B0D8->unk014];
+    player = D_8013B0D8;
+    for (i = 0; i < 14; i++) {
+        player->unk5BC[i].x = player->unk5BC[i].y = player->unk5BC[i].z = 0;
+        player->unk62C[i].x = *values++;
+        player->unk62C[i].y = -*values++;
+        player->unk62C[i].z = -*values++;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001AF64);
 
@@ -457,11 +506,3 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001E3E4);
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001E484);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001E524);
-
-void clearCurrentPlayerSequenceState(void) {
-    s32 i;
-    for (i = 0; i < 6; i++) {
-        D_8013B0D8->unk0CA[i] = 0;
-        D_8013B0D8->unk0D6[i] = 0;
-    }
-}
