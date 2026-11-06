@@ -237,6 +237,10 @@ u8 gSecondaryResourceModeOffsets[12] __attribute__((section(".data.secondary_res
 
 GameTask *gSecondaryResourceDisplayTask __attribute__((section(".sdata.secondary_resource_display_task"))) = NULL;
 
+s16 gControllerPlaybackDurations[12] __attribute__((section(".data.controller_playback_durations"))) = {
+    900, 384, 560, 592, 613, 606, 400, 288, 288, 286, 205, 272
+};
+
 extern u8 D_8013AF3A __attribute__((section(".data")));
 extern s16 D_8013B10C __attribute__((section(".data")));
 extern u8 D_8013B55E __attribute__((section(".data")));
@@ -261,8 +265,9 @@ void func_800A5AFC(void);
 void func_800A6548(void);
 void func_800A624C(void);
 
+void func_80040D5C(void);
+void func_800A3AA4(void);
 void func_8002FA58(s16 resource);
-void func_800A39AC(void);
 void func_800A42CC(void);
 void func_800A499C(void);
 void func_8001B858(void);
@@ -443,11 +448,26 @@ INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A3750);
 void advanceTaskWhenFlagB55ESet(void) {
     if (D_8013B55E != 0) {
         D_8013AE88->data18 = 0;
-        setCurrentTaskCallback(func_800A39AC);
+        setCurrentTaskCallback(updateControllerPlaybackUntilFade);
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A39AC);
+void updateControllerPlaybackUntilFade(void) {
+    func_80040D5C();
+    if (D_8013AEE8[0] & 0x800) {
+        D_8013AE88->data18 = gControllerPlaybackDurations[D_8013AFD9];
+    }
+    D_8013AE88->data18++;
+    if (gControllerPlaybackDurations[D_8013AFD9] <= D_8013AE88->data18) {
+        func_80070274(2, 0, 30);
+        startCdVolumeFade(103, 20, 0, 1);
+        D_8013AE88->data18 = 0;
+        setCurrentTaskCallback(func_800A3AA4);
+    } else {
+        playbackControllerInput(0);
+        playbackControllerInput(1);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A3AA4);
 

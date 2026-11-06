@@ -208,7 +208,6 @@ void func_8009F9B8(void);
 void func_8009F224(void);
 
 void func_8002FA58(s16 resource);
-void func_800A39AC(void);
 void func_800A42CC(void);
 void func_800A499C(void);
 void func_8001D97C(void);
