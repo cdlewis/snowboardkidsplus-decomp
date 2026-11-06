@@ -510,7 +510,24 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_800183FC);
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80018538);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80018624);
+s32 playOwnedSoundEffect(u8 owner, u8 bank, u16 note, s16 volume) {
+    u8 i;
+    SoundVoiceRecord *voice;
+    if (gSoundBankLoaded[bank]) {
+        for (i = 0; i < 8; i++) {
+            voice = &gSoundVoiceRecords[i];
+            if (voice->owner == 0xFF) {
+                SsUtKeyOnV(i + 12, bank, note & 0xFF, note >> 8,
+                           note >> 8, 0, volume, volume);
+                voice->owner = owner;
+                voice->bank = bank;
+                voice->note = note;
+                return (s16)i + 12;
+            }
+        }
+    }
+    return 0xFF;
+}
 
 void stopMatchingSoundVoice(u8 owner, u8 bank, u16 note) {
     u8 i;

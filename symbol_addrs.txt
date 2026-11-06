@@ -2076,6 +2076,7 @@ createFadingTextTask = 0x8006A8A8; // type:func
 
 startCurrentPlayerAnimation = 0x80016E80; // type:func
 
+playOwnedSoundEffect = 0x80018624; // type:func
 stopMatchingSoundVoice = 0x80018720; // type:func
 gSoundVoiceRecords = 0x800EB368; // size:0x20
 

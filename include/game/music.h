@@ -55,4 +55,7 @@ s32 func_80018538(s32 x, s32 y, s32 z, u8 bank, u16 programAndTone, s16 volume);
 void startCdVolumeFade(s16 start, s16 step, s16 end, u8 mode);
 void func_800187B8(u8 voice);
 
+/* Allocates voices 12 through 19; returns 0xFF if unavailable. */
+s32 playOwnedSoundEffect(u8 owner, u8 bank, u16 note, s16 volume);
+
 void stopMatchingSoundVoice(u8 owner, u8 bank, u16 note);
