@@ -49,6 +49,17 @@ typedef struct ExpandingCoordinateEffectResource {
     s16 pitch, unkCA, yaw, unkCE, selectedIndex;
     u8 unkD2[0x2E];
 } ExpandingCoordinateEffectResource;
+typedef struct OrbitingPlayerVisualResource {
+    GsCOORDINATE2 coordinate;
+    u8 unk50[0x20];
+    Position3D offset;
+    s32 radius;
+    u8 unk80[0x44];
+    s16 unkC4, frameLimit, frameStep, framePosition;
+    u8 r0, g0, b0, code;
+    s32 unkD0, scale, angle, countdown;
+    u8 unkE0[0x20];
+} OrbitingPlayerVisualResource;
 
 typedef struct RisingPlayerEffectResource {
     GsCOORDINATE2 coordinate;
@@ -374,6 +385,7 @@ extern u8 D_8013AFE2 __attribute__((section(".data")));
 
 
 void func_80048340(void);
+void func_80048AA4(void);
 void func_80046404(TaskVisualResource *resource, VECTOR *vectors, s32 value, s32 scale);
 void func_80046EF8(void);
 void func_8004713C(void);
@@ -3532,7 +3544,29 @@ void fadeOutPlayerTimerTask(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800489A0);
+void initializeOrbitingPlayerVisualTask(void) {
+    OrbitingPlayerVisualResource *resource;
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    resource = (OrbitingPlayerVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    GsInitCoordinate2(0, &resource->coordinate);
+    resource->frameLimit = 0x400;
+    resource->frameStep = 0x80;
+    resource->r0 = resource->g0 = resource->b0 = 0x80;
+    resource->code = POLY_FT4_CODE | 2;
+    resource->offset.y = -32;
+    resource->radius = 8;
+    resource->r0 = resource->g0 = resource->b0 = 0x40;
+    resource->framePosition = 0;
+    resource->scale = 0x1800;
+    resource->angle = 0;
+    func_800183FC(D_8013AE88->data18, 1, 0xE00, 0x20);
+    resource->countdown = 0x10;
+    D_8013AE88->data1C = 0;
+    setCurrentTaskCallback(func_80048AA4);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80048AA4);
 
