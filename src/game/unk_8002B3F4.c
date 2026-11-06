@@ -841,7 +841,7 @@ void startUnlockNotification0Task(void) {
 
     task->data18 = 1;
     parent->data1C++;
-    func_800A7CE8(0);
+    startUnlockNotification(0);
     setCurrentTaskCallback(waitUnlockNotification0TransitionTask);
 }
 

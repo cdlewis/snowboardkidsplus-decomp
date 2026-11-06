@@ -55,6 +55,7 @@ typedef struct TextEntryListHeader {
 } TextEntryListHeader;
 
 
+extern u8 D_8013AF3A __attribute__((section(".data")));
 extern s16 D_8013B10C __attribute__((section(".data")));
 extern u8 D_8013B55E __attribute__((section(".data")));
 
@@ -67,6 +68,7 @@ void func_800187B8(u8 voice);
 void func_800A3750(void);
 void func_800A5AFC(void);
 void func_800A6548(void);
+void func_800A624C(void);
 
 void func_8002FA58(s16 resource);
 void func_800A39AC(void);
@@ -510,7 +512,16 @@ void signalFlag9WhenTaskCountdownExpires(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A7CE8);
+void startUnlockNotification(s16 index) {
+    if ((u16)index < 11 && (s16)getUnlockNotificationFlag(index) == 0) {
+        D_8013AF3A = index;
+        D_8013AFE4 &= ~0x200;
+        setUnlockNotificationFlag(index);
+        func_80014874(func_800A624C);
+    } else {
+        D_8013AFE4 |= 0x200;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A7D8C);
 

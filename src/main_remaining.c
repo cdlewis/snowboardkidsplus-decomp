@@ -805,7 +805,7 @@ void beginResourceLoadOrUnlockNotification(void) {
         createResourceLoadTask();
         setCurrentTaskCallback(advanceTaskWhenFlagAFE4Bit8Set);
     } else {
-        func_800A7CE8(D_80120EA4[0] + 1);
+        startUnlockNotification(D_80120EA4[0] + 1);
         setCurrentTaskCallback(startResourceLoadWhenFlagAFE4Bit9Set);
     }
 }

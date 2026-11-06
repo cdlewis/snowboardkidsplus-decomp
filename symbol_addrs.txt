@@ -2317,3 +2317,5 @@ updateTaskViewAndCheckPlayerLimit = 0x800A1ECC; // type:func
 setSecondaryTextEntryTask = 0x800A6DD0; // type:func
 
 initializeRaceTimeDifferenceDisplay = 0x800338BC; // type:func
+
+startUnlockNotification = 0x800A7CE8; // type:func
