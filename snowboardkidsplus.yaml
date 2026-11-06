@@ -66,7 +66,10 @@ segments:
     bss_size: 0x5E88
     subsegments:
       - [0x800, rodata, main]
-      - [0xB88, rodata, main_remaining]
+      - [0xB88, rodata]
+      - [0xC18, .rodata, main_remaining]
+      - [0xC2C, pad]
+      - [0xC30, rodata]
       - [0xC7C, rodata]
       - [0xCB0, rodata]
       - [0xE34, rodata]

@@ -140,7 +140,8 @@ void func_80018D80(u8 slot, void *destination);
 void func_80019980(void);
 void func_8001C0DC(void);
 void func_8001B7F0(void);
-void func_80019A70(void);
+s32 func_80019520(void);
+void pollMemoryCardReadTask(void);
 void func_8001E0C0(void);
 void func_80018AA4(void);
 void func_80019B94(void);
@@ -473,14 +474,26 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80019980);
 
 s32 startMemoryCardReadTask(void) {
     if (D_8013AF3E == 5) {
-        func_80014874(func_80019A70);
+        func_80014874(pollMemoryCardReadTask);
         D_8013AF3E = 3;
         return 1;
     }
     return 0;
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80019A70);
+void pollMemoryCardReadTask(void) {
+    s32 result = func_80019520();
+    if (result != 0) {
+        switch (result) {
+        case 1: D_8013AF3E = 0; break;
+        case 2: D_8013AF3E = 7; break;
+        case 3: D_8013AF3E = 8; break;
+        case 4: D_8013AF3E = 11; break;
+        case 5: D_8013AF3E = 12; break;
+        }
+        func_800149A8();
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80019AF4);
 
