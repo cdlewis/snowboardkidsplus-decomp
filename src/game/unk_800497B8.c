@@ -444,7 +444,6 @@ void SetFarColor(s32 r, s32 g, s32 b);
 void SetFogNearFar(s32 near, s32 far, s32 h);
 void func_800592DC(u16 index);
 void func_80049D48(s32 x, s32 y, const char *format, ...);
-void func_8006BF14(s16 x, s16 y, s32 frameIndex, GsOT *ot, u16 depth);
 void func_8006C5F4(s16 x, s16 y, s32 frameIndex, GsOT *ot, u16 depth);
 void func_80063B58(void);
 void func_80063DF4(void);
@@ -1842,7 +1841,27 @@ void setTexturedQuadColor(s32 r, s32 g, s32 b) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006BEEC);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006BF14);
+void drawTexturedQuad(s16 x, s16 y, s32 index, GsOT *ot, u16 depth) {
+    POLY_FT4 *quad = &gTexturedQuadTemplate;
+    TextureRegion *region = &D_8013B6AC[index];
+    quad->x0 = x;
+    quad->y0 = y;
+    quad->x1 = x + region->w;
+    quad->y1 = y;
+    quad->x2 = x;
+    quad->y2 = y + region->h;
+    quad->x3 = x + region->w;
+    quad->y3 = y + region->h;
+    quad->u0 = region->u;
+    quad->v0 = region->v;
+    quad->u1 = region->u + region->w;
+    quad->v1 = region->v;
+    quad->u2 = region->u;
+    quad->v2 = region->v + region->h;
+    quad->u3 = region->u + region->w;
+    quad->v3 = region->v + region->h;
+    GsSortPoly(quad, ot, depth);
+}
 
 void drawStretchedTexturedQuad(s16 x, s16 y, s16 width, s16 height, s32 index, GsOT *ot, u16 depth) {
     POLY_FT4 *quad = &gTexturedQuadTemplate;
@@ -1874,7 +1893,7 @@ void drawTexturedQuadByIndex(s16 x, s16 y, s32 index, GsOT *ot, u16 depth) {
     TexturedQuadFrame *frame = &D_8012DFF4[index];
 
     setTexturedQuadTexture(frame->textureIndex, 0);
-    func_8006BF14(x, y, frame->frameIndex, ot, depth);
+    drawTexturedQuad(x, y, frame->frameIndex, ot, depth);
 }
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006C190);

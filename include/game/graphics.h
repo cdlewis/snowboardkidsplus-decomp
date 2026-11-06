@@ -174,6 +174,7 @@ void setSpriteTextureBlend(s32 index, s32 palette, s32 blend);
 void setTexturedQuadTexture(s32 index, s32 palette);
 void setTexturedQuadTextureBlend(s32 index, s32 palette, s32 blend);
 void setTexturedQuadColor(s32 r, s32 g, s32 b);
+void drawTexturedQuad(s16 x, s16 y, s32 index, GsOT *ot, u16 depth);
 void drawStretchedTexturedQuad(s16 x, s16 y, s16 width, s16 height, s32 index,
                                 GsOT *ot, u16 depth);
 void drawTexturedQuadByIndex(s16 x, s16 y, s32 index, GsOT *ot, u16 depth);
