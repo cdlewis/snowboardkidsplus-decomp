@@ -2661,3 +2661,5 @@ drawSelectedTaskMarkerSprite = 0x800326FC; // type:func
 drawOffsetSelectedTaskSprite = 0x800A2AB0; // type:func
 
 loadCurrentPlayerModelPose = 0x8009747C; // type:func
+
+moveTaskChildrenWithSpacing = 0x80073950; // type:func

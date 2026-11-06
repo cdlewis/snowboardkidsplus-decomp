@@ -18,3 +18,6 @@ typedef struct SelectedSpriteChild {
 } SelectedSpriteChild;
 
 void drawOffsetSelectedTaskSprite(void);
+
+void moveTaskChildrenWithSpacing(s32 mode, GameTask *task, s32 x, s32 y,
+                                 s32 speedX, s32 speedY, s32 delay);

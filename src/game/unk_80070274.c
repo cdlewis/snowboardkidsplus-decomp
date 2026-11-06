@@ -14,6 +14,13 @@
 #include "psx/libsnd.h"
 
 
+typedef struct ChildMovementGroup {
+    u8 unk00[0x32];
+    s16 selectedIndex;
+    u8 unk34[0x22];
+    s16 spacingX, spacingY, count;
+} ChildMovementGroup;
+
 typedef struct ValueTransitionResource {
     u32 *value;
     u32 target;
@@ -351,7 +358,34 @@ s16 findByteIndexOrZero(const u8 *data, s16 value, s16 count) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80073810);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80073950);
+void moveTaskChildrenWithSpacing(s32 mode, GameTask *task, s32 x, s32 y, s32 speedX, s32 speedY, s32 delay) {
+    ChildMovementGroup *state;
+    SelectedSpriteChild *children;
+    s16 i, end;
+    Movement2D *movement;
+    state = (ChildMovementGroup *)&D_800D9504[task->resource14];
+    children = (SelectedSpriteChild *)&D_800D9504[task->resource16];
+    if (mode == 1) {
+        i = state->selectedIndex;
+        end = i + 1;
+    } else {
+        i = 0;
+        end = state->count;
+    }
+    for (; i < end; i++) {
+        if (mode == 2 && i == state->selectedIndex) {
+            continue;
+        }
+        movement = (Movement2D *)&D_800D9504[children[i].task->resource14];
+        if (delay == -1000) {
+            func_80070F10(movement, x + ((state->spacingX * i) << 12),
+                           y + ((state->spacingY * i) << 12), speedX, speedY, delay);
+        } else {
+            func_80070F10(movement, x + ((state->spacingX * i) << 12),
+                           y + ((state->spacingY * i) << 12), speedX, speedY, delay * i);
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80073B0C);
 
