@@ -2187,3 +2187,5 @@ createTimedSpriteB5Task = 0x80077184; // type:func
 initializeDualResourceSequenceTask = 0x800776B0; // type:func
 
 waitTaskMenuCountdownAndPlaySound = 0x80039210; // type:func
+
+waitTaskTimeRecordCountdownAndPlaySound = 0x8003A814; // type:func

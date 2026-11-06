@@ -275,6 +275,7 @@ void func_8003BE58(TaskResourceRecord *resource);
 void func_8003C5D8(void);
 void advanceCurrentTaskPanelTimer(void);
 void func_8003A3D8(void);
+void func_8003A760(void);
 void func_80039484(TaskResourceRecord *resource);
 void func_80039564(TaskResourceRecord *resource);
 void func_80039B34(TaskResourceRecord *resource);
@@ -1502,7 +1503,20 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003A690);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003A760);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003A814);
+void waitTaskTimeRecordCountdownAndPlaySound(void) {
+    TimeRecordDetailCountdownResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (TimeRecordDetailCountdownResource *)&D_800D9504[D_8013AE88->resource14];
+    if (--resource->timer == 0) {
+        resource->timer = 20;
+        func_800181B0(0, 0x700, 0x20);
+        setCurrentTaskCallback(func_8003A760);
+    }
+    func_80039484((TaskResourceRecord *)resource);
+    func_80039B34((TaskResourceRecord *)resource);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8003A8C0);
 
