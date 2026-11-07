@@ -186,7 +186,43 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_800707F0);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80070830);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80070870);
+void configureColorCycleTask(s32 mode, s16 minimum, s16 maximum, s32 step, s16 index) {
+    GameTask *task;
+    ColorCycleResource *resource;
+    s32 missing;
+    u8 low = minimum;
+    u8 high = maximum;
+    u8 rate = step;
+    if (index < 4) {
+        task = D_8013BDA8[index];
+        missing = task == NULL;
+        if (mode != 0 && (mode < 0 ? 0 : (mode < 5))) {
+            if (missing == 1) {
+                func_80014930(&gGameTasks[3], updateColorCycleTask);
+                task = D_8013BDA8[index] = D_8013AE8C;
+                task->data1A = index;
+                D_8013AE8C->resource14 = allocateTaskResource();
+                resource = (ColorCycleResource *)&D_800D9504[D_8013AE8C->resource14];
+                if (mode == 1 || mode == 3) resource->value = minimum;
+                else resource->value = maximum;
+            } else {
+                resource = (ColorCycleResource *)&D_800D9504[task->resource14];
+                if (mode == 1) resource->value = minimum;
+                if (mode == 2) resource->value = maximum;
+            }
+            task->data18 = mode;
+            if (mode == 3) task->data18 = 1;
+            if (mode == 4) task->data18 = 2;
+            task->data1E = 0;
+            resource->step = rate;
+            resource->minimum = low;
+            resource->maximum = high;
+            D_8013B3A4 = resource->value;
+            D_8013B3A5 = resource->value;
+            D_8013B3A6 = resource->value;
+        } else if (task != NULL) task->data18 = 0;
+    }
+}
 
 void updateColorCycleTask(void) {
     ColorCycleResource *resource;

@@ -212,6 +212,7 @@ void configureVerticalTaskGridMovement(s32 mode, GameTask *task, s32 x, s32 y,
 void initializeSpacedTaskGridPositions(s32 mode, GameTask *task, s32 x, s32 y,
                                  s32 spacingX, s32 spacingY);
 
+void configureColorCycleTask(s32 mode, s16 minimum, s16 maximum, s32 step, s16 index);
 void updateColorCycleTask(void);
 
 void updateControllerPlaybackUntilFade(void);
