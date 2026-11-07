@@ -176,6 +176,29 @@ typedef struct TriangleScratchpad {
     TriangleScratchVertex vertices[3];
 } TriangleScratchpad;
 
+typedef struct LitTexturedTriangleScratchpad {
+    u32 unk00;
+    void (*emitTriangle)(TriangleScratchVertex *);
+    s32 depth, depthCue;
+    s32 flags, unk14, clipping;
+    u8 unk1C[0x34];
+    struct { u16 x, y; } screen[3];
+    u8 unk5C[8];
+    u8 r, g, b, code;
+    u8 unk68[3];
+    u8 fogEnabled;
+    u8 unk6C[4];
+    TriangleScratchVertex vertices[3];
+} LitTexturedTriangleScratchpad;
+
+/* Lighting loads span eight bytes from each unk00, including the adjacent
+ * vertex index and following primitive-stream fields. */
+typedef struct ModelLitTexturedGouraudTriangle {
+    u32 command;
+    TextureUV uv[3];
+    u8 r, g, b, code;
+    struct { s16 unk00, vertexIndex; } vertices[3];
+} ModelLitTexturedGouraudTriangle;
 typedef struct GouraudQuadScratchpad {
     u32 unk00;
     void (*emitQuad)(TriangleScratchVertex *);
@@ -1846,7 +1869,53 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80056AC4);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80056D18);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80056F90);
+void drawProjectedIndexedLitTexturedGouraudTriangle(void) {
+    ModelLitTexturedGouraudTriangle *primitive = (ModelLitTexturedGouraudTriangle *)D_8013B680;
+    POLY_GT3 *packet = (POLY_GT3 *)GsOUT_PACKET_P;
+    LitTexturedTriangleScratchpad *scratch = (LitTexturedTriangleScratchpad *)0x1F800000;
+    gte_ldv3(&D_8013B688[primitive->vertices[0].vertexIndex], &D_8013B688[primitive->vertices[1].vertexIndex], &D_8013B688[primitive->vertices[2].vertexIndex]);
+    gte_rtpt();
+    gte_stsxy3(&packet->x0, &packet->x1, &packet->x2);
+    gte_nclip();
+    gte_stopz(&scratch->clipping);
+    gte_stflg(&scratch->flags);
+    gte_stszotz(&scratch->depth);
+    if (scratch->clipping < 0 || scratch->flags < 0 || scratch->depth <= 0 || scratch->depth >= 0x1000) return;
+    if (scratch->fogEnabled) {
+        gte_stdp(&scratch->depthCue);
+        DpqColor((CVECTOR *)&primitive->r, scratch->depthCue, (CVECTOR *)&packet->r0);
+        DpqColor((CVECTOR *)&primitive->r, scratch->depthCue, (CVECTOR *)&packet->r1);
+        DpqColor((CVECTOR *)&primitive->r, scratch->depthCue, (CVECTOR *)&packet->r2);
+    } else {
+        setRGB0(packet, primitive->r, primitive->g, primitive->b);
+        setRGB1(packet, primitive->r, primitive->g, primitive->b);
+        setRGB2(packet, primitive->r, primitive->g, primitive->b);
+    }
+    gte_ldv0(&primitive->vertices[0].unk00);
+    gte_ldrgb(&packet->r0);
+    gte_nccs();
+    gte_strgb(&packet->r0);
+    gte_ldv0(&primitive->vertices[1].unk00);
+    gte_ldrgb(&packet->r1);
+    gte_nccs();
+    gte_strgb(&packet->r1);
+    gte_ldv0(&primitive->vertices[2].unk00);
+    gte_ldrgb(&packet->r2);
+    gte_nccs();
+    gte_strgb(&packet->r2);
+    packet->tag = 9 << 24;
+    setcode(packet, scratch->code | POLY_GT3_CODE);
+    packet->tpage = primitive->uv[1].attribute;
+    packet->clut = primitive->uv[0].attribute;
+    packet->u0 = primitive->uv[0].coords.u;
+    packet->u1 = primitive->uv[1].coords.u;
+    packet->u2 = primitive->uv[2].coords.u;
+    packet->v0 = primitive->uv[0].coords.v;
+    packet->v1 = primitive->uv[1].coords.v;
+    packet->v2 = primitive->uv[2].coords.v;
+    addPrim(&D_8013B670->org[(scratch->depth >> D_8013B69C) + 6], packet);
+    GsOUT_PACKET_P = (u32)(packet + 1);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800572C4);
 
