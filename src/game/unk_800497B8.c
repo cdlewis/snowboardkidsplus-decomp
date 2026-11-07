@@ -1150,7 +1150,7 @@ void drawShrinkingTexturedQuadTask(void);
 void drawLoweringQuadStripTask(void);
 void drawSlidingQuadTask(void);
 void func_80069E08(s32 duration);
-void func_80062B24(void);
+void drawFallingParticlesTask(void);
 void func_800632C4(void);
 void func_800618A0(void);
 void func_80061E48(void);
@@ -3681,12 +3681,45 @@ void startIndexedRenderTaskPair(s32 index) {
     resource->unk00 = 0;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80062B24);
+void drawFallingParticlesTask(void) {
+    s32 i;
+    FallingParticleResource *resource;
+    SPRT_8 *packet;
+    SPRT_8 *scratch;
+    DR_TPAGE *page;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    scratch = (SPRT_8 *)0x1F800000;
+    resource = (FallingParticleResource *)&D_800D9504[D_8013AE88->resource14];
+    packet = (SPRT_8 *)GsOUT_PACKET_P;
+    setcode(scratch, SPRT_8_CODE);
+    setRGB0(scratch, 128, 128, 128);
+    scratch->v0 = 232;
+    for (i = 0; i < 40; i++) {
+        scratch->x0 = (resource->x[i] + rcos(resource->frame * 32 + i * 256) / 64) % 320 - 160;
+        scratch->y0 = resource->y[i] - 120;
+        resource->y[i] += 2 + (i & 3);
+        if (resource->y[i] >= 240) resource->y[i] = -4;
+        scratch->u0 = (((u8)resource->frame + i) & 3) * 8 + 216U;
+        scratch->clut = getClut(992, 240 + i % 5);
+        scratch->tag = (3 << 24) | getaddr(D_8013AF6C);
+        *packet = *scratch;
+        setaddr(D_8013AF6C, packet);
+        packet++;
+    }
+    page = (DR_TPAGE *)packet;
+    setlen(page, 1);
+    page->code[0] = ((u32)DRAW_MODE_COMMAND_HIGH << 16) | getTPage(0, 0, 768, 256);
+    addPrim(D_8013AF6C, page);
+    GsOUT_PACKET_P = (u32)(page + 1);
+    resource->frame++;
+}
 
 void createFallingParticleTask(void) {
     FallingParticleResource *resource;
     s32 i;
-    func_80014930(&gGameTasks[4], func_80062B24);
+    func_80014930(&gGameTasks[4], drawFallingParticlesTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     resource = (FallingParticleResource *)&D_800D9504[D_8013AE8C->resource14];
     for (i = 0; i < 40; i++) {
