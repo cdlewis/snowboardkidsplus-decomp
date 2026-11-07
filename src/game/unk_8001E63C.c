@@ -99,7 +99,7 @@ void func_8002AE6C(void);
 s32 func_80017268(void);
 void func_80015C94(u16 playerIndex);
 void func_8001596C(u16 playerIndex);
-void func_80025840(void);
+void moveCurrentPlayerToTaskTarget(void);
 void advanceCurrentPlayerTaskOnAnimationFlag(void);
 void func_80025B08(void);
 void func_80025DD8(void);
@@ -114,7 +114,7 @@ s16 func_80028234(void);
 
 TaskCallback gCurrentPlayerTaskPhaseCallbacks[8]
     __attribute__((section(".data.player_task_phases"))) = {
-    func_80025840, advanceCurrentPlayerTaskOnAnimationFlag, func_80025B08, func_80025DD8,
+    moveCurrentPlayerToTaskTarget, advanceCurrentPlayerTaskOnAnimationFlag, func_80025B08, func_80025DD8,
     func_80025FAC, advanceCurrentPlayerTaskPhaseMovement, func_800260E4, moveCurrentPlayerForwardUntilState22
 };
 
@@ -681,7 +681,32 @@ void updateCurrentPlayerFromTaskPhase(void) {
     player->position8E4[2] = player->z >> 8;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80025840);
+void moveCurrentPlayerToTaskTarget(void) {
+    s16 angle;
+    s32 difference;
+    RacePlayer *player;
+    difference = (D_8013B0D8->unk126 - (u16)D_8013B0D8->unk0B6) & 0xFFF;
+    angle = difference;
+    if (difference > 0x800) {
+        angle = difference | 0xF000;
+    }
+    smoothAndScaleCurrentPlayerInput(0x100, 0);
+    player = D_8013B0D8;
+    if (player->unk090 != 0) {
+        player->unk0B6 += angle / player->unk090;
+        player->x += ((s32)D_80123D80[D_8013AFCE].unk18[0] - player->x) / player->unk090;
+        player->z += ((s32)D_80123D80[D_8013AFCE].unk18[2] - player->z) / player->unk090;
+    }
+    player = D_8013B0D8;
+    if (--player->unk08C == 0) {
+        player->x = D_80123D80[D_8013AFCE].unk18[0];
+        player->z = D_80123D80[D_8013AFCE].unk18[2];
+        D_8013AE88->data1A++;
+        player->unk08C = 0;
+        startCurrentPlayerAnimation(3, 2);
+        D_801241E8[D_8013AE88->data18].unk16 = 3;
+    }
+}
 
 void advanceCurrentPlayerTaskOnAnimationFlag(void) {
     RacePlayer *player;
