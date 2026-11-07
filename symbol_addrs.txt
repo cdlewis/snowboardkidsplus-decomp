@@ -3064,3 +3064,5 @@ updateCurrentPlayerMotionEffects = 0x8001EC88; // type:func
 processTextEntrySound = 0x800A7928; // type:func
 gTextOneShotSoundKey = 0x8013B6C4; // size:0x2 defined:true
 gTextOneShotVoice = 0x8013B6C6; // size:0x1 defined:true
+
+updateCollectibleTask = 0x8005DF98; // type:func

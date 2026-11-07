@@ -446,7 +446,6 @@ extern TaskVisualFrame gPlayerVisualPairFrame
 extern TaskVisualFrame gPlayerVisualPair6780Frame
     __attribute__((section(".data.player_visual_pair_6780_frame"), aligned(4)));
 
-extern s16 D_8013B1D4 __attribute__((section(".data.finish_slot_state")));
 
 
 extern u16 D_8013AFAA __attribute__((section(".data")));

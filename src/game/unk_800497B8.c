@@ -354,7 +354,7 @@ typedef struct PickupPlacement {
 typedef struct PickupResource {
     GsCOORDINATE2 coordinate;
     u8 unk50[0x50];
-    s32 position[3];
+    Position3D position;
     u8 unkAC[0x14];
     SVECTOR rotation;
     u8 unkC8[8];
@@ -977,7 +977,7 @@ void func_8006FE68(s16 x, s16 y, s16 w, s16 h, s16 borderW, s16 borderH,
 s32 isPointWithinCameraForwardRange(s32 x, s32 z, s16 player);
 void initializeProximityParticleTask(void);
 void func_8005CEF0(void);
-void func_8005DF98(void);
+void updateCollectibleTask(void);
 void updateLandedTaskObject(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800497B8);
@@ -2381,18 +2381,42 @@ void initializeCollectibleTask(void) {
     height = func_8004A764(resource->geometryIndex, resource->coordinate.coord.t[0], resource->coordinate.coord.t[2]);
     D_8013B2C0[D_8013AE88->data18].y = height;
     resource->coordinate.coord.t[1] = height;
-    resource->position[0] = resource->coordinate.coord.t[0] << 8;
-    resource->position[1] = resource->coordinate.coord.t[1] << 8;
-    resource->position[2] = resource->coordinate.coord.t[2] << 8;
+    resource->position.x = resource->coordinate.coord.t[0] << 8;
+    resource->position.y = resource->coordinate.coord.t[1] << 8;
+    resource->position.z = resource->coordinate.coord.t[2] << 8;
     if (gameOptionPlayerModeAbsolute == 1) {
         resource->collisionRange = 0x2C00;
     } else {
         resource->collisionRange = 0x3400;
     }
-    setCurrentTaskCallback(func_8005DF98);
+    setCurrentTaskCallback(updateCollectibleTask);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005DF98);
+void updateCollectibleTask(void) {
+    PickupResource *resource;
+    u16 i;
+    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    resource = (PickupResource *)&D_800D9504[D_8013AE88->resource14];
+    if (isPositionInCameraRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
+        D_80129A80[10].coord2 = &resource->coordinate;
+        func_8001E3E4(&resource->rotation, &resource->coordinate);
+        drawTaskObject(10);
+        if (!D_8013AFD3) {
+            func_8002BF88(&resource->position, 0x2800, 0x8000, 2);
+            for (i = 0; i < D_8013B1D4; i++) {
+                if (arePositionsWithinXZRange(&resource->position, &D_8012450C[i].position, resource->collisionRange)) {
+                    *D_8012450C[i].active = 0;
+                    D_80120E90[D_8012450C[i].playerIndex].unk95E++;
+                    playSoundEffect(1, 0xF00, 0x20);
+                    createNineIndexedChildTasks(0x15, 1);
+                    D_8013AE88->callback = deleteCurrentTask;
+                    D_8013AE88->unk10 |= 1;
+                    break;
+                }
+            }
+        }
+    }
+}
 
 void initializeFallingTaskObject(void) {
     FallingTaskResource *resource;

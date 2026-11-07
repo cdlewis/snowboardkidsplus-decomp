@@ -266,3 +266,16 @@ u16 addPlayerFlagsIfWithinRadius(struct Position3D *position, s32 radius, s16 fl
 void addPlayerFlagsWithinRadius(const Position3D *position, s32 radius, u16 flags);
 
 u16 isPositionWithinPlayerCollisionRange(const Position3D *position, s32 radius, s32 height, s16 playerIndex);
+
+/* Players eligible to collect an object during the current frame. */
+typedef struct PlayerCollectionEntry {
+    s32 *active;
+    Position3D position;
+    s32 playerIndex;
+} PlayerCollectionEntry;
+
+extern PlayerCollectionEntry D_8012450C[];
+extern s16 D_8013B1D4 __attribute__((section(".data.finish_slot_state")));
+
+u16 arePositionsWithinXZRange(const Position3D *a, const Position3D *b, s32 threshold);
+void func_8002BF88(const Position3D *position, s32 radius, s32 height, s32 flags);
