@@ -528,7 +528,41 @@ void startUnlockActionAfterCountdown(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A5050);
+void animateUnlockMenuTransition(void) {
+    UnlockMenuState *state;
+    s16 i;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        for (;;) {}
+    }
+    state = (UnlockMenuState *)&D_800D9504[D_8013AE88->resource14];
+    func_800A4C28();
+    switch (D_8013AE88->data18) {
+    case 0:
+        for (i = 0; i < 6; i++) {
+            state->unk58[i] = 0;
+            state->unk20[i] = 0;
+        }
+        D_8013AE88->data18 = 1;
+        break;
+    case 1:
+        for (i = 0; i < 6; i++) {
+            state->unk20[i] += 0x4000;
+            state->unk04[i] += state->unk20[i];
+            state->unk58[i] += 0x4000;
+            state->unk3C[i] += state->unk58[i];
+        }
+        if (state->unk04[0] > 0x168000) {
+            D_8013AE88->data18 = 2;
+        }
+        break;
+    case 2:
+        state->selection = 5;
+        state->previousSelection = 5;
+        resetUnlockMenuAnimation(state);
+        setCurrentTaskCallback(func_800A3D9C);
+        break;
+    }
+}
 
 void resumeUnlockSelectionTask(void) {
     setSecondaryDisplayTaskMode(0);
