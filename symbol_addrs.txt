@@ -3204,3 +3204,5 @@ initializeSpacedChildTasks = 0x80072864; // type:func
 
 // Update state 11 motion and request state 12 when its landing animation ends.
 updateCurrentPlayerState11Motion = 0x80027014; // type:func
+
+drawProjectedIndexedGouraudTriangle = 0x800562C8; // type:func
