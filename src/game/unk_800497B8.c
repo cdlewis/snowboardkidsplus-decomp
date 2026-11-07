@@ -850,6 +850,13 @@ typedef struct PairedEffectResource {
     u16 clut;
 } PairedEffectResource;
 
+typedef struct PlayerSnapshotTrailResource {
+    GsCOORDINATE2 current, previous;
+    u8 unkA0[0x30];
+    VECTOR currentScale, previousScale;
+    s16 remainingFrames;
+} PlayerSnapshotTrailResource;
+
 /* Current and previous state used by player rendering effects. */
 typedef struct PlayerRenderSnapshot {
     VECTOR position;
@@ -1178,6 +1185,7 @@ void drawSlidingQuadTask(void);
 void func_80069E08(s32 duration);
 void drawFallingParticlesTask(void);
 void func_800632C4(void);
+void func_80061348(void);
 void func_800618A0(void);
 void func_80061E48(void);
 void func_80062354(void);
@@ -3861,7 +3869,41 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80061304);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80061348);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80061594);
+void initializePlayerSnapshotTrailTask(void) {
+    PlayerSnapshotTrailResource *resource;
+    SVECTOR rotation;
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    resource = (PlayerSnapshotTrailResource *)&D_800D9504[D_8013AE88->resource14];
+    GsInitCoordinate2(0, &resource->current);
+    GsInitCoordinate2(0, &resource->previous);
+    rotation.vx = gPlayerRenderSnapshots[D_8013AE88->data1C].unk10;
+    rotation.vy = gPlayerRenderSnapshots[D_8013AE88->data1C].unk18 + 0x400;
+    rotation.vz = gPlayerRenderSnapshots[D_8013AE88->data1C].unk14;
+    resource->currentScale.vx = 0x1000;
+    resource->currentScale.vy = 0x1000;
+    resource->currentScale.vz = (((s16)gPlayerRenderSnapshots[D_8013AE88->data1C].unk18 &
+        (0x3FF - (s16)gPlayerRenderSnapshots[D_8013AE88->data1C].unk12) & 0x3FF) << 2) + 0x1000;
+    RotMatrix(&rotation, &resource->current.coord);
+    resource->current.coord.t[0] = gPlayerRenderSnapshots[D_8013AE88->data1C].position.vx;
+    resource->current.coord.t[1] = gPlayerRenderSnapshots[D_8013AE88->data1C].position.vy;
+    resource->current.coord.t[2] = gPlayerRenderSnapshots[D_8013AE88->data1C].position.vz;
+    rotation.vx = gPreviousPlayerRenderSnapshots[D_8013AE88->data1C].unk10;
+    rotation.vy = gPreviousPlayerRenderSnapshots[D_8013AE88->data1C].unk18 + 0x400;
+    rotation.vz = gPreviousPlayerRenderSnapshots[D_8013AE88->data1C].unk14;
+    resource->previousScale.vx = 0x1000;
+    resource->previousScale.vy = 0x1000;
+    resource->previousScale.vz = (((s16)gPreviousPlayerRenderSnapshots[D_8013AE88->data1C].unk18 &
+        (0x3FF - (s16)gPreviousPlayerRenderSnapshots[D_8013AE88->data1C].unk12) & 0x3FF) << 2) + 0x1000;
+    RotMatrix(&rotation, &resource->previous.coord);
+    resource->previous.coord.t[0] = gPreviousPlayerRenderSnapshots[D_8013AE88->data1C].position.vx;
+    resource->previous.coord.t[1] = gPreviousPlayerRenderSnapshots[D_8013AE88->data1C].position.vy;
+    resource->previous.coord.t[2] = gPreviousPlayerRenderSnapshots[D_8013AE88->data1C].position.vz;
+    resource->remainingFrames = D_8013AE88->data1A;
+    setCurrentTaskCallback(func_80061348);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800618A0);
 

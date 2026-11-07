@@ -2479,6 +2479,7 @@ initPlayerCamera = 0x8003DF3C; // type:func
 updatePlayerCameraPosition = 0x8003E050; // type:func
 
 updatePlayerRenderSnapshots = 0x80060E80; // type:func
+initializePlayerSnapshotTrailTask = 0x80061594; // type:func
 gPlayerRenderSnapshots = 0x8012C72C; // size:0x70 defined:true
 gPreviousPlayerRenderSnapshots = 0x8012C79C; // size:0x70 defined:true
 gPlayerRenderIdentityMatrix = 0x8012C80C; // size:0x20 defined:true
