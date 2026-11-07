@@ -11,6 +11,23 @@
 #include "game/race_player.h"
 #include "game/movement.h"
 
+typedef struct PaletteRotationResource {
+    RECT rect;
+    u16 original[16];
+    u16 rotated[16];
+    s16 interval;
+    s16 timer;
+    s8 first;
+    s8 last;
+    s8 steps;
+} PaletteRotationResource;
+
+typedef struct PaletteRotationSlot {
+    GameTask *task;
+    s16 state;
+    s16 unk06;
+} PaletteRotationSlot;
+
 typedef struct GroupedIndexResource {
     u8 unk00[0x48];
     const u8 *values;
@@ -65,6 +82,7 @@ extern u8 D_8013B6B8[1];
 extern u8 D_8013B6B9[7];
 
 void func_8007D5C8(void);
+void func_8007E004(void);
 void func_80089B30(void);
 void func_80087030(void);
 void func_800857C4(void);
@@ -95,7 +113,40 @@ void initializeModeDependentDualResourceTask(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8007D5C8);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8007DE28);
+static inline PaletteRotationSlot *getPaletteRotationSlot(u16 resourceIndex, s32 index) {
+    PaletteRotationSlot *slots = (PaletteRotationSlot *)&D_800D9504[resourceIndex];
+    return &slots[index / 10];
+}
+
+void createPaletteRotationTask(s32 x, s32 y, s32 first, s32 last, s32 steps, s32 interval, s32 index) {
+    PaletteRotationResource *resource;
+    PaletteRotationSlot *slot;
+    func_80014874(func_8007E004);
+    D_8013AE8C->data18 = 0;
+    D_8013AE8C->data1E = index;
+    D_8013AE8C->resource14 = allocateTaskResource();
+    resource = (PaletteRotationResource *)&D_800D9504[D_8013AE8C->resource14];
+    resource->rect.w = 16;
+    resource->rect.x = x;
+    resource->rect.y = y;
+    resource->rect.h = 1;
+    StoreImage(&resource->rect, (u32 *)resource->original);
+    resource->interval = interval;
+    resource->timer = 0;
+    resource->first = first;
+    resource->last = last;
+    resource->steps = steps;
+    if (index % 10 == 0) {
+        if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+        slot = getPaletteRotationSlot(D_8013AE88->resource14, index);
+    } else {
+        if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
+        slot = getPaletteRotationSlot(D_8013AE88->resource16, index);
+    }
+    slot->state = 1;
+    slot->unk06 = 0;
+    slot->task = D_8013AE8C;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8007E004);
 
