@@ -95,6 +95,7 @@ u8 gPlayerState30Animation22Countdowns[12]
     30, 30, 30, 0, 0, 0, 30, 0, 0, 30, 0, 0
 };
 
+void func_8001EC88(void);
 void initializeScaledTaskCoordinateResource(void);
 void func_8001EEBC(void);
 void func_80025014(void);
@@ -111,8 +112,7 @@ void func_80015C94(u16 playerIndex);
 void func_8001596C(u16 playerIndex);
 void moveCurrentPlayerToTaskTarget(void);
 void advanceCurrentPlayerTaskOnAnimationFlag(void);
-
-void func_80025DD8(void);
+void updateCurrentPlayerTaskDecelerationSteps(void);
 void func_80025FAC(void);
 void func_800260E4(void);
 void moveCurrentPlayerForwardUntilState22(void);
@@ -124,7 +124,7 @@ s16 func_8002D3C4(s16 value);
 
 TaskCallback gCurrentPlayerTaskPhaseCallbacks[8]
     __attribute__((section(".data.player_task_phases"))) = {
-    moveCurrentPlayerToTaskTarget, advanceCurrentPlayerTaskOnAnimationFlag, updateCurrentPlayerTaskJumpAndSpawnCourseOffset, func_80025DD8,
+    moveCurrentPlayerToTaskTarget, advanceCurrentPlayerTaskOnAnimationFlag, updateCurrentPlayerTaskJumpAndSpawnCourseOffset, updateCurrentPlayerTaskDecelerationSteps,
     func_80025FAC, advanceCurrentPlayerTaskPhaseMovement, func_800260E4, moveCurrentPlayerForwardUntilState22
 };
 
@@ -1030,7 +1030,54 @@ void updateCurrentPlayerTaskJumpAndSpawnCourseOffset(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80025DD8);
+void updateCurrentPlayerTaskDecelerationSteps(void) {
+    RacePlayer *player = D_8013B0D8;
+    RacePlayer *firstStep;
+    RacePlayer *second;
+    RacePlayer *last;
+    player->unk0B6 -= 0x10;
+    if (player->unk090 > 0) {
+        player->unk090 -= 0x20;
+    } else {
+        player->unk090 += 0x20;
+    }
+    D_8013AF90->vx = 0;
+    D_8013AF90->vy = D_8013B0D8->unk110;
+    D_8013AF90->vz = 0;
+    RotMatrix(D_8013AF90, D_8013AF98);
+    D_8013AF90->vx = 0;
+    D_8013AF90->vy = 0;
+    D_8013AF90->vz = D_8013B0D8->unk090;
+    ApplyMatrix(D_8013AF98, D_8013AF90, D_8013AF88);
+    firstStep = D_8013B0D8;
+    firstStep->x += D_8013AF88->vx;
+    firstStep->z += D_8013AF88->vz;
+    firstStep->unk0B6 -= 0x10;
+    if (firstStep->unk090 > 0) {
+        firstStep->unk090 -= 0x20;
+    } else {
+        firstStep->unk090 += 0x20;
+    }
+    D_8013AF90->vx = 0;
+    D_8013AF90->vy = D_8013B0D8->unk110;
+    D_8013AF90->vz = 0;
+    RotMatrix(D_8013AF90, D_8013AF98);
+    D_8013AF90->vx = 0;
+    D_8013AF90->vy = 0;
+    D_8013AF90->vz = D_8013B0D8->unk090;
+    ApplyMatrix(D_8013AF98, D_8013AF90, D_8013AF88);
+    second = D_8013B0D8;
+    second->x += D_8013AF88->vx;
+    second->z += D_8013AF88->vz;
+    updateCurrentPlayerMotionEffects();
+    if (--D_8013B0D8->unk08C == 0) {
+        D_8013AE88->data1A++;
+        startCurrentPlayerAnimation(25, 2);
+        last = D_8013B0D8;
+        last->unk08C = 19;
+        last->unk128 |= 0x200;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80025FAC);
 
