@@ -131,6 +131,14 @@ typedef struct ModelFlatTriangle {
     u8 r, g, b, code;
     s16 vertexIndices[3];
 } ModelFlatTriangle;
+/* The GTE lighting load reads the eight bytes beginning at unk08,
+ * including the three vertex indices, as in the original primitive stream. */
+typedef struct ModelLitFlatTriangle {
+    u32 unk00;
+    u8 r, g, b, code;
+    s16 unk08;
+    s16 vertexIndices[3];
+} ModelLitFlatTriangle;
 /* Indexed flat quad in the current model primitive stream. */
 typedef struct ModelFlatQuad {
     u32 unk00;
@@ -1497,7 +1505,33 @@ void drawProjectedIndexedFlatTriangle(void) {
     GsOUT_PACKET_P = (u32)(packet + 1);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80055E10);
+void drawProjectedIndexedLitFlatTriangle(void) {
+    ModelLitFlatTriangle *primitive = (ModelLitFlatTriangle *)D_8013B680;
+    POLY_F3 *packet = (POLY_F3 *)GsOUT_PACKET_P;
+    TriangleScratchpad *scratch = TRIANGLE_SCRATCHPAD;
+    gte_ldv3(&D_8013B688[primitive->vertexIndices[0]], &D_8013B688[primitive->vertexIndices[1]], &D_8013B688[primitive->vertexIndices[2]]);
+    gte_rtpt();
+    gte_stsxy3(&packet->x0, &packet->x1, &packet->x2);
+    gte_nclip();
+    gte_stopz(&scratch->clipping);
+    gte_stflg(&scratch->flags);
+    gte_stszotz(&scratch->depth);
+    if (scratch->clipping < 0 || scratch->flags < 0 || scratch->depth <= 0 || scratch->depth >= 0x1000) return;
+    if (scratch->fogEnabled) {
+        gte_stdp(&scratch->depthCue);
+        DpqColor((CVECTOR *)&primitive->r, scratch->depthCue, (CVECTOR *)&packet->r0);
+    } else {
+        setRGB0(packet, primitive->r, primitive->g, primitive->b);
+    }
+    packet->tag = 4 << 24;
+    setcode(packet, scratch->code | POLY_F3_CODE);
+    gte_ldv0(&primitive->unk08);
+    gte_ldrgb(&packet->r0);
+    gte_nccs();
+    gte_strgb(&packet->r0);
+    addPrim(&D_8013B670->org[(scratch->depth >> D_8013B69C) + 6], packet);
+    GsOUT_PACKET_P = (u32)(packet + 1);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80056034);
 

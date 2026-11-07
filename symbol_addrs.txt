@@ -10,6 +10,7 @@ initializeCourseVisualTask = 0x8005B978; // type:func
 gCourseVisualFrames = 0x8013B2C8; // size:0x4 defined:true
 D_8013B2CC = 0x8013B2CC; // size:0x4
 initializeSelectionIndexedDualResourceTask = 0x8009C9A0; // type:func
+drawProjectedIndexedLitFlatTriangle = 0x80055E10; // type:func
 drawProjectedIndexedFlatQuad = 0x800578A0; // type:func
 drawProjectedIndexedFlatTriangle = 0x80055C1C; // type:func
 isPositionWithinPlayerCollisionRange = 0x8002C738; // type:func

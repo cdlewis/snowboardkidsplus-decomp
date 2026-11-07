@@ -93,3 +93,19 @@ long SquareRoot0(long value);
 #define gte_stsxy(r0) __asm__ volatile ( \
     "swc2 $14, 0(%0)" \
     : : "r"(r0) : "memory")
+
+/* Psy-Q INLINE_C.H. */
+#define gte_ldrgb(r0) __asm__ volatile ( \
+    "lwc2 $6, 0(%0)" \
+    : : "r"(r0))
+
+/* Psy-Q INLINE_C.H. */
+#define gte_nccs() __asm__ volatile ( \
+    "nop;" \
+    "nop;" \
+    "nccs")
+
+/* Psy-Q INLINE_C.H. */
+#define gte_strgb(r0) __asm__ volatile ( \
+    "swc2 $22, 0(%0)" \
+    : : "r"(r0) : "memory")
