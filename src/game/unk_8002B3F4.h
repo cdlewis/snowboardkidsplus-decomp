@@ -32,6 +32,14 @@ typedef struct MenuTransitionResource {
     u8 unk00[0xE];
     s16 unk0E;
 } MenuTransitionResource;
+typedef struct FallingObjectResource {
+    GsCOORDINATE2 coordinate, parent;
+    Position3D velocity;
+    s32 heightLimit;
+    u8 unkB0[0x10];
+    SVECTOR rotation, parentRotation;
+    u8 unkD0[0x30];
+} FallingObjectResource;
 
 typedef struct SelectedTaskSpriteResource {
     u8 unk00[0x30];
@@ -627,3 +635,4 @@ void initializeMenuTransitionResourcesTask(void);
 void waitMode2TransitionTask(void);
 
 void initializeRaceTimeComparisonPanel(void);
+void updateFallingRotatingObjectTask(void);

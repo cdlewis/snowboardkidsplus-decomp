@@ -2971,7 +2971,36 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_800450BC);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_8004531C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_800456DC);
+void updateFallingRotatingObjectTask(void) {
+    FallingObjectResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    resource = (FallingObjectResource *)&D_800D9504[D_8013AE88->resource14];
+    if (!D_8013AFD3) {
+        if (D_8013AE88->data1A & 1) {
+            resource->rotation.vx += 0x100;
+            resource->rotation.vy += 0x100;
+            resource->rotation.vz += 0x100;
+        } else {
+            resource->rotation.vx -= 0x100;
+            resource->rotation.vy -= 0x100;
+            resource->rotation.vz -= 0x100;
+        }
+        resource->coordinate.coord.t[0] += resource->velocity.x;
+        resource->coordinate.coord.t[1] += resource->velocity.y;
+        resource->coordinate.coord.t[2] += resource->velocity.z;
+        resource->velocity.y += 6;
+        if (resource->coordinate.coord.t[1] > resource->heightLimit) {
+            func_800149A8();
+            return;
+        }
+    }
+    if (isPositionInCameraRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
+        D_80129A80[D_8013AE88->data1C].coord2 = &resource->coordinate;
+        func_8001E3E4(&resource->parentRotation, &resource->parent);
+        func_8001E3E4(&resource->rotation, &resource->coordinate);
+        drawTaskObject(D_8013AE88->data1C);
+    }
+}
 
 void initializeScaledTaskCoordinateResource(void) {
     ScaledCoordinateResource *resource;

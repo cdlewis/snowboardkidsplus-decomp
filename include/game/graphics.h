@@ -105,6 +105,8 @@ extern GsOT D_800EC0B8[2];
 extern GsOT D_800EC090[2];
 extern GsOT D_800EC130[2];
 
+u16 func_80059254(void);
+void drawTaskObject(u16 index);
 void drawTaskObjectAlternateLayer(u16 index);
 
 extern GsDOBJ2 D_80129A80[30];

@@ -8,6 +8,7 @@ drawProjectedIndexedTexturedQuad = 0x80057D84; // type:func
 spawnPaletteBurstTask = 0x8009BB68; // type:func
 gVisualPlacementHeightData = 0x801296A0; // size:0x24 defined:true
 updateCourseVisualTask = 0x8005BA8C; // type:func
+updateFallingRotatingObjectTask = 0x800456DC; // type:func
 initializeCurrentPlayerModelAndHeight = 0x80020380; // type:func
 adjustDebugPositionAndDisplay = 0x8004D7F8; // type:func
 gDebugPositionXFormat = 0x8013B214; // size:0x8 defined:true
