@@ -1953,6 +1953,7 @@ startPositionEffectTask = 0x800663E8; // type:func
 getSaveRecordFlagGroupIndex = 0x80080FB4; // type:func
 
 startAlternateQuadAnimationTask = 0x80065E34; // type:func
+emitRadialEffectTask = 0x8006624C; // type:func
 gAlternateQuadAnimationSteps = 0x8012C990; // size:0x64
 
 resetCurrentPlayerForCallback26DAC = 0x8001F718; // type:func

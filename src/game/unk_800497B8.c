@@ -13,6 +13,7 @@
 #include "game/offset_archive.h"
 #include "game/music.h"
 #include "game/game_options.h"
+#include "game/game_task_scheduler.h"
 #define TASK_TRANSITION_FLAGS_ABSOLUTE_ADDRESSING
 #define TASK_ABSOLUTE_ADDRESSING
 #include "game/task.h"
@@ -642,6 +643,14 @@ typedef struct SlidingQuadResource {
     u8 pad10[0xF0];
 } SlidingQuadResource;
 
+typedef struct RadialEffectResource {
+    GsCOORDINATE2 coordinate;
+    SVECTOR positions[6];
+    SVECTOR innerPositions[6];
+    SVECTOR velocities[6];
+    s32 elapsed;
+} RadialEffectResource;
+
 typedef struct QuadAnimationStep {
     s32 duration, scale;
     u8 r, g, b, flags;
@@ -1130,7 +1139,8 @@ void func_800632C4(void);
 void func_800618A0(void);
 void func_80061E48(void);
 void func_80062354(void);
-void func_8006624C(void);
+void func_80065EC8(void);
+void emitRadialEffectTask(void);
 void func_80066D18(void);
 void func_80067DD0(void);
 void func_800659F0(void);
@@ -3792,11 +3802,42 @@ GameTask *startAlternateQuadAnimationTask(s32 unused, const PositionEffectOrigin
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80065EC8);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006624C);
+void emitRadialEffectTask(void) {
+    PositionEffectOrigin *origin;
+    RadialEffectResource *resource;
+    s32 i;
+    s32 angle;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    origin = (PositionEffectOrigin *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AFD3 == 0 && (gFrameCounter & 3) == 0) {
+        func_80014930(D_8013B304, func_80065EC8);
+        D_8013AE8C->resource14 = allocateTaskResource();
+        resource = (RadialEffectResource *)&D_800D9504[D_8013AE8C->resource14];
+        GsInitCoordinate2(0, &resource->coordinate);
+        resource->coordinate.coord.t[0] = origin->x;
+        resource->coordinate.coord.t[1] = origin->y;
+        resource->coordinate.coord.t[2] = origin->z;
+        for (i = 0, angle = 0; i < 6; i++) {
+            resource->positions[i].vx = resource->innerPositions[i].vx = 0;
+            resource->positions[i].vz = resource->innerPositions[i].vz = 0;
+            resource->positions[i].vy = resource->innerPositions[i].vy = 0;
+            resource->velocities[i].vx = rcos(angle) / 512;
+            resource->velocities[i].vz = rsin(angle) / 512;
+            angle += 0x2AA;
+            resource->velocities[i].vy = -32;
+        }
+        resource->elapsed = 0;
+        if (--D_8013AE88->data18 == 0) {
+            func_800149A8();
+        }
+    }
+}
 
 void startPositionEffectTask(const PositionEffectOrigin *position) {
     PositionEffectOrigin *resource;
-    func_80014930(D_8013B304, func_8006624C);
+    func_80014930(D_8013B304, emitRadialEffectTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     D_8013AE8C->data18 = 3;
     resource = (PositionEffectOrigin *)&D_800D9504[D_8013AE8C->resource14];
