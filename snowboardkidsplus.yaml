@@ -586,6 +586,8 @@ segments:
       - {start: 0xDCA00, type: .data, name: engine/game_loop, linker_section: .data.render_buffers}
       - {start: 0x110A00, type: .data, name: main_remaining, linker_section: .data.player_model_parts}
       - [0x110BEC, data, player_model_parts_tail]
+      - {start: 0x110CC4, type: .data, name: engine/task_transitions, linker_section: .data.player_resource_texture_positions}
+      - [0x110CD4, data, player_texture_origins]
       - {start: 0x110CE4, type: .data, name: main_tail, linker_section: .data.grid_resource_sector_ranges}
       - [0x110E74, data, grid_resource_sector_ranges_tail]
       - [0x11109C, .data, game/unk_8001E63C]
@@ -593,6 +595,7 @@ segments:
       - {start: 0x11126C, type: .data, name: game/unk_8001E63C, linker_section: .data.player_task_phases}
       - {start: 0x11128C, type: .data, name: game/unk_8001E63C, linker_section: .data.player_state30_task_phases}
       - [0x111298, data, player_task_phases_tail]
+      - {start: 0x113E60, type: .data, name: engine/task_transitions, linker_section: .data.player_resource_texture_selections}
       - {start: 0x113E80, type: .data, name: game/unk_8001E63C, linker_section: .data.player_variant_attributes}
       - {start: 0x113F90, type: .data, name: game/unk_8001E63C, linker_section: .data.player_character_attributes}
       - [0x11401C, data, player_attributes_tail]

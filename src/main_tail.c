@@ -71,11 +71,6 @@ typedef struct SplitSelectionBoundsConfigs {
     u8 padding[2];
 } SplitSelectionBoundsConfigs;
 
-typedef struct ResourceSectorRange {
-    s16 sector;
-    s16 sectorCount;
-} ResourceSectorRange;
-
 typedef struct UnlockMenuState {
     s16 selection, previousSelection;
     s32 unk04[7];
@@ -238,7 +233,6 @@ void func_8009F224(void);
 void func_8002FA58(s16 resource);
 void func_800A42CC(void);
 void func_800A499C(void);
-void func_8001D97C(void);
 void preparePlayerResourcesTask(void);
 void initializeRaceTaskState(void);
 void func_8001B858(void);
@@ -1103,7 +1097,7 @@ void prepareRaceResourcesIfSelectionChanged(void) {
 }
 
 void preparePlayerResourcesTask(void) {
-    func_8001D97C();
+    queuePlayerResourceReadsAndUploadTextures();
     setCurrentTaskCallback(initializeRaceTaskState);
     D_8013AE88->unk10 |= 2;
 }

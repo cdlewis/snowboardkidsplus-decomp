@@ -3,6 +3,15 @@
 #include "decomp/types.h"
 #include "psx/libcd.h"
 
+typedef struct ResourceSectorRange {
+    s16 sector;
+    s16 sectorCount;
+} ResourceSectorRange;
+
+extern ResourceSectorRange gGridResourceFirstSectorRanges[10][5];
+extern ResourceSectorRange gGridResourceSecondSectorRanges[10][5];
+void queuePlayerResourceReadsAndUploadTextures(void);
+
 /* Shared CD state remains in the original data owner. */
 extern s16 D_8013AE78;
 extern s16 D_8013AE4C;

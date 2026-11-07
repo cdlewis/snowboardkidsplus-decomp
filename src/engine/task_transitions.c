@@ -24,8 +24,27 @@
 #include "psx/libcd.h"
 #include "psx/libpress.h"
 
+#define GLOBAL_FLAGS_GP_ADDRESSING
+#include "game/global_flags.h"
 #include "game/game_loop.h"
 #include "../main_remaining.h"
+
+typedef struct PlayerResourceTextureSelections {
+    u8 entries[2][15];
+    u8 padding[2];
+} PlayerResourceTextureSelections;
+
+s16 gPlayerResourceTexturePositions[4][2] __attribute__((section(".data.player_resource_texture_positions"))) = {
+    {0, 0}, {16, 0}, {32, 0}, {48, 0}
+};
+
+PlayerResourceTextureSelections gPlayerResourceTextureSelections __attribute__((section(".data.player_resource_texture_selections"))) = {
+    {
+        {0, 6, 1, 4, 3, 8, 5, 11, 13, 14, 15, 16, 17, 18, 19},
+        {0, 6, 1, 4, 3, 8, 5, 11, 13, 14, 15, 16, 17, 18, 19}
+    },
+    {0, 0}
+};
 
 extern u16 D_8013AFAA __attribute__((section(".data")));
 extern u8 D_8013B562 __attribute__((section(".data")));
@@ -314,7 +333,24 @@ void animateAlternatingVramRow(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/engine/task_transitions", func_8001D97C);
+void queuePlayerResourceReadsAndUploadTextures(void) {
+    u16 i;
+    u32 *offset;
+    for (i = 0; i < activeRacePlayerCountGp; i++) {
+        queueCdSectorCommand(0, gGridResourceFirstSectorRanges[D_80120E90[i].unk014][D_80120E90[i].unk015[0]].sector,
+            gGridResourceFirstSectorRanges[D_80120E90[i].unk014][D_80120E90[i].unk015[0]].sectorCount,
+            (u8 *)0x8016B000 + i * 0x4000, 0);
+        queueCdSectorCommand(1, gGridResourceSecondSectorRanges[D_80120E90[i].unk014][D_80120E90[i].unk015[0]].sector,
+            gGridResourceSecondSectorRanges[D_80120E90[i].unk014][D_80120E90[i].unk015[0]].sectorCount,
+            (void *)0x80180000, (s32)&D_801204D4[i]);
+        if (i < gameOptionPlayerModeGp && !D_8013AFD7 && !D_8013AFD8 && !D_8013AFD9) {
+            offset = &((OffsetArchive *)0x801F0000)->offsets[gPlayerResourceTextureSelections.entries[i][D_80120E90[i].unk015[1]]];
+        } else {
+            offset = &((OffsetArchive *)0x801F0000)->offsets[D_80120E90[i].unk015[2]];
+        }
+        uploadTimImageWithOffset((u32 *)(0x801F0000 + *offset), gPlayerResourceTexturePositions[i]);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/engine/task_transitions", func_8001DB7C);
 

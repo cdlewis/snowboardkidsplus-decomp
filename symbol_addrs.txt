@@ -3006,3 +3006,7 @@ updateCurrentPlayerModelPartCoordinates = 0x8009766C; // type:func
 readPcHostAsset = 0x800A8104; // type:func
 
 initializeRaceTimeComparisonPanel = 0x8003C7F0; // type:func
+
+queuePlayerResourceReadsAndUploadTextures = 0x8001D97C; // type:func
+gPlayerResourceTexturePositions = 0x801204C4; // size:0x10
+gPlayerResourceTextureSelections = 0x80123660; // size:0x20
