@@ -201,6 +201,17 @@ typedef struct TexturedQuadScratchpad {
     u8 unk6C[4];
 } TexturedQuadScratchpad;
 
+typedef struct IndexedTexturedQuadScratchpad {
+    u32 unk00;
+    void (*emitQuad)(TriangleScratchVertex *);
+    s32 depth, depthCue;
+    s32 flags, unk14, clipping;
+    u8 unk1C[0x4B];
+    u8 code;
+    u8 unk68[3];
+    u8 fogEnabled;
+} IndexedTexturedQuadScratchpad;
+
 typedef struct MovingLineResource {
     s16 x, y;
     u32 elapsed;
@@ -1722,7 +1733,42 @@ void drawProjectedIndexedFlatQuad(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80057AC0);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80057D84);
+void drawProjectedIndexedTexturedQuad(void) {
+    TexturedQuadPrimitive *primitive = (TexturedQuadPrimitive *)D_8013B680;
+    POLY_FT4 *packet = (POLY_FT4 *)GsOUT_PACKET_P;
+    IndexedTexturedQuadScratchpad *scratch = (IndexedTexturedQuadScratchpad *)0x1F800000;
+    gte_ldv3(&D_8013B688[primitive->vertexIndices[0]], &D_8013B688[primitive->vertexIndices[1]], &D_8013B688[primitive->vertexIndices[2]]);
+    gte_rtpt();
+    gte_stsxy3(&packet->x0, &packet->x1, &packet->x2);
+    gte_nclip();
+    gte_stopz(&scratch->clipping);
+    gte_ldv0(&D_8013B688[primitive->vertexIndices[3]]);
+    gte_rtps();
+    gte_stsxy(&packet->x3);
+    gte_stflg(&scratch->flags);
+    gte_stszotz(&scratch->depth);
+    if (scratch->clipping < 0 || scratch->flags < 0 || scratch->depth <= 0 || scratch->depth >= 0x1000) return;
+    if (scratch->fogEnabled) {
+        gte_stdp(&scratch->depthCue);
+        DpqColor((CVECTOR *)&primitive->r, scratch->depthCue, (CVECTOR *)&packet->r0);
+    } else {
+        setRGB0(packet, primitive->r, primitive->g, primitive->b);
+    }
+    packet->tag = 9 << 24;
+    setcode(packet, scratch->code | POLY_FT4_CODE);
+    packet->tpage = primitive->uv[1].attribute;
+    packet->clut = primitive->uv[0].attribute;
+    packet->u0 = primitive->uv[0].coords.u;
+    packet->v0 = primitive->uv[0].coords.v;
+    packet->u1 = primitive->uv[1].coords.u;
+    packet->v1 = primitive->uv[1].coords.v;
+    packet->u2 = primitive->uv[2].coords.u;
+    packet->v2 = primitive->uv[2].coords.v;
+    packet->u3 = primitive->uv[3].coords.u;
+    packet->v3 = primitive->uv[3].coords.v;
+    addPrim(&D_8013B670->org[(scratch->depth >> D_8013B69C) + 6], packet);
+    GsOUT_PACKET_P = (u32)(packet + 1);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005801C);
 
