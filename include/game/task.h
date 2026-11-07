@@ -175,3 +175,5 @@ extern u8 D_8013B0F0;
 void drawSelectedTaskSprite(void);
 
 void initializeBouncingVisualTask(void);
+
+void initializeExpandingCoordinateEffectTask(void);

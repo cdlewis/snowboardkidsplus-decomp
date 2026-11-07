@@ -2694,3 +2694,5 @@ initializeVisualTrailTask = 0x800481A8; // type:func
 initializeFallingTaskObject = 0x8005E174; // type:func
 
 pollMemoryCardRead = 0x80019520; // type:func
+
+initializeExpandingCoordinateEffectTask = 0x80044A38; // type:func

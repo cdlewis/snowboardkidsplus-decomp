@@ -40,6 +40,16 @@ typedef struct SelectedTaskEntry {
     s16 unk04, unk06;
 } SelectedTaskEntry;
 
+typedef struct ExpandingCoordinateEffectResource {
+    GsCOORDINATE2 coordinate, parent;
+    Position3D position;
+    s32 unkAC;
+    VECTOR scale;
+    SVECTOR rotation;
+    s16 pitch, unkCA, yaw, unkCE, selectedIndex;
+    u8 unkD2[0x2E];
+} ExpandingCoordinateEffectResource;
+
 typedef struct RisingPlayerEffectResource {
     GsCOORDINATE2 coordinate;
     u8 unk50[0x50];
@@ -438,6 +448,7 @@ void func_800458F8(void);
 void func_8004531C(void);
 void updatePlayerFlagTaskVisual(void);
 void func_800442F4(TaskVisualResource *resource);
+void func_80044BC0(void);
 void func_80046044(void);
 void func_80047600(void);
 void func_80047D94(void);
@@ -3213,7 +3224,39 @@ void updateOneShotTaskVisual(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80044A38);
+void initializeExpandingCoordinateEffectTask(void) {
+    ExpandingCoordinateEffectResource *resource;
+    ExpandingCoordinateEffectResource *initial;
+    s32 x, y, z;
+    s16 index;
+    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    initial = (ExpandingCoordinateEffectResource *)&D_800D9504[D_8013AE88->resource14];
+    index = initial->rotation.vz;
+    x = initial->coordinate.coord.t[0];
+    y = initial->coordinate.coord.t[1];
+    z = initial->coordinate.coord.t[2];
+    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    resource = (ExpandingCoordinateEffectResource *)&D_800D9504[D_8013AE88->resource14];
+    GsInitCoordinate2(0, &resource->parent);
+    GsInitCoordinate2(&resource->parent, &resource->coordinate);
+    resource->position.x = x << 8;
+    resource->position.y = y << 8;
+    resource->position.z = z << 8;
+    resource->selectedIndex = index;
+    resource->rotation.vx = 0;
+    resource->rotation.vy = 0;
+    resource->rotation.vz = 0;
+    resource->parent.coord.t[0] = x;
+    resource->parent.coord.t[1] = y;
+    resource->parent.coord.t[2] = z;
+    playPositionalSoundEffect(resource->position.x, resource->position.y, resource->position.z, 1, 0x101, 0x20);
+    func_8004A764(index, x, z);
+    computeSelectedTriangleAngles(&resource->pitch, &resource->yaw);
+    resource->unkCA = 0;
+    D_8013AE88->data1A = 45;
+    resource->scale.vx = resource->scale.vy = resource->scale.vz = 0;
+    setCurrentTaskCallback(func_80044BC0);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80044BC0);
 
