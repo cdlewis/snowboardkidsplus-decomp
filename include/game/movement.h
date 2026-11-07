@@ -17,4 +17,4 @@ typedef struct Movement2D {
 
 void initMovement2D(Movement2D *movement, s32 x, s32 y);
 
-void func_80070F10(Movement2D *movement, s32 x, s32 y, s32 speedX, s32 speedY, s32 delay);
+void configureMovement2D(Movement2D *movement, s32 x, s32 y, s32 stepX, s32 stepY, s32 delay);

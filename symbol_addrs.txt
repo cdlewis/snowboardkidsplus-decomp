@@ -210,6 +210,7 @@ gGameOptionFlags = 0x8013B570; // size:0x4 defined:true
 gUnlockNotificationFlags = 0x8013B574; // size:0x2 defined:true
 // Sprite initialization, offset archives, and a separate arithmetic RNG.
 initMovement2D = 0x80070EF0; // type:func
+configureMovement2D = 0x80070F10; // type:func
 clearTaskReference = 0x80071484; // type:func
 drawBlackScreenTask = 0x80071678; // type:func
 clearSecondaryTaskReference = 0x8007199C; // type:func

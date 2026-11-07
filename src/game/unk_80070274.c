@@ -13,6 +13,7 @@
 #include "game/task.h"
 #include "game/selected_sprite.h"
 #include "psx/libsnd.h"
+#include "psx/stdlib.h"
 
 
 typedef struct ChildMovementGroup {
@@ -136,7 +137,6 @@ s16 func_80070794(s32 id);
 void addTilePacket(s32 x, s32 y, s32 width, s32 height, s32 r, s32 g, s32 b,
                    GsOT *ot, u16 depth);
 void func_80071490(s32 mode, s32 value1, s32 value2);
-void func_80070F10(Movement2D *movement, s32 x, s32 y, s32 stepX, s32 stepY, s32 delay);
 void func_8007197C(void);
 void func_80071A80(void);
 void initTimedSequence(TimedSequence *sequence, const TimedSequenceEntry *entries, s16 index, s16 count);
@@ -238,7 +238,33 @@ void initMovement2D(Movement2D *movement, s32 x, s32 y) {
     movement->delay = 0;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80070F10);
+void configureMovement2D(Movement2D *movement, s32 x, s32 y, s32 stepX, s32 stepY, s32 delay) {
+    movement->remainingX = sdkAbs(x - movement->x);
+    movement->remainingY = sdkAbs(y - movement->y);
+    if (x - movement->x < 0) {
+        movement->stepX = -sdkAbs(stepX);
+    } else {
+        movement->stepX = sdkAbs(stepX);
+    }
+    if (y - movement->y < 0) {
+        movement->stepY = -sdkAbs(stepY);
+    } else {
+        movement->stepY = sdkAbs(stepY);
+    }
+    if (delay < 0) {
+        movement->modeX = 2;
+        movement->modeY = 2;
+        if (delay == -1000) {
+            delay = 0;
+        } else {
+            delay = sdkAbs(delay);
+        }
+    } else {
+        movement->modeX = 0;
+        movement->modeY = 0;
+    }
+    movement->delay = delay;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_8007102C);
 
@@ -497,7 +523,7 @@ void configureTaskGridMovement(s32 mode, GameTask *task, s32 x, s32 y, s32 stepX
     }
     for (; i < end; i++) {
         if (mode == 2 && i == state->selectedIndex) continue;
-        func_80070F10((Movement2D *)&D_800D9504[entries[i].task->resource14], x, y, stepX, stepY, delay);
+        configureMovement2D((Movement2D *)&D_800D9504[entries[i].task->resource14], x, y, stepX, stepY, delay);
     }
 }
 
@@ -549,10 +575,10 @@ void configureVerticalTaskGridMovement(s32 mode, GameTask *task, s32 x, s32 y, s
         if (mode == 2 && i == state->selectedIndex) continue;
         movement = (Movement2D *)&D_800D9504[entries[i].task->resource14];
         if (delay == -1000) {
-            func_80070F10(movement, x, y + ((state->spacingY * i) << 12), stepX, stepY, delay);
+            configureMovement2D(movement, x, y + ((state->spacingY * i) << 12), stepX, stepY, delay);
         } else {
             nextIndex = i + 1;
-            func_80070F10(movement, x, y + ((state->spacingY * i) << 12), stepX, stepY, delay * (state->count - nextIndex));
+            configureMovement2D(movement, x, y + ((state->spacingY * i) << 12), stepX, stepY, delay * (state->count - nextIndex));
         }
     }
 }
