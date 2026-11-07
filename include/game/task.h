@@ -261,3 +261,5 @@ void drawTaskGridSelectionMarker(void);
 void createRegisteredMovingPanelTask(u16 mode, const s16 *values, s16 x, s16 y,
                                      s16 x2, s16 y2, s16 x3, s16 y3,
                                      s32 depth, s32 index);
+
+void initializeSpacedChildTasks(void);

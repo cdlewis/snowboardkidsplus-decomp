@@ -3198,3 +3198,5 @@ drawHitCountPanel = 0x80038090; // type:func
 gHitCountTimeOutLabel = 0x80010AA0; // size:0xC
 gHitCountTotalFormat = 0x8013B130; // size:0x4
 gHitCountMarker = 0x8013B134; // size:0x4
+
+initializeSpacedChildTasks = 0x80072864; // type:func

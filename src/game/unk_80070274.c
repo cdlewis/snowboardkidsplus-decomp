@@ -19,6 +19,15 @@
 #include "psx/stdlib.h"
 
 
+typedef struct SpacedTaskResource {
+    s32 x, y;
+    u8 unk08[0x38];
+    TaskCallback callback;
+    u8 unk44[0xC];
+    s32 value;
+    s16 unk54, spacingX, spacingY, count;
+} SpacedTaskResource;
+
 typedef struct ChildMovementGroup {
     u8 unk00[0x32];
     s16 selectedIndex;
@@ -166,6 +175,9 @@ DR_TPAGE gAnimatedSprite16DrawPage __attribute__((section(".sdata.animated_sprit
 };
 
 s16 func_80070794(s32 id);
+void func_80072A88(s16 index, s16 x, s16 y, TaskCallback callback, s32 value, s32 registrationIndex);
+void func_80072C54(void);
+
 void addTilePacket(s32 x, s32 y, s32 width, s32 height, s32 r, s32 g, s32 b,
                    GsOT *ot, u16 depth);
 void updateScrollingBackgroundTask(void);
@@ -647,7 +659,30 @@ void setMusicSequenceEnabled(s16 enabled) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_800725D0);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80072864);
+void initializeSpacedChildTasks(void) {
+    SpacedTaskResource *state;
+    RegisteredTaskEntry *entry;
+    s32 i;
+    RegisteredTaskEntry *entries;
+    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    state = (SpacedTaskResource *)&D_800D9504[D_8013AE88->resource14];
+    if ((u16)(D_8013AE88->data1E % 10U) == 0) {
+        if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
+        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource14];
+        entry = &entries[D_8013AE88->data1E / 10U];
+    } else {
+        if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
+        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource16];
+        entry = &entries[D_8013AE88->data1E / 10U];
+    }
+    for (i = 0; i < state->count; i++) {
+        func_80072A88(i, state->x / 4096 + state->spacingX * i,
+                     state->y / 4096 + state->spacingY * i,
+                     state->callback, state->value, i * 10 + 1);
+    }
+    entry->flags = 0;
+    setCurrentTaskCallback(func_80072C54);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80072A88);
 
