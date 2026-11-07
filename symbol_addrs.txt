@@ -9,6 +9,7 @@ spawnPaletteBurstTask = 0x8009BB68; // type:func
 gVisualPlacementHeightData = 0x801296A0; // size:0x24 defined:true
 updateCourseVisualTask = 0x8005BA8C; // type:func
 drawTimeRecordListRows = 0x800398F4; // type:func
+updateRegisteredChildBlinkTransition = 0x80083968; // type:func
 drawProjectedIndexedLitGouraudTexturedTriangle = 0x80057580; // type:func
 drawCurrentTaskSelectionPanel = 0x80096238; // type:func
 gTaskSelectionPanelLabel = 0x80131D74; // size:0xC defined:true

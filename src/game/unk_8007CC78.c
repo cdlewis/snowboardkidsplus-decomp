@@ -77,6 +77,12 @@ typedef struct IndexedHalfwordRecord {
     s16 unk_04;
 } IndexedHalfwordRecord;
 
+typedef struct SelectionTransitionEntry {
+    s16 selection;
+    s16 previousSelection;
+    s16 timer;
+} SelectionTransitionEntry;
+
 typedef struct StateValueHistory {
     s32 unk_00;
     s16 activeIndex;
@@ -121,6 +127,7 @@ void initializeDualResourceTaskAndResetByteState(void);
 void adjustGroupedIndexForMode(s16 mode, u8 *index);
 void func_8007F630(void);
 void func_80081DF0(void);
+void func_800816D8(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8007CC78);
 
@@ -549,7 +556,49 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80083180);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80083574);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80083968);
+static inline RegisteredTaskEntry *getRegisteredBlinkEntry(u16 resource, u32 index) {
+    RegisteredTaskEntry *entries = (RegisteredTaskEntry *)&D_800D9504[resource];
+    return &entries[(u16)(index / 10)];
+}
+
+void updateRegisteredChildBlinkTransition(void) {
+    Movement2D *position;
+    RegisteredTaskEntry *children;
+    RegisteredTaskEntry *entry;
+    SelectionTransitionEntry *selection;
+    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
+    children = (RegisteredTaskEntry *)&D_800D9504[D_8013AE88->resource16];
+    if ((u16)(D_8013AE88->data1E % 10) == 0) {
+        if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
+        entry = getRegisteredBlinkEntry(D_8013AE98->resource14, D_8013AE88->data1E);
+    } else {
+        if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
+        entry = getRegisteredBlinkEntry(D_8013AE98->resource16, D_8013AE88->data1E);
+    }
+    selection = &((SelectionTransitionEntry *)&D_801300AC)[(s16)D_8013AE88->data18];
+    if (entry->command == 1) {
+        if (selection->timer == 0) {
+            initMovement2D((Movement2D *)&D_800D9504[children[D_8013AE88->data1C].task->resource16], position->x, position->y);
+            entry->command = 0;
+            entry->flags = 0;
+        } else if (selection->timer > 0) {
+            if (selection->timer % 2 == 0) {
+                initMovement2D((Movement2D *)&D_800D9504[children[D_8013AE88->data1C].task->resource16], position->x, position->y);
+            } else {
+                initMovement2D((Movement2D *)&D_800D9504[children[D_8013AE88->data1C].task->resource16], position->x + 0x140000, position->y);
+            }
+            selection->timer--;
+            entry->flags = 1;
+        }
+    } else {
+        setCurrentTaskCallback(func_800816D8);
+        entry->command = 0;
+        entry->flags = 0;
+        selection->previousSelection = selection->selection;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80083C3C);
 
