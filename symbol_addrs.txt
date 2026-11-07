@@ -3001,3 +3001,5 @@ createPlayerPanelTask = 0x8007893C; // type:func
 initializeCountedPlayerGroupedSelectionBoundsTask = 0x8007F4BC; // type:func
 
 updateCurrentPlayerModelPartCoordinates = 0x8009766C; // type:func
+
+readPcHostAsset = 0x800A8104; // type:func

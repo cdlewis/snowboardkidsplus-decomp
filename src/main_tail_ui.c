@@ -274,12 +274,14 @@ extern s16 selectionMenuRecordAbsolute __attribute__((section(".data")));
 extern u8 D_8013B562;
 extern char D_80012310[];
 extern char D_8001232C[];
+extern char D_8013B5C8[];
 
 
 void func_800187B8(u8 voice);
 void func_8001814C(void);
 void signalFlag9WhenTaskCountdownExpires(void);
 int printf(const char *format, ...);
+int sprintf(char *buffer, const char *format, ...);
 
 void func_80040D5C(void);
 void initializeNumberSelectionTask(void);
@@ -1209,4 +1211,27 @@ int writePcHostFile(char *name, char *buffer, int length) {
     return 0;
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A8104);
+s16 readPcHostAsset(s16 mode, char *name, void *buffer, s16 *position) {
+    char path[256];
+    s16 result;
+
+    if (name == NULL) return -1;
+    sprintf(path, D_8013B5C8, name);
+    switch (mode) {
+    case 0:
+        result = readHostFile(path, buffer);
+        break;
+    case 1:
+        result = readHostFile(path, buffer);
+        uploadTimImageWithOffset(buffer, position);
+        break;
+    case 2:
+        result = readHostFile(path, buffer);
+        uploadTimArchive(buffer, position);
+        break;
+    default:
+        result = -1;
+        break;
+    }
+    return result;
+}
