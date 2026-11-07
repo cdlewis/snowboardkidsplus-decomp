@@ -7,7 +7,7 @@ s32 pollMemoryCardRead(void) {
     D_8013B60C[D_8013AF38] = 0;
     switch (MemCardSync(1, &command, &result)) {
     case -1:
-        MemCardReadFile(D_8013AF34, D_8013AF40, &gMemoryCardSaveHeader, 0, D_800EB550[D_8013AF48]);
+        MemCardReadFile(D_8013AF34, D_8013AF40, &gMemoryCardSaveHeader, 0, gMemoryCardSaveCapacities[D_8013AF48]);
         break;
     case 0: break;
     case 1:

@@ -28,7 +28,7 @@ extern u8 D_8013AF48;
 extern char *D_8013AF40;
 extern u8 D_8013B608[2] __attribute__((section(".bss")));
 extern u8 D_8013B60C[2] __attribute__((section(".bss")));
-extern s32 D_800EB550[5];
+extern u32 gMemoryCardSaveCapacities[5];
 
 s16 validateAndCopyMemoryCardSave(void);
 s32 pollMemoryCardRead(void);

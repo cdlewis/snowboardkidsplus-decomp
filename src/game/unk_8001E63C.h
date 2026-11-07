@@ -24,7 +24,7 @@ void initializeCurrentPlayerState25(void);
 void resetCurrentPlayerForCallback25508(void);
 void resetCurrentPlayerForCallback255C4(void);
 void initializeCurrentPlayerState23(void);
-void func_80024F10(void);
+void updateCurrentPlayerState23MotionAndTimer(void);
 void initializeCurrentPlayerState7(void);
 void resetCurrentPlayerForCallback240D0(void);
 void func_80020018(void);

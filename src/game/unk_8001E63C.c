@@ -506,7 +506,7 @@ void initializeCurrentPlayerState23(void) {
     D_8013AE8C->data18 = D_8013AE88->data18;
     func_8002E5A0(D_8013AE88->data18, 6);
     func_800183FC(D_8013AE88->data18, 1, 0xD00, 0x20);
-    setCurrentTaskCallback(func_80024F10);
+    setCurrentTaskCallback(updateCurrentPlayerState23MotionAndTimer);
 }
 
 void initializeCurrentPlayerState7(void) {

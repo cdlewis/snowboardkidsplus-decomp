@@ -187,15 +187,9 @@ typedef struct QuadScratchpad {
     TriangleScratchVertex vertices[4];
 } QuadScratchpad;
 
-typedef struct TexturedScratchVertex {
-    SVECTOR position;
-    u8 u, v;
-    u16 unk0A;
-    TriangleColor color;
-} TexturedScratchVertex;
 typedef struct TexturedQuadScratchpad {
     u32 unk00;
-    void (*emitQuad)(TexturedScratchVertex *);
+    void (*emitQuad)(TriangleScratchVertex *);
     s32 depth, depthCue;
     u8 unk10[0x40];
     struct { u16 x, y; } screen[4];
@@ -822,10 +816,10 @@ void updateFallingTaskObject(void);
 
 void emitProjectedGouraudTriangle(TriangleScratchVertex *);
 void emitProjectedTexturedTriangle(TriangleScratchVertex *);
-void func_80052D84(TriangleScratchVertex *);
-void func_80052F90(TriangleScratchVertex *);
+void emitProjectedGouraudQuad(TriangleScratchVertex *);
+void emitProjectedTexturedQuad(TriangleScratchVertex *);
 void func_80053180(TriangleScratchVertex *);
-void func_800529FC(TriangleScratchVertex *);
+void emitProjectedGouraudTexturedTriangle(TriangleScratchVertex *);
 void func_80053A34(TriangleScratchVertex *, s32);
 void func_8006479C(void);
 void func_800654B4(void);
@@ -1291,7 +1285,7 @@ void emitProjectedTexturedTriangle(TriangleScratchVertex *vertices) {
     GsOUT_PACKET_P = (u32)(packet + 1);
 }
 
-void emitProjectedGouraudTexturedTriangle(TexturedScratchVertex *vertices) {
+void emitProjectedGouraudTexturedTriangle(TriangleScratchVertex *vertices) {
     TexturedQuadScratchpad *scratch = (TexturedQuadScratchpad *)0x1F800000;
     POLY_GT3 *packet = (POLY_GT3 *)GsOUT_PACKET_P;
     if (scratch->fogEnabled) {
@@ -1314,12 +1308,12 @@ void emitProjectedGouraudTexturedTriangle(TexturedScratchVertex *vertices) {
     setcode(packet, scratch->code | POLY_GT3_CODE);
     packet->tpage = scratch->tpage;
     packet->clut = scratch->clut;
-    packet->u0 = vertices[0].u;
-    packet->u1 = vertices[1].u;
-    packet->u2 = vertices[2].u;
-    packet->v0 = vertices[0].v;
-    packet->v1 = vertices[1].v;
-    packet->v2 = vertices[2].v;
+    packet->u0 = vertices[0].texture.uv.u;
+    packet->u1 = vertices[1].texture.uv.u;
+    packet->u2 = vertices[2].texture.uv.u;
+    packet->v0 = vertices[0].texture.uv.v;
+    packet->v1 = vertices[1].texture.uv.v;
+    packet->v2 = vertices[2].texture.uv.v;
     packet->x0 = scratch->screen[0].x;
     packet->x1 = scratch->screen[1].x;
     packet->x2 = scratch->screen[2].x;
@@ -1390,7 +1384,7 @@ void emitProjectedGouraudQuad(TriangleScratchVertex *vertices) {
     GsOUT_PACKET_P = (u32)(packet + 1);
 }
 
-void emitProjectedTexturedQuad(TexturedScratchVertex *vertices) {
+void emitProjectedTexturedQuad(TriangleScratchVertex *vertices) {
     TexturedQuadScratchpad *scratch = (TexturedQuadScratchpad *)0x1F800000;
     POLY_FT4 *packet = (POLY_FT4 *)GsOUT_PACKET_P;
     if (scratch->fogEnabled) {
@@ -1403,14 +1397,14 @@ void emitProjectedTexturedQuad(TexturedScratchVertex *vertices) {
     setcode(packet, scratch->code | POLY_FT4_CODE);
     packet->tpage = scratch->tpage;
     packet->clut = scratch->clut;
-    packet->u0 = vertices[0].u;
-    packet->u1 = vertices[1].u;
-    packet->u2 = vertices[2].u;
-    packet->u3 = vertices[3].u;
-    packet->v0 = vertices[0].v;
-    packet->v1 = vertices[1].v;
-    packet->v2 = vertices[2].v;
-    packet->v3 = vertices[3].v;
+    packet->u0 = vertices[0].texture.uv.u;
+    packet->u1 = vertices[1].texture.uv.u;
+    packet->u2 = vertices[2].texture.uv.u;
+    packet->u3 = vertices[3].texture.uv.u;
+    packet->v0 = vertices[0].texture.uv.v;
+    packet->v1 = vertices[1].texture.uv.v;
+    packet->v2 = vertices[2].texture.uv.v;
+    packet->v3 = vertices[3].texture.uv.v;
     packet->x0 = scratch->screen[0].x;
     packet->x1 = scratch->screen[1].x;
     packet->x2 = scratch->screen[2].x;
@@ -1476,7 +1470,7 @@ void processTexturedGouraudTrianglePrimitive(void) {
     TexturedGouraudTrianglePrimitive *primitive = (TexturedGouraudTrianglePrimitive *)D_8013B680;
     ((TriangleTextureState *)0x1F800000)->tpage = primitive->uv[1].attribute;
     ((TriangleTextureState *)0x1F800000)->clut = primitive->uv[0].attribute;
-    ((TriangleTextureState *)0x1F800000)->callback = func_800529FC;
+    ((TriangleTextureState *)0x1F800000)->callback = emitProjectedGouraudTexturedTriangle;
     ((TriangleScratchVertex *)0x1F800070)->position = D_8013B688[primitive->vertexIndices[0]];
     ((TriangleScratchVertex *)0x1F800080)->position = D_8013B688[primitive->vertexIndices[1]];
     ((TriangleScratchVertex *)0x1F800090)->position = D_8013B688[primitive->vertexIndices[2]];
@@ -1504,7 +1498,7 @@ void drawIndexedFlatQuad(void) {
 
 void processGouraudQuadPrimitive(void) {
     GouraudQuadPrimitive *primitive = (GouraudQuadPrimitive *)D_8013B680;
-    QUAD_SCRATCHPAD->emitQuad = func_80052D84;
+    QUAD_SCRATCHPAD->emitQuad = emitProjectedGouraudQuad;
     ((TriangleScratchVertex *)0x1F800070)->position = D_8013B688[primitive->vertexIndices[0]];
     ((TriangleScratchVertex *)0x1F800080)->position = D_8013B688[primitive->vertexIndices[1]];
     ((TriangleScratchVertex *)0x1F800090)->position = D_8013B688[primitive->vertexIndices[2]];
@@ -1523,7 +1517,7 @@ void processTexturedQuadPrimitive(void) {
     ((TriangleTextureState *)0x1F800000)->r = primitive->r;
     ((TriangleTextureState *)0x1F800000)->g = primitive->g;
     ((TriangleTextureState *)0x1F800000)->b = primitive->b;
-    ((TriangleTextureState *)0x1F800000)->callback = func_80052F90;
+    ((TriangleTextureState *)0x1F800000)->callback = emitProjectedTexturedQuad;
     ((TriangleScratchVertex *)0x1F800070)->position = D_8013B688[primitive->vertexIndices[0]];
     ((TriangleScratchVertex *)0x1F800080)->position = D_8013B688[primitive->vertexIndices[1]];
     ((TriangleScratchVertex *)0x1F800090)->position = D_8013B688[primitive->vertexIndices[2]];
@@ -1778,7 +1772,7 @@ void updateMovingTaskObject(void) {
         resource->coordinate.coord.t[2] += D_8013AF88->vz;
         D_8013AE88->data1A--;
     }
-    if (func_8005143C(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
+    if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
         D_80129A80[D_8013AE88->data1C].coord2 = &resource->coordinate;
         func_8001E3E4(&resource->rotation, &resource->coordinate);
         drawTaskObject(D_8013AE88->data1C);
@@ -2107,7 +2101,7 @@ void updateFallingTaskObject(void) {
         }
         resource->coordinate.coord.t[1] = resource->position.y >> 8;
     }
-    if (func_8005143C(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
+    if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
         D_80129A80[9].coord2 = &resource->coordinate;
         func_8001E3E4(&resource->rotation, &resource->coordinate);
         drawTaskObject(9);
@@ -2131,13 +2125,13 @@ void updateLandedTaskObject(void) {
             return;
         }
         for (i = 0; i < D_8013AFD2; i++) {
-            if (func_8002C8BC(&resource->position, 0xC00, 4, i)) {
+            if (addPlayerFlagsIfWithinRadius(&resource->position, 0xC00, 4, i)) {
                 func_800149A8();
                 return;
             }
         }
     }
-    if (func_8005143C(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
+    if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
         D_80129A80[9].coord2 = &resource->coordinate;
         func_8001E3E4(&resource->rotation, &resource->coordinate);
         drawTaskObject(9);

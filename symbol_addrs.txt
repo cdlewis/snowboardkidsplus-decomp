@@ -2503,7 +2503,7 @@ drawAutoPilotLabelTask = 0x80035B24; // type:func
 gAutoPilotLabel = 0x80010A58; // type:char size:0xC
 
 waitResultDisplayTaskFlagsTask = 0x800362FC; // type:func
-waitResultDisplayInputTask = 0x800363A0; // type:func
+waitResultFlagsInputTask = 0x800363A0; // type:func
 
 emitProjectedFlatTriangle = 0x80052530; // type:func
 emitProjectedGouraudTriangle = 0x80052680; // type:func
@@ -2889,7 +2889,6 @@ D_8013AE68 = 0x8013AE68; // size:0x2
 
 completeModeSelectionTransitionWhenReady = 0x800A2324; // type:func
 modeTransitionReadyGp = 0x8013B55E; // size:0x1 allow_duplicated:true
-D_8013B55E = 0x8013B55E; // size:0x1 allow_duplicated:true
 
 prepareMemoryCardSave = 0x80018BA4; // type:func
 gMemoryCardSaveTitles = 0x800EB53C; // size:0x14
@@ -2917,3 +2916,8 @@ drawTransformedSpriteByIndex = 0x8006CF38; // type:func
 emitProjectedGouraudQuad = 0x80052D84; // type:func
 
 createRegisteredCallbackTask = 0x80074988; // type:func
+
+updatePlayerDualResourceEffectTask = 0x80046CB4; // type:func
+gPlayerDualResourceEffectFrame = 0x8013B1AC; // size:0x8 defined:true
+
+D_8013B154 = 0x8013B154; // type:u32 size:0x4 defined:true

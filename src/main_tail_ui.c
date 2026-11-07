@@ -282,6 +282,8 @@ void signalFlag9WhenTaskCountdownExpires(void);
 int printf(const char *format, ...);
 
 void func_80040D5C(void);
+void initializeNumberSelectionTask(void);
+void completeModeSelectionTransitionWhenReady(void);
 void func_800A2D68(void);
 void initializeModeSectorReadResourcesTask(void);
 void func_800A24EC(void);
@@ -296,6 +298,8 @@ void func_800A6684(void);
 void func_800A624C(void);
 
 void func_80040D5C(void);
+void initializeNumberSelectionTask(void);
+void completeModeSelectionTransitionWhenReady(void);
 void func_800A3AA4(void);
 void func_8002FA58(s16 resource);
 void func_800A42CC(void);
@@ -382,7 +386,7 @@ void advanceTaskAtModeCoursePosition(void) {
         stopPlayerSound(1);
         startCdVolumeFade(103, 20, 0, 1);
         taskTransitionFlagGp = 0;
-        func_80014874(func_800A2510);
+        func_80014874(initializeNumberSelectionTask);
         setCurrentTaskCallback(completeModeSelectionTransitionWhenReady);
     }
 }

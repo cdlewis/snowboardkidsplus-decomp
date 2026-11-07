@@ -214,3 +214,5 @@ void updateControllerPlaybackUntilFade(void);
 
 void createRegisteredCallbackTask(s32 mode, s16 x, s16 y, TaskCallback callback,
                                   s32 value, s32 index);
+
+void initializeMode1RacePlayers(void);

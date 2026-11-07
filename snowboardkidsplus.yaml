@@ -76,7 +76,7 @@ segments:
       - [0xE34, rodata]
       - [0xEAC, .rodata, game/unk_8002B3F4]
       - [0xECC, rodata]
-      - [0x1024, .rodata, game/unk_8002B3F4]
+      - [0x1024, .rodata, game/unk_8002B3F4_tail]
       - [0x1090, rodata]
       - {start: 0x123C, type: .rodata, name: game/unk_8002B3F4, linker_section: .rodata.demonstration_overlay}
       - {start: 0x1258, type: .rodata, name: game/unk_8002B3F4, linker_section: .rodata.auto_pilot_label}
@@ -147,6 +147,7 @@ segments:
       # Absolute-addressed player helpers begin here.
       - [0x1AD60, c, game/unk_8002A560]
       - [0x1BBF4, c, game/unk_8002B3F4]
+      - [0x20618, c, game/unk_8002B3F4_tail]
       - [0x39FB8, c, game/unk_800497B8]
       - [0x60A74, c, game/unk_80070274]
       - [0x6C69C, c, game/unk_8007BE9C]
@@ -728,14 +729,16 @@ segments:
       - {start: 0x12B8DC, type: .data, name: game/unk_8002B3F4, linker_section: .data.player_sound_variants}
       - [0x12B8E4, data, 12B8E4]
       - {start: 0x12B914, type: .data, name: game/unk_8002B3F4, linker_section: .data.falling_paired_visual_animation}
-      - [0x12B91A, data, falling_paired_visual_animation_tail]
+      - [0x12B91A, pad]
       - {start: 0x12B91C, type: .data, name: game/unk_8002B3F4, linker_section: .data.result_icon_palettes}
       - [0x12B920, data, 12B920]
-      - [0x12B956, pad]
+      - {start: 0x12B954, type: .data, name: game/unk_8002B3F4, linker_section: .data.menu_sprite_palettes_prefix}
       - {start: 0x12B958, type: .data, name: game/unk_8002B3F4, linker_section: .data.menu_sprite_palettes}
       - [0x12B96C, data, 12B96C]
       - {start: 0x12B980, type: .sdata, name: game/unk_8002B3F4, linker_section_order: .data}
       - [0x12B984, data, 12B984]
+      - {start: 0x12B9AC, type: .data, name: game/unk_8002B3F4, linker_section: .data.player_dual_resource_effect_frame}
+      - [0x12B9B4, data, 12B9B4]
       - {start: 0x12B9D4, type: .data, name: game/unk_8002B3F4, linker_section: .data.finish_slot_state}
       - [0x12B9D6, pad]
       - {start: 0x12B9D8, type: .sdata, name: game/unk_800497B8, linker_section_order: .data}

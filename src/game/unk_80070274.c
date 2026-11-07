@@ -559,10 +559,10 @@ void moveTaskChildrenWithSpacing(s32 mode, GameTask *task, s32 x, s32 y, s32 spe
         }
         movement = (Movement2D *)&D_800D9504[children[i].task->resource14];
         if (delay == -1000) {
-            func_80070F10(movement, x + ((state->spacingX * i) << 12),
+            configureMovement2D(movement, x + ((state->spacingX * i) << 12),
                            y + ((state->spacingY * i) << 12), speedX, speedY, delay);
         } else {
-            func_80070F10(movement, x + ((state->spacingX * i) << 12),
+            configureMovement2D(movement, x + ((state->spacingX * i) << 12),
                            y + ((state->spacingY * i) << 12), speedX, speedY, delay * i);
         }
     }

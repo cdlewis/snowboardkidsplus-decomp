@@ -221,7 +221,6 @@ void func_80099880(void);
 void func_800A0FDC(void);
 void func_800A1774(TextSequenceResource *resource);
 void func_80092A50(void);
-void initializeMode1RacePlayers(void);
 void prepareRaceResourcesIfSelectionChanged(void);
 void SetFogNearFar(s32 near, s32 far, s32 h);
 void func_800A0EE8(void);
@@ -1198,7 +1197,7 @@ void initializeTaskPlayerCamera(void) {
     cameras[D_8013AE88->data18].yaw = D_8013B0D8->unk110;
     cameras[D_8013AE88->data18].pitch = 0;
     cameras[D_8013AE88->data18].unk18 = D_8013B0D8->unk92E;
-    func_8003E050(D_8013AE88->data18);
+    updatePlayerCameraPosition(D_8013AE88->data18);
     clampPlayerCameraHeight(D_8013AE88->data18);
     cameras[D_8013AE88->data18].unk10 = -0x230;
     setCurrentTaskCallback(updateTaskViewAndCheckPlayerLimit);
