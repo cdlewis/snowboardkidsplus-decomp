@@ -363,22 +363,22 @@ void updateCdRequestQueue(void) {
             uploadTimArchive(gCdRequests[index].destination, (s16 *)gCdRequests[index].unk_18);
             break;
         case 3:
-            loadSoundBank(0, gCdRequests[index].destination, (u8 *)0x80180000);
+            loadSoundBank(0, gCdRequests[index].destination, DAT_SCRATCH);
             break;
         case 4:
-            loadSoundBank(1, gCdRequests[index].destination, (u8 *)0x80180000);
+            loadSoundBank(1, gCdRequests[index].destination, DAT_SCRATCH);
             break;
         case 5:
-            loadSoundBank(2, gCdRequests[index].destination, (u8 *)0x80180000);
+            loadSoundBank(2, gCdRequests[index].destination, DAT_SCRATCH);
             break;
         case 6:
-            loadSoundBank(3, gCdRequests[index].destination, (u8 *)0x80180000);
+            loadSoundBank(3, gCdRequests[index].destination, DAT_SCRATCH);
             break;
         case 7:
-            loadSoundBank(4, gCdRequests[index].destination, (u8 *)0x80180000);
+            loadSoundBank(4, gCdRequests[index].destination, DAT_SCRATCH);
             break;
         case 8:
-            loadSoundBank(5, gCdRequests[index].destination, (u8 *)0x80180000);
+            loadSoundBank(5, gCdRequests[index].destination, DAT_SCRATCH);
             break;
         case 9:
             openMusicSequence(2, gCdRequests[index].destination);

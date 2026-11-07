@@ -157,8 +157,6 @@ s16 getTaskResourceAdjustedGroupedIndex(s16 value, GameTask *task, s16 index);
 
 void copyIndexedTaskImagesToVram(s16 index);
 
-void finishMusicTaskAtDeadline(void);
-
 void resetStateAndBeginResourceLoadTransition(u8 requestLoad);
 
 #if defined(TASK_FLAGS_ABSOLUTE_ADDRESSING)

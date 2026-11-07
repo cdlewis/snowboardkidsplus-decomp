@@ -1,3 +1,4 @@
+#include "game/io/dat_resources.h"
 #include "card_movie_internal.h"
 
 MovieDecodeState gMovieDecodeState __attribute__((section(".bss.movie_decode_state")));
@@ -5,11 +6,11 @@ MovieDecodeState gMovieDecodeState __attribute__((section(".bss.movie_decode_sta
 INCLUDE_ASM("asm/nonmatchings/io/movie_stream", func_80019D3C);
 
 void initMovieDecodeState(MovieDecodeState *state, s16 x0, s16 y0, s16 x1, s16 y1) {
-    state->vlcBuffers[0] = (u32 *)0x801A1000;
-    state->vlcBuffers[1] = (u32 *)0x801C9000;
+    state->vlcBuffers[0] = MOVIE_VLC_BUFFER_0;
+    state->vlcBuffers[1] = MOVIE_VLC_BUFFER_1;
     state->vlcBufferIndex = 0;
-    state->imageBuffers[0] = (u32 *)0x801F1000;
-    state->imageBuffers[1] = (u32 *)0x801F4000;
+    state->imageBuffers[0] = MOVIE_IMAGE_BUFFER_0;
+    state->imageBuffers[1] = MOVIE_IMAGE_BUFFER_1;
     state->imageBufferIndex = 0;
     state->frames[0].x = x0;
     state->frames[0].y = y0;
@@ -25,7 +26,7 @@ void initMovieDecodeState(MovieDecodeState *state, s16 x0, s16 y0, s16 x1, s16 y
 void startMovieStream(CdlLOC *location, DecDCCb outputCallback) {
     DecDCTReset(0);
     DecDCToutCallback(outputCallback);
-    StSetRing((u8 *)0x80180000, 32);
+    StSetRing(DAT_SCRATCH, 32);
     StSetStream(1, 1, -1, 0, 0);
     startMovieCdRead(location);
 }
@@ -61,7 +62,7 @@ s32 decodeNextMovieFrame(MovieDecodeState *state) {
         frame = getNextMovieStreamFrame(state);
         if (frame != 0) {
             state->vlcBufferIndex = !state->vlcBufferIndex;
-            DecDCTvlc2(frame, state->vlcBuffers[state->vlcBufferIndex], (u16 *)0x80190000);
+            DecDCTvlc2(frame, state->vlcBuffers[state->vlcBufferIndex], MOVIE_VLC_TABLE);
             StFreeRing(frame);
             return 0;
         }

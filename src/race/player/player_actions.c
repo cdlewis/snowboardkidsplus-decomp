@@ -632,9 +632,9 @@ INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002E644);
 INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002EA0C);
 
 void loadCurrentPlayerModelBlock(void) {
-    u32 *offsets = (u32 *)0x8017D004;
-    u8 *archive = (u8 *)0x8017D000;
-    u32 (*buffers)[512] = (u32 (*)[512])0x8017B000;
+    u32 *offsets = DAT_STARTUP_MODELS->offsets;
+    u8 *archive = (u8 *)DAT_STARTUP_MODELS;
+    u32 (*buffers)[512] = DAT_PLAYER_MODEL_BLOCKS;
     u32 i = 0;
     u16 player = D_8013AE88->data18;
     u32 *dest;
@@ -650,7 +650,7 @@ void loadCurrentPlayerModelBlock(void) {
     }
     GsMapModelingData((u32 *)((u32)model | 4));
     {
-        u32 (*largeBuffers)[4096] = (u32 (*)[4096])0x8016B000;
+        u32 (*largeBuffers)[4096] = DAT_PLAYER_MODEL_BUFFERS;
         i = 3;
         dest = model;
         model = largeBuffers[D_8013AE88->data18];

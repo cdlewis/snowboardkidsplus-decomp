@@ -1,6 +1,6 @@
 drawProjectedIndexedTexturedGouraudQuad = 0x8005801C; // type:func
 drawProjectedIndexedLitTexturedGouraudTriangle = 0x80056F90; // type:func
-setTextEntryMusicTask = 0x800A73BC; // type:func
+setSceneMusicEventTask = 0x800A73BC; // type:func
 drawProjectedIndexedGouraudQuad = 0x80057AC0; // type:func
 drawProjectedIndexedColoredLitGouraudTriangle = 0x800567F4; // type:func
 drawProjectedIndexedLitGouraudTriangle = 0x80056034; // type:func
@@ -161,7 +161,7 @@ isCdCommandQueueIdle = 0x800137E0; // type:func
 resetPendingCdRequests = 0x80013ED8; // type:func
 
 unpackPsxColor = 0x80051694; // type:func
-signalFlag9WhenTaskCountdownExpires = 0x800A7C8C; // type:func
+finishScenePlaybackExitTask = 0x800A7C8C; // type:func
 
 // Start mode 2 for id 0 with duration 30, then install callback 8002F5F8.
 beginMode2TaskSequence = 0x8002F628; // type:func
@@ -183,7 +183,7 @@ updatePairedStateFlag = 0x8008C4BC; // type:func
 // First player's task callback comparison; callback semantics remain unknown.
 isFirstPlayerUsingCallback26D10 = 0x800442D4; // type:func
 // Find the first list node matching its word key and field at offset 0x04.
-findKeyedListNode = 0x800A5F48; // type:func
+findSceneEvent = 0x800A5F48; // type:func
 
 selectGeometryRecord = 0x8004A6F0; // type:func
 // Copy the selected record halfwords to current player fields 0x116 and 0x11A.
@@ -1101,7 +1101,7 @@ _getctl = 0x800CF1E8; // type:func defined:true
 
 // Game task and audio wrappers recovered through SDK assembly similarity.
 setCurrentTaskCallback = 0x80014B4C; // type:func
-initializeSecondaryResourceTask = 0x800A6A28; // type:func
+initializeSceneImageTask = 0x800A6A28; // type:func
 resetTaskCallbackOnFlag4 = 0x8001E17C; // type:func
 deleteCurrentTask = 0x80014B8C; // type:func
 stopMusicSequence = 0x80017F64; // type:func
@@ -1815,7 +1815,7 @@ resetSelectedRecordStates = 0x8005F6E4; // type:func
 
 copyGlobalFlagState = 0x800898CC; // type:func
 
-resetTextEntryPool = 0x800A5EA4; // type:func
+resetSceneEventPool = 0x800A5EA4; // type:func
 
 setCurrentPlayerFinalPartTranslations = 0x800975FC; // type:func
 
@@ -1885,9 +1885,9 @@ arePositionsWithinXZRange = 0x8002BF3C; // type:func
 resetUnlockMenuAnimation = 0x800A3CE0; // type:func
 
 parseDecimalS16 = 0x800A5DA0; // type:func
-resetTextEntryStates = 0x800A5E0C; // type:func
+resetScenePlaybackStates = 0x800A5E0C; // type:func
 
-initializeLoadedTextEntries = 0x800A6508; // type:func
+initializeLoadedSceneEvents = 0x800A6508; // type:func
 preparePlayerResourcesTask = 0x800A0D10; // type:func
 
 readMemoryCardDirectory = 0x80018F58; // type:func
@@ -1921,7 +1921,7 @@ averageWrappedAngle = 0x80028608; // type:func
 addTextCharacter = 0x8006B2E4; // type:func
 addStretchedTextCharacter = 0x8006B38C; // type:func
 
-findTextEntryInsertionPoint = 0x800A5F90; // type:func
+findSceneEventInsertionPoint = 0x800A5F90; // type:func
 
 startThreeFrameScreenBlend = 0x8001D4C8; // type:func
 
@@ -1979,8 +1979,8 @@ drawTexturedQuadByIndexWithBlend = 0x8006C190; // type:func
 drawInclusiveTexturedQuad = 0x8006C5F4; // type:func
 drawInclusiveTexturedQuadByIndex = 0x8006C70C; // type:func
 
-stopTextSoundVoices = 0x800A7B0C; // type:func
-gTextSoundSlots = 0x8013BE50; // size:0x20 defined:true
+stopSceneSoundVoices = 0x800A7B0C; // type:func
+gSceneSoundSlots = 0x8013BE50; // size:0x20 defined:true
 
 startTaskTransitionWhenFlagAEE8Set = 0x8001CFD0; // type:func
 
@@ -2293,7 +2293,7 @@ waitTaskStatsCountdownAndPlaySound = 0x8003BC18; // type:func
 
 getTaskResourceAdjustedGroupedIndex = 0x800810F0; // type:func
 
-finishMusicTaskAtDeadline = 0x800A7590; // type:func
+finishSceneMusicTaskAtDeadline = 0x800A7590; // type:func
 
 initializeCurrentPlayerState12 = 0x8001F970; // type:func
 
@@ -2397,7 +2397,7 @@ updateThreeFrameScreenBlend = 0x8001D42C; // type:func
 
 updateTaskViewAndCheckPlayerLimit = 0x800A1ECC; // type:func
 
-setSecondaryTextEntryTask = 0x800A6DD0; // type:func
+setSceneTextEventTask = 0x800A6DD0; // type:func
 
 initializeRaceTimeDifferenceDisplay = 0x800338BC; // type:func
 
@@ -2714,10 +2714,10 @@ moveTaskChildrenWithSpacing = 0x80073950; // type:func
 
 createValuePanelTask = 0x8007AA58;
 
-setSecondaryResourceEntryTask = 0x800A68B4; // type:func
-gSecondaryResourceLocations = 0x80132B98; // size:0x1B0 defined:true
-gSecondaryResourceModeOffsets = 0x80132D48; // size:0xC defined:true
-gSecondaryResourceDisplayTask = 0x8013B6C0; // size:0x4 defined:true
+setSceneImageEventTask = 0x800A68B4; // type:func
+gSceneImageSectorRanges = 0x80132B98; // size:0x1B0 defined:true
+gSceneImageModeOffsets = 0x80132D48; // size:0xC defined:true
+gSceneImageDisplayTask = 0x8013B6C0; // size:0x4 defined:true
 
 updateLandedTaskObject = 0x8005E454; // type:func
 
@@ -2748,8 +2748,8 @@ updateExpandingCoordinateEffectTask = 0x80044BC0; // type:func
 drawUppercaseProportionalText = 0x8006F57C; // type:func
 gUppercaseGlyphMetrics = 0x8012EBD0; // type:u8 size:0x34
 
-setTextEntryCdAudioTask = 0x800A7664; // type:func
-gTextEntryCdCommands = 0x80132914; // size:0x1CC
+setSceneCdAudioEventTask = 0x800A7664; // type:func
+gSceneCdCommands = 0x80132914; // size:0x1CC
 
 createPlayerPairedQuadEffectTask = 0x80065818; // type:func
 gPlayerPairedQuadOffsets = 0x8012C8EC; // size:0x20 defined:true
@@ -2824,7 +2824,7 @@ drawNumberSelectionPanel = 0x800A29A4; // type:func
 updateControllerPlaybackUntilFade = 0x800A39AC; // type:func
 gControllerPlaybackDurations = 0x8013283C; // size:0x18
 
-drawSecondaryTextBackgroundTask = 0x800A6CC4; // type:func
+drawSceneImageTask = 0x800A6CC4; // type:func
 
 advanceCurrentPlayerState30TaskOnResult = 0x80026AA8; // type:func
 
@@ -2844,7 +2844,7 @@ initializePlayerSideVisualTask = 0x8004463C; // type:func
 
 initializePlayerParticleHistoryTask = 0x80045B4C; // type:func
 
-beginAudioFadeCountdownTask = 0x800A7B9C; // type:func
+beginScenePlaybackExitTask = 0x800A7B9C; // type:func
 
 updateCurrentPlayerState23MotionAndTimer = 0x80024F10; // type:func
 
@@ -2862,7 +2862,7 @@ updateQuadTransitionSequenceTask = 0x80069E54; // type:func
 
 drawWrappedText8x8 = 0x8006D134; // type:func
 
-initializeTextPlaybackTask = 0x800A6548; // type:func
+initializeScenePlaybackTask = 0x800A6548; // type:func
 
 queueOffsetScreenCopySprites = 0x80052314; // type:func
 gScreenCopyPlusBuffer1 = 0x80124F14; // size:0x30
@@ -3070,7 +3070,7 @@ initializeCurrentPlayerModelObjects = 0x8001E244; // type:func
 gPlayerRootTextureOffsets = 0x80120674; // size:0x18 defined:true
 gPlayerPartTextureOffsets = 0x8012068C; // size:0x18 defined:true
 
-updateTextEntryCdAudioTask = 0x800A77B0; // type:func
+updateSceneCdAudioTask = 0x800A77B0; // type:func
 
 initializeCurrentPlayerTimedEffectState = 0x8001F528; // type:func
 
@@ -3094,9 +3094,9 @@ updatePlayerSideVisualTask = 0x80044768; // type:func
 
 updateCurrentPlayerMotionEffects = 0x8001EC88; // type:func
 
-processTextEntrySound = 0x800A7928; // type:func
-gTextOneShotSoundKey = 0x8013B6C4; // size:0x2 defined:true
-gTextOneShotVoice = 0x8013B6C6; // size:0x1 defined:true
+processSceneSoundEvent = 0x800A7928; // type:func
+gSceneOneShotSoundKey = 0x8013B6C4; // size:0x2 defined:true
+gSceneOneShotVoice = 0x8013B6C6; // size:0x1 defined:true
 
 updateCollectibleTask = 0x8005DF98; // type:func
 
@@ -3255,7 +3255,7 @@ gFadingTextGlyphBanks = 0x80010D90; // size:0x10
 
 drawHalfStepSpriteBar = 0x8006E5E0; // type:func
 
-updateSecondaryResourceTask = 0x800A6A8C; // type:func
+updateSceneImageTask = 0x800A6A8C; // type:func
 
 finishControllerPlaybackTransition = 0x800A3AA4; // type:func
 D_8013B562 = 0x8013B562; // size:0x1
@@ -3277,7 +3277,7 @@ updateCurrentPlayerTimedMotion = 0x800273D4; // type:func
 
 finishUnlockMenuTask = 0x800A46E0; // type:func
 
-updateTextPlaybackTask = 0x800A6684; // type:func
+updateScenePlaybackTask = 0x800A6684; // type:func
 
 updateCurrentPlayerState25MotionAndTimer = 0x800252CC; // type:func
 updatePlayerModelPreviewTask = 0x80097C2C; // type:func
@@ -3286,3 +3286,39 @@ drawLapTimeHud = 0x800435AC; // type:func
 gLapTimeLabel = 0x80010C24; // size:0xC
 gLapTimeFormat = 0x80010C30; // size:0x14
 gBestLapLabel = 0x80010C50; // size:0x10
+
+// Loaded resource RAM views: overlapping lifetimes, no executable storage.
+gDatScratch = 0x80180000; // size:0x80000 absolute:true extract:false
+gDatStartupModels = 0x8017D000; // size:0x2800 absolute:true extract:false
+gDatStartupTextures = 0x801F0000; // size:0x9000 absolute:true extract:false
+gDatPlayerModels = 0x8016B000; // size:0x10000 absolute:true extract:false
+gDatPlayerModelBlocks = 0x8017B000; // size:0x2000 absolute:true extract:false
+gDatBackgroundMap = 0x80180800; // size:0x800 absolute:true extract:false
+gDatBackgroundTextureFirst = 0x80181000; // size:0x6800 absolute:true extract:false
+gDatBackgroundTextureSecond = 0x80187800; // size:0x2000 absolute:true extract:false
+gDatTextureArchive = 0x80189800; // size:0x46800 absolute:true extract:false
+gDatSoundHeader0 = 0x8015E800; // size:0x1800 absolute:true extract:false
+gDatSoundHeader1 = 0x80160000; // size:0x1800 absolute:true extract:false
+gDatSoundHeader2 = 0x80161800; // size:0x2000 absolute:true extract:false
+gDatMusicSequence = 0x80163800; // size:0x2000 absolute:true extract:false
+gDatCourseFirst = 0x801C0000; // size:0x8800 absolute:true extract:false
+gDatCourseSecond = 0x801C8800; // size:0x2B000 absolute:true extract:false
+gDatCourseOptional = 0x801F0800; // size:0x2800 absolute:true extract:false
+gDatSceneImageBuffer = 0x80184060; // size:0x13000 absolute:true extract:false
+gDatIndexedResource = 0x801F2080; // size:0x800 absolute:true extract:false
+gDatGridModels = 0x801BC800; // size:0x10000 absolute:true extract:false
+gDatGridTextures = 0x801D0800; // size:0x10000 absolute:true extract:false
+gMovieVlcBuffer0 = 0x801A1000; // size:0x28000 absolute:true extract:false
+gMovieVlcBuffer1 = 0x801C9000; // size:0x28000 absolute:true extract:false
+gMovieImageBuffer0 = 0x801F1000; // size:0x3000 absolute:true extract:false
+gMovieImageBuffer1 = 0x801F4000; // size:0x3000 absolute:true extract:false
+gMovieVlcTable = 0x80190000; // size:0x11000 absolute:true extract:false
+gSaveRecordWorkspace = 0x801E0000; // size:0x810 absolute:true extract:false
+
+// Scene timeline records and text-block preparation.
+gFreeSceneEvents = 0x8013B5D0; // size:0x4 defined:true
+gActiveSceneEvents = 0x8013B5D4; // size:0x4 defined:true
+parseLoadedSceneTextBlocks = 0x800A5AFC; // type:func
+initializeSceneEvent = 0x800A5F00; // type:func
+initializeScenePlaybackResourcesTask = 0x800A624C; // type:func
+updateSceneTextTask = 0x800A6E88; // type:func

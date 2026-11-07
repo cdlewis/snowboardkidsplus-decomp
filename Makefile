@@ -39,7 +39,7 @@ COMPARISON ?= 0
 NON_MATCHING ?= 0
 EXTRA_CC_FLAGS ?=
 
-CPP_FLAGS := -nostdinc -undef -D__GNUC__=2 -D__OPTIMIZE__ -Dmips -D__mips__ -D__psx__ -DPSX -DINCLUDE_ASM_USE_MACRO_INC=1 -I$(ROOT)/include
+CPP_FLAGS := -nostdinc -undef -D__GNUC__=2 -D__OPTIMIZE__ -Dmips -D__mips__ -D__psx__ -DPSX -DINCLUDE_ASM_USE_MACRO_INC=1 -I$(ROOT)/include -I$(ROOT)/build/include
 AS_FLAGS := -EL -march=r3000 -mtune=r3000 -I $(ROOT)/include -I $(ROOT)/src -I $(ROOT)/build
 
 include config/compiler.mk
@@ -69,6 +69,7 @@ endif
 # restarts Make, discovering newly generated assembly after a clean checkout.
 SPLIT_INPUTS := snowboardkidsplus.yaml symbol_addrs.txt reloc_addrs.txt disc/SLPS_018.23 Makefile
 SPLIT_OUTPUTS := linkers/slps_018.23.ld linkers/slps_018.23.d linkers/undefined_funcs_auto.txt linkers/undefined_syms_auto.txt include/include_asm.h include/macro.inc include/labels.inc include/gte_macros.inc
+DAT_METADATA := build/dat/snb_dat.yaml build/dat/runtime.ld build/include/game/io/dat_entries.h
 .PHONY: all verify objects all-objects expected split extract clean hooks report badges scratch print-settings FORCE
 ifeq ($(COMPARISON),1)
 ifeq ($(abspath $(BUILD_DIR)),$(ROOT)/build)
@@ -99,13 +100,22 @@ $(SPLIT_OUTPUTS) &: $(SPLIT_INPUTS)
 	sed -i -E 's/(\.a):[^[:space:]:]+/\1/g' linkers/slps_018.23.d
 	@touch $(SPLIT_OUTPUTS)
 
-split: $(SPLIT_OUTPUTS)
+$(DAT_METADATA) &: tools/snb_dat.py config/dat_resources.yaml symbol_addrs.txt disc/SNB/SNB.DAT
+	$(PY) tools/snb_dat.py generate
+	@touch $(DAT_METADATA)
+
+# Separate target binary, generated assets and cache; never links into the EXE.
+.PHONY: dat-split
+dat-split: $(DAT_METADATA)
+	$(SPLAT) split build/dat/snb_dat.yaml --modes bin > build/dat/split.log 2>&1 || { tail -n 30 build/dat/split.log; exit 1; }
+
+split: $(SPLIT_OUTPUTS) dat-split
 
 extract:
 	$(PRINTF) "[$(CYAN)extract $(NO_COL)]  Extracting disc executable and SNB/SNB.DAT\n"
 	$(PY) tools/extract_iso.py "Snobow Kids Plus (Japan)/Snobow Kids Plus (Japan).bin" disc
 
-disc/SLPS_018.23:
+disc/SLPS_018.23 disc/SNB/SNB.DAT &:
 	$(MAKE) extract
 
 # Invalidate objects when resolved environment/command-line settings change.
@@ -149,7 +159,7 @@ endef
 $(foreach library,$(SDK_NAMES),$(eval $(call sdk_archive_rule,$(library))))
 
 define c_rule
-$(call unit_output,$(1)).i: $(call unit_source,$(1)) Makefile config/compiler.mk $(BUILD_DIR)/.config
+$(call unit_output,$(1)).i: $(call unit_source,$(1)) Makefile config/compiler.mk $(BUILD_DIR)/.config build/include/game/io/dat_entries.h
 	@mkdir -p $$(@D)
 	$(PRINTF) "[$(GREEN)   c    $(NO_COL)]  $(call unit_source,$(1))\n"
 	$(CPP) $(CPP_FLAGS) -I$(ROOT)/$(dir $(1)) -MMD -MP -MT $$@ -MF $(call unit_output,$(1)).d $(abspath $(call unit_source,$(1))) -o $$@
@@ -182,18 +192,21 @@ $(BUILD_DIR)/src/%.o: src/%.s Makefile config/compiler.mk $(BUILD_DIR)/.config
 
 ifneq ($(COMPARISON),1)
 # PS-X EXE combines code and mutable data in one load image without page permissions.
-build/slps_018.23.elf: $(C_OBJECTS) $(HASM_OBJECTS) $(ASM_OBJECTS) config/symbol_aliases.ld linkers/slps_018.23.ld linkers/undefined_funcs_auto.txt linkers/undefined_syms_auto.txt
+build/slps_018.23.elf: $(C_OBJECTS) $(HASM_OBJECTS) $(ASM_OBJECTS) config/symbol_aliases.ld build/dat/runtime.ld linkers/slps_018.23.ld linkers/undefined_funcs_auto.txt linkers/undefined_syms_auto.txt
 	$(PRINTF) "[$(PINK) linker $(NO_COL)]  Linking $@\n"
-	$(LD) -EL -nostdlib --no-warn-rwx-segments -T linkers/slps_018.23.ld -T linkers/undefined_funcs_auto.txt -T linkers/undefined_syms_auto.txt -T config/symbol_aliases.ld -Map build/slps_018.23.map -o $@ --whole-archive --start-group $(SDK_LIBRARIES) --end-group --no-whole-archive
+	$(LD) -EL -nostdlib --no-warn-rwx-segments -T linkers/slps_018.23.ld -T linkers/undefined_funcs_auto.txt -T linkers/undefined_syms_auto.txt -T config/symbol_aliases.ld -T build/dat/runtime.ld -Map build/slps_018.23.map -o $@ --whole-archive --start-group $(SDK_LIBRARIES) --end-group --no-whole-archive
 
 build/slps_018.23.exe: build/slps_018.23.elf
 	$(PRINTF) "[$(CYAN) objcpy $(NO_COL)]  $<\n"
 	$(OBJCOPY) -O binary $< $@
 
-verify: build/slps_018.23.exe
+verify: build/slps_018.23.exe dat-split
 	$(PRINTF) "[$(GREEN) verify $(NO_COL)]  Checking executable SHA1\n"
 	$(PY) tools/verify_image.py
 	$(PY) tools/psyq_sdk.py --verify
+	$(PY) tools/snb_dat.py map
+	$(PY) tools/snb_dat.py pack
+	$(PY) tools/snb_dat.py verify
 
 endif
 

@@ -1133,12 +1133,12 @@ void initializeTimedSpritePresentation(void) {
 
 void loadTimedSpritePresentationResources(void) {
     setSecondaryDisplayTaskMode(1);
-    queueCdSectorCommand(1, 0xC56, 0x11, (void *)0x80180000, 0);
-    queueCdSectorCommand(1, 0xC67, 0x11, (void *)0x80180000, 0);
-    queueCdSectorCommand(1, 0x12E5, 0x26, (void *)0x80180000, 0);
-    queueCdSectorCommand(1, 0x130B, 0x26, (void *)0x80180000, 0);
+    queueCdSectorCommand(1, DAT_ENTRY_177_SECTOR, DAT_ENTRY_177_SECTOR_COUNT, DAT_SCRATCH, 0);
+    queueCdSectorCommand(1, DAT_ENTRY_178_SECTOR, DAT_ENTRY_178_SECTOR_COUNT, DAT_SCRATCH, 0);
+    queueCdSectorCommand(1, DAT_ENTRY_232_SECTOR, DAT_ENTRY_232_SECTOR_COUNT, DAT_SCRATCH, 0);
+    queueCdSectorCommand(1, DAT_ENTRY_233_SECTOR, DAT_ENTRY_233_SECTOR_COUNT, DAT_SCRATCH, 0);
     DrawSync(0);
-    queueCdSectorCommand(0, 0x1EF, 0xE3, (void *)0x80180000, 0);
+    queueCdSectorCommand(0, DAT_PLAYER_ANIMATION_SECTOR, DAT_PLAYER_ANIMATION_SECTOR_COUNT, DAT_SCRATCH, 0);
     setCurrentTaskCallback(initializeTimedSpritePresentation);
     D_8013AE88->unk10 |= 2;
 }

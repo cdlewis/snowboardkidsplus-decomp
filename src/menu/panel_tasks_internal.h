@@ -2,7 +2,7 @@
 
 /* Original unit addressing policy; include before public headers. */
 #include "common.h"
-#include "game/text/text_sound_slots.h"
+#include "game/scene/scene_sound_slots.h"
 #include "game/io/controller.h"
 #include "game/io/controller_effects.h"
 #include "game/save/save_data.h"
@@ -25,7 +25,7 @@
 #include "game/race/player/race_player.h"
 #include "game/race/camera/race_camera.h"
 #include "game/graphics/coordinate.h"
-#include "game/text/text_entries.h"
+#include "game/scene/scene_events.h"
 #include "game/engine/task.h"
 #include "game/menu/movement.h"
 #include "psx/libgpu.h"
@@ -33,11 +33,11 @@
 #include "game/menu/menu_selection_state.h"
 #include "game/graphics/coordinate.h"
 #include "game/engine/linear_random.h"
-#include "game/text/text_task_types.h"
-#include "game/audio/text_audio_types.h"
+#include "game/scene/scene_task_types.h"
+#include "game/scene/scene_audio_types.h"
 #include "game/menu/number_selection_types.h"
 
-#define INDEXED_SECTOR_READ_DESTINATION ((void *)0x801F2080)
+#define INDEXED_SECTOR_READ_DESTINATION DAT_INDEXED_RESOURCE
 
 typedef struct PaletteBurstResource {
     s16 x, y, z, unk06;
@@ -185,8 +185,6 @@ void func_800A0EE8(void);
 void queueTaskModeSectorRead(void);
 void queueModeIndexedSectorRead(s16 mode, s16 index);
 void initializeControllerPlaybackRaceTask(void);
-void func_800A5AFC(void);
-void initializeTextPlaybackTask(void);
 void func_8009B700(void);
 void func_8009BDB8(void);
 void func_8009CA90(void);

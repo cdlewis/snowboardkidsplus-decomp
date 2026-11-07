@@ -28,12 +28,13 @@ def build_input(path):
 
 def checksum(path, data):
     source = data.decode("utf-8")
-    if path == "tools/build.py":
+    if path in ("tools/build.py", "tools/snb_dat.py"):
+        name = "TARGET_SHA1" if path == "tools/build.py" else "DAT_SHA1"
         for node in ast.parse(source).body:
             if isinstance(node, ast.Assign) and any(
-                    isinstance(t, ast.Name) and t.id == "TARGET_SHA1" for t in node.targets):
+                    isinstance(t, ast.Name) and t.id == name for t in node.targets):
                 return ast.literal_eval(node.value)
-        raise ValueError("tools/build.py must retain TARGET_SHA1")
+        raise ValueError(f"{path} must retain {name}")
     values = re.findall(r"^\s*sha1:\s*([0-9a-fA-F]{40})\s*$", source, re.M)
     if len(values) != 1:
         raise ValueError(f"expected one SHA1 in {path}")
@@ -60,6 +61,9 @@ def check_inputs(root):
         after = checksum(path, git(root, "show", f":{path}"))
         if before != after:
             raise ValueError(f"expected checksum changed in {path}; validation cannot accept a new target")
+    dat_source = git(root, "show", ":tools/snb_dat.py")
+    if checksum("tools/snb_dat.py", dat_source) != committed_dat_sha1(root):
+        raise ValueError("expected DAT checksum changed; validation cannot accept a new target")
     return git(root, "write-tree").strip()
 
 
@@ -75,12 +79,33 @@ def verify_image(root):
         raise ValueError("rebuilt executable differs from disc/SLPS_018.23")
 
 
+def committed_dat_sha1(root):
+    exists = subprocess.run(["git", "cat-file", "-e", "HEAD:tools/snb_dat.py"], cwd=root,
+                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode == 0
+    if exists:
+        return checksum("tools/snb_dat.py", git(root, "show", "HEAD:tools/snb_dat.py"))
+    # Bootstrap protection until the DAT pipeline's first commit.
+    return "226b3cd476010a340455b9720b2e37dcd94b7933"
+
+
+def verify_dat(root):
+    expected = committed_dat_sha1(root)
+    original = (root / "disc/SNB/SNB.DAT").read_bytes()
+    rebuilt = (root / "build/dat/SNB.DAT").read_bytes()
+    for name, data in (("disc/SNB/SNB.DAT", original), ("build/dat/SNB.DAT", rebuilt)):
+        if hashlib.sha1(data).hexdigest() != expected:
+            raise ValueError(f"{name}: DAT SHA1 differs from protected checksum {expected}")
+    if rebuilt != original:
+        raise ValueError("rebuilt DAT differs from disc/SNB/SNB.DAT")
+
+
 def validate(root):
     from build_and_verify import build_and_verify
 
     tree = check_inputs(root)
     build_and_verify(root)
     verify_image(root)
+    verify_dat(root)
     if check_inputs(root) != tree:
         raise ValueError("the staged snapshot changed during validation; retry the commit")
     print("[pre-commit] Staged inputs validated; full executable matches.", flush=True)

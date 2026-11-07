@@ -1,3 +1,4 @@
+#include "game/text/text_layout.h"
 #include "../menu/selection_tasks_internal.h"
 
 void func_800A5AD4(void) {
@@ -15,7 +16,7 @@ void func_800A5AEC(void) {
 void func_800A5AF4(void) {
 }
 
-INCLUDE_ASM("asm/nonmatchings/text/text_entries", func_800A5AFC);
+INCLUDE_ASM("asm/nonmatchings/scene/scene_events", parseLoadedSceneTextBlocks);
 
 s16 parseDecimalS16(const u8 *text, s16 *result) {
     s16 value = 0;
@@ -30,7 +31,7 @@ s16 parseDecimalS16(const u8 *text, s16 *result) {
     return count;
 }
 
-void resetTextEntryStates(TextControlState *control, TextResourceState *resource) {
+void resetScenePlaybackStates(SceneControlState *control, SceneChannelState *resource) {
     s16 i;
     if (control != NULL) {
         control->unk00 = 0;
@@ -50,32 +51,32 @@ void resetTextEntryStates(TextControlState *control, TextResourceState *resource
     }
 }
 
-void resetTextEntryPool(void) {
-    TextEntry *previous = NULL;
-    TextEntry *entry = (TextEntry *)0x80180008;
+void resetSceneEventPool(void) {
+    SceneEvent *previous = NULL;
+    SceneEvent *entry = DAT_SCENE_WORKSPACE->entries;
     u16 i;
-    D_8013B5D0 = entry;
+    gFreeSceneEvents = entry;
     for (i = 0; i < 295; i++) {
         entry->previous = previous;
         previous = entry;
-        previous->unk04 = 0;
-        previous->unk06 = 0;
-        previous->unk08 = 0;
-        previous->unk0A = 0;
+        previous->type = 0;
+        previous->resourceId = 0;
+        previous->mode = 0;
+        previous->duration = 0;
         previous->next = previous + 1;
         entry++;
     }
     entry[-1].next = NULL;
-    D_8013B5D4 = NULL;
+    gActiveSceneEvents = NULL;
 }
 
-INCLUDE_ASM("asm/nonmatchings/text/text_entries", func_800A5F00);
+INCLUDE_ASM("asm/nonmatchings/scene/scene_events", initializeSceneEvent);
 
-TextEntry *findKeyedListNode(u32 key, u32 value) {
-    TextEntry *node = D_8013B5D4;
-    TextEntry *result = NULL;
+SceneEvent *findSceneEvent(u32 tick, u32 type) {
+    SceneEvent *node = gActiveSceneEvents;
+    SceneEvent *result = NULL;
     while (node != NULL) {
-        if (key == (u32)node->text && value == node->unk04) {
+        if (tick == node->tick && type == node->type) {
             result = node;
             break;
         }
@@ -85,13 +86,13 @@ TextEntry *findKeyedListNode(u32 key, u32 value) {
     return result;
 }
 
-TextEntry *findTextEntryInsertionPoint(u32 key, u32 value) {
-    TextEntry *node = D_8013B5D4;
+SceneEvent *findSceneEventInsertionPoint(u32 tick, u32 type) {
+    SceneEvent *node = gActiveSceneEvents;
     while (node != NULL) {
-        if (key == (u32)node->text && value < node->unk04) {
+        if (tick == node->tick && type < node->type) {
             break;
         }
-        if (key < (u32)node->text) {
+        if (tick < node->tick) {
             break;
         }
         node = node->next;

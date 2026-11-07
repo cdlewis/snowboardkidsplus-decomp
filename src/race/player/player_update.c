@@ -22,6 +22,7 @@
 #include "game/menu/selected_records.h"
 #include "psx/libsnd.h"
 #include "player_update_internal.h"
+#include "game/io/dat_resources.h"
 
 
 typedef struct PlayerVariantAttributeTable {
@@ -692,7 +693,7 @@ void initializeCurrentPlayerModelAndHeight(void) {
     player->unk0B8 = 0;
     player->unk962 = -1;
     D_8013B0D8 = player;
-    initializeCurrentPlayerModelObjects(((u32 (*)[4096])0x8016B000)[D_8013AE88->data18]);
+    initializeCurrentPlayerModelObjects((DAT_PLAYER_MODEL_BUFFERS)[D_8013AE88->data18]);
     if (!D_8013AFD8 && !D_8013AFD9) {
         D_8013B0D8->unk92E = 0;
     } else {

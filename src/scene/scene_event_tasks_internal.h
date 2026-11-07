@@ -2,7 +2,7 @@
 
 /* Original unit addressing policy; include before public headers. */
 #include "common.h"
-#include "game/text/text_sound_slots.h"
+#include "game/scene/scene_sound_slots.h"
 #include "game/io/controller.h"
 #include "game/io/controller_effects.h"
 #include "game/save/save_data.h"
@@ -22,7 +22,7 @@
 #define TASK_ABSOLUTE_ADDRESSING
 #define TASK_FLAGS_ABSOLUTE_ADDRESSING
 #include "game/race/player/race_player.h"
-#include "game/text/text_entries.h"
+#include "game/scene/scene_events.h"
 #include "game/engine/task.h"
 #include "game/menu/selected_sprite.h"
 #include "game/menu/movement.h"
@@ -31,60 +31,44 @@
 #include "psx/libsn.h"
 
 #include "../race/race_internal.h"
-#include "game/text/text_task_types.h"
-#include "game/audio/text_audio_types.h"
+#include "game/scene/scene_task_types.h"
+#include "game/scene/scene_audio_types.h"
 #include "game/graphics/draw_mode_sprite.h"
 
 #define DRAW_MODE_COMMAND_HIGH 0xE100
 #define TEXTURED_SPRITE_CODE 0x64
 
-typedef struct SecondaryOwner {
+typedef struct SceneImageOwner {
     u8 unk00[0x24];
     u32 tick;
     u16 flags;
-    u16 resource;
-    GameTask *task;
+    u16 imageId;
+    GameTask *imageTask;
     u8 unk30[0x10];
     u32 completionTick;
-} SecondaryOwner;
+} SceneImageOwner;
 
-typedef struct AudioTransitionState {
+typedef struct SceneExitState {
     u8 unk00[0x2C];
-    s32 unk2C[5];
-} AudioTransitionState;
+    GameTask *tasks[5];
+} SceneExitState;
 
-extern s16 gTextEntryCdCommands[230] __attribute__((section(".data.text_entry_cd_commands")));
+extern s16 gSceneCdCommands[230] __attribute__((section(".data.scene_cd_commands")));
 
-extern CdResourceLocation gSecondaryResourceLocations[108] __attribute__((section(".data.secondary_resource_tables")));
-extern u8 gSecondaryResourceModeOffsets[12] __attribute__((section(".data.secondary_resource_tables")));
+extern CdResourceLocation gSceneImageSectorRanges[108] __attribute__((section(".data.scene_image_sector_ranges")));
+extern u8 gSceneImageModeOffsets[12] __attribute__((section(".data.scene_image_sector_ranges")));
 
-extern GameTask *gSecondaryResourceDisplayTask __attribute__((section(".sdata.secondary_resource_display_task")));
+extern GameTask *gSceneImageDisplayTask __attribute__((section(".sdata.scene_image_display_task")));
 
 extern u8 D_8013AF3A __attribute__((section(".data")));
 extern char D_80012310[];
 extern char D_8001232C[];
 extern char D_8013B5C8[];
-extern u16 gTextOneShotSoundKey;
-extern u8 gTextOneShotVoice;
 
 void func_800187B8(u8 voice);
 void func_8001814C(void);
-void func_800A6E88(void);
-void updateTextEntryCdAudioTask(void);
-void signalFlag9WhenTaskCountdownExpires(void);
 int printf(const char *format, ...);
 
-void setSecondaryResourceEntryTask(TextEntry *entry);
-void initializeSecondaryResourceTask(void);
-void updateSecondaryResourceTask(void);
-void drawSecondaryTextBackgroundTask(void);
-void setSecondaryTextEntryTask(TextEntry *entry);
-void setTextEntryMusicTask(TextEntry *entry);
-void finishMusicTaskAtDeadline(void);
-void setTextEntryCdAudioTask(TextEntry *entry);
-void processTextEntrySound(TextEntry *entry);
-void stopTextSoundVoices(void);
-void beginAudioFadeCountdownTask(void);
 void startUnlockNotification(s16 index);
 void drawPagedTexturedRectangle(s16 x, s16 y, s16 width, s16 height, s16 tpage,
                    s16 clut, GsOT *ot, u16 depth);

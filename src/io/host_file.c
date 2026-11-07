@@ -1,4 +1,4 @@
-#include "../text/resource_playback_internal.h"
+#include "../scene/scene_event_tasks_internal.h"
 
 int readHostFile(char *path, char *buffer) {
     int length;

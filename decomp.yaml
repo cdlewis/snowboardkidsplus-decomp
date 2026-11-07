@@ -39,6 +39,7 @@ tools:
             - graphics/
             - audio/
             - text/
+            - scene/
             - menu/
             - race/
             - unclassified/

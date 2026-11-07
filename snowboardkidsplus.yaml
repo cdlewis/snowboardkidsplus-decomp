@@ -122,9 +122,9 @@ segments:
       - [0x2A0C, .rodata, menu/selection_tasks]
       - [0x2A30, rodata]
       - [0x2A58, rodata]
-      - [0x2B54, .rodata, text/text_playback]
-      - {start: 0x2B68, type: .rodata, name: text/text_playback, linker_section: .rodata.text_playback_padding}
-      - [0x2B6C, .rodata, text/resource_playback]
+      - [0x2B54, .rodata, scene/scene_playback]
+      - {start: 0x2B68, type: .rodata, name: scene/scene_playback, linker_section: .rodata.scene_playback_padding}
+      - [0x2B6C, .rodata, scene/scene_event_tasks]
       - [0x2B80, lib, libspu, spu, .rdata]
       - [0x2BD0, lib, libsnd, ssopenq, .rdata]
       - [0x2C00, lib, libsnd, seqinit, .rdata]
@@ -212,10 +212,11 @@ segments:
       - [0x93F50, c, io/controller_playback]
       - [0x9443C, c, menu/unlock_menu]
       - [0x95AD8, c, menu/number_adjustment]
-      - [0x962D4, c, text/text_entries]
+      - [0x962D4, c, scene/scene_events]
       - [0x969E0, c, audio/music_sequence]
-      - [0x96D08, c, text/text_playback]
-      - [0x970B4, c, text/resource_playback]
+      - [0x96A4C, c, scene/scene_loading]
+      - [0x96D08, c, scene/scene_playback]
+      - [0x970B4, c, scene/scene_event_tasks]
       - [0x984E8, c, menu/unlock_notification]
       - [0x98784, c, io/host_file]
       - [0x98A04, lib, libmath, divsf3, .text]
@@ -743,10 +744,10 @@ segments:
       - {start: 0x12303C, type: .data, name: io/controller_playback, linker_section: .data.controller_playback_durations}
       - [0x123054, data, 123054]
       - {start: 0x123100, type: .data, name: menu/panel_tasks, linker_section: .data.number_adjustment_arrow}
-      - {start: 0x123114, type: .data, name: text/resource_playback, linker_section: .data.text_entry_cd_commands}
-      - [0x1232E0, data, text_entry_cd_commands_tail]
-      - {start: 0x123398, type: .data, name: text/resource_playback, linker_section: .data.secondary_resource_tables}
-      - [0x123554, data, secondary_resource_tables_tail]
+      - {start: 0x123114, type: .data, name: scene/scene_event_tasks, linker_section: .data.scene_cd_commands}
+      - [0x1232E0, data, scene_cd_commands_tail]
+      - {start: 0x123398, type: .data, name: scene/scene_event_tasks, linker_section: .data.scene_image_sector_ranges}
+      - [0x123554, data, scene_image_sector_ranges_tail]
       - {start: 0x1235BC, type: .data, name: syslib/libmath/ferr, linker_section: .data.math_error}
       - [0x1235C4, lib, libsnd, ssinit, .data]
       - [0x123604, lib, libspu, s_ini, .data]
@@ -881,8 +882,8 @@ segments:
       - {start: 0x12BEA4, type: .sdata, name: race/course/course_objects, linker_section: .sdata.object_sort_saved_stack, linker_section_order: .data}
       - {start: 0x12BEA8, type: .sdata, name: race/course/course_objects, linker_section: .sdata.alternate_object_sort_saved_stack, linker_section_order: .data}
       - [0x12BEAC, data]
-      - {start: 0x12BEC0, type: .sdata, name: text/resource_playback, linker_section: .sdata.secondary_resource_display_task, linker_section_order: .data}
-      - {start: 0x12BEC4, type: .sdata, name: menu/selection_tasks, linker_section: .sdata.text_sound_state, linker_section_order: .data}
+      - {start: 0x12BEC0, type: .sdata, name: scene/scene_event_tasks, linker_section: .sdata.scene_image_display_task, linker_section_order: .data}
+      - {start: 0x12BEC4, type: .sdata, name: menu/selection_tasks, linker_section: .sdata.scene_sound_state, linker_section_order: .data}
 
       - {start: 0x12BEC8, type: .data, name: io/cd_queue, linker_section: .data.cd_search_file}
       - [0x12BEE0, pad]
@@ -949,7 +950,7 @@ segments:
     subsegments:
       - {start: 0x12C000, type: .bss, name: unclassified/menu_8007CC78, linker_section: .bss.state_value_history}
 
-  - name: game_text_sound_slots_bss
+  - name: game_scene_sound_slots_bss
     type: code
     start: 0x12C000
     vram: 0x8013BE50
@@ -957,7 +958,7 @@ segments:
     subalign: 1
     section_order: [".bss"]
     subsegments:
-      - {start: 0x12C000, type: .bss, name: text/text_sound_slots}
+      - {start: 0x12C000, type: .bss, name: scene/scene_sound_slots}
 
   - name: sdk_libsnd_ssinit_bss_common_SsFCALL
     type: code

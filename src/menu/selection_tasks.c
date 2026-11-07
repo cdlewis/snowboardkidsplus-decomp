@@ -1,8 +1,8 @@
 #include "selection_tasks_internal.h"
 
-u16 gTextOneShotSoundKey __attribute__((section(".sdata.text_sound_state"))) = 0;
+u16 gSceneOneShotSoundKey __attribute__((section(".sdata.scene_sound_state"))) = 0;
 
-u8 gTextOneShotVoice __attribute__((section(".sdata.text_sound_state"))) = 0;
+u8 gSceneOneShotVoice __attribute__((section(".sdata.scene_sound_state"))) = 0;
 
 INCLUDE_ASM("asm/nonmatchings/menu/selection_tasks", func_800A1F50);
 

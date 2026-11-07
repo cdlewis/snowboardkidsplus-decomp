@@ -8,20 +8,20 @@ void resetGameOptionState(void) {
 }
 
 void queueBackgroundTextureSectorCommands(void) {
-    queueCdSectorCommand(2, 0x480, 0x4A, (u8 *)0x80180000, 0);
-    queueCdSectorCommand(0, 0xC9B, 1, (u8 *)0x80180000, 0);
-    queueCdSectorCommand(0, 0xC9C, 1, (u8 *)0x80180800, 0);
-    queueCdSectorCommand(0, 0xC78, 13, (u8 *)0x80181000, 0);
-    queueCdSectorCommand(0, 0xC85, 4, (u8 *)0x80187800, 0);
+    queueCdSectorCommand(2, DAT_BACKGROUND_TEXTURES_SECTOR, DAT_BACKGROUND_TEXTURES_SECTOR_COUNT, DAT_SCRATCH, 0);
+    queueCdSectorCommand(0, DAT_BACKGROUND_DEFINITION_SECTOR, DAT_BACKGROUND_DEFINITION_SECTOR_COUNT, DAT_SCRATCH, 0);
+    queueCdSectorCommand(0, DAT_BACKGROUND_MAP_SECTOR, DAT_BACKGROUND_MAP_SECTOR_COUNT, DAT_BACKGROUND_MAP, 0);
+    queueCdSectorCommand(0, DAT_BACKGROUND_TEXTURE_FIRST_SECTOR, DAT_BACKGROUND_TEXTURE_FIRST_SECTOR_COUNT, DAT_BACKGROUND_TEXTURE_FIRST, 0);
+    queueCdSectorCommand(0, DAT_BACKGROUND_TEXTURE_SECOND_SECTOR, DAT_BACKGROUND_TEXTURE_SECOND_SECTOR_COUNT, DAT_BACKGROUND_TEXTURE_SECOND, 0);
 }
 
 void uploadBufferedTexturePair(void) {
-    uploadTimImageWithOffset((u32 *)0x80187800, NULL);
-    uploadTimImageWithOffset((u32 *)0x80181000, NULL);
+    uploadTimImageWithOffset(DAT_BACKGROUND_TEXTURE_SECOND, NULL);
+    uploadTimImageWithOffset(DAT_BACKGROUND_TEXTURE_FIRST, NULL);
 }
 
 void uploadTextureArchiveEntry(s16 x, s16 y, s16 clutX, s16 clutY, s32 index) {
-    OffsetArchive *archive = (OffsetArchive *)0x80189800;
+    OffsetArchive *archive = DAT_TEXTURE_ARCHIVE;
     s32 offset;
     /* The archive word index includes the count and wraps as a signed halfword. */
     index = (s16)index + 1;
@@ -34,12 +34,12 @@ void uploadTextureArchiveEntry(s16 x, s16 y, s16 clutX, s16 clutY, s32 index) {
 void initDefaultBackground(s16 mode, s16 unused, GameBackground *background,
                            GameBackgroundMap *map) {
     func_80071300(mode, unused, background, map,
-                  (u8 *)0x80180000, (u8 *)0x80180800);
+                  DAT_SCRATCH, DAT_BACKGROUND_MAP);
 }
 
 void queueStartupSectorReads(void) {
-    queueCdSectorCommand(0, 1, 5, (u8 *)0x8017D000, 0);
-    queueCdSectorCommand(0, 6, 18, (u8 *)0x801F0000, 0);
+    queueCdSectorCommand(0, DAT_STARTUP_MODELS_SECTOR, DAT_STARTUP_MODELS_SECTOR_COUNT, DAT_STARTUP_MODELS, 0);
+    queueCdSectorCommand(0, DAT_STARTUP_TEXTURES_SECTOR, DAT_STARTUP_TEXTURES_SECTOR_COUNT, DAT_STARTUP_TEXTURES, 0);
 }
 
 INCLUDE_ASM("asm/nonmatchings/graphics/background_resources", func_8002F394);
@@ -122,14 +122,14 @@ INCLUDE_ASM("asm/nonmatchings/graphics/background_resources", func_8002FA58);
 void queueMode11TransitionResources(void) {
     closeMusicSequence();
     func_8001816C();
-    queueCdSectorCommand(0, 0x7CD, 0x34, (u8 *)0x80180000, 0);
-    queueCdSectorCommand(3, 0x801, 3, (u8 *)0x8015E800, 0);
-    queueCdSectorCommand(0, 0x804, 0x5D, (u8 *)0x80180000, 0);
-    queueCdSectorCommand(4, 0x861, 3, (u8 *)0x80160000, 0);
-    queueCdSectorCommand(0, 0x961, 0x68, (u8 *)0x80180000, 0);
-    queueCdSectorCommand(5, 0x9C9, 4, (u8 *)0x80161800, 0);
-    queueCdSectorCommand(9, 0x9CD, 4, (u8 *)0x80163800, 0);
-    queueCdSectorCommand(0, 1, 5, (u8 *)0x8017D000, 0);
-    queueCdSectorCommand(0, 6, 18, (u8 *)0x801F0000, 0);
+    queueCdSectorCommand(0, DAT_MODE11_RESOURCE_07CD_SECTOR, DAT_MODE11_RESOURCE_07CD_SECTOR_COUNT, DAT_SCRATCH, 0);
+    queueCdSectorCommand(3, DAT_MODE11_RESOURCE_0801_SECTOR, DAT_MODE11_RESOURCE_0801_SECTOR_COUNT, DAT_SOUND_HEADER_0, 0);
+    queueCdSectorCommand(0, DAT_MODE11_RESOURCE_0804_SECTOR, DAT_MODE11_RESOURCE_0804_SECTOR_COUNT, DAT_SCRATCH, 0);
+    queueCdSectorCommand(4, DAT_MODE11_RESOURCE_0861_SECTOR, DAT_MODE11_RESOURCE_0861_SECTOR_COUNT, DAT_SOUND_HEADER_1, 0);
+    queueCdSectorCommand(0, DAT_MODE11_RESOURCE_0961_SECTOR, DAT_MODE11_RESOURCE_0961_SECTOR_COUNT, DAT_SCRATCH, 0);
+    queueCdSectorCommand(5, DAT_MODE11_RESOURCE_09C9_SECTOR, DAT_MODE11_RESOURCE_09C9_SECTOR_COUNT, DAT_SOUND_HEADER_2, 0);
+    queueCdSectorCommand(9, DAT_MODE11_RESOURCE_09CD_SECTOR, DAT_MODE11_RESOURCE_09CD_SECTOR_COUNT, DAT_MUSIC_SEQUENCE, 0);
+    queueCdSectorCommand(0, DAT_STARTUP_MODELS_SECTOR, DAT_STARTUP_MODELS_SECTOR_COUNT, DAT_STARTUP_MODELS, 0);
+    queueCdSectorCommand(0, DAT_STARTUP_TEXTURES_SECTOR, DAT_STARTUP_TEXTURES_SECTOR_COUNT, DAT_STARTUP_TEXTURES, 0);
     SetFogNearFar(5000, 6000, 400);
 }

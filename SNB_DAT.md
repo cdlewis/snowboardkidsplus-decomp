@@ -5,6 +5,118 @@ It combines direct inspection of `disc/SNB/SNB.DAT` with matched C implementatio
 of the game's loading path. Observed bytes and loader behavior are distinguished
 from interpretations that still need confirmation.
 
+## Extraction, mapping and rebuilding
+
+Run the normal project wrapper:
+
+```sh
+./tools/build-and-verify.sh --jobs 4
+```
+
+It splits both inputs, builds the executable, maps resource reads, reconstructs
+SNB.DAT, and independently verifies both original hashes. The executable still
+uses `snowboardkidsplus.yaml`. The DAT uses a companion Splat configuration
+generated from its directory and `config/dat_resources.yaml`; both run through
+the same wrapper. Do not invoke Splat or Make directly.
+
+Generated outputs are under `build/` and contain original game data; do not
+commit them:
+
+| Output | Purpose |
+| --- | --- |
+| `build/dat/snb_dat.yaml` | Companion Splat configuration: header and 395 binary spans |
+| `build/dat/assets/` | Exact header and allocated entry bytes, including padding |
+| `build/dat/nested/` | Child spans from consumer-confirmed offset archives |
+| `build/dat/catalogue.md` | Entry list and read inventory for inspection |
+| `build/dat/catalogue.json` | Full evidence, nested layouts, reads, commands, destinations and RAM views |
+| `build/dat/SNB.DAT` | Reconstructed archive, assembled from extracted header and entry files |
+| `build/include/game/io/dat_entries.h` | Resource sector/count constants and runtime addresses |
+| `build/dat/runtime.ld` | Absolute runtime symbols; allocates no storage |
+
+For read-only inspection without a full build:
+
+```sh
+.venv/bin/python tools/snb_dat.py inspect
+.venv/bin/python tools/snb_dat.py verify
+```
+
+Inspection needs the executable's generated assembly for live fallbacks; run
+the wrapper first. `verify` checks current extracted files, nested spans, rebuilt
+DAT bytes and catalogue freshness. The wrapper handles `generate`, `map`, and
+`pack` in dependency order. Packing reads its output bytes solely from extracted
+files and refuses to overwrite the original DAT. It currently preserves the
+original layout and requires the original DAT to derive span boundaries; it is
+not an asset editor or a disc-image builder.
+
+The tracked manifest assigns stable entry indices, descriptive names where
+supported, evidence, known C read tables, and assembly-backed table layouts.
+Offsets and allocated lengths come from the protected DAT directory, never a
+second hand-maintained list. Unknown identities keep index-based names. C table
+fields and calls use generated `DAT_*_SECTOR` and `DAT_*_SECTOR_COUNT` constants;
+there is no new runtime resource-lookup table or change to the CD queue ABI.
+
+Runtime addresses remain canonical in `symbol_addrs.txt`. The manifest associates
+them with RAM views and evidence; `include/game/io/dat_resources.h` supplies typed
+views used by C. The views overlap deliberately across game states. In particular,
+the DAT staging region also holds animation/scene data, sound bodies and the movie
+ring. Course reads, startup textures, movie buffers and save-record workspaces
+reuse parts of the same arena. These are absolute references, not executable
+data/BSS definitions or a claim that all views are resident together. Some extent
+bounds describe available address space rather than an established allocation.
+
+Fixed-address C views are intentional for matching. Direct linker-object accesses
+produce different address-loading instructions from the original immediate
+`lui`/`ori` sequences. Generating addresses from the canonical symbol map preserves
+the original instructions while removing numeric addresses from consumers.
+Archive fields and model/scene/save slots use member access and typed indexing.
+
+### Scene timeline records
+
+The scheduler in [scene_playback.c](src/scene/scene_playback.c) advances a scene
+timeline and dispatches image, text, music, CD-audio and sound events. Its loader
+is in [scene_loading.c](src/scene/scene_loading.c), and its channel handlers are
+in [scene_event_tasks.c](src/scene/scene_event_tasks.c).
+
+`SceneEvent`, declared in `include/game/scene/scene_events.h`, is a `0x18`-byte
+record. Its first word is an unsigned scheduled tick. The next halfword selects
+`SCENE_EVENT_IMAGE`, `SCENE_EVENT_TEXT`, `SCENE_EVENT_MUSIC`,
+`SCENE_EVENT_CD_AUDIO`, or `SCENE_EVENT_SOUND`. Remaining halfwords hold a
+resource ID, event-specific mode, duration and parameters; the record also has
+previous/next pointers. `parameter14` is deliberately shared: audio uses it for
+volume/repeats, while text playback uses it for its reveal interval.
+
+The shared RAM view `DAT_SCENE_WORKSPACE` contains the free/active list heads
+and a pool of 295 events. Scene dialogue strings live in separate text blocks;
+an event's tick is not a text pointer. Text layout helpers retain their own
+declarations in `include/game/text/text_layout.h`. Scene images and event data
+are named accordingly in the DAT catalogue. Unidentified fields retain neutral
+names, and these semantic names make no claim about original source filenames.
+
+The inventory covers literal C calls, nine C resource tables, and live assembly
+calls. Constant propagation through assembly is conservative at branches and
+calls, includes delay slots, and retains instruction context. Seven manually
+traced table-use descriptions resolve the remaining dynamic assembly reads from
+the original executable's halfword tables. A new unknown expression is reported
+as unresolved rather than assigned a guessed entry. Table rows describe possible
+reads; the report does not claim each row executes in a particular playthrough.
+
+The initial map associates reads with 392 of the 395 entries. Entries 150–152
+(sectors `0x9D1`, `0x9D4`, and `0x9E5`) have no identified read in this inventory.
+They include a sequence signature, an unclassified payload, and a VAB header
+signature respectively; their reachability and relationship remain unproven.
+The catalogue distinguishes structurally validated TIMs, signature-based audio
+candidates, consumer-confirmed offset archives, and structural archive candidates.
+Only confirmed archives receive extracted child files. Child spans may include
+padding; their offset words, including low-bit flags, remain recorded verbatim.
+The raw top-level spans are authoritative for reconstruction.
+
+Validation checks entry coverage, extracted bytes, nested bounds, read bounds,
+known destination extents and catalogue freshness. Dynamic destination expressions
+and executable-owned buffer allocations remain recorded for consumer analysis;
+the tool does not prove their bounds or resource lifetimes. Unknown compression,
+payload formats, VAB body/header pairing outside traced reads and executable code
+inside DAT still require investigation.
+
 ## File identity and disc context
 
 | Property | Value |
@@ -22,7 +134,7 @@ separate filesystem files, rather than entries that the loader locates inside
 SNB.DAT. `SYSTEM.CNF` supplies the boot configuration. The purpose of the large
 `ZERO.NOP` file has not been established here.
 
-[initializeCdFiles](src/main.c) searches for the three movies and SNB.DAT using
+[initializeCdFiles](src/io/cd_queue.c) searches for the three movies and SNB.DAT using
 `CdSearchFile`. It converts the DAT file's disc position to an integer sector
 and stores it in `gDatStartSector`.
 
@@ -61,12 +173,12 @@ necessarily the meaningful payload length.
 | 394 | `0x11BB800` | `0x800` | 9079 | 1 |
 
 The first two spans exactly match the ranges requested by
-[queueStartupSectorReads](src/game/unk_8002B3F4.c), independently supporting
+[queueStartupSectorReads](src/graphics/background_resources.c), independently supporting
 this interpretation.
 
 ## How the game reads DAT resources
 
-[queueCdSectorCommand and updateCdRequestQueue](src/main.c) establish the
+[queueCdSectorCommand and updateCdRequestQueue](src/io/cd_queue.c) establish the
 sector-based loading contract:
 
 ```text
@@ -84,9 +196,10 @@ sector reads. The dispatcher also supports reading a filesystem filename
 through `CdReadFile` when that selector is zero.
 
 Many resource positions and lengths are embedded in executable code or tables.
-Examples include `gGridResourceFirstSectorRanges`,
-`gGridResourceSecondSectorRanges`, `gMode1SectorRanges`, and
-`gOtherModeSectorRanges` in [main_tail.c](src/main_tail.c).
+Examples include `gGridResourceFirstSectorRanges` and
+`gGridResourceSecondSectorRanges` in [panel_tasks.c](src/menu/panel_tasks.c),
+and `gMode1SectorRanges` and `gOtherModeSectorRanges` in
+[text_sequence.c](src/text/text_sequence.c).
 The generic dispatcher receives a range and destination; it does not look up
 a resource name or directory index inside DAT.
 
@@ -119,7 +232,7 @@ This supports processing data already in memory.
 Command 15 has a separate filename-based streaming path: locate the file,
 seek to it, and call `CdRead2(0x1E0)`. It is not an identified DAT resource type.
 
-[loadSoundBank](src/main_remaining.c) passes its header to `SsVabOpenHead`
+[loadSoundBank](src/audio/sound_manager.c) passes its header to `SsVabOpenHead`
 and its body to `SsVabTransBody`. The dispatcher supplies the request destination
 as the header and RAM address `0x80180000` as the body. Mapping the associated
 reads is necessary before assigning complete sound-bank boundaries in DAT.
@@ -130,7 +243,7 @@ Music-sequence buffers are passed to `SsSeqOpen`.
 Some payloads contain their own count and offset tables. They should not be
 assumed to share every detail of the proposed top-level directory format.
 
-For the TIM archive consumed by [uploadTimArchive](src/main_remaining.c), the
+For the TIM archive consumed by [uploadTimArchive](src/graphics/texture_upload.c), the
 count is read as a `u16` from the first word. Later words contain offsets
 relative to the archive base. The implementation clears the offset's low bit
 before accessing the image. Whether that bit has a meaning elsewhere remains
@@ -152,7 +265,7 @@ alone.
 | Same | `0xC78` | 13 | `0x80181000` | Later uploaded as a TIM image |
 | Same | `0xC85` | 4 | `0x80187800` | Later uploaded as a TIM image |
 
-Background callers are in [unk_8002B3F4.c](src/game/unk_8002B3F4.c).
+Background callers are in [background_resources.c](src/graphics/background_resources.c).
 These are examples, not a complete DAT catalogue. A read range can cover
 part of an entry or several resources; callers must be compared with directory
 boundaries before treating requests as one-to-one entry mappings.
@@ -169,8 +282,8 @@ There is no general decompression stage in `updateCdRequestQueue`.
 This does not establish that every resource is uncompressed: individual
 consumers may interpret or decode their own formats.
 
-The next useful investigation is to map all sector-read callers onto the
-proposed 395 entries, trace the consumers of command-0 buffers, and identify
-the formats of the remaining nested archives. A complete catalogue should
-record entry spans, actual read ranges, processing commands, RAM destinations,
-and evidence for each resource identity.
+The generated catalogue now maps known sector-read callers and tables onto the
+395 entries. Further investigation should trace command-0 consumers, establish
+the remaining nested formats, and determine whether entries 150–152 are used.
+Neither a structural candidate nor a signature alone establishes full resource
+identity, compression behavior or executable code.

@@ -10,7 +10,7 @@ import sys
 import tempfile
 
 from decomp import INCLUDE, uncomment
-from validate_commit import verify_image
+from validate_commit import verify_dat, verify_image
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -64,6 +64,7 @@ def _build_and_verify(root, *, expected=False, objects=False, non_matching=False
     check_includes(root)
     make("all")
     verify_image(root)
+    verify_dat(root)
     make("report")
     if expected:
         # The full build above was independently verified before snapshotting.
@@ -91,7 +92,7 @@ def main():
     except (OSError, ValueError, subprocess.CalledProcessError) as error:
         print(f"BUILD HAS FAILED. {error}", file=sys.stderr)
         return 1
-    print("BUILD SUCCEEDED. Full executable matches the protected SHA1; progress is fresh.", flush=True)
+    print("BUILD SUCCEEDED. Executable and SNB.DAT match protected SHA1s; progress is fresh.", flush=True)
     return 0
 
 

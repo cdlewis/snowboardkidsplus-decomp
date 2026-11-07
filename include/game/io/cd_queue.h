@@ -2,6 +2,7 @@
 
 #include "decomp/types.h"
 #include "psx/libcd.h"
+#include "game/io/dat_resources.h"
 
 typedef struct ResourceSectorRange {
     s16 sector;

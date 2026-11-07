@@ -7,5 +7,3 @@ void playMusicSequence(s16 count, u8 left, u8 right) {
         SsSeqPlay(gMusicSequenceId, 1, count);
     }
 }
-
-INCLUDE_ASM("asm/nonmatchings/audio/music_sequence", func_800A624C);

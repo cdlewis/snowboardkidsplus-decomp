@@ -32,8 +32,7 @@
 #define TMD_TEXTURE_HEADER(mode, flags, inputWords, outputWords) \
     (((mode) << 24) | ((flags) << 16) | ((inputWords) << 8) | (outputWords))
 
-#define PLAYER_ANIMATION_ARCHIVE ((u8 *)0x80180000)
-#define PLAYER_ANIMATION_OFFSETS ((u32 *)0x80180004)
+#define PLAYER_ANIMATION_ARCHIVE ((u8 *)DAT_ANIMATION_ARCHIVE)
 
 typedef struct PaletteTransitionResource {
     u32 *pixels;

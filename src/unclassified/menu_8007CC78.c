@@ -1,4 +1,5 @@
 #include "../menu/save_record_tasks_internal.h"
+#include "game/io/dat_resources.h"
 
 u16 litObjectDrawAreaDepths[4] __attribute__((section(".data.lit_object_draw_area_depths"))) = {
     0x30, 0x20, 0x50, 0x3E
@@ -659,8 +660,8 @@ void initializeSaveRecordTask(void) {
     func_800897D0(&((SaveRecord *)&D_8013080C)[1]);
     copyGlobalFlagState(&D_8013080C, &D_8013101C);
     mergeSaveRecordFlags(&((SaveRecord *)&D_8013080C)[1], (SaveRecord *)&D_8013101C);
-    D_8013B484[0] = (GlobalFlagStatePrefix *)0x801E0000;
-    D_8013B484[1] = (GlobalFlagStatePrefix *)0x801E0408;
+    D_8013B484[0] = (GlobalFlagStatePrefix *)&SAVE_RECORD_WORKSPACE[0];
+    D_8013B484[1] = (GlobalFlagStatePrefix *)&SAVE_RECORD_WORKSPACE[1];
     func_800897D0((SaveRecord *)D_8013B484[0]);
     func_800897D0((SaveRecord *)D_8013B484[1]);
     for (i = 0; i < 15; i++) {

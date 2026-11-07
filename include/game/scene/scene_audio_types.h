@@ -2,18 +2,18 @@
 
 #include "common.h"
 #include "game/engine/task.h"
-#include "game/text/text_entries.h"
+#include "game/scene/scene_events.h"
 
-typedef struct MusicOwnerState {
+typedef struct SceneMusicOwner {
     u8 unk00[0x24];
     u32 tick;
     u8 unk28[0xC];
     GameTask *musicTask;
     u8 unk38[8];
     u32 completionTick;
-} MusicOwnerState;
+} SceneMusicOwner;
 
-typedef struct CdAudioPlaybackOwner {
+typedef struct SceneCdAudioPlaybackOwner {
     u8 unk00[0x24];
     u32 tick;
     u16 flags;
@@ -21,29 +21,29 @@ typedef struct CdAudioPlaybackOwner {
     GameTask *task;
     u8 unk3C[4];
     u32 completionTick;
-} CdAudioPlaybackOwner;
+} SceneCdAudioPlaybackOwner;
 
-typedef struct MusicResource {
-    TextEntry *entry;
+typedef struct SceneMusicResource {
+    SceneEvent *entry;
     u32 deadline;
-} MusicResource;
+} SceneMusicResource;
 
-typedef struct CdAudioOwner {
+typedef struct SceneCdAudioOwner {
     u8 unk00[0x24];
     u32 tick;
     u8 unk28[0x10];
     GameTask *task;
-} CdAudioOwner;
+} SceneCdAudioOwner;
 
-typedef struct CdAudioResource {
-    TextEntry *entry;
+typedef struct SceneCdAudioResource {
+    SceneEvent *entry;
     u32 deadline;
-} CdAudioResource;
+} SceneCdAudioResource;
 
-typedef struct SecondaryResource {
-    TextEntry *entry;
+typedef struct SceneImageResource {
+    SceneEvent *entry;
     u32 deadline;
-} SecondaryResource;
+} SceneImageResource;
 
 typedef struct CdResourceLocation {
     s16 sector;

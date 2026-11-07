@@ -3,7 +3,8 @@
 /* Original unit addressing policy; include before public headers. */
 #define RACE_FINISH_ABSOLUTE_ADDRESSING
 #include "common.h"
-#include "game/text/text_sound_slots.h"
+#include "game/text/text_layout.h"
+#include "game/scene/scene_sound_slots.h"
 #include "game/io/controller.h"
 #include "game/io/controller_effects.h"
 #include "game/save/save_data.h"
@@ -23,7 +24,7 @@
 #define TASK_ABSOLUTE_ADDRESSING
 #define TASK_FLAGS_ABSOLUTE_ADDRESSING
 #include "game/race/player/race_player.h"
-#include "game/text/text_entries.h"
+#include "game/scene/scene_events.h"
 #include "game/engine/task.h"
 #include "game/menu/selected_sprite.h"
 #include "game/menu/movement.h"
@@ -31,8 +32,8 @@
 #include "psx/libgs.h"
 #include "psx/libsn.h"
 #include "psx/libc.h"
-#include "game/text/text_task_types.h"
-#include "game/audio/text_audio_types.h"
+#include "game/scene/scene_task_types.h"
+#include "game/scene/scene_audio_types.h"
 #include "game/menu/number_selection_types.h"
 #include "game/graphics/draw_mode_sprite.h"
 
@@ -55,8 +56,6 @@ typedef struct ControllerPlaybackEntry {
     s16 count;
 } ControllerPlaybackEntry;
 
-extern u16 gTextOneShotSoundKey __attribute__((section(".sdata.text_sound_state")));
-extern u8 gTextOneShotVoice __attribute__((section(".sdata.text_sound_state")));
 
 extern ControllerPlaybackEntry gControllerPlaybackEntries[12] __attribute__((section(".data.controller_playback_entries")));
 
@@ -99,8 +98,6 @@ void func_800A2C40(void);
 void func_800A25F8(void);
 void initializeControllerPlaybackRaceTask(void);
 void initializeRaceTaskState(void);
-void func_800A5AFC(void);
-void initializeTextPlaybackTask(void);
 
 void finishControllerPlaybackTransition(void);
 void func_8002FA58(s16 resource);
@@ -117,7 +114,6 @@ typedef struct NumberPanelState {
     u16 number;
 } NumberPanelState;
 
-void updateTextEntryCdAudioTask(void);
 void func_800A53BC(void);
 void finishNumberAdjustmentTask(void);
 void func_8002F394(void);
@@ -149,11 +145,4 @@ void func_800A5ADC(void);
 void func_800A5AE4(void);
 void func_800A5AEC(void);
 void func_800A5AF4(void);
-s16 parseDecimalS16(const u8 *text, s16 *result);
-void resetTextEntryStates(TextControlState *control, TextResourceState *resource);
-void resetTextEntryPool(void);
-TextEntry *findKeyedListNode(u32 key, u32 value);
-TextEntry *findTextEntryInsertionPoint(u32 key, u32 value);
-s16 countWrappedTextLines(const s8 *text, s16 width, s16 limit);
-s16 advanceTextLine(const s8 **text, s16 limit);
 void playMusicSequence(s16 count, u8 left, u8 right);

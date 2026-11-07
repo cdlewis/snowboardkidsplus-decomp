@@ -57,10 +57,11 @@ G8_UNITS := \
     src/io/controller_playback.c \
     src/menu/unlock_menu.c \
     src/menu/number_adjustment.c \
-    src/text/text_entries.c \
+    src/scene/scene_events.c \
     src/audio/music_sequence.c \
-    src/text/text_playback.c \
-    src/text/resource_playback.c \
+    src/scene/scene_loading.c \
+    src/scene/scene_playback.c \
+    src/scene/scene_event_tasks.c \
     src/menu/unlock_notification.c \
     src/io/host_file.c \
     src/engine/game_options.c \

@@ -1,0 +1,1436 @@
+# Resource identities and runtime uses; offsets/lengths come from SNB.DAT.
+entries:
+  0:
+    name: startup_models
+    identity_evidence: queueStartupSectorReads and loadCurrentPlayerModelBlock
+    archive_confirmed: true
+  1:
+    name: startup_textures
+    identity_evidence: queueStartupSectorReads and queuePlayerResourceReadsAndUploadTextures
+    archive_confirmed: true
+  2:
+    name: entry_002
+  3:
+    name: entry_003
+  4:
+    name: entry_004
+  5:
+    name: race_controller_playback_00
+    identity_evidence: D_8012043C[0] halfword loads at call 0x8001BCBC
+  6:
+    name: race_controller_playback_01
+    identity_evidence: D_8012043C[1] halfword loads at call 0x8001BCBC
+  7:
+    name: race_controller_playback_02
+    identity_evidence: D_8012043C[2] halfword loads at call 0x8001BCBC
+  8:
+    name: race_controller_playback_03
+    identity_evidence: D_8012043C[3] halfword loads at call 0x8001BCBC
+  9:
+    name: race_controller_playback_04
+    identity_evidence: D_8012043C[4] halfword loads at call 0x8001BCBC
+  10:
+    name: entry_010
+  11:
+    name: transition_textures
+    identity_evidence: sector-read command and its named C consumer
+    archive_confirmed: true
+  12:
+    name: mode2_textures
+    identity_evidence: sector-read command and its named C consumer
+    archive_confirmed: true
+  13:
+    name: player_animation
+    identity_evidence: sector-read command and its named C consumer
+    archive_confirmed: true
+  14:
+    name: entry_014
+  15:
+    name: entry_015
+  16:
+    name: entry_016
+  17:
+    name: entry_017
+  18:
+    name: entry_018
+  19:
+    name: entry_019
+  20:
+    name: background_textures
+    identity_evidence: sector-read command and its named C consumer
+    archive_confirmed: true
+  21:
+    name: grid_texture_0_0
+    identity_evidence: gGridResourceSecondSectorRanges[0] in src/menu/panel_tasks.c
+  22:
+    name: grid_model_0_0
+    identity_evidence: gGridResourceFirstSectorRanges[0] in src/menu/panel_tasks.c
+  23:
+    name: grid_texture_0_1
+    identity_evidence: gGridResourceSecondSectorRanges[1] in src/menu/panel_tasks.c
+  24:
+    name: grid_model_0_1
+    identity_evidence: gGridResourceFirstSectorRanges[1] in src/menu/panel_tasks.c
+  25:
+    name: grid_texture_0_2
+    identity_evidence: gGridResourceSecondSectorRanges[2] in src/menu/panel_tasks.c
+  26:
+    name: grid_model_0_2
+    identity_evidence: gGridResourceFirstSectorRanges[2] in src/menu/panel_tasks.c
+  27:
+    name: grid_texture_0_3
+    identity_evidence: gGridResourceSecondSectorRanges[3] in src/menu/panel_tasks.c
+  28:
+    name: grid_model_0_3
+    identity_evidence: gGridResourceFirstSectorRanges[3] in src/menu/panel_tasks.c
+  29:
+    name: grid_texture_0_4
+    identity_evidence: gGridResourceSecondSectorRanges[4] in src/menu/panel_tasks.c
+  30:
+    name: grid_model_0_4
+    identity_evidence: gGridResourceFirstSectorRanges[4] in src/menu/panel_tasks.c
+  31:
+    name: grid_texture_1_0
+    identity_evidence: gGridResourceSecondSectorRanges[5] in src/menu/panel_tasks.c
+  32:
+    name: grid_model_1_0
+    identity_evidence: gGridResourceFirstSectorRanges[5] in src/menu/panel_tasks.c
+  33:
+    name: grid_texture_1_1
+    identity_evidence: gGridResourceSecondSectorRanges[6] in src/menu/panel_tasks.c
+  34:
+    name: grid_model_1_1
+    identity_evidence: gGridResourceFirstSectorRanges[6] in src/menu/panel_tasks.c
+  35:
+    name: grid_texture_1_2
+    identity_evidence: gGridResourceSecondSectorRanges[7] in src/menu/panel_tasks.c
+  36:
+    name: grid_model_1_2
+    identity_evidence: gGridResourceFirstSectorRanges[7] in src/menu/panel_tasks.c
+  37:
+    name: grid_texture_1_3
+    identity_evidence: gGridResourceSecondSectorRanges[8] in src/menu/panel_tasks.c
+  38:
+    name: grid_model_1_3
+    identity_evidence: gGridResourceFirstSectorRanges[8] in src/menu/panel_tasks.c
+  39:
+    name: grid_texture_1_4
+    identity_evidence: gGridResourceSecondSectorRanges[9] in src/menu/panel_tasks.c
+  40:
+    name: grid_model_1_4
+    identity_evidence: gGridResourceFirstSectorRanges[9] in src/menu/panel_tasks.c
+  41:
+    name: grid_texture_2_0
+    identity_evidence: gGridResourceSecondSectorRanges[10] in src/menu/panel_tasks.c
+  42:
+    name: grid_model_2_0
+    identity_evidence: gGridResourceFirstSectorRanges[10] in src/menu/panel_tasks.c
+  43:
+    name: grid_texture_2_1
+    identity_evidence: gGridResourceSecondSectorRanges[11] in src/menu/panel_tasks.c
+  44:
+    name: grid_model_2_1
+    identity_evidence: gGridResourceFirstSectorRanges[11] in src/menu/panel_tasks.c
+  45:
+    name: grid_texture_2_2
+    identity_evidence: gGridResourceSecondSectorRanges[12] in src/menu/panel_tasks.c
+  46:
+    name: grid_model_2_2
+    identity_evidence: gGridResourceFirstSectorRanges[12] in src/menu/panel_tasks.c
+  47:
+    name: grid_texture_2_3
+    identity_evidence: gGridResourceSecondSectorRanges[13] in src/menu/panel_tasks.c
+  48:
+    name: grid_model_2_3
+    identity_evidence: gGridResourceFirstSectorRanges[13] in src/menu/panel_tasks.c
+  49:
+    name: grid_texture_2_4
+    identity_evidence: gGridResourceSecondSectorRanges[14] in src/menu/panel_tasks.c
+  50:
+    name: grid_model_2_4
+    identity_evidence: gGridResourceFirstSectorRanges[14] in src/menu/panel_tasks.c
+  51:
+    name: grid_texture_3_0
+    identity_evidence: gGridResourceSecondSectorRanges[15] in src/menu/panel_tasks.c
+  52:
+    name: grid_model_3_0
+    identity_evidence: gGridResourceFirstSectorRanges[15] in src/menu/panel_tasks.c
+  53:
+    name: grid_texture_3_1
+    identity_evidence: gGridResourceSecondSectorRanges[16] in src/menu/panel_tasks.c
+  54:
+    name: grid_model_3_1
+    identity_evidence: gGridResourceFirstSectorRanges[16] in src/menu/panel_tasks.c
+  55:
+    name: grid_texture_3_2
+    identity_evidence: gGridResourceSecondSectorRanges[17] in src/menu/panel_tasks.c
+  56:
+    name: grid_model_3_2
+    identity_evidence: gGridResourceFirstSectorRanges[17] in src/menu/panel_tasks.c
+  57:
+    name: grid_texture_3_3
+    identity_evidence: gGridResourceSecondSectorRanges[18] in src/menu/panel_tasks.c
+  58:
+    name: grid_model_3_3
+    identity_evidence: gGridResourceFirstSectorRanges[18] in src/menu/panel_tasks.c
+  59:
+    name: grid_texture_3_4
+    identity_evidence: gGridResourceSecondSectorRanges[19] in src/menu/panel_tasks.c
+  60:
+    name: grid_model_3_4
+    identity_evidence: gGridResourceFirstSectorRanges[19] in src/menu/panel_tasks.c
+  61:
+    name: grid_texture_4_0
+    identity_evidence: gGridResourceSecondSectorRanges[20] in src/menu/panel_tasks.c
+  62:
+    name: grid_model_4_0
+    identity_evidence: gGridResourceFirstSectorRanges[20] in src/menu/panel_tasks.c
+  63:
+    name: grid_texture_4_1
+    identity_evidence: gGridResourceSecondSectorRanges[21] in src/menu/panel_tasks.c
+  64:
+    name: grid_model_4_1
+    identity_evidence: gGridResourceFirstSectorRanges[21] in src/menu/panel_tasks.c
+  65:
+    name: grid_texture_4_2
+    identity_evidence: gGridResourceSecondSectorRanges[22] in src/menu/panel_tasks.c
+  66:
+    name: grid_model_4_2
+    identity_evidence: gGridResourceFirstSectorRanges[22] in src/menu/panel_tasks.c
+  67:
+    name: grid_texture_4_3
+    identity_evidence: gGridResourceSecondSectorRanges[23] in src/menu/panel_tasks.c
+  68:
+    name: grid_model_4_3
+    identity_evidence: gGridResourceFirstSectorRanges[23] in src/menu/panel_tasks.c
+  69:
+    name: grid_texture_4_4
+    identity_evidence: gGridResourceSecondSectorRanges[24] in src/menu/panel_tasks.c
+  70:
+    name: grid_model_4_4
+    identity_evidence: gGridResourceFirstSectorRanges[24] in src/menu/panel_tasks.c
+  71:
+    name: grid_texture_5_0
+    identity_evidence: gGridResourceSecondSectorRanges[25] in src/menu/panel_tasks.c
+  72:
+    name: grid_model_5_0
+    identity_evidence: gGridResourceFirstSectorRanges[25] in src/menu/panel_tasks.c
+  73:
+    name: grid_texture_5_1
+    identity_evidence: gGridResourceSecondSectorRanges[26] in src/menu/panel_tasks.c
+  74:
+    name: grid_model_5_1
+    identity_evidence: gGridResourceFirstSectorRanges[26] in src/menu/panel_tasks.c
+  75:
+    name: grid_texture_5_2
+    identity_evidence: gGridResourceSecondSectorRanges[27] in src/menu/panel_tasks.c
+  76:
+    name: grid_model_5_2
+    identity_evidence: gGridResourceFirstSectorRanges[27] in src/menu/panel_tasks.c
+  77:
+    name: grid_texture_5_3
+    identity_evidence: gGridResourceSecondSectorRanges[28] in src/menu/panel_tasks.c
+  78:
+    name: grid_model_5_3
+    identity_evidence: gGridResourceFirstSectorRanges[28] in src/menu/panel_tasks.c
+  79:
+    name: grid_texture_5_4
+    identity_evidence: gGridResourceSecondSectorRanges[29] in src/menu/panel_tasks.c
+  80:
+    name: grid_model_5_4
+    identity_evidence: gGridResourceFirstSectorRanges[29] in src/menu/panel_tasks.c
+  81:
+    name: grid_texture_6_0
+    identity_evidence: gGridResourceSecondSectorRanges[30] in src/menu/panel_tasks.c
+  82:
+    name: grid_model_6_0
+    identity_evidence: gGridResourceFirstSectorRanges[30] in src/menu/panel_tasks.c
+  83:
+    name: grid_texture_6_1
+    identity_evidence: gGridResourceSecondSectorRanges[31] in src/menu/panel_tasks.c
+  84:
+    name: grid_model_6_1
+    identity_evidence: gGridResourceFirstSectorRanges[31] in src/menu/panel_tasks.c
+  85:
+    name: grid_texture_6_2
+    identity_evidence: gGridResourceSecondSectorRanges[32] in src/menu/panel_tasks.c
+  86:
+    name: grid_model_6_2
+    identity_evidence: gGridResourceFirstSectorRanges[32] in src/menu/panel_tasks.c
+  87:
+    name: grid_texture_6_3
+    identity_evidence: gGridResourceSecondSectorRanges[33] in src/menu/panel_tasks.c
+  88:
+    name: grid_model_6_3
+    identity_evidence: gGridResourceFirstSectorRanges[33] in src/menu/panel_tasks.c
+  89:
+    name: grid_texture_6_4
+    identity_evidence: gGridResourceSecondSectorRanges[34] in src/menu/panel_tasks.c
+  90:
+    name: grid_model_6_4
+    identity_evidence: gGridResourceFirstSectorRanges[34] in src/menu/panel_tasks.c
+  91:
+    name: grid_texture_7_0
+    identity_evidence: gGridResourceSecondSectorRanges[35] in src/menu/panel_tasks.c
+  92:
+    name: grid_model_7_0
+    identity_evidence: gGridResourceFirstSectorRanges[35] in src/menu/panel_tasks.c
+  93:
+    name: grid_texture_7_1
+    identity_evidence: gGridResourceSecondSectorRanges[36] in src/menu/panel_tasks.c
+  94:
+    name: grid_model_7_1
+    identity_evidence: gGridResourceFirstSectorRanges[36] in src/menu/panel_tasks.c
+  95:
+    name: grid_texture_7_2
+    identity_evidence: gGridResourceSecondSectorRanges[37] in src/menu/panel_tasks.c
+  96:
+    name: grid_model_7_2
+    identity_evidence: gGridResourceFirstSectorRanges[37] in src/menu/panel_tasks.c
+  97:
+    name: grid_texture_7_3
+    identity_evidence: gGridResourceSecondSectorRanges[38] in src/menu/panel_tasks.c
+  98:
+    name: grid_model_7_3
+    identity_evidence: gGridResourceFirstSectorRanges[38] in src/menu/panel_tasks.c
+  99:
+    name: grid_texture_7_4
+    identity_evidence: gGridResourceSecondSectorRanges[39] in src/menu/panel_tasks.c
+  100:
+    name: grid_model_7_4
+    identity_evidence: gGridResourceFirstSectorRanges[39] in src/menu/panel_tasks.c
+  101:
+    name: grid_texture_8_0
+    identity_evidence: gGridResourceSecondSectorRanges[40] in src/menu/panel_tasks.c
+  102:
+    name: grid_model_8_0
+    identity_evidence: gGridResourceFirstSectorRanges[40] in src/menu/panel_tasks.c
+  103:
+    name: grid_texture_8_1
+    identity_evidence: gGridResourceSecondSectorRanges[41] in src/menu/panel_tasks.c
+  104:
+    name: grid_model_8_1
+    identity_evidence: gGridResourceFirstSectorRanges[41] in src/menu/panel_tasks.c
+  105:
+    name: grid_texture_8_2
+    identity_evidence: gGridResourceSecondSectorRanges[42] in src/menu/panel_tasks.c
+  106:
+    name: grid_model_8_2
+    identity_evidence: gGridResourceFirstSectorRanges[42] in src/menu/panel_tasks.c
+  107:
+    name: grid_texture_8_3
+    identity_evidence: gGridResourceSecondSectorRanges[43] in src/menu/panel_tasks.c
+  108:
+    name: grid_model_8_3
+    identity_evidence: gGridResourceFirstSectorRanges[43] in src/menu/panel_tasks.c
+  109:
+    name: grid_texture_8_4
+    identity_evidence: gGridResourceSecondSectorRanges[44] in src/menu/panel_tasks.c
+  110:
+    name: grid_model_8_4
+    identity_evidence: gGridResourceFirstSectorRanges[44] in src/menu/panel_tasks.c
+  111:
+    name: grid_texture_9_0
+    identity_evidence: gGridResourceSecondSectorRanges[45] in src/menu/panel_tasks.c
+  112:
+    name: grid_model_9_0
+    identity_evidence: gGridResourceFirstSectorRanges[45] in src/menu/panel_tasks.c
+  113:
+    name: grid_texture_9_1
+    identity_evidence: gGridResourceSecondSectorRanges[46] in src/menu/panel_tasks.c
+  114:
+    name: grid_model_9_1
+    identity_evidence: gGridResourceFirstSectorRanges[46] in src/menu/panel_tasks.c
+  115:
+    name: grid_texture_9_2
+    identity_evidence: gGridResourceSecondSectorRanges[47] in src/menu/panel_tasks.c
+  116:
+    name: grid_model_9_2
+    identity_evidence: gGridResourceFirstSectorRanges[47] in src/menu/panel_tasks.c
+  117:
+    name: grid_texture_9_3
+    identity_evidence: gGridResourceSecondSectorRanges[48] in src/menu/panel_tasks.c
+  118:
+    name: grid_model_9_3
+    identity_evidence: gGridResourceFirstSectorRanges[48] in src/menu/panel_tasks.c
+  119:
+    name: grid_texture_9_4
+    identity_evidence: gGridResourceSecondSectorRanges[49] in src/menu/panel_tasks.c
+  120:
+    name: grid_model_9_4
+    identity_evidence: gGridResourceFirstSectorRanges[49] in src/menu/panel_tasks.c
+  121:
+    name: mode11_resource_07cd
+    identity_evidence: 'queueMode11TransitionResources: destination and processing
+      command'
+  122:
+    name: mode11_resource_0801
+    identity_evidence: 'queueMode11TransitionResources: destination and processing
+      command'
+  123:
+    name: mode11_resource_0804
+    identity_evidence: 'queueMode11TransitionResources: destination and processing
+      command'
+  124:
+    name: mode11_resource_0861
+    identity_evidence: 'queueMode11TransitionResources: destination and processing
+      command'
+  125:
+    name: entry_125
+  126:
+    name: entry_126
+  127:
+    name: player_sound_body_00
+    identity_evidence: D_801203EC[0] halfword loads at call 0x8001BBD8
+  128:
+    name: player_sound_header_00
+    identity_evidence: D_801203EC[0] halfword loads at call 0x8001BC10
+  129:
+    name: player_sound_body_01
+    identity_evidence: D_801203EC[1] halfword loads at call 0x8001BBD8
+  130:
+    name: player_sound_header_01
+    identity_evidence: D_801203EC[1] halfword loads at call 0x8001BC10
+  131:
+    name: player_sound_body_02
+    identity_evidence: D_801203EC[2] halfword loads at call 0x8001BBD8
+  132:
+    name: player_sound_header_02
+    identity_evidence: D_801203EC[2] halfword loads at call 0x8001BC10
+  133:
+    name: player_sound_body_03
+    identity_evidence: D_801203EC[3] halfword loads at call 0x8001BBD8
+  134:
+    name: player_sound_header_03
+    identity_evidence: D_801203EC[3] halfword loads at call 0x8001BC10
+  135:
+    name: player_sound_body_04
+    identity_evidence: D_801203EC[4] halfword loads at call 0x8001BBD8
+  136:
+    name: player_sound_header_04
+    identity_evidence: D_801203EC[4] halfword loads at call 0x8001BC10
+  137:
+    name: player_sound_body_05
+    identity_evidence: D_801203EC[5] halfword loads at call 0x8001BBD8
+  138:
+    name: player_sound_header_05
+    identity_evidence: D_801203EC[5] halfword loads at call 0x8001BC10
+  139:
+    name: player_sound_body_06
+    identity_evidence: D_801203EC[6] halfword loads at call 0x8001BBD8
+  140:
+    name: player_sound_header_06
+    identity_evidence: D_801203EC[6] halfword loads at call 0x8001BC10
+  141:
+    name: player_sound_body_07
+    identity_evidence: D_801203EC[7] halfword loads at call 0x8001BBD8
+  142:
+    name: player_sound_header_07
+    identity_evidence: D_801203EC[7] halfword loads at call 0x8001BC10
+  143:
+    name: player_sound_body_08
+    identity_evidence: D_801203EC[8] halfword loads at call 0x8001BBD8
+  144:
+    name: player_sound_header_08
+    identity_evidence: D_801203EC[8] halfword loads at call 0x8001BC10
+  145:
+    name: player_sound_body_09
+    identity_evidence: D_801203EC[9] halfword loads at call 0x8001BBD8
+  146:
+    name: player_sound_header_09
+    identity_evidence: D_801203EC[9] halfword loads at call 0x8001BC10
+  147:
+    name: mode11_resource_0961
+    identity_evidence: 'queueMode11TransitionResources: destination and processing
+      command'
+  148:
+    name: mode11_resource_09c9
+    identity_evidence: 'queueMode11TransitionResources: destination and processing
+      command'
+  149:
+    name: mode11_resource_09cd
+    identity_evidence: 'queueMode11TransitionResources: destination and processing
+      command'
+  150:
+    name: entry_150
+  151:
+    name: entry_151
+  152:
+    name: entry_152
+  153:
+    name: entry_153
+  154:
+    name: entry_154
+  155:
+    name: entry_155
+  156:
+    name: scene_sound_body_00
+    identity_evidence: D_80132D54[0] halfword loads at call 0x800A63A0
+  157:
+    name: scene_sound_header_00
+    identity_evidence: D_80132D54[0] halfword loads at call 0x800A63C8
+  158:
+    name: scene_sound_body_01
+    identity_evidence: D_80132D54[1] halfword loads at call 0x800A63A0
+  159:
+    name: scene_sound_header_01
+    identity_evidence: D_80132D54[1] halfword loads at call 0x800A63C8
+  160:
+    name: scene_sound_body_02
+    identity_evidence: D_80132D54[2] halfword loads at call 0x800A63A0
+  161:
+    name: scene_sound_header_02
+    identity_evidence: D_80132D54[2] halfword loads at call 0x800A63C8
+  162:
+    name: scene_sound_body_03
+    identity_evidence: D_80132D54[3] halfword loads at call 0x800A63A0
+  163:
+    name: scene_sound_header_03
+    identity_evidence: D_80132D54[3] halfword loads at call 0x800A63C8
+  164:
+    name: scene_sound_body_05
+    identity_evidence: D_80132D54[5] halfword loads at call 0x800A63A0
+  165:
+    name: scene_sound_header_05
+    identity_evidence: D_80132D54[5] halfword loads at call 0x800A63C8
+  166:
+    name: scene_sound_body_06
+    identity_evidence: D_80132D54[6] halfword loads at call 0x800A63A0
+  167:
+    name: scene_sound_header_06
+    identity_evidence: D_80132D54[6] halfword loads at call 0x800A63C8
+  168:
+    name: scene_sound_body_07
+    identity_evidence: D_80132D54[7] halfword loads at call 0x800A63A0
+  169:
+    name: scene_sound_header_07
+    identity_evidence: D_80132D54[7] halfword loads at call 0x800A63C8
+  170:
+    name: scene_sound_body_08
+    identity_evidence: D_80132D54[8] halfword loads at call 0x800A63A0
+  171:
+    name: scene_sound_header_08
+    identity_evidence: D_80132D54[8] halfword loads at call 0x800A63C8
+  172:
+    name: scene_sound_body_09
+    identity_evidence: D_80132D54[9] halfword loads at call 0x800A63A0
+  173:
+    name: scene_sound_header_09
+    identity_evidence: D_80132D54[9] halfword loads at call 0x800A63C8
+  174:
+    name: scene_sound_body_10
+    identity_evidence: D_80132D54[10] halfword loads at call 0x800A63A0
+  175:
+    name: scene_sound_header_10
+    identity_evidence: D_80132D54[10] halfword loads at call 0x800A63C8
+  176:
+    name: entry_176
+  177:
+    name: entry_177
+  178:
+    name: entry_178
+  179:
+    name: background_texture_first
+    identity_evidence: sector-read command and its named C consumer
+  180:
+    name: background_texture_second
+    identity_evidence: sector-read command and its named C consumer
+  181:
+    name: grid_fallback
+    identity_evidence: sector-read command and its named C consumer
+  182:
+    name: entry_182
+  183:
+    name: background_definition
+    identity_evidence: sector-read command and its named C consumer
+  184:
+    name: background_map
+    identity_evidence: sector-read command and its named C consumer
+  185:
+    name: course_0_resource_0
+    identity_evidence: gCourseResourceSectors[0] in src/race/course/course_objects.c
+  186:
+    name: course_0_resource_1
+    identity_evidence: gCourseResourceSectors[1] in src/race/course/course_objects.c
+  187:
+    name: course_0_resource_2
+    identity_evidence: gCourseResourceSectors[2] in src/race/course/course_objects.c
+    archive_confirmed: true
+  188:
+    name: course_metadata_000
+    identity_evidence: gCourseMetadataSectors[0] in src/race/course/course_objects.c
+  189:
+    name: course_optional_000
+    identity_evidence: gCourseOptionalResourceSectors[0] in src/race/course/course_objects.c
+  190:
+    name: course_1_resource_0
+    identity_evidence: gCourseResourceSectors[3] in src/race/course/course_objects.c
+  191:
+    name: course_1_resource_1
+    identity_evidence: gCourseResourceSectors[4] in src/race/course/course_objects.c
+  192:
+    name: course_1_resource_2
+    identity_evidence: gCourseResourceSectors[5] in src/race/course/course_objects.c
+    archive_confirmed: true
+  193:
+    name: course_metadata_001
+    identity_evidence: gCourseMetadataSectors[1] in src/race/course/course_objects.c
+  194:
+    name: course_optional_001
+    identity_evidence: gCourseOptionalResourceSectors[1] in src/race/course/course_objects.c
+  195:
+    name: course_2_resource_0
+    identity_evidence: gCourseResourceSectors[6] in src/race/course/course_objects.c
+  196:
+    name: course_2_resource_1
+    identity_evidence: gCourseResourceSectors[7] in src/race/course/course_objects.c
+  197:
+    name: course_2_resource_2
+    identity_evidence: gCourseResourceSectors[8] in src/race/course/course_objects.c
+    archive_confirmed: true
+  198:
+    name: course_metadata_002
+    identity_evidence: gCourseMetadataSectors[2] in src/race/course/course_objects.c
+  199:
+    name: course_3_resource_0
+    identity_evidence: gCourseResourceSectors[9] in src/race/course/course_objects.c
+  200:
+    name: course_3_resource_1
+    identity_evidence: gCourseResourceSectors[10] in src/race/course/course_objects.c
+  201:
+    name: course_3_resource_2
+    identity_evidence: gCourseResourceSectors[11] in src/race/course/course_objects.c
+    archive_confirmed: true
+  202:
+    name: course_metadata_003
+    identity_evidence: gCourseMetadataSectors[3] in src/race/course/course_objects.c
+  203:
+    name: course_4_resource_0
+    identity_evidence: gCourseResourceSectors[12] in src/race/course/course_objects.c
+  204:
+    name: course_4_resource_1
+    identity_evidence: gCourseResourceSectors[13] in src/race/course/course_objects.c
+  205:
+    name: course_4_resource_2
+    identity_evidence: gCourseResourceSectors[14] in src/race/course/course_objects.c
+    archive_confirmed: true
+  206:
+    name: course_metadata_004
+    identity_evidence: gCourseMetadataSectors[4] in src/race/course/course_objects.c
+  207:
+    name: course_optional_004
+    identity_evidence: gCourseOptionalResourceSectors[4] in src/race/course/course_objects.c
+  208:
+    name: course_5_resource_0
+    identity_evidence: gCourseResourceSectors[15] in src/race/course/course_objects.c
+  209:
+    name: course_5_resource_1
+    identity_evidence: gCourseResourceSectors[16] in src/race/course/course_objects.c
+  210:
+    name: course_5_resource_2
+    identity_evidence: gCourseResourceSectors[17] in src/race/course/course_objects.c
+    archive_confirmed: true
+  211:
+    name: course_metadata_005
+    identity_evidence: gCourseMetadataSectors[5] in src/race/course/course_objects.c
+  212:
+    name: course_6_resource_0
+    identity_evidence: gCourseResourceSectors[18] in src/race/course/course_objects.c
+  213:
+    name: course_6_resource_1
+    identity_evidence: gCourseResourceSectors[19] in src/race/course/course_objects.c
+  214:
+    name: course_6_resource_2
+    identity_evidence: gCourseResourceSectors[20] in src/race/course/course_objects.c
+    archive_confirmed: true
+  215:
+    name: course_metadata_006
+    identity_evidence: gCourseMetadataSectors[6] in src/race/course/course_objects.c
+  216:
+    name: course_optional_006
+    identity_evidence: gCourseOptionalResourceSectors[6] in src/race/course/course_objects.c
+  217:
+    name: course_image
+    identity_evidence: sector-read command and its named C consumer
+  218:
+    name: course_7_resource_0
+    identity_evidence: gCourseResourceSectors[21] in src/race/course/course_objects.c
+  219:
+    name: course_7_resource_1
+    identity_evidence: gCourseResourceSectors[22] in src/race/course/course_objects.c
+  220:
+    name: course_7_resource_2
+    identity_evidence: gCourseResourceSectors[23] in src/race/course/course_objects.c
+    archive_confirmed: true
+  221:
+    name: course_metadata_007
+    identity_evidence: gCourseMetadataSectors[7] in src/race/course/course_objects.c
+  222:
+    name: course_8_resource_0
+    identity_evidence: gCourseResourceSectors[24] in src/race/course/course_objects.c
+  223:
+    name: course_8_resource_1
+    identity_evidence: gCourseResourceSectors[25] in src/race/course/course_objects.c
+  224:
+    name: course_8_resource_2
+    identity_evidence: gCourseResourceSectors[26] in src/race/course/course_objects.c
+    archive_confirmed: true
+  225:
+    name: course_optional_008
+    identity_evidence: gCourseOptionalResourceSectors[8] in src/race/course/course_objects.c
+  226:
+    name: course_metadata_008
+    identity_evidence: gCourseMetadataSectors[8] in src/race/course/course_objects.c
+  227:
+    name: course_9_resource_0
+    identity_evidence: gCourseResourceSectors[27] in src/race/course/course_objects.c
+  228:
+    name: course_9_resource_1
+    identity_evidence: gCourseResourceSectors[28] in src/race/course/course_objects.c
+  229:
+    name: course_9_resource_2
+    identity_evidence: gCourseResourceSectors[29] in src/race/course/course_objects.c
+    archive_confirmed: true
+  230:
+    name: course_optional_009
+    identity_evidence: gCourseOptionalResourceSectors[9] in src/race/course/course_objects.c
+  231:
+    name: course_metadata_009
+    identity_evidence: gCourseMetadataSectors[9] in src/race/course/course_objects.c
+  232:
+    name: entry_232
+  233:
+    name: entry_233
+  234:
+    name: scene_events_00
+    identity_evidence: D_80132B60[0] halfword loads at call 0x800A6488
+  235:
+    name: scene_text_data_00
+    identity_evidence: D_80132B34[0] halfword loads at call 0x800A64BC
+  236:
+    name: scene_events_01
+    identity_evidence: D_80132B60[1] halfword loads at call 0x800A6488
+  237:
+    name: scene_text_data_01
+    identity_evidence: D_80132B34[1] halfword loads at call 0x800A64BC
+  238:
+    name: scene_events_02
+    identity_evidence: D_80132B60[2] halfword loads at call 0x800A6488
+  239:
+    name: scene_text_data_02
+    identity_evidence: D_80132B34[2] halfword loads at call 0x800A64BC
+  240:
+    name: scene_events_03
+    identity_evidence: D_80132B60[3] halfword loads at call 0x800A6488
+  241:
+    name: scene_text_data_03
+    identity_evidence: D_80132B34[3] halfword loads at call 0x800A64BC
+  242:
+    name: scene_events_04
+    identity_evidence: D_80132B60[4] halfword loads at call 0x800A6488
+  243:
+    name: scene_text_data_04
+    identity_evidence: D_80132B34[4] halfword loads at call 0x800A64BC
+  244:
+    name: scene_events_05
+    identity_evidence: D_80132B60[5] halfword loads at call 0x800A6488
+  245:
+    name: scene_text_data_05
+    identity_evidence: D_80132B34[5] halfword loads at call 0x800A64BC
+  246:
+    name: scene_events_06
+    identity_evidence: D_80132B60[6] halfword loads at call 0x800A6488
+  247:
+    name: scene_text_data_06
+    identity_evidence: D_80132B34[6] halfword loads at call 0x800A64BC
+  248:
+    name: scene_events_07
+    identity_evidence: D_80132B60[7] halfword loads at call 0x800A6488
+  249:
+    name: scene_text_data_07
+    identity_evidence: D_80132B34[7] halfword loads at call 0x800A64BC
+  250:
+    name: scene_events_08
+    identity_evidence: D_80132B60[8] halfword loads at call 0x800A6488
+  251:
+    name: scene_text_data_08
+    identity_evidence: D_80132B34[8] halfword loads at call 0x800A64BC
+  252:
+    name: scene_events_09
+    identity_evidence: D_80132B60[9] halfword loads at call 0x800A6488
+  253:
+    name: scene_text_data_09
+    identity_evidence: D_80132B34[9] halfword loads at call 0x800A64BC
+  254:
+    name: scene_events_10
+    identity_evidence: D_80132B60[10] halfword loads at call 0x800A6488
+  255:
+    name: scene_text_data_10
+    identity_evidence: D_80132B34[10] halfword loads at call 0x800A64BC
+  256:
+    name: scene_image_001
+    identity_evidence: gSceneImageSectorRanges[1] in src/scene/scene_event_tasks.c
+  257:
+    name: scene_image_002
+    identity_evidence: gSceneImageSectorRanges[2] in src/scene/scene_event_tasks.c
+  258:
+    name: scene_image_003
+    identity_evidence: gSceneImageSectorRanges[3] in src/scene/scene_event_tasks.c
+  259:
+    name: scene_image_004
+    identity_evidence: gSceneImageSectorRanges[4] in src/scene/scene_event_tasks.c
+  260:
+    name: scene_image_005
+    identity_evidence: gSceneImageSectorRanges[5] in src/scene/scene_event_tasks.c
+  261:
+    name: scene_image_006
+    identity_evidence: gSceneImageSectorRanges[6] in src/scene/scene_event_tasks.c
+  262:
+    name: scene_image_007
+    identity_evidence: gSceneImageSectorRanges[7] in src/scene/scene_event_tasks.c
+  263:
+    name: scene_image_008
+    identity_evidence: gSceneImageSectorRanges[8] in src/scene/scene_event_tasks.c
+  264:
+    name: scene_image_009
+    identity_evidence: gSceneImageSectorRanges[9] in src/scene/scene_event_tasks.c
+  265:
+    name: scene_image_010
+    identity_evidence: gSceneImageSectorRanges[10] in src/scene/scene_event_tasks.c
+  266:
+    name: scene_image_011
+    identity_evidence: gSceneImageSectorRanges[11] in src/scene/scene_event_tasks.c
+  267:
+    name: scene_image_012
+    identity_evidence: gSceneImageSectorRanges[12] in src/scene/scene_event_tasks.c
+  268:
+    name: scene_image_013
+    identity_evidence: gSceneImageSectorRanges[13] in src/scene/scene_event_tasks.c
+  269:
+    name: scene_image_014
+    identity_evidence: gSceneImageSectorRanges[14] in src/scene/scene_event_tasks.c
+  270:
+    name: scene_image_015
+    identity_evidence: gSceneImageSectorRanges[15] in src/scene/scene_event_tasks.c
+  271:
+    name: scene_image_016
+    identity_evidence: gSceneImageSectorRanges[16] in src/scene/scene_event_tasks.c
+  272:
+    name: scene_image_017
+    identity_evidence: gSceneImageSectorRanges[17] in src/scene/scene_event_tasks.c
+  273:
+    name: scene_image_018
+    identity_evidence: gSceneImageSectorRanges[18] in src/scene/scene_event_tasks.c
+  274:
+    name: scene_image_019
+    identity_evidence: gSceneImageSectorRanges[19] in src/scene/scene_event_tasks.c
+  275:
+    name: scene_image_020
+    identity_evidence: gSceneImageSectorRanges[20] in src/scene/scene_event_tasks.c
+  276:
+    name: scene_image_021
+    identity_evidence: gSceneImageSectorRanges[21] in src/scene/scene_event_tasks.c
+  277:
+    name: scene_image_022
+    identity_evidence: gSceneImageSectorRanges[22] in src/scene/scene_event_tasks.c
+  278:
+    name: scene_image_023
+    identity_evidence: gSceneImageSectorRanges[23] in src/scene/scene_event_tasks.c
+  279:
+    name: scene_image_024
+    identity_evidence: gSceneImageSectorRanges[24] in src/scene/scene_event_tasks.c
+  280:
+    name: scene_image_025
+    identity_evidence: gSceneImageSectorRanges[25] in src/scene/scene_event_tasks.c
+  281:
+    name: scene_image_026
+    identity_evidence: gSceneImageSectorRanges[26] in src/scene/scene_event_tasks.c
+  282:
+    name: scene_image_027
+    identity_evidence: gSceneImageSectorRanges[27] in src/scene/scene_event_tasks.c
+  283:
+    name: scene_image_028
+    identity_evidence: gSceneImageSectorRanges[28] in src/scene/scene_event_tasks.c
+  284:
+    name: scene_image_029
+    identity_evidence: gSceneImageSectorRanges[29] in src/scene/scene_event_tasks.c
+  285:
+    name: scene_image_030
+    identity_evidence: gSceneImageSectorRanges[30] in src/scene/scene_event_tasks.c
+  286:
+    name: scene_image_031
+    identity_evidence: gSceneImageSectorRanges[31] in src/scene/scene_event_tasks.c
+  287:
+    name: scene_image_032
+    identity_evidence: gSceneImageSectorRanges[32] in src/scene/scene_event_tasks.c
+  288:
+    name: scene_image_033
+    identity_evidence: gSceneImageSectorRanges[33] in src/scene/scene_event_tasks.c
+  289:
+    name: scene_image_034
+    identity_evidence: gSceneImageSectorRanges[34] in src/scene/scene_event_tasks.c
+  290:
+    name: scene_image_035
+    identity_evidence: gSceneImageSectorRanges[35] in src/scene/scene_event_tasks.c
+  291:
+    name: scene_image_036
+    identity_evidence: gSceneImageSectorRanges[36] in src/scene/scene_event_tasks.c
+  292:
+    name: scene_image_037
+    identity_evidence: gSceneImageSectorRanges[37] in src/scene/scene_event_tasks.c
+  293:
+    name: scene_image_038
+    identity_evidence: gSceneImageSectorRanges[38] in src/scene/scene_event_tasks.c
+  294:
+    name: scene_image_039
+    identity_evidence: gSceneImageSectorRanges[39] in src/scene/scene_event_tasks.c
+  295:
+    name: scene_image_040
+    identity_evidence: gSceneImageSectorRanges[40] in src/scene/scene_event_tasks.c
+  296:
+    name: scene_image_041
+    identity_evidence: gSceneImageSectorRanges[41] in src/scene/scene_event_tasks.c
+  297:
+    name: scene_image_042
+    identity_evidence: gSceneImageSectorRanges[42] in src/scene/scene_event_tasks.c
+  298:
+    name: scene_image_043
+    identity_evidence: gSceneImageSectorRanges[43] in src/scene/scene_event_tasks.c
+  299:
+    name: scene_image_044
+    identity_evidence: gSceneImageSectorRanges[44] in src/scene/scene_event_tasks.c
+  300:
+    name: scene_image_045
+    identity_evidence: gSceneImageSectorRanges[45] in src/scene/scene_event_tasks.c
+  301:
+    name: scene_image_046
+    identity_evidence: gSceneImageSectorRanges[46] in src/scene/scene_event_tasks.c
+  302:
+    name: scene_image_047
+    identity_evidence: gSceneImageSectorRanges[47] in src/scene/scene_event_tasks.c
+  303:
+    name: scene_image_048
+    identity_evidence: gSceneImageSectorRanges[48] in src/scene/scene_event_tasks.c
+  304:
+    name: scene_image_049
+    identity_evidence: gSceneImageSectorRanges[49] in src/scene/scene_event_tasks.c
+  305:
+    name: scene_image_050
+    identity_evidence: gSceneImageSectorRanges[50] in src/scene/scene_event_tasks.c
+  306:
+    name: scene_image_051
+    identity_evidence: gSceneImageSectorRanges[51] in src/scene/scene_event_tasks.c
+  307:
+    name: scene_image_052
+    identity_evidence: gSceneImageSectorRanges[52] in src/scene/scene_event_tasks.c
+  308:
+    name: scene_image_053
+    identity_evidence: gSceneImageSectorRanges[53] in src/scene/scene_event_tasks.c
+  309:
+    name: scene_image_000
+    identity_evidence: gSceneImageSectorRanges[0] in src/scene/scene_event_tasks.c
+  310:
+    name: scene_image_055
+    identity_evidence: gSceneImageSectorRanges[55] in src/scene/scene_event_tasks.c
+  311:
+    name: scene_image_056
+    identity_evidence: gSceneImageSectorRanges[56] in src/scene/scene_event_tasks.c
+  312:
+    name: scene_image_057
+    identity_evidence: gSceneImageSectorRanges[57] in src/scene/scene_event_tasks.c
+  313:
+    name: scene_image_058
+    identity_evidence: gSceneImageSectorRanges[58] in src/scene/scene_event_tasks.c
+  314:
+    name: scene_image_059
+    identity_evidence: gSceneImageSectorRanges[59] in src/scene/scene_event_tasks.c
+  315:
+    name: scene_image_060
+    identity_evidence: gSceneImageSectorRanges[60] in src/scene/scene_event_tasks.c
+  316:
+    name: scene_image_061
+    identity_evidence: gSceneImageSectorRanges[61] in src/scene/scene_event_tasks.c
+  317:
+    name: scene_image_062
+    identity_evidence: gSceneImageSectorRanges[62] in src/scene/scene_event_tasks.c
+  318:
+    name: scene_image_063
+    identity_evidence: gSceneImageSectorRanges[63] in src/scene/scene_event_tasks.c
+  319:
+    name: scene_image_064
+    identity_evidence: gSceneImageSectorRanges[64] in src/scene/scene_event_tasks.c
+  320:
+    name: scene_image_065
+    identity_evidence: gSceneImageSectorRanges[65] in src/scene/scene_event_tasks.c
+  321:
+    name: scene_image_066
+    identity_evidence: gSceneImageSectorRanges[66] in src/scene/scene_event_tasks.c
+  322:
+    name: scene_image_067
+    identity_evidence: gSceneImageSectorRanges[67] in src/scene/scene_event_tasks.c
+  323:
+    name: scene_image_068
+    identity_evidence: gSceneImageSectorRanges[68] in src/scene/scene_event_tasks.c
+  324:
+    name: scene_image_069
+    identity_evidence: gSceneImageSectorRanges[69] in src/scene/scene_event_tasks.c
+  325:
+    name: scene_image_070
+    identity_evidence: gSceneImageSectorRanges[70] in src/scene/scene_event_tasks.c
+  326:
+    name: scene_image_071
+    identity_evidence: gSceneImageSectorRanges[71] in src/scene/scene_event_tasks.c
+  327:
+    name: scene_image_072
+    identity_evidence: gSceneImageSectorRanges[72] in src/scene/scene_event_tasks.c
+  328:
+    name: scene_image_073
+    identity_evidence: gSceneImageSectorRanges[73] in src/scene/scene_event_tasks.c
+  329:
+    name: scene_image_074
+    identity_evidence: gSceneImageSectorRanges[74] in src/scene/scene_event_tasks.c
+  330:
+    name: scene_image_075
+    identity_evidence: gSceneImageSectorRanges[75] in src/scene/scene_event_tasks.c
+  331:
+    name: scene_image_076
+    identity_evidence: gSceneImageSectorRanges[76] in src/scene/scene_event_tasks.c
+  332:
+    name: scene_image_077
+    identity_evidence: gSceneImageSectorRanges[77] in src/scene/scene_event_tasks.c
+  333:
+    name: scene_image_078
+    identity_evidence: gSceneImageSectorRanges[78] in src/scene/scene_event_tasks.c
+  334:
+    name: scene_image_079
+    identity_evidence: gSceneImageSectorRanges[79] in src/scene/scene_event_tasks.c
+  335:
+    name: scene_image_080
+    identity_evidence: gSceneImageSectorRanges[80] in src/scene/scene_event_tasks.c
+  336:
+    name: scene_image_081
+    identity_evidence: gSceneImageSectorRanges[81] in src/scene/scene_event_tasks.c
+  337:
+    name: scene_image_082
+    identity_evidence: gSceneImageSectorRanges[82] in src/scene/scene_event_tasks.c
+  338:
+    name: scene_image_083
+    identity_evidence: gSceneImageSectorRanges[83] in src/scene/scene_event_tasks.c
+  339:
+    name: scene_image_084
+    identity_evidence: gSceneImageSectorRanges[84] in src/scene/scene_event_tasks.c
+  340:
+    name: scene_image_085
+    identity_evidence: gSceneImageSectorRanges[85] in src/scene/scene_event_tasks.c
+  341:
+    name: scene_image_086
+    identity_evidence: gSceneImageSectorRanges[86] in src/scene/scene_event_tasks.c
+  342:
+    name: scene_image_087
+    identity_evidence: gSceneImageSectorRanges[87] in src/scene/scene_event_tasks.c
+  343:
+    name: scene_image_088
+    identity_evidence: gSceneImageSectorRanges[88] in src/scene/scene_event_tasks.c
+  344:
+    name: scene_image_089
+    identity_evidence: gSceneImageSectorRanges[89] in src/scene/scene_event_tasks.c
+  345:
+    name: scene_image_090
+    identity_evidence: gSceneImageSectorRanges[90] in src/scene/scene_event_tasks.c
+  346:
+    name: scene_image_091
+    identity_evidence: gSceneImageSectorRanges[91] in src/scene/scene_event_tasks.c
+  347:
+    name: scene_image_092
+    identity_evidence: gSceneImageSectorRanges[92] in src/scene/scene_event_tasks.c
+  348:
+    name: scene_image_093
+    identity_evidence: gSceneImageSectorRanges[93] in src/scene/scene_event_tasks.c
+  349:
+    name: scene_image_094
+    identity_evidence: gSceneImageSectorRanges[94] in src/scene/scene_event_tasks.c
+  350:
+    name: scene_image_095
+    identity_evidence: gSceneImageSectorRanges[95] in src/scene/scene_event_tasks.c
+  351:
+    name: scene_image_096
+    identity_evidence: gSceneImageSectorRanges[96] in src/scene/scene_event_tasks.c
+  352:
+    name: scene_image_097
+    identity_evidence: gSceneImageSectorRanges[97] in src/scene/scene_event_tasks.c
+  353:
+    name: scene_image_098
+    identity_evidence: gSceneImageSectorRanges[98] in src/scene/scene_event_tasks.c
+  354:
+    name: scene_image_099
+    identity_evidence: gSceneImageSectorRanges[99] in src/scene/scene_event_tasks.c
+  355:
+    name: scene_image_100
+    identity_evidence: gSceneImageSectorRanges[100] in src/scene/scene_event_tasks.c
+  356:
+    name: scene_image_101
+    identity_evidence: gSceneImageSectorRanges[101] in src/scene/scene_event_tasks.c
+  357:
+    name: scene_image_102
+    identity_evidence: gSceneImageSectorRanges[102] in src/scene/scene_event_tasks.c
+  358:
+    name: scene_image_103
+    identity_evidence: gSceneImageSectorRanges[103] in src/scene/scene_event_tasks.c
+  359:
+    name: scene_image_104
+    identity_evidence: gSceneImageSectorRanges[104] in src/scene/scene_event_tasks.c
+  360:
+    name: scene_image_105
+    identity_evidence: gSceneImageSectorRanges[105] in src/scene/scene_event_tasks.c
+  361:
+    name: scene_image_106
+    identity_evidence: gSceneImageSectorRanges[106] in src/scene/scene_event_tasks.c
+  362:
+    name: scene_image_107
+    identity_evidence: gSceneImageSectorRanges[107] in src/scene/scene_event_tasks.c
+  363:
+    name: controller_playback_001
+    identity_evidence: gControllerPlaybackEntries[1] in src/io/controller_playback.c
+  364:
+    name: controller_playback_002
+    identity_evidence: gControllerPlaybackEntries[2] in src/io/controller_playback.c
+  365:
+    name: controller_playback_003
+    identity_evidence: gControllerPlaybackEntries[3] in src/io/controller_playback.c
+  366:
+    name: controller_playback_004
+    identity_evidence: gControllerPlaybackEntries[4] in src/io/controller_playback.c
+  367:
+    name: controller_playback_005
+    identity_evidence: gControllerPlaybackEntries[5] in src/io/controller_playback.c
+  368:
+    name: controller_playback_006
+    identity_evidence: gControllerPlaybackEntries[6] in src/io/controller_playback.c
+  369:
+    name: controller_playback_007
+    identity_evidence: gControllerPlaybackEntries[7] in src/io/controller_playback.c
+  370:
+    name: controller_playback_008
+    identity_evidence: gControllerPlaybackEntries[8] in src/io/controller_playback.c
+  371:
+    name: controller_playback_009
+    identity_evidence: gControllerPlaybackEntries[9] in src/io/controller_playback.c
+  372:
+    name: controller_playback_010
+    identity_evidence: gControllerPlaybackEntries[10] in src/io/controller_playback.c
+  373:
+    name: controller_playback_011
+    identity_evidence: gControllerPlaybackEntries[11] in src/io/controller_playback.c
+  374:
+    name: other_mode_text_000
+    identity_evidence: gOtherModeSectorRanges[0] in src/text/text_sequence.c
+  375:
+    name: other_mode_text_001
+    identity_evidence: gOtherModeSectorRanges[1] in src/text/text_sequence.c
+  376:
+    name: other_mode_text_003
+    identity_evidence: gOtherModeSectorRanges[3] in src/text/text_sequence.c
+  377:
+    name: other_mode_text_002
+    identity_evidence: gOtherModeSectorRanges[2] in src/text/text_sequence.c
+  378:
+    name: other_mode_text_004
+    identity_evidence: gOtherModeSectorRanges[4] in src/text/text_sequence.c
+  379:
+    name: other_mode_text_005
+    identity_evidence: gOtherModeSectorRanges[5] in src/text/text_sequence.c
+  380:
+    name: other_mode_text_007
+    identity_evidence: gOtherModeSectorRanges[7] in src/text/text_sequence.c
+  381:
+    name: other_mode_text_006
+    identity_evidence: gOtherModeSectorRanges[6] in src/text/text_sequence.c
+  382:
+    name: other_mode_text_009
+    identity_evidence: gOtherModeSectorRanges[9] in src/text/text_sequence.c
+  383:
+    name: other_mode_text_008
+    identity_evidence: gOtherModeSectorRanges[8] in src/text/text_sequence.c
+  384:
+    name: other_mode_text_010
+    identity_evidence: gOtherModeSectorRanges[10] in src/text/text_sequence.c
+  385:
+    name: mode1_text_000
+    identity_evidence: gMode1SectorRanges[0] in src/text/text_sequence.c
+  386:
+    name: mode1_text_001
+    identity_evidence: gMode1SectorRanges[1] in src/text/text_sequence.c
+  387:
+    name: mode1_text_002
+    identity_evidence: gMode1SectorRanges[2] in src/text/text_sequence.c
+  388:
+    name: mode1_text_003
+    identity_evidence: gMode1SectorRanges[3] in src/text/text_sequence.c
+  389:
+    name: mode1_text_004
+    identity_evidence: gMode1SectorRanges[4] in src/text/text_sequence.c
+  390:
+    name: mode1_text_005
+    identity_evidence: gMode1SectorRanges[5] in src/text/text_sequence.c
+  391:
+    name: mode1_text_006
+    identity_evidence: gMode1SectorRanges[6] in src/text/text_sequence.c
+  392:
+    name: mode1_text_007
+    identity_evidence: gMode1SectorRanges[7] in src/text/text_sequence.c
+  393:
+    name: mode1_text_008
+    identity_evidence: gMode1SectorRanges[8] in src/text/text_sequence.c
+  394:
+    name: mode1_text_009
+    identity_evidence: gMode1SectorRanges[9] in src/text/text_sequence.c
+read_tables:
+- source: src/menu/panel_tasks.c
+  name: gGridResourceFirstSectorRanges
+  rows: 50
+  fields:
+  - 0
+  - 1
+  uses:
+  - command: 0
+    destination: DAT_PLAYER_MODEL_BUFFERS + slot * 0x4000
+  - command: 0
+    destination: DAT_GRID_MODEL_BUFFERS + slot * 0x4000
+- source: src/menu/panel_tasks.c
+  name: gGridResourceSecondSectorRanges
+  rows: 50
+  fields:
+  - 0
+  - 1
+  uses:
+  - command: 1
+    destination: DAT_SCRATCH
+  - command: 0
+    destination: DAT_GRID_TEXTURE_BUFFERS + slot * 0x4000
+- source: src/race/course/course_objects.c
+  name: gCourseResourceSectors
+  rows: 30
+  fields:
+  - 0
+  - 1
+  uses:
+  - column: 0
+    command: 0
+    destination: DAT_COURSE_FIRST
+  - column: 1
+    command: 0
+    destination: DAT_COURSE_SECOND
+  - column: 2
+    command: 2
+    destination: DAT_SCRATCH
+- source: src/race/course/course_objects.c
+  name: gCourseMetadataSectors
+  rows: 10
+  fields:
+  - 0
+  - 1
+  uses:
+  - command: 0
+    destination: gCourseMetadataBuffer
+- source: src/race/course/course_objects.c
+  name: gCourseOptionalResourceSectors
+  rows: 10
+  fields:
+  - 0
+  - 1
+  uses:
+  - command: 0
+    destination: DAT_COURSE_OPTIONAL
+- source: src/scene/scene_event_tasks.c
+  name: gSceneImageSectorRanges
+  rows: 108
+  fields:
+  - 0
+  - 1
+  uses:
+  - command: 0
+    destination: DAT_SCENE_IMAGE
+- source: src/text/text_sequence.c
+  name: gMode1SectorRanges
+  rows: 10
+  fields:
+  - 0
+  - 1
+  uses:
+  - command: 0
+    destination: DAT_INDEXED_RESOURCE
+- source: src/text/text_sequence.c
+  name: gOtherModeSectorRanges
+  rows: 11
+  fields:
+  - 0
+  - 1
+  uses:
+  - command: 0
+    destination: DAT_INDEXED_RESOURCE
+- source: src/io/controller_playback.c
+  name: gControllerPlaybackEntries
+  rows: 12
+  fields:
+  - 2
+  - 3
+  uses:
+  - command: 0
+    destination: D_800E959C
+runtime_regions:
+- symbol: gDatScratch
+  macro: DAT_SCRATCH
+  evidence: Shared DAT staging, sound body, animation, scene event workspace and movie ring;
+    extent is remaining RAM, not a reservation.
+- symbol: gDatStartupModels
+  macro: DAT_STARTUP_MODEL_BUFFER
+  views: [DAT_STARTUP_MODELS]
+  evidence: Entry 0 startup read; overlaps scratch above 0x80180000.
+- symbol: gDatStartupTextures
+  macro: DAT_STARTUP_TEXTURE_BUFFER
+  views: [DAT_STARTUP_TEXTURES]
+  evidence: Entry 1 startup read; reused by movies/course resources.
+- symbol: gDatPlayerModels
+  macro: DAT_PLAYER_MODEL_BUFFERS
+  evidence: Four 0x4000 player model slots.
+- symbol: gDatPlayerModelBlocks
+  macro: DAT_PLAYER_MODEL_BLOCKS
+  evidence: Four 0x800 model header blocks.
+- symbol: gDatBackgroundMap
+  macro: DAT_BACKGROUND_MAP
+  evidence: One sector background map.
+- symbol: gDatBackgroundTextureFirst
+  macro: DAT_BACKGROUND_TEXTURE_FIRST
+  evidence: Background TIM read, 13 sectors.
+- symbol: gDatBackgroundTextureSecond
+  macro: DAT_BACKGROUND_TEXTURE_SECOND
+  evidence: Background TIM read, four sectors.
+- symbol: gDatTextureArchive
+  macro: DAT_TEXTURE_ARCHIVE_BUFFER
+  views: [DAT_TEXTURE_ARCHIVE]
+  evidence: Mode 2 TIM archive read, 0x8d sectors; other states also stage TIM archives
+    here.
+- symbol: gDatSoundHeader0
+  macro: DAT_SOUND_HEADER_0
+  evidence: Mode 11 sound bank slot 0 header.
+- symbol: gDatSoundHeader1
+  macro: DAT_SOUND_HEADER_1
+  evidence: Mode 11 sound bank slot 1 header.
+- symbol: gDatSoundHeader2
+  macro: DAT_SOUND_HEADER_2
+  evidence: Mode 11 sound bank slot 2 header.
+- symbol: gDatMusicSequence
+  macro: DAT_MUSIC_SEQUENCE
+  evidence: Mode 11 music sequence.
+- symbol: gDatCourseFirst
+  macro: DAT_COURSE_FIRST
+  evidence: First course resource; sizes vary by course.
+- symbol: gDatCourseSecond
+  macro: DAT_COURSE_SECOND
+  evidence: Second course resource; overlaps startup textures in some states.
+- symbol: gDatCourseOptional
+  macro: DAT_COURSE_OPTIONAL
+  evidence: Optional course read, up to five sectors.
+- symbol: gDatSceneImageBuffer
+  macro: DAT_SCENE_IMAGE
+  evidence: Secondary text resource TIM reads, 0x26 sectors.
+- symbol: gDatIndexedResource
+  macro: DAT_INDEXED_RESOURCE
+  evidence: Mode-indexed one sector text reads.
+- symbol: gDatGridModels
+  macro: DAT_GRID_MODEL_BUFFERS
+  evidence: Grid model slots, 0x4000 stride; overlays other resource views.
+- symbol: gDatGridTextures
+  macro: DAT_GRID_TEXTURE_BUFFERS
+  evidence: Grid texture slots, 0x4000 stride.
+- symbol: gMovieVlcBuffer0
+  macro: MOVIE_VLC_BUFFER_0
+  evidence: Movie VLC buffers, 0x28000 stride.
+- symbol: gMovieVlcBuffer1
+  macro: MOVIE_VLC_BUFFER_1
+  evidence: Movie VLC buffers, 0x28000 stride.
+- symbol: gMovieImageBuffer0
+  macro: MOVIE_IMAGE_BUFFER_0
+  evidence: Movie decoded image buffers, 0x3000 stride.
+- symbol: gMovieImageBuffer1
+  macro: MOVIE_IMAGE_BUFFER_1
+  evidence: Movie decoded image buffers, 0x3000 stride.
+- symbol: gMovieVlcTable
+  macro: MOVIE_VLC_TABLE
+  evidence: Movie VLC lookup table base; extent is capped at the first VLC buffer,
+    not a proven allocation size.
+- symbol: gSaveRecordWorkspace
+  macro: SAVE_RECORD_WORKSPACE
+  evidence: Two SaveRecord slots used by initializeSaveRecordTask; shares the
+    resource/movie arena and is not a DAT entry.
+binary_read_tables:
+- symbol: D_80132D54
+  address: 2148740436
+  rows: 12
+  stride: 8
+  fields:
+  - 0
+  - 2
+  command: 0
+  destination: DAT_SCRATCH
+  call: 2148164512
+- symbol: D_80132D54
+  address: 2148740436
+  rows: 12
+  stride: 8
+  fields:
+  - 4
+  - 6
+  command: 4
+  destination: DAT_SOUND_HEADER_1
+  call: 2148164552
+- symbol: D_80132B60
+  address: 2148739936
+  rows: 11
+  stride: 4
+  fields:
+  - 0
+  - 2
+  command: 0
+  destination: DAT_SCRATCH
+  call: 2148164744
+- symbol: D_80132B34
+  address: 2148739892
+  rows: 11
+  stride: 4
+  fields:
+  - 0
+  - 2
+  command: 0
+  destination: '0x80182060'
+  call: 2148164796
+- symbol: D_801203EC
+  address: 2148664300
+  rows: 10
+  stride: 8
+  fields:
+  - 0
+  - 2
+  command: 0
+  destination: DAT_SCRATCH
+  call: 2147597272
+- symbol: D_801203EC
+  address: 2148664300
+  rows: 10
+  stride: 8
+  fields:
+  - 4
+  - 6
+  command: 5 + player
+  destination: 0x80167000 + player * 0x1000
+  call: 2147597328
+- symbol: D_8012043C
+  address: 2148664380
+  rows: 5
+  stride: 4
+  fields:
+  - 0
+  - 2
+  command: 0
+  destination: D_800E959C
+  call: 2147597500

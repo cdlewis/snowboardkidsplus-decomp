@@ -66,8 +66,8 @@ void dispatchGameOptionTransitionTask(void) {
     case 2:
         configureTaskStateTransition(1, 0, 30);
         setSecondaryDisplayTaskMode(1);
-        queueCdSectorCommand(0, 1, 5, (void *)0x8017D000, 0);
-        queueCdSectorCommand(0, 6, 18, (void *)0x801F0000, 0);
+        queueCdSectorCommand(0, DAT_STARTUP_MODELS_SECTOR, DAT_STARTUP_MODELS_SECTOR_COUNT, DAT_STARTUP_MODELS, 0);
+        queueCdSectorCommand(0, DAT_STARTUP_TEXTURES_SECTOR, DAT_STARTUP_TEXTURES_SECTOR_COUNT, DAT_STARTUP_TEXTURES, 0);
         D_8013B109 = 1;
         D_8013B0F0 = 0;
         D_8013AE88->callback = func_80014B58;
@@ -96,7 +96,7 @@ void initializeMenuTransitionResourcesTask(void) {
     if (D_8013B0F0 == 0) {
         configureTaskStateTransition(11, 0, 30);
         setSecondaryDisplayTaskMode(3);
-        queueCdSectorCommand(2, 0x162, 0x8D, (void *)0x80189800, 0);
+        queueCdSectorCommand(2, DAT_MODE2_TEXTURES_SECTOR, DAT_MODE2_TEXTURES_SECTOR_COUNT, DAT_TEXTURE_ARCHIVE, 0);
         D_8013B0F0 = 1;
         D_8013AE88->data18 = 0;
         setCurrentTaskCallback(waitMode2TransitionTask);

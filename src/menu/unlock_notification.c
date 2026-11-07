@@ -1,11 +1,11 @@
-#include "../text/resource_playback_internal.h"
+#include "../scene/scene_event_tasks_internal.h"
 
 void startUnlockNotification(s16 index) {
     if ((u16)index < 11 && (s16)getUnlockNotificationFlag(index) == 0) {
         D_8013AF3A = index;
         D_8013AFE4 &= ~0x200;
         setUnlockNotificationFlag(index);
-        func_80014874(func_800A624C);
+        func_80014874(initializeScenePlaybackResourcesTask);
     } else {
         D_8013AFE4 |= 0x200;
     }

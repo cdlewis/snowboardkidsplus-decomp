@@ -36,11 +36,12 @@ RacePlayerVector gPlayerAnimationPose[12] __attribute__((section(".data.player_a
 
 void startCurrentPlayerAnimation(u8 animation, u8 mode) {
     RacePlayer *player;
+    u32 *offsets = DAT_ANIMATION_ARCHIVE->offsets;
     currentPlayerAbsolute->animationIndex = D_800EB09C[currentPlayerAbsolute->characterId][animation];
     currentPlayerAbsolute->animationFlags = mode;
     currentPlayerAbsolute->animationStep = 0;
     player = currentPlayerAbsolute;
-    player->animationStream = (u16 *)(PLAYER_ANIMATION_ARCHIVE + PLAYER_ANIMATION_OFFSETS[player->animationIndex]);
+    player->animationStream = (u16 *)(PLAYER_ANIMATION_ARCHIVE + offsets[player->animationIndex]);
     player->animationFrameCount = *player->animationStream;
     player->animationStream++;
     player->animationTicks = *player->animationStream;
@@ -94,7 +95,10 @@ s32 updateCurrentPlayerAnimation(void) {
         case 1:
             currentPlayerAbsolute->animationStep++;
             restart = currentPlayerAbsolute;
-            restart->animationStream = (u16 *)(PLAYER_ANIMATION_ARCHIVE + PLAYER_ANIMATION_OFFSETS[restart->animationIndex]);
+            {
+                u32 *offsets = DAT_ANIMATION_ARCHIVE->offsets;
+                restart->animationStream = (u16 *)(PLAYER_ANIMATION_ARCHIVE + offsets[restart->animationIndex]);
+            }
             restart->animationFrameCount = *restart->animationStream;
             restart->animationStream++;
             restart->animationTicks = *restart->animationStream;
