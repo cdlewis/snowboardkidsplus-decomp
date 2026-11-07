@@ -21,6 +21,7 @@ void setCoordinateRotationZYX(SVECTOR *rotation, GsCOORDINATE2 *coordinate);
 void adjustDebugPositionAndDisplay(VECTOR *position);
 void computeVectorYawAndPitch(VECTOR *vector, s16 *yaw, s16 *pitch);
 
+void func_8004BC3C(s16 index, s32 x, s32 z, s32 radius, s32 *displacementX, s32 *displacementZ, s32 *directionX, s32 *directionZ);
 void func_8004C968(s16 index, s32 x, s32 z, s32 radius, s32 *displacementX, s32 *displacementZ);
 
 #undef COORDINATE_DATA

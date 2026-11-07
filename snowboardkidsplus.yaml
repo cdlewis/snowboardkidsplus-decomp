@@ -758,6 +758,8 @@ segments:
       - {start: 0x12B9AC, type: .data, name: game/unk_8002B3F4, linker_section: .data.player_dual_resource_effect_frame}
       - {start: 0x12B9B4, type: .data, name: game/unk_8002B3F4, linker_section: .data.player_visual_pair_frame}
       - [0x12B9BC, data, 12B9BC]
+      - {start: 0x12B9C4, type: .data, name: game/unk_8002B3F4, linker_section: .data.player_visual_pair_6780_frame}
+      - [0x12B9CC, data, 12B9CC]
       - {start: 0x12B9D4, type: .data, name: game/unk_8002B3F4, linker_section: .data.finish_slot_state}
       - [0x12B9D6, pad]
       - {start: 0x12B9D8, type: .sdata, name: game/unk_800497B8, linker_section_order: .data}

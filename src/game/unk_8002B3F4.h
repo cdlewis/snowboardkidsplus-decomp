@@ -440,6 +440,9 @@ extern s32 D_8013B0E8;
 extern TaskVisualFrame gPlayerVisualPairFrame
     __attribute__((section(".data.player_visual_pair_frame"), aligned(4)));
 
+extern TaskVisualFrame gPlayerVisualPair6780Frame
+    __attribute__((section(".data.player_visual_pair_6780_frame"), aligned(4)));
+
 extern s16 D_8013B1D4 __attribute__((section(".data.finish_slot_state")));
 
 
@@ -459,7 +462,7 @@ void func_80046894(TaskVisualResource *resource, VECTOR *history, s32 distance, 
 void updateAcceleratingTaskVisualCountdown(void);
 void updatePlayerVisualPairTask(void);
 void func_8004713C(void);
-void func_80047380(void);
+void updatePlayerVisualPairTask6780(void);
 
 
 void drawSlidingRaceTimeDisplay(SlidingTimeResource *resource);
