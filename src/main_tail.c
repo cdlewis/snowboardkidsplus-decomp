@@ -210,7 +210,6 @@ extern u8 D_8013B562;
 extern u8 D_8013AF3A __attribute__((section(".data")));
 
 
-void func_8001E3E4(SVECTOR *rotation, GsCOORDINATE2 *coordinate);
 void func_8009488C(void);
 void func_800187B8(u8 voice);
 

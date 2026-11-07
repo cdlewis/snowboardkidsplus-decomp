@@ -944,7 +944,6 @@ const char gNoProcessMessage[16] = "NO PROCESS...";
 
 void func_8004EFE0(void);
 void func_80059F68(void);
-void func_8001E3E4(SVECTOR *rotation, GsCOORDINATE2 *coordinate);
 void SetFarColor(s32 r, s32 g, s32 b);
 void SetFogNearFar(s32 near, s32 far, s32 h);
 void drawTaskObject(u16 index);

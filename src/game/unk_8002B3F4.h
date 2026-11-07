@@ -543,7 +543,7 @@ void slideRaceTimeDisplayOut(void);
 void func_80033100(void);
 void updatePlayerTimerTask(void);
 void func_80049240(void);
-void func_800458F8(void);
+void updatePlayerScaledObjectTask(void);
 void func_8004531C(void);
 void updatePlayerFlagTaskVisual(void);
 void drawPlayerFlagTaskVisual(TaskVisualResource *resource);

@@ -16,6 +16,7 @@ extern SVECTOR *D_8013AF90 COORDINATE_DATA;
 extern SVECTOR *D_8013AF94 COORDINATE_DATA;
 extern MATRIX *D_8013AF98 COORDINATE_DATA;
 
+void func_8001E3E4(SVECTOR *rotation, GsCOORDINATE2 *coordinate);
 void setCoordinateRotationZYX(SVECTOR *rotation, GsCOORDINATE2 *coordinate);
 
 void adjustDebugPositionAndDisplay(VECTOR *position);

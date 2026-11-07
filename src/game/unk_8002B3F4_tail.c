@@ -2860,10 +2860,34 @@ void initializeScaledTaskCoordinateResource(void) {
     resource = (ScaledCoordinateResource *)&D_800D9504[D_8013AE88->resource14];
     GsInitCoordinate2(0, &resource->coordinate);
     resource->scale.vx = resource->scale.vy = resource->scale.vz = 0xC00;
-    setCurrentTaskCallback(func_800458F8);
+    setCurrentTaskCallback(updatePlayerScaledObjectTask);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_800458F8);
+void updatePlayerScaledObjectTask(void) {
+    PlayerEffectResource *resource;
+    RacePlayer *players;
+    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    resource = (PlayerEffectResource *)&D_800D9504[D_8013AE88->resource14];
+    players = D_80120E90;
+    resource->coordinate.coord.t[0] = players[D_8013AE88->data18].worldCoordinate.coord.t[0];
+    resource->coordinate.coord.t[1] = players[D_8013AE88->data18].worldCoordinate.coord.t[1];
+    resource->coordinate.coord.t[2] = players[D_8013AE88->data18].worldCoordinate.coord.t[2];
+    resource->rotation.vx = players[D_8013AE88->data18].unk0B4;
+    resource->rotation.vy = players[D_8013AE88->data18].unk0B6;
+    resource->rotation.vz = players[D_8013AE88->data18].unk0B8;
+    if (isPositionInCameraRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
+        D_80129A80[10].coord2 = &resource->coordinate;
+        func_8001E3E4(&resource->rotation, &resource->coordinate);
+        ScaleMatrix(&resource->coordinate.coord, &resource->scale);
+        drawTaskObject(10);
+    }
+    if (players[D_8013AE88->data18].unk12C != 25) {
+        func_800183FC(D_8013AE88->data18, 1, 0xF00, 0x20);
+        createNineIndexedChildTasks(0x15, 0);
+        D_8013AE88->callback = deleteCurrentTask;
+        D_8013AE88->unk10 |= 1;
+    }
+}
 
 void initializePlayerParticleHistoryTask(void) {
     TaskVisualResource *resource;
