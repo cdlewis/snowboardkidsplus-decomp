@@ -2737,6 +2737,7 @@ gTaskShadowedText = 0x80130724; // size:0x1C
 animateUnlockMenuTransition = 0x800A5050; // type:func
 
 createPaletteRotationTask = 0x8007DE28; // type:func
+updatePaletteRotationTask = 0x8007E004; // type:func
 
 updateOrbitingTaskObject = 0x8005A1C4; // type:func
 updateMovingTaskObject = 0x8005A360; // type:func

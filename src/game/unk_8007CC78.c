@@ -114,7 +114,7 @@ void func_800897D0(SaveRecord *record);
 void mergeSaveRecordFlags(SaveRecord *source, SaveRecord *destination);
 void func_800875D0(void);
 void func_8007D5C8(void);
-void func_8007E004(void);
+void updatePaletteRotationTask(void);
 void func_80089B30(void);
 void func_80087030(void);
 void func_800857C4(void);
@@ -158,7 +158,7 @@ static inline PaletteRotationSlot *getPaletteRotationSlot(u16 resourceIndex, s32
 void createPaletteRotationTask(s32 x, s32 y, s32 first, s32 last, s32 steps, s32 interval, s32 index) {
     PaletteRotationResource *resource;
     PaletteRotationSlot *slot;
-    func_80014874(func_8007E004);
+    func_80014874(updatePaletteRotationTask);
     D_8013AE8C->data18 = 0;
     D_8013AE8C->data1E = index;
     D_8013AE8C->resource14 = allocateTaskResource();
@@ -185,7 +185,49 @@ void createPaletteRotationTask(s32 x, s32 y, s32 first, s32 last, s32 steps, s32
     slot->task = D_8013AE8C;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8007E004);
+static inline PaletteRotationSlot *getPaletteEntrySlot(u16 resourceIndex, u16 index) {
+    PaletteRotationSlot *slots = (PaletteRotationSlot *)&D_800D9504[resourceIndex];
+    return &slots[(u16)(index / 10)];
+}
+
+void updatePaletteRotationTask(void) {
+    PaletteRotationResource *resource;
+    PaletteRotationSlot *slot;
+    s32 i, j, step;
+    u16 color;
+    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    resource = (PaletteRotationResource *)&D_800D9504[D_8013AE88->resource14];
+    if ((u16)(D_8013AE88->data1E % 10) == 0) {
+        if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
+        slot = getPaletteEntrySlot(D_8013AE98->resource14, D_8013AE88->data1E);
+    } else {
+        if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
+        slot = getPaletteEntrySlot(D_8013AE98->resource16, D_8013AE88->data1E);
+    }
+    switch (slot->state) {
+    case 1:
+        if (++resource->timer < 2) return;
+        for (i = 0; i < 16; i++) resource->rotated[i] = resource->original[i];
+        resource->timer = 0;
+        slot->state = 0;
+        break;
+    case 99:
+        LoadImage(&resource->rect, (u32 *)resource->original);
+        slot->task = 0;
+        slot->unk06 = 0;
+        func_800149A8();
+        return;
+    }
+    if (++resource->timer > resource->interval) {
+        resource->timer = 0;
+        for (step = 0; step < resource->steps; step++) {
+            color = resource->rotated[resource->last];
+            for (j = resource->last; j > resource->first; j--) resource->rotated[j] = resource->rotated[j - 1];
+            resource->rotated[resource->first] = color;
+        }
+        LoadImage(&resource->rect, (u32 *)resource->rotated);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8007E298);
 
@@ -588,11 +630,6 @@ s16 mapGroupedValueToTableIndex(s16 value) {
 }
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80086C34);
-
-static inline PaletteRotationSlot *getPaletteEntrySlot(u16 resourceIndex, u16 index) {
-    PaletteRotationSlot *slots = (PaletteRotationSlot *)&D_800D9504[resourceIndex];
-    return &slots[(u16)(index / 10)];
-}
 
 void updatePaletteEntryTask(void) {
     PaletteEntryResource *resource;
