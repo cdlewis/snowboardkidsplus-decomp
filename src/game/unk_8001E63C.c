@@ -89,7 +89,6 @@ void func_8001EEBC(void);
 void func_80025014(void);
 void func_800252CC(void);
 void func_80024288(void);
-void func_800245C4(void);
 void func_8002497C(void);
 void func_800205B8(void);
 void func_80028680(void);
@@ -112,6 +111,7 @@ void func_80028680(void);
 void func_80026BAC(void);
 void func_80027624(void);
 s16 func_80028234(void);
+s16 func_8002D3C4(s16 value);
 
 TaskCallback gCurrentPlayerTaskPhaseCallbacks[8]
     __attribute__((section(".data.player_task_phases"))) = {
@@ -366,7 +366,7 @@ void initializeCurrentPlayerState4(void) {
     D_8013B0D8->unk050 = D_8013B0D8->x - D_8013B0D8->unk060;
     D_8013B0D8->unk058 = D_8013B0D8->z - D_8013B0D8->unk064;
     func_8002E5A0(D_8013AE88->data18, 4);
-    setCurrentTaskCallback(func_800245C4);
+    setCurrentTaskCallback(updateCurrentPlayerState4MotionAndLanding);
 }
 
 void initializeCurrentPlayerState5(void) {
@@ -737,7 +737,44 @@ void updateCurrentPlayerState29MotionAndAnimation(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80024288);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_800245C4);
+void updateCurrentPlayerState4MotionAndLanding(void) {
+    RacePlayer *player;
+    func_8002AE6C();
+    player = D_8013B0D8;
+    player->unk130 = 0x1800;
+    if (player->unk128 & 1) {
+        D_800EB22C.vx = player->unk060;
+        D_800EB22C.vz = player->unk064;
+        clampVectorToCurrentPlayerLimit(&D_800EB22C);
+        D_8013B0D8->unk060 = D_800EB22C.vx;
+        D_8013B0D8->unk064 = D_800EB22C.vz;
+        D_8013B0D8->unk062 += 0x280;
+        D_8013B0D8->unk060 -= D_8013B0D8->unk060 / 15;
+        D_8013B0D8->unk064 -= D_8013B0D8->unk064 / 15;
+    } else {
+        player->unk09E = player->unk09A;
+        func_8002AE38(0, 0xC0, 0xC0, 0xC0);
+    }
+    D_8013B0D8->x += D_8013B0D8->unk060;
+    D_8013B0D8->y += D_8013B0D8->unk062;
+    D_8013B0D8->z += D_8013B0D8->unk064;
+    if (!(D_8013B0D8->unk128 & 1)) {
+        func_80028680();
+    } else if (func_80028234()) {
+        func_8002E5A0(D_8013AE88->data18, 9);
+        func_800183FC(D_8013AE88->data18, 1, 0xB01, 0x20);
+        createPlayerTripleQuadEffectTask(D_8013AE88->data18);
+    }
+    func_80017268();
+    if (D_8013B0D8->animationFlags & 0x10) {
+        if (!(D_8013B0D8->unk128 & 1)) {
+            if (!func_8002D3C4(0)) {
+                D_8013B0D8->unk12C = 5;
+            }
+            currentPlayerStateCallbacks[D_8013B0D8->unk12C]();
+        }
+    }
+}
 
 void updateCurrentPlayerState5MotionAndTimer(void) {
     RacePlayer *player;

@@ -3112,3 +3112,5 @@ gResultValueFormat = 0x8013B120; // size:0x4
 gResultValueMultiplierLabel = 0x8013B124; // size:0x4
 gPlayerNumberSuffixLabel = 0x8013B128; // size:0x4
 gComputerPlayerLabel = 0x8013B12C; // size:0x4
+
+updateCurrentPlayerState4MotionAndLanding = 0x800245C4; // type:func
