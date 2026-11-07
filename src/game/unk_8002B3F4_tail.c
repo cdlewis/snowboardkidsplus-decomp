@@ -1,5 +1,14 @@
 #include "unk_8002B3F4.h"
 #include "../main_remaining.h"
+#include "game/global_flags.h"
+
+/* Verified time-menu fields in the shared save-state prefix. */
+typedef struct TimeMenuSaveStateView {
+    u8 unk000[0x44];
+    RaceTime times[10][5];
+    u8 unk10C[0x1C1];
+    u8 icons[10][5];
+} TimeMenuSaveStateView;
 
 void dispatchMode11TransitionTask(void) {
     if (D_8013B109 != 1) {
@@ -1362,7 +1371,31 @@ void drawRaceTime(const RaceTime *value, s32 x, s32 y, s16 mode, GsOT *ot, u16 d
     func_8006C998(x + 40, y, 24, mode, -1, ot, depth);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_800379B8);
+void drawTimeRecordRows(MenuTimeResource *resource) {
+    s32 y, i, mode;
+    setSpriteColor(128, 128, 128);
+    y = -80;
+    for (i = 0; i < 5; i++) {
+        if (resource->selection == i && (gFrameCounter & 1)) {
+            mode = 2;
+        } else if (i < 3) {
+            mode = 1;
+        } else {
+            mode = 4;
+        }
+        func_8006C998(-8, y, i + 0x136, mode, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawRaceTime(&((TimeMenuSaveStateView *)&D_8013080C)->times[D_8013AFCE][i],
+                     16, y, mode, &D_800EBFF0[D_8013AF78], 1);
+        func_8006C998(88, y,
+                     (((TimeMenuSaveStateView *)&D_8013080C)->icons[D_8013AFCE][i] & 15) * 3 + 0x14A,
+                     D_80124284[((TimeMenuSaveStateView *)&D_8013080C)->icons[D_8013AFCE][i] & 15],
+                     -1, &D_800EBFF0[D_8013AF78], 1);
+        func_8006C998(108, y,
+                     (((TimeMenuSaveStateView *)&D_8013080C)->icons[D_8013AFCE][i] >> 4) + 0x13B,
+                     7, -1, &D_800EBFF0[D_8013AF78], 1);
+        y += 32;
+    }
+}
 
 void drawMenuTimeWithBrightness(MenuTimeResource *resource) {
     if (resource->brightness != 128) {
@@ -1393,7 +1426,7 @@ void drawCurrentTaskTimeMenu(void) {
     }
     resource = &D_800D9504[D_8013AE88->resource14];
     drawMenuTimeWithBrightness((MenuTimeResource *)resource);
-    func_800379B8(resource);
+    drawTimeRecordRows((MenuTimeResource *)resource);
     drawLapTimeLabel((TaskMenuFadeResource *)resource);
 }
 
@@ -1409,7 +1442,7 @@ void drawTaskTimeMenuAndSetFlag10OnInput(void) {
         setCurrentTaskCallback(drawCurrentTaskTimeMenu);
     }
     drawMenuTimeWithBrightness((MenuTimeResource *)resource);
-    func_800379B8(resource);
+    drawTimeRecordRows((MenuTimeResource *)resource);
     drawLapTimeLabel((TaskMenuFadeResource *)resource);
 }
 
