@@ -141,7 +141,8 @@ typedef struct TriangleScratchpad {
     u32 unk00;
     void (*emitTriangle)(TriangleScratchVertex *);
     s32 depth, depthCue;
-    u8 unk10[0x40];
+    s32 flags, unk14, clipping;
+    u8 unk1C[0x34];
     struct { u16 x, y; } screen[3];
     u8 unk5C[8];
     u8 r, g, b, code;
@@ -1435,7 +1436,29 @@ void processTexturedGouraudQuadPrimitive(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800559F4);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80055C1C);
+void drawProjectedIndexedFlatTriangle(void) {
+    ModelFlatTriangle *primitive = D_8013B680;
+    POLY_F3 *packet = (POLY_F3 *)GsOUT_PACKET_P;
+    TriangleScratchpad *scratch = TRIANGLE_SCRATCHPAD;
+    gte_ldv3(&D_8013B688[primitive->vertexIndices[0]], &D_8013B688[primitive->vertexIndices[1]], &D_8013B688[primitive->vertexIndices[2]]);
+    gte_rtpt();
+    gte_stsxy3(&packet->x0, &packet->x1, &packet->x2);
+    gte_nclip();
+    gte_stopz(&scratch->clipping);
+    gte_stflg(&scratch->flags);
+    gte_stszotz(&scratch->depth);
+    if (scratch->clipping < 0 || scratch->flags < 0 || scratch->depth <= 0 || scratch->depth >= 0x1000) return;
+    if (scratch->fogEnabled) {
+        gte_stdp(&scratch->depthCue);
+        DpqColor((CVECTOR *)&primitive->r, scratch->depthCue, (CVECTOR *)&packet->r0);
+    } else {
+        setRGB0(packet, primitive->r, primitive->g, primitive->b);
+    }
+    packet->tag = 4 << 24;
+    setcode(packet, scratch->code | POLY_F3_CODE);
+    addPrim(&D_8013B670->org[(scratch->depth >> D_8013B69C) + 6], packet);
+    GsOUT_PACKET_P = (u32)(packet + 1);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80055E10);
 
