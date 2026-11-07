@@ -3040,7 +3040,48 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_80046044);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_80046228);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_80046404);
+void initializePlayerVisualHistory(TaskVisualResource *resource, VECTOR *vectors, s32 value, s32 scale) {
+    RacePlayer *players;
+    RacePlayer *player;
+    VECTOR *entry;
+    u16 i;
+    GsInitCoordinate2(0, &resource->coordinate);
+    resource->r0 = resource->g0 = resource->b0 = 0x80;
+    resource->code = POLY_FT4_CODE;
+    resource->unkC6 = 0;
+    resource->unkC8 = 0;
+    resource->framePosition = 0;
+    if (D_80120E90[D_8013AE88->data18].unk128 & 0x400) {
+        resource->unkD8 = (s16)D_80120E90[D_8013AE88->data18].unk110 + 0x800;
+    } else {
+        resource->unkD8 = (s16)D_80120E90[D_8013AE88->data18].unk110;
+    }
+    players = D_80120E90;
+    resource->coordinate.coord.t[0] = players[D_8013AE88->data18].worldCoordinate.coord.t[0];
+    resource->coordinate.coord.t[1] = players[D_8013AE88->data18].worldCoordinate.coord.t[1] - 18;
+    resource->coordinate.coord.t[2] = players[D_8013AE88->data18].worldCoordinate.coord.t[2];
+    resource->position.x = resource->coordinate.coord.t[0] << 8;
+    resource->position.y = resource->coordinate.coord.t[1] << 8;
+    resource->position.z = resource->coordinate.coord.t[2] << 8;
+    resource->unkC4 = getAdjacentGeometryRegionForPoint(players[D_8013AE88->data18].unk92E, players[D_8013AE88->data18].x >> 8, players[D_8013AE88->data18].z >> 8);
+    resource->unkDC = value;
+    resource->groundY = scale;
+    player = &players[D_8013AE88->data18];
+    if (player->unk0BC != 0) {
+        resource->velocityY = (player->unk062 * ((scale << 8) / player->unk0BC)) / 256;
+    } else {
+        resource->velocityY = player->unk062;
+    }
+    for (i = 0; i < 4; i++) {
+        entry = vectors;
+        entry += i;
+        entry->vx = entry->vy = entry->vz = 0;
+        entry->pad = 0;
+    }
+    D_8013AE88->data1A = 0;
+    func_8001496C(&gGameTasks[4], initializePlayerSideVisualTask);
+    D_8013AE8C->data18 = D_8013AE88->data18;
+}
 
 void drawTaskVisualPositionHistory(TaskVisualResource *resource, VECTOR *history, TaskVisualFrame *frames) {
     u16 i;
@@ -3144,7 +3185,7 @@ void initializePlayerDualResourceEffectTask(void) {
         while (1) {}
     }
     D_8013AE88->resource16 = allocateTaskResource();
-    func_80046404((TaskVisualResource *)resource, (VECTOR *)&D_800D9504[D_8013AE88->resource16], 300, 0x5580);
+    initializePlayerVisualHistory((TaskVisualResource *)resource, (VECTOR *)&D_800D9504[D_8013AE88->resource16], 300, 0x5580);
     setCurrentTaskCallback(updatePlayerDualResourceEffectTask);
 }
 
@@ -3191,7 +3232,7 @@ void initializePlayerVisualPairTask(void) {
         while (1) {}
     }
     D_8013AE88->resource16 = allocateTaskResource();
-    func_80046404(resource, (VECTOR *)&D_800D9504[D_8013AE88->resource16], 300, 0x5580);
+    initializePlayerVisualHistory(resource, (VECTOR *)&D_800D9504[D_8013AE88->resource16], 300, 0x5580);
     setCurrentTaskCallback(updatePlayerVisualPairTask);
 }
 
@@ -3238,7 +3279,7 @@ void initializePlayerVisualPairTask5E80(void) {
         while (1) {}
     }
     D_8013AE88->resource16 = allocateTaskResource();
-    func_80046404(resource, (VECTOR *)&D_800D9504[D_8013AE88->resource16], 300, 0x5E80);
+    initializePlayerVisualHistory(resource, (VECTOR *)&D_800D9504[D_8013AE88->resource16], 300, 0x5E80);
     setCurrentTaskCallback(func_8004713C);
 }
 
@@ -3255,7 +3296,7 @@ void initializePlayerVisualPairTask6780(void) {
         while (1) {}
     }
     D_8013AE88->resource16 = allocateTaskResource();
-    func_80046404(resource, (VECTOR *)&D_800D9504[D_8013AE88->resource16], 180, 0x6780);
+    initializePlayerVisualHistory(resource, (VECTOR *)&D_800D9504[D_8013AE88->resource16], 180, 0x6780);
     setCurrentTaskCallback(updatePlayerVisualPairTask6780);
 }
 
@@ -3302,7 +3343,7 @@ void initializeDualResource4C80EffectTask(void) {
         while (1) {}
     }
     D_8013AE88->resource16 = allocateTaskResource();
-    func_80046404((TaskVisualResource *)resource, (VECTOR *)&D_800D9504[D_8013AE88->resource16], 300, 0x4C80);
+    initializePlayerVisualHistory((TaskVisualResource *)resource, (VECTOR *)&D_800D9504[D_8013AE88->resource16], 300, 0x4C80);
     setCurrentTaskCallback(func_80047600);
 }
 
@@ -3379,7 +3420,7 @@ void initializeDualResource5100EffectTask(void) {
         while (1) {}
     }
     D_8013AE88->resource16 = allocateTaskResource();
-    func_80046404((TaskVisualResource *)resource, (VECTOR *)&D_800D9504[D_8013AE88->resource16], 300, 0x5100);
+    initializePlayerVisualHistory((TaskVisualResource *)resource, (VECTOR *)&D_800D9504[D_8013AE88->resource16], 300, 0x5100);
     D_8013AE88->data1A = 0;
     setCurrentTaskCallback(func_80047D94);
 }

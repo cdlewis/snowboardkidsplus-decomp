@@ -3100,3 +3100,5 @@ updateCurrentPlayerState10Movement = 0x800271D0; // type:func
 updateControllerInput = 0x8001553C; // type:func
 
 createDualSelectionSequenceTask = 0x80077EA4; // type:func
+
+initializePlayerVisualHistory = 0x80046404; // type:func
