@@ -2705,3 +2705,5 @@ gTextEntryCdCommands = 0x80132914; // size:0x1CC
 
 createPlayerPairedQuadEffectTask = 0x80065818; // type:func
 gPlayerPairedQuadOffsets = 0x8012C8EC; // size:0x20 defined:true
+
+createInputTimedSpriteTask = 0x80076C20; // type:func
