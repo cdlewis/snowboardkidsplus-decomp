@@ -26,11 +26,38 @@
 #include "psx/libpress.h"
 #include "main_remaining.h"
 
+#define TMD_TEXTURE_HEADER(mode, flags, inputWords, outputWords) \
+    (((mode) << 24) | ((flags) << 16) | ((inputWords) << 8) | (outputWords))
+
 #define PLAYER_ANIMATION_ARCHIVE ((u8 *)0x80180000)
 #define PLAYER_ANIMATION_OFFSETS ((u32 *)0x80180004)
 
 
 
+
+typedef struct TmdTexturedPrimitive {
+    union {
+        s32 code;
+        struct {
+            u8 outputLength;
+            s8 inputLength;
+            u8 flags, mode;
+        } bytes;
+    } header;
+    u16 uv0, clut, uv1, tpage, uv2, pad, uv3;
+} TmdTexturedPrimitive;
+typedef struct TmdObject {
+    SVECTOR *vertices;
+    u32 vertexCount;
+    SVECTOR *normals;
+    u32 normalCount;
+    TmdTexturedPrimitive *primitives;
+    u32 primitiveCount;
+    s32 scale;
+} TmdObject;
+typedef struct TmdTextureOffset {
+    u16 tpage, uv, clut;
+} TmdTextureOffset;
 
 typedef struct PaletteTransitionResource {
     u32 *pixels;
@@ -187,7 +214,41 @@ void uploadTimArchive(TimArchive *archive, s16 *position) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001604C);
+void offsetTmdObjectTextures(u16 index, TmdObject *objects, TmdTextureOffset *offset) {
+    TmdObject *object = &objects[index];
+    u8 *primitive = (u8 *)object->primitives;
+    u16 i;
+    for (i = 0; i < object->primitiveCount; i++) {
+        TmdTexturedPrimitive *p = (TmdTexturedPrimitive *)primitive;
+        TmdTexturedPrimitive *header = (TmdTexturedPrimitive *)primitive;
+        switch (header->header.code) {
+        case TMD_TEXTURE_HEADER(POLY_FT4_CODE, 0, 7, 9):
+        case TMD_TEXTURE_HEADER(POLY_FT4_CODE | 1, 1, 7, 9):
+        case TMD_TEXTURE_HEADER(POLY_FT4_CODE | 2, 0, 7, 9):
+        case TMD_TEXTURE_HEADER(POLY_FT4_CODE | 2 | 1, 1, 7, 9):
+        case TMD_TEXTURE_HEADER(POLY_GT4_CODE, 0, 8, 12):
+        case TMD_TEXTURE_HEADER(POLY_GT4_CODE | 1, 1, 10, 12):
+        case TMD_TEXTURE_HEADER(POLY_GT4_CODE | 2, 0, 8, 12):
+        case TMD_TEXTURE_HEADER(POLY_GT4_CODE | 2 | 1, 1, 10, 12):
+            p->uv3 += offset->uv;
+            /* Fall through to the three shared texture coordinates. */
+        case TMD_TEXTURE_HEADER(POLY_FT3_CODE, 0, 5, 7):
+        case TMD_TEXTURE_HEADER(POLY_FT3_CODE | 1, 1, 6, 7):
+        case TMD_TEXTURE_HEADER(POLY_FT3_CODE | 2, 0, 5, 7):
+        case TMD_TEXTURE_HEADER(POLY_FT3_CODE | 2 | 1, 1, 6, 7):
+        case TMD_TEXTURE_HEADER(POLY_GT3_CODE, 0, 6, 9):
+        case TMD_TEXTURE_HEADER(POLY_GT3_CODE | 1, 1, 8, 9):
+        case TMD_TEXTURE_HEADER(POLY_GT3_CODE | 2, 0, 6, 9):
+        case TMD_TEXTURE_HEADER(POLY_GT3_CODE | 2 | 1, 1, 8, 9):
+            p->clut += offset->clut;
+            p->tpage += offset->tpage;
+            p->uv0 += offset->uv;
+            p->uv1 += offset->uv;
+            p->uv2 += offset->uv;
+        }
+        primitive += header->header.bytes.inputLength * 4 + 4;
+    }
+}
 
 void uploadImage64x256(u32 *pixels, s16 x, s16 y) {
     RECT rect;
