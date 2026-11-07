@@ -16,6 +16,32 @@ u16 litObjectDrawAreaDepths[4] __attribute__((section(".data.lit_object_draw_are
 
 HalfwordPair D_8012F13C[16] __attribute__((section(".data"))) = {0};
 
+TexturedQuadListEntry taskIndexPanelQuadsPalette0[10] __attribute__((section(".data.task_index_panel_quads"))) = {
+    {33, 0, 0, 0, 0, 0},
+    {34, 0, 72, 0, 176, 0},
+    {35, 0, 248, 0, 0, 0},
+    {36, 0, 0, 16, 0, 72},
+    {37, 0, 72, 16, 176, 72},
+    {38, 0, 248, 16, 0, 72},
+    {39, 0, 0, 88, 0, 0},
+    {40, 0, 72, 88, 176, 0},
+    {41, 0, 248, 88, 0, 0},
+    {0, 255, 0, 0, 0, 0},
+};
+
+TexturedQuadListEntry taskIndexPanelQuadsPalette1[10] __attribute__((section(".data.task_index_panel_quads"))) = {
+    {33, 1, 0, 0, 0, 0},
+    {34, 1, 72, 0, 176, 0},
+    {35, 1, 248, 0, 0, 0},
+    {36, 1, 0, 16, 0, 72},
+    {37, 1, 72, 16, 176, 72},
+    {38, 1, 248, 16, 0, 72},
+    {39, 1, 0, 88, 0, 0},
+    {40, 1, 72, 88, 176, 0},
+    {41, 1, 248, 88, 0, 0},
+    {0, 255, 0, 0, 0, 0},
+};
+
 StateValueHistory D_8013BE30 __attribute__((section(".bss.state_value_history")));
 
 INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_8007CC78);
@@ -632,7 +658,29 @@ INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_800857C4);
 
 INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_80086584);
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_8008690C);
+void drawTaskIndexPanel(void) {
+    Movement2D *resource;
+    s16 index;
+    TexturedQuadListEntry *list;
+
+    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    resource = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    index = D_8013AE88->data18;
+    if (D_8013AE88->data1A != 0) {
+        func_8006C998(resource->x / 4096 + 8, resource->y / 4096 + 80,
+                      0x133, 10, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        func_8006C998(resource->x / 4096 + 24, resource->y / 4096 + 80,
+                      0x31, 2, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    }
+    setSpriteColor(128, 128, 128);
+    setTexturedQuadColor(128, 128, 128);
+    func_8006D66C(resource->x / 4096 + 54, resource->y / 4096 + 4,
+                  1, 0, index + 1, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    if (index == 0) list = taskIndexPanelQuadsPalette0;
+    else list = taskIndexPanelQuadsPalette1;
+    drawTexturedQuadList(resource->x / 4096, resource->y / 4096, list,
+                        -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+}
 
 s16 mapGroupedValueToTableIndex(s16 value) {
     s16 result;

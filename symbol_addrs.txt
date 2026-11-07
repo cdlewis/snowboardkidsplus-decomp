@@ -2446,6 +2446,9 @@ tickRaceResultsSoundDelayTask = 0x8003A760; // type:func
 waitForStatsScoreCountTask = 0x8003B8AC; // type:func
 
 drawTaskOffsetSpriteB8 = 0x80084254; // type:func
+drawTaskIndexPanel = 0x8008690C; // type:func
+taskIndexPanelQuadsPalette0 = 0x801301CC; // size:0x78
+taskIndexPanelQuadsPalette1 = 0x80130244; // size:0x78
 
 loadCurrentPlayerModelBlock = 0x8002ED00; // type:func
 

@@ -108,6 +108,8 @@ extern u8 D_8013AFD9 __attribute__((section(".data")));
 extern u8 D_8013B47C;
 extern u8 D_8013B6B8[1];
 extern u8 D_8013B6B9[7];
+extern TexturedQuadListEntry taskIndexPanelQuadsPalette0[10];
+extern TexturedQuadListEntry taskIndexPanelQuadsPalette1[10];
 
 void func_800897D0(SaveRecord *record);
 void mergeSaveRecordFlags(SaveRecord *source, SaveRecord *destination);
@@ -146,6 +148,7 @@ void sortLitObjectWithDrawArea(GsDOBJ2 *object, u16 index, RECT *bounds);
 ByteTriplet *lookupByteTriplet(ByteTriplet *records, u8 *indices, s16 index);
 void updateRegisteredChildBlinkTransition(void);
 void drawTaskOffsetSpriteB8(void);
+void drawTaskIndexPanel(void);
 void createPlayerGroupedSelectionTask(s32 player, s32 index);
 void initializeDualResourceTask(void);
 s16 mapGroupedValueToTableIndex(s16 value);

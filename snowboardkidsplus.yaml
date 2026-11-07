@@ -723,6 +723,8 @@ segments:
       - [0x11F98C, data, 11F98C]
       - {start: 0x11FBDC, type: .data, name: menu/task_widgets, linker_section: .data.text_panel_message}
       - [0x11FC00, data, 11FC00]
+      - {start: 0x1209CC, type: .data, name: unclassified/menu_8007CC78, linker_section: .data.task_index_panel_quads}
+      - [0x120ABC, data, task_index_panel_tail]
       - {start: 0x120F24, type: .data, name: menu/save_record_tasks, linker_section: .data.task_shadowed_text}
       - [0x120F40, data, task_shadowed_text_tail]
       - {start: 0x122040, type: .data, name: menu/panel_tasks, linker_section: .data.board_selection_levels}
