@@ -506,7 +506,20 @@ void drawCurrentTaskSpriteBA(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_80094564);
+void drawCurrentTaskFramedSpritePair16A(void) {
+    Movement2D *position;
+    if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
+    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->data1A != 0) {
+        func_8006C998(position->x / 4096, position->y / 4096,
+                      0x16A, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        func_8006C998(position->x / 4096 + 64, position->y / 4096,
+                      0x16B, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    }
+    setTexturedQuadColor(128, 128, 128);
+    drawTexturedFrameStyle9(position->x / 4096 - 4, position->y / 4096 - 4,
+                           136, 36, 5, 1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C - 1);
+}
 
 void initializeCountedDisplayBoundsTask(void) {
     RECT *bounds;
