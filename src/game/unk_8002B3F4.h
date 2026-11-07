@@ -465,6 +465,8 @@ void func_80045C7C(void);
 void initializePlayerVisualHistory(TaskVisualResource *resource, VECTOR *vectors, s32 value, s32 scale);
 s16 func_80046228(Position3D *position, s32 distance, s16 angle, s16 player, s16 *targetAngle);
 void updateHomingTaskVisualMovement(TaskVisualResource *resource, VECTOR *history, s32 distance, s32 maxTurn);
+void initializeBouncingTaskVisual(void);
+void updateBouncingTaskVisual(void);
 void updateAcceleratingTaskVisualCountdown(void);
 void updatePlayerVisualPairTask(void);
 void func_8004713C(void);

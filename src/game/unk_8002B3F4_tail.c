@@ -3370,7 +3370,39 @@ void initializeDualResource4C80EffectTask(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_80047600);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_8004777C);
+void initializeBouncingTaskVisual(void) {
+    TaskVisualResource *resource;
+    RacePlayer *players;
+    if (D_8013AE88->resource14 != 0xFFFF) { while (1) {} }
+    D_8013AE88->resource14 = allocateTaskResource();
+    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    GsInitCoordinate2(0, &resource->coordinate);
+    resource->unkC6 = 0x200;
+    resource->r0 = resource->g0 = resource->b0 = 0x80;
+    resource->code = POLY_FT4_CODE;
+    resource->unkC8 = 0;
+    resource->framePosition = 0;
+    if (D_80120E90[D_8013AE88->data18].unk128 & 0x400) {
+        resource->unkD8 = (s16)D_80120E90[D_8013AE88->data18].unk110;
+    } else {
+        resource->unkD8 = (s16)D_80120E90[D_8013AE88->data18].unk110 + 0x800;
+    }
+    D_800EB22C.vx = rsin(resource->unkD8) / 64;
+    D_800EB22C.vz = rcos(resource->unkD8) / 64;
+    players = D_80120E90;
+    resource->coordinate.coord.t[0] = players[D_8013AE88->data18].worldCoordinate.coord.t[0] + D_800EB22C.vx;
+    resource->coordinate.coord.t[1] = players[D_8013AE88->data18].worldCoordinate.coord.t[1] - 18;
+    resource->coordinate.coord.t[2] = players[D_8013AE88->data18].worldCoordinate.coord.t[2] + D_800EB22C.vz;
+    resource->position.x = resource->coordinate.coord.t[0] << 8;
+    resource->position.y = resource->coordinate.coord.t[1] << 8;
+    resource->position.z = resource->coordinate.coord.t[2] << 8;
+    resource->unkC4 = getAdjacentGeometryRegionForPoint(players[D_8013AE88->data18].unk92E, players[D_8013AE88->data18].x >> 8, players[D_8013AE88->data18].z >> 8);
+    resource->velocityY = -0xA00;
+    resource->groundY = func_8004A764(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8) << 8;
+    resource->bounceCount = 0;
+    func_800183FC(D_8013AE88->data18, 1, 2, 0x20);
+    setCurrentTaskCallback(updateBouncingTaskVisual);
+}
 
 void updateBouncingTaskVisual(void) {
     TaskVisualResource *resource;
