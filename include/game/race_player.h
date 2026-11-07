@@ -93,7 +93,8 @@ struct RacePlayer {
     u16 unk10C;
     u8 unk10E[2];
     u16 unk110;
-    u8 unk112[4];
+    u16 unk112;
+    u8 unk114[2];
     s16 unk116;
     s16 unk118;
     s16 unk11A;
@@ -110,7 +111,7 @@ struct RacePlayer {
     s8 unk136;
     u8 unk137;
     u16 unk138;
-    u8 unk13A[2];
+    u16 unk13A;
     s16 unk13C;
     u8 unk13E[14];
     u8 unk14C[14];
@@ -136,7 +137,7 @@ struct RacePlayer {
     u8 animationIndex;
     u8 animationFlags;
     u8 animationStep;
-    u8 unk92C[2];
+    u16 unk92C;
     s16 unk92E;
     u8 unk930[4];
     s8 unk934;
@@ -214,6 +215,7 @@ s16 countCurrentPlayerInputGroups(void);
 void copySelectedRecordToCurrentPlayer(void);
 s16 smoothAndScaleCurrentPlayerInput(s32 magnitude, s16 input);
 void clampCurrentPlayerHorizontalVector(VECTOR *vector);
+void clampVectorToCurrentPlayerLimit(VECTOR *vector);
 
 s32 checkCurrentPlayerFlags43040OrAngleRange(void);
 s32 checkCurrentPlayerFlags345001(void);

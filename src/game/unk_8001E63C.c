@@ -87,7 +87,6 @@ void initializeScaledTaskCoordinateResource(void);
 void func_8001EEBC(void);
 void func_80025014(void);
 void func_800252CC(void);
-void func_800240D0(void);
 void func_80024288(void);
 void func_800245C4(void);
 void func_8002497C(void);
@@ -570,7 +569,7 @@ void resetCurrentPlayerForCallback240D0(void) {
     player->unk126 = 0;
     D_8013B0D8->unk0BE = D_8013B0D8->unk138;
     startCurrentPlayerAnimation(0x22, 2);
-    setCurrentTaskCallback(func_800240D0);
+    setCurrentTaskCallback(updateCurrentPlayerState29MotionAndAnimation);
 }
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80020018);
@@ -635,7 +634,45 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80021258);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80021B20);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_800240D0);
+void updateCurrentPlayerState29MotionAndAnimation(void) {
+    RacePlayer *player;
+    func_8002AE6C();
+    player = D_8013B0D8;
+    player->unk09E = player->unk09A;
+    player->unk110 = player->unk138;
+    player->unk112 = player->unk13A;
+    if (player->unk128 & 0x400) {
+        player->unk110 += 0x800;
+        player->unk112 = -(player->unk112 & 0xFFF);
+    }
+    D_8013B0D8->unk0B6 = D_8013B0D8->unk110 - 0x400;
+    D_8013B0D8->unk0B8 = D_8013B0D8->unk112;
+    smoothAndScaleCurrentPlayerInput(0, 0);
+    D_800EB22C.vx = D_8013B0D8->unk060;
+    D_800EB22C.vz = D_8013B0D8->unk064;
+    clampVectorToCurrentPlayerLimit(&D_800EB22C);
+    D_8013B0D8->unk060 = D_800EB22C.vx;
+    D_8013B0D8->unk064 = D_800EB22C.vz;
+    func_8002AE38(0, (s16)D_8013B0D8->unk0A6, (s16)D_8013B0D8->unk0A8, (s16)D_8013B0D8->unk0AA);
+    D_8013B0D8->x += D_8013B0D8->unk060;
+    D_8013B0D8->y += D_8013B0D8->unk062;
+    D_8013B0D8->z += D_8013B0D8->unk064;
+    func_80028680();
+    func_80017268();
+    if (D_8013B0D8->animationFlags & 0x10) {
+        startCurrentPlayerAnimation(0x23, 1);
+    }
+    D_8013B0D8->unk128 &= ~0x2000000;
+    if ((u16)callCurrentPlayerStateCallbackIfDifferent(0x1D)) {
+        if (D_8013B0D8->unk12C == 0x16) {
+            if (D_8013B0D8->unk062 < 0) {
+                D_8013B0D8->unk062 = -D_8013B0D8->unk062;
+            }
+            D_8013B0D8->unk92C = 0;
+            startCurrentPlayerAnimation(1, 1);
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80024288);
 
