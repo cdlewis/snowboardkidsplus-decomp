@@ -164,7 +164,7 @@ struct RacePlayer {
     s16 unk96C;
     u16 unk96E;
     u16 unk970;
-    u8 unk972[2];
+    s16 unk972;
     PlayerTimerState timer;
 };
 

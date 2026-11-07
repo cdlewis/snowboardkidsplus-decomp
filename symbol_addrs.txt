@@ -3057,3 +3057,5 @@ initializeProximityParticleTask = 0x8005CCEC; // type:func
 
 gPlayerSideVisualFrames = 0x801242E4; // size:0x20 defined:true
 updatePlayerSideVisualTask = 0x80044768; // type:func
+
+updateCurrentPlayerMotionEffects = 0x8001EC88; // type:func

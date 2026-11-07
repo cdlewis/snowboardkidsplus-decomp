@@ -3,6 +3,7 @@
 #include "common.h"
 
 void advanceCurrentPlayerTaskPhaseMovement(void);
+void updateCurrentPlayerMotionEffects(void);
 
 void resetCurrentPlayerForCallback205B8(void);
 void initializeCurrentPlayerDefaultState(void);

@@ -220,7 +220,67 @@ u8 readSelectedByteTable(s32 index) {
     return D_8012090C[D_8013AFCE][index];
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8001EC88);
+void updateCurrentPlayerMotionEffects(void) {
+    s32 difference;
+    s16 angle;
+    s16 turn;
+    RacePlayer *player;
+
+    difference = (s16)(func_8004A124(0, 0,
+        D_8013B0D8->x - D_8013B0D8->unk050,
+        D_8013B0D8->z - D_8013B0D8->unk058) - (u16)D_8013B0D8->unk110) & 0xFFF;
+    angle = difference;
+    if (difference > 0x800) {
+        angle = 0x1000 - difference;
+    }
+    if (angle > 0x400) {
+        angle = 0x800 - angle;
+    }
+    player = D_8013B0D8;
+    player->unk972 = angle * 3 / 2;
+    player->unk96C = player->unk0BC / 768;
+    if (player->unk96C != 0) {
+        player->unk96C += angle >> 6;
+        turn = player->unk126;
+        if (turn < 0) {
+            turn = -turn;
+        }
+        player->unk96C += turn >> 4;
+        if (player->unk96C > 28) {
+            player->unk96C = 28;
+        }
+    }
+    switch (readSelectedByteTable(D_8013B0D8->unk136)) {
+    case 0:
+        D_8013B0D8->unk96E = 0;
+        break;
+    case 1:
+        D_8013B0D8->unk96E = 0x801;
+        D_8013B0D8->unk972 = 0;
+        D_8013B0D8->unk96C = 32;
+        break;
+    case 2:
+        D_8013B0D8->unk96E = 0x100;
+        break;
+    case 3:
+        D_8013B0D8->unk96E = 0x200;
+        break;
+    case 4:
+        D_8013B0D8->unk96E = 0x100;
+        if (D_8013B0D8->unk136 == 13) {
+            D_8013B0D8->unk96E = 0x300;
+            if (D_8013B0D8->unk96C > 10 && (gFrameCounter & 3) == 0) {
+                func_8002E5A0(D_8013AE88->data18, 15);
+            }
+        }
+        D_8013B0D8->unk972 = 0;
+        break;
+    }
+    if (D_8013B0D8->unk128 & 0x2000000) {
+        D_8013B0D8->unk96E = 0x100;
+    }
+}
+
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8001EEBC);
 
