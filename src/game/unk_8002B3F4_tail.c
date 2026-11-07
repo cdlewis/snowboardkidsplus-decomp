@@ -2040,7 +2040,50 @@ void updateStatsMenuPostCountInputTask(void) {
     drawStatsMenuMoneyLabels((StatsMenuFadeResource *)resource);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_8003B690);
+void countStatsMenuMoneyTask(void) {
+    StatsMenuFadeResource *resource;
+    s32 amount;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (StatsMenuFadeResource *)&D_800D9504[D_8013AE88->resource14];
+    if (resource->timer == 0) {
+        resource->timer = 2;
+        playSoundEffect(0, 0x700, 0x20);
+    } else {
+        resource->timer--;
+    }
+    amount = resource->trickPrize;
+    if (amount >= 8 && !(D_8013AEE8[0] & 0xB0)) {
+        amount = 8;
+    }
+    D_80120E90[0].unk010 += amount;
+    resource->trickPrize -= amount;
+    amount = resource->makeBonus;
+    if (amount >= 8 && !(D_8013AEE8[0] & 0xB0)) {
+        amount = 8;
+    }
+    D_80120E90[0].unk010 += amount;
+    resource->makeBonus -= amount;
+    amount = resource->completeBonus;
+    if (amount >= 8 && !(D_8013AEE8[0] & 0xB0)) {
+        amount = 8;
+    }
+    D_80120E90[0].unk010 += amount;
+    resource->completeBonus -= amount;
+    if (D_80120E90[0].unk010 > 999999) {
+        D_80120E90[0].unk010 = 999999;
+    }
+    D_80130BF0[0] = D_80120E90[0].unk010;
+    if (resource->trickPrize == 0 && resource->makeBonus == 0 && resource->completeBonus == 0) {
+        playSoundEffect(0, 0x700, 0x20);
+        resource->timer = 20;
+        setCurrentTaskCallback(updateStatsMenuPostCountInputTask);
+    }
+    func_8003AAE0((TaskResourceRecord *)resource);
+    func_8003AD48((TaskResourceRecord *)resource);
+    drawStatsMenuMoneyLabels(resource);
+}
 
 void waitForStatsScoreCountTask(void) {
     StatsMenuFadeResource *resource;
@@ -2051,7 +2094,7 @@ void waitForStatsScoreCountTask(void) {
     resource = (StatsMenuFadeResource *)&D_800D9504[D_8013AE88->resource14];
     resource->unk06 = 3;
     if (--resource->timer == 0) {
-        setCurrentTaskCallback(func_8003B690);
+        setCurrentTaskCallback(countStatsMenuMoneyTask);
     }
     func_8003AAE0((TaskResourceRecord *)resource);
     func_8003AD48((TaskResourceRecord *)resource);

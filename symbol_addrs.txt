@@ -3083,3 +3083,5 @@ setTaskBackgroundMode = 0x80071490; // type:func
 drawCurrentTaskPlayerValuePanel = 0x80099318; // type:func
 gTaskPlayerValuePanelLabel = 0x80131DCC; // size:0xC
 gTaskPlayerValuePanelText = 0x80131DD8; // size:0x10
+
+countStatsMenuMoneyTask = 0x8003B690; // type:func

@@ -264,7 +264,10 @@ typedef struct StatsMenuFadeResource {
     s16 brightness;
     s16 timer;
     s16 unk06;
-    u8 unk08[0xF8];
+    s16 trickPrize;
+    s16 makeBonus;
+    s16 completeBonus;
+    u8 unk0E[0xF2];
 } StatsMenuFadeResource;
 
 typedef struct RaceResultsFadeResource {
@@ -607,7 +610,7 @@ void drawStatsMenuMoneyLabels(StatsMenuFadeResource *resource);
 void waitForStatsScoreCountStartTask(void);
 void advanceTaskStatsCountdownAndPlaySound(void);
 void resetTaskStatsCountdown(void);
-void func_8003B690(void);
+void countStatsMenuMoneyTask(void);
 void drawCurrentTaskStatsSelection(void);
 void waitTaskStatsCountdownAndPlaySound(void);
 void waitResultFlagsInputTask(void);
