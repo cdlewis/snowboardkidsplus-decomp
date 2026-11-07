@@ -31,6 +31,7 @@ extern ControllerActuatorOutput D_8013AF00[];
 extern s16 D_8013AEF0[];
 extern u8 D_8013AFD3 __attribute__((section(".data")));
 
+void func_8006BA4C(u16 controller);
 void updateLegacyControllerActuators(u16 controller);
 
 /* Pending effect IDs remain in the shared controller data object. */

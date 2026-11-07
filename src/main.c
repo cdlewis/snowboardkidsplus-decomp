@@ -2,6 +2,7 @@
 #include "psx/libcd.h"
 #include "psx/libpad.h"
 #include "psx/libapi.h"
+#include "psx/libpad.h"
 #include "game/cd_queue.h"
 #include "psx/libsnd.h"
 #include "game/controller.h"
@@ -95,6 +96,9 @@ u8 gControllerFlags[4] __attribute__((section(".data"))) = {0, 0, 0, 0};
 u8 gControllerHorizontalRepeatTimers[2] __attribute__((section(".sdata.controller_repeat_timing"))) = {0, 0};
 u8 gControllerRepeatInitialDelay __attribute__((section(".sdata.controller_repeat_timing"))) = 12;
 u8 gControllerRepeatInterval __attribute__((section(".sdata.controller_repeat_timing"))) = 2;
+
+u8 gControllerActuatorAlignment[6] __attribute__((section(".data.controller_actuator_alignment"))) = {0, 1, 0xFF, 0xFF, 0xFF, 0xFF};
+static u16 sControllerActuatorAlignmentPadding __attribute__((section(".data.controller_actuator_alignment"))) = 0;
 
 s16 D_8013AF08[2] __attribute__((section(".data.controller_values"))) = {0, 0};
 
@@ -549,15 +553,41 @@ s16 isControllerInputSupported(u16 controller) {
 
 INCLUDE_ASM("asm/nonmatchings/main", func_8001553C);
 
-INCLUDE_ASM("asm/nonmatchings/main", func_800157DC);
+void updateControllerActuators(u16 controller) {
+    int state;
+    if (gControllerFlags[controller] & 0x20) {
+        D_8013AF00[controller].control = 0;
+        D_8013AF00[controller].value = 0;
+    } else if (PadInfoMode(controller << 4, 2, 0)) {
+        func_8006BA4C(controller);
+    } else {
+        updateLegacyControllerActuators(controller);
+    }
+    state = PadGetState(controller << 4);
+    if (state != 0) {
+        if (state == 1) {
+            D_8013AF00[controller].aligned = 0;
+        }
+        if (D_8013AF00[controller].aligned == 0) {
+            PadSetAct(controller << 4, &D_8013AF00[controller].control, 2);
+            if (state == 2) {
+                D_8013AF00[controller].aligned = 1;
+            } else if (state == 6) {
+                if (PadSetActAlign(controller << 4, gControllerActuatorAlignment)) {
+                    D_8013AF00[controller].aligned = 1;
+                }
+            }
+        }
+    }
+}
 
 void updateControllers(void) {
     func_8001553C(0);
     func_80014D60(0);
-    func_800157DC(0);
+    updateControllerActuators(0);
     func_8001553C(1);
     func_80014D60(1);
-    func_800157DC(1);
+    updateControllerActuators(1);
 }
 
 INCLUDE_ASM("asm/nonmatchings/main", func_8001596C);

@@ -2900,3 +2900,6 @@ D_800102FC = 0x800102FC; // size:0x40
 D_80010340 = 0x80010340; // size:0x40
 
 moveCurrentPlayerForwardUntilState22 = 0x80026500; // type:func
+
+updateControllerActuators = 0x800157DC; // type:func
+gControllerActuatorAlignment = 0x8013AECC; // size:0x6

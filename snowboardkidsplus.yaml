@@ -709,6 +709,8 @@ segments:
       - [0x12B6BC, data]
       - {start: 0x12B6C0, type: .sdata, name: main, linker_section: .sdata.controller_repeat_timing, linker_section_order: .data}
       - [0x12B6C4, data]
+      - {start: 0x12B6CC, type: .data, name: main, linker_section: .data.controller_actuator_alignment}
+      - [0x12B6D4, data]
       - {start: 0x12B6E4, type: .sdata, name: main, linker_section: .sdata.controller_input_state, linker_section_order: .data}
       - {start: 0x12B6E8, type: .data, name: main, linker_section: .data.controller_input_arrays}
       - {start: 0x12B708, type: .data, name: main, linker_section: .data.controller_values}
