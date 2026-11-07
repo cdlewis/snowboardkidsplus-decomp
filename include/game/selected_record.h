@@ -43,3 +43,4 @@ void getGeometryPlacementTransform(s16 index, s32 *x, s32 *y, s32 *z, u16 *angle
 s32 getGeometryPlacementSignedDistance(s16 index, s32 x, s32 z);
 
 s32 func_8004A764(s16 index, s32 x, s32 z);
+s32 getAdjacentGeometryRegionForPoint(s16 index, s32 x, s32 z);

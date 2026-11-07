@@ -493,7 +493,6 @@ extern int rand(void);
 
 void uploadTimImageAt(s16 x, s16 y, s16 clutX, s16 clutY, u32 *tim);
 s16 func_8004A124(s32 x1, s32 z1, s32 x2, s32 z2);
-s32 func_8004A4C4(s16 index, s32 x, s32 z);
 u8 func_8004AAA0(s16 index, s32 x, s32 z);
 void func_8003EE70(void);
 void func_8002F5F8(void);
@@ -3515,7 +3514,7 @@ void clampPlayerCameraHeight(u16 playerIndex) {
     GsRVIEW2 *views = gPlayerCameraViews;
     GsRVIEW2 *view = &views[playerIndex];
     s32 height;
-    camera->unk18 = func_8004A4C4(camera->unk18, view->vpx, view->vpz);
+    camera->unk18 = getAdjacentGeometryRegionForPoint(camera->unk18, view->vpx, view->vpz);
     height = func_8004A764(camera->unk18, view->vpx, view->vpz);
     if (height - 120 < view->vpy) {
         view->vpy = height - 120;

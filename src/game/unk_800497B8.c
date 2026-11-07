@@ -340,6 +340,12 @@ typedef struct FallingTaskResource {
     s16 geometryIndex, groundPitch, groundRoll, unkD6;
     s32 verticalVelocity, groundHeight;
 } FallingTaskResource;
+/* Four edge neighbors and corner indices in a 0x1C-byte region record. */
+typedef struct GeometryRegion {
+    s16 neighbors[4];
+    s16 vertices[4];
+    s16 unk10[6];
+} GeometryRegion;
 
 /* Geometry entries have a 0x1C-byte stride; the origin references a vertex. */
 typedef struct GeometryPlacement {
@@ -937,7 +943,29 @@ void bindGeometryRecordData(s16 *data) {
     D_8013B1F4 = data;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8004A4C4);
+s32 getAdjacentGeometryRegionForPoint(s16 index, s32 x, s32 z) {
+    s32 x0, x1, x2, x3;
+    s32 z0, z1, z2, z3;
+    s16 neighbor;
+
+    x0 = D_8013B1EC[((GeometryRegion *)D_8013B1F4)[index].vertices[0] * 3] * 5;
+    x1 = D_8013B1EC[((GeometryRegion *)D_8013B1F4)[index].vertices[1] * 3] * 5;
+    x2 = D_8013B1EC[((GeometryRegion *)D_8013B1F4)[index].vertices[2] * 3] * 5;
+    x3 = D_8013B1EC[((GeometryRegion *)D_8013B1F4)[index].vertices[3] * 3] * 5;
+    z0 = D_8013B1EC[((GeometryRegion *)D_8013B1F4)[index].vertices[0] * 3 + 2] * 5;
+    z1 = D_8013B1EC[((GeometryRegion *)D_8013B1F4)[index].vertices[1] * 3 + 2] * 5;
+    z2 = D_8013B1EC[((GeometryRegion *)D_8013B1F4)[index].vertices[2] * 3 + 2] * 5;
+    z3 = D_8013B1EC[((GeometryRegion *)D_8013B1F4)[index].vertices[3] * 3 + 2] * 5;
+    neighbor = ((GeometryRegion *)D_8013B1F4)[index].neighbors[0];
+    if (neighbor >= 0 && (x0 - x1) * (z - z1) - (z0 - z1) * (x - x1) > 0) return neighbor;
+    neighbor = ((GeometryRegion *)D_8013B1F4)[index].neighbors[1];
+    if (neighbor >= 0 && (x3 - x2) * (z - z2) - (z3 - z2) * (x - x2) > 0) return neighbor;
+    neighbor = ((GeometryRegion *)D_8013B1F4)[index].neighbors[3];
+    if (neighbor >= 0 && (x2 - x0) * (z - z0) - (z2 - z0) * (x - x0) > 0) return neighbor;
+    neighbor = ((GeometryRegion *)D_8013B1F4)[index].neighbors[2];
+    if (neighbor >= 0 && (x1 - x3) * (z - z3) - (z1 - z3) * (x - x3) > 0) return neighbor;
+    return index;
+}
 
 void selectGeometryRecord(s16 index) {
     s16 *vertices;
