@@ -180,6 +180,13 @@ u16 gCurrentTaskPanelText[8] __attribute__((section(".data.current_task_panel_te
     0xFA, 0x94, 0xB1, 0x9F, 0x98, 0x31, 0, 0
 };
 
+const u16 gTaskSelectionPanelLabel[6] __attribute__((section(".data.task_selection_panel_text"), aligned(4))) = {
+    0x18, 0x157, 0x2D, 0x8020, 0xBF, 0
+};
+const u16 gTaskSelectionPanelText[8] __attribute__((section(".data.task_selection_panel_text"), aligned(4))) = {
+    0xFA, 0x94, 0xB1, 0x9E, 0xA2, 0x33, 0, 0
+};
+
 const u16 gTaskPanel144x48Text[8] __attribute__((section(".data.task_panel_144x48_text"))) = {
     0xF4, 0xC1, 0x96, 0xB1, 0x9F, 0x98, 0x31, 0
 };
@@ -655,7 +662,26 @@ void drawCurrentTaskTextPanel(void) {
                             &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_80096238);
+void drawCurrentTaskSelectionPanel(void) {
+    Movement2D *position;
+    s32 x, y;
+    TaskPanelSelectionValue *selection;
+    if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
+    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    x = position->x / 4096;
+    y = position->y / 4096;
+    selection = &D_8013B508[(s16)D_8013AE98->data1A];
+    setSpriteColor(128, 128, 128);
+    setTexturedQuadColor(128, 128, 128);
+    func_8006EF30((s16)(x + 8), (s16)(y + 4), 10, gTaskSelectionPanelLabel,
+                 8, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    func_8006E2C4((s16)(x + 56), (s16)(y + 4), 1, 0, selection->value + 1,
+                 8, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    func_8006EF30((s16)(x + 8), (s16)(y + 20), 10, gTaskSelectionPanelText,
+                 8, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    drawDefaultTexturedPanel(x, y, 144, 48, 5, 0,
+                            &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+}
 
 void queueGridResourceSectorReads(s16 slot, s16 row, s16 column) {
     if (row < 10) {

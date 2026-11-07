@@ -26,3 +26,12 @@ void updateSplitSelectionBoundsTransition(void);
 
 void initializeCountedPlayerGroupedSelectionBoundsTask(void);
 void drawCurrentTaskBoardStyleAndLevel(void);
+
+/* Four-byte records indexed by the parent task's data1A. */
+typedef struct TaskPanelSelectionValue {
+    s16 value;
+    s16 unk02;
+} TaskPanelSelectionValue;
+
+extern TaskPanelSelectionValue D_8013B508[];
+void drawCurrentTaskSelectionPanel(void);

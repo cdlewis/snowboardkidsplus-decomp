@@ -674,7 +674,7 @@ segments:
       - {start: 0x12205C, type: .data, name: main_tail, linker_section: .data.board_selection_styles}
       - [0x122068, data, board_selection_tail]
       - {start: 0x122564, type: .data, name: main_tail, linker_section: .data.current_task_panel_text}
-      - [0x122574, data, 122574]
+      - {start: 0x122574, type: .data, name: main_tail, linker_section: .data.task_selection_panel_text}
       - {start: 0x122590, type: .data, name: main_tail, linker_section: .data.split_selection_bounds_configs}
       - [0x1225B0, data, 1225B0]
       - {start: 0x1225BC, type: .data, name: main_tail, linker_section: .data.task_panel_144x48_text}
