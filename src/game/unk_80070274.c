@@ -153,7 +153,9 @@ DR_TPAGE gAnimatedSprite16DrawPage __attribute__((section(".sdata.animated_sprit
 s16 func_80070794(s32 id);
 void addTilePacket(s32 x, s32 y, s32 width, s32 height, s32 r, s32 g, s32 b,
                    GsOT *ot, u16 depth);
-void func_80071490(s32 mode, s32 value1, s32 value2);
+void updateScrollingBackgroundTask(void);
+void drawTaskImagesOnBlackBackground(void);
+void func_8007195C(void);
 void func_80070448(void);
 void func_8007197C(void);
 void func_80071A80(void);
@@ -386,7 +388,62 @@ void clearTaskReference(void) {
     D_8013B378 = NULL;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80071490);
+void setTaskBackgroundMode(s32 mode, s32 value1, s32 value2) {
+    ScrollingBackgroundResource *resource;
+    ScrollingBackgroundResource *existing;
+    switch (mode) {
+    case 1:
+        if (D_8013B378 != NULL) {
+            if (D_8013B378->data18 == mode) return;
+            D_8013B378->data18 = 0;
+        }
+        func_80014930(&gGameTasks[3], drawBlackScreenTask);
+        D_8013B378 = D_8013AE8C;
+        D_8013B378->data18 = mode;
+        break;
+    case 2:
+        if (D_8013B378 != NULL) {
+            if (D_8013B378->data18 == mode) {
+                existing = (ScrollingBackgroundResource *)&D_800D9504[D_8013B378->resource14];
+                existing->stepX = value1;
+                existing->stepY = value2;
+                return;
+            }
+            D_8013B378->data18 = 0;
+        }
+        func_80014930(&gGameTasks[3], updateScrollingBackgroundTask);
+        D_8013AE8C->resource14 = allocateTaskResource();
+        resource = (ScrollingBackgroundResource *)&D_800D9504[D_8013AE8C->resource14];
+        initDefaultBackground(0, -1, &resource->background, (GameBackgroundMap *)resource->map);
+        resource->x = 0;
+        resource->y = 0;
+        resource->stepX = value1;
+        resource->stepY = value2;
+        D_8013B378 = D_8013AE8C;
+        D_8013B378->data18 = 2;
+        break;
+    case 3:
+        if (D_8013B378 != NULL) {
+            if (D_8013B378->data18 == mode) return;
+            D_8013B378->data18 = 0;
+        }
+        func_80014930(&gGameTasks[3], drawTaskImagesOnBlackBackground);
+        D_8013B378 = D_8013AE8C;
+        D_8013B378->data18 = mode;
+        D_8013B378->data1A = value1;
+        D_8013B378->data1C = 0;
+        copyIndexedTaskImagesToVram(value1);
+        func_8007195C();
+        break;
+    case 0:
+    default:
+        if (D_8013B378 != NULL) {
+            D_8013B378->data18 = 0;
+            D_8013B378 = NULL;
+        }
+        break;
+    }
+}
 
 void drawBlackScreenTask(void) {
     if (D_8013AE88->data18 == 0) {
@@ -432,7 +489,7 @@ s32 hasTaskReference(void) {
 
 void resetTaskControlState(void) {
     configureTaskStateTransition(0, 0, 30);
-    func_80071490(0, 0, 0);
+    setTaskBackgroundMode(0, 0, 0);
     func_8007197C();
 }
 

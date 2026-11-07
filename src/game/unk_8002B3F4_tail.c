@@ -71,7 +71,7 @@ void initializeMenuTransitionResourcesTask(void) {
     if (D_8013AE88->resource16 != 0xFFFF) { while (1) {} }
     D_8013AE88->resource16 = allocateTaskResource();
     resource->unk0E = 0;
-    func_80071490(0, 0, 0);
+    setTaskBackgroundMode(0, 0, 0);
     func_8002EE0C();
     if (D_8013B0F0 == 0) {
         configureTaskStateTransition(11, 0, 30);

@@ -3077,3 +3077,5 @@ updateHomingTaskVisualMovement = 0x80046894; // type:func
 
 initializeControllerPlaybackRaceTask = 0x800A3750; // type:func
 gControllerPlaybackEntries = 0x801327F4; // size:0x48
+
+setTaskBackgroundMode = 0x80071490; // type:func

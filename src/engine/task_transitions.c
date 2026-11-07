@@ -402,7 +402,7 @@ void initializeSelectedCourseTransition(void) {
     D_8013AFD0 = D_80123D80[D_8013AFCE].unk02;
     if (D_8013AFE2 != 0 || D_8013AFCD == 1 || D_8013AFDA == 0) {
         configureTaskStateTransition(1, 0, 30);
-        func_80071490(3, D_8013B104, 0);
+        setTaskBackgroundMode(3, D_8013B104, 0);
         setCurrentTaskCallback(func_8001DB7C);
     }
 }
