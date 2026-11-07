@@ -2689,3 +2689,5 @@ D_8013AF32 = 0x8013AF32; // size:0x2 defined:true
 D_8013AF30 = 0x8013AF30; // size:0x2 defined:true
 
 initializeVisualTrailTask = 0x800481A8; // type:func
+
+initializeFallingTaskObject = 0x8005E174; // type:func

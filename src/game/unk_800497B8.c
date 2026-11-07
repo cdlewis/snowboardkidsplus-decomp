@@ -665,6 +665,7 @@ extern u16 D_8013B376 __attribute__((section(".sdata")));
 
 
 void updateProximityEmitterTask(void);
+void updateFallingTaskObject(void);
 
 void emitProjectedGouraudTriangle(TriangleScratchVertex *);
 void emitProjectedTexturedTriangle(TriangleScratchVertex *);
@@ -1644,7 +1645,30 @@ void initializeCollectibleTask(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005DF98);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005E174);
+void initializeFallingTaskObject(void) {
+    FallingTaskResource *resource;
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    resource = (FallingTaskResource *)&D_800D9504[D_8013AE88->resource14];
+    GsInitCoordinate2(0, &resource->coordinate);
+    D_8013AE88->data1A = D_8013B2BC[D_8013AE88->data18].unk01;
+    resource->geometryIndex = D_80120E90[D_8013AE88->data18].unk92E;
+    resource->rotation.vx = 0;
+    resource->rotation.vy = 0;
+    resource->rotation.vz = 0;
+    resource->position.x = D_80120E90[D_8013AE88->data18].x;
+    resource->position.y = D_80120E90[D_8013AE88->data18].y - 0x2000;
+    resource->position.z = D_80120E90[D_8013AE88->data18].z;
+    resource->coordinate.coord.t[0] = resource->position.x >> 8;
+    resource->coordinate.coord.t[1] = resource->position.y >> 8;
+    resource->coordinate.coord.t[2] = resource->position.z >> 8;
+    resource->verticalVelocity = -0xA00;
+    resource->groundHeight = func_8004A764(resource->geometryIndex, resource->position.x >> 8, resource->position.z >> 8) << 8;
+    computeSelectedTriangleAngles(&resource->groundPitch, &resource->groundRoll);
+    setCurrentTaskCallback(updateFallingTaskObject);
+}
 
 void updateFallingTaskObject(void) {
     FallingTaskResource *resource;
