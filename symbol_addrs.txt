@@ -1,3 +1,4 @@
+drawProjectedIndexedColoredLitGouraudTriangle = 0x800567F4; // type:func
 drawProjectedIndexedLitGouraudTriangle = 0x80056034; // type:func
 drawProjectedIndexedTexturedQuad = 0x80057D84; // type:func
 spawnPaletteBurstTask = 0x8009BB68; // type:func
