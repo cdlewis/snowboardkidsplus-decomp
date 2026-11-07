@@ -2927,7 +2927,79 @@ void unpackUpperWordBytes(u32 packed, UnpackedWordBytes *out) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_8004054C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_80040A60);
+void initializeRaceRulesAndCounters(void) {
+    RaceTime *times;
+    u8 *flags;
+    D_8013B620 = -1;
+    switch (D_8013AFE2) {
+    case 0:
+        if (D_8013AFCD == 1) {
+            D_8013B620 = 0;
+        } else {
+            D_8013B620 = 1;
+        }
+        break;
+    case 1:
+        if (D_8013AFE0 == 0) {
+            if (D_8013AFCD == 1) {
+                D_8013B620 = 2;
+            } else {
+                D_8013B620 = 3;
+            }
+            D_80120E90[0].unk95A = 0;
+            D_80120E90[0].unk95C = D_8012429C[D_8013AFCE];
+            D_80120E90[1].unk95A = 0;
+            D_80120E90[1].unk95C = D_8012429C[D_8013AFCE];
+        } else if (D_8013AFE0 == 1) {
+            if (D_8013AFCD == 1) {
+                D_8013B620 = 4;
+                D_8013B184 = D_80124248[D_8013AFCE];
+            } else {
+                D_8013B620 = 5;
+                D_8013B184 = D_80124248[D_8013AFCE];
+                D_8013B198[0] = D_80124248[D_8013AFCE];
+                D_8013B198[1] = D_80124248[D_8013AFCE];
+            }
+            D_80120E90[0].unk95E = 0;
+            D_80120E90[0].unk960 = D_801242A8[D_8013AFCE];
+            D_80120E90[1].unk95E = 0;
+            D_80120E90[1].unk960 = D_801242A8[D_8013AFCE];
+        } else if (D_8013AFE0 == 2) {
+            if (D_8013AFCD == 1) {
+                D_8013B620 = 6;
+                D_8013B184 = D_8013B154;
+            } else {
+                D_8013B620 = 7;
+                D_8013B184 = D_8013B154;
+                D_8013B198[0] = D_8013B154;
+                D_8013B198[1] = D_8013B154;
+            }
+        }
+        break;
+    case 2:
+        D_8013B620 = 8;
+        break;
+    }
+    if (D_8013AFD8 != 0 || D_8013AFD9 != 0) {
+        D_8013B620 = 9;
+    }
+    flags = D_8013B1A0;
+    flags[0] = 0;
+    gRaceElapsedTime.minutes = 0;
+    gRaceElapsedTime.seconds = 0;
+    gRaceElapsedTime.centiseconds = 0;
+    D_8013B18C = 0;
+    D_8013B18D_gp = 0;
+    D_8013B1A8_gp = 0;
+    flags[1] = 0;
+    times = D_8013B190;
+    times[0].minutes = 0;
+    times[0].seconds = 0;
+    times[0].centiseconds = 0;
+    times[1].minutes = 0;
+    times[1].seconds = 0;
+    times[1].centiseconds = 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_80040D5C);
 

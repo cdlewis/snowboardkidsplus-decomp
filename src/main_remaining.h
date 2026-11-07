@@ -79,5 +79,5 @@ void pollMemoryCardStatusTask(void);
 void func_8001D100(void);
 void advanceTaskWhenFlagAFE4Bit8Set(void);
 void startResourceLoadWhenFlagAFE4Bit9Set(void);
-void func_80040A60(void);
+void initializeRaceRulesAndCounters(void);
 

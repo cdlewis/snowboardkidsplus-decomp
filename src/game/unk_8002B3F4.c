@@ -41,6 +41,22 @@ MenuSpritePaletteGroups gMenuSpritePaletteGroups
         {0, 5, 0, 1, 4, 0, 5, 0, 0}
     };
 
+RaceTime D_80124248[10]
+    __attribute__((section(".data.course_hit_time_limits"), aligned(4))) = {
+        {3, 0, 0}, {3, 0, 0}, {3, 0, 0}, {3, 0, 0}, {3, 0, 0},
+        {3, 0, 0}, {3, 0, 0}, {3, 0, 0}, {1, 0, 0}, {1, 30, 0}
+    };
+
+u8 D_8012429C[12]
+    __attribute__((section(".data.course_count_targets"), aligned(4))) = {
+        20, 20, 0, 0, 0, 0, 0, 0, 0, 10, 0, 0
+    };
+
+u8 D_801242A8[12]
+    __attribute__((section(".data.course_hit_targets"), aligned(4))) = {
+        60, 60, 0, 0, 0, 0, 0, 0, 0, 30, 0, 0
+    };
+
 /* Each input sequence ends with 0xFFFF. */
 u16 gControllerInputSequences[3][26]
     __attribute__((section(".data.controller_input_sequences"))) = {

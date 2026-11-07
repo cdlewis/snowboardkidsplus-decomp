@@ -83,7 +83,6 @@ s32 func_80014838(TaskCallback callback);
 void func_8001D100(void);
 void advanceTaskWhenFlagAFE4Bit8Set(void);
 void startResourceLoadWhenFlagAFE4Bit9Set(void);
-void func_80040A60(void);
 void func_80015A30(u16 controller);
 void func_8003CAF0(void);
 void func_80040D5C(void);
@@ -250,7 +249,7 @@ void initializeRaceRestartTask(void) {
         D_80120E90[i].unk024 = 1;
     }
     initializeActiveRacePlayers();
-    func_80040A60();
+    initializeRaceRulesAndCounters();
     setCurrentTaskCallback(func_8001BD50);
 }
 
@@ -467,7 +466,7 @@ void initializeRaceTaskState(void) {
         resetSecondaryRng();
     }
     initializeActiveRacePlayers();
-    func_80040A60();
+    initializeRaceRulesAndCounters();
     func_800149A8();
 }
 

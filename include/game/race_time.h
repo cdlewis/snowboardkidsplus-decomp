@@ -9,6 +9,11 @@ typedef struct RaceTime {
     s16 centiseconds;
 } RaceTime;
 
+extern RaceTime D_8013B154;
+extern RaceTime D_8013B184;
+extern RaceTime D_8013B190[];
+extern RaceTime D_8013B198[];
+extern RaceTime D_80124248[];
 extern RaceTime gRaceElapsedTime;
 extern RaceTime D_8013B188;
 extern RaceTime D_80124050[];

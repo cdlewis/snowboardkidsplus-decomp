@@ -623,6 +623,10 @@ segments:
       - [0x114964, data, controller_input_sequences_tail]
       - {start: 0x1149A8, type: .data, name: game/unk_8002B3F4, linker_section: .data.player_camera_views}
       - [0x1149E8, data, player_camera_state_tail]
+      - {start: 0x114A48, type: .data, name: game/unk_8002B3F4, linker_section: .data.course_hit_time_limits}
+      - [0x114A70, data, course_hit_time_limits_tail]
+      - {start: 0x114A9C, type: .data, name: game/unk_8002B3F4, linker_section: .data.course_count_targets}
+      - {start: 0x114AA8, type: .data, name: game/unk_8002B3F4, linker_section: .data.course_hit_targets}
       - {start: 0x114AB4, type: .data, name: game/unk_8002B3F4, linker_section: .data.player_flag_visual_frames}
       - {start: 0x114AE4, type: .data, name: game/unk_8002B3F4, linker_section: .data.player_side_visual_frames}
       - [0x114B04, data, player_flag_visual_frames_tail]

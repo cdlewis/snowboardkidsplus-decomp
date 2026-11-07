@@ -3260,3 +3260,12 @@ D_8013B562 = 0x8013B562; // size:0x1
 queueScanlineCopyPackets = 0x80051770; // type:func
 gScanlineCopyRect = 0x8013B250; // size:0x8 defined:true
 gScanlineSeedRect = 0x8013B258; // size:0x8 defined:true
+
+D_8013B18D = 0x8013B18D; // size:0x1
+D_8013B1A8 = 0x8013B1A8; // size:0x2
+
+initializeRaceRulesAndCounters = 0x80040A60; // type:func
+
+D_80124248 = 0x80124248; // type:RaceTime size:0x28 defined:true
+D_8012429C = 0x8012429C; // size:0xC defined:true
+D_801242A8 = 0x801242A8; // size:0xC defined:true

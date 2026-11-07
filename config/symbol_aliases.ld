@@ -23,3 +23,5 @@ selectedCameraOverlayModeGp = D_8013B20C;
 playbackTransitionByteAbsolute = D_8013B562;
 scanlineCopyRectGp = gScanlineCopyRect;
 selectedCameraStateGp = D_8013B20C;
+D_8013B18D_gp = D_8013B18D;
+D_8013B1A8_gp = D_8013B1A8;
