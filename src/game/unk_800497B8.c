@@ -320,6 +320,12 @@ typedef struct VisualPlacement {
     s32 x, y, z;
 } VisualPlacement;
 
+struct VisualPlacementHeightData {
+    s16 prefix;
+    s16 offsets[16];
+    s16 suffix;
+};
+
 /* Collectible placements use 0x10-byte records. */
 typedef struct PickupPlacement {
     u16 unk00;
@@ -669,6 +675,13 @@ TexturedSpritePacket gScreenCopyMinusBuffer0[2] __attribute__((section(".data.of
      95, -120, 0, 0, 0, 64, 240}
 };
 
+struct VisualPlacementHeightData gVisualPlacementHeightData __attribute__((section(".data.visual_placement_heights"))) = {
+    0,
+    {0, 56, 88, 96, -16, -40, -64, -88,
+     -112, -136, -160, -184, -208, -232, -256, -280},
+    0
+};
+
 extern SVECTOR *D_8013B688;
 extern SVECTOR *D_8013AF90 __attribute__((section(".data")));
 extern MATRIX D_8012A6B0, D_8012A6D0;
@@ -808,6 +821,9 @@ extern RECT readPixelRectGp;
 extern PlayerCollisionRegion D_80129A18[2];
 extern u8 D_8013B2B5, D_8013B2B6;
 extern VisualPlacement *D_8013B2BC;
+extern u8 D_8013B2B9, D_8013B2BA;
+/* The course lookup base precedes its valid pointer entries in shared frame data. */
+extern TaskVisualFrame *D_80129540[];
 void func_8005B038(void);
 extern PickupPlacement *D_8013B2C0;
 
@@ -863,7 +879,7 @@ void func_800689EC(void);
 void func_8005D828(RacePlayer *player, PlayerCollisionRegion *region);
 void func_8005B460(void);
 void func_8005B6C0(void);
-void func_8005BA8C(void);
+void updateCourseVisualTask(void);
 void emitProjectedFlatTriangle(TriangleScratchVertex *vertices);
 void emitProjectedFlatQuad(TriangleScratchVertex *vertices);
 void func_800542BC(TriangleScratchVertex *vertices, s32 flags);
@@ -2070,10 +2086,37 @@ void initializeCourseVisualTask(void) {
         resource->framePosition = 0;
         gCourseVisualFrames = D_801294AC;
     }
-    setCurrentTaskCallback(func_8005BA8C);
+    setCurrentTaskCallback(updateCourseVisualTask);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005BA8C);
+void updateCourseVisualTask(void) {
+    TaskVisualResource *resource;
+    u8 i;
+    s32 height;
+    s16 *heightOffsets;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    prepareTaskVisualQuad(resource, gCourseVisualFrames, 0);
+    for (i = D_8013B2B9; i < D_8013B2B9 + D_8013B2BA; i++) {
+        if (isPointWithinCameraForwardRange(D_8013B2BC[i].x, D_8013B2BC[i].z, (s16)func_80059254())) {
+            resource->coordinate.coord.t[0] = D_8013B2BC[i].x;
+            resource->coordinate.coord.t[1] = D_8013B2BC[i].y;
+            resource->coordinate.coord.t[2] = D_8013B2BC[i].z;
+            height = D_8013B2BC[i].flags & 0xF;
+            if (height != 0) {
+                heightOffsets = gVisualPlacementHeightData.offsets;
+                resource->coordinate.coord.t[1] -= heightOffsets[height];
+            }
+            func_8005A788(resource, D_80129540[D_8013B2BC[i].unk01], 2);
+        }
+    }
+    if (D_8013AFD3 == 0) {
+        if (D_8013AFCE == 9) resource->framePosition += resource->unkC8;
+        if (resource->framePosition >= resource->unkC6) resource->framePosition &= 0xFF;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005BC70);
 
@@ -2150,6 +2193,7 @@ void updateActivePlayerRegionCollisions(void) {
 void initializeCollectibleTask(void) {
     PickupResource *resource;
     s32 height;
+    s16 *heightOffsets;
     if (D_8013AE88->resource14 != 0xFFFF) {
         while (1) {}
     }

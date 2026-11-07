@@ -616,6 +616,8 @@ segments:
       - [0x1157D4, data, offset_screen_copy_sprites_tail]
       - {start: 0x115914, type: .data, name: game/unk_800497B8, linker_section: .data.course_sector_resources}
       - [0x1161DC, data, course_sector_resources_tail]
+      - {start: 0x119EA0, type: .data, name: game/unk_800497B8, linker_section: .data.visual_placement_heights}
+      - [0x119EC4, data, visual_placement_heights_tail]
       - {start: 0x119F44, type: .data, name: game/unk_800497B8, linker_section: .data.proximity_emitter_placements}
       - [0x119F64, data, proximity_emitter_placements_tail]
       - {start: 0x11CF2C, type: .data, name: game/unk_800497B8, linker_section: .data.player_render_snapshots}
