@@ -51,6 +51,7 @@ checkCurrentPlayerSurfaceType = 0x8002DD70; // type:func
 drawIndexedFlatTriangle = 0x80054E70; // type:func
 initializeViewAndSelectTaskCallback = 0x8002F584; // type:func
 updateCurrentPlayerTaskCountdown = 0x80026D10; // type:func
+updateCurrentPlayerState8Steering = 0x80026DAC; // type:func
 drawFixedSpriteAndBottomBarTask = 0x8003597C; // type:func
 addFourWordGpuPacket = 0x8004002C; // type:func
 addTexturedSpritePacket = 0x80040140; // type:func

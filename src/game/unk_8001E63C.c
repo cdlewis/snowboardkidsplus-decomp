@@ -91,7 +91,6 @@ void func_800252CC(void);
 void func_80024288(void);
 void func_800245C4(void);
 void func_8002497C(void);
-void func_80026DAC(void);
 void func_800205B8(void);
 void func_80028680(void);
 void updateCurrentPlayerAirborneDragUntilLanding(void);
@@ -438,7 +437,7 @@ void resetCurrentPlayerForCallback26DAC(void) {
     player->unk128 &= ~0x200;
     player->unk128 |= 0xA000;
     D_8013AE88->data1A = 0;
-    setCurrentTaskCallback(func_80026DAC);
+    setCurrentTaskCallback(updateCurrentPlayerState8Steering);
 }
 
 void initializeCurrentPlayerState10(void) {
@@ -1061,7 +1060,80 @@ void updateCurrentPlayerTaskCountdown(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80026DAC);
+void updateCurrentPlayerState8Steering(void) {
+    s16 angle;
+    RacePlayer *player;
+    s32 difference;
+    s16 delta;
+    func_8002AE6C();
+    if (D_8013B0D8->unk128 & 1) {
+        D_8013B0D8->unk128 |= 0x200;
+    } else {
+        D_8013B0D8->unk128 &= ~0x200;
+    }
+    player = D_8013B0D8;
+    if (player->unk92E == (s16)D_80123D80[D_8013AFCE].unk00 && !(player->unk128 & 0x40)) {
+        angle = func_8004A124(player->x, player->z, D_80123D80[D_8013AFCE].unk18[10], D_80123D80[D_8013AFCE].unk18[11]);
+        player = D_8013B0D8;
+        if (player->unk128 & 0x400) {
+            angle += 0x800;
+        }
+        delta = angle - player->unk110;
+        difference = delta & 0xFFF;
+        angle = difference;
+        if (difference > 0x800) {
+            angle = difference | 0xF000;
+        }
+        if ((s16)angle > 0x66) {
+            angle = 0x66;
+        }
+        if ((s16)angle < -0x66) {
+            angle = -0x66;
+        }
+        player->unk0B6 += angle;
+    } else {
+        if (player->unk008 == 0 || player->unk92E != player->unk962) {
+            goto movement;
+        }
+        angle = ((GeometryPlacement *)geometryPlacementDataAbsolute)[player->unk92E].angle;
+        if (player->unk128 & 0x400) {
+            angle += 0x800;
+        }
+        delta = angle - player->unk110;
+        difference = delta & 0xFFF;
+        angle = difference;
+        if (difference > 0x800) {
+            angle = difference | 0xF000;
+        }
+        if ((s16)angle > 0x66) {
+            angle = 0x66;
+        }
+        if ((s16)angle < -0x66) {
+            angle = -0x66;
+        }
+        player->unk0B6 += angle;
+    }
+movement:
+    smoothAndScaleCurrentPlayerInput(0, 0);
+    D_8013B0D8->unk09E = 0x280;
+    func_80028680();
+    func_80017268();
+    if (++D_8013AE88->data1A < 15) {
+        D_8013B0D8->unk128 |= 8;
+    } else {
+        D_8013B0D8->unk128 &= ~8;
+    }
+    if (D_8013B0D8->animationFlags & 0x10) {
+        D_8013B0D8->unk962 = D_8013B0D8->unk92E;
+        D_8013B0D8->unk128 &= 0xFF0C1FFB;
+        if (D_8013B0D8->unk12C != 24) {
+            D_8013B0D8->unk12C = 0;
+        }
+    }
+    if ((u16)callCurrentPlayerStateCallbackIfDifferent(8)) {
+        D_8013B0D8->unk128 &= ~8;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80027014);
 

@@ -56,3 +56,5 @@ void updateCurrentPlayerState23MotionAndTimer(void);
 s16 isPlayerNearSelectedRecord(s16 index);
 
 void updateCurrentPlayerState5MotionAndTimer(void);
+
+void updateCurrentPlayerState8Steering(void);

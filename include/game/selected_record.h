@@ -3,6 +3,14 @@
 #include "decomp/types.h"
 #include "psx/libgte.h"
 
+/* Geometry entries have a 0x1C-byte stride; the origin references a vertex. */
+typedef struct GeometryPlacement {
+    s16 unk00[8];
+    s16 vertexIndex;
+    u16 angle;
+    s16 unk14[4];
+} GeometryPlacement;
+
 typedef struct SelectedRecord {
     u16 vertexIndices[3];
     s16 unk6;
