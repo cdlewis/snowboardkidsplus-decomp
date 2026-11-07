@@ -17,6 +17,13 @@ typedef struct StatsRecordSaveView {
     u8 icons[10][5];
 } StatsRecordSaveView;
 
+typedef struct CountRecordSaveView {
+    u8 unk000[0x304];
+    u8 scores[10][5];
+    u8 unk336[5];
+    u8 icons[10][5];
+} CountRecordSaveView;
+
 void dispatchMode11TransitionTask(void) {
     if (D_8013B109 != 1) {
         func_800149A8();
@@ -1517,7 +1524,29 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_80038090);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_80038270);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_80038574);
+void drawCountRecordRows(TaskResourceRecord *resource) {
+    s32 y, i, mode, textMode;
+    setSpriteColor(128, 128, 128);
+    y = -80;
+    for (i = 0; i < 5; i++) {
+        if (((TaskMenuFadeResource *)resource)->unk00 == i && (gFrameCounter & 1)) {
+            mode = 2;
+        } else if (i < 3) {
+            mode = 1;
+            textMode = 2;
+        } else {
+            mode = 4;
+            textMode = 4;
+        }
+        func_8006C998(-8, y, i + 0x136, mode, -1, &D_800EBFF0[D_8013AF78], 1);
+        func_8006DFB4(16, y, 2, 0, ((CountRecordSaveView *)&D_8013080C)->scores[D_8013AFCE][i], mode, -1, &D_800EBFF0[D_8013AF78], 1);
+        func_8006C998(70, y, (((CountRecordSaveView *)&D_8013080C)->icons[D_8013AFCE][i] & 15) * 3 + 0x14A,
+            D_80124284[((CountRecordSaveView *)&D_8013080C)->icons[D_8013AFCE][i] & 15], -1, &D_800EBFF0[D_8013AF78], 1);
+        func_8006C998(88, y, (((CountRecordSaveView *)&D_8013080C)->icons[D_8013AFCE][i] >> 4) + 0x13B, 7, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawLimitedText8x8(32, i * 32 - 72, 3, D_8013B138, textMode, -1, &D_800EBFF0[D_8013AF78], 1);
+        y += 32;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_8003881C);
 
@@ -1529,7 +1558,7 @@ void drawCurrentTaskMenu(void) {
     }
     resource = &D_800D9504[D_8013AE88->resource14];
     func_80038090(resource);
-    func_80038574(resource);
+    drawCountRecordRows(resource);
 }
 
 void drawTaskMenuAndSetFlag10OnInput(void) {
@@ -1544,7 +1573,7 @@ void drawTaskMenuAndSetFlag10OnInput(void) {
         setCurrentTaskCallback(drawCurrentTaskMenu);
     }
     func_80038090(resource);
-    func_80038574(resource);
+    drawCountRecordRows(resource);
 }
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_80038B34);

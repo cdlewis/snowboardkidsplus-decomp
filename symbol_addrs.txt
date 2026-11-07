@@ -3091,3 +3091,5 @@ drawStatsRecordRows = 0x8003B020; // type:func
 updatePlayerFollowingOrbitTask = 0x80059F68; // type:func
 
 createPlayerGroupedSelectionTask = 0x800846F4; // type:func
+
+drawCountRecordRows = 0x80038574;
