@@ -1,6 +1,8 @@
 #include "unk_8002B3F4.h"
 #include "../main_remaining.h"
 #include "game/global_flags.h"
+#include "psx/libc.h"
+
 
 /* Verified time-menu fields in the shared save-state prefix. */
 typedef struct TimeMenuSaveStateView {
@@ -1270,7 +1272,26 @@ void initializeResultDisplayTask(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_80036BA4);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_80037074);
+void drawPlayerResultRowValues(s16 row, s16 x, s16 y, TaskFadeResource *resource) {
+    char text[32];
+    s32 length;
+    s32 mode;
+    if (row != 0 || (gFrameCounter & 1)) {
+        mode = 6;
+    } else {
+        mode = 0;
+    }
+    sprintf(text, gResultValueFormat, D_80120E90[resource->playerOrder[0]].unk02A);
+    length = strlen(text);
+    drawLimitedText8x8(x + 104, y + 24, 1, gResultValueMultiplierLabel, mode, -1, &D_800EBFF0[D_8013AF78], 1);
+    func_8006D66C(x + 112, y + 24, length, 0, D_80120E90[resource->playerOrder[row]].unk02A, mode, -1, &D_800EBFF0[D_8013AF78], 1);
+    if (D_80120E90[resource->playerOrder[row]].unk008 == 0) {
+        func_8006D66C(x + 88, y + 6, 1, 0, D_80120E90[resource->playerOrder[row]].playerIndex + 1, 5, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawLimitedText8x8(x + 96, y + 6, 1, gPlayerNumberSuffixLabel, 5, -1, &D_800EBFF0[D_8013AF78], 1);
+    } else {
+        drawLimitedText8x8(x + 88, y + 6, 3, gComputerPlayerLabel, 4, -1, &D_800EBFF0[D_8013AF78], 1);
+    }
+}
 
 void drawPlayerResultRows(TaskFadeResource *resource) {
     if (resource->brightness != 128) {
@@ -1279,16 +1300,16 @@ void drawPlayerResultRows(TaskFadeResource *resource) {
         setSpriteColor(128, 128, 128);
     }
     if (resource->playerOrder[0] != -1) {
-        func_80037074(0, -136, -80, resource);
+        drawPlayerResultRowValues(0, -136, -80, resource);
     }
     if (resource->playerOrder[1] != -1) {
-        func_80037074(1, 8, -48, resource);
+        drawPlayerResultRowValues(1, 8, -48, resource);
     }
     if (resource->playerOrder[2] != -1) {
-        func_80037074(2, -136, -16, resource);
+        drawPlayerResultRowValues(2, -136, -16, resource);
     }
     if (resource->playerOrder[3] != -1) {
-        func_80037074(3, 8, 16, resource);
+        drawPlayerResultRowValues(3, 8, 16, resource);
     }
 }
 
@@ -2019,7 +2040,7 @@ void drawStatsRecordRows(TaskResourceRecord *resource) {
         func_8006C998(102, y, (((StatsRecordSaveView *)&D_8013080C)->icons[D_8013AFCE][i] & 15) * 3 + 0x14A,
             D_80124284[((StatsRecordSaveView *)&D_8013080C)->icons[D_8013AFCE][i] & 15], -1, &D_800EBFF0[D_8013AF78], 1);
         func_8006C998(120, y, (((StatsRecordSaveView *)&D_8013080C)->icons[D_8013AFCE][i] >> 4) + 0x13B, 7, -1, &D_800EBFF0[D_8013AF78], 1);
-        drawLimitedText8x8(84, y + 8, 1, D_8013B128, textMode, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawLimitedText8x8(84, y + 8, 1, gPlayerNumberSuffixLabel, textMode, -1, &D_800EBFF0[D_8013AF78], 1);
         y += 32;
     }
 }

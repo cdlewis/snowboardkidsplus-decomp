@@ -302,6 +302,8 @@ void func_8006C998(s16 x, s16 y, s32 sprite, s32 palette, s32 blendMode,
                    GsOT *ot, u16 depth);
 void func_8006D984(s16 x, s16 y, s16 digits, s16 zeroFill, s32 value,
                    s16 palette, s16 blendMode, GsOT *ot, u16 depth);
+void func_8006D66C(s16 x, s16 y, s16 digits, s16 zeroFill, s32 value,
+                   s16 palette, s16 blendMode, GsOT *ot, u16 depth);
 void func_8006DFB4(s16 x, s16 y, s16 digits, s16 zeroFill, s32 value,
                    s16 palette, s16 blendMode, GsOT *ot, u16 depth);
 /* Draw the upper three bytes as two-digit fields with time separators. */

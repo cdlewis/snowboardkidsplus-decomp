@@ -15,6 +15,7 @@
 #include "game/music.h"
 #include "psx/libsnd.h"
 #include "psx/libsn.h"
+#include "psx/libc.h"
 #define RACE_PLAYER_ABSOLUTE_ADDRESSING
 #define TASK_ABSOLUTE_ADDRESSING
 #define TASK_FLAGS_ABSOLUTE_ADDRESSING
@@ -26,6 +27,7 @@
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
 #include "psx/libsn.h"
+#include "psx/libc.h"
 
 #define DRAW_MODE_COMMAND_HIGH 0xE100
 #define TEXTURED_SPRITE_CODE 0x64
@@ -328,7 +330,6 @@ void func_800187B8(u8 voice);
 void func_8001814C(void);
 void signalFlag9WhenTaskCountdownExpires(void);
 int printf(const char *format, ...);
-int sprintf(char *buffer, const char *format, ...);
 
 void func_80040D5C(void);
 void initializeNumberSelectionTask(void);

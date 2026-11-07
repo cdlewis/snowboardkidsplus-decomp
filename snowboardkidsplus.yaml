@@ -756,7 +756,8 @@ segments:
       - {start: 0x12B914, type: .data, name: game/unk_8002B3F4, linker_section: .data.falling_paired_visual_animation}
       - [0x12B91A, pad]
       - {start: 0x12B91C, type: .data, name: game/unk_8002B3F4, linker_section: .data.result_icon_palettes}
-      - [0x12B920, data, 12B920]
+      - {start: 0x12B920, type: .data, name: game/unk_8002B3F4, linker_section: .data.result_row_labels}
+      - [0x12B930, data, result_row_labels_tail]
       - {start: 0x12B954, type: .data, name: game/unk_8002B3F4, linker_section: .data.menu_sprite_palettes_prefix}
       - {start: 0x12B958, type: .data, name: game/unk_8002B3F4, linker_section: .data.menu_sprite_palettes}
       - [0x12B96C, data, 12B96C]

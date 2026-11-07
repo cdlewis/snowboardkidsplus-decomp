@@ -123,6 +123,11 @@ const char gResultGetCoinLabel[16] __attribute__((section(".rodata.result_prize_
 
 const char gResultTotalMoneyLabel[16] __attribute__((section(".rodata.result_prize_labels"), aligned(4))) = "-TOTAL MONEY-";
 
+const char gResultValueFormat[4] __attribute__((section(".data.result_row_labels"), aligned(4))) = "%d";
+const char gResultValueMultiplierLabel[4] __attribute__((section(".data.result_row_labels"), aligned(4))) = "X";
+const char gPlayerNumberSuffixLabel[4] __attribute__((section(".data.result_row_labels"), aligned(4))) = "P";
+const char gComputerPlayerLabel[4] __attribute__((section(".data.result_row_labels"), aligned(4))) = "COM";
+
 RaceTime gRaceElapsedTime = {0, 0, 0};
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002B3F4);
