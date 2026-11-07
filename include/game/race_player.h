@@ -68,7 +68,8 @@ struct RacePlayer {
     u16 unk0BE;
     u8 unk0C0[2];
     u16 unk0C2;
-    u8 unk0C4[4];
+    u8 unk0C4[2];
+    u16 unk0C6;
     s16 unk0C8;
     s16 unk0CA[6];
     s16 unk0D6[6];

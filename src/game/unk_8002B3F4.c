@@ -504,7 +504,44 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002DEA4);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002DEE8);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002E1B0);
+void updateCurrentPlayerDirectionalAnimation(void) {
+    GameTask *task = D_8013AE88;
+    RacePlayer *player;
+    if (!(D_8013AEEC[task->data18] & task->data1C)) {
+        task->data1E = 1;
+    }
+    player = D_8013B0D8;
+    if (player->animationFlags & 0x10) {
+        GameTask *animationTask = D_8013AE88;
+        if (animationTask->data1E) {
+            animationTask->data1A++;
+            if (player->unk128 & 0x400) {
+                if (animationTask->data1C & 8) {
+                    startCurrentPlayerAnimation(0x1D, 2);
+                }
+                if (D_8013AE88->data1C & 4) {
+                    startCurrentPlayerAnimation(0x1B, 2);
+                }
+            } else {
+                if (animationTask->data1C & 8) {
+                    startCurrentPlayerAnimation(0x1B, 2);
+                }
+                if (D_8013AE88->data1C & 4) {
+                    startCurrentPlayerAnimation(0x1D, 2);
+                }
+            }
+            if (D_8013AE88->data1C & 1) {
+                startCurrentPlayerAnimation(0x1F, 2);
+            }
+            if (D_8013AE88->data1C & 2) {
+                startCurrentPlayerAnimation(0x21, 2);
+            }
+        } else {
+            player->unk0C6++;
+        }
+    }
+    D_8013B0D8->unk128 |= 0x800;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002E368);
 

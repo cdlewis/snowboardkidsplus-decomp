@@ -639,3 +639,5 @@ void waitMode2TransitionTask(void);
 
 void initializeRaceTimeComparisonPanel(void);
 void updateFallingRotatingObjectTask(void);
+
+void updateCurrentPlayerDirectionalAnimation(void);

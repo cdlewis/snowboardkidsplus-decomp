@@ -3191,3 +3191,5 @@ gPerfectHitLabel = 0x80010AD4; // type:char size:0x10
 
 sortPlayerModelWithDrawArea = 0x800972B8; // type:func
 playerModelDrawAreaDepths = 0x8013B500; // size:0x8 defined:true
+
+updateCurrentPlayerDirectionalAnimation = 0x8002E1B0; // type:func
