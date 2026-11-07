@@ -3052,3 +3052,5 @@ emitProjectedGouraudTexturedQuad = 0x80053180; // type:func
 updateCurrentPlayerState29MotionAndAnimation = 0x800240D0; // type:func
 
 drawTimeRecordRows = 0x800379B8; // type:func
+
+initializeProximityParticleTask = 0x8005CCEC; // type:func

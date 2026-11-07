@@ -9,6 +9,7 @@
 #define GS_PACKET_ABSOLUTE_ADDRESSING
 #include "game/graphics.h"
 #include "game/linear_random.h"
+#include "game/random.h"
 #include "game/offset_archive.h"
 #include "game/music.h"
 #include "game/game_options.h"
@@ -498,6 +499,19 @@ typedef struct ProximityEmitterResource {
     u8 unkDC[0x24];
 } ProximityEmitterResource;
 
+/* Fixed-point motion for a particle spawned by a proximity emitter. */
+typedef struct EmittedParticleResource {
+    GsCOORDINATE2 coordinate;
+    u8 unk50[0x50];
+    s32 positionX, positionY, positionZ;
+    s32 unkAC;
+    s32 velocityX, velocityY, velocityZ, gravity;
+    s16 rotation, angle, unkC4;
+    u8 unkC6[0xA];
+    s16 geometryIndex;
+    u8 unkD2[0x2E];
+} EmittedParticleResource;
+
 /* One 256-byte task resource; the remaining fields belong to the effect callbacks. */
 typedef struct PositionedEffectResource {
     s32 unk00;
@@ -954,7 +968,8 @@ void func_8006FE68(s16 x, s16 y, s16 w, s16 h, s16 borderW, s16 borderH,
                    s16 style, s16 palette, s16 blend, GsOT *ot, u16 depth);
 
 s32 isPointWithinCameraForwardRange(s32 x, s32 z, s16 player);
-void func_8005CCEC(void);
+void initializeProximityParticleTask(void);
+void func_8005CEF0(void);
 void func_8005DF98(void);
 void updateLandedTaskObject(void);
 
@@ -2242,13 +2257,42 @@ void updateProximityEmitterTask(void) {
         if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
             if (--resource->countdown == 0) {
                 resource->countdown = 0x20;
-                func_800148B4(func_8005CCEC);
+                func_800148B4(initializeProximityParticleTask);
             }
         }
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005CCEC);
+void initializeProximityParticleTask(void) {
+    EmittedParticleResource *resource;
+    ProximityEmitterResource *parent;
+    s32 xOffset, zOffset;
+    s32 sine, cosine;
+    if (D_8013AE88->resource14 != 0xFFFF) { while (1) {} }
+    D_8013AE88->resource14 = allocateTaskResource();
+    resource = (EmittedParticleResource *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
+    parent = (ProximityEmitterResource *)&D_800D9504[D_8013AE98->resource14];
+    GsInitCoordinate2(0, &resource->coordinate);
+    resource->geometryIndex = parent->geometryIndex;
+    resource->rotation = 0;
+    resource->angle = parent->angle;
+    resource->unkC4 = 0;
+    xOffset = ((u8)((u8)randomNextSecondary() % 60) - 30) * 10;
+    zOffset = ((u8)((u8)randomNextSecondary() % 60) - 30) * 10;
+    resource->positionX = (parent->coordinate.coord.t[0] + xOffset) << 8;
+    resource->positionY = parent->coordinate.coord.t[1] << 8;
+    resource->positionZ = (parent->coordinate.coord.t[2] + zOffset) << 8;
+    sine = rsin(resource->angle);
+    cosine = rcos(resource->angle);
+    resource->velocityX = (sine * 2560) / 4096;
+    resource->velocityZ = (cosine * 2560) / 4096;
+    resource->velocityY = -4096;
+    resource->gravity = 80;
+    D_8013AE88->data18 = 0;
+    D_8013AE88->data1A = 90;
+    setCurrentTaskCallback(func_8005CEF0);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005CEF0);
 
