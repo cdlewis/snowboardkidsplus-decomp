@@ -547,7 +547,39 @@ void createPlayerPositionTrailTask(s32 playerIndex) {
 
 INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_800676FC);
 
-INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_80067B30);
+void emitPlayerTurnTripleQuadEffectTask(void) {
+    RacePlayer *player;
+    PlayerTripleQuadEffectResource *resource;
+    SVECTOR *vertex;
+    s32 i, sine;
+    player = &D_80120E90[D_8013AE88->data18];
+    if (D_8013AFD3 != 0) return;
+    if (!isPointWithinCameraForwardRange(player->worldCoordinate.coord.t[0], player->worldCoordinate.coord.t[2], (s16)func_80059254())) return;
+    if (!(player->unk128 & 8) && player->unk96E != 0 && player->unk96E != 0x801 && player->unk96E != 0x200) return;
+    sine = rsin((s16)player->unk0BE - (s16)player->unk110);
+    if (sine < 0) sine = -sine;
+    if ((gFrameCounter & 3) == 0 && !(player->unk128 & 0x677DA21) && player->unk0BC >= 0x800 && sine >= 0x200) {
+        func_80014930(D_8013B304, func_800676FC);
+        D_8013AE8C->resource14 = allocateTaskResource();
+        resource = (PlayerTripleQuadEffectResource *)&D_800D9504[D_8013AE8C->resource14];
+        vertex = gPlayerTripleQuadOffsets;
+        for (i = 0; i < 3; i++) {
+            ApplyMatrix(&player->model.effect.effectMatrix180, vertex, (VECTOR *)&resource->positions[i]);
+            resource->positions[i].x += player->worldCoordinate.coord.t[0];
+            resource->positions[i].y += player->worldCoordinate.coord.t[1];
+            resource->positions[i].z += player->worldCoordinate.coord.t[2];
+            vertex++;
+        }
+        resource->elapsed = 0;
+        resource->rotation.vx = 0;
+        resource->rotation.vy = 0;
+        resource->rotation.vz = randomNextLinear() % 4096;
+        resource->state = player->unk96E;
+        resource->scale = rsin((s16)player->unk0BE - (s16)player->unk110);
+        if (resource->scale < 0) resource->scale = -resource->scale;
+        D_8013AE8C->data18 = D_8013AE88->data18;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_80067D88);
 

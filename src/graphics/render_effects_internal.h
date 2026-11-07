@@ -1166,6 +1166,8 @@ GameTask *startAlternateQuadAnimationTask(s32 unused, const PositionEffectOrigin
 void startPositionEffectTask(const PositionEffectOrigin *position);
 void createPlayerPositionTrailTask(s32 playerIndex);
 void createPlayerRingEffectTask(s32 playerIndex);
+void func_800676FC(void);
+void emitPlayerTurnTripleQuadEffectTask(void);
 s32 createPlayerTripleQuadEffectTask(s32 playerIndex);
 void drawRisingTexturedStripTask(void);
 void createRotatingQuadTrailTask(void);
