@@ -10,6 +10,13 @@ typedef struct TimeMenuSaveStateView {
     u8 icons[10][5];
 } TimeMenuSaveStateView;
 
+typedef struct StatsRecordSaveView {
+    u8 unk000[0x228];
+    u16 scores[10][5];
+    u8 unk28C[10];
+    u8 icons[10][5];
+} StatsRecordSaveView;
+
 void dispatchMode11TransitionTask(void) {
     if (D_8013B109 != 1) {
         func_800149A8();
@@ -1964,7 +1971,29 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_8003AAE0);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_8003AD48);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_8003B020);
+void drawStatsRecordRows(TaskResourceRecord *resource) {
+    u8 padding[0x20];
+    s32 y, i, mode, textMode;
+    y = -80;
+    for (i = 0; i < 5; i++) {
+        if (((StatsMenuFadeResource *)resource)->unk00 == i && (gFrameCounter & 1)) {
+            mode = 2;
+        } else if (i < 3) {
+            mode = 1;
+            textMode = 2;
+        } else {
+            mode = 4;
+            textMode = 4;
+        }
+        func_8006C998(24, y, i + 0x136, mode, -1, &D_800EBFF0[D_8013AF78], 1);
+        func_8006DFB4(44, y, 5, 0, ((StatsRecordSaveView *)&D_8013080C)->scores[D_8013AFCE][i], mode, -1, &D_800EBFF0[D_8013AF78], 1);
+        func_8006C998(102, y, (((StatsRecordSaveView *)&D_8013080C)->icons[D_8013AFCE][i] & 15) * 3 + 0x14A,
+            D_80124284[((StatsRecordSaveView *)&D_8013080C)->icons[D_8013AFCE][i] & 15], -1, &D_800EBFF0[D_8013AF78], 1);
+        func_8006C998(120, y, (((StatsRecordSaveView *)&D_8013080C)->icons[D_8013AFCE][i] >> 4) + 0x13B, 7, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawLimitedText8x8(84, y + 8, 1, D_8013B128, textMode, -1, &D_800EBFF0[D_8013AF78], 1);
+        y += 32;
+    }
+}
 
 void drawStatsMenuMoneyLabels(StatsMenuFadeResource *resource) {
     u8 padding[0x10];
@@ -1990,7 +2019,7 @@ void drawCurrentTaskStatsSelection(void) {
         func_800149A8();
     }
     func_8003AAE0(resource);
-    func_8003B020(resource);
+    drawStatsRecordRows(resource);
 }
 
 void updateStatsMenuExitInputTask(void) {
@@ -2005,7 +2034,7 @@ void updateStatsMenuExitInputTask(void) {
         setCurrentTaskCallback(drawCurrentTaskStatsSelection);
     }
     func_8003AAE0(resource);
-    func_8003B020(resource);
+    drawStatsRecordRows(resource);
 }
 
 void drawCurrentTaskStatsMenu(void) {

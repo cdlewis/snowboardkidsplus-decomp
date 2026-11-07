@@ -498,6 +498,7 @@ extern const char gResultGetCoinLabel[16] __attribute__((section(".rodata.result
 extern const char gResultTotalMoneyLabel[16] __attribute__((section(".rodata.result_prize_labels"), aligned(4)));
 
 extern u8 D_80124284[];
+extern const char D_8013B128[];
 extern RaceTime gRaceElapsedTime;
 
 
@@ -605,7 +606,7 @@ void func_80039B34(TaskResourceRecord *resource);
 void func_800398F4(TaskResourceRecord *resource);
 void func_8003AAE0(TaskResourceRecord *resource);
 void func_8003AD48(TaskResourceRecord *resource);
-void func_8003B020(TaskResourceRecord *resource);
+void drawStatsRecordRows(TaskResourceRecord *resource);
 void drawStatsMenuMoneyLabels(StatsMenuFadeResource *resource);
 void waitForStatsScoreCountStartTask(void);
 void advanceTaskStatsCountdownAndPlaySound(void);
