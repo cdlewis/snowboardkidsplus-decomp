@@ -3681,7 +3681,22 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80043120);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800435AC);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80043810);
+void drawFirstPlayerStatusHud(void) {
+    GsOT *ot = &D_800EBFF0[D_8013AF78];
+    RacePlayer *player;
+    s16 frame;
+    s32 palette;
+    setSpriteColor(128, 128, 128);
+    player = D_80120E90;
+    drawMenuKindSprite(-32, -96, (s8)player->unk936[8], (s8)player->unk936[10], ot, 1);
+    drawPaletteMappedIcon(0, -96, (s8)player->unk936[11], ot, 1);
+    frame = (s16)gFrameCounter % 12;
+    func_8006C998(120, 80, (s16)(frame / 2) + 472, 7, -1, ot, 1);
+    palette = player->unk01C < 100 ? 2 : 3;
+    func_8006DFB4(78, 80, 5, 0, player->unk01C, palette, -1, ot, 1);
+    func_8006C998(-116, 80, 426, 1, -1, ot, 1);
+    func_8006C998(-136, 64, 420, 14, -1, ot, 1);
+}
 
 void advanceRaceElapsedTime(void) {
     if (!D_8013AFD3) {

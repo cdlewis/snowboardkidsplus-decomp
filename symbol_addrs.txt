@@ -2903,3 +2903,5 @@ moveCurrentPlayerForwardUntilState22 = 0x80026500; // type:func
 
 updateControllerActuators = 0x800157DC; // type:func
 gControllerActuatorAlignment = 0x8013AECC; // size:0x6
+
+drawFirstPlayerStatusHud = 0x80043810; // type:func
