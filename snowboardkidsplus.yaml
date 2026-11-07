@@ -67,7 +67,9 @@ segments:
     subsegments:
       - [0x800, rodata, main]
       - [0xB88, rodata]
-      - [0xBF0, .rodata, main_remaining]
+      - [0xBA0, .rodata, game/memory_card_read]
+      - [0xBB8, rodata]
+      - [0xBF0, .rodata, main_remaining_tail]
       - [0xC6C, rodata]
       - [0xC7C, rodata]
       - [0xCB0, rodata]
@@ -135,6 +137,8 @@ segments:
       - [0x39B4, c, main]
       - [0x6604, c, engine/random]
       - [0x66E0, c, main_remaining]
+      - [0x9D20, c, game/memory_card_read]
+      - [0x9E70, c, main_remaining_tail]
       # Working groups based on rodata consumers; original object boundaries are unknown.
       - [0xEE10, c, game/unk_8001E63C]
       # Absolute-addressed player helpers begin here.

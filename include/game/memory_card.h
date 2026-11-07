@@ -1,0 +1,30 @@
+#pragma once
+
+#include "common.h"
+
+typedef struct MemoryCardSaveHeader {
+    u8 magic[2];
+    u8 iconDisplay;
+    u8 blockCount;
+    u8 title[64];
+    u8 reserved[28];
+    u16 iconPalette[16];
+    u8 icons[3][128];
+    u32 version;
+    u32 payloadSize;
+    u32 checksum;
+    u32 unk20C;
+    u8 payload[0x870];
+} MemoryCardSaveHeader;
+
+extern MemoryCardSaveHeader gMemoryCardSaveHeader;
+extern s16 D_8013AF38;
+extern s32 D_8013AF34;
+extern u8 D_8013AF48;
+extern char *D_8013AF40;
+extern u8 D_8013B608[2] __attribute__((section(".bss")));
+extern u8 D_8013B60C[2] __attribute__((section(".bss")));
+extern s32 D_800EB550[5];
+
+s16 validateAndCopyMemoryCardSave(void);
+s32 pollMemoryCardRead(void);

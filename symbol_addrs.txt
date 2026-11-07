@@ -2691,3 +2691,5 @@ D_8013AF30 = 0x8013AF30; // size:0x2 defined:true
 initializeVisualTrailTask = 0x800481A8; // type:func
 
 initializeFallingTaskObject = 0x8005E174; // type:func
+
+pollMemoryCardRead = 0x80019520; // type:func
