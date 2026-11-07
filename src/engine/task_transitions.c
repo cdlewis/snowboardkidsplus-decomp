@@ -78,7 +78,6 @@ void func_8001BD50(void);
 void func_8001C0DC(void);
 void func_8003DEE0(void);
 void func_8001B858(void);
-void func_8002FFC0(void);
 s32 func_80014838(TaskCallback callback);
 void func_8001D100(void);
 void advanceTaskWhenFlagAFE4Bit8Set(void);
@@ -148,7 +147,7 @@ void initializeGameOptionViewTask(void) {
     setControllerFlag0(0);
     setControllerFlag0(1);
     setCurrentTaskCallback(func_8001B858);
-    func_80014838(func_8002FFC0);
+    func_80014838(dispatchGameOptionTransitionTask);
     D_8013AE88->unk10 |= 1;
 }
 

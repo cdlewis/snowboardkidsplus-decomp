@@ -74,7 +74,37 @@ void initializeMode11TransitionTask(void) {
     D_8013AE88->unk10 |= 2;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_8002FFC0);
+void dispatchGameOptionTransitionTask(void) {
+    D_8013AF84 = 0x100;
+    initPlayerCamera(0);
+    func_8003DEE0();
+    switch (D_8013B109) {
+    case 0:
+        func_80019D3C(2);
+        resetPendingCdRequests();
+        D_8013B109 = 1;
+        D_8013B0F0 = 0;
+        break;
+    case 1:
+        func_80014874(initializeMode11TransitionTask);
+        D_8013AE88->unk10 |= 1;
+        break;
+    case 2:
+        func_80070274(1, 0, 30);
+        setSecondaryDisplayTaskMode(1);
+        queueCdSectorCommand(0, 1, 5, (void *)0x8017D000, 0);
+        queueCdSectorCommand(0, 6, 18, (void *)0x801F0000, 0);
+        D_8013B109 = 1;
+        D_8013B0F0 = 0;
+        D_8013AE88->callback = func_80014B58;
+        break;
+    case 3:
+        D_8013B109 = 1;
+        D_8013B0F0 = 0;
+        func_800149A8();
+        break;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_80030108);
 

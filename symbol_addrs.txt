@@ -3179,3 +3179,5 @@ updateNumberAdjustmentTask = 0x800A5418; // type:func
 drawFallingParticlesTask = 0x80062B24; // type:func
 
 createRegisteredMovingPanelTask = 0x80076258; // type:func
+
+dispatchGameOptionTransitionTask = 0x8002FFC0; // type:func
