@@ -1878,7 +1878,38 @@ void drawProjectedIndexedFlatQuad(void) {
     GsOUT_PACKET_P = (u32)(packet + 1);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80057AC0);
+void drawProjectedIndexedGouraudQuad(void) {
+    GouraudQuadPrimitive *primitive = (GouraudQuadPrimitive *)D_8013B680;
+    POLY_G4 *packet = (POLY_G4 *)GsOUT_PACKET_P;
+    TriangleScratchpad *scratch = TRIANGLE_SCRATCHPAD;
+    gte_ldv3(&D_8013B688[primitive->vertexIndices[0]], &D_8013B688[primitive->vertexIndices[1]], &D_8013B688[primitive->vertexIndices[2]]);
+    gte_rtpt();
+    gte_stsxy3(&packet->x0, &packet->x1, &packet->x2);
+    gte_nclip();
+    gte_stopz(&scratch->clipping);
+    gte_ldv0(&D_8013B688[primitive->vertexIndices[3]]);
+    gte_rtps();
+    gte_stsxy(&packet->x3);
+    gte_stflg(&scratch->flags);
+    gte_stszotz(&scratch->depth);
+    if (scratch->clipping < 0 || scratch->flags < 0 || scratch->depth <= 0 || scratch->depth >= 0x1000) return;
+    if (scratch->fogEnabled) {
+        gte_stdp(&scratch->depthCue);
+        DpqColor((CVECTOR *)&primitive->colors[0], scratch->depthCue, (CVECTOR *)&packet->r0);
+        DpqColor((CVECTOR *)&primitive->colors[1], scratch->depthCue, (CVECTOR *)&packet->r1);
+        DpqColor((CVECTOR *)&primitive->colors[2], scratch->depthCue, (CVECTOR *)&packet->r2);
+        DpqColor((CVECTOR *)&primitive->colors[3], scratch->depthCue, (CVECTOR *)&packet->r3);
+    } else {
+        setRGB0(packet, primitive->colors[0].r, primitive->colors[0].g, primitive->colors[0].b);
+        setRGB1(packet, primitive->colors[1].r, primitive->colors[1].g, primitive->colors[1].b);
+        setRGB2(packet, primitive->colors[2].r, primitive->colors[2].g, primitive->colors[2].b);
+        setRGB3(packet, primitive->colors[3].r, primitive->colors[3].g, primitive->colors[3].b);
+    }
+    packet->tag = 8 << 24;
+    setcode(packet, scratch->code | POLY_G4_CODE);
+    addPrim(&D_8013B670->org[(scratch->depth >> D_8013B69C) + 6], packet);
+    GsOUT_PACKET_P = (u32)(packet + 1);
+}
 
 void drawProjectedIndexedTexturedQuad(void) {
     TexturedQuadPrimitive *primitive = (TexturedQuadPrimitive *)D_8013B680;
