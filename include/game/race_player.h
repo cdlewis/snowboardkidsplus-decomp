@@ -123,6 +123,7 @@ struct RacePlayer {
         struct {
             u8 unk15C[0x24];
             MATRIX effectMatrix180;
+            u8 unk1A0[0x41C];
         } effect;
     } model;
     RacePlayerVector unk5BC[14];

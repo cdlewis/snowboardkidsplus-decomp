@@ -4,6 +4,7 @@
 
 void advanceCurrentPlayerTaskPhaseMovement(void);
 void updateCurrentPlayerMotionEffects(void);
+void updateCurrentPlayerPartTransforms(void);
 
 void resetCurrentPlayerForCallback205B8(void);
 void initializeCurrentPlayerDefaultState(void);

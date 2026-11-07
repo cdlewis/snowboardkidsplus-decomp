@@ -97,7 +97,6 @@ u8 gPlayerState30Animation22Countdowns[12]
 
 void func_8001EC88(void);
 void initializeScaledTaskCoordinateResource(void);
-void func_8001EEBC(void);
 void func_80025014(void);
 void func_800252CC(void);
 void func_80024288(void);
@@ -292,7 +291,32 @@ void updateCurrentPlayerMotionEffects(void) {
 }
 
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8001EEBC);
+void updateCurrentPlayerPartTransforms(void) {
+    u16 i;
+    u8 parent;
+    for (i = 0; i < 12; i++) {
+        parent = D_8013B0D8->unk13E[i];
+        RotMatrix((SVECTOR *)&D_8013B0D8->unk5BC[i], &D_8013B0D8->model.modelCoordinates[i].coord);
+        if (i == 0) {
+            D_8013AF90->vx = 0;
+            D_8013AF90->vy = 0;
+            D_8013AF90->vz = 0;
+            ApplyMatrix(&D_8013B0D8->model.modelCoordinates[0].coord, D_8013AF90, D_8013AF88);
+            D_8013B0D8->model.modelCoordinates[0].coord.t[0] = D_8013AF88->vx + D_8013B0D8->unk62C[0].x;
+            D_8013B0D8->model.modelCoordinates[0].coord.t[1] = D_8013AF88->vy + D_8013B0D8->unk62C[0].y;
+            D_8013B0D8->model.modelCoordinates[0].coord.t[2] = D_8013AF88->vz + D_8013B0D8->unk62C[0].z;
+        } else {
+            ApplyMatrix(&D_8013B0D8->model.modelCoordinates[parent].coord, (SVECTOR *)&D_8013B0D8->unk62C[i], D_8013AF88);
+            if (D_8013B0D8->unk128 & 0x200000) {
+                D_8013AF88->vy = D_8013AF88->vy * D_8013B0D8->unk0F8 / 8;
+            }
+            D_8013B0D8->model.modelCoordinates[i].coord.t[0] = D_8013AF88->vx + D_8013B0D8->model.modelCoordinates[parent].coord.t[0];
+            D_8013B0D8->model.modelCoordinates[i].coord.t[1] = D_8013AF88->vy + D_8013B0D8->model.modelCoordinates[parent].coord.t[1];
+            D_8013B0D8->model.modelCoordinates[i].coord.t[2] = D_8013AF88->vz + D_8013B0D8->model.modelCoordinates[parent].coord.t[2];
+        }
+        func_8001E3E4((SVECTOR *)&D_8013B0D8->unk5BC[i], &D_8013B0D8->model.modelCoordinates[i]);
+    }
+}
 
 void resetCurrentPlayerForCallback205B8(void) {
     RacePlayer *player = D_8013B0D8;
@@ -525,7 +549,7 @@ void initializeCurrentPlayerState24(void) {
         D_8013B0D8->unk5BC[i].z = 0;
         D_8013B0D8->unk5BC[i].x = 0;
     }
-    func_8001EEBC();
+    updateCurrentPlayerPartTransforms();
     D_8013AE88->data1A = 0;
     D_8013AE88->data1C = 0;
     player = D_8013B0D8;

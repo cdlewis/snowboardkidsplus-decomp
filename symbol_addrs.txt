@@ -3158,3 +3158,5 @@ createRegisteredDetailedTextPanelTask = 0x8008CB88; // type:func
 createRegisteredTripletTask = 0x80081BFC; // type:func
 
 updateCurrentPlayerTaskDecelerationSteps = 0x80025DD8; // type:func
+
+updateCurrentPlayerPartTransforms = 0x8001EEBC; // type:func
