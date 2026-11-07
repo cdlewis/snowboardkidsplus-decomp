@@ -1,4 +1,5 @@
 #include "unk_8002B3F4.h"
+#include "../main_remaining.h"
 
 void dispatchMode11TransitionTask(void) {
     if (D_8013B109 != 1) {
@@ -52,7 +53,29 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_8002FFC0);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_80030108);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_8003012C);
+void initializeMenuTransitionResourcesTask(void) {
+    MenuTransitionResource *resource;
+    D_8013AE88->data18 = 0;
+    if (D_8013AE88->resource14 != 0xFFFF) { while (1) {} }
+    D_8013AE88->resource14 = allocateTaskResource();
+    resource = (MenuTransitionResource *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 != 0xFFFF) { while (1) {} }
+    D_8013AE88->resource16 = allocateTaskResource();
+    resource->unk0E = 0;
+    func_80071490(0, 0, 0);
+    func_8002EE0C();
+    if (D_8013B0F0 == 0) {
+        func_80070274(11, 0, 30);
+        setSecondaryDisplayTaskMode(3);
+        queueCdSectorCommand(2, 0x162, 0x8D, (void *)0x80189800, 0);
+        D_8013B0F0 = 1;
+        D_8013AE88->data18 = 0;
+        setCurrentTaskCallback(waitMode2TransitionTask);
+        D_8013AE88->unk10 |= 2;
+    } else {
+        setCurrentTaskCallback(func_800302F8);
+    }
+}
 
 void waitMode2TransitionTask(void) {
     switch (D_8013AE88->data18) {

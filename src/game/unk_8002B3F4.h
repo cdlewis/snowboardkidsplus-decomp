@@ -28,6 +28,11 @@
 #include "psx/libsnd.h"
 #include "psx/libgte.h"
 
+typedef struct MenuTransitionResource {
+    u8 unk00[0xE];
+    s16 unk0E;
+} MenuTransitionResource;
+
 typedef struct SelectedTaskSpriteResource {
     u8 unk00[0x30];
     u16 state;
@@ -593,3 +598,6 @@ void func_8003B690(void);
 void drawCurrentTaskStatsSelection(void);
 void waitTaskStatsCountdownAndPlaySound(void);
 void waitResultFlagsInputTask(void);
+
+void initializeMenuTransitionResourcesTask(void);
+void waitMode2TransitionTask(void);
