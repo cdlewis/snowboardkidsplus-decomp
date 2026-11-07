@@ -162,6 +162,8 @@ void func_80076E18(void);
 void updateTimedSpriteB5Task(void);
 void updateValueTransitionTask(void);
 void func_80077770(void);
+void func_80078AFC(void);
+void func_8007BBAC(s16 player);
 void GsSortBg(GameBackground *background, GsOT *ot, u16 depth);
 void func_8007BE9C(void);
 void func_8007B10C(void);
@@ -990,7 +992,36 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80077EA4);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80078140);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_8007893C);
+void createPlayerPanelTask(s16 player, s16 x, s16 y, s32 depth, s32 index) {
+    ValuePanelEntry *entry;
+
+    func_80014874(func_80078AFC);
+    D_8013AE8C->data1A = player;
+    D_8013AE8C->data1C = depth;
+    D_8013AE8C->data1E = index;
+    D_8013AE8C->resource14 = allocateTaskResource();
+    initMovement2D((Movement2D *)&D_800D9504[D_8013AE8C->resource14], x << 12, y << 12);
+    D_8013AE8C->resource16 = allocateTaskResource();
+    if (index % 10 == 0) {
+        ValuePanelEntry *table;
+        if (D_8013AE88->resource14 == 0xFFFF) {
+            while (1) {}
+        }
+        table = (ValuePanelEntry *)&D_800D9504[D_8013AE88->resource14];
+        entry = table + index / 10;
+    } else {
+        ValuePanelEntry *table;
+        if (D_8013AE88->resource16 == 0xFFFF) {
+            while (1) {}
+        }
+        table = (ValuePanelEntry *)&D_800D9504[D_8013AE88->resource16];
+        entry = table + index / 10;
+    }
+    entry->flags = 1;
+    entry->active = 1;
+    entry->task = D_8013AE8C;
+    func_8007BBAC(player);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80078AFC);
 
