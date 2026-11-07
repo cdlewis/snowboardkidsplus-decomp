@@ -273,6 +273,8 @@ u8 gSecondaryResourceModeOffsets[12] __attribute__((section(".data.secondary_res
 };
 
 GameTask *gSecondaryResourceDisplayTask __attribute__((section(".sdata.secondary_resource_display_task"))) = NULL;
+u16 gTextOneShotSoundKey __attribute__((section(".sdata.text_sound_state"))) = 0;
+u8 gTextOneShotVoice __attribute__((section(".sdata.text_sound_state"))) = 0;
 
 s16 gControllerPlaybackDurations[12] __attribute__((section(".data.controller_playback_durations"))) = {
     900, 384, 560, 592, 613, 606, 400, 288, 288, 286, 205, 272
@@ -1169,7 +1171,48 @@ void updateTextEntryCdAudioTask(void) {
     func_800149A8();
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A7928);
+void processTextEntrySound(TextEntry *entry) {
+    TextPlaybackState *owner;
+    TextSoundSlot *slot;
+    u16 soundKey;
+    s16 volume;
+    s16 i;
+    if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
+    owner = (TextPlaybackState *)&D_800D9504[D_8013AE88->resource16];
+    if (entry != NULL && entry->unk06 != 0) {
+        soundKey = (entry->unk06 - 1) << 8;
+        volume = 32;
+        if (entry->unk14 != 0) volume = entry->unk14;
+        switch (entry->unk08) {
+        case 0:
+            gTextOneShotVoice = playSoundEffect(1, (soundKey >> 8) << 8, volume);
+            gTextOneShotSoundKey = soundKey;
+            break;
+        case 1:
+            for (i = 0; i < 8; i++) {
+                slot = &gTextSoundSlots[i];
+                if (slot->voice == 0xFF) {
+                    slot->voice = playOwnedSoundEffect(0, 1, (soundKey >> 8) << 8, volume);
+                    slot->soundKey = soundKey;
+                    break;
+                }
+            }
+            break;
+        case 2:
+            for (i = 0; i < 8; i++) {
+                slot = &gTextSoundSlots[i];
+                if (slot->voice != 0xFF && slot->soundKey == soundKey) {
+                    func_800187B8(slot->voice);
+                    slot->voice = 0xFF;
+                    slot->soundKey = 0;
+                    break;
+                }
+            }
+            break;
+        }
+    }
+    owner->tasks[4] = NULL;
+}
 
 void stopTextSoundVoices(void) {
     s16 i;

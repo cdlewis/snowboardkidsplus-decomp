@@ -798,7 +798,7 @@ segments:
       - {start: 0x12BEA8, type: .sdata, name: game/unk_800497B8, linker_section: .sdata.alternate_object_sort_saved_stack, linker_section_order: .data}
       - [0x12BEAC, data]
       - {start: 0x12BEC0, type: .sdata, name: main_tail_ui, linker_section: .sdata.secondary_resource_display_task, linker_section_order: .data}
-      - [0x12BEC4, data, secondary_resource_display_task_tail]
+      - {start: 0x12BEC4, type: .sdata, name: main_tail_ui, linker_section: .sdata.text_sound_state, linker_section_order: .data}
 
       - {start: 0x12BEC8, type: .data, name: main, linker_section: .data.cd_search_file}
       - [0x12BEE0, pad]
