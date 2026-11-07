@@ -3118,3 +3118,5 @@ updateCurrentPlayerState4MotionAndLanding = 0x800245C4; // type:func
 
 updateSelectedPlayerPlaybackTask = 0x8001D678; // type:func
 gSelectedPlayerRestoreFrames = 0x801204A8; // size:0x1C
+
+updateBobbingTrailEmitterTask = 0x8005C8BC; // type:func

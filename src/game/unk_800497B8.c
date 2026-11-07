@@ -393,6 +393,33 @@ typedef struct PickupResource {
     s32 collisionRange;
 } PickupResource;
 
+typedef union HeadingValue {
+    s32 value;
+    struct { s16 low, high; } halves;
+} HeadingValue;
+typedef struct BobbingTrailEmitterResource {
+    GsCOORDINATE2 coordinate;
+    u8 unk50[0x50];
+    Position3D position;
+    u8 unkAC[0x14];
+    SVECTOR rotation;
+    u8 unkC8[8];
+    s16 geometryIndex;
+    u8 unkD2[6];
+    s32 countdown;
+    HeadingValue heading;
+    s32 phase;
+    HeadingValue baseHeading;
+    s32 headingStep;
+} BobbingTrailEmitterResource;
+typedef struct EmitterTrailResource {
+    GsCOORDINATE2 coordinate;
+    u8 unk50[0x74];
+    s16 geometryIndex;
+    u8 unkC6[0x12];
+    s32 angle;
+} EmitterTrailResource;
+
 typedef struct FallingTaskResource {
     GsCOORDINATE2 coordinate;
     u8 unk50[0x50];
@@ -2480,7 +2507,45 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005C51C);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005C7AC);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005C8BC);
+void updateBobbingTrailEmitterTask(void) {
+    BobbingTrailEmitterResource *resource;
+    EmitterTrailResource *trail;
+    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    resource = (BobbingTrailEmitterResource *)&D_800D9504[D_8013AE88->resource14];
+    if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
+        if (!D_8013AFD3) {
+            func_8002BF88(&resource->position, 0x7000, 0x18000, 2);
+            resource->heading.value += resource->headingStep;
+            if (resource->heading.halves.low > resource->baseHeading.halves.low + 0x140) resource->headingStep = -8;
+            if (resource->heading.halves.low < resource->baseHeading.halves.low - 0x140) resource->headingStep = 8;
+            resource->phase += 0x40;
+            resource->rotation.vy = resource->heading.halves.low;
+            resource->coordinate.coord.t[1] = 0xB654 - (rsin(resource->phase) >> 9);
+            if (--resource->countdown == 0) {
+                resource->countdown = 15;
+                playPositionalSoundEffect(resource->position.x, resource->position.y, resource->position.z, 1, 0xA00, 0x18);
+                if ((s16)func_800148B4(initializeVisualTrailTask) == 1) {
+                    D_8013AE8C->data18 = 0xFF;
+                    D_8013AE8C->resource14 = allocateTaskResource();
+                    trail = (EmitterTrailResource *)&D_800D9504[D_8013AE8C->resource14];
+                    GsInitCoordinate2(0, &trail->coordinate);
+                    trail->geometryIndex = resource->geometryIndex;
+                    trail->coordinate.coord.t[0] = resource->coordinate.coord.t[0];
+                    trail->coordinate.coord.t[1] = resource->coordinate.coord.t[1] - 0x100;
+                    trail->coordinate.coord.t[2] = resource->coordinate.coord.t[2];
+                    trail->angle = (resource->heading.value + 0x800) & 0xFFF;
+                }
+            }
+        }
+        D_80129A80[10].coord2 = &resource->coordinate;
+        func_8001E3E4(&resource->rotation, &resource->coordinate);
+        D_8013AF88->vx = 0x3000;
+        D_8013AF88->vy = 0x3000;
+        D_8013AF88->vz = 0x3000;
+        ScaleMatrix(&resource->coordinate.coord, D_8013AF88);
+        drawTaskObject(10);
+    }
+}
 
 void initializeProximityEmitterTask(void) {
     ProximityEmitterResource *resource;
