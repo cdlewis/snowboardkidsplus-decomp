@@ -43,7 +43,7 @@ void func_80027014(void);
 
 void updateCurrentPlayerAndRequestState30(void);
 
-void func_800271D0(void);
+void updateCurrentPlayerState10Movement(void);
 void updateCurrentPlayerVerticalMotionUntilLanding(void);
 
 void initializeCurrentPlayerAttributes(void);

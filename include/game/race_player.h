@@ -177,7 +177,11 @@ extern s32 D_80130BF0[];
 extern s8 D_8013AFD2 __attribute__((section(".data")));
 /* GP-relative alias of D_8013AFD2. */
 extern s8 activeRacePlayerCountGp;
+#ifdef PLAYER_STATE_RESULT_ABSOLUTE_ADDRESSING
+extern s16 D_8013B0E4 __attribute__((section(".data")));
+#else
 extern s16 D_8013B0E4;
+#endif
 extern u16 D_8013B0E6;
 extern s32 D_8013B0E8;
 /* Two declarations preserve the original GP-relative and absolute accesses

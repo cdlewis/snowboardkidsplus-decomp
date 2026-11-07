@@ -3093,3 +3093,5 @@ updatePlayerFollowingOrbitTask = 0x80059F68; // type:func
 createPlayerGroupedSelectionTask = 0x800846F4; // type:func
 
 drawCountRecordRows = 0x80038574;
+
+updateCurrentPlayerState10Movement = 0x800271D0; // type:func

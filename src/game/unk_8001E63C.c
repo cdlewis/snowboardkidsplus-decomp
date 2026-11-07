@@ -3,6 +3,7 @@
 #define TASK_FLAGS_ABSOLUTE_ADDRESSING
 #define TASK_ABSOLUTE_ADDRESSING
 #define RACE_FINISH_ABSOLUTE_ADDRESSING
+#define PLAYER_STATE_RESULT_ABSOLUTE_ADDRESSING
 #include "game/race_player.h"
 #include "game/race_camera.h"
 #include "game/selected_record.h"
@@ -95,6 +96,7 @@ void func_800205B8(void);
 void func_80028680(void);
 void updateCurrentPlayerAirborneDragUntilLanding(void);
 void func_8002AE6C(void);
+void func_80028C80(void);
 void func_8002AE38(s32, s32, s32, s32);
 s32 func_80017268(void);
 void func_80015C94(u16 playerIndex);
@@ -452,7 +454,7 @@ void initializeCurrentPlayerState10(void) {
     D_8013B0D8->unk08C = 30;
     D_8013B0D8->unk078 = 0;
     func_8002E5A0(D_8013AE88->data18, 2);
-    setCurrentTaskCallback(func_800271D0);
+    setCurrentTaskCallback(updateCurrentPlayerState10Movement);
 }
 
 void initializeCurrentPlayerState14(void) {
@@ -1063,7 +1065,43 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80026DAC);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80027014);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_800271D0);
+void updateCurrentPlayerState10Movement(void) {
+    func_8002AE6C();
+    smoothAndScaleCurrentPlayerInput(D_8013B0D8->unk094, 0);
+    if (D_8013B0D8->unk062 < 0) {
+        D_8013B0D8->unk060 = 0;
+        D_8013B0D8->unk062 = 0;
+        D_8013B0D8->unk064 = 0;
+    }
+    D_8013B0D8->unk130 = 0x2000;
+    D_8013B0D8->unk09E = D_8013B0D8->unk09A;
+    func_8002AE38(0, 0, 0, 0);
+    D_8013B0D8->x += D_8013B0D8->unk060;
+    D_8013B0D8->y += D_8013B0D8->unk062;
+    D_8013B0D8->z += D_8013B0D8->unk064;
+    D_8013B0D8->unk110 = func_8004A124(0, 0, D_8013B0D8->unk060, D_8013B0D8->unk064);
+    if (D_8013B0D8->unk128 & 0x400) {
+        D_8013B0D8->unk110 += 0x800;
+    }
+    D_8013B0D8->unk0B6 = D_8013B0D8->unk110 - 0x400;
+    func_80028C80();
+    func_80017268();
+    if (D_8013B0E4 != 0) {
+        currentPlayerStateCallbacks[D_8013B0D8->unk12C]();
+    } else if (!(D_8013B0D8->unk128 & 0x201)) {
+        if (D_8013B0D8->unk136 != 3 && D_8013B0D8->unk136 != 6 &&
+            D_8013B0D8->unk136 != 12 && D_8013B0D8->unk136 != 16 &&
+            D_8013B0D8->unk136 != 8 && D_8013B0D8->unk136 != 7 &&
+            D_8013B0D8->unk136 != 14 && D_8013B0D8->unk136 != 15) {
+            D_801241E8[D_8013AE88->data18].unk16 = 1;
+            initializeCurrentPlayerState14();
+        } else {
+            D_8013B0D8->unk96E = 0x500;
+            D_8013B0D8->unk972 = 0;
+            D_8013B0D8->unk96C = 0x20;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_800273D4);
 
