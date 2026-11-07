@@ -505,7 +505,7 @@ void drawSound601SequenceSpriteTask(void);
 void drawGrowingSprite178Task(void);
 void func_80033C2C(void);
 void updateOneShotTaskVisual(void);
-void func_80034C40(SpriteMotionResource *resource);
+void drawSpriteMotionDisplay(SpriteMotionResource *resource);
 void slideInSpriteMotionTask(void);
 void waitSpriteExitMotionTask(void);
 void slideInSlidingDisplayTask(void);

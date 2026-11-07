@@ -3014,3 +3014,5 @@ gPlayerResourceTextureSelections = 0x80123660; // size:0x20
 finishRaceTransitionAfterCountdown = 0x8001C85C; // type:func
 
 configureColorCycleTask = 0x80070870; // type:func
+
+drawSpriteMotionDisplay = 0x80034C40; // type:func
