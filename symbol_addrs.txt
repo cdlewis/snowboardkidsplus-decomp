@@ -3181,3 +3181,5 @@ drawFallingParticlesTask = 0x80062B24; // type:func
 createRegisteredMovingPanelTask = 0x80076258; // type:func
 
 dispatchGameOptionTransitionTask = 0x8002FFC0; // type:func
+
+drawSlidingNumberDisplay = 0x800350AC; // type:func

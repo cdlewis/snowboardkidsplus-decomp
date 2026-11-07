@@ -868,7 +868,31 @@ void initializeSpriteMotionTask(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_8003504C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_800350AC);
+void drawSlidingNumberDisplay(SlidingNumberResource *resource) {
+    s16 visible = 0;
+    GsOT *ot;
+    setSpriteColor(128, 128, 128);
+    if (D_8013AFCD == 1) {
+        visible = 1;
+        ot = &D_800EC018[D_8013AF78];
+    } else if (resource->player == 0) {
+        if (func_8003D904(0)) {
+            visible = 1;
+            ot = &D_800EC018[D_8013AF78];
+        }
+    } else {
+        if (func_8003D904(1)) {
+            visible = 1;
+            ot = &D_800EC0B8[D_8013AF78];
+        }
+    }
+    if (visible) {
+        func_8006DFB4((s16)(resource->x - 8), (s16)(resource->y - 8), 5, 0,
+                     resource->value, 3, -1, ot, 1);
+        func_8006C998((s16)(resource->x - 60), (s16)(resource->y - 4), 0x1B4, 4, -1, ot, 1);
+        func_8006C998((s16)(resource->x + 44), (s16)(resource->y - 4), 0x1B5, 4, -1, ot, 1);
+    }
+}
 
 void slideOutSlidingNumberDisplayTask(void) {
     SlidingNumberResource *resource;
@@ -881,7 +905,7 @@ void slideOutSlidingNumberDisplayTask(void) {
     if (resource->speed >= 56) {
         func_800149A8();
     } else {
-        func_800350AC(resource);
+        drawSlidingNumberDisplay(resource);
     }
 }
 
@@ -895,7 +919,7 @@ void waitSlidingNumberDisplayTask(void) {
     if (--resource->timer == 0) {
         setCurrentTaskCallback(slideOutSlidingNumberDisplayTask);
     }
-    func_800350AC(resource);
+    drawSlidingNumberDisplay(resource);
 }
 
 void slideInSlidingNumberDisplayTask(void) {
@@ -911,7 +935,7 @@ void slideInSlidingNumberDisplayTask(void) {
         resource->timer = 45;
         setCurrentTaskCallback(waitSlidingNumberDisplayTask);
     }
-    func_800350AC(resource);
+    drawSlidingNumberDisplay(resource);
 }
 
 void initializeSlidingNumberDisplayTask(void) {
