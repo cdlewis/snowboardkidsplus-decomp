@@ -3151,3 +3151,5 @@ gCourse8Triggers = 0x8012BD50; // size:0x10
 gCourse9Triggers = 0x8012BD60; // size:0xC
 gCourseTriggers = 0x8012BD6C; // size:0x28
 gEmptyCourseTriggers = 0x8013B2D0; // size:0x4
+
+createRegisteredDetailedTextPanelTask = 0x8008CB88; // type:func

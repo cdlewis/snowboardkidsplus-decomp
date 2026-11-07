@@ -36,6 +36,14 @@ typedef struct PaletteBurstResource {
     s32 age;
     u8 r, g, b;
 } PaletteBurstResource;
+typedef struct RegisteredPanelResource {
+    s16 unk00, unk02, unk04, unk06, unk08;
+    s16 x, y, textX, textY;
+    const u16 *text;
+    s16 value, color, mode;
+    const u16 *content;
+    s32 depth, index;
+} RegisteredPanelResource;
 
 /* Menu descriptors have a 0x14-byte stride in the callers' tables. */
 typedef struct ByteMappingDescriptor {
@@ -220,6 +228,7 @@ extern u8 D_8013AF3A __attribute__((section(".data")));
 void func_8009488C(void);
 void func_800187B8(u8 voice);
 
+void func_8008CD98(void);
 void func_8008FA8C(void);
 void func_8008D200(void);
 void func_8008DDC0(void);
@@ -270,7 +279,49 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_8008C708);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_8008C8BC);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_8008CB88);
+static inline RegisteredTaskEntry *getRegisteredPanelEntry(u32 resource, s32 index) {
+    RegisteredTaskEntry *entries = (RegisteredTaskEntry *)&D_800D9504[resource];
+    return &entries[index / 10];
+}
+
+void createRegisteredDetailedTextPanelTask(s16 x, s16 y, s16 textX, s16 textY,
+                                   const u16 *text, s32 value, s32 color, s32 mode,
+                                   const u16 *content, s32 depth, s32 index) {
+    RegisteredPanelResource *resource;
+    RegisteredTaskEntry *entry;
+    func_80014874(func_8008CD98);
+    D_8013AE8C->resource14 = allocateTaskResource();
+    resource = (RegisteredPanelResource *)&D_800D9504[D_8013AE8C->resource14];
+    resource->unk00 = 0;
+    resource->unk02 = 0;
+    resource->unk04 = 0;
+    resource->unk06 = 0;
+    resource->unk08 = 0;
+    resource->x = x;
+    resource->y = y;
+    resource->textX = textX;
+    resource->textY = textY;
+    resource->text = text;
+    resource->value = value;
+    resource->color = color;
+    resource->mode = mode;
+    resource->content = content;
+    resource->depth = depth;
+    resource->index = index;
+    D_8013AE8C->resource16 = allocateTaskResource();
+    D_8013AE8C->data18 = 0;
+    D_8013AE8C->data1A = 0;
+    if (index % 10 == 0) {
+        if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
+        entry = getRegisteredPanelEntry(D_8013AE88->resource14, index);
+    } else {
+        if (D_8013AE88->resource16 == 0xFFFF) { for (;;) {} }
+        entry = getRegisteredPanelEntry(D_8013AE88->resource16, index);
+    }
+    entry->command = 0;
+    entry->flags = 0;
+    entry->task = D_8013AE8C;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_8008CD98);
 

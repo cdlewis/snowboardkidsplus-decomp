@@ -38,6 +38,12 @@ typedef struct TaskGridEntry {
     u32 unk04;
 } TaskGridEntry;
 
+typedef struct RegisteredTaskEntry {
+    GameTask *task;
+    s16 command;
+    u16 flags;
+} RegisteredTaskEntry;
+
 /* One set bit for each available task resource. */
 extern u16 gTaskResourceFreeBits[16];
 
@@ -236,3 +242,6 @@ void createRegisteredTextPanelTask(s16 x, s16 y, const u16 **texts,
 void initializeSaveRecordTask(void);
 
 void updateSelectedPlayerPlaybackTask(void);
+void createRegisteredDetailedTextPanelTask(s16 x, s16 y, s16 textX, s16 textY,
+                                   const u16 *text, s32 value, s32 color, s32 mode,
+                                   const u16 *content, s32 depth, s32 index);

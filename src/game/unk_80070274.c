@@ -22,11 +22,6 @@ typedef struct ChildMovementGroup {
     u8 unk34[0x22];
     s16 spacingX, spacingY, count;
 } ChildMovementGroup;
-typedef struct RegisteredTaskEntry {
-    GameTask *task;
-    s16 command;
-    u16 flags;
-} RegisteredTaskEntry;
 
 typedef struct RegisteredTextResource {
     const u16 **texts;
