@@ -22,6 +22,17 @@ typedef struct ChildMovementGroup {
     u8 unk34[0x22];
     s16 spacingX, spacingY, count;
 } ChildMovementGroup;
+typedef struct RegisteredTaskEntry {
+    GameTask *task;
+    s16 command;
+    u16 flags;
+} RegisteredTaskEntry;
+
+typedef struct CallbackResource {
+    TaskCallback callback;
+    u32 unk04;
+} CallbackResource;
+
 typedef struct ColorCycleResource {
     u8 value, step, minimum, maximum;
 } ColorCycleResource;
@@ -150,6 +161,7 @@ void func_8007BE9C(void);
 void func_8007B10C(void);
 void func_8007AC0C(void);
 void updateAnimatedSpriteTask(void);
+void func_80074B60(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80070274);
 
@@ -645,7 +657,36 @@ s16 hasTaskResource16Value(GameTask *task) {
     return resource->unk08 != 0;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80074988);
+static inline RegisteredTaskEntry *getRegisteredTaskEntry(u32 resource, s32 index) {
+    RegisteredTaskEntry *entries = (RegisteredTaskEntry *)&D_800D9504[resource];
+    return &entries[index / 10];
+}
+
+void createRegisteredCallbackTask(s32 mode, s16 x, s16 y, TaskCallback callback, s32 value, s32 index) {
+    CallbackResource *resource;
+    RegisteredTaskEntry *entry;
+    func_80014874(func_80074B60);
+    D_8013AE8C->data18 = mode;
+    D_8013AE8C->data1A = 0;
+    D_8013AE8C->data1C = value;
+    D_8013AE8C->data1E = index;
+    D_8013AE8C->resource14 = allocateTaskResource();
+    initMovement2D((Movement2D *)&D_800D9504[D_8013AE8C->resource14], x << 12, y << 12);
+    D_8013AE8C->resource16 = allocateTaskResource();
+    resource = (CallbackResource *)&D_800D9504[D_8013AE8C->resource16];
+    resource->callback = callback;
+    resource->unk04 = 0;
+    if (index % 10 == 0) {
+        if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+        entry = getRegisteredTaskEntry(D_8013AE88->resource14, index);
+    } else {
+        if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
+        entry = getRegisteredTaskEntry(D_8013AE88->resource16, index);
+    }
+    entry->command = 0;
+    entry->flags = 0;
+    entry->task = D_8013AE8C;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80074B60);
 

@@ -211,3 +211,6 @@ void initializeSpacedTaskGridPositions(s32 mode, GameTask *task, s32 x, s32 y,
 void updateColorCycleTask(void);
 
 void updateControllerPlaybackUntilFade(void);
+
+void createRegisteredCallbackTask(s32 mode, s16 x, s16 y, TaskCallback callback,
+                                  s32 value, s32 index);

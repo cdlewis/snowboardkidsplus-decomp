@@ -2915,3 +2915,5 @@ getAdjacentGeometryRegionForPoint = 0x8004A4C4; // type:func
 drawTransformedSpriteByIndex = 0x8006CF38; // type:func
 
 emitProjectedGouraudQuad = 0x80052D84; // type:func
+
+createRegisteredCallbackTask = 0x80074988; // type:func
