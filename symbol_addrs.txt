@@ -2992,3 +2992,6 @@ initializeMenuTransitionResourcesTask = 0x8003012C; // type:func
 
 drawPlayerFlagTaskVisual = 0x800442F4; // type:func
 gPlayerFlagVisualFrames = 0x801242B4; // size:0x30 defined:true
+
+updatePlayerVisualPairTask = 0x80046EF8; // type:func
+gPlayerVisualPairFrame = 0x8013B1B4; // size:0x8 defined:true

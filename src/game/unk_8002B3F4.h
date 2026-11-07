@@ -437,6 +437,9 @@ extern u8 D_80123640[];
 extern s16 D_8013B0E4;
 extern u16 D_8013B0E6;
 extern s32 D_8013B0E8;
+extern TaskVisualFrame gPlayerVisualPairFrame
+    __attribute__((section(".data.player_visual_pair_frame"), aligned(4)));
+
 extern s16 D_8013B1D4 __attribute__((section(".data.finish_slot_state")));
 
 
@@ -454,7 +457,7 @@ void func_80045C7C(void);
 void func_80046404(TaskVisualResource *resource, VECTOR *vectors, s32 value, s32 scale);
 void func_80046894(TaskVisualResource *resource, VECTOR *history, s32 distance, s32 value);
 void updateAcceleratingTaskVisualCountdown(void);
-void func_80046EF8(void);
+void updatePlayerVisualPairTask(void);
 void func_8004713C(void);
 void func_80047380(void);
 
