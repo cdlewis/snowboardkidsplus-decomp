@@ -36,6 +36,7 @@ typedef struct CourseOffsetResource {
     GsCOORDINATE2 coordinate;
     VECTOR position;
     SVECTOR rotation;
+    GameTask *linkedTask;
 } CourseOffsetResource;
 
 typedef struct CourseSectorRange { s16 sector, count; } CourseSectorRange;
@@ -900,7 +901,7 @@ s32 D_8013B650 __attribute__((section(".sdata.geometry_edge_projection"))) = 0;
 const char gNoProcessMessage[16] = "NO PROCESS...";
 
 void func_8004EFE0(void);
-void func_80059DBC(void);
+void func_80059F68(void);
 void func_8001E3E4(SVECTOR *rotation, GsCOORDINATE2 *coordinate);
 void SetFarColor(s32 r, s32 g, s32 b);
 void SetFogNearFar(s32 near, s32 far, s32 h);
@@ -1808,10 +1809,41 @@ void initializeSelectedCourseOffsetTask(void) {
         D_8013AE88->data1C = 0x19;
     }
     D_8013AE88->data1E = 0x16;
-    setCurrentTaskCallback(func_80059DBC);
+    setCurrentTaskCallback(updateSelectedCourseOffsetTask);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80059DBC);
+void updateSelectedCourseOffsetTask(void) {
+    CourseOffsetResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (CourseOffsetResource *)&D_800D9504[D_8013AE88->resource14];
+    if (!D_8013AFD3) {
+        RotMatrix(&resource->rotation, D_8013AF98);
+        D_8013AF90->vx = 0;
+        D_8013AF90->vy = 0;
+        D_8013AF90->vz = 0x1000;
+        ApplyMatrix(D_8013AF98, D_8013AF90, D_8013AF88);
+        resource->position.vx += D_8013AF88->vx;
+        resource->position.vz += D_8013AF88->vz;
+        resource->coordinate.coord.t[0] = resource->position.vx >> 8;
+        resource->coordinate.coord.t[1] = resource->position.vy >> 8;
+        resource->coordinate.coord.t[2] = resource->position.vz >> 8;
+        if (D_8013AE88->data1E != 0) {
+            D_8013AE88->data1E--;
+        }
+    }
+    if (D_8013AE88->data1E == 0) {
+        if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
+            D_80129A80[D_8013AE88->data1C].coord2 = &resource->coordinate;
+            func_8001E3E4(&resource->rotation, &resource->coordinate);
+            drawTaskObject(D_8013AE88->data1C);
+        }
+    }
+    if (resource->linkedTask->data1A == 6) {
+        setCurrentTaskCallback(func_80059F68);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80059F68);
 

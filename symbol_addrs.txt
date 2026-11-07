@@ -2638,6 +2638,7 @@ drawSound601SequenceSpriteTask = 0x80032F84; // type:func
 updatePaletteTransition = 0x80016CBC; // type:func
 
 initializeSelectedCourseOffsetTask = 0x80059C3C; // type:func
+updateSelectedCourseOffsetTask = 0x80059DBC; // type:func
 
 dispatchMode11TransitionTask = 0x8002FE18; // type:func
 
