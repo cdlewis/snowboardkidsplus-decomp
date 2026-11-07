@@ -278,6 +278,7 @@ void uploadTimArchive(TimArchive *archive, s16 *position);
 void uploadTimImageWithOffset(u32 *tim, s16 *position);
 void uploadBufferedTexturePair(void);
 /* Queue the buffered screen sprites shifted one pixel in each direction. */
+void queueSelectedCameraOverlayPackets(void);
 void queueOffsetScreenCopySprites(void);
 
 /* Add a full-screen semi-transparent tile to an ordering table. */

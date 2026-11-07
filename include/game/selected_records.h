@@ -45,5 +45,7 @@ extern s16 selectedFinishLapCountAbsolute __attribute__((section(".data")));
 void captureSelectedPlayerStates(void);
 /* Camera-related state saved alongside selected player snapshots. */
 extern u32 D_8013B20C __attribute__((section(".data")));
+/* GP-addressed view used when queuing the saved camera overlay. */
+extern u32 selectedCameraOverlayModeGp;
 
 s32 restoreSelectedPlayerState(void);

@@ -16,3 +16,6 @@ geometryPlacementDataAbsolute = D_8013B1F4;
 selectionMenuRecordAbsolute = D_8013B560;
 taskTransitionFlagGp = D_8013B55E;
 modeTransitionReadyGp = D_8013B55E;
+
+/* GP-addressed view of the saved camera overlay selector. */
+selectedCameraOverlayModeGp = D_8013B20C;

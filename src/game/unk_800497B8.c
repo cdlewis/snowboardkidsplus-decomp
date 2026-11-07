@@ -605,6 +605,28 @@ CourseSectorRange gCourseOptionalResourceSectors[10] __attribute__((section(".da
 
 u8 gCourseMetadataBuffer[0x800] __attribute__((section(".data.course_sector_resources"), aligned(4))) = {0};
 
+/* Screen copies selected by the saved camera state. */
+TexturedSpritePacket gCameraOverlaySpritesBuffer0[2] __attribute__((section(".data.camera_overlay_packets"))) = {
+    {5 << 24, ((u32)DRAW_MODE_COMMAND_HIGH << 16) | getTPage(2, 0, 0, 0),
+     128, 128, 128, TEXTURED_SPRITE_CODE | SEMI_TRANSPARENT_FLAG, -160, -120, 0, 0, 0, 256, 240},
+    {5 << 24, ((u32)DRAW_MODE_COMMAND_HIGH << 16) | getTPage(2, 0, 256, 0),
+     128, 128, 128, TEXTURED_SPRITE_CODE | SEMI_TRANSPARENT_FLAG, 96, -120, 0, 0, 0, 64, 240},
+};
+TexturedSpritePacket gCameraOverlaySpritesBuffer1[2] __attribute__((section(".data.camera_overlay_packets"))) = {
+    {5 << 24, ((u32)DRAW_MODE_COMMAND_HIGH << 16) | getTPage(2, 0, 0, 256),
+     128, 128, 128, TEXTURED_SPRITE_CODE | SEMI_TRANSPARENT_FLAG, -160, -120, 0, 0, 0, 256, 240},
+    {5 << 24, ((u32)DRAW_MODE_COMMAND_HIGH << 16) | getTPage(2, 0, 256, 256),
+     128, 128, 128, TEXTURED_SPRITE_CODE | SEMI_TRANSPARENT_FLAG, 96, -120, 0, 0, 0, 64, 240},
+};
+POLY_FT4 gCameraOverlayQuadsBuffer0[2] __attribute__((section(".data.camera_overlay_packets"))) = {
+    {9 << 24, 128, 128, 128, POLY_FT4_CODE | SEMI_TRANSPARENT_FLAG, 101, -120, 0, 8, 0, 159, -120, 55, 8, getTPage(2, 0, 256, 0), 101, 119, 0, 231, 0, 159, 119, 55, 231, 0},
+    {9 << 24, 128, 128, 128, POLY_FT4_CODE | SEMI_TRANSPARENT_FLAG, -160, -120, 8, 8, 0, 101, -120, 255, 8, getTPage(2, 0, 0, 0), -160, 119, 8, 231, 0, 101, 119, 255, 231, 0},
+};
+POLY_FT4 gCameraOverlayQuadsBuffer1[2] __attribute__((section(".data.camera_overlay_packets"))) = {
+    {9 << 24, 128, 128, 128, POLY_FT4_CODE | SEMI_TRANSPARENT_FLAG, 101, -120, 0, 8, 0, 159, -120, 55, 8, getTPage(2, 0, 256, 256), 101, 119, 0, 231, 0, 159, 119, 55, 231, 0},
+    {9 << 24, 128, 128, 128, POLY_FT4_CODE | SEMI_TRANSPARENT_FLAG, -160, -120, 8, 8, 0, 101, -120, 255, 8, getTPage(2, 0, 0, 256), -160, 119, 8, 231, 0, 101, 119, 255, 231, 0},
+};
+
 /* Semi-transparent screen copies displaced one pixel horizontally. */
 TexturedSpritePacket gScreenCopyPlusBuffer1[2] __attribute__((section(".data.offset_screen_copy_sprites"))) = {
     {5 << 24, ((u32)DRAW_MODE_COMMAND_HIGH << 16) | getTPage(2, 0, 0, 0),
@@ -1185,7 +1207,33 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80051A68);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80051D3C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800520E8);
+void queueSelectedCameraOverlayPackets(void) {
+    DR_STP *packet;
+    switch (selectedCameraOverlayModeGp) {
+    case 1:
+        if (D_8013AF78) {
+            addPrim(&D_8013AF6C[2], &gCameraOverlaySpritesBuffer1[0]);
+            addPrim(&D_8013AF6C[2], &gCameraOverlaySpritesBuffer1[1]);
+        } else {
+            addPrim(&D_8013AF6C[2], &gCameraOverlaySpritesBuffer0[0]);
+            addPrim(&D_8013AF6C[2], &gCameraOverlaySpritesBuffer0[1]);
+        }
+        break;
+    case 2:
+        if (D_8013AF78) {
+            addPrim(&D_8013AF6C[2], &gCameraOverlayQuadsBuffer1[1]);
+            addPrim(&D_8013AF6C[2], &gCameraOverlayQuadsBuffer1[0]);
+        } else {
+            addPrim(&D_8013AF6C[2], &gCameraOverlayQuadsBuffer0[1]);
+            addPrim(&D_8013AF6C[2], &gCameraOverlayQuadsBuffer0[0]);
+        }
+        break;
+    }
+    packet = (DR_STP *)GsOUT_PACKET_P;
+    SetDrawStp(packet, 1);
+    addPrim(&D_8013AF6C[4095], packet);
+    GsOUT_PACKET_P = (u32)(packet + 1);
+}
 
 void queueOffsetScreenCopySprites(void) {
     DR_STP *packet;
