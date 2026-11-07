@@ -2976,7 +2976,44 @@ void drawTaskVisualPositionHistory(TaskVisualResource *resource, VECTOR *history
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_80046894);
+void updateHomingTaskVisualMovement(TaskVisualResource *resource, VECTOR *history, s32 distance, s32 maxTurn) {
+    VECTOR *entry;
+    s16 angle;
+    s32 player;
+    s32 oldY;
+    s32 ground;
+    entry = history;
+    entry += D_8013AE88->data1A;
+    entry->vx = resource->position.x;
+    entry = history;
+    entry += D_8013AE88->data1A;
+    entry->vy = resource->position.y;
+    entry = history;
+    entry += D_8013AE88->data1A;
+    entry->vz = resource->position.z;
+    history += D_8013AE88->data1A;
+    history->pad = 1;
+    player = func_80046228(&resource->position, distance, resource->unkD8, D_8013AE88->data18, &angle);
+    resource->unkE0 = player;
+    if (player != -1) {
+        D_80120E90[player].unk946 = 1;
+        angle = (angle - resource->unkD8) & 0xFFF;
+        if (angle > 0x800) angle -= 0x1000;
+        if (angle > (s16)maxTurn) angle = maxTurn;
+        if (angle < -(s16)maxTurn) angle = -maxTurn;
+        resource->unkD8 += angle;
+    }
+    D_800EB22C.vx = rsin(resource->unkD8) * resource->groundY / 4096;
+    D_800EB22C.vz = rcos(resource->unkD8) * resource->groundY / 4096;
+    oldY = resource->position.y;
+    resource->position.x += D_800EB22C.vx;
+    resource->position.y += resource->velocityY;
+    resource->position.z += D_800EB22C.vz;
+    resource->unkC4 = getAdjacentGeometryRegionForPoint(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8);
+    ground = func_8004A764(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8) << 8;
+    if (resource->position.y > ground) resource->position.y = ground;
+    resource->velocityY = resource->position.y - oldY + 0x1900;
+}
 
 void checkTaskVisualOtherPlayerCollision(TaskVisualResource *resource, s16 flags) {
     u16 i;
@@ -3023,7 +3060,7 @@ void updatePlayerDualResourceEffectTask(void) {
     }
     history = (VECTOR *)&D_800D9504[D_8013AE88->resource16];
     if (D_8013AFD3 == 0) {
-        func_80046894(resource, history, 0x63000, 0x1C);
+        updateHomingTaskVisualMovement(resource, history, 0x63000, 0x1C);
         func_8004C968(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8, 2, &dx, &dz);
         if (dx != 0 || dz != 0) {
             resource->unkDC = 0;
@@ -3070,7 +3107,7 @@ void updatePlayerVisualPairTask(void) {
     }
     history = (VECTOR *)&D_800D9504[D_8013AE88->resource16];
     if (D_8013AFD3 == 0) {
-        func_80046894(resource, history, 0x51000, 0x12);
+        updateHomingTaskVisualMovement(resource, history, 0x51000, 0x12);
         func_8004C968(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8, 2, &dx, &dz);
         if (dx != 0 || dz != 0) {
             resource->unkDC = 0;
@@ -3134,7 +3171,7 @@ void updatePlayerVisualPairTask6780(void) {
     }
     history = (VECTOR *)&D_800D9504[D_8013AE88->resource16];
     if (D_8013AFD3 == 0) {
-        func_80046894(resource, history, 0x1B000, 0x1C);
+        updateHomingTaskVisualMovement(resource, history, 0x1B000, 0x1C);
         func_8004BC3C(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8, 2, &dx, &dz, &D_800EB22C.vx, &D_800EB22C.vz);
         if (dx != 0 || dz != 0) {
             resource->position.x += dx;
