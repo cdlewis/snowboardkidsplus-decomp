@@ -217,10 +217,47 @@ void initializePlayerState23CoordinateEffectTask(void) {
     resource->unkCA = 0;
     resource->scale.vx = resource->scale.vy = resource->scale.vz = 0;
     players[D_8013AE88->data18].isActive = 0;
-    setCurrentTaskCallback(func_800450BC);
+    setCurrentTaskCallback(updatePlayerState23CoordinateEffectTask);
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/effects/coordinate_effects", func_800450BC);
+void updatePlayerState23CoordinateEffectTask(void) {
+    ExpandingCoordinateEffectResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    resource = (ExpandingCoordinateEffectResource *)&D_800D9504[D_8013AE88->resource14];
+    if (!D_8013AFD3) {
+        RacePlayer *players = D_80120E90;
+        resource->position.x = players[D_8013AE88->data18].x;
+        resource->position.y = players[D_8013AE88->data18].y;
+        resource->position.z = players[D_8013AE88->data18].z;
+        func_8002BF88(&resource->position, 0x2FC0, 0x5C00, 2);
+        resource->parent.coord.t[0] = resource->position.x >> 8;
+        resource->parent.coord.t[1] = resource->position.y >> 8;
+        resource->parent.coord.t[2] = resource->position.z >> 8;
+        if (resource->scale.vx < 0x1000) {
+            resource->scale.vx += 0x400;
+            resource->scale.vy = resource->scale.vz = resource->scale.vx;
+        }
+    }
+    if (isPositionInCameraRange(resource->parent.coord.t[0], resource->parent.coord.t[2], (s16)func_80059254())) {
+        D_80129A80[13].coord2 = &resource->coordinate;
+        func_8001E3E4((SVECTOR *)&resource->pitch, &resource->parent);
+        func_8001E3E4(&resource->rotation, &resource->coordinate);
+        ScaleMatrix(&resource->coordinate.coord, &resource->scale);
+        drawTaskObject(13);
+    }
+    if (!D_8013AFD3) {
+        RacePlayer *players = D_80120E90;
+        if (players[D_8013AE88->data18].unk12C != 0x17) {
+            players[D_8013AE88->data18].isActive = 1;
+            func_800183FC(D_8013AE88->data18, 1, 0x301, 0x20);
+            createNineIndexedChildTasks(0x12, 0);
+            D_8013AE88->callback = deleteCurrentTask;
+            D_8013AE88->unk10 |= 1;
+        } else if (isFirstPlayerUsingCallback26D10()) {
+            func_800149A8();
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/race/effects/coordinate_effects", func_8004531C);
 
