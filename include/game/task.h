@@ -57,6 +57,7 @@ extern TaskResourceRecord D_800D9504[256];
 void initializeTaskScheduler(void);
 void initializeCollectibleTask(void);
 void initializePickupVisualTask(void);
+void initializeVisualTrailTask(void);
 /* Initial scheduler callbacks implemented by the main presentation flow. */
 void func_8001E0C0(void);
 void func_8001E148(void);

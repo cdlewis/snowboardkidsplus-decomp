@@ -2687,3 +2687,5 @@ initializeSoundSystem = 0x80017C20; // type:func
 gSoundSequenceTable = 0x800EB2B8; // size:0xB0 defined:true
 D_8013AF32 = 0x8013AF32; // size:0x2 defined:true
 D_8013AF30 = 0x8013AF30; // size:0x2 defined:true
+
+initializeVisualTrailTask = 0x800481A8; // type:func

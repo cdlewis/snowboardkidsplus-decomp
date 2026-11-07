@@ -276,6 +276,16 @@ typedef struct SpriteMotionResource {
     u8 padding[0xE6];
 } SpriteMotionResource;
 
+typedef struct TrailVisualResource {
+    GsCOORDINATE2 coordinate;
+    Position3D position;
+    u8 unk5C[0x6A];
+    s16 unkC6, unkC8, framePosition;
+    u8 r0, g0, b0, code;
+    s32 scale, unkD4, angle, lifetime;
+    u8 unkE0[0x20];
+} TrailVisualResource;
+
 typedef struct BouncingVisualResource {
     GsCOORDINATE2 coordinate;
     u8 unk50[0x24];
@@ -353,6 +363,7 @@ extern u8 D_8013AFE0 __attribute__((section(".data")));
 extern u8 D_8013AFE2 __attribute__((section(".data")));
 
 
+void func_80048340(void);
 void func_80046404(TaskVisualResource *resource, VECTOR *vectors, s32 value, s32 scale);
 void func_80046EF8(void);
 void func_8004713C(void);
@@ -3374,7 +3385,36 @@ void initializeDualResource5100EffectTask(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80047D94);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800481A8);
+void initializeVisualTrailTask(void) {
+    TrailVisualResource *resource;
+    VECTOR *vectors;
+    u16 i;
+    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    resource = (TrailVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 != 0xFFFF) { while (1) {} }
+    D_8013AE88->resource16 = allocateTaskResource();
+    vectors = (VECTOR *)&D_800D9504[D_8013AE88->resource16];
+    resource->r0 = resource->g0 = resource->b0 = 0x80;
+    resource->code = POLY_FT4_CODE;
+    resource->unkC6 = 0;
+    resource->unkC8 = 0;
+    resource->framePosition = 0;
+    D_800EB22C.vx = rsin(resource->angle) / 64;
+    D_800EB22C.vz = rcos(resource->angle) / 64;
+    resource->lifetime = 60;
+    resource->scale = 0x6780;
+    resource->unkD4 = 0;
+    resource->position.x = resource->coordinate.coord.t[0] << 8;
+    resource->position.y = resource->coordinate.coord.t[1] << 8;
+    resource->position.z = resource->coordinate.coord.t[2] << 8;
+    for (i = 0; i < 4; i++) {
+        VECTOR *vector = &vectors[i];
+        vector->vx = vector->vy = vector->vz = 0;
+        vector->pad = 0;
+    }
+    D_8013AE88->data1A = 0;
+    setCurrentTaskCallback(func_80048340);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80048340);
 
