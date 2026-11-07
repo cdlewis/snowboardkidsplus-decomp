@@ -1510,7 +1510,7 @@ void drawGrowingSprite179Task(void) {
         func_800149A8();
     }
     setSpriteColor(128, 128, 128);
-    func_8006CF38((s16)D_8013AE88->data18, 0, 0x179, 6, -1,
+    drawTransformedSpriteByIndex((s16)D_8013AE88->data18, 0, 0x179, 6, -1,
         0x7FFF, 0x7FFF, (s16)D_8013AE88->data1C,
         (s16)D_8013AE88->data1C, 0, &D_800EBFF0[D_8013AF78], 1);
 }
@@ -1530,7 +1530,7 @@ void drawGrowingSprite178Task(void) {
         setCurrentTaskCallback(drawGrowingSprite179Task);
     }
     setSpriteColor(128, 128, 128);
-    func_8006CF38((s16)D_8013AE88->data18, 0, 0x178, 6, -1,
+    drawTransformedSpriteByIndex((s16)D_8013AE88->data18, 0, 0x178, 6, -1,
         0x7FFF, 0x7FFF, (s16)D_8013AE88->data1C,
         (s16)D_8013AE88->data1C, 0, &D_800EBFF0[D_8013AF78], 1);
 }
@@ -1628,7 +1628,7 @@ void initializeRaceTimeDifferenceDisplay(void) {
 
 void drawFallingSpriteEffect(FallingSpriteEffect *effect) {
     setSpriteColor(128, 128, 128);
-    func_8006CF38(effect->x >> 4, effect->y >> 4, effect->frame + 378,
+    drawTransformedSpriteByIndex(effect->x >> 4, effect->y >> 4, effect->frame + 378,
                   effect->palette, -1, 0x7FFF, 0x7FFF, effect->scale,
                   effect->scale, 0, &D_800EBFF0[D_8013AF78], 2);
 }
@@ -3635,7 +3635,7 @@ void drawScaledPaletteMappedIcon(s16 x, s16 y, s16 index, s16 scaleX, s16 scaleY
         sprite = index + 461;
     }
     if (scaleX > 0 && scaleY > 0) {
-        func_8006CF38((s16)(x + 16), (s16)(y + 16), sprite, palette, -1,
+        drawTransformedSpriteByIndex((s16)(x + 16), (s16)(y + 16), sprite, palette, -1,
                        0x7FFF, 0x7FFF, scaleX, scaleY, 0, ot, depth);
     } else {
         func_8006C998(x, y, sprite, palette, -1, ot, depth);
