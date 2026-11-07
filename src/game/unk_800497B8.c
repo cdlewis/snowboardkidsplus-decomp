@@ -428,6 +428,13 @@ typedef struct PlayerRingEffectResource {
     SVECTOR rotations[6];
 } PlayerRingEffectResource;
 
+typedef struct PlayerTripleQuadEffectResource {
+    TrailPosition positions[3];
+    SVECTOR rotation;
+    s32 elapsed, scale;
+    u16 state;
+} PlayerTripleQuadEffectResource;
+
 typedef struct RotatingQuadTrailResource {
     s32 countdown;
     s16 angles[8];
@@ -704,6 +711,11 @@ VECTOR gPlayerPairedQuadOffsets[2]
     {-50, 0, 0, 0}, {50, 0, 0, 0}
 };
 
+SVECTOR gPlayerTripleQuadOffsets[3]
+    __attribute__((section(".data.player_triple_quad_offsets"))) = {
+    {-40, 0, 0, 0}, {40, 0, 0, 0}, {0, 0, 0, 0}
+};
+
 POLY_FT4 gQuadShrinkPacket __attribute__((section(".data.quad_shrink"))) = {
     0x09000000, 0x80, 0x80, 0x80, 0x2C,
     0, 0, 0, 0x10, getClut(944, 240),
@@ -846,6 +858,7 @@ void func_80053A34(TriangleScratchVertex *, s32);
 void func_8006479C(void);
 void func_800654B4(void);
 void func_80066474(void);
+void func_800689EC(void);
 void func_8005D828(RacePlayer *player, PlayerCollisionRegion *region);
 void func_8005B460(void);
 void func_8005B6C0(void);
@@ -3001,7 +3014,40 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800688C0);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800689EC);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80068A10);
+s32 createPlayerTripleQuadEffectTask(s32 playerIndex) {
+    RacePlayer *player;
+    PlayerTripleQuadEffectResource *resource;
+    SVECTOR *vertex;
+    s32 i;
+    s32 state;
+    player = &D_80120E90[playerIndex];
+    if (!isPointWithinCameraForwardRange(player->position8E4[0], player->position8E4[2], (s16)func_80059254())) {
+        return 0;
+    }
+    if (!(player->unk128 & 8) && player->unk96E != 0 && player->unk96E != 0x801 && player->unk96E != 0x200) {
+        return 0;
+    }
+    func_80014930(D_8013B304, func_800689EC);
+    D_8013AE8C->resource14 = allocateTaskResource();
+    resource = (PlayerTripleQuadEffectResource *)&D_800D9504[D_8013AE8C->resource14];
+    vertex = gPlayerTripleQuadOffsets;
+    for (i = 0; i < 3; i++) {
+        ApplyMatrix(&player->model.effect.effectMatrix180, vertex, (VECTOR *)&resource->positions[i]);
+        resource->positions[i].x += player->position8E4[0];
+        resource->positions[i].y += player->position8E4[1];
+        resource->positions[i].z += player->position8E4[2];
+        vertex++;
+    }
+    resource->elapsed = 0;
+    resource->rotation.vx = 0;
+    resource->rotation.vy = 0;
+    resource->rotation.vz = randomNextLinear() % 4096;
+    state = player->unk96E;
+    resource->state = state;
+    resource->scale = 0;
+    D_8013AE8C->data18 = playerIndex;
+    return state;
+}
 
 void drawRisingTexturedStripTask(void) {
     POLY_FT4 *packet;

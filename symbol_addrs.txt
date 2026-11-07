@@ -3016,3 +3016,6 @@ finishRaceTransitionAfterCountdown = 0x8001C85C; // type:func
 configureColorCycleTask = 0x80070870; // type:func
 
 drawSpriteMotionDisplay = 0x80034C40; // type:func
+
+createPlayerTripleQuadEffectTask = 0x80068A10; // type:func
+gPlayerTripleQuadOffsets = 0x8012CA34; // size:0x18 defined:true

@@ -625,6 +625,8 @@ segments:
       - {start: 0x11D12C, type: .data, name: game/unk_800497B8, linker_section: .data.quad_animation}
       - {start: 0x11D190, type: .data, name: game/unk_800497B8, linker_section: .data.alternate_quad_steps}
       - [0x11D1F4, data, 11D1F4]
+      - {start: 0x11D234, type: .data, name: game/unk_800497B8, linker_section: .data.player_triple_quad_offsets}
+      - [0x11D24C, data, player_triple_quad_offsets_tail]
       - {start: 0x11D294, type: .data, name: game/unk_800497B8, linker_section: .data.quad_shrink}
       - {start: 0x11D2DC, type: .data, name: game/unk_800497B8, linker_section: .data.middle_shrink_vertices}
       - {start: 0x11D2FC, type: .data, name: game/unk_800497B8, linker_section: .data.right_quad_vertices}
