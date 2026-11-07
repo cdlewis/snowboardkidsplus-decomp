@@ -459,6 +459,7 @@ void func_80048AA4(void);
 void func_80044768(void);
 void func_80045C7C(void);
 void func_80046404(TaskVisualResource *resource, VECTOR *vectors, s32 value, s32 scale);
+void updateAcceleratingTaskVisualCountdown(void);
 void func_80046EF8(void);
 void func_8004713C(void);
 void func_80047380(void);
@@ -4092,7 +4093,36 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80047600);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8004777C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80047A3C);
+void updateBouncingTaskVisual(void) {
+    TaskVisualResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    if (!D_8013AFD3) {
+        resource->velocityY += 0x180;
+        resource->position.y += resource->velocityY;
+        if (resource->velocityY > 0 && resource->position.y > resource->groundY) {
+            if (resource->bounceCount == 0) {
+                resource->velocityY = -0xA00;
+                func_80018538(resource->position.x, resource->position.y, resource->position.z, 1, 0xB01, 12);
+            } else {
+                func_80018538(resource->position.x, resource->position.y, resource->position.z, 1, 0xB01, 8);
+            }
+            resource->position.y = resource->groundY;
+            resource->bounceCount++;
+        }
+        resource->coordinate.coord.t[0] = resource->position.x >> 8;
+        resource->coordinate.coord.t[1] = resource->position.y >> 8;
+        resource->coordinate.coord.t[2] = resource->position.z >> 8;
+    }
+    setTaskVisualFrame(resource, D_80124354, 0x1A00);
+    func_8005AC4C(resource, 1);
+    if (!D_8013AFD3 && resource->bounceCount == 2) {
+        resource->unkDC = 30;
+        setCurrentTaskCallback(updateAcceleratingTaskVisualCountdown);
+    }
+}
 
 void updateAcceleratingTaskVisualCountdown(void) {
     TaskVisualResource *resource;

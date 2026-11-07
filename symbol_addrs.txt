@@ -2775,6 +2775,7 @@ updateFallingPairedVisualTask = 0x800356FC; // type:func
 gFallingPairedVisualFrames = 0x80124078; // size:0x38 defined:true
 gFallingPairedVisualAnimation = 0x8013B114; // size:0x6 defined:true
 
+updateBouncingTaskVisual = 0x80047A3C; // type:func
 updateAcceleratingTaskVisualCountdown = 0x80047BAC; // type:func
 
 initializeBackgroundCameraTask = 0x8002F468; // type:func

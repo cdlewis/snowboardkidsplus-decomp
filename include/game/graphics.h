@@ -76,9 +76,10 @@ typedef struct TaskVisualResource {
     s16 unkC4, unkC6, unkC8;
     s16 framePosition; /* Signed 8.8 frame index. */
     u8 r0, g0, b0, code;
-    u8 unkD0[0xC];
+    s32 groundY, velocityY, unkD8;
     s32 unkDC;
-    u8 unkE0[0x20];
+    s32 unkE0, bounceCount;
+    u8 unkE8[0x18];
 } TaskVisualResource;
 
 extern GsOT D_800EBFF0[2];
