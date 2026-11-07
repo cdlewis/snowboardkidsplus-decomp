@@ -20,6 +20,14 @@ TaskVisualFrame gPlayerFlagVisualFrames[6]
         {0xA8, 0x48, 24, 24, 0xD, 0x3CB9}
     };
 
+TaskVisualFrame gPlayerSideVisualFrames[4]
+    __attribute__((section(".data.player_side_visual_frames"), aligned(4))) = {
+        {0x50, 0x28, 32, 32, 0xD, 0x3D39},
+        {0x70, 0x28, 32, 32, 0xD, 0x3D39},
+        {0x90, 0x28, 32, 32, 0xD, 0x3D39},
+        {0xB0, 0x28, 32, 32, 0xD, 0x3D39}
+    };
+
 GsRVIEW2 gPlayerCameraViews[2]
     __attribute__((section(".data.player_camera_views"))) = {0};
 

@@ -2747,10 +2747,28 @@ void initializePlayerSideVisualTask(void) {
     } else {
         resource->radius = 52;
     }
-    setCurrentTaskCallback(func_80044768);
+    setCurrentTaskCallback(updatePlayerSideVisualTask);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_80044768);
+void updatePlayerSideVisualTask(void) {
+    OrbitingPlayerVisualResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (OrbitingPlayerVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    D_800EB22C.vx = rsin((s16)D_80120E90[D_8013AE88->data18].unk110) * resource->radius / 4096;
+    D_800EB22C.vz = rcos((s16)D_80120E90[D_8013AE88->data18].unk110) * resource->radius / 4096;
+    resource->coordinate.coord.t[0] = D_80120E90[D_8013AE88->data18].worldCoordinate.coord.t[0] + D_800EB22C.vx;
+    resource->coordinate.coord.t[1] = D_80120E90[D_8013AE88->data18].worldCoordinate.coord.t[1] - 18;
+    resource->coordinate.coord.t[2] = D_80120E90[D_8013AE88->data18].worldCoordinate.coord.t[2] + D_800EB22C.vz;
+    setTaskVisualFrame((TaskVisualResource *)resource, gPlayerSideVisualFrames, 0x2000);
+    func_8005AC4C((TaskVisualResource *)resource, 1);
+    if (!D_8013AFD3) {
+        if (!func_80059290((TaskVisualResource *)resource)) {
+            func_800149A8();
+        }
+    }
+}
 
 void updateOneShotTaskVisual(void) {
     TaskVisualResource *resource;

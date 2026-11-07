@@ -414,6 +414,9 @@ extern const u16 gPlayerModeAlternateMessageText[] __attribute__((section(".data
 
 extern const u16 *gPlayerModeMessageTexts[] __attribute__((section(".data.player_mode_message_texts")));
 
+extern TaskVisualFrame gPlayerSideVisualFrames[4]
+    __attribute__((section(".data.player_side_visual_frames"), aligned(4)));
+
 extern TaskVisualFrame gPlayerFlagVisualFrames[6]
     __attribute__((section(".data.player_flag_visual_frames"), aligned(4)));
 
@@ -455,7 +458,7 @@ extern u8 D_8013AFE2 __attribute__((section(".data")));
 void func_80048340(void);
 void func_80031C98(void);
 void func_80048AA4(void);
-void func_80044768(void);
+void updatePlayerSideVisualTask(void);
 void func_80045C7C(void);
 void func_80046404(TaskVisualResource *resource, VECTOR *vectors, s32 value, s32 scale);
 void func_80046894(TaskVisualResource *resource, VECTOR *history, s32 distance, s32 value);

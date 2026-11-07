@@ -3054,3 +3054,6 @@ updateCurrentPlayerState29MotionAndAnimation = 0x800240D0; // type:func
 drawTimeRecordRows = 0x800379B8; // type:func
 
 initializeProximityParticleTask = 0x8005CCEC; // type:func
+
+gPlayerSideVisualFrames = 0x801242E4; // size:0x20 defined:true
+updatePlayerSideVisualTask = 0x80044768; // type:func
