@@ -262,6 +262,12 @@ void createRegisteredMovingPanelTask(u16 mode, const s16 *values, s16 x, s16 y,
                                      s16 x2, s16 y2, s16 x3, s16 y3,
                                      s32 depth, s32 index);
 
+void createRegisteredSpacedChildTasks(s16 mode, u32 acceptMask, u32 cancelMask,
+                                      const u8 *data44, const u8 *data48,
+                                      const u8 *data4C, u8 arg6, s8 arg7, u8 arg8,
+                                      s16 x, s16 y, s16 spacingX, s16 spacingY,
+                                      s16 count, s16 arg14, TaskCallback callback3C,
+                                      TaskCallback callback40, s32 value, s32 index);
 void initializeSpacedChildTasks(void);
 
 s16 func_800148F4(GameTask *parent, TaskCallback callback);

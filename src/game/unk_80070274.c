@@ -28,6 +28,21 @@ typedef struct SpacedTaskResource {
     s16 unk54, spacingX, spacingY, count;
 } SpacedTaskResource;
 
+typedef struct SpacedGroupResource {
+    Movement2D movement;
+    u32 acceptMask, cancelMask;
+    u8 unk30[12];
+    TaskCallback callback3C, callback40;
+    const u8 *data44, *data48, *data4C;
+    s32 value;
+    s16 mode, spacingX, spacingY, count;
+    u8 unk5C, unk5D;
+    s8 unk5E;
+    u8 unk5F;
+    s16 unk60;
+    u8 r, g, b;
+} SpacedGroupResource;
+
 typedef struct ChildMovementGroup {
     u8 unk00[0x32];
     s16 selectedIndex;
@@ -667,7 +682,57 @@ void setMusicSequenceEnabled(s16 enabled) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_800725D0);
+static inline RegisteredTaskEntry *getRegisteredTaskEntry(u32 resource, s32 index) {
+    RegisteredTaskEntry *entries = (RegisteredTaskEntry *)&D_800D9504[resource];
+    return &entries[index / 10];
+}
+
+void createRegisteredSpacedChildTasks(s16 mode, u32 acceptMask, u32 cancelMask,
+                                      const u8 *data44, const u8 *data48,
+                                      const u8 *data4C, u8 arg6, s8 arg7, u8 arg8,
+                                      s16 x, s16 y, s16 spacingX, s16 spacingY,
+                                      s16 count, s16 arg14, TaskCallback callback3C,
+                                      TaskCallback callback40, s32 value, s32 index) {
+    SpacedGroupResource *state;
+    RegisteredTaskEntry *entry;
+    if (count != 0) {
+        func_80014874(initializeSpacedChildTasks);
+        D_8013AE8C->data1E = index;
+        D_8013AE8C->resource14 = allocateTaskResource();
+        state = (SpacedGroupResource *)&D_800D9504[D_8013AE8C->resource14];
+        state->mode = mode;
+        state->spacingX = spacingX;
+        state->spacingY = spacingY;
+        state->count = count;
+        state->unk5C = arg6;
+        state->unk5E = arg7;
+        state->unk5D = arg8;
+        state->value = value;
+        state->unk60 = arg14;
+        state->callback3C = callback3C;
+        state->callback40 = callback40;
+        state->data44 = data44;
+        state->data48 = data48;
+        state->data4C = data4C;
+        state->acceptMask = acceptMask;
+        state->cancelMask = cancelMask;
+        state->r = 128;
+        state->g = 128;
+        state->b = 128;
+        initMovement2D(&state->movement, x << 12, y << 12);
+        D_8013AE8C->resource16 = allocateTaskResource();
+        if (index % 10 == 0) {
+            if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+            entry = getRegisteredTaskEntry(D_8013AE88->resource14, index);
+        } else {
+            if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
+            entry = getRegisteredTaskEntry(D_8013AE88->resource16, index);
+        }
+        entry->command = 0;
+        entry->flags = 1;
+        entry->task = D_8013AE8C;
+    }
+}
 
 void initializeSpacedChildTasks(void) {
     SpacedTaskResource *state;

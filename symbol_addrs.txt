@@ -3228,3 +3228,5 @@ gBoardSelectionStyles = 0x8013185C; // size:0xC
 gBoardLevelLabel = 0x80011EA0; // size:0x10
 
 drawSnowBackgroundAndSetFog = 0x800508D4; // type:func
+
+createRegisteredSpacedChildTasks = 0x800725D0; // type:func
