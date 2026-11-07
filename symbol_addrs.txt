@@ -3193,3 +3193,8 @@ sortPlayerModelWithDrawArea = 0x800972B8; // type:func
 playerModelDrawAreaDepths = 0x8013B500; // size:0x8 defined:true
 
 updateCurrentPlayerDirectionalAnimation = 0x8002E1B0; // type:func
+
+drawHitCountPanel = 0x80038090; // type:func
+gHitCountTimeOutLabel = 0x80010AA0; // size:0xC
+gHitCountTotalFormat = 0x8013B130; // size:0x4
+gHitCountMarker = 0x8013B134; // size:0x4

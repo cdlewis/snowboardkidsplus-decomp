@@ -30,6 +30,13 @@ const char gHitPrizeOneGoldLabel[20] __attribute__((section(".rodata.hit_prize_l
 const char gHitPrizeFiftyGoldLabel[20] __attribute__((section(".rodata.hit_prize_labels"), aligned(4))) = "-HIT PRIZE(*50G)-";
 const char gPerfectHitLabel[16] __attribute__((section(".rodata.hit_prize_labels"), aligned(4))) = "  -PERFECT HIT-";
 
+
+extern const char gHitCountTimeOutLabel[];
+extern char gHitCountTotalFormat[];
+extern char gHitCountMarker[];
+
+int sprintf(char *buffer, const char *format, ...);
+
 void dispatchMode11TransitionTask(void) {
     if (D_8013B109 != 1) {
         func_800149A8();
@@ -1599,7 +1606,23 @@ void initializeTaskMenuFade(void) {
     setCurrentTaskCallback(fadeInLapTimeLabelTask);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_80038090);
+void drawHitCountPanel(TaskResourceRecord *record) {
+    char text[32];
+    MenuFadeInResource *resource = (MenuFadeInResource *)record;
+    if (resource->brightness != 128) {
+        setSpriteColor((u8)resource->brightness, (u8)resource->brightness, (u8)resource->brightness);
+    } else {
+        setSpriteColor(128, 128, 128);
+    }
+    func_8006DFB4(-76, -28, 2, 0, D_80120E90[0].unk95E, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+    sprintf(text, gHitCountTotalFormat, D_80120E90[0].unk960);
+    drawLimitedText8x8(-84, -20, 1, gHitCountMarker, 6, -1, &D_800EBFF0[D_8013AF78], 1);
+    drawLimitedText8x8(-60, -20, 10, text, 6, -1, &D_800EBFF0[D_8013AF78], 1);
+    if (D_8013B18D) {
+        drawLimitedText8x8(-104, -4, 10, gHitCountTimeOutLabel, 4, -1, &D_800EBFF0[D_8013AF78], 1);
+    }
+    func_8006C998(-108, -36, 432, 0, -1, &D_800EBFF0[D_8013AF78], 1);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_80038270);
 
@@ -1658,7 +1681,7 @@ void drawCurrentTaskMenu(void) {
         while (1) {}
     }
     resource = &D_800D9504[D_8013AE88->resource14];
-    func_80038090(resource);
+    drawHitCountPanel(resource);
     drawCountRecordRows(resource);
 }
 
@@ -1673,7 +1696,7 @@ void drawTaskMenuAndSetFlag10OnInput(void) {
         D_8013AFE4 |= 0x10;
         setCurrentTaskCallback(drawCurrentTaskMenu);
     }
-    func_80038090(resource);
+    drawHitCountPanel(resource);
     drawCountRecordRows(resource);
 }
 
@@ -1693,7 +1716,7 @@ void updateMenuExitInputTask(void) {
             setCurrentTaskCallback(func_80038B34);
         }
     }
-    func_80038090((TaskResourceRecord *)resource);
+    drawHitCountPanel((TaskResourceRecord *)resource);
     func_80038270((TaskResourceRecord *)resource);
     drawHitPrizeMoneyLabels((MenuFadeInResource *)resource);
 }
@@ -1710,7 +1733,7 @@ void advanceTaskMenuCountdown(void) {
     if (--resource->timer == 0) {
         setCurrentTaskCallback(func_80038C70);
     }
-    func_80038090((TaskResourceRecord *)resource);
+    drawHitCountPanel((TaskResourceRecord *)resource);
     func_80038270((TaskResourceRecord *)resource);
     drawHitPrizeMoneyLabels((MenuFadeInResource *)resource);
 }
@@ -1726,7 +1749,7 @@ void resetTaskMenuCountdown(void) {
         resource->timer = 10;
         setCurrentTaskCallback(advanceTaskMenuCountdown);
     }
-    func_80038090((TaskResourceRecord *)resource);
+    drawHitCountPanel((TaskResourceRecord *)resource);
     func_80038270((TaskResourceRecord *)resource);
     drawHitPrizeMoneyLabels((MenuFadeInResource *)resource);
 }
@@ -1743,7 +1766,7 @@ void startTaskMenuCountdownAndPlaySound(void) {
         resource->timer = 20;
         setCurrentTaskCallback(resetTaskMenuCountdown);
     }
-    func_80038090((TaskResourceRecord *)resource);
+    drawHitCountPanel((TaskResourceRecord *)resource);
     func_80038270((TaskResourceRecord *)resource);
     drawHitPrizeMoneyLabels((MenuFadeInResource *)resource);
 }
@@ -1760,7 +1783,7 @@ void tickMenuSoundDelayStage1Task(void) {
         resource->timer = 20;
         setCurrentTaskCallback(startTaskMenuCountdownAndPlaySound);
     }
-    func_80038090((TaskResourceRecord *)resource);
+    drawHitCountPanel((TaskResourceRecord *)resource);
     func_80038270((TaskResourceRecord *)resource);
     drawHitPrizeMoneyLabels((MenuFadeInResource *)resource);
 }
@@ -1781,7 +1804,7 @@ void tickMenuSoundDelayStage0Task(void) {
             setCurrentTaskCallback(startTaskMenuCountdownAndPlaySound);
         }
     }
-    func_80038090((TaskResourceRecord *)resource);
+    drawHitCountPanel((TaskResourceRecord *)resource);
     func_80038270((TaskResourceRecord *)resource);
     drawHitPrizeMoneyLabels((MenuFadeInResource *)resource);
 }
@@ -1797,7 +1820,7 @@ void waitTaskMenuCountdownAndPlaySound(void) {
         playSoundEffect(0, 0x700, 0x20);
         setCurrentTaskCallback(tickMenuSoundDelayStage0Task);
     }
-    func_80038090((TaskResourceRecord *)resource);
+    drawHitCountPanel((TaskResourceRecord *)resource);
     drawHitPrizeMoneyLabels((MenuFadeInResource *)resource);
 }
 
@@ -1813,7 +1836,7 @@ void updateTaskMenuFadeIn(void) {
         resource->brightness = 128;
         setCurrentTaskCallback(waitTaskMenuCountdownAndPlaySound);
     }
-    func_80038090((TaskResourceRecord *)resource);
+    drawHitCountPanel((TaskResourceRecord *)resource);
     drawHitPrizeMoneyLabels((MenuFadeInResource *)resource);
 }
 
@@ -3850,3 +3873,7 @@ void initializeSlidingVisualSequenceTask(void) {
     D_8013AE88->data1C = 0;
     setCurrentTaskCallback(func_800497B8);
 }
+
+const char gHitCountTimeOutLabel[12] __attribute__((section(".rodata.hit_count_time_out"), aligned(4))) = "TIME OUT";
+char gHitCountTotalFormat[4] __attribute__((section(".data.hit_count_labels"), aligned(4))) = "/%d";
+char gHitCountMarker[4] __attribute__((section(".data.hit_count_labels"), aligned(4))) = "*";

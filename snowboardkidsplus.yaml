@@ -88,6 +88,7 @@ segments:
       - {start: 0x1258, type: .rodata, name: game/unk_8002B3F4, linker_section: .rodata.auto_pilot_label}
       - {start: 0x1264, type: .rodata, name: game/unk_8002B3F4, linker_section: .rodata.result_prize_labels}
       - [0x1294, rodata]
+      - {start: 0x12A0, type: .rodata, name: game/unk_8002B3F4_tail, linker_section: .rodata.hit_count_time_out}
       - {start: 0x12AC, type: .rodata, name: game/unk_8002B3F4_tail, linker_section: .rodata.hit_prize_labels}
       - {start: 0x12E4, type: .rodata, name: game/unk_8002B3F4, linker_section: .rodata.complete_bonus_label}
       - [0x12F8, rodata]
@@ -767,7 +768,8 @@ segments:
       - [0x12B91A, pad]
       - {start: 0x12B91C, type: .data, name: game/unk_8002B3F4, linker_section: .data.result_icon_palettes}
       - {start: 0x12B920, type: .data, name: game/unk_8002B3F4, linker_section: .data.result_row_labels}
-      - [0x12B930, data, result_row_labels_tail]
+      - {start: 0x12B930, type: .data, name: game/unk_8002B3F4_tail, linker_section: .data.hit_count_labels}
+      - [0x12B938, data, hit_count_labels_tail]
       - {start: 0x12B954, type: .data, name: game/unk_8002B3F4, linker_section: .data.menu_sprite_palettes_prefix}
       - {start: 0x12B958, type: .data, name: game/unk_8002B3F4, linker_section: .data.menu_sprite_palettes}
       - [0x12B96C, data, 12B96C]

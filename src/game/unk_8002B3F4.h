@@ -603,7 +603,7 @@ void drawFirstPlayerResultCounterAndIcon(ResultDisplayResource *resource);
 void drawMenuTimeWithBrightness(MenuTimeResource *resource);
 void drawTimeRecordRows(MenuTimeResource *resource);
 void drawLapTimeLabel(TaskMenuFadeResource *resource);
-void func_80038090(TaskResourceRecord *resource);
+void drawHitCountPanel(TaskResourceRecord *resource);
 void func_80038270(TaskResourceRecord *resource);
 void func_80038C70(void);
 void drawCountRecordRows(TaskResourceRecord *resource);
