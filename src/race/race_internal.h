@@ -625,7 +625,7 @@ void drawTimeRecordHeader(TimeRecordHeaderResource *resource);
 void func_80039564(TaskResourceRecord *resource);
 void func_80039B34(TaskResourceRecord *resource);
 void drawTimeRecordListRows(TimeRecordListResource *resource);
-void func_8003AAE0(TaskResourceRecord *resource);
+void drawStatsMenuValues(TaskResourceRecord *resource);
 void func_8003AD48(TaskResourceRecord *resource);
 void drawStatsRecordRows(TaskResourceRecord *resource);
 void drawStatsMenuMoneyLabels(StatsMenuFadeResource *resource);

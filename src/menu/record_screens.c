@@ -3,6 +3,8 @@
 const char gHitCountTimeOutLabel[12] __attribute__((section(".rodata.hit_count_time_out"), aligned(4))) = "TIME OUT";
 char gHitCountTotalFormat[4] __attribute__((section(".data.hit_count_labels"), aligned(4))) = "/%d";
 char gHitCountMarker[4] __attribute__((section(".data.hit_count_labels"), aligned(4))) = "*";
+char gStatsTrickLabel[8] __attribute__((section(".data.stats_value_labels"), aligned(4))) = "-TRICK-";
+char gStatsMakeLabel[8] __attribute__((section(".data.stats_value_labels"), aligned(4))) = "-MAKE-";
 
 const char gHitPrizeOneGoldLabel[20] __attribute__((section(".rodata.hit_prize_labels"), aligned(4))) = "-HIT PRIZE(*1G)-";
 
@@ -738,7 +740,34 @@ void initializeRaceResultsTask(void) {
     setCurrentTaskCallback(fadeInRaceResultsTask);
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/record_screens", func_8003AAE0);
+void drawStatsMenuValues(TaskResourceRecord *record) {
+    char text[32];
+    s16 length;
+    s32 x;
+    StatsMenuFadeResource *resource = (StatsMenuFadeResource *)record;
+    if (resource->brightness != 128) {
+        setSpriteColor((u8)resource->brightness, (u8)resource->brightness, (u8)resource->brightness);
+    } else {
+        setSpriteColor(128, 128, 128);
+    }
+    drawLimitedText8x8(-104, -64, 10, gStatsTrickLabel, 6, -1, &D_800EBFF0[D_8013AF78], 1);
+    drawLimitedText8x8(-100, -28, 10, gStatsMakeLabel, 5, -1, &D_800EBFF0[D_8013AF78], 1);
+    if (D_8013B18D) {
+        drawLimitedText8x8(-108, 8, 10, gHitCountTimeOutLabel, 4, -1, &D_800EBFF0[D_8013AF78], 1);
+    }
+    sprintf(text, gResultValueFormat, D_80120E90[0].unk0E2);
+    length = strlen(text);
+    x = -80;
+    if (D_80120E90[0].unk0E2 >= 10) x = -84;
+    if (D_80120E90[0].unk0E2 >= 100) x = -88;
+    if (D_80120E90[0].unk0E2 >= 1000) x = -92;
+    func_8006DFB4(x, -55, length, 0, D_80120E90[0].unk0E2, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+    sprintf(text, gResultValueFormat, D_80120E90[0].unk0E5);
+    length = strlen(text);
+    x = -80;
+    if (D_80120E90[0].unk0E5 >= 10) x = -84;
+    func_8006DFB4(x, -19, length, 0, D_80120E90[0].unk0E5, 3, -1, &D_800EBFF0[D_8013AF78], 1);
+}
 
 INCLUDE_ASM("asm/nonmatchings/menu/record_screens", func_8003AD48);
 
@@ -789,7 +818,7 @@ void drawCurrentTaskStatsSelection(void) {
     if (!(D_8013AFE4 & 0x10)) {
         func_800149A8();
     }
-    func_8003AAE0(resource);
+    drawStatsMenuValues(resource);
     drawStatsRecordRows(resource);
 }
 
@@ -804,7 +833,7 @@ void updateStatsMenuExitInputTask(void) {
         D_8013AFE4 |= 0x10;
         setCurrentTaskCallback(drawCurrentTaskStatsSelection);
     }
-    func_8003AAE0(resource);
+    drawStatsMenuValues(resource);
     drawStatsRecordRows(resource);
 }
 
@@ -815,7 +844,7 @@ void drawCurrentTaskStatsMenu(void) {
         while (1) {}
     }
     resource = &D_800D9504[D_8013AE88->resource14];
-    func_8003AAE0(resource);
+    drawStatsMenuValues(resource);
     func_8003AD48(resource);
     drawStatsMenuMoneyLabels((StatsMenuFadeResource *)resource);
 }
@@ -835,7 +864,7 @@ void updateStatsMenuPostCountInputTask(void) {
             setCurrentTaskCallback(drawCurrentTaskStatsMenu);
         }
     }
-    func_8003AAE0((TaskResourceRecord *)resource);
+    drawStatsMenuValues((TaskResourceRecord *)resource);
     func_8003AD48((TaskResourceRecord *)resource);
     drawStatsMenuMoneyLabels((StatsMenuFadeResource *)resource);
 }
@@ -880,7 +909,7 @@ void countStatsMenuMoneyTask(void) {
         resource->timer = 20;
         setCurrentTaskCallback(updateStatsMenuPostCountInputTask);
     }
-    func_8003AAE0((TaskResourceRecord *)resource);
+    drawStatsMenuValues((TaskResourceRecord *)resource);
     func_8003AD48((TaskResourceRecord *)resource);
     drawStatsMenuMoneyLabels(resource);
 }
@@ -896,7 +925,7 @@ void waitForStatsScoreCountTask(void) {
     if (--resource->timer == 0) {
         setCurrentTaskCallback(countStatsMenuMoneyTask);
     }
-    func_8003AAE0((TaskResourceRecord *)resource);
+    drawStatsMenuValues((TaskResourceRecord *)resource);
     func_8003AD48((TaskResourceRecord *)resource);
     drawStatsMenuMoneyLabels((StatsMenuFadeResource *)resource);
 }
@@ -913,7 +942,7 @@ void waitForStatsScoreCountStartTask(void) {
         resource->timer = 10;
         setCurrentTaskCallback(waitForStatsScoreCountTask);
     }
-    func_8003AAE0((TaskResourceRecord *)resource);
+    drawStatsMenuValues((TaskResourceRecord *)resource);
     func_8003AD48((TaskResourceRecord *)resource);
     drawStatsMenuMoneyLabels((StatsMenuFadeResource *)resource);
 }
@@ -930,7 +959,7 @@ void startTaskStatsCountdownAndPlaySound(void) {
         resource->timer = 20;
         setCurrentTaskCallback(waitForStatsScoreCountStartTask);
     }
-    func_8003AAE0((TaskResourceRecord *)resource);
+    drawStatsMenuValues((TaskResourceRecord *)resource);
     func_8003AD48((TaskResourceRecord *)resource);
     drawStatsMenuMoneyLabels((StatsMenuFadeResource *)resource);
 }
@@ -947,7 +976,7 @@ void advanceTaskStatsCountdownAndPlaySound(void) {
         resource->timer = 20;
         setCurrentTaskCallback(startTaskStatsCountdownAndPlaySound);
     }
-    func_8003AAE0((TaskResourceRecord *)resource);
+    drawStatsMenuValues((TaskResourceRecord *)resource);
     func_8003AD48((TaskResourceRecord *)resource);
     drawStatsMenuMoneyLabels((StatsMenuFadeResource *)resource);
 }
@@ -964,7 +993,7 @@ void resetTaskStatsCountdown(void) {
         resource->timer = 20;
         setCurrentTaskCallback(advanceTaskStatsCountdownAndPlaySound);
     }
-    func_8003AAE0((TaskResourceRecord *)resource);
+    drawStatsMenuValues((TaskResourceRecord *)resource);
     func_8003AD48((TaskResourceRecord *)resource);
     drawStatsMenuMoneyLabels((StatsMenuFadeResource *)resource);
 }
@@ -980,7 +1009,7 @@ void waitTaskStatsCountdownAndPlaySound(void) {
         playSoundEffect(0, 0x700, 0x20);
         setCurrentTaskCallback(resetTaskStatsCountdown);
     }
-    func_8003AAE0((TaskResourceRecord *)resource);
+    drawStatsMenuValues((TaskResourceRecord *)resource);
     drawStatsMenuMoneyLabels((StatsMenuFadeResource *)resource);
 }
 
@@ -997,7 +1026,7 @@ void fadeInStatsMenuTask(void) {
         resource->brightness = 128;
         setCurrentTaskCallback(waitTaskStatsCountdownAndPlaySound);
     }
-    func_8003AAE0((TaskResourceRecord *)resource);
+    drawStatsMenuValues((TaskResourceRecord *)resource);
     drawStatsMenuMoneyLabels((StatsMenuFadeResource *)resource);
 }
 
