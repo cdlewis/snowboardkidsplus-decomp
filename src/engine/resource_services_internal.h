@@ -119,7 +119,7 @@ extern s16 D_8013AF32 __attribute__((section(".sdata.music_state")));
 extern s32 gLinearRandomState __attribute__((section(".data.linear_random_state")));
 extern MovieDecodeState gMovieDecodeState __attribute__((section(".bss.movie_decode_state")));
 
-void func_80016F5C(void);
+void updateCurrentPlayerModelTransforms(void);
 
 void uploadTimImageWithOffset(u32 *tim, s16 *position);
 void uploadTimArchive(TimArchive *archive, s16 *position);

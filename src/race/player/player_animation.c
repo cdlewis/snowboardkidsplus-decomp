@@ -50,7 +50,55 @@ void startCurrentPlayerAnimation(u8 animation, u8 mode) {
     currentPlayerAbsolute->animationFlags |= 0x20;
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/player/player_animation", func_80016F5C);
+void updateCurrentPlayerModelTransforms(void) {
+    u16 i;
+    u8 parent;
+    RacePlayer *player;
+    if (currentPlayerAbsolute->unk128 & 0x400) {
+        i = 0;
+        player = currentPlayerAbsolute;
+        player->unk62C[0].x = -player->unk62C[0].x;
+        for (; i < 12; i++) {
+            player->unk5BC[i].x = gPlayerAnimationPose[player->unk14C[i]].x;
+            player->unk5BC[i].y = -gPlayerAnimationPose[player->unk14C[i]].y;
+            player->unk5BC[i].z = -gPlayerAnimationPose[player->unk14C[i]].z;
+        }
+    }
+    if (!(currentPlayerAbsolute->animationFlags & 4)) {
+        currentPlayerAbsolute->unk92C = currentPlayerAbsolute->unk5BC[0].x;
+    } else {
+        if ((s16)currentPlayerAbsolute->unk92C >= 0x800)
+            currentPlayerAbsolute->unk92C -= 0x1000;
+        if ((s16)currentPlayerAbsolute->unk92C > 0x40)
+            currentPlayerAbsolute->unk92C -= 0x40;
+        else if ((s16)currentPlayerAbsolute->unk92C < -0x40)
+            currentPlayerAbsolute->unk92C += 0x40;
+        else {
+            currentPlayerAbsolute->unk92C = 0;
+            currentPlayerAbsolute->animationFlags &= ~4;
+        }
+        currentPlayerAbsolute->unk5BC[0].x = currentPlayerAbsolute->unk92C;
+    }
+    for (i = 0; i < 12; i++) {
+        parent = currentPlayerAbsolute->unk13E[i];
+        RotMatrix((SVECTOR *)&currentPlayerAbsolute->unk5BC[i], &currentPlayerAbsolute->model.modelCoordinates[i].coord);
+        if (i == 0) {
+            D_8013AF90->vx = 0;
+            D_8013AF90->vy = 0;
+            D_8013AF90->vz = 0;
+            ApplyMatrix(&currentPlayerAbsolute->model.modelCoordinates[0].coord, D_8013AF90, D_8013AF88);
+            currentPlayerAbsolute->model.modelCoordinates[0].coord.t[0] = D_8013AF88->vx + currentPlayerAbsolute->unk62C[0].x;
+            currentPlayerAbsolute->model.modelCoordinates[0].coord.t[1] = D_8013AF88->vy + currentPlayerAbsolute->unk62C[0].y;
+            currentPlayerAbsolute->model.modelCoordinates[0].coord.t[2] = D_8013AF88->vz + currentPlayerAbsolute->unk62C[0].z;
+        } else {
+            ApplyMatrix(&currentPlayerAbsolute->model.modelCoordinates[parent].coord, (SVECTOR *)&currentPlayerAbsolute->unk62C[i], D_8013AF88);
+            currentPlayerAbsolute->model.modelCoordinates[i].coord.t[0] = D_8013AF88->vx + currentPlayerAbsolute->model.modelCoordinates[parent].coord.t[0];
+            currentPlayerAbsolute->model.modelCoordinates[i].coord.t[1] = D_8013AF88->vy + currentPlayerAbsolute->model.modelCoordinates[parent].coord.t[1];
+            currentPlayerAbsolute->model.modelCoordinates[i].coord.t[2] = D_8013AF88->vz + currentPlayerAbsolute->model.modelCoordinates[parent].coord.t[2];
+        }
+        func_8001E3E4((SVECTOR *)&currentPlayerAbsolute->unk5BC[i], &currentPlayerAbsolute->model.modelCoordinates[i]);
+    }
+}
 
 s32 updateCurrentPlayerAnimation(void) {
     u16 i;
@@ -88,7 +136,7 @@ s32 updateCurrentPlayerAnimation(void) {
     currentPlayerAbsolute->animationStream++;
     currentPlayerAbsolute->unk62C[1].x = ((s16)*currentPlayerAbsolute->animationStream + 2) / 4;
     currentPlayerAbsolute->animationStream++;
-    func_80016F5C();
+    updateCurrentPlayerModelTransforms();
     currentPlayerAbsolute->animationFrameCount--;
     if (currentPlayerAbsolute->animationFrameCount == 0) {
         switch (currentPlayerAbsolute->animationFlags & 3) {

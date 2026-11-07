@@ -3327,3 +3327,5 @@ updateSceneTextTask = 0x800A6E88; // type:func
 gSceneCdAudioDefaultResources = 0x80132B8C; // size:0xC defined:true
 
 drawTexturedPanel = 0x8006FE68; // type:func
+
+updateCurrentPlayerModelTransforms = 0x80016F5C; // type:func
