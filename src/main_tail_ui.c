@@ -177,6 +177,8 @@ extern u8 D_8013B564;
 extern s16 D_8013B560;
 extern s16 selectionMenuRecordAbsolute __attribute__((section(".data")));
 extern u8 D_8013B562;
+/* Playback cleanup addresses this shared transition byte absolutely. */
+extern u8 playbackTransitionByteAbsolute __attribute__((section(".data")));
 extern char D_80012310[];
 extern char D_8001232C[];
 extern char D_8013B5C8[];
@@ -206,7 +208,7 @@ void func_800A6684(void);
 void func_80040D5C(void);
 void initializeNumberSelectionTask(void);
 void completeModeSelectionTransitionWhenReady(void);
-void func_800A3AA4(void);
+void finishControllerPlaybackTransition(void);
 void func_8002FA58(s16 resource);
 void func_800A42CC(void);
 void func_800A499C(void);
@@ -551,14 +553,50 @@ void updateControllerPlaybackUntilFade(void) {
         configureTaskStateTransition(2, 0, 30);
         startCdVolumeFade(103, 20, 0, 1);
         D_8013AE88->data18 = 0;
-        setCurrentTaskCallback(func_800A3AA4);
+        setCurrentTaskCallback(finishControllerPlaybackTransition);
     } else {
         playbackControllerInput(0);
         playbackControllerInput(1);
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A3AA4);
+void finishControllerPlaybackTransition(void) {
+    switch (D_8013AE88->data18) {
+    case 0:
+        if (func_800707F0(0)) {
+            playbackControllerInput(0);
+            playbackControllerInput(1);
+        } else {
+            stopPlayerSound(0);
+            D_8013AFAA = (D_8013AFAA | 0x1090) & ~0x2000;
+            resetPendingCdRequests();
+            resetPaletteRecords();
+            func_800149E0();
+            D_8013B10C = -1;
+            D_8013AFAA |= 0x48;
+            func_8002FA58(2);
+            D_8013B106 = 0;
+            playbackTransitionByteAbsolute = 0;
+            setControllerFlag5(0);
+            setControllerFlag5(1);
+            SetFogNearFar(5000, 6000, 400);
+            D_8013B109 = 1;
+            D_8013B108 = 28;
+            D_8013AE88->data18 = 1;
+        }
+        break;
+    case 1:
+        setSecondaryDisplayTaskMode(1);
+        func_80070274(1, 0, 30);
+        D_8013AE88->data18 = 2;
+        break;
+    case 2:
+        D_8013B564 = 0;
+        setCurrentTaskCallback(initializeGameOptionViewTask);
+        D_8013AE88->unk10 |= 2;
+        break;
+    }
+}
 
 void initializeUnlockMenuResourceTask(void) {
     UnlockMenuState *state;

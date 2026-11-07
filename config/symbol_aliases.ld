@@ -20,3 +20,4 @@ modeTransitionReadyGp = D_8013B55E;
 
 /* GP-addressed view of the saved camera overlay selector. */
 selectedCameraOverlayModeGp = D_8013B20C;
+playbackTransitionByteAbsolute = D_8013B562;

@@ -3250,3 +3250,6 @@ gFadingTextGlyphBanks = 0x80010D90; // size:0x10
 drawHalfStepSpriteBar = 0x8006E5E0; // type:func
 
 updateSecondaryResourceTask = 0x800A6A8C; // type:func
+
+finishControllerPlaybackTransition = 0x800A3AA4; // type:func
+D_8013B562 = 0x8013B562; // size:0x1
