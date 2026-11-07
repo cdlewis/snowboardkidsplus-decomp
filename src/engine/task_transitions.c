@@ -224,7 +224,7 @@ INCLUDE_ASM("asm/nonmatchings/engine/task_transitions", func_8001C9F0);
 void begin30TickTransitionOnFlag10(void) {
     if (D_8013AFE4 & 0x10) {
         D_8013AE88->data18 = 30;
-        func_80070274(2, 0, 30);
+        configureTaskStateTransition(2, 0, 30);
         startCdVolumeFade(103, 26, 0, 1);
         setCurrentTaskCallback(func_8001D100);
     }
@@ -296,7 +296,7 @@ void startTaskTransitionWhenFlagAEE8Set(void) {
     if (D_8013AE88->data18 == 0) {
         if (D_8013AEE8[0] & 0xB0) {
             D_8013AE88->data18 = 30;
-            func_80070274(2, 0, 30);
+            configureTaskStateTransition(2, 0, 30);
             setCurrentTaskCallback(finishTaskTransitionAfterCountdown);
         }
     } else {
@@ -401,7 +401,7 @@ void initializeRaceTaskState(void) {
 void initializeSelectedCourseTransition(void) {
     D_8013AFD0 = D_80123D80[D_8013AFCE].unk02;
     if (D_8013AFE2 != 0 || D_8013AFCD == 1 || D_8013AFDA == 0) {
-        func_80070274(1, 0, 30);
+        configureTaskStateTransition(1, 0, 30);
         func_80071490(3, D_8013B104, 0);
         setCurrentTaskCallback(func_8001DB7C);
     }

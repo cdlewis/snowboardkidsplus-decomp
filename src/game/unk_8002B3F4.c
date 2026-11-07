@@ -666,7 +666,7 @@ void initializeBackgroundCameraTask(void) {
     D_8013B10C = -1;
     D_8013B10E = -1;
     D_8013B106 = 0;
-    func_80070274(11, 0, 30);
+    configureTaskStateTransition(11, 0, 30);
     setSecondaryDisplayTaskMode(1);
     queueBackgroundTextureSectorCommands();
     D_8013AF84 = 400;
@@ -702,7 +702,7 @@ restore:
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002F5F8);
 
 void beginMode2TaskSequence(void) {
-    func_80070274(2, 0, 30);
+    configureTaskStateTransition(2, 0, 30);
     setCurrentTaskCallback(func_8002F5F8);
 }
 
@@ -711,7 +711,7 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002F65C);
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002F698);
 
 void beginMode2SequenceAndFadeMusic(void) {
-    func_80070274(2, 0, 30);
+    configureTaskStateTransition(2, 0, 30);
     if (D_8013B106 == 1) {
         fadeOutMusicSequence(0x200);
         D_8013B106 = 0;

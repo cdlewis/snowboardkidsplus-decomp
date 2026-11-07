@@ -51,7 +51,7 @@ void dispatchMode11TransitionTask(void) {
 }
 
 void initializeMode11TransitionTask(void) {
-    func_80070274(11, 0, 30);
+    configureTaskStateTransition(11, 0, 30);
     setSecondaryDisplayTaskMode(1);
     queueMode11TransitionResources();
     setCurrentTaskCallback(dispatchMode11TransitionTask);
@@ -74,7 +74,7 @@ void initializeMenuTransitionResourcesTask(void) {
     func_80071490(0, 0, 0);
     func_8002EE0C();
     if (D_8013B0F0 == 0) {
-        func_80070274(11, 0, 30);
+        configureTaskStateTransition(11, 0, 30);
         setSecondaryDisplayTaskMode(3);
         queueCdSectorCommand(2, 0x162, 0x8D, (void *)0x80189800, 0);
         D_8013B0F0 = 1;
@@ -89,7 +89,7 @@ void initializeMenuTransitionResourcesTask(void) {
 void waitMode2TransitionTask(void) {
     switch (D_8013AE88->data18) {
     case 0:
-        func_80070274(2, 0, 30);
+        configureTaskStateTransition(2, 0, 30);
         D_8013AE88->data18 = 1;
         break;
     case 1:
@@ -284,7 +284,7 @@ void startUnlockNotification0Task(void) {
 void waitUnlockNotification0TransitionTask(void) {
     if (D_8013AFE4 & 0x200) {
         D_8013AE98->data18 = 5;
-        func_80070274(11, 0, 30);
+        configureTaskStateTransition(11, 0, 30);
         setSecondaryDisplayTaskMode(1);
         D_8013B10C = -1;
         queueMode11TransitionResources();

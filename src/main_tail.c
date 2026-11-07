@@ -1064,7 +1064,7 @@ void initializeTaskResourcePairWithOneTickTransition(void) {
         for (;;) {}
     }
     D_8013AE88->resource16 = allocateTaskResource();
-    func_80070274(2, 0, 1);
+    configureTaskStateTransition(2, 0, 1);
     setCurrentTaskCallback(func_800A05C0);
     D_8013AE88->unk10 |= 2;
 }
@@ -1148,7 +1148,7 @@ void initializeMode1RacePlayers(void) {
 }
 
 void prepareRaceResourcesIfSelectionChanged(void) {
-    func_80070274(1, 0, 30);
+    configureTaskStateTransition(1, 0, 30);
     setSecondaryDisplayTaskMode(1);
     if (D_8013B560 != D_8013AFCE) {
         func_800180F4(2);
@@ -1222,7 +1222,7 @@ void initializeTextSequenceTask(void) {
     resource->intensity = 0x80;
     resource->unk3A = 0;
     setSecondaryDisplayTaskMode(0);
-    func_80070274(1, 0, 30);
+    configureTaskStateTransition(1, 0, 30);
     if (resource->mode != 1 || resource->unk0A != 9) {
         queueCdCommand(3, 0);
     }
@@ -1241,7 +1241,7 @@ void advanceModeAfterTextSequenceFadeTask(void) {
     resource = (TextSequenceResource *)&D_800D9504[D_8013AE88->resource14];
     switch (D_8013AE88->data18) {
     case 1:
-        func_80070274(2, 0, 30);
+        configureTaskStateTransition(2, 0, 30);
         startCdVolumeFade(103, 20, 0, 1);
         resource->intensity = 0;
         D_8013AE88->data18 = 2;

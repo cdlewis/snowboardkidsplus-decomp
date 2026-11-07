@@ -3066,3 +3066,5 @@ gTextOneShotSoundKey = 0x8013B6C4; // size:0x2 defined:true
 gTextOneShotVoice = 0x8013B6C6; // size:0x1 defined:true
 
 updateCollectibleTask = 0x8005DF98; // type:func
+
+configureTaskStateTransition = 0x80070274; // type:func

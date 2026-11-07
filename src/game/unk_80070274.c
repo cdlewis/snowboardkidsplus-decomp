@@ -154,6 +154,7 @@ s16 func_80070794(s32 id);
 void addTilePacket(s32 x, s32 y, s32 width, s32 height, s32 r, s32 g, s32 b,
                    GsOT *ot, u16 depth);
 void func_80071490(s32 mode, s32 value1, s32 value2);
+void func_80070448(void);
 void func_8007197C(void);
 void func_80071A80(void);
 void initTimedSequence(TimedSequence *sequence, const TimedSequenceEntry *entries, s16 index, s16 count);
@@ -172,7 +173,42 @@ void updateAnimatedSpriteTask(void);
 void func_80074448(void);
 void func_80074B60(void);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80070274);
+void configureTaskStateTransition(s32 mode, s32 id, u16 duration) {
+    TaskValueState *state;
+    s16 index;
+    index = func_80070794(id);
+    switch (index) {
+    case 0: break;
+    case 1: id -= 0xFFC; break;
+    case 2: id -= 0x1FFC; break;
+    }
+    state = &D_8012D4A4[index];
+    if (duration == 0) state->unk04 = 0xFFFF;
+    else state->unk04 = 0xFFFF / duration;
+    switch (mode) {
+    case 1: case 2: case 4: case 5: case 6: case 7:
+    case 11: case 12: case 14: case 15:
+        func_80014930(&gGameTasks[4], func_80070448);
+        if (mode >= 10) D_8013AE8C->data18 = mode - 10;
+        else D_8013AE8C->data18 = mode;
+        D_8013AE8C->data1A = index;
+        D_8013AE8C->data1C = id;
+        D_8013AE8C->data1E = 1;
+        state->task = D_8013AE8C;
+        if (mode < 11) {
+            if (duration == 0) {
+                if (mode == 1 || mode == 4 || mode == 6) state->unk06 = 0xFFFF;
+                else state->unk06 = 0;
+            } else {
+                if (mode == 1 || mode == 4 || mode == 6) state->unk06 = 0xFFFF;
+                else state->unk06 = 0;
+            }
+        }
+        break;
+    case 0: case 3: case 8: case 9: case 10: case 13:
+    default: state->task = NULL; break;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80070448);
 
@@ -395,7 +431,7 @@ s32 hasTaskReference(void) {
 }
 
 void resetTaskControlState(void) {
-    func_80070274(0, 0, 30);
+    configureTaskStateTransition(0, 0, 30);
     func_80071490(0, 0, 0);
     func_8007197C();
 }

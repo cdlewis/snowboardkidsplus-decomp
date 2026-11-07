@@ -463,7 +463,7 @@ void selectTaskBySelectedRecordMatch(void) {
 
 void startMode1TaskTransition(void) {
     setSecondaryDisplayTaskMode(1);
-    func_80070274(1, 0, 30);
+    configureTaskStateTransition(1, 0, 30);
     setCurrentTaskCallback(initializeGameOptionViewTask);
 }
 
@@ -546,7 +546,7 @@ void initializeSelectionMenuTask(void) {
     D_8013AFCE = -1;
     selectionMenuRecordAbsolute = 99;
     setSecondaryDisplayTaskMode(0);
-    func_80070274(1, 0, 30);
+    configureTaskStateTransition(1, 0, 30);
     if (D_8013B564 == 0) {
         queueCdCommand(3, 0);
         D_8013B564 = 1;
@@ -576,7 +576,7 @@ void updateControllerPlaybackUntilFade(void) {
     }
     D_8013AE88->data18++;
     if (gControllerPlaybackDurations[D_8013AFD9] <= D_8013AE88->data18) {
-        func_80070274(2, 0, 30);
+        configureTaskStateTransition(2, 0, 30);
         startCdVolumeFade(103, 20, 0, 1);
         D_8013AE88->data18 = 0;
         setCurrentTaskCallback(func_800A3AA4);
@@ -599,7 +599,7 @@ void initializeUnlockMenuResourceTask(void) {
     state->previousSelection = 0;
     resetUnlockMenuAnimation(state);
     state->unk8C = 0;
-    func_80070274(1, 0, 30);
+    configureTaskStateTransition(1, 0, 30);
     func_8007BBAC(0);
     setCurrentTaskCallback(func_800A3D9C);
 }
@@ -1013,7 +1013,7 @@ void initializeTextPlaybackTask(void) {
         gTextSoundSlots[i].soundKey = 0;
     }
     setSecondaryDisplayTaskMode(0);
-    func_80070274(2, 5, 30);
+    configureTaskStateTransition(2, 5, 30);
     D_8013B59C = 0;
     D_8013B59E = 0;
     D_8013B59F = 0;
@@ -1241,7 +1241,7 @@ void beginAudioFadeCountdownTask(void) {
     fadeOutMusicSequence(0x200);
     resetPendingCdRequests();
     SsSetSerialVol(0, 103, 103);
-    func_80070274(0, 5, 0);
+    configureTaskStateTransition(0, 5, 0);
     D_8013AE88->data18 = 10;
     setCurrentTaskCallback(signalFlag9WhenTaskCountdownExpires);
 }
