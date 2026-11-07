@@ -2965,7 +2965,29 @@ void createNineIndexedChildTasks(u16 value, u16 mode) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_80044EC0);
+void initializePlayerState23CoordinateEffectTask(void) {
+    ExpandingCoordinateEffectResource *resource;
+    RacePlayer *players;
+    if (D_8013AE88->resource14 != 0xFFFF) { while (1) {} }
+    D_8013AE88->resource14 = allocateTaskResource();
+    resource = (ExpandingCoordinateEffectResource *)&D_800D9504[D_8013AE88->resource14];
+    GsInitCoordinate2(0, &resource->parent);
+    GsInitCoordinate2(&resource->parent, &resource->coordinate);
+    players = D_80120E90;
+    resource->selectedIndex = players[D_8013AE88->data18].unk92E;
+    resource->rotation.vx = 0;
+    resource->rotation.vy = players[D_8013AE88->data18].unk110;
+    resource->rotation.vz = 0;
+    resource->position.x = players[D_8013AE88->data18].x;
+    resource->position.y = players[D_8013AE88->data18].y;
+    resource->position.z = players[D_8013AE88->data18].z;
+    func_8004A764(resource->selectedIndex, resource->position.x >> 8, resource->position.z >> 8);
+    computeSelectedTriangleAngles(&resource->pitch, &resource->yaw);
+    resource->unkCA = 0;
+    resource->scale.vx = resource->scale.vy = resource->scale.vz = 0;
+    players[D_8013AE88->data18].unk024 = 0;
+    setCurrentTaskCallback(func_800450BC);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_800450BC);
 

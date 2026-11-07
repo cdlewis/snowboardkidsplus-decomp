@@ -3160,3 +3160,5 @@ createRegisteredTripletTask = 0x80081BFC; // type:func
 updateCurrentPlayerTaskDecelerationSteps = 0x80025DD8; // type:func
 
 updateCurrentPlayerPartTransforms = 0x8001EEBC; // type:func
+
+initializePlayerState23CoordinateEffectTask = 0x80044EC0; // type:func
