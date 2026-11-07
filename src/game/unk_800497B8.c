@@ -141,6 +141,13 @@ typedef struct ModelLitFlatTriangle {
     s16 unk08;
     s16 vertexIndices[3];
 } ModelLitFlatTriangle;
+/* Each GTE lighting load reads eight bytes starting at unk00, including
+ * the adjacent vertex index and following stream fields. */
+typedef struct ModelLitGouraudTriangle {
+    u32 unk00;
+    u8 r, g, b, code;
+    struct { s16 unk00, vertexIndex; } vertices[3];
+} ModelLitGouraudTriangle;
 /* Indexed flat quad in the current model primitive stream. */
 typedef struct ModelFlatQuad {
     u32 unk00;
@@ -1746,7 +1753,43 @@ void drawProjectedIndexedLitFlatTriangle(void) {
     GsOUT_PACKET_P = (u32)(packet + 1);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80056034);
+void drawProjectedIndexedLitGouraudTriangle(void) {
+    ModelLitGouraudTriangle *primitive = (ModelLitGouraudTriangle *)D_8013B680;
+    POLY_G3 *packet = (POLY_G3 *)GsOUT_PACKET_P;
+    TriangleScratchpad *scratch = TRIANGLE_SCRATCHPAD;
+    gte_ldv3(&D_8013B688[primitive->vertices[0].vertexIndex], &D_8013B688[primitive->vertices[1].vertexIndex], &D_8013B688[primitive->vertices[2].vertexIndex]);
+    gte_rtpt();
+    gte_stsxy3(&packet->x0, &packet->x1, &packet->x2);
+    gte_nclip();
+    gte_stopz(&scratch->clipping);
+    gte_stflg(&scratch->flags);
+    gte_stszotz(&scratch->depth);
+    if (scratch->clipping < 0 || scratch->flags < 0 || scratch->depth <= 0 || scratch->depth >= 0x1000) return;
+    packet->tag = 6 << 24;
+    setcode(packet, scratch->code | POLY_G3_CODE);
+    if (scratch->fogEnabled) {
+        gte_stdp(&scratch->depthCue);
+        DpqColor((CVECTOR *)&primitive->r, scratch->depthCue, (CVECTOR *)&packet->r0);
+        DpqColor((CVECTOR *)&primitive->r, scratch->depthCue, (CVECTOR *)&packet->r1);
+        DpqColor((CVECTOR *)&primitive->r, scratch->depthCue, (CVECTOR *)&packet->r2);
+    } else {
+        setRGB0(packet, primitive->r, primitive->g, primitive->b);
+    }
+    gte_ldv0(&primitive->vertices[0].unk00);
+    gte_ldrgb(&packet->r0);
+    gte_nccs();
+    gte_strgb(&packet->r0);
+    gte_ldv0(&primitive->vertices[1].unk00);
+    gte_ldrgb(&packet->r1);
+    gte_nccs();
+    gte_strgb(&packet->r1);
+    gte_ldv0(&primitive->vertices[2].unk00);
+    gte_ldrgb(&packet->r2);
+    gte_nccs();
+    gte_strgb(&packet->r2);
+    addPrim(&D_8013B670->org[(scratch->depth >> D_8013B69C) + 6], packet);
+    GsOUT_PACKET_P = (u32)(packet + 1);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800562C8);
 
