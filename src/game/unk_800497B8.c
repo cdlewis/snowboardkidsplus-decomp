@@ -2838,10 +2838,10 @@ void createPlayerPairedQuadEffectTask(s32 playerIndex, s32 variant) {
     resource = (PairedEffectResource *)&D_800D9504[D_8013AE8C->resource14];
     for (i = 0; i < 2; i++) {
         gPlayerPairedQuadOffsets[i].vz = randomNextLinear() % 40 - 20;
-        ApplyMatrixLV(&player->effectMatrix180, &gPlayerPairedQuadOffsets[i], &resource->positions[i]);
-        resource->positions[i].vx += player->effectMatrix180.t[0];
-        resource->positions[i].vy += player->effectMatrix180.t[1];
-        resource->positions[i].vz += player->effectMatrix180.t[2];
+        ApplyMatrixLV(&player->model.effect.effectMatrix180, &gPlayerPairedQuadOffsets[i], &resource->positions[i]);
+        resource->positions[i].vx += player->model.effect.effectMatrix180.t[0];
+        resource->positions[i].vy += player->model.effect.effectMatrix180.t[1];
+        resource->positions[i].vz += player->model.effect.effectMatrix180.t[2];
         resource->positions[i].vx -= player->position8E4[0] + player->unk084;
         resource->positions[i].vy -= player->position8E4[1] + player->unk086;
         resource->positions[i].vz -= player->position8E4[2] + player->unk088;

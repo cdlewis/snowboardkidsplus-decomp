@@ -112,9 +112,14 @@ struct RacePlayer {
     s16 unk13C;
     u8 unk13E[14];
     u8 unk14C[14];
-    u8 unk15A[0x26];
-    MATRIX effectMatrix180;
-    u8 unk1A0[0x41C];
+    u8 unk15A[2];
+    union {
+        GsCOORDINATE2 modelCoordinates[14];
+        struct {
+            u8 unk15C[0x24];
+            MATRIX effectMatrix180;
+        } effect;
+    } model;
     RacePlayerVector unk5BC[14];
     RacePlayerVector unk62C[14];
     u8 unk69C[0x248];
@@ -186,6 +191,7 @@ s16 isFirstPlayerUsingCallback26D10(void);
 void clearCurrentPlayerSequenceState(void);
 void updateCurrentPlayerFromTaskPhase(void);
 
+void updateCurrentPlayerModelPartCoordinates(void);
 void loadCurrentPlayerModelPose(const s16 *values);
 void setCurrentPlayerFinalPartTranslations(const s16 *values);
 void copyPlayerPaletteRowWithTransition(s16 playerIndex, s32 unused, s32 paletteRow, u16 mode);

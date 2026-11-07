@@ -25,6 +25,7 @@
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
 #include "game/menu_selection_state.h"
+#include "game/coordinate.h"
 
 #define INDEXED_SECTOR_READ_DESTINATION ((void *)0x801F2080)
 
@@ -206,7 +207,7 @@ extern u8 D_8013B562;
 extern u8 D_8013AF3A __attribute__((section(".data")));
 
 
-void func_8009766C(void);
+void func_8001E3E4(SVECTOR *rotation, GsCOORDINATE2 *coordinate);
 void func_8009488C(void);
 void func_800187B8(u8 voice);
 
@@ -571,7 +572,7 @@ void loadCurrentPlayerModelPose(const s16 *values) {
         values++;
     }
     setCurrentPlayerFinalPartTranslations(values);
-    func_8009766C();
+    updateCurrentPlayerModelPartCoordinates();
 }
 
 void setCurrentPlayerFinalPartTranslations(const s16 *values) {
@@ -586,7 +587,29 @@ void setCurrentPlayerFinalPartTranslations(const s16 *values) {
     player->unk62C[index].z = *values++;
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009766C);
+void updateCurrentPlayerModelPartCoordinates(void) {
+    s16 i;
+    u8 parent;
+    for (i = 0; i < D_8013B0D8->modelPartCount; i++) {
+        parent = D_8013B0D8->unk13E[i];
+        RotMatrix((SVECTOR *)&D_8013B0D8->unk5BC[i], &D_8013B0D8->model.modelCoordinates[i].coord);
+        if (i == 0) {
+            D_8013AF90->vx = 0;
+            D_8013AF90->vy = 0;
+            D_8013AF90->vz = 0;
+            ApplyMatrix(&D_8013B0D8->model.modelCoordinates[0].coord, D_8013AF90, D_8013AF88);
+            D_8013B0D8->model.modelCoordinates[0].coord.t[0] = D_8013AF88->vx + D_8013B0D8->unk62C[0].x;
+            D_8013B0D8->model.modelCoordinates[0].coord.t[1] = D_8013AF88->vy + D_8013B0D8->unk62C[0].y;
+            D_8013B0D8->model.modelCoordinates[0].coord.t[2] = D_8013AF88->vz + D_8013B0D8->unk62C[0].z;
+        } else {
+            ApplyMatrix(&D_8013B0D8->model.modelCoordinates[parent].coord, (SVECTOR *)&D_8013B0D8->unk62C[i], &D_800EB22C);
+            D_8013B0D8->model.modelCoordinates[i].coord.t[0] = D_800EB22C.vx + D_8013B0D8->model.modelCoordinates[parent].coord.t[0];
+            D_8013B0D8->model.modelCoordinates[i].coord.t[1] = D_800EB22C.vy + D_8013B0D8->model.modelCoordinates[parent].coord.t[1];
+            D_8013B0D8->model.modelCoordinates[i].coord.t[2] = D_800EB22C.vz + D_8013B0D8->model.modelCoordinates[parent].coord.t[2];
+        }
+        func_8001E3E4((SVECTOR *)&D_8013B0D8->unk5BC[i], &D_8013B0D8->model.modelCoordinates[i]);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_80097858);
 
