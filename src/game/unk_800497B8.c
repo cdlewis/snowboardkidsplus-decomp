@@ -1164,6 +1164,10 @@ extern s32 D_8013B660;
 extern SVECTOR D_8012A5C0[];
 extern GsCOORDINATE2 D_80129C60[];
 
+s32 D_8013B624 __attribute__((section(".sdata.geometry_edge_projection"))) = 0;
+s32 D_8013B628 __attribute__((section(".sdata.geometry_edge_projection"))) = 0;
+s32 D_8013B62C __attribute__((section(".sdata.geometry_edge_projection"))) = 0;
+
 s32 D_8013B630 __attribute__((section(".sdata.geometry_edge_projection"))) = 0;
 s32 D_8013B634 __attribute__((section(".sdata.geometry_edge_projection"))) = 0;
 s32 D_8013B638 __attribute__((section(".sdata.geometry_edge_projection"))) = 0;
@@ -1319,7 +1323,30 @@ void getGeometryPlacementTransform(s16 index, s32 *x, s32 *y, s32 *z, u16 *angle
     *angle = ((GeometryPlacement *)D_8013B1F4)[index].angle;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8004ADF8);
+void reflectVelocityAndEnforceGeometryEdgeDistance(s32 *velocityX, s32 *velocityZ, s32 limit) {
+    s32 length, nx, nz, perpendicularX;
+    s32 tangent, normal;
+    length = SquareRoot0(D_8013B63C * D_8013B63C + D_8013B644 * D_8013B644);
+    nx = (D_8013B644 << 12) / length;
+    nz = (D_8013B63C << 12) / length;
+    D_8013B62C = length;
+    D_8013B624 = nx;
+    D_8013B628 = nz;
+    perpendicularX = -nx;
+    D_8013B638 = (perpendicularX * D_8013B630 + nz * D_8013B638) / 4096;
+    if (D_8013B638 < limit) {
+        tangent = (nz * *velocityX + nx * *velocityZ) / 4096;
+        normal = (perpendicularX * *velocityX + nz * *velocityZ) / 4096;
+        if (normal < 0) {
+            normal = -normal;
+            *velocityX = (nz * tangent - nx * normal) / 4096;
+            *velocityZ = (D_8013B624 * tangent + D_8013B628 * normal) / 4096;
+        }
+        D_8013B644 = limit - D_8013B638;
+        D_8013B648 += -D_8013B624 * D_8013B644 / 4096;
+        D_8013B650 += D_8013B628 * D_8013B644 / 4096;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8004B044);
 
