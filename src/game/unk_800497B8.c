@@ -3856,7 +3856,38 @@ void drawWrappedText16x16(s16 x, s16 y, s16 columns, const char *text,
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006F8A4);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006FC40);
+void drawLimitedWrappedText16x16(s16 x, s16 y, s16 limit, s16 columns, const char *text,
+                   s16 palette, s16 blend, GsOT *ot, u16 depth) {
+    s16 count = 0;
+    s16 total = 0;
+    s16 startX = x;
+    while (*(const s8 *)text && total < limit) {
+        if ((s8)text[0] == '\r' && (s8)text[1] == '\n') {
+            x = startX;
+            y += 16;
+            count = 0;
+            text += 2;
+            continue;
+        } else if ((s8)text[0] == 'c') {
+            if ((u32)((u8)text[1] - '0') < 10) {
+                palette = (s8)text[1] - '0' + 8;
+            }
+            text += 2;
+            continue;
+        } else {
+            if (count >= columns) {
+                x = startX;
+                y += 16;
+                count = 0;
+            }
+            func_8006F8A4(x, y, 16, 16, text, palette, blend, ot, depth);
+            x += 16;
+            count++;
+            total++;
+        }
+        text += 2;
+    }
+}
 
 void setTexturedQuadTextureBlend(s32 index, s32 palette, s32 blend) {
     TextureRegionSet *texture = &D_8012DDA4[index];
