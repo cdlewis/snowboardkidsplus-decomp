@@ -2898,7 +2898,7 @@ createRegisteredCallbackTask = 0x80074988; // type:func
 updatePlayerDualResourceEffectTask = 0x80046CB4; // type:func
 gPlayerDualResourceEffectFrame = 0x8013B1AC; // size:0x8 defined:true
 
-D_8013B154 = 0x8013B154; // type:u32 size:0x4 defined:true
+D_8013B154 = 0x8013B154; // type:RaceTime size:0x4 defined:true
 
 
 
@@ -3003,3 +3003,5 @@ initializeCountedPlayerGroupedSelectionBoundsTask = 0x8007F4BC; // type:func
 updateCurrentPlayerModelPartCoordinates = 0x8009766C; // type:func
 
 readPcHostAsset = 0x800A8104; // type:func
+
+initializeRaceTimeComparisonPanel = 0x8003C7F0; // type:func

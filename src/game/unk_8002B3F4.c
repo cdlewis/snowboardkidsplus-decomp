@@ -23,7 +23,8 @@ TaskVisualFrame gPlayerFlagVisualFrames[6]
 GsRVIEW2 gPlayerCameraViews[2]
     __attribute__((section(".data.player_camera_views"))) = {0};
 
-u32 D_8013B154 __attribute__((section(".data.menu_sprite_palettes_prefix"))) = 3;
+RaceTime D_8013B154
+    __attribute__((section(".data.menu_sprite_palettes_prefix"), aligned(4))) = {3, 0, 0};
 
 MenuSpritePaletteGroups gMenuSpritePaletteGroups
     __attribute__((section(".data.menu_sprite_palettes"), aligned(4))) = {

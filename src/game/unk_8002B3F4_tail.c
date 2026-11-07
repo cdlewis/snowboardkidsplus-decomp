@@ -2162,7 +2162,39 @@ void fadeInCurrentTaskPanel(void) {
     func_8003BE58((TaskResourceRecord *)resource);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_8003C7F0);
+void initializeRaceTimeComparisonPanel(void) {
+    PanelResource *resource;
+    s16 i;
+    if (D_8013AE88->resource14 != 0xFFFF) { while (1) {} }
+    D_8013AE88->resource14 = allocateTaskResource();
+    resource = (PanelResource *)&D_800D9504[D_8013AE88->resource14];
+    resource->brightness = 0;
+    resource->unk0C = 0;
+    if (D_8013AFE1 == 1) {
+        resource->unk0E[0] = 0;
+        resource->unk0E[1] = 1;
+    } else if (D_8013AFE1 == 2) {
+        resource->unk0E[0] = 1;
+        resource->unk0E[1] = 0;
+    } else {
+        resource->unk0E[0] = 2;
+        resource->unk0E[1] = 2;
+    }
+    for (i = 0; i < 2; i++) {
+        switch (D_8013AFE0) {
+        case 0:
+            calculateRaceTimeDifference(&D_80124220[D_8013AFCE], &D_8013B190[i], &resource->time[i]);
+            break;
+        case 1:
+            calculateRaceTimeDifference(&D_80124248[D_8013AFCE], &D_8013B190[i], &resource->time[i]);
+            break;
+        case 2:
+            calculateRaceTimeDifference(&D_8013B154, &D_8013B190[i], &resource->time[i]);
+            break;
+        }
+    }
+    setCurrentTaskCallback(fadeInCurrentTaskPanel);
+}
 
 s16 compareRaceTimes(const RaceTime *a, const RaceTime *b) {
     s32 first = (a->centiseconds & 0xFF00) + a->seconds * 25600 + a->minutes * 1536000;

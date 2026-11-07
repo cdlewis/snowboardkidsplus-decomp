@@ -607,3 +607,5 @@ void waitResultFlagsInputTask(void);
 
 void initializeMenuTransitionResourcesTask(void);
 void waitMode2TransitionTask(void);
+
+void initializeRaceTimeComparisonPanel(void);
