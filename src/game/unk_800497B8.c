@@ -100,7 +100,8 @@ typedef struct TexturedTriangleScratchpad {
     u32 reserved0;
     void (*callback)(TriangleScratchVertex *);
     s32 depth, depthCue;
-    u8 reserved10[0x40];
+    s32 flags, unk14, clipping;
+    u8 reserved1C[0x34];
     struct { u16 x, y; } screen[3];
     u8 reserved5C[4];
     u16 tpage, clut;
@@ -2066,7 +2067,37 @@ void drawProjectedIndexedColoredLitGouraudTriangle(void) {
     GsOUT_PACKET_P = (u32)(packet + 1);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80056AC4);
+void drawProjectedIndexedTexturedTriangle(void) {
+    TexturedTrianglePrimitive *primitive = (TexturedTrianglePrimitive *)D_8013B680;
+    POLY_FT3 *packet = (POLY_FT3 *)GsOUT_PACKET_P;
+    TexturedTriangleScratchpad *scratch = (TexturedTriangleScratchpad *)0x1F800000;
+    gte_ldv3(&D_8013B688[primitive->vertexIndices[0]], &D_8013B688[primitive->vertexIndices[1]], &D_8013B688[primitive->vertexIndices[2]]);
+    gte_rtpt();
+    gte_stsxy3(&packet->x0, &packet->x1, &packet->x2);
+    gte_nclip();
+    gte_stopz(&scratch->clipping);
+    gte_stflg(&scratch->flags);
+    gte_stszotz(&scratch->depth);
+    if (scratch->clipping < 0 || scratch->flags < 0 || scratch->depth <= 0 || scratch->depth >= 0x1000) return;
+    if (scratch->fogEnabled) {
+        gte_stdp(&scratch->depthCue);
+        DpqColor((CVECTOR *)&primitive->r, scratch->depthCue, (CVECTOR *)&packet->r0);
+    } else {
+        setRGB0(packet, primitive->r, primitive->g, primitive->b);
+    }
+    packet->tag = 7 << 24;
+    setcode(packet, scratch->code | POLY_FT3_CODE);
+    packet->tpage = primitive->uv[1].attribute;
+    packet->clut = primitive->uv[0].attribute;
+    packet->u0 = primitive->uv[0].coords.u;
+    packet->u1 = primitive->uv[1].coords.u;
+    packet->u2 = primitive->uv[2].coords.u;
+    packet->v0 = primitive->uv[0].coords.v;
+    packet->v1 = primitive->uv[1].coords.v;
+    packet->v2 = primitive->uv[2].coords.v;
+    addPrim(&D_8013B670->org[(scratch->depth >> D_8013B69C) + 6], packet);
+    GsOUT_PACKET_P = (u32)(packet + 1);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80056D18);
 
