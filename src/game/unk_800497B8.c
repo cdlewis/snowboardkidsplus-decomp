@@ -26,19 +26,13 @@
 #include "psx/libgs.h"
 #include "game/quad_animation.h"
 #include "game/coordinate.h"
+#include "game/course_offset.h"
 #include "psx/libapi.h"
 
 typedef union PaletteColor {
     u16 value;
     u8 bytes[2];
 } PaletteColor;
-
-typedef struct CourseOffsetResource {
-    GsCOORDINATE2 coordinate;
-    VECTOR position;
-    SVECTOR rotation;
-    GameTask *linkedTask;
-} CourseOffsetResource;
 
 typedef struct CourseSectorRange { s16 sector, count; } CourseSectorRange;
 

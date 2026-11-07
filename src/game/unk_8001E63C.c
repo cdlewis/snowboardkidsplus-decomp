@@ -9,6 +9,7 @@
 #include "game/selected_record.h"
 #include "game/graphics.h"
 #include "game/coordinate.h"
+#include "game/course_offset.h"
 #include "game/quad_animation.h"
 #include "game/angles.h"
 #include "game/linear_random.h"
@@ -100,7 +101,7 @@ void func_80015C94(u16 playerIndex);
 void func_8001596C(u16 playerIndex);
 void moveCurrentPlayerToTaskTarget(void);
 void advanceCurrentPlayerTaskOnAnimationFlag(void);
-void func_80025B08(void);
+
 void func_80025DD8(void);
 void func_80025FAC(void);
 void func_800260E4(void);
@@ -114,7 +115,7 @@ s16 func_8002D3C4(s16 value);
 
 TaskCallback gCurrentPlayerTaskPhaseCallbacks[8]
     __attribute__((section(".data.player_task_phases"))) = {
-    moveCurrentPlayerToTaskTarget, advanceCurrentPlayerTaskOnAnimationFlag, func_80025B08, func_80025DD8,
+    moveCurrentPlayerToTaskTarget, advanceCurrentPlayerTaskOnAnimationFlag, updateCurrentPlayerTaskJumpAndSpawnCourseOffset, func_80025DD8,
     func_80025FAC, advanceCurrentPlayerTaskPhaseMovement, func_800260E4, moveCurrentPlayerForwardUntilState22
 };
 
@@ -967,7 +968,58 @@ void advanceCurrentPlayerTaskOnAnimationFlag(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80025B08);
+void updateCurrentPlayerTaskJumpAndSpawnCourseOffset(void) {
+    RacePlayer *player;
+    RacePlayer *landingPlayer;
+    CourseOffsetResource *resource;
+    D_8013AF90->vx = 0;
+    D_8013AF90->vy = D_8013B0D8->unk110;
+    D_8013AF90->vz = 0;
+    RotMatrix(D_8013AF90, D_8013AF98);
+    D_8013AF90->vx = 0;
+    D_8013AF90->vy = 0;
+    D_8013AF90->vz = D_8013B0D8->unk090;
+    ApplyMatrix(D_8013AF98, D_8013AF90, D_8013AF88);
+    player = D_8013B0D8;
+    player->x += D_8013AF88->vx;
+    player->z += D_8013AF88->vz;
+    D_8013AF90->vx = 0;
+    D_8013AF90->vy = player->unk110;
+    D_8013AF90->vz = 0;
+    RotMatrix(D_8013AF90, D_8013AF98);
+    D_8013AF90->vx = 0;
+    D_8013AF90->vy = 0;
+    D_8013AF90->vz = D_8013B0D8->unk090;
+    ApplyMatrix(D_8013AF98, D_8013AF90, D_8013AF88);
+    landingPlayer = D_8013B0D8;
+    landingPlayer->x += D_8013AF88->vx;
+    landingPlayer->z += D_8013AF88->vz;
+    landingPlayer->unk062 += 0x140;
+    landingPlayer->y += landingPlayer->unk062;
+    if (landingPlayer->unk062 > 0 && landingPlayer->y > (s32)D_80123D80[D_8013AFCE].unk18[1]) {
+        landingPlayer->y = D_80123D80[D_8013AFCE].unk18[1];
+        if (landingPlayer->animationIndex != D_800EB09C[landingPlayer->unk014][1]) {
+            startCurrentPlayerAnimation(1, 1);
+            func_800183FC(D_8013AE88->data18, 1, 0x701, 0x20);
+            D_8013AFE4 &= ~4;
+        }
+        updateCurrentPlayerMotionEffects();
+        D_8013B0D8->unk128 &= ~0x200;
+    } else {
+        D_8013B0D8->unk128 |= 0x200;
+    }
+    player = D_8013B0D8;
+    if (--player->unk08C == 0) {
+        D_8013AE88->data1A++;
+        player->unk08C = 0x20;
+        func_80014930(&gGameTasks[4], initializeSelectedCourseOffsetTask);
+        D_8013AE8C->data18 = D_8013AE88->data18;
+        D_8013AE8C->resource14 = allocateTaskResource();
+        resource = (CourseOffsetResource *)&D_800D9504[D_8013AE8C->resource14];
+        resource->linkedTask = D_8013AE88;
+        D_8013B0D8->unk128 &= ~0x20;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80025DD8);
 
