@@ -64,3 +64,5 @@ void updateCurrentPlayerState4MotionAndLanding(void);
 
 void updateCurrentPlayerTaskJumpAndSpawnCourseOffset(void);
 void updateCurrentPlayerState30AnimationAndHeight(void);
+
+void updateCurrentPlayerState25MotionAndTimer(void);
