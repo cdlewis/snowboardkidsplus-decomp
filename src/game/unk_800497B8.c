@@ -950,7 +950,8 @@ s32 D_8013B650 __attribute__((section(".sdata.geometry_edge_projection"))) = 0;
 const char gNoProcessMessage[16] = "NO PROCESS...";
 
 void func_8004EFE0(void);
-void func_80059F68(void);
+void updatePlayerFollowingOrbitTask(void);
+void updateOrbitingTaskObject(void);
 void SetFarColor(s32 r, s32 g, s32 b);
 void SetFogNearFar(s32 near, s32 far, s32 h);
 void drawTaskObject(u16 index);
@@ -2075,11 +2076,43 @@ void updateSelectedCourseOffsetTask(void) {
         }
     }
     if (resource->linkedTask->data1A == 6) {
-        setCurrentTaskCallback(func_80059F68);
+        setCurrentTaskCallback(updatePlayerFollowingOrbitTask);
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80059F68);
+void updatePlayerFollowingOrbitTask(void) {
+    CourseOffsetResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (CourseOffsetResource *)&D_800D9504[D_8013AE88->resource14];
+    if (!D_8013AFD3) {
+        if (D_80120E90[D_8013AE88->data18].unk12C != 7) {
+            D_8013AF94->vx = -100;
+            D_8013AF94->vy = 0;
+            D_8013AF94->vz = 0;
+            RotMatrix(&resource->rotation, D_8013AF98);
+            ApplyMatrix(D_8013AF98, D_8013AF94, D_8013AF88);
+            resource->position.vx = resource->coordinate.coord.t[0] + D_8013AF88->vx;
+            resource->position.vz = resource->coordinate.coord.t[2] + D_8013AF88->vz;
+            D_8013AE88->data1A = 0x40;
+            setCurrentTaskCallback(updateOrbitingTaskObject);
+            updateOrbitingTaskObject();
+            return;
+        }
+        resource->coordinate.coord.t[0] = D_80120E90[D_8013AE88->data18].worldCoordinate.coord.t[0];
+        resource->coordinate.coord.t[1] = D_80120E90[D_8013AE88->data18].worldCoordinate.coord.t[1];
+        resource->coordinate.coord.t[2] = D_80120E90[D_8013AE88->data18].worldCoordinate.coord.t[2];
+        if (resource->linkedTask->data1A == 7) {
+            resource->rotation.vy = D_80120E90[D_8013AE88->data18].unk110;
+        }
+    }
+    if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
+        D_80129A80[D_8013AE88->data1C].coord2 = &resource->coordinate;
+        func_8001E3E4(&resource->rotation, &resource->coordinate);
+        drawTaskObject(D_8013AE88->data1C);
+    }
+}
 
 void updateOrbitingTaskObject(void) {
     CourseOffsetResource *resource;
