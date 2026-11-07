@@ -2,7 +2,9 @@
 #include "psx/libcd.h"
 #include "psx/libpad.h"
 #include "psx/libapi.h"
-#include "psx/libpad.h"
+#include "psx/libapi.h"
+#include "game/graphics.h"
+#include "game/music.h"
 #include "game/cd_queue.h"
 #include "psx/libsnd.h"
 #include "game/controller.h"
@@ -22,22 +24,31 @@ typedef struct CdRequest {
     s32 sector;
     s32 sectorCount;
     s16 command;
-    s16 unk_16;
+    s16 unk_16; /* Nonzero selects sectors relative to SNB.DAT. */
     s32 unk_18;
 } CdRequest;
 
-typedef struct ControllerReceiveBuffer {
-    u8 status;
-    u8 deviceId;
-    u8 payload[32];
-} ControllerReceiveBuffer;
-CdlFILE D_800D7BA4 __attribute__((section(".data.cd_file_records"))) = {0};
-CdlFILE D_800D7BBC __attribute__((section(".data.cd_file_records"))) = {0};
-CdlFILE D_800D7BD4 __attribute__((section(".data.cd_file_records"))) = {0};
-CdlFILE D_8013B6E8 __attribute__((section(".data.cd_archive_file"))) = {0};
-s32 D_8013B5FC __attribute__((section(".sdata.cd_archive_sector"))) = 0;
-u16 D_8013AE68 __attribute__((section(".sdata.cd_queue_count"))) = 0;
-static u16 sCdQueueCountPadding __attribute__((section(".sdata.cd_queue_count"))) = 0;
+static char sAtMoviePath[16] __attribute__((section(".rodata.cd_paths"), aligned(4))) =
+    "\\MV\\ATMOV.STR;1";
+static char sRaMoviePath[16] __attribute__((section(".rodata.cd_paths"), aligned(4))) =
+    "\\MV\\RAMOV.STR;1";
+static char sOpeningMoviePath[16] __attribute__((section(".rodata.cd_paths"), aligned(4))) =
+    "\\MV\\OPMOV.STR;1";
+static char sDatPath[16] __attribute__((section(".rodata.cd_paths"), aligned(4))) =
+    "\\SNB\\SNB.DAT;1";
+
+CdlFILE gAtMovieFile __attribute__((section(".data.cd_files"))) = {0};
+CdlFILE gRaMovieFile __attribute__((section(".data.cd_files"))) = {0};
+CdlFILE gOpeningMovieFile __attribute__((section(".data.cd_files"))) = {0};
+CdlFILE gDatFile __attribute__((section(".data.dat_file"))) = {0};
+s32 gDatStartSector __attribute__((section(".sdata.dat_start_sector"))) = 0;
+u16 D_8013AE68 __attribute__((section(".sdata.cd_read_state"))) = 0;
+static u16 sCdReadStatePadding __attribute__((section(".sdata.cd_read_state"))) = 0;
+s32 D_8013AE6C __attribute__((section(".sdata.cd_read_state"))) = 0;
+s32 D_8013AE7C __attribute__((section(".sdata.cd_io_flags"))) = 0;
+u8 D_8013B5DC[8] __attribute__((section(".sdata.cd_read_delay"))) = {0};
+u8 D_8013B5E4[8] __attribute__((section(".data.cd_sync_result"))) = {0};
+CdlFILE D_8013B6C8 __attribute__((section(".data.cd_search_file"))) = {0};
 
 GameTask gGameTasks[200] __attribute__((section(".data.game_tasks"))) = {0};
 
@@ -62,7 +73,12 @@ CdCommand gCdCommands[8] __attribute__((section(".data.cd_commands"))) = {0};
 u16 gCdRequestPhase = 0;
 u16 gCdRequestWriteIndex = 0;
 u16 gCdRequestReadIndex = 0;
-u16 D_8013AE76 = 0;
+s16 D_8013AE76 = 0;
+typedef struct ControllerReceiveBuffer {
+    u8 status;
+    u8 deviceId;
+    u8 payload[32];
+} ControllerReceiveBuffer;
 
 ControllerReceiveBuffer D_800E9558[2] __attribute__((section(".data.controller_receive_buffers"))) = {0};
 extern u8 D_8013AEE0[];
@@ -93,7 +109,8 @@ u16 gTaskResourceFreeBits[16] __attribute__((section(".data.task_resource_bitmap
 
 u8 gControllerFlags[4] __attribute__((section(".data"))) = {0, 0, 0, 0};
 
-u8 gControllerHorizontalRepeatTimers[2] __attribute__((section(".sdata.controller_repeat_timing"))) = {0, 0};
+u8 gControllerHorizontalRepeatTimers[2]
+    __attribute__((section(".sdata.controller_repeat_timing"))) = {0, 0};
 u8 gControllerRepeatInitialDelay __attribute__((section(".sdata.controller_repeat_timing"))) = 12;
 u8 gControllerRepeatInterval __attribute__((section(".sdata.controller_repeat_timing"))) = 2;
 
@@ -117,8 +134,12 @@ s16 D_8013AE78 __attribute__((section(".sdata.cd_command_active"))) = 0;
 static u16 sCdCommandActivePadding __attribute__((section(".sdata.cd_command_active"))) = 0;
 
 TaskCallback gInitialTaskCallbacks[6] __attribute__((section(".data.initial_task_callbacks"))) = {
-    initializeGameOptionTask, func_8001E0C0, func_8001E0C0,
-    func_8001E148, func_8001E148, func_8001E1B8,
+    initializeGameOptionTask,
+    func_8001E0C0,
+    func_8001E0C0,
+    func_8001E148,
+    func_8001E148,
+    func_8001E1B8,
 };
 /* Scratch links used while removing a subtree from the task list. */
 extern GameTask *D_8013AEA0;
@@ -128,10 +149,9 @@ extern GameTask *D_8013AEAC;
 extern GameTask *D_8013AEB0;
 extern u16 D_8013AEB4;
 
-extern char D_80010000[], D_80010010[], D_80010020[], D_80010030[];
+void func_80013540(void);
 
-void func_800131B4(void) {
-}
+void func_800131B4(void) {}
 
 INCLUDE_ASM("asm/nonmatchings/main", func_800131BC);
 
@@ -182,10 +202,12 @@ void updateCdVolumeFade(void) {
     }
 }
 
-void initializeCdFileRecords(void) {
+void initializeCdFiles(void) {
     _96_remove();
     _96_init();
-    while (!CdInit()) {}
+    do {
+
+    } while (CdInit() == 0);
     gCdRequestReadIndex = 0;
     gCdRequestWriteIndex = 0;
     D_8013AE76 = 0;
@@ -195,14 +217,22 @@ void initializeCdFileRecords(void) {
     D_8013AE4E = 0;
     D_8013AE78 = 0;
     resetCdCommandState();
-    while (!CdSearchFile(&D_800D7BA4, D_80010000)) {}
-    while (!CdSearchFile(&D_800D7BBC, D_80010010)) {}
-    while (!CdSearchFile(&D_800D7BD4, D_80010020)) {}
-    D_8013B6E8.pos.minute = 0;
-    D_8013B6E8.pos.second = 0;
-    D_8013B6E8.pos.sector = 0;
-    while (!CdSearchFile(&D_8013B6E8, D_80010030)) {}
-    D_8013B5FC = CdPosToInt(&D_8013B6E8.pos);
+    do {
+
+    } while (CdSearchFile(&gAtMovieFile, sAtMoviePath) == 0);
+    do {
+
+    } while (CdSearchFile(&gRaMovieFile, sRaMoviePath) == 0);
+    do {
+
+    } while (CdSearchFile(&gOpeningMovieFile, sOpeningMoviePath) == 0);
+    gDatFile.pos.minute = 0;
+    gDatFile.pos.second = 0;
+    gDatFile.pos.sector = 0;
+    do {
+
+    } while (CdSearchFile(&gDatFile, sDatPath) == 0);
+    gDatStartSector = CdPosToInt(&gDatFile.pos);
 }
 
 INCLUDE_ASM("asm/nonmatchings/main", func_800134E4);
@@ -272,13 +302,174 @@ s32 isCdRequestQueueReady(void) {
     return result;
 }
 
-INCLUDE_ASM("asm/nonmatchings/main", func_800138AC);
+void updateCdRequestQueue(void) {
+    CdlLOC position;
+    u8 result[16];
+    s32 i;
+    u8 *clear;
+    s32 writeIndex;
+    s16 index;
+    s32 status;
+    s32 readStatus;
+    if ((s16)D_8013AE76 != 0)
+        return;
+    i = 15;
+    clear = &result[15];
+    do {
+        *clear = 0;
+        i--;
+        clear--;
+    } while (i >= 0);
+    index = gCdRequestReadIndex & 63;
+    writeIndex = gCdRequestWriteIndex & 63;
+    gCdRequestReadIndex = index;
+    gCdRequestWriteIndex = writeIndex;
+    if (index == writeIndex)
+        return;
+    if (D_8013AE78 != 0) {
+        if (D_8013AE4C == -1)
+            return;
+        func_80013540();
+    }
+    switch (gCdRequestPhase) {
+    case 0:
+        if (CdSync(1, result) == 0)
+            break;
+        result[0] = CdlModeSpeed;
+        CdControlF(CdlSetmode, result);
+        D_8013B5DC[0] = 3;
+        D_8013AE7C |= 0x04000000;
+        gCdRequestPhase++;
+        break;
+    case 1:
+        status = CdSync(1, D_8013B5E4);
+        if (status == 2) {
+            D_8013AE7C &= ~0x04000000;
+            gCdRequestPhase++;
+        } else if (status == 5) {
+            gCdRequestPhase = 0;
+            D_8013AE7C &= ~0x04000000;
+        }
+        break;
+    case 2:
+        D_8013B5DC[0]--;
+        if ((s8)D_8013B5DC[0] > 0)
+            break;
+        /* Bit 7 skips reading; the low seven bits select processing below. */
+        if ((s32)(gCdRequests[index].command & 0xFF) >= 0x80)
+            goto read_started;
+        if (gCdRequests[index].command == 15)
+            goto stream_seek;
+        if (gCdRequests[index].unk_16 != 0) {
+            D_8013AE6C = gCdRequests[index].sectorCount << 11;
+            CdIntToPos(gCdRequests[index].sector + gDatStartSector, &position);
+            CdControlF(CdlSetloc, (u8 *)&position);
+            D_8013AE7C |= 0x04000000;
+            gCdRequestPhase++;
+            break;
+        }
+        D_8013AE7C |= 0x02000000;
+        do {
+            D_8013AE6C = CdReadFile(gCdRequests[index].filename, gCdRequests[index].destination, 0);
+        } while (D_8013AE6C == 0);
+    read_started:
+        gCdRequestPhase = 6;
+        break;
+    stream_seek:
+        while (CdSearchFile(&D_8013B6C8, gCdRequests[index].filename) == NULL) {
+        }
+        CdControlF(CdlSetloc, (u8 *)&D_8013B6C8.pos);
+        D_8013AE7C |= 0x04000000;
+        gCdRequestPhase++;
+        break;
+    case 3:
+        gCdRequestPhase++;
+        /* fallthrough */
+    case 4:
+        status = CdSync(1, result);
+        if (status == 2) {
+            D_8013AE7C &= ~0x04000000;
+            gCdRequestPhase++;
+        } else if (status == 5) {
+            gCdRequestPhase = 0;
+            D_8013AE7C &= ~0x04000000;
+        }
+        break;
+    case 5:
+        if (gCdRequests[index].command != 15) {
+            D_8013AE7C |= 0x02000000;
+            if (CdRead(gCdRequests[index].sectorCount, gCdRequests[index].destination,
+                       CdlModeSpeed))
+                gCdRequestPhase++;
+        } else {
+            D_8013AE68 |= 1;
+            if (CdRead2(0x1E0))
+                gCdRequestPhase = 7;
+        }
+        break;
+    case 6:
+        readStatus = CdReadSync(1, result);
+        if (readStatus == 0) {
+            gCdRequestPhase = 7;
+            D_8013AE7C &= ~0x02000000;
+        }
+        if (readStatus == -1) {
+            gCdRequestPhase = 0;
+            D_8013AE7C &= ~0x02000000;
+        }
+        break;
+    case 7:
+        gCdRequestPhase++;
+        /* fallthrough */
+    case 8:
+        switch ((u32)(u16)gCdRequests[index].command & 0x7F) {
+        case 0:
+            break;
+        case 1:
+            uploadTimImageWithOffset(gCdRequests[index].destination,
+                                     (s16 *)gCdRequests[index].unk_18);
+            break;
+        case 2:
+            uploadTimArchive(gCdRequests[index].destination, (s16 *)gCdRequests[index].unk_18);
+            break;
+        case 3:
+            loadSoundBank(0, gCdRequests[index].destination, (u8 *)0x80180000);
+            break;
+        case 4:
+            loadSoundBank(1, gCdRequests[index].destination, (u8 *)0x80180000);
+            break;
+        case 5:
+            loadSoundBank(2, gCdRequests[index].destination, (u8 *)0x80180000);
+            break;
+        case 6:
+            loadSoundBank(3, gCdRequests[index].destination, (u8 *)0x80180000);
+            break;
+        case 7:
+            loadSoundBank(4, gCdRequests[index].destination, (u8 *)0x80180000);
+            break;
+        case 8:
+            loadSoundBank(5, gCdRequests[index].destination, (u8 *)0x80180000);
+            break;
+        case 9:
+            openMusicSequence(2, gCdRequests[index].destination);
+            break;
+        case 16:
+            uploadImage64x256(gCdRequests[index].destination, 0x280, 0x100);
+            break;
+        }
+        gCdRequestPhase = 0;
+        D_8013AE7C &= ~0x04000000;
+        gCdRequestReadIndex++;
+        break;
+    }
+}
 
 void queueCdCommand(s16 command, s16 value) {
     s32 index = D_8013AE4E & 7;
     D_8013AE4E = index;
     if (command == -1) {
-        if (D_8013AE78 != 0 && D_8013AE4C == -1) return;
+        if (D_8013AE78 != 0 && D_8013AE4C == -1)
+            return;
         gCdVolumeFadeActive = 0;
         gCdRequestReadIndex = 0;
         gCdRequestWriteIndex = 0;
@@ -408,15 +599,11 @@ void deletePendingTaskSubtree(void) {
 
 INCLUDE_ASM("asm/nonmatchings/main", func_80014B14);
 
-void setCurrentTaskCallback(TaskCallback callback) {
-    D_8013AE88->callback = callback;
-}
+void setCurrentTaskCallback(TaskCallback callback) { D_8013AE88->callback = callback; }
 
 INCLUDE_ASM("asm/nonmatchings/main", func_80014B58);
 
-void deleteCurrentTask(void) {
-    func_800149A8();
-}
+void deleteCurrentTask(void) { func_800149A8(); }
 
 u32 allocateTaskResource(void) {
     u16 i, bit;
@@ -441,9 +628,7 @@ void releaseTaskResource(u16 resource) {
     gTaskResourceFreeBits[index] |= 1 << resource;
 }
 
-void setControllerFlag0(u16 controller) {
-    gControllerFlags[controller] |= 1;
-}
+void setControllerFlag0(u16 controller) { gControllerFlags[controller] |= 1; }
 
 void clearControllerFlag0(u16 controller) {
     u8 *flags = controller + gControllerFlags;
@@ -603,7 +788,7 @@ void playbackControllerInput(u16 controller) {
     D_8013AEF8[controller] = (s8)D_8013AED4[controller][D_8013AEDC[controller]].horizontal;
     D_8013AEFC[controller] = (s8)D_8013AED4[controller][D_8013AEDC[controller]].vertical;
     counter = &D_8013AEE0[controller];
-    *counter = *counter ? *counter - 1 :
-        (D_8013AEDC[controller]++,
-         D_8013AED4[controller][D_8013AEDC[controller]].repeatCount);
+    *counter = *counter ? *counter - 1
+                        : (D_8013AEDC[controller]++,
+                           D_8013AED4[controller][D_8013AEDC[controller]].repeatCount);
 }

@@ -59,3 +59,7 @@ u32 StFreeRing(u32 *base);
 
 s32 CdInit(void);
 CdlFILE *CdSearchFile(CdlFILE *file, char *name);
+s32 CdControlF(u8 command, u8 *param);
+s32 CdRead(s32 count, void *destination, s32 mode);
+s32 CdReadFile(char *name, void *destination, s32 size);
+s32 CdReadSync(s32 mode, u8 *result);

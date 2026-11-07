@@ -3,6 +3,7 @@
 #include "decomp/types.h"
 #include "psx/libgte.h"
 #include "psx/sprite.h"
+#include "psx/libgpu.h"
 
 typedef struct { s16 vx, vy, vz, pad; } SVECTOR;
 typedef struct { VECTOR scale; SVECTOR rotate; VECTOR trans; } GsCOORD2PARAM;
@@ -81,3 +82,17 @@ MATRIX *RotMatrixYXZ(SVECTOR *rotation, MATRIX *matrix);
 MATRIX *ScaleMatrix(MATRIX *matrix, VECTOR *scale);
 
 VECTOR *ApplyMatrixLV(MATRIX *matrix, VECTOR *in, VECTOR *out);
+void GsInitGraph(s32 width, s32 height, s32 mode, s32 interlace, s32 display);
+void GsDefDispBuff(s32 x0, s32 y0, s32 x1, s32 y1);
+void GsInit3D(void);
+
+extern DISPENV GsDISPENV;
+void GsClearOt(u16 offset, u16 point, GsOT *ot);
+void GsDefDispBuff2(s32 x0, s32 y0, s32 x1, s32 y1);
+void GsDrawOt(GsOT *ot);
+s32 GsGetActiveBuff(void);
+void GsInitGraph2(s32 width, s32 height, s32 mode, s32 interlace, s32 display);
+void GsSetClip(RECT *clip);
+void GsSetOffset(s32 x, s32 y);
+void GsSortClear(s32 r, s32 g, s32 b, GsOT *ot);
+void GsSwapDispBuff(void);

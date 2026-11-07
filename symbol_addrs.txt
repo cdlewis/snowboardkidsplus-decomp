@@ -2865,13 +2865,6 @@ updatePlayerCameraPitch = 0x8003E1D0; // type:func
 
 drawLoweringTexturedQuadTask = 0x800690C8; // type:func
 
-initializeCdFileRecords = 0x800133EC; // type:func
-D_800D7BA4 = 0x800D7BA4; // size:0x18
-D_800D7BBC = 0x800D7BBC; // size:0x18
-D_800D7BD4 = 0x800D7BD4; // size:0x18
-D_8013B6E8 = 0x8013B6E8; // size:0x18
-D_8013B5FC = 0x8013B5FC; // size:0x4
-D_8013AE68 = 0x8013AE68; // size:0x2
 
 completeModeSelectionTransitionWhenReady = 0x800A2324; // type:func
 
@@ -2906,3 +2899,78 @@ updatePlayerDualResourceEffectTask = 0x80046CB4; // type:func
 gPlayerDualResourceEffectFrame = 0x8013B1AC; // size:0x8 defined:true
 
 D_8013B154 = 0x8013B154; // type:u32 size:0x4 defined:true
+
+
+
+
+initializeCdFiles = 0x800133EC; // type:func
+
+sAtMoviePath = 0x80010000; // size:0x10 defined:true
+
+sRaMoviePath = 0x80010010; // size:0x10 defined:true
+
+sOpeningMoviePath = 0x80010020; // size:0x10 defined:true
+
+sDatPath = 0x80010030; // size:0x10 defined:true
+
+gAtMovieFile = 0x800D7BA4; // size:0x18 defined:true
+
+gRaMovieFile = 0x800D7BBC; // size:0x18 defined:true
+
+gOpeningMovieFile = 0x800D7BD4; // size:0x18 defined:true
+
+gDatFile = 0x8013B6E8; // size:0x18 defined:true
+
+gDatStartSector = 0x8013B5FC; // size:0x4 defined:true
+
+initializeGameSystems = 0x8001AB3C; // type:func
+
+D_800EBFF0 = 0x800EBFF0; // size:0x28 defined:true
+
+D_800EC018 = 0x800EC018; // size:0x28 defined:true
+
+D_800EC040 = 0x800EC040; // size:0x28 defined:true
+
+D_800EC068 = 0x800EC068; // size:0x28 defined:true
+
+D_800EC090 = 0x800EC090; // size:0x28 defined:true
+
+D_800EC0B8 = 0x800EC0B8; // size:0x28 defined:true
+
+D_800EC0E0 = 0x800EC0E0; // size:0x28 defined:true
+
+D_800EC108 = 0x800EC108; // size:0x28 defined:true
+
+D_800EC130 = 0x800EC130; // size:0x28 defined:true
+
+D_800EC1B0 = 0x800EC1B0; // size:0x28 defined:true
+
+D_800EC1D8 = 0x800EC1D8; // size:0x28 defined:true
+
+D_800EC158 = 0x800EC158; // size:0x18 defined:true
+
+D_800EC170 = 0x800EC170; // size:0x40 defined:true
+
+D_800EC200 = 0x800EC200; // size:0x8000 defined:true
+
+D_800F4200 = 0x800F4200; // size:0x8000 defined:true
+
+D_800FC200 = 0x800FC200; // size:0x4000 defined:true
+
+D_80100200 = 0x80100200; // size:0x20000 defined:true
+
+runGameLoop = 0x8001A540; // type:func
+
+updateCdRequestQueue = 0x800138AC; // type:func
+
+D_8013AE68 = 0x8013AE68; // size:0x2 defined:true
+
+D_8013AE6C = 0x8013AE6C; // size:0x4 defined:true
+
+D_8013AE7C = 0x8013AE7C; // size:0x4 defined:true
+
+D_8013B5DC = 0x8013B5DC; // size:0x8 defined:true
+
+D_8013B5E4 = 0x8013B5E4; // size:0x8 defined:true
+
+D_8013B6C8 = 0x8013B6C8; // size:0x18 defined:true

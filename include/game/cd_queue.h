@@ -1,6 +1,7 @@
 #pragma once
 
 #include "decomp/types.h"
+#include "psx/libcd.h"
 
 /* Shared CD state remains in the original data owner. */
 extern s16 D_8013AE78;
@@ -32,4 +33,14 @@ void resetCdVolumeFade(void);
 void startCdVolumeFade(s16 startVolume, s16 step, s16 targetVolume, u8 interval);
 void updateCdVolumeFade(void);
 
-void initializeCdFileRecords(void);
+void initializeCdFiles(void);
+extern CdlFILE gAtMovieFile;
+extern CdlFILE gRaMovieFile;
+extern CdlFILE gOpeningMovieFile;
+extern CdlFILE gDatFile;
+extern s32 gDatStartSector;
+
+void updateCdRequestQueue(void);
+extern u16 D_8013AE68;
+extern s32 D_8013AE6C;
+extern s32 D_8013AE7C;

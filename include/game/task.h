@@ -4,6 +4,9 @@
 
 typedef void (*TaskCallback)(void);
 
+extern TaskCallback D_8013AFC8;
+u16 func_80014B14(void);
+
 /* The scheduler allocates 0x20-byte records and links children after parents. */
 typedef struct GameTask {
     TaskCallback callback;

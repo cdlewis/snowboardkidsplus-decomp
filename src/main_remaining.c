@@ -29,13 +29,6 @@
 #define PLAYER_ANIMATION_ARCHIVE ((u8 *)0x80180000)
 #define PLAYER_ANIMATION_OFFSETS ((u32 *)0x80180004)
 
-/* The first word holds the count; later words hold tagged byte offsets.
- * words includes that header word, so the first image uses word index 1.
- */
-typedef union TimArchive {
-    u16 count;
-    s32 words[1];
-} TimArchive;
 
 
 
@@ -146,7 +139,6 @@ MovieDecodeState gMovieDecodeState __attribute__((section(".bss.movie_decode_sta
 
 
 
-void uploadTimArchive(TimArchive *archive, s16 *position);
 
 void uploadTimImageWithOffset(u32 *tim, s16 *position) {
     RECT rect;

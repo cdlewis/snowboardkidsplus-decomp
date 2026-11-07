@@ -65,7 +65,11 @@ segments:
     vram: 0x80010000
     bss_size: 0x5E88
     subsegments:
-      - [0x800, rodata, main]
+      - {start: 0x800, type: .rodata, name: main, linker_section: .rodata.cd_paths}
+      - [0x840, rodata, main_cd_paths_tail]
+      - [0x918, .rodata, main]
+      - [0x984, pad]
+      - [0x988, rodata, main_cd_commands]
       - [0xB88, rodata]
       - [0xBA0, .rodata, game/memory_card_read]
       - [0xBB8, rodata]
@@ -142,6 +146,8 @@ segments:
       - [0x66E0, c, main_remaining]
       - [0x9D20, c, game/memory_card_read]
       - [0x9E70, c, main_remaining_tail]
+      - [0xAD40, c, engine/game_loop]
+      - [0xB640, c, engine/task_transitions]
       # Working groups based on rodata consumers; original object boundaries are unknown.
       - [0xEE10, c, game/unk_8001E63C]
       # Absolute-addressed player helpers begin here.
@@ -557,7 +563,7 @@ segments:
       - [0xC78E8, data, C78E8] # estimated
       - {start: 0xC7C84, type: .data, name: main, linker_section: .data.cd_requests}
       - {start: 0xC8384, type: .data, name: main, linker_section: .data.cd_commands}
-      - {start: 0xC83A4, type: .data, name: main, linker_section: .data.cd_file_records}
+      - {start: 0xC83A4, type: .data, name: main, linker_section: .data.cd_files}
       - {start: 0xC83EC, type: .data, name: main, linker_section: .data.initial_task_callbacks}
       - {start: 0xC8404, type: .data, name: main, linker_section: .data.game_tasks}
       - [0xC9D04, data]
@@ -576,6 +582,8 @@ segments:
       - {start: 0xDBD3C, type: .data, name: main_remaining, linker_section: .data.memory_card_tables}
       - {start: 0xDBD64, type: .data, name: main_remaining, linker_section: .data.memory_card_save_header}
       - [0xDC7E4, data, DC7E4]
+      - {start: 0xDC7F0, type: .data, name: engine/game_loop, linker_section: .data.render_state}
+      - {start: 0xDCA00, type: .data, name: engine/game_loop, linker_section: .data.render_buffers}
       - {start: 0x110A00, type: .data, name: main_remaining, linker_section: .data.player_model_parts}
       - [0x110BEC, data, player_model_parts_tail]
       - {start: 0x110CE4, type: .data, name: main_tail, linker_section: .data.grid_resource_sector_ranges}
@@ -701,11 +709,10 @@ segments:
       - [0x12B628, data]
       - [0x12B638, lib, libapi, pad, .data]
       - {start: 0x12B648, type: .sdata, name: main, linker_section: .sdata.cd_command_state, linker_section_order: .data}
-      - {start: 0x12B668, type: .sdata, name: main, linker_section: .sdata.cd_queue_count, linker_section_order: .data}
-      - [0x12B66C, data]
+      - {start: 0x12B668, type: .sdata, name: main, linker_section: .sdata.cd_read_state, linker_section_order: .data}
       - {start: 0x12B670, type: .sdata, name: main, linker_section_order: .data}
       - {start: 0x12B678, type: .sdata, name: main, linker_section: .sdata.cd_command_active, linker_section_order: .data}
-      - [0x12B67C, data]
+      - {start: 0x12B67C, type: .sdata, name: main, linker_section: .sdata.cd_io_flags, linker_section_order: .data}
       - {start: 0x12B680, type: .sdata, name: main, linker_section: .sdata.cd_volume_fade, linker_section_order: .data}
       - {start: 0x12B688, type: .sdata, name: main, linker_section: .sdata.task_scheduler, linker_section_order: .data}
       - [0x12B6B8, .data, main]
@@ -762,8 +769,11 @@ segments:
       - [0x12BD18, data, 12BD18]
       - [0x12BD70, .data, engine/game_options]
       - [0x12BD78, data, 12BD78]
+      - {start: 0x12BDDC, type: .sdata, name: main, linker_section: .sdata.cd_read_delay, linker_section_order: .data}
+      - {start: 0x12BDE4, type: .data, name: main, linker_section: .data.cd_sync_result}
+      - [0x12BDEC, data]
       - {start: 0x12BDF8, type: .sdata, name: main, linker_section: .sdata.cd_volume_fade_timer, linker_section_order: .data}
-      - {start: 0x12BDFC, type: .sdata, name: main, linker_section: .sdata.cd_archive_sector, linker_section_order: .data}
+      - {start: 0x12BDFC, type: .sdata, name: main, linker_section: .sdata.dat_start_sector, linker_section_order: .data}
       - [0x12BE00, data]
       - {start: 0x12BE30, type: .sdata, name: game/unk_800497B8, linker_section: .sdata.geometry_edge_projection, linker_section_order: .data}
       - [0x12BE54, data]
@@ -773,7 +783,9 @@ segments:
       - {start: 0x12BEC0, type: .sdata, name: main_tail_ui, linker_section: .sdata.secondary_resource_display_task, linker_section_order: .data}
       - [0x12BEC4, data, secondary_resource_display_task_tail]
 
-      - {start: 0x12BEE8, type: .data, name: main, linker_section: .data.cd_archive_file}
+      - {start: 0x12BEC8, type: .data, name: main, linker_section: .data.cd_search_file}
+      - [0x12BEE0, pad]
+      - {start: 0x12BEE8, type: .data, name: main, linker_section: .data.dat_file}
       - [0x12BF00, data]
 
   - name: movie_decode_state_bss

@@ -4,6 +4,12 @@
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
 
+#ifdef GRAPHICS_GP_ADDRESSING
+#define GRAPHICS_DATA
+#else
+#define GRAPHICS_DATA __attribute__((section(".data")))
+#endif
+
 typedef struct PlayerTextureOrigin {
     s16 x, y;
 } PlayerTextureOrigin;
@@ -93,12 +99,12 @@ void drawTaskObjectAlternateLayer(u16 index);
 extern GsDOBJ2 D_80129A80[30];
 void sortLitObject(GsDOBJ2 *object);
 void sortLitObjectWithDrawArea(GsDOBJ2 *object, u16 index, RECT *bounds);
-extern u32 *D_8013AF6C __attribute__((section(".data")));
-extern u16 D_8013AF7A __attribute__((section(".data")));
-extern u16 D_8013AF7C __attribute__((section(".data")));
+extern u32 *D_8013AF6C GRAPHICS_DATA;
+extern u16 D_8013AF7A GRAPHICS_DATA;
+extern u16 D_8013AF7C GRAPHICS_DATA;
 
 void drawFixedSpriteAndBottomBarTask(void);
-extern u16 D_8013AF78 __attribute__((section(".data")));
+extern u16 D_8013AF78 GRAPHICS_DATA;
 
 extern POLY_FT4 gTexturedQuadTemplate;
 typedef struct SpritePrimitiveTemplate {
@@ -262,6 +268,13 @@ void initDefaultBackground(s16 mode, s16 unused, GameBackground *background,
                            GameBackgroundMap *map);
 
 /* Upload a TIM image, optionally offsetting its pixel and CLUT positions. */
+/* The count occupies the low halfword; subsequent words are tagged byte offsets. */
+typedef union TimArchive {
+    u16 count;
+    s32 words[1];
+} TimArchive;
+
+void uploadTimArchive(TimArchive *archive, s16 *position);
 void uploadTimImageWithOffset(u32 *tim, s16 *position);
 void uploadBufferedTexturePair(void);
 /* Queue the buffered screen sprites shifted one pixel in each direction. */
@@ -286,7 +299,7 @@ void drawScaledMenuKindSprite(s16 x, s16 y, s16 kind, s32 frame,
                               s16 scaleX, s16 scaleY, GsOT *ot, u16 depth);
 struct GsOT;
 extern struct GsOT D_800EBFF0[2];
-extern u16 D_8013AF78 __attribute__((section(".data")));
+extern u16 D_8013AF78 GRAPHICS_DATA;
 
 void drawLimitedText8x8(s16 x, s16 y, s16 limit, const char *text,
                    s16 palette, s16 blend, struct GsOT *ot, u16 depth);
@@ -357,9 +370,10 @@ void drawSemiTransparentTextureRectUV(s16 x, s16 y, s16 width, s16 height,
 
 /* Full-screen rectangle followed by the two animated player view rectangles. */
 extern RECT D_800EC158[3];
-extern s16 D_8013AF7E __attribute__((section(".data")));
-extern s16 D_8013AF80 __attribute__((section(".data")));
+extern s16 D_8013AF7E GRAPHICS_DATA;
+extern s16 D_8013AF80 GRAPHICS_DATA;
 
 void updateSplitScreenTransitionTask(void);
 
 void drawFirstPlayerStatusHud(void);
+#undef GRAPHICS_DATA

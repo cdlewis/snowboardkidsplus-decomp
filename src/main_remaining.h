@@ -29,7 +29,11 @@ extern char D_8013AF3C[];
 extern s32 D_8013B600[2];
 extern struct DIRENTRY D_8013B700[2][15];
 extern s16 D_8013AF3E;
+#ifdef FRAME_COUNTER_GP_ADDRESSING
+extern u16 D_8013AFAA;
+#else
 extern u16 D_8013AFAA __attribute__((section(".data")));
+#endif
 extern u8 D_8013B562 __attribute__((section(".data")));
 extern u8 D_80120EA4[];
 extern s16 D_8013B104 __attribute__((section(".data")));
@@ -46,9 +50,9 @@ void func_800A89F4(void);
 void StCdInterrupt(void);
 u32 *getNextMovieStreamFrame(MovieDecodeState *state);
 void func_800131B4(void);
-void func_8001AB3C(void);
+void initializeGameSystems(void);
 void func_80019D3C(s32 movieIndex);
-void func_8001A540(void);
+void runGameLoop(void);
 void startMovieCdRead(CdlLOC *location);
 void func_8002EE0C(void);
 void func_8001DB7C(void);

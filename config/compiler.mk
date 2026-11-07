@@ -7,6 +7,7 @@
 
 MAIN_GAME_UNITS := src/main.c src/main_remaining.c \
     src/main_remaining_tail.c src/game/memory_card_read.c \
+    src/engine/game_loop.c src/engine/task_transitions.c \
     src/game/unk_8001E63C.c \
     src/game/unk_8002A560.c \
     src/game/unk_8002B3F4.c \
@@ -32,6 +33,8 @@ UNIT_REORDER_src/main.c := 0
 UNIT_REORDER_src/main_remaining.c := 0
 UNIT_REORDER_src/main_remaining_tail.c := 0
 UNIT_REORDER_src/game/memory_card_read.c := 0
+UNIT_REORDER_src/engine/game_loop.c := 0
+UNIT_REORDER_src/engine/task_transitions.c := 0
 UNIT_REORDER_src/game/unk_8001E63C.c := 0
 UNIT_REORDER_src/game/unk_8002A560.c := 0
 UNIT_REORDER_src/game/unk_8002B3F4.c := 0

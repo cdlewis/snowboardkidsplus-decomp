@@ -4,5 +4,4 @@
 #include "psx/libgpu.h"
 
 extern DRAWENV GsDRAWENV;
-extern DISPENV GsDISPENV;
 extern s16 PSDGPU;
