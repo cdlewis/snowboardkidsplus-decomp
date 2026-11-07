@@ -385,6 +385,11 @@ typedef struct PickupPlacement {
     s16 geometryIndex;
     s32 x, y, z;
 } PickupPlacement;
+typedef struct MovingVisualPlacement {
+    s16 geometryIndex, pad;
+    s32 startX, startZ, endX, endZ;
+} MovingVisualPlacement;
+
 typedef struct PickupResource {
     GsCOORDINATE2 coordinate;
     u8 unk50[0x50];
@@ -786,6 +791,19 @@ EmitterPlacement gProximityEmitterPlacements[2]
     {0x65E0, 0xAB40, 0xEFA0, 0x52, 0},
 };
 
+MovingVisualPlacement gMovingVisualPlacements[9]
+    __attribute__((section(".data.moving_visual_placements"))) = {
+    {24, 0, -2487616, 5385268, -2052416, 5742644},
+    {26, 0, -2352960, 6135860, -2678592, 5676084},
+    {24, 0, -3052352, 6169652, -2539328, 6403636},
+    {29, 0, -2818880, 6921780, -3435840, 6783540},
+    {29, 0, -3475776, 7003188, -3229504, 7422516},
+    {29, 0, -3573496, 6820636, -3384720, 6964300},
+    {27, 0, -2870196, 6550352, -3431836, 6553112},
+    {26, 0, -3162140, 6098112, -2780108, 5860364},
+    {24, 0, -2426136, 5658860, -2373948, 5250364},
+};
+
 u32 gObjectSortSavedStackPointer
     __attribute__((section(".sdata.object_sort_saved_stack"))) = 0;
 u32 gAlternateObjectSortSavedStackPointer
@@ -943,6 +961,7 @@ extern u16 D_8013B376 __attribute__((section(".sdata")));
 
 
 void updateProximityEmitterTask(void);
+void func_8005D394(void);
 void updateFallingTaskObject(void);
 
 void emitProjectedGouraudTriangle(TriangleScratchVertex *);
@@ -2663,7 +2682,39 @@ void initializeProximityParticleTask(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005CEF0);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005D1B0);
+void initializeMovingVisualTask(void) {
+    TaskVisualResource *resource;
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    GsInitCoordinate2(0, &resource->coordinate);
+    resource->unkC6 = 0x800;
+    resource->unkC8 = 0x80;
+    resource->r0 = resource->g0 = resource->b0 = 0x80;
+    resource->code = POLY_FT4_CODE | SEMI_TRANSPARENT_FLAG;
+    resource->framePosition = 0;
+    resource->scaleX = 0x1000;
+    resource->scaleY = 0x1000;
+    resource->scaleZ = 0x1000;
+    resource->unkC4 = gMovingVisualPlacements[D_8013AE88->data18].geometryIndex;
+    resource->position.x = gMovingVisualPlacements[D_8013AE88->data18].startX;
+    resource->position.z = gMovingVisualPlacements[D_8013AE88->data18].startZ;
+    resource->velocityY = func_8004A124(resource->position.x, resource->position.z,
+        gMovingVisualPlacements[D_8013AE88->data18].endX, gMovingVisualPlacements[D_8013AE88->data18].endZ);
+    resource->unkDC = 0x10;
+    resource->unkE0 = 0x80;
+    resource->unkD8 = 0;
+    resource->bounceCount = 0x400;
+    resource->groundY = 0;
+    resource->unkC4 = getAdjacentGeometryRegionForPoint(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8);
+    resource->position.y = func_8004A764(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8) << 8;
+    resource->coordinate.coord.t[0] = resource->position.x >> 8;
+    resource->coordinate.coord.t[1] = resource->position.y >> 8;
+    resource->coordinate.coord.t[2] = resource->position.z >> 8;
+    setCurrentTaskCallback(func_8005D394);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005D394);
 

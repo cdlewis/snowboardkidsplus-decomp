@@ -3135,3 +3135,6 @@ gPlayerState30Animation20Countdowns = 0x80120A98; // size:0xC defined:true
 gPlayerState30Animation22Countdowns = 0x80120AA4; // size:0xC defined:true
 
 drawMovingLineTask = 0x8004F46C; // type:func
+
+initializeMovingVisualTask = 0x8005D1B0; // type:func
+gMovingVisualPlacements = 0x80129964; // size:0xB4
