@@ -3033,3 +3033,5 @@ drawPagedTexturedRectangle = 0x800A7D8C; // type:func
 initializeCurrentPlayerModelObjects = 0x8001E244; // type:func
 gPlayerRootTextureOffsets = 0x80120674; // size:0x18 defined:true
 gPlayerPartTextureOffsets = 0x8012068C; // size:0x18 defined:true
+
+updateTextEntryCdAudioTask = 0x800A77B0; // type:func

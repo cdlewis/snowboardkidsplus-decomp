@@ -45,6 +45,15 @@ typedef struct CdAudioOwner {
     u8 unk28[0x10];
     GameTask *task;
 } CdAudioOwner;
+typedef struct CdAudioPlaybackOwner {
+    u8 unk00[0x24];
+    u32 tick;
+    u16 flags;
+    u8 unk2A[0xE];
+    GameTask *task;
+    u8 unk3C[4];
+    u32 completionTick;
+} CdAudioPlaybackOwner;
 typedef struct CdAudioResource {
     TextEntry *entry;
     u32 deadline;
@@ -359,7 +368,7 @@ typedef struct MusicOwnerState {
     u8 unk38[8];
     u32 completionTick;
 } MusicOwnerState;
-void func_800A77B0(void);
+void updateTextEntryCdAudioTask(void);
 void func_800A53BC(void);
 void func_800A5630(void);
 void beginMode2SequenceAndFadeMusic(void);
@@ -1122,7 +1131,7 @@ void setTextEntryCdAudioTask(TextEntry *entry) {
         if (entry->unk14 == 0) SsSetSerialVol(0, 103, 103);
         else SsSetSerialVol(0, entry->unk14, entry->unk14);
         queueCdCommand(gTextEntryCdCommands[entry->unk06], 1);
-        func_80014874(func_800A77B0);
+        func_80014874(updateTextEntryCdAudioTask);
         owner->task = D_8013AE8C;
         D_8013AE8C->resource14 = allocateTaskResource();
         resource = (CdAudioResource *)&D_800D9504[D_8013AE8C->resource14];
@@ -1131,7 +1140,34 @@ void setTextEntryCdAudioTask(TextEntry *entry) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A77B0);
+void updateTextEntryCdAudioTask(void) {
+    CdAudioPlaybackOwner *owner;
+    CdAudioResource *resource;
+    TextEntry *entry;
+    if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
+    owner = (CdAudioPlaybackOwner *)&D_800D9504[D_8013AE98->resource16];
+    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    resource = (CdAudioResource *)&D_800D9504[D_8013AE88->resource14];
+    entry = resource->entry;
+    if (owner->task == D_8013AE88) {
+        if (entry->unk06 == 0) owner->task = NULL;
+        if (owner->task == NULL) {
+            SsSetSerialVol(0, 0, 0);
+            resetPendingCdRequests();
+        } else if (!(owner->flags & 2) && (D_8013AEE8[0] & 0xB0)) {
+            SsSetSerialVol(0, 0, 0);
+            resetPendingCdRequests();
+            owner->task = NULL;
+        } else {
+            if (owner->tick < resource->deadline) return;
+            SsSetSerialVol(0, 0, 0);
+            resetPendingCdRequests();
+            owner->task = NULL;
+            if (owner->completionTick < resource->deadline) owner->completionTick = resource->deadline;
+        }
+    }
+    func_800149A8();
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A7928);
 
