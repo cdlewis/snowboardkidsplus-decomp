@@ -10,6 +10,16 @@ const char gDemonstrationText[16]
 const char gDemonstrationStartText[12]
     __attribute__((section(".rodata.demonstration_overlay"), aligned(4))) = "PUSH START";
 
+TaskVisualFrame gPlayerFlagVisualFrames[6]
+    __attribute__((section(".data.player_flag_visual_frames"), aligned(4))) = {
+        {0x30, 0x48, 24, 24, 0xD, 0x3CB9},
+        {0x48, 0x48, 24, 24, 0xD, 0x3CB9},
+        {0x60, 0x48, 24, 24, 0xD, 0x3CB9},
+        {0x78, 0x48, 24, 24, 0xD, 0x3CB9},
+        {0x90, 0x48, 24, 24, 0xD, 0x3CB9},
+        {0xA8, 0x48, 24, 24, 0xD, 0x3CB9}
+    };
+
 GsRVIEW2 gPlayerCameraViews[2]
     __attribute__((section(".data.player_camera_views"))) = {0};
 

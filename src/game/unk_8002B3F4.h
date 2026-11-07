@@ -414,6 +414,9 @@ extern const u16 gPlayerModeAlternateMessageText[] __attribute__((section(".data
 
 extern const u16 *gPlayerModeMessageTexts[] __attribute__((section(".data.player_mode_message_texts")));
 
+extern TaskVisualFrame gPlayerFlagVisualFrames[6]
+    __attribute__((section(".data.player_flag_visual_frames"), aligned(4)));
+
 extern TaskVisualFrame gFallingPairedVisualFrames[7]
     __attribute__((section(".data.falling_paired_visual_frames"), aligned(4)));
 
@@ -534,7 +537,7 @@ void func_80049240(void);
 void func_800458F8(void);
 void func_8004531C(void);
 void updatePlayerFlagTaskVisual(void);
-void func_800442F4(TaskVisualResource *resource);
+void drawPlayerFlagTaskVisual(TaskVisualResource *resource);
 void func_80044BC0(void);
 void func_80046044(void);
 void func_80047600(void);

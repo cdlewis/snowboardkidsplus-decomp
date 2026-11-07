@@ -209,6 +209,7 @@ void prepareTaskVisualQuad(TaskVisualResource *resource, TaskVisualFrame *frame,
 extern TaskVisualFrame D_80124304[];
 extern TaskVisualFrame D_80124354[];
 void func_8005AC4C(TaskVisualResource *resource, u8 mode);
+u16 func_80059254(void);
 s16 func_80059290(TaskVisualResource *resource);
 void setTaskVisualFrame(TaskVisualResource *resource, TaskVisualFrame *frames,
                         s32 scale);

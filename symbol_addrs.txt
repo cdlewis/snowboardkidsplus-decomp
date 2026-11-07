@@ -2989,3 +2989,6 @@ D_8013B20C = 0x8013B20C; // size:0x4
 createRegisteredTextPanelTask = 0x80074270; // type:func
 
 initializeMenuTransitionResourcesTask = 0x8003012C; // type:func
+
+drawPlayerFlagTaskVisual = 0x800442F4; // type:func
+gPlayerFlagVisualFrames = 0x801242B4; // size:0x30 defined:true

@@ -2582,7 +2582,17 @@ s16 isFirstPlayerUsingCallback26D10(void) {
     return D_80120E90[0].task->callback == updateCurrentPlayerTaskCountdown;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_800442F4);
+void drawPlayerFlagTaskVisual(TaskVisualResource *resource) {
+    PlayerCamera *cameras = D_801241E8;
+    D_800EB22C.vx = rcos(-cameras[func_80059254()].yaw) * 40 / 4096;
+    D_800EB22C.vz = rsin(-cameras[func_80059254()].yaw) * 40 / 4096;
+    resource->coordinate.coord.t[0] = D_80120E90[D_8013AE88->data18].position8E4[0] + D_800EB22C.vx;
+    resource->coordinate.coord.t[1] = D_80120E90[D_8013AE88->data18].position8E4[1] - 80;
+    resource->coordinate.coord.t[2] = D_80120E90[D_8013AE88->data18].position8E4[2] + D_800EB22C.vz;
+    setTaskVisualFrame(resource, gPlayerFlagVisualFrames, 0x1800);
+    func_8005AC4C(resource, 1);
+    func_80059290(resource);
+}
 
 void initializeTaskCoordinateResource(void) {
     if (D_8013AE88->resource14 != 0xFFFF) {
@@ -2611,13 +2621,13 @@ void updatePlayerFlagTaskVisual(void) {
             D_8013AE88->data1A = 1;
             D_8013AE88->data1C = 7;
         }
-        func_800442F4(resource);
+        drawPlayerFlagTaskVisual(resource);
     } else if (D_8013AE88->data1A) {
         D_8013AE88->data1C--;
         if (D_8013AE88->data1C == 0) {
             D_8013AE88->data1A = 0;
         } else {
-            func_800442F4(resource);
+            drawPlayerFlagTaskVisual(resource);
         }
     }
 }

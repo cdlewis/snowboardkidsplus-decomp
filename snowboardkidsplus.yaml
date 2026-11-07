@@ -606,6 +606,8 @@ segments:
       - [0x114964, data, controller_input_sequences_tail]
       - {start: 0x1149A8, type: .data, name: game/unk_8002B3F4, linker_section: .data.player_camera_views}
       - [0x1149E8, data, player_camera_state_tail]
+      - {start: 0x114AB4, type: .data, name: game/unk_8002B3F4, linker_section: .data.player_flag_visual_frames}
+      - [0x114AE4, data, player_flag_visual_frames_tail]
       - {start: 0x115614, type: .data, name: game/unk_800497B8, linker_section: .data.camera_overlay_packets}
       - {start: 0x115714, type: .data, name: game/unk_800497B8, linker_section: .data.offset_screen_copy_sprites}
       - [0x1157D4, data, offset_screen_copy_sprites_tail]

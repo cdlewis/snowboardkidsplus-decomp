@@ -917,7 +917,6 @@ void func_800688C0(s32 playerIndex);
 void func_8006FE68(s16 x, s16 y, s16 w, s16 h, s16 borderW, s16 borderH,
                    s16 style, s16 palette, s16 blend, GsOT *ot, u16 depth);
 
-u16 func_80059254(void);
 s32 isPointWithinCameraForwardRange(s32 x, s32 z, s16 player);
 void func_8005CCEC(void);
 void func_8005DF98(void);
