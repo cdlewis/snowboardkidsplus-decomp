@@ -3710,13 +3710,44 @@ void initializeDelayedPlayerRiseEffectTask(void) {
         resource->rotation.vx = resource->rotation.vy = resource->rotation.vz = 0;
         resource->scale.vx = resource->scale.vy = resource->scale.vz = 0;
         playSoundEffect(1, 0xA00, 0x30);
-        setCurrentTaskCallback(func_80049240);
+        setCurrentTaskCallback(updateRisingPlayerEffectTask);
     } else {
         D_8013AE88->data1C--;
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_80049240);
+void updateRisingPlayerEffectTask(void) {
+    RisingPlayerEffectResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (RisingPlayerEffectResource *)&D_800D9504[D_8013AE88->resource14];
+    if (!D_8013AFD3) {
+        resource->velocity -= 2;
+        resource->offset.y += resource->velocity;
+        if (resource->offset.y < -320) {
+            resource->velocity = 2;
+            resource->unkD8 = 1;
+            D_8013AE88->data1C = 0;
+            setCurrentTaskCallback(func_80049404);
+            return;
+        }
+        resource->coordinate.coord.t[0] = D_80120E90[D_8013AE88->data1A].position8E4[0];
+        resource->coordinate.coord.t[1] = D_80120E90[D_8013AE88->data1A].position8E4[1] + resource->offset.y;
+        resource->coordinate.coord.t[2] = D_80120E90[D_8013AE88->data1A].position8E4[2];
+        if (resource->scale.vx < 0x1000) {
+            resource->scale.vx += 0x100;
+            resource->scale.vy += 0x100;
+            resource->scale.vz += 0x100;
+        }
+    }
+    if (isPositionInCameraRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
+        D_80129A80[12].coord2 = &resource->coordinate;
+        func_8001E3E4(&resource->rotation, &resource->coordinate);
+        ScaleMatrix(&resource->coordinate.coord, &resource->scale);
+        drawTaskObject(12);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_80049404);
 
