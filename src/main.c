@@ -106,6 +106,13 @@ static u16 sCdVolumeFadeTimerPadding __attribute__((section(".sdata.cd_volume_fa
 
 u16 gTaskResourceFreeBits[16] __attribute__((section(".data.task_resource_bitmap"))) = {0};
 
+u8 gControllerAnalogResponse[52] __attribute__((section(".data.controller_analog_response"))) = {
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x04, 0x07, 0x0A, 0x0D, 0x10, 0x12, 0x14,
+    0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1B, 0x1C, 0x1C, 0x1D, 0x1D, 0x1D, 0x1E,
+    0x1E, 0x1E, 0x1E, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x00, 0x00,
+};
+
 u8 gControllerFlags[4] __attribute__((section(".data"))) = {0, 0, 0, 0};
 
 u8 gControllerHorizontalRepeatTimers[2]
@@ -692,7 +699,24 @@ void updateControllerAxesFromButtons(u16 controller) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/main", func_80015154);
+void updateControllerAxesFromAnalog(u16 controller) {
+    s16 x, y;
+    x = D_800E9558[controller].payload[4] * 100 / 256 - 50;
+    y = D_800E9558[controller].payload[5] * 100 / 256 - 50;
+    if (x > 45) x = 45;
+    if (x < -45) x = -45;
+    if (y > 45) y = 45;
+    if (y < -45) y = -45;
+    if (x >= 0) D_8013AEF8[controller] = (s8)gControllerAnalogResponse[x];
+    else D_8013AEF8[controller] = -(s8)gControllerAnalogResponse[-x];
+    if (y >= 0) D_8013AEFC[controller] = (s8)gControllerAnalogResponse[y];
+    else D_8013AEFC[controller] = -(s8)gControllerAnalogResponse[-y];
+    updateControllerAxesFromButtons(controller);
+    if (D_8013AEF8[controller] > 26) D_8013AEEC[controller] |= 0x2000;
+    if (D_8013AEF8[controller] < -26) D_8013AEEC[controller] |= 0x8000;
+    if (D_8013AEFC[controller] > 26) D_8013AEEC[controller] |= 0x4000;
+    if (D_8013AEFC[controller] < -26) D_8013AEEC[controller] |= 0x1000;
+}
 
 void initializeControllers(void) {
     PadInitDirect((u8 *)&D_800E9558[0], (u8 *)&D_800E9558[1]);

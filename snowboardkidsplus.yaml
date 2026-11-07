@@ -574,7 +574,7 @@ segments:
       - {start: 0xC8404, type: .data, name: main, linker_section: .data.game_tasks}
       - [0xC9D04, data]
       - {start: 0xD9D04, type: .data, name: main, linker_section: .data.task_resource_bitmap}
-      - [0xD9D24, data, D9D24]
+      - {start: 0xD9D24, type: .data, name: main, linker_section: .data.controller_analog_response}
       - {start: 0xD9D58, type: .data, name: main, linker_section: .data.controller_receive_buffers}
       - [0xD9D9C, data, D9D9C]
       - [0xDAD9C, .data, engine/random]
