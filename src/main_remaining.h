@@ -74,7 +74,7 @@ s32 func_80014838(TaskCallback callback);
 void pollMemoryCardReadTask(void);
 void captureMemoryCardSaveIcon(void);
 s32 func_80019288(void);
-s32 func_80019670(void);
+
 void pollMemoryCardStatusTask(void);
 void func_8001D100(void);
 void advanceTaskWhenFlagAFE4Bit8Set(void);

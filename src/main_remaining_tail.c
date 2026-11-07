@@ -40,7 +40,40 @@ s32 StGetNext(u32 **data, MovieStreamHeader **header);
 
 
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining_tail", func_80019670);
+s32 pollMemoryCardWrite(void) {
+    s32 command, result;
+    D_8013B60C[D_8013AF38] = 0;
+    if (D_8013B608[D_8013AF38] == 1) {
+        switch (MemCardCreateFile(D_8013AF34, D_8013AF40, (s8)gMemoryCardSaveHeader.blockCount)) {
+        case 0: readMemoryCardDirectory();
+            D_8013B608[D_8013AF38] = 0; break;
+        case 1: return 2;
+        case 2: return 3;
+        case 4: return 4;
+        case 6: D_8013B608[D_8013AF38] = 0; break;
+        case 7: return 5;
+        default: return 0;
+        }
+    }
+    switch (MemCardSync(1, &command, &result)) {
+    case -1:
+        MemCardWriteFile(D_8013AF34, D_8013AF40, &gMemoryCardSaveHeader, 0, gMemoryCardSaveCapacities[D_8013AF48]);
+        break;
+    case 0: break;
+    case 1:
+        if (command == 4) {
+            switch (result) {
+            case 0: return 1;
+            case 1: return 2;
+            case 2: return 3;
+            case 3: MemCardAccept(D_8013AF34);
+            case 5: D_8013B608[D_8013AF38] = 1; break;
+            }
+        }
+        break;
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining_tail", func_8001983C);
 
@@ -126,7 +159,7 @@ INCLUDE_ASM("asm/nonmatchings/main_remaining_tail", func_80019C40);
 INCLUDE_ASM("asm/nonmatchings/main_remaining_tail", func_80019C84);
 
 void pollMemoryCardWriteTask(void) {
-    s32 result = func_80019670();
+    s32 result = pollMemoryCardWrite();
     if (result != 0) {
         switch (result) {
         case 1: D_8013AF3E = 0; break;

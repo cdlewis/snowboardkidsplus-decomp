@@ -32,3 +32,5 @@ extern u32 gMemoryCardSaveCapacities[5];
 
 s16 validateAndCopyMemoryCardSave(void);
 s32 pollMemoryCardRead(void);
+s32 pollMemoryCardWrite(void);
+void readMemoryCardDirectory(void);
