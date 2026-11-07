@@ -868,6 +868,8 @@ segments:
       - [0x12BBBC, data, 12BBBC]
       - {start: 0x12BC60, type: .data, name: unclassified/menu_8007CC78, linker_section: .data.lit_object_draw_area_depths}
       - [0x12BC68, data, 12BC68]
+      - {start: 0x12BC70, type: .data, name: menu/panel_tasks, linker_section: .data.registered_panel_mode_labels}
+      - [0x12BC78, data, 12BC78]
       - {start: 0x12BD00, type: .data, name: race/player/player_model_preview, linker_section: .data.player_model_draw_area_depths}
       - [0x12BD08, data, player_model_draw_area_depths_tail]
       - {start: 0x12BD14, type: .sdata, name: menu/grid_selection, linker_section: .sdata, linker_section_order: .data}

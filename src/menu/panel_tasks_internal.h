@@ -67,6 +67,19 @@ typedef struct GridMarkerState {
     u8 red, green, blue;
 } GridMarkerState;
 
+typedef struct RegisteredTextPanelResource {
+    s32 index;
+    u32 depth;
+    s16 mode;
+    s16 x, y, textX, textY;
+    const u16 *text;
+} RegisteredTextPanelResource;
+
+typedef struct PanelModeLabel {
+    u16 glyph;
+    u16 terminator;
+} PanelModeLabel;
+
 typedef struct RegisteredDetailedPanelResource {
     s16 unk00, unk02, unk04, unk06, unk08;
     s16 x, y, textX, textY;
@@ -168,6 +181,7 @@ void func_8009488C(void);
 void func_800187B8(u8 voice);
 
 void func_8008CD98(void);
+void drawRegisteredTextPanelTask(void);
 void func_8008FA8C(void);
 void func_8008D200(void);
 void func_8008DDC0(void);

@@ -3349,3 +3349,7 @@ emitPlayerTurnTripleQuadEffectTask = 0x80067B30; // type:func
 updatePlacedObjectBounceTask = 0x8005C51C; // type:func
 
 createRegisteredTexturePairTask = 0x80074E2C; // type:func
+
+drawRegisteredTextPanelTask = 0x8008C8BC; // type:func
+gRegisteredPanelMode0Label = 0x8013B470; // size:0x4
+gRegisteredPanelMode1Label = 0x8013B474; // size:0x4

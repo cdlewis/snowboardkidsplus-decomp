@@ -1,5 +1,8 @@
 #include "panel_tasks_internal.h"
 
+PanelModeLabel gRegisteredPanelMode0Label __attribute__((section(".data.registered_panel_mode_labels"))) = {2, 0};
+PanelModeLabel gRegisteredPanelMode1Label __attribute__((section(".data.registered_panel_mode_labels"))) = {3, 0};
+
 u8 gBoardSelectionLevels[12] __attribute__((section(".data.board_selection_levels"))) = {
     1, 1, 1, 2, 2, 2, 3, 3, 3, 1, 2, 3
 };
@@ -181,11 +184,40 @@ POLY_F3 gNumberAdjustmentArrow __attribute__((section(".data.number_adjustment_a
 
 INCLUDE_ASM("asm/nonmatchings/menu/panel_tasks", func_8008C708);
 
-INCLUDE_ASM("asm/nonmatchings/menu/panel_tasks", func_8008C8BC);
-
 static inline RegisteredTaskEntry *getRegisteredPanelEntry(u32 resource, s32 index) {
     RegisteredTaskEntry *entries = (RegisteredTaskEntry *)&D_800D9504[resource];
     return &entries[index / 10];
+}
+
+void drawRegisteredTextPanelTask(void) {
+    RegisteredTextPanelResource *state;
+    RegisteredTaskEntry *entry;
+    if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
+    state = (RegisteredTextPanelResource *)&D_800D9504[D_8013AE88->resource14];
+    if (state->index % 10 == 0) {
+        if (D_8013AE98->resource14 == 0xFFFF) { for (;;) {} }
+        entry = getRegisteredPanelEntry(D_8013AE98->resource14, state->index);
+    } else {
+        if (D_8013AE98->resource16 == 0xFFFF) { for (;;) {} }
+        entry = getRegisteredPanelEntry(D_8013AE98->resource16, state->index);
+    }
+    if (entry->task != D_8013AE88 || entry->command == 99) {
+        func_800149A8();
+    } else {
+        setSpriteColor(128, 128, 128);
+        func_8006EC84(state->textX, state->textY, 18, state->text, 7, -1,
+                     &D_800EBFF0[D_8013AF78], state->depth);
+        if (state->mode == 0) {
+            func_8006EC84((s16)(state->textX + 32), state->textY, 18, &gRegisteredPanelMode0Label.glyph, 7, -1,
+                         &D_800EBFF0[D_8013AF78], state->depth);
+        } else if (state->mode == 1) {
+            func_8006EC84((s16)(state->textX + 32), state->textY, 18, &gRegisteredPanelMode1Label.glyph, 7, -1,
+                         &D_800EBFF0[D_8013AF78], state->depth);
+        }
+        setTexturedQuadColor(128, 128, 128);
+        drawDefaultTexturedPanel(state->x, state->y, 152, 40, 5, 0,
+                                &D_800EBFF0[D_8013AF78], state->depth);
+    }
 }
 
 void createRegisteredDetailedTextPanelTask(s16 x, s16 y, s16 textX, s16 textY,
