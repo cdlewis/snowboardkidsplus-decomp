@@ -548,6 +548,13 @@ typedef struct RotatingQuadTrailResource {
     u8 pad[0xDC];
 } RotatingQuadTrailResource;
 
+typedef struct QuadScaleScratchpad {
+    MATRIX matrix;
+    SVECTOR rotation;
+    VECTOR scale;
+    SVECTOR vertices[4];
+} QuadScaleScratchpad;
+
 typedef struct QuadTransitionResource {
     s32 frames;
     SVECTOR *vertices;
@@ -1130,7 +1137,7 @@ void drawMovingLineTask(void);
 void func_8004F780(void);
 
 void func_80068D1C(void);
-void func_800692E8(void);
+void drawShrinkingTexturedQuadTask(void);
 void drawLoweringQuadStripTask(void);
 void drawSlidingQuadTask(void);
 void func_80069E08(s32 duration);
@@ -4034,12 +4041,43 @@ void drawLoweringTexturedQuadTask(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800692E8);
+void drawShrinkingTexturedQuadTask(void) {
+    s32 i;
+    POLY_FT4 *packet;
+    QuadTransitionResource *resource;
+    QuadScaleScratchpad *scratch;
+    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    scratch = (QuadScaleScratchpad *)0x1F800000;
+    resource = (QuadTransitionResource *)&D_800D9504[D_8013AE88->resource14];
+    packet = (POLY_FT4 *)GsOUT_PACKET_P;
+    scratch->rotation.vx = scratch->rotation.vy = scratch->rotation.vz = 0;
+    scratch->scale.vx = scratch->scale.vy = scratch->scale.vz = resource->frames * 1000 + 0x1000;
+    RotMatrix((SVECTOR *)0x1F800020, &scratch->matrix);
+    ScaleMatrix(&scratch->matrix, (VECTOR *)0x1F800028);
+    for (i = 0; i < 4; i++) {
+        ApplyMatrixSV(&scratch->matrix, &resource->vertices[i], &scratch->vertices[i]);
+    }
+    *packet = *resource->packet;
+    packet->x0 = scratch->vertices[0].vx;
+    packet->y0 = scratch->vertices[0].vy;
+    packet->x1 = scratch->vertices[1].vx;
+    packet->y1 = scratch->vertices[1].vy;
+    packet->x2 = scratch->vertices[2].vx;
+    packet->y2 = scratch->vertices[2].vy;
+    packet->x3 = scratch->vertices[3].vx;
+    packet->y3 = scratch->vertices[3].vy;
+    addPrim(D_8013AF6C, packet);
+    GsOUT_PACKET_P = (u32)(packet + 1);
+    if (--resource->frames <= 0) {
+        setCurrentTaskCallback(drawLoweringTexturedQuadTask);
+        resource->frames = 0;
+    }
+}
 
 void createQuadShrinkTask(void) {
     QuadTransitionResource *resource;
 
-    func_80014930(&gGameTasks[4], func_800692E8);
+    func_80014930(&gGameTasks[4], drawShrinkingTexturedQuadTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     resource = (QuadTransitionResource *)&D_800D9504[D_8013AE8C->resource14];
     resource->frames = 5;
@@ -4050,7 +4088,7 @@ void createQuadShrinkTask(void) {
 void startMiddleQuadShrinkTask(void) {
     ShrinkingQuadResource *resource;
 
-    func_80014930(&gGameTasks[4], func_800692E8);
+    func_80014930(&gGameTasks[4], drawShrinkingTexturedQuadTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     resource = (ShrinkingQuadResource *)&D_800D9504[D_8013AE8C->resource14];
     resource->countdown = 5;
@@ -4061,7 +4099,7 @@ void startMiddleQuadShrinkTask(void) {
 void createRightQuadShrinkTask(void) {
     QuadTransitionResource *resource;
 
-    func_80014930(&gGameTasks[4], func_800692E8);
+    func_80014930(&gGameTasks[4], drawShrinkingTexturedQuadTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     resource = (QuadTransitionResource *)&D_800D9504[D_8013AE8C->resource14];
     resource->frames = 5;

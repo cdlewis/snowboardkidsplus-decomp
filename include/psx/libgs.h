@@ -75,6 +75,7 @@ void func_800BF2C8(u32 value);
 
 MATRIX *RotMatrix(SVECTOR *rotation, MATRIX *matrix);
 VECTOR *ApplyMatrix(MATRIX *matrix, SVECTOR *vector, VECTOR *result);
+SVECTOR *ApplyMatrixSV(MATRIX *matrix, SVECTOR *vector, SVECTOR *result);
 MATRIX *RotMatrixZYX(SVECTOR *rotation, MATRIX *matrix);
 
 MATRIX *RotMatrix(SVECTOR *rotation, MATRIX *matrix);

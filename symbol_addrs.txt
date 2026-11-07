@@ -2886,6 +2886,7 @@ updateSplitScreenTransitionTask = 0x8001C128; // type:func
 updatePlayerCameraPitch = 0x8003E1D0; // type:func
 
 drawLoweringTexturedQuadTask = 0x800690C8; // type:func
+drawShrinkingTexturedQuadTask = 0x800692E8; // type:func
 
 
 completeModeSelectionTransitionWhenReady = 0x800A2324; // type:func
