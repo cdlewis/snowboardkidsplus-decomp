@@ -3072,3 +3072,6 @@ configureTaskStateTransition = 0x80070274; // type:func
 
 updatePlayerScaledObjectTask = 0x800458F8; // type:func
 updateHomingTaskVisualMovement = 0x80046894; // type:func
+
+initializeControllerPlaybackRaceTask = 0x800A3750; // type:func
+gControllerPlaybackEntries = 0x801327F4; // size:0x48

@@ -1,3 +1,4 @@
+#define RACE_FINISH_ABSOLUTE_ADDRESSING
 #include "common.h"
 #include "main_tail_sound_slots.h"
 #include "game/controller.h"
@@ -121,6 +122,13 @@ typedef struct SecondaryResource {
     TextEntry *entry;
     u32 deadline;
 } SecondaryResource;
+typedef struct ControllerPlaybackEntry {
+    u8 course;
+    u8 pad;
+    s16 sector;
+    s16 count;
+} ControllerPlaybackEntry;
+
 typedef struct CdResourceLocation {
     s16 sector;
     s16 count;
@@ -276,6 +284,21 @@ GameTask *gSecondaryResourceDisplayTask __attribute__((section(".sdata.secondary
 u16 gTextOneShotSoundKey __attribute__((section(".sdata.text_sound_state"))) = 0;
 u8 gTextOneShotVoice __attribute__((section(".sdata.text_sound_state"))) = 0;
 
+ControllerPlaybackEntry gControllerPlaybackEntries[12] __attribute__((section(".data.controller_playback_entries"))) = {
+    {0, 0, 0, 0},
+    {0, 0, 9037, 2},
+    {0, 0, 9039, 2},
+    {9, 0, 9041, 2},
+    {0, 0, 9043, 2},
+    {0, 0, 9045, 2},
+    {4, 0, 9047, 2},
+    {1, 0, 9049, 2},
+    {3, 0, 9051, 2},
+    {2, 0, 9053, 2},
+    {9, 0, 9055, 2},
+    {0, 0, 9057, 2},
+};
+
 s16 gControllerPlaybackDurations[12] __attribute__((section(".data.controller_playback_durations"))) = {
     900, 384, 560, 592, 613, 606, 400, 288, 288, 286, 205, 272
 };
@@ -319,7 +342,8 @@ void selectTaskBySelectedRecordMatch(void);
 void SetFogNearFar(s32 near, s32 far, s32 h);
 void func_800A2C40(void);
 void func_800A25F8(void);
-void func_800A3750(void);
+void initializeControllerPlaybackRaceTask(void);
+void initializeRaceTaskState(void);
 void func_800A5AFC(void);
 void initializeTextPlaybackTask(void);
 void func_800A6684(void);
@@ -586,7 +610,7 @@ void finishSelectionMenuTask(void) {
             func_800149A8();
         } else {
             queueStartupSectorReads();
-            setCurrentTaskCallback(func_800A3750);
+            setCurrentTaskCallback(initializeControllerPlaybackRaceTask);
             D_8013AE88->unk10 |= 2;
         }
         return;
@@ -596,7 +620,69 @@ void finishSelectionMenuTask(void) {
 
 INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A31C0);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A3750);
+void initializeControllerPlaybackRaceTask(void) {
+    s32 i = 0;
+    RacePlayer *player;
+    selectionMenuRecordAbsolute = D_8013AFCE;
+    D_8013AFCE = gControllerPlaybackEntries[D_8013AFD9].course;
+    player = D_80120E90;
+    D_8013AFD3 = 0;
+    D_8013AFD6 = 0;
+    D_8013AFE1 = 0;
+    D_8013AFD8 = 0;
+    D_8013AFE2 = 0;
+    D_8013AFE0 = 0;
+    player[0].unk008 = 0;
+    player[1].unk008 = 0;
+    player[2].unk008 = 1;
+    player[3].unk008 = 1;
+    player[0].unk014 = 0;
+    player[1].unk014 = 1;
+    player[2].unk014 = 2;
+    player[3].unk014 = 3;
+    player[0].unk015[1] = 0;
+    player[1].unk015[1] = 0;
+    player[2].unk015[1] = 0;
+    player[3].unk015[1] = 0;
+    player[0].unk015[2] = 3;
+    player[1].unk015[2] = 5;
+    player[2].unk015[2] = 6;
+    player[3].unk015[2] = 7;
+    player[0].unk025[3] = 0;
+    player[1].unk025[3] = 1;
+    player[2].unk025[3] = 2;
+    player[3].unk025[3] = 3;
+    player[0].unk024 = 1;
+    player[1].unk024 = 1;
+    player[2].unk024 = 1;
+    player[3].unk024 = 1;
+    D_8013AFD0 = 5;
+    player[0].unk01C = 0;
+    player[1].unk01C = 0;
+    player[2].unk01C = 0;
+    player[3].unk01C = 0;
+    D_8013AFD2 = 3;
+    D_8013AFCD = 2;
+    D_8013AFDE = 100;
+    for (; i < 4; i++) {
+        player[i].unk025[1] = 0;
+        player[i].unk025[2] = 0;
+    }
+    resetGameplayRng();
+    configureTaskStateTransition(1, 0, 30);
+    setSecondaryDisplayTaskMode(1);
+    setCurrentTaskCallback(initializeRaceTaskState);
+    queueCdSectorCommand(0, gControllerPlaybackEntries[D_8013AFD9].sector, gControllerPlaybackEntries[D_8013AFD9].count, D_800E959C, 0);
+    if (selectionMenuRecordAbsolute != D_8013AFCE) {
+        func_800180F4(2);
+        func_800180F4(3);
+        func_800180F4(4);
+        func_800180F4(5);
+        queuePlayerResourceReadsAndUploadTextures();
+    }
+    D_8013AE88->unk10 |= 2;
+}
+
 
 void advanceTaskWhenFlagB55ESet(void) {
     if (D_8013B55E != 0) {

@@ -667,6 +667,7 @@ segments:
       - [0x122708, data, player_palette_transition_tail]
       - {start: 0x122F38, type: .data, name: main_tail, linker_section: .data.indexed_sector_ranges}
       - [0x122F8C, data, 122F8C]
+      - {start: 0x122FF4, type: .data, name: main_tail_ui, linker_section: .data.controller_playback_entries}
       - {start: 0x12303C, type: .data, name: main_tail_ui, linker_section: .data.controller_playback_durations}
       - [0x123054, data, 123054]
       - {start: 0x123100, type: .data, name: main_tail, linker_section: .data.number_adjustment_arrow}

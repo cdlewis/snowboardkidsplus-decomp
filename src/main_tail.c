@@ -229,7 +229,7 @@ void SetFogNearFar(s32 near, s32 far, s32 h);
 void func_800A0EE8(void);
 void queueTaskModeSectorRead(void);
 void queueModeIndexedSectorRead(s16 mode, s16 index);
-void func_800A3750(void);
+void initializeControllerPlaybackRaceTask(void);
 void func_800A5AFC(void);
 void initializeTextPlaybackTask(void);
 void func_8009B700(void);
@@ -1074,7 +1074,7 @@ void selectTaskCallbackFromModeState(void) {
     if (D_8013AFD8 != 0) {
         setCurrentTaskCallback(initializeMode1RacePlayers);
     } else if (D_8013AFD9 != 0) {
-        setCurrentTaskCallback(func_800A3750);
+        setCurrentTaskCallback(initializeControllerPlaybackRaceTask);
     }
 }
 
