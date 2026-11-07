@@ -1,9 +1,14 @@
 #pragma once
 
 #include "common.h"
+#include "game/race_time.h"
 
 typedef struct SaveRecord {
-    u8 unk_000[0x3AC];
+    u8 unk_000[0x14C];
+    RaceTime timeRecords[10][5];
+    u8 unk_214[0x15E];
+    u8 timeRecordCharacters[10][5];
+    u8 unk_3A4[8];
     u32 flags_3AC;
     u32 flags_3B0[10];
     u32 flags_3D8;

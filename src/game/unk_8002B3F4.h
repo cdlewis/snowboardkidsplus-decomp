@@ -149,6 +149,11 @@ typedef struct FallingSpriteEffect {
     s16 palette;
 } FallingSpriteEffect;
 
+typedef struct TimeRecordListResource {
+    s16 selectedRow;
+    u8 unk02[0xFE];
+} TimeRecordListResource;
+
 typedef struct TimeRecordHeaderResource {
     u8 unk00[6];
     s16 brightness;
@@ -621,7 +626,7 @@ void tickRaceResultsSoundDelayTask(void);
 void drawTimeRecordHeader(TimeRecordHeaderResource *resource);
 void func_80039564(TaskResourceRecord *resource);
 void func_80039B34(TaskResourceRecord *resource);
-void func_800398F4(TaskResourceRecord *resource);
+void drawTimeRecordListRows(TimeRecordListResource *resource);
 void func_8003AAE0(TaskResourceRecord *resource);
 void func_8003AD48(TaskResourceRecord *resource);
 void drawStatsRecordRows(TaskResourceRecord *resource);

@@ -1883,7 +1883,29 @@ void drawTimeRecordHeader(TimeRecordHeaderResource *resource) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_80039564);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_800398F4);
+void drawTimeRecordListRows(TimeRecordListResource *resource) {
+    u8 padding[0x20];
+    s32 y;
+    s32 row;
+    s32 palette;
+    setSpriteColor(128, 128, 128);
+    y = -80;
+    for (row = 0; row < 5; row++) {
+        if (resource->selectedRow == row && (gFrameCounter & 1)) {
+            palette = 2;
+        } else if (row < 3) {
+            palette = 1;
+        } else {
+            palette = 4;
+        }
+        func_8006C998(-8, y, row + 0x136, palette, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawRaceTime(&((SaveRecord *)&D_8013080C)->timeRecords[D_8013AFCE][row], 16, y, palette, &D_800EBFF0[D_8013AF78], 1);
+        func_8006C998(88, y, (((SaveRecord *)&D_8013080C)->timeRecordCharacters[D_8013AFCE][row] & 15) * 3 + 0x14A,
+            D_80124284[((SaveRecord *)&D_8013080C)->timeRecordCharacters[D_8013AFCE][row] & 15], -1, &D_800EBFF0[D_8013AF78], 1);
+        func_8006C998(108, y, (((SaveRecord *)&D_8013080C)->timeRecordCharacters[D_8013AFCE][row] >> 4) + 0x13B, 7, -1, &D_800EBFF0[D_8013AF78], 1);
+        y += 32;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_80039B34);
 
@@ -1898,7 +1920,7 @@ void drawCurrentTaskTimeRecords(void) {
         func_800149A8();
     }
     drawTimeRecordHeader((TimeRecordHeaderResource *)resource);
-    func_800398F4(resource);
+    drawTimeRecordListRows((TimeRecordListResource *)resource);
 }
 
 void drawTaskTimeRecordsAndSetFlag10OnInput(void) {
@@ -1913,7 +1935,7 @@ void drawTaskTimeRecordsAndSetFlag10OnInput(void) {
         setCurrentTaskCallback(drawCurrentTaskTimeRecords);
     }
     drawTimeRecordHeader((TimeRecordHeaderResource *)resource);
-    func_800398F4(resource);
+    drawTimeRecordListRows((TimeRecordListResource *)resource);
 }
 
 void drawCurrentTaskTimeRecordDetails(void) {
