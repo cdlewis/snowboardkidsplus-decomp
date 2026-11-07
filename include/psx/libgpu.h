@@ -74,6 +74,20 @@ typedef struct POLY_FT4 {
 } POLY_FT4;
 #define POLY_FT4_CODE 0x2C
 
+typedef struct POLY_GT3 {
+    u32 tag;
+    u8 r0, g0, b0, code;
+    s16 x0, y0;
+    u8 u0, v0; u16 clut;
+    u8 r1, g1, b1, pad1;
+    s16 x1, y1;
+    u8 u1, v1; u16 tpage;
+    u8 r2, g2, b2, pad2;
+    s16 x2, y2;
+    u8 u2, v2; u16 pad3;
+} POLY_GT3;
+#define POLY_GT3_CODE 0x34
+
 typedef struct POLY_GT4 {
     u32 tag;
     u8 r0, g0, b0, code;

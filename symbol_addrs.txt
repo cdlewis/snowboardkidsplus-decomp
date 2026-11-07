@@ -2505,6 +2505,7 @@ waitResultDisplayInputTask = 0x800363A0; // type:func
 
 emitProjectedFlatTriangle = 0x80052530; // type:func
 emitProjectedGouraudTriangle = 0x80052680; // type:func
+emitProjectedGouraudTexturedTriangle = 0x800529FC; // type:func
 emitProjectedTexturedQuad = 0x80052F90; // type:func
 
 createFallingParticleTask = 0x80062DA8; // type:func

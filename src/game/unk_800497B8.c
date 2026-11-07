@@ -1242,7 +1242,44 @@ void emitProjectedTexturedTriangle(TriangleScratchVertex *vertices) {
     GsOUT_PACKET_P = (u32)(packet + 1);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800529FC);
+void emitProjectedGouraudTexturedTriangle(TexturedScratchVertex *vertices) {
+    TexturedQuadScratchpad *scratch = (TexturedQuadScratchpad *)0x1F800000;
+    POLY_GT3 *packet = (POLY_GT3 *)GsOUT_PACKET_P;
+    if (scratch->fogEnabled) {
+        gte_stdp(&scratch->depthCue);
+        DpqColor((CVECTOR *)&vertices[0].color, scratch->depthCue, (CVECTOR *)&packet->r0);
+        DpqColor((CVECTOR *)&vertices[1].color, scratch->depthCue, (CVECTOR *)&packet->r1);
+        DpqColor((CVECTOR *)&vertices[2].color, scratch->depthCue, (CVECTOR *)&packet->r2);
+    } else {
+        packet->r0 = vertices[0].color.r;
+        packet->r1 = vertices[1].color.r;
+        packet->r2 = vertices[2].color.r;
+        packet->g0 = vertices[0].color.g;
+        packet->g1 = vertices[1].color.g;
+        packet->g2 = vertices[2].color.g;
+        packet->b0 = vertices[0].color.b;
+        packet->b1 = vertices[1].color.b;
+        packet->b2 = vertices[2].color.b;
+    }
+    packet->tag = 9 << 24;
+    setcode(packet, scratch->code | POLY_GT3_CODE);
+    packet->tpage = scratch->tpage;
+    packet->clut = scratch->clut;
+    packet->u0 = vertices[0].u;
+    packet->u1 = vertices[1].u;
+    packet->u2 = vertices[2].u;
+    packet->v0 = vertices[0].v;
+    packet->v1 = vertices[1].v;
+    packet->v2 = vertices[2].v;
+    packet->x0 = scratch->screen[0].x;
+    packet->x1 = scratch->screen[1].x;
+    packet->x2 = scratch->screen[2].x;
+    packet->y0 = scratch->screen[0].y;
+    packet->y1 = scratch->screen[1].y;
+    packet->y2 = scratch->screen[2].y;
+    addPrim(&D_8013B670->org[(scratch->depth >> D_8013B69C) + 6], packet);
+    GsOUT_PACKET_P = (u32)(packet + 1);
+}
 
 void emitProjectedFlatQuad(TriangleScratchVertex *vertices) {
     QuadScratchpad *scratch = QUAD_SCRATCHPAD;
