@@ -90,13 +90,13 @@ void func_800252CC(void);
 void func_800240D0(void);
 void func_80024288(void);
 void func_800245C4(void);
-void func_80024804(void);
 void func_8002497C(void);
 void func_80026DAC(void);
 void func_800205B8(void);
 void func_80028680(void);
 void updateCurrentPlayerAirborneDragUntilLanding(void);
 void func_8002AE6C(void);
+void func_8002AE38(s32, s32, s32, s32);
 s32 func_80017268(void);
 void func_80015C94(u16 playerIndex);
 void func_8001596C(u16 playerIndex);
@@ -322,7 +322,7 @@ void initializeCurrentPlayerState5(void) {
     D_8013B0D8->unk08C -= D_8013B0D8->unk08C * D_8013B0D8->unk935 / 8;
     func_800183FC(D_8013AE88->data18, 1, 0xB00, 0x20);
     func_8002E5A0(D_8013AE88->data18, 9);
-    setCurrentTaskCallback(func_80024804);
+    setCurrentTaskCallback(updateCurrentPlayerState5MotionAndTimer);
 }
 
 void initializeCurrentPlayerTimedEffectState(s32 value) {
@@ -641,7 +641,50 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80024288);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_800245C4);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80024804);
+void updateCurrentPlayerState5MotionAndTimer(void) {
+    RacePlayer *player;
+    RacePlayer *motion;
+    RacePlayer *grounded;
+    s16 input;
+    func_8002AE6C();
+    smoothAndScaleCurrentPlayerInput(0, 0);
+    if (!(D_8013B0D8->unk128 & 1)) {
+        func_8002AE38(0, 0x100, 0x100, 0x100);
+    }
+    motion = D_8013B0D8;
+    motion->unk09E = 0x280;
+    if (motion->unk062 > 0x7800) {
+        motion->unk062 = 0x7800;
+    }
+    D_8013B0D8->y += D_8013B0D8->unk062;
+    func_80028680();
+    func_80017268();
+    player = D_8013B0D8;
+    if (!(player->unk128 & 1)) {
+        input = countCurrentPlayerInputGroups();
+        D_8013B0D8->unk08C--;
+        D_8013B0D8->unk08C -= input;
+        if (D_8013B0D8->unk08C < 0) {
+            D_8013B0D8->unk08C = 0;
+        }
+        grounded = D_8013B0D8;
+        if (grounded->animationFlags & 0x10) {
+            grounded->unk128 &= ~0x200;
+            if (grounded->unk08C == 0) {
+                grounded->unk12C = 8;
+                currentPlayerStateCallbacks[8]();
+                return;
+            }
+        }
+    } else {
+        player->unk128 |= 0x200;
+        startCurrentPlayerAnimation(13, 2);
+        if (D_8013B0D8->unk08C < 30) {
+            D_8013B0D8->unk08C = 30;
+        }
+    }
+    callCurrentPlayerStateCallbackIfDifferent(5);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8002497C);
 

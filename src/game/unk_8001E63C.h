@@ -52,3 +52,5 @@ void advanceCurrentPlayerState30TaskOnResult(void);
 void updateCurrentPlayerState23MotionAndTimer(void);
 
 s16 isPlayerNearSelectedRecord(s16 index);
+
+void updateCurrentPlayerState5MotionAndTimer(void);
