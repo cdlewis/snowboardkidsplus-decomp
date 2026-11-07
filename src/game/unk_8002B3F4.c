@@ -691,4 +691,17 @@ void beginMode2SequenceAndFadeMusic(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002FA58);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002FCF8);
+void queueMode11TransitionResources(void) {
+    closeMusicSequence();
+    func_8001816C();
+    queueCdSectorCommand(0, 0x7CD, 0x34, (u8 *)0x80180000, 0);
+    queueCdSectorCommand(3, 0x801, 3, (u8 *)0x8015E800, 0);
+    queueCdSectorCommand(0, 0x804, 0x5D, (u8 *)0x80180000, 0);
+    queueCdSectorCommand(4, 0x861, 3, (u8 *)0x80160000, 0);
+    queueCdSectorCommand(0, 0x961, 0x68, (u8 *)0x80180000, 0);
+    queueCdSectorCommand(5, 0x9C9, 4, (u8 *)0x80161800, 0);
+    queueCdSectorCommand(9, 0x9CD, 4, (u8 *)0x80163800, 0);
+    queueCdSectorCommand(0, 1, 5, (u8 *)0x8017D000, 0);
+    queueCdSectorCommand(0, 6, 18, (u8 *)0x801F0000, 0);
+    SetFogNearFar(5000, 6000, 400);
+}

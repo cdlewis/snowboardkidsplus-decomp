@@ -43,7 +43,7 @@ void dispatchMode11TransitionTask(void) {
 void initializeMode11TransitionTask(void) {
     func_80070274(11, 0, 30);
     setSecondaryDisplayTaskMode(1);
-    func_8002FCF8();
+    queueMode11TransitionResources();
     setCurrentTaskCallback(dispatchMode11TransitionTask);
     D_8013AE88->unk10 |= 2;
 }
@@ -255,7 +255,7 @@ void waitUnlockNotification0TransitionTask(void) {
         func_80070274(11, 0, 30);
         setSecondaryDisplayTaskMode(1);
         D_8013B10C = -1;
-        func_8002FCF8();
+        queueMode11TransitionResources();
         queueBackgroundTextureSectorCommands();
         func_8002FA58((s16)D_8013AE98->data18);
         setCurrentTaskCallback(func_80032F3C);
