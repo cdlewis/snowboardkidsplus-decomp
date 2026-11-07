@@ -14,6 +14,21 @@ PlayerRenderSnapshot gPreviousPlayerRenderSnapshots[4]
 MATRIX gPlayerRenderIdentityMatrix
     __attribute__((section(".data.player_render_snapshots"))) = {0};
 
+POLY_FT4 gPlayerSnapshotTrailPacket
+    __attribute__((section(".data.player_snapshot_trail"))) = {
+    TEXTURED_QUAD_PACKET_WORDS << 24, 0, 0, 0,
+    TEXTURED_QUAD_CODE | SEMI_TRANSPARENT_FLAG,
+    0, 0, 64, 0, getClut(880, 243),
+    0, 0, 127, 0, getTPage(0, 2, 704, 0),
+    0, 0, 64, 31, 0,
+    0, 0, 127, 31, 0,
+};
+
+SVECTOR gPlayerSnapshotTrailEndpoints[2]
+    __attribute__((section(".data.player_snapshot_trail"))) = {
+    {0, 0, -20, 0}, {0, 0, 20, 0},
+};
+
 VECTOR gPlayerPairedQuadOffsets[2]
     __attribute__((section(".data.player_paired_quad_offsets"))) = {
     {-50, 0, 0, 0}, {50, 0, 0, 0}
@@ -144,7 +159,38 @@ INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_800612BC);
 
 INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_80061304);
 
-INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_80061348);
+void drawPlayerSnapshotTrailTask(void) {
+    s32 p, flag;
+    PlayerSnapshotTrailResource *resource;
+    POLY_FT4 *packet;
+    MATRIX *scratch = (MATRIX *)0x1F800000;
+    s32 depth;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (PlayerSnapshotTrailResource *)&D_800D9504[D_8013AE88->resource14];
+    packet = &gPlayerSnapshotTrailPacket;
+    packet->r0 = resource->remainingFrames * 48 / 90;
+    packet->g0 = resource->remainingFrames * 32 / 90;
+    packet->b0 = resource->remainingFrames * 32 / 90;
+    GsGetLs(&resource->current, scratch);
+    ScaleMatrix(scratch, &resource->currentScale);
+    GsSetLsMatrix(scratch);
+    depth = RotTransPers(&gPlayerSnapshotTrailEndpoints[0], (s32 *)&packet->x0, &p, &flag);
+    depth += RotTransPers(&gPlayerSnapshotTrailEndpoints[1], (s32 *)&packet->x1, &p, &flag);
+    GsGetLs(&resource->previous, scratch);
+    ScaleMatrix(scratch, &resource->previousScale);
+    GsSetLsMatrix(scratch);
+    depth += RotTransPers(&gPlayerSnapshotTrailEndpoints[0], (s32 *)&packet->x2, &p, &flag);
+    depth += RotTransPers(&gPlayerSnapshotTrailEndpoints[1], (s32 *)&packet->x3, &p, &flag);
+    if (depth >= 0 && flag >= 0) {
+        addCopiedPrimitive(&D_8013AF6C[depth >> 4], (u32 *)packet);
+    }
+    if (--resource->remainingFrames == -1 || gPlayerSnapshotTrailPacket.y0 > 160) {
+        func_800149A8();
+        D_8013B300--;
+    }
+}
 
 void initializePlayerSnapshotTrailTask(void) {
     PlayerSnapshotTrailResource *resource;
@@ -179,7 +225,7 @@ void initializePlayerSnapshotTrailTask(void) {
     resource->previous.coord.t[1] = gPreviousPlayerRenderSnapshots[D_8013AE88->data1C].position.vy;
     resource->previous.coord.t[2] = gPreviousPlayerRenderSnapshots[D_8013AE88->data1C].position.vz;
     resource->remainingFrames = D_8013AE88->data1A;
-    setCurrentTaskCallback(func_80061348);
+    setCurrentTaskCallback(drawPlayerSnapshotTrailTask);
 }
 
 INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_800618A0);

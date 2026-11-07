@@ -753,6 +753,7 @@ extern SVECTOR *D_8013AF90 __attribute__((section(".data")));
 extern MATRIX D_8012A6B0, D_8012A6D0;
 extern MATRIX *D_8013AF9C __attribute__((section(".data")));
 extern POLY_FT4 D_8012967C;
+extern s32 D_8013B300 __attribute__((section(".data")));
 typedef struct PairedEffectResource {
     u8 unk00[0x20];
     VECTOR positions[2];
@@ -948,7 +949,7 @@ void drawSlidingQuadTask(void);
 void func_80069E08(s32 duration);
 void drawFallingParticlesTask(void);
 void func_800632C4(void);
-void func_80061348(void);
+void drawPlayerSnapshotTrailTask(void);
 void func_800618A0(void);
 void func_80061E48(void);
 void func_80062354(void);

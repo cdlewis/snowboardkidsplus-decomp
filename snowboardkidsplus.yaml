@@ -693,7 +693,8 @@ segments:
       - {start: 0x11C454, type: .data, name: race/course/course_objects, linker_section: .data.course_triggers}
       - [0x11C594, data, course_triggers_tail]
       - {start: 0x11CF2C, type: .data, name: race/effects/player_effects, linker_section: .data.player_render_snapshots}
-      - [0x11D02C, data, player_render_snapshots_tail]
+      - {start: 0x11D02C, type: .data, name: race/effects/player_effects, linker_section: .data.player_snapshot_trail}
+      - [0x11D064, data, player_render_snapshots_tail]
       - {start: 0x11D0EC, type: .data, name: race/effects/player_effects, linker_section: .data.player_paired_quad_offsets}
       - [0x11D10C, data, player_paired_quad_offsets_tail]
       - {start: 0x11D12C, type: .data, name: race/effects/player_effects, linker_section: .data.quad_animation}
