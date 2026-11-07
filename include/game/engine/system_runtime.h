@@ -16,7 +16,11 @@ extern s16 *D_801203C4[10];
 extern char D_8013AF3C[];
 extern s32 D_8013B600[2];
 extern struct DIRENTRY D_8013B700[2][15];
+#ifdef MEMORY_CARD_STATUS_ABSOLUTE_ADDRESSING
+extern s16 D_8013AF3E __attribute__((section(".data")));
+#else
 extern s16 D_8013AF3E;
+#endif
 #ifdef FRAME_COUNTER_GP_ADDRESSING
 extern u16 D_8013AFAA;
 #else

@@ -109,6 +109,9 @@ segments:
       - [0x1C68, rodata]
       - [0x1E40, .rodata, unclassified/menu_8007CC78]
       - [0x1ED8, rodata]
+      - [0x2400, .rodata, menu/save_record_tasks]
+      - {start: 0x2434, type: .rodata, name: menu/save_record_tasks, linker_section: .rodata.state_value_history_padding}
+      - [0x2438, rodata]
       - [0x2520, rodata, main_tail_jump_tables]
       - [0x2534, rodata]
       - [0x2618, rodata]

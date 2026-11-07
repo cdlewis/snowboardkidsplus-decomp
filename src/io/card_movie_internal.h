@@ -42,7 +42,6 @@ extern u8 D_8013B610;
 s32 StGetNext(u32 **data, MovieStreamHeader **header);
 
 s32 pollMemoryCardWrite(void);
-void resetMemoryCardTaskState(void);
 void beginMemoryCardBufferRead(void);
 void pollMemoryCardBufferReadTask(void);
 s32 startMemoryCardReadTask(void);

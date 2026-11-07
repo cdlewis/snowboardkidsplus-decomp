@@ -3358,3 +3358,6 @@ gRegisteredPanelMode0Label = 0x8013B470; // size:0x4
 gRegisteredPanelMode1Label = 0x8013B474; // size:0x4
 
 startCurrentPlayerDirectionalAnimation = 0x8002DEE8; // type:func
+
+updateStateValueHistoryTask = 0x80089B30; // type:func
+gStateValueHistoryPadding = 0x80011C34; // size:0x4

@@ -1,5 +1,8 @@
 #include "save_record_tasks_internal.h"
 
+const u32 gStateValueHistoryPadding
+    __attribute__((section(".rodata.state_value_history_padding"))) = 0;
+
 u16 gTaskShadowedText[14] __attribute__((section(".data.task_shadowed_text"))) = {
     0x001A, 0x001F, 0x001D, 0x0012, 0x8020, 0x8020, 0x000C,
     0x001F, 0x001E, 0x001E, 0x0019, 0x0018, 0, 0
@@ -56,11 +59,79 @@ u32 calculateByteSum(const u8 *data, u32 size) {
     return sum;
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/save_record_tasks", func_80089B30);
+void updateStateValueHistoryTask(void) {
+    switch (D_8013AE88->data18) {
+    case 0:
+        resetMemoryCardTaskState();
+        if (D_8013BE30.unk_00 == 0) {
+            D_8013BE30.activeIndex = isValue16(D_8013BE30.unk_00 = 16);
+        } else {
+            D_8013BE30.activeIndex = isValue16(D_8013BE30.unk_00 = 0);
+        }
+        func_800198C4(D_8013BE30.unk_00);
+        D_8013AE88->data18 = 1;
+        break;
+    case 1:
+        if (D_8013AF3E == 7)
+            D_8013BE30.unk_16[D_8013BE30.activeIndex] = 0;
+        switch (D_8013AF3E) {
+        case 0:
+            if (D_8013BE30.unk_12[D_8013BE30.activeIndex] == 2) {
+                D_8013BE30.unk_12[D_8013BE30.activeIndex] = 0;
+                D_8013BE30.unk_0E[D_8013BE30.activeIndex] = 4;
+                return;
+            }
+            if (D_8013BE30.unk_12[D_8013BE30.activeIndex] == 4) {
+                D_8013BE30.unk_12[D_8013BE30.activeIndex] = 0;
+                D_8013BE30.unk_0E[D_8013BE30.activeIndex] = 7;
+                D_8013BE30.previous[D_8013BE30.activeIndex] =
+                    D_8013BE30.current[D_8013BE30.activeIndex];
+                D_8013BE30.current[D_8013BE30.activeIndex] = D_8013AF3E;
+                return;
+            }
+            break;
+        case 2:
+        case 3:
+        case 4:
+            D_8013BE30.previous[D_8013BE30.activeIndex] =
+                D_8013BE30.current[D_8013BE30.activeIndex];
+            D_8013BE30.current[D_8013BE30.activeIndex] = D_8013AF3E;
+            break;
+        case 5:
+        case 6:
+        case 11:
+            D_8013BE30.previous[D_8013BE30.activeIndex] =
+                D_8013BE30.current[D_8013BE30.activeIndex];
+            D_8013BE30.current[D_8013BE30.activeIndex] = D_8013AF3E;
+            if (D_8013BE30.unk_12[D_8013BE30.activeIndex] == 3) {
+                D_8013BE30.unk_0E[D_8013BE30.activeIndex] = 6;
+                return;
+            } else {
+                D_8013BE30.unk_0E[D_8013BE30.activeIndex] = 1;
+                D_8013AE88->data18 = 0;
+            }
+            break;
+        case 7:
+        case 8:
+        case 9:
+        case 10:
+        case 12:
+            D_8013BE30.previous[D_8013BE30.activeIndex] =
+                D_8013BE30.current[D_8013BE30.activeIndex];
+            D_8013BE30.current[D_8013BE30.activeIndex] = D_8013AF3E;
+            D_8013BE30.unk_0E[D_8013BE30.activeIndex] = 1;
+            D_8013AE88->data18 = 0;
+            break;
+        }
+        if ((s16)func_80019AF4((void *)0x801E4000, 0x810) == 1)
+            D_8013BE30.unk_0E[D_8013BE30.activeIndex] = 0;
+        break;
+    }
+}
 
 void startStateValueHistoryTask(void) {
     s16 i;
-    func_80014874(func_80089B30);
+    func_80014874(updateStateValueHistoryTask);
     D_8013AE8C->data18 = 0;
     D_8013BE30.unk_00 = 16;
     D_8013BE30.activeIndex = 1;

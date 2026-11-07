@@ -11,6 +11,8 @@
 #include "psx/libsnd.h"
 #define TASK_ABSOLUTE_ADDRESSING
 #include "game/engine/task.h"
+#define MEMORY_CARD_STATUS_ABSOLUTE_ADDRESSING
+#include "game/engine/system_runtime.h"
 #include "game/race/player/race_player.h"
 #include "game/menu/movement.h"
 #include "game/menu/menu_selection_state.h"
@@ -116,7 +118,7 @@ void mergeSaveRecordFlags(SaveRecord *source, SaveRecord *destination);
 void func_800875D0(void);
 void func_8007D5C8(void);
 void updatePaletteRotationTask(void);
-void func_80089B30(void);
+void updateStateValueHistoryTask(void);
 void func_80087030(void);
 void func_800857C4(void);
 void func_800843DC(void);
