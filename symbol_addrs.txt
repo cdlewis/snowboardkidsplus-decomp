@@ -2906,3 +2906,6 @@ updateControllerActuators = 0x800157DC; // type:func
 gControllerActuatorAlignment = 0x8013AECC; // size:0x6
 
 drawFirstPlayerStatusHud = 0x80043810; // type:func
+
+updateSplitSelectionBoundsTransition = 0x80098D68; // type:func
+gSplitSelectionBoundsConfigs = 0x80131D90; // size:0x20 defined:true

@@ -635,6 +635,8 @@ segments:
       - [0x120F40, data, task_shadowed_text_tail]
       - {start: 0x122564, type: .data, name: main_tail, linker_section: .data.current_task_panel_text}
       - [0x122574, data, 122574]
+      - {start: 0x122590, type: .data, name: main_tail, linker_section: .data.split_selection_bounds_configs}
+      - [0x1225B0, data, 1225B0]
       - {start: 0x1225BC, type: .data, name: main_tail, linker_section: .data.task_panel_144x48_text}
       - [0x1225CC, data, 1225CC]
       - {start: 0x1226E8, type: .data, name: main_tail, linker_section: .data.player_palette_transition_pixels}

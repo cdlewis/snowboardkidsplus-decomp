@@ -19,3 +19,5 @@ void initializeCountedGroupedSelectionBoundsTask(void);
 
 void initializeCountedSplitSelectionBoundsTask(void);
 void initializeCountedFourBoundsTask(void);
+
+void updateSplitSelectionBoundsTransition(void);

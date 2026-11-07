@@ -58,6 +58,18 @@ typedef struct TextSequenceResource {
     u8 unk3C[0xC4];
 } TextSequenceResource;
 
+typedef struct SplitBoundsResource {
+    u8 unk00[0x1C];
+    s16 unk1C;
+    u8 unk1E[6];
+    s16 unk24;
+} SplitBoundsResource;
+
+typedef struct SplitSelectionBoundsConfigs {
+    u8 entries[10][3];
+    u8 padding[2];
+} SplitSelectionBoundsConfigs;
+
 typedef struct ResourceSectorRange {
     s16 sector;
     s16 sectorCount;
@@ -179,6 +191,12 @@ ResourceSectorRange gOtherModeSectorRanges[11] __attribute__((section(".data.ind
 POLY_F3 gNumberAdjustmentArrow __attribute__((section(".data.number_adjustment_arrow"))) = {
     4U << 24, 0, 0, 0, POLY_F3_CODE, 0, 0, 0, 0, 0, 0
 };
+
+SplitSelectionBoundsConfigs gSplitSelectionBoundsConfigs __attribute__((section(".data.split_selection_bounds_configs"))) = {{
+    {60, 120, 4}, {30, 180, 6}, {30, 180, 6}, {60, 120, 4},
+    {30, 180, 6}, {30, 180, 6}, {60, 120, 4}, {30, 180, 6},
+    {60, 120, 4}, {60, 120, 4}
+}, {0, 0}};
 
 u8 D_8013B514[3] __attribute__((section(".sdata.four_bounds_task_flag"))) = {0x82, 0x66, 0};
 u8 D_8013B517 __attribute__((section(".sdata.four_bounds_task_flag"))) = 0;
@@ -619,7 +637,62 @@ void initializeCountedSplitSelectionBoundsTask(void) {
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_80097FF4);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_80098D68);
+void updateSplitSelectionBoundsTransition(void) {
+    SplitBoundsResource *movement;
+    u8 index;
+    s16 height;
+    if (D_8013AE88->resource16 == 0xFFFF) { for (;;) {} }
+    movement = (SplitBoundsResource *)&D_800D9504[D_8013AE88->resource16];
+    index = D_80120E90[(s16)D_8013AE88->data1A].unk009;
+    height = D_801300B8[0].h;
+    switch (D_8013AE88->data18) {
+    case 19:
+        {
+            RECT *bounds = &D_801300B8[1];
+            bounds->x = 160;
+            bounds->y = gSplitSelectionBoundsConfigs.entries[index][0];
+            bounds->w = 160;
+            bounds->h = gSplitSelectionBoundsConfigs.entries[index][1];
+        }
+        {
+            RECT *bounds = &D_801300B8[0];
+            bounds->x = 160;
+            bounds->y = gSplitSelectionBoundsConfigs.entries[index][0];
+            bounds->w = 160;
+            bounds->h = 0;
+        }
+        movement->unk1C = 13;
+        playSoundEffect(1, 0x102, 32);
+        D_8013AE88->data18 = 20;
+        break;
+    case 20:
+        height += gSplitSelectionBoundsConfigs.entries[index][2];
+        if (height <= gSplitSelectionBoundsConfigs.entries[index][1]) {
+            {
+                RECT *bounds = &D_801300B8[1];
+                bounds->x = 160;
+                bounds->y = gSplitSelectionBoundsConfigs.entries[index][0] + height;
+                bounds->w = 160;
+                bounds->h = gSplitSelectionBoundsConfigs.entries[index][1] - height;
+            }
+            {
+                RECT *bounds = &D_801300B8[0];
+                bounds->x = 160;
+                bounds->y = gSplitSelectionBoundsConfigs.entries[index][0];
+                bounds->w = 160;
+                bounds->h = height;
+            }
+        } else {
+            movement->unk24 = 13;
+            D_8013AE88->data18 = 21;
+        }
+        break;
+    case 21:
+        D_8013AE88->data18 = 16;
+        setCurrentTaskCallback(func_80097FF4);
+        break;
+    }
+}
 
 void drawCurrentTaskSpriteB7(void) {
     Movement2D *position;
