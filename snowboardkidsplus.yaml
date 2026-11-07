@@ -630,6 +630,8 @@ segments:
       - [0x119F64, data, proximity_emitter_placements_tail]
       - {start: 0x11A164, type: .data, name: game/unk_800497B8, linker_section: .data.moving_visual_placements}
       - [0x11A218, data, moving_visual_placements_tail]
+      - {start: 0x11A268, type: .data, name: game/unk_800497B8, linker_section: .data.orbiting_task_placements}
+      - [0x11A280, data, orbiting_task_placements_tail]
       - {start: 0x11C454, type: .data, name: game/unk_800497B8, linker_section: .data.course_triggers}
       - [0x11C594, data, course_triggers_tail]
       - {start: 0x11CF2C, type: .data, name: game/unk_800497B8, linker_section: .data.player_render_snapshots}

@@ -435,6 +435,19 @@ typedef struct EmitterTrailResource {
     u8 unkC6[0x12];
     s32 angle;
 } EmitterTrailResource;
+typedef struct OrbitingTaskResource {
+    GsCOORDINATE2 coordinate, groundCoordinate;
+    Position3D position;
+    u8 unkAC[0x14];
+    SVECTOR rotation, groundRotation;
+    s16 geometryIndex, phase;
+    u8 unkD4[4];
+    s32 playerCooldowns[4];
+} OrbitingTaskResource;
+typedef struct OrbitingTaskPlacement {
+    s16 geometryIndex, radius;
+    s32 x, z;
+} OrbitingTaskPlacement;
 
 typedef struct FallingTaskResource {
     GsCOORDINATE2 coordinate;
@@ -811,6 +824,12 @@ MovingVisualPlacement gMovingVisualPlacements[9]
     {24, 0, -2426136, 5658860, -2373948, 5250364},
 };
 
+OrbitingTaskPlacement gOrbitingTaskPlacements[2]
+    __attribute__((section(".data.orbiting_task_placements"))) = {
+    {99, 640, 23253, 42781},
+    {99, 832, 22656, 45410},
+};
+
 u32 gObjectSortSavedStackPointer
     __attribute__((section(".sdata.object_sort_saved_stack"))) = 0;
 u32 gAlternateObjectSortSavedStackPointer
@@ -929,6 +948,7 @@ extern VisualPlacement *D_8013B2BC;
 extern u8 D_8013B2B9, D_8013B2BA;
 /* The course lookup base precedes its valid pointer entries in shared frame data. */
 extern TaskVisualFrame *D_80129540[];
+void func_8005E728(void);
 void func_8005B038(void);
 extern PickupPlacement *D_8013B2C0;
 
@@ -3018,7 +3038,32 @@ void updateLandedTaskObject(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005E578);
+void initializeOrbitingTaskObject(void) {
+    OrbitingTaskResource *resource;
+    u16 i;
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    resource = (OrbitingTaskResource *)&D_800D9504[D_8013AE88->resource14];
+    GsInitCoordinate2(0, &resource->groundCoordinate);
+    GsInitCoordinate2(&resource->groundCoordinate, &resource->coordinate);
+    resource->rotation.vx = 0;
+    resource->rotation.vy = 0;
+    resource->rotation.vz = 0;
+    resource->phase = (0x1000 / D_8013AE88->data1A) * D_8013AE88->data1C;
+    resource->geometryIndex = gOrbitingTaskPlacements[D_8013AE88->data18].geometryIndex;
+    resource->groundCoordinate.coord.t[0] = gOrbitingTaskPlacements[D_8013AE88->data18].x;
+    resource->groundCoordinate.coord.t[2] = gOrbitingTaskPlacements[D_8013AE88->data18].z;
+    resource->groundCoordinate.coord.t[1] = func_8004A764(resource->geometryIndex,
+        resource->groundCoordinate.coord.t[0], resource->groundCoordinate.coord.t[2]);
+    computeSelectedTriangleAngles(&resource->groundRotation.vx, &resource->groundRotation.vz);
+    resource->groundRotation.vy = 0;
+    for (i = 0; i < D_8013AFD2; i++) {
+        resource->playerCooldowns[i] = 0;
+    }
+    setCurrentTaskCallback(func_8005E728);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005E728);
 
