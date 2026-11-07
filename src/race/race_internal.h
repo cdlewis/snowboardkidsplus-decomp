@@ -589,7 +589,7 @@ void fadeInTimeMenuTask(void);
 void drawTaskTimeMenuAndSetFlag10OnInput(void);
 void waitTaskTimeRecordCountdownAndPlaySound(void);
 void updateTaskTimeRecordCountdownPhase1AndPlaySound(void);
-void func_8003A158(void);
+void countRaceResultsMoneyTask(void);
 void drawTaskTimeRecordsAndSetFlag10OnInput(void);
 void drawCurrentTaskTimeRecordDetails(void);
 void func_80036454(void);

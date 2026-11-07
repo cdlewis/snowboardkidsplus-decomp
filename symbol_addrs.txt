@@ -3340,3 +3340,5 @@ gPlayerSnapshotTrailPacket = 0x8012C82C; // size:0x28 defined:true
 gPlayerSnapshotTrailEndpoints = 0x8012C854; // size:0x10 defined:true
 
 drawFlickeringDotsTask = 0x8004F780; // type:func
+
+countRaceResultsMoneyTask = 0x8003A158; // type:func

@@ -570,7 +570,56 @@ void updateRaceResultsExitInputTask(void) {
     func_80039B34((TaskResourceRecord *)resource);
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/record_screens", func_8003A158);
+void countRaceResultsMoneyTask(void) {
+    RaceResultsFadeResource *resource;
+    s32 amount;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (RaceResultsFadeResource *)&D_800D9504[D_8013AE88->resource14];
+    if (resource->timer == 0) {
+        resource->timer = 2;
+        playSoundEffect(0, 0x700, 0x20);
+    } else {
+        resource->timer--;
+    }
+    amount = resource->timeBonus;
+    if (amount >= 8 && !(D_8013AEE8[0] & 0xB0)) {
+        amount = 8;
+    }
+    D_80120E90[0].unk010 += amount;
+    resource->timeBonus -= amount;
+    amount = resource->scoreBonus;
+    if (amount >= 8 && !(D_8013AEE8[0] & 0xB0)) {
+        amount = 8;
+    }
+    D_80120E90[0].unk010 += amount;
+    resource->scoreBonus -= amount;
+    amount = resource->bonusTimer;
+    if (amount >= 8 && !(D_8013AEE8[0] & 0xB0)) {
+        amount = 8;
+    }
+    D_80120E90[0].unk010 += amount;
+    resource->bonusTimer -= amount;
+    amount = resource->displayTimer;
+    if (amount >= 8 && !(D_8013AEE8[0] & 0xB0)) {
+        amount = 8;
+    }
+    D_80120E90[0].unk010 += amount;
+    resource->displayTimer -= amount;
+    if (D_80120E90[0].unk010 > 999999) {
+        D_80120E90[0].unk010 = 999999;
+    }
+    D_80130BF0[0] = D_80120E90[0].unk010;
+    if (resource->scoreBonus == 0 && resource->timeBonus == 0 && resource->bonusTimer == 0 && resource->displayTimer == 0) {
+        playSoundEffect(0, 0x700, 0x20);
+        resource->timer = 20;
+        setCurrentTaskCallback(updateRaceResultsExitInputTask);
+    }
+    drawTimeRecordHeader((TimeRecordHeaderResource *)resource);
+    func_80039564((TaskResourceRecord *)resource);
+    func_80039B34((TaskResourceRecord *)resource);
+}
 
 void tickRaceResultsDelayTask(void) {
     RaceResultsFadeResource *resource;
@@ -581,7 +630,7 @@ void tickRaceResultsDelayTask(void) {
     resource = (RaceResultsFadeResource *)&D_800D9504[D_8013AE88->resource14];
     resource->unk0A = 4;
     if (--resource->timer == 0) {
-        setCurrentTaskCallback(func_8003A158);
+        setCurrentTaskCallback(countRaceResultsMoneyTask);
     }
     drawTimeRecordHeader((TimeRecordHeaderResource *)resource);
     func_80039564((TaskResourceRecord *)resource);
