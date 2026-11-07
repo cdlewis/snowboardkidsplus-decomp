@@ -126,6 +126,7 @@ D_8013BE30 = 0x8013BE30; // size:0x1C defined:true
 createCountdownTask = 0x80076158; // type:func
 updateCountdownTask = 0x800761CC; // type:func
 closeMusicSequence = 0x80017E38; // type:func
+updateCurrentPlayerSound = 0x8003DB94; // type:func
 stopPlayerSound = 0x8003DE64; // type:func
 findIndexedHalfwordRecord = 0x80081380; // type:func
 adjustGroupedIndexForMode = 0x800811E0; // type:func

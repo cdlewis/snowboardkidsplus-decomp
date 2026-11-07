@@ -45,3 +45,6 @@ s16 SsUtKeyOffV(s16 voice);
 
 s16 SsUtKeyOnV(s16 voice, s16 bank, s16 program, s16 tone, s16 note,
                 s16 fine, s16 left, s16 right);
+
+s16 SsUtChangePitch(s16, s16, s16, s16, s16, s16, s16);
+s16 SsUtSetVVol(s16 voice, s16 left, s16 right);

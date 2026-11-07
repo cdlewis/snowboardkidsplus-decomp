@@ -216,6 +216,7 @@ void startPlayerTimerTask(RacePlayer *player);
 void initPlayerTimerTask(void);
 void initializePlayerParticleHistoryTask(void);
 void fadeOutPlayerTimerTask(void);
+void updateCurrentPlayerSound(void);
 void stopPlayerSound(u16 playerIndex);
 s32 requestCurrentPlayerAction6(void);
 s32 requestCurrentPlayerAction6NarrowAngle(void);
