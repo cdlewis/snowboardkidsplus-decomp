@@ -531,12 +531,6 @@ typedef struct SlidingQuadResource {
     u8 pad10[0xF0];
 } SlidingQuadResource;
 
-/* The effect callback uses the first three words as world coordinates. */
-typedef struct PositionEffectOrigin {
-    s32 x, y, z;
-    s32 pad;
-} PositionEffectOrigin;
-
 typedef struct QuadAnimationStep {
     s32 duration, scale;
     u8 r, g, b, flags;

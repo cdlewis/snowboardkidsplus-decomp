@@ -91,6 +91,7 @@ void func_800240D0(void);
 void func_80024288(void);
 void func_800245C4(void);
 void func_80024804(void);
+void func_8002497C(void);
 void func_80026DAC(void);
 void func_800205B8(void);
 void func_80028680(void);
@@ -324,7 +325,38 @@ void initializeCurrentPlayerState5(void) {
     setCurrentTaskCallback(func_80024804);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8001F528);
+void initializeCurrentPlayerTimedEffectState(s32 value) {
+    RacePlayer *player = D_8013B0D8;
+    player->unk08C = 60;
+    player->unk128 = (player->unk128 & 0xFF0C1FFB) | 0x42000;
+    D_8013AE88->data1A = 0;
+    D_8013AE88->data1C = value;
+    player->unk078 = 0;
+    player->unk10C = player->unk92E;
+    switch (player->unk136) {
+    case 6:
+        createPlayerRingEffectTask(D_8013AE88->data18);
+        func_800183FC(D_8013AE88->data18, 1, 0xF00, 0x30);
+        break;
+    case 7:
+    case 12:
+        startPositionEffectTask((const PositionEffectOrigin *)D_80120E90[D_8013AE88->data18].worldCoordinate.coord.t);
+        func_800183FC(D_8013AE88->data18, 1, 1, 0x30);
+        break;
+    case 14:
+        createPlayerRingEffectTask(D_8013AE88->data18);
+        break;
+    }
+    D_8013B0D8->unk08C -= D_8013B0D8->unk08C * D_8013B0D8->unk935 / 8;
+    startCurrentPlayerAnimation(16, 2);
+    func_8002E5A0(D_8013AE88->data18, 1);
+    D_8013B0D8->unk064 = 0;
+    D_8013B0D8->unk062 = 0;
+    D_8013B0D8->unk060 = 0;
+    D_8013B0D8->unk0BC = 0;
+    D_8013B0D8->unk094 = 0;
+    setCurrentTaskCallback(func_8002497C);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_8001F6D8);
 
