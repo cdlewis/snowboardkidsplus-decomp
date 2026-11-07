@@ -552,7 +552,6 @@ void slideOutSlidingDisplayTask(void);
 void drawSlidingDisplaySprite(SlidingDisplayResource *resource);
 void slideRaceTimeDisplayOut(void);
 void func_80033100(void);
-void updatePlayerTimerTask(void);
 void func_80049240(void);
 void updatePlayerScaledObjectTask(void);
 void func_8004531C(void);

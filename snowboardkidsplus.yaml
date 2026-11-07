@@ -589,6 +589,7 @@ segments:
       - {start: 0xDCA00, type: .data, name: engine/game_loop, linker_section: .data.render_buffers}
       - {start: 0x110A00, type: .data, name: main_remaining, linker_section: .data.player_model_parts}
       - [0x110BEC, data, player_model_parts_tail]
+      - {start: 0x110CA8, type: .data, name: engine/task_transitions, linker_section: .data.selected_player_restore_frames}
       - {start: 0x110CC4, type: .data, name: engine/task_transitions, linker_section: .data.player_resource_texture_positions}
       - [0x110CD4, data, player_texture_origins]
       - {start: 0x110CE4, type: .data, name: main_tail, linker_section: .data.grid_resource_sector_ranges}

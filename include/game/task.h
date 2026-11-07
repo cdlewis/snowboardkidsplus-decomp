@@ -233,3 +233,5 @@ void createRegisteredTextPanelTask(s16 x, s16 y, const u16 **texts,
                                    const u8 *mapping, s32 depth, s32 index);
 
 void initializeSaveRecordTask(void);
+
+void updateSelectedPlayerPlaybackTask(void);

@@ -32,6 +32,10 @@
 
 #include "game/player_resource_textures.h"
 
+u16 gSelectedPlayerRestoreFrames[14] __attribute__((section(".data.selected_player_restore_frames"))) = {
+    0, 104, 205, 309, 412, 515, 616, 718, 821, 928, 1036, 1126, 1330, 0
+};
+
 s16 gPlayerResourceTexturePositions[4][2] __attribute__((section(".data.player_resource_texture_positions"))) = {
     {0, 0}, {16, 0}, {32, 0}, {48, 0}
 };
@@ -345,7 +349,41 @@ void startThreeFrameScreenBlend(void) {
 
 INCLUDE_ASM("asm/nonmatchings/engine/task_transitions", func_8001D528);
 
-INCLUDE_ASM("asm/nonmatchings/engine/task_transitions", func_8001D678);
+void updateSelectedPlayerPlaybackTask(void) {
+    GameTask *savedTask;
+    s16 buttons = 0;
+    if (gSelectedPlayerRestoreFrames[D_8013AE88->data1A] == D_8013AE88->data18) {
+        stopPlayerSound(0);
+        savedTask = D_8013AE88;
+        D_8013AE88 = D_8013B304;
+        func_800149E0();
+        D_8013AE88 = savedTask;
+        startRacePlayerTasks();
+        if ((s16)restoreSelectedPlayerState()) {
+            resetGameplayRng();
+            if (D_8013AE88->data1A != 0) configureTaskStateTransition(0, 0x1000, 0);
+            D_8013AE88->data1A++;
+            D_80120E90[0].unk970 = 0xFFFF;
+            if (D_80120E90[0].task->next->depth != 2 && D_80120E90[0].unk0FE) {
+                if (D_80120E90[0].unk0FC) func_80014930(D_80120E90[0].task, updatePlayerTimerTask);
+                else func_80014930(D_80120E90[0].task, fadeOutPlayerTimerTask);
+                D_8013AE8C->data18 = 0;
+            }
+        } else buttons = 0x800;
+    }
+    D_8013AE88->data18++;
+    D_8013AFE8 = D_8013AEEC[0];
+    if (D_8013AEE8[0] & 0x8F0) buttons = 0x800;
+    playbackControllerInput(0);
+    D_8013AEE8[0] |= buttons;
+    if (D_8013AEDC[0] == D_8013AEE2 || (D_8013AEE8[0] & 0x800)) {
+        D_8013AE88->data18 = 30;
+        configureTaskStateTransition(2, 0, 30);
+        D_8013AEE4 = 0;
+        startCdVolumeFade(103, 26, 0, 1);
+        setCurrentTaskCallback(func_8001D100);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/engine/task_transitions", func_8001D89C);
 
