@@ -7,6 +7,12 @@ typedef struct CdlLOC {
     u8 minute, second, sector, track;
 } CdlLOC;
 
+typedef struct CdlFILE {
+    CdlLOC pos;
+    u32 size;
+    char name[16];
+} CdlFILE;
+
 typedef struct CdlATV {
     u8 val0, val1, val2, val3;
 } CdlATV;
@@ -50,3 +56,6 @@ void StSetRing(u8 *addr, s32 size);
 void StSetStream(u32 mode, u32 start, u32 end, void (*func1)(void), void (*func2)(void));
 
 u32 StFreeRing(u32 *base);
+
+s32 CdInit(void);
+CdlFILE *CdSearchFile(CdlFILE *file, char *name);

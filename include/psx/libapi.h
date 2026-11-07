@@ -9,3 +9,5 @@ s32 StopRCnt(s32 specification);
 s32 ResetRCnt(s32 specification);
 
 u32 SetSp(u32 stack);
+void _96_init(void);
+void _96_remove(void);

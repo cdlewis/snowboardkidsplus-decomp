@@ -1,6 +1,7 @@
 #include "common.h"
 #include "psx/libcd.h"
 #include "psx/libpad.h"
+#include "psx/libapi.h"
 #include "game/cd_queue.h"
 #include "psx/libsnd.h"
 #include "game/controller.h"
@@ -29,6 +30,13 @@ typedef struct ControllerReceiveBuffer {
     u8 deviceId;
     u8 payload[32];
 } ControllerReceiveBuffer;
+CdlFILE D_800D7BA4 __attribute__((section(".data.cd_file_records"))) = {0};
+CdlFILE D_800D7BBC __attribute__((section(".data.cd_file_records"))) = {0};
+CdlFILE D_800D7BD4 __attribute__((section(".data.cd_file_records"))) = {0};
+CdlFILE D_8013B6E8 __attribute__((section(".data.cd_archive_file"))) = {0};
+s32 D_8013B5FC __attribute__((section(".sdata.cd_archive_sector"))) = 0;
+u16 D_8013AE68 __attribute__((section(".sdata.cd_queue_count"))) = 0;
+static u16 sCdQueueCountPadding __attribute__((section(".sdata.cd_queue_count"))) = 0;
 
 GameTask gGameTasks[200] __attribute__((section(".data.game_tasks"))) = {0};
 
@@ -116,6 +124,8 @@ extern GameTask *D_8013AEAC;
 extern GameTask *D_8013AEB0;
 extern u16 D_8013AEB4;
 
+extern char D_80010000[], D_80010010[], D_80010020[], D_80010030[];
+
 void func_800131B4(void) {
 }
 
@@ -168,7 +178,28 @@ void updateCdVolumeFade(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/main", func_800133EC);
+void initializeCdFileRecords(void) {
+    _96_remove();
+    _96_init();
+    while (!CdInit()) {}
+    gCdRequestReadIndex = 0;
+    gCdRequestWriteIndex = 0;
+    D_8013AE76 = 0;
+    gCdRequestPhase = 0;
+    D_8013AE68 = 0;
+    D_8013AE50 = 0;
+    D_8013AE4E = 0;
+    D_8013AE78 = 0;
+    resetCdCommandState();
+    while (!CdSearchFile(&D_800D7BA4, D_80010000)) {}
+    while (!CdSearchFile(&D_800D7BBC, D_80010010)) {}
+    while (!CdSearchFile(&D_800D7BD4, D_80010020)) {}
+    D_8013B6E8.pos.minute = 0;
+    D_8013B6E8.pos.second = 0;
+    D_8013B6E8.pos.sector = 0;
+    while (!CdSearchFile(&D_8013B6E8, D_80010030)) {}
+    D_8013B5FC = CdPosToInt(&D_8013B6E8.pos);
+}
 
 INCLUDE_ASM("asm/nonmatchings/main", func_800134E4);
 

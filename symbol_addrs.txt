@@ -2872,3 +2872,11 @@ updateSplitScreenTransitionTask = 0x8001C128; // type:func
 updatePlayerCameraPitch = 0x8003E1D0; // type:func
 
 drawLoweringTexturedQuadTask = 0x800690C8; // type:func
+
+initializeCdFileRecords = 0x800133EC; // type:func
+D_800D7BA4 = 0x800D7BA4; // size:0x18
+D_800D7BBC = 0x800D7BBC; // size:0x18
+D_800D7BD4 = 0x800D7BD4; // size:0x18
+D_8013B6E8 = 0x8013B6E8; // size:0x18
+D_8013B5FC = 0x8013B5FC; // size:0x4
+D_8013AE68 = 0x8013AE68; // size:0x2
