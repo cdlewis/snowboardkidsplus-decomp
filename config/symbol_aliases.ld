@@ -25,3 +25,6 @@ scanlineCopyRectGp = gScanlineCopyRect;
 selectedCameraStateGp = D_8013B20C;
 D_8013B18D_gp = D_8013B18D;
 D_8013B1A8_gp = D_8013B1A8;
+
+/* Shared three-byte string literal immediately preceding the grid task flag. */
+D_8013B514 = D_8013B517 - 3;

@@ -14,6 +14,7 @@
 #include "game/engine/game_options.h"
 #define GAME_LOOP_ABSOLUTE_ADDRESSING
 #include "game/engine/game_loop.h"
+#define TASK_WIDGET_COLORS_ABSOLUTE_ADDRESSING
 #include "game/graphics/graphics.h"
 #define MUSIC_ABSOLUTE_ADDRESSING
 #include "game/audio/music.h"
@@ -157,8 +158,7 @@ extern SplitSelectionBoundsConfigs gSplitSelectionBoundsConfigs __attribute__((s
 
 extern u16 playerModelDrawAreaDepths[4] __attribute__((section(".data.player_model_draw_area_depths")));
 
-extern u8 D_8013B514[3] __attribute__((section(".sdata.four_bounds_task_flag")));
-extern u8 D_8013B517 __attribute__((section(".sdata.four_bounds_task_flag")));
+extern u8 D_8013B517 __attribute__((section(".sdata")));
 
 extern s16 D_8013B560;
 extern u8 D_8013B562;
@@ -241,6 +241,7 @@ void drawCurrentTaskFramedSprite20B(void);
 void drawCurrentTaskTextPanel144x48(void);
 void drawCurrentTaskPlayerValuePanel(void);
 void initializeCountedFourBoundsTask(void);
+void drawCurrentTaskSavedValuePanel(void);
 void initializeTaskGridPositions(s32 unused, GameTask *task, s32 x, s32 y);
 void configureFourColumnTaskGridMovement(s32 mode, GameTask *task, s32 x, s32 y, s32 stepX, s32 stepY, s32 delay);
 void drawTaskGridSelectionMarker(void);

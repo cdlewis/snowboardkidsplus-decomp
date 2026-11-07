@@ -4,6 +4,14 @@
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
 
+#ifdef TASK_WIDGET_COLORS_ABSOLUTE_ADDRESSING
+extern u8 D_8013B3A4 __attribute__((section(".data")));
+extern u8 D_8013B3A5 __attribute__((section(".data")));
+extern u8 D_8013B3A6 __attribute__((section(".data")));
+#else
+extern u8 D_8013B3A4, D_8013B3A5, D_8013B3A6;
+#endif
+
 typedef struct TmdTexturedPrimitive {
     union {
         s32 code;

@@ -187,7 +187,6 @@ extern TimedSequenceEntry D_8012F18C[], D_8012F1AC[];
 extern GameTask *D_8013B378;
 extern GameTask *D_8013B37C;
 extern GameTask *D_8013BDA8[4];
-extern u8 D_8013B3A4, D_8013B3A5, D_8013B3A6;
 
 s8 gTaskImageSourceRows[12] = {8, 1, 2, 3, 4, 5, 6, 7, 9, 0, 0, 0};
 

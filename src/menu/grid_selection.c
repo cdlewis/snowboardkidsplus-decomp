@@ -18,10 +18,6 @@ SplitSelectionBoundsConfigs gSplitSelectionBoundsConfigs __attribute__((section(
     {60, 120, 4}, {60, 120, 4}
 }, {0, 0}};
 
-u8 D_8013B514[3] __attribute__((section(".sdata.four_bounds_task_flag"))) = {0x82, 0x66, 0};
-
-u8 D_8013B517 __attribute__((section(".sdata.four_bounds_task_flag"))) = 0;
-
 void initializeCountedSplitSelectionBoundsTask(void) {
     D_8013AE98->data1C++;
     D_8013AE88->data18 = 0;
@@ -230,7 +226,38 @@ void initializeCountedFourBoundsTask(void) {
 
 INCLUDE_ASM("asm/nonmatchings/menu/grid_selection", func_80099880);
 
-INCLUDE_ASM("asm/nonmatchings/menu/grid_selection", func_8009A560);
+void drawCurrentTaskSavedValuePanel(void) {
+    Movement2D *position;
+    s32 x, y;
+    u16 index;
+    SaveRecord *records;
+    GsOT *ot;
+    if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
+    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    x = position->x / 4096;
+    y = position->y / 4096;
+    index = D_8013AE98->data1A;
+    if (D_8013AE88->data1A != 0) {
+        func_8006C998(x + 8, y - 22, 0xBB, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        func_8006C998(x + 74, y + 140, 0xBD, 10, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        records = (SaveRecord *)&D_8013080C;
+        func_8006D66C(x + 74, y + 152, 6, 0,
+            ((GlobalFlagStatePrefix *)&records[(s16)index])->unk_3E4,
+            0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        ot = &D_800EBFF0[D_8013AF78];
+        drawWrappedText8x8(x + 122, y + 152, 2, "\x82" "f", 0, -1,
+            ot, D_8013AE88->data1C);
+        if (D_8013AE88->data1A == 1) {
+            func_8007240C(x + 68, y + 136, 68, 32, D_8013B3A4, D_8013B3A5, D_8013B3A6,
+                2, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        } else {
+            func_8007240C(x + 68, y + 136, 68, 32, 128, 128, 128,
+                2, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        }
+    }
+}
+
+u8 D_8013B517 __attribute__((section(".sdata"))) = 0;
 
 INCLUDE_ASM("asm/nonmatchings/menu/grid_selection", func_8009A87C);
 
