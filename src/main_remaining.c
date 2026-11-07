@@ -272,7 +272,7 @@ s32 startPaletteTransition(s16 x, s16 y, u32 *pixels, u16 duration) {
     GameTask *task;
     PaletteTransitionResource *resource;
     if (index != 32) {
-        if ((s16)func_800148B4(func_80016A7C) != 0) {
+        if ((s16)func_800148B4(initializePaletteTransition) != 0) {
             D_8013AE8C->resource14 = allocateTaskResource();
             task = D_8013AE8C;
             resource = (PaletteTransitionResource *)&D_800D9504[task->resource14];
@@ -296,7 +296,26 @@ void requestSavedImageRestore(u16 index) {
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80016628);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80016A7C);
+void initializePaletteTransition(void) {
+    PaletteTransitionState *resource;
+    u16 i;
+    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    resource = (PaletteTransitionState *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->data1C == 0) {
+        for (i = 0; i < 16; i++) {
+            resource->red[i] = (gSavedImageEntries[D_8013AE88->data1A].transitionPixels[i] & 0x1F) << 8;
+            resource->green[i] = (gSavedImageEntries[D_8013AE88->data1A].transitionPixels[i] & 0x3E0) << 3;
+            resource->blue[i] = (gSavedImageEntries[D_8013AE88->data1A].transitionPixels[i] & 0x7C00) >> 2;
+            resource->redStep[i] = (((resource->pixels[i] & 0x1F) << 8) - (s16)resource->red[i]) / (s16)D_8013AE88->data18;
+            resource->greenStep[i] = (((resource->pixels[i] & 0x3E0) << 3) - (s16)resource->green[i]) / (s16)D_8013AE88->data18;
+            resource->blueStep[i] = (((resource->pixels[i] & 0x7C00) >> 2) - (s16)resource->blue[i]) / (s16)D_8013AE88->data18;
+            resource->mask[i] = resource->pixels[i] & 0x8000;
+        }
+        setCurrentTaskCallback(updatePaletteTransition);
+    } else {
+        D_8013AE88->data1C--;
+    }
+}
 
 void updatePaletteTransition(void) {
     PaletteTransitionState *resource;

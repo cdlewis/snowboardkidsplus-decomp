@@ -2657,6 +2657,7 @@ D_8013B55E = 0x8013B55E; // size:0x1
 
 drawSound601SequenceSpriteTask = 0x80032F84; // type:func
 
+initializePaletteTransition = 0x80016A7C; // type:func
 updatePaletteTransition = 0x80016CBC; // type:func
 
 initializeSelectedCourseOffsetTask = 0x80059C3C; // type:func
