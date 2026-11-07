@@ -106,7 +106,6 @@ void func_80028680(void);
 void updateCurrentPlayerAirborneDragUntilLanding(void);
 void func_8002AE6C(void);
 void func_80028C80(void);
-void func_8002AE38(s32, s32, s32, s32);
 void func_80015C94(u16 playerIndex);
 void func_8001596C(u16 playerIndex);
 void moveCurrentPlayerToTaskTarget(void);
@@ -510,7 +509,7 @@ void initializeCurrentPlayerState11(void) {
     smoothAndScaleCurrentPlayerInput(0, 0);
     D_8013B0D8->unk078 = 0;
     func_8002E5A0(D_8013AE88->data18, 9);
-    setCurrentTaskCallback(func_80027014);
+    setCurrentTaskCallback(updateCurrentPlayerState11Motion);
 }
 
 void initializeCurrentPlayerState12(void) {
@@ -1334,7 +1333,39 @@ movement:
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80027014);
+void updateCurrentPlayerState11Motion(void) {
+    func_8002AE6C();
+    D_8013B0D8->unk130 = 0x1800;
+    D_800EB22C.vx = D_8013B0D8->unk060;
+    D_800EB22C.vz = D_8013B0D8->unk064;
+    clampVectorToCurrentPlayerLimit(&D_800EB22C);
+    D_8013B0D8->unk060 = D_800EB22C.vx;
+    D_8013B0D8->unk064 = D_800EB22C.vz;
+    if (!(D_8013B0D8->unk128 & 1)) {
+        D_8013B0D8->unk09E = D_8013B0D8->unk09C;
+        func_8002AE38(0, 0x100, 0x100, 0x100);
+    } else {
+        D_8013B0D8->unk060 -= D_8013B0D8->unk060 / 16;
+        D_8013B0D8->unk062 += D_8013B0D8->unk09C;
+        if (D_8013B0D8->unk062 > 0x7800) {
+            D_8013B0D8->unk062 = 0x7800;
+        }
+        D_8013B0D8->unk064 -= D_8013B0D8->unk064 / 16;
+    }
+    D_8013B0D8->x += D_8013B0D8->unk060;
+    D_8013B0D8->y += D_8013B0D8->unk062;
+    D_8013B0D8->z += D_8013B0D8->unk064;
+    if (!(D_8013B0D8->unk128 & 1)) {
+        func_80028680();
+    } else {
+        func_80028234();
+    }
+    func_80017268();
+    if (!(D_8013B0D8->unk128 & 1) && (D_8013B0D8->animationFlags & 0x10)) {
+        D_8013B0D8->unk12C = 12;
+        currentPlayerStateCallbacks[12]();
+    }
+}
 
 void updateCurrentPlayerState10Movement(void) {
     func_8002AE6C();

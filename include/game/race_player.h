@@ -227,6 +227,7 @@ void copySelectedRecordToCurrentPlayer(void);
 s16 smoothAndScaleCurrentPlayerInput(s32 magnitude, s16 input);
 void clampCurrentPlayerHorizontalVector(VECTOR *vector);
 void clampVectorToCurrentPlayerLimit(VECTOR *vector);
+void func_8002AE38(s32, s32, s32, s32);
 
 s32 checkCurrentPlayerFlags43040OrAngleRange(void);
 s32 checkCurrentPlayerFlags345001(void);
