@@ -160,6 +160,19 @@ typedef struct TriangleScratchpad {
     TriangleScratchVertex vertices[3];
 } TriangleScratchpad;
 
+typedef struct GouraudQuadScratchpad {
+    u32 unk00;
+    void (*emitQuad)(TriangleScratchVertex *);
+    s32 depth, depthCue;
+    u8 unk10[0x40];
+    struct { u16 x, y; } screen[4];
+    u8 unk60[4];
+    u8 r, g, b, code;
+    u8 unk68[2];
+    u8 fogEnabled;
+    u8 unk6B[5];
+} GouraudQuadScratchpad;
+
 typedef struct QuadScratchpad {
     u32 unk00;
     void (*emitQuad)(TriangleScratchVertex *);
@@ -1340,7 +1353,42 @@ void emitProjectedFlatQuad(TriangleScratchVertex *vertices) {
     GsOUT_PACKET_P = (u32)(packet + 1);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80052D84);
+void emitProjectedGouraudQuad(TriangleScratchVertex *vertices) {
+    GouraudQuadScratchpad *scratch = (GouraudQuadScratchpad *)0x1F800000;
+    POLY_G4 *packet = (POLY_G4 *)GsOUT_PACKET_P;
+    if (scratch->fogEnabled) {
+        gte_stdp(&scratch->depthCue);
+        DpqColor((CVECTOR *)&vertices[0].color, scratch->depthCue, (CVECTOR *)&packet->r0);
+        DpqColor((CVECTOR *)&vertices[1].color, scratch->depthCue, (CVECTOR *)&packet->r1);
+        DpqColor((CVECTOR *)&vertices[2].color, scratch->depthCue, (CVECTOR *)&packet->r2);
+        DpqColor((CVECTOR *)&vertices[3].color, scratch->depthCue, (CVECTOR *)&packet->r3);
+    } else {
+        packet->r0 = vertices[0].color.r;
+        packet->g0 = vertices[0].color.g;
+        packet->b0 = vertices[0].color.b;
+        packet->r1 = vertices[1].color.r;
+        packet->g1 = vertices[1].color.g;
+        packet->b1 = vertices[1].color.b;
+        packet->r2 = vertices[2].color.r;
+        packet->g2 = vertices[2].color.g;
+        packet->b2 = vertices[2].color.b;
+        packet->r3 = vertices[3].color.r;
+        packet->g3 = vertices[3].color.g;
+        packet->b3 = vertices[3].color.b;
+    }
+    packet->tag = 8 << 24;
+    setcode(packet, scratch->code | POLY_G4_CODE);
+    packet->x0 = scratch->screen[0].x;
+    packet->x1 = scratch->screen[1].x;
+    packet->x2 = scratch->screen[2].x;
+    packet->x3 = scratch->screen[3].x;
+    packet->y0 = scratch->screen[0].y;
+    packet->y1 = scratch->screen[1].y;
+    packet->y2 = scratch->screen[2].y;
+    packet->y3 = scratch->screen[3].y;
+    addPrim(&D_8013B670->org[(scratch->depth >> D_8013B69C) + 6], packet);
+    GsOUT_PACKET_P = (u32)(packet + 1);
+}
 
 void emitProjectedTexturedQuad(TexturedScratchVertex *vertices) {
     TexturedQuadScratchpad *scratch = (TexturedQuadScratchpad *)0x1F800000;

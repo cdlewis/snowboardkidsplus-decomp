@@ -2913,3 +2913,5 @@ gSplitSelectionBoundsConfigs = 0x80131D90; // size:0x20 defined:true
 getAdjacentGeometryRegionForPoint = 0x8004A4C4; // type:func
 
 drawTransformedSpriteByIndex = 0x8006CF38; // type:func
+
+emitProjectedGouraudQuad = 0x80052D84; // type:func
