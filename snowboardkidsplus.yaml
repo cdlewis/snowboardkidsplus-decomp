@@ -746,6 +746,7 @@ segments:
       - {start: 0x123100, type: .data, name: menu/panel_tasks, linker_section: .data.number_adjustment_arrow}
       - {start: 0x123114, type: .data, name: scene/scene_event_tasks, linker_section: .data.scene_cd_commands}
       - [0x1232E0, data, scene_cd_commands_tail]
+      - {start: 0x12338C, type: .data, name: scene/scene_events, linker_section: .data.scene_cd_audio_default_resources}
       - {start: 0x123398, type: .data, name: scene/scene_event_tasks, linker_section: .data.scene_image_sector_ranges}
       - [0x123554, data, scene_image_sector_ranges_tail]
       - {start: 0x1235BC, type: .data, name: syslib/libmath/ferr, linker_section: .data.math_error}

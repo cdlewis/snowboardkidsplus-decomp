@@ -1,6 +1,10 @@
 #include "game/text/text_layout.h"
 #include "../menu/selection_tasks_internal.h"
 
+u8 gSceneCdAudioDefaultResources[12] __attribute__((section(".data.scene_cd_audio_default_resources"))) = {
+    0x00, 0x54, 0x60, 0x75, 0x82, 0x92, 0x9E, 0xB0, 0xC3, 0xD4, 0xDB, 0xE3
+};
+
 void func_800A5AD4(void) {
 }
 
@@ -70,7 +74,18 @@ void resetSceneEventPool(void) {
     gActiveSceneEvents = NULL;
 }
 
-INCLUDE_ASM("asm/nonmatchings/scene/scene_events", initializeSceneEvent);
+void initializeSceneEvent(SceneEvent *entry, u32 tick, u16 type) {
+    entry->type = type;
+    entry->tick = tick;
+    if (type == SCENE_EVENT_CD_AUDIO) {
+        entry->resourceId = gSceneCdAudioDefaultResources[D_8013AF3A];
+    } else {
+        entry->resourceId = 0;
+    }
+    entry->mode = 0;
+    entry->duration = 0;
+    entry->parameter14 = 0;
+}
 
 SceneEvent *findSceneEvent(u32 tick, u32 type) {
     SceneEvent *node = gActiveSceneEvents;

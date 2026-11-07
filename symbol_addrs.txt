@@ -3322,3 +3322,5 @@ parseLoadedSceneTextBlocks = 0x800A5AFC; // type:func
 initializeSceneEvent = 0x800A5F00; // type:func
 initializeScenePlaybackResourcesTask = 0x800A624C; // type:func
 updateSceneTextTask = 0x800A6E88; // type:func
+
+gSceneCdAudioDefaultResources = 0x80132B8C; // size:0xC defined:true
