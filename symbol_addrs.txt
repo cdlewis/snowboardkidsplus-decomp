@@ -3133,3 +3133,5 @@ gPlayerVisualPair5E80Frame = 0x8013B1BC; // size:0x8 defined:true
 updateCurrentPlayerState30AnimationAndHeight = 0x80026BAC; // type:func
 gPlayerState30Animation20Countdowns = 0x80120A98; // size:0xC defined:true
 gPlayerState30Animation22Countdowns = 0x80120AA4; // size:0xC defined:true
+
+drawMovingLineTask = 0x8004F46C; // type:func

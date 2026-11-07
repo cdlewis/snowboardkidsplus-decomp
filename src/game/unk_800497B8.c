@@ -251,6 +251,15 @@ typedef struct MovingLineResource {
     u8 pad[0xF4];
 } MovingLineResource;
 
+typedef struct MovingLinePacket {
+    u32 tag;
+    u16 tpage, drawModeCommand;
+    u8 r0, g0, b0, code;
+    s16 x0, y0;
+    u8 r1, g1, b1, pad;
+    s16 x1, y1;
+} MovingLinePacket;
+
 /* Interleaved screen positions and animation phase for 25 flickering dots. */
 typedef struct FlickeringDotPosition { s16 x, y; } FlickeringDotPosition;
 typedef struct FlickeringDotsResource {
@@ -320,6 +329,7 @@ typedef struct SemiTransparentGouraudTrianglePacket {
     s16 x2, y2;
 } SemiTransparentGouraudTrianglePacket;
 
+#define GOURAUD_LINE_CODE 0x50
 #define FLAT_RECTANGLE_CODE 0x60
 #define TEXTURED_QUAD_CODE 0x2C
 #define TEXTURED_SPRITE_CODE 0x64
@@ -953,7 +963,7 @@ void updateCourseVisualTask(void);
 void emitProjectedFlatTriangle(TriangleScratchVertex *vertices);
 void emitProjectedFlatQuad(TriangleScratchVertex *vertices);
 void func_800542BC(TriangleScratchVertex *vertices, s32 flags);
-void func_8004F46C(void);
+void drawMovingLineTask(void);
 void func_8004F780(void);
 
 void func_80068D1C(void);
@@ -1201,11 +1211,55 @@ void createOscillatingQuadTask(s32 value, VECTOR *position, s32 amplitude, s32 r
     resource->z = position->vz;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8004F46C);
+void drawMovingLineTask(void) {
+    PlayerCamera *camera;
+    PlayerCamera *cameras;
+    MovingLineResource *resource;
+    MovingLinePacket *line;
+    u32 brightness;
+    s32 yaw;
+    s16 pitch;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    cameras = D_801241E8;
+    camera = &cameras[D_8013AE88->data18];
+    resource = (MovingLineResource *)&D_800D9504[D_8013AE88->resource14];
+    yaw = -((camera->yaw & 0xFFF) << 11) / 4096;
+    pitch = camera->pitch;
+    line = (MovingLinePacket *)GsOUT_PACKET_P;
+    line->tag = (sizeof(MovingLinePacket) / sizeof(u32) - 1) << 24;
+    line->code = GOURAUD_LINE_CODE | SEMI_TRANSPARENT_FLAG;
+    line->drawModeCommand = DRAW_MODE_COMMAND_HIGH;
+    line->tpage = getTPage(0, 1, 0, 0);
+    line->x0 = ((u32)yaw + resource->x) % 320 - 160;
+    line->y0 = ((u32)(pitch / 2) + resource->y) % 240 - 120;
+    line->r1 = line->g1 = line->b1 = 0;
+    line->x1 = line->x0 + 64;
+    line->y1 = line->y0 - 32;
+    brightness = 256;
+    if (resource->elapsed < 16) {
+        brightness = resource->elapsed * 16;
+    }
+    if (resource->duration - 16 < resource->elapsed) {
+        brightness = (resource->duration - resource->elapsed) * 16;
+    }
+    line->b0 = brightness / 2;
+    line->r0 = line->g0 = brightness * 255 / 256;
+    addPrim(&D_8013AF6C[4094], line);
+    GsOUT_PACKET_P = (u32)(line + 1);
+    if (!D_8013AFD3) {
+        resource->x -= 8;
+        resource->y += 4;
+        if (++resource->elapsed == resource->duration) {
+            func_800149A8();
+        }
+    }
+}
 
 void createMovingLineTask(s32 index) {
     MovingLineResource *resource;
-    func_80014930(&gGameTasks[4], func_8004F46C);
+    func_80014930(&gGameTasks[4], drawMovingLineTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     D_8013AE8C->data18 = index;
     resource = (MovingLineResource *)&D_800D9504[D_8013AE8C->resource14];
