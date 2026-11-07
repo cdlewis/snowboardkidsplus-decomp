@@ -122,6 +122,8 @@ s16 *D_801203C4[10] __attribute__((section(".data.player_model_parts"))) = {
 /* Nine bank flags with the original three trailing padding bytes. */
 s8 gSoundBankLoaded[12] __attribute__((section(".data.sound_bank_loaded"), aligned(4))) = {0};
 
+char gSoundSequenceTable[0xB0] __attribute__((section(".data.sound_sequence_table"), aligned(4))) = {0};
+
 SoundVoiceRecord gSoundVoiceRecords[8] __attribute__((section(".data.sound_voice_records"))) = {0};
 
 MemoryCardSaveHeader gMemoryCardSaveHeader __attribute__((section(".data.memory_card_save_header"))) = {0};
@@ -131,6 +133,11 @@ u32 gSynchronizedFrameCount __attribute__((section(".sdata.synchronized_frame_co
 s8 gSoundSystemActive = 0;
 u8 D_8013AF29 = 0;
 s16 gMusicSequenceId = 0;
+u8 gMusicSequenceActive __attribute__((section(".sdata.music_state"))) = 0;
+u8 gMusicFadeMode __attribute__((section(".sdata.music_state"))) = 0;
+s16 gMusicFadeStep __attribute__((section(".sdata.music_state"))) = 0;
+s16 D_8013AF30 __attribute__((section(".sdata.music_state"))) = 0;
+s16 D_8013AF32 __attribute__((section(".sdata.music_state"))) = 0;
 s32 gLinearRandomState __attribute__((section(".data.linear_random_state"))) = 1;
 typedef struct MovieDecodeState {
     u32 *vlcBuffers[2];
@@ -171,6 +178,7 @@ extern u8 D_8013AF48;
 
 int strcmp(const char *, const char *);
 
+void func_800A89F4(void);
 void StCdInterrupt(void);
 u32 *func_8001A2B8(MovieDecodeState *state);
 void func_800131B4(void);
@@ -429,7 +437,32 @@ void applyStereoSoundOption(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80017C20);
+void initializeSoundSystem(s32 hot) {
+    u8 i;
+    if (hot == 0) {
+        func_800A89F4();
+    } else {
+        SsInitHot();
+    }
+    resetCdVolumeFade();
+    SsSetSerialAttr(SS_SERIAL_A, SS_MIX, SS_SON);
+    SsSetSerialVol(0, 103, 103);
+    SsSetTickMode(SS_TICKVSYNC);
+    applyStereoSoundOption();
+    SsSetTableSize(gSoundSequenceTable, 1, 1);
+    for (i = 0; i < 9; i++) {
+        gSoundBankLoaded[i] = 0;
+    }
+    gSoundSystemActive = 0;
+    D_8013AF29 = 0;
+    D_8013AF32 = 0;
+    gMusicSequenceActive = 0;
+    SsUtSetReverbType(SS_REV_TYPE_ROOM);
+    SsUtReverbOn();
+    for (i = 0; i < 8; i++) {
+        gSoundVoiceRecords[i].owner = 255;
+    }
+}
 
 void loadSoundBank(s16 bankId, u8 *header, u8 *body) {
     if (gSoundBankLoaded[bankId] == 0) {

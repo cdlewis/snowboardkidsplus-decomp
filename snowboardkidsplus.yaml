@@ -561,7 +561,7 @@ segments:
       - {start: 0xDAE9C, type: .data, name: main_remaining, linker_section: .data.saved_image_entries}
       - [0xDB89C, data, DB89C]
       - {start: 0xDBAAC, type: .data, name: main_remaining, linker_section: .data.sound_bank_loaded}
-      - [0xDBAB8, data, DBAB8]
+      - {start: 0xDBAB8, type: .data, name: main_remaining, linker_section: .data.sound_sequence_table}
       - {start: 0xDBB68, type: .data, name: main_remaining, linker_section: .data.sound_voice_records}
       - [0xDBB88, data, DBB88]
       - {start: 0xDBD28, type: .data, name: main_remaining, linker_section: .data.memory_card_file_names}
@@ -688,7 +688,8 @@ segments:
       - {start: 0x12B710, type: .sdata, name: engine/random, linker_section_order: .data}
       - [0x12B714, data, 12B714]
       - {start: 0x12B728, type: .sdata, name: main_remaining, linker_section_order: .data}
-      - [0x12B72C, data, 12B72C]
+      - {start: 0x12B72C, type: .sdata, name: main_remaining, linker_section: .sdata.music_state, linker_section_order: .data}
+      - [0x12B734, data, 12B734]
       - [0x12B7AC, .data, engine/game_task_scheduler]
       - {start: 0x12B7B0, type: .sdata, name: main_remaining, linker_section: .sdata.synchronized_frame_count, linker_section_order: .data}
       - [0x12B7B4, data, 12B7B4]

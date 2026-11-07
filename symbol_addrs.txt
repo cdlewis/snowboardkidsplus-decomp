@@ -2682,3 +2682,8 @@ drawCurrentTaskFramedSprite20C = 0x80095F30; // type:func
 drawCurrentTaskFramedSprite20B = 0x80099010; // type:func
 
 initializeMode1RacePlayers = 0x800A0AA8; // type:func
+
+initializeSoundSystem = 0x80017C20; // type:func
+gSoundSequenceTable = 0x800EB2B8; // size:0xB0 defined:true
+D_8013AF32 = 0x8013AF32; // size:0x2 defined:true
+D_8013AF30 = 0x8013AF30; // size:0x2 defined:true

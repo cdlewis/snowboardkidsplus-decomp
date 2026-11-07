@@ -37,6 +37,7 @@ void closeMusicSequence(void);
 void pauseMusicSequence(void);
 void resumeMusicSequence(void);
 void applyStereoSoundOption(void);
+void initializeSoundSystem(s32 hot);
 void startSoundSystem(void);
 void endSoundSystem(void);
 

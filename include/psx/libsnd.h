@@ -2,6 +2,19 @@
 
 #include "decomp/types.h"
 
+#define SS_SERIAL_A 0
+#define SS_MIX 0
+#define SS_SON 1
+#define SS_TICKVSYNC 5
+#define SS_REV_TYPE_ROOM 1
+
+void SsInitHot(void);
+void SsSetSerialAttr(s8 serial, s8 attr, s8 value);
+void SsSetTickMode(s32 mode);
+void SsSetTableSize(char *table, s16 sequenceCount, s16 trackCount);
+s16 SsUtSetReverbType(s16 type);
+void SsUtReverbOn(void);
+
 s16 SsSeqOpen(u32 *sequence, s16 bankId);
 void SsUtSetReverbDepth(s16 left, s16 right);
 void SsSeqClose(s16 id);
