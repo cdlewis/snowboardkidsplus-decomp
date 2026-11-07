@@ -390,3 +390,7 @@ void updateSplitScreenTransitionTask(void);
 
 void drawFirstPlayerStatusHud(void);
 #undef GRAPHICS_DATA
+
+void func_8006E2C4(s16 x, s16 y, s16 digits, s16 leadingZeroes, s32 value,
+                   s16 palette, s16 blend, GsOT *ot, u16 depth);
+void drawCurrentTaskPlayerValuePanel(void);

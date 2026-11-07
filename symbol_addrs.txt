@@ -3079,3 +3079,7 @@ initializeControllerPlaybackRaceTask = 0x800A3750; // type:func
 gControllerPlaybackEntries = 0x801327F4; // size:0x48
 
 setTaskBackgroundMode = 0x80071490; // type:func
+
+drawCurrentTaskPlayerValuePanel = 0x80099318; // type:func
+gTaskPlayerValuePanelLabel = 0x80131DCC; // size:0xC
+gTaskPlayerValuePanelText = 0x80131DD8; // size:0x10

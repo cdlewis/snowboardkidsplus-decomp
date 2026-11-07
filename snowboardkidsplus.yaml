@@ -662,7 +662,9 @@ segments:
       - {start: 0x122590, type: .data, name: main_tail, linker_section: .data.split_selection_bounds_configs}
       - [0x1225B0, data, 1225B0]
       - {start: 0x1225BC, type: .data, name: main_tail, linker_section: .data.task_panel_144x48_text}
-      - [0x1225CC, data, 1225CC]
+      - {start: 0x1225CC, type: .data, name: main_tail, linker_section: .data.task_player_value_panel_label}
+      - {start: 0x1225D8, type: .data, name: main_tail, linker_section: .data.task_player_value_panel_text}
+      - [0x1225E8, data, 1225E8]
       - {start: 0x1226E8, type: .data, name: main_tail, linker_section: .data.player_palette_transition_pixels}
       - [0x122708, data, player_palette_transition_tail]
       - {start: 0x122F38, type: .data, name: main_tail, linker_section: .data.indexed_sector_ranges}
