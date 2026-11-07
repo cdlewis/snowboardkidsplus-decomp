@@ -2339,6 +2339,7 @@ initializeDelayedPlayerRiseEffectTask = 0x80049168; // type:func
 drawRisingTexturedStripTask = 0x80068BC0; // type:func
 
 initializeTaskGridPositions = 0x8009ADAC; // type:func
+configureFourColumnTaskGridMovement = 0x8009AEC0; // type:func
 
 copyPlayerPaletteRowWithTransition = 0x8009B5A0; // type:func
 gPlayerPaletteTransitionPixels = 0x80131EE8; // size:0x20 defined:true

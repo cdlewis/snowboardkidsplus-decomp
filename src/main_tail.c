@@ -829,7 +829,41 @@ void initializeTaskGridPositions(s32 unused, GameTask *task, s32 x, s32 y) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009AEC0);
+void configureFourColumnTaskGridMovement(s32 mode, GameTask *task, s32 x, s32 y, s32 stepX, s32 stepY, s32 delay) {
+    TaskGridState *state;
+    TaskGridEntry *entries;
+    s16 i, end;
+    Movement2D *movement;
+    state = (TaskGridState *)&D_800D9504[task->resource14];
+    entries = (TaskGridEntry *)&D_800D9504[task->resource16];
+    if (mode == 1) {
+        i = state->selectedIndex;
+        end = i + 1;
+    } else {
+        i = 0;
+        end = state->count;
+    }
+    for (; i < end; i++) {
+        if (mode == 2 && i == state->selectedIndex) continue;
+        if (i < 8) {
+            movement = (Movement2D *)&D_800D9504[entries[i].task->resource14];
+            if (delay == -1000) {
+                configureMovement2D(movement, x + (i % 4) * 0x20000,
+                                    y + (i / 4) * 0x28000, stepX, stepY, delay);
+            } else {
+                configureMovement2D(movement, x + (i % 4) * 0x20000,
+                                    y + (i / 4) * 0x28000, stepX, stepY, delay * (i / 4));
+            }
+        } else {
+            movement = (Movement2D *)&D_800D9504[entries[i].task->resource14];
+            if (delay == -1000) {
+                configureMovement2D(movement, x + 0xC000, y + 0x50000, stepX, stepY, delay);
+            } else {
+                configureMovement2D(movement, x + 0xC000, y + 0x50000, stepX, stepY, delay * 2);
+            }
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009B0E8);
 
