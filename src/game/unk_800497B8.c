@@ -99,6 +99,14 @@ typedef struct TexturedGouraudTrianglePrimitive {
     TriangleColor colors[3];
     u16 vertexIndices[3];
 } TexturedGouraudTrianglePrimitive;
+/* The eight-byte GTE lighting load at unk1C also reads the vertex indices. */
+typedef struct ModelLitGouraudTexturedTriangle {
+    u32 command;
+    TextureUV uv[3];
+    TriangleColor colors[3];
+    s16 unk1C;
+    u16 vertexIndices[3];
+} ModelLitGouraudTexturedTriangle;
 typedef struct TexturedGouraudQuadPrimitive {
     u32 command;
     TextureUV uv[4];
@@ -2390,7 +2398,53 @@ void drawProjectedIndexedGouraudTexturedTriangle(void) {
     GsOUT_PACKET_P = (u32)(packet + 1);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80057580);
+void drawProjectedIndexedLitGouraudTexturedTriangle(void) {
+    ModelLitGouraudTexturedTriangle *primitive = (ModelLitGouraudTexturedTriangle *)D_8013B680;
+    POLY_GT3 *packet = (POLY_GT3 *)GsOUT_PACKET_P;
+    TexturedTriangleScratchpad *scratch = (TexturedTriangleScratchpad *)0x1F800000;
+    gte_ldv3(&D_8013B688[primitive->vertexIndices[0]], &D_8013B688[primitive->vertexIndices[1]], &D_8013B688[primitive->vertexIndices[2]]);
+    gte_rtpt();
+    gte_stsxy3(&packet->x0, &packet->x1, &packet->x2);
+    gte_nclip();
+    gte_stopz(&scratch->clipping);
+    gte_stflg(&scratch->flags);
+    gte_stszotz(&scratch->depth);
+    if (scratch->clipping < 0 || scratch->flags < 0 || scratch->depth <= 0 || scratch->depth >= 0x1000) return;
+    if (scratch->fogEnabled) {
+        gte_stdp(&scratch->depthCue);
+        DpqColor((CVECTOR *)&primitive->colors[0], scratch->depthCue, (CVECTOR *)&packet->r0);
+        DpqColor((CVECTOR *)&primitive->colors[1], scratch->depthCue, (CVECTOR *)&packet->r1);
+        DpqColor((CVECTOR *)&primitive->colors[2], scratch->depthCue, (CVECTOR *)&packet->r2);
+    } else {
+        setRGB0(packet, primitive->colors[0].r, primitive->colors[0].g, primitive->colors[0].b);
+        setRGB1(packet, primitive->colors[1].r, primitive->colors[1].g, primitive->colors[1].b);
+        setRGB2(packet, primitive->colors[2].r, primitive->colors[2].g, primitive->colors[2].b);
+    }
+    gte_ldv0(&primitive->unk1C);
+    gte_ldrgb(&packet->r0);
+    gte_nccs();
+    gte_strgb(&packet->r0);
+    gte_ldv0(&primitive->unk1C);
+    gte_ldrgb(&packet->r1);
+    gte_nccs();
+    gte_strgb(&packet->r1);
+    gte_ldv0(&primitive->unk1C);
+    gte_ldrgb(&packet->r2);
+    gte_nccs();
+    gte_strgb(&packet->r2);
+    packet->tag = 9 << 24;
+    setcode(packet, scratch->code | POLY_GT3_CODE);
+    packet->tpage = primitive->uv[1].attribute;
+    packet->clut = primitive->uv[0].attribute;
+    packet->u0 = primitive->uv[0].coords.u;
+    packet->u1 = primitive->uv[1].coords.u;
+    packet->u2 = primitive->uv[2].coords.u;
+    packet->v0 = primitive->uv[0].coords.v;
+    packet->v1 = primitive->uv[1].coords.v;
+    packet->v2 = primitive->uv[2].coords.v;
+    addPrim(&D_8013B670->org[(scratch->depth >> D_8013B69C) + 6], packet);
+    GsOUT_PACKET_P = (u32)(packet + 1);
+}
 
 void drawProjectedIndexedFlatQuad(void) {
     ModelFlatQuad *primitive = (ModelFlatQuad *)D_8013B680;
