@@ -3095,3 +3095,5 @@ createPlayerGroupedSelectionTask = 0x800846F4; // type:func
 drawCountRecordRows = 0x80038574;
 
 updateCurrentPlayerState10Movement = 0x800271D0; // type:func
+
+updateControllerInput = 0x8001553C; // type:func

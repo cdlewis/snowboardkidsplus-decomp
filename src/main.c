@@ -95,7 +95,6 @@ s16 D_8013AEF8[2] __attribute__((section(".data.controller_input_arrays"))) = {0
 s16 D_8013AEFC[2] __attribute__((section(".data.controller_input_arrays"))) = {0};
 ControllerActuatorOutput D_8013AF00[2] __attribute__((section(".data.controller_input_arrays"))) = {0};
 static u16 sControllerActuatorPadding __attribute__((section(".data.controller_input_arrays"))) = 0;
-u16 D_8013AF0C[2] __attribute__((section(".sdata.controller_previous_buttons"))) = {0};
 
 u8 gCdVolumeFadeActive __attribute__((section(".sdata.cd_volume_fade"))) = 0;
 u8 gCdVolumeFadeInterval __attribute__((section(".sdata.cd_volume_fade"))) = 0;
@@ -150,6 +149,7 @@ extern GameTask *D_8013AEB0;
 extern u16 D_8013AEB4;
 
 void func_80013540(void);
+void func_80015154(u16 controller);
 
 void func_800131B4(void) {}
 
@@ -736,7 +736,59 @@ s16 isControllerInputSupported(u16 controller) {
     return 0;
 }
 
-INCLUDE_ASM("asm/nonmatchings/main", func_8001553C);
+void updateControllerInput(u16 controller) {
+    ControllerReceiveBuffer *buffer;
+    ControllerReceiveBuffer *packet;
+    s32 buttons;
+    s32 device;
+    D_8013AF0C[controller] = D_8013AEEC[controller];
+    if (!isControllerInputSupported(controller)) {
+        D_8013AEE8[controller] = 0;
+        D_8013AEEC[controller] = 0;
+        D_8013AEFC[controller] = 0;
+        D_8013AEF8[controller] = 0;
+        return;
+    }
+    buffer = D_800E9558;
+    packet = buffer + controller;
+    device = packet->deviceId & 0xF0;
+    if (device == 0x40) {
+        D_8013AEEC[controller] = ((u8)~packet->payload[0] << 8) | (u8)~packet->payload[1];
+        setControllerAxesFromButtons(controller);
+    } else if (device == 0x70) {
+        D_8013AEEC[controller] = ((u8)~packet->payload[0] << 8) | (u8)~packet->payload[1];
+        func_80015154(controller);
+    } else if (device == 0x50) {
+        D_8013AEEC[controller] = (u8)~packet->payload[0] << 8;
+        buttons = ~packet->payload[1];
+        if (buttons & 1) {
+            D_8013AEEC[controller] |= 1;
+        }
+        if (buttons & 2) {
+            D_8013AEEC[controller] |= 4;
+        }
+        if (buttons & 4) {
+            D_8013AEEC[controller] |= 0x80;
+        }
+        if (buttons & 8) {
+            D_8013AEEC[controller] |= 0x10;
+        }
+        if (buttons & 0x10) {
+            D_8013AEEC[controller] |= 8;
+        }
+        if (buttons & 0x20) {
+            D_8013AEEC[controller] |= 0x20;
+        }
+        if (buttons & 0x40) {
+            D_8013AEEC[controller] |= 0x40;
+        }
+        if (buttons & 0x80) {
+            D_8013AEEC[controller] |= 2;
+        }
+        func_80015154(controller);
+    }
+    D_8013AEE8[controller] = ~D_8013AF0C[controller] & D_8013AEEC[controller];
+}
 
 void updateControllerActuators(u16 controller) {
     int state;
@@ -767,10 +819,10 @@ void updateControllerActuators(u16 controller) {
 }
 
 void updateControllers(void) {
-    func_8001553C(0);
+    updateControllerInput(0);
     func_80014D60(0);
     updateControllerActuators(0);
-    func_8001553C(1);
+    updateControllerInput(1);
     func_80014D60(1);
     updateControllerActuators(1);
 }
