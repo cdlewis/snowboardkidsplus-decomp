@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common.h"
+#include "game/global_flags.h"
 #include "game/angles.h"
 #include "game/coordinate.h"
 #include "game/movement.h"
@@ -443,7 +444,6 @@ extern TaskVisualFrame gPlayerDualResourceEffectFrame
 extern TaskVisualFrame gPlayerVisualPair5E80Frame
     __attribute__((section(".data.player_visual_pair_5e80_frame"), aligned(4)));
 
-extern u8 D_8013B11A;
 extern u8 D_8013B18D __attribute__((section(".data")));
 
 extern s16 D_8013B10C;

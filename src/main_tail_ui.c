@@ -362,7 +362,6 @@ void func_800A1F50(void);
 void func_800A4C28(void);
 void resetUnlockMenuOffsets(UnlockMenuState *state);
 void resetUnlockMenuAnimation(UnlockMenuState *state);
-void func_8007BBAC(s16 index);
 void func_800A3D9C(void);
 void func_800A525C(void);
 void initializeSecondaryResourceTask(void);
@@ -728,7 +727,7 @@ void initializeUnlockMenuResourceTask(void) {
     resetUnlockMenuAnimation(state);
     state->unk8C = 0;
     configureTaskStateTransition(1, 0, 30);
-    func_8007BBAC(0);
+    applySaveRecordUnlockOverrides(0);
     setCurrentTaskCallback(func_800A3D9C);
 }
 

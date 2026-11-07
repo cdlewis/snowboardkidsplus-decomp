@@ -2,6 +2,14 @@
 
 #include "common.h"
 
+typedef struct SaveRecord {
+    u8 unk_000[0x3AC];
+    u32 flags_3AC;
+    u32 flags_3B0[10];
+    u32 flags_3D8;
+    u8 unk_3DC[0x2C];
+} SaveRecord;
+
 /* Verified prefix only; the remaining state layout is unknown. */
 typedef struct GlobalFlagStatePrefix {
     u8 unk_000[0x3AC];
@@ -59,3 +67,12 @@ s32 getPlayerRecordFlagMode(s16 index);
 
 extern s16 D_8013AFDE __attribute__((section(".data")));
 extern u8 D_8013AFE1 __attribute__((section(".data")));
+
+#ifdef SAVE_OVERRIDE_ABSOLUTE_ADDRESSING
+extern u8 D_8013B11A __attribute__((section(".data")));
+#else
+extern u8 D_8013B11A;
+#endif
+
+void copySaveRecordAndMergeFlags(void);
+void applySaveRecordUnlockOverrides(s16 index);

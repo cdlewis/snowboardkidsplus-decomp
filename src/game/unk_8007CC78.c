@@ -66,14 +66,6 @@ typedef struct RegisteredTripletData {
     s16 offsetY;
 } RegisteredTripletData;
 
-typedef struct SaveRecord {
-    u8 unk_000[0x3AC];
-    u32 flags_3AC;
-    u32 flags_3B0[10];
-    u32 flags_3D8;
-    u8 unk_3DC[0x2C];
-} SaveRecord;
-
 typedef struct HalfwordPair {
     s16 unk_00;
     s16 unk_02;

@@ -1,6 +1,9 @@
 #define TASK_ABSOLUTE_ADDRESSING
 #define MUSIC_STATE_ABSOLUTE_ADDRESSING
 #include "common.h"
+#define SAVE_OVERRIDE_ABSOLUTE_ADDRESSING
+#include "game/global_flags.h"
+#include "game/game_options.h"
 #include "game/byte_search.h"
 #include "game/controller.h"
 #include "game/graphics.h"
@@ -162,6 +165,7 @@ void updateScrollingBackgroundTask(void);
 void drawTaskImagesOnBlackBackground(void);
 void func_8007195C(void);
 void func_80070448(void);
+void func_8007B890(s16 recordIndex, s16 maskIndex);
 void func_8007197C(void);
 void func_80071A80(void);
 void initTimedSequence(TimedSequence *sequence, const TimedSequenceEntry *entries, s16 index, s16 count);
@@ -1265,7 +1269,30 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_8007B48C);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_8007B890);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_8007BBAC);
+void applySaveRecordUnlockOverrides(s16 index) {
+    s16 i;
+    if (D_8013B11A & 1) {
+        updatePairedStateFlag(0);
+        updatePairedStateFlag(1);
+    }
+    if (D_8013B11A & 2) {
+        for (i = 0; i < 10; i++) {
+            setSaveRecordMaskTier(index, i, 4);
+            func_8007B890(index, i);
+            func_8007B890(index, i);
+            func_8007B890(index, i);
+            func_8007B890(index, i);
+            func_8007B890(index, i);
+            func_8007B890(index, i);
+        }
+        gUnlockNotificationFlags = 0x7FF;
+    }
+    if (D_8013B11A & 4) {
+        SaveRecord *records = (SaveRecord *)&D_8013080C;
+        records[index].flags_3AC |= 0x1FFFC;
+    }
+    copySaveRecordAndMergeFlags();
+}
 
 void drawTextMessagePanel(void) {
     setSpriteColor(128, 128, 128);
