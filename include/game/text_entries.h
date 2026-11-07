@@ -28,3 +28,5 @@ s16 advanceTextLine(const s8 **text, s16 limit);
 s16 countWrappedTextLines(const s8 *text, s16 width, s16 limit);
 
 void setSecondaryResourceEntryTask(TextEntry *entry);
+
+void setTextEntryCdAudioTask(TextEntry *entry);
