@@ -44,6 +44,10 @@ typedef struct RegisteredTaskEntry {
     u16 flags;
 } RegisteredTaskEntry;
 
+typedef struct ByteTriplet {
+    u8 bytes[3];
+} ByteTriplet;
+
 /* One set bit for each available task resource. */
 extern u16 gTaskResourceFreeBits[16];
 
@@ -245,3 +249,6 @@ void updateSelectedPlayerPlaybackTask(void);
 void createRegisteredDetailedTextPanelTask(s16 x, s16 y, s16 textX, s16 textY,
                                    const u16 *text, s32 value, s32 color, s32 mode,
                                    const u16 *content, s32 depth, s32 index);
+
+void createRegisteredTripletTask(s32 x, s32 y, s32 offsetX, s32 offsetY,
+                                 ByteTriplet *records, u8 *indices, s32 depth, s32 index);

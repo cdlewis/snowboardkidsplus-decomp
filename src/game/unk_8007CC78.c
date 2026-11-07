@@ -59,6 +59,13 @@ typedef struct GroupedIndexResource {
     u8 unk4C[0xB4];
 } GroupedIndexResource;
 
+typedef struct RegisteredTripletData {
+    ByteTriplet *records;
+    u8 *indices;
+    s16 offsetX;
+    s16 offsetY;
+} RegisteredTripletData;
+
 typedef struct SaveRecord {
     u8 unk_000[0x3AC];
     u32 flags_3AC;
@@ -71,10 +78,6 @@ typedef struct HalfwordPair {
     s16 unk_00;
     s16 unk_02;
 } HalfwordPair;
-
-typedef struct ByteTriplet {
-    u8 bytes[3];
-} ByteTriplet;
 
 typedef struct IndexedHalfwordRecord {
     s16 value;
@@ -125,6 +128,7 @@ void func_800815D0(void);
 void initializeDualResourceTaskAndResetByteState(void);
 void adjustGroupedIndexForMode(s16 mode, u8 *index);
 void func_8007F630(void);
+void func_80081DF0(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8007CC78);
 
@@ -487,7 +491,37 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80081AC8);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80081BAC);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80081BFC);
+static inline RegisteredTaskEntry *getRegisteredTripletEntry(u16 resource, s32 index) {
+    RegisteredTaskEntry *entries = (RegisteredTaskEntry *)&D_800D9504[resource];
+    return &entries[index / 10];
+}
+
+void createRegisteredTripletTask(s32 x, s32 y, s32 offsetX, s32 offsetY, ByteTriplet *records, u8 *indices, s32 depth, s32 index) {
+    RegisteredTripletData *data;
+    RegisteredTaskEntry *entry;
+    func_80014874(func_80081DF0);
+    D_8013AE8C->data1A = 0;
+    D_8013AE8C->data1C = depth;
+    D_8013AE8C->data1E = index;
+    D_8013AE8C->resource14 = allocateTaskResource();
+    initMovement2D((Movement2D *)&D_800D9504[D_8013AE8C->resource14], (s16)x << 12, (s16)y << 12);
+    D_8013AE8C->resource16 = allocateTaskResource();
+    data = (RegisteredTripletData *)&D_800D9504[D_8013AE8C->resource16];
+    data->records = records;
+    data->indices = indices;
+    data->offsetX = offsetX;
+    data->offsetY = offsetY;
+    if (index % 10 == 0) {
+        if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+        entry = getRegisteredTripletEntry(D_8013AE88->resource14, index);
+    } else {
+        if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
+        entry = getRegisteredTripletEntry(D_8013AE88->resource16, index);
+    }
+    entry->command = 0;
+    entry->flags = 0;
+    entry->task = D_8013AE8C;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80081DF0);
 

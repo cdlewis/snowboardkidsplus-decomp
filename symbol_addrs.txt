@@ -3153,3 +3153,5 @@ gCourseTriggers = 0x8012BD6C; // size:0x28
 gEmptyCourseTriggers = 0x8013B2D0; // size:0x4
 
 createRegisteredDetailedTextPanelTask = 0x8008CB88; // type:func
+
+createRegisteredTripletTask = 0x80081BFC; // type:func
