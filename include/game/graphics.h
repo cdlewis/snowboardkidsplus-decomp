@@ -311,6 +311,9 @@ void func_8006D66C(s16 x, s16 y, s16 digits, s16 zeroFill, s32 value,
                    s16 palette, s16 blendMode, GsOT *ot, u16 depth);
 void func_8006DFB4(s16 x, s16 y, s16 digits, s16 zeroFill, s32 value,
                    s16 palette, s16 blendMode, GsOT *ot, u16 depth);
+/* Draw one sprite per two steps, with a second glyph for an odd step. */
+void drawHalfStepSpriteBar(s16 x, s16 y, s16 count, s16 palette, s16 blend,
+                           GsOT *ot, u16 depth);
 /* Draw the upper three bytes as two-digit fields with time separators. */
 void drawPackedTime(s16 x, s16 y, u32 value, s16 palette, s16 blend,
                     GsOT *ot, u16 depth);

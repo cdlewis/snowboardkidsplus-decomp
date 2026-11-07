@@ -5306,7 +5306,49 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006DFB4);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006E2C4);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006E5E0);
+void drawHalfStepSpriteBar(s16 x, s16 y, s16 count, s16 palette, s16 blend, GsOT *ot, u16 depth) {
+    s32 semiTrans;
+    s32 blendMode;
+    SpritePrimitiveTemplate *template;
+    SPRT *packet;
+    DR_TPAGE *page;
+    s32 i;
+    if (count > 0) {
+        if (blend >= 0) {
+            blendMode = blend;
+            semiTrans = 1;
+        } else {
+            blendMode = 0;
+            semiTrans = 0;
+        }
+        template = &gSpritePrimitiveTemplate;
+        SetDrawTPage(&template->drawPage, 1, 1, GetTPage(0, blendMode, 0x340, 0x100));
+        template->sprite.clut = GetClut(0x320, palette + 0xF0);
+        SetSemiTrans(&template->sprite, semiTrans);
+        template->sprite.w = 8;
+        template->sprite.h = 8;
+        template->sprite.x0 = x;
+        template->sprite.y0 = y;
+        template->sprite.u0 = 0x70;
+        template->sprite.v0 = 0;
+        packet = (SPRT *)GsGetWorkBase();
+        for (i = 0; i < count / 2; i++) {
+            *packet = template->sprite;
+            AddPrim(&ot->org[depth], packet++);
+            template->sprite.x0 += 8;
+        }
+        if ((s16)(count % 2) > 0) {
+            *packet = template->sprite;
+            packet->u0 = 0x78;
+            AddPrim(&ot->org[depth], packet);
+            packet++;
+        }
+        page = (DR_TPAGE *)packet;
+        *page = gSpritePrimitiveTemplate.drawPage;
+        AddPrim(&ot->org[depth], page);
+        func_800BF2C8((u32)(page + 1));
+    }
+}
 
 void drawPackedTime(s16 x, s16 y, u32 value, s16 palette, s16 blend, GsOT *ot, u16 depth) {
     s32 field;
