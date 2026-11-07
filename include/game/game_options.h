@@ -27,10 +27,11 @@ extern u8 D_8013AFE2 __attribute__((section(".data")));
 extern u8 gameOptionPlayerModeGp;
 #ifdef GAME_OPTION_TRANSITION_ABSOLUTE_ADDRESSING
 extern u8 D_8013B108 __attribute__((section(".data")));
+extern u8 D_8013B109 __attribute__((section(".data")));
 #else
 extern u8 D_8013B108;
-#endif
 extern u8 D_8013B109;
+#endif
 extern u8 D_8013B10A;
 
 void initializeGameOptionTask(void);

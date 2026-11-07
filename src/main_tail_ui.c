@@ -311,6 +311,8 @@ void func_80040D5C(void);
 void initializeNumberSelectionTask(void);
 void completeModeSelectionTransitionWhenReady(void);
 void func_800A2D68(void);
+void finishSelectionMenuTask(void);
+void func_800A31C0(SelectionMenuState *state);
 void initializeModeSectorReadResourcesTask(void);
 void func_800A24EC(void);
 void selectTaskBySelectedRecordMatch(void);
@@ -556,7 +558,41 @@ void initializeSelectionMenuTask(void) {
 
 INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A2D68);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A3028);
+void finishSelectionMenuTask(void) {
+    SelectionMenuState *state;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        for (;;) {}
+    }
+    state = (SelectionMenuState *)&D_800D9504[D_8013AE88->resource14];
+    switch (D_8013AE88->data18) {
+    case 0:
+        if (state->unk08 == 0) {
+            configureTaskStateTransition(2, 0, 30);
+            startCdVolumeFade(103, 20, 0, 1);
+            D_8013AE88->data18 = 1;
+        }
+        break;
+    case 1:
+        if (func_800707F0(0) == 0) {
+            D_8013AE88->data18 = 2;
+        }
+        break;
+    case 2:
+        configureColorCycleTask(0, 0, 0, 0, 0);
+        configureColorCycleTask(0, 0, 0, 0, 1);
+        if (state->unk0A != 0) {
+            D_8013B108 = 2;
+            D_8013B109 = 1;
+            func_800149A8();
+        } else {
+            queueStartupSectorReads();
+            setCurrentTaskCallback(func_800A3750);
+            D_8013AE88->unk10 |= 2;
+        }
+        return;
+    }
+    func_800A31C0(state);
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A31C0);
 
