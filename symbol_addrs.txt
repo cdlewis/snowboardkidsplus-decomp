@@ -3230,3 +3230,5 @@ gBoardLevelLabel = 0x80011EA0; // size:0x10
 drawSnowBackgroundAndSetFog = 0x800508D4; // type:func
 
 createRegisteredSpacedChildTasks = 0x800725D0; // type:func
+
+drawProjectedIndexedLitGouraudTriangle = 0x8005652C; // type:func
