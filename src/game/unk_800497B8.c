@@ -325,6 +325,10 @@ typedef struct FadingTextResource {
     u8 pad[0xEC];
 } FadingTextResource;
 
+typedef struct FadingTextGlyphBanks {
+    const s8 *entries[4];
+} FadingTextGlyphBanks;
+
 typedef struct QuadAnimationFrame {
     s32 duration;
     s32 scale;
@@ -702,6 +706,13 @@ typedef struct TimedSpriteSequenceResource {
     const TimedSpriteStep *step;
     u8 pad0C[0xF4];
 } TimedSpriteSequenceResource;
+
+extern const s8 D_8012EC04[], D_8012ECC8[], D_8012EECC[], D_8012F0D0[];
+
+const FadingTextGlyphBanks gFadingTextGlyphBanks
+    __attribute__((section(".rodata.fading_text_glyph_banks"))) = {
+    {D_8012EC04, D_8012ECC8, D_8012EECC, D_8012F0D0}
+};
 
 /* Interleaved texture U coordinate and advance width for A through Z. */
 u8 gUppercaseGlyphMetrics[52] __attribute__((section(".data.uppercase_glyph_metrics"))) = {
@@ -1202,7 +1213,7 @@ void func_80063B58(void);
 void func_80063DF4(void);
 void drawFullScreenSpriteTask(void);
 void updateFadingTextTask(void);
-void func_8006A4E8(FadingTextResource *resource);
+void drawFadingText(FadingTextResource *resource);
 void loadTimedSpritePresentationResources(void);
 void func_8006AB8C(void);
 void updatePrimaryValueTransition(void);
@@ -4592,7 +4603,63 @@ void uploadTimImageAndPaletteAt(u32 *tim, s32 x, s32 y, s32 clutX, s32 clutY) {
     DrawSync(0);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006A4E8);
+void drawFadingText(FadingTextResource *resource) {
+    FadingTextGlyphBanks tables = gFadingTextGlyphBanks;
+    DrawModeSpritePacket *scratch = (DrawModeSpritePacket *)0x1F800000, *packet;
+    const s8 *text, *glyph;
+    s32 table, index;
+    scratch->tag = (sizeof(*scratch) / 4 - 1) << 24;
+    scratch->code = TEXTURED_SPRITE_CODE | SEMI_TRANSPARENT_FLAG;
+    scratch->drawModeCode = DRAW_MODE_COMMAND_HIGH;
+    scratch->clut = resource->clut;
+    scratch->x0 = resource->x;
+    scratch->y0 = resource->y;
+    scratch->r0 = scratch->g0 = scratch->b0 = *(u8 *)&resource->brightness;
+    scratch->w = 16;
+    scratch->h = 16;
+    text = (const s8 *)resource->text;
+    packet = (DrawModeSpritePacket *)GsOUT_PACKET_P;
+    while (*text) {
+        for (table = 0; table < 4; table++) {
+            glyph = tables.entries[table];
+            for (index = 0; glyph[index]; index += 2) {
+                if (glyph[index] == text[0] && glyph[index + 1] == text[1]) {
+                    scratch->u0 = ((index >> 1) & 15) << 4;
+                    scratch->v0 = (index >> 1) & ~15;
+                    switch (table) {
+                        case 0:
+                            scratch->tpage = getTPage(0, 0, 960, 256);
+                            scratch->v0 += 160;
+                            break;
+                        case 1:
+                            scratch->tpage = getTPage(0, 0, 896, 256);
+                            break;
+                        case 2:
+                            scratch->tpage = getTPage(0, 0, 768, 256);
+                            break;
+                        case 3:
+                            scratch->tpage = getTPage(0, 0, 704, 256);
+                            break;
+                    }
+                    *packet = *scratch;
+                    packet->tpage |= getTPage(0, 1, 0, 0);
+                    addPrim(&D_8013AF6C[0], packet);
+                    packet++;
+                    *packet = *scratch;
+                    packet->clut = getClut(768, 248);
+                    packet->tpage |= getTPage(0, 2, 0, 0);
+                    addPrim(&D_8013AF6C[0], packet);
+                    packet++;
+                    goto nextCharacter;
+                }
+            }
+        }
+    nextCharacter:
+        scratch->x0 += 16;
+        text += 2;
+    }
+    GsOUT_PACKET_P = (u32)packet;
+}
 
 void updateFadingTextTask(void) {
     FadingTextResource *resource;
@@ -4608,7 +4675,7 @@ void updateFadingTextTask(void) {
     } else {
         resource->brightness = 255;
     }
-    func_8006A4E8(resource);
+    drawFadingText(resource);
     D_8013B368 = 0;
     if (++resource->elapsed == resource->duration) {
         func_800149A8();

@@ -97,6 +97,8 @@ segments:
       - [0x149C, rodata]
       - [0x14C4, .rodata, game/unk_800497B8]
       - [0x14D4, rodata]
+      - {start: 0x1590, type: .rodata, name: game/unk_800497B8, linker_section: .rodata.fading_text_glyph_banks}
+      - [0x15A0, rodata]
       - [0x1A38, .rodata, game/unk_80070274]
       - [0x1A78, rodata]
       - [0x1C3C, rodata]

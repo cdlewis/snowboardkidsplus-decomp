@@ -3243,3 +3243,6 @@ gControllerAnalogResponse = 0x800E9524; // size:0x34 defined:true
 initCurrentPlayerCameraTask = 0x8003E794; // type:func
 
 transferHitPrizeMoneyTask = 0x80038C70; // type:func
+
+drawFadingText = 0x8006A4E8; // type:func
+gFadingTextGlyphBanks = 0x80010D90; // size:0x10
