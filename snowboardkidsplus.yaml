@@ -572,7 +572,7 @@ segments:
       - {start: 0xDBB68, type: .data, name: main_remaining, linker_section: .data.sound_voice_records}
       - [0xDBB88, data, DBB88]
       - {start: 0xDBD28, type: .data, name: main_remaining, linker_section: .data.memory_card_file_names}
-      - [0xDBD3C, data, memory_card_tables_tail]
+      - {start: 0xDBD3C, type: .data, name: main_remaining, linker_section: .data.memory_card_tables}
       - {start: 0xDBD64, type: .data, name: main_remaining, linker_section: .data.memory_card_save_header}
       - [0xDC7E4, data, DC7E4]
       - {start: 0x110A00, type: .data, name: main_remaining, linker_section: .data.player_model_parts}

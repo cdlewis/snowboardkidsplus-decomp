@@ -2,11 +2,15 @@
 
 #include "common.h"
 
+typedef struct MemoryCardSaveTitle {
+    u8 bytes[64];
+} MemoryCardSaveTitle;
+
 typedef struct MemoryCardSaveHeader {
     u8 magic[2];
     u8 iconDisplay;
     u8 blockCount;
-    u8 title[64];
+    MemoryCardSaveTitle title;
     u8 reserved[28];
     u16 iconPalette[16];
     u8 icons[3][128];

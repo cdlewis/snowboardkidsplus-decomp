@@ -77,6 +77,20 @@ char *gMemoryCardFileNames[5] __attribute__((section(".data.memory_card_file_nam
     D_800101B8, D_800101D0, D_800101E8, D_80010200, D_80010218
 };
 
+extern MemoryCardSaveTitle D_80010230;
+extern MemoryCardSaveTitle D_80010274;
+extern MemoryCardSaveTitle D_800102B8;
+extern MemoryCardSaveTitle D_800102FC;
+extern MemoryCardSaveTitle D_80010340;
+
+MemoryCardSaveTitle *gMemoryCardSaveTitles[5] __attribute__((section(".data.memory_card_tables"))) = {
+    &D_80010230, &D_80010274, &D_800102B8, &D_800102FC, &D_80010340
+};
+
+u32 gMemoryCardSaveCapacities[5] __attribute__((section(".data.memory_card_tables"))) = {
+    0xA80, 0x400, 0xB00, 0x8880, 0x2000
+};
+
 u8 D_80120200[16] __attribute__((section(".data.player_model_parts"))) = {
     255, 0, 1, 2, 1, 4, 1, 6, 6, 8, 6, 10, 0, 0, 0, 0
 };
@@ -645,7 +659,27 @@ void captureMemoryCardSaveIcon(void) {
     StoreImage(&iconRect, (u32 *)gMemoryCardSaveHeader.icons);
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80018BA4);
+void prepareMemoryCardSave(u8 slot, void *source, u32 size) {
+    u8 blocks;
+    u32 i;
+    u32 checksum;
+    D_8013AF40 = gMemoryCardFileNames[slot];
+    blocks = gMemoryCardSaveCapacities[slot] / 8192;
+    if (gMemoryCardSaveCapacities[slot] % 8192) blocks++;
+    gMemoryCardSaveHeader.blockCount = blocks;
+    gMemoryCardSaveHeader.title = *gMemoryCardSaveTitles[slot];
+    memcpy(gMemoryCardSaveHeader.payload, source, size);
+    for (i = size; i < gMemoryCardSaveCapacities[slot] - 0x210; i++) {
+        gMemoryCardSaveHeader.payload[i] = 0;
+    }
+    i = 0;
+    checksum = 0;
+    gMemoryCardSaveHeader.payloadSize = size;
+    gMemoryCardSaveHeader.version = 0;
+    for (; i < size; i++) checksum += gMemoryCardSaveHeader.payload[i];
+    gMemoryCardSaveHeader.checksum = checksum;
+    D_8013AF48 = slot;
+}
 
 void selectMemoryCardLoadFile(u8 slot, void *destination) {
     switch (slot) {

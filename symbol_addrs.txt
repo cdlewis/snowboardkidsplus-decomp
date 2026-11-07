@@ -2887,3 +2887,12 @@ D_8013AE68 = 0x8013AE68; // size:0x2
 completeModeSelectionTransitionWhenReady = 0x800A2324; // type:func
 modeTransitionReadyGp = 0x8013B55E; // size:0x1 allow_duplicated:true
 D_8013B55E = 0x8013B55E; // size:0x1 allow_duplicated:true
+
+prepareMemoryCardSave = 0x80018BA4; // type:func
+gMemoryCardSaveTitles = 0x800EB53C; // size:0x14
+gMemoryCardSaveCapacities = 0x800EB550; // size:0x14
+D_80010230 = 0x80010230; // size:0x40
+D_80010274 = 0x80010274; // size:0x40
+D_800102B8 = 0x800102B8; // size:0x40
+D_800102FC = 0x800102FC; // size:0x40
+D_80010340 = 0x80010340; // size:0x40
