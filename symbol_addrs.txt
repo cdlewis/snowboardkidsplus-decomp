@@ -3276,3 +3276,5 @@ D_801242A8 = 0x801242A8; // size:0xC defined:true
 updateCurrentPlayerTimedMotion = 0x800273D4; // type:func
 
 finishUnlockMenuTask = 0x800A46E0; // type:func
+
+updateTextPlaybackTask = 0x800A6684; // type:func

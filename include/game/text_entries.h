@@ -41,3 +41,12 @@ void initializeSecondaryResourceTask(void);
 void updateSecondaryResourceTask(void);
 void drawSecondaryTextBackgroundTask(void);
 void func_800A624C(void);
+
+TextEntry *findKeyedListNode(u32 key, u32 value);
+void func_800A5AFC(void);
+void initializeTextPlaybackTask(void);
+void updateTextPlaybackTask(void);
+void beginAudioFadeCountdownTask(void);
+void setSecondaryTextEntryTask(TextEntry *entry);
+void func_800A73BC(TextEntry *entry);
+void func_800A7928(TextEntry *entry);

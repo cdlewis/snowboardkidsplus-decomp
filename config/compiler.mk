@@ -21,6 +21,7 @@ G8_UNITS := \
     $(MAIN_GAME_UNITS) \
     src/main_tail.c \
     src/main_tail_ui.c \
+    src/main_tail_text_playback.c \
     src/main_tail_resources.c \
     src/engine/game_options.c \
     src/engine/random.c

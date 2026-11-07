@@ -203,7 +203,6 @@ void initializeControllerPlaybackRaceTask(void);
 void initializeRaceTaskState(void);
 void func_800A5AFC(void);
 void initializeTextPlaybackTask(void);
-void func_800A6684(void);
 
 void func_80040D5C(void);
 void initializeNumberSelectionTask(void);
@@ -1064,48 +1063,3 @@ void playMusicSequence(s16 count, u8 left, u8 right) {
 }
 
 INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A624C);
-
-void initializeLoadedTextEntries(void) {
-    TextEntryListHeader *header = (TextEntryListHeader *)0x80180000;
-    TextEntry *freeEntries = header->freeEntries;
-    TextEntry *activeEntries = header->activeEntries;
-    D_8013B5D0 = freeEntries;
-    D_8013B5D4 = activeEntries;
-    func_800A5AFC();
-    setCurrentTaskCallback(initializeTextPlaybackTask);
-}
-
-void initializeTextPlaybackTask(void) {
-    TextPlaybackState *state;
-    s16 i;
-
-    if (D_8013AE88->resource16 == 0xFFFF) {
-        while (1) {}
-    }
-    state = (TextPlaybackState *)&D_800D9504[D_8013AE88->resource16];
-    state->currentEntry = findKeyedListNode(0, 0);
-    if (state->currentEntry == NULL) {
-        state->currentEntry = findTextEntryInsertionPoint(0, 0);
-    }
-    for (i = 0; i < 5; i++) {
-        state->unk04[i] = 0;
-        state->unk18[i] = 0;
-    }
-    state->tick = -1;
-    state->flags = 0;
-    state->unk2A = 0xFFFF;
-    state->unk40 = 0;
-    for (i = 0; i < 8; i++) {
-        gTextSoundSlots[i].voice = 0xFF;
-        gTextSoundSlots[i].soundKey = 0;
-    }
-    setSecondaryDisplayTaskMode(0);
-    configureTaskStateTransition(2, 5, 30);
-    D_8013B59C = 0;
-    D_8013B59E = 0;
-    D_8013B59F = 0;
-    setCurrentTaskCallback(func_800A6684);
-}
-
-INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A6684);
-

@@ -118,7 +118,8 @@ segments:
       - [0x2A0C, .rodata, main_tail_ui]
       - [0x2A30, rodata]
       - [0x2A58, rodata]
-      - [0x2B54, rodata]
+      - [0x2B54, .rodata, main_tail_text_playback]
+      - {start: 0x2B68, type: .rodata, name: main_tail_text_playback, linker_section: .rodata.text_playback_padding}
       - [0x2B6C, .rodata, main_tail_resources]
       - [0x2B80, lib, libspu, spu, .rdata]
       - [0x2BD0, lib, libsnd, ssopenq, .rdata]
@@ -171,6 +172,7 @@ segments:
       - [0x7CF08, c, main_tail]
       # The UI continuation accesses the transition flag absolutely.
       - [0x92750, c, main_tail_ui]
+      - [0x96D08, c, main_tail_text_playback]
       - [0x970B4, c, main_tail_resources]
       - [0x98A04, lib, libmath, divsf3, .text]
       - [0x98B54, lib, libmath, fixsfsi, .text]
