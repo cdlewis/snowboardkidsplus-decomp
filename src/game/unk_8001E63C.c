@@ -105,7 +105,7 @@ void func_80025B08(void);
 void func_80025DD8(void);
 void func_80025FAC(void);
 void func_800260E4(void);
-void func_80026500(void);
+void moveCurrentPlayerForwardUntilState22(void);
 void func_80026754(void);
 void func_80028680(void);
 void func_80026BAC(void);
@@ -115,7 +115,7 @@ s16 func_80028234(void);
 TaskCallback gCurrentPlayerTaskPhaseCallbacks[8]
     __attribute__((section(".data.player_task_phases"))) = {
     func_80025840, advanceCurrentPlayerTaskOnAnimationFlag, func_80025B08, func_80025DD8,
-    func_80025FAC, advanceCurrentPlayerTaskPhaseMovement, func_800260E4, func_80026500
+    func_80025FAC, advanceCurrentPlayerTaskPhaseMovement, func_800260E4, moveCurrentPlayerForwardUntilState22
 };
 
 
@@ -730,7 +730,44 @@ void advanceCurrentPlayerTaskPhaseMovement(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_800260E4);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80026500);
+void moveCurrentPlayerForwardUntilState22(void) {
+    RacePlayer *player;
+    D_8013AF90->vx = 0;
+    D_8013AF90->vy = D_8013B0D8->unk110;
+    D_8013AF90->vz = 0;
+    RotMatrix(D_8013AF90, D_8013AF98);
+    D_8013AF90->vx = 0;
+    D_8013AF90->vy = 0;
+    D_8013AF90->vz = 0x1000;
+    ApplyMatrix(D_8013AF98, D_8013AF90, D_8013AF88);
+    player = D_8013B0D8;
+    player->x += D_8013AF88->vx;
+    player->z += D_8013AF88->vz;
+    if (--player->unk08C == 0) {
+        player->unk12C = 22;
+        player->unk128 = 0;
+        player->unk0E8 = 0;
+        switch (player->unk935) {
+        case 1:
+            player->x += player->unk060;
+            player->z += player->unk064;
+            break;
+        case 2:
+            player->x += player->unk060 * 2;
+            player->z += player->unk064 * 2;
+            break;
+        case 3:
+            player->x += player->unk060 * 4;
+            player->z += player->unk064 * 4;
+            break;
+        }
+        D_8013B0D8->unk062 = 0;
+        D_8013B0D8->unk094 = 0;
+        D_8013B0D8->unk943 = 0;
+        startCurrentPlayerAnimation(4, 2);
+        currentPlayerStateCallbacks[D_8013B0D8->unk12C]();
+    }
+}
 
 void updateCurrentPlayerAndRequestState30(void) {
     RacePlayer *player;

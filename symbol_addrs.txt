@@ -2896,3 +2896,5 @@ D_80010274 = 0x80010274; // size:0x40
 D_800102B8 = 0x800102B8; // size:0x40
 D_800102FC = 0x800102FC; // size:0x40
 D_80010340 = 0x80010340; // size:0x40
+
+moveCurrentPlayerForwardUntilState22 = 0x80026500; // type:func
