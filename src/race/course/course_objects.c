@@ -1,5 +1,11 @@
 #include "../../graphics/render_effects_internal.h"
 
+typedef struct PlacedObjectBounceVisual {
+    GsCOORDINATE2 coordinate;
+    u8 unk50[0x24];
+    s32 height, unk78, velocity;
+} PlacedObjectBounceVisual;
+
 struct VisualPlacementHeightData gVisualPlacementHeightData __attribute__((section(".data.visual_placement_heights"))) = {
     0,
     {0, 56, 88, 96, -16, -40, -64, -88,
@@ -697,7 +703,46 @@ void initializePlacedObjectTask(void) {
 
 INCLUDE_ASM("asm/nonmatchings/race/course/course_objects", func_8005BF00);
 
-INCLUDE_ASM("asm/nonmatchings/race/course/course_objects", func_8005C51C);
+void updatePlacedObjectBounceTask(void) {
+    PlacedObjectResource *resource;
+    PlacedObjectBounceVisual *visual;
+    u16 i;
+    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    resource = (PlacedObjectResource *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
+    visual = (PlacedObjectBounceVisual *)&D_800D9504[D_8013AE88->resource16];
+    if (!D_8013AFD3) {
+        visual->height += visual->velocity;
+        switch (D_8013AE88->data1C) {
+        case 0: case 1:
+            visual->velocity += 0x140;
+            if (visual->height >= 0) {
+                visual->height = 0;
+                if (D_8013AE88->data1C == 0) visual->velocity = -0x600;
+                else { visual->velocity = 0; D_8013AE88->data1E = 4; }
+                D_8013AE88->data1C++;
+            }
+            break;
+        case 2:
+            if (--D_8013AE88->data1E == 0) {
+                visual->velocity = -0x500;
+                startRotatingQuadEffectTask(D_8013AE88->data1A - 2, (VECTOR *)&resource->position, resource->groundRotation.vx, resource->rotation.vy, resource->groundRotation.vz);
+                D_8013AE88->data1E = 16;
+                D_8013AE88->data1C++;
+            }
+            break;
+        case 3:
+            if (--D_8013AE88->data1E == 0) D_8013AE88->data1C++;
+            break;
+        }
+        if (D_8013AE88->data1C != 0 || visual->velocity > 0) {
+            for (i = 0; i < D_8013AFD2; i++) func_8002C520(&resource->position, 0x3000, 0x6000, (s16)i);
+        }
+    }
+    visual->coordinate.coord.t[1] = resource->groundCoordinate.coord.t[1] + (visual->height >> 8);
+    func_8005AC4C((TaskVisualResource *)visual, 0);
+    if (D_8013AE88->data1C == 4) setCurrentTaskCallback(func_8005BF00);
+}
 
 INCLUDE_ASM("asm/nonmatchings/race/course/course_objects", func_8005C7AC);
 
