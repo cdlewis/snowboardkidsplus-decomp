@@ -30,10 +30,7 @@
 #include "game/game_loop.h"
 #include "../main_remaining.h"
 
-typedef struct PlayerResourceTextureSelections {
-    u8 entries[2][15];
-    u8 padding[2];
-} PlayerResourceTextureSelections;
+#include "game/player_resource_textures.h"
 
 s16 gPlayerResourceTexturePositions[4][2] __attribute__((section(".data.player_resource_texture_positions"))) = {
     {0, 0}, {16, 0}, {32, 0}, {48, 0}

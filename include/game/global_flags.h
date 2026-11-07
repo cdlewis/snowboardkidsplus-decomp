@@ -26,7 +26,7 @@ extern u8 taskTransitionFlagGp;
 extern GlobalFlagStatePrefix D_8013080C;
 extern GlobalFlagStatePrefix D_8013101C;
 extern u32 D_801313C8[];
-extern GlobalFlagStatePrefix *D_8013B484[];
+extern GlobalFlagStatePrefix *D_8013B484[2];
 
 u32 getGlobalFlagMask(s16 bitIndex);
 

@@ -11,6 +11,7 @@
 #include "game/race_player.h"
 #include "game/movement.h"
 #include "game/menu_selection_state.h"
+#include "game/player_resource_textures.h"
 
 typedef struct PaletteRotationResource {
     RECT rect;
@@ -92,6 +93,9 @@ extern u8 D_8013B47C;
 extern u8 D_8013B6B8[1];
 extern u8 D_8013B6B9[7];
 
+void func_800897D0(SaveRecord *record);
+void mergeSaveRecordFlags(SaveRecord *source, SaveRecord *destination);
+void func_800875D0(void);
 void func_8007D5C8(void);
 void func_8007E004(void);
 void func_80089B30(void);
@@ -558,7 +562,34 @@ void startClearedStateValueHistoryTask(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80087464);
+void initializeSaveRecordTask(void) {
+    s16 i;
+
+    D_8013AE88->data18 = 0;
+    D_8013AE98->data1C++;
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    if (D_8013AE88->resource16 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource16 = allocateTaskResource();
+    func_800897D0((SaveRecord *)&D_8013080C);
+    func_800897D0(&((SaveRecord *)&D_8013080C)[1]);
+    copyGlobalFlagState(&D_8013080C, &D_8013101C);
+    mergeSaveRecordFlags(&((SaveRecord *)&D_8013080C)[1], (SaveRecord *)&D_8013101C);
+    D_8013B484[0] = (GlobalFlagStatePrefix *)0x801E0000;
+    D_8013B484[1] = (GlobalFlagStatePrefix *)0x801E0408;
+    func_800897D0((SaveRecord *)D_8013B484[0]);
+    func_800897D0((SaveRecord *)D_8013B484[1]);
+    for (i = 0; i < 15; i++) {
+        gPlayerResourceTextureSelections.entries[0][i] = D_80123650[i];
+        gPlayerResourceTextureSelections.entries[1][i] = D_80123650[i];
+    }
+    startClearedStateValueHistoryTask();
+    setCurrentTaskCallback(func_800875D0);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_800875D0);
 
