@@ -115,6 +115,58 @@ class FilePolicyTests(unittest.TestCase):
                                 for entry in config['hooks']['PreToolUse']
                                 for hook in entry['hooks']))
 
+    def test_git_configuration_reads_and_overrides(self):
+        self.check_cases(False, [{"tool_input": {"cmd": command}} for command in (
+            'git config --get core.hooksPath',
+            'git config --local --get core.hooksPath',
+            'git config core.hooksPath',
+            'git config --get-regexp core.hooksPath',
+            'git commit -m "Fix core.hooksPath inspection"',
+        )])
+        self.check_cases(True, [{"tool_input": {"cmd": command}} for command in (
+            'git config core.hooksPath /tmp/hooks',
+            'git config --unset core.hooksPath',
+            'git -ccore.hooksPath=/dev/null commit -m test',
+            'git --config-env=core.hooksPath=HOOKS commit -m test',
+        )])
+
+    def test_reads_with_unprotected_write_destinations(self):
+        self.check_cases(False, [{"tool_input": {"cmd": command}} for command in (
+            'cat tools/build.py > /tmp/build-copy.py',
+            'cat asm/test.s > /tmp/assembly-copy.txt',
+            'cp tools/build.py /tmp/build-copy.py',
+            '''python3 -c "from pathlib import Path; print(Path('tools/build.py').read_text())"''',
+            '''python3 -c "from pathlib import Path; Path('/tmp/copy').write_text(Path('tools/build.py').read_text())"''',
+            '''python3 -c "from pathlib import Path; print(Path('tools/build.py').read_text().replace('old', 'new'))"''',
+        )])
+        self.check_cases(True, [{"tool_input": {"cmd": command}} for command in (
+            'cat src/test.c > asm/test.s',
+            'cat src/test.c >> tools/build.py',
+            'cat src/test.c >&ctx.c',
+            'cp -t asm/ src/test.c',
+            'cp --target-directory=asm/ src/test.c',
+            '''python3 -c "from pathlib import Path; Path('ctx.c').open('w')"''',
+            '''python3 -c "from pathlib import Path; p=Path('tools/build.py'); p.write_text('changed')"''',
+            '''python3 -c "import subprocess; subprocess.run(['rm', 'ctx.c'])"''',
+            '''python3 -c "import os; os.system('rm ctx.c')"''',
+        )])
+
+    def test_literal_heredocs_and_following_commands(self):
+        self.check_cases(False, [{"tool_input": {"cmd": command}} for command in (
+            "cat > /tmp/script.py <<'PY'\nfrom pathlib import Path\nprint(Path('tools/build.py').read_text())\n# An unmatched quote: '\nPY\n",
+            "python3 - <<'PY'\nfrom pathlib import Path\nprint(Path('tools/build.py').read_text())\nPY\n",
+            "cat <<'ONE' <<'TWO'\n'\nONE\n\"\nTWO\n",
+            "cat <<-'TEXT'\n\t'\n\tTEXT\n",
+        )])
+        self.check_cases(True, [{"tool_input": {"cmd": command}} for command in (
+            "cat >ctx.c <<'TEXT'\nhello\nTEXT\n",
+            "python3 - <<'PY'\nopen('ctx.c', 'w').write('text')\nPY\n",
+            "bash <<'SH'\ngit commit --no-verify\nSH\n",
+            "cat <<'TEXT'\nhello\nTEXT\nrm ctx.c\n",
+            "cat <<TEXT\n$(rm ctx.c)\nTEXT\n",
+            "cat <<'TEXT'\nunterminated\n",
+        )])
+
 
 if __name__ == '__main__':
     unittest.main()

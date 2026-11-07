@@ -111,6 +111,163 @@ def references_protected(text, cwd=None):
                or relative_path(path, cwd) in CHECKSUM_FILES for path in paths)
 
 
+def python_reason(source, cwd=None):
+    """Check visible file mutations, without treating read paths as destinations."""
+    try:
+        tree = ast.parse(source)
+    except SyntaxError:
+        return "cannot inspect malformed Python syntax"
+    bindings = {}
+    path_objects = set()
+
+    def is_path_object(node):
+        if isinstance(node, ast.Name):
+            return node.id in path_objects
+        if isinstance(node, ast.Call):
+            name = node.func.id if isinstance(node.func, ast.Name) else getattr(node.func, "attr", "")
+            return name in {"Path", "PurePath"}
+        return False
+
+    def path(node):
+        if isinstance(node, ast.Constant) and isinstance(node.value, str):
+            return node.value
+        if isinstance(node, ast.Name):
+            return bindings.get(node.id)
+        if isinstance(node, ast.Call):
+            name = node.func.id if isinstance(node.func, ast.Name) else getattr(node.func, "attr", "")
+            if name in {"Path", "PurePath", "open"} and node.args:
+                return path(node.args[0])
+        return None
+
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Assign):
+            for target in node.targets:
+                if isinstance(target, ast.Name):
+                    bindings[target.id] = path(node.value)
+                    if is_path_object(node.value):
+                        path_objects.add(target.id)
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Call):
+            continue
+        name = node.func.id if isinstance(node.func, ast.Name) else getattr(node.func, "attr", "")
+        targets = []
+        if name == "open":
+            mode_index = 0 if isinstance(node.func, ast.Attribute) else 1
+            mode = node.args[mode_index] if len(node.args) > mode_index else next(
+                (kw.value for kw in node.keywords if kw.arg == "mode"), ast.Constant("r"))
+            mode = path(mode)
+            if mode is None or any(flag in mode for flag in "wax+"):
+                targets.append(path(node.func.value) if isinstance(node.func, ast.Attribute)
+                               else path(node.args[0]) if node.args else None)
+        elif isinstance(node.func, ast.Attribute) and (
+                name in {"write_text", "write_bytes", "touch"}
+                or name in {"unlink", "rename", "replace"} and is_path_object(node.func.value)):
+            targets.append(path(node.func.value))
+            if name in {"rename", "replace"} and node.args:
+                targets.append(path(node.args[0]))
+        elif name in {"remove", "unlink", "rename", "replace"} and (
+                isinstance(node.func, ast.Name) or isinstance(node.func.value, ast.Name)
+                and node.func.value.id in {"os", "posix"}):
+            targets.extend(path(arg) for arg in node.args)
+        elif name in {"system", "run", "call", "check_call", "check_output", "Popen"} and node.args:
+            try:
+                command = ast.literal_eval(node.args[0])
+            except (ValueError, TypeError):
+                command = None
+            if isinstance(command, (list, tuple)) and all(isinstance(arg, str) for arg in command):
+                command = shlex.join(command)
+            if isinstance(command, str):
+                reason = shell_reason(command, cwd)
+                if reason:
+                    return reason
+            elif references_protected(source, cwd):
+                return "cannot resolve Python subprocess command referencing protected files"
+        for target in targets:
+            if target is not None and references_protected(target, cwd):
+                return "Python writes to protected files require source/configuration patches preserving SHA1 fields"
+            if target is None and references_protected(source, cwd):
+                return "cannot resolve Python write destination; use an explicit path or a structured patch"
+    return None
+
+
+def shell_tokens(command):
+    lexer = shlex.shlex(command, posix=True, punctuation_chars=";&|()<>\n")
+    lexer.whitespace_split = True
+    lexer.whitespace = " \t\r"
+    return list(lexer)
+
+
+def heredoc_source(command, cwd=None):
+    """Separate shell syntax from literal stdin, including multiple heredocs."""
+    lines = command.splitlines(keepends=True)
+    clean = []
+    index = 0
+    while index < len(lines):
+        header = lines[index]
+        clean.append(header)
+        index += 1
+        try:
+            tokens = shell_tokens(header)
+        except ValueError:
+            continue  # The complete shell lexer handles multiline quotes.
+        for pos, token in enumerate(tokens[:-1]):
+            if token != "<<":
+                continue
+            delimiter = tokens[pos + 1]
+            strip_tabs = delimiter.startswith("-")
+            if strip_tabs:
+                delimiter = delimiter[1:]
+            body = []
+            while index < len(lines):
+                line = lines[index]
+                index += 1
+                check = line.lstrip("\t") if strip_tabs else line
+                if check.rstrip("\r\n") == delimiter:
+                    break
+                body.append(check)
+            else:
+                return command, "unterminated shell heredoc"
+            source = "".join(body)
+            # Expanded heredocs can execute shell substitutions before stdin is
+            # passed to the command. Require quoting for those payloads.
+            quoted = re.search(r"<<-?\s*(['\"])" + re.escape(delimiter), header)
+            if not quoted and ("$(" in source or "`" in source):
+                return command, "quote the heredoc delimiter to prevent shell command substitution"
+            start = pos - 1
+            while start >= 0 and tokens[start] not in {";", "&&", "||", "|"}:
+                start -= 1
+            args = tokens[start + 1:pos]
+            while args and ("=" in args[0] or args[0] in {"env", "command", "exec"}):
+                args = args[1:]
+            name = PurePosixPath(args[0]).name if args else ""
+            reason = None
+            if name.startswith("python") and "-" in args:
+                reason = python_reason(source, cwd)
+            elif name in {"sh", "bash", "zsh"}:
+                reason = shell_reason(source, cwd)
+            if reason:
+                return command, reason
+    return "".join(clean), None
+
+
+def git_hooks_override(args):
+    for index, arg in enumerate(args):
+        value = args[index + 1] if arg in {"-c", "--config-env"} and index + 1 < len(args) else ""
+        if arg.startswith(("--config-env=", "-c")) and arg not in {"-c", "--config-env"}:
+            value = arg.split("=", 1)[1] if arg.startswith("--config-env=") else arg[2:]
+        if value.lower().startswith("core.hookspath="):
+            return True
+    if "config" not in args:
+        return False
+    options = args[args.index("config") + 1:]
+    if not any(arg.lower() == "core.hookspath" for arg in options):
+        return False
+    if any(arg in {"--get", "--get-all", "--get-regexp", "--get-urlmatch", "--list", "get", "list"} for arg in options):
+        return False
+    # A single key is Git's legacy read syntax. Other forms mutate configuration.
+    return len(options) != 1 or options[0].lower() != "core.hookspath"
+
+
 def shell_reason(command, cwd=None):
     if "*** Begin Patch" in command:
         reason = patch_reason(command[command.index("*** Begin Patch"):], cwd)
@@ -121,11 +278,11 @@ def shell_reason(command, cwd=None):
         if (command.lstrip().startswith("*** Begin Patch\n")
                 and command.rstrip().endswith("*** End Patch")):
             return None
-    lexer = shlex.shlex(command, posix=True, punctuation_chars=";&|()<>\n")
-    lexer.whitespace_split = True
-    lexer.whitespace = " \t\r"
+    command, reason = heredoc_source(command, cwd)
+    if reason:
+        return reason
     try:
-        tokens = list(lexer)
+        tokens = shell_tokens(command)
     except ValueError:
         return "cannot inspect malformed shell syntax"
     segments = []
@@ -148,7 +305,7 @@ def shell_reason(command, cwd=None):
                 return "do not bypass Git hooks with --no-verify"
             if "commit" in args and any(re.fullmatch(r"-[a-zA-Z]*n[a-zA-Z]*", arg) for arg in args):
                 return "git commit -n bypasses hooks; run the validation hook"
-            if any("core.hookspath" in arg.lower() for arg in args):
+            if git_hooks_override(args):
                 return "do not override core.hooksPath to bypass validation"
         if name in {"sh", "bash", "zsh"}:
             for index, arg in enumerate(args[1:-1], 1):
@@ -156,20 +313,45 @@ def shell_reason(command, cwd=None):
                     reason = shell_reason(args[index + 1], cwd)
                     if reason:
                         return reason
+        if name.startswith("python") and "-c" in args:
+            index = args.index("-c")
+            if index + 1 < len(args):
+                reason = python_reason(args[index + 1], cwd)
+                if reason:
+                    return reason
+                continue
+        # Redirection writes affect the destination, not every input path.
+        redirected = set()
+        for index, arg in enumerate(args[:-1]):
+            if ">" in arg and set(arg) <= set("<>&|"):
+                if references_protected(args[index + 1], cwd):
+                    return "shell redirection writes to a protected file"
+                redirected.update({index, index + 1})
+        args = [arg for index, arg in enumerate(args) if index not in redirected]
         text = " ".join(args[1:])
         if not references_protected(text, cwd):
             continue
-        writes = any(">" in arg and set(arg) <= set("<>&") for arg in args)
         read_only = name in READ_COMMANDS
+        if name == "cp" and args:
+            destination = args[-1]
+            for index, arg in enumerate(args[1:], 1):
+                if arg in {"-t", "--target-directory"} and index + 1 < len(args):
+                    destination = args[index + 1]
+                elif arg.startswith("--target-directory="):
+                    destination = arg.split("=", 1)[1]
+                elif arg.startswith("-t") and len(arg) > 2:
+                    destination = arg[2:]
+            if not references_protected(destination, cwd):
+                continue
         if name == "sed":
             read_only = not any(arg.startswith("-i") or arg == "--in-place" or arg.startswith("--in-place=") for arg in args[1:])
             # sed's w/e commands can write files or execute commands.
             read_only = read_only and not re.search(r"[;\s][we]\s|^[we]\s|/[^/]*w(?:\s|$)", text)
         if name == "git":
-            read_only = any(arg in {"diff", "show", "log", "status", "ls-files", "grep"} for arg in args[1:])
+            read_only = any(arg in {"diff", "show", "log", "status", "ls-files", "grep", "config"} for arg in args[1:])
             # Staging updates the index, without writing protected worktree files.
             read_only = read_only or (len(args) > 1 and args[1] == "add")
-        if writes or not read_only:
+        if not read_only:
             return "shell writes to assembly, ctx.c, or checksum sources are blocked; use source/configuration edits (preserving SHA1 fields)"
     return None
 
