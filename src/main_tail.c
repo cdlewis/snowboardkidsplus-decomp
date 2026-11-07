@@ -1,7 +1,9 @@
 #include "common.h"
 #include "main_tail_sound_slots.h"
 #include "game/controller.h"
+#include "game/controller_effects.h"
 #include "game/global_flags.h"
+#define RACE_FINISH_ABSOLUTE_ADDRESSING
 #define SELECTED_RECORDS_ABSOLUTE_ADDRESSING
 #include "game/selected_records.h"
 #include "game/cd_queue.h"
@@ -201,7 +203,9 @@ void func_80090450(void);
 void func_80092090(void);
 void func_800A0FDC(void);
 void func_80092A50(void);
-void func_800A0AA8(void);
+void initializeMode1RacePlayers(void);
+void prepareRaceResourcesIfSelectionChanged(void);
+void SetFogNearFar(s32 near, s32 far, s32 h);
 void func_800A0EE8(void);
 void queueModeIndexedSectorRead(s16 mode, s16 index);
 void func_800A3750(void);
@@ -820,7 +824,7 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A05C0);
 
 void selectTaskCallbackFromModeState(void) {
     if (D_8013AFD8 != 0) {
-        setCurrentTaskCallback(func_800A0AA8);
+        setCurrentTaskCallback(initializeMode1RacePlayers);
     } else if (D_8013AFD9 != 0) {
         setCurrentTaskCallback(func_800A3750);
     }
@@ -833,10 +837,66 @@ void initializeMode1Task(void) {
     setControllerFlag5(0);
     setControllerFlag5(1);
     D_8013B0F0 = 0;
-    setCurrentTaskCallback(func_800A0AA8);
+    setCurrentTaskCallback(initializeMode1RacePlayers);
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A0AA8);
+void initializeMode1RacePlayers(void) {
+    s32 i;
+    s16 mode;
+    D_8013B560 = D_8013AFCE;
+    if ((s16)D_8013AFD8 < 7 && D_8013AFD8 != 0) D_8013AFCE = 0;
+    else D_8013AFCE = 9;
+    SetFogNearFar(8000, 10000, 400);
+    D_8013AFD3 = 0;
+    D_8013AFD6 = 0;
+    D_8013AFE1 = 0;
+    D_8013AFD9 = 0;
+    D_8013AFE2 = 0;
+    D_8013AFE0 = 0;
+    D_80120E90[0].unk008 = 0;
+    D_80120E90[1].unk008 = 1;
+    D_80120E90[2].unk008 = 1;
+    D_80120E90[3].unk008 = 1;
+    D_80120E90[0].unk014 = 0;
+    D_80120E90[1].unk014 = 1;
+    D_80120E90[2].unk014 = 2;
+    D_80120E90[3].unk014 = 3;
+    D_80120E90[0].unk015[1] = 0;
+    D_80120E90[1].unk015[1] = 0;
+    D_80120E90[2].unk015[1] = 0;
+    D_80120E90[3].unk015[1] = 0;
+    D_80120E90[0].unk015[2] = 3;
+    D_80120E90[1].unk015[2] = 5;
+    D_80120E90[2].unk015[2] = 6;
+    D_80120E90[3].unk015[2] = 7;
+    D_80120E90[0].unk025[3] = 0;
+    D_80120E90[1].unk025[3] = 1;
+    D_80120E90[2].unk025[3] = 2;
+    D_80120E90[3].unk025[3] = 3;
+    gameOptionPlayerModeAbsolute = 2;
+    mode = D_8013AFD8;
+    if (mode != 0 && (mode < 7 || mode == 9)) {
+        D_80120E90[0].unk024 = 1;
+        D_80120E90[1].unk024 = 0;
+        D_80120E90[2].unk024 = 0;
+        D_80120E90[3].unk024 = 0;
+        D_8013AFD2 = 1;
+    } else {
+        D_80120E90[0].unk024 = 1;
+        D_80120E90[1].unk024 = 1;
+        D_80120E90[2].unk024 = 1;
+        D_80120E90[3].unk024 = 1;
+        D_8013AFD2 = 4;
+    }
+    D_8013AFD0 = 5;
+    D_8013AFDE = 100;
+    for (i = 0; i < 4; i++) {
+        D_80120E90[i].unk025[1] = 0;
+        D_80120E90[i].unk025[2] = 0;
+        D_80120E90[i].unk01C = 0;
+    }
+    setCurrentTaskCallback(prepareRaceResourcesIfSelectionChanged);
+}
 
 void prepareRaceResourcesIfSelectionChanged(void) {
     func_80070274(1, 0, 30);

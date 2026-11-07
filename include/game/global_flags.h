@@ -52,3 +52,6 @@ void setSaveRecordFlagPair(s16 recordIndex, s16 maskIndex, s16 pairIndex, s16 va
 s32 hasStateGridFlag(GlobalFlagStatePrefix *state, s16 row, s16 column);
 
 s32 getPlayerRecordFlagMode(s16 index);
+
+extern s16 D_8013AFDE __attribute__((section(".data")));
+extern u8 D_8013AFE1 __attribute__((section(".data")));

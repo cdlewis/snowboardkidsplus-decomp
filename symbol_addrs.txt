@@ -2680,3 +2680,5 @@ drawSkewedTexturedQuadByIndexWithBlend = 0x8006C428; // type:func
 drawCurrentTaskFramedSprite20C = 0x80095F30; // type:func
 
 drawCurrentTaskFramedSprite20B = 0x80099010; // type:func
+
+initializeMode1RacePlayers = 0x800A0AA8; // type:func
