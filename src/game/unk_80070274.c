@@ -65,6 +65,14 @@ typedef struct ScrollingBackgroundResource {
     s32 stepX, stepY;
 } ScrollingBackgroundResource;
 
+typedef struct SelectionEntry {
+    s16 unk00;
+    s16 selected;
+    s16 previous;
+    s16 unk06;
+    s16 unk08;
+} SelectionEntry;
+
 typedef struct TimedSequenceEntry {
     s32 unk00;
     s32 duration;
@@ -135,6 +143,8 @@ u16 gTextPanelMessage[] __attribute__((section(".data.text_panel_message"))) = {
 
 /* Storage remains in the shared data object. */
 extern TaskValueState D_8012D4A4[3];
+extern u8 D_8012D460[];
+extern TimedSequenceEntry D_8012F18C[], D_8012F1AC[];
 extern GameTask *D_8013B378;
 extern GameTask *D_8013B37C;
 extern GameTask *D_8013BDA8[4];
@@ -165,6 +175,7 @@ void func_80076E18(void);
 void updateTimedSpriteB5Task(void);
 void updateValueTransitionTask(void);
 void func_80077770(void);
+void func_80078140(void);
 void func_80078AFC(void);
 void func_8007BBAC(s16 player);
 void GsSortBg(GameBackground *background, GsOT *ot, u16 depth);
@@ -1117,7 +1128,45 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80077770);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80077E58);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80077EA4);
+void createDualSelectionSequenceTask(s16 x, s16 y, s32 depth, s32 index) {
+    SelectionEntry *selection;
+    TimedSequence *sequences;
+    ValuePanelEntry *entry;
+    s16 i;
+    u8 type;
+    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    selection = (SelectionEntry *)&D_800D9504[D_8013AE88->resource14];
+    func_80014874(func_80078140);
+    D_8013AE8C->data1A = 0;
+    D_8013AE8C->data1C = depth;
+    D_8013AE8C->data1E = index;
+    D_8013AE8C->resource14 = allocateTaskResource();
+    initMovement2D((Movement2D *)&D_800D9504[D_8013AE8C->resource14], x << 12, y << 12);
+    D_8013AE8C->resource16 = allocateTaskResource();
+    sequences = (TimedSequence *)&D_800D9504[D_8013AE8C->resource16];
+    for (i = 0; i < 2; i++) {
+        type = D_8012D460[selection[i].selected];
+        if (type == 3 || type == 4 || type == 8) {
+            initTimedSequence(&sequences[i], D_8012F1AC, 0, 8);
+        } else {
+            initTimedSequence(&sequences[i], D_8012F18C, 0, 4);
+        }
+    }
+    if (index % 10 == 0) {
+        ValuePanelEntry *table;
+        if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+        table = (ValuePanelEntry *)&D_800D9504[D_8013AE88->resource14];
+        entry = table + index / 10;
+    } else {
+        ValuePanelEntry *table;
+        if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
+        table = (ValuePanelEntry *)&D_800D9504[D_8013AE88->resource16];
+        entry = table + index / 10;
+    }
+    entry->flags = 0;
+    entry->active = 0;
+    entry->task = D_8013AE8C;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80078140);
 
