@@ -54,3 +54,6 @@ extern u32 D_8013B20C __attribute__((section(".data")));
 extern u32 selectedCameraOverlayModeGp;
 
 s32 restoreSelectedPlayerState(void);
+
+/* GP-relative access to the same saved camera state. */
+extern u32 selectedCameraStateGp;

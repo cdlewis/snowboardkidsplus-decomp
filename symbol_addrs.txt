@@ -3256,3 +3256,7 @@ updateSecondaryResourceTask = 0x800A6A8C; // type:func
 
 finishControllerPlaybackTransition = 0x800A3AA4; // type:func
 D_8013B562 = 0x8013B562; // size:0x1
+
+queueScanlineCopyPackets = 0x80051770; // type:func
+gScanlineCopyRect = 0x8013B250; // size:0x8 defined:true
+gScanlineSeedRect = 0x8013B258; // size:0x8 defined:true

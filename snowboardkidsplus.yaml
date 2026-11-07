@@ -798,6 +798,8 @@ segments:
       - [0x12BA2C, data, debug_position_formats_tail]
       - {start: 0x12BA40, type: .data, name: game/unk_800497B8, linker_section: .data.read_pixel_rect}
       - [0x12BA48, data, 12BA48]
+      - {start: 0x12BA50, type: .data, name: game/unk_800497B8, linker_section: .data.scanline_copy_rects}
+      - [0x12BA60, data, scanline_copy_rects_tail]
       - {start: 0x12BAC8, type: .sdata, name: game/unk_800497B8, linker_section: .sdata.course_visual_frames, linker_section_order: .data}
       - [0x12BACC, data, 12BACC]
       - {start: 0x12BAD0, type: .data, name: game/unk_800497B8, linker_section: .data.empty_course_triggers}

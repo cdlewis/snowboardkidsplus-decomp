@@ -995,6 +995,11 @@ extern char debugPositionZFormatAbsolute[];
 
 extern GameTask *D_8013B304 __attribute__((section(".data")));
 RECT gReadPixelRect __attribute__((section(".data.read_pixel_rect"))) = {0, 0, 1, 1};
+RECT gScanlineCopyRect __attribute__((section(".data.scanline_copy_rects"))) = {640, 256, 64, 1};
+RECT gScanlineSeedRect __attribute__((section(".data.scanline_copy_rects"))) = {704, 144, 64, 1};
+
+/* Coordinate updates use GP-relative accesses. */
+extern RECT scanlineCopyRectGp;
 
 /* The original stores coordinates through GP but passes an absolute address. */
 extern RECT readPixelRectGp;
@@ -1613,7 +1618,52 @@ u32 packTextureColor(TextureColor *color) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80051700);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80051770);
+void queueScanlineCopyPackets(void) {
+    DR_MOVE *move;
+    DR_STP *stp;
+    s32 y, i, depth;
+
+    move = (DR_MOVE *)GsOUT_PACKET_P;
+    for (y = 256; y < 512; y += 16) {
+        SetDrawMove(move, &gScanlineSeedRect, 640, y);
+        addPrim(&D_8013AF6C[4095], move);
+        move += 2;
+    }
+    GsOUT_PACKET_P = (u32)move;
+    if (selectedCameraStateGp) {
+        stp = (DR_STP *)GsOUT_PACKET_P;
+        for (i = 0; i < 15; i++) {
+            depth = (i * 200) / 15 + 150;
+            SetDrawStp(stp, 1);
+            addPrim(&D_8013AF6C[depth], stp);
+            stp++;
+        }
+        GsOUT_PACKET_P = (u32)stp;
+    }
+    move = (DR_MOVE *)GsOUT_PACKET_P;
+    for (i = 0; i < 15; i++) {
+        y = 256;
+        scanlineCopyRectGp.y = i + 257;
+        depth = (i * 200) / 15 + 150;
+        for (; y < 512; y += 16) {
+            SetDrawMove(move, &gScanlineCopyRect, 640, y);
+            addPrim(&D_8013AF6C[depth], move);
+            scanlineCopyRectGp.y += 16;
+            move++;
+        }
+    }
+    GsOUT_PACKET_P = (u32)move;
+    if (selectedCameraStateGp) {
+        stp = (DR_STP *)GsOUT_PACKET_P;
+        for (i = 0; i < 15; i++) {
+            depth = (i * 200) / 15 + 150;
+            SetDrawStp(stp, 0);
+            addPrim(&D_8013AF6C[depth], stp);
+            stp++;
+        }
+        GsOUT_PACKET_P = (u32)stp;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80051A68);
 
