@@ -204,6 +204,8 @@ void clearCurrentPlayerSequenceState(void);
 void updateCurrentPlayerFromTaskPhase(void);
 
 void updateCurrentPlayerModelPartCoordinates(void);
+void sortPlayerModelWithDrawArea(u16 playerIndex, u16 depthIndex, RECT *bounds);
+
 void loadCurrentPlayerModelPose(const s16 *values);
 void setCurrentPlayerFinalPartTranslations(const s16 *values);
 void copyPlayerPaletteRowWithTransition(s16 playerIndex, s32 unused, s32 paletteRow, u16 mode);

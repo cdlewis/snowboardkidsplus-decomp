@@ -227,6 +227,10 @@ SplitSelectionBoundsConfigs gSplitSelectionBoundsConfigs __attribute__((section(
     {60, 120, 4}, {60, 120, 4}
 }, {0, 0}};
 
+u16 playerModelDrawAreaDepths[4] __attribute__((section(".data.player_model_draw_area_depths"))) = {
+    0x70, 0x40, 0x20, 0
+};
+
 u8 D_8013B514[3] __attribute__((section(".sdata.four_bounds_task_flag"))) = {0x82, 0x66, 0};
 u8 D_8013B517 __attribute__((section(".sdata.four_bounds_task_flag"))) = 0;
 
@@ -614,7 +618,27 @@ INCLUDE_ASM("asm/nonmatchings/main_tail", func_80096AB0);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_80096EC8);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800972B8);
+void sortPlayerModelWithDrawArea(u16 playerIndex, u16 depthIndex, RECT *bounds) {
+    MATRIX matrix;
+    RacePlayer *player = &D_80120E90[playerIndex];
+    GsDOBJ2 *object = player->modelObjects;
+    s16 i;
+    s16 count;
+    D_8013B0D8 = player;
+    count = player->modelPartCount;
+    for (i = 0; i < count; i++, object++) {
+        GsGetLw(object->coord2, &matrix);
+        GsSetLightMatrix(&matrix);
+        GsGetLs(object->coord2, &matrix);
+        GsSetLsMatrix(&matrix);
+        GsSortObject4(object, &D_800EBFF0[D_8013AF78], depthIndex, (u32 *)0x1F800000);
+    }
+    if (bounds->w >= 0 && bounds->h >= 0) {
+        addDrawAreaPacket(bounds->x, bounds->y, bounds->w, bounds->h,
+                         &D_800EBFF0[D_8013AF78], playerModelDrawAreaDepths[depthIndex]);
+        addDrawAreaPacket(0, 0, 320, 240, &D_800EBFF0[D_8013AF78], 14);
+    }
+}
 
 void loadCurrentPlayerModelPose(const s16 *values) {
     RacePlayer *player;

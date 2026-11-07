@@ -3188,3 +3188,6 @@ drawHitPrizeMoneyLabels = 0x8003881C; // type:func
 gHitPrizeOneGoldLabel = 0x80010AAC; // type:char size:0x14
 gHitPrizeFiftyGoldLabel = 0x80010AC0; // type:char size:0x14
 gPerfectHitLabel = 0x80010AD4; // type:char size:0x10
+
+sortPlayerModelWithDrawArea = 0x800972B8; // type:func
+playerModelDrawAreaDepths = 0x8013B500; // size:0x8 defined:true
