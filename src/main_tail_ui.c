@@ -403,6 +403,8 @@ typedef struct MusicResource {
 } MusicResource;
 void updateTextEntryCdAudioTask(void);
 void func_800A53BC(void);
+void finishNumberAdjustmentTask(void);
+void func_8002F394(void);
 void func_800A5630(void);
 void beginMode2SequenceAndFadeMusic(void);
 void func_800A624C(void);
@@ -886,7 +888,43 @@ void initializeNumberAdjustmentTask(void) {
 
 INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A53BC);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A5418);
+void updateNumberAdjustmentTask(void) {
+    NumberAdjustmentState *state;
+    s16 previous;
+    u16 buttons;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        for (;;) {}
+    }
+    state = (NumberAdjustmentState *)&D_800D9504[D_8013AE88->resource14];
+    buttons = D_8013AEE8[0] | D_8013AEE8[1];
+    previous = state->value;
+    if ((buttons & 0x1000) && state->value > 1) {
+        state->value--;
+    }
+    if ((buttons & 0x4000) && state->value < 9) {
+        state->value++;
+    }
+    if (previous != state->value) {
+        playSoundEffect(0, 0x100, 0x20);
+    }
+    if (buttons & 0xB0) {
+        playSoundEffect(0, 0, 0x20);
+        D_8013AFD0 = state->value;
+        state->countdown = 20;
+        state->active = 0;
+        D_8013AE98->data18 = 0x17;
+        D_8013AE88->data18 = 0;
+        setCurrentTaskCallback(finishNumberAdjustmentTask);
+    }
+    if (buttons & 0x40) {
+        playSoundEffect(0, 0, 0x20);
+        D_8013AE98->data18 = 8;
+        func_8002F394();
+        D_8013AE88->data18 = 0;
+        setCurrentTaskCallback(finishNumberAdjustmentTask);
+    }
+    func_800A5630();
+}
 
 void drawNumberAdjustmentArrow(s16 direction, GsOT *ot, u16 depth) {
     POLY_F3 *triangle = &gNumberAdjustmentArrow;
