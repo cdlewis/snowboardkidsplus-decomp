@@ -2883,3 +2883,7 @@ D_800D7BD4 = 0x800D7BD4; // size:0x18
 D_8013B6E8 = 0x8013B6E8; // size:0x18
 D_8013B5FC = 0x8013B5FC; // size:0x4
 D_8013AE68 = 0x8013AE68; // size:0x2
+
+completeModeSelectionTransitionWhenReady = 0x800A2324; // type:func
+modeTransitionReadyGp = 0x8013B55E; // size:0x1 allow_duplicated:true
+D_8013B55E = 0x8013B55E; // size:0x1 allow_duplicated:true

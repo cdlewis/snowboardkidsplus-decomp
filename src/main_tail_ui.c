@@ -6,8 +6,10 @@
 #define SELECTED_RECORDS_ABSOLUTE_ADDRESSING
 #include "game/selected_records.h"
 #include "game/cd_queue.h"
+#define GAME_OPTION_TRANSITION_ABSOLUTE_ADDRESSING
 #include "game/game_options.h"
 #include "game/graphics.h"
+#define MUSIC_STATE_ABSOLUTE_ADDRESSING
 #define MUSIC_ABSOLUTE_ADDRESSING
 #include "game/music.h"
 #include "psx/libsnd.h"
@@ -255,8 +257,12 @@ s16 gControllerPlaybackDurations[12] __attribute__((section(".data.controller_pl
 };
 
 extern u8 D_8013AF3A __attribute__((section(".data")));
+extern u16 D_8013AFAA __attribute__((section(".data")));
+extern s16 D_8013B10E __attribute__((section(".data")));
 extern s16 D_8013B10C __attribute__((section(".data")));
 extern u8 D_8013B55E __attribute__((section(".data")));
+/* This transition uses $gp; the playback transition below uses absolute access. */
+extern u8 modeTransitionReadyGp;
 
 extern u8 D_8013B564;
 extern s16 D_8013B59C;
@@ -276,8 +282,11 @@ void signalFlag9WhenTaskCountdownExpires(void);
 int printf(const char *format, ...);
 
 void func_80040D5C(void);
-void func_800A2324(void);
 void func_800A2D68(void);
+void initializeModeSectorReadResourcesTask(void);
+void func_800A24EC(void);
+void selectTaskBySelectedRecordMatch(void);
+void SetFogNearFar(s32 near, s32 far, s32 h);
 void func_800A2C40(void);
 void func_800A25F8(void);
 void func_800A3750(void);
@@ -374,11 +383,43 @@ void advanceTaskAtModeCoursePosition(void) {
         startCdVolumeFade(103, 20, 0, 1);
         taskTransitionFlagGp = 0;
         func_80014874(func_800A2510);
-        setCurrentTaskCallback(func_800A2324);
+        setCurrentTaskCallback(completeModeSelectionTransitionWhenReady);
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A2324);
+void completeModeSelectionTransitionWhenReady(void) {
+    if (modeTransitionReadyGp != 0) {
+        D_8013AFAA = (D_8013AFAA | 0x1090) & ~0x2000;
+        resetPendingCdRequests();
+        resetPaletteRecords();
+        func_800149E0();
+        D_8013AFD3 = 0;
+        D_8013AFAA |= 0x48;
+        switch (D_8013AFD8) {
+        case 10:
+            modeTransitionReadyGp = 0;
+            func_80014874(initializeModeSectorReadResourcesTask);
+            D_8013AE88->unk10 |= 1;
+            break;
+        case 11:
+            D_8013AFAA |= 0x48;
+            D_8013B10C = -1;
+            D_8013B10E = -1;
+            D_8013B106 = 0;
+            D_8013AFD8 = 0;
+            D_8013B562 = 0;
+            SetFogNearFar(5000, 6000, 400);
+            setCurrentTaskCallback(func_800A24EC);
+            D_8013B108 = 2;
+            return;
+        default:
+            func_80014838(initializeMode1RacePlayers);
+            setCurrentTaskCallback(selectTaskBySelectedRecordMatch);
+            D_8013AE88->unk10 |= 1;
+            break;
+        }
+    }
+}
 
 void selectTaskBySelectedRecordMatch(void) {
     if (D_8013B560 != D_8013AFCE) {
