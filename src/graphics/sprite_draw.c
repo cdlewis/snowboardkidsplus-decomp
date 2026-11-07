@@ -674,21 +674,52 @@ void setTexturedQuadTextureBlend(s32 index, s32 palette, s32 blend) {
     D_8013B6AC = texture->regions;
 }
 
-INCLUDE_ASM("asm/nonmatchings/graphics/sprite_draw", func_8006FE68);
+void drawTexturedPanel(s16 x, s16 y, s16 w, s16 h, s16 borderW, s16 borderH,
+                  s16 style, s16 palette, s16 blendMode, GsOT *ot, u16 depth) {
+    TexturedQuadFrame *entry;
+    s32 semiTrans, blend, frame;
+    s16 right, bottom, innerX, innerY, innerW, innerH;
+    if (blendMode >= 0) {
+        blend = blendMode;
+        semiTrans = 1;
+    } else {
+        blend = 0;
+        semiTrans = 0;
+    }
+    entry = &D_8012DFF4[style];
+    frame = entry->frameIndex;
+    setTexturedQuadTextureBlend(entry->textureIndex, palette, blend);
+    func_8006BEEC(semiTrans);
+    right = x + w - borderW;
+    bottom = y + h - borderH;
+    drawTexturedQuad(x, y, frame, ot, depth);
+    drawTexturedQuad(x, bottom, frame + 6, ot, depth);
+    innerX = x + borderW;
+    innerW = right - innerX;
+    drawStretchedTexturedQuad(innerX, y, innerW, borderH, frame + 1, ot, depth);
+    drawStretchedTexturedQuad(innerX, bottom, innerW, borderH, frame + 7, ot, depth);
+    drawTexturedQuad(right, y, frame + 2, ot, depth);
+    drawTexturedQuad(right, bottom, frame + 8, ot, depth);
+    innerY = y + borderH;
+    innerH = bottom - innerY;
+    drawStretchedTexturedQuad(x, innerY, borderW, innerH, frame + 3, ot, depth);
+    drawStretchedTexturedQuad(right, innerY, borderW, innerH, frame + 5, ot, depth);
+    drawStretchedTexturedQuad(innerX, innerY, innerW, innerH, frame + 4, ot, depth);
+}
 
 /* Style 0 uses an eight-pixel border on each side. */
 void drawDefaultTexturedPanel(s16 x, s16 y, s16 w, s16 h, s16 clutOffset,
                               s16 blendMode, GsOT *ot, u16 depth) {
-    func_8006FE68(x, y, w, h, 8, 8, 0, clutOffset, blendMode, ot, depth);
+    drawTexturedPanel(x, y, w, h, 8, 8, 0, clutOffset, blendMode, ot, depth);
 }
 
 void drawTexturedFrameStyle9(s16 x, s16 y, s16 w, s16 h, s16 palette,
                              s16 blend, GsOT *ot, u16 depth) {
-    func_8006FE68(x, y, w, h, 8, 8, 9, palette, blend, ot, depth);
+    drawTexturedPanel(x, y, w, h, 8, 8, 9, palette, blend, ot, depth);
 }
 
 /* Style 0x20D uses a sixteen-pixel border on each side. */
 void drawStyle20DTexturedPanel(s16 x, s16 y, s16 w, s16 h, s16 clutOffset,
                               s16 blendMode, GsOT *ot, u16 depth) {
-    func_8006FE68(x, y, w, h, 16, 16, 0x20D, clutOffset, blendMode, ot, depth);
+    drawTexturedPanel(x, y, w, h, 16, 16, 0x20D, clutOffset, blendMode, ot, depth);
 }
