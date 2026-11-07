@@ -65,66 +65,66 @@ segments:
     vram: 0x80010000
     bss_size: 0x5E88
     subsegments:
-      - {start: 0x800, type: .rodata, name: main, linker_section: .rodata.cd_paths}
+      - {start: 0x800, type: .rodata, name: io/cd_queue, linker_section: .rodata.cd_paths}
       - [0x840, rodata, main_cd_paths_tail]
-      - [0x918, .rodata, main]
+      - [0x918, .rodata, io/cd_queue]
       - [0x984, pad]
       - [0x988, rodata, main_cd_commands]
       - [0xB88, rodata]
-      - [0xBA0, .rodata, game/memory_card_read]
-      - [0xBB8, .rodata, main_remaining_tail]
+      - [0xBA0, .rodata, io/memory_card_read]
+      - [0xBB8, .rodata, io/memory_card_tasks]
       - [0xC6C, rodata]
       - [0xC7C, rodata]
       - [0xCB0, rodata]
-      - [0xCD8, .rodata, game/unk_8001E63C]
+      - [0xCD8, .rodata, race/player/player_update]
       - [0xCEC, rodata]
       - [0xE34, rodata]
-      - [0xEAC, .rodata, game/unk_8002B3F4]
+      - [0xEAC, .rodata, race/player/player_actions]
       - [0xECC, rodata]
-      - [0x1024, .rodata, game/unk_8002B3F4_tail]
+      - [0x1024, .rodata, menu/mode_transitions]
       - [0x1090, rodata]
-      - {start: 0x123C, type: .rodata, name: game/unk_8002B3F4, linker_section: .rodata.demonstration_overlay}
-      - {start: 0x1258, type: .rodata, name: game/unk_8002B3F4, linker_section: .rodata.auto_pilot_label}
-      - {start: 0x1264, type: .rodata, name: game/unk_8002B3F4, linker_section: .rodata.result_prize_labels}
+      - {start: 0x123C, type: .rodata, name: race/player/player_actions, linker_section: .rodata.demonstration_overlay}
+      - {start: 0x1258, type: .rodata, name: race/player/player_actions, linker_section: .rodata.auto_pilot_label}
+      - {start: 0x1264, type: .rodata, name: race/player/player_actions, linker_section: .rodata.result_prize_labels}
       - [0x1294, rodata]
-      - {start: 0x12A0, type: .rodata, name: game/unk_8002B3F4_tail, linker_section: .rodata.hit_count_time_out}
-      - {start: 0x12AC, type: .rodata, name: game/unk_8002B3F4_tail, linker_section: .rodata.hit_prize_labels}
-      - {start: 0x12E4, type: .rodata, name: game/unk_8002B3F4, linker_section: .rodata.complete_bonus_label}
+      - {start: 0x12A0, type: .rodata, name: menu/record_screens, linker_section: .rodata.hit_count_time_out}
+      - {start: 0x12AC, type: .rodata, name: menu/record_screens, linker_section: .rodata.hit_prize_labels}
+      - {start: 0x12E4, type: .rodata, name: race/player/player_actions, linker_section: .rodata.complete_bonus_label}
       - [0x12F8, rodata]
-      - {start: 0x1360, type: .rodata, name: game/unk_8002B3F4, linker_section: .rodata.money_labels}
+      - {start: 0x1360, type: .rodata, name: race/player/player_actions, linker_section: .rodata.money_labels}
       - [0x1390, rodata]
-      - {start: 0x1424, type: .rodata, name: game/unk_8002B3F4_tail, linker_section: .rodata.lap_time_label}
-      - {start: 0x1430, type: .rodata, name: game/unk_8002B3F4_tail, linker_section: .rodata.lap_time_format}
+      - {start: 0x1424, type: .rodata, name: race/ui/race_hud, linker_section: .rodata.lap_time_label}
+      - {start: 0x1430, type: .rodata, name: race/ui/race_hud, linker_section: .rodata.lap_time_format}
       - [0x1444, rodata]
-      - {start: 0x1450, type: .rodata, name: game/unk_8002B3F4_tail, linker_section: .rodata.best_lap_label}
+      - {start: 0x1450, type: .rodata, name: race/ui/race_hud, linker_section: .rodata.best_lap_label}
       - [0x1460, rodata]
       - [0x149C, rodata]
-      - [0x14C4, .rodata, game/unk_800497B8]
+      - [0x14C4, .rodata, unclassified/graphics_800497B8]
       - [0x14D4, rodata]
-      - {start: 0x1590, type: .rodata, name: game/unk_800497B8, linker_section: .rodata.fading_text_glyph_banks}
+      - {start: 0x1590, type: .rodata, name: race/effects/player_effects, linker_section: .rodata.fading_text_glyph_banks}
       - [0x15A0, rodata]
-      - [0x1A38, .rodata, game/unk_80070274]
+      - [0x1A38, .rodata, menu/task_widgets]
       - [0x1A78, rodata]
       - [0x1C3C, rodata]
       - [0x1C68, rodata]
-      - [0x1E40, .rodata, game/unk_8007CC78]
+      - [0x1E40, .rodata, unclassified/menu_8007CC78]
       - [0x1ED8, rodata]
       - [0x2520, rodata, main_tail_jump_tables]
       - [0x2534, rodata]
       - [0x2618, rodata]
-      - {start: 0x26A0, type: .rodata, name: main_tail, linker_section: .rodata.board_level_label}
+      - {start: 0x26A0, type: .rodata, name: menu/panel_tasks, linker_section: .rodata.board_level_label}
       - [0x26B0, rodata]
       - [0x2794, rodata]
       - [0x2840, rodata]
       - [0x288C, rodata]
       - [0x28D0, rodata]
       - [0x2964, rodata]
-      - [0x2A0C, .rodata, main_tail_ui]
+      - [0x2A0C, .rodata, menu/selection_tasks]
       - [0x2A30, rodata]
       - [0x2A58, rodata]
-      - [0x2B54, .rodata, main_tail_text_playback]
-      - {start: 0x2B68, type: .rodata, name: main_tail_text_playback, linker_section: .rodata.text_playback_padding}
-      - [0x2B6C, .rodata, main_tail_resources]
+      - [0x2B54, .rodata, text/text_playback]
+      - {start: 0x2B68, type: .rodata, name: text/text_playback, linker_section: .rodata.text_playback_padding}
+      - [0x2B6C, .rodata, text/resource_playback]
       - [0x2B80, lib, libspu, spu, .rdata]
       - [0x2BD0, lib, libsnd, ssopenq, .rdata]
       - [0x2C00, lib, libsnd, seqinit, .rdata]
@@ -156,28 +156,68 @@ segments:
       - [0x3998, lib, libmcrd421, userfunc, .rdata]
       - [0x39B1, pad]
       - [0x39B4, c, main]
+      - [0x3A78, c, io/cd_queue]
+      - [0x4E7C, c, engine/task_scheduler]
+      - [0x5474, c, io/controller_input]
       - [0x6604, c, engine/random]
-      - [0x66E0, c, main_remaining]
-      - [0x9D20, c, game/memory_card_read]
-      - [0x9E70, c, main_remaining_tail]
+      - [0x66E0, c, graphics/texture_upload]
+      - [0x7680, c, race/player/player_animation]
+      - [0x83AC, c, audio/sound_manager]
+      - [0x9234, c, io/memory_card]
+      - [0x9D20, c, io/memory_card_read]
+      - [0x9E70, c, io/memory_card_tasks]
+      - [0xA53C, c, io/movie_stream]
+      - [0xACE8, c, engine/frame_sync]
       - [0xAD40, c, engine/game_loop]
       - [0xB640, c, engine/task_transitions]
       # Working groups based on rodata consumers; original object boundaries are unknown.
-      - [0xEE10, c, game/unk_8001E63C]
+      - [0xEE10, c, race/player/player_update]
       # Absolute-addressed player helpers begin here.
-      - [0x1AD60, c, game/unk_8002A560]
-      - [0x1BBF4, c, game/unk_8002B3F4]
-      - [0x20618, c, game/unk_8002B3F4_tail]
-      - [0x39FB8, c, game/unk_800497B8]
-      - [0x60A74, c, game/unk_80070274]
-      - [0x6C69C, c, game/unk_8007BE9C]
-      - [0x6D478, c, game/unk_8007CC78]
+      - [0x1AD60, c, race/player/player_input]
+      - [0x1BBF4, c, race/player/player_actions]
+      - [0x1F9A4, c, graphics/background_resources]
+      - [0x20618, c, menu/mode_transitions]
+      - [0x23DE4, c, race/ui/race_panels]
+      - [0x28050, c, menu/record_screens]
+      - [0x2D1A4, c, race/player/player_results]
+      - [0x2E73C, c, race/camera/race_camera]
+      - [0x2F670, c, unclassified/race_8003EE70]
+      - [0x33DAC, c, race/ui/race_hud]
+      - [0x34AF4, c, race/effects/coordinate_effects]
+      - [0x39FB8, c, unclassified/graphics_800497B8]
+      - [0x3AC54, c, race/course/course_geometry]
+      - [0x3DB30, c, unclassified/graphics_8004D330]
+      - [0x42D30, c, graphics/model_renderer]
+      - [0x49278, c, race/course/course_objects]
+      - [0x50334, c, graphics/primitive_draw]
+      - [0x51530, c, graphics/tim_archive]
+      - [0x51628, c, engine/linear_random]
+      - [0x51680, c, race/effects/player_effects]
+      - [0x5C1FC, c, io/controller_effects]
+      - [0x5C5DC, c, graphics/sprite_draw]
+      - [0x60A74, c, menu/task_widgets]
+      - [0x6C69C, c, unclassified/menu_8007BE9C]
+      - [0x6D478, c, unclassified/menu_8007CC78]
+      - [0x79FA4, c, menu/save_record_tasks]
       - [0x7CE30, c, engine/game_options]
-      - [0x7CF08, c, main_tail]
+      - [0x7CF08, c, menu/panel_tasks]
+      - [0x87AB8, c, race/player/player_model_preview]
+      - [0x886BC, c, menu/grid_selection]
+      - [0x8BDA0, c, race/player/player_palette]
+      - [0x8C4FC, c, menu/resource_tasks]
+      - [0x91714, c, text/text_sequence]
+      - [0x925A0, c, race/camera/task_camera]
       # The UI continuation accesses the transition flag absolutely.
-      - [0x92750, c, main_tail_ui]
-      - [0x96D08, c, main_tail_text_playback]
-      - [0x970B4, c, main_tail_resources]
+      - [0x92750, c, menu/selection_tasks]
+      - [0x93F50, c, io/controller_playback]
+      - [0x9443C, c, menu/unlock_menu]
+      - [0x95AD8, c, menu/number_adjustment]
+      - [0x962D4, c, text/text_entries]
+      - [0x969E0, c, audio/music_sequence]
+      - [0x96D08, c, text/text_playback]
+      - [0x970B4, c, text/resource_playback]
+      - [0x984E8, c, menu/unlock_notification]
+      - [0x98784, c, io/host_file]
       - [0x98A04, lib, libmath, divsf3, .text]
       - [0x98B54, lib, libmath, fixsfsi, .text]
       - [0x98C14, lib, libmath, fltsisf, .text]
@@ -577,135 +617,135 @@ segments:
       - [0xC7828, lib, libapi, chclrpad, .text]
       - [0xC7898, data, C7898]
       - [0xC78E8, data, C78E8] # estimated
-      - {start: 0xC7C84, type: .data, name: main, linker_section: .data.cd_requests}
-      - {start: 0xC8384, type: .data, name: main, linker_section: .data.cd_commands}
-      - {start: 0xC83A4, type: .data, name: main, linker_section: .data.cd_files}
-      - {start: 0xC83EC, type: .data, name: main, linker_section: .data.initial_task_callbacks}
-      - {start: 0xC8404, type: .data, name: main, linker_section: .data.game_tasks}
+      - {start: 0xC7C84, type: .data, name: io/cd_queue, linker_section: .data.cd_requests}
+      - {start: 0xC8384, type: .data, name: io/cd_queue, linker_section: .data.cd_commands}
+      - {start: 0xC83A4, type: .data, name: io/cd_queue, linker_section: .data.cd_files}
+      - {start: 0xC83EC, type: .data, name: engine/task_scheduler, linker_section: .data.initial_task_callbacks}
+      - {start: 0xC8404, type: .data, name: engine/task_scheduler, linker_section: .data.game_tasks}
       - [0xC9D04, data]
-      - {start: 0xD9D04, type: .data, name: main, linker_section: .data.task_resource_bitmap}
-      - {start: 0xD9D24, type: .data, name: main, linker_section: .data.controller_analog_response}
-      - {start: 0xD9D58, type: .data, name: main, linker_section: .data.controller_receive_buffers}
+      - {start: 0xD9D04, type: .data, name: engine/task_scheduler, linker_section: .data.task_resource_bitmap}
+      - {start: 0xD9D24, type: .data, name: io/controller_input, linker_section: .data.controller_analog_response}
+      - {start: 0xD9D58, type: .data, name: io/controller_input, linker_section: .data.controller_receive_buffers}
       - [0xD9D9C, data, D9D9C]
       - [0xDAD9C, .data, engine/random]
-      - {start: 0xDAE9C, type: .data, name: main_remaining, linker_section: .data.saved_image_entries}
+      - {start: 0xDAE9C, type: .data, name: graphics/texture_upload, linker_section: .data.saved_image_entries}
       - [0xDB89C, data, DB89C]
-      - {start: 0xDBA4C, type: .data, name: main_remaining, linker_section: .data.player_animation_pose}
-      - {start: 0xDBAAC, type: .data, name: main_remaining, linker_section: .data.sound_bank_loaded}
-      - {start: 0xDBAB8, type: .data, name: main_remaining, linker_section: .data.sound_sequence_table}
-      - {start: 0xDBB68, type: .data, name: main_remaining, linker_section: .data.sound_voice_records}
+      - {start: 0xDBA4C, type: .data, name: race/player/player_animation, linker_section: .data.player_animation_pose}
+      - {start: 0xDBAAC, type: .data, name: audio/sound_manager, linker_section: .data.sound_bank_loaded}
+      - {start: 0xDBAB8, type: .data, name: audio/sound_manager, linker_section: .data.sound_sequence_table}
+      - {start: 0xDBB68, type: .data, name: audio/sound_manager, linker_section: .data.sound_voice_records}
       - [0xDBB88, data, DBB88]
-      - {start: 0xDBD28, type: .data, name: main_remaining, linker_section: .data.memory_card_file_names}
-      - {start: 0xDBD3C, type: .data, name: main_remaining, linker_section: .data.memory_card_tables}
-      - {start: 0xDBD64, type: .data, name: main_remaining, linker_section: .data.memory_card_save_header}
+      - {start: 0xDBD28, type: .data, name: io/memory_card, linker_section: .data.memory_card_file_names}
+      - {start: 0xDBD3C, type: .data, name: io/memory_card, linker_section: .data.memory_card_tables}
+      - {start: 0xDBD64, type: .data, name: io/memory_card, linker_section: .data.memory_card_save_header}
       - [0xDC7E4, data, DC7E4]
       - {start: 0xDC7F0, type: .data, name: engine/game_loop, linker_section: .data.render_state}
       - {start: 0xDCA00, type: .data, name: engine/game_loop, linker_section: .data.render_buffers}
-      - {start: 0x110A00, type: .data, name: main_remaining, linker_section: .data.player_model_parts}
+      - {start: 0x110A00, type: .data, name: race/player/player_animation, linker_section: .data.player_model_parts}
       - [0x110BEC, data, player_model_parts_tail]
       - {start: 0x110CA8, type: .data, name: engine/task_transitions, linker_section: .data.selected_player_restore_frames}
       - {start: 0x110CC4, type: .data, name: engine/task_transitions, linker_section: .data.player_resource_texture_positions}
       - [0x110CD4, data, player_texture_origins]
-      - {start: 0x110CE4, type: .data, name: main_tail, linker_section: .data.grid_resource_sector_ranges}
+      - {start: 0x110CE4, type: .data, name: menu/panel_tasks, linker_section: .data.grid_resource_sector_ranges}
       - {start: 0x110E74, type: .data, name: engine/task_transitions, linker_section: .data.player_model_texture_offsets}
       - [0x110EA4, data, grid_resource_sector_ranges_tail]
-      - [0x11109C, .data, game/unk_8001E63C]
+      - [0x11109C, .data, race/player/player_update]
       - [0x11125C, data, 11125C]
-      - {start: 0x11126C, type: .data, name: game/unk_8001E63C, linker_section: .data.player_task_phases}
-      - {start: 0x11128C, type: .data, name: game/unk_8001E63C, linker_section: .data.player_state30_task_phases}
-      - {start: 0x111298, type: .data, name: game/unk_8001E63C, linker_section: .data.player_state30_animation_countdowns}
+      - {start: 0x11126C, type: .data, name: race/player/player_update, linker_section: .data.player_task_phases}
+      - {start: 0x11128C, type: .data, name: race/player/player_update, linker_section: .data.player_state30_task_phases}
+      - {start: 0x111298, type: .data, name: race/player/player_update, linker_section: .data.player_state30_animation_countdowns}
       - [0x1112B0, data, player_task_phases_tail]
       - {start: 0x113E60, type: .data, name: engine/task_transitions, linker_section: .data.player_resource_texture_selections}
-      - {start: 0x113E80, type: .data, name: game/unk_8001E63C, linker_section: .data.player_variant_attributes}
-      - {start: 0x113F90, type: .data, name: game/unk_8001E63C, linker_section: .data.player_character_attributes}
+      - {start: 0x113E80, type: .data, name: race/player/player_update, linker_section: .data.player_variant_attributes}
+      - {start: 0x113F90, type: .data, name: race/player/player_update, linker_section: .data.player_character_attributes}
       - [0x11401C, data, player_attributes_tail]
-      - {start: 0x114434, type: .data, name: game/unk_8002B3F4, linker_section: .data.player_mode_messages}
+      - {start: 0x114434, type: .data, name: race/player/player_actions, linker_section: .data.player_mode_messages}
       - [0x11447C, data, player_mode_messages_tail]
-      - {start: 0x114488, type: .data, name: game/unk_8002B3F4, linker_section: .data.player_mode_message_texts}
+      - {start: 0x114488, type: .data, name: race/player/player_actions, linker_section: .data.player_mode_message_texts}
       - [0x114490, data, player_mode_message_texts_tail]
-      - {start: 0x114878, type: .data, name: game/unk_8002B3F4, linker_section: .data.falling_paired_visual_frames}
-      - {start: 0x1148B0, type: .data, name: game/unk_8002B3F4, linker_section: .data.controller_input_sequences}
-      - {start: 0x11494C, type: .data, name: game/unk_8002B3F4, linker_section: .data.result_label_tables}
+      - {start: 0x114878, type: .data, name: race/player/player_actions, linker_section: .data.falling_paired_visual_frames}
+      - {start: 0x1148B0, type: .data, name: race/player/player_actions, linker_section: .data.controller_input_sequences}
+      - {start: 0x11494C, type: .data, name: race/player/player_actions, linker_section: .data.result_label_tables}
       - [0x114964, data, controller_input_sequences_tail]
-      - {start: 0x1149A8, type: .data, name: game/unk_8002B3F4, linker_section: .data.player_camera_views}
+      - {start: 0x1149A8, type: .data, name: race/player/player_actions, linker_section: .data.player_camera_views}
       - [0x1149E8, data, player_camera_state_tail]
-      - {start: 0x114A48, type: .data, name: game/unk_8002B3F4, linker_section: .data.course_hit_time_limits}
+      - {start: 0x114A48, type: .data, name: race/player/player_actions, linker_section: .data.course_hit_time_limits}
       - [0x114A70, data, course_hit_time_limits_tail]
-      - {start: 0x114A9C, type: .data, name: game/unk_8002B3F4, linker_section: .data.course_count_targets}
-      - {start: 0x114AA8, type: .data, name: game/unk_8002B3F4, linker_section: .data.course_hit_targets}
-      - {start: 0x114AB4, type: .data, name: game/unk_8002B3F4, linker_section: .data.player_flag_visual_frames}
-      - {start: 0x114AE4, type: .data, name: game/unk_8002B3F4, linker_section: .data.player_side_visual_frames}
+      - {start: 0x114A9C, type: .data, name: race/player/player_actions, linker_section: .data.course_count_targets}
+      - {start: 0x114AA8, type: .data, name: race/player/player_actions, linker_section: .data.course_hit_targets}
+      - {start: 0x114AB4, type: .data, name: race/player/player_actions, linker_section: .data.player_flag_visual_frames}
+      - {start: 0x114AE4, type: .data, name: race/player/player_actions, linker_section: .data.player_side_visual_frames}
       - [0x114B04, data, player_flag_visual_frames_tail]
-      - {start: 0x115614, type: .data, name: game/unk_800497B8, linker_section: .data.camera_overlay_packets}
-      - {start: 0x115714, type: .data, name: game/unk_800497B8, linker_section: .data.offset_screen_copy_sprites}
+      - {start: 0x115614, type: .data, name: unclassified/graphics_8004D330, linker_section: .data.camera_overlay_packets}
+      - {start: 0x115714, type: .data, name: unclassified/graphics_8004D330, linker_section: .data.offset_screen_copy_sprites}
       - [0x1157D4, data, offset_screen_copy_sprites_tail]
-      - {start: 0x115914, type: .data, name: game/unk_800497B8, linker_section: .data.course_sector_resources}
+      - {start: 0x115914, type: .data, name: race/course/course_objects, linker_section: .data.course_sector_resources}
       - [0x1161DC, data, course_sector_resources_tail]
-      - {start: 0x119EA0, type: .data, name: game/unk_800497B8, linker_section: .data.visual_placement_heights}
+      - {start: 0x119EA0, type: .data, name: race/course/course_objects, linker_section: .data.visual_placement_heights}
       - [0x119EC4, data, visual_placement_heights_tail]
-      - {start: 0x119F44, type: .data, name: game/unk_800497B8, linker_section: .data.proximity_emitter_placements}
+      - {start: 0x119F44, type: .data, name: race/course/course_objects, linker_section: .data.proximity_emitter_placements}
       - [0x119F64, data, proximity_emitter_placements_tail]
-      - {start: 0x11A164, type: .data, name: game/unk_800497B8, linker_section: .data.moving_visual_placements}
+      - {start: 0x11A164, type: .data, name: race/course/course_objects, linker_section: .data.moving_visual_placements}
       - [0x11A218, data, moving_visual_placements_tail]
-      - {start: 0x11A268, type: .data, name: game/unk_800497B8, linker_section: .data.orbiting_task_placements}
+      - {start: 0x11A268, type: .data, name: race/course/course_objects, linker_section: .data.orbiting_task_placements}
       - [0x11A280, data, orbiting_task_placements_tail]
-      - {start: 0x11C454, type: .data, name: game/unk_800497B8, linker_section: .data.course_triggers}
+      - {start: 0x11C454, type: .data, name: race/course/course_objects, linker_section: .data.course_triggers}
       - [0x11C594, data, course_triggers_tail]
-      - {start: 0x11CF2C, type: .data, name: game/unk_800497B8, linker_section: .data.player_render_snapshots}
+      - {start: 0x11CF2C, type: .data, name: race/effects/player_effects, linker_section: .data.player_render_snapshots}
       - [0x11D02C, data, player_render_snapshots_tail]
-      - {start: 0x11D0EC, type: .data, name: game/unk_800497B8, linker_section: .data.player_paired_quad_offsets}
+      - {start: 0x11D0EC, type: .data, name: race/effects/player_effects, linker_section: .data.player_paired_quad_offsets}
       - [0x11D10C, data, player_paired_quad_offsets_tail]
-      - {start: 0x11D12C, type: .data, name: game/unk_800497B8, linker_section: .data.quad_animation}
-      - {start: 0x11D190, type: .data, name: game/unk_800497B8, linker_section: .data.alternate_quad_steps}
+      - {start: 0x11D12C, type: .data, name: race/effects/player_effects, linker_section: .data.quad_animation}
+      - {start: 0x11D190, type: .data, name: race/effects/player_effects, linker_section: .data.alternate_quad_steps}
       - [0x11D1F4, data, 11D1F4]
-      - {start: 0x11D234, type: .data, name: game/unk_800497B8, linker_section: .data.player_triple_quad_offsets}
+      - {start: 0x11D234, type: .data, name: race/effects/player_effects, linker_section: .data.player_triple_quad_offsets}
       - [0x11D24C, data, player_triple_quad_offsets_tail]
-      - {start: 0x11D294, type: .data, name: game/unk_800497B8, linker_section: .data.quad_shrink}
-      - {start: 0x11D2DC, type: .data, name: game/unk_800497B8, linker_section: .data.middle_shrink_vertices}
-      - {start: 0x11D2FC, type: .data, name: game/unk_800497B8, linker_section: .data.right_quad_vertices}
-      - {start: 0x11D31C, type: .data, name: game/unk_800497B8, linker_section: .data.middle_shrink_packet}
-      - {start: 0x11D344, type: .data, name: game/unk_800497B8, linker_section: .data.right_quad_packet}
-      - {start: 0x11D36C, type: .data, name: game/unk_800497B8, linker_section: .data.sliding_quad_packet}
-      - {start: 0x11D394, type: .data, name: game/unk_800497B8, linker_section: .data.color_cycle_palette}
+      - {start: 0x11D294, type: .data, name: race/effects/player_effects, linker_section: .data.quad_shrink}
+      - {start: 0x11D2DC, type: .data, name: race/effects/player_effects, linker_section: .data.middle_shrink_vertices}
+      - {start: 0x11D2FC, type: .data, name: race/effects/player_effects, linker_section: .data.right_quad_vertices}
+      - {start: 0x11D31C, type: .data, name: race/effects/player_effects, linker_section: .data.middle_shrink_packet}
+      - {start: 0x11D344, type: .data, name: race/effects/player_effects, linker_section: .data.right_quad_packet}
+      - {start: 0x11D36C, type: .data, name: race/effects/player_effects, linker_section: .data.sliding_quad_packet}
+      - {start: 0x11D394, type: .data, name: race/effects/player_effects, linker_section: .data.color_cycle_palette}
       - [0x11D3B4, data, color_cycle_palette_tail]
-      - [0x11DC38, .data, game/unk_800497B8]
+      - [0x11DC38, .data, unclassified/graphics_800497B8]
       - [0x11DC60, data, 11DC60]
-      - [0x11F0E4, .data, game/sprite_templates]
+      - [0x11F0E4, .data, graphics/sprite_templates]
       - [0x11F0FC, data, 11F0FC]
-      - {start: 0x11F3D0, type: .data, name: game/unk_800497B8, linker_section: .data.uppercase_glyph_metrics}
+      - {start: 0x11F3D0, type: .data, name: graphics/sprite_draw, linker_section: .data.uppercase_glyph_metrics}
       - [0x11F404, data, uppercase_glyph_metrics_tail]
-      - [0x11F900, .data, game/unk_80070274]
-      - {start: 0x11F90C, type: .data, name: game/unk_80070274, linker_section: .data.secondary_task_sequence}
-      - [0x11F93C, .data, game/unk_8007CC78]
-      - {start: 0x11F97C, type: .data, name: game/unk_80070274, linker_section: .data.animated_sprite16}
+      - [0x11F900, .data, menu/task_widgets]
+      - {start: 0x11F90C, type: .data, name: menu/task_widgets, linker_section: .data.secondary_task_sequence}
+      - [0x11F93C, .data, unclassified/menu_8007CC78]
+      - {start: 0x11F97C, type: .data, name: menu/task_widgets, linker_section: .data.animated_sprite16}
       - [0x11F98C, data, 11F98C]
-      - {start: 0x11FBDC, type: .data, name: game/unk_80070274, linker_section: .data.text_panel_message}
+      - {start: 0x11FBDC, type: .data, name: menu/task_widgets, linker_section: .data.text_panel_message}
       - [0x11FC00, data, 11FC00]
-      - {start: 0x120F24, type: .data, name: game/unk_8007CC78, linker_section: .data.task_shadowed_text}
+      - {start: 0x120F24, type: .data, name: menu/save_record_tasks, linker_section: .data.task_shadowed_text}
       - [0x120F40, data, task_shadowed_text_tail]
-      - {start: 0x122040, type: .data, name: main_tail, linker_section: .data.board_selection_levels}
-      - {start: 0x12204C, type: .data, name: main_tail, linker_section: .data.board_style_text}
-      - {start: 0x12205C, type: .data, name: main_tail, linker_section: .data.board_selection_styles}
+      - {start: 0x122040, type: .data, name: menu/panel_tasks, linker_section: .data.board_selection_levels}
+      - {start: 0x12204C, type: .data, name: menu/panel_tasks, linker_section: .data.board_style_text}
+      - {start: 0x12205C, type: .data, name: menu/panel_tasks, linker_section: .data.board_selection_styles}
       - [0x122068, data, board_selection_tail]
-      - {start: 0x122564, type: .data, name: main_tail, linker_section: .data.current_task_panel_text}
-      - {start: 0x122574, type: .data, name: main_tail, linker_section: .data.task_selection_panel_text}
-      - {start: 0x122590, type: .data, name: main_tail, linker_section: .data.split_selection_bounds_configs}
+      - {start: 0x122564, type: .data, name: menu/panel_tasks, linker_section: .data.current_task_panel_text}
+      - {start: 0x122574, type: .data, name: menu/panel_tasks, linker_section: .data.task_selection_panel_text}
+      - {start: 0x122590, type: .data, name: menu/grid_selection, linker_section: .data.split_selection_bounds_configs}
       - [0x1225B0, data, 1225B0]
-      - {start: 0x1225BC, type: .data, name: main_tail, linker_section: .data.task_panel_144x48_text}
-      - {start: 0x1225CC, type: .data, name: main_tail, linker_section: .data.task_player_value_panel_label}
-      - {start: 0x1225D8, type: .data, name: main_tail, linker_section: .data.task_player_value_panel_text}
+      - {start: 0x1225BC, type: .data, name: menu/grid_selection, linker_section: .data.task_panel_144x48_text}
+      - {start: 0x1225CC, type: .data, name: menu/grid_selection, linker_section: .data.task_player_value_panel_label}
+      - {start: 0x1225D8, type: .data, name: menu/grid_selection, linker_section: .data.task_player_value_panel_text}
       - [0x1225E8, data, 1225E8]
-      - {start: 0x1226E8, type: .data, name: main_tail, linker_section: .data.player_palette_transition_pixels}
+      - {start: 0x1226E8, type: .data, name: race/player/player_palette, linker_section: .data.player_palette_transition_pixels}
       - [0x122708, data, player_palette_transition_tail]
-      - {start: 0x122F38, type: .data, name: main_tail, linker_section: .data.indexed_sector_ranges}
+      - {start: 0x122F38, type: .data, name: text/text_sequence, linker_section: .data.indexed_sector_ranges}
       - [0x122F8C, data, 122F8C]
-      - {start: 0x122FF4, type: .data, name: main_tail_ui, linker_section: .data.controller_playback_entries}
-      - {start: 0x12303C, type: .data, name: main_tail_ui, linker_section: .data.controller_playback_durations}
+      - {start: 0x122FF4, type: .data, name: io/controller_playback, linker_section: .data.controller_playback_entries}
+      - {start: 0x12303C, type: .data, name: io/controller_playback, linker_section: .data.controller_playback_durations}
       - [0x123054, data, 123054]
-      - {start: 0x123100, type: .data, name: main_tail, linker_section: .data.number_adjustment_arrow}
-      - {start: 0x123114, type: .data, name: main_tail_resources, linker_section: .data.text_entry_cd_commands}
+      - {start: 0x123100, type: .data, name: menu/panel_tasks, linker_section: .data.number_adjustment_arrow}
+      - {start: 0x123114, type: .data, name: text/resource_playback, linker_section: .data.text_entry_cd_commands}
       - [0x1232E0, data, text_entry_cd_commands_tail]
-      - {start: 0x123398, type: .data, name: main_tail_resources, linker_section: .data.secondary_resource_tables}
+      - {start: 0x123398, type: .data, name: text/resource_playback, linker_section: .data.secondary_resource_tables}
       - [0x123554, data, secondary_resource_tables_tail]
       - {start: 0x1235BC, type: .data, name: syslib/libmath/ferr, linker_section: .data.math_error}
       - [0x1235C4, lib, libsnd, ssinit, .data]
@@ -756,97 +796,97 @@ segments:
       - [0x12B624, lib, libmcrd421, userfunc, .data]
       - [0x12B628, data]
       - [0x12B638, lib, libapi, pad, .data]
-      - {start: 0x12B648, type: .sdata, name: main, linker_section: .sdata.cd_command_state, linker_section_order: .data}
-      - {start: 0x12B668, type: .sdata, name: main, linker_section: .sdata.cd_read_state, linker_section_order: .data}
-      - {start: 0x12B670, type: .sdata, name: main, linker_section_order: .data}
-      - {start: 0x12B678, type: .sdata, name: main, linker_section: .sdata.cd_command_active, linker_section_order: .data}
-      - {start: 0x12B67C, type: .sdata, name: main, linker_section: .sdata.cd_io_flags, linker_section_order: .data}
-      - {start: 0x12B680, type: .sdata, name: main, linker_section: .sdata.cd_volume_fade, linker_section_order: .data}
-      - {start: 0x12B688, type: .sdata, name: main, linker_section: .sdata.task_scheduler, linker_section_order: .data}
+      - {start: 0x12B648, type: .sdata, name: io/cd_queue, linker_section: .sdata.cd_command_state, linker_section_order: .data}
+      - {start: 0x12B668, type: .sdata, name: io/cd_queue, linker_section: .sdata.cd_read_state, linker_section_order: .data}
+      - {start: 0x12B670, type: .sdata, name: io/cd_queue, linker_section_order: .data}
+      - {start: 0x12B678, type: .sdata, name: io/cd_queue, linker_section: .sdata.cd_command_active, linker_section_order: .data}
+      - {start: 0x12B67C, type: .sdata, name: io/cd_queue, linker_section: .sdata.cd_io_flags, linker_section_order: .data}
+      - {start: 0x12B680, type: .sdata, name: io/cd_queue, linker_section: .sdata.cd_volume_fade, linker_section_order: .data}
+      - {start: 0x12B688, type: .sdata, name: engine/task_scheduler, linker_section: .sdata.task_scheduler, linker_section_order: .data}
       - [0x12B6B8, .data, main]
       - [0x12B6BC, data]
-      - {start: 0x12B6C0, type: .sdata, name: main, linker_section: .sdata.controller_repeat_timing, linker_section_order: .data}
+      - {start: 0x12B6C0, type: .sdata, name: io/controller_input, linker_section: .sdata.controller_repeat_timing, linker_section_order: .data}
       - [0x12B6C4, data]
-      - {start: 0x12B6CC, type: .data, name: main, linker_section: .data.controller_actuator_alignment}
+      - {start: 0x12B6CC, type: .data, name: io/controller_input, linker_section: .data.controller_actuator_alignment}
       - [0x12B6D4, data]
-      - {start: 0x12B6E4, type: .sdata, name: main, linker_section: .sdata.controller_input_state, linker_section_order: .data}
-      - {start: 0x12B6E8, type: .data, name: main, linker_section: .data.controller_input_arrays}
-      - {start: 0x12B708, type: .data, name: main, linker_section: .data.controller_values}
-      - {start: 0x12B70C, type: .sdata, name: game/controller_previous_buttons, linker_section: .sdata.controller_previous_buttons, linker_section_order: .data}
+      - {start: 0x12B6E4, type: .sdata, name: io/controller_input, linker_section: .sdata.controller_input_state, linker_section_order: .data}
+      - {start: 0x12B6E8, type: .data, name: io/controller_input, linker_section: .data.controller_input_arrays}
+      - {start: 0x12B708, type: .data, name: io/controller_input, linker_section: .data.controller_values}
+      - {start: 0x12B70C, type: .sdata, name: io/controller_previous_buttons, linker_section: .sdata.controller_previous_buttons, linker_section_order: .data}
       - {start: 0x12B710, type: .sdata, name: engine/random, linker_section_order: .data}
       - [0x12B714, data, 12B714]
-      - {start: 0x12B728, type: .sdata, name: main_remaining, linker_section_order: .data}
-      - {start: 0x12B72C, type: .sdata, name: main_remaining, linker_section: .sdata.music_state, linker_section_order: .data}
+      - {start: 0x12B728, type: .sdata, name: audio/sound_manager, linker_section_order: .data}
+      - {start: 0x12B72C, type: .sdata, name: audio/sound_manager, linker_section: .sdata.music_state, linker_section_order: .data}
       - [0x12B734, data, 12B734]
       - [0x12B7AC, .data, engine/game_task_scheduler]
-      - {start: 0x12B7B0, type: .sdata, name: main_remaining, linker_section: .sdata.synchronized_frame_count, linker_section_order: .data}
+      - {start: 0x12B7B0, type: .sdata, name: engine/frame_sync, linker_section: .sdata.synchronized_frame_count, linker_section_order: .data}
       - [0x12B7B4, data, 12B7B4]
-      - {start: 0x12B8DC, type: .data, name: game/unk_8002B3F4, linker_section: .data.player_sound_variants}
+      - {start: 0x12B8DC, type: .data, name: race/player/player_actions, linker_section: .data.player_sound_variants}
       - [0x12B8E4, data, 12B8E4]
-      - {start: 0x12B914, type: .data, name: game/unk_8002B3F4, linker_section: .data.falling_paired_visual_animation}
+      - {start: 0x12B914, type: .data, name: race/player/player_actions, linker_section: .data.falling_paired_visual_animation}
       - [0x12B91A, pad]
-      - {start: 0x12B91C, type: .data, name: game/unk_8002B3F4, linker_section: .data.result_icon_palettes}
-      - {start: 0x12B920, type: .data, name: game/unk_8002B3F4, linker_section: .data.result_row_labels}
-      - {start: 0x12B930, type: .data, name: game/unk_8002B3F4_tail, linker_section: .data.hit_count_labels}
+      - {start: 0x12B91C, type: .data, name: race/player/player_actions, linker_section: .data.result_icon_palettes}
+      - {start: 0x12B920, type: .data, name: race/player/player_actions, linker_section: .data.result_row_labels}
+      - {start: 0x12B930, type: .data, name: menu/record_screens, linker_section: .data.hit_count_labels}
       - [0x12B938, data, hit_count_labels_tail]
-      - {start: 0x12B954, type: .data, name: game/unk_8002B3F4, linker_section: .data.menu_sprite_palettes_prefix}
-      - {start: 0x12B958, type: .data, name: game/unk_8002B3F4, linker_section: .data.menu_sprite_palettes}
+      - {start: 0x12B954, type: .data, name: race/player/player_actions, linker_section: .data.menu_sprite_palettes_prefix}
+      - {start: 0x12B958, type: .data, name: race/player/player_actions, linker_section: .data.menu_sprite_palettes}
       - [0x12B96C, data, 12B96C]
-      - {start: 0x12B980, type: .sdata, name: game/unk_8002B3F4, linker_section_order: .data}
+      - {start: 0x12B980, type: .sdata, name: race/player/player_actions, linker_section_order: .data}
       - [0x12B984, data, 12B984]
-      - {start: 0x12B9AC, type: .data, name: game/unk_8002B3F4, linker_section: .data.player_dual_resource_effect_frame}
-      - {start: 0x12B9B4, type: .data, name: game/unk_8002B3F4, linker_section: .data.player_visual_pair_frame}
-      - {start: 0x12B9BC, type: .data, name: game/unk_8002B3F4, linker_section: .data.player_visual_pair_5e80_frame}
-      - {start: 0x12B9C4, type: .data, name: game/unk_8002B3F4, linker_section: .data.player_visual_pair_6780_frame}
+      - {start: 0x12B9AC, type: .data, name: race/player/player_actions, linker_section: .data.player_dual_resource_effect_frame}
+      - {start: 0x12B9B4, type: .data, name: race/player/player_actions, linker_section: .data.player_visual_pair_frame}
+      - {start: 0x12B9BC, type: .data, name: race/player/player_actions, linker_section: .data.player_visual_pair_5e80_frame}
+      - {start: 0x12B9C4, type: .data, name: race/player/player_actions, linker_section: .data.player_visual_pair_6780_frame}
       - [0x12B9CC, data, 12B9CC]
-      - {start: 0x12B9D4, type: .data, name: game/unk_8002B3F4, linker_section: .data.finish_slot_state}
+      - {start: 0x12B9D4, type: .data, name: race/player/player_actions, linker_section: .data.finish_slot_state}
       - [0x12B9D6, pad]
-      - {start: 0x12B9D8, type: .sdata, name: game/unk_800497B8, linker_section_order: .data}
+      - {start: 0x12B9D8, type: .sdata, name: unclassified/graphics_800497B8, linker_section_order: .data}
       - [0x12B9DA, pad]
       - [0x12B9DC, data, 12B9DC]
-      - {start: 0x12BA14, type: .data, name: game/unk_800497B8, linker_section: .data.debug_position_formats}
+      - {start: 0x12BA14, type: .data, name: unclassified/graphics_800497B8, linker_section: .data.debug_position_formats}
       - [0x12BA2C, data, debug_position_formats_tail]
-      - {start: 0x12BA40, type: .data, name: game/unk_800497B8, linker_section: .data.read_pixel_rect}
+      - {start: 0x12BA40, type: .data, name: unclassified/graphics_8004D330, linker_section: .data.read_pixel_rect}
       - [0x12BA48, data, 12BA48]
-      - {start: 0x12BA50, type: .data, name: game/unk_800497B8, linker_section: .data.scanline_copy_rects}
+      - {start: 0x12BA50, type: .data, name: unclassified/graphics_8004D330, linker_section: .data.scanline_copy_rects}
       - [0x12BA60, data, scanline_copy_rects_tail]
-      - {start: 0x12BAA4, type: .data, name: game/unk_800497B8, linker_section: .data.placed_object_visual_frame}
+      - {start: 0x12BAA4, type: .data, name: race/course/course_objects, linker_section: .data.placed_object_visual_frame}
       - [0x12BAAC, data, placed_object_visual_frame_tail]
-      - {start: 0x12BAC8, type: .sdata, name: game/unk_800497B8, linker_section: .sdata.course_visual_frames, linker_section_order: .data}
+      - {start: 0x12BAC8, type: .sdata, name: race/course/course_objects, linker_section: .sdata.course_visual_frames, linker_section_order: .data}
       - [0x12BACC, data, 12BACC]
-      - {start: 0x12BAD0, type: .data, name: game/unk_800497B8, linker_section: .data.empty_course_triggers}
+      - {start: 0x12BAD0, type: .data, name: unclassified/graphics_800497B8, linker_section: .data.empty_course_triggers}
       - [0x12BAD4, data, empty_course_triggers_tail]
-      - {start: 0x12BAFC, type: .data, name: main_remaining, linker_section: .data.linear_random_state}
+      - {start: 0x12BAFC, type: .data, name: engine/linear_random_state, linker_section: .data.linear_random_state}
       - [0x12BB00, data, 12BB00]
-      - {start: 0x12BB28, type: .data, name: game/unk_800497B8, linker_section: .data.color_cycle_rects}
+      - {start: 0x12BB28, type: .data, name: race/effects/player_effects, linker_section: .data.color_cycle_rects}
       - [0x12BB38, data, color_cycle_rects_tail]
-      - {start: 0x12BBB4, type: .sdata, name: game/unk_80070274, linker_section: .sdata.animated_sprite16_page, linker_section_order: .data}
+      - {start: 0x12BBB4, type: .sdata, name: menu/task_widgets, linker_section: .sdata.animated_sprite16_page, linker_section_order: .data}
       - [0x12BBBC, data, 12BBBC]
-      - {start: 0x12BC60, type: .data, name: game/unk_8007CC78, linker_section: .data.lit_object_draw_area_depths}
+      - {start: 0x12BC60, type: .data, name: unclassified/menu_8007CC78, linker_section: .data.lit_object_draw_area_depths}
       - [0x12BC68, data, 12BC68]
-      - {start: 0x12BD00, type: .data, name: main_tail, linker_section: .data.player_model_draw_area_depths}
+      - {start: 0x12BD00, type: .data, name: race/player/player_model_preview, linker_section: .data.player_model_draw_area_depths}
       - [0x12BD08, data, player_model_draw_area_depths_tail]
-      - {start: 0x12BD14, type: .sdata, name: main_tail, linker_section: .sdata.four_bounds_task_flag, linker_section_order: .data}
+      - {start: 0x12BD14, type: .sdata, name: menu/grid_selection, linker_section: .sdata.four_bounds_task_flag, linker_section_order: .data}
       - [0x12BD18, data, 12BD18]
       - [0x12BD70, .data, engine/game_options]
       - [0x12BD78, data, 12BD78]
-      - {start: 0x12BDDC, type: .sdata, name: main, linker_section: .sdata.cd_read_delay, linker_section_order: .data}
-      - {start: 0x12BDE4, type: .data, name: main, linker_section: .data.cd_sync_result}
+      - {start: 0x12BDDC, type: .sdata, name: io/cd_queue, linker_section: .sdata.cd_read_delay, linker_section_order: .data}
+      - {start: 0x12BDE4, type: .data, name: io/cd_queue, linker_section: .data.cd_sync_result}
       - [0x12BDEC, data]
-      - {start: 0x12BDF8, type: .sdata, name: main, linker_section: .sdata.cd_volume_fade_timer, linker_section_order: .data}
-      - {start: 0x12BDFC, type: .sdata, name: main, linker_section: .sdata.dat_start_sector, linker_section_order: .data}
+      - {start: 0x12BDF8, type: .sdata, name: io/cd_queue, linker_section: .sdata.cd_volume_fade_timer, linker_section_order: .data}
+      - {start: 0x12BDFC, type: .sdata, name: io/cd_queue, linker_section: .sdata.dat_start_sector, linker_section_order: .data}
       - [0x12BE00, data]
-      - {start: 0x12BE24, type: .sdata, name: game/unk_800497B8, linker_section: .sdata.geometry_edge_projection, linker_section_order: .data}
+      - {start: 0x12BE24, type: .sdata, name: race/course/course_geometry, linker_section: .sdata.geometry_edge_projection, linker_section_order: .data}
       - [0x12BE54, data]
-      - {start: 0x12BEA4, type: .sdata, name: game/unk_800497B8, linker_section: .sdata.object_sort_saved_stack, linker_section_order: .data}
-      - {start: 0x12BEA8, type: .sdata, name: game/unk_800497B8, linker_section: .sdata.alternate_object_sort_saved_stack, linker_section_order: .data}
+      - {start: 0x12BEA4, type: .sdata, name: race/course/course_objects, linker_section: .sdata.object_sort_saved_stack, linker_section_order: .data}
+      - {start: 0x12BEA8, type: .sdata, name: race/course/course_objects, linker_section: .sdata.alternate_object_sort_saved_stack, linker_section_order: .data}
       - [0x12BEAC, data]
-      - {start: 0x12BEC0, type: .sdata, name: main_tail_resources, linker_section: .sdata.secondary_resource_display_task, linker_section_order: .data}
-      - {start: 0x12BEC4, type: .sdata, name: main_tail_ui, linker_section: .sdata.text_sound_state, linker_section_order: .data}
+      - {start: 0x12BEC0, type: .sdata, name: text/resource_playback, linker_section: .sdata.secondary_resource_display_task, linker_section_order: .data}
+      - {start: 0x12BEC4, type: .sdata, name: menu/selection_tasks, linker_section: .sdata.text_sound_state, linker_section_order: .data}
 
-      - {start: 0x12BEC8, type: .data, name: main, linker_section: .data.cd_search_file}
+      - {start: 0x12BEC8, type: .data, name: io/cd_queue, linker_section: .data.cd_search_file}
       - [0x12BEE0, pad]
-      - {start: 0x12BEE8, type: .data, name: main, linker_section: .data.dat_file}
+      - {start: 0x12BEE8, type: .data, name: io/cd_queue, linker_section: .data.dat_file}
       - [0x12BF00, data]
 
   - name: movie_decode_state_bss
@@ -857,7 +897,7 @@ segments:
     subalign: 1
     section_order: [".bss"]
     subsegments:
-      - {start: 0x12C000, type: .bss, name: main_remaining, linker_section: .bss.movie_decode_state}
+      - {start: 0x12C000, type: .bss, name: io/movie_stream, linker_section: .bss.movie_decode_state}
 
   - name: white_pulse_palette_bss
     type: code
@@ -867,7 +907,7 @@ segments:
     subalign: 1
     section_order: [".bss"]
     subsegments:
-      - {start: 0x12C000, type: .bss, name: game/unk_800497B8, linker_section: .bss.white_pulse_palette}
+      - {start: 0x12C000, type: .bss, name: race/effects/player_effects, linker_section: .bss.white_pulse_palette}
 
   - name: game_textured_quad_template_bss
     type: code
@@ -877,7 +917,7 @@ segments:
     subalign: 1
     section_order: [".bss"]
     subsegments:
-      - {start: 0x12C000, type: .bss, name: game/primitive_templates}
+      - {start: 0x12C000, type: .bss, name: graphics/primitive_templates}
 
   - name: game_sprite_template_bss
     type: code
@@ -887,7 +927,7 @@ segments:
     subalign: 1
     section_order: [".bss"]
     subsegments:
-      - {start: 0x12C000, type: .bss, name: game/sprite_templates}
+      - {start: 0x12C000, type: .bss, name: graphics/sprite_templates}
 
   - name: game_rotated_sprite_template_bss
     type: code
@@ -897,7 +937,7 @@ segments:
     subalign: 1
     section_order: [".bss"]
     subsegments:
-      - {start: 0x12C000, type: .bss, name: game/sprite_templates, linker_section: .bss.rotated_sprite}
+      - {start: 0x12C000, type: .bss, name: graphics/sprite_templates, linker_section: .bss.rotated_sprite}
 
   - name: game_state_value_history_bss
     type: code
@@ -907,7 +947,7 @@ segments:
     subalign: 1
     section_order: [".bss"]
     subsegments:
-      - {start: 0x12C000, type: .bss, name: game/unk_8007CC78, linker_section: .bss.state_value_history}
+      - {start: 0x12C000, type: .bss, name: unclassified/menu_8007CC78, linker_section: .bss.state_value_history}
 
   - name: game_text_sound_slots_bss
     type: code
@@ -917,7 +957,7 @@ segments:
     subalign: 1
     section_order: [".bss"]
     subsegments:
-      - {start: 0x12C000, type: .bss, name: main_tail_sound_slots}
+      - {start: 0x12C000, type: .bss, name: text/text_sound_slots}
 
   - name: sdk_libsnd_ssinit_bss_common_SsFCALL
     type: code

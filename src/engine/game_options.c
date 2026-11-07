@@ -1,5 +1,5 @@
 #include "common.h"
-#include "game/game_options.h"
+#include "game/engine/game_options.h"
 
 u32 gGameOptionFlags = 0x3E;
 u16 gUnlockNotificationFlags = 0;

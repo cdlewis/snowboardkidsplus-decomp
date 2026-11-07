@@ -35,8 +35,13 @@ tools:
           paths:
             - engine/
             - main
-            - main_remaining
-            - main_tail
+            - io/
+            - graphics/
+            - audio/
+            - text/
+            - menu/
+            - race/
+            - unclassified/
         - id: sdk
           name: PSY-Q SDK
           paths:

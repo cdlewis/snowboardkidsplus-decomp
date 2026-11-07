@@ -5,24 +5,64 @@
 # assembler -G0 defaults. Explicit .data externs also retain absolute addressing
 # through tools/cc1psx.py, including in units that otherwise use small data.
 
-MAIN_GAME_UNITS := src/main.c src/main_remaining.c \
-    src/main_remaining_tail.c src/game/memory_card_read.c \
+MAIN_GAME_UNITS := src/main.c \
+    src/io/cd_queue.c \
+    src/engine/task_scheduler.c \
+    src/io/controller_input.c src/graphics/texture_upload.c \
+    src/race/player/player_animation.c \
+    src/audio/sound_manager.c \
+    src/io/memory_card.c \
+    src/io/memory_card_tasks.c \
+    src/io/movie_stream.c \
+    src/engine/frame_sync.c src/io/memory_card_read.c \
     src/engine/game_loop.c src/engine/task_transitions.c \
-    src/game/unk_8001E63C.c \
-    src/game/unk_8002A560.c \
-    src/game/unk_8002B3F4.c \
-    src/game/unk_8002B3F4_tail.c \
-    src/game/unk_800497B8.c \
-    src/game/unk_80070274.c \
-    src/game/unk_8007BE9C.c \
-    src/game/unk_8007CC78.c
+    src/race/player/player_update.c \
+    src/race/player/player_input.c \
+    src/race/player/player_actions.c \
+    src/graphics/background_resources.c \
+    src/menu/mode_transitions.c \
+    src/race/ui/race_panels.c \
+    src/menu/record_screens.c \
+    src/race/player/player_results.c \
+    src/race/camera/race_camera.c \
+    src/unclassified/race_8003EE70.c \
+    src/race/ui/race_hud.c \
+    src/race/effects/coordinate_effects.c \
+    src/unclassified/graphics_800497B8.c \
+    src/race/course/course_geometry.c \
+    src/unclassified/graphics_8004D330.c \
+    src/graphics/model_renderer.c \
+    src/race/course/course_objects.c \
+    src/graphics/primitive_draw.c \
+    src/graphics/tim_archive.c \
+    src/engine/linear_random.c \
+    src/race/effects/player_effects.c \
+    src/io/controller_effects.c \
+    src/graphics/sprite_draw.c \
+    src/menu/task_widgets.c \
+    src/unclassified/menu_8007BE9C.c \
+    src/unclassified/menu_8007CC78.c \
+    src/menu/save_record_tasks.c
 
 G8_UNITS := \
     $(MAIN_GAME_UNITS) \
-    src/main_tail.c \
-    src/main_tail_ui.c \
-    src/main_tail_text_playback.c \
-    src/main_tail_resources.c \
+    src/menu/panel_tasks.c \
+    src/race/player/player_model_preview.c \
+    src/menu/grid_selection.c \
+    src/race/player/player_palette.c \
+    src/menu/resource_tasks.c \
+    src/text/text_sequence.c \
+    src/race/camera/task_camera.c \
+    src/menu/selection_tasks.c \
+    src/io/controller_playback.c \
+    src/menu/unlock_menu.c \
+    src/menu/number_adjustment.c \
+    src/text/text_entries.c \
+    src/audio/music_sequence.c \
+    src/text/text_playback.c \
+    src/text/resource_playback.c \
+    src/menu/unlock_notification.c \
+    src/io/host_file.c \
     src/engine/game_options.c \
     src/engine/random.c
 $(foreach unit,$(G8_UNITS),$(eval UNIT_G_$(unit) := 8))
@@ -32,18 +72,47 @@ $(foreach unit,$(GAME_TEXT_UNITS),$(eval UNIT_REORDER_$(unit) := 1))
 
 # These modules retain stores and stack restores before returns in the original instruction stream.
 UNIT_REORDER_src/main.c := 0
-UNIT_REORDER_src/main_remaining.c := 0
-UNIT_REORDER_src/main_remaining_tail.c := 0
-UNIT_REORDER_src/game/memory_card_read.c := 0
+UNIT_REORDER_src/io/cd_queue.c := 0
+UNIT_REORDER_src/engine/task_scheduler.c := 0
+UNIT_REORDER_src/io/controller_input.c := 0
+UNIT_REORDER_src/graphics/texture_upload.c := 0
+UNIT_REORDER_src/race/player/player_animation.c := 0
+UNIT_REORDER_src/audio/sound_manager.c := 0
+UNIT_REORDER_src/io/memory_card.c := 0
+UNIT_REORDER_src/io/memory_card_tasks.c := 0
+UNIT_REORDER_src/io/movie_stream.c := 0
+UNIT_REORDER_src/engine/frame_sync.c := 0
+UNIT_REORDER_src/io/memory_card_read.c := 0
 UNIT_REORDER_src/engine/game_loop.c := 0
 UNIT_REORDER_src/engine/task_transitions.c := 0
-UNIT_REORDER_src/game/unk_8001E63C.c := 0
-UNIT_REORDER_src/game/unk_8002A560.c := 0
-UNIT_REORDER_src/game/unk_8002B3F4.c := 0
-UNIT_REORDER_src/game/unk_8002B3F4_tail.c := 0
-UNIT_REORDER_src/game/unk_800497B8.c := 0
-UNIT_REORDER_src/game/unk_80070274.c := 0
-UNIT_REORDER_src/game/unk_8007CC78.c := 0
+UNIT_REORDER_src/race/player/player_update.c := 0
+UNIT_REORDER_src/race/player/player_input.c := 0
+UNIT_REORDER_src/race/player/player_actions.c := 0
+UNIT_REORDER_src/graphics/background_resources.c := 0
+UNIT_REORDER_src/menu/mode_transitions.c := 0
+UNIT_REORDER_src/race/ui/race_panels.c := 0
+UNIT_REORDER_src/menu/record_screens.c := 0
+UNIT_REORDER_src/race/player/player_results.c := 0
+UNIT_REORDER_src/race/camera/race_camera.c := 0
+UNIT_REORDER_src/unclassified/race_8003EE70.c := 0
+UNIT_REORDER_src/race/ui/race_hud.c := 0
+UNIT_REORDER_src/race/effects/coordinate_effects.c := 0
+UNIT_REORDER_src/unclassified/graphics_800497B8.c := 0
+UNIT_REORDER_src/race/course/course_geometry.c := 0
+UNIT_REORDER_src/unclassified/graphics_8004D330.c := 0
+UNIT_REORDER_src/graphics/model_renderer.c := 0
+UNIT_REORDER_src/race/course/course_objects.c := 0
+UNIT_REORDER_src/graphics/primitive_draw.c := 0
+UNIT_REORDER_src/graphics/tim_archive.c := 0
+UNIT_REORDER_src/engine/linear_random.c := 0
+UNIT_G_src/engine/linear_random_state.c := 8
+UNIT_REORDER_src/engine/linear_random_state.c := 0
+UNIT_REORDER_src/race/effects/player_effects.c := 0
+UNIT_REORDER_src/io/controller_effects.c := 0
+UNIT_REORDER_src/graphics/sprite_draw.c := 0
+UNIT_REORDER_src/menu/task_widgets.c := 0
+UNIT_REORDER_src/unclassified/menu_8007CC78.c := 0
+UNIT_REORDER_src/menu/save_record_tasks.c := 0
 
 GCC272_G0_REORDER_PAD_UNITS := \
     src/syslib/libcard/card.c \

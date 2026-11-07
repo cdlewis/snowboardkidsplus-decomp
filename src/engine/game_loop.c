@@ -3,18 +3,18 @@
 #define GRAPHICS_GP_ADDRESSING
 #define COORDINATE_GP_ADDRESSING
 #include "common.h"
-#include "game/task.h"
-#include "game/game_task_scheduler.h"
-#include "game/graphics.h"
-#include "game/coordinate.h"
-#include "game/game_loop.h"
-#include "game/cd_queue.h"
-#include "game/music.h"
-#include "game/controller.h"
-#include "game/race_camera.h"
-#include "game/linear_random.h"
+#include "game/engine/task.h"
+#include "game/engine/game_task_scheduler.h"
+#include "game/graphics/graphics.h"
+#include "game/graphics/coordinate.h"
+#include "game/engine/game_loop.h"
+#include "game/io/cd_queue.h"
+#include "game/audio/music.h"
+#include "game/io/controller.h"
+#include "game/race/camera/race_camera.h"
+#include "game/engine/linear_random.h"
 #include "psx/libetc.h"
-#include "../main_remaining.h"
+#include "game/engine/system_runtime.h"
 
 GsOT D_800EBFF0[2] __attribute__((section(".data.render_state"))) = {0};
 GsOT D_800EC018[2] __attribute__((section(".data.render_state"))) = {0};

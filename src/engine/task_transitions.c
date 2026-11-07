@@ -1,22 +1,22 @@
 #include "common.h"
 #define TASK_ABSOLUTE_ADDRESSING
-#include "game/task.h"
-#include "game/graphics.h"
-#include "game/coordinate.h"
-#include "game/race_camera.h"
-#include "game/linear_random.h"
-#include "game/offset_archive.h"
-#include "game/music.h"
+#include "game/engine/task.h"
+#include "game/graphics/graphics.h"
+#include "game/graphics/coordinate.h"
+#include "game/race/camera/race_camera.h"
+#include "game/engine/linear_random.h"
+#include "game/engine/offset_archive.h"
+#include "game/audio/music.h"
 #define RACE_PLAYER_ABSOLUTE_ADDRESSING
-#include "game/cd_queue.h"
+#include "game/io/cd_queue.h"
 #define CONTROLLER_STATE_ABSOLUTE_ADDRESSING
-#include "game/controller.h"
-#include "game/race_player.h"
+#include "game/io/controller.h"
+#include "game/race/player/race_player.h"
 #define GAME_OPTIONS_GP_ADDRESSING
-#include "game/game_options.h"
+#include "game/engine/game_options.h"
 #define SELECTED_RECORDS_GP_ADDRESSING
 #define SELECTED_RECORD_COUNTER_GP_ADDRESSING
-#include "game/selected_records.h"
+#include "game/menu/selected_records.h"
 #include "psx/libsnd.h"
 #include "psx/libcd.h"
 #include "psx/libgpu.h"
@@ -27,11 +27,11 @@
 #include "psx/libpress.h"
 
 #define GLOBAL_FLAGS_GP_ADDRESSING
-#include "game/global_flags.h"
-#include "game/game_loop.h"
-#include "../main_remaining.h"
+#include "game/save/save_data.h"
+#include "game/engine/game_loop.h"
+#include "game/engine/system_runtime.h"
 
-#include "game/player_resource_textures.h"
+#include "game/race/player/player_resource_textures.h"
 
 u16 gSelectedPlayerRestoreFrames[14] __attribute__((section(".data.selected_player_restore_frames"))) = {
     0, 104, 205, 309, 412, 515, 616, 718, 821, 928, 1036, 1126, 1330, 0
@@ -110,7 +110,7 @@ void initCurrentPlayerModelParts(void) {
         D_8013B0D8->unk13E[i] = D_80120200[i];
         D_8013B0D8->unk14C[i] = D_80120210[i];
     }
-    values = D_801203C4[D_8013B0D8->unk014];
+    values = D_801203C4[D_8013B0D8->characterId];
     player = D_8013B0D8;
     for (i = 0; i < 14; i++) {
         player->unk5BC[i].x = player->unk5BC[i].y = player->unk5BC[i].z = 0;
@@ -245,7 +245,7 @@ void initializeRaceRestartTask(void) {
         stopPlayerSound(1);
     }
     for (i = 0; i < activeRacePlayerCountGp; i++) {
-        D_80120E90[i].unk024 = 1;
+        D_80120E90[i].isActive = 1;
     }
     initializeActiveRacePlayers();
     initializeRaceRulesAndCounters();
@@ -442,11 +442,11 @@ void queuePlayerResourceReadsAndUploadTextures(void) {
     u16 i;
     u32 *offset;
     for (i = 0; i < activeRacePlayerCountGp; i++) {
-        queueCdSectorCommand(0, gGridResourceFirstSectorRanges[D_80120E90[i].unk014][D_80120E90[i].unk015[0]].sector,
-            gGridResourceFirstSectorRanges[D_80120E90[i].unk014][D_80120E90[i].unk015[0]].sectorCount,
+        queueCdSectorCommand(0, gGridResourceFirstSectorRanges[D_80120E90[i].characterId][D_80120E90[i].unk015[0]].sector,
+            gGridResourceFirstSectorRanges[D_80120E90[i].characterId][D_80120E90[i].unk015[0]].sectorCount,
             (u8 *)0x8016B000 + i * 0x4000, 0);
-        queueCdSectorCommand(1, gGridResourceSecondSectorRanges[D_80120E90[i].unk014][D_80120E90[i].unk015[0]].sector,
-            gGridResourceSecondSectorRanges[D_80120E90[i].unk014][D_80120E90[i].unk015[0]].sectorCount,
+        queueCdSectorCommand(1, gGridResourceSecondSectorRanges[D_80120E90[i].characterId][D_80120E90[i].unk015[0]].sector,
+            gGridResourceSecondSectorRanges[D_80120E90[i].characterId][D_80120E90[i].unk015[0]].sectorCount,
             (void *)0x80180000, (s32)&D_801204D4[i]);
         if (i < gameOptionPlayerModeGp && !D_8013AFD7 && !D_8013AFD8 && !D_8013AFD9) {
             offset = &((OffsetArchive *)0x801F0000)->offsets[gPlayerResourceTextureSelections.entries[i][D_80120E90[i].unk015[1]]];

@@ -1,5 +1,5 @@
 #include "common.h"
-#include "game/game_task_scheduler.h"
+#include "game/engine/game_task_scheduler.h"
 
 /* Shared with the JP scheduler and runGameLoop. Keep its initialized
  * storage at the original data address.
