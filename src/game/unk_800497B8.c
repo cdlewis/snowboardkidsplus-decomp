@@ -504,6 +504,17 @@ typedef struct TimedSpriteSequenceResource {
     u8 pad0C[0xF4];
 } TimedSpriteSequenceResource;
 
+/* Interleaved texture U coordinate and advance width for A through Z. */
+u8 gUppercaseGlyphMetrics[52] __attribute__((section(".data.uppercase_glyph_metrics"))) = {
+    0xC0, 0x08, 0xC8, 0x08, 0xD0, 0x08, 0xD8, 0x08,
+    0xE0, 0x07, 0xE8, 0x07, 0xF0, 0x08, 0xC0, 0x08,
+    0xC8, 0x04, 0xCC, 0x06, 0xD4, 0x08, 0xDC, 0x07,
+    0xE4, 0x0A, 0xF0, 0x08, 0x80, 0x08, 0x88, 0x08,
+    0x90, 0x09, 0x9C, 0x08, 0xA4, 0x07, 0xAC, 0x08,
+    0xB4, 0x08, 0xBC, 0x09, 0xC8, 0x0A, 0xD4, 0x09,
+    0xE0, 0x0A, 0xEC, 0x08,
+};
+
 extern SVECTOR *D_8013B688;
 extern SVECTOR *D_8013AF90 __attribute__((section(".data")));
 extern MATRIX D_8012A6B0, D_8012A6D0;
@@ -3152,7 +3163,46 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006EF30);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006F248);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006F57C);
+void drawUppercaseProportionalText(s16 x, s16 y, s16 count, const char *text, s16 palette,
+                   s16 blend, GsOT *ot, u16 depth) {
+    DrawModeSpritePacket *packet = (DrawModeSpritePacket *)0x1F800000;
+    s16 i;
+    s8 glyph;
+    packet->tag = (sizeof(*packet) / sizeof(u32) - 1) << 24;
+    packet->drawModeCode = DRAW_MODE_COMMAND_HIGH;
+    packet->code = TEXTURED_SPRITE_CODE;
+    setRGB0(packet, gTexturedSpriteTemplate.r0, gTexturedSpriteTemplate.g0, gTexturedSpriteTemplate.b0);
+    packet->tpage = getTPage(0, 0, 832, 256);
+    if (blend >= 0) {
+        packet->code = TEXTURED_SPRITE_CODE | SEMI_TRANSPARENT_FLAG;
+        packet->tpage = (blend << 5) | getTPage(0, 0, 832, 256);
+    }
+    packet->clut = getClut(800, palette + 240);
+    packet->x0 = x;
+    packet->y0 = y;
+    packet->h = 16;
+    for (i = 0; *(const s8 *)text; i++, text++) {
+        if (i >= count) {
+            break;
+        }
+        if ((u8)(*text - 'A') < 26) {
+            glyph = *text - 'A';
+            packet->u0 = gUppercaseGlyphMetrics[glyph * 2];
+            if (*(const s8 *)text >= 'O') {
+                packet->v0 = 0x90;
+            } else if (*(const s8 *)text >= 'H') {
+                packet->v0 = 0x80;
+            } else {
+                packet->v0 = 0x70;
+            }
+            packet->w = gUppercaseGlyphMetrics[glyph * 2 + 1];
+            addTexturedSpritePacket((TexturedSpritePacket *)packet, ot, depth);
+            packet->x0 += packet->w;
+        } else {
+            packet->x0 += 8;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8006F754);
 

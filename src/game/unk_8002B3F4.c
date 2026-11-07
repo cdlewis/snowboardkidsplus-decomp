@@ -1742,9 +1742,9 @@ void drawFixedSpriteAndBottomBarTask(void) {
 
 void drawDemonstrationOverlay(void) {
     setSpriteColor(128, 128, 128);
-    func_8006F57C(-52, -8, 20, gDemonstrationText, 1, -1, &D_800EBFF0[D_8013AF78], 3);
+    drawUppercaseProportionalText(-52, -8, 20, gDemonstrationText, 1, -1, &D_800EBFF0[D_8013AF78], 3);
     if (gFrameCounter & 8) {
-        func_8006F57C(-40, 28, 20, gDemonstrationStartText, 2, -1, &D_800EBFF0[D_8013AF78], 3);
+        drawUppercaseProportionalText(-40, 28, 20, gDemonstrationStartText, 2, -1, &D_800EBFF0[D_8013AF78], 3);
     }
 }
 
@@ -1754,17 +1754,17 @@ void drawAutoPilotLabelTask(void) {
         setSpriteColor(128, 128, 128);
         if (D_8013AFCD == 1) {
             frame = gFrameCounter & 2;
-            func_8006F57C(-40, -18, 20, gAutoPilotLabel,
+            drawUppercaseProportionalText(-40, -18, 20, gAutoPilotLabel,
                          (frame / 2) + 1, -1,
                          &D_800EBFF0[D_8013AF78], 3);
         } else if (D_8013AE88->data18 == 0) {
             frame = gFrameCounter & 2;
-            func_8006F57C(-72, -66, 20, gAutoPilotLabel,
+            drawUppercaseProportionalText(-72, -66, 20, gAutoPilotLabel,
                          (frame / 2) + 1, -1,
                          &D_800EBFF0[D_8013AF78], 3);
         } else {
             frame = gFrameCounter & 2;
-            func_8006F57C(-72, 46, 20, gAutoPilotLabel,
+            drawUppercaseProportionalText(-72, 46, 20, gAutoPilotLabel,
                          (frame / 2) + 1, -1,
                          &D_800EBFF0[D_8013AF78], 3);
         }

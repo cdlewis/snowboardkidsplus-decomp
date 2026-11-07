@@ -286,7 +286,7 @@ void func_8006C240(s16 x, s16 y, s16 width, s16 height, s16 index, s16 palette, 
 void drawTexturedQuadList(s16 x, s16 y, TexturedQuadListEntry *entry, s16 blend, GsOT *ot, u16 depth);
 
 void drawDemonstrationOverlay(void);
-void func_8006F57C(s16 x, s16 y, s16 count, const char *text, s32 palette,
+void drawUppercaseProportionalText(s16 x, s16 y, s16 count, const char *text, s16 palette,
                    s16 blend, GsOT *ot, u16 depth);
 
 void drawAnimatedSprite16(s16 frame, s16 x, s16 y, s16 unused, GsOT *ot, u16 depth);

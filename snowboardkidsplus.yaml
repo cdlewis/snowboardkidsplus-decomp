@@ -608,6 +608,8 @@ segments:
       - [0x11DC60, data, 11DC60]
       - [0x11F0E4, .data, game/sprite_templates]
       - [0x11F0FC, data, 11F0FC]
+      - {start: 0x11F3D0, type: .data, name: game/unk_800497B8, linker_section: .data.uppercase_glyph_metrics}
+      - [0x11F404, data, uppercase_glyph_metrics_tail]
       - [0x11F900, .data, game/unk_80070274]
       - {start: 0x11F90C, type: .data, name: game/unk_80070274, linker_section: .data.secondary_task_sequence}
       - [0x11F93C, .data, game/unk_8007CC78]
