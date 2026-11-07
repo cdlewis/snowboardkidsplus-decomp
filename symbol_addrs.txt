@@ -2976,3 +2976,5 @@ D_8013B5E4 = 0x8013B5E4; // size:0x8 defined:true
 D_8013B6C8 = 0x8013B6C8; // size:0x18 defined:true
 
 queueMode11TransitionResources = 0x8002FCF8; // type:func
+
+createRegisteredPanelTask = 0x80081400; // type:func

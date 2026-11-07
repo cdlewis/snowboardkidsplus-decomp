@@ -28,6 +28,12 @@ typedef struct PaletteRotationSlot {
     s16 unk06;
 } PaletteRotationSlot;
 
+typedef struct RegisteredPanelSlot {
+    GameTask *task;
+    s16 command;
+    s16 flags;
+} RegisteredPanelSlot;
+
 typedef struct GroupedIndexResource {
     u8 unk00[0x48];
     const u8 *values;
@@ -92,6 +98,7 @@ void func_80087030(void);
 void func_800857C4(void);
 void func_800843DC(void);
 void func_800801A0(void);
+void func_800815D0(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8007CC78);
 
@@ -345,7 +352,35 @@ s16 findIndexedHalfwordRecord(IndexedHalfwordRecord *records, u8 *indices, s16 c
     return result;
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80081400);
+static inline RegisteredPanelSlot *getPanelSlot(u32 resource, s32 index) {
+    RegisteredPanelSlot *slots = (RegisteredPanelSlot *)&D_800D9504[resource];
+    return &slots[index / 10];
+}
+
+void createRegisteredPanelTask(s32 mode, s32 value, s16 x, s16 y, s16 depth, s32 index) {
+    Movement2D *movement;
+    RegisteredPanelSlot *slot;
+    func_80014874(func_800815D0);
+    D_8013AE8C->data18 = mode;
+    D_8013AE8C->data1A = value;
+    D_8013AE8C->data1C = 0;
+    D_8013AE8C->data1E = index;
+    D_8013AE8C->resource14 = allocateTaskResource();
+    movement = (Movement2D *)&D_800D9504[D_8013AE8C->resource14];
+    initMovement2D(movement, x << 12, y << 12);
+    movement->unk08 = depth;
+    D_8013AE8C->resource16 = allocateTaskResource();
+    if (index % 10 == 0) {
+        if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+        slot = getPanelSlot(D_8013AE88->resource14, index);
+    } else {
+        if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
+        slot = getPanelSlot(D_8013AE88->resource16, index);
+    }
+    slot->command = 0;
+    slot->flags = 1;
+    slot->task = D_8013AE8C;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_800815D0);
 
