@@ -26,8 +26,16 @@
 #include "psx/libgs.h"
 #include "game/menu_selection_state.h"
 #include "game/coordinate.h"
+#include "game/linear_random.h"
 
 #define INDEXED_SECTOR_READ_DESTINATION ((void *)0x801F2080)
+
+typedef struct PaletteBurstResource {
+    s16 x, y, z, unk06;
+    s16 rotation, unk0A;
+    s32 age;
+    u8 r, g, b;
+} PaletteBurstResource;
 
 /* Menu descriptors have a 0x14-byte stride in the callers' tables. */
 typedef struct ByteMappingDescriptor {
@@ -225,6 +233,7 @@ void queueModeIndexedSectorRead(s16 mode, s16 index);
 void func_800A3750(void);
 void func_800A5AFC(void);
 void initializeTextPlaybackTask(void);
+void func_8009B700(void);
 void func_8009BDB8(void);
 void func_8009CA90(void);
 void func_8009F9B8(void);
@@ -853,7 +862,31 @@ void copyPlayerPaletteRow(s16 playerIndex) {
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009B700);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009BB68);
+void spawnPaletteBurstTask(u8 paletteIndex) {
+    u16 pixels[16];
+    RECT rect;
+    PaletteBurstResource *resource;
+    u8 row;
+    func_80014930(&gGameTasks[4], func_8009B700);
+    row = paletteIndex;
+    D_8013AE8C->resource14 = allocateTaskResource();
+    resource = (PaletteBurstResource *)&D_800D9504[D_8013AE8C->resource14];
+    resource->x = randomNextLinear() % 4 - 2;
+    resource->y = randomNextLinear() % 4 - 17;
+    resource->z = randomNextLinear() % 4 - 2;
+    resource->rotation = randomNextLinear() % 4096;
+    resource->age = 0;
+    if (row >= 8) row = paletteIndex + 1;
+    rect.x = 1008;
+    rect.y = row + 240;
+    rect.w = 16;
+    rect.h = 1;
+    StoreImage(&rect, (u32 *)pixels);
+    DrawSync(0);
+    resource->b = (pixels[1] >> 7) & 0xF8;
+    resource->g = (pixels[1] >> 2) & 0xF8;
+    resource->r = pixels[1] << 3;
+}
 
 void initializeMainTailDualResourceTask(void) {
     GameTask *task = D_8013AE88;

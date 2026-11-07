@@ -1,3 +1,4 @@
+spawnPaletteBurstTask = 0x8009BB68; // type:func
 gVisualPlacementHeightData = 0x801296A0; // size:0x24 defined:true
 updateCourseVisualTask = 0x8005BA8C; // type:func
 initializeCurrentPlayerModelAndHeight = 0x80020380; // type:func
