@@ -1723,7 +1723,56 @@ void updateMenuExitInputTask(void) {
     drawHitPrizeMoneyLabels((MenuFadeInResource *)resource);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_80038C70);
+void transferHitPrizeMoneyTask(void) {
+    MenuFadeInResource *resource;
+    s32 amount;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (MenuFadeInResource *)&D_800D9504[D_8013AE88->resource14];
+    if (resource->timer == 0) {
+        resource->timer = 2;
+        playSoundEffect(0, 0x700, 0x20);
+    } else {
+        resource->timer--;
+    }
+    amount = resource->unk08;
+    if (amount >= 8) {
+        if (!(D_8013AEE8[0] & 0xB0)) {
+            amount = 8;
+        }
+    }
+    D_80120E90[0].unk010 += amount;
+    resource->unk08 -= amount;
+    amount = resource->unk0A;
+    if (amount >= 8) {
+        if (!(D_8013AEE8[0] & 0xB0)) {
+            amount = 8;
+        }
+    }
+    D_80120E90[0].unk010 += amount;
+    resource->unk0A -= amount;
+    amount = resource->unk0C;
+    if (amount >= 8) {
+        if (!(D_8013AEE8[0] & 0xB0)) {
+            amount = 8;
+        }
+    }
+    D_80120E90[0].unk010 += amount;
+    resource->unk0C -= amount;
+    if (D_80120E90[0].unk010 > 999999) {
+        D_80120E90[0].unk010 = 999999;
+    }
+    D_80130BF0[0] = D_80120E90[0].unk010;
+    if (resource->unk08 == 0 && resource->unk0A == 0 && resource->unk0C == 0) {
+        playSoundEffect(0, 0x700, 0x20);
+        resource->timer = 20;
+        setCurrentTaskCallback(updateMenuExitInputTask);
+    }
+    drawHitCountPanel((TaskResourceRecord *)resource);
+    func_80038270((TaskResourceRecord *)resource);
+    drawHitPrizeMoneyLabels(resource);
+}
 
 void advanceTaskMenuCountdown(void) {
     MenuCountdownResource *resource;
@@ -1733,7 +1782,7 @@ void advanceTaskMenuCountdown(void) {
     resource = (MenuCountdownResource *)&D_800D9504[D_8013AE88->resource14];
     resource->unk06 = 3;
     if (--resource->timer == 0) {
-        setCurrentTaskCallback(func_80038C70);
+        setCurrentTaskCallback(transferHitPrizeMoneyTask);
     }
     drawHitCountPanel((TaskResourceRecord *)resource);
     func_80038270((TaskResourceRecord *)resource);
