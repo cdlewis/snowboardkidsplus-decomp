@@ -77,3 +77,5 @@ MATRIX *RotMatrix(SVECTOR *rotation, MATRIX *matrix);
 MATRIX *RotMatrixYXZ(SVECTOR *rotation, MATRIX *matrix);
 
 MATRIX *ScaleMatrix(MATRIX *matrix, VECTOR *scale);
+
+VECTOR *ApplyMatrixLV(MATRIX *matrix, VECTOR *in, VECTOR *out);

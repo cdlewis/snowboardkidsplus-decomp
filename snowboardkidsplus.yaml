@@ -593,6 +593,8 @@ segments:
       - [0x119F64, data, proximity_emitter_placements_tail]
       - {start: 0x11CF2C, type: .data, name: game/unk_800497B8, linker_section: .data.player_render_snapshots}
       - [0x11D02C, data, player_render_snapshots_tail]
+      - {start: 0x11D0EC, type: .data, name: game/unk_800497B8, linker_section: .data.player_paired_quad_offsets}
+      - [0x11D10C, data, player_paired_quad_offsets_tail]
       - {start: 0x11D12C, type: .data, name: game/unk_800497B8, linker_section: .data.quad_animation}
       - {start: 0x11D190, type: .data, name: game/unk_800497B8, linker_section: .data.alternate_quad_steps}
       - [0x11D1F4, data, 11D1F4]

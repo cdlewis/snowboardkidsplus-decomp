@@ -12,7 +12,6 @@ extern void PopMatrix(void);
 extern MATRIX *MulMatrix(MATRIX *left, MATRIX *right);
 extern MATRIX *MulMatrix2(MATRIX *left, MATRIX *right);
 extern MATRIX *MulMatrix0(MATRIX *left, MATRIX *right, MATRIX *out);
-extern VECTOR *ApplyMatrixLV(MATRIX *m, VECTOR *in, VECTOR *out);
 extern int printf(const char *, ...);
 
 const char gsMatrixRotationFormat[36] __attribute__((section(".rodata.gs_matrix_print"), aligned(4))) =

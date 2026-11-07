@@ -103,7 +103,9 @@ struct RacePlayer {
     s16 unk13C;
     u8 unk13E[14];
     u8 unk14C[14];
-    u8 unk15A[0x462];
+    u8 unk15A[0x26];
+    MATRIX effectMatrix180;
+    u8 unk1A0[0x41C];
     RacePlayerVector unk5BC[14];
     RacePlayerVector unk62C[14];
     u8 unk69C[0x248];

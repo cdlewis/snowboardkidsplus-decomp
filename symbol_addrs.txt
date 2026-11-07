@@ -2702,3 +2702,6 @@ gUppercaseGlyphMetrics = 0x8012EBD0; // type:u8 size:0x34
 
 setTextEntryCdAudioTask = 0x800A7664; // type:func
 gTextEntryCdCommands = 0x80132914; // size:0x1CC
+
+createPlayerPairedQuadEffectTask = 0x80065818; // type:func
+gPlayerPairedQuadOffsets = 0x8012C8EC; // size:0x20 defined:true

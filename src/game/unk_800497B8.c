@@ -520,6 +520,13 @@ extern SVECTOR *D_8013AF90 __attribute__((section(".data")));
 extern MATRIX D_8012A6B0, D_8012A6D0;
 extern MATRIX *D_8013AF9C __attribute__((section(".data")));
 extern POLY_FT4 D_8012967C;
+typedef struct PairedEffectResource {
+    u8 unk00[0x20];
+    VECTOR positions[2];
+    s32 elapsed;
+    u16 clut;
+} PairedEffectResource;
+
 /* Current and previous state used by player rendering effects. */
 typedef struct PlayerRenderSnapshot {
     VECTOR position;
@@ -545,6 +552,11 @@ PlayerRenderSnapshot gPreviousPlayerRenderSnapshots[4]
     __attribute__((section(".data.player_render_snapshots"))) = {0};
 MATRIX gPlayerRenderIdentityMatrix
     __attribute__((section(".data.player_render_snapshots"))) = {0};
+
+VECTOR gPlayerPairedQuadOffsets[2]
+    __attribute__((section(".data.player_paired_quad_offsets"))) = {
+    {-50, 0, 0, 0}, {50, 0, 0, 0}
+};
 
 POLY_FT4 gQuadShrinkPacket __attribute__((section(".data.quad_shrink"))) = {
     0x09000000, 0x80, 0x80, 0x80, 0x2C,
@@ -686,6 +698,7 @@ void func_80053180(TriangleScratchVertex *);
 void func_800529FC(TriangleScratchVertex *);
 void func_80053A34(TriangleScratchVertex *, s32);
 void func_8006479C(void);
+void func_800654B4(void);
 void func_80066474(void);
 void func_8005D828(RacePlayer *player, PlayerCollisionRegion *region);
 void func_8005B460(void);
@@ -2310,7 +2323,28 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80065464);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800654B4);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80065818);
+void createPlayerPairedQuadEffectTask(s32 playerIndex, s32 variant) {
+    PairedEffectResource *resource;
+    RacePlayer *player;
+    s32 i;
+    func_80014930(D_8013B304, func_800654B4);
+    D_8013AE8C->resource14 = allocateTaskResource();
+    player = &D_80120E90[playerIndex];
+    resource = (PairedEffectResource *)&D_800D9504[D_8013AE8C->resource14];
+    for (i = 0; i < 2; i++) {
+        gPlayerPairedQuadOffsets[i].vz = randomNextLinear() % 40 - 20;
+        ApplyMatrixLV(&player->effectMatrix180, &gPlayerPairedQuadOffsets[i], &resource->positions[i]);
+        resource->positions[i].vx += player->effectMatrix180.t[0];
+        resource->positions[i].vy += player->effectMatrix180.t[1];
+        resource->positions[i].vz += player->effectMatrix180.t[2];
+        resource->positions[i].vx -= player->position8E4[0] + player->unk084;
+        resource->positions[i].vy -= player->position8E4[1] + player->unk086;
+        resource->positions[i].vz -= player->position8E4[2] + player->unk088;
+    }
+    resource->elapsed = 0;
+    resource->clut = variant == 0 ? getClut(800, 250) : getClut(800, 251);
+    D_8013AE8C->data18 = playerIndex;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800659F0);
 

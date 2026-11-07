@@ -177,3 +177,5 @@ void drawSelectedTaskSprite(void);
 void initializeBouncingVisualTask(void);
 
 void initializeExpandingCoordinateEffectTask(void);
+
+void createPlayerPairedQuadEffectTask(s32 playerIndex, s32 variant);
