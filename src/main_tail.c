@@ -36,6 +36,16 @@ typedef struct PaletteBurstResource {
     s32 age;
     u8 r, g, b;
 } PaletteBurstResource;
+typedef struct GridMarkerState {
+    u8 unk00[0x30];
+    u16 state;
+    s16 selectedIndex;
+    u8 unk34[0x1C];
+    u16 depth;
+    u8 unk52[0x10];
+    u8 red, green, blue;
+} GridMarkerState;
+
 typedef struct RegisteredPanelResource {
     s16 unk00, unk02, unk04, unk06, unk08;
     s16 x, y, textX, textY;
@@ -940,7 +950,34 @@ void configureFourColumnTaskGridMovement(s32 mode, GameTask *task, s32 x, s32 y,
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009B0E8);
+void drawTaskGridSelectionMarker(void) {
+    GridMarkerState *state;
+    TaskGridEntry *entries;
+    Movement2D *position;
+    s32 mode;
+    u32 colorMode;
+    if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
+    state = (GridMarkerState *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) { for (;;) {} }
+    entries = (TaskGridEntry *)&D_800D9504[D_8013AE88->resource16];
+    mode = (s16)state->state;
+    colorMode = state->state;
+    if (mode > 0) {
+        if ((u32)(colorMode - 1) < 2) {
+            setSpriteColor(state->red, state->green, state->blue);
+        } else {
+            setSpriteColor(128, 128, 128);
+        }
+        position = (Movement2D *)&D_800D9504[entries[state->selectedIndex].task->resource14];
+        if (state->selectedIndex < 8) {
+            func_8006C998(position->x / 4096, position->y / 4096, 0x16F, 8, -1,
+                         &D_800EBFF0[D_8013AF78], (u16)(state->depth - 1));
+        } else {
+            func_8006C998(position->x / 4096, position->y / 4096, 0xB0, 0, -1,
+                         &D_800EBFF0[D_8013AF78], (u16)(state->depth - 1));
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_8009B2D8);
 

@@ -253,3 +253,5 @@ void createRegisteredDetailedTextPanelTask(s16 x, s16 y, s16 textX, s16 textY,
 
 void createRegisteredTripletTask(s32 x, s32 y, s32 offsetX, s32 offsetY,
                                  ByteTriplet *records, u8 *indices, s32 depth, s32 index);
+
+void drawTaskGridSelectionMarker(void);
