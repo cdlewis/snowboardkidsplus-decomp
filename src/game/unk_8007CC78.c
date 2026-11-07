@@ -52,6 +52,11 @@ typedef struct StateValueHistory {
 
 HalfwordPair D_8012F13C[16] __attribute__((section(".data"))) = {0};
 
+u16 gTaskShadowedText[14] __attribute__((section(".data.task_shadowed_text"))) = {
+    0x001A, 0x001F, 0x001D, 0x0012, 0x8020, 0x8020, 0x000C,
+    0x001F, 0x001E, 0x001E, 0x0019, 0x0018, 0, 0
+};
+
 StateValueHistory D_8013BE30 __attribute__((section(".bss.state_value_history")));
 extern u8 D_8013AFD8 __attribute__((section(".data")));
 extern u8 D_8013AFD9 __attribute__((section(".data")));
@@ -507,7 +512,23 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8008A058);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8008B178);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8008BCDC);
+void drawTaskShadowedText(void) {
+    Movement2D *resource;
+    s32 x, y;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    x = resource->x / 4096;
+    y = resource->y / 4096;
+    func_8006EC84(x - 48, y + 24, 12, gTaskShadowedText, 0, -1,
+                  &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    setSpriteColor(0, 0, 0);
+    func_8006EC84(x - 47, y + 25, 12, gTaskShadowedText, 0, -1,
+                  &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    func_8006EC84(x - 46, y + 25, 12, gTaskShadowedText, 0, -1,
+                  &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+}
 
 s16 getSaveRecordMaskTier(s16 recordIndex, s16 maskIndex) {
     s16 result = 0;

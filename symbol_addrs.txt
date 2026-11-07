@@ -2707,3 +2707,6 @@ createPlayerPairedQuadEffectTask = 0x80065818; // type:func
 gPlayerPairedQuadOffsets = 0x8012C8EC; // size:0x20 defined:true
 
 createInputTimedSpriteTask = 0x80076C20; // type:func
+
+drawTaskShadowedText = 0x8008BCDC; // type:func
+gTaskShadowedText = 0x80130724; // size:0x1C

@@ -300,3 +300,6 @@ void func_8006EB00(s16 x, s16 y, s16 w, s16 h, s8 *text, s16 palette,
 
 void func_8006EF30(s32 x, s32 y, s16 columns, const u16 *text,
                    s32 palette, s16 blendMode, GsOT *ot, u16 depth);
+
+void func_8006EC84(s16 x, s16 y, s16 columns, const u16 *text, s16 palette, s16 blend, GsOT *ot, u16 depth);
+void drawTaskShadowedText(void);
