@@ -464,6 +464,14 @@ typedef struct EmitterTrailResource {
     u8 unkC6[0x12];
     s32 angle;
 } EmitterTrailResource;
+typedef struct PlacedObjectResource {
+    GsCOORDINATE2 coordinate, groundCoordinate;
+    Position3D position;
+    u8 unkAC[0x14];
+    SVECTOR rotation, groundRotation;
+    s16 geometryIndex;
+} PlacedObjectResource;
+
 typedef struct OrbitingTaskResource {
     GsCOORDINATE2 coordinate, groundCoordinate;
     Position3D position;
@@ -1011,6 +1019,7 @@ extern VisualPlacement *D_8013B2BC;
 extern u8 D_8013B2B9, D_8013B2BA;
 /* The course lookup base precedes its valid pointer entries in shared frame data. */
 extern TaskVisualFrame *D_80129540[];
+void func_8005BF00(void);
 void func_8005E728(void);
 void func_8005B038(void);
 extern PickupPlacement *D_8013B2C0;
@@ -1022,6 +1031,11 @@ extern TextureRegion *D_8013B6AC;
 extern TaskSnapshot *D_8013B2E4;
 extern RacePlayer *D_8013B2E8;
 extern SelectedStateRecord *D_8012C6F4[];
+TaskVisualFrame gPlacedObjectVisualFrame
+    __attribute__((section(".data.placed_object_visual_frame"))) = {
+    192, 0, 64, 64, 0xA, 0x3F28,
+};
+
 TaskVisualFrame *gCourseVisualFrames
     __attribute__((section(".sdata.course_visual_frames"))) = 0;
 
@@ -3062,7 +3076,54 @@ void updateCourseVisualTask(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005BC70);
+void initializePlacedObjectTask(void) {
+    PlacedObjectResource *resource;
+    TaskVisualResource *visual;
+    if ((s16)getStateAdjustedGameOptionFlag1() == 0) {
+        if ((u32)(D_8013B2BC[D_8013AE88->data18].unk01 - 2) < 2) {
+            func_800149A8();
+            return;
+        }
+    }
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (PlacedObjectResource *)&D_800D9504[D_8013AE88->resource14];
+    GsInitCoordinate2(0, &resource->groundCoordinate);
+    GsInitCoordinate2(&resource->groundCoordinate, &resource->coordinate);
+    D_8013AE88->data1A = D_8013B2BC[D_8013AE88->data18].unk01;
+    resource->geometryIndex = D_8013B2BC[D_8013AE88->data18].geometryIndex;
+    resource->rotation.vx = 0;
+    resource->rotation.vy = ((GeometryPlacement *)geometryPlacementDataAbsolute)[resource->geometryIndex].angle;
+    resource->rotation.vz = 0;
+    resource->groundCoordinate.coord.t[0] = D_8013B2BC[D_8013AE88->data18].x;
+    resource->groundCoordinate.coord.t[2] = D_8013B2BC[D_8013AE88->data18].z;
+    resource->groundCoordinate.coord.t[1] = D_8013B2BC[D_8013AE88->data18].y =
+        func_8004A764(resource->geometryIndex, resource->groundCoordinate.coord.t[0],
+                      resource->groundCoordinate.coord.t[2]);
+    resource->position.x = resource->groundCoordinate.coord.t[0] << 8;
+    resource->position.y = resource->groundCoordinate.coord.t[1] << 8;
+    resource->position.z = resource->groundCoordinate.coord.t[2] << 8;
+    computeSelectedTriangleAngles(&resource->groundRotation.vx, &resource->groundRotation.vz);
+    resource->groundRotation.vy = 0;
+    if ((u32)(D_8013AE88->data1A - 2) < 2) {
+        if (D_8013AE88->resource16 == 0xFFFF) {
+            while (1) {}
+        }
+        visual = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource16];
+        GsInitCoordinate2(0, &visual->coordinate);
+        visual->coordinate.coord.t[0] = resource->groundCoordinate.coord.t[0];
+        visual->coordinate.coord.t[1] = resource->groundCoordinate.coord.t[1] - 0x50;
+        visual->coordinate.coord.t[2] = resource->groundCoordinate.coord.t[2];
+        visual->unkC6 = 0;
+        visual->unkC8 = 0;
+        visual->framePosition = 0;
+        visual->r0 = visual->g0 = visual->b0 = 0x80;
+        visual->code = POLY_FT4_CODE;
+        setTaskVisualFrame(visual, &gPlacedObjectVisualFrame, 0x1200);
+    }
+    setCurrentTaskCallback(func_8005BF00);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005BF00);
 

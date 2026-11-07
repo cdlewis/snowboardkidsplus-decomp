@@ -86,6 +86,7 @@ extern TaskResourceRecord D_800D9504[256];
 void initializeTaskScheduler(void);
 void initializeCollectibleTask(void);
 void initializePickupVisualTask(void);
+void initializePlacedObjectTask(void);
 void initializeOrbitingTaskObject(void);
 void initializeVisualTrailTask(void);
 void updateBobbingTrailEmitterTask(void);
