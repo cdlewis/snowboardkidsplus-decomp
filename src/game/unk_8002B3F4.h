@@ -432,6 +432,8 @@ extern u8 gFallingPairedVisualAnimation[6]
 extern TaskVisualFrame gPlayerDualResourceEffectFrame
     __attribute__((section(".data.player_dual_resource_effect_frame"), aligned(4)));
 
+extern TaskVisualFrame gPlayerVisualPair5E80Frame
+    __attribute__((section(".data.player_visual_pair_5e80_frame"), aligned(4)));
 
 extern u8 D_8013B11A;
 extern u8 D_8013B18D __attribute__((section(".data")));
@@ -469,7 +471,7 @@ void initializeBouncingTaskVisual(void);
 void updateBouncingTaskVisual(void);
 void updateAcceleratingTaskVisualCountdown(void);
 void updatePlayerVisualPairTask(void);
-void func_8004713C(void);
+void updatePlayerVisualPairTask5E80(void);
 void updatePlayerVisualPairTask6780(void);
 
 

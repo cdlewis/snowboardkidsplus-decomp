@@ -3301,10 +3301,40 @@ void initializePlayerVisualPairTask5E80(void) {
     }
     D_8013AE88->resource16 = allocateTaskResource();
     initializePlayerVisualHistory(resource, (VECTOR *)&D_800D9504[D_8013AE88->resource16], 300, 0x5E80);
-    setCurrentTaskCallback(func_8004713C);
+    setCurrentTaskCallback(updatePlayerVisualPairTask5E80);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_8004713C);
+void updatePlayerVisualPairTask5E80(void) {
+    TaskVisualResource *resource;
+    VECTOR *history;
+    s32 dx, dz;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) {
+        while (1) {}
+    }
+    history = (VECTOR *)&D_800D9504[D_8013AE88->resource16];
+    if (D_8013AFD3 == 0) {
+        updateHomingTaskVisualMovement(resource, history, 0x3F000, 0x18);
+        func_8004C968(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8, 2, &dx, &dz);
+        if (dx != 0 || dz != 0) {
+            resource->unkDC = 0;
+            resource->position.x += dx;
+            resource->position.z += dz;
+        }
+    }
+    drawTaskVisualPositionHistory(resource, history, &gPlayerVisualPair5E80Frame);
+    if (D_8013AFD3 == 0) {
+        checkTaskVisualOtherPlayerCollision(resource, 0x10);
+        if (resource->unkDC == 0) {
+            resetTaskVisualState(resource);
+        } else {
+            resource->unkDC--;
+        }
+    }
+}
 
 void initializePlayerVisualPairTask6780(void) {
     TaskVisualResource *resource;

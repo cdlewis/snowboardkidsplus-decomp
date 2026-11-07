@@ -3125,3 +3125,5 @@ updateCurrentPlayerAnimation = 0x80017268; // type:func
 gPlayerAnimationPose = 0x800EB24C; // size:0x60 defined:true
 
 updateCurrentPlayerTaskJumpAndSpawnCourseOffset = 0x80025B08; // type:func
+updatePlayerVisualPairTask5E80 = 0x8004713C; // type:func
+gPlayerVisualPair5E80Frame = 0x8013B1BC; // size:0x8 defined:true

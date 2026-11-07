@@ -105,6 +105,11 @@ TaskVisualFrame gPlayerVisualPair6780Frame
         120, 96, 24, 24, 13, 0x3EB9
     };
 
+TaskVisualFrame gPlayerVisualPair5E80Frame
+    __attribute__((section(".data.player_visual_pair_5e80_frame"), aligned(4))) = {
+        96, 96, 24, 24, 13, 0x3E79
+    };
+
 s16 D_8013B1D4 __attribute__((section(".data.finish_slot_state"))) = 0;
 
 const char gAutoPilotLabel[] __attribute__((section(".rodata.auto_pilot_label"), aligned(4))) = "AUTO PILOT";
