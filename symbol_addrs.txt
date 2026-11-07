@@ -3347,3 +3347,5 @@ countRaceResultsMoneyTask = 0x8003A158; // type:func
 emitPlayerTurnTripleQuadEffectTask = 0x80067B30; // type:func
 
 updatePlacedObjectBounceTask = 0x8005C51C; // type:func
+
+createRegisteredTexturePairTask = 0x80074E2C; // type:func

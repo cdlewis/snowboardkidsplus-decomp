@@ -274,3 +274,6 @@ void initializeDemoPlaybackTask(void);
 
 typedef char GameTaskSizeCheck[(sizeof(GameTask) == 0x20) ? 1 : -1];
 typedef char TaskResourceRecordSizeCheck[(sizeof(TaskResourceRecord) == 0x100) ? 1 : -1];
+
+void createRegisteredTexturePairTask(s16 x, s16 y, const u8 *mapping, s32 mode,
+                                     s32 unused, u16 arg5, s32 depth, s32 index);

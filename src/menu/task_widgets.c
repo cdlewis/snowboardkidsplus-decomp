@@ -56,6 +56,16 @@ typedef struct RegisteredTextResource {
     const u16 *text;
 } RegisteredTextResource;
 
+typedef struct TexturePairResource {
+    s16 x, y;
+    u8 unk04[4];
+    u8 unk08, unk09, textureA, textureB, unk0C;
+    const u8 *mapping;
+} TexturePairResource;
+typedef struct TexturePairParent {
+    s16 unk00, valueA, valueB;
+} TexturePairParent;
+
 typedef struct CallbackResource {
     TaskCallback callback;
     u32 unk04;
@@ -184,6 +194,7 @@ u16 gTextPanelMessage[] __attribute__((section(".data.text_panel_message"))) = {
 extern u8 D_8012D460[12];
 extern TaskValueState D_8012D4A4[3];
 extern TimedSequenceEntry D_8012F18C[], D_8012F1AC[];
+extern u32 D_8013B3BC;
 extern GameTask *D_8013B378;
 extern GameTask *D_8013B37C;
 extern GameTask *D_8013BDA8[4];
@@ -201,6 +212,7 @@ DR_TPAGE gAnimatedSprite16DrawPage __attribute__((section(".sdata.animated_sprit
 s16 func_80070794(s32 id);
 void func_80072A88(s16 index, s16 x, s16 y, TaskCallback callback, s32 value, s32 registrationIndex);
 void func_80072C54(void);
+void func_800750E0(void);
 
 void addTilePacket(s32 x, s32 y, s32 width, s32 height, s32 r, s32 g, s32 b,
                    GsOT *ot, u16 depth);
@@ -976,7 +988,43 @@ void createRegisteredCallbackTask(s32 mode, s16 x, s16 y, TaskCallback callback,
 
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80074B60);
 
-INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80074E2C);
+void createRegisteredTexturePairTask(s16 x, s16 y, const u8 *mapping, s32 mode, s32 unused, u16 arg5, s32 depth, s32 index) {
+    TexturePairParent *parent;
+    TexturePairResource *resource;
+    RegisteredTaskEntry *entry;
+    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    parent = (TexturePairParent *)&D_800D9504[D_8013AE88->resource14];
+    func_80014874(func_800750E0);
+    D_8013AE8C->data1A = 0;
+    D_8013AE8C->data1C = depth;
+    D_8013AE8C->data1E = index;
+    D_8013AE8C->resource14 = allocateTaskResource();
+    initMovement2D((Movement2D *)&D_800D9504[D_8013AE8C->resource14], x << 12, y << 12);
+    D_8013AE8C->resource16 = allocateTaskResource();
+    resource = (TexturePairResource *)&D_800D9504[D_8013AE8C->resource16];
+    resource->unk08 = 0;
+    resource->unk0C = mode;
+    resource->mapping = mapping;
+    resource->textureA = func_8007373C(mapping, parent->valueA);
+    resource->textureB = func_8007373C(resource->mapping, parent->valueB);
+    if (resource->textureA < 255) uploadTextureArchiveEntry(576, 256, 768, 238, resource->textureA);
+    if (resource->textureB < 255) uploadTextureArchiveEntry(704, 256, 768, 237, resource->textureB);
+    resource->x = 144;
+    resource->y = 144;
+    resource->unk08 = 0;
+    resource->unk09 = arg5;
+    D_8013B3BC = 0;
+    if (index % 10 == 0) {
+        if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+        entry = getRegisteredTaskEntry(D_8013AE88->resource14, index);
+    } else {
+        if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
+        entry = getRegisteredTaskEntry(D_8013AE88->resource16, index);
+    }
+    entry->command = 0;
+    entry->flags = 1;
+    entry->task = D_8013AE8C;
+}
 
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_800750E0);
 
