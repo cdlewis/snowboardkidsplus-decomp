@@ -2725,6 +2725,7 @@ animateUnlockMenuTransition = 0x800A5050; // type:func
 
 createPaletteRotationTask = 0x8007DE28; // type:func
 
+updateOrbitingTaskObject = 0x8005A1C4; // type:func
 updateMovingTaskObject = 0x8005A360; // type:func
 initializeOrbitingPlayerVisualTask = 0x800489A0; // type:func
 
