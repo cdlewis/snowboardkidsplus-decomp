@@ -2267,6 +2267,7 @@ advanceCurrentPlayerInputSequence = 0x8001E524; // type:func
 updateTaskTimeRecordDetailCountdown = 0x8003A478; // type:func
 
 initializePlayerCoordinateEffectTask = 0x80045F8C; // type:func
+updatePlayerCoordinateEffectTask = 0x80046044; // type:func
 
 createPlayerTrailTask = 0x80066C3C; // type:func
 

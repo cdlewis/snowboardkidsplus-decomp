@@ -3230,10 +3230,49 @@ void initializePlayerCoordinateEffectTask(void) {
     resource->rotation.vx = resource->rotation.vy = resource->rotation.vz = 0;
     resource->scale.vx = resource->scale.vy = resource->scale.vz = 0;
     func_800183FC(D_8013AE88->data18, 1, 0x800, 0x20);
-    setCurrentTaskCallback(func_80046044);
+    setCurrentTaskCallback(updatePlayerCoordinateEffectTask);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_80046044);
+void updatePlayerCoordinateEffectTask(void) {
+    PlayerEffectResource *resource;
+    RacePlayer *players;
+    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    resource = (PlayerEffectResource *)&D_800D9504[D_8013AE88->resource14];
+    if (!D_8013AFD3) {
+        players = D_80120E90;
+        if (players[D_8013AE88->data18].unk12C == 0x1B) {
+            resource->coordinate.coord.t[0] = players[D_8013AE88->data18].position8E4[0];
+            resource->coordinate.coord.t[1] = players[D_8013AE88->data18].position8E4[1];
+            resource->coordinate.coord.t[2] = players[D_8013AE88->data18].position8E4[2];
+            if (resource->scale.vx < 0x1000) {
+                resource->scale.vx += 0x200;
+                resource->scale.vy += 0x200;
+                resource->scale.vz += 0x200;
+            }
+        } else {
+            if (isFirstPlayerUsingCallback26D10()) {
+                func_800149A8();
+                return;
+            }
+            if (resource->scale.vy == 0) {
+                resource->scale.vx -= 0x400;
+                resource->scale.vz -= 0x400;
+                if (resource->scale.vx <= 0) {
+                    func_800149A8();
+                    return;
+                }
+            } else {
+                resource->scale.vy -= 0x100;
+            }
+        }
+    }
+    if (isPositionInCameraRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
+        D_80129A80[11].coord2 = &resource->coordinate;
+        func_8001E3E4(&resource->rotation, &resource->coordinate);
+        ScaleMatrix(&resource->coordinate.coord, &resource->scale);
+        drawTaskObject(11);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_80046228);
 
