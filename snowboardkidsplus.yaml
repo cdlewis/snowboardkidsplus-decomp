@@ -630,6 +630,8 @@ segments:
       - [0x119F64, data, proximity_emitter_placements_tail]
       - {start: 0x11A164, type: .data, name: game/unk_800497B8, linker_section: .data.moving_visual_placements}
       - [0x11A218, data, moving_visual_placements_tail]
+      - {start: 0x11C454, type: .data, name: game/unk_800497B8, linker_section: .data.course_triggers}
+      - [0x11C594, data, course_triggers_tail]
       - {start: 0x11CF2C, type: .data, name: game/unk_800497B8, linker_section: .data.player_render_snapshots}
       - [0x11D02C, data, player_render_snapshots_tail]
       - {start: 0x11D0EC, type: .data, name: game/unk_800497B8, linker_section: .data.player_paired_quad_offsets}
@@ -784,6 +786,8 @@ segments:
       - [0x12BA48, data, 12BA48]
       - {start: 0x12BAC8, type: .sdata, name: game/unk_800497B8, linker_section: .sdata.course_visual_frames, linker_section_order: .data}
       - [0x12BACC, data, 12BACC]
+      - {start: 0x12BAD0, type: .data, name: game/unk_800497B8, linker_section: .data.empty_course_triggers}
+      - [0x12BAD4, data, empty_course_triggers_tail]
       - {start: 0x12BAFC, type: .data, name: main_remaining, linker_section: .data.linear_random_state}
       - [0x12BB00, data, 12BB00]
       - {start: 0x12BB28, type: .data, name: game/unk_800497B8, linker_section: .data.color_cycle_rects}

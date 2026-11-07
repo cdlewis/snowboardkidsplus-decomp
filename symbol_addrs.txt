@@ -3138,3 +3138,16 @@ drawMovingLineTask = 0x8004F46C; // type:func
 
 initializeMovingVisualTask = 0x8005D1B0; // type:func
 gMovingVisualPlacements = 0x80129964; // size:0xB4
+
+updateCurrentPlayerCourseTrigger = 0x8005F46C; // type:func
+gCourse0Triggers = 0x8012BC54; // size:0x20
+gCourse1Triggers = 0x8012BC74; // size:0x10
+gCourse2Triggers = 0x8012BC84; // size:0x28
+gCourse3Triggers = 0x8012BCAC; // size:0x38
+gCourse4Triggers = 0x8012BCE4; // size:0x24
+gCourse5Triggers = 0x8012BD08; // size:0x28
+gCourse6Triggers = 0x8012BD30; // size:0x20
+gCourse8Triggers = 0x8012BD50; // size:0x10
+gCourse9Triggers = 0x8012BD60; // size:0xC
+gCourseTriggers = 0x8012BD6C; // size:0x28
+gEmptyCourseTriggers = 0x8013B2D0; // size:0x4

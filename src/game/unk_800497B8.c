@@ -34,6 +34,12 @@ typedef union PaletteColor {
     u8 bytes[2];
 } PaletteColor;
 
+typedef struct CourseTriggerRecord {
+    s16 geometryIndex;
+    u8 value;
+    u8 pad;
+} CourseTriggerRecord;
+
 typedef struct CourseSectorRange { s16 sector, count; } CourseSectorRange;
 
 typedef struct TriangleColor { u8 r, g, b, code; } TriangleColor;
@@ -934,6 +940,114 @@ extern RacePlayer *D_8013B2E8;
 extern SelectedStateRecord *D_8012C6F4[];
 TaskVisualFrame *gCourseVisualFrames
     __attribute__((section(".sdata.course_visual_frames"))) = 0;
+
+CourseTriggerRecord gCourse0Triggers[]
+    __attribute__((section(".data.course_triggers"), aligned(4))) = {
+    {49, 7, 0},
+    {82, 7, 0},
+    {102, 3, 0},
+    {139, 1, 0},
+    {142, 7, 0},
+    {153, 7, 0},
+    {166, 7, 0},
+    {-1, 0, 0},
+};
+CourseTriggerRecord gCourse1Triggers[]
+    __attribute__((section(".data.course_triggers"), aligned(4))) = {
+    {39, 7, 0},
+    {52, 7, 0},
+    {103, 7, 0},
+    {-1, 0, 0},
+};
+CourseTriggerRecord gCourse2Triggers[]
+    __attribute__((section(".data.course_triggers"), aligned(4))) = {
+    {6, 7, 0},
+    {33, 1, 0},
+    {44, 1, 0},
+    {66, 1, 0},
+    {79, 1, 0},
+    {106, 1, 0},
+    {121, 1, 0},
+    {136, 1, 0},
+    {140, 1, 0},
+    {-1, 0, 0},
+};
+CourseTriggerRecord gCourse3Triggers[]
+    __attribute__((section(".data.course_triggers"), aligned(4))) = {
+    {16, 7, 0},
+    {19, 7, 0},
+    {34, 3, 0},
+    {72, 1, 0},
+    {129, 3, 0},
+    {140, 1, 0},
+    {157, 1, 0},
+    {183, 3, 0},
+    {272, 0, 0},
+    {257, 0, 0},
+    {246, 1, 0},
+    {234, 1, 0},
+    {226, 0, 0},
+    {-1, 7, 0},
+};
+CourseTriggerRecord gCourse4Triggers[]
+    __attribute__((section(".data.course_triggers"), aligned(4))) = {
+    {34, 1, 0},
+    {70, 1, 0},
+    {86, 2, 0},
+    {105, 2, 0},
+    {137, 3, 0},
+    {150, 0, 0},
+    {156, 3, 0},
+    {186, 3, 0},
+    {-1, 7, 0},
+};
+CourseTriggerRecord gCourse5Triggers[]
+    __attribute__((section(".data.course_triggers"), aligned(4))) = {
+    {30, 3, 0},
+    {46, 3, 0},
+    {119, 0, 0},
+    {145, 0, 0},
+    {180, 3, 0},
+    {183, 3, 0},
+    {261, 3, 0},
+    {294, 3, 0},
+    {303, 3, 0},
+    {-1, 7, 0},
+};
+CourseTriggerRecord gCourse6Triggers[]
+    __attribute__((section(".data.course_triggers"), aligned(4))) = {
+    {26, 3, 0},
+    {41, 0, 0},
+    {76, 3, 0},
+    {97, 7, 0},
+    {132, 3, 0},
+    {175, 3, 0},
+    {224, 3, 0},
+    {-1, 7, 0},
+};
+CourseTriggerRecord gCourse8Triggers[]
+    __attribute__((section(".data.course_triggers"), aligned(4))) = {
+    {21, 7, 0},
+    {31, 7, 0},
+    {50, 0, 0},
+    {-1, 7, 0},
+};
+CourseTriggerRecord gCourse9Triggers[]
+    __attribute__((section(".data.course_triggers"), aligned(4))) = {
+    {23, 7, 0},
+    {56, 7, 0},
+    {-1, 7, 0},
+};
+CourseTriggerRecord gEmptyCourseTriggers[]
+    __attribute__((section(".data.empty_course_triggers"), aligned(4))) = {
+    {-1, 7, 0},
+};
+CourseTriggerRecord *gCourseTriggers[]
+    __attribute__((section(".data.course_triggers"))) = {
+    gCourse0Triggers, gCourse1Triggers, gCourse2Triggers, gCourse3Triggers,
+    gCourse4Triggers, gCourse5Triggers, gCourse6Triggers, gEmptyCourseTriggers,
+    gCourse8Triggers, gCourse9Triggers,
+};
 
 extern s8 *D_8012BBB4[][4];
 PaletteColor gCapturedColorCyclePalette[16]
@@ -2897,7 +3011,36 @@ void copySlot26TransformToCurrentTaskObject(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005EFA0);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005F46C);
+void updateCurrentPlayerCourseTrigger(void) {
+    s32 i = 0;
+    CourseTriggerRecord *record;
+    s32 x, y, z;
+    u16 angle;
+    s32 sine, cosine;
+    s32 mask;
+    if (currentPlayerAbsolute->unk128 & 0x1000) currentPlayerAbsolute->unk948 = 0;
+    currentPlayerAbsolute->unk950[0] = 0;
+    record = gCourseTriggers[D_8013AFCE];
+    for (;; record++, i++) {
+        if (record->geometryIndex == -1) return;
+        mask = 1 << i;
+        if (!(currentPlayerAbsolute->unk948 & mask) && record->geometryIndex >= currentPlayerAbsolute->unk92E && record->geometryIndex - 3 < currentPlayerAbsolute->unk92E) {
+            getGeometryPlacementTransform(record->geometryIndex, &x, &y, &z, &angle);
+            x -= currentPlayerAbsolute->x;
+            y -= currentPlayerAbsolute->y;
+            z -= currentPlayerAbsolute->z;
+            sine = rsin(-(s16)angle);
+            cosine = rcos(-(s16)angle);
+            z = (-sine * x + cosine * z) / 4096;
+            if (z > 0 && z < 0x1E000) {
+                currentPlayerAbsolute->unk948 |= mask;
+                currentPlayerAbsolute->unk950[0] = 1;
+                currentPlayerAbsolute->unk950[3] = record->value;
+                return;
+            }
+        }
+    }
+}
 
 void updatePlayerField94CFromSelectedTable(u16 tableIndex, s16 sampleIndex,
                                           u16 playerIndex) {

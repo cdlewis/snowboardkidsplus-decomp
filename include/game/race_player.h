@@ -149,7 +149,8 @@ struct RacePlayer {
     u8 randomIndex;
     u8 unk945;
     u8 unk946;
-    u8 unk947[5];
+    u8 unk947;
+    u32 unk948;
     s32 unk94C;
     u8 unk950[4];
     u8 unk954;
@@ -290,3 +291,5 @@ void func_8002BF88(const Position3D *position, s32 radius, s32 height, s32 flags
 void updatePlayerTimerTask(void);
 void startRacePlayerTasks(void);
 s16 func_8002D3C4(s16 value);
+
+void updateCurrentPlayerCourseTrigger(void);
