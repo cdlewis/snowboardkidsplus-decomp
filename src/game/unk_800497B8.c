@@ -874,7 +874,7 @@ void emitProjectedGouraudTriangle(TriangleScratchVertex *);
 void emitProjectedTexturedTriangle(TriangleScratchVertex *);
 void emitProjectedGouraudQuad(TriangleScratchVertex *);
 void emitProjectedTexturedQuad(TriangleScratchVertex *);
-void func_80053180(TriangleScratchVertex *);
+void emitProjectedGouraudTexturedQuad(TriangleScratchVertex *);
 void emitProjectedGouraudTexturedTriangle(TriangleScratchVertex *);
 void func_80053A34(TriangleScratchVertex *, s32);
 void func_8006479C(void);
@@ -1500,7 +1500,52 @@ void emitProjectedTexturedQuad(TriangleScratchVertex *vertices) {
     GsOUT_PACKET_P = (u32)(packet + 1);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80053180);
+void emitProjectedGouraudTexturedQuad(TriangleScratchVertex *vertices) {
+    TexturedQuadScratchpad *scratch = (TexturedQuadScratchpad *)0x1F800000;
+    POLY_GT4 *packet = (POLY_GT4 *)GsOUT_PACKET_P;
+    if (scratch->fogEnabled) {
+        gte_stdp(&scratch->depthCue);
+        DpqColor((CVECTOR *)&vertices[0].color, scratch->depthCue, (CVECTOR *)&packet->r0);
+        DpqColor((CVECTOR *)&vertices[1].color, scratch->depthCue, (CVECTOR *)&packet->r1);
+        DpqColor((CVECTOR *)&vertices[2].color, scratch->depthCue, (CVECTOR *)&packet->r2);
+        DpqColor((CVECTOR *)&vertices[3].color, scratch->depthCue, (CVECTOR *)&packet->r3);
+    } else {
+        packet->r0 = vertices[0].color.r;
+        packet->r1 = vertices[1].color.r;
+        packet->r2 = vertices[2].color.r;
+        packet->r3 = vertices[3].color.r;
+        packet->g0 = vertices[0].color.g;
+        packet->g1 = vertices[1].color.g;
+        packet->g2 = vertices[2].color.g;
+        packet->g3 = vertices[3].color.g;
+        packet->b0 = vertices[0].color.b;
+        packet->b1 = vertices[1].color.b;
+        packet->b2 = vertices[2].color.b;
+        packet->b3 = vertices[3].color.b;
+    }
+    packet->tag = 12 << 24;
+    setcode(packet, scratch->code | POLY_GT4_CODE);
+    packet->tpage = scratch->tpage;
+    packet->clut = scratch->clut;
+    packet->u0 = vertices[0].texture.uv.u;
+    packet->u1 = vertices[1].texture.uv.u;
+    packet->u2 = vertices[2].texture.uv.u;
+    packet->u3 = vertices[3].texture.uv.u;
+    packet->v0 = vertices[0].texture.uv.v;
+    packet->v1 = vertices[1].texture.uv.v;
+    packet->v2 = vertices[2].texture.uv.v;
+    packet->v3 = vertices[3].texture.uv.v;
+    packet->x0 = scratch->screen[0].x;
+    packet->x1 = scratch->screen[1].x;
+    packet->x2 = scratch->screen[2].x;
+    packet->x3 = scratch->screen[3].x;
+    packet->y0 = scratch->screen[0].y;
+    packet->y1 = scratch->screen[1].y;
+    packet->y2 = scratch->screen[2].y;
+    packet->y3 = scratch->screen[3].y;
+    addPrim(&D_8013B670->org[(scratch->depth >> D_8013B69C) + 6], packet);
+    GsOUT_PACKET_P = (u32)(packet + 1);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80053408);
 
@@ -1616,7 +1661,7 @@ void processTexturedGouraudQuadPrimitive(void) {
     TexturedGouraudQuadPrimitive *primitive = (TexturedGouraudQuadPrimitive *)D_8013B680;
     ((TriangleTextureState *)0x1F800000)->tpage = primitive->uv[1].attribute;
     ((TriangleTextureState *)0x1F800000)->clut = primitive->uv[0].attribute;
-    ((TriangleTextureState *)0x1F800000)->callback = func_80053180;
+    ((TriangleTextureState *)0x1F800000)->callback = emitProjectedGouraudTexturedQuad;
     ((TriangleScratchVertex *)0x1F800070)->position = D_8013B688[primitive->vertexIndices[0]];
     ((TriangleScratchVertex *)0x1F800080)->position = D_8013B688[primitive->vertexIndices[1]];
     ((TriangleScratchVertex *)0x1F800090)->position = D_8013B688[primitive->vertexIndices[2]];
