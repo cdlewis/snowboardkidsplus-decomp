@@ -21,6 +21,7 @@
 #define TASK_FLAGS_ABSOLUTE_ADDRESSING
 #include "game/race_player.h"
 #include "game/race_camera.h"
+#include "game/coordinate.h"
 #include "game/text_entries.h"
 #include "game/task.h"
 #include "game/movement.h"
@@ -38,6 +39,11 @@ typedef struct PaletteBurstResource {
     s32 age;
     u8 r, g, b;
 } PaletteBurstResource;
+typedef struct ModelPreviewState {
+    s16 unk00;
+    u16 rotationStep;
+} ModelPreviewState;
+
 typedef struct SelectionDisplayEntry {
     s16 index;
     s16 unk02;
@@ -789,7 +795,42 @@ void updateCurrentPlayerModelPartCoordinates(void) {
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_80097858);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_80097C2C);
+static inline RegisteredTaskEntry *getModelPreviewEntry(u32 resource, u32 index) {
+    RegisteredTaskEntry *entries = (RegisteredTaskEntry *)&D_800D9504[resource];
+    return &entries[(u16)(index / 10)];
+}
+
+void updatePlayerModelPreviewTask(void) {
+    u8 padding[0x10];
+    ModelPreviewState *state;
+    RegisteredTaskEntry *entry;
+    D_8013B0D8 = &D_80120E90[D_8013AE88->data1C];
+    if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
+    state = (ModelPreviewState *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) { for (;;) {} }
+    if ((u16)(D_8013AE88->data1E % 10) == 0) {
+        if (D_8013AE98->resource14 == 0xFFFF) { for (;;) {} }
+        entry = getModelPreviewEntry(D_8013AE98->resource14, D_8013AE88->data1E);
+    } else {
+        if (D_8013AE98->resource16 == 0xFFFF) { for (;;) {} }
+        entry = getModelPreviewEntry(D_8013AE98->resource16, D_8013AE88->data1E);
+    }
+    switch (entry->command) {
+    case 1: state->rotationStep = 64; entry->flags = 0; break;
+    case 3: state->rotationStep = 0; entry->flags = 0; break;
+    case 0: entry->flags = 0; break;
+    case 99:
+        entry->task = 0;
+        entry->flags = 0;
+        func_800149A8();
+        return;
+    }
+    D_8013B0D8->unk0B6 = (D_8013B0D8->unk0B6 + state->rotationStep) & 0xFFF;
+    func_8001E3E4((SVECTOR *)&D_8013B0D8->unk0B4, &D_8013B0D8->worldCoordinate);
+    func_8001E3E4(&D_8013B0D8->modelRotation, &D_8013B0D8->modelCoordinate);
+    func_8001E3E4((SVECTOR *)D_8013B0D8->unk5BC, D_8013B0D8->model.partCoordinates);
+    sortPlayerModelWithDrawArea(D_8013AE88->data1C, 0, &D_801300B8[D_8013AE88->data1C]);
+}
 
 void initializeCountedSplitSelectionBoundsTask(void) {
     D_8013AE98->data1C++;

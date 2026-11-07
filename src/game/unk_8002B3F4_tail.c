@@ -3444,9 +3444,9 @@ void updatePlayerCoordinateEffectTask(void) {
     if (!D_8013AFD3) {
         players = D_80120E90;
         if (players[D_8013AE88->data18].unk12C == 0x1B) {
-            resource->coordinate.coord.t[0] = players[D_8013AE88->data18].position8E4[0];
-            resource->coordinate.coord.t[1] = players[D_8013AE88->data18].position8E4[1];
-            resource->coordinate.coord.t[2] = players[D_8013AE88->data18].position8E4[2];
+            resource->coordinate.coord.t[0] = players[D_8013AE88->data18].preview.fields.position8E4[0];
+            resource->coordinate.coord.t[1] = players[D_8013AE88->data18].preview.fields.position8E4[1];
+            resource->coordinate.coord.t[2] = players[D_8013AE88->data18].preview.fields.position8E4[2];
             if (resource->scale.vx < 0x1000) {
                 resource->scale.vx += 0x200;
                 resource->scale.vy += 0x200;
@@ -4099,9 +4099,9 @@ void updateRisingPlayerEffectTask(void) {
             setCurrentTaskCallback(func_80049404);
             return;
         }
-        resource->coordinate.coord.t[0] = D_80120E90[D_8013AE88->data1A].position8E4[0];
-        resource->coordinate.coord.t[1] = D_80120E90[D_8013AE88->data1A].position8E4[1] + resource->offset.y;
-        resource->coordinate.coord.t[2] = D_80120E90[D_8013AE88->data1A].position8E4[2];
+        resource->coordinate.coord.t[0] = D_80120E90[D_8013AE88->data1A].preview.fields.position8E4[0];
+        resource->coordinate.coord.t[1] = D_80120E90[D_8013AE88->data1A].preview.fields.position8E4[1] + resource->offset.y;
+        resource->coordinate.coord.t[2] = D_80120E90[D_8013AE88->data1A].preview.fields.position8E4[2];
         if (resource->scale.vx < 0x1000) {
             resource->scale.vx += 0x100;
             resource->scale.vy += 0x100;

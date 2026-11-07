@@ -49,7 +49,7 @@ struct RacePlayer {
     u8 unk066[0xE];
     s32 unk074;
     s32 unk078;
-    u8 unk07C[8];
+    SVECTOR modelRotation;
     s16 unk084, unk086, unk088;
     u8 unk08A[2];
     s32 unk08C;
