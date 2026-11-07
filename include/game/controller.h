@@ -28,7 +28,12 @@ extern s16 D_8013AEF8[];
 extern s16 D_8013AEFC[];
 extern s16 D_8013AEF4[];
 extern u16 D_8013AF0C[2];
+#ifdef CONTROLLER_STATE_ABSOLUTE_ADDRESSING
+extern u8 D_8013AEE4 __attribute__((section(".data")));
+#else
 extern u8 D_8013AEE4;
+#endif
+extern u16 D_8013AEE2 __attribute__((section(".data")));
 
 void initializeControllers(void);
 

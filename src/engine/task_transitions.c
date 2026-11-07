@@ -9,6 +9,7 @@
 #include "game/music.h"
 #define RACE_PLAYER_ABSOLUTE_ADDRESSING
 #include "game/cd_queue.h"
+#define CONTROLLER_STATE_ABSOLUTE_ADDRESSING
 #include "game/controller.h"
 #include "game/race_player.h"
 #define GAME_OPTIONS_GP_ADDRESSING
@@ -53,6 +54,7 @@ extern s16 D_8013B104 __attribute__((section(".data")));
 extern u8 D_8013AFE2;
 extern u8 D_8013B1AB __attribute__((section(".data")));
 extern u16 D_8013AFE8;
+extern u16 D_8013B1A8 __attribute__((section(".data")));
 
 
 void func_800131B4(void);
@@ -73,6 +75,10 @@ void func_8001D100(void);
 void advanceTaskWhenFlagAFE4Bit8Set(void);
 void startResourceLoadWhenFlagAFE4Bit9Set(void);
 void func_80040A60(void);
+void func_80015A30(u16 controller);
+void func_8003CAF0(void);
+void func_80040D5C(void);
+void func_8001C9F0(void);
 
 void runMovieAndGameLoop(void) {
     func_800131B4();
@@ -183,7 +189,30 @@ void updateSplitScreenTransitionTask(void) {
 
 INCLUDE_ASM("asm/nonmatchings/engine/task_transitions", func_8001C2E0);
 
-INCLUDE_ASM("asm/nonmatchings/engine/task_transitions", func_8001C85C);
+void finishRaceTransitionAfterCountdown(void) {
+    s16 i;
+    if (D_8013AFE2 == 2 && (D_8013AEE4 & 2)) func_80015A30(0);
+    if (--D_8013AE88->data18 == 0) {
+        D_8013B1A8 = 0;
+        D_8013AFE4 |= 8;
+        if (gameOptionPlayerModeGp == 1) func_8003CAF0();
+        for (i = 0; i < gameOptionPlayerModeGp; i++) {
+            if (D_80120E90[i].unk935 == 0) {
+                createFallingParticleTask();
+                D_8013AE8C->data18 = 0;
+                break;
+            }
+        }
+        if (D_8013AFE2 == 2) {
+            if (D_8013AEE4 & 8) D_8013AEE4 = 0;
+            else {
+                D_8013AEE4 = 4;
+                D_8013AEE2 = D_8013AEDC[0];
+            }
+        }
+        setCurrentTaskCallback(func_8001C9F0);
+    } else func_80040D5C();
+}
 
 INCLUDE_ASM("asm/nonmatchings/engine/task_transitions", func_8001C9F0);
 
