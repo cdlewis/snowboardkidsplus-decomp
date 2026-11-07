@@ -103,9 +103,11 @@ segments:
       - [0x1C68, rodata]
       - [0x1E40, .rodata, game/unk_8007CC78]
       - [0x1ED8, rodata]
-      - [0x2520, rodata, main_tail]
+      - [0x2520, rodata, main_tail_jump_tables]
       - [0x2534, rodata]
       - [0x2618, rodata]
+      - {start: 0x26A0, type: .rodata, name: main_tail, linker_section: .rodata.board_level_label}
+      - [0x26B0, rodata]
       - [0x2794, rodata]
       - [0x2840, rodata]
       - [0x288C, rodata]
@@ -667,6 +669,10 @@ segments:
       - [0x11FC00, data, 11FC00]
       - {start: 0x120F24, type: .data, name: game/unk_8007CC78, linker_section: .data.task_shadowed_text}
       - [0x120F40, data, task_shadowed_text_tail]
+      - {start: 0x122040, type: .data, name: main_tail, linker_section: .data.board_selection_levels}
+      - {start: 0x12204C, type: .data, name: main_tail, linker_section: .data.board_style_text}
+      - {start: 0x12205C, type: .data, name: main_tail, linker_section: .data.board_selection_styles}
+      - [0x122068, data, board_selection_tail]
       - {start: 0x122564, type: .data, name: main_tail, linker_section: .data.current_task_panel_text}
       - [0x122574, data, 122574]
       - {start: 0x122590, type: .data, name: main_tail, linker_section: .data.split_selection_bounds_configs}

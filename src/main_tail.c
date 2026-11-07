@@ -38,6 +38,12 @@ typedef struct PaletteBurstResource {
     s32 age;
     u8 r, g, b;
 } PaletteBurstResource;
+typedef struct SelectionDisplayEntry {
+    s16 index;
+    s16 unk02;
+    s16 unk04;
+} SelectionDisplayEntry;
+
 typedef struct GridMarkerState {
     u8 unk00[0x30];
     u16 state;
@@ -153,6 +159,22 @@ typedef struct TextEntryListHeader {
     TextEntry *freeEntries;
     TextEntry *activeEntries;
 } TextEntryListHeader;
+
+extern s8 D_80011DC8[];
+
+u8 gBoardSelectionLevels[12] __attribute__((section(".data.board_selection_levels"))) = {
+    1, 1, 1, 2, 2, 2, 3, 3, 3, 1, 2, 3
+};
+s8 *gBoardStyleText[4] __attribute__((section(".data.board_style_text"))) = {
+    D_80011DC8, D_80011DC8 + 0x10, D_80011DC8 + 0x20, D_80011DC8 + 0x2C
+};
+u8 gBoardSelectionStyles[12] __attribute__((section(".data.board_selection_styles"))) = {
+    0, 1, 2, 0, 1, 2, 0, 1, 2, 3, 3, 3
+};
+const u8 gBoardLevelLabel[16] __attribute__((section(".rodata.board_level_label"), aligned(4))) = {
+    0x82, 0x6B, 0x82, 0x64, 0x82, 0x75, 0x82, 0x64,
+    0x82, 0x6B, 0, 0, 0, 0, 0, 0
+};
 
 u16 gCurrentTaskPanelText[8] __attribute__((section(".data.current_task_panel_text"))) = {
     0xFA, 0x94, 0xB1, 0x9F, 0x98, 0x31, 0, 0
@@ -493,7 +515,25 @@ void initializeTaskResourcesAndClearData18(void) {
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_80092A50);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800937BC);
+void drawCurrentTaskBoardStyleAndLevel(void) {
+    Movement2D *position;
+    SelectionDisplayEntry *entry;
+    s32 textIndex;
+    if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
+    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    entry = &((SelectionDisplayEntry *)&D_801300AC)[(s16)D_8013AE88->data18];
+    if (D_8013AE88->data1A != 0) {
+        textIndex = gBoardSelectionStyles[entry->index];
+        drawWrappedDoubleByteText(position->x / 4096 - 104, position->y / 4096 + 8,
+            10, gBoardStyleText[textIndex], 6, -1,
+            &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        drawWrappedDoubleByteText(position->x / 4096 - 104, position->y / 4096 + 24,
+            10, (s8 *)gBoardLevelLabel, 6, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        func_8006D984(position->x / 4096 - 64, position->y / 4096 + 24,
+            1, 0, gBoardSelectionLevels[entry->index], 6, -1,
+            &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_80093A20);
 

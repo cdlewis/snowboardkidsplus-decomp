@@ -25,3 +25,4 @@ void initializeCountedFourBoundsTask(void);
 void updateSplitSelectionBoundsTransition(void);
 
 void initializeCountedPlayerGroupedSelectionBoundsTask(void);
+void drawCurrentTaskBoardStyleAndLevel(void);

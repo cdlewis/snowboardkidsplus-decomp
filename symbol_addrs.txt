@@ -3218,3 +3218,9 @@ pollMemoryCardWrite = 0x80019670; // type:func
 initializeDemoPlaybackTask = 0x8001D528; // type:func
 
 reflectVelocityAndEnforceGeometryEdgeDistance = 0x8004ADF8; // type:func
+
+drawCurrentTaskBoardStyleAndLevel = 0x800937BC; // type:func
+gBoardSelectionLevels = 0x80131840; // size:0xC
+gBoardStyleText = 0x8013184C; // size:0x10
+gBoardSelectionStyles = 0x8013185C; // size:0xC
+gBoardLevelLabel = 0x80011EA0; // size:0x10
