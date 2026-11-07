@@ -574,7 +574,7 @@ void func_80049404(void);
 void func_8004531C(void);
 void updatePlayerFlagTaskVisual(void);
 void drawPlayerFlagTaskVisual(TaskVisualResource *resource);
-void func_80044BC0(void);
+void updateExpandingCoordinateEffectTask(void);
 void func_800450BC(void);
 void updatePlayerCoordinateEffectTask(void);
 void updateDualResource4C80EffectTask(void);

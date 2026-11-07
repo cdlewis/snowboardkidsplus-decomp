@@ -2734,6 +2734,7 @@ initializeFallingTaskObject = 0x8005E174; // type:func
 pollMemoryCardRead = 0x80019520; // type:func
 
 initializeExpandingCoordinateEffectTask = 0x80044A38; // type:func
+updateExpandingCoordinateEffectTask = 0x80044BC0; // type:func
 
 drawUppercaseProportionalText = 0x8006F57C; // type:func
 gUppercaseGlyphMetrics = 0x8012EBD0; // type:u8 size:0x34

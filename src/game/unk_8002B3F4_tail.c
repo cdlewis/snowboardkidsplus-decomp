@@ -3063,10 +3063,40 @@ void initializeExpandingCoordinateEffectTask(void) {
     resource->unkCA = 0;
     D_8013AE88->data1A = 45;
     resource->scale.vx = resource->scale.vy = resource->scale.vz = 0;
-    setCurrentTaskCallback(func_80044BC0);
+    setCurrentTaskCallback(updateExpandingCoordinateEffectTask);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_80044BC0);
+void updateExpandingCoordinateEffectTask(void) {
+    ExpandingCoordinateEffectResource *resource;
+    u16 i;
+    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    resource = (ExpandingCoordinateEffectResource *)&D_800D9504[D_8013AE88->resource14];
+    if (!D_8013AFD3) {
+        if (D_8013AE88->data1A >= 16) {
+            resource->scale.vx += 0x40;
+            resource->scale.vy += 0x40;
+            resource->scale.vz += 0x40;
+            for (i = 0; i < D_8013AFD2; i++) {
+                addPlayerFlagsIfWithinRadius(&resource->position, resource->scale.vx * 24, 0x80, i);
+                D_80120E90[i].unk0F4 = D_8013AE88->data18;
+            }
+        } else {
+            resource->scale.vx -= 0x80;
+            resource->scale.vy -= 0x80;
+            resource->scale.vz -= 0x80;
+        }
+        resource->rotation.vy += 0x80;
+        D_8013AE88->data1A--;
+    }
+    if (isPositionInCameraRange(resource->parent.coord.t[0], resource->parent.coord.t[2], (s16)func_80059254())) {
+        D_80129A80[15].coord2 = &resource->coordinate;
+        func_8001E3E4((SVECTOR *)&resource->pitch, &resource->parent);
+        func_8001E3E4(&resource->rotation, &resource->coordinate);
+        ScaleMatrix(&resource->coordinate.coord, &resource->scale);
+        drawTaskObject(15);
+    }
+    if (!D_8013AE88->data1A) { func_800149A8(); }
+}
 
 void resetTaskVisualState(TaskVisualResource *resource) {
     resource->unkC6 = 0x400;
