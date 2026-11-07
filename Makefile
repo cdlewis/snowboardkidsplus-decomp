@@ -181,9 +181,10 @@ $(BUILD_DIR)/src/%.o: src/%.s Makefile config/compiler.mk $(BUILD_DIR)/.config
 	$(AS) $(AS_FLAGS) -no-pad-sections -G$(G_VALUE) --MD $@.d -o $@ $<
 
 ifneq ($(COMPARISON),1)
-build/slps_018.23.elf: $(C_OBJECTS) $(HASM_OBJECTS) $(ASM_OBJECTS) linkers/slps_018.23.ld linkers/undefined_funcs_auto.txt linkers/undefined_syms_auto.txt
+# PS-X EXE combines code and mutable data in one load image without page permissions.
+build/slps_018.23.elf: $(C_OBJECTS) $(HASM_OBJECTS) $(ASM_OBJECTS) config/symbol_aliases.ld linkers/slps_018.23.ld linkers/undefined_funcs_auto.txt linkers/undefined_syms_auto.txt
 	$(PRINTF) "[$(PINK) linker $(NO_COL)]  Linking $@\n"
-	$(LD) -EL -nostdlib -T linkers/slps_018.23.ld -T linkers/undefined_funcs_auto.txt -T linkers/undefined_syms_auto.txt -Map build/slps_018.23.map -o $@ --whole-archive --start-group $(SDK_LIBRARIES) --end-group --no-whole-archive
+	$(LD) -EL -nostdlib --no-warn-rwx-segments -T linkers/slps_018.23.ld -T linkers/undefined_funcs_auto.txt -T linkers/undefined_syms_auto.txt -T config/symbol_aliases.ld -Map build/slps_018.23.map -o $@ --whole-archive --start-group $(SDK_LIBRARIES) --end-group --no-whole-archive
 
 build/slps_018.23.exe: build/slps_018.23.elf
 	$(PRINTF) "[$(CYAN) objcpy $(NO_COL)]  $<\n"

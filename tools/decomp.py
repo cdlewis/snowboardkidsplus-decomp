@@ -159,6 +159,7 @@ def require_fresh(root=ROOT):
     if not output.exists() or not elf.exists():
         raise ValueError("build artifacts missing; run ./tools/build-and-verify.sh first")
     inputs = [root / "Makefile", root / "config/compiler.mk",
+              root / "config/symbol_aliases.ld",
               root / "tools/build.py",
               root / "snowboardkidsplus.yaml",
               root / "symbol_addrs.txt", root / "reloc_addrs.txt"]

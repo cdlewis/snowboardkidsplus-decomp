@@ -1,11 +1,8 @@
 initializeCurrentPlayerModelAndHeight = 0x80020380; // type:func
-debugPositionXFormatAbsolute = 0x8013B214; // size:0x8 allow_duplicated:true
-debugPositionYFormatAbsolute = 0x8013B21C; // size:0x8 allow_duplicated:true
-debugPositionZFormatAbsolute = 0x8013B224; // size:0x8 allow_duplicated:true
 adjustDebugPositionAndDisplay = 0x8004D7F8; // type:func
-gDebugPositionXFormat = 0x8013B214; // size:0x8 defined:true allow_duplicated:true
-gDebugPositionYFormat = 0x8013B21C; // size:0x8 defined:true allow_duplicated:true
-gDebugPositionZFormat = 0x8013B224; // size:0x8 defined:true allow_duplicated:true
+gDebugPositionXFormat = 0x8013B214; // size:0x8 defined:true
+gDebugPositionYFormat = 0x8013B21C; // size:0x8 defined:true
+gDebugPositionZFormat = 0x8013B224; // size:0x8 defined:true
 initializeCourseVisualTask = 0x8005B978; // type:func
 gCourseVisualFrames = 0x8013B2C8; // size:0x4 defined:true
 D_8013B2CC = 0x8013B2CC; // size:0x4
@@ -1985,9 +1982,8 @@ animateAlternatingVramRow = 0x8001D8D4; // type:func
 callCurrentPlayerStateCallbackIfDifferent = 0x80020328; // type:func
 currentPlayerStateCallbacks = 0x80120934; // size:0x128 defined:true
 
-// Absolute-addressing alias for the shared player pointer.
-currentPlayerAbsolute = 0x8013B0D8; // size:0x4 allow_duplicated:true
-D_8013B0D8 = 0x8013B0D8; // size:0x4 defined:true allow_duplicated:true
+// Shared player pointer; addressing aliases are in config/symbol_aliases.ld.
+D_8013B0D8 = 0x8013B0D8; // size:0x4 defined:true
 queueStartupSectorReads = 0x8002F348; // type:func
 
 addFlatTriangle = 0x8005FBC0; // type:func
@@ -1996,9 +1992,8 @@ startValueInterpolationTask = 0x8006A128; // type:func
 addSemiTransparentTriangle = 0x8005FFF8; // type:func
 addSemiTransparentGouraudTriangle = 0x800600A8; // type:func
 
-// GP-relative alias for the single-pixel read rectangle.
-readPixelRectGp = 0x8013B240; // size:0x8 allow_duplicated:true
-gReadPixelRect = 0x8013B240; // size:0x8 defined:true allow_duplicated:true
+// Single-pixel read rectangle.
+gReadPixelRect = 0x8013B240; // size:0x8 defined:true
 drawCyanBackgroundAndSetFog = 0x8004EF70; // type:func
 readVramPixelColor = 0x800515A8; // type:func
 
@@ -2031,7 +2026,6 @@ isControllerInputSupported = 0x800154D0; // type:func
 
 drawPaletteMappedIcon = 0x800403C8; // type:func
 drawScaledPaletteMappedIcon = 0x80040440; // type:func
-gMappedIconPalettes = 0x8013B163; // type:u8 size:0x9
 
 prepareUnlockSelectionResume = 0x800A5204; // type:func
 
@@ -2518,18 +2512,13 @@ gSecondaryTaskSequenceEntries = 0x8012F10C; // size:0x30
 
 advanceTextLine = 0x800A60FC; // type:func
 
-// GP-relative aliases used by the race restart task.
-gameOptionPlayerModeGp = 0x8013AFCD; // size:0x1 allow_duplicated:true
-activeRacePlayerCountGp = 0x8013AFD2; // size:0x1 allow_duplicated:true
-D_8013AFCD = 0x8013AFCD; // size:0x1 allow_duplicated:true
-D_8013AFD2 = 0x8013AFD2; // size:0x1 allow_duplicated:true
+// Race options; addressing aliases are in config/symbol_aliases.ld.
+D_8013AFCD = 0x8013AFCD; // size:0x1
+D_8013AFD2 = 0x8013AFD2; // size:0x1
 initializeRaceRestartTask = 0x8001CD64; // type:func
 
-gameOptionPlayerModeAbsolute = 0x8013AFCD; // allow_duplicated:true
-selectedCourseIndexAbsolute = 0x8013AFCE; // allow_duplicated:true
-selectedFinishLapCountAbsolute = 0x8013AFD0; // allow_duplicated:true
-D_8013AFCE = 0x8013AFCE; // size:0x2 allow_duplicated:true
-D_8013AFD0 = 0x8013AFD0; // size:0x2 allow_duplicated:true
+D_8013AFCE = 0x8013AFCE; // size:0x2
+D_8013AFD0 = 0x8013AFD0; // size:0x2
 
 createFlickeringDotsTask = 0x8004FA74; // type:func
 
@@ -2541,8 +2530,7 @@ initializeCurrentPlayerState23 = 0x8001FDEC; // type:func
 
 emitProjectedFlatQuad = 0x80052C1C; // type:func
 
-geometryPlacementDataAbsolute = 0x8013B1F4; // allow_duplicated:true
-D_8013B1F4 = 0x8013B1F4; // allow_duplicated:true
+D_8013B1F4 = 0x8013B1F4;
 initializeProximityEmitterTask = 0x8005CB08; // type:func
 gProximityEmitterPlacements = 0x80129744; // size:0x20
 
@@ -2607,8 +2595,7 @@ initializeCurrentPlayerState24 = 0x8001FAC4; // type:func
 drawFirstPlayerResultCounterAndIcon = 0x80035FAC; // type:func
 
 initializeSelectionMenuTask = 0x800A2C74; // type:func
-selectionMenuRecordAbsolute = 0x8013B560; // allow_duplicated:true
-D_8013B560 = 0x8013B560; // size:0x2 allow_duplicated:true
+D_8013B560 = 0x8013B560; // size:0x2
 
 updateCurrentPlayerAndResetState = 0x800204D8; // type:func
 
@@ -2644,8 +2631,7 @@ updateAnimatedSpriteTask = 0x8007747C; // type:func
 initializePickupVisualTask = 0x8005AF0C; // type:func
 
 advanceTaskAtModeCoursePosition = 0x800A2210; // type:func
-taskTransitionFlagGp = 0x8013B55E; // size:0x1 allow_duplicated:true
-D_8013B55E = 0x8013B55E; // size:0x1 allow_duplicated:true
+D_8013B55E = 0x8013B55E; // size:0x1
 
 drawSound601SequenceSpriteTask = 0x80032F84; // type:func
 
@@ -2888,7 +2874,6 @@ D_8013B5FC = 0x8013B5FC; // size:0x4
 D_8013AE68 = 0x8013AE68; // size:0x2
 
 completeModeSelectionTransitionWhenReady = 0x800A2324; // type:func
-modeTransitionReadyGp = 0x8013B55E; // size:0x1 allow_duplicated:true
 
 prepareMemoryCardSave = 0x80018BA4; // type:func
 gMemoryCardSaveTitles = 0x800EB53C; // size:0x14

@@ -38,7 +38,7 @@ volatile u32 *mdec1 MDEC_DATA = (volatile u32 *)0x1F801824;
 volatile u32 *mdec_d_pcr MDEC_DATA = (volatile u32 *)0x1F8010F0;
 
 /* The first string's alignment also preserves the original rodata tail padding. */
-const char sMdecResetError[] __attribute__((section(".rodata.mdec"), aligned(16))) =
+const char sMdecResetError[] __attribute__((section(".rodata.mdec"), aligned(8))) =
     "MDEC_rest:bad option(%d)\n";
 const char sMdecInSyncName[] MDEC_RODATA = "MDEC_in_sync";
 const char sMdecOutSyncName[] MDEC_RODATA = "MDEC_out_sync";

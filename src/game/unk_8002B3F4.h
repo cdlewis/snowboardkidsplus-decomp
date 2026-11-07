@@ -206,7 +206,7 @@ typedef struct UnpackedWordBytes {
 typedef struct MenuSpritePaletteGroups {
     u8 unk00[3];
     u8 kind[8];
-    u8 unk0B[9];
+    u8 mappedIconPalettes[9];
 } MenuSpritePaletteGroups;
 
 typedef struct PlayerNumberResource {
@@ -421,8 +421,6 @@ extern TaskVisualFrame gPlayerDualResourceEffectFrame
 
 extern u8 D_8013B11A;
 extern u8 D_8013B18D __attribute__((section(".data")));
-/* Assembly and C consumers address this palette subtable directly. */
-extern u8 gMappedIconPalettes[9];
 
 extern s16 D_8013B10C;
 extern s16 D_8013B10E;

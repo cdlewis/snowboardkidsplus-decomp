@@ -574,6 +574,13 @@ class MaspsxProcessor:
                 # already handled via preprocess_lines
                 pass
 
+            elif line.startswith(".section"):
+                # GCC marks named sections as PROGBITS even for BSS. Preserve
+                # zero-fill storage when translating them for the ELF assembler.
+                if re.match(r'^\.section\s+\.(?:bss|sbss)(?:[.,\s]|$)', line):
+                    line = line.replace("@progbits", "@nobits")
+                res.append(line)
+
             elif line.startswith(".data"):
                 res.append(".section .data")
             elif line.startswith(".sdata"):

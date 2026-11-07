@@ -2421,7 +2421,8 @@ void drawPaletteMappedIcon(s16 x, s16 y, s16 index, struct GsOT *ot, u16 depth) 
         palette = 5;
         sprite = 446;
     } else {
-        palette = gMappedIconPalettes[index];
+        u8 *palettes = gMenuSpritePaletteGroups.mappedIconPalettes;
+        palette = palettes[index];
         sprite = index + 461;
     }
     func_8006C998(x, y, sprite, palette, -1, ot, depth);
@@ -2434,7 +2435,8 @@ void drawScaledPaletteMappedIcon(s16 x, s16 y, s16 index, s16 scaleX, s16 scaleY
         palette = 5;
         sprite = 446;
     } else {
-        palette = gMappedIconPalettes[index];
+        u8 *palettes = gMenuSpritePaletteGroups.mappedIconPalettes;
+        palette = palettes[index];
         sprite = index + 461;
     }
     if (scaleX > 0 && scaleY > 0) {
