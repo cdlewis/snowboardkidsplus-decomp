@@ -57,7 +57,7 @@ struct RacePlayer {
     u16 unk098, unk09A, unk09C, unk09E;
     u16 unk0A0, unk0A2, unk0A4, unk0A6, unk0A8, unk0AA;
     s32 unk0AC;
-    u8 unk0B0[4];
+    s32 unk0B0;
     u16 unk0B4;
     s16 unk0B6;
     s16 unk0B8;
@@ -251,3 +251,5 @@ struct Position3D;
 u16 addPlayerFlagsIfWithinRadius(struct Position3D *position, s32 radius, s16 flags, u16 playerIndex);
 
 void addPlayerFlagsWithinRadius(const Position3D *position, s32 radius, u16 flags);
+
+u16 isPositionWithinPlayerCollisionRange(const Position3D *position, s32 radius, s32 height, s16 playerIndex);

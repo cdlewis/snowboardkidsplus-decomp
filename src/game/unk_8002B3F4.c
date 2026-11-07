@@ -606,7 +606,7 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002B820);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002BC2C);
 
-s16 arePositionsWithinXZRange(const Position3D *a, const Position3D *b, s32 threshold) {
+u16 arePositionsWithinXZRange(const Position3D *a, const Position3D *b, s32 threshold) {
     s32 dx = a->x - b->x;
     s32 dz = a->z - b->z;
 
@@ -628,7 +628,46 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002C2D8);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002C520);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_8002C738);
+u16 isPositionWithinPlayerCollisionRange(const Position3D *position, s32 radius, s32 height, s16 playerIndex) {
+    RacePlayer *player;
+    RacePlayer *players;
+    s32 x, y, z, range, verticalRange;
+    players = D_80120E90;
+    player = &players[playerIndex];
+    if (player->unk024) {
+        if (arePositionsWithinXZRange(position, (Position3D *)&D_80120E90[playerIndex].x, 0x10000)) {
+            y = position->y - player->unk074;
+            verticalRange = height;
+            if (y < 0) {
+                y = -y;
+            } else {
+                verticalRange = player->unk0B0;
+            }
+            if (y < verticalRange) {
+                RacePlayer *horizontalPlayer;
+                RacePlayer *horizontalPlayers = D_80120E90;
+                horizontalPlayer = &horizontalPlayers[playerIndex];
+                x = position->x - horizontalPlayer->x;
+                range = radius + horizontalPlayer->unk0AC;
+                if (x < 0) {
+                    x = -x;
+                }
+                if (x < range) {
+                    z = position->z - horizontalPlayer->z;
+                    if (z < 0) {
+                        z = -z;
+                    }
+                    if (z < range) {
+                        if (SquareRoot0(x * x + z * z) < range) {
+                            return 1;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return 0;
+}
 
 u16 addPlayerFlagsIfWithinRadius(Position3D *position, s32 radius, s16 flags, u16 playerIndex) {
     RacePlayer *player;
