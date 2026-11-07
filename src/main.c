@@ -156,7 +156,7 @@ extern GameTask *D_8013AEB0;
 extern u16 D_8013AEB4;
 
 void func_80013540(void);
-void func_80015154(u16 controller);
+void updateControllerAxesFromAnalog(u16 controller);
 
 void func_800131B4(void) {}
 
@@ -781,7 +781,7 @@ void updateControllerInput(u16 controller) {
         setControllerAxesFromButtons(controller);
     } else if (device == 0x70) {
         D_8013AEEC[controller] = ((u8)~packet->payload[0] << 8) | (u8)~packet->payload[1];
-        func_80015154(controller);
+        updateControllerAxesFromAnalog(controller);
     } else if (device == 0x50) {
         D_8013AEEC[controller] = (u8)~packet->payload[0] << 8;
         buttons = ~packet->payload[1];
@@ -809,7 +809,7 @@ void updateControllerInput(u16 controller) {
         if (buttons & 0x80) {
             D_8013AEEC[controller] |= 2;
         }
-        func_80015154(controller);
+        updateControllerAxesFromAnalog(controller);
     }
     D_8013AEE8[controller] = ~D_8013AF0C[controller] & D_8013AEEC[controller];
 }

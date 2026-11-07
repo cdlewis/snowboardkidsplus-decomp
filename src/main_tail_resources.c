@@ -57,6 +57,18 @@ typedef struct MusicResource {
 #define DRAW_MODE_COMMAND_HIGH 0xE100
 #define TEXTURED_SPRITE_CODE 0x64
 
+typedef struct TextPlaybackState {
+    TextEntry *currentEntry;
+    u32 unk04[5];
+    s16 unk18[5];
+    u8 unk22[2];
+    s32 tick;
+    u16 flags, unk2A;
+    GameTask *tasks[5];
+    u32 unk40;
+    u8 unk44[0xBC];
+} TextPlaybackState;
+
 typedef struct CdAudioOwner {
     u8 unk00[0x24];
     u32 tick;
@@ -374,7 +386,7 @@ void drawSecondaryTextBackgroundTask(void) {
             func_8007240C(-140, 44, 280, 56, 128, 128, 128, 2, &D_800EBFF0[D_8013AF78], 8);
         }
         setSpriteColor(128, 128, 128);
-        func_800A7D8C(-160, -120, 320, 240, 149, 0x3AB0, &D_800EBFF0[D_8013AF78], 8);
+        drawPagedTexturedRectangle(-160, -120, 320, 240, 149, 0x3AB0, &D_800EBFF0[D_8013AF78], 8);
     }
 }
 
@@ -484,7 +496,7 @@ void setTextEntryCdAudioTask(TextEntry *entry) {
         if (entry->unk14 == 0) SsSetSerialVol(0, 103, 103);
         else SsSetSerialVol(0, entry->unk14, entry->unk14);
         queueCdCommand(gTextEntryCdCommands[entry->unk06], 1);
-        func_80014874(func_800A77B0);
+        func_80014874(updateTextEntryCdAudioTask);
         owner->task = D_8013AE8C;
         D_8013AE8C->resource14 = allocateTaskResource();
         resource = (CdAudioResource *)&D_800D9504[D_8013AE8C->resource14];

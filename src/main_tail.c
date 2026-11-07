@@ -828,7 +828,7 @@ void updatePlayerModelPreviewTask(void) {
     D_8013B0D8->unk0B6 = (D_8013B0D8->unk0B6 + state->rotationStep) & 0xFFF;
     func_8001E3E4((SVECTOR *)&D_8013B0D8->unk0B4, &D_8013B0D8->worldCoordinate);
     func_8001E3E4(&D_8013B0D8->modelRotation, &D_8013B0D8->modelCoordinate);
-    func_8001E3E4((SVECTOR *)D_8013B0D8->unk5BC, D_8013B0D8->model.partCoordinates);
+    func_8001E3E4((SVECTOR *)D_8013B0D8->unk5BC, D_8013B0D8->model.modelCoordinates);
     sortPlayerModelWithDrawArea(D_8013AE88->data1C, 0, &D_801300B8[D_8013AE88->data1C]);
 }
 

@@ -107,7 +107,7 @@ void dispatchGameOptionTransitionTask(void) {
         D_8013AE88->unk10 |= 1;
         break;
     case 2:
-        func_80070274(1, 0, 30);
+        configureTaskStateTransition(1, 0, 30);
         setSecondaryDisplayTaskMode(1);
         queueCdSectorCommand(0, 1, 5, (void *)0x8017D000, 0);
         queueCdSectorCommand(0, 6, 18, (void *)0x801F0000, 0);
@@ -3466,9 +3466,9 @@ void updatePlayerCoordinateEffectTask(void) {
     if (!D_8013AFD3) {
         players = D_80120E90;
         if (players[D_8013AE88->data18].unk12C == 0x1B) {
-            resource->coordinate.coord.t[0] = players[D_8013AE88->data18].preview.fields.position8E4[0];
-            resource->coordinate.coord.t[1] = players[D_8013AE88->data18].preview.fields.position8E4[1];
-            resource->coordinate.coord.t[2] = players[D_8013AE88->data18].preview.fields.position8E4[2];
+            resource->coordinate.coord.t[0] = players[D_8013AE88->data18].worldCoordinate.coord.t[0];
+            resource->coordinate.coord.t[1] = players[D_8013AE88->data18].worldCoordinate.coord.t[1];
+            resource->coordinate.coord.t[2] = players[D_8013AE88->data18].worldCoordinate.coord.t[2];
             if (resource->scale.vx < 0x1000) {
                 resource->scale.vx += 0x200;
                 resource->scale.vy += 0x200;
@@ -4121,9 +4121,9 @@ void updateRisingPlayerEffectTask(void) {
             setCurrentTaskCallback(func_80049404);
             return;
         }
-        resource->coordinate.coord.t[0] = D_80120E90[D_8013AE88->data1A].preview.fields.position8E4[0];
-        resource->coordinate.coord.t[1] = D_80120E90[D_8013AE88->data1A].preview.fields.position8E4[1] + resource->offset.y;
-        resource->coordinate.coord.t[2] = D_80120E90[D_8013AE88->data1A].preview.fields.position8E4[2];
+        resource->coordinate.coord.t[0] = D_80120E90[D_8013AE88->data1A].worldCoordinate.coord.t[0];
+        resource->coordinate.coord.t[1] = D_80120E90[D_8013AE88->data1A].worldCoordinate.coord.t[1] + resource->offset.y;
+        resource->coordinate.coord.t[2] = D_80120E90[D_8013AE88->data1A].worldCoordinate.coord.t[2];
         if (resource->scale.vx < 0x1000) {
             resource->scale.vx += 0x100;
             resource->scale.vy += 0x100;

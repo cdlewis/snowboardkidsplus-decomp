@@ -908,10 +908,7 @@ void drawSelectedTaskSprite(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80073F84);
 
-static inline RegisteredTaskEntry *getRegisteredTaskEntry(u32 resource, s32 index) {
-    RegisteredTaskEntry *entries = (RegisteredTaskEntry *)&D_800D9504[resource];
-    return &entries[index / 10];
-}
+
 
 void createRegisteredTextPanelTask(s16 x, s16 y, const u16 **texts, const u8 *mapping, s32 depth, s32 index) {
     RegisteredTextResource *resource;
@@ -1354,7 +1351,7 @@ void createPlayerPanelTask(s16 player, s16 x, s16 y, s32 depth, s32 index) {
     entry->flags = 1;
     entry->active = 1;
     entry->task = D_8013AE8C;
-    func_8007BBAC(player);
+    applySaveRecordUnlockOverrides(player);
 }
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80078AFC);

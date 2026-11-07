@@ -96,7 +96,7 @@ u8 gPlayerState30Animation22Countdowns[12]
     30, 30, 30, 0, 0, 0, 30, 0, 0, 30, 0, 0
 };
 
-void func_8001EC88(void);
+void updateCurrentPlayerMotionEffects(void);
 void initializeScaledTaskCoordinateResource(void);
 void func_80025014(void);
 void func_80024288(void);
@@ -912,7 +912,7 @@ void updateCurrentPlayerState25MotionAndTimer(void) {
         if (func_80028234()) {
             func_8002E5A0(D_8013AE88->data18, 10);
             func_800183FC(D_8013AE88->data18, 1, 0xB01, 0x18);
-            func_80068A10(D_8013AE88->data18);
+            createPlayerTripleQuadEffectTask(D_8013AE88->data18);
         }
     }
     D_8013B0D8->unk08C -= 1 + countCurrentPlayerInputGroups();
@@ -1276,7 +1276,7 @@ void updateCurrentPlayerState30AnimationAndHeight(void) {
                 }
             }
         }
-        func_80017268();
+        updateCurrentPlayerAnimation();
     } else {
         player->unk08C--;
     }
@@ -1405,7 +1405,7 @@ void updateCurrentPlayerState11Motion(void) {
     } else {
         func_80028234();
     }
-    func_80017268();
+    updateCurrentPlayerAnimation();
     if (!(D_8013B0D8->unk128 & 1) && (D_8013B0D8->animationFlags & 0x10)) {
         D_8013B0D8->unk12C = 12;
         currentPlayerStateCallbacks[12]();
@@ -1485,7 +1485,7 @@ void updateCurrentPlayerTimedMotion(void) {
         D_8013B0D8->unk110 += 0x800;
     }
     D_8013B0D8->unk0B6 = D_8013B0D8->unk110 - 0x400;
-    func_80017268();
+    updateCurrentPlayerAnimation();
     if (D_8013B0E4) {
         currentPlayerStateCallbacks[D_8013B0D8->unk12C]();
     } else if (D_8013B0D8->unk08C == 0) {

@@ -48,5 +48,5 @@ void initializeTextPlaybackTask(void);
 void updateTextPlaybackTask(void);
 void beginAudioFadeCountdownTask(void);
 void setSecondaryTextEntryTask(TextEntry *entry);
-void func_800A73BC(TextEntry *entry);
-void func_800A7928(TextEntry *entry);
+void setTextEntryMusicTask(TextEntry *entry);
+void processTextEntrySound(TextEntry *entry);

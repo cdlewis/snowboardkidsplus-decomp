@@ -64,7 +64,6 @@ extern s16 D_8013B104 __attribute__((section(".data")));
 extern u8 D_8013AFE2;
 extern u8 D_8013B1AB __attribute__((section(".data")));
 extern u16 D_8013AFE8;
-extern u16 D_8013B1A8 __attribute__((section(".data")));
 
 
 void func_800131B4(void);
@@ -527,9 +526,9 @@ void initializeCurrentPlayerModelObjects(u32 *model) {
     if (!D_8013B1AB && !D_8013B562 && !raceFinishFlagAbsolute) {
         loadCurrentPlayerModelBlock();
         if (D_8013AE88->data18) {
-            func_8001604C(0, objects, &gPlayerRootTextureOffsets[D_8013AE88->data18]);
+            offsetTmdObjectTextures(0, (TmdObject *)objects, &gPlayerRootTextureOffsets[D_8013AE88->data18]);
             for (i = 1; i < 14; i++) {
-                func_8001604C(i, objects, &gPlayerPartTextureOffsets[D_8013AE88->data18]);
+                offsetTmdObjectTextures(i, (TmdObject *)objects, &gPlayerPartTextureOffsets[D_8013AE88->data18]);
             }
         }
     }

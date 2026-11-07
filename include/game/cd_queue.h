@@ -28,7 +28,7 @@ void queueStartupSectorReads(void);
 void queueCourseResourceSectorReads(void);
 void queueCdCommand(s16 command, s16 value);
 void queueBackgroundTextureSectorCommands(void);
-void func_8002FCF8(void);
+void queueMode11TransitionResources(void);
 void resetPendingCdRequests(void);
 void resetCdCommandState(void);
 

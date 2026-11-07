@@ -230,7 +230,6 @@ void clampCurrentPlayerHorizontalVector(VECTOR *vector);
 void clampVectorToCurrentPlayerLimit(VECTOR *vector);
 void func_8002AE38(s32, s32, s32, s32);
 void func_8002A8E4(s32, s32, s32, s32, s32);
-void func_80068A10(s32 playerIndex);
 
 s32 checkCurrentPlayerFlags43040OrAngleRange(void);
 s32 checkCurrentPlayerFlags345001(void);

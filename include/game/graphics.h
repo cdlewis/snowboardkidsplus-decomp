@@ -4,16 +4,37 @@
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
 
+typedef struct TmdTexturedPrimitive {
+    union {
+        s32 code;
+        struct {
+            u8 outputLength;
+            s8 inputLength;
+            u8 flags, mode;
+        } bytes;
+    } header;
+    u16 uv0, clut, uv1, tpage, uv2, pad, uv3;
+} TmdTexturedPrimitive;
+typedef struct TmdObject {
+    SVECTOR *vertices;
+    u32 vertexCount;
+    SVECTOR *normals;
+    u32 normalCount;
+    TmdTexturedPrimitive *primitives;
+    u32 primitiveCount;
+    s32 scale;
+} TmdObject;
+
 /* Packed texture adjustments for a TMD object's CLUT, UVs, and texture page. */
 typedef struct ModelTextureOffset {
-    u16 clut;
-    u16 uv;
     u16 tpage;
+    u16 uv;
+    u16 clut;
 } ModelTextureOffset;
 
 extern ModelTextureOffset gPlayerRootTextureOffsets[4];
 extern ModelTextureOffset gPlayerPartTextureOffsets[4];
-void func_8001604C(u16 part, u32 *model, ModelTextureOffset *offset);
+void offsetTmdObjectTextures(u16 part, TmdObject *model, ModelTextureOffset *offset);
 
 #ifdef GRAPHICS_GP_ADDRESSING
 #define GRAPHICS_DATA
@@ -404,7 +425,5 @@ void updateSplitScreenTransitionTask(void);
 void drawFirstPlayerStatusHud(void);
 #undef GRAPHICS_DATA
 
-void func_8006E2C4(s16 x, s16 y, s16 digits, s16 leadingZeroes, s32 value,
-                   s16 palette, s16 blend, GsOT *ot, u16 depth);
 void drawCurrentTaskPlayerValuePanel(void);
 void queueScanlineCopyPackets(void);

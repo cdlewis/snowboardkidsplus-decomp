@@ -35,29 +35,7 @@
 
 
 
-typedef struct TmdTexturedPrimitive {
-    union {
-        s32 code;
-        struct {
-            u8 outputLength;
-            s8 inputLength;
-            u8 flags, mode;
-        } bytes;
-    } header;
-    u16 uv0, clut, uv1, tpage, uv2, pad, uv3;
-} TmdTexturedPrimitive;
-typedef struct TmdObject {
-    SVECTOR *vertices;
-    u32 vertexCount;
-    SVECTOR *normals;
-    u32 normalCount;
-    TmdTexturedPrimitive *primitives;
-    u32 primitiveCount;
-    s32 scale;
-} TmdObject;
-typedef struct TmdTextureOffset {
-    u16 tpage, uv, clut;
-} TmdTextureOffset;
+
 
 typedef struct PaletteTransitionResource {
     u32 *pixels;
@@ -214,7 +192,7 @@ void uploadTimArchive(TimArchive *archive, s16 *position) {
     }
 }
 
-void offsetTmdObjectTextures(u16 index, TmdObject *objects, TmdTextureOffset *offset) {
+void offsetTmdObjectTextures(u16 index, TmdObject *objects, ModelTextureOffset *offset) {
     TmdObject *object = &objects[index];
     u8 *primitive = (u8 *)object->primitives;
     u16 i;

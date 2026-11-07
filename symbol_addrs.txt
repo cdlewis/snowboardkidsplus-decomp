@@ -3241,7 +3241,7 @@ drawSnowBackgroundAndSetFog = 0x800508D4; // type:func
 
 createRegisteredSpacedChildTasks = 0x800725D0; // type:func
 
-drawProjectedIndexedLitGouraudTriangle = 0x8005652C; // type:func
+drawProjectedIndexedSingleNormalGouraudTriangle = 0x8005652C; // type:func
 
 updateControllerAxesFromAnalog = 0x80015154; // type:func
 gControllerAnalogResponse = 0x800E9524; // size:0x34 defined:true

@@ -50,12 +50,12 @@ typedef struct GouraudTrianglePrimitive {
     s16 vertexIndices[3];
 } GouraudTrianglePrimitive;
 /* The GTE load at unk10 spans the three following vertex indices. */
-typedef struct ModelLitGouraudTriangle {
+typedef struct ModelSingleNormalGouraudTriangle {
     u32 command;
     TriangleColor colors[3];
     s16 unk10;
     s16 vertexIndices[3];
-} ModelLitGouraudTriangle;
+} ModelSingleNormalGouraudTriangle;
 typedef struct GouraudQuadPrimitive {
     u32 command;
     TriangleColor colors[4];
@@ -2238,8 +2238,8 @@ void drawProjectedIndexedGouraudTriangle(void) {
     GsOUT_PACKET_P = (u32)(packet + 1);
 }
 
-void drawProjectedIndexedLitGouraudTriangle(void) {
-    ModelLitGouraudTriangle *primitive = (ModelLitGouraudTriangle *)D_8013B680;
+void drawProjectedIndexedSingleNormalGouraudTriangle(void) {
+    ModelSingleNormalGouraudTriangle *primitive = (ModelSingleNormalGouraudTriangle *)D_8013B680;
     POLY_G3 *packet = (POLY_G3 *)GsOUT_PACKET_P;
     TriangleScratchpad *scratch = TRIANGLE_SCRATCHPAD;
     gte_ldv3(&D_8013B688[primitive->vertexIndices[0]], &D_8013B688[primitive->vertexIndices[1]], &D_8013B688[primitive->vertexIndices[2]]);

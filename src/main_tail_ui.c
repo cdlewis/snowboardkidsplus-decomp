@@ -586,7 +586,7 @@ void finishControllerPlaybackTransition(void) {
         break;
     case 1:
         setSecondaryDisplayTaskMode(1);
-        func_80070274(1, 0, 30);
+        configureTaskStateTransition(1, 0, 30);
         D_8013AE88->data18 = 2;
         break;
     case 2:
@@ -664,7 +664,7 @@ void finishUnlockMenuTask(void) {
         if (state->unk04[0] > 0x168000) {
             if ((u16)state->unk8C != 0) {
                 setSecondaryDisplayTaskMode(3);
-                func_8002FCF8();
+                queueMode11TransitionResources();
                 queueBackgroundTextureSectorCommands();
                 D_8013B10C = -1;
                 func_8002FA58(2);
@@ -674,7 +674,7 @@ void finishUnlockMenuTask(void) {
         break;
     case 2:
         if (isCdCommandQueueIdle() == 1) {
-            func_80070274(2, 0, 10);
+            configureTaskStateTransition(2, 0, 10);
             D_8013AE88->data18 = 3;
         }
         break;
