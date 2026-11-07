@@ -346,8 +346,8 @@ void initializeCountedGroupedSelectionBoundsTask(void) {
     if (D_8013AE88->resource16 != 0xFFFF) { for (;;) {} }
     D_8013AE88->resource16 = allocateTaskResource();
     selection = getGroupedIndexBase(0);
-    D_801300AC.selection = selection;
-    D_801300AC.previousSelection = selection;
+    D_801300AC[0].selection = selection;
+    D_801300AC[0].previousSelection = selection;
     D_801300B8[0].x = 0;
     D_801300B8[0].y = 0;
     D_801300B8[0].w = -1;
@@ -392,8 +392,8 @@ void initializeCountedSelectionBoundsTask(void) {
     D_8013AE88->resource14 = allocateTaskResource();
     if (D_8013AE88->resource16 != 0xFFFF) { for (;;) {} }
     D_8013AE88->resource16 = allocateTaskResource();
-    D_801300AC.selection = 0;
-    D_801300AC.previousSelection = 0;
+    D_801300AC[0].selection = 0;
+    D_801300AC[0].previousSelection = 0;
     D_801300B8[0].x = 0;
     D_801300B8[0].y = 0;
     D_801300B8[0].w = -1;

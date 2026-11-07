@@ -38,6 +38,15 @@ typedef struct PaletteRotationSlot {
     s16 unk06;
 } PaletteRotationSlot;
 
+/* Selection bytes at player offsets 8..12, with the full player stride. */
+typedef struct PlayerSelectionRecord {
+    GameTask *task;
+    u16 playerIndex;
+    u8 unk06[2];
+    u8 selectionBytes[5];
+    u8 unk0D[0x9CF];
+} PlayerSelectionRecord;
+
 typedef struct RegisteredPanelSlot {
     GameTask *task;
     s16 command;
@@ -110,6 +119,7 @@ void func_80089B30(void);
 void func_80087030(void);
 void func_800857C4(void);
 void func_800843DC(void);
+void func_80084970(void);
 void func_800801A0(void);
 void func_800815D0(void);
 void initializeDualResourceTaskAndResetByteState(void);
@@ -209,9 +219,9 @@ void initializeCountedPlayerGroupedSelectionBoundsTask(void) {
         if (D_8013AE88->resource16 != 0xFFFF) { for (;;) {} }
         D_8013AE88->resource16 = allocateTaskResource();
         adjustGroupedIndexForMode(D_8013AE88->data1A, &D_80120E90[0].unk00A[1]);
-        D_801300AC.selection = getGroupedIndexBase(D_80120E90[0].unk00A[1]);
-        if (D_801300AC.selection == 9) {
-            D_801300AC.selection += getSaveRecordFlagGroupIndex(0, 0);
+        D_801300AC[0].selection = getGroupedIndexBase(D_80120E90[0].unk00A[1]);
+        if (D_801300AC[0].selection == 9) {
+            D_801300AC[0].selection += getSaveRecordFlagGroupIndex(0, 0);
         }
         D_801300B8[0].x = 0;
         D_801300B8[0].y = 0;
@@ -222,7 +232,7 @@ void initializeCountedPlayerGroupedSelectionBoundsTask(void) {
         bounds->y = 0;
         bounds->w = -1;
         bounds->h = -1;
-        D_801300AC.previousSelection = D_801300AC.selection;
+        D_801300AC[0].previousSelection = D_801300AC[0].selection;
         setCurrentTaskCallback(func_8007F630);
     }
 }
@@ -505,7 +515,44 @@ void initializeDualResourceTaskAndResetByteState(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_800843DC);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_800846F4);
+void createPlayerGroupedSelectionTask(s32 player, s32 index) {
+    MenuSelectionState *selection;
+    RegisteredPanelSlot *slot;
+    RECT *bounds;
+    func_80014874(func_80084970);
+    D_8013AE8C->data18 = 1;
+    D_8013AE8C->data1A = getPlayerRecordFlagMode(player + 10);
+    D_8013AE8C->data1C = player;
+    D_8013AE8C->data1E = index;
+    D_8013AE8C->resource14 = allocateTaskResource();
+    D_8013AE8C->resource16 = allocateTaskResource();
+    selection = &D_801300AC[(s16)player];
+    adjustGroupedIndexForMode((s16)D_8013AE8C->data1A, &((PlayerSelectionRecord *)D_80120E90)[(s16)player].selectionBytes[3]);
+    selection->selection = getGroupedIndexBase(((PlayerSelectionRecord *)D_80120E90)[(s16)player].selectionBytes[3]);
+    if (selection->selection == 9) {
+        selection->selection += getSaveRecordFlagGroupIndex(player + 10, 0);
+    }
+    selection->previousSelection = selection->selection;
+    D_801300B8[0].x = 25;
+    D_801300B8[0].y = 32;
+    D_801300B8[0].w = 270;
+    D_801300B8[0].h = 87;
+    D_801300B8[1].x = 25;
+    bounds = &D_801300B8[1];
+    bounds->y = 136;
+    bounds->w = 270;
+    bounds->h = 87;
+    if (index % 10 == 0) {
+        if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+        slot = getPanelSlot(D_8013AE88->resource14, index);
+    } else {
+        if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
+        slot = getPanelSlot(D_8013AE88->resource16, index);
+    }
+    slot->command = 0;
+    slot->flags = 1;
+    slot->task = D_8013AE8C;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80084970);
 

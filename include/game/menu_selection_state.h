@@ -2,14 +2,16 @@
 
 #include "psx/libgpu.h"
 
-/* Shared by the selection menus; the last four halfwords remain unknown. */
+/* Two six-byte player records shared by the selection menus. */
 typedef struct MenuSelectionState {
     s16 selection;
     s16 previousSelection;
-    s16 unk04[4];
+    s16 unk04;
 } MenuSelectionState;
 
-extern MenuSelectionState D_801300AC;
+extern MenuSelectionState D_801300AC[2];
+
+void createPlayerGroupedSelectionTask(s32 player, s32 index);
 extern RECT D_801300B8[4];
 
 void initializeCountedSelectionBoundsTask(void);
