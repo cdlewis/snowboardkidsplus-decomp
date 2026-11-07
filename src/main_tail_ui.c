@@ -396,6 +396,11 @@ typedef struct MusicOwnerState {
     u8 unk38[8];
     u32 completionTick;
 } MusicOwnerState;
+
+typedef struct MusicResource {
+    TextEntry *entry;
+    u32 deadline;
+} MusicResource;
 void updateTextEntryCdAudioTask(void);
 void func_800A53BC(void);
 void func_800A5630(void);
@@ -1216,7 +1221,56 @@ void setSecondaryTextEntryTask(TextEntry *entry) {
 
 INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A6E88);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A73BC);
+void setTextEntryMusicTask(TextEntry *entry) {
+    MusicOwnerState *owner;
+    MusicResource *resource;
+
+    if (D_8013AE88->resource16 == 0xFFFF) {
+        while (1) {}
+    }
+    owner = (MusicOwnerState *)&D_800D9504[D_8013AE88->resource16];
+    if (entry == NULL) {
+        owner->musicTask = NULL;
+    } else if (entry->unk06 == 0) {
+        stopMusicSequence();
+        owner->musicTask = NULL;
+    } else {
+        func_80014874(finishMusicTaskAtDeadline);
+        owner->musicTask = D_8013AE8C;
+        D_8013AE8C->resource14 = allocateTaskResource();
+        resource = (MusicResource *)&D_800D9504[D_8013AE8C->resource14];
+        resource->entry = entry;
+        switch (entry->unk08) {
+        case 0:
+            if (entry->unk14 == 0) {
+                func_80017E7C(0);
+            } else {
+                playMusicSequence((s16)entry->unk14, (u8)entry->unk14, 1);
+            }
+            resource->deadline = 0;
+            break;
+        case 1:
+            if (entry->unk0A == 0) {
+                func_80017ED4(0x100, 0);
+                resource->deadline = owner->tick + 15;
+            } else {
+                func_80017ED4((s16)(0x400 - entry->unk0A), 0);
+                resource->deadline = owner->tick + entry->unk0A;
+            }
+            break;
+        case 2:
+            if (entry->unk0A == 0) {
+                fadeOutMusicSequence(0x100);
+                resource->deadline = owner->tick + 15;
+            } else {
+                fadeOutMusicSequence((s16)(0x400 - entry->unk0A));
+                resource->deadline = owner->tick + entry->unk0A;
+            }
+            break;
+        }
+    }
+}
+
 
 void finishMusicTaskAtDeadline(void) {
     MusicOwnerState *owner;

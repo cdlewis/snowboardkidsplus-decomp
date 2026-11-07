@@ -32,3 +32,5 @@ void setSecondaryResourceEntryTask(TextEntry *entry);
 void setTextEntryCdAudioTask(TextEntry *entry);
 
 void processTextEntrySound(TextEntry *entry);
+
+void setTextEntryMusicTask(TextEntry *entry);

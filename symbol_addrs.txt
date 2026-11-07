@@ -1,3 +1,4 @@
+setTextEntryMusicTask = 0x800A73BC; // type:func
 drawProjectedIndexedGouraudQuad = 0x80057AC0; // type:func
 drawProjectedIndexedColoredLitGouraudTriangle = 0x800567F4; // type:func
 drawProjectedIndexedLitGouraudTriangle = 0x80056034; // type:func
