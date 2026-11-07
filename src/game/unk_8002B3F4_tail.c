@@ -962,12 +962,12 @@ void initializeBouncingVisualTask(void) {
     resource->timer = 0;
     resource->framePosition = 0;
     if (D_8013AFD2 == 1) {
-        position->coord.t[0] = D_80120E90[0].position8E4[0];
+        position->coord.t[0] = D_80120E90[0].worldCoordinate.coord.t[0];
     } else {
         position->coord.t[0] = 0;
     }
-    position->coord.t[1] = D_80120E90[0].position8E4[1];
-    position->coord.t[2] = D_80120E90[0].position8E4[2] + 50;
+    position->coord.t[1] = D_80120E90[0].worldCoordinate.coord.t[1];
+    position->coord.t[2] = D_80120E90[0].worldCoordinate.coord.t[2] + 50;
     resource->offsetY = -37120;
     resource->velocity = 0;
     resource->frame = 0;
@@ -2422,9 +2422,9 @@ void initPlayerCameraAndTarget(u16 index) {
     clampPlayerCameraHeight(index);
     targets = gPlayerCameraViews;
     players = D_80120E90;
-    targets[D_8013AE88->data18].vrx = players[D_8013AE88->data18].position8E4[0] + players[D_8013AE88->data18].unk084;
-    targets[D_8013AE88->data18].vry = players[D_8013AE88->data18].position8E4[1] + (s16)(cameras[D_8013AE88->data18].unk14 / 8 - 120) + players[D_8013AE88->data18].unk086;
-    targets[D_8013AE88->data18].vrz = players[D_8013AE88->data18].position8E4[2] + players[D_8013AE88->data18].unk088;
+    targets[D_8013AE88->data18].vrx = players[D_8013AE88->data18].worldCoordinate.coord.t[0] + players[D_8013AE88->data18].unk084;
+    targets[D_8013AE88->data18].vry = players[D_8013AE88->data18].worldCoordinate.coord.t[1] + (s16)(cameras[D_8013AE88->data18].unk14 / 8 - 120) + players[D_8013AE88->data18].unk086;
+    targets[D_8013AE88->data18].vrz = players[D_8013AE88->data18].worldCoordinate.coord.t[2] + players[D_8013AE88->data18].unk088;
 }
 
 void initPlayerZeroTask(void) {
@@ -2439,9 +2439,9 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_8003EA20);
 void updateCurrentPlayerCameraTarget(void) {
     GsRVIEW2 *targets = gPlayerCameraViews;
     RacePlayer *players = D_80120E90;
-    targets[D_8013AE88->data18].vrx = players[D_8013AE88->data18].position8E4[0] + players[D_8013AE88->data18].unk084;
-    targets[D_8013AE88->data18].vry = players[D_8013AE88->data18].position8E4[1] + (s16)(D_801241E8[D_8013AE88->data18].unk14 / 8 - 120) + players[D_8013AE88->data18].unk086;
-    targets[D_8013AE88->data18].vrz = players[D_8013AE88->data18].position8E4[2] + players[D_8013AE88->data18].unk088;
+    targets[D_8013AE88->data18].vrx = players[D_8013AE88->data18].worldCoordinate.coord.t[0] + players[D_8013AE88->data18].unk084;
+    targets[D_8013AE88->data18].vry = players[D_8013AE88->data18].worldCoordinate.coord.t[1] + (s16)(D_801241E8[D_8013AE88->data18].unk14 / 8 - 120) + players[D_8013AE88->data18].unk086;
+    targets[D_8013AE88->data18].vrz = players[D_8013AE88->data18].worldCoordinate.coord.t[2] + players[D_8013AE88->data18].unk088;
 }
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_8003EE70);
@@ -2648,9 +2648,9 @@ void drawPlayerFlagTaskVisual(TaskVisualResource *resource) {
     PlayerCamera *cameras = D_801241E8;
     D_800EB22C.vx = rcos(-cameras[func_80059254()].yaw) * 40 / 4096;
     D_800EB22C.vz = rsin(-cameras[func_80059254()].yaw) * 40 / 4096;
-    resource->coordinate.coord.t[0] = D_80120E90[D_8013AE88->data18].position8E4[0] + D_800EB22C.vx;
-    resource->coordinate.coord.t[1] = D_80120E90[D_8013AE88->data18].position8E4[1] - 80;
-    resource->coordinate.coord.t[2] = D_80120E90[D_8013AE88->data18].position8E4[2] + D_800EB22C.vz;
+    resource->coordinate.coord.t[0] = D_80120E90[D_8013AE88->data18].worldCoordinate.coord.t[0] + D_800EB22C.vx;
+    resource->coordinate.coord.t[1] = D_80120E90[D_8013AE88->data18].worldCoordinate.coord.t[1] - 80;
+    resource->coordinate.coord.t[2] = D_80120E90[D_8013AE88->data18].worldCoordinate.coord.t[2] + D_800EB22C.vz;
     setTaskVisualFrame(resource, gPlayerFlagVisualFrames, 0x1800);
     func_8005AC4C(resource, 1);
     func_80059290(resource);

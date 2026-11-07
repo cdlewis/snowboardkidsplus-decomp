@@ -122,9 +122,10 @@ struct RacePlayer {
     } model;
     RacePlayerVector unk5BC[14];
     RacePlayerVector unk62C[14];
-    u8 unk69C[0x248];
-    s32 position8E4[3];
-    u8 unk8F0[0x2C];
+    u8 unk69C[0x100];
+    GsDOBJ2 modelObjects[14];
+    GsCOORDINATE2 modelCoordinate;
+    GsCOORDINATE2 worldCoordinate;
     u16 *animationStream;
     u16 *animationFrame;
     u16 animationFrameCount;
@@ -230,7 +231,8 @@ void func_8002E5A0(u16 index, s16 value);
 
 void startCurrentPlayerAnimation(u8 animation, u8 mode);
 
-void func_8001E244(u32 *model);
+void initializeCurrentPlayerModelObjects(u32 *model);
+void loadCurrentPlayerModelBlock(void);
 void initializeCurrentPlayerModelAndHeight(void);
 void initCurrentPlayerModelParts(void);
 s32 callCurrentPlayerStateCallbackIfDifferent(u16 state);

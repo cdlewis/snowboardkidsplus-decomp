@@ -2959,9 +2959,9 @@ void createPlayerPairedQuadEffectTask(s32 playerIndex, s32 variant) {
         resource->positions[i].vx += player->model.effect.effectMatrix180.t[0];
         resource->positions[i].vy += player->model.effect.effectMatrix180.t[1];
         resource->positions[i].vz += player->model.effect.effectMatrix180.t[2];
-        resource->positions[i].vx -= player->position8E4[0] + player->unk084;
-        resource->positions[i].vy -= player->position8E4[1] + player->unk086;
-        resource->positions[i].vz -= player->position8E4[2] + player->unk088;
+        resource->positions[i].vx -= player->worldCoordinate.coord.t[0] + player->unk084;
+        resource->positions[i].vy -= player->worldCoordinate.coord.t[1] + player->unk086;
+        resource->positions[i].vz -= player->worldCoordinate.coord.t[2] + player->unk088;
     }
     resource->elapsed = 0;
     resource->clut = variant == 0 ? getClut(800, 250) : getClut(800, 251);
@@ -3047,7 +3047,7 @@ void createPlayerPositionTrailTask(s32 playerIndex) {
     resource = (PlayerPositionTrailResource *)&D_800D9504[D_8013AE8C->resource14];
     for (i = 0; i < 3; i++) {
         for (j = 0; j < 3; j++) {
-            resource->positions[i][j] = player->position8E4[j];
+            resource->positions[i][j] = player->worldCoordinate.coord.t[j];
         }
     }
     resource->unk4E = 1;
@@ -3071,7 +3071,7 @@ void createPlayerRingEffectTask(s32 playerIndex) {
         D_8013AE8C->resource14 = allocateTaskResource();
         resource = (PlayerRingEffectResource *)&D_800D9504[D_8013AE8C->resource14];
         for (i = 0; i < 3; i++) {
-            resource->position[i] = player->position8E4[i];
+            resource->position[i] = player->worldCoordinate.coord.t[i];
         }
         resource->position[1] = func_8004A764(player->unk92E, resource->position[0], resource->position[2]);
         for (i = 0; i < 6; i++) {
@@ -3097,7 +3097,7 @@ s32 createPlayerTripleQuadEffectTask(s32 playerIndex) {
     s32 i;
     s32 state;
     player = &D_80120E90[playerIndex];
-    if (!isPointWithinCameraForwardRange(player->position8E4[0], player->position8E4[2], (s16)func_80059254())) {
+    if (!isPointWithinCameraForwardRange(player->worldCoordinate.coord.t[0], player->worldCoordinate.coord.t[2], (s16)func_80059254())) {
         return 0;
     }
     if (!(player->unk128 & 8) && player->unk96E != 0 && player->unk96E != 0x801 && player->unk96E != 0x200) {
@@ -3109,9 +3109,9 @@ s32 createPlayerTripleQuadEffectTask(s32 playerIndex) {
     vertex = gPlayerTripleQuadOffsets;
     for (i = 0; i < 3; i++) {
         ApplyMatrix(&player->model.effect.effectMatrix180, vertex, (VECTOR *)&resource->positions[i]);
-        resource->positions[i].x += player->position8E4[0];
-        resource->positions[i].y += player->position8E4[1];
-        resource->positions[i].z += player->position8E4[2];
+        resource->positions[i].x += player->worldCoordinate.coord.t[0];
+        resource->positions[i].y += player->worldCoordinate.coord.t[1];
+        resource->positions[i].z += player->worldCoordinate.coord.t[2];
         vertex++;
     }
     resource->elapsed = 0;

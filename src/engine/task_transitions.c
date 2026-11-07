@@ -44,6 +44,14 @@ PlayerResourceTextureSelections gPlayerResourceTextureSelections __attribute__((
     {0, 0}
 };
 
+ModelTextureOffset gPlayerRootTextureOffsets[4] __attribute__((section(".data.player_model_texture_offsets"))) = {
+    {0, 0, 0}, {0, 64, 1}, {0, 128, 2}, {0, 192, 3}
+};
+
+ModelTextureOffset gPlayerPartTextureOffsets[4] __attribute__((section(".data.player_model_texture_offsets"))) = {
+    {0, 0, 0}, {0, 0x8000, 0x2000}, {1, 0, 4}, {1, 0x8000, 0x2004}
+};
+
 extern u16 D_8013AFAA __attribute__((section(".data")));
 extern u8 D_8013B562 __attribute__((section(".data")));
 extern u8 D_80120EA4[];
@@ -430,7 +438,39 @@ void restoreSavedStateAndHandleFlag4(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/engine/task_transitions", func_8001E244);
+/* Model setup uses the GP-relative current player pointer. */
+#undef D_8013B0D8
+
+void initializeCurrentPlayerModelObjects(u32 *model) {
+    s32 i;
+    GsDOBJ2 *object;
+    u32 *objects;
+
+    model++;
+    objects = model;
+    GsMapModelingData(objects);
+    objects = ++model;
+    D_8013B0D8->modelPartCount = *(u8 *)objects;
+    objects = ++model;
+    if (!D_8013B1AB && !D_8013B562 && !raceFinishFlagAbsolute) {
+        loadCurrentPlayerModelBlock();
+        if (D_8013AE88->data18) {
+            func_8001604C(0, objects, &gPlayerRootTextureOffsets[D_8013AE88->data18]);
+            for (i = 1; i < 14; i++) {
+                func_8001604C(i, objects, &gPlayerPartTextureOffsets[D_8013AE88->data18]);
+            }
+        }
+    }
+    GsInitCoordinate2(0, &D_8013B0D8->worldCoordinate);
+    GsInitCoordinate2(&D_8013B0D8->worldCoordinate, &D_8013B0D8->modelCoordinate);
+    for (i = 0; i < 14; i++) {
+        GsLinkObject4(objects, &D_8013B0D8->modelObjects[i], i);
+        object = &D_8013B0D8->modelObjects[i];
+        GsInitCoordinate2(&D_8013B0D8->modelCoordinate, &D_8013B0D8->model.modelCoordinates[i]);
+        object->attribute = 0;
+        object->coord2 = &D_8013B0D8->model.modelCoordinates[i];
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/engine/task_transitions", func_8001E3E4);
 
@@ -442,9 +482,6 @@ void setCoordinateRotationZYX(SVECTOR *rotation, GsCOORDINATE2 *coordinate) {
     coordinate->coord = *D_8013AF98;
     coordinate->flg = 0;
 }
-
-/* This routine accesses the shared player pointer through GP. */
-#undef D_8013B0D8
 
 u16 advanceCurrentPlayerInputSequence(u8 sequence[][2], s16 slot) {
     u8 input = D_8013AEEC[D_8013AE88->data18] >> 12;

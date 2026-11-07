@@ -589,7 +589,8 @@ segments:
       - {start: 0x110CC4, type: .data, name: engine/task_transitions, linker_section: .data.player_resource_texture_positions}
       - [0x110CD4, data, player_texture_origins]
       - {start: 0x110CE4, type: .data, name: main_tail, linker_section: .data.grid_resource_sector_ranges}
-      - [0x110E74, data, grid_resource_sector_ranges_tail]
+      - {start: 0x110E74, type: .data, name: engine/task_transitions, linker_section: .data.player_model_texture_offsets}
+      - [0x110EA4, data, grid_resource_sector_ranges_tail]
       - [0x11109C, .data, game/unk_8001E63C]
       - [0x11125C, data, 11125C]
       - {start: 0x11126C, type: .data, name: game/unk_8001E63C, linker_section: .data.player_task_phases}

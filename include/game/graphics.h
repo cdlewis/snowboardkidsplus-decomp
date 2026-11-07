@@ -4,6 +4,17 @@
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
 
+/* Packed texture adjustments for a TMD object's CLUT, UVs, and texture page. */
+typedef struct ModelTextureOffset {
+    u16 clut;
+    u16 uv;
+    u16 tpage;
+} ModelTextureOffset;
+
+extern ModelTextureOffset gPlayerRootTextureOffsets[4];
+extern ModelTextureOffset gPlayerPartTextureOffsets[4];
+void func_8001604C(u16 part, u32 *model, ModelTextureOffset *offset);
+
 #ifdef GRAPHICS_GP_ADDRESSING
 #define GRAPHICS_DATA
 #else

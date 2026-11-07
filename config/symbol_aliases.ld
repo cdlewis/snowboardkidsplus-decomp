@@ -6,6 +6,7 @@ debugPositionXFormatAbsolute = gDebugPositionXFormat;
 debugPositionYFormatAbsolute = gDebugPositionYFormat;
 debugPositionZFormatAbsolute = gDebugPositionZFormat;
 currentPlayerAbsolute = D_8013B0D8;
+raceFinishFlagAbsolute = D_8013AFD6;
 readPixelRectGp = gReadPixelRect;
 gameOptionPlayerModeGp = D_8013AFCD;
 activeRacePlayerCountGp = D_8013AFD2;

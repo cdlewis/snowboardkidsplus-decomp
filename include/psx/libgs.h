@@ -37,6 +37,7 @@ void GsSetProjection(s32 projection);
 int GsSetRefView2L(GsRVIEW2 *view);
 
 void GsMapModelingData(u32 *data);
+void GsLinkObject4(u32 *model, GsDOBJ2 *object, s32 index);
 
 void GsInitCoordinate2(GsCOORDINATE2 *super, GsCOORDINATE2 *coord);
 void GsGetLs(GsCOORDINATE2 *coord, MATRIX *matrix);

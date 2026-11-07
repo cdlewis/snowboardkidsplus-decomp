@@ -437,9 +437,9 @@ void initializeCurrentPlayerState24(void) {
     player->unk094 = 0;
     player->unk08C = 90 - (player->unk08C * player->unk935) / 8;
     func_8002E5A0(D_8013AE88->data18, 7);
-    D_8013AF88->vx = D_8013B0D8->position8E4[0];
-    D_8013AF88->vy = D_8013B0D8->position8E4[1] - 32;
-    D_8013AF88->vz = D_8013B0D8->position8E4[2];
+    D_8013AF88->vx = D_8013B0D8->worldCoordinate.coord.t[0];
+    D_8013AF88->vy = D_8013B0D8->worldCoordinate.coord.t[1] - 32;
+    D_8013AF88->vz = D_8013B0D8->worldCoordinate.coord.t[2];
     createQuadAnimationTask(D_8013AE88->data18, D_8013AF88);
     setCurrentTaskCallback(func_80025014);
 }
@@ -568,7 +568,7 @@ void initializeCurrentPlayerModelAndHeight(void) {
     player->unk0B8 = 0;
     player->unk962 = -1;
     D_8013B0D8 = player;
-    func_8001E244(((u32 (*)[4096])0x8016B000)[D_8013AE88->data18]);
+    initializeCurrentPlayerModelObjects(((u32 (*)[4096])0x8016B000)[D_8013AE88->data18]);
     if (!D_8013AFD8 && !D_8013AFD9) {
         D_8013B0D8->unk92E = 0;
     } else {
@@ -651,9 +651,9 @@ void updateCurrentPlayerVerticalMotionUntilLanding(void) {
     player = D_8013B0D8;
     player->unk062 += 0x1C0;
     player->y += player->unk062;
-    player->position8E4[0] = player->x >> 8;
-    player->position8E4[1] = player->y >> 8;
-    player->position8E4[2] = player->z >> 8;
+    player->worldCoordinate.coord.t[0] = player->x >> 8;
+    player->worldCoordinate.coord.t[1] = player->y >> 8;
+    player->worldCoordinate.coord.t[2] = player->z >> 8;
     if (player->unk062 > 0) {
         if (func_80028234() != 0) {
             D_8013B0D8->unk12C = 12;
@@ -676,9 +676,9 @@ void updateCurrentPlayerFromTaskPhase(void) {
     D_8013B0D8->unk946 = 0;
     player = D_8013B0D8;
     player->unk110 = player->unk0B6 + 0x400;
-    player->position8E4[0] = player->x >> 8;
-    player->position8E4[1] = player->y >> 8;
-    player->position8E4[2] = player->z >> 8;
+    player->worldCoordinate.coord.t[0] = player->x >> 8;
+    player->worldCoordinate.coord.t[1] = player->y >> 8;
+    player->worldCoordinate.coord.t[2] = player->z >> 8;
 }
 
 void moveCurrentPlayerToTaskTarget(void) {
@@ -803,9 +803,9 @@ void updateCurrentPlayerAndRequestState30(void) {
     }
     player = D_8013B0D8;
     player->unk110 = player->unk0B6 + 0x400;
-    player->position8E4[0] = player->x >> 8;
-    player->position8E4[1] = player->y >> 8;
-    player->position8E4[2] = player->z >> 8;
+    player->worldCoordinate.coord.t[0] = player->x >> 8;
+    player->worldCoordinate.coord.t[1] = player->y >> 8;
+    player->worldCoordinate.coord.t[2] = player->z >> 8;
     callCurrentPlayerStateCallbackIfDifferent(30);
 }
 
@@ -846,9 +846,9 @@ void updateCurrentPlayerTaskCountdown(void) {
     func_8002AE6C();
     D_8013B0D8->unk946 = 0;
     player = D_8013B0D8;
-    player->position8E4[0] = player->x >> 8;
-    player->position8E4[1] = player->y >> 8;
-    player->position8E4[2] = player->z >> 8;
+    player->worldCoordinate.coord.t[0] = player->x >> 8;
+    player->worldCoordinate.coord.t[1] = player->y >> 8;
+    player->worldCoordinate.coord.t[2] = player->z >> 8;
     func_80017268();
     if (D_8013AE88->data18 == 0) {
         if (--D_8013AE88->data1A == 0) {
