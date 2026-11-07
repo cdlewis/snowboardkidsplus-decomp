@@ -1391,7 +1391,31 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80059F68);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005A1C4);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_8005A360);
+void updateMovingTaskObject(void) {
+    CourseOffsetResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (CourseOffsetResource *)&D_800D9504[D_8013AE88->resource14];
+    if (!D_8013AFD3) {
+        RotMatrix(&resource->rotation, D_8013AF98);
+        D_8013AF90->vx = 0;
+        D_8013AF90->vy = 0;
+        D_8013AF90->vz = 8;
+        ApplyMatrix(D_8013AF98, D_8013AF90, D_8013AF88);
+        resource->coordinate.coord.t[0] += D_8013AF88->vx;
+        resource->coordinate.coord.t[2] += D_8013AF88->vz;
+        D_8013AE88->data1A--;
+    }
+    if (func_8005143C(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
+        D_80129A80[D_8013AE88->data1C].coord2 = &resource->coordinate;
+        func_8001E3E4(&resource->rotation, &resource->coordinate);
+        drawTaskObject(D_8013AE88->data1C);
+    }
+    if (D_8013AE88->data1A == 0) {
+        func_800149A8();
+    }
+}
 
 void computeSelectedTriangleAngles(s16 *pitch, s16 *yaw) {
     VECTOR normal;
