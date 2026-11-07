@@ -28,6 +28,12 @@ typedef struct RegisteredTaskEntry {
     u16 flags;
 } RegisteredTaskEntry;
 
+typedef struct RegisteredTextResource {
+    const u16 **texts;
+    const u8 *mapping;
+    const u16 *text;
+} RegisteredTextResource;
+
 typedef struct CallbackResource {
     TaskCallback callback;
     u32 unk04;
@@ -161,6 +167,7 @@ void func_8007BE9C(void);
 void func_8007B10C(void);
 void func_8007AC0C(void);
 void updateAnimatedSpriteTask(void);
+void func_80074448(void);
 void func_80074B60(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80070274);
@@ -642,7 +649,36 @@ void drawSelectedTaskSprite(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80073F84);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80074270);
+static inline RegisteredTaskEntry *getRegisteredTaskEntry(u32 resource, s32 index) {
+    RegisteredTaskEntry *entries = (RegisteredTaskEntry *)&D_800D9504[resource];
+    return &entries[index / 10];
+}
+
+void createRegisteredTextPanelTask(s16 x, s16 y, const u16 **texts, const u8 *mapping, s32 depth, s32 index) {
+    RegisteredTextResource *resource;
+    RegisteredTaskEntry *entry;
+    func_80014874(func_80074448);
+    D_8013AE8C->data1A = 0;
+    D_8013AE8C->data1C = depth;
+    D_8013AE8C->data1E = index;
+    D_8013AE8C->resource14 = allocateTaskResource();
+    initMovement2D((Movement2D *)&D_800D9504[D_8013AE8C->resource14], x << 12, y << 12);
+    D_8013AE8C->resource16 = allocateTaskResource();
+    resource = (RegisteredTextResource *)&D_800D9504[D_8013AE8C->resource16];
+    resource->texts = texts;
+    resource->mapping = mapping;
+    resource->text = 0;
+    if (index % 10 == 0) {
+        if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+        entry = getRegisteredTaskEntry(D_8013AE88->resource14, index);
+    } else {
+        if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
+        entry = getRegisteredTaskEntry(D_8013AE88->resource16, index);
+    }
+    entry->command = 0;
+    entry->flags = 0;
+    entry->task = D_8013AE8C;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80074448);
 
@@ -655,11 +691,6 @@ void setTaskSecondaryResourceData(GameTask *task, const u16 *data) {
 s16 hasTaskResource16Value(GameTask *task) {
     TaskResourceRecord *resource = task->resource16 + D_800D9504;
     return resource->unk08 != 0;
-}
-
-static inline RegisteredTaskEntry *getRegisteredTaskEntry(u32 resource, s32 index) {
-    RegisteredTaskEntry *entries = (RegisteredTaskEntry *)&D_800D9504[resource];
-    return &entries[index / 10];
 }
 
 void createRegisteredCallbackTask(s32 mode, s16 x, s16 y, TaskCallback callback, s32 value, s32 index) {

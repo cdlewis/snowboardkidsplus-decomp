@@ -2985,3 +2985,5 @@ gCameraOverlaySpritesBuffer1 = 0x80124E44; // size:0x30
 gCameraOverlayQuadsBuffer0 = 0x80124E74; // size:0x50
 gCameraOverlayQuadsBuffer1 = 0x80124EC4; // size:0x50
 D_8013B20C = 0x8013B20C; // size:0x4
+
+createRegisteredTextPanelTask = 0x80074270; // type:func

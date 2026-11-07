@@ -221,3 +221,6 @@ void createRegisteredCallbackTask(s32 mode, s16 x, s16 y, TaskCallback callback,
 void initializeMode1RacePlayers(void);
 
 void createRegisteredPanelTask(s32 mode, s32 value, s16 x, s16 y, s16 depth, s32 index);
+
+void createRegisteredTextPanelTask(s16 x, s16 y, const u16 **texts,
+                                   const u8 *mapping, s32 depth, s32 index);
