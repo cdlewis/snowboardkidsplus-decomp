@@ -114,6 +114,7 @@ s32 checkCurrentPlayerFlags275000OrField134(void);
 s16 checkCurrentPlayerSurfaceType(void);
 s16 countCurrentPlayerInputGroups(void);
 void clearCurrentPlayerTaskState(void);
+void startCurrentPlayerDirectionalAnimation(void);
 void updateCurrentPlayerDirectionalAnimation(void);
 void func_8002E3C0(void);
 void addPlayerCappedCounters(u16 playerIndex, s32 amount);

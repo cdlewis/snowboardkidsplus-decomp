@@ -520,7 +520,58 @@ void clearCurrentPlayerTaskState(void) {
 
 INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002DEA4);
 
-INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002DEE8);
+void startCurrentPlayerDirectionalAnimation(void) {
+    RacePlayer *player = D_8013B0D8;
+    player->unk0C4 = 0;
+    player->unk0C6 = 0;
+    if (!player->unk008) {
+        if (D_8013AEE8[D_8013AE88->data18] & 8) {
+            D_8013AE88->data1C = 8;
+            player->unk0C4 = 1;
+        }
+        if (D_8013AEE8[D_8013AE88->data18] & 4) {
+            D_8013AE88->data1C = 4;
+            D_8013B0D8->unk0C4 = 3;
+        }
+        if (D_8013AEE8[D_8013AE88->data18] & 1) {
+            D_8013AE88->data1C = 1;
+            D_8013B0D8->unk0C4 = 7;
+        }
+        if (D_8013AEE8[D_8013AE88->data18] & 2) {
+            D_8013AE88->data1C = 2;
+            D_8013B0D8->unk0C4 = 5;
+        }
+        if (D_8013AE88->data1C) {
+            if ((s16)D_8013B0D8->unk0C2 < 6) {
+                D_8013B0D8->unk0C4++;
+            }
+            D_8013AE88->data1A++;
+            if (D_8013B0D8->unk128 & 0x400) {
+                if (D_8013AE88->data1C & 8) {
+                    startCurrentPlayerAnimation(0x1C, 2);
+                }
+                if (D_8013AE88->data1C & 4) {
+                    startCurrentPlayerAnimation(0x1A, 2);
+                }
+            } else {
+                if (D_8013AE88->data1C & 8) {
+                    startCurrentPlayerAnimation(0x1A, 2);
+                }
+                if (D_8013AE88->data1C & 4) {
+                    startCurrentPlayerAnimation(0x1C, 2);
+                }
+            }
+            if (D_8013AE88->data1C & 1) {
+                startCurrentPlayerAnimation(0x1E, 2);
+            }
+            if (D_8013AE88->data1C & 2) {
+                startCurrentPlayerAnimation(0x20, 2);
+            }
+            D_8013B0D8->unk128 |= 0x800;
+        }
+        D_8013B0D8->unk0C2++;
+    }
+}
 
 void updateCurrentPlayerDirectionalAnimation(void) {
     GameTask *task = D_8013AE88;
