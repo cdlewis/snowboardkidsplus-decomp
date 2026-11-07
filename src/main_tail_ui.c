@@ -641,7 +641,49 @@ INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A3D9C);
 
 INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A42CC);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A46E0);
+void finishUnlockMenuTask(void) {
+    UnlockMenuState *state;
+    s16 i;
+    if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
+    state = (UnlockMenuState *)&D_800D9504[D_8013AE88->resource14];
+    func_800A42CC();
+    switch (D_8013AE88->data18) {
+    case 0:
+        for (i = 0; i < 5; i++) {
+            state->unk58[i] = 0;
+            state->unk20[i] = 0;
+        }
+        D_8013AE88->data18 = 1;
+        break;
+    case 1:
+        for (i = 0; i < 5; i++) {
+            state->unk20[i] += 0x4000;
+            state->unk04[i] += state->unk20[i];
+            state->unk58[i] += 0x4000;
+            state->unk3C[i] += state->unk58[i];
+        }
+        if (state->unk04[0] > 0x168000) {
+            if ((u16)state->unk8C != 0) {
+                setSecondaryDisplayTaskMode(3);
+                func_8002FCF8();
+                queueBackgroundTextureSectorCommands();
+                D_8013B10C = -1;
+                func_8002FA58(2);
+            }
+            D_8013AE88->data18 = 2;
+        }
+        break;
+    case 2:
+        if (isCdCommandQueueIdle() == 1) {
+            func_80070274(2, 0, 10);
+            D_8013AE88->data18 = 3;
+        }
+        break;
+    case 3:
+        if (func_800707F0(0) == 0) { func_800149A8(); }
+        break;
+    }
+}
 
 void initializeUnlockMenuTask(void) {
     UnlockMenuState *state;

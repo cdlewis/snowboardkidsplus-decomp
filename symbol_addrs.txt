@@ -3272,3 +3272,5 @@ D_8012429C = 0x8012429C; // size:0xC defined:true
 D_801242A8 = 0x801242A8; // size:0xC defined:true
 
 updateCurrentPlayerTimedMotion = 0x800273D4; // type:func
+
+finishUnlockMenuTask = 0x800A46E0; // type:func
