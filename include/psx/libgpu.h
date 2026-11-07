@@ -149,6 +149,14 @@ typedef struct POLY_G4 {
 } POLY_G4;
 #define POLY_G4_CODE 0x38
 
+/* Fixed-size one-pixel tile. */
+typedef struct TILE_1 {
+    u32 tag;
+    u8 r0, g0, b0, code;
+    s16 x0, y0;
+} TILE_1;
+#define TILE_1_CODE 0x68
+
 typedef struct TILE {
     u32 tag;
     u8 r0, g0, b0, code;

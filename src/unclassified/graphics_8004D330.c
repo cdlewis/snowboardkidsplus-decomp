@@ -1,4 +1,5 @@
 #include "../graphics/render_effects_internal.h"
+#include "../race/race_internal.h"
 
 TexturedSpritePacket gCameraOverlaySpritesBuffer0[2] __attribute__((section(".data.camera_overlay_packets"))) = {
     {5 << 24, ((u32)DRAW_MODE_COMMAND_HIGH << 16) | getTPage(2, 0, 0, 0),
@@ -174,12 +175,48 @@ void createMovingLineTask(s32 index) {
     resource->duration = randomNextLinear() % 15 + 15;
 }
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/graphics_8004D330", func_8004F780);
+void drawFlickeringDotsTask(void) {
+    FlickeringDotsResource *resource;
+    TILE_1 *packet;
+    TILE_1 *scratch;
+    PlayerCamera *camera;
+    PlayerCamera *cameras;
+    s32 yaw, pitch;
+    u32 i;
+    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    resource = (FlickeringDotsResource *)&D_800D9504[D_8013AE88->resource14];
+    packet = (TILE_1 *)GsOUT_PACKET_P;
+    scratch = (TILE_1 *)0x1F800000;
+    if (D_8013AFAA & 0x400) {
+        if (D_8013AE88->data18 != D_8013AF78) return;
+    } else if (D_8013AE88->data18 != 0) return;
+    cameras = D_801241E8;
+    camera = &cameras[D_8013AE88->data18];
+    yaw = -((camera->yaw & 0xFFF) << 11) / 4096;
+    pitch = camera->pitch / 2;
+    scratch->tag = 2 << 24;
+    setcode(scratch, TILE_1_CODE);
+    for (i = 0; i < 25; i++) {
+        scratch->x0 = ((u32)resource->positions[i].x + yaw) % 320 + (u16)-160;
+        scratch->y0 = ((u32)resource->positions[i].y + pitch) % 240 + (u16)-120;
+        scratch->r0 = scratch->g0 = rcos(randomLinearFromValue(i * 211) + (resource->frame << 7)) / 64 - 65;
+        scratch->b0 = scratch->r0 / 2;
+        *packet = *scratch;
+        addPrim(&D_8013AF6C[4094], packet);
+        packet++;
+    }
+    GsOUT_PACKET_P = (u32)packet;
+    if (!D_8013AFD3) {
+        if ((++resource->frame & 15) == 0 && (randomNextLinear() & 15) == 0) {
+            createMovingLineTask(D_8013AE88->data18);
+        }
+    }
+}
 
 void createFlickeringDotsTask(s32 playerIndex) {
     FlickeringDotsResource *resource;
     s32 i;
-    func_80014930(&gGameTasks[4], func_8004F780);
+    func_80014930(&gGameTasks[4], drawFlickeringDotsTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     D_8013AE8C->data18 = playerIndex;
     resource = (FlickeringDotsResource *)&D_800D9504[D_8013AE8C->resource14];

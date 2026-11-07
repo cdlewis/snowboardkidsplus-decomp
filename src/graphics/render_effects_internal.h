@@ -940,7 +940,7 @@ void emitProjectedFlatTriangle(TriangleScratchVertex *vertices);
 void emitProjectedFlatQuad(TriangleScratchVertex *vertices);
 void func_800542BC(TriangleScratchVertex *vertices, s32 flags);
 void drawMovingLineTask(void);
-void func_8004F780(void);
+void drawFlickeringDotsTask(void);
 
 void func_80068D1C(void);
 void drawShrinkingTexturedQuadTask(void);
