@@ -600,7 +600,8 @@ segments:
       - [0x11125C, data, 11125C]
       - {start: 0x11126C, type: .data, name: game/unk_8001E63C, linker_section: .data.player_task_phases}
       - {start: 0x11128C, type: .data, name: game/unk_8001E63C, linker_section: .data.player_state30_task_phases}
-      - [0x111298, data, player_task_phases_tail]
+      - {start: 0x111298, type: .data, name: game/unk_8001E63C, linker_section: .data.player_state30_animation_countdowns}
+      - [0x1112B0, data, player_task_phases_tail]
       - {start: 0x113E60, type: .data, name: engine/task_transitions, linker_section: .data.player_resource_texture_selections}
       - {start: 0x113E80, type: .data, name: game/unk_8001E63C, linker_section: .data.player_variant_attributes}
       - {start: 0x113F90, type: .data, name: game/unk_8001E63C, linker_section: .data.player_character_attributes}

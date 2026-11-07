@@ -85,6 +85,16 @@ u8 *D_8012090C[10] = {
 };
 
 
+u8 gPlayerState30Animation20Countdowns[12]
+    __attribute__((section(".data.player_state30_animation_countdowns"), aligned(4))) = {
+    20, 0, 20, 0, 50, 0, 0, 0, 0, 30, 0, 0
+};
+
+u8 gPlayerState30Animation22Countdowns[12]
+    __attribute__((section(".data.player_state30_animation_countdowns"), aligned(4))) = {
+    30, 30, 30, 0, 0, 0, 30, 0, 0, 30, 0, 0
+};
+
 void initializeScaledTaskCoordinateResource(void);
 void func_8001EEBC(void);
 void func_80025014(void);
@@ -108,7 +118,6 @@ void func_800260E4(void);
 void moveCurrentPlayerForwardUntilState22(void);
 void func_80026754(void);
 void func_80028680(void);
-void func_80026BAC(void);
 void func_80027624(void);
 s16 func_80028234(void);
 s16 func_8002D3C4(s16 value);
@@ -122,7 +131,7 @@ TaskCallback gCurrentPlayerTaskPhaseCallbacks[8]
 
 TaskCallback gCurrentPlayerState30TaskPhaseCallbacks[3]
     __attribute__((section(".data.player_state30_task_phases"))) = {
-    func_80026754, advanceCurrentPlayerState30TaskOnResult, func_80026BAC
+    func_80026754, advanceCurrentPlayerState30TaskOnResult, updateCurrentPlayerState30AnimationAndHeight
 };
 
 
@@ -1130,7 +1139,38 @@ void advanceCurrentPlayerState30TaskOnResult(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80026BAC);
+void updateCurrentPlayerState30AnimationAndHeight(void) {
+    RacePlayer *player = D_8013B0D8;
+    if (player->unk08C == 0) {
+        if (player->animationFlags & 0x10) {
+            if (!(D_8013AE88->data1C & 1)) {
+                D_8013AE88->data1C++;
+                if (!(D_8013AE88->data1C & 2)) {
+                    if (!D_8013AFD6) playCurrentPlayerSoundEffect(6);
+                    startCurrentPlayerAnimation(0x14, 2);
+                } else {
+                    startCurrentPlayerAnimation(0x16, 2);
+                }
+            } else {
+                if (!(D_8013AE88->data1C & 2)) {
+                    player->unk08C = gPlayerState30Animation20Countdowns[player->unk014];
+                    startCurrentPlayerAnimation(0x14, 2);
+                } else {
+                    player->unk08C = gPlayerState30Animation22Countdowns[player->unk014];
+                    startCurrentPlayerAnimation(0x16, 2);
+                }
+            }
+        }
+        func_80017268();
+    } else {
+        player->unk08C--;
+    }
+    D_8013B0D8->unk946 = 0;
+    if (func_8002D3C4(0)) {
+        D_8013B0D8->unk92E = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8);
+        D_8013B0D8->y = func_8004A764(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8) << 8;
+    }
+}
 
 void updateCurrentPlayerTaskCountdown(void) {
     RacePlayer *player;

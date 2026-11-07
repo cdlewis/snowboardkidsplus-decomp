@@ -62,3 +62,4 @@ void updateCurrentPlayerState8Steering(void);
 void updateCurrentPlayerState4MotionAndLanding(void);
 
 void updateCurrentPlayerTaskJumpAndSpawnCourseOffset(void);
+void updateCurrentPlayerState30AnimationAndHeight(void);

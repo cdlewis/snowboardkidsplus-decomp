@@ -289,3 +289,4 @@ void func_8002BF88(const Position3D *position, s32 radius, s32 height, s32 flags
 
 void updatePlayerTimerTask(void);
 void startRacePlayerTasks(void);
+s16 func_8002D3C4(s16 value);
