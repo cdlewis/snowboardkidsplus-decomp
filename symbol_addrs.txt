@@ -3183,3 +3183,8 @@ createRegisteredMovingPanelTask = 0x80076258; // type:func
 dispatchGameOptionTransitionTask = 0x8002FFC0; // type:func
 
 drawSlidingNumberDisplay = 0x800350AC; // type:func
+
+drawHitPrizeMoneyLabels = 0x8003881C; // type:func
+gHitPrizeOneGoldLabel = 0x80010AAC; // type:char size:0x14
+gHitPrizeFiftyGoldLabel = 0x80010AC0; // type:char size:0x14
+gPerfectHitLabel = 0x80010AD4; // type:char size:0x10

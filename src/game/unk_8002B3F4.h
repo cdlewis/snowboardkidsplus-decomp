@@ -607,7 +607,7 @@ void func_80038090(TaskResourceRecord *resource);
 void func_80038270(TaskResourceRecord *resource);
 void func_80038C70(void);
 void drawCountRecordRows(TaskResourceRecord *resource);
-void func_8003881C(TaskResourceRecord *resource);
+void drawHitPrizeMoneyLabels(MenuFadeInResource *resource);
 void tickMenuSoundDelayStage0Task(void);
 void waitTaskMenuCountdownAndPlaySound(void);
 void drawTaskMenuAndSetFlag10OnInput(void);

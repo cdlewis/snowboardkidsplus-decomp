@@ -26,6 +26,10 @@ typedef struct CountRecordSaveView {
     u8 icons[10][5];
 } CountRecordSaveView;
 
+const char gHitPrizeOneGoldLabel[20] __attribute__((section(".rodata.hit_prize_labels"), aligned(4))) = "-HIT PRIZE(*1G)-";
+const char gHitPrizeFiftyGoldLabel[20] __attribute__((section(".rodata.hit_prize_labels"), aligned(4))) = "-HIT PRIZE(*50G)-";
+const char gPerfectHitLabel[16] __attribute__((section(".rodata.hit_prize_labels"), aligned(4))) = "  -PERFECT HIT-";
+
 void dispatchMode11TransitionTask(void) {
     if (D_8013B109 != 1) {
         func_800149A8();
@@ -1623,7 +1627,29 @@ void drawCountRecordRows(TaskResourceRecord *resource) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_8003881C);
+void drawHitPrizeMoneyLabels(MenuFadeInResource *resource) {
+    s32 y;
+    if (resource->brightness != 128) {
+        setSpriteColor((u8)resource->brightness, (u8)resource->brightness, (u8)resource->brightness);
+    } else {
+        setSpriteColor(128, 128, 128);
+    }
+    y = -80;
+    if (resource->unk0E == 0) y = -60;
+    if (D_8013B18D) {
+        drawLimitedText8x8(-8, y, 20, gHitPrizeOneGoldLabel, 5, -1, &D_800EBFF0[D_8013AF78], 1);
+    } else {
+        drawLimitedText8x8(-12, y, 20, gHitPrizeFiftyGoldLabel, 5, -1, &D_800EBFF0[D_8013AF78], 1);
+    }
+    y += 40;
+    if (resource->unk0E != 0) {
+        drawLimitedText8x8(-12, y, 20, gPerfectHitLabel, 5, -1, &D_800EBFF0[D_8013AF78], 1);
+        y += 40;
+    }
+    drawLimitedText8x8(-8, y, 20, gCompleteBonusLabel, 5, -1, &D_800EBFF0[D_8013AF78], 1);
+    y += 40;
+    drawLimitedText8x8(4, y, 20, gResultTotalMoneyLabel, 5, -1, &D_800EBFF0[D_8013AF78], 1);
+}
 
 void drawCurrentTaskMenu(void) {
     TaskResourceRecord *resource;
@@ -1669,7 +1695,7 @@ void updateMenuExitInputTask(void) {
     }
     func_80038090((TaskResourceRecord *)resource);
     func_80038270((TaskResourceRecord *)resource);
-    func_8003881C((TaskResourceRecord *)resource);
+    drawHitPrizeMoneyLabels((MenuFadeInResource *)resource);
 }
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_80038C70);
@@ -1686,7 +1712,7 @@ void advanceTaskMenuCountdown(void) {
     }
     func_80038090((TaskResourceRecord *)resource);
     func_80038270((TaskResourceRecord *)resource);
-    func_8003881C((TaskResourceRecord *)resource);
+    drawHitPrizeMoneyLabels((MenuFadeInResource *)resource);
 }
 
 void resetTaskMenuCountdown(void) {
@@ -1702,7 +1728,7 @@ void resetTaskMenuCountdown(void) {
     }
     func_80038090((TaskResourceRecord *)resource);
     func_80038270((TaskResourceRecord *)resource);
-    func_8003881C((TaskResourceRecord *)resource);
+    drawHitPrizeMoneyLabels((MenuFadeInResource *)resource);
 }
 
 void startTaskMenuCountdownAndPlaySound(void) {
@@ -1719,7 +1745,7 @@ void startTaskMenuCountdownAndPlaySound(void) {
     }
     func_80038090((TaskResourceRecord *)resource);
     func_80038270((TaskResourceRecord *)resource);
-    func_8003881C((TaskResourceRecord *)resource);
+    drawHitPrizeMoneyLabels((MenuFadeInResource *)resource);
 }
 
 void tickMenuSoundDelayStage1Task(void) {
@@ -1736,7 +1762,7 @@ void tickMenuSoundDelayStage1Task(void) {
     }
     func_80038090((TaskResourceRecord *)resource);
     func_80038270((TaskResourceRecord *)resource);
-    func_8003881C((TaskResourceRecord *)resource);
+    drawHitPrizeMoneyLabels((MenuFadeInResource *)resource);
 }
 
 void tickMenuSoundDelayStage0Task(void) {
@@ -1757,7 +1783,7 @@ void tickMenuSoundDelayStage0Task(void) {
     }
     func_80038090((TaskResourceRecord *)resource);
     func_80038270((TaskResourceRecord *)resource);
-    func_8003881C((TaskResourceRecord *)resource);
+    drawHitPrizeMoneyLabels((MenuFadeInResource *)resource);
 }
 
 void waitTaskMenuCountdownAndPlaySound(void) {
@@ -1772,7 +1798,7 @@ void waitTaskMenuCountdownAndPlaySound(void) {
         setCurrentTaskCallback(tickMenuSoundDelayStage0Task);
     }
     func_80038090((TaskResourceRecord *)resource);
-    func_8003881C((TaskResourceRecord *)resource);
+    drawHitPrizeMoneyLabels((MenuFadeInResource *)resource);
 }
 
 void updateTaskMenuFadeIn(void) {
@@ -1788,7 +1814,7 @@ void updateTaskMenuFadeIn(void) {
         setCurrentTaskCallback(waitTaskMenuCountdownAndPlaySound);
     }
     func_80038090((TaskResourceRecord *)resource);
-    func_8003881C((TaskResourceRecord *)resource);
+    drawHitPrizeMoneyLabels((MenuFadeInResource *)resource);
 }
 
 void initializeTaskMenuFadeIn(void) {
