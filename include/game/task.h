@@ -255,3 +255,7 @@ void createRegisteredTripletTask(s32 x, s32 y, s32 offsetX, s32 offsetY,
                                  ByteTriplet *records, u8 *indices, s32 depth, s32 index);
 
 void drawTaskGridSelectionMarker(void);
+
+void createRegisteredMovingPanelTask(u16 mode, const s16 *values, s16 x, s16 y,
+                                     s16 x2, s16 y2, s16 x3, s16 y3,
+                                     s32 depth, s32 index);

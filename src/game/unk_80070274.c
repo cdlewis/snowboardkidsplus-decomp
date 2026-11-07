@@ -105,6 +105,13 @@ typedef struct ValuePanelResource {
     s16 *values;
 } ValuePanelResource;
 
+typedef struct RegisteredPanelResource {
+    u8 unk00[0x2C];
+    s16 x, y, x2, y2, x3, y3;
+    s16 values[6];
+    u16 mode;
+} RegisteredPanelResource;
+
 typedef struct ValuePanelEntry {
     GameTask *task;
     s16 flags;
@@ -170,6 +177,7 @@ void func_8007197C(void);
 void func_80071A80(void);
 void initTimedSequence(TimedSequence *sequence, const TimedSequenceEntry *entries, s16 index, s16 count);
 void updateCountdownTask(void);
+void func_8007649C(void);
 void func_80076E18(void);
 void updateTimedSpriteB5Task(void);
 void updateValueTransitionTask(void);
@@ -954,7 +962,46 @@ void updateCountdownTask(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80076258);
+void createRegisteredMovingPanelTask(u16 mode, const s16 *values, s16 x, s16 y,
+                                     s16 x2, s16 y2, s16 x3, s16 y3, s32 depth, s32 index) {
+    RegisteredPanelResource *resource;
+    ValuePanelEntry *entry;
+    func_80014874(func_8007649C);
+    D_8013AE8C->data18 = 0;
+    D_8013AE8C->data1A = mode & 0xFF;
+    D_8013AE8C->data1C = depth;
+    D_8013AE8C->data1E = index;
+    D_8013AE8C->resource14 = allocateTaskResource();
+    resource = (RegisteredPanelResource *)&D_800D9504[D_8013AE8C->resource14];
+    resource->x = x;
+    resource->y = y;
+    resource->x2 = x2;
+    resource->y2 = y2;
+    resource->x3 = x3;
+    resource->y3 = y3;
+    resource->values[0] = values[0];
+    resource->values[1] = values[1];
+    resource->values[2] = values[2];
+    resource->values[3] = values[3];
+    resource->values[4] = values[4];
+    resource->values[5] = values[5];
+    resource->mode = (mode & 0xFFFF) >> 8;
+    D_8013AE8C->resource16 = allocateTaskResource();
+    if (index % 10 == 0) {
+        ValuePanelEntry *table;
+        if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+        table = (ValuePanelEntry *)&D_800D9504[D_8013AE88->resource14];
+        entry = table + index / 10;
+    } else {
+        ValuePanelEntry *table;
+        if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
+        table = (ValuePanelEntry *)&D_800D9504[D_8013AE88->resource16];
+        entry = table + index / 10;
+    }
+    entry->flags = 1;
+    entry->active = -1;
+    entry->task = D_8013AE8C;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_8007649C);
 
