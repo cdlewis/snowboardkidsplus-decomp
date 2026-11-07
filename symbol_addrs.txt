@@ -3281,3 +3281,8 @@ updateTextPlaybackTask = 0x800A6684; // type:func
 
 updateCurrentPlayerState25MotionAndTimer = 0x800252CC; // type:func
 updatePlayerModelPreviewTask = 0x80097C2C; // type:func
+
+drawLapTimeHud = 0x800435AC; // type:func
+gLapTimeLabel = 0x80010C24; // size:0xC
+gLapTimeFormat = 0x80010C30; // size:0x14
+gBestLapLabel = 0x80010C50; // size:0x10

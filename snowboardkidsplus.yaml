@@ -93,6 +93,10 @@ segments:
       - [0x12F8, rodata]
       - {start: 0x1360, type: .rodata, name: game/unk_8002B3F4, linker_section: .rodata.money_labels}
       - [0x1390, rodata]
+      - {start: 0x1424, type: .rodata, name: game/unk_8002B3F4_tail, linker_section: .rodata.lap_time_label}
+      - {start: 0x1430, type: .rodata, name: game/unk_8002B3F4_tail, linker_section: .rodata.lap_time_format}
+      - [0x1444, rodata]
+      - {start: 0x1450, type: .rodata, name: game/unk_8002B3F4_tail, linker_section: .rodata.best_lap_label}
       - [0x1460, rodata]
       - [0x149C, rodata]
       - [0x14C4, .rodata, game/unk_800497B8]

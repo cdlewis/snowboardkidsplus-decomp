@@ -653,3 +653,5 @@ void initializeRaceTimeComparisonPanel(void);
 void updateFallingRotatingObjectTask(void);
 
 void updateCurrentPlayerDirectionalAnimation(void);
+
+void drawLapTimeHud(void);

@@ -26,6 +26,10 @@ typedef struct CountRecordSaveView {
     u8 icons[10][5];
 } CountRecordSaveView;
 
+const char gLapTimeLabel[12] __attribute__((section(".rodata.lap_time_label"), aligned(4))) = "LAP TIME";
+const char gLapTimeFormat[20] __attribute__((section(".rodata.lap_time_format"), aligned(4))) = "%2.2d'%2.2d\"%2.2d";
+const char gBestLapLabel[16] __attribute__((section(".rodata.best_lap_label"), aligned(4))) = "BEST LAP";
+
 const char gHitPrizeOneGoldLabel[20] __attribute__((section(".rodata.hit_prize_labels"), aligned(4))) = "-HIT PRIZE(*1G)-";
 const char gHitPrizeFiftyGoldLabel[20] __attribute__((section(".rodata.hit_prize_labels"), aligned(4))) = "-HIT PRIZE(*50G)-";
 const char gPerfectHitLabel[16] __attribute__((section(".rodata.hit_prize_labels"), aligned(4))) = "  -PERFECT HIT-";
@@ -3021,7 +3025,25 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_80042DC0);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_80043120);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_800435AC);
+void drawLapTimeHud(void) {
+    GsOT *ot = &D_800EBFF0[D_8013AF78];
+    char text[16];
+    s32 icon;
+    setSpriteColor(128,128,128);
+    func_8006DFB4(72,80,2,1,gRaceElapsedTime.minutes,1,-1,ot,1);
+    func_8006DFB4(96,80,2,1,gRaceElapsedTime.seconds,1,-1,ot,1);
+    func_8006DFB4(120,80,2,1,gRaceElapsedTime.centiseconds >> 8,1,-1,ot,1);
+    func_8006C998(88,80,25,1,-1,ot,1);
+    func_8006C998(112,80,24,1,-1,ot,1);
+    drawLimitedText8x8(72,71,10,gLapTimeLabel,5,-1,ot,1);
+    sprintf(text,gLapTimeFormat,((SaveRecord *)&D_8013080C)->lapRecords[D_8013AFCE][0].minutes,((SaveRecord *)&D_8013080C)->lapRecords[D_8013AFCE][0].seconds,((SaveRecord *)&D_8013080C)->lapRecords[D_8013AFCE][0].centiseconds >> 8);
+    drawLimitedText8x8(72,-88,20,text,7,-1,ot,1);
+    drawLimitedText8x8(72,-97,10,gBestLapLabel,7,-1,ot,1);
+    icon = (s8)D_80120E90[0].unk936[11];
+    if (icon) drawPaletteMappedIcon(-16,-96,icon,ot,1);
+    func_8006C998(-116,64,425,1,-1,ot,1);
+    func_8006C998(-136,64,420,14,-1,ot,1);
+}
 
 void drawFirstPlayerStatusHud(void) {
     GsOT *ot = &D_800EBFF0[D_8013AF78];
