@@ -35,3 +35,4 @@ void clampPlayerCameraDistance(u16 playerIndex);
 s32 getNearestCameraManhattanDistance(s32 x, s32 y, s32 z);
 
 void initPlayerZeroTask(void);
+void initCurrentPlayerCameraTask(void);

@@ -37,6 +37,8 @@ extern char gHitCountMarker[];
 
 int sprintf(char *buffer, const char *format, ...);
 
+void func_8003EA20(void);
+
 void dispatchMode11TransitionTask(void) {
     if (D_8013B109 != 1) {
         func_800149A8();
@@ -2712,7 +2714,34 @@ void initPlayerZeroTask(void) {
     setCurrentTaskCallback(func_8003EE70);
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_8003E794);
+void initCurrentPlayerCameraTask(void) {
+    GsRVIEW2 *views;
+    PlayerCamera *cameras;
+    if (D_8013AFD7 != 0) {
+        D_801241E8[D_8013AE88->data18].unk16 = 1;
+        initPlayerCameraAndTarget(D_8013AE88->data18);
+        if (D_8013AE88->data18 == 0) {
+            queueCdCommand(D_80124164[D_8013AFCE], 0);
+        } else {
+            D_8013AFAA |= 0x800;
+        }
+        setCurrentTaskCallback(func_8003EE70);
+    } else {
+        D_8013AE88->data1A = 64;
+        initPlayerCameraAndTarget(D_8013AE88->data18);
+        views = gPlayerCameraViews;
+        views[D_8013AE88->data18].vpx = 0;
+        views[D_8013AE88->data18].vpz += 2560;
+        cameras = D_801241E8;
+        cameras[D_8013AE88->data18].unk18 = getAdjacentGeometryRegionForPoint(cameras[D_8013AE88->data18].unk18, views[D_8013AE88->data18].vpx, views[D_8013AE88->data18].vpz);
+        views[D_8013AE88->data18].vpy = func_8004A764(cameras[D_8013AE88->data18].unk18, views[D_8013AE88->data18].vpx, views[D_8013AE88->data18].vpz) - 120;
+        cameras[D_8013AE88->data18].x = views[D_8013AE88->data18].vpx << 8;
+        cameras[D_8013AE88->data18].y = views[D_8013AE88->data18].vpy << 8;
+        cameras[D_8013AE88->data18].z = views[D_8013AE88->data18].vpz << 8;
+        updatePlayerCameraAngles(D_8013AE88->data18);
+        setCurrentTaskCallback(func_8003EA20);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4_tail", func_8003EA20);
 
