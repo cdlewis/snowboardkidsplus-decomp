@@ -263,3 +263,6 @@ void createRegisteredMovingPanelTask(u16 mode, const s16 *values, s16 x, s16 y,
                                      s32 depth, s32 index);
 
 void initializeSpacedChildTasks(void);
+
+s16 func_800148F4(GameTask *parent, TaskCallback callback);
+void initializeDemoPlaybackTask(void);

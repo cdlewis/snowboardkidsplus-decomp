@@ -3213,3 +3213,5 @@ drawProjectedIndexedGouraudTriangle = 0x800562C8; // type:func
 animateTextSequenceExitTask = 0x800A12E4; // type:func
 
 pollMemoryCardWrite = 0x80019670; // type:func
+
+initializeDemoPlaybackTask = 0x8001D528; // type:func

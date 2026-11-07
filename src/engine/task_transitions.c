@@ -15,6 +15,7 @@
 #define GAME_OPTIONS_GP_ADDRESSING
 #include "game/game_options.h"
 #define SELECTED_RECORDS_GP_ADDRESSING
+#define SELECTED_RECORD_COUNTER_GP_ADDRESSING
 #include "game/selected_records.h"
 #include "psx/libsnd.h"
 #include "psx/libcd.h"
@@ -87,6 +88,9 @@ void func_80015A30(u16 controller);
 void func_8003CAF0(void);
 void func_80040D5C(void);
 void func_8001C9F0(void);
+void func_80060FE4(void);
+void func_80058BD4(void);
+void func_8001B4EC(void);
 
 void runMovieAndGameLoop(void) {
     func_800131B4();
@@ -346,7 +350,39 @@ void startThreeFrameScreenBlend(void) {
     setCurrentTaskCallback(updateThreeFrameScreenBlend);
 }
 
-INCLUDE_ASM("asm/nonmatchings/engine/task_transitions", func_8001D528);
+void initializeDemoPlaybackTask(void) {
+    initPlayerCamera(0);
+    func_8003DEE0();
+    func_80060FE4();
+    func_800148F4(&gGameTasks[3], initPlayerZeroTask);
+    D_8013AE8C->data18 = 0;
+    func_80058BD4();
+    func_80014838(updateRacePlayerFinishSlotsTask);
+    func_80014838(initializeCurrentPlayerModelAndHeight);
+    D_8013AE8C->data18 = 0;
+    D_80120E90[0].task = D_8013AE8C;
+    configureTaskStateTransition(1, 0, 0);
+    queueCdCommand(0, 1);
+    D_8013AFDB = 0;
+    D_800EC158[0].x = 0;
+    D_800EC158[0].y = 32;
+    D_800EC158[0].w = D_8013AF7A;
+    D_800EC158[0].h = D_8013AF7C - 32;
+    func_8001B4EC();
+    D_8013AFE4 = 0;
+    D_8013AFAA |= 0x48;
+    resetSecondaryRng();
+    D_8013AFD6 = 1;
+    D_8013AFE8 = D_8013AEEC[0];
+    initializeActiveRacePlayers();
+    setControllerFlag5(0);
+    setControllerFlag5(1);
+    D_8013AEE4 = 0;
+    D_8013AE88->data18 = 0;
+    D_8013AE88->data1A = 0;
+    func_80014874(drawFixedSpriteAndBottomBarTask);
+    setCurrentTaskCallback(updateSelectedPlayerPlaybackTask);
+}
 
 void updateSelectedPlayerPlaybackTask(void) {
     GameTask *savedTask;
