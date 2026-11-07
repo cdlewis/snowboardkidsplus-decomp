@@ -10,6 +10,7 @@
 #include "game/task.h"
 #include "game/race_player.h"
 #include "game/movement.h"
+#include "game/menu_selection_state.h"
 
 typedef struct PaletteRotationResource {
     RECT rect;
@@ -99,6 +100,9 @@ void func_800857C4(void);
 void func_800843DC(void);
 void func_800801A0(void);
 void func_800815D0(void);
+void initializeDualResourceTaskAndResetByteState(void);
+void adjustGroupedIndexForMode(s16 mode, u8 *index);
+void func_8007F630(void);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8007CC78);
 
@@ -180,7 +184,36 @@ void clearHalfwordPairTable(void) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8007F46C);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8007F4BC);
+void initializeCountedPlayerGroupedSelectionBoundsTask(void) {
+    RECT *bounds;
+    D_8013AE98->data1C++;
+    if (D_8013AFCD == 2) {
+        setCurrentTaskCallback(initializeDualResourceTaskAndResetByteState);
+    } else {
+        D_8013AE88->data18 = 0;
+        D_8013AE88->data1A = getPlayerRecordFlagMode(0);
+        if (D_8013AE88->resource14 != 0xFFFF) { for (;;) {} }
+        D_8013AE88->resource14 = allocateTaskResource();
+        if (D_8013AE88->resource16 != 0xFFFF) { for (;;) {} }
+        D_8013AE88->resource16 = allocateTaskResource();
+        adjustGroupedIndexForMode(D_8013AE88->data1A, &D_80120E90[0].unk00A[1]);
+        D_801300AC.selection = getGroupedIndexBase(D_80120E90[0].unk00A[1]);
+        if (D_801300AC.selection == 9) {
+            D_801300AC.selection += getSaveRecordFlagGroupIndex(0, 0);
+        }
+        D_801300B8[0].x = 0;
+        D_801300B8[0].y = 0;
+        D_801300B8[0].w = -1;
+        D_801300B8[0].h = -1;
+        D_801300B8[1].x = 0;
+        bounds = &D_801300B8[1];
+        bounds->y = 0;
+        bounds->w = -1;
+        bounds->h = -1;
+        D_801300AC.previousSelection = D_801300AC.selection;
+        setCurrentTaskCallback(func_8007F630);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_8007F630);
 
