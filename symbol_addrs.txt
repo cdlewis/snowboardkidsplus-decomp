@@ -2656,6 +2656,7 @@ gColorCycleCaptureRect = 0x8013B330; // size:0x8 defined:true
 finishNumberAdjustmentTask = 0x800A59B8; // type:func
 
 initializeBouncingVisualTask = 0x80035808; // type:func
+drawSelectedTaskSideMarkerSprite = 0x80031728; // type:func
 drawSelectedTaskMarkerSprite = 0x800326FC; // type:func
 
 drawOffsetSelectedTaskSprite = 0x800A2AB0; // type:func

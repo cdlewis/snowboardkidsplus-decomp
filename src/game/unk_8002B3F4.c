@@ -1024,7 +1024,38 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800309EC);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80030B50);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_80031728);
+void drawSelectedTaskSideMarkerSprite(void) {
+    SelectedTaskSpriteResource *resource;
+    SelectedTaskEntry *entries;
+    Movement2D *position;
+    s32 offset;
+    s32 selection;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (SelectedTaskSpriteResource *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) {
+        while (1) {}
+    }
+    entries = (SelectedTaskEntry *)&D_800D9504[D_8013AE88->resource16];
+    if ((s16)resource->state > 0) {
+        setSpriteColor(128, 128, 128);
+        selection = resource->selection;
+        switch (selection) {
+        case 0:
+        case 1:
+            offset = 16;
+            break;
+        case 2:
+            offset = 8;
+            break;
+        }
+        position = (Movement2D *)&D_800D9504[entries[selection].task->resource14];
+        func_8006C998(position->x / 4096 + (s16)(offset - 32), position->y / 4096 - 4,
+                      0x44, 0, -1, &D_800EBFF0[D_8013AF78], (u16)(resource->depth - 1));
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8002B3F4", func_800318C4);
 
