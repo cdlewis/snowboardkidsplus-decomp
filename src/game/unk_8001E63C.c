@@ -94,7 +94,7 @@ void func_80024804(void);
 void func_80026DAC(void);
 void func_800205B8(void);
 void func_80028680(void);
-void func_800255C4(void);
+void updateCurrentPlayerAirborneDragUntilLanding(void);
 void func_8002AE6C(void);
 s32 func_80017268(void);
 void func_80015C94(u16 playerIndex);
@@ -486,7 +486,7 @@ void resetCurrentPlayerForCallback255C4(void) {
     player->unk128 |= 0x822204;
     D_8013AE88->data1C = 0;
     func_8002E5A0(D_8013AE88->data18, 6);
-    setCurrentTaskCallback(func_800255C4);
+    setCurrentTaskCallback(updateCurrentPlayerAirborneDragUntilLanding);
 }
 
 void initializeCurrentPlayerState23(void) {
@@ -666,7 +666,37 @@ void updateCurrentPlayerVerticalMotionUntilLanding(void) {
     func_80017268();
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_800255C4);
+void updateCurrentPlayerAirborneDragUntilLanding(void) {
+    func_8002AE6C();
+    smoothAndScaleCurrentPlayerInput(0, 0);
+    if (D_8013B0D8->unk062 < 0) {
+        D_8013B0D8->unk062 += 0x150;
+        D_8013B0D8->unk060 -= D_8013B0D8->unk060 / 64;
+        D_8013B0D8->unk064 -= D_8013B0D8->unk064 / 64;
+    } else {
+        if (D_8013AE88->data1C == 0) {
+            D_8013AE88->data1C++;
+            func_80014930(&gGameTasks[4], initializePlayerCoordinateEffectTask);
+            D_8013AE8C->data18 = D_8013AE88->data18;
+        }
+        D_8013B0D8->unk0B6 += 0x40;
+        D_8013B0D8->unk062 += 0x18;
+        D_8013B0D8->unk060 -= D_8013B0D8->unk060 / 48;
+        D_8013B0D8->unk064 -= D_8013B0D8->unk064 / 48;
+    }
+    D_8013B0D8->x += D_8013B0D8->unk060;
+    D_8013B0D8->y += D_8013B0D8->unk062;
+    D_8013B0D8->z += D_8013B0D8->unk064;
+    D_8013B0D8->worldCoordinate.coord.t[0] = D_8013B0D8->x >> 8;
+    D_8013B0D8->worldCoordinate.coord.t[1] = D_8013B0D8->y >> 8;
+    D_8013B0D8->worldCoordinate.coord.t[2] = D_8013B0D8->z >> 8;
+    if (func_80028234() != 0) {
+        D_8013B0D8->unk12C = 8;
+        currentPlayerStateCallbacks[8]();
+    } else {
+        func_80017268();
+    }
+}
 
 void updateCurrentPlayerFromTaskPhase(void) {
     RacePlayer *player;

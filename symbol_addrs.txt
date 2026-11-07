@@ -35,6 +35,7 @@ findIdentityMappedIndexOrZero = 0x800A046C; // type:func
 initializeSlidingNumberDisplayTask = 0x8003543C; // type:func
 checkTaskVisualOtherPlayerCollision = 0x80046AEC; // type:func
 updateCurrentPlayerVerticalMotionUntilLanding = 0x80025508; // type:func
+updateCurrentPlayerAirborneDragUntilLanding = 0x800255C4; // type:func
 resetCurrentPlayerForCallback25508 = 0x8001FCB4; // type:func
 drawIndexedFlatQuad = 0x80055390; // type:func
 playSoundEffect = 0x800181B0; // type:func
