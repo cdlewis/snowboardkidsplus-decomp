@@ -3225,3 +3225,5 @@ gBoardSelectionLevels = 0x80131840; // size:0xC
 gBoardStyleText = 0x8013184C; // size:0x10
 gBoardSelectionStyles = 0x8013185C; // size:0xC
 gBoardLevelLabel = 0x80011EA0; // size:0x10
+
+drawSnowBackgroundAndSetFog = 0x800508D4; // type:func

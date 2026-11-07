@@ -1498,7 +1498,23 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80050080);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80050504);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_800508D4);
+void drawSnowBackgroundAndSetFog(s16 playerIndex) {
+    s16 y;
+    s16 x;
+    y = D_801241E8[playerIndex].pitch / 2;
+    x = -160 - ((D_801241E8[playerIndex].yaw >> 1) & 255);
+    if (y > 240) y = 240;
+    addTexturedSprite(&D_8013AF6C[1024], 26, 0x7C29, (s16)x, (s16)y, 256, 64, 0, 0, 128, 128, 128);
+    addTexturedSprite(&D_8013AF6C[1024], 26, 0x7C29, (s16)(x + 256), (s16)y, 256, 64, 0, 0, 128, 128, 128);
+    addTexturedSprite(&D_8013AF6C[1024], 26, 0x7C29, (s16)(x + 512), (s16)y, 256, 64, 0, 0, 128, 128, 128);
+    if ((s16)y >= -119) {
+        addFlatRectangle(&D_8013AF6C[1024], -160, -120, 320, (s16)(y + 120), 0, 168, 248);
+    }
+    if ((s16)y < -120) y = -184;
+    addFlatRectangle(&D_8013AF6C[1024], -160, (s16)(y + 64), 320, (s16)(120 - y), 248, 248, 248);
+    SetFarColor(248, 248, 248);
+    SetFogNearFar(8000, 10000, 400);
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_800497B8", func_80050B18);
 
