@@ -133,8 +133,8 @@ struct RacePlayer {
     GsCOORDINATE2 worldCoordinate;
     u16 *animationStream;
     u16 *animationFrame;
-    u16 animationFrameCount;
-    u16 animationTicks;
+    s16 animationFrameCount;
+    s16 animationTicks;
     u8 modelPartCount;
     u8 animationIndex;
     u8 animationFlags;
@@ -240,6 +240,7 @@ void playCurrentPlayerSoundEffect(s16 index);
 void func_8002E5A0(u16 index, s16 value);
 
 void startCurrentPlayerAnimation(u8 animation, u8 mode);
+s32 updateCurrentPlayerAnimation(void);
 
 void initializeCurrentPlayerModelObjects(u32 *model);
 void loadCurrentPlayerModelBlock(void);

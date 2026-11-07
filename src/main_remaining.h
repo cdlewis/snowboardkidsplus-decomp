@@ -64,7 +64,6 @@ void updateThreeFrameScreenBlend(void);
 void *memcpy(void *destination, const void *source, unsigned int size);
 u16 func_800162C8(void);
 void func_80016A7C(void);
-s32 func_80017268(void);
 void selectMemoryCardLoadFile(u8 slot, void *destination);
 void pollMemoryCardBufferReadTask(void);
 void func_8001C0DC(void);

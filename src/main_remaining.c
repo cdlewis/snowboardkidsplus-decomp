@@ -115,6 +115,8 @@ s16 D_80120370[42] __attribute__((section(".data.player_model_parts"))) = {
 s16 *D_801203C4[10] __attribute__((section(".data.player_model_parts"))) = {
     D_80120220, D_80120274, D_80120220, D_80120370, D_801202C8, D_80120220, D_80120220, D_801202C8, D_8012031C, D_8012031C
 };
+RacePlayerVector gPlayerAnimationPose[12] __attribute__((section(".data.player_animation_pose"), aligned(4))) = {0};
+
 /* Nine bank flags with the original three trailing padding bytes. */
 s8 gSoundBankLoaded[12] __attribute__((section(".data.sound_bank_loaded"), aligned(4))) = {0};
 
@@ -136,6 +138,8 @@ s16 D_8013AF30 __attribute__((section(".sdata.music_state"))) = 0;
 s16 D_8013AF32 __attribute__((section(".sdata.music_state"))) = 0;
 s32 gLinearRandomState __attribute__((section(".data.linear_random_state"))) = 1;
 MovieDecodeState gMovieDecodeState __attribute__((section(".bss.movie_decode_state")));
+
+void func_80016F5C(void);
 
 
 
@@ -330,13 +334,74 @@ void startCurrentPlayerAnimation(u8 animation, u8 mode) {
     player->animationStream++;
     player->animationTicks = *player->animationStream;
     player->animationStream++;
-    func_80017268();
+    updateCurrentPlayerAnimation();
     currentPlayerAbsolute->animationFlags |= 0x20;
 }
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80016F5C);
 
-INCLUDE_ASM("asm/nonmatchings/main_remaining", func_80017268);
+s32 updateCurrentPlayerAnimation(void) {
+    u16 i;
+    RacePlayer *player;
+    RacePlayer *restart;
+    RacePlayerVector *pose;
+    if (currentPlayerAbsolute->animationFlags & 0x20) {
+        currentPlayerAbsolute->animationFlags &= ~0x20;
+        return 1;
+    }
+    if (currentPlayerAbsolute->animationFlags & 0x10) return 0;
+    currentPlayerAbsolute->animationTicks--;
+    if (currentPlayerAbsolute->animationTicks != 0) return 1;
+    i = 0;
+    pose = gPlayerAnimationPose;
+    currentPlayerAbsolute->animationFrame = currentPlayerAbsolute->animationStream;
+    player = currentPlayerAbsolute;
+    for (; i < 12; i++) {
+        pose[i].x = player->unk5BC[i].x = *player->animationStream;
+        player->animationStream++;
+        pose[i].y = player->unk5BC[i].y = *player->animationStream;
+        player->animationStream++;
+        pose[i].z = player->unk5BC[i].z = *player->animationStream;
+        player->animationStream++;
+    }
+    currentPlayerAbsolute->unk62C[0].x = ((s16)*currentPlayerAbsolute->animationStream + 2) / 4;
+    currentPlayerAbsolute->animationStream++;
+    currentPlayerAbsolute->unk62C[0].y = ((s16)*currentPlayerAbsolute->animationStream + 2) / 4;
+    currentPlayerAbsolute->animationStream++;
+    currentPlayerAbsolute->unk62C[0].z = ((s16)*currentPlayerAbsolute->animationStream + 2) / 4;
+    currentPlayerAbsolute->animationStream++;
+    currentPlayerAbsolute->unk62C[1].z = -((s16)*currentPlayerAbsolute->animationStream + 2) / 4;
+    currentPlayerAbsolute->animationStream++;
+    currentPlayerAbsolute->unk62C[1].y = ((s16)*currentPlayerAbsolute->animationStream + 2) / 4;
+    currentPlayerAbsolute->animationStream++;
+    currentPlayerAbsolute->unk62C[1].x = ((s16)*currentPlayerAbsolute->animationStream + 2) / 4;
+    currentPlayerAbsolute->animationStream++;
+    func_80016F5C();
+    currentPlayerAbsolute->animationFrameCount--;
+    if (currentPlayerAbsolute->animationFrameCount == 0) {
+        switch (currentPlayerAbsolute->animationFlags & 3) {
+        case 1:
+            currentPlayerAbsolute->animationStep++;
+            restart = currentPlayerAbsolute;
+            restart->animationStream = (u16 *)(PLAYER_ANIMATION_ARCHIVE + PLAYER_ANIMATION_OFFSETS[restart->animationIndex]);
+            restart->animationFrameCount = *restart->animationStream;
+            restart->animationStream++;
+            restart->animationTicks = *restart->animationStream;
+            restart->animationStream++;
+            return 1;
+        case 2:
+            currentPlayerAbsolute->animationFlags |= 0x10;
+            currentPlayerAbsolute->animationFrameCount = 1;
+            currentPlayerAbsolute->animationTicks = 1;
+            currentPlayerAbsolute->animationStream = currentPlayerAbsolute->animationFrame;
+            return 0;
+        }
+        return 0;
+    }
+    currentPlayerAbsolute->animationTicks = *currentPlayerAbsolute->animationStream;
+    currentPlayerAbsolute->animationStream++;
+    return 1;
+}
 
 INCLUDE_ASM("asm/nonmatchings/main_remaining", func_8001758C);
 

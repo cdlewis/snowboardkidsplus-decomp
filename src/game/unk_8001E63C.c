@@ -96,7 +96,6 @@ void updateCurrentPlayerAirborneDragUntilLanding(void);
 void func_8002AE6C(void);
 void func_80028C80(void);
 void func_8002AE38(s32, s32, s32, s32);
-s32 func_80017268(void);
 void func_80015C94(u16 playerIndex);
 void func_8001596C(u16 playerIndex);
 void moveCurrentPlayerToTaskTarget(void);
@@ -674,7 +673,7 @@ void initializeCurrentPlayerModelAndHeight(void) {
 
 void updateCurrentPlayerAndResetState(void) {
     func_8002AE6C();
-    func_80017268();
+    updateCurrentPlayerAnimation();
     if (D_8013AFE4 == 0) {
         if (D_8013B0D8->unk008 == 0) {
             if (D_8013AFD7 || D_8013AFD9) {
@@ -719,7 +718,7 @@ void updateCurrentPlayerState29MotionAndAnimation(void) {
     D_8013B0D8->y += D_8013B0D8->unk062;
     D_8013B0D8->z += D_8013B0D8->unk064;
     func_80028680();
-    func_80017268();
+    updateCurrentPlayerAnimation();
     if (D_8013B0D8->animationFlags & 0x10) {
         startCurrentPlayerAnimation(0x23, 1);
     }
@@ -765,7 +764,7 @@ void updateCurrentPlayerState4MotionAndLanding(void) {
         func_800183FC(D_8013AE88->data18, 1, 0xB01, 0x20);
         createPlayerTripleQuadEffectTask(D_8013AE88->data18);
     }
-    func_80017268();
+    updateCurrentPlayerAnimation();
     if (D_8013B0D8->animationFlags & 0x10) {
         if (!(D_8013B0D8->unk128 & 1)) {
             if (!func_8002D3C4(0)) {
@@ -793,7 +792,7 @@ void updateCurrentPlayerState5MotionAndTimer(void) {
     }
     D_8013B0D8->y += D_8013B0D8->unk062;
     func_80028680();
-    func_80017268();
+    updateCurrentPlayerAnimation();
     player = D_8013B0D8;
     if (!(player->unk128 & 1)) {
         input = countCurrentPlayerInputGroups();
@@ -873,7 +872,7 @@ void updateCurrentPlayerVerticalMotionUntilLanding(void) {
     } else {
         player->unk946 = 0;
     }
-    func_80017268();
+    updateCurrentPlayerAnimation();
 }
 
 void updateCurrentPlayerAirborneDragUntilLanding(void) {
@@ -904,14 +903,14 @@ void updateCurrentPlayerAirborneDragUntilLanding(void) {
         D_8013B0D8->unk12C = 8;
         currentPlayerStateCallbacks[8]();
     } else {
-        func_80017268();
+        updateCurrentPlayerAnimation();
     }
 }
 
 void updateCurrentPlayerFromTaskPhase(void) {
     RacePlayer *player;
     func_8002AE6C();
-    func_80017268();
+    updateCurrentPlayerAnimation();
     gCurrentPlayerTaskPhaseCallbacks[D_8013AE88->data1A]();
     D_8013B0D8->unk946 = 0;
     player = D_8013B0D8;
@@ -1075,7 +1074,7 @@ void advanceCurrentPlayerState30TaskOnResult(void) {
     } else {
         smoothAndScaleCurrentPlayerInput(0, 0);
         func_80028680();
-        func_80017268();
+        updateCurrentPlayerAnimation();
     }
 }
 
@@ -1089,7 +1088,7 @@ void updateCurrentPlayerTaskCountdown(void) {
     player->worldCoordinate.coord.t[0] = player->x >> 8;
     player->worldCoordinate.coord.t[1] = player->y >> 8;
     player->worldCoordinate.coord.t[2] = player->z >> 8;
-    func_80017268();
+    updateCurrentPlayerAnimation();
     if (D_8013AE88->data18 == 0) {
         if (--D_8013AE88->data1A == 0) {
             playCurrentPlayerSoundEffect(6);
@@ -1154,7 +1153,7 @@ movement:
     smoothAndScaleCurrentPlayerInput(0, 0);
     D_8013B0D8->unk09E = 0x280;
     func_80028680();
-    func_80017268();
+    updateCurrentPlayerAnimation();
     if (++D_8013AE88->data1A < 15) {
         D_8013B0D8->unk128 |= 8;
     } else {
@@ -1194,7 +1193,7 @@ void updateCurrentPlayerState10Movement(void) {
     }
     D_8013B0D8->unk0B6 = D_8013B0D8->unk110 - 0x400;
     func_80028C80();
-    func_80017268();
+    updateCurrentPlayerAnimation();
     if (D_8013B0E4 != 0) {
         currentPlayerStateCallbacks[D_8013B0D8->unk12C]();
     } else if (!(D_8013B0D8->unk128 & 0x201)) {
