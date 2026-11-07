@@ -313,8 +313,6 @@ void func_800A4C28(void);
 void resetUnlockMenuOffsets(UnlockMenuState *state);
 void func_800A525C(void);
 void func_800A53BC(void);
-void func_800A6A8C(void);
-void func_800A624C(void);
 void func_8009D354(void);
 void func_800A05C0(void);
 void startUnlockResourceLoad(void);

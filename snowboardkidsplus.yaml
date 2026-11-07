@@ -119,6 +119,7 @@ segments:
       - [0x2A30, rodata]
       - [0x2A58, rodata]
       - [0x2B54, rodata]
+      - [0x2B6C, .rodata, main_tail_resources]
       - [0x2B80, lib, libspu, spu, .rdata]
       - [0x2BD0, lib, libsnd, ssopenq, .rdata]
       - [0x2C00, lib, libsnd, seqinit, .rdata]
@@ -170,6 +171,7 @@ segments:
       - [0x7CF08, c, main_tail]
       # The UI continuation accesses the transition flag absolutely.
       - [0x92750, c, main_tail_ui]
+      - [0x970B4, c, main_tail_resources]
       - [0x98A04, lib, libmath, divsf3, .text]
       - [0x98B54, lib, libmath, fixsfsi, .text]
       - [0x98C14, lib, libmath, fltsisf, .text]
@@ -691,9 +693,9 @@ segments:
       - {start: 0x12303C, type: .data, name: main_tail_ui, linker_section: .data.controller_playback_durations}
       - [0x123054, data, 123054]
       - {start: 0x123100, type: .data, name: main_tail, linker_section: .data.number_adjustment_arrow}
-      - {start: 0x123114, type: .data, name: main_tail_ui, linker_section: .data.text_entry_cd_commands}
+      - {start: 0x123114, type: .data, name: main_tail_resources, linker_section: .data.text_entry_cd_commands}
       - [0x1232E0, data, text_entry_cd_commands_tail]
-      - {start: 0x123398, type: .data, name: main_tail_ui, linker_section: .data.secondary_resource_tables}
+      - {start: 0x123398, type: .data, name: main_tail_resources, linker_section: .data.secondary_resource_tables}
       - [0x123554, data, secondary_resource_tables_tail]
       - {start: 0x1235BC, type: .data, name: syslib/libmath/ferr, linker_section: .data.math_error}
       - [0x1235C4, lib, libsnd, ssinit, .data]
@@ -825,7 +827,7 @@ segments:
       - {start: 0x12BEA4, type: .sdata, name: game/unk_800497B8, linker_section: .sdata.object_sort_saved_stack, linker_section_order: .data}
       - {start: 0x12BEA8, type: .sdata, name: game/unk_800497B8, linker_section: .sdata.alternate_object_sort_saved_stack, linker_section_order: .data}
       - [0x12BEAC, data]
-      - {start: 0x12BEC0, type: .sdata, name: main_tail_ui, linker_section: .sdata.secondary_resource_display_task, linker_section_order: .data}
+      - {start: 0x12BEC0, type: .sdata, name: main_tail_resources, linker_section: .sdata.secondary_resource_display_task, linker_section_order: .data}
       - {start: 0x12BEC4, type: .sdata, name: main_tail_ui, linker_section: .sdata.text_sound_state, linker_section_order: .data}
 
       - {start: 0x12BEC8, type: .data, name: main, linker_section: .data.cd_search_file}

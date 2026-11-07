@@ -3248,3 +3248,5 @@ drawFadingText = 0x8006A4E8; // type:func
 gFadingTextGlyphBanks = 0x80010D90; // size:0x10
 
 drawHalfStepSpriteBar = 0x8006E5E0; // type:func
+
+updateSecondaryResourceTask = 0x800A6A8C; // type:func

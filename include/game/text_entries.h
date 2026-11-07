@@ -15,6 +15,9 @@ typedef struct TextEntry {
 } TextEntry;
 extern TextEntry *D_8013B5D0;
 extern TextEntry *D_8013B5D4;
+extern s16 D_8013B59C;
+extern u8 D_8013B59E;
+extern u8 D_8013B59F;
 
 void resetTextEntryPool(void);
 void initializeLoadedTextEntries(void);
@@ -34,3 +37,7 @@ void setTextEntryCdAudioTask(TextEntry *entry);
 void processTextEntrySound(TextEntry *entry);
 
 void setTextEntryMusicTask(TextEntry *entry);
+void initializeSecondaryResourceTask(void);
+void updateSecondaryResourceTask(void);
+void drawSecondaryTextBackgroundTask(void);
+void func_800A624C(void);
