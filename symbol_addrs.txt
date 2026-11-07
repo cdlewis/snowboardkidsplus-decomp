@@ -3044,3 +3044,5 @@ updateCurrentPlayerState5MotionAndTimer = 0x80024804; // type:func
 
 updatePlayerVisualPairTask6780 = 0x80047380; // type:func
 gPlayerVisualPair6780Frame = 0x8013B1C4; // size:0x8 defined:true
+
+updatePaletteEntryTask = 0x80086DEC; // type:func

@@ -24,6 +24,14 @@ typedef struct PaletteRotationResource {
     s8 steps;
 } PaletteRotationResource;
 
+typedef struct PaletteEntryResource {
+    RECT rect;
+    u16 original[16];
+    u16 modified[16];
+    s8 destination;
+    s8 source;
+} PaletteEntryResource;
+
 typedef struct PaletteRotationSlot {
     GameTask *task;
     s16 state;
@@ -534,7 +542,41 @@ s16 mapGroupedValueToTableIndex(s16 value) {
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80086C34);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8007CC78", func_80086DEC);
+static inline PaletteRotationSlot *getPaletteEntrySlot(u16 resourceIndex, u16 index) {
+    PaletteRotationSlot *slots = (PaletteRotationSlot *)&D_800D9504[resourceIndex];
+    return &slots[(u16)(index / 10)];
+}
+
+void updatePaletteEntryTask(void) {
+    PaletteEntryResource *resource;
+    PaletteRotationSlot *slot;
+    s32 i;
+    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    resource = (PaletteEntryResource *)&D_800D9504[D_8013AE88->resource14];
+    if ((u16)(D_8013AE88->data1E % 10) == 0) {
+        if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
+        slot = getPaletteEntrySlot(D_8013AE98->resource14, D_8013AE88->data1E);
+    } else {
+        if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
+        slot = getPaletteEntrySlot(D_8013AE98->resource16, D_8013AE88->data1E);
+    }
+    switch (slot->state) {
+    case 1:
+        if (++D_8013AE88->data18 >= 2) {
+            for (i = 0; i < 16; i++) resource->modified[i] = resource->original[i];
+            resource->modified[resource->destination] = resource->original[resource->source];
+            LoadImage(&resource->rect, (u32 *)resource->modified);
+            slot->state = 0;
+        }
+        break;
+    case 99:
+        LoadImage(&resource->rect, (u32 *)resource->original);
+        slot->task = 0;
+        slot->unk06 = 0;
+        func_800149A8();
+        break;
+    }
+}
 
 s32 isValue16(s32 value) {
     return value == 16;
