@@ -1,3 +1,4 @@
+reloadTaskPlayerModel = 0x80082A30; // type:func
 drawProjectedIndexedTexturedGouraudQuad = 0x8005801C; // type:func
 drawProjectedIndexedLitTexturedGouraudTriangle = 0x80056F90; // type:func
 setSceneMusicEventTask = 0x800A73BC; // type:func

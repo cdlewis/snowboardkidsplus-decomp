@@ -1,6 +1,15 @@
 #include "../menu/save_record_tasks_internal.h"
 #include "game/io/dat_resources.h"
 
+typedef struct MenuModelResource {
+    GsDOBJ2 object;
+    GsCOORDINATE2 local;
+    SVECTOR localRotation;
+    GsCOORDINATE2 world;
+    SVECTOR worldRotation;
+    s16 unkC0, unkC2, unkC4, unkC6;
+} MenuModelResource;
+
 u16 litObjectDrawAreaDepths[4] __attribute__((section(".data.lit_object_draw_area_depths"))) = {
     0x30, 0x20, 0x50, 0x3E
 };
@@ -406,7 +415,61 @@ INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_80081DF0);
 
 INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_80082690);
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_80082A30);
+void reloadTaskPlayerModel(GameTask *task, u16 slot, u16 selection, u16 modelIndex, s16 x, s16 y, s16 z) {
+    MenuModelResource saved;
+    MenuModelResource *resource;
+    u32 *offsets;
+    u32 *textureOffsets;
+    u32 *entry;
+    u8 *archive;
+    u32 (*buffers)[512];
+    u32 *dest;
+    u32 *source;
+    u32 *model;
+    u32 i;
+    task->data18 = selection;
+    task->data1A = modelIndex;
+    task->data1C = slot;
+    resource = (MenuModelResource *)&D_800D9504[task->resource14];
+    saved = *resource;
+    offsets = DAT_STARTUP_MODELS->offsets;
+    archive = (u8 *)DAT_STARTUP_MODELS;
+    buffers = DAT_PLAYER_MODEL_BLOCKS;
+    i = 0;
+    entry = &offsets[D_80123640[task->data1A]];
+    source = (u32 *)(*entry + archive);
+    model = buffers[task->data1C];
+    dest = model;
+    for (; i < 512; i++) { *dest++ = *source++; }
+    entry = (u32 *)((u32)model | 4);
+    GsMapModelingData(entry);
+    entry += 2;
+    if (task->data1C != 0) {
+        offsetTmdObjectTextures(0, (TmdObject *)entry, &gPlayerRootTextureOffsets[task->data1C]);
+    }
+    GsLinkObject4(entry, &resource->object, 0);
+    GsInitCoordinate2(0, &resource->world);
+    GsInitCoordinate2(&resource->world, &resource->local);
+    resource->object.coord2 = &resource->local;
+    resource->object.attribute = 0;
+    textureOffsets = DAT_STARTUP_TEXTURES->offsets;
+    entry = &textureOffsets[gPlayerResourceTextureSelections.entries[task->data18][task->data1A]];
+    uploadTimImageWithOffset((u32 *)((u8 *)DAT_STARTUP_TEXTURES + *entry), gPlayerResourceTexturePositions[task->data1C]);
+    resource->world.coord.t[0] = x;
+    resource->world.coord.t[1] = y;
+    resource->world.coord.t[2] = z;
+    resource->worldRotation.vx = saved.worldRotation.vx;
+    resource->worldRotation.vy = saved.worldRotation.vy;
+    resource->worldRotation.vz = saved.worldRotation.vz;
+    resource->local.coord.t[0] = saved.local.coord.t[0];
+    resource->local.coord.t[1] = saved.local.coord.t[1];
+    resource->local.coord.t[2] = saved.local.coord.t[2];
+    resource->localRotation.vx = saved.localRotation.vx;
+    resource->localRotation.vy = saved.localRotation.vy;
+    resource->localRotation.vz = saved.localRotation.vz;
+    resource->unkC2 = saved.unkC2;
+    initMovement2D((Movement2D *)&D_800D9504[task->resource16], x << 12, y << 12);
+}
 
 INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_80082CE0);
 

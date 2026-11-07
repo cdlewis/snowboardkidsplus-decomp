@@ -173,3 +173,5 @@ void updatePairedStateFlag(s16 index);
 void setPairedStateIndexedFlag(s16 index);
 s32 getModeFilteredGameOptionFlag2(void);
 s32 getStateAdjustedGameOptionFlag1(void);
+
+void reloadTaskPlayerModel(GameTask *task, u16 slot, u16 selection, u16 modelIndex, s16 x, s16 y, s16 z);

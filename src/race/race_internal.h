@@ -12,6 +12,7 @@
 #include "game/engine/task.h"
 #include "game/engine/game_task_scheduler.h"
 #include "game/race/player/race_player.h"
+#include "game/race/player/player_resource_textures.h"
 #include "game/race/camera/race_camera.h"
 #include "game/graphics/coordinate.h"
 #include "game/race/ui/race_time.h"
@@ -457,7 +458,6 @@ extern s16 D_8013B620;
 
 extern s16 D_8013B10C;
 extern s16 D_8013B10E;
-extern u8 D_80123640[];
 
 extern s16 D_8013B0E4;
 extern u16 D_8013B0E6;

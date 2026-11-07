@@ -12,6 +12,7 @@
 #define CONTROLLER_STATE_ABSOLUTE_ADDRESSING
 #include "game/io/controller.h"
 #include "game/race/player/race_player.h"
+#include "game/race/player/player_resource_textures.h"
 #define GAME_OPTIONS_GP_ADDRESSING
 #include "game/engine/game_options.h"
 #define SELECTED_RECORDS_GP_ADDRESSING
