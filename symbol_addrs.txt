@@ -1,3 +1,4 @@
+drawProjectedIndexedTexturedGouraudQuad = 0x8005801C; // type:func
 drawProjectedIndexedLitTexturedGouraudTriangle = 0x80056F90; // type:func
 setTextEntryMusicTask = 0x800A73BC; // type:func
 drawProjectedIndexedGouraudQuad = 0x80057AC0; // type:func
