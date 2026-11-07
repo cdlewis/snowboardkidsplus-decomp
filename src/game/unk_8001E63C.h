@@ -34,7 +34,7 @@ void updateCurrentPlayerState29MotionAndAnimation(void);
 void func_80020018(void);
 void func_800200F8(void);
 
-void func_800273D4(void);
+void updateCurrentPlayerTimedMotion(void);
 
 void func_80021B20(void);
 

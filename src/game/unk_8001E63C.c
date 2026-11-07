@@ -2,6 +2,7 @@
 #define TASK_TRANSITION_FLAGS_ABSOLUTE_ADDRESSING
 #define TASK_FLAGS_ABSOLUTE_ADDRESSING
 #define TASK_ABSOLUTE_ADDRESSING
+#define RACE_PLAYER_STATE_FLAG_ABSOLUTE_ADDRESSING
 #define RACE_FINISH_ABSOLUTE_ADDRESSING
 #define PLAYER_STATE_RESULT_ABSOLUTE_ADDRESSING
 #include "game/race_player.h"
@@ -495,7 +496,7 @@ void initializeCurrentPlayerState14(void) {
     player->unk078 = 0;
     startCurrentPlayerAnimation(15, 1);
     func_8002E5A0(D_8013AE88->data18, 5);
-    setCurrentTaskCallback(func_800273D4);
+    setCurrentTaskCallback(updateCurrentPlayerTimedMotion);
 }
 
 void initializeCurrentPlayerState11(void) {
@@ -535,7 +536,7 @@ void initializeCurrentPlayerState40(void) {
     D_8013B0D8->unk078 = 0;
     startCurrentPlayerAnimation(15, 1);
     func_8002E5A0(D_8013AE88->data18, 5);
-    setCurrentTaskCallback(func_800273D4);
+    setCurrentTaskCallback(updateCurrentPlayerTimedMotion);
 }
 
 void initializeCurrentPlayerState24(void) {
@@ -1405,7 +1406,51 @@ void updateCurrentPlayerState10Movement(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_800273D4);
+void updateCurrentPlayerTimedMotion(void) {
+    func_8002AE6C();
+    if (!(D_8013B0D8->unk128 & 1)) {
+        smoothAndScaleCurrentPlayerInput(0x400, 0);
+        D_8013B0D8->unk09E = 0x280;
+        D_8013B0D8->unk128 &= ~0x200;
+        func_8002AE38(0, 0, 0, 0);
+    } else {
+        D_8013B0D8->unk062 += D_8013B0D8->unk09C;
+        if (D_8013B0D8->unk062 > 0x7800) {
+            D_8013B0D8->unk062 = 0x7800;
+        }
+        D_8013B0D8->unk128 |= 0x200;
+    }
+    D_800EB22C.vx = D_8013B0D8->unk060;
+    D_800EB22C.vz = D_8013B0D8->unk064;
+    clampVectorToCurrentPlayerLimit(&D_800EB22C);
+    D_8013B0D8->unk060 = D_800EB22C.vx;
+    D_8013B0D8->unk064 = D_800EB22C.vz;
+    D_8013B0D8->x += D_8013B0D8->unk060;
+    D_8013B0D8->y += D_8013B0D8->unk062;
+    D_8013B0D8->z += D_8013B0D8->unk064;
+    if (!(D_8013B0D8->unk128 & 1)) {
+        func_80028680();
+        D_8013B0D8->unk96E = 0x500;
+        D_8013B0D8->unk972 = 0;
+        D_8013B0D8->unk96C = 0x20;
+    } else {
+        func_80028234();
+    }
+    D_8013B0D8->unk110 = func_8004A124(0, 0, D_8013B0D8->unk060, D_8013B0D8->unk064);
+    if (D_8013B0D8->unk128 & 0x400) {
+        D_8013B0D8->unk110 += 0x800;
+    }
+    D_8013B0D8->unk0B6 = D_8013B0D8->unk110 - 0x400;
+    func_80017268();
+    if (D_8013B0E4) {
+        currentPlayerStateCallbacks[D_8013B0D8->unk12C]();
+    } else if (D_8013B0D8->unk08C == 0) {
+        D_8013B0D8->unk12C = 12;
+        currentPlayerStateCallbacks[12]();
+    } else {
+        D_8013B0D8->unk08C--;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_8001E63C", func_80027624);
 
