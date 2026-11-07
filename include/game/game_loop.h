@@ -16,7 +16,11 @@ extern MATRIX *D_800EC170[16];
 extern u32 D_800EC200[8192], D_800F4200[8192], D_800FC200[4096];
 extern u8 D_80100200[2][0x10000];
 
+#ifdef GAME_LOOP_ABSOLUTE_ADDRESSING
+extern u16 D_8013AFAA __attribute__((section(".data")));
+#else
 extern u16 D_8013AFAA;
+#endif
 extern u32 *D_8013AF70, *D_8013AF74;
 extern s16 D_8013AF7E;
 extern s16 D_8013AF80;

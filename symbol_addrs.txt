@@ -3207,3 +3207,5 @@ initializeSpacedChildTasks = 0x80072864; // type:func
 updateCurrentPlayerState11Motion = 0x80027014; // type:func
 
 drawProjectedIndexedGouraudTriangle = 0x800562C8; // type:func
+
+animateTextSequenceExitTask = 0x800A12E4; // type:func

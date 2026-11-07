@@ -9,6 +9,8 @@
 #include "game/cd_queue.h"
 #include "game/byte_search.h"
 #include "game/game_options.h"
+#define GAME_LOOP_ABSOLUTE_ADDRESSING
+#include "game/game_loop.h"
 #include "game/graphics.h"
 #define MUSIC_ABSOLUTE_ADDRESSING
 #include "game/music.h"
@@ -74,7 +76,10 @@ typedef struct TextSequenceResource {
     u8 unk00[0xA];
     u16 unk0A;
     u16 entryIndex;
-    u8 unk0E[0x22];
+    u8 unk0E[6];
+    s32 x, y, velocity;
+    u8 unk20[0xC];
+    s32 displacement;
     u16 progress;
     u16 duration;
     s16 state;
@@ -1380,7 +1385,45 @@ void initializeTextSequenceTask(void) {
 
 INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A0FDC);
 
-INCLUDE_ASM("asm/nonmatchings/main_tail", func_800A12E4);
+void animateTextSequenceExitTask(void) {
+    TextSequenceResource *resource;
+    u16 previous;
+    s16 delta;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        for (;;) {}
+    }
+    resource = (TextSequenceResource *)&D_800D9504[D_8013AE88->resource14];
+    resource->velocity += 0x1000;
+    resource->y -= resource->velocity;
+    resource->displacement += resource->velocity;
+    if (resource->intensity != 0) resource->intensity -= 4;
+    previous = D_800EC158[1].h;
+    D_800EC158[1].h = resource->displacement / 4096 - (u32)(-D_8013AF7C / 2 + 4);
+    if (D_800EC158[1].h > D_8013AF7C) D_800EC158[1].h = D_8013AF7C;
+    delta = D_800EC158[1].h - previous;
+    resource->unk3A += delta;
+    D_8013AF80 -= delta / 2;
+    if (D_8013AF80 < 0) D_8013AF80 = 0;
+    D_800EC158[2].y += delta;
+    D_800EC158[2].h -= delta;
+    if (D_800EC158[2].h < 0) {
+        D_800EC158[2].y = 240;
+        D_800EC158[2].h = 0;
+    }
+    D_801241E8[0].unk10 += delta * 2;
+    if (D_801241E8[0].unk10 > -320) D_801241E8[0].unk10 = -320;
+    if (resource->displacement / 4096 >= 141) {
+        taskTransitionFlagGp = 1;
+        D_8013B1A8 = 1;
+        D_8013AFCD = 1;
+        D_8013AFE4 = 0;
+        D_8013AFAA |= 0x1000;
+        queueCdCommand(D_80124164[D_8013AFCE], 0);
+        func_800149A8();
+    } else {
+        func_800A1774(resource);
+    }
+}
 
 void advanceModeAfterTextSequenceFadeTask(void) {
     TextSequenceResource *resource;
