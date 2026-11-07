@@ -108,6 +108,16 @@ typedef struct SpriteZoomResource {
     u8 unk18[0xE8];
 } SpriteZoomResource;
 
+typedef struct SelectionPanelRecord {
+    s16 unk00, selection, previousSelection;
+} SelectionPanelRecord;
+typedef struct SelectionPanelResource {
+    u8 unk00[8];
+    s8 unk08;
+    u8 unk09[0xB];
+    SelectionPanelRecord *record;
+} SelectionPanelResource;
+
 typedef struct ValuePanelResource {
     s32 x, y;
     u8 unk08[0x24];
@@ -156,8 +166,8 @@ u16 gTextPanelMessage[] __attribute__((section(".data.text_panel_message"))) = {
 };
 
 /* Storage remains in the shared data object. */
+extern u8 D_8012D460[12];
 extern TaskValueState D_8012D4A4[3];
-extern u8 D_8012D460[];
 extern TimedSequenceEntry D_8012F18C[], D_8012F1AC[];
 extern GameTask *D_8013B378;
 extern GameTask *D_8013B37C;
@@ -196,7 +206,7 @@ void updateValueTransitionTask(void);
 void func_80077770(void);
 void func_80078140(void);
 void func_80078AFC(void);
-void func_8007BBAC(s16 player);
+void func_80079FE8(void);
 void GsSortBg(GameBackground *background, GsOT *ot, u16 depth);
 void func_8007BE9C(void);
 void func_8007B10C(void);
@@ -1286,7 +1296,42 @@ INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80078AFC);
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_800797C4);
 
-INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80079DB0);
+void createRegisteredSelectionPanelTask(s16 playerIndex, SelectionPanelRecord *record, s32 depth, s32 index) {
+    SelectionPanelResource *resource;
+    ValuePanelEntry *entry;
+    s32 player;
+    func_80014874(func_80079FE8);
+    D_8013AE8C->data1A = playerIndex;
+    D_8013AE8C->data1C = depth;
+    D_8013AE8C->data1E = index;
+    D_8013AE8C->resource14 = allocateTaskResource();
+    resource = (SelectionPanelResource *)&D_800D9504[D_8013AE8C->resource14];
+    resource->unk08 = 0;
+    resource->record = record;
+    player = playerIndex;
+    if (player < D_8013AFCD) {
+        uploadTextureArchiveEntry(0x240 + (player << 7), 0x100, 0x300,
+                                  0xEE - player * 2, D_8012D460[record->selection]);
+    } else {
+        uploadTextureArchiveEntry(0x240 + (player << 7), 0x100, 0x300,
+                                  0xEE - player * 2, 10);
+    }
+    uploadTextureArchiveEntry(0x140, 0x100, 0x300, 0xEA, 11);
+    if (index % 10 == 0) {
+        ValuePanelEntry *table;
+        if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+        table = (ValuePanelEntry *)&D_800D9504[D_8013AE88->resource14];
+        entry = table + index / 10;
+    } else {
+        ValuePanelEntry *table;
+        if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
+        table = (ValuePanelEntry *)&D_800D9504[D_8013AE88->resource16];
+        entry = table + index / 10;
+    }
+    entry->flags = 0;
+    entry->active = 0;
+    entry->task = D_8013AE8C;
+}
 
 INCLUDE_ASM("asm/nonmatchings/game/unk_80070274", func_80079FE8);
 
