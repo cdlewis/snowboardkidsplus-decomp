@@ -3027,3 +3027,5 @@ gPlayerTripleQuadOffsets = 0x8012CA34; // size:0x18 defined:true
 initializeSaveRecordTask = 0x80087464; // type:func
 
 moveCurrentPlayerToTaskTarget = 0x80025840; // type:func
+
+drawPagedTexturedRectangle = 0x800A7D8C; // type:func

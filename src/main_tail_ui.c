@@ -26,6 +26,19 @@
 #include "psx/libgs.h"
 #include "psx/libsn.h"
 
+#define DRAW_MODE_COMMAND_HIGH 0xE100
+#define TEXTURED_SPRITE_CODE 0x64
+
+typedef struct DrawModeSpritePacket {
+    u32 tag;
+    u16 tpage, drawModeCode;
+    u8 r0, g0, b0, code;
+    s16 x0, y0;
+    u8 u0, v0;
+    u16 clut;
+    s16 w, h;
+} DrawModeSpritePacket;
+
 typedef struct CdAudioOwner {
     u8 unk00[0x24];
     u32 tick;
@@ -1047,7 +1060,7 @@ void drawSecondaryTextBackgroundTask(void) {
             func_8007240C(-140, 44, 280, 56, 128, 128, 128, 2, &D_800EBFF0[D_8013AF78], 8);
         }
         setSpriteColor(128, 128, 128);
-        func_800A7D8C(-160, -120, 320, 240, 149, 0x3AB0, &D_800EBFF0[D_8013AF78], 8);
+        drawPagedTexturedRectangle(-160, -120, 320, 240, 149, 0x3AB0, &D_800EBFF0[D_8013AF78], 8);
     }
 }
 
@@ -1172,7 +1185,53 @@ void startUnlockNotification(s16 index) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/main_tail_ui", func_800A7D8C);
+void drawPagedTexturedRectangle(s16 x, s16 y, s16 width, s16 height, s16 tpage,
+                   s16 clut, GsOT *ot, u16 depth) {
+    DrawModeSpritePacket *packet = (DrawModeSpritePacket *)0x1F800000;
+    s16 remainingWidth;
+    s16 textureDepth;
+    u16 initialTpage;
+    packet->tag = (sizeof(*packet) / sizeof(u32) - 1) << 24;
+    packet->drawModeCode = DRAW_MODE_COMMAND_HIGH;
+    packet->tpage = tpage;
+    setRGB0(packet, gTexturedSpriteTemplate.r0, gTexturedSpriteTemplate.g0, gTexturedSpriteTemplate.b0);
+    packet->code = TEXTURED_SPRITE_CODE;
+    packet->y0 = y;
+    packet->u0 = 0;
+    packet->v0 = 0;
+    initialTpage = tpage;
+    textureDepth = (initialTpage >> 7) & 3;
+    packet->clut = clut;
+    while (height > 0) {
+        if (height > 256) {
+            packet->h = 256;
+            height -= 256;
+        } else {
+            packet->h = height;
+            height = 0;
+        }
+        remainingWidth = width;
+        packet->x0 = x;
+        while (remainingWidth > 0) {
+            if (remainingWidth > 256) {
+                packet->w = 256;
+                remainingWidth -= 256;
+            } else {
+                packet->w = remainingWidth;
+                remainingWidth = 0;
+            }
+            addTexturedSpritePacket((TexturedSpritePacket *)packet, ot, depth);
+            packet->x0 += 256;
+            switch (textureDepth) {
+            case 0: packet->tpage += 1; break;
+            case 1: packet->tpage += 2; break;
+            case 2: packet->tpage += 4; break;
+            }
+        }
+        packet->tpage = initialTpage + 16;
+        packet->y0 += 256;
+    }
+}
 
 int readHostFile(char *path, char *buffer) {
     int length;

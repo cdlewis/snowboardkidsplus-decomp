@@ -243,7 +243,7 @@ void drawTransformedSpriteByIndex(s32 x, s32 y, s32 index, s32 paletteIndex,
                                   s16 blendMode, s16 pivotX, s16 pivotY,
                                   s16 scaleX, s16 scaleY, s32 rotation,
                                   GsOT *ot, u16 depth);
-void func_800A7D8C(s16 x, s16 y, s16 width, s16 height, s16 tpage,
+void drawPagedTexturedRectangle(s16 x, s16 y, s16 width, s16 height, s16 tpage,
                    s16 clut, GsOT *ot, u16 depth);
 void drawFullScreenTexturedBackground(void);
 void drawBlackScreenTask(void);
