@@ -233,7 +233,7 @@ void updateControllerActuators(u16 controller) {
         D_8013AF00[controller].control = 0;
         D_8013AF00[controller].value = 0;
     } else if (PadInfoMode(controller << 4, 2, 0)) {
-        func_8006BA4C(controller);
+        updateControllerEffectSequence(controller);
     } else {
         updateLegacyControllerActuators(controller);
     }

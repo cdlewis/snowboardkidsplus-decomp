@@ -3366,3 +3366,16 @@ gStateValueHistoryPadding = 0x80011C34; // size:0x4
 drawRegisteredTaskGridSprite = 0x8009B2D8; // type:func
 
 drawCameraFacingTaskVisual = 0x8005AC4C; // type:func
+
+updateControllerEffectSequence = 0x8006BA4C; // type:func
+gControllerEffectSteps0 = 0x8012D294; // type:ControllerEffectStep
+gControllerEffectSteps1 = 0x8012D2A4; // type:ControllerEffectStep
+gControllerEffectSteps2 = 0x8012D2B4; // type:ControllerEffectStep
+gControllerEffectSteps3 = 0x8012D2C4; // type:ControllerEffectStep
+gControllerEffectSteps4 = 0x8012D2DC; // type:ControllerEffectStep
+gControllerEffectSteps5 = 0x8012D2EC; // type:ControllerEffectStep
+gControllerEffectSteps6 = 0x8012D304; // type:ControllerEffectStep
+gControllerEffectSteps7 = 0x8012D314; // type:ControllerEffectStep
+gControllerEffectSteps8 = 0x8012D324; // type:ControllerEffectStep
+gControllerEffectSteps9 = 0x8012D334; // type:ControllerEffectStep
+gControllerEffectDefinitions = 0x8012D36C; // type:ControllerEffectDefinition size:0xCC

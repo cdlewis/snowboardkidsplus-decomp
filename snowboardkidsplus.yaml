@@ -713,6 +713,7 @@ segments:
       - {start: 0x11D36C, type: .data, name: race/effects/player_effects, linker_section: .data.sliding_quad_packet}
       - {start: 0x11D394, type: .data, name: race/effects/player_effects, linker_section: .data.color_cycle_palette}
       - [0x11D3B4, data, color_cycle_palette_tail]
+      - [0x11DA94, .data, io/controller_effects]
       - [0x11DC38, .data, unclassified/graphics_800497B8]
       - [0x11DC60, data, 11DC60]
       - [0x11F0E4, .data, graphics/sprite_templates]
