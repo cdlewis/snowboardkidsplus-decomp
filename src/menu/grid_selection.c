@@ -1,4 +1,16 @@
 #include "panel_tasks_internal.h"
+#include "game/menu/selected_sprite.h"
+
+typedef struct GridSpriteParent {
+    u8 unk00[0x32];
+    s16 selectedIndex;
+    u8 unk34[0x10];
+    const GridSpriteEntry *sprites;
+    const u8 *mapping;
+    u8 unk4C[0xE];
+    u16 count;
+    s8 mode;
+} GridSpriteParent;
 
 const u16 gTaskPanel144x48Text[8] __attribute__((section(".data.task_panel_144x48_text"))) = {
     0xF4, 0xC1, 0x96, 0xB1, 0x9F, 0x98, 0x31, 0
@@ -343,4 +355,41 @@ void drawTaskGridSelectionMarker(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/grid_selection", func_8009B2D8);
+void drawRegisteredTaskGridSprite(void) {
+    Movement2D *position;
+    GridSpriteParent *parent;
+    RegisteredTaskEntry *entry;
+    RegisteredTaskEntry *entries;
+    const GridSpriteEntry *sprite;
+    if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
+    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) { for (;;) {} }
+    if (D_8013AE98->resource14 == 0xFFFF) { for (;;) {} }
+    parent = (GridSpriteParent *)&D_800D9504[D_8013AE98->resource14];
+    if ((u16)(D_8013AE88->data1E % 10U) == 0) {
+        if (D_8013AE98->resource14 == 0xFFFF) { for (;;) {} }
+        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource14];
+        entry = &entries[D_8013AE88->data1E / 10U];
+    } else {
+        if (D_8013AE98->resource16 == 0xFFFF) { for (;;) {} }
+        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource16];
+        entry = &entries[D_8013AE88->data1E / 10U];
+    }
+    if (parent->mapping != 0) {
+        if (entry->command == 99) {
+            entry->task = 0;
+            func_800149A8();
+        } else {
+            if (parent->mode == 1 && parent->selectedIndex != D_8013AE88->data1A) {
+                sprite = func_800736D0(parent->sprites, parent->mapping,
+                    (s16)(D_8013AE88->data1A + parent->count));
+            } else {
+                sprite = func_800736D0(parent->sprites, parent->mapping, (s16)D_8013AE88->data1A);
+            }
+            setSpriteColor(128, 128, 128);
+            func_8006C998((s16)(position->x / 4096), (s16)(position->y / 4096),
+                sprite->sprite, sprite->color, 0, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            entry->flags = 0;
+        }
+    }
+}

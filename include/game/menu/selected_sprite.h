@@ -17,7 +17,18 @@ typedef struct SelectedSpriteChild {
     s32 unk04;
 } SelectedSpriteChild;
 
+/* Six-byte descriptor selected directly or through an optional byte mapping. */
+typedef struct GridSpriteEntry {
+    s16 sprite;
+    u8 color;
+    u8 unk03[3];
+} GridSpriteEntry;
+
 void drawOffsetSelectedTaskSprite(void);
 
 void moveTaskChildrenWithSpacing(s32 mode, GameTask *task, s32 x, s32 y,
                                  s32 speedX, s32 speedY, s32 delay);
+
+const GridSpriteEntry *func_800736D0(const GridSpriteEntry *sprites,
+                                   const u8 *mapping, s16 index);
+void drawRegisteredTaskGridSprite(void);

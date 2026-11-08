@@ -3361,3 +3361,5 @@ startCurrentPlayerDirectionalAnimation = 0x8002DEE8; // type:func
 
 updateStateValueHistoryTask = 0x80089B30; // type:func
 gStateValueHistoryPadding = 0x80011C34; // size:0x4
+
+drawRegisteredTaskGridSprite = 0x8009B2D8; // type:func
