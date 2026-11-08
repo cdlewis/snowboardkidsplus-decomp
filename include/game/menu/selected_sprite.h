@@ -24,6 +24,17 @@ typedef struct GridSpriteEntry {
     u8 unk03[3];
 } GridSpriteEntry;
 
+typedef struct GridSpriteParent {
+    u8 unk00[0x32];
+    s16 selectedIndex;
+    u8 unk34[0x10];
+    const GridSpriteEntry *sprites;
+    const u8 *mapping;
+    u8 unk4C[0xE];
+    u16 count;
+    s8 mode;
+} GridSpriteParent;
+
 void drawOffsetSelectedTaskSprite(void);
 
 void moveTaskChildrenWithSpacing(s32 mode, GameTask *task, s32 x, s32 y,
@@ -32,3 +43,5 @@ void moveTaskChildrenWithSpacing(s32 mode, GameTask *task, s32 x, s32 y,
 const GridSpriteEntry *func_800736D0(const GridSpriteEntry *sprites,
                                    const u8 *mapping, s16 index);
 void drawRegisteredTaskGridSprite(void);
+
+void drawRegisteredTaskGridSpriteWithDefaultBlend(void);

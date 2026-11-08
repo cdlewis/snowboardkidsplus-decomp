@@ -1,17 +1,6 @@
 #include "panel_tasks_internal.h"
 #include "game/menu/selected_sprite.h"
 
-typedef struct GridSpriteParent {
-    u8 unk00[0x32];
-    s16 selectedIndex;
-    u8 unk34[0x10];
-    const GridSpriteEntry *sprites;
-    const u8 *mapping;
-    u8 unk4C[0xE];
-    u16 count;
-    s8 mode;
-} GridSpriteParent;
-
 const u16 gTaskPanel144x48Text[8] __attribute__((section(".data.task_panel_144x48_text"))) = {
     0xF4, 0xC1, 0x96, 0xB1, 0x9F, 0x98, 0x31, 0
 };
