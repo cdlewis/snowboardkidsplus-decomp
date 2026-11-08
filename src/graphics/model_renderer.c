@@ -1,3 +1,5 @@
+#include "psx/scratchpad.h"
+#include "psx/libetc.h"
 #include "render_effects_internal.h"
 
 void emitProjectedFlatTriangle(TriangleScratchVertex *vertices) {
@@ -47,7 +49,7 @@ void emitProjectedGouraudTriangle(TriangleScratchVertex *vertices) {
 }
 
 void emitProjectedTexturedTriangle(TriangleScratchVertex *vertices) {
-    TexturedTriangleScratchpad *scratch = (TexturedTriangleScratchpad *)0x1F800000;
+    TexturedTriangleScratchpad *scratch = (TexturedTriangleScratchpad *)getScratchAddr(0);
     POLY_FT3 *packet = (POLY_FT3 *)GsOUT_PACKET_P;
     if (scratch->fogEnabled) {
         gte_stdp(&scratch->depthCue);
@@ -76,7 +78,7 @@ void emitProjectedTexturedTriangle(TriangleScratchVertex *vertices) {
 }
 
 void emitProjectedGouraudTexturedTriangle(TriangleScratchVertex *vertices) {
-    TexturedQuadScratchpad *scratch = (TexturedQuadScratchpad *)0x1F800000;
+    TexturedQuadScratchpad *scratch = (TexturedQuadScratchpad *)getScratchAddr(0);
     POLY_GT3 *packet = (POLY_GT3 *)GsOUT_PACKET_P;
     if (scratch->fogEnabled) {
         gte_stdp(&scratch->depthCue);
@@ -138,7 +140,7 @@ void emitProjectedFlatQuad(TriangleScratchVertex *vertices) {
 }
 
 void emitProjectedGouraudQuad(TriangleScratchVertex *vertices) {
-    GouraudQuadScratchpad *scratch = (GouraudQuadScratchpad *)0x1F800000;
+    GouraudQuadScratchpad *scratch = (GouraudQuadScratchpad *)getScratchAddr(0);
     POLY_G4 *packet = (POLY_G4 *)GsOUT_PACKET_P;
     if (scratch->fogEnabled) {
         gte_stdp(&scratch->depthCue);
@@ -175,7 +177,7 @@ void emitProjectedGouraudQuad(TriangleScratchVertex *vertices) {
 }
 
 void emitProjectedTexturedQuad(TriangleScratchVertex *vertices) {
-    TexturedQuadScratchpad *scratch = (TexturedQuadScratchpad *)0x1F800000;
+    TexturedQuadScratchpad *scratch = (TexturedQuadScratchpad *)getScratchAddr(0);
     POLY_FT4 *packet = (POLY_FT4 *)GsOUT_PACKET_P;
     if (scratch->fogEnabled) {
         gte_stdp(&scratch->depthCue);
@@ -208,7 +210,7 @@ void emitProjectedTexturedQuad(TriangleScratchVertex *vertices) {
 }
 
 void emitProjectedGouraudTexturedQuad(TriangleScratchVertex *vertices) {
-    TexturedQuadScratchpad *scratch = (TexturedQuadScratchpad *)0x1F800000;
+    TexturedQuadScratchpad *scratch = (TexturedQuadScratchpad *)getScratchAddr(0);
     POLY_GT4 *packet = (POLY_GT4 *)GsOUT_PACKET_P;
     if (scratch->fogEnabled) {
         gte_stdp(&scratch->depthCue);
@@ -274,48 +276,48 @@ void drawIndexedFlatTriangle(void) {
 
 void processGouraudTrianglePrimitive(void) {
     GouraudTrianglePrimitive *primitive = (GouraudTrianglePrimitive *)D_8013B680;
-    *(void (**)(TriangleScratchVertex *))0x1F800004 = emitProjectedGouraudTriangle;
-    ((TriangleScratchVertex *)0x1F800070)->position = D_8013B688[primitive->vertexIndices[0]];
-    ((TriangleScratchVertex *)0x1F800080)->position = D_8013B688[primitive->vertexIndices[1]];
-    ((TriangleScratchVertex *)0x1F800090)->position = D_8013B688[primitive->vertexIndices[2]];
-    ((TriangleScratchVertex *)0x1F800070)->color = primitive->colors[0];
-    ((TriangleScratchVertex *)0x1F800080)->color = primitive->colors[1];
-    ((TriangleScratchVertex *)0x1F800090)->color = primitive->colors[2];
-    func_80053A34((TriangleScratchVertex *)0x1F800070, 0);
+    TRIANGLE_SCRATCHPAD->emitTriangle = emitProjectedGouraudTriangle;
+    TRIANGLE_SCRATCHPAD->vertices[0].position = D_8013B688[primitive->vertexIndices[0]];
+    TRIANGLE_SCRATCHPAD->vertices[1].position = D_8013B688[primitive->vertexIndices[1]];
+    TRIANGLE_SCRATCHPAD->vertices[2].position = D_8013B688[primitive->vertexIndices[2]];
+    TRIANGLE_SCRATCHPAD->vertices[0].color = primitive->colors[0];
+    TRIANGLE_SCRATCHPAD->vertices[1].color = primitive->colors[1];
+    TRIANGLE_SCRATCHPAD->vertices[2].color = primitive->colors[2];
+    func_80053A34(TRIANGLE_SCRATCHPAD->vertices, 0);
 }
 
 void processTexturedTrianglePrimitive(void) {
     TexturedTrianglePrimitive *primitive = (TexturedTrianglePrimitive *)D_8013B680;
-    ((TriangleTextureState *)0x1F800000)->tpage = primitive->uv[1].attribute;
-    ((TriangleTextureState *)0x1F800000)->clut = primitive->uv[0].attribute;
-    ((TriangleTextureState *)0x1F800000)->r = primitive->r;
-    ((TriangleTextureState *)0x1F800000)->g = primitive->g;
-    ((TriangleTextureState *)0x1F800000)->b = primitive->b;
-    ((TriangleTextureState *)0x1F800000)->callback = emitProjectedTexturedTriangle;
-    ((TriangleScratchVertex *)0x1F800070)->position = D_8013B688[primitive->vertexIndices[0]];
-    ((TriangleScratchVertex *)0x1F800080)->position = D_8013B688[primitive->vertexIndices[1]];
-    ((TriangleScratchVertex *)0x1F800090)->position = D_8013B688[primitive->vertexIndices[2]];
-    *(UVPair *)0x1F800078 = primitive->uv[0].coords;
-    *(UVPair *)0x1F800088 = primitive->uv[1].coords;
-    *(UVPair *)0x1F800098 = primitive->uv[2].coords;
-    func_80053A34((TriangleScratchVertex *)0x1F800070, 0);
+    ((TriangleTextureState *)getScratchAddr(0))->tpage = primitive->uv[1].attribute;
+    ((TriangleTextureState *)getScratchAddr(0))->clut = primitive->uv[0].attribute;
+    ((TriangleTextureState *)getScratchAddr(0))->r = primitive->r;
+    ((TriangleTextureState *)getScratchAddr(0))->g = primitive->g;
+    ((TriangleTextureState *)getScratchAddr(0))->b = primitive->b;
+    ((TriangleTextureState *)getScratchAddr(0))->callback = emitProjectedTexturedTriangle;
+    TRIANGLE_SCRATCHPAD->vertices[0].position = D_8013B688[primitive->vertexIndices[0]];
+    TRIANGLE_SCRATCHPAD->vertices[1].position = D_8013B688[primitive->vertexIndices[1]];
+    TRIANGLE_SCRATCHPAD->vertices[2].position = D_8013B688[primitive->vertexIndices[2]];
+    TRIANGLE_SCRATCHPAD->vertices[0].texture.coords = primitive->uv[0].coords;
+    TRIANGLE_SCRATCHPAD->vertices[1].texture.coords = primitive->uv[1].coords;
+    TRIANGLE_SCRATCHPAD->vertices[2].texture.coords = primitive->uv[2].coords;
+    func_80053A34(TRIANGLE_SCRATCHPAD->vertices, 0);
 }
 
 void processTexturedGouraudTrianglePrimitive(void) {
     TexturedGouraudTrianglePrimitive *primitive = (TexturedGouraudTrianglePrimitive *)D_8013B680;
-    ((TriangleTextureState *)0x1F800000)->tpage = primitive->uv[1].attribute;
-    ((TriangleTextureState *)0x1F800000)->clut = primitive->uv[0].attribute;
-    ((TriangleTextureState *)0x1F800000)->callback = emitProjectedGouraudTexturedTriangle;
-    ((TriangleScratchVertex *)0x1F800070)->position = D_8013B688[primitive->vertexIndices[0]];
-    ((TriangleScratchVertex *)0x1F800080)->position = D_8013B688[primitive->vertexIndices[1]];
-    ((TriangleScratchVertex *)0x1F800090)->position = D_8013B688[primitive->vertexIndices[2]];
-    *(UVPair *)0x1F800078 = primitive->uv[0].coords;
-    *(UVPair *)0x1F800088 = primitive->uv[1].coords;
-    *(UVPair *)0x1F800098 = primitive->uv[2].coords;
-    ((TriangleScratchVertex *)0x1F800070)->color = primitive->colors[0];
-    ((TriangleScratchVertex *)0x1F800080)->color = primitive->colors[1];
-    ((TriangleScratchVertex *)0x1F800090)->color = primitive->colors[2];
-    func_80053A34((TriangleScratchVertex *)0x1F800070, 0);
+    ((TriangleTextureState *)getScratchAddr(0))->tpage = primitive->uv[1].attribute;
+    ((TriangleTextureState *)getScratchAddr(0))->clut = primitive->uv[0].attribute;
+    ((TriangleTextureState *)getScratchAddr(0))->callback = emitProjectedGouraudTexturedTriangle;
+    TRIANGLE_SCRATCHPAD->vertices[0].position = D_8013B688[primitive->vertexIndices[0]];
+    TRIANGLE_SCRATCHPAD->vertices[1].position = D_8013B688[primitive->vertexIndices[1]];
+    TRIANGLE_SCRATCHPAD->vertices[2].position = D_8013B688[primitive->vertexIndices[2]];
+    TRIANGLE_SCRATCHPAD->vertices[0].texture.coords = primitive->uv[0].coords;
+    TRIANGLE_SCRATCHPAD->vertices[1].texture.coords = primitive->uv[1].coords;
+    TRIANGLE_SCRATCHPAD->vertices[2].texture.coords = primitive->uv[2].coords;
+    TRIANGLE_SCRATCHPAD->vertices[0].color = primitive->colors[0];
+    TRIANGLE_SCRATCHPAD->vertices[1].color = primitive->colors[1];
+    TRIANGLE_SCRATCHPAD->vertices[2].color = primitive->colors[2];
+    func_80053A34(TRIANGLE_SCRATCHPAD->vertices, 0);
 }
 
 void drawIndexedFlatQuad(void) {
@@ -334,54 +336,54 @@ void drawIndexedFlatQuad(void) {
 void processGouraudQuadPrimitive(void) {
     GouraudQuadPrimitive *primitive = (GouraudQuadPrimitive *)D_8013B680;
     QUAD_SCRATCHPAD->emitQuad = emitProjectedGouraudQuad;
-    ((TriangleScratchVertex *)0x1F800070)->position = D_8013B688[primitive->vertexIndices[0]];
-    ((TriangleScratchVertex *)0x1F800080)->position = D_8013B688[primitive->vertexIndices[1]];
-    ((TriangleScratchVertex *)0x1F800090)->position = D_8013B688[primitive->vertexIndices[2]];
-    ((TriangleScratchVertex *)0x1F8000A0)->position = D_8013B688[primitive->vertexIndices[3]];
-    ((TriangleScratchVertex *)0x1F800070)->color = primitive->colors[0];
-    ((TriangleScratchVertex *)0x1F800080)->color = primitive->colors[1];
-    ((TriangleScratchVertex *)0x1F800090)->color = primitive->colors[2];
-    ((TriangleScratchVertex *)0x1F8000A0)->color = primitive->colors[3];
-    func_800542BC((TriangleScratchVertex *)0x1F800070, 0);
+    QUAD_SCRATCHPAD->vertices[0].position = D_8013B688[primitive->vertexIndices[0]];
+    QUAD_SCRATCHPAD->vertices[1].position = D_8013B688[primitive->vertexIndices[1]];
+    QUAD_SCRATCHPAD->vertices[2].position = D_8013B688[primitive->vertexIndices[2]];
+    QUAD_SCRATCHPAD->vertices[3].position = D_8013B688[primitive->vertexIndices[3]];
+    QUAD_SCRATCHPAD->vertices[0].color = primitive->colors[0];
+    QUAD_SCRATCHPAD->vertices[1].color = primitive->colors[1];
+    QUAD_SCRATCHPAD->vertices[2].color = primitive->colors[2];
+    QUAD_SCRATCHPAD->vertices[3].color = primitive->colors[3];
+    func_800542BC(QUAD_SCRATCHPAD->vertices, 0);
 }
 
 void processTexturedQuadPrimitive(void) {
     TexturedQuadPrimitive *primitive = (TexturedQuadPrimitive *)D_8013B680;
-    ((TriangleTextureState *)0x1F800000)->tpage = primitive->uv[1].attribute;
-    ((TriangleTextureState *)0x1F800000)->clut = primitive->uv[0].attribute;
-    ((TriangleTextureState *)0x1F800000)->r = primitive->r;
-    ((TriangleTextureState *)0x1F800000)->g = primitive->g;
-    ((TriangleTextureState *)0x1F800000)->b = primitive->b;
-    ((TriangleTextureState *)0x1F800000)->callback = emitProjectedTexturedQuad;
-    ((TriangleScratchVertex *)0x1F800070)->position = D_8013B688[primitive->vertexIndices[0]];
-    ((TriangleScratchVertex *)0x1F800080)->position = D_8013B688[primitive->vertexIndices[1]];
-    ((TriangleScratchVertex *)0x1F800090)->position = D_8013B688[primitive->vertexIndices[2]];
-    ((TriangleScratchVertex *)0x1F8000A0)->position = D_8013B688[primitive->vertexIndices[3]];
-    *(UVPair *)0x1F800078 = primitive->uv[0].coords;
-    *(UVPair *)0x1F800088 = primitive->uv[1].coords;
-    *(UVPair *)0x1F800098 = primitive->uv[2].coords;
-    *(UVPair *)0x1F8000A8 = primitive->uv[3].coords;
-    func_800542BC((TriangleScratchVertex *)0x1F800070, 0);
+    ((TriangleTextureState *)getScratchAddr(0))->tpage = primitive->uv[1].attribute;
+    ((TriangleTextureState *)getScratchAddr(0))->clut = primitive->uv[0].attribute;
+    ((TriangleTextureState *)getScratchAddr(0))->r = primitive->r;
+    ((TriangleTextureState *)getScratchAddr(0))->g = primitive->g;
+    ((TriangleTextureState *)getScratchAddr(0))->b = primitive->b;
+    ((TriangleTextureState *)getScratchAddr(0))->callback = emitProjectedTexturedQuad;
+    QUAD_SCRATCHPAD->vertices[0].position = D_8013B688[primitive->vertexIndices[0]];
+    QUAD_SCRATCHPAD->vertices[1].position = D_8013B688[primitive->vertexIndices[1]];
+    QUAD_SCRATCHPAD->vertices[2].position = D_8013B688[primitive->vertexIndices[2]];
+    QUAD_SCRATCHPAD->vertices[3].position = D_8013B688[primitive->vertexIndices[3]];
+    QUAD_SCRATCHPAD->vertices[0].texture.coords = primitive->uv[0].coords;
+    QUAD_SCRATCHPAD->vertices[1].texture.coords = primitive->uv[1].coords;
+    QUAD_SCRATCHPAD->vertices[2].texture.coords = primitive->uv[2].coords;
+    QUAD_SCRATCHPAD->vertices[3].texture.coords = primitive->uv[3].coords;
+    func_800542BC(QUAD_SCRATCHPAD->vertices, 0);
 }
 
 void processTexturedGouraudQuadPrimitive(void) {
     TexturedGouraudQuadPrimitive *primitive = (TexturedGouraudQuadPrimitive *)D_8013B680;
-    ((TriangleTextureState *)0x1F800000)->tpage = primitive->uv[1].attribute;
-    ((TriangleTextureState *)0x1F800000)->clut = primitive->uv[0].attribute;
-    ((TriangleTextureState *)0x1F800000)->callback = emitProjectedGouraudTexturedQuad;
-    ((TriangleScratchVertex *)0x1F800070)->position = D_8013B688[primitive->vertexIndices[0]];
-    ((TriangleScratchVertex *)0x1F800080)->position = D_8013B688[primitive->vertexIndices[1]];
-    ((TriangleScratchVertex *)0x1F800090)->position = D_8013B688[primitive->vertexIndices[2]];
-    ((TriangleScratchVertex *)0x1F8000A0)->position = D_8013B688[primitive->vertexIndices[3]];
-    *(UVPair *)0x1F800078 = primitive->uv[0].coords;
-    *(UVPair *)0x1F800088 = primitive->uv[1].coords;
-    *(UVPair *)0x1F800098 = primitive->uv[2].coords;
-    *(UVPair *)0x1F8000A8 = primitive->uv[3].coords;
-    ((TriangleScratchVertex *)0x1F800070)->color = primitive->colors[0];
-    ((TriangleScratchVertex *)0x1F800080)->color = primitive->colors[1];
-    ((TriangleScratchVertex *)0x1F800090)->color = primitive->colors[2];
-    ((TriangleScratchVertex *)0x1F8000A0)->color = primitive->colors[3];
-    func_800542BC((TriangleScratchVertex *)0x1F800070, 0);
+    ((TriangleTextureState *)getScratchAddr(0))->tpage = primitive->uv[1].attribute;
+    ((TriangleTextureState *)getScratchAddr(0))->clut = primitive->uv[0].attribute;
+    ((TriangleTextureState *)getScratchAddr(0))->callback = emitProjectedGouraudTexturedQuad;
+    QUAD_SCRATCHPAD->vertices[0].position = D_8013B688[primitive->vertexIndices[0]];
+    QUAD_SCRATCHPAD->vertices[1].position = D_8013B688[primitive->vertexIndices[1]];
+    QUAD_SCRATCHPAD->vertices[2].position = D_8013B688[primitive->vertexIndices[2]];
+    QUAD_SCRATCHPAD->vertices[3].position = D_8013B688[primitive->vertexIndices[3]];
+    QUAD_SCRATCHPAD->vertices[0].texture.coords = primitive->uv[0].coords;
+    QUAD_SCRATCHPAD->vertices[1].texture.coords = primitive->uv[1].coords;
+    QUAD_SCRATCHPAD->vertices[2].texture.coords = primitive->uv[2].coords;
+    QUAD_SCRATCHPAD->vertices[3].texture.coords = primitive->uv[3].coords;
+    QUAD_SCRATCHPAD->vertices[0].color = primitive->colors[0];
+    QUAD_SCRATCHPAD->vertices[1].color = primitive->colors[1];
+    QUAD_SCRATCHPAD->vertices[2].color = primitive->colors[2];
+    QUAD_SCRATCHPAD->vertices[3].color = primitive->colors[3];
+    func_800542BC(QUAD_SCRATCHPAD->vertices, 0);
 }
 
 INCLUDE_ASM("asm/nonmatchings/graphics/model_renderer", func_800559F4);
@@ -587,7 +589,7 @@ void drawProjectedIndexedColoredLitGouraudTriangle(void) {
 void drawProjectedIndexedTexturedTriangle(void) {
     TexturedTrianglePrimitive *primitive = (TexturedTrianglePrimitive *)D_8013B680;
     POLY_FT3 *packet = (POLY_FT3 *)GsOUT_PACKET_P;
-    TexturedTriangleScratchpad *scratch = (TexturedTriangleScratchpad *)0x1F800000;
+    TexturedTriangleScratchpad *scratch = (TexturedTriangleScratchpad *)getScratchAddr(0);
     gte_ldv3(&D_8013B688[primitive->vertexIndices[0]], &D_8013B688[primitive->vertexIndices[1]], &D_8013B688[primitive->vertexIndices[2]]);
     gte_rtpt();
     gte_stsxy3(&packet->x0, &packet->x1, &packet->x2);
@@ -619,7 +621,7 @@ void drawProjectedIndexedTexturedTriangle(void) {
 void drawProjectedIndexedLitTexturedTriangle(void) {
     ModelLitTexturedTriangle *primitive = (ModelLitTexturedTriangle *)D_8013B680;
     POLY_FT3 *packet = (POLY_FT3 *)GsOUT_PACKET_P;
-    TexturedTriangleScratchpad *scratch = (TexturedTriangleScratchpad *)0x1F800000;
+    TexturedTriangleScratchpad *scratch = (TexturedTriangleScratchpad *)getScratchAddr(0);
     gte_ldv3(&D_8013B688[primitive->vertexIndices[0]], &D_8013B688[primitive->vertexIndices[1]], &D_8013B688[primitive->vertexIndices[2]]);
     gte_rtpt();
     gte_stsxy3(&packet->x0, &packet->x1, &packet->x2);
@@ -655,7 +657,7 @@ void drawProjectedIndexedLitTexturedTriangle(void) {
 void drawProjectedIndexedLitTexturedGouraudTriangle(void) {
     ModelLitTexturedGouraudTriangle *primitive = (ModelLitTexturedGouraudTriangle *)D_8013B680;
     POLY_GT3 *packet = (POLY_GT3 *)GsOUT_PACKET_P;
-    LitTexturedTriangleScratchpad *scratch = (LitTexturedTriangleScratchpad *)0x1F800000;
+    LitTexturedTriangleScratchpad *scratch = (LitTexturedTriangleScratchpad *)getScratchAddr(0);
     gte_ldv3(&D_8013B688[primitive->vertices[0].vertexIndex], &D_8013B688[primitive->vertices[1].vertexIndex], &D_8013B688[primitive->vertices[2].vertexIndex]);
     gte_rtpt();
     gte_stsxy3(&packet->x0, &packet->x1, &packet->x2);
@@ -703,7 +705,7 @@ void drawProjectedIndexedLitTexturedGouraudTriangle(void) {
 void drawProjectedIndexedGouraudTexturedTriangle(void) {
     TexturedGouraudTrianglePrimitive *primitive = (TexturedGouraudTrianglePrimitive *)D_8013B680;
     POLY_GT3 *packet = (POLY_GT3 *)GsOUT_PACKET_P;
-    TexturedTriangleScratchpad *scratch = (TexturedTriangleScratchpad *)0x1F800000;
+    TexturedTriangleScratchpad *scratch = (TexturedTriangleScratchpad *)getScratchAddr(0);
     gte_ldv3(&D_8013B688[primitive->vertexIndices[0]], &D_8013B688[primitive->vertexIndices[1]], &D_8013B688[primitive->vertexIndices[2]]);
     gte_rtpt();
     gte_stsxy3(&packet->x0, &packet->x1, &packet->x2);
@@ -739,7 +741,7 @@ void drawProjectedIndexedGouraudTexturedTriangle(void) {
 void drawProjectedIndexedLitGouraudTexturedTriangle(void) {
     ModelLitGouraudTexturedTriangle *primitive = (ModelLitGouraudTexturedTriangle *)D_8013B680;
     POLY_GT3 *packet = (POLY_GT3 *)GsOUT_PACKET_P;
-    TexturedTriangleScratchpad *scratch = (TexturedTriangleScratchpad *)0x1F800000;
+    TexturedTriangleScratchpad *scratch = (TexturedTriangleScratchpad *)getScratchAddr(0);
     gte_ldv3(&D_8013B688[primitive->vertexIndices[0]], &D_8013B688[primitive->vertexIndices[1]], &D_8013B688[primitive->vertexIndices[2]]);
     gte_rtpt();
     gte_stsxy3(&packet->x0, &packet->x1, &packet->x2);
@@ -847,7 +849,7 @@ void drawProjectedIndexedGouraudQuad(void) {
 void drawProjectedIndexedTexturedQuad(void) {
     TexturedQuadPrimitive *primitive = (TexturedQuadPrimitive *)D_8013B680;
     POLY_FT4 *packet = (POLY_FT4 *)GsOUT_PACKET_P;
-    IndexedTexturedQuadScratchpad *scratch = (IndexedTexturedQuadScratchpad *)0x1F800000;
+    IndexedTexturedQuadScratchpad *scratch = (IndexedTexturedQuadScratchpad *)getScratchAddr(0);
     gte_ldv3(&D_8013B688[primitive->vertexIndices[0]], &D_8013B688[primitive->vertexIndices[1]], &D_8013B688[primitive->vertexIndices[2]]);
     gte_rtpt();
     gte_stsxy3(&packet->x0, &packet->x1, &packet->x2);
@@ -884,7 +886,7 @@ void drawProjectedIndexedTexturedQuad(void) {
 void drawProjectedIndexedTexturedGouraudQuad(void) {
     TexturedGouraudQuadPrimitive *primitive = (TexturedGouraudQuadPrimitive *)D_8013B680;
     POLY_GT4 *packet = (POLY_GT4 *)GsOUT_PACKET_P;
-    IndexedTexturedQuadScratchpad *scratch = (IndexedTexturedQuadScratchpad *)0x1F800000;
+    IndexedTexturedQuadScratchpad *scratch = (IndexedTexturedQuadScratchpad *)getScratchAddr(0);
     gte_ldv3(&D_8013B688[primitive->vertexIndices[0]], &D_8013B688[primitive->vertexIndices[1]], &D_8013B688[primitive->vertexIndices[2]]);
     gte_rtpt();
     gte_stsxy3(&packet->x0, &packet->x1, &packet->x2);

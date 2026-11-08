@@ -5,6 +5,7 @@ import argparse
 import re
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 import build
@@ -38,11 +39,26 @@ def find_unit(function, requested_unit=None):
 
 
 def generate_context(source):
-    """Preprocess PSX declarations without compiler-specific attributes."""
-    return subprocess.check_output(
-        [build.CPP, *build.CPP_FLAGS, "-DM2CTX", "-DNON_MATCHING",
-         "-D__attribute__(x)=", "-P", str(source)],
-        cwd=ROOT, text=True)
+    """Keep project macros and declarations, without assembly or attributes."""
+    with tempfile.TemporaryDirectory(prefix="skp-m2ctx-") as temporary:
+        includes = Path(temporary)
+        # Context needs only the no-op M2CTX forms, even before split generation
+        # or while a clean build has removed the generated include_asm.h.
+        (includes / "include_asm.h").write_text(
+            "#pragma once\n#define INCLUDE_ASM(FOLDER, NAME)\n"
+            "#define INCLUDE_RODATA(FOLDER, NAME)\n")
+        command = [build.CPP, *build.CPP_FLAGS, "-I" + str(includes),
+                   "-DM2CTX", "-DNON_MATCHING", "-D__attribute__(x)=", "-P"]
+        stock = subprocess.check_output(command + ["-dM", "-x", "c", "-"],
+                                        cwd=ROOT, input="", text=True)
+        macros = subprocess.check_output(command + ["-dM", str(source)], cwd=ROOT, text=True)
+        declarations = subprocess.check_output(command + [str(source)], cwd=ROOT, text=True)
+        predefined = set(stock.splitlines())
+        # -dM preserves unexpanded macro bodies, including storage annotations.
+        # Those annotation macros are unnecessary in already-expanded C.
+        project_macros = [line for line in macros.splitlines()
+                          if line not in predefined and "__attribute__" not in line]
+        return "\n".join(project_macros) + "\n\n" + declarations
 
 
 def main():

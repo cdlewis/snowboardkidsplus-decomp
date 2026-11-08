@@ -1,3 +1,5 @@
+#include "psx/scratchpad.h"
+#include "psx/libetc.h"
 #include "../scene/scene_event_tasks_internal.h"
 
 void startUnlockNotification(s16 index) {
@@ -13,7 +15,7 @@ void startUnlockNotification(s16 index) {
 
 void drawPagedTexturedRectangle(s16 x, s16 y, s16 width, s16 height, s16 tpage,
                    s16 clut, GsOT *ot, u16 depth) {
-    DrawModeSpritePacket *packet = (DrawModeSpritePacket *)0x1F800000;
+    DrawModeSpritePacket *packet = (DrawModeSpritePacket *)getScratchAddr(0);
     s16 remainingWidth;
     s16 textureDepth;
     u16 initialTpage;

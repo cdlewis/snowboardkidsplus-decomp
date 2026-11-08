@@ -1,3 +1,9 @@
+// PSX scratchpad RAM; fixed hardware storage.
+scratchpad = 0x1F800000; // size:0x400
+
+drawRotatingQuadTrailTask = 0x80068D1C; // type:func
+gRotatingQuadTrailVertices = 0x8012CA74; // type:SVECTOR size:0x20 defined:true
+
 drawRegisteredTaskGridSpriteWithDefaultBlend = 0x800318C4; // type:func
 reloadTaskPlayerModel = 0x80082A30; // type:func
 drawProjectedIndexedTexturedGouraudQuad = 0x8005801C; // type:func

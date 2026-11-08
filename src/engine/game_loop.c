@@ -1,3 +1,5 @@
+#include "psx/scratchpad.h"
+#include "psx/libetc.h"
 #define FRAME_COUNTER_GP_ADDRESSING
 #define TASK_ABSOLUTE_ADDRESSING
 #define GRAPHICS_GP_ADDRESSING
@@ -15,6 +17,18 @@
 #include "game/engine/linear_random.h"
 #include "psx/libetc.h"
 #include "game/engine/system_runtime.h"
+
+/* Reused workspace views published by initializeGameSystems. */
+typedef struct GameScratchpad {
+    VECTOR vectors[2];
+    SVECTOR shortVectors[2];
+    MATRIX matrices[2];
+    u8 unk70[0x50];
+    u8 unkC0[0x50];
+    MATRIX matrixPool[16];
+} GameScratchpad;
+
+#define GAME_SCRATCHPAD ((GameScratchpad *)getScratchAddr(0))
 
 GsOT D_800EBFF0[2] __attribute__((section(".data.render_state"))) = {0};
 GsOT D_800EC018[2] __attribute__((section(".data.render_state"))) = {0};
@@ -160,17 +174,17 @@ void initializeGameSystems(void) {
     u8 matrixIndex;
     RECT *clip;
 
-    D_8013AF88 = (VECTOR *)0x1F800000;
-    D_8013AF8C = (VECTOR *)0x1F800010;
-    D_8013AF90 = (SVECTOR *)0x1F800020;
-    D_8013AF94 = (SVECTOR *)0x1F800028;
-    D_8013AF98 = (MATRIX *)0x1F800030;
-    D_8013AF9C = (MATRIX *)0x1F800050;
-    D_8013AFA0 = (u8 *)0x1F800070;
-    D_8013AFA4 = (u8 *)0x1F8000C0;
+    D_8013AF88 = &GAME_SCRATCHPAD->vectors[0];
+    D_8013AF8C = &GAME_SCRATCHPAD->vectors[1];
+    D_8013AF90 = &GAME_SCRATCHPAD->shortVectors[0];
+    D_8013AF94 = &GAME_SCRATCHPAD->shortVectors[1];
+    D_8013AF98 = &GAME_SCRATCHPAD->matrices[0];
+    D_8013AF9C = &GAME_SCRATCHPAD->matrices[1];
+    D_8013AFA0 = GAME_SCRATCHPAD->unk70;
+    D_8013AFA4 = GAME_SCRATCHPAD->unkC0;
     matrixIndex = 0;
     do {
-        D_800EC170[matrixIndex] = (MATRIX *)(0x1F800110 + matrixIndex * sizeof(MATRIX));
+        D_800EC170[matrixIndex] = &GAME_SCRATCHPAD->matrixPool[matrixIndex];
         matrixIndex += 1;
     } while (matrixIndex < 16);
     D_8013AF7A = 0x140;

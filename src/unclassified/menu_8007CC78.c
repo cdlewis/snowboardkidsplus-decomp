@@ -1,3 +1,5 @@
+#include "psx/scratchpad.h"
+#include "psx/libetc.h"
 #include "../menu/save_record_tasks_internal.h"
 #include "game/io/dat_resources.h"
 
@@ -508,7 +510,7 @@ void sortLitObjectWithDrawArea(GsDOBJ2 *object, u16 index, RECT *bounds) {
     {
         u32 depthIndex = index;
         GsSortObject4(object, &D_800EBFF0[D_8013AF78], (depthIndex & 1) + 1,
-                      (u32 *)0x1F800000);
+                      (u32 *)getScratchAddr(0));
         if (bounds->w >= 0 && bounds->h >= 0) {
             addDrawAreaPacket(bounds->x, bounds->y, bounds->w, bounds->h,
                               &D_800EBFF0[D_8013AF78], litObjectDrawAreaDepths[depthIndex]);

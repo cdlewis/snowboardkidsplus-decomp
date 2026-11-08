@@ -191,9 +191,18 @@ typedef struct DISPENV {
 
 #define setlen(p, length) (((P_TAG *)(p))->len = (u8)(length))
 #define setcode(p, value) (((P_TAG *)(p))->code = (u8)(value))
+#define setPolyFT4(p) (setlen(p, 9), setcode(p, POLY_FT4_CODE))
+#define getcode(p) (((P_TAG *)(p))->code)
+#define setSemiTrans(p, enable) \
+    ((enable) ? setcode(p, getcode(p) | 2) : setcode(p, getcode(p) & ~2))
 #define getaddr(p) (((P_TAG *)(p))->addr)
 #define setaddr(p, address) (((P_TAG *)(p))->addr = (u32)(address))
 #define addPrim(ot, p) (setaddr(p, getaddr(ot)), setaddr(ot, p))
+#define setUV4(p, u_0, v_0, u_1, v_1, u_2, v_2, u_3, v_3) \
+    ((p)->u0 = (u_0), (p)->v0 = (v_0), \
+     (p)->u1 = (u_1), (p)->v1 = (v_1), \
+     (p)->u2 = (u_2), (p)->v2 = (v_2), \
+     (p)->u3 = (u_3), (p)->v3 = (v_3))
 #define setRGB0(p, r, g, b) ((p)->r0 = (r), (p)->g0 = (g), (p)->b0 = (b))
 #define setRGB1(p, r, g, b) ((p)->r1 = (r), (p)->g1 = (g), (p)->b1 = (b))
 #define setRGB2(p, r, g, b) ((p)->r2 = (r), (p)->g2 = (g), (p)->b2 = (b))
@@ -205,6 +214,11 @@ typedef struct DISPENV {
 #define setXY3(p, x_0, y_0, x_1, y_1, x_2, y_2) \
     ((p)->x0 = (x_0), (p)->y0 = (y_0), (p)->x1 = (x_1), (p)->y1 = (y_1), \
      (p)->x2 = (x_2), (p)->y2 = (y_2))
+#define setXY4(p, x_0, y_0, x_1, y_1, x_2, y_2, x_3, y_3) \
+    ((p)->x0 = (x_0), (p)->y0 = (y_0), \
+     (p)->x1 = (x_1), (p)->y1 = (y_1), \
+     (p)->x2 = (x_2), (p)->y2 = (y_2), \
+     (p)->x3 = (x_3), (p)->y3 = (y_3))
 #define getlen(p) ((u8)(((P_TAG *)(p))->len))
 #define getTPage(tp, abr, x, y) \
     ((((tp) & 3) << 7) | (((abr) & 3) << 5) | (((y) & 0x100) >> 4) | \

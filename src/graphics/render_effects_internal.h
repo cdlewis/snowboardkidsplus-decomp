@@ -1,5 +1,7 @@
 #pragma once
 
+#include "psx/scratchpad.h"
+#include "psx/libetc.h"
 /* Original unit addressing policy; include before public headers. */
 #include "common.h"
 #include "game/engine/angles.h"
@@ -65,16 +67,18 @@ typedef struct GouraudQuadPrimitive {
     TriangleColor colors[4];
     u16 vertexIndices[4];
 } GouraudQuadPrimitive;
+typedef struct UVPair { s8 u, v; } UVPair;
+
 typedef struct TriangleScratchVertex {
     SVECTOR position;
     union {
         s32 unk08;
+        UVPair coords;
         struct { u8 u, v; u16 attribute; } uv;
     } texture;
     TriangleColor color;
 } TriangleScratchVertex;
 
-typedef struct UVPair { s8 u, v; } UVPair;
 typedef struct TextureUV { UVPair coords; u16 attribute; } TextureUV;
 typedef struct TexturedTrianglePrimitive {
     u32 command;
@@ -154,8 +158,8 @@ typedef struct PlayerCollisionRegion {
     s16 minHeight, maxHeight;
     s16 pitch, yaw;
 } PlayerCollisionRegion;
-#define TRIANGLE_SCRATCHPAD ((TriangleScratchpad *)0x1F800000)
-#define QUAD_SCRATCHPAD ((QuadScratchpad *)0x1F800000)
+#define TRIANGLE_SCRATCHPAD ((TriangleScratchpad *)getScratchAddr(0))
+#define QUAD_SCRATCHPAD ((QuadScratchpad *)getScratchAddr(0))
 
 /* Indexed flat triangle in the current model primitive stream. */
 typedef struct ModelFlatTriangle {
@@ -803,6 +807,9 @@ extern VECTOR gPlayerPairedQuadOffsets[2]
 extern SVECTOR gPlayerTripleQuadOffsets[3]
     __attribute__((section(".data.player_triple_quad_offsets")));
 
+extern SVECTOR gRotatingQuadTrailVertices[4]
+    __attribute__((section(".data.rotating_quad_trail_vertices")));
+
 extern POLY_FT4 gQuadShrinkPacket __attribute__((section(".data.quad_shrink")));
 extern SVECTOR gQuadShrinkVertices[4] __attribute__((section(".data.quad_shrink")));
 
@@ -943,7 +950,7 @@ void func_800542BC(TriangleScratchVertex *vertices, s32 flags);
 void drawMovingLineTask(void);
 void drawFlickeringDotsTask(void);
 
-void func_80068D1C(void);
+void drawRotatingQuadTrailTask(void);
 void drawShrinkingTexturedQuadTask(void);
 void drawLoweringQuadStripTask(void);
 void drawSlidingQuadTask(void);

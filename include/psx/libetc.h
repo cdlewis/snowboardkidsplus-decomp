@@ -2,6 +2,9 @@
 
 #include "decomp/types.h"
 
+/* Psy-Q LIBETC.H: word-indexed access to fixed scratchpad hardware RAM. */
+#define getScratchAddr(offset) ((u32 *)(0x1F800000 + (offset) * 4))
+
 typedef void (*DmaCallback)(void);
 DmaCallback DMACallback(s32 channel, DmaCallback callback);
 

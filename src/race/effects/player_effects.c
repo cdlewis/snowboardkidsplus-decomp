@@ -1,4 +1,9 @@
+#include "psx/scratchpad.h"
+#include "psx/libetc.h"
 #include "../../graphics/render_effects_internal.h"
+
+/* Equal-channel color assignment for grayscale primitives. */
+#define setGray0(p, shade) ((p)->r0 = (p)->g0 = (p)->b0 = (shade))
 
 const FadingTextGlyphBanks gFadingTextGlyphBanks
     __attribute__((section(".rodata.fading_text_glyph_banks"))) = {
@@ -37,6 +42,12 @@ VECTOR gPlayerPairedQuadOffsets[2]
 SVECTOR gPlayerTripleQuadOffsets[3]
     __attribute__((section(".data.player_triple_quad_offsets"))) = {
     {-40, 0, 0, 0}, {40, 0, 0, 0}, {0, 0, 0, 0}
+};
+
+SVECTOR gRotatingQuadTrailVertices[4]
+    __attribute__((section(".data.rotating_quad_trail_vertices"))) = {
+    {-108, -8, 0, 0}, {108, -8, 0, 0},
+    {-108, 8, 0, 0}, {108, 8, 0, 0}
 };
 
 POLY_FT4 gQuadShrinkPacket __attribute__((section(".data.quad_shrink"))) = {
@@ -163,7 +174,7 @@ void drawPlayerSnapshotTrailTask(void) {
     s32 p, flag;
     PlayerSnapshotTrailResource *resource;
     POLY_FT4 *packet;
-    MATRIX *scratch = (MATRIX *)0x1F800000;
+    MATRIX *scratch = (MATRIX *)getScratchAddr(0);
     s32 depth;
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
@@ -268,7 +279,7 @@ void drawFallingParticlesTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    scratch = (SPRT_8 *)0x1F800000;
+    scratch = (SPRT_8 *)getScratchAddr(0);
     resource = (FallingParticleResource *)&D_800D9504[D_8013AE88->resource14];
     packet = (SPRT_8 *)GsOUT_PACKET_P;
     setcode(scratch, SPRT_8_CODE);
@@ -689,13 +700,76 @@ void drawRisingTexturedStripTask(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_80068D1C);
+void drawRotatingQuadTrailTask(void) {
+    s32 i, j;
+    s32 rotation;
+    POLY_FT4 *packet;
+    RotatingQuadTrailResource *resource;
+    QuadScaleScratchpad *scratch;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    scratch = (QuadScaleScratchpad *)getScratchAddr(0);
+    resource = (RotatingQuadTrailResource *)&D_800D9504[D_8013AE88->resource14];
+    packet = (POLY_FT4 *)GsOUT_PACKET_P;
+    for (i = 7; i > 0; i--) {
+        resource->angles[i] = resource->angles[i - 1];
+        resource->scales[i] = resource->scales[i - 1];
+    }
+    if (resource->countdown >= 0) {
+        resource->angles[0] = (resource->countdown * resource->countdown) << 8;
+        resource->scales[0] = resource->countdown * 200 + 0x1000;
+        rotation = resource->countdown << 8;
+        resource->angles[1] = rotation + 128;
+    } else {
+        resource->angles[0] = 0;
+        resource->scales[0] = 0x1000;
+    }
+    for (i = 0; i < 8; i++) {
+        scratch->rotation.vx = 0;
+        scratch->rotation.vy = 0;
+        scratch->rotation.vz = resource->angles[i];
+        scratch->scale.vx = scratch->scale.vy = scratch->scale.vz = resource->scales[i];
+        RotMatrix(&scratch->rotation, &scratch->matrix);
+        ScaleMatrix(&scratch->matrix, &scratch->scale);
+        for (j = 0; j < 4; j++) {
+            ApplyMatrixSV(&scratch->matrix, &gRotatingQuadTrailVertices[j], &scratch->vertices[j]);
+        }
+        /* Initialize the complete DMA tag, including its link address. */
+        packet->tag = TEXTURED_QUAD_PACKET_WORDS << 24;
+        setcode(packet, POLY_FT4_CODE);
+        setSemiTrans(packet, 1);
+        setUV4(packet, 0, 0, 215, 0, 0, 15, 215, 15);
+        if (i & 2) {
+            packet->tpage = getTPage(0, 0, 960, 0);
+            setGray0(packet, 255 - i * 16);
+            packet->clut = getClut(944, 240);
+        } else {
+            setGray0(packet, 128 - i * 16);
+            packet->tpage = getTPage(0, 1, 960, 0);
+            packet->clut = getClut(944, 240);
+        }
+        setXY4(packet,
+            scratch->vertices[0].vx, scratch->vertices[0].vy,
+            scratch->vertices[1].vx, scratch->vertices[1].vy,
+            scratch->vertices[2].vx, scratch->vertices[2].vy,
+            scratch->vertices[3].vx, scratch->vertices[3].vy);
+        addPrim(D_8013AF6C, packet);
+        packet++;
+    }
+    GsOUT_PACKET_P = (u32)packet;
+    if (--resource->countdown < -7) {
+        setCurrentTaskCallback(drawRisingTexturedStripTask);
+        resource->countdown = 0;
+    }
+}
 
 void createRotatingQuadTrailTask(void) {
     RotatingQuadTrailResource *resource;
     s32 i;
 
-    func_80014930(&gGameTasks[4], func_80068D1C);
+    func_80014930(&gGameTasks[4], drawRotatingQuadTrailTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     resource = (RotatingQuadTrailResource *)&D_800D9504[D_8013AE8C->resource14];
     resource->countdown = 30;
@@ -733,13 +807,13 @@ void drawShrinkingTexturedQuadTask(void) {
     QuadTransitionResource *resource;
     QuadScaleScratchpad *scratch;
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    scratch = (QuadScaleScratchpad *)0x1F800000;
+    scratch = (QuadScaleScratchpad *)getScratchAddr(0);
     resource = (QuadTransitionResource *)&D_800D9504[D_8013AE88->resource14];
     packet = (POLY_FT4 *)GsOUT_PACKET_P;
     scratch->rotation.vx = scratch->rotation.vy = scratch->rotation.vz = 0;
     scratch->scale.vx = scratch->scale.vy = scratch->scale.vz = resource->frames * 1000 + 0x1000;
-    RotMatrix((SVECTOR *)0x1F800020, &scratch->matrix);
-    ScaleMatrix(&scratch->matrix, (VECTOR *)0x1F800028);
+    RotMatrix(&scratch->rotation, &scratch->matrix);
+    ScaleMatrix(&scratch->matrix, &scratch->scale);
     for (i = 0; i < 4; i++) {
         ApplyMatrixSV(&scratch->matrix, &resource->vertices[i], &scratch->vertices[i]);
     }
@@ -1056,7 +1130,7 @@ void uploadTimImageAndPaletteAt(u32 *tim, s32 x, s32 y, s32 clutX, s32 clutY) {
 
 void drawFadingText(FadingTextResource *resource) {
     FadingTextGlyphBanks tables = gFadingTextGlyphBanks;
-    DrawModeSpritePacket *scratch = (DrawModeSpritePacket *)0x1F800000, *packet;
+    DrawModeSpritePacket *scratch = (DrawModeSpritePacket *)getScratchAddr(0), *packet;
     const s8 *text, *glyph;
     s32 table, index;
     scratch->tag = (sizeof(*scratch) / 4 - 1) << 24;

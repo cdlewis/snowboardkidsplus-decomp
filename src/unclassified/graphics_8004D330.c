@@ -1,3 +1,5 @@
+#include "psx/scratchpad.h"
+#include "psx/libetc.h"
 #include "../graphics/render_effects_internal.h"
 #include "../race/race_internal.h"
 
@@ -186,7 +188,7 @@ void drawFlickeringDotsTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
     resource = (FlickeringDotsResource *)&D_800D9504[D_8013AE88->resource14];
     packet = (TILE_1 *)GsOUT_PACKET_P;
-    scratch = (TILE_1 *)0x1F800000;
+    scratch = (TILE_1 *)getScratchAddr(0);
     if (D_8013AFAA & 0x400) {
         if (D_8013AE88->data18 != D_8013AF78) return;
     } else if (D_8013AE88->data18 != 0) return;

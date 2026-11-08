@@ -1,3 +1,5 @@
+#include "psx/scratchpad.h"
+#include "psx/libetc.h"
 #include "../../menu/panel_tasks_internal.h"
 
 u16 playerModelDrawAreaDepths[4] __attribute__((section(".data.player_model_draw_area_depths"))) = {
@@ -17,7 +19,7 @@ void sortPlayerModelWithDrawArea(u16 playerIndex, u16 depthIndex, RECT *bounds) 
         GsSetLightMatrix(&matrix);
         GsGetLs(object->coord2, &matrix);
         GsSetLsMatrix(&matrix);
-        GsSortObject4(object, &D_800EBFF0[D_8013AF78], depthIndex, (u32 *)0x1F800000);
+        GsSortObject4(object, &D_800EBFF0[D_8013AF78], depthIndex, (u32 *)getScratchAddr(0));
     }
     if (bounds->w >= 0 && bounds->h >= 0) {
         addDrawAreaPacket(bounds->x, bounds->y, bounds->w, bounds->h,

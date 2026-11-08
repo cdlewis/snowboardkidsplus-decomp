@@ -1,3 +1,5 @@
+#include "psx/scratchpad.h"
+#include "psx/libetc.h"
 #include "render_effects_internal.h"
 
 u8 gUppercaseGlyphMetrics[52] __attribute__((section(".data.uppercase_glyph_metrics"))) = {
@@ -568,7 +570,7 @@ INCLUDE_ASM("asm/nonmatchings/graphics/sprite_draw", func_8006F248);
 
 void drawUppercaseProportionalText(s16 x, s16 y, s16 count, const char *text, s16 palette,
                    s16 blend, GsOT *ot, u16 depth) {
-    DrawModeSpritePacket *packet = (DrawModeSpritePacket *)0x1F800000;
+    DrawModeSpritePacket *packet = (DrawModeSpritePacket *)getScratchAddr(0);
     s16 i;
     s8 glyph;
     packet->tag = (sizeof(*packet) / sizeof(u32) - 1) << 24;

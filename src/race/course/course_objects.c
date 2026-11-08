@@ -1,3 +1,5 @@
+#include "psx/scratchpad.h"
+#include "psx/libetc.h"
 #include "../../graphics/render_effects_internal.h"
 
 typedef struct PlacedObjectBounceVisual {
@@ -268,15 +270,15 @@ INCLUDE_ASM("asm/nonmatchings/race/course/course_objects", func_80059290);
 void drawTaskObject(u16 index) {
     GsDOBJ2 *object;
     GsDOBJ2 *objects;
-    gObjectSortSavedStackPointer = SetSp(0x1F8003FC);
+    gObjectSortSavedStackPointer = SetSp((u32)getScratchAddr((sizeof(scratchpad) - sizeof(u32)) / sizeof(u32)));
     objects = D_80129A80;
     object = &objects[index];
     GsGetLs(object->coord2, D_8013AF98);
     GsSetLsMatrix(D_8013AF98);
     if (func_80059254()) {
-        GsSortObject4(object, &D_800EC0B8[D_8013AF78], 2, (u32 *)0x1F800000);
+        GsSortObject4(object, &D_800EC0B8[D_8013AF78], 2, (u32 *)getScratchAddr(0));
     } else {
-        GsSortObject4(object, &D_800EC018[D_8013AF78], 2, (u32 *)0x1F800000);
+        GsSortObject4(object, &D_800EC018[D_8013AF78], 2, (u32 *)getScratchAddr(0));
     }
     SetSp(gObjectSortSavedStackPointer);
 }
@@ -284,15 +286,15 @@ void drawTaskObject(u16 index) {
 void drawTaskObjectAlternateLayer(u16 index) {
     GsDOBJ2 *object;
     GsDOBJ2 *objects;
-    gAlternateObjectSortSavedStackPointer = SetSp(0x1F8003FC);
+    gAlternateObjectSortSavedStackPointer = SetSp((u32)getScratchAddr((sizeof(scratchpad) - sizeof(u32)) / sizeof(u32)));
     objects = D_80129A80;
     object = &objects[index];
     GsGetLs(object->coord2, D_8013AF98);
     GsSetLsMatrix(D_8013AF98);
     if (func_80059254()) {
-        GsSortObject4(object, &D_800EC130[D_8013AF78], 2, (u32 *)0x1F800000);
+        GsSortObject4(object, &D_800EC130[D_8013AF78], 2, (u32 *)getScratchAddr(0));
     } else {
-        GsSortObject4(object, &D_800EC090[D_8013AF78], 2, (u32 *)0x1F800000);
+        GsSortObject4(object, &D_800EC090[D_8013AF78], 2, (u32 *)getScratchAddr(0));
     }
     SetSp(gAlternateObjectSortSavedStackPointer);
 }

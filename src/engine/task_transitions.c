@@ -1,3 +1,5 @@
+#include "psx/scratchpad.h"
+#include "psx/libetc.h"
 #include "common.h"
 #define TASK_ABSOLUTE_ADDRESSING
 #include "game/engine/task.h"
@@ -127,7 +129,7 @@ void sortLitObject(GsDOBJ2 *object) {
     GsSetLightMatrix(D_8013AF98);
     GsGetLs(object->coord2, D_8013AF98);
     GsSetLsMatrix(D_8013AF98);
-    GsSortObject4(object, &D_800EC018[D_8013AF78], 2, (u32 *)0x1F800000);
+    GsSortObject4(object, &D_800EC018[D_8013AF78], 2, (u32 *)getScratchAddr(0));
 }
 
 INCLUDE_ASM("asm/nonmatchings/engine/task_transitions", func_8001B4EC);
