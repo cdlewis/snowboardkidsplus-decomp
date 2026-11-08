@@ -550,11 +550,11 @@ void drawFallingPairedVisualTask(void) {
     resource->coordinate.coord.t[2] = base->coord.t[2];
     resource->framePosition = 0;
     setTaskVisualFrame((TaskVisualResource *)resource, gFallingPairedVisualFrames, 0x1E00);
-    func_8005AC4C((TaskVisualResource *)resource, 0);
+    drawCameraFacingTaskVisual((TaskVisualResource *)resource, 0);
     resource->coordinate.coord.t[1] += 0x49;
     resource->framePosition = gFallingPairedVisualAnimation[resource->animationTick >> 1] << 8;
     setTaskVisualFrame((TaskVisualResource *)resource, gFallingPairedVisualFrames, 0x1E00);
-    func_8005AC4C((TaskVisualResource *)resource, 0);
+    drawCameraFacingTaskVisual((TaskVisualResource *)resource, 0);
 }
 
 void updateFallingPairedVisualTask(void) {

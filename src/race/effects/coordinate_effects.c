@@ -8,7 +8,7 @@ void drawPlayerFlagTaskVisual(TaskVisualResource *resource) {
     resource->coordinate.coord.t[1] = D_80120E90[D_8013AE88->data18].worldCoordinate.coord.t[1] - 80;
     resource->coordinate.coord.t[2] = D_80120E90[D_8013AE88->data18].worldCoordinate.coord.t[2] + D_800EB22C.vz;
     setTaskVisualFrame(resource, gPlayerFlagVisualFrames, 0x1800);
-    func_8005AC4C(resource, 1);
+    drawCameraFacingTaskVisual(resource, 1);
     func_80059290(resource);
 }
 
@@ -85,7 +85,7 @@ void updatePlayerSideVisualTask(void) {
     resource->coordinate.coord.t[1] = D_80120E90[D_8013AE88->data18].worldCoordinate.coord.t[1] - 18;
     resource->coordinate.coord.t[2] = D_80120E90[D_8013AE88->data18].worldCoordinate.coord.t[2] + D_800EB22C.vz;
     setTaskVisualFrame((TaskVisualResource *)resource, gPlayerSideVisualFrames, 0x2000);
-    func_8005AC4C((TaskVisualResource *)resource, 1);
+    drawCameraFacingTaskVisual((TaskVisualResource *)resource, 1);
     if (!D_8013AFD3) {
         if (!func_80059290((TaskVisualResource *)resource)) {
             func_800149A8();
@@ -100,7 +100,7 @@ void updateOneShotTaskVisual(void) {
     }
     resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
     setTaskVisualFrame(resource, D_80124304, 0x2000);
-    func_8005AC4C(resource, 1);
+    drawCameraFacingTaskVisual(resource, 1);
     if (!D_8013AFD3) {
         if (!func_80059290(resource)) {
             func_800149A8();
@@ -846,7 +846,7 @@ void updateBouncingTaskVisual(void) {
         resource->coordinate.coord.t[2] = resource->position.z >> 8;
     }
     setTaskVisualFrame(resource, D_80124354, 0x1A00);
-    func_8005AC4C(resource, 1);
+    drawCameraFacingTaskVisual(resource, 1);
     if (!D_8013AFD3 && resource->bounceCount == 2) {
         resource->unkDC = 30;
         setCurrentTaskCallback(updateAcceleratingTaskVisualCountdown);
@@ -860,7 +860,7 @@ void updateAcceleratingTaskVisualCountdown(void) {
     }
     resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
     setTaskVisualFrame(resource, D_80124354, 0x1A00);
-    func_8005AC4C(resource, 1);
+    drawCameraFacingTaskVisual(resource, 1);
     if (!D_8013AFD3) {
         if (resource->unkDC >= 5) {
             resource->unkC8 += 8;

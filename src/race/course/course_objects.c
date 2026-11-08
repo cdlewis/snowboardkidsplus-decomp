@@ -516,7 +516,46 @@ void setTaskVisualFrame(TaskVisualResource *resource, TaskVisualFrame *frames, s
     resource->frame = &frames[index];
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/course/course_objects", func_8005AC4C);
+void drawCameraFacingTaskVisual(TaskVisualResource *resource, u8 mode) {
+    u16 i;
+    POLY_FT4 *poly;
+    long depthCue, flags;
+    long depth;
+    if (mode == 0) {
+        D_8013AF90->vx = 0;
+        D_8013AF90->vy = D_801241E8[func_80059254()].yaw;
+        D_8013AF90->vz = 0;
+    } else {
+        D_8013AF90->vx = D_801241E8[func_80059254()].pitch;
+        D_8013AF90->vy = D_801241E8[func_80059254()].yaw;
+        D_8013AF90->vz = 0;
+    }
+    RotMatrixYXZ(D_8013AF90, D_8013AF98);
+    ScaleMatrix(D_8013AF98, (VECTOR *)&resource->scaleX);
+    for (i = 0; i < 4; i++) {
+        ApplyMatrixSV(D_8013AF98, (SVECTOR *)&resource->vertices[i], (SVECTOR *)&resource->transformedVertices[i]);
+    }
+    resource->coordinate.flg = 0;
+    GsGetLs(&resource->coordinate, D_8013AF98);
+    GsSetLsMatrix(D_8013AF98);
+    poly = &D_8012967C;
+    poly->u0 = resource->frame->u;
+    poly->v0 = resource->frame->v;
+    poly->u1 = (u8)(resource->frame->u - 1) + resource->frame->width;
+    poly->v1 = resource->frame->v;
+    poly->u2 = resource->frame->u;
+    poly->v2 = (u8)(resource->frame->v - 1) + resource->frame->height;
+    poly->u3 = (u8)(resource->frame->u - 1) + resource->frame->width;
+    poly->v3 = (u8)(resource->frame->v - 1) + resource->frame->height;
+    setRGB0(poly, resource->r0, resource->g0, resource->b0);
+    setcode(poly, resource->code);
+    poly->tpage = resource->frame->tpage;
+    poly->clut = resource->frame->clut;
+    depth = RotTransPers4((SVECTOR *)&resource->transformedVertices[0], (SVECTOR *)&resource->transformedVertices[1], (SVECTOR *)&resource->transformedVertices[2], (SVECTOR *)&resource->transformedVertices[3], (long *)&poly->x0, (long *)&poly->x1, (long *)&poly->x2, (long *)&poly->x3, &depthCue, &flags);
+    if (depth >= 0 && flags >= 0) {
+        addCopiedPrimitive(&D_8013AF6C[depth >> 2], (u32 *)poly);
+    }
+}
 
 void initializePickupVisualTask(void) {
     TaskVisualResource *resource;
@@ -740,7 +779,7 @@ void updatePlacedObjectBounceTask(void) {
         }
     }
     visual->coordinate.coord.t[1] = resource->groundCoordinate.coord.t[1] + (visual->height >> 8);
-    func_8005AC4C((TaskVisualResource *)visual, 0);
+    drawCameraFacingTaskVisual((TaskVisualResource *)visual, 0);
     if (D_8013AE88->data1C == 4) setCurrentTaskCallback(func_8005BF00);
 }
 

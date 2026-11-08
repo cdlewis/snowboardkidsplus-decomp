@@ -76,6 +76,9 @@ void func_800BF2C8(u32 value);
 MATRIX *RotMatrix(SVECTOR *rotation, MATRIX *matrix);
 VECTOR *ApplyMatrix(MATRIX *matrix, SVECTOR *vector, VECTOR *result);
 SVECTOR *ApplyMatrixSV(MATRIX *matrix, SVECTOR *vector, SVECTOR *result);
+long RotTransPers4(SVECTOR *v0, SVECTOR *v1, SVECTOR *v2, SVECTOR *v3,
+                   long *sxy0, long *sxy1, long *sxy2, long *sxy3,
+                   long *depthCue, long *flags);
 MATRIX *RotMatrixZYX(SVECTOR *rotation, MATRIX *matrix);
 
 MATRIX *RotMatrix(SVECTOR *rotation, MATRIX *matrix);
