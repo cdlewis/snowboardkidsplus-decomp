@@ -496,7 +496,6 @@ s32 calculateRaceTimeDifference(const RaceTime *a, const RaceTime *b, RaceTime *
 void drawRaceTime(const RaceTime *value, s32 x, s32 y, s16 mode, GsOT *ot, u16 depth);
 
 /* Only the first byte of this shared state is used by this task flow. */
-extern u8 D_80120F90[];
 extern const char D_80010A94[];
 extern const char gAutoPilotLabel[] __attribute__((section(".rodata.auto_pilot_label"), aligned(4)));
 
@@ -626,7 +625,7 @@ void func_80039564(TaskResourceRecord *resource);
 void func_80039B34(TaskResourceRecord *resource);
 void drawTimeRecordListRows(TimeRecordListResource *resource);
 void drawStatsMenuValues(TaskResourceRecord *resource);
-void func_8003AD48(TaskResourceRecord *resource);
+void drawStatsMenuMoneyValues(TaskResourceRecord *resource);
 void drawStatsRecordRows(TaskResourceRecord *resource);
 void drawStatsMenuMoneyLabels(StatsMenuFadeResource *resource);
 void waitForStatsScoreCountStartTask(void);

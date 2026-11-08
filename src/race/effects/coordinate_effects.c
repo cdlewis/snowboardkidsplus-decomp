@@ -4,9 +4,9 @@ void drawPlayerFlagTaskVisual(TaskVisualResource *resource) {
     PlayerCamera *cameras = D_801241E8;
     D_800EB22C.vx = rcos(-cameras[func_80059254()].yaw) * 40 / 4096;
     D_800EB22C.vz = rsin(-cameras[func_80059254()].yaw) * 40 / 4096;
-    resource->coordinate.coord.t[0] = D_80120E90[D_8013AE88->data18].worldCoordinate.coord.t[0] + D_800EB22C.vx;
-    resource->coordinate.coord.t[1] = D_80120E90[D_8013AE88->data18].worldCoordinate.coord.t[1] - 80;
-    resource->coordinate.coord.t[2] = D_80120E90[D_8013AE88->data18].worldCoordinate.coord.t[2] + D_800EB22C.vz;
+    resource->coordinate.coord.t[0] = gRacePlayers[D_8013AE88->data18].worldCoordinate.coord.t[0] + D_800EB22C.vx;
+    resource->coordinate.coord.t[1] = gRacePlayers[D_8013AE88->data18].worldCoordinate.coord.t[1] - 80;
+    resource->coordinate.coord.t[2] = gRacePlayers[D_8013AE88->data18].worldCoordinate.coord.t[2] + D_800EB22C.vz;
     setTaskVisualFrame(resource, gPlayerFlagVisualFrames, 0x1800);
     drawCameraFacingTaskVisual(resource, 1);
     func_80059290(resource);
@@ -29,7 +29,7 @@ void updatePlayerFlagTaskVisual(void) {
         while (1) {}
     }
     resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
-    if (D_80120E90[D_8013AE88->data18].unk946) {
+    if (gRacePlayers[D_8013AE88->data18].unk946) {
         if (!D_8013AE88->data1A) {
             resource->unkC6 = 0x600;
             resource->unkC8 = 0x100;
@@ -65,7 +65,7 @@ void initializePlayerSideVisualTask(void) {
     resource->framePosition = 0;
     func_800183FC(D_8013AE88->data18, 1, 0x600, 0x20);
     func_8002E5A0(D_8013AE88->data18, 12);
-    if (D_80120E90[D_8013AE88->data18].unk128 & 0x400) {
+    if (gRacePlayers[D_8013AE88->data18].unk128 & 0x400) {
         resource->radius = -52;
     } else {
         resource->radius = 52;
@@ -79,11 +79,11 @@ void updatePlayerSideVisualTask(void) {
         while (1) {}
     }
     resource = (OrbitingPlayerVisualResource *)&D_800D9504[D_8013AE88->resource14];
-    D_800EB22C.vx = rsin((s16)D_80120E90[D_8013AE88->data18].unk110) * resource->radius / 4096;
-    D_800EB22C.vz = rcos((s16)D_80120E90[D_8013AE88->data18].unk110) * resource->radius / 4096;
-    resource->coordinate.coord.t[0] = D_80120E90[D_8013AE88->data18].worldCoordinate.coord.t[0] + D_800EB22C.vx;
-    resource->coordinate.coord.t[1] = D_80120E90[D_8013AE88->data18].worldCoordinate.coord.t[1] - 18;
-    resource->coordinate.coord.t[2] = D_80120E90[D_8013AE88->data18].worldCoordinate.coord.t[2] + D_800EB22C.vz;
+    D_800EB22C.vx = rsin((s16)gRacePlayers[D_8013AE88->data18].unk110) * resource->radius / 4096;
+    D_800EB22C.vz = rcos((s16)gRacePlayers[D_8013AE88->data18].unk110) * resource->radius / 4096;
+    resource->coordinate.coord.t[0] = gRacePlayers[D_8013AE88->data18].worldCoordinate.coord.t[0] + D_800EB22C.vx;
+    resource->coordinate.coord.t[1] = gRacePlayers[D_8013AE88->data18].worldCoordinate.coord.t[1] - 18;
+    resource->coordinate.coord.t[2] = gRacePlayers[D_8013AE88->data18].worldCoordinate.coord.t[2] + D_800EB22C.vz;
     setTaskVisualFrame((TaskVisualResource *)resource, gPlayerSideVisualFrames, 0x2000);
     drawCameraFacingTaskVisual((TaskVisualResource *)resource, 1);
     if (!D_8013AFD3) {
@@ -154,7 +154,7 @@ void updateExpandingCoordinateEffectTask(void) {
             resource->scale.vz += 0x40;
             for (i = 0; i < D_8013AFD2; i++) {
                 addPlayerFlagsIfWithinRadius(&resource->position, resource->scale.vx * 24, 0x80, i);
-                D_80120E90[i].unk0F4 = D_8013AE88->data18;
+                gRacePlayers[i].unk0F4 = D_8013AE88->data18;
             }
         } else {
             resource->scale.vx -= 0x80;
@@ -204,7 +204,7 @@ void initializePlayerState23CoordinateEffectTask(void) {
     resource = (ExpandingCoordinateEffectResource *)&D_800D9504[D_8013AE88->resource14];
     GsInitCoordinate2(0, &resource->parent);
     GsInitCoordinate2(&resource->parent, &resource->coordinate);
-    players = D_80120E90;
+    players = gRacePlayers;
     resource->selectedIndex = players[D_8013AE88->data18].unk92E;
     resource->rotation.vx = 0;
     resource->rotation.vy = players[D_8013AE88->data18].unk110;
@@ -225,7 +225,7 @@ void updatePlayerState23CoordinateEffectTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
     resource = (ExpandingCoordinateEffectResource *)&D_800D9504[D_8013AE88->resource14];
     if (!D_8013AFD3) {
-        RacePlayer *players = D_80120E90;
+        RacePlayer *players = gRacePlayers;
         resource->position.x = players[D_8013AE88->data18].x;
         resource->position.y = players[D_8013AE88->data18].y;
         resource->position.z = players[D_8013AE88->data18].z;
@@ -246,7 +246,7 @@ void updatePlayerState23CoordinateEffectTask(void) {
         drawTaskObject(13);
     }
     if (!D_8013AFD3) {
-        RacePlayer *players = D_80120E90;
+        RacePlayer *players = gRacePlayers;
         if (players[D_8013AE88->data18].unk12C != 0x17) {
             players[D_8013AE88->data18].isActive = 1;
             func_800183FC(D_8013AE88->data18, 1, 0x301, 0x20);
@@ -309,7 +309,7 @@ void updatePlayerScaledObjectTask(void) {
     RacePlayer *players;
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
     resource = (PlayerEffectResource *)&D_800D9504[D_8013AE88->resource14];
-    players = D_80120E90;
+    players = gRacePlayers;
     resource->coordinate.coord.t[0] = players[D_8013AE88->data18].worldCoordinate.coord.t[0];
     resource->coordinate.coord.t[1] = players[D_8013AE88->data18].worldCoordinate.coord.t[1];
     resource->coordinate.coord.t[2] = players[D_8013AE88->data18].worldCoordinate.coord.t[2];
@@ -382,7 +382,7 @@ void updatePlayerCoordinateEffectTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
     resource = (PlayerEffectResource *)&D_800D9504[D_8013AE88->resource14];
     if (!D_8013AFD3) {
-        players = D_80120E90;
+        players = gRacePlayers;
         if (players[D_8013AE88->data18].unk12C == 0x1B) {
             resource->coordinate.coord.t[0] = players[D_8013AE88->data18].worldCoordinate.coord.t[0];
             resource->coordinate.coord.t[1] = players[D_8013AE88->data18].worldCoordinate.coord.t[1];
@@ -430,12 +430,12 @@ void initializePlayerVisualHistory(TaskVisualResource *resource, VECTOR *vectors
     resource->unkC6 = 0;
     resource->unkC8 = 0;
     resource->framePosition = 0;
-    if (D_80120E90[D_8013AE88->data18].unk128 & 0x400) {
-        resource->unkD8 = (s16)D_80120E90[D_8013AE88->data18].unk110 + 0x800;
+    if (gRacePlayers[D_8013AE88->data18].unk128 & 0x400) {
+        resource->unkD8 = (s16)gRacePlayers[D_8013AE88->data18].unk110 + 0x800;
     } else {
-        resource->unkD8 = (s16)D_80120E90[D_8013AE88->data18].unk110;
+        resource->unkD8 = (s16)gRacePlayers[D_8013AE88->data18].unk110;
     }
-    players = D_80120E90;
+    players = gRacePlayers;
     resource->coordinate.coord.t[0] = players[D_8013AE88->data18].worldCoordinate.coord.t[0];
     resource->coordinate.coord.t[1] = players[D_8013AE88->data18].worldCoordinate.coord.t[1] - 18;
     resource->coordinate.coord.t[2] = players[D_8013AE88->data18].worldCoordinate.coord.t[2];
@@ -517,7 +517,7 @@ void updateHomingTaskVisualMovement(TaskVisualResource *resource, VECTOR *histor
     player = func_80046228(&resource->position, distance, resource->unkD8, D_8013AE88->data18, &angle);
     resource->unkE0 = player;
     if (player != -1) {
-        D_80120E90[player].unk946 = 1;
+        gRacePlayers[player].unk946 = 1;
         angle = (angle - resource->unkD8) & 0xFFF;
         if (angle > 0x800) angle -= 0x1000;
         if (angle > (s16)maxTurn) angle = maxTurn;
@@ -541,7 +541,7 @@ void checkTaskVisualOtherPlayerCollision(TaskVisualResource *resource, s16 flags
     RacePlayer *player;
     for (i = 0; i < D_8013AFD2; i++) {
         if (i != D_8013AE88->data18) {
-            player = &D_80120E90[i];
+            player = &gRacePlayers[i];
             if (player->unk946 != 0) {
                 if (addPlayerFlagsIfWithinRadius(&resource->position, 0xF00, flags, i) != 0) {
                     player->unk0F4 = D_8013AE88->data18;
@@ -800,14 +800,14 @@ void initializeBouncingTaskVisual(void) {
     resource->code = POLY_FT4_CODE;
     resource->unkC8 = 0;
     resource->framePosition = 0;
-    if (D_80120E90[D_8013AE88->data18].unk128 & 0x400) {
-        resource->unkD8 = (s16)D_80120E90[D_8013AE88->data18].unk110;
+    if (gRacePlayers[D_8013AE88->data18].unk128 & 0x400) {
+        resource->unkD8 = (s16)gRacePlayers[D_8013AE88->data18].unk110;
     } else {
-        resource->unkD8 = (s16)D_80120E90[D_8013AE88->data18].unk110 + 0x800;
+        resource->unkD8 = (s16)gRacePlayers[D_8013AE88->data18].unk110 + 0x800;
     }
     D_800EB22C.vx = rsin(resource->unkD8) / 64;
     D_800EB22C.vz = rcos(resource->unkD8) / 64;
-    players = D_80120E90;
+    players = gRacePlayers;
     resource->coordinate.coord.t[0] = players[D_8013AE88->data18].worldCoordinate.coord.t[0] + D_800EB22C.vx;
     resource->coordinate.coord.t[1] = players[D_8013AE88->data18].worldCoordinate.coord.t[1] - 18;
     resource->coordinate.coord.t[2] = players[D_8013AE88->data18].worldCoordinate.coord.t[2] + D_800EB22C.vz;
@@ -932,44 +932,44 @@ void initializeVisualTrailTask(void) {
 INCLUDE_ASM("asm/nonmatchings/race/effects/coordinate_effects", func_80048340);
 
 void initPlayerTimerTask(void) {
-    PlayerTimerState *timer = &D_80120E90[D_8013AE88->data18].timer;
+    PlayerTimerState *timer = &gRacePlayers[D_8013AE88->data18].timer;
 
     GsInitCoordinate2(0, &timer->coordinate);
     timer->unk60 = 0;
-    D_80120E90[D_8013AE88->data18].unk0FE = 1;
+    gRacePlayers[D_8013AE88->data18].unk0FE = 1;
     setCurrentTaskCallback(updatePlayerTimerTask);
 }
 
 void updatePlayerTimerTask(void) {
     if (!D_8013AFD3) {
-        if (D_80120E90[D_8013AE88->data18].unk128 & 0x3040) {
-            D_80120E90[D_8013AE88->data18].unk0FC = 0;
+        if (gRacePlayers[D_8013AE88->data18].unk128 & 0x3040) {
+            gRacePlayers[D_8013AE88->data18].unk0FC = 0;
         }
-        if (D_80120E90[D_8013AE88->data18].unk0FC != 0) {
-            D_80120E90[D_8013AE88->data18].unk0FC--;
+        if (gRacePlayers[D_8013AE88->data18].unk0FC != 0) {
+            gRacePlayers[D_8013AE88->data18].unk0FC--;
         }
-        if (D_80120E90[D_8013AE88->data18].unk0FC == 0) {
-            if (!D_80120E90[D_8013AE88->data18].unk008 &&
+        if (gRacePlayers[D_8013AE88->data18].unk0FC == 0) {
+            if (!gRacePlayers[D_8013AE88->data18].unk008 &&
                 gControllerEffectStates[D_8013AE88->data18].effect == 13 &&
-                !(D_80120E90[D_8013AE88->data18].unk128 & 0x2000)) {
+                !(gRacePlayers[D_8013AE88->data18].unk128 & 0x2000)) {
                 D_8013AF08[D_8013AE88->data18] = 0;
             }
             setCurrentTaskCallback(fadeOutPlayerTimerTask);
-        } else if (D_80120E90[D_8013AE88->data18].timer.unk60 < 0x1000) {
-            D_80120E90[D_8013AE88->data18].timer.unk60 += 0x100;
+        } else if (gRacePlayers[D_8013AE88->data18].timer.unk60 < 0x1000) {
+            gRacePlayers[D_8013AE88->data18].timer.unk60 += 0x100;
         }
     }
 }
 
 void fadeOutPlayerTimerTask(void) {
     if (!D_8013AFD3) {
-        if (D_80120E90[D_8013AE88->data18].unk0FC == 0) {
-            D_80120E90[D_8013AE88->data18].timer.unk60 -= 0x200;
-            if (D_80120E90[D_8013AE88->data18].timer.unk60 > 0) {
+        if (gRacePlayers[D_8013AE88->data18].unk0FC == 0) {
+            gRacePlayers[D_8013AE88->data18].timer.unk60 -= 0x200;
+            if (gRacePlayers[D_8013AE88->data18].timer.unk60 > 0) {
                 return;
             }
-            D_80120E90[D_8013AE88->data18].timer.unk60 = 0;
-            D_80120E90[D_8013AE88->data18].unk0FE = 0;
+            gRacePlayers[D_8013AE88->data18].timer.unk60 = 0;
+            gRacePlayers[D_8013AE88->data18].unk0FE = 0;
         }
         func_800149A8();
     }
@@ -1039,9 +1039,9 @@ void updateRisingPlayerEffectTask(void) {
             setCurrentTaskCallback(func_80049404);
             return;
         }
-        resource->coordinate.coord.t[0] = D_80120E90[D_8013AE88->data1A].worldCoordinate.coord.t[0];
-        resource->coordinate.coord.t[1] = D_80120E90[D_8013AE88->data1A].worldCoordinate.coord.t[1] + resource->offset.y;
-        resource->coordinate.coord.t[2] = D_80120E90[D_8013AE88->data1A].worldCoordinate.coord.t[2];
+        resource->coordinate.coord.t[0] = gRacePlayers[D_8013AE88->data1A].worldCoordinate.coord.t[0];
+        resource->coordinate.coord.t[1] = gRacePlayers[D_8013AE88->data1A].worldCoordinate.coord.t[1] + resource->offset.y;
+        resource->coordinate.coord.t[2] = gRacePlayers[D_8013AE88->data1A].worldCoordinate.coord.t[2];
         if (resource->scale.vx < 0x1000) {
             resource->scale.vx += 0x100;
             resource->scale.vy += 0x100;

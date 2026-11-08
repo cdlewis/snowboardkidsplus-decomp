@@ -149,7 +149,7 @@ void initializeTaskMenuFade(void) {
     }
     D_8013AE88->resource14 = allocateTaskResource();
     resource = (TaskMenuFadeResource *)&D_800D9504[D_8013AE88->resource14];
-    resource->unk00 = D_80120F90[0];
+    resource->unk00 = gRacePlayers[0].unk100[0];
     resource->brightness = 0;
     resource->secondaryBrightness = 0;
     setCurrentTaskCallback(fadeInLapTimeLabelTask);
@@ -163,8 +163,8 @@ void drawHitCountPanel(TaskResourceRecord *record) {
     } else {
         setSpriteColor(128, 128, 128);
     }
-    func_8006DFB4(-76, -28, 2, 0, D_80120E90[0].unk95E, 1, -1, &D_800EBFF0[D_8013AF78], 1);
-    sprintf(text, gHitCountTotalFormat, D_80120E90[0].unk960);
+    func_8006DFB4(-76, -28, 2, 0, gRacePlayers[0].scoreAttackPointTotal, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+    sprintf(text, gHitCountTotalFormat, gRacePlayers[0].scoreAttackPointTarget);
     drawLimitedText8x8(-84, -20, 1, gHitCountMarker, 6, -1, &D_800EBFF0[D_8013AF78], 1);
     drawLimitedText8x8(-60, -20, 10, text, 6, -1, &D_800EBFF0[D_8013AF78], 1);
     if (D_8013B18D) {
@@ -289,7 +289,7 @@ void transferHitPrizeMoneyTask(void) {
             amount = 8;
         }
     }
-    D_80120E90[0].unk010 += amount;
+    gRacePlayers[0].money += amount;
     resource->unk08 -= amount;
     amount = resource->unk0A;
     if (amount >= 8) {
@@ -297,7 +297,7 @@ void transferHitPrizeMoneyTask(void) {
             amount = 8;
         }
     }
-    D_80120E90[0].unk010 += amount;
+    gRacePlayers[0].money += amount;
     resource->unk0A -= amount;
     amount = resource->unk0C;
     if (amount >= 8) {
@@ -305,12 +305,12 @@ void transferHitPrizeMoneyTask(void) {
             amount = 8;
         }
     }
-    D_80120E90[0].unk010 += amount;
+    gRacePlayers[0].money += amount;
     resource->unk0C -= amount;
-    if (D_80120E90[0].unk010 > 999999) {
-        D_80120E90[0].unk010 = 999999;
+    if (gRacePlayers[0].money > 999999) {
+        gRacePlayers[0].money = 999999;
     }
-    D_80130BF0[0] = D_80120E90[0].unk010;
+    D_80130BF0[0] = gRacePlayers[0].money;
     if (resource->unk08 == 0 && resource->unk0A == 0 && resource->unk0C == 0) {
         playSoundEffect(0, 0x700, 0x20);
         resource->timer = 20;
@@ -453,16 +453,16 @@ void initializeTaskMenuFadeIn(void) {
         resource->unk0C = 100;
     }
     if (D_8013B18D) {
-        resource->unk08 = D_80120E90[0].unk95E;
+        resource->unk08 = gRacePlayers[0].scoreAttackPointTotal;
     } else {
-        resource->unk08 = D_80120E90[0].unk95E * 50;
-        if (D_80120E90[0].unk95E == D_80120E90[0].unk960) {
+        resource->unk08 = gRacePlayers[0].scoreAttackPointTotal * 50;
+        if (gRacePlayers[0].scoreAttackPointTotal == gRacePlayers[0].scoreAttackPointTarget) {
             resource->unk0E = 1;
             resource->unk0A = 1000;
         }
     }
-    resource->unk00 = D_80120E90[0].unk100[0];
-    D_80120E90[0].unk010 = D_80130BF0[0];
+    resource->unk00 = gRacePlayers[0].unk100[0];
+    gRacePlayers[0].money = D_80130BF0[0];
     setCurrentTaskCallback(updateTaskMenuFadeIn);
 }
 
@@ -587,30 +587,30 @@ void countRaceResultsMoneyTask(void) {
     if (amount >= 8 && !(D_8013AEE8[0] & 0xB0)) {
         amount = 8;
     }
-    D_80120E90[0].unk010 += amount;
+    gRacePlayers[0].money += amount;
     resource->timeBonus -= amount;
     amount = resource->scoreBonus;
     if (amount >= 8 && !(D_8013AEE8[0] & 0xB0)) {
         amount = 8;
     }
-    D_80120E90[0].unk010 += amount;
+    gRacePlayers[0].money += amount;
     resource->scoreBonus -= amount;
     amount = resource->bonusTimer;
     if (amount >= 8 && !(D_8013AEE8[0] & 0xB0)) {
         amount = 8;
     }
-    D_80120E90[0].unk010 += amount;
+    gRacePlayers[0].money += amount;
     resource->bonusTimer -= amount;
     amount = resource->displayTimer;
     if (amount >= 8 && !(D_8013AEE8[0] & 0xB0)) {
         amount = 8;
     }
-    D_80120E90[0].unk010 += amount;
+    gRacePlayers[0].money += amount;
     resource->displayTimer -= amount;
-    if (D_80120E90[0].unk010 > 999999) {
-        D_80120E90[0].unk010 = 999999;
+    if (gRacePlayers[0].money > 999999) {
+        gRacePlayers[0].money = 999999;
     }
-    D_80130BF0[0] = D_80120E90[0].unk010;
+    D_80130BF0[0] = gRacePlayers[0].money;
     if (resource->scoreBonus == 0 && resource->timeBonus == 0 && resource->bonusTimer == 0 && resource->displayTimer == 0) {
         playSoundEffect(0, 0x700, 0x20);
         resource->timer = 20;
@@ -778,14 +778,14 @@ void initializeRaceResultsTask(void) {
         resource->timeBonus = 0;
     } else {
         resource->timeBonus = (resource->difference.minutes * 60 + resource->difference.seconds) * 20;
-        if (D_80120E90[0].unk95A == D_80120E90[0].unk95C) {
+        if (gRacePlayers[0].collectedCourseCoinMarkerCount == gRacePlayers[0].totalCourseCoinMarkerCount) {
             resource->hasBonus = 1;
             resource->bonusTimer = 300;
         }
     }
-    resource->scoreBonus = D_80120E90[0].unk95A * 10;
-    resource->unk00 = D_80120E90[0].unk100[0];
-    D_80120E90[0].unk010 = D_80130BF0[0];
+    resource->scoreBonus = gRacePlayers[0].collectedCourseCoinMarkerCount * 10;
+    resource->unk00 = gRacePlayers[0].unk100[0];
+    gRacePlayers[0].money = D_80130BF0[0];
     setCurrentTaskCallback(fadeInRaceResultsTask);
 }
 
@@ -804,21 +804,49 @@ void drawStatsMenuValues(TaskResourceRecord *record) {
     if (D_8013B18D) {
         drawLimitedText8x8(-108, 8, 10, gHitCountTimeOutLabel, 4, -1, &D_800EBFF0[D_8013AF78], 1);
     }
-    sprintf(text, gResultValueFormat, D_80120E90[0].unk0E2);
+    sprintf(text, gResultValueFormat, gRacePlayers[0].trickAttackPointTotal);
     length = strlen(text);
     x = -80;
-    if (D_80120E90[0].unk0E2 >= 10) x = -84;
-    if (D_80120E90[0].unk0E2 >= 100) x = -88;
-    if (D_80120E90[0].unk0E2 >= 1000) x = -92;
-    func_8006DFB4(x, -55, length, 0, D_80120E90[0].unk0E2, 1, -1, &D_800EBFF0[D_8013AF78], 1);
-    sprintf(text, gResultValueFormat, D_80120E90[0].unk0E5);
+    if (gRacePlayers[0].trickAttackPointTotal >= 10) x = -84;
+    if (gRacePlayers[0].trickAttackPointTotal >= 100) x = -88;
+    if (gRacePlayers[0].trickAttackPointTotal >= 1000) x = -92;
+    func_8006DFB4(x, -55, length, 0, gRacePlayers[0].trickAttackPointTotal, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+    sprintf(text, gResultValueFormat, gRacePlayers[0].trickAttackMakeCount);
     length = strlen(text);
     x = -80;
-    if (D_80120E90[0].unk0E5 >= 10) x = -84;
-    func_8006DFB4(x, -19, length, 0, D_80120E90[0].unk0E5, 3, -1, &D_800EBFF0[D_8013AF78], 1);
+    if (gRacePlayers[0].trickAttackMakeCount >= 10) x = -84;
+    func_8006DFB4(x, -19, length, 0, gRacePlayers[0].trickAttackMakeCount, 3, -1, &D_800EBFF0[D_8013AF78], 1);
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/record_screens", func_8003AD48);
+void drawStatsMenuMoneyValues(TaskResourceRecord *record) {
+    u8 padding[0x20];
+    s32 y;
+    s32 stage;
+    setSpriteColor(128, 128, 128);
+    y = -71;
+    stage = ((StatsMenuFadeResource *)record)->unk06;
+    if (stage >= 0) {
+        func_8006DFB4(32, y, 5, 0, ((StatsMenuFadeResource *)record)->trickPrize, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+        func_8006C998(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+        y += 40;
+        stage = ((StatsMenuFadeResource *)record)->unk06;
+        if (stage >= 1) {
+            func_8006DFB4(32, y, 5, 0, ((StatsMenuFadeResource *)record)->makeBonus, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+            func_8006C998(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+            y += 40;
+            stage = ((StatsMenuFadeResource *)record)->unk06;
+        }
+    }
+    if (stage >= 2) {
+        func_8006DFB4(32, y, 5, 0, ((StatsMenuFadeResource *)record)->completeBonus, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+        func_8006C998(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+        y += 40;
+    }
+    if (((StatsMenuFadeResource *)record)->unk06 >= 3) {
+        func_8006DFB4(24, y, 6, 0, gRacePlayers[0].money, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+        func_8006C998(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+    }
+}
 
 void drawStatsRecordRows(TaskResourceRecord *resource) {
     u8 padding[0x20];
@@ -894,7 +922,7 @@ void drawCurrentTaskStatsMenu(void) {
     }
     resource = &D_800D9504[D_8013AE88->resource14];
     drawStatsMenuValues(resource);
-    func_8003AD48(resource);
+    drawStatsMenuMoneyValues(resource);
     drawStatsMenuMoneyLabels((StatsMenuFadeResource *)resource);
 }
 
@@ -914,7 +942,7 @@ void updateStatsMenuPostCountInputTask(void) {
         }
     }
     drawStatsMenuValues((TaskResourceRecord *)resource);
-    func_8003AD48((TaskResourceRecord *)resource);
+    drawStatsMenuMoneyValues((TaskResourceRecord *)resource);
     drawStatsMenuMoneyLabels((StatsMenuFadeResource *)resource);
 }
 
@@ -935,31 +963,31 @@ void countStatsMenuMoneyTask(void) {
     if (amount >= 8 && !(D_8013AEE8[0] & 0xB0)) {
         amount = 8;
     }
-    D_80120E90[0].unk010 += amount;
+    gRacePlayers[0].money += amount;
     resource->trickPrize -= amount;
     amount = resource->makeBonus;
     if (amount >= 8 && !(D_8013AEE8[0] & 0xB0)) {
         amount = 8;
     }
-    D_80120E90[0].unk010 += amount;
+    gRacePlayers[0].money += amount;
     resource->makeBonus -= amount;
     amount = resource->completeBonus;
     if (amount >= 8 && !(D_8013AEE8[0] & 0xB0)) {
         amount = 8;
     }
-    D_80120E90[0].unk010 += amount;
+    gRacePlayers[0].money += amount;
     resource->completeBonus -= amount;
-    if (D_80120E90[0].unk010 > 999999) {
-        D_80120E90[0].unk010 = 999999;
+    if (gRacePlayers[0].money > 999999) {
+        gRacePlayers[0].money = 999999;
     }
-    D_80130BF0[0] = D_80120E90[0].unk010;
+    D_80130BF0[0] = gRacePlayers[0].money;
     if (resource->trickPrize == 0 && resource->makeBonus == 0 && resource->completeBonus == 0) {
         playSoundEffect(0, 0x700, 0x20);
         resource->timer = 20;
         setCurrentTaskCallback(updateStatsMenuPostCountInputTask);
     }
     drawStatsMenuValues((TaskResourceRecord *)resource);
-    func_8003AD48((TaskResourceRecord *)resource);
+    drawStatsMenuMoneyValues((TaskResourceRecord *)resource);
     drawStatsMenuMoneyLabels(resource);
 }
 
@@ -975,7 +1003,7 @@ void waitForStatsScoreCountTask(void) {
         setCurrentTaskCallback(countStatsMenuMoneyTask);
     }
     drawStatsMenuValues((TaskResourceRecord *)resource);
-    func_8003AD48((TaskResourceRecord *)resource);
+    drawStatsMenuMoneyValues((TaskResourceRecord *)resource);
     drawStatsMenuMoneyLabels((StatsMenuFadeResource *)resource);
 }
 
@@ -992,7 +1020,7 @@ void waitForStatsScoreCountStartTask(void) {
         setCurrentTaskCallback(waitForStatsScoreCountTask);
     }
     drawStatsMenuValues((TaskResourceRecord *)resource);
-    func_8003AD48((TaskResourceRecord *)resource);
+    drawStatsMenuMoneyValues((TaskResourceRecord *)resource);
     drawStatsMenuMoneyLabels((StatsMenuFadeResource *)resource);
 }
 
@@ -1009,7 +1037,7 @@ void startTaskStatsCountdownAndPlaySound(void) {
         setCurrentTaskCallback(waitForStatsScoreCountStartTask);
     }
     drawStatsMenuValues((TaskResourceRecord *)resource);
-    func_8003AD48((TaskResourceRecord *)resource);
+    drawStatsMenuMoneyValues((TaskResourceRecord *)resource);
     drawStatsMenuMoneyLabels((StatsMenuFadeResource *)resource);
 }
 
@@ -1026,7 +1054,7 @@ void advanceTaskStatsCountdownAndPlaySound(void) {
         setCurrentTaskCallback(startTaskStatsCountdownAndPlaySound);
     }
     drawStatsMenuValues((TaskResourceRecord *)resource);
-    func_8003AD48((TaskResourceRecord *)resource);
+    drawStatsMenuMoneyValues((TaskResourceRecord *)resource);
     drawStatsMenuMoneyLabels((StatsMenuFadeResource *)resource);
 }
 
@@ -1043,7 +1071,7 @@ void resetTaskStatsCountdown(void) {
         setCurrentTaskCallback(advanceTaskStatsCountdownAndPlaySound);
     }
     drawStatsMenuValues((TaskResourceRecord *)resource);
-    func_8003AD48((TaskResourceRecord *)resource);
+    drawStatsMenuMoneyValues((TaskResourceRecord *)resource);
     drawStatsMenuMoneyLabels((StatsMenuFadeResource *)resource);
 }
 

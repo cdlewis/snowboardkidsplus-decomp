@@ -69,7 +69,7 @@ void updateSplitSelectionBoundsTransition(void) {
     s16 height;
     if (D_8013AE88->resource16 == 0xFFFF) { for (;;) {} }
     movement = (SplitBoundsResource *)&D_800D9504[D_8013AE88->resource16];
-    index = D_80120E90[(s16)D_8013AE88->data1A].unk009;
+    index = gRacePlayers[(s16)D_8013AE88->data1A].unk009;
     height = D_801300B8[0].h;
     switch (D_8013AE88->data18) {
     case 19:
@@ -166,7 +166,7 @@ void drawCurrentTaskPlayerValuePanel(void) {
     position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
     x = position->x / 4096;
     y = position->y / 4096;
-    value = D_80120E90[(s16)D_8013AE98->data1A].unk00A[0];
+    value = gRacePlayers[(s16)D_8013AE98->data1A].unk00A[0];
     setSpriteColor(128, 128, 128);
     setTexturedQuadColor(128, 128, 128);
     func_8006EF30((s16)(x + 8), (s16)(y + 4), 10, gTaskPlayerValuePanelLabel, 8, -1,

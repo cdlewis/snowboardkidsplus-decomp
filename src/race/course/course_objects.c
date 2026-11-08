@@ -370,7 +370,7 @@ void updatePlayerFollowingOrbitTask(void) {
     }
     resource = (CourseOffsetResource *)&D_800D9504[D_8013AE88->resource14];
     if (!D_8013AFD3) {
-        if (D_80120E90[D_8013AE88->data18].unk12C != 7) {
+        if (gRacePlayers[D_8013AE88->data18].unk12C != 7) {
             D_8013AF94->vx = -100;
             D_8013AF94->vy = 0;
             D_8013AF94->vz = 0;
@@ -383,11 +383,11 @@ void updatePlayerFollowingOrbitTask(void) {
             updateOrbitingTaskObject();
             return;
         }
-        resource->coordinate.coord.t[0] = D_80120E90[D_8013AE88->data18].worldCoordinate.coord.t[0];
-        resource->coordinate.coord.t[1] = D_80120E90[D_8013AE88->data18].worldCoordinate.coord.t[1];
-        resource->coordinate.coord.t[2] = D_80120E90[D_8013AE88->data18].worldCoordinate.coord.t[2];
+        resource->coordinate.coord.t[0] = gRacePlayers[D_8013AE88->data18].worldCoordinate.coord.t[0];
+        resource->coordinate.coord.t[1] = gRacePlayers[D_8013AE88->data18].worldCoordinate.coord.t[1];
+        resource->coordinate.coord.t[2] = gRacePlayers[D_8013AE88->data18].worldCoordinate.coord.t[2];
         if (resource->linkedTask->data1A == 7) {
-            resource->rotation.vy = D_80120E90[D_8013AE88->data18].unk110;
+            resource->rotation.vy = gRacePlayers[D_8013AE88->data18].unk110;
         }
     }
     if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
@@ -938,7 +938,7 @@ void updateActivePlayerRegionCollisions(void) {
     if (!D_8013AFD3) {
         i = 0;
         region = &D_80129A18[D_8013AE88->data18];
-        players = D_80120E90;
+        players = gRacePlayers;
         do {
             if (players[i].isActive != 0) {
                 func_8005D828(&players[i], region);
@@ -992,7 +992,7 @@ void updateCollectibleTask(void) {
             for (i = 0; i < D_8013B1D4; i++) {
                 if (arePositionsWithinXZRange(&resource->position, &D_8012450C[i].position, resource->collisionRange)) {
                     *D_8012450C[i].active = 0;
-                    D_80120E90[D_8012450C[i].playerIndex].unk95E++;
+                    gRacePlayers[D_8012450C[i].playerIndex].scoreAttackPointTotal++;
                     playSoundEffect(1, 0xF00, 0x20);
                     createNineIndexedChildTasks(0x15, 1);
                     D_8013AE88->callback = deleteCurrentTask;
@@ -1013,13 +1013,13 @@ void initializeFallingTaskObject(void) {
     resource = (FallingTaskResource *)&D_800D9504[D_8013AE88->resource14];
     GsInitCoordinate2(0, &resource->coordinate);
     D_8013AE88->data1A = D_8013B2BC[D_8013AE88->data18].unk01;
-    resource->geometryIndex = D_80120E90[D_8013AE88->data18].unk92E;
+    resource->geometryIndex = gRacePlayers[D_8013AE88->data18].unk92E;
     resource->rotation.vx = 0;
     resource->rotation.vy = 0;
     resource->rotation.vz = 0;
-    resource->position.x = D_80120E90[D_8013AE88->data18].x;
-    resource->position.y = D_80120E90[D_8013AE88->data18].y - 0x2000;
-    resource->position.z = D_80120E90[D_8013AE88->data18].z;
+    resource->position.x = gRacePlayers[D_8013AE88->data18].x;
+    resource->position.y = gRacePlayers[D_8013AE88->data18].y - 0x2000;
+    resource->position.z = gRacePlayers[D_8013AE88->data18].z;
     resource->coordinate.coord.t[0] = resource->position.x >> 8;
     resource->coordinate.coord.t[1] = resource->position.y >> 8;
     resource->coordinate.coord.t[2] = resource->position.z >> 8;
@@ -1170,7 +1170,7 @@ void updatePlayerField94CFromSelectedTable(u16 tableIndex, s16 sampleIndex,
     RacePlayer *player;
 
     delta = D_8012BBB4[D_8013AFCE][tableIndex][sampleIndex] * 20;
-    player = &D_80120E90[playerIndex];
+    player = &gRacePlayers[playerIndex];
     delta -= player->unk94C;
     if (delta > 30) {
         delta = 30;
@@ -1201,15 +1201,15 @@ void captureSelectedPlayerStates(void) {
         GameTask *task;
         u16 inputIndex;
         if (record->state == -2) goto done;
-        if (record->state == -1 && record->unk02 == D_80120E90[0].unk92E) {
+        if (record->state == -1 && record->unk02 == gRacePlayers[0].unk92E) {
             inputIndex = D_8013AEDC[0];
             record->state = inputIndex - 1;
             if (D_8013AED4[0][D_8013AEDC[0]-1].repeatCount) {
                 record->state = inputIndex;
                 split = 1;
             }
-            D_8013B2E8[i] = D_80120E90[0];
-            task = D_80120E90[0].task;
+            D_8013B2E8[i] = gRacePlayers[0];
+            task = gRacePlayers[0].task;
             D_8013B2E4[i].callback = task->callback;
             D_8013B2E4[i].data18 = task->data18;
             D_8013B2E4[i].data1A = task->data1A;
@@ -1235,9 +1235,9 @@ s32 restoreSelectedPlayerState(void) {
     for (;;) {
         if (record->state == -2) return 0;
         if (record->state != -1) {
-            GameTask *task = D_80120E90[0].task;
-            D_80120E90[0] = D_8013B2E8[i];
-            D_80120E90[0].task = task;
+            GameTask *task = gRacePlayers[0].task;
+            gRacePlayers[0] = D_8013B2E8[i];
+            gRacePlayers[0].task = task;
             task->callback = D_8013B2E4[i].callback;
             task->data18 = D_8013B2E4[i].data18;
             task->data1A = D_8013B2E4[i].data1A;

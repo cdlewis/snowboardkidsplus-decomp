@@ -11,25 +11,25 @@ void advanceTaskAtModeCoursePosition(void) {
 
     switch (D_8013AFD8) {
     case 1:
-        if (D_80120E90[0].unk92E == 80) reached = 1;
+        if (gRacePlayers[0].unk92E == 80) reached = 1;
         break;
     case 2:
     case 3:
     case 4:
     case 5:
-        if (D_80120E90[0].unk92E == 156) reached = 1;
+        if (gRacePlayers[0].unk92E == 156) reached = 1;
         break;
     case 6:
-        if (D_80120E90[0].unk92E == 180) reached = 1;
+        if (gRacePlayers[0].unk92E == 180) reached = 1;
         break;
     case 7:
-        if (D_80120E90[0].unk92E == 22) reached = 1;
+        if (gRacePlayers[0].unk92E == 22) reached = 1;
         break;
     case 8:
-        if (D_80120E90[0].unk92E == 29) reached = 1;
+        if (gRacePlayers[0].unk92E == 29) reached = 1;
         break;
     case 9:
-        if (D_80120E90[0].unk92E == 54) reached = 1;
+        if (gRacePlayers[0].unk92E == 54) reached = 1;
         break;
     }
     func_80040D5C();

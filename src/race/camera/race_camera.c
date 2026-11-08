@@ -22,7 +22,7 @@ void initPlayerCamera(u16 index) {
     view = &views[index];
     cameras = D_801241E8;
     camera = &cameras[index];
-    players = D_80120E90;
+    players = gRacePlayers;
     view->rz = 0;
     view->super = 0;
     camera->yaw = players[index].unk0B6 + 0x400;
@@ -48,7 +48,7 @@ void updatePlayerCameraPosition(u16 index) {
     D_8013AF94->vy = 0;
     D_8013AF94->vz = camera->unk10 - camera->unk12 + camera->unk14;
     ApplyMatrix(D_8013AF98, D_8013AF94, D_8013AF88);
-    players = D_80120E90;
+    players = gRacePlayers;
     player = &players[index];
     camera->x = player->x + (D_8013AF88->vx << 8);
     camera->y = player->y + (D_8013AF88->vy << 8);
@@ -61,7 +61,7 @@ void updatePlayerCameraPosition(u16 index) {
 }
 
 void updatePlayerCameraPitch(u16 playerIndex) {
-    RacePlayer *players = D_80120E90;
+    RacePlayer *players = gRacePlayers;
     RacePlayer *player = &players[playerIndex];
     PlayerCamera *cameras = D_801241E8;
     PlayerCamera *camera = &cameras[playerIndex];
@@ -83,7 +83,7 @@ void updatePlayerCameraPitch(u16 playerIndex) {
 void updatePlayerCameraAngles(u16 playerIndex) {
     PlayerCamera *cameras = D_801241E8;
     PlayerCamera *camera = &cameras[playerIndex];
-    RacePlayer *players = D_80120E90;
+    RacePlayer *players = gRacePlayers;
     RacePlayer *player = &players[playerIndex];
     camera->yaw = func_8004A124(camera->x, camera->z, player->x, player->z);
     updatePlayerCameraPitch(playerIndex);
@@ -141,7 +141,7 @@ void initPlayerCameraAndTarget(u16 index) {
     updatePlayerCameraPosition(index);
     clampPlayerCameraHeight(index);
     targets = gPlayerCameraViews;
-    players = D_80120E90;
+    players = gRacePlayers;
     targets[D_8013AE88->data18].vrx = players[D_8013AE88->data18].worldCoordinate.coord.t[0] + players[D_8013AE88->data18].unk084;
     targets[D_8013AE88->data18].vry = players[D_8013AE88->data18].worldCoordinate.coord.t[1] + (s16)(cameras[D_8013AE88->data18].unk14 / 8 - 120) + players[D_8013AE88->data18].unk086;
     targets[D_8013AE88->data18].vrz = players[D_8013AE88->data18].worldCoordinate.coord.t[2] + players[D_8013AE88->data18].unk088;
@@ -185,7 +185,7 @@ INCLUDE_ASM("asm/nonmatchings/race/camera/race_camera", func_8003EA20);
 
 void updateCurrentPlayerCameraTarget(void) {
     GsRVIEW2 *targets = gPlayerCameraViews;
-    RacePlayer *players = D_80120E90;
+    RacePlayer *players = gRacePlayers;
     targets[D_8013AE88->data18].vrx = players[D_8013AE88->data18].worldCoordinate.coord.t[0] + players[D_8013AE88->data18].unk084;
     targets[D_8013AE88->data18].vry = players[D_8013AE88->data18].worldCoordinate.coord.t[1] + (s16)(D_801241E8[D_8013AE88->data18].unk14 / 8 - 120) + players[D_8013AE88->data18].unk086;
     targets[D_8013AE88->data18].vrz = players[D_8013AE88->data18].worldCoordinate.coord.t[2] + players[D_8013AE88->data18].unk088;

@@ -178,8 +178,8 @@ void initializeCountedPlayerGroupedSelectionBoundsTask(void) {
         D_8013AE88->resource14 = allocateTaskResource();
         if (D_8013AE88->resource16 != 0xFFFF) { for (;;) {} }
         D_8013AE88->resource16 = allocateTaskResource();
-        adjustGroupedIndexForMode(D_8013AE88->data1A, &D_80120E90[0].unk00A[1]);
-        D_801300AC[0].selection = getGroupedIndexBase(D_80120E90[0].unk00A[1]);
+        adjustGroupedIndexForMode(D_8013AE88->data1A, &gRacePlayers[0].unk00A[1]);
+        D_801300AC[0].selection = getGroupedIndexBase(gRacePlayers[0].unk00A[1]);
         if (D_801300AC[0].selection == 9) {
             D_801300AC[0].selection += getSaveRecordFlagGroupIndex(0, 0);
         }
@@ -224,9 +224,9 @@ s32 getPlayerRecordFlagMode(s16 index) {
     } else {
         record = &((SaveRecord *)&D_8013080C)[index];
     }
-    if (D_80120E90[playerIndex].unk009 == 8) {
+    if (gRacePlayers[playerIndex].unk009 == 8) {
         result = 2;
-    } else if (D_80120E90[playerIndex].unk009 == 9) {
+    } else if (gRacePlayers[playerIndex].unk009 == 9) {
         result = 5;
     } else {
         result = (record->flags_3AC & 0x3800) != 0;
@@ -613,8 +613,8 @@ void createPlayerGroupedSelectionTask(s32 player, s32 index) {
     D_8013AE8C->resource14 = allocateTaskResource();
     D_8013AE8C->resource16 = allocateTaskResource();
     selection = &D_801300AC[(s16)player];
-    adjustGroupedIndexForMode((s16)D_8013AE8C->data1A, &((PlayerSelectionRecord *)D_80120E90)[(s16)player].selectionBytes[3]);
-    selection->selection = getGroupedIndexBase(((PlayerSelectionRecord *)D_80120E90)[(s16)player].selectionBytes[3]);
+    adjustGroupedIndexForMode((s16)D_8013AE8C->data1A, &((PlayerSelectionRecord *)gRacePlayers)[(s16)player].selectionBytes[3]);
+    selection->selection = getGroupedIndexBase(((PlayerSelectionRecord *)gRacePlayers)[(s16)player].selectionBytes[3]);
     if (selection->selection == 9) {
         selection->selection += getSaveRecordFlagGroupIndex(player + 10, 0);
     }

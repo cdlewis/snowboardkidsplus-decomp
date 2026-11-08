@@ -26,7 +26,7 @@ struct RacePlayer {
     u8 unk00A[3];
     u8 unk00D;
     u8 unk00E[2];
-    s32 unk010;
+    s32 money;
     u8 characterId;
     u8 unk015[7];
     s32 unk01C;
@@ -73,9 +73,9 @@ struct RacePlayer {
     s16 unk0C8;
     s16 unk0CA[6];
     s16 unk0D6[6];
-    s16 unk0E2;
+    s16 trickAttackPointTotal;
     u8 unk0E4;
-    s8 unk0E5;
+    s8 trickAttackMakeCount;
     u8 unk0E6[2];
     u16 unk0E8;
     u8 unk0EA[0xA];
@@ -160,10 +160,10 @@ struct RacePlayer {
     u8 unk950[4];
     u8 unk954;
     u8 unk955[5];
-    s16 unk95A;
-    s16 unk95C;
-    s16 unk95E;
-    s16 unk960;
+    s16 collectedCourseCoinMarkerCount;
+    s16 totalCourseCoinMarkerCount;
+    s16 scoreAttackPointTotal;
+    s16 scoreAttackPointTarget;
     s16 unk962;
     u8 unk964;
     s8 unk965;
@@ -179,7 +179,7 @@ struct RacePlayer {
 /* Per-character animation indices; each row has the original 40-byte stride. */
 extern u8 D_800EB09C[10][40];
 
-extern RacePlayer D_80120E90[];
+extern RacePlayer gRacePlayers[];
 /* Shared result state; task code accesses the first word. */
 extern s32 D_80130BF0[];
 extern s8 D_8013AFD2 __attribute__((section(".data")));

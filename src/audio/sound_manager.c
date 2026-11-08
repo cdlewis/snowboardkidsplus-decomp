@@ -272,8 +272,8 @@ INCLUDE_ASM("asm/nonmatchings/audio/sound_manager", func_800187B8);
 void playPlayerPositionalSoundEffect(u8 playerIndex, u8 bank, u16 programAndTone, s16 volume) {
     u16 note;
     volume = attenuateSoundVolume(getNearestCameraManhattanDistance(
-        D_80120E90[playerIndex].x, D_80120E90[playerIndex].y,
-        D_80120E90[playerIndex].z), volume);
+        gRacePlayers[playerIndex].x, gRacePlayers[playerIndex].y,
+        gRacePlayers[playerIndex].z), volume);
     note = programAndTone;
     if (volume == 0) return;
     if (gSoundBankLoaded[bank]) {

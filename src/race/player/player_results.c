@@ -17,17 +17,17 @@ s16 compareRaceTimes(const RaceTime *a, const RaceTime *b) {
 
 void assignTwoPlayerResultSlots(s16 result) {
     if (result == 1) {
-        D_80120E90[0].unk100[0] = 0;
-        D_80120E90[1].unk100[0] = 1;
+        gRacePlayers[0].unk100[0] = 0;
+        gRacePlayers[1].unk100[0] = 1;
     } else if (result == 2) {
-        D_80120E90[0].unk100[0] = 1;
-        D_80120E90[1].unk100[0] = 0;
+        gRacePlayers[0].unk100[0] = 1;
+        gRacePlayers[1].unk100[0] = 0;
     } else if ((rand() & 1) == 0) {
-        D_80120E90[0].unk100[0] = 2;
-        D_80120E90[1].unk100[0] = 3;
+        gRacePlayers[0].unk100[0] = 2;
+        gRacePlayers[1].unk100[0] = 3;
     } else {
-        D_80120E90[0].unk100[0] = 3;
-        D_80120E90[1].unk100[0] = 2;
+        gRacePlayers[0].unk100[0] = 3;
+        gRacePlayers[1].unk100[0] = 2;
     }
 }
 
@@ -41,29 +41,29 @@ void updateCurrentPlayerSound(void) {
     s32 semitone;
     s16 fine;
     if (D_8013AFD3) {
-        D_80120E90[D_8013AE88->data18].unk96C = 0;
+        gRacePlayers[D_8013AE88->data18].unk96C = 0;
     }
-    if (D_80120E90[D_8013AE88->data18].unk96C != 0) {
-        if (D_80120E90[D_8013AE88->data18].soundVoice == 0xFF) {
-            D_80120E90[D_8013AE88->data18].soundVoice = playOwnedSoundEffect(D_8013AE88->data18, 1, D_80120E90[D_8013AE88->data18].unk96E, 0x20);
-            D_80120E90[D_8013AE88->data18].unk970 = D_80120E90[D_8013AE88->data18].unk96E;
-        } else if (D_80120E90[D_8013AE88->data18].unk970 != D_80120E90[D_8013AE88->data18].unk96E) {
-            func_800187B8(D_80120E90[D_8013AE88->data18].soundVoice);
-            D_80120E90[D_8013AE88->data18].soundVoice = playOwnedSoundEffect(D_8013AE88->data18, 1, D_80120E90[D_8013AE88->data18].unk96E, 0x20);
-            D_80120E90[D_8013AE88->data18].unk970 = D_80120E90[D_8013AE88->data18].unk96E;
+    if (gRacePlayers[D_8013AE88->data18].unk96C != 0) {
+        if (gRacePlayers[D_8013AE88->data18].soundVoice == 0xFF) {
+            gRacePlayers[D_8013AE88->data18].soundVoice = playOwnedSoundEffect(D_8013AE88->data18, 1, gRacePlayers[D_8013AE88->data18].unk96E, 0x20);
+            gRacePlayers[D_8013AE88->data18].unk970 = gRacePlayers[D_8013AE88->data18].unk96E;
+        } else if (gRacePlayers[D_8013AE88->data18].unk970 != gRacePlayers[D_8013AE88->data18].unk96E) {
+            func_800187B8(gRacePlayers[D_8013AE88->data18].soundVoice);
+            gRacePlayers[D_8013AE88->data18].soundVoice = playOwnedSoundEffect(D_8013AE88->data18, 1, gRacePlayers[D_8013AE88->data18].unk96E, 0x20);
+            gRacePlayers[D_8013AE88->data18].unk970 = gRacePlayers[D_8013AE88->data18].unk96E;
         }
-        semitone = D_80120E90[D_8013AE88->data18].unk972 / 128;
-        fine = 127 - D_80120E90[D_8013AE88->data18].unk972 % 128;
-        SsUtChangePitch(D_80120E90[D_8013AE88->data18].soundVoice, 1, D_80120E90[D_8013AE88->data18].unk96E & 255, D_80120E90[D_8013AE88->data18].unk96E >> 8, fine, -semitone, fine);
-        SsUtSetVVol(D_80120E90[D_8013AE88->data18].soundVoice, D_80120E90[D_8013AE88->data18].unk96C, D_80120E90[D_8013AE88->data18].unk96C);
-    } else if (D_80120E90[D_8013AE88->data18].soundVoice != 0xFF) {
-        func_800187B8(D_80120E90[D_8013AE88->data18].soundVoice);
-        D_80120E90[D_8013AE88->data18].soundVoice = 0xFF;
+        semitone = gRacePlayers[D_8013AE88->data18].unk972 / 128;
+        fine = 127 - gRacePlayers[D_8013AE88->data18].unk972 % 128;
+        SsUtChangePitch(gRacePlayers[D_8013AE88->data18].soundVoice, 1, gRacePlayers[D_8013AE88->data18].unk96E & 255, gRacePlayers[D_8013AE88->data18].unk96E >> 8, fine, -semitone, fine);
+        SsUtSetVVol(gRacePlayers[D_8013AE88->data18].soundVoice, gRacePlayers[D_8013AE88->data18].unk96C, gRacePlayers[D_8013AE88->data18].unk96C);
+    } else if (gRacePlayers[D_8013AE88->data18].soundVoice != 0xFF) {
+        func_800187B8(gRacePlayers[D_8013AE88->data18].soundVoice);
+        gRacePlayers[D_8013AE88->data18].soundVoice = 0xFF;
     }
 }
 
 void stopPlayerSound(u16 playerIndex) {
-    RacePlayer *players = D_80120E90;
+    RacePlayer *players = gRacePlayers;
     RacePlayer *player = &players[playerIndex];
 
     player->unk96C = 0;

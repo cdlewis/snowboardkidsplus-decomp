@@ -23,8 +23,8 @@ void copyPlayerPaletteRowWithTransition(s16 playerIndex, s32 unused, s32 palette
 }
 
 void copyPlayerPaletteRow(s16 playerIndex) {
-    copyPlayerPaletteRowWithTransition(playerIndex, D_80120E90[playerIndex].unk009,
-                  D_80120E90[playerIndex].unk00D, 0);
+    copyPlayerPaletteRowWithTransition(playerIndex, gRacePlayers[playerIndex].unk009,
+                  gRacePlayers[playerIndex].unk00D, 0);
 }
 
 INCLUDE_ASM("asm/nonmatchings/race/player/player_palette", func_8009B700);

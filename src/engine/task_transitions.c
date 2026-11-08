@@ -60,7 +60,6 @@ ModelTextureOffset gPlayerPartTextureOffsets[4] __attribute__((section(".data.pl
 
 extern u16 D_8013AFAA __attribute__((section(".data")));
 extern u8 D_8013B562 __attribute__((section(".data")));
-extern u8 D_80120EA4[];
 extern s16 D_8013B104 __attribute__((section(".data")));
 extern u8 D_8013AFE2;
 extern u8 D_8013B1AB __attribute__((section(".data")));
@@ -208,7 +207,7 @@ void finishRaceTransitionAfterCountdown(void) {
         D_8013AFE4 |= 8;
         if (gameOptionPlayerModeGp == 1) func_8003CAF0();
         for (i = 0; i < gameOptionPlayerModeGp; i++) {
-            if (D_80120E90[i].unk935 == 0) {
+            if (gRacePlayers[i].unk935 == 0) {
                 createFallingParticleTask();
                 D_8013AE8C->data18 = 0;
                 break;
@@ -246,7 +245,7 @@ void initializeRaceRestartTask(void) {
         stopPlayerSound(1);
     }
     for (i = 0; i < activeRacePlayerCountGp; i++) {
-        D_80120E90[i].isActive = 1;
+        gRacePlayers[i].isActive = 1;
     }
     initializeActiveRacePlayers();
     initializeRaceRulesAndCounters();
@@ -274,7 +273,7 @@ void beginResourceLoadOrUnlockNotification(void) {
         createResourceLoadTask();
         setCurrentTaskCallback(advanceTaskWhenFlagAFE4Bit8Set);
     } else {
-        startUnlockNotification(D_80120EA4[0] + 1);
+        startUnlockNotification(gRacePlayers[0].characterId + 1);
         setCurrentTaskCallback(startResourceLoadWhenFlagAFE4Bit9Set);
     }
 }
@@ -359,7 +358,7 @@ void initializeDemoPlaybackTask(void) {
     func_80014838(updateRacePlayerFinishSlotsTask);
     func_80014838(initializeCurrentPlayerModelAndHeight);
     D_8013AE8C->data18 = 0;
-    D_80120E90[0].task = D_8013AE8C;
+    gRacePlayers[0].task = D_8013AE8C;
     configureTaskStateTransition(1, 0, 0);
     queueCdCommand(0, 1);
     D_8013AFDB = 0;
@@ -397,10 +396,10 @@ void updateSelectedPlayerPlaybackTask(void) {
             resetGameplayRng();
             if (D_8013AE88->data1A != 0) configureTaskStateTransition(0, 0x1000, 0);
             D_8013AE88->data1A++;
-            D_80120E90[0].unk970 = 0xFFFF;
-            if (D_80120E90[0].task->next->depth != 2 && D_80120E90[0].unk0FE) {
-                if (D_80120E90[0].unk0FC) func_80014930(D_80120E90[0].task, updatePlayerTimerTask);
-                else func_80014930(D_80120E90[0].task, fadeOutPlayerTimerTask);
+            gRacePlayers[0].unk970 = 0xFFFF;
+            if (gRacePlayers[0].task->next->depth != 2 && gRacePlayers[0].unk0FE) {
+                if (gRacePlayers[0].unk0FC) func_80014930(gRacePlayers[0].task, updatePlayerTimerTask);
+                else func_80014930(gRacePlayers[0].task, fadeOutPlayerTimerTask);
                 D_8013AE8C->data18 = 0;
             }
         } else buttons = 0x800;
@@ -443,16 +442,16 @@ void queuePlayerResourceReadsAndUploadTextures(void) {
     u16 i;
     u32 *offset;
     for (i = 0; i < activeRacePlayerCountGp; i++) {
-        queueCdSectorCommand(0, gGridResourceFirstSectorRanges[D_80120E90[i].characterId][D_80120E90[i].unk015[0]].sector,
-            gGridResourceFirstSectorRanges[D_80120E90[i].characterId][D_80120E90[i].unk015[0]].sectorCount,
+        queueCdSectorCommand(0, gGridResourceFirstSectorRanges[gRacePlayers[i].characterId][gRacePlayers[i].unk015[0]].sector,
+            gGridResourceFirstSectorRanges[gRacePlayers[i].characterId][gRacePlayers[i].unk015[0]].sectorCount,
             (u8 *)DAT_PLAYER_MODEL_BUFFERS[i], 0);
-        queueCdSectorCommand(1, gGridResourceSecondSectorRanges[D_80120E90[i].characterId][D_80120E90[i].unk015[0]].sector,
-            gGridResourceSecondSectorRanges[D_80120E90[i].characterId][D_80120E90[i].unk015[0]].sectorCount,
+        queueCdSectorCommand(1, gGridResourceSecondSectorRanges[gRacePlayers[i].characterId][gRacePlayers[i].unk015[0]].sector,
+            gGridResourceSecondSectorRanges[gRacePlayers[i].characterId][gRacePlayers[i].unk015[0]].sectorCount,
             DAT_SCRATCH, (s32)&D_801204D4[i]);
         if (i < gameOptionPlayerModeGp && !D_8013AFD7 && !D_8013AFD8 && !D_8013AFD9) {
-            offset = &(DAT_STARTUP_TEXTURES)->offsets[gPlayerResourceTextureSelections.entries[i][D_80120E90[i].unk015[1]]];
+            offset = &(DAT_STARTUP_TEXTURES)->offsets[gPlayerResourceTextureSelections.entries[i][gRacePlayers[i].unk015[1]]];
         } else {
-            offset = &(DAT_STARTUP_TEXTURES)->offsets[D_80120E90[i].unk015[2]];
+            offset = &(DAT_STARTUP_TEXTURES)->offsets[gRacePlayers[i].unk015[2]];
         }
         uploadTimImageWithOffset((u32 *)((u8 *)DAT_STARTUP_TEXTURES + *offset), gPlayerResourceTexturePositions[i]);
     }

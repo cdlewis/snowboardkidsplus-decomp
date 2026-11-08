@@ -185,10 +185,10 @@ u16 isPositionWithinPlayerCollisionRange(const Position3D *position, s32 radius,
     RacePlayer *player;
     RacePlayer *players;
     s32 x, y, z, range, verticalRange;
-    players = D_80120E90;
+    players = gRacePlayers;
     player = &players[playerIndex];
     if (player->isActive) {
-        if (arePositionsWithinXZRange(position, (Position3D *)&D_80120E90[playerIndex].x, 0x10000)) {
+        if (arePositionsWithinXZRange(position, (Position3D *)&gRacePlayers[playerIndex].x, 0x10000)) {
             y = position->y - player->unk074;
             verticalRange = height;
             if (y < 0) {
@@ -198,7 +198,7 @@ u16 isPositionWithinPlayerCollisionRange(const Position3D *position, s32 radius,
             }
             if (y < verticalRange) {
                 RacePlayer *horizontalPlayer;
-                RacePlayer *horizontalPlayers = D_80120E90;
+                RacePlayer *horizontalPlayers = gRacePlayers;
                 horizontalPlayer = &horizontalPlayers[playerIndex];
                 x = position->x - horizontalPlayer->x;
                 range = radius + horizontalPlayer->unk0AC;
@@ -226,11 +226,11 @@ u16 addPlayerFlagsIfWithinRadius(Position3D *position, s32 radius, s16 flags, u1
     RacePlayer *player;
     RacePlayer *players;
     s32 x, y, z, range;
-    if (D_80120E90[playerIndex].isActive) {
-        if (flags != 4 && D_80120E90[playerIndex].unk134 != 0) {
+    if (gRacePlayers[playerIndex].isActive) {
+        if (flags != 4 && gRacePlayers[playerIndex].unk134 != 0) {
             return 0;
         }
-        players = D_80120E90;
+        players = gRacePlayers;
         player = &players[playerIndex];
         x = player->x - position->x;
         range = radius + player->unk0AC;
@@ -265,7 +265,7 @@ void addPlayerFlagsWithinRadius(const Position3D *position, s32 radius, u16 flag
     s32 x, y, z, range;
 
     for (i = 0; i < 4; i++) {
-        player = &D_80120E90[i];
+        player = &gRacePlayers[i];
         if (player->isActive) {
             x = player->x - position->x;
             range = radius + player->unk0AC;
@@ -304,7 +304,7 @@ void updateRacePlayerFinishSlotsTask(void) {
         func_8002BC2C();
         func_8002B820();
         for (i = 0; i < D_8013AFD2; i++) {
-            D_8013B0D8 = &D_80120E90[i];
+            D_8013B0D8 = &gRacePlayers[i];
             assignCurrentPlayerFinishSlot(i);
         }
     }
@@ -618,7 +618,7 @@ void func_8002E3C0(void) {
 }
 
 void addPlayerCappedCounters(u16 playerIndex, s32 amount) {
-    RacePlayer *players = D_80120E90;
+    RacePlayer *players = gRacePlayers;
     RacePlayer *player;
     players += playerIndex;
     player = players;
@@ -692,7 +692,7 @@ void loadCurrentPlayerModelBlock(void) {
     u32 offset;
     u32 *source;
     u32 *model;
-    offset = offsets[D_80123640[D_80120E90[player].unk015[1]]];
+    offset = offsets[D_80123640[gRacePlayers[player].unk015[1]]];
     model = buffers[player];
     source = (u32 *)(offset + archive);
     dest = model;

@@ -433,7 +433,7 @@ void initializeCurrentPlayerTimedEffectState(s32 value) {
         break;
     case 7:
     case 12:
-        startPositionEffectTask((const PositionEffectOrigin *)D_80120E90[D_8013AE88->data18].worldCoordinate.coord.t);
+        startPositionEffectTask((const PositionEffectOrigin *)gRacePlayers[D_8013AE88->data18].worldCoordinate.coord.t);
         func_800183FC(D_8013AE88->data18, 1, 1, 0x30);
         break;
     case 14:
@@ -687,7 +687,7 @@ void initializeCurrentPlayerModelAndHeight(void) {
         func_80014930(&gGameTasks[4], initializeTaskCoordinateResource);
         D_8013AE8C->data18 = D_8013AE88->data18;
     }
-    player = &D_80120E90[D_8013AE88->data18];
+    player = &gRacePlayers[D_8013AE88->data18];
     player->unk0B6 = -0x400;
     player->unk0B4 = 0;
     player->unk0B8 = 0;
@@ -1524,7 +1524,7 @@ INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_80028C80);
 void initializeActiveRacePlayers(void) {
     u16 i;
     for (i = 0; i < D_8013AFD2; i++) {
-        RacePlayer *player = &D_80120E90[i];
+        RacePlayer *player = &gRacePlayers[i];
         player->playerIndex = i;
         if (player->isActive) {
             currentPlayerAbsolute = player;
@@ -1553,16 +1553,16 @@ INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_800293F0);
 s16 isPlayerNearSelectedRecord(s16 index) {
     s16 i;
     s32 distance;
-    if (D_80120E90[index].unk92E != (s16)D_80123D80[D_8013AFCE].unk00) return 0;
-    if (D_80120E90[index].unk128 & 0x40) return 0;
+    if (gRacePlayers[index].unk92E != (s16)D_80123D80[D_8013AFCE].unk00) return 0;
+    if (gRacePlayers[index].unk128 & 0x40) return 0;
     for (i = 0; i < 4; i++) {
-        if (D_80120E90[i].isActive && D_80120E90[i].playerIndex != index &&
-            (D_80120E90[i].unk128 & 0x20)) return 0;
+        if (gRacePlayers[i].isActive && gRacePlayers[i].playerIndex != index &&
+            (gRacePlayers[i].unk128 & 0x20)) return 0;
     }
-    distance = D_80120E90[index].x - D_80123D80[D_8013AFCE].unk18[0];
+    distance = gRacePlayers[index].x - D_80123D80[D_8013AFCE].unk18[0];
     if (distance < 0) distance = -distance;
     if (distance > 0x6000) return 0;
-    distance = D_80120E90[index].z - D_80123D80[D_8013AFCE].unk18[2];
+    distance = gRacePlayers[index].z - D_80123D80[D_8013AFCE].unk18[2];
     if (distance < 0) distance = -distance;
     return distance <= 0x6000;
 }

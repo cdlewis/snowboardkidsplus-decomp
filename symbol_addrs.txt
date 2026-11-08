@@ -3379,3 +3379,7 @@ gControllerEffectSteps7 = 0x8012D314; // type:ControllerEffectStep
 gControllerEffectSteps8 = 0x8012D324; // type:ControllerEffectStep
 gControllerEffectSteps9 = 0x8012D334; // type:ControllerEffectStep
 gControllerEffectDefinitions = 0x8012D36C; // type:ControllerEffectDefinition size:0xCC
+
+// Four race players, each with the 0x9DC-byte player-loop stride.
+gRacePlayers = 0x80120E90; // size:0x2770
+drawStatsMenuMoneyValues = 0x8003AD48; // type:func

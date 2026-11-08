@@ -130,7 +130,7 @@ void updatePlayerRenderSnapshots(void) {
     GsInitCoordinate2(0, &coordinate);
     GsGetLs(&coordinate, &gPlayerRenderIdentityMatrix);
     for (i = 0; i < 2; i++) {
-        player = &D_80120E90[i];
+        player = &gRacePlayers[i];
         gPreviousPlayerRenderSnapshots[i] = gPlayerRenderSnapshots[i];
         gPlayerRenderSnapshots[i].position.vx = player->x >> 8;
         gPlayerRenderSnapshots[i].position.vy = player->y >> 8;
@@ -412,7 +412,7 @@ void createPlayerPairedQuadEffectTask(s32 playerIndex, s32 variant) {
     s32 i;
     func_80014930(D_8013B304, func_800654B4);
     D_8013AE8C->resource14 = allocateTaskResource();
-    player = &D_80120E90[playerIndex];
+    player = &gRacePlayers[playerIndex];
     resource = (PairedEffectResource *)&D_800D9504[D_8013AE8C->resource14];
     for (i = 0; i < 2; i++) {
         gPlayerPairedQuadOffsets[i].vz = randomNextLinear() % 40 - 20;
@@ -532,7 +532,7 @@ void createPlayerPositionTrailTask(s32 playerIndex) {
     PlayerPositionTrailResource *resource;
     s32 i, j;
 
-    player = &D_80120E90[playerIndex];
+    player = &gRacePlayers[playerIndex];
     func_80014930(D_8013B304, func_80066D18);
     D_8013AE8C->resource14 = allocateTaskResource();
     D_8013AE8C->data18 = playerIndex;
@@ -552,7 +552,7 @@ void emitPlayerTurnTripleQuadEffectTask(void) {
     PlayerTripleQuadEffectResource *resource;
     SVECTOR *vertex;
     s32 i, sine;
-    player = &D_80120E90[D_8013AE88->data18];
+    player = &gRacePlayers[D_8013AE88->data18];
     if (D_8013AFD3 != 0) return;
     if (!isPointWithinCameraForwardRange(player->worldCoordinate.coord.t[0], player->worldCoordinate.coord.t[2], (s16)func_80059254())) return;
     if (!(player->unk128 & 8) && player->unk96E != 0 && player->unk96E != 0x801 && player->unk96E != 0x200) return;
@@ -589,7 +589,7 @@ void createPlayerRingEffectTask(s32 playerIndex) {
     RacePlayer *player;
     PlayerRingEffectResource *resource;
     s32 i;
-    player = &D_80120E90[playerIndex];
+    player = &gRacePlayers[playerIndex];
     if (D_8013AFCE != 3) {
         func_80014930(D_8013B304, func_80067DD0);
         D_8013AE8C->resource14 = allocateTaskResource();
@@ -620,7 +620,7 @@ s32 createPlayerTripleQuadEffectTask(s32 playerIndex) {
     SVECTOR *vertex;
     s32 i;
     s32 state;
-    player = &D_80120E90[playerIndex];
+    player = &gRacePlayers[playerIndex];
     if (!isPointWithinCameraForwardRange(player->worldCoordinate.coord.t[0], player->worldCoordinate.coord.t[2], (s16)func_80059254())) {
         return 0;
     }

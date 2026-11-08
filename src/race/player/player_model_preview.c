@@ -6,7 +6,7 @@ u16 playerModelDrawAreaDepths[4] __attribute__((section(".data.player_model_draw
 
 void sortPlayerModelWithDrawArea(u16 playerIndex, u16 depthIndex, RECT *bounds) {
     MATRIX matrix;
-    RacePlayer *player = &D_80120E90[playerIndex];
+    RacePlayer *player = &gRacePlayers[playerIndex];
     GsDOBJ2 *object = player->modelObjects;
     s16 i;
     s16 count;
@@ -102,7 +102,7 @@ void updatePlayerModelPreviewTask(void) {
     u8 padding[0x10];
     ModelPreviewState *state;
     RegisteredTaskEntry *entry;
-    D_8013B0D8 = &D_80120E90[D_8013AE88->data1C];
+    D_8013B0D8 = &gRacePlayers[D_8013AE88->data1C];
     if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
     state = (ModelPreviewState *)&D_800D9504[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) { for (;;) {} }

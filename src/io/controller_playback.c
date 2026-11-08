@@ -24,7 +24,7 @@ void initializeControllerPlaybackRaceTask(void) {
     RacePlayer *player;
     selectionMenuRecordAbsolute = D_8013AFCE;
     D_8013AFCE = gControllerPlaybackEntries[D_8013AFD9].course;
-    player = D_80120E90;
+    player = gRacePlayers;
     D_8013AFD3 = 0;
     D_8013AFD6 = 0;
     D_8013AFE1 = 0;

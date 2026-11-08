@@ -20,7 +20,7 @@ void drawLapTimeHud(void) {
     sprintf(text,gLapTimeFormat,((SaveRecord *)&D_8013080C)->lapRecords[D_8013AFCE][0].minutes,((SaveRecord *)&D_8013080C)->lapRecords[D_8013AFCE][0].seconds,((SaveRecord *)&D_8013080C)->lapRecords[D_8013AFCE][0].centiseconds >> 8);
     drawLimitedText8x8(72,-88,20,text,7,-1,ot,1);
     drawLimitedText8x8(72,-97,10,gBestLapLabel,7,-1,ot,1);
-    icon = (s8)D_80120E90[0].unk936[11];
+    icon = (s8)gRacePlayers[0].unk936[11];
     if (icon) drawPaletteMappedIcon(-16,-96,icon,ot,1);
     func_8006C998(-116,64,425,1,-1,ot,1);
     func_8006C998(-136,64,420,14,-1,ot,1);
@@ -32,7 +32,7 @@ void drawFirstPlayerStatusHud(void) {
     s16 frame;
     s32 palette;
     setSpriteColor(128, 128, 128);
-    player = D_80120E90;
+    player = gRacePlayers;
     drawMenuKindSprite(-32, -96, (s8)player->unk936[8], (s8)player->unk936[10], ot, 1);
     drawPaletteMappedIcon(0, -96, (s8)player->unk936[11], ot, 1);
     frame = (s16)gFrameCounter % 12;
@@ -97,5 +97,5 @@ void resetControllersAndDeleteCurrentTask(void) {
 INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud", func_80043FBC);
 
 s16 isFirstPlayerUsingCallback26D10(void) {
-    return D_80120E90[0].task->callback == updateCurrentPlayerTaskCountdown;
+    return gRacePlayers[0].task->callback == updateCurrentPlayerTaskCountdown;
 }

@@ -27,7 +27,6 @@ extern u16 D_8013AFAA;
 extern u16 D_8013AFAA __attribute__((section(".data")));
 #endif
 extern u8 D_8013B562 __attribute__((section(".data")));
-extern u8 D_80120EA4[];
 extern s16 D_8013B104 __attribute__((section(".data")));
 extern u8 D_8013AFE2;
 extern u8 D_8013B1AB __attribute__((section(".data")));

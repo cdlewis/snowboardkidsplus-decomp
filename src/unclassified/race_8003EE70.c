@@ -121,10 +121,10 @@ void initializeRaceRulesAndCounters(void) {
             } else {
                 D_8013B620 = 3;
             }
-            D_80120E90[0].unk95A = 0;
-            D_80120E90[0].unk95C = D_8012429C[D_8013AFCE];
-            D_80120E90[1].unk95A = 0;
-            D_80120E90[1].unk95C = D_8012429C[D_8013AFCE];
+            gRacePlayers[0].collectedCourseCoinMarkerCount = 0;
+            gRacePlayers[0].totalCourseCoinMarkerCount = D_8012429C[D_8013AFCE];
+            gRacePlayers[1].collectedCourseCoinMarkerCount = 0;
+            gRacePlayers[1].totalCourseCoinMarkerCount = D_8012429C[D_8013AFCE];
         } else if (D_8013AFE0 == 1) {
             if (D_8013AFCD == 1) {
                 D_8013B620 = 4;
@@ -135,10 +135,10 @@ void initializeRaceRulesAndCounters(void) {
                 D_8013B198[0] = D_80124248[D_8013AFCE];
                 D_8013B198[1] = D_80124248[D_8013AFCE];
             }
-            D_80120E90[0].unk95E = 0;
-            D_80120E90[0].unk960 = D_801242A8[D_8013AFCE];
-            D_80120E90[1].unk95E = 0;
-            D_80120E90[1].unk960 = D_801242A8[D_8013AFCE];
+            gRacePlayers[0].scoreAttackPointTotal = 0;
+            gRacePlayers[0].scoreAttackPointTarget = D_801242A8[D_8013AFCE];
+            gRacePlayers[1].scoreAttackPointTotal = 0;
+            gRacePlayers[1].scoreAttackPointTarget = D_801242A8[D_8013AFCE];
         } else if (D_8013AFE0 == 2) {
             if (D_8013AFCD == 1) {
                 D_8013B620 = 6;

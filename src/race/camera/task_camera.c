@@ -2,7 +2,7 @@
 
 void initializeTaskPlayerCamera(void) {
     PlayerCamera *cameras;
-    D_8013B0D8 = &D_80120E90[D_8013AE88->data18];
+    D_8013B0D8 = &gRacePlayers[D_8013AE88->data18];
     initPlayerCameraAndTarget(D_8013AE88->data18);
     cameras = D_801241E8;
     cameras[D_8013AE88->data18].yaw = D_8013B0D8->unk110;

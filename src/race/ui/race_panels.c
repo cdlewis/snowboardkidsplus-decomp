@@ -525,7 +525,7 @@ void initializeSlidingNumberDisplayTask(void) {
 
 void createActivePlayerSlidingNumberTask(s32 value, s16 player) {
     SlidingNumberResource *resource;
-    if (D_80120E90[player].isActive != 0) {
+    if (gRacePlayers[player].isActive != 0) {
         func_80014874(initializeSlidingNumberDisplayTask);
         D_8013AE8C->resource14 = allocateTaskResource();
         resource = (SlidingNumberResource *)&D_800D9504[D_8013AE8C->resource14];
@@ -604,12 +604,12 @@ void initializeBouncingVisualTask(void) {
     resource->timer = 0;
     resource->framePosition = 0;
     if (D_8013AFD2 == 1) {
-        position->coord.t[0] = D_80120E90[0].worldCoordinate.coord.t[0];
+        position->coord.t[0] = gRacePlayers[0].worldCoordinate.coord.t[0];
     } else {
         position->coord.t[0] = 0;
     }
-    position->coord.t[1] = D_80120E90[0].worldCoordinate.coord.t[1];
-    position->coord.t[2] = D_80120E90[0].worldCoordinate.coord.t[2] + 50;
+    position->coord.t[1] = gRacePlayers[0].worldCoordinate.coord.t[1];
+    position->coord.t[2] = gRacePlayers[0].worldCoordinate.coord.t[2] + 50;
     resource->offsetY = -37120;
     resource->velocity = 0;
     resource->frame = 0;
@@ -709,14 +709,14 @@ void drawFirstPlayerResultCounterAndIcon(ResultDisplayResource *resource) {
     if (resource->unk06 == 3) {
         func_8006C998(24, -11, 397, 5, -1, &D_800EBFF0[D_8013AF78], 1);
     }
-    func_8006DFB4(32, -15, 5, 0, D_80120E90[0].unk01C, palette, -1,
+    func_8006DFB4(32, -15, 5, 0, gRacePlayers[0].unk01C, palette, -1,
                   &D_800EBFF0[D_8013AF78], 1);
     func_8006C998(72, -15, 26, palette, -1, &D_800EBFF0[D_8013AF78], 1);
 }
 
 void drawFirstPlayerResultNumberAndIcon(ResultDisplayResource *resource) {
     setSpriteColor(128, 128, 128);
-    func_8006DFB4(24, 33, 6, 0, D_80120E90[0].unk010, 1, -1,
+    func_8006DFB4(24, 33, 6, 0, gRacePlayers[0].money, 1, -1,
                   &D_800EBFF0[D_8013AF78], 1);
     func_8006C998(72, 33, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
 }
@@ -877,13 +877,13 @@ void initializeResultDisplayTask(void) {
     D_8013AE88->resource14 = allocateTaskResource();
     resource = (ResultDisplayResource *)&D_800D9504[D_8013AE88->resource14];
     resource->brightness = 0;
-    resource->unk06 = (s8)D_80120E90[0].unk935;
+    resource->unk06 = (s8)gRacePlayers[0].unk935;
     resource->unk04 = 0;
     if (resource->unk06 < 3) {
         resource->unk04 = D_8012FC6C[D_8013AFCE][resource->unk06];
     }
-    D_80120E90[0].unk010 = D_80130BF0[0];
-    resource->unk08 = D_80120E90[0].characterId;
+    gRacePlayers[0].money = D_80130BF0[0];
+    resource->unk08 = gRacePlayers[0].characterId;
     setCurrentTaskCallback(fadeInResultDisplayTask);
 }
 
@@ -898,12 +898,12 @@ void drawPlayerResultRowValues(s16 row, s16 x, s16 y, TaskFadeResource *resource
     } else {
         mode = 0;
     }
-    sprintf(text, gResultValueFormat, D_80120E90[resource->playerOrder[0]].unk02A);
+    sprintf(text, gResultValueFormat, gRacePlayers[resource->playerOrder[0]].unk02A);
     length = strlen(text);
     drawLimitedText8x8(x + 104, y + 24, 1, gResultValueMultiplierLabel, mode, -1, &D_800EBFF0[D_8013AF78], 1);
-    func_8006D66C(x + 112, y + 24, length, 0, D_80120E90[resource->playerOrder[row]].unk02A, mode, -1, &D_800EBFF0[D_8013AF78], 1);
-    if (D_80120E90[resource->playerOrder[row]].unk008 == 0) {
-        func_8006D66C(x + 88, y + 6, 1, 0, D_80120E90[resource->playerOrder[row]].playerIndex + 1, 5, -1, &D_800EBFF0[D_8013AF78], 1);
+    func_8006D66C(x + 112, y + 24, length, 0, gRacePlayers[resource->playerOrder[row]].unk02A, mode, -1, &D_800EBFF0[D_8013AF78], 1);
+    if (gRacePlayers[resource->playerOrder[row]].unk008 == 0) {
+        func_8006D66C(x + 88, y + 6, 1, 0, gRacePlayers[resource->playerOrder[row]].playerIndex + 1, 5, -1, &D_800EBFF0[D_8013AF78], 1);
         drawLimitedText8x8(x + 96, y + 6, 1, gPlayerNumberSuffixLabel, 5, -1, &D_800EBFF0[D_8013AF78], 1);
     } else {
         drawLimitedText8x8(x + 88, y + 6, 3, gComputerPlayerLabel, 4, -1, &D_800EBFF0[D_8013AF78], 1);
@@ -938,8 +938,8 @@ void updatePlayerResultOrder(TaskFadeResource *resource) {
     }
     for (i = 0; i < D_8013AFD2 - 1; i++) {
         for (j = i + 1; j < D_8013AFD2; j++) {
-            if (D_80120E90[resource->playerOrder[i]].unk935 >
-                D_80120E90[resource->playerOrder[j]].unk935) {
+            if (gRacePlayers[resource->playerOrder[i]].unk935 >
+                gRacePlayers[resource->playerOrder[j]].unk935) {
                 temp = resource->playerOrder[i];
                 resource->playerOrder[i] = resource->playerOrder[j];
                 resource->playerOrder[j] = temp;
@@ -947,7 +947,7 @@ void updatePlayerResultOrder(TaskFadeResource *resource) {
         }
     }
     for (i = 0; i < 4; i++) {
-        if (!(D_80120E90[resource->playerOrder[i]].unk128 & 0x40)) {
+        if (!(gRacePlayers[resource->playerOrder[i]].unk128 & 0x40)) {
             resource->playerOrder[i] = -1;
         }
     }
