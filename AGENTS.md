@@ -79,7 +79,11 @@ before inventing an implementation.
 
 Run `./tools/codex --bootstrap-only FUNCTION` and enter the printed workspace.
 Use `./build.sh base.c` and `./diff.sh` to compare attempts. Keep useful variants
-in separate files and use real project headers. Inspect each attempt's
+in separate `base_1.c`, `base_2.c`, etc. files and use real project headers.
+The build helper labels and archives each attempt under `attempts/base_N/`,
+records scores and failures in `match_log.txt`, and tracks the best archived
+source and artifacts in `best.json`. Preserve earlier attempts and never
+include another mutable candidate C file. Inspect each attempt's
 `result.json`, `diff.txt`, and disassembly. Owned data and jump tables require
 full-unit comparisons. An isolated `EXACT` result must still pass integration.
 
@@ -119,6 +123,8 @@ Fix a failed hook; never bypass it. Stay within the user's requested scope.
 If a build or experiment tool explicitly instructs you to stop, stop and report
 the best score and attempt file, approaches tried, remaining differences, and
 whether a different strategy is needed. Preserve useful scratch attempts.
+Stop after 20 attempts without improvement; use the best archived source and
+score from `best.json` in the report.
 A function is complete only at 100% byte match with a green full-image gate.
 
 ## Validation Checklist

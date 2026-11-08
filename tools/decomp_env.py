@@ -193,6 +193,31 @@ def build_attempt(workspace, source):
         return compare_attempt(workspace, source)
 
 
+def record_attempt(workspace, output, record):
+    (output / "attempt.json").write_text(json.dumps(record, indent=2) + "\n")
+    score = record.get("instruction_similarity_percent")
+    status = "exact" if record.get("exact") else "different" if score is not None else "error"
+    score_text = f"{score:.2f}%" if score is not None else "unscored"
+    with (workspace / "match_log.txt").open("a") as log:
+        log.write(f'{record["attempt"]}.c {score_text} {status} '
+                  f'source={record["source"]} sha1={record["source_sha1"]}\n')
+    records = sorted((json.loads(path.read_text()) for path in
+                      (workspace / "attempts").glob("base_*/attempt.json")),
+                     key=lambda item: item["number"])
+    scored = [item for item in records if "instruction_similarity_percent" in item]
+    if not scored:
+        return
+    # Exact bytes outrank rounded similarity; ties retain the earliest attempt.
+    best = max(scored, key=lambda item: (item["exact"], item["instruction_similarity_percent"]))
+    (workspace / "best.json").write_text(json.dumps(best, indent=2) + "\n")
+    print(f'Best: {best["attempt"]}.c — {best["instruction_similarity_percent"]:.2f}% '
+          f'({"EXACT" if best["exact"] else "different bytes"}); source: {best["source"]}', flush=True)
+    since = sum(item["number"] > best["number"] for item in records)
+    if since >= 20 and not best["exact"]:
+        print(f"STOP: No improvement in {since} attempts. Preserve the best attempt and report "
+              "its score/source, approaches tried, remaining differences, and next strategy.", flush=True)
+
+
 def compare_attempt(workspace, source):
     check_image()
     metadata = json.loads((workspace / "workspace.json").read_text())
@@ -206,17 +231,38 @@ def compare_attempt(workspace, source):
     if not source.is_file() or source.suffix != ".c":
         raise ValueError("provide an existing C attempt")
     latest = workspace / "latest.json"
-    latest.unlink(missing_ok=True)
-    output = workspace / "attempts" / source.stem
-    suffix = 2
-    while output.exists():
-        output = workspace / "attempts" / f"{source.stem}-{suffix}"
-        suffix += 1
+    attempts = workspace / "attempts"
+    numbers = [int(match[1]) for path in attempts.glob("base_*")
+               if (match := re.fullmatch(r"base_(\d+)", path.name))]
+    number = max(numbers, default=0) + 1
+    while (workspace / f"base_{number}.c").exists() and source != workspace / f"base_{number}.c":
+        number += 1
+    label = f"base_{number}"
+    numbered_source = workspace / f"{label}.c"
+    if source != numbered_source:
+        shutil.copyfile(source, numbered_source)
+    output = attempts / label
+    output.mkdir(parents=True)
+    snapshot = output / f"{label}.c"
+    snapshot.write_bytes(numbered_source.read_bytes())
+    source_hash = hashlib.sha1(snapshot.read_bytes()).hexdigest()
+    record = {"attempt": label, "number": number, "input": str(source),
+              "source": str(snapshot.relative_to(workspace)), "source_sha1": source_hash,
+              "output": str(output)}
+    print(f"Attempt: {label}.c", flush=True)
     result = subprocess.run([sys.executable, str(ROOT / "tools/match_function.py"), oracle.name,
-                             str(source), "--unit", str(oracle.unit), "--output", str(output)], cwd=ROOT)
+                             str(numbered_source), "--unit", str(oracle.unit), "--output", str(output)], cwd=ROOT)
     if result.returncode in (0, 1) and (output / "result.json").is_file():
+        report = json.loads((output / "result.json").read_text())
+        if report["source_sha1"] != source_hash:
+            record_attempt(workspace, output, record)
+            raise ValueError("attempt source changed during compilation; score was not logged")
+        record.update({key: report[key] for key in ("exact", "instruction_similarity_percent",
+                                                   "matching_instruction_words", "comparison_words")})
+        record_attempt(workspace, output, record)
         latest.write_text(json.dumps({"output": str(output)}, indent=2) + "\n")
         return result.returncode
+    record_attempt(workspace, output, record)
     return 2
 
 

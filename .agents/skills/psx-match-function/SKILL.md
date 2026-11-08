@@ -32,7 +32,15 @@ Create the function's workspace:
 
 Enter the printed directory. It contains `base.c`, the target assembly/object,
 preprocessed context, and build/diff helpers. Use real project headers and keep
-useful variants in separate files. Run `./build.sh base.c` and `./diff.sh`.
+useful variants in separate `base_1.c`, `base_2.c`, etc. files. Run
+`./build.sh base.c` and `./diff.sh`. The build helper numbers and archives each
+attempt under `attempts/base_N/`, appends its score/status to `match_log.txt`,
+and prints the best attempt. `best.json` points to its archived source and
+artifacts; `./diff.sh` shows the latest comparison, which may differ from best.
+Never include another mutable candidate C file or overwrite an archived attempt.
+Stop on exact bytes, an explicit tool stop instruction, or 20 attempts without
+improvement. Report the best score/source, approaches tried, remaining
+differences, and whether a different strategy is needed.
 Add `--id ID` when bootstrapping to reuse a workspace without overwriting attempts.
 
 The build helper uses the owning unit's compiler settings. Inspect each attempt's
