@@ -16,6 +16,7 @@ from urllib.request import Request, urlopen
 import build
 from decomp import ROOT, Elf32, PsxImage, active_functions, parse_asm, require_fresh, uncomment
 from match_function import owning_unit
+from m2ctx import generate_context
 from validate_commit import verify_image
 
 TEMPLATES = ROOT / "tools/decomp-env"
@@ -135,8 +136,7 @@ def seed_source(workspace, oracle, imported_source=None):
     original = source.read_text()
     includes = "\n".join(re.findall(r'^\s*#include[^\n]+', original, re.M)).strip() + "\n\n"
     context = workspace / "context.c"
-    subprocess.run([build.CPP, *build.CPP_FLAGS, "-DM2CTX", "-DNON_MATCHING", "-P",
-                    str(source), "-o", str(context)], cwd=ROOT, check=True)
+    context.write_text(generate_context(source))
     body = imported_source if imported_source is not None else existing_body(original, oracle.name)
     if body is None:
         m2c = shutil.which("m2c")
