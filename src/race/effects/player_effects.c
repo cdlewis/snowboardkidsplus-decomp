@@ -5,6 +5,22 @@
 /* Equal-channel color assignment for grayscale primitives. */
 #define setGray0(p, shade) ((p)->r0 = (p)->g0 = (p)->b0 = (shade))
 
+typedef struct TriangleBurstResource {
+    s32 frame;
+    VECTOR origin;
+    VECTOR positions[5];
+    SVECTOR velocities[5];
+    SVECTOR rotations[5];
+} TriangleBurstResource;
+typedef struct TriangleBurstScratch {
+    GsCOORDINATE2 coordinate;
+    SVECTOR vertices[3];
+    s32 depth, cue, flags;
+    MATRIX matrix;
+} TriangleBurstScratch;
+typedef struct ScreenPoint { s16 x, y; } ScreenPoint;
+
+
 const FadingTextGlyphBanks gFadingTextGlyphBanks
     __attribute__((section(".rodata.fading_text_glyph_banks"))) = {
     {D_8012EC04, D_8012ECC8, D_8012EECC, D_8012F0D0}
@@ -337,7 +353,43 @@ void createPlayerParticleTask(s32 playerIndex) {
     D_8013AE8C->data1A = 0;
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_80063890);
+void drawTriangleBurstTask(void) {
+    u8 padding[0x50];
+    ScreenPoint screen[3];
+    TriangleBurstResource *resource;
+    TriangleBurstScratch *scratch;
+    s32 i, depth;
+    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    scratch = (TriangleBurstScratch *)getScratchAddr(0);
+    resource = (TriangleBurstResource *)&D_800D9504[D_8013AE88->resource14];
+    setVector(&scratch->vertices[0], -40, -40, 0);
+    setVector(&scratch->vertices[1], 40, -40, 0);
+    setVector(&scratch->vertices[2], 40, 40, 0);
+    GsInitCoordinate2(0, &scratch->coordinate);
+    for (i = 0; i < 5; i++) {
+        RotMatrixYXZ(&resource->rotations[i], &scratch->coordinate.coord);
+        setVector((VECTOR *)scratch->coordinate.coord.t, resource->positions[i].vx, resource->positions[i].vy, resource->positions[i].vz);
+        GsGetLs(&scratch->coordinate, &scratch->matrix);
+        GsSetLsMatrix(&scratch->matrix);
+        depth = RotTransPers3(&scratch->vertices[0], &scratch->vertices[1], &scratch->vertices[2],
+            (long *)&screen[0], (long *)&screen[1], (long *)&screen[2], (long *)&scratch->cue, (long *)&scratch->flags);
+        scratch->depth = depth;
+        if (scratch->flags >= 0 && depth >= 0 && depth < 4096) {
+            func_8005FE7C(D_8013AF6C + (depth >> 2), screen[0].x, screen[0].y, screen[1].x, screen[1].y, screen[2].x, screen[2].y,
+                10, getClut(640, 250), 128, 128, 191, 128, 128, 191, 255, 255, 255, 128, 128, 128, 64, 64, 64);
+        }
+        if (!D_8013AFD3) {
+            resource->positions[i].vx += resource->velocities[i].vx;
+            resource->positions[i].vy += resource->velocities[i].vy;
+            resource->positions[i].vz += resource->velocities[i].vz;
+            resource->velocities[i].vy += 4;
+            resource->rotations[i].vx += 0x155;
+            resource->rotations[i].vz += 0x155;
+        }
+    }
+    if (!D_8013AFD3) resource->frame++;
+    if (resource->frame == 30) func_800149A8();
+}
 
 INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_80063B58);
 

@@ -3421,3 +3421,5 @@ transferResultPrizeMoneyTask = 0x80036454; // type:func
 renderCurrentCameraPlayersAndUpdateSound = 0x8003D940; // type:func
 
 drawProjectedModelPrimitives = 0x80058350; // type:func
+
+drawTriangleBurstTask = 0x80063890; // type:func

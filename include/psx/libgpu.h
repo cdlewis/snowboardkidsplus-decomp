@@ -2,6 +2,10 @@
 
 #include "decomp/types.h"
 
+/* Psy-Q 4.2 LIBGPU.H: set the three vector components. */
+#define setVector(v, x, y, z) \
+    ((v)->vx = (x), (v)->vy = (y), (v)->vz = (z))
+
 typedef struct RECT { s16 x, y, w, h; } RECT;
 
 typedef struct P_TAG {
