@@ -1093,7 +1093,7 @@ void updateRisingPlayerEffectTask(void) {
             resource->velocity = 2;
             resource->unkD8 = 1;
             D_8013AE88->data1C = 0;
-            setCurrentTaskCallback(func_80049404);
+            setCurrentTaskCallback(updateFallingPlayerEffectTask);
             return;
         }
         resource->coordinate.coord.t[0] = gRacePlayers[D_8013AE88->data1A].worldCoordinate.coord.t[0];
@@ -1113,7 +1113,49 @@ void updateRisingPlayerEffectTask(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/effects/coordinate_effects", func_80049404);
+void updateFallingPlayerEffectTask(void) {
+    RisingPlayerEffectResource *resource;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (RisingPlayerEffectResource *)&D_800D9504[D_8013AE88->resource14];
+    if (!D_8013AFD3) {
+        resource->velocity += 2;
+        resource->offset.y += resource->velocity;
+        switch (D_8013AE88->data1C) {
+        case 0:
+            gRacePlayers[D_8013AE88->data18].unk946 = 1;
+            if (resource->offset.y > -128 && resource->unkD8) {
+                func_800183FC(D_8013AE88->data18, 1, 0x900, 0x20);
+                gRacePlayers[D_8013AE88->data18].unk0E8 |= 0x1000;
+                gRacePlayers[D_8013AE88->data18].unk0F4 = D_8013AE88->data1A;
+                resource->unkD8 = 0;
+                return;
+            }
+            if (resource->offset.y > -64) {
+                resource->velocity = -16;
+                resource->countdown = 16;
+                D_8013AE88->data1C++;
+            }
+            break;
+        case 1:
+            if (--resource->countdown == 0) {
+                func_800149A8();
+                return;
+            }
+            break;
+        }
+        resource->coordinate.coord.t[0] = gRacePlayers[D_8013AE88->data18].worldCoordinate.coord.t[0];
+        resource->coordinate.coord.t[1] = gRacePlayers[D_8013AE88->data18].worldCoordinate.coord.t[1] + resource->offset.y;
+        resource->coordinate.coord.t[2] = gRacePlayers[D_8013AE88->data18].worldCoordinate.coord.t[2];
+    }
+    if (isPositionInCameraRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
+        D_80129A80[12].coord2 = &resource->coordinate;
+        func_8001E3E4(&resource->rotation, &resource->coordinate);
+        ScaleMatrix(&resource->coordinate.coord, &resource->scale);
+        drawTaskObject(12);
+    }
+}
 
 void initializeSlidingVisualSequenceTask(void) {
     SlidingVisualResource *resource;

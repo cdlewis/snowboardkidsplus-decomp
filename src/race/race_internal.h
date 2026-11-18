@@ -121,7 +121,9 @@ typedef struct RisingPlayerEffectResource {
     u8 unkC8[0x10];
     s32 unkD8;
     s32 velocity;
-    u8 unkE0[0x20];
+    u8 unkE0[4];
+    s32 countdown;
+    u8 unkE8[0x18];
 } RisingPlayerEffectResource;
 
 typedef struct PlayerEffectResource {
@@ -567,7 +569,7 @@ void slideRaceTimeDisplayOut(void);
 void func_80033100(void);
 void updatePlayerScaledObjectTask(void);
 void updateRisingPlayerEffectTask(void);
-void func_80049404(void);
+void updateFallingPlayerEffectTask(void);
 void func_8004531C(void);
 void updatePlayerFlagTaskVisual(void);
 void drawPlayerFlagTaskVisual(TaskVisualResource *resource);

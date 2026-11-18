@@ -2370,6 +2370,7 @@ computeSelectedTriangleAngles = 0x8005A4D0; // type:func
 
 initializeDelayedPlayerRiseEffectTask = 0x80049168; // type:func
 updateRisingPlayerEffectTask = 0x80049240; // type:func
+updateFallingPlayerEffectTask = 0x80049404; // type:func
 
 drawRisingTexturedStripTask = 0x80068BC0; // type:func
 
