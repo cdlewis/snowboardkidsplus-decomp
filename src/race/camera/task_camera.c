@@ -15,7 +15,7 @@ void initializeTaskPlayerCamera(void) {
 }
 
 void updateTaskViewAndCheckPlayerLimit(void) {
-    func_8003D940();
+    renderCurrentCameraPlayersAndUpdateSound();
     if (D_8013B55E != 0) {
         if (D_8013AE88->data18 < D_8013AFCD) {
             setCurrentTaskCallback(func_8003EE70);

@@ -1017,7 +1017,6 @@ void createPlayerTrailTask(s32 playerIndex);
 void func_80067D88(s32 playerIndex);
 void func_800688C0(s32 playerIndex);
 
-s32 isPointWithinCameraForwardRange(s32 x, s32 z, s16 player);
 void initializeProximityParticleTask(void);
 void func_8005CEF0(void);
 void updateCollectibleTask(void);

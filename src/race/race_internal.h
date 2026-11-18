@@ -562,6 +562,8 @@ void slideInSlidingNumberDisplayTask(void);
 void drawSlidingNumberDisplay(SlidingNumberResource *resource);
 void advancePlayerSpriteAnimationTask(void);
 void drawPlayerSpriteAnimation(SpriteAnimationResource *resource);
+void func_8001AF64(u16 player, u16 view);
+void func_80051D3C(s16 view);
 s16 func_8003D904(u16 player);
 void slideOutSlidingDisplayTask(void);
 void drawSlidingDisplaySprite(SlidingDisplayResource *resource);

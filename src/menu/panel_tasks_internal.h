@@ -219,7 +219,7 @@ void func_8009D354(void);
 void func_800A05C0(void);
 void startUnlockResourceLoad(void);
 void prepareUnlockSelectionResume(void);
-void func_8003D940(void);
+void renderCurrentCameraPlayersAndUpdateSound(void);
 void func_8003EE70(void);
 void updateTaskViewAndCheckPlayerLimit(void);
 

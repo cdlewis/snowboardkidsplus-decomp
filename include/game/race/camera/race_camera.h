@@ -19,6 +19,8 @@ extern GsRVIEW2 gPlayerCameraViews[2];
 /* X/Z are fixed point with eight fractional bits. */
 s32 isPositionInCameraRange(s32 x, s32 z, s16 playerIndex);
 
+s32 isPointWithinCameraForwardRange(s32 x, s32 z, s16 player);
+
 void initPlayerCamera(u16 index);
 void initPlayerCameraAndTarget(u16 index);
 void updatePlayerCameraPosition(u16 index);

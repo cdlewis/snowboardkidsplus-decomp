@@ -35,7 +35,33 @@ INCLUDE_ASM("asm/nonmatchings/race/player/player_results", func_8003CAF0);
 
 INCLUDE_ASM("asm/nonmatchings/race/player/player_results", func_8003D904);
 
-INCLUDE_ASM("asm/nonmatchings/race/player/player_results", func_8003D940);
+void renderCurrentCameraPlayersAndUpdateSound(void) {
+    u16 i;
+    if (func_8003D904(D_8013AE88->data18)) {
+        GsSetRefView2L(&gPlayerCameraViews[D_8013AE88->data18]);
+        updateCameraRotationMatrices(D_8013AE88->data18);
+        if (D_8013AE88->data18 != 0 && (D_8013AFAA & 0x2000)) {
+            for (i = 0; i < D_8013AFD2; i++) {
+                if (isPointWithinCameraForwardRange(gRacePlayers[i].worldCoordinate.coord.t[0], gRacePlayers[i].worldCoordinate.coord.t[2], 0)) {
+                    func_8001E3E4((SVECTOR *)&gRacePlayers[i].unk0B4, &gRacePlayers[i].worldCoordinate);
+                    setCoordinateRotationZYX(&gRacePlayers[i].modelRotation, &gRacePlayers[i].modelCoordinate);
+                    func_8001AF64(i, 0);
+                }
+            }
+            func_80051D3C(0);
+        } else {
+            for (i = 0; i < D_8013AFD2; i++) {
+                if (isPointWithinCameraForwardRange(gRacePlayers[i].worldCoordinate.coord.t[0], gRacePlayers[i].worldCoordinate.coord.t[2], D_8013AE88->data18)) {
+                    func_8001E3E4((SVECTOR *)&gRacePlayers[i].unk0B4, &gRacePlayers[i].worldCoordinate);
+                    setCoordinateRotationZYX(&gRacePlayers[i].modelRotation, &gRacePlayers[i].modelCoordinate);
+                    func_8001AF64(i, D_8013AE88->data18);
+                }
+            }
+            func_80051D3C(D_8013AE88->data18);
+        }
+    }
+    updateCurrentPlayerSound();
+}
 
 void updateCurrentPlayerSound(void) {
     s32 semitone;
