@@ -799,7 +799,71 @@ void waitResultFlagsInputTask(void) {
     drawResultPrizeLabels(resource);
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/ui/race_panels", func_80036454);
+void transferResultPrizeMoneyTask(void) {
+    ResultDisplayResource *resource;
+    s32 counting = 0;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (ResultDisplayResource *)&D_800D9504[D_8013AE88->resource14];
+    if (resource->unk04 != 0) {
+        counting = 1;
+    }
+    if (resource->unk04 >= 9) {
+        gRacePlayers[0].money += 8;
+        resource->unk04 -= 8;
+    } else {
+        gRacePlayers[0].money += resource->unk04;
+        resource->unk04 = 0;
+    }
+    if (resource->unk06 != 3) {
+        if (gRacePlayers[0].unk01C != 0) {
+            counting = 1;
+        }
+        if (gRacePlayers[0].unk01C >= 9) {
+            gRacePlayers[0].unk01C -= 8;
+            gRacePlayers[0].money += 8;
+        } else {
+            gRacePlayers[0].money += gRacePlayers[0].unk01C;
+            gRacePlayers[0].unk01C = 0;
+        }
+    }
+    if (D_8013AEE8[0] & 0xB0) {
+        gRacePlayers[0].money += resource->unk04;
+        if (resource->unk06 != 3) {
+            gRacePlayers[0].money += gRacePlayers[0].unk01C;
+            gRacePlayers[0].unk01C = 0;
+        }
+        resource->unk04 = 0;
+    }
+    if (gRacePlayers[0].money > 999999) {
+        gRacePlayers[0].money = 999999;
+    }
+    D_80130BF0[0] = gRacePlayers[0].money;
+    if (resource->unk06 != 3) {
+        if (resource->unk04 == 0 && gRacePlayers[0].unk01C == 0) {
+            playSoundEffect(0, 0x700, 0x20);
+            setCurrentTaskCallback(waitResultFlagsInputTask);
+        }
+    } else if (resource->unk04 == 0) {
+        counting = 0;
+        playSoundEffect(0, 0x700, 0x20);
+        setCurrentTaskCallback(waitResultFlagsInputTask);
+    }
+    if (counting) {
+        if (resource->timer == 0) {
+            resource->timer = 2;
+            playSoundEffect(0, 0x700, 0x20);
+        } else {
+            resource->timer--;
+        }
+    }
+    drawResultDisplayLabels(resource);
+    drawResultNumberAndIcon(resource);
+    drawFirstPlayerResultCounterAndIcon(resource);
+    drawFirstPlayerResultNumberAndIcon(resource);
+    drawResultPrizeLabels(resource);
+}
 
 void waitResultDisplayInputTask(void) {
     ResultDisplayResource *resource;
@@ -813,7 +877,7 @@ void waitResultDisplayInputTask(void) {
     }
     if (resource->timer == 0) {
         resource->timer = 0;
-        setCurrentTaskCallback(func_80036454);
+        setCurrentTaskCallback(transferResultPrizeMoneyTask);
     }
     drawResultDisplayLabels(resource);
     drawResultNumberAndIcon(resource);

@@ -593,7 +593,7 @@ void updateTaskTimeRecordCountdownPhase1AndPlaySound(void);
 void countRaceResultsMoneyTask(void);
 void drawTaskTimeRecordsAndSetFlag10OnInput(void);
 void drawCurrentTaskTimeRecordDetails(void);
-void func_80036454(void);
+void transferResultPrizeMoneyTask(void);
 void waitResultDisplayInputTask(void);
 void waitResultNumberDisplayTask(void);
 void waitResultDisplayConfirmationTask(void);
