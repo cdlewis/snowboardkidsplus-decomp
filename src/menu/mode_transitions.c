@@ -1,6 +1,16 @@
 #include "../race/race_presentation_internal.h"
 #include "game/menu/selected_sprite.h"
 
+extern TexturedQuadListEntry D_80123850[];
+extern TexturedQuadListEntry D_801239D0[];
+extern TexturedQuadListEntry D_80123910[];
+extern TexturedQuadListEntry D_80123A90[];
+
+TexturedQuadListEntry *gRegisteredTaskQuadLists[4]
+    __attribute__((section(".data.registered_task_quad_lists"))) = {
+    D_80123850, D_801239D0, D_80123910, D_80123A90
+};
+
 void dispatchMode11TransitionTask(void) {
     if (D_8013B109 != 1) {
         func_800149A8();
@@ -266,7 +276,48 @@ void drawSelectedTaskMarkerSprite(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/mode_transitions", func_8003288C);
+void drawRegisteredTaskTexturedQuadList(void) {
+    Movement2D *position;
+    GridSpriteParent *parent;
+    RegisteredTaskEntry *entry;
+    RegisteredTaskEntry *entries;
+    TextureColor *color;
+    s16 texture;
+    TexturedQuadListEntry *list;
+    if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
+    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) { for (;;) {} }
+    color = (TextureColor *)&D_800D9504[D_8013AE88->resource16];
+    if (D_8013AE98->resource14 == 0xFFFF) { for (;;) {} }
+    parent = (GridSpriteParent *)&D_800D9504[D_8013AE98->resource14];
+    if ((u16)(D_8013AE88->data1E % 10U) == 0) {
+        if (D_8013AE98->resource14 == 0xFFFF) { for (;;) {} }
+        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource14];
+        entry = &entries[D_8013AE88->data1E / 10U];
+    } else {
+        if (D_8013AE98->resource16 == 0xFFFF) { for (;;) {} }
+        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource16];
+        entry = &entries[D_8013AE88->data1E / 10U];
+    }
+    if (parent->mapping != 0) {
+        if (entry->command == 99) {
+            entry->task = 0;
+            func_800149A8();
+        } else {
+            setTexturedQuadColor(color->r, color->g, color->b);
+            if (parent->mode == 1 && parent->selectedIndex != D_8013AE88->data1A) {
+                texture = func_8007373C(parent->mapping,
+                    (s16)(D_8013AE88->data1A + parent->count));
+            } else {
+                texture = func_8007373C(parent->mapping, (s16)D_8013AE88->data1A);
+            }
+            list = gRegisteredTaskQuadLists[texture];
+            drawTexturedQuadList((s16)(position->x / 4096), (s16)(position->y / 4096),
+                list, 1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            entry->flags = 0;
+        }
+    }
+}
 
 void createRepeatedSoundTask(s32 sound, s32 delay, s32 interval, s32 count) {
     RepeatedSoundResource *resource;

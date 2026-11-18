@@ -45,3 +45,4 @@ const GridSpriteEntry *func_800736D0(const GridSpriteEntry *sprites,
 void drawRegisteredTaskGridSprite(void);
 
 void drawRegisteredTaskGridSpriteWithDefaultBlend(void);
+void drawRegisteredTaskTexturedQuadList(void);
