@@ -240,7 +240,7 @@ void func_8007B10C(void);
 void func_8007AC0C(void);
 void updateAnimatedSpriteTask(void);
 void func_80074448(void);
-void func_80074B60(void);
+void updateRegisteredCallbackTask(void);
 
 void configureTaskStateTransition(s32 mode, s32 id, u16 duration) {
     TaskValueState *state;
@@ -1003,7 +1003,7 @@ s16 hasTaskResource16Value(GameTask *task) {
 void createRegisteredCallbackTask(s32 mode, s16 x, s16 y, TaskCallback callback, s32 value, s32 index) {
     CallbackResource *resource;
     RegisteredTaskEntry *entry;
-    func_80014874(func_80074B60);
+    func_80014874(updateRegisteredCallbackTask);
     D_8013AE8C->data18 = mode;
     D_8013AE8C->data1A = 0;
     D_8013AE8C->data1C = value;
@@ -1026,7 +1026,42 @@ void createRegisteredCallbackTask(s32 mode, s16 x, s16 y, TaskCallback callback,
     entry->task = D_8013AE8C;
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80074B60);
+void updateRegisteredCallbackTask(void) {
+    Movement2D *movement;
+    CallbackResource *resource;
+    RegisteredTaskEntry *entry;
+    RegisteredTaskEntry *entries;
+    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    movement = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
+    resource = (CallbackResource *)&D_800D9504[D_8013AE88->resource16];
+    if ((u16)(D_8013AE88->data1E % 10U) == 0) {
+        if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
+        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource14];
+        entry = &entries[D_8013AE88->data1E / 10U];
+    } else {
+        if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
+        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource16];
+        entry = &entries[D_8013AE88->data1E / 10U];
+    }
+    switch (entry->command) {
+    case 20: D_8013AE88->data1A = 1; entry->command = 0; entry->flags = 0; break;
+    case 21: D_8013AE88->data1A = 2; entry->command = 0; entry->flags = 0; break;
+    case 22: D_8013AE88->data1A = 3; entry->command = 0; entry->flags = 0; break;
+    case 23: D_8013AE88->data1A = 0; entry->command = 0; entry->flags = 0; break;
+    case 0: entry->flags = 0; break;
+    case 99: entry->task = 0; func_800149A8(); return;
+    }
+    entry->flags |= func_8007102C(movement);
+    if (D_8013AE88->data1A != 0) {
+        if (D_8013AE88->data1A == 1 || D_8013AE88->data1A == 2) {
+            setSpriteColor(gTaskWidgetRedAbsolute, gTaskWidgetGreenAbsolute, gTaskWidgetBlueAbsolute);
+        } else {
+            setSpriteColor(128, 128, 128);
+        }
+    }
+    if (resource->callback != 0) resource->callback();
+}
 
 void createRegisteredTexturePairTask(s16 x, s16 y, const u8 *mapping, s32 mode, s32 unused, u16 arg5, s32 depth, s32 index) {
     TexturePairParent *parent;

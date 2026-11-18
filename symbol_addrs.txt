@@ -3425,3 +3425,5 @@ drawProjectedModelPrimitives = 0x80058350; // type:func
 drawTriangleBurstTask = 0x80063890; // type:func
 
 updateInputTimedSpriteTask = 0x80076E18; // type:func
+
+updateRegisteredCallbackTask = 0x80074B60; // type:func
