@@ -855,6 +855,8 @@ extern RECT readPixelRectGp;
 /* Shared collision regions remain in player_camera_state_tail. */
 extern PlayerCollisionRegion D_80129A18[2];
 extern u8 D_8013B2B5, D_8013B2B6;
+extern TaskVisualFrame gInteractionVisualFrame;
+extern VisualPlacement *gInteractionVisualPlacements;
 extern VisualPlacement *D_8013B2BC;
 extern u8 D_8013B2B9, D_8013B2BA;
 /* The course lookup base precedes its valid pointer entries in shared frame data. */
@@ -942,7 +944,7 @@ void func_80066474(void);
 void func_800689EC(void);
 void func_8005D828(RacePlayer *player, PlayerCollisionRegion *region);
 void func_8005B460(void);
-void func_8005B6C0(void);
+void updateInteractionVisualTask(void);
 void updateCourseVisualTask(void);
 void emitProjectedFlatTriangle(TriangleScratchVertex *vertices);
 void emitProjectedFlatQuad(TriangleScratchVertex *vertices);

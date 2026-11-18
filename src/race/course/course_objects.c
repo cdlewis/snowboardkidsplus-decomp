@@ -8,6 +8,11 @@ typedef struct PlacedObjectBounceVisual {
     s32 height, unk78, velocity;
 } PlacedObjectBounceVisual;
 
+TaskVisualFrame gInteractionVisualFrame __attribute__((section(".data.interaction_visual_frame"))) = {
+    0xC0, 0x20, 0x20, 0x20, 0x1C, 0x3D7F
+};
+VisualPlacement *gInteractionVisualPlacements __attribute__((section(".sdata.interaction_visual_placements"))) = 0;
+
 struct VisualPlacementHeightData gVisualPlacementHeightData __attribute__((section(".data.visual_placement_heights"))) = {
     0,
     {0, 56, 88, 96, -16, -40, -64, -88,
@@ -627,10 +632,59 @@ void initializeInteractionVisualTask(void) {
     resource->scaleX = 0x2000;
     resource->scaleY = 0x2000;
     resource->scaleZ = 0x2000;
-    setCurrentTaskCallback(func_8005B6C0);
+    setCurrentTaskCallback(updateInteractionVisualTask);
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/course/course_objects", func_8005B6C0);
+void updateInteractionVisualTask(void) {
+    TaskVisualResource *resource;
+    u8 i, player;
+    s32 height;
+    s16 *heightOffsets;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    prepareTaskVisualQuad(resource, &gInteractionVisualFrame, 1);
+    for (i = 0; ; i++) {
+        if (gInteractionVisualPlacements[i].unk01 == 0xFF) {
+            return;
+        }
+        if (!(gInteractionVisualPlacements[i].flags & 0x40)) {
+            if (isPositionInCameraRange(gInteractionVisualPlacements[i].x, gInteractionVisualPlacements[i].z, (s16)func_80059254())) {
+                resource->unkC4 = gInteractionVisualPlacements[i].geometryIndex;
+                resource->coordinate.coord.t[0] = gInteractionVisualPlacements[i].x;
+                resource->coordinate.coord.t[1] = gInteractionVisualPlacements[i].y;
+                resource->coordinate.coord.t[2] = gInteractionVisualPlacements[i].z;
+                height = gInteractionVisualPlacements[i].flags & 0xF;
+                if (height != 0) {
+                    heightOffsets = gVisualPlacementHeightData.offsets;
+                    resource->coordinate.coord.t[1] -= heightOffsets[height];
+                }
+                player = 0;
+                if (D_8013AFD3 == 0) {
+                    resource->position.x = resource->coordinate.coord.t[0] << 8;
+                    resource->position.y = resource->coordinate.coord.t[1] << 8;
+                    resource->position.z = resource->coordinate.coord.t[2] << 8;
+                    for (; player < D_8013AFCD; player++) {
+                        if (isPositionWithinPlayerCollisionRange(&resource->position, 0x1C00, 0x5000, player)) {
+                            gRacePlayers[player].collectedCourseCoinMarkerCount++;
+                            if (gRacePlayers[player].unk0FC != 0) {
+                                gRacePlayers[player].unk0FC = 0xF0;
+                            } else {
+                                startPlayerTimerTask(&gRacePlayers[player]);
+                            }
+                            func_8002E5A0(gRacePlayers[player].playerIndex, 0xD);
+                            playSoundEffect(0, 0, 0x20);
+                            gInteractionVisualPlacements[i].flags |= 0x40;
+                            break;
+                        }
+                    }
+                }
+                func_8005A788(resource, &gInteractionVisualFrame, 0);
+            }
+        }
+    }
+}
 
 void initializeCourseVisualTask(void) {
     TaskVisualResource *resource;
