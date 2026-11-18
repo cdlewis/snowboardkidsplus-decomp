@@ -36,6 +36,19 @@
 #include "psx/libapi.h"
 #include "game/graphics/draw_mode_sprite.h"
 
+/* TMD dispatch header and persistent flags shared by projected renderers. */
+typedef struct ProjectedModelScratchpad {
+    union {
+        u32 word;
+        struct { u8 outputLength, inputLength, flags, mode; } bytes;
+    } header;
+    u8 unk04[0x63];
+    u8 code;
+    u8 unk68[2];
+    u8 fogEnabled;
+    u8 unk6B;
+} ProjectedModelScratchpad;
+
 typedef union PaletteColor {
     u16 value;
     u8 bytes[2];
@@ -918,6 +931,8 @@ extern s32 D_8013B360;
 extern s32 D_8013B364;
 extern s32 D_8013B368;
 extern s32 D_8013B36C;
+extern u32 D_8013B66C;
+extern u32 D_8013B68C;
 extern ModelFlatTriangle *D_8013B680 __attribute__((section(".sdata")));
 extern SVECTOR *D_8013B688 __attribute__((section(".sdata")));
 
@@ -1059,6 +1074,7 @@ void drawIndexedFlatQuad(void);
 void processGouraudQuadPrimitive(void);
 void processTexturedQuadPrimitive(void);
 void processTexturedGouraudQuadPrimitive(void);
+void drawProjectedModelPrimitives(TmdObject *object, GsOT *ot, s32 shift, u32 flags);
 void drawProjectedIndexedFlatTriangle(void);
 void drawProjectedIndexedLitFlatTriangle(void);
 void drawProjectedIndexedLitGouraudTriangle(void);

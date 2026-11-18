@@ -3419,3 +3419,5 @@ drawPlayerNumberDisplay = 0x80034664; // type:func
 
 transferResultPrizeMoneyTask = 0x80036454; // type:func
 renderCurrentCameraPlayersAndUpdateSound = 0x8003D940; // type:func
+
+drawProjectedModelPrimitives = 0x80058350; // type:func

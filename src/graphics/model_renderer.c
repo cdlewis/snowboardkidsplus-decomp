@@ -926,7 +926,35 @@ void drawProjectedIndexedTexturedGouraudQuad(void) {
     GsOUT_PACKET_P = (u32)(packet + 1);
 }
 
-INCLUDE_ASM("asm/nonmatchings/graphics/model_renderer", func_80058350);
+void drawProjectedModelPrimitives(TmdObject *object, GsOT *ot, s32 shift, u32 flags) {
+    ProjectedModelScratchpad *scratch = (ProjectedModelScratchpad *)getScratchAddr(0);
+    u16 i;
+    D_8013B670 = ot;
+    D_8013B69C = shift;
+    D_8013B688 = object->vertices;
+    D_8013B680 = (ModelFlatTriangle *)object->primitives;
+    D_8013B68C = object->primitiveCount;
+    if (flags & 1) scratch->fogEnabled = 1;
+    else scratch->fogEnabled = 0;
+    scratch->unk6B = (flags >> 1) & 1;
+    D_8013B66C = SetSp((u32)getScratchAddr(255));
+    for (i = 0; i < D_8013B68C; i++) {
+        scratch->header.word = D_8013B680->unk00;
+        scratch->code = scratch->header.bytes.mode & 2;
+        switch (scratch->header.word & 0xFDFFFFFF) {
+        case ((POLY_F3_CODE | 1) << 24) | 0x00010304: drawProjectedIndexedFlatTriangle(); break;
+        case ((POLY_G3_CODE | 1) << 24) | 0x00010506: drawProjectedIndexedGouraudTriangle(); break;
+        case ((POLY_FT3_CODE | 1) << 24) | 0x00010607: drawProjectedIndexedTexturedTriangle(); break;
+        case ((POLY_GT3_CODE | 1) << 24) | 0x00010809: drawProjectedIndexedGouraudTexturedTriangle(); break;
+        case ((POLY_F4_CODE | 1) << 24) | 0x00010305: drawProjectedIndexedFlatQuad(); break;
+        case ((POLY_G4_CODE | 1) << 24) | 0x00010608: drawProjectedIndexedGouraudQuad(); break;
+        case ((POLY_FT4_CODE | 1) << 24) | 0x00010709: drawProjectedIndexedTexturedQuad(); break;
+        case ((POLY_GT4_CODE | 1) << 24) | 0x00010A0C: drawProjectedIndexedTexturedGouraudQuad(); break;
+        }
+        D_8013B680 = (ModelFlatTriangle *)((u32 *)D_8013B680 + (scratch->header.bytes.inputLength + 1));
+    }
+    SetSp(D_8013B66C);
+}
 
 INCLUDE_ASM("asm/nonmatchings/graphics/model_renderer", func_80058560);
 
