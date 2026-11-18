@@ -3401,3 +3401,6 @@ D_801239D0 = 0x801239D0; // size:0xC0
 D_80123A90 = 0x80123A90; // size:0xC0
 
 drawRegisteredTaskGridSpriteWithColor = 0x80073F84; // type:func
+
+updatePlayerParticleHistoryTask = 0x80045C7C; // type:func
+gPlayerParticleHistoryVisualFrames = 0x80124324; // size:0x30 defined:true

@@ -682,6 +682,8 @@ segments:
       - {start: 0x114AB4, type: .data, name: race/player/player_actions, linker_section: .data.player_flag_visual_frames}
       - {start: 0x114AE4, type: .data, name: race/player/player_actions, linker_section: .data.player_side_visual_frames}
       - [0x114B04, data, player_flag_visual_frames_tail]
+      - {start: 0x114B24, type: .data, name: race/effects/coordinate_effects, linker_section: .data.player_particle_history_visual_frames}
+      - [0x114B54, data, player_particle_history_visual_frames_tail]
       - {start: 0x115614, type: .data, name: unclassified/graphics_8004D330, linker_section: .data.camera_overlay_packets}
       - {start: 0x115714, type: .data, name: unclassified/graphics_8004D330, linker_section: .data.offset_screen_copy_sprites}
       - [0x1157D4, data, offset_screen_copy_sprites_tail]

@@ -1,5 +1,15 @@
 #include "../race_presentation_internal.h"
 
+TaskVisualFrame gPlayerParticleHistoryVisualFrames[6]
+    __attribute__((section(".data.player_particle_history_visual_frames"), aligned(4))) = {
+        {0x30, 0x28, 32, 32, 0xD, 0x3D79},
+        {0x50, 0x28, 32, 32, 0xD, 0x3D79},
+        {0x70, 0x28, 32, 32, 0xD, 0x3D79},
+        {0x90, 0x28, 32, 32, 0xD, 0x3D79},
+        {0xB0, 0x28, 32, 32, 0xD, 0x3D79},
+        {0xD0, 0x28, 32, 32, 0xD, 0x3D79}
+    };
+
 void drawPlayerFlagTaskVisual(TaskVisualResource *resource) {
     PlayerCamera *cameras = D_801241E8;
     D_800EB22C.vx = rcos(-cameras[func_80059254()].yaw) * 40 / 4096;
@@ -356,10 +366,57 @@ void initializePlayerParticleHistoryTask(void) {
     resource->unkC8 = 0;
     resource->framePosition = 0;
     resource->code = POLY_FT4_CODE;
-    setCurrentTaskCallback(func_80045C7C);
+    setCurrentTaskCallback(updatePlayerParticleHistoryTask);
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/effects/coordinate_effects", func_80045C7C);
+void updatePlayerParticleHistoryTask(void) {
+    TaskVisualResource *resource;
+    PlayerParticleResource *trail;
+    RacePlayer *players;
+    u16 i;
+    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
+    trail = (PlayerParticleResource *)&D_800D9504[D_8013AE88->resource16];
+    if (!D_8013AFD3) {
+        players = gRacePlayers;
+        if (players[D_8013AE88->data18].unk12C == 0x1A) {
+            D_8013AE88->data1A++;
+            if (D_8013AE88->data1A & 1) {
+                trail->entries[D_8013AE88->data1C].position.x = players[D_8013AE88->data18].worldCoordinate.coord.t[0] + (((u32)randomNextSecondary() & 0xFF) >> 1) - 0x40;
+                trail->entries[D_8013AE88->data1C].position.y = players[D_8013AE88->data18].worldCoordinate.coord.t[1];
+                trail->entries[D_8013AE88->data1C].position.z = players[D_8013AE88->data18].worldCoordinate.coord.t[2] + (((u32)randomNextSecondary() & 0xFF) >> 1) - 0x40;
+                trail->entries[D_8013AE88->data1C].framePosition = 0;
+                D_8013AE88->data1C = (D_8013AE88->data1C + 1) & 0xF;
+            }
+        } else {
+            if (!D_8013AE88->data1E) {
+                D_8013AE88->data1E = 1;
+                D_8013AE88->data1A = 13;
+            }
+            if (D_8013AE88->data1E) {
+                if (--D_8013AE88->data1A == 0) {
+                    func_800149A8();
+                    return;
+                }
+            }
+        }
+    }
+    for (i = 0; i < 16; i++) {
+        if (trail->entries[i].framePosition < 0x600) {
+            resource->framePosition = trail->entries[i].framePosition;
+            resource->coordinate.coord.t[0] = trail->entries[i].position.x;
+            resource->coordinate.coord.t[1] = trail->entries[i].position.y;
+            resource->coordinate.coord.t[2] = trail->entries[i].position.z;
+            if (!D_8013AFD3) {
+                trail->entries[i].position.y -= 2;
+                trail->entries[i].framePosition += 0x80;
+            }
+            setTaskVisualFrame(resource, gPlayerParticleHistoryVisualFrames, 0x2000);
+            drawCameraFacingTaskVisual(resource, 1);
+        }
+    }
+}
 
 void initializePlayerCoordinateEffectTask(void) {
     PlayerEffectResource *resource;
