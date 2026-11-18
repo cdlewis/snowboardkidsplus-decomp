@@ -2,6 +2,25 @@
 #include "psx/libetc.h"
 #include "render_effects_internal.h"
 
+typedef struct DigitSpritePacket {
+    u32 tag;
+    u16 tpage, drawModeCode;
+    u8 r0, g0, b0, code;
+    s16 x0, y0;
+    u8 u0, v0;
+    u16 clut;
+} DigitSpritePacket;
+
+DigitSpritePacket gDigitSprite16Template __attribute__((section(".data.digit_sprite16_template"))) = {
+    0x04000000, 0x001F, 0xE100,
+    0x80, 0x80, 0x80, SPRT_16_CODE,
+    0, 0, 0, 0, 0
+};
+
+const u16 gDigitSpriteBlendBits[4] __attribute__((section(".data.digit_sprite_blend_bits"))) = {
+    0x0000, 0x0020, 0x0040, 0x0060
+};
+
 u8 gUppercaseGlyphMetrics[52] __attribute__((section(".data.uppercase_glyph_metrics"))) = {
     0xC0, 0x08, 0xC8, 0x08, 0xD0, 0x08, 0xD8, 0x08,
     0xE0, 0x07, 0xE8, 0x07, 0xF0, 0x08, 0xC0, 0x08,
@@ -467,7 +486,58 @@ INCLUDE_ASM("asm/nonmatchings/graphics/sprite_draw", func_8006DC94);
 
 INCLUDE_ASM("asm/nonmatchings/graphics/sprite_draw", func_8006DFB4);
 
-INCLUDE_ASM("asm/nonmatchings/graphics/sprite_draw", func_8006E2C4);
+void drawDecimalNumber16(s16 x, s16 y, s16 count, s16 mode, s32 value,
+                   s16 palette, s16 blend, GsOT *ot, u16 depth) {
+    DigitSpritePacket digit;
+    DigitSpritePacket *packet;
+    s16 i;
+    s16 drawn;
+    if (count > 0) {
+        digit = gDigitSprite16Template;
+        packet = &digit;
+        if (blend >= 0) {
+            packet->tpage |= gDigitSpriteBlendBits[blend];
+            /* The draw-mode word occupies the standalone sprite tag slot. */
+            setSemiTrans((SPRT_16 *)&packet->tpage, 1);
+        }
+        setRGB0(packet, gTexturedSpriteTemplate.r0, gTexturedSpriteTemplate.g0, gTexturedSpriteTemplate.b0);
+        i = 0;
+        setXY0(packet, x, y);
+        packet->x0 += (count - 1) * 16;
+        setUV0(packet, 0, 0xA0);
+        packet->clut = getClut(0x300, palette + 0xF0);
+        packet = (DigitSpritePacket *)GsGetWorkBase();
+        drawn = 0;
+        for (; i < count; i++) {
+            if (value <= 0) break;
+            *packet = digit;
+            packet->u0 = (value % 10) * 16;
+            AddPrim(&ot->org[depth], packet);
+            packet++;
+            value /= 10;
+            drawn = 1;
+            digit.x0 -= 16;
+        }
+        if (!drawn) {
+            *packet = digit;
+            packet->u0 = 0;
+            AddPrim(&ot->org[depth], packet);
+            packet++;
+            i++;
+            digit.x0 -= 16;
+        }
+        if (mode == 1) {
+            for (; i < count; i++) {
+                *packet = digit;
+                packet->u0 = 0;
+                AddPrim(&ot->org[depth], packet);
+                packet++;
+                digit.x0 -= 16;
+            }
+        }
+        func_800BF2C8((u32)packet);
+    }
+}
 
 void drawHalfStepSpriteBar(s16 x, s16 y, s16 count, s16 palette, s16 blend, GsOT *ot, u16 depth) {
     s32 semiTrans;

@@ -563,7 +563,7 @@ void drawCurrentTaskSelectionPanel(void) {
     setTexturedQuadColor(128, 128, 128);
     func_8006EF30((s16)(x + 8), (s16)(y + 4), 10, gTaskSelectionPanelLabel,
                  8, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
-    func_8006E2C4((s16)(x + 56), (s16)(y + 4), 1, 0, selection->value + 1,
+    drawDecimalNumber16((s16)(x + 56), (s16)(y + 4), 1, 0, selection->value + 1,
                  8, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     func_8006EF30((s16)(x + 8), (s16)(y + 20), 10, gTaskSelectionPanelText,
                  8, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);

@@ -198,6 +198,8 @@ typedef struct DISPENV {
 #define getaddr(p) (((P_TAG *)(p))->addr)
 #define setaddr(p, address) (((P_TAG *)(p))->addr = (u32)(address))
 #define addPrim(ot, p) (setaddr(p, getaddr(ot)), setaddr(ot, p))
+/* PSY-Q 4.2 LIBGPU.H: scalar texture-coordinate setter. */
+#define setUV0(p, u, v) ((p)->u0 = (u), (p)->v0 = (v))
 #define setUV4(p, u_0, v_0, u_1, v_1, u_2, v_2, u_3, v_3) \
     ((p)->u0 = (u_0), (p)->v0 = (v_0), \
      (p)->u1 = (u_1), (p)->v1 = (v_1), \

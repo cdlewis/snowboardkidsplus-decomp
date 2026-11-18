@@ -719,6 +719,8 @@ segments:
       - [0x11DC60, data, 11DC60]
       - [0x11F0E4, .data, graphics/sprite_templates]
       - [0x11F0FC, data, 11F0FC]
+      - {start: 0x11F17C, type: .data, name: graphics/sprite_draw, linker_section: .data.digit_sprite16_template}
+      - [0x11F190, data, digit_sprite16_template_tail]
       - {start: 0x11F3D0, type: .data, name: graphics/sprite_draw, linker_section: .data.uppercase_glyph_metrics}
       - [0x11F404, data, uppercase_glyph_metrics_tail]
       - [0x11F900, .data, menu/task_widgets]
@@ -871,6 +873,8 @@ segments:
       - [0x12BB00, data, 12BB00]
       - {start: 0x12BB28, type: .data, name: race/effects/player_effects, linker_section: .data.color_cycle_rects}
       - [0x12BB38, data, color_cycle_rects_tail]
+      - {start: 0x12BB94, type: .data, name: graphics/sprite_draw, linker_section: .data.digit_sprite_blend_bits}
+      - [0x12BB9C, data, digit_sprite_blend_bits_tail]
       - {start: 0x12BBB4, type: .sdata, name: menu/task_widgets, linker_section: .sdata.animated_sprite16_page, linker_section_order: .data}
       - [0x12BBBC, data, 12BBBC]
       - {start: 0x12BC60, type: .data, name: unclassified/menu_8007CC78, linker_section: .data.lit_object_draw_area_depths}
