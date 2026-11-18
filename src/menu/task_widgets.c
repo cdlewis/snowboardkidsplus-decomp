@@ -226,7 +226,8 @@ void func_80071A80(void);
 void initTimedSequence(TimedSequence *sequence, const TimedSequenceEntry *entries, s16 index, s16 count);
 void updateCountdownTask(void);
 void func_8007649C(void);
-void func_80076E18(void);
+void updateInputTimedSpriteTask(void);
+void updateTimedSequence(TimedSequence *sequence);
 void updateTimedSpriteB5Task(void);
 void updateValueTransitionTask(void);
 void func_80077770(void);
@@ -1203,7 +1204,7 @@ void createInputTimedSpriteTask(s32 x, s32 y, const TimedSequenceEntry *entries,
     InputTimedSpriteResource *resource;
     ValuePanelEntry *entry;
 
-    func_80014874(func_80076E18);
+    func_80014874(updateInputTimedSpriteTask);
     D_8013AE8C->data1C = depth;
     D_8013AE8C->data1E = index;
     D_8013AE8C->resource14 = allocateTaskResource();
@@ -1237,7 +1238,47 @@ void createInputTimedSpriteTask(s32 x, s32 y, const TimedSequenceEntry *entries,
     entry->task = D_8013AE8C;
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80076E18);
+void updateInputTimedSpriteTask(void) {
+    InputTimedSpriteResource *state;
+    ValuePanelEntry *entry;
+    ValuePanelEntry *entries;
+    u16 input = 0;
+    s16 frame;
+    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    state = (InputTimedSpriteResource *)&D_800D9504[D_8013AE88->resource14];
+    if ((u16)(D_8013AE88->data1E % 10U) == 0) {
+        if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
+        entries = (ValuePanelEntry *)&D_800D9504[D_8013AE98->resource14];
+        entry = &entries[D_8013AE88->data1E / 10U];
+    } else {
+        if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
+        entries = (ValuePanelEntry *)&D_800D9504[D_8013AE98->resource16];
+        entry = &entries[D_8013AE88->data1E / 10U];
+    }
+    if (entry->flags == 99) {
+        entry->active = 0;
+        func_800149A8();
+    } else {
+        if (state->controllers & 1) input |= D_8013AEE8[0];
+        if (state->controllers & 2) input |= D_8013AEE8[1];
+        if (input & state->acceptMask) {
+            playSoundEffect(0, 0, 32);
+            entry->active = 0;
+            func_800149A8();
+        } else if (input & state->cancelMask) {
+            playSoundEffect(0, 0, 32);
+            entry->active = -1;
+            func_800149A8();
+        } else if (state->entries != NULL) {
+            frame = state->frame;
+            setTexturedQuadColor(128, 128, 128);
+            drawTexturedQuadByIndexWithBlend((s16)(state->x / 4096), (s16)(state->y / 4096),
+                (s16)state->entries[frame].unk00, (s16)(state->entries[frame].unk00 >> 16),
+                -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            updateTimedSequence((TimedSequence *)state);
+        }
+    }
+}
 
 void initTimedSequence(TimedSequence *sequence, const TimedSequenceEntry *entries, s16 index, s16 count) {
     sequence->index = index;
