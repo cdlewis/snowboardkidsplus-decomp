@@ -555,7 +555,7 @@ void queueBackgroundTextureSectorCommands(void);
 void func_8002FA58(s16 resource);
 void initializePlayerNumberDisplayTask(void);
 void slideOutPlayerNumberDisplayTask(void);
-void func_80034664(PlayerNumberResource *resource);
+void drawPlayerNumberDisplay(PlayerNumberResource *resource);
 void slideOutSlidingNumberDisplayTask(void);
 void initializeSlidingNumberDisplayTask(void);
 void slideInSlidingNumberDisplayTask(void);

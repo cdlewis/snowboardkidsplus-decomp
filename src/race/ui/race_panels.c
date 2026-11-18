@@ -264,7 +264,37 @@ void createPlayerSpriteAnimationTask(s32 x, s32 y, s32 player, s32 checkPlayer, 
     resource->frame = 0xFFFF;
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/ui/race_panels", func_80034664);
+void drawPlayerNumberDisplay(PlayerNumberResource *resource) {
+    u16 depth = 1;
+    s16 visible = 0;
+    GsOT *ot;
+    setSpriteColor(128, 128, 128);
+    if (D_8013AFCD == 1) {
+        visible = 1;
+        ot = &D_800EC018[D_8013AF78];
+    } else if (resource->player == 0) {
+        if (func_8003D904(0)) {
+            visible = 1;
+            ot = &D_800EC018[D_8013AF78];
+        }
+    } else {
+        if (func_8003D904(1)) {
+            visible = 1;
+            ot = &D_800EC0B8[D_8013AF78];
+        }
+    }
+    if (visible) {
+        func_8006DFB4(resource->x + 8, resource->y, 2, 0, resource->value, 3, -1, ot, depth);
+        func_8006C998(resource->x - 70, resource->y + 4, 0x1B4, 4, -1, ot, depth);
+        func_8006C998(resource->x - 26, resource->y + 4, 0x1B5, 4, -1, ot, depth);
+        func_8006C998(resource->x + 32, resource->y + 4, 0x1B6, 4, -1, ot, depth);
+        if (resource->showExtraValue) {
+            func_8006DFB4(resource->x + 8, resource->y + 18, 3, 0, 300, 3, -1, ot, depth);
+            func_8006C998(resource->x - 76, resource->y + 22, 0x1B3, 5, -1, ot, depth);
+            func_8006C998(resource->x + 40, resource->y + 22, 0x1B6, 4, -1, ot, depth);
+        }
+    }
+}
 
 void slideOutPlayerNumberDisplayTask(void) {
     PlayerNumberResource *resource;
@@ -277,7 +307,7 @@ void slideOutPlayerNumberDisplayTask(void) {
     if (resource->speed >= 56) {
         func_800149A8();
     } else {
-        func_80034664(resource);
+        drawPlayerNumberDisplay(resource);
     }
 }
 
@@ -291,7 +321,7 @@ void waitPlayerNumberDisplayTask(void) {
     if (--resource->timer == 0) {
         setCurrentTaskCallback(slideOutPlayerNumberDisplayTask);
     }
-    func_80034664(resource);
+    drawPlayerNumberDisplay(resource);
 }
 
 void slideInPlayerNumberDisplayTask(void) {
@@ -307,7 +337,7 @@ void slideInPlayerNumberDisplayTask(void) {
         resource->timer = 45;
         setCurrentTaskCallback(waitPlayerNumberDisplayTask);
     }
-    func_80034664(resource);
+    drawPlayerNumberDisplay(resource);
 }
 
 void initializePlayerNumberDisplayTask(void) {

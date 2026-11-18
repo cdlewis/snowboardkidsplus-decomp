@@ -3409,3 +3409,5 @@ gPlayerParticleHistoryVisualFrames = 0x80124324; // size:0x30 defined:true
 updateInteractionVisualTask = 0x8005B6C0; // type:func
 gInteractionVisualFrame = 0x8013B294; // size:0x8 defined:true
 gInteractionVisualPlacements = 0x8013B2C4; // size:0x4 defined:true
+
+drawPlayerNumberDisplay = 0x80034664; // type:func
