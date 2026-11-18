@@ -31,6 +31,7 @@ void drawFullScreenTexturedBackground(void);
 void drawSelectedTaskSideMarkerSprite(void);
 void initializePlayerModeSelectionTask(void);
 void drawSelectedTaskMarkerSprite(void);
+void updateRegisteredPlayerModePanelTask(void);
 void createRepeatedSoundTask(s32 sound, s32 delay, s32 interval, s32 count);
 void updateRepeatedSoundTask(void);
 void drawPlayerModeMessagePanelTask(void);

@@ -11,6 +11,36 @@ TexturedQuadListEntry *gRegisteredTaskQuadLists[4]
     D_80123850, D_801239D0, D_80123910, D_80123A90
 };
 
+const u16 gRegisteredPlayerModePanelText0[28]
+    __attribute__((section(".data.registered_player_mode_panel_text"), aligned(4))) = {
+    0xC00F, 0x006C, 0x002C, 0x004F, 0x00A8, 0x00DA, 0x00DB, 0x009F,
+    0x00BB, 0x0087, 0x006C, 0x0044, 0x0066, 0x002C, 0x00AB, 0x00DC,
+    0x00DD, 0x00BF, 0x00DE, 0x00B4, 0x00A5, 0x009A, 0x00CB, 0x009D,
+    0x0094, 0x0033, 0x0000, 0x0000,
+};
+
+const u16 gRegisteredPlayerModePanelText1[38]
+    __attribute__((section(".data.registered_player_mode_panel_text"), aligned(4))) = {
+    0xC00E, 0x0080, 0x0056, 0x006B, 0x006C, 0x002C, 0x004F, 0xC00F,
+    0x0039, 0xC00E, 0x0052, 0x0044, 0x0063, 0x0043, 0x0052, 0x003F,
+    0x004A, 0xC00F, 0x0039, 0xC00E, 0x004F, 0x0049, 0x006B, 0x0074,
+    0x002C, 0x0063, 0xC00F, 0x00C1, 0x0087, 0x006C, 0x0044, 0x00CE,
+    0x0099, 0x00B1, 0x009F, 0x0033, 0x0000, 0x0000,
+};
+
+const u16 gRegisteredPlayerModePanelText2[28]
+    __attribute__((section(".data.registered_player_mode_panel_text"), aligned(4))) = {
+    0xC00E, 0x0080, 0x0056, 0x006B, 0x006C, 0x002C, 0x004F, 0xC00F,
+    0x00A6, 0xC00E, 0x004F, 0x0049, 0x006B, 0x0074, 0x002C, 0x0063,
+    0xC00F, 0x00C1, 0x0087, 0x006C, 0x0044, 0x00CE, 0x0099, 0x00B1,
+    0x009F, 0x0033, 0x0000, 0x0000,
+};
+
+const u16 *gRegisteredPlayerModePanelTexts[3]
+    __attribute__((section(".data.registered_player_mode_panel_texts"))) = {
+    gRegisteredPlayerModePanelText0, gRegisteredPlayerModePanelText1, gRegisteredPlayerModePanelText2
+};
+
 void dispatchMode11TransitionTask(void) {
     if (D_8013B109 != 1) {
         func_800149A8();
@@ -247,7 +277,40 @@ INCLUDE_ASM("asm/nonmatchings/menu/mode_transitions", func_80031C98);
 
 INCLUDE_ASM("asm/nonmatchings/menu/mode_transitions", func_80032280);
 
-INCLUDE_ASM("asm/nonmatchings/menu/mode_transitions", func_8003240C);
+void updateRegisteredPlayerModePanelTask(void) {
+    Movement2D *position;
+    RegisteredTaskEntry *entry;
+    RegisteredTaskEntry *entries;
+    u16 remainder;
+    u16 resource;
+    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
+    remainder = D_8013AE88->data1E % 10U;
+    resource = D_8013AE98->resource14;
+    if (remainder == 0) {
+        if (resource == 0xFFFF) { while (1) {} }
+        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource14];
+        entry = &entries[D_8013AE88->data1E / 10U];
+    } else {
+        if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
+        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource16];
+        entry = &entries[D_8013AE88->data1E / 10U];
+    }
+    if (entry->command == 99) {
+        entry->flags = 0;
+        func_800149A8();
+    } else {
+        entry->flags = func_8007102C(position);
+        setSpriteColor(128, 128, 128);
+        setTexturedQuadColor(128, 128, 128);
+        D_8013AE88->data1A = D_8013AE98->data1A;
+        func_8006EF30((s16)(position->x / 4096 + 8), (s16)(position->y / 4096 + 8),
+            14, gRegisteredPlayerModePanelTexts[D_8013AE88->data1A], 8, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        drawDefaultTexturedPanel((s16)(position->x / 4096), (s16)(position->y / 4096),
+            240, 64, 5, 0, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    }
+}
 
 void drawSelectedTaskMarkerSprite(void) {
     SelectedTaskSpriteResource *resource;
