@@ -917,7 +917,46 @@ void drawSelectedTaskSprite(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80073F84);
+void drawRegisteredTaskGridSpriteWithColor(void) {
+    Movement2D *position;
+    ByteTriplet *color;
+    GridSpriteParent *parent;
+    RegisteredTaskEntry *entry;
+    RegisteredTaskEntry *entries;
+    const GridSpriteEntry *sprite;
+    if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
+    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) { for (;;) {} }
+    color = (ByteTriplet *)&D_800D9504[D_8013AE88->resource16];
+    if (D_8013AE98->resource14 == 0xFFFF) { for (;;) {} }
+    parent = (GridSpriteParent *)&D_800D9504[D_8013AE98->resource14];
+    if ((u16)(D_8013AE88->data1E % 10U) == 0) {
+        if (D_8013AE98->resource14 == 0xFFFF) { for (;;) {} }
+        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource14];
+        entry = &entries[D_8013AE88->data1E / 10U];
+    } else {
+        if (D_8013AE98->resource16 == 0xFFFF) { for (;;) {} }
+        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource16];
+        entry = &entries[D_8013AE88->data1E / 10U];
+    }
+    if (parent->mapping != 0) {
+        if (entry->command == 99) {
+            entry->task = 0;
+            func_800149A8();
+        } else {
+            if (parent->mode == 1 && parent->selectedIndex != D_8013AE88->data1A) {
+                sprite = func_800736D0(parent->sprites, parent->mapping,
+                    (s16)(D_8013AE88->data1A + parent->count));
+            } else {
+                sprite = func_800736D0(parent->sprites, parent->mapping, (s16)D_8013AE88->data1A);
+            }
+            setSpriteColor(color->bytes[0], color->bytes[1], color->bytes[2]);
+            func_8006C998((s16)(position->x / 4096), (s16)(position->y / 4096),
+                sprite->sprite, sprite->color, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            entry->flags = 0;
+        }
+    }
+}
 
 
 

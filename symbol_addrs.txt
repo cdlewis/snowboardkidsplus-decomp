@@ -3399,3 +3399,5 @@ D_80123850 = 0x80123850; // size:0xC0
 D_80123910 = 0x80123910; // size:0xC0
 D_801239D0 = 0x801239D0; // size:0xC0
 D_80123A90 = 0x80123A90; // size:0xC0
+
+drawRegisteredTaskGridSpriteWithColor = 0x80073F84; // type:func
