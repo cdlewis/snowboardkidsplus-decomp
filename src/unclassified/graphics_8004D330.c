@@ -2,6 +2,8 @@
 #include "psx/libetc.h"
 #include "../graphics/render_effects_internal.h"
 #include "../race/race_internal.h"
+#define GAME_LOOP_ABSOLUTE_ADDRESSING
+#include "game/engine/game_loop.h"
 
 TexturedSpritePacket gCameraOverlaySpritesBuffer0[2] __attribute__((section(".data.camera_overlay_packets"))) = {
     {5 << 24, ((u32)DRAW_MODE_COMMAND_HIGH << 16) | getTPage(2, 0, 0, 0),
@@ -68,6 +70,9 @@ RECT gReadPixelRect __attribute__((section(".data.read_pixel_rect"))) = {0, 0, 1
 RECT gScanlineCopyRect __attribute__((section(".data.scanline_copy_rects"))) = {640, 256, 64, 1};
 
 RECT gScanlineSeedRect __attribute__((section(".data.scanline_copy_rects"))) = {704, 144, 64, 1};
+
+extern VECTOR D_80124BDC;
+extern TmdObject *D_80125044[3];
 
 INCLUDE_ASM("asm/nonmatchings/unclassified/graphics_8004D330", func_8004D330);
 
@@ -255,7 +260,37 @@ void drawSnowBackgroundAndSetFog(s16 playerIndex) {
 
 INCLUDE_ASM("asm/nonmatchings/unclassified/graphics_8004D330", func_80050B18);
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/graphics_8004D330", func_80050F84);
+void drawBackgroundModelsAndSetFog(s16 playerIndex) {
+    GsCOORDINATE2 *coordinate = (GsCOORDINATE2 *)getScratchAddr(0);
+    MATRIX *matrix = (MATRIX *)getScratchAddr(20);
+    GsOT *ot;
+    s16 x, y, horizon;
+
+    if (playerIndex == 0) {
+        ot = &D_800EC040[D_8013AF78];
+    } else {
+        ot = &D_800EC0E0[D_8013AF78];
+    }
+    x = -160 - ((D_801241E8[playerIndex].yaw >> 1) & 255);
+    y = D_801241E8[playerIndex].pitch / 2;
+    horizon = y;
+    addTexturedSprite(&D_8013AF6C[512], 26, 0x7C2A, (s16)x, y, 256, 64, 0, 128, 128, 128, 128);
+    addTexturedSprite(&D_8013AF6C[512], 26, 0x7C2A, (s16)(x + 256), y, 256, 64, 0, 128, 128, 128, 128);
+    addTexturedSprite(&D_8013AF6C[512], 26, 0x7C2A, (s16)(x + 512), y, 256, 64, 0, 128, 128, 128, 128);
+    if (horizon < -120) horizon = -120;
+    if (horizon > 120) horizon = 120;
+    addFlatRectangle(&D_8013AF6C[4095], -160, -120, 320, (s16)(horizon + 120), 0, 120, 240);
+    addFlatRectangle(&D_8013AF6C[4095], -160, (s16)horizon, 320, (s16)(120 - horizon), 255, 255, 255);
+    GsInitCoordinate2(0, coordinate);
+    GsGetLs(coordinate, matrix);
+    ScaleMatrix(matrix, &D_80124BDC);
+    GsSetLsMatrix(matrix);
+    drawProjectedModelPrimitives(D_80125044[0], ot, 2, 1);
+    drawProjectedModelPrimitives(D_80125044[1], ot, 2, 1);
+    drawProjectedModelPrimitives(D_80125044[2], ot, 2, 1);
+    SetFarColor(110, 110, 128);
+    SetFogNearFar(8000, 10000, 400);
+}
 
 INCLUDE_ASM("asm/nonmatchings/unclassified/graphics_8004D330", func_800512A4);
 
