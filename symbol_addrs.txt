@@ -3402,6 +3402,7 @@ gControllerEffectDefinitions = 0x8012D36C; // type:ControllerEffectDefinition si
 gRacePlayers = 0x80120E90; // size:0x2770
 drawStatsMenuMoneyValues = 0x8003AD48; // type:func
 
+drawDecimalNumber8x16 = 0x8006D984; // type:func
 drawDecimalNumber16 = 0x8006E2C4; // type:func
 gDigitSprite16Template = 0x8012E97C; // size:0x14 defined:true
 gDigitSpriteBlendBits = 0x8013B394; // size:0x8 defined:true

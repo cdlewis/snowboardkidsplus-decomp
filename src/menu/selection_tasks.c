@@ -195,7 +195,7 @@ void drawNumberSelectionPanel(NumberPanelState *state) {
     GsOT *ot = &D_800EBFF0[D_8013AF78];
     setSpriteColor(128, 128, 128);
     setTexturedQuadColor(128, 128, 128);
-    func_8006D984(23, -39, 1, 0, state->number + 1, 5, -1, ot, 2);
+    drawDecimalNumber8x16(23, -39, 1, 0, state->number + 1, 5, -1, ot, 2);
     func_8006C998(-40, -36, 404, 8, -1, ot, 2);
     drawDefaultTexturedPanel(-56, -48, 112, 96, 5, 0, ot, 2);
     func_80070C5C(128, ot, 2);

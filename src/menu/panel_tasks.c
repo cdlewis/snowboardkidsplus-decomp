@@ -424,7 +424,7 @@ void drawCurrentTaskBoardStyleAndLevel(void) {
             &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         drawWrappedDoubleByteText(position->x / 4096 - 104, position->y / 4096 + 24,
             10, (s8 *)gBoardLevelLabel, 6, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
-        func_8006D984(position->x / 4096 - 64, position->y / 4096 + 24,
+        drawDecimalNumber8x16(position->x / 4096 - 64, position->y / 4096 + 24,
             1, 0, gBoardSelectionLevels[entry->index], 6, -1,
             &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     }
