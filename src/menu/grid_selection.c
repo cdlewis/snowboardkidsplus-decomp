@@ -242,7 +242,7 @@ void drawCurrentTaskSavedValuePanel(void) {
         func_8006C998(x + 8, y - 22, 0xBB, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         func_8006C998(x + 74, y + 140, 0xBD, 10, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         records = (SaveRecord *)&D_8013080C;
-        func_8006D66C(x + 74, y + 152, 6, 0,
+        drawDecimalNumber8x8(x + 74, y + 152, 6, 0,
             ((GlobalFlagStatePrefix *)&records[(s16)index])->unk_3E4,
             0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         ot = &D_800EBFF0[D_8013AF78];

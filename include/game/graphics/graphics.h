@@ -344,8 +344,8 @@ void func_8006C998(s16 x, s16 y, s32 sprite, s32 palette, s32 blendMode,
                    GsOT *ot, u16 depth);
 void drawDecimalNumber8x16(s16 x, s16 y, s16 digits, s16 zeroFill, s32 value,
                           s16 palette, s16 blend, GsOT *ot, u16 depth);
-void func_8006D66C(s16 x, s16 y, s16 digits, s16 zeroFill, s32 value,
-                   s16 palette, s16 blendMode, GsOT *ot, u16 depth);
+void drawDecimalNumber8x8(s16 x, s16 y, s16 digits, s16 zeroFill, s32 value,
+                         s16 palette, s16 blend, GsOT *ot, u16 depth);
 void drawHudDecimalNumber8x16(s16 x, s16 y, s16 digits, s16 zeroFill, s32 value,
                              s16 palette, s16 blend, GsOT *ot, u16 depth);
 /* Draw one sprite per two steps, with a second glyph for an odd step. */

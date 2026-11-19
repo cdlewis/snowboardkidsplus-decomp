@@ -760,7 +760,7 @@ void drawTaskIndexPanel(void) {
     }
     setSpriteColor(128, 128, 128);
     setTexturedQuadColor(128, 128, 128);
-    func_8006D66C(resource->x / 4096 + 54, resource->y / 4096 + 4,
+    drawDecimalNumber8x8(resource->x / 4096 + 54, resource->y / 4096 + 4,
                   1, 0, index + 1, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     if (index == 0) list = taskIndexPanelQuadsPalette0;
     else list = taskIndexPanelQuadsPalette1;

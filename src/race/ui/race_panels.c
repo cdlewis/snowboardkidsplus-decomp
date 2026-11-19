@@ -995,9 +995,9 @@ void drawPlayerResultRowValues(s16 row, s16 x, s16 y, TaskFadeResource *resource
     sprintf(text, gResultValueFormat, gRacePlayers[resource->playerOrder[0]].unk02A);
     length = strlen(text);
     drawLimitedText8x8(x + 104, y + 24, 1, gResultValueMultiplierLabel, mode, -1, &D_800EBFF0[D_8013AF78], 1);
-    func_8006D66C(x + 112, y + 24, length, 0, gRacePlayers[resource->playerOrder[row]].unk02A, mode, -1, &D_800EBFF0[D_8013AF78], 1);
+    drawDecimalNumber8x8(x + 112, y + 24, length, 0, gRacePlayers[resource->playerOrder[row]].unk02A, mode, -1, &D_800EBFF0[D_8013AF78], 1);
     if (gRacePlayers[resource->playerOrder[row]].unk008 == 0) {
-        func_8006D66C(x + 88, y + 6, 1, 0, gRacePlayers[resource->playerOrder[row]].playerIndex + 1, 5, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawDecimalNumber8x8(x + 88, y + 6, 1, 0, gRacePlayers[resource->playerOrder[row]].playerIndex + 1, 5, -1, &D_800EBFF0[D_8013AF78], 1);
         drawLimitedText8x8(x + 96, y + 6, 1, gPlayerNumberSuffixLabel, 5, -1, &D_800EBFF0[D_8013AF78], 1);
     } else {
         drawLimitedText8x8(x + 88, y + 6, 3, gComputerPlayerLabel, 4, -1, &D_800EBFF0[D_8013AF78], 1);
