@@ -107,7 +107,7 @@ void func_800A42CC(void);
 void func_800A499C(void);
 void func_8001B858(void);
 void initializeModeRaceTasks(void);
-void func_800A4C28(void);
+void drawUnlockNotificationMenu(void);
 void func_800A3D9C(void);
 void func_800A525C(void);
 

@@ -1,5 +1,11 @@
 #include "selection_tasks_internal.h"
 
+s16 gUnlockNotificationSprites[14] __attribute__((section(".data.unlock_notification_sprites"))) = {
+    0x216, 0x217, 0x218, 0x219, 0x21A, 0x21B,
+    0x21D, 0x21E, 0x21F, 0x220, 0x221, 0x222,
+    0x21C, 0
+};
+
 void initializeUnlockMenuResourceTask(void) {
     UnlockMenuState *state;
     if (D_8013AE88->resource14 != 0xFFFF) {
@@ -96,7 +102,7 @@ void initializeUnlockMenuTask(void) {
     state->selection = 0;
     state->previousSelection = 0;
     resetUnlockMenuOffsets(state);
-    func_800A4C28();
+    drawUnlockNotificationMenu();
     setCurrentTaskCallback(func_800A499C);
 }
 
@@ -112,7 +118,44 @@ void resetUnlockMenuOffsets(UnlockMenuState *state) {
 
 INCLUDE_ASM("asm/nonmatchings/menu/unlock_menu", func_800A499C);
 
-INCLUDE_ASM("asm/nonmatchings/menu/unlock_menu", func_800A4C28);
+void drawUnlockNotificationMenu(void) {
+    UnlockMenuState *state;
+    s16 row;
+    s16 verticalOffset;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        for (;;) {}
+    }
+    state = (UnlockMenuState *)&D_800D9504[D_8013AE88->resource14];
+    setSpriteColor(128, 128, 128);
+    verticalOffset = state->unk3C[0] / 4096;
+    func_8006C998(-68, -96 - verticalOffset, 0x22F, 2, -1, &D_800EBFF0[D_8013AF78], 4);
+    for (row = 0; row < 6; row++) {
+        s16 sprite;
+        s16 rightIndex;
+        s16 horizontalOffset = state->unk04[row] / 4096;
+
+        if ((s16)hasUnlockNotificationFlag(row)) {
+            sprite = gUnlockNotificationSprites[row];
+        } else {
+            sprite = 0x233;
+        }
+        func_8006C998(-136 - horizontalOffset, row * 20 - 56, sprite,
+                      state->selection != row, -1, &D_800EBFF0[D_8013AF78], 4);
+        rightIndex = row + 6;
+        if ((s16)hasUnlockNotificationFlag(rightIndex)) {
+            sprite = gUnlockNotificationSprites[rightIndex];
+        } else {
+            sprite = 0x233;
+        }
+        func_8006C998(horizontalOffset + 8, row * 20 - 56, sprite,
+                      state->selection != rightIndex, -1, &D_800EBFF0[D_8013AF78], 4);
+    }
+    func_8006C998(-64, verticalOffset + 72, 0x21C, state->selection != 12, -1,
+                  &D_800EBFF0[D_8013AF78], 4);
+    func_8007240C(-160, -120, 320, 240, 192, 192, 192, 2, &D_800EBFF0[D_8013AF78], 4);
+    drawFullScreenTexturedBackground();
+}
 
 s32 hasUnlockNotificationFlag(s16 index) {
     if (index == 11) {
@@ -140,7 +183,7 @@ void animateUnlockMenuTransition(void) {
         for (;;) {}
     }
     state = (UnlockMenuState *)&D_800D9504[D_8013AE88->resource14];
-    func_800A4C28();
+    drawUnlockNotificationMenu();
     switch (D_8013AE88->data18) {
     case 0:
         for (i = 0; i < 6; i++) {

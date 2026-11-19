@@ -238,6 +238,7 @@ getGameOptionFlag0 = 0x8008C640; // type:func
 getPlayerOptionFlag = 0x8008C650; // type:func
 getUnlockNotificationFlag = 0x8008C6BC; // type:func
 setUnlockNotificationFlag = 0x8008C6DC; // type:func
+drawUnlockNotificationMenu = 0x800A4C28; // type:func
 hasUnlockNotificationFlag = 0x800A4F78; // type:func
 resumeUnlockSelectionTask = 0x800A51D8; // type:func
 startUnlockResourceLoad = 0x800A528C; // type:func
@@ -2845,6 +2846,7 @@ drawNumberSelectionPanel = 0x800A29A4; // type:func
 
 updateControllerPlaybackUntilFade = 0x800A39AC; // type:func
 gControllerPlaybackDurations = 0x8013283C; // size:0x18
+gUnlockNotificationSprites = 0x80132878; // size:0x1C
 
 drawSceneImageTask = 0x800A6CC4; // type:func
 

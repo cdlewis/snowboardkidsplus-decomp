@@ -211,7 +211,6 @@ void func_800A499C(void);
 void preparePlayerResourcesTask(void);
 void initializeRaceTaskState(void);
 void func_8001B858(void);
-void func_800A4C28(void);
 void func_800A525C(void);
 void func_800A53BC(void);
 void func_8009D354(void);
