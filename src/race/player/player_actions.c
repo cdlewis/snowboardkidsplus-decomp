@@ -224,7 +224,7 @@ void resolvePlayerCollisionsWithCylinder(const Position3D *position, s32 radius,
             continue;
         }
         distance -= range;
-        D_8013B0E6 = func_8004A124(position->x, position->z, player->x, player->z);
+        D_8013B0E6 = getXZHeading(position->x, position->z, player->x, player->z);
         sine = rsin((s16)D_8013B0E6);
         cosine = rcos((s16)D_8013B0E6);
 

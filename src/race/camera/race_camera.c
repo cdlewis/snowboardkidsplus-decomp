@@ -77,7 +77,7 @@ void updatePlayerCameraPitch(u16 playerIndex) {
         x /= 2;
         z /= 2;
     }
-    D_801241E8[playerIndex].pitch = func_8004A124(0, 0, SquareRoot0(x * x + z * z), y / scale) - 0x400;
+    D_801241E8[playerIndex].pitch = getXZHeading(0, 0, SquareRoot0(x * x + z * z), y / scale) - 0x400;
 }
 
 void updatePlayerCameraAngles(u16 playerIndex) {
@@ -85,7 +85,7 @@ void updatePlayerCameraAngles(u16 playerIndex) {
     PlayerCamera *camera = &cameras[playerIndex];
     RacePlayer *players = gRacePlayers;
     RacePlayer *player = &players[playerIndex];
-    camera->yaw = func_8004A124(camera->x, camera->z, player->x, player->z);
+    camera->yaw = getXZHeading(camera->x, camera->z, player->x, player->z);
     updatePlayerCameraPitch(playerIndex);
 }
 

@@ -784,7 +784,7 @@ void updatePlayerVisualPairTask6780(void) {
         if (dx != 0 || dz != 0) {
             resource->position.x += dx;
             resource->position.z += dz;
-            resource->unkD8 = func_8004A124(0, 0, D_800EB22C.vx, D_800EB22C.vz);
+            resource->unkD8 = getXZHeading(0, 0, D_800EB22C.vx, D_800EB22C.vz);
         }
     }
     drawTaskVisualPositionHistory(resource, history, &gPlayerVisualPair6780Frame);
@@ -1036,7 +1036,7 @@ void updateVisualTrailTask(void) {
         if (dx != 0 || dz != 0) {
             resource->position.x += dx;
             resource->position.z += dz;
-            resource->angle = func_8004A124(0, 0, D_800EB22C.vx, D_800EB22C.vz);
+            resource->angle = getXZHeading(0, 0, D_800EB22C.vx, D_800EB22C.vz);
         }
     }
     drawTaskVisualPositionHistory((TaskVisualResource *)resource, history, &gPlayerVisualPair6780Frame);

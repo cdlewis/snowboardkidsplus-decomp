@@ -235,7 +235,7 @@ void updateCurrentPlayerMotionEffects(void) {
     s16 turn;
     RacePlayer *player;
 
-    difference = (s16)(func_8004A124(0, 0,
+    difference = (s16)(getXZHeading(0, 0,
         D_8013B0D8->x - D_8013B0D8->unk050,
         D_8013B0D8->z - D_8013B0D8->unk058) - (u16)D_8013B0D8->unk110) & 0xFFF;
     angle = difference;
@@ -1378,7 +1378,7 @@ void updateCurrentPlayerState8Steering(void) {
     }
     player = D_8013B0D8;
     if (player->unk92E == (s16)D_80123D80[D_8013AFCE].unk00 && !(player->unk128 & 0x40)) {
-        angle = func_8004A124(player->x, player->z, D_80123D80[D_8013AFCE].unk40[0], D_80123D80[D_8013AFCE].unk40[1]);
+        angle = getXZHeading(player->x, player->z, D_80123D80[D_8013AFCE].unk40[0], D_80123D80[D_8013AFCE].unk40[1]);
         player = D_8013B0D8;
         if (player->unk128 & 0x400) {
             angle += 0x800;
@@ -1488,7 +1488,7 @@ void updateCurrentPlayerState10Movement(void) {
     D_8013B0D8->x += D_8013B0D8->unk060;
     D_8013B0D8->y += D_8013B0D8->unk062;
     D_8013B0D8->z += D_8013B0D8->unk064;
-    D_8013B0D8->unk110 = func_8004A124(0, 0, D_8013B0D8->unk060, D_8013B0D8->unk064);
+    D_8013B0D8->unk110 = getXZHeading(0, 0, D_8013B0D8->unk060, D_8013B0D8->unk064);
     if (D_8013B0D8->unk128 & 0x400) {
         D_8013B0D8->unk110 += 0x800;
     }
@@ -1542,7 +1542,7 @@ void updateCurrentPlayerTimedMotion(void) {
     } else {
         func_80028234();
     }
-    D_8013B0D8->unk110 = func_8004A124(0, 0, D_8013B0D8->unk060, D_8013B0D8->unk064);
+    D_8013B0D8->unk110 = getXZHeading(0, 0, D_8013B0D8->unk060, D_8013B0D8->unk064);
     if (D_8013B0D8->unk128 & 0x400) {
         D_8013B0D8->unk110 += 0x800;
     }
@@ -1732,13 +1732,13 @@ void computeVectorYawAndPitch(VECTOR *vector, s16 *yaw, s16 *pitch) {
     x = vector->vx;
     y = vector->vy;
     z = vector->vz;
-    angle = func_8004A124(0, 0, x, z);
+    angle = getXZHeading(0, 0, x, z);
     if (angle >= 0x800) angle -= 0x1000;
     *yaw = angle;
     x /= 16;
     y /= 16;
     z /= 16;
-    angle = func_8004A124(0, 0, SquareRoot0(x*x + z*z), y);
+    angle = getXZHeading(0, 0, SquareRoot0(x*x + z*z), y);
     if (angle >= 0x800) angle -= 0x1000;
     *pitch = angle;
 }

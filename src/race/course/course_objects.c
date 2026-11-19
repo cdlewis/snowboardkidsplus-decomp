@@ -534,14 +534,14 @@ void computeSelectedTriangleAngles(s16 *pitch, s16 *yaw) {
     VECTOR normal;
     s32 x, y, z;
     computeSelectedTriangleNormal(&normal);
-    *yaw = func_8004A124(0, 0, normal.vx, normal.vy);
+    *yaw = getXZHeading(0, 0, normal.vx, normal.vy);
     x = normal.vx;
     y = normal.vy;
     z = normal.vz;
     x /= 16;
     y /= 16;
     z /= 16;
-    *pitch = -func_8004A124(0, 0, z, SquareRoot0(x*x + y*y));
+    *pitch = -getXZHeading(0, 0, z, SquareRoot0(x*x + y*y));
 }
 
 void updateCameraRotationMatrices(u16 playerIndex) {
@@ -1177,7 +1177,7 @@ void initializeMovingVisualTask(void) {
     resource->unkC4 = gMovingVisualPlacements[D_8013AE88->data18].geometryIndex;
     resource->position.x = gMovingVisualPlacements[D_8013AE88->data18].startX;
     resource->position.z = gMovingVisualPlacements[D_8013AE88->data18].startZ;
-    resource->velocityY = func_8004A124(resource->position.x, resource->position.z,
+    resource->velocityY = getXZHeading(resource->position.x, resource->position.z,
         gMovingVisualPlacements[D_8013AE88->data18].endX, gMovingVisualPlacements[D_8013AE88->data18].endZ);
     resource->unkDC = 0x10;
     resource->unkE0 = 0x80;
