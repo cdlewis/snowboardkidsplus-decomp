@@ -386,7 +386,39 @@ void processTexturedGouraudQuadPrimitive(void) {
     func_800542BC(QUAD_SCRATCHPAD->vertices, 0);
 }
 
-INCLUDE_ASM("asm/nonmatchings/graphics/model_renderer", func_800559F4);
+void func_800559F4(TmdObject *object, GsOT *ot, s32 shift, u32 flags) {
+    ProjectedModelScratchpad *scratch = (ProjectedModelScratchpad *)getScratchAddr(0);
+    u32 i;
+
+    D_8013B670 = ot;
+    D_8013B69C = shift;
+    D_8013B688 = object->vertices;
+    D_8013B680 = (ModelFlatTriangle *)object->primitives;
+    D_8013B68C = object->primitiveCount;
+    if (flags & 1) scratch->fogEnabled = 1;
+    else scratch->fogEnabled = 0;
+    scratch->unk6B = (flags >> 1) & 1;
+    D_8013B668 = SetSp((u32)getScratchAddr(255));
+
+    for (i = 0; i < D_8013B68C; i++) {
+        scratch->header.word = D_8013B680->unk00;
+        scratch->code = scratch->header.bytes.mode & 2;
+        scratch->unk68[0] = (scratch->header.bytes.mode >> 2) & 1;
+        scratch->unk68[1] = (scratch->header.bytes.mode >> 4) & 1;
+        switch (scratch->header.word & 0xFDFFFFFF) {
+        case ((POLY_F3_CODE | 1) << 24) | 0x00010304: drawIndexedFlatTriangle(); break;
+        case ((POLY_FT3_CODE | 1) << 24) | 0x00010607: processTexturedTrianglePrimitive(); break;
+        case ((POLY_G3_CODE | 1) << 24) | 0x00010506: processGouraudTrianglePrimitive(); break;
+        case ((POLY_GT3_CODE | 1) << 24) | 0x00010809: processTexturedGouraudTrianglePrimitive(); break;
+        case ((POLY_F4_CODE | 1) << 24) | 0x00010305: drawIndexedFlatQuad(); break;
+        case ((POLY_G4_CODE | 1) << 24) | 0x00010608: processGouraudQuadPrimitive(); break;
+        case ((POLY_FT4_CODE | 1) << 24) | 0x00010709: processTexturedQuadPrimitive(); break;
+        case ((POLY_GT4_CODE | 1) << 24) | 0x00010A0C: processTexturedGouraudQuadPrimitive(); break;
+        }
+        D_8013B680 = (ModelFlatTriangle *)((u32 *)D_8013B680 + (scratch->header.bytes.inputLength + 1));
+    }
+    SetSp(D_8013B668);
+}
 
 void drawProjectedIndexedFlatTriangle(void) {
     ModelFlatTriangle *primitive = D_8013B680;
