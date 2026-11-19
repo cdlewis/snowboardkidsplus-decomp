@@ -428,7 +428,81 @@ void configureMovement2D(Movement2D *movement, s32 x, s32 y, s32 stepX, s32 step
     movement->delay = delay;
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_8007102C);
+s32 updateMovement2D(Movement2D *movement) {
+    s32 magnitude;
+
+    if (movement->delay > 0) {
+        movement->delay--;
+        return 1;
+    }
+
+    if (movement->remainingX > 0) {
+        magnitude = sdkAbs(movement->stepX);
+        if (magnitude >= movement->remainingX) {
+            if (movement->modeX == 0) {
+                movement->modeX = 1;
+                if (movement->stepX < 0) {
+                    movement->stepX = -(movement->remainingX / 2);
+                } else {
+                    movement->stepX = movement->remainingX / 2;
+                }
+                magnitude = sdkAbs(movement->stepX);
+            }
+            if (magnitude >= movement->remainingX) {
+                movement->x = movement->stepX < 0
+                    ? movement->x - movement->remainingX
+                    : movement->x + movement->remainingX;
+                movement->remainingX = 0;
+                goto decayX;
+            }
+        }
+        movement->x += movement->stepX;
+        movement->remainingX -= magnitude;
+    decayX:
+        if (movement->modeX == 1 && movement->stepX > 0x200) {
+            movement->stepX /= 2;
+            if (movement->stepX < 0x200) {
+                movement->stepX = 0x200;
+            }
+        }
+    }
+
+    if (movement->remainingY > 0) {
+        magnitude = sdkAbs(movement->stepY);
+        if (magnitude >= movement->remainingY) {
+            if (movement->modeY == 0) {
+                movement->modeY = 1;
+                if (movement->stepY < 0) {
+                    movement->stepY = -(movement->remainingY / 2);
+                } else {
+                    movement->stepY = movement->remainingY / 2;
+                }
+                magnitude = sdkAbs(movement->stepY);
+            }
+            if (magnitude >= movement->remainingY) {
+                movement->y = movement->stepY < 0
+                    ? movement->y - movement->remainingY
+                    : movement->y + movement->remainingY;
+                movement->remainingY = 0;
+                goto decayY;
+            }
+        }
+        movement->y += movement->stepY;
+        movement->remainingY -= magnitude;
+    decayY:
+        if (movement->modeY == 1 && movement->stepY > 0x200) {
+            movement->stepY /= 2;
+            if (movement->stepY < 0x200) {
+                movement->stepY = 0x200;
+            }
+        }
+    }
+
+    if (movement->remainingX > 0 || movement->remainingY > 0) {
+        return 1;
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80071300);
 
@@ -1052,7 +1126,7 @@ void updateRegisteredCallbackTask(void) {
     case 0: entry->flags = 0; break;
     case 99: entry->task = 0; func_800149A8(); return;
     }
-    entry->flags |= func_8007102C(movement);
+    entry->flags |= updateMovement2D(movement);
     if (D_8013AE88->data1A != 0) {
         if (D_8013AE88->data1A == 1 || D_8013AE88->data1A == 2) {
             setSpriteColor(gTaskWidgetRedAbsolute, gTaskWidgetGreenAbsolute, gTaskWidgetBlueAbsolute);

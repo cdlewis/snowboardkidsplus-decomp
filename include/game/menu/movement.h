@@ -19,4 +19,4 @@ void initMovement2D(Movement2D *movement, s32 x, s32 y);
 
 void configureMovement2D(Movement2D *movement, s32 x, s32 y, s32 stepX, s32 stepY, s32 delay);
 
-s32 func_8007102C(Movement2D *movement);
+s32 updateMovement2D(Movement2D *movement);

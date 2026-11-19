@@ -301,7 +301,7 @@ void updateRegisteredPlayerModePanelTask(void) {
         entry->flags = 0;
         func_800149A8();
     } else {
-        entry->flags = func_8007102C(position);
+        entry->flags = updateMovement2D(position);
         setSpriteColor(128, 128, 128);
         setTexturedQuadColor(128, 128, 128);
         D_8013AE88->data1A = D_8013AE98->data1A;
