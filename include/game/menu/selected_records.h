@@ -10,7 +10,11 @@ typedef struct SelectedCourseRecord {
     u32 unk04[4];
     u16 unk14;
     u16 unk16;
-    u32 unk18[12];
+    u32 unk18[8];
+    s16 objectFirstSegment;
+    s16 objectLastSegment;
+    u32 unk3C;
+    u32 unk40[2];
 } SelectedCourseRecord;
 
 extern SelectedCourseRecord D_80123D80[];

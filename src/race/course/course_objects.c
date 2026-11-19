@@ -306,7 +306,63 @@ void drawTaskObjectAlternateLayer(u16 index) {
 
 INCLUDE_ASM("asm/nonmatchings/race/course/course_objects", func_80059484);
 
-INCLUDE_ASM("asm/nonmatchings/race/course/course_objects", func_80059958);
+void updateCourseObjectTask(void) {
+    RECT rect;
+    RacePlayer *players;
+    RacePlayer *cameraPlayer;
+    SelectedCourseRecord *records;
+    GsCOORDINATE2 *coordinates;
+    s16 cameraIndex;
+    u16 objectIndex;
+
+    if (!D_8013AFD3 && D_8013AE88->data18 == 2) {
+        if (D_8013AFE4 & 4) {
+            if (D_8013AE88->data1A != 0x400) {
+                if (D_8013AE88->data1A == 0) {
+                    rect.x = 640;
+                    rect.y = 247;
+                    rect.w = 16;
+                    rect.h = 1;
+                    MoveImage(&rect, 640, 246);
+                }
+                D_8013AE88->data1A += 0x80;
+                D_8012A5C0[D_8013AE88->data18].vy += 0x80;
+            }
+        } else if (D_8013AE88->data1A != 0) {
+            D_8013AE88->data1A -= 0x80;
+            D_8012A5C0[D_8013AE88->data18].vy -= 0x80;
+            if (D_8013AE88->data1A == 0) {
+                rect.x = 640;
+                rect.y = 255;
+                rect.w = 16;
+                rect.h = 1;
+                MoveImage(&rect, 640, 246);
+            }
+        }
+    }
+
+    if (D_8013AFCE != 9 && D_8013AE88->data18 == 3) {
+        players = gRacePlayers;
+        cameraPlayer = &players[func_80059254()];
+        records = D_80123D80;
+        if (cameraPlayer->unk92E < records[D_8013AFCE].objectFirstSegment) {
+            return;
+        }
+        if (players[func_80059254()].unk92E > records[D_8013AFCE].objectLastSegment) {
+            return;
+        }
+    }
+
+    cameraIndex = func_80059254();
+    coordinates = D_80129C60;
+    objectIndex = D_8013AE88->data18;
+    if (isPositionInCameraRange(coordinates[objectIndex].coord.t[0],
+                                coordinates[objectIndex].coord.t[2], cameraIndex)) {
+        objectIndex = D_8013AE88->data18;
+        func_8001E3E4(&D_8012A5C0[objectIndex], &coordinates[objectIndex]);
+        drawTaskObjectAlternateLayer(D_8013AE88->data18);
+    }
+}
 
 void initializeSelectedCourseOffsetTask(void) {
     CourseOffsetResource *resource;

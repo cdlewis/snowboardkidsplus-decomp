@@ -1317,7 +1317,7 @@ void updateCurrentPlayerState8Steering(void) {
     }
     player = D_8013B0D8;
     if (player->unk92E == (s16)D_80123D80[D_8013AFCE].unk00 && !(player->unk128 & 0x40)) {
-        angle = func_8004A124(player->x, player->z, D_80123D80[D_8013AFCE].unk18[10], D_80123D80[D_8013AFCE].unk18[11]);
+        angle = func_8004A124(player->x, player->z, D_80123D80[D_8013AFCE].unk40[0], D_80123D80[D_8013AFCE].unk40[1]);
         player = D_8013B0D8;
         if (player->unk128 & 0x400) {
             angle += 0x800;
