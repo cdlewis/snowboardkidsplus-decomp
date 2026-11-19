@@ -277,6 +277,7 @@ void initializeModeDependentTailResourcePairTask(void);
 s16 findIdentityMappedIndexOrZero(ByteMappingDescriptor *descriptor, s16 value);
 void initializeTaskResourcePairWithOneTickTransition(void);
 void drawCurrentTaskTimeRecordsPrompt(void);
+void drawCurrentTaskLapRecordsPrompt(void);
 void selectTaskCallbackFromModeState(void);
 void initializeMode1Task(void);
 void initializeMode1RacePlayers(void);
