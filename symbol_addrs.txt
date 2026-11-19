@@ -1922,6 +1922,7 @@ tryAcceptMemoryCard = 0x80019244; // type:func
 waitForMemoryCardAcceptTask = 0x80019B54; // type:func
 
 beginMode2SequenceAndFadeMusic = 0x8002FA14; // type:func
+queueMenuResourceReads = 0x8002FA58; // type:func
 
 getModeFilteredGameOptionFlag2 = 0x8008C568; // type:func
 setStateGridFlag = 0x80095EB4; // type:func

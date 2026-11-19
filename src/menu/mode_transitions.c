@@ -461,7 +461,7 @@ void waitUnlockNotification0TransitionTask(void) {
         D_8013B10C = -1;
         queueMode11TransitionResources();
         queueBackgroundTextureSectorCommands();
-        func_8002FA58((s16)D_8013AE98->data18);
+        queueMenuResourceReads((s16)D_8013AE98->data18);
         setCurrentTaskCallback(func_80032F3C);
         D_8013AE88->unk10 |= 2;
     }

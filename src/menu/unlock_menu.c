@@ -76,7 +76,7 @@ void finishUnlockMenuTask(void) {
                 queueMode11TransitionResources();
                 queueBackgroundTextureSectorCommands();
                 D_8013B10C = -1;
-                func_8002FA58(2);
+                queueMenuResourceReads(2);
             }
             D_8013AE88->data18 = 2;
         }
@@ -220,7 +220,7 @@ void resumeUnlockSelectionTask(void) {
 void prepareUnlockSelectionResume(void) {
     setSecondaryDisplayTaskMode(3);
     D_8013B10C = -1;
-    func_8002FA58(2);
+    queueMenuResourceReads(2);
     setCurrentTaskCallback(resumeUnlockSelectionTask);
     D_8013AE88->unk10 |= 2;
 }

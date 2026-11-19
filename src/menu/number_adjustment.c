@@ -15,7 +15,7 @@ void initializeNumberAdjustmentTask(void) {
         state->unk2C[i] = 0;
     }
     state->active = 1;
-    func_8002FA58(0x17);
+    queueMenuResourceReads(0x17);
     setCurrentTaskCallback(func_800A53BC);
     D_8013AE88->unk10 |= 2;
 }

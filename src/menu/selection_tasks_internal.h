@@ -102,7 +102,6 @@ void initializeControllerPlaybackRaceTask(void);
 void initializeRaceTaskState(void);
 
 void finishControllerPlaybackTransition(void);
-void func_8002FA58(s16 resource);
 void func_800A42CC(void);
 void func_800A499C(void);
 void func_8001B858(void);

@@ -121,7 +121,7 @@ void finishControllerPlaybackTransition(void) {
             func_800149E0();
             D_8013B10C = -1;
             D_8013AFAA |= 0x48;
-            func_8002FA58(2);
+            queueMenuResourceReads(2);
             D_8013B106 = 0;
             playbackTransitionByteAbsolute = 0;
             setControllerFlag5(0);

@@ -552,7 +552,6 @@ void updateRepeatedSoundTask(void);
 void waitUnlockNotification0TransitionTask(void);
 void func_80032F3C(void);
 void queueBackgroundTextureSectorCommands(void);
-void func_8002FA58(s16 resource);
 void initializePlayerNumberDisplayTask(void);
 void slideOutPlayerNumberDisplayTask(void);
 void drawPlayerNumberDisplay(PlayerNumberResource *resource);

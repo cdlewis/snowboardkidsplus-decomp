@@ -207,7 +207,6 @@ void func_8009CA90(void);
 void func_8009F9B8(void);
 void func_8009F224(void);
 
-void func_8002FA58(s16 resource);
 void func_800A42CC(void);
 void func_800A499C(void);
 void preparePlayerResourcesTask(void);
