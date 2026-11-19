@@ -1,3 +1,5 @@
+drawOscillatingQuadTask = 0x8004EFE0; // type:func
+gOscillatingQuadVertices = 0x80124DA4; // type:SVECTOR size:0x20 defined:true
 // PSX scratchpad RAM; fixed hardware storage.
 scratchpad = 0x1F800000; // size:0x400
 

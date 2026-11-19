@@ -613,7 +613,7 @@ typedef struct QuadTransitionResource {
 typedef struct OscillatingQuadResource {
     GsCOORDINATE2 coordinate;
     SVECTOR rotation;
-    s32 x, y, z;
+    s32 position[3];
     s32 elapsed;
     s16 unk68;
     s16 pad6A;
@@ -990,7 +990,7 @@ extern s32 D_8013B650 __attribute__((section(".sdata.geometry_edge_projection"))
 
 extern const char gNoProcessMessage[16];
 
-void func_8004EFE0(void);
+void drawOscillatingQuadTask(void);
 void updatePlayerFollowingOrbitTask(void);
 void updateOrbitingTaskObject(void);
 void SetFarColor(s32 r, s32 g, s32 b);

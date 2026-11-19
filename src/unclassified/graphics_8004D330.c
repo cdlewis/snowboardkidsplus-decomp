@@ -5,6 +5,20 @@
 #define GAME_LOOP_ABSOLUTE_ADDRESSING
 #include "game/engine/game_loop.h"
 
+typedef struct OscillatingQuadScratchpad {
+    GsCOORDINATE2 coordinate;
+    MATRIX rotationMatrix;
+    SVECTOR vertices[4];
+    long depth, cue, flags;
+} OscillatingQuadScratchpad;
+
+SVECTOR gOscillatingQuadVertices[4] __attribute__((section(".data.oscillating_quad_vertices"))) = {
+    {-512, -4096, 0, 0},
+    {512, -4096, 0, 0},
+    {-128, 0, 0, 0},
+    {128, 0, 0, 0},
+};
+
 TexturedSpritePacket gCameraOverlaySpritesBuffer0[2] __attribute__((section(".data.camera_overlay_packets"))) = {
     {5 << 24, ((u32)DRAW_MODE_COMMAND_HIGH << 16) | getTPage(2, 0, 0, 0),
      128, 128, 128, TEXTURED_SPRITE_CODE | SEMI_TRANSPARENT_FLAG, -160, -120, 0, 0, 0, 256, 240},
@@ -102,11 +116,69 @@ void drawCyanBackgroundAndSetFog(void) {
     SetFogNearFar(5500, 10000, 400);
 }
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/graphics_8004D330", func_8004EFE0);
+void drawOscillatingQuadTask(void) {
+    OscillatingQuadScratchpad *scratch;
+    OscillatingQuadResource *resource;
+    GouraudQuadPacket *packet;
+    s32 i;
+    s16 cameraIndex;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (OscillatingQuadResource *)&D_800D9504[D_8013AE88->resource14];
+    packet = (GouraudQuadPacket *)GsOUT_PACKET_P;
+    cameraIndex = (s16)func_80059254();
+    scratch = (OscillatingQuadScratchpad *)getScratchAddr(0);
+    if (isPositionInCameraRange(resource->position[0], resource->position[2], cameraIndex)) {
+        /* The draw-mode command shares the quad tag and adds one packet word. */
+        packet->tag = (sizeof(*packet) / sizeof(u32) - 1) << 24;
+        packet->code = POLY_G4_CODE | SEMI_TRANSPARENT_FLAG;
+        setRGB0(packet, 0, 0, 0);
+        setRGB1(packet, 0, 0, 0);
+        packet->tpage = getTPage(0, 1, 0, 0);
+        packet->drawModeCommand = DRAW_MODE_COMMAND_HIGH;
+        if (!D_8013AFD3 && !(D_8013AFAA & 0x400) && (gFrameCounter & 1)) {
+            setRGB2(packet, resource->r / 2, resource->g / 2, resource->b / 2);
+            setRGB3(packet, resource->r / 2, resource->g / 2, resource->b / 2);
+        } else {
+            setRGB2(packet, resource->r, resource->g, resource->b);
+            setRGB3(packet, resource->r, resource->g, resource->b);
+        }
+
+        resource->rotation.vz = resource->amplitude * rsin(resource->elapsed << 4) / 4096;
+        RotMatrix(&resource->rotation, &scratch->rotationMatrix);
+        for (i = 0; i < 4; i++) {
+            ApplyMatrixSV(&scratch->rotationMatrix, &gOscillatingQuadVertices[i], &scratch->vertices[i]);
+        }
+
+        GsInitCoordinate2(0, &scratch->coordinate);
+        for (i = 0; i < 3; i++) {
+            scratch->coordinate.coord.t[i] = resource->position[i];
+        }
+        GsGetLs(&scratch->coordinate, &scratch->coordinate.workm);
+        for (i = 0; i < 3; i++) {
+            scratch->coordinate.coord.t[i] = scratch->coordinate.workm.t[i];
+        }
+        GsSetLsMatrix(&scratch->coordinate.coord);
+
+        scratch->depth = RotTransPers4(&scratch->vertices[0], &scratch->vertices[1],
+            &scratch->vertices[2], &scratch->vertices[3], (long *)&packet->x0,
+            (long *)&packet->x1, (long *)&packet->x2, (long *)&packet->x3,
+            &scratch->cue, &scratch->flags);
+        if (!(scratch->flags & 0x7FFBE000) && scratch->depth >= 0 && scratch->depth < 4096) {
+            addPrim(&D_8013AF6C[scratch->depth >> 2], packet);
+        }
+        GsOUT_PACKET_P = (u32)(packet + 1);
+        if (!D_8013AFD3) {
+            resource->elapsed++;
+        }
+    }
+}
 
 void createOscillatingQuadTask(s32 value, VECTOR *position, s32 amplitude, s32 r, s32 g, s32 b) {
     OscillatingQuadResource *resource;
-    func_80014930(&gGameTasks[4], func_8004EFE0);
+    func_80014930(&gGameTasks[4], drawOscillatingQuadTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     resource = (OscillatingQuadResource *)&D_800D9504[D_8013AE8C->resource14];
     resource->unk68 = value;
@@ -119,9 +191,9 @@ void createOscillatingQuadTask(s32 value, VECTOR *position, s32 amplitude, s32 r
     resource->elapsed = 0;
     resource->amplitude = amplitude;
     GsInitCoordinate2(0, &resource->coordinate);
-    resource->x = position->vx;
-    resource->y = position->vy;
-    resource->z = position->vz;
+    resource->position[0] = position->vx;
+    resource->position[1] = position->vy;
+    resource->position[2] = position->vz;
 }
 
 void drawMovingLineTask(void) {
