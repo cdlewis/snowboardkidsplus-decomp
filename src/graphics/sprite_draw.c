@@ -950,14 +950,97 @@ void drawWrappedText16x16(s16 x, s16 y, s16 columns, const char *text,
             y += 16;
             count = 0;
         }
-        func_8006F8A4(x, y, 16, 16, text, palette, blend, ot, depth);
+        drawDoubleByteGlyph16x16(x, y, 16, 16, text, palette, blend, ot, depth);
         x += 16;
         text += 2;
         count++;
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/graphics/sprite_draw", func_8006F8A4);
+void drawDoubleByteGlyph16x16(s16 x, s16 y, s16 unusedWidth, s16 unusedHeight, const char *glyphText,
+                              s16 palette, s16 blend, GsOT *ot, u16 depth) {
+    s16 screenX = x;
+    s16 screenY = y;
+    s16 u = -1;
+    s16 v = -1;
+    s16 page;
+    s16 offset;
+    const s8 *first;
+    const s8 *second;
+    const s8 *third;
+    DrawModeSpritePacket *packet;
+    TextureRegionSet *texture;
+
+    first = D_8012EC04;
+    second = D_8012ECC8;
+    third = D_8012EECC;
+    offset = 0;
+    /* The first two tables determine when the glyph search ends. */
+    for (;; offset += 2) {
+        s8 firstByte = *first;
+        if (!firstByte) {
+            if (!*second) {
+                break;
+            }
+        } else {
+            if ((s8)glyphText[0] == firstByte && (s8)glyphText[1] == first[1]) {
+                u = ((s16)offset / 2 % 16) * 16;
+                v = ((s16)offset / 32) * 16 + 160;
+                page = 0;
+                break;
+            }
+            first += 2;
+        }
+        if (*second) {
+            if ((s8)glyphText[0] == second[0] && (s8)glyphText[1] == second[1]) {
+                u = ((s16)offset / 2 % 16) * 16;
+                v = ((s16)offset / 32) * 16;
+                page = 1;
+                break;
+            }
+            second += 2;
+        }
+        if (*third) {
+            if ((s8)glyphText[0] == third[0] && (s8)glyphText[1] == third[1]) {
+                u = ((s16)offset / 2 % 16) * 16;
+                v = ((s16)offset / 32) * 16;
+                page = 29;
+                break;
+            }
+            third += 2;
+        }
+    }
+    if (u >= 0 && v >= 0) {
+        u16 tpage;
+        u16 clut;
+        packet = (DrawModeSpritePacket *)GsGetWorkBase();
+        packet->tag = (sizeof(*packet) / sizeof(u32) - 1) << 24;
+        packet->drawModeCode = DRAW_MODE_COMMAND_HIGH;
+        setRGB0(packet, gTexturedSpriteTemplate.r0, gTexturedSpriteTemplate.g0, gTexturedSpriteTemplate.b0);
+        texture = &D_8012DDA4[page];
+        if (blend >= 0) {
+            s16 textureDepth = texture->depth;
+            s16 ty = texture->y;
+            s16 tx = texture->x;
+            packet->code = TEXTURED_SPRITE_CODE | SEMI_TRANSPARENT_FLAG;
+            tpage = getTPage(textureDepth, blend, tx, ty);
+        } else {
+            s16 textureDepth = texture->depth;
+            s16 ty = texture->y;
+            s16 tx = texture->x;
+            packet->code = TEXTURED_SPRITE_CODE;
+            tpage = getTPage(textureDepth, 0, tx, ty);
+        }
+        packet->tpage = tpage;
+        clut = getClut((u16)texture->clutX, (u16)texture->clutY + palette);
+        setXY0(packet, screenX, screenY);
+        setUV0(packet, u, v);
+        setWH(packet, 16, 16);
+        packet->clut = clut;
+        AddPrim(&ot->org[depth], packet);
+        func_800BF2C8((u32)(packet + 1));
+    }
+}
 
 void drawLimitedWrappedText16x16(s16 x, s16 y, s16 limit, s16 columns, const char *text,
                    s16 palette, s16 blend, GsOT *ot, u16 depth) {
@@ -983,7 +1066,7 @@ void drawLimitedWrappedText16x16(s16 x, s16 y, s16 limit, s16 columns, const cha
                 y += 16;
                 count = 0;
             }
-            func_8006F8A4(x, y, 16, 16, text, palette, blend, ot, depth);
+            drawDoubleByteGlyph16x16(x, y, 16, 16, text, palette, blend, ot, depth);
             x += 16;
             count++;
             total++;
