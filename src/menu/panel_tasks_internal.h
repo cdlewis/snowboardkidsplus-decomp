@@ -186,6 +186,7 @@ void func_8008CD98(void);
 void drawRegisteredTextPanelTask(void);
 void func_8008FA8C(void);
 void func_8008D200(void);
+void drawCurrentTaskMoneyPanel(void);
 void func_8008DDC0(void);
 void func_8008EC50(void);
 void func_80090450(void);

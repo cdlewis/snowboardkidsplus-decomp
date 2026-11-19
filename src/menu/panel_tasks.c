@@ -284,7 +284,35 @@ void initializeCountedTaskResourcePair(void) {
 
 INCLUDE_ASM("asm/nonmatchings/menu/panel_tasks", func_8008D200);
 
-INCLUDE_ASM("asm/nonmatchings/menu/panel_tasks", func_8008D958);
+/* Keep the array incomplete at the call site for absolute address scheduling. */
+extern char gMoneyPanelCurrencyLabel[] __attribute__((section(".data")));
+
+void drawCurrentTaskMoneyPanel(void) {
+    Movement2D *position;
+
+    if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
+    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->data1A != 0) {
+        func_8006C998(position->x / 4096 + 32, position->y / 4096 - 22,
+                     0xB6, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        func_8006C998(position->x / 4096 + 74, position->y / 4096 + 140,
+                     0xBD, 10, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        drawDecimalNumber8x8(position->x / 4096 + 74, position->y / 4096 + 152,
+                             6, 0, D_80130BF0[0], 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        drawWrappedText8x8(position->x / 4096 + 122, position->y / 4096 + 152,
+                           2, gMoneyPanelCurrencyLabel, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        if (D_8013AE88->data1A == 1) {
+            func_8007240C(position->x / 4096 + 68, position->y / 4096 + 136, 68, 32,
+                          D_8013B3A4, D_8013B3A5, D_8013B3A6, 2,
+                          &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        } else {
+            func_8007240C(position->x / 4096 + 68, position->y / 4096 + 136, 68, 32,
+                          128, 128, 128, 2, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        }
+    }
+}
+
+char gMoneyPanelCurrencyLabel[4] __attribute__((section(".data"), aligned(4))) = "\x82" "f";
 
 void initializeAlternateCountedTaskResourcePair(void) {
     D_8013AE88->data18 = 0;
