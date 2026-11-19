@@ -257,7 +257,7 @@ void addTexturedSprite(u32 *orderingTable, s32 tpage, s32 clut, s32 x,
 void initSprite(GsSPRITE *sprite);
 void drawTaskVisualPositionHistory(TaskVisualResource *resource, VECTOR *history,
                                    TaskVisualFrame *frames);
-void func_8005A788(TaskVisualResource *resource, TaskVisualFrame *frames, u8 mode);
+void drawPreparedTaskVisualQuad(TaskVisualResource *resource, TaskVisualFrame *frames, u8 mode);
 void prepareTaskVisualQuad(TaskVisualResource *resource, TaskVisualFrame *frame, u8 usePitch);
 extern TaskVisualFrame D_80124304[];
 extern TaskVisualFrame D_80124354[];

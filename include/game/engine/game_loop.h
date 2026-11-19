@@ -19,10 +19,11 @@ extern u8 D_80100200[2][0x10000];
 #ifdef GAME_LOOP_ABSOLUTE_ADDRESSING
 extern u16 D_8013AFAA __attribute__((section(".data")));
 extern u32 *D_8013AF70 __attribute__((section(".data")));
+extern u32 *D_8013AF74 __attribute__((section(".data")));
 #else
 extern u16 D_8013AFAA;
 extern u32 *D_8013AF70;
-#endif
 extern u32 *D_8013AF74;
+#endif
 extern s16 D_8013AF7E;
 extern s16 D_8013AF80;

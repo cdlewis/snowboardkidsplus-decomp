@@ -531,7 +531,7 @@ void drawTaskVisualPositionHistory(TaskVisualResource *resource, VECTOR *history
     resource->coordinate.coord.t[1] = resource->position.y >> 8;
     resource->coordinate.coord.t[2] = resource->position.z >> 8;
     prepareTaskVisualQuad(resource, frames, 1);
-    func_8005A788(resource, frames, 0);
+    drawPreparedTaskVisualQuad(resource, frames, 0);
     resource->code = POLY_FT4_CODE | 2;
     for (i = 0; i < 4; i++) {
         entry = history;
@@ -546,7 +546,7 @@ void drawTaskVisualPositionHistory(TaskVisualResource *resource, VECTOR *history
             resource->scaleY = 0x1A00 + (phase << 9);
             resource->scaleZ = 0x1A00 + (phase << 9);
             prepareTaskVisualQuad(resource, frames, 1);
-            func_8005A788(resource, frames, 0);
+            drawPreparedTaskVisualQuad(resource, frames, 0);
         }
     }
     if (D_8013AFD3 == 0) {

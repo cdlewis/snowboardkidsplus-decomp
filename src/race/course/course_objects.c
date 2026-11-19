@@ -1,3 +1,5 @@
+#define GAME_LOOP_ABSOLUTE_ADDRESSING
+#include "game/engine/game_loop.h"
 #include "psx/scratchpad.h"
 #include "psx/libetc.h"
 #include "../../graphics/render_effects_internal.h"
@@ -569,7 +571,83 @@ void prepareTaskVisualQuad(TaskVisualResource *resource, TaskVisualFrame *frame,
     D_8012967C.tpage = resource->frame->tpage;
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/course/course_objects", func_8005A788);
+void drawPreparedTaskVisualQuad(TaskVisualResource *resource, TaskVisualFrame *frames, u8 mode) {
+    u16 i;
+    POLY_FT4 *poly;
+    long depthCue, flags;
+    long depth;
+
+    resource->frame = &frames[(u16)(resource->framePosition >> 8)];
+    /* This texture-page bit reverses the quad horizontally. */
+    if (resource->frame->tpage & 0x200) {
+        resource->vertices[0].x = (resource->frame->width - 1) / 2;
+        resource->vertices[0].y = -resource->frame->height;
+        resource->vertices[0].z = 0;
+        resource->vertices[1].x = (-resource->frame->width - 1) / 2;
+        resource->vertices[1].y = -resource->frame->height;
+        resource->vertices[1].z = 0;
+        resource->vertices[2].x = (resource->frame->width - 1) / 2;
+        resource->vertices[2].y = -1;
+        resource->vertices[2].z = 0;
+        resource->vertices[3].x = (-resource->frame->width - 1) / 2;
+        resource->vertices[3].y = -1;
+        resource->vertices[3].z = 0;
+    } else {
+        resource->vertices[0].x = (-resource->frame->width - 1) / 2;
+        resource->vertices[0].y = -resource->frame->height;
+        resource->vertices[0].z = 0;
+        resource->vertices[1].x = (resource->frame->width - 1) / 2;
+        resource->vertices[1].y = -resource->frame->height;
+        resource->vertices[1].z = 0;
+        resource->vertices[2].x = (-resource->frame->width - 1) / 2;
+        resource->vertices[2].y = -1;
+        resource->vertices[2].z = 0;
+        resource->vertices[3].x = (resource->frame->width - 1) / 2;
+        resource->vertices[3].y = -1;
+        resource->vertices[3].z = 0;
+    }
+
+    *D_8013AF98 = *D_8013AF9C;
+    for (i = 0; i < 4; i++) {
+        ApplyMatrixSV(D_8013AF98, (SVECTOR *)&resource->vertices[i], (SVECTOR *)&resource->transformedVertices[i]);
+    }
+    resource->coordinate.flg = 0;
+    GsGetLs(&resource->coordinate, D_8013AF98);
+    GsSetLsMatrix(D_8013AF98);
+
+    poly = &D_8012967C;
+    poly->u0 = resource->frame->u;
+    poly->v0 = resource->frame->v;
+    poly->u1 = (u8)(resource->frame->u - 1) + resource->frame->width;
+    poly->v1 = resource->frame->v;
+    poly->u2 = resource->frame->u;
+    poly->v2 = (u8)(resource->frame->v - 1) + resource->frame->height;
+    poly->u3 = (u8)(resource->frame->u - 1) + resource->frame->width;
+    poly->v3 = (u8)(resource->frame->v - 1) + resource->frame->height;
+    setcode(poly, resource->code);
+    poly->clut = resource->frame->clut;
+
+    depth = RotTransPers4((SVECTOR *)&resource->transformedVertices[0],
+                          (SVECTOR *)&resource->transformedVertices[1],
+                          (SVECTOR *)&resource->transformedVertices[2],
+                          (SVECTOR *)&resource->transformedVertices[3],
+                          (long *)&poly->x0, (long *)&poly->x1,
+                          (long *)&poly->x2, (long *)&poly->x3,
+                          &depthCue, &flags);
+    if (depth >= 0 && flags >= 0) {
+        switch (mode) {
+        case 0:
+            addCopiedPrimitive(&D_8013AF6C[depth >> 2], (u32 *)poly);
+            break;
+        case 1:
+            addCopiedPrimitive(&D_8013AF70[depth >> 2], (u32 *)poly);
+            break;
+        case 2:
+            addCopiedPrimitive(&D_8013AF74[depth >> 2], (u32 *)poly);
+            break;
+        }
+    }
+}
 
 void setTaskVisualFrame(TaskVisualResource *resource, TaskVisualFrame *frames, s32 scale) {
     u16 index;
@@ -749,7 +827,7 @@ void updateInteractionVisualTask(void) {
                         }
                     }
                 }
-                func_8005A788(resource, &gInteractionVisualFrame, 0);
+                drawPreparedTaskVisualQuad(resource, &gInteractionVisualFrame, 0);
             }
         }
     }
@@ -807,7 +885,7 @@ void updateCourseVisualTask(void) {
                 heightOffsets = gVisualPlacementHeightData.offsets;
                 resource->coordinate.coord.t[1] -= heightOffsets[height];
             }
-            func_8005A788(resource, D_80129540[D_8013B2BC[i].unk01], 2);
+            drawPreparedTaskVisualQuad(resource, D_80129540[D_8013B2BC[i].unk01], 2);
         }
     }
     if (D_8013AFD3 == 0) {
