@@ -1,5 +1,38 @@
 #include "selection_tasks_internal.h"
 
+const u16 gNumberAdjustmentLabel[]
+    __attribute__((section(".data.number_adjustment_label"))) = {
+    0x00F7, 0x00CE, 0x0093, 0x00A1, 0x00D2, 0,
+};
+
+/* The null entry at the start of the following pointer table terminates this text. */
+const u16 gNumberAdjustmentInstructions[]
+    __attribute__((section(".data.number_adjustment_instructions"))) = {
+    0x00F7, 0x00F1, 0x00DD, 0x00BF, 0x00E7, 0x00E8, 0x0049, 0x002C,
+    0x00CE, 0x800A, 0x00E3, 0x00C0, 0x00CE, 0x0039, 0x015A, 0x0084,
+    0x0052, 0x0070, 0x00BF, 0x0097, 0x009E, 0x00A5, 0x009A, 0x800A,
+    0x00CB, 0x009D, 0x0094, 0x0033,
+};
+
+const u16 gNumberAdjustmentDigitTexts[9][2]
+    __attribute__((section(".data.number_adjustment_digit_texts"))) = {
+    {2, 0}, {3, 0}, {4, 0}, {5, 0}, {6, 0}, {7, 0}, {8, 0}, {9, 0}, {10, 0},
+};
+
+const u16 *gNumberAdjustmentValueTexts[10]
+    __attribute__((section(".data.number_adjustment_value_texts"))) = {
+    NULL,
+    gNumberAdjustmentDigitTexts[0],
+    gNumberAdjustmentDigitTexts[1],
+    gNumberAdjustmentDigitTexts[2],
+    gNumberAdjustmentDigitTexts[3],
+    gNumberAdjustmentDigitTexts[4],
+    gNumberAdjustmentDigitTexts[5],
+    gNumberAdjustmentDigitTexts[6],
+    gNumberAdjustmentDigitTexts[7],
+    gNumberAdjustmentDigitTexts[8],
+};
+
 void initializeNumberAdjustmentTask(void) {
     NumberAdjustmentState *state;
     s16 i;
@@ -57,7 +90,7 @@ void updateNumberAdjustmentTask(void) {
         D_8013AE88->data18 = 0;
         setCurrentTaskCallback(finishNumberAdjustmentTask);
     }
-    func_800A5630();
+    drawNumberAdjustmentPanel();
 }
 
 void drawNumberAdjustmentArrow(s16 direction, GsOT *ot, u16 depth) {
@@ -71,7 +104,44 @@ void drawNumberAdjustmentArrow(s16 direction, GsOT *ot, u16 depth) {
     GsSortPoly(triangle, ot, depth);
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/number_adjustment", func_800A5630);
+void drawNumberAdjustmentPanel(void) {
+    NumberAdjustmentState *state;
+    s32 scroll;
+    s32 palette;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        for (;;) {}
+    }
+    state = (NumberAdjustmentState *)&D_800D9504[D_8013AE88->resource14];
+    setSpriteColor(128, 128, 128);
+    setTexturedQuadColor(128, 128, 128);
+    scroll = state->unk20[0] / 4096;
+    func_8006C998(-76, scroll - 91, 296, 0, -1, &D_800EBFF0[D_8013AF78], 4);
+    palette = 13;
+    func_8006C998(-84, scroll - 96, 295, 1, -1, &D_800EBFF0[D_8013AF78], 4);
+    if (state->countdown > 0) {
+        if (state->countdown & 1) {
+            palette = 8;
+        }
+        state->countdown--;
+    }
+    func_8006EF30(-48, -28, 30, gNumberAdjustmentValueTexts[state->value],
+                   palette, 1, &D_800EBFF0[D_8013AF78], 4);
+    if (state->active) {
+        if (state->value > 1 && (gFrameCounter & 8)) {
+            drawNumberAdjustmentArrow(0, &D_800EBFF0[D_8013AF78], 4);
+        }
+        if (state->value < 9 && (gFrameCounter & 8)) {
+            drawNumberAdjustmentArrow(1, &D_800EBFF0[D_8013AF78], 4);
+        }
+    }
+    func_8006EF30(-32, -28, 30, gNumberAdjustmentLabel,
+                   palette, 1, &D_800EBFF0[D_8013AF78], 4);
+    drawDefaultTexturedPanel(-64, -52, 128, 64, 5, 0, &D_800EBFF0[D_8013AF78], 4);
+    func_8006EF30(-104, 34, 30, gNumberAdjustmentInstructions,
+                   15, 1, &D_800EBFF0[D_8013AF78], 4);
+    drawDefaultTexturedPanel(-120, 26, 240, 64, 5, 0, &D_800EBFF0[D_8013AF78], 4);
+}
 
 void finishNumberAdjustmentTask(void) {
     NumberAdjustmentState *state;
@@ -97,5 +167,5 @@ void finishNumberAdjustmentTask(void) {
         func_800149A8();
         return;
     }
-    func_800A5630();
+    drawNumberAdjustmentPanel();
 }

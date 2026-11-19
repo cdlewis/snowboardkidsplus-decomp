@@ -777,7 +777,9 @@ segments:
       - {start: 0x12303C, type: .data, name: io/controller_playback, linker_section: .data.controller_playback_durations}
       - [0x123054, data, 123054]
       - {start: 0x123078, type: .data, name: menu/unlock_menu, linker_section: .data.unlock_notification_sprites}
-      - [0x123094, data, unlock_notification_tail]
+      - {start: 0x123094, type: .data, name: menu/number_adjustment, linker_section: .data.number_adjustment_label}
+      - {start: 0x1230A0, type: .data, name: menu/number_adjustment, linker_section: .data.number_adjustment_instructions}
+      - {start: 0x1230D8, type: .data, name: menu/number_adjustment, linker_section: .data.number_adjustment_value_texts}
       - {start: 0x123100, type: .data, name: menu/panel_tasks, linker_section: .data.number_adjustment_arrow}
       - {start: 0x123114, type: .data, name: scene/scene_event_tasks, linker_section: .data.scene_cd_commands}
       - [0x1232E0, data, scene_cd_commands_tail]
@@ -923,7 +925,8 @@ segments:
       - {start: 0x12BD14, type: .sdata, name: menu/grid_selection, linker_section: .sdata, linker_section_order: .data}
       - [0x12BD18, data, 12BD18]
       - [0x12BD70, .data, engine/game_options]
-      - [0x12BD78, data, 12BD78]
+      - {start: 0x12BD78, type: .data, name: menu/number_adjustment, linker_section: .data.number_adjustment_digit_texts}
+      - [0x12BD9C, data, 12BD78]
       - {start: 0x12BDDC, type: .sdata, name: io/cd_queue, linker_section: .sdata.cd_read_delay, linker_section_order: .data}
       - {start: 0x12BDE4, type: .data, name: io/cd_queue, linker_section: .data.cd_sync_result}
       - [0x12BDEC, data]

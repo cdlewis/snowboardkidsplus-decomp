@@ -694,6 +694,7 @@ _mk_xpndsp = 0x800BC4D8; // type:func defined:true
 _mk_normsp = 0x800BC79C; // type:func defined:true
 GsSortPoly = 0x800BCA08; // type:func defined:true
 drawNumberAdjustmentArrow = 0x800A55A0; // type:func
+drawNumberAdjustmentPanel = 0x800A5630; // type:func
 gNumberAdjustmentArrow = 0x80132900; // type:POLY_F3 size:0x14
 _make_packet = 0x800BCBD8; // type:func defined:true
 GsSortSprite = 0x800BCC78; // type:func defined:true
@@ -2880,6 +2881,10 @@ drawNumberSelectionPanel = 0x800A29A4; // type:func
 updateControllerPlaybackUntilFade = 0x800A39AC; // type:func
 gControllerPlaybackDurations = 0x8013283C; // size:0x18
 gUnlockNotificationSprites = 0x80132878; // size:0x1C
+gNumberAdjustmentLabel = 0x80132894; // size:0xC
+gNumberAdjustmentInstructions = 0x801328A0; // size:0x38
+gNumberAdjustmentValueTexts = 0x801328D8; // size:0x28
+gNumberAdjustmentDigitTexts = 0x8013B578; // size:0x24
 
 drawSceneImageTask = 0x800A6CC4; // type:func
 
