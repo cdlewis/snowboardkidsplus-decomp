@@ -2644,6 +2644,7 @@ initializeCurrentPlayerState24 = 0x8001FAC4; // type:func
 drawFirstPlayerResultCounterAndIcon = 0x80035FAC; // type:func
 
 initializeSelectionMenuTask = 0x800A2C74; // type:func
+updateSelectionMenuTask = 0x800A2D68; // type:func
 finishSelectionMenuTask = 0x800A3028; // type:func
 D_8013B560 = 0x8013B560; // size:0x2
 

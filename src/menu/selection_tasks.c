@@ -250,10 +250,81 @@ void initializeSelectionMenuTask(void) {
         queueCdCommand(3, 0);
         D_8013B564 = 1;
     }
-    setCurrentTaskCallback(func_800A2D68);
+    setCurrentTaskCallback(updateSelectionMenuTask);
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/selection_tasks", func_800A2D68);
+void updateSelectionMenuTask(void) {
+    SelectionMenuState *state;
+    u32 selection;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        for (;;) {}
+    }
+    state = (SelectionMenuState *)&D_800D9504[D_8013AE88->resource14];
+    state->unk0A = 0;
+
+    if (D_8013AEE8[0] & 0x8000) {
+        selection = (u16)state->selection;
+        if ((u16)(selection - 1) < 4 || (u32)(selection - 6) < 5) {
+            state->selection = selection - 1;
+        }
+    }
+    if (D_8013AEE8[0] & 0x2000) {
+        selection = (u16)state->selection;
+        if (selection < 4 || (u32)(selection - 5) < 5) {
+            state->selection = selection + 1;
+        }
+    }
+    if (D_8013AEE8[0] & 0x1000) {
+        selection = (u16)state->selection;
+        if ((u16)(selection - 5) < 3) {
+            state->selection = selection - 5;
+        } else if ((u32)(selection - 8) < 3) {
+            state->selection = selection - 6;
+        } else if ((s16)selection == 11) {
+            state->selection = 8;
+        }
+    }
+    if (D_8013AEE8[0] & 0x4000) {
+        selection = (u16)state->selection;
+        if (selection < 3) {
+            state->selection = selection + 5;
+        } else if ((u32)(selection - 2) < 3) {
+            state->selection = selection + 6;
+        } else if ((u32)(selection - 5) < 6) {
+            state->selection = 11;
+        }
+    }
+    if (D_8013AEE8[0] & 0x40) {
+        state->unk0A = 1;
+    }
+    if (state->selection != state->previousSelection) {
+        playSoundEffect(0, 0x100, 0x20);
+        state->previousSelection = state->selection;
+    }
+    if (state->selection == 11) {
+        if (D_8013AEE8[0] & 0xB0) {
+            state->unk0A = 1;
+            state->unk08 = 20;
+        }
+    } else {
+        if (D_8013AEE8[0] & 0xB0) {
+            D_8013AFD9 = state->selection + 1;
+            playSoundEffect(0, 0, 0x20);
+            state->unk08 = 20;
+            D_8013B0F0 = 0;
+            D_8013AE88->data18 = 0;
+            setCurrentTaskCallback(finishSelectionMenuTask);
+        }
+    }
+    func_800A31C0(state);
+    if (state->unk0A) {
+        playSoundEffect(0, 0, 0x20);
+        D_8013AFD9 = 0;
+        D_8013AE88->data18 = 0;
+        setCurrentTaskCallback(finishSelectionMenuTask);
+    }
+}
 
 void finishSelectionMenuTask(void) {
     SelectionMenuState *state;

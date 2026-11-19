@@ -23,6 +23,7 @@
 #define RACE_PLAYER_ABSOLUTE_ADDRESSING
 #define TASK_ABSOLUTE_ADDRESSING
 #define TASK_FLAGS_ABSOLUTE_ADDRESSING
+#define TASK_MODE_STATE_ABSOLUTE_ADDRESSING
 #include "game/race/player/race_player.h"
 #include "game/race/camera/race_camera.h"
 #include "game/scene/scene_events.h"
@@ -88,7 +89,7 @@ int printf(const char *format, ...);
 void func_80040D5C(void);
 void initializeNumberSelectionTask(void);
 void completeModeSelectionTransitionWhenReady(void);
-void func_800A2D68(void);
+void updateSelectionMenuTask(void);
 void finishSelectionMenuTask(void);
 void func_800A31C0(SelectionMenuState *state);
 void initializeModeSectorReadResourcesTask(void);
