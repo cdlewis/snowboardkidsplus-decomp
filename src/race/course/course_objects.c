@@ -28,6 +28,15 @@ TaskVisualFrame gInteractionVisualFrame __attribute__((section(".data.interactio
 };
 VisualPlacement *gInteractionVisualPlacements __attribute__((section(".sdata.interaction_visual_placements"))) = 0;
 
+TaskVisualFrame gPickupVisualFrames[6] __attribute__((section(".data.pickup_visual_frames"), aligned(4))) = {
+    {0x80, 0x98, 0x20, 0x20, 0x000D, 0x3DB9},
+    {0xA0, 0x98, 0x18, 0x20, 0x000D, 0x3DB9},
+    {0xB8, 0x98, 0x10, 0x20, 0x000D, 0x3DB9},
+    {0xC8, 0x98, 0x08, 0x20, 0x000D, 0x3DB9},
+    {0xD0, 0x98, 0x10, 0x20, 0x000D, 0x3DB9},
+    {0xE0, 0x98, 0x18, 0x20, 0x000D, 0x3DB9},
+};
+
 struct VisualPlacementHeightData gVisualPlacementHeightData __attribute__((section(".data.visual_placement_heights"))) = {
     0,
     {0, 56, 88, 96, -16, -40, -64, -88,
@@ -736,11 +745,70 @@ void initializePickupVisualTask(void) {
         resource->scaleX = 0x1800;
         resource->scaleY = 0x1800;
         resource->scaleZ = 0x1800;
-        setCurrentTaskCallback(func_8005B038);
+        setCurrentTaskCallback(updatePickupVisualTask);
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/course/course_objects", func_8005B038);
+void updatePickupVisualTask(void) {
+    TaskVisualResource *resource;
+    u8 i, player, nearby;
+    s32 height;
+    s16 *heightOffsets;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    prepareTaskVisualQuad(resource, gPickupVisualFrames, 0);
+    for (i = D_8013B2B5; i < D_8013B2B5 + D_8013B2B6; i++) {
+        if (!(D_8013B2BC[i].flags & 0x40)) {
+            if (!isPointWithinCameraForwardRange(D_8013B2BC[i].x, D_8013B2BC[i].z, (s16)func_80059254())) {
+                continue;
+            }
+            resource->unkC4 = D_8013B2BC[i].geometryIndex;
+            resource->coordinate.coord.t[0] = D_8013B2BC[i].x;
+            resource->coordinate.coord.t[1] = D_8013B2BC[i].y;
+            resource->coordinate.coord.t[2] = D_8013B2BC[i].z;
+            height = D_8013B2BC[i].flags & 0xF;
+            if (height != 0) {
+                heightOffsets = gVisualPlacementHeightData.offsets;
+                resource->coordinate.coord.t[1] -= heightOffsets[height];
+            }
+            if (D_8013AFD3 == 0) {
+                player = 0;
+                resource->position.x = resource->coordinate.coord.t[0] << 8;
+                resource->position.y = resource->coordinate.coord.t[1] << 8;
+                resource->position.z = resource->coordinate.coord.t[2] << 8;
+                for (; player < D_8013AFD2; player++) {
+                    if (isPositionWithinPlayerCollisionRange(&resource->position, 0x1A00, 0x3800, player)) {
+                        addPlayerCappedCounters(player, 100);
+                        func_800183FC(player, 0, 0x700, 0x20);
+                        D_8013B2BC[i].flags |= 0x40;
+                        break;
+                    }
+                }
+            }
+            drawPreparedTaskVisualQuad(resource, gPickupVisualFrames, 1);
+        } else {
+            nearby = 0;
+            for (player = 0; player < D_8013AFD2; player++) {
+                resource->position.x = D_8013B2BC[i].x << 8;
+                resource->position.z = D_8013B2BC[i].z << 8;
+                nearby = arePositionsWithinXZRange(&resource->position, (const Position3D *)&gRacePlayers[player].x, 0x80000);
+                if (nearby) {
+                    break;
+                }
+            }
+            if (!nearby) {
+                D_8013B2BC[i].flags &= 0xBF;
+            }
+        }
+    }
+    resource->framePosition += resource->unkC8;
+    if (resource->framePosition >= resource->unkC6) {
+        resource->framePosition &= 0xFF;
+    }
+}
 
 void initializeObjectVisualTask(void) {
     TaskVisualResource *resource;

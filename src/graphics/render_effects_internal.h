@@ -864,7 +864,7 @@ extern TaskVisualFrame *D_80129540[];
 void func_8005BF00(void);
 void updatePlacedObjectBounceTask(void);
 void func_8005E728(void);
-void func_8005B038(void);
+void updatePickupVisualTask(void);
 extern PickupPlacement *D_8013B2C0;
 
 /* Shared texture metadata remains in its original data owner. */

@@ -3461,7 +3461,9 @@ drawRegisteredTaskGridSpriteWithColor = 0x80073F84; // type:func
 updatePlayerParticleHistoryTask = 0x80045C7C; // type:func
 gPlayerParticleHistoryVisualFrames = 0x80124324; // size:0x30 defined:true
 
+updatePickupVisualTask = 0x8005B038; // type:func
 updateInteractionVisualTask = 0x8005B6C0; // type:func
+gPickupVisualFrames = 0x8012947C; // type:u8 size:0x30
 gInteractionVisualFrame = 0x8013B294; // size:0x8 defined:true
 gInteractionVisualPlacements = 0x8013B2C4; // size:0x4 defined:true
 
