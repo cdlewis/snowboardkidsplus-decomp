@@ -13,9 +13,9 @@ const char gHitPrizeFiftyGoldLabel[20] __attribute__((section(".rodata.hit_prize
 const char gPerfectHitLabel[16] __attribute__((section(".rodata.hit_prize_labels"), aligned(4))) = "  -PERFECT HIT-";
 
 void drawRaceTime(const RaceTime *value, s32 x, s32 y, s16 mode, GsOT *ot, u16 depth) {
-    func_8006DFB4(x, y, 2, 1, value->minutes, mode, -1, ot, depth);
-    func_8006DFB4(x + 24, y, 2, 1, value->seconds, mode, -1, ot, depth);
-    func_8006DFB4(x + 48, y, 2, 1, value->centiseconds >> 8, mode, -1, ot, depth);
+    drawHudDecimalNumber8x16(x, y, 2, 1, value->minutes, mode, -1, ot, depth);
+    drawHudDecimalNumber8x16(x + 24, y, 2, 1, value->seconds, mode, -1, ot, depth);
+    drawHudDecimalNumber8x16(x + 48, y, 2, 1, value->centiseconds >> 8, mode, -1, ot, depth);
     func_8006C998(x + 16, y, 25, mode, -1, ot, depth);
     func_8006C998(x + 40, y, 24, mode, -1, ot, depth);
 }
@@ -163,7 +163,7 @@ void drawHitCountPanel(TaskResourceRecord *record) {
     } else {
         setSpriteColor(128, 128, 128);
     }
-    func_8006DFB4(-76, -28, 2, 0, gRacePlayers[0].scoreAttackPointTotal, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+    drawHudDecimalNumber8x16(-76, -28, 2, 0, gRacePlayers[0].scoreAttackPointTotal, 1, -1, &D_800EBFF0[D_8013AF78], 1);
     sprintf(text, gHitCountTotalFormat, gRacePlayers[0].scoreAttackPointTarget);
     drawLimitedText8x8(-84, -20, 1, gHitCountMarker, 6, -1, &D_800EBFF0[D_8013AF78], 1);
     drawLimitedText8x8(-60, -20, 10, text, 6, -1, &D_800EBFF0[D_8013AF78], 1);
@@ -185,7 +185,7 @@ void drawHitPrizeMoneyValues(TaskResourceRecord *record) {
     if (stage < 0) {
         goto draw_completion;
     }
-    func_8006DFB4(32, y, 5, 0, resource->unk08, 1, -1,
+    drawHudDecimalNumber8x16(32, y, 5, 0, resource->unk08, 1, -1,
                   &D_800EBFF0[D_8013AF78], 1);
     func_8006C998(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
     y += 40;
@@ -194,7 +194,7 @@ void drawHitPrizeMoneyValues(TaskResourceRecord *record) {
         goto draw_completion;
     }
     if (resource->unk0E != 0) {
-        func_8006DFB4(32, y, 5, 0, resource->unk0A, 1, -1,
+        drawHudDecimalNumber8x16(32, y, 5, 0, resource->unk0A, 1, -1,
                       &D_800EBFF0[D_8013AF78], 1);
         func_8006C998(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
         y += 40;
@@ -202,13 +202,13 @@ void drawHitPrizeMoneyValues(TaskResourceRecord *record) {
     stage = resource->unk06;
 draw_completion:
     if (stage >= 2) {
-        func_8006DFB4(32, y, 5, 0, resource->unk0C, 1, -1,
+        drawHudDecimalNumber8x16(32, y, 5, 0, resource->unk0C, 1, -1,
                       &D_800EBFF0[D_8013AF78], 1);
         func_8006C998(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
         y += 40;
     }
     if (resource->unk06 >= 3) {
-        func_8006DFB4(24, y, 6, 0, gRacePlayers[0].money, 1, -1,
+        drawHudDecimalNumber8x16(24, y, 6, 0, gRacePlayers[0].money, 1, -1,
                       &D_800EBFF0[D_8013AF78], 1);
         func_8006C998(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
     }
@@ -229,7 +229,7 @@ void drawCountRecordRows(TaskResourceRecord *resource) {
             textMode = 4;
         }
         func_8006C998(-8, y, i + 0x136, mode, -1, &D_800EBFF0[D_8013AF78], 1);
-        func_8006DFB4(16, y, 2, 0, ((SaveRecord *)&D_8013080C)->countRecordValues[D_8013AFCE][i], mode, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawHudDecimalNumber8x16(16, y, 2, 0, ((SaveRecord *)&D_8013080C)->countRecordValues[D_8013AFCE][i], mode, -1, &D_800EBFF0[D_8013AF78], 1);
         func_8006C998(70, y, (((SaveRecord *)&D_8013080C)->countRecordIcons[D_8013AFCE][i] & 15) * 3 + 0x14A,
             D_80124284[((SaveRecord *)&D_8013080C)->countRecordIcons[D_8013AFCE][i] & 15], -1, &D_800EBFF0[D_8013AF78], 1);
         func_8006C998(88, y, (((SaveRecord *)&D_8013080C)->countRecordIcons[D_8013AFCE][i] >> 4) + 0x13B, 7, -1, &D_800EBFF0[D_8013AF78], 1);
@@ -849,12 +849,12 @@ void drawStatsMenuValues(TaskResourceRecord *record) {
     if (gRacePlayers[0].trickAttackPointTotal >= 10) x = -84;
     if (gRacePlayers[0].trickAttackPointTotal >= 100) x = -88;
     if (gRacePlayers[0].trickAttackPointTotal >= 1000) x = -92;
-    func_8006DFB4(x, -55, length, 0, gRacePlayers[0].trickAttackPointTotal, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+    drawHudDecimalNumber8x16(x, -55, length, 0, gRacePlayers[0].trickAttackPointTotal, 1, -1, &D_800EBFF0[D_8013AF78], 1);
     sprintf(text, gResultValueFormat, gRacePlayers[0].trickAttackMakeCount);
     length = strlen(text);
     x = -80;
     if (gRacePlayers[0].trickAttackMakeCount >= 10) x = -84;
-    func_8006DFB4(x, -19, length, 0, gRacePlayers[0].trickAttackMakeCount, 3, -1, &D_800EBFF0[D_8013AF78], 1);
+    drawHudDecimalNumber8x16(x, -19, length, 0, gRacePlayers[0].trickAttackMakeCount, 3, -1, &D_800EBFF0[D_8013AF78], 1);
 }
 
 void drawStatsMenuMoneyValues(TaskResourceRecord *record) {
@@ -865,24 +865,24 @@ void drawStatsMenuMoneyValues(TaskResourceRecord *record) {
     y = -71;
     stage = ((StatsMenuFadeResource *)record)->unk06;
     if (stage >= 0) {
-        func_8006DFB4(32, y, 5, 0, ((StatsMenuFadeResource *)record)->trickPrize, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawHudDecimalNumber8x16(32, y, 5, 0, ((StatsMenuFadeResource *)record)->trickPrize, 1, -1, &D_800EBFF0[D_8013AF78], 1);
         func_8006C998(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
         y += 40;
         stage = ((StatsMenuFadeResource *)record)->unk06;
         if (stage >= 1) {
-            func_8006DFB4(32, y, 5, 0, ((StatsMenuFadeResource *)record)->makeBonus, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+            drawHudDecimalNumber8x16(32, y, 5, 0, ((StatsMenuFadeResource *)record)->makeBonus, 1, -1, &D_800EBFF0[D_8013AF78], 1);
             func_8006C998(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
             y += 40;
             stage = ((StatsMenuFadeResource *)record)->unk06;
         }
     }
     if (stage >= 2) {
-        func_8006DFB4(32, y, 5, 0, ((StatsMenuFadeResource *)record)->completeBonus, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawHudDecimalNumber8x16(32, y, 5, 0, ((StatsMenuFadeResource *)record)->completeBonus, 1, -1, &D_800EBFF0[D_8013AF78], 1);
         func_8006C998(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
         y += 40;
     }
     if (((StatsMenuFadeResource *)record)->unk06 >= 3) {
-        func_8006DFB4(24, y, 6, 0, gRacePlayers[0].money, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawHudDecimalNumber8x16(24, y, 6, 0, gRacePlayers[0].money, 1, -1, &D_800EBFF0[D_8013AF78], 1);
         func_8006C998(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
     }
 }
@@ -902,7 +902,7 @@ void drawStatsRecordRows(TaskResourceRecord *resource) {
             textMode = 4;
         }
         func_8006C998(24, y, i + 0x136, mode, -1, &D_800EBFF0[D_8013AF78], 1);
-        func_8006DFB4(44, y, 5, 0, ((SaveRecord *)&D_8013080C)->statsRecordValues[D_8013AFCE][i], mode, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawHudDecimalNumber8x16(44, y, 5, 0, ((SaveRecord *)&D_8013080C)->statsRecordValues[D_8013AFCE][i], mode, -1, &D_800EBFF0[D_8013AF78], 1);
         func_8006C998(102, y, (((SaveRecord *)&D_8013080C)->statsRecordIcons[D_8013AFCE][i] & 15) * 3 + 0x14A,
             D_80124284[((SaveRecord *)&D_8013080C)->statsRecordIcons[D_8013AFCE][i] & 15], -1, &D_800EBFF0[D_8013AF78], 1);
         func_8006C998(120, y, (((SaveRecord *)&D_8013080C)->statsRecordIcons[D_8013AFCE][i] >> 4) + 0x13B, 7, -1, &D_800EBFF0[D_8013AF78], 1);

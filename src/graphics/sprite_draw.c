@@ -547,7 +547,71 @@ void drawDecimalNumber8x16(s16 x, s16 y, s16 digits, s16 zeroFill, s32 value,
 
 INCLUDE_ASM("asm/nonmatchings/graphics/sprite_draw", func_8006DC94);
 
-INCLUDE_ASM("asm/nonmatchings/graphics/sprite_draw", func_8006DFB4);
+void drawHudDecimalNumber8x16(s16 x, s16 y, s16 digits, s16 zeroFill, s32 value,
+                             s16 palette, s16 blend, GsOT *ot, u16 depth) {
+    u8 padding[0x10]; /* Preserve the original stack frame. */
+    s32 semiTrans;
+    s32 blendMode;
+    SpritePrimitiveTemplate *template;
+    SPRT *packet;
+    DR_TPAGE *page;
+    s32 i;
+    s32 drawn;
+
+    if (digits > 0) {
+        if (blend >= 0) {
+            blendMode = blend;
+            semiTrans = 1;
+        } else {
+            blendMode = 0;
+            semiTrans = 0;
+        }
+        template = &gSpritePrimitiveTemplate;
+        SetDrawTPage(&template->drawPage, 1, 1, GetTPage(0, blendMode, 0x340, 0x100));
+        template->sprite.clut = GetClut(0x320, palette + 0xF0);
+        SetSemiTrans(&template->sprite, semiTrans);
+        setXY0(&template->sprite, x + (digits - 1) * 8, y);
+        setWH(&template->sprite, 8, 16);
+        setUV0(&template->sprite, 0, 0);
+        packet = (SPRT *)GsGetWorkBase();
+
+        drawn = 0;
+        for (i = 0; i < digits;) {
+            if (value <= 0) {
+                break;
+            }
+            *packet = template->sprite;
+            packet->u0 = (value % 10) * 8;
+            AddPrim(&ot->org[depth], packet);
+            i++;
+            packet++;
+            value /= 10;
+            drawn = 1;
+            template->sprite.x0 -= 8;
+        }
+        if (!drawn) {
+            *packet = template->sprite;
+            packet->u0 = 0;
+            AddPrim(&ot->org[depth], packet);
+            packet++;
+            i++;
+            template->sprite.x0 -= 8;
+        }
+        if (zeroFill == 1) {
+            for (; i < digits; i++) {
+                *packet = template->sprite;
+                packet->u0 = 0;
+                AddPrim(&ot->org[depth], packet);
+                packet++;
+                template->sprite.x0 -= 8;
+            }
+        }
+        page = (DR_TPAGE *)packet;
+        *page = gSpritePrimitiveTemplate.drawPage;
+        AddPrim(&ot->org[depth], page);
+        func_800BF2C8((u32)(page + 1));
+    }
+}
 
 void drawDecimalNumber16(s16 x, s16 y, s16 count, s16 mode, s32 value,
                    s16 palette, s16 blend, GsOT *ot, u16 depth) {
@@ -650,14 +714,14 @@ void drawPackedTime(s16 x, s16 y, u32 value, s16 palette, s16 blend, GsOT *ot, u
     s32 field;
     value >>= 8;
     field = value & 255;
-    func_8006DFB4(x + 48, y, 2, 1, field, palette, blend, ot, depth);
+    drawHudDecimalNumber8x16(x + 48, y, 2, 1, field, palette, blend, ot, depth);
     value >>= 8;
     func_8006C998(x + 40, y, 24, palette, blend, ot, depth);
     field = value & 255;
-    func_8006DFB4(x + 24, y, 2, 1, field, 1, -1, ot, depth);
+    drawHudDecimalNumber8x16(x + 24, y, 2, 1, field, 1, -1, ot, depth);
     func_8006C998(x + 16, y, 25, palette, blend, ot, depth);
     value >>= 8;
-    func_8006DFB4(x, y, 2, 1, value, 1, -1, ot, depth);
+    drawHudDecimalNumber8x16(x, y, 2, 1, value, 1, -1, ot, depth);
 }
 
 void drawWrappedDoubleByteText(s16 x, s16 y, s16 columns, s8 *text, s16 palette, s16 blend, GsOT *ot, u16 depth) {

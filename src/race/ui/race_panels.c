@@ -284,12 +284,12 @@ void drawPlayerNumberDisplay(PlayerNumberResource *resource) {
         }
     }
     if (visible) {
-        func_8006DFB4(resource->x + 8, resource->y, 2, 0, resource->value, 3, -1, ot, depth);
+        drawHudDecimalNumber8x16(resource->x + 8, resource->y, 2, 0, resource->value, 3, -1, ot, depth);
         func_8006C998(resource->x - 70, resource->y + 4, 0x1B4, 4, -1, ot, depth);
         func_8006C998(resource->x - 26, resource->y + 4, 0x1B5, 4, -1, ot, depth);
         func_8006C998(resource->x + 32, resource->y + 4, 0x1B6, 4, -1, ot, depth);
         if (resource->showExtraValue) {
-            func_8006DFB4(resource->x + 8, resource->y + 18, 3, 0, 300, 3, -1, ot, depth);
+            drawHudDecimalNumber8x16(resource->x + 8, resource->y + 18, 3, 0, 300, 3, -1, ot, depth);
             func_8006C998(resource->x - 76, resource->y + 22, 0x1B3, 5, -1, ot, depth);
             func_8006C998(resource->x + 40, resource->y + 22, 0x1B6, 4, -1, ot, depth);
         }
@@ -480,7 +480,7 @@ void drawSlidingNumberDisplay(SlidingNumberResource *resource) {
         }
     }
     if (visible) {
-        func_8006DFB4((s16)(resource->x - 8), (s16)(resource->y - 8), 5, 0,
+        drawHudDecimalNumber8x16((s16)(resource->x - 8), (s16)(resource->y - 8), 5, 0,
                      resource->value, 3, -1, ot, 1);
         func_8006C998((s16)(resource->x - 60), (s16)(resource->y - 4), 0x1B4, 4, -1, ot, 1);
         func_8006C998((s16)(resource->x + 44), (s16)(resource->y - 4), 0x1B5, 4, -1, ot, 1);
@@ -725,7 +725,7 @@ void drawResultDisplayLabels(ResultDisplayResource *resource) {
 
 void drawResultNumberAndIcon(ResultDisplayResource *resource) {
     setSpriteColor(128, 128, 128);
-    func_8006DFB4(32, -63, 5, 0, resource->unk04, 1, -1,
+    drawHudDecimalNumber8x16(32, -63, 5, 0, resource->unk04, 1, -1,
                   &D_800EBFF0[D_8013AF78], 1);
     func_8006C998(72, -63, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
 }
@@ -739,14 +739,14 @@ void drawFirstPlayerResultCounterAndIcon(ResultDisplayResource *resource) {
     if (resource->unk06 == 3) {
         func_8006C998(24, -11, 397, 5, -1, &D_800EBFF0[D_8013AF78], 1);
     }
-    func_8006DFB4(32, -15, 5, 0, gRacePlayers[0].unk01C, palette, -1,
+    drawHudDecimalNumber8x16(32, -15, 5, 0, gRacePlayers[0].unk01C, palette, -1,
                   &D_800EBFF0[D_8013AF78], 1);
     func_8006C998(72, -15, 26, palette, -1, &D_800EBFF0[D_8013AF78], 1);
 }
 
 void drawFirstPlayerResultNumberAndIcon(ResultDisplayResource *resource) {
     setSpriteColor(128, 128, 128);
-    func_8006DFB4(24, 33, 6, 0, gRacePlayers[0].money, 1, -1,
+    drawHudDecimalNumber8x16(24, 33, 6, 0, gRacePlayers[0].money, 1, -1,
                   &D_800EBFF0[D_8013AF78], 1);
     func_8006C998(72, 33, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
 }

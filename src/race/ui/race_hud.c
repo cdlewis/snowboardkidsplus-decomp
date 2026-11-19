@@ -11,9 +11,9 @@ void drawLapTimeHud(void) {
     char text[16];
     s32 icon;
     setSpriteColor(128,128,128);
-    func_8006DFB4(72,80,2,1,gRaceElapsedTime.minutes,1,-1,ot,1);
-    func_8006DFB4(96,80,2,1,gRaceElapsedTime.seconds,1,-1,ot,1);
-    func_8006DFB4(120,80,2,1,gRaceElapsedTime.centiseconds >> 8,1,-1,ot,1);
+    drawHudDecimalNumber8x16(72,80,2,1,gRaceElapsedTime.minutes,1,-1,ot,1);
+    drawHudDecimalNumber8x16(96,80,2,1,gRaceElapsedTime.seconds,1,-1,ot,1);
+    drawHudDecimalNumber8x16(120,80,2,1,gRaceElapsedTime.centiseconds >> 8,1,-1,ot,1);
     func_8006C998(88,80,25,1,-1,ot,1);
     func_8006C998(112,80,24,1,-1,ot,1);
     drawLimitedText8x8(72,71,10,gLapTimeLabel,5,-1,ot,1);
@@ -38,7 +38,7 @@ void drawFirstPlayerStatusHud(void) {
     frame = (s16)gFrameCounter % 12;
     func_8006C998(120, 80, (s16)(frame / 2) + 472, 7, -1, ot, 1);
     palette = player->unk01C < 100 ? 2 : 3;
-    func_8006DFB4(78, 80, 5, 0, player->unk01C, palette, -1, ot, 1);
+    drawHudDecimalNumber8x16(78, 80, 5, 0, player->unk01C, palette, -1, ot, 1);
     func_8006C998(-116, 80, 426, 1, -1, ot, 1);
     func_8006C998(-136, 64, 420, 14, -1, ot, 1);
 }
