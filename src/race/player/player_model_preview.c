@@ -1,3 +1,4 @@
+#include "game/io/dat_resources.h"
 #include "psx/scratchpad.h"
 #include "psx/libetc.h"
 #include "../../menu/panel_tasks_internal.h"
@@ -93,7 +94,97 @@ void updateCurrentPlayerModelPartCoordinates(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/player/player_model_preview", func_80097858);
+static inline RegisteredTaskEntry *getSignedModelPreviewEntry(u32 resource, s32 index) {
+    RegisteredTaskEntry *entries = (RegisteredTaskEntry *)&D_800D9504[resource];
+    return &entries[index / 10];
+}
+
+void createPlayerModelPreviewTask(u16 playerIndex, u16 characterId, u16 modelSlot,
+                                  s16 x, s16 y, s16 z, s32 index) {
+    u32 *source;
+    u32 *destination;
+    u32 *model;
+    s32 i = 0;
+    ModelPreviewState *state;
+    RacePlayer *player;
+    Movement2D *position;
+    RegisteredTaskEntry *entry;
+
+    func_80014874(updatePlayerModelPreviewTask);
+    D_8013AE8C->data18 = 0;
+    D_8013AE8C->data1A = modelSlot;
+    D_8013AE8C->data1C = playerIndex;
+    D_8013AE8C->data1E = index;
+    D_8013AE8C->resource14 = allocateTaskResource();
+
+    D_8013B0D8 = &gRacePlayers[D_8013AE8C->data1C];
+    state = (ModelPreviewState *)&D_800D9504[D_8013AE8C->resource14];
+    D_8013B0D8->characterId = characterId;
+    {
+        u32 (*sourceBuffers)[4096] = (u32 (*)[4096])DAT_GRID_MODEL_BUFFERS;
+        u32 (*destinationBuffers)[4096] = DAT_PLAYER_MODEL_BUFFERS;
+
+        destination = destinationBuffers[D_8013AE8C->data1C];
+        source = sourceBuffers[D_8013AE8C->data1A];
+    }
+    for (; i < 4096; i++) {
+        *destination++ = *source++;
+    }
+
+    model = DAT_PLAYER_MODEL_BUFFERS[D_8013AE8C->data1C];
+    model++;
+    GsMapModelingData(model);
+    model++;
+    D_8013B0D8->modelPartCount = *(u8 *)model;
+    GsInitCoordinate2(0, &D_8013B0D8->worldCoordinate);
+    GsInitCoordinate2(&D_8013B0D8->worldCoordinate, &D_8013B0D8->modelCoordinate);
+    model++;
+    for (i = 0; i < D_8013B0D8->modelPartCount; i++) {
+        GsDOBJ2 *object;
+        GsLinkObject4(model, &D_8013B0D8->modelObjects[i], i);
+        object = &D_8013B0D8->modelObjects[i];
+        GsInitCoordinate2(&D_8013B0D8->modelCoordinate, &D_8013B0D8->model.modelCoordinates[i]);
+        object->attribute = 0;
+        object->coord2 = &D_8013B0D8->model.modelCoordinates[i];
+    }
+
+    player = D_8013B0D8;
+    player->worldCoordinate.coord.t[0] = x;
+    player->worldCoordinate.coord.t[1] = y;
+    player->worldCoordinate.coord.t[2] = z;
+    player->unk0B4 = 0;
+    player->unk0B6 = 0;
+    player->unk0B8 = 0;
+    player->modelCoordinate.coord.t[0] = 58;
+    player->modelCoordinate.coord.t[1] = 0;
+    player->modelCoordinate.coord.t[2] = 0;
+    player->modelRotation.vx = 0;
+    player->modelRotation.vy = 1024;
+    player->modelRotation.vz = 0;
+    player->model.modelCoordinates[0].coord.t[0] = 0;
+    player->model.modelCoordinates[0].coord.t[1] = 0;
+    player->model.modelCoordinates[0].coord.t[2] = 0;
+    player->unk5BC[0].x = 512;
+    player->unk5BC[0].y = 0;
+    player->unk5BC[0].z = 0;
+
+    state->rotationStep = 0;
+    D_8013AE8C->resource16 = allocateTaskResource();
+    position = (Movement2D *)&D_800D9504[D_8013AE8C->resource16];
+    initMovement2D(position, x << 12, y << 12);
+    position->unk08 = z;
+
+    if (index % 10 == 0) {
+        if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
+        entry = getSignedModelPreviewEntry(D_8013AE88->resource14, index);
+    } else {
+        if (D_8013AE88->resource16 == 0xFFFF) { for (;;) {} }
+        entry = getSignedModelPreviewEntry(D_8013AE88->resource16, index);
+    }
+    entry->command = 0;
+    entry->flags = 10;
+    entry->task = D_8013AE8C;
+}
 
 static inline RegisteredTaskEntry *getModelPreviewEntry(u32 resource, u32 index) {
     RegisteredTaskEntry *entries = (RegisteredTaskEntry *)&D_800D9504[resource];

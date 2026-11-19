@@ -251,6 +251,8 @@ void sortPlayerModelWithDrawArea(u16 playerIndex, u16 depthIndex, RECT *bounds);
 void loadCurrentPlayerModelPose(const s16 *values);
 void setCurrentPlayerFinalPartTranslations(const s16 *values);
 void updateCurrentPlayerModelPartCoordinates(void);
+void createPlayerModelPreviewTask(u16 playerIndex, u16 characterId, u16 modelSlot,
+                                  s16 x, s16 y, s16 z, s32 index);
 void updatePlayerModelPreviewTask(void);
 void initializeCountedSplitSelectionBoundsTask(void);
 void updateSplitSelectionBoundsTransition(void);
