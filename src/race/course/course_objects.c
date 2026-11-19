@@ -917,7 +917,7 @@ void updateBobbingTrailEmitterTask(void) {
     resource = (BobbingTrailEmitterResource *)&D_800D9504[D_8013AE88->resource14];
     if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
         if (!D_8013AFD3) {
-            func_8002BF88(&resource->position, 0x7000, 0x18000, 2);
+            resolvePlayerCollisionsWithCylinder(&resource->position, 0x7000, 0x18000, 2);
             resource->heading.value += resource->headingStep;
             if (resource->heading.halves.low > resource->baseHeading.halves.low + 0x140) resource->headingStep = -8;
             if (resource->heading.halves.low < resource->baseHeading.halves.low - 0x140) resource->headingStep = 8;
@@ -1069,7 +1069,7 @@ void updateProximityParticleTask(void) {
             }
             if (D_8013AE88->data18) {
                 if (D_8013AE88->data1C) {
-                    func_8002BF88(&resource->position, 0x4000, 0x6000, 2);
+                    resolvePlayerCollisionsWithCylinder(&resource->position, 0x4000, 0x6000, 2);
                     D_8013AE88->data1C--;
                 }
             }
@@ -1175,7 +1175,7 @@ void updateCollectibleTask(void) {
         func_8001E3E4(&resource->rotation, &resource->coordinate);
         drawTaskObject(10);
         if (!D_8013AFD3) {
-            func_8002BF88(&resource->position, 0x2800, 0x8000, 2);
+            resolvePlayerCollisionsWithCylinder(&resource->position, 0x2800, 0x8000, 2);
             for (i = 0; i < D_8013B1D4; i++) {
                 if (arePositionsWithinXZRange(&resource->position, &D_8012450C[i].position, resource->collisionRange)) {
                     *D_8012450C[i].active = 0;

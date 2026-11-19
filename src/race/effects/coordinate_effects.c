@@ -239,7 +239,7 @@ void updatePlayerState23CoordinateEffectTask(void) {
         resource->position.x = players[D_8013AE88->data18].x;
         resource->position.y = players[D_8013AE88->data18].y;
         resource->position.z = players[D_8013AE88->data18].z;
-        func_8002BF88(&resource->position, 0x2FC0, 0x5C00, 2);
+        resolvePlayerCollisionsWithCylinder(&resource->position, 0x2FC0, 0x5C00, 2);
         resource->parent.coord.t[0] = resource->position.x >> 8;
         resource->parent.coord.t[1] = resource->position.y >> 8;
         resource->parent.coord.t[2] = resource->position.z >> 8;

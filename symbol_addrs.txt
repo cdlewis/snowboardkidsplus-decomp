@@ -1892,6 +1892,7 @@ copyPlayerPaletteRow = 0x8009B6A8; // type:func
 runTaskResource14Update = 0x800A3D5C; // type:func
 
 arePositionsWithinXZRange = 0x8002BF3C; // type:func
+resolvePlayerCollisionsWithCylinder = 0x8002BF88; // type:func
 
 resetUnlockMenuAnimation = 0x800A3CE0; // type:func
 

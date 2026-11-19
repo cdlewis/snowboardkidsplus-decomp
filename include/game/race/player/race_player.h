@@ -78,7 +78,9 @@ struct RacePlayer {
     s8 trickAttackMakeCount;
     u8 unk0E6[2];
     u16 unk0E8;
-    u8 unk0EA[0xA];
+    u8 unk0EA[2];
+    s32 unk0EC;
+    s32 unk0F0;
     u16 unk0F4;
     s16 unk0F6;
     s16 unk0F8;
@@ -302,7 +304,7 @@ extern s16 D_8013B1D4 __attribute__((section(".data.finish_slot_state")));
 
 u16 arePositionsWithinXZRange(const Position3D *a, const Position3D *b, s32 threshold);
 s32 func_8002C520(const Position3D *position, s32 radius, s32 height, s16 playerIndex);
-void func_8002BF88(const Position3D *position, s32 radius, s32 height, s32 flags);
+void resolvePlayerCollisionsWithCylinder(const Position3D *position, s32 radius, s32 height, s32 flags);
 
 void updatePlayerTimerTask(void);
 void startRacePlayerTasks(void);

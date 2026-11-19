@@ -176,7 +176,74 @@ u16 arePositionsWithinXZRange(const Position3D *a, const Position3D *b, s32 thre
     return 0;
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002BF88);
+void resolvePlayerCollisionsWithCylinder(const Position3D *position, s32 radius, s32 height, s32 flags) {
+    u16 i;
+    u16 hitFlags = flags;
+
+    for (i = 0; i < D_8013AFD2; i++) {
+        RacePlayer *player = &gRacePlayers[i];
+        s32 distance, verticalRange, x, z, range;
+        s32 sine, cosine, tangent, normal;
+        s32 correctionX, correctionZ;
+
+        if (!player->isActive || (player->unk128 & 0x1000) ||
+            !arePositionsWithinXZRange(position, (const Position3D *)&gRacePlayers[i].x, 0x18000)) {
+            continue;
+        }
+        distance = position->y - player->unk074;
+        if (distance < 0) {
+            distance = -distance;
+            verticalRange = player->unk0B0 * 2;
+        } else {
+            verticalRange = height;
+        }
+        if (distance > verticalRange) {
+            continue;
+        }
+
+        player = &gRacePlayers[i];
+        x = position->x - player->x;
+        range = radius + player->unk0AC;
+        if (x < 0) {
+            x = -x;
+        }
+        if (x >= range) {
+            continue;
+        }
+
+        z = position->z - player->z;
+        if (z < 0) {
+            z = -z;
+        }
+        if (z >= range) {
+            continue;
+        }
+
+        distance = SquareRoot0(x * x + z * z);
+        if (distance >= range) {
+            continue;
+        }
+        distance -= range;
+        D_8013B0E6 = func_8004A124(position->x, position->z, player->x, player->z);
+        sine = rsin((s16)D_8013B0E6);
+        cosine = rcos((s16)D_8013B0E6);
+
+        correctionX = (-sine * distance) / 4096;
+        correctionZ = (cosine * distance) / 4096;
+        player->x += correctionX;
+        player->z -= correctionZ;
+
+        tangent = (cosine * player->unk0EC - sine * player->unk0F0) / 4096;
+        normal = (sine * player->unk0EC + cosine * player->unk0F0) / 4096;
+        if (normal > 0) {
+            normal = -normal;
+        }
+        player->unk0EC = -(cosine * tangent + sine * normal) / 4096;
+        player->unk0F0 = -(-sine * tangent + cosine * normal) / 4096;
+        D_8013B0E8 = player->unk0BC / 2;
+        player->unk0E8 |= hitFlags;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002C2D8);
 
