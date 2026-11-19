@@ -2340,6 +2340,7 @@ resetStateAndBeginResourceLoadTransition = 0x8001CF18; // type:func
 initializeNumberAdjustmentTask = 0x800A52D8; // type:func
 
 startRotatingQuadEffectTask = 0x8006435C; // type:func
+drawPlayerShadowTask = 0x80064454; // type:func
 
 drawTimeRecordHeader = 0x80039484; // type:func
 
@@ -3366,6 +3367,8 @@ gStatsMakeLabel = 0x8013B14C; // size:0x8 defined:true
 drawPlayerSnapshotTrailTask = 0x80061348; // type:func
 gPlayerSnapshotTrailPacket = 0x8012C82C; // size:0x28 defined:true
 gPlayerSnapshotTrailEndpoints = 0x8012C854; // size:0x10 defined:true
+gPlayerShadowPacket = 0x8012C884; // size:0x28 defined:true
+gPlayerShadowVertices = 0x8012C8AC; // size:0x20 defined:true
 
 drawFlickeringDotsTask = 0x8004F780; // type:func
 

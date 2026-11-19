@@ -1,6 +1,8 @@
 #include "psx/scratchpad.h"
 #include "psx/libetc.h"
 #include "../../graphics/render_effects_internal.h"
+#define GAME_LOOP_ABSOLUTE_ADDRESSING
+#include "game/engine/game_loop.h"
 
 /* Equal-channel color assignment for grayscale primitives. */
 #define setGray0(p, shade) ((p)->r0 = (p)->g0 = (p)->b0 = (shade))
@@ -20,6 +22,18 @@ typedef struct TriangleBurstScratch {
 } TriangleBurstScratch;
 typedef struct ScreenPoint { s16 x, y; } ScreenPoint;
 
+
+typedef struct PlayerShadowScratch {
+    GsCOORDINATE2 coordinate;
+    SVECTOR vertices[4];
+    MATRIX localScreen;
+    VECTOR scale;
+    SVECTOR rotation;
+    long depth;
+    long cue;
+    long flags;
+    s32 size;
+} PlayerShadowScratch;
 
 const FadingTextGlyphBanks gFadingTextGlyphBanks
     __attribute__((section(".rodata.fading_text_glyph_banks"))) = {
@@ -48,6 +62,22 @@ POLY_FT4 gPlayerSnapshotTrailPacket
 SVECTOR gPlayerSnapshotTrailEndpoints[2]
     __attribute__((section(".data.player_snapshot_trail"))) = {
     {0, 0, -20, 0}, {0, 0, 20, 0},
+};
+
+POLY_FT4 gPlayerShadowPacket
+    __attribute__((section(".data.player_shadow"))) = {
+    TEXTURED_QUAD_PACKET_WORDS << 24, 48, 48, 48,
+    TEXTURED_QUAD_CODE | SEMI_TRANSPARENT_FLAG,
+    0, 0, 64, 32, getClut(880, 241),
+    0, 0, 127, 32, getTPage(0, 2, 704, 0),
+    0, 0, 64, 63, 0,
+    0, 0, 127, 63, 0,
+};
+
+SVECTOR gPlayerShadowVertices[4]
+    __attribute__((section(".data.player_shadow"))) = {
+    {-45, 0, -20, 0}, {45, 0, -20, 0},
+    {-45, 0, 20, 0}, {45, 0, 20, 0},
 };
 
 VECTOR gPlayerPairedQuadOffsets[2]
@@ -425,7 +455,55 @@ void startRotatingQuadEffectTask(s32 variant, const VECTOR *position, s32 pitch,
     resource->textureU = variant == 0 ? 0x40 : 0x80;
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_80064454);
+void drawPlayerShadowTask(void) {
+    RacePlayer *player = &gRacePlayers[D_8013AE88->data18];
+    POLY_FT4 *packet = (POLY_FT4 *)GsOUT_PACKET_P;
+    PlayerShadowScratch *scratch = (PlayerShadowScratch *)getScratchAddr(0);
+    s32 i;
+    long depth;
+
+    if ((player->unk128 & 0x1000) && player->task->data1A == 7) {
+        return;
+    }
+    if (!isPointWithinCameraForwardRange(player->worldCoordinate.coord.t[0],
+            player->worldCoordinate.coord.t[2], (s16)func_80059254())) {
+        return;
+    }
+    *packet = gPlayerShadowPacket;
+    for (i = 0; i < 4; i++) {
+        ApplyMatrixSV(&player->model.effect.effectMatrix180, &gPlayerShadowVertices[i],
+            &scratch->vertices[i]);
+    }
+    for (i = 3; i >= 0; i--) {
+        scratch->vertices[i].vy = 0;
+    }
+    GsInitCoordinate2(0, &scratch->coordinate);
+    scratch->coordinate.coord.t[0] = player->model.effect.effectMatrix180.t[0];
+    scratch->coordinate.coord.t[2] = player->model.effect.effectMatrix180.t[2];
+    scratch->coordinate.coord.t[1] = func_8004A764(player->unk92E,
+        scratch->coordinate.coord.t[0], scratch->coordinate.coord.t[2]);
+    computeSelectedTriangleAngles(&scratch->rotation.vx, &scratch->rotation.vz);
+    scratch->rotation.vy = 0;
+    RotMatrixZYX(&scratch->rotation, &scratch->coordinate.coord);
+    scratch->size = 4096 -
+        (scratch->coordinate.coord.t[1] - player->model.effect.effectMatrix180.t[1]) * 10;
+    if (scratch->size < 2048) {
+        scratch->size = 2048;
+    }
+    setVector(&scratch->scale, scratch->size, scratch->size, scratch->size);
+    ScaleMatrix(&scratch->coordinate.coord, &scratch->scale);
+    GsGetLs(&scratch->coordinate, &scratch->localScreen);
+    GsSetLsMatrix(&scratch->localScreen);
+    depth = RotTransPers4(&scratch->vertices[0], &scratch->vertices[1],
+        &scratch->vertices[2], &scratch->vertices[3], (long *)&packet->x0,
+        (long *)&packet->x1, (long *)&packet->x2, (long *)&packet->x3,
+        &scratch->cue, &scratch->flags);
+    scratch->depth = depth;
+    if (scratch->flags >= 0 && depth >= 0 && depth < 4096) {
+        addPrim(&D_8013AF70[scratch->depth >> 2], packet);
+    }
+    GsOUT_PACKET_P = (u32)(packet + 1);
+}
 
 INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_80064754);
 
