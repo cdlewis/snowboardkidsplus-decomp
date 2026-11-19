@@ -20,8 +20,6 @@ extern char gHitCountMarker[];
 
 int sprintf(char *buffer, const char *format, ...);
 
-void func_8003EA20(void);
-
 void dispatchMode11TransitionTask(void);
 void initializeMode11TransitionTask(void);
 void dispatchGameOptionTransitionTask(void);
@@ -175,6 +173,7 @@ void clampPlayerCameraHeight(u16 playerIndex);
 void initPlayerCameraAndTarget(u16 index);
 void initPlayerZeroTask(void);
 void initCurrentPlayerCameraTask(void);
+void updateRaceIntroCameraTask(void);
 void updateCurrentPlayerCameraTarget(void);
 void addFourWordGpuPacket(GpuPacket4 *source, GsOT *ot, u16 depth);
 void addTexturedSpritePacket(TexturedSpritePacket *source, GsOT *ot, u16 depth);

@@ -177,11 +177,66 @@ void initCurrentPlayerCameraTask(void) {
         cameras[D_8013AE88->data18].y = views[D_8013AE88->data18].vpy << 8;
         cameras[D_8013AE88->data18].z = views[D_8013AE88->data18].vpz << 8;
         updatePlayerCameraAngles(D_8013AE88->data18);
-        setCurrentTaskCallback(func_8003EA20);
+        setCurrentTaskCallback(updateRaceIntroCameraTask);
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/camera/race_camera", func_8003EA20);
+void updateRaceIntroCameraTask(void) {
+    GsRVIEW2 *views;
+    PlayerCamera *cameras;
+    GameTask *tasks;
+
+    if ((--D_8013AE88->data1A & 0x8000) == 0) {
+        views = gPlayerCameraViews;
+        views[D_8013AE88->data18].vpz -= 40;
+        cameras = D_801241E8;
+        cameras[D_8013AE88->data18].unk18 = getAdjacentGeometryRegionForPoint(
+            cameras[D_8013AE88->data18].unk18,
+            views[D_8013AE88->data18].vpx, views[D_8013AE88->data18].vpz);
+        views[D_8013AE88->data18].vpy = func_8004A764(
+            cameras[D_8013AE88->data18].unk18,
+            views[D_8013AE88->data18].vpx, views[D_8013AE88->data18].vpz) - 120;
+        cameras[D_8013AE88->data18].y = (views[D_8013AE88->data18].vpy + 120) << 8;
+        cameras[D_8013AE88->data18].z = views[D_8013AE88->data18].vpz << 8;
+        updatePlayerCameraAngles(D_8013AE88->data18);
+
+        if (D_8013AE88->data1A == 15) {
+            configureTaskStateTransition(5, 0, 15);
+        }
+        if (D_8013AE88->data1A == 0) {
+            if (D_8013AFCD == 2) {
+                D_8013AFAA |= 0x800;
+            }
+            initPlayerCameraAndTarget(D_8013AE88->data18);
+            configureTaskStateTransition(4, 0, 40);
+            D_8013B1A8 = 1;
+            if (D_8013AE88->data18 == 0) {
+                tasks = gGameTasks;
+                func_80014930(&tasks[0], beginSpriteScaleTransitionDelay);
+                if (D_8013AE88->data18 == 0) {
+                    func_80014930(&tasks[4], initializeBouncingVisualTask);
+                }
+            }
+        }
+    }
+
+    if (D_8013AE88->data18 == 0 || (D_8013AFAA & 0x400)) {
+        renderCurrentCameraPlayersAndUpdateSound();
+    }
+
+    if (D_8013AE88->data18 == 0 && D_8013AE88->data1A == (u16)-50) {
+        playSoundEffect(0, 1, 32);
+    }
+    if (D_8013AE88->data1A == (u16)-104) {
+        if (D_8013AE88->data18 == 0) {
+            queueCdCommand(D_80124164[D_8013AFCE], 0);
+            playSoundEffect(0, 0x101, 32);
+            D_8013AFE4 = 0;
+            D_8013B1AB = 0;
+        }
+        setCurrentTaskCallback(func_8003EE70);
+    }
+}
 
 void updateCurrentPlayerCameraTarget(void) {
     GsRVIEW2 *targets = gPlayerCameraViews;
