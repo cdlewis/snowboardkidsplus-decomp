@@ -610,7 +610,7 @@ void drawMenuTimeWithBrightness(MenuTimeResource *resource);
 void drawTimeRecordRows(MenuTimeResource *resource);
 void drawLapTimeLabel(TaskMenuFadeResource *resource);
 void drawHitCountPanel(TaskResourceRecord *resource);
-void func_80038270(TaskResourceRecord *resource);
+void drawHitPrizeMoneyValues(TaskResourceRecord *record);
 void drawCountRecordRows(TaskResourceRecord *resource);
 void transferHitPrizeMoneyTask(void);
 void drawHitPrizeMoneyLabels(MenuFadeInResource *resource);

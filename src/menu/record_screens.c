@@ -173,7 +173,46 @@ void drawHitCountPanel(TaskResourceRecord *record) {
     func_8006C998(-108, -36, 432, 0, -1, &D_800EBFF0[D_8013AF78], 1);
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/record_screens", func_80038270);
+void drawHitPrizeMoneyValues(TaskResourceRecord *record) {
+    MenuFadeInResource *resource = (MenuFadeInResource *)record;
+    u8 padding[0x20];
+    s32 y;
+    s32 stage;
+
+    setSpriteColor(128, 128, 128);
+    y = resource->unk0E == 0 ? -51 : -71;
+    stage = resource->unk06;
+    if (stage < 0) {
+        goto draw_completion;
+    }
+    func_8006DFB4(32, y, 5, 0, resource->unk08, 1, -1,
+                  &D_800EBFF0[D_8013AF78], 1);
+    func_8006C998(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+    y += 40;
+    stage = resource->unk06;
+    if (stage <= 0) {
+        goto draw_completion;
+    }
+    if (resource->unk0E != 0) {
+        func_8006DFB4(32, y, 5, 0, resource->unk0A, 1, -1,
+                      &D_800EBFF0[D_8013AF78], 1);
+        func_8006C998(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+        y += 40;
+    }
+    stage = resource->unk06;
+draw_completion:
+    if (stage >= 2) {
+        func_8006DFB4(32, y, 5, 0, resource->unk0C, 1, -1,
+                      &D_800EBFF0[D_8013AF78], 1);
+        func_8006C998(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+        y += 40;
+    }
+    if (resource->unk06 >= 3) {
+        func_8006DFB4(24, y, 6, 0, gRacePlayers[0].money, 1, -1,
+                      &D_800EBFF0[D_8013AF78], 1);
+        func_8006C998(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+    }
+}
 
 void drawCountRecordRows(TaskResourceRecord *resource) {
     s32 y, i, mode, textMode;
@@ -266,7 +305,7 @@ void updateMenuExitInputTask(void) {
         }
     }
     drawHitCountPanel((TaskResourceRecord *)resource);
-    func_80038270((TaskResourceRecord *)resource);
+    drawHitPrizeMoneyValues((TaskResourceRecord *)resource);
     drawHitPrizeMoneyLabels((MenuFadeInResource *)resource);
 }
 
@@ -317,7 +356,7 @@ void transferHitPrizeMoneyTask(void) {
         setCurrentTaskCallback(updateMenuExitInputTask);
     }
     drawHitCountPanel((TaskResourceRecord *)resource);
-    func_80038270((TaskResourceRecord *)resource);
+    drawHitPrizeMoneyValues((TaskResourceRecord *)resource);
     drawHitPrizeMoneyLabels(resource);
 }
 
@@ -332,7 +371,7 @@ void advanceTaskMenuCountdown(void) {
         setCurrentTaskCallback(transferHitPrizeMoneyTask);
     }
     drawHitCountPanel((TaskResourceRecord *)resource);
-    func_80038270((TaskResourceRecord *)resource);
+    drawHitPrizeMoneyValues((TaskResourceRecord *)resource);
     drawHitPrizeMoneyLabels((MenuFadeInResource *)resource);
 }
 
@@ -348,7 +387,7 @@ void resetTaskMenuCountdown(void) {
         setCurrentTaskCallback(advanceTaskMenuCountdown);
     }
     drawHitCountPanel((TaskResourceRecord *)resource);
-    func_80038270((TaskResourceRecord *)resource);
+    drawHitPrizeMoneyValues((TaskResourceRecord *)resource);
     drawHitPrizeMoneyLabels((MenuFadeInResource *)resource);
 }
 
@@ -365,7 +404,7 @@ void startTaskMenuCountdownAndPlaySound(void) {
         setCurrentTaskCallback(resetTaskMenuCountdown);
     }
     drawHitCountPanel((TaskResourceRecord *)resource);
-    func_80038270((TaskResourceRecord *)resource);
+    drawHitPrizeMoneyValues((TaskResourceRecord *)resource);
     drawHitPrizeMoneyLabels((MenuFadeInResource *)resource);
 }
 
@@ -382,7 +421,7 @@ void tickMenuSoundDelayStage1Task(void) {
         setCurrentTaskCallback(startTaskMenuCountdownAndPlaySound);
     }
     drawHitCountPanel((TaskResourceRecord *)resource);
-    func_80038270((TaskResourceRecord *)resource);
+    drawHitPrizeMoneyValues((TaskResourceRecord *)resource);
     drawHitPrizeMoneyLabels((MenuFadeInResource *)resource);
 }
 
@@ -403,7 +442,7 @@ void tickMenuSoundDelayStage0Task(void) {
         }
     }
     drawHitCountPanel((TaskResourceRecord *)resource);
-    func_80038270((TaskResourceRecord *)resource);
+    drawHitPrizeMoneyValues((TaskResourceRecord *)resource);
     drawHitPrizeMoneyLabels((MenuFadeInResource *)resource);
 }
 
