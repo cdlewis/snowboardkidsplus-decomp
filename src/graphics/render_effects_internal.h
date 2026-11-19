@@ -966,7 +966,7 @@ void drawPlayerSnapshotTrailTask(void);
 void func_800618A0(void);
 void func_80061E48(void);
 void func_80062354(void);
-void func_80065EC8(void);
+void updateRadialEffectTask(void);
 void emitRadialEffectTask(void);
 void func_80066D18(void);
 void func_80067DD0(void);

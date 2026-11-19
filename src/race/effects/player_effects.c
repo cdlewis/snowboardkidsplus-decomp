@@ -35,6 +35,13 @@ typedef struct PlayerShadowScratch {
     s32 size;
 } PlayerShadowScratch;
 
+typedef struct RadialEffectScratch {
+    MATRIX localScreen;
+    long depth;
+    long cue;
+    long flags;
+} RadialEffectScratch;
+
 const FadingTextGlyphBanks gFadingTextGlyphBanks
     __attribute__((section(".rodata.fading_text_glyph_banks"))) = {
     {D_8012EC04, D_8012ECC8, D_8012EECC, D_8012F0D0}
@@ -602,7 +609,80 @@ GameTask *startAlternateQuadAnimationTask(s32 unused, const PositionEffectOrigin
     return task;
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_80065EC8);
+void updateRadialEffectTask(void) {
+    RadialEffectResource *resource;
+    RadialEffectScratch *scratch;
+    POLY_FT4 *packet;
+    s32 i;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (RadialEffectResource *)&D_800D9504[D_8013AE88->resource14];
+    packet = (POLY_FT4 *)GsOUT_PACKET_P;
+    scratch = (RadialEffectScratch *)getScratchAddr(0);
+
+    if (D_8013AFD3 == 0) {
+        for (i = 0; i < 6; i++) {
+            resource->positions[i].vx += resource->velocities[i].vx;
+            resource->positions[i].vy += resource->velocities[i].vy;
+            resource->positions[i].vz += resource->velocities[i].vz;
+            resource->innerPositions[i].vx += resource->velocities[i].vx / 2;
+            resource->innerPositions[i].vz += resource->velocities[i].vz / 2;
+            if (resource->positions[i].vy < 0) {
+                resource->velocities[i].vy += 4;
+            } else {
+                resource->positions[i].vy = 0;
+                resource->velocities[i].vy = 0;
+            }
+        }
+        resource->elapsed++;
+    }
+
+    if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0],
+            resource->coordinate.coord.t[2], (s16)func_80059254())) {
+        resource->coordinate.flg = 0;
+        GsGetLs(&resource->coordinate, &scratch->localScreen);
+        GsSetLsMatrix(&scratch->localScreen);
+        for (i = 0; i < 6; i++) {
+            u8 shade;
+
+            /* Clear the DMA link while setting the packet length. */
+            packet->tag = TEXTURED_QUAD_PACKET_WORDS << 24;
+            setcode(packet, POLY_FT4_CODE);
+            setSemiTrans(packet, 1);
+            packet->tpage = getTPage(0, 1, 704, 0);
+            packet->clut = getClut(880, 246);
+            setUV4(packet, 128, 0, 191, 0, 128, 63, 191, 63);
+            shade = 255 - resource->elapsed * 255 / 30;
+            setGray0(packet, shade);
+
+            if (i < 5) {
+                *(volatile long *)&scratch->depth = RotTransPers4(
+                    &resource->positions[i], &resource->positions[i + 1],
+                    &resource->innerPositions[i], &resource->innerPositions[i + 1],
+                    (long *)&packet->x0, (long *)&packet->x1, (long *)&packet->x2,
+                    (long *)&packet->x3, &scratch->cue, &scratch->flags);
+            } else {
+                /* Close the ring with the first pair of vertices. */
+                *(volatile long *)&scratch->depth = RotTransPers4(
+                    &resource->positions[5], &resource->positions[0],
+                    &resource->innerPositions[5], &resource->innerPositions[0],
+                    (long *)&packet->x0, (long *)&packet->x1, (long *)&packet->x2,
+                    (long *)&packet->x3, &scratch->cue, &scratch->flags);
+            }
+            if (*(volatile long *)&scratch->flags >= 0 && scratch->depth >= 0 && scratch->depth < 4096) {
+                addPrim(&D_8013AF6C[scratch->depth >> 2], packet);
+            }
+            packet++;
+        }
+        GsOUT_PACKET_P = (u32)packet;
+    }
+
+    if (resource->elapsed >= 30) {
+        func_800149A8();
+    }
+}
 
 void emitRadialEffectTask(void) {
     PositionEffectOrigin *origin;
@@ -614,7 +694,7 @@ void emitRadialEffectTask(void) {
     }
     origin = (PositionEffectOrigin *)&D_800D9504[D_8013AE88->resource14];
     if (D_8013AFD3 == 0 && (gFrameCounter & 3) == 0) {
-        func_80014930(D_8013B304, func_80065EC8);
+        func_80014930(D_8013B304, updateRadialEffectTask);
         D_8013AE8C->resource14 = allocateTaskResource();
         resource = (RadialEffectResource *)&D_800D9504[D_8013AE8C->resource14];
         GsInitCoordinate2(0, &resource->coordinate);
