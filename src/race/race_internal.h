@@ -571,7 +571,7 @@ void func_80033100(void);
 void updatePlayerScaledObjectTask(void);
 void updateRisingPlayerEffectTask(void);
 void updateFallingPlayerEffectTask(void);
-void func_8004531C(void);
+void initializeFallingRotatingObjectTask(void);
 void updatePlayerFlagTaskVisual(void);
 void drawPlayerFlagTaskVisual(TaskVisualResource *resource);
 void updateExpandingCoordinateEffectTask(void);

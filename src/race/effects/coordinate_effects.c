@@ -198,7 +198,7 @@ void resetTaskVisualState(TaskVisualResource *resource) {
 void createNineIndexedChildTasks(u16 value, u16 mode) {
     u16 i;
     for (i = 0; i < 9; i++) {
-        func_800148B4(func_8004531C);
+        func_800148B4(initializeFallingRotatingObjectTask);
         D_8013AE8C->data18 = D_8013AE88->data18;
         D_8013AE8C->data1A = i;
         D_8013AE8C->data1C = value;
@@ -269,7 +269,45 @@ void updatePlayerState23CoordinateEffectTask(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/effects/coordinate_effects", func_8004531C);
+void initializeFallingRotatingObjectTask(void) {
+    FallingObjectResource *resource;
+    s32 heightLimit;
+
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    resource = (FallingObjectResource *)&D_800D9504[D_8013AE88->resource14];
+    GsInitCoordinate2(0, &resource->coordinate);
+    if (D_8013AE88->data1E == 0) {
+        u8 random;
+
+        random = randomNextSecondary();
+        resource->coordinate.coord.t[0] = gRacePlayers[D_8013AE88->data18].worldCoordinate.coord.t[0] + (u8)(random % 96) - 48;
+        random = randomNextSecondary();
+        resource->coordinate.coord.t[1] = gRacePlayers[D_8013AE88->data18].worldCoordinate.coord.t[1] + (u8)(random % 96) - 128;
+        random = randomNextSecondary();
+        resource->coordinate.coord.t[2] = gRacePlayers[D_8013AE88->data18].worldCoordinate.coord.t[2] + (u8)(random % 96) - 48;
+        heightLimit = gRacePlayers[D_8013AE88->data18].worldCoordinate.coord.t[1];
+    } else {
+        GsCOORDINATE2 *parent;
+
+        if (D_8013AE98->resource14 == 0xFFFF) {
+            while (1) {}
+        }
+        parent = (GsCOORDINATE2 *)&D_800D9504[D_8013AE98->resource14];
+        resource->coordinate.coord.t[0] = parent->coord.t[0] + (u8)((u8)randomNextSecondary() % 96) - 48;
+        resource->coordinate.coord.t[1] = parent->coord.t[1] + (u8)((u8)randomNextSecondary() % 96) - 128;
+        resource->coordinate.coord.t[2] = parent->coord.t[2] + (u8)((u8)randomNextSecondary() % 96) - 48;
+        heightLimit = parent->coord.t[1];
+    }
+    resource->heightLimit = heightLimit;
+    resource->velocity.x = (u8)((u8)randomNextSecondary() % 21) - 10;
+    resource->velocity.y = -(randomNextSecondary() & 32);
+    resource->velocity.z = (randomNextSecondary() & 21) - 10;
+    D_8013AE88->data1C += D_8013AE88->data1A % 3U;
+    setCurrentTaskCallback(updateFallingRotatingObjectTask);
+}
 
 void updateFallingRotatingObjectTask(void) {
     FallingObjectResource *resource;
