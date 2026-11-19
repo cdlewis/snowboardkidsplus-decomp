@@ -366,10 +366,11 @@ typedef struct SpriteMotionResource {
 typedef struct TrailVisualResource {
     GsCOORDINATE2 coordinate;
     Position3D position;
-    u8 unk5C[0x6A];
+    u8 unk5C[0x68];
+    s16 geometryIndex;
     s16 unkC6, unkC8, framePosition;
     u8 r0, g0, b0, code;
-    s32 scale, unkD4, angle, lifetime;
+    s32 horizontalSpeed, velocityY, angle, lifetime;
     u8 unkE0[0x20];
 } TrailVisualResource;
 
@@ -475,7 +476,7 @@ extern s32 D_8013AF84 __attribute__((section(".data")));
 extern u8 D_8013AFE0 __attribute__((section(".data")));
 extern u8 D_8013AFE2 __attribute__((section(".data")));
 
-void func_80048340(void);
+void updateVisualTrailTask(void);
 void func_80031C98(void);
 void func_80048AA4(void);
 void updatePlayerSideVisualTask(void);

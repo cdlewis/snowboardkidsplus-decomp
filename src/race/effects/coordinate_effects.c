@@ -972,8 +972,8 @@ void initializeVisualTrailTask(void) {
     D_800EB22C.vx = rsin(resource->angle) / 64;
     D_800EB22C.vz = rcos(resource->angle) / 64;
     resource->lifetime = 60;
-    resource->scale = 0x6780;
-    resource->unkD4 = 0;
+    resource->horizontalSpeed = 0x6780;
+    resource->velocityY = 0;
     resource->position.x = resource->coordinate.coord.t[0] << 8;
     resource->position.y = resource->coordinate.coord.t[1] << 8;
     resource->position.z = resource->coordinate.coord.t[2] << 8;
@@ -983,10 +983,77 @@ void initializeVisualTrailTask(void) {
         vector->pad = 0;
     }
     D_8013AE88->data1A = 0;
-    setCurrentTaskCallback(func_80048340);
+    setCurrentTaskCallback(updateVisualTrailTask);
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/effects/coordinate_effects", func_80048340);
+void updateVisualTrailTask(void) {
+    TrailVisualResource *resource;
+    VECTOR *history;
+    s32 dx, dz;
+    s32 oldY;
+    s32 ground;
+    u16 i;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (TrailVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) {
+        while (1) {}
+    }
+    history = (VECTOR *)&D_800D9504[D_8013AE88->resource16];
+    if (D_8013AFD3 == 0) {
+        {
+            VECTOR *entry = &history[D_8013AE88->data1A];
+            entry->vx = resource->position.x;
+        }
+        {
+            VECTOR *entry = &history[D_8013AE88->data1A];
+            entry->vy = resource->position.y;
+        }
+        {
+            VECTOR *entry = &history[D_8013AE88->data1A];
+            entry->vz = resource->position.z;
+        }
+        {
+            VECTOR *entry = &history[D_8013AE88->data1A];
+            entry->pad = 1;
+        }
+
+        D_800EB22C.vx = rsin(resource->angle) * resource->horizontalSpeed / 4096;
+        D_800EB22C.vz = rcos(resource->angle) * resource->horizontalSpeed / 4096;
+        oldY = resource->position.y;
+        resource->position.x += D_800EB22C.vx;
+        resource->position.y += resource->velocityY;
+        resource->position.z += D_800EB22C.vz;
+        resource->geometryIndex = getAdjacentGeometryRegionForPoint(resource->geometryIndex, resource->position.x >> 8, resource->position.z >> 8);
+        ground = func_8004A764(resource->geometryIndex, resource->position.x >> 8, resource->position.z >> 8) << 8;
+        if (resource->position.y > ground) {
+            resource->position.y = ground;
+        }
+        resource->velocityY = resource->position.y - oldY + 0x1900;
+        func_8004BC3C(resource->geometryIndex, resource->position.x >> 8, resource->position.z >> 8, 2, &dx, &dz, &D_800EB22C.vx, &D_800EB22C.vz);
+        if (dx != 0 || dz != 0) {
+            resource->position.x += dx;
+            resource->position.z += dz;
+            resource->angle = func_8004A124(0, 0, D_800EB22C.vx, D_800EB22C.vz);
+        }
+    }
+    drawTaskVisualPositionHistory((TaskVisualResource *)resource, history, &gPlayerVisualPair6780Frame);
+    if (D_8013AFD3 == 0) {
+        for (i = 0; i < D_8013AFD2; i++) {
+            if (addPlayerFlagsIfWithinRadius(&resource->position, 0x1000, 0x2000, i) != 0) {
+                resource->lifetime = 0;
+                break;
+            }
+        }
+        if (resource->lifetime == 0) {
+            resetTaskVisualState((TaskVisualResource *)resource);
+        } else {
+            resource->lifetime--;
+        }
+    }
+}
 
 void initPlayerTimerTask(void) {
     PlayerTimerState *timer = &gRacePlayers[D_8013AE88->data18].timer;
