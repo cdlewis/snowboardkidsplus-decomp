@@ -640,19 +640,6 @@ typedef struct ProximityEmitterResource {
     u8 unkDC[0x24];
 } ProximityEmitterResource;
 
-/* Fixed-point motion for a particle spawned by a proximity emitter. */
-typedef struct EmittedParticleResource {
-    GsCOORDINATE2 coordinate;
-    u8 unk50[0x50];
-    s32 positionX, positionY, positionZ;
-    s32 unkAC;
-    s32 velocityX, velocityY, velocityZ, gravity;
-    s16 rotation, angle, unkC4;
-    u8 unkC6[0xA];
-    s16 geometryIndex;
-    u8 unkD2[0x2E];
-} EmittedParticleResource;
-
 /* One 256-byte task resource; the remaining fields belong to the effect callbacks. */
 typedef struct PositionedEffectResource {
     s32 unk00;
@@ -1034,7 +1021,7 @@ void func_80067D88(s32 playerIndex);
 void func_800688C0(s32 playerIndex);
 
 void initializeProximityParticleTask(void);
-void func_8005CEF0(void);
+void updateProximityParticleTask(void);
 void updateCollectibleTask(void);
 void updateLandedTaskObject(void);
 

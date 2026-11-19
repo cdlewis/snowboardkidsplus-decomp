@@ -8,6 +8,19 @@ typedef struct PlacedObjectBounceVisual {
     s32 height, unk78, velocity;
 } PlacedObjectBounceVisual;
 
+/* Fixed-point motion for a particle spawned by a proximity emitter. */
+typedef struct ProximityParticleResource {
+    GsCOORDINATE2 coordinate;
+    u8 unk50[0x50];
+    Position3D position;
+    s32 unkAC;
+    s32 velocityX, velocityY, velocityZ, gravity;
+    SVECTOR rotation;
+    u8 unkC8[8];
+    s16 geometryIndex;
+    u8 unkD2[0x2E];
+} ProximityParticleResource;
+
 TaskVisualFrame gInteractionVisualFrame __attribute__((section(".data.interaction_visual_frame"))) = {
     0xC0, 0x20, 0x20, 0x20, 0x1C, 0x3D7F
 };
@@ -973,37 +986,99 @@ void updateProximityEmitterTask(void) {
 }
 
 void initializeProximityParticleTask(void) {
-    EmittedParticleResource *resource;
+    ProximityParticleResource *resource;
     ProximityEmitterResource *parent;
     s32 xOffset, zOffset;
     s32 sine, cosine;
     if (D_8013AE88->resource14 != 0xFFFF) { while (1) {} }
     D_8013AE88->resource14 = allocateTaskResource();
-    resource = (EmittedParticleResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (ProximityParticleResource *)&D_800D9504[D_8013AE88->resource14];
     if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
     parent = (ProximityEmitterResource *)&D_800D9504[D_8013AE98->resource14];
     GsInitCoordinate2(0, &resource->coordinate);
     resource->geometryIndex = parent->geometryIndex;
-    resource->rotation = 0;
-    resource->angle = parent->angle;
-    resource->unkC4 = 0;
+    resource->rotation.vx = 0;
+    resource->rotation.vy = parent->angle;
+    resource->rotation.vz = 0;
     xOffset = ((u8)((u8)randomNextSecondary() % 60) - 30) * 10;
     zOffset = ((u8)((u8)randomNextSecondary() % 60) - 30) * 10;
-    resource->positionX = (parent->coordinate.coord.t[0] + xOffset) << 8;
-    resource->positionY = parent->coordinate.coord.t[1] << 8;
-    resource->positionZ = (parent->coordinate.coord.t[2] + zOffset) << 8;
-    sine = rsin(resource->angle);
-    cosine = rcos(resource->angle);
+    resource->position.x = (parent->coordinate.coord.t[0] + xOffset) << 8;
+    resource->position.y = parent->coordinate.coord.t[1] << 8;
+    resource->position.z = (parent->coordinate.coord.t[2] + zOffset) << 8;
+    sine = rsin(resource->rotation.vy);
+    cosine = rcos(resource->rotation.vy);
     resource->velocityX = (sine * 2560) / 4096;
     resource->velocityZ = (cosine * 2560) / 4096;
     resource->velocityY = -4096;
     resource->gravity = 80;
     D_8013AE88->data18 = 0;
     D_8013AE88->data1A = 90;
-    setCurrentTaskCallback(func_8005CEF0);
+    setCurrentTaskCallback(updateProximityParticleTask);
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/course/course_objects", func_8005CEF0);
+void updateProximityParticleTask(void) {
+    ProximityParticleResource *resource;
+    s32 groundY;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (ProximityParticleResource *)&D_800D9504[D_8013AE88->resource14];
+    if (!D_8013AFD3) {
+        resource->rotation.vx += 0x40;
+        resource->velocityY += resource->gravity;
+        resource->position.x += resource->velocityX;
+        resource->position.z += resource->velocityZ;
+        resource->position.y += resource->velocityY;
+        resource->coordinate.coord.t[0] = resource->position.x >> 8;
+        resource->coordinate.coord.t[1] = resource->position.y >> 8;
+        resource->coordinate.coord.t[2] = resource->position.z >> 8;
+
+        if (D_8013AE88->data1A == 0) {
+            if (resource->velocityY > 0) {
+                resource->geometryIndex = getAdjacentGeometryRegionForPoint(resource->geometryIndex,
+                    resource->coordinate.coord.t[0], resource->coordinate.coord.t[2]);
+                groundY = func_8004A764(resource->geometryIndex, resource->coordinate.coord.t[0],
+                    resource->coordinate.coord.t[2]) - 0x10;
+                if (resource->coordinate.coord.t[1] > groundY) {
+                    if (!D_8013AE88->data18 || !(u8)func_8004AAA0(resource->geometryIndex,
+                            resource->coordinate.coord.t[0], resource->coordinate.coord.t[2])) {
+                        resource->coordinate.coord.t[1] = groundY;
+                        resource->position.y = groundY << 8;
+                        resource->velocityY = -(resource->velocityY * 3 / 5);
+                        playPositionalSoundEffect(resource->position.x, resource->position.y,
+                            resource->position.z, 1, 0xA01, 0x20);
+                        D_8013AE88->data18 = 1;
+                        D_8013AE88->data1C = 6;
+                    } else {
+                        func_800149A8();
+                        return;
+                    }
+                }
+            }
+        } else {
+            D_8013AE88->data1A--;
+        }
+    }
+
+    if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0],
+            resource->coordinate.coord.t[2], (s16)func_80059254())) {
+        if (!D_8013AFD3) {
+            if (resource->velocityY > 0) {
+                addPlayerFlagsWithinRadius(&resource->position, 0x5C00, 0x20);
+            }
+            if (D_8013AE88->data18) {
+                if (D_8013AE88->data1C) {
+                    func_8002BF88(&resource->position, 0x4000, 0x6000, 2);
+                    D_8013AE88->data1C--;
+                }
+            }
+        }
+        D_80129A80[7].coord2 = &resource->coordinate;
+        func_8001E3E4(&resource->rotation, &resource->coordinate);
+        drawTaskObject(7);
+    }
+}
 
 void initializeMovingVisualTask(void) {
     TaskVisualResource *resource;
