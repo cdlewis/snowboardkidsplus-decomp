@@ -70,7 +70,8 @@ segments:
       - [0x918, .rodata, io/cd_queue]
       - [0x984, pad]
       - [0x988, rodata, main_cd_commands]
-      - [0xB88, rodata]
+      - [0xB88, .rodata, io/memory_card]
+      - {start: 0xB9C, type: .rodata, name: io/memory_card, linker_section: .rodata.memory_card_availability_padding}
       - [0xBA0, .rodata, io/memory_card_read]
       - [0xBB8, .rodata, io/memory_card_tasks]
       - [0xC6C, rodata]
@@ -917,6 +918,9 @@ segments:
       - {start: 0x12BDF8, type: .sdata, name: io/cd_queue, linker_section: .sdata.cd_volume_fade_timer, linker_section_order: .data}
       - {start: 0x12BDFC, type: .sdata, name: io/cd_queue, linker_section: .sdata.dat_start_sector, linker_section_order: .data}
       - [0x12BE00, data]
+      - {start: 0x12BE08, type: .data, name: io/memory_card, linker_section: .data.memory_card_poll_flags}
+      - {start: 0x12BE0A, type: .data, name: io/memory_card, linker_section: .data.memory_card_accept_retry_counts}
+      - [0x12BE0C, data]
       - {start: 0x12BE24, type: .sdata, name: race/course/course_geometry, linker_section: .sdata.geometry_edge_projection, linker_section_order: .data}
       - [0x12BE54, data]
       - {start: 0x12BEA4, type: .sdata, name: race/course/course_objects, linker_section: .sdata.object_sort_saved_stack, linker_section_order: .data}

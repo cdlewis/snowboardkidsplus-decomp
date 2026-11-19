@@ -13,6 +13,7 @@ struct DIRENTRY {
 
 s32 MemCardGetDirentry(s32 chan, char *name, struct DIRENTRY *dir,
                        s32 *files, s32 ofs, s32 max);
+s32 MemCardExist(s32 chan);
 s32 MemCardAccept(s32 chan);
 s32 MemCardReadFile(s32 chan, char *name, void *buffer, s32 offset, s32 bytes);
 s32 MemCardSync(s32 mode, s32 *cmds, s32 *result);

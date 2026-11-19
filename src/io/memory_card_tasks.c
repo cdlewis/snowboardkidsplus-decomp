@@ -53,7 +53,7 @@ void beginMemoryCardBufferRead(void) {
 }
 
 void pollMemoryCardBufferReadTask(void) {
-    switch (func_80019288()) {
+    switch (pollMemoryCardAvailability()) {
     case 0: D_8013AF3E = 1; return;
     case 5: D_8013AF3E = 2; return;
     case 2: D_8013AF3E = 6; break;
@@ -100,7 +100,7 @@ void waitForMemoryCardAcceptTask(void) {
 }
 
 void pollMemoryCardStatusTask(void) {
-    switch (func_80019288()) {
+    switch (pollMemoryCardAvailability()) {
     case 0: D_8013AF3E = 1; return;
     case 5: D_8013AF3E = 2; return;
     case 2: D_8013AF3E = 6; break;

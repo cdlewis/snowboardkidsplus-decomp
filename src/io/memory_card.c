@@ -14,6 +14,14 @@ u32 gMemoryCardSaveCapacities[5] __attribute__((section(".data.memory_card_table
 
 MemoryCardSaveHeader gMemoryCardSaveHeader __attribute__((section(".data.memory_card_save_header"))) = {0};
 
+const u32 gMemoryCardAvailabilityTablePadding
+    __attribute__((section(".rodata.memory_card_availability_padding"))) = 0;
+
+u8 D_8013B608[2] __attribute__((section(".data.memory_card_poll_flags"))) = {0};
+u8 gMemoryCardAcceptRetryCounts[2] __attribute__((section(".data.memory_card_accept_retry_counts"))) = {0};
+
+s32 func_8001907C(void);
+
 void initializeMemoryCardSaveHeader(void) {
     u16 i;
     MemCardInit(0);
@@ -147,4 +155,97 @@ s32 tryAcceptMemoryCard(void) {
     return 0;
 }
 
-INCLUDE_ASM("asm/nonmatchings/io/memory_card", func_80019288);
+s32 pollMemoryCardAvailability(void) {
+    s32 command;
+    s32 result;
+
+    D_8013B608[D_8013AF38] = 1;
+    switch (MemCardSync(1, &command, &result)) {
+    case -1:
+        MemCardExist(D_8013AF34);
+        gMemoryCardAcceptRetryCounts[D_8013AF38] = 0;
+        break;
+    case 0:
+        return 0;
+    case 1:
+        switch (command) {
+        case 1:
+            if (result != 1) {
+                if (result == 0) {
+                    goto checkExistingCard;
+                }
+                if (result == 2) {
+                    goto unformattedCard;
+                }
+                if (result != 3) {
+                    return 0;
+                }
+                goto newCard;
+            checkExistingCard:
+                if ((s16)func_8001907C()) {
+                    return 7;
+                }
+                if (!(s16)memoryCardFileExists()) {
+                    return 8;
+                }
+                if (D_8013B60C[D_8013AF38]) {
+                    return 2;
+                }
+                return 1;
+            newCard:
+                D_8013B60C[D_8013AF38] = 1;
+                MemCardAccept(D_8013AF34);
+                return 5;
+            }
+            return 3;
+        case 2:
+            switch (result) {
+            case 0:
+                if ((s16)func_8001907C()) {
+                    return 7;
+                }
+                if (!(s16)memoryCardFileExists()) {
+                    return 8;
+                }
+                if (D_8013B60C[D_8013AF38]) {
+                    return 2;
+                }
+                return 1;
+            case 1:
+                return 3;
+            case 3:
+                D_8013B60C[D_8013AF38] = 1;
+                readMemoryCardDirectory();
+                if ((s16)func_8001907C()) {
+                    return 7;
+                }
+                if (!(s16)memoryCardFileExists()) {
+                    return 8;
+                }
+                if (D_8013B60C[D_8013AF38]) {
+                    return 2;
+                }
+                return 1;
+            case 2:
+            unformattedCard:
+                return 4;
+            case 4:
+                if (gMemoryCardAcceptRetryCounts[D_8013AF38] < 10) {
+                    gMemoryCardAcceptRetryCounts[D_8013AF38]++;
+                    MemCardAccept(D_8013AF34);
+                    return 5;
+                }
+                gMemoryCardAcceptRetryCounts[D_8013AF38] = 0;
+                D_8013B600[D_8013AF38] = 0;
+                return 6;
+            }
+            break;
+        default:
+            return 0;
+        }
+        break;
+    default:
+        return 0;
+    }
+    return 0;
+}

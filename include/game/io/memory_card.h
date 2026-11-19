@@ -26,7 +26,7 @@ extern s16 D_8013AF38;
 extern s32 D_8013AF34;
 extern u8 D_8013AF48;
 extern char *D_8013AF40;
-extern u8 D_8013B608[2] __attribute__((section(".bss")));
+extern u8 D_8013B608[2];
 extern u8 D_8013B60C[2] __attribute__((section(".bss")));
 extern u32 gMemoryCardSaveCapacities[5];
 
