@@ -106,6 +106,8 @@ segments:
       - [0x149C, rodata]
       - [0x14C4, .rodata, unclassified/graphics_800497B8]
       - [0x14D4, rodata]
+      - {start: 0x1554, type: .rodata, name: race/effects/player_effects, linker_section: .rodata.race_oscillating_quad_position}
+      - [0x1564, rodata]
       - {start: 0x1590, type: .rodata, name: race/effects/player_effects, linker_section: .rodata.fading_text_glyph_banks}
       - [0x15A0, rodata]
       - [0x1A38, .rodata, menu/task_widgets]

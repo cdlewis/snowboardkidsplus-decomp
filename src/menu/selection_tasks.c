@@ -14,7 +14,7 @@ void initializeModeRaceTasks(void) {
     if (!D_8013B562) {
         func_80051A68();
     }
-    func_80060FE4();
+    initializeRacePlayerEffects();
     taskTransitionFlagGp = 0;
     func_80014874(initializeModeSectorReadResourcesTask);
     if (D_8013AFCD == 2) {

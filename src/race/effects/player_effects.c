@@ -42,6 +42,11 @@ typedef struct RadialEffectScratch {
     long flags;
 } RadialEffectScratch;
 
+const VECTOR gInitialRaceOscillatingQuadPosition
+    __attribute__((section(".rodata.race_oscillating_quad_position"))) = {
+    -0x1B25, 0x3557, 0x9E5E, 0
+};
+
 const FadingTextGlyphBanks gFadingTextGlyphBanks
     __attribute__((section(".rodata.fading_text_glyph_banks"))) = {
     {D_8012EC04, D_8012ECC8, D_8012EECC, D_8012F0D0}
@@ -217,7 +222,61 @@ void startRacePlayerTasks(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_80060FE4);
+void initializeRacePlayerEffects(void) {
+    s32 playerIndex;
+    VECTOR position;
+
+    func_80014930(&gGameTasks[4], updatePlayerRenderSnapshots);
+    playerSnapshotTaskGp = D_8013AE8C;
+    if (D_8013AFD2 == 4) {
+        playerIndex = 0;
+        do {
+            func_80064754(playerIndex);
+            createPlayerPositionTrailTask(playerIndex);
+            func_800688C0(playerIndex);
+        } while (++playerIndex < D_8013AFD2);
+    } else {
+        for (playerIndex = 0; playerIndex < D_8013AFD2; playerIndex++) {
+            func_80064754(playerIndex);
+            func_80065464(playerIndex);
+            createPlayerTrailTask(playerIndex);
+            func_80067D88(playerIndex);
+            func_800688C0(playerIndex);
+        }
+    }
+    if (D_8013AFCE == 6) {
+        for (playerIndex = 0; playerIndex < D_8013AFCD; playerIndex++) {
+            createPlayerParticleTask(playerIndex);
+        }
+    }
+    if (D_8013AFCE == 4) {
+        position = gInitialRaceOscillatingQuadPosition;
+        createOscillatingQuadTask(0, &position, 0x200, 0, 255, 0);
+        position.vx = -0x198F;
+        position.vy = 0x3343;
+        position.vz = 0x91FF;
+        createOscillatingQuadTask(0, &position, 0x100, 255, 0, 128);
+        position.vx = 0xF2E;
+        position.vy = 0xB676;
+        position.vz = 0x17E89;
+        createOscillatingQuadTask(0, &position, 0x100, 255, 255, 0);
+        position.vx = 0x18EC;
+        position.vy = 0xB676;
+        position.vz = 0x17ADC;
+        createOscillatingQuadTask(0, &position, -0x200, 0, 128, 255);
+        position.vx = -0x5AF;
+        position.vy = 0xB676;
+        position.vz = 0x179BC;
+        createOscillatingQuadTask(0, &position, -0x100, 255, 0, 128);
+        position.vx = -0x9B4;
+        position.vy = 0xB5C2;
+        position.vz = 0x17110;
+        createOscillatingQuadTask(0, &position, 0x200, 0, 255, 0);
+        for (playerIndex = 0; playerIndex < D_8013AFCD; playerIndex++) {
+            createFlickeringDotsTask(playerIndex);
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_800612BC);
 

@@ -10,6 +10,7 @@ raceFinishFlagAbsolute = D_8013AFD6;
 readPixelRectGp = gReadPixelRect;
 gameOptionPlayerModeGp = D_8013AFCD;
 activeRacePlayerCountGp = D_8013AFD2;
+playerSnapshotTaskGp = D_8013B304;
 gameOptionPlayerModeAbsolute = D_8013AFCD;
 selectedCourseIndexAbsolute = D_8013AFCE;
 selectedFinishLapCountAbsolute = D_8013AFD0;

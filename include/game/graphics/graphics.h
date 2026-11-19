@@ -144,7 +144,7 @@ extern GsOT D_800EC130[2];
 
 void func_80051A68(void);
 void func_80058BD4(void);
-void func_80060FE4(void);
+void initializeRacePlayerEffects(void);
 u16 func_80059254(void);
 void drawTaskObject(u16 index);
 void drawTaskObjectAlternateLayer(u16 index);

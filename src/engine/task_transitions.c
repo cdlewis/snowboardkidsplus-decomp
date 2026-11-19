@@ -415,7 +415,7 @@ void startThreeFrameScreenBlend(void) {
 void initializeDemoPlaybackTask(void) {
     initPlayerCamera(0);
     func_8003DEE0();
-    func_80060FE4();
+    initializeRacePlayerEffects();
     func_800148F4(&gGameTasks[3], initPlayerZeroTask);
     D_8013AE8C->data18 = 0;
     func_80058BD4();
