@@ -2591,6 +2591,9 @@ createFallingParticleTask = 0x80062DA8; // type:func
 createPlayerParticleTask = 0x80063788; // type:func
 
 setSecondaryDisplayTaskMode = 0x800719A8; // type:func
+drawSecondaryDisplayTask = 0x80071A80; // type:func
+gSecondaryDisplayLabel = 0x8012D498; // size:0xC defined:true
+gSecondaryDisplayPulseGlyph = 0x8013B39C; // size:0x8 defined:true
 gSecondaryTaskSequenceEntries = 0x8012F10C; // size:0x30
 
 advanceTextLine = 0x800A60FC; // type:func

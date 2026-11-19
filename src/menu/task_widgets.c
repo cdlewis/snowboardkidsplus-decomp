@@ -171,6 +171,11 @@ typedef struct TaskValueState {
     u16 unk06;
 } TaskValueState;
 
+const u16 gSecondaryDisplayLabel[6]
+    __attribute__((section(".data.secondary_display_label"), aligned(4))) = {
+    0x006D, 0x002C, 0x007F, 0x0110, 0, 0
+};
+
 TimedSequenceEntry gSecondaryTaskSequenceEntries[6]
     __attribute__((section(".data.secondary_task_sequence"))) = {
     {0x000C0172, 6}, {0x000C0173, 6}, {0x000C0174, 6},
@@ -198,6 +203,11 @@ SPRT_16 gAnimatedSprite16Template __attribute__((section(".data.animated_sprite1
     0x03000000, 0x80, 0x80, 0x80, SPRT_16_CODE,
     0, 0, 0x70, 0x50, 0x3EB2
 };
+s8 gSecondaryDisplayPulseGlyph[8]
+    __attribute__((section(".data.secondary_display_pulse_glyph"), aligned(4))) = {
+    (s8)0x81, 0x44, 0, 0, 0, 0, 0, 0
+};
+
 DR_TPAGE gAnimatedSprite16DrawPage __attribute__((section(".sdata.animated_sprite16_page"))) = {
     0x01000000, {0xE1000000 | getTPage(0, 0, 832, 256)}
 };
@@ -220,7 +230,7 @@ void func_8007195C(void);
 void func_80070448(void);
 void func_8007B890(s16 recordIndex, s16 maskIndex);
 void func_8007197C(void);
-void func_80071A80(void);
+void drawSecondaryDisplayTask(void);
 void initTimedSequence(TimedSequence *sequence, const TimedSequenceEntry *entries, s16 index, s16 count);
 void updateCountdownTask(void);
 void func_8007649C(void);
@@ -646,7 +656,7 @@ void setSecondaryDisplayTaskMode(s16 mode) {
         if (D_8013B37C != NULL) {
             D_8013B37C->data18 = 0;
         }
-        func_80014930(&gGameTasks[3], func_80071A80);
+        func_80014930(&gGameTasks[3], drawSecondaryDisplayTask);
         D_8013B37C = D_8013AE8C;
         D_8013AE8C->data18 = mode;
         D_8013AE8C->data1C = 0;
@@ -664,7 +674,54 @@ void setSecondaryDisplayTaskMode(s16 mode) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80071A80);
+void drawSecondaryDisplayTask(void) {
+    u8 i;
+    u8 phase;
+    u8 shade;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    if (D_8013AE88->data18 == 0) {
+        func_800149A8();
+    } else {
+        setSpriteColor(128, 128, 128);
+        func_8006EF30(36, 88, 15, gSecondaryDisplayLabel, 15, -1,
+                      &D_800EBFF0[D_8013AF78], 1);
+        i = 0;
+        phase = D_8013AE88->data1C;
+        do {
+            shade = i * 32 + 16 + phase * 4;
+            setSpriteColor(shade, shade, shade);
+            drawWrappedDoubleByteText(i * 8 + (phase + 92), 88, 15,
+                                      gSecondaryDisplayPulseGlyph, 7, 0,
+                                      &D_800EBFF0[D_8013AF78], 1);
+            i++;
+        } while (i < 4);
+        for (; i < 8; i++) {
+            shade = 128 - (i - 4) * 32 - phase * 4;
+            setSpriteColor(shade, shade, shade);
+            drawWrappedDoubleByteText(i * 8 + (phase + 92), 88, 15,
+                                      gSecondaryDisplayPulseGlyph, 7, 0,
+                                      &D_800EBFF0[D_8013AF78], 1);
+        }
+        if (++D_8013AE88->data1C >= 8) {
+            D_8013AE88->data1C = 0;
+        }
+        if (D_8013AE88->data18 == 1) {
+            addTilePacket(-160, -120, 320, 240, 0, 0, 0,
+                          &D_800EBFF0[D_8013AF78], 0xFFE);
+        }
+        if (D_8013AE88->data18 == 1 || D_8013AE88->data18 == 3) {
+            setSpriteColor(128, 128, 128);
+            if (++D_8013AE88->data1E >= 36) {
+                D_8013AE88->data1E = 0;
+            }
+            func_8006C998(2, 76, (u16)((u32)D_8013AE88->data1E / 6) + 370,
+                          12, -1, &D_800EBFF0[D_8013AF78], 1);
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80071E20);
 
