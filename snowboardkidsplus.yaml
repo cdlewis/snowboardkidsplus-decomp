@@ -119,7 +119,7 @@ segments:
       - [0x2400, .rodata, menu/save_record_tasks]
       - {start: 0x2434, type: .rodata, name: menu/save_record_tasks, linker_section: .rodata.state_value_history_padding}
       - [0x2438, rodata]
-      - [0x2520, rodata, main_tail_jump_tables]
+      - [0x2520, .rodata, menu/panel_tasks]
       - [0x2534, rodata]
       - [0x2618, rodata]
       - {start: 0x26A0, type: .rodata, name: menu/panel_tasks, linker_section: .rodata.board_level_label}

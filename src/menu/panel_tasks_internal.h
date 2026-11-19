@@ -185,7 +185,7 @@ extern u8 D_8013AF3A __attribute__((section(".data")));
 void func_8009488C(void);
 void func_800187B8(u8 voice);
 
-void func_8008CD98(void);
+void updateRegisteredDetailedTextPanelTask(void);
 void drawRegisteredTextPanelTask(void);
 void func_8008FA8C(void);
 void func_8008D200(void);

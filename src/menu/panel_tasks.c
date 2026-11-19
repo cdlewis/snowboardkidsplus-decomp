@@ -1,4 +1,5 @@
 #include "panel_tasks_internal.h"
+#include "game/menu/task_widgets.h"
 
 PanelModeLabel gRegisteredPanelMode0Label __attribute__((section(".data.registered_panel_mode_labels"))) = {2, 0};
 PanelModeLabel gRegisteredPanelMode1Label __attribute__((section(".data.registered_panel_mode_labels"))) = {3, 0};
@@ -188,6 +189,10 @@ POLY_F3 gNumberAdjustmentArrow __attribute__((section(".data.number_adjustment_a
     4U << 24, 0, 0, 0, POLY_F3_CODE, 0, 0, 0, 0, 0, 0
 };
 
+extern void func_8008C708(s16 x, s16 y, s16 textX, s16 textY,
+                         const u16 *text, s32 mode, s32 depth, s32 index);
+extern const TimedSequenceEntry D_80123840[];
+
 INCLUDE_ASM("asm/nonmatchings/menu/panel_tasks", func_8008C708);
 
 static inline RegisteredTaskEntry *getRegisteredPanelEntry(u32 resource, s32 index) {
@@ -231,7 +236,7 @@ void createRegisteredDetailedTextPanelTask(s16 x, s16 y, s16 textX, s16 textY,
                                    const u16 *content, s32 depth, s32 index) {
     RegisteredDetailedPanelResource *resource;
     RegisteredTaskEntry *entry;
-    func_80014874(func_8008CD98);
+    func_80014874(updateRegisteredDetailedTextPanelTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     resource = (RegisteredDetailedPanelResource *)&D_800D9504[D_8013AE8C->resource14];
     resource->unk00 = 0;
@@ -265,7 +270,81 @@ void createRegisteredDetailedTextPanelTask(s16 x, s16 y, s16 textX, s16 textY,
     entry->task = D_8013AE8C;
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/panel_tasks", func_8008CD98);
+void updateRegisteredDetailedTextPanelTask(void) {
+    RegisteredDetailedPanelResource *state;
+    ValuePanelEntry *children;
+    RegisteredTaskEntry *entry;
+    s16 result;
+
+    if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
+    state = (RegisteredDetailedPanelResource *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) { for (;;) {} }
+    children = (ValuePanelEntry *)&D_800D9504[D_8013AE88->resource16];
+    if (state->index % 10 == 0) {
+        if (D_8013AE98->resource14 == 0xFFFF) { for (;;) {} }
+        entry = getRegisteredPanelEntry(D_8013AE98->resource14, state->index);
+    } else {
+        if (D_8013AE98->resource16 == 0xFFFF) { for (;;) {} }
+        entry = getRegisteredPanelEntry(D_8013AE98->resource16, state->index);
+    }
+
+    if (entry->task == D_8013AE88 && entry->command != 99) {
+        switch (D_8013AE88->data18) {
+        case 0:
+            func_8008C708(state->x, state->y, state->textX, state->textY,
+                          state->text, state->value, state->depth + 1, 1);
+            if (state->mode == 0) {
+                entry->flags = 2;
+                D_8013AE88->data18 = 3;
+            } else {
+                createInputTimedSpriteTask(state->x + 132, state->y + 18,
+                                           D_80123840, 2, (u8)state->color,
+                                           0xB0, 0x40, state->depth, 11);
+                D_8013AE88->data18 = 1;
+            }
+            break;
+        case 1:
+            result = children[1].active;
+            if (result > 0) {
+                break;
+            }
+            if (result < 0) {
+                entry->flags = 1;
+                D_8013AE88->data18 = 4;
+            } else if (state->content == NULL) {
+                entry->flags = 2;
+                D_8013AE88->data18 = 4;
+            } else {
+                createRegisteredMovingPanelTask(state->color, (const s16 *)state->content,
+                                                state->x + 28, state->y + 23, 0, 16,
+                                                state->x + 28, state->y + 39,
+                                                state->depth + 2, 21);
+                D_8013AE88->data18 = 2;
+            }
+            break;
+        case 2:
+            result = children[2].active;
+            if (result >= 0) {
+                if (result == 0) {
+                    entry->flags = 2;
+                } else if (result == 1) {
+                    entry->flags = 3;
+                } else {
+                    entry->flags = 4;
+                }
+                D_8013AE88->data18 = 4;
+            }
+            break;
+        case 3:
+            break;
+        case 4:
+            goto finish;
+        }
+    } else {
+    finish:
+        func_800149A8();
+    }
+}
 
 void initializeCountedTaskResourcePair(void) {
     D_8013AE88->data18 = 0;
