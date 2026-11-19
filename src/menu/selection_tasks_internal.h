@@ -24,6 +24,7 @@
 #define TASK_ABSOLUTE_ADDRESSING
 #define TASK_FLAGS_ABSOLUTE_ADDRESSING
 #include "game/race/player/race_player.h"
+#include "game/race/camera/race_camera.h"
 #include "game/scene/scene_events.h"
 #include "game/engine/task.h"
 #include "game/menu/selected_sprite.h"
@@ -104,7 +105,7 @@ void func_8002FA58(s16 resource);
 void func_800A42CC(void);
 void func_800A499C(void);
 void func_8001B858(void);
-void func_800A1F50(void);
+void initializeModeRaceTasks(void);
 void func_800A4C28(void);
 void func_800A3D9C(void);
 void func_800A525C(void);

@@ -2,6 +2,8 @@
 
 #include "decomp/types.h"
 
+void func_8001B4EC(void);
+
 /* Explicit .data placement preserves absolute accesses in this module;
  * some other game units access these same objects through $gp.
  */

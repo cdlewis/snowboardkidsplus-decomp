@@ -88,9 +88,6 @@ void func_80015A30(u16 controller);
 void func_8003CAF0(void);
 void func_80040D5C(void);
 void func_8001C9F0(void);
-void func_80060FE4(void);
-void func_80058BD4(void);
-void func_8001B4EC(void);
 
 void runMovieAndGameLoop(void) {
     func_800131B4();

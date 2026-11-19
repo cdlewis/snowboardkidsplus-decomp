@@ -4,7 +4,80 @@ u16 gSceneOneShotSoundKey __attribute__((section(".sdata.scene_sound_state"))) =
 
 u8 gSceneOneShotVoice __attribute__((section(".sdata.scene_sound_state"))) = 0;
 
-INCLUDE_ASM("asm/nonmatchings/menu/selection_tasks", func_800A1F50);
+void initializeModeRaceTasks(void) {
+    s16 player;
+    RECT *clip;
+    u16 width;
+    u16 height;
+    u16 sixthHeight;
+
+    if (!D_8013B562) {
+        func_80051A68();
+    }
+    func_80060FE4();
+    taskTransitionFlagGp = 0;
+    func_80014874(initializeModeSectorReadResourcesTask);
+    if (D_8013AFCD == 2) {
+        D_8013AFAA |= 0x800;
+        func_800148F4(&gGameTasks[3], initializeTaskPlayerCamera);
+        D_8013AE8C->data18 = 1;
+    }
+    func_800148F4(&gGameTasks[3], initializeTaskPlayerCamera);
+    D_8013AE8C->data18 = 0;
+    func_80058BD4();
+    func_80014838(updateRacePlayerFinishSlotsTask);
+    for (player = D_8013AFD2 - 1; player >= 0; player--) {
+        func_80014838(initializeCurrentPlayerModelAndHeight);
+        D_8013AE8C->data18 = player;
+        gRacePlayers[player].task = D_8013AE8C;
+    }
+    configureTaskStateTransition(2, 0, 15);
+
+    D_8013AFDB = 0;
+    clip = D_800EC158;
+    width = D_8013AF7A;
+    clip[0].x = 0;
+    clip[0].y = 0;
+    clip[0].w = width;
+    /* Preserve the separate height reads for the full and player clips. */
+    clip[0].h = *(volatile u16 *)&D_8013AF7C;
+    if (D_8013AFCD == 1) {
+        clip[1].x = 0;
+        clip[1].y = 0;
+        clip[1].w = width;
+        D_8013AF7E = 0;
+        height = D_8013AF7C;
+        clip[1].h = height / 2 + 16;
+        sixthHeight = (u32)height / 6;
+    } else {
+        D_8013AF7E = 0;
+        clip[1].x = 0;
+        clip[1].y = 0;
+        clip[1].w = width;
+        clip[2].x = 0;
+        clip[2].w = width;
+        height = D_8013AF7C;
+        clip[1].h = height / 2 + 16;
+        clip[2].y = height / 2 + 16;
+        clip[2].h = height / 2 - 16;
+        sixthHeight = (u32)height / 6;
+    }
+    D_8013AF80 = sixthHeight;
+    func_8001B4EC();
+    player = 0;
+    if (D_8013AFCD) {
+        do {
+            copyPlayerPaletteRow(player);
+            player++;
+        } while (player < D_8013AFCD);
+    }
+    D_8013AFAA |= 0x48;
+    if (D_8013AFD8) {
+        setCurrentTaskCallback(advanceTaskAtModeCoursePosition);
+    } else {
+        setCurrentTaskCallback(advanceTaskWhenFlagB55ESet);
+    }
+}
 
 void advanceTaskAtModeCoursePosition(void) {
     s16 reached = 0;
@@ -83,7 +156,7 @@ void selectTaskBySelectedRecordMatch(void) {
         setCurrentTaskCallback(func_8001B858);
     } else {
         D_8013B562 = 1;
-        setCurrentTaskCallback(func_800A1F50);
+        setCurrentTaskCallback(initializeModeRaceTasks);
     }
 }
 
