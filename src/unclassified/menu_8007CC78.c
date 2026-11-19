@@ -4,6 +4,9 @@
 #include "game/io/dat_resources.h"
 #include "game/menu/selected_sprite.h"
 
+#define MEMORY_CARD_SLOT_BUFFER_BASE ((u8 *)0x801E4000)
+#define MEMORY_CARD_SLOT_BUFFER_STRIDE 0x2000
+
 typedef struct MenuModelResource {
     GsDOBJ2 object;
     GsCOORDINATE2 local;
@@ -57,6 +60,9 @@ TexturedQuadListEntry taskIndexPanelQuadsPalette1[10] __attribute__((section(".d
 };
 
 s16 gMenuPlayerModelYaw[2] __attribute__((section(".sdata"))) = {0};
+
+const u32 gMemoryCardSlotTaskTablePadding
+    __attribute__((section(".rodata.memory_card_slot_task_padding"))) = 0;
 
 StateValueHistory D_8013BE30 __attribute__((section(".bss.state_value_history")));
 
@@ -1031,12 +1037,95 @@ s16 hasStateValueChanged(s16 index) {
     return D_8013BE30.current[index] != D_8013BE30.previous[index];
 }
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_80087030);
+void updateMemoryCardSlotTask(void) {
+    switch (D_8013AE88->data18) {
+    case 0:
+        resetMemoryCardTaskState();
+        if (D_8013BE30.unk_00 == 0) {
+            D_8013BE30.activeIndex = isValue16(D_8013BE30.unk_00 = 16);
+        } else {
+            D_8013BE30.activeIndex = isValue16(D_8013BE30.unk_00 = 0);
+        }
+        func_800198C4(D_8013BE30.unk_00);
+        D_8013AE88->data18 = 1;
+        break;
+    case 1:
+        if (D_8013AF3E != 7) {
+            D_8013BE30.unk_16[D_8013BE30.activeIndex] = 1;
+        } else {
+            D_8013BE30.unk_16[D_8013BE30.activeIndex] = 0;
+        }
+        switch (D_8013AF3E) {
+        case 0:
+            if (D_8013BE30.current[D_8013BE30.activeIndex] != D_8013AF3E) {
+                D_8013BE30.previous[D_8013BE30.activeIndex] =
+                    D_8013BE30.current[D_8013BE30.activeIndex];
+                D_8013BE30.current[D_8013BE30.activeIndex] = D_8013AF3E;
+            }
+            if (D_8013BE30.unk_0E[D_8013BE30.activeIndex] == 2) {
+                D_8013BE30.unk_0E[D_8013BE30.activeIndex] = 3;
+                D_8013AE88->data18 = 0;
+            }
+            break;
+        case 2:
+        case 3:
+            if (D_8013BE30.current[D_8013BE30.activeIndex] != D_8013AF3E) {
+                D_8013BE30.previous[D_8013BE30.activeIndex] =
+                    D_8013BE30.current[D_8013BE30.activeIndex];
+                D_8013BE30.current[D_8013BE30.activeIndex] = D_8013AF3E;
+            }
+            break;
+        case 6:
+            D_8013AF3E = 5;
+            /* Fall through. */
+        case 5:
+            if (D_8013BE30.unk_0E[D_8013BE30.activeIndex] == 3) {
+                D_8013AE88->data18 = 0;
+            } else if (D_8013BE30.unk_12[D_8013BE30.activeIndex] == 1) {
+                D_8013BE30.unk_12[D_8013BE30.activeIndex] = 0;
+                D_8013BE30.unk_0E[D_8013BE30.activeIndex] = 2;
+                startMemoryCardReadTask();
+                D_8013BE30.previous[D_8013BE30.activeIndex] =
+                    D_8013BE30.current[D_8013BE30.activeIndex];
+                D_8013BE30.current[D_8013BE30.activeIndex] = D_8013AF3E;
+                return;
+            } else {
+                if (D_8013BE30.current[D_8013BE30.activeIndex] != D_8013AF3E) {
+                    D_8013BE30.previous[D_8013BE30.activeIndex] =
+                        D_8013BE30.current[D_8013BE30.activeIndex];
+                    D_8013BE30.current[D_8013BE30.activeIndex] = D_8013AF3E;
+                }
+                D_8013BE30.unk_0E[D_8013BE30.activeIndex] = 1;
+                D_8013AE88->data18 = 0;
+            }
+            break;
+        case 7:
+        case 8:
+        case 9:
+        case 10:
+        case 11:
+        case 12:
+            if (D_8013BE30.current[D_8013BE30.activeIndex] != D_8013AF3E) {
+                D_8013BE30.previous[D_8013BE30.activeIndex] =
+                    D_8013BE30.current[D_8013BE30.activeIndex];
+                D_8013BE30.current[D_8013BE30.activeIndex] = D_8013AF3E;
+            }
+            D_8013BE30.unk_0E[D_8013BE30.activeIndex] = 1;
+            D_8013AE88->data18 = 0;
+            break;
+        }
+        if ((s16)func_800198EC(MEMORY_CARD_SLOT_BUFFER_BASE +
+                             D_8013BE30.activeIndex * MEMORY_CARD_SLOT_BUFFER_STRIDE) == 1) {
+            D_8013BE30.unk_0E[D_8013BE30.activeIndex] = 0;
+        }
+        break;
+    }
+}
 
 void startClearedStateValueHistoryTask(void) {
     s16 i;
 
-    func_80014874(func_80087030);
+    func_80014874(updateMemoryCardSlotTask);
     D_8013AE8C->data18 = 0;
     D_8013BE30.unk_00 = 16;
     D_8013BE30.activeIndex = 1;

@@ -129,7 +129,7 @@ void func_800875D0(void);
 void func_8007D5C8(void);
 void updatePaletteRotationTask(void);
 void updateStateValueHistoryTask(void);
-void func_80087030(void);
+void updateMemoryCardSlotTask(void);
 void func_800857C4(void);
 void func_800843DC(void);
 void func_80084970(void);

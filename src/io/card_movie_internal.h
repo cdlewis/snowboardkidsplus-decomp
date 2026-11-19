@@ -44,7 +44,6 @@ s32 StGetNext(u32 **data, MovieStreamHeader **header);
 s32 pollMemoryCardWrite(void);
 void beginMemoryCardBufferRead(void);
 void pollMemoryCardBufferReadTask(void);
-s32 startMemoryCardReadTask(void);
 void pollMemoryCardReadTask(void);
 void waitForMemoryCardAcceptTask(void);
 void pollMemoryCardStatusTask(void);
