@@ -46,6 +46,10 @@ TexturedQuadListEntry taskIndexPanelQuadsPalette1[10] __attribute__((section(".d
 
 StateValueHistory D_8013BE30 __attribute__((section(".bss.state_value_history")));
 
+extern u8 D_80130094[][5];
+extern u8 D_801300A0[][5];
+extern u8 D_8013B44C[];
+
 INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_8007CC78);
 
 INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_8007D47C);
@@ -236,7 +240,87 @@ s32 getPlayerRecordFlagMode(s16 index) {
     return result;
 }
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_80080C64);
+void buildRecordFlagMenuEntries(s16 index, s16 mode, s16 group, u16 arg4, u16 arg5,
+                                RecordFlagMenuEntries *out) {
+    SaveRecord *record;
+    s32 i;
+
+    out->unk_05 = arg5;
+    out->unk_04 = arg4;
+    if (index >= 10) {
+        record = (SaveRecord *)&D_8013101C;
+        index -= 10;
+    } else {
+        record = &((SaveRecord *)&D_8013080C)[index];
+    }
+
+    switch (mode) {
+    case 2:
+    case 5:
+        out->entries = D_80130094[index];
+        out->entries[0] = 8;
+        out->count = 1;
+        out->textIndices = D_8013B44C;
+        out->unk_10 = 0;
+        return;
+    case 1:
+        if (group != 3) {
+            goto standardGroups;
+        }
+        out->entries = D_80130094[index];
+        out->count = 0;
+        out->textIndices = D_801300A0[index];
+        out->unk_10 = 0;
+        for (i = 0; i < 3; i++) {
+            if (record->flags_3AC & (0x800 << i)) {
+                out->entries[out->count] = i + 11;
+                out->textIndices[out->count] = i + 5;
+                out->count++;
+            }
+        }
+        return;
+    case 0:
+standardGroups:
+        if (group < 3) {
+            out->entries = D_80130094[index];
+            out->count = 0;
+            out->textIndices = D_801300A0[index];
+            out->unk_10 = 0;
+            if (group == 0) {
+                for (i = 0; i < 3; i++) {
+                    if (record->flags_3AC & (4 << i)) {
+                        out->entries[out->count] = i + 8;
+                        out->textIndices[out->count] = 8;
+                        out->count++;
+                    }
+                }
+            } else if (group == 1) {
+                for (i = 0; i < 3; i++) {
+                    if (record->flags_3AC & (0x20 << i)) {
+                        out->entries[out->count] = i + 8;
+                        out->textIndices[out->count] = 8;
+                        out->count++;
+                    }
+                }
+            } else if (group == 2) {
+                for (i = 0; i < 3; i++) {
+                    if (record->flags_3AC & (0x100 << i)) {
+                        out->entries[out->count] = i + 8;
+                        out->textIndices[out->count] = 8;
+                        out->count++;
+                    }
+                }
+            }
+            return;
+        }
+        /* fall through */
+    default:
+        out->entries = NULL;
+        out->textIndices = NULL;
+        out->unk_10 = 0;
+        return;
+    }
+}
 
 s32 getSaveRecordFlagGroupIndex(s16 recordIndex, s16 groupIndex) {
     SaveRecord *record;

@@ -76,6 +76,16 @@ typedef struct HalfwordPair {
     s16 unk_02;
 } HalfwordPair;
 
+typedef struct RecordFlagMenuEntries {
+    u8 *entries;
+    u8 unk_04;
+    u8 unk_05;
+    u8 count;
+    u8 *textIndices;
+    u32 unk_0C;
+    u32 unk_10;
+} RecordFlagMenuEntries;
+
 typedef struct IndexedHalfwordRecord {
     s16 value;
     s16 unk_02;
@@ -137,6 +147,8 @@ void clearHalfwordPairTable(void);
 void initializeCountedPlayerGroupedSelectionBoundsTask(void);
 void initializeDualResourceTaskAndClearState(void);
 s32 getPlayerRecordFlagMode(s16 index);
+void buildRecordFlagMenuEntries(s16 index, s16 mode, s16 group, u16 arg4, u16 arg5,
+                                RecordFlagMenuEntries *out);
 s32 getSaveRecordFlagGroupIndex(s16 recordIndex, s16 groupIndex);
 s16 getTaskResourceGroupedIndex(GameTask *task, s16 index);
 s16 getTaskResourceAdjustedGroupedIndex(s16 value, GameTask *task, s16 index);

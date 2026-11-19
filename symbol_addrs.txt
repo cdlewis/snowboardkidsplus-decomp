@@ -1971,6 +1971,7 @@ gMenuSpritePaletteGroups = 0x8013B158; // size:0x14 defined:true
 
 startPositionEffectTask = 0x800663E8; // type:func
 
+buildRecordFlagMenuEntries = 0x80080C64; // type:func
 getSaveRecordFlagGroupIndex = 0x80080FB4; // type:func
 
 startAlternateQuadAnimationTask = 0x80065E34; // type:func
