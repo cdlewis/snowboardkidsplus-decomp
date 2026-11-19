@@ -94,7 +94,7 @@ segments:
       - {start: 0x12A0, type: .rodata, name: menu/record_screens, linker_section: .rodata.hit_count_time_out}
       - {start: 0x12AC, type: .rodata, name: menu/record_screens, linker_section: .rodata.hit_prize_labels}
       - {start: 0x12E4, type: .rodata, name: race/player/player_actions, linker_section: .rodata.complete_bonus_label}
-      - [0x12F8, rodata]
+      - {start: 0x12F8, type: .rodata, name: menu/record_screens, linker_section: .rodata.race_results_labels}
       - {start: 0x1360, type: .rodata, name: race/player/player_actions, linker_section: .rodata.money_labels}
       - [0x1390, rodata]
       - {start: 0x1424, type: .rodata, name: race/ui/race_hud, linker_section: .rodata.lap_time_label}
@@ -863,6 +863,7 @@ segments:
       - {start: 0x12B920, type: .data, name: race/player/player_actions, linker_section: .data.result_row_labels}
       - {start: 0x12B930, type: .data, name: menu/record_screens, linker_section: .data.hit_count_labels}
       - [0x12B938, data, hit_count_labels_tail]
+      - {start: 0x12B93C, type: .data, name: menu/record_screens, linker_section: .data.race_results_fast_label}
       - {start: 0x12B944, type: .data, name: menu/record_screens, linker_section: .data.stats_value_labels}
       - {start: 0x12B954, type: .data, name: race/player/player_actions, linker_section: .data.menu_sprite_palettes_prefix}
       - {start: 0x12B958, type: .data, name: race/player/player_actions, linker_section: .data.menu_sprite_palettes}

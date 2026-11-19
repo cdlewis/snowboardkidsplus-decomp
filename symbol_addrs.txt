@@ -3485,3 +3485,11 @@ updateInputTimedSpriteTask = 0x80076E18; // type:func
 updateRegisteredCallbackTask = 0x80074B60; // type:func
 
 drawRaceResultsMoneyValues = 0x80039564; // type:func
+gRaceResultsTargetLabel = 0x80010AF8; // size:0xC defined:true
+gRaceResultsTargetTimeFormat = 0x80010B04; // size:0x14 defined:true
+gRaceResultsTimeDifferenceFormat = 0x80010B18; // size:0x14 defined:true
+gRaceResultsTimePrizeLabel = 0x80010B2C; // size:0x10 defined:true
+gRaceResultsSpeedFanGetLabel = 0x80010B3C; // size:0x14 defined:true
+gRaceResultsPerfectGetLabel = 0x80010B50; // size:0x10 defined:true
+gRaceResultsFastLabel = 0x8013B13C; // size:0x8 defined:true
+drawRaceResultsLabels = 0x80039B34; // type:func

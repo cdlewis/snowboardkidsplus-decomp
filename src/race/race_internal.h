@@ -625,7 +625,7 @@ void tickRaceResultsDelayTask(void);
 void tickRaceResultsSoundDelayTask(void);
 void drawTimeRecordHeader(TimeRecordHeaderResource *resource);
 void drawRaceResultsMoneyValues(TaskResourceRecord *record);
-void func_80039B34(TaskResourceRecord *resource);
+void drawRaceResultsLabels(RaceResultsFadeResource *resource);
 void drawTimeRecordListRows(TimeRecordListResource *resource);
 void drawStatsMenuValues(TaskResourceRecord *resource);
 void drawStatsMenuMoneyValues(TaskResourceRecord *resource);
