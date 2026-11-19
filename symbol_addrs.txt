@@ -5,6 +5,7 @@ drawRotatingQuadTrailTask = 0x80068D1C; // type:func
 gRotatingQuadTrailVertices = 0x8012CA74; // type:SVECTOR size:0x20 defined:true
 
 drawRegisteredTaskGridSpriteWithDefaultBlend = 0x800318C4; // type:func
+createRegisteredPlayerModelTask = 0x80082690; // type:func
 reloadTaskPlayerModel = 0x80082A30; // type:func
 drawProjectedIndexedTexturedGouraudQuad = 0x8005801C; // type:func
 drawProjectedIndexedLitTexturedGouraudTriangle = 0x80056F90; // type:func

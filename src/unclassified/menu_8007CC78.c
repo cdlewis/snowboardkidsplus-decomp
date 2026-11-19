@@ -64,6 +64,8 @@ extern u8 D_80130094[][5];
 extern u8 D_801300A0[][5];
 extern u8 D_8013B44C[];
 
+void updateRegisteredPlayerModelTask(void);
+
 INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_8007CC78);
 
 INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_8007D47C);
@@ -539,7 +541,80 @@ void createRegisteredTripletTask(s32 x, s32 y, s32 offsetX, s32 offsetY, ByteTri
 
 INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_80081DF0);
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_80082690);
+void createRegisteredPlayerModelTask(s16 slot, s16 selection, s16 modelIndex,
+                                     s16 x, s16 y, s16 z, s32 index) {
+    MenuModelResource *resource;
+    u32 *offsets;
+    u32 *textureOffsets;
+    u32 *entry;
+    u8 *archive;
+    u32 (*buffers)[512];
+    u32 *dest;
+    u32 *source;
+    u32 *model;
+    u32 i;
+    RegisteredTaskEntry *registration;
+
+    func_80014874(updateRegisteredPlayerModelTask);
+    D_8013AE8C->data18 = selection;
+    D_8013AE8C->data1A = modelIndex;
+    D_8013AE8C->data1C = slot;
+    D_8013AE8C->data1E = index;
+    D_8013AE8C->resource14 = allocateTaskResource();
+    offsets = DAT_STARTUP_MODELS->offsets;
+    archive = (u8 *)DAT_STARTUP_MODELS;
+    buffers = DAT_PLAYER_MODEL_BLOCKS;
+    i = 0;
+    resource = (MenuModelResource *)&D_800D9504[D_8013AE8C->resource14];
+    entry = &offsets[D_80123640[D_8013AE8C->data1A]];
+    model = buffers[D_8013AE8C->data1C];
+    source = (u32 *)(*entry + archive);
+    dest = model;
+    for (; i < 512; i++) {
+        *dest++ = *source++;
+    }
+    entry = (u32 *)((u32)model | 4);
+    GsMapModelingData(entry);
+    entry += 2;
+    if (D_8013AE8C->data1C != 0) {
+        offsetTmdObjectTextures(0, (TmdObject *)entry, &gPlayerRootTextureOffsets[D_8013AE8C->data1C]);
+    }
+    GsLinkObject4(entry, &resource->object, 0);
+    GsInitCoordinate2(0, &resource->world);
+    GsInitCoordinate2(&resource->world, &resource->local);
+    resource->object.coord2 = &resource->local;
+    resource->object.attribute = 0;
+    textureOffsets = DAT_STARTUP_TEXTURES->offsets;
+    entry = &textureOffsets[gPlayerResourceTextureSelections.entries[D_8013AE8C->data18][D_8013AE8C->data1A]];
+    uploadTimImageWithOffset((u32 *)((u8 *)DAT_STARTUP_TEXTURES + *entry),
+                             gPlayerResourceTexturePositions[D_8013AE8C->data1C]);
+    resource->world.coord.t[0] = x;
+    resource->world.coord.t[1] = y;
+    resource->world.coord.t[2] = z;
+    resource->worldRotation.vx = 0;
+    resource->worldRotation.vy = 0;
+    resource->worldRotation.vz = 0;
+    gMenuPlayerModelYaw[(s16)selection] = resource->worldRotation.vy;
+    resource->local.coord.t[0] = 0;
+    resource->local.coord.t[1] = 0;
+    resource->local.coord.t[2] = 0;
+    resource->localRotation.vx = 0x400;
+    resource->localRotation.vy = -0x249;
+    resource->localRotation.vz = 0;
+    resource->unkC2 = 0;
+    D_8013AE8C->resource16 = allocateTaskResource();
+    initMovement2D((Movement2D *)&D_800D9504[D_8013AE8C->resource16], x << 12, y << 12);
+    if (index % 10 == 0) {
+        if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+        registration = getRegisteredTripletEntry(D_8013AE88->resource14, index);
+    } else {
+        if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
+        registration = getRegisteredTripletEntry(D_8013AE88->resource16, index);
+    }
+    registration->command = 0;
+    registration->flags = 1;
+    registration->task = D_8013AE8C;
+}
 
 void reloadTaskPlayerModel(GameTask *task, u16 slot, u16 selection, u16 modelIndex, s16 x, s16 y, s16 z) {
     MenuModelResource saved;
