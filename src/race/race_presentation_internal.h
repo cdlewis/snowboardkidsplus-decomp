@@ -104,7 +104,6 @@ void drawCurrentTaskPlayerResults(void);
 void waitPlayerResultsInputTask(void);
 void fadeInPlayerResultsTask(void);
 void initializeTaskFade(void);
-void drawRaceTime(const RaceTime *value, s32 x, s32 y, s16 mode, GsOT *ot, u16 depth);
 void drawTimeRecordRows(MenuTimeResource *resource);
 void drawMenuTimeWithBrightness(MenuTimeResource *resource);
 void drawLapTimeLabel(TaskMenuFadeResource *resource);

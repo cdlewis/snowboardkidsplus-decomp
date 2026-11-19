@@ -496,7 +496,6 @@ void func_800497B8(void);
 void updateFallingPairedVisualTask(void);
 s32 calculateRaceTimeDifference(const RaceTime *a, const RaceTime *b, RaceTime *difference);
 
-void drawRaceTime(const RaceTime *value, s32 x, s32 y, s16 mode, GsOT *ot, u16 depth);
 
 /* Only the first byte of this shared state is used by this task flow. */
 extern const char D_80010A94[];

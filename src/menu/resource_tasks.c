@@ -1,6 +1,12 @@
 #include "panel_tasks_internal.h"
 #include "game/menu/selected_sprite.h"
 
+const u8 gTimeRecordsStartPrompt[24] __attribute__((section(".rodata.time_records_start_prompt"), aligned(4))) = {
+    0x83, 0x51, 0x81, 0x7C, 0x83, 0x80, 0x82, 0xF0,
+    0x82, 0xCD, 0x82, 0xB6, 0x82, 0xDF, 0x82, 0xDC,
+    0x82, 0xB7, 0x82, 0xA9, 0x81, 0x48, 0x00, 0x00,
+};
+
 void initializeMainTailDualResourceTask(void) {
     GameTask *task = D_8013AE88;
     GameTask *parent = D_8013AE98;
@@ -121,7 +127,43 @@ void drawRegisteredTaskGridSpriteWithNumber(void) {
 
 INCLUDE_ASM("asm/nonmatchings/menu/resource_tasks", func_8009DEF0);
 
-INCLUDE_ASM("asm/nonmatchings/menu/resource_tasks", func_8009E468);
+void drawCurrentTaskTimeRecordsPrompt(void) {
+    Movement2D *position;
+    s16 x, y;
+    s16 row;
+    s16 palette;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        for (;;) {}
+    }
+    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    setSpriteColor(128, 128, 128);
+    x = position->x / 4096;
+    y = position->y / 4096 + 56;
+    for (row = 0; row < 5; row++) {
+        if (row < 3) {
+            palette = 1;
+        } else {
+            palette = 4;
+        }
+        func_8006C998(x + 18, y, row + 0x136, palette, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawRaceTime(&((SaveRecord *)&D_8013080C)->timeRecords[D_8013AFCE][row],
+                     x + 38, y, palette, &D_800EBFF0[D_8013AF78], 1);
+        func_8006C998(x + 106, y,
+                     (((SaveRecord *)&D_8013080C)->timeRecordCharacters[D_8013AFCE][row] & 15) * 3 + 0x14A,
+                     D_80124284[((SaveRecord *)&D_8013080C)->timeRecordCharacters[D_8013AFCE][row] & 15],
+                     -1, &D_800EBFF0[D_8013AF78], 1);
+        func_8006C998(x + 124, y,
+                     (((SaveRecord *)&D_8013080C)->timeRecordCharacters[D_8013AFCE][row] >> 4) + 0x13B,
+                     7, -1, &D_800EBFF0[D_8013AF78], 1);
+        y += 20;
+    }
+    drawWrappedDoubleByteText(position->x / 4096 + 28, position->y / 4096 + 164, 14,
+                              (s8 *)gTimeRecordsStartPrompt, 7, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    setTexturedQuadColor(128, 128, 128);
+    drawDefaultTexturedPanel(position->x / 4096 + 24, position->y / 4096 + 160, 120, 24,
+                             5, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+}
 
 INCLUDE_ASM("asm/nonmatchings/menu/resource_tasks", func_8009E848);
 

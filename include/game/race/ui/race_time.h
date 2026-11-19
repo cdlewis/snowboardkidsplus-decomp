@@ -19,6 +19,9 @@ extern RaceTime D_8013B188;
 extern RaceTime D_80124050[];
 extern RaceTime D_80124220[];
 
+struct GsOT;
+void drawRaceTime(const RaceTime *value, s32 x, s32 y, s16 mode, struct GsOT *ot, u16 depth);
+
 s16 compareRaceTimes(const RaceTime *a, const RaceTime *b);
 void advanceRaceElapsedTime(void);
 s32 calculateRaceTimeDifference(const RaceTime *a, const RaceTime *b, RaceTime *difference);
