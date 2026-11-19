@@ -477,7 +477,45 @@ void initializeTaskResourcePair(void) {
 
 INCLUDE_ASM("asm/nonmatchings/menu/panel_tasks", func_80090450);
 
-INCLUDE_ASM("asm/nonmatchings/menu/panel_tasks", func_80091318);
+extern char gSaveRecordMoneyPanelCurrencyLabel[]
+    __attribute__((section(".data.save_record_money_panel_currency_label")));
+
+void drawCurrentTaskSaveRecordMoneyPanel(void) {
+    Movement2D *position;
+    u16 recordIndex;
+
+    if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
+    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    recordIndex = D_8013AE88->data18;
+    if (D_8013AE88->data1A != 0) {
+        func_8006C998(position->x / 4096 + 8, position->y / 4096 - 22,
+                     0xB9, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        func_8006C998(position->x / 4096 + 74, position->y / 4096 + 140,
+                     0xBD, 10, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        {
+            s32 amountX = (s16)(position->x / 4096 + 74);
+            s32 amountY = (s16)(position->y / 4096 + 152);
+            SaveRecord *records = (SaveRecord *)&D_8013080C;
+            drawDecimalNumber8x8(amountX, amountY, 6, 0,
+                                 ((GlobalFlagStatePrefix *)&records[(s16)recordIndex])->unk_3E4,
+                                 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        }
+        drawWrappedText8x8(position->x / 4096 + 122, position->y / 4096 + 152,
+                           2, gSaveRecordMoneyPanelCurrencyLabel, 0, -1,
+                           &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        if (D_8013AE88->data1A == 1) {
+            func_8007240C(position->x / 4096 + 68, position->y / 4096 + 136, 68, 32,
+                          D_8013B3A4, D_8013B3A5, D_8013B3A6, 2,
+                          &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        } else {
+            func_8007240C(position->x / 4096 + 68, position->y / 4096 + 136, 68, 32,
+                          128, 128, 128, 2, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        }
+    }
+}
+
+char gSaveRecordMoneyPanelCurrencyLabel[4]
+    __attribute__((section(".data.save_record_money_panel_currency_label"), aligned(4))) = "\x82" "f";
 
 INCLUDE_ASM("asm/nonmatchings/menu/panel_tasks", func_800916F4);
 
