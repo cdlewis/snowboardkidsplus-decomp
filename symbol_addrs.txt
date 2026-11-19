@@ -2342,6 +2342,7 @@ prepareTaskVisualQuad = 0x8005A660; // type:func
 drawPreparedTaskVisualQuad = 0x8005A788; // type:func
 
 initializeModeDependentTaskResourcePair = 0x8009D29C; // type:func
+drawRegisteredTaskGridSpriteWithNumber = 0x8009DB70; // type:func
 
 initializeSlidingVisualSequenceTask = 0x800496EC; // type:func
 createOscillatingQuadTask = 0x8004F374; // type:func
