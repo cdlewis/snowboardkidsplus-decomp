@@ -900,6 +900,8 @@ segments:
       - [0x12BB9C, data, digit_sprite_blend_bits_tail]
       - {start: 0x12BBB4, type: .sdata, name: menu/task_widgets, linker_section: .sdata.animated_sprite16_page, linker_section_order: .data}
       - [0x12BBBC, data, 12BBBC]
+      - {start: 0x12BBC8, type: .data, name: menu/task_widgets, linker_section: .data.shrinking_sprite_offsets}
+      - [0x12BBD0, data, 12BBD0]
       - {start: 0x12BC60, type: .data, name: unclassified/menu_8007CC78, linker_section: .data.lit_object_draw_area_depths}
       - [0x12BC68, data, 12BC68]
       - {start: 0x12BC70, type: .data, name: menu/panel_tasks, linker_section: .data.registered_panel_mode_labels}

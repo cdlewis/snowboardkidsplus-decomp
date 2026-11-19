@@ -123,7 +123,10 @@ typedef struct InputTimedSpriteResource {
 } InputTimedSpriteResource;
 
 typedef struct SpriteZoomResource {
-    s32 scale;
+    union {
+        s32 value;
+        s16 low;
+    } scale;
     u8 unk04[0x10];
     s32 step;
     u8 unk18[0xE8];
@@ -199,6 +202,11 @@ DR_TPAGE gAnimatedSprite16DrawPage __attribute__((section(".sdata.animated_sprit
     0x01000000, {0xE1000000 | getTPage(0, 0, 832, 256)}
 };
 
+/* Interleaved signed X and Y offsets, indexed by the task's byte cursor. */
+s8 gShrinkingSpriteOffsets[8] __attribute__((section(".data.shrinking_sprite_offsets"))) = {
+    0, 1, 0, -1, 0, 1, 0, -1
+};
+
 s16 func_80070794(s32 id);
 void func_80072A88(s16 index, s16 x, s16 y, TaskCallback callback, s32 value, s32 registrationIndex);
 void func_80072C54(void);
@@ -226,7 +234,7 @@ void func_80078AFC(void);
 void func_80079FE8(void);
 void GsSortBg(GameBackground *background, GsOT *ot, u16 depth);
 void func_8007BE9C(void);
-void func_8007B10C(void);
+void updateShrinkingSpriteTask(void);
 void func_8007AC0C(void);
 void updateAnimatedSpriteTask(void);
 void func_80074448(void);
@@ -1661,7 +1669,7 @@ INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_8007AC0C);
 GameTask *createShrinkingSpriteTask(s16 motionEnabled, u16 spriteIndex) {
     SpriteZoomResource *resource;
     TaskResourceRecord *resources;
-    func_80014874(func_8007B10C);
+    func_80014874(updateShrinkingSpriteTask);
     D_8013AE8C->data18 = 1;
     D_8013AE8C->data1A = 1;
     D_8013AE8C->data1C = spriteIndex;
@@ -1671,14 +1679,86 @@ GameTask *createShrinkingSpriteTask(s16 motionEnabled, u16 spriteIndex) {
     resources = D_800D9504;
     D_8013AE8C->resource14 = allocateTaskResource();
     resource = (SpriteZoomResource *)&resources[D_8013AE8C->resource14];
-    resource->scale = 0x8000;
+    resource->scale.value = 0x8000;
     resource->step = 0x400;
     D_8013AE8C->resource16 = allocateTaskResource();
     (*(SpriteMotionResource *)&resources[D_8013AE8C->resource16])[0] = motionEnabled;
     return D_8013AE8C;
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_8007B10C);
+void updateShrinkingSpriteTask(void) {
+    SpriteZoomResource *zoom;
+    SpriteMotionResource *motion;
+    Movement2D *position;
+    GameTask *task;
+    u16 depth;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    zoom = (SpriteZoomResource *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) {
+        while (1) {}
+    }
+    motion = (SpriteMotionResource *)&D_800D9504[D_8013AE88->resource16];
+    if (D_8013AE98->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    position = (Movement2D *)&D_800D9504[D_8013AE98->resource14];
+    task = D_8013AE88;
+    switch (task->data18) {
+    case 1:
+        if (zoom->scale.value > 0x1000) {
+            zoom->scale.value -= zoom->step;
+            zoom->step *= 2;
+            if (zoom->scale.value < 0x1000) {
+                zoom->scale.value = 0x1000;
+            }
+        } else {
+            task->data1E = 0;
+            task->data18 = 2;
+        }
+        break;
+    case 2:
+        if ((*motion)[0]) {
+            position->x += gShrinkingSpriteOffsets[task->data1E] << 12;
+            position->y += (gShrinkingSpriteOffsets + 1)[task->data1E] << 12;
+        }
+        D_8013AE88->data1E += 2;
+        if (D_8013AE88->data1E >= 8) {
+            D_8013AE88->data1A = 0;
+            if (!(*motion)[0]) {
+                D_8013AE88->data18 = 99;
+            } else {
+                D_8013AE88->data18 = 3;
+            }
+        }
+        break;
+    case 0:
+    case 99:
+        func_800149A8();
+        break;
+    }
+
+    setSpriteColor(128, 128, 128);
+    if (!(*motion)[0]) {
+        depth = D_8013AE88->data1C - 1;
+        drawTransformedSpriteByIndex((s16)(position->x / 4096 + 155),
+                                     (s16)(position->y / 4096 + 49), 88, 12,
+                                     3, 0x7FFF, 0x7FFF, zoom->scale.low,
+                                     zoom->scale.low, 0, &D_800EBFF0[D_8013AF78], depth);
+    } else {
+        if (zoom->scale.value > 0x1000) {
+            depth = D_8013AE88->data1C - 1;
+        } else {
+            depth = D_8013AE88->data1C;
+        }
+        drawTransformedSpriteByIndex((s16)(position->x / 4096 + 155),
+                                     (s16)(position->y / 4096 + 49), 88, 12,
+                                     -1, 0x7FFF, 0x7FFF, zoom->scale.low,
+                                     zoom->scale.low, 0, &D_800EBFF0[D_8013AF78], depth);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_8007B48C);
 
