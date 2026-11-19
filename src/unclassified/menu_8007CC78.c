@@ -2,6 +2,7 @@
 #include "psx/libetc.h"
 #include "../menu/save_record_tasks_internal.h"
 #include "game/io/dat_resources.h"
+#include "game/menu/selected_sprite.h"
 
 typedef struct MenuModelResource {
     GsDOBJ2 object;
@@ -11,6 +12,17 @@ typedef struct MenuModelResource {
     SVECTOR worldRotation;
     s16 unkC0, unkC2, unkC4, unkC6;
 } MenuModelResource;
+
+typedef struct ClippedGridSpriteParent {
+    u8 unk00[0x44];
+    const GridSpriteEntry *sprites;
+    const u8 *mapping;
+    u8 unk4C[8];
+    u16 mode;
+    u8 unk56[4];
+    u16 count;
+    s8 alternateSprites;
+} ClippedGridSpriteParent;
 
 u16 litObjectDrawAreaDepths[4] __attribute__((section(".data.lit_object_draw_area_depths"))) = {
     0x30, 0x20, 0x50, 0x3E
@@ -819,7 +831,52 @@ void initializeDualResourceTask(void) {
 
 INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_800857C4);
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_80086584);
+void drawClippedRegisteredTaskGridSprite(void) {
+    Movement2D *position;
+    ByteTriplet *color;
+    ClippedGridSpriteParent *parent;
+    RegisteredTaskEntry *entry;
+    RegisteredTaskEntry *entries;
+    const GridSpriteEntry *sprite;
+    s16 row;
+
+    if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
+    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) { for (;;) {} }
+    color = (ByteTriplet *)&D_800D9504[D_8013AE88->resource16];
+    if (D_8013AE98->resource14 == 0xFFFF) { for (;;) {} }
+    parent = (ClippedGridSpriteParent *)&D_800D9504[D_8013AE98->resource14];
+    if ((u16)(D_8013AE88->data1E % 10U) == 0) {
+        if (D_8013AE98->resource14 == 0xFFFF) { for (;;) {} }
+        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource14];
+        entry = &entries[D_8013AE88->data1E / 10U];
+    } else {
+        if (D_8013AE98->resource16 == 0xFFFF) { for (;;) {} }
+        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource16];
+        entry = &entries[D_8013AE88->data1E / 10U];
+    }
+    if (parent->mapping != 0) {
+        if (entry->command == 99) {
+            entry->task = 0;
+            func_800149A8();
+        } else {
+            row = (parent->mode & 1) ^ 1;
+            if (parent->alternateSprites == 1) {
+                sprite = func_800736D0(parent->sprites, parent->mapping,
+                    (s16)(D_8013AE88->data1A + parent->count));
+            } else {
+                sprite = func_800736D0(parent->sprites, parent->mapping, (s16)D_8013AE88->data1A);
+            }
+            setSpriteColor(color->bytes[0], color->bytes[1], color->bytes[2]);
+            addDrawAreaPacket(0, 0, 320, 240, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            func_8006C998((s16)(position->x / 4096), (s16)(position->y / 4096),
+                sprite->sprite, sprite->color, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            addDrawAreaPacket(25, row * 104 + 40, 270, 94,
+                &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            entry->flags = 0;
+        }
+    }
+}
 
 void drawTaskIndexPanel(void) {
     Movement2D *resource;
