@@ -15,6 +15,7 @@
 #define TASK_ABSOLUTE_ADDRESSING
 #include "game/engine/task.h"
 #include "game/menu/selected_sprite.h"
+#include "game/menu/task_widgets.h"
 #include "psx/libsnd.h"
 #include "psx/stdlib.h"
 
@@ -105,11 +106,6 @@ typedef struct SelectionEntry {
     s16 unk08;
 } SelectionEntry;
 
-typedef struct TimedSequenceEntry {
-    s32 unk00;
-    s32 duration;
-} TimedSequenceEntry;
-
 typedef struct TimedSequence {
     const TimedSequenceEntry *entries;
     s16 index;
@@ -155,12 +151,6 @@ typedef struct RegisteredSelectionPanelResource {
     s16 values[6];
     u16 mode;
 } RegisteredSelectionPanelResource;
-
-typedef struct ValuePanelEntry {
-    GameTask *task;
-    s16 flags;
-    s16 active;
-} ValuePanelEntry;
 
 typedef struct AnimatedSpriteResource {
     s16 frame;

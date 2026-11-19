@@ -1949,6 +1949,7 @@ addPlayerCappedCounters = 0x8002E3C8; // type:func
 queueModeIndexedSectorRead = 0x800A1604; // type:func
 gMode1SectorRanges = 0x80132738; // size:0x28 defined:true
 gOtherModeSectorRanges = 0x80132760; // size:0x2C defined:true
+gTextSequenceAdvancePromptFrames = 0x801327A0; // size:0x10 defined:true
 
 copySaveRecordAndMergeFlags = 0x80089990; // type:func
 
@@ -2541,6 +2542,7 @@ tickMenuSoundDelayStage0Task = 0x80039144; // type:func
 tickMenuSoundDelayStage1Task = 0x8003908C; // type:func
 
 initializeTextSequenceTask = 0x800A0F14; // type:func
+updateTextSequenceTask = 0x800A0FDC; // type:func
 
 deletePendingTaskSubtree = 0x80014A2C; // type:func
 

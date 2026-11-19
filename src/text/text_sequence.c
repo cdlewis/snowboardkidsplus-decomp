@@ -1,4 +1,15 @@
 #include "../menu/panel_tasks_internal.h"
+#include "game/menu/task_widgets.h"
+
+/* The parser builds this table immediately before the indexed sector buffer. */
+#define TEXT_SEQUENCE_ENTRIES ((TextSequenceEntry *)0x801F2000)
+#define TEXT_SEQUENCE_ADVANCE_BUTTONS 0xB0
+
+typedef struct TextSequenceEntry {
+    const u16 *text;
+    u16 kind;
+    u16 length;
+} TextSequenceEntry;
 
 ResourceSectorRange gMode1SectorRanges[10] __attribute__((section(".data.indexed_sector_ranges"))) = {
     {DAT_MODE1_TEXT_000_SECTOR, DAT_MODE1_TEXT_000_SECTOR_COUNT},
@@ -27,6 +38,12 @@ ResourceSectorRange gOtherModeSectorRanges[11] __attribute__((section(".data.ind
     {DAT_OTHER_MODE_TEXT_010_SECTOR, DAT_OTHER_MODE_TEXT_010_SECTOR_COUNT}
 };
 
+TimedSequenceEntry gTextSequenceAdvancePromptFrames[2]
+    __attribute__((section(".data.text_sequence_prompt_frames"))) = {
+    {0x00030231, 10},
+    {0x00030232, 10},
+};
+
 void initializeTextSequenceTask(void) {
     TextSequenceResource *resource;
     if (D_8013AE88->resource14 == 0xFFFF) {
@@ -44,10 +61,90 @@ void initializeTextSequenceTask(void) {
     if (resource->mode != 1 || resource->unk0A != 9) {
         queueCdCommand(3, 0);
     }
-    setCurrentTaskCallback(func_800A0FDC);
+    setCurrentTaskCallback(updateTextSequenceTask);
 }
 
-INCLUDE_ASM("asm/nonmatchings/text/text_sequence", func_800A0FDC);
+void updateTextSequenceTask(void) {
+    TextSequenceResource *resource;
+    ValuePanelEntry *panel;
+    TextSequenceEntry *entry;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (TextSequenceResource *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) {
+        while (1) {}
+    }
+    panel = (ValuePanelEntry *)&D_800D9504[D_8013AE88->resource16];
+
+    switch (resource->state) {
+    case 2:
+        entry = TEXT_SEQUENCE_ENTRIES;
+        entry += resource->entryIndex;
+        if (entry->kind == 0) {
+            resource->headerText = entry->text;
+            resource->x = (-(entry->length << 4) / 2) << 12;
+            resource->y = -48 * 4096;
+            resource->entryIndex++;
+            entry++;
+        }
+        if (entry->kind == 1) {
+            resource->bodyText = entry->text;
+            if (resource->mode == 1 && resource->unk0A == 9) {
+                resource->bodyX = -136 * 4096;
+                resource->displacement = -37 * 4096;
+            } else {
+                resource->bodyX = -136 * 4096;
+                resource->displacement = 20 * 4096;
+            }
+            resource->progress = 0;
+            resource->duration = entry->length;
+        }
+        if (entry->kind == 2) {
+            resource->velocity = 0;
+            if (resource->mode == 1 && resource->unk0A == 9) {
+                D_8013AE88->data18 = 1;
+                setCurrentTaskCallback(advanceModeAfterTextSequenceFadeTask);
+            } else {
+                startCdVolumeFade(103, 20, 0, 1);
+                setCurrentTaskCallback(animateTextSequenceExitTask);
+            }
+        } else {
+            resource->state = 3;
+        }
+        break;
+    case 3:
+        if (!hasTaskStateValue6(0)) {
+            resource->state = 0;
+        }
+        break;
+    case 1:
+        if (panel->active <= 0) {
+            resource->state = 2;
+            resource->entryIndex++;
+        }
+        break;
+    case 0:
+    default:
+        if ((resource->progress >> 8) >= resource->duration) {
+            resource->state = 1;
+            createInputTimedSpriteTask(resource->bodyX / 4096 + 248, resource->displacement / 4096 + 52,
+                                       gTextSequenceAdvancePromptFrames, 2, 1, TEXT_SEQUENCE_ADVANCE_BUTTONS, 0, 0, 1);
+        } else {
+            if (D_8013AEE8[0] & TEXT_SEQUENCE_ADVANCE_BUTTONS) {
+                resource->progress = resource->duration << 8;
+            } else {
+                resource->progress += 127;
+            }
+            if ((resource->progress >> 8) > resource->duration) {
+                resource->progress = resource->duration << 8;
+            }
+        }
+        break;
+    }
+    func_800A1774(resource);
+}
 
 void animateTextSequenceExitTask(void) {
     TextSequenceResource *resource;

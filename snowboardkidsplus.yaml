@@ -763,6 +763,8 @@ segments:
       - [0x122708, data, player_palette_transition_tail]
       - {start: 0x122F38, type: .data, name: text/text_sequence, linker_section: .data.indexed_sector_ranges}
       - [0x122F8C, data, 122F8C]
+      - {start: 0x122FA0, type: .data, name: text/text_sequence, linker_section: .data.text_sequence_prompt_frames}
+      - [0x122FB0, data, 122FB0]
       - {start: 0x122FF4, type: .data, name: io/controller_playback, linker_section: .data.controller_playback_entries}
       - {start: 0x12303C, type: .data, name: io/controller_playback, linker_section: .data.controller_playback_durations}
       - [0x123054, data, 123054]

@@ -108,10 +108,13 @@ typedef struct TextSequenceResource {
     u8 unk00[0xA];
     u16 unk0A;
     u16 entryIndex;
-    u8 unk0E[6];
+    u8 unk0E[2];
+    const u16 *headerText;
     s32 x, y, velocity;
-    u8 unk20[0xC];
-    s32 displacement;
+    u8 unk20[4];
+    const u16 *bodyText;
+    s32 bodyX;
+    s32 displacement; /* Body Y during playback, then displacement during exit. */
     u16 progress;
     u16 duration;
     s16 state;
@@ -193,7 +196,7 @@ void func_80090450(void);
 void func_80092090(void);
 void func_80097FF4(void);
 void func_80099880(void);
-void func_800A0FDC(void);
+void updateTextSequenceTask(void);
 void func_800A1774(TextSequenceResource *resource);
 void func_80092A50(void);
 void prepareRaceResourcesIfSelectionChanged(void);
