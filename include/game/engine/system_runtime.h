@@ -33,7 +33,11 @@ extern u8 D_8013B1AB __attribute__((section(".data")));
 extern u16 D_8013AFE8;
 extern void *D_8013AF4C;
 extern void *gMemoryCardLoadDestination;
+#ifdef SCENE_INDEX_ABSOLUTE_ADDRESSING
+extern u8 D_8013AF3A __attribute__((section(".data")));
+#else
 extern u8 D_8013AF3A;
+#endif
 
 int strcmp(const char *, const char *);
 

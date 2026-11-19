@@ -35,6 +35,29 @@ typedef char SceneEventListHeaderSizeCheck[(sizeof(SceneEventListHeader) == 8) ?
 typedef char SceneEventSizeCheck[(sizeof(SceneEvent) == 0x18) ? 1 : -1];
 typedef char SceneEventWorkspaceSizeCheck[(sizeof(SceneEventWorkspace) == 0x1BB0) ? 1 : -1];
 
+typedef union SceneTextMetadata {
+    u32 marker;
+    struct {
+        u16 characterCount;
+        u8 unk06, unk07, unk08, unk09, unk0A, unk0B;
+    } fields;
+} SceneTextMetadata;
+
+typedef struct SceneTextBlock {
+    u8 *text;
+    SceneTextMetadata metadata;
+} SceneTextBlock;
+
+/* The text file follows the 100-entry block table in the DAT staging buffer. */
+typedef struct SceneTextWorkspace {
+    SceneEventWorkspace events;
+    SceneTextBlock blocks[100];
+    u8 text[0];
+} SceneTextWorkspace;
+
+typedef char SceneTextBlockSizeCheck[(sizeof(SceneTextBlock) == 0xC) ? 1 : -1];
+typedef char SceneTextWorkspaceSizeCheck[(sizeof(SceneTextWorkspace) == 0x2060) ? 1 : -1];
+
 typedef struct ScenePlaybackState {
     SceneEvent *currentEntry;
     u32 unk04[5];

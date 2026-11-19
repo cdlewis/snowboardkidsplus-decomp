@@ -1,29 +1,6 @@
 #include "game/text/text_layout.h"
 #include "../menu/selection_tasks_internal.h"
 
-typedef union SceneTextMetadata {
-    u32 marker;
-    struct {
-        u16 characterCount;
-        u8 unk06, unk07, unk08, unk09, unk0A, unk0B;
-    } fields;
-} SceneTextMetadata;
-
-typedef struct SceneTextBlock {
-    u8 *text;
-    SceneTextMetadata metadata;
-} SceneTextBlock;
-
-/* The text file follows the 100-entry block table in the DAT staging buffer. */
-typedef struct SceneTextWorkspace {
-    SceneEventWorkspace events;
-    SceneTextBlock blocks[100];
-    u8 text[0];
-} SceneTextWorkspace;
-
-typedef char SceneTextBlockSizeCheck[(sizeof(SceneTextBlock) == 0xC) ? 1 : -1];
-typedef char SceneTextWorkspaceSizeCheck[(sizeof(SceneTextWorkspace) == 0x2060) ? 1 : -1];
-
 u8 gSceneCdAudioDefaultResources[12] __attribute__((section(".data.scene_cd_audio_default_resources"))) = {
     0x00, 0x54, 0x60, 0x75, 0x82, 0x92, 0x9E, 0xB0, 0xC3, 0xD4, 0xDB, 0xE3
 };

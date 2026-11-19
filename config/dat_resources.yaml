@@ -465,64 +465,64 @@ entries:
     name: entry_155
   156:
     name: scene_sound_body_00
-    identity_evidence: D_80132D54[0] halfword loads at call 0x800A63A0
+    identity_evidence: sSceneSoundBankSectors[0].bodySector in src/scene/scene_loading.c
   157:
     name: scene_sound_header_00
-    identity_evidence: D_80132D54[0] halfword loads at call 0x800A63C8
+    identity_evidence: sSceneSoundBankSectors[0].headerSector in src/scene/scene_loading.c
   158:
     name: scene_sound_body_01
-    identity_evidence: D_80132D54[1] halfword loads at call 0x800A63A0
+    identity_evidence: sSceneSoundBankSectors[1].bodySector in src/scene/scene_loading.c
   159:
     name: scene_sound_header_01
-    identity_evidence: D_80132D54[1] halfword loads at call 0x800A63C8
+    identity_evidence: sSceneSoundBankSectors[1].headerSector in src/scene/scene_loading.c
   160:
     name: scene_sound_body_02
-    identity_evidence: D_80132D54[2] halfword loads at call 0x800A63A0
+    identity_evidence: sSceneSoundBankSectors[2].bodySector in src/scene/scene_loading.c
   161:
     name: scene_sound_header_02
-    identity_evidence: D_80132D54[2] halfword loads at call 0x800A63C8
+    identity_evidence: sSceneSoundBankSectors[2].headerSector in src/scene/scene_loading.c
   162:
     name: scene_sound_body_03
-    identity_evidence: D_80132D54[3] halfword loads at call 0x800A63A0
+    identity_evidence: sSceneSoundBankSectors[3].bodySector in src/scene/scene_loading.c
   163:
     name: scene_sound_header_03
-    identity_evidence: D_80132D54[3] halfword loads at call 0x800A63C8
+    identity_evidence: sSceneSoundBankSectors[3].headerSector in src/scene/scene_loading.c
   164:
     name: scene_sound_body_05
-    identity_evidence: D_80132D54[5] halfword loads at call 0x800A63A0
+    identity_evidence: sSceneSoundBankSectors[5].bodySector in src/scene/scene_loading.c
   165:
     name: scene_sound_header_05
-    identity_evidence: D_80132D54[5] halfword loads at call 0x800A63C8
+    identity_evidence: sSceneSoundBankSectors[5].headerSector in src/scene/scene_loading.c
   166:
     name: scene_sound_body_06
-    identity_evidence: D_80132D54[6] halfword loads at call 0x800A63A0
+    identity_evidence: sSceneSoundBankSectors[6].bodySector in src/scene/scene_loading.c
   167:
     name: scene_sound_header_06
-    identity_evidence: D_80132D54[6] halfword loads at call 0x800A63C8
+    identity_evidence: sSceneSoundBankSectors[6].headerSector in src/scene/scene_loading.c
   168:
     name: scene_sound_body_07
-    identity_evidence: D_80132D54[7] halfword loads at call 0x800A63A0
+    identity_evidence: sSceneSoundBankSectors[7].bodySector in src/scene/scene_loading.c
   169:
     name: scene_sound_header_07
-    identity_evidence: D_80132D54[7] halfword loads at call 0x800A63C8
+    identity_evidence: sSceneSoundBankSectors[7].headerSector in src/scene/scene_loading.c
   170:
     name: scene_sound_body_08
-    identity_evidence: D_80132D54[8] halfword loads at call 0x800A63A0
+    identity_evidence: sSceneSoundBankSectors[8].bodySector in src/scene/scene_loading.c
   171:
     name: scene_sound_header_08
-    identity_evidence: D_80132D54[8] halfword loads at call 0x800A63C8
+    identity_evidence: sSceneSoundBankSectors[8].headerSector in src/scene/scene_loading.c
   172:
     name: scene_sound_body_09
-    identity_evidence: D_80132D54[9] halfword loads at call 0x800A63A0
+    identity_evidence: sSceneSoundBankSectors[9].bodySector in src/scene/scene_loading.c
   173:
     name: scene_sound_header_09
-    identity_evidence: D_80132D54[9] halfword loads at call 0x800A63C8
+    identity_evidence: sSceneSoundBankSectors[9].headerSector in src/scene/scene_loading.c
   174:
     name: scene_sound_body_10
-    identity_evidence: D_80132D54[10] halfword loads at call 0x800A63A0
+    identity_evidence: sSceneSoundBankSectors[10].bodySector in src/scene/scene_loading.c
   175:
     name: scene_sound_header_10
-    identity_evidence: D_80132D54[10] halfword loads at call 0x800A63C8
+    identity_evidence: sSceneSoundBankSectors[10].headerSector in src/scene/scene_loading.c
   176:
     name: entry_176
   177:
@@ -703,70 +703,70 @@ entries:
     name: entry_233
   234:
     name: scene_events_00
-    identity_evidence: D_80132B60[0] halfword loads at call 0x800A6488
+    identity_evidence: sSceneEventSectors[0] in src/scene/scene_loading.c
   235:
     name: scene_text_data_00
-    identity_evidence: D_80132B34[0] halfword loads at call 0x800A64BC
+    identity_evidence: sSceneTextSectors[0] in src/scene/scene_loading.c
   236:
     name: scene_events_01
-    identity_evidence: D_80132B60[1] halfword loads at call 0x800A6488
+    identity_evidence: sSceneEventSectors[1] in src/scene/scene_loading.c
   237:
     name: scene_text_data_01
-    identity_evidence: D_80132B34[1] halfword loads at call 0x800A64BC
+    identity_evidence: sSceneTextSectors[1] in src/scene/scene_loading.c
   238:
     name: scene_events_02
-    identity_evidence: D_80132B60[2] halfword loads at call 0x800A6488
+    identity_evidence: sSceneEventSectors[2] in src/scene/scene_loading.c
   239:
     name: scene_text_data_02
-    identity_evidence: D_80132B34[2] halfword loads at call 0x800A64BC
+    identity_evidence: sSceneTextSectors[2] in src/scene/scene_loading.c
   240:
     name: scene_events_03
-    identity_evidence: D_80132B60[3] halfword loads at call 0x800A6488
+    identity_evidence: sSceneEventSectors[3] in src/scene/scene_loading.c
   241:
     name: scene_text_data_03
-    identity_evidence: D_80132B34[3] halfword loads at call 0x800A64BC
+    identity_evidence: sSceneTextSectors[3] in src/scene/scene_loading.c
   242:
     name: scene_events_04
-    identity_evidence: D_80132B60[4] halfword loads at call 0x800A6488
+    identity_evidence: sSceneEventSectors[4] in src/scene/scene_loading.c
   243:
     name: scene_text_data_04
-    identity_evidence: D_80132B34[4] halfword loads at call 0x800A64BC
+    identity_evidence: sSceneTextSectors[4] in src/scene/scene_loading.c
   244:
     name: scene_events_05
-    identity_evidence: D_80132B60[5] halfword loads at call 0x800A6488
+    identity_evidence: sSceneEventSectors[5] in src/scene/scene_loading.c
   245:
     name: scene_text_data_05
-    identity_evidence: D_80132B34[5] halfword loads at call 0x800A64BC
+    identity_evidence: sSceneTextSectors[5] in src/scene/scene_loading.c
   246:
     name: scene_events_06
-    identity_evidence: D_80132B60[6] halfword loads at call 0x800A6488
+    identity_evidence: sSceneEventSectors[6] in src/scene/scene_loading.c
   247:
     name: scene_text_data_06
-    identity_evidence: D_80132B34[6] halfword loads at call 0x800A64BC
+    identity_evidence: sSceneTextSectors[6] in src/scene/scene_loading.c
   248:
     name: scene_events_07
-    identity_evidence: D_80132B60[7] halfword loads at call 0x800A6488
+    identity_evidence: sSceneEventSectors[7] in src/scene/scene_loading.c
   249:
     name: scene_text_data_07
-    identity_evidence: D_80132B34[7] halfword loads at call 0x800A64BC
+    identity_evidence: sSceneTextSectors[7] in src/scene/scene_loading.c
   250:
     name: scene_events_08
-    identity_evidence: D_80132B60[8] halfword loads at call 0x800A6488
+    identity_evidence: sSceneEventSectors[8] in src/scene/scene_loading.c
   251:
     name: scene_text_data_08
-    identity_evidence: D_80132B34[8] halfword loads at call 0x800A64BC
+    identity_evidence: sSceneTextSectors[8] in src/scene/scene_loading.c
   252:
     name: scene_events_09
-    identity_evidence: D_80132B60[9] halfword loads at call 0x800A6488
+    identity_evidence: sSceneEventSectors[9] in src/scene/scene_loading.c
   253:
     name: scene_text_data_09
-    identity_evidence: D_80132B34[9] halfword loads at call 0x800A64BC
+    identity_evidence: sSceneTextSectors[9] in src/scene/scene_loading.c
   254:
     name: scene_events_10
-    identity_evidence: D_80132B60[10] halfword loads at call 0x800A6488
+    identity_evidence: sSceneEventSectors[10] in src/scene/scene_loading.c
   255:
     name: scene_text_data_10
-    identity_evidence: D_80132B34[10] halfword loads at call 0x800A64BC
+    identity_evidence: sSceneTextSectors[10] in src/scene/scene_loading.c
   256:
     name: scene_image_001
     identity_evidence: gSceneImageSectorRanges[1] in src/scene/scene_event_tasks.c
@@ -1277,6 +1277,42 @@ read_tables:
   uses:
   - command: 0
     destination: D_800E959C
+- source: src/scene/scene_loading.c
+  name: sSceneSoundBankSectors
+  rows: 12
+  fields:
+  - 0
+  - 1
+  uses:
+  - command: 0
+    destination: DAT_SCRATCH
+- source: src/scene/scene_loading.c
+  name: sSceneSoundBankSectors
+  rows: 12
+  fields:
+  - 2
+  - 3
+  uses:
+  - command: 4
+    destination: DAT_SOUND_HEADER_1
+- source: src/scene/scene_loading.c
+  name: sSceneEventSectors
+  rows: 11
+  fields:
+  - 0
+  - 1
+  uses:
+  - command: 0
+    destination: DAT_SCRATCH
+- source: src/scene/scene_loading.c
+  name: sSceneTextSectors
+  rows: 11
+  fields:
+  - 0
+  - 1
+  uses:
+  - command: 0
+    destination: DAT_SCENE_TEXT
 runtime_regions:
 - symbol: gDatScratch
   macro: DAT_SCRATCH
@@ -1331,6 +1367,10 @@ runtime_regions:
 - symbol: gDatCourseOptional
   macro: DAT_COURSE_OPTIONAL
   evidence: Optional course read, up to five sectors.
+- symbol: gDatSceneTextBuffer
+  macro: DAT_SCENE_TEXT
+  evidence: Scene text reads start after the block table in the shared staging buffer;
+    extent is remaining RAM.
 - symbol: gDatSceneImageBuffer
   macro: DAT_SCENE_IMAGE
   evidence: Secondary text resource TIM reads, 0x26 sectors.
@@ -1364,46 +1404,6 @@ runtime_regions:
   evidence: Two SaveRecord slots used by initializeSaveRecordTask; shares the
     resource/movie arena and is not a DAT entry.
 binary_read_tables:
-- symbol: D_80132D54
-  address: 2148740436
-  rows: 12
-  stride: 8
-  fields:
-  - 0
-  - 2
-  command: 0
-  destination: DAT_SCRATCH
-  call: 2148164512
-- symbol: D_80132D54
-  address: 2148740436
-  rows: 12
-  stride: 8
-  fields:
-  - 4
-  - 6
-  command: 4
-  destination: DAT_SOUND_HEADER_1
-  call: 2148164552
-- symbol: D_80132B60
-  address: 2148739936
-  rows: 11
-  stride: 4
-  fields:
-  - 0
-  - 2
-  command: 0
-  destination: DAT_SCRATCH
-  call: 2148164744
-- symbol: D_80132B34
-  address: 2148739892
-  rows: 11
-  stride: 4
-  fields:
-  - 0
-  - 2
-  command: 0
-  destination: '0x80182060'
-  call: 2148164796
 - symbol: D_801203EC
   address: 2148664300
   rows: 10

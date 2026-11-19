@@ -540,7 +540,6 @@ void drawSpriteMotionDisplay(SpriteMotionResource *resource);
 void slideInSpriteMotionTask(void);
 void waitSpriteExitMotionTask(void);
 void slideInSlidingDisplayTask(void);
-void func_8001816C(void);
 void SetFogNearFar(s32 near, s32 far, s32 h);
 void queueMode11TransitionResources(void);
 void dispatchMode11TransitionTask(void);
