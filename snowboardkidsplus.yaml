@@ -746,6 +746,7 @@ segments:
       - {start: 0x12204C, type: .data, name: menu/panel_tasks, linker_section: .data.board_style_text}
       - {start: 0x12205C, type: .data, name: menu/panel_tasks, linker_section: .data.board_selection_styles}
       - [0x122068, data, board_selection_tail]
+      - {start: 0x122558, type: .data, name: menu/panel_tasks, linker_section: .data.board_price_vertical_offsets}
       - {start: 0x122564, type: .data, name: menu/panel_tasks, linker_section: .data.current_task_panel_text}
       - {start: 0x122574, type: .data, name: menu/panel_tasks, linker_section: .data.task_selection_panel_text}
       - {start: 0x122590, type: .data, name: menu/grid_selection, linker_section: .data.split_selection_bounds_configs}

@@ -20,6 +20,12 @@ const u8 gBoardLevelLabel[16] __attribute__((section(".rodata.board_level_label"
     0x82, 0x6B, 0, 0, 0, 0, 0, 0
 };
 
+/* Read the encoded byte before converting it to a signed screen offset. */
+static volatile u8 sBoardPriceVerticalOffsets[12]
+    __attribute__((section(".data.board_price_vertical_offsets"), aligned(4))) = {
+    0xF8, 0xF8, 0xF6, 0xF8, 0xE8, 0xF6, 0xF6, 0xEC, 0xFC, 0xF9, 0, 0
+};
+
 u16 gCurrentTaskPanelText[8] __attribute__((section(".data.current_task_panel_text"))) = {
     0xFA, 0x94, 0xB1, 0x9F, 0x98, 0x31, 0, 0
 };
@@ -500,7 +506,71 @@ INCLUDE_ASM("asm/nonmatchings/menu/panel_tasks", func_8009488C);
 
 INCLUDE_ASM("asm/nonmatchings/menu/panel_tasks", func_80095674);
 
-INCLUDE_ASM("asm/nonmatchings/menu/panel_tasks", func_80095A58);
+void drawCurrentTaskBoardPrice(void) {
+    Movement2D *position;
+    s16 player;
+    s16 character;
+    TaskPanelSelectionValue *selection;
+    s32 x, y, fixedY;
+    u8 offset;
+    s16 priceX, priceY;
+    u32 price, remaining;
+    s16 digits;
+    u32 halfWidth;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        for (;;) {}
+    }
+    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    player = D_8013AE98->data1A;
+    character = gRacePlayers[player].unk009;
+    selection = &D_8013B508[player];
+    x = position->x / 4096;
+    priceX = x;
+    fixedY = position->y;
+    if (fixedY < 0) {
+        fixedY += 4095;
+    }
+    offset = sBoardPriceVerticalOffsets[character];
+    fixedY >>= 12;
+    y = (s8)offset + fixedY;
+    priceY = y;
+
+    if (D_8013AE88->data1A != 0) {
+        SaveRecord *record = (SaveRecord *)&D_8013080C + player;
+        s16 column = selection->value;
+
+        price = D_801319B0[character * 5 + column];
+        if (hasStateGridFlag((GlobalFlagStatePrefix *)record, character, column) == 1) {
+            func_8006C998(x + 36, y + 8, 0xC3, 15, -1,
+                          &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        } else {
+            remaining = price;
+            digits = 0;
+            while (remaining != 0) {
+                remaining /= 10;
+                digits++;
+            }
+            if (digits < 5) {
+                digits = 5;
+            }
+            halfWidth = digits * 4;
+            priceX -= halfWidth - 64;
+            drawDecimalNumber8x8(priceX, priceY + 12, digits, 0, price, 0, -1,
+                                 &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            drawWrappedText8x8(priceX + digits * 8, priceY + 12, 2, D_8013B4FC, 0, -1,
+                               &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            if (D_8013AE88->data1A == 1) {
+                func_8007240C(priceX - 4, priceY + 8, digits * 8 + 16, 16,
+                              D_8013B3A4, D_8013B3A5, D_8013B3A6, 2,
+                              &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            } else {
+                func_8007240C(priceX - 4, priceY + 8, digits * 8 + 16, 16, 128, 128, 128, 2,
+                              &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            }
+        }
+    }
+}
 
 s32 hasStateGridFlag(GlobalFlagStatePrefix *state, s16 row, s16 column) {
     if (row < 5) {

@@ -2098,6 +2098,8 @@ setSpriteTextureBlend = 0x8006C8B0; // type:func
 
 setTexturedQuadTextureBlend = 0x8006FDE4; // type:func
 
+drawCurrentTaskBoardPrice = 0x80095A58; // type:func
+sBoardPriceVerticalOffsets = 0x80131D58; // size:0xC defined:true
 hasStateGridFlag = 0x80095E24; // type:func
 
 initializeCurrentPlayerState14 = 0x8001F874; // type:func

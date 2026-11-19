@@ -141,6 +141,8 @@ extern u8 D_8013B55E;
 extern u8 D_8013B527 __attribute__((section(".data")));
 
 extern s8 D_80011DC8[];
+extern u32 D_801319B0[50];
+extern char D_8013B4FC[];
 
 extern u8 gBoardSelectionLevels[12] __attribute__((section(".data.board_selection_levels")));
 extern s8 *gBoardStyleText[4] __attribute__((section(".data.board_style_text")));
@@ -235,6 +237,7 @@ void drawCurrentTaskBoardStyleAndLevel(void);
 void drawCurrentTaskSpriteBA(void);
 void drawCurrentTaskFramedSpritePair16A(void);
 void initializeCountedDisplayBoundsTask(void);
+void drawCurrentTaskBoardPrice(void);
 s32 hasStateGridFlag(GlobalFlagStatePrefix *state, s16 row, s16 column);
 void setStateGridFlag(GlobalFlagStatePrefix *state, s16 row, s16 column);
 void drawCurrentTaskFramedSprite20C(void);
