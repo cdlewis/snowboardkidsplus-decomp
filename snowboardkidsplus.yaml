@@ -913,6 +913,8 @@ segments:
       - {start: 0x12BEA4, type: .sdata, name: race/course/course_objects, linker_section: .sdata.object_sort_saved_stack, linker_section_order: .data}
       - {start: 0x12BEA8, type: .sdata, name: race/course/course_objects, linker_section: .sdata.alternate_object_sort_saved_stack, linker_section_order: .data}
       - [0x12BEAC, data]
+      - {start: 0x12BEB4, type: .sdata, name: unclassified/menu_8007CC78, linker_section_order: .data}
+      - [0x12BEB8, data]
       - {start: 0x12BEC0, type: .sdata, name: scene/scene_event_tasks, linker_section: .sdata.scene_image_display_task, linker_section_order: .data}
       - {start: 0x12BEC4, type: .sdata, name: menu/selection_tasks, linker_section: .sdata.scene_sound_state, linker_section_order: .data}
 

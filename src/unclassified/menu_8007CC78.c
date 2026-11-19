@@ -44,6 +44,8 @@ TexturedQuadListEntry taskIndexPanelQuadsPalette1[10] __attribute__((section(".d
     {0, 255, 0, 0, 0, 0},
 };
 
+s16 gMenuPlayerModelYaw[2] __attribute__((section(".sdata"))) = {0};
+
 StateValueHistory D_8013BE30 __attribute__((section(".bss.state_value_history")));
 
 extern u8 D_80130094[][5];
@@ -583,7 +585,87 @@ void reloadTaskPlayerModel(GameTask *task, u16 slot, u16 selection, u16 modelInd
     initMovement2D((Movement2D *)&D_800D9504[task->resource16], x << 12, y << 12);
 }
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_80082CE0);
+static inline RegisteredTaskEntry *getRegisteredMenuTaskEntry(u16 resource, u32 index) {
+    RegisteredTaskEntry *entries = (RegisteredTaskEntry *)&D_800D9504[resource];
+    return &entries[(u16)(index / 10)];
+}
+
+void updateRegisteredPlayerModelTask(void) {
+    MenuModelResource *model;
+    Movement2D *movement;
+    RegisteredTaskEntry *entry;
+    u8 padding[16];
+
+    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    model = (MenuModelResource *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
+    movement = (Movement2D *)&D_800D9504[D_8013AE88->resource16];
+
+    if ((u16)(D_8013AE88->data1E % 10) == 0) {
+        if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
+        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource14, D_8013AE88->data1E);
+    } else {
+        if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
+        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource16, D_8013AE88->data1E);
+    }
+
+    {
+        s16 command = entry->command;
+        if (command == 2) goto keepRotating;
+        if (command < 3) {
+            if (command == 0) goto clearFlags;
+            if (command == 1) goto startRotating;
+            goto remove;
+        }
+        if (command == 3) goto resetRotation;
+        goto remove;
+    }
+
+startRotating:
+    model->unkC2 = -32;
+    entry->command = 0;
+    entry->flags = 0;
+    if (D_8013AE88->data18 == 0) {
+        model->worldRotation.vy = gMenuPlayerModelYaw[1];
+    } else {
+        model->worldRotation.vy = gMenuPlayerModelYaw[0] - model->unkC2;
+    }
+    goto update;
+
+keepRotating:
+    model->unkC2 = -32;
+    goto clearCommand;
+
+resetRotation:
+    model->worldRotation.vy = 0;
+    model->unkC2 = 0;
+clearCommand:
+    entry->command = 0;
+clearFlags:
+    entry->flags = 0;
+    goto update;
+
+remove:
+    entry->task = 0;
+    entry->flags = 0;
+    func_800149A8();
+    return;
+
+update:
+    entry->flags |= updateMovement2D(movement);
+    model->world.coord.t[0] = movement->x / 4096;
+    model->world.coord.t[1] = movement->y / 4096;
+    model->worldRotation.vy += model->unkC2;
+    gMenuPlayerModelYaw[D_8013AE88->data18] = model->worldRotation.vy;
+    func_8001E3E4(&model->worldRotation, &model->world);
+    func_8001E3E4(&model->localRotation, &model->local);
+    if (model->world.coord.t[2] >= 512) {
+        sortLitObjectWithDrawArea(&model->object, D_8013AE88->data18 + 2, &D_801300B8[D_8013AE88->data18]);
+    } else {
+        u16 index = D_8013AE88->data1C;
+        sortLitObjectWithDrawArea(&model->object, index & 1, &D_801300B8[index]);
+    }
+}
 
 void sortLitObjectWithDrawArea(GsDOBJ2 *object, u16 index, RECT *bounds) {
     MATRIX matrix;
@@ -611,11 +693,6 @@ INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_80083180);
 
 INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_80083574);
 
-static inline RegisteredTaskEntry *getRegisteredBlinkEntry(u16 resource, u32 index) {
-    RegisteredTaskEntry *entries = (RegisteredTaskEntry *)&D_800D9504[resource];
-    return &entries[(u16)(index / 10)];
-}
-
 void updateRegisteredChildBlinkTransition(void) {
     Movement2D *position;
     RegisteredTaskEntry *children;
@@ -627,10 +704,10 @@ void updateRegisteredChildBlinkTransition(void) {
     children = (RegisteredTaskEntry *)&D_800D9504[D_8013AE88->resource16];
     if ((u16)(D_8013AE88->data1E % 10) == 0) {
         if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
-        entry = getRegisteredBlinkEntry(D_8013AE98->resource14, D_8013AE88->data1E);
+        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource14, D_8013AE88->data1E);
     } else {
         if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
-        entry = getRegisteredBlinkEntry(D_8013AE98->resource16, D_8013AE88->data1E);
+        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource16, D_8013AE88->data1E);
     }
     selection = &((SelectionTransitionEntry *)&D_801300AC)[(s16)D_8013AE88->data18];
     if (entry->command == 1) {
