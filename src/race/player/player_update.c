@@ -117,7 +117,7 @@ void func_800260E4(void);
 void moveCurrentPlayerForwardUntilState22(void);
 void func_80026754(void);
 void func_80028680(void);
-void func_80027624(void);
+void updateCurrentPlayerState12MotionAndTimer(void);
 s16 func_80028234(void);
 s16 func_8002D3C4(s16 value);
 
@@ -525,7 +525,7 @@ void initializeCurrentPlayerState12(void) {
     D_8013AE88->data1A = 0;
     func_800183FC(D_8013AE88->data18, 1, 0xB00, 0x20);
     func_8002E5A0(D_8013AE88->data18, 4);
-    setCurrentTaskCallback(func_80027624);
+    setCurrentTaskCallback(updateCurrentPlayerState12MotionAndTimer);
 }
 
 void initializeCurrentPlayerState40(void) {
@@ -1558,7 +1558,70 @@ void updateCurrentPlayerTimedMotion(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_80027624);
+void updateCurrentPlayerState12MotionAndTimer(void) {
+    RacePlayer *player;
+    RacePlayer *grounded;
+    s16 input;
+
+    func_8002AE6C();
+    smoothAndScaleCurrentPlayerInput(0, 0);
+    player = D_8013B0D8;
+    if (!(player->unk128 & 1)) {
+        player->unk09E = 0x280;
+        func_8002AE38(0, 0x180, 0x180, 0x180);
+        D_8013B0D8->x += D_8013B0D8->unk060;
+        D_8013B0D8->y += D_8013B0D8->unk062;
+        D_8013B0D8->z += D_8013B0D8->unk064;
+        func_80028680();
+        updateCurrentPlayerAnimation();
+        if (++D_8013AE88->data1A >= 8) {
+            D_8013B0D8->unk128 |= 8;
+        } else {
+            D_8013B0D8->unk128 &= ~8;
+        }
+        updateCurrentPlayerMotionEffects();
+        if (D_8013B0D8->unk96E != 0x300 && D_8013B0D8->unk96E != 0x801) {
+            D_8013B0D8->unk972 = 0x400;
+        }
+        if (D_8013B0E4) {
+            D_8013B0D8->unk128 &= ~8;
+            currentPlayerStateCallbacks[D_8013B0D8->unk12C]();
+        } else {
+            input = countCurrentPlayerInputGroups();
+            D_8013B0D8->unk08C--;
+            D_8013B0D8->unk08C -= input;
+            if (D_8013B0D8->unk08C < 0) {
+                D_8013B0D8->unk08C = 0;
+            }
+            grounded = D_8013B0D8;
+            if (grounded->animationFlags & 0x10) {
+                grounded->unk128 &= ~0x200;
+                if (grounded->unk08C == 0) {
+                    grounded->unk12C = 8;
+                    grounded->unk128 &= ~8;
+                    currentPlayerStateCallbacks[grounded->unk12C]();
+                }
+            }
+        }
+    } else {
+        player->unk062 += player->unk09C;
+        if (player->unk062 > 0x7800) {
+            player->unk062 = 0x7800;
+        }
+        D_8013B0D8->x += D_8013B0D8->unk060;
+        D_8013B0D8->y += D_8013B0D8->unk062;
+        D_8013B0D8->z += D_8013B0D8->unk064;
+        if (func_80028234()) {
+            func_8002E5A0(D_8013AE88->data18, 9);
+            func_800183FC(D_8013AE88->data18, 1, 0xB01, 0x20);
+            createPlayerTripleQuadEffectTask(D_8013AE88->data18);
+        }
+        D_8013B0D8->unk08C = 30;
+        D_8013B0D8->unk128 |= 0x200;
+        D_8013B0D8->unk090 = 7;
+        D_8013B0D8->unk128 &= ~8;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_80027918);
 
