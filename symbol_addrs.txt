@@ -3308,6 +3308,7 @@ finishUnlockMenuTask = 0x800A46E0; // type:func
 
 updateScenePlaybackTask = 0x800A6684; // type:func
 
+updateCurrentPlayerState24MotionAndScale = 0x80025014; // type:func
 updateCurrentPlayerState25MotionAndTimer = 0x800252CC; // type:func
 updatePlayerModelPreviewTask = 0x80097C2C; // type:func
 

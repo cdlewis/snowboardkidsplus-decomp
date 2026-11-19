@@ -99,7 +99,7 @@ u8 gPlayerState30Animation22Countdowns[12]
 
 void updateCurrentPlayerMotionEffects(void);
 void initializeScaledTaskCoordinateResource(void);
-void func_80025014(void);
+void updateCurrentPlayerState24MotionAndScale(void);
 void func_80024288(void);
 void func_8002497C(void);
 void func_800205B8(void);
@@ -566,7 +566,7 @@ void initializeCurrentPlayerState24(void) {
     D_8013AF88->vy = D_8013B0D8->worldCoordinate.coord.t[1] - 32;
     D_8013AF88->vz = D_8013B0D8->worldCoordinate.coord.t[2];
     createQuadAnimationTask(D_8013AE88->data18, D_8013AF88);
-    setCurrentTaskCallback(func_80025014);
+    setCurrentTaskCallback(updateCurrentPlayerState24MotionAndScale);
 }
 
 void initializeCurrentPlayerState25(void) {
@@ -884,7 +884,68 @@ void updateCurrentPlayerState23MotionAndTimer(void) {
     callCurrentPlayerStateCallbackIfDifferent(23);
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_80025014);
+void updateCurrentPlayerState24MotionAndScale(void) {
+    RacePlayer *player;
+    u16 timerStep;
+    s16 landed;
+
+    func_8002AE6C();
+    smoothAndScaleCurrentPlayerInput(0, 0);
+    if (D_8013B0D8->unk128 & 1) {
+        D_8013B0D8->unk062 += 0x280;
+        if (D_8013B0D8->unk062 > 0x7800) {
+            D_8013B0D8->unk062 = 0x7800;
+        }
+        D_8013B0D8->y += D_8013B0D8->unk062;
+        D_8013B0D8->unk128 |= 0x200;
+    } else {
+        D_8013B0D8->unk128 &= ~0x200;
+    }
+    if (!(D_8013B0D8->unk128 & 1)) {
+        func_80028680();
+    } else if ((landed = func_80028234()) != 0) {
+        func_8002E5A0(D_8013AE88->data18, 9);
+        func_800183FC(D_8013AE88->data18, 1, 0xB01, 0x20);
+        createPlayerTripleQuadEffectTask(D_8013AE88->data18);
+    }
+
+    switch (D_8013AE88->data1A) {
+    case 0:
+        if (D_8013B0D8->unk0F8 != 1) {
+            D_8013B0D8->unk0F8--;
+        }
+        timerStep = 1 + countCurrentPlayerInputGroups();
+        if (timerStep != 1) {
+            D_8013B0D8->unk0F8 = 3;
+        }
+        D_8013B0D8->unk08C -= timerStep;
+        if (D_8013B0D8->unk08C < 0) {
+            D_8013B0D8->unk08C = 0;
+        }
+        if (D_8013B0D8->unk08C == 0) {
+            D_8013AE88->data1A++;
+            D_8013B0D8->unk0F8 = 1;
+        }
+        break;
+    case 1:
+        if (++D_8013B0D8->unk0F8 == 7) {
+            D_8013B0D8->unk0F8 = 2;
+            D_8013AE88->data1A++;
+        }
+        break;
+    case 2:
+        if (++D_8013B0D8->unk0F8 == 8) {
+            player = D_8013B0D8;
+            player->unk12C = 0;
+            player->unk128 &= 0xFF0C1FFB;
+            currentPlayerStateCallbacks[0]();
+            D_8013B0D8->unk0F6 = 60;
+            return;
+        }
+        break;
+    }
+    updateCurrentPlayerPartTransforms();
+}
 
 void updateCurrentPlayerState25MotionAndTimer(void) {
     func_8002AE6C();
