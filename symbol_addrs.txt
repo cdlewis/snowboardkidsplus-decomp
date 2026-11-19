@@ -2661,6 +2661,7 @@ initializeDelayedEightEntryEffectTask = 0x80065330; // type:func
 
 initializeCountedGroupedSelectionBoundsTask = 0x8008F970; // type:func
 
+drawSelectionHeaderAndMoneyPanel = 0x8007C7C8; // type:func
 initializeFlagSelectedCdAwareTask = 0x8007CB90; // type:func
 
 emitProjectedTexturedTriangle = 0x80052840; // type:func
@@ -3415,6 +3416,7 @@ drawRegisteredTextPanelTask = 0x8008C8BC; // type:func
 gRegisteredPanelMode0Label = 0x8013B470; // size:0x4
 gRegisteredPanelMode1Label = 0x8013B474; // size:0x4
 drawCurrentTaskMoneyPanel = 0x8008D958; // type:func
+gSelectionMoneyCurrencyLabel = 0x8013B3F8; // size:0x4
 gMoneyPanelCurrencyLabel = 0x8013B4AC; // size:0x4
 
 startCurrentPlayerDirectionalAnimation = 0x8002DEE8; // type:func
