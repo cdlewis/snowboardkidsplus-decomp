@@ -1097,7 +1097,6 @@ void initializeProximityEmitterTask(void);
 void initializeMovingVisualTask(void);
 void updateActivePlayerRegionCollisions(void);
 void initializeCollectibleTask(void);
-void initializeFallingTaskObject(void);
 void initializeOrbitingTaskObject(void);
 void updateAndDrawCurrentTaskObject(void);
 void copySlot26TransformToCurrentTaskObject(void);

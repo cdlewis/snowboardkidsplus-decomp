@@ -230,7 +230,6 @@ void initializeVisualTrailTask(void);
 void initPlayerTimerTask(void);
 void updatePlayerTimerTask(void);
 void fadeOutPlayerTimerTask(void);
-void initializeOrbitingPlayerVisualTask(void);
 void initializeDelayedPlayerRiseEffectTask(void);
 void updateRisingPlayerEffectTask(void);
 void initializeSlidingVisualSequenceTask(void);

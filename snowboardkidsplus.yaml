@@ -81,6 +81,8 @@ segments:
       - [0xE34, rodata]
       - [0xEAC, .rodata, race/player/player_actions]
       - [0xECC, rodata]
+      - {start: 0xEE4, type: .rodata, name: race/player/player_actions, linker_section: .rodata.player_item_use}
+      - [0xEFC, rodata]
       - [0x1024, .rodata, menu/mode_transitions]
       - [0x1090, rodata]
       - {start: 0x123C, type: .rodata, name: race/player/player_actions, linker_section: .rodata.demonstration_overlay}

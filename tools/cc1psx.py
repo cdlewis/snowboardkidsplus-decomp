@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run native CCPSX GCC, preserving explicit sections on external objects.
+"""Run native CCPSX GCC, preserving explicit section placement.
 
 GCC 2.7.2-cdk emits .extern NAME,SIZE even when an external declaration has
 section(".data"). ASPSX/maspsx interpret that directive as small-data eligibility.
@@ -33,7 +33,14 @@ def absolute_externs(source):
 
 
 def main():
-    args = sys.argv[1:]
+    args = []
+    rdata_sections = {}
+    for arg in sys.argv[1:]:
+        if arg.startswith("--rdata-section="):
+            function, section = arg.split("=", 1)[1].split(":", 1)
+            rdata_sections[function] = section
+        else:
+            args.append(arg)
     if not COMPILER.is_file():
         sys.exit("Missing gcc-2.7.2-cdk/cc1; run tools/fetch-gcc.py")
     result = subprocess.run([str(COMPILER), *args])
@@ -56,8 +63,15 @@ def main():
             return f"# {name} is declared in {absolute[name]}; no small-data .extern"
         return match[0]
 
-    output.write_text(re.sub(r'^\s*\.extern\s+(\w+),\s*\d+\s*$',
-                             preserve_section, assembly, flags=re.M))
+    assembly = re.sub(r'^\s*\.extern\s+(\w+),\s*\d+\s*$',
+                      preserve_section, assembly, flags=re.M)
+    for function, section in rdata_sections.items():
+        name = re.escape(function)
+        extent = rf'^\t\.ent\t{name}\n.*?^\t\.end\t{name}\b'
+        assembly = re.sub(extent, lambda match: match[0].replace(
+            '\t.rdata\n', f'\t.section {section},"a",@progbits\n'),
+            assembly, flags=re.M | re.S)
+    output.write_text(assembly)
     return 0
 
 

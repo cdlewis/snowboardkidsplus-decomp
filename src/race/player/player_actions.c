@@ -1,4 +1,5 @@
 #include "player_actions_internal.h"
+#include "game/engine/random.h"
 
 u16 gPlayerSoundVariantsA[2] __attribute__((section(".data.player_sound_variants"))) = {0x100, 0x200};
 
@@ -680,7 +681,84 @@ void startPlayerTimerTask(RacePlayer *player) {
 
 INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002E644);
 
-INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002EA0C);
+void updateCurrentPlayerItemUse(u16 playerIndex) {
+    u16 activate = 0;
+
+    if (!D_8013B0D8->unk008) {
+        activate = (D_8013AEE8[playerIndex] >> 5) & 1;
+    } else {
+        if ((s8)D_8013B0D8->itemUseCooldown != 0) {
+            D_8013B0D8->itemUseCooldown--;
+        } else {
+            if ((u8)randomNextMain() <= D_8013B0D8->unk02C[0]) {
+                activate = 1;
+            }
+            D_8013B0D8->itemUseCooldown = 10;
+        }
+        if ((s8)D_8013B0D8->heldItem == 6) {
+            activate = D_8013B0D8->unk946 != 0;
+        }
+    }
+
+    if (!activate) {
+        return;
+    }
+
+    switch ((s8)(D_8013B0D8->heldItem - 1)) {
+    case 0:
+        if (D_8013B0D8->unk0FC != 0) {
+            return;
+        }
+        startPlayerTimerTask(D_8013B0D8);
+        func_8002E5A0(playerIndex, 13);
+        goto clearItem;
+    case 1:
+        func_8001496C(&gGameTasks[4], initializeOrbitingPlayerVisualTask);
+        D_8013AE8C->data18 = playerIndex;
+        D_8013B0D8->heldItem = 0;
+        return;
+    case 2: {
+        u16 count = 0;
+        u16 index;
+        for (index = 0; index < D_8013AFD2; index++) {
+            if (index != playerIndex) {
+                s32 delay;
+                func_80014930(&gGameTasks[4], initializeDelayedPlayerRiseEffectTask);
+                delay = count * 3;
+                count++;
+                D_8013AE8C->data18 = index;
+                D_8013AE8C->data1A = playerIndex;
+                D_8013AE8C->data1C = delay;
+            }
+        }
+        goto clearItem;
+    }
+    case 3:
+        func_8001496C(&gGameTasks[4], initializeFallingTaskObject);
+        D_8013AE8C->data18 = playerIndex;
+        func_800183FC(D_8013AE88->data18, 1, 2, 32);
+        goto clearItem;
+    case 4:
+        if (!D_8013B0D8->unk008) {
+            func_8001496C(&gGameTasks[4], initializeSlidingVisualSequenceTask);
+            D_8013AE8C->data18 = playerIndex;
+        }
+    clearItem:
+        D_8013B0D8->heldItem = 0;
+        return;
+    case 5: {
+        RacePlayer *player = D_8013B0D8;
+        if (player->unk134 == 0) {
+            player->heldItem = 0;
+            player->unk134 = 180;
+            func_800183FC(D_8013AE88->data18, 1, 0xE00, 32);
+        }
+        return;
+    }
+    default:
+        return;
+    }
+}
 
 void loadCurrentPlayerModelBlock(void) {
     u32 *offsets = DAT_STARTUP_MODELS->offsets;

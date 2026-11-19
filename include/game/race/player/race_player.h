@@ -149,7 +149,9 @@ struct RacePlayer {
     u8 unk930[4];
     s8 unk934;
     s8 unk935;
-    u8 unk936[0xD];
+    u8 unk936[0xB];
+    u8 heldItem;
+    u8 unk942;
     u8 unk943;
     u8 randomIndex;
     u8 unk945;
@@ -159,7 +161,9 @@ struct RacePlayer {
     s32 unk94C;
     u8 unk950[4];
     u8 unk954;
-    u8 unk955[5];
+    u8 unk955[3];
+    u8 itemUseCooldown;
+    u8 unk959;
     s16 collectedCourseCoinMarkerCount;
     s16 totalCourseCoinMarkerCount;
     s16 scoreAttackPointTotal;
@@ -249,6 +253,7 @@ void resetCurrentPlayerForCallback205B8(void);
 
 void playCurrentPlayerSoundEffect(s16 index);
 void func_8002E5A0(u16 index, s16 value);
+void updateCurrentPlayerItemUse(u16 playerIndex);
 
 void startCurrentPlayerAnimation(u8 animation, u8 mode);
 s32 updateCurrentPlayerAnimation(void);

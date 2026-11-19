@@ -144,6 +144,7 @@ adjustGroupedIndexForMode = 0x800811E0; // type:func
 getGroupedIndexBase = 0x80081244; // type:func
 
 startPlayerTimerTask = 0x8002E5D8; // type:func
+updateCurrentPlayerItemUse = 0x8002EA0C; // type:func
 initPlayerTimerTask = 0x80048668; // type:func
 updatePlayerTimerTask = 0x80048714; // type:func
 
