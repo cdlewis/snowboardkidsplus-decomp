@@ -63,7 +63,7 @@ void initializeModeRaceTasks(void) {
         sixthHeight = (u32)height / 6;
     }
     D_8013AF80 = sixthHeight;
-    func_8001B4EC();
+    initializeRacePaletteCycles();
     player = 0;
     if (D_8013AFCD) {
         do {

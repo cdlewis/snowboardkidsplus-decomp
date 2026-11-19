@@ -73,6 +73,7 @@ void func_80019D3C(s32 movieIndex);
 void func_8002EE0C(void);
 void finishTaskTransitionAfterCountdown(void);
 void updateThreeFrameScreenBlend(void);
+void func_8001D89C(void);
 void func_8001DB7C(void);
 void resetStateAndBeginResourceLoadTransition(u8 loadResources);
 void initializeRaceRestartTask(void);
@@ -129,7 +130,71 @@ void sortLitObject(GsDOBJ2 *object) {
     GsSortObject4(object, &D_800EC018[D_8013AF78], 2, (u32 *)getScratchAddr(0));
 }
 
-INCLUDE_ASM("asm/nonmatchings/engine/task_transitions", func_8001B4EC);
+void initializeRacePaletteCycles(void) {
+    u16 palette;
+    s16 row;
+
+    palette = saveVram16Pixels(656, 244);
+    if (palette != 32) {
+        startPaletteCycle(1, palette, 1, 6, 1);
+    }
+
+    switch (D_8013AFCE) {
+    case 0:
+        palette = saveVram16Pixels(672, 498);
+        if (palette != 32) {
+            startPaletteCycle(1, palette, 0, 15, 1);
+        }
+        break;
+    case 1:
+        for (row = 0; row < 6; row++) {
+            palette = saveVram16Pixels(656, (s16)(483 + row));
+            if (palette != 32) {
+                startPaletteCycle(1, palette, 0, 15, 1);
+            }
+        }
+        break;
+    case 2:
+        palette = saveVram16Pixels(656, 495);
+        if (palette != 32) {
+            startPaletteCycle(0, palette, 0, 15, 1);
+        }
+        func_80014930(&gGameTasks[4], func_8001D89C);
+        break;
+    case 3:
+        palette = saveVram16Pixels(688, 501);
+        if (palette != 32) {
+            startPaletteCycle(1, palette, 0, 15, 1);
+        }
+        break;
+    case 4:
+        palette = saveVram16Pixels(672, 497);
+        if (palette != 32) {
+            startPaletteCycle(0, palette, 0, 15, 1);
+        }
+        break;
+    case 5:
+        palette = saveVram16Pixels(640, 498);
+        if (palette != 32) {
+            startPaletteCycle(1, palette, 0, 15, 1);
+        }
+        palette = saveVram16Pixels(656, 504);
+        if (palette != 32) {
+            startPaletteCycle(1, palette, 0, 15, 1);
+        }
+        palette = saveVram16Pixels(656, 509);
+        if (palette != 32) {
+            startPaletteCycle(1, palette, 0, 15, 1);
+        }
+        break;
+    case 7:
+        palette = saveVram16Pixels(688, 490);
+        if (palette != 32) {
+            startPaletteCycle(1, palette, 1, 14, 2);
+        }
+        break;
+    }
+}
 
 void initializeGameOptionTask(void) {
     queueCdSectorCommand(2, DAT_TRANSITION_TEXTURES_SECTOR, DAT_TRANSITION_TEXTURES_SECTOR_COUNT, DAT_SCRATCH, 0);
@@ -365,7 +430,7 @@ void initializeDemoPlaybackTask(void) {
     D_800EC158[0].y = 32;
     D_800EC158[0].w = D_8013AF7A;
     D_800EC158[0].h = D_8013AF7C - 32;
-    func_8001B4EC();
+    initializeRacePaletteCycles();
     D_8013AFE4 = 0;
     D_8013AFAA |= 0x48;
     resetSecondaryRng();
