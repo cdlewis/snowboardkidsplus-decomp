@@ -1,6 +1,21 @@
 #include "../graphics/render_effects_internal.h"
+#include "psx/stdarg.h"
 
 #define HEADING_RATIO_SCALE 640
+
+#define DRAW_DEBUG_HEX_DIGITS(sprite, value, nibble, digit)                 \
+    do {                                                                    \
+        (digit) = ((value) >> ((nibble) * 4)) & 0xF;                        \
+        if ((digit) < 10) {                                                 \
+            (digit) += '0';                                                 \
+        } else {                                                            \
+            (digit) += 'A' - 10;                                            \
+        }                                                                   \
+        (sprite)->u = ((digit) & 0x1F) * 8;                                 \
+        (sprite)->v = (((digit) & 0xE0) >> 3) & ~7;                         \
+        GsSortFastSprite((sprite), &D_800EBFF0[D_8013AF78], 0);             \
+        (sprite)->x += 8;                                                   \
+    } while (--(nibble) >= 0)
 
 ControllerEffectState gControllerEffectStates[2] = {0};
 
@@ -78,6 +93,8 @@ static s16 sHeadingOctantAngles[]
     509, 510, 510, 511, 511, 511, 511, 511, 511, 511, 511, 511,
 };
 
+GsSPRITE gDebugTextSprite __attribute__((section(".data.debug_text_sprite"), aligned(4))) = {0};
+
 INCLUDE_ASM("asm/nonmatchings/unclassified/graphics_800497B8", func_800497B8);
 
 INCLUDE_ASM("asm/nonmatchings/unclassified/graphics_800497B8", func_80049CDC);
@@ -86,7 +103,77 @@ void setTextPalette(s32 palette) {
     gTextClut = (u8)palette + 0xF0;
 }
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/graphics_800497B8", func_80049D48);
+/* %0 through %7 select a palette. %c, %s, and %l draw 2, 4, and 8 hex digits. */
+void drawDebugText(s32 x, s32 y, const char *format, ...) {
+    GsSPRITE *sprite;
+    va_list args;
+    s32 nibble;
+    s32 value;
+    s32 digit;
+
+    gDebugTextSprite.x = x;
+    gDebugTextSprite.y = y;
+    gDebugTextSprite.attribute |= GsALON;
+    if (!*(const s8 *)format) {
+        return;
+    }
+    va_start(args, format);
+    sprite = &gDebugTextSprite;
+
+    do {
+        nibble = 0;
+        if (*(const s8 *)format == '%') {
+            if (((const s8 *)format)[1] >= '0') {
+                if (((const s8 *)format)[1] <= '7') {
+                    gTextClut = (((const s8 *)format)[1] & 7) + 0xF0;
+                    format += 2;
+                }
+            }
+            if (*(const s8 *)format == '%') {
+                if (((const s8 *)format)[1] == 'c') {
+                    nibble = 1;
+                }
+                if (((const s8 *)format)[1] == 's') {
+                    nibble = 2;
+                }
+                if (((const s8 *)format)[1] == 'l') {
+                    nibble = 3;
+                }
+            }
+        }
+
+        sprite->cy = gTextClut;
+        switch (nibble) {
+            case 0: {
+                const s8 *cursor = (const s8 *)format;
+                sprite->u = ((u8)*cursor & 0x1F) * 8;
+                sprite->v = ((*cursor & 0xE0) >> 3) & ~7;
+                GsSortFastSprite(sprite, &D_800EBFF0[D_8013AF78], 0);
+                sprite->x += 8;
+                format++;
+                break;
+            }
+            case 1:
+                value = va_arg(args, s32);
+                DRAW_DEBUG_HEX_DIGITS(sprite, value, nibble, digit);
+                format += 2;
+                break;
+            case 2:
+                value = va_arg(args, s32);
+                nibble = 3;
+                DRAW_DEBUG_HEX_DIGITS(sprite, value, nibble, digit);
+                format += 2;
+                break;
+            case 3:
+                value = va_arg(args, s32);
+                nibble = 7;
+                DRAW_DEBUG_HEX_DIGITS(sprite, value, nibble, digit);
+                format += 2;
+                break;
+        }
+    } while (*(const s8 *)format);
+    va_end(args);
+}
 
 void initSprite(GsSPRITE *sprite) {
     sprite->r = 0x80;

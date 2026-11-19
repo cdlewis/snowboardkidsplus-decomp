@@ -450,5 +450,5 @@ void queueOffsetScreenCopySprites(void) {
 }
 
 void drawNoProcessMessage(void) {
-    func_80049D48(0, 30, gNoProcessMessage);
+    drawDebugText(0, 30, gNoProcessMessage);
 }

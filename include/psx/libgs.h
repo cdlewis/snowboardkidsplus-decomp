@@ -70,6 +70,7 @@ void GsGetTimInfo(u32 *tim, GsIMAGE *image);
 void GsSortObject4(GsDOBJ2 *object, GsOT *ot, s32 shift, u32 *scratch);
 void GsSortPoly(void *packet, GsOT *ot, u16 depth);
 void GsSortSprite(GsSPRITE *sprite, GsOT *ot, u16 depth);
+void GsSortFastSprite(GsSPRITE *sprite, GsOT *ot, u16 depth);
 u32 *GsGetWorkBase(void);
 void func_800BF2C8(u32 value);
 
