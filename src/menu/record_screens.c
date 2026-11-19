@@ -518,7 +518,48 @@ void drawTimeRecordHeader(TimeRecordHeaderResource *resource) {
                  &D_800EBFF0[D_8013AF78], 1);
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/record_screens", func_80039564);
+
+void drawRaceResultsMoneyValues(TaskResourceRecord *record) {
+    RaceResultsFadeResource *resource = (RaceResultsFadeResource *)record;
+    u8 padding[0x20];
+    s32 y;
+    s32 stage;
+
+    setSpriteColor(128, 128, 128);
+    y = -71;
+    stage = resource->unk0A;
+    if (stage >= 0) {
+        drawHudDecimalNumber8x16(32, y, 5, 0, resource->timeBonus, 1, -1,
+                                &D_800EBFF0[D_8013AF78], 1);
+        func_8006C998(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+        y += 32;
+        stage = resource->unk0A;
+        if (stage >= 1) {
+            drawHudDecimalNumber8x16(32, y, 5, 0, resource->scoreBonus, 1, -1,
+                                    &D_800EBFF0[D_8013AF78], 1);
+            func_8006C998(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+            y += 32;
+            stage = resource->unk0A;
+        }
+    }
+    if (stage >= 2 && resource->hasBonus) {
+        drawHudDecimalNumber8x16(32, y, 5, 0, resource->bonusTimer, 1, -1,
+                                &D_800EBFF0[D_8013AF78], 1);
+        func_8006C998(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+        y += 32;
+    }
+    if (resource->unk0A >= 3) {
+        drawHudDecimalNumber8x16(32, y, 5, 0, resource->displayTimer, 1, -1,
+                                &D_800EBFF0[D_8013AF78], 1);
+        func_8006C998(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+        y += 32;
+    }
+    if (resource->unk0A >= 4) {
+        drawHudDecimalNumber8x16(24, y, 6, 0, gRacePlayers[0].money, 1, -1,
+                                &D_800EBFF0[D_8013AF78], 1);
+        func_8006C998(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+    }
+}
 
 void drawTimeRecordListRows(TimeRecordListResource *resource) {
     u8 padding[0x20];
@@ -586,7 +627,7 @@ void drawCurrentTaskTimeRecordDetails(void) {
         func_800149A8();
     }
     drawTimeRecordHeader((TimeRecordHeaderResource *)resource);
-    func_80039564((TaskResourceRecord *)resource);
+    drawRaceResultsMoneyValues((TaskResourceRecord *)resource);
     func_80039B34((TaskResourceRecord *)resource);
 }
 
@@ -605,7 +646,7 @@ void updateRaceResultsExitInputTask(void) {
         }
     }
     drawTimeRecordHeader((TimeRecordHeaderResource *)resource);
-    func_80039564((TaskResourceRecord *)resource);
+    drawRaceResultsMoneyValues((TaskResourceRecord *)resource);
     func_80039B34((TaskResourceRecord *)resource);
 }
 
@@ -656,7 +697,7 @@ void countRaceResultsMoneyTask(void) {
         setCurrentTaskCallback(updateRaceResultsExitInputTask);
     }
     drawTimeRecordHeader((TimeRecordHeaderResource *)resource);
-    func_80039564((TaskResourceRecord *)resource);
+    drawRaceResultsMoneyValues((TaskResourceRecord *)resource);
     func_80039B34((TaskResourceRecord *)resource);
 }
 
@@ -672,7 +713,7 @@ void tickRaceResultsDelayTask(void) {
         setCurrentTaskCallback(countRaceResultsMoneyTask);
     }
     drawTimeRecordHeader((TimeRecordHeaderResource *)resource);
-    func_80039564((TaskResourceRecord *)resource);
+    drawRaceResultsMoneyValues((TaskResourceRecord *)resource);
     func_80039B34((TaskResourceRecord *)resource);
 }
 
@@ -688,7 +729,7 @@ void updateTaskTimeRecordDetailCountdown(void) {
         setCurrentTaskCallback(tickRaceResultsDelayTask);
     }
     drawTimeRecordHeader((TimeRecordHeaderResource *)resource);
-    func_80039564((TaskResourceRecord *)resource);
+    drawRaceResultsMoneyValues((TaskResourceRecord *)resource);
     func_80039B34((TaskResourceRecord *)resource);
 }
 
@@ -705,7 +746,7 @@ void updateTaskTimeRecordCountdownAndPlaySound(void) {
         setCurrentTaskCallback(updateTaskTimeRecordDetailCountdown);
     }
     drawTimeRecordHeader((TimeRecordHeaderResource *)resource);
-    func_80039564((TaskResourceRecord *)resource);
+    drawRaceResultsMoneyValues((TaskResourceRecord *)resource);
     func_80039B34((TaskResourceRecord *)resource);
 }
 
@@ -722,7 +763,7 @@ void updateTaskTimeRecordCountdownPhase2AndPlaySound(void) {
         setCurrentTaskCallback(updateTaskTimeRecordCountdownAndPlaySound);
     }
     drawTimeRecordHeader((TimeRecordHeaderResource *)resource);
-    func_80039564((TaskResourceRecord *)resource);
+    drawRaceResultsMoneyValues((TaskResourceRecord *)resource);
     func_80039B34((TaskResourceRecord *)resource);
 }
 
@@ -743,7 +784,7 @@ void updateTaskTimeRecordCountdownPhase1AndPlaySound(void) {
         }
     }
     drawTimeRecordHeader((TimeRecordHeaderResource *)resource);
-    func_80039564((TaskResourceRecord *)resource);
+    drawRaceResultsMoneyValues((TaskResourceRecord *)resource);
     func_80039B34((TaskResourceRecord *)resource);
 }
 
@@ -761,7 +802,7 @@ void tickRaceResultsSoundDelayTask(void) {
         setCurrentTaskCallback(updateTaskTimeRecordCountdownPhase1AndPlaySound);
     }
     drawTimeRecordHeader((TimeRecordHeaderResource *)resource);
-    func_80039564((TaskResourceRecord *)resource);
+    drawRaceResultsMoneyValues((TaskResourceRecord *)resource);
     func_80039B34((TaskResourceRecord *)resource);
 }
 

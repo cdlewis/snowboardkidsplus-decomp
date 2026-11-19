@@ -624,7 +624,7 @@ void advanceCurrentTaskPanelTimer(void);
 void tickRaceResultsDelayTask(void);
 void tickRaceResultsSoundDelayTask(void);
 void drawTimeRecordHeader(TimeRecordHeaderResource *resource);
-void func_80039564(TaskResourceRecord *resource);
+void drawRaceResultsMoneyValues(TaskResourceRecord *record);
 void func_80039B34(TaskResourceRecord *resource);
 void drawTimeRecordListRows(TimeRecordListResource *resource);
 void drawStatsMenuValues(TaskResourceRecord *resource);
