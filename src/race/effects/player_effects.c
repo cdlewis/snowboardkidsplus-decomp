@@ -76,6 +76,23 @@ typedef struct PlayerRingEffectScratch {
     long flags;
 } PlayerRingEffectScratch;
 
+typedef struct PlayerParticleTrailResource {
+    s32 positions[10][3];
+    s16 ages[10];
+    s16 angles[10];
+} PlayerParticleTrailResource;
+
+typedef struct PlayerParticleTrailScratch {
+    GsCOORDINATE2 coordinate;
+    POLY_FT4 quad;
+    SVECTOR vertices[4];
+    VECTOR scale;
+    SVECTOR rotation;
+    long depth;
+    long cue;
+    long flags;
+} PlayerParticleTrailScratch;
+
 const VECTOR gInitialRaceOscillatingQuadPosition
     __attribute__((section(".rodata.race_oscillating_quad_position"))) = {
     -0x1B25, 0x3557, 0x9E5E, 0
@@ -1160,7 +1177,101 @@ void createPlayerRingEffectTask(s32 playerIndex) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_8006836C);
+void updatePlayerParticleTrailTask(void) {
+    PlayerParticleTrailResource *resource;
+    PlayerParticleTrailScratch *scratch;
+    RacePlayer *player;
+    POLY_FT4 *packet;
+    s32 i, j;
+    s32 shade;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    scratch = (PlayerParticleTrailScratch *)getScratchAddr(0);
+    resource = (PlayerParticleTrailResource *)&D_800D9504[D_8013AE88->resource14];
+    player = &gRacePlayers[D_8013AE88->data18];
+    packet = (POLY_FT4 *)GsOUT_PACKET_P;
+    scratch->quad.tag = TEXTURED_QUAD_PACKET_WORDS << 24;
+    setcode(&scratch->quad, POLY_FT4_CODE);
+    setSemiTrans(&scratch->quad, 1);
+    scratch->quad.clut = getClut(880, 248);
+    scratch->quad.tpage = getTPage(0, 1, 704, 0);
+    setUV4(&scratch->quad, 0, 64, 63, 64, 0, 127, 63, 127);
+    setVector(&scratch->vertices[0], -20, -20, 0);
+    setVector(&scratch->vertices[1], -20, 20, 0);
+    setVector(&scratch->vertices[2], 20, -20, 0);
+    setVector(&scratch->vertices[3], 20, 20, 0);
+
+    if (D_8013AFD3 == 0) {
+        for (j = 9; j > 0; j--) {
+            s32 x;
+            s32 *current;
+            resource->ages[j] = resource->ages[j - 1];
+            resource->angles[j] = resource->angles[j - 1];
+            current = resource->positions[j];
+            x = resource->positions[j - 1][0];
+            current[0] = player->unk0FF ? x + 20 : x - 20;
+            resource->positions[j][1] = resource->positions[j - 1][1] + randomNextLinear() % 8 - 8;
+            resource->positions[j][2] = resource->positions[j - 1][2] + randomNextLinear() % 8 - 4;
+        }
+        if (player->unk0FC && isPointWithinCameraForwardRange(
+                player->worldCoordinate.coord.t[0], player->worldCoordinate.coord.t[2],
+                (s16)func_80059254())) {
+            resource->ages[0] = 0;
+            resource->angles[0] = randomNextLinear() % 4096;
+            resource->positions[0][0] = player->unk0FF ? 60 : -60;
+            resource->positions[0][1] = -20;
+            resource->positions[0][2] = 0;
+        } else {
+            resource->ages[0] = 10;
+        }
+    }
+
+    scratch->rotation.vy = 0;
+    scratch->rotation.vx = 0;
+    GsInitCoordinate2(&player->model.modelCoordinates[0], &scratch->coordinate);
+    for (i = 0; i < 10; i++) {
+        if (resource->ages[i] < 10) {
+            scratch->scale.vx = scratch->scale.vy = scratch->scale.vz = 4096 + (i << 10);
+            shade = 32 - (i << 5) / 10;
+            scratch->quad.b0 = shade;
+            scratch->quad.g0 = shade;
+            scratch->quad.r0 = shade;
+            /* The original reads the reused loop index before resetting it below. */
+            scratch->rotation.vz = resource->angles[j];
+            scratch->coordinate.flg = 0;
+            for (j = 0; j < 3; j++) {
+                scratch->coordinate.coord.t[j] = resource->positions[i][j];
+            }
+            GsGetLs(&scratch->coordinate, &scratch->coordinate.workm);
+            for (j = 0; j < 3; j++) {
+                scratch->coordinate.coord.t[j] = scratch->coordinate.workm.t[j];
+            }
+            RotMatrix(&scratch->rotation, &scratch->coordinate.coord);
+            ScaleMatrix(&scratch->coordinate.coord, &scratch->scale);
+            GsSetLsMatrix(&scratch->coordinate.coord);
+            scratch->depth = RotTransPers4(
+                &scratch->vertices[0], &scratch->vertices[1],
+                &scratch->vertices[2], &scratch->vertices[3],
+                (long *)&scratch->quad.x0, (long *)&scratch->quad.x1,
+                (long *)&scratch->quad.x2, (long *)&scratch->quad.x3,
+                &scratch->cue, &scratch->flags);
+            if (!(scratch->flags & 0x7FFBE000) && scratch->depth >= 0 && scratch->depth < 4096) {
+                *packet = scratch->quad;
+                addPrim(&D_8013AF6C[scratch->depth >> 2], packet);
+            }
+            packet++;
+            if (D_8013AFD3 == 0) {
+                resource->positions[i][1] -= 2;
+                if (resource->ages[i] < 11) {
+                    resource->ages[i]++;
+                }
+            }
+        }
+    }
+    GsOUT_PACKET_P = (u32)packet;
+}
 
 INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_800688C0);
 

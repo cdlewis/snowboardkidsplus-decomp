@@ -3008,6 +3008,7 @@ updateCurrentPlayerState23MotionAndTimer = 0x80024F10; // type:func
 
 updatePlayerRingEffectTask = 0x80067DD0; // type:func
 createPlayerRingEffectTask = 0x80068230; // type:func
+updatePlayerParticleTrailTask = 0x8006836C; // type:func
 
 drawRotatedSpriteByIndex = 0x8006CDA4; // type:func
 gRotatedSpriteTemplate = 0x8013BE08; // size:0x24 defined:true
