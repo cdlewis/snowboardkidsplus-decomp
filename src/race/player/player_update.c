@@ -115,7 +115,7 @@ void updateCurrentPlayerTaskDecelerationSteps(void);
 void func_80025FAC(void);
 void func_800260E4(void);
 void moveCurrentPlayerForwardUntilState22(void);
-void func_80026754(void);
+void updateCurrentPlayerState30TaskUntilStopped(void);
 void func_80028680(void);
 void updateCurrentPlayerState12MotionAndTimer(void);
 s16 func_80028234(void);
@@ -130,7 +130,7 @@ TaskCallback gCurrentPlayerTaskPhaseCallbacks[8]
 
 TaskCallback gCurrentPlayerState30TaskPhaseCallbacks[3]
     __attribute__((section(".data.player_state30_task_phases"))) = {
-    func_80026754, advanceCurrentPlayerState30TaskOnResult, updateCurrentPlayerState30AnimationAndHeight
+    updateCurrentPlayerState30TaskUntilStopped, advanceCurrentPlayerState30TaskOnResult, updateCurrentPlayerState30AnimationAndHeight
 };
 
 
@@ -1286,7 +1286,95 @@ void updateCurrentPlayerAndRequestState30(void) {
     callCurrentPlayerStateCallbackIfDifferent(30);
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_80026754);
+void updateCurrentPlayerState30TaskUntilStopped(void) {
+    RacePlayer *player;
+    RacePlayer *steeringPlayer;
+    GameTask *task = D_8013AE88;
+    RacePlayer *animationPlayer;
+    RacePlayer *movingPlayer;
+    RacePlayer *stoppedPlayer;
+    RacePlayer *finishedPlayer;
+    s16 turn;
+    s32 difference;
+
+    if (task->data1E != 0) {
+        player = D_8013B0D8;
+        difference = (player->unk0BE - player->unk110) & 0xFFF;
+        turn = difference;
+        if (difference > 0x800) {
+            turn = difference | 0xF000;
+        }
+        if (turn > 0x40) {
+            turn = 0x40;
+        }
+        if (turn < -0x40) {
+            turn = -0x40;
+        }
+        player->unk0B6 -= turn;
+        if (task->data1C) {
+            player->unk08C = 31;
+        } else {
+            player->unk08C = -31;
+        }
+        D_8013B0D8->unk124 = 63;
+        turn = smoothAndScaleCurrentPlayerInput(D_8013B0D8->unk0BC, (s16)D_8013B0D8->unk08C);
+        steeringPlayer = D_8013B0D8;
+        turn -= steeringPlayer->unk126;
+        if (turn > 0x30) {
+            turn = 0x30;
+        }
+        if (turn < -0x30) {
+            turn = -0x30;
+        }
+        steeringPlayer->unk126 += turn;
+        if ((s16)steeringPlayer->unk126 == 0) {
+            if (steeringPlayer->animationIndex != D_800EB09C[steeringPlayer->characterId][1]) {
+                startCurrentPlayerAnimation(1, 1);
+            }
+        } else {
+            if ((s16)steeringPlayer->unk126 >= 0) {
+                func_8001758C(6, (s16)steeringPlayer->unk126, 0x118);
+                if ((s16)D_8013B0D8->unk126 >= 0) {
+                    goto updateAnimation;
+                }
+            }
+            func_8001758C(5, -(s16)D_8013B0D8->unk126, 0x118);
+        }
+    } else {
+        smoothAndScaleCurrentPlayerInput(0, 0);
+    }
+
+updateAnimation:
+    animationPlayer = D_8013B0D8;
+    if (animationPlayer->animationIndex != D_800EB09C[animationPlayer->characterId][6] &&
+        animationPlayer->animationIndex != D_800EB09C[animationPlayer->characterId][5]) {
+        updateCurrentPlayerAnimation();
+    }
+    func_8002AE38(0, 0x200, 0x180, 0x180);
+    movingPlayer = D_8013B0D8;
+    movingPlayer->x += movingPlayer->unk060;
+    movingPlayer->y += movingPlayer->unk062;
+    movingPlayer->z += movingPlayer->unk064;
+    func_80028680();
+    updateCurrentPlayerMotionEffects();
+
+    stoppedPlayer = D_8013B0D8;
+    if ((stoppedPlayer->unk060 | stoppedPlayer->unk064) == 0 && !(stoppedPlayer->unk128 & 1)) {
+        if (stoppedPlayer->unk008 == 0) {
+            PlayerCamera *cameras = D_801241E8;
+            PlayerCamera *camera = &cameras[D_8013AE88->data18];
+            if (camera->unk16 != 6 && D_8013AFD6 == 0) {
+                camera->unk16 = 5;
+            }
+        }
+        finishedPlayer = D_8013B0D8;
+        finishedPlayer->unk128 |= 0x100;
+        D_8013AE88->data1A++;
+        if (finishedPlayer->animationIndex != D_800EB09C[finishedPlayer->characterId][1]) {
+            startCurrentPlayerAnimation(1, 1);
+        }
+    }
+}
 
 void advanceCurrentPlayerState30TaskOnResult(void) {
     if (D_8013AFE1 != 0) {

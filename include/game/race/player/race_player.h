@@ -259,6 +259,7 @@ void updateCurrentPlayerItemUse(u16 playerIndex);
 
 void startCurrentPlayerAnimation(u8 animation, u8 mode);
 s32 updateCurrentPlayerAnimation(void);
+void func_8001758C(s16 animation, s32 weight, s32 scale);
 
 void initializeCurrentPlayerModelObjects(u32 *model);
 void loadCurrentPlayerModelBlock(void);

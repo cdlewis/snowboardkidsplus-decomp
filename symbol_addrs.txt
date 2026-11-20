@@ -2901,6 +2901,7 @@ gNumberAdjustmentDigitTexts = 0x8013B578; // size:0x24
 
 drawSceneImageTask = 0x800A6CC4; // type:func
 
+updateCurrentPlayerState30TaskUntilStopped = 0x80026754; // type:func
 advanceCurrentPlayerState30TaskOnResult = 0x80026AA8; // type:func
 
 initializeCountedSplitSelectionBoundsTask = 0x80097EBC; // type:func
