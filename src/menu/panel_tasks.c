@@ -43,7 +43,6 @@ typedef struct MoneyMenuText {
 
 extern const u8 D_80131868[];
 extern GroupedSelectionDescriptor D_801318D4[];
-extern const u16 *D_8012FFD4[];
 extern ByteTriplet D_8012FFFC[];
 extern u8 D_8013B4BC __attribute__((section(".data")));
 extern MoneyMenuText D_80131794;

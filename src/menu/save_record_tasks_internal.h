@@ -133,7 +133,7 @@ void updateMemoryCardSlotTask(void);
 void func_800857C4(void);
 void updatePlayerGroupedSelectionMenu(void);
 void func_80084970(void);
-void func_800801A0(void);
+void updateRecordFlagSelectionMenuTask(void);
 void func_800815D0(void);
 void initializeDualResourceTaskAndResetByteState(void);
 void adjustGroupedIndexForMode(s16 mode, u8 *index);

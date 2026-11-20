@@ -59,6 +59,7 @@ typedef struct SelectionItemStats {
 
 extern SelectionItemStats D_8012FCE4[];
 extern ByteMappingDescriptor D_8012FD10[];
+extern const u16 *D_8012FFD4[];
 void drawRegisteredSelectionItemStatus(void);
 void drawSelectionItemDetails(void);
 void drawSelectionPrizeAndPlayerCounters(void);

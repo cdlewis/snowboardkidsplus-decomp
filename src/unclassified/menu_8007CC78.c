@@ -90,6 +90,31 @@ TexturedQuadListEntry taskIndexPanelQuadsPalette1[10] __attribute__((section(".d
 
 s16 gMenuPlayerModelYaw[2] __attribute__((section(".sdata"))) = {0};
 
+IndexedHalfwordRecord gRecordFlagMenuSpriteRecords[]
+    __attribute__((section(".data.record_flag_menu_sprites"), aligned(4))) = {
+    {205, 0, 0},
+    {206, 0x100, 0x100},
+    {207, 0x100, 0x200},
+    {208, 0x100, 0},
+    {209, 0x100, 0x300},
+    {210, 0x100, 0x700},
+    {211, 0x100, 0x700},
+    {212, 0x100, 0x700},
+    {216, 0, 0},
+    {217, 0, 0},
+    {218, 0, 0},
+    {219, 0x100, 0x600},
+    {220, 0x100, 0x500},
+    {221, 0x100, 0x400},
+    {210, 0x100, 0x800},
+    {211, 0x100, 0x800},
+    {212, 0x100, 0x800},
+    {199, 0, 0},
+};
+
+const u32 gRecordFlagSelectionMenuTablePadding
+    __attribute__((section(".rodata.record_flag_selection_menu_padding"))) = 0;
+
 const u32 gGroupedSelectionMenuTablePadding
     __attribute__((section(".rodata.grouped_selection_menu_padding"))) = 0;
 
@@ -809,10 +834,187 @@ void initializeDualResourceTaskAndClearState(void) {
         while (1) {}
     }
     D_8013AE88->resource16 = allocateTaskResource();
-    setCurrentTaskCallback(func_800801A0);
+    setCurrentTaskCallback(updateRecordFlagSelectionMenuTask);
 }
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_800801A0);
+void updateRecordFlagSelectionMenuTask(void) {
+    CourseSelectionResource *parentSelection;
+    RegisteredPanelSlot *parentPanels;
+    CourseSelectionResource *selection;
+    RegisteredPanelSlot *panels;
+    MenuSelectionState *groupedSelection;
+    RecordFlagMenuEntries entryStorage;
+    RecordFlagMenuEntries *entries;
+    s32 complete;
+    s16 value;
+
+    if (D_8013AE98->resource14 == 0xFFFF) { for (;;) {} }
+    parentSelection = (CourseSelectionResource *)&D_800D9504[D_8013AE98->resource14];
+    if (D_8013AE98->resource16 == 0xFFFF) { for (;;) {} }
+    parentPanels = (RegisteredPanelSlot *)&D_800D9504[D_8013AE98->resource16];
+    if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
+    selection = (CourseSelectionResource *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) { for (;;) {} }
+    panels = (RegisteredPanelSlot *)&D_800D9504[D_8013AE88->resource16];
+    groupedSelection = &D_801300AC[0];
+
+    switch (D_8013AE88->data18) {
+    case 0:
+        moveTaskChildrenWithSpacing(2, parentPanels[0].task, -0x130000, -0x60000, 0x1E000, 0x1E000, -1000);
+        D_8013AE88->data18 = 1;
+        break;
+    case 1:
+        if (parentPanels[0].flags == 0) {
+            parentPanels[0].command = 23;
+            parentPanels[1].command = 23;
+            parentPanels[4].command = 23;
+            configureTaskGridMovement(1, parentPanels[0].task, -0x7C000, -0x60000, 0x1E000, 0x1E000, 0);
+            D_8013AE88->data18 = 2;
+        }
+        break;
+    case 2:
+        if (parentPanels[0].flags == 0) {
+            entries = &entryStorage;
+            buildRecordFlagMenuEntries(0, D_8013AE98->data1A, parentSelection->selectedIndex, 0, 20, entries);
+            createRegisteredSpacedChildTasks(1, 0xB0, 0x40, (const u8 *)gRecordFlagMenuSpriteRecords,
+                                             entries->entries, NULL, 0, 0, 20, -304, -96,
+                                             entries->unk_04, entries->unk_05, entries->count, 222,
+                                             drawSelectedTaskSprite, drawRegisteredTaskGridSpriteWithColor, 5, 1);
+            createRegisteredTextPanelTask(-136, 8, D_8012FFD4, entries->textIndices, 4, 11);
+            selection->mode = 0;
+            value = getGroupedIndexOffsetPlus216(groupedSelection->selection);
+            selection->selectedIndex = value;
+            value = findIndexedHalfwordRecord(gRecordFlagMenuSpriteRecords, entries->entries, entries->count, value);
+            selection->selectedIndex = value;
+            selection->previousIndex = value;
+            selection->choiceResult = 0;
+            D_8013AE88->data18 = 3;
+        }
+        break;
+    case 3:
+        if (panels[0].flags == 0 && panels[1].flags == 0) {
+            initializeSpacedTaskGridPositions(0, panels[0].task, -0x74000, -0x60000, 0, 0);
+            configureVerticalTaskGridMovement(0, panels[0].task, -0x74000, -0x4C000, 0x8000, 0x8000, 2);
+            initMovement2D((Movement2D *)&D_800D9504[parentPanels[1].task->resource14], -0x13C000, 0x8000);
+            D_8013AE88->data18 = 4;
+        }
+        break;
+    case 4:
+        if (panels[0].flags == 0 && panels[1].flags == 0) {
+            panels[0].command = 20;
+            panels[1].command = 20;
+            configureColorCycleTask(1, 0, 128, 8, 0);
+            D_8013B41F = 0;
+            D_8013AE88->data18 = 5;
+        }
+        break;
+    case 5:
+        complete = isTaskResourceTransitionComplete(0);
+        if (complete == 1 && D_8013B41F == 0) {
+            panels[0].command = 21;
+            panels[1].command = 22;
+            configureColorCycleTask(2, 64, 128, 4, 0);
+            D_8013B41F = complete;
+        }
+        if (parentPanels[2].flags == 0) {
+            if (selection->choiceResult > 0) {
+                parentPanels[2].command = 3;
+            }
+            if (selection->choiceResult != 0) {
+                D_8013AE88->data18 = 6;
+            }
+        }
+        if (groupedSelection->selection == groupedSelection->previousSelection &&
+            selection->selectedIndex != selection->previousIndex) {
+            groupedSelection->previousSelection = groupedSelection->selection;
+            groupedSelection->selection = getTaskResourceAdjustedGroupedIndex(D_8013AE88->data1A, panels[0].task, selection->selectedIndex);
+            if (groupedSelection->selection < 0) {
+                groupedSelection->selection = groupedSelection->previousSelection;
+            } else {
+                parentPanels[2].command = 13;
+            }
+            selection->previousIndex = selection->selectedIndex;
+        } else if (D_8013AE88->data18 != 5 && D_8013B41F == 0) {
+            panels[0].command = 22;
+            panels[1].command = 22;
+            D_8013B41F = 1;
+        }
+        break;
+    case 6:
+        if (parentPanels[2].flags == 0 && selection->choiceResult != 0 && panels[0].flags == 0) {
+            if (selection->choiceResult < 0) {
+                D_8013AE88->data18 = 10;
+            } else {
+                gRacePlayers[0].unk00A[1] = getTaskResourceAdjustedGroupedIndex(D_8013AE88->data1A, panels[0].task, selection->selectedIndex);
+                D_8013AE88->data18 = 7;
+            }
+        }
+        break;
+    case 10:
+        configureTaskGridMovement(0, panels[0].task, -0x74000, -0x60000, 0x1E000, 0x1E000, 0);
+        panels[0].command = 23;
+        D_8013AE88->data18 = 11;
+        break;
+    case 11:
+        if (panels[0].flags == 0) {
+            initializeSpacedTaskGridPositions(0, panels[0].task, -0x128000, -0x60000, 0, 0);
+            moveTaskChildrenWithSpacing(1, parentPanels[0].task, -0x7C000, -0x60000, 0x1E000, 0x1E000, 0);
+            D_8013AE88->data18 = 12;
+        }
+        break;
+    case 12:
+        if (parentPanels[0].flags == 0) {
+            moveTaskChildrenWithSpacing(2, parentPanels[0].task, -0x7C000, -0x60000, 0x1E000, 0x1E000, 0);
+            D_8013AE88->data18 = 13;
+        }
+        break;
+    case 13:
+        if (parentPanels[0].flags == 0) {
+            initMovement2D((Movement2D *)&D_800D9504[panels[1].task->resource14], -0x13C000, 0x8000);
+            initMovement2D((Movement2D *)&D_800D9504[parentPanels[1].task->resource14], -0x88000, 0x8000);
+            parentPanels[2].command = 1;
+            parentPanels[0].command = 20;
+            parentPanels[1].command = 20;
+            parentPanels[4].command = 20;
+            configureColorCycleTask(1, 0, 128, 8, 0);
+            D_8013B41F = 0;
+            D_8013AE88->data18 = 14;
+        }
+        break;
+    case 14:
+        parentSelection->choiceResult = 0;
+        D_8013AE98->data18 = 4;
+        goto finish;
+    case 7:
+        if (panels[0].flags == 0 && panels[1].flags == 0 &&
+            parentPanels[0].flags == 0 && parentPanels[1].flags == 0 &&
+            parentPanels[2].flags == 0 && parentPanels[3].flags == 0 && parentPanels[4].flags == 0) {
+            moveTaskChildrenWithSpacing(0, panels[0].task, -0x128000, -0x4C000, 0x1E000, 0x1E000, -1000);
+            panels[0].command = 23;
+            configureMovement2D((Movement2D *)&D_800D9504[panels[1].task->resource14], -0x13C000, 0x8000, 0x1E000, 0x1E000, -1000);
+            configureTaskGridMovement(0, parentPanels[0].task, -0x130000, -0x60000, 0x1E000, 0x1E000, -1000);
+            configureMovement2D((Movement2D *)&D_800D9504[parentPanels[1].task->resource14], -0x13C000, 0x8000, 0x1E000, 0x1E000, -1000);
+            func_80081AC8(0, parentPanels[2].task, 0xF4000, 0, 0x1E000, 0, -1000);
+            func_80081AC8(1, parentPanels[2].task, 0xF4000, 0, 0x1E000, 0, -1000);
+            configureMovement2D((Movement2D *)&D_800D9504[parentPanels[3].task->resource14], 0xAC000, -0x48000, 0x1E000, 0x1E000, -1000);
+            configureMovement2D((Movement2D *)&D_800D9504[parentPanels[4].task->resource14], -0x128000, 0x30000, 0x1E000, 0x1E000, -1000);
+            D_8013AE88->data18 = 8;
+        }
+        break;
+    case 8:
+        if (panels[0].flags == 0 && panels[1].flags == 0 &&
+            parentPanels[0].flags == 0 && parentPanels[1].flags == 0 &&
+            parentPanels[2].flags == 0 && parentPanels[3].flags == 0 && parentPanels[4].flags == 0) {
+            D_8013AE98->data18 = 11;
+            goto finish;
+        }
+        break;
+    default:
+finish:
+        func_800149A8();
+        break;
+    }
+}
 
 s32 getPlayerRecordFlagMode(s16 index) {
     s32 result;

@@ -131,6 +131,7 @@ UNIT_REORDER_src/unclassified/menu_8007BE9C.c := 0
 UNIT_REORDER_src/unclassified/menu_8007CC78.c := 0
 UNIT_CCFLAGS_src/unclassified/menu_8007CC78.c += --rdata-section=updateCdAwareCourseSelectionTask:.rodata.course_selection
 UNIT_CCFLAGS_src/unclassified/menu_8007CC78.c += --rdata-section=updateSelectionPrizeMenuTask:.rodata.selection_prize_menu
+UNIT_CCFLAGS_src/unclassified/menu_8007CC78.c += --rdata-section=updateRecordFlagSelectionMenuTask:.rodata.record_flag_selection_menu
 UNIT_CCFLAGS_src/unclassified/menu_8007CC78.c += --rdata-section=updateRegisteredPlayerModels:.rodata.registered_player_models
 UNIT_CCFLAGS_src/unclassified/menu_8007CC78.c += --rdata-section=updatePlayerGroupedSelectionMenu:.rodata.grouped_selection_menu
 UNIT_CCFLAGS_src/unclassified/menu_8007CC78.c += --rdata-section=updateMemoryCardSlotTask:.rodata.memory_card_slot_task

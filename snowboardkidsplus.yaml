@@ -131,6 +131,8 @@ segments:
       - {start: 0x1C68, type: .rodata, name: unclassified/menu_8007CC78, linker_section: .rodata.course_selection}
       - {start: 0x1D38, type: .rodata, name: unclassified/menu_8007CC78, linker_section: .rodata.selection_prize_menu}
       - [0x1DC0, rodata]
+      - {start: 0x1E00, type: .rodata, name: unclassified/menu_8007CC78, linker_section: .rodata.record_flag_selection_menu}
+      - {start: 0x1E3C, type: .rodata, name: unclassified/menu_8007CC78, linker_section: .rodata.record_flag_selection_menu_padding}
       - [0x1E40, .rodata, unclassified/menu_8007CC78]
       - {start: 0x1ED8, type: .rodata, name: unclassified/menu_8007CC78, linker_section: .rodata.registered_player_models}
       - {start: 0x2068, type: .rodata, name: unclassified/menu_8007CC78, linker_section: .rodata.grouped_selection_menu}
@@ -816,6 +818,8 @@ segments:
       - {start: 0x11FBC8, type: .data, name: menu/task_widgets, linker_section: .data.value_panel_label}
       - {start: 0x11FBDC, type: .data, name: menu/task_widgets, linker_section: .data.text_panel_message}
       - [0x11FC00, data, 11FC00]
+      - {start: 0x120560, type: .data, name: unclassified/menu_8007CC78, linker_section: .data.record_flag_menu_sprites}
+      - [0x1205CC, data, record_flag_menu_data_tail]
       - {start: 0x1209CC, type: .data, name: unclassified/menu_8007CC78, linker_section: .data.task_index_panel_quads}
       - [0x120ABC, data, task_index_panel_tail]
       - {start: 0x120F24, type: .data, name: menu/save_record_tasks, linker_section: .data.task_shadowed_text}
