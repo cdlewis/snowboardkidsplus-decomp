@@ -277,6 +277,11 @@ CourseTriggerRecord *gCourseTriggers[]
     gCourse8Triggers, gCourse9Triggers,
 };
 
+static const u32 sCourseObjectJumpTablePadding
+    __attribute__((section(".rodata.course_object_jump_table_padding"))) = 0;
+
+void updateCourseObjectTask(void);
+
 void queueCourseResourceSectorReads(void) {
     queueCdSectorCommand(0, gCourseResourceSectors[D_8013AFCE][0].sector, gCourseResourceSectors[D_8013AFCE][0].count, DAT_COURSE_FIRST, 0);
     queueCdSectorCommand(0, gCourseResourceSectors[D_8013AFCE][1].sector, gCourseResourceSectors[D_8013AFCE][1].count, DAT_COURSE_SECOND, 0);
@@ -328,7 +333,73 @@ void drawTaskObjectAlternateLayer(u16 index) {
     SetSp(gAlternateObjectSortSavedStackPointer);
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/course/course_objects", func_80059484);
+void initializeCourseObjectTask(void) {
+    if (D_8013AFCE == 8 && D_8013AE88->data18 == 0) {
+        D_8013AE88->data18 = 24;
+    }
+
+    switch (D_8013AE88->data18) {
+    case 0:
+    case 24:
+        D_8012A5C0[D_8013AE88->data18].vy = D_80123D80[D_8013AFCE].unk16;
+        D_8013AE88->data1C = 0x418;
+        D_8013AE88->data1E = 0x240;
+        D_8013AF90->vx = 0;
+        D_8013AF90->vy = D_8012A5C0[D_8013AE88->data18].vy + D_8013AE88->data1C;
+        D_8013AF90->vz = 0;
+        D_8013AF94->vx = 0;
+        D_8013AF94->vy = 0;
+        D_8013AF94->vz = D_8013AE88->data1E;
+        RotMatrix(D_8013AF90, D_8013AF98);
+        ApplyMatrix(D_8013AF98, D_8013AF94, D_8013AF88);
+        D_80129C60[D_8013AE88->data18].coord.t[0] =
+            ((s32)D_80123D80[D_8013AFCE].unk18[0] >> 8) + D_8013AF88->vx;
+        D_80129C60[D_8013AE88->data18].coord.t[1] = ((s32)D_80123D80[D_8013AFCE].unk18[1] >> 8);
+        D_80129C60[D_8013AE88->data18].coord.t[2] =
+            ((s32)D_80123D80[D_8013AFCE].unk18[2] >> 8) + D_8013AF88->vz;
+        break;
+    case 1:
+    case 2:
+        D_8013AE88->data1A = 0;
+        D_8012A5C0[D_8013AE88->data18].vy = D_80123D80[D_8013AFCE].unk16 + 0x400;
+        D_8013AE88->data1C = 0x128;
+        D_8013AE88->data1E = 0xA0;
+        D_8013AF90->vx = 0;
+        D_8013AF90->vy = D_8012A5C0[D_8013AE88->data18].vy + D_8013AE88->data1C;
+        D_8013AF90->vz = 0;
+        D_8013AF94->vx = 0;
+        D_8013AF94->vy = 0;
+        D_8013AF94->vz = D_8013AE88->data1E;
+        RotMatrix(D_8013AF90, D_8013AF98);
+        ApplyMatrix(D_8013AF98, D_8013AF94, D_8013AF88);
+        D_80129C60[D_8013AE88->data18].coord.t[0] =
+            ((s32)D_80123D80[D_8013AFCE].unk18[0] >> 8) + D_8013AF88->vx;
+        D_80129C60[D_8013AE88->data18].coord.t[1] = ((s32)D_80123D80[D_8013AFCE].unk18[1] >> 8);
+        D_80129C60[D_8013AE88->data18].coord.t[2] =
+            ((s32)D_80123D80[D_8013AFCE].unk18[2] >> 8) + D_8013AF88->vz;
+        break;
+    case 3:
+        D_8012A5C0[D_8013AE88->data18].vy = D_80123D80[D_8013AFCE].unk14 + 0x400;
+        D_8013AE88->data1C = 0x280;
+        D_8013AE88->data1E = -0x78;
+        D_8013AF90->vx = 0;
+        D_8013AF90->vy = D_8012A5C0[D_8013AE88->data18].vy + D_8013AE88->data1C;
+        D_8013AF90->vz = 0;
+        D_8013AF94->vx = 0;
+        D_8013AF94->vy = 0;
+        D_8013AF94->vz = D_8013AE88->data1E;
+        RotMatrix(D_8013AF90, D_8013AF98);
+        ApplyMatrix(D_8013AF98, D_8013AF94, D_8013AF88);
+        D_80129C60[D_8013AE88->data18].coord.t[0] =
+            (D_80123D80[D_8013AFCE].unk08 >> 8) + D_8013AF88->vx;
+        D_80129C60[D_8013AE88->data18].coord.t[1] = (D_80123D80[D_8013AFCE].unk0C >> 8) - 8;
+        D_80129C60[D_8013AE88->data18].coord.t[2] =
+            (D_80123D80[D_8013AFCE].unk10 >> 8) + D_8013AF88->vz;
+        break;
+    }
+
+    setCurrentTaskCallback(updateCourseObjectTask);
+}
 
 void updateCourseObjectTask(void) {
     RECT rect;

@@ -2640,6 +2640,7 @@ drawTaskObject = 0x800592DC; // type:func
 gObjectSortSavedStackPointer = 0x8013B6A4; // type:u32 size:0x4
 
 drawTaskObjectAlternateLayer = 0x800593B0; // type:func
+initializeCourseObjectTask = 0x80059484; // type:func
 updateCourseObjectTask = 0x80059958; // type:func
 gAlternateObjectSortSavedStackPointer = 0x8013B6A8; // type:u32 size:0x4
 
