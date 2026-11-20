@@ -2147,6 +2147,7 @@ setTexturedQuadTextureBlend = 0x8006FDE4; // type:func
 
 drawCurrentTaskSelectedPlayerMoneyPanel = 0x80095674; // type:func
 drawCurrentTaskBoardPrice = 0x80095A58; // type:func
+createGridModelPreviewTask = 0x80096590; // type:func
 reloadGridModelPreview = 0x80096AB0; // type:func
 updateGridModelPreviewTask = 0x80096EC8; // type:func
 D_80131A9C = 0x80131A9C; // size:0x6C

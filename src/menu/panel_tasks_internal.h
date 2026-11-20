@@ -255,6 +255,8 @@ void drawCurrentTaskFramedSprite20C(void);
 void drawCurrentTaskTextPanel(void);
 void drawCurrentTaskSelectionPanel(void);
 void queueGridResourceSectorReads(s16 slot, s16 row, s16 column);
+void createGridModelPreviewTask(s16 playerIndex, s16 character, s16 modelSlot, s16 paletteRow,
+                                s16 x, s16 y, s16 z, s32 index);
 void reloadGridModelPreview(GameTask *task, s16 character, s16 modelSlot, s16 paletteRow,
                             s16 x, s16 y, s16 z);
 void updateGridModelPreviewTask(void);

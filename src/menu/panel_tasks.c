@@ -1012,7 +1012,100 @@ void queueGridResourceSectorReads(s16 slot, s16 row, s16 column) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/panel_tasks", func_80096590);
+void createGridModelPreviewTask(s16 playerIndex, s16 character, s16 modelSlot, s16 paletteRow,
+                                s16 x, s16 y, s16 z, s32 index) {
+    GridModelPreviewState *state;
+    Movement2D *position;
+    RegisteredTaskEntry *entry;
+    u32 *source;
+    u32 *destination;
+    u32 *model;
+    s32 i;
+    u32 (*sourceBuffers)[4096];
+    u32 (*destinationBuffers)[4096];
+    RacePlayer *attributePlayer;
+    RacePlayer *positionPlayer;
+
+    func_80014874(updateGridModelPreviewTask);
+    i = 0;
+    D_8013AE8C->data1A = modelSlot;
+    D_8013AE8C->data1C = playerIndex;
+    D_8013AE8C->data1E = index;
+    D_8013AE8C->resource14 = allocateTaskResource();
+    sourceBuffers = (u32 (*)[4096])DAT_GRID_MODEL_BUFFERS;
+    destinationBuffers = DAT_PLAYER_MODEL_BUFFERS;
+    D_8013B0D8 = &gRacePlayers[D_8013AE8C->data1C];
+    state = (GridModelPreviewState *)&D_800D9504[D_8013AE8C->resource14];
+    D_8013B0D8->characterId = character;
+    D_8013B0D8->unk015[0] = modelSlot;
+    D_8013B0D8->unk015[3] = paletteRow;
+
+    destination = destinationBuffers[D_8013AE8C->data1C];
+    source = sourceBuffers[D_8013AE8C->data1A];
+    for (; i < 4096; i++) {
+        *destination++ = *source++;
+    }
+
+    model = DAT_PLAYER_MODEL_BUFFERS[D_8013AE8C->data1C];
+    model++;
+    GsMapModelingData(model);
+    model++;
+    D_8013B0D8->modelPartCount = *(u8 *)model;
+    model++;
+    if (D_8013AE8C->data1C != 0) {
+        offsetTmdObjectTextures(0, (TmdObject *)model, &gPlayerRootTextureOffsets[D_8013AE8C->data1C]);
+        for (i = 1; i < D_8013B0D8->modelPartCount; i++) {
+            offsetTmdObjectTextures(i, (TmdObject *)model, &gPlayerPartTextureOffsets[D_8013AE8C->data1C]);
+        }
+    }
+
+    GsInitCoordinate2(0, &D_8013B0D8->modelCoordinate);
+    for (i = 0; i < D_8013B0D8->modelPartCount; i++) {
+        GsDOBJ2 *object;
+
+        GsLinkObject4(model, &D_8013B0D8->modelObjects[i], i);
+        object = &D_8013B0D8->modelObjects[i];
+        GsInitCoordinate2(&D_8013B0D8->modelCoordinate, &D_8013B0D8->model.modelCoordinates[i]);
+        object->attribute = 0;
+        object->coord2 = &D_8013B0D8->model.modelCoordinates[i];
+    }
+
+    attributePlayer = D_8013B0D8;
+    if (attributePlayer->modelPartCount >= 2) {
+        attributePlayer->modelObjects[0].attribute |= GS_MODEL_OBJECT_HIDDEN;
+    }
+    uploadTimImageWithOffset(((u32 (*)[4096])DAT_GRID_TEXTURE_BUFFERS)[D_8013AE8C->data1A],
+                             (s16 *)&D_801204D4[D_8013AE8C->data1C]);
+
+    positionPlayer = D_8013B0D8;
+    positionPlayer->modelCoordinate.coord.t[0] = x;
+    positionPlayer->modelCoordinate.coord.t[1] = y;
+    positionPlayer->modelCoordinate.coord.t[2] = z;
+    positionPlayer->unk0B4 = 0;
+    positionPlayer->unk0B6 = 0;
+    positionPlayer->unk0B8 = 0;
+    state->rotationStep = 0;
+    if (character < 10) {
+        loadCurrentPlayerModelPose(gGridModelPreviewPoses[character]);
+    }
+
+    D_8013AE8C->resource16 = allocateTaskResource();
+    position = (Movement2D *)&D_800D9504[D_8013AE8C->resource16];
+    initMovement2D(position, x << 12, y << 12);
+    position->unk08 = z;
+
+    if (index % 10 == 0) {
+        if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
+        entry = getRegisteredPanelEntry(D_8013AE88->resource14, index);
+    } else {
+        if (D_8013AE88->resource16 == 0xFFFF) { for (;;) {} }
+        entry = getRegisteredPanelEntry(D_8013AE88->resource16, index);
+    }
+    entry->command = 0;
+    entry->flags = 1;
+    entry->task = D_8013AE8C;
+    copyPlayerPaletteRowWithTransition(playerIndex, character, paletteRow, 0);
+}
 
 void reloadGridModelPreview(GameTask *task, s16 character, s16 modelSlot, s16 paletteRow,
                             s16 x, s16 y, s16 z) {
