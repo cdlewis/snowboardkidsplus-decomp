@@ -98,6 +98,21 @@ u8 gPlayerState30Animation22Countdowns[12]
     30, 30, 30, 0, 0, 0, 30, 0, 0, 30, 0, 0
 };
 
+u16 gPlayerTrickRewards[16]
+    __attribute__((section(".data.player_trick_rewards"), aligned(4))) = {
+    0, 100, 100, 120, 120, 150, 150, 150, 150, 220, 250, 300, 350, 400, 500, 0,
+};
+
+u16 gPlayerDirectionalTrickRewards[10]
+    __attribute__((section(".data.player_trick_rewards"), aligned(4))) = {
+    0, 20, 20, 30, 30, 20, 20, 30, 30, 0,
+};
+
+u16 gPlayerCombinedTrickBonuses[10]
+    __attribute__((section(".data.player_trick_rewards"), aligned(4))) = {
+    0, 10, 20, 20, 30, 10, 20, 20, 30, 0,
+};
+
 void updateCurrentPlayerMotionEffects(void);
 void initializeScaledTaskCoordinateResource(void);
 void updateCurrentPlayerState24MotionAndScale(void);
@@ -1887,7 +1902,100 @@ void assignCurrentPlayerFinishSlot(s32 value) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_80029FE4);
+void awardCurrentPlayerTrickRewards(void) {
+    s32 reward = 0;
+    s32 points = 0;
+    s32 sound;
+    s16 trick;
+    RacePlayer *player;
+
+    if (currentPlayerAbsolute->unk0C8 >= 9 ||
+        (currentPlayerAbsolute->unk0C8 != 0 && currentPlayerAbsolute->unk0C4 != 0)) {
+        currentPlayerAbsolute->unk965 = 1;
+    }
+
+    if (currentPlayerAbsolute->unk0C8 != 0) {
+        reward += gPlayerTrickRewards[currentPlayerAbsolute->unk0C8];
+        if (currentPlayerAbsolute->unk0C8 < 9) {
+            points += 10;
+        } else {
+            points += 40;
+        }
+        trick = currentPlayerAbsolute->unk0C8 < 10 ? currentPlayerAbsolute->unk0C8 : 9;
+        currentPlayerAbsolute->unk0E6 |= 1 << trick;
+    }
+
+    if (currentPlayerAbsolute->unk0C4 != 0) {
+        if (currentPlayerAbsolute->unk0C8 != 0) {
+            reward += gPlayerCombinedTrickBonuses[currentPlayerAbsolute->unk0C4];
+            if (currentPlayerAbsolute->unk0C4 & 1) {
+                points += 5;
+            } else {
+                points += 10;
+            }
+        } else {
+            reward += gPlayerDirectionalTrickRewards[currentPlayerAbsolute->unk0C4];
+            points++;
+        }
+        reward += currentPlayerAbsolute->unk0C6;
+    }
+
+    if (reward != 0 && D_8013AFE2 == 0) {
+        addPlayerCappedCounters(D_8013AE88->data18, reward);
+        if (currentPlayerAbsolute->unk008 == 0 && (D_8013AFD9 == 0 || D_8013AE88->data18 == 0)) {
+            createActivePlayerSlidingNumberTask(reward, currentPlayerAbsolute->playerIndex);
+            sound = 0x201;
+            if (reward >= 100) {
+                sound = 0x301;
+            }
+            if (reward >= 120) {
+                sound = 0x401;
+            }
+            if (reward >= 200) {
+                sound = 0x501;
+            }
+            playSoundEffect(0, sound, 0x40);
+        }
+    }
+
+    if (D_8013AFE2 == 1 && D_8013AFE0 == 2 && points != 0) {
+        if (points > 9999) {
+            points = 9999;
+        }
+        player = currentPlayerAbsolute;
+        player->trickAttackMakeCount++;
+        player->trickAttackPointTotal += points;
+        if (currentPlayerAbsolute->trickAttackMakeCount > 99) {
+            currentPlayerAbsolute->trickAttackMakeCount = 99;
+        }
+        if (currentPlayerAbsolute->unk0E4 < currentPlayerAbsolute->trickAttackMakeCount) {
+            currentPlayerAbsolute->unk0E4 = currentPlayerAbsolute->trickAttackMakeCount;
+        }
+        sound = 0x201;
+        if (points >= 10) {
+            sound = 0x301;
+        }
+        if (points >= 15) {
+            sound = 0x401;
+        }
+        if (points >= 20) {
+            sound = 0x501;
+        }
+
+        if (currentPlayerAbsolute->unk0E6 == 0x3FE) {
+            currentPlayerAbsolute->unk0E6 = 0x3FF;
+            currentPlayerAbsolute->trickAttackPointTotal += 300;
+            createPlayerNumberDisplayTask(points, 1, (s16)D_8013AE88->data18);
+            sound = 0x501;
+        } else {
+            createPlayerNumberDisplayTask(points, 0, (s16)D_8013AE88->data18);
+        }
+        playSoundEffect(0, sound, 0x40);
+        if (currentPlayerAbsolute->trickAttackPointTotal > 9999) {
+            currentPlayerAbsolute->trickAttackPointTotal = 9999;
+        }
+    }
+}
 
 void computeSelectedTriangleNormal(VECTOR *normal) {
     VECTOR first, second;

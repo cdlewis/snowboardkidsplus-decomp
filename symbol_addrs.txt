@@ -1,3 +1,7 @@
+awardCurrentPlayerTrickRewards = 0x80029FE4; // type:func
+gPlayerTrickRewards = 0x80120AB0; // size:0x20 defined:true
+gPlayerDirectionalTrickRewards = 0x80120AD0; // size:0x14 defined:true
+gPlayerCombinedTrickBonuses = 0x80120AE4; // size:0x14 defined:true
 drawOscillatingQuadTask = 0x8004EFE0; // type:func
 gOscillatingQuadVertices = 0x80124DA4; // type:SVECTOR size:0x20 defined:true
 // PSX scratchpad RAM; fixed hardware storage.
