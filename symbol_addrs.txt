@@ -2770,6 +2770,9 @@ gCourseModelTextureWindow = 0x8013B268; // size:0x8 defined:true
 drawCourseModelsForView = 0x80051D3C; // type:func
 
 initializeCurrentPlayerAttributes = 0x80029208; // type:func
+initializeCurrentRacePlayer = 0x800293F0; // type:func size:0x840
+gPlaybackPlayerStartPlacements = 0x80120AF8; // type:s32 size:0x370
+gCoursePlayerStartZ = 0x80120E68; // type:s32 size:0x28
 gPlayerVariantAttributes = 0x80123680; // size:0x110
 gPlayerCharacterAttributes = 0x80123790; // type:u16 size:0x8C
 

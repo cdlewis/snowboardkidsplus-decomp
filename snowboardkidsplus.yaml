@@ -79,6 +79,7 @@ segments:
       - [0xCB0, rodata]
       - [0xCD8, .rodata, race/player/player_update]
       - [0xCEC, rodata]
+      - {start: 0xDE0, type: .rodata, name: race/player/player_update, linker_section: .rodata.race_player_start}
       - {start: 0xE34, type: .rodata, name: race/player/player_actions, linker_section: .rodata.player_course_progress}
       - {start: 0xE58, type: .rodata, name: race/player/player_actions, linker_section: .rodata.player_course_progress_padding}
       - [0xE5C, rodata]
@@ -692,7 +693,9 @@ segments:
       - {start: 0x11128C, type: .data, name: race/player/player_update, linker_section: .data.player_state30_task_phases}
       - {start: 0x111298, type: .data, name: race/player/player_update, linker_section: .data.player_state30_animation_countdowns}
       - {start: 0x1112B0, type: .data, name: race/player/player_update, linker_section: .data.player_trick_rewards}
-      - [0x1112F8, data, player_task_phases_tail]
+      - {start: 0x1112F8, type: .data, name: race/player/player_update, linker_section: .data.playback_player_start_placements}
+      - {start: 0x111668, type: .data, name: race/player/player_update, linker_section: .data.course_player_start_z}
+      - [0x111690, data, player_task_phases_tail]
       - {start: 0x113E00, type: .data, name: race/player/player_input, linker_section: .data.player_rank_speed_adjustments}
       - [0x113E10, data, player_rank_speed_adjustments_tail]
       - {start: 0x113E20, type: .data, name: race/player/player_actions, linker_section: .data.player_projectile_bounce_choices}

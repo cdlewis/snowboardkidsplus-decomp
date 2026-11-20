@@ -31,6 +31,12 @@
 #include "../race_presentation_internal.h"
 
 
+typedef struct PlayerStartPlacement {
+    VECTOR position;
+    s16 recordIndex;
+    s16 heading;
+} PlayerStartPlacement;
+
 typedef struct PlayerVariantAttributeTable {
     u16 values[15][9];
     u16 padding;
@@ -70,6 +76,70 @@ u16 gPlayerCharacterAttributes[10][7]
     {0x0320, 0x0770, 0x010D, 0x06CD, 0x0086, 0x0009, 0x0027},
     {0x0310, 0x0650, 0x00DA, 0x0B90, 0x00F0, 0x0008, 0x0020},
     {0x02F0, 0x0520, 0x00CF, 0x06A0, 0x00B8, 0x0008, 0x0020},
+};
+
+PlayerStartPlacement gPlaybackPlayerStartPlacements[44]
+    __attribute__((section(".data.playback_player_start_placements"), aligned(4))) = {
+    {{-0x4C973C0C, -0x34B949DC, -0x15F75C52, 0}, 134, 0x219},
+    {{-0x4C233D40, -0x34893439, -0x153B862E, 0}, 133, 0x219},
+    {{-0x4D1F5EE8, -0x34E406CC, -0x168907F2, 0}, 135, 0x219},
+    {{-0x4BA775CC, -0x34844240, -0x156F80BA, 0}, 133, 0x219},
+
+    {{-0x2F9C0015, -0x1C325481, -0x9EDD4B9, 0}, 71, 0x39D},
+    {{-0x2DEC593B, -0x1BB801E7, -0xAC9EB63, 0}, 69, 0x57C},
+    {{-0x320CEF39, -0x1CE69457, -0xA540867, 0}, 74, 0xCB},
+    {{-0x2D08138B, -0x1ABC260A, -0xE81A693, 0}, 66, 0x7A6},
+
+    {{-0xFF93AD, -0x1FE7D8B, -0x92606A7, 0}, 14, 0x1BB},
+    {{0x312A27, -0x19DDD18, -0x81EFF0B, 0}, 12, 0x1BB},
+    {{0x9D334B, -0x1568446, -0x6B45767, 0}, 8, 0x14F},
+    {{0x122D61D, -0x10F40E8, -0x4F3D899, 0}, 5, 0x7},
+
+    {{-0xCEB926A, -0x9A02784, -0x1A6B4D59, 0}, 28, 0x112},
+    {{-0xC21FEB2, -0x90B721B, -0x19078555, 0}, 27, 0x112},
+    {{-0xAF3C2D8, -0x86213B9, -0x17A3F597, 0}, 27, 0x18C},
+    {{-0xB02DF46, -0x840DB1F, -0x172998F9, 0}, 27, 0x18C},
+
+    {{-0x9439096, -0x6D7D2D1, -0x153658E2, 0}, 25, 0x185},
+    {{-0xAE3C86E, -0x856BECC, -0x17892B48, 0}, 27, 0x185},
+    {{-0xAE40770, -0x84AED3E, -0x1761443E, 0}, 27, 0x185},
+    {{-0xB1072EE, -0x8571E92, -0x176AD568, 0}, 27, 0x185},
+
+    {{0x3658EEB, -0x24FF70B, -0xCB8263D, 0}, 14, 0x7A},
+    {{0x32C7FE7, -0x22D4578, -0xC4E4AC5, 0}, 14, 0xA6},
+    {{0x39BF323, -0x245FEC4, -0xC0546C9, 0}, 14, 0xA6},
+    {{0x3561369, -0x22E2CE3, -0xBAA033F, 0}, 14, 0xA6},
+
+    {{0x152F51DA, -0x24A8EB76, -0x263A2166, 0}, 61, -0x26},
+    {{0x15945DC0, -0x2500F6D9, -0x26C116B0, 0}, 61, -0x26},
+    {{0x1574E1FA, -0x256FB2C0, -0x27898422, 0}, 62, -0x26},
+    {{0x15223A28, -0x242DFF79, -0x2564392C, 0}, 60, -0x12E},
+
+    {{-0x22D1172B, -0x1D707228, -0x4F4169D2, 0}, 123, 0x225},
+    {{-0x24D5F811, -0x1E29BE70, -0x50710F56, 0}, 125, 0x137},
+    {{-0x248C797D, -0x1E14C635, -0x505C8526, 0}, 125, 0x137},
+    {{-0x2420E879, -0x1DE480DE, -0x504DE972, 0}, 124, 0x1CA},
+
+    {{-0x8DAAB59, -0x106A5C0A, -0x22507AC2, 0}, 51, 0x319},
+    {{-0xBCF2339, -0x10C4CA36, -0x23D26A52, 0}, 55, 0x319},
+    {{-0x7EBD42D, -0x103DD94A, -0x2224AF9C, 0}, 50, 0x39D},
+    {{-0x6974D27, -0xFE59AD3, -0x22121DD4, 0}, 49, 0x39D},
+
+    {{-0x3360774, -0x3FF2382, -0xDE980FF, 0}, 20, -0x1A9},
+    {{-0x1F85334, -0x53FB8EE, -0x101E2A2D, 0}, 22, -0x1A9},
+    {{-0x48138, -0x6EEF536, -0x11DA22E1, 0}, 24, -0x1A9},
+    {{0x10B8D34, -0x7B17937, -0x14F3BDC3, 0}, 28, -0x265},
+
+    {{-0x4D56854F, -0x4A8EB15C, -0x397927D5, 0}, 160, -0x490},
+    {{-0x4EB2B06F, -0x49C902FA, -0x39111D15, 0}, 159, -0x380},
+    {{-0x4D7494C3, -0x4A736BB8, -0x38FECA8F, 0}, 160, -0x380},
+    {{-0x508EA3AF, -0x48BAC9F9, -0x373B87C9, 0}, 157, -0x16B},
+};
+
+s32 gCoursePlayerStartZ[10]
+    __attribute__((section(".data.course_player_start_z"), aligned(4))) = {
+    0xA000, 0x2F000, 0x14800, 0xA000, 0x14000,
+    0x17800, 0x37000, 0x16000, 0xA000, 0x4A000,
 };
 
 u8 D_8012089C[28] = {
@@ -251,7 +321,7 @@ void clearCurrentPlayerSequenceState(void) {
 
 
 
-void func_800293F0(void);
+void initializeCurrentRacePlayer(void);
 
 INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_8001E63C);
 
@@ -2219,7 +2289,7 @@ void initializeActiveRacePlayers(void) {
         player->playerIndex = i;
         if (player->isActive) {
             currentPlayerAbsolute = player;
-            func_800293F0();
+            initializeCurrentRacePlayer();
         }
     }
 }
@@ -2239,7 +2309,223 @@ void initializeCurrentPlayerAttributes(void) {
     player->unk0AA = variant[player->unk015[1]][8];
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_800293F0);
+void initializeCurrentRacePlayer(void) {
+    u32 i = 0;
+    RacePlayer *player = currentPlayerAbsolute;
+    u8 *state = (u8 *)&player->x;
+    u32 size = (u8 *)(player + 1) - state;
+
+    /* The fields before x contain the player setup supplied by the caller. */
+    while (i < size) {
+        state[i++] = 0;
+    }
+
+    currentPlayerAbsolute->unk96C = 0;
+    currentPlayerAbsolute->unk972 = 0;
+    currentPlayerAbsolute->soundVoice = 0xFF;
+    initCurrentPlayerModelParts();
+
+    switch (currentPlayerAbsolute->playerIndex) {
+        case 0: currentPlayerAbsolute->x = -0x3C00; break;
+        case 1: currentPlayerAbsolute->x = 0x3C00; break;
+        case 2: currentPlayerAbsolute->x = -0xB400; break;
+        case 3: currentPlayerAbsolute->x = 0xB400; break;
+    }
+
+    currentPlayerAbsolute->z = gCoursePlayerStartZ[D_8013AFCE];
+    /* Copy the four-word position block, including its fourth word. */
+    __builtin_memcpy(&currentPlayerAbsolute->unk050, &currentPlayerAbsolute->x, sizeof(VECTOR));
+    currentPlayerAbsolute->unk078 = 0x400;
+    currentPlayerAbsolute->unk0AC = 0x2000;
+    currentPlayerAbsolute->unk0B0 = 0x3800;
+    initializeCurrentPlayerAttributes();
+
+    if (currentPlayerAbsolute->unk008) {
+        if (currentPlayerAbsolute->characterId >= 8) {
+            currentPlayerAbsolute->unk0A6 = 0x6000;
+        } else {
+            currentPlayerAbsolute->unk0A6 = 0x800;
+        }
+    }
+    if (D_8013AFE2 == 2) {
+        currentPlayerAbsolute->heldItem = 1;
+    }
+    if (!currentPlayerAbsolute->unk008) {
+        currentPlayerAbsolute->unk945 = 8;
+    } else if (D_8013AFD9) {
+        currentPlayerAbsolute->unk945 = 8;
+    }
+    if (D_8013AFE2 == 1 && D_8013AFE0 == 1) {
+        if (D_8013AFCD == 1) {
+            currentPlayerAbsolute->unk93C = 10;
+        } else {
+            currentPlayerAbsolute->unk93C = 5;
+        }
+    }
+    if (D_8013AFCE == 7 && D_8013AFCD == 1) {
+        currentPlayerAbsolute->x = 0;
+    }
+    if (!currentPlayerAbsolute->unk008 && !D_8013AFD6 &&
+        (s16)currentPlayerAbsolute->unk0A8 != (s16)currentPlayerAbsolute->unk0AA) {
+        func_80014930(&gGameTasks[1], initializePlayerPromptTask);
+        D_8013AE8C->data18 = currentPlayerAbsolute->playerIndex;
+    }
+
+    switch (D_8013AFD8) {
+        case 1:
+            *(s16 *)&currentPlayerAbsolute->unk110 = -0x57E;
+            currentPlayerAbsolute->x = 0xFF6E1C30;
+            currentPlayerAbsolute->z = 0x634F64;
+            currentPlayerAbsolute->unk92E = 0x34;
+            break;
+        case 2:
+        case 3:
+        case 4:
+        case 5:
+            *(s16 *)&currentPlayerAbsolute->unk110 = -0xFD5;
+            currentPlayerAbsolute->x = 0xFEB8AC08;
+            currentPlayerAbsolute->z = 0xA4ECB8;
+            currentPlayerAbsolute->unk92E = 0x96;
+            break;
+        case 6:
+            *(s16 *)&currentPlayerAbsolute->unk110 = -0x993;
+            currentPlayerAbsolute->x = 0xFF060F18;
+            currentPlayerAbsolute->z = 0xC6B91C;
+            currentPlayerAbsolute->unk92E = 0xAE;
+            break;
+        case 7:
+            switch (currentPlayerAbsolute->playerIndex) {
+                case 0:
+                    *(s16 *)&currentPlayerAbsolute->unk110 = 0x10C0;
+                    currentPlayerAbsolute->x = 0xD6AA;
+                    currentPlayerAbsolute->z = 0xC4AA5;
+                    currentPlayerAbsolute->unk92E = 3;
+                    break;
+                case 2:
+                    *(s16 *)&currentPlayerAbsolute->unk110 = -0x102;
+                    currentPlayerAbsolute->x = 0x4BEA0;
+                    currentPlayerAbsolute->z = 0x19EBC0;
+                    currentPlayerAbsolute->unk92E = 8;
+                    break;
+                case 3:
+                    *(s16 *)&currentPlayerAbsolute->unk110 = -0x8F;
+                    currentPlayerAbsolute->x = 0x30B18;
+                    currentPlayerAbsolute->z = 0x17AA90;
+                    currentPlayerAbsolute->unk92E = 7;
+                    break;
+                case 1:
+                    *(s16 *)&currentPlayerAbsolute->unk110 = -0x8F;
+                    currentPlayerAbsolute->x = 0x5F0BC;
+                    currentPlayerAbsolute->z = 0x179368;
+                    currentPlayerAbsolute->unk92E = 7;
+                    break;
+            }
+            break;
+        case 8:
+            switch (currentPlayerAbsolute->playerIndex) {
+                case 0:
+                    *(s16 *)&currentPlayerAbsolute->unk110 = 0xE23;
+                    currentPlayerAbsolute->x = 0x7CD;
+                    currentPlayerAbsolute->z = 0x208502;
+                    currentPlayerAbsolute->unk92E = 12;
+                    break;
+                case 2:
+                    *(s16 *)&currentPlayerAbsolute->unk110 = 0xDA8;
+                    currentPlayerAbsolute->x = 0xFFF9A98C;
+                    currentPlayerAbsolute->z = 0x26DEA6;
+                    currentPlayerAbsolute->unk92E = 14;
+                    break;
+                case 3:
+                    *(s16 *)&currentPlayerAbsolute->unk110 = 0xE75;
+                    currentPlayerAbsolute->x = 0xFFFA9EC0;
+                    currentPlayerAbsolute->z = 0x28D821;
+                    currentPlayerAbsolute->unk92E = 14;
+                    break;
+                case 1:
+                    *(s16 *)&currentPlayerAbsolute->unk110 = 0xE43;
+                    currentPlayerAbsolute->x = 0xFFFAB685;
+                    currentPlayerAbsolute->z = 0x281B92;
+                    currentPlayerAbsolute->unk92E = 14;
+                    break;
+            }
+            break;
+        case 9:
+            *(s16 *)&currentPlayerAbsolute->unk110 = -0x235;
+            currentPlayerAbsolute->x = 0xFFFABFE0;
+            currentPlayerAbsolute->z = 0x274DD8;
+            currentPlayerAbsolute->unk92E = 14;
+            break;
+    }
+
+    switch (D_8013AFD9) {
+        case 1:
+            currentPlayerAbsolute->unk93E = 1;
+            currentPlayerAbsolute->unk940 = 3;
+            break;
+        case 2:
+            currentPlayerAbsolute->unk93E = 2;
+            currentPlayerAbsolute->unk940 = 3;
+            break;
+        case 3:
+            currentPlayerAbsolute->unk93E = 3;
+            currentPlayerAbsolute->unk940 = 3;
+            break;
+        case 4:
+            currentPlayerAbsolute->unk93E = 4;
+            currentPlayerAbsolute->unk940 = 3;
+            break;
+        case 5:
+            currentPlayerAbsolute->unk93E = 5;
+            currentPlayerAbsolute->unk940 = 3;
+            break;
+        case 6:
+            currentPlayerAbsolute->heldItem = 1;
+            break;
+        case 7:
+            currentPlayerAbsolute->heldItem = 2;
+            break;
+        case 8:
+            currentPlayerAbsolute->heldItem = 3;
+            break;
+        case 9:
+            currentPlayerAbsolute->heldItem = 4;
+            break;
+        case 10:
+            currentPlayerAbsolute->heldItem = 5;
+            if (currentPlayerAbsolute->playerIndex != 0) {
+                currentPlayerAbsolute->unk01C = 5000;
+            }
+            break;
+        case 11:
+            currentPlayerAbsolute->heldItem = 6;
+            if (currentPlayerAbsolute->playerIndex == 1) {
+                currentPlayerAbsolute->heldItem = 3;
+            }
+            currentPlayerAbsolute->unk93E = 1;
+            currentPlayerAbsolute->unk940 = 3;
+            break;
+    }
+
+    if (D_8013AFD9) {
+        if (currentPlayerAbsolute->playerIndex >= 2) {
+            currentPlayerAbsolute->heldItem = 0;
+            currentPlayerAbsolute->unk93E = 0;
+            currentPlayerAbsolute->unk940 = 0;
+        }
+        currentPlayerAbsolute->x = (gPlaybackPlayerStartPlacements[(D_8013AFD9 - 1) * 4 +
+                                                  currentPlayerAbsolute->playerIndex].position.vx / 256) * 4;
+        currentPlayerAbsolute->z = (-gPlaybackPlayerStartPlacements[(D_8013AFD9 - 1) * 4 +
+                                                  currentPlayerAbsolute->playerIndex].position.vz / 256) * 4;
+        currentPlayerAbsolute->unk110 = -gPlaybackPlayerStartPlacements[(D_8013AFD9 - 1) * 4 +
+                                                  currentPlayerAbsolute->playerIndex].heading;
+        currentPlayerAbsolute->unk92E = gPlaybackPlayerStartPlacements[(D_8013AFD9 - 1) * 4 +
+                                                  currentPlayerAbsolute->playerIndex].recordIndex;
+    }
+
+    currentPlayerAbsolute->y += 0x40000;
+    __builtin_memcpy(&currentPlayerAbsolute->unk050, &currentPlayerAbsolute->x, sizeof(VECTOR));
+    currentPlayerAbsolute->randomIndex = randomNextMain();
+}
 
 s16 isPlayerNearSelectedRecord(s16 index) {
     s16 i;

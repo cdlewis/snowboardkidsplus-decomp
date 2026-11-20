@@ -88,6 +88,7 @@ UNIT_REORDER_src/io/memory_card_read.c := 0
 UNIT_REORDER_src/engine/game_loop.c := 0
 UNIT_REORDER_src/engine/task_transitions.c := 0
 UNIT_REORDER_src/race/player/player_update.c := 0
+UNIT_CCFLAGS_src/race/player/player_update.c += --rdata-section=initializeCurrentRacePlayer:.rodata.race_player_start
 UNIT_REORDER_src/race/player/player_input.c := 0
 UNIT_REORDER_src/race/player/player_actions.c := 0
 # Preserve the original addresses of the player action switch tables.
