@@ -18,6 +18,7 @@ selectedCourseIndexAbsolute = D_8013AFCE;
 selectedFinishLapCountAbsolute = D_8013AFD0;
 geometryPlacementDataAbsolute = D_8013B1F4;
 selectionMenuRecordAbsolute = D_8013B560;
+mainTailSelectionGp = D_8013B527;
 taskTransitionFlagGp = D_8013B55E;
 modeTransitionReadyGp = D_8013B55E;
 

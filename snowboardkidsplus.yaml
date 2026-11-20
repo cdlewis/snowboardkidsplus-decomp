@@ -152,7 +152,7 @@ segments:
       - [0x2794, rodata]
       - {start: 0x27DC, type: .rodata, name: menu/grid_selection, linker_section: .rodata.split_board_selection}
       - [0x2840, .rodata, menu/grid_selection]
-      - [0x288C, rodata]
+      - {start: 0x288C, type: .rodata, name: menu/resource_tasks, linker_section: .rodata.main_tail_selection}
       - {start: 0x28B8, type: .rodata, name: menu/resource_tasks, linker_section: .rodata.time_records_start_prompt}
       - {start: 0x28D0, type: .rodata, name: menu/resource_tasks, linker_section: .rodata.selection_indexed_menu}
       - {start: 0x290C, type: .rodata, name: menu/resource_tasks, linker_section: .rodata.selection_indexed_menu_padding}
@@ -834,7 +834,10 @@ segments:
       - [0x1226BC, data, 1226BC]
       - {start: 0x1226C8, type: .data, name: race/player/player_palette, linker_section: .data.palette_burst_vertices}
       - {start: 0x1226E8, type: .data, name: race/player/player_palette, linker_section: .data.player_palette_transition_pixels}
-      - [0x122708, data, player_palette_transition_tail]
+      - {start: 0x122708, type: .data, name: menu/resource_tasks, linker_section: .data.main_tail_selection_sprites}
+      - [0x122720, data, main_tail_selection_text_strings]
+      - {start: 0x1229E8, type: .data, name: menu/resource_tasks, linker_section: .data.main_tail_selection_texts}
+      - [0x122A04, data, player_palette_transition_tail]
       - {start: 0x122F14, type: .data, name: menu/mode_race_tasks, linker_section: .data.mode11_selection_sprites}
       - {start: 0x122F38, type: .data, name: text/text_sequence, linker_section: .data.indexed_sector_ranges}
       - {start: 0x122F8C, type: .data, name: menu/selection_tasks, linker_section: .data.number_selection_sprite_table}
@@ -1023,7 +1026,8 @@ segments:
       - [0x12BD08, data, player_model_draw_area_depths_tail]
       - {start: 0x12BD14, type: .sdata, name: menu/grid_selection, linker_section: .sdata, linker_section_order: .data}
       - {start: 0x12BD18, type: .data, name: menu/resource_tasks, linker_section: .data.main_tail_selection_mapping}
-      - [0x12BD1C, data, 12BD18_head]
+      - {start: 0x12BD1C, type: .data, name: menu/resource_tasks, linker_section: .data.main_tail_multiplayer_text_mapping}
+      - {start: 0x12BD20, type: .data, name: menu/resource_tasks, linker_section: .data.main_tail_selection_parent_states}
       - {start: 0x12BD24, type: .data, name: menu/resource_tasks, linker_section: .data.main_tail_money_currency_label}
       - [0x12BD28, data, 12BD18_tail]
       - {start: 0x12BD48, type: .data, name: menu/resource_tasks, linker_section: .data.count_records_hit_label}
