@@ -2523,6 +2523,7 @@ loadCurrentPlayerModelBlock = 0x8002ED00; // type:func
 initializeDualResourceTaskAndNotifyParent = 0x8007BDE0; // type:func
 
 initializeMainTailDualResourceTask = 0x8009BCFC; // type:func
+drawMainTailSelectionHeaderAndMoneyPanel = 0x8009C568; // type:func
 
 waitForStatsScoreCountStartTask = 0x8003B94C; // type:func
 
@@ -2926,6 +2927,9 @@ advanceCurrentPlayerState30TaskOnResult = 0x80026AA8; // type:func
 initializeCountedSplitSelectionBoundsTask = 0x80097EBC; // type:func
 initializeCountedFourBoundsTask = 0x8009974C; // type:func
 D_8013B517 = 0x8013B517; // size:0x1 defined:true
+gMainTailSelectionMapping = 0x8013B518; // size:0x4 defined:true
+gMainTailMoneyCurrencyLabel = 0x8013B524; // size:0x3 defined:true
+D_8013B527 = 0x8013B527; // size:0x1 defined:true
 D_8013B514 = 0x8013B514; // size:0x3 defined:true
 drawCurrentTaskSavedValuePanel = 0x8009A560; // type:func
 

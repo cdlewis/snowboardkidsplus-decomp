@@ -1,6 +1,18 @@
 #include "panel_tasks_internal.h"
 #include "game/menu/selected_sprite.h"
 
+typedef struct MainTailSelectionResource {
+    s16 unk00;
+    s16 selectedIndex;
+} MainTailSelectionResource;
+
+u8 gMainTailSelectionMapping[4] __attribute__((section(".data.main_tail_selection_mapping"), aligned(4))) = {
+    0, 1, 2, 3,
+};
+
+/* Keep the array incomplete at the call site for absolute address scheduling. */
+extern char gMainTailMoneyCurrencyLabel[] __attribute__((section(".data.main_tail_money_currency_label")));
+
 const u8 gTimeRecordsStartPrompt[24] __attribute__((section(".rodata.time_records_start_prompt"), aligned(4))) = {
     0x83, 0x51, 0x81, 0x7C, 0x83, 0x80, 0x82, 0xF0,
     0x82, 0xCD, 0x82, 0xB6, 0x82, 0xDF, 0x82, 0xDC,
@@ -32,7 +44,50 @@ void initializeMainTailDualResourceTask(void) {
 
 INCLUDE_ASM("asm/nonmatchings/menu/resource_tasks", func_8009BDB8);
 
-INCLUDE_ASM("asm/nonmatchings/menu/resource_tasks", func_8009C568);
+void drawMainTailSelectionHeaderAndMoneyPanel(void) {
+    Movement2D *position;
+    MainTailSelectionResource *selection;
+    u8 playerCount;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        for (;;) {}
+    }
+    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE98->resource14 == 0xFFFF) {
+        for (;;) {}
+    }
+    selection = (MainTailSelectionResource *)&D_800D9504[D_8013AE98->resource14];
+    if (D_8013AE88->data1A == 0) {
+        return;
+    }
+    func_8006C998(position->x / 4096 + 8, position->y / 4096 - 22,
+                 0xB2, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    playerCount = D_8013AFCD;
+    if (playerCount != 1) {
+        return;
+    }
+    if (gMainTailSelectionMapping[selection->selectedIndex] == 3) {
+        return;
+    }
+    func_8006C998(position->x / 4096 + 74, position->y / 4096 + 140,
+                 0xBD, 10, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    drawDecimalNumber8x8(position->x / 4096 + 74, position->y / 4096 + 152,
+                         6, 0, D_80130BF0[0], 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    drawWrappedText8x8(position->x / 4096 + 122, position->y / 4096 + 152,
+                       2, gMainTailMoneyCurrencyLabel, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    if (D_8013AE88->data1A == playerCount) {
+        func_8007240C(position->x / 4096 + 68, position->y / 4096 + 136, 68, 32,
+                      D_8013B3A4, D_8013B3A5, D_8013B3A6, 2,
+                      &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    } else {
+        func_8007240C(position->x / 4096 + 68, position->y / 4096 + 136, 68, 32,
+                      128, 128, 128, 2, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    }
+}
+
+char gMainTailMoneyCurrencyLabel[3] __attribute__((section(".data.main_tail_money_currency_label"), aligned(4))) = "\x82" "f";
+/* This byte immediately follows the three-byte currency label in the image. */
+u8 D_8013B527 __attribute__((section(".data.main_tail_money_currency_label"))) = 0;
 
 void initializeSelectionIndexedDualResourceTask(void) {
     GameTask *task = D_8013AE88;

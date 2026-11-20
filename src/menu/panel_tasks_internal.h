@@ -141,7 +141,7 @@ typedef struct SplitSelectionBoundsConfigs {
 
 extern s16 D_8013B10C __attribute__((section(".data")));
 extern u8 D_8013B55E;
-extern u8 D_8013B527 __attribute__((section(".data")));
+extern u8 D_8013B527 __attribute__((section(".data.main_tail_money_currency_label")));
 
 extern s8 D_80011DC8[];
 extern u32 D_801319B0[50];
