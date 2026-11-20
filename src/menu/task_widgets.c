@@ -61,12 +61,13 @@ typedef struct RegisteredTextResource {
 
 typedef struct TexturePairResource {
     s16 x, y;
-    u8 unk04[4];
-    u8 unk08, unk09, textureA, textureB, unk0C;
+    s16 stepX, stepY;
+    s8 unk08;
+    u8 unk09, textureA, textureB, unk0C;
     const u8 *mapping;
 } TexturePairResource;
 typedef struct TexturePairParent {
-    s16 unk00, valueA, valueB;
+    s16 unk00, selectedIndex, previousIndex, choiceResult;
 } TexturePairParent;
 
 typedef struct CallbackResource {
@@ -233,7 +234,8 @@ s8 gShrinkingSpriteOffsets[8] __attribute__((section(".data.shrinking_sprite_off
 s16 func_80070794(s32 id);
 void func_80072A88(s16 index, s16 x, s16 y, TaskCallback callback, s32 value, s32 registrationIndex);
 void func_80072C54(void);
-void func_800750E0(void);
+void updateRegisteredTexturePairTask(void);
+void func_800757E0(void);
 
 void addTilePacket(s32 x, s32 y, s32 width, s32 height, s32 r, s32 g, s32 b,
                    GsOT *ot, u16 depth);
@@ -1363,7 +1365,7 @@ void createRegisteredTexturePairTask(s16 x, s16 y, const u8 *mapping, s32 mode, 
     RegisteredTaskEntry *entry;
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
     parent = (TexturePairParent *)&D_800D9504[D_8013AE88->resource14];
-    func_80014874(func_800750E0);
+    func_80014874(updateRegisteredTexturePairTask);
     D_8013AE8C->data1A = 0;
     D_8013AE8C->data1C = depth;
     D_8013AE8C->data1E = index;
@@ -1374,8 +1376,8 @@ void createRegisteredTexturePairTask(s16 x, s16 y, const u8 *mapping, s32 mode, 
     resource->unk08 = 0;
     resource->unk0C = mode;
     resource->mapping = mapping;
-    resource->textureA = func_8007373C(mapping, parent->valueA);
-    resource->textureB = func_8007373C(resource->mapping, parent->valueB);
+    resource->textureA = func_8007373C(mapping, parent->selectedIndex);
+    resource->textureB = func_8007373C(resource->mapping, parent->previousIndex);
     if (resource->textureA < 255) uploadTextureArchiveEntry(576, 256, 768, 238, resource->textureA);
     if (resource->textureB < 255) uploadTextureArchiveEntry(704, 256, 768, 237, resource->textureB);
     resource->x = 144;
@@ -1395,7 +1397,111 @@ void createRegisteredTexturePairTask(s16 x, s16 y, const u8 *mapping, s32 mode, 
     entry->task = D_8013AE8C;
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_800750E0);
+void updateRegisteredTexturePairTask(void) {
+    Movement2D *movement;
+    TexturePairResource *resource;
+    TexturePairParent *parent;
+    RegisteredTaskEntry *entry;
+    RegisteredTaskEntry *entries;
+    s32 direction;
+    s32 active;
+    u8 color;
+
+    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    movement = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
+    resource = (TexturePairResource *)&D_800D9504[D_8013AE88->resource16];
+    if ((u16)(D_8013AE88->data1E % 10U) == 0) {
+        if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
+        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource14];
+        entry = &entries[D_8013AE88->data1E / 10U];
+    } else {
+        if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
+        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource16];
+        entry = &entries[D_8013AE88->data1E / 10U];
+    }
+    if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
+    parent = (TexturePairParent *)&D_800D9504[D_8013AE98->resource14];
+    if (entry->command != 0) {
+        entry->task = 0;
+        func_800149A8();
+        return;
+    }
+    entry->flags = 0;
+    entry->flags |= updateMovement2D(movement);
+    setTexturedQuadColor(128, 128, 128);
+    drawTexturedFrameStyle9((s16)(movement->x / 4096 - 4), (s16)(movement->y / 4096 - 4),
+                            152, 152, 5, 1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+
+    if (parent->choiceResult >= 0 && resource->unk08 == 0 && parent->selectedIndex != parent->previousIndex) {
+        direction = 0;
+        if (parent->selectedIndex == parent->previousIndex - 1 ||
+            (parent->selectedIndex == resource->unk0C - 1 && parent->previousIndex == 0)) {
+            direction = 1;
+        }
+        if (parent->selectedIndex == parent->previousIndex + 1 ||
+            (parent->selectedIndex == 0 && parent->previousIndex == resource->unk0C - 1)) {
+            direction = 2;
+        }
+        if (resource->unk0C == 2) {
+            direction = 2;
+            if (parent->selectedIndex == 0) {
+                direction = 1;
+            }
+        }
+        active = 1;
+        if (direction == active) {
+            resource->x = 144;
+            resource->y = 108;
+            resource->stepX = 0;
+            resource->stepY = -36;
+            resource->textureA = func_8007373C(resource->mapping, parent->previousIndex);
+            resource->textureB = func_8007373C(resource->mapping, parent->selectedIndex);
+            resource->unk08 = active;
+        }
+        if (direction == 2) {
+            resource->x = 144;
+            resource->y = 36;
+            resource->stepX = 0;
+            resource->stepY = 36;
+            resource->textureA = func_8007373C(resource->mapping, parent->selectedIndex);
+            resource->textureB = func_8007373C(resource->mapping, parent->previousIndex);
+            resource->unk08 = active;
+        }
+        parent->previousIndex = parent->selectedIndex;
+        if (resource->textureA != resource->textureB) {
+            if (resource->textureA < 255) {
+                uploadTextureArchiveEntry(576, 256, 768, 238, resource->textureA);
+            }
+            if (resource->textureB < 255) {
+                uploadTextureArchiveEntry(704, 256, 768, 237, resource->textureB);
+            }
+            entry->flags = active;
+            setCurrentTaskCallback(func_800757E0);
+        } else {
+            resource->x = 144;
+            resource->y = 144;
+            resource->unk08 = 0;
+        }
+    }
+
+    addDrawAreaPacket(0, 0, 320, 240, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    if (resource->textureA < 255) {
+        color = (D_8013B3BC & (1U << resource->textureA)) ? 40 : 128;
+        setSpriteColor(color, color, color);
+        func_8006C998((s16)(movement->x / 4096 + (s16)(resource->x - 144)),
+                     (s16)(movement->y / 4096 + (s16)(resource->y - 144)), 142, 0, -1,
+                     &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    }
+    if (resource->textureB < 255) {
+        color = (D_8013B3BC & (1U << resource->textureB)) ? 40 : 128;
+        setSpriteColor(color, color, color);
+        func_8006C998((s16)(movement->x / 4096), (s16)(movement->y / 4096), 143, 0, -1,
+                     &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    }
+    addDrawAreaPacket((s16)(movement->x / 4096 + 160), (s16)(movement->y / 4096 + 120),
+                      144, 144, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+}
 
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_800757E0);
 
