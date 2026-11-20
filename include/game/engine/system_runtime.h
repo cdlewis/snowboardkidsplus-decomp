@@ -73,7 +73,7 @@ void captureMemoryCardSaveIcon(void);
 s32 pollMemoryCardAvailability(void);
 
 void pollMemoryCardStatusTask(void);
-void func_8001D100(void);
+void finishRaceExitAfterCountdown(void);
 void advanceTaskWhenFlagAFE4Bit8Set(void);
 void startResourceLoadWhenFlagAFE4Bit9Set(void);
 void initializeRaceRulesAndCounters(void);

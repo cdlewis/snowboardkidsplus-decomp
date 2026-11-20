@@ -1973,6 +1973,7 @@ addStretchedTextCharacter = 0x8006B38C; // type:func
 
 findSceneEventInsertionPoint = 0x800A5F90; // type:func
 
+finishRaceExitAfterCountdown = 0x8001D100; // type:func
 startThreeFrameScreenBlend = 0x8001D4C8; // type:func
 
 capturePaletteForColorCycle = 0x80069DC8; // type:func
@@ -2452,6 +2453,7 @@ configureFourColumnTaskGridMovement = 0x8009AEC0; // type:func
 
 copyPlayerPaletteRowWithTransition = 0x8009B5A0; // type:func
 gPlayerPaletteTransitionPixels = 0x80131EE8; // size:0x20 defined:true
+D_80120470 = 0x80120470; // size:0x8
 D_801204D4 = 0x801204D4; // size:0x10
 initializeScaledTaskCoordinateResource = 0x80045868; // type:func
 

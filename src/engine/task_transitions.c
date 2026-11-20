@@ -67,6 +67,7 @@ extern s16 D_8013B104 __attribute__((section(".data")));
 extern u8 D_8013AFE2;
 extern u8 D_8013B1AB __attribute__((section(".data")));
 extern u16 D_8013AFE8;
+extern u8 D_80120470[];
 
 
 void func_800131B4(void);
@@ -82,13 +83,15 @@ void func_8001C0DC(void);
 void func_8003DEE0(void);
 void func_8001B858(void);
 s32 func_80014838(TaskCallback callback);
-void func_8001D100(void);
 void advanceTaskWhenFlagAFE4Bit8Set(void);
 void startResourceLoadWhenFlagAFE4Bit9Set(void);
 void func_80015A30(u16 controller);
 void func_8003CAF0(void);
 void func_80040D5C(void);
 void func_8001C9F0(void);
+s16 func_8008C290(s16 characterId, s16 finishPosition);
+void func_8005EBC4(void);
+void func_80069F1C(s32 transitionIndex);
 
 void runMovieAndGameLoop(void) {
     func_800131B4();
@@ -366,7 +369,7 @@ void begin30TickTransitionOnFlag10(void) {
         D_8013AE88->data18 = 30;
         configureTaskStateTransition(2, 0, 30);
         startCdVolumeFade(103, 26, 0, 1);
-        setCurrentTaskCallback(func_8001D100);
+        setCurrentTaskCallback(finishRaceExitAfterCountdown);
     }
 }
 
@@ -463,7 +466,89 @@ void finishTaskTransitionAfterCountdown(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/engine/task_transitions", func_8001D100);
+void finishRaceExitAfterCountdown(void) {
+    RacePlayer *player;
+    GameTask *savedTask;
+    s16 unlockTier;
+    s32 transitionIndex;
+
+    if (D_8013AFD7) {
+        playbackControllerInput(0);
+    }
+    if (D_8013AFD6) {
+        playbackControllerInput(0);
+    }
+    if (--D_8013AE88->data18 == 0) {
+        stopPlayerSound(0);
+        if (!D_8013AFD7 && !D_8013B1AA && !D_8013B1AB && !D_8013AFE2 && D_8013AFCD == 1) {
+            player = &gRacePlayers[0];
+            if (player->unk935 < 3) {
+                unlockTier = func_8008C290(player->characterId, player->unk935);
+                transitionIndex = unlockTier;
+                switch (transitionIndex) {
+                case 1:
+                case 2:
+                case 3:
+                    func_80014930(&gGameTasks[4], func_8005EBC4);
+                    D_8013AE8C->data18 = unlockTier;
+                    D_8013AE88->data18 = 30;
+                    D_8013AE88->data1A = unlockTier;
+                    configureTaskStateTransition(1, 0, D_8013AE88->data18);
+                    D_8013AFE4 |= 0x40;
+                    queueCdCommand(7, 0);
+                    savedTask = D_8013AE88;
+                    D_8013AE88 = D_8013B304;
+                    func_800149E0();
+                    D_8013AE88 = savedTask;
+                    func_80069F1C(transitionIndex - 1);
+                    player->unk0F8 = 8;
+                    setCurrentTaskCallback(startTaskTransitionWhenFlagAEE8Set);
+                    return;
+                case 4:
+                    {
+                        s32 pairedState = D_80120470[0];
+                        if (pairedState == 9) {
+                            updatePairedStateFlag(1);
+                        } else if (pairedState == 8) {
+                            updatePairedStateFlag(0);
+                        }
+                    }
+                    resetStateAndBeginResourceLoadTransition(1);
+                    return;
+                }
+            }
+        }
+
+        D_8013B1AA = 0;
+        resetPendingCdRequests();
+        D_8013AFAA = (D_8013AFAA | 0x1090) & ~0x2000;
+        D_8013AFD6 = 0;
+        D_8013B20C = 0;
+        D_8013AFE4 &= ~0x10;
+        resetPaletteRecords();
+        func_800149E0();
+
+        if (D_8013AFE2 == 2) {
+            if (D_8013AEE4 & 4) {
+                setCurrentTaskCallback(initializeDemoPlaybackTask);
+                return;
+            }
+            D_800EC158[0].x = 0;
+            D_800EC158[0].y = 0;
+            D_800EC158[0].w = D_8013AF7A;
+            D_800EC158[0].h = D_8013AF7C;
+        }
+        if (D_8013AFCD == 2) {
+            startThreeFrameScreenBlend();
+        } else if (D_8013B1AB) {
+            setCurrentTaskCallback(initializeRaceRestartTask);
+        } else {
+            setCurrentTaskCallback(initializeGameOptionViewTask);
+        }
+    } else {
+        func_80040D5C();
+    }
+}
 
 void updateThreeFrameScreenBlend(void) {
     if (--D_8013AE88->data18 == 0) {
@@ -549,7 +634,7 @@ void updateSelectedPlayerPlaybackTask(void) {
         configureTaskStateTransition(2, 0, 30);
         D_8013AEE4 = 0;
         startCdVolumeFade(103, 26, 0, 1);
-        setCurrentTaskCallback(func_8001D100);
+        setCurrentTaskCallback(finishRaceExitAfterCountdown);
     }
 }
 
