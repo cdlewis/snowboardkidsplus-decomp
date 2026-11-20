@@ -2977,7 +2977,10 @@ loadCurrentPlayerModelPose = 0x8009747C; // type:func
 
 moveTaskChildrenWithSpacing = 0x80073950; // type:func
 
+updateRegisteredSelectionPanelTask = 0x80079FE8;
 createValuePanelTask = 0x8007AA58;
+gSelectionPanelCharacterStats = 0x8012F1EC; // size:0x20
+gSelectionPanelLabelOffsets = 0x8012F20C; // size:0xC
 
 setSceneImageEventTask = 0x800A68B4; // type:func
 gSceneImageSectorRanges = 0x80132B98; // size:0x1B0 defined:true

@@ -132,11 +132,19 @@ typedef struct SelectionPanelRecord {
     s16 unk00, selection, previousSelection;
 } SelectionPanelRecord;
 typedef struct SelectionPanelResource {
-    u8 unk00[8];
-    s8 unk08;
-    u8 unk09[0xB];
+    u16 slideX;
+    s16 slideY, speedX, speedY;
+    s8 transitioning;
+    u8 unk09;
+    u8 previousTexture, nextTexture;
+    u8 unk0C[8];
     SelectionPanelRecord *record;
 } SelectionPanelResource;
+
+typedef struct SelectionPanelStatsTable {
+    s8 values[10][3];
+    u8 padding[2];
+} SelectionPanelStatsTable;
 
 typedef struct ValuePanelResource {
     s32 x, y;
@@ -182,6 +190,20 @@ TimedSequenceEntry gSecondaryTaskSequenceEntries[6]
     __attribute__((section(".data.secondary_task_sequence"))) = {
     {0x000C0172, 6}, {0x000C0173, 6}, {0x000C0174, 6},
     {0x000C0175, 6}, {0x000C0176, 6}, {0x000C0177, 6}
+};
+
+SelectionPanelStatsTable gSelectionPanelCharacterStats
+    __attribute__((section(".data.selection_panel_character_stats"), aligned(4))) = {
+    {
+        {4, 4, 4}, {2, 6, 6}, {3, 5, 5}, {5, 3, 3}, {6, 2, 2},
+        {5, 3, 3}, {4, 6, 3}, {6, 2, 3}, {5, 5, 5}, {5, 5, 5}
+    },
+    {0, 0}
+};
+
+u8 gSelectionPanelLabelOffsets[12]
+    __attribute__((section(".data.selection_panel_label_offsets"), aligned(4))) = {
+    8, 8, 16, 8, 8, 8, 0, 12, 0, 8, 0, 0
 };
 
 const u16 gValuePanelLabel[10]
@@ -259,7 +281,7 @@ void func_80078140(void);
 void updatePlayerPanelTask(void);
 void updatePlayerCharacterSelection(s16 playerIndex, SelectionEntry *entries);
 void createRegisteredSelectionPanelTask(s16 playerIndex, SelectionPanelRecord *record, s32 depth, s32 index);
-void func_80079FE8(void);
+void updateRegisteredSelectionPanelTask(void);
 void GsSortBg(GameBackground *background, GsOT *ot, u16 depth);
 void func_8007BE9C(void);
 void updateShrinkingSpriteTask(void);
@@ -2307,13 +2329,13 @@ void createRegisteredSelectionPanelTask(s16 playerIndex, SelectionPanelRecord *r
     SelectionPanelResource *resource;
     ValuePanelEntry *entry;
     s32 player;
-    func_80014874(func_80079FE8);
+    func_80014874(updateRegisteredSelectionPanelTask);
     D_8013AE8C->data1A = playerIndex;
     D_8013AE8C->data1C = depth;
     D_8013AE8C->data1E = index;
     D_8013AE8C->resource14 = allocateTaskResource();
     resource = (SelectionPanelResource *)&D_800D9504[D_8013AE8C->resource14];
-    resource->unk08 = 0;
+    resource->transitioning = 0;
     resource->record = record;
     player = playerIndex;
     if (player < D_8013AFCD) {
@@ -2340,7 +2362,104 @@ void createRegisteredSelectionPanelTask(s16 playerIndex, SelectionPanelRecord *r
     entry->task = D_8013AE8C;
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80079FE8);
+void updateRegisteredSelectionPanelTask(void) {
+    SelectionPanelResource *resource;
+    Movement2D *position;
+    SelectionPanelRecord *record;
+    TaskResourceRecord *slot;
+    GameTask *parent;
+    s16 player;
+    u8 shade;
+
+    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    slot = &D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
+    parent = D_8013AE98;
+    position = (Movement2D *)&D_800D9504[parent->resource14];
+    if ((u16)(D_8013AE88->data1E % 10U) == 0) {
+        if (parent->resource14 == 0xFFFF) { while (1) {} }
+    } else {
+        if (parent->resource16 == 0xFFFF) { while (1) {} }
+    }
+
+    resource = (SelectionPanelResource *)slot;
+    player = D_8013AE88->data1A;
+    record = resource->record;
+    shade = 128;
+    setSpriteColor(shade, shade, shade);
+    if (player >= D_8013AFCD) {
+        setSpriteColor(64, 64, 64);
+        func_8006C998((s16)(position->x / 4096 + 96), (s16)(position->y / 4096),
+                     241 + player * 2, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    } else {
+        if (!resource->transitioning && record->selection != record->previousSelection) {
+            resource->transitioning = 1;
+            resource->slideX = 112;
+            resource->slideY = 0;
+            resource->speedX = -28;
+            resource->speedY = 0;
+            resource->previousTexture = D_8012D460[record->previousSelection];
+            resource->nextTexture = D_8012D460[record->selection];
+            uploadTextureArchiveEntry(576 + player * 128, 256, 768, 238 - player * 2,
+                                      resource->previousTexture);
+            uploadTextureArchiveEntry(640 + player * 128, 256, 768, 237 - player * 2,
+                                      resource->nextTexture);
+        }
+        if (resource->transitioning == 1) {
+            resource->slideX += resource->speedX;
+            resource->slideY += resource->speedY;
+            if (resource->slideX > 112 || resource->slideY < 0 || resource->slideY > 112) {
+                resource->transitioning = 0;
+                record->previousSelection = record->selection;
+                uploadTextureArchiveEntry(576 + player * 128, 256, 768, 238 - player * 2,
+                                          D_8012D460[record->selection]);
+            }
+        }
+
+        func_8006C998((s16)(position->x / 4096 + 112), (s16)(position->y / 4096 + 70),
+                     30, 1, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        func_8006C998((s16)(position->x / 4096 + 112), (s16)(position->y / 4096 + 78),
+                     31, 1, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        func_8006C998((s16)(position->x / 4096 + 112), (s16)(position->y / 4096 + 86),
+                     32, 1, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        if (resource->transitioning == 1) {
+            addDrawAreaPacket(0, 0, 320, 240, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            {
+                s32 slideX = position->x / 4096 - 16;
+                func_8006C998((s16)(slideX + (s32)resource->slideX),
+                             (s16)(position->y / 4096), 241 + player * 2, 0, 0,
+                             &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            }
+            func_8006C998((s16)(resource->slideX + 96 + position->x / 4096),
+                         (s16)(position->y / 4096), 242 + player * 2, 0, 0,
+                         &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            func_8006C998((s16)(position->x / 4096 + 96), (s16)(position->y / 4096),
+                         267, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            addDrawAreaPacket((s16)(position->x / 4096 + 256), (s16)(position->y / 4096 + 120),
+                              112, 96, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        } else {
+            s16 character = D_8012D460[record->selection];
+            const s8 *stats = gSelectionPanelCharacterStats.values[character];
+            s8 labelOffset;
+
+            drawHalfStepSpriteBar((s16)(position->x / 4096 + 168), (s16)(position->y / 4096 + 70),
+                                  stats[0], 5, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            drawHalfStepSpriteBar((s16)(position->x / 4096 + 168), (s16)(position->y / 4096 + 78),
+                                  stats[1], 5, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            drawHalfStepSpriteBar((s16)(position->x / 4096 + 168), (s16)(position->y / 4096 + 86),
+                                  stats[2], 5, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            func_8006C998((s16)(position->x / 4096 + 96), (s16)(position->y / 4096),
+                         241 + player * 2, 0, 0, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            func_8006C998((s16)(position->x / 4096 + 96), (s16)(position->y / 4096),
+                         267, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            labelOffset = gSelectionPanelLabelOffsets[character];
+            func_8006C998((s16)(labelOffset + (s16)(position->x / 4096 + 33)),
+                         (s16)(position->y / 4096 + 3), 254 + character,
+                         (s16)(player + 2), -1,
+                         &D_800EBFF0[D_8013AF78], (u16)(D_8013AE88->data1C - 2));
+        }
+    }
+}
 
 void createValuePanelTask(s16 x, s16 y, s16 *values, s32 depth, s32 index) {
     ValuePanelResource *resource;
