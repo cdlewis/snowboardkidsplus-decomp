@@ -812,6 +812,7 @@ segments:
       - {start: 0x122F8C, type: .data, name: menu/selection_tasks, linker_section: .data.number_selection_sprite_table}
       - {start: 0x122FA0, type: .data, name: text/text_sequence, linker_section: .data.text_sequence_prompt_frames}
       - [0x122FB0, data, 122FB0]
+      - {start: 0x122FC4, type: .data, name: menu/selection_tasks, linker_section: .data.playback_selection_menu_instructions}
       - {start: 0x122FF4, type: .data, name: io/controller_playback, linker_section: .data.controller_playback_entries}
       - {start: 0x12303C, type: .data, name: io/controller_playback, linker_section: .data.controller_playback_durations}
       - [0x123054, data, 123054]

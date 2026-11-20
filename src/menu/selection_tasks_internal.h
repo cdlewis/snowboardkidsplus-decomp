@@ -89,7 +89,7 @@ void initializeNumberSelectionTask(void);
 void completeModeSelectionTransitionWhenReady(void);
 void updateSelectionMenuTask(void);
 void finishSelectionMenuTask(void);
-void func_800A31C0(SelectionMenuState *state);
+void drawPlaybackSelectionMenu(SelectionMenuState *state);
 void initializeModeSectorReadResourcesTask(void);
 void func_800A24EC(void);
 void selectTaskBySelectedRecordMatch(void);

@@ -11,6 +11,7 @@ u8 gSceneOneShotVoice __attribute__((section(".sdata.scene_sound_state"))) = 0;
 
 /* Keep the table definitions after the call sites for address scheduling. */
 extern const NumberSelectionSpriteTable gNumberSelectionSprites;
+extern const u16 gPlaybackSelectionMenuInstructions[];
 extern const u8 gNumberSelectionMapping[];
 extern const u8 gNumberSelectionFinalMapping[];
 
@@ -419,7 +420,7 @@ void updateSelectionMenuTask(void) {
             setCurrentTaskCallback(finishSelectionMenuTask);
         }
     }
-    func_800A31C0(state);
+    drawPlaybackSelectionMenu(state);
     if (state->unk0A) {
         playSoundEffect(0, 0, 0x20);
         D_8013AFD9 = 0;
@@ -461,10 +462,93 @@ void finishSelectionMenuTask(void) {
         }
         return;
     }
-    func_800A31C0(state);
+    drawPlaybackSelectionMenu(state);
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/selection_tasks", func_800A31C0);
+void drawPlaybackSelectionMenu(SelectionMenuState *state) {
+    s16 i;
+    s16 highlight;
+    s16 x;
+
+    if (state->unk08 != 0) {
+        if (state->unk08 & 1) {
+            state->unk04 = 96;
+        } else {
+            state->unk04 = 0;
+        }
+        state->unk08--;
+    } else {
+        state->unk04 += state->unk06;
+        if (state->unk04 < 0) {
+            state->unk04 = 0;
+            state->unk06 = -state->unk06;
+        } else if (state->unk04 > 96) {
+            state->unk04 = 96;
+            state->unk06 = -state->unk06;
+        }
+    }
+
+    setSpriteColor(128, 128, 128);
+    setTexturedQuadColor(128, 128, 128);
+    func_8006EF30(-96, -88, 14, gPlaybackSelectionMenuInstructions, 13, -1, &D_800EBFF0[D_8013AF78], 4);
+    drawDefaultTexturedPanel(-120, -96, 240, 48, 5, 0, &D_800EBFF0[D_8013AF78], 4);
+
+    for (i = 0; i < 5; i++) {
+        highlight = 0;
+        if (state->selection == i) {
+            highlight = state->unk04;
+        }
+        x = i * 48;
+        drawMenuKindSprite(x - 120, -28, i + 1, 1, &D_800EBFF0[D_8013AF78], 4);
+        func_8007240C(x - 122, -30, 36, 36, highlight + 128, highlight + 16, 16,
+                      -1, &D_800EBFF0[D_8013AF78], 4);
+        func_8007240C(x - 114, -22, 36, 36, highlight / 4 + 64, 8, 8,
+                      -1, &D_800EBFF0[D_8013AF78], 4);
+    }
+
+    for (i = 0; i < 6; i++) {
+        highlight = 0;
+        if (state->selection == i + 5) {
+            highlight = state->unk04;
+        }
+        x = i * 48;
+        drawPaletteMappedIcon(x - 144, 28, i + 1, &D_800EBFF0[D_8013AF78], 4);
+        func_8007240C(x - 146, 26, 36, 36, 16, highlight + 16, highlight + 128,
+                      -1, &D_800EBFF0[D_8013AF78], 4);
+        func_8007240C(x - 138, 34, 36, 36, 8, 8, highlight / 4 + 64,
+                      -1, &D_800EBFF0[D_8013AF78], 4);
+    }
+
+    if (state->selection == 11) {
+        highlight = state->unk04 + 32;
+        setSpriteColor((u8)highlight, (u8)highlight, (u8)highlight);
+        func_8006C998(-56, 84, 403, 0, -1, &D_800EBFF0[D_8013AF78], 4);
+        highlight = 0;
+        if (state->unk06 > 0) {
+            state->unk06 = 8;
+        } else {
+            state->unk06 = -8;
+        }
+    } else {
+        highlight = 2;
+        if (state->unk06 > 0) {
+            state->unk06 = 16;
+        } else {
+            state->unk06 = -16;
+        }
+    }
+    setSpriteColor(128, 128, 128);
+    func_8006C998(-56, 84, 402, highlight, -1, &D_800EBFF0[D_8013AF78], 4);
+    func_80070C5C(128, &D_800EBFF0[D_8013AF78], 4);
+    drawFullScreenTexturedBackground();
+}
+
+const u16 gPlaybackSelectionMenuInstructions[]
+    __attribute__((section(".data.playback_selection_menu_instructions"), aligned(4))) = {
+    0x00E7, 0x00E8, 0x0049, 0x002C, 0x00CE, 0x00E3, 0x00C0, 0x00CE,
+    0x0039, 0x800A, 0x015A, 0x0084, 0x0052, 0x0070, 0x00BF, 0x0097,
+    0x009E, 0x00A5, 0x009A, 0x00CB, 0x009D, 0x0094, 0x0033, 0,
+};
 
 const NumberSelectionSpriteTable gNumberSelectionSprites
     __attribute__((section(".data.number_selection_sprite_table"), aligned(4))) = {

@@ -2769,6 +2769,7 @@ drawFirstPlayerResultCounterAndIcon = 0x80035FAC; // type:func
 initializeSelectionMenuTask = 0x800A2C74; // type:func
 updateSelectionMenuTask = 0x800A2D68; // type:func
 finishSelectionMenuTask = 0x800A3028; // type:func
+drawPlaybackSelectionMenu = 0x800A31C0; // type:func
 D_8013B560 = 0x8013B560; // size:0x2
 
 updateCurrentPlayerAndResetState = 0x800204D8; // type:func
@@ -2808,6 +2809,7 @@ initializeModeRaceTasks = 0x800A1F50; // type:func
 advanceTaskAtModeCoursePosition = 0x800A2210; // type:func
 D_8013B55E = 0x8013B55E; // size:0x1
 gNumberSelectionSprites = 0x8013278C; // size:0x14 defined:true
+gPlaybackSelectionMenuInstructions = 0x801327C4; // size:0x30 defined:true
 gNumberSelectionMapping = 0x8013B558; // size:0x4 defined:true
 gNumberSelectionFinalMapping = 0x8013B55C; // size:0x2 defined:true
 
