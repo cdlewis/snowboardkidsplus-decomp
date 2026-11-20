@@ -127,6 +127,7 @@ UNIT_CCFLAGS_src/unclassified/menu_8007CC78.c += --rdata-section=updatePlayerGro
 UNIT_CCFLAGS_src/unclassified/menu_8007CC78.c += --rdata-section=updateMemoryCardSlotTask:.rodata.memory_card_slot_task
 UNIT_CCFLAGS_src/unclassified/menu_8007CC78.c += --rdata-section=updateSaveRecordTask:.rodata.save_record_task
 UNIT_REORDER_src/menu/save_record_tasks.c := 0
+UNIT_CCFLAGS_src/menu/panel_tasks.c += --rdata-section=updateGroupedSelectionBoundsTask:.rodata.grouped_selection_bounds
 
 GCC272_G0_REORDER_PAD_UNITS := \
     src/syslib/libcard/card.c \

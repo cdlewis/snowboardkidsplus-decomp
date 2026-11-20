@@ -11,6 +11,7 @@ typedef struct MenuSelectionState {
 
 extern MenuSelectionState D_801300AC[2];
 
+s16 func_8007E8CC(const u8 *mapping, s16 index);
 void createPlayerGroupedSelectionTask(s32 player, s32 index);
 extern RECT D_801300B8[4];
 

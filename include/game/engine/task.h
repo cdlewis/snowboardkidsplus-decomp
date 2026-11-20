@@ -257,6 +257,7 @@ void initializeMode1RacePlayers(void);
 void initializeModeRaceTasks(void);
 void queueRaceStartupResourcesTask(void);
 
+void func_80081AC8(s32 index, GameTask *task, s32 x, s32 y, s32 stepX, s32 stepY, s32 delay);
 void createRegisteredPanelTask(s32 mode, s32 value, s16 x, s16 y, s16 depth, s32 index);
 
 void createRegisteredTextPanelTask(s16 x, s16 y, const u16 **texts,

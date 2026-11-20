@@ -40,6 +40,13 @@
 
 #define INDEXED_SECTOR_READ_DESTINATION DAT_INDEXED_RESOURCE
 
+typedef struct FlagSelectedMenuState {
+    s16 mode;
+    s16 selectedIndex;
+    s16 previousIndex;
+    s16 choiceResult;
+} FlagSelectedMenuState;
+
 typedef struct PaletteBurstResource {
     s16 x, y, z, unk06;
     s16 rotation, unk0A;
@@ -180,7 +187,7 @@ void func_800187B8(u8 voice);
 
 void updateRegisteredDetailedTextPanelTask(void);
 void drawRegisteredTextPanelTask(void);
-void func_8008FA8C(void);
+void updateGroupedSelectionBoundsTask(void);
 void func_8008D200(void);
 void drawCurrentTaskMoneyPanel(void);
 void drawCurrentTaskMoneyPanelWithCharacterSprites(void);

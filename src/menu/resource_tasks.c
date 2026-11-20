@@ -11,13 +11,6 @@ typedef struct MainTailSelectionResource {
     s16 selectedIndex;
 } MainTailSelectionResource;
 
-typedef struct FlagSelectedMenuState {
-    s16 mode;
-    s16 selectedIndex;
-    s16 previousIndex;
-    s16 choiceResult;
-} FlagSelectedMenuState;
-
 extern ByteMappingDescriptor D_801325FC[];
 extern const u8 D_8012D46C[];
 

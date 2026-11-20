@@ -92,7 +92,6 @@ extern u16 gSaveRecordProgressCurrencyLabel[2];
 extern char gSelectionPrizeCurrencyLabel[] __attribute__((section(".data")));
 extern const char gRegisteredTripletUnavailableLabel[];
 
-s16 func_8007E8CC(const u8 *mapping, s16 index);
 void updateRegisteredPlayerModelTask(void);
 void func_80086C34(s32 x, s32 y, s32 destination, s32 source, s32 index);
 
