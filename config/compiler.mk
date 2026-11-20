@@ -124,6 +124,7 @@ UNIT_REORDER_src/menu/task_widgets.c := 0
 UNIT_CCFLAGS_src/menu/task_widgets.c += --rdata-section=cycleSaveRecordUnlockFlags:.rodata.save_record_unlock_flags
 UNIT_REORDER_src/unclassified/menu_8007BE9C.c := 0
 UNIT_REORDER_src/unclassified/menu_8007CC78.c := 0
+UNIT_CCFLAGS_src/unclassified/menu_8007CC78.c += --rdata-section=updateRegisteredPlayerModels:.rodata.registered_player_models
 UNIT_CCFLAGS_src/unclassified/menu_8007CC78.c += --rdata-section=updatePlayerGroupedSelectionMenu:.rodata.grouped_selection_menu
 UNIT_CCFLAGS_src/unclassified/menu_8007CC78.c += --rdata-section=updateMemoryCardSlotTask:.rodata.memory_card_slot_task
 UNIT_CCFLAGS_src/unclassified/menu_8007CC78.c += --rdata-section=updateSaveRecordTask:.rodata.save_record_task

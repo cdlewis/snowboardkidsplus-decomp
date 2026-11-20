@@ -26,6 +26,11 @@ typedef struct MenuPlayerModelPosition {
     s16 z;
 } MenuPlayerModelPosition;
 
+typedef struct MenuModelSelectionPair {
+    s16 selection;
+    s16 previousSelection;
+} MenuModelSelectionPair;
+
 typedef struct ClippedGridSpriteParent {
     u8 unk00[0x44];
     const GridSpriteEntry *sprites;
@@ -88,11 +93,15 @@ StateValueHistory D_8013BE30 __attribute__((section(".bss.state_value_history"))
 extern u8 D_80130094[][5];
 extern u8 D_801300A0[][5];
 extern u8 D_8013B44C[];
+extern MenuModelSelectionPair D_8013B468[];
 extern u16 gSaveRecordProgressCurrencyLabel[2];
 extern char gSelectionPrizeCurrencyLabel[] __attribute__((section(".data")));
 extern const char gRegisteredTripletUnavailableLabel[];
 
 void updateRegisteredPlayerModelTask(void);
+void transitionRegisteredPlayerModels(void);
+void transitionRegisteredPlayerModelsUp(void);
+void func_80083C3C(void);
 void func_80086C34(s32 x, s32 y, s32 destination, s32 source, s32 index);
 
 INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_8007CC78);
@@ -695,7 +704,105 @@ void createRegisteredPanelTask(s32 mode, s32 value, s16 x, s16 y, s16 depth, s32
 
 INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_800815D0);
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_800816D8);
+static inline RegisteredTaskEntry *getRegisteredMenuTaskEntry(u16 resource, u32 index) {
+    RegisteredTaskEntry *entries = (RegisteredTaskEntry *)&D_800D9504[resource];
+    return &entries[(u16)(index / 10)];
+}
+
+void updateRegisteredPlayerModels(void) {
+    MenuPlayerModelPosition *position;
+    RegisteredTaskEntry *children;
+    RegisteredTaskEntry *entry;
+    MenuSelectionState *selection;
+    MenuModelSelectionPair *alternateSelection;
+    u16 playerIndex;
+    s16 childCommand;
+
+    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    position = (MenuPlayerModelPosition *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
+    children = (RegisteredTaskEntry *)&D_800D9504[D_8013AE88->resource16];
+    if ((u16)(D_8013AE88->data1E % 10) == 0) {
+        if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
+        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource14, D_8013AE88->data1E);
+    } else {
+        if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
+        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource16, D_8013AE88->data1E);
+    }
+    if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
+    selection = &D_801300AC[(s16)D_8013AE88->data18];
+    playerIndex = D_8013AE88->data18;
+    alternateSelection = &D_8013B468[(s16)D_8013AE88->data18];
+
+    switch (entry->command) {
+    case 0:
+        entry->flags = 0;
+        break;
+    case 1:
+        childCommand = 1;
+        goto commandChildren;
+    case 2:
+        childCommand = 3;
+commandChildren:
+        children[0].command = childCommand;
+        children[1].command = childCommand;
+        entry->command = 0;
+        entry->flags = 0;
+        break;
+    case 3:
+        children[0].command = 3;
+        children[1].command = 3;
+        entry->command = 10;
+        entry->flags = 1;
+        break;
+    case 10:
+        setCurrentTaskCallback(updateRegisteredChildBlinkTransition);
+        entry->command = 1;
+        entry->flags = 1;
+        selection->unk04 = 20;
+        break;
+    case 11:
+        if (selection->selection != selection->previousSelection) {
+            setCurrentTaskCallback(transitionRegisteredPlayerModels);
+            entry->command = 1;
+            entry->flags = 1;
+        }
+        break;
+    case 12:
+        if (selection->selection != selection->previousSelection) {
+            setCurrentTaskCallback(transitionRegisteredPlayerModelsUp);
+            entry->command = 1;
+            entry->flags = 1;
+        }
+        break;
+    case 13:
+        if (selection->selection != selection->previousSelection) {
+            u16 slot = D_8013AE88->data1C;
+            Movement2D *movement = (Movement2D *)&D_800D9504[children[slot].task->resource16];
+            reloadTaskPlayerModel(children[slot].task, (s16)(slot + (s16)playerIndex * 2),
+                                  playerIndex, selection->selection,
+                                  movement->x / 4096, movement->y / 4096, position->z);
+            entry->command = 0;
+            entry->flags = 0;
+            selection->previousSelection = selection->selection;
+        }
+        break;
+    case 20:
+        if (alternateSelection->selection != alternateSelection->previousSelection) {
+            setCurrentTaskCallback(func_80083C3C);
+            entry->command = 1;
+            entry->flags = 1;
+        }
+        break;
+    case 99:
+    default:
+        entry->task = 0;
+        func_800149A8();
+        return;
+    }
+    entry->flags |= children[0].flags;
+    entry->flags |= children[1].flags;
+}
 
 INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_80081AC8);
 
@@ -984,11 +1091,6 @@ void reloadTaskPlayerModel(GameTask *task, s16 slot, s16 selection, s16 modelInd
     initMovement2D((Movement2D *)&D_800D9504[task->resource16], x << 12, y << 12);
 }
 
-static inline RegisteredTaskEntry *getRegisteredMenuTaskEntry(u16 resource, u32 index) {
-    RegisteredTaskEntry *entries = (RegisteredTaskEntry *)&D_800D9504[resource];
-    return &entries[(u16)(index / 10)];
-}
-
 void updateRegisteredPlayerModelTask(void) {
     MenuModelResource *model;
     Movement2D *movement;
@@ -1138,9 +1240,9 @@ void transitionRegisteredPlayerModels(void) {
         entry->command = 0;
         entry->flags = 0;
         selection->previousSelection = selection->selection;
-        setCurrentTaskCallback(func_800816D8);
+        setCurrentTaskCallback(updateRegisteredPlayerModels);
     } else {
-        setCurrentTaskCallback(func_800816D8);
+        setCurrentTaskCallback(updateRegisteredPlayerModels);
         entry->command = 0;
         entry->flags = 0;
     }
@@ -1196,9 +1298,9 @@ void transitionRegisteredPlayerModelsUp(void) {
         entry->command = 0;
         entry->flags = 0;
         selection->previousSelection = selection->selection;
-        setCurrentTaskCallback(func_800816D8);
+        setCurrentTaskCallback(updateRegisteredPlayerModels);
     } else {
-        setCurrentTaskCallback(func_800816D8);
+        setCurrentTaskCallback(updateRegisteredPlayerModels);
         entry->command = 0;
         entry->flags = 0;
     }
@@ -1236,7 +1338,7 @@ void updateRegisteredChildBlinkTransition(void) {
             entry->flags = 1;
         }
     } else {
-        setCurrentTaskCallback(func_800816D8);
+        setCurrentTaskCallback(updateRegisteredPlayerModels);
         entry->command = 0;
         entry->flags = 0;
         selection->previousSelection = selection->selection;

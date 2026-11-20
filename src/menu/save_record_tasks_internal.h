@@ -139,7 +139,7 @@ void initializeDualResourceTaskAndResetByteState(void);
 void adjustGroupedIndexForMode(s16 mode, u8 *index);
 void func_8007F630(void);
 void updateRegisteredTripletTask(void);
-void func_800816D8(void);
+void updateRegisteredPlayerModels(void);
 
 void initializeModeDependentDualResourceTask(void);
 void createPaletteRotationTask(s32 x, s32 y, s32 first, s32 last, s32 steps, s32 interval, s32 index);
