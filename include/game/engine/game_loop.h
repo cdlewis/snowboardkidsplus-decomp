@@ -4,7 +4,6 @@
 
 void initializeGameSystems(void);
 void runGameLoop(void);
-extern VECTOR *D_8013AF8C;
 extern SVECTOR *D_8013AF94;
 extern MATRIX *D_8013AF9C;
 extern u8 *D_8013AFA0, *D_8013AFA4;
@@ -17,10 +16,12 @@ extern u32 D_800EC200[8192], D_800F4200[8192], D_800FC200[4096];
 extern u8 D_80100200[2][0x10000];
 
 #ifdef GAME_LOOP_ABSOLUTE_ADDRESSING
+extern VECTOR *D_8013AF8C __attribute__((section(".data")));
 extern u16 D_8013AFAA __attribute__((section(".data")));
 extern u32 *D_8013AF70 __attribute__((section(".data")));
 extern u32 *D_8013AF74 __attribute__((section(".data")));
 #else
+extern VECTOR *D_8013AF8C;
 extern u16 D_8013AFAA;
 extern u32 *D_8013AF70;
 extern u32 *D_8013AF74;

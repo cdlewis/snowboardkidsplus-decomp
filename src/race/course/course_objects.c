@@ -1339,7 +1339,125 @@ void initializeMovingVisualTask(void) {
 
 INCLUDE_ASM("asm/nonmatchings/race/course/course_objects", func_8005D394);
 
-INCLUDE_ASM("asm/nonmatchings/race/course/course_objects", func_8005D828);
+void resolvePlayerRegionCollision(RacePlayer *player, PlayerCollisionRegion *region) {
+    s32 dx, dz;
+    s32 lateral, vertical, correction;
+    s32 localX, localY;
+    s16 height;
+    s32 courseHeight, slopeHeight;
+
+    if (D_8013AFD3) {
+        return;
+    }
+    if (player->unk12C == 0x1D) {
+        player->unk128 |= 0x2000000;
+        D_8013AF90->vx = region->pitch;
+        D_8013AF90->vy = -region->yaw;
+        D_8013AF90->vz = 0;
+        RotMatrixYXZ(D_8013AF90, D_8013AF98);
+        D_8013AF88->vx = player->x - region->endpoints[0].position.x;
+        D_8013AF88->vy = 0;
+        D_8013AF88->vz = player->z - region->endpoints[0].position.z;
+        ApplyMatrixLV(D_8013AF98, D_8013AF88, D_8013AF8C);
+        if (D_8013AF8C->vx != 0) {
+            D_8013AF90->vx = 0;
+            D_8013AF90->vy = region->yaw;
+            D_8013AF90->vz = 0;
+            RotMatrix(D_8013AF90, D_8013AF98);
+            D_8013AF90->vx = -D_8013AF8C->vx;
+            D_8013AF90->vy = 0;
+            D_8013AF90->vz = 0;
+            ApplyMatrix(D_8013AF98, D_8013AF90, D_8013AF88);
+            player->x += D_8013AF88->vx;
+            player->z += D_8013AF88->vz;
+        }
+        D_8013AF90->vx = region->pitch;
+        D_8013AF90->vy = -region->yaw;
+        D_8013AF90->vz = 0;
+        RotMatrixYXZ(D_8013AF90, D_8013AF98);
+        dx = (player->x - region->endpoints[0].position.x) >> 5;
+        dz = (player->z - region->endpoints[0].position.z) >> 5;
+        D_8013AF88->vx = 0;
+        D_8013AF88->vy = 0;
+        D_8013AF88->vz = SquareRoot0(dx * dx + dz * dz) << 5;
+        ApplyMatrixLV(D_8013AF98, D_8013AF88, D_8013AF8C);
+        slopeHeight = D_8013AF8C->vy + 0x3000;
+        player->y = region->endpoints[0].position.y - slopeHeight;
+        courseHeight = player->unk92E;
+        player->worldCoordinate.coord.t[1] = player->y >> 8;
+        if (region->maxHeight < courseHeight) {
+            if (D_8013AFE2 == 0) {
+                playSoundEffect(0, 0x501, 0x40);
+                addPlayerCappedCounters(player->playerIndex, 300);
+                createActivePlayerSlidingNumberTask(300, player->playerIndex);
+            }
+            if (D_8013AFE2 == 1 && D_8013AFE0 == 2) {
+                playSoundEffect(0, 0x501, 0x40);
+                player->trickAttackPointTotal *= 2;
+                func_8003504C(player->playerIndex);
+            }
+            player->unk12C = 0x16;
+        }
+    } else {
+        func_8002C520(&region->endpoints[0].position, 0xC00, 0x4000, player->playerIndex);
+        func_8002C520(&region->endpoints[1].position, 0xC00, 0x4000, player->playerIndex);
+        height = player->unk92E;
+        if (height < region->minHeight || height > region->maxHeight) {
+            return;
+        }
+        D_8013AF90->vx = region->pitch;
+        D_8013AF90->vy = -region->yaw;
+        D_8013AF90->vz = 0;
+        RotMatrixYXZ(D_8013AF90, D_8013AF98);
+        D_8013AF88->vx = player->x - region->endpoints[0].position.x;
+        D_8013AF88->vy = player->y - region->endpoints[0].position.y - 0x2800;
+        D_8013AF88->vz = player->z - region->endpoints[0].position.z;
+        ApplyMatrixLV(D_8013AF98, D_8013AF88, D_8013AF8C);
+        localX = D_8013AF8C->vx;
+        if (localX < -0x1C00 - player->unk0AC || localX > player->unk0AC + 0x1C00) {
+            return;
+        }
+        localY = D_8013AF8C->vy;
+        if (localY > 0) {
+            return;
+        }
+        if (localY < -0x4800) {
+            return;
+        }
+        if ((player->unk128 & 0x201) && !(player->unk128 & 0x2800) &&
+            player->unk062 > 0 && localY < -0x2000 &&
+            localX > -0x1C00 && localX < 0x1C00) {
+            player->unk128 |= 0x2000000;
+            player->unk12C = 0x1D;
+            player->unk138 = region->yaw;
+            player->unk13A = region->pitch;
+            return;
+        }
+        lateral = D_8013AF8C->vx;
+        correction = 0;
+        if (lateral >= 0) {
+            s32 margin = player->unk0AC;
+            if (lateral < margin + 0x1C00) {
+                s32 edgeDistance = lateral - 0x1C00;
+                correction = margin - edgeDistance;
+            }
+        } else if (lateral > -(player->unk0AC + 0x1C00)) {
+            correction = -(player->unk0AC + 0x1C00) - lateral;
+        }
+        if (correction != 0) {
+            D_8013AF90->vx = 0;
+            D_8013AF90->vy = region->yaw;
+            D_8013AF90->vz = 0;
+            RotMatrix(D_8013AF90, D_8013AF98);
+            D_8013AF90->vx = correction;
+            D_8013AF90->vy = 0;
+            D_8013AF90->vz = 0;
+            ApplyMatrix(D_8013AF98, D_8013AF90, D_8013AF88);
+            player->x += D_8013AF88->vx;
+            player->z += D_8013AF88->vz;
+        }
+    }
+}
 
 void updateActivePlayerRegionCollisions(void) {
     u16 i;
@@ -1351,7 +1469,7 @@ void updateActivePlayerRegionCollisions(void) {
         players = gRacePlayers;
         do {
             if (players[i].isActive != 0) {
-                func_8005D828(&players[i], region);
+                resolvePlayerRegionCollision(&players[i], region);
             }
             i++;
         } while (i < 4);

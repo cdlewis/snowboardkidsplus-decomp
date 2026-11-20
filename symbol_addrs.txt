@@ -82,6 +82,7 @@ attenuateSoundVolume = 0x80018358; // type:func
 initializeTaskResourcePair = 0x800903C4; // type:func
 updateCurrentPlayerAndRequestState30 = 0x800266A8; // type:func
 gCurrentPlayerState30TaskPhaseCallbacks = 0x80120A8C; // size:0xC defined:true
+resolvePlayerRegionCollision = 0x8005D828; // type:func
 updateActivePlayerRegionCollisions = 0x8005DD70; // type:func
 findIdentityMappedIndexOrZero = 0x800A046C; // type:func
 initializeSlidingNumberDisplayTask = 0x8003543C; // type:func

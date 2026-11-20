@@ -182,6 +182,7 @@ extern TaskVisualFrame *gCourseVisualFrames;
 void createPlayerSpriteAnimationTask(s32 x, s32 y, s32 player, s32 checkPlayer, u16 alternateLayer);
 void createPlayerNumberDisplayTask(s32 value, s32 showExtraValue, s32 player);
 void createActivePlayerSlidingNumberTask(s32 value, s16 player);
+void func_8003504C(s16 playerIndex);
 void createFallingParticleTask(void);
 void createPositionedEffectTask(s32 x, s32 y, s32 z);
 void createPlayerTrailTask(s32 playerIndex);

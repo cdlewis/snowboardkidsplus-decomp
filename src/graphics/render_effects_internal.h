@@ -170,7 +170,10 @@ typedef struct PlayerTrailResource {
 
 /* Two endpoints, height bounds, and rotation; each record occupies 0x28 bytes. */
 typedef struct PlayerCollisionRegion {
-    VECTOR endpoints[2];
+    struct {
+        Position3D position;
+        s32 pad;
+    } endpoints[2];
     s16 minHeight, maxHeight;
     s16 pitch, yaw;
 } PlayerCollisionRegion;
@@ -947,7 +950,7 @@ void func_8006479C(void);
 void func_800654B4(void);
 void func_80066474(void);
 void func_800689EC(void);
-void func_8005D828(RacePlayer *player, PlayerCollisionRegion *region);
+void resolvePlayerRegionCollision(RacePlayer *player, PlayerCollisionRegion *region);
 void func_8005B460(void);
 void updateInteractionVisualTask(void);
 void updateCourseVisualTask(void);
