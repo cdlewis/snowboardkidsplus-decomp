@@ -50,7 +50,6 @@ u8 D_80100200[2][0x10000] __attribute__((section(".data.render_buffers"))) = {0}
 
 void updateCdVolumeFade(void);
 void func_80013F98(void);
-void func_80016628(void);
 void initializeControllers(void);
 void initializeSoundSystem(s32);
 void func_80049CDC(void);
@@ -136,7 +135,7 @@ void runGameLoop(void) {
         }
         if (!(D_8013AFAA & 0x400)) {
             waitForFrameHcount(0x190U);
-            func_80016628();
+            updatePaletteRecords();
             GsSwapDispBuff();
             GsSortClear(0, 0, 0, &D_800EC018[D_8013AF78]);
             GsSetClip(&D_800EC158[0]);
@@ -145,7 +144,7 @@ void runGameLoop(void) {
         } else {
             if (!((u16)gFrameCounter & 1)) {
                 waitForFrameHcount(0x384U);
-                func_80016628();
+                updatePaletteRecords();
                 GsSwapDispBuff();
                 GsSortClear(0, 0, 0, &D_800EC018[D_8013AF78]);
                 GsSetOffset(((u16)D_8013AF7A >> 1) - ((s16)D_8013AF7E / 2),
@@ -154,7 +153,7 @@ void runGameLoop(void) {
                 GsDrawOt(&D_800EC018[D_8013AF78]);
                 continue;
             }
-            func_80016628();
+            updatePaletteRecords();
             DrawSync(0);
             GsSetOffset(((u16)D_8013AF7A >> 1) - ((s16)D_8013AF7E / 2),
                         (((u16)D_8013AF7C >> 1) + D_8013AF80) - 8);

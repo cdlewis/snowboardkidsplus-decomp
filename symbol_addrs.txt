@@ -1821,6 +1821,7 @@ updateTimedSequence = 0x80077110; // type:func
 releaseSavedImageEntry = 0x80016314; // type:func
 readVram16Pixels = 0x800163E4; // type:func
 requestSavedImageRestore = 0x800165EC; // type:func
+updatePaletteRecords = 0x80016628; // type:func
 gSavedImageEntries = 0x800EA69C; // size:0xA00 defined:true
 
 // Sets bit index + 14 in both state flag words; game-specific meaning is unknown.

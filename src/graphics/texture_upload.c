@@ -186,7 +186,84 @@ void requestSavedImageRestore(u16 index) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/graphics/texture_upload", func_80016628);
+void updatePaletteRecords(void) {
+    u16 i;
+    s16 j;
+
+    for (i = 0; i < 16; i++) {
+        if (gSavedImageEntries[i].flags == 0) {
+            continue;
+        }
+        if (gSavedImageEntries[i].flags & 2) {
+            for (j = 0; j < 16; j++) {
+                gSavedImageEntries[i].transitionPixels[j] = gSavedImageEntries[i].pixels[j];
+            }
+            gSavedImageEntries[i].flags &= ~2;
+        }
+        if (gSavedImageEntries[i].flags & 4) {
+            PaletteRecordColor *color = &gSavedImageEntries[i].color;
+            for (j = 0; j < 16; j++) {
+                s16 source = gSavedImageEntries[i].pixels[j];
+                s32 green = source >> 5;
+                s32 blue = source >> 10;
+                s32 intensity = ((source & 31) + (green & 31) + (blue & 31)) / 3;
+                s16 r, g, b;
+
+                r = intensity;
+                r += color->r;
+                g = intensity + color->g;
+                b = intensity + color->b;
+
+                if (r > 31) {
+                    r = 31;
+                } else if (r < 0) {
+                    r = 0;
+                }
+                if (g > 31) {
+                    g = 31;
+                } else if (g < 0) {
+                    g = 0;
+                }
+                if (b > 31) {
+                    b = 31;
+                } else if (b < 0) {
+                    b = 0;
+                }
+                gSavedImageEntries[i].transitionPixels[j] = r | (g << 5) | (b << 10);
+            }
+            gSavedImageEntries[i].flags = (gSavedImageEntries[i].flags & ~4) | 0x20;
+        }
+        if (gSavedImageEntries[i].flags & 0x18) {
+            PaletteRecordColor *color = &gSavedImageEntries[i].color;
+            if (--color->b == 0) {
+                u16 pixel;
+                color->b = color->unk3;
+                if (gSavedImageEntries[i].flags & 8) {
+                    pixel = gSavedImageEntries[i].transitionPixels[color->g];
+                    for (j = color->g; j > color->r; j--) {
+                        gSavedImageEntries[i].transitionPixels[j] = gSavedImageEntries[i].transitionPixels[j - 1];
+                    }
+                    gSavedImageEntries[i].transitionPixels[color->r] = pixel;
+                } else {
+                    pixel = gSavedImageEntries[i].transitionPixels[color->r];
+                    for (j = color->r; j < color->g; j++) {
+                        gSavedImageEntries[i].transitionPixels[j] = gSavedImageEntries[i].transitionPixels[j + 1];
+                    }
+                    gSavedImageEntries[i].transitionPixels[color->g] = pixel;
+                }
+                LoadImage(&gSavedImageEntries[i].rect, (u32 *)gSavedImageEntries[i].transitionPixels);
+            }
+        }
+        if (gSavedImageEntries[i].flags & 0x20) {
+            gSavedImageEntries[i].flags &= ~0x20;
+            LoadImage(&gSavedImageEntries[i].rect, (u32 *)gSavedImageEntries[i].transitionPixels);
+        }
+        if (gSavedImageEntries[i].flags & 0x40) {
+            gSavedImageEntries[i].flags &= ~0x40;
+            LoadImage(&gSavedImageEntries[i].rect, (u32 *)gSavedImageEntries[i].pixels);
+        }
+    }
+}
 
 void initializePaletteTransition(void) {
     PaletteTransitionState *resource;
