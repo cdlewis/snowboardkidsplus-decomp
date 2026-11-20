@@ -203,7 +203,6 @@ s32 func_80014838(TaskCallback callback);
 void advanceTaskWhenFlagAFE4Bit8Set(void);
 void startResourceLoadWhenFlagAFE4Bit9Set(void);
 void func_80015A30(u16 controller);
-void func_8003CAF0(void);
 void func_8001C9F0(void);
 s16 func_8008C290(s16 characterId, s16 finishPosition);
 void func_8005EBC4(void);
@@ -732,7 +731,7 @@ void updateActiveRaceTask(void) {
             if (!(gRacePlayers[0].unk100[0] | gRacePlayers[1].unk100[0])) {
                 return;
             }
-            func_8003CAF0();
+            updateAttackResultsAndRecords();
             func_80014874(beginTask60TickCountdown);
             if (gRacePlayers[0].unk100[0] < gRacePlayers[1].unk100[0]) {
                 D_8013AE8C->data18 = 0;
@@ -815,7 +814,7 @@ void finishRaceTransitionAfterCountdown(void) {
     if (--D_8013AE88->data18 == 0) {
         D_8013B1A8 = 0;
         D_8013AFE4 |= 8;
-        if (gameOptionPlayerModeGp == 1) func_8003CAF0();
+        if (gameOptionPlayerModeGp == 1) updateAttackResultsAndRecords();
         for (i = 0; i < gameOptionPlayerModeGp; i++) {
             if (gRacePlayers[i].unk935 == 0) {
                 createFallingParticleTask();

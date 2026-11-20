@@ -8,7 +8,9 @@ typedef struct SaveRecord {
     s32 unk_00C[10];
     u8 unk_034[0x10];
     RaceTime lapRecords[10][5];
-    u8 unk_10C[0x40];
+    u8 unk_10C[0x14];
+    RaceTime bestLapSplitTimes[10];
+    u8 unk_148[4];
     RaceTime timeRecords[10][5];
     u8 unk_214[0x14];
     u16 statsRecordValues[10][5];
@@ -109,6 +111,7 @@ typedef char SaveRecord_unk_3F6_OffsetCheck[((unsigned int)&((SaveRecord *)0)->u
 typedef char GlobalFlagStatePrefixSizeCheck[(sizeof(GlobalFlagStatePrefix) == 0x3E8) ? 1 : -1];
 
 typedef char SaveRecord_statsRecordValues_OffsetCheck[((unsigned int)&((SaveRecord *)0)->statsRecordValues == 0x228) ? 1 : -1];
+typedef char SaveRecord_bestLapSplitTimes_OffsetCheck[((unsigned int)&((SaveRecord *)0)->bestLapSplitTimes == 0x120) ? 1 : -1];
 typedef char SaveRecord_statsRecordIcons_OffsetCheck[((unsigned int)&((SaveRecord *)0)->statsRecordIcons == 0x296) ? 1 : -1];
 typedef char SaveRecord_lapRecordIcons_OffsetCheck[((unsigned int)&((SaveRecord *)0)->lapRecordIcons == 0x2CD) ? 1 : -1];
 typedef char SaveRecord_countRecordValues_OffsetCheck[((unsigned int)&((SaveRecord *)0)->countRecordValues == 0x304) ? 1 : -1];

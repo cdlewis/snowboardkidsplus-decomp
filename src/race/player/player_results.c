@@ -1,4 +1,11 @@
+#define RACE_TIME_ABSOLUTE_ADDRESSING
 #include "../race_presentation_internal.h"
+
+#define ATTACK_SAVE_RECORD ((SaveRecord *)&D_8013080C)
+#define FULL_RACE_TIME(time) \
+    ((time).centiseconds + (time).seconds * 25600 + (time).minutes * 1536000)
+#define RECORD_ICON(player) \
+    ((player).characterId + (player).unk015[1] * 16)
 
 s16 compareRaceTimes(const RaceTime *a, const RaceTime *b) {
     s32 first = (a->centiseconds & 0xFF00) + a->seconds * 25600 + a->minutes * 1536000;
@@ -31,7 +38,235 @@ void assignTwoPlayerResultSlots(s16 result) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/player/player_results", func_8003CAF0);
+void updateAttackResultsAndRecords(void) {
+    s16 player;
+    s16 rank;
+    s16 row;
+    s16 comparison;
+    s32 time;
+    s32 recordTime;
+    s32 faster;
+
+    switch (D_8013AFE2) {
+    case 0:
+        break;
+    case 1:
+        if (D_8013AFE0 == 0) {
+            if (D_8013AFCD == 1) {
+                D_8013B190[0] = gRaceElapsedTime;
+                D_8013B1A0[0] = D_8013B18D;
+            } else {
+                comparison = compareRaceTimes(&D_8013B190[0], &D_8013B190[1]);
+                if (comparison > 0) {
+                    D_8013AFE1 = 2;
+                } else if (comparison < 0) {
+                    D_8013AFE1 = 1;
+                } else if (gRacePlayers[0].scoreAttackPointTotal > gRacePlayers[1].scoreAttackPointTotal) {
+                    D_8013AFE1 = 1;
+                } else if (gRacePlayers[0].scoreAttackPointTotal < gRacePlayers[1].scoreAttackPointTotal) {
+                    D_8013AFE1 = 2;
+                } else {
+                    D_8013AFE1 = 3;
+                }
+                assignTwoPlayerResultSlots(D_8013AFE1);
+                if (D_8013B1A0[0]) {
+                    if (!D_8013B1A0[1]) {
+                        D_8013AFE1 = 2;
+                        gRacePlayers[0].unk100[0] += 5;
+                    } else {
+                        D_8013AFE1 = 3;
+                    }
+                } else if (D_8013B1A0[1]) {
+                    D_8013AFE1 = 1;
+                    gRacePlayers[1].unk100[0] += 5;
+                }
+                return;
+            }
+
+            for (player = 0; player < D_8013AFCD; player++) {
+                time = FULL_RACE_TIME(D_8013B190[player]);
+                for (rank = 0; rank < 5; rank++) {
+                    recordTime = FULL_RACE_TIME(ATTACK_SAVE_RECORD->timeRecords[D_8013AFCE][rank]);
+                    faster = time < recordTime;
+                    if (faster) {
+                        break;
+                    }
+                }
+                if (D_8013B1A0[player]) {
+                    rank = 5;
+                }
+                gRacePlayers[player].unk100[0] = rank;
+            }
+            for (player = 0; player < D_8013AFCD; player++) {
+                rank = gRacePlayers[player].unk100[0];
+                if (rank < 5) {
+                    for (row = 3; row >= rank; row--) {
+                        ATTACK_SAVE_RECORD->timeRecords[D_8013AFCE][row + 1] =
+                            ATTACK_SAVE_RECORD->timeRecords[D_8013AFCE][row];
+                        ATTACK_SAVE_RECORD->timeRecordCharacters[D_8013AFCE][row + 1] =
+                            ATTACK_SAVE_RECORD->timeRecordCharacters[D_8013AFCE][row];
+                    }
+                    ATTACK_SAVE_RECORD->timeRecords[D_8013AFCE][rank] = D_8013B190[player];
+                    ATTACK_SAVE_RECORD->timeRecordCharacters[D_8013AFCE][rank] = RECORD_ICON(gRacePlayers[player]);
+                    D_8013AFE1 = 1;
+                } else {
+                    D_8013AFE1 = 2;
+                }
+            }
+        } else if (D_8013AFE0 == 1) {
+            if (D_8013AFCD == 1) {
+                D_8013B1A0[0] = D_8013B18D;
+            } else {
+                if (gRacePlayers[0].scoreAttackPointTotal > gRacePlayers[1].scoreAttackPointTotal) {
+                    D_8013AFE1 = 1;
+                } else if (gRacePlayers[0].scoreAttackPointTotal < gRacePlayers[1].scoreAttackPointTotal) {
+                    D_8013AFE1 = 2;
+                } else {
+                    comparison = compareRaceTimes(&D_8013B190[0], &D_8013B190[1]);
+                    if (comparison > 0) {
+                        D_8013AFE1 = 2;
+                    } else if (comparison < 0) {
+                        D_8013AFE1 = 1;
+                    } else {
+                        D_8013AFE1 = 3;
+                    }
+                }
+                assignTwoPlayerResultSlots(D_8013AFE1);
+                if (D_8013B1A0[0]) {
+                    if (!D_8013B1A0[1]) {
+                        D_8013AFE1 = 2;
+                        gRacePlayers[0].unk100[0] += 5;
+                    } else {
+                        D_8013AFE1 = 3;
+                    }
+                } else if (D_8013B1A0[1]) {
+                    D_8013AFE1 = 1;
+                    gRacePlayers[1].unk100[0] += 5;
+                }
+                return;
+            }
+
+            for (player = 0; player < D_8013AFCD; player++) {
+                for (rank = 0; rank < 5; rank++) {
+                    if (gRacePlayers[player].scoreAttackPointTotal >
+                        ATTACK_SAVE_RECORD->countRecordValues[D_8013AFCE][rank]) {
+                        break;
+                    }
+                }
+                if (D_8013B1A0[player]) {
+                    rank = 5;
+                }
+                gRacePlayers[player].unk100[0] = rank;
+            }
+            for (player = 0; player < D_8013AFCD; player++) {
+                rank = gRacePlayers[player].unk100[0];
+                if (rank < 5) {
+                    for (row = 3; row >= rank; row--) {
+                        ATTACK_SAVE_RECORD->countRecordValues[D_8013AFCE][row + 1] =
+                            ATTACK_SAVE_RECORD->countRecordValues[D_8013AFCE][row];
+                        ATTACK_SAVE_RECORD->countRecordIcons[D_8013AFCE][row + 1] =
+                            ATTACK_SAVE_RECORD->countRecordIcons[D_8013AFCE][row];
+                    }
+                    ATTACK_SAVE_RECORD->countRecordValues[D_8013AFCE][rank] = gRacePlayers[player].scoreAttackPointTotal;
+                    ATTACK_SAVE_RECORD->countRecordIcons[D_8013AFCE][rank] = RECORD_ICON(gRacePlayers[player]);
+                    D_8013AFE1 = 1;
+                } else {
+                    D_8013AFE1 = 2;
+                }
+            }
+        } else if (D_8013AFE0 == 2) {
+            if (D_8013AFCD == 1) {
+                D_8013B1A0[0] = D_8013B18D;
+            } else {
+                if (gRacePlayers[0].trickAttackPointTotal > gRacePlayers[1].trickAttackPointTotal) {
+                    D_8013AFE1 = 1;
+                } else if (gRacePlayers[0].trickAttackPointTotal < gRacePlayers[1].trickAttackPointTotal) {
+                    D_8013AFE1 = 2;
+                } else {
+                    comparison = compareRaceTimes(&D_8013B190[0], &D_8013B190[1]);
+                    if (comparison > 0) {
+                        D_8013AFE1 = 2;
+                    } else if (comparison < 0) {
+                        D_8013AFE1 = 1;
+                    } else {
+                        D_8013AFE1 = 3;
+                    }
+                }
+                assignTwoPlayerResultSlots(D_8013AFE1);
+                if (D_8013B1A0[0]) {
+                    if (D_8013B1A0[1]) {
+                        D_8013AFE1 = 3;
+                    } else {
+                        D_8013AFE1 = 2;
+                        gRacePlayers[0].unk100[0] += 5;
+                    }
+                } else if (D_8013B1A0[1]) {
+                    D_8013AFE1 = 1;
+                    gRacePlayers[1].unk100[0] += 5;
+                }
+                return;
+            }
+
+            for (player = 0; player < D_8013AFCD; player++) {
+                for (rank = 0; rank < 5; rank++) {
+                    if (gRacePlayers[player].trickAttackPointTotal >
+                        ATTACK_SAVE_RECORD->statsRecordValues[D_8013AFCE][rank]) {
+                        break;
+                    }
+                }
+                if (D_8013B1A0[player]) {
+                    rank = 5;
+                }
+                gRacePlayers[player].unk100[0] = rank;
+            }
+            for (player = 0; player < D_8013AFCD; player++) {
+                rank = gRacePlayers[player].unk100[0];
+                if (rank < 5) {
+                    for (row = 3; row >= rank; row--) {
+                        ATTACK_SAVE_RECORD->statsRecordValues[D_8013AFCE][row + 1] =
+                            ATTACK_SAVE_RECORD->statsRecordValues[D_8013AFCE][row];
+                        ATTACK_SAVE_RECORD->statsRecordIcons[D_8013AFCE][row + 1] =
+                            ATTACK_SAVE_RECORD->statsRecordIcons[D_8013AFCE][row];
+                    }
+                    ATTACK_SAVE_RECORD->statsRecordValues[D_8013AFCE][rank] = gRacePlayers[player].trickAttackPointTotal;
+                    ATTACK_SAVE_RECORD->statsRecordIcons[D_8013AFCE][rank] = RECORD_ICON(gRacePlayers[player]);
+                    D_8013AFE1 = 1;
+                } else {
+                    D_8013AFE1 = 2;
+                }
+            }
+        }
+        break;
+    case 2:
+        time = FULL_RACE_TIME(gRaceElapsedTime);
+        for (rank = 0; rank < 5; rank++) {
+            faster = time < FULL_RACE_TIME(ATTACK_SAVE_RECORD->lapRecords[D_8013AFCE][rank]);
+            if (faster) {
+                break;
+            }
+        }
+        gRacePlayers[0].unk100[0] = rank;
+        if (rank < 5) {
+            for (row = 3; row >= rank; row--) {
+                ATTACK_SAVE_RECORD->lapRecords[D_8013AFCE][row + 1] =
+                    ATTACK_SAVE_RECORD->lapRecords[D_8013AFCE][row];
+                ATTACK_SAVE_RECORD->lapRecordIcons[D_8013AFCE][row + 1] =
+                    ATTACK_SAVE_RECORD->lapRecordIcons[D_8013AFCE][row];
+            }
+            ATTACK_SAVE_RECORD->lapRecords[D_8013AFCE][rank] = gRaceElapsedTime;
+            ATTACK_SAVE_RECORD->lapRecordIcons[D_8013AFCE][rank] = RECORD_ICON(gRacePlayers[0]);
+            if (rank == 0) {
+                ATTACK_SAVE_RECORD->bestLapSplitTimes[D_8013AFCE] = D_8013B188;
+            }
+        }
+        if (rank < 5) {
+            D_8013AFE1 = 1;
+        } else {
+            D_8013AFE1 = 2;
+        }
+        break;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/race/player/player_results", func_8003D904);
 

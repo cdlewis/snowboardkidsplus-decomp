@@ -14,8 +14,13 @@ extern RaceTime D_8013B184;
 extern RaceTime D_8013B190[];
 extern RaceTime D_8013B198[];
 extern RaceTime D_80124248[];
+#ifdef RACE_TIME_ABSOLUTE_ADDRESSING
+extern RaceTime gRaceElapsedTime __attribute__((section(".data")));
+extern RaceTime D_8013B188 __attribute__((section(".data")));
+#else
 extern RaceTime gRaceElapsedTime;
 extern RaceTime D_8013B188;
+#endif
 extern RaceTime D_80124050[];
 extern RaceTime D_80124220[];
 

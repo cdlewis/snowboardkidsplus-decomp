@@ -2342,6 +2342,7 @@ createRotatingQuadTrailTask = 0x80069024; // type:func
 advancePlayerSpriteAnimationTask = 0x8003452C; // type:func
 
 assignTwoPlayerResultSlots = 0x8003CA58; // type:func
+updateAttackResultsAndRecords = 0x8003CAF0; // type:func
 
 addGouraudTriangle = 0x8005FC5C; // type:func
 addTexturedTriangle = 0x8005FD5C; // type:func
