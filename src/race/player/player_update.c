@@ -20,7 +20,10 @@
 #include "game/save/save_data.h"
 #include "game/engine/game_options.h"
 #include "game/menu/selected_records.h"
+#include "psx/libapi.h"
+#include "psx/libetc.h"
 #include "psx/libsnd.h"
+#include "psx/scratchpad.h"
 #include "player_update_internal.h"
 #include "game/io/dat_resources.h"
 #include "../race_presentation_internal.h"
@@ -113,6 +116,9 @@ u16 gPlayerCombinedTrickBonuses[10]
     0, 10, 20, 20, 30, 10, 20, 20, 30, 0,
 };
 
+u32 gPlayerTerrainContactSavedStackPointer
+    __attribute__((section(".sdata.player_terrain_contact_saved_stack"))) = 0;
+
 void updateCurrentPlayerMotionEffects(void);
 void initializeScaledTaskCoordinateResource(void);
 void updateCurrentPlayerState24MotionAndScale(void);
@@ -133,7 +139,8 @@ void moveCurrentPlayerForwardUntilState22(void);
 void updateCurrentPlayerState30TaskUntilStopped(void);
 void func_80028680(void);
 void updateCurrentPlayerState12MotionAndTimer(void);
-s16 func_80028234(void);
+void func_80027918(void);
+s16 resolveCurrentPlayerTerrainContact(void);
 s16 func_8002D3C4(s16 value);
 
 TaskCallback gCurrentPlayerTaskPhaseCallbacks[8]
@@ -808,7 +815,7 @@ void updateCurrentPlayerState4MotionAndLanding(void) {
     D_8013B0D8->z += D_8013B0D8->unk064;
     if (!(D_8013B0D8->unk128 & 1)) {
         func_80028680();
-    } else if (func_80028234()) {
+    } else if (resolveCurrentPlayerTerrainContact()) {
         func_8002E5A0(D_8013AE88->data18, 9);
         func_800183FC(D_8013AE88->data18, 1, 0xB01, 0x20);
         createPlayerTripleQuadEffectTask(D_8013AE88->data18);
@@ -885,7 +892,7 @@ void updateCurrentPlayerState23MotionAndTimer(void) {
             player->unk062 = 0x7800;
         }
         D_8013B0D8->y += D_8013B0D8->unk062;
-        func_80028234();
+        resolveCurrentPlayerTerrainContact();
     }
     D_8013B0D8->unk08C -= 1 + countCurrentPlayerInputGroups();
     if (D_8013B0D8->unk08C < 0) {
@@ -918,7 +925,7 @@ void updateCurrentPlayerState24MotionAndScale(void) {
     }
     if (!(D_8013B0D8->unk128 & 1)) {
         func_80028680();
-    } else if ((landed = func_80028234()) != 0) {
+    } else if ((landed = resolveCurrentPlayerTerrainContact()) != 0) {
         func_8002E5A0(D_8013AE88->data18, 9);
         func_800183FC(D_8013AE88->data18, 1, 0xB01, 0x20);
         createPlayerTripleQuadEffectTask(D_8013AE88->data18);
@@ -986,7 +993,7 @@ void updateCurrentPlayerState25MotionAndTimer(void) {
         D_8013B0D8->x += D_8013B0D8->unk060;
         D_8013B0D8->y += D_8013B0D8->unk062;
         D_8013B0D8->z += D_8013B0D8->unk064;
-        if (func_80028234()) {
+        if (resolveCurrentPlayerTerrainContact()) {
             func_8002E5A0(D_8013AE88->data18, 10);
             func_800183FC(D_8013AE88->data18, 1, 0xB01, 0x18);
             createPlayerTripleQuadEffectTask(D_8013AE88->data18);
@@ -1019,7 +1026,7 @@ void updateCurrentPlayerVerticalMotionUntilLanding(void) {
     player->worldCoordinate.coord.t[1] = player->y >> 8;
     player->worldCoordinate.coord.t[2] = player->z >> 8;
     if (player->unk062 > 0) {
-        if (func_80028234() != 0) {
+        if (resolveCurrentPlayerTerrainContact() != 0) {
             D_8013B0D8->unk12C = 12;
             currentPlayerStateCallbacks[12]();
             return;
@@ -1054,7 +1061,7 @@ void updateCurrentPlayerAirborneDragUntilLanding(void) {
     D_8013B0D8->worldCoordinate.coord.t[0] = D_8013B0D8->x >> 8;
     D_8013B0D8->worldCoordinate.coord.t[1] = D_8013B0D8->y >> 8;
     D_8013B0D8->worldCoordinate.coord.t[2] = D_8013B0D8->z >> 8;
-    if (func_80028234() != 0) {
+    if (resolveCurrentPlayerTerrainContact() != 0) {
         D_8013B0D8->unk12C = 8;
         currentPlayerStateCallbacks[8]();
     } else {
@@ -1655,7 +1662,7 @@ void updateCurrentPlayerState11Motion(void) {
     if (!(D_8013B0D8->unk128 & 1)) {
         func_80028680();
     } else {
-        func_80028234();
+        resolveCurrentPlayerTerrainContact();
     }
     updateCurrentPlayerAnimation();
     if (!(D_8013B0D8->unk128 & 1) && (D_8013B0D8->animationFlags & 0x10)) {
@@ -1730,7 +1737,7 @@ void updateCurrentPlayerTimedMotion(void) {
         D_8013B0D8->unk972 = 0;
         D_8013B0D8->unk96C = 0x20;
     } else {
-        func_80028234();
+        resolveCurrentPlayerTerrainContact();
     }
     D_8013B0D8->unk110 = getXZHeading(0, 0, D_8013B0D8->unk060, D_8013B0D8->unk064);
     if (D_8013B0D8->unk128 & 0x400) {
@@ -1801,7 +1808,7 @@ void updateCurrentPlayerState12MotionAndTimer(void) {
         D_8013B0D8->x += D_8013B0D8->unk060;
         D_8013B0D8->y += D_8013B0D8->unk062;
         D_8013B0D8->z += D_8013B0D8->unk064;
-        if (func_80028234()) {
+        if (resolveCurrentPlayerTerrainContact()) {
             func_8002E5A0(D_8013AE88->data18, 9);
             func_800183FC(D_8013AE88->data18, 1, 0xB01, 0x20);
             createPlayerTripleQuadEffectTask(D_8013AE88->data18);
@@ -1815,7 +1822,83 @@ void updateCurrentPlayerState12MotionAndTimer(void) {
 
 INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_80027918);
 
-INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_80028234);
+s16 resolveCurrentPlayerTerrainContact(void) {
+    s32 groundY;
+    s32 probeDistance;
+    s32 dx, dz;
+    s32 forwardY, rearY;
+    s32 y;
+    s16 region;
+    s32 sinYaw, cosYaw;
+
+    gPlayerTerrainContactSavedStackPointer = SetSp((u32)getScratchAddr((sizeof(scratchpad) - sizeof(u32)) / sizeof(u32)));
+    func_80027918();
+    if (func_8002D3C4(1)) {
+        region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8);
+        D_8013B0D8->unk92E = region;
+        D_8013B0D8->worldCoordinate.coord.t[0] = D_8013B0D8->x >> 8;
+        D_8013B0D8->worldCoordinate.coord.t[1] = D_8013B0D8->y >> 8;
+        D_8013B0D8->worldCoordinate.coord.t[2] = D_8013B0D8->z >> 8;
+        SetSp(gPlayerTerrainContactSavedStackPointer);
+        return 0;
+    }
+
+    region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8);
+    D_8013B0D8->unk92E = region;
+    groundY = func_8004A764(region, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8) << 8;
+    if (groundY < D_8013B0D8->y) {
+        copySelectedRecordToCurrentPlayer();
+        D_8013B0D8->unk11E = D_8013B0D8->unk118 = D_8013B0D8->unk116;
+        D_8013B0D8->y = groundY;
+        D_8013B0D8->unk120 = D_8013B0D8->unk11C = D_8013B0D8->unk11A;
+        D_8013B0D8->unk128 &= ~1;
+        D_8013B0D8->worldCoordinate.coord.t[0] = D_8013B0D8->x >> 8;
+        D_8013B0D8->worldCoordinate.coord.t[1] = D_8013B0D8->y >> 8;
+        D_8013B0D8->worldCoordinate.coord.t[2] = D_8013B0D8->z >> 8;
+        SetSp(gPlayerTerrainContactSavedStackPointer);
+        return 1;
+    }
+
+    D_8013B0D8->unk128 |= 1;
+    D_8013B0D8->worldCoordinate.coord.t[0] = (D_8013B0D8->x >> 8) - D_8013B0D8->unk084;
+    D_8013B0D8->worldCoordinate.coord.t[1] = (D_8013B0D8->y >> 8) - D_8013B0D8->unk086;
+    D_8013B0D8->worldCoordinate.coord.t[2] = (D_8013B0D8->z >> 8) - D_8013B0D8->unk088;
+    probeDistance = (rcos((s16)D_8013B0D8->unk112) * 20) / 4096;
+    if (groundY < D_8013B0D8->y + (probeDistance << 8)) {
+        sinYaw = rsin((s16)D_8013B0D8->unk110);
+        cosYaw = rcos((s16)D_8013B0D8->unk110);
+        dx = (sinYaw * probeDistance) / 4096;
+        dz = (cosYaw * probeDistance) / 4096;
+        region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, (D_8013B0D8->x >> 8) + dx, (D_8013B0D8->z >> 8) + dz);
+        forwardY = func_8004A764(region, (D_8013B0D8->x >> 8) + dx, (D_8013B0D8->z >> 8) + dz) << 8;
+        region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, (D_8013B0D8->x >> 8) - dx, (D_8013B0D8->z >> 8) - dz);
+        rearY = func_8004A764(region, (D_8013B0D8->x >> 8) - dx, (D_8013B0D8->z >> 8) - dz) << 8;
+        y = D_8013B0D8->y;
+        if (forwardY < y || rearY < y) {
+            if (forwardY < y && rearY < y) {
+                copySelectedRecordToCurrentPlayer();
+                D_8013B0D8->unk11E = D_8013B0D8->unk118 = D_8013B0D8->unk116;
+                D_8013B0D8->y = y;
+                D_8013B0D8->unk120 = D_8013B0D8->unk11C = D_8013B0D8->unk11A;
+                D_8013B0D8->unk128 &= ~1;
+                SetSp(gPlayerTerrainContactSavedStackPointer);
+                return 1;
+            }
+            if (!(D_8013B0D8->unk128 & 0x2000000)) {
+                s16 pitch;
+                if (forwardY < y) {
+                    pitch = getXZHeading(0, 0, probeDistance, (y - forwardY) >> 8);
+                } else {
+                    pitch = getXZHeading(0, 0, probeDistance, (rearY - y) >> 8);
+                }
+                D_8013B0D8->unk112 = D_8013B0D8->unk0B8 = pitch - 0x400;
+            }
+        }
+    }
+
+    SetSp(gPlayerTerrainContactSavedStackPointer);
+    return 0;
+}
 
 /* Average angles on the 4096-unit circle, taking the shorter arc. */
 s32 averageWrappedAngle(s16 first, u16 second) {

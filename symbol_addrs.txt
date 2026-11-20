@@ -1965,6 +1965,7 @@ getModeFilteredGameOptionFlag2 = 0x8008C568; // type:func
 setStateGridFlag = 0x80095EB4; // type:func
 
 selectTaskCallbackFromModeState = 0x800A09FC; // type:func
+resolveCurrentPlayerTerrainContact = 0x80028234; // type:func
 averageWrappedAngle = 0x80028608; // type:func
 
 addTextCharacter = 0x8006B2E4; // type:func
@@ -3597,3 +3598,4 @@ gMovieFrameHeight = 0x8013AF56; // size:0x2 defined:true
 gCurrentMovieIndex = 0x8013AF60; // size:0x2 defined:true
 gMovieReachedEnd = 0x8013B610; // size:0x1 defined:true
 gMovieStartupFrames = 0x8013B611; // size:0x1 defined:true
+gPlayerTerrainContactSavedStackPointer = 0x8013B618; // type:u32 size:0x4

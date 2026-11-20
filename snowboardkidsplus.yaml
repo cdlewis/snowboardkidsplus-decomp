@@ -988,6 +988,8 @@ segments:
       - [0x12BE0C, data]
       - {start: 0x12BE10, type: .sdata, name: io/movie_stream, linker_section: .sdata.movie_flags, linker_section_order: .data}
       - [0x12BE14, data]
+      - {start: 0x12BE18, type: .sdata, name: race/player/player_update, linker_section: .sdata.player_terrain_contact_saved_stack, linker_section_order: .data}
+      - [0x12BE1C, data]
       - {start: 0x12BE24, type: .sdata, name: race/course/course_geometry, linker_section: .sdata.geometry_edge_projection, linker_section_order: .data}
       - [0x12BE54, data]
       - {start: 0x12BEA4, type: .sdata, name: race/course/course_objects, linker_section: .sdata.object_sort_saved_stack, linker_section_order: .data}
