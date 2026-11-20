@@ -2541,6 +2541,7 @@ waitForStatsScoreCountStartTask = 0x8003B94C; // type:func
 
 initializeResultDisplayTask = 0x80036AB8; // type:func
 
+updateValuePanelTask = 0x8007AC0C; // type:func
 createShrinkingSpriteTask = 0x8007B034; // type:func
 updateShrinkingSpriteTask = 0x8007B10C; // type:func
 gShrinkingSpriteOffsets = 0x8013B3C8; // type:s8 size:0x8
@@ -2563,6 +2564,7 @@ calculateRaceTimeDifference = 0x80043ACC; // type:func
 createMovingLineTask = 0x8004F69C; // type:func
 
 drawTextMessagePanel = 0x8007BD04; // type:func
+gValuePanelLabel = 0x8012F3C8; // size:0x14
 gTextPanelMessage = 0x8012F3DC; // size:0x24
 
 initPlayerCamera = 0x8003DF3C; // type:func

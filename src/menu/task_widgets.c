@@ -184,6 +184,12 @@ TimedSequenceEntry gSecondaryTaskSequenceEntries[6]
     {0x000C0175, 6}, {0x000C0176, 6}, {0x000C0177, 6}
 };
 
+const u16 gValuePanelLabel[10]
+    __attribute__((section(".data.value_panel_label"), aligned(4))) = {
+    0x009C, 0x00BC, 0x00CE, 0x0094, 0x0094, 0x00CE,
+    0x009F, 0x0098, 0x0031, 0
+};
+
 u16 gTextPanelMessage[] __attribute__((section(".data.text_panel_message"))) = {
     0xC00F, 0x0049, 0x0040, 0x0069, 0x004A, 0x0052,
     0x0158, 0x00BF, 0x0096, 0x00B9, 0x00C0, 0x00CE,
@@ -246,7 +252,7 @@ void func_80079FE8(void);
 void GsSortBg(GameBackground *background, GsOT *ot, u16 depth);
 void func_8007BE9C(void);
 void updateShrinkingSpriteTask(void);
-void func_8007AC0C(void);
+void updateValuePanelTask(void);
 void updateAnimatedSpriteTask(void);
 void func_80074448(void);
 void updateRegisteredCallbackTask(void);
@@ -1765,7 +1771,7 @@ void createValuePanelTask(s16 x, s16 y, s16 *values, s32 depth, s32 index) {
     ValuePanelResource *resource;
     ValuePanelEntry *entry;
 
-    func_80014874(func_8007AC0C);
+    func_80014874(updateValuePanelTask);
     D_8013AE8C->data1C = depth;
     D_8013AE8C->data1E = index;
     D_8013AE8C->resource14 = allocateTaskResource();
@@ -1794,7 +1800,83 @@ void createValuePanelTask(s16 x, s16 y, s16 *values, s32 depth, s32 index) {
     entry->task = D_8013AE8C;
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_8007AC0C);
+void updateValuePanelTask(void) {
+    ValuePanelResource *resource;
+    ValuePanelEntry *result;
+    ValuePanelEntry *entry;
+    ValuePanelEntry *entries;
+    s16 *values;
+    s16 panelValues[6];
+    u16 mode;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (ValuePanelResource *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) {
+        while (1) {}
+    }
+    result = (ValuePanelEntry *)&D_800D9504[D_8013AE88->resource16];
+    if ((u16)(D_8013AE88->data1E % 10U) == 0) {
+        if (D_8013AE98->resource14 == 0xFFFF) {
+            while (1) {}
+        }
+        entries = (ValuePanelEntry *)&D_800D9504[D_8013AE98->resource14];
+        entry = &entries[D_8013AE88->data1E / 10U];
+    } else {
+        if (D_8013AE98->resource16 == 0xFFFF) {
+            while (1) {}
+        }
+        entries = (ValuePanelEntry *)&D_800D9504[D_8013AE98->resource16];
+        entry = &entries[D_8013AE88->data1E / 10U];
+    }
+
+    values = resource->values;
+    switch (entry->flags) {
+    case 1:
+        /* The inverted sign bit enables the first option. */
+        mode = (u32)~(s32)values[1] >> 31;
+        if (values[6] >= 0) {
+            mode |= 2;
+        }
+        panelValues[0] = 21;
+        panelValues[1] = 5;
+        panelValues[2] = 22;
+        panelValues[3] = 5;
+        panelValues[4] = 23;
+        panelValues[5] = 5;
+        createRegisteredMovingPanelTask(mode, panelValues, -40, -16, 0, 16,
+                                        -40, 16, D_8013AE88->data1C - 1, 1);
+        entry->flags = 2;
+        entry->active = 1;
+        break;
+    case 2:
+        if (result->active >= 0) {
+            if (result->active != 0) {
+                if (result->flags & 1) {
+                    values[3] = 0;
+                }
+                if (result->flags & 2) {
+                    values[8] = 0;
+                }
+            }
+            entry->flags = 99;
+        }
+        break;
+    case 99:
+    default:
+        entry->active = 0;
+        func_800149A8();
+        return;
+    }
+    setSpriteColor(128, 128, 128);
+    setTexturedQuadColor(128, 128, 128);
+    func_8006EF30((s16)(resource->x / 4096 + 48), (s16)(resource->y / 4096 + 16),
+                   14, gValuePanelLabel, 15, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C - 2);
+    drawDefaultTexturedPanel((s16)(resource->x / 4096), (s16)(resource->y / 4096),
+                             240, 64, 5, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C - 2);
+    func_80070C5C(64, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+}
 
 GameTask *createShrinkingSpriteTask(s16 motionEnabled, u16 spriteIndex) {
     SpriteZoomResource *resource;
