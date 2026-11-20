@@ -3675,3 +3675,5 @@ gRaceComparisonLapTimeLabel = 0x80010B90; // size:0xC defined:true
 gRaceComparisonSpeedFanLabel = 0x80010B9C; // size:0x10 defined:true
 gRaceComparisonHitCountLabel = 0x80010BAC; // size:0xC defined:true
 gRaceComparisonTrickPointLabel = 0x80010BB8; // size:0xC defined:true
+updateOrbitingPlayerVisualTask = 0x80048AA4; // type:func
+sOrbitingPlayerVisualFrames = 0x80124364; // size:0x20 defined:true

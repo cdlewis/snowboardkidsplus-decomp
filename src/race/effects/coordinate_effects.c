@@ -1,4 +1,5 @@
 #include "../race_presentation_internal.h"
+#include "game/engine/random.h"
 
 typedef union CollectionTaskResource {
     TaskVisualResource visual;
@@ -16,6 +17,14 @@ TaskVisualFrame gPlayerParticleHistoryVisualFrames[6]
         {0x90, 0x28, 32, 32, 0xD, 0x3D79},
         {0xB0, 0x28, 32, 32, 0xD, 0x3D79},
         {0xD0, 0x28, 32, 32, 0xD, 0x3D79}
+    };
+
+static TaskVisualFrame sOrbitingPlayerVisualFrames[4]
+    __attribute__((section(".data.orbiting_player_visual_frames"), aligned(4))) = {
+        {0x00, 0x78, 32, 32, 0xD, 0x3CF9},
+        {0x20, 0x78, 32, 32, 0xD, 0x3CF9},
+        {0x40, 0x78, 32, 32, 0xD, 0x3CF9},
+        {0x60, 0x78, 32, 32, 0xD, 0x3CF9}
     };
 
 void drawPlayerFlagTaskVisual(TaskVisualResource *resource) {
@@ -1246,10 +1255,138 @@ void initializeOrbitingPlayerVisualTask(void) {
     func_800183FC(D_8013AE88->data18, 1, 0xE00, 0x20);
     resource->countdown = 0x10;
     D_8013AE88->data1C = 0;
-    setCurrentTaskCallback(func_80048AA4);
+    setCurrentTaskCallback(updateOrbitingPlayerVisualTask);
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/effects/coordinate_effects", func_80048AA4);
+void updateOrbitingPlayerVisualTask(void) {
+    OrbitingPlayerVisualResource *resource;
+    PlayerCamera *cameras;
+    u32 roll;
+    u8 target;
+    u16 cameraIndex;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (OrbitingPlayerVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    if (!D_8013AFD3) {
+        switch (D_8013AE88->data1C) {
+        case 0:
+            resource->offset.y -= 4;
+            resource->r0 += 4;
+            resource->g0 += 4;
+            resource->b0 += 4;
+            if (--resource->countdown == 0) {
+                resource->code &= ~2;
+                resource->countdown = 8;
+                D_8013AE88->data1C++;
+            }
+            break;
+        case 1:
+            if (--resource->countdown == 0) {
+                resource->countdown = 16;
+                D_8013AE88->data1C++;
+            }
+            break;
+        case 2:
+            if (resource->scale > 0) {
+                resource->scale -= 0x180;
+            }
+            if (--resource->countdown == 0) {
+                roll = randomNextMain() & 0xFF;
+                if (roll != 0) {
+                    target = 0;
+                    if (D_8013AFD2 >= 4) {
+                        u32 player = D_8013B0EC[3];
+
+                        if (D_8013AE88->data18 != player) {
+                            target = player;
+                        }
+                    }
+                    if (D_8013AFD2 >= 3) {
+                        u8 *order = D_8013B0EC;
+                        u8 player = order[2];
+
+                        if (D_8013AE88->data18 != player && roll >= 2 &&
+                            !(gRacePlayers[order[2]].unk128 & 0x40)) {
+                            target = player;
+                        }
+                    }
+                    if (D_8013AFD2 >= 2) {
+                        u8 *order = D_8013B0EC;
+                        u8 player = order[1];
+
+                        if (D_8013AE88->data18 != player && roll >= 3 &&
+                            !(gRacePlayers[order[1]].unk128 & 0x40)) {
+                            target = player;
+                        }
+                    }
+                    if (D_8013AFD2 > 0) {
+                        u8 *order = D_8013B0EC;
+                        u8 player = order[0];
+
+                        if (D_8013AE88->data18 != player && roll >= 4 &&
+                            !(gRacePlayers[order[0]].unk128 & 0x40)) {
+                            target = player;
+                        }
+                    }
+                    D_8013AE88->data18 = target & 3;
+                }
+                gRacePlayers[D_8013AE88->data18].unk0FA++;
+                resource->offset.y = -48;
+                resource->radius = 48;
+                resource->r0 = resource->g0 = resource->b0 = 0x60;
+                resource->code |= 2;
+                resource->countdown = 300;
+                resource->unkD0 = 0;
+                func_800183FC(D_8013AE88->data18, 1, 0xE00, 0x20);
+                D_8013AE88->data1C++;
+            }
+            break;
+        case 3:
+            if (resource->countdown < 16) {
+                resource->scale -= 0x180;
+            } else if (resource->scale < 0x1800) {
+                resource->scale += 0x180;
+            }
+            if (resource->unkD0 == 0) {
+                resource->r0 += 4;
+                resource->g0 += 4;
+                resource->b0 += 4;
+                if (resource->r0 >= 0xA0) {
+                    resource->unkD0 = 1;
+                }
+            } else {
+                resource->r0 -= 4;
+                resource->g0 -= 4;
+                resource->b0 -= 4;
+                if (resource->r0 <= 0x60) {
+                    resource->unkD0 = 0;
+                }
+            }
+            resource->angle += 0x60;
+            if (--resource->countdown == 0) {
+                gRacePlayers[D_8013AE88->data18].unk0FA--;
+                func_800149A8();
+                return;
+            }
+            break;
+        }
+        cameraIndex = func_80059254();
+        cameras = D_801241E8;
+        resource->offset.x = rsin(cameras[cameraIndex].yaw + resource->angle) * resource->radius / 4096;
+        resource->offset.z = rcos(cameras[func_80059254()].yaw + resource->angle) * resource->radius / 4096;
+        resource->coordinate.coord.t[0] = gRacePlayers[D_8013AE88->data18].worldCoordinate.coord.t[0] + resource->offset.x;
+        resource->coordinate.coord.t[1] = gRacePlayers[D_8013AE88->data18].worldCoordinate.coord.t[1] + resource->offset.y;
+        resource->coordinate.coord.t[2] = gRacePlayers[D_8013AE88->data18].worldCoordinate.coord.t[2] + resource->offset.z;
+        resource->framePosition += resource->frameStep;
+        if (resource->framePosition >= resource->frameLimit) {
+            resource->framePosition &= 0xFF;
+        }
+    }
+    setTaskVisualFrame((TaskVisualResource *)resource, sOrbitingPlayerVisualFrames, resource->scale);
+    drawCameraFacingTaskVisual((TaskVisualResource *)resource, 1);
+}
 
 void initializeDelayedPlayerRiseEffectTask(void) {
     RisingPlayerEffectResource *resource;

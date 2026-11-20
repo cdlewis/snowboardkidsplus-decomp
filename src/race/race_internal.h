@@ -460,6 +460,7 @@ extern s16 D_8013B10E;
 extern s16 D_8013B0E4;
 extern u16 D_8013B0E6;
 extern s32 D_8013B0E8;
+extern u8 D_8013B0EC[];
 extern TaskVisualFrame gPlayerVisualPairFrame
     __attribute__((section(".data.player_visual_pair_frame"), aligned(4)));
 
@@ -475,7 +476,7 @@ extern u8 D_8013AFE2 __attribute__((section(".data")));
 
 void updateVisualTrailTask(void);
 void func_80031C98(void);
-void func_80048AA4(void);
+void updateOrbitingPlayerVisualTask(void);
 void updatePlayerSideVisualTask(void);
 void updatePlayerParticleHistoryTask(void);
 void initializePlayerVisualHistory(TaskVisualResource *resource, VECTOR *vectors, s32 value, s32 scale);
