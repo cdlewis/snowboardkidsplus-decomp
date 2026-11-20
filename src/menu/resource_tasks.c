@@ -16,6 +16,7 @@ typedef struct Mode11MenuSelection {
     s16 choiceResult;
 } Mode11MenuSelection;
 
+extern ByteMappingDescriptor D_801325FC[];
 extern const GridSpriteEntry gMode11SelectionSprites[];
 extern const u8 gMode11SelectionMapping[];
 
@@ -199,7 +200,53 @@ void drawRegisteredTaskGridSpriteWithNumber(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/resource_tasks", func_8009DEF0);
+void drawMainTailSelectionItemDetails(void) {
+    Movement2D *position;
+    MainTailSelectionResource *selection;
+    s16 index;
+    ByteMappingDescriptor *group;
+    SelectionItemStats *stats;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        for (;;) {}
+    }
+    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE98->resource14 == 0xFFFF) {
+        for (;;) {}
+    }
+    selection = (MainTailSelectionResource *)&D_800D9504[D_8013AE98->resource14];
+    if (D_8013AE88->data1A == 0) {
+        return;
+    }
+    func_8006C998(position->x / 4096 + 8, position->y / 4096 - 22,
+                 0xB3, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    group = &D_801325FC[D_8013AE98->data1A];
+    index = func_8007373C(group->mapping, selection->selectedIndex);
+    if ((u16)index >= 10) {
+        return;
+    }
+    stats = &D_8012FCE4[index];
+    if (stats->price && stats->rating) {
+        func_8006C998(position->x / 4096 + 84, position->y / 4096 + 128,
+                     0xBC, 10, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        drawDecimalNumber8x8(position->x / 4096 + 88, position->y / 4096 + 136,
+                             4, 0, stats->price, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        func_8006C998(position->x / 4096 + 122, position->y / 4096 + 138,
+                     0xBF, 10, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        func_8006C998(position->x / 4096 + 84, position->y / 4096 + 148,
+                     0xBE, 10, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        drawHalfStepSpriteBar(position->x / 4096 + 88, position->y / 4096 + 156,
+                              stats->rating, 5, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    }
+    if (D_8013AE88->data1A == 1) {
+        func_8007240C(position->x / 4096 + 80, position->y / 4096 + 124, 56, 44,
+                      D_8013B3A4, D_8013B3A5, D_8013B3A6, 2,
+                      &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    } else {
+        func_8007240C(position->x / 4096 + 80, position->y / 4096 + 124, 56, 44,
+                      128, 128, 128, 2, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    }
+}
 
 void drawCurrentTaskTimeRecordsPrompt(void) {
     Movement2D *position;

@@ -43,5 +43,11 @@ typedef struct ByteMappingDescriptor {
     u8 unk07[13];
 } ByteMappingDescriptor;
 
+typedef struct SelectionItemStats {
+    u8 rating;
+    u16 price;
+} SelectionItemStats;
+
+extern SelectionItemStats D_8012FCE4[];
 extern ByteMappingDescriptor D_8012FD10[];
 void drawSelectionItemDetails(void);

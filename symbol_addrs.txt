@@ -2557,6 +2557,7 @@ initializeDualResourceTaskAndNotifyParent = 0x8007BDE0; // type:func
 
 initializeMainTailDualResourceTask = 0x8009BCFC; // type:func
 drawMainTailSelectionHeaderAndMoneyPanel = 0x8009C568; // type:func
+drawMainTailSelectionItemDetails = 0x8009DEF0; // type:func
 
 waitForStatsScoreCountStartTask = 0x8003B94C; // type:func
 

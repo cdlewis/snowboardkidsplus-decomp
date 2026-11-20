@@ -42,11 +42,6 @@ typedef struct SaveRecordTaskStatus {
     s16 secondResult;
 } SaveRecordTaskStatus;
 
-typedef struct SelectionItemStats {
-    u8 rating;
-    u16 price;
-} SelectionItemStats;
-
 u16 litObjectDrawAreaDepths[4] __attribute__((section(".data.lit_object_draw_area_depths"))) = {
     0x30, 0x20, 0x50, 0x3E
 };
@@ -89,7 +84,6 @@ const u32 gMemoryCardSlotTaskTablePadding
 
 StateValueHistory D_8013BE30 __attribute__((section(".bss.state_value_history")));
 
-extern SelectionItemStats D_8012FCE4[];
 extern u8 D_80130094[][5];
 extern u8 D_801300A0[][5];
 extern u8 D_8013B44C[];
