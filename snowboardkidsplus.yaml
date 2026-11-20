@@ -113,8 +113,6 @@ segments:
       - {start: 0x14B4, type: .rodata, name: unclassified/graphics_8004D330, linker_section: .rodata.course_model_scale}
       - {start: 0x14C4, type: .rodata, name: unclassified/graphics_800497B8, linker_section: .rodata.no_process_message}
       - [0x14D4, .rodata, race/course/course_objects]
-      - {start: 0x1538, type: .rodata, name: race/course/course_objects, linker_section: .rodata.course_object_jump_table_padding}
-      - [0x153C, rodata]
       - {start: 0x1554, type: .rodata, name: race/effects/player_effects, linker_section: .rodata.race_oscillating_quad_position}
       - [0x1564, .rodata, race/effects/player_effects]
       - {start: 0x1590, type: .rodata, name: race/effects/player_effects, linker_section: .rodata.fading_text_glyph_banks}
@@ -739,8 +737,10 @@ segments:
       - [0x1161DC, data, course_sector_resources_tail]
       - {start: 0x119C7C, type: .data, name: race/course/course_objects, linker_section: .data.pickup_visual_frames}
       - [0x119CAC, data, pickup_visual_frames_tail]
+      - {start: 0x119DA0, type: .data, name: race/course/course_objects, linker_section: .data.placed_object_model_ids}
+      - [0x119DB0, data, course_visual_settings]
       - {start: 0x119EA0, type: .data, name: race/course/course_objects, linker_section: .data.visual_placement_heights}
-      - [0x119EC4, data, visual_placement_heights_tail]
+      - {start: 0x119EC4, type: .data, name: race/course/course_objects, linker_section: .data.placed_object_reward_choices}
       - {start: 0x119F44, type: .data, name: race/course/course_objects, linker_section: .data.proximity_emitter_placements}
       - [0x119F64, data, proximity_emitter_placements_tail]
       - {start: 0x11A164, type: .data, name: race/course/course_objects, linker_section: .data.moving_visual_placements}

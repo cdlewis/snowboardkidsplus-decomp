@@ -1,6 +1,7 @@
 #define GAME_LOOP_ABSOLUTE_ADDRESSING
 #define PLAYER_COLLECTION_ABSOLUTE_ADDRESSING
 #include "game/engine/game_loop.h"
+#include "game/save/save_data.h"
 #include "psx/scratchpad.h"
 #include "psx/libetc.h"
 #include "../../graphics/render_effects_internal.h"
@@ -283,8 +284,26 @@ CourseTriggerRecord *gCourseTriggers[]
     gCourse8Triggers, gCourse9Triggers,
 };
 
-static const u32 sCourseObjectJumpTablePadding
-    __attribute__((section(".rodata.course_object_jump_table_padding"))) = 0;
+u16 gPlacedObjectModelIds[8]
+    __attribute__((section(".data.placed_object_model_ids"))) = {
+    8, 9, 5, 6, 10, 10, 13, 0,
+};
+
+u8 gPlacedObjectEffectChoices[4][16]
+    __attribute__((section(".data.placed_object_reward_choices"), aligned(4))) = {
+    {4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 3, 1, 2},
+    {4, 4, 5, 5, 3, 3, 3, 3, 1, 1, 1, 1, 2, 2, 2, 2},
+    {4, 5, 3, 3, 3, 3, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2},
+    {4, 3, 3, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2},
+};
+
+u8 gPlacedObjectItemChoices[4][16]
+    __attribute__((section(".data.placed_object_reward_choices"), aligned(4))) = {
+    {4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 6, 6, 6, 2, 1},
+    {4, 4, 4, 2, 6, 6, 6, 2, 2, 2, 2, 2, 2, 2, 1, 1},
+    {4, 6, 1, 2, 2, 2, 2, 2, 6, 1, 1, 3, 3, 3, 3, 3},
+    {6, 2, 2, 2, 1, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 5},
+};
 
 void updateCourseObjectTask(void);
 
@@ -1085,10 +1104,142 @@ void initializePlacedObjectTask(void) {
         visual->code = POLY_FT4_CODE;
         setTaskVisualFrame(visual, &gPlacedObjectVisualFrame, 0x1200);
     }
-    setCurrentTaskCallback(func_8005BF00);
+    setCurrentTaskCallback(updatePlacedObjectTask);
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/course/course_objects", func_8005BF00);
+void updatePlacedObjectTask(void) {
+    PlacedObjectResource *resource;
+    PlacedObjectBounceVisual *visual;
+    RacePlayer *player;
+    RacePlayer *buyer;
+    RacePlayer *itemPlayer;
+    RacePlayer *players;
+    u16 model;
+    u16 i;
+    u16 blocked;
+    s32 height;
+    s32 balance;
+    u8 reward;
+    u8 uses;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (PlacedObjectResource *)&D_800D9504[D_8013AE88->resource14];
+    if (isPositionInCameraRange(resource->groundCoordinate.coord.t[0],
+                                resource->groundCoordinate.coord.t[2], (s16)func_80059254())) {
+        if ((u32)(D_8013AE88->data1A - 2) < 2) {
+            if (gRacePlayers[func_80059254()].unk01C >= 100) {
+                if (D_8013AE88->data1A == 2) {
+                    model = 17;
+                } else {
+                    model = 16;
+                }
+                height = resource->groundCoordinate.coord.t[1];
+                D_80129A80[model].coord2 = &resource->coordinate;
+                resource->groundCoordinate.coord.t[1] += -0x100 + (rsin((gFrameCounter & 31) << 7) >> 8);
+                D_8013AF90->vx = 0;
+                D_8013AF90->vy = 0;
+                D_8013AF90->vz = 0;
+                func_8001E3E4(D_8013AF90, &resource->groundCoordinate);
+                func_8001E3E4(&resource->rotation, &resource->coordinate);
+                D_8013AF88->vx = 0x2000;
+                D_8013AF88->vy = 0x2000;
+                D_8013AF88->vz = 0x2000;
+                ScaleMatrix(&resource->coordinate.coord, D_8013AF88);
+                drawTaskObject(model);
+                resource->groundCoordinate.coord.t[1] = height;
+            }
+            if (D_8013AE88->resource16 == 0xFFFF) {
+                while (1) {}
+            }
+            drawCameraFacingTaskVisual((TaskVisualResource *)&D_800D9504[D_8013AE88->resource16], 0);
+        }
+        D_80129A80[gPlacedObjectModelIds[D_8013AE88->data1A]].coord2 = &resource->coordinate;
+        func_8001E3E4(&resource->groundRotation, &resource->groundCoordinate);
+        func_8001E3E4(&resource->rotation, &resource->coordinate);
+        if (D_8013AE88->data1A == 5) {
+            D_8013AF88->vx = 0x3000;
+            D_8013AF88->vy = 0x3000;
+            D_8013AF88->vz = 0x3000;
+            ScaleMatrix(&resource->coordinate.coord, D_8013AF88);
+        }
+        drawTaskObject(gPlacedObjectModelIds[D_8013AE88->data1A]);
+    }
+    if (!D_8013AFD3) {
+        switch (D_8013AE88->data1A) {
+        case 0:
+            resolvePlayerCollisionsWithCylinder(&resource->position, 0x6000, 0x10000, 2);
+            break;
+        case 1:
+            for (i = 0; i < D_8013AFD2; i++) {
+                addPlayerFlagsIfWithinRadius(&resource->position, 0xC00, 4, i);
+            }
+            break;
+        case 2:
+        case 3:
+            blocked = 0;
+            i = 0;
+            players = gRacePlayers;
+            uses = 4;
+        check_player:
+            if (i < D_8013AFD2) {
+                if (isPositionWithinPlayerCollisionRange(&resource->position, 0x2FC0, 0x5C00, (s16)i)) {
+                    buyer = (RacePlayer *)(i * sizeof(*players) + (u32)players);
+                    balance = buyer->unk01C;
+                    blocked = 1;
+                    if (balance < 100) {
+                        if (!buyer->unk008) {
+                            goto next_player;
+                        }
+                        buyer->unk01C = 0;
+                    } else {
+                        buyer->unk01C = balance - 100;
+                    }
+                    func_800183FC(i, 1, 0x901, 0x20);
+                    if (D_8013AE88->data1A == 2) {
+                        player = (RacePlayer *)(i * sizeof(*players) + (u32)players);
+                        reward = gPlacedObjectEffectChoices[player->unk935][randomNextObject(player) & 15];
+                        player->unk940 = 3;
+                        player->unk93F = uses;
+                        player->unk93E = reward;
+                    } else {
+                        itemPlayer = (RacePlayer *)(i * sizeof(*players) + (u32)players);
+                        itemPlayer->heldItem = gPlacedObjectItemChoices[itemPlayer->unk935][randomNextObject(itemPlayer) & 15];
+                        if (D_8013AFD8) {
+                            itemPlayer->heldItem = 1;
+                        }
+                        if (D_8013AFCE == 8 && itemPlayer->unk008 &&
+                            (s8)itemPlayer->heldItem == uses && (u8)randomNextMain()) {
+                            itemPlayer->heldItem = 6;
+                        }
+                        players[i].unk942 = 4;
+                    }
+                    createPositionedEffectTask(resource->position.x, resource->position.y, resource->position.z);
+                    D_8013AE88->data1C = 0;
+                    if (D_8013AE88->resource16 == 0xFFFF) {
+                        while (1) {}
+                    }
+                    visual = (PlacedObjectBounceVisual *)&D_800D9504[D_8013AE88->resource16];
+                    visual->velocity = -0x800;
+                    visual->height = -0x5000;
+                    setCurrentTaskCallback(updatePlacedObjectBounceTask);
+                    return;
+                }
+            next_player:
+                i++;
+                goto check_player;
+            }
+            if (blocked) {
+                resolvePlayerCollisionsWithCylinder(&resource->position, 0x2FC0, 0x5C00, 0x800);
+            }
+            break;
+        case 5:
+            resolvePlayerCollisionsWithCylinder(&resource->position, 0x6800, 0x18000, 2);
+            break;
+        }
+    }
+}
 
 void updatePlacedObjectBounceTask(void) {
     PlacedObjectResource *resource;
@@ -1128,7 +1279,7 @@ void updatePlacedObjectBounceTask(void) {
     }
     visual->coordinate.coord.t[1] = resource->groundCoordinate.coord.t[1] + (visual->height >> 8);
     drawCameraFacingTaskVisual((TaskVisualResource *)visual, 0);
-    if (D_8013AE88->data1C == 4) setCurrentTaskCallback(func_8005BF00);
+    if (D_8013AE88->data1C == 4) setCurrentTaskCallback(updatePlacedObjectTask);
 }
 
 INCLUDE_ASM("asm/nonmatchings/race/course/course_objects", func_8005C7AC);

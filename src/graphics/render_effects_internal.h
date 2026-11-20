@@ -867,7 +867,7 @@ extern VisualPlacement *D_8013B2BC;
 extern u8 D_8013B2B9, D_8013B2BA;
 /* The course lookup base precedes its valid pointer entries in shared frame data. */
 extern TaskVisualFrame *D_80129540[];
-void func_8005BF00(void);
+void updatePlacedObjectTask(void);
 void updatePlacedObjectBounceTask(void);
 void updateOrbitingObstacleTask(void);
 void updatePickupVisualTask(void);
