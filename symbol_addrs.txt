@@ -2110,6 +2110,7 @@ gRightQuadShrinkPacket = 0x8012CB44; // type:POLY_FT4 size:0x28
 isControllerInputSupported = 0x800154D0; // type:func
 
 drawCourseCoinHud = 0x80042DC0; // type:func
+drawSplitScreenCourseCoinHud = 0x80043120; // type:func
 drawPaletteMappedIcon = 0x800403C8; // type:func
 drawScaledPaletteMappedIcon = 0x80040440; // type:func
 

@@ -277,7 +277,56 @@ void drawCourseCoinHud(void) {
     func_8006C998(-136, 64, 420, 14, -1, ot, 1);
 }
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/race_8003EE70", func_80043120);
+void drawSplitScreenCourseCoinHud(s16 player) {
+    GsOT *hudOt = &D_800EBFF0[D_8013AF78];
+    GsOT *timeOt;
+    s32 hudY;
+    s16 timeY;
+    u16 depth;
+    char text[16];
+
+    if (player == 0) {
+        timeOt = &D_800EC018[D_8013AF78];
+        hudY = 0;
+        timeY = 0;
+    } else {
+        timeOt = &D_800EC0B8[D_8013AF78];
+        hudY = 104;
+        timeY = 0;
+    }
+
+    depth = 1;
+    setSpriteColor(128, 128, 128);
+    if (func_8003D904(player)) {
+        if (D_8013B1A0[player]) {
+            func_8006C998(-112, timeY + 39, 398, 5, -1, timeOt, 1);
+        }
+        drawHudDecimalNumber8x16(-112, timeY + 36, 2, 1, D_8013B190[player].minutes, 1, -1, timeOt, 1);
+        drawHudDecimalNumber8x16(-88, timeY + 36, 2, 1, D_8013B190[player].seconds, 1, -1, timeOt, 1);
+        drawHudDecimalNumber8x16(-64, timeY + 36, 2, 1, D_8013B190[player].centiseconds >> 8, 1, -1, timeOt, 1);
+        func_8006C998(-96, timeY + 36, 25, 1, -1, timeOt, 1);
+        func_8006C998(-72, timeY + 36, 24, 1, -1, timeOt, 1);
+        drawLimitedText8x8(-112, timeY + 28, 10, gLapTimeLabel, 5, -1, timeOt, 1);
+        sprintf(text, gLapTimeFormat, D_80124220[D_8013AFCE].minutes,
+                D_80124220[D_8013AFCE].seconds, D_80124220[D_8013AFCE].centiseconds >> 8);
+        drawLimitedText8x8(-112, timeY - 28, 20, text, 7, -1, timeOt, 1);
+        drawLimitedText8x8(-112, timeY - 36, 11, gTargetTimeLabel, 7, -1, timeOt, 1);
+    }
+
+    drawTransformedSpriteByIndex(112, (s16)(hudY - 80), 462, 5, -1, 0x7FFF, 0x7FFF,
+                                 0xC00, 0xC00, 0, hudOt, depth);
+    drawLimitedText8x8(124, hudY - 76, 1, gCourseCoinCountMarker, 6, -1, hudOt, depth);
+    drawHudDecimalNumber8x16(132, hudY - 84, 2, 0,
+                            gRacePlayers[player].collectedCourseCoinMarkerCount, 1, -1, hudOt, depth);
+    drawTransformedSpriteByIndex(135, (s16)(hudY - 24), 423, 3, -1, 0x7FFF, 0x7FFF,
+                                 0x1000, 0x1000, 0, hudOt, depth);
+    drawTransformedSpriteByIndex(120, (s16)(hudY - 24), 420, 14, -1, 0x7FFF, 0x7FFF,
+                                 0x1000, 0x1000, 0, hudOt, depth);
+    if (player == 1) {
+        hudY += 18;
+    }
+    func_8006C998(96, hudY - 121, 417, 12, -1, hudOt, depth);
+}
 
 char gCourseCoinTotalFormat[4] __attribute__((section(".data"), aligned(4))) = "/%d";
 char gCourseCoinCountMarker[2] __attribute__((section(".data"), aligned(4))) = "*";

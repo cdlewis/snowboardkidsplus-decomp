@@ -179,6 +179,7 @@ void updateRaceIntroCameraTask(void);
 void updateCurrentPlayerCameraTarget(void);
 void drawTrickAttackHud(void);
 void drawCourseCoinHud(void);
+void drawSplitScreenCourseCoinHud(s16 player);
 void addFourWordGpuPacket(GpuPacket4 *source, GsOT *ot, u16 depth);
 void addTexturedSpritePacket(TexturedSpritePacket *source, GsOT *ot, u16 depth);
 void drawMenuKindSprite(s16 x, s16 y, s16 kind, s32 frame, GsOT *ot, u16 depth);
