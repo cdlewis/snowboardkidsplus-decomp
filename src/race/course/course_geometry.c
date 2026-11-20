@@ -121,7 +121,145 @@ void reflectVelocityAndEnforceGeometryEdgeDistance(s32 *velocityX, s32 *velocity
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/course/course_geometry", func_8004B044);
+void resolveGeometryBoundaryCollision(s16 index, s32 x, s32 z, s32 radius, s32 mode,
+                                      s32 *displacementX, s32 *displacementZ, s32 *velocityX, s32 *velocityZ) {
+    /* Boundary types are stored as negative neighbor indices. */
+    s8 wallType = -mode;
+    s32 x0, x1, x2, x3;
+    s32 z0, z1, z2, z3;
+    s32 nx, nz, tangent, normal, length, edgeLength;
+
+    D_8013B648 = x;
+    D_8013B650 = z;
+    x0 = D_8013B1EC[((GeometryRegion *)D_8013B1F4)[index].vertices[0] * 3] * 5;
+    x1 = D_8013B1EC[((GeometryRegion *)D_8013B1F4)[index].vertices[1] * 3] * 5;
+    x2 = D_8013B1EC[((GeometryRegion *)D_8013B1F4)[index].vertices[2] * 3] * 5;
+    x3 = D_8013B1EC[((GeometryRegion *)D_8013B1F4)[index].vertices[3] * 3] * 5;
+    z0 = D_8013B1EC[((GeometryRegion *)D_8013B1F4)[index].vertices[0] * 3 + 2] * 5;
+    z1 = D_8013B1EC[((GeometryRegion *)D_8013B1F4)[index].vertices[1] * 3 + 2] * 5;
+    z2 = D_8013B1EC[((GeometryRegion *)D_8013B1F4)[index].vertices[2] * 3 + 2] * 5;
+    z3 = D_8013B1EC[((GeometryRegion *)D_8013B1F4)[index].vertices[3] * 3 + 2] * 5;
+
+    if (((GeometryRegion *)D_8013B1F4)[index].neighbors[0] == wallType) {
+        D_8013B63C = x1 - x0;
+        D_8013B644 = z1 - z0;
+        D_8013B630 = x - x0;
+        D_8013B638 = z - z0;
+        reflectVelocityAndEnforceGeometryEdgeDistance(velocityX, velocityZ, radius);
+    }
+
+    if (((GeometryRegion *)D_8013B1F4)[index].neighbors[1] == wallType) {
+        D_8013B63C = x2 - x3;
+        D_8013B644 = z2 - z3;
+        D_8013B630 = D_8013B648 - x3;
+        D_8013B638 = D_8013B650 - z3;
+        reflectVelocityAndEnforceGeometryEdgeDistance(velocityX, velocityZ, radius);
+    }
+
+    /* Flagged side-edge corners use radial distance beyond the endpoints. */
+    if (((GeometryRegion *)D_8013B1F4)[index].neighbors[2] == wallType) {
+        D_8013B63C = x3 - x1;
+        D_8013B644 = z3 - z1;
+        D_8013B630 = D_8013B648 - x1;
+        D_8013B638 = D_8013B650 - z1;
+        D_8013B62C = SquareRoot0(D_8013B63C * D_8013B63C + D_8013B644 * D_8013B644);
+        nx = (D_8013B644 << 12) / D_8013B62C;
+        nz = (D_8013B63C << 12) / D_8013B62C;
+        D_8013B624 = nx;
+        D_8013B628 = nz;
+        tangent = (nz * D_8013B630 + nx * D_8013B638) / 4096;
+        normal = (-nx * D_8013B630 + nz * D_8013B638) / 4096;
+        edgeLength = (nz * D_8013B63C + nx * D_8013B644) / 4096;
+        if ((((GeometryRegion *)D_8013B1F4)[index].cornerFlags & 2) && tangent < 0) {
+            tangent = D_8013B648 - x1;
+            normal = D_8013B650 - z1;
+            length = SquareRoot0(tangent * tangent + normal * normal);
+            D_8013B62C = length;
+            if (length < -radius) {
+                tangent = tangent * -radius / length;
+                normal = normal * -radius / length;
+                D_8013B648 = tangent + x1;
+                D_8013B650 = normal + z1;
+            }
+        } else if ((((GeometryRegion *)D_8013B1F4)[index].cornerFlags & 8) && edgeLength < tangent) {
+            tangent = D_8013B648 - x3;
+            normal = D_8013B650 - z3;
+            length = SquareRoot0(tangent * tangent + normal * normal);
+            D_8013B62C = length;
+            if (length < -radius) {
+                tangent = tangent * -radius / length;
+                normal = normal * -radius / length;
+                D_8013B648 = tangent + x3;
+                D_8013B650 = normal + z3;
+            }
+        } else if (normal < radius) {
+            s32 velocityTangent, velocityNormal;
+            velocityTangent = (D_8013B628 * *velocityX + D_8013B624 * *velocityZ) / 4096;
+            velocityNormal = (-D_8013B624 * *velocityX + D_8013B628 * *velocityZ) / 4096;
+            if (velocityNormal < 0) {
+                velocityNormal = -velocityNormal;
+                *velocityX = (D_8013B628 * velocityTangent - D_8013B624 * velocityNormal) / 4096;
+                *velocityZ = (D_8013B624 * velocityTangent + D_8013B628 * velocityNormal) / 4096;
+            }
+            D_8013B644 = radius - normal;
+            D_8013B648 += -D_8013B624 * D_8013B644 / 4096;
+            D_8013B650 += D_8013B628 * D_8013B644 / 4096;
+        }
+    }
+
+    if (((GeometryRegion *)D_8013B1F4)[index].neighbors[3] == wallType) {
+        D_8013B63C = x0 - x2;
+        D_8013B644 = z0 - z2;
+        D_8013B630 = D_8013B648 - x2;
+        D_8013B638 = D_8013B650 - z2;
+        D_8013B62C = SquareRoot0(D_8013B63C * D_8013B63C + D_8013B644 * D_8013B644);
+        nx = (D_8013B644 << 12) / D_8013B62C;
+        nz = (D_8013B63C << 12) / D_8013B62C;
+        D_8013B624 = nx;
+        D_8013B628 = nz;
+        tangent = (nz * D_8013B630 + nx * D_8013B638) / 4096;
+        normal = (-nx * D_8013B630 + nz * D_8013B638) / 4096;
+        edgeLength = (nz * D_8013B63C + nx * D_8013B644) / 4096;
+        if ((((GeometryRegion *)D_8013B1F4)[index].cornerFlags & 4) && tangent < 0) {
+            tangent = D_8013B648 - x2;
+            normal = D_8013B650 - z2;
+            length = SquareRoot0(tangent * tangent + normal * normal);
+            D_8013B62C = length;
+            if (length < -radius) {
+                tangent = tangent * -radius / length;
+                normal = normal * -radius / length;
+                D_8013B648 = tangent + x2;
+                D_8013B650 = normal + z2;
+            }
+        } else if ((((GeometryRegion *)D_8013B1F4)[index].cornerFlags & 1) && edgeLength < tangent) {
+            tangent = D_8013B648 - x0;
+            normal = D_8013B650 - z0;
+            length = SquareRoot0(tangent * tangent + normal * normal);
+            D_8013B62C = length;
+            if (length < -radius) {
+                tangent = tangent * -radius / length;
+                normal = normal * -radius / length;
+                D_8013B648 = tangent + x0;
+                D_8013B650 = normal + z0;
+            }
+        } else if (normal < radius) {
+            s32 velocityTangent, velocityNormal;
+            velocityTangent = (D_8013B628 * *velocityX + D_8013B624 * *velocityZ) / 4096;
+            velocityNormal = (-D_8013B624 * *velocityX + D_8013B628 * *velocityZ) / 4096;
+            if (velocityNormal < 0) {
+                velocityNormal = -velocityNormal;
+                *velocityX = (D_8013B628 * velocityTangent - D_8013B624 * velocityNormal) / 4096;
+                *velocityZ = (D_8013B624 * velocityTangent + D_8013B628 * velocityNormal) / 4096;
+            }
+            D_8013B644 = radius - normal;
+            D_8013B648 += -D_8013B624 * D_8013B644 / 4096;
+            D_8013B650 += D_8013B628 * D_8013B644 / 4096;
+        }
+    }
+
+    *displacementX = D_8013B648 - x;
+    *displacementZ = D_8013B650 - z;
+}
 
 INCLUDE_ASM("asm/nonmatchings/race/course/course_geometry", func_8004BC3C);
 

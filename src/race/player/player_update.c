@@ -434,8 +434,6 @@ void moveCurrentPlayerForwardUntilState22(void);
 void updateCurrentPlayerState30TaskUntilStopped(void);
 s32 updateCurrentPlayerGroundContact(void);
 void updateCurrentPlayerState12MotionAndTimer(void);
-void func_8004B044(s16 region, s32 x, s32 z, s32 radius, s32 mode,
-                   s32 *dx, s32 *dz, s32 *responseX, s32 *responseZ);
 s16 resolveCurrentPlayerTerrainContact(void);
 
 TaskCallback gCurrentPlayerTaskPhaseCallbacks[8]
@@ -2479,7 +2477,7 @@ void resolveCurrentPlayerWallContact(void) {
     }
 
     region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8);
-    func_8004B044(region, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8, 18, 2, &dx, &dz, &responseX, &responseZ);
+    resolveGeometryBoundaryCollision(region, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8, 18, 2, &dx, &dz, &responseX, &responseZ);
     if (dx || dz) {
         D_8013B0D8->x += dx << 8;
         D_8013B0D8->z += dz << 8;
@@ -2487,7 +2485,7 @@ void resolveCurrentPlayerWallContact(void) {
     }
 
     radius = (D_8013B0D8->unk128 & 0x7C000) ? 36 : 22;
-    func_8004B044(region, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8, radius, 1, &dx, &dz,
+    resolveGeometryBoundaryCollision(region, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8, radius, 1, &dx, &dz,
                   &D_8013B0D8->unk0EC, &D_8013B0D8->unk0F0);
     if (dx || dz) {
         D_8013B0D8->x += dx << 8;
@@ -2495,7 +2493,7 @@ void resolveCurrentPlayerWallContact(void) {
         D_8013B0D8->unk0E8 |= 1;
         region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8);
     }
-    func_8004B044(region, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8, radius, 3, &dx, &dz,
+    resolveGeometryBoundaryCollision(region, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8, radius, 3, &dx, &dz,
                   &D_8013B0D8->unk0EC, &D_8013B0D8->unk0F0);
     if (dx || dz) {
         D_8013B0D8->x += dx << 8;
@@ -2514,7 +2512,7 @@ void resolveCurrentPlayerWallContact(void) {
             probes[i].vx = D_8013B0D8->x + gPlayerWallProbeOffsets[i] * sine / 4096;
             probes[i].vz = D_8013B0D8->z + gPlayerWallProbeOffsets[i] * cosine / 4096;
             region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, probes[i].vx >> 8, probes[i].vz >> 8);
-            func_8004B044(region, probes[i].vx >> 8, probes[i].vz >> 8, 14, 1, &dx, &dz,
+            resolveGeometryBoundaryCollision(region, probes[i].vx >> 8, probes[i].vz >> 8, 14, 1, &dx, &dz,
                           &D_8013B0D8->unk0EC, &D_8013B0D8->unk0F0);
             if (dx || dz) {
                 adjusted = 1;
@@ -2523,7 +2521,7 @@ void resolveCurrentPlayerWallContact(void) {
                 D_8013B0D8->unk0E8 |= 1;
                 region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, probes[i].vx >> 8, probes[i].vz >> 8);
             }
-            func_8004B044(region, probes[i].vx >> 8, probes[i].vz >> 8, 14, 3, &dx, &dz,
+            resolveGeometryBoundaryCollision(region, probes[i].vx >> 8, probes[i].vz >> 8, 14, 3, &dx, &dz,
                           &D_8013B0D8->unk0EC, &D_8013B0D8->unk0F0);
             if (dx || dz) {
                 probes[i].vx += dx << 8;
@@ -2544,14 +2542,14 @@ void resolveCurrentPlayerWallContact(void) {
                 probes[i].vx = D_8013B0D8->x + gPlayerWallProbeOffsets[i] * sine / 4096;
                 probes[i].vz = D_8013B0D8->z + gPlayerWallProbeOffsets[i] * cosine / 4096;
                 region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, probes[i].vx >> 8, probes[i].vz >> 8);
-                func_8004B044(region, probes[i].vx >> 8, probes[i].vz >> 8, 14, 1, &dx, &dz,
+                resolveGeometryBoundaryCollision(region, probes[i].vx >> 8, probes[i].vz >> 8, 14, 1, &dx, &dz,
                               &D_8013B0D8->unk0EC, &D_8013B0D8->unk0F0);
                 if (dx || dz) {
                     D_8013B0D8->x += dx << 8;
                     D_8013B0D8->z += dz << 8;
                     region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, probes[i].vx >> 8, probes[i].vz >> 8);
                 }
-                func_8004B044(region, probes[i].vx >> 8, probes[i].vz >> 8, 14, 3, &dx, &dz,
+                resolveGeometryBoundaryCollision(region, probes[i].vx >> 8, probes[i].vz >> 8, 14, 3, &dx, &dz,
                               &D_8013B0D8->unk0EC, &D_8013B0D8->unk0F0);
                 if (dx || dz) {
                     D_8013B0D8->x += dx << 8;
