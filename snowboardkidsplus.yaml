@@ -956,6 +956,8 @@ segments:
       - [0x12BB20, data, radial_effect_quads_tail]
       - {start: 0x12BB28, type: .data, name: race/effects/player_effects, linker_section: .data.color_cycle_rects}
       - [0x12BB38, data, color_cycle_rects_tail]
+      - {start: 0x12BB74, type: .sdata, name: race/effects/player_effects, linker_section: .sdata.stretched_text, linker_section_order: .data}
+      - [0x12BB78, data, stretched_text_tail]
       - {start: 0x12BB94, type: .data, name: graphics/sprite_draw, linker_section: .data.digit_sprite_blend_bits}
       - {start: 0x12BB9C, type: .data, name: menu/task_widgets, linker_section: .data.secondary_display_pulse_glyph}
       - [0x12BBA4, data, digit_sprite_blend_bits_tail]

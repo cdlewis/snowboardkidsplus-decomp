@@ -931,7 +931,6 @@ extern GsOT *D_8013B670;
 extern s32 D_8013B69C;
 extern s32 D_8013B660;
 
-extern u16 D_8013B376 __attribute__((section(".sdata")));
 
 void updateProximityEmitterTask(void);
 void func_8005D394(void);
@@ -1003,7 +1002,7 @@ void SetFogNearFar(s32 near, s32 far, s32 h);
 void drawTaskObject(u16 index);
 void updateMovingTaskObject(void);
 void drawDebugText(s32 x, s32 y, const char *format, ...);
-void func_8006B4A0(s32 x, s32 y, const char *format, ...);
+void drawStretchedDebugText(s32 x, s32 y, const char *format, ...);
 void func_8006BEEC(s32 enabled);
 void func_8006C970(s32 enabled);
 void func_80063B58(void);

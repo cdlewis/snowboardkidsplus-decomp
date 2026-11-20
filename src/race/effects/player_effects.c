@@ -1,5 +1,6 @@
 #include "psx/scratchpad.h"
 #include "psx/libetc.h"
+#include "psx/stdarg.h"
 #define RACE_FINISH_ABSOLUTE_ADDRESSING
 #include "../../graphics/render_effects_internal.h"
 #define GAME_LOOP_ABSOLUTE_ADDRESSING
@@ -276,6 +277,9 @@ RECT gWhitePulsePaletteRect
 
 RECT gColorCycleCaptureRect
     __attribute__((section(".data.color_cycle_rects"))) = {944, 240, 8, 1};
+
+u16 gStretchedTextWidth __attribute__((section(".sdata.stretched_text"), aligned(2))) = 8;
+u16 gTextGlyphPalette __attribute__((section(".sdata.stretched_text"), aligned(2))) = 0;
 
 void updatePlayerRenderSnapshots(void) {
     GsCOORDINATE2 coordinate;
@@ -2167,7 +2171,7 @@ void addTextCharacter(s32 x, s32 y, u32 character) {
     sprite->v0 = (character >> 3) & 24;
     setXY0(sprite, x, y);
     sprite->tag = (sizeof(SPRT_8) / sizeof(u32) - 1) << 24;
-    sprite->clut = getClut(0x300, D_8013B376 + 0xF0);
+    sprite->clut = getClut(0x300, gTextGlyphPalette + 0xF0);
     addPrim(D_8013AF6C, sprite);
     GsOUT_PACKET_P = (u32)(sprite + 1);
 }
@@ -2178,7 +2182,7 @@ void addStretchedTextCharacter(s32 x, s32 y, s32 width, u32 character) {
     quad = (POLY_FT4 *)GsOUT_PACKET_P;
     quad->tag = (sizeof(POLY_FT4) / sizeof(u32) - 1) << 24;
     setcode(quad, POLY_FT4_CODE);
-    quad->clut = getClut(768, D_8013B376 + 240);
+    quad->clut = getClut(768, gTextGlyphPalette + 240);
     quad->tpage = getTPage(0, 0, 960, 256);
     setRGB0(quad, 255, 255, 255);
     quad->y0 = y;
@@ -2201,6 +2205,131 @@ void addStretchedTextCharacter(s32 x, s32 y, s32 width, u32 character) {
     GsOUT_PACKET_P = (u32)(quad + 1);
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_8006B4A0);
+/* %w and %p set glyph width and palette. A digit from 1 to 9 sets the numeric field width. */
+void drawStretchedDebugText(s32 x, s32 y, const char *format, ...) {
+    va_list args;
+    u8 character;
+    u8 digits;
+    s32 i;
+    s32 value;
+    u8 byte;
+    u32 digit;
+    const u8 *string;
+    DR_TPAGE *page;
+
+    x = gStretchedTextWidth * x - 160;
+    y = gStretchedTextWidth * y - 120;
+    va_start(args, format);
+
+    while ((character = *format) != 0) {
+        if (character == '%') {
+            format++;
+            digits = 4;
+            if ((u32)((character = *format) - '1') < 9) {
+                digits = character - '0';
+                format++;
+            }
+
+            switch ((u8)*format) {
+            case '%':
+                addStretchedTextCharacter((s16)x, (s16)y, (s16)gStretchedTextWidth, '%');
+                x += gStretchedTextWidth;
+                format++;
+                break;
+            case 'w':
+                format++;
+                gStretchedTextWidth = (s8)*format - '0';
+                format++;
+                break;
+            case 'd':
+                value = va_arg(args, s32);
+                if (value < 0) {
+                    addStretchedTextCharacter((s16)x, (s16)y, (s16)gStretchedTextWidth, '-');
+                    value = -value;
+                }
+                for (i = digits; i > 0; i--) {
+                    digit = value % 10 + '0';
+                    value /= 10;
+                    addStretchedTextCharacter((s16)(x + i * (s16)gStretchedTextWidth), (s16)y,
+                                              (s16)gStretchedTextWidth, (u8)digit);
+                }
+                x += (digits + 1) * (s16)gStretchedTextWidth;
+                format++;
+                break;
+            case 'D':
+                byte = va_arg(args, u8);
+                for (i = digits; i > 0; i--) {
+                    digit = (u32)byte % 10 + '0';
+                    byte = (u32)byte / 10;
+                    addStretchedTextCharacter((s16)(x + i * (s16)gStretchedTextWidth), (s16)y,
+                                              (s16)gStretchedTextWidth, (u8)digit);
+                }
+                x += (digits + 1) * (s16)gStretchedTextWidth;
+                format++;
+                break;
+            case 'x':
+                value = va_arg(args, s32);
+                if (value < 0) {
+                    addStretchedTextCharacter((s16)x, (s16)y, (s16)gStretchedTextWidth, '-');
+                    value = -value;
+                }
+                for (i = digits; i > 0; i--) {
+                    digit = value % 16;
+                    value /= 16;
+                    if (digit < 10) {
+                        addStretchedTextCharacter((s16)(x + i * (s16)gStretchedTextWidth), (s16)y,
+                                                  (s16)gStretchedTextWidth, (u8)(digit + '0'));
+                    } else {
+                        addStretchedTextCharacter((s16)(x + i * (s16)gStretchedTextWidth), (s16)y,
+                                                  (s16)gStretchedTextWidth, (u8)(digit + 'a' - 10));
+                    }
+                }
+                x += (digits + 1) * (s16)gStretchedTextWidth;
+                format++;
+                break;
+            case 'X':
+                byte = va_arg(args, u8);
+                for (i = digits; i > 0; i--) {
+                    digit = byte & 15;
+                    byte >>= 4;
+                    if (digit < 10) {
+                        addStretchedTextCharacter((s16)(x + i * (s16)gStretchedTextWidth), (s16)y,
+                                                  (s16)gStretchedTextWidth, (u8)(digit + '0'));
+                    } else {
+                        addStretchedTextCharacter((s16)(x + i * (s16)gStretchedTextWidth), (s16)y,
+                                                  (s16)gStretchedTextWidth, (u8)(digit + 'a' - 10));
+                    }
+                }
+                x += (digits + 1) * (s16)gStretchedTextWidth;
+                format++;
+                break;
+            case 's':
+                string = va_arg(args, const u8 *);
+                while (*string) {
+                    addStretchedTextCharacter((s16)x, (s16)y, (s16)gStretchedTextWidth, *string);
+                    string++;
+                    x += gStretchedTextWidth;
+                }
+                format++;
+                break;
+            case 'p':
+                format++;
+                gTextGlyphPalette = (s8)*format - '0';
+                format++;
+                break;
+            }
+        } else {
+            addStretchedTextCharacter((s16)x, (s16)y, (s16)gStretchedTextWidth, character);
+            x += gStretchedTextWidth;
+            format++;
+        }
+    }
+    va_end(args);
+
+    page = (DR_TPAGE *)GsOUT_PACKET_P;
+    setDrawTPage(page, 0, 0, getTPage(0, 0, 960, 256));
+    addPrim(D_8013AF6C, page);
+    GsOUT_PACKET_P = (u32)(page + 1);
+}
 
 INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_8006B9EC);

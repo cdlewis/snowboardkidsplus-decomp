@@ -229,6 +229,10 @@ typedef struct DISPENV {
 #define getTPage(tp, abr, x, y) \
     ((((tp) & 3) << 7) | (((abr) & 3) << 5) | (((y) & 0x100) >> 4) | \
      (((x) & 0x3FF) >> 6) | (((y) & 0x200) << 2))
+/* PSY-Q 4.2 LIBGPU.H: one-word draw-mode packet. */
+#define setDrawTPage(p, dfe, dtd, tpage) \
+    (setlen(p, 1), (p)->code[0] = (0xE1000000u | ((dtd) ? 0x0200 : 0) | \
+                                  ((dfe) ? 0x0400 : 0) | ((tpage) & 0x9FF)))
 #define getClut(x, y) (((y) << 6) | (((x) >> 4) & 0x3F))
 
 u16 GetTPage(s32 tp, s32 abr, s32 x, s32 y);

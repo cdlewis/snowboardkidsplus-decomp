@@ -120,9 +120,9 @@ void adjustDebugPositionAndDisplay(VECTOR *position) {
     if (D_8013AEEC[1] & 0x2000) position->vz -= 32;
     if (D_8013AEEC[1] & 8) position->vy += 32;
     if (D_8013AEEC[1] & 2) position->vy -= 32;
-    func_8006B4A0(0, 10, debugPositionXFormatAbsolute, position->vx);
-    func_8006B4A0(0, 11, debugPositionYFormatAbsolute, position->vy);
-    func_8006B4A0(0, 12, debugPositionZFormatAbsolute, position->vz);
+    drawStretchedDebugText(0, 10, debugPositionXFormatAbsolute, position->vx);
+    drawStretchedDebugText(0, 11, debugPositionYFormatAbsolute, position->vy);
+    drawStretchedDebugText(0, 12, debugPositionZFormatAbsolute, position->vz);
 }
 
 INCLUDE_ASM("asm/nonmatchings/unclassified/graphics_8004D330", func_8004D93C);
