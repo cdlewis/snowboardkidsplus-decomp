@@ -13,6 +13,8 @@ typedef struct ValuePanelEntry {
     s16 active;
 } ValuePanelEntry;
 
+extern const TimedSequenceEntry D_80123840[];
+
 void createInputTimedSpriteTask(s32 x, s32 y, const TimedSequenceEntry *entries, s32 count,
                                 s32 controllers, u32 acceptMask, u32 cancelMask, s32 depth, s32 index);
 

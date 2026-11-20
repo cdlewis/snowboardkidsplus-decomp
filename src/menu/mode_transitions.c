@@ -2,7 +2,6 @@
 #include "game/menu/selected_sprite.h"
 #include "game/menu/task_widgets.h"
 
-extern const TimedSequenceEntry D_80123840[];
 extern const u8 D_80123B50[];
 extern const u8 D_8013B0FC[];
 extern TexturedQuadListEntry D_80123850[];

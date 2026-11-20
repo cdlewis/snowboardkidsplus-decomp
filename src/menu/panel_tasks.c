@@ -218,7 +218,6 @@ POLY_F3 gNumberAdjustmentArrow __attribute__((section(".data.number_adjustment_a
 
 extern void func_8008C708(s16 x, s16 y, s16 textX, s16 textY,
                          const u16 *text, s32 mode, s32 depth, s32 index);
-extern const TimedSequenceEntry D_80123840[];
 
 INCLUDE_ASM("asm/nonmatchings/menu/panel_tasks", func_8008C708);
 

@@ -3,6 +3,7 @@
 #define MUSIC_STATE_ABSOLUTE_ADDRESSING
 #include "panel_tasks_internal.h"
 #include "game/menu/selected_sprite.h"
+#include "game/menu/task_widgets.h"
 #include "game/engine/system_runtime.h"
 
 typedef struct MainTailSelectionResource {
@@ -575,10 +576,171 @@ void initializeModeDependentTailResourcePairTask(void) {
         while (1) {}
     }
     D_8013AE88->resource16 = allocateTaskResource();
-    setCurrentTaskCallback(func_8009F9B8);
+    setCurrentTaskCallback(updateLapRecordsMenuTask);
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/resource_tasks", func_8009F9B8);
+void updateLapRecordsMenuTask(void) {
+    FlagSelectedMenuState *parentSelection;
+    MainTailSelectionResource *selection;
+    RegisteredTaskEntry *parentEntries;
+    RegisteredTaskEntry *entries;
+    GameTask *parent;
+    GameTask *task;
+    s32 complete;
+    s16 panelValues[6];
+    u16 parentNextState;
+    GameTask *transitionTask;
+    GameTask *resumeTask;
+
+    if (D_8013AE98->resource14 == 0xFFFF) {
+        for (;;) {}
+    }
+    parent = D_8013AE98;
+    parentSelection = (FlagSelectedMenuState *)&D_800D9504[parent->resource14];
+    if (parent->resource16 == 0xFFFF) {
+        for (;;) {}
+    }
+    parentEntries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource16];
+    task = D_8013AE88;
+    if (task->resource14 == 0xFFFF) {
+        for (;;) {}
+    }
+    selection = (MainTailSelectionResource *)&D_800D9504[task->resource14];
+    if (task->resource16 == 0xFFFF) {
+        for (;;) {}
+    }
+    task = D_8013AE88;
+    entries = (RegisteredTaskEntry *)&D_800D9504[task->resource16];
+    selection->selectedIndex = parentSelection->selectedIndex;
+
+    switch (task->data18) {
+    case 0:
+        moveTaskChildrenWithSpacing(2, parentEntries[0].task, -0x134000, -0x60000, 0x1E000, 0x1E000, -1000);
+        D_8013AE88->data18 = 1;
+        break;
+    case 1:
+        if ((s16)parentEntries[0].flags == 0) {
+            parentEntries[0].command = 23;
+            configureTaskGridMovement(1, parentEntries[0].task, -0x80000, -0x60000, 0x1E000, 0x1E000, 0);
+            D_8013AE88->data18 = 2;
+        }
+        break;
+    case 2:
+        if ((s16)parentEntries[0].flags == 0) {
+            createRegisteredCallbackTask(0, -340, -128, drawCurrentTaskLapRecordsPrompt, 3, 1);
+            D_8013AE88->data18 = 3;
+        }
+        break;
+    case 3:
+        if ((s16)entries[0].flags == 0) {
+            configureMovement2D((Movement2D *)&D_800D9504[entries[0].task->resource14],
+                                -0xA0000, -0x80000, 0x1E000, 0x1E000, 0);
+            D_8013AE88->data18 = 4;
+        }
+        break;
+    case 4:
+        if ((s16)entries[0].flags == 0) {
+            createInputTimedSpriteTask(-36, 36, D_80123840, 2, D_8013AE88->data1A, 0xB0, 0x40, 3, 11);
+            entries[0].command = 20;
+            configureColorCycleTask(1, 0, 128, 8, 0);
+            transitionTask = D_8013AE88;
+            D_8013B41F = 0;
+            transitionTask->data18 = 5;
+        }
+        break;
+    case 5:
+        complete = isTaskResourceTransitionComplete(0);
+        if (complete == 1 && D_8013B41F == 0) {
+            entries[0].command = 22;
+            configureColorCycleTask(2, 64, 128, 4, 0);
+            D_8013B41F = complete;
+        }
+        if ((s16)entries[1].flags <= 0) {
+            if (D_8013B41F == 0) {
+                entries[0].command = 22;
+                D_8013B41F = 1;
+            }
+            if ((s16)entries[1].flags >= 0) {
+                panelValues[0] = 21;
+                panelValues[1] = 5;
+                panelValues[2] = 22;
+                panelValues[3] = 5;
+                panelValues[4] = 23;
+                panelValues[5] = 5;
+                createRegisteredMovingPanelTask(D_8013AE88->data1A, panelValues, -116, 24, 0, 16, -116, 56, 5, 21);
+                D_8013AE88->data18 = 6;
+            } else {
+                D_8013AE88->data18 = 11;
+            }
+        }
+        break;
+    case 6:
+        if ((s16)entries[2].flags >= 0) {
+            if ((s16)entries[2].flags == 0) {
+                D_8013AE88->data18 = 7;
+            } else {
+                D_8013AE88->data18 = 11;
+            }
+        }
+        break;
+    case 11:
+        configureMovement2D((Movement2D *)&D_800D9504[entries[0].task->resource14],
+                            -0x154000, -0x80000, 0x1E000, 0x1E000, -1000);
+        D_8013AE88->data18 = 12;
+        break;
+    case 12:
+        if ((s16)entries[0].flags == 0) {
+            moveTaskChildrenWithSpacing(1, parentEntries[0].task, -0x80000, -0x60000, 0x1E000, 0x1E000, 0);
+            D_8013AE88->data18 = 13;
+        }
+        break;
+    case 13:
+        if ((s16)parentEntries[0].flags == 0) {
+            moveTaskChildrenWithSpacing(2, parentEntries[0].task, -0x80000, -0x60000, 0x1E000, 0x1E000, 0);
+            D_8013AE88->data18 = 14;
+        }
+        break;
+    case 14:
+        if ((s16)parentEntries[0].flags == 0) {
+            parentEntries[0].command = 20;
+            configureColorCycleTask(1, 0, 128, 8, 0);
+            transitionTask = D_8013AE88;
+            D_8013B41F = 0;
+            transitionTask->data18 = 15;
+        }
+        break;
+    case 15:
+        resumeTask = D_8013AE98;
+        parentNextState = 4;
+        parentSelection->choiceResult = 0;
+        goto finish;
+    case 7:
+        configureMovement2D((Movement2D *)&D_800D9504[entries[0].task->resource14],
+                            -0x154000, -0x80000, 0x1E000, 0x1E000, -1000);
+        configureTaskGridMovement(1, parentEntries[0].task, -0x134000, -0x60000, 0x1E000, 0x1E000, -1000);
+        configureMovement2D((Movement2D *)&D_800D9504[parentEntries[1].task->resource14],
+                            0xAC000, -0x48000, 0x1E000, 0x1E000, -1000);
+        configureMovement2D((Movement2D *)&D_800D9504[parentEntries[2].task->resource14],
+                            0xAC000, -0x48000, 0x1E000, 0x1E000, -1000);
+        D_8013AE88->data18 = 8;
+        break;
+    case 8:
+        if ((s16)entries[0].flags == 0 && (s16)parentEntries[0].flags == 0 &&
+            (s16)parentEntries[1].flags == 0 && (s16)parentEntries[2].flags == 0) {
+            D_8013AE88->data18 = 9;
+        }
+        break;
+    case 9:
+        resumeTask = D_8013AE98;
+        parentNextState = 12;
+    finish:
+        resumeTask->data18 = parentNextState;
+        /* fall through */
+    default:
+        func_800149A8();
+        break;
+    }
+}
 
 void drawCurrentTaskLapRecordsPrompt(void) {
     Movement2D *position;
@@ -630,6 +792,3 @@ s16 findIdentityMappedIndexOrZero(ByteMappingDescriptor *descriptor, s16 value) 
     }
     return result;
 }
-
-const u32 gFlagSelectedMenuJumpTablePadding
-    __attribute__((section(".rodata.flag_selected_menu_jump_table_padding"))) = 0;

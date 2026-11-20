@@ -149,8 +149,6 @@ segments:
       - [0x28D0, rodata]
       - {start: 0x294C, type: .rodata, name: menu/resource_tasks, linker_section: .rodata.lap_records_start_prompt}
       - [0x2964, .rodata, menu/resource_tasks]
-      - {start: 0x29A0, type: .rodata, name: menu/resource_tasks, linker_section: .rodata.flag_selected_menu_jump_table_padding}
-      - [0x29A4, rodata]
       - [0x29E4, .rodata, menu/mode_race_tasks]
       - {start: 0x2A08, type: .rodata, name: menu/mode_race_tasks, linker_section: .rodata.mode11_selection_jump_table_padding}
       - [0x2A0C, .rodata, menu/selection_tasks]

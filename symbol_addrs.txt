@@ -2615,6 +2615,7 @@ initializeUnlockMenuResourceTask = 0x800A3C3C; // type:func
 updateOneShotTaskVisual = 0x80044990; // type:func
 
 initializeModeDependentTailResourcePairTask = 0x8009F900; // type:func
+updateLapRecordsMenuTask = 0x8009F9B8; // type:func
 
 calculateRaceTimeDifference = 0x80043ACC; // type:func
 
@@ -2654,7 +2655,6 @@ createAnimatedSpriteTask = 0x80077390; // type:func
 
 initializeFlagSelectedDualResourceTask = 0x8009F158; // type:func
 updateFlagSelectedMenuTask = 0x8009F224; // type:func
-gFlagSelectedMenuJumpTablePadding = 0x800121A0; // size:0x4
 
 assignCurrentPlayerFinishSlot = 0x80029EE4; // type:func
 
