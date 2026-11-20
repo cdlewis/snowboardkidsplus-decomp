@@ -46,6 +46,7 @@ void selectGeometryRecord(s16 index);
 void computeSelectedTriangleNormal(VECTOR *normal);
 void computeSelectedTriangleAngles(s16 *pitch, s16 *yaw);
 
+u8 func_8004AAA0(s16 index, s32 x, s32 z);
 void getGeometryPlacementTransform(s16 index, s32 *x, s32 *y, s32 *z, u16 *angle);
 
 s32 getGeometryPlacementSignedDistance(s16 index, s32 x, s32 z);

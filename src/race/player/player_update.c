@@ -127,7 +127,6 @@ void func_8002497C(void);
 void func_800205B8(void);
 void func_80028680(void);
 void updateCurrentPlayerAirborneDragUntilLanding(void);
-void func_8002AE6C(void);
 void func_80028C80(void);
 void func_80015C94(u16 playerIndex);
 void func_8001596C(u16 playerIndex);
@@ -728,7 +727,7 @@ void initializeCurrentPlayerModelAndHeight(void) {
 }
 
 void updateCurrentPlayerAndResetState(void) {
-    func_8002AE6C();
+    prepareCurrentPlayerFrame();
     updateCurrentPlayerAnimation();
     if (D_8013AFE4 == 0) {
         if (D_8013B0D8->unk008 == 0) {
@@ -752,7 +751,7 @@ INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_80021B20);
 
 void updateCurrentPlayerState29MotionAndAnimation(void) {
     RacePlayer *player;
-    func_8002AE6C();
+    prepareCurrentPlayerFrame();
     player = D_8013B0D8;
     player->unk09E = player->unk09A;
     player->unk110 = player->unk138;
@@ -794,7 +793,7 @@ INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_80024288);
 
 void updateCurrentPlayerState4MotionAndLanding(void) {
     RacePlayer *player;
-    func_8002AE6C();
+    prepareCurrentPlayerFrame();
     player = D_8013B0D8;
     player->unk130 = 0x1800;
     if (player->unk128 & 1) {
@@ -836,7 +835,7 @@ void updateCurrentPlayerState5MotionAndTimer(void) {
     RacePlayer *motion;
     RacePlayer *grounded;
     s16 input;
-    func_8002AE6C();
+    prepareCurrentPlayerFrame();
     smoothAndScaleCurrentPlayerInput(0, 0);
     if (!(D_8013B0D8->unk128 & 1)) {
         func_8002AE38(0, 0x100, 0x100, 0x100);
@@ -880,7 +879,7 @@ INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_8002497C);
 
 void updateCurrentPlayerState23MotionAndTimer(void) {
     RacePlayer *player;
-    func_8002AE6C();
+    prepareCurrentPlayerFrame();
     player = D_8013B0D8;
     if (!(player->unk128 & 1)) {
         player->unk128 &= ~0x200;
@@ -911,7 +910,7 @@ void updateCurrentPlayerState24MotionAndScale(void) {
     u16 timerStep;
     s16 landed;
 
-    func_8002AE6C();
+    prepareCurrentPlayerFrame();
     smoothAndScaleCurrentPlayerInput(0, 0);
     if (D_8013B0D8->unk128 & 1) {
         D_8013B0D8->unk062 += 0x280;
@@ -970,7 +969,7 @@ void updateCurrentPlayerState24MotionAndScale(void) {
 }
 
 void updateCurrentPlayerState25MotionAndTimer(void) {
-    func_8002AE6C();
+    prepareCurrentPlayerFrame();
     if (!(D_8013B0D8->unk128 & 1)) {
         D_8013B0D8->unk128 &= ~0x200;
         smoothAndScaleCurrentPlayerInput(D_8013B0D8->unk094, 0);
@@ -1018,7 +1017,7 @@ void updateCurrentPlayerState25MotionAndTimer(void) {
 
 void updateCurrentPlayerVerticalMotionUntilLanding(void) {
     RacePlayer *player;
-    func_8002AE6C();
+    prepareCurrentPlayerFrame();
     player = D_8013B0D8;
     player->unk062 += 0x1C0;
     player->y += player->unk062;
@@ -1038,7 +1037,7 @@ void updateCurrentPlayerVerticalMotionUntilLanding(void) {
 }
 
 void updateCurrentPlayerAirborneDragUntilLanding(void) {
-    func_8002AE6C();
+    prepareCurrentPlayerFrame();
     smoothAndScaleCurrentPlayerInput(0, 0);
     if (D_8013B0D8->unk062 < 0) {
         D_8013B0D8->unk062 += 0x150;
@@ -1071,7 +1070,7 @@ void updateCurrentPlayerAirborneDragUntilLanding(void) {
 
 void updateCurrentPlayerFromTaskPhase(void) {
     RacePlayer *player;
-    func_8002AE6C();
+    prepareCurrentPlayerFrame();
     updateCurrentPlayerAnimation();
     gCurrentPlayerTaskPhaseCallbacks[D_8013AE88->data1A]();
     D_8013B0D8->unk946 = 0;
@@ -1382,7 +1381,7 @@ void moveCurrentPlayerForwardUntilState22(void) {
 
 void updateCurrentPlayerAndRequestState30(void) {
     RacePlayer *player;
-    func_8002AE6C();
+    prepareCurrentPlayerFrame();
     gCurrentPlayerState30TaskPhaseCallbacks[D_8013AE88->data1A]();
     if (D_8013B0D8->unk0AC < 0x3C00) {
         D_8013B0D8->unk0AC += 0x200;
@@ -1548,7 +1547,7 @@ void updateCurrentPlayerState30AnimationAndHeight(void) {
 
 void updateCurrentPlayerTaskCountdown(void) {
     RacePlayer *player;
-    func_8002AE6C();
+    prepareCurrentPlayerFrame();
     D_8013B0D8->unk946 = 0;
     player = D_8013B0D8;
     player->worldCoordinate.coord.t[0] = player->x >> 8;
@@ -1567,7 +1566,7 @@ void updateCurrentPlayerState8Steering(void) {
     RacePlayer *player;
     s32 difference;
     s16 delta;
-    func_8002AE6C();
+    prepareCurrentPlayerFrame();
     if (D_8013B0D8->unk128 & 1) {
         D_8013B0D8->unk128 |= 0x200;
     } else {
@@ -1638,7 +1637,7 @@ movement:
 }
 
 void updateCurrentPlayerState11Motion(void) {
-    func_8002AE6C();
+    prepareCurrentPlayerFrame();
     D_8013B0D8->unk130 = 0x1800;
     D_800EB22C.vx = D_8013B0D8->unk060;
     D_800EB22C.vz = D_8013B0D8->unk064;
@@ -1672,7 +1671,7 @@ void updateCurrentPlayerState11Motion(void) {
 }
 
 void updateCurrentPlayerState10Movement(void) {
-    func_8002AE6C();
+    prepareCurrentPlayerFrame();
     smoothAndScaleCurrentPlayerInput(D_8013B0D8->unk094, 0);
     if (D_8013B0D8->unk062 < 0) {
         D_8013B0D8->unk060 = 0;
@@ -1710,7 +1709,7 @@ void updateCurrentPlayerState10Movement(void) {
 }
 
 void updateCurrentPlayerTimedMotion(void) {
-    func_8002AE6C();
+    prepareCurrentPlayerFrame();
     if (!(D_8013B0D8->unk128 & 1)) {
         smoothAndScaleCurrentPlayerInput(0x400, 0);
         D_8013B0D8->unk09E = 0x280;
@@ -1760,7 +1759,7 @@ void updateCurrentPlayerState12MotionAndTimer(void) {
     RacePlayer *grounded;
     s16 input;
 
-    func_8002AE6C();
+    prepareCurrentPlayerFrame();
     smoothAndScaleCurrentPlayerInput(0, 0);
     player = D_8013B0D8;
     if (!(player->unk128 & 1)) {

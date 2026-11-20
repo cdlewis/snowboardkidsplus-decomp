@@ -528,7 +528,6 @@ extern RaceTime gRaceElapsedTime;
 extern int rand(void);
 
 void uploadTimImageAt(s16 x, s16 y, s16 clutX, s16 clutY, u32 *tim);
-u8 func_8004AAA0(s16 index, s32 x, s32 z);
 void func_8003EE70(void);
 void func_8002F5F8(void);
 void func_8002F548(void);

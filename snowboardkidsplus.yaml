@@ -689,6 +689,8 @@ segments:
       - {start: 0x111298, type: .data, name: race/player/player_update, linker_section: .data.player_state30_animation_countdowns}
       - {start: 0x1112B0, type: .data, name: race/player/player_update, linker_section: .data.player_trick_rewards}
       - [0x1112F8, data, player_task_phases_tail]
+      - {start: 0x113E00, type: .data, name: race/player/player_input, linker_section: .data.player_rank_speed_adjustments}
+      - [0x113E10, data, player_rank_speed_adjustments_tail]
       - {start: 0x113E20, type: .data, name: race/player/player_actions, linker_section: .data.player_projectile_bounce_choices}
       - [0x113E40, data, player_projectile_bounce_choices_tail]
       - {start: 0x113E60, type: .data, name: engine/task_transitions, linker_section: .data.player_resource_texture_selections}

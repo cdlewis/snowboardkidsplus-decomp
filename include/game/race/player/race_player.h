@@ -84,7 +84,7 @@ struct RacePlayer {
     u16 unk0F4;
     s16 unk0F6;
     s16 unk0F8;
-    u8 unk0FA[2];
+    s16 unk0FA;
     s16 unk0FC;
     u8 unk0FE;
     u8 unk0FF;
@@ -114,9 +114,9 @@ struct RacePlayer {
     u16 unk126;
     u32 unk128;
     u16 unk12C;
-    u8 unk12E[2];
+    s16 unk12E;
     s16 unk130;
-    u8 unk132[2];
+    s16 unk132;
     s16 unk134;
     s8 unk136;
     u8 unk137;
@@ -153,7 +153,8 @@ struct RacePlayer {
     s32 coursePlacementDistance;
     s8 unk934;
     s8 unk935;
-    u8 unk936[6];
+    u8 unk936[2];
+    s32 unk938;
     s16 unk93C;
     s8 unk93E;
     u8 unk93F;
@@ -170,7 +171,7 @@ struct RacePlayer {
     u8 unk950[4];
     u8 unk954;
     s8 speedControlMode;
-    u8 speedControlState;
+    s8 speedControlState;
     s8 speedControlTarget;
     u8 itemUseCooldown;
     s8 projectileUseCooldown;
@@ -242,6 +243,7 @@ s32 requestCurrentPlayerAction7(void);
 s32 requestCurrentPlayerAction17(void);
 s16 countCurrentPlayerInputGroups(void);
 
+void prepareCurrentPlayerFrame(void);
 void copySelectedRecordToCurrentPlayer(void);
 s16 smoothAndScaleCurrentPlayerInput(s32 magnitude, s16 input);
 void clampCurrentPlayerHorizontalVector(VECTOR *vector);

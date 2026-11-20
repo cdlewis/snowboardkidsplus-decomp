@@ -1,3 +1,5 @@
+prepareCurrentPlayerFrame = 0x8002AE6C; // type:func
+gPlayerRankSpeedAdjustments = 0x80123600; // size:0x10 defined:true
 awardCurrentPlayerTrickRewards = 0x80029FE4; // type:func
 gPlayerTrickRewards = 0x80120AB0; // size:0x20 defined:true
 gPlayerDirectionalTrickRewards = 0x80120AD0; // size:0x14 defined:true
