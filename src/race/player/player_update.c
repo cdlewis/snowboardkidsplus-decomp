@@ -1441,12 +1441,12 @@ void updateCurrentPlayerState30TaskUntilStopped(void) {
             }
         } else {
             if ((s16)steeringPlayer->unk126 >= 0) {
-                func_8001758C(6, (s16)steeringPlayer->unk126, 0x118);
+                blendCurrentPlayerSteeringPose(6, (s16)steeringPlayer->unk126, 0x118);
                 if ((s16)D_8013B0D8->unk126 >= 0) {
                     goto updateAnimation;
                 }
             }
-            func_8001758C(5, -(s16)D_8013B0D8->unk126, 0x118);
+            blendCurrentPlayerSteeringPose(5, -(s16)D_8013B0D8->unk126, 0x118);
         }
     } else {
         smoothAndScaleCurrentPlayerInput(0, 0);

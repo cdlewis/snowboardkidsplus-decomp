@@ -136,7 +136,9 @@ struct RacePlayer {
     } model;
     RacePlayerVector unk5BC[14];
     RacePlayerVector unk62C[14];
-    u8 unk69C[0x100];
+    RacePlayerVector blendRoot[2];
+    RacePlayerVector blendBoard[2];
+    RacePlayerVector blendAngles[2][14];
     GsDOBJ2 modelObjects[14];
     GsCOORDINATE2 modelCoordinate;
     GsCOORDINATE2 worldCoordinate;
@@ -270,7 +272,7 @@ void updateCurrentPlayerItemUse(u16 playerIndex);
 
 void startCurrentPlayerAnimation(u8 animation, u8 mode);
 s32 updateCurrentPlayerAnimation(void);
-void func_8001758C(s16 animation, s32 weight, s32 scale);
+void blendCurrentPlayerSteeringPose(s16 animation, s32 weight, s32 scale);
 
 void initializeCurrentPlayerModelObjects(u32 *model);
 void loadCurrentPlayerModelBlock(void);

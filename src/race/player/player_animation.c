@@ -50,7 +50,7 @@ void startCurrentPlayerAnimation(u8 animation, u8 mode) {
     currentPlayerAbsolute->animationFlags |= 0x20;
 }
 
-void updateCurrentPlayerModelTransforms(void) {
+void updateCurrentPlayerModelTransforms(RacePlayer *unused) {
     u16 i;
     u8 parent;
     RacePlayer *player;
@@ -136,7 +136,7 @@ s32 updateCurrentPlayerAnimation(void) {
     currentPlayerAbsolute->animationStream++;
     currentPlayerAbsolute->unk62C[1].x = ((s16)*currentPlayerAbsolute->animationStream + 2) / 4;
     currentPlayerAbsolute->animationStream++;
-    updateCurrentPlayerModelTransforms();
+    updateCurrentPlayerModelTransforms(currentPlayerAbsolute);
     currentPlayerAbsolute->animationFrameCount--;
     if (currentPlayerAbsolute->animationFrameCount == 0) {
         switch (currentPlayerAbsolute->animationFlags & 3) {
@@ -166,4 +166,76 @@ s32 updateCurrentPlayerAnimation(void) {
     return 1;
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/player/player_animation", func_8001758C);
+void blendCurrentPlayerSteeringPose(s16 animation, s32 weight, s32 scale) {
+    RacePlayer *initial = currentPlayerAbsolute;
+    RacePlayer *player;
+    RacePlayer *blendPlayer;
+    RacePlayer *output;
+    u8 index = D_800EB09C[initial->characterId][animation];
+    RacePlayerVector *pose;
+    u16 i, j;
+    s32 delta;
+    s32 rootX, rootY, rootZ, boardX, boardY, boardZ;
+
+    if (initial->animationIndex != index) {
+        u32 *offsets = DAT_ANIMATION_ARCHIVE->offsets;
+        RacePlayer *streamPlayer;
+        OffsetArchive *archive;
+
+        initial->animationIndex = index;
+        currentPlayerAbsolute->animationFlags = 0;
+        currentPlayerAbsolute->animationStep = 0;
+        streamPlayer = currentPlayerAbsolute;
+        archive = DAT_ANIMATION_ARCHIVE;
+        streamPlayer->animationStream = (u16 *)((u8 *)archive->offsets + offsets[streamPlayer->animationIndex]);
+        player = streamPlayer;
+        for (i = 0; i < 2; i++) {
+            for (j = 0; j < 12; j++) {
+                player->blendAngles[i][j].x = *player->animationStream;
+                player->blendAngles[i][j].y = *++player->animationStream;
+                player->blendAngles[i][j].z = *++player->animationStream;
+                player->animationStream++;
+            }
+            player->blendRoot[i].x = ((s16)*player->animationStream + 2) / 4;
+            player->blendRoot[i].y = ((s16)*++player->animationStream + 2) / 4;
+            player->blendRoot[i].z = ((s16)*++player->animationStream + 2) / 4;
+            player->blendBoard[i].z = -((s16)*++player->animationStream + 2) / 4;
+            player->blendBoard[i].y = ((s16)*++player->animationStream + 2) / 4;
+            player->blendBoard[i].x = ((s16)*++player->animationStream + 2) / 4;
+            player->animationStream += 2;
+        }
+    }
+
+    j = 0;
+    blendPlayer = currentPlayerAbsolute;
+    pose = gPlayerAnimationPose;
+    for (; j < 12; j++) {
+        delta = (blendPlayer->blendAngles[1][j].x - blendPlayer->blendAngles[0][j].x) & 0xFFF;
+        if (delta > 0x800)
+            delta -= 0x1000;
+        pose[j].x = blendPlayer->unk5BC[j].x = (blendPlayer->blendAngles[0][j].x + delta * weight / scale) & 0xFFF;
+        delta = (blendPlayer->blendAngles[1][j].y - blendPlayer->blendAngles[0][j].y) & 0xFFF;
+        if (delta > 0x800)
+            delta -= 0x1000;
+        pose[j].y = blendPlayer->unk5BC[j].y = (blendPlayer->blendAngles[0][j].y + delta * weight / scale) & 0xFFF;
+        delta = (blendPlayer->blendAngles[1][j].z - blendPlayer->blendAngles[0][j].z) & 0xFFF;
+        if (delta > 0x800)
+            delta -= 0x1000;
+        pose[j].z = blendPlayer->unk5BC[j].z = (blendPlayer->blendAngles[0][j].z + delta * weight / scale) & 0xFFF;
+    }
+
+    output = currentPlayerAbsolute;
+    rootX = (output->blendRoot[1].x - output->blendRoot[0].x) * weight / scale;
+    rootY = (output->blendRoot[1].y - output->blendRoot[0].y) * weight / scale;
+    rootZ = (output->blendRoot[1].z - output->blendRoot[0].z) * weight / scale;
+    boardX = (output->blendBoard[1].x - output->blendBoard[0].x) * weight / scale;
+    boardY = (output->blendBoard[1].y - output->blendBoard[0].y) * weight / scale;
+    boardZ = (output->blendBoard[1].z - output->blendBoard[0].z) * weight / scale;
+    output->unk62C[0].x = output->blendRoot[0].x + rootX;
+    output->unk62C[0].y = output->blendRoot[0].y + rootY;
+    output->unk62C[0].z = output->blendRoot[0].z + rootZ;
+    output->unk62C[1].x = output->blendBoard[0].x + boardX;
+    output->unk62C[1].y = output->blendBoard[0].y + boardY;
+    output->unk62C[1].z = output->blendBoard[0].z + boardZ;
+    updateCurrentPlayerModelTransforms(output);
+}
