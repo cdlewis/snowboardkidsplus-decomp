@@ -1,9 +1,32 @@
 #include "../engine/input_scheduler_internal.h"
 
-u16 gCdRequestPhase = 0;
-u16 gCdRequestWriteIndex = 0;
-u16 gCdRequestReadIndex = 0;
-s16 D_8013AE76 = 0;
+#define CD_READ_PENDING 0x02000000
+#define CD_CONTROL_PENDING 0x04000000
+#define CD_XA_ACTIVE 1
+#define CD_XA_FILTER_MODE 8
+#define CD_SET_FILTER 0x0D
+#define CD_GET_LOCATION 0x11
+#define CD_COMPLETE 2
+#define CD_DISK_ERROR 5
+
+typedef union XaCommandResult {
+    u8 bytes[16];
+    struct {
+        u8 trackAndRelativeTime[5];
+        CdlLOC position;
+    } getLocation;
+} XaCommandResult;
+
+typedef struct XaFilter {
+    u8 file;
+    u8 channel;
+    u8 padding[2];
+} XaFilter;
+
+u16 gCdRequestPhase __attribute__((section(".sdata.cd_request_state"))) = 0;
+u16 gCdRequestWriteIndex __attribute__((section(".sdata.cd_request_state"))) = 0;
+u16 gCdRequestReadIndex __attribute__((section(".sdata.cd_request_state"))) = 0;
+s16 D_8013AE76 __attribute__((section(".sdata.cd_request_state"))) = 0;
 
 static char sAtMoviePath[16] __attribute__((section(".data.cd_paths"), aligned(4))) =
     "\\MV\\ATMOV.STR;1";
@@ -80,6 +103,92 @@ s32 D_8013AE64 __attribute__((section(".sdata.cd_command_state"))) = 0;
 s16 D_8013AE78 __attribute__((section(".sdata.cd_command_active"))) = 0;
 
 static u16 sCdCommandActivePadding __attribute__((section(".sdata.cd_command_active"))) = 0;
+
+static char sXaBgmShortPath[16] __attribute__((section(".data.xa_paths"), aligned(4))) =
+    "\\XA\\BGM_S.XA;1";
+
+static char sXaBgmLongPath[16] __attribute__((section(".data.xa_paths"), aligned(4))) =
+    "\\XA\\BGM_L.XA;1";
+
+static char sXaVoice01Path[20] __attribute__((section(".data.xa_paths"), aligned(4))) =
+    "\\XA\\VOICE_01.XA;1";
+
+static char sXaVoice02Path[20] __attribute__((section(".data.xa_paths"), aligned(4))) =
+    "\\XA\\VOICE_02.XA;1";
+
+static char sXaVoice03Path[20] __attribute__((section(".data.xa_paths"), aligned(4))) =
+    "\\XA\\VOICE_03.XA;1";
+
+static char sXaVoice04Path[20] __attribute__((section(".data.xa_paths"), aligned(4))) =
+    "\\XA\\VOICE_04.XA;1";
+
+static char sXaVoice05Path[20] __attribute__((section(".data.xa_paths"), aligned(4))) =
+    "\\XA\\VOICE_05.XA;1";
+
+static char sXaVoice06Path[20] __attribute__((section(".data.xa_paths"), aligned(4))) =
+    "\\XA\\VOICE_06.XA;1";
+
+static char sXaVoice07Path[20] __attribute__((section(".data.xa_paths"), aligned(4))) =
+    "\\XA\\VOICE_07.XA;1";
+
+static char sXaVoice08Path[20] __attribute__((section(".data.xa_paths"), aligned(4))) =
+    "\\XA\\VOICE_08.XA;1";
+
+static char *sXaPaths[10] __attribute__((section(".data.xa_tracks"))) = {
+    sXaBgmShortPath,
+    sXaBgmLongPath,
+    sXaVoice01Path,
+    sXaVoice02Path,
+    sXaVoice03Path,
+    sXaVoice04Path,
+    sXaVoice05Path,
+    sXaVoice06Path,
+    sXaVoice07Path,
+    sXaVoice08Path,
+};
+
+static s32 sXaTrackSectorLengths[] __attribute__((section(".data.xa_tracks"))) = {
+    0x1A18, 0x0195, 0x0391, 0x37C2, 0x6F46, 0x6D3F, 0x609B, 0x38BF,
+    0x7DE1, 0x86A6, 0xA274, 0x7226, 0xACA5, 0x74B0, 0x934E, 0x9186,
+    0x0D40, 0x09E0, 0x0960, 0x0900, 0x0820, 0x0800, 0x07C0, 0x07A0,
+    0x0780, 0x0740, 0x0720, 0x0700, 0x0680, 0x0660, 0x0660, 0x0600,
+    0x05A0, 0x0580, 0x0580, 0x0560, 0x0540, 0x0540, 0x0500, 0x04E0,
+    0x04C0, 0x04C0, 0x04C0, 0x04A0, 0x04A0, 0x04A0, 0x04A0, 0x04A0,
+    0x0480, 0x0480, 0x0480, 0x0480, 0x0440, 0x0440, 0x0440, 0x0440,
+    0x0440, 0x0440, 0x0420, 0x0420, 0x0420, 0x0420, 0x0400, 0x0400,
+    0x0400, 0x0400, 0x0400, 0x03E0, 0x03E0, 0x03C0, 0x03C0, 0x03C0,
+    0x03C0, 0x03C0, 0x03C0, 0x03C0, 0x03C0, 0x03A0, 0x03A0, 0x03A0,
+    0x04E0, 0x0380, 0x0380, 0x0380, 0x0380, 0x0380, 0x0380, 0x0380,
+    0x0360, 0x0360, 0x0360, 0x0360, 0x0340, 0x0340, 0x0340, 0x0320,
+    0x0320, 0x0320, 0x0300, 0x0300, 0x0300, 0x0300, 0x0300, 0x02E0,
+    0x02E0, 0x02E0, 0x02E0, 0x02E0, 0x02E0, 0x02E0, 0x02C0, 0x02C0,
+    0x03E0, 0x02C0, 0x02C0, 0x02C0, 0x02C0, 0x02C0, 0x02A0, 0x02A0,
+    0x02A0, 0x02A0, 0x02A0, 0x02A0, 0x02A0, 0x0280, 0x0280, 0x0280,
+    0x0280, 0x0280, 0x0260, 0x0260, 0x0260, 0x0260, 0x0260, 0x0260,
+    0x0260, 0x0260, 0x0260, 0x0240, 0x0240, 0x0240, 0x0240, 0x0240,
+    0x0360, 0x0240, 0x0220, 0x0220, 0x0220, 0x0220, 0x0220, 0x0220,
+    0x0220, 0x0200, 0x0200, 0x01E0, 0x01E0, 0x01E0, 0x01E0, 0x01E0,
+    0x01E0, 0x01E0, 0x01E0, 0x01C0, 0x01C0, 0x01C0, 0x01C0, 0x01C0,
+    0x01C0, 0x01C0, 0x01A0, 0x01A0, 0x01A0, 0x01A0, 0x01A0, 0x01A0,
+    0x02C0, 0x0180, 0x0180, 0x0180, 0x0180, 0x0180, 0x0180, 0x0180,
+    0x0180, 0x0180, 0x0180, 0x01A0, 0x0160, 0x0160, 0x0160, 0x0160,
+    0x0160, 0x0160, 0x0160, 0x0140, 0x0140, 0x0140, 0x0140, 0x0140,
+    0x0140, 0x0140, 0x0140, 0x0140, 0x0140, 0x0120, 0x0120, 0x0120,
+    0x0240, 0x0120, 0x0100, 0x0100, 0x0100, 0x00E0, 0x00E0, 0x00E0,
+    0x00C0, 0x00C0, 0x00C0, 0x00C0, 0x00C0, 0x00A0, 0x00A0, 0x00A0,
+    0x00C0, 0x00A0, 0x00A0, 0x00A0, 0x0080, 0x0080, 0x0080, 0x0080,
+    0x0080, 0x0080, 0x0080, 0x0060, 0x0060, 0x0040, 0x0080, 0x0000,
+    0x0740,
+};
+
+static u8 sXaModeDelay[4] __attribute__((section(".sdata.xa_mode_delay"), aligned(4))) = {0};
+
+static CdlLOC sXaSeekPosition __attribute__((section(".data.xa_seek_position"), aligned(4))) = {0};
+
+static XaFilter sXaFilter __attribute__((section(".sdata"), aligned(4))) = {0};
+
+/* This unit accesses the shared frame counter by its absolute address. */
+extern u32 gSynchronizedFrameCount __attribute__((section(".data")));
 
 void resetCdVolumeFade(void) {
     gCdVolumeFadeInterval = 0;
@@ -441,4 +550,240 @@ void resetPendingCdRequests(void) {
 
 INCLUDE_ASM("asm/nonmatchings/io/cd_queue", func_80013F28);
 
-INCLUDE_ASM("asm/nonmatchings/io/cd_queue", func_80013F98);
+void updateCdCommandQueue(void) {
+    XaCommandResult result;
+    CdlFILE file;
+    s32 i = 15;
+    u8 *clear = &result.bytes[15];
+    u16 readIndex, writeIndex;
+    s16 fileIndex;
+    char **path, **paths;
+    s32 sector, status, readStatus, pathIndex;
+    s16 activeCommand;
+
+    do {
+        *clear = 0;
+        i--;
+        clear--;
+    } while (i >= 0);
+
+    readIndex = D_8013AE50 & 7;
+    writeIndex = D_8013AE4E & 7;
+    D_8013AE50 = readIndex;
+    D_8013AE4E = writeIndex;
+    if (readIndex != writeIndex) {
+        CdCommand *commands = gCdCommands;
+        s16 command, value;
+
+        D_8013AE50 = readIndex + 1;
+        command = commands[readIndex].command;
+        value = commands[readIndex].value;
+        D_8013AE48 = 0;
+        D_8013AE78 = 1;
+        D_8013AE4C = command;
+        D_8013AE4A = value;
+    }
+
+    if (D_8013AE78 == 0)
+        return;
+    activeCommand = D_8013AE4C;
+    if (activeCommand != -1) {
+        switch (D_8013AE48) {
+        case 0:
+            if (CdSync(1, result.bytes) != 0) {
+                if (!(D_8013AE68 & CD_XA_ACTIVE)) {
+                    D_8013AE48++;
+                } else {
+                    CdControlF(CdlPause, NULL);
+                    D_8013AE7C |= CD_CONTROL_PENDING;
+                    D_8013AE48++;
+                }
+            }
+            break;
+        case 1:
+            status = CdSync(1, result.bytes);
+            if (status == CD_COMPLETE) {
+                result.bytes[0] = CdlModeSpeed;
+                D_8013AE68 &= ~CD_XA_ACTIVE;
+                CdControlF(CdlSetmode, result.bytes);
+                sXaModeDelay[0] = 4;
+                D_8013AE7C |= CD_CONTROL_PENDING;
+                D_8013AE48++;
+            } else if (status == CD_DISK_ERROR) {
+                D_8013AE48 = 0;
+                D_8013AE7C &= ~CD_CONTROL_PENDING;
+            }
+            break;
+        case 2:
+            status = CdSync(1, result.bytes);
+            if (status == CD_COMPLETE)
+                D_8013AE48++;
+            if (status == CD_DISK_ERROR) {
+                D_8013AE48 = 0;
+                D_8013AE7C &= ~CD_CONTROL_PENDING;
+            }
+            break;
+        case 3:
+            sXaModeDelay[0]--;
+            if ((s8)sXaModeDelay[0] > 0)
+                break;
+            if (D_8013AE4C < 16)
+                fileIndex = D_8013AE4C / 8;
+            else
+                fileIndex = (D_8013AE4C - 16) / 32 + 2;
+            pathIndex = fileIndex;
+            paths = sXaPaths;
+            path = paths + pathIndex;
+            while (CdSearchFile(&file, *path) == NULL) {
+            }
+            sector = CdPosToInt(&file.pos);
+            D_8013AE64 = sector;
+            D_8013AE5C = sector;
+            D_8013AE58 = 0;
+            D_8013AE60 = sector + sXaTrackSectorLengths[D_8013AE4C];
+            CdIntToPos(sector, &sXaSeekPosition);
+            CdControlF(CdlSetloc, (u8 *)&sXaSeekPosition);
+            D_8013AE7C |= CD_CONTROL_PENDING;
+            D_8013AE48++;
+            break;
+        case 4:
+            status = CdSync(1, result.bytes);
+            if (status == CD_COMPLETE) {
+                D_8013AE48++;
+                D_8013AE7C |= CD_CONTROL_PENDING;
+            } else if (status == CD_DISK_ERROR) {
+                D_8013AE48 = 0;
+                D_8013AE7C &= ~CD_CONTROL_PENDING;
+            }
+            break;
+        case 5:
+            status = CdSync(1, result.bytes);
+            if (status == CD_COMPLETE) {
+                D_8013AE7C &= ~CD_CONTROL_PENDING;
+                D_8013AE48++;
+            } else if (status == CD_DISK_ERROR) {
+                D_8013AE48 = 0;
+                D_8013AE7C &= ~CD_CONTROL_PENDING;
+            }
+            break;
+        case 6:
+            sXaFilter.file = 1;
+            if (D_8013AE4C < 16)
+                sXaFilter.channel = D_8013AE4C & 7;
+            else
+                sXaFilter.channel = (D_8013AE4C - 16) & 31;
+            CdControlF(CD_SET_FILTER, (u8 *)&sXaFilter);
+            D_8013AE7C |= CD_CONTROL_PENDING;
+            D_8013AE48++;
+            break;
+        case 7:
+            status = CdSync(1, result.bytes);
+            if (status == CD_COMPLETE) {
+                D_8013AE7C &= ~CD_CONTROL_PENDING;
+                D_8013AE48++;
+            } else if (status == CD_DISK_ERROR) {
+                D_8013AE48 = 0;
+                D_8013AE7C &= ~CD_CONTROL_PENDING;
+            }
+            break;
+        case 8:
+            D_8013AE68 |= CD_XA_ACTIVE;
+            if (CdRead2(CdlModeSpeed | CdlModeRT | CdlModeSize1 | CD_XA_FILTER_MODE) == 1) {
+                D_8013AE54 = 0;
+                gSynchronizedFrameCount = 1;
+                D_8013AE48++;
+            }
+            break;
+        case 9:
+            if (gSynchronizedFrameCount & 7)
+                break;
+            status = CdSync(1, result.bytes);
+            if (status == CD_DISK_ERROR) {
+                D_8013AE7C &= ~CD_CONTROL_PENDING;
+                D_8013AE48++;
+                break;
+            }
+            if (status == CD_COMPLETE) {
+                if (D_8013AE5C > D_8013AE60 || D_8013AE5C < D_8013AE64) {
+                    if (D_8013AE4A == 0) {
+                        D_8013AE48++;
+                    } else {
+                        D_8013AE48 = 0;
+                        D_8013AE4C = -1;
+                    }
+                    break;
+                }
+                if (D_8013AE54 >= 6 && CdLastCom() == CD_GET_LOCATION) {
+                    sector = CdPosToInt(&result.getLocation.position);
+                    if (sector > 0)
+                        D_8013AE5C = sector;
+                }
+                CdControlF(CD_GET_LOCATION, NULL);
+                D_8013AE7C |= CD_CONTROL_PENDING;
+            }
+            D_8013AE54++;
+            break;
+        case 10:
+            CdControlF(CdlPause, NULL);
+            D_8013AE7C |= CD_CONTROL_PENDING;
+            D_8013AE48++;
+            break;
+        case 11:
+            status = CdSync(1, result.bytes);
+            if (status == CD_COMPLETE) {
+                D_8013AE54 = 0;
+                D_8013AE48 = 0;
+                D_8013AE7C &= ~CD_CONTROL_PENDING;
+                D_8013AE68 &= ~CD_XA_ACTIVE;
+            } else if (status == CD_DISK_ERROR) {
+                D_8013AE48 = 10;
+                D_8013AE7C &= ~CD_CONTROL_PENDING;
+            }
+            break;
+        }
+    } else {
+        switch (D_8013AE48) {
+        case 0:
+            if (D_8013AE7C & CD_READ_PENDING) {
+                readStatus = CdReadSync(1, result.bytes);
+                if (readStatus == 0) {
+                    D_8013AE7C &= ~CD_READ_PENDING;
+                    D_8013AE7C &= ~CD_CONTROL_PENDING;
+                    D_8013AE48++;
+                }
+                if (readStatus == activeCommand) {
+                    D_8013AE7C &= ~CD_READ_PENDING;
+                    D_8013AE7C &= ~CD_CONTROL_PENDING;
+                    D_8013AE48++;
+                }
+                break;
+            }
+            D_8013AE48 = 1;
+            /* fallthrough */
+        case 1:
+            if (!(D_8013AE68 & CD_XA_ACTIVE)) {
+                D_8013AE78 = 0;
+            } else if (CdSync(1, result.bytes) != 0) {
+                D_8013AE7C &= ~CD_CONTROL_PENDING;
+                D_8013AE48++;
+            }
+            break;
+        case 2:
+            CdControlF(CdlPause, NULL);
+            D_8013AE7C |= CD_CONTROL_PENDING;
+            D_8013AE48++;
+            break;
+        case 3:
+            status = CdSync(1, result.bytes);
+            if (status == CD_COMPLETE) {
+                D_8013AE78 = 0;
+                D_8013AE7C &= ~CD_CONTROL_PENDING;
+                D_8013AE68 &= ~CD_XA_ACTIVE;
+            } else if (status == CD_DISK_ERROR) {
+                D_8013AE48 = 0;
+                D_8013AE7C &= ~CD_CONTROL_PENDING;
+            }
+            break;
+        }
+    }
+}

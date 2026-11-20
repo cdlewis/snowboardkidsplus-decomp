@@ -49,7 +49,6 @@ u32 D_800FC200[4096] __attribute__((section(".data.render_buffers"))) = {0};
 u8 D_80100200[2][0x10000] __attribute__((section(".data.render_buffers"))) = {0};
 
 void updateCdVolumeFade(void);
-void func_80013F98(void);
 void initializeControllers(void);
 void initializeSoundSystem(s32);
 void func_80049CDC(void);
@@ -125,7 +124,7 @@ void runGameLoop(void) {
             D_8013AE88 = nextTask;
         } while (nextTask != NULL);
         updateCdRequestQueue();
-        func_80013F98();
+        updateCdCommandQueue();
         updateCdVolumeFade();
         updateMusicSequenceFade();
         if ((GsDISPENV.disp.w != D_8013AF7A) || (GsDISPENV.disp.h != D_8013AF7C)) {

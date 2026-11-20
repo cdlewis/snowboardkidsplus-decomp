@@ -68,10 +68,10 @@ segments:
     bss_size: 0x5E88
     subsegments:
       - {start: 0x800, type: .rodata, name: io/cd_queue, linker_section: .data.cd_paths}
-      - [0x840, rodata, main_cd_paths_tail]
+      - {start: 0x840, type: .rodata, name: io/cd_queue, linker_section: .data.xa_paths}
+      - [0x900, rodata, main_cd_paths_tail]
       - [0x918, .rodata, io/cd_queue]
-      - [0x984, pad]
-      - [0x988, rodata, main_cd_commands]
+      - [0x9B8, rodata, main_cd_commands]
       - [0xB88, .rodata, io/memory_card]
       - {start: 0xB9C, type: .rodata, name: io/memory_card, linker_section: .rodata.memory_card_availability_padding}
       - [0xBA0, .rodata, io/memory_card_read]
@@ -657,8 +657,7 @@ segments:
       - [0xC7778, lib, libapi, a21, .text]
       - [0xC7788, lib, libapi, patch, .text]
       - [0xC7828, lib, libapi, chclrpad, .text]
-      - [0xC7898, data, C7898]
-      - [0xC78E8, data, C78E8] # estimated
+      - {start: 0xC7898, type: .data, name: io/cd_queue, linker_section: .data.xa_tracks}
       - {start: 0xC7C84, type: .data, name: io/cd_queue, linker_section: .data.cd_requests}
       - {start: 0xC8384, type: .data, name: io/cd_queue, linker_section: .data.cd_commands}
       - {start: 0xC83A4, type: .data, name: io/cd_queue, linker_section: .data.cd_files}
@@ -907,7 +906,7 @@ segments:
       - [0x12B638, lib, libapi, pad, .data]
       - {start: 0x12B648, type: .sdata, name: io/cd_queue, linker_section: .sdata.cd_command_state, linker_section_order: .data}
       - {start: 0x12B668, type: .sdata, name: io/cd_queue, linker_section: .sdata.cd_read_state, linker_section_order: .data}
-      - {start: 0x12B670, type: .sdata, name: io/cd_queue, linker_section_order: .data}
+      - {start: 0x12B670, type: .sdata, name: io/cd_queue, linker_section: .sdata.cd_request_state, linker_section_order: .data}
       - {start: 0x12B678, type: .sdata, name: io/cd_queue, linker_section: .sdata.cd_command_active, linker_section_order: .data}
       - {start: 0x12B67C, type: .sdata, name: io/cd_queue, linker_section: .sdata.cd_io_flags, linker_section_order: .data}
       - {start: 0x12B680, type: .sdata, name: io/cd_queue, linker_section: .sdata.cd_volume_fade, linker_section_order: .data}
@@ -1037,7 +1036,9 @@ segments:
       - [0x12BD9C, data, 12BD78]
       - {start: 0x12BDDC, type: .sdata, name: io/cd_queue, linker_section: .sdata.cd_read_delay, linker_section_order: .data}
       - {start: 0x12BDE4, type: .data, name: io/cd_queue, linker_section: .data.cd_sync_result}
-      - [0x12BDEC, data]
+      - {start: 0x12BDEC, type: .sdata, name: io/cd_queue, linker_section: .sdata.xa_mode_delay, linker_section_order: .data}
+      - {start: 0x12BDF0, type: .data, name: io/cd_queue, linker_section: .data.xa_seek_position}
+      - {start: 0x12BDF4, type: .sdata, name: io/cd_queue, linker_section_order: .data}
       - {start: 0x12BDF8, type: .sdata, name: io/cd_queue, linker_section: .sdata.cd_volume_fade_timer, linker_section_order: .data}
       - {start: 0x12BDFC, type: .sdata, name: io/cd_queue, linker_section: .sdata.dat_start_sector, linker_section_order: .data}
       - [0x12BE00, data]

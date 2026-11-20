@@ -58,6 +58,7 @@ extern CdlFILE gDatFile;
 extern s32 gDatStartSector;
 
 void updateCdRequestQueue(void);
+void updateCdCommandQueue(void);
 extern u16 D_8013AE68;
 extern s32 D_8013AE6C;
 extern s32 D_8013AE7C;
