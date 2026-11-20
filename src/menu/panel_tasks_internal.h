@@ -254,6 +254,7 @@ void drawCurrentTaskSelectionPanel(void);
 void queueGridResourceSectorReads(s16 slot, s16 row, s16 column);
 void reloadGridModelPreview(GameTask *task, s16 character, s16 modelSlot, s16 paletteRow,
                             s16 x, s16 y, s16 z);
+void updateGridModelPreviewTask(void);
 void sortPlayerModelWithDrawArea(u16 playerIndex, u16 depthIndex, RECT *bounds);
 void loadCurrentPlayerModelPose(const s16 *values);
 void setCurrentPlayerFinalPartTranslations(const s16 *values);
@@ -291,3 +292,8 @@ void initializeModeSectorReadResourcesTask(void);
 void initializeTextSequenceTask(void);
 void animateTextSequenceExitTask(void);
 void advanceModeAfterTextSequenceFadeTask(void);
+
+static inline RegisteredTaskEntry *getModelPreviewEntry(u32 resource, u32 index) {
+    RegisteredTaskEntry *entries = (RegisteredTaskEntry *)&D_800D9504[resource];
+    return &entries[(u16)(index / 10)];
+}

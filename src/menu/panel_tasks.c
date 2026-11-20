@@ -1,11 +1,12 @@
 #include "panel_tasks_internal.h"
 #include "game/menu/task_widgets.h"
+#include "game/engine/game_task_scheduler.h"
 
 #define GS_MODEL_OBJECT_HIDDEN 0x80000000u
 
 typedef struct GridModelPreviewState {
     s16 unk00;
-    u16 rotationStep;
+    s16 rotationStep;
     s16 unk04;
     s16 unk06;
 } GridModelPreviewState;
@@ -983,4 +984,71 @@ void reloadGridModelPreview(GameTask *task, s16 character, s16 modelSlot, s16 pa
     copyPlayerPaletteRowWithTransition(playerIndex, character, paletteRow, 0);
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/panel_tasks", func_80096EC8);
+void updateGridModelPreviewTask(void) {
+    u8 padding[0x10];
+    GridModelPreviewState *state;
+    Movement2D *position;
+    TaskPanelSelectionValue *selection;
+    RegisteredTaskEntry *entry;
+
+    D_8013B0D8 = &gRacePlayers[D_8013AE88->data1C];
+    selection = &D_8013B508[(s16)D_8013AE98->data1A];
+    if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
+    state = (GridModelPreviewState *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) { for (;;) {} }
+    position = (Movement2D *)&D_800D9504[D_8013AE88->resource16];
+    if ((u16)(D_8013AE88->data1E % 10U) == 0) {
+        if (D_8013AE98->resource14 == 0xFFFF) { for (;;) {} }
+        entry = getModelPreviewEntry(D_8013AE98->resource14, D_8013AE88->data1E);
+    } else {
+        if (D_8013AE98->resource16 == 0xFFFF) { for (;;) {} }
+        entry = getModelPreviewEntry(D_8013AE98->resource16, D_8013AE88->data1E);
+    }
+
+    switch (entry->command) {
+    case 1:
+        state->rotationStep = 1;
+        entry->command = 0;
+        entry->flags = 0;
+        break;
+    case 2:
+        state->rotationStep = -32;
+        entry->command = 0;
+        entry->flags = 0;
+        break;
+    case 3:
+        state->rotationStep = 0;
+        entry->command = 0;
+        entry->flags = 0;
+        break;
+    case 0:
+        entry->flags = 0;
+        break;
+    case 13:
+        reloadGridModelPreview(D_8013AE88, gRacePlayers[D_8013AE88->data1C].characterId,
+                               selection->value, gRacePlayers[D_8013AE88->data1C].unk015[3],
+                               position->x / 4096, position->y / 4096, position->unk08);
+        entry->command = 0;
+        entry->flags = 0;
+        selection->unk02 = selection->value;
+        break;
+    case 99:
+    default:
+        entry->task = 0;
+        entry->flags = 0;
+        func_800149A8();
+        return;
+    }
+
+    entry->flags |= updateMovement2D(position);
+    D_8013B0D8->modelCoordinate.coord.t[0] = position->x / 4096;
+    D_8013B0D8->modelCoordinate.coord.t[1] = position->y / 4096;
+    D_8013B0D8->modelCoordinate.coord.t[2] = position->unk08;
+    if (state->rotationStep > 0) {
+        D_8013B0D8->unk0B6 = (-32 * gFrameCounter) & 0xFFF;
+    } else {
+        D_8013B0D8->unk0B6 = 0x480;
+    }
+    func_8001E3E4((SVECTOR *)&D_8013B0D8->unk0B4, &D_8013B0D8->modelCoordinate);
+    sortPlayerModelWithDrawArea(D_8013AE88->data1C, D_8013AE88->data1C, &D_801300B8[D_8013AE88->data1C]);
+}

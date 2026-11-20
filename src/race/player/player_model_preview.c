@@ -186,11 +186,6 @@ void createPlayerModelPreviewTask(u16 playerIndex, u16 characterId, u16 modelSlo
     entry->task = D_8013AE8C;
 }
 
-static inline RegisteredTaskEntry *getModelPreviewEntry(u32 resource, u32 index) {
-    RegisteredTaskEntry *entries = (RegisteredTaskEntry *)&D_800D9504[resource];
-    return &entries[(u16)(index / 10)];
-}
-
 void updatePlayerModelPreviewTask(void) {
     u8 padding[0x10];
     ModelPreviewState *state;
