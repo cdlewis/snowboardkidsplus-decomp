@@ -1,6 +1,8 @@
+#define TASK_WIDGET_COLORS_ABSOLUTE_ADDRESSING
 #include "psx/scratchpad.h"
 #include "psx/libetc.h"
 #include "../menu/save_record_tasks_internal.h"
+#include "game/engine/byte_search.h"
 #include "game/io/cd_queue.h"
 #include "game/menu/selected_sprite.h"
 #include "game/menu/task_widgets.h"
@@ -39,6 +41,11 @@ typedef struct SaveRecordTaskStatus {
     u8 unk08[8];
     s16 secondResult;
 } SaveRecordTaskStatus;
+
+typedef struct SelectionItemStats {
+    u8 rating;
+    u16 price;
+} SelectionItemStats;
 
 u16 litObjectDrawAreaDepths[4] __attribute__((section(".data.lit_object_draw_area_depths"))) = {
     0x30, 0x20, 0x50, 0x3E
@@ -82,6 +89,7 @@ const u32 gMemoryCardSlotTaskTablePadding
 
 StateValueHistory D_8013BE30 __attribute__((section(".bss.state_value_history")));
 
+extern SelectionItemStats D_8012FCE4[];
 extern u8 D_80130094[][5];
 extern u8 D_801300A0[][5];
 extern u8 D_8013B44C[];
@@ -196,7 +204,53 @@ INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_8007E298);
 
 INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_8007E8CC);
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_8007E8F0);
+void drawSelectionItemDetails(void) {
+    Movement2D *position;
+    HalfwordPair *selection;
+    s16 index;
+    ByteMappingDescriptor *group;
+    SelectionItemStats *stats;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        for (;;) {}
+    }
+    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE98->resource14 == 0xFFFF) {
+        for (;;) {}
+    }
+    selection = (HalfwordPair *)&D_800D9504[D_8013AE98->resource14];
+    if (D_8013AE88->data1A == 0) {
+        return;
+    }
+    func_8006C998(position->x / 4096 + 8, position->y / 4096 - 22,
+                 0xB3, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    group = &D_8012FD10[D_8013AE98->data1A];
+    index = func_8007373C(group->mapping, selection->unk_02);
+    if ((u16)index >= 10) {
+        return;
+    }
+    stats = &D_8012FCE4[index];
+    if (stats->price && stats->rating) {
+        func_8006C998(position->x / 4096 + 84, position->y / 4096 + 128,
+                     0xBC, 10, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        drawDecimalNumber8x8(position->x / 4096 + 88, position->y / 4096 + 136,
+                             4, 0, stats->price, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        func_8006C998(position->x / 4096 + 122, position->y / 4096 + 138,
+                     0xBF, 10, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        func_8006C998(position->x / 4096 + 84, position->y / 4096 + 148,
+                     0xBE, 10, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        drawHalfStepSpriteBar(position->x / 4096 + 88, position->y / 4096 + 156,
+                              stats->rating, 5, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    }
+    if (D_8013AE88->data1A == 1) {
+        func_8007240C(position->x / 4096 + 80, position->y / 4096 + 124, 56, 44,
+                      D_8013B3A4, D_8013B3A5, D_8013B3A6, 2,
+                      &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    } else {
+        func_8007240C(position->x / 4096 + 80, position->y / 4096 + 124, 56, 44,
+                      128, 128, 128, 2, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_8007EE68);
 

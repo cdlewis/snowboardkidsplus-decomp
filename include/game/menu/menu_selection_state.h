@@ -35,3 +35,13 @@ typedef struct TaskPanelSelectionValue {
 
 extern TaskPanelSelectionValue D_8013B508[];
 void drawCurrentTaskSelectionPanel(void);
+
+typedef struct ByteMappingDescriptor {
+    const u8 *mapping;
+    u8 unk04[2];
+    u8 count;
+    u8 unk07[13];
+} ByteMappingDescriptor;
+
+extern ByteMappingDescriptor D_8012FD10[];
+void drawSelectionItemDetails(void);

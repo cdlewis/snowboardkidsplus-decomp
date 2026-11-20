@@ -90,13 +90,6 @@ typedef struct RegisteredDetailedPanelResource {
 } RegisteredDetailedPanelResource;
 
 /* Menu descriptors have a 0x14-byte stride in the callers' tables. */
-typedef struct ByteMappingDescriptor {
-    const u8 *mapping;
-    u8 unk04[2];
-    u8 count;
-    u8 unk07[13];
-} ByteMappingDescriptor;
-
 typedef struct ModeSectorReadState {
     u8 unk00[0xA];
     s16 sectorIndex;
