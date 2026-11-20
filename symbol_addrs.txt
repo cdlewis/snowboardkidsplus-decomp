@@ -108,6 +108,7 @@ slideOutPlayerNumberDisplayTask = 0x80034928; // type:func
 updateControllers = 0x80015924; // type:func
 slideRaceTimeDisplayIn = 0x80033820; // type:func
 updateCurrentPlayerFromTaskPhase = 0x800257AC; // type:func
+gPlayerTimedEffectPlacementOffsets = 0x80120A5C; // size:0x10 defined:true
 gCurrentPlayerTaskPhaseCallbacks = 0x80120A6C; // size:0x20 defined:true
 finishTimedSpritePresentation = 0x8006AB18; // type:func
 drawMenuTimeWithBrightness = 0x80037BF8; // type:func
@@ -3024,6 +3025,7 @@ initializePlayerParticleHistoryTask = 0x80045B4C; // type:func
 
 beginScenePlaybackExitTask = 0x800A7B9C; // type:func
 
+updateCurrentPlayerTimedEffect = 0x8002497C; // type:func
 updateCurrentPlayerState23MotionAndTimer = 0x80024F10; // type:func
 
 updatePlayerRingEffectTask = 0x80067DD0; // type:func

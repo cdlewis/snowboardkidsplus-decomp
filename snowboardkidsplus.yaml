@@ -684,7 +684,7 @@ segments:
       - {start: 0x110E74, type: .data, name: engine/task_transitions, linker_section: .data.player_model_texture_offsets}
       - [0x110EA4, data, grid_resource_sector_ranges_tail]
       - [0x11109C, .data, race/player/player_update]
-      - [0x11125C, data, 11125C]
+      - {start: 0x11125C, type: .data, name: race/player/player_update, linker_section: .data.player_timed_effect_placement_offsets}
       - {start: 0x11126C, type: .data, name: race/player/player_update, linker_section: .data.player_task_phases}
       - {start: 0x11128C, type: .data, name: race/player/player_update, linker_section: .data.player_state30_task_phases}
       - {start: 0x111298, type: .data, name: race/player/player_update, linker_section: .data.player_state30_animation_countdowns}

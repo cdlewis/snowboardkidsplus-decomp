@@ -91,6 +91,11 @@ u8 *D_8012090C[10] = {
 };
 
 
+s32 gPlayerTimedEffectPlacementOffsets[4]
+    __attribute__((section(".data.player_timed_effect_placement_offsets"), aligned(4))) = {
+    -0x800, 0x800, -0x1800, 0x1800,
+};
+
 u8 gPlayerState30Animation20Countdowns[12]
     __attribute__((section(".data.player_state30_animation_countdowns"), aligned(4))) = {
     20, 0, 20, 0, 50, 0, 0, 0, 0, 30, 0, 0
@@ -123,7 +128,7 @@ void updateCurrentPlayerMotionEffects(void);
 void initializeScaledTaskCoordinateResource(void);
 void updateCurrentPlayerState24MotionAndScale(void);
 void func_80024288(void);
-void func_8002497C(void);
+void updateCurrentPlayerTimedEffect(void);
 void func_800205B8(void);
 void func_80028680(void);
 void updateCurrentPlayerAirborneDragUntilLanding(void);
@@ -469,7 +474,7 @@ void initializeCurrentPlayerTimedEffectState(s32 value) {
     D_8013B0D8->unk060 = 0;
     D_8013B0D8->unk0BC = 0;
     D_8013B0D8->unk094 = 0;
-    setCurrentTaskCallback(func_8002497C);
+    setCurrentTaskCallback(updateCurrentPlayerTimedEffect);
 }
 
 INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_8001F6D8);
@@ -875,7 +880,110 @@ void updateCurrentPlayerState5MotionAndTimer(void) {
     callCurrentPlayerStateCallbackIfDifferent(5);
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_8002497C);
+void updateCurrentPlayerTimedEffect(void) {
+    GameTask *task;
+    s32 nextX, nextY, nextZ;
+    u16 angle;
+    s32 xOffset, zOffset;
+
+    prepareCurrentPlayerFrame();
+    func_80028680();
+    updateCurrentPlayerAnimation();
+    if (D_8013B0D8->animationFlags & 0x10) {
+        startCurrentPlayerAnimation(17, 1);
+    }
+
+    task = D_8013AE88;
+    switch (task->data1A) {
+    case 0:
+        if (--D_8013B0D8->unk08C != 0) {
+            break;
+        }
+        task->data1A++;
+        D_8013B0D8->unk08C = 30;
+        if (D_8013B0D8->unk008 == 0) {
+            if (task->data18 == 0) {
+                configureTaskStateTransition(2, 0x1000, D_8013B0D8->unk08C);
+            } else {
+                configureTaskStateTransition(2, 0x2000, D_8013B0D8->unk08C);
+            }
+        }
+        break;
+    case 1:
+        if (--D_8013B0D8->unk08C != 0) {
+            break;
+        }
+        task->data1A++;
+        D_8013B0D8->unk08C = 30;
+        if (D_8013B0D8->unk008 == 0) {
+            if (task->data18 == 0) {
+                configureTaskStateTransition(1, 0x1000, D_8013B0D8->unk08C);
+            } else {
+                configureTaskStateTransition(1, 0x2000, D_8013B0D8->unk08C);
+            }
+        }
+        if (D_8013AE88->data1C == 0) {
+            for (;;) {
+                getGeometryPlacementTransform(D_8013B0D8->unk92E, &D_8013B0D8->x, &D_8013B0D8->y,
+                                              &D_8013B0D8->z, &D_8013B0D8->unk110);
+                if (checkCurrentPlayerSurfaceType()) {
+                    break;
+                }
+                D_8013B0D8->unk92E--;
+            }
+        } else {
+            /* Reuse the probe counter as the output angle below. */
+            angle = 0;
+            do {
+                if (func_8004AAA0(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8) == 8) {
+                    D_8013B0D8->unk92E++;
+                    break;
+                }
+                D_8013B0D8->unk92E++;
+                angle++;
+            } while ((s16)angle != 3);
+            getGeometryPlacementTransform(D_8013B0D8->unk92E, &D_8013B0D8->x, &D_8013B0D8->y,
+                                              &D_8013B0D8->z, &D_8013B0D8->unk110);
+            getGeometryPlacementTransform(D_8013B0D8->unk92E + 1, &nextX, &nextY, &nextZ, &angle);
+            xOffset = rcos((s16)angle) * gPlayerTimedEffectPlacementOffsets[D_8013AE88->data18];
+            D_8013B0D8->x += (nextX - D_8013B0D8->x) / 2 + xOffset / 4096;
+            zOffset = rsin((s16)angle) * gPlayerTimedEffectPlacementOffsets[D_8013AE88->data18];
+            D_8013B0D8->z += (nextZ - D_8013B0D8->z) / 2 - zOffset / 4096;
+        }
+
+        D_8013B0D8->unk0B8 = 0;
+        D_8013B0D8->unk0B4 = 0;
+        D_8013B0D8->unk0B6 = D_8013B0D8->unk110 - 0x400;
+        D_8013B0D8->y = func_8004A764(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8) << 8;
+        /* Preserve the fourth word of the position snapshot. */
+        *(VECTOR *)&D_8013B0D8->unk050 = *(VECTOR *)&D_8013B0D8->x;
+        D_8013B0D8->unk128 &= 0xFFFBDBFF;
+        smoothAndScaleCurrentPlayerInput(0, 0);
+        startCurrentPlayerAnimation(1, 1);
+        if (D_8013B0D8->unk008 == 0) {
+            D_801241E8[D_8013AE88->data18].unk16 = 1;
+            D_801241E8[D_8013AE88->data18].yaw = D_8013B0D8->unk110;
+            D_801241E8[D_8013AE88->data18].pitch = -0x40;
+            updatePlayerCameraPosition(D_8013AE88->data18);
+            clampPlayerCameraHeight(D_8013AE88->data18);
+        }
+        D_8013B0D8->unk078 = 0x400;
+        break;
+    case 2:
+        if (--D_8013B0D8->unk08C != 0) {
+            break;
+        }
+        if (D_8013B0D8->unk12C != 24) {
+            D_8013B0D8->unk12C = 0;
+        }
+        D_8013B0D8->unk128 &= ~8;
+        currentPlayerStateCallbacks[D_8013B0D8->unk12C]();
+        return;
+    }
+    if (D_8013B0D8->unk12C != 6 && D_8013B0D8->unk12C != 9) {
+        currentPlayerStateCallbacks[D_8013B0D8->unk12C]();
+    }
+}
 
 void updateCurrentPlayerState23MotionAndTimer(void) {
     RacePlayer *player;
