@@ -36,15 +36,18 @@
 #include "psx/libapi.h"
 #include "game/graphics/draw_mode_sprite.h"
 
-/* TMD dispatch header and persistent flags shared by projected renderers. */
+/* TMD dispatch and triangle projection state shared by the model renderers. */
 typedef struct ProjectedModelScratchpad {
     union {
         u32 word;
         struct { u8 outputLength, inputLength, flags, mode; } bytes;
     } header;
-    u8 unk04[0x63];
-    u8 code;
-    u8 unk68[2];
+    u8 unk04[4];
+    s32 depth, depthCue, flags;
+    u8 unk14[0x4C];
+    u16 tpage, clut;
+    u8 r, g, b, code;
+    u8 textured, gouraud;
     u8 fogEnabled;
     u8 unk6B;
 } ProjectedModelScratchpad;
@@ -949,6 +952,8 @@ void func_8005D828(RacePlayer *player, PlayerCollisionRegion *region);
 void func_8005B460(void);
 void updateInteractionVisualTask(void);
 void updateCourseVisualTask(void);
+void drawSubdivisionTriangle(TriangleScratchVertex *first, TriangleScratchVertex *second,
+                             TriangleScratchVertex *third);
 void emitProjectedFlatTriangle(TriangleScratchVertex *vertices);
 void emitProjectedFlatQuad(TriangleScratchVertex *vertices);
 void func_800542BC(TriangleScratchVertex *vertices, s32 flags);

@@ -256,7 +256,127 @@ void emitProjectedGouraudTexturedQuad(TriangleScratchVertex *vertices) {
     GsOUT_PACKET_P = (u32)(packet + 1);
 }
 
-INCLUDE_ASM("asm/nonmatchings/graphics/model_renderer", func_80053408);
+void drawSubdivisionTriangle(TriangleScratchVertex *first, TriangleScratchVertex *second,
+                             TriangleScratchVertex *third) {
+    ProjectedModelScratchpad *scratch = (ProjectedModelScratchpad *)getScratchAddr(0);
+    if (scratch->textured) {
+        if (scratch->gouraud) {
+            POLY_GT3 *packet = (POLY_GT3 *)GsOUT_PACKET_P;
+            gte_ldv3(&first->position, &second->position, &third->position);
+            gte_rtpt();
+            gte_stflg(&scratch->flags);
+            if (scratch->flags & 0x7FFBE000) {
+                return;
+            }
+            gte_stsxy3_gt3(packet);
+            packet->tag = 9 << 24;
+            setcode(packet, scratch->code | POLY_GT3_CODE);
+            packet->tpage = scratch->tpage;
+            packet->clut = scratch->clut;
+            gte_avsz3();
+            gte_stotz(&scratch->depth);
+            if (scratch->depth < 25) {
+                return;
+            }
+            packet->u0 = first->texture.uv.u;
+            packet->u1 = second->texture.uv.u;
+            packet->u2 = third->texture.uv.u;
+            packet->v0 = first->texture.uv.v;
+            packet->v1 = second->texture.uv.v;
+            packet->v2 = third->texture.uv.v;
+            packet->r0 = first->color.r;
+            packet->r1 = second->color.r;
+            packet->r2 = third->color.r;
+            packet->g0 = first->color.g;
+            packet->g1 = second->color.g;
+            packet->g2 = third->color.g;
+            packet->b0 = first->color.b;
+            packet->b1 = second->color.b;
+            packet->b2 = third->color.b;
+            setaddr(packet, getaddr(&D_8013B670->org[(scratch->depth >> D_8013B69C) + 6]));
+            GsOUT_PACKET_P = (u32)(packet + 1);
+            setaddr(&D_8013B670->org[(scratch->depth >> D_8013B69C) + 6], packet);
+        } else {
+            POLY_FT3 *packet = (POLY_FT3 *)GsOUT_PACKET_P;
+            gte_ldv3(&first->position, &second->position, &third->position);
+            gte_rtpt();
+            gte_stflg(&scratch->flags);
+            if (scratch->flags & 0x7FFBE000) {
+                return;
+            }
+            gte_stsxy3_ft3(packet);
+            packet->tag = 7 << 24;
+            setcode(packet, scratch->code | POLY_FT3_CODE);
+            packet->tpage = scratch->tpage;
+            packet->clut = scratch->clut;
+            gte_avsz3();
+            gte_stotz(&scratch->depth);
+            if (scratch->depth < 25) {
+                return;
+            }
+            packet->u0 = first->texture.uv.u;
+            packet->u1 = second->texture.uv.u;
+            packet->u2 = third->texture.uv.u;
+            packet->v0 = first->texture.uv.v;
+            packet->v1 = second->texture.uv.v;
+            packet->v2 = third->texture.uv.v;
+            setRGB0(packet, scratch->r, scratch->g, scratch->b);
+            setaddr(packet, getaddr(&D_8013B670->org[(scratch->depth >> D_8013B69C) + 6]));
+            GsOUT_PACKET_P = (u32)(packet + 1);
+            setaddr(&D_8013B670->org[(scratch->depth >> D_8013B69C) + 6], packet);
+        }
+    } else {
+        if (scratch->gouraud) {
+            POLY_G3 *packet = (POLY_G3 *)GsOUT_PACKET_P;
+            gte_ldv3(&first->position, &second->position, &third->position);
+            gte_rtpt();
+            gte_stflg(&scratch->flags);
+            if (scratch->flags & 0x7FFBE000) {
+                return;
+            }
+            gte_stsxy3_g3(packet);
+            packet->tag = 6 << 24;
+            setcode(packet, scratch->code | POLY_G3_CODE);
+            gte_avsz3();
+            gte_stotz(&scratch->depth);
+            if (scratch->depth < 25) {
+                return;
+            }
+            packet->r0 = first->color.r;
+            packet->r1 = second->color.r;
+            packet->r2 = third->color.r;
+            packet->g0 = first->color.g;
+            packet->g1 = second->color.g;
+            packet->g2 = third->color.g;
+            packet->b0 = first->color.b;
+            packet->b1 = second->color.b;
+            packet->b2 = third->color.b;
+            setaddr(packet, getaddr(&D_8013B670->org[(scratch->depth >> D_8013B69C) + 6]));
+            GsOUT_PACKET_P = (u32)(packet + 1);
+            setaddr(&D_8013B670->org[(scratch->depth >> D_8013B69C) + 6], packet);
+        } else {
+            POLY_F3 *packet = (POLY_F3 *)GsOUT_PACKET_P;
+            gte_ldv3(&first->position, &second->position, &third->position);
+            gte_rtpt();
+            gte_stflg(&scratch->flags);
+            if (scratch->flags & 0x7FFBE000) {
+                return;
+            }
+            gte_stsxy3_f3(packet);
+            packet->tag = 4 << 24;
+            setcode(packet, scratch->code | POLY_F3_CODE);
+            gte_avsz3();
+            gte_stotz(&scratch->depth);
+            if (scratch->depth < 25) {
+                return;
+            }
+            setRGB0(packet, scratch->r, scratch->g, scratch->b);
+            setaddr(packet, getaddr(&D_8013B670->org[(scratch->depth >> D_8013B69C) + 6]));
+            GsOUT_PACKET_P = (u32)(packet + 1);
+            setaddr(&D_8013B670->org[(scratch->depth >> D_8013B69C) + 6], packet);
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/graphics/model_renderer", func_80053A34);
 
@@ -403,8 +523,8 @@ void func_800559F4(TmdObject *object, GsOT *ot, s32 shift, u32 flags) {
     for (i = 0; i < D_8013B68C; i++) {
         scratch->header.word = D_8013B680->unk00;
         scratch->code = scratch->header.bytes.mode & 2;
-        scratch->unk68[0] = (scratch->header.bytes.mode >> 2) & 1;
-        scratch->unk68[1] = (scratch->header.bytes.mode >> 4) & 1;
+        scratch->textured = (scratch->header.bytes.mode >> 2) & 1;
+        scratch->gouraud = (scratch->header.bytes.mode >> 4) & 1;
         switch (scratch->header.word & 0xFDFFFFFF) {
         case ((POLY_F3_CODE | 1) << 24) | 0x00010304: drawIndexedFlatTriangle(); break;
         case ((POLY_FT3_CODE | 1) << 24) | 0x00010607: processTexturedTrianglePrimitive(); break;

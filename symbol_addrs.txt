@@ -83,6 +83,7 @@ playSoundEffect = 0x800181B0; // type:func
 playPositionalSoundEffect = 0x80018538; // type:func
 initializeGameOptionViewTask = 0x8001B7F0; // type:func
 checkCurrentPlayerSurfaceType = 0x8002DD70; // type:func
+drawSubdivisionTriangle = 0x80053408; // type:func
 drawIndexedFlatTriangle = 0x80054E70; // type:func
 initializeViewAndSelectTaskCallback = 0x8002F584; // type:func
 updateCurrentPlayerTaskCountdown = 0x80026D10; // type:func

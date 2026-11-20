@@ -45,6 +45,36 @@ long SquareRoot0(long value);
     : "r"( r0 ), "r"( r1 ), "r"( r2 ) \
     : "memory" )
 
+/* Psy-Q 4.2 INLINE_C.H. */
+#define gte_avsz3() __asm__ volatile ("nop; nop; avsz3")
+#define gte_stotz(result) \
+    __asm__ volatile ("swc2 $7, 0(%0)" : : "r"(result) : "memory")
+
+/* Psy-Q 4.2 INLINE_C.H: write projected coordinates to triangle packets. */
+#define gte_stsxy3_f3(packet) __asm__ volatile ( \
+    "swc2 $12, 8(%0);" \
+    "swc2 $13, 12(%0);" \
+    "swc2 $14, 16(%0)" \
+    : : "r"(packet) : "memory")
+
+#define gte_stsxy3_g3(packet) __asm__ volatile ( \
+    "swc2 $12, 8(%0);" \
+    "swc2 $13, 16(%0);" \
+    "swc2 $14, 24(%0)" \
+    : : "r"(packet) : "memory")
+
+#define gte_stsxy3_ft3(packet) __asm__ volatile ( \
+    "swc2 $12, 8(%0);" \
+    "swc2 $13, 16(%0);" \
+    "swc2 $14, 24(%0)" \
+    : : "r"(packet) : "memory")
+
+#define gte_stsxy3_gt3(packet) __asm__ volatile ( \
+    "swc2 $12, 8(%0);" \
+    "swc2 $13, 20(%0);" \
+    "swc2 $14, 32(%0)" \
+    : : "r"(packet) : "memory")
+
 /* Psy-Q 3.6 INLINE_C.H. */
 #define gte_nclip() __asm__ volatile ( \
     "nop;" \
