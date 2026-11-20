@@ -69,7 +69,7 @@ endif
 # restarts Make, discovering newly generated assembly after a clean checkout.
 SPLIT_INPUTS := snowboardkidsplus.yaml symbol_addrs.txt reloc_addrs.txt disc/SLPS_018.23 Makefile
 SPLIT_OUTPUTS := linkers/slps_018.23.ld linkers/slps_018.23.d linkers/undefined_funcs_auto.txt linkers/undefined_syms_auto.txt include/include_asm.h include/macro.inc include/labels.inc include/gte_macros.inc
-DAT_METADATA := build/dat/snb_dat.yaml build/dat/runtime.ld build/include/game/io/dat_entries.h
+DAT_METADATA := build/dat/snb_dat.yaml build/include/game/io/dat_entries.h
 .PHONY: all verify objects all-objects expected split extract clean hooks report badges scratch print-settings FORCE
 ifeq ($(COMPARISON),1)
 ifeq ($(abspath $(BUILD_DIR)),$(ROOT)/build)
@@ -109,7 +109,11 @@ $(DAT_METADATA) &: tools/snb_dat.py config/dat_resources.yaml symbol_addrs.txt d
 dat-split: $(DAT_METADATA)
 	$(SPLAT) split build/dat/snb_dat.yaml --modes bin > build/dat/split.log 2>&1 || { tail -n 30 build/dat/split.log; exit 1; }
 
-split: $(SPLIT_OUTPUTS) dat-split
+split: $(SPLIT_OUTPUTS) build/absolute_symbols.ld dat-split
+
+build/absolute_symbols.ld: tools/absolute_symbols.py symbol_addrs.txt
+	@mkdir -p $(@D)
+	$(PY) tools/absolute_symbols.py symbol_addrs.txt $@
 
 extract:
 	$(PRINTF) "[$(CYAN)extract $(NO_COL)]  Extracting disc executable and SNB/SNB.DAT\n"
@@ -192,9 +196,9 @@ $(BUILD_DIR)/src/%.o: src/%.s Makefile config/compiler.mk $(BUILD_DIR)/.config
 
 ifneq ($(COMPARISON),1)
 # PS-X EXE combines code and mutable data in one load image without page permissions.
-build/slps_018.23.elf: $(C_OBJECTS) $(HASM_OBJECTS) $(ASM_OBJECTS) config/symbol_aliases.ld build/dat/runtime.ld linkers/slps_018.23.ld linkers/undefined_funcs_auto.txt linkers/undefined_syms_auto.txt
+build/slps_018.23.elf: $(C_OBJECTS) $(HASM_OBJECTS) $(ASM_OBJECTS) config/symbol_aliases.ld build/absolute_symbols.ld linkers/slps_018.23.ld linkers/undefined_funcs_auto.txt linkers/undefined_syms_auto.txt
 	$(PRINTF) "[$(PINK) linker $(NO_COL)]  Linking $@\n"
-	$(LD) -EL -nostdlib --no-warn-rwx-segments -T linkers/slps_018.23.ld -T linkers/undefined_funcs_auto.txt -T linkers/undefined_syms_auto.txt -T config/symbol_aliases.ld -T build/dat/runtime.ld -Map build/slps_018.23.map -o $@ --whole-archive --start-group $(SDK_LIBRARIES) --end-group --no-whole-archive
+	$(LD) -EL -nostdlib --no-warn-rwx-segments -T linkers/slps_018.23.ld -T linkers/undefined_funcs_auto.txt -T linkers/undefined_syms_auto.txt -T config/symbol_aliases.ld -T build/absolute_symbols.ld -Map build/slps_018.23.map -o $@ --whole-archive --start-group $(SDK_LIBRARIES) --end-group --no-whole-archive
 
 build/slps_018.23.exe: build/slps_018.23.elf
 	$(PRINTF) "[$(CYAN) objcpy $(NO_COL)]  $<\n"

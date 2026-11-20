@@ -1342,91 +1342,118 @@ read_tables:
     destination: DAT_SCENE_TEXT
 runtime_regions:
 - symbol: gDatScratch
+  size: 0x80000
   macro: DAT_SCRATCH
   evidence: Shared DAT staging, sound body, animation, scene event workspace and movie ring;
     extent is remaining RAM, not a reservation.
 - symbol: gDatStartupModels
+  size: 0x2800
   macro: DAT_STARTUP_MODEL_BUFFER
   views: [DAT_STARTUP_MODELS]
   evidence: Entry 0 startup read; overlaps scratch above 0x80180000.
 - symbol: gDatStartupTextures
+  size: 0x9000
   macro: DAT_STARTUP_TEXTURE_BUFFER
   views: [DAT_STARTUP_TEXTURES]
   evidence: Entry 1 startup read; reused by movies/course resources.
 - symbol: gDatPlayerModels
+  size: 0x10000
   macro: DAT_PLAYER_MODEL_BUFFERS
   evidence: Four 0x4000 player model slots.
 - symbol: gDatPlayerModelBlocks
+  size: 0x2000
   macro: DAT_PLAYER_MODEL_BLOCKS
   evidence: Four 0x800 model header blocks.
 - symbol: gDatBackgroundMap
+  size: 0x800
   macro: DAT_BACKGROUND_MAP
   evidence: One sector background map.
 - symbol: gDatBackgroundTextureFirst
+  size: 0x6800
   macro: DAT_BACKGROUND_TEXTURE_FIRST
   evidence: Background TIM read, 13 sectors.
 - symbol: gDatBackgroundTextureSecond
+  size: 0x2000
   macro: DAT_BACKGROUND_TEXTURE_SECOND
   evidence: Background TIM read, four sectors.
 - symbol: gDatTextureArchive
+  size: 0x46800
   macro: DAT_TEXTURE_ARCHIVE_BUFFER
   views: [DAT_TEXTURE_ARCHIVE]
   evidence: Mode 2 TIM archive read, 0x8d sectors; other states also stage TIM archives
     here.
 - symbol: gDatSoundHeader0
+  size: 0x1800
   macro: DAT_SOUND_HEADER_0
   evidence: Mode 11 sound bank slot 0 header.
 - symbol: gDatSoundHeader1
+  size: 0x1800
   macro: DAT_SOUND_HEADER_1
   evidence: Mode 11 sound bank slot 1 header.
 - symbol: gDatSoundHeader2
+  size: 0x2000
   macro: DAT_SOUND_HEADER_2
   evidence: Mode 11 sound bank slot 2 header.
 - symbol: gDatMusicSequence
+  size: 0x2000
   macro: DAT_MUSIC_SEQUENCE
   evidence: Mode 11 music sequence.
 - symbol: gDatCourseFirst
+  size: 0x8800
   macro: DAT_COURSE_FIRST
   evidence: First course resource; sizes vary by course.
 - symbol: gDatCourseSecond
+  size: 0x2B000
   macro: DAT_COURSE_SECOND
   evidence: Second course resource; overlaps startup textures in some states.
 - symbol: gDatCourseOptional
+  size: 0x2800
   macro: DAT_COURSE_OPTIONAL
   evidence: Optional course read, up to five sectors.
 - symbol: gDatSceneTextBuffer
+  size: 0x7DFA0
   macro: DAT_SCENE_TEXT
   evidence: Scene text reads start after the block table in the shared staging buffer;
     extent is remaining RAM.
 - symbol: gDatSceneImageBuffer
+  size: 0x13000
   macro: DAT_SCENE_IMAGE
   evidence: Secondary text resource TIM reads, 0x26 sectors.
 - symbol: gDatIndexedResource
+  size: 0x800
   macro: DAT_INDEXED_RESOURCE
   evidence: Mode-indexed one sector text reads.
 - symbol: gDatGridModels
+  size: 0x10000
   macro: DAT_GRID_MODEL_BUFFERS
   evidence: Grid model slots, 0x4000 stride; overlays other resource views.
 - symbol: gDatGridTextures
+  size: 0x10000
   macro: DAT_GRID_TEXTURE_BUFFERS
   evidence: Grid texture slots, 0x4000 stride.
 - symbol: gMovieVlcBuffer0
+  size: 0x28000
   macro: MOVIE_VLC_BUFFER_0
   evidence: Movie VLC buffers, 0x28000 stride.
 - symbol: gMovieVlcBuffer1
+  size: 0x28000
   macro: MOVIE_VLC_BUFFER_1
   evidence: Movie VLC buffers, 0x28000 stride.
 - symbol: gMovieImageBuffer0
+  size: 0x3000
   macro: MOVIE_IMAGE_BUFFER_0
   evidence: Movie decoded image buffers, 0x3000 stride.
 - symbol: gMovieImageBuffer1
+  size: 0x3000
   macro: MOVIE_IMAGE_BUFFER_1
   evidence: Movie decoded image buffers, 0x3000 stride.
 - symbol: gMovieVlcTable
+  size: 0x11000
   macro: MOVIE_VLC_TABLE
   evidence: Movie VLC lookup table base; extent is capped at the first VLC buffer,
     not a proven allocation size.
 - symbol: gSaveRecordWorkspace
+  size: 0x810
   macro: SAVE_RECORD_WORKSPACE
   evidence: Two SaveRecord slots used by initializeSaveRecordTask; shares the
     resource/movie arena and is not a DAT entry.

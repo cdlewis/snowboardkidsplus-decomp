@@ -7,7 +7,7 @@ gPlayerCombinedTrickBonuses = 0x80120AE4; // size:0x14 defined:true
 drawOscillatingQuadTask = 0x8004EFE0; // type:func
 gOscillatingQuadVertices = 0x80124DA4; // type:SVECTOR size:0x20 defined:true
 // PSX scratchpad RAM; fixed hardware storage.
-scratchpad = 0x1F800000; // size:0x400
+scratchpad = 0x1F800000; // size:0x400 absolute:true extract:false
 
 drawRotatingQuadTrailTask = 0x80068D1C; // type:func
 gRotatingQuadTrailVertices = 0x8012CA74; // type:SVECTOR size:0x20 defined:true
@@ -2990,7 +2990,9 @@ restoreSelectedPlayerState = 0x8005F944; // type:func
 drawFallingPairedVisualTask = 0x800355D4; // type:func
 updateFallingPairedVisualTask = 0x800356FC; // type:func
 gFallingPairedVisualFrames = 0x80124078; // size:0x38 defined:true
-gFallingPairedVisualAnimation = 0x8013B114; // size:0x6 defined:true
+// The six-byte extent is declared in C. Splat scans this section in whole words.
+gFallingPairedVisualAnimation = 0x8013B114; // type:u8 defined:true
+gSaveRecordUnlockOverrideFlags = 0x8013B11A; // type:u8 size:0x1 defined:true
 
 initializeBouncingTaskVisual = 0x8004777C; // type:func
 updateBouncingTaskVisual = 0x80047A3C; // type:func
@@ -3528,34 +3530,34 @@ D_8013B17A = 0x8013B17A; // size:0x2
 gCourseCoinCountFormat = 0x8013B17C; // size:0x4
 gBestLapLabel = 0x80010C50; // size:0x10
 
-// Loaded resource RAM views: overlapping lifetimes, no executable storage.
-gDatScratch = 0x80180000; // size:0x80000 absolute:true extract:false
-gDatStartupModels = 0x8017D000; // size:0x2800 absolute:true extract:false
-gDatStartupTextures = 0x801F0000; // size:0x9000 absolute:true extract:false
-gDatPlayerModels = 0x8016B000; // size:0x10000 absolute:true extract:false
-gDatPlayerModelBlocks = 0x8017B000; // size:0x2000 absolute:true extract:false
-gDatBackgroundMap = 0x80180800; // size:0x800 absolute:true extract:false
-gDatBackgroundTextureFirst = 0x80181000; // size:0x6800 absolute:true extract:false
-gDatBackgroundTextureSecond = 0x80187800; // size:0x2000 absolute:true extract:false
-gDatTextureArchive = 0x80189800; // size:0x46800 absolute:true extract:false
-gDatSoundHeader0 = 0x8015E800; // size:0x1800 absolute:true extract:false
-gDatSoundHeader1 = 0x80160000; // size:0x1800 absolute:true extract:false
-gDatSoundHeader2 = 0x80161800; // size:0x2000 absolute:true extract:false
-gDatMusicSequence = 0x80163800; // size:0x2000 absolute:true extract:false
-gDatCourseFirst = 0x801C0000; // size:0x8800 absolute:true extract:false
-gDatCourseSecond = 0x801C8800; // size:0x2B000 absolute:true extract:false
-gDatCourseOptional = 0x801F0800; // size:0x2800 absolute:true extract:false
-gDatSceneTextBuffer = 0x80182060; // size:0x7DFA0 absolute:true extract:false
-gDatSceneImageBuffer = 0x80184060; // size:0x13000 absolute:true extract:false
-gDatIndexedResource = 0x801F2080; // size:0x800 absolute:true extract:false
-gDatGridModels = 0x801BC800; // size:0x10000 absolute:true extract:false
-gDatGridTextures = 0x801D0800; // size:0x10000 absolute:true extract:false
-gMovieVlcBuffer0 = 0x801A1000; // size:0x28000 absolute:true extract:false
-gMovieVlcBuffer1 = 0x801C9000; // size:0x28000 absolute:true extract:false
-gMovieImageBuffer0 = 0x801F1000; // size:0x3000 absolute:true extract:false
-gMovieImageBuffer1 = 0x801F4000; // size:0x3000 absolute:true extract:false
-gMovieVlcTable = 0x80190000; // size:0x11000 absolute:true extract:false
-gSaveRecordWorkspace = 0x801E0000; // size:0x810 absolute:true extract:false
+// Loaded resource RAM views. Extents are in config/dat_resources.yaml.
+gDatScratch = 0x80180000; // absolute:true extract:false
+gDatStartupModels = 0x8017D000; // absolute:true extract:false
+gDatStartupTextures = 0x801F0000; // absolute:true extract:false
+gDatPlayerModels = 0x8016B000; // absolute:true extract:false
+gDatPlayerModelBlocks = 0x8017B000; // absolute:true extract:false
+gDatBackgroundMap = 0x80180800; // absolute:true extract:false
+gDatBackgroundTextureFirst = 0x80181000; // absolute:true extract:false
+gDatBackgroundTextureSecond = 0x80187800; // absolute:true extract:false
+gDatTextureArchive = 0x80189800; // absolute:true extract:false
+gDatSoundHeader0 = 0x8015E800; // absolute:true extract:false
+gDatSoundHeader1 = 0x80160000; // absolute:true extract:false
+gDatSoundHeader2 = 0x80161800; // absolute:true extract:false
+gDatMusicSequence = 0x80163800; // absolute:true extract:false
+gDatCourseFirst = 0x801C0000; // absolute:true extract:false
+gDatCourseSecond = 0x801C8800; // absolute:true extract:false
+gDatCourseOptional = 0x801F0800; // absolute:true extract:false
+gDatSceneTextBuffer = 0x80182060; // absolute:true extract:false
+gDatSceneImageBuffer = 0x80184060; // absolute:true extract:false
+gDatIndexedResource = 0x801F2080; // absolute:true extract:false
+gDatGridModels = 0x801BC800; // absolute:true extract:false
+gDatGridTextures = 0x801D0800; // absolute:true extract:false
+gMovieVlcBuffer0 = 0x801A1000; // absolute:true extract:false
+gMovieVlcBuffer1 = 0x801C9000; // absolute:true extract:false
+gMovieImageBuffer0 = 0x801F1000; // absolute:true extract:false
+gMovieImageBuffer1 = 0x801F4000; // absolute:true extract:false
+gMovieVlcTable = 0x80190000; // absolute:true extract:false
+gSaveRecordWorkspace = 0x801E0000; // absolute:true extract:false
 
 // Scene timeline records and text-block preparation.
 gFreeSceneEvents = 0x8013B5D0; // size:0x4 defined:true

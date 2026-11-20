@@ -29,6 +29,8 @@ options:
   disassemble_all: True
   # Keep unmatched rodata as standalone assembly while recording its C-unit owner.
   migrate_rodata_to_functions: False
+  # A reference can identify a jump table without establishing ownership of its neighbors.
+  pair_rodata_to_text: False
   # INCLUDE_ASM wrapped in __maspsx_include_asm_hack_* functions so the
   # cc1 -> maspsx -> GNU as pipeline keeps included asm verbatim.
   include_asm_macro_style: maspsx_hack
@@ -65,7 +67,7 @@ segments:
     vram: 0x80010000
     bss_size: 0x5E88
     subsegments:
-      - {start: 0x800, type: .rodata, name: io/cd_queue, linker_section: .rodata.cd_paths}
+      - {start: 0x800, type: .rodata, name: io/cd_queue, linker_section: .data.cd_paths}
       - [0x840, rodata, main_cd_paths_tail]
       - [0x918, .rodata, io/cd_queue]
       - [0x984, pad]
@@ -79,6 +81,7 @@ segments:
       - [0xCB0, rodata]
       - [0xCD8, .rodata, race/player/player_update]
       - [0xCEC, rodata]
+      - [0xCF0, rodata]
       - {start: 0xDE0, type: .rodata, name: race/player/player_update, linker_section: .rodata.race_player_start}
       - {start: 0xE34, type: .rodata, name: race/player/player_actions, linker_section: .rodata.player_course_progress}
       - {start: 0xE58, type: .rodata, name: race/player/player_actions, linker_section: .rodata.player_course_progress_padding}
@@ -145,6 +148,7 @@ segments:
       - {start: 0x26A0, type: .rodata, name: menu/panel_tasks, linker_section: .rodata.board_level_label}
       - [0x26B0, rodata]
       - [0x2794, rodata]
+      - [0x27DC, rodata]
       - [0x2840, rodata]
       - [0x288C, rodata]
       - {start: 0x28B8, type: .rodata, name: menu/resource_tasks, linker_section: .rodata.time_records_start_prompt}
@@ -927,7 +931,7 @@ segments:
       - {start: 0x12B8F4, type: .data, name: menu/mode_transitions, linker_section: .data.title_menu_sprite_mapping}
       - [0x12B8FC, data, 12B8FC]
       - {start: 0x12B914, type: .data, name: race/player/player_actions, linker_section: .data.falling_paired_visual_animation}
-      - [0x12B91A, pad]
+      - {start: 0x12B91A, type: .data, name: menu/task_widgets, linker_section: .data.save_record_unlock_override_flags}
       - {start: 0x12B91C, type: .data, name: race/player/player_actions, linker_section: .data.result_icon_palettes}
       - {start: 0x12B920, type: .data, name: race/player/player_actions, linker_section: .data.result_row_labels}
       - {start: 0x12B930, type: .data, name: menu/record_screens, linker_section: .data.hit_count_labels}

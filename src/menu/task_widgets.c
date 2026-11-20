@@ -213,6 +213,9 @@ extern GameTask *D_8013BDA8[4];
 
 s8 gTaskImageSourceRows[12] = {8, 1, 2, 3, 4, 5, 6, 7, 9, 0, 0, 0};
 
+u8 gSaveRecordUnlockOverrideFlags
+    __attribute__((section(".data.save_record_unlock_override_flags"))) = 0;
+
 SPRT_16 gAnimatedSprite16Template __attribute__((section(".data.animated_sprite16"))) = {
     0x03000000, 0x80, 0x80, 0x80, SPRT_16_CODE,
     0, 0, 0x70, 0x50, 0x3EB2
@@ -2324,11 +2327,11 @@ void cycleSaveRecordUnlockFlags(s16 recordIndex, s16 maskIndex) {
 
 void applySaveRecordUnlockOverrides(s16 index) {
     s16 i;
-    if (D_8013B11A & 1) {
+    if (gSaveRecordUnlockOverrideFlags & 1) {
         updatePairedStateFlag(0);
         updatePairedStateFlag(1);
     }
-    if (D_8013B11A & 2) {
+    if (gSaveRecordUnlockOverrideFlags & 2) {
         for (i = 0; i < 10; i++) {
             setSaveRecordMaskTier(index, i, 4);
             cycleSaveRecordUnlockFlags(index, i);
@@ -2340,7 +2343,7 @@ void applySaveRecordUnlockOverrides(s16 index) {
         }
         gUnlockNotificationFlags = 0x7FF;
     }
-    if (D_8013B11A & 4) {
+    if (gSaveRecordUnlockOverrideFlags & 4) {
         SaveRecord *records = (SaveRecord *)&D_8013080C;
         records[index].flags_3AC |= 0x1FFFC;
     }

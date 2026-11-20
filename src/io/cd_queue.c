@@ -5,16 +5,16 @@ u16 gCdRequestWriteIndex = 0;
 u16 gCdRequestReadIndex = 0;
 s16 D_8013AE76 = 0;
 
-static char sAtMoviePath[16] __attribute__((section(".rodata.cd_paths"), aligned(4))) =
+static char sAtMoviePath[16] __attribute__((section(".data.cd_paths"), aligned(4))) =
     "\\MV\\ATMOV.STR;1";
 
-static char sRaMoviePath[16] __attribute__((section(".rodata.cd_paths"), aligned(4))) =
+static char sRaMoviePath[16] __attribute__((section(".data.cd_paths"), aligned(4))) =
     "\\MV\\RAMOV.STR;1";
 
-static char sOpeningMoviePath[16] __attribute__((section(".rodata.cd_paths"), aligned(4))) =
+static char sOpeningMoviePath[16] __attribute__((section(".data.cd_paths"), aligned(4))) =
     "\\MV\\OPMOV.STR;1";
 
-static char sDatPath[16] __attribute__((section(".rodata.cd_paths"), aligned(4))) =
+static char sDatPath[16] __attribute__((section(".data.cd_paths"), aligned(4))) =
     "\\SNB\\SNB.DAT;1";
 
 CdlFILE gMovieFiles[MOVIE_FILE_COUNT] __attribute__((section(".data.cd_files"))) = {0};

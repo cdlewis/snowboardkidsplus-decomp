@@ -31,7 +31,7 @@ commit them:
 | `build/dat/catalogue.json` | Full evidence, nested layouts, reads, commands, destinations and RAM views |
 | `build/dat/SNB.DAT` | Reconstructed archive, assembled from extracted header and entry files |
 | `build/include/game/io/dat_entries.h` | Resource sector/count constants and runtime addresses |
-| `build/dat/runtime.ld` | Absolute runtime symbols; allocates no storage |
+| `build/absolute_symbols.ld` | Absolute linker symbols from `symbol_addrs.txt`, including DAT runtime addresses |
 
 For read-only inspection without a full build:
 

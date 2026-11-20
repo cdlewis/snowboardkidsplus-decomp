@@ -757,7 +757,7 @@ void checkControllerInputSequenceTask(void) {
         if (D_8013AEE8[0] == gControllerInputSequences[D_8013AE88->data18][D_8013AE88->data1A]) {
             D_8013AE88->data1A++;
             if (gControllerInputSequences[D_8013AE88->data18][D_8013AE88->data1A] == 0xFFFF) {
-                D_8013B11A |= 1 << D_8013AE88->data18;
+                gSaveRecordUnlockOverrideFlags |= 1 << D_8013AE88->data18;
                 playSoundEffect(0, 0, 0x20);
                 func_800149A8();
             }
