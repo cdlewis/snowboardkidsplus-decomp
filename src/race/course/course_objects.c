@@ -2056,7 +2056,7 @@ void updateCurrentPlayerCourseTrigger(void) {
     s32 sine, cosine;
     s32 mask;
     if (currentPlayerAbsolute->unk128 & 0x1000) currentPlayerAbsolute->unk948 = 0;
-    currentPlayerAbsolute->unk950[0] = 0;
+    currentPlayerAbsolute->unk950 = 0;
     record = gCourseTriggers[D_8013AFCE];
     for (;; record++, i++) {
         if (record->geometryIndex == -1) return;
@@ -2071,8 +2071,8 @@ void updateCurrentPlayerCourseTrigger(void) {
             z = (-sine * x + cosine * z) / 4096;
             if (z > 0 && z < 0x1E000) {
                 currentPlayerAbsolute->unk948 |= mask;
-                currentPlayerAbsolute->unk950[0] = 1;
-                currentPlayerAbsolute->unk950[3] = record->value;
+                currentPlayerAbsolute->unk950 = 1;
+                currentPlayerAbsolute->unk952[1] = record->value;
                 return;
             }
         }

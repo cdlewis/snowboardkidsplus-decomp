@@ -40,7 +40,7 @@ void updateCurrentPlayerTimedMotion(void);
 
 void func_80021B20(void);
 
-void func_80021258(void);
+void updateCurrentPlayerChargeAndLaunch(void);
 
 void updateCurrentPlayerState11Motion(void);
 

@@ -168,14 +168,16 @@ struct RacePlayer {
     s8 unk940;
     u8 heldItem;
     s8 unk942;
-    u8 unk943;
+    s8 unk943;
     u8 randomIndex;
     u8 unk945;
     u8 unk946;
     u8 unk947;
     u32 unk948;
     s32 unk94C;
-    u8 unk950[4];
+    u8 unk950;
+    s8 unk951;
+    u8 unk952[2];
     u8 unk954;
     s8 speedControlMode;
     s8 speedControlState;

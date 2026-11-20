@@ -2169,6 +2169,8 @@ setMusicSequenceEnabled = 0x8007255C; // type:func
 
 animateAlternatingVramRow = 0x8001D8D4; // type:func
 callCurrentPlayerStateCallbackIfDifferent = 0x80020328; // type:func
+updateCurrentPlayerChargeAndLaunch = 0x80021258; // type:func
+gPlayerLaunchTricks = 0x80120770; // type:u16 size:0x12C
 currentPlayerStateCallbacks = 0x80120934; // size:0x128 defined:true
 
 // Shared player pointer; addressing aliases are in config/symbol_aliases.ld.

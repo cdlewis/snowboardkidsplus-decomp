@@ -32,6 +32,12 @@
 #include "../race_presentation_internal.h"
 
 
+typedef struct PlayerState2Trick {
+    s16 sound;
+    s16 state;
+    s16 trickIndex;
+} PlayerState2Trick;
+
 typedef struct PlayerStartPlacement {
     VECTOR position;
     s16 recordIndex;
@@ -395,6 +401,20 @@ static s32 gPlayerWallProbeOffsets[2]
     0x2000, -0x2000,
 };
 
+const PlayerState2Trick gPlayerLaunchTricks[50]
+    __attribute__((section(".data.player_launch_tricks"), aligned(4))) = {
+    {0, 0, 0}, {0, 13, 1}, {0, 15, 2}, {0, 16, 3}, {0, 17, 4},
+    {1, 18, 5}, {1, 19, 6}, {1, 20, 7}, {1, 21, 8}, {1, 31, 11},
+    {1, 32, 11}, {1, 33, 12}, {1, 34, 13}, {1, 35, 10}, {1, 36, 12},
+    {1, 37, 11}, {1, 38, 13}, {1, 39, 14}, {1, 41, 9}, {1, 42, 10},
+    {1, 43, 12}, {1, 44, 9}, {1, 45, 10}, {1, 46, 14}, {1, 47, 9},
+    {1, 48, 11}, {1, 49, 13}, {1, 50, 9}, {1, 51, 10}, {1, 52, 12},
+    {1, 53, 10}, {1, 54, 12}, {1, 55, 9}, {1, 56, 10}, {1, 57, 13},
+    {1, 58, 11}, {1, 59, 12}, {1, 60, 9}, {1, 61, 9}, {1, 62, 10},
+    {1, 63, 11}, {1, 64, 12}, {1, 65, 9}, {1, 66, 10}, {1, 67, 11},
+    {1, 68, 12}, {1, 69, 9}, {1, 70, 10}, {1, 71, 11}, {1, 72, 12},
+};
+
 u16 gPlayerTrickRewards[16]
     __attribute__((section(".data.player_trick_rewards"), aligned(4))) = {
     0, 100, 100, 120, 120, 150, 150, 150, 150, 220, 250, 300, 350, 400, 500, 0,
@@ -424,6 +444,7 @@ void updateCurrentPlayerTimedEffect(void);
 void updateCurrentPlayerRiding(void);
 void func_8004D330(s16 segment, s32 x, s32 z, s32 *targetX, s32 *targetZ, u16 route, u16 playerIndex);
 s16 func_8008C670(s16 playerIndex);
+u16 func_8001E63C(void);
 s16 func_80029DD0(s16 playerIndex);
 void updateCurrentPlayerAirborneDragUntilLanding(void);
 s32 snapCurrentPlayerToTerrain(void);
@@ -909,7 +930,7 @@ void initializeCurrentPlayerState2(void) {
     clearCurrentPlayerSequenceState();
     D_8013B0D8->unk0C8 = 0;
     D_8013B0D8->unk13C = 0;
-    setCurrentTaskCallback(func_80021258);
+    setCurrentTaskCallback(updateCurrentPlayerChargeAndLaunch);
 }
 
 void initializeCurrentPlayerState3(void) {
@@ -1610,7 +1631,208 @@ applySteering:
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_80021258);
+void updateCurrentPlayerChargeAndLaunch(void) {
+    RacePlayer *player;
+    RacePlayer *chargePlayer;
+    RacePlayer *positionPlayer;
+    RacePlayer *velocityPlayer;
+    RacePlayer *trickPlayer;
+    RacePlayer *launchPlayer;
+    RacePlayer *motionPlayer;
+    RacePlayer *inputPlayer;
+    s32 boost;
+    s32 push;
+    u16 trick;
+    s16 contact;
+    const PlayerState2Trick *reward;
+    const PlayerState2Trick *rewardTable;
+
+    prepareCurrentPlayerFrame();
+    push = 0;
+    player = D_8013B0D8;
+    if (!player->unk008 && player->unk92E == (s16)D_80123D80[D_8013AFCE].unk00 &&
+        func_8008C670((s16)D_8013AE88->data18)) {
+        drawAutoPilotLabelTask();
+    }
+    player = D_8013B0D8;
+    if (player->animationIndex != D_800EB09C[player->characterId][2]) {
+        u32 reversed;
+        RacePlayer *counterPlayer;
+        if (player->unk92E == (s16)D_80123D80[D_8013AFCE].unk00 && !(player->unk128 & 0x40)) {
+            s16 heading = getXZHeading(player->x, player->z, D_80123D80[D_8013AFCE].unk40[0],
+                                       D_80123D80[D_8013AFCE].unk40[1]);
+            s16 delta;
+            counterPlayer = D_8013B0D8;
+            delta = heading - counterPlayer->unk110 + 0x400;
+            if ((delta & 0xFFF) < 0x800) {
+                if (!(counterPlayer->unk128 & 0x400)) {
+                    goto advanceCharge;
+                }
+                goto turn;
+            }
+            reversed = counterPlayer->unk128 & 0x400;
+            goto checkReversed;
+        }
+        if (D_8013B0D8->unk094 > 0x80 && (D_8013B0D8->unk128 & 0x400)) {
+            goto turn;
+        }
+        if (D_8013B0D8->unk094 < -0x80) {
+            reversed = D_8013B0D8->unk128 & 0x400;
+checkReversed:
+            if (!reversed) {
+turn:
+                D_8013B0D8->unk128 ^= 0x400;
+                startCurrentPlayerAnimation(2, 2);
+            }
+        }
+        counterPlayer = D_8013B0D8;
+advanceCharge:
+        if (counterPlayer->unk13C < 90) {
+            counterPlayer->unk13C++;
+        }
+    }
+    if (D_8013B0D8->animationIndex != D_800EB09C[D_8013B0D8->characterId][3] &&
+        (D_8013B0D8->animationFlags & 0x10)) {
+        startCurrentPlayerAnimation(3, 2);
+    }
+    updateCurrentPlayerProjectileUse(D_8013AE88->data18);
+    if (D_8013B0D8->unk13C < 6) {
+        if (!D_8013B0D8->unk008 &&
+            (D_8013B0D8->unk92E != (s16)D_80123D80[D_8013AFCE].unk00 ||
+             !func_8008C670((s16)D_8013AE88->data18))) {
+            if (!(D_8013AEEC[D_8013AE88->data18] & 0x40)) {
+                D_8013B0D8->unk128 &= ~0x10;
+            }
+        } else if (!D_8013B0D8->unk951) {
+            D_8013B0D8->unk128 &= ~0x10;
+        }
+    } else if (D_8013B0D8->unk128 & 0x10) {
+        if (!D_8013B0D8->unk008 &&
+            (D_8013B0D8->unk92E != (s16)D_80123D80[D_8013AFCE].unk00 ||
+             !func_8008C670((s16)D_8013AE88->data18))) {
+            if (!(D_8013AEEC[D_8013AE88->data18] & 0x40)) {
+                D_8013B0D8->unk128 &= ~0x10;
+            }
+        } else {
+            chargePlayer = D_8013B0D8;
+            chargePlayer->unk128 &= ~0x10;
+            if (chargePlayer->unk951) {
+                chargePlayer->unk08C = 0xD00;
+            }
+        }
+        if ((D_8013B0D8->unk128 & 0x10) && D_8013B0D8->unk08C < 0xD00) {
+            D_8013B0D8->unk08C += 0x4C;
+        }
+    }
+    smoothAndScaleCurrentPlayerInput(D_8013B0D8->unk094, 0);
+    inputPlayer = D_8013B0D8;
+    inputPlayer->unk09E = inputPlayer->unk09A;
+    boost = 0;
+    if (inputPlayer->unk0FC) {
+        boost = inputPlayer->unk0FF ? -0x280 : 0x280;
+    }
+    motionPlayer = D_8013B0D8;
+    if (motionPlayer->unk13C < 6) {
+        updateCurrentPlayerSlopeVelocity(0, boost, (s16)motionPlayer->unk0A6 * 2, (s16)motionPlayer->unk0A8, (s16)motionPlayer->unk0AA);
+        func_8001E63C();
+    } else {
+        if (!(motionPlayer->unk128 & 0x10)) {
+            if (motionPlayer->unk128 & 0x400) {
+                push = -0xF00;
+                if (motionPlayer->unk945) {
+                    boost = -0x4000;
+                }
+                if (motionPlayer->unk13C >= 60) {
+                    boost -= 0x1400;
+                    motionPlayer->unk12E += 0x1400;
+                    motionPlayer->unk130 += 0x1400;
+                    playCurrentPlayerSoundEffect(0);
+                }
+                if (D_8013AFCE == 7 && D_8013B0D8->unk92E == 2) {
+                    push = -0x1100;
+                }
+            } else {
+                push = 0xF00;
+                if (motionPlayer->unk945) {
+                    boost = 0x1000;
+                }
+                if (motionPlayer->unk13C >= 60) {
+                    boost += 0x1400;
+                    motionPlayer->unk12E += 0x1400;
+                    motionPlayer->unk130 += 0x1400;
+                    playCurrentPlayerSoundEffect(0);
+                }
+                if (D_8013AFCE == 7 && D_8013B0D8->unk92E == 2) {
+                    push = 0x1100;
+                }
+            }
+        }
+        updateCurrentPlayerSlopeVelocity(push, boost, (s16)D_8013B0D8->unk0A6 * 2,
+                                         (s16)D_8013B0D8->unk0A8, (s16)D_8013B0D8->unk0AA);
+        trick = func_8001E63C();
+        launchPlayer = D_8013B0D8;
+        if (!(launchPlayer->unk128 & 0x10)) {
+            if (launchPlayer->unk08C < 0xD00) {
+                trick = 0;
+            }
+            if (trick >= 9) {
+                launchPlayer->unk08C = 0xE00;
+            }
+            D_8013B0D8->unk0C4 = 0;
+            if (trick) {
+                func_800183FC(D_8013AE88->data18, 1, 0x501, 0x30);
+                rewardTable = gPlayerLaunchTricks;
+                reward = &rewardTable[trick];
+                playCurrentPlayerSoundEffect(reward->sound);
+                trickPlayer = D_8013B0D8;
+                trickPlayer->unk12C = reward->state;
+                trickPlayer->unk0C8 = reward->trickIndex;
+                trickPlayer->unk128 |= 0x800;
+                if (!trickPlayer->unk008) {
+                    if (trickPlayer->unk0C8 < 9) {
+                        startIndexedRenderTask(D_8013AE88->data18);
+                    } else {
+                        startIndexedRenderTaskPair(D_8013AE88->data18);
+                    }
+                }
+            } else {
+                D_8013B0D8->unk12C = 1;
+                D_8013B0D8->unk0C8 = 0;
+            }
+            velocityPlayer = D_8013B0D8;
+            velocityPlayer->unk062 -= velocityPlayer->unk08C;
+            if (D_8013AFCE == 7 && velocityPlayer->unk92E == 2) {
+                velocityPlayer->unk062 -= 0x400;
+            }
+            D_8013B0D8->y -= 0x1800;
+            D_8013B0D8->unk128 |= 0x200;
+            startCurrentPlayerAnimation(4, 2);
+        }
+    }
+    positionPlayer = D_8013B0D8;
+    positionPlayer->x += positionPlayer->unk060;
+    positionPlayer->y += positionPlayer->unk062;
+    positionPlayer->z += positionPlayer->unk064;
+    updateCurrentPlayerMotionEffects();
+    if (D_8013B0D8->unk943) {
+        playCurrentPlayerSoundEffect(5);
+    }
+    contact = updateCurrentPlayerGroundContact();
+    updateCurrentPlayerAnimation();
+    if (!(u16)callCurrentPlayerStateCallbackIfDifferent(2)) {
+        if ((u16)contact && D_8013B0D8->unk12C == 2) {
+            D_8013B0D8->unk12C = 22;
+        } else {
+            if (D_8013B0D8->unk128 & 0x40) {
+                D_8013B0D8->unk12C = 30;
+            }
+            if (func_80029DD0((s16)D_8013AE88->data18)) {
+                D_8013B0D8->unk12C = 7;
+            }
+        }
+        callCurrentPlayerStateCallbackIfDifferent(2);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_80021B20);
 

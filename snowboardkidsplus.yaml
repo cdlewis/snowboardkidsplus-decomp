@@ -699,7 +699,7 @@ segments:
       - {start: 0x110CE4, type: .data, name: menu/panel_tasks, linker_section: .data.grid_resource_sector_ranges}
       - {start: 0x110E74, type: .data, name: engine/task_transitions, linker_section: .data.player_model_texture_offsets}
       - {start: 0x110EA4, type: .data, name: race/player/player_update, linker_section: .data.player_trick_long_inputs}
-      - [0x110F70, data, grid_resource_sector_ranges_tail]
+      - {start: 0x110F70, type: .data, name: race/player/player_update, linker_section: .data.player_launch_tricks}
       - [0x11109C, .data, race/player/player_update]
       - {start: 0x11125C, type: .data, name: race/player/player_update, linker_section: .data.player_timed_effect_placement_offsets}
       - {start: 0x11126C, type: .data, name: race/player/player_update, linker_section: .data.player_task_phases}

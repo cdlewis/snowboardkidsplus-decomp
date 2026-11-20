@@ -63,3 +63,5 @@ extern u8 gameOptionPlayerModeAbsolute __attribute__((section(".data")));
 
 extern s16 D_80124164[];
 extern s16 D_8013B1A8 __attribute__((section(".data")));
+
+s16 func_8008C670(s16 playerIndex);
