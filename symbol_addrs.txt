@@ -2003,6 +2003,7 @@ copySaveRecordAndMergeFlags = 0x80089990; // type:func
 
 resetCurrentPlayerForCallback240D0 = 0x8001FFA8; // type:func
 
+drawTrickTriangleRingTask = 0x800618A0; // type:func
 startIndexedRenderTask = 0x80061DD8; // type:func
 drawTrickRingTask = 0x80061E48; // type:func
 startRacePlayerTasks = 0x80060F74; // type:func

@@ -31,6 +31,18 @@ typedef struct TrickRingPacket {
     s16 x3, y3;
 } TrickRingPacket;
 
+/* One DMA tag covers the draw-mode command and the Gouraud triangle. */
+typedef struct TrickTrianglePacket {
+    u32 tag;
+    u16 tpage, drawMode;
+    u8 r0, g0, b0, code;
+    s16 x0, y0;
+    u8 r1, g1, b1, pad1;
+    s16 x1, y1;
+    u8 r2, g2, b2, pad2;
+    s16 x2, y2;
+} TrickTrianglePacket;
+
 typedef struct TriangleBurstResource {
     s32 frame;
     VECTOR origin;
@@ -411,11 +423,112 @@ void initializePlayerSnapshotTrailTask(void) {
     setCurrentTaskCallback(drawPlayerSnapshotTrailTask);
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_800618A0);
+void drawTrickTriangleRingTask(void) {
+    TrickRingResource *resource;
+    RacePlayer *player;
+    TrickTrianglePacket *scratch;
+    TrickTrianglePacket *packet;
+    u32 *ot;
+    s32 radius;
+    s32 angle;
+    s32 nextAngle;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (TrickRingResource *)&D_800D9504[D_8013AE88->resource14];
+    scratch = (TrickTrianglePacket *)getScratchAddr(0);
+    packet = (TrickTrianglePacket *)GsOUT_PACKET_P;
+    player = &gRacePlayers[D_8013AE88->data18];
+    if (D_8013AE88->data18 == 0) {
+        ot = D_800EC040[D_8013AF78].org;
+    } else {
+        ot = D_800EC0E0[D_8013AF78].org;
+    }
+    if (D_8013AFD6 && player->unk0C8 < 9) {
+        func_800149A8();
+    }
+    switch (resource->state) {
+    case 0:
+    case 1:
+        radius = 192 - resource->frame * 128 / 10;
+        if (resource->frame == 10) {
+            resource->state = 2;
+            resource->frame = 0;
+        }
+        break;
+    case 2:
+        radius = 64;
+        if (resource->frame == 10) {
+            resource->state = 3;
+            resource->frame = 0;
+        }
+        break;
+    case 3:
+        radius = 192 - (10 - resource->frame) * 128 / 10;
+        if (resource->frame == 10) {
+            func_800149A8();
+        }
+        break;
+    case 4:
+        if (player->unk0C8 == 0) {
+            resource->state = 0;
+            resource->frame = 0;
+        }
+        return;
+    }
+    if (D_8013AFAA & 0x400) {
+        if (D_8013AE88->data18 != D_8013AF78) {
+            goto advance;
+        }
+        scratch->tag = (1 + 6) << 24;
+    } else {
+        if (D_8013AE88->data18 != 0) {
+            goto advance;
+        }
+        scratch->tag = (1 + 6) << 24;
+    }
+    scratch->code = POLY_G3_CODE | 2;
+    scratch->tpage = getTPage(0, 1, 0, 0);
+    scratch->drawMode = DRAW_MODE_COMMAND_HIGH;
+    scratch->r0 = scratch->g0 = scratch->b0 = 0;
+    if (player->unk0C8 >= 9) {
+        scratch->r1 = scratch->g1 = 128;
+        scratch->b1 = 0;
+        scratch->r2 = scratch->g2 = 128;
+        scratch->b2 = 0;
+    } else {
+        scratch->r1 = scratch->g1 = scratch->b1 = 64;
+        scratch->r2 = scratch->g2 = scratch->b2 = 64;
+    }
+    angle = 0;
+    do {
+        s32 width = randomLinearFromValue(angle + resource->frame) % 8 + 8;
+        setXY0(scratch, radius * rcos(angle) / 4096, radius * rsin(angle) / 4096 + 32);
+        scratch->x1 = rcos(angle) * 280 / 4096;
+        scratch->y1 = rsin(angle) * 210 / 4096 + 32;
+        nextAngle = angle + width;
+        scratch->x2 = rcos(nextAngle) * 280 / 4096;
+        scratch->y2 = rsin(nextAngle) * 210 / 4096 + 32;
+        *packet = *scratch;
+        addPrim(ot, packet);
+        packet++;
+        {
+            s32 gap = randomLinearFromValue((angle + resource->frame) * angle) % 64 + 16;
+            angle = nextAngle + gap;
+        }
+    } while (angle < 0x1000);
+    GsOUT_PACKET_P = (u32)packet;
+
+advance:
+    if (!D_8013AFD3) {
+        resource->frame++;
+    }
+}
 
 void startIndexedRenderTask(s32 index) {
     TaskResourceRecord *resource;
-    func_80014930(D_8013B304, func_800618A0);
+    func_80014930(D_8013B304, drawTrickTriangleRingTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     D_8013AE8C->data18 = index;
     resource = &D_800D9504[D_8013AE8C->resource14];

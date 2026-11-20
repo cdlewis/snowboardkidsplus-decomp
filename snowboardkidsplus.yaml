@@ -115,8 +115,7 @@ segments:
       - {start: 0x1538, type: .rodata, name: race/course/course_objects, linker_section: .rodata.course_object_jump_table_padding}
       - [0x153C, rodata]
       - {start: 0x1554, type: .rodata, name: race/effects/player_effects, linker_section: .rodata.race_oscillating_quad_position}
-      - [0x1564, rodata]
-      - [0x157C, .rodata, race/effects/player_effects]
+      - [0x1564, .rodata, race/effects/player_effects]
       - {start: 0x1590, type: .rodata, name: race/effects/player_effects, linker_section: .rodata.fading_text_glyph_banks}
       - [0x15A0, rodata]
       - [0x1A38, .rodata, menu/task_widgets]
