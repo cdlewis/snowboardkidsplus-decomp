@@ -485,7 +485,55 @@ void drawSnowBackgroundAndSetFog(s16 playerIndex) {
     SetFogNearFar(8000, 10000, 400);
 }
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/graphics_8004D330", func_80050B18);
+void drawCameraCulledBackgroundAndSetFog(s16 playerIndex) {
+    GsCOORDINATE2 *coordinate = (GsCOORDINATE2 *)getScratchAddr(0);
+    MATRIX *matrix = (MATRIX *)getScratchAddr(20);
+    GsOT *ot;
+    s16 x, y, horizon;
+
+    if (playerIndex == 0) {
+        ot = &D_800EC090[D_8013AF78];
+    } else {
+        ot = &D_800EC130[D_8013AF78];
+    }
+    x = -160 - ((D_801241E8[playerIndex].yaw >> 1) & 255);
+    y = D_801241E8[playerIndex].pitch / 4;
+    horizon = y;
+    addTexturedSprite(&D_8013AF6C[512], 26, 0x7C29, (s16)x, y, 256, 64, 0, 0, 128, 128, 128);
+    addTexturedSprite(&D_8013AF6C[512], 26, 0x7C29, (s16)(x + 256), y, 256, 64, 0, 0, 128, 128, 128);
+    addTexturedSprite(&D_8013AF6C[512], 26, 0x7C29, (s16)(x + 512), y, 256, 64, 0, 0, 128, 128, 128);
+    if (horizon < -120) horizon = -120;
+    if (horizon > 120) horizon = 120;
+    addFlatRectangle(&D_8013AF6C[1024], -160, -120, 320, (s16)(horizon + 120), 112, 168, 248);
+    addFlatRectangle(&D_8013AF6C[1024], -160, (s16)horizon, 320, (s16)(120 - horizon), 200, 216, 240);
+    GsInitCoordinate2(0, coordinate);
+    GsGetLs(coordinate, matrix);
+    ScaleMatrix(matrix, &D_80124BDC);
+    GsSetLsMatrix(matrix);
+    if (isPositionInCameraRange(0xADA, 0xCD1, (s16)func_80059254())) {
+        drawProjectedModelPrimitives(D_80125044[0], ot, 2, 1);
+    }
+    if (isPositionInCameraRange(0xA61, 0x18D4, (s16)func_80059254())) {
+        drawProjectedModelPrimitives(D_80125044[1], ot, 2, 1);
+    }
+    if (isPositionInCameraRange(0x24E0, 0x1F11, (s16)func_80059254())) {
+        drawProjectedModelPrimitives(D_80125044[2], ot, 2, 1);
+    }
+    if (isPositionInCameraRange(0x47E0, 0x2B52, (s16)func_80059254())) {
+        drawProjectedModelPrimitives(D_80125044[3], ot, 2, 1);
+    }
+    if (isPositionInCameraRange(0x6356, 0x32B7, (s16)func_80059254())) {
+        drawProjectedModelPrimitives(D_80125044[4], ot, 2, 1);
+    }
+    if (isPositionInCameraRange(0x6B5E, 0x5C1C, (s16)func_80059254())) {
+        drawProjectedModelPrimitives(D_80125044[5], ot, 2, 1);
+    }
+    if (isPositionInCameraRange(0x6B5E, 0x5C1C, (s16)func_80059254())) {
+        drawProjectedModelPrimitives(D_80125044[6], ot, 2, 1);
+    }
+    SetFarColor(112, 168, 248);
+    SetFogNearFar(8000, 10000, 400);
+}
 
 void drawBackgroundModelsAndSetFog(s16 playerIndex) {
     GsCOORDINATE2 *coordinate = (GsCOORDINATE2 *)getScratchAddr(0);
