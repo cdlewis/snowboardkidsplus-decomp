@@ -121,7 +121,6 @@ extern u16 D_8013B654;
 extern s32 D_8013B664;
 extern TmdObject *D_8013BBF8[];
 
-void func_8004D93C(s16 playerIndex);
 void func_800512A4(s16 view);
 
 INCLUDE_ASM("asm/nonmatchings/unclassified/graphics_8004D330", func_8004D330);
@@ -138,7 +137,96 @@ void adjustDebugPositionAndDisplay(VECTOR *position) {
     drawStretchedDebugText(0, 12, debugPositionZFormatAbsolute, position->vz);
 }
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/graphics_8004D330", func_8004D93C);
+void drawBackgroundLensFlare(s16 playerIndex) {
+    CVECTOR colors[2];
+    u8 padding[0x18];
+    s16 angle, leftX, leftY;
+    s16 outerX, outerY, rightX, rightY;
+    s16 red, blue;
+    u16 green;
+    s16 x, y, centerX, centerY;
+    u16 yaw;
+    s32 rayIndex;
+    s32 cosine, radius;
+    PlayerCamera *cameras;
+    PlayerCamera *camera;
+
+    cameras = D_801241E8;
+    camera = &cameras[playerIndex];
+    yaw = camera->yaw & 0xFFF;
+    if (yaw > 0x400 && yaw < 0xC00) {
+        return;
+    }
+    x = -320 * rsin(camera->yaw + D_8013B22C) / 4096;
+    if ((u16)((y = 240 * rsin(camera->pitch + D_8013B22E) / 4096) + 120) > 240) {
+        return;
+    }
+    if ((u16)(x + 160) > 320) {
+        return;
+    }
+
+    rayIndex = 0;
+    /* The original initializes these packet codes even though it draws through helpers. */
+    colors[0].cd = 6;
+    colors[1].cd = 48;
+    for (angle = yaw; angle < (s16)yaw + 0x1000; angle += 0x100, rayIndex++) {
+        cosine = rcos(angle);
+        radius = 64 + (rayIndex & 1) * 32;
+        outerX = x + radius * cosine / 4096;
+        outerY = y + radius * rsin(angle) / 4096;
+        rightX = x + rcos(angle + 128) / 128;
+        rightY = y + rsin(angle + 128) / 128;
+        leftX = x + rcos(angle - 128) / 128;
+        leftY = y + rsin(angle - 128) / 128;
+
+        centerX = x;
+        centerY = y;
+        if ((s16)((s16)rayIndex % 3)) {
+            red = 16;
+            blue = green = 0;
+        } else if (((s16)rayIndex + 1) % 3) {
+            red = 0;
+            green = 16;
+            blue = 0;
+        } else if (((s16)rayIndex + 2) % 3) {
+            blue = 16;
+            red = 0;
+            green = 0;
+        }
+
+        addSemiTransparentGouraudTriangle(D_8013AF6C, getTPage(0, 1, 0, 0),
+            outerX, outerY, rightX, rightY, centerX, centerY,
+            (u8)red, (u8)green, (u8)blue, 0, 0, 0, 64, 64, 64);
+        addSemiTransparentGouraudTriangle(D_8013AF6C, getTPage(0, 1, 0, 0),
+            outerX, outerY, centerX, centerY, leftX, leftY,
+            (u8)red, (u8)green, (u8)blue, 64, 64, 64, 0, 0, 0);
+    }
+
+    addTexturedQuad(D_8013AF6C,
+        (s16)(x - 32), (s16)(y - 32), (s16)(x + 32), (s16)(y - 32),
+        (s16)(x - 32), (s16)(y + 32), (s16)(x + 32), (s16)(y + 32),
+        SEMI_TRANSPARENT_FLAG, getTPage(0, 1, 704, 0), getClut(880, 241),
+        0, 0, 63, 0, 0, 63, 63, 63, 96, 96, 96);
+    addTexturedQuad(D_8013AF6C,
+        (s16)(x / 2 - 16), (s16)(y / 2 - 16), (s16)(x / 2 + 16), (s16)(y / 2 - 16),
+        (s16)(x / 2 - 16), (s16)(y / 2 + 16), (s16)(x / 2 + 16), (s16)(y / 2 + 16),
+        SEMI_TRANSPARENT_FLAG, getTPage(0, 1, 704, 0), getClut(880, 240),
+        0, 0, 63, 0, 0, 63, 63, 63, 38, 24, 24);
+    addTexturedQuad(D_8013AF6C,
+        -20, -20, 20, -20, -20, 20, 20, 20,
+        SEMI_TRANSPARENT_FLAG, getTPage(0, 1, 704, 0), getClut(880, 241),
+        0, 0, 63, 0, 0, 63, 63, 63, 50, 68, 50);
+    addTexturedQuad(D_8013AF6C,
+        (s16)(-x / 2 - 40), (s16)(-y / 2 - 40), (s16)(-x / 2 + 40), (s16)(-y / 2 - 40),
+        (s16)(-x / 2 - 40), (s16)(-y / 2 + 40), (s16)(-x / 2 + 40), (s16)(-y / 2 + 40),
+        SEMI_TRANSPARENT_FLAG, getTPage(0, 1, 704, 0), getClut(880, 242),
+        0, 0, 63, 0, 0, 63, 63, 63, 10, 20, 10);
+    addTexturedQuad(D_8013AF6C,
+        (s16)(-x - 20), (s16)(-y - 20), (s16)(-x + 20), (s16)(-y - 20),
+        (s16)(-x - 20), (s16)(-y + 20), (s16)(-x + 20), (s16)(-y + 20),
+        SEMI_TRANSPARENT_FLAG, getTPage(0, 1, 704, 0), getClut(880, 240),
+        0, 0, 63, 0, 0, 63, 63, 63, 40, 20, 20);
+}
 
 INCLUDE_ASM("asm/nonmatchings/unclassified/graphics_8004D330", func_8004E09C);
 
@@ -354,7 +442,7 @@ void drawRipplingBackgroundAndSetFog(s16 playerIndex) {
         (s16)segment == 254 || (u32)(segment - 311) < 7) {
         D_8013B22C = 0xE90;
         D_8013B22E = 0xF60;
-        func_8004D93C(playerIndex);
+        drawBackgroundLensFlare(playerIndex);
     }
 
     if (!D_8013AFD3) {

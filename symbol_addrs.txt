@@ -50,6 +50,7 @@ initializeFallingRotatingObjectTask = 0x8004531C; // type:func
 updateFallingRotatingObjectTask = 0x800456DC; // type:func
 initializeCurrentPlayerModelAndHeight = 0x80020380; // type:func
 adjustDebugPositionAndDisplay = 0x8004D7F8; // type:func
+drawBackgroundLensFlare = 0x8004D93C; // type:func
 gDebugPositionXFormat = 0x8013B214; // size:0x8 defined:true
 gDebugPositionYFormat = 0x8013B21C; // size:0x8 defined:true
 gDebugPositionZFormat = 0x8013B224; // size:0x8 defined:true
