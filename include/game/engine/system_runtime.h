@@ -56,7 +56,7 @@ void func_8001DB7C(void);
 void finishTaskTransitionAfterCountdown(void);
 void resetStateAndBeginResourceLoadTransition(u8 loadResources);
 void initializeRaceRestartTask(void);
-void func_8001BD50(void);
+void initializeRacePresentationTask(void);
 void updateThreeFrameScreenBlend(void);
 void *memcpy(void *destination, const void *source, unsigned int size);
 u16 func_800162C8(void);

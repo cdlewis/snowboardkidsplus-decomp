@@ -24,6 +24,8 @@ extern u8 D_8013AEE0[];
 /* Shared recording/playback buffer; storage remains in the controller data unit. */
 extern u8 D_800E959C[];
 
+extern u8 D_8013AEC4[];
+
 extern u16 D_8013AEE8[];
 /* Two state values; an incomplete array preserves absolute addressing. */
 extern u16 D_8013AEEC[];

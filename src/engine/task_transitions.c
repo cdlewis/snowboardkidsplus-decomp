@@ -32,6 +32,7 @@
 #define GLOBAL_FLAGS_GP_ADDRESSING
 #include "game/save/save_data.h"
 #include "game/engine/game_loop.h"
+#include "game/engine/game_task_scheduler.h"
 #include "game/engine/system_runtime.h"
 
 #include "game/race/player/player_resource_textures.h"
@@ -76,7 +77,7 @@ void func_8001D89C(void);
 void func_8001DB7C(void);
 void resetStateAndBeginResourceLoadTransition(u8 loadResources);
 void initializeRaceRestartTask(void);
-void func_8001BD50(void);
+void func_8001C2E0(void);
 void func_8001C0DC(void);
 void func_8003DEE0(void);
 void func_8001B858(void);
@@ -218,7 +219,78 @@ void initializeGameOptionViewTask(void) {
 
 INCLUDE_ASM("asm/nonmatchings/engine/task_transitions", func_8001B858);
 
-INCLUDE_ASM("asm/nonmatchings/engine/task_transitions", func_8001BD50);
+void initializeRacePresentationTask(void) {
+    s16 i;
+
+    setSecondaryDisplayTaskMode(0);
+    if (!D_8013B1AB) {
+        func_80051A68();
+    }
+    initializeRacePlayerEffects();
+    if (gameOptionPlayerModeGp == 2) {
+        func_800148F4(&gGameTasks[3], initCurrentPlayerCameraTask);
+        D_8013AE8C->data18 = 1;
+    }
+    func_800148F4(&gGameTasks[3], initCurrentPlayerCameraTask);
+    D_8013AE8C->data18 = 0;
+    func_80058BD4();
+    func_80014838(updateRacePlayerFinishSlotsTask);
+    for (i = activeRacePlayerCountGp - 1; i >= 0; i--) {
+        func_80014838(initializeCurrentPlayerModelAndHeight);
+        D_8013AE8C->data18 = i;
+        gRacePlayers[i].task = D_8013AE8C;
+    }
+    configureTaskStateTransition(1, 0, 15);
+    if (!D_8013AFD7) {
+        queueCdCommand(1, 1);
+    } else {
+        gFrameCounter = 0;
+    }
+
+    D_8013AFDB = 0;
+    D_800EC158[0].x = 0;
+    D_800EC158[0].y = 0;
+    D_800EC158[0].w = D_8013AF7A;
+    D_800EC158[0].h = D_8013AF7C;
+
+    if (gameOptionPlayerModeGp == 2) {
+        D_8013AF7E = 64;
+        D_8013AF80 = D_8013AF7C / 4;
+        D_800EC158[1].x = 0;
+        D_800EC158[1].y = 0;
+        D_800EC158[1].w = D_8013AF7A - 64;
+        D_800EC158[1].h = D_8013AF7C / 2 - 1;
+        D_800EC158[2].x = 0;
+        D_800EC158[2].y = D_8013AF7C / 2 + 1;
+        D_800EC158[2].w = D_8013AF7A - 64;
+        D_800EC158[2].h = D_8013AF7C / 2 - 1;
+    }
+
+    initializeRacePaletteCycles();
+    for (i = 0; i < gameOptionPlayerModeGp; i++) {
+        copyPlayerPaletteRow(i);
+    }
+    resetTaskControlState();
+    D_8013AFAA |= 0x48;
+    clearControllerFlag0(0);
+    clearControllerFlag0(1);
+    if (D_8013AFD7 || D_8013AEC4[0]) {
+        setControllerFlag5(0);
+    } else {
+        clearControllerFlag5(0);
+    }
+    if (D_8013AFD7 || D_8013AEC4[1]) {
+        setControllerFlag5(1);
+    } else {
+        clearControllerFlag5(1);
+    }
+
+    for (i = 0; i < activeRacePlayerCountGp; i++) {
+        gRacePlayers[i].unk01C = 0;
+        gRacePlayers[i].unk020 = 0;
+    }
+    setCurrentTaskCallback(func_8001C2E0);
+}
 
 void beginTask60TickCountdown(void) {
     D_8013AE88->data1A = 60;
@@ -312,7 +384,7 @@ void initializeRaceRestartTask(void) {
     }
     initializeActiveRacePlayers();
     initializeRaceRulesAndCounters();
-    setCurrentTaskCallback(func_8001BD50);
+    setCurrentTaskCallback(initializeRacePresentationTask);
 }
 
 void advanceTaskWhenFlagAFE4Bit8Set(void) {
