@@ -2453,6 +2453,7 @@ initializeAlternateCountedTaskResourcePair = 0x8008DD04; // type:func
 drawCurrentTaskSaveRecordMoneyPanelWithCharacterSprites = 0x8008E66C; // type:func
 
 initializeCountedTaskResourcePairEC50 = 0x8008EB94; // type:func
+updateMoneyPanelSelectionTask = 0x8008EC50; // type:func
 
 advanceCurrentPlayerInputSequence = 0x8001E524; // type:func
 readCurrentPlayerTrickInput = 0x8001E63C; // type:func

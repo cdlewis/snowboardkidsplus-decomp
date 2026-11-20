@@ -145,6 +145,8 @@ segments:
       - [0x2438, rodata]
       - [0x2520, .rodata, menu/panel_tasks]
       - [0x2534, rodata]
+      - {start: 0x2594, type: .rodata, name: menu/panel_tasks, linker_section: .rodata.money_panel_selection}
+      - [0x25C8, rodata]
       - {start: 0x2600, type: .rodata, name: menu/panel_tasks, linker_section: .rodata.selected_board_details}
       - {start: 0x2618, type: .rodata, name: menu/panel_tasks, linker_section: .rodata.grouped_selection_bounds}
       - {start: 0x2654, type: .rodata, name: menu/panel_tasks, linker_section: .rodata.grouped_selection_bounds_padding}
