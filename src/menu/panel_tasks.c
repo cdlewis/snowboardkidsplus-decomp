@@ -35,6 +35,14 @@ u8 gBoardSelectionStyles[12] __attribute__((section(".data.board_selection_style
     0, 1, 2, 0, 1, 2, 0, 1, 2, 3, 3, 3
 };
 
+const u8 gSelectedBoardLevelLabel[12] __attribute__((section(".rodata.selected_board_details"), aligned(4))) = {
+    0x82, 0x6B, 0x82, 0x64, 0x82, 0x75, 0x82, 0x64, 0x82, 0x6B, 0, 0
+};
+
+const u8 gSelectedBoardPricePlaceholder[12] __attribute__((section(".rodata.selected_board_details"), aligned(4))) = {
+    0x81, 0x7C, 0x81, 0x7C, 0x81, 0x7C, 0x81, 0x7C, 0x81, 0x7C, 0, 0
+};
+
 const u8 gBoardLevelLabel[16] __attribute__((section(".rodata.board_level_label"), aligned(4))) = {
     0x82, 0x6B, 0x82, 0x64, 0x82, 0x75, 0x82, 0x64,
     0x82, 0x6B, 0, 0, 0, 0, 0, 0
@@ -536,7 +544,70 @@ void drawCurrentTaskSaveRecordMoneyPanel(void) {
 char gSaveRecordMoneyPanelCurrencyLabel[4]
     __attribute__((section(".data.save_record_money_panel_currency_label"), aligned(4))) = "\x82" "f";
 
-INCLUDE_ASM("asm/nonmatchings/menu/panel_tasks", func_800916F4);
+void drawCurrentTaskSelectedBoardDetails(void) {
+    Movement2D *position;
+    SelectionDisplayEntry *entry;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        for (;;) {}
+    }
+    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    entry = &((SelectionDisplayEntry *)&D_801300AC)[(s16)D_8013AE88->data18];
+    if (D_8013AE88->data1A != 0) {
+        s16 board = entry->index;
+        u32 price = D_80131810[board];
+        s32 priceOffset = 4;
+
+        if (board < 9) {
+            s32 textIndex = gBoardSelectionStyles[board];
+            priceOffset = 0;
+            drawWrappedDoubleByteText(position->x / 4096 - 104, position->y / 4096 + 8,
+                10, gBoardStyleText[textIndex], 6, -1,
+                &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            drawWrappedDoubleByteText(position->x / 4096 - 104, position->y / 4096 + 24,
+                10, (s8 *)gSelectedBoardLevelLabel, 6, -1,
+                &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            drawDecimalNumber8x16(position->x / 4096 - 64, position->y / 4096 + 24,
+                1, 0, gBoardSelectionLevels[entry->index], 6, -1,
+                &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        }
+        if (price == 0) {
+            s32 x = (s16)(position->x / 4096 - 104);
+            s32 y = position->y / 4096;
+            s32 textOffset = priceOffset + 8;
+            drawWrappedDoubleByteText(x, y + textOffset + 32,
+                10, (s8 *)gSelectedBoardPricePlaceholder, 6, -1,
+                &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        } else {
+            u32 remaining = price;
+            s32 count = 0;
+            s32 nextCount;
+            s16 digits;
+            s32 textOffset;
+
+            do {
+                nextCount = ++count;
+                remaining /= 10;
+            } while (remaining != 0);
+            digits = nextCount;
+            {
+                s32 x = (s16)(position->x / 4096 - 104);
+                s32 y = position->y / 4096;
+                textOffset = priceOffset + 8;
+                drawDecimalNumber8x16(x, y + textOffset + 32,
+                    digits, 0, price, 6, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            }
+            {
+                s32 x = position->x / 4096;
+                s32 currencyOffset = digits * 8 - 104;
+                drawWrappedDoubleByteText(x + currencyOffset,
+                    position->y / 4096 + textOffset + 32,
+                    1, (s8 *)gSaveRecordMoneyPanelCurrencyLabel, 6, -1,
+                    &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            }
+        }
+    }
+}
 
 void drawCurrentTaskSelectedBoardPrice(void) {
     Movement2D *position;
