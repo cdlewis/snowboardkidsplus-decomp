@@ -279,6 +279,10 @@ void createRegisteredTripletTask(s32 x, s32 y, s32 offsetX, s32 offsetY,
 
 void drawTaskGridSelectionMarker(void);
 
+s16 func_8007E8CC(const u8 *mapping, s16 index);
+void func_80081AC8(s32 index, GameTask *task, s32 x, s32 y,
+                   s32 speedX, s32 speedY, s32 duration);
+
 void createRegisteredMovingPanelTask(u16 mode, const s16 *values, s16 x, s16 y,
                                      s16 x2, s16 y2, s16 x3, s16 y3,
                                      s32 depth, s32 index);
