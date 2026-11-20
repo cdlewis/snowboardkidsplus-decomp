@@ -1042,7 +1042,43 @@ void initializeResultDisplayTask(void) {
     setCurrentTaskCallback(fadeInResultDisplayTask);
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/ui/race_panels", func_80036BA4);
+void drawPlayerResultIcons(TaskFadeResource *resource) {
+    s16 brightness = resource->brightness == 128 ? 128 : (u8)resource->brightness;
+
+    setSpriteColor(brightness, brightness, brightness);
+    if (resource->playerOrder[0] != -1) {
+        func_800401DC(-136, -80, 0, &D_800EBFF0[D_8013AF78], 1);
+        func_8006C998(-104, -64, 0x189, gResultIconPalettes[0], -1,
+                     &D_800EBFF0[D_8013AF78], 1);
+        func_8006C998(-84, -80, gRacePlayers[resource->playerOrder[0]].characterId + 0x1EC,
+                     0, -1, &D_800EBFF0[D_8013AF78], 1);
+        func_8006C998(-48, -66, 0x1B1, 3, -1, &D_800EBFF0[D_8013AF78], 1);
+    }
+    if (resource->playerOrder[1] != -1) {
+        func_800401DC(8, -48, 1, &D_800EBFF0[D_8013AF78], 1);
+        func_8006C998(40, -32, 0x18A, gResultIconPalettes[1], -1,
+                     &D_800EBFF0[D_8013AF78], 1);
+        func_8006C998(60, -48, gRacePlayers[resource->playerOrder[1]].characterId + 0x1EC,
+                     0, -1, &D_800EBFF0[D_8013AF78], 1);
+        func_8006C998(96, -34, 0x1B1, 3, -1, &D_800EBFF0[D_8013AF78], 1);
+    }
+    if (resource->playerOrder[2] != -1) {
+        func_800401DC(-136, -16, 2, &D_800EBFF0[D_8013AF78], 1);
+        func_8006C998(-104, 0, 0x18B, gResultIconPalettes[2], -1,
+                     &D_800EBFF0[D_8013AF78], 1);
+        func_8006C998(-84, -16, gRacePlayers[resource->playerOrder[2]].characterId + 0x1EC,
+                     0, -1, &D_800EBFF0[D_8013AF78], 1);
+        func_8006C998(-48, -2, 0x1B1, 3, -1, &D_800EBFF0[D_8013AF78], 1);
+    }
+    if (resource->playerOrder[3] != -1) {
+        func_800401DC(8, 16, 3, &D_800EBFF0[D_8013AF78], 1);
+        func_8006C998(40, 32, 0x18C, gResultIconPalettes[3], -1,
+                     &D_800EBFF0[D_8013AF78], 1);
+        func_8006C998(60, 16, gRacePlayers[resource->playerOrder[3]].characterId + 0x1EC,
+                     0, -1, &D_800EBFF0[D_8013AF78], 1);
+        func_8006C998(96, 30, 0x1B1, 3, -1, &D_800EBFF0[D_8013AF78], 1);
+    }
+}
 
 void drawPlayerResultRowValues(s16 row, s16 x, s16 y, TaskFadeResource *resource) {
     char text[32];
@@ -1109,36 +1145,36 @@ void updatePlayerResultOrder(TaskFadeResource *resource) {
 }
 
 void drawCurrentTaskPlayerResults(void) {
-    TaskResourceRecord *resource;
+    TaskFadeResource *resource;
 
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = &D_800D9504[D_8013AE88->resource14];
+    resource = (TaskFadeResource *)&D_800D9504[D_8013AE88->resource14];
     if (!(D_8013AFE4 & 0x10)) {
         func_800149A8();
     }
-    updatePlayerResultOrder((TaskFadeResource *)resource);
-    func_80036BA4(resource);
-    drawPlayerResultRows((TaskFadeResource *)resource);
+    updatePlayerResultOrder(resource);
+    drawPlayerResultIcons(resource);
+    drawPlayerResultRows(resource);
 }
 
 void waitPlayerResultsInputTask(void) {
     s32 player;
-    TaskResourceRecord *resource;
+    TaskFadeResource *resource;
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = &D_800D9504[D_8013AE88->resource14];
+    resource = (TaskFadeResource *)&D_800D9504[D_8013AE88->resource14];
     for (player = 0; player < gameOptionPlayerModeAbsolute; player++) {
         if (D_8013AEE8[player] & 0xB0) {
             D_8013AFE4 |= 0x10;
             setCurrentTaskCallback(drawCurrentTaskPlayerResults);
         }
     }
-    updatePlayerResultOrder((TaskFadeResource *)resource);
-    func_80036BA4(resource);
-    drawPlayerResultRows((TaskFadeResource *)resource);
+    updatePlayerResultOrder(resource);
+    drawPlayerResultIcons(resource);
+    drawPlayerResultRows(resource);
 }
 
 void fadeInPlayerResultsTask(void) {
@@ -1154,7 +1190,7 @@ void fadeInPlayerResultsTask(void) {
         setCurrentTaskCallback(waitPlayerResultsInputTask);
     }
     updatePlayerResultOrder((TaskFadeResource *)resource);
-    func_80036BA4((TaskResourceRecord *)resource);
+    drawPlayerResultIcons(resource);
     drawPlayerResultRows(resource);
 }
 

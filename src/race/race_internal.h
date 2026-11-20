@@ -580,7 +580,7 @@ void updateDualResource4C80EffectTask(void);
 void updateDualResource5100EffectTask(void);
 void updatePlayerDualResourceEffectTask(void);
 void updatePlayerResultOrder(TaskFadeResource *resource);
-void func_80036BA4(TaskResourceRecord *resource);
+void drawPlayerResultIcons(TaskFadeResource *resource);
 void waitPlayerResultsInputTask(void);
 void drawPlayerResultRowValues(s16 row, s16 x, s16 y, TaskFadeResource *resource);
 void drawPlayerResultRows(TaskFadeResource *resource);
