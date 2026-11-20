@@ -2,6 +2,20 @@
 #include "game/menu/selected_sprite.h"
 #include "game/menu/task_widgets.h"
 
+typedef struct TitleLogoResource {
+    s32 logoX, logoY;
+    s32 unk08;
+    s32 logoVelocityY;
+    s16 logoScaleX, logoScaleY;
+    s32 delay;
+    s32 subtitleX, subtitleY;
+    s32 subtitleVelocityX;
+    s32 unk24;
+    s16 subtitleScaleX, subtitleScaleY;
+    s16 blendMode;
+    u8 flash, unk2F, brightness, soundState;
+} TitleLogoResource;
+
 typedef struct ModeSelectionInput {
     s16 unk00;
     s16 selection;
@@ -378,7 +392,211 @@ void drawFullScreenTexturedBackground(void) {
 
 INCLUDE_ASM("asm/nonmatchings/menu/mode_transitions", func_800309EC);
 
-INCLUDE_ASM("asm/nonmatchings/menu/mode_transitions", func_80030B50);
+void updateTitleLogoTask(void) {
+    TitleLogoResource *logo;
+    SelectedTaskEntry *entry;
+    SelectedTaskEntry *entries;
+    s32 logoX, logoY, subtitleX, subtitleY;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        for (;;) {}
+    }
+    logo = (TitleLogoResource *)&D_800D9504[D_8013AE88->resource14];
+    if ((u16)(D_8013AE88->data1E % 10U) == 0) {
+        if (D_8013AE98->resource14 == 0xFFFF) {
+            for (;;) {}
+        }
+        entries = (SelectedTaskEntry *)&D_800D9504[D_8013AE98->resource14];
+        entry = &entries[D_8013AE88->data1E / 10U];
+    } else {
+        if (D_8013AE98->resource16 == 0xFFFF) {
+            for (;;) {}
+        }
+        entries = (SelectedTaskEntry *)&D_800D9504[D_8013AE98->resource16];
+        entry = &entries[D_8013AE88->data1E / 10U];
+    }
+
+    if (D_8013AEE8[0] & 0x8F0) {
+        D_8013AE88->data18 = 7;
+        if (logo->soundState == 0) {
+            logo->soundState = 1;
+        }
+    }
+
+    switch (D_8013AE88->data18) {
+    case 0:
+        logo->logoX = -0x70000;
+        logo->logoY = -0x10E000;
+        logo->logoScaleX = 4096;
+        logo->logoScaleY = 4096;
+        logo->subtitleScaleX = 4096;
+        logo->subtitleScaleY = 4096;
+        logo->brightness = 128;
+        logo->flash = 0;
+        logo->unk2F = 0;
+        logo->blendMode = -1;
+        logo->delay = 30;
+        logo->logoVelocityY = 0;
+        logo->subtitleX = 0xE8000;
+        logo->subtitleY = -0x26000;
+        D_8013AE88->data18 = 1;
+        break;
+    case 2:
+        if (--logo->delay == 0) {
+            D_8013AE88->data18 = 1;
+        }
+        break;
+    case 1:
+        logo->logoVelocityY += 0x1000;
+        logo->logoY += logo->logoVelocityY;
+        if (logo->logoY >= -0x1E000) {
+            logo->logoVelocityY = -0x8000;
+            logo->logoY = -0x1E000;
+            D_8013AE88->data18 = 3;
+        }
+        break;
+    case 3:
+        logo->logoVelocityY += 0x1000;
+        logo->logoY += logo->logoVelocityY;
+        if (logo->logoY >= -0x1E000) {
+            logo->logoVelocityY = -0x4000;
+            logo->logoY = -0x1E000;
+            D_8013AE88->data18 = 8;
+        }
+        break;
+    case 8:
+        logo->logoVelocityY += 0x1000;
+        logo->logoY += logo->logoVelocityY;
+        if (logo->logoY >= -0x1E000) {
+            logo->logoVelocityY = -0x2000;
+            logo->logoY = -0x1E000;
+            D_8013AE88->data18 = 9;
+        }
+        break;
+    case 9:
+        logo->logoVelocityY += 0x1000;
+        logo->logoY += logo->logoVelocityY;
+        if (logo->logoY >= -0x1E000) {
+            logo->soundState = 1;
+            logo->logoY = -0x1E000;
+            logo->subtitleVelocityX = 0;
+            D_8013AE88->data18 = 10;
+        }
+        break;
+    case 10:
+        logo->subtitleVelocityX -= 0x1000;
+        logo->subtitleX += logo->subtitleVelocityX;
+        if (logo->subtitleX <= 0x68000) {
+            D_8013AE88->data18 = 11;
+        }
+        break;
+    case 11:
+        logo->subtitleVelocityX -= 0x1000;
+        logo->subtitleX += logo->subtitleVelocityX;
+        logo->logoX += (logo->subtitleVelocityX * 32) / 80;
+        logo->subtitleScaleX = (logo->subtitleX / 4096 + 144) * 4096 / 216;
+        logo->subtitleScaleY = (0x40000 + logo->subtitleVelocityX / 5) / 64;
+        logo->logoScaleX = ((logo->subtitleX - logo->logoX) / 4096 + 40) * 16;
+        logo->logoScaleY = (0x68000 + (logo->subtitleVelocityX * 32) / 80) / 104;
+        if (logo->subtitleX <= -0x8000) {
+            logo->logoX = -0x90000;
+            logo->subtitleVelocityX = -logo->subtitleVelocityX;
+            logo->subtitleVelocityX += 0x1000;
+            D_8013AE88->data18 = 12;
+        }
+        break;
+    case 12:
+        logo->subtitleVelocityX += 0x1000;
+        logo->subtitleX += logo->subtitleVelocityX;
+        logo->subtitleScaleX = (logo->subtitleX / 4096 + 144) * 4096 / 216;
+        logo->subtitleScaleY = (0x40000 + logo->subtitleVelocityX / 5) / 64;
+        logo->logoScaleX = ((logo->subtitleX - logo->logoX) / 4096 + 40) * 16;
+        logo->logoScaleY = (0x68000 + (logo->subtitleVelocityX * 32) / 80) / 104;
+        if (logo->subtitleX >= 0x68000) {
+            logo->subtitleVelocityX = 0;
+            D_8013AE88->data18 = 13;
+        }
+        break;
+    case 13:
+        logo->subtitleVelocityX -= 0x1000;
+        logo->subtitleX += logo->subtitleVelocityX;
+        logo->subtitleScaleX = (logo->subtitleX / 4096 + 144) * 4096 / 216;
+        logo->subtitleScaleY = (0x40000 + logo->subtitleVelocityX / 5) / 64;
+        logo->logoScaleX = ((logo->subtitleX - logo->logoX) / 4096 + 40) * 16;
+        logo->logoScaleY = (0x68000 + (logo->subtitleVelocityX * 32) / 80) / 104;
+        if (logo->subtitleX <= 0x48000) {
+            s16 flash = 1;
+            logo->subtitleScaleX = 4096;
+            logo->subtitleScaleY = 4096;
+            logo->logoScaleX = 4096;
+            logo->logoScaleY = 4096;
+            logo->brightness = 255;
+            logo->flash = flash;
+            logo->blendMode = flash;
+            logo->subtitleX = 0x48000;
+            D_8013AE88->data18 = 14;
+        }
+        break;
+    case 14:
+        logo->brightness -= 8;
+        if (logo->brightness <= 128) {
+            logo->brightness = 128;
+            logo->blendMode = -1;
+            D_8013AE88->data18 = 7;
+        }
+        break;
+    case 7:
+        logo->logoX = -0x90000;
+        logo->logoY = -0x1E000;
+        logo->logoScaleX = 4096;
+        logo->logoScaleY = 4096;
+        logo->subtitleScaleX = 4096;
+        logo->subtitleScaleY = 4096;
+        logo->brightness = 128;
+        logo->blendMode = -1;
+        logo->subtitleX = 0x48000;
+        logo->subtitleY = -0x26000;
+        logo->unk2F = 1;
+        entry->unk06 = 0;
+        break;
+    }
+
+    if (entry->unk04 == 99) {
+        func_800149A8();
+        return;
+    }
+    if (logo->soundState == 1) {
+        playSoundEffect(1, 0xA01, 72);
+        logo->soundState = 2;
+        D_8013B100 = 1;
+    }
+    if (D_8013B100 > 0) {
+        D_8013B100++;
+    }
+
+    logoX = logo->logoX / 4096;
+    logoY = logo->logoY / 4096;
+    subtitleX = logo->subtitleX / 4096;
+    subtitleY = logo->subtitleY / 4096;
+    if (logo->flash == 1) {
+        setSpriteColor(logo->brightness, logo->brightness, logo->brightness);
+        drawTransformedSpriteByIndex((s16)subtitleX, (s16)subtitleY, 0x1BA, 0, logo->blendMode,
+                                    0, 32, logo->subtitleScaleX, logo->subtitleScaleY, 0, &D_800EBFF0[D_8013AF78], 4);
+        drawTransformedSpriteByIndex((s16)logoX, (s16)logoY, 0x1BB, 0, logo->blendMode,
+                                    0, 72, logo->logoScaleX, logo->logoScaleY, 0, &D_800EBFF0[D_8013AF78], 4);
+    }
+    setSpriteColor(128, 128, 128);
+    drawTransformedSpriteByIndex((s16)subtitleX, (s16)subtitleY, 0x1BA, 0, -1,
+                                0, 32, logo->subtitleScaleX, logo->subtitleScaleY, 0, &D_800EBFF0[D_8013AF78], 4);
+    drawTransformedSpriteByIndex((s16)logoX, (s16)logoY, 0x1BB, 0, -1,
+                                0, 72, logo->logoScaleX, logo->logoScaleY, 0, &D_800EBFF0[D_8013AF78], 4);
+    if (logo->flash == 1) {
+        setSpriteColor(logo->brightness, logo->brightness, logo->brightness);
+        func_8006C998((s16)logoX, (s16)(logoY - 72), 0x1B7, 0, 1, &D_800EBFF0[D_8013AF78], 4);
+        func_8006C998((s16)(logoX + 128), (s16)(logoY - 72), 0x1B8, 0, 1, &D_800EBFF0[D_8013AF78], 4);
+        func_8006C998((s16)(logoX + 256), (s16)(logoY - 72), 0x1B9, 0, 1, &D_800EBFF0[D_8013AF78], 4);
+    }
+}
 
 void drawSelectedTaskSideMarkerSprite(void) {
     SelectedTaskSpriteResource *resource;

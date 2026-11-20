@@ -94,7 +94,8 @@ segments:
       - [0xF0C, .rodata, graphics/background_resources]
       - [0x1024, .rodata, menu/mode_transitions]
       - {start: 0x10B8, type: .rodata, name: menu/mode_transitions, linker_section: .rodata.title_menu_jump_table_padding}
-      - [0x10BC, rodata]
+      - {start: 0x10BC, type: .rodata, name: menu/mode_transitions, linker_section: .rodata.title_logo}
+      - [0x10F8, pad]
       - {start: 0x10FC, type: .rodata, name: menu/mode_transitions, linker_section: .rodata.player_mode_selection}
       - [0x121C, rodata]
       - {start: 0x123C, type: .rodata, name: race/player/player_actions, linker_section: .rodata.demonstration_overlay}
