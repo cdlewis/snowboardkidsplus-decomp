@@ -2767,6 +2767,7 @@ emitProjectedTexturedQuad = 0x80052F90; // type:func
 
 createFallingParticleTask = 0x80062DA8; // type:func
 drawRadialTriangleAndQuadEffect = 0x80062EA0; // type:func
+drawPlayerParticlesTask = 0x800632C4; // type:func
 createPlayerParticleTask = 0x80063788; // type:func
 
 setSecondaryDisplayTaskMode = 0x800719A8; // type:func

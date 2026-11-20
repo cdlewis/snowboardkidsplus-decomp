@@ -119,6 +119,14 @@ typedef struct PlayerRingEffectScratch {
     long flags;
 } PlayerRingEffectScratch;
 
+typedef struct PlayerParticleScratch {
+    MATRIX localScreen;
+    POLY_FT4 quad;
+    SVECTOR corners[4];
+    SVECTOR vertices[4];
+    long depth, cue, flags;
+} PlayerParticleScratch;
+
 typedef struct PlayerParticleTrailResource {
     s32 positions[10][3];
     s16 ages[10];
@@ -1166,12 +1174,95 @@ void drawRadialTriangleAndQuadEffect(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_800632C4);
+void drawPlayerParticlesTask(void) {
+    PlayerParticleScratch *scratch;
+    PlayerParticlePosition *positions;
+    PlayerParticlePosition *position;
+    RacePlayer *player;
+    POLY_FT4 *packet;
+    s32 i, j;
+    s32 yawOffset, pitchOffset;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    scratch = (PlayerParticleScratch *)getScratchAddr(0);
+    packet = (POLY_FT4 *)GsOUT_PACKET_P;
+    positions = (PlayerParticlePosition *)&D_800D9504[D_8013AE88->resource14];
+    player = &gRacePlayers[D_8013AE88->data18];
+
+    setVector(&scratch->corners[0], -4, -4, 0);
+    setVector(&scratch->corners[1], 4, -4, 0);
+    setVector(&scratch->corners[2], -4, 4, 0);
+    setVector(&scratch->corners[3], 4, 4, 0);
+    scratch->quad.u0 = scratch->quad.u2 = 0;
+    scratch->quad.tag = TEXTURED_QUAD_PACKET_WORDS << 24;
+    setcode(&scratch->quad, POLY_FT4_CODE | SEMI_TRANSPARENT_FLAG);
+    scratch->quad.tpage = getTPage(0, 1, 704, 0);
+    scratch->quad.clut = getClut(880, 249);
+    scratch->quad.u1 = scratch->quad.u3 = 15;
+    scratch->quad.v0 = scratch->quad.v1 = 128;
+    scratch->quad.v2 = scratch->quad.v3 = 143;
+    scratch->quad.b0 = 128;
+    scratch->quad.g0 = 128;
+    scratch->quad.r0 = 128;
+    scratch->localScreen = GsIDMATRIX2;
+    GsSetLsMatrix(&scratch->localScreen);
+
+    yawOffset = -D_801241E8[D_8013AE88->data18].yaw;
+    pitchOffset = D_801241E8[D_8013AE88->data18].pitch;
+    for (i = 0; i < 40; i++) {
+        if (D_8013AFAA & 0x400) {
+            if (D_8013AE88->data18 != (gFrameCounter & 1)) {
+                goto updatePosition;
+            }
+        } else if (D_8013AE88->data18 != 0) {
+            goto updatePosition;
+        }
+
+        j = 0;
+        position = &positions[i];
+        for (; j < 4; j++) {
+            s32 y;
+            s32 x = (((u16)position->x + yawOffset) & 1023) - 512;
+            scratch->vertices[j].vx = scratch->corners[j].vx + x;
+            y = (((u16)position->y + pitchOffset) & 511) - 256;
+            scratch->vertices[j].vy = scratch->corners[j].vy + y;
+            scratch->vertices[j].vz = position->z & 1023;
+        }
+        scratch->depth = RotTransPers4(&scratch->vertices[0], &scratch->vertices[1],
+            &scratch->vertices[2], &scratch->vertices[3],
+            (long *)&scratch->quad.x0, (long *)&scratch->quad.x1,
+            (long *)&scratch->quad.x2, (long *)&scratch->quad.x3,
+            &scratch->cue, &scratch->flags);
+        if (!(scratch->flags & 0x7FFBE000) && scratch->depth >= 0 && scratch->depth < 4096) {
+            *packet = scratch->quad;
+            addPrim(&D_8013AF6C[10], packet);
+            packet++;
+        }
+
+    updatePosition:
+        if (!D_8013AFD3) {
+            s32 drift = randomNextLinear() % 16 + 8;
+            s32 sine = rsin(D_8013AE88->data1A);
+            s32 cosine = rcos(D_8013AE88->data1A * 5);
+            positions[i].x += drift * (sine + cosine) / 8192;
+            positions[i].y += 8;
+            if (!D_8013AFD6) {
+                positions[i].z -= player->unk0BC / 256;
+            }
+        }
+    }
+    GsOUT_PACKET_P = (u32)packet;
+    if (!D_8013AFD3) {
+        D_8013AE88->data1A++;
+    }
+}
 
 void createPlayerParticleTask(s32 playerIndex) {
     PlayerParticlePosition *position;
     s32 i;
-    func_80014930(&gGameTasks[4], func_800632C4);
+    func_80014930(&gGameTasks[4], drawPlayerParticlesTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     position = (PlayerParticlePosition *)&D_800D9504[D_8013AE8C->resource14];
     for (i = 0; i < 40; i++) {

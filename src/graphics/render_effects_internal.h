@@ -969,7 +969,7 @@ void drawLoweringQuadStripTask(void);
 void drawSlidingQuadTask(void);
 void func_80069E08(s32 duration);
 void drawFallingParticlesTask(void);
-void func_800632C4(void);
+void drawPlayerParticlesTask(void);
 void drawPlayerSnapshotTrailTask(void);
 void drawTrickTriangleRingTask(void);
 void drawTrickRingTask(void);
