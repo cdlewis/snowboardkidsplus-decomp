@@ -85,11 +85,13 @@ const u32 gMemoryCardSlotTaskTablePadding
 
 StateValueHistory D_8013BE30 __attribute__((section(".bss.state_value_history")));
 
+extern const GridSpriteEntry D_8012F798[];
 extern u8 D_80130094[][5];
 extern u8 D_801300A0[][5];
 extern u8 D_8013B44C[];
 extern char gSelectionPrizeCurrencyLabel[] __attribute__((section(".data")));
 
+s16 func_8007E8CC(const u8 *mapping, s16 index);
 void updateRegisteredPlayerModelTask(void);
 void func_80086C34(s32 x, s32 y, s32 destination, s32 source, s32 index);
 
@@ -196,7 +198,84 @@ void updatePaletteRotationTask(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_8007E298);
+void drawRegisteredSelectionItemStatus(void) {
+    Movement2D *position;
+    ByteTriplet *color;
+    GroupedIndexResource *parent;
+    RegisteredTaskEntry *entry;
+    RegisteredTaskEntry *entries;
+    const GridSpriteEntry *sprite;
+    s16 index;
+    u8 character;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        for (;;) {}
+    }
+    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) {
+        for (;;) {}
+    }
+    color = (ByteTriplet *)&D_800D9504[D_8013AE88->resource16];
+    if (D_8013AE98->resource14 == 0xFFFF) {
+        for (;;) {}
+    }
+    parent = (GroupedIndexResource *)&D_800D9504[D_8013AE98->resource14];
+    if ((u16)(D_8013AE88->data1E % 10U) == 0) {
+        if (D_8013AE98->resource14 == 0xFFFF) {
+            for (;;) {}
+        }
+        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource14];
+        entry = &entries[D_8013AE88->data1E / 10U];
+    } else {
+        if (D_8013AE98->resource16 == 0xFFFF) {
+            for (;;) {}
+        }
+        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource16];
+        entry = &entries[D_8013AE88->data1E / 10U];
+    }
+    if (parent->values != 0) {
+        sprite = D_8012F798;
+        if (entry->command == 99) {
+            entry->task = 0;
+            func_800149A8();
+        } else {
+            sprite = func_800736D0(sprite, parent->values, (s16)D_8013AE88->data1A);
+            setSpriteColor(color->bytes[0], color->bytes[1], color->bytes[2]);
+            func_8006C998(position->x / 4096, position->y / 4096, sprite->sprite,
+                sprite->color, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            setSpriteColor(128, 128, 128);
+            character = gRacePlayers[0].unk009;
+            index = func_8007E8CC(parent->values, (s16)D_8013AE88->data1A);
+            if ((u16)index < 10) {
+                if (D_8013AFCD == 1) {
+                    if ((D_8013101C.masks[character] & (1U << (index * 2))) > 0) {
+                        if (!(D_8013101C.masks[character] & (2U << (index * 2)))) {
+                            goto draw_base_status;
+                        }
+                        func_8006C998(position->x / 4096 - 17, position->y / 4096 - 1,
+                            index + 70, 9, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                    } else if (D_8013101C.masks[character] & (2U << (index * 2))) {
+                        func_8006C998(position->x / 4096 - 17, position->y / 4096 - 1,
+                            index + 70, 10, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                    } else {
+draw_base_status:
+                        if ((D_8013101C.masks[character] & (1U << (index * 2))) > 0) {
+                            func_8006C998(position->x / 4096 - 17, position->y / 4096 - 1,
+                                index + 70, 11, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                        } else {
+                            drawMenuDecimalNumber8x16(position->x / 4096 - 20, position->y / 4096 + 1,
+                                2, 0, index + 1, 3, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                        }
+                    }
+                } else {
+                    drawMenuDecimalNumber8x16(position->x / 4096 - 20, position->y / 4096 + 1,
+                        2, 0, index + 1, 3, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                }
+            }
+            entry->flags = 0;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_8007E8CC);
 
