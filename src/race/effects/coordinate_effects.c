@@ -694,7 +694,7 @@ void updatePlayerDualResourceEffectTask(void) {
     history = (VECTOR *)&D_800D9504[D_8013AE88->resource16];
     if (D_8013AFD3 == 0) {
         updateHomingTaskVisualMovement(resource, history, 0x63000, 0x1C);
-        func_8004C968(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8, 2, &dx, &dz);
+        getGeometryBoundaryDisplacement(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8, 2, &dx, &dz);
         if (dx != 0 || dz != 0) {
             resource->unkDC = 0;
             resource->position.x += dx;
@@ -741,7 +741,7 @@ void updatePlayerVisualPairTask(void) {
     history = (VECTOR *)&D_800D9504[D_8013AE88->resource16];
     if (D_8013AFD3 == 0) {
         updateHomingTaskVisualMovement(resource, history, 0x51000, 0x12);
-        func_8004C968(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8, 2, &dx, &dz);
+        getGeometryBoundaryDisplacement(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8, 2, &dx, &dz);
         if (dx != 0 || dz != 0) {
             resource->unkDC = 0;
             resource->position.x += dx;
@@ -788,7 +788,7 @@ void updatePlayerVisualPairTask5E80(void) {
     history = (VECTOR *)&D_800D9504[D_8013AE88->resource16];
     if (D_8013AFD3 == 0) {
         updateHomingTaskVisualMovement(resource, history, 0x3F000, 0x18);
-        func_8004C968(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8, 2, &dx, &dz);
+        getGeometryBoundaryDisplacement(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8, 2, &dx, &dz);
         if (dx != 0 || dz != 0) {
             resource->unkDC = 0;
             resource->position.x += dx;
@@ -882,7 +882,7 @@ void updateDualResource4C80EffectTask(void) {
     history = (VECTOR *)&D_800D9504[D_8013AE88->resource16];
     if (D_8013AFD3 == 0) {
         updateHomingTaskVisualMovement(resource, history, 0x2D000, 0x10);
-        func_8004C968(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8, 2, &dx, &dz);
+        getGeometryBoundaryDisplacement(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8, 2, &dx, &dz);
         if (dx != 0 || dz != 0) {
             resource->unkDC = 0;
             resource->position.x += dx;
@@ -1053,7 +1053,7 @@ void updateDualResource5100EffectTask(void) {
             resource->position.y = ground;
         }
         resource->velocityY = resource->position.y - oldY + 0x1900;
-        func_8004C968(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8, 2, &dx, &dz);
+        getGeometryBoundaryDisplacement(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8, 2, &dx, &dz);
         if (dx != 0 || dz != 0) {
             resource->unkDC = 0;
             resource->position.x += dx;

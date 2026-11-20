@@ -139,4 +139,115 @@ void enforceGeometryEdgeDistance(s32 limit) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/course/course_geometry", func_8004C968);
+void getGeometryBoundaryDisplacement(s16 index, s32 x, s32 z, s32 radius, s32 *displacementX, s32 *displacementZ) {
+    s32 x0, x1, x2, x3;
+    s32 z0, z1, z2, z3;
+    s32 nx, nz, tangent, normal, length, edgeLength;
+
+    D_8013B648 = x;
+    D_8013B650 = z;
+    x0 = D_8013B1EC[((GeometryRegion *)D_8013B1F4)[index].vertices[0] * 3] * 5;
+    x1 = D_8013B1EC[((GeometryRegion *)D_8013B1F4)[index].vertices[1] * 3] * 5;
+    x2 = D_8013B1EC[((GeometryRegion *)D_8013B1F4)[index].vertices[2] * 3] * 5;
+    x3 = D_8013B1EC[((GeometryRegion *)D_8013B1F4)[index].vertices[3] * 3] * 5;
+    z0 = D_8013B1EC[((GeometryRegion *)D_8013B1F4)[index].vertices[0] * 3 + 2] * 5;
+    z1 = D_8013B1EC[((GeometryRegion *)D_8013B1F4)[index].vertices[1] * 3 + 2] * 5;
+    z2 = D_8013B1EC[((GeometryRegion *)D_8013B1F4)[index].vertices[2] * 3 + 2] * 5;
+    z3 = D_8013B1EC[((GeometryRegion *)D_8013B1F4)[index].vertices[3] * 3 + 2] * 5;
+
+    if (((GeometryRegion *)D_8013B1F4)[index].neighbors[0] < 0) {
+        D_8013B63C = x1 - x0;
+        D_8013B644 = z1 - z0;
+        D_8013B630 = x - x0;
+        D_8013B638 = z - z0;
+        enforceGeometryEdgeDistance(radius);
+    }
+
+    if (((GeometryRegion *)D_8013B1F4)[index].neighbors[1] < 0) {
+        D_8013B63C = x2 - x3;
+        D_8013B644 = z2 - z3;
+        D_8013B630 = D_8013B648 - x3;
+        D_8013B638 = D_8013B650 - z3;
+        enforceGeometryEdgeDistance(radius);
+    }
+
+    /* Flagged side-edge corners use radial distance beyond the endpoints. */
+    if (((GeometryRegion *)D_8013B1F4)[index].neighbors[2] < 0) {
+        D_8013B63C = x3 - x1;
+        D_8013B644 = z3 - z1;
+        D_8013B630 = D_8013B648 - x1;
+        D_8013B638 = D_8013B650 - z1;
+        length = SquareRoot0(D_8013B63C * D_8013B63C + D_8013B644 * D_8013B644);
+        nx = (D_8013B644 << 12) / length;
+        nz = (D_8013B63C << 12) / length;
+        tangent = (nz * D_8013B630 + nx * D_8013B638) / 4096;
+        normal = (-nx * D_8013B630 + nz * D_8013B638) / 4096;
+        edgeLength = (nz * D_8013B63C + nx * D_8013B644) / 4096;
+        if ((((GeometryRegion *)D_8013B1F4)[index].cornerFlags & 2) && tangent < 0) {
+            tangent = D_8013B648 - x1;
+            normal = D_8013B650 - z1;
+            length = SquareRoot0(tangent * tangent + normal * normal);
+            if (length < -radius) {
+                tangent = tangent * -radius / length;
+                normal = normal * -radius / length;
+                D_8013B648 = tangent + x1;
+                D_8013B650 = normal + z1;
+            }
+        } else if ((((GeometryRegion *)D_8013B1F4)[index].cornerFlags & 8) && edgeLength < tangent) {
+            tangent = D_8013B648 - x3;
+            normal = D_8013B650 - z3;
+            length = SquareRoot0(tangent * tangent + normal * normal);
+            if (length < -radius) {
+                tangent = tangent * -radius / length;
+                normal = normal * -radius / length;
+                D_8013B648 = tangent + x3;
+                D_8013B650 = normal + z3;
+            }
+        } else if (normal < radius) {
+            D_8013B644 = radius - normal;
+            D_8013B648 += -nx * D_8013B644 / 4096;
+            D_8013B650 += nz * D_8013B644 / 4096;
+        }
+    }
+
+    if (((GeometryRegion *)D_8013B1F4)[index].neighbors[3] < 0) {
+        D_8013B63C = x0 - x2;
+        D_8013B644 = z0 - z2;
+        D_8013B630 = D_8013B648 - x2;
+        D_8013B638 = D_8013B650 - z2;
+        length = SquareRoot0(D_8013B63C * D_8013B63C + D_8013B644 * D_8013B644);
+        nx = (D_8013B644 << 12) / length;
+        nz = (D_8013B63C << 12) / length;
+        tangent = (nz * D_8013B630 + nx * D_8013B638) / 4096;
+        normal = (-nx * D_8013B630 + nz * D_8013B638) / 4096;
+        edgeLength = (nz * D_8013B63C + nx * D_8013B644) / 4096;
+        if ((((GeometryRegion *)D_8013B1F4)[index].cornerFlags & 4) && tangent < 0) {
+            tangent = D_8013B648 - x2;
+            normal = D_8013B650 - z2;
+            length = SquareRoot0(tangent * tangent + normal * normal);
+            if (length < -radius) {
+                tangent = tangent * -radius / length;
+                normal = normal * -radius / length;
+                D_8013B648 = tangent + x2;
+                D_8013B650 = normal + z2;
+            }
+        } else if ((((GeometryRegion *)D_8013B1F4)[index].cornerFlags & 1) && edgeLength < tangent) {
+            tangent = D_8013B648 - x0;
+            normal = D_8013B650 - z0;
+            length = SquareRoot0(tangent * tangent + normal * normal);
+            if (length < -radius) {
+                tangent = tangent * -radius / length;
+                normal = normal * -radius / length;
+                D_8013B648 = tangent + x0;
+                D_8013B650 = normal + z0;
+            }
+        } else if (normal < radius) {
+            D_8013B644 = radius - normal;
+            D_8013B648 += -nx * D_8013B644 / 4096;
+            D_8013B650 += nz * D_8013B644 / 4096;
+        }
+    }
+
+    *displacementX = D_8013B648 - x;
+    *displacementZ = D_8013B650 - z;
+}

@@ -527,7 +527,8 @@ typedef struct FallingTaskResource {
 typedef struct GeometryRegion {
     s16 neighbors[4];
     s16 vertices[4];
-    s16 unk10[6];
+    s16 unk10[5];
+    u16 cornerFlags;
 } GeometryRegion;
 
 typedef struct TextureRegion {

@@ -2851,6 +2851,7 @@ updateCurrentPlayerAndResetState = 0x800204D8; // type:func
 drawSlidingDisplaySprite = 0x80034090; // type:func
 
 enforceGeometryEdgeDistance = 0x8004C81C; // type:func
+getGeometryBoundaryDisplacement = 0x8004C968; // type:func
 D_8013B630 = 0x8013B630; // size:0x4
 D_8013B634 = 0x8013B634; // size:0x4
 D_8013B638 = 0x8013B638; // size:0x4
