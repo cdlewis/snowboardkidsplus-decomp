@@ -206,7 +206,7 @@ void initializeDelayedEightEntryEffectTask(void);
 
 void initializeFlagSelectedCdAwareTask(void);
 s32 func_8007D47C(void);
-void func_8007CC78(void);
+void updateCdAwareCourseSelectionTask(void);
 
 void initializeSelectedCourseOffsetTask(void);
 void updateSelectedCourseOffsetTask(void);
@@ -245,6 +245,7 @@ void initializeSpacedTaskGridPositions(s32 mode, GameTask *task, s32 x, s32 y,
                                  s32 spacingX, s32 spacingY);
 
 extern u8 D_8013B41F __attribute__((section(".data")));
+extern u8 selectionMenuFadeStartedGp;
 void configureColorCycleTask(s32 mode, s16 minimum, s16 maximum, s32 step, s16 index);
 void updateColorCycleTask(void);
 

@@ -84,6 +84,6 @@ void initializeFlagSelectedCdAwareTask(void) {
     if (isCdCommandQueueIdle() != 1) {
         setSecondaryDisplayTaskMode(2);
     }
-    setCurrentTaskCallback(func_8007CC78);
+    setCurrentTaskCallback(updateCdAwareCourseSelectionTask);
     D_8013AE88->unk10 |= 2;
 }

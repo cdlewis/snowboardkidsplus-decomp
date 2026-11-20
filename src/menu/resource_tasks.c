@@ -14,7 +14,6 @@ typedef struct MainTailSelectionResource {
 extern ByteMappingDescriptor D_801325FC[];
 extern ByteMappingDescriptor D_80132638[];
 extern const u16 *D_801325D0[];
-extern const u8 D_8012D46C[];
 extern const u16 D_80131F20[];
 extern const u16 D_80131F94[];
 extern const u16 D_80132004[];

@@ -4,12 +4,20 @@
 #include "../menu/save_record_tasks_internal.h"
 #include "game/engine/byte_search.h"
 #include "game/io/cd_queue.h"
+#define SELECTED_RECORDS_ABSOLUTE_ADDRESSING
 #include "game/menu/selected_records.h"
 #include "game/menu/selected_sprite.h"
 #include "game/menu/task_widgets.h"
 
 #define MEMORY_CARD_SLOT_BUFFER_BASE ((u8 *)0x801E4000)
 #define MEMORY_CARD_SLOT_BUFFER_STRIDE 0x2000
+
+typedef struct CourseSelectionResource {
+    s16 mode;
+    s16 selectedIndex;
+    s16 previousIndex;
+    s16 choiceResult;
+} CourseSelectionResource;
 
 typedef struct MenuModelResource {
     GsDOBJ2 object;
@@ -104,7 +112,192 @@ void transitionRegisteredPlayerModelsUp(void);
 void func_80083C3C(void);
 void func_80086C34(s32 x, s32 y, s32 destination, s32 source, s32 index);
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_8007CC78);
+void updateCdAwareCourseSelectionTask(void) {
+    s32 mode;
+    ByteMappingDescriptor *group;
+    CourseSelectionResource *selection;
+    RegisteredPanelSlot *entries;
+    s32 complete;
+    s16 selectedIndex;
+    u16 course;
+    u16 courseParameter;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        for (;;) {}
+    }
+    selection = (CourseSelectionResource *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) {
+        for (;;) {}
+    }
+    entries = (RegisteredPanelSlot *)&D_800D9504[D_8013AE88->resource16];
+
+    switch (D_8013AE88->data18) {
+    case 1:
+        setMusicSequenceEnabled(1);
+        setSecondaryDisplayTaskMode(0);
+        if (D_8013AFCD == 1) {
+            mode = 1;
+        } else {
+            mode = 3;
+        }
+        group = &D_8012FD10[D_8013AE88->data1A];
+        selection->mode = 0;
+        selectedIndex = findIdentityMappedIndexOrZero(group, D_8013B104);
+        selection->selectedIndex = selectedIndex;
+        selection->previousIndex = selectedIndex;
+        selection->choiceResult = 0;
+        createRegisteredSpacedChildTasks(mode, 0xB0, 0x40, (const u8 *)D_8012F798,
+                                         group->mapping, NULL, 0, 0, 20,
+                                         -312, -96, group->spacingX, group->spacingY,
+                                         group->count, 149, drawSelectedTaskSprite,
+                                         drawRegisteredSelectionItemStatus, 4, 1);
+        createRegisteredCallbackTask(0, 172, -72, drawSelectionItemDetails, 4, 11);
+        createRegisteredTexturePairTask(172, -72, group->textureMapping,
+                                        group->count, selection->selectedIndex, 1, 5, 21);
+        D_8013AE88->data18 = 3;
+        break;
+    case 3:
+        if (entries[0].flags == 0 && entries[1].flags == 0 && entries[2].flags == 0) {
+            moveTaskChildrenWithSpacing(0, entries[0].task, -0x84000, -0x60000, 0x1E000, 0x1E000, 1);
+            configureMovement2D((Movement2D *)&D_800D9504[entries[1].task->resource14],
+                                -0x8000, -0x48000, 0x1E000, 0x1E000, 5);
+            configureMovement2D((Movement2D *)&D_800D9504[entries[2].task->resource14],
+                                -0x8000, -0x48000, 0x1E000, 0x1E000, 5);
+            D_8013AE88->data18 = 4;
+        }
+        break;
+    case 4:
+        if (entries[0].flags == 0 && entries[1].flags == 0 && entries[2].flags == 0) {
+            entries[0].command = 20;
+            entries[1].command = 20;
+            configureColorCycleTask(1, 0, 128, 8, 0);
+            selectionMenuFadeStartedGp = 0;
+            D_8013AE88->data18 = 5;
+        }
+        break;
+    case 5:
+    case 6:
+        complete = isTaskResourceTransitionComplete(0);
+        if (complete == 1 && selectionMenuFadeStartedGp == 0) {
+            entries[0].command = 21;
+            entries[1].command = 22;
+            configureColorCycleTask(2, 64, 128, 4, 0);
+            selectionMenuFadeStartedGp = complete;
+        }
+        if (selection->choiceResult != 0 && entries[0].flags == 0) {
+            if (selectionMenuFadeStartedGp == 0) {
+                entries[0].command = 22;
+                entries[1].command = 22;
+                selectionMenuFadeStartedGp = 1;
+            }
+            if (selection->choiceResult < 0) {
+                GameTask *parent = D_8013AE98;
+                D_8013B104 = 0;
+                parent->data18 = 6;
+                D_8013AE88->data18 = 7;
+            } else {
+                D_8013AE88->data18 = 50;
+            }
+        }
+        break;
+    case 50: {
+        GameTask *task = D_8013AE88;
+        entries[0].command = 10;
+        task->data18 = 51;
+        break;
+    }
+    case 51:
+        if (entries[0].flags == 0) {
+            D_8013AE88->data18 = 52;
+        }
+        break;
+    case 52: {
+        GameTask *task = D_8013AE88;
+        group = &D_8012FD10[task->data1A];
+        switch (group->mapping[selection->selectedIndex]) {
+        case 10: {
+            GameTask *parent = D_8013AE98;
+            D_8013B104 = 0;
+            parent->data18 = 6;
+            task->data18 = 7;
+            break;
+        }
+        case 12:
+            task->data1A = 0;
+            task->data18 = 40;
+            break;
+        case 11:
+            task->data1A = 8;
+            task->data18 = 40;
+            break;
+        default:
+            selectedIndex = D_8013B104 = func_8007373C(group->mapping, selection->selectedIndex);
+            course = D_8012D46C[selectedIndex];
+            courseParameter = D_80123D80[course].unk02;
+            D_8013AFCE = course;
+            D_8013AE88->data18 = 30;
+            D_8013AFD0 = courseParameter;
+            break;
+        }
+        break;
+    }
+    case 30:
+        func_80014874(initializeModeDependentDualResourceTask);
+        D_8013AE8C->data18 = 1;
+        D_8013AE88->data18 = 31;
+        break;
+    case 32: {
+        GameTask *parent = D_8013AE98;
+        GameTask *task = D_8013AE88;
+        parent->data18 = 8;
+        task->data18 = 99;
+        queueMenuResourceReads((s16)parent->data18);
+        break;
+    }
+    case 40:
+        moveTaskChildrenWithSpacing(0, entries[0].task, -0x84000, -0x60000, 0x1E000, 0x1E000, 0);
+        D_8013AE88->data18 = 41;
+        break;
+    case 41:
+        if (entries[0].flags == 0) {
+            GameTask *task = D_8013AE88;
+            entries[0].command = 99;
+            task->data18 = 42;
+        }
+        break;
+    case 42:
+        if (entries[0].task == NULL) {
+            D_8013AE88->data18 = 2;
+        }
+        break;
+    case 7:
+        if (entries[0].flags == 0 && entries[1].flags == 0 && entries[2].flags == 0) {
+            queueMenuResourceReads((s16)D_8013AE98->data18);
+            moveTaskChildrenWithSpacing(0, entries[0].task, -0x138000, -0x60000, 0x1E000, 0x1E000, -1000);
+            entries[0].command = 23;
+            configureMovement2D((Movement2D *)&D_800D9504[entries[1].task->resource14],
+                                0xAC000, -0x48000, 0x1E000, 0x1E000, -1000);
+            configureMovement2D((Movement2D *)&D_800D9504[entries[2].task->resource14],
+                                0xAC000, -0x48000, 0x1E000, 0x1E000, -1000);
+            D_8013AE88->data18 = 8;
+        }
+        break;
+    case 8:
+        if (entries[0].flags == 0 && entries[1].flags == 0 && entries[2].flags == 0) {
+            D_8013AE88->data18 = 9;
+        }
+        break;
+    case 9:
+        D_8013AE88->data18 = 99;
+        break;
+    case 31:
+        break;
+    default:
+        D_8013AE98->data1C--;
+        func_800149A8();
+        break;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_8007D47C);
 

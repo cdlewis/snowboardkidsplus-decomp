@@ -20,6 +20,7 @@ typedef struct SelectedCourseRecord {
 } SelectedCourseRecord;
 
 extern SelectedCourseRecord D_80123D80[];
+extern const u8 D_8012D46C[];
 #ifdef SELECTED_RECORDS_GP_ADDRESSING
 extern s16 D_8013AFCE;
 #else

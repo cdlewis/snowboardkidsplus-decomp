@@ -2869,6 +2869,7 @@ updateGroupedSelectionBoundsTask = 0x8008FA8C; // type:func
 
 drawSelectionHeaderAndMoneyPanel = 0x8007C7C8; // type:func
 initializeFlagSelectedCdAwareTask = 0x8007CB90; // type:func
+updateCdAwareCourseSelectionTask = 0x8007CC78; // type:func
 
 emitProjectedTexturedTriangle = 0x80052840; // type:func
 
