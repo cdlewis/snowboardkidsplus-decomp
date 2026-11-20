@@ -4,7 +4,9 @@
 #include "game/race/ui/race_time.h"
 
 typedef struct SaveRecord {
-    u8 unk_000[0x44];
+    u8 unk_000[0xC];
+    s32 unk_00C[10];
+    u8 unk_034[0x10];
     RaceTime lapRecords[10][5];
     u8 unk_10C[0x40];
     RaceTime timeRecords[10][5];

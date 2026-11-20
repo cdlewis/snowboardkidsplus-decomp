@@ -965,6 +965,8 @@ segments:
       - [0x12BBD0, data, 12BBD0]
       - {start: 0x12BBF8, type: .data, name: unclassified/menu_8007BE9C, linker_section: .data.selection_money_currency_label}
       - [0x12BBFC, data, 12BBD0_tail]
+      - {start: 0x12BC1C, type: .data, name: unclassified/menu_8007CC78, linker_section: .data.selection_prize_currency_label}
+      - [0x12BC20, data, selection_prize_currency_label_tail]
       - {start: 0x12BC60, type: .data, name: unclassified/menu_8007CC78, linker_section: .data.lit_object_draw_area_depths}
       - [0x12BC68, data, 12BC68]
       - {start: 0x12BC70, type: .data, name: menu/panel_tasks, linker_section: .data.registered_panel_mode_labels}

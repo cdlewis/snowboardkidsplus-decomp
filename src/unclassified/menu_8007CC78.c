@@ -4,6 +4,7 @@
 #include "../menu/save_record_tasks_internal.h"
 #include "game/engine/byte_search.h"
 #include "game/io/cd_queue.h"
+#include "game/menu/selected_records.h"
 #include "game/menu/selected_sprite.h"
 #include "game/menu/task_widgets.h"
 
@@ -87,6 +88,7 @@ StateValueHistory D_8013BE30 __attribute__((section(".bss.state_value_history"))
 extern u8 D_80130094[][5];
 extern u8 D_801300A0[][5];
 extern u8 D_8013B44C[];
+extern char gSelectionPrizeCurrencyLabel[] __attribute__((section(".data")));
 
 void updateRegisteredPlayerModelTask(void);
 void func_80086C34(s32 x, s32 y, s32 destination, s32 source, s32 index);
@@ -246,7 +248,49 @@ void drawSelectionItemDetails(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_8007EE68);
+void drawSelectionPrizeAndPlayerCounters(void) {
+    Movement2D *position;
+    s16 row;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        for (;;) {}
+    }
+    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->data1A != 0) {
+        if (D_8013AFCD == 1) {
+            func_8006C998(position->x / 4096, position->y / 4096,
+                          0xC1, 14, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            for (row = 0; row < 3; row++) {
+                s32 *prizes = D_8012FC6C[D_8013AFCE];
+                drawDecimalNumber8x8(position->x / 4096 + 48, row * 8 + (s16)(position->y / 4096 + 9),
+                                     5, 0, prizes[row], 0, -1,
+                                     &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                drawWrappedText8x8(position->x / 4096 + 88, row * 8 + (s16)(position->y / 4096 + 9),
+                                   2, gSelectionPrizeCurrencyLabel, 6, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            }
+            func_8006C998(position->x / 4096 + 6, position->y / 4096 + 35,
+                          0xC2, 14, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            drawDecimalNumber8x8(position->x / 4096 + 26, position->y / 4096 + 42,
+                                 5, 0, ((SaveRecord *)&D_8013080C)->unk_00C[D_8013AFCE],
+                                 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            drawWrappedText8x8(position->x / 4096 + 66, position->y / 4096 + 42,
+                               2, gSelectionPrizeCurrencyLabel, 6, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        } else {
+            func_8006C998(position->x / 4096, position->y / 4096,
+                          0xC0, 14, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            drawMenuDecimalNumber8x16(position->x / 4096 + 64, position->y / 4096 + 19,
+                                      2, 0, gRacePlayers[0].unk02A, 5, -1,
+                                      &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            drawMenuDecimalNumber8x16(position->x / 4096 + 64, position->y / 4096 + 35,
+                                      2, 0, gRacePlayers[1].unk02A, 5, -1,
+                                      &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        }
+    }
+}
+
+char gSelectionPrizeCurrencyLabel[3]
+    __attribute__((section(".data.selection_prize_currency_label"), aligned(4))) = "\x82" "f";
+u8 D_8013B41F __attribute__((section(".data.selection_prize_currency_label"))) = 0;
 
 void clearHalfwordPairTable(void) {
     s16 i;

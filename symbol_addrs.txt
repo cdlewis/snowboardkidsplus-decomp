@@ -2907,6 +2907,7 @@ animateUnlockMenuTransition = 0x800A5050; // type:func
 createPaletteRotationTask = 0x8007DE28; // type:func
 updatePaletteRotationTask = 0x8007E004; // type:func
 drawSelectionItemDetails = 0x8007E8F0; // type:func
+drawSelectionPrizeAndPlayerCounters = 0x8007EE68; // type:func
 
 updateOrbitingTaskObject = 0x8005A1C4; // type:func
 updateMovingTaskObject = 0x8005A360; // type:func
@@ -3552,6 +3553,8 @@ gRegisteredPanelMode0Label = 0x8013B470; // size:0x4
 gRegisteredPanelMode1Label = 0x8013B474; // size:0x4
 drawCurrentTaskMoneyPanel = 0x8008D958; // type:func
 gSelectionMoneyCurrencyLabel = 0x8013B3F8; // size:0x4
+gSelectionPrizeCurrencyLabel = 0x8013B41C; // size:0x3
+D_8013B41F = 0x8013B41F; // size:0x1
 gMoneyPanelCurrencyLabel = 0x8013B4AC; // size:0x4
 drawCurrentTaskSaveRecordMoneyPanel = 0x80091318; // type:func
 drawCurrentTaskSelectedBoardPrice = 0x80091B80; // type:func
