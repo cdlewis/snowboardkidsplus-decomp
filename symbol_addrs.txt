@@ -2200,6 +2200,7 @@ getTaskResourceGroupedIndex = 0x8008104C; // type:func
 
 beginResourceLoadOrUnlockNotification = 0x8001CEAC; // type:func
 
+drawRaceTimeComparisonPanel = 0x8003BE58; // type:func
 drawCurrentTaskPanel = 0x8003C55C; // type:func
 
 drawSpriteTextureRegion = 0x8006CB70; // type:func
@@ -3670,3 +3671,7 @@ gPlayerTerrainContactSavedStackPointer = 0x8013B618; // type:u32 size:0x4
 gPlayerGroundContactSavedStackPointer = 0x8013B61C; // type:u32 size:0x4
 gPlayerTimerModelObject = 0x80129B60; // size:0x10
 gRacePlayerSortSavedStackPointer = 0x8013B614; // type:u32 size:0x4
+gRaceComparisonLapTimeLabel = 0x80010B90; // size:0xC defined:true
+gRaceComparisonSpeedFanLabel = 0x80010B9C; // size:0x10 defined:true
+gRaceComparisonHitCountLabel = 0x80010BAC; // size:0xC defined:true
+gRaceComparisonTrickPointLabel = 0x80010BB8; // size:0xC defined:true

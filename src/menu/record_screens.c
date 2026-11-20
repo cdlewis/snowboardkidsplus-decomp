@@ -18,6 +18,11 @@ const char gRaceResultsTimeDifferenceFormat[20] __attribute__((section(".rodata.
 const char gRaceResultsTimePrizeLabel[16] __attribute__((section(".rodata.race_results_labels"), aligned(4))) = "  -TIME PRIZE-";
 const char gRaceResultsSpeedFanGetLabel[20] __attribute__((section(".rodata.race_results_labels"), aligned(4))) = " -SPEED FAN GET-";
 const char gRaceResultsPerfectGetLabel[16] __attribute__((section(".rodata.race_results_labels"), aligned(4))) = "  -PERFECT GET-";
+const char gRaceComparisonLapTimeLabel[12] __attribute__((section(".rodata.race_comparison_labels"), aligned(4))) = "LAP TIME";
+const char gRaceComparisonSpeedFanLabel[16] __attribute__((section(".rodata.race_comparison_labels"), aligned(4))) = "SPEEDFAN GET";
+const char gRaceComparisonHitCountLabel[12] __attribute__((section(".rodata.race_comparison_labels"), aligned(4))) = "HIT COUNT";
+const char gRaceComparisonTrickPointLabel[12] __attribute__((section(".rodata.race_comparison_labels"), aligned(4))) = "TRICK POINT";
+
 extern char gRaceResultsFastLabel[];
 
 void drawRaceTime(const RaceTime *value, s32 x, s32 y, s16 mode, GsOT *ot, u16 depth) {
@@ -1233,35 +1238,94 @@ void fadeInStatsMenuTask(void) {
 
 INCLUDE_ASM("asm/nonmatchings/menu/record_screens", func_8003BD70);
 
-INCLUDE_ASM("asm/nonmatchings/menu/record_screens", func_8003BE58);
+void drawRaceTimeComparisonPanel(PanelResource *resource) {
+    char text[32];
+    s16 i;
+
+    for (i = 0; i < 2; i++) {
+        if (resource->brightness != 128) {
+            setSpriteColor((u8)resource->brightness, (u8)resource->brightness, (u8)resource->brightness);
+        } else {
+            setSpriteColor(128, 128, 128);
+        }
+        func_8006C998(-124, i * 104 - 88, i + 490, (s16)(i + 13), 0, &D_800EBFF0[D_8013AF78], 1);
+        drawLimitedText8x8(-80, i * 104 - 56, 20, gRaceComparisonLapTimeLabel, 5, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawRaceTime(&D_8013B190[i], -80, i * 104 - 48, 1, &D_800EBFF0[D_8013AF78], 1);
+        if (D_8013B1A0[i] == 0) {
+            drawLimitedText8x8(-80, i * 104 - 24, 20, gRaceResultsFastLabel, 7, -1, &D_800EBFF0[D_8013AF78], 1);
+            sprintf(text, gRaceResultsTimeDifferenceFormat, resource->time[i].minutes,
+                    resource->time[i].seconds, resource->time[i].centiseconds >> 8);
+            drawLimitedText8x8(-80, i * 104 - 16, 20, text, 7, -1, &D_800EBFF0[D_8013AF78], 1);
+        } else {
+            drawLimitedText8x8(-80, i * 104 - 24, 20, gHitCountTimeOutLabel, 4, -1, &D_800EBFF0[D_8013AF78], 1);
+        }
+        if (resource->displayStage > 0) {
+            switch (D_8013AFE0) {
+            case 0:
+                drawUppercaseProportionalText(8, i * 104 - 56, 20, gRaceComparisonSpeedFanLabel, 3, -1, &D_800EBFF0[D_8013AF78], 1);
+                drawHudDecimalNumber8x16(64, i * 104 - 40, 2, 0, gRacePlayers[i].collectedCourseCoinMarkerCount,
+                                        1, -1, &D_800EBFF0[D_8013AF78], 1);
+                func_8006C998(80, i * 104 - 40, 27, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+                drawHudDecimalNumber8x16(88, i * 104 - 40, 2, 0, gRacePlayers[i].totalCourseCoinMarkerCount,
+                                        1, -1, &D_800EBFF0[D_8013AF78], 1);
+                break;
+            case 1:
+                drawUppercaseProportionalText(8, i * 104 - 56, 20, gRaceComparisonHitCountLabel, 3, -1, &D_800EBFF0[D_8013AF78], 1);
+                drawHudDecimalNumber8x16(64, i * 104 - 40, 2, 0, gRacePlayers[i].scoreAttackPointTotal,
+                                        1, -1, &D_800EBFF0[D_8013AF78], 1);
+                func_8006C998(80, i * 104 - 40, 27, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+                drawHudDecimalNumber8x16(88, i * 104 - 40, 2, 0, gRacePlayers[i].scoreAttackPointTarget,
+                                        1, -1, &D_800EBFF0[D_8013AF78], 1);
+                break;
+            case 2:
+                drawUppercaseProportionalText(8, i * 104 - 56, 20, gRaceComparisonTrickPointLabel, 3, -1, &D_800EBFF0[D_8013AF78], 1);
+                drawHudDecimalNumber8x16(88, i * 104 - 40, 5, 0, gRacePlayers[i].trickAttackPointTotal,
+                                        1, -1, &D_800EBFF0[D_8013AF78], 1);
+                break;
+            }
+        }
+        if (resource->displayStage >= 2) {
+            s16 palette;
+            if (resource->resultIcon[i] == 0 && (gFrameCounter & 1)) {
+                setSpriteColor(192, 192, 192);
+                palette = resource->resultIcon[i] + 9;
+            } else {
+                setSpriteColor(128, 128, 128);
+                palette = resource->resultIcon[i] + 9;
+            }
+            func_8006C998(-80, i * 104 - 84, resource->resultIcon[i] + 567, palette,
+                          -1, &D_800EBFF0[D_8013AF78], 1);
+        }
+    }
+}
 
 void drawCurrentTaskPanel(void) {
-    TaskResourceRecord *resource;
+    PanelResource *resource;
 
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = &D_800D9504[D_8013AE88->resource14];
+    resource = (PanelResource *)&D_800D9504[D_8013AE88->resource14];
     if (!(D_8013AFE4 & 0x10)) {
         func_800149A8();
     }
-    func_8003BE58(resource);
+    drawRaceTimeComparisonPanel(resource);
 }
 
 void updatePanelExitInputTask(void) {
-    PanelInputResource *resource;
+    PanelResource *resource;
 
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (PanelInputResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (PanelResource *)&D_800D9504[D_8013AE88->resource14];
     if (resource->timer > 0) {
         resource->timer--;
     } else if ((D_8013AEE8[0] | D_8013AEE8[1]) & 0xB0) {
         D_8013AFE4 |= 0x10;
         setCurrentTaskCallback(drawCurrentTaskPanel);
     }
-    func_8003BE58((TaskResourceRecord *)resource);
+    drawRaceTimeComparisonPanel(resource);
 }
 
 void advanceCurrentTaskPanelTimer(void) {
@@ -1272,14 +1336,14 @@ void advanceCurrentTaskPanelTimer(void) {
     }
     resource = (PanelResource *)&D_800D9504[D_8013AE88->resource14];
     if (--resource->timer == 20) {
-        resource->unk0C = 1;
+        resource->displayStage = 1;
     }
     if (resource->timer == 0) {
         resource->timer = 20;
-        resource->unk0C = 2;
+        resource->displayStage = 2;
         setCurrentTaskCallback(updatePanelExitInputTask);
     }
-    func_8003BE58((TaskResourceRecord *)resource);
+    drawRaceTimeComparisonPanel(resource);
 }
 
 void fadeInCurrentTaskPanel(void) {
@@ -1295,7 +1359,7 @@ void fadeInCurrentTaskPanel(void) {
         resource->brightness = 128;
         setCurrentTaskCallback(advanceCurrentTaskPanelTimer);
     }
-    func_8003BE58((TaskResourceRecord *)resource);
+    drawRaceTimeComparisonPanel(resource);
 }
 
 void initializeRaceTimeComparisonPanel(void) {
@@ -1305,16 +1369,16 @@ void initializeRaceTimeComparisonPanel(void) {
     D_8013AE88->resource14 = allocateTaskResource();
     resource = (PanelResource *)&D_800D9504[D_8013AE88->resource14];
     resource->brightness = 0;
-    resource->unk0C = 0;
+    resource->displayStage = 0;
     if (D_8013AFE1 == 1) {
-        resource->unk0E[0] = 0;
-        resource->unk0E[1] = 1;
+        resource->resultIcon[0] = 0;
+        resource->resultIcon[1] = 1;
     } else if (D_8013AFE1 == 2) {
-        resource->unk0E[0] = 1;
-        resource->unk0E[1] = 0;
+        resource->resultIcon[0] = 1;
+        resource->resultIcon[1] = 0;
     } else {
-        resource->unk0E[0] = 2;
-        resource->unk0E[1] = 2;
+        resource->resultIcon[0] = 2;
+        resource->resultIcon[1] = 2;
     }
     for (i = 0; i < 2; i++) {
         switch (D_8013AFE0) {

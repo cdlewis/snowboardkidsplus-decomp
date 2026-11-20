@@ -249,8 +249,8 @@ typedef struct PanelResource {
     RaceTime time[2];
     s16 brightness;
     s16 timer;
-    s16 unk0C;
-    s16 unk0E[2];
+    s16 displayStage;
+    s16 resultIcon[2];
     u8 unk12[0xEE];
 } PanelResource;
 
@@ -270,12 +270,6 @@ typedef struct ResultDisplayResource {
     s16 unk08;
     u8 unk0A[0xF6];
 } ResultDisplayResource;
-
-typedef struct PanelInputResource {
-    u8 unk00[0xA];
-    s16 timer;
-    u8 unk0C[0xF4];
-} PanelInputResource;
 
 typedef struct StatsMenuFadeResource {
     s16 unk00;
@@ -615,7 +609,7 @@ void waitTaskMenuCountdownAndPlaySound(void);
 void drawTaskMenuAndSetFlag10OnInput(void);
 void func_80038B34(void);
 void startTaskMenuCountdownAndPlaySound(void);
-void func_8003BE58(TaskResourceRecord *resource);
+void drawRaceTimeComparisonPanel(PanelResource *resource);
 void updatePanelExitInputTask(void);
 void advanceCurrentTaskPanelTimer(void);
 void tickRaceResultsDelayTask(void);
