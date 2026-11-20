@@ -230,7 +230,6 @@ void updateScrollingBackgroundTask(void);
 void drawTaskImagesOnBlackBackground(void);
 void func_8007195C(void);
 void updateTaskStateTransition(void);
-void func_8007B890(s16 recordIndex, s16 maskIndex);
 void func_8007197C(void);
 void drawSecondaryDisplayTask(void);
 void initTimedSequence(TimedSequence *sequence, const TimedSequenceEntry *entries, s16 index, s16 count);
@@ -1893,7 +1892,54 @@ void updateShrinkingSpriteTask(void) {
 
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_8007B48C);
 
-INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_8007B890);
+void cycleSaveRecordUnlockFlags(s16 recordIndex, s16 maskIndex) {
+    s16 pairIndex;
+    s16 flags;
+
+    switch (getSaveRecordMaskTier(recordIndex, maskIndex)) {
+    case 0:
+        flags = 0;
+        for (pairIndex = 0; pairIndex < 6; pairIndex++) {
+            flags |= getSaveRecordFlagPair(recordIndex, maskIndex, pairIndex);
+        }
+        if (!flags) {
+            setSaveRecordFlagPair(recordIndex, maskIndex, 0, 3);
+            setSaveRecordFlagPair(recordIndex, maskIndex, 1, 3);
+            setSaveRecordFlagPair(recordIndex, maskIndex, 2, 3);
+            setSaveRecordFlagPair(recordIndex, maskIndex, 3, 3);
+            setSaveRecordFlagPair(recordIndex, maskIndex, 4, 3);
+        } else {
+            setSaveRecordFlagPair(recordIndex, maskIndex, 5, 3);
+            setSaveRecordMaskTier(recordIndex, maskIndex, 1);
+        }
+        break;
+    case 1:
+        setSaveRecordFlagPair(recordIndex, maskIndex, 6, 3);
+        setSaveRecordMaskTier(recordIndex, maskIndex, 2);
+        break;
+    case 2:
+        setSaveRecordFlagPair(recordIndex, maskIndex, 7, 3);
+        setSaveRecordMaskTier(recordIndex, maskIndex, 3);
+        break;
+    case 3:
+        setSaveRecordFlagPair(recordIndex, maskIndex, 8, 3);
+        setSaveRecordMaskTier(recordIndex, maskIndex, 4);
+        break;
+    case 4:
+        setSaveRecordFlagPair(recordIndex, maskIndex, 0, 0);
+        setSaveRecordFlagPair(recordIndex, maskIndex, 1, 0);
+        setSaveRecordFlagPair(recordIndex, maskIndex, 2, 0);
+        setSaveRecordFlagPair(recordIndex, maskIndex, 3, 0);
+        setSaveRecordFlagPair(recordIndex, maskIndex, 4, 0);
+        setSaveRecordFlagPair(recordIndex, maskIndex, 5, 0);
+        setSaveRecordFlagPair(recordIndex, maskIndex, 6, 0);
+        setSaveRecordFlagPair(recordIndex, maskIndex, 7, 0);
+        setSaveRecordFlagPair(recordIndex, maskIndex, 8, 0);
+        setSaveRecordFlagPair(recordIndex, maskIndex, 9, 0);
+        setSaveRecordMaskTier(recordIndex, maskIndex, 0);
+        break;
+    }
+}
 
 void applySaveRecordUnlockOverrides(s16 index) {
     s16 i;
@@ -1904,12 +1950,12 @@ void applySaveRecordUnlockOverrides(s16 index) {
     if (D_8013B11A & 2) {
         for (i = 0; i < 10; i++) {
             setSaveRecordMaskTier(index, i, 4);
-            func_8007B890(index, i);
-            func_8007B890(index, i);
-            func_8007B890(index, i);
-            func_8007B890(index, i);
-            func_8007B890(index, i);
-            func_8007B890(index, i);
+            cycleSaveRecordUnlockFlags(index, i);
+            cycleSaveRecordUnlockFlags(index, i);
+            cycleSaveRecordUnlockFlags(index, i);
+            cycleSaveRecordUnlockFlags(index, i);
+            cycleSaveRecordUnlockFlags(index, i);
+            cycleSaveRecordUnlockFlags(index, i);
         }
         gUnlockNotificationFlags = 0x7FF;
     }

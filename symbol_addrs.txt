@@ -3303,6 +3303,7 @@ updatePlayerState23CoordinateEffectTask = 0x800450BC; // type:func
 initializeOrbitingTaskObject = 0x8005E578; // type:func
 gOrbitingTaskPlacements = 0x80129A68; // size:0x18
 
+cycleSaveRecordUnlockFlags = 0x8007B890; // type:func
 applySaveRecordUnlockOverrides = 0x8007BBAC; // type:func
 
 drawTaskGridSelectionMarker = 0x8009B0E8; // type:func
