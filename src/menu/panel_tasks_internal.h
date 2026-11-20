@@ -190,7 +190,11 @@ void drawRegisteredTextPanelTask(void);
 void func_8008FA8C(void);
 void func_8008D200(void);
 void drawCurrentTaskMoneyPanel(void);
+extern u8 D_80131804[12];
+extern u32 D_80131810[12];
+
 void drawCurrentTaskSaveRecordMoneyPanel(void);
+void drawCurrentTaskSelectedBoardPrice(void);
 void drawCurrentTaskSelectedPlayerMoneyPanel(void);
 void func_8008DDC0(void);
 void func_8008EC50(void);

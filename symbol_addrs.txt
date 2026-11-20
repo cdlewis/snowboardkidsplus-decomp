@@ -3451,6 +3451,7 @@ drawCurrentTaskMoneyPanel = 0x8008D958; // type:func
 gSelectionMoneyCurrencyLabel = 0x8013B3F8; // size:0x4
 gMoneyPanelCurrencyLabel = 0x8013B4AC; // size:0x4
 drawCurrentTaskSaveRecordMoneyPanel = 0x80091318; // type:func
+drawCurrentTaskSelectedBoardPrice = 0x80091B80; // type:func
 gSaveRecordMoneyPanelCurrencyLabel = 0x8013B4E4; // size:0x4
 
 startCurrentPlayerDirectionalAnimation = 0x8002DEE8; // type:func

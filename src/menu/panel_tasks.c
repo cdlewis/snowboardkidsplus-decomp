@@ -519,7 +519,57 @@ char gSaveRecordMoneyPanelCurrencyLabel[4]
 
 INCLUDE_ASM("asm/nonmatchings/menu/panel_tasks", func_800916F4);
 
-INCLUDE_ASM("asm/nonmatchings/menu/panel_tasks", func_80091B80);
+void drawCurrentTaskSelectedBoardPrice(void) {
+    Movement2D *position;
+    s16 player;
+    SelectionDisplayEntry *entry;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        for (;;) {}
+    }
+    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    player = D_8013AE88->data18;
+    entry = &((SelectionDisplayEntry *)&D_801300AC)[player];
+    if (D_8013AE88->data1A != 0) {
+        s16 board = entry->index;
+        u8 flagIndex = D_80131804[board];
+        u32 price = D_80131810[board];
+        SaveRecord *records = (SaveRecord *)&D_8013080C;
+        if (records[player].flags_3AC & (4U << flagIndex)) {
+            func_8006C998(position->x / 4096 + 36, position->y / 4096 - 8, 0xC3, 15, -1,
+                         &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        } else {
+            u32 remaining = price;
+            s16 digits = 0;
+            s32 xOffset;
+            s32 x;
+
+            while (remaining != 0) {
+                remaining /= 10;
+                digits++;
+            }
+            if (digits < 5) {
+                digits = 5;
+            }
+            x = position->x / 4096;
+            xOffset = digits * 4 - 64;
+            drawDecimalNumber8x8(x - xOffset, position->y / 4096 - 4,
+                                 digits, 0, price, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            drawWrappedText8x8(position->x / 4096 - xOffset + digits * 8, position->y / 4096 - 4,
+                               2, gSaveRecordMoneyPanelCurrencyLabel, 0, -1,
+                               &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            if (D_8013AE88->data1A == 1) {
+                func_8007240C(position->x / 4096 - xOffset - 4, position->y / 4096 - 8,
+                              digits * 8 + 16, 16, D_8013B3A4, D_8013B3A5, D_8013B3A6, 2,
+                              &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            } else {
+                func_8007240C(position->x / 4096 - xOffset - 4, position->y / 4096 - 8,
+                              digits * 8 + 16, 16, 128, 128, 128, 2,
+                              &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            }
+        }
+    }
+}
 
 void initializeCountedSelectionBoundsTask(void) {
     RECT *bounds;
