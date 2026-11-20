@@ -1980,6 +1980,7 @@ setStateGridFlag = 0x80095EB4; // type:func
 selectTaskCallbackFromModeState = 0x800A09FC; // type:func
 resolveCurrentPlayerTerrainContact = 0x80028234; // type:func
 averageWrappedAngle = 0x80028608; // type:func
+snapCurrentPlayerToTerrain = 0x80028C80; // type:func
 
 addTextCharacter = 0x8006B2E4; // type:func
 addStretchedTextCharacter = 0x8006B38C; // type:func

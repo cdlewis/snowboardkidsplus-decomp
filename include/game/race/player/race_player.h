@@ -99,7 +99,7 @@ struct RacePlayer {
         s32 word;
     } unk108;
     u16 unk10C;
-    u8 unk10E[2];
+    u16 unk10E;
     u16 unk110;
     u16 unk112;
     u8 unk114[2];

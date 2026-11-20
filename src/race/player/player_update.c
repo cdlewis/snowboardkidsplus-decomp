@@ -127,7 +127,7 @@ void func_8002497C(void);
 void func_800205B8(void);
 void func_80028680(void);
 void updateCurrentPlayerAirborneDragUntilLanding(void);
-void func_80028C80(void);
+s32 snapCurrentPlayerToTerrain(void);
 void func_80015C94(u16 playerIndex);
 void func_8001596C(u16 playerIndex);
 void moveCurrentPlayerToTaskTarget(void);
@@ -1689,7 +1689,7 @@ void updateCurrentPlayerState10Movement(void) {
         D_8013B0D8->unk110 += 0x800;
     }
     D_8013B0D8->unk0B6 = D_8013B0D8->unk110 - 0x400;
-    func_80028C80();
+    snapCurrentPlayerToTerrain();
     updateCurrentPlayerAnimation();
     if (D_8013B0E4 != 0) {
         currentPlayerStateCallbacks[D_8013B0D8->unk12C]();
@@ -1915,7 +1915,81 @@ s32 averageWrappedAngle(s16 first, u16 second) {
 
 INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_80028680);
 
-INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_80028C80);
+s32 snapCurrentPlayerToTerrain(void) {
+    u8 padding[0x20];
+    s32 heights[4];
+    s16 records[4];
+    s32 firstSin, firstCos, secondSin, secondCos;
+    s32 firstX, firstZ, secondX, secondZ;
+    s16 region;
+    s16 firstAngle, secondAngle;
+
+    func_80027918();
+    if (func_8002D3C4(0)) {
+        region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8);
+        D_8013B0D8->unk92E = region;
+        D_8013B0D8->y = func_8004A764(region, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8) << 8;
+        D_8013B0D8->worldCoordinate.coord.t[0] = D_8013B0D8->x >> 8;
+        D_8013B0D8->worldCoordinate.coord.t[1] = D_8013B0D8->y >> 8;
+        D_8013B0D8->worldCoordinate.coord.t[2] = D_8013B0D8->z >> 8;
+        return 0;
+    }
+
+    region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8);
+    D_8013B0D8->unk92E = region;
+    D_8013B0D8->y = func_8004A764(region, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8) << 8;
+    copySelectedRecordToCurrentPlayer();
+
+    /* Probe both ends of two axes angled 45 degrees from the heading. */
+    firstSin = rsin((s16)D_8013B0D8->unk110 + 0x200);
+    firstCos = rcos((s16)D_8013B0D8->unk110 + 0x200);
+    secondSin = rsin((s16)D_8013B0D8->unk110 - 0x200);
+    secondCos = rcos((s16)D_8013B0D8->unk110 - 0x200);
+    firstX = firstSin * 20 / 4096;
+    firstZ = firstCos * 20 / 4096;
+    secondX = secondSin * 20 / 4096;
+    secondZ = secondCos * 20 / 4096;
+
+    region = getAdjacentGeometryRegionForPoint(
+        D_8013B0D8->unk92E, (D_8013B0D8->x >> 8) + firstX, (D_8013B0D8->z >> 8) + firstZ);
+    heights[0] = func_8004A764(region, (D_8013B0D8->x >> 8) + firstX, (D_8013B0D8->z >> 8) + firstZ) << 8;
+    records[0] = D_8013B1FE;
+
+    region = getAdjacentGeometryRegionForPoint(
+        D_8013B0D8->unk92E, (D_8013B0D8->x >> 8) - firstX, (D_8013B0D8->z >> 8) - firstZ);
+    heights[1] = func_8004A764(region, (D_8013B0D8->x >> 8) - firstX, (D_8013B0D8->z >> 8) - firstZ) << 8;
+    records[1] = D_8013B1FE;
+
+    region = getAdjacentGeometryRegionForPoint(
+        D_8013B0D8->unk92E, (D_8013B0D8->x >> 8) + secondX, (D_8013B0D8->z >> 8) + secondZ);
+    heights[2] = func_8004A764(region, (D_8013B0D8->x >> 8) + secondX, (D_8013B0D8->z >> 8) + secondZ) << 8;
+    records[2] = D_8013B1FE;
+
+    region = getAdjacentGeometryRegionForPoint(
+        D_8013B0D8->unk92E, (D_8013B0D8->x >> 8) - secondX, (D_8013B0D8->z >> 8) - secondZ);
+    heights[3] = func_8004A764(region, (D_8013B0D8->x >> 8) - secondX, (D_8013B0D8->z >> 8) - secondZ) << 8;
+    records[3] = D_8013B1FE;
+
+    D_8013B0D8->unk118 = D_8013B0D8->unk11E;
+    D_8013B0D8->unk11C = D_8013B0D8->unk120;
+    firstAngle = averageWrappedAngle(D_8013B1F0[records[0]].unk8, D_8013B1F0[records[1]].unk8);
+    secondAngle = averageWrappedAngle(D_8013B1F0[records[2]].unk8, D_8013B1F0[records[3]].unk8);
+    D_8013B0D8->unk11E = averageWrappedAngle(firstAngle, secondAngle);
+    /* The original average counts the third record twice. */
+    D_8013B0D8->unk120 = (D_8013B1F0[records[0]].unkA + D_8013B1F0[records[1]].unkA +
+                         D_8013B1F0[records[2]].unkA + D_8013B1F0[records[2]].unkA) / 4;
+    D_8013B0D8->worldCoordinate.coord.t[0] = D_8013B0D8->x >> 8;
+    D_8013B0D8->worldCoordinate.coord.t[1] = D_8013B0D8->y >> 8;
+    D_8013B0D8->worldCoordinate.coord.t[2] = D_8013B0D8->z >> 8;
+    if (!(D_8013B0D8->unk128 & 0x2000000)) {
+        D_8013B0D8->unk0B8 = 0;
+        D_8013B0D8->unk112 = 0;
+        D_8013B0D8->unk10E = D_8013B0D8->unk0B4;
+        D_8013B0D8->unk110 = D_8013B0D8->unk0B6 + 0x400;
+    }
+    D_8013B0D8->unk128 &= ~1;
+    /* The main path falls through. The caller discards the return value. */
+}
 
 void initializeActiveRacePlayers(void) {
     u16 i;
