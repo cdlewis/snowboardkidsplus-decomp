@@ -193,4 +193,4 @@ s32 getStateAdjustedGameOptionFlag1(void);
 
 void createRegisteredPlayerModelTask(s16 slot, s16 selection, s16 modelIndex,
                                      s16 x, s16 y, s16 z, s32 index);
-void reloadTaskPlayerModel(GameTask *task, u16 slot, u16 selection, u16 modelIndex, s16 x, s16 y, s16 z);
+void reloadTaskPlayerModel(GameTask *task, s16 slot, s16 selection, s16 modelIndex, s16 x, s16 y, s16 z);

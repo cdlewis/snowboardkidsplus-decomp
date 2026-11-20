@@ -16,6 +16,12 @@ typedef struct MenuModelResource {
     s16 unkC0, unkC2, unkC4, unkC6;
 } MenuModelResource;
 
+typedef struct MenuPlayerModelPosition {
+    s32 x;
+    s32 y;
+    s16 z;
+} MenuPlayerModelPosition;
+
 typedef struct ClippedGridSpriteParent {
     u8 unk00[0x44];
     const GridSpriteEntry *sprites;
@@ -622,7 +628,7 @@ void createRegisteredPlayerModelTask(s16 slot, s16 selection, s16 modelIndex,
     registration->task = D_8013AE8C;
 }
 
-void reloadTaskPlayerModel(GameTask *task, u16 slot, u16 selection, u16 modelIndex, s16 x, s16 y, s16 z) {
+void reloadTaskPlayerModel(GameTask *task, s16 slot, s16 selection, s16 modelIndex, s16 x, s16 y, s16 z) {
     MenuModelResource saved;
     MenuModelResource *resource;
     u32 *offsets;
@@ -782,7 +788,63 @@ ByteTriplet *lookupByteTriplet(ByteTriplet *records, u8 *indices, s16 index) {
     return &records[indices[index]];
 }
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_80083180);
+void transitionRegisteredPlayerModels(void) {
+    MenuPlayerModelPosition *position;
+    RegisteredTaskEntry *children;
+    s16 player;
+    RegisteredTaskEntry *entry;
+    MenuSelectionState *selection;
+    u16 playerIndex;
+    s32 command;
+
+    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    position = (MenuPlayerModelPosition *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
+    children = (RegisteredTaskEntry *)&D_800D9504[D_8013AE88->resource16];
+    if ((u16)(D_8013AE88->data1E % 10) == 0) {
+        if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
+        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource14, D_8013AE88->data1E);
+    } else {
+        if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
+        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource16, D_8013AE88->data1E);
+    }
+    if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
+    selection = &D_801300AC[(s16)D_8013AE88->data18];
+    playerIndex = D_8013AE88->data18;
+    command = entry->command;
+    if (command == 1) {
+        s16 incomingSlot;
+        s32 outgoingSlot;
+        Movement2D *movement;
+        if (D_8013AE88->data1C == 0) {
+            outgoingSlot = 0;
+            incomingSlot = 1;
+            D_8013AE88->data1C = command;
+        } else {
+            outgoingSlot = 1;
+            incomingSlot = 0;
+            D_8013AE88->data1C = 0;
+        }
+        movement = (Movement2D *)&D_800D9504[children[incomingSlot].task->resource16];
+        player = playerIndex;
+        reloadTaskPlayerModel(children[incomingSlot].task, (s16)(incomingSlot + player * 2), player,
+                              selection->selection, position->x / 4096, position->y / 4096 - 180, position->z);
+        configureMovement2D(movement, position->x, position->y, 0x4B000, 0x4B000, 0);
+
+        movement = (Movement2D *)&D_800D9504[children[outgoingSlot].task->resource16];
+        reloadTaskPlayerModel(children[outgoingSlot].task, (s16)(outgoingSlot + player * 2), player,
+                              selection->previousSelection, position->x / 4096, movement->y / 4096, position->z);
+        configureMovement2D(movement, position->x, position->y + 0xB4000, 0x4B000, 0x4B000, 0);
+        entry->command = 0;
+        entry->flags = 0;
+        selection->previousSelection = selection->selection;
+        setCurrentTaskCallback(func_800816D8);
+    } else {
+        setCurrentTaskCallback(func_800816D8);
+        entry->command = 0;
+        entry->flags = 0;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_80083574);
 
