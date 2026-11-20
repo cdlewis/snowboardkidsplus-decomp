@@ -105,6 +105,7 @@ segments:
       - [0x1444, rodata]
       - {start: 0x1450, type: .rodata, name: race/ui/race_hud, linker_section: .rodata.best_lap_label}
       - [0x1460, rodata]
+      - [0x1488, .rodata, race/ui/race_hud]
       - [0x149C, rodata]
       - [0x14C4, .rodata, unclassified/graphics_800497B8]
       - [0x14D4, rodata]

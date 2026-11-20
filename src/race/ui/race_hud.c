@@ -1,10 +1,22 @@
+#define PAUSE_MENU_FLAGS_GP_ADDRESSING
 #include "../race_presentation_internal.h"
+
+#define PAUSE_MENU_START 0x0800
+#define PAUSE_MENU_UP 0x1000
+#define PAUSE_MENU_DOWN 0x4000
+#define PAUSE_MENU_CONFIRM 0x00B0
+#define PAUSE_MENU_RESUME_PENDING 0x80
 
 const char gLapTimeLabel[12] __attribute__((section(".rodata.lap_time_label"), aligned(4))) = "LAP TIME";
 
 const char gLapTimeFormat[20] __attribute__((section(".rodata.lap_time_format"), aligned(4))) = "%2.2d'%2.2d\"%2.2d";
 
 const char gBestLapLabel[16] __attribute__((section(".rodata.best_lap_label"), aligned(4))) = "BEST LAP";
+
+extern u8 D_8013AFD5 __attribute__((section(".data")));
+extern u8 D_8013AEC4[];
+
+void func_80043FBC(void);
 
 void drawLapTimeHud(void) {
     GsOT *ot = &D_800EBFF0[D_8013AF78];
@@ -85,7 +97,81 @@ s32 calculateRaceTimeDifference(const RaceTime *a, const RaceTime *b, RaceTime *
 
 INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud", func_80043C28);
 
-INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud", func_80043C5C);
+void updateRacePauseMenu(void) {
+    u8 pause = D_8013AFD3;
+    s16 player = pause - 1;
+    u8 resumeState;
+
+    if (D_8013AEE8[player] & PAUSE_MENU_START) {
+        resumeState = pause | PAUSE_MENU_RESUME_PENDING;
+        goto resume;
+    }
+    if ((D_8013AEE8[player] & PAUSE_MENU_UP) && D_8013AFD5 != 0) {
+        D_8013AFD5--;
+        playSoundEffect(0, 0x100, 0x20);
+    }
+    if (D_8013AEE8[player] & PAUSE_MENU_DOWN) {
+        if (D_8013AFD5 < 4) {
+            D_8013AFD5++;
+            playSoundEffect(0, 0x100, 0x20);
+        }
+    }
+
+    switch (D_8013AFD5) {
+    case 0:
+        if (D_8013AEE8[player] & PAUSE_MENU_CONFIRM) {
+            playSoundEffect(0, 0, 0x20);
+            resumeState = D_8013AFD3 | PAUSE_MENU_RESUME_PENDING;
+resume:
+            D_8013AFD3 = resumeState;
+            func_800149A8();
+            return;
+        }
+        break;
+    case 1:
+        if (D_8013AEE8[player] & PAUSE_MENU_CONFIRM) {
+            playSoundEffect(0, 0, 0x20);
+            D_8013B1AA = 1;
+            D_8013AFD3 |= PAUSE_MENU_RESUME_PENDING;
+            resetControllersAndDeleteCurrentTask();
+            return;
+        }
+        break;
+    case 2:
+        if (D_8013AEE8[player] & PAUSE_MENU_CONFIRM) {
+            playSoundEffect(0, 0, 0x20);
+            D_8013B1AB = 1;
+            D_8013AFD3 |= PAUSE_MENU_RESUME_PENDING;
+            resetControllersAndDeleteCurrentTask();
+            return;
+        }
+        break;
+    case 3:
+        if (D_8013AEE8[player] & PAUSE_MENU_CONFIRM) {
+            playSoundEffect(0, 0, 0x20);
+            if (D_8013AEC4[player]) {
+                clearControllerFlag5(player);
+                D_8013AEC4[player] = 0;
+            } else {
+                setControllerFlag5(player);
+                D_8013AEC4[player] = 0x20;
+            }
+        }
+        break;
+    case 4:
+        if (D_8013AEE8[player] & PAUSE_MENU_CONFIRM) {
+            playSoundEffect(0, 0, 0x20);
+            if ((s16)getPlayerOptionFlag(player)) {
+                gGameOptionFlags &= ~(0x10 << player);
+            } else {
+                gGameOptionFlags |= 0x10 << player;
+            }
+        }
+        break;
+    }
+
+    func_80043FBC();
+}
 
 void resetControllersAndDeleteCurrentTask(void) {
     setControllerFlag5(0);

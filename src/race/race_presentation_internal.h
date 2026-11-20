@@ -187,6 +187,7 @@ void drawLapTimeHud(void);
 void drawFirstPlayerStatusHud(void);
 void advanceRaceElapsedTime(void);
 s32 calculateRaceTimeDifference(const RaceTime *a, const RaceTime *b, RaceTime *difference);
+void updateRacePauseMenu(void);
 void resetControllersAndDeleteCurrentTask(void);
 s16 isFirstPlayerUsingCallback26D10(void);
 void drawPlayerFlagTaskVisual(TaskVisualResource *resource);

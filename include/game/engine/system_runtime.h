@@ -29,7 +29,13 @@ extern u16 D_8013AFAA __attribute__((section(".data")));
 extern u8 D_8013B562 __attribute__((section(".data")));
 extern s16 D_8013B104 __attribute__((section(".data")));
 extern u8 D_8013AFE2;
+#ifdef PAUSE_MENU_FLAGS_GP_ADDRESSING
+extern u8 D_8013B1AA;
+extern u8 D_8013B1AB;
+#else
+extern u8 D_8013B1AA __attribute__((section(".data")));
 extern u8 D_8013B1AB __attribute__((section(".data")));
+#endif
 extern u16 D_8013AFE8;
 extern void *D_8013AF4C;
 extern void *gMemoryCardLoadDestination;
