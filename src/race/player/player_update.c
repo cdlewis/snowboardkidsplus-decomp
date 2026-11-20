@@ -421,7 +421,10 @@ void initializeScaledTaskCoordinateResource(void);
 void updateCurrentPlayerState24MotionAndScale(void);
 void func_80024288(void);
 void updateCurrentPlayerTimedEffect(void);
-void func_800205B8(void);
+void updateCurrentPlayerRiding(void);
+void func_8004D330(s16 segment, s32 x, s32 z, s32 *targetX, s32 *targetZ, u16 route, u16 playerIndex);
+s16 func_8008C670(s16 playerIndex);
+s16 func_80029DD0(s16 playerIndex);
 void updateCurrentPlayerAirborneDragUntilLanding(void);
 s32 snapCurrentPlayerToTerrain(void);
 void func_80015C94(u16 playerIndex);
@@ -867,7 +870,7 @@ void resetCurrentPlayerForCallback205B8(void) {
         playCurrentPlayerSoundEffect(7);
         startCurrentPlayerAnimation(0x12, 2);
     }
-    setCurrentTaskCallback(func_800205B8);
+    setCurrentTaskCallback(updateCurrentPlayerRiding);
 }
 
 void initializeCurrentPlayerDefaultState(void) {
@@ -1260,7 +1263,352 @@ void updateCurrentPlayerAndResetState(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_800205B8);
+void updateCurrentPlayerRiding(void) {
+    RacePlayer *framePlayer;
+    RacePlayer *autoPlayer;
+    RacePlayer *headingPlayer;
+    RacePlayer *filteredPlayer;
+    RacePlayer *manualPlayer;
+    RacePlayer *stancePlayer;
+    RacePlayer *speedPlayer;
+    RacePlayer *steeringPlayer;
+    RacePlayer *centeringPlayer;
+    RacePlayer *turnPlayer;
+    RacePlayer *boostPlayer;
+    RacePlayer *movingPlayer;
+    RacePlayer *itemPlayer;
+    RacePlayer *autoItemPlayer;
+    RacePlayer *jumpPlayer;
+    RacePlayer *lowSpeedPlayer;
+    RacePlayer *manualItemPlayer;
+    RacePlayer *landingPlayer;
+    const SelectedCourseRecord *course;
+    s16 steer;
+    s16 angle;
+    s16 headingStep;
+    s32 speed;
+    s32 magnitude;
+    s32 difference;
+    s32 boost;
+    u8 character;
+    u8 padding[0x10];
+    s32 targetX, targetZ;
+
+    prepareCurrentPlayerFrame();
+    framePlayer = D_8013B0D8;
+    framePlayer->unk09E = framePlayer->unk09A;
+    speed = framePlayer->unk094;
+    if (speed >= 0) {
+        if (speed < 0x40) {
+            speed = 0x40;
+        }
+    } else {
+        if (speed > -0x40) {
+            speed = -0x40;
+        }
+    }
+
+    if (D_8013B0D8->unk008 ||
+        (D_8013B0D8->unk92E == (s16)D_80123D80[D_8013AFCE].unk00 &&
+         func_8008C670(D_8013AE88->data18))) {
+        autoPlayer = D_8013B0D8;
+        func_8004D330(autoPlayer->unk92E, autoPlayer->x >> 8, autoPlayer->z >> 8,
+                      &targetX, &targetZ, (s8)autoPlayer->unk025[3], D_8013AE88->data18);
+        angle = getXZHeading(D_8013B0D8->x, D_8013B0D8->z, targetX << 8, targetZ << 8);
+        headingPlayer = D_8013B0D8;
+        if (headingPlayer->unk128 & 0x400) {
+            angle = (angle + 0x800) & 0xFFF;
+        }
+        steer = angle - headingPlayer->unk110;
+        difference = steer & 0xFFF;
+        steer = difference;
+        if (difference > 0x800) {
+            steer = difference | 0xF000;
+        }
+        if (steer > 0x100) {
+            steer = 0x100;
+        }
+        if (steer < -0x100) {
+            steer = -0x100;
+        }
+        headingStep = steer >> 2;
+        steer = (steer + 1) >> 1;
+        if (steer > 31) {
+            steer = 31;
+        }
+        if (steer < -31) {
+            steer = -31;
+        }
+        {
+            u8 previous = headingPlayer->unk954;
+            steer -= (s8)previous;
+            difference = steer & 0xFFF;
+            steer = difference;
+            if (difference > 0x800) {
+                steer = difference | 0xF000;
+            }
+            if (steer > 2) {
+                steer = 2;
+            }
+            if (steer < -2) {
+                steer = -2;
+            }
+            headingPlayer->unk954 = previous + steer;
+        }
+        filteredPlayer = D_8013B0D8;
+        steer = -(s8)filteredPlayer->unk954;
+        if (steer == 1) {
+            steer = 0;
+        }
+        if (steer == -1) {
+            steer = 0;
+        }
+        filteredPlayer->unk124 = 63;
+        if (!filteredPlayer->unk008) {
+            drawAutoPilotLabelTask();
+        }
+    } else {
+        s16 throttle;
+        steer = -D_8013AEF8[D_8013AE88->data18];
+        throttle = D_8013AEFC[D_8013AE88->data18];
+        if (throttle == 31) {
+            steer *= 3;
+            if (steer > 31) {
+                steer = 31;
+            } else if (steer < -31) {
+                steer = -31;
+            }
+        }
+        throttle *= 3;
+        if (throttle > 31) {
+            throttle = 31;
+        }
+        manualPlayer = D_8013B0D8;
+        manualPlayer->unk124 = throttle + 32;
+        if (manualPlayer->unk124 < 31) {
+            manualPlayer->unk124 = 31;
+        }
+    }
+
+    stancePlayer = D_8013B0D8;
+    magnitude = speed;
+    if (stancePlayer->unk094 < 0) {
+        magnitude = -speed;
+        steer = -steer;
+    }
+    if (stancePlayer->animationIndex != D_800EB09C[stancePlayer->characterId][2]) {
+        const SelectedCourseRecord *records = D_80123D80;
+        s16 recordIndex = D_8013AFCE;
+        course = &records[recordIndex];
+        if (stancePlayer->unk92E == (s16)course->unk00 && !(stancePlayer->unk128 & 0x40)) {
+            s32 offset;
+            angle = getXZHeading(stancePlayer->x, stancePlayer->z, course->unk40[0], course->unk40[1]);
+            offset = (s16)(angle - D_8013B0D8->unk110 + 0x400) & 0xFFF;
+            if (offset < 0x800) {
+                if (D_8013B0D8->unk128 & 0x400) {
+                    goto reloadStance;
+                }
+                goto applySteering;
+            }
+            if (D_8013B0D8->unk128 & 0x400) {
+                goto applySteering;
+            }
+            goto reloadStance;
+        }
+        speedPlayer = D_8013B0D8;
+        if (speedPlayer->unk094 > 0x80 && (speedPlayer->unk128 & 0x400)) {
+            goto reverseStance;
+        }
+        if (speedPlayer->unk094 >= -0x80 || (speedPlayer->unk128 & 0x400)) {
+            goto applySteering;
+        }
+reloadStance:
+        speedPlayer = D_8013B0D8;
+reverseStance:
+        speedPlayer->unk128 ^= 0x400;
+        startCurrentPlayerAnimation(2, 2);
+    }
+
+applySteering:
+    angle = smoothAndScaleCurrentPlayerInput(magnitude, steer);
+    steeringPlayer = D_8013B0D8;
+    if (steeringPlayer->animationIndex != D_800EB09C[steeringPlayer->characterId][2] &&
+        steeringPlayer->animationIndex != D_800EB09C[steeringPlayer->characterId][0]) {
+        angle -= steeringPlayer->unk126;
+        if (angle > 0x30) {
+            angle = 0x30;
+        }
+        if (angle < -0x30) {
+            angle = -0x30;
+        }
+        steeringPlayer->unk126 += angle;
+        if ((s16)steeringPlayer->unk126 == 0) {
+            if (steeringPlayer->animationIndex != D_800EB09C[steeringPlayer->characterId][0x12] &&
+                steeringPlayer->animationIndex != D_800EB09C[steeringPlayer->characterId][1]) {
+                startCurrentPlayerAnimation(1, 1);
+            }
+        } else {
+            if ((s16)steeringPlayer->unk126 > 0) {
+                blendCurrentPlayerSteeringPose(6, (s16)steeringPlayer->unk126, 0x118);
+            }
+            if ((s16)D_8013B0D8->unk126 < 0) {
+                blendCurrentPlayerSteeringPose(5, -(s16)D_8013B0D8->unk126, 0x118);
+            }
+        }
+    } else {
+        centeringPlayer = D_8013B0D8;
+        angle = -centeringPlayer->unk126;
+        if (angle > 0x30) {
+            angle = 0x30;
+        }
+        if (angle < -0x30) {
+            angle = -0x30;
+        }
+        centeringPlayer->unk126 += angle;
+    }
+    if (D_8013B0D8->animationFlags & 0x10) {
+        startCurrentPlayerAnimation(1, 1);
+    }
+
+    if (D_8013B0D8->unk008 ||
+        (D_8013B0D8->unk92E == (s16)D_80123D80[D_8013AFCE].unk00 &&
+         func_8008C670(D_8013AE88->data18))) {
+        /* The same autopilot condition above supplies this correction. */
+        D_8013B0D8->unk0B6 += headingStep;
+    } else {
+        s16 span;
+        s16 baseScale;
+        s32 turnScale;
+        s32 radius;
+        s32 turnRate;
+        turnPlayer = D_8013B0D8;
+        turnRate = (-(steer << 4) * (s16)turnPlayer->unk0A0) / 256;
+        span = turnPlayer->unk0A4;
+        baseScale = turnPlayer->unk0A2;
+        turnScale = ((span - baseScale) * (63 - turnPlayer->unk124)) / 32 + baseScale;
+        angle = 0;
+        if (turnRate != 0) {
+            radius = (f32)turnScale * (f32)magnitude * (f32)magnitude / (f32)turnRate;
+            if (radius != 0) {
+                if (radius > 0) {
+                    radius += 0xC00;
+                }
+                if (radius < 0) {
+                    radius -= 0xC00;
+                }
+                if (radius > 0x100000) {
+                    radius = 0x100000;
+                }
+                if (radius < -0x100000) {
+                    radius = -0x100000;
+                }
+                angle = getXZHeading(radius, 0, 0, speed);
+                if (radius > 0) {
+                    angle += 0x400;
+                }
+                if (radius < 0) {
+                    angle += 0xC00;
+                }
+            }
+            angle &= 0xFFF;
+        }
+        if (angle > 0x80 && angle <= 0x800) {
+            angle = 0x80;
+        }
+        if (angle > 0x800 && angle < 0xF80) {
+            angle = -0x80;
+        }
+        D_8013B0D8->unk0B6 = (D_8013B0D8->unk0B6 + angle) & 0xFFF;
+    }
+
+    boostPlayer = D_8013B0D8;
+    boost = 0;
+    if (boostPlayer->unk0FC != 0) {
+        boost = 0x280;
+        if (boostPlayer->unk0FF) {
+            boost = -0x280;
+        }
+    }
+    if (D_8013AFD9 && D_8013B0D8->unk945 == 8) {
+        boost = 0x1800;
+    }
+    updateCurrentPlayerSlopeVelocity(0, boost, (s16)D_8013B0D8->unk0A6,
+                                    (s16)D_8013B0D8->unk0A8, (s16)D_8013B0D8->unk0AA);
+    movingPlayer = D_8013B0D8;
+    movingPlayer->x += movingPlayer->unk060;
+    movingPlayer->y += movingPlayer->unk062;
+    movingPlayer->z += movingPlayer->unk064;
+    updateCurrentPlayerMotionEffects();
+
+    itemPlayer = D_8013B0D8;
+    if (itemPlayer->animationIndex != D_800EB09C[itemPlayer->characterId][0]) {
+        if (itemPlayer->unk008 ||
+            (itemPlayer->unk92E == (s16)D_80123D80[D_8013AFCE].unk00 &&
+             func_8008C670(D_8013AE88->data18))) {
+            autoItemPlayer = D_8013B0D8;
+            if (((s8 *)autoItemPlayer->unk950)[0]) {
+                autoItemPlayer->unk950[1] = 1;
+                jumpPlayer = D_8013B0D8;
+                character = jumpPlayer->characterId;
+                jumpPlayer->unk12C = 2;
+                if (jumpPlayer->animationIndex == D_800EB09C[character][6] ||
+                    jumpPlayer->animationIndex == D_800EB09C[character][5]) {
+                    D_8013AE88->data1A = 1;
+                } else {
+                    D_8013AE88->data1A = 0;
+                }
+            } else if (autoItemPlayer->unk0BC < 0xC00) {
+                autoItemPlayer->unk950[1] = 0;
+                lowSpeedPlayer = D_8013B0D8;
+                character = lowSpeedPlayer->characterId;
+                lowSpeedPlayer->unk12C = 2;
+                if (lowSpeedPlayer->animationIndex == D_800EB09C[character][6] ||
+                    lowSpeedPlayer->animationIndex == D_800EB09C[character][5]) {
+                    D_8013AE88->data1A = 1;
+                } else {
+                    D_8013AE88->data1A = 0;
+                }
+            }
+        } else {
+            GameTask *task = D_8013AE88;
+            if (D_8013AEEC[task->data18] & 0x40) {
+                manualItemPlayer = D_8013B0D8;
+                manualItemPlayer->unk12C = 2;
+                if (manualItemPlayer->animationIndex == D_800EB09C[manualItemPlayer->characterId][6] ||
+                    manualItemPlayer->animationIndex == D_800EB09C[manualItemPlayer->characterId][5]) {
+                    task->data1A = 1;
+                } else {
+                    task->data1A = 0;
+                }
+            }
+        }
+        updateCurrentPlayerProjectileUse(D_8013AE88->data18);
+        updateCurrentPlayerItemUse(D_8013AE88->data18);
+    }
+
+    if (*(s8 *)&D_8013B0D8->unk943) {
+        playCurrentPlayerSoundEffect(5);
+    }
+    steer = updateCurrentPlayerGroundContact();
+    landingPlayer = D_8013B0D8;
+    if (landingPlayer->animationIndex != D_800EB09C[landingPlayer->characterId][6] &&
+        landingPlayer->animationIndex != D_800EB09C[landingPlayer->characterId][5]) {
+        updateCurrentPlayerAnimation();
+    }
+    if ((u16)callCurrentPlayerStateCallbackIfDifferent(0) == 0) {
+        if (steer != 0 && D_8013B0D8->unk12C == 0) {
+            D_8013B0D8->unk12C = 0x16;
+        } else {
+            if (D_8013B0D8->unk128 & 0x40) {
+                D_8013B0D8->unk12C = 0x1E;
+            }
+            if (func_80029DD0(D_8013AE88->data18)) {
+                D_8013B0D8->unk12C = 7;
+            }
+        }
+        callCurrentPlayerStateCallbackIfDifferent(0);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_80021258);
 
