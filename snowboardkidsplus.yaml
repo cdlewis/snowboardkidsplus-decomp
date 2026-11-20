@@ -80,7 +80,9 @@ segments:
       - [0xCB0, rodata]
       - [0xCD8, .rodata, race/player/player_update]
       - [0xCEC, rodata]
-      - [0xE34, rodata]
+      - {start: 0xE34, type: .rodata, name: race/player/player_actions, linker_section: .rodata.player_course_progress}
+      - {start: 0xE58, type: .rodata, name: race/player/player_actions, linker_section: .rodata.player_course_progress_padding}
+      - [0xE5C, rodata]
       - [0xEAC, .rodata, race/player/player_actions]
       - [0xECC, rodata]
       - {start: 0xEE4, type: .rodata, name: race/player/player_actions, linker_section: .rodata.player_item_use}

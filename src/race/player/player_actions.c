@@ -152,9 +152,107 @@ const char gPlayerNumberSuffixLabel[4] __attribute__((section(".data.result_row_
 
 const char gComputerPlayerLabel[4] __attribute__((section(".data.result_row_labels"), aligned(4))) = "COM";
 
+const u32 gPlayerCourseProgressTablePadding
+    __attribute__((section(".rodata.player_course_progress_padding"))) = 0;
+
 RaceTime gRaceElapsedTime = {0, 0, 0};
 
-INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002B3F4);
+void getPlayerCourseProgress(u16 playerIndex, s32 *progress, s32 *distance) {
+    RacePlayer *players = gRacePlayers;
+    RacePlayer *player = &players[playerIndex];
+    s32 position;
+
+    *progress = player->unk92E * 8;
+    *distance = player->coursePlacementDistance;
+
+    /* Remap course segments onto a common progress scale for race placement. */
+    switch (D_8013AFCE) {
+    case 0:
+        if (*progress >= 0x580) {
+            *progress = 0x598 - *progress;
+            *distance = -*distance;
+        }
+        break;
+    case 1:
+        if (*progress >= 0x4A8) {
+            *progress = 0x4A8 - *progress;
+            *distance = -*distance;
+        }
+        break;
+    case 2: {
+        s32 segmentPosition;
+        s32 offset;
+        segmentPosition = *progress;
+        if (segmentPosition >= 0x490 && segmentPosition <= 0x4B8) {
+            *progress = 0x490 - segmentPosition;
+            *distance = -*distance;
+            break;
+        }
+        offset = segmentPosition - 0x4C0;
+        if ((u32)offset <= 0x10) {
+            *progress = 0x80 + offset * 56 / 16;
+        } else if (segmentPosition >= 0x4D8 && segmentPosition <= 0x5C0) {
+            *progress = 0x188 + (segmentPosition - 0x4D8) * 288 / 232;
+        } else if (segmentPosition >= 0x5C8 && segmentPosition <= 0x620) {
+            *progress = segmentPosition - 0x338;
+        }
+        break;
+    }
+    case 3:
+        position = *progress;
+        if (position >= 0x628 && position <= 0x648) {
+            *progress = 0x628 - position;
+            *distance = -*distance;
+        } else if (position >= 0x650 && position <= 0x7D0) {
+            *progress = 0x60 + (position - 0x650) * 312 / 384;
+        } else if (position >= 0x7D8 && position <= 0x8E0) {
+            *progress = 0x2F0 + (position - 0x7D8) * 184 / 264;
+        } else if (position >= 0x8E8 && position <= 0x920) {
+            *progress = 0x520 + (position - 0x8E8) * 104 / 56;
+        }
+        break;
+    case 4: {
+        s32 offset;
+        position = *progress;
+        if (position >= 0x618 && position <= 0x640) {
+            *progress = 0x618 - position;
+            *distance = -*distance;
+        }
+        offset = *progress - 0x648;
+        if ((u32)offset <= 0x50) {
+            *progress = 0x380 + offset * 112 / 80;
+        }
+        break;
+    }
+    case 5:
+        position = *progress;
+        if (position >= 0x6D0 && position <= 0x6F8) {
+            *progress = 0x6F8 - position;
+            *distance = -*distance;
+        }
+        position = *progress;
+        if (position >= 0x700 && position <= 0x7E8) {
+            *progress = 0x1A0 + (position - 0x700) * 208 / 232;
+        } else if (position >= 0x7F0 && position <= 0xA00) {
+            *progress = 0x2C8 + (position - 0x7F0) * 640 / 528;
+        } else if (position >= 0xA08 && position <= 0xA38) {
+            *progress = 0x550 + (position - 0xA08) * 72 / 48;
+        }
+        break;
+    case 6:
+        if (*progress >= 0x7B8 && *progress <= 0x7E0) {
+            *progress = 0x7F8 - *progress;
+            *distance = -*distance;
+        }
+        break;
+    case 8:
+        if (*progress >= 0x1F0 && *progress <= 0x218) {
+            *progress = 0x1F0 - *progress;
+            *distance = -*distance;
+        }
+        break;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002B820);
 

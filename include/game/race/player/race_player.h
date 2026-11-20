@@ -148,7 +148,7 @@ struct RacePlayer {
     u8 animationStep;
     u16 unk92C;
     s16 unk92E;
-    u8 unk930[4];
+    s32 coursePlacementDistance;
     s8 unk934;
     s8 unk935;
     u8 unk936[0xB];
@@ -284,6 +284,7 @@ void updatePlayerRenderSnapshots(void);
 
 void assignCurrentPlayerFinishSlot(s32 taskValue);
 void updateRacePlayerFinishSlotsTask(void);
+void getPlayerCourseProgress(u16 playerIndex, s32 *progress, s32 *distance);
 
 struct Position3D;
 u16 addPlayerFlagsIfWithinRadius(struct Position3D *position, s32 radius, s16 flags, u16 playerIndex);
@@ -316,3 +317,4 @@ typedef char RacePlayerSizeCheck[(sizeof(RacePlayer) == 0x9DC) ? 1 : -1];
 
 typedef char RacePlayer_characterId_OffsetCheck[((unsigned int)&((RacePlayer *)0)->characterId == 0x14) ? 1 : -1];
 typedef char RacePlayer_isActive_OffsetCheck[((unsigned int)&((RacePlayer *)0)->isActive == 0x24) ? 1 : -1];
+typedef char RacePlayer_coursePlacementDistance_OffsetCheck[((unsigned int)&((RacePlayer *)0)->coursePlacementDistance == 0x930) ? 1 : -1];

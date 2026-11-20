@@ -1903,6 +1903,8 @@ copyPlayerPaletteRow = 0x8009B6A8; // type:func
 
 runTaskResource14Update = 0x800A3D5C; // type:func
 
+getPlayerCourseProgress = 0x8002B3F4; // type:func
+gPlayerCourseProgressTablePadding = 0x80010658; // size:0x4 defined:true
 arePositionsWithinXZRange = 0x8002BF3C; // type:func
 resolvePlayerCollisionsWithCylinder = 0x8002BF88; // type:func
 
