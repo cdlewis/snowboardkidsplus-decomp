@@ -7,6 +7,13 @@ const char gAttackTimeLimitLabel[24] __attribute__((section(".rodata.trick_attac
 const char gTrickAttackPointLabel[12] __attribute__((section(".rodata.trick_attack_labels"), aligned(4))) =
     "\x82\x6F\x82\x6E\x82\x68\x82\x6D\x82\x73";
 
+const char gTargetTimeLabel[12] __attribute__((section(".rodata.target_time_label"), aligned(4))) =
+    "TARGET TIME";
+
+extern char gCourseCoinTotalFormat[] __attribute__((section(".data")));
+extern char gCourseCoinCountMarker[] __attribute__((section(".data")));
+extern char gCourseCoinCountFormat[] __attribute__((section(".data")));
+
 INCLUDE_ASM("asm/nonmatchings/unclassified/race_8003EE70", func_8003EE70);
 
 void addFourWordGpuPacket(GpuPacket4 *source, GsOT *ot, u16 depth) {
@@ -237,6 +244,42 @@ INCLUDE_ASM("asm/nonmatchings/unclassified/race_8003EE70", func_80042558);
 
 INCLUDE_ASM("asm/nonmatchings/unclassified/race_8003EE70", func_80042894);
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/race_8003EE70", func_80042DC0);
+void drawCourseCoinHud(void) {
+    GsOT *ot = &D_800EBFF0[D_8013AF78];
+    char text[16];
+    s16 digits;
+
+    setSpriteColor(128, 128, 128);
+    if (D_8013B18D_gp) {
+        func_8006C998(72, 84, 398, 5, -1, ot, 1);
+    }
+    drawHudDecimalNumber8x16(72, 80, 2, 1, gRaceElapsedTime.minutes, 1, -1, ot, 1);
+    drawHudDecimalNumber8x16(96, 80, 2, 1, gRaceElapsedTime.seconds, 1, -1, ot, 1);
+    drawHudDecimalNumber8x16(120, 80, 2, 1, gRaceElapsedTime.centiseconds >> 8, 1, -1, ot, 1);
+    func_8006C998(88, 80, 25, 1, -1, ot, 1);
+    func_8006C998(112, 80, 24, 1, -1, ot, 1);
+    drawLimitedText8x8(72, 71, 10, gLapTimeLabel, 5, -1, ot, 1);
+
+    sprintf(text, gLapTimeFormat, D_80124220[D_8013AFCE].minutes,
+            D_80124220[D_8013AFCE].seconds, D_80124220[D_8013AFCE].centiseconds >> 8);
+    drawLimitedText8x8(72, -87, 20, text, 7, -1, ot, 1);
+    drawLimitedText8x8(50, -96, 11, gTargetTimeLabel, 7, -1, ot, 1);
+
+    drawPaletteMappedIcon(-136, -96, 1, ot, 1);
+    sprintf(text, gCourseCoinCountFormat, gRacePlayers[0].collectedCourseCoinMarkerCount);
+    digits = strlen(text);
+    drawLimitedText8x8(-104, -72, 1, gCourseCoinCountMarker, 6, -1, ot, 1);
+    drawHudDecimalNumber8x16(-96, -80, digits, 0, gRacePlayers[0].collectedCourseCoinMarkerCount, 1, -1, ot, 1);
+    sprintf(text, gCourseCoinTotalFormat, gRacePlayers[0].totalCourseCoinMarkerCount);
+    drawLimitedText8x8(-96 + digits * 8, -72, 10, text, 6, -1, ot, 1);
+
+    func_8006C998(-112, 64, 423, 3, -1, ot, 1);
+    func_8006C998(-136, 64, 420, 14, -1, ot, 1);
+}
 
 INCLUDE_ASM("asm/nonmatchings/unclassified/race_8003EE70", func_80043120);
+
+char gCourseCoinTotalFormat[4] __attribute__((section(".data"), aligned(4))) = "/%d";
+char gCourseCoinCountMarker[2] __attribute__((section(".data"), aligned(4))) = "*";
+u16 D_8013B17A __attribute__((section(".data"))) = 1;
+char gCourseCoinCountFormat[4] __attribute__((section(".data"), aligned(4))) = "%d";

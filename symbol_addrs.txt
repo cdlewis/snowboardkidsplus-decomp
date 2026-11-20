@@ -2094,6 +2094,7 @@ gRightQuadShrinkPacket = 0x8012CB44; // type:POLY_FT4 size:0x28
 
 isControllerInputSupported = 0x800154D0; // type:func
 
+drawCourseCoinHud = 0x80042DC0; // type:func
 drawPaletteMappedIcon = 0x800403C8; // type:func
 drawScaledPaletteMappedIcon = 0x80040440; // type:func
 
@@ -3393,6 +3394,11 @@ gAttackTimeLimitLabel = 0x80010BF4; // size:0x18 defined:true
 gTrickAttackPointLabel = 0x80010C0C; // size:0xC defined:true
 gLapTimeLabel = 0x80010C24; // size:0xC
 gLapTimeFormat = 0x80010C30; // size:0x14
+gTargetTimeLabel = 0x80010C44; // size:0xC
+gCourseCoinTotalFormat = 0x8013B174; // size:0x4
+gCourseCoinCountMarker = 0x8013B178; // size:0x2
+D_8013B17A = 0x8013B17A; // size:0x2
+gCourseCoinCountFormat = 0x8013B17C; // size:0x4
 gBestLapLabel = 0x80010C50; // size:0x10
 
 // Loaded resource RAM views: overlapping lifetimes, no executable storage.

@@ -105,7 +105,7 @@ segments:
       - [0x1418, rodata]
       - {start: 0x1424, type: .rodata, name: race/ui/race_hud, linker_section: .rodata.lap_time_label}
       - {start: 0x1430, type: .rodata, name: race/ui/race_hud, linker_section: .rodata.lap_time_format}
-      - [0x1444, rodata]
+      - {start: 0x1444, type: .rodata, name: unclassified/race_8003EE70, linker_section: .rodata.target_time_label}
       - {start: 0x1450, type: .rodata, name: race/ui/race_hud, linker_section: .rodata.best_lap_label}
       - [0x1460, rodata]
       - [0x1488, .rodata, race/ui/race_hud]
@@ -898,6 +898,7 @@ segments:
       - {start: 0x12B954, type: .data, name: race/player/player_actions, linker_section: .data.menu_sprite_palettes_prefix}
       - {start: 0x12B958, type: .data, name: race/player/player_actions, linker_section: .data.menu_sprite_palettes}
       - [0x12B96C, data, 12B96C]
+      - [0x12B974, .data, unclassified/race_8003EE70]
       - {start: 0x12B980, type: .sdata, name: race/player/player_actions, linker_section_order: .data}
       - [0x12B984, data, 12B984]
       - {start: 0x12B9AC, type: .data, name: race/player/player_actions, linker_section: .data.player_dual_resource_effect_frame}
