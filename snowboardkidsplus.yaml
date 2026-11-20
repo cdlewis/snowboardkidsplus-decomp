@@ -789,6 +789,7 @@ segments:
       - {start: 0x1225CC, type: .data, name: menu/grid_selection, linker_section: .data.task_player_value_panel_label}
       - {start: 0x1225D8, type: .data, name: menu/grid_selection, linker_section: .data.task_player_value_panel_text}
       - [0x1225E8, data, 1225E8]
+      - {start: 0x1226C8, type: .data, name: race/player/player_palette, linker_section: .data.palette_burst_vertices}
       - {start: 0x1226E8, type: .data, name: race/player/player_palette, linker_section: .data.player_palette_transition_pixels}
       - [0x122708, data, player_palette_transition_tail]
       - {start: 0x122F38, type: .data, name: text/text_sequence, linker_section: .data.indexed_sector_ranges}

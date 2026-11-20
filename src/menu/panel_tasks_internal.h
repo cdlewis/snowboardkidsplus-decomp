@@ -211,7 +211,6 @@ void func_800A0EE8(void);
 void queueTaskModeSectorRead(void);
 void queueModeIndexedSectorRead(s16 mode, s16 index);
 void initializeControllerPlaybackRaceTask(void);
-void func_8009B700(void);
 void func_8009BDB8(void);
 void func_8009CA90(void);
 void func_8009F9B8(void);
