@@ -959,7 +959,7 @@ void drawSubdivisionTriangle(TriangleScratchVertex *first, TriangleScratchVertex
                              TriangleScratchVertex *third);
 void emitProjectedFlatTriangle(TriangleScratchVertex *vertices);
 void emitProjectedFlatQuad(TriangleScratchVertex *vertices);
-void func_800542BC(TriangleScratchVertex *vertices, s32 flags);
+void drawAdaptiveQuad(TriangleScratchVertex *vertices, s32 level);
 void drawMovingLineTask(void);
 void drawFlickeringDotsTask(void);
 

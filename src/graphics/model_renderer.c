@@ -15,6 +15,21 @@ typedef struct SubdivisionScratchpad {
     u8 textured, gouraud;
 } SubdivisionScratchpad;
 
+typedef struct QuadSubdivisionScratchpad {
+    u32 unk00;
+    void (*emitQuad)(TriangleScratchVertex *);
+    s32 depth, depthCue, flags;
+    s32 minDepth; /* Holds the fourth vertex's projection flags before depth sorting. */
+    s32 clipping;
+    u8 unk1C[0x10];
+    volatile s32 vertexDepth[4];
+    u8 unk3C[0xC];
+    struct { u16 x, y; } max, min;
+    volatile struct { u16 x, y; } screen[4];
+    u8 unk60[8];
+    u8 textured, gouraud;
+} QuadSubdivisionScratchpad;
+
 void emitProjectedFlatTriangle(TriangleScratchVertex *vertices) {
     TriangleScratchpad *scratch = TRIANGLE_SCRATCHPAD;
     POLY_F3 *packet = (POLY_F3 *)GsOUT_PACKET_P;
@@ -563,7 +578,232 @@ void drawAdaptiveTriangle(TriangleScratchVertex *vertices, s32 level) {
     drawAdaptiveTriangle(next, subdivision);
 }
 
-INCLUDE_ASM("asm/nonmatchings/graphics/model_renderer", func_800542BC);
+void drawAdaptiveQuad(TriangleScratchVertex *vertices, s32 level) {
+    s16 subdivision = level;
+    QuadSubdivisionScratchpad *scratch = (QuadSubdivisionScratchpad *)getScratchAddr(0);
+    TriangleScratchVertex *next = vertices + 4;
+    u16 a, b;
+    s32 z, otherDepth;
+
+    gte_ldv3(&vertices[0].position, &vertices[1].position, &vertices[2].position);
+    gte_rtpt();
+    if (subdivision == 0) {
+        gte_nclip();
+        gte_stopz(&scratch->clipping);
+        if (scratch->clipping < 0) {
+            return;
+        }
+    }
+    gte_stsxy3(&scratch->screen[0], &scratch->screen[1], &scratch->screen[2]);
+    gte_stflg(&scratch->flags);
+    gte_ldv0(&vertices[3].position);
+    gte_rtps();
+    gte_stsxy(&scratch->screen[3]);
+    gte_stflg(&scratch->minDepth);
+    scratch->flags |= scratch->minDepth;
+
+    a = scratch->screen[0].x;
+    b = scratch->screen[1].x;
+    if ((s16)a > (s16)b) {
+        scratch->max.x = a;
+        scratch->min.x = b;
+    } else {
+        scratch->min.x = a;
+        scratch->max.x = b;
+    }
+    a = scratch->screen[2].x;
+    if ((s16)a > (s16)scratch->max.x) {
+        scratch->max.x = a;
+        a = scratch->screen[2].x;
+    }
+    if ((s16)a < (s16)scratch->min.x) {
+        scratch->min.x = a;
+    }
+    a = scratch->screen[3].x;
+    if ((s16)a > (s16)scratch->max.x) {
+        scratch->max.x = a;
+        a = scratch->screen[3].x;
+    }
+    if ((s16)a < (s16)scratch->min.x) {
+        scratch->min.x = a;
+    }
+    if ((s16)scratch->min.x > 200 || (s16)scratch->max.x < -200) {
+        return;
+    }
+
+    a = scratch->screen[0].y;
+    if ((s16)a > (s16)scratch->screen[1].y) {
+        u16 secondY = scratch->screen[1].y;
+        scratch->max.y = a;
+        scratch->min.y = secondY;
+    } else {
+        u16 secondY = scratch->screen[1].y;
+        scratch->min.y = a;
+        scratch->max.y = secondY;
+    }
+    a = scratch->screen[2].y;
+    if ((s16)a > (s16)scratch->max.y) {
+        scratch->max.y = a;
+        a = scratch->screen[2].y;
+    }
+    if ((s16)a < (s16)scratch->min.y) {
+        scratch->min.y = a;
+    }
+    a = scratch->screen[3].y;
+    if ((s16)a > (s16)scratch->max.y) {
+        scratch->max.y = a;
+        a = scratch->screen[3].y;
+    }
+    if ((s16)a < (s16)scratch->min.y) {
+        scratch->min.y = a;
+    }
+    if ((s16)scratch->min.y > 160 || (s16)scratch->max.y < -160) {
+        return;
+    }
+
+    gte_stsz4(&scratch->vertexDepth[0],
+              &scratch->vertexDepth[1],
+              &scratch->vertexDepth[2],
+              &scratch->vertexDepth[3]);
+    z = scratch->vertexDepth[0];
+    if (z > scratch->vertexDepth[1]) {
+        otherDepth = scratch->vertexDepth[1];
+        scratch->depth = z;
+        scratch->minDepth = otherDepth;
+    } else {
+        otherDepth = scratch->vertexDepth[1];
+        scratch->minDepth = z;
+        scratch->depth = otherDepth;
+    }
+    z = scratch->vertexDepth[2];
+    if (z > scratch->depth) {
+        scratch->depth = z;
+        z = scratch->vertexDepth[2];
+    }
+    if (z < scratch->minDepth) {
+        scratch->minDepth = z;
+    }
+
+    z = scratch->vertexDepth[3];
+    if (z > scratch->depth) {
+        scratch->depth = z;
+        z = scratch->vertexDepth[3];
+    }
+    if (z < scratch->minDepth) {
+        scratch->minDepth = z;
+    }
+
+    z = scratch->depth >> 2;
+    scratch->depth = z;
+    if (z < 25) {
+        return;
+    }
+    if (z <= 0 || z >= 4096) {
+        return;
+    }
+    if (subdivision >= 3 ||
+        (!(scratch->flags & 0x7FFBE000) &&
+         (s16)scratch->max.x - (s16)scratch->min.x < 128 &&
+         (s16)scratch->max.y - (s16)scratch->min.y < 128)) {
+        scratch->emitQuad(vertices);
+        return;
+    }
+
+    next[0].position = vertices[0].position;
+    setVector(&next[1].position,
+              (vertices[0].position.vx + vertices[1].position.vx) / 2,
+              (vertices[0].position.vy + vertices[1].position.vy) / 2,
+              (vertices[0].position.vz + vertices[1].position.vz) / 2);
+    setVector(&next[2].position,
+              (vertices[0].position.vx + vertices[2].position.vx) / 2,
+              (vertices[0].position.vy + vertices[2].position.vy) / 2,
+              (vertices[0].position.vz + vertices[2].position.vz) / 2);
+    setVector(&next[3].position,
+              (vertices[0].position.vx + vertices[3].position.vx) / 2,
+              (vertices[0].position.vy + vertices[3].position.vy) / 2,
+              (vertices[0].position.vz + vertices[3].position.vz) / 2);
+    subdivision++;
+    if (scratch->textured) {
+        next[0].texture.coords = vertices[0].texture.coords;
+        next[1].texture.uv.u = (vertices[0].texture.uv.u + vertices[1].texture.uv.u) / 2;
+        next[1].texture.uv.v = (vertices[0].texture.uv.v + vertices[1].texture.uv.v) / 2;
+        next[2].texture.uv.u = (vertices[0].texture.uv.u + vertices[2].texture.uv.u) / 2;
+        next[2].texture.uv.v = (vertices[0].texture.uv.v + vertices[2].texture.uv.v) / 2;
+        next[3].texture.uv.u = (vertices[0].texture.uv.u + vertices[3].texture.uv.u) / 2;
+        next[3].texture.uv.v = (vertices[0].texture.uv.v + vertices[3].texture.uv.v) / 2;
+    }
+    if (scratch->gouraud) {
+        next[0].color = vertices[0].color;
+        next[1].color.r = (vertices[0].color.r + vertices[1].color.r) / 2;
+        next[1].color.g = (vertices[0].color.g + vertices[1].color.g) / 2;
+        next[1].color.b = (vertices[0].color.b + vertices[1].color.b) / 2;
+        next[2].color.r = (vertices[0].color.r + vertices[2].color.r) / 2;
+        next[2].color.g = (vertices[0].color.g + vertices[2].color.g) / 2;
+        next[2].color.b = (vertices[0].color.b + vertices[2].color.b) / 2;
+        next[3].color.r = (vertices[0].color.r + vertices[3].color.r) / 2;
+        next[3].color.g = (vertices[0].color.g + vertices[3].color.g) / 2;
+        next[3].color.b = (vertices[0].color.b + vertices[3].color.b) / 2;
+    }
+    drawAdaptiveQuad(next, subdivision);
+    drawSubdivisionTriangle(&next[1], &vertices[0], &vertices[1]);
+
+    next[0].position = vertices[1].position;
+    setVector(&next[2].position,
+              (vertices[1].position.vx + vertices[3].position.vx) / 2,
+              (vertices[1].position.vy + vertices[3].position.vy) / 2,
+              (vertices[1].position.vz + vertices[3].position.vz) / 2);
+    if (scratch->textured) {
+        next[0].texture.coords = vertices[1].texture.coords;
+        next[2].texture.uv.u = (vertices[1].texture.uv.u + vertices[3].texture.uv.u) / 2;
+        next[2].texture.uv.v = (vertices[1].texture.uv.v + vertices[3].texture.uv.v) / 2;
+    }
+    if (scratch->gouraud) {
+        next[0].color = vertices[1].color;
+        next[2].color.r = (vertices[1].color.r + vertices[3].color.r) / 2;
+        next[2].color.g = (vertices[1].color.g + vertices[3].color.g) / 2;
+        next[2].color.b = (vertices[1].color.b + vertices[3].color.b) / 2;
+    }
+    drawAdaptiveQuad(next, subdivision);
+    drawSubdivisionTriangle(&next[2], &vertices[1], &vertices[3]);
+
+    next[0].position = vertices[3].position;
+    setVector(&next[1].position,
+              (vertices[3].position.vx + vertices[2].position.vx) / 2,
+              (vertices[3].position.vy + vertices[2].position.vy) / 2,
+              (vertices[3].position.vz + vertices[2].position.vz) / 2);
+    if (scratch->textured) {
+        next[0].texture.coords = vertices[3].texture.coords;
+        next[1].texture.uv.u = (vertices[3].texture.uv.u + vertices[2].texture.uv.u) / 2;
+        next[1].texture.uv.v = (vertices[3].texture.uv.v + vertices[2].texture.uv.v) / 2;
+    }
+    if (scratch->gouraud) {
+        next[0].color = vertices[3].color;
+        next[1].color.r = (vertices[3].color.r + vertices[2].color.r) / 2;
+        next[1].color.g = (vertices[3].color.g + vertices[2].color.g) / 2;
+        next[1].color.b = (vertices[3].color.b + vertices[2].color.b) / 2;
+    }
+    drawAdaptiveQuad(next, subdivision);
+    drawSubdivisionTriangle(&next[1], &vertices[3], &vertices[2]);
+
+    next[0].position = vertices[2].position;
+    setVector(&next[2].position,
+              (vertices[0].position.vx + vertices[2].position.vx) / 2,
+              (vertices[0].position.vy + vertices[2].position.vy) / 2,
+              (vertices[0].position.vz + vertices[2].position.vz) / 2);
+    if (scratch->textured) {
+        next[0].texture.coords = vertices[2].texture.coords;
+        next[2].texture.uv.u = (vertices[0].texture.uv.u + vertices[2].texture.uv.u) / 2;
+        next[2].texture.uv.v = (vertices[0].texture.uv.v + vertices[2].texture.uv.v) / 2;
+    }
+    if (scratch->gouraud) {
+        next[0].color = vertices[2].color;
+        next[2].color.r = (vertices[0].color.r + vertices[2].color.r) / 2;
+        next[2].color.g = (vertices[0].color.g + vertices[2].color.g) / 2;
+        next[2].color.b = (vertices[0].color.b + vertices[2].color.b) / 2;
+    }
+    drawAdaptiveQuad(next, subdivision);
+    drawSubdivisionTriangle(&next[2], &vertices[2], &vertices[0]);
+}
 
 void drawIndexedFlatTriangle(void) {
     ModelFlatTriangle *primitive = D_8013B680;
@@ -633,7 +873,7 @@ void drawIndexedFlatQuad(void) {
     QUAD_SCRATCHPAD->vertices[1].position = D_8013B688[primitive->vertexIndices[1]];
     QUAD_SCRATCHPAD->vertices[2].position = D_8013B688[primitive->vertexIndices[2]];
     QUAD_SCRATCHPAD->vertices[3].position = D_8013B688[primitive->vertexIndices[3]];
-    func_800542BC(QUAD_SCRATCHPAD->vertices, 0);
+    drawAdaptiveQuad(QUAD_SCRATCHPAD->vertices, 0);
 }
 
 void processGouraudQuadPrimitive(void) {
@@ -647,7 +887,7 @@ void processGouraudQuadPrimitive(void) {
     QUAD_SCRATCHPAD->vertices[1].color = primitive->colors[1];
     QUAD_SCRATCHPAD->vertices[2].color = primitive->colors[2];
     QUAD_SCRATCHPAD->vertices[3].color = primitive->colors[3];
-    func_800542BC(QUAD_SCRATCHPAD->vertices, 0);
+    drawAdaptiveQuad(QUAD_SCRATCHPAD->vertices, 0);
 }
 
 void processTexturedQuadPrimitive(void) {
@@ -666,7 +906,7 @@ void processTexturedQuadPrimitive(void) {
     QUAD_SCRATCHPAD->vertices[1].texture.coords = primitive->uv[1].coords;
     QUAD_SCRATCHPAD->vertices[2].texture.coords = primitive->uv[2].coords;
     QUAD_SCRATCHPAD->vertices[3].texture.coords = primitive->uv[3].coords;
-    func_800542BC(QUAD_SCRATCHPAD->vertices, 0);
+    drawAdaptiveQuad(QUAD_SCRATCHPAD->vertices, 0);
 }
 
 void processTexturedGouraudQuadPrimitive(void) {
@@ -686,7 +926,7 @@ void processTexturedGouraudQuadPrimitive(void) {
     QUAD_SCRATCHPAD->vertices[1].color = primitive->colors[1];
     QUAD_SCRATCHPAD->vertices[2].color = primitive->colors[2];
     QUAD_SCRATCHPAD->vertices[3].color = primitive->colors[3];
-    func_800542BC(QUAD_SCRATCHPAD->vertices, 0);
+    drawAdaptiveQuad(QUAD_SCRATCHPAD->vertices, 0);
 }
 
 void func_800559F4(TmdObject *object, GsOT *ot, s32 shift, u32 flags) {
