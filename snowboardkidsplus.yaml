@@ -146,7 +146,6 @@ segments:
       - {start: 0x294C, type: .rodata, name: menu/resource_tasks, linker_section: .rodata.lap_records_start_prompt}
       - [0x2964, rodata]
       - [0x2A0C, .rodata, menu/selection_tasks]
-      - [0x2A30, rodata]
       - [0x2A58, rodata]
       - [0x2B54, .rodata, scene/scene_playback]
       - {start: 0x2B68, type: .rodata, name: scene/scene_playback, linker_section: .rodata.scene_playback_padding}
@@ -793,7 +792,7 @@ segments:
       - {start: 0x1226E8, type: .data, name: race/player/player_palette, linker_section: .data.player_palette_transition_pixels}
       - [0x122708, data, player_palette_transition_tail]
       - {start: 0x122F38, type: .data, name: text/text_sequence, linker_section: .data.indexed_sector_ranges}
-      - [0x122F8C, data, 122F8C]
+      - {start: 0x122F8C, type: .data, name: menu/selection_tasks, linker_section: .data.number_selection_sprite_table}
       - {start: 0x122FA0, type: .data, name: text/text_sequence, linker_section: .data.text_sequence_prompt_frames}
       - [0x122FB0, data, 122FB0]
       - {start: 0x122FF4, type: .data, name: io/controller_playback, linker_section: .data.controller_playback_entries}
@@ -955,6 +954,10 @@ segments:
       - [0x12BD1C, data, 12BD18_head]
       - {start: 0x12BD24, type: .data, name: menu/resource_tasks, linker_section: .data.main_tail_money_currency_label}
       - [0x12BD28, data, 12BD18_tail]
+      - {start: 0x12BD58, type: .data, name: menu/selection_tasks, linker_section: .data.number_selection_mapping}
+      - {start: 0x12BD5C, type: .data, name: menu/selection_tasks, linker_section: .data.number_selection_final_mapping}
+      - [0x12BD5E, data, number_selection_transition_tail]
+      - {start: 0x12BD6E, type: .data, name: menu/selection_tasks, linker_section: .data.number_selection_tail_padding}
       - [0x12BD70, .data, engine/game_options]
       - {start: 0x12BD78, type: .data, name: menu/number_adjustment, linker_section: .data.number_adjustment_digit_texts}
       - [0x12BD9C, data, 12BD78]

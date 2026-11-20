@@ -67,6 +67,7 @@ extern u8 D_8013AF3A __attribute__((section(".data")));
 extern u16 D_8013AFAA __attribute__((section(".data")));
 extern s16 D_8013B10E __attribute__((section(".data")));
 extern s16 D_8013B10C __attribute__((section(".data")));
+extern u8 D_8013B41F __attribute__((section(".data")));
 extern u8 D_8013B55E __attribute__((section(".data")));
 /* This transition uses $gp; the playback transition below uses absolute access. */
 extern u8 modeTransitionReadyGp;
@@ -97,7 +98,7 @@ void func_800A24EC(void);
 void selectTaskBySelectedRecordMatch(void);
 void SetFogNearFar(s32 near, s32 far, s32 h);
 void func_800A2C40(void);
-void func_800A25F8(void);
+void updateNumberSelectionTask(void);
 void initializeControllerPlaybackRaceTask(void);
 void initializeRaceTaskState(void);
 
@@ -111,7 +112,9 @@ void func_800A3D9C(void);
 void func_800A525C(void);
 
 typedef struct NumberPanelState {
-    u16 unk00[5];
+    u16 mode, selectedIndex, previousIndex;
+    s16 choiceResult;
+    u16 unk08;
     u16 number;
 } NumberPanelState;
 

@@ -1,8 +1,18 @@
 #include "selection_tasks_internal.h"
 
+typedef struct NumberSelectionSpriteTable {
+    GridSpriteEntry entries[3];
+    u16 padding;
+} NumberSelectionSpriteTable;
+
 u16 gSceneOneShotSoundKey __attribute__((section(".sdata.scene_sound_state"))) = 0;
 
 u8 gSceneOneShotVoice __attribute__((section(".sdata.scene_sound_state"))) = 0;
+
+/* Keep the table definitions after the call sites for address scheduling. */
+extern const NumberSelectionSpriteTable gNumberSelectionSprites;
+extern const u8 gNumberSelectionMapping[];
+extern const u8 gNumberSelectionFinalMapping[];
 
 void initializeModeRaceTasks(void) {
     s16 player;
@@ -186,10 +196,102 @@ void initializeNumberSelectionTask(void) {
     setControllerFlag5(1);
     resetPendingCdRequests();
     func_80014874(func_800A2C40);
-    setCurrentTaskCallback(func_800A25F8);
+    setCurrentTaskCallback(updateNumberSelectionTask);
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/selection_tasks", func_800A25F8);
+void updateNumberSelectionTask(void) {
+    NumberPanelState *state;
+    RegisteredTaskEntry *entries;
+    s32 complete;
+    s16 selection;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        for (;;) {}
+    }
+    state = (NumberPanelState *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) {
+        for (;;) {}
+    }
+    entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE88->resource16];
+
+    switch (D_8013AE88->data18) {
+    case 0:
+        state->mode = 0;
+        state->choiceResult = 0;
+        if (state->number == 8) {
+            state->selectedIndex = 1;
+            state->previousIndex = 1;
+            createRegisteredSpacedChildTasks(1, 0xB0, 0,
+                                             (const u8 *)&gNumberSelectionSprites, gNumberSelectionFinalMapping, NULL,
+                                             0, 0, 20, -40, 4, 0, 20, 2, 403,
+                                             drawOffsetSelectedTaskSprite,
+                                             drawRegisteredTaskGridSpriteWithColor, 1, 11);
+        } else {
+            state->selectedIndex = 0;
+            state->previousIndex = 0;
+            createRegisteredSpacedChildTasks(1, 0xB0, 0,
+                                             (const u8 *)&gNumberSelectionSprites, gNumberSelectionMapping, NULL,
+                                             0, 0, 20, -40, -16, 0, 20, 3, 403,
+                                             drawOffsetSelectedTaskSprite,
+                                             drawRegisteredTaskGridSpriteWithColor, 1, 11);
+        }
+        D_8013AE88->data18 = 1;
+        break;
+    case 1:
+        /* This task tests the registered flags as a signed status. */
+        if (*(s16 *)&entries[1].flags == 0) {
+            entries[1].command = 20;
+            configureColorCycleTask(1, 0, 128, 8, 0);
+            D_8013B41F = 0;
+            D_8013AE88->data18 = 3;
+        }
+        break;
+    case 3:
+        complete = isTaskResourceTransitionComplete(0);
+        if (complete == 1 && D_8013B41F == 0) {
+            entries[1].command = 21;
+            configureColorCycleTask(2, 64, 128, 4, 0);
+            D_8013B41F = complete;
+        }
+        if (state->choiceResult != 0 && *(s16 *)&entries[1].flags == 0) {
+            entries[1].command = 23;
+            configureColorCycleTask(0, 0, 0, 0, 0);
+            D_8013AE88->data18 = 4;
+        }
+        break;
+    case 4:
+        if (state->number == 8) {
+            selection = state->selectedIndex + 1;
+        } else {
+            selection = state->selectedIndex;
+        }
+        if (selection == 0) {
+            D_8013AFD8++;
+            D_8013AE88->data18 = 6;
+        } else {
+            if (selection != 1) {
+                D_8013AFD8 = state->number == 8 ? D_8013AFD8 + 1 : 11;
+            }
+            D_8013AE88->data18 = 6;
+        }
+        break;
+    case 6:
+        configureTaskStateTransition(7, 0, 30);
+        D_8013AE88->data18 = 7;
+        break;
+    case 7:
+        if (func_800707F0(0) == 0) {
+            D_8013AE88->data18 = 8;
+        }
+        break;
+    case 8:
+    default:
+        taskTransitionFlagGp = 1;
+        func_800149A8();
+        return;
+    }
+    drawNumberSelectionPanel(state);
+}
 
 void drawNumberSelectionPanel(NumberPanelState *state) {
     GsOT *ot = &D_800EBFF0[D_8013AF78];
@@ -363,3 +465,19 @@ void finishSelectionMenuTask(void) {
 }
 
 INCLUDE_ASM("asm/nonmatchings/menu/selection_tasks", func_800A31C0);
+
+const NumberSelectionSpriteTable gNumberSelectionSprites
+    __attribute__((section(".data.number_selection_sprite_table"), aligned(4))) = {
+    {{405, 9, {0, 0, 0}}, {406, 9, {0, 0, 0}}, {407, 9, {0, 0, 0}}},
+    0,
+};
+
+const u8 gNumberSelectionMapping[4]
+    __attribute__((section(".data.number_selection_mapping"), aligned(4))) = {0, 1, 2, 0};
+
+const u8 gNumberSelectionFinalMapping[2]
+    __attribute__((section(".data.number_selection_final_mapping"), aligned(2))) = {1, 2};
+
+/* Preserve the padding after the adjacent assembly data block. */
+const u16 gNumberSelectionTailPadding
+    __attribute__((section(".data.number_selection_tail_padding"))) = 0;

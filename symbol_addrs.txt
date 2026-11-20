@@ -1931,6 +1931,7 @@ getStateMaskTier = 0x8008BFF0; // type:func
 selectTaskBySelectedRecordMatch = 0x800A2460; // type:func
 startMode1TaskTransition = 0x800A24B0; // type:func
 initializeNumberSelectionTask = 0x800A2510; // type:func
+updateNumberSelectionTask = 0x800A25F8; // type:func
 
 isCdReading = 0x80013798; // type:func
 initTexturedQuadTemplate = 0x8006BE04; // type:func
@@ -2753,6 +2754,9 @@ initializePickupVisualTask = 0x8005AF0C; // type:func
 initializeModeRaceTasks = 0x800A1F50; // type:func
 advanceTaskAtModeCoursePosition = 0x800A2210; // type:func
 D_8013B55E = 0x8013B55E; // size:0x1
+gNumberSelectionSprites = 0x8013278C; // size:0x14 defined:true
+gNumberSelectionMapping = 0x8013B558; // size:0x4 defined:true
+gNumberSelectionFinalMapping = 0x8013B55C; // size:0x2 defined:true
 
 drawSound601SequenceSpriteTask = 0x80032F84; // type:func
 
