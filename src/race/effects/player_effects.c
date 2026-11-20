@@ -44,6 +44,21 @@ typedef struct TrickTrianglePacket {
     s16 x2, y2;
 } TrickTrianglePacket;
 
+/* One DMA tag covers the draw-mode command and the Gouraud line. */
+typedef struct TrickRayPacket {
+    u32 tag;
+    u16 tpage, drawMode;
+    u8 r0, g0, b0, code;
+    s16 x0, y0;
+    u8 r1, g1, b1, pad1;
+    s16 x1, y1;
+} TrickRayPacket;
+
+typedef struct TrickSparkScratch {
+    TrickRayPacket ray;
+    POLY_FT4 spark;
+} TrickSparkScratch;
+
 typedef struct TriangleBurstResource {
     s32 frame;
     VECTOR origin;
@@ -652,7 +667,126 @@ advance:
 }
 
 
-INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_80062354);
+void drawTrickSparkRingTask(void) {
+    s32 *frame;
+    TrickSparkScratch *scratch;
+    u8 *packet;
+    RacePlayer *player;
+    u32 *ot;
+    s32 minimumRadius;
+    s32 angle;
+    s32 innerRadius;
+    s32 outerRadius;
+    s32 edgeRadius;
+    s32 edgeAngle;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    frame = (s32 *)&D_800D9504[D_8013AE88->resource14].unk00;
+    scratch = (TrickSparkScratch *)getScratchAddr(0);
+    packet = (u8 *)GsOUT_PACKET_P;
+    player = &gRacePlayers[D_8013AE88->data18];
+    if (D_8013AE88->data18 == 0) {
+        ot = D_800EC040[D_8013AF78].org;
+    } else {
+        ot = D_800EC0E0[D_8013AF78].org;
+    }
+    if (D_8013AFD6 && player->unk0C8 < 9) {
+        func_800149A8();
+    }
+    if (player->unk0C8 < 9 && *frame < 30) {
+        *frame = 30;
+    }
+    /* Initialize complete DMA tags before linking the packets into the ordering table. */
+    if (D_8013AFAA & 0x400) {
+        if (D_8013AE88->data18 != D_8013AF78) {
+            goto advance;
+        }
+        scratch->ray.tag = (1 + 4) << 24;
+    } else {
+        if (D_8013AE88->data18 != 0) {
+            goto advance;
+        }
+        scratch->ray.tag = (1 + 4) << 24;
+    }
+
+    scratch->ray.code = LINE_G2_CODE | 2;
+    scratch->ray.drawMode = DRAW_MODE_COMMAND_HIGH;
+    scratch->ray.tpage = getTPage(0, 1, 0, 0);
+    scratch->spark.tag = 9 << 24;
+    setcode(&scratch->spark, POLY_FT4_CODE | 2);
+    scratch->spark.tpage = getTPage(0, 1, 704, 0);
+    scratch->spark.clut = getClut(880, 241);
+    scratch->ray.r0 = scratch->ray.g0 = scratch->ray.b0 = 0;
+    setUV4(&scratch->spark, 0, 0, 63, 0, 0, 63, 63, 63);
+    minimumRadius = 64;
+    if (*frame < 30) {
+        scratch->ray.r1 = 255;
+        scratch->ray.g1 = 180;
+        scratch->ray.b0 = 0;
+        setRGB0(&scratch->spark, 0, 0, 255);
+    } else {
+        s32 green;
+
+        scratch->ray.r1 = (40 - *frame) * 255 / 10;
+        green = (40 - *frame) * 18;
+        scratch->ray.b0 = 0;
+        scratch->spark.r0 = 0;
+        scratch->spark.g0 = 0;
+        scratch->ray.g1 = green;
+        scratch->spark.b0 = (40 - *frame) * 255 / 10;
+        minimumRadius = (*frame - 30) * 128 / 10 + 64;
+    }
+
+    angle = 0;
+    do {
+        innerRadius = ((*frame * 16 + (angle + 0x1C96251) * (0x4AE9 % (angle + 1))) >> (angle & 15)) & 255;
+        outerRadius = innerRadius + 128;
+        if (innerRadius < minimumRadius) {
+            innerRadius = minimumRadius;
+        }
+        if (outerRadius < minimumRadius) {
+            outerRadius = minimumRadius;
+        }
+        setXY2(&scratch->ray,
+               innerRadius * rcos(angle) / 4096, innerRadius * rsin(angle) / 4096,
+               outerRadius * rcos(angle) / 4096, outerRadius * rsin(angle) / 4096);
+        *(TrickRayPacket *)packet = scratch->ray;
+        angle += 32;
+        addPrim(ot, packet);
+        packet += sizeof(TrickRayPacket);
+    } while (angle < 0x1000);
+
+    angle = 0;
+    do {
+        innerRadius = ((*frame * 16 + (angle + 0x1FBBCF1) * (0xD789 % (angle + 1))) >> (angle & 15)) & 255;
+        outerRadius = innerRadius + 32;
+        edgeRadius = innerRadius + 16;
+        setXY0(&scratch->spark, outerRadius * rcos(angle) / 4096, outerRadius * rsin(angle) / 4096);
+        edgeAngle = angle - 16;
+        scratch->spark.x1 = edgeRadius * rcos(edgeAngle) / 4096;
+        scratch->spark.y1 = edgeRadius * rsin(edgeAngle) / 4096;
+        edgeAngle = angle + 16;
+        scratch->spark.x2 = edgeRadius * rcos(edgeAngle) / 4096;
+        scratch->spark.y2 = edgeRadius * rsin(edgeAngle) / 4096;
+        scratch->spark.x3 = innerRadius * rcos(angle) / 4096;
+        scratch->spark.y3 = innerRadius * rsin(angle) / 4096;
+        *(POLY_FT4 *)packet = scratch->spark;
+        angle += 64;
+        addPrim(ot, packet);
+        packet += sizeof(POLY_FT4);
+    } while (angle < 0x1000);
+    GsOUT_PACKET_P = (u32)packet;
+
+advance:
+    if (!D_8013AFD3) {
+        ++*frame;
+    }
+    if (*frame >= 41) {
+        func_800149A8();
+    }
+}
 
 void startIndexedRenderTaskPair(s32 index) {
     TaskResourceRecord *resource;
@@ -662,7 +796,7 @@ void startIndexedRenderTaskPair(s32 index) {
     resource = &D_800D9504[D_8013AE8C->resource14];
     resource->unk00 = 0;
     resource->unk04 = 0;
-    func_80014930(D_8013B304, func_80062354);
+    func_80014930(D_8013B304, drawTrickSparkRingTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     D_8013AE8C->data18 = index;
     resource = &D_800D9504[D_8013AE8C->resource14];

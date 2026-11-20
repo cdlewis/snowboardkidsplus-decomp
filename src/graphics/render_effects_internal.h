@@ -972,7 +972,7 @@ void func_800632C4(void);
 void drawPlayerSnapshotTrailTask(void);
 void drawTrickTriangleRingTask(void);
 void drawTrickRingTask(void);
-void func_80062354(void);
+void drawTrickSparkRingTask(void);
 void updateRadialEffectTask(void);
 void emitRadialEffectTask(void);
 void func_80066D18(void);

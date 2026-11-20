@@ -114,6 +114,8 @@ typedef struct LINE_F2 {
     u8 r0, g0, b0, code;
     s16 x0, y0, x1, y1;
 } LINE_F2;
+/* PSY-Q 4.2 LIBGPU.H: Gouraud line opcode used by setLineG2. */
+#define LINE_G2_CODE 0x50
 
 typedef struct POLY_F4 {
     u32 tag;
