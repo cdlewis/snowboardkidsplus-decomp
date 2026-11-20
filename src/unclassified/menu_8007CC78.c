@@ -88,6 +88,7 @@ StateValueHistory D_8013BE30 __attribute__((section(".bss.state_value_history"))
 extern u8 D_80130094[][5];
 extern u8 D_801300A0[][5];
 extern u8 D_8013B44C[];
+extern u16 gSaveRecordProgressCurrencyLabel[2];
 extern char gSelectionPrizeCurrencyLabel[] __attribute__((section(".data")));
 
 s16 func_8007E8CC(const u8 *mapping, s16 index);
@@ -1657,6 +1658,117 @@ INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_800879CC);
 
 INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_80087B84);
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_80088EB4);
+void drawSaveRecordProgressPanel(void) {
+    Movement2D *position;
+    s16 x, y;
+    s16 slot;
+    s16 i;
+    s16 tier, sprite, palette;
+    u8 r, g, b;
+    TexturedQuadListEntry *list;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    x = position->x / 4096;
+    y = position->y / 4096;
+    slot = D_8013AE88->data18;
+    if (slot < D_8013AFCD) {
+        if (D_8013AE88->data1A != 0) {
+            if (D_8013AE88->data1A == 1 || D_8013AE88->data1A == 2) {
+                func_80070B64(slot, &D_8013B3A4);
+                r = D_8013B3A4;
+                g = D_8013B3A5;
+                b = D_8013B3A6;
+            } else {
+                b = g = r = 128;
+            }
+            setSpriteColor(r, g, b);
+            for (i = 0; i < 8; i++) {
+                tier = getStateMaskTier(slot, i);
+                if (tier == 4) {
+                    sprite = 0x34;
+                    palette = 12;
+                } else if (tier == 3) {
+                    sprite = 0x10A;
+                    palette = 9;
+                } else if (tier == 2) {
+                    sprite = 0x109;
+                    palette = 10;
+                } else if (tier == 1) {
+                    sprite = 0x108;
+                    palette = 11;
+                } else {
+                    sprite = -1;
+                    palette = 0;
+                }
+                if (sprite >= 0) {
+                    func_8006C998(i * 32 + (s16)(x + 9), y + 54, sprite, palette, -1,
+                                  &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                }
+                func_8006C998(i * 32 + (s16)(x + 8), y + 60, 0x70 + i * 3, 0, -1,
+                              &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            }
+            for (i = 8; i < 10; i++) {
+                tier = getStateMaskTier(slot, i);
+                if (tier == 4) {
+                    sprite = 0x34;
+                    palette = 12;
+                } else if (tier == 3) {
+                    sprite = 0x10A;
+                    palette = 9;
+                } else if (tier == 2) {
+                    sprite = 0x109;
+                    palette = 10;
+                } else if (tier == 1) {
+                    sprite = 0x108;
+                    palette = 11;
+                } else {
+                    sprite = -1;
+                    palette = 0;
+                }
+                if (sprite >= 0) {
+                    func_8006C998(x + i * 32 - 55, y + 13, sprite, palette, -1,
+                                  &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                }
+                if (D_8013B484[slot]->flags & (1u << (i - 8))) {
+                    func_8006C998((i - 8) * 32 + (s16)(x + 200), y + 19,
+                                  0x70 + D_8012D460[i] * 3, 0, -1,
+                                  &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                }
+            }
+            func_8006C998(x + 72, y + 19, 0x5A, 3, -1,
+                          &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            drawDecimalNumber16(x + 72, y + 30, 6, 0, D_8013B484[slot]->unk_3E4,
+                                8, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            func_8006EF30((s16)(x + 168), (s16)(y + 30), 1, gSaveRecordProgressCurrencyLabel, 8, -1,
+                          &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        }
+    } else {
+        setSpriteColor(128, 128, 128);
+        func_8006C998(x + 64, y + 32, 0xB4, 1, -1,
+                      &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    }
+
+    if (slot < D_8013AFCD) {
+        setSpriteColor(128, 128, 128);
+        setTexturedQuadColor(128, 128, 128);
+    } else {
+        setSpriteColor(64, 64, 64);
+        setTexturedQuadColor(64, 64, 64);
+    }
+    drawDecimalNumber8x8(x + 54, y + 4, 1, 0, slot + 1, 0, -1,
+                         &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    if (slot == 0) {
+        list = taskIndexPanelQuadsPalette0;
+    } else {
+        list = taskIndexPanelQuadsPalette1;
+    }
+    drawTexturedQuadList(x, y, list, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+}
+
+u16 gSaveRecordProgressCurrencyLabel[2]
+    __attribute__((section(".data.save_record_progress_currency_label"), aligned(4))) = {0x11, 0};
 
 INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_800895DC);

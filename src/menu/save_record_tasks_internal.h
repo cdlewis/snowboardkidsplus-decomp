@@ -163,6 +163,7 @@ ByteTriplet *lookupByteTriplet(ByteTriplet *records, u8 *indices, s16 index);
 void updateRegisteredChildBlinkTransition(void);
 void drawTaskOffsetSpriteB8(void);
 void drawTaskIndexPanel(void);
+void drawSaveRecordProgressPanel(void);
 void createPlayerGroupedSelectionTask(s32 player, s32 index);
 void initializeDualResourceTask(void);
 s16 mapGroupedValueToTableIndex(s16 value);

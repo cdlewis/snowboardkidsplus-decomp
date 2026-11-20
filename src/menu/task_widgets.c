@@ -203,7 +203,6 @@ u16 gTextPanelMessage[] __attribute__((section(".data.text_panel_message"))) = {
 };
 
 /* Storage remains in the shared data object. */
-extern u8 D_8012D460[12];
 extern TaskValueState D_8012D4A4[3];
 extern TimedSequenceEntry D_8012F18C[], D_8012F1AC[];
 extern u32 D_8013B3BC;
