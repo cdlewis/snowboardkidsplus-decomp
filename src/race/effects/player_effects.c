@@ -186,6 +186,15 @@ PaletteColor gCapturedColorCyclePalette[16]
 u16 gWhitePulsePalette[16]
     __attribute__((section(".bss.white_pulse_palette"), aligned(4)));
 
+u16 gRadialQuadHalfSizes[4]
+    __attribute__((section(".data.radial_effect_quads"))) = {32, 32, 16, 32};
+
+u16 gRadialQuadPaletteOffsets[4]
+    __attribute__((section(".data.radial_effect_quads"))) = {1, 0, 1, 2};
+
+u16 gRadialQuadShades[4]
+    __attribute__((section(".data.radial_effect_quads"))) = {32, 16, 32, 16};
+
 RECT gWhitePulsePaletteRect
     __attribute__((section(".data.color_cycle_rects"))) = {944, 240, 8, 1};
 
@@ -430,7 +439,64 @@ void createFallingParticleTask(void) {
     resource->frame = 0;
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_80062EA0);
+void drawRadialTriangleAndQuadEffect(void) {
+    s16 angle = 0;
+    s16 ray = 0;
+    s16 i;
+
+    do {
+        s16 x, y, rightX, rightY, leftX, leftY, centerX, centerY;
+        s16 red, green, blue;
+        s32 cosine = rcos(angle);
+        s32 radius = 64 + (ray & 1) * 32;
+
+        x = radius * cosine / 4096;
+        y = radius * rsin(angle) / 4096;
+        rightX = rcos(angle + 128) / 128;
+        rightY = rsin(angle + 128) / 128;
+        leftX = rcos(angle - 128) / 128;
+        leftY = rsin(angle - 128) / 128;
+        centerY = centerX = 0;
+        /* At least one of the three consecutive ray numbers has a nonzero remainder. */
+        if ((s16)(ray % 3)) {
+            red = 16;
+            blue = 0;
+            green = 0;
+        } else if ((ray + 1) % 3) {
+            red = 0;
+            green = 16;
+            blue = 0;
+        } else if ((ray + 2) % 3) {
+            red = 0;
+            green = 0;
+            blue = 16;
+        }
+
+        addSemiTransparentGouraudTriangle(D_8013AF6C, getTPage(0, 1, 0, 0), x, y,
+            rightX, rightY, centerX, centerY, (u8)red, (u8)green, (u8)blue,
+            0, 0, 0, 64, 64, 64);
+        addSemiTransparentGouraudTriangle(D_8013AF6C, getTPage(0, 1, 0, 0), x, y,
+            centerX, centerY, leftX, leftY, (u8)red, (u8)green, (u8)blue,
+            64, 64, 64, 0, 0, 0);
+        angle += 256;
+        ray++;
+    } while (angle < 4096);
+
+    for (i = 0; i < 4; i++) {
+        s16 halfSize = gRadialQuadHalfSizes[i];
+        s16 centerY = i * 32;
+        s16 centerX = -centerY;
+
+        addTexturedQuad(D_8013AF6C, (s16)(centerX - halfSize), (s16)(centerY - halfSize),
+            (s16)(halfSize + centerX), (s16)(centerY - halfSize),
+            (s16)(centerX - halfSize), (s16)(halfSize + centerY),
+            (s16)(halfSize + centerX), (s16)(halfSize + centerY),
+            SEMI_TRANSPARENT_FLAG, getTPage(0, 1, 704, 0),
+            (s16)getClut(880, 240 + gRadialQuadPaletteOffsets[i]),
+            0, 0, 63, 0, 0, 63, 63, 63,
+            (u8)gRadialQuadShades[i], (u8)gRadialQuadShades[i], (u8)gRadialQuadShades[i]);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_800632C4);
 
