@@ -2611,6 +2611,7 @@ updateRecordFlagSelectionMenuTask = 0x800801A0; // type:func size:0xA20
 gRecordFlagMenuSpriteRecords = 0x8012FD60; // size:0x6C
 
 initializeTaskResourcesAndClearData18 = 0x800929C4; // type:func
+updateBoardSelectionDetailsMenuTask = 0x80092A50; // type:func size:0xD6C
 
 advanceCurrentPlayerTaskPhaseMovement = 0x80026010; // type:func
 updateCurrentPlayerTaskLapTransition = 0x800260E4; // type:func

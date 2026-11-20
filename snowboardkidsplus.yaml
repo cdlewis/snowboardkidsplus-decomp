@@ -157,7 +157,9 @@ segments:
       - [0x2658, rodata]
       - {start: 0x26A0, type: .rodata, name: menu/panel_tasks, linker_section: .rodata.board_level_label}
       - {start: 0x26B0, type: .rodata, name: menu/panel_tasks, linker_section: .rodata.board_selection_menu}
-      - [0x26F0, rodata]
+      - {start: 0x26F0, type: .rodata, name: menu/panel_tasks, linker_section: .rodata.board_selection_details}
+      - {start: 0x274C, type: .rodata, name: menu/panel_tasks, linker_section: .rodata.board_selection_details_padding}
+      - [0x2750, rodata]
       - [0x2794, rodata]
       - {start: 0x27DC, type: .rodata, name: menu/grid_selection, linker_section: .rodata.split_board_selection}
       - [0x2840, .rodata, menu/grid_selection]
