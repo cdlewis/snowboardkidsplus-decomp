@@ -1,12 +1,37 @@
 #include "save_record_tasks_internal.h"
+#include "game/io/cd_queue.h"
+#include "game/io/memory_card.h"
+#include "game/menu/task_widgets.h"
+
+typedef struct SaveMenuResource {
+    u8 unk00[4];
+    s16 command04;
+    s16 busy06;
+    s16 unk08;
+    s16 slot;
+    s16 command0C;
+    s16 result0E;
+    u8 unk10[14];
+    s16 result1E;
+} SaveMenuResource;
 
 const u32 gStateValueHistoryPadding
     __attribute__((section(".rodata.state_value_history_padding"))) = 0;
+
+const u32 gMemoryCardSaveMenuPadding
+    __attribute__((section(".rodata.memory_card_save_menu_padding"))) = 0;
 
 u16 gTaskShadowedText[14] __attribute__((section(".data.task_shadowed_text"))) = {
     0x001A, 0x001F, 0x001D, 0x0012, 0x8020, 0x8020, 0x000C,
     0x001F, 0x001E, 0x001E, 0x0019, 0x0018, 0, 0
 };
+
+extern const u16 D_801302BC[], D_80130390[], D_801303EC[], D_80130428[];
+extern const u16 D_80130460[], D_8013047C[], D_80130578[], D_801305C4[];
+extern const u16 D_801305F0[], D_80130638[], D_80130694[], D_801306DC[];
+extern const u16 D_80130708[], D_80130740[], D_8013075C[], D_80130770[];
+extern const u16 D_801307AC[], D_80130800[];
+void func_8008B178(void);
 
 void repeatByteStore(u8 *destination, s32 value, s32 count) {
     s16 i;
@@ -146,7 +171,368 @@ void startStateValueHistoryTask(void) {
 
 INCLUDE_ASM("asm/nonmatchings/menu/save_record_tasks", func_80089EC0);
 
-INCLUDE_ASM("asm/nonmatchings/menu/save_record_tasks", func_8008A058);
+void updateMemoryCardSaveMenuTask(void) {
+    SaveMenuResource *primary;
+    SaveMenuResource *menu;
+    SaveMenuResource *input;
+    s16 x;
+    s16 y;
+    s16 player;
+    u8 texture;
+    u16 enabled;
+    /* Preserve the original task's 0x60-byte stack frame. */
+    u8 padding[0x10];
+    s16 status;
+    s32 formatResult;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    menu = (SaveMenuResource *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) {
+        while (1) {}
+    }
+    primary = menu;
+    input = (SaveMenuResource *)&D_800D9504[D_8013AE88->resource16];
+    player = D_8013AE88->data1A;
+    texture = gRacePlayers[player].unk009;
+    x = -76;
+    y = -30;
+
+    enabled = 1;
+    switch (D_8013AE88->data18) {
+    case 0:
+        setMusicSequenceEnabled(1);
+        configureTaskStateTransition(1, 0, 30);
+        D_8013AE88->data18 = 1;
+        break;
+    case 1:
+        primary->busy06 = 0;
+        createRegisteredCallbackTask(0, 0, 30, func_8008B178, 6, 1);
+        uploadTextureArchiveEntry(player * 128 + 576, 256, 768, 238 - player * 2, texture);
+        uploadTextureArchiveEntry(320, 256, 768, 234, 11);
+        goto showTitle;
+    case 2:
+        createRegisteredCallbackTask(0, 0, 30, drawTaskShadowedText, 4, 11);
+        D_8013AE88->data18 = 3;
+        break;
+    case 3:
+        if (input->busy06 || input->result0E)
+            break;
+        input->command04 = 22;
+        input->command0C = 21;
+        configureColorCycleTask(2, 64, 128, 4, 0);
+        createInputTimedSpriteTask(-16, 54, D_80123840, 2, 1, 176, 64, 4, 31);
+        D_8013AE88->data18 = 5;
+        break;
+    case 5:
+        if (input->result1E > 0)
+            break;
+        if (input->result1E < 0) {
+            D_8013AE88->data18 = 39;
+        } else {
+            input->command0C = 99;
+            D_8013AE88->data18 = 9;
+            break;
+        }
+        break;
+    case 6:
+        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_80130694,
+                                              -1, enabled, 1, D_80130800, 4, 11);
+        D_8013AE88->data18 = 7;
+        break;
+    case 7:
+        status = input->result0E;
+        if (status == 0)
+            break;
+        if (status == 1) {
+            D_8013AE88->data18 = 9;
+            break;
+        }
+        if (status == 2) {
+            menu->slot = 0;
+            goto checkCard;
+        }
+        if (status == 3) {
+            menu->slot = 1;
+            goto checkCard;
+        }
+        goto selectSlot;
+    case 8:
+        switch (D_8013BE30.current[menu->slot]) {
+        case 0:
+            break;
+        case 1:
+        case 2:
+            func_8008C708(x, y, x + 4, y + 2, D_801302BC, menu->slot, 4, 11);
+            break;
+        case 6:
+            D_8013BE30.previous[menu->slot] = D_8013BE30.current[menu->slot];
+            if (D_8013BE30.unk_16[menu->slot] == 1)
+                goto showSaveConfirmation;
+            D_8013AE88->data18 = 26;
+            D_8013BE30.unk_16[menu->slot] = 1;
+            break;
+        case 11: {
+            s16 slot = menu->slot;
+            D_8013BE30.previous[slot] = D_8013BE30.current[slot];
+            D_8013AE88->data18 = 16;
+            break;
+        }
+        case 5:
+        showSaveConfirmation:
+            D_8013AE88->data18 = 14;
+            break;
+        case 7:
+            D_8013BE30.previous[menu->slot] = D_8013BE30.current[menu->slot];
+            D_8013AE88->data18 = 28;
+            break;
+        case 8:
+        case 12:
+            D_8013AE88->data18 = 24;
+            func_8008C708(x, y, x + 4, y + 2, D_80130390, player, 4, 11);
+            D_8013BE30.previous[menu->slot] = D_8013BE30.current[menu->slot];
+            break;
+        case 9:
+            D_8013BE30.previous[menu->slot] = D_8013BE30.current[menu->slot];
+            D_8013AE88->data18 = 32;
+            break;
+        case 10:
+            D_8013BE30.previous[menu->slot] = D_8013BE30.current[menu->slot];
+            D_8013AE88->data18 = 30;
+            break;
+        }
+        break;
+    case 9:
+        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_80130708,
+                                              -1, (u16)menu->command0C | enabled, 1, D_801307AC, 4, 11);
+        D_8013AE88->data18 = 10;
+        break;
+    case 10:
+        menu->command0C = 0;
+        status = input->result0E;
+        if (status == 0)
+            break;
+        if (status == 1)
+            goto showTitle;
+        if (status == 2)
+            goto selectSlot;
+        if (status == 3)
+            goto showRetry;
+        D_8013AE88->data18 = 9;
+        break;
+    showTitle:
+        D_8013AE88->data18 = 2;
+        break;
+    case 14:
+        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_8013075C,
+                                              -1, enabled, 1, D_801307AC, 4, 11);
+        D_8013AE88->data18 = 15;
+        break;
+    case 15:
+        if (D_8013BE30.current[menu->slot] == 7)
+            goto checkCard;
+        status = input->result0E;
+        if (status == 0)
+            break;
+        if (status == 1)
+            goto showRetry;
+        if (status == 2)
+            goto startSave;
+        goto showRetry;
+    case 16:
+        D_8013BE30.unk_12[menu->slot] = 3;
+        func_8008C708(x, y, x + 4, y + 2, D_80130578, -1, 4, 11);
+        D_8013AE88->data18 = 17;
+        break;
+    case 17:
+        if (D_8013BE30.current[menu->slot] == 7)
+            goto showSaveFailure;
+        if (D_8013BE30.unk_0E[menu->slot] == 6)
+            D_8013AE88->data18 = 18;
+        break;
+    case 18:
+        D_8013AF3E = 5;
+        D_8013BE30.unk_12[menu->slot] = 4;
+        func_80019C40();
+        D_8013AE88->data18 = 19;
+        break;
+    case 19:
+        status = D_8013BE30.current[menu->slot];
+        if (status == 5)
+            break;
+        if (status == 4)
+            break;
+        if (status == 0 || status == 5) {
+            func_8008C708(x, y, x + 20, y + 12, D_801306DC, -1, 4, 11);
+            D_8013AE88->data18 = (D_8013B47C = 1, 22);
+            break;
+        }
+        D_8013BE30.unk_0E[D_8013BE30.activeIndex] = 7;
+    showSaveFailure:
+        D_8013AE88->data18 = 20;
+        break;
+    case 20:
+        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_80130770,
+                                              -1, enabled, 1, 0, 4, 11);
+        D_8013AE88->data18 = 21;
+        break;
+    case 22:
+        D_8013AE98->data18 = 2;
+        fadeOutMusicSequence(512);
+        D_8013AE88->data18 = 40;
+        break;
+    case 24:
+        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_80130740,
+                                              -1, enabled, 1, D_801307AC, 4, 11);
+        D_8013AE88->data18 = 25;
+        break;
+    case 25:
+        status = input->result0E;
+        if (status == 0)
+            break;
+        if (status == 1) {
+            D_8013AE88->data18 = 9;
+            break;
+        }
+        if (status != 2) {
+            D_8013AE88->data18 = 9;
+            break;
+        }
+        D_8013AE88->data18 = 22;
+        break;
+    case 26:
+        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_80130638,
+                                              -1, enabled, 1, D_801307AC, 4, 11);
+        D_8013AE88->data18 = 27;
+        break;
+    case 27:
+        if (D_8013BE30.current[menu->slot] == 7)
+            goto checkCard;
+        status = input->result0E;
+        if (status == 0)
+            break;
+        if (status == 1)
+            goto selectSlot;
+        if (status == 2)
+            goto startSave;
+    selectSlot:
+        D_8013AE88->data18 = 6;
+        break;
+    case 28:
+        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_801305C4,
+                                              menu->slot, enabled, 1, 0, 4, 11);
+        D_8013AE88->data18 = 29;
+        break;
+    case 29:
+        if (hasStateValueChanged(menu->slot)) {
+            D_8013AE88->data18 = 9;
+        } else if (input->result0E) {
+            menu->command0C = 0x100;
+            D_8013AE88->data18 = 24;
+        }
+        break;
+    case 30:
+        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_801305F0,
+                                              menu->slot, enabled, 1, 0, 4, 11);
+        D_8013AE88->data18 = 31;
+        break;
+    case 31:
+        if (hasStateValueChanged(menu->slot))
+            goto checkCard;
+        goto waitForPanel;
+    case 32:
+        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_801303EC,
+                                              menu->slot, enabled, 1, 0, 4, 11);
+        D_8013AE88->data18 = 33;
+        break;
+    case 33:
+        if (D_8013BE30.current[menu->slot] == 7)
+            goto checkCard;
+        if (!input->result0E)
+            break;
+        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_80130428,
+                                              menu->slot, enabled | 0x100, 1, D_801307AC, 4, 11);
+        D_8013AE88->data18 = 34;
+        break;
+    case 34:
+        if (D_8013BE30.current[menu->slot] == 7) {
+    checkCard:
+            D_8013AE88->data18 = 8;
+            break;
+        }
+        status = input->result0E;
+        if (status == 0)
+            break;
+        if (status == 1)
+            goto showRetry;
+        if (status != 2)
+            goto showRetry;
+        D_8013AE88->data18 = 35;
+        break;
+    case 35:
+        func_8008C708(x, y, x + 4, y + 2, D_801302BC, menu->slot, 4, 11);
+        D_8013BE30.unk_12[menu->slot] = 2;
+        D_8013AE88->data18 = 36;
+        break;
+    case 36:
+        if (D_8013BE30.current[menu->slot] == 7)
+            goto showFormatFailure;
+        if (D_8013BE30.unk_0E[menu->slot] != 4)
+            break;
+        resetMemoryCardTaskState();
+        if (menu->slot == 0)
+            func_800198C4(0);
+        else
+            func_800198C4(16);
+        formatResult = func_8001983C();
+        D_8013BE30.unk_0E[menu->slot] = 5;
+        if (formatResult == 0) {
+            func_8008C708(x, y, x + 4, y + 2, D_80130460, -1, 4, 11);
+            D_8013BE30.unk_12[menu->slot] = 3;
+    startSave:
+            D_8013AE88->data18 = 16;
+            break;
+        }
+        if (formatResult < 0)
+            break;
+        if (formatResult < 3) {
+    showFormatFailure:
+            D_8013AE88->data18 = 37;
+        }
+        break;
+    case 37:
+        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_8013047C,
+                                              -1, enabled, 1, 0, 4, 11);
+        D_8013AE88->data18 = 38;
+        break;
+    case 21:
+    case 38:
+    waitForPanel:
+        if (!input->result0E)
+            break;
+    showRetry:
+        D_8013AE88->data18 = 24;
+        break;
+    case 39:
+        D_8013AE98->data18 = 6;
+        /* Fall through. */
+    case 40:
+        queueMenuResourceReads(D_8013AE98->data18);
+        configureTaskStateTransition(2, 0, 30);
+        D_8013AE88->data18 = 41;
+        break;
+    case 41:
+        if (func_800707F0(0) == 0)
+            D_8013AE88->data18 = 42;
+        break;
+    case 42:
+    default:
+        D_8013AE98->data1C--;
+        func_800149A8();
+        break;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/menu/save_record_tasks", func_8008B178);
 

@@ -30,6 +30,7 @@
 #include "game/io/dat_resources.h"
 #include "game/io/controller.h"
 #include "../race_presentation_internal.h"
+#include "../race_internal.h"
 
 
 typedef struct PlayerState2Trick {
@@ -442,9 +443,7 @@ void updateCurrentPlayerState24MotionAndScale(void);
 void func_80024288(void);
 void updateCurrentPlayerTimedEffect(void);
 void updateCurrentPlayerRiding(void);
-void func_8004D330(s16 segment, s32 x, s32 z, s32 *targetX, s32 *targetZ, u16 route, u16 playerIndex);
 s16 func_8008C670(s16 playerIndex);
-u16 func_8001E63C(void);
 s16 func_80029DD0(s16 playerIndex);
 void updateCurrentPlayerAirborneDragUntilLanding(void);
 s32 snapCurrentPlayerToTerrain(void);
@@ -568,7 +567,7 @@ u16 readCurrentPlayerTrickInput(void) {
     u16 buttons;
 
     if (D_8013B0D8->unk008 != 0) {
-        direction = (u8)randomNextMain() & (s8)D_8013B0D8->unk950[3];
+        direction = (u8)randomNextMain() & (s8)D_8013B0D8->unk952[1];
     } else {
         buttons = D_8013AEEC[D_8013AE88->data18];
         if (buttons & 0x1000) {
@@ -1333,7 +1332,7 @@ void updateCurrentPlayerRiding(void) {
         (D_8013B0D8->unk92E == (s16)D_80123D80[D_8013AFCE].unk00 &&
          func_8008C670(D_8013AE88->data18))) {
         autoPlayer = D_8013B0D8;
-        func_8004D330(autoPlayer->unk92E, autoPlayer->x >> 8, autoPlayer->z >> 8,
+        getCourseSteeringTarget(autoPlayer->unk92E, autoPlayer->x >> 8, autoPlayer->z >> 8,
                       &targetX, &targetZ, (s8)autoPlayer->unk025[3], D_8013AE88->data18);
         angle = getXZHeading(D_8013B0D8->x, D_8013B0D8->z, targetX << 8, targetZ << 8);
         headingPlayer = D_8013B0D8;
@@ -1567,8 +1566,8 @@ applySteering:
             (itemPlayer->unk92E == (s16)D_80123D80[D_8013AFCE].unk00 &&
              func_8008C670(D_8013AE88->data18))) {
             autoItemPlayer = D_8013B0D8;
-            if (((s8 *)autoItemPlayer->unk950)[0]) {
-                autoItemPlayer->unk950[1] = 1;
+            if (autoItemPlayer->unk950) {
+                autoItemPlayer->unk951 = 1;
                 jumpPlayer = D_8013B0D8;
                 character = jumpPlayer->characterId;
                 jumpPlayer->unk12C = 2;
@@ -1579,7 +1578,7 @@ applySteering:
                     D_8013AE88->data1A = 0;
                 }
             } else if (autoItemPlayer->unk0BC < 0xC00) {
-                autoItemPlayer->unk950[1] = 0;
+                autoItemPlayer->unk951 = 0;
                 lowSpeedPlayer = D_8013B0D8;
                 character = lowSpeedPlayer->characterId;
                 lowSpeedPlayer->unk12C = 2;
@@ -1734,7 +1733,7 @@ advanceCharge:
     motionPlayer = D_8013B0D8;
     if (motionPlayer->unk13C < 6) {
         updateCurrentPlayerSlopeVelocity(0, boost, (s16)motionPlayer->unk0A6 * 2, (s16)motionPlayer->unk0A8, (s16)motionPlayer->unk0AA);
-        func_8001E63C();
+        readCurrentPlayerTrickInput();
     } else {
         if (!(motionPlayer->unk128 & 0x10)) {
             if (motionPlayer->unk128 & 0x400) {
@@ -1769,7 +1768,7 @@ advanceCharge:
         }
         updateCurrentPlayerSlopeVelocity(push, boost, (s16)D_8013B0D8->unk0A6 * 2,
                                          (s16)D_8013B0D8->unk0A8, (s16)D_8013B0D8->unk0AA);
-        trick = func_8001E63C();
+        trick = readCurrentPlayerTrickInput();
         launchPlayer = D_8013B0D8;
         if (!(launchPlayer->unk128 & 0x10)) {
             if (launchPlayer->unk08C < 0xD00) {

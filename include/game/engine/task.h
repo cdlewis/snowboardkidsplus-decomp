@@ -266,10 +266,13 @@ void createRegisteredTextPanelTask(s16 x, s16 y, const u16 **texts,
 
 void initializeSaveRecordTask(void);
 void func_80089EC0(void);
+void updateMemoryCardSaveMenuTask(void);
 
 void startUnlockNotification0Task(void);
 
 void updateSelectedPlayerPlaybackTask(void);
+void func_8008C708(s16 x, s16 y, s16 textX, s16 textY,
+                   const u16 *text, s32 mode, s32 depth, s32 index);
 void createRegisteredDetailedTextPanelTask(s16 x, s16 y, s16 textX, s16 textY,
                                    const u16 *text, s32 value, s32 color, s32 mode,
                                    const u16 *content, s32 depth, s32 index);

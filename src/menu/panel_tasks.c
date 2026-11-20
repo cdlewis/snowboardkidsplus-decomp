@@ -264,9 +264,6 @@ POLY_F3 gNumberAdjustmentArrow __attribute__((section(".data.number_adjustment_a
     4U << 24, 0, 0, 0, POLY_F3_CODE, 0, 0, 0, 0, 0, 0
 };
 
-extern void func_8008C708(s16 x, s16 y, s16 textX, s16 textY,
-                         const u16 *text, s32 mode, s32 depth, s32 index);
-
 INCLUDE_ASM("asm/nonmatchings/menu/panel_tasks", func_8008C708);
 
 static inline RegisteredTaskEntry *getRegisteredPanelEntry(u32 resource, s32 index) {

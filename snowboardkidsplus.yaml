@@ -146,7 +146,8 @@ segments:
       - [0x2318, rodata]
       - [0x2400, .rodata, menu/save_record_tasks]
       - {start: 0x2434, type: .rodata, name: menu/save_record_tasks, linker_section: .rodata.state_value_history_padding}
-      - [0x2438, rodata]
+      - {start: 0x2438, type: .rodata, name: menu/save_record_tasks, linker_section: .rodata.memory_card_save_menu}
+      - {start: 0x251C, type: .rodata, name: menu/save_record_tasks, linker_section: .rodata.memory_card_save_menu_padding}
       - [0x2520, .rodata, menu/panel_tasks]
       - [0x2534, rodata]
       - {start: 0x2594, type: .rodata, name: menu/panel_tasks, linker_section: .rodata.money_panel_selection}
