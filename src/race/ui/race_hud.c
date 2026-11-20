@@ -13,8 +13,6 @@ const char gLapTimeFormat[20] __attribute__((section(".rodata.lap_time_format"),
 
 const char gBestLapLabel[16] __attribute__((section(".rodata.best_lap_label"), aligned(4))) = "BEST LAP";
 
-extern u8 D_8013AFD5 __attribute__((section(".data")));
-
 void func_80043FBC(void);
 
 void drawLapTimeHud(void) {

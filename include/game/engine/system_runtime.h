@@ -52,7 +52,6 @@ void func_800131B4(void);
 void initializeGameSystems(void);
 void runGameLoop(void);
 void func_8002EE0C(void);
-void func_8001DB7C(void);
 void finishTaskTransitionAfterCountdown(void);
 void resetStateAndBeginResourceLoadTransition(u8 loadResources);
 void initializeRaceRestartTask(void);

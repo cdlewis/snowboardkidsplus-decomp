@@ -1,6 +1,7 @@
 #include "psx/scratchpad.h"
 #include "psx/libetc.h"
 #include "common.h"
+#define RACE_SETUP_GP_ADDRESSING
 #define TASK_ABSOLUTE_ADDRESSING
 #include "game/engine/task.h"
 #include "game/graphics/graphics.h"
@@ -13,6 +14,7 @@
 #include "game/io/cd_queue.h"
 #define CONTROLLER_STATE_ABSOLUTE_ADDRESSING
 #include "game/io/controller.h"
+#include "game/io/controller_effects.h"
 #include "game/race/player/race_player.h"
 #include "game/race/player/player_resource_textures.h"
 #define GAME_OPTIONS_GP_ADDRESSING
@@ -36,6 +38,27 @@
 #include "game/engine/system_runtime.h"
 
 #include "game/race/player/player_resource_textures.h"
+
+u8 gCourseOpponentCharacters[10][4] __attribute__((section(".data.course_race_setup"))) = {
+    {0, 1, 2, 5},
+    {4, 7, 6, 1},
+    {0, 2, 5, 4},
+    {1, 2, 6, 3},
+    {1, 2, 3, 5},
+    {4, 1, 5, 6},
+    {1, 2, 7, 4},
+    {0, 1, 2, 3},
+    {8, 0, 1, 3},
+    {3, 5, 0, 2},
+};
+
+u8 gCourseOpponentBoardSelections[12] __attribute__((section(".data.course_race_setup"))) = {
+    1, 1, 4, 4, 4, 7, 7, 0, 7, 1, 0, 0,
+};
+
+u8 D_80120484[12] __attribute__((section(".data.course_race_setup"))) = {
+    20, 30, 40, 40, 60, 80, 128, 0, 255, 10, 0, 0,
+};
 
 u16 gSelectedPlayerRestoreFrames[14] __attribute__((section(".data.selected_player_restore_frames"))) = {
     0, 104, 205, 309, 412, 515, 616, 718, 821, 928, 1036, 1126, 1330, 0
@@ -67,7 +90,8 @@ extern s16 D_8013B104 __attribute__((section(".data")));
 extern u8 D_8013AFE2;
 extern u8 D_8013B1AB __attribute__((section(".data")));
 extern u16 D_8013AFE8;
-extern u8 D_80120470[];
+extern u8 D_8013AFCC;
+extern u8 D_8013AFD4;
 
 
 void func_800131B4(void);
@@ -75,7 +99,7 @@ void func_8002EE0C(void);
 void finishTaskTransitionAfterCountdown(void);
 void updateThreeFrameScreenBlend(void);
 void func_8001D89C(void);
-void func_8001DB7C(void);
+void initializeRaceTaskState(void);
 void resetStateAndBeginResourceLoadTransition(u8 loadResources);
 void initializeRaceRestartTask(void);
 void func_8001C2E0(void);
@@ -506,7 +530,7 @@ void finishRaceExitAfterCountdown(void) {
                     return;
                 case 4:
                     {
-                        s32 pairedState = D_80120470[0];
+                        s32 pairedState = gCourseOpponentCharacters[8][0];
                         if (pairedState == 9) {
                             updatePairedStateFlag(1);
                         } else if (pairedState == 8) {
@@ -677,7 +701,130 @@ void queuePlayerResourceReadsAndUploadTextures(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/engine/task_transitions", func_8001DB7C);
+void prepareRacePlayersAndQueueResources(void) {
+    s32 i;
+    s32 j;
+    s32 opponentIndex;
+    s32 available;
+    u8 specialCharacters;
+
+    D_8013AFD3 = 0;
+    D_8013AFD4 = 0;
+    D_8013AFD5 = 0;
+    D_8013AFD6 = 0;
+    D_8013AFE1 = 0;
+    D_8013AFD8 = 0;
+    D_8013AFD9 = 0;
+    D_8013AFCC = 0;
+    for (i = 0; i < 4; i++) {
+        if (i < gameOptionPlayerModeGp) {
+            gRacePlayers[i].unk008 = 0;
+        } else {
+            gRacePlayers[i].unk008 = 1;
+        }
+        gRacePlayers[i].unk02C[0] = D_80120484[D_8013AFCE];
+        gRacePlayers[i].unk02C[1] = D_80120484[D_8013AFCE];
+        if (gameOptionPlayerModeGp != 1) {
+            gRacePlayers[i].unk02C[0] = 0;
+            gRacePlayers[i].unk02C[1] = 0;
+        }
+        gRacePlayers[i].unk025[3] = i;
+        gRacePlayers[i].characterId = gRacePlayers[i].unk009;
+        gRacePlayers[i].unk015[0] = gRacePlayers[i].unk00A[0];
+        gRacePlayers[i].unk015[1] = gRacePlayers[i].unk00A[1];
+        if (i < gameOptionPlayerModeGp) {
+            gRacePlayers[i].unk015[2] = gPlayerResourceTextureSelections.entries[i][gRacePlayers[i].unk015[1]];
+        }
+    }
+
+    if (D_8013AFCE == 8) {
+        if (gameOptionPlayerModeGp == 1) {
+            if (gRacePlayers[0].characterId >= 8) {
+                if (gRacePlayers[0].characterId == 8) {
+                    gCourseOpponentCharacters[8][0] = 9;
+                } else {
+                    gCourseOpponentCharacters[8][0] = 8;
+                }
+            } else {
+                if ((s16)getGlobalFlagMask(1) != 0) {
+                    goto selectRandom;
+                }
+                gCourseOpponentCharacters[8][0] = 9;
+            }
+        } else {
+            specialCharacters = 0;
+            if (gRacePlayers[0].characterId >= 8) {
+                specialCharacters = gRacePlayers[0].characterId - 7;
+            }
+            if (gRacePlayers[1].characterId >= 8) {
+                specialCharacters |= gRacePlayers[1].characterId - 7;
+            }
+            if (specialCharacters != 0) {
+                if (specialCharacters == 1) {
+                    gCourseOpponentCharacters[8][0] = 9;
+                } else if (specialCharacters == 2) {
+                    gCourseOpponentCharacters[8][0] = 8;
+                }
+            } else {
+                if ((s16)getGlobalFlagMask(1) == 0) {
+                    gCourseOpponentCharacters[8][0] = 9;
+                } else {
+selectRandom:
+                    gCourseOpponentCharacters[8][0] = 8 + (randomNextMain() & 1);
+                }
+            }
+        }
+    }
+
+    if (D_8013AFE2 == 0) {
+        s8 active = 1;
+        for (i = 4; --i >= 0;) {
+            gRacePlayers[i].isActive = active;
+        }
+        activeRacePlayerCountGp = i = 4;
+        D_8013AFDE = 100;
+    } else {
+        for (i = 0; i < 4; i++) {
+            if (i < gameOptionPlayerModeGp) {
+                gRacePlayers[i].isActive = 1;
+            } else {
+                gRacePlayers[i].isActive = 0;
+            }
+        }
+        activeRacePlayerCountGp = gameOptionPlayerModeGp;
+        D_8013AFD0 = 1;
+        D_8013AFDE = 100;
+    }
+
+    for (i = 0; i < 4; i++) {
+        gRacePlayers[i].unk025[1] = 0;
+        gRacePlayers[i].unk025[2] = 0;
+    }
+
+    opponentIndex = 0;
+    for (i = gameOptionPlayerModeGp; i < activeRacePlayerCountGp; i++) {
+        do {
+            gRacePlayers[i].characterId = gCourseOpponentCharacters[D_8013AFCE][opponentIndex++];
+            available = 1;
+            for (j = 0; j < gameOptionPlayerModeGp; j++) {
+                if (gRacePlayers[i].characterId == gRacePlayers[j].characterId) {
+                    available = 0;
+                }
+            }
+        } while (!available);
+        if (gRacePlayers[i].characterId < 8) {
+            gRacePlayers[i].unk015[1] = gCourseOpponentBoardSelections[D_8013AFCE];
+            gRacePlayers[i].unk015[2] = (u8)randomNextMain() % 14u;
+        } else {
+            gRacePlayers[i].unk015[1] = 14;
+            gRacePlayers[i].unk015[2] = 19;
+        }
+    }
+
+    setCurrentTaskCallback(initializeRaceTaskState);
+    queuePlayerResourceReadsAndUploadTextures();
+    D_8013AE88->unk10 |= 2;
+}
 
 void initializeRaceTaskState(void) {
     D_8013AFE4 = 1;
@@ -694,7 +841,7 @@ void initializeSelectedCourseTransition(void) {
     if (D_8013AFE2 != 0 || D_8013AFCD == 1 || D_8013AFDA == 0) {
         configureTaskStateTransition(1, 0, 30);
         setTaskBackgroundMode(3, D_8013B104, 0);
-        setCurrentTaskCallback(func_8001DB7C);
+        setCurrentTaskCallback(prepareRacePlayersAndQueueResources);
     }
 }
 

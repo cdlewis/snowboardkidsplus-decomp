@@ -95,7 +95,7 @@ restore:
         func_800149A8();
         return;
     }
-    setCurrentTaskCallback(func_8001DB7C);
+    setCurrentTaskCallback(prepareRacePlayersAndQueueResources);
 }
 
 INCLUDE_ASM("asm/nonmatchings/graphics/background_resources", func_8002F5F8);

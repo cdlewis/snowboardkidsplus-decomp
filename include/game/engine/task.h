@@ -171,7 +171,13 @@ extern u8 D_8013AFD7 __attribute__((section(".data")));
 extern u8 D_8013AFD7;
 #endif
 
-void func_8001DB7C(void);
+#ifdef RACE_SETUP_GP_ADDRESSING
+extern u8 D_8013AFD5;
+#else
+extern u8 D_8013AFD5 __attribute__((section(".data")));
+#endif
+
+void prepareRacePlayersAndQueueResources(void);
 void initializeViewAndSelectTaskCallback(void);
 
 void initializeGameOptionViewTask(void);

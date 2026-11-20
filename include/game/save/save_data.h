@@ -82,8 +82,12 @@ s32 hasStateGridFlag(GlobalFlagStatePrefix *state, s16 row, s16 column);
 
 s32 getPlayerRecordFlagMode(s16 index);
 
+#ifdef RACE_SETUP_GP_ADDRESSING
+extern s16 D_8013AFDE;
+#else
 extern s16 D_8013AFDE __attribute__((section(".data")));
 extern u8 D_8013AFE1 __attribute__((section(".data")));
+#endif
 
 #ifdef SAVE_OVERRIDE_ABSOLUTE_ADDRESSING
 extern u8 D_8013B11A __attribute__((section(".data")));
