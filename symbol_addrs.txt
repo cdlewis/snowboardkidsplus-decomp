@@ -2603,6 +2603,8 @@ memoryCardFileExists = 0x80018FBC; // type:func
 
 waitTimeMenuDisplayTask = 0x80037E34; // type:func
 
+updatePlayerGroupedCourseSelectionTask = 0x8007F630; // type:func size:0xAE4
+gGroupedCourseMenuDescriptors = 0x8013000C; // size:0x78
 initializeDualResourceTaskAndClearState = 0x80080114; // type:func
 updateRecordFlagSelectionMenuTask = 0x800801A0; // type:func size:0xA20
 gRecordFlagMenuSpriteRecords = 0x8012FD60; // size:0x6C

@@ -137,7 +137,7 @@ void updateRecordFlagSelectionMenuTask(void);
 void func_800815D0(void);
 void initializeDualResourceTaskAndResetByteState(void);
 void adjustGroupedIndexForMode(s16 mode, u8 *index);
-void func_8007F630(void);
+void updatePlayerGroupedCourseSelectionTask(void);
 void updateRegisteredTripletTask(void);
 void updateRegisteredPlayerModels(void);
 

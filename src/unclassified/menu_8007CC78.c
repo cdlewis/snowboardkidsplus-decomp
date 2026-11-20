@@ -19,6 +19,17 @@ typedef struct CourseSelectionResource {
     s16 choiceResult;
 } CourseSelectionResource;
 
+typedef struct GroupedSelectionMenuDescriptor {
+    const u8 *mapping;
+    u8 spacingX;
+    u8 spacingY;
+    u8 count;
+    u8 unk07;
+    const u8 *textMapping;
+    const u8 *unk0C;
+    u8 *tripletIndices;
+} GroupedSelectionMenuDescriptor;
+
 typedef struct MenuModelResource {
     GsDOBJ2 object;
     GsCOORDINATE2 local;
@@ -112,6 +123,24 @@ IndexedHalfwordRecord gRecordFlagMenuSpriteRecords[]
     {199, 0, 0},
 };
 
+extern u8 D_8013B420[], D_8013B424[], D_8013B42C[];
+extern u8 D_8013B430[], D_8013B434[], D_8013B438[];
+extern u8 D_8013B43C[], D_8013B440[], D_8013B448[], D_8013B44C[];
+extern u8 D_8013B450[], D_8013B454[];
+
+GroupedSelectionMenuDescriptor gGroupedCourseMenuDescriptors[]
+    __attribute__((section(".data.grouped_course_menu_descriptors"))) = {
+    {D_8013B420, 0, 24, 4, 0, D_8013B43C, NULL, D_8013B450},
+    {D_8013B424, 0, 20, 5, 0, D_8013B440, NULL, D_8013B454},
+    {D_8013B42C, 0, 24, 4, 0, D_8013B43C, NULL, D_8013B450},
+    {D_8013B434, 0, 20, 3, 0, D_8013B44C, NULL, NULL},
+    {D_8013B438, 0, 16, 3, 0, D_8013B448, NULL, NULL},
+    {D_8013B430, 0, 24, 4, 0, D_8013B43C, NULL, D_8013B450},
+};
+
+const u32 gGroupedCourseMenuTablePadding
+    __attribute__((section(".rodata.grouped_course_menu_padding"))) = 0;
+
 const u32 gRecordFlagSelectionMenuTablePadding
     __attribute__((section(".rodata.record_flag_selection_menu_padding"))) = 0;
 
@@ -126,7 +155,6 @@ StateValueHistory D_8013BE30 __attribute__((section(".bss.state_value_history"))
 extern const u16 *D_8012FC2C[10];
 extern u8 D_80130094[][5];
 extern u8 D_801300A0[][5];
-extern u8 D_8013B44C[];
 extern MenuModelSelectionPair D_8013B468[];
 extern u16 gSaveRecordProgressCurrencyLabel[2];
 extern char gSelectionPrizeCurrencyLabel[] __attribute__((section(".data")));
@@ -818,11 +846,195 @@ void initializeCountedPlayerGroupedSelectionBoundsTask(void) {
         bounds->w = -1;
         bounds->h = -1;
         D_801300AC[0].previousSelection = D_801300AC[0].selection;
-        setCurrentTaskCallback(func_8007F630);
+        setCurrentTaskCallback(updatePlayerGroupedCourseSelectionTask);
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_8007F630);
+void updatePlayerGroupedCourseSelectionTask(void) {
+    CourseSelectionResource *selection;
+    RegisteredPanelSlot *panels;
+    MenuSelectionState *groupedSelection;
+    GroupedSelectionMenuDescriptor *descriptor;
+    s32 complete;
+
+    if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
+    selection = (CourseSelectionResource *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) { for (;;) {} }
+    panels = (RegisteredPanelSlot *)&D_800D9504[D_8013AE88->resource16];
+    groupedSelection = &D_801300AC[0];
+
+    switch (D_8013AE88->data18) {
+    case 0:
+        setMusicSequenceEnabled(1);
+        descriptor = &gGroupedCourseMenuDescriptors[D_8013AE88->data1A];
+        createRegisteredSpacedChildTasks(1, 0xB0, 0x40, (const u8 *)gRecordFlagMenuSpriteRecords,
+                                         descriptor->mapping, NULL, 0, 0, 20, -304, -96,
+                                         descriptor->spacingX, descriptor->spacingY, descriptor->count, 176,
+                                         drawSelectedTaskSprite, drawRegisteredTaskGridSpriteWithColor, 4, 1);
+        createRegisteredTextPanelTask(-316, 8, D_8012FFD4, descriptor->textMapping, 4, 11);
+        createRegisteredPanelTask(0, groupedSelection->selection, 244, 0, 384, 21);
+        createRegisteredCallbackTask(0, 172, -72, drawTaskOffsetSpriteB8, 4, 31);
+        createRegisteredTripletTask(-296, 48, 0, 16, D_8012FFFC, descriptor->tripletIndices, 3, 41);
+        selection->mode = 0;
+        if (gRacePlayers[0].unk00A[1] < 9 && (u8)(gRacePlayers[0].unk00A[1] % 3) == 0) {
+            selection->selectedIndex = 0;
+        }
+        if (gRacePlayers[0].unk00A[1] < 9 && (u8)(gRacePlayers[0].unk00A[1] % 3) == 1) {
+            selection->selectedIndex = 1;
+        }
+        if (gRacePlayers[0].unk00A[1] < 9 && (u8)(gRacePlayers[0].unk00A[1] % 3) == 2) {
+            selection->selectedIndex = 2;
+        }
+        if (gRacePlayers[0].unk00A[1] >= 9 && gRacePlayers[0].unk00A[1] < 12) {
+            selection->selectedIndex = 3;
+        }
+        if (gRacePlayers[0].unk00A[1] >= 12) {
+            selection->selectedIndex = gRacePlayers[0].unk00A[1] - 12;
+        }
+        selection->previousIndex = selection->selectedIndex;
+        selection->choiceResult = 0;
+        D_8013AE88->data18 = 2;
+        break;
+    case 2:
+        if (panels[0].flags == 0 && panels[1].flags == 0 && panels[2].flags == 0 &&
+            panels[3].flags == 0 && panels[4].flags == 0) {
+            moveTaskChildrenWithSpacing(0, panels[0].task, -0x7C000, -0x60000, 0x1E000, 0x1E000, 1);
+            configureMovement2D((Movement2D *)&D_800D9504[panels[1].task->resource14], -0x88000, 0x8000, 0x1E000, 0x1E000, 5);
+            func_80081AC8(0, panels[2].task, 0x40000, 0, 0x1E000, 0x1E000, 5);
+            configureMovement2D((Movement2D *)&D_800D9504[panels[3].task->resource14], -0x8000, -0x48000, 0x1E000, 0x1E000, 5);
+            configureMovement2D((Movement2D *)&D_800D9504[panels[4].task->resource14], -0x74000, 0x30000, 0x1E000, 0x1E000, 5);
+            D_8013AE88->data18 = 3;
+        }
+        break;
+    case 3:
+        if (panels[0].flags == 0 && panels[1].flags == 0 && panels[2].flags == 0 &&
+            panels[3].flags == 0 && panels[4].flags == 0) {
+            panels[0].command = 20;
+            panels[1].command = 20;
+            panels[2].command = 1;
+            panels[3].command = 20;
+            panels[4].command = 20;
+            configureColorCycleTask(1, 0, 128, 8, 0);
+            D_8013B41F = 0;
+            D_8013AE88->data18 = 4;
+        }
+        break;
+    case 4:
+        complete = isTaskResourceTransitionComplete(0);
+        if (complete == 1 && D_8013B41F == 0) {
+            panels[0].command = 21;
+            panels[1].command = 22;
+            panels[3].command = 22;
+            panels[4].command = 22;
+            configureColorCycleTask(2, 64, 128, 4, 0);
+            D_8013B41F = complete;
+        }
+        if (selection->selectedIndex != selection->previousIndex) {
+            groupedSelection->previousSelection = groupedSelection->selection;
+            groupedSelection->selection = getTaskResourceGroupedIndex(panels[0].task, selection->selectedIndex);
+            if (groupedSelection->selection == 9) {
+                groupedSelection->selection += getSaveRecordFlagGroupIndex(0, 0);
+            }
+            if (groupedSelection->selection < 0) {
+                groupedSelection->selection = groupedSelection->previousSelection;
+            } else if (groupedSelection->selection != groupedSelection->previousSelection) {
+                if (selection->previousIndex >= selection->selectedIndex) {
+                    panels[2].command = 12;
+                } else {
+                    panels[2].command = 11;
+                }
+            }
+            selection->previousIndex = selection->selectedIndex;
+        } else if (selection->choiceResult != 0 && panels[0].flags == 0) {
+            if (D_8013B41F == 0) {
+                panels[0].command = 22;
+                panels[1].command = 22;
+                panels[3].command = 22;
+                panels[4].command = 22;
+                D_8013B41F = 1;
+            }
+            if (selection->choiceResult < 0) {
+                D_8013AE88->data18 = 14;
+            } else {
+                descriptor = &gGroupedCourseMenuDescriptors[D_8013AE88->data1A];
+                if (descriptor->mapping[selection->selectedIndex] == 0) {
+                    selection->choiceResult = -1;
+                    D_8013AE88->data18 = 14;
+                } else {
+                    panels[0].command = 10;
+                    D_8013AE88->data18 = 12;
+                }
+            }
+        }
+        break;
+    case 12:
+        panels[0].command = 10;
+        D_8013AE88->data18 = 13;
+        break;
+    case 13:
+        if (panels[0].flags == 0) {
+            D_8013AE88->data18 = 9;
+        }
+        break;
+    case 14:
+        switch (D_8013AFE2) {
+        case 0:
+            D_8013AE98->data18 = 7;
+            break;
+        case 2:
+            D_8013AE98->data18 = 10;
+            break;
+        case 1:
+            D_8013AE98->data18 = 20;
+            break;
+        }
+        D_8013AE88->data18 = 5;
+        break;
+    case 9:
+        func_80014874(initializeDualResourceTaskAndClearState);
+        D_8013AE8C->data18 = 1;
+        descriptor = &gGroupedCourseMenuDescriptors[D_8013AE88->data1A];
+        D_8013AE8C->data1A = func_8007E8CC(descriptor->mapping, selection->selectedIndex);
+        D_8013AE88->data18 = 10;
+        break;
+    case 10:
+        break;
+    case 11:
+        beginMode2SequenceAndFadeMusic();
+        D_8013AE98->data18 = 23;
+        goto finishExit;
+    case 5:
+        if (panels[0].flags == 0 && panels[1].flags == 0 && panels[2].flags == 0 &&
+            panels[3].flags == 0 && panels[4].flags == 0) {
+            queueMenuResourceReads(D_8013AE98->data18);
+            moveTaskChildrenWithSpacing(0, panels[0].task, -0x130000, -0x60000, 0x1E000, 0x1E000, -1000);
+            panels[0].command = 23;
+            configureMovement2D((Movement2D *)&D_800D9504[panels[1].task->resource14], -0x13C000, 0x8000, 0x1E000, 0x1E000, -1000);
+            func_80081AC8(0, panels[2].task, 0xF4000, 0, 0x1E000, 0, -1000);
+            func_80081AC8(1, panels[2].task, 0xF4000, 0, 0x1E000, 0, -1000);
+            configureMovement2D((Movement2D *)&D_800D9504[panels[3].task->resource14], 0xAC000, -0x48000, 0x1E000, 0x1E000, -1000);
+            configureMovement2D((Movement2D *)&D_800D9504[panels[4].task->resource14], -0x128000, 0x30000, 0x1E000, 0x1E000, -1000);
+            D_8013AE88->data18 = 6;
+        }
+        break;
+    case 6:
+        if (panels[0].flags == 0 && panels[1].flags == 0 && panels[2].flags == 0 &&
+            panels[3].flags == 0 && panels[4].flags == 0) {
+finishExit:
+            D_8013AE88->data18 = 7;
+        }
+        break;
+    case 7:
+        if (selection->choiceResult <= 0 || func_800707F0(0) == 0) {
+            D_8013AE88->data18 = 8;
+        }
+        break;
+    default:
+        D_8013AE98->data1C--;
+        func_800149A8();
+        break;
+    }
+}
 
 void initializeDualResourceTaskAndClearState(void) {
     D_8013AE88->data18 = 0;
