@@ -59,6 +59,19 @@ typedef struct TriangleBurstScratch {
 typedef struct ScreenPoint { s16 x, y; } ScreenPoint;
 
 
+typedef struct RotatingQuadScratch {
+    SVECTOR vertices[8];
+    GsCOORDINATE2 coordinate;
+    GsCOORDINATE2 parent;
+    MATRIX localScreen;
+    long depth, cue, flags;
+    s32 textureAdvance, displacement;
+    union {
+        long packed;
+        ScreenPoint point;
+    } screen[4];
+} RotatingQuadScratch;
+
 typedef struct PlayerShadowScratch {
     GsCOORDINATE2 coordinate;
     SVECTOR vertices[4];
@@ -827,11 +840,92 @@ void createPositionedEffectTask(s32 x, s32 y, s32 z) {
     resource->z = z >> 8;
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_80063DF4);
+void drawRotatingQuadEffectTask(void) {
+    RotatingEffectResource *resource;
+    RotatingQuadScratch *scratch;
+    s32 i;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (RotatingEffectResource *)&D_800D9504[D_8013AE88->resource14];
+    scratch = (RotatingQuadScratch *)getScratchAddr(0);
+    if (resource->elapsed <= 16) {
+        scratch->textureAdvance = resource->elapsed * 63 / 16;
+        scratch->displacement = resource->elapsed * 5;
+        if (!D_8013AFD3) {
+            resource->elapsed++;
+        }
+    } else {
+        func_800149A8();
+        return;
+    }
+
+    /* The base and rotating faces share the descending edge. */
+    setVector(&scratch->vertices[0], -40, -scratch->displacement, -40);
+    setVector(&scratch->vertices[1], -40, -scratch->displacement, 40);
+    setVector(&scratch->vertices[2], 40, -scratch->displacement, -40);
+    setVector(&scratch->vertices[3], 40, -scratch->displacement, 40);
+    setVector(&scratch->vertices[4], 40, -scratch->displacement, -40);
+    setVector(&scratch->vertices[5], 40, -scratch->displacement, 40);
+    setVector(&scratch->vertices[6], 40, 0, -40);
+    setVector(&scratch->vertices[7], 40, 0, 40);
+    GsInitCoordinate2(&scratch->parent, &scratch->coordinate);
+    GsInitCoordinate2(NULL, &scratch->parent);
+    RotMatrix(&resource->rotation, &scratch->coordinate.coord);
+    RotMatrix(&resource->parentRotation, &scratch->parent.coord);
+    scratch->parent.coord.t[0] = resource->x;
+    scratch->parent.coord.t[1] = resource->y;
+    scratch->parent.coord.t[2] = resource->z;
+    GsGetLs(&scratch->coordinate, &scratch->localScreen);
+    GsSetLsMatrix(&scratch->localScreen);
+
+    scratch->depth = RotTransPers4(&scratch->vertices[0], &scratch->vertices[1],
+        &scratch->vertices[2], &scratch->vertices[3], &scratch->screen[0].packed,
+        &scratch->screen[1].packed, &scratch->screen[2].packed, &scratch->screen[3].packed,
+        &scratch->cue, &scratch->flags);
+    if (scratch->flags >= 0 &&
+        NormalClip(scratch->screen[0].packed, scratch->screen[1].packed, scratch->screen[2].packed) >= 0 &&
+        scratch->depth >= 0 && scratch->depth < 4096) {
+        addGouraudTexturedQuad(D_8013AF6C + (scratch->depth >> 2),
+            scratch->screen[0].point.x, scratch->screen[0].point.y,
+            scratch->screen[1].point.x, scratch->screen[1].point.y,
+            scratch->screen[2].point.x, scratch->screen[2].point.y,
+            scratch->screen[3].point.x, scratch->screen[3].point.y,
+            getTPage(0, 0, 640, 0), getClut(640, 250), 128, 128, 191, 128, 128, 191, 191, 191,
+            192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192);
+    }
+
+    /* Reuse the side quad at each quarter turn. */
+    for (i = 0; i < 4; i++) {
+        RotMatrix(&resource->rotation, &scratch->coordinate.coord);
+        scratch->coordinate.flg = 0;
+        GsGetLs(&scratch->coordinate, &scratch->localScreen);
+        GsSetLsMatrix(&scratch->localScreen);
+        scratch->depth = RotTransPers4(&scratch->vertices[4], &scratch->vertices[5],
+            &scratch->vertices[6], &scratch->vertices[7], &scratch->screen[0].packed,
+            &scratch->screen[1].packed, &scratch->screen[2].packed, &scratch->screen[3].packed,
+            &scratch->cue, &scratch->flags);
+        if (scratch->flags >= 0 &&
+            NormalClip(scratch->screen[0].packed, scratch->screen[1].packed, scratch->screen[2].packed) >= 0 &&
+            scratch->depth >= 0 && scratch->depth < 4096) {
+            addGouraudTexturedQuad(D_8013AF6C + (scratch->depth >> 2),
+                scratch->screen[0].point.x, scratch->screen[0].point.y,
+                scratch->screen[1].point.x, scratch->screen[1].point.y,
+                scratch->screen[2].point.x, scratch->screen[2].point.y,
+                scratch->screen[3].point.x, scratch->screen[3].point.y,
+                getTPage(0, 0, 640, 0), resource->clut, 192, resource->textureU, 255, resource->textureU,
+                192, resource->textureU + scratch->textureAdvance,
+                255, resource->textureU + scratch->textureAdvance,
+                192, 192, 192, 192, 192, 192, 64, 64, 64, 64, 64, 64);
+        }
+        resource->rotation.vy += 0x400;
+    }
+}
 
 void startRotatingQuadEffectTask(s32 variant, const VECTOR *position, s32 pitch, s32 yaw, s32 roll) {
     RotatingEffectResource *resource;
-    func_80014874(func_80063DF4);
+    func_80014874(drawRotatingQuadEffectTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     resource = (RotatingEffectResource *)&D_800D9504[D_8013AE8C->resource14];
     resource->x = position->vx >> 8;

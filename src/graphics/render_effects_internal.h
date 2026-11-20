@@ -1007,7 +1007,7 @@ void func_8006B4A0(s32 x, s32 y, const char *format, ...);
 void func_8006BEEC(s32 enabled);
 void func_8006C970(s32 enabled);
 void func_80063B58(void);
-void func_80063DF4(void);
+void drawRotatingQuadEffectTask(void);
 void drawFullScreenSpriteTask(void);
 void updateFadingTextTask(void);
 void drawFadingText(FadingTextResource *resource);
