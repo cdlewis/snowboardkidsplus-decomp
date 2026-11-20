@@ -74,7 +74,7 @@ segments:
       - {start: 0xB9C, type: .rodata, name: io/memory_card, linker_section: .rodata.memory_card_availability_padding}
       - [0xBA0, .rodata, io/memory_card_read]
       - [0xBB8, .rodata, io/memory_card_tasks]
-      - [0xC6C, rodata]
+      - {start: 0xC6C, type: .rodata, name: engine/task_transitions, linker_section: .rodata.race_vsync_debug_format}
       - [0xC7C, .rodata, engine/task_transitions]
       - [0xCB0, rodata]
       - [0xCD8, .rodata, race/player/player_update]

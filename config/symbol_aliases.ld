@@ -9,6 +9,7 @@ currentPlayerAbsolute = D_8013B0D8;
 raceFinishFlagAbsolute = D_8013AFD6;
 readPixelRectGp = gReadPixelRect;
 gameOptionPlayerModeGp = D_8013AFCD;
+raceResultsModeGp = D_8013AFE1;
 activeRacePlayerCountGp = D_8013AFD2;
 playerSnapshotTaskGp = D_8013B304;
 gameOptionPlayerModeAbsolute = D_8013AFCD;

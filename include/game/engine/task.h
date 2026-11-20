@@ -59,6 +59,7 @@ extern u16 gTaskResourceFreeBits[16];
 #ifdef TASK_ABSOLUTE_ADDRESSING
 extern GameTask *D_8013AE88 __attribute__((section(".data")));
 extern GameTask *D_8013AE8C __attribute__((section(".data")));
+extern GameTask *D_8013AE90 __attribute__((section(".data")));
 extern GameTask *D_8013AE98 __attribute__((section(".data")));
 extern GameTask *D_8013B304 __attribute__((section(".data")));
 #else

@@ -43,6 +43,9 @@
 #define RACE_SOUND_HEADER ((u8 *)0x80165800)
 #define RACE_PLAYER_SOUND_HEADERS ((u8 (*)[0x1000])0x80167000)
 #define RACE_EXTRA_RESOURCE_BUFFER ((u8 *)0x801F3000)
+#define RACE_PAUSE_START 0x0800
+#define RACE_PAUSE_RESUME_PENDING 0x80
+#define RACE_DEMO_FRAME_LIMIT 946
 
 typedef struct RacePlayerSoundSectorRanges {
     s16 bodySector;
@@ -50,6 +53,9 @@ typedef struct RacePlayerSoundSectorRanges {
     s16 headerSector;
     s16 headerSectorCount;
 } RacePlayerSoundSectorRanges;
+
+const char gRaceVsyncDebugFormat[16]
+    __attribute__((section(".rodata.race_vsync_debug_format"), aligned(4))) = "VSYNC=%4d";
 
 RacePlayerSoundSectorRanges gRacePlayerSoundSectorRanges[10]
     __attribute__((section(".data.race_startup_sector_ranges"))) = {
@@ -176,6 +182,7 @@ extern u8 D_8013B1AB __attribute__((section(".data")));
 extern u16 D_8013AFE8;
 extern u8 D_8013AFCC;
 extern u8 D_8013AFD4;
+extern u8 raceResultsModeGp;
 
 
 void func_800131B4(void);
@@ -186,7 +193,9 @@ void func_8001D89C(void);
 void initializeRaceTaskState(void);
 void resetStateAndBeginResourceLoadTransition(u8 loadResources);
 void initializeRaceRestartTask(void);
-void func_8001C2E0(void);
+void updateActiveRaceTask(void);
+void finishRaceTransitionAfterCountdown(void);
+void func_80043C28(void);
 void func_8001C0DC(void);
 void func_8003DEE0(void);
 s32 func_80014838(TaskCallback callback);
@@ -623,7 +632,7 @@ void initializeRacePresentationTask(void) {
         gRacePlayers[i].unk01C = 0;
         gRacePlayers[i].unk020 = 0;
     }
-    setCurrentTaskCallback(func_8001C2E0);
+    setCurrentTaskCallback(updateActiveRaceTask);
 }
 
 void beginTask60TickCountdown(void) {
@@ -666,7 +675,139 @@ void updateSplitScreenTransitionTask(void) {
     if (--D_8013AE88->data1A == 0) func_800149A8();
 }
 
-INCLUDE_ASM("asm/nonmatchings/engine/task_transitions", func_8001C2E0);
+void updateActiveRaceTask(void) {
+    u16 i;
+    u16 finishedCount;
+    s32 pauseRequested;
+
+    if (D_8013AFD3 & RACE_PAUSE_RESUME_PENDING) {
+        D_8013AFD3 = 0;
+    }
+    func_80040D5C();
+    if (!(D_8013AFE4 & 1) && D_8013B1AB) {
+        D_8013AE88->data18 = 30;
+        configureTaskStateTransition(2, 0, 30);
+        setControllerFlag5(0);
+        setControllerFlag5(1);
+        startCdVolumeFade(103, 26, 0, 1);
+        setCurrentTaskCallback(finishRaceExitAfterCountdown);
+        return;
+    }
+    if (D_8013B1AA) {
+        D_8013AE88->data18 = 30;
+        configureTaskStateTransition(2, 0, 30);
+        if (D_8013AFE2 == 2) {
+            D_8013AEE4 = 0;
+        }
+        setControllerFlag5(0);
+        setControllerFlag5(1);
+        startCdVolumeFade(103, 26, 0, 1);
+        setCurrentTaskCallback(finishRaceExitAfterCountdown);
+        return;
+    }
+
+    updateCpuRacerSpeedControl();
+    finishedCount = 0;
+    for (i = 0; i < D_8013AFCD; i++) {
+        if (gRacePlayers[i].unk128 & 0x40) {
+            finishedCount++;
+        }
+    }
+    if (finishedCount == D_8013AFCD) {
+        queueCdCommand(2, 1);
+        if (D_8013AFE2 == 0) {
+            if (D_8013AFCD == 2) {
+                if (!(gRacePlayers[0].unk100[0] | gRacePlayers[1].unk100[0])) {
+                    return;
+                }
+                func_80014874(beginTask60TickCountdown);
+                if (gRacePlayers[0].unk100[0] < gRacePlayers[1].unk100[0]) {
+                    D_8013AE8C->data18 = 0;
+                } else {
+                    D_8013AE8C->data18 = 1;
+                }
+            }
+            raceResultsModeGp = 1;
+        } else if (D_8013AFCD == 2) {
+            if (!(gRacePlayers[0].unk100[0] | gRacePlayers[1].unk100[0])) {
+                return;
+            }
+            func_8003CAF0();
+            func_80014874(beginTask60TickCountdown);
+            if (gRacePlayers[0].unk100[0] < gRacePlayers[1].unk100[0]) {
+                D_8013AE8C->data18 = 0;
+            } else {
+                D_8013AE8C->data18 = 1;
+            }
+        }
+
+        if (D_8013AFE2 == 2 && (D_8013AEE4 & 2)) {
+            func_80015A30(0);
+        }
+        D_8013AE88->data18 = 60;
+        setCurrentTaskCallback(finishRaceTransitionAfterCountdown);
+        return;
+    }
+
+    if (!(D_8013AFE4 & 1)) {
+        if (D_8013AFD3) {
+            goto pause;
+        }
+        if (!D_8013AFD7) {
+            if (D_8013AFCD == 1) {
+                if ((D_8013AEE8[0] & RACE_PAUSE_START) || !isControllerInputSupported(0)) {
+                    playSoundEffect(0, 0, 32);
+                    D_8013AFD3 = 1;
+                    func_80014930(&gGameTasks[4], func_80043C28);
+                }
+            } else {
+                pauseRequested = 0;
+                if ((D_8013AEE8[0] & RACE_PAUSE_START) || !isControllerInputSupported(0) ||
+                    (D_8013AEE8[1] & RACE_PAUSE_START) || !isControllerInputSupported(1)) {
+                    pauseRequested = 1;
+                }
+                if (pauseRequested) {
+                    playSoundEffect(0, 0, 32);
+                    D_8013AFD3 = ((D_8013AEE8[0] & RACE_PAUSE_START) ||
+                                  !isControllerInputSupported(0)) ? 1 : 2;
+                    func_80014930(&gGameTasks[1], func_80043C28);
+                }
+            }
+        }
+    }
+    if (D_8013AFD3) {
+        goto pause;
+    }
+    if (D_8013AFE2 == 2 && (D_8013AEE4 & 2)) {
+        func_80015A30(0);
+    }
+    if (D_8013AFD7) {
+        if (D_8013AEE4 & 2) {
+            if (gFrameCounter < RACE_DEMO_FRAME_LIMIT) {
+                drawStretchedDebugText(4, 4, gRaceVsyncDebugFormat, gFrameCounter);
+                func_80015A30(0);
+                return;
+            }
+        } else if (gFrameCounter < RACE_DEMO_FRAME_LIMIT &&
+                   !(D_8013AEE8[0] & RACE_PAUSE_START)) {
+            goto continueDemo;
+        }
+        D_8013AE88->data18 = 45;
+        configureTaskStateTransition(2, 0, 45);
+        startCdVolumeFade(103, 40, 0, 1);
+        setCurrentTaskCallback(finishRaceExitAfterCountdown);
+    }
+    return;
+
+continueDemo:
+    playbackControllerInput(0);
+    setTextPalette(0);
+    drawDemonstrationOverlay();
+    return;
+
+pause:
+    D_8013AE88 = D_8013AE90->previous;
+}
 
 void finishRaceTransitionAfterCountdown(void) {
     s16 i;

@@ -1005,7 +1005,6 @@ void SetFogNearFar(s32 near, s32 far, s32 h);
 void drawTaskObject(u16 index);
 void updateMovingTaskObject(void);
 void drawDebugText(s32 x, s32 y, const char *format, ...);
-void drawStretchedDebugText(s32 x, s32 y, const char *format, ...);
 void func_8006BEEC(s32 enabled);
 void func_8006C970(s32 enabled);
 void func_80063B58(void);

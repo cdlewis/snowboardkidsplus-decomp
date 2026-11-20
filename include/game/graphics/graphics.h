@@ -390,6 +390,7 @@ void drawStretchedTexturedQuadByIndexWithBlend(s16 x, s16 y, s16 width, s16 heig
 void drawTexturedQuadList(s16 x, s16 y, TexturedQuadListEntry *entry, s16 blend, GsOT *ot, u16 depth);
 
 void drawDemonstrationOverlay(void);
+void drawStretchedDebugText(s32 x, s32 y, const char *format, ...);
 void drawUppercaseProportionalText(s16 x, s16 y, s16 count, const char *text, s16 palette,
                    s16 blend, GsOT *ot, u16 depth);
 
