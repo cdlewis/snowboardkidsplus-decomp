@@ -138,7 +138,7 @@ void func_800815D0(void);
 void initializeDualResourceTaskAndResetByteState(void);
 void adjustGroupedIndexForMode(s16 mode, u8 *index);
 void func_8007F630(void);
-void func_80081DF0(void);
+void updateRegisteredTripletTask(void);
 void func_800816D8(void);
 
 void initializeModeDependentDualResourceTask(void);

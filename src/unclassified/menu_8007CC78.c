@@ -90,6 +90,7 @@ extern u8 D_801300A0[][5];
 extern u8 D_8013B44C[];
 extern u16 gSaveRecordProgressCurrencyLabel[2];
 extern char gSelectionPrizeCurrencyLabel[] __attribute__((section(".data")));
+extern const char gRegisteredTripletUnavailableLabel[];
 
 s16 func_8007E8CC(const u8 *mapping, s16 index);
 void updateRegisteredPlayerModelTask(void);
@@ -709,7 +710,7 @@ static inline RegisteredTaskEntry *getRegisteredTripletEntry(u16 resource, s32 i
 void createRegisteredTripletTask(s32 x, s32 y, s32 offsetX, s32 offsetY, ByteTriplet *records, u8 *indices, s32 depth, s32 index) {
     RegisteredTripletData *data;
     RegisteredTaskEntry *entry;
-    func_80014874(func_80081DF0);
+    func_80014874(updateRegisteredTripletTask);
     D_8013AE8C->data1A = 0;
     D_8013AE8C->data1C = depth;
     D_8013AE8C->data1E = index;
@@ -733,7 +734,125 @@ void createRegisteredTripletTask(s32 x, s32 y, s32 offsetX, s32 offsetY, ByteTri
     entry->task = D_8013AE8C;
 }
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_80081DF0);
+void updateRegisteredTripletTask(void) {
+    Movement2D *position;
+    RegisteredTripletData *data;
+    RegisteredTaskEntry *entry;
+    RegisteredTaskEntry *entries;
+    HalfwordPair *selection;
+    ByteTriplet *values;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        for (;;) {}
+    }
+    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) {
+        for (;;) {}
+    }
+    data = (RegisteredTripletData *)&D_800D9504[D_8013AE88->resource16];
+    if ((u16)(D_8013AE88->data1E % 10U) == 0) {
+        if (D_8013AE98->resource14 == 0xFFFF) {
+            for (;;) {}
+        }
+        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource14];
+        entry = &entries[D_8013AE88->data1E / 10U];
+    } else {
+        if (D_8013AE98->resource16 == 0xFFFF) {
+            for (;;) {}
+        }
+        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource16];
+        entry = &entries[D_8013AE88->data1E / 10U];
+    }
+    if (D_8013AE98->resource14 == 0xFFFF) {
+        for (;;) {}
+    }
+    selection = (HalfwordPair *)&D_800D9504[D_8013AE98->resource14];
+
+    {
+        s16 command = entry->command;
+        if (command == 21) goto modeTwo;
+        if (command < 22) {
+            if (command == 0) goto clearFlags;
+            if (command == 20) goto modeOne;
+            goto remove;
+        }
+        if (command == 23) goto hide;
+        if (command < 23) goto modeThree;
+        goto remove;
+    }
+
+modeOne:
+    D_8013AE88->data1A = 1;
+    goto clearCommand;
+modeTwo:
+    D_8013AE88->data1A = 2;
+    goto clearCommand;
+modeThree:
+    D_8013AE88->data1A = 3;
+    goto clearCommand;
+hide:
+    D_8013AE88->data1A = 0;
+clearCommand:
+    entry->command = 0;
+clearFlags:
+    entry->flags = 0;
+    goto update;
+
+remove:
+    entry->task = 0;
+    func_800149A8();
+    return;
+
+update:
+    entry->flags |= updateMovement2D(position);
+    if (D_8013AE88->data1A == 0) {
+        return;
+    }
+    if ((u32)(D_8013AE88->data1A - 1) < 2) {
+        setSpriteColor(D_8013B3A4, D_8013B3A5, D_8013B3A6);
+    } else {
+        setSpriteColor(128, 128, 128);
+    }
+    if (data->records == 0 || data->indices == 0) {
+        return;
+    }
+    values = lookupByteTriplet(data->records, data->indices, selection->unk_02);
+    if (!values->bytes[0] && !values->bytes[1] && !values->bytes[2]) {
+        return;
+    }
+
+    func_8006C998(position->x / 4096, position->y / 4096, 30, 1, -1,
+                  &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    func_8006C998(position->x / 4096 + data->offsetX, position->y / 4096 + data->offsetY,
+                  31, 1, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    func_8006C998(data->offsetX * 2 + position->x / 4096, data->offsetY * 2 + position->y / 4096,
+                  32, 1, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+
+    if (values->bytes[0] == 255) {
+        drawWrappedText8x8(position->x / 4096 + 56, position->y / 4096, 2, gRegisteredTripletUnavailableLabel,
+                           6, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    } else {
+        drawHalfStepSpriteBar(position->x / 4096 + 56, position->y / 4096, values->bytes[0],
+                              5, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    }
+    if (values->bytes[1] == 255) {
+        drawWrappedText8x8((s16)(position->x / 4096 + 56) + data->offsetX, position->y / 4096 + data->offsetY,
+                           2, gRegisteredTripletUnavailableLabel, 6, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    } else {
+        drawHalfStepSpriteBar((s16)(position->x / 4096 + 56) + data->offsetX, position->y / 4096 + data->offsetY,
+                              values->bytes[1], 5, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    }
+    if (values->bytes[2] == 255) {
+        drawWrappedText8x8(data->offsetX * 2 + (s16)(position->x / 4096 + 56), data->offsetY * 2 + position->y / 4096,
+                           2, gRegisteredTripletUnavailableLabel, 6, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    } else {
+        drawHalfStepSpriteBar(data->offsetX * 2 + (s16)(position->x / 4096 + 56), data->offsetY * 2 + position->y / 4096,
+                              values->bytes[2], 5, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    }
+}
+
+const char gRegisteredTripletUnavailableLabel[4]
+    __attribute__((section(".data.registered_triplet_unavailable_label"), aligned(4))) = "\x81\x48";
 
 void createRegisteredPlayerModelTask(s16 slot, s16 selection, s16 modelIndex,
                                      s16 x, s16 y, s16 z, s32 index) {
