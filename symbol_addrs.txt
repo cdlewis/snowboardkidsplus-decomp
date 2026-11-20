@@ -3302,6 +3302,11 @@ drawMovingLineTask = 0x8004F46C; // type:func
 initializeMovingVisualTask = 0x8005D1B0; // type:func
 gMovingVisualPlacements = 0x80129964; // size:0xB4
 
+updateCpuRacerSpeedControl = 0x8005EFA0; // type:func
+gCpuSpeedModesSoloFirst = 0x8013B2D4; // size:0x4 defined:true
+gCpuSpeedModesSoloSecond = 0x8013B2D8; // size:0x4 defined:true
+gCpuSpeedModesSoloThird = 0x8013B2DC; // size:0x4 defined:true
+gCpuSpeedModesSoloFourth = 0x8013B2E0; // size:0x4 defined:true
 updateCurrentPlayerCourseTrigger = 0x8005F46C; // type:func
 gCourse0Triggers = 0x8012BC54; // size:0x20
 gCourse1Triggers = 0x8012BC74; // size:0x10

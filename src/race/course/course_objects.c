@@ -24,6 +24,11 @@ typedef struct ProximityParticleResource {
     u8 unkD2[0x2E];
 } ProximityParticleResource;
 
+u8 gCpuSpeedModesSoloFirst[4] __attribute__((section(".data.cpu_speed_modes"))) = { 1, 0, 2, 0 };
+u8 gCpuSpeedModesSoloSecond[4] __attribute__((section(".data.cpu_speed_modes"))) = { 0, 1, 2, 0 };
+u8 gCpuSpeedModesSoloThird[4] __attribute__((section(".data.cpu_speed_modes"))) = { 0, 1, 2, 0 };
+u8 gCpuSpeedModesSoloFourth[4] __attribute__((section(".data.cpu_speed_modes"))) = { 0, 2, 1, 0 };
+
 TaskVisualFrame gInteractionVisualFrame __attribute__((section(".data.interaction_visual_frame"))) = {
     0xC0, 0x20, 0x20, 0x20, 0x1C, 0x3D7F
 };
@@ -1536,7 +1541,155 @@ void copySlot26TransformToCurrentTaskObject(void) {
     setCurrentTaskCallback(updateAndDrawCurrentTaskObject);
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/course/course_objects", func_8005EFA0);
+void updateCpuRacerSpeedControl(void) {
+    s32 i, j;
+    s32 firstMode, secondMode;
+    u8 playerMode;
+    s32 order[4];
+
+    if (D_8013AFE2) {
+        return;
+    }
+
+    /* The original builds this standings order before assigning speed modes. */
+    order[0] = 0;
+    order[1] = 1;
+    order[2] = 2;
+    order[3] = 3;
+    for (i = 0; i < 3; i++) {
+        for (j = i; j < 4; j++) {
+            s32 first = order[i];
+            s32 next = order[j];
+            if (gRacePlayers[first].unk935 > gRacePlayers[next].unk935) {
+                order[i] = next;
+                order[j] = first;
+            }
+        }
+    }
+
+    i = 3;
+    playerMode = D_8013AFCD;
+    secondMode = 2;
+    firstMode = 1;
+    if (playerMode == firstMode) {
+        i = 0;
+        if (gRacePlayers[0].unk935 == 0) {
+            for (j = 0; j < 4; j++) {
+                if (gRacePlayers[j].unk008) {
+                    u8 mode = gCpuSpeedModesSoloFirst[i++];
+                    gRacePlayers[j].speedControlTarget = 0;
+                    gRacePlayers[j].speedControlMode = mode;
+                }
+            }
+        }
+        i = 0;
+        if (gRacePlayers[0].unk935 == 1) {
+            for (j = 0; j < 4; j++) {
+                if (gRacePlayers[j].unk008) {
+                    u8 mode = gCpuSpeedModesSoloSecond[i++];
+                    gRacePlayers[j].speedControlTarget = 0;
+                    gRacePlayers[j].speedControlMode = mode;
+                }
+            }
+        }
+        i = 0;
+        if (gRacePlayers[0].unk935 == 2) {
+            for (j = 0; j < 4; j++) {
+                if (gRacePlayers[j].unk008) {
+                    u8 mode = gCpuSpeedModesSoloThird[i++];
+                    gRacePlayers[j].speedControlTarget = 0;
+                    gRacePlayers[j].speedControlMode = mode;
+                }
+            }
+        }
+        i = 0;
+        if (gRacePlayers[0].unk935 == 3) {
+            for (j = 0; j < 4; j++) {
+                if (gRacePlayers[j].unk008) {
+                    u8 mode = gCpuSpeedModesSoloFourth[i++];
+                    gRacePlayers[j].speedControlTarget = 0;
+                    gRacePlayers[j].speedControlMode = mode;
+                }
+            }
+        }
+    } else {
+        RacePlayer *players = gRacePlayers;
+        if (players[0].unk935 <= players[1].unk935) {
+            if (players[1].unk935 == i) {
+                if (players[2].unk935 <= players[3].unk935) {
+                    players[2].speedControlMode = secondMode;
+                    players[3].speedControlMode = firstMode;
+                } else {
+                    players[2].speedControlMode = firstMode;
+                    players[3].speedControlMode = secondMode;
+                }
+            } else {
+                if (players[2].unk935 <= players[3].unk935) {
+                    players[2].speedControlMode = firstMode;
+                    players[3].speedControlMode = secondMode;
+                } else {
+                    players[2].speedControlMode = secondMode;
+                    players[3].speedControlMode = firstMode;
+                }
+            }
+            gRacePlayers[2].speedControlTarget = 1;
+            gRacePlayers[3].speedControlTarget = 1;
+        } else {
+            if (players[0].unk935 == i) {
+                if (players[2].unk935 <= players[3].unk935) {
+                    goto assignSecondMode;
+                }
+            } else {
+                if (players[2].unk935 > players[3].unk935) {
+                    goto assignSecondMode;
+                }
+            }
+            players[2].speedControlMode = firstMode;
+            players[3].speedControlMode = secondMode;
+            goto setTargetPlayer;
+
+assignSecondMode:
+            players[2].speedControlMode = secondMode;
+            players[3].speedControlMode = firstMode;
+
+setTargetPlayer:
+            gRacePlayers[2].speedControlTarget = 0;
+            gRacePlayers[3].speedControlTarget = 0;
+        }
+    }
+
+    for (i = 0; i < D_8013AFD2; i++) {
+        RacePlayer *player = &gRacePlayers[i];
+        if (player->unk008) {
+            switch (player->speedControlMode) {
+            case 0:
+                player->speedControlState = 0;
+                break;
+            case 1: {
+                RacePlayer *target = &gRacePlayers[player->speedControlTarget];
+                s32 dx, dz;
+                player->speedControlState = 0;
+                dx = target->x - player->x;
+                dz = target->z - player->z;
+                if (dx >= 0x140000 || dx <= -0x140000 || dz >= 0x140000 || dz <= -0x140000) {
+                    if (gRacePlayers[player->speedControlTarget].unk935 < player->unk935) {
+                        player->speedControlState = 1;
+                    } else {
+                        player->speedControlState = 2;
+                    }
+                }
+                break;
+            }
+            case 2:
+                player->speedControlState = 3;
+                break;
+            }
+            if (player->characterId == 8 || player->characterId == 9) {
+                player->speedControlState = 0;
+            }
+        }
+    }
+}
 
 void updateCurrentPlayerCourseTrigger(void) {
     s32 i = 0;

@@ -169,7 +169,9 @@ struct RacePlayer {
     s32 unk94C;
     u8 unk950[4];
     u8 unk954;
-    u8 unk955[3];
+    s8 speedControlMode;
+    u8 speedControlState;
+    s8 speedControlTarget;
     u8 itemUseCooldown;
     s8 projectileUseCooldown;
     s16 collectedCourseCoinMarkerCount;
@@ -328,6 +330,7 @@ void startRacePlayerTasks(void);
 s16 func_8003D904(u16 player);
 s16 func_8002D3C4(s16 value);
 
+void updateCpuRacerSpeedControl(void);
 void updateCurrentPlayerCourseTrigger(void);
 void updateCurrentPlayerProjectileUse(u16 playerIndex);
 
