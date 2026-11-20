@@ -2,12 +2,52 @@
 #include "game/menu/selected_sprite.h"
 #include "game/menu/task_widgets.h"
 
+typedef struct ModeSelectionInput {
+    s16 unk00;
+    s16 selection;
+    s16 previousSelection;
+    s16 confirmed;
+} ModeSelectionInput;
+
+typedef struct ModeSelectionState {
+    ModeSelectionInput input;
+    s16 unk08;
+    s16 idleFrames;
+    s16 selectionFrames;
+    s16 promptState;
+    s16 selectionDelay;
+} ModeSelectionState;
+
 extern const u8 D_80123B50[];
 extern const u8 D_8013B0FC[];
 extern TexturedQuadListEntry D_80123850[];
 extern TexturedQuadListEntry D_801239D0[];
 extern TexturedQuadListEntry D_80123910[];
 extern TexturedQuadListEntry D_80123A90[];
+
+extern s32 D_8013B100;
+extern u8 D_8013B110;
+
+const char gTitleScreenStartPrompt[16]
+    __attribute__((section(".rodata.title_screen_start_prompt"), aligned(4))) = "PUSH START";
+
+const u32 gTitleMenuJumpTablePadding
+    __attribute__((section(".rodata.title_menu_jump_table_padding"))) = 0;
+
+const GridSpriteEntry gTitleMenuSprites[6]
+    __attribute__((section(".data.title_menu_sprites"), aligned(4))) = {
+    {0x52, 7, {0, 0, 0}},
+    {0x53, 7, {0, 0, 0}},
+    {0x54, 7, {0, 0, 0}},
+    {0x55, 8, {0, 0, 0}},
+    {0x56, 8, {0, 0, 0}},
+    {0x57, 8, {0, 0, 0}},
+};
+
+const u8 gTitleMenuSpriteMapping[8]
+    __attribute__((section(".data.title_menu_sprite_mapping"), aligned(4))) = {
+    0, 1, 2, 3, 4, 5,
+};
 
 TexturedQuadListEntry *gRegisteredTaskQuadLists[4]
     __attribute__((section(".data.registered_task_quad_lists"))) = {
@@ -44,6 +84,8 @@ const u16 *gRegisteredPlayerModePanelTexts[3]
     gRegisteredPlayerModePanelText0, gRegisteredPlayerModePanelText1, gRegisteredPlayerModePanelText2
 };
 
+void func_80035CF8(void);
+void func_800309EC(s32, s32);
 void updatePlayerModeSelectionTask(void);
 void func_80032280(s16 x, s16 y, s32 depth, s32 index);
 
@@ -149,7 +191,7 @@ void initializeMenuTransitionResourcesTask(void) {
         setCurrentTaskCallback(waitMode2TransitionTask);
         D_8013AE88->unk10 |= 2;
     } else {
-        setCurrentTaskCallback(func_800302F8);
+        setCurrentTaskCallback(updateTitleScreenMenuTask);
     }
 }
 
@@ -162,13 +204,171 @@ void waitMode2TransitionTask(void) {
     case 1:
         if (func_800707F0(0) == 0) {
             D_8013AE88->data18 = 0;
-            setCurrentTaskCallback(func_800302F8);
+            setCurrentTaskCallback(updateTitleScreenMenuTask);
         }
         break;
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/mode_transitions", func_800302F8);
+void updateTitleScreenMenuTask(void) {
+    ModeSelectionState *state;
+    SelectedTaskEntry *entries;
+    ModeSelectionInput *input;
+    u16 countdown;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        for (;;) {}
+    }
+    state = (ModeSelectionState *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) {
+        for (;;) {}
+    }
+    entries = (SelectedTaskEntry *)&D_800D9504[D_8013AE88->resource16];
+    input = &state->input;
+
+    switch (D_8013AE88->data18) {
+    case 0:
+        func_80035CF8();
+        setMusicSequenceEnabled(0);
+        setSecondaryDisplayTaskMode(0);
+        configureTaskStateTransition(11, 0, 30);
+        D_8013B100 = 0;
+        D_8013AE88->data1A = 15;
+        D_8013AE88->data18 = 1;
+        break;
+    case 1:
+        func_800309EC(4, 1);
+        D_8013AE88->data18 = 2;
+        break;
+    case 2:
+        if (entries[0].unk06 != 0) {
+            break;
+        }
+        input->unk00 = 0;
+        input->confirmed = 0;
+        input->previousSelection = input->selection = D_8013B110;
+        createRegisteredSpacedChildTasks(1, 0x8B0, 0, (const u8 *)gTitleMenuSprites, gTitleMenuSpriteMapping,
+                                        0, 1, 0, 0, 316, 48, 0, 15, 3, 0,
+                                        drawSelectedTaskSideMarkerSprite,
+                                        drawRegisteredTaskGridSpriteWithDefaultBlend, 3, 11);
+        D_8013AE88->data18 = 3;
+        break;
+    case 3:
+        if (entries[1].unk06 != 0) {
+            break;
+        }
+        entries[1].unk04 = 23;
+        state->selectionDelay = 150;
+        state->idleFrames = 0;
+        state->selectionFrames = 0;
+        D_8013AE88->data18 = 4;
+        break;
+    case 4:
+        if (D_8013AE88->data1A == 0) {
+            if (input->selection != input->previousSelection) {
+                input->previousSelection = input->selection;
+                state->selectionFrames = 0;
+            }
+            if (state->idleFrames >= 1290) {
+                if (state->selectionFrames >= state->selectionDelay) {
+                    D_8013B10A++;
+                    if (D_8013B10A >= 10) {
+                        D_8013B10A = 0;
+                    }
+                    if (D_8013B10A & 1) {
+                        D_8013B109 = 2;
+                        D_8013AFD7 = (D_8013B10A >> 1) + 1;
+                    } else {
+                        D_8013B109 = 0;
+                        D_8013AFD7 = 0;
+                    }
+                    D_8013B110 = 0;
+                    D_8013B108 = 2;
+                    configureTaskStateTransition(2, 0, 30);
+                    input->confirmed = 1;
+                    D_8013AE88->data18 = 7;
+                    break;
+                } else {
+                    state->selectionFrames++;
+                }
+            } else {
+                state->idleFrames++;
+            }
+        }
+        if (input->confirmed != 0 && entries[1].unk06 == 0) {
+            configureTaskStateTransition(2, 0, 30);
+            startCdVolumeFade(103, 20, 0, 1);
+            D_8013AE88->data18 = 5;
+        }
+        break;
+    case 5:
+        if (func_800707F0(0)) {
+            break;
+        }
+        switch (input->selection) {
+        case 0:
+            D_8013B108 = 3;
+            break;
+        case 1:
+            D_8013B108 = 25;
+            break;
+        case 2:
+            D_8013B108 = 26;
+            break;
+        }
+        resetPendingCdRequests();
+        D_8013B110 = input->selection;
+        D_8013AE88->data18 = 8;
+        break;
+    case 7:
+        if (!func_800707F0(0)) {
+            D_8013AE88->data18 = 8;
+        }
+        break;
+    case 8:
+    default:
+        resetPendingCdRequests();
+        func_800149A8();
+        return;
+    }
+
+    if (D_8013B100 < 41) {
+        if (D_8013B100 > 0) {
+            D_8013B100++;
+        }
+    } else {
+        countdown = D_8013AE88->data1A;
+        if (countdown > 1) {
+            D_8013AE88->data1A = countdown - 1;
+        } else if (countdown == 1) {
+            queueCdCommand(0, 1);
+            D_8013AE88->data1A--;
+        }
+    }
+    if (D_8013AE88->data18 >= 4) {
+        if (state->promptState != 0) {
+            if (state->promptState == 1) {
+                initializeSpacedTaskGridPositions(0, entries[1].task, -0x2C000, 0x30000, 0, 0x10000);
+                entries[1].unk04 = 22;
+                state->promptState = 2;
+                state->selectionDelay = 450;
+            }
+            setSpriteColor(128, 128, 128);
+            func_8007240C(-72, 44, 144, 54, 128, 128, 128, 2, &D_800EBFF0[D_8013AF78], 4);
+        } else {
+            if (gFrameCounter & 8) {
+                setSpriteColor(128, 128, 128);
+                drawUppercaseProportionalText(-40, 62, 20, gTitleScreenStartPrompt, 2, -1, &D_800EBFF0[D_8013AF78], 4);
+            }
+            if (D_8013AEE8[0] & 0x800) {
+                playSoundEffect(0, 0, 32);
+                state->promptState = 1;
+            }
+        }
+        func_8006C998(-72, 96, 53, 10, -1, &D_800EBFF0[D_8013AF78], 4);
+    }
+    drawFullScreenTexturedBackground();
+}
 
 void drawFullScreenTexturedBackground(void) {
     setSpriteColor(128, 128, 128);

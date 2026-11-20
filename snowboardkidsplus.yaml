@@ -86,10 +86,11 @@ segments:
       - {start: 0xECC, type: .rodata, name: race/player/player_actions, linker_section: .rodata.player_projectile_use}
       - {start: 0xEE0, type: .rodata, name: race/player/player_actions, linker_section: .rodata.player_projectile_use_padding}
       - {start: 0xEE4, type: .rodata, name: race/player/player_actions, linker_section: .rodata.player_item_use}
-      - [0xEFC, rodata]
+      - {start: 0xEFC, type: .rodata, name: menu/mode_transitions, linker_section: .rodata.title_screen_start_prompt}
       - [0xF0C, .rodata, graphics/background_resources]
       - [0x1024, .rodata, menu/mode_transitions]
-      - [0x1090, rodata]
+      - {start: 0x10B8, type: .rodata, name: menu/mode_transitions, linker_section: .rodata.title_menu_jump_table_padding}
+      - [0x10BC, rodata]
       - {start: 0x10FC, type: .rodata, name: menu/mode_transitions, linker_section: .rodata.player_mode_selection}
       - [0x121C, rodata]
       - {start: 0x123C, type: .rodata, name: race/player/player_actions, linker_section: .rodata.demonstration_overlay}
@@ -699,7 +700,8 @@ segments:
       - {start: 0x113E60, type: .data, name: engine/task_transitions, linker_section: .data.player_resource_texture_selections}
       - {start: 0x113E80, type: .data, name: race/player/player_update, linker_section: .data.player_variant_attributes}
       - {start: 0x113F90, type: .data, name: race/player/player_update, linker_section: .data.player_character_attributes}
-      - [0x11401C, data, player_attributes_tail]
+      - {start: 0x11401C, type: .data, name: menu/mode_transitions, linker_section: .data.title_menu_sprites}
+      - [0x114040, data, player_attributes_tail]
       - {start: 0x114368, type: .data, name: menu/mode_transitions, linker_section: .data.registered_task_quad_lists}
       - {start: 0x114378, type: .data, name: menu/mode_transitions, linker_section: .data.registered_player_mode_panel_text}
       - {start: 0x114434, type: .data, name: race/player/player_actions, linker_section: .data.player_mode_messages}
@@ -919,6 +921,8 @@ segments:
       - [0x12B7B4, data, 12B7B4]
       - {start: 0x12B8DC, type: .data, name: race/player/player_actions, linker_section: .data.player_sound_variants}
       - [0x12B8E4, data, 12B8E4]
+      - {start: 0x12B8F4, type: .data, name: menu/mode_transitions, linker_section: .data.title_menu_sprite_mapping}
+      - [0x12B8FC, data, 12B8FC]
       - {start: 0x12B914, type: .data, name: race/player/player_actions, linker_section: .data.falling_paired_visual_animation}
       - [0x12B91A, pad]
       - {start: 0x12B91C, type: .data, name: race/player/player_actions, linker_section: .data.result_icon_palettes}

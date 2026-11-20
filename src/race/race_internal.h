@@ -540,7 +540,7 @@ void queueMode11TransitionResources(void);
 void dispatchMode11TransitionTask(void);
 void func_80030108(void);
 void initializeBackgroundCameraTask(void);
-void func_800302F8(void);
+void updateTitleScreenMenuTask(void);
 void updateRepeatedSoundTask(void);
 void waitUnlockNotification0TransitionTask(void);
 void func_80032F3C(void);
