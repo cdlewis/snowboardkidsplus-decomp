@@ -3,6 +3,7 @@
 #include "common.h"
 
 void advanceCurrentPlayerTaskPhaseMovement(void);
+void updateCurrentPlayerTaskLapTransition(void);
 void updateCurrentPlayerMotionEffects(void);
 void updateCurrentPlayerPartTransforms(void);
 

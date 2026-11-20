@@ -7,7 +7,9 @@
 typedef struct SelectedCourseRecord {
     u16 unk00;
     u16 unk02;
-    u32 unk04[4];
+    s16 unk04;
+    u16 unk06;
+    s32 unk08, unk0C, unk10;
     u16 unk14;
     u16 unk16;
     u32 unk18[8];

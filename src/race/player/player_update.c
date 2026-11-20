@@ -23,6 +23,7 @@
 #include "psx/libsnd.h"
 #include "player_update_internal.h"
 #include "game/io/dat_resources.h"
+#include "../race_presentation_internal.h"
 
 
 typedef struct PlayerVariantAttributeTable {
@@ -113,7 +114,6 @@ void moveCurrentPlayerToTaskTarget(void);
 void advanceCurrentPlayerTaskOnAnimationFlag(void);
 void updateCurrentPlayerTaskDecelerationSteps(void);
 void func_80025FAC(void);
-void func_800260E4(void);
 void moveCurrentPlayerForwardUntilState22(void);
 void updateCurrentPlayerState30TaskUntilStopped(void);
 void func_80028680(void);
@@ -124,7 +124,7 @@ s16 func_8002D3C4(s16 value);
 TaskCallback gCurrentPlayerTaskPhaseCallbacks[8]
     __attribute__((section(".data.player_task_phases"))) = {
     moveCurrentPlayerToTaskTarget, advanceCurrentPlayerTaskOnAnimationFlag, updateCurrentPlayerTaskJumpAndSpawnCourseOffset, updateCurrentPlayerTaskDecelerationSteps,
-    func_80025FAC, advanceCurrentPlayerTaskPhaseMovement, func_800260E4, moveCurrentPlayerForwardUntilState22
+    func_80025FAC, advanceCurrentPlayerTaskPhaseMovement, updateCurrentPlayerTaskLapTransition, moveCurrentPlayerForwardUntilState22
 };
 
 
@@ -1230,7 +1230,94 @@ void advanceCurrentPlayerTaskPhaseMovement(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_800260E4);
+void updateCurrentPlayerTaskLapTransition(void) {
+    RacePlayer *player;
+    RacePlayer *movingPlayer;
+    RacePlayer *placedPlayer;
+    RacePlayer *phasePlayer;
+    const SelectedCourseRecord *course;
+    GameTask *task;
+    s16 segment;
+
+    if (D_8013B0D8->unk090 > 0) {
+        if (D_8013B0D8->unk090 < 0x2800) {
+            D_8013B0D8->unk090 += 0x80;
+        }
+        D_8013AF90->vx = 0x100;
+        D_8013AF90->vy = D_8013B0D8->unk110;
+        D_8013AF90->vz = 0;
+    } else {
+        if (D_8013B0D8->unk090 >= -0x27FF) {
+            D_8013B0D8->unk090 -= 0x80;
+        }
+        D_8013AF90->vx = -0x100;
+        D_8013AF90->vy = D_8013B0D8->unk110;
+        D_8013AF90->vz = 0;
+    }
+    RotMatrixYXZ(D_8013AF90, D_8013AF98);
+    D_8013AF90->vx = 0;
+    D_8013AF90->vy = 0;
+    D_8013AF90->vz = D_8013B0D8->unk090;
+    ApplyMatrix(D_8013AF98, D_8013AF90, D_8013AF88);
+    movingPlayer = D_8013B0D8;
+    movingPlayer->x += D_8013AF88->vx;
+    movingPlayer->y += D_8013AF88->vy;
+    movingPlayer->z += D_8013AF88->vz;
+    if (--movingPlayer->unk08C == 0) {
+        D_8013AE88->data1A++;
+        movingPlayer->unk0B6 = D_80123D80[D_8013AFCE].unk14;
+        movingPlayer->unk110 = movingPlayer->unk0BE = movingPlayer->unk0B6 + 0x400;
+        D_8013AF90->vx = 0;
+        D_8013AF90->vy = movingPlayer->unk110;
+        D_8013AF90->vz = 0;
+        RotMatrix(D_8013AF90, D_8013AF98);
+        D_8013AF88->vx = 0;
+        D_8013AF88->vy = 0;
+        D_8013AF88->vz = -0x28000;
+        ApplyMatrixLV(D_8013AF98, D_8013AF88, (VECTOR *)&D_8013B0D8->x);
+        course = &D_80123D80[D_8013AFCE];
+        placedPlayer = D_8013B0D8;
+        placedPlayer->x += course->unk08;
+        placedPlayer->y += course->unk0C - 0x2000;
+        placedPlayer->z += course->unk10;
+        segment = course->unk04;
+        placedPlayer->unk934++;
+        placedPlayer->unk92E = segment;
+        /* Preserve the complete four-word position vector. */
+        *(VECTOR *)&D_8013B0D8->unk050 = *(VECTOR *)&D_8013B0D8->x;
+        phasePlayer = D_8013B0D8;
+        phasePlayer->unk08C = 40;
+        phasePlayer->animationFlags &= ~0x10;
+        phasePlayer->unk128 &= ~0x04000400;
+        if (D_8013B0D8->unk008 == 0) {
+            PlayerCamera *cameras = D_801241E8;
+            cameras[D_8013AE88->data18].unk16 = 7;
+            task = D_8013AE88;
+            cameras[task->data18].yaw = D_8013B0D8->unk110;
+            cameras[task->data18].pitch = 0;
+            cameras[task->data18].unk18 = D_8013B0D8->unk92E;
+            updatePlayerCameraPosition(task->data18);
+            clampPlayerCameraHeight(D_8013AE88->data18);
+            if (D_8013AE88->data18 == 0) {
+                configureTaskStateTransition(1, 0x1000, 60);
+            } else {
+                configureTaskStateTransition(1, 0x2000, 60);
+            }
+            if (D_8013B0D8->unk934 >= selectedFinishLapCountAbsolute - 1) {
+                func_80014874(initializeTaskMotionResource);
+                D_8013AE8C->data18 = D_8013AE88->data18;
+            }
+        }
+    }
+    player = D_8013B0D8;
+    if (player->unk08C == 60 && player->unk008 == 0) {
+        if (D_8013AE88->data18 == 0) {
+            configureTaskStateTransition(2, 0x1000, player->unk08C);
+        } else {
+            configureTaskStateTransition(2, 0x2000, player->unk08C);
+        }
+    }
+}
 
 void moveCurrentPlayerForwardUntilState22(void) {
     RacePlayer *player;
