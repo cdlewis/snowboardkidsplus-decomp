@@ -45,7 +45,7 @@ void drawFirstPlayerStatusHud(void) {
     s32 palette;
     setSpriteColor(128, 128, 128);
     player = gRacePlayers;
-    drawMenuKindSprite(-32, -96, (s8)player->unk936[8], (s8)player->unk936[10], ot, 1);
+    drawMenuKindSprite(-32, -96, player->unk93E, player->unk940, ot, 1);
     drawPaletteMappedIcon(0, -96, (s8)player->heldItem, ot, 1);
     frame = (s16)gFrameCounter % 12;
     func_8006C998(120, 80, (s16)(frame / 2) + 472, 7, -1, ot, 1);

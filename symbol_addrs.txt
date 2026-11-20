@@ -151,6 +151,7 @@ adjustGroupedIndexForMode = 0x800811E0; // type:func
 getGroupedIndexBase = 0x80081244; // type:func
 
 startPlayerTimerTask = 0x8002E5D8; // type:func
+updateCurrentPlayerProjectileUse = 0x8002E644; // type:func
 updateCurrentPlayerItemUse = 0x8002EA0C; // type:func
 initPlayerTimerTask = 0x80048668; // type:func
 updatePlayerTimerTask = 0x80048714; // type:func
@@ -1908,6 +1909,7 @@ runTaskResource14Update = 0x800A3D5C; // type:func
 
 getPlayerCourseProgress = 0x8002B3F4; // type:func
 gPlayerCourseProgressTablePadding = 0x80010658; // size:0x4 defined:true
+gPlayerProjectileUseTablePadding = 0x800106E0; // size:0x4 defined:true
 arePositionsWithinXZRange = 0x8002BF3C; // type:func
 resolvePlayerCollisionsWithCylinder = 0x8002BF88; // type:func
 
@@ -3478,6 +3480,7 @@ gControllerEffectDefinitions = 0x8012D36C; // type:ControllerEffectDefinition si
 
 // Four race players, each with the 0x9DC-byte player-loop stride.
 gRacePlayers = 0x80120E90; // size:0x2770
+gPlayerProjectileBounceChoices = 0x80123620; // size:0x20 defined:true
 drawStatsMenuMoneyValues = 0x8003AD48; // type:func
 
 drawDecimalNumber8x8 = 0x8006D66C; // type:func

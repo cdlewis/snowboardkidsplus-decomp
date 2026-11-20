@@ -155,6 +155,17 @@ const char gComputerPlayerLabel[4] __attribute__((section(".data.result_row_labe
 const u32 gPlayerCourseProgressTablePadding
     __attribute__((section(".rodata.player_course_progress_padding"))) = 0;
 
+u8 gPlayerProjectileBounceChoices[4][8]
+    __attribute__((section(".data.player_projectile_bounce_choices"), aligned(4))) = {
+        {1, 1, 1, 1, 1, 1, 1, 1},
+        {1, 1, 1, 1, 1, 0, 0, 0},
+        {1, 1, 1, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0}
+    };
+
+const u32 gPlayerProjectileUseTablePadding
+    __attribute__((section(".rodata.player_projectile_use_padding"))) = 0;
+
 RaceTime gRaceElapsedTime = {0, 0, 0};
 
 void getPlayerCourseProgress(u16 playerIndex, s32 *progress, s32 *distance) {
@@ -844,7 +855,105 @@ void startPlayerTimerTask(RacePlayer *player) {
 }
 
 
-INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002E644);
+void updateCurrentPlayerProjectileUse(u16 playerIndex) {
+    s32 activate = 0;
+
+    if (!D_8013B0D8->unk008) {
+        activate = ((u8)D_8013AEE8[D_8013AE88->data18]) >> 7;
+    } else {
+        if (D_8013B0D8->projectileUseCooldown == 0) {
+            D_8013B0D8->projectileUseCooldown = 10;
+            if ((u8)randomNextMain() <= D_8013B0D8->unk02C[1]) {
+                activate = 1;
+            }
+        } else {
+            D_8013B0D8->projectileUseCooldown--;
+        }
+
+        if (!activate) {
+            return;
+        }
+
+        if (!D_8013B0D8->unk940) {
+            goto tryActivation;
+        }
+        {
+            s32 i = 0;
+
+            /* CPU players check for a nearby human in their forward arc. */
+            activate = i;
+            for (; i < D_8013AFD2; i++) {
+                if (!gRacePlayers[i].unk008) {
+                    s32 dx = gRacePlayers[i].x - D_8013B0D8->x;
+                    s32 dz = gRacePlayers[i].z - D_8013B0D8->z;
+
+                    if (dx >= -0x5FFFF && dx <= 0x5FFFF &&
+                        dz <= 0x5FFFF && dz > -0x60000) {
+                        s32 angle = getXZHeading(0, 0, dx, dz) & 0xFFF;
+                        if ((u32)(((angle - D_8013B0D8->unk110) & 0xFFF) - 0x200) > 0xC00) {
+                            activate = 1;
+                            D_8013B0D8->projectileUseCooldown = -62;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+tryActivation:
+    if (!activate) {
+        return;
+    }
+
+    if (D_8013B0D8->unk940) {
+        switch ((s8)(D_8013B0D8->unk93E - 1)) {
+        case 0:
+            func_80014930(&gGameTasks[4], initializePlayerDualResourceEffectTask);
+            break;
+        case 1:
+            func_80014930(&gGameTasks[4], initializePlayerVisualPairTask);
+            break;
+        case 2:
+            func_80014930(&gGameTasks[4], initializePlayerVisualPairTask5E80);
+            break;
+        case 3:
+            func_80014930(&gGameTasks[4], initializePlayerVisualPairTask6780);
+            break;
+        case 4: {
+            u8 bounce = 0;
+            if (!D_8013B0D8->unk008) {
+                bounce = (D_8013AEEC[playerIndex] & 0xE000) == 0x4000;
+            } else {
+                s32 roll = randomNextSecondary();
+                if (gPlayerProjectileBounceChoices[D_8013B0D8->unk935][roll & 7]) {
+                    bounce = 1;
+                }
+            }
+            if (bounce) {
+                func_80014930(&gGameTasks[4], initializeBouncingTaskVisual);
+            } else {
+                func_80014930(&gGameTasks[4], initializeDualResource4C80EffectTask);
+            }
+            break;
+        }
+        default:
+            goto clearEmptyEffect;
+        }
+        D_8013AE8C->data18 = playerIndex;
+        D_8013B0D8->unk940--;
+
+    clearEmptyEffect:
+        if (!D_8013B0D8->unk940) {
+            D_8013B0D8->unk93E = 0;
+        }
+    }
+
+    if (D_8013B0D8->unk93C) {
+        func_80014930(&gGameTasks[4], initializeDualResource5100EffectTask);
+        D_8013AE8C->data18 = playerIndex;
+        D_8013B0D8->unk93C--;
+    }
+}
 
 void updateCurrentPlayerItemUse(u16 playerIndex) {
     u16 activate = 0;

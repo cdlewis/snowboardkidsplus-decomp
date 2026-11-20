@@ -89,8 +89,9 @@ UNIT_REORDER_src/engine/task_transitions.c := 0
 UNIT_REORDER_src/race/player/player_update.c := 0
 UNIT_REORDER_src/race/player/player_input.c := 0
 UNIT_REORDER_src/race/player/player_actions.c := 0
-# The item-use switch table is separated from the unit's earlier table in ROM.
+# Preserve the original addresses of the player action switch tables.
 UNIT_CCFLAGS_src/race/player/player_actions.c += --rdata-section=getPlayerCourseProgress:.rodata.player_course_progress
+UNIT_CCFLAGS_src/race/player/player_actions.c += --rdata-section=updateCurrentPlayerProjectileUse:.rodata.player_projectile_use
 UNIT_CCFLAGS_src/race/player/player_actions.c += --rdata-section=updateCurrentPlayerItemUse:.rodata.player_item_use
 UNIT_REORDER_src/graphics/background_resources.c := 0
 UNIT_REORDER_src/menu/mode_transitions.c := 0

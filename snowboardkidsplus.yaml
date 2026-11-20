@@ -84,7 +84,8 @@ segments:
       - {start: 0xE58, type: .rodata, name: race/player/player_actions, linker_section: .rodata.player_course_progress_padding}
       - [0xE5C, rodata]
       - [0xEAC, .rodata, race/player/player_actions]
-      - [0xECC, rodata]
+      - {start: 0xECC, type: .rodata, name: race/player/player_actions, linker_section: .rodata.player_projectile_use}
+      - {start: 0xEE0, type: .rodata, name: race/player/player_actions, linker_section: .rodata.player_projectile_use_padding}
       - {start: 0xEE4, type: .rodata, name: race/player/player_actions, linker_section: .rodata.player_item_use}
       - [0xEFC, rodata]
       - [0xF84, .rodata, graphics/background_resources]
@@ -674,6 +675,8 @@ segments:
       - {start: 0x11128C, type: .data, name: race/player/player_update, linker_section: .data.player_state30_task_phases}
       - {start: 0x111298, type: .data, name: race/player/player_update, linker_section: .data.player_state30_animation_countdowns}
       - [0x1112B0, data, player_task_phases_tail]
+      - {start: 0x113E20, type: .data, name: race/player/player_actions, linker_section: .data.player_projectile_bounce_choices}
+      - [0x113E40, data, player_projectile_bounce_choices_tail]
       - {start: 0x113E60, type: .data, name: engine/task_transitions, linker_section: .data.player_resource_texture_selections}
       - {start: 0x113E80, type: .data, name: race/player/player_update, linker_section: .data.player_variant_attributes}
       - {start: 0x113F90, type: .data, name: race/player/player_update, linker_section: .data.player_character_attributes}

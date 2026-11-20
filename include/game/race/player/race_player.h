@@ -151,7 +151,11 @@ struct RacePlayer {
     s32 coursePlacementDistance;
     s8 unk934;
     s8 unk935;
-    u8 unk936[0xB];
+    u8 unk936[6];
+    s16 unk93C;
+    s8 unk93E;
+    u8 unk93F;
+    s8 unk940;
     u8 heldItem;
     u8 unk942;
     u8 unk943;
@@ -165,7 +169,7 @@ struct RacePlayer {
     u8 unk954;
     u8 unk955[3];
     u8 itemUseCooldown;
-    u8 unk959;
+    s8 projectileUseCooldown;
     s16 collectedCourseCoinMarkerCount;
     s16 totalCourseCoinMarkerCount;
     s16 scoreAttackPointTotal;
@@ -313,6 +317,7 @@ void startRacePlayerTasks(void);
 s16 func_8002D3C4(s16 value);
 
 void updateCurrentPlayerCourseTrigger(void);
+void updateCurrentPlayerProjectileUse(u16 playerIndex);
 
 typedef char RacePlayerSizeCheck[(sizeof(RacePlayer) == 0x9DC) ? 1 : -1];
 
