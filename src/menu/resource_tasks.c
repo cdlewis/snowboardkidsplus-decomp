@@ -1,3 +1,6 @@
+#define GAME_OPTION_TRANSITION_ABSOLUTE_ADDRESSING
+#define MODE11_CD_STATE_ABSOLUTE_ADDRESSING
+#define MUSIC_STATE_ABSOLUTE_ADDRESSING
 #include "panel_tasks_internal.h"
 #include "game/menu/selected_sprite.h"
 
@@ -5,6 +8,16 @@ typedef struct MainTailSelectionResource {
     s16 unk00;
     s16 selectedIndex;
 } MainTailSelectionResource;
+
+typedef struct Mode11MenuSelection {
+    s16 mode;
+    s16 selectedIndex;
+    s16 previousIndex;
+    s16 choiceResult;
+} Mode11MenuSelection;
+
+extern const GridSpriteEntry gMode11SelectionSprites[];
+extern const u8 gMode11SelectionMapping[];
 
 u8 gMainTailSelectionMapping[4] __attribute__((section(".data.main_tail_selection_mapping"), aligned(4))) = {
     0, 1, 2, 3,
@@ -425,11 +438,138 @@ void initializeTaskResourcePairWithOneTickTransition(void) {
     }
     D_8013AE88->resource16 = allocateTaskResource();
     configureTaskStateTransition(2, 0, 1);
-    setCurrentTaskCallback(func_800A05C0);
+    setCurrentTaskCallback(updateMode11SelectionMenuTask);
     D_8013AE88->unk10 |= 2;
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/resource_tasks", func_800A05C0);
+void updateMode11SelectionMenuTask(void) {
+    Mode11MenuSelection *selection;
+    RegisteredTaskEntry *entries;
+    s32 complete;
+    s32 index;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        for (;;) {}
+    }
+    selection = (Mode11MenuSelection *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) {
+        for (;;) {}
+    }
+    entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE88->resource16];
+
+    switch (D_8013AE88->data18) {
+    case 0:
+        setSecondaryDisplayTaskMode(0);
+        selection->mode = 0;
+        selection->selectedIndex = 0;
+        selection->previousIndex = 0;
+        selection->choiceResult = 0;
+        createRegisteredSpacedChildTasks(1, 0xB0, 0x40, (const u8 *)gMode11SelectionSprites,
+                                         gMode11SelectionMapping, NULL,
+                                         1, 0, 20, -48, -24, 0, 24, 3, 403,
+                                         drawSelectedTaskSprite,
+                                         drawRegisteredTaskGridSpriteWithColor, 3, 11);
+        D_8013AE88->data18 = 1;
+        break;
+    case 1:
+        if ((s16)entries[1].flags == 0) {
+            configureTaskStateTransition(1, 0, 30);
+            queueCdCommand(3, 0);
+            D_8013B564 = 1;
+            D_8013AE88->data18 = 2;
+        }
+        break;
+    case 2:
+        if (hasTaskStateValue6(0) == 0) {
+            entries[1].command = 20;
+            configureColorCycleTask(1, 0, 128, 8, 0);
+            D_8013B41F = 0;
+            D_8013AE88->data18 = 3;
+        }
+        break;
+    case 3:
+        complete = isTaskResourceTransitionComplete(0);
+        if (complete == 1 && D_8013B41F == 0) {
+            entries[1].command = 21;
+            configureColorCycleTask(2, 64, 128, 4, 0);
+            D_8013B41F = complete;
+        }
+        if (selection->choiceResult != 0 && (s16)entries[1].flags == 0) {
+            entries[1].command = 22;
+            if (selection->choiceResult < 0) {
+                D_8013B108 = 2;
+                D_8013AE88->data18 = 4;
+            } else {
+                index = selection->selectedIndex;
+                if (index == 2) {
+                    D_8013B108 = index;
+                }
+                D_8013AE88->data18 = 7;
+            }
+        }
+        break;
+    case 7:
+        entries[1].command = 10;
+        D_8013AE88->data18 = 8;
+        break;
+    case 8:
+        if ((s16)entries[1].flags == 0) {
+            if (selection->selectedIndex != 2) {
+                if (selection->selectedIndex == 0) {
+                    D_8013B108 = 27;
+                }
+                index = selection->selectedIndex;
+                if (index == 1) {
+                    D_8013B108 = 28;
+                    D_8013AFD9 = index;
+                }
+            }
+            D_8013AE88->data18 = 4;
+        }
+        break;
+    case 4:
+        configureTaskStateTransition(2, 0, 30);
+        if (D_8013B108 != 28) {
+            startCdVolumeFade(103, 20, 0, 1);
+        }
+        D_8013B106 = 0;
+        configureColorCycleTask(0, 0, 0, 0, 0);
+        D_8013AE88->data18 = 5;
+        break;
+    case 5:
+        if (func_800707F0(0) == 0) {
+            D_8013AE88->data18 = 6;
+        }
+        break;
+    case 6:
+    default:
+        func_800149A8();
+        return;
+    }
+
+    if (D_8013AE88->data18 >= 2) {
+        func_80070C5C(128, &D_800EBFF0[D_8013AF78], 4);
+        drawFullScreenTexturedBackground();
+    }
+}
+
+const GridSpriteEntry gMode11SelectionSprites[6]
+    __attribute__((section(".data.mode11_selection_sprites"), aligned(4))) = {
+    {400, 0, {0, 0, 0}},
+    {401, 0, {0, 0, 0}},
+    {402, 0, {0, 0, 0}},
+    {400, 2, {0, 0, 0}},
+    {401, 2, {0, 0, 0}},
+    {402, 2, {0, 0, 0}},
+};
+
+const u8 gMode11SelectionMapping[8]
+    __attribute__((section(".data.mode11_selection_mapping"), aligned(4))) = {
+    0, 1, 2, 3, 4, 5, 0, 0,
+};
+
+const u32 gMode11SelectionJumpTablePadding
+    __attribute__((section(".rodata.mode11_selection_jump_table_padding"))) = 0;
 
 void selectTaskCallbackFromModeState(void) {
     if (D_8013AFD8 != 0) {

@@ -227,7 +227,7 @@ void func_8001B858(void);
 void func_800A525C(void);
 void func_800A53BC(void);
 void func_8009D354(void);
-void func_800A05C0(void);
+void updateMode11SelectionMenuTask(void);
 void startUnlockResourceLoad(void);
 void prepareUnlockSelectionResume(void);
 void renderCurrentCameraPlayersAndUpdateSound(void);
