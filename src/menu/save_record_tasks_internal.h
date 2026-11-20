@@ -126,7 +126,7 @@ extern TexturedQuadListEntry taskIndexPanelQuadsPalette1[10];
 void func_800897D0(SaveRecord *record);
 void mergeSaveRecordFlags(SaveRecord *source, SaveRecord *destination);
 void updateSaveRecordTask(void);
-void func_8007D5C8(void);
+void updateSelectionPrizeMenuTask(void);
 void updatePaletteRotationTask(void);
 void updateStateValueHistoryTask(void);
 void updateMemoryCardSlotTask(void);

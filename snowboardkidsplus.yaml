@@ -129,7 +129,8 @@ segments:
       - {start: 0x1C28, type: .rodata, name: menu/task_widgets, linker_section: .rodata.save_record_unlock_flags}
       - [0x1C3C, rodata]
       - {start: 0x1C68, type: .rodata, name: unclassified/menu_8007CC78, linker_section: .rodata.course_selection}
-      - [0x1D38, rodata]
+      - {start: 0x1D38, type: .rodata, name: unclassified/menu_8007CC78, linker_section: .rodata.selection_prize_menu}
+      - [0x1DC0, rodata]
       - [0x1E40, .rodata, unclassified/menu_8007CC78]
       - {start: 0x1ED8, type: .rodata, name: unclassified/menu_8007CC78, linker_section: .rodata.registered_player_models}
       - {start: 0x2068, type: .rodata, name: unclassified/menu_8007CC78, linker_section: .rodata.grouped_selection_menu}
