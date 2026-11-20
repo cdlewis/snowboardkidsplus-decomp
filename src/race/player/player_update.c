@@ -390,6 +390,11 @@ u8 gPlayerTrick49Input[8][2]
 /* The last pair is also addressed by func_800200F8. */
 extern u8 D_8013B0C0[4][2];
 
+static s32 gPlayerWallProbeOffsets[2]
+    __attribute__((section(".data.player_wall_probe_offsets"), aligned(4))) = {
+    0x2000, -0x2000,
+};
+
 u16 gPlayerTrickRewards[16]
     __attribute__((section(".data.player_trick_rewards"), aligned(4))) = {
     0, 100, 100, 120, 120, 150, 150, 150, 150, 220, 250, 300, 350, 400, 500, 0,
@@ -429,7 +434,8 @@ void moveCurrentPlayerForwardUntilState22(void);
 void updateCurrentPlayerState30TaskUntilStopped(void);
 s32 updateCurrentPlayerGroundContact(void);
 void updateCurrentPlayerState12MotionAndTimer(void);
-void func_80027918(void);
+void func_8004B044(s16 region, s32 x, s32 z, s32 radius, s32 mode,
+                   s32 *dx, s32 *dz, s32 *responseX, s32 *responseZ);
 s16 resolveCurrentPlayerTerrainContact(void);
 s16 func_8002D3C4(s16 value);
 
@@ -2436,7 +2442,133 @@ void updateCurrentPlayerState12MotionAndTimer(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_80027918);
+void resolveCurrentPlayerWallContact(void) {
+    VECTOR probes[2];
+    s32 dx, dz;
+    s32 responseX, responseZ;
+    s32 region;
+    s32 radius;
+    s8 adjusted;
+    s16 i;
+    s32 sine, cosine;
+    s32 velocityX, velocityZ;
+
+    D_8013B0D8->unk943 = 0;
+    D_8013B0D8->unk965 = 0;
+    D_8013B0D8->unk946 = 0;
+    D_8013B0D8->unk0EC = D_8013B0D8->unk060;
+    D_8013B0D8->unk0F0 = D_8013B0D8->unk064;
+    D_8013B0D8->unk074 = D_8013B0D8->y + 0x1800;
+    if (D_8013B0D8->unk0F6) {
+        D_8013B0D8->unk0F6--;
+    }
+    if (D_8013B0D8->unk0FC) {
+        D_8013B0D8->unk96E = 0x400;
+        D_8013B0D8->unk972 = 0;
+        D_8013B0D8->unk96C = 0x20;
+    }
+    if (D_8013B0D8->unk128 & 0x403040) {
+        D_8013B0D8->unk134 = 0;
+    } else if (D_8013B0D8->unk134) {
+        D_8013B0D8->unk134--;
+    }
+    if (!(D_8013AFE4 & 1) && D_8013B0D8->unk945) {
+        D_8013B0D8->unk945--;
+    }
+    if (D_8013B0D8->unk0E8) {
+        return;
+    }
+
+    region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8);
+    func_8004B044(region, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8, 18, 2, &dx, &dz, &responseX, &responseZ);
+    if (dx || dz) {
+        D_8013B0D8->x += dx << 8;
+        D_8013B0D8->z += dz << 8;
+        region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8);
+    }
+
+    radius = (D_8013B0D8->unk128 & 0x7C000) ? 36 : 22;
+    func_8004B044(region, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8, radius, 1, &dx, &dz,
+                  &D_8013B0D8->unk0EC, &D_8013B0D8->unk0F0);
+    if (dx || dz) {
+        D_8013B0D8->x += dx << 8;
+        D_8013B0D8->z += dz << 8;
+        D_8013B0D8->unk0E8 |= 1;
+        region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8);
+    }
+    func_8004B044(region, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8, radius, 3, &dx, &dz,
+                  &D_8013B0D8->unk0EC, &D_8013B0D8->unk0F0);
+    if (dx || dz) {
+        D_8013B0D8->x += dx << 8;
+        D_8013B0D8->z += dz << 8;
+        D_8013B0D8->unk0E8 |= 0x200;
+    }
+
+    adjusted = 0;
+    /* Check both ends of the board, then retry from the corrected pose. */
+    if (radius == 22) {
+        D_8013B0D8->unk10E = D_8013B0D8->unk0B4;
+        D_8013B0D8->unk110 = D_8013B0D8->unk0B6 + 0x400;
+        sine = rsin((s16)D_8013B0D8->unk110);
+        cosine = rcos((s16)D_8013B0D8->unk110);
+        for (i = 0; i < 2; i++) {
+            probes[i].vx = D_8013B0D8->x + gPlayerWallProbeOffsets[i] * sine / 4096;
+            probes[i].vz = D_8013B0D8->z + gPlayerWallProbeOffsets[i] * cosine / 4096;
+            region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, probes[i].vx >> 8, probes[i].vz >> 8);
+            func_8004B044(region, probes[i].vx >> 8, probes[i].vz >> 8, 14, 1, &dx, &dz,
+                          &D_8013B0D8->unk0EC, &D_8013B0D8->unk0F0);
+            if (dx || dz) {
+                adjusted = 1;
+                probes[i].vx += dx << 8;
+                probes[i].vz += dz << 8;
+                D_8013B0D8->unk0E8 |= 1;
+                region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, probes[i].vx >> 8, probes[i].vz >> 8);
+            }
+            func_8004B044(region, probes[i].vx >> 8, probes[i].vz >> 8, 14, 3, &dx, &dz,
+                          &D_8013B0D8->unk0EC, &D_8013B0D8->unk0F0);
+            if (dx || dz) {
+                probes[i].vx += dx << 8;
+                probes[i].vz += dz << 8;
+                adjusted = 1;
+                D_8013B0D8->unk0E8 |= 0x200;
+            }
+        }
+
+        if (adjusted) {
+            D_8013B0D8->unk110 = getXZHeading(probes[1].vx, probes[1].vz, probes[0].vx, probes[0].vz);
+            D_8013B0D8->unk0B6 = D_8013B0D8->unk110 - 0x400;
+            D_8013B0D8->x = (probes[0].vx + probes[1].vx) / 2;
+            D_8013B0D8->z = (probes[0].vz + probes[1].vz) / 2;
+            sine = rsin((s16)D_8013B0D8->unk110);
+            cosine = rcos((s16)D_8013B0D8->unk110);
+            for (i = 0; i < 2; i++) {
+                probes[i].vx = D_8013B0D8->x + gPlayerWallProbeOffsets[i] * sine / 4096;
+                probes[i].vz = D_8013B0D8->z + gPlayerWallProbeOffsets[i] * cosine / 4096;
+                region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, probes[i].vx >> 8, probes[i].vz >> 8);
+                func_8004B044(region, probes[i].vx >> 8, probes[i].vz >> 8, 14, 1, &dx, &dz,
+                              &D_8013B0D8->unk0EC, &D_8013B0D8->unk0F0);
+                if (dx || dz) {
+                    D_8013B0D8->x += dx << 8;
+                    D_8013B0D8->z += dz << 8;
+                    region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, probes[i].vx >> 8, probes[i].vz >> 8);
+                }
+                func_8004B044(region, probes[i].vx >> 8, probes[i].vz >> 8, 14, 3, &dx, &dz,
+                              &D_8013B0D8->unk0EC, &D_8013B0D8->unk0F0);
+                if (dx || dz) {
+                    D_8013B0D8->x += dx << 8;
+                    D_8013B0D8->z += dz << 8;
+                }
+            }
+        }
+    }
+
+    if (D_8013B0D8->unk0E8) {
+        velocityX = D_8013B0D8->unk0EC - D_8013B0D8->unk060;
+        velocityZ = D_8013B0D8->unk0F0 - D_8013B0D8->unk064;
+        D_8013B0E8 = SquareRoot0(velocityX * velocityX + velocityZ * velocityZ) / 2;
+        D_8013B0E6 = getXZHeading(0, 0, velocityX, velocityZ);
+    }
+}
 
 s16 resolveCurrentPlayerTerrainContact(void) {
     s32 groundY;
@@ -2448,7 +2580,7 @@ s16 resolveCurrentPlayerTerrainContact(void) {
     s32 sinYaw, cosYaw;
 
     gPlayerTerrainContactSavedStackPointer = SetSp((u32)getScratchAddr((sizeof(scratchpad) - sizeof(u32)) / sizeof(u32)));
-    func_80027918();
+    resolveCurrentPlayerWallContact();
     if (func_8002D3C4(1)) {
         region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8);
         D_8013B0D8->unk92E = region;
@@ -2537,7 +2669,7 @@ s32 updateCurrentPlayerGroundContact(void) {
     s32 groundY;
 
     gPlayerGroundContactSavedStackPointer = SetSp((u32)getScratchAddr((sizeof(scratchpad) - sizeof(u32)) / sizeof(u32)));
-    func_80027918();
+    resolveCurrentPlayerWallContact();
     if (func_8002D3C4(0) >= 2) {
         region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8);
         D_8013B0D8->unk92E = region;
@@ -2650,7 +2782,7 @@ s32 snapCurrentPlayerToTerrain(void) {
     s16 region;
     s16 firstAngle, secondAngle;
 
-    func_80027918();
+    resolveCurrentPlayerWallContact();
     if (func_8002D3C4(0)) {
         region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8);
         D_8013B0D8->unk92E = region;

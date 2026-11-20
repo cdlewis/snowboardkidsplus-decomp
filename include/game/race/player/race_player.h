@@ -207,8 +207,13 @@ extern s16 D_8013B0E4 __attribute__((section(".data")));
 #else
 extern s16 D_8013B0E4;
 #endif
+#if defined(PLAYER_STATE_RESULT_ABSOLUTE_ADDRESSING)
+extern u16 D_8013B0E6 __attribute__((section(".data")));
+extern s32 D_8013B0E8 __attribute__((section(".data")));
+#else
 extern u16 D_8013B0E6;
 extern s32 D_8013B0E8;
+#endif
 /* Two declarations preserve the original GP-relative and absolute accesses
  * to this shared pointer. The absolute alias is resolved by the symbol map. */
 extern RacePlayer *D_8013B0D8;

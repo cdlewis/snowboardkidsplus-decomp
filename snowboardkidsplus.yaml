@@ -929,6 +929,8 @@ segments:
       - [0x12B7B4, data, 12B7B4]
       - {start: 0x12B7EC, type: .data, name: race/player/player_update, linker_section: .data.player_trick_short_inputs}
       - [0x12B8C0, data, player_trick_input_tail]
+      - {start: 0x12B8D0, type: .data, name: race/player/player_update, linker_section: .data.player_wall_probe_offsets}
+      - [0x12B8D8, data, current_player_pointer]
       - {start: 0x12B8DC, type: .data, name: race/player/player_actions, linker_section: .data.player_sound_variants}
       - [0x12B8E4, data, 12B8E4]
       - {start: 0x12B8F4, type: .data, name: menu/mode_transitions, linker_section: .data.title_menu_sprite_mapping}

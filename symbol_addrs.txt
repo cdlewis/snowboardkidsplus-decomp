@@ -2149,6 +2149,7 @@ callCurrentPlayerStateCallbackIfDifferent = 0x80020328; // type:func
 currentPlayerStateCallbacks = 0x80120934; // size:0x128 defined:true
 
 // Shared player pointer; addressing aliases are in config/symbol_aliases.ld.
+gPlayerWallProbeOffsets = 0x8013B0D0; // size:0x8 defined:true
 D_8013B0D8 = 0x8013B0D8; // size:0x4 defined:true
 queueStartupSectorReads = 0x8002F348; // type:func
 
@@ -3552,6 +3553,7 @@ D_801242A8 = 0x801242A8; // size:0xC defined:true
 
 updateCurrentPlayerTimedMotion = 0x800273D4; // type:func
 updateCurrentPlayerState12MotionAndTimer = 0x80027624; // type:func
+resolveCurrentPlayerWallContact = 0x80027918; // type:func
 
 finishUnlockMenuTask = 0x800A46E0; // type:func
 
