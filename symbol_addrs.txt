@@ -3086,6 +3086,7 @@ drawTransformedSpriteByIndex = 0x8006CF38; // type:func
 
 emitProjectedGouraudQuad = 0x80052D84; // type:func
 
+updateRegisteredTextPanelTask = 0x80074448; // type:func
 createRegisteredCallbackTask = 0x80074988; // type:func
 
 updatePlayerDualResourceEffectTask = 0x80046CB4; // type:func

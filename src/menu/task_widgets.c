@@ -254,7 +254,7 @@ void func_8007BE9C(void);
 void updateShrinkingSpriteTask(void);
 void updateValuePanelTask(void);
 void updateAnimatedSpriteTask(void);
-void func_80074448(void);
+void updateRegisteredTextPanelTask(void);
 void updateRegisteredCallbackTask(void);
 
 void configureTaskStateTransition(s32 mode, s32 id, u16 duration) {
@@ -1172,7 +1172,7 @@ void drawRegisteredTaskGridSpriteWithColor(void) {
 void createRegisteredTextPanelTask(s16 x, s16 y, const u16 **texts, const u8 *mapping, s32 depth, s32 index) {
     RegisteredTextResource *resource;
     RegisteredTaskEntry *entry;
-    func_80014874(func_80074448);
+    func_80014874(updateRegisteredTextPanelTask);
     D_8013AE8C->data1A = 0;
     D_8013AE8C->data1C = depth;
     D_8013AE8C->data1E = index;
@@ -1195,7 +1195,88 @@ void createRegisteredTextPanelTask(s16 x, s16 y, const u16 **texts, const u8 *ma
     entry->task = D_8013AE8C;
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80074448);
+void updateRegisteredTextPanelTask(void) {
+    Movement2D *movement;
+    RegisteredTextResource *resource;
+    RegisteredTaskEntry *entry;
+    RegisteredTaskEntry *entries;
+    SelectionEntry *selection;
+    u16 mode;
+
+    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    movement = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
+    resource = (RegisteredTextResource *)&D_800D9504[D_8013AE88->resource16];
+    if ((u16)(D_8013AE88->data1E % 10U) == 0) {
+        if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
+        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource14];
+        entry = &entries[D_8013AE88->data1E / 10U];
+    } else {
+        if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
+        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource16];
+        entry = &entries[D_8013AE88->data1E / 10U];
+    }
+    if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
+    selection = (SelectionEntry *)&D_800D9504[D_8013AE98->resource14];
+    if (selection->selected != selection->previous) {
+        resource->text = 0;
+    }
+
+    switch (entry->command) {
+    case 20:
+        D_8013AE88->data1A = 1;
+        entry->command = 0;
+        entry->flags = 0;
+        break;
+    case 21:
+        D_8013AE88->data1A = 2;
+        entry->command = 0;
+        entry->flags = 0;
+        break;
+    case 22:
+        D_8013AE88->data1A = 3;
+        entry->command = 0;
+        entry->flags = 0;
+        break;
+    case 23:
+        D_8013AE88->data1A = 0;
+        entry->command = 0;
+        entry->flags = 0;
+        break;
+    case 0:
+        entry->flags = 0;
+        break;
+    case 99:
+    default:
+        entry->task = 0;
+        func_800149A8();
+        return;
+    }
+
+    entry->flags |= updateMovement2D(movement);
+    mode = D_8013AE88->data1A;
+    if (mode != 0) {
+        if ((u32)(mode - 1) < 2) {
+            setSpriteColor(gTaskWidgetRedAbsolute, gTaskWidgetGreenAbsolute, gTaskWidgetBlueAbsolute);
+        } else {
+            setSpriteColor(128, 128, 128);
+        }
+
+        if (resource->text != 0) {
+            func_8006EC84((s16)(movement->x / 4096 + 4), (s16)(movement->y / 4096 + 4),
+                          14, resource->text, 7, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        } else if (resource->texts != 0) {
+            s16 textIndex = func_8007373C(resource->mapping, selection->selected);
+
+            func_8006EC84((s16)(movement->x / 4096 + 4), (s16)(movement->y / 4096 + 4),
+                          14, resource->texts[textIndex], 7, -1,
+                          &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        }
+    }
+    setTexturedQuadColor(128, 128, 128);
+    drawDefaultTexturedPanel((s16)(movement->x / 4096), (s16)(movement->y / 4096),
+                             120, 88, 5, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+}
 
 void setTaskSecondaryResourceData(GameTask *task, const u16 *data) {
     u32 index = task->resource16;
