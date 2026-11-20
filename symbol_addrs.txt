@@ -2422,6 +2422,7 @@ advanceTaskStatsCountdownAndPlaySound = 0x8003BAAC; // type:func
 initializeCurrentPlayerState5 = 0x8001F444; // type:func
 
 initializeDualResource5100EffectTask = 0x80047CC0; // type:func
+updateDualResource5100EffectTask = 0x80047D94; // type:func
 
 computeSelectedTriangleAngles = 0x8005A4D0; // type:func
 
@@ -3183,6 +3184,7 @@ updateCurrentPlayerState5MotionAndTimer = 0x80024804; // type:func
 
 updatePlayerVisualPairTask6780 = 0x80047380; // type:func
 gPlayerVisualPair6780Frame = 0x8013B1C4; // size:0x8 defined:true
+gPlayerDualResource5100EffectFrame = 0x8013B1CC; // size:0x8 defined:true
 
 updatePaletteEntryTask = 0x80086DEC; // type:func
 

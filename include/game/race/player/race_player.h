@@ -301,12 +301,21 @@ u16 isPositionWithinPlayerCollisionRange(const Position3D *position, s32 radius,
 /* Players eligible to collect an object during the current frame. */
 typedef struct PlayerCollectionEntry {
     s32 *active;
-    Position3D position;
-    s32 playerIndex;
+    union {
+        struct {
+            Position3D position;
+            s32 playerIndex;
+        } player;
+        VECTOR vector;
+    } location;
 } PlayerCollectionEntry;
 
 extern PlayerCollectionEntry D_8012450C[];
+#ifdef PLAYER_COLLECTION_ABSOLUTE_ADDRESSING
 extern s16 D_8013B1D4 __attribute__((section(".data.finish_slot_state")));
+#else
+extern s16 D_8013B1D4;
+#endif
 
 u16 arePositionsWithinXZRange(const Position3D *a, const Position3D *b, s32 threshold);
 s32 func_8002C520(const Position3D *position, s32 radius, s32 height, s16 playerIndex);

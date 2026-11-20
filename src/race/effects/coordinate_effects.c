@@ -1,5 +1,13 @@
 #include "../race_presentation_internal.h"
 
+typedef union CollectionTaskResource {
+    TaskVisualResource visual;
+    struct {
+        GsCOORDINATE2 coordinate;
+        VECTOR position;
+    } trail;
+} CollectionTaskResource;
+
 TaskVisualFrame gPlayerParticleHistoryVisualFrames[6]
     __attribute__((section(".data.player_particle_history_visual_frames"), aligned(4))) = {
         {0x30, 0x28, 32, 32, 0xD, 0x3D79},
@@ -988,10 +996,90 @@ void initializeDualResource5100EffectTask(void) {
     D_8013AE88->resource16 = allocateTaskResource();
     initializePlayerVisualHistory((TaskVisualResource *)resource, (VECTOR *)&D_800D9504[D_8013AE88->resource16], 300, 0x5100);
     D_8013AE88->data1A = 0;
-    setCurrentTaskCallback(func_80047D94);
+    setCurrentTaskCallback(updateDualResource5100EffectTask);
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/effects/coordinate_effects", func_80047D94);
+void updateDualResource5100EffectTask(void) {
+    TaskVisualResource *resource;
+    VECTOR *history;
+    s32 dx, dz;
+    s32 oldY, ground;
+    u16 i;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) {
+        while (1) {}
+    }
+    history = (VECTOR *)&D_800D9504[D_8013AE88->resource16];
+    if (D_8013AFD3 == 0) {
+        {
+            VECTOR *entry = &history[D_8013AE88->data1A];
+            entry->vx = resource->position.x;
+        }
+        {
+            VECTOR *entry = &history[D_8013AE88->data1A];
+            entry->vy = resource->position.y;
+        }
+        {
+            VECTOR *entry = &history[D_8013AE88->data1A];
+            entry->vz = resource->position.z;
+        }
+        {
+            VECTOR *entry = &history[D_8013AE88->data1A];
+            entry->pad = 1;
+        }
+
+        D_800EB22C.vx = rsin(resource->unkD8) * resource->groundY / 4096;
+        D_800EB22C.vz = rcos(resource->unkD8) * resource->groundY / 4096;
+        oldY = resource->position.y;
+        resource->position.x += D_800EB22C.vx;
+        resource->position.y += resource->velocityY;
+        resource->position.z += D_800EB22C.vz;
+        resource->unkC4 = getAdjacentGeometryRegionForPoint(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8);
+        ground = func_8004A764(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8) << 8;
+        if (resource->position.y > ground) {
+            resource->position.y = ground;
+        }
+        resource->velocityY = resource->position.y - oldY + 0x1900;
+        func_8004C968(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8, 2, &dx, &dz);
+        if (dx != 0 || dz != 0) {
+            resource->unkDC = 0;
+            resource->position.x += dx;
+            resource->position.z += dz;
+        }
+    }
+    drawTaskVisualPositionHistory(resource, history, &gPlayerDualResource5100EffectFrame);
+    if (D_8013AFD3 == 0) {
+        for (i = 0; i < D_8013AFD2; i++) {
+            if (i != D_8013AE88->data18 &&
+                addPlayerFlagsIfWithinRadius(&resource->position, 0x1000, 0x4000, i) != 0) {
+                gRacePlayers[i].unk0F4 = D_8013AE88->data18;
+                resource->unkDC = 0;
+                return;
+            }
+        }
+        if (resource->unkDC == 0) {
+            gRacePlayers[D_8013AE88->data18].unk93C++;
+            resetTaskVisualState(resource);
+        } else {
+            PlayerCollectionEntry *entry;
+            u16 playerIndex;
+            resource->unkDC--;
+            /* The vector pad shares storage with the collecting player index. */
+            D_8012450C[D_8013B1D4].location.vector = ((CollectionTaskResource *)resource)->trail.position;
+            entry = &D_8012450C[D_8013B1D4];
+            playerIndex = D_8013AE88->data18;
+            entry->active = &resource->unkDC;
+            entry->location.player.playerIndex = playerIndex;
+            if (++D_8013B1D4 >= 10) {
+                D_8013B1D4--;
+            }
+        }
+    }
+}
 
 void initializeVisualTrailTask(void) {
     TrailVisualResource *resource;

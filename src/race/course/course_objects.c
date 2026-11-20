@@ -1,4 +1,5 @@
 #define GAME_LOOP_ABSOLUTE_ADDRESSING
+#define PLAYER_COLLECTION_ABSOLUTE_ADDRESSING
 #include "game/engine/game_loop.h"
 #include "psx/scratchpad.h"
 #include "psx/libetc.h"
@@ -1394,9 +1395,9 @@ void updateCollectibleTask(void) {
         if (!D_8013AFD3) {
             resolvePlayerCollisionsWithCylinder(&resource->position, 0x2800, 0x8000, 2);
             for (i = 0; i < D_8013B1D4; i++) {
-                if (arePositionsWithinXZRange(&resource->position, &D_8012450C[i].position, resource->collisionRange)) {
+                if (arePositionsWithinXZRange(&resource->position, &D_8012450C[i].location.player.position, resource->collisionRange)) {
                     *D_8012450C[i].active = 0;
-                    gRacePlayers[D_8012450C[i].playerIndex].scoreAttackPointTotal++;
+                    gRacePlayers[D_8012450C[i].location.player.playerIndex].scoreAttackPointTotal++;
                     playSoundEffect(1, 0xF00, 0x20);
                     createNineIndexedChildTasks(0x15, 1);
                     D_8013AE88->callback = deleteCurrentTask;

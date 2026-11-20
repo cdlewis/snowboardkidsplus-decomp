@@ -470,6 +470,8 @@ extern TaskVisualFrame gPlayerVisualPairFrame
 
 extern TaskVisualFrame gPlayerVisualPair6780Frame
     __attribute__((section(".data.player_visual_pair_6780_frame"), aligned(4)));
+extern TaskVisualFrame gPlayerDualResource5100EffectFrame
+    __attribute__((section(".data.player_dual_resource_5100_effect_frame")));
 
 extern u16 D_8013AFAA __attribute__((section(".data")));
 extern s32 D_8013AF84 __attribute__((section(".data")));
@@ -575,7 +577,7 @@ void updateExpandingCoordinateEffectTask(void);
 void updatePlayerState23CoordinateEffectTask(void);
 void updatePlayerCoordinateEffectTask(void);
 void updateDualResource4C80EffectTask(void);
-void func_80047D94(void);
+void updateDualResource5100EffectTask(void);
 void updatePlayerDualResourceEffectTask(void);
 void updatePlayerResultOrder(TaskFadeResource *resource);
 void func_80036BA4(TaskResourceRecord *resource);

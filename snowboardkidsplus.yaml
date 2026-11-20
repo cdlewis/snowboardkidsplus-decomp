@@ -906,7 +906,7 @@ segments:
       - {start: 0x12B9B4, type: .data, name: race/player/player_actions, linker_section: .data.player_visual_pair_frame}
       - {start: 0x12B9BC, type: .data, name: race/player/player_actions, linker_section: .data.player_visual_pair_5e80_frame}
       - {start: 0x12B9C4, type: .data, name: race/player/player_actions, linker_section: .data.player_visual_pair_6780_frame}
-      - [0x12B9CC, data, 12B9CC]
+      - {start: 0x12B9CC, type: .data, name: race/player/player_actions, linker_section: .data.player_dual_resource_5100_effect_frame}
       - {start: 0x12B9D4, type: .data, name: race/player/player_actions, linker_section: .data.finish_slot_state}
       - [0x12B9D6, pad]
       - {start: 0x12B9D8, type: .sdata, name: unclassified/graphics_800497B8, linker_section_order: .data}
