@@ -1,4 +1,5 @@
 #include "psx/scratchpad.h"
+#include "psx/libapi.h"
 #include "psx/libetc.h"
 #include "common.h"
 #define RACE_SETUP_GP_ADDRESSING
@@ -84,6 +85,12 @@ ModelTextureOffset gPlayerPartTextureOffsets[4] __attribute__((section(".data.pl
     {0, 0, 0}, {0, 0x8000, 0x2000}, {1, 0, 4}, {1, 0x8000, 0x2004}
 };
 
+GsDOBJ2 gPlayerTimerModelObject
+    __attribute__((section(".data.player_timer_model_object"))) = {0};
+
+u32 gRacePlayerSortSavedStackPointer
+    __attribute__((section(".sdata.race_player_sort_saved_stack"))) = 0;
+
 extern u16 D_8013AFAA __attribute__((section(".data")));
 extern u8 D_8013B562 __attribute__((section(".data")));
 extern s16 D_8013B104 __attribute__((section(".data")));
@@ -147,7 +154,96 @@ void initCurrentPlayerModelParts(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/engine/task_transitions", func_8001AF64);
+void sortRacePlayerModelForView(u16 playerIndex, u16 view) {
+    GsDOBJ2 *objects;
+    GsDOBJ2 *extra;
+    RacePlayer *player;
+    s16 timer;
+    u16 drawRootOnly;
+    u16 count;
+    u16 i;
+    u16 blinkMask;
+
+    gRacePlayerSortSavedStackPointer = SetSp((u32)getScratchAddr(255));
+    player = &gRacePlayers[playerIndex];
+    D_8013B0D8 = player;
+    objects = player->modelObjects;
+    timer = player->unk134;
+    drawRootOnly = 0;
+    if (timer != 0) {
+        blinkMask = gameOptionPlayerModeAbsolute == 1 ? 1 : 2;
+        drawRootOnly = 1;
+        if (timer < 16) {
+            drawRootOnly = !(blinkMask & (u16)timer);
+        }
+        if (timer >= 165 && (blinkMask & (u16)timer)) {
+            drawRootOnly = 0;
+        }
+    }
+
+    count = 1;
+    if (!drawRootOnly) {
+        count = 12;
+        if (D_8013B0D8->unk12C == 25) {
+            count = 1;
+        }
+    }
+
+    for (i = 0; i < count; i++) {
+        GsGetLs(objects[i].coord2, D_800EC170[i]);
+    }
+    for (i = 0; i < count; i++, objects++) {
+        if (i == 0 && D_8013B0D8->unk0FE) {
+            D_8013B0D8->timer.coordinate.coord = *D_800EC170[0];
+        }
+        if (D_8013B0D8->unk128 & 0x200000) {
+            D_8013AF88->vx = D_8013AF88->vz = 0x1000;
+            D_8013AF88->vy = D_8013B0D8->unk0F8 * 512;
+            ScaleMatrix(D_800EC170[i], D_8013AF88);
+        }
+        GsSetLsMatrix(D_800EC170[i]);
+        if (!(taskTransitionFlagsAbsolute & 0x40) || i != 0) {
+            if (view == 0) {
+                GsSortObject4(objects, &D_800EC068[D_8013AF78], 2, getScratchAddr(0));
+            } else {
+                GsSortObject4(objects, &D_800EC108[D_8013AF78], 2, getScratchAddr(0));
+            }
+        }
+        if (i == 0) {
+            if (count != 1) {
+                extra = objects + 12;
+                if (view == 0) {
+                    GsSortObject4(extra, &D_800EC018[D_8013AF78], 2, getScratchAddr(0));
+                } else {
+                    GsSortObject4(extra, &D_800EC0B8[D_8013AF78], 2, getScratchAddr(0));
+                }
+                extra++;
+                if (view == 0) {
+                    GsSortObject4(extra, &D_800EC018[D_8013AF78], 2, getScratchAddr(0));
+                } else {
+                    GsSortObject4(extra, &D_800EC0B8[D_8013AF78], 2, getScratchAddr(0));
+                }
+            }
+            if (D_8013B0D8->unk0FE) {
+                if (D_8013B0D8->unk0FF) {
+                    setVector(D_8013AF88, D_8013B0D8->timer.unk60,
+                              D_8013B0D8->timer.unk60, D_8013B0D8->timer.unk60);
+                } else {
+                    setVector(D_8013AF88, -D_8013B0D8->timer.unk60,
+                              D_8013B0D8->timer.unk60, -D_8013B0D8->timer.unk60);
+                }
+                ScaleMatrix(&D_8013B0D8->timer.coordinate.coord, D_8013AF88);
+                GsSetLsMatrix(&D_8013B0D8->timer.coordinate.coord);
+                if (view == 0) {
+                    GsSortObject4(&gPlayerTimerModelObject, &D_800EC018[D_8013AF78], 2, getScratchAddr(0));
+                } else {
+                    GsSortObject4(&gPlayerTimerModelObject, &D_800EC0B8[D_8013AF78], 2, getScratchAddr(0));
+                }
+            }
+        }
+    }
+    SetSp(gRacePlayerSortSavedStackPointer);
+}
 
 void sortLitObject(GsDOBJ2 *object) {
     GsGetLw(object->coord2, D_8013AF98);

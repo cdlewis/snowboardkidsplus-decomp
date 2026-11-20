@@ -45,7 +45,7 @@ void renderCurrentCameraPlayersAndUpdateSound(void) {
                 if (isPointWithinCameraForwardRange(gRacePlayers[i].worldCoordinate.coord.t[0], gRacePlayers[i].worldCoordinate.coord.t[2], 0)) {
                     func_8001E3E4((SVECTOR *)&gRacePlayers[i].unk0B4, &gRacePlayers[i].worldCoordinate);
                     setCoordinateRotationZYX(&gRacePlayers[i].modelRotation, &gRacePlayers[i].modelCoordinate);
-                    func_8001AF64(i, 0);
+                    sortRacePlayerModelForView(i, 0);
                 }
             }
             drawCourseModelsForView(0);
@@ -54,7 +54,7 @@ void renderCurrentCameraPlayersAndUpdateSound(void) {
                 if (isPointWithinCameraForwardRange(gRacePlayers[i].worldCoordinate.coord.t[0], gRacePlayers[i].worldCoordinate.coord.t[2], D_8013AE88->data18)) {
                     func_8001E3E4((SVECTOR *)&gRacePlayers[i].unk0B4, &gRacePlayers[i].worldCoordinate);
                     setCoordinateRotationZYX(&gRacePlayers[i].modelRotation, &gRacePlayers[i].modelCoordinate);
-                    func_8001AF64(i, D_8013AE88->data18);
+                    sortRacePlayerModelForView(i, D_8013AE88->data18);
                 }
             }
             drawCourseModelsForView(D_8013AE88->data18);

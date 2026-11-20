@@ -75,6 +75,7 @@ extern u32 D_8013AFE4 __attribute__((section(".data")));
 #else
 extern u32 D_8013AFE4;
 #endif
+extern u32 taskTransitionFlagsAbsolute __attribute__((section(".data")));
 extern GameTask gGameTasks[200];
 /* The resource allocator supplies 256-byte records to task-specific users. */
 typedef struct TaskResourceRecord {

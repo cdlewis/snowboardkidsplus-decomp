@@ -12,6 +12,7 @@ gameOptionPlayerModeGp = D_8013AFCD;
 activeRacePlayerCountGp = D_8013AFD2;
 playerSnapshotTaskGp = D_8013B304;
 gameOptionPlayerModeAbsolute = D_8013AFCD;
+taskTransitionFlagsAbsolute = D_8013AFE4;
 selectedCourseIndexAbsolute = D_8013AFCE;
 selectedFinishLapCountAbsolute = D_8013AFD0;
 geometryPlacementDataAbsolute = D_8013B1F4;

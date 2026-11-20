@@ -222,6 +222,7 @@ void clearCurrentPlayerSequenceState(void);
 void updateCurrentPlayerFromTaskPhase(void);
 
 void updateCurrentPlayerModelPartCoordinates(void);
+void sortRacePlayerModelForView(u16 playerIndex, u16 view);
 void sortPlayerModelWithDrawArea(u16 playerIndex, u16 depthIndex, RECT *bounds);
 
 void loadCurrentPlayerModelPose(const s16 *values);
