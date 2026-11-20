@@ -1990,6 +1990,7 @@ setStateGridFlag = 0x80095EB4; // type:func
 selectTaskCallbackFromModeState = 0x800A09FC; // type:func
 resolveCurrentPlayerTerrainContact = 0x80028234; // type:func
 averageWrappedAngle = 0x80028608; // type:func
+updateCurrentPlayerGroundContact = 0x80028680; // type:func
 snapCurrentPlayerToTerrain = 0x80028C80; // type:func
 
 addTextCharacter = 0x8006B2E4; // type:func
@@ -3666,5 +3667,6 @@ gCurrentMovieIndex = 0x8013AF60; // size:0x2 defined:true
 gMovieReachedEnd = 0x8013B610; // size:0x1 defined:true
 gMovieStartupFrames = 0x8013B611; // size:0x1 defined:true
 gPlayerTerrainContactSavedStackPointer = 0x8013B618; // type:u32 size:0x4
+gPlayerGroundContactSavedStackPointer = 0x8013B61C; // type:u32 size:0x4
 gPlayerTimerModelObject = 0x80129B60; // size:0x10
 gRacePlayerSortSavedStackPointer = 0x8013B614; // type:u32 size:0x4

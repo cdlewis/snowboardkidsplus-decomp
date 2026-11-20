@@ -19,6 +19,8 @@
 #include "game/audio/music.h"
 #include "game/save/save_data.h"
 #include "game/engine/game_options.h"
+#define GAME_LOOP_ABSOLUTE_ADDRESSING
+#include "game/engine/game_loop.h"
 #include "game/menu/selected_records.h"
 #include "psx/libapi.h"
 #include "psx/libetc.h"
@@ -124,13 +126,15 @@ u16 gPlayerCombinedTrickBonuses[10]
 u32 gPlayerTerrainContactSavedStackPointer
     __attribute__((section(".sdata.player_terrain_contact_saved_stack"))) = 0;
 
+u32 gPlayerGroundContactSavedStackPointer
+    __attribute__((section(".sdata.player_ground_contact_saved_stack"))) = 0;
+
 void updateCurrentPlayerMotionEffects(void);
 void initializeScaledTaskCoordinateResource(void);
 void updateCurrentPlayerState24MotionAndScale(void);
 void func_80024288(void);
 void updateCurrentPlayerTimedEffect(void);
 void func_800205B8(void);
-void func_80028680(void);
 void updateCurrentPlayerAirborneDragUntilLanding(void);
 s32 snapCurrentPlayerToTerrain(void);
 void func_80015C94(u16 playerIndex);
@@ -141,7 +145,7 @@ void updateCurrentPlayerTaskDecelerationSteps(void);
 void func_80025FAC(void);
 void moveCurrentPlayerForwardUntilState22(void);
 void updateCurrentPlayerState30TaskUntilStopped(void);
-void func_80028680(void);
+s32 updateCurrentPlayerGroundContact(void);
 void updateCurrentPlayerState12MotionAndTimer(void);
 void func_80027918(void);
 s16 resolveCurrentPlayerTerrainContact(void);
@@ -726,7 +730,7 @@ void initializeCurrentPlayerModelAndHeight(void) {
         D_8013B0D8->unk0B6 = D_8013B0D8->unk110 - 0x400;
     }
     D_8013B0D8->y = D_8013B0D8->unk054 = func_8004A764(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8) << 8;
-    func_80028680();
+    updateCurrentPlayerGroundContact();
     startCurrentPlayerAnimation(1, 1);
     setCurrentTaskCallback(updateCurrentPlayerAndResetState);
 }
@@ -777,7 +781,7 @@ void updateCurrentPlayerState29MotionAndAnimation(void) {
     D_8013B0D8->x += D_8013B0D8->unk060;
     D_8013B0D8->y += D_8013B0D8->unk062;
     D_8013B0D8->z += D_8013B0D8->unk064;
-    func_80028680();
+    updateCurrentPlayerGroundContact();
     updateCurrentPlayerAnimation();
     if (D_8013B0D8->animationFlags & 0x10) {
         startCurrentPlayerAnimation(0x23, 1);
@@ -818,7 +822,7 @@ void updateCurrentPlayerState4MotionAndLanding(void) {
     D_8013B0D8->y += D_8013B0D8->unk062;
     D_8013B0D8->z += D_8013B0D8->unk064;
     if (!(D_8013B0D8->unk128 & 1)) {
-        func_80028680();
+        updateCurrentPlayerGroundContact();
     } else if (resolveCurrentPlayerTerrainContact()) {
         func_8002E5A0(D_8013AE88->data18, 9);
         func_800183FC(D_8013AE88->data18, 1, 0xB01, 0x20);
@@ -851,7 +855,7 @@ void updateCurrentPlayerState5MotionAndTimer(void) {
         motion->unk062 = 0x7800;
     }
     D_8013B0D8->y += D_8013B0D8->unk062;
-    func_80028680();
+    updateCurrentPlayerGroundContact();
     updateCurrentPlayerAnimation();
     player = D_8013B0D8;
     if (!(player->unk128 & 1)) {
@@ -887,7 +891,7 @@ void updateCurrentPlayerTimedEffect(void) {
     s32 xOffset, zOffset;
 
     prepareCurrentPlayerFrame();
-    func_80028680();
+    updateCurrentPlayerGroundContact();
     updateCurrentPlayerAnimation();
     if (D_8013B0D8->animationFlags & 0x10) {
         startCurrentPlayerAnimation(17, 1);
@@ -991,7 +995,7 @@ void updateCurrentPlayerState23MotionAndTimer(void) {
     player = D_8013B0D8;
     if (!(player->unk128 & 1)) {
         player->unk128 &= ~0x200;
-        func_80028680();
+        updateCurrentPlayerGroundContact();
     } else {
         player->unk128 |= 0x200;
         player->unk062 += 0x240;
@@ -1031,7 +1035,7 @@ void updateCurrentPlayerState24MotionAndScale(void) {
         D_8013B0D8->unk128 &= ~0x200;
     }
     if (!(D_8013B0D8->unk128 & 1)) {
-        func_80028680();
+        updateCurrentPlayerGroundContact();
     } else if ((landed = resolveCurrentPlayerTerrainContact()) != 0) {
         func_8002E5A0(D_8013AE88->data18, 9);
         func_800183FC(D_8013AE88->data18, 1, 0xB01, 0x20);
@@ -1085,7 +1089,7 @@ void updateCurrentPlayerState25MotionAndTimer(void) {
         D_8013B0D8->x += D_8013B0D8->unk060;
         D_8013B0D8->y += D_8013B0D8->unk062;
         D_8013B0D8->z += D_8013B0D8->unk064;
-        func_80028680();
+        updateCurrentPlayerGroundContact();
     } else {
         D_8013B0D8->unk128 |= 0x200;
         D_800EB22C.vx = D_8013B0D8->unk060;
@@ -1571,7 +1575,7 @@ updateAnimation:
     movingPlayer->x += movingPlayer->unk060;
     movingPlayer->y += movingPlayer->unk062;
     movingPlayer->z += movingPlayer->unk064;
-    func_80028680();
+    updateCurrentPlayerGroundContact();
     updateCurrentPlayerMotionEffects();
 
     stoppedPlayer = D_8013B0D8;
@@ -1615,7 +1619,7 @@ void advanceCurrentPlayerState30TaskOnResult(void) {
         D_8013B0D8->unk08C = 0;
     } else {
         smoothAndScaleCurrentPlayerInput(0, 0);
-        func_80028680();
+        updateCurrentPlayerGroundContact();
         updateCurrentPlayerAnimation();
     }
 }
@@ -1725,7 +1729,7 @@ void updateCurrentPlayerState8Steering(void) {
 movement:
     smoothAndScaleCurrentPlayerInput(0, 0);
     D_8013B0D8->unk09E = 0x280;
-    func_80028680();
+    updateCurrentPlayerGroundContact();
     updateCurrentPlayerAnimation();
     if (++D_8013AE88->data1A < 15) {
         D_8013B0D8->unk128 |= 8;
@@ -1767,7 +1771,7 @@ void updateCurrentPlayerState11Motion(void) {
     D_8013B0D8->y += D_8013B0D8->unk062;
     D_8013B0D8->z += D_8013B0D8->unk064;
     if (!(D_8013B0D8->unk128 & 1)) {
-        func_80028680();
+        updateCurrentPlayerGroundContact();
     } else {
         resolveCurrentPlayerTerrainContact();
     }
@@ -1839,7 +1843,7 @@ void updateCurrentPlayerTimedMotion(void) {
     D_8013B0D8->y += D_8013B0D8->unk062;
     D_8013B0D8->z += D_8013B0D8->unk064;
     if (!(D_8013B0D8->unk128 & 1)) {
-        func_80028680();
+        updateCurrentPlayerGroundContact();
         D_8013B0D8->unk96E = 0x500;
         D_8013B0D8->unk972 = 0;
         D_8013B0D8->unk96C = 0x20;
@@ -1876,7 +1880,7 @@ void updateCurrentPlayerState12MotionAndTimer(void) {
         D_8013B0D8->x += D_8013B0D8->unk060;
         D_8013B0D8->y += D_8013B0D8->unk062;
         D_8013B0D8->z += D_8013B0D8->unk064;
-        func_80028680();
+        updateCurrentPlayerGroundContact();
         updateCurrentPlayerAnimation();
         if (++D_8013AE88->data1A >= 8) {
             D_8013B0D8->unk128 |= 8;
@@ -2021,7 +2025,116 @@ s32 averageWrappedAngle(s16 first, u16 second) {
     return midpoint & 0x7FF;
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_80028680);
+s32 updateCurrentPlayerGroundContact(void) {
+    u8 padding[0x28];
+    s16 result = 0;
+    s16 region;
+    s32 groundY;
+
+    gPlayerGroundContactSavedStackPointer = SetSp((u32)getScratchAddr((sizeof(scratchpad) - sizeof(u32)) / sizeof(u32)));
+    func_80027918();
+    if (func_8002D3C4(0) >= 2) {
+        region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8);
+        D_8013B0D8->unk92E = region;
+        D_8013B0D8->y = func_8004A764(region, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8) << 8;
+        D_8013B0D8->worldCoordinate.coord.t[0] = D_8013B0D8->x >> 8;
+        D_8013B0D8->worldCoordinate.coord.t[1] = D_8013B0D8->y >> 8;
+        D_8013B0D8->worldCoordinate.coord.t[2] = D_8013B0D8->z >> 8;
+        SetSp(gPlayerGroundContactSavedStackPointer);
+        return 0;
+    }
+
+    region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8);
+    D_8013B0D8->unk92E = region;
+    groundY = func_8004A764(region, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8) << 8;
+    copySelectedRecordToCurrentPlayer();
+
+    if (groundY > D_8013B0D8->y + 0x400) {
+        s16 yawDifference = D_8013B0D8->unk116 - D_8013B0D8->unk118;
+        if ((yawDifference > 0x400 && yawDifference < 0xC00) ||
+            (yawDifference < -0x400 && yawDifference > -0xC00)) {
+            s16 previousPitch;
+            if (D_8013B0D8->unk11C > 0) {
+                previousPitch = D_8013B0D8->unk11C - 0x800;
+            } else {
+                previousPitch = D_8013B0D8->unk11C + 0x800;
+            }
+            if (D_8013B0D8->unk11A - previousPitch > 0xA0 &&
+                D_8013B0D8->unk0BC / 16 < groundY - D_8013B0D8->y) {
+                result = 2;
+            }
+        } else if (D_8013B0D8->unk062 > 0 &&
+                   D_8013B0D8->unk11A - D_8013B0D8->unk11C > 0xA0 &&
+                   D_8013B0D8->unk0BC / 16 < groundY - D_8013B0D8->y) {
+            result = 1;
+        }
+    }
+
+    if (result == 0) {
+        s32 sinYaw, cosYaw, probeDistance, dx, dz;
+        s32 forwardY, rearY;
+        s16 forwardRecord;
+
+        sinYaw = rsin((s16)D_8013B0D8->unk110);
+        cosYaw = rcos((s16)D_8013B0D8->unk110);
+        probeDistance = rcos((s16)D_8013B0D8->unk112) * 20 / 4096;
+        dx = sinYaw * probeDistance / 4096;
+        dz = cosYaw * probeDistance / 4096;
+
+        region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, (D_8013B0D8->x >> 8) + dx, (D_8013B0D8->z >> 8) + dz);
+        forwardY = func_8004A764(region, (D_8013B0D8->x >> 8) + dx, (D_8013B0D8->z >> 8) + dz) << 8;
+        forwardRecord = D_8013B1FE;
+        computeSelectedTriangleNormal(D_8013AF88);
+
+        region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, (D_8013B0D8->x >> 8) - dx, (D_8013B0D8->z >> 8) - dz);
+        rearY = func_8004A764(region, (D_8013B0D8->x >> 8) - dx, (D_8013B0D8->z >> 8) - dz) << 8;
+        computeSelectedTriangleNormal(D_8013AF8C);
+
+        if (forwardRecord == D_8013B1FE) {
+            s32 y;
+            D_8013B0D8->y = groundY;
+            D_8013B0D8->unk118 = D_8013B0D8->unk11E;
+            D_8013B0D8->unk11C = D_8013B0D8->unk120;
+            D_8013B0D8->unk11E = D_8013B0D8->unk116;
+            D_8013B0D8->unk120 = D_8013B0D8->unk11A;
+            D_8013B0D8->worldCoordinate.coord.t[0] = D_8013B0D8->x >> 8;
+            y = D_8013B0D8->y;
+            D_8013B0D8->worldCoordinate.coord.t[1] = y >> 8;
+            D_8013B0D8->worldCoordinate.coord.t[2] = D_8013B0D8->z >> 8;
+        } else {
+            D_8013B0D8->unk118 = D_8013B0D8->unk11E;
+            D_8013B0D8->unk11C = D_8013B0D8->unk120;
+            D_8013AF88->vx = (D_8013AF88->vx + D_8013AF8C->vx) / 2;
+            D_8013AF88->vy = (D_8013AF88->vy + D_8013AF8C->vy) / 2;
+            D_8013AF88->vz = (D_8013AF88->vz + D_8013AF8C->vz) / 2;
+            computeVectorYawAndPitch(D_8013AF88, &D_8013B0D8->unk116, &D_8013B0D8->unk11A);
+            D_8013B0D8->unk11E = averageWrappedAngle(D_8013B0D8->unk116, D_8013B0D8->unk11E);
+            D_8013B0D8->y = groundY;
+            D_8013B0D8->worldCoordinate.coord.t[1] = (((forwardY + rearY) >> 1) + groundY) >> 9;
+            D_8013B0D8->unk120 = (D_8013B0D8->unk11A + D_8013B0D8->unk11C) / 2;
+            D_8013B0D8->worldCoordinate.coord.t[0] = D_8013B0D8->x >> 8;
+            D_8013B0D8->worldCoordinate.coord.t[2] = D_8013B0D8->z >> 8;
+        }
+
+        if (!(D_8013B0D8->unk128 & 0x2000000)) {
+            D_8013B0D8->unk10E = D_8013B0D8->unk0B4;
+            D_8013B0D8->unk110 = D_8013B0D8->unk0B6 + 0x400;
+            D_8013B0D8->unk112 = D_8013B0D8->unk0B8 = getXZHeading(0, 0, probeDistance * 2, (rearY - forwardY) >> 8) - 0x400;
+        }
+        D_8013B0D8->unk128 &= ~1;
+    } else {
+        if (result == 2) {
+            D_8013B0D8->unk062 = 0;
+        }
+        D_8013B0D8->worldCoordinate.coord.t[0] = D_8013B0D8->x >> 8;
+        D_8013B0D8->worldCoordinate.coord.t[1] = D_8013B0D8->y >> 8;
+        D_8013B0D8->worldCoordinate.coord.t[2] = D_8013B0D8->z >> 8;
+        D_8013B0D8->unk128 |= 1;
+    }
+
+    SetSp(gPlayerGroundContactSavedStackPointer);
+    return result;
+}
 
 s32 snapCurrentPlayerToTerrain(void) {
     u8 padding[0x20];
