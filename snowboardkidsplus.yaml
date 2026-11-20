@@ -151,7 +151,8 @@ segments:
       - [0x29E4, .rodata, menu/resource_tasks]
       - {start: 0x2A08, type: .rodata, name: menu/resource_tasks, linker_section: .rodata.mode11_selection_jump_table_padding}
       - [0x2A0C, .rodata, menu/selection_tasks]
-      - [0x2A58, rodata]
+      - [0x2A58, .rodata, menu/unlock_menu]
+      - [0x2A74, rodata]
       - [0x2B54, .rodata, scene/scene_playback]
       - {start: 0x2B68, type: .rodata, name: scene/scene_playback, linker_section: .rodata.scene_playback_padding}
       - [0x2B6C, .rodata, scene/scene_event_tasks]

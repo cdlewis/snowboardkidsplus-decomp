@@ -1448,6 +1448,7 @@ padPatchSavedRa = 0x80141668; // defined:true
 changeClearPadSavedRa = 0x80141678; // defined:true
 
 // Original Psy-Q 4.2 object exports and project aliases.
+jtbl_80012258 = 0x80012258; // defined:true size:0x1C
 jtbl_80012480 = 0x80012480; // defined:true
 jtbl_800124A0 = 0x800124A0; // defined:true
 jtbl_800124C0 = 0x800124C0; // defined:true
@@ -1935,6 +1936,7 @@ checkCurrentPlayerFlags275000OrField134 = 0x8002D260; // type:func
 copyPlayerPaletteRow = 0x8009B6A8; // type:func
 
 runTaskResource14Update = 0x800A3D5C; // type:func
+updateUnlockOptionsMenuTask = 0x800A3D9C; // type:func
 
 getPlayerCourseProgress = 0x8002B3F4; // type:func
 gPlayerCourseProgressTablePadding = 0x80010658; // size:0x4 defined:true

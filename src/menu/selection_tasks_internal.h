@@ -103,7 +103,7 @@ void finishControllerPlaybackTransition(void);
 void func_800A42CC(void);
 void func_800A499C(void);
 void drawUnlockNotificationMenu(void);
-void func_800A3D9C(void);
+void updateUnlockOptionsMenuTask(void);
 void func_800A525C(void);
 
 typedef struct NumberPanelState {

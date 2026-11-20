@@ -7,7 +7,6 @@ void initializeRacePaletteCycles(void);
 /* Explicit .data placement preserves absolute accesses in this module;
  * some other game units access these same objects through $gp.
  */
-extern u32 gGameOptionFlags __attribute__((section(".data")));
 extern u16 gUnlockNotificationFlags __attribute__((section(".data")));
 
 /* These getters return raw masks, not normalized booleans. Bit 3 selects stereo
@@ -15,11 +14,13 @@ extern u16 gUnlockNotificationFlags __attribute__((section(".data")));
  * The per-player option occupies bit (4 + playerIndex).
  */
 #ifdef GAME_OPTIONS_GP_ADDRESSING
+extern u32 gGameOptionFlags;
 extern u8 D_8013AFCD;
 extern u8 D_8013AFE0;
 extern u8 D_8013AFE1;
 extern u8 D_8013AFE2;
 #else
+extern u32 gGameOptionFlags __attribute__((section(".data")));
 extern u8 D_8013AFCD __attribute__((section(".data")));
 extern u8 D_8013AFE0 __attribute__((section(".data")));
 extern u8 D_8013AFE1 __attribute__((section(".data")));

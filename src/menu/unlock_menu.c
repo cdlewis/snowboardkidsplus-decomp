@@ -1,3 +1,4 @@
+#define GAME_OPTIONS_GP_ADDRESSING
 #include "selection_tasks_internal.h"
 
 s16 gUnlockNotificationSprites[14] __attribute__((section(".data.unlock_notification_sprites"))) = {
@@ -19,7 +20,7 @@ void initializeUnlockMenuResourceTask(void) {
     state->unk8C = 0;
     configureTaskStateTransition(1, 0, 30);
     applySaveRecordUnlockOverrides(0);
-    setCurrentTaskCallback(func_800A3D9C);
+    setCurrentTaskCallback(updateUnlockOptionsMenuTask);
 }
 
 void resetUnlockMenuAnimation(UnlockMenuState *state) {
@@ -45,7 +46,137 @@ void runTaskResource14Update(void) {
     func_800A42CC();
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/unlock_menu", func_800A3D9C);
+void updateUnlockOptionsMenuTask(void) {
+    UnlockMenuState *state;
+    s16 exitRequested;
+    s16 optionChanged;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        for (;;) {}
+    }
+    exitRequested = 0;
+    optionChanged = 0;
+    state = (UnlockMenuState *)&D_800D9504[D_8013AE88->resource14];
+
+    if (D_8013AEE8[0] & 0x1000) {
+        if (state->selection > 0) {
+            state->selection--;
+        }
+    }
+    if (D_8013AEE8[0] & 0x4000) {
+        if (state->selection < 6) {
+            state->selection++;
+        }
+    }
+    if (D_8013AEE8[0] & 0x40) {
+        exitRequested = 1;
+    }
+    if (state->selection != state->previousSelection) {
+        playSoundEffect(0, 0x100, 0x20);
+        state->previousSelection = state->selection;
+    }
+
+    switch (state->selection) {
+    case 0:
+        if ((D_8013AEE8[0] & 0x8000) && !(gGameOptionFlags & 0x1)) {
+            gGameOptionFlags |= 0x1;
+            optionChanged = 1;
+        }
+        if ((D_8013AEE8[0] & 0x2000) && (gGameOptionFlags & 0x1)) {
+            gGameOptionFlags &= ~0x1;
+            optionChanged = 1;
+        }
+        if (D_8013AEE8[0] & 0xB0) {
+            gGameOptionFlags = !(gGameOptionFlags & 0x1) ?
+                gGameOptionFlags | 0x1 : gGameOptionFlags & ~0x1;
+            optionChanged = 1;
+        }
+        break;
+    case 1:
+        if ((D_8013AEE8[0] & 0x8000) && !(gGameOptionFlags & 0x2)) {
+            gGameOptionFlags |= 0x2;
+            optionChanged = 1;
+        }
+        if ((D_8013AEE8[0] & 0x2000) && (gGameOptionFlags & 0x2)) {
+            gGameOptionFlags &= ~0x2;
+            optionChanged = 1;
+        }
+        if (D_8013AEE8[0] & 0xB0) {
+            gGameOptionFlags = !(gGameOptionFlags & 0x2) ?
+                gGameOptionFlags | 0x2 : gGameOptionFlags & ~0x2;
+            optionChanged = 1;
+        }
+        break;
+    case 2:
+        if ((D_8013AEE8[0] & 0x8000) && !(gGameOptionFlags & 0x4)) {
+            gGameOptionFlags |= 0x4;
+            optionChanged = 1;
+        }
+        if ((D_8013AEE8[0] & 0x2000) && (gGameOptionFlags & 0x4)) {
+            gGameOptionFlags &= ~0x4;
+            optionChanged = 1;
+        }
+        if (D_8013AEE8[0] & 0xB0) {
+            gGameOptionFlags = !(gGameOptionFlags & 0x4) ?
+                gGameOptionFlags | 0x4 : gGameOptionFlags & ~0x4;
+            optionChanged = 1;
+        }
+        break;
+    case 3:
+        if ((D_8013AEE8[0] & 0x8000) && !(gGameOptionFlags & 0x10)) {
+            gGameOptionFlags |= 0x30;
+            optionChanged = 1;
+        }
+        if ((D_8013AEE8[0] & 0x2000) && (gGameOptionFlags & 0x10)) {
+            gGameOptionFlags &= ~0x30;
+            optionChanged = 1;
+        }
+        if (D_8013AEE8[0] & 0xB0) {
+            gGameOptionFlags = !(gGameOptionFlags & 0x10) ?
+                gGameOptionFlags | 0x30 : gGameOptionFlags & ~0x30;
+            optionChanged = 1;
+        }
+        break;
+    case 4:
+        if ((D_8013AEE8[0] & 0x8000) && !(gGameOptionFlags & 0x8)) {
+            gGameOptionFlags |= 0x8;
+            optionChanged = 1;
+        }
+        if ((D_8013AEE8[0] & 0x2000) && (gGameOptionFlags & 0x8)) {
+            gGameOptionFlags &= ~0x8;
+            optionChanged = 1;
+        }
+        if (D_8013AEE8[0] & 0xB0) {
+            gGameOptionFlags = !(gGameOptionFlags & 0x8) ?
+                gGameOptionFlags | 0x8 : gGameOptionFlags & ~0x8;
+            optionChanged = 1;
+        }
+        break;
+    case 5:
+        if (D_8013AEE8[0] & 0xB0) {
+            setCurrentTaskCallback(initializeUnlockMenuTask);
+            optionChanged = 1;
+        }
+        break;
+    case 6:
+        if (D_8013AEE8[0] & 0xB0) {
+            exitRequested = 1;
+        }
+        break;
+    }
+
+    func_800A42CC();
+    if (exitRequested) {
+        playSoundEffect(0, 0, 0x20);
+        D_8013AE88->data18 = 0;
+        setCurrentTaskCallback(finishUnlockMenuTask);
+    } else if (optionChanged) {
+        playSoundEffect(0, 0, 0x20);
+        if (state->selection == 4) {
+            applyStereoSoundOption();
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/menu/unlock_menu", func_800A42CC);
 
@@ -207,7 +338,7 @@ void animateUnlockMenuTransition(void) {
         state->selection = 5;
         state->previousSelection = 5;
         resetUnlockMenuAnimation(state);
-        setCurrentTaskCallback(func_800A3D9C);
+        setCurrentTaskCallback(updateUnlockOptionsMenuTask);
         break;
     }
 }
