@@ -138,7 +138,8 @@ segments:
       - {start: 0x1ED8, type: .rodata, name: unclassified/menu_8007CC78, linker_section: .rodata.registered_player_models}
       - {start: 0x2068, type: .rodata, name: unclassified/menu_8007CC78, linker_section: .rodata.grouped_selection_menu}
       - {start: 0x210C, type: .rodata, name: unclassified/menu_8007CC78, linker_section: .rodata.grouped_selection_menu_padding}
-      - [0x2110, rodata]
+      - {start: 0x2110, type: .rodata, name: unclassified/menu_8007CC78, linker_section: .rodata.player_grouped_selection}
+      - [0x2230, rodata]
       - {start: 0x22B8, type: .rodata, name: unclassified/menu_8007CC78, linker_section: .rodata.memory_card_slot_task}
       - {start: 0x22EC, type: .rodata, name: unclassified/menu_8007CC78, linker_section: .rodata.memory_card_slot_task_padding}
       - {start: 0x22F0, type: .rodata, name: unclassified/menu_8007CC78, linker_section: .rodata.save_record_task}
@@ -823,6 +824,10 @@ segments:
       - [0x1205CC, data, record_flag_menu_data_tail]
       - {start: 0x12080C, type: .data, name: unclassified/menu_8007CC78, linker_section: .data.grouped_course_menu_descriptors}
       - [0x120884, data, grouped_course_menu_data_tail]
+      - {start: 0x1208D8, type: .data, name: unclassified/menu_8007CC78, linker_section: .data.player_grouped_selection_sprites}
+      - {start: 0x12093E, type: .data, name: unclassified/menu_8007CC78, linker_section: .data.player_grouped_selection_sprites_padding}
+      - {start: 0x120940, type: .data, name: unclassified/menu_8007CC78, linker_section: .data.player_grouped_selection_descriptors}
+      - [0x1209B8, data, grouped_course_menu_data_end]
       - {start: 0x1209CC, type: .data, name: unclassified/menu_8007CC78, linker_section: .data.task_index_panel_quads}
       - [0x120ABC, data, task_index_panel_tail]
       - {start: 0x120F24, type: .data, name: menu/save_record_tasks, linker_section: .data.task_shadowed_text}
@@ -1030,6 +1035,7 @@ segments:
       - {start: 0x12BC5C, type: .data, name: unclassified/menu_8007CC78, linker_section: .data.registered_triplet_unavailable_label}
       - {start: 0x12BC60, type: .data, name: unclassified/menu_8007CC78, linker_section: .data.lit_object_draw_area_depths}
       - [0x12BC68, data, 12BC68]
+      - {start: 0x12BC6C, type: .data, name: unclassified/menu_8007CC78, linker_section: .data.player_grouped_selection_transition_flags}
       - {start: 0x12BC70, type: .data, name: menu/panel_tasks, linker_section: .data.registered_panel_mode_labels}
       - {start: 0x12BC78, type: .data, name: unclassified/menu_8007CC78, linker_section: .data.save_record_progress_currency_label}
       - [0x12BC7C, data, 12BC7C]
@@ -1077,7 +1083,8 @@ segments:
       - {start: 0x12BEA8, type: .sdata, name: race/course/course_objects, linker_section: .sdata.alternate_object_sort_saved_stack, linker_section_order: .data}
       - [0x12BEAC, data]
       - {start: 0x12BEB4, type: .sdata, name: unclassified/menu_8007CC78, linker_section_order: .data}
-      - [0x12BEB8, data]
+      - {start: 0x12BEB8, type: .sdata, name: unclassified/menu_8007CC78, linker_section: .sdata.player_grouped_selection_states, linker_section_order: .data}
+      - {start: 0x12BEBA, type: .data, name: unclassified/menu_8007CC78, linker_section: .data.player_grouped_selection_states_padding}
       - {start: 0x12BEC0, type: .sdata, name: scene/scene_event_tasks, linker_section: .sdata.scene_image_display_task, linker_section_order: .data}
       - {start: 0x12BEC4, type: .sdata, name: menu/selection_tasks, linker_section: .sdata.scene_sound_state, linker_section_order: .data}
 

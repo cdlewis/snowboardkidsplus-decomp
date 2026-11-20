@@ -118,8 +118,6 @@ extern StateValueHistory D_8013BE30 __attribute__((section(".bss.state_value_his
 extern u8 D_8013AFD8 __attribute__((section(".data")));
 extern u8 D_8013AFD9 __attribute__((section(".data")));
 extern u8 D_8013B47C;
-extern u8 D_8013B6B8[1];
-extern u8 D_8013B6B9[7];
 extern TexturedQuadListEntry taskIndexPanelQuadsPalette0[10];
 extern TexturedQuadListEntry taskIndexPanelQuadsPalette1[10];
 
@@ -132,7 +130,7 @@ void updateStateValueHistoryTask(void);
 void updateMemoryCardSlotTask(void);
 void func_800857C4(void);
 void updatePlayerGroupedSelectionMenu(void);
-void func_80084970(void);
+void updatePlayerGroupedSelectionTask(void);
 void updateRecordFlagSelectionMenuTask(void);
 void func_800815D0(void);
 void initializeDualResourceTaskAndResetByteState(void);

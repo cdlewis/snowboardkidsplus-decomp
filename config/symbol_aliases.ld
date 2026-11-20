@@ -38,3 +38,6 @@ D_8013B514 = D_8013B517 - 3;
 gTaskWidgetRedAbsolute = D_8013B3A4;
 gTaskWidgetGreenAbsolute = D_8013B3A5;
 gTaskWidgetBlueAbsolute = D_8013B3A6;
+
+/* The external view preserves GP-relative fixed accesses and absolute indexed accesses. */
+gPlayerGroupedSelectionStatesReference = gPlayerGroupedSelectionStates;
