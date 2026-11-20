@@ -2896,6 +2896,7 @@ updateCurrentPlayerRiding = 0x800205B8; // type:func
 
 drawSlidingDisplaySprite = 0x80034090; // type:func
 
+reflectVelocityAndResolveGeometryBoundary = 0x8004BC3C; // type:func
 enforceGeometryEdgeDistance = 0x8004C81C; // type:func
 getGeometryBoundaryDisplacement = 0x8004C968; // type:func
 D_8013B630 = 0x8013B630; // size:0x4

@@ -835,7 +835,7 @@ void updatePlayerVisualPairTask6780(void) {
     history = (VECTOR *)&D_800D9504[D_8013AE88->resource16];
     if (D_8013AFD3 == 0) {
         updateHomingTaskVisualMovement(resource, history, 0x1B000, 0x1C);
-        func_8004BC3C(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8, 2, &dx, &dz, &D_800EB22C.vx, &D_800EB22C.vz);
+        reflectVelocityAndResolveGeometryBoundary(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8, 2, &dx, &dz, &D_800EB22C.vx, &D_800EB22C.vz);
         if (dx != 0 || dz != 0) {
             resource->position.x += dx;
             resource->position.z += dz;
@@ -1167,7 +1167,7 @@ void updateVisualTrailTask(void) {
             resource->position.y = ground;
         }
         resource->velocityY = resource->position.y - oldY + 0x1900;
-        func_8004BC3C(resource->geometryIndex, resource->position.x >> 8, resource->position.z >> 8, 2, &dx, &dz, &D_800EB22C.vx, &D_800EB22C.vz);
+        reflectVelocityAndResolveGeometryBoundary(resource->geometryIndex, resource->position.x >> 8, resource->position.z >> 8, 2, &dx, &dz, &D_800EB22C.vx, &D_800EB22C.vz);
         if (dx != 0 || dz != 0) {
             resource->position.x += dx;
             resource->position.z += dz;

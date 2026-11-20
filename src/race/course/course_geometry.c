@@ -1,4 +1,9 @@
 #include "../../graphics/render_effects_internal.h"
+#include "game/graphics/coordinate.h"
+
+typedef struct CourseGeometryVertex {
+    s16 x, y, z;
+} CourseGeometryVertex;
 
 s32 D_8013B624 __attribute__((section(".sdata.geometry_edge_projection"))) = 0;
 
@@ -261,7 +266,142 @@ void resolveGeometryBoundaryCollision(s16 index, s32 x, s32 z, s32 radius, s32 m
     *displacementZ = D_8013B650 - z;
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/course/course_geometry", func_8004BC3C);
+void reflectVelocityAndResolveGeometryBoundary(s16 index, s32 x, s32 z, s32 radius,
+                                               s32 *displacementX, s32 *displacementZ,
+                                               s32 *directionX, s32 *directionZ) {
+    s32 x0, x1, x2, x3;
+    s32 z0, z1, z2, z3;
+    s32 along, distance, edgeLength, basisX, basisZ;
+    s32 cornerLength, tangent, normal;
+    CourseGeometryVertex *vertices = (CourseGeometryVertex *)D_8013B1EC;
+
+    D_8013B648 = x;
+    D_8013B650 = z;
+    x0 = vertices[((GeometryRegion *)D_8013B1F4)[index].vertices[0]].x * 5;
+    x1 = vertices[((GeometryRegion *)D_8013B1F4)[index].vertices[1]].x * 5;
+    x2 = vertices[((GeometryRegion *)D_8013B1F4)[index].vertices[2]].x * 5;
+    x3 = vertices[((GeometryRegion *)D_8013B1F4)[index].vertices[3]].x * 5;
+    z0 = vertices[((GeometryRegion *)D_8013B1F4)[index].vertices[0]].z * 5;
+    z1 = vertices[((GeometryRegion *)D_8013B1F4)[index].vertices[1]].z * 5;
+    z2 = vertices[((GeometryRegion *)D_8013B1F4)[index].vertices[2]].z * 5;
+    z3 = vertices[((GeometryRegion *)D_8013B1F4)[index].vertices[3]].z * 5;
+
+    if (((GeometryRegion *)D_8013B1F4)[index].neighbors[0] < 0) {
+        D_8013B63C = x1 - x0;
+        D_8013B644 = z1 - z0;
+        D_8013B630 = x - x0;
+        D_8013B638 = z - z0;
+        reflectVelocityAndEnforceGeometryEdgeDistance(directionX, directionZ, radius);
+    }
+    if (((GeometryRegion *)D_8013B1F4)[index].neighbors[1] < 0) {
+        D_8013B63C = x2 - x3;
+        D_8013B644 = z2 - z3;
+        D_8013B630 = D_8013B648 - x3;
+        D_8013B638 = D_8013B650 - z3;
+        reflectVelocityAndEnforceGeometryEdgeDistance(directionX, directionZ, radius);
+    }
+
+    if (((GeometryRegion *)D_8013B1F4)[index].neighbors[2] < 0) {
+        D_8013B63C = x3 - x1;
+        D_8013B644 = z3 - z1;
+        D_8013B630 = D_8013B648 - x1;
+        D_8013B638 = D_8013B650 - z1;
+        D_8013B62C = SquareRoot0(D_8013B63C * D_8013B63C + D_8013B644 * D_8013B644);
+        basisX = (D_8013B644 << 12) / D_8013B62C;
+        basisZ = (D_8013B63C << 12) / D_8013B62C;
+        D_8013B624 = basisX;
+        D_8013B628 = basisZ;
+        along = (basisZ * D_8013B630 + basisX * D_8013B638) / 4096;
+        distance = (-basisX * D_8013B630 + basisZ * D_8013B638) / 4096;
+        edgeLength = (basisZ * D_8013B63C + basisX * D_8013B644) / 4096;
+        if ((((GeometryRegion *)D_8013B1F4)[index].cornerFlags & (1 << 1)) && along < 0) {
+            along = D_8013B648 - x1;
+            distance = D_8013B650 - z1;
+            cornerLength = SquareRoot0(along * along + distance * distance);
+            D_8013B62C = cornerLength;
+            if (cornerLength < -radius) {
+                along = along * -radius / cornerLength;
+                distance = distance * -radius / cornerLength;
+                D_8013B648 = along + x1;
+                D_8013B650 = distance + z1;
+            }
+        } else if ((((GeometryRegion *)D_8013B1F4)[index].cornerFlags & (1 << 3)) && edgeLength < along) {
+            along = D_8013B648 - x3;
+            distance = D_8013B650 - z3;
+            cornerLength = SquareRoot0(along * along + distance * distance);
+            D_8013B62C = cornerLength;
+            if (cornerLength < -radius) {
+                along = along * -radius / cornerLength;
+                distance = distance * -radius / cornerLength;
+                D_8013B648 = along + x3;
+                D_8013B650 = distance + z3;
+            }
+        } else if (distance < radius) {
+            tangent = (D_8013B628 * *directionX + D_8013B624 * *directionZ) / 4096;
+            normal = (-D_8013B624 * *directionX + D_8013B628 * *directionZ) / 4096;
+            if (normal < 0) {
+                normal = -normal;
+                *directionX = (D_8013B628 * tangent - D_8013B624 * normal) / 4096;
+                *directionZ = (D_8013B624 * tangent + D_8013B628 * normal) / 4096;
+            }
+            D_8013B644 = radius - distance;
+            D_8013B648 += -D_8013B624 * D_8013B644 / 4096;
+            D_8013B650 += D_8013B628 * D_8013B644 / 4096;
+        }
+    }
+
+    if (((GeometryRegion *)D_8013B1F4)[index].neighbors[3] < 0) {
+        D_8013B63C = x0 - x2;
+        D_8013B644 = z0 - z2;
+        D_8013B630 = D_8013B648 - x2;
+        D_8013B638 = D_8013B650 - z2;
+        D_8013B62C = SquareRoot0(D_8013B63C * D_8013B63C + D_8013B644 * D_8013B644);
+        basisX = (D_8013B644 << 12) / D_8013B62C;
+        basisZ = (D_8013B63C << 12) / D_8013B62C;
+        D_8013B624 = basisX;
+        D_8013B628 = basisZ;
+        along = (basisZ * D_8013B630 + basisX * D_8013B638) / 4096;
+        distance = (-basisX * D_8013B630 + basisZ * D_8013B638) / 4096;
+        edgeLength = (basisZ * D_8013B63C + basisX * D_8013B644) / 4096;
+        if ((((GeometryRegion *)D_8013B1F4)[index].cornerFlags & (1 << 2)) && along < 0) {
+            along = D_8013B648 - x2;
+            distance = D_8013B650 - z2;
+            cornerLength = SquareRoot0(along * along + distance * distance);
+            D_8013B62C = cornerLength;
+            if (cornerLength < -radius) {
+                along = along * -radius / cornerLength;
+                distance = distance * -radius / cornerLength;
+                D_8013B648 = along + x2;
+                D_8013B650 = distance + z2;
+            }
+        } else if ((((GeometryRegion *)D_8013B1F4)[index].cornerFlags & (1 << 0)) && edgeLength < along) {
+            along = D_8013B648 - x0;
+            distance = D_8013B650 - z0;
+            cornerLength = SquareRoot0(along * along + distance * distance);
+            D_8013B62C = cornerLength;
+            if (cornerLength < -radius) {
+                along = along * -radius / cornerLength;
+                distance = distance * -radius / cornerLength;
+                D_8013B648 = along + x0;
+                D_8013B650 = distance + z0;
+            }
+        } else if (distance < radius) {
+            tangent = (D_8013B628 * *directionX + D_8013B624 * *directionZ) / 4096;
+            normal = (-D_8013B624 * *directionX + D_8013B628 * *directionZ) / 4096;
+            if (normal < 0) {
+                normal = -normal;
+                *directionX = (D_8013B628 * tangent - D_8013B624 * normal) / 4096;
+                *directionZ = (D_8013B624 * tangent + D_8013B628 * normal) / 4096;
+            }
+            D_8013B644 = radius - distance;
+            D_8013B648 += -D_8013B624 * D_8013B644 / 4096;
+            D_8013B650 += D_8013B628 * D_8013B644 / 4096;
+        }
+    }
+
+    *displacementX = D_8013B648 - x;
+    *displacementZ = D_8013B650 - z;
+}
 
 void enforceGeometryEdgeDistance(s32 limit) {
     s32 length, nx, nz, perpendicularX;
