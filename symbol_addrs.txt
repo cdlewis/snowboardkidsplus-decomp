@@ -2311,6 +2311,7 @@ slideInSlidingNumberDisplayTask = 0x8003539C; // type:func
 updateCurrentPlayerCameraTarget = 0x8003ED6C; // type:func
 gPlayerCameraViews = 0x801241A8; // size:0x40
 
+animateRegisteredTexturePairTask = 0x800757E0; // type:func
 createValueTransitionTask = 0x80075F80; // type:func
 
 initializeCurrentPlayerState11 = 0x8001F8E4; // type:func
@@ -2461,6 +2462,7 @@ drawTimeRecordHeader = 0x80039484; // type:func
 
 drawAnimatedSprite16 = 0x800775C8; // type:func
 gAnimatedSprite16Template = 0x8012F17C; // size:0x10
+gTexturePairBounceOffsets = 0x8013B3AC; // size:0x8
 gAnimatedSprite16DrawPage = 0x8013B3B4; // size:0x8
 
 initializeCountedSelectionBoundsTask = 0x80091FAC; // type:func

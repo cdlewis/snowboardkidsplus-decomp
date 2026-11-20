@@ -984,6 +984,7 @@ segments:
       - {start: 0x12BB94, type: .data, name: graphics/sprite_draw, linker_section: .data.digit_sprite_blend_bits}
       - {start: 0x12BB9C, type: .data, name: menu/task_widgets, linker_section: .data.secondary_display_pulse_glyph}
       - [0x12BBA4, data, digit_sprite_blend_bits_tail]
+      - {start: 0x12BBAC, type: .data, name: menu/task_widgets, linker_section: .data.texture_pair_bounce_offsets}
       - {start: 0x12BBB4, type: .sdata, name: menu/task_widgets, linker_section: .sdata.animated_sprite16_page, linker_section_order: .data}
       - [0x12BBBC, data, 12BBBC]
       - {start: 0x12BBC8, type: .data, name: menu/task_widgets, linker_section: .data.shrinking_sprite_offsets}
