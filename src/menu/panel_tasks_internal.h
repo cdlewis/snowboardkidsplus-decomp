@@ -204,7 +204,7 @@ void func_8008EC50(void);
 void func_80090450(void);
 void func_80092090(void);
 void func_80097FF4(void);
-void func_80099880(void);
+void updatePlayerPaletteSelectionTask(void);
 void updateTextSequenceTask(void);
 void func_800A1774(TextSequenceResource *resource);
 void func_80092A50(void);
@@ -271,7 +271,8 @@ void drawCurrentTaskTextPanel144x48(void);
 void drawCurrentTaskPlayerValuePanel(void);
 void initializeCountedFourBoundsTask(void);
 void drawCurrentTaskSavedValuePanel(void);
-void initializeTaskGridPositions(s32 unused, GameTask *task, s32 x, s32 y);
+void initializeTaskGridPositions(s32 unused, GameTask *task, s32 x, s32 y,
+                                 s32 unusedStep, s32 unusedDelay);
 void configureFourColumnTaskGridMovement(s32 mode, GameTask *task, s32 x, s32 y, s32 stepX, s32 stepY, s32 delay);
 void drawTaskGridSelectionMarker(void);
 void copyPlayerPaletteRowWithTransition(s16 playerIndex, s32 unused, s32 paletteRow, u16 mode);

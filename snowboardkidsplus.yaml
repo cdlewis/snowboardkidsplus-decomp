@@ -151,7 +151,7 @@ segments:
       - [0x26B0, rodata]
       - [0x2794, rodata]
       - [0x27DC, rodata]
-      - [0x2840, rodata]
+      - [0x2840, .rodata, menu/grid_selection]
       - [0x288C, rodata]
       - {start: 0x28B8, type: .rodata, name: menu/resource_tasks, linker_section: .rodata.time_records_start_prompt}
       - [0x28D0, rodata]
@@ -816,7 +816,7 @@ segments:
       - {start: 0x12205C, type: .data, name: menu/panel_tasks, linker_section: .data.board_selection_styles}
       - [0x122068, data, board_selection_tail]
       - {start: 0x122524, type: .data, name: menu/panel_tasks, linker_section: .data.grid_model_preview_poses}
-      - [0x12254C, data, grid_model_preview_data_tail]
+      - {start: 0x12254C, type: .data, name: menu/grid_selection, linker_section: .data.palette_selection_main_preview_y}
       - {start: 0x122558, type: .data, name: menu/panel_tasks, linker_section: .data.board_price_vertical_offsets}
       - {start: 0x122564, type: .data, name: menu/panel_tasks, linker_section: .data.current_task_panel_text}
       - {start: 0x122574, type: .data, name: menu/panel_tasks, linker_section: .data.task_selection_panel_text}
@@ -825,7 +825,12 @@ segments:
       - {start: 0x1225BC, type: .data, name: menu/grid_selection, linker_section: .data.task_panel_144x48_text}
       - {start: 0x1225CC, type: .data, name: menu/grid_selection, linker_section: .data.task_player_value_panel_label}
       - {start: 0x1225D8, type: .data, name: menu/grid_selection, linker_section: .data.task_player_value_panel_text}
-      - [0x1225E8, data, 1225E8]
+      - {start: 0x1225E8, type: .data, name: menu/grid_selection, linker_section: .data.palette_selection_sprites}
+      - {start: 0x12263C, type: .data, name: menu/grid_selection, linker_section: .data.palette_selection_sprite_mapping}
+      - {start: 0x122698, type: .data, name: menu/grid_selection, linker_section: .data.palette_selection_side_preview_y}
+      - {start: 0x1226A4, type: .data, name: menu/grid_selection, linker_section: .data.palette_selection_side_preview_rotation}
+      - {start: 0x1226B0, type: .data, name: menu/grid_selection, linker_section: .data.palette_selection_purchase_preview_y}
+      - [0x1226BC, data, 1226BC]
       - {start: 0x1226C8, type: .data, name: race/player/player_palette, linker_section: .data.palette_burst_vertices}
       - {start: 0x1226E8, type: .data, name: race/player/player_palette, linker_section: .data.player_palette_transition_pixels}
       - [0x122708, data, player_palette_transition_tail]
