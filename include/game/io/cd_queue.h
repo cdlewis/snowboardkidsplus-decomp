@@ -46,9 +46,14 @@ void startCdVolumeFade(s16 startVolume, s16 step, s16 targetVolume, u8 interval)
 void updateCdVolumeFade(void);
 
 void initializeCdFiles(void);
-extern CdlFILE gAtMovieFile;
-extern CdlFILE gRaMovieFile;
-extern CdlFILE gOpeningMovieFile;
+typedef enum MovieFileIndex {
+    MOVIE_FILE_AT,
+    MOVIE_FILE_RA,
+    MOVIE_FILE_OPENING,
+    MOVIE_FILE_COUNT
+} MovieFileIndex;
+
+extern CdlFILE gMovieFiles[MOVIE_FILE_COUNT];
 extern CdlFILE gDatFile;
 extern s32 gDatStartSector;
 

@@ -17,11 +17,7 @@ static char sOpeningMoviePath[16] __attribute__((section(".rodata.cd_paths"), al
 static char sDatPath[16] __attribute__((section(".rodata.cd_paths"), aligned(4))) =
     "\\SNB\\SNB.DAT;1";
 
-CdlFILE gAtMovieFile __attribute__((section(".data.cd_files"))) = {0};
-
-CdlFILE gRaMovieFile __attribute__((section(".data.cd_files"))) = {0};
-
-CdlFILE gOpeningMovieFile __attribute__((section(".data.cd_files"))) = {0};
+CdlFILE gMovieFiles[MOVIE_FILE_COUNT] __attribute__((section(".data.cd_files"))) = {0};
 
 CdlFILE gDatFile __attribute__((section(".data.dat_file"))) = {0};
 
@@ -149,13 +145,13 @@ void initializeCdFiles(void) {
     resetCdCommandState();
     do {
 
-    } while (CdSearchFile(&gAtMovieFile, sAtMoviePath) == 0);
+    } while (CdSearchFile(&gMovieFiles[MOVIE_FILE_AT], sAtMoviePath) == 0);
     do {
 
-    } while (CdSearchFile(&gRaMovieFile, sRaMoviePath) == 0);
+    } while (CdSearchFile(&gMovieFiles[MOVIE_FILE_RA], sRaMoviePath) == 0);
     do {
 
-    } while (CdSearchFile(&gOpeningMovieFile, sOpeningMoviePath) == 0);
+    } while (CdSearchFile(&gMovieFiles[MOVIE_FILE_OPENING], sOpeningMoviePath) == 0);
     gDatFile.pos.minute = 0;
     gDatFile.pos.second = 0;
     gDatFile.pos.sector = 0;

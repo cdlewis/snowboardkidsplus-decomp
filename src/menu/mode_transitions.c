@@ -95,7 +95,7 @@ void dispatchGameOptionTransitionTask(void) {
     func_8003DEE0();
     switch (D_8013B109) {
     case 0:
-        func_80019D3C(2);
+        playMovie(2);
         resetPendingCdRequests();
         D_8013B109 = 1;
         D_8013B0F0 = 0;

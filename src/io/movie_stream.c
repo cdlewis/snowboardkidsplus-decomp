@@ -1,11 +1,72 @@
 #include "game/io/dat_resources.h"
 #include "card_movie_internal.h"
 
+#define MOVIE_SKIP_BUTTON 0x0800
+
+MovieInfo gMovieInfo[] __attribute__((section(".data.movie_info"))) = {
+    {194, 0, 0},
+    {76, 0, 0},
+    {973, 0, 0},
+};
+s16 gMovieFrameWidth __attribute__((section(".sdata.movie_dimensions"))) = 0;
+s16 gMovieFrameHeight __attribute__((section(".sdata.movie_dimensions"))) = 0;
+s16 gCurrentMovieIndex __attribute__((section(".sdata.movie_index"))) = 0;
+static u16 sMovieIndexPadding __attribute__((section(".sdata.movie_index"))) = 0;
+u8 gMovieReachedEnd __attribute__((section(".sdata.movie_flags"))) = 0;
+u8 gMovieStartupFrames __attribute__((section(".sdata.movie_flags"))) = 0;
+static u16 sMovieFlagsPadding __attribute__((section(".sdata.movie_flags"))) = 0;
+
 MovieDecodeState gMovieDecodeState __attribute__((section(".bss.movie_decode_state")));
 
-INCLUDE_ASM("asm/nonmatchings/io/movie_stream", func_80019D3C);
+void playMovie(s32 movieIndex) {
+    DISPENV display;
+    u8 padding[0x60]; /* Preserves the original stack frame. */
+    CdlLOC location;
+    RECT clearRect = {0, 0, 639, 511};
+    s32 displayY;
 
-void initMovieDecodeState(MovieDecodeState *state, s16 x0, s16 y0, s16 x1, s16 y1) {
+    gCurrentMovieIndex = movieIndex;
+    ClearImage(&clearRect, 0, 0, 0);
+    DrawSync(0);
+    SsSetSerialVol(0, 127, 127);
+    gMovieStartupFrames = 0;
+    initMovieDecodeState(&gMovieDecodeState, gMovieInfo[gCurrentMovieIndex].x, gMovieInfo[gCurrentMovieIndex].y,
+                        gMovieInfo[gCurrentMovieIndex].x, gMovieInfo[gCurrentMovieIndex].y + 240);
+    startMovieStream(&gMovieFiles[gCurrentMovieIndex].pos, handleMovieOutput);
+    DecDCTvlcBuild(MOVIE_VLC_TABLE);
+    while (decodeNextMovieFrame(&gMovieDecodeState) == -1) {
+        location = gMovieFiles[gCurrentMovieIndex].pos;
+        startMovieCdRead(&location);
+    }
+    gMovieReachedEnd = 0;
+    D_8013AEEC[0] = D_8013AEEC[1] = MOVIE_SKIP_BUTTON;
+    while (1) {
+        updateControllers();
+        DecDCTin(gMovieDecodeState.vlcBuffers[gMovieDecodeState.vlcBufferIndex], 3);
+        DecDCTout(gMovieDecodeState.imageBuffers[gMovieDecodeState.imageBufferIndex],
+                  gMovieDecodeState.slice.w * gMovieDecodeState.slice.h / 2);
+        decodeNextMovieFrame(&gMovieDecodeState);
+        waitForMovieOutput(&gMovieDecodeState, 0);
+        VSync(0);
+        displayY = !gMovieDecodeState.frameIndex;
+        SetDefDispEnv(&display, 0, displayY * 240, 480, 240);
+        display.disp.w = display.disp.w * 2 / 3;
+        display.isrgb24 = 1;
+        PutDispEnv(&display);
+        SetDispMask(1);
+        if (gMovieReachedEnd == 1 || (D_8013AEE8[0] & MOVIE_SKIP_BUTTON)) break;
+        if (gMovieStartupFrames < 2) gMovieStartupFrames++;
+    }
+    SsSetSerialVol(0, 0, 0);
+    DecDCToutCallback(0);
+    StUnSetRing();
+    CdControlB(CdlPause, 0, 0);
+    VSync(2);
+    ClearImage(&clearRect, 0, 0, 0);
+    DrawSync(0);
+}
+
+void initMovieDecodeState(MovieDecodeState *state, s32 x0, s32 y0, s32 x1, s32 y1) {
     state->vlcBuffers[0] = MOVIE_VLC_BUFFER_0;
     state->vlcBuffers[1] = MOVIE_VLC_BUFFER_1;
     state->vlcBufferIndex = 0;
@@ -50,7 +111,7 @@ void handleMovieOutput(void) {
         gMovieDecodeState.slice.x = gMovieDecodeState.frames[gMovieDecodeState.frameIndex].x;
         gMovieDecodeState.slice.y = gMovieDecodeState.frames[gMovieDecodeState.frameIndex].y;
     }
-    if (D_8013B611 > 1) {
+    if (gMovieStartupFrames > 1) {
         LoadImage(&slice, gMovieDecodeState.imageBuffers[imageIndex]);
     }
 }
@@ -78,23 +139,23 @@ u32 *getNextMovieStreamFrame(MovieDecodeState *state) {
     while (StGetNext(&data, &header)) {
         if (--timeout == 0) return 0;
     }
-    if (header->frameNumber >= D_800EBFE4[D_8013AF60].endFrame) D_8013B610 = 1;
-    if (D_8013AF54 != header->width || D_8013AF56 != header->height) {
+    if (header->frameNumber >= gMovieInfo[gCurrentMovieIndex].endFrame) gMovieReachedEnd = 1;
+    if (gMovieFrameWidth != header->width || gMovieFrameHeight != header->height) {
         RECT rect;
         rect.x = 0;
         rect.y = 0;
         rect.w = 480;
         rect.h = 480;
         ClearImage(&rect, 0, 0, 0);
-        D_8013AF54 = header->width;
-        D_8013AF56 = header->height;
+        gMovieFrameWidth = header->width;
+        gMovieFrameHeight = header->height;
     }
-    state->frames[0].w = state->frames[1].w = D_8013AF54 * 3 / 2;
-    state->slice.h = state->frames[0].h = state->frames[1].h = D_8013AF56;
+    state->frames[0].w = state->frames[1].w = gMovieFrameWidth * 3 / 2;
+    state->slice.h = state->frames[0].h = state->frames[1].h = gMovieFrameHeight;
     return data;
 }
 
-void waitForMovieOutput(MovieDecodeState *state) {
+void waitForMovieOutput(MovieDecodeState *state, s32 unusedMode) {
     volatile s32 timeout = 0x800000;
     while (state->outputComplete == 0) {
         if (--timeout == 0) {

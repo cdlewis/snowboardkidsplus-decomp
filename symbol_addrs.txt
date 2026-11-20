@@ -1886,6 +1886,8 @@ gControllerEffectStates = 0x8012D438; // size:0x28 defined:true
 
 hasTaskStateValue6 = 0x800707B8; // type:func
 
+playMovie = 0x80019D3C; // type:func
+
 // Initialize movie decode buffers and display coordinates.
 initMovieDecodeState = 0x8001A018; // type:func
 
@@ -3084,11 +3086,7 @@ sOpeningMoviePath = 0x80010020; // size:0x10 defined:true
 
 sDatPath = 0x80010030; // size:0x10 defined:true
 
-gAtMovieFile = 0x800D7BA4; // size:0x18 defined:true
-
-gRaMovieFile = 0x800D7BBC; // size:0x18 defined:true
-
-gOpeningMovieFile = 0x800D7BD4; // size:0x18 defined:true
+gMovieFiles = 0x800D7BA4; // size:0x48 defined:true
 
 gDatFile = 0x8013B6E8; // size:0x18 defined:true
 
@@ -3589,3 +3587,10 @@ gRaceResultsSpeedFanGetLabel = 0x80010B3C; // size:0x14 defined:true
 gRaceResultsPerfectGetLabel = 0x80010B50; // size:0x10 defined:true
 gRaceResultsFastLabel = 0x8013B13C; // size:0x8 defined:true
 drawRaceResultsLabels = 0x80039B34; // type:func
+
+gMovieInfo = 0x800EBFE4; // size:0xC defined:true
+gMovieFrameWidth = 0x8013AF54; // size:0x2 defined:true
+gMovieFrameHeight = 0x8013AF56; // size:0x2 defined:true
+gCurrentMovieIndex = 0x8013AF60; // size:0x2 defined:true
+gMovieReachedEnd = 0x8013B610; // size:0x1 defined:true
+gMovieStartupFrames = 0x8013B611; // size:0x1 defined:true

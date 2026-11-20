@@ -69,7 +69,6 @@ extern u16 D_8013AFE8;
 
 
 void func_800131B4(void);
-void func_80019D3C(s32 movieIndex);
 void func_8002EE0C(void);
 void finishTaskTransitionAfterCountdown(void);
 void updateThreeFrameScreenBlend(void);
@@ -94,8 +93,8 @@ void runMovieAndGameLoop(void) {
     func_800131B4();
     while (1) {
         initializeGameSystems();
-        func_80019D3C(0);
-        func_80019D3C(1);
+        playMovie(0);
+        playMovie(1);
         runGameLoop();
         ResetGraph(3);
         StopCallback();

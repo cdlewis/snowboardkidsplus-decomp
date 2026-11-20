@@ -21,4 +21,5 @@ void DecDCTout(u32 *buffer, s32 size);
 DecDCCb DecDCTinCallback(DecDCCb callback);
 DecDCCb DecDCToutCallback(DecDCCb callback);
 
+void DecDCTvlcBuild(DECDCTTAB table);
 s32 DecDCTvlc2(u32 *bitstream, u32 *buffer, DECDCTTAB table);

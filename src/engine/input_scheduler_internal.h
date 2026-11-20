@@ -31,9 +31,6 @@ typedef struct CdRequest {
     s32 unk_18;
 } CdRequest;
 
-extern CdlFILE gAtMovieFile __attribute__((section(".data.cd_files")));
-extern CdlFILE gRaMovieFile __attribute__((section(".data.cd_files")));
-extern CdlFILE gOpeningMovieFile __attribute__((section(".data.cd_files")));
 extern CdlFILE gDatFile __attribute__((section(".data.dat_file")));
 extern s32 gDatStartSector __attribute__((section(".sdata.dat_start_sector")));
 extern u16 D_8013AE68 __attribute__((section(".sdata.cd_read_state")));

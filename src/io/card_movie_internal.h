@@ -36,9 +36,6 @@ typedef struct MovieStreamHeader {
     u16 width, height;
 } MovieStreamHeader;
 typedef struct MovieInfo { s16 endFrame; u8 x, y; } MovieInfo;
-extern MovieInfo D_800EBFE4[];
-extern s16 D_8013AF60, D_8013AF54, D_8013AF56;
-extern u8 D_8013B610;
 s32 StGetNext(u32 **data, MovieStreamHeader **header);
 
 s32 pollMemoryCardWrite(void);
@@ -48,11 +45,4 @@ void pollMemoryCardReadTask(void);
 void waitForMemoryCardAcceptTask(void);
 void pollMemoryCardStatusTask(void);
 void pollMemoryCardWriteTask(void);
-void initMovieDecodeState(MovieDecodeState *state, s16 x0, s16 y0, s16 x1, s16 y1);
-void startMovieStream(CdlLOC *location, DecDCCb outputCallback);
-void handleMovieOutput(void);
-s32 decodeNextMovieFrame(MovieDecodeState *state);
-u32 *getNextMovieStreamFrame(MovieDecodeState *state);
-void waitForMovieOutput(MovieDecodeState *state);
-void startMovieCdRead(CdlLOC *location);
 void waitForFrameHcount(u32 minimumHcount);

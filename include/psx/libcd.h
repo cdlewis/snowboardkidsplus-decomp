@@ -19,6 +19,7 @@ typedef struct CdlATV {
 
 #define CdlNop 0x01
 #define CdlSetloc 0x02
+#define CdlPause 0x09
 #define CdlSetmode 0x0E
 #define CdlStatRead 0x20
 

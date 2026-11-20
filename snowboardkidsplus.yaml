@@ -667,7 +667,7 @@ segments:
       - {start: 0xDBD28, type: .data, name: io/memory_card, linker_section: .data.memory_card_file_names}
       - {start: 0xDBD3C, type: .data, name: io/memory_card, linker_section: .data.memory_card_tables}
       - {start: 0xDBD64, type: .data, name: io/memory_card, linker_section: .data.memory_card_save_header}
-      - [0xDC7E4, data, DC7E4]
+      - {start: 0xDC7E4, type: .data, name: io/movie_stream, linker_section: .data.movie_info}
       - {start: 0xDC7F0, type: .data, name: engine/game_loop, linker_section: .data.render_state}
       - {start: 0xDCA00, type: .data, name: engine/game_loop, linker_section: .data.render_buffers}
       - {start: 0x110A00, type: .data, name: race/player/player_animation, linker_section: .data.player_model_parts}
@@ -887,6 +887,10 @@ segments:
       - {start: 0x12B728, type: .sdata, name: audio/sound_manager, linker_section_order: .data}
       - {start: 0x12B72C, type: .sdata, name: audio/sound_manager, linker_section: .sdata.music_state, linker_section_order: .data}
       - [0x12B734, data, 12B734]
+      - {start: 0x12B754, type: .sdata, name: io/movie_stream, linker_section: .sdata.movie_dimensions, linker_section_order: .data}
+      - {start: 0x12B758, type: .sdata, name: io/movie_stream, linker_section_order: .data}
+      - {start: 0x12B760, type: .sdata, name: io/movie_stream, linker_section: .sdata.movie_index, linker_section_order: .data}
+      - [0x12B764, data]
       - [0x12B7AC, .data, engine/game_task_scheduler]
       - {start: 0x12B7B0, type: .sdata, name: engine/frame_sync, linker_section: .sdata.synchronized_frame_count, linker_section_order: .data}
       - [0x12B7B4, data, 12B7B4]
@@ -982,6 +986,8 @@ segments:
       - {start: 0x12BE08, type: .data, name: io/memory_card, linker_section: .data.memory_card_poll_flags}
       - {start: 0x12BE0A, type: .data, name: io/memory_card, linker_section: .data.memory_card_accept_retry_counts}
       - [0x12BE0C, data]
+      - {start: 0x12BE10, type: .sdata, name: io/movie_stream, linker_section: .sdata.movie_flags, linker_section_order: .data}
+      - [0x12BE14, data]
       - {start: 0x12BE24, type: .sdata, name: race/course/course_geometry, linker_section: .sdata.geometry_edge_projection, linker_section_order: .data}
       - [0x12BE54, data]
       - {start: 0x12BEA4, type: .sdata, name: race/course/course_objects, linker_section: .sdata.object_sort_saved_stack, linker_section_order: .data}
