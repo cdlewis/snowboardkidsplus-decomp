@@ -28,6 +28,7 @@
 #include "psx/scratchpad.h"
 #include "player_update_internal.h"
 #include "game/io/dat_resources.h"
+#include "game/io/controller.h"
 #include "../race_presentation_internal.h"
 
 
@@ -178,6 +179,217 @@ u8 gPlayerState30Animation22Countdowns[12]
     30, 30, 30, 0, 0, 0, 30, 0, 0, 30, 0, 0
 };
 
+/* Each pair contains a directional button pattern and a completed trick ID. */
+u8 gPlayerTrick9Input[4][2]
+    __attribute__((section(".data.player_trick_short_inputs"), aligned(4))) = {
+    {2, 0}, {8, 0}, {2, 0}, {8, 9},
+};
+
+u8 gPlayerTrick18Input[4][2]
+    __attribute__((section(".data.player_trick_short_inputs"), aligned(4))) = {
+    {1, 0}, {4, 0}, {1, 18}, {0, 0},
+};
+
+u8 gPlayerTrick19Input[2][2]
+    __attribute__((section(".data.player_trick_short_inputs"), aligned(4))) = {
+    {8, 0}, {2, 19},
+};
+
+u8 gPlayerTrick20Input[4][2]
+    __attribute__((section(".data.player_trick_short_inputs"), aligned(4))) = {
+    {8, 0}, {1, 0}, {2, 20}, {0, 0},
+};
+
+u8 gPlayerTrick10Input[4][2]
+    __attribute__((section(".data.player_trick_short_inputs"), aligned(4))) = {
+    {8, 0}, {2, 0}, {8, 0}, {2, 10},
+};
+
+u8 gPlayerTrick11Input[4][2]
+    __attribute__((section(".data.player_trick_short_inputs"), aligned(4))) = {
+    {1, 0}, {4, 0}, {8, 11}, {0, 0},
+};
+
+u8 gPlayerTrick12Input[4][2]
+    __attribute__((section(".data.player_trick_short_inputs"), aligned(4))) = {
+    {8, 0}, {2, 0}, {1, 0}, {4, 12},
+};
+
+u8 gPlayerTrick21Input[2][2]
+    __attribute__((section(".data.player_trick_short_inputs"), aligned(4))) = {
+    {8, 0}, {2, 21},
+};
+
+u8 gPlayerTrick22Input[2][2]
+    __attribute__((section(".data.player_trick_short_inputs"), aligned(4))) = {
+    {9, 0}, {3, 22},
+};
+
+u8 gPlayerTrick23Input[4][2]
+    __attribute__((section(".data.player_trick_short_inputs"), aligned(4))) = {
+    {8, 0}, {1, 0}, {2, 0}, {4, 23},
+};
+
+u8 gPlayerTrick13Input[4][2]
+    __attribute__((section(".data.player_trick_short_inputs"), aligned(4))) = {
+    {8, 0}, {2, 0}, {8, 0}, {2, 13},
+};
+
+u8 gPlayerTrick14Input[4][2]
+    __attribute__((section(".data.player_trick_short_inputs"), aligned(4))) = {
+    {4, 0}, {1, 0}, {8, 14}, {0, 0},
+};
+
+u8 gPlayerTrick24Input[2][2]
+    __attribute__((section(".data.player_trick_short_inputs"), aligned(4))) = {
+    {8, 0}, {2, 24},
+};
+
+u8 gPlayerTrick25Input[4][2]
+    __attribute__((section(".data.player_trick_short_inputs"), aligned(4))) = {
+    {1, 0}, {4, 0}, {1, 0}, {4, 25},
+};
+
+u8 gPlayerTrick27Input[2][2]
+    __attribute__((section(".data.player_trick_short_inputs"), aligned(4))) = {
+    {8, 0}, {2, 27},
+};
+
+u8 gPlayerTrick28Input[4][2]
+    __attribute__((section(".data.player_trick_short_inputs"), aligned(4))) = {
+    {8, 0}, {2, 0}, {1, 0}, {4, 28},
+};
+
+u8 gPlayerTrick30Input[4][2]
+    __attribute__((section(".data.player_trick_short_inputs"), aligned(4))) = {
+    {2, 0}, {8, 0}, {2, 30}, {0, 0},
+};
+
+u8 gPlayerTrick31Input[4][2]
+    __attribute__((section(".data.player_trick_short_inputs"), aligned(4))) = {
+    {8, 0}, {2, 0}, {8, 0}, {2, 31},
+};
+
+u8 gPlayerTrick38Input[2][2]
+    __attribute__((section(".data.player_trick_short_inputs"), aligned(4))) = {
+    {8, 0}, {2, 38},
+};
+
+u8 gPlayerTrick39Input[4][2]
+    __attribute__((section(".data.player_trick_short_inputs"), aligned(4))) = {
+    {8, 0}, {2, 0}, {8, 0}, {2, 39},
+};
+
+u8 gPlayerTrick40Input[4][2]
+    __attribute__((section(".data.player_trick_short_inputs"), aligned(4))) = {
+    {1, 0}, {4, 0}, {1, 0}, {4, 40},
+};
+
+u8 gPlayerTrick41Input[4][2]
+    __attribute__((section(".data.player_trick_short_inputs"), aligned(4))) = {
+    {1, 0}, {4, 0}, {8, 41}, {0, 0},
+};
+
+u8 gPlayerTrick42Input[2][2]
+    __attribute__((section(".data.player_trick_short_inputs"), aligned(4))) = {
+    {8, 0}, {2, 42},
+};
+
+u8 gPlayerTrick43Input[4][2]
+    __attribute__((section(".data.player_trick_short_inputs"), aligned(4))) = {
+    {8, 0}, {1, 0}, {2, 0}, {4, 43},
+};
+
+u8 gPlayerTrick35Input[4][2]
+    __attribute__((section(".data.player_trick_short_inputs"), aligned(4))) = {
+    {8, 0}, {2, 0}, {8, 0}, {2, 35},
+};
+
+u8 gPlayerTrick36Input[4][2]
+    __attribute__((section(".data.player_trick_short_inputs"), aligned(4))) = {
+    {1, 0}, {2, 0}, {4, 0}, {8, 36},
+};
+
+u8 gPlayerTrick37Input[4][2]
+    __attribute__((section(".data.player_trick_short_inputs"), aligned(4))) = {
+    {2, 0}, {8, 0}, {2, 37}, {0, 0},
+};
+
+u8 gPlayerTrick17Input[4][2]
+    __attribute__((section(".data.player_trick_short_inputs"), aligned(4))) = {
+    {8, 0}, {1, 0}, {2, 0}, {4, 17},
+};
+
+u8 gPlayerTrick32Input[4][2]
+    __attribute__((section(".data.player_trick_short_inputs"), aligned(4))) = {
+    {2, 0}, {8, 0}, {2, 32}, {0, 0},
+};
+
+u8 gPlayerTrick46Input[4][2]
+    __attribute__((section(".data.player_trick_short_inputs"), aligned(4))) = {
+    {2, 0}, {8, 0}, {2, 46}, {0, 0},
+};
+
+u8 gPlayerTrick26Input[18][2]
+    __attribute__((section(".data.player_trick_long_inputs"), aligned(4))) = {
+    {4, 0}, {12, 0}, {8, 0}, {9, 0}, {1, 0}, {3, 0}, {2, 0}, {6, 0},
+    {4, 0}, {12, 0}, {8, 0}, {9, 0}, {1, 0}, {3, 0}, {2, 0}, {6, 0},
+    {4, 26}, {0, 0},
+};
+
+u8 gPlayerTrick15Input[6][2]
+    __attribute__((section(".data.player_trick_long_inputs"), aligned(4))) = {
+    {1, 0}, {4, 0}, {1, 0}, {4, 0}, {8, 15}, {0, 0},
+};
+
+u8 gPlayerTrick29Input[6][2]
+    __attribute__((section(".data.player_trick_long_inputs"), aligned(4))) = {
+    {1, 0}, {4, 0}, {8, 0}, {2, 0}, {1, 0}, {4, 29},
+};
+
+u8 gPlayerTrick16Input[10][2]
+    __attribute__((section(".data.player_trick_long_inputs"), aligned(4))) = {
+    {1, 0}, {3, 0}, {2, 0}, {6, 0}, {4, 0}, {12, 0}, {8, 0}, {9, 0},
+    {1, 16}, {0, 0},
+};
+
+u8 gPlayerTrick44Input[6][2]
+    __attribute__((section(".data.player_trick_long_inputs"), aligned(4))) = {
+    {1, 0}, {4, 0}, {1, 0}, {4, 0}, {8, 44}, {0, 0},
+};
+
+u8 gPlayerTrick45Input[6][2]
+    __attribute__((section(".data.player_trick_long_inputs"), aligned(4))) = {
+    {1, 0}, {4, 0}, {8, 0}, {2, 0}, {1, 0}, {4, 45},
+};
+
+u8 gPlayerTrick33Input[18][2]
+    __attribute__((section(".data.player_trick_long_inputs"), aligned(4))) = {
+    {2, 0}, {6, 0}, {4, 0}, {12, 0}, {8, 0}, {9, 0}, {1, 0}, {3, 0},
+    {2, 0}, {6, 0}, {4, 0}, {12, 0}, {8, 0}, {9, 0}, {1, 0}, {3, 0},
+    {2, 33}, {0, 0},
+};
+
+u8 gPlayerTrick34Input[18][2]
+    __attribute__((section(".data.player_trick_long_inputs"), aligned(4))) = {
+    {1, 0}, {3, 0}, {2, 0}, {6, 0}, {4, 0}, {12, 0}, {8, 0}, {9, 0},
+    {1, 0}, {3, 0}, {2, 0}, {6, 0}, {4, 0}, {12, 0}, {8, 0}, {9, 0},
+    {1, 34}, {0, 0},
+};
+
+u8 gPlayerTrick47Input[6][2]
+    __attribute__((section(".data.player_trick_long_inputs"), aligned(4))) = {
+    {4, 0}, {8, 0}, {2, 0}, {8, 0}, {2, 47}, {0, 0},
+};
+
+u8 gPlayerTrick49Input[8][2]
+    __attribute__((section(".data.player_trick_long_inputs"), aligned(4))) = {
+    {8, 0}, {1, 0}, {2, 0}, {4, 0}, {8, 0}, {1, 0}, {2, 0}, {4, 49},
+};
+
+/* The last pair is also addressed by func_800200F8. */
+extern u8 D_8013B0C0[4][2];
+
 u16 gPlayerTrickRewards[16]
     __attribute__((section(".data.player_trick_rewards"), aligned(4))) = {
     0, 100, 100, 120, 120, 150, 150, 150, 150, 220, 250, 300, 350, 400, 500, 0,
@@ -323,7 +535,230 @@ void clearCurrentPlayerSequenceState(void) {
 
 void initializeCurrentRacePlayer(void);
 
-INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_8001E63C);
+u16 readCurrentPlayerTrickInput(void) {
+    u16 direction = 0;
+    u16 sequenceResult;
+    u16 buttons;
+
+    if (D_8013B0D8->unk008 != 0) {
+        direction = (u8)randomNextMain() & (s8)D_8013B0D8->unk950[3];
+    } else {
+        buttons = D_8013AEEC[D_8013AE88->data18];
+        if (buttons & 0x1000) {
+            direction = 1;
+        }
+        if (buttons & 0x4000) {
+            direction = 2;
+        }
+        if (buttons & 0x2000) {
+            direction = 3;
+        }
+        if (buttons & 0x8000) {
+            direction = 4;
+        }
+        if ((buttons & 0x3000) == 0x3000) {
+            direction = 5;
+        }
+        if ((buttons & 0x9000) == 0x9000) {
+            direction = 6;
+        }
+        if ((buttons & 0x6000) == 0x6000) {
+            direction = 7;
+        }
+        if ((buttons & 0xC000) == 0xC000) {
+            direction = 8;
+        }
+
+        switch (D_8013B0D8->characterId) {
+        case 0:
+            sequenceResult = advanceCurrentPlayerInputSequence(gPlayerTrick9Input, 0);
+            if (sequenceResult != 0) {
+                direction = sequenceResult;
+            }
+            sequenceResult = advanceCurrentPlayerInputSequence(gPlayerTrick18Input, 1);
+            if (sequenceResult != 0) {
+                direction = sequenceResult;
+            }
+            sequenceResult = advanceCurrentPlayerInputSequence(gPlayerTrick19Input, 2);
+            if (sequenceResult != 0) {
+                direction = sequenceResult;
+            }
+            sequenceResult = advanceCurrentPlayerInputSequence(gPlayerTrick20Input, 3);
+            if (sequenceResult != 0) {
+                direction = sequenceResult;
+            }
+            break;
+        case 1:
+            sequenceResult = advanceCurrentPlayerInputSequence(gPlayerTrick21Input, 3);
+            if (sequenceResult != 0) {
+                direction = sequenceResult;
+            }
+            sequenceResult = advanceCurrentPlayerInputSequence(gPlayerTrick10Input, 0);
+            if (sequenceResult != 0) {
+                direction = sequenceResult;
+            }
+            sequenceResult = advanceCurrentPlayerInputSequence(gPlayerTrick11Input, 1);
+            if (sequenceResult != 0) {
+                direction = sequenceResult;
+            }
+            sequenceResult = advanceCurrentPlayerInputSequence(gPlayerTrick12Input, 2);
+            if (sequenceResult != 0) {
+                direction = sequenceResult;
+            }
+            sequenceResult = advanceCurrentPlayerInputSequence(gPlayerTrick22Input, 4);
+            if (sequenceResult != 0) {
+                direction = sequenceResult;
+            }
+            sequenceResult = advanceCurrentPlayerInputSequence(gPlayerTrick23Input, 5);
+            if (sequenceResult != 0) {
+                direction = sequenceResult;
+            }
+            break;
+        case 2:
+            sequenceResult = advanceCurrentPlayerInputSequence(gPlayerTrick24Input, 2);
+            if (sequenceResult != 0) {
+                direction = sequenceResult;
+            }
+            sequenceResult = advanceCurrentPlayerInputSequence(gPlayerTrick13Input, 0);
+            if (sequenceResult != 0) {
+                direction = sequenceResult;
+            }
+            sequenceResult = advanceCurrentPlayerInputSequence(gPlayerTrick14Input, 1);
+            if (sequenceResult != 0) {
+                direction = sequenceResult;
+            }
+            sequenceResult = advanceCurrentPlayerInputSequence(gPlayerTrick25Input, 3);
+            if (sequenceResult != 0) {
+                direction = sequenceResult;
+            }
+            sequenceResult = advanceCurrentPlayerInputSequence(gPlayerTrick26Input, 4);
+            if (sequenceResult != 0) {
+                direction = sequenceResult;
+            }
+            break;
+        case 3:
+            sequenceResult = advanceCurrentPlayerInputSequence(gPlayerTrick15Input, 0);
+            if (sequenceResult != 0) {
+                direction = sequenceResult;
+            }
+            sequenceResult = advanceCurrentPlayerInputSequence(gPlayerTrick27Input, 1);
+            if (sequenceResult != 0) {
+                direction = sequenceResult;
+            }
+            sequenceResult = advanceCurrentPlayerInputSequence(gPlayerTrick28Input, 2);
+            if (sequenceResult != 0) {
+                direction = sequenceResult;
+            }
+            sequenceResult = advanceCurrentPlayerInputSequence(gPlayerTrick29Input, 3);
+            if (sequenceResult != 0) {
+                direction = sequenceResult;
+            }
+            break;
+        case 4:
+            sequenceResult = advanceCurrentPlayerInputSequence(gPlayerTrick16Input, 0);
+            if (sequenceResult != 0) {
+                direction = sequenceResult;
+            }
+            sequenceResult = advanceCurrentPlayerInputSequence(gPlayerTrick30Input, 1);
+            if (sequenceResult != 0) {
+                direction = sequenceResult;
+            }
+            sequenceResult = advanceCurrentPlayerInputSequence(gPlayerTrick31Input, 2);
+            if (sequenceResult != 0) {
+                direction = sequenceResult;
+            }
+            break;
+        case 5:
+            sequenceResult = advanceCurrentPlayerInputSequence(gPlayerTrick38Input, 0);
+            if (sequenceResult != 0) {
+                direction = sequenceResult;
+            }
+            sequenceResult = advanceCurrentPlayerInputSequence(gPlayerTrick39Input, 1);
+            if (sequenceResult != 0) {
+                direction = sequenceResult;
+            }
+            sequenceResult = advanceCurrentPlayerInputSequence(gPlayerTrick40Input, 2);
+            if (sequenceResult != 0) {
+                direction = sequenceResult;
+            }
+            sequenceResult = advanceCurrentPlayerInputSequence(gPlayerTrick41Input, 3);
+            if (sequenceResult != 0) {
+                direction = sequenceResult;
+            }
+            break;
+        case 6:
+            sequenceResult = advanceCurrentPlayerInputSequence(gPlayerTrick42Input, 0);
+            if (sequenceResult != 0) {
+                direction = sequenceResult;
+            }
+            sequenceResult = advanceCurrentPlayerInputSequence(gPlayerTrick43Input, 1);
+            if (sequenceResult != 0) {
+                direction = sequenceResult;
+            }
+            sequenceResult = advanceCurrentPlayerInputSequence(gPlayerTrick44Input, 2);
+            if (sequenceResult != 0) {
+                direction = sequenceResult;
+            }
+            sequenceResult = advanceCurrentPlayerInputSequence(gPlayerTrick45Input, 3);
+            if (sequenceResult != 0) {
+                direction = sequenceResult;
+            }
+            break;
+        case 7:
+            sequenceResult = advanceCurrentPlayerInputSequence(gPlayerTrick37Input, 2);
+            if (sequenceResult != 0) {
+                direction = sequenceResult;
+            }
+            sequenceResult = advanceCurrentPlayerInputSequence(gPlayerTrick35Input, 0);
+            if (sequenceResult != 0) {
+                direction = sequenceResult;
+            }
+            sequenceResult = advanceCurrentPlayerInputSequence(gPlayerTrick36Input, 1);
+            if (sequenceResult != 0) {
+                direction = sequenceResult;
+            }
+            break;
+        case 8:
+            sequenceResult = advanceCurrentPlayerInputSequence(gPlayerTrick17Input, 0);
+            if (sequenceResult != 0) {
+                direction = sequenceResult;
+            }
+            sequenceResult = advanceCurrentPlayerInputSequence(gPlayerTrick32Input, 1);
+            if (sequenceResult != 0) {
+                direction = sequenceResult;
+            }
+            sequenceResult = advanceCurrentPlayerInputSequence(gPlayerTrick33Input, 2);
+            if (sequenceResult != 0) {
+                direction = sequenceResult;
+            }
+            sequenceResult = advanceCurrentPlayerInputSequence(gPlayerTrick34Input, 3);
+            if (sequenceResult != 0) {
+                direction = sequenceResult;
+            }
+            break;
+        case 9:
+            sequenceResult = advanceCurrentPlayerInputSequence(gPlayerTrick46Input, 0);
+            if (sequenceResult != 0) {
+                direction = sequenceResult;
+            }
+            sequenceResult = advanceCurrentPlayerInputSequence(gPlayerTrick47Input, 1);
+            if (sequenceResult != 0) {
+                direction = sequenceResult;
+            }
+            sequenceResult = advanceCurrentPlayerInputSequence(D_8013B0C0, 2);
+            if (sequenceResult != 0) {
+                direction = sequenceResult;
+            }
+            sequenceResult = advanceCurrentPlayerInputSequence(gPlayerTrick49Input, 3);
+            if (sequenceResult != 0) {
+                direction = sequenceResult;
+            }
+            break;
+        }
+    }
+
+    return direction;
+}
 
 u8 readSelectedByteTable(s32 index) {
     return D_8012090C[D_8013AFCE][index];

@@ -5,6 +5,7 @@
 void advanceCurrentPlayerTaskPhaseMovement(void);
 void updateCurrentPlayerTaskLapTransition(void);
 void updateCurrentPlayerMotionEffects(void);
+u16 readCurrentPlayerTrickInput(void);
 void updateCurrentPlayerPartTransforms(void);
 
 void resetCurrentPlayerForCallback205B8(void);

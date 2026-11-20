@@ -78,7 +78,7 @@ segments:
       - [0xBB8, .rodata, io/memory_card_tasks]
       - {start: 0xC6C, type: .rodata, name: engine/task_transitions, linker_section: .rodata.race_vsync_debug_format}
       - [0xC7C, .rodata, engine/task_transitions]
-      - [0xCB0, rodata]
+      - {start: 0xCB0, type: .rodata, name: race/player/player_update, linker_section: .rodata.player_trick_input_dispatch}
       - [0xCD8, .rodata, race/player/player_update]
       - [0xCEC, rodata]
       - [0xCF0, rodata]
@@ -690,7 +690,8 @@ segments:
       - [0x110CD4, data, player_texture_origins]
       - {start: 0x110CE4, type: .data, name: menu/panel_tasks, linker_section: .data.grid_resource_sector_ranges}
       - {start: 0x110E74, type: .data, name: engine/task_transitions, linker_section: .data.player_model_texture_offsets}
-      - [0x110EA4, data, grid_resource_sector_ranges_tail]
+      - {start: 0x110EA4, type: .data, name: race/player/player_update, linker_section: .data.player_trick_long_inputs}
+      - [0x110F70, data, grid_resource_sector_ranges_tail]
       - [0x11109C, .data, race/player/player_update]
       - {start: 0x11125C, type: .data, name: race/player/player_update, linker_section: .data.player_timed_effect_placement_offsets}
       - {start: 0x11126C, type: .data, name: race/player/player_update, linker_section: .data.player_task_phases}
@@ -926,6 +927,8 @@ segments:
       - [0x12B7AC, .data, engine/game_task_scheduler]
       - {start: 0x12B7B0, type: .sdata, name: engine/frame_sync, linker_section: .sdata.synchronized_frame_count, linker_section_order: .data}
       - [0x12B7B4, data, 12B7B4]
+      - {start: 0x12B7EC, type: .data, name: race/player/player_update, linker_section: .data.player_trick_short_inputs}
+      - [0x12B8C0, data, player_trick_input_tail]
       - {start: 0x12B8DC, type: .data, name: race/player/player_actions, linker_section: .data.player_sound_variants}
       - [0x12B8E4, data, 12B8E4]
       - {start: 0x12B8F4, type: .data, name: menu/mode_transitions, linker_section: .data.title_menu_sprite_mapping}
