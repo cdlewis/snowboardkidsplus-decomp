@@ -2497,6 +2497,7 @@ prepareTaskVisualQuad = 0x8005A660; // type:func
 drawPreparedTaskVisualQuad = 0x8005A788; // type:func
 
 initializeModeDependentTaskResourcePair = 0x8009D29C; // type:func
+updateModeDependentRecordsMenuTask = 0x8009D354; // type:func
 drawRegisteredTaskGridSpriteWithNumber = 0x8009DB70; // type:func
 drawCurrentTaskTimeRecordsPrompt = 0x8009E468; // type:func
 drawCurrentTaskCountRecordsPrompt = 0x8009E848; // type:func

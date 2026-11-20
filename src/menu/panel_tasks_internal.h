@@ -217,6 +217,7 @@ void queueModeIndexedSectorRead(s16 mode, s16 index);
 void initializeControllerPlaybackRaceTask(void);
 void updateMainTailSelectionMenuTask(void);
 void updateSelectionIndexedMenuTask(void);
+void updateModeDependentRecordsMenuTask(void);
 void updateLapRecordsMenuTask(void);
 void updateFlagSelectedMenuTask(void);
 
@@ -226,7 +227,6 @@ void preparePlayerResourcesTask(void);
 void initializeRaceTaskState(void);
 void func_800A525C(void);
 void func_800A53BC(void);
-void func_8009D354(void);
 void updateMode11SelectionMenuTask(void);
 void startUnlockResourceLoad(void);
 void prepareUnlockSelectionResume(void);

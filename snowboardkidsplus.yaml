@@ -157,7 +157,7 @@ segments:
       - {start: 0x28B8, type: .rodata, name: menu/resource_tasks, linker_section: .rodata.time_records_start_prompt}
       - {start: 0x28D0, type: .rodata, name: menu/resource_tasks, linker_section: .rodata.selection_indexed_menu}
       - {start: 0x290C, type: .rodata, name: menu/resource_tasks, linker_section: .rodata.selection_indexed_menu_padding}
-      - [0x2910, rodata]
+      - {start: 0x2910, type: .rodata, name: menu/resource_tasks, linker_section: .rodata.records_menu}
       - {start: 0x294C, type: .rodata, name: menu/resource_tasks, linker_section: .rodata.lap_records_start_prompt}
       - [0x2964, .rodata, menu/resource_tasks]
       - [0x29E4, .rodata, menu/mode_race_tasks]

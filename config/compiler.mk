@@ -124,6 +124,7 @@ UNIT_REORDER_src/menu/task_widgets.c := 0
 UNIT_CCFLAGS_src/menu/task_widgets.c += --rdata-section=cycleSaveRecordUnlockFlags:.rodata.save_record_unlock_flags
 UNIT_CCFLAGS_src/menu/resource_tasks.c += --rdata-section=updateMainTailSelectionMenuTask:.rodata.main_tail_selection
 UNIT_CCFLAGS_src/menu/resource_tasks.c += --rdata-section=updateSelectionIndexedMenuTask:.rodata.selection_indexed_menu
+UNIT_CCFLAGS_src/menu/resource_tasks.c += --rdata-section=updateModeDependentRecordsMenuTask:.rodata.records_menu
 UNIT_REORDER_src/unclassified/menu_8007BE9C.c := 0
 UNIT_REORDER_src/unclassified/menu_8007CC78.c := 0
 UNIT_CCFLAGS_src/unclassified/menu_8007CC78.c += --rdata-section=updateCdAwareCourseSelectionTask:.rodata.course_selection
