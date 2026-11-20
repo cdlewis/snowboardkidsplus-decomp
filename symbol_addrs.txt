@@ -200,6 +200,9 @@ finishScenePlaybackExitTask = 0x800A7C8C; // type:func
 // Start mode 2 for id 0 with duration 30, then install callback 8002F5F8.
 beginMode2TaskSequence = 0x8002F628; // type:func
 
+// Dispatch the current menu selection or prepare its background transition.
+dispatchBackgroundMenuTask = 0x8002F698; // type:func
+
 // Clear the task counter and advance its callback when the shared flag is set.
 advanceTaskWhenFlagB55ESet = 0x800A3970; // type:func
 

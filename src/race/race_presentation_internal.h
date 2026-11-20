@@ -35,7 +35,6 @@ void updateRegisteredPlayerModePanelTask(void);
 void createRepeatedSoundTask(s32 sound, s32 delay, s32 interval, s32 count);
 void updateRepeatedSoundTask(void);
 void drawPlayerModeMessagePanelTask(void);
-void startUnlockNotification0Task(void);
 void waitUnlockNotification0TransitionTask(void);
 void drawSound601SequenceSpriteTask(void);
 void beginSound601TaskSequence(void);

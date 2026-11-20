@@ -262,6 +262,9 @@ void createRegisteredTextPanelTask(s16 x, s16 y, const u16 **texts,
                                    const u8 *mapping, s32 depth, s32 index);
 
 void initializeSaveRecordTask(void);
+void func_80089EC0(void);
+
+void startUnlockNotification0Task(void);
 
 void updateSelectedPlayerPlaybackTask(void);
 void createRegisteredDetailedTextPanelTask(s16 x, s16 y, s16 textX, s16 textY,

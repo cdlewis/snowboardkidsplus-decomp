@@ -171,7 +171,6 @@ u32 gRacePlayerSortSavedStackPointer
 
 extern u16 D_8013AFAA __attribute__((section(".data")));
 extern u8 D_8013B562 __attribute__((section(".data")));
-extern s16 D_8013B104 __attribute__((section(".data")));
 extern u8 D_8013AFE2;
 extern u8 D_8013B1AB __attribute__((section(".data")));
 extern u16 D_8013AFE8;

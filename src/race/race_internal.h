@@ -532,6 +532,7 @@ void func_8003EE70(void);
 void func_8002F5F8(void);
 void func_8002F548(void);
 void func_8002F65C(void);
+void dispatchBackgroundMenuTask(void);
 void func_8003DEE0(void);
 void drawSound601SequenceSpriteTask(void);
 void drawGrowingSprite178Task(void);

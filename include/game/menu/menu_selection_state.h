@@ -15,6 +15,10 @@ void createPlayerGroupedSelectionTask(s32 player, s32 index);
 extern RECT D_801300B8[4];
 
 void initializeCountedSelectionBoundsTask(void);
+void initializeCountedTaskResourcePair(void);
+void initializeAlternateCountedTaskResourcePair(void);
+void initializeCountedTaskResourcePairEC50(void);
+void initializeNumberAdjustmentTask(void);
 void initializeCountedDisplayBoundsTask(void);
 
 void initializeCountedGroupedSelectionBoundsTask(void);

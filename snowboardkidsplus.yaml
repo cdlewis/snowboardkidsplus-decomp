@@ -87,7 +87,7 @@ segments:
       - {start: 0xEE0, type: .rodata, name: race/player/player_actions, linker_section: .rodata.player_projectile_use_padding}
       - {start: 0xEE4, type: .rodata, name: race/player/player_actions, linker_section: .rodata.player_item_use}
       - [0xEFC, rodata]
-      - [0xF84, .rodata, graphics/background_resources]
+      - [0xF0C, .rodata, graphics/background_resources]
       - [0x1024, .rodata, menu/mode_transitions]
       - [0x1090, rodata]
       - {start: 0x123C, type: .rodata, name: race/player/player_actions, linker_section: .rodata.demonstration_overlay}

@@ -135,7 +135,6 @@ s32 hasUnlockNotificationFlag(s16 index);
 void startUnlockActionAfterCountdown(void);
 void animateUnlockMenuTransition(void);
 void resumeUnlockSelectionTask(void);
-void initializeNumberAdjustmentTask(void);
 void updateNumberAdjustmentTask(void);
 void drawNumberAdjustmentArrow(s16 direction, GsOT *ot, u16 depth);
 void func_800A5AD4(void);

@@ -1,4 +1,7 @@
 #include "../race/player/player_actions_internal.h"
+#define BACKGROUND_MODE_GP_ADDRESSING
+#include "game/engine/system_runtime.h"
+#include "game/menu/menu_selection_state.h"
 
 void resetGameOptionState(void) {
     D_8013B108 = 2;
@@ -107,7 +110,115 @@ void beginMode2TaskSequence(void) {
 
 INCLUDE_ASM("asm/nonmatchings/graphics/background_resources", func_8002F65C);
 
-INCLUDE_ASM("asm/nonmatchings/graphics/background_resources", func_8002F698);
+void dispatchBackgroundMenuTask(void) {
+    GameTask *task = D_8013AE88;
+
+    if (task->data1C == 0) {
+        D_8013B108 = task->data18;
+        switch (task->data18) {
+        case 2:
+            configureColorCycleTask(0, 0, 0, 0, 0);
+            configureColorCycleTask(0, 0, 0, 0, 1);
+            setMusicSequenceEnabled(0);
+            func_800149A8();
+            return;
+        case 3:
+            func_80014874(initializePlayerModeSelectionTask);
+            return;
+        case 4:
+            func_80014874(initializeSaveRecordTask);
+            return;
+        case 30:
+            func_80014874(startUnlockNotification0Task);
+            return;
+        case 5:
+            func_80014874(initializeDualResourceSequenceTask);
+            return;
+        case 6:
+            func_80014874(initializeDualResourceTaskAndNotifyParent);
+            return;
+        case 7:
+            func_80014874(initializeFlagSelectedCdAwareTask);
+            return;
+        case 8:
+            func_80014874(initializeCountedPlayerGroupedSelectionBoundsTask);
+            return;
+        case 9:
+            func_80014874(initializeMainTailDualResourceTask);
+            return;
+        case 10:
+            func_80014874(initializeFlagSelectedDualResourceTask);
+            return;
+        case 11:
+            func_80014874(initializeCountedTaskResourcePair);
+            return;
+        case 12:
+            func_80014874(initializeAlternateCountedTaskResourcePair);
+            return;
+        case 16:
+            func_80014874(initializeCountedGroupedSelectionBoundsTask);
+            return;
+        case 17:
+            func_80014874(initializeCountedSelectionBoundsTask);
+            return;
+        case 13:
+            func_80014874(initializeCountedTaskResourcePairEC50);
+            return;
+        case 18:
+            func_80014874(initializeCountedDisplayBoundsTask);
+            return;
+        case 19:
+            func_80014874(initializeCountedSplitSelectionBoundsTask);
+            return;
+        case 14:
+            func_80014874(initializeCountedFourBoundsTask);
+            return;
+        case 15:
+            func_80014874(func_80089EC0);
+            return;
+        case 20:
+        case 21:
+        case 22:
+            func_80014874(initializeSelectionIndexedDualResourceTask);
+            return;
+        case 29:
+            func_80014874(initializeNumberAdjustmentTask);
+            return;
+        case 23:
+            queueMenuResourceReads(D_8013AE88->data18);
+            if (isCdCommandQueueIdle() == 1) {
+                configureTaskStateTransition(1, 0, 30);
+                setTaskBackgroundMode(3, D_8013B104, 0);
+                goto selectFallback;
+            }
+            return;
+        case 24:
+            configureColorCycleTask(0, 0, 0, 0, 0);
+            configureColorCycleTask(0, 0, 0, 0, 1);
+            setMusicSequenceEnabled(0);
+            D_8013AFD7 = 0;
+            D_8013B109 = 3;
+            switch (D_8013AFE2) {
+            case 1:
+                D_8013B108 = 9;
+                break;
+            case 0:
+            case 2:
+                D_8013B108 = 6;
+                break;
+            default:
+                D_8013B108 = 2;
+                D_8013AFE2 = 0;
+                break;
+            }
+            D_8013AE98->data1E = 1;
+            func_800149A8();
+            return;
+        }
+    selectFallback:
+        D_8013AE88->data18 = 24;
+    }
+}
 
 void beginMode2SequenceAndFadeMusic(void) {
     configureTaskStateTransition(2, 0, 30);

@@ -27,7 +27,11 @@ extern u16 D_8013AFAA;
 extern u16 D_8013AFAA __attribute__((section(".data")));
 #endif
 extern u8 D_8013B562 __attribute__((section(".data")));
+#ifdef BACKGROUND_MODE_GP_ADDRESSING
+extern s16 D_8013B104;
+#else
 extern s16 D_8013B104 __attribute__((section(".data")));
+#endif
 extern u8 D_8013AFE2;
 #ifdef PAUSE_MENU_FLAGS_GP_ADDRESSING
 extern u8 D_8013B1AA;
