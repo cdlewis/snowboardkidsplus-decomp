@@ -124,6 +124,9 @@ segments:
       - [0x1C68, rodata]
       - [0x1E40, .rodata, unclassified/menu_8007CC78]
       - [0x1ED8, rodata]
+      - {start: 0x2068, type: .rodata, name: unclassified/menu_8007CC78, linker_section: .rodata.grouped_selection_menu}
+      - {start: 0x210C, type: .rodata, name: unclassified/menu_8007CC78, linker_section: .rodata.grouped_selection_menu_padding}
+      - [0x2110, rodata]
       - {start: 0x22B8, type: .rodata, name: unclassified/menu_8007CC78, linker_section: .rodata.memory_card_slot_task}
       - {start: 0x22EC, type: .rodata, name: unclassified/menu_8007CC78, linker_section: .rodata.memory_card_slot_task_padding}
       - [0x22F0, rodata]

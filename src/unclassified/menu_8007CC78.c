@@ -1,7 +1,7 @@
 #include "psx/scratchpad.h"
 #include "psx/libetc.h"
 #include "../menu/save_record_tasks_internal.h"
-#include "game/io/dat_resources.h"
+#include "game/io/cd_queue.h"
 #include "game/menu/selected_sprite.h"
 
 #define MEMORY_CARD_SLOT_BUFFER_BASE ((u8 *)0x801E4000)
@@ -67,6 +67,9 @@ TexturedQuadListEntry taskIndexPanelQuadsPalette1[10] __attribute__((section(".d
 
 s16 gMenuPlayerModelYaw[2] __attribute__((section(".sdata"))) = {0};
 
+const u32 gGroupedSelectionMenuTablePadding
+    __attribute__((section(".rodata.grouped_selection_menu_padding"))) = 0;
+
 const u32 gMemoryCardSlotTaskTablePadding
     __attribute__((section(".rodata.memory_card_slot_task_padding"))) = 0;
 
@@ -77,6 +80,7 @@ extern u8 D_801300A0[][5];
 extern u8 D_8013B44C[];
 
 void updateRegisteredPlayerModelTask(void);
+void func_80086C34(s32 x, s32 y, s32 destination, s32 source, s32 index);
 
 INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_8007CC78);
 
@@ -969,11 +973,75 @@ void initializeDualResourceTaskAndResetByteState(void) {
         while (1) {}
     }
     D_8013AE88->resource16 = allocateTaskResource();
-    setCurrentTaskCallback(func_800843DC);
+    setCurrentTaskCallback(updatePlayerGroupedSelectionMenu);
     D_8013AE88->unk10 |= 2;
 }
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_800843DC);
+void updatePlayerGroupedSelectionMenu(void) {
+    RegisteredPanelSlot *slots;
+
+    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
+    slots = (RegisteredPanelSlot *)&D_800D9504[D_8013AE88->resource16];
+
+    switch (D_8013AE88->data18) {
+    case 1:
+        setMusicSequenceEnabled(1);
+        createPlayerGroupedSelectionTask(0, 1);
+        createPlayerGroupedSelectionTask(1, 11);
+        func_80086C34(816, 240, 15, 0, 21);
+        func_80086C34(816, 241, 15, 0, 31);
+        D_8013AE88->data18 = 3;
+        break;
+    case 3:
+        if (D_8013B6B8[0] == 4 || D_8013B6B9[0] == 4) {
+            D_8013AE88->data18 = 40;
+        } else if (D_8013B6B8[0] == 6 || D_8013B6B9[0] == 6) {
+            if (D_8013AFE2 == 0 && (s16)getGameOptionFlag0() != 0) {
+                D_8013AE98->data18 = 29;
+            } else {
+                D_8013AE98->data18 = 23;
+                beginMode2SequenceAndFadeMusic();
+            }
+            D_8013AE88->data18 = 9;
+        }
+        break;
+    case 40:
+        if (D_8013B6B8[0] == 4 && D_8013B6B9[0] == 4) {
+            D_8013B6B8[0] = 5;
+            D_8013B6B9[0] = 5;
+            D_8013AE88->data18 = 41;
+        }
+        break;
+    case 41:
+        if (D_8013B6B8[0] == 6 || D_8013B6B9[0] == 6) {
+            switch (D_8013AFE2) {
+            case 0:
+            case 2:
+                D_8013AE98->data18 = 7;
+                break;
+            case 1:
+                D_8013AE98->data18 = 20;
+                break;
+            }
+            queueMenuResourceReads((s16)D_8013AE98->data18);
+            slots[2].command = 99;
+            slots[3].command = 99;
+            D_8013AE88->data18 = 99;
+        }
+        break;
+    case 9:
+        if (D_8013AE98->data18 != 23 || func_800707F0(0) == 0) {
+            D_8013AE88->data18 = 99;
+        }
+        break;
+    default:
+        queueMenuResourceReads((s16)D_8013AE98->data18);
+        D_8013AE98->data1C--;
+        func_800149A8();
+        break;
+    }
+}
 
 void createPlayerGroupedSelectionTask(s32 player, s32 index) {
     MenuSelectionState *selection;

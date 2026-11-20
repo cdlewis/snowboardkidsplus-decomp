@@ -132,5 +132,4 @@ void uploadTimImageAt(s16 x, s16 y, s16 clutX, s16 clutY, u32 *tim);
 void initializeBackgroundCameraTask(void);
 void initializeViewAndSelectTaskCallback(void);
 void beginMode2TaskSequence(void);
-void beginMode2SequenceAndFadeMusic(void);
 void queueMode11TransitionResources(void);

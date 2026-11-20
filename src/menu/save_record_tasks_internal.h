@@ -131,7 +131,7 @@ void updatePaletteRotationTask(void);
 void updateStateValueHistoryTask(void);
 void updateMemoryCardSlotTask(void);
 void func_800857C4(void);
-void func_800843DC(void);
+void updatePlayerGroupedSelectionMenu(void);
 void func_80084970(void);
 void func_800801A0(void);
 void func_800815D0(void);

@@ -119,7 +119,6 @@ void func_800A53BC(void);
 void finishNumberAdjustmentTask(void);
 void func_8002F394(void);
 void drawNumberAdjustmentPanel(void);
-void beginMode2SequenceAndFadeMusic(void);
 void startUnlockResourceLoad(void);
 void prepareUnlockSelectionResume(void);
 

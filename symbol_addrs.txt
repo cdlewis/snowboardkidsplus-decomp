@@ -2490,6 +2490,8 @@ drawFirstPlayerResultNumberAndIcon = 0x800360F4; // type:func
 createPlayerPositionTrailTask = 0x80067620; // type:func
 
 initializeDualResourceTaskAndResetByteState = 0x8008432C; // type:func
+updatePlayerGroupedSelectionMenu = 0x800843DC; // type:func size:0x318
+gGroupedSelectionMenuTablePadding = 0x8001190C; // type:u32 size:0x4
 
 queueGridResourceSectorReads = 0x800964B0; // type:func
 gGridResourceSecondSectorRanges = 0x801204E4; // size:0xC8 defined:true
