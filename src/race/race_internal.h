@@ -536,7 +536,7 @@ void func_8002F65C(void);
 void func_8003DEE0(void);
 void drawSound601SequenceSpriteTask(void);
 void drawGrowingSprite178Task(void);
-void func_80033C2C(void);
+void updateFallingSpriteEffectsTask(void);
 void updateOneShotTaskVisual(void);
 void drawSpriteMotionDisplay(SpriteMotionResource *resource);
 void slideInSpriteMotionTask(void);

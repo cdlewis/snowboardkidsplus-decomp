@@ -123,7 +123,68 @@ void updateSwayingFallingSpriteEffect(FallingSpriteEffect *effect) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/ui/race_panels", func_80033C2C);
+void updateFallingSpriteEffectsTask(void) {
+    FallingSpriteEffect *effects;
+    s16 i;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    effects = (FallingSpriteEffect *)&D_800D9504[D_8013AE88->resource14];
+    for (i = 0; i < 10; i++) {
+        FallingSpriteEffect *effect = &effects[i];
+        if (D_8013AE98->data18 == 0 && effect->active == 0) {
+            D_8013AE98->data18 = 1;
+            switch (randomNextMain() & 1) {
+            case 0: {
+                u8 palette;
+                effect->x = ((randomNextMain() & 255) - 128) * 16;
+                effect->y = -1920;
+                effect->unk08 = randomNextMain() & 15;
+                effect->unk0E = (randomNextMain() & 255) * 16;
+                if (randomNextMain() & 1) {
+                    effect->scale = 4096;
+                    effect->velocityY = (randomNextMain() & 7) | 64;
+                } else {
+                    effect->scale = 3072;
+                    effect->velocityY = (randomNextMain() & 7) | 32;
+                }
+                palette = (u8)randomNextMain() % 5U;
+                effect->active = 1;
+                effect->palette = palette;
+                break;
+            }
+            case 1:
+                effect->x = ((randomNextMain() & 255) - 128) * 16;
+                effect->y = -1920;
+                effect->unk08 = (randomNextMain() & 31) - 15;
+                effect->unk0E = (randomNextMain() & 255) * 16;
+                if (randomNextMain() & 1) {
+                    effect->scale = 4096;
+                    effect->velocityY = (randomNextMain() & 7) + 60;
+                } else {
+                    effect->scale = 3072;
+                    effect->velocityY = (randomNextMain() & 7) + 34;
+                }
+                effect->palette = (u8)((u8)randomNextMain() % 5U);
+                effect->unk0E = (randomNextMain() & 1) - 1;
+                effect->velocityX = (-((randomNextMain() & 255) * 8)) & 15;
+                effect->unk10 = randomNextMain() & 15;
+                effect->active = 2;
+                break;
+            }
+        } else {
+            switch (effect->active) {
+            case 1:
+                updateSwayingFallingSpriteEffect(effect);
+                break;
+            case 2:
+                updateDriftingFallingSpriteEffect(effect);
+                break;
+            }
+        }
+    }
+}
 
 void initializeFallingSpriteEffectsTask(void) {
     FallingSpriteEffect *effects;
@@ -136,7 +197,7 @@ void initializeFallingSpriteEffectsTask(void) {
     for (i = 0; i < 10; i++) {
         effects[i].active = 0;
     }
-    setCurrentTaskCallback(func_80033C2C);
+    setCurrentTaskCallback(updateFallingSpriteEffectsTask);
 }
 
 INCLUDE_ASM("asm/nonmatchings/race/ui/race_panels", func_80033FAC);

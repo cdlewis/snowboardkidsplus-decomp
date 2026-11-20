@@ -2270,6 +2270,7 @@ updatePrimaryValueTransition = 0x80069F64; // type:func
 
 playbackControllerInput = 0x80015CF8; // type:func
 
+updateFallingSpriteEffectsTask = 0x80033C2C; // type:func
 initializeFallingSpriteEffectsTask = 0x80033F00; // type:func
 
 drawTaskTimeRecordsAndSetFlag10OnInput = 0x80039F6C; // type:func
