@@ -1,11 +1,35 @@
 #include "psx/scratchpad.h"
 #include "psx/libetc.h"
+#define RACE_FINISH_ABSOLUTE_ADDRESSING
 #include "../../graphics/render_effects_internal.h"
 #define GAME_LOOP_ABSOLUTE_ADDRESSING
 #include "game/engine/game_loop.h"
 
 /* Equal-channel color assignment for grayscale primitives. */
 #define setGray0(p, shade) ((p)->r0 = (p)->g0 = (p)->b0 = (shade))
+
+#define setGray1(p, shade) ((p)->r1 = (p)->g1 = (p)->b1 = (shade))
+#define setGray2(p, shade) ((p)->r2 = (p)->g2 = (p)->b2 = (shade))
+#define setGray3(p, shade) ((p)->r3 = (p)->g3 = (p)->b3 = (shade))
+
+typedef struct TrickRingResource {
+    s32 frame;
+    s32 state;
+} TrickRingResource;
+
+/* One DMA tag covers the draw-mode command and the Gouraud quad. */
+typedef struct TrickRingPacket {
+    u32 tag;
+    u16 tpage, drawMode;
+    u8 r0, g0, b0, code;
+    s16 x0, y0;
+    u8 r1, g1, b1, pad1;
+    s16 x1, y1;
+    u8 r2, g2, b2, pad2;
+    s16 x2, y2;
+    u8 r3, g3, b3, pad3;
+    s16 x3, y3;
+} TrickRingPacket;
 
 typedef struct TriangleBurstResource {
     s32 frame;
@@ -382,13 +406,110 @@ void startIndexedRenderTask(s32 index) {
     resource->unk04 = 0;
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_80061E48);
+void drawTrickRingTask(void) {
+    TrickRingResource *resource;
+    RacePlayer *player;
+    TrickRingPacket *scratch;
+    TrickRingPacket *packet;
+    u32 *ot;
+    s32 angle;
+    s32 nextAngle;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (TrickRingResource *)&D_800D9504[D_8013AE88->resource14];
+    scratch = (TrickRingPacket *)getScratchAddr(0);
+    player = &gRacePlayers[D_8013AE88->data18];
+    packet = (TrickRingPacket *)GsOUT_PACKET_P;
+    if (D_8013AE88->data18 == 0) {
+        ot = D_800EC040[D_8013AF78].org;
+    } else {
+        ot = D_800EC0E0[D_8013AF78].org;
+    }
+    if (D_8013AFD6 && player->unk0C8 < 9) {
+        func_800149A8();
+    }
+    switch (resource->state) {
+    case 0:
+        if (player->unk0C8 > 0) {
+            resource->state = 1;
+            resource->frame = 0;
+        }
+        return;
+    case 1:
+        setGray2(scratch, resource->frame * 16);
+        setGray3(scratch, resource->frame * 16);
+        if (resource->frame == 10) {
+            resource->state = 2;
+            resource->frame = 0;
+        }
+        break;
+    case 2:
+        setGray2(scratch, 160);
+        setGray3(scratch, 160);
+        if (resource->frame == 30 || player->unk0C8 < 9) {
+            resource->state = 3;
+            resource->frame = 0;
+        }
+        break;
+    case 3:
+        setGray2(scratch, (10 - resource->frame) * 16);
+        setGray3(scratch, (10 - resource->frame) * 16);
+        if (resource->frame == 10) {
+            resource->state = 4;
+        }
+        break;
+    case 4:
+        func_800149A8();
+        return;
+    }
+    if (D_8013AFAA & 0x400) {
+        if (D_8013AE88->data18 != D_8013AF78) {
+            goto advance;
+        }
+    } else if (D_8013AE88->data18 != 0) {
+        goto advance;
+    }
+
+    scratch->tag = (1 + 8) << 24;
+    scratch->code = POLY_G4_CODE | 2;
+    scratch->tpage = getTPage(0, 2, 0, 0);
+    scratch->drawMode = DRAW_MODE_COMMAND_HIGH;
+    setGray0(scratch, 0);
+    setGray1(scratch, 0);
+    angle = 0;
+    do {
+        setXY0(scratch, rcos(angle) / 64, rsin(angle) / 64 + 32);
+        nextAngle = angle + 0x200;
+        scratch->x1 = rcos(nextAngle) / 64;
+        scratch->y1 = rsin(nextAngle) / 64 + 32;
+        scratch->x2 = rcos(angle) * 240 / 4096;
+        scratch->y2 = rsin(angle) * 208 / 4096 + 32;
+        scratch->x3 = rcos(nextAngle) * 240 / 4096;
+        scratch->y3 = rsin(nextAngle) * 208 / 4096 + 32;
+        *packet = *scratch;
+        angle += 0x200;
+        addPrim(&ot[1], packet);
+        packet++;
+    } while (angle < 0x1000);
+    GsOUT_PACKET_P = (u32)packet;
+
+advance:
+    if (!D_8013AFD3) {
+        resource->frame++;
+    }
+    if (resource->frame >= 31) {
+        func_800149A8();
+    }
+}
+
 
 INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_80062354);
 
 void startIndexedRenderTaskPair(s32 index) {
     TaskResourceRecord *resource;
-    func_80014930(D_8013B304, func_80061E48);
+    func_80014930(D_8013B304, drawTrickRingTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     D_8013AE8C->data18 = index;
     resource = &D_800D9504[D_8013AE8C->resource14];
