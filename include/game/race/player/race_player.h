@@ -117,9 +117,14 @@ struct RacePlayer {
     s16 unk12E;
     s16 unk130;
     s16 unk132;
-    s16 unk134;
-    s8 unk136;
-    u8 unk137;
+    union {
+        u32 word;
+        struct {
+            s16 unk134;
+            s8 unk136;
+            u8 unk137;
+        } fields;
+    } surfaceState;
     u16 unk138;
     u16 unk13A;
     s16 unk13C;
@@ -338,7 +343,7 @@ void resolvePlayerCollisionsWithCylinder(const Position3D *position, s32 radius,
 void updatePlayerTimerTask(void);
 void startRacePlayerTasks(void);
 s16 func_8003D904(u16 player);
-s16 func_8002D3C4(s16 value);
+s16 processCurrentPlayerActionRequests(s16 suppressWallAction);
 
 void updateCpuRacerSpeedControl(void);
 void updateCurrentPlayerCourseTrigger(void);
@@ -348,4 +353,5 @@ typedef char RacePlayerSizeCheck[(sizeof(RacePlayer) == 0x9DC) ? 1 : -1];
 
 typedef char RacePlayer_characterId_OffsetCheck[((unsigned int)&((RacePlayer *)0)->characterId == 0x14) ? 1 : -1];
 typedef char RacePlayer_isActive_OffsetCheck[((unsigned int)&((RacePlayer *)0)->isActive == 0x24) ? 1 : -1];
+typedef char RacePlayer_surfaceState_OffsetCheck[((unsigned int)&((RacePlayer *)0)->surfaceState == 0x134) ? 1 : -1];
 typedef char RacePlayer_coursePlacementDistance_OffsetCheck[((unsigned int)&((RacePlayer *)0)->coursePlacementDistance == 0x930) ? 1 : -1];

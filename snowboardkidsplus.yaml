@@ -85,8 +85,7 @@ segments:
       - {start: 0xDE0, type: .rodata, name: race/player/player_update, linker_section: .rodata.race_player_start}
       - {start: 0xE34, type: .rodata, name: race/player/player_actions, linker_section: .rodata.player_course_progress}
       - {start: 0xE58, type: .rodata, name: race/player/player_actions, linker_section: .rodata.player_course_progress_padding}
-      - [0xE5C, rodata]
-      - [0xEAC, .rodata, race/player/player_actions]
+      - [0xE5C, .rodata, race/player/player_actions]
       - {start: 0xECC, type: .rodata, name: race/player/player_actions, linker_section: .rodata.player_projectile_use}
       - {start: 0xEE0, type: .rodata, name: race/player/player_actions, linker_section: .rodata.player_projectile_use_padding}
       - {start: 0xEE4, type: .rodata, name: race/player/player_actions, linker_section: .rodata.player_item_use}

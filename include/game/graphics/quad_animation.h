@@ -11,4 +11,5 @@ typedef struct PositionEffectOrigin {
     s32 pad;
 } PositionEffectOrigin;
 
+GameTask *startAlternateQuadAnimationTask(s32 unused, const PositionEffectOrigin *position);
 void startPositionEffectTask(const PositionEffectOrigin *position);

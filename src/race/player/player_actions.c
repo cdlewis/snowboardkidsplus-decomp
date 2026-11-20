@@ -1,5 +1,6 @@
 #include "player_actions_internal.h"
 #include "game/engine/random.h"
+#include "game/graphics/quad_animation.h"
 
 u16 gPlayerSoundVariantsA[2] __attribute__((section(".data.player_sound_variants"))) = {0x100, 0x200};
 
@@ -172,6 +173,21 @@ const u32 gPlayerProjectileUseTablePadding
     __attribute__((section(".rodata.player_projectile_use_padding"))) = 0;
 
 RaceTime gRaceElapsedTime = {0, 0, 0};
+
+s32 func_8002CE58(void);
+s32 func_8002CE9C(void);
+s32 func_8002CEE0(void);
+s32 func_8002CF24(void);
+s32 func_8002CF68(void);
+s32 func_8002CFAC(void);
+s32 func_8002CFF0(void);
+s32 func_8002D040(void);
+s32 func_8002D120(void);
+s32 func_8002D1B8(void);
+s32 func_8002D2B4(void);
+s32 func_8002D2F8(void);
+s32 func_8002D33C(void);
+s32 func_8002D380(void);
 
 void getPlayerCourseProgress(u16 playerIndex, s32 *progress, s32 *distance) {
     RacePlayer *players = gRacePlayers;
@@ -409,7 +425,7 @@ u16 addPlayerFlagsIfWithinRadius(Position3D *position, s32 radius, s16 flags, u1
     RacePlayer *players;
     s32 x, y, z, range;
     if (gRacePlayers[playerIndex].isActive) {
-        if (flags != 4 && gRacePlayers[playerIndex].unk134 != 0) {
+        if (flags != 4 && gRacePlayers[playerIndex].surfaceState.fields.unk134 != 0) {
             return 0;
         }
         players = gRacePlayers;
@@ -631,7 +647,7 @@ s32 requestCurrentPlayerAction17(void) {
     if (player->unk0F6 != 0) {
         return 1;
     }
-    if (player->unk134 != 0) {
+    if (player->surfaceState.fields.unk134 != 0) {
         return 1;
     }
     if (D_8013B0E4 < 17) {
@@ -645,7 +661,7 @@ s32 checkCurrentPlayerFlags275000OrField134(void) {
     if (player->unk128 & 0x275000) {
         return 1;
     }
-    if (player->unk134) {
+    if (player->surfaceState.fields.unk134) {
         return 1;
     }
     if (D_8013B0E4 < 18) {
@@ -662,7 +678,190 @@ INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002D33C);
 
 INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002D380);
 
-INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002D3C4);
+s16 processCurrentPlayerActionRequests(s16 suppressWallAction) {
+    u16 pending = D_8013B0D8->unk0E8;
+
+    D_8013B0E4 = 0;
+    if (pending) {
+        if ((pending & 0x200) && !suppressWallAction) {
+            D_8013B0D8->unk0E8 = pending | 1;
+        }
+        if ((D_8013B0D8->unk0E8 & 1) && func_8002CFF0() &&
+            requestCurrentPlayerAction6() && checkCurrentPlayerFlags43040OrAngleRange()) {
+            func_8002D120();
+        }
+        if ((D_8013B0D8->unk0E8 & 2) && func_8002CFF0()) {
+            requestCurrentPlayerAction6NarrowAngle();
+        }
+        if (D_8013B0D8->unk0E8 & 0x800) {
+            requestCurrentPlayerAction7();
+        }
+        if ((D_8013B0D8->unk0E8 & 0x400) && func_8002CEE0()) {
+            func_8002CEE0();
+        }
+        if ((D_8013B0D8->unk0E8 & 4) && func_8002D040()) {
+            func_8002CE58();
+        }
+        if (D_8013B0D8->unk0E8 & 8) {
+            func_8002CE9C();
+        }
+        if (D_8013B0D8->unk0E8 & 0x100) {
+            func_8002CF68();
+        }
+        if (D_8013B0D8->unk0E8 & 0x4000) {
+            func_8002CFAC();
+        }
+        if (D_8013B0D8->unk0E8 & 0x20) {
+            requestCurrentPlayerAction17();
+        }
+        if (D_8013B0D8->unk0E8 & 0x1000) {
+            checkCurrentPlayerFlags275000OrField134();
+        }
+        if (D_8013B0D8->unk0E8 & 0x10) {
+            func_8002D1B8();
+        }
+        if (D_8013B0D8->unk0E8 & 0x40) {
+            func_8002D2B4();
+        }
+        if (D_8013B0D8->unk0E8 & 0x2000) {
+            func_8002D2F8();
+        }
+        if (D_8013B0D8->unk0E8 & 0x80) {
+            func_8002CF24();
+        }
+        D_8013B0D8->unk0E8 = 0;
+    }
+
+    if ((D_8013B0D8->surfaceState.word & 0xFFFF0000) == 0x03030000 || D_8013B0D8->surfaceState.fields.unk136 == 8) {
+        checkCurrentPlayerFlags345001();
+    }
+    if (D_8013B0D8->surfaceState.fields.unk136 == 6 || D_8013B0D8->surfaceState.fields.unk136 == 12 || D_8013B0D8->surfaceState.fields.unk136 == 16) {
+        func_8002D33C();
+    }
+    if (D_8013B0D8->surfaceState.fields.unk136 == 7 || D_8013B0D8->surfaceState.fields.unk136 == 14 || D_8013B0D8->surfaceState.fields.unk136 == 15) {
+        func_8002D380();
+    }
+
+    if (!D_8013B0E4) {
+        return 0;
+    }
+    if (D_8013B0D8->unk128 & 0x800) {
+        D_8013B0D8->trickAttackMakeCount = 0;
+    }
+
+    switch ((s16)(D_8013B0E4 - 1)) {
+        case 7 - 1:
+            func_800183FC(D_8013AE88->data18, 0, 0x302, 0x40);
+            /* fall through */
+        case 6 - 1:
+            if (D_8013B0E4 != 7) {
+                playCurrentPlayerSoundEffect(2);
+            }
+            D_8013B0D8->unk12C = 4;
+            D_8013B0D8->unk102 = D_8013B0E6;
+            D_8013B0D8->unk104.word = D_8013B0D8->unk0EC;
+            D_8013B0D8->unk108.word = D_8013B0D8->unk0F0;
+            func_800183FC(D_8013AE88->data18, 1, 0x201, 0x20);
+            D_8013AF88->vx = D_8013B0D8->worldCoordinate.coord.t[0];
+            D_8013AF88->vy = D_8013B0D8->worldCoordinate.coord.t[1] - 48;
+            D_8013AF88->vz = D_8013B0D8->worldCoordinate.coord.t[2];
+            startAlternateQuadAnimationTask(D_8013AE88->data18, (const PositionEffectOrigin *)D_8013AF88);
+            break;
+        case 9 - 1:
+            playCurrentPlayerSoundEffect(2);
+            D_8013B0D8->unk12C = 14;
+            func_800183FC(D_8013AE88->data18, 1, 0x201, 0x20);
+            D_8013AF88->vx = D_8013B0D8->worldCoordinate.coord.t[0];
+            D_8013AF88->vy = D_8013B0D8->worldCoordinate.coord.t[1] - 48;
+            D_8013AF88->vz = D_8013B0D8->worldCoordinate.coord.t[2];
+            startAlternateQuadAnimationTask(D_8013AE88->data18, (const PositionEffectOrigin *)D_8013AF88);
+            break;
+        case 10 - 1:
+            playCurrentPlayerSoundEffect(2);
+            D_8013B0D8->unk12C = 14;
+            D_8013B0D8->unk102 = D_8013B0E6;
+            D_8013B0D8->unk104.word = D_8013B0D8->unk0EC;
+            D_8013B0D8->unk108.word = D_8013B0D8->unk0F0;
+            break;
+        case 2 - 1:
+            playCurrentPlayerSoundEffect(2);
+            D_8013B0D8->unk12C = 3;
+            D_8013B0D8->unk102 = D_8013B0E6;
+            D_8013B0D8->unk104.word = D_8013B0D8->unk0EC;
+            D_8013B0D8->unk108.word = D_8013B0D8->unk0F0;
+            func_800183FC(D_8013AE88->data18, 1, 0x201, 0x20);
+            D_8013AF88->vx = D_8013B0D8->worldCoordinate.coord.t[0];
+            D_8013AF88->vy = D_8013B0D8->worldCoordinate.coord.t[1] - 48;
+            D_8013AF88->vz = D_8013B0D8->worldCoordinate.coord.t[2];
+            startAlternateQuadAnimationTask(D_8013AE88->data18, (const PositionEffectOrigin *)D_8013AF88);
+            break;
+        case 3 - 1:
+            playCurrentPlayerSoundEffect(2);
+            D_8013B0D8->unk12C = 3;
+            D_8013B0D8->unk102 = -1;
+            D_8013B0D8->unk104.word = 0;
+            D_8013B0D8->unk108.word = 0;
+            break;
+        case 1 - 1:
+            D_8013B0D8->unk12E = 0x300;
+            break;
+        case 8 - 1:
+        case 11 - 1:
+            playCurrentPlayerSoundEffect(2);
+            D_8013B0D8->unk12C = 11;
+            break;
+        case 12 - 1:
+            gRacePlayers[D_8013B0D8->unk0F4 & 3].unk943 = 1;
+            playCurrentPlayerSoundEffect(gRacePlayers[D_8013B0D8->unk0F4 & 3].unk008 ? 2 : 3);
+            D_8013B0D8->unk12C = 40;
+            break;
+        case 13 - 1:
+            gRacePlayers[D_8013B0D8->unk0F4 & 3].unk943 = 1;
+            playCurrentPlayerSoundEffect(gRacePlayers[D_8013B0D8->unk0F4 & 3].unk008 ? 2 : 3);
+            D_8013B0D8->unk12C = 26;
+            break;
+        case 14 - 1:
+            gRacePlayers[D_8013B0D8->unk0F4 & 3].unk943 = 1;
+            playCurrentPlayerSoundEffect(gRacePlayers[D_8013B0D8->unk0F4 & 3].unk008 ? 2 : 3);
+            D_8013B0D8->unk12C = 27;
+            break;
+        case 15 - 1:
+            playCurrentPlayerSoundEffect(4);
+            D_8013B0D8->unk12C = 10;
+            break;
+        case 17 - 1:
+        case 18 - 1:
+            if (D_8013B0E4 == 18) {
+                playCurrentPlayerSoundEffect(gRacePlayers[D_8013B0D8->unk0F4 & 3].unk008 ? 2 : 3);
+            } else {
+                playCurrentPlayerSoundEffect(2);
+            }
+            D_8013B0D8->unk12C = 24;
+            break;
+        case 16 - 1:
+            gRacePlayers[D_8013B0D8->unk0F4 & 3].unk943 = 1;
+            playCurrentPlayerSoundEffect(gRacePlayers[D_8013B0D8->unk0F4 & 3].unk008 ? 2 : 3);
+            D_8013B0D8->unk12C = 23;
+            break;
+        case 4 - 1:
+            gRacePlayers[D_8013B0D8->unk0F4 & 3].unk943 = 1;
+            playCurrentPlayerSoundEffect(gRacePlayers[D_8013B0D8->unk0F4 & 3].unk008 ? 2 : 3);
+            D_8013B0D8->unk12C = 25;
+            break;
+        case 5 - 1:
+            playCurrentPlayerSoundEffect(2);
+            D_8013B0D8->unk12C = 25;
+            break;
+        case 19 - 1:
+            D_8013B0D8->unk12C = 6;
+            break;
+        case 20 - 1:
+            D_8013B0D8->unk12C = 9;
+            break;
+    }
+
+    return D_8013B0E4;
+}
 
 s16 checkCurrentPlayerSurfaceType(void) {
     RacePlayer *player = D_8013B0D8;
@@ -1027,9 +1226,9 @@ void updateCurrentPlayerItemUse(u16 playerIndex) {
         return;
     case 5: {
         RacePlayer *player = D_8013B0D8;
-        if (player->unk134 == 0) {
+        if (player->surfaceState.fields.unk134 == 0) {
             player->heldItem = 0;
-            player->unk134 = 180;
+            player->surfaceState.fields.unk134 = 180;
             func_800183FC(D_8013AE88->data18, 1, 0xE00, 32);
         }
         return;

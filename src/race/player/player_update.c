@@ -437,7 +437,6 @@ void updateCurrentPlayerState12MotionAndTimer(void);
 void func_8004B044(s16 region, s32 x, s32 z, s32 radius, s32 mode,
                    s32 *dx, s32 *dz, s32 *responseX, s32 *responseZ);
 s16 resolveCurrentPlayerTerrainContact(void);
-s16 func_8002D3C4(s16 value);
 
 TaskCallback gCurrentPlayerTaskPhaseCallbacks[8]
     __attribute__((section(".data.player_task_phases"))) = {
@@ -800,7 +799,7 @@ void updateCurrentPlayerMotionEffects(void) {
             player->unk96C = 28;
         }
     }
-    switch (readSelectedByteTable(D_8013B0D8->unk136)) {
+    switch (readSelectedByteTable(D_8013B0D8->surfaceState.fields.unk136)) {
     case 0:
         D_8013B0D8->unk96E = 0;
         break;
@@ -817,7 +816,7 @@ void updateCurrentPlayerMotionEffects(void) {
         break;
     case 4:
         D_8013B0D8->unk96E = 0x100;
-        if (D_8013B0D8->unk136 == 13) {
+        if (D_8013B0D8->surfaceState.fields.unk136 == 13) {
             D_8013B0D8->unk96E = 0x300;
             if (D_8013B0D8->unk96C > 10 && (gFrameCounter & 3) == 0) {
                 func_8002E5A0(D_8013AE88->data18, 15);
@@ -967,7 +966,7 @@ void initializeCurrentPlayerTimedEffectState(s32 value) {
     D_8013AE88->data1C = value;
     player->unk078 = 0;
     player->unk10C = player->unk92E;
-    switch (player->unk136) {
+    switch (player->surfaceState.fields.unk136) {
     case 6:
         createPlayerRingEffectTask(D_8013AE88->data18);
         func_800183FC(D_8013AE88->data18, 1, 0xF00, 0x30);
@@ -1184,7 +1183,7 @@ void initializeCurrentPlayerState7(void) {
     if (player->unk128 & 0x400) {
         player->unk126 += 0x800;
     }
-    D_8013B0D8->unk134 = 0;
+    D_8013B0D8->surfaceState.fields.unk134 = 0;
     D_8013AFE4 |= 4;
     startCurrentPlayerAnimation(1, 1);
     func_800183FC(D_8013AE88->data18, 1, 0x401, 0x20);
@@ -1342,7 +1341,7 @@ void updateCurrentPlayerState4MotionAndLanding(void) {
     updateCurrentPlayerAnimation();
     if (D_8013B0D8->animationFlags & 0x10) {
         if (!(D_8013B0D8->unk128 & 1)) {
-            if (!func_8002D3C4(0)) {
+            if (!processCurrentPlayerActionRequests(0)) {
                 D_8013B0D8->unk12C = 5;
             }
             currentPlayerStateCallbacks[D_8013B0D8->unk12C]();
@@ -2162,7 +2161,7 @@ void updateCurrentPlayerState30AnimationAndHeight(void) {
         player->unk08C--;
     }
     D_8013B0D8->unk946 = 0;
-    if (func_8002D3C4(0)) {
+    if (processCurrentPlayerActionRequests(0)) {
         D_8013B0D8->unk92E = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8);
         D_8013B0D8->y = func_8004A764(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8) << 8;
     }
@@ -2317,10 +2316,10 @@ void updateCurrentPlayerState10Movement(void) {
     if (D_8013B0E4 != 0) {
         currentPlayerStateCallbacks[D_8013B0D8->unk12C]();
     } else if (!(D_8013B0D8->unk128 & 0x201)) {
-        if (D_8013B0D8->unk136 != 3 && D_8013B0D8->unk136 != 6 &&
-            D_8013B0D8->unk136 != 12 && D_8013B0D8->unk136 != 16 &&
-            D_8013B0D8->unk136 != 8 && D_8013B0D8->unk136 != 7 &&
-            D_8013B0D8->unk136 != 14 && D_8013B0D8->unk136 != 15) {
+        if (D_8013B0D8->surfaceState.fields.unk136 != 3 && D_8013B0D8->surfaceState.fields.unk136 != 6 &&
+            D_8013B0D8->surfaceState.fields.unk136 != 12 && D_8013B0D8->surfaceState.fields.unk136 != 16 &&
+            D_8013B0D8->surfaceState.fields.unk136 != 8 && D_8013B0D8->surfaceState.fields.unk136 != 7 &&
+            D_8013B0D8->surfaceState.fields.unk136 != 14 && D_8013B0D8->surfaceState.fields.unk136 != 15) {
             D_801241E8[D_8013AE88->data18].unk16 = 1;
             initializeCurrentPlayerState14();
         } else {
@@ -2468,9 +2467,9 @@ void resolveCurrentPlayerWallContact(void) {
         D_8013B0D8->unk96C = 0x20;
     }
     if (D_8013B0D8->unk128 & 0x403040) {
-        D_8013B0D8->unk134 = 0;
-    } else if (D_8013B0D8->unk134) {
-        D_8013B0D8->unk134--;
+        D_8013B0D8->surfaceState.fields.unk134 = 0;
+    } else if (D_8013B0D8->surfaceState.fields.unk134) {
+        D_8013B0D8->surfaceState.fields.unk134--;
     }
     if (!(D_8013AFE4 & 1) && D_8013B0D8->unk945) {
         D_8013B0D8->unk945--;
@@ -2581,7 +2580,7 @@ s16 resolveCurrentPlayerTerrainContact(void) {
 
     gPlayerTerrainContactSavedStackPointer = SetSp((u32)getScratchAddr((sizeof(scratchpad) - sizeof(u32)) / sizeof(u32)));
     resolveCurrentPlayerWallContact();
-    if (func_8002D3C4(1)) {
+    if (processCurrentPlayerActionRequests(1)) {
         region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8);
         D_8013B0D8->unk92E = region;
         D_8013B0D8->worldCoordinate.coord.t[0] = D_8013B0D8->x >> 8;
@@ -2670,7 +2669,7 @@ s32 updateCurrentPlayerGroundContact(void) {
 
     gPlayerGroundContactSavedStackPointer = SetSp((u32)getScratchAddr((sizeof(scratchpad) - sizeof(u32)) / sizeof(u32)));
     resolveCurrentPlayerWallContact();
-    if (func_8002D3C4(0) >= 2) {
+    if (processCurrentPlayerActionRequests(0) >= 2) {
         region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8);
         D_8013B0D8->unk92E = region;
         D_8013B0D8->y = func_8004A764(region, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8) << 8;
@@ -2783,7 +2782,7 @@ s32 snapCurrentPlayerToTerrain(void) {
     s16 firstAngle, secondAngle;
 
     resolveCurrentPlayerWallContact();
-    if (func_8002D3C4(0)) {
+    if (processCurrentPlayerActionRequests(0)) {
         region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8);
         D_8013B0D8->unk92E = region;
         D_8013B0D8->y = func_8004A764(region, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8) << 8;

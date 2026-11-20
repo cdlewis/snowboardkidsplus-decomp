@@ -253,7 +253,7 @@ void sortRacePlayerModelForView(u16 playerIndex, u16 view) {
     player = &gRacePlayers[playerIndex];
     D_8013B0D8 = player;
     objects = player->modelObjects;
-    timer = player->unk134;
+    timer = player->surfaceState.fields.unk134;
     drawRootOnly = 0;
     if (timer != 0) {
         blinkMask = gameOptionPlayerModeAbsolute == 1 ? 1 : 2;

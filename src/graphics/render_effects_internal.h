@@ -1186,7 +1186,6 @@ void startRotatingQuadEffectTask(s32 variant, const VECTOR *position, s32 pitch,
 void initializeDelayedEightEntryEffectTask(void);
 void createPlayerPairedQuadEffectTask(s32 playerIndex, s32 variant);
 GameTask *createQuadAnimationTask(u16 unusedId, VECTOR *position);
-GameTask *startAlternateQuadAnimationTask(s32 unused, const PositionEffectOrigin *position);
 void startPositionEffectTask(const PositionEffectOrigin *position);
 void createPlayerPositionTrailTask(s32 playerIndex);
 void createPlayerRingEffectTask(s32 playerIndex);

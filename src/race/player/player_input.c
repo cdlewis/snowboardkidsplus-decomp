@@ -177,19 +177,19 @@ void prepareCurrentPlayerFrame(void) {
 
     initialPlayer = &gRacePlayers[D_8013AE88->data18];
     D_8013B0D8 = initialPlayer;
-    initialPlayer->unk137 = initialPlayer->unk136;
+    initialPlayer->surfaceState.fields.unk137 = initialPlayer->surfaceState.fields.unk136;
     initialPlayer->unk938 = 0;
     if (D_8013B0D8->unk128 & 0x201) {
-        D_8013B0D8->unk136 = 0;
+        D_8013B0D8->surfaceState.fields.unk136 = 0;
     } else {
-        D_8013B0D8->unk136 = func_8004AAA0(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8);
+        D_8013B0D8->surfaceState.fields.unk136 = func_8004AAA0(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8);
     }
     if (D_8013B0D8->unk128 & 0x2000000) {
-        D_8013B0D8->unk136 = 11;
+        D_8013B0D8->surfaceState.fields.unk136 = 11;
     }
-    if ((u32)((u8)D_8013B0D8->unk136 - 17) < 8 && !(D_8013B0D8->unk128 & 0x200)) {
+    if ((u32)((u8)D_8013B0D8->surfaceState.fields.unk136 - 17) < 8 && !(D_8013B0D8->unk128 & 0x200)) {
         getGeometryPlacementTransform(D_8013B0D8->unk92E, &x, &y, &z, &angle);
-        surface = D_8013B0D8->unk136;
+        surface = D_8013B0D8->surfaceState.fields.unk136;
         D_8013AF90->vx = 0;
         D_8013AF90->vz = 0;
         angle += (surface - 17) * 512;
@@ -217,7 +217,7 @@ void prepareCurrentPlayerFrame(void) {
         D_8013B0D8->unk12E -= D_8013B0D8->unk12E >> 2;
     }
 
-    if (D_8013B0D8->unk0E8 == 0 && D_8013B0D8->unk136 == 1 && D_8013B0D8->unk12E > 0x1400) {
+    if (D_8013B0D8->unk0E8 == 0 && D_8013B0D8->surfaceState.fields.unk136 == 1 && D_8013B0D8->unk12E > 0x1400) {
         D_8013B0D8->unk12E = 0x1400;
     }
 
