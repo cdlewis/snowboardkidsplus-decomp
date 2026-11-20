@@ -1851,6 +1851,7 @@ resetGameOptionState = 0x8002F1A4; // type:func
 
 lookupByteTriplet = 0x8008315C; // type:func
 transitionRegisteredPlayerModels = 0x80083180; // type:func
+transitionRegisteredPlayerModelsUp = 0x80083574; // type:func
 mapGroupedValueToTableIndex = 0x80086BCC; // type:func
 
 hasStateValueChanged = 0x80087004; // type:func
