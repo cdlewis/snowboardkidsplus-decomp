@@ -173,6 +173,12 @@ typedef struct TaskValueState {
     u16 unk06;
 } TaskValueState;
 
+const u16 gCharacterSelectionConfirmSounds[10]
+    __attribute__((section(".data.character_selection_confirm_sounds"), aligned(4))) = {
+    0x0001, 0x0101, 0x0201, 0x0301, 0x0401,
+    0x0501, 0x0601, 0x0701, 0x0801, 0x0901
+};
+
 const u16 gSecondaryDisplayLabel[6]
     __attribute__((section(".data.secondary_display_label"), aligned(4))) = {
     0x006D, 0x002C, 0x007F, 0x0110, 0, 0
@@ -1807,7 +1813,114 @@ void createPlayerPanelTask(s16 player, s16 x, s16 y, s32 depth, s32 index) {
 
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80078AFC);
 
-INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_800797C4);
+void updatePlayerCharacterSelection(s16 playerIndex, SelectionEntry *entries) {
+    SelectionEntry *entry = &entries[playerIndex];
+    SelectionEntry *other;
+    s16 previous;
+    s16 selection;
+    s16 upSelection;
+    RacePlayer *player;
+    RacePlayer *players;
+    SaveRecord *records;
+    const u8 *mapping;
+    u8 choices[8];
+    s16 count;
+
+    if (entry->unk06 != 0 || entry->selected != entry->previous) {
+        return;
+    }
+    if (playerIndex == 0) {
+        other = &entries[1];
+    } else {
+        other = &entries[0];
+    }
+    previous = entry->selected;
+
+    if (D_8013AEE8[playerIndex] & 0x8000) {
+        s16 current = *(volatile s16 *)&entry->selected;
+        entry->selected = (current & 1) ? current - 1 : current + 1;
+        selection = entry->selected - 8;
+        if ((u16)selection < 2 && !(D_801313C8[0] & (1 << selection))) {
+            entry->selected = previous;
+        }
+    }
+    if (D_8013AEE8[playerIndex] & 0x2000) {
+        s16 current;
+        entry->selected++;
+        current = *(volatile s16 *)&entry->selected;
+        if (!(current & 1)) {
+            entry->selected = current - 2;
+        }
+        selection = entry->selected - 8;
+        if ((u16)selection < 2 && !(D_801313C8[0] & (1 << selection))) {
+            entry->selected = previous;
+        }
+    }
+    if (D_8013AEE8[playerIndex] & 0x1000) {
+        upSelection = entry->selected;
+        entry->selected = upSelection - 2;
+        if (entry->selected < 0) {
+            entry->selected = upSelection + 8;
+            selection = upSelection;
+            if ((u16)selection < 2 && !(D_801313C8[0] & (1 << selection))) {
+                entry->selected = selection + 6;
+            }
+        }
+    }
+    if (D_8013AEE8[playerIndex] & 0x4000) {
+        selection = entry->selected;
+        entry->selected = selection + 2;
+        if ((u16)(selection - 6) < 2 && !(D_801313C8[0] & (1 << (s16)(selection - 6)))) {
+            entry->selected = selection + 4;
+        }
+        if (entry->selected >= 10) {
+            entry->selected -= 10;
+        }
+    }
+    if (entry->selected != previous) {
+        entry->previous = previous;
+        playSoundEffect(0, 0x100, 0x20);
+    }
+    if (D_8013AEE8[playerIndex] & 0xB0) {
+        entry->unk06 = 1;
+        mapping = &D_8012D460[entry->selected];
+        records = (SaveRecord *)&D_8013080C;
+        players = gRacePlayers;
+        player = &players[playerIndex];
+        player->unk009 = *mapping;
+        player->unk00A[0] = records[playerIndex].unk_3EC[player->unk009];
+        player->unk00D = records[playerIndex].unk_3F6[player->unk009];
+        if (D_8013AFCD != 2 || other->unk00 < 0 || other->unk06 != 1 ||
+            gRacePlayers[0].unk009 != gRacePlayers[1].unk009) {
+            goto confirm;
+        }
+        if (gRacePlayers[0].unk00A[0] == gRacePlayers[1].unk00A[0]) {
+            count = 0;
+            for (selection = 0; selection < 4; selection++) {
+                if (selection != gRacePlayers[playerIndex].unk00A[0]) {
+                    choices[count] = selection;
+                    count++;
+                }
+            }
+            gRacePlayers[playerIndex].unk00A[0] = choices[rand() % count];
+        }
+        count = 0;
+        if (gRacePlayers[0].unk00D == gRacePlayers[1].unk00D) {
+            for (selection = 0; selection < 8; selection++) {
+                if (selection != gRacePlayers[playerIndex].unk00D) {
+                    choices[count] = selection;
+                    count++;
+                }
+            }
+            gRacePlayers[playerIndex].unk00D = choices[rand() % count];
+        }
+confirm:
+        playSoundEffect(1, gCharacterSelectionConfirmSounds[D_8012D460[entry->selected]], 0x20);
+    }
+    if (D_8013AEE8[playerIndex] & 0x40) {
+        entry->unk06 = -1;
+    }
+}
 
 void createRegisteredSelectionPanelTask(s16 playerIndex, SelectionPanelRecord *record, s32 depth, s32 index) {
     SelectionPanelResource *resource;

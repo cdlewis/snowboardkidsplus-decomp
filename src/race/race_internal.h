@@ -29,6 +29,7 @@
 #include "game/io/controller.h"
 #include "psx/libsnd.h"
 #include "psx/libgte.h"
+#include "psx/stdlib.h"
 
 typedef struct MenuTransitionResource {
     u8 unk00[0xE];
@@ -524,8 +525,6 @@ extern const char gPlayerNumberSuffixLabel[];
 extern const char gComputerPlayerLabel[];
 extern const char D_8013B138[];
 extern RaceTime gRaceElapsedTime;
-
-extern int rand(void);
 
 void uploadTimImageAt(s16 x, s16 y, s16 clutX, s16 clutY, u32 *tim);
 void func_8003EE70(void);

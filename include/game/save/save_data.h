@@ -26,7 +26,10 @@ typedef struct SaveRecord {
     u32 flags_3AC;
     u32 flags_3B0[10];
     u32 flags_3D8;
-    u8 unk_3DC[0x2C];
+    u8 unk_3DC[0x10];
+    u8 unk_3EC[10];
+    u8 unk_3F6[10];
+    u8 unk_400[8];
 } SaveRecord;
 
 /* Verified prefix only; the remaining state layout is unknown. */
@@ -101,6 +104,8 @@ void copySaveRecordAndMergeFlags(void);
 void applySaveRecordUnlockOverrides(s16 index);
 
 typedef char SaveRecordSizeCheck[(sizeof(SaveRecord) == 0x408) ? 1 : -1];
+typedef char SaveRecord_unk_3EC_OffsetCheck[((unsigned int)&((SaveRecord *)0)->unk_3EC == 0x3EC) ? 1 : -1];
+typedef char SaveRecord_unk_3F6_OffsetCheck[((unsigned int)&((SaveRecord *)0)->unk_3F6 == 0x3F6) ? 1 : -1];
 typedef char GlobalFlagStatePrefixSizeCheck[(sizeof(GlobalFlagStatePrefix) == 0x3E8) ? 1 : -1];
 
 typedef char SaveRecord_statsRecordValues_OffsetCheck[((unsigned int)&((SaveRecord *)0)->statsRecordValues == 0x228) ? 1 : -1];

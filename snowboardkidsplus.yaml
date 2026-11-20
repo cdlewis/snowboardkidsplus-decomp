@@ -771,6 +771,7 @@ segments:
       - [0x11DA94, .data, io/controller_effects]
       - [0x11DC38, .data, unclassified/graphics_800497B8]
       - [0x11DC60, data, 11DC60]
+      - {start: 0x11DC84, type: .data, name: menu/task_widgets, linker_section: .data.character_selection_confirm_sounds}
       - {start: 0x11DC98, type: .data, name: menu/task_widgets, linker_section: .data.secondary_display_label}
       - [0x11DCA4, data, secondary_display_label_tail]
       - [0x11F0E4, .data, graphics/sprite_templates]
