@@ -866,7 +866,7 @@ extern u8 D_8013B2B9, D_8013B2BA;
 extern TaskVisualFrame *D_80129540[];
 void func_8005BF00(void);
 void updatePlacedObjectBounceTask(void);
-void func_8005E728(void);
+void updateOrbitingObstacleTask(void);
 void updatePickupVisualTask(void);
 extern PickupPlacement *D_8013B2C0;
 
@@ -1069,6 +1069,7 @@ void processGouraudQuadPrimitive(void);
 void processTexturedQuadPrimitive(void);
 void processTexturedGouraudQuadPrimitive(void);
 void func_800559F4(TmdObject *object, GsOT *ot, s32 shift, u32 flags);
+extern TmdObject *D_80125044[3];
 void drawProjectedModelPrimitives(TmdObject *object, GsOT *ot, s32 shift, u32 flags);
 void drawProjectedIndexedFlatTriangle(void);
 void drawProjectedIndexedLitFlatTriangle(void);

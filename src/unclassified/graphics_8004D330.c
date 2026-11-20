@@ -100,7 +100,6 @@ RECT gCourseModelTextureWindow __attribute__((section(".data.course_model_textur
 DR_MODE gCourseModelDrawMode __attribute__((section(".bss.course_model_draw_mode")));
 
 extern VECTOR D_80124BDC;
-extern TmdObject *D_80125044[3];
 extern GsCOORDINATE2 D_80124FF4;
 extern s32 D_8013AFB8 __attribute__((section(".data")));
 extern s16 D_8013B22C, D_8013B22E;

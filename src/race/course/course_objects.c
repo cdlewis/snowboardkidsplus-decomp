@@ -1518,10 +1518,98 @@ void initializeOrbitingTaskObject(void) {
     for (i = 0; i < D_8013AFD2; i++) {
         resource->playerCooldowns[i] = 0;
     }
-    setCurrentTaskCallback(func_8005E728);
+    setCurrentTaskCallback(updateOrbitingObstacleTask);
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/course/course_objects", func_8005E728);
+void updateOrbitingObstacleTask(void) {
+    OrbitingTaskResource *resource;
+    u8 active;
+    u8 i;
+    s32 x, y, z;
+    u16 trackHeading;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    active = 0;
+    i = active;
+    resource = (OrbitingTaskResource *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AFCD != 0) {
+        do {
+            if ((u32)((u16)gRacePlayers[i].unk92E - 91) < 13) {
+                active |= 1;
+            }
+            i++;
+        } while (i < D_8013AFCD);
+    }
+    if (!active) {
+        return;
+    }
+    if (!D_8013AFD3) {
+        if (D_8013AE88->data18 == 0) {
+            resource->phase += 24;
+            resource->rotation.vy += 96;
+        } else {
+            resource->phase -= 24;
+            resource->rotation.vy -= 96;
+        }
+        resource->groundCoordinate.coord.t[0] =
+            gOrbitingTaskPlacements[D_8013AE88->data18].x
+            + rsin(resource->phase) * gOrbitingTaskPlacements[D_8013AE88->data18].radius / 4096;
+        resource->groundCoordinate.coord.t[2] =
+            gOrbitingTaskPlacements[D_8013AE88->data18].z
+            + rcos(resource->phase) * gOrbitingTaskPlacements[D_8013AE88->data18].radius / 4096;
+        resource->groundCoordinate.coord.t[1] = func_8004A764(resource->geometryIndex,
+            resource->groundCoordinate.coord.t[0], resource->groundCoordinate.coord.t[2]);
+        resource->position.x = resource->groundCoordinate.coord.t[0] << 8;
+        resource->position.y = resource->groundCoordinate.coord.t[1] << 8;
+        resource->position.z = resource->groundCoordinate.coord.t[2] << 8;
+        for (i = 0; i < D_8013AFD2; i++) {
+            if (resource->playerCooldowns[i] == 0) {
+                if ((u16)func_8002C520(&resource->position, 0x9000, 0x8000, i)) {
+                    s16 heading, delta, limit;
+                    func_800183FC(i, 1, 0xC01, 0x20);
+                    heading = getXZHeading(resource->position.x, resource->position.z,
+                        gRacePlayers[i].x, gRacePlayers[i].z);
+                    getGeometryPlacementTransform(gRacePlayers[i].unk92E, &x, &y, &z, &trackHeading);
+                    delta = (heading - trackHeading) & 0xFFF;
+                    limit = 0x200;
+                    if (gRacePlayers[i].unk008) {
+                        limit = 0x400;
+                    }
+                    if (delta > limit || delta < -limit) {
+                        if (delta > 0x800) {
+                            heading += limit;
+                        } else {
+                            heading -= limit;
+                        }
+                    } else {
+                        heading = trackHeading;
+                    }
+                    gRacePlayers[i].unk060 = rsin((s16)heading) * 3;
+                    gRacePlayers[i].unk064 = rcos((s16)heading) * 3;
+                    gRacePlayers[i].unk050 = gRacePlayers[i].x - gRacePlayers[i].unk060;
+                    gRacePlayers[i].unk058 = gRacePlayers[i].z - gRacePlayers[i].unk064;
+                    resource->playerCooldowns[i] = 6;
+                }
+            } else {
+                resource->playerCooldowns[i]--;
+            }
+        }
+    }
+    if (isPositionInCameraRange(resource->groundCoordinate.coord.t[0],
+        resource->groundCoordinate.coord.t[2], (s16)func_80059254())) {
+        func_8001E3E4(&resource->groundRotation, &resource->groundCoordinate);
+        func_8001E3E4(&resource->rotation, &resource->coordinate);
+        GsGetLs(&resource->coordinate, D_8013AF98);
+        GsSetLsMatrix(D_8013AF98);
+        if ((u16)func_80059254()) {
+            drawProjectedModelPrimitives(D_80125044[0], &D_800EC0B8[D_8013AF78], 2, 1);
+        } else {
+            drawProjectedModelPrimitives(D_80125044[0], &D_800EC018[D_8013AF78], 2, 1);
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/race/course/course_objects", func_8005EBC4);
 
