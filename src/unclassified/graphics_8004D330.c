@@ -25,6 +25,14 @@ TILE gLapAnimatedBackgroundTile __attribute__((section(".data.lap_animated_backg
 
 u32 gLapAnimatedBackgroundFrame __attribute__((section(".sdata.lap_animated_background_frame"))) = 0;
 
+VECTOR gLayeredBackgroundModelPosition1 __attribute__((section(".data.layered_background_model_positions"))) = {
+    -0xC2E8, 0x7147, 0x2D37, 0,
+};
+
+VECTOR gLayeredBackgroundModelPosition2 __attribute__((section(".data.layered_background_model_positions"))) = {
+    -0xF499, 0x14D45, 0xCAD5, 0,
+};
+
 SVECTOR gOscillatingQuadVertices[4] __attribute__((section(".data.oscillating_quad_vertices"))) = {
     {-512, -4096, 0, 0},
     {512, -4096, 0, 0},
@@ -228,7 +236,87 @@ void drawBackgroundLensFlare(s16 playerIndex) {
         0, 0, 63, 0, 0, 63, 63, 63, 40, 20, 20);
 }
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/graphics_8004D330", func_8004E09C);
+void drawLayeredBackgroundAndSetFog(s16 playerIndex) {
+    u8 padding[0x10];
+    GsCOORDINATE2 *coordinate = (GsCOORDINATE2 *)getScratchAddr(0);
+    MATRIX *matrix = (MATRIX *)getScratchAddr(20);
+    GsOT *ot;
+    PlayerCamera *cameras;
+    PlayerCamera *camera;
+    s16 x, y, horizon;
+
+    if (playerIndex == 0) {
+        ot = &D_800EC018[D_8013AF78];
+    } else {
+        ot = &D_800EC0B8[D_8013AF78];
+    }
+
+    cameras = D_801241E8;
+    camera = &cameras[playerIndex];
+    if ((u16)camera->unk18 < 8) {
+        D_8013B22C = 0xF28;
+        D_8013B22E = 0xF70;
+        drawBackgroundLensFlare(playerIndex);
+    }
+
+    x = -160 - ((camera->yaw >> 1) & 255);
+    y = camera->pitch / 2;
+    horizon = y - 64;
+
+    addTexturedSprite(&D_8013AF6C[1024], getTPage(0, 0, 640, 256), getClut(656, 481),
+        x, (s16)(y - 64), 256, 48, 0, 0, 128, 128, 128);
+    addTexturedSprite(&D_8013AF6C[1024], getTPage(0, 0, 640, 256), getClut(656, 480),
+        x, (s16)(y - 16), 256, 80, 0, 48, 128, 128, 128);
+    addTexturedSprite(&D_8013AF6C[1024], getTPage(0, 0, 640, 256), getClut(656, 481),
+        (s16)(x + 256), (s16)(y - 64), 256, 48, 0, 0, 128, 128, 128);
+    addTexturedSprite(&D_8013AF6C[1024], getTPage(0, 0, 640, 256), getClut(656, 480),
+        (s16)(x + 256), (s16)(y - 16), 256, 80, 0, 48, 128, 128, 128);
+    addTexturedSprite(&D_8013AF6C[1024], getTPage(0, 0, 640, 256), getClut(656, 481),
+        (s16)(x + 512), (s16)(y - 64), 256, 48, 0, 0, 128, 128, 128);
+    addTexturedSprite(&D_8013AF6C[1024], getTPage(0, 0, 640, 256), getClut(656, 480),
+        (s16)(x + 512), (s16)(y - 16), 256, 80, 0, 48, 128, 128, 128);
+
+    addGouraudQuad(&D_8013AF6C[1024],
+        -160, (s16)(y - 184), 160, (s16)(y - 184), -160, (s16)(y - 64), 160, (s16)(y - 64),
+        128, 255, 255, 128, 255, 255, 41, 123, 230, 0, 112, 230);
+    addGouraudQuad(&D_8013AF6C[1024],
+        -160, (s16)(y + 64), 160, (s16)(y + 64), -160, (s16)(y + 184), 160, (s16)(y + 184),
+        255, 255, 255, 255, 255, 255, 220, 220, 220, 220, 220, 220);
+
+    if (horizon > 120) horizon = 120;
+    if (horizon < -120) horizon = -120;
+    addFlatRectangle(&D_8013AF6C[1024], -160, -120, 320, (s16)(horizon + 120), 128, 255, 255);
+    addFlatRectangle(&D_8013AF6C[1024], -160, horizon, 320, (s16)(120 - horizon), 220, 220, 220);
+
+    if (isPointWithinCameraForwardRange(-0xF02D, 0xC5B6, playerIndex)) {
+        GsInitCoordinate2(0, coordinate);
+        setVector((VECTOR *)coordinate->coord.t, -0xEE39, 0x14DAC, 0xC7AA);
+        RotMatrixY(512, &coordinate->coord);
+        GsGetLs(coordinate, matrix);
+        ScaleMatrix(matrix, &D_80124BDC);
+        GsSetLsMatrix(matrix);
+        drawProjectedModelPrimitives(D_80125044[0], ot, 2, 3);
+    }
+    if (isPointWithinCameraForwardRange(gLayeredBackgroundModelPosition1.vx, gLayeredBackgroundModelPosition1.vz, playerIndex)) {
+        GsInitCoordinate2(0, coordinate);
+        setVector((VECTOR *)coordinate->coord.t, gLayeredBackgroundModelPosition1.vx, gLayeredBackgroundModelPosition1.vy, gLayeredBackgroundModelPosition1.vz);
+        RotMatrixY(-1000, &coordinate->coord);
+        GsGetLs(coordinate, matrix);
+        GsSetLsMatrix(matrix);
+        drawProjectedModelPrimitives(D_80125044[1], ot, 2, 3);
+    }
+    if (isPointWithinCameraForwardRange(gLayeredBackgroundModelPosition2.vx, gLayeredBackgroundModelPosition2.vz, playerIndex)) {
+        GsInitCoordinate2(0, coordinate);
+        setVector((VECTOR *)coordinate->coord.t, gLayeredBackgroundModelPosition2.vx, gLayeredBackgroundModelPosition2.vy, gLayeredBackgroundModelPosition2.vz);
+        RotMatrixY(600, &coordinate->coord);
+        GsGetLs(coordinate, matrix);
+        GsSetLsMatrix(matrix);
+        drawProjectedModelPrimitives(D_80125044[1], ot, 2, 3);
+    }
+
+    SetFarColor(160, 160, 200);
+    SetFogNearFar(8000, 10000, 400);
+}
 
 INCLUDE_ASM("asm/nonmatchings/unclassified/graphics_8004D330", func_8004E718);
 
