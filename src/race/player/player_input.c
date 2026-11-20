@@ -2,6 +2,7 @@
 #define RACE_PLAYER_ABSOLUTE_ADDRESSING
 #define TASK_ABSOLUTE_ADDRESSING
 #include "game/race/player/race_player.h"
+#include "game/engine/angles.h"
 #include "game/engine/game_options.h"
 #include "game/graphics/coordinate.h"
 #include "game/menu/selected_record.h"
@@ -19,6 +20,9 @@ const PlayerRankSpeedAdjustment gPlayerRankSpeedAdjustments[4]
     {0x400, 0},
     {0x800, 0},
 };
+
+VECTOR gPlayerSlopeVelocityScratch
+    __attribute__((section(".data.player_slope_velocity_scratch"))) = {0, 0, 0, 0};
 
 void copySelectedRecordToCurrentPlayer(void) {
     RacePlayer *player = D_8013B0D8;
@@ -69,7 +73,95 @@ void clampCurrentPlayerHorizontalVector(VECTOR *vector) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/player/player_input", func_8002A8E4);
+void updateCurrentPlayerSlopeVelocity(s32 push, s32 boost, s32 lateralDrag, s32 forwardDrag, s32 reverseDrag) {
+    s32 pitchCos, sine, cosine;
+    s32 slopeX, slopeZ;
+    s32 drag, sideDrag;
+    s32 limitReverse;
+    s16 heading;
+
+    pitchCos = rcos(D_8013B0D8->unk0C0);
+    D_8013B0D8->unk060 = (D_8013B0D8->unk060 << 12) / pitchCos;
+    D_8013B0D8->unk064 = (D_8013B0D8->unk064 << 12) / pitchCos;
+
+    sine = rsin(D_8013B0D8->unk120);
+    slopeX = rsin(D_8013B0D8->unk11E) * (s16)D_8013B0D8->unk09E / 4096 * sine / 4096;
+    slopeZ = rcos(D_8013B0D8->unk11E) * (s16)D_8013B0D8->unk09E / 4096 * sine / 4096;
+    D_8013B0D8->unk060 += slopeX;
+    D_8013B0D8->unk064 += slopeZ;
+
+    sine = rsin(-(s16)D_8013B0D8->unk110);
+    cosine = rcos(-(s16)D_8013B0D8->unk110);
+    gPlayerSlopeVelocityScratch.vx = (D_8013B0D8->unk060 * cosine + D_8013B0D8->unk064 * sine) / 4096;
+    gPlayerSlopeVelocityScratch.vz = (D_8013B0D8->unk060 * -sine + D_8013B0D8->unk064 * cosine) / 4096;
+    gPlayerSlopeVelocityScratch.vy = D_8013B0D8->unk062;
+
+    if (push > 0) {
+        if (gPlayerSlopeVelocityScratch.vz < 0xC00) {
+            gPlayerSlopeVelocityScratch.vz += push;
+        }
+    } else if (gPlayerSlopeVelocityScratch.vz >= -0xBFF) {
+        gPlayerSlopeVelocityScratch.vz += push;
+    }
+    limitReverse = 0;
+    gPlayerSlopeVelocityScratch.vz += boost;
+    if (gPlayerSlopeVelocityScratch.vy > 0) {
+        gPlayerSlopeVelocityScratch.vy = 0;
+    }
+    drag = forwardDrag;
+    if (gPlayerSlopeVelocityScratch.vz <= 0) {
+        drag = reverseDrag;
+        if (forwardDrag != drag) {
+            limitReverse = 1;
+        }
+    }
+    sideDrag = lateralDrag;
+    if (limitReverse) {
+        clampCurrentPlayerHorizontalVector(&gPlayerSlopeVelocityScratch);
+    } else {
+        clampVectorToCurrentPlayerLimit(&gPlayerSlopeVelocityScratch);
+    }
+
+    if (gPlayerSlopeVelocityScratch.vz >= 0) {
+        if (gPlayerSlopeVelocityScratch.vz > drag) {
+            gPlayerSlopeVelocityScratch.vz -= drag;
+        } else {
+            gPlayerSlopeVelocityScratch.vz = 0;
+        }
+    } else if (gPlayerSlopeVelocityScratch.vz < -drag) {
+        gPlayerSlopeVelocityScratch.vz += drag;
+    } else {
+        gPlayerSlopeVelocityScratch.vz = 0;
+    }
+
+    if (gPlayerSlopeVelocityScratch.vx >= 0) {
+        if (gPlayerSlopeVelocityScratch.vx > sideDrag) {
+            gPlayerSlopeVelocityScratch.vx -= sideDrag;
+        } else {
+            gPlayerSlopeVelocityScratch.vx = 0;
+        }
+    } else if (gPlayerSlopeVelocityScratch.vx < -sideDrag) {
+        gPlayerSlopeVelocityScratch.vx += sideDrag;
+    } else {
+        gPlayerSlopeVelocityScratch.vx = 0;
+    }
+
+    D_8013B0D8->unk096 = gPlayerSlopeVelocityScratch.vx;
+    D_8013B0D8->unk094 = gPlayerSlopeVelocityScratch.vz;
+    sine = rsin((s16)D_8013B0D8->unk110);
+    cosine = rcos((s16)D_8013B0D8->unk110);
+    D_8013B0D8->unk060 = (gPlayerSlopeVelocityScratch.vx * cosine + gPlayerSlopeVelocityScratch.vz * sine) / 4096;
+    D_8013B0D8->unk064 = (gPlayerSlopeVelocityScratch.vx * -sine + gPlayerSlopeVelocityScratch.vz * cosine) / 4096;
+    D_8013B0D8->unk0BC = SquareRoot0(D_8013B0D8->unk060 * D_8013B0D8->unk060 +
+                                    D_8013B0D8->unk064 * D_8013B0D8->unk064);
+    heading = getXZHeading(0, 0, D_8013B0D8->unk060, D_8013B0D8->unk064);
+    D_8013B0D8->unk0BE = heading;
+    D_8013B0D8->unk0C0 = rcos(heading - D_8013B0D8->unk11E) * D_8013B0D8->unk120 / 4096;
+    sine = rsin(D_8013B0D8->unk0C0);
+    D_8013B0D8->unk062 = sine * D_8013B0D8->unk0BC / 4096;
+    D_8013B0D8->unk060 = D_8013B0D8->unk060 * pitchCos / 4096;
+    D_8013B0D8->unk064 = D_8013B0D8->unk064 * pitchCos / 4096;
+}
 
 INCLUDE_ASM("asm/nonmatchings/race/player/player_input", func_8002AE38);
 

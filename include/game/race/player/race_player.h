@@ -66,7 +66,7 @@ struct RacePlayer {
     u8 unk0BA[2];
     s16 unk0BC;
     u16 unk0BE;
-    u8 unk0C0[2];
+    s16 unk0C0;
     u16 unk0C2;
     s16 unk0C4;
     s16 unk0C6;
@@ -251,7 +251,7 @@ s16 smoothAndScaleCurrentPlayerInput(s32 magnitude, s16 input);
 void clampCurrentPlayerHorizontalVector(VECTOR *vector);
 void clampVectorToCurrentPlayerLimit(VECTOR *vector);
 void func_8002AE38(s32, s32, s32, s32);
-void func_8002A8E4(s32, s32, s32, s32, s32);
+void updateCurrentPlayerSlopeVelocity(s32 push, s32 boost, s32 lateralDrag, s32 forwardDrag, s32 reverseDrag);
 
 s32 checkCurrentPlayerFlags43040OrAngleRange(void);
 s32 checkCurrentPlayerFlags345001(void);

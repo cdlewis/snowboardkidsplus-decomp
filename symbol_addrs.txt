@@ -230,6 +230,7 @@ selectGeometryRecord = 0x8004A6F0; // type:func
 copySelectedRecordToCurrentPlayer = 0x8002A560; // type:func
 smoothAndScaleCurrentPlayerInput = 0x8002A5A0; // type:func
 clampCurrentPlayerHorizontalVector = 0x8002A7B4; // type:func
+updateCurrentPlayerSlopeVelocity = 0x8002A8E4; // type:func
 // Clamp a vector's X/Z length to the current player's signed limit at 0x130.
 clampVectorToCurrentPlayerLimit = 0x8002A6AC; // type:func
 
@@ -3328,6 +3329,7 @@ gSelectedPlayerRestoreFrames = 0x801204A8; // size:0x1C
 updateBobbingTrailEmitterTask = 0x8005C8BC; // type:func
 
 updateCurrentPlayerAnimation = 0x80017268; // type:func
+gPlayerSlopeVelocityScratch = 0x800EB23C; // size:0x10 defined:true
 gPlayerAnimationPose = 0x800EB24C; // size:0x60 defined:true
 
 updateCurrentPlayerTaskJumpAndSpawnCourseOffset = 0x80025B08; // type:func

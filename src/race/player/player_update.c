@@ -973,7 +973,7 @@ void updateCurrentPlayerState25MotionAndTimer(void) {
     if (!(D_8013B0D8->unk128 & 1)) {
         D_8013B0D8->unk128 &= ~0x200;
         smoothAndScaleCurrentPlayerInput(D_8013B0D8->unk094, 0);
-        func_8002A8E4(0, 0, (s16)D_8013B0D8->unk0A6, (s16)D_8013B0D8->unk0A8, (s16)D_8013B0D8->unk0AA);
+        updateCurrentPlayerSlopeVelocity(0, 0, (s16)D_8013B0D8->unk0A6, (s16)D_8013B0D8->unk0A8, (s16)D_8013B0D8->unk0AA);
         D_8013B0D8->x += D_8013B0D8->unk060;
         D_8013B0D8->y += D_8013B0D8->unk062;
         D_8013B0D8->z += D_8013B0D8->unk064;
