@@ -85,8 +85,24 @@ RECT gScanlineCopyRect __attribute__((section(".data.scanline_copy_rects"))) = {
 
 RECT gScanlineSeedRect __attribute__((section(".data.scanline_copy_rects"))) = {704, 144, 64, 1};
 
+const VECTOR gCourseModelScale __attribute__((section(".rodata.course_model_scale"))) = {
+    5 * 4096, 5 * 4096, 5 * 4096, 0,
+};
+
+RECT gCourseModelTextureWindow __attribute__((section(".data.course_model_texture_window"))) = {0};
+
+DR_MODE gCourseModelDrawMode __attribute__((section(".bss.course_model_draw_mode")));
+
 extern VECTOR D_80124BDC;
 extern TmdObject *D_80125044[3];
+extern GsCOORDINATE2 D_80124FF4;
+extern s32 D_8013AFB8 __attribute__((section(".data")));
+extern Position3D *D_8013B280 __attribute__((section(".data")));
+extern u16 D_8013B654;
+extern s32 D_8013B664;
+extern TmdObject *D_8013BBF8[];
+
+void func_800512A4(s16 view);
 
 INCLUDE_ASM("asm/nonmatchings/unclassified/graphics_8004D330", func_8004D330);
 
@@ -472,7 +488,88 @@ void queueScanlineCopyPackets(void) {
 
 INCLUDE_ASM("asm/nonmatchings/unclassified/graphics_8004D330", func_80051A68);
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/graphics_8004D330", func_80051D3C);
+void drawCourseModelsForView(s16 view) {
+    MATRIX *matrix = (MATRIX *)getScratchAddr(0);
+    TmdObject **models;
+    VECTOR scale;
+    GsRVIEW2 *cameraView;
+    PlayerCamera *camera;
+    PlayerCamera *cameras;
+    GsRVIEW2 *views;
+    s32 centerX, centerZ;
+    s32 cameraX, cameraZ;
+    GsOT *ot;
+    s32 sine, cosine;
+    u32 flags;
+    u16 i;
+
+    if (view == 0) {
+        ot = &D_800EC040[D_8013AF78];
+    } else {
+        ot = &D_800EC0E0[D_8013AF78];
+    }
+    scale = gCourseModelScale;
+    if (D_8013AFB8 != 0) {
+        return;
+    }
+    func_800512A4(view);
+    if (D_8013AFCE == 6) {
+        queueScanlineCopyPackets();
+    }
+    cameras = D_801241E8;
+    camera = &cameras[view];
+    sine = rsin(camera->yaw);
+    views = gPlayerCameraViews;
+    cameraView = &views[view];
+    centerX = cameraView->vpx / 256 + ((D_8013B660 / 2) * sine) / 4096;
+    cosine = rcos(camera->yaw);
+    centerZ = cameraView->vpz / 256 + ((D_8013B660 / 2) * cosine) / 4096;
+    cameraX = cameraView->vpx / 256;
+    cameraZ = cameraView->vpz / 256;
+
+    GsGetLs(&D_80124FF4, matrix);
+    ScaleMatrix(matrix, &scale);
+    GsSetLsMatrix(matrix);
+
+    if (D_8013AFCE == 6) {
+        flags = 1;
+    } else {
+        flags = 3;
+    }
+
+    i = 0;
+    models = D_8013BBF8;
+    do {
+        const Position3D *positions;
+        s32 x, z, dx, dz;
+
+        if (i >= D_8013B654) {
+            goto queue_draw_mode;
+        }
+        positions = D_8013B280;
+        x = positions[i].x;
+        z = positions[i].z;
+        dx = centerX - x;
+        dz = centerZ - z;
+        if (SquareRoot0(dx * dx + dz * dz) <= D_8013B660) {
+            s32 dx = cameraX - x;
+            s32 dz = cameraZ - z;
+            if (SquareRoot0(dx * dx + dz * dz) >= D_8013B664) {
+                drawProjectedModelPrimitives(models[i], ot, 2, flags);
+            } else {
+                func_800559F4(models[i], ot, 2, flags);
+            }
+        }
+        i++;
+    } while (1);
+
+queue_draw_mode:
+    SetDrawMode(&gCourseModelDrawMode, 0, 1, 0, &gCourseModelTextureWindow);
+    addPrim(&D_8013AF6C[4095], &gCourseModelDrawMode);
+    if (selectedCameraStateGp) {
+        queueSelectedCameraOverlayPackets();
+    }
+}
 
 void queueSelectedCameraOverlayPackets(void) {
     DR_STP *packet;

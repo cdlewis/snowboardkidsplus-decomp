@@ -110,6 +110,7 @@ segments:
       - [0x1460, rodata]
       - [0x1488, .rodata, race/ui/race_hud]
       - [0x149C, rodata]
+      - {start: 0x14B4, type: .rodata, name: unclassified/graphics_8004D330, linker_section: .rodata.course_model_scale}
       - [0x14C4, .rodata, unclassified/graphics_800497B8]
       - [0x14D4, .rodata, race/course/course_objects]
       - {start: 0x1538, type: .rodata, name: race/course/course_objects, linker_section: .rodata.course_object_jump_table_padding}
@@ -919,6 +920,8 @@ segments:
       - [0x12BA48, data, 12BA48]
       - {start: 0x12BA50, type: .data, name: unclassified/graphics_8004D330, linker_section: .data.scanline_copy_rects}
       - [0x12BA60, data, scanline_copy_rects_tail]
+      - {start: 0x12BA68, type: .data, name: unclassified/graphics_8004D330, linker_section: .data.course_model_texture_window}
+      - [0x12BA70, data]
       - {start: 0x12BA94, type: .data, name: race/course/course_objects, linker_section: .data.interaction_visual_frame, linker_section_order: .data}
       - [0x12BA9C, data, interaction_visual_frame_tail]
       - {start: 0x12BAA4, type: .data, name: race/course/course_objects, linker_section: .data.placed_object_visual_frame}
@@ -998,6 +1001,16 @@ segments:
     section_order: [".bss"]
     subsegments:
       - {start: 0x12C000, type: .bss, name: io/movie_stream, linker_section: .bss.movie_decode_state}
+
+  - name: course_model_draw_mode_bss
+    type: code
+    start: 0x12C000
+    vram: 0x8013BBE8
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: .bss, name: unclassified/graphics_8004D330, linker_section: .bss.course_model_draw_mode}
 
   - name: white_pulse_palette_bss
     type: code
