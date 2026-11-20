@@ -475,7 +475,6 @@ extern u8 D_8013AFE0 __attribute__((section(".data")));
 extern u8 D_8013AFE2 __attribute__((section(".data")));
 
 void updateVisualTrailTask(void);
-void func_80031C98(void);
 void updateOrbitingPlayerVisualTask(void);
 void updatePlayerSideVisualTask(void);
 void updatePlayerParticleHistoryTask(void);

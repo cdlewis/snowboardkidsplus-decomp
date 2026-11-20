@@ -1,6 +1,10 @@
 #include "../race/race_presentation_internal.h"
 #include "game/menu/selected_sprite.h"
+#include "game/menu/task_widgets.h"
 
+extern const TimedSequenceEntry D_80123840[];
+extern const u8 D_80123B50[];
+extern const u8 D_8013B0FC[];
 extern TexturedQuadListEntry D_80123850[];
 extern TexturedQuadListEntry D_801239D0[];
 extern TexturedQuadListEntry D_80123910[];
@@ -40,6 +44,9 @@ const u16 *gRegisteredPlayerModePanelTexts[3]
     __attribute__((section(".data.registered_player_mode_panel_texts"))) = {
     gRegisteredPlayerModePanelText0, gRegisteredPlayerModePanelText1, gRegisteredPlayerModePanelText2
 };
+
+void updatePlayerModeSelectionTask(void);
+void func_80032280(s16 x, s16 y, s32 depth, s32 index);
 
 void dispatchMode11TransitionTask(void) {
     if (D_8013B109 != 1) {
@@ -270,10 +277,153 @@ void initializePlayerModeSelectionTask(void) {
         while (1) {}
     }
     D_8013AE88->resource16 = allocateTaskResource();
-    setCurrentTaskCallback(func_80031C98);
+    setCurrentTaskCallback(updatePlayerModeSelectionTask);
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/mode_transitions", func_80031C98);
+void updatePlayerModeSelectionTask(void) {
+    PlayerModeSelectionResource *selection;
+    RegisteredTaskEntry *entries;
+    s32 ready;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    selection = (PlayerModeSelectionResource *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) {
+        while (1) {}
+    }
+    entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE88->resource16];
+
+    switch (D_8013AE88->data18) {
+    case 1:
+        setMusicSequenceEnabled(1);
+        setSecondaryDisplayTaskMode(0);
+        configureTaskStateTransition(11, 0, 30);
+        setTaskBackgroundMode(2, -0x1000, 0x1000);
+        func_80032280(-120, -48, 4, 21);
+        D_8013AE88->data18 = 2;
+        break;
+    case 2:
+        if (hasTaskStateValue6(0)) {
+            break;
+        }
+        createInputTimedSpriteTask(96, -8, D_80123840, 2, 1, 0xB0, 0x40, 3, 31);
+        D_8013AE88->data18 = 3;
+        break;
+    case 3:
+        if ((s16)entries[3].flags > 0) {
+            break;
+        }
+        if ((s16)entries[3].flags < 0) {
+            goto cancel;
+        }
+        configureMovement2D((Movement2D *)&D_800D9504[entries[2].task->resource14],
+                            -0x78000, -0x60000, 0, -0x1E000, 0);
+        D_8013AE88->data18++;
+        break;
+    case 4:
+        if ((s16)entries[2].flags != 0) {
+            break;
+        }
+        createRegisteredSpacedChildTasks(1, 0xB0, 0x40, D_80123B50, D_8013B0FC,
+                                         0, 1, 0, 20, 248, -16, 0, 56, 2, 0,
+                                         drawSelectedTaskMarkerSprite,
+                                         drawRegisteredTaskTexturedQuadList, 4, 41);
+        D_8013AE88->data18 = 5;
+        break;
+    case 5:
+        if ((s16)entries[4].flags != 0) {
+            break;
+        }
+        moveTaskChildrenWithSpacing(0, entries[4].task, -0x48000, -0x10000, -0x3C000, 0, 2);
+        entries[4].command = 23;
+        createRepeatedSoundTask(0, 0, 6, 2);
+        D_8013AE88->data18 = 6;
+        break;
+    case 6:
+        if ((s16)entries[4].flags != 0) {
+            break;
+        }
+        entries[4].command = 20;
+        configureColorCycleTask(1, 0, 128, 8, 0);
+        D_8013B41F = 0;
+        D_8013AE88->data18 = 7;
+        break;
+    case 7:
+        D_8013AE88->data1A = selection->selection + 1;
+        ready = isTaskResourceTransitionComplete(0);
+        if (ready == 1 && D_8013B41F == 0) {
+            entries[4].command = 22;
+            D_8013B41F = ready;
+        }
+        if ((s16)selection->unk06 > 0) {
+            entries[4].command = 10;
+            entries[4].flags = 1;
+        }
+        if ((s16)selection->unk06 != 0) {
+            D_8013AE88->data18 = 72;
+        }
+        break;
+    case 72:
+        if ((s16)selection->unk06 == 0 || (s16)entries[4].flags != 0) {
+            break;
+        }
+        if (D_8013B41F == 0) {
+            entries[4].command = 22;
+            D_8013B41F = 1;
+        }
+        if ((s16)selection->unk06 < 0) {
+cancel:
+            D_8013AE88->data18 = 10;
+            break;
+        }
+        D_8013AE98->data18 = 4;
+        D_8013B10C = -1;
+        queueMenuResourceReads((s16)D_8013AE98->data18);
+        D_8013AFCD = selection->selection + 1;
+        moveTaskChildrenWithSpacing(0, entries[4].task, -0x188000, -0x10000, -0x3C000, 0, -2);
+        entries[4].command = 23;
+        createRepeatedSoundTask(1, 2, 6, 2);
+        D_8013AE88->data18 = 71;
+        break;
+    case 71:
+        D_8013AE88->data18 = 8;
+        break;
+    case 8:
+        if ((s16)entries[4].flags != 0) {
+            break;
+        }
+        configureMovement2D((Movement2D *)&D_800D9504[entries[2].task->resource14],
+                            -0x78000, -0x20000, 0, 0x1E000, 0);
+        D_8013AE88->data18 = 9;
+        break;
+    case 9:
+        if ((s16)entries[2].flags != 0) {
+            break;
+        }
+        func_80071E20(drawPlayerModeMessagePanelTask);
+        D_8013AE88->data18 = 99;
+        break;
+    case 10:
+        D_8013AE98->data18 = 2;
+        D_8013B10C = -1;
+        configureTaskStateTransition(2, 0, 30);
+        setMusicSequenceEnabled(0);
+        D_8013AE88->data18 = 11;
+        break;
+    case 11:
+        if (func_800707F0(0)) {
+            break;
+        }
+        configureTaskStateTransition(1, 0, 30);
+        setSecondaryDisplayTaskMode(1);
+        /* fall through */
+    default:
+        D_8013AE98->data1C--;
+        func_800149A8();
+        break;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/menu/mode_transitions", func_80032280);
 

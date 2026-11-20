@@ -90,6 +90,8 @@ segments:
       - [0xF0C, .rodata, graphics/background_resources]
       - [0x1024, .rodata, menu/mode_transitions]
       - [0x1090, rodata]
+      - {start: 0x10FC, type: .rodata, name: menu/mode_transitions, linker_section: .rodata.player_mode_selection}
+      - [0x121C, rodata]
       - {start: 0x123C, type: .rodata, name: race/player/player_actions, linker_section: .rodata.demonstration_overlay}
       - {start: 0x1258, type: .rodata, name: race/player/player_actions, linker_section: .rodata.auto_pilot_label}
       - {start: 0x1264, type: .rodata, name: race/player/player_actions, linker_section: .rodata.result_prize_labels}

@@ -95,6 +95,7 @@ UNIT_CCFLAGS_src/race/player/player_actions.c += --rdata-section=updateCurrentPl
 UNIT_CCFLAGS_src/race/player/player_actions.c += --rdata-section=updateCurrentPlayerItemUse:.rodata.player_item_use
 UNIT_REORDER_src/graphics/background_resources.c := 0
 UNIT_REORDER_src/menu/mode_transitions.c := 0
+UNIT_CCFLAGS_src/menu/mode_transitions.c += --rdata-section=updatePlayerModeSelectionTask:.rodata.player_mode_selection
 UNIT_REORDER_src/race/ui/race_panels.c := 0
 UNIT_REORDER_src/menu/record_screens.c := 0
 UNIT_REORDER_src/race/player/player_results.c := 0
