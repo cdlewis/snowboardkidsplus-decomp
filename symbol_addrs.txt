@@ -3201,6 +3201,7 @@ gSceneOneShotVoice = 0x8013B6C6; // size:0x1 defined:true
 updateCollectibleTask = 0x8005DF98; // type:func
 
 configureTaskStateTransition = 0x80070274; // type:func
+updateTaskStateTransition = 0x80070448; // type:func
 
 updatePlayerScaledObjectTask = 0x800458F8; // type:func
 updateHomingTaskVisualMovement = 0x80046894; // type:func

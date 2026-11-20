@@ -314,6 +314,7 @@ void resolvePlayerCollisionsWithCylinder(const Position3D *position, s32 radius,
 
 void updatePlayerTimerTask(void);
 void startRacePlayerTasks(void);
+s16 func_8003D904(u16 player);
 s16 func_8002D3C4(s16 value);
 
 void updateCurrentPlayerCourseTrigger(void);

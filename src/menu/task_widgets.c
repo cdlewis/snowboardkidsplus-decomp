@@ -6,6 +6,7 @@
 #include "game/engine/game_options.h"
 #include "game/engine/byte_search.h"
 #include "game/io/controller.h"
+#include "game/io/controller_effects.h"
 #include "game/graphics/graphics.h"
 #include "game/engine/game_task_scheduler.h"
 #include "game/engine/linear_random.h"
@@ -16,6 +17,7 @@
 #include "game/engine/task.h"
 #include "game/menu/selected_sprite.h"
 #include "game/menu/task_widgets.h"
+#include "game/race/player/race_player.h"
 #include "psx/libsnd.h"
 #include "psx/stdlib.h"
 
@@ -227,7 +229,7 @@ void addTilePacket(s32 x, s32 y, s32 width, s32 height, s32 r, s32 g, s32 b,
 void updateScrollingBackgroundTask(void);
 void drawTaskImagesOnBlackBackground(void);
 void func_8007195C(void);
-void func_80070448(void);
+void updateTaskStateTransition(void);
 void func_8007B890(s16 recordIndex, s16 maskIndex);
 void func_8007197C(void);
 void drawSecondaryDisplayTask(void);
@@ -265,7 +267,7 @@ void configureTaskStateTransition(s32 mode, s32 id, u16 duration) {
     switch (mode) {
     case 1: case 2: case 4: case 5: case 6: case 7:
     case 11: case 12: case 14: case 15:
-        func_80014930(&gGameTasks[4], func_80070448);
+        func_80014930(&gGameTasks[4], updateTaskStateTransition);
         if (mode >= 10) D_8013AE8C->data18 = mode - 10;
         else D_8013AE8C->data18 = mode;
         D_8013AE8C->data1A = index;
@@ -287,7 +289,79 @@ void configureTaskStateTransition(s32 mode, s32 id, u16 duration) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80070448);
+void updateTaskStateTransition(void) {
+    u16 index = D_8013AE88->data1A;
+    TaskValueState *state = &D_8012D4A4[index];
+    GsOT *ot;
+    s16 draw;
+    GameTask *task;
+
+    if (state->task != D_8013AE88) {
+        goto end_task;
+    }
+    /* configureTaskStateTransition assigns one of the three viewport indices. */
+    switch (index) {
+    case 0:
+        ot = &D_800EBFF0[D_8013AF78];
+        draw = 1;
+        break;
+    case 1:
+        ot = &D_800EC018[D_8013AF78];
+        draw = func_8003D904(0);
+        break;
+    case 2:
+        ot = &D_800EC0B8[D_8013AF78];
+        draw = func_8003D904(1);
+        break;
+    }
+
+    if (draw) {
+        u16 mode;
+        GameTask *drawTask = D_8013AE88;
+        mode = drawTask->data18;
+        if (mode == 1 || mode == 2 || mode == 6 || mode == 7) {
+            func_80070C5C(state->unk06 >> 8, ot, D_8013AE88->data1C);
+        } else if (mode == 4 || mode == 5) {
+            func_80070D48(state->unk06 >> 8, ot, drawTask->data1C);
+        }
+    }
+
+    if (D_8013AE88->data1E &&
+        (!D_8013AFD3 || D_8013AE88->data18 == 6 || D_8013AE88->data18 == 7)) {
+        if ((D_8013AE88->data18 == 1 || D_8013AE88->data18 == 6) && state->unk06 == 0) {
+            goto end_task;
+        }
+        task = D_8013AE88;
+        if ((task->data18 == 2 || task->data18 == 7) && state->unk06 == 0xFFFF) {
+            goto stop_transition;
+        }
+        if (D_8013AE88->data18 == 4 && state->unk06 == 0) {
+end_task:
+            func_800149A8();
+            return;
+        }
+        task = D_8013AE88;
+        if (task->data18 == 5 && state->unk06 == 0xFFFF) {
+stop_transition:
+            task->data1E = 0;
+            return;
+        }
+        if (D_8013AE88->data18 == 1 || D_8013AE88->data18 == 4 || D_8013AE88->data18 == 6) {
+            if (state->unk06 < state->unk04) {
+                state->unk06 = 0;
+            } else {
+                state->unk06 -= state->unk04;
+            }
+        }
+        if (D_8013AE88->data18 == 2 || D_8013AE88->data18 == 5 || D_8013AE88->data18 == 7) {
+            if (0xFFFF - state->unk06 < state->unk04) {
+                state->unk06 = 0xFFFF;
+            } else {
+                state->unk06 += state->unk04;
+            }
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80070794);
 
