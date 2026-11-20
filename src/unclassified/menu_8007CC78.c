@@ -3,6 +3,7 @@
 #include "../menu/save_record_tasks_internal.h"
 #include "game/io/cd_queue.h"
 #include "game/menu/selected_sprite.h"
+#include "game/menu/task_widgets.h"
 
 #define MEMORY_CARD_SLOT_BUFFER_BASE ((u8 *)0x801E4000)
 #define MEMORY_CARD_SLOT_BUFFER_STRIDE 0x2000
@@ -32,6 +33,12 @@ typedef struct ClippedGridSpriteParent {
     u16 count;
     s8 alternateSprites;
 } ClippedGridSpriteParent;
+
+typedef struct SaveRecordTaskStatus {
+    RegisteredPanelSlot first;
+    u8 unk08[8];
+    s16 secondResult;
+} SaveRecordTaskStatus;
 
 u16 litObjectDrawAreaDepths[4] __attribute__((section(".data.lit_object_draw_area_depths"))) = {
     0x30, 0x20, 0x50, 0x3E
@@ -1324,6 +1331,8 @@ void startClearedStateValueHistoryTask(void) {
     }
 }
 
+void func_800879CC(s16 slot, s32 x, s32 y, s16 depth, s32 index);
+
 void initializeSaveRecordTask(void) {
     s16 i;
 
@@ -1350,10 +1359,122 @@ void initializeSaveRecordTask(void) {
         gPlayerResourceTextureSelections.entries[1][i] = D_80123650[i];
     }
     startClearedStateValueHistoryTask();
-    setCurrentTaskCallback(func_800875D0);
+    setCurrentTaskCallback(updateSaveRecordTask);
 }
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_800875D0);
+void updateSaveRecordTask(void) {
+    SaveRecordTaskStatus *status;
+    RegisteredPanelSlot *panels;
+    s16 firstResult;
+    s16 secondResult;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    status = (SaveRecordTaskStatus *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) {
+        while (1) {}
+    }
+    panels = (RegisteredPanelSlot *)&D_800D9504[D_8013AE88->resource16];
+
+    switch (D_8013AE88->data18) {
+    case 0:
+        setMusicSequenceEnabled(1);
+        status->first.flags = 0;
+        status->secondResult = 0;
+        uploadBufferedTexturePair();
+        func_800879CC(0, -136, -96, 6, 1);
+        func_800879CC(1, -136, 8, 6, 11);
+        D_8013AE88->data18 = 2;
+        break;
+    case 2:
+        if (panels[0].flags || panels[1].flags) {
+            break;
+        }
+        markSecondaryTaskAndClearReference();
+        panels[0].command = 3;
+        D_8013AE88->data18 = 3;
+        break;
+    case 3:
+        if (panels[0].flags) {
+            break;
+        }
+        if (status->first.flags < 0) {
+            goto finish_panels;
+        }
+        panels[1].command = 3;
+        D_8013AE88->data18 = 4;
+        break;
+    case 4:
+        if (panels[1].flags) {
+            break;
+        }
+        if (status->secondResult >= 0) {
+            if (panels[0].task->data18 != 26) {
+                panels[0].command = 15;
+            }
+            if (panels[1].task->data18 != 26) {
+                panels[1].command = 15;
+            }
+        }
+    finish_panels:
+        D_8013AE88->data18 = 5;
+        break;
+    case 5:
+        if ((firstResult = status->first.flags) < 0 ||
+            (secondResult = status->secondResult) < 0) {
+            D_8013AE98->data18 = 3;
+            resetUnlockNotificationStateForMode2();
+        } else {
+            if (firstResult == 0 || secondResult == 0 || panels[0].flags || panels[1].flags) {
+                break;
+            }
+            if (D_8013AFCD == 1 && D_8013B47C == 0) {
+                D_8013AE98->data18 = 30;
+            } else {
+                D_8013AE98->data18 = 5;
+                queueMenuResourceReads(5);
+            }
+            applyStereoSoundOption();
+        }
+        D_8013AE88->data18 = 6;
+        break;
+    case 6:
+        panels[0].command = 27;
+        panels[1].command = 27;
+        D_8013AE88->data18 = 7;
+        break;
+    case 7:
+        if (panels[0].flags || panels[1].flags) {
+            break;
+        }
+        if (D_8013AE98->data18 == 30) {
+            configureTaskStateTransition(2, 0, 30);
+            D_8013AE88->data18 = 8;
+            break;
+        }
+        goto finish_transition;
+    case 8:
+        if (D_8013AFCD == 2) {
+            D_8013AE98->data18 = 5;
+            queueMenuResourceReads(5);
+        } else {
+            if (func_800707F0(0) != 0) {
+                break;
+            }
+            setMusicSequenceEnabled(0);
+            setTaskBackgroundMode(0, 0, 0);
+        }
+    finish_transition:
+        D_8013AE88->data18 = 9;
+        break;
+    case 9:
+    default:
+        D_8013AE98->data1C--;
+        func_800149A8();
+        break;
+    }
+}
 
 void resetUnlockNotificationStateForMode2(void) {
     if (D_8013AFCD == 2) {

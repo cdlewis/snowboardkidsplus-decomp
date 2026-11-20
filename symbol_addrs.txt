@@ -3201,6 +3201,7 @@ createPlayerTripleQuadEffectTask = 0x80068A10; // type:func
 gPlayerTripleQuadOffsets = 0x8012CA34; // size:0x18 defined:true
 
 initializeSaveRecordTask = 0x80087464; // type:func
+updateSaveRecordTask = 0x800875D0; // type:func
 
 moveCurrentPlayerToTaskTarget = 0x80025840; // type:func
 

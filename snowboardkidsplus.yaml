@@ -131,7 +131,8 @@ segments:
       - [0x2110, rodata]
       - {start: 0x22B8, type: .rodata, name: unclassified/menu_8007CC78, linker_section: .rodata.memory_card_slot_task}
       - {start: 0x22EC, type: .rodata, name: unclassified/menu_8007CC78, linker_section: .rodata.memory_card_slot_task_padding}
-      - [0x22F0, rodata]
+      - {start: 0x22F0, type: .rodata, name: unclassified/menu_8007CC78, linker_section: .rodata.save_record_task}
+      - [0x2318, rodata]
       - [0x2400, .rodata, menu/save_record_tasks]
       - {start: 0x2434, type: .rodata, name: menu/save_record_tasks, linker_section: .rodata.state_value_history_padding}
       - [0x2438, rodata]
