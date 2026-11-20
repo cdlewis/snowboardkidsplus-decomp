@@ -19,6 +19,12 @@ SVECTOR gOscillatingQuadVertices[4] __attribute__((section(".data.oscillating_qu
     {128, 0, 0, 0},
 };
 
+/* Twelve animated offsets followed by the four words used by the next background. */
+s16 gRipplingBackgroundStripData[20] __attribute__((section(".data.rippling_background"), aligned(4))) = {
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0x5000, 0, 0x5000, 0, 0x5000, 0, 0, 0,
+};
+
 TexturedSpritePacket gCameraOverlaySpritesBuffer0[2] __attribute__((section(".data.camera_overlay_packets"))) = {
     {5 << 24, ((u32)DRAW_MODE_COMMAND_HIGH << 16) | getTPage(2, 0, 0, 0),
      128, 128, 128, TEXTURED_SPRITE_CODE | SEMI_TRANSPARENT_FLAG, -160, -120, 0, 0, 0, 256, 240},
@@ -97,11 +103,13 @@ extern VECTOR D_80124BDC;
 extern TmdObject *D_80125044[3];
 extern GsCOORDINATE2 D_80124FF4;
 extern s32 D_8013AFB8 __attribute__((section(".data")));
+extern s16 D_8013B22C, D_8013B22E;
 extern Position3D *D_8013B280 __attribute__((section(".data")));
 extern u16 D_8013B654;
 extern s32 D_8013B664;
 extern TmdObject *D_8013BBF8[];
 
+void func_8004D93C(s16 playerIndex);
 void func_800512A4(s16 view);
 
 INCLUDE_ASM("asm/nonmatchings/unclassified/graphics_8004D330", func_8004D330);
@@ -324,7 +332,56 @@ void createFlickeringDotsTask(s32 playerIndex) {
 
 INCLUDE_ASM("asm/nonmatchings/unclassified/graphics_8004D330", func_8004FB70);
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/graphics_8004D330", func_80050080);
+void drawRipplingBackgroundAndSetFog(s16 playerIndex) {
+    s32 column, strip, offset, x, y;
+    u32 segment = (u16)D_801241E8[playerIndex].unk18;
+
+    if (segment < 2 || (u32)(segment - 10) < 10 ||
+        (u32)(segment - 41) < 9 || (u32)(segment - 125) < 4 ||
+        (u32)(segment - 249) < 5 || (u32)(segment - 79) < 12 ||
+        (s16)segment == 254 || (u32)(segment - 311) < 7) {
+        D_8013B22C = 0xE90;
+        D_8013B22E = 0xF60;
+        func_8004D93C(playerIndex);
+    }
+
+    if (!D_8013AFD3) {
+        for (column = 0; column < 11; column++) {
+            gRipplingBackgroundStripData[column] = gRipplingBackgroundStripData[column + 1];
+        }
+        gRipplingBackgroundStripData[11] = randomNextLinear() % 4 - 2;
+        if (randomNextLinear() % 30) {
+            gRipplingBackgroundStripData[0] = randomNextLinear() % 5 - 3;
+        }
+        if (randomNextLinear() % 120) {
+            gRipplingBackgroundStripData[0] = randomNextLinear() % 8 - 4;
+        }
+    }
+
+    x = -160 - ((D_801241E8[playerIndex].yaw >> 1) & 255);
+    y = D_801241E8[playerIndex].pitch / 4 - 64;
+    /* The bottom edge of the last strip uses the halfword following the offsets. */
+    for (column = 0; column < 3; column++, x += 256) {
+        strip = offset = 0;
+        for (strip = 0; strip < 12; strip++, offset += 8) {
+            addTexturedQuad(&D_8013AF6C[4094],
+                (s16)(x + gRipplingBackgroundStripData[strip]), (s16)(y + offset),
+                (s16)(x + gRipplingBackgroundStripData[strip] + 256), (s16)(y + offset),
+                (s16)(x + gRipplingBackgroundStripData[strip + 1]), (s16)(y + offset + 8),
+                (s16)(x + gRipplingBackgroundStripData[strip + 1] + 256), (s16)(y + offset + 8),
+                POLY_FT4_CODE, getTPage(0, 0, 640, 256), getClut(656, 510),
+                0, (u8)(128 + offset), 255, (u8)(128 + offset),
+                0, (u8)(135 + offset), 255, (u8)(135 + offset), 128, 128, 128);
+        }
+    }
+
+    if (y < -120) y = -120;
+    if (y > 120) y = 120;
+    addFlatRectangle(&D_8013AF6C[4095], -160, -120, 320, (s16)(y + 120), 72, 184, 248);
+    addFlatRectangle(&D_8013AF6C[4095], -160, (s16)y, 320, (s16)(120 - y), 232, 208, 144);
+    SetFarColor(112, 100, 80);
+    SetFogNearFar(8000, 10000, 400);
+}
 
 INCLUDE_ASM("asm/nonmatchings/unclassified/graphics_8004D330", func_80050504);
 
