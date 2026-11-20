@@ -1014,7 +1014,7 @@ void drawFullScreenSpriteTask(void);
 void updateFadingTextTask(void);
 void drawFadingText(FadingTextResource *resource);
 void loadTimedSpritePresentationResources(void);
-void func_8006AB8C(void);
+void updateTimedSpritePresentation(void);
 void updatePrimaryValueTransition(void);
 void updatePaletteWhitePulse(void);
 void updateTimedSpriteSequence(void);

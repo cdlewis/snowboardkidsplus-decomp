@@ -6,6 +6,8 @@
 #define GAME_LOOP_ABSOLUTE_ADDRESSING
 #include "game/engine/game_loop.h"
 
+#define PRESENTATION_SKIP_BUTTON 0x0800
+
 /* Equal-channel color assignment for grayscale primitives. */
 #define setGray0(p, shade) ((p)->r0 = (p)->g0 = (p)->b0 = (shade))
 
@@ -143,6 +145,260 @@ const FadingTextGlyphBanks gFadingTextGlyphBanks
     __attribute__((section(".rodata.fading_text_glyph_banks"))) = {
     {D_8012EC04, D_8012ECC8, D_8012EECC, D_8012F0D0}
 };
+
+/* Shift-JIS captions with the original four-byte padding. */
+const char gTimedSpritePresentationText[0x498]
+    __attribute__((section(".rodata.timed_sprite_text"), aligned(4))) =
+    "\x83\x58\x83\x6D\x83\x7B\x83\x4C\x83\x62\x83\x59  \x83\x76\x83\x89"
+    "\x83\x58\x00\x00\x00\x00"
+    "\x81\x7C\x83\x58\x83\x5E\x83\x62\x83\x74\x81\x7C\x00\x00\x00\x00"
+    "\x83\x4C\x83\x83\x83\x58\x83\x67\x00\x00\x00\x00"
+    "\x83\x58\x83\x89\x83\x62\x83\x56\x83\x85\x00\x00"
+    "\x90\x58\x93\x63  \x90\xE7\x96\xBE\x00\x00"
+    "\x83\x69\x83\x93\x83\x56\x81\x5B\x81\x5E\x8F\x97\x82\xCC\x8E\x71\x82\x60"
+    "\x00\x00"
+    "\x90\xCE\x90\xEC  \x90\xC3\x00\x00\x00\x00"
+    "\x83\x8A\x83\x93\x83\x5F\x81\x5E\x83\x4A\x83\x47\x83\x66\x81\x5E\x8F\x97"
+    "\x82\xCC\x8E\x71\x82\x61\x00\x00\x00\x00"
+    "\x89\xC4\x8E\xF7  \x83\x8A\x83\x49\x00\x00"
+    "\x83\x57\x83\x83\x83\x80\x81\x5E\x83\x56\x83\x6D\x83\x72\x83\x93\x81\x5E"
+    "\x92\x53\x94\x43\x82\xCC\x90\xE6\x90\xB6\x00\x00\x00\x00"
+    "\x90\x7A\x96\x4B\x95\x94  \x8F\x87\x88\xEA\x00\x00\x00\x00"
+    "\x83\x67\x83\x7E\x83\x42\x81\x5E\x83\x8B\x83\x72\x81\x5B\x81\x5E\x8C\xA2"
+    "\x93\x58\x92\xB7\x00\x00"
+    "\x89\x93\x8B\xDF  \x8D\x46\x88\xEA\x00\x00"
+    "\x93\x63\x8C\xFB  \x8D\x47\x8E\x71\x00\x00"
+    "\x83\x6A\x83\x52\x83\x8B\x81\x5E\x83\x58\x83\x89\x83\x62\x83\x56\x83\x85"
+    "\x82\xCC\x95\xEA\x81\x5E\x92\x6A\x82\xCC\x8E\x71\x00\x00"
+    "\x8B\x67\x93\x63  \x8C\xC3\x93\xDE\x94\xFC\x00\x00\x00\x00"
+    "\x83\x69\x83\x8C\x81\x5B\x83\x56\x83\x87\x83\x93\x00\x00\x00\x00"
+    "\x82\x63\x82\x69  \x83\x69\x83\x43\x83\x4E\x00\x00\x00\x00"
+    "\x83\x81\x83\x43\x83\x93\x83\x76\x83\x89\x83\x93\x83\x69\x81\x5B\x00\x00"
+    "\x00\x00"
+    "\x95\x9E\x95\x94  \x97\x52\x96\xAF\x8C\xCF\x00\x00\x00\x00"
+    "\x83\x41\x83\x56\x83\x58\x83\x5E\x83\x93\x83\x67\x83\x76\x83\x89\x83\x93"
+    "\x83\x69\x81\x5B\x00\x00"
+    "\x8F\xAC\x90\x58  \x90\xAC\x97\x59\x00\x00"
+    "\x83\x81\x83\x43\x83\x93\x83\x76\x83\x8D\x83\x4F\x83\x89\x83\x7D\x81\x5B"
+    "\x00\x00"
+    "\x83\x41\x83\x56\x83\x58\x83\x5E\x83\x93\x83\x67\x83\x76\x83\x8D\x83\x4F"
+    "\x83\x89\x83\x7D\x81\x5B\x00\x00\x00\x00"
+    "\x82\xDD\x82\xE2\x82\xB6\x82\xDC\x82\xDD\x82\xCC\x82\xE9\x00\x00"
+    "\x83\x50\x83\x5C\x82\xDC\x82\xE9\x00\x00\x00\x00"
+    "\x82\x52\x82\x63\x83\x4F\x83\x89\x83\x74\x83\x42\x83\x62\x83\x4E\x00\x00"
+    "\x00\x00"
+    "\x82\xED\x82\xBE  \x82\xB3\x82\xC6\x82\xB5\x00\x00\x00\x00"
+    "\x8A\xE2\x8D\xE8  \x92\x71\x94\xFC\x00\x00"
+    "\x90\xD4\x96\xD8  \x8B\x60\x8F\xAE\x00\x00"
+    "\x91\xE5\x92\xCE\x92\xE9\x8D\x91\x00\x00\x00\x00"
+    "\x82\x51\x82\x63\x83\x4F\x83\x89\x83\x74\x83\x42\x83\x62\x83\x4E\x00\x00"
+    "\x00\x00"
+    "\x82\xA8\x82\xA9\x82\xBF\x82\xA4\x00\x00\x00\x00"
+    "\x83\x4C\x83\x83\x83\x89\x83\x4E\x83\x5E\x81\x5B\x8C\xB4\x88\xC4\x00\x00"
+    "\x00\x00"
+    "\x83\x51\x81\x5B\x83\x80\x92\x86\x8C\xB4\x89\xE6\x81\x5E\x83\x58\x83\x5E"
+    "\x83\x62\x83\x74\x83\x8D\x81\x5B\x83\x8B\x8C\xB4\x89\xE6\x00\x00\x00\x00"
+    "\x83\x82\x81\x5B\x83\x56\x83\x87\x83\x93\x00\x00"
+    "\x96\x78\x94\x56\x93\xE0\x8C\x4E\x00\x00\x00\x00"
+    "\x83\x54\x83\x45\x83\x93\x83\x68\x83\x76\x83\x8D\x83\x66\x83\x85\x81\x5B"
+    "\x83\x54\x81\x5B\x00\x00"
+    "\x8A\x7D\x88\xE4  \x8C\x4D\x00\x00\x00\x00"
+    "\x82\x73\x82\x6E\x82\x6C\x82\x6E\x82\x67\x82\x68\x82\x6A\x82\x6E  "
+    "\x82\x72\x82\x60\x82\x73\x82\x6E\x00\x00"
+    "\x8E\x52\x96\x7B  \x8F\xAC\x95\x53\x8D\x87\x00\x00\x00\x00"
+    "\x83\x76\x83\x8D\x83\x57\x83\x46\x83\x4E\x83\x67\x83\x8A\x81\x5B\x83\x5F"
+    "\x81\x5B\x00\x00\x00\x00"
+    "\x83\x66\x83\x42\x83\x8C\x83\x4E\x83\x5E\x81\x5B\x00\x00\x00\x00"
+    "\x96\xEE\x8E\x52  \x8F\x47\x8E\xF7\x00\x00"
+    "\x91\xBA\x93\x63  \x95\x90\x8E\x69\x00\x00"
+    "\x82\x61\x82\x66\x82\x6C  \x83\x49\x81\x5B\x83\x76\x83\x6A\x83\x93"
+    "\x83\x4F\x81\x45\x83\x47\x83\x93\x83\x66\x83\x42\x83\x93\x83\x4F\x00\x00"
+    "\x83\x65\x83\x58\x83\x67\x83\x76\x83\x8C\x83\x43\x83\x84\x81\x5B\x00\x00"
+    "\x00\x00"
+    "\x8F\xAC\x91\x71  \x8D\x47\x8C\x76\x00\x00"
+    "\x95\xBD\x96\xEC  \x90\xB9\x93\xF1\x00\x00"
+    "\x8B\xE0\xE0\x56  \x8B\x4D\x95\x71\x00\x00"
+    "\x8E\x4F\x89\x59  \x82\xE0\x82\xA6\x00\x00"
+    "\x91\xAB\x97\xA7  \x8F\x83\x00\x00\x00\x00"
+    "\x83\x65\x83\x58\x83\x67\x83\x76\x83\x8C\x83\x43\x83\x84\x81\x5B\x83\x60"
+    "\x81\x5B\x83\x74\x00\x00"
+    "\x8E\x52\x96\x7B  \x8D\x57\x8D\x4E\x00\x00"
+    "\x83\x65\x83\x58\x83\x67\x83\x76\x83\x8C\x83\x43\x83\x84\x81\x5B\x83\x7D"
+    "\x83\x6C\x81\x5B\x83\x57\x83\x83\x81\x5B\x00\x00\x00\x00"
+    "\x93\xF1\x96\xD8  \x97\xB2\x8D\x4B\x00\x00"
+    "\x83\x80\x81\x5B\x83\x72\x81\x5B\x81\x5E\x83\x43\x83\x78\x83\x93\x83\x67"
+    "\x83\x4F\x83\x89\x83\x74\x83\x42\x83\x62\x83\x4E\x00\x00"
+    "\x83\x41\x81\x5B\x83\x58\x83\x8A\x81\x5B\x83\x76\x83\x8D\x83\x5F\x83\x4E"
+    "\x83\x56\x83\x87\x83\x93\x00\x00\x00\x00"
+    "\x83\x7D\x83\x6A\x83\x85\x83\x41\x83\x8B\x83\x66\x83\x55\x83\x43\x83\x93"
+    "\x00\x00"
+    "\x89\x69\x93\x87  \x90\xAD\x92\x6A\x00\x00"
+    "\x83\x5E\x83\x43\x83\x67\x83\x8B\x83\x66\x83\x55\x83\x43\x83\x93\x00\x00"
+    "\x00\x00"
+    "\x90\xCE\x88\xE4  \x8E\x6A\x90\x6C\x00\x00"
+    "\x83\x76\x83\x8D\x83\x82\x81\x5B\x83\x56\x83\x87\x83\x93\x00\x00"
+    "\x93\x87\x91\xBA  \x91\xE5\x8E\x4F\x00\x00"
+    "\x83\x76\x83\x8D\x83\x66\x83\x85\x81\x5B\x83\x54\x81\x5B\x00\x00"
+    "\x93\x63\x92\x86  \x97\x54\x94\x56\x00\x00";
+
+char gTimedSpriteAlternateText[4][8]
+    __attribute__((section(".data.timed_sprite_alternate_text"), aligned(4))) = {
+    "\x83\x70\x83\x81\x83\x89\x00\x00",
+    "\x82\xA2\x82\xA9\x82\x61\x00\x00",
+    "\x82\xC2\x82\xE9\x93\x63\x00\x00",
+    "\x8A\x5E\x88\xEE\x00\x00\x00\x00",
+};
+
+const TimedSpriteStep gTimedSpriteStepsAtFrame0[]
+    __attribute__((section(".data.timed_sprite_steps"))) = {
+    {0, 90, -80, -24, &gTimedSpritePresentationText[0x000], 12, 0},
+    {0, 90, -48, 0, &gTimedSpritePresentationText[0x018], 14, 0},
+    {-1, 0, 0, 0, NULL, 0, 0},
+};
+
+const TimedSpriteStep gTimedSpriteStepsAtFrame210[]
+    __attribute__((section(".data.timed_sprite_steps"))) = {
+    {0, 1230, -32, -64, &gTimedSpritePresentationText[0x028], 15, 0},
+    {60, 120, -40, -32, &gTimedSpritePresentationText[0x034], 12, 0},
+    {60, 120, -40, 0, &gTimedSpritePresentationText[0x040], 14, 0},
+    {210, 120, -72, -32, &gTimedSpritePresentationText[0x04C], 12, 0},
+    {210, 120, -32, 0, &gTimedSpritePresentationText[0x060], 14, 0},
+    {360, 120, -96, -32, &gTimedSpritePresentationText[0x06C], 12, 0},
+    {360, 120, -40, 0, &gTimedSpritePresentationText[0x088], 14, 0},
+    {510, 120, -112, -32, &gTimedSpritePresentationText[0x094], 12, 0},
+    {510, 120, -48, 0, &gTimedSpritePresentationText[0x0B4], 14, 0},
+    {660, 120, -88, -32, &gTimedSpritePresentationText[0x0C4], 12, 0},
+    {660, 120, -40, 0, &gTimedSpritePresentationText[0x0DC], 14, 0},
+    {810, 120, -24, -32, gTimedSpriteAlternateText[0], 12, 0},
+    {810, 120, -40, 0, &gTimedSpritePresentationText[0x0E8], 14, 0},
+    {960, 120, -120, -32, &gTimedSpritePresentationText[0x0F4], 12, 0},
+    {960, 120, -48, 0, &gTimedSpritePresentationText[0x114], 14, 0},
+    {1110, 120, -48, -32, &gTimedSpritePresentationText[0x124], 12, 0},
+    {1110, 120, -48, 0, &gTimedSpritePresentationText[0x134], 14, 0},
+    {-1, 0, 0, 0, NULL, 0, 0},
+};
+
+const TimedSpriteStep gTimedSpriteStepsAtFrame1530[]
+    __attribute__((section(".data.timed_sprite_steps"))) = {
+    {0, 120, -64, -32, &gTimedSpritePresentationText[0x144], 15, 0},
+    {30, 90, -48, 0, &gTimedSpritePresentationText[0x158], 14, 0},
+    {120, 120, -88, -32, &gTimedSpritePresentationText[0x168], 15, 0},
+    {150, 90, -40, 0, &gTimedSpritePresentationText[0x180], 14, 0},
+    {-1, 0, 0, 0, NULL, 0, 0},
+};
+
+const TimedSpriteStep gTimedSpriteStepsAtFrame1800[]
+    __attribute__((section(".data.timed_sprite_steps"))) = {
+    {0, 120, -72, -32, &gTimedSpritePresentationText[0x18C], 15, 0},
+    {30, 90, -24, 0, gTimedSpriteAlternateText[1], 14, 0},
+    {120, 120, -96, -32, &gTimedSpritePresentationText[0x1A0], 15, 0},
+    {150, 90, -56, 0, &gTimedSpritePresentationText[0x1BC], 14, 0},
+    {150, 90, -32, 16, &gTimedSpritePresentationText[0x1CC], 14, 0},
+    {-1, 0, 0, 0, NULL, 0, 0},
+};
+
+const TimedSpriteStep gTimedSpriteStepsAtFrame2130[]
+    __attribute__((section(".data.timed_sprite_steps"))) = {
+    {0, 270, -64, -64, &gTimedSpritePresentationText[0x1D8], 15, 0},
+    {30, 120, -24, -32, gTimedSpriteAlternateText[2], 14, 0},
+    {30, 120, -48, 0, &gTimedSpritePresentationText[0x1EC], 14, 0},
+    {30, 120, -16, -16, gTimedSpriteAlternateText[3], 14, 0},
+    {150, 120, -40, -32, &gTimedSpritePresentationText[0x1FC], 14, 0},
+    {150, 120, -40, -16, &gTimedSpritePresentationText[0x208], 14, 0},
+    {150, 120, -32, 0, &gTimedSpritePresentationText[0x214], 14, 0},
+    {-1, 0, 0, 0, NULL, 0, 0},
+};
+
+const TimedSpriteStep gTimedSpriteStepsAtFrame2430[]
+    __attribute__((section(".data.timed_sprite_steps"))) = {
+    {0, 120, -64, -32, &gTimedSpritePresentationText[0x220], 15, 0},
+    {30, 90, -32, 0, &gTimedSpritePresentationText[0x234], 14, 0},
+    {-1, 0, 0, 0, NULL, 0, 0},
+};
+
+const TimedSpriteStep gTimedSpriteStepsAtFrame2670[]
+    __attribute__((section(".data.timed_sprite_steps"))) = {
+    {0, 120, -64, -48, &gTimedSpritePresentationText[0x240], 15, 0},
+    {0, 120, -128, -32, &gTimedSpritePresentationText[0x254], 15, 0},
+    {30, 90, -32, 0, &gTimedSpritePresentationText[0x208], 14, 0},
+    {-1, 0, 0, 0, NULL, 0, 0},
+};
+
+const TimedSpriteStep gTimedSpriteStepsAtFrame2820[]
+    __attribute__((section(".data.timed_sprite_steps"))) = {
+    {0, 120, -40, -32, &gTimedSpritePresentationText[0x278], 15, 0},
+    {30, 90, -32, 0, &gTimedSpritePresentationText[0x284], 14, 0},
+    {-1, 0, 0, 0, NULL, 0, 0},
+};
+
+const TimedSpriteStep gTimedSpriteStepsAtFrame2970[]
+    __attribute__((section(".data.timed_sprite_steps"))) = {
+    {0, 150, -88, -64, &gTimedSpritePresentationText[0x290], 15, 0},
+    {30, 120, -32, -32, &gTimedSpritePresentationText[0x2A8], 14, 0},
+    {30, 120, -104, -16, &gTimedSpritePresentationText[0x2B4], 14, 0},
+    {30, 120, -48, 0, &gTimedSpritePresentationText[0x2D0], 14, 0},
+    {-1, 0, 0, 0, NULL, 0, 0},
+};
+
+const TimedSpriteStep gTimedSpriteStepsAtFrame3150[]
+    __attribute__((section(".data.timed_sprite_steps"))) = {
+    {0, 120, -80, -32, &gTimedSpritePresentationText[0x2E0], 15, 0},
+    {30, 90, -48, 0, &gTimedSpritePresentationText[0x158], 14, 0},
+    {-1, 0, 0, 0, NULL, 0, 0},
+};
+
+const TimedSpriteStep gTimedSpriteStepsAtFrame3390[]
+    __attribute__((section(".data.timed_sprite_steps"))) = {
+    {0, 120, -48, -48, &gTimedSpritePresentationText[0x2F8], 15, 0},
+    {30, 90, -40, -16, &gTimedSpritePresentationText[0x308], 14, 0},
+    {30, 90, -40, 0, &gTimedSpritePresentationText[0x314], 14, 0},
+    {-1, 0, 0, 0, NULL, 0, 0},
+};
+
+const TimedSpriteStep gTimedSpriteStepsAtFrame3510[]
+    __attribute__((section(".data.timed_sprite_steps"))) = {
+    {0, 120, -136, -32, &gTimedSpritePresentationText[0x320], 15, 0},
+    {30, 90, -104, 0, &gTimedSpritePresentationText[0x2B4], 14, 0},
+    {-1, 0, 0, 0, NULL, 0, 0},
+};
+
+const TimedSpriteStep gTimedSpriteStepsAtFrame3720[]
+    __attribute__((section(".data.timed_sprite_steps"))) = {
+    {0, 150, -64, -64, &gTimedSpritePresentationText[0x344], 15, 0},
+    {30, 120, -40, -32, &gTimedSpritePresentationText[0x358], 14, 0},
+    {30, 120, -40, -16, &gTimedSpritePresentationText[0x364], 14, 0},
+    {30, 120, -40, 0, &gTimedSpritePresentationText[0x370], 14, 0},
+    {30, 120, -40, 16, &gTimedSpritePresentationText[0x37C], 14, 0},
+    {30, 120, -32, 32, &gTimedSpritePresentationText[0x388], 14, 0},
+    {150, 120, -88, -32, &gTimedSpritePresentationText[0x394], 15, 0},
+    {180, 90, -40, 0, &gTimedSpritePresentationText[0x3AC], 14, 0},
+    {270, 120, -112, -32, &gTimedSpritePresentationText[0x3B8], 15, 0},
+    {300, 90, -40, 0, &gTimedSpritePresentationText[0x3D8], 14, 0},
+    {-1, 0, 0, 0, NULL, 0, 0},
+};
+
+const TimedSpriteStep gTimedSpriteStepsAtFrame4110[]
+    __attribute__((section(".data.timed_sprite_steps"))) = {
+    {0, 120, -120, -32, &gTimedSpritePresentationText[0x3E4], 15, 0},
+    {30, 90, -96, 0, &gTimedSpritePresentationText[0x404], 14, 0},
+    {-1, 0, 0, 0, NULL, 0, 0},
+};
+
+const TimedSpriteStep gTimedSpriteStepsAtFrame4230[]
+    __attribute__((section(".data.timed_sprite_steps"))) = {
+    {0, 120, -72, -32, &gTimedSpritePresentationText[0x420], 15, 0},
+    {30, 90, -40, 0, &gTimedSpritePresentationText[0x434], 14, 0},
+    {120, 120, -64, -32, &gTimedSpritePresentationText[0x440], 15, 0},
+    {150, 90, -40, 0, &gTimedSpritePresentationText[0x454], 14, 0},
+    {240, 120, -56, -32, &gTimedSpritePresentationText[0x460], 15, 0},
+    {270, 90, -40, 0, &gTimedSpritePresentationText[0x470], 14, 0},
+    {360, 150, -56, -32, &gTimedSpritePresentationText[0x47C], 15, 0},
+    {390, 120, -40, 0, &gTimedSpritePresentationText[0x48C], 14, 0},
+    {-1, 0, 0, 0, NULL, 0, 0},
+};
+
+s32 gTimedSpritePresentationFrame
+    __attribute__((section(".sdata"))) = 0;
 
 PlayerRenderSnapshot gPlayerRenderSnapshots[4]
     __attribute__((section(".data.player_render_snapshots"))) = {0};
@@ -2266,7 +2522,141 @@ void finishTimedSpritePresentation(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_8006AB8C);
+void updateTimedSpritePresentation(void) {
+    s32 frame = D_8013AE88->data18;
+
+    gTimedSpritePresentationFrame = frame;
+    if (frame == 0) {
+        startValueInterpolationTask(15, 0, 64);
+        createFullScreenSpriteTask(120, getTPage(1, 1, 320, 256), getClut(320, 496),
+            0, 0, &D_8013B360);
+    }
+    if (frame == 75) {
+        startValueInterpolationTask(14, 64, 255);
+    }
+    if (frame == 90) {
+        startValueInterpolationTask(30, 255, 0);
+        startPrimaryValueTransition(30, 0, 128);
+        createFullScreenSpriteTask(1410, getTPage(1, 1, 320, 0), getClut(320, 240),
+            0, 0, &D_8013B35C);
+    }
+    if (frame == 180) {
+        startPrimaryValueTransition(30, 128, 64);
+    }
+    if (frame == 0) {
+        startTimedSpriteSequence(gTimedSpriteStepsAtFrame0);
+    }
+    if (frame == 210) {
+        startTimedSpriteSequence(gTimedSpriteStepsAtFrame210);
+    }
+    if (frame == 1440) {
+        startPrimaryValueTransition(30, 64, 0);
+        startValueInterpolationTask(30, 0, 128);
+        uploadTimImageAndPaletteAt(getOffsetArchiveEntry(DAT_ANIMATION_ARCHIVE, 0),
+            320, 256, 320, 496);
+        createFullScreenSpriteTask(660, getTPage(1, 1, 320, 256), getClut(320, 496),
+            0, 0, &D_8013B360);
+    }
+    if (frame == 1530) {
+        startValueInterpolationTask(30, 128, 64);
+        startTimedSpriteSequence(gTimedSpriteStepsAtFrame1530);
+    }
+    if (frame == 1800) {
+        startTimedSpriteSequence(gTimedSpriteStepsAtFrame1800);
+    }
+    if (frame == 2040) {
+        startValueInterpolationTask(60, 64, 0);
+        startPrimaryValueTransition(30, 0, 128);
+        uploadTimImageAndPaletteAt(getOffsetArchiveEntry(DAT_ANIMATION_ARCHIVE, 1),
+            320, 0, 320, 240);
+        createFullScreenSpriteTask(600, getTPage(1, 1, 320, 0), getClut(320, 240),
+            0, 0, &D_8013B35C);
+    }
+    if (frame == 2130) {
+        startPrimaryValueTransition(30, 128, 64);
+        startTimedSpriteSequence(gTimedSpriteStepsAtFrame2130);
+    }
+    if (frame == 2430) {
+        startTimedSpriteSequence(gTimedSpriteStepsAtFrame2430);
+    }
+    if (frame == 2580) {
+        startPrimaryValueTransition(60, 64, 0);
+        startValueInterpolationTask(30, 0, 128);
+        uploadTimImageAndPaletteAt(getOffsetArchiveEntry(DAT_ANIMATION_ARCHIVE, 2),
+            320, 256, 320, 496);
+        createFullScreenSpriteTask(780, getTPage(1, 1, 320, 256), getClut(320, 496),
+            0, 0, &D_8013B360);
+    }
+    if (frame == 2670) {
+        startValueInterpolationTask(30, 128, 64);
+        startTimedSpriteSequence(gTimedSpriteStepsAtFrame2670);
+    }
+    if (frame == 2820) {
+        startTimedSpriteSequence(gTimedSpriteStepsAtFrame2820);
+    }
+    if (frame == 2970) {
+        startTimedSpriteSequence(gTimedSpriteStepsAtFrame2970);
+    }
+    if (frame == 3150) {
+        startTimedSpriteSequence(gTimedSpriteStepsAtFrame3150);
+    }
+    if (frame == 3300) {
+        startValueInterpolationTask(60, 64, 0);
+        startPrimaryValueTransition(30, 0, 128);
+        uploadTimImageAndPaletteAt(getOffsetArchiveEntry(DAT_ANIMATION_ARCHIVE, 3),
+            320, 0, 320, 240);
+        createFullScreenSpriteTask(390, getTPage(1, 1, 320, 0), getClut(320, 240),
+            0, 0, &D_8013B35C);
+    }
+    if (frame == 3390) {
+        startPrimaryValueTransition(30, 128, 64);
+        startTimedSpriteSequence(gTimedSpriteStepsAtFrame3390);
+    }
+    if (frame == 3510) {
+        startTimedSpriteSequence(gTimedSpriteStepsAtFrame3510);
+    }
+    if (frame == 3630) {
+        startPrimaryValueTransition(60, 64, 0);
+        startValueInterpolationTask(30, 0, 128);
+        uploadTimImageAndPaletteAt(getOffsetArchiveEntry(DAT_ANIMATION_ARCHIVE, 4),
+            320, 256, 320, 496);
+        createFullScreenSpriteTask(1230, getTPage(1, 1, 320, 256), getClut(320, 496),
+            0, 0, &D_8013B360);
+    }
+    if (frame == 3720) {
+        startValueInterpolationTask(30, 128, 64);
+        startTimedSpriteSequence(gTimedSpriteStepsAtFrame3720);
+    }
+    if (frame == 4110) {
+        startTimedSpriteSequence(gTimedSpriteStepsAtFrame4110);
+    }
+    if (frame == 4230) {
+        startTimedSpriteSequence(gTimedSpriteStepsAtFrame4230);
+    }
+    if (frame == 4710) {
+        startValueInterpolationTask(60, 64, 0);
+    }
+    if (frame == 4740) {
+        startPrimaryValueTransition(60, 0, 128);
+        uploadTimImageAndPaletteAt(getOffsetArchiveEntry(DAT_ANIMATION_ARCHIVE, 5),
+            320, 0, 320, 240);
+        createFullScreenSpriteTask(300, getTPage(1, 1, 320, 0), getClut(320, 240),
+            0, 0, &D_8013B35C);
+    }
+
+    if (frame == 4950 || (D_8013AEE8[0] & PRESENTATION_SKIP_BUTTON)) {
+        D_8013B36C = 1;
+        D_8013AE88->data18 = 0;
+        func_800149E0();
+        startPrimaryValueTransition(30, (s16)D_8013B35C, 0);
+        startValueInterpolationTask(30, (s16)D_8013B360, 0);
+        setCurrentTaskCallback(finishTimedSpritePresentation);
+    } else {
+        D_8013B368 = 0;
+        D_8013B364 = 0;
+        D_8013AE88->data18++;
+    }
+}
 
 void initializeTimedSpritePresentation(void) {
     setSecondaryDisplayTaskMode(0);
@@ -2277,7 +2667,7 @@ void initializeTimedSpritePresentation(void) {
     D_8013B368 = 0;
     D_8013B36C = 0;
     D_8013AE88->data18 = 0;
-    setCurrentTaskCallback(func_8006AB8C);
+    setCurrentTaskCallback(updateTimedSpritePresentation);
 }
 
 void loadTimedSpritePresentationResources(void) {

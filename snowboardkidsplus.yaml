@@ -123,7 +123,7 @@ segments:
       - {start: 0x1554, type: .rodata, name: race/effects/player_effects, linker_section: .rodata.race_oscillating_quad_position}
       - [0x1564, .rodata, race/effects/player_effects]
       - {start: 0x1590, type: .rodata, name: race/effects/player_effects, linker_section: .rodata.fading_text_glyph_banks}
-      - [0x15A0, rodata]
+      - {start: 0x15A0, type: .rodata, name: race/effects/player_effects, linker_section: .rodata.timed_sprite_text}
       - [0x1A38, .rodata, menu/task_widgets]
       - [0x1A78, rodata]
       - {start: 0x1C28, type: .rodata, name: menu/task_widgets, linker_section: .rodata.save_record_unlock_flags}
@@ -786,7 +786,7 @@ segments:
       - {start: 0x11D344, type: .data, name: race/effects/player_effects, linker_section: .data.right_quad_packet}
       - {start: 0x11D36C, type: .data, name: race/effects/player_effects, linker_section: .data.sliding_quad_packet}
       - {start: 0x11D394, type: .data, name: race/effects/player_effects, linker_section: .data.color_cycle_palette}
-      - [0x11D3B4, data, color_cycle_palette_tail]
+      - {start: 0x11D3B4, type: .data, name: race/effects/player_effects, linker_section: .data.timed_sprite_steps}
       - [0x11DA94, .data, io/controller_effects]
       - [0x11DC38, .data, unclassified/graphics_800497B8]
       - [0x11DC60, data, 11DC60]
@@ -986,6 +986,9 @@ segments:
       - [0x12BB20, data, radial_effect_quads_tail]
       - {start: 0x12BB28, type: .data, name: race/effects/player_effects, linker_section: .data.color_cycle_rects}
       - [0x12BB38, data, color_cycle_rects_tail]
+      - {start: 0x12BB3C, type: .data, name: race/effects/player_effects, linker_section: .data.timed_sprite_alternate_text}
+      - [0x12BB5C, data, timed_sprite_state]
+      - {start: 0x12BB70, type: .sdata, name: race/effects/player_effects, linker_section_order: .data}
       - {start: 0x12BB74, type: .sdata, name: race/effects/player_effects, linker_section: .sdata.stretched_text, linker_section_order: .data}
       - [0x12BB78, data, stretched_text_tail]
       - {start: 0x12BB94, type: .data, name: graphics/sprite_draw, linker_section: .data.digit_sprite_blend_bits}
