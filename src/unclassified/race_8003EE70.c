@@ -1,5 +1,12 @@
 #include "../race/race_presentation_internal.h"
 
+/* Full-width Shift-JIS labels used by the race HUD. */
+const char gAttackTimeLimitLabel[24] __attribute__((section(".rodata.trick_attack_labels"), aligned(4))) =
+    "\x82\x73\x82\x68\x82\x6C\x82\x64  \x82\x6B\x82\x68\x82\x6C\x82\x68\x82\x73";
+
+const char gTrickAttackPointLabel[12] __attribute__((section(".rodata.trick_attack_labels"), aligned(4))) =
+    "\x82\x6F\x82\x6E\x82\x68\x82\x6D\x82\x73";
+
 INCLUDE_ASM("asm/nonmatchings/unclassified/race_8003EE70", func_8003EE70);
 
 void addFourWordGpuPacket(GpuPacket4 *source, GsOT *ot, u16 depth) {
@@ -184,7 +191,45 @@ INCLUDE_ASM("asm/nonmatchings/unclassified/race_8003EE70", func_80041890);
 
 INCLUDE_ASM("asm/nonmatchings/unclassified/race_8003EE70", func_800418F4);
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/race_8003EE70", func_80041DC0);
+void drawTrickAttackHud(void) {
+    s16 palette = 1;
+    GsOT *ot = &D_800EBFF0[D_8013AF78];
+    u16 depth = palette;
+    s16 x;
+    s16 i;
+
+    if (D_8013B184.minutes == 0 && D_8013B184.seconds < 10 && (gFrameCounter & 1)) {
+        palette = 2;
+    }
+
+    setSpriteColor(128, 128, 128);
+    if (D_8013B18D_gp) {
+        func_8006C998(64, 84, 398, 5, -1, ot, depth);
+        palette = 2;
+    }
+    drawHudDecimalNumber8x16(64, 80, 2, 1, D_8013B184.minutes, palette, -1, ot, depth);
+    drawHudDecimalNumber8x16(88, 80, 2, 1, D_8013B184.seconds, palette, -1, ot, depth);
+    drawHudDecimalNumber8x16(112, 80, 2, 1, D_8013B184.centiseconds >> 8, palette, -1, ot, depth);
+    func_8006C998(80, 80, 25, palette, -1, ot, depth);
+    func_8006C998(104, 80, 24, palette, -1, ot, depth);
+    drawWrappedText8x8(56, 71, 10, gAttackTimeLimitLabel, 5, -1, ot, depth);
+
+    if (gRacePlayers[0].trickAttackMakeCount < 10) {
+        x = -112;
+        for (i = 0; i < gRacePlayers[0].trickAttackMakeCount; i++) {
+            drawTransformedSpriteByIndex(x, -72, 431, 13, -1, 0x7FFF, 0x7FFF, 0x555, 0x555, 0, ot, depth);
+            x += 8;
+        }
+    } else {
+        func_8006C998(-132, -96, 431, 13, -1, ot, depth);
+        drawHudDecimalNumber8x16(-100, -89, 2, 0, gRacePlayers[0].trickAttackMakeCount, 1, -1, ot, depth);
+    }
+
+    drawHudDecimalNumber8x16(92, -88, 5, 0, gRacePlayers[0].trickAttackPointTotal, 1, -1, ot, depth);
+    drawWrappedText8x8(96, -97, 5, gTrickAttackPointLabel, 5, -1, ot, depth);
+    func_8006C998(-112, 64, 422, 2, -1, ot, depth);
+    func_8006C998(-136, 64, 419, 14, -1, ot, depth);
+}
 
 INCLUDE_ASM("asm/nonmatchings/unclassified/race_8003EE70", func_8004213C);
 

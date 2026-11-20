@@ -6,6 +6,8 @@
 #include "game/save/save_data.h"
 #include "psx/libc.h"
 
+extern const char gAttackTimeLimitLabel[24] __attribute__((section(".rodata.trick_attack_labels"), aligned(4)));
+
 extern const char gLapTimeLabel[12] __attribute__((section(".rodata.lap_time_label"), aligned(4)));
 extern const char gLapTimeFormat[20] __attribute__((section(".rodata.lap_time_format"), aligned(4)));
 extern const char gBestLapLabel[16] __attribute__((section(".rodata.best_lap_label"), aligned(4)));
@@ -175,6 +177,7 @@ void initPlayerZeroTask(void);
 void initCurrentPlayerCameraTask(void);
 void updateRaceIntroCameraTask(void);
 void updateCurrentPlayerCameraTarget(void);
+void drawTrickAttackHud(void);
 void addFourWordGpuPacket(GpuPacket4 *source, GsOT *ot, u16 depth);
 void addTexturedSpritePacket(TexturedSpritePacket *source, GsOT *ot, u16 depth);
 void drawMenuKindSprite(s16 x, s16 y, s16 kind, s32 frame, GsOT *ot, u16 depth);
