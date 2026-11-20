@@ -190,6 +190,8 @@ void drawRegisteredTextPanelTask(void);
 void func_8008FA8C(void);
 void func_8008D200(void);
 void drawCurrentTaskMoneyPanel(void);
+void drawCurrentTaskMoneyPanelWithCharacterSprites(void);
+extern s8 D_801317E4[];
 extern u8 D_80131804[12];
 extern u32 D_80131810[12];
 

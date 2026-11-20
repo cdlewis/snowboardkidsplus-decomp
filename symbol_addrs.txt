@@ -2730,6 +2730,7 @@ prepareRaceResourcesIfSelectionChanged = 0x800A0C6C; // type:func
 
 initializeDelayedEightEntryEffectTask = 0x80065330; // type:func
 
+drawCurrentTaskMoneyPanelWithCharacterSprites = 0x8008F474; // type:func
 initializeCountedGroupedSelectionBoundsTask = 0x8008F970; // type:func
 
 drawSelectionHeaderAndMoneyPanel = 0x8007C7C8; // type:func
