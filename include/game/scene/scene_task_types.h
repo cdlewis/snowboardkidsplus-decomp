@@ -72,7 +72,14 @@ typedef struct ScenePlaybackState {
 
 typedef struct SceneTextTaskResource {
     SceneEvent *entry;
-    u8 unk04[0x2C];
+    SceneTextBlock *block;
+    u32 unk08;
+    u32 deadline;
+    u8 revealState;
+    const s8 *visibleText;
+    u32 visibleCharacters; /* Eight fractional bits. */
+    u32 revealedCharacters; /* Eight fractional bits. */
+    u8 unk20[0x10];
     GameTask *task;
     u8 unk34[0xCC];
 } SceneTextTaskResource;

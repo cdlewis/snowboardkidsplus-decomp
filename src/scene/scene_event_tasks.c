@@ -272,7 +272,116 @@ void setSceneTextEventTask(SceneEvent *entry) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/scene/scene_event_tasks", updateSceneTextTask);
+void updateSceneTextTask(void) {
+    ScenePlaybackState *owner;
+    SceneTextTaskResource *resource;
+    SceneTextBlock *block;
+    SceneEvent *entry;
+    GsOT *ot;
+    u16 depth;
+
+    if (D_8013AE98->resource16 == 0xFFFF) {
+        while (1) {}
+    }
+    owner = (ScenePlaybackState *)&D_800D9504[D_8013AE98->resource16];
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (SceneTextTaskResource *)&D_800D9504[D_8013AE88->resource14];
+    block = resource->block;
+    ot = &D_800EBFF0[D_8013AF78];
+    entry = resource->entry;
+    depth = 6;
+    if (owner->tasks[SCENE_EVENT_TEXT] != D_8013AE88) {
+        func_800149A8();
+        return;
+    }
+    if (entry->resourceId == 0) {
+        if (D_8013B59F) {
+            D_8013B59F = 0;
+        } else {
+            D_8013B59F = 1;
+        }
+        owner->tasks[SCENE_EVENT_TEXT] = NULL;
+        func_800149A8();
+        return;
+    }
+
+    switch (D_8013AE88->data18) {
+    case 0:
+        resource->block = ((SceneTextWorkspace *)DAT_SCRATCH_ADDRESS)->blocks;
+        if (entry->resourceId != 0) {
+            resource->block += entry->resourceId - 1;
+        } else {
+            resource->block = NULL;
+        }
+        block = resource->block;
+        entry->parameter14 = (entry->duration << 8) / block->metadata.fields.characterCount;
+        resource->deadline = (u32)owner->tick + entry->duration;
+        resource->revealState = 0;
+        resource->visibleText = (const s8 *)block->text;
+        resource->visibleCharacters = 0;
+        resource->revealedCharacters = 0;
+        owner->flags |= 2;
+        D_8013AE88->data18 = 1;
+        break;
+    case 1:
+        if (resource->revealState == 1) {
+            if ((D_8013AEE8[0] & 0xB0) || (u32)owner->tick >= resource->deadline) {
+                owner->tasks[SCENE_EVENT_TEXT] = NULL;
+                if (owner->completionTick < resource->deadline) {
+                    owner->completionTick = resource->deadline;
+                }
+                owner->flags &= ~2;
+                resource->revealState = 2;
+                func_800149A8();
+                return;
+            }
+        } else if (resource->revealState == 0) {
+            if ((resource->revealedCharacters >> 8) > block->metadata.fields.characterCount) {
+                resource->revealState = 1;
+            } else {
+                if (D_8013AEEC[0] & 0xB0) {
+                    resource->visibleCharacters += 0x200;
+                    resource->revealedCharacters += 0x200;
+                } else {
+                    s32 step = 0x10000 / entry->parameter14;
+                    resource->visibleCharacters += step;
+                    resource->revealedCharacters += step;
+                }
+                if (countWrappedTextLines(resource->visibleText, 14, resource->visibleCharacters >> 8) >= 4) {
+                    resource->visibleCharacters -= advanceTextLine(&resource->visibleText, 14) * 256;
+                }
+            }
+        }
+        break;
+    }
+
+    setSpriteColor(128, 128, 128);
+    if (block->metadata.fields.unk06 != 0) {
+        drawWrappedDoubleByteText(-96, 48, 1, D_8013B5C4, 2, -1, ot, depth);
+        func_8006C998(-136, 48, block->metadata.fields.unk06 + 502,
+                      block->metadata.fields.unk07 + 14, 1, ot, depth);
+    }
+    if (block->metadata.fields.unk08 != 0) {
+        if (block->metadata.fields.unk08 != 17) {
+            drawWrappedDoubleByteText(-96, 64, 1, D_8013B5C4, 2, -1, ot, depth);
+        }
+        func_8006C998(-136, 64, block->metadata.fields.unk08 + 502,
+                      block->metadata.fields.unk09 + 14, 1, ot, depth);
+    }
+    if (block->metadata.fields.unk0A != 0) {
+        if (block->metadata.fields.unk0A != 17) {
+            drawWrappedDoubleByteText(-96, 80, 1, D_8013B5C4, 2, -1, ot, depth);
+        }
+        func_8006C998(-136, 80, block->metadata.fields.unk0A + 502,
+                      block->metadata.fields.unk0B + 14, 1, ot, depth);
+    }
+    if (entry->resourceId != 0) {
+        drawLimitedWrappedText16x16(-88, 48, resource->visibleCharacters >> 8, 14,
+                                    (const char *)resource->visibleText, 8, 1, ot, depth);
+    }
+}
 
 void setSceneMusicEventTask(SceneEvent *entry) {
     SceneMusicOwner *owner;
