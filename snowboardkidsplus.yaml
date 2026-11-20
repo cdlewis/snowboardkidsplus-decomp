@@ -150,7 +150,7 @@ segments:
       - {start: 0x26A0, type: .rodata, name: menu/panel_tasks, linker_section: .rodata.board_level_label}
       - [0x26B0, rodata]
       - [0x2794, rodata]
-      - [0x27DC, rodata]
+      - {start: 0x27DC, type: .rodata, name: menu/grid_selection, linker_section: .rodata.split_board_selection}
       - [0x2840, .rodata, menu/grid_selection]
       - [0x288C, rodata]
       - {start: 0x28B8, type: .rodata, name: menu/resource_tasks, linker_section: .rodata.time_records_start_prompt}

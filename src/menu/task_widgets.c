@@ -31,21 +31,6 @@ typedef struct SpacedTaskResource {
     s16 unk54, spacingX, spacingY, count;
 } SpacedTaskResource;
 
-typedef struct SpacedGroupResource {
-    Movement2D movement;
-    u32 acceptMask, cancelMask;
-    u8 unk30[12];
-    TaskCallback callback3C, callback40;
-    const u8 *data44, *data48, *data4C;
-    s32 value;
-    s16 mode, spacingX, spacingY, count;
-    u8 unk5C, unk5D;
-    s8 unk5E;
-    u8 unk5F;
-    s16 unk60;
-    u8 r, g, b;
-} SpacedGroupResource;
-
 typedef struct ChildMovementGroup {
     u8 unk00[0x32];
     s16 selectedIndex;

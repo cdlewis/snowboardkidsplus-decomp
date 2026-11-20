@@ -203,7 +203,7 @@ void func_8008DDC0(void);
 void func_8008EC50(void);
 void func_80090450(void);
 void func_80092090(void);
-void func_80097FF4(void);
+void updateSplitBoardSelectionTask(void);
 void updatePlayerPaletteSelectionTask(void);
 void updateTextSequenceTask(void);
 void func_800A1774(TextSequenceResource *resource);

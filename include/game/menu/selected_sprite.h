@@ -25,6 +25,7 @@ typedef struct GridSpriteEntry {
 } GridSpriteEntry;
 
 extern const GridSpriteEntry D_8012F798[];
+extern const GridSpriteEntry D_80131A78[6];
 
 typedef struct GridSpriteParent {
     u8 unk00[0x32];

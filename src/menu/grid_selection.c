@@ -1,10 +1,14 @@
 #include "panel_tasks_internal.h"
 #include "game/menu/selected_sprite.h"
+#include "game/menu/task_widgets.h"
 
 #define CHILD_MOVEMENT(entry, resource) ((Movement2D *)&D_800D9504[(entry).task->resource])
 #define FIRST_FOUR_READY(entries) \
     ((s16)(entries)[0].flags == 0 && (s16)(entries)[1].flags == 0 && \
      (s16)(entries)[2].flags == 0 && (s16)(entries)[3].flags == 0)
+
+#define SPLIT_CHILDREN_READY(entries) \
+    ((s16)(entries)[0].flags == 0 && (s16)(entries)[1].flags == 0 && (s16)(entries)[3].flags == 0)
 
 typedef struct PaletteSelectionMapping {
     u8 entries[10][9];
@@ -81,7 +85,10 @@ SplitSelectionBoundsConfigs gSplitSelectionBoundsConfigs __attribute__((section(
     {60, 120, 4}, {60, 120, 4}
 }, {0, 0}};
 
+extern u8 D_8013B4BD __attribute__((section(".data")));
+
 s16 func_80073760(GameTask *task, s16 index);
+void func_800995A8(s16 player, s16 character, u8 spacingX, u8 spacingY, ByteMappingDescriptor *descriptor);
 void func_8009A87C(void);
 
 void initializeCountedSplitSelectionBoundsTask(void) {
@@ -122,11 +129,276 @@ void initializeCountedSplitSelectionBoundsTask(void) {
         bounds->w = -1;
         bounds->h = -1;
     }
-    setCurrentTaskCallback(func_80097FF4);
+    setCurrentTaskCallback(updateSplitBoardSelectionTask);
     D_8013AE88->unk10 |= 2;
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/grid_selection", func_80097FF4);
+void updateSplitBoardSelectionTask(void) {
+    FlagSelectedMenuState *input;
+    RegisteredTaskEntry *entries;
+    TaskPanelSelectionValue *selection;
+    ByteMappingDescriptor descriptor;
+    ByteMappingDescriptor *mapping;
+    s16 panelValues[6];
+    u16 player;
+    s16 playerIndex;
+    u8 character;
+    u8 palette;
+
+    if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
+    input = (FlagSelectedMenuState *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) { for (;;) {} }
+    entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE88->resource16];
+    playerIndex = (s16)D_8013AE88->data1A;
+    player = D_8013AE88->data1A;
+    character = gRacePlayers[playerIndex].unk009;
+    palette = gRacePlayers[playerIndex].unk00D;
+    selection = &D_8013B508[playerIndex];
+
+    switch (D_8013AE88->data18) {
+    case 0: {
+        s16 previewCharacter;
+        s16 previewPalette;
+        u8 model;
+        s16 gridMode = 1;
+        s32 gridIndex = 1;
+        RacePlayer *previewPlayer;
+        RacePlayer *players;
+        const s8 *mainPreviewY;
+
+        setMusicSequenceEnabled(1);
+        setSecondaryDisplayTaskMode(0);
+        mapping = &descriptor;
+        func_800995A8((s16)player, character, 0, 20, mapping);
+        input->selectedIndex = 0;
+        input->mode = 0;
+        input->previousIndex = 0;
+        input->choiceResult = 0;
+        model = mapping->mapping[input->selectedIndex];
+        if (model < 5U) {
+            selection->value = model;
+        } else {
+            selection->value = gRacePlayers[(s16)player].unk00A[0];
+        }
+        selection->unk02 = selection->value;
+        createRegisteredSpacedChildTasks(gridMode, 0xB0, 0x40, (const u8 *)D_80131A78, mapping->mapping,
+                                         NULL, 0, 0, 20, -304, -96, mapping->spacingX,
+                                         mapping->spacingY, mapping->count, 0xB0,
+                                         drawSelectedTaskSprite, drawRegisteredTaskGridSpriteWithColor, 4, gridIndex);
+        createRegisteredCallbackTask(0, 172, -72, drawCurrentTaskSpriteB7, 4, 11);
+        previewCharacter = character;
+        previewPalette = palette;
+        players = gRacePlayers;
+        previewPlayer = &players[(s16)player];
+        mainPreviewY = &gPaletteSelectionMainPreviewY[previewCharacter];
+        createGridModelPreviewTask(0, previewCharacter, previewPlayer->unk00A[0], previewPalette,
+                                   244, *mainPreviewY + 50, 384, 31);
+        createRegisteredCallbackTask(0, -180, 0, drawCurrentTaskFramedSprite20B, 4, 21);
+        createGridModelPreviewTask(2, previewCharacter, selection->value, previewPalette,
+                                   -260, gPaletteSelectionSidePreviewY[previewCharacter] + 118, 448, 51);
+        createGridModelPreviewTask(1, previewCharacter, previewPlayer->unk00A[0], previewPalette,
+                                   64, *mainPreviewY + 50, 384, 41);
+        D_8013AE88->data18 = 2;
+        break;
+    }
+    case 2:
+        if (SPLIT_CHILDREN_READY(entries) && (s16)entries[2].flags == 0 &&
+            (s16)entries[5].flags == 0 && (s16)entries[4].flags == 0) {
+            moveTaskChildrenWithSpacing(0, entries[0].task, -0x7C000, -0x60000, 0x1E000, 0, 1);
+            configureMovement2D(CHILD_MOVEMENT(entries[1], resource14), -0x8000, -0x48000, 0x1E000, 0, 6);
+            configureMovement2D(CHILD_MOVEMENT(entries[3], resource16), 0x40000,
+                                (gPaletteSelectionMainPreviewY[character] + 50) * 4096, 0x1E000, 0, 6);
+            configureMovement2D(CHILD_MOVEMENT(entries[2], resource14), 0, 0, 0x1E000, 0x1E000, 6);
+            D_8013AE88->data18 = 3;
+        }
+        break;
+    case 3:
+        if (SPLIT_CHILDREN_READY(entries) && (s16)entries[2].flags == 0) {
+            configureMovement2D(CHILD_MOVEMENT(entries[5], resource16), -0x50000,
+                                (gPaletteSelectionSidePreviewY[character] + 118) * 4096, 0x1E000, 0x1E000, 0);
+            D_8013AE88->data18 = 4;
+        }
+        break;
+    case 4:
+        if ((s16)entries[5].flags == 0) {
+            GameTask *task;
+            entries[0].command = 20;
+            entries[1].command = 20;
+            entries[5].command = 1;
+            configureColorCycleTask(1, 0, 128, 8, 0);
+            task = D_8013AE88;
+            D_8013B41F = 0;
+            task->data18 = 5;
+        }
+        break;
+    case 5: {
+        s32 complete = isTaskResourceTransitionComplete(0);
+        if (complete == 1 && D_8013B41F == 0) {
+            entries[0].command = 21;
+            entries[1].command = 22;
+            configureColorCycleTask(2, 64, 128, 4, 0);
+            D_8013B41F = complete;
+        }
+        if (input->selectedIndex != input->previousIndex) {
+            s16 model;
+            selection->unk02 = selection->value;
+            model = func_80073760(entries[0].task, input->selectedIndex);
+            if ((u16)model < 5U) {
+                selection->value = model;
+                if (model != selection->unk02) {
+                    entries[5].command = 13;
+                    D_8013AE88->data1C = 0;
+                }
+            }
+            input->previousIndex = input->selectedIndex;
+        } else if (input->choiceResult != 0 && (s16)entries[0].flags == 0) {
+            if (D_8013B41F == 0) {
+                entries[0].command = 22;
+                entries[1].command = 22;
+                D_8013B41F = 1;
+            }
+            if (input->choiceResult < 0) {
+                D_8013AE98->data18 = 13;
+                goto exitSelection;
+            }
+            if (func_80073760(entries[0].task, input->selectedIndex) == 5) {
+                D_8013B4BD = 0;
+                D_8013AE98->data18 = 11;
+                playSoundEffect(0, 0x202, 32);
+                D_8013AE88->data18 = 22;
+            } else if (gRacePlayers[(s16)player].unk00A[0] == selection->value) {
+                D_8013AE88->data18 = 24;
+            } else {
+                D_8013AE88->data18 = 13;
+            }
+        }
+        break;
+    }
+    case 13:
+        createRegisteredCallbackTask((s16)player, 0, -28, drawCurrentTaskTextPanel144x48, 2, 61);
+        panelValues[0] = 0x125;
+        panelValues[2] = 0x126;
+        panelValues[4] = 0xB0;
+        panelValues[1] = 0;
+        panelValues[3] = 0;
+        panelValues[5] = 0;
+        createRegisteredMovingPanelTask(1, panelValues, 24, -13, 0, 16, 24, 19, 3, 71);
+        D_8013AE88->data18 = 14;
+        break;
+    case 14:
+        if ((s16)entries[7].flags >= 0) {
+            entries[6].command = 99;
+            if ((s16)entries[7].flags != 0) {
+                D_8013AE88->data18 = 24;
+            } else {
+                D_8013AE88->data18 = 15;
+            }
+        }
+        break;
+    case 15: {
+        RacePlayer *players = gRacePlayers;
+        RacePlayer *currentPlayer = &players[(s16)player];
+        u8 model;
+        selection->unk02 = currentPlayer->unk00A[0];
+        model = selection->value;
+        currentPlayer->unk00A[0] = model;
+        ((SaveRecord *)&D_8013080C)[(s16)player].unk_3EC[currentPlayer->unk009] = model;
+        D_8013AE88->data18 = 19;
+        setCurrentTaskCallback(updateSplitSelectionBoundsTransition);
+        break;
+    }
+    case 16: {
+        SpacedGroupResource *group;
+        mapping = &descriptor;
+        func_800995A8((s16)player, character, 0, 20, mapping);
+        group = (SpacedGroupResource *)&D_800D9504[entries[0].task->resource14];
+        group->data48 = descriptor.mapping;
+        group->spacingX = mapping->spacingX;
+        group->spacingY = mapping->spacingY;
+        group->count = mapping->count;
+        D_8013AE88->data18 = 17;
+        break;
+    }
+    case 17: {
+        s16 model = func_80073760(entries[0].task, input->selectedIndex);
+        if ((u16)model < 5U) {
+            selection->value = model;
+            entries[5].command = 13;
+        }
+        createRegisteredCallbackTask((s16)player, 0, -28, drawCurrentTaskPlayerValuePanel, 2, 61);
+        entries[8].task = createCountdownTask(15);
+        D_8013AE88->data18 = 18;
+        break;
+    }
+    case 18: {
+        GameTask *countdown = entries[8].task;
+        if (countdown->data1A == 1) {
+            countdown->data18 = 1;
+            entries[6].command = 99;
+            D_8013AE88->data18 = 24;
+        }
+        break;
+    }
+    case 24: {
+        GameTask *task;
+        input->choiceResult = 0;
+        entries[0].command = 21;
+        configureColorCycleTask(2, 64, 128, 4, 0);
+        task = D_8013AE88;
+        D_8013B41F = 1;
+        task->data18 = 5;
+        break;
+    }
+    case 22: {
+        GameTask *task;
+        task = D_8013AE88;
+        entries[0].command = 10;
+        task->data18 = 23;
+        break;
+    }
+    case 23:
+        if ((s16)entries[0].flags == 0) {
+exitSelection:
+            D_8013AE88->data18 = 8;
+        }
+        break;
+    case 8:
+        if (SPLIT_CHILDREN_READY(entries)) {
+            GameTask *task;
+            queueMenuResourceReads((s16)D_8013AE98->data18);
+            configureMovement2D(CHILD_MOVEMENT(entries[5], resource16), -0x104000,
+                                (gPaletteSelectionSidePreviewY[character] + 118) * 4096, 0x1E000, 0x1E000, -1000);
+            task = D_8013AE88;
+            entries[2].command = 23;
+            task->data18 = 9;
+        }
+        break;
+    case 9:
+        if ((s16)entries[5].flags == 0) {
+            moveTaskChildrenWithSpacing(0, entries[0].task, -0x130000, -0x60000, 0x1E000, 0x1E000, -1000);
+            entries[0].command = 23;
+            configureMovement2D(CHILD_MOVEMENT(entries[1], resource14), 0xAC000, -0x48000, 0x1E000, 0x1E000, -1000);
+            configureMovement2D(CHILD_MOVEMENT(entries[3], resource16), 0xF4000,
+                                (gPaletteSelectionMainPreviewY[character] + 50) * 4096, 0x1E000, 0x1E000, -1000);
+            configureMovement2D(CHILD_MOVEMENT(entries[2], resource14), -0xB4000, 0, 0x1E000, 0x1E000, -1000);
+            D_8013AE88->data1C = 0;
+            D_8013AE88->data18 = 10;
+        }
+        break;
+    case 10:
+        if (SPLIT_CHILDREN_READY(entries) && (s16)entries[2].flags == 0) {
+            D_8013AE88->data18 = 11;
+        }
+        break;
+    case 11:
+        D_8013AE88->data18 = 12;
+        break;
+    default:
+        D_8013AE98->data1C--;
+        func_800149A8();
+        break;
+    }
+}
 
 void updateSplitSelectionBoundsTransition(void) {
     SplitBoundsResource *movement;
@@ -180,7 +452,7 @@ void updateSplitSelectionBoundsTransition(void) {
         break;
     case 21:
         D_8013AE88->data18 = 16;
-        setCurrentTaskCallback(func_80097FF4);
+        setCurrentTaskCallback(updateSplitBoardSelectionTask);
         break;
     }
 }
