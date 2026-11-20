@@ -962,6 +962,8 @@ segments:
       - [0x12BD1C, data, 12BD18_head]
       - {start: 0x12BD24, type: .data, name: menu/resource_tasks, linker_section: .data.main_tail_money_currency_label}
       - [0x12BD28, data, 12BD18_tail]
+      - {start: 0x12BD48, type: .data, name: menu/resource_tasks, linker_section: .data.count_records_hit_label}
+      - [0x12BD4C, data, 12BD4C_tail]
       - {start: 0x12BD58, type: .data, name: menu/selection_tasks, linker_section: .data.number_selection_mapping}
       - {start: 0x12BD5C, type: .data, name: menu/selection_tasks, linker_section: .data.number_selection_final_mapping}
       - [0x12BD5E, data, number_selection_transition_tail]
