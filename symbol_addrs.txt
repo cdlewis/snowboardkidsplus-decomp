@@ -3424,6 +3424,9 @@ gBoardStyleText = 0x8013184C; // size:0x10
 gBoardSelectionStyles = 0x8013185C; // size:0xC
 gBoardLevelLabel = 0x80011EA0; // size:0x10
 
+drawLapAnimatedBackgroundAndSetFog = 0x80050504; // type:func
+gLapAnimatedBackgroundTile = 0x80124D74; // size:0x10 defined:true
+gLapAnimatedBackgroundFrame = 0x8013B23C; // size:0x4 defined:true
 drawRipplingBackgroundAndSetFog = 0x80050080; // type:func
 gRipplingBackgroundStripData = 0x80124DC4; // size:0x28 defined:true
 drawSnowBackgroundAndSetFog = 0x800508D4; // type:func

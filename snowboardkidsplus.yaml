@@ -723,6 +723,8 @@ segments:
       - {start: 0x114DD4, type: .data, name: unclassified/graphics_800497B8, linker_section: .data.heading_octant_angles}
       - {start: 0x1152E4, type: .data, name: unclassified/graphics_800497B8, linker_section: .data.debug_text_sprite}
       - [0x115308, data, heading_octant_angles_tail]
+      - {start: 0x115574, type: .data, name: unclassified/graphics_8004D330, linker_section: .data.lap_animated_background_tile}
+      - [0x115584, data, lap_animated_background_tile_tail]
       - {start: 0x1155A4, type: .data, name: unclassified/graphics_8004D330, linker_section: .data.oscillating_quad_vertices}
       - {start: 0x1155C4, type: .data, name: unclassified/graphics_8004D330, linker_section: .data.rippling_background}
       - [0x1155EC, data, oscillating_quad_vertices_tail]
@@ -935,6 +937,7 @@ segments:
       - [0x12B9DC, data, 12B9DC]
       - {start: 0x12BA14, type: .data, name: unclassified/graphics_800497B8, linker_section: .data.debug_position_formats}
       - [0x12BA2C, data, debug_position_formats_tail]
+      - {start: 0x12BA3C, type: .sdata, name: unclassified/graphics_8004D330, linker_section: .sdata.lap_animated_background_frame, linker_section_order: .data}
       - {start: 0x12BA40, type: .data, name: unclassified/graphics_8004D330, linker_section: .data.read_pixel_rect}
       - [0x12BA48, data, 12BA48]
       - {start: 0x12BA50, type: .data, name: unclassified/graphics_8004D330, linker_section: .data.scanline_copy_rects}

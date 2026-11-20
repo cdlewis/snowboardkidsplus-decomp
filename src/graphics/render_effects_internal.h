@@ -1043,6 +1043,7 @@ void drawCyanBackgroundAndSetFog(void);
 void createOscillatingQuadTask(s32 value, VECTOR *position, s32 amplitude, s32 r, s32 g, s32 b);
 void createMovingLineTask(s32 index);
 void createFlickeringDotsTask(s32 playerIndex);
+void drawLapAnimatedBackgroundAndSetFog(s16 playerIndex);
 void drawSnowBackgroundAndSetFog(s16 playerIndex);
 void drawBackgroundModelsAndSetFog(s16 playerIndex);
 s32 isPositionInCameraRange(s32 x, s32 z, s16 playerIndex);

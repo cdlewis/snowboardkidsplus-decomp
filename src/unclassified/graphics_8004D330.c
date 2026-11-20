@@ -12,6 +12,19 @@ typedef struct OscillatingQuadScratchpad {
     long depth, cue, flags;
 } OscillatingQuadScratchpad;
 
+typedef struct AnimatedBackgroundScratchpad {
+    GsCOORDINATE2 root;
+    GsCOORDINATE2 child;
+    MATRIX localScreen;
+    SVECTOR rotation;
+} AnimatedBackgroundScratchpad;
+
+TILE gLapAnimatedBackgroundTile __attribute__((section(".data.lap_animated_background_tile"))) = {
+    3 << 24, 224, 224, 232, TILE_CODE, -160, -120, 320, 240,
+};
+
+u32 gLapAnimatedBackgroundFrame __attribute__((section(".sdata.lap_animated_background_frame"))) = 0;
+
 SVECTOR gOscillatingQuadVertices[4] __attribute__((section(".data.oscillating_quad_vertices"))) = {
     {-512, -4096, 0, 0},
     {512, -4096, 0, 0},
@@ -382,7 +395,77 @@ void drawRipplingBackgroundAndSetFog(s16 playerIndex) {
     SetFogNearFar(8000, 10000, 400);
 }
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/graphics_8004D330", func_80050504);
+void drawLapAnimatedBackgroundAndSetFog(s16 playerIndex) {
+    AnimatedBackgroundScratchpad *scratch = (AnimatedBackgroundScratchpad *)getScratchAddr(0);
+    GsOT *ot;
+
+    if (playerIndex == 0) {
+        ot = &D_800EC040[D_8013AF78];
+    } else {
+        ot = &D_800EC0E0[D_8013AF78];
+    }
+    addCopiedPrimitive(&D_8013AF6C[2048], (u32 *)&gLapAnimatedBackgroundTile);
+    if (isPositionInCameraRange(-0x152D4, 0xB540, playerIndex)) {
+        switch (gRacePlayers[playerIndex].unk934) {
+        case 0:
+            GsInitCoordinate2(0, &scratch->root);
+            scratch->root.coord.t[0] = -0x152D4;
+            scratch->root.coord.t[1] = 0x7C4A;
+            scratch->root.coord.t[2] = 0xB540;
+            setVector(&scratch->rotation, 0, 0x9C2, 0);
+            RotMatrix(&scratch->rotation, &scratch->root.coord);
+            GsGetLs(&scratch->root, &scratch->localScreen);
+            ScaleMatrix(&scratch->localScreen, (VECTOR *)&gRipplingBackgroundStripData[12]);
+            GsSetLsMatrix(&scratch->localScreen);
+            drawProjectedModelPrimitives(D_80125044[0], ot, 2, 1);
+
+            GsInitCoordinate2(&scratch->root, &scratch->child);
+            RotMatrixY((-gLapAnimatedBackgroundFrame << 6) & 0xFC0, &scratch->child.coord);
+            GsGetLs(&scratch->child, &scratch->localScreen);
+            ScaleMatrix(&scratch->localScreen, (VECTOR *)&gRipplingBackgroundStripData[12]);
+            GsSetLsMatrix(&scratch->localScreen);
+            drawProjectedModelPrimitives(D_80125044[1], ot, 2, 1);
+
+            GsInitCoordinate2(&scratch->root, &scratch->child);
+            RotMatrixY((gLapAnimatedBackgroundFrame << 6) & 0xFC0, &scratch->child.coord);
+            GsGetLs(&scratch->child, &scratch->localScreen);
+            ScaleMatrix(&scratch->localScreen, (VECTOR *)&gRipplingBackgroundStripData[12]);
+            GsSetLsMatrix(&scratch->localScreen);
+            drawProjectedModelPrimitives(D_80125044[2], ot, 2, 1);
+            break;
+        case 1:
+            GsInitCoordinate2(0, &scratch->root);
+            scratch->root.coord.t[0] = -0x152D4;
+            scratch->root.coord.t[1] = 0x7B6E + rsin(gLapAnimatedBackgroundFrame << 6) * 25 / 4096;
+            scratch->root.coord.t[2] = 0xB540;
+            setVector(&scratch->rotation, 0, 0x9C2, 0);
+            RotMatrix(&scratch->rotation, &scratch->root.coord);
+            GsGetLs(&scratch->root, &scratch->localScreen);
+            ScaleMatrix(&scratch->localScreen, (VECTOR *)&gRipplingBackgroundStripData[12]);
+            GsSetLsMatrix(&scratch->localScreen);
+            drawProjectedModelPrimitives(D_80125044[0], ot, 2, 1);
+
+            GsInitCoordinate2(&scratch->root, &scratch->child);
+            RotMatrixY((-gLapAnimatedBackgroundFrame << 9) & 0xE00, &scratch->child.coord);
+            GsGetLs(&scratch->child, &scratch->localScreen);
+            ScaleMatrix(&scratch->localScreen, (VECTOR *)&gRipplingBackgroundStripData[12]);
+            GsSetLsMatrix(&scratch->localScreen);
+            drawProjectedModelPrimitives(D_80125044[1], ot, 2, 1);
+
+            GsInitCoordinate2(&scratch->root, &scratch->child);
+            RotMatrixY((gLapAnimatedBackgroundFrame << 9) & 0xE00, &scratch->child.coord);
+            GsGetLs(&scratch->child, &scratch->localScreen);
+            ScaleMatrix(&scratch->localScreen, (VECTOR *)&gRipplingBackgroundStripData[12]);
+            GsSetLsMatrix(&scratch->localScreen);
+            drawProjectedModelPrimitives(D_80125044[2], ot, 2, 1);
+            break;
+        }
+    }
+
+    gLapAnimatedBackgroundFrame++;
+    SetFarColor(224, 224, 232);
+    SetFogNearFar(2400, 5600, 400);
+}
 
 void drawSnowBackgroundAndSetFog(s16 playerIndex) {
     s16 y;

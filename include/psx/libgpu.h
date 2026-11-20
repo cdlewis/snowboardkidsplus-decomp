@@ -166,6 +166,7 @@ typedef struct TILE {
     u8 r0, g0, b0, code;
     s16 x0, y0, w, h;
 } TILE;
+#define TILE_CODE 0x60
 
 
 typedef struct DR_ENV { u32 tag; u32 code[15]; } DR_ENV;
