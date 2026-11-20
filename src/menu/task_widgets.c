@@ -109,6 +109,14 @@ typedef struct SelectionEntry {
     s16 unk08;
 } SelectionEntry;
 
+typedef struct PlayerPanelAnimation {
+    u8 unk00[8];
+    GameTask *movingSprite;
+    u8 unk0C[10];
+    s16 spawnFrames;
+    GameTask *stationarySprite;
+} PlayerPanelAnimation;
+
 typedef struct TimedSequence {
     const TimedSequenceEntry *entries;
     s16 index;
@@ -207,6 +215,7 @@ u16 gTextPanelMessage[] __attribute__((section(".data.text_panel_message"))) = {
 extern TaskValueState D_8012D4A4[3];
 extern TimedSequenceEntry D_8012F18C[], D_8012F1AC[];
 extern u32 D_8013B3BC;
+extern TexturedQuadListEntry *D_8013B3C0[2];
 extern GameTask *D_8013B378;
 extern GameTask *D_8013B37C;
 extern GameTask *D_8013BDA8[4];
@@ -262,7 +271,9 @@ void updateTimedSpriteB5Task(void);
 void updateValueTransitionTask(void);
 void func_80077770(void);
 void func_80078140(void);
-void func_80078AFC(void);
+void updatePlayerPanelTask(void);
+void updatePlayerCharacterSelection(s16 playerIndex, SelectionEntry *entries);
+void createRegisteredSelectionPanelTask(s16 playerIndex, SelectionPanelRecord *record, s32 depth, s32 index);
 void func_80079FE8(void);
 void GsSortBg(GameBackground *background, GsOT *ot, u16 depth);
 void func_8007BE9C(void);
@@ -2012,7 +2023,7 @@ INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80078140);
 void createPlayerPanelTask(s16 player, s16 x, s16 y, s32 depth, s32 index) {
     ValuePanelEntry *entry;
 
-    func_80014874(func_80078AFC);
+    func_80014874(updatePlayerPanelTask);
     D_8013AE8C->data1A = player;
     D_8013AE8C->data1C = depth;
     D_8013AE8C->data1E = index;
@@ -2040,7 +2051,163 @@ void createPlayerPanelTask(s16 player, s16 x, s16 y, s32 depth, s32 index) {
     applySaveRecordUnlockOverrides(player);
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80078AFC);
+void updatePlayerPanelTask(void) {
+    Movement2D *position;
+    PlayerPanelAnimation *animation;
+    ValuePanelEntry *entries;
+    ValuePanelEntry *panel;
+    SelectionEntry *selections;
+    SelectionEntry *selection;
+    s16 player;
+    s16 state;
+    u8 character;
+    s32 i;
+
+    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
+    animation = (PlayerPanelAnimation *)&D_800D9504[D_8013AE88->resource16];
+    if ((u16)(D_8013AE88->data1E % 10U) == 0) {
+        if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
+        entries = (ValuePanelEntry *)&D_800D9504[D_8013AE98->resource14];
+        panel = &entries[D_8013AE88->data1E / 10U];
+    } else {
+        if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
+        entries = (ValuePanelEntry *)&D_800D9504[D_8013AE98->resource16];
+        panel = &entries[D_8013AE88->data1E / 10U];
+    }
+    if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
+    selections = (SelectionEntry *)&D_800D9504[D_8013AE98->resource14];
+    selection = &selections[(s16)D_8013AE88->data1A];
+    player = D_8013AE88->data1A;
+    if (selection->selected >= 0) {
+        character = D_8012D460[selection->selected];
+    } else {
+        character = 0;
+    }
+
+    state = panel->flags;
+    if (state == 2) goto select;
+    if (state < 3) {
+        if (state == 0) goto clearActive;
+        if (state == 1) goto initialize;
+        goto remove;
+    }
+    if (state == 11) goto finish;
+    if (state >= 12) goto remove;
+    if (state == 10) goto animate;
+    goto remove;
+
+initialize:
+    createRegisteredSelectionPanelTask(player, (SelectionPanelRecord *)selection,
+                                       D_8013AE88->data1C + 1, 1);
+    panel->flags = 0;
+    panel->active = 1;
+    goto render;
+select:
+    updatePlayerCharacterSelection(player, selections);
+    if (selection->selected >= 0 && selection->unk06 > 0) {
+        animation->movingSprite = createShrinkingSpriteTask(1, D_8013AE88->data1C - 2);
+        animation->spawnFrames = 3;
+        panel->flags = 10;
+        panel->active = 1;
+        goto render;
+    }
+    goto clearActive;
+animate:
+    if (animation->spawnFrames > 0) {
+        animation->stationarySprite = createShrinkingSpriteTask(0, D_8013AE88->data1C - 2);
+        animation->spawnFrames--;
+    } else if (animation->movingSprite->data1A == 0 && animation->stationarySprite->data1A == 0) {
+        panel->flags = 11;
+    }
+    goto render;
+finish:
+    if (selection->unk06 == 0) {
+        selection->unk00 = 2;
+        panel->flags = 2;
+        animation->movingSprite->data18 = 99;
+    }
+clearActive:
+    panel->active = 0;
+    goto render;
+
+remove:
+    func_800149A8();
+    return;
+
+render:
+    panel->active |= updateMovement2D(position);
+    i = 0;
+    if (player < D_8013AFCD) {
+        for (; i < 3; i++) {
+            SaveRecord *records = (SaveRecord *)&D_8013080C;
+            if (records[player].flags_3B0[character] & (0x1000000U << i)) {
+                setSpriteColor(0x80, 0x80, 0x80);
+            } else {
+                setSpriteColor(0x20, 0x20, 0x20);
+            }
+            func_8006C998((s16)(position->x / 4096 + 8),
+                          (s16)(i * 22 + (s16)(position->y / 4096 + 30)),
+                          i + 18, 6, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        }
+        for (i = 0; i < 9; i++) {
+            SaveRecord *records = (SaveRecord *)&D_8013080C;
+            u32 first;
+            setSpriteColor(0x80, 0x80, 0x80);
+            first = records[player].flags_3B0[character] & (1U << (i * 2));
+            if (first && (records[player].flags_3B0[character] & (2U << (i * 2)))) {
+                func_8006C998((s16)(i % 3 * 16 + (s16)(position->x / 4096 + 44)),
+                              (s16)(i / 3 * 22 + (s16)(position->y / 4096 + 31)),
+                              i + 70, 9, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            } else if (records[player].flags_3B0[character] & (2U << (i * 2))) {
+                func_8006C998((s16)(i % 3 * 16 + (s16)(position->x / 4096 + 44)),
+                              (s16)(i / 3 * 22 + (s16)(position->y / 4096 + 31)),
+                              i + 70, 10, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            } else {
+                u32 firstOnly = records[player].flags_3B0[character] & (1U << (i * 2));
+                if (firstOnly) {
+                    func_8006C998((s16)(i % 3 * 16 + (s16)(position->x / 4096 + 44)),
+                                  (s16)(i / 3 * 22 + (s16)(position->y / 4096 + 31)),
+                                  i + 70, 11, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                } else {
+                    setSpriteColor(0x20, 0x20, 0x20);
+                    func_8006C998((s16)(i % 3 * 16 + (s16)(position->x / 4096 + 44)),
+                                  (s16)(i / 3 * 22 + (s16)(position->y / 4096 + 31)),
+                                  69, 9, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                }
+            }
+        }
+    } else {
+        setSpriteColor(0x80, 0x80, 0x80);
+        func_8006C998((s16)(position->x / 4096 + 48), (s16)(position->y / 4096 + 32),
+                      180, 1, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    }
+    if (player < D_8013AFCD) {
+        setTexturedQuadColor(0x80, 0x80, 0x80);
+        setSpriteColor(0x80, 0x80, 0x80);
+    } else {
+        setTexturedQuadColor(0x40, 0x40, 0x40);
+        setSpriteColor(0x40, 0x40, 0x40);
+    }
+    if (player == 0) {
+        func_8006C998((s16)(position->x / 4096 + 5), (s16)(position->y / 4096 + 2),
+                      110, 6, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        func_8006C998((s16)(position->x / 4096 + 3), (s16)(position->y / 4096 + 19),
+                      91, 6, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        func_8006C998((s16)(position->x / 4096 + 43), (s16)(position->y / 4096 + 19),
+                      89, 6, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    } else {
+        func_8006C998((s16)(position->x / 4096 + 5), (s16)(position->y / 4096 + 2),
+                      111, 5, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        func_8006C998((s16)(position->x / 4096 + 3), (s16)(position->y / 4096 + 19),
+                      91, 5, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        func_8006C998((s16)(position->x / 4096 + 43), (s16)(position->y / 4096 + 19),
+                      89, 5, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    }
+    drawTexturedQuadList((s16)(position->x / 4096), (s16)(position->y / 4096),
+                         D_8013B3C0[player], 1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+}
 
 void updatePlayerCharacterSelection(s16 playerIndex, SelectionEntry *entries) {
     SelectionEntry *entry = &entries[playerIndex];
@@ -2301,7 +2468,7 @@ void updateValuePanelTask(void) {
     func_80070C5C(64, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
 }
 
-GameTask *createShrinkingSpriteTask(s16 motionEnabled, u16 spriteIndex) {
+GameTask *createShrinkingSpriteTask(s16 motionEnabled, s32 spriteIndex) {
     SpriteZoomResource *resource;
     TaskResourceRecord *resources;
     func_80014874(updateShrinkingSpriteTask);
