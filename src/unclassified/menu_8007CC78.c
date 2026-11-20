@@ -85,7 +85,6 @@ const u32 gMemoryCardSlotTaskTablePadding
 
 StateValueHistory D_8013BE30 __attribute__((section(".bss.state_value_history")));
 
-extern const GridSpriteEntry D_8012F798[];
 extern u8 D_80130094[][5];
 extern u8 D_801300A0[][5];
 extern u8 D_8013B44C[];

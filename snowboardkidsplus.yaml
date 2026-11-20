@@ -148,9 +148,11 @@ segments:
       - {start: 0x28B8, type: .rodata, name: menu/resource_tasks, linker_section: .rodata.time_records_start_prompt}
       - [0x28D0, rodata]
       - {start: 0x294C, type: .rodata, name: menu/resource_tasks, linker_section: .rodata.lap_records_start_prompt}
-      - [0x2964, rodata]
-      - [0x29E4, .rodata, menu/resource_tasks]
-      - {start: 0x2A08, type: .rodata, name: menu/resource_tasks, linker_section: .rodata.mode11_selection_jump_table_padding}
+      - [0x2964, .rodata, menu/resource_tasks]
+      - {start: 0x29A0, type: .rodata, name: menu/resource_tasks, linker_section: .rodata.flag_selected_menu_jump_table_padding}
+      - [0x29A4, rodata]
+      - [0x29E4, .rodata, menu/mode_race_tasks]
+      - {start: 0x2A08, type: .rodata, name: menu/mode_race_tasks, linker_section: .rodata.mode11_selection_jump_table_padding}
       - [0x2A0C, .rodata, menu/selection_tasks]
       - [0x2A58, .rodata, menu/unlock_menu]
       - [0x2A74, rodata]
@@ -237,6 +239,7 @@ segments:
       - [0x886BC, c, menu/grid_selection]
       - [0x8BDA0, c, race/player/player_palette]
       - [0x8C4FC, c, menu/resource_tasks]
+      - [0x90D0C, c, menu/mode_race_tasks]
       - [0x91714, c, text/text_sequence]
       - [0x925A0, c, race/camera/task_camera]
       # The UI continuation accesses the transition flag absolutely.
@@ -816,7 +819,7 @@ segments:
       - {start: 0x1226C8, type: .data, name: race/player/player_palette, linker_section: .data.palette_burst_vertices}
       - {start: 0x1226E8, type: .data, name: race/player/player_palette, linker_section: .data.player_palette_transition_pixels}
       - [0x122708, data, player_palette_transition_tail]
-      - {start: 0x122F14, type: .data, name: menu/resource_tasks, linker_section: .data.mode11_selection_sprites}
+      - {start: 0x122F14, type: .data, name: menu/mode_race_tasks, linker_section: .data.mode11_selection_sprites}
       - {start: 0x122F38, type: .data, name: text/text_sequence, linker_section: .data.indexed_sector_ranges}
       - {start: 0x122F8C, type: .data, name: menu/selection_tasks, linker_section: .data.number_selection_sprite_table}
       - {start: 0x122FA0, type: .data, name: text/text_sequence, linker_section: .data.text_sequence_prompt_frames}
@@ -997,7 +1000,7 @@ segments:
       - [0x12BD28, data, 12BD18_tail]
       - {start: 0x12BD48, type: .data, name: menu/resource_tasks, linker_section: .data.count_records_hit_label}
       - {start: 0x12BD4C, type: .data, name: menu/resource_tasks, linker_section: .data.stats_records_player_suffix}
-      - {start: 0x12BD50, type: .data, name: menu/resource_tasks, linker_section: .data.mode11_selection_mapping}
+      - {start: 0x12BD50, type: .data, name: menu/mode_race_tasks, linker_section: .data.mode11_selection_mapping}
       - {start: 0x12BD58, type: .data, name: menu/selection_tasks, linker_section: .data.number_selection_mapping}
       - {start: 0x12BD5C, type: .data, name: menu/selection_tasks, linker_section: .data.number_selection_final_mapping}
       - [0x12BD5E, data, number_selection_transition_tail]

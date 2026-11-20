@@ -3,22 +3,22 @@
 #define MUSIC_STATE_ABSOLUTE_ADDRESSING
 #include "panel_tasks_internal.h"
 #include "game/menu/selected_sprite.h"
+#include "game/engine/system_runtime.h"
 
 typedef struct MainTailSelectionResource {
     s16 unk00;
     s16 selectedIndex;
 } MainTailSelectionResource;
 
-typedef struct Mode11MenuSelection {
+typedef struct FlagSelectedMenuState {
     s16 mode;
     s16 selectedIndex;
     s16 previousIndex;
     s16 choiceResult;
-} Mode11MenuSelection;
+} FlagSelectedMenuState;
 
 extern ByteMappingDescriptor D_801325FC[];
-extern const GridSpriteEntry gMode11SelectionSprites[];
-extern const u8 gMode11SelectionMapping[];
+extern const u8 D_8012D46C[];
 
 u8 gMainTailSelectionMapping[4] __attribute__((section(".data.main_tail_selection_mapping"), aligned(4))) = {
     0, 1, 2, 3,
@@ -396,11 +396,168 @@ void initializeFlagSelectedDualResourceTask(void) {
         while (1) {}
     }
     D_8013AE88->resource16 = allocateTaskResource();
-    setCurrentTaskCallback(func_8009F224);
+    setCurrentTaskCallback(updateFlagSelectedMenuTask);
     D_8013AE88->unk10 |= 2;
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/resource_tasks", func_8009F224);
+void updateFlagSelectedMenuTask(void) {
+    s32 mode;
+    ByteMappingDescriptor *group;
+    FlagSelectedMenuState *selection;
+    RegisteredTaskEntry *entries;
+    s32 complete;
+    s16 selectedIndex;
+    GameTask *task;
+    GameTask *parent;
+    GameTask *selectionTask;
+    u16 value;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        for (;;) {}
+    }
+    selection = (FlagSelectedMenuState *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) {
+        for (;;) {}
+    }
+    entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE88->resource16];
+
+    switch (D_8013AE88->data18) {
+    case 0:
+        setMusicSequenceEnabled(1);
+        if (D_8013AFCD == 1) {
+            mode = 1;
+        } else {
+            mode = 3;
+        }
+        group = &D_8012FD10[D_8013AE88->data1A];
+        selection->mode = 0;
+        selectedIndex = findIdentityMappedIndexOrZero(group, D_8013B104);
+        selection->selectedIndex = selectedIndex;
+        selection->previousIndex = selectedIndex;
+        selection->choiceResult = 0;
+        createRegisteredSpacedChildTasks(mode, 0xB0, 0x40, (const u8 *)D_8012F798,
+                                         group->mapping, NULL, 0, 0, 20,
+                                         -308, -96, group->spacingX, group->spacingY,
+                                         group->count, 149, drawSelectedTaskSprite,
+                                         drawRegisteredSelectionItemStatus, 4, 1);
+        createRegisteredCallbackTask(0, 172, -72, drawSelectionItemDetails, 4, 11);
+        createRegisteredTexturePairTask(172, -72, group->textureMapping,
+                                        group->count, selection->selectedIndex, 1, 5, 21);
+        D_8013AE88->data18 = 2;
+        break;
+    case 2:
+        if (*(s16 *)&entries[0].flags == 0 && *(s16 *)&entries[1].flags == 0 &&
+            *(s16 *)&entries[2].flags == 0) {
+            group = &D_8012FD10[D_8013AE88->data1A];
+            moveTaskChildrenWithSpacing(0, entries[0].task, -0x80000, -0x60000, 0x1E000, 0, 1);
+            configureMovement2D((Movement2D *)&D_800D9504[entries[1].task->resource14],
+                                -0x8000, -0x48000, 0x1E000, 0, group->count);
+            configureMovement2D((Movement2D *)&D_800D9504[entries[2].task->resource14],
+                                -0x8000, -0x48000, 0x1E000, 0, group->count);
+            D_8013AE88->data18 = 3;
+        }
+        break;
+    case 3:
+        if (*(s16 *)&entries[0].flags == 0 && *(s16 *)&entries[1].flags == 0 &&
+            *(s16 *)&entries[2].flags == 0) {
+            entries[0].command = 20;
+            entries[1].command = 20;
+            configureColorCycleTask(1, 0, 128, 8, 0);
+            D_8013B41F = 0;
+            D_8013AE88->data18 = 4;
+        }
+        break;
+    case 4:
+        complete = isTaskResourceTransitionComplete(0);
+        if (complete == 1 && D_8013B41F == 0) {
+            entries[0].command = 21;
+            entries[1].command = 22;
+            configureColorCycleTask(2, 64, 128, 4, 0);
+            D_8013B41F = complete;
+        }
+        if (selection->choiceResult != 0 && *(s16 *)&entries[0].flags == 0) {
+            if (D_8013B41F == 0) {
+                entries[0].command = 22;
+                entries[1].command = 22;
+                D_8013B41F = 1;
+            }
+            if (selection->choiceResult < 0) {
+                value = 6;
+                parent = D_8013AE98;
+                task = D_8013AE88;
+                parent->data18 = value;
+                task->data18 = value;
+            } else {
+                D_8013AE88->data18 = 13;
+            }
+        }
+        break;
+    case 13:
+        entries[0].command = 10;
+        D_8013AE88->data18 = 14;
+        break;
+    case 14:
+        if (*(s16 *)&entries[0].flags == 0) {
+            D_8013AE88->data18 = 5;
+        }
+        break;
+    case 5:
+        selectionTask = D_8013AE88;
+        group = &D_8012FD10[selectionTask->data1A];
+        selectedIndex = selection->selectedIndex;
+        if (group->mapping[selectedIndex] == 10) {
+            GameTask *menuParent = D_8013AE98;
+            D_8013B104 = 0;
+            menuParent->data18 = 6;
+            selectionTask->data18 = 6;
+        } else {
+            selectedIndex = D_8013B104 = func_8007373C(group->mapping, selectedIndex);
+            value = D_8012D46C[selectedIndex];
+            D_8013AFD0 = 1;
+            D_8013AFCE = value;
+            task = D_8013AE88;
+            task->data18 = 10;
+        }
+        break;
+    case 10:
+        func_80014874(initializeModeDependentTailResourcePairTask);
+        D_8013AE8C->data18 = 1;
+        D_8013AE88->data18 = 11;
+        break;
+    case 12:
+        value = 8;
+        parent = D_8013AE98;
+        task = D_8013AE88;
+        parent->data18 = value;
+        task->data18 = value;
+        break;
+    case 6:
+        queueMenuResourceReads((s16)D_8013AE98->data18);
+        moveTaskChildrenWithSpacing(0, entries[0].task, -0x134000, -0x60000, 0x1E000, 0x1E000, -1000);
+        entries[0].command = 23;
+        configureMovement2D((Movement2D *)&D_800D9504[entries[1].task->resource14],
+                            0xAC000, -0x48000, 0x1E000, 0x1E000, -1000);
+        configureMovement2D((Movement2D *)&D_800D9504[entries[2].task->resource14],
+                            0xAC000, -0x48000, 0x1E000, 0x1E000, -1000);
+        D_8013AE88->data18 = 7;
+        break;
+    case 7:
+        if (*(s16 *)&entries[0].flags == 0 && *(s16 *)&entries[1].flags == 0 &&
+            *(s16 *)&entries[2].flags == 0) {
+            D_8013AE88->data18 = 8;
+        }
+        break;
+    case 8:
+        D_8013AE88->data18 = 9;
+        break;
+    case 11:
+        break;
+    default:
+        D_8013AE98->data1C--;
+        func_800149A8();
+        break;
+    }
+}
 
 void initializeModeDependentTailResourcePairTask(void) {
     GameTask *task = D_8013AE88;
@@ -474,284 +631,5 @@ s16 findIdentityMappedIndexOrZero(ByteMappingDescriptor *descriptor, s16 value) 
     return result;
 }
 
-void initializeTaskResourcePairWithOneTickTransition(void) {
-    D_8013AE88->data18 = 0;
-    if (D_8013AE88->resource14 != 0xFFFF) {
-        for (;;) {}
-    }
-    D_8013AE88->resource14 = allocateTaskResource();
-    if (D_8013AE88->resource16 != 0xFFFF) {
-        for (;;) {}
-    }
-    D_8013AE88->resource16 = allocateTaskResource();
-    configureTaskStateTransition(2, 0, 1);
-    setCurrentTaskCallback(updateMode11SelectionMenuTask);
-    D_8013AE88->unk10 |= 2;
-}
-
-void updateMode11SelectionMenuTask(void) {
-    Mode11MenuSelection *selection;
-    RegisteredTaskEntry *entries;
-    s32 complete;
-    s32 index;
-
-    if (D_8013AE88->resource14 == 0xFFFF) {
-        for (;;) {}
-    }
-    selection = (Mode11MenuSelection *)&D_800D9504[D_8013AE88->resource14];
-    if (D_8013AE88->resource16 == 0xFFFF) {
-        for (;;) {}
-    }
-    entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE88->resource16];
-
-    switch (D_8013AE88->data18) {
-    case 0:
-        setSecondaryDisplayTaskMode(0);
-        selection->mode = 0;
-        selection->selectedIndex = 0;
-        selection->previousIndex = 0;
-        selection->choiceResult = 0;
-        createRegisteredSpacedChildTasks(1, 0xB0, 0x40, (const u8 *)gMode11SelectionSprites,
-                                         gMode11SelectionMapping, NULL,
-                                         1, 0, 20, -48, -24, 0, 24, 3, 403,
-                                         drawSelectedTaskSprite,
-                                         drawRegisteredTaskGridSpriteWithColor, 3, 11);
-        D_8013AE88->data18 = 1;
-        break;
-    case 1:
-        if ((s16)entries[1].flags == 0) {
-            configureTaskStateTransition(1, 0, 30);
-            queueCdCommand(3, 0);
-            D_8013B564 = 1;
-            D_8013AE88->data18 = 2;
-        }
-        break;
-    case 2:
-        if (hasTaskStateValue6(0) == 0) {
-            entries[1].command = 20;
-            configureColorCycleTask(1, 0, 128, 8, 0);
-            D_8013B41F = 0;
-            D_8013AE88->data18 = 3;
-        }
-        break;
-    case 3:
-        complete = isTaskResourceTransitionComplete(0);
-        if (complete == 1 && D_8013B41F == 0) {
-            entries[1].command = 21;
-            configureColorCycleTask(2, 64, 128, 4, 0);
-            D_8013B41F = complete;
-        }
-        if (selection->choiceResult != 0 && (s16)entries[1].flags == 0) {
-            entries[1].command = 22;
-            if (selection->choiceResult < 0) {
-                D_8013B108 = 2;
-                D_8013AE88->data18 = 4;
-            } else {
-                index = selection->selectedIndex;
-                if (index == 2) {
-                    D_8013B108 = index;
-                }
-                D_8013AE88->data18 = 7;
-            }
-        }
-        break;
-    case 7:
-        entries[1].command = 10;
-        D_8013AE88->data18 = 8;
-        break;
-    case 8:
-        if ((s16)entries[1].flags == 0) {
-            if (selection->selectedIndex != 2) {
-                if (selection->selectedIndex == 0) {
-                    D_8013B108 = 27;
-                }
-                index = selection->selectedIndex;
-                if (index == 1) {
-                    D_8013B108 = 28;
-                    D_8013AFD9 = index;
-                }
-            }
-            D_8013AE88->data18 = 4;
-        }
-        break;
-    case 4:
-        configureTaskStateTransition(2, 0, 30);
-        if (D_8013B108 != 28) {
-            startCdVolumeFade(103, 20, 0, 1);
-        }
-        D_8013B106 = 0;
-        configureColorCycleTask(0, 0, 0, 0, 0);
-        D_8013AE88->data18 = 5;
-        break;
-    case 5:
-        if (func_800707F0(0) == 0) {
-            D_8013AE88->data18 = 6;
-        }
-        break;
-    case 6:
-    default:
-        func_800149A8();
-        return;
-    }
-
-    if (D_8013AE88->data18 >= 2) {
-        func_80070C5C(128, &D_800EBFF0[D_8013AF78], 4);
-        drawFullScreenTexturedBackground();
-    }
-}
-
-const GridSpriteEntry gMode11SelectionSprites[6]
-    __attribute__((section(".data.mode11_selection_sprites"), aligned(4))) = {
-    {400, 0, {0, 0, 0}},
-    {401, 0, {0, 0, 0}},
-    {402, 0, {0, 0, 0}},
-    {400, 2, {0, 0, 0}},
-    {401, 2, {0, 0, 0}},
-    {402, 2, {0, 0, 0}},
-};
-
-const u8 gMode11SelectionMapping[8]
-    __attribute__((section(".data.mode11_selection_mapping"), aligned(4))) = {
-    0, 1, 2, 3, 4, 5, 0, 0,
-};
-
-const u32 gMode11SelectionJumpTablePadding
-    __attribute__((section(".rodata.mode11_selection_jump_table_padding"))) = 0;
-
-void selectTaskCallbackFromModeState(void) {
-    if (D_8013AFD8 != 0) {
-        setCurrentTaskCallback(initializeMode1RacePlayers);
-    } else if (D_8013AFD9 != 0) {
-        setCurrentTaskCallback(initializeControllerPlaybackRaceTask);
-    }
-}
-
-void initializeMode1Task(void) {
-    D_8013AFD8 = 1;
-    D_8013AFCE = -1;
-    D_8013B560 = 99;
-    setControllerFlag5(0);
-    setControllerFlag5(1);
-    D_8013B0F0 = 0;
-    setCurrentTaskCallback(initializeMode1RacePlayers);
-}
-
-void initializeMode1RacePlayers(void) {
-    s32 i;
-    s16 mode;
-    D_8013B560 = D_8013AFCE;
-    if ((s16)D_8013AFD8 < 7 && D_8013AFD8 != 0) D_8013AFCE = 0;
-    else D_8013AFCE = 9;
-    SetFogNearFar(8000, 10000, 400);
-    D_8013AFD3 = 0;
-    D_8013AFD6 = 0;
-    D_8013AFE1 = 0;
-    D_8013AFD9 = 0;
-    D_8013AFE2 = 0;
-    D_8013AFE0 = 0;
-    gRacePlayers[0].unk008 = 0;
-    gRacePlayers[1].unk008 = 1;
-    gRacePlayers[2].unk008 = 1;
-    gRacePlayers[3].unk008 = 1;
-    gRacePlayers[0].characterId = 0;
-    gRacePlayers[1].characterId = 1;
-    gRacePlayers[2].characterId = 2;
-    gRacePlayers[3].characterId = 3;
-    gRacePlayers[0].unk015[1] = 0;
-    gRacePlayers[1].unk015[1] = 0;
-    gRacePlayers[2].unk015[1] = 0;
-    gRacePlayers[3].unk015[1] = 0;
-    gRacePlayers[0].unk015[2] = 3;
-    gRacePlayers[1].unk015[2] = 5;
-    gRacePlayers[2].unk015[2] = 6;
-    gRacePlayers[3].unk015[2] = 7;
-    gRacePlayers[0].unk025[3] = 0;
-    gRacePlayers[1].unk025[3] = 1;
-    gRacePlayers[2].unk025[3] = 2;
-    gRacePlayers[3].unk025[3] = 3;
-    gameOptionPlayerModeAbsolute = 2;
-    mode = D_8013AFD8;
-    if (mode != 0 && (mode < 7 || mode == 9)) {
-        gRacePlayers[0].isActive = 1;
-        gRacePlayers[1].isActive = 0;
-        gRacePlayers[2].isActive = 0;
-        gRacePlayers[3].isActive = 0;
-        D_8013AFD2 = 1;
-    } else {
-        gRacePlayers[0].isActive = 1;
-        gRacePlayers[1].isActive = 1;
-        gRacePlayers[2].isActive = 1;
-        gRacePlayers[3].isActive = 1;
-        D_8013AFD2 = 4;
-    }
-    D_8013AFD0 = 5;
-    D_8013AFDE = 100;
-    for (i = 0; i < 4; i++) {
-        gRacePlayers[i].unk025[1] = 0;
-        gRacePlayers[i].unk025[2] = 0;
-        gRacePlayers[i].unk01C = 0;
-    }
-    setCurrentTaskCallback(prepareRaceResourcesIfSelectionChanged);
-}
-
-void prepareRaceResourcesIfSelectionChanged(void) {
-    configureTaskStateTransition(1, 0, 30);
-    setSecondaryDisplayTaskMode(1);
-    if (D_8013B560 != D_8013AFCE) {
-        func_800180F4(2);
-        func_800180F4(3);
-        func_800180F4(4);
-        func_800180F4(5);
-        queueStartupSectorReads();
-        setCurrentTaskCallback(preparePlayerResourcesTask);
-        D_8013AE88->unk10 |= 2;
-    } else {
-        setCurrentTaskCallback(initializeRaceTaskState);
-    }
-}
-
-void preparePlayerResourcesTask(void) {
-    queuePlayerResourceReadsAndUploadTextures();
-    setCurrentTaskCallback(initializeRaceTaskState);
-    D_8013AE88->unk10 |= 2;
-}
-
-void initializeModeSectorReadResourcesTask(void) {
-    ModeSectorReadState *state;
-    if (D_8013AE88->resource14 != 0xFFFF) {
-        for (;;) {}
-    }
-    D_8013AE88->resource14 = allocateTaskResource();
-    state = (ModeSectorReadState *)&D_800D9504[D_8013AE88->resource14];
-    if (D_8013AE88->resource16 != 0xFFFF) {
-        for (;;) {}
-    }
-    D_8013AE88->resource16 = allocateTaskResource();
-    D_8013B55E = 0;
-    if (D_8013AFD8 != 0) {
-        state->mode = 1;
-    } else {
-        state->mode = 2;
-    }
-    stopPlayerSound(0);
-    stopPlayerSound(1);
-    setCurrentTaskCallback(queueTaskModeSectorRead);
-}
-
-void queueTaskModeSectorRead(void) {
-    ModeSectorReadState *state;
-    if (D_8013AE88->resource14 == 0xFFFF) {
-        for (;;) {}
-    }
-    state = (ModeSectorReadState *)&D_800D9504[D_8013AE88->resource14];
-    if (state->mode == 1) {
-        state->sectorIndex = D_8013AFD8 - 1;
-    } else {
-        state->sectorIndex = D_8013AFD9 - 1;
-    }
-    queueModeIndexedSectorRead(state->mode, state->sectorIndex);
-    setCurrentTaskCallback(func_800A0EE8);
-    D_8013AE88->unk10 |= 2;
-}
-
-INCLUDE_ASM("asm/nonmatchings/menu/resource_tasks", func_800A0EE8);
+const u32 gFlagSelectedMenuJumpTablePadding
+    __attribute__((section(".rodata.flag_selected_menu_jump_table_padding"))) = 0;

@@ -2650,6 +2650,8 @@ drawTaskImagesOnBlackBackground = 0x800717E8; // type:func
 createAnimatedSpriteTask = 0x80077390; // type:func
 
 initializeFlagSelectedDualResourceTask = 0x8009F158; // type:func
+updateFlagSelectedMenuTask = 0x8009F224; // type:func
+gFlagSelectedMenuJumpTablePadding = 0x800121A0; // size:0x4
 
 assignCurrentPlayerFinishSlot = 0x80029EE4; // type:func
 

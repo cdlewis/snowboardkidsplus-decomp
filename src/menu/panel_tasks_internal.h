@@ -210,7 +210,7 @@ void initializeControllerPlaybackRaceTask(void);
 void func_8009BDB8(void);
 void func_8009CA90(void);
 void func_8009F9B8(void);
-void func_8009F224(void);
+void updateFlagSelectedMenuTask(void);
 
 void func_800A42CC(void);
 void func_800A499C(void);

@@ -51,6 +51,7 @@ G8_UNITS := \
     src/menu/grid_selection.c \
     src/race/player/player_palette.c \
     src/menu/resource_tasks.c \
+    src/menu/mode_race_tasks.c \
     src/text/text_sequence.c \
     src/race/camera/task_camera.c \
     src/menu/selection_tasks.c \

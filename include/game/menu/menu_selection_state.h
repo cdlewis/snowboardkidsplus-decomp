@@ -42,9 +42,12 @@ void drawCurrentTaskSelectionPanel(void);
 
 typedef struct ByteMappingDescriptor {
     const u8 *mapping;
-    u8 unk04[2];
+    u8 spacingX;
+    u8 spacingY;
     u8 count;
-    u8 unk07[13];
+    u8 unk07[5];
+    const u8 *textureMapping;
+    u8 unk10[4];
 } ByteMappingDescriptor;
 
 typedef struct SelectionItemStats {
@@ -54,5 +57,6 @@ typedef struct SelectionItemStats {
 
 extern SelectionItemStats D_8012FCE4[];
 extern ByteMappingDescriptor D_8012FD10[];
+void drawRegisteredSelectionItemStatus(void);
 void drawSelectionItemDetails(void);
 void drawSelectionPrizeAndPlayerCounters(void);

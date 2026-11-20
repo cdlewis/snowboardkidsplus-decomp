@@ -24,6 +24,8 @@ typedef struct GridSpriteEntry {
     u8 unk03[3];
 } GridSpriteEntry;
 
+extern const GridSpriteEntry D_8012F798[];
+
 typedef struct GridSpriteParent {
     u8 unk00[0x32];
     s16 selectedIndex;
