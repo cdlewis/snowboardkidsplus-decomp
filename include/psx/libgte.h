@@ -46,6 +46,13 @@ long SquareRoot0(long value);
     : "memory" )
 
 /* Psy-Q 4.2 INLINE_C.H. */
+#define gte_stsz3(first, second, third) __asm__ volatile ( \
+    "swc2 $17, 0(%0);" \
+    "swc2 $18, 0(%1);" \
+    "swc2 $19, 0(%2)" \
+    : : "r"(first), "r"(second), "r"(third) : "memory")
+
+/* Psy-Q 4.2 INLINE_C.H. */
 #define gte_avsz3() __asm__ volatile ("nop; nop; avsz3")
 #define gte_stotz(result) \
     __asm__ volatile ("swc2 $7, 0(%0)" : : "r"(result) : "memory")

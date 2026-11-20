@@ -945,7 +945,7 @@ void emitProjectedGouraudQuad(TriangleScratchVertex *);
 void emitProjectedTexturedQuad(TriangleScratchVertex *);
 void emitProjectedGouraudTexturedQuad(TriangleScratchVertex *);
 void emitProjectedGouraudTexturedTriangle(TriangleScratchVertex *);
-void func_80053A34(TriangleScratchVertex *, s32);
+void drawAdaptiveTriangle(TriangleScratchVertex *vertices, s32 level);
 void func_8006479C(void);
 void func_800654B4(void);
 void func_80066474(void);
