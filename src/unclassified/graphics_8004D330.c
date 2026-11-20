@@ -131,7 +131,61 @@ extern TmdObject *D_8013BBF8[];
 
 void func_800512A4(s16 view);
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/graphics_8004D330", func_8004D330);
+void getCourseSteeringTarget(s16 region, s32 x, s32 z, s32 *targetX, s32 *targetZ,
+                             u16 tableIndex, u16 playerIndex) {
+    s32 dx, dz, forward, cosine, lateral;
+    s16 vertexX, vertexZ;
+    s16 nextRegion;
+    s32 vertexIndex;
+    s16 *vertices;
+    SelectedCourseRecord *course;
+    SelectedCourseRecord *courses = D_80123D80;
+
+    if (region != (s16)courses[D_8013AFCE].unk00) {
+        D_8013B624 = rsin(-(s16)((GeometryPlacement *)D_8013B1F4)[region].angle);
+        cosine = rcos(-(s16)((GeometryPlacement *)D_8013B1F4)[region].angle);
+        vertexIndex = ((GeometryPlacement *)D_8013B1F4)[region].vertexIndex;
+        dx = x - D_8013B1EC[vertexIndex * 3] * 5;
+        dz = z - D_8013B1EC[vertexIndex * 3 + 2] * 5;
+        D_8013B628 = cosine;
+        dz = (-D_8013B624 * dx + cosine * dz) / 4096;
+
+        course = &courses[D_8013AFCE];
+        if ((region >= course->objectFirstSegment && region <= course->objectLastSegment) ||
+            (D_8013AFCE == 3 && (u16)(region - 285) < 2)) {
+            dz -= 960;
+            *targetX = -D_8013B624 * dz / 4096;
+            *targetZ = D_8013B628 * dz / 4096;
+        } else {
+            dz += 960;
+            *targetX = -D_8013B624 * dz / 4096;
+            *targetZ = D_8013B628 * dz / 4096;
+        }
+
+        *targetX += D_8013B1EC[((GeometryPlacement *)D_8013B1F4)[region].vertexIndex * 3] * 5;
+        *targetZ += D_8013B1EC[((GeometryPlacement *)D_8013B1F4)[region].vertexIndex * 3 + 2] * 5;
+
+        nextRegion = getAdjacentGeometryRegionForPoint(region, *targetX, *targetZ);
+        D_8013B624 = rsin(-(s16)((GeometryPlacement *)D_8013B1F4)[nextRegion].angle);
+        D_8013B628 = rcos(-(s16)((GeometryPlacement *)D_8013B1F4)[nextRegion].angle);
+        vertexIndex = ((GeometryPlacement *)D_8013B1F4)[nextRegion].vertexIndex * 3;
+        vertices = D_8013B1EC;
+        vertexX = vertices[vertexIndex];
+        vertexZ = vertices[vertexIndex + 2];
+        dx = *targetX - vertexX * 5;
+        dz = *targetZ - vertexZ * 5;
+        forward = updatePlayerField94CFromSelectedTable(tableIndex, nextRegion, playerIndex);
+
+        lateral = (-D_8013B624 * dx + D_8013B628 * dz) / 4096;
+        *targetX = (D_8013B628 * forward + -D_8013B624 * lateral) / 4096;
+        *targetZ = (D_8013B624 * forward + D_8013B628 * lateral) / 4096;
+        *targetX += D_8013B1EC[((GeometryPlacement *)D_8013B1F4)[nextRegion].vertexIndex * 3] * 5;
+        *targetZ += D_8013B1EC[((GeometryPlacement *)D_8013B1F4)[nextRegion].vertexIndex * 3 + 2] * 5;
+    } else {
+        *targetX = (s32)courses[D_8013AFCE].unk18[0] >> 8;
+        *targetZ = (s32)courses[D_8013AFCE].unk18[2] >> 8;
+    }
+}
 
 void adjustDebugPositionAndDisplay(VECTOR *position) {
     if (D_8013AEEC[1] & 0x1000) position->vx += 32;

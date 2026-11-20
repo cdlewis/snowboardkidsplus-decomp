@@ -639,3 +639,6 @@ void updateFallingRotatingObjectTask(void);
 void updateCurrentPlayerDirectionalAnimation(void);
 
 void drawLapTimeHud(void);
+
+void getCourseSteeringTarget(s16 region, s32 x, s32 z, s32 *targetX, s32 *targetZ,
+                             u16 tableIndex, u16 playerIndex);

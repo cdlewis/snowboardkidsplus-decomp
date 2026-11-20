@@ -1112,8 +1112,6 @@ void initializeOrbitingTaskObject(void);
 void updateAndDrawCurrentTaskObject(void);
 void copySlot26TransformToCurrentTaskObject(void);
 void updateCurrentPlayerCourseTrigger(void);
-void updatePlayerField94CFromSelectedTable(u16 tableIndex, s16 sampleIndex,
-                                          u16 playerIndex);
 void resetSelectedRecordStates(void);
 void captureSelectedPlayerStates(void);
 s32 restoreSelectedPlayerState(void);

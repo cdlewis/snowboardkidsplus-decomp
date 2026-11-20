@@ -2079,7 +2079,7 @@ void updateCurrentPlayerCourseTrigger(void) {
     }
 }
 
-void updatePlayerField94CFromSelectedTable(u16 tableIndex, s16 sampleIndex,
+s32 updatePlayerField94CFromSelectedTable(u16 tableIndex, s16 sampleIndex,
                                           u16 playerIndex) {
     s32 delta;
     RacePlayer *player;
@@ -2093,7 +2093,7 @@ void updatePlayerField94CFromSelectedTable(u16 tableIndex, s16 sampleIndex,
     if (delta < -30) {
         delta = -30;
     }
-    player->unk94C += delta;
+    return player->unk94C += delta;
 }
 
 void resetSelectedRecordStates(void) {

@@ -89,6 +89,7 @@ drawProjectedIndexedTexturedTriangle = 0x80056AC4; // type:func
 initializeFallingRotatingObjectTask = 0x8004531C; // type:func
 updateFallingRotatingObjectTask = 0x800456DC; // type:func
 initializeCurrentPlayerModelAndHeight = 0x80020380; // type:func
+getCourseSteeringTarget = 0x8004D330; // type:func
 adjustDebugPositionAndDisplay = 0x8004D7F8; // type:func
 drawBackgroundLensFlare = 0x8004D93C; // type:func
 drawLayeredBackgroundAndSetFog = 0x8004E09C; // type:func

@@ -45,7 +45,7 @@ extern u8 D_8013AFD6;
 #endif
 
 void resetSelectedRecordStates(void);
-void updatePlayerField94CFromSelectedTable(u16 tableIndex, s16 sampleIndex,
+s32 updatePlayerField94CFromSelectedTable(u16 tableIndex, s16 sampleIndex,
                                           u16 playerIndex);
 
 extern s16 selectedCourseIndexAbsolute __attribute__((section(".data")));
