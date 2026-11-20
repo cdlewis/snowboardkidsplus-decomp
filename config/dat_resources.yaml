@@ -16,19 +16,19 @@ entries:
     name: entry_004
   5:
     name: race_controller_playback_00
-    identity_evidence: D_8012043C[0] halfword loads at call 0x8001BCBC
+    identity_evidence: gRacePlaybackSectorRanges[0] halfword loads at call 0x8001BCBC
   6:
     name: race_controller_playback_01
-    identity_evidence: D_8012043C[1] halfword loads at call 0x8001BCBC
+    identity_evidence: gRacePlaybackSectorRanges[1] halfword loads at call 0x8001BCBC
   7:
     name: race_controller_playback_02
-    identity_evidence: D_8012043C[2] halfword loads at call 0x8001BCBC
+    identity_evidence: gRacePlaybackSectorRanges[2] halfword loads at call 0x8001BCBC
   8:
     name: race_controller_playback_03
-    identity_evidence: D_8012043C[3] halfword loads at call 0x8001BCBC
+    identity_evidence: gRacePlaybackSectorRanges[3] halfword loads at call 0x8001BCBC
   9:
     name: race_controller_playback_04
-    identity_evidence: D_8012043C[4] halfword loads at call 0x8001BCBC
+    identity_evidence: gRacePlaybackSectorRanges[4] halfword loads at call 0x8001BCBC
   10:
     name: entry_010
   11:
@@ -381,64 +381,64 @@ entries:
     name: entry_126
   127:
     name: player_sound_body_00
-    identity_evidence: D_801203EC[0] halfword loads at call 0x8001BBD8
+    identity_evidence: gRacePlayerSoundSectorRanges[0] halfword loads at call 0x8001BBD8
   128:
     name: player_sound_header_00
-    identity_evidence: D_801203EC[0] halfword loads at call 0x8001BC10
+    identity_evidence: gRacePlayerSoundSectorRanges[0] halfword loads at call 0x8001BC10
   129:
     name: player_sound_body_01
-    identity_evidence: D_801203EC[1] halfword loads at call 0x8001BBD8
+    identity_evidence: gRacePlayerSoundSectorRanges[1] halfword loads at call 0x8001BBD8
   130:
     name: player_sound_header_01
-    identity_evidence: D_801203EC[1] halfword loads at call 0x8001BC10
+    identity_evidence: gRacePlayerSoundSectorRanges[1] halfword loads at call 0x8001BC10
   131:
     name: player_sound_body_02
-    identity_evidence: D_801203EC[2] halfword loads at call 0x8001BBD8
+    identity_evidence: gRacePlayerSoundSectorRanges[2] halfword loads at call 0x8001BBD8
   132:
     name: player_sound_header_02
-    identity_evidence: D_801203EC[2] halfword loads at call 0x8001BC10
+    identity_evidence: gRacePlayerSoundSectorRanges[2] halfword loads at call 0x8001BC10
   133:
     name: player_sound_body_03
-    identity_evidence: D_801203EC[3] halfword loads at call 0x8001BBD8
+    identity_evidence: gRacePlayerSoundSectorRanges[3] halfword loads at call 0x8001BBD8
   134:
     name: player_sound_header_03
-    identity_evidence: D_801203EC[3] halfword loads at call 0x8001BC10
+    identity_evidence: gRacePlayerSoundSectorRanges[3] halfword loads at call 0x8001BC10
   135:
     name: player_sound_body_04
-    identity_evidence: D_801203EC[4] halfword loads at call 0x8001BBD8
+    identity_evidence: gRacePlayerSoundSectorRanges[4] halfword loads at call 0x8001BBD8
   136:
     name: player_sound_header_04
-    identity_evidence: D_801203EC[4] halfword loads at call 0x8001BC10
+    identity_evidence: gRacePlayerSoundSectorRanges[4] halfword loads at call 0x8001BC10
   137:
     name: player_sound_body_05
-    identity_evidence: D_801203EC[5] halfword loads at call 0x8001BBD8
+    identity_evidence: gRacePlayerSoundSectorRanges[5] halfword loads at call 0x8001BBD8
   138:
     name: player_sound_header_05
-    identity_evidence: D_801203EC[5] halfword loads at call 0x8001BC10
+    identity_evidence: gRacePlayerSoundSectorRanges[5] halfword loads at call 0x8001BC10
   139:
     name: player_sound_body_06
-    identity_evidence: D_801203EC[6] halfword loads at call 0x8001BBD8
+    identity_evidence: gRacePlayerSoundSectorRanges[6] halfword loads at call 0x8001BBD8
   140:
     name: player_sound_header_06
-    identity_evidence: D_801203EC[6] halfword loads at call 0x8001BC10
+    identity_evidence: gRacePlayerSoundSectorRanges[6] halfword loads at call 0x8001BC10
   141:
     name: player_sound_body_07
-    identity_evidence: D_801203EC[7] halfword loads at call 0x8001BBD8
+    identity_evidence: gRacePlayerSoundSectorRanges[7] halfword loads at call 0x8001BBD8
   142:
     name: player_sound_header_07
-    identity_evidence: D_801203EC[7] halfword loads at call 0x8001BC10
+    identity_evidence: gRacePlayerSoundSectorRanges[7] halfword loads at call 0x8001BC10
   143:
     name: player_sound_body_08
-    identity_evidence: D_801203EC[8] halfword loads at call 0x8001BBD8
+    identity_evidence: gRacePlayerSoundSectorRanges[8] halfword loads at call 0x8001BBD8
   144:
     name: player_sound_header_08
-    identity_evidence: D_801203EC[8] halfword loads at call 0x8001BC10
+    identity_evidence: gRacePlayerSoundSectorRanges[8] halfword loads at call 0x8001BC10
   145:
     name: player_sound_body_09
-    identity_evidence: D_801203EC[9] halfword loads at call 0x8001BBD8
+    identity_evidence: gRacePlayerSoundSectorRanges[9] halfword loads at call 0x8001BBD8
   146:
     name: player_sound_header_09
-    identity_evidence: D_801203EC[9] halfword loads at call 0x8001BC10
+    identity_evidence: gRacePlayerSoundSectorRanges[9] halfword loads at call 0x8001BC10
   147:
     name: mode11_resource_0961
     identity_evidence: 'queueMode11TransitionResources: destination and processing
@@ -1185,6 +1185,33 @@ entries:
     name: mode1_text_009
     identity_evidence: gMode1SectorRanges[9] in src/text/text_sequence.c
 read_tables:
+- source: src/engine/task_transitions.c
+  name: gRacePlayerSoundSectorRanges
+  rows: 10
+  fields:
+  - 0
+  - 1
+  uses:
+  - command: 0
+    destination: DAT_SCRATCH
+- source: src/engine/task_transitions.c
+  name: gRacePlayerSoundSectorRanges
+  rows: 10
+  fields:
+  - 2
+  - 3
+  uses:
+  - command: 5 + player
+    destination: 0x80167000 + player * 0x1000
+- source: src/engine/task_transitions.c
+  name: gRacePlaybackSectorRanges
+  rows: 5
+  fields:
+  - 0
+  - 1
+  uses:
+  - command: 0
+    destination: D_800E959C
 - source: src/menu/panel_tasks.c
   name: gGridResourceFirstSectorRanges
   rows: 50
@@ -1403,34 +1430,3 @@ runtime_regions:
   macro: SAVE_RECORD_WORKSPACE
   evidence: Two SaveRecord slots used by initializeSaveRecordTask; shares the
     resource/movie arena and is not a DAT entry.
-binary_read_tables:
-- symbol: D_801203EC
-  address: 2148664300
-  rows: 10
-  stride: 8
-  fields:
-  - 0
-  - 2
-  command: 0
-  destination: DAT_SCRATCH
-  call: 2147597272
-- symbol: D_801203EC
-  address: 2148664300
-  rows: 10
-  stride: 8
-  fields:
-  - 4
-  - 6
-  command: 5 + player
-  destination: 0x80167000 + player * 0x1000
-  call: 2147597328
-- symbol: D_8012043C
-  address: 2148664380
-  rows: 5
-  stride: 4
-  fields:
-  - 0
-  - 2
-  command: 0
-  destination: D_800E959C
-  call: 2147597500

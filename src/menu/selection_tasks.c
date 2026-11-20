@@ -163,7 +163,7 @@ void completeModeSelectionTransitionWhenReady(void) {
 void selectTaskBySelectedRecordMatch(void) {
     if (D_8013B560 != D_8013AFCE) {
         D_8013B562 = 0;
-        setCurrentTaskCallback(func_8001B858);
+        setCurrentTaskCallback(queueRaceStartupResourcesTask);
     } else {
         D_8013B562 = 1;
         setCurrentTaskCallback(initializeModeRaceTasks);

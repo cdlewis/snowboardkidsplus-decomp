@@ -40,6 +40,70 @@
 
 #include "game/race/player/player_resource_textures.h"
 
+#define RACE_SOUND_HEADER ((u8 *)0x80165800)
+#define RACE_PLAYER_SOUND_HEADERS ((u8 (*)[0x1000])0x80167000)
+#define RACE_EXTRA_RESOURCE_BUFFER ((u8 *)0x801F3000)
+
+typedef struct RacePlayerSoundSectorRanges {
+    s16 bodySector;
+    s16 bodySectorCount;
+    s16 headerSector;
+    s16 headerSectorCount;
+} RacePlayerSoundSectorRanges;
+
+RacePlayerSoundSectorRanges gRacePlayerSoundSectorRanges[10]
+    __attribute__((section(".data.race_startup_sector_ranges"))) = {
+    {
+        DAT_PLAYER_SOUND_BODY_00_SECTOR, DAT_PLAYER_SOUND_BODY_00_SECTOR_COUNT,
+        DAT_PLAYER_SOUND_HEADER_00_SECTOR, DAT_PLAYER_SOUND_HEADER_00_SECTOR_COUNT,
+    },
+    {
+        DAT_PLAYER_SOUND_BODY_01_SECTOR, DAT_PLAYER_SOUND_BODY_01_SECTOR_COUNT,
+        DAT_PLAYER_SOUND_HEADER_01_SECTOR, DAT_PLAYER_SOUND_HEADER_01_SECTOR_COUNT,
+    },
+    {
+        DAT_PLAYER_SOUND_BODY_02_SECTOR, DAT_PLAYER_SOUND_BODY_02_SECTOR_COUNT,
+        DAT_PLAYER_SOUND_HEADER_02_SECTOR, DAT_PLAYER_SOUND_HEADER_02_SECTOR_COUNT,
+    },
+    {
+        DAT_PLAYER_SOUND_BODY_03_SECTOR, DAT_PLAYER_SOUND_BODY_03_SECTOR_COUNT,
+        DAT_PLAYER_SOUND_HEADER_03_SECTOR, DAT_PLAYER_SOUND_HEADER_03_SECTOR_COUNT,
+    },
+    {
+        DAT_PLAYER_SOUND_BODY_04_SECTOR, DAT_PLAYER_SOUND_BODY_04_SECTOR_COUNT,
+        DAT_PLAYER_SOUND_HEADER_04_SECTOR, DAT_PLAYER_SOUND_HEADER_04_SECTOR_COUNT,
+    },
+    {
+        DAT_PLAYER_SOUND_BODY_05_SECTOR, DAT_PLAYER_SOUND_BODY_05_SECTOR_COUNT,
+        DAT_PLAYER_SOUND_HEADER_05_SECTOR, DAT_PLAYER_SOUND_HEADER_05_SECTOR_COUNT,
+    },
+    {
+        DAT_PLAYER_SOUND_BODY_06_SECTOR, DAT_PLAYER_SOUND_BODY_06_SECTOR_COUNT,
+        DAT_PLAYER_SOUND_HEADER_06_SECTOR, DAT_PLAYER_SOUND_HEADER_06_SECTOR_COUNT,
+    },
+    {
+        DAT_PLAYER_SOUND_BODY_07_SECTOR, DAT_PLAYER_SOUND_BODY_07_SECTOR_COUNT,
+        DAT_PLAYER_SOUND_HEADER_07_SECTOR, DAT_PLAYER_SOUND_HEADER_07_SECTOR_COUNT,
+    },
+    {
+        DAT_PLAYER_SOUND_BODY_08_SECTOR, DAT_PLAYER_SOUND_BODY_08_SECTOR_COUNT,
+        DAT_PLAYER_SOUND_HEADER_08_SECTOR, DAT_PLAYER_SOUND_HEADER_08_SECTOR_COUNT,
+    },
+    {
+        DAT_PLAYER_SOUND_BODY_09_SECTOR, DAT_PLAYER_SOUND_BODY_09_SECTOR_COUNT,
+        DAT_PLAYER_SOUND_HEADER_09_SECTOR, DAT_PLAYER_SOUND_HEADER_09_SECTOR_COUNT,
+    },
+};
+
+ResourceSectorRange gRacePlaybackSectorRanges[5]
+    __attribute__((section(".data.race_startup_sector_ranges"))) = {
+    {DAT_RACE_CONTROLLER_PLAYBACK_00_SECTOR, DAT_RACE_CONTROLLER_PLAYBACK_00_SECTOR_COUNT},
+    {DAT_RACE_CONTROLLER_PLAYBACK_01_SECTOR, DAT_RACE_CONTROLLER_PLAYBACK_01_SECTOR_COUNT},
+    {DAT_RACE_CONTROLLER_PLAYBACK_02_SECTOR, DAT_RACE_CONTROLLER_PLAYBACK_02_SECTOR_COUNT},
+    {DAT_RACE_CONTROLLER_PLAYBACK_03_SECTOR, DAT_RACE_CONTROLLER_PLAYBACK_03_SECTOR_COUNT},
+    {DAT_RACE_CONTROLLER_PLAYBACK_04_SECTOR, DAT_RACE_CONTROLLER_PLAYBACK_04_SECTOR_COUNT},
+};
+
 u8 gCourseOpponentCharacters[10][4] __attribute__((section(".data.course_race_setup"))) = {
     {0, 1, 2, 5},
     {4, 7, 6, 1},
@@ -59,6 +123,20 @@ u8 gCourseOpponentBoardSelections[12] __attribute__((section(".data.course_race_
 
 u8 D_80120484[12] __attribute__((section(".data.course_race_setup"))) = {
     20, 30, 40, 40, 60, 80, 128, 0, 255, 10, 0, 0,
+};
+
+u8 gRaceStartupPlayerPresets1[4][3] __attribute__((section(".data.course_race_setup"))) = {
+    {0, 1, 0},
+    {3, 1, 1},
+    {7, 0, 2},
+    {1, 0, 3},
+};
+
+u8 gRaceStartupPlayerPresets5[4][3] __attribute__((section(".data.course_race_setup"))) = {
+    {3, 2, 4},
+    {5, 0, 5},
+    {6, 0, 6},
+    {4, 0, 7},
 };
 
 u16 gSelectedPlayerRestoreFrames[14] __attribute__((section(".data.selected_player_restore_frames"))) = {
@@ -112,7 +190,6 @@ void initializeRaceRestartTask(void);
 void func_8001C2E0(void);
 void func_8001C0DC(void);
 void func_8003DEE0(void);
-void func_8001B858(void);
 s32 func_80014838(TaskCallback callback);
 void advanceTaskWhenFlagAFE4Bit8Set(void);
 void startResourceLoadWhenFlagAFE4Bit9Set(void);
@@ -335,12 +412,147 @@ void initializeGameOptionViewTask(void) {
     func_8003DEE0();
     setControllerFlag0(0);
     setControllerFlag0(1);
-    setCurrentTaskCallback(func_8001B858);
+    setCurrentTaskCallback(queueRaceStartupResourcesTask);
     func_80014838(dispatchGameOptionTransitionTask);
     D_8013AE88->unk10 |= 1;
 }
 
-INCLUDE_ASM("asm/nonmatchings/engine/task_transitions", func_8001B858);
+void queueRaceStartupResourcesTask(void) {
+    u32 i;
+
+    if (D_8013AFD7) {
+        switch (D_8013AFD7) {
+        case 1:
+            D_8013AFCE = 9;
+            D_8013AFCD = 1;
+            D_8013AFE2 = 0;
+            activeRacePlayerCountGp = 4;
+            for (i = 0; i < 4; i++) {
+                RacePlayer *player = &gRacePlayers[i];
+                u8 characterId = gRaceStartupPlayerPresets1[i][0];
+
+                player->unk015[0] = 0;
+                player->characterId = characterId;
+                player->unk015[1] = gRaceStartupPlayerPresets1[i][1];
+                player->unk015[2] = gRaceStartupPlayerPresets1[i][2];
+                player->unk015[3] = 0;
+                player->isActive = 1;
+                if (i == 0) {
+                    gRacePlayers[0].unk008 = 0;
+                } else {
+                    player->unk008 = 1;
+                    player->unk02C[0] = D_80120484[D_8013AFCE];
+                    player->unk02C[1] = D_80120484[D_8013AFCE];
+                    player->unk025[3] = i;
+                }
+            }
+            break;
+        case 2:
+            D_8013AFE2 = 1;
+            D_8013AFE0 = 0;
+            D_8013AFCE = 0;
+            D_8013AFCD = 1;
+            activeRacePlayerCountGp = 1;
+            gRacePlayers[0].characterId = 4;
+            gRacePlayers[0].unk015[1] = 2;
+            gRacePlayers[0].isActive = 1;
+            break;
+        case 3:
+            D_8013AFE2 = 1;
+            D_8013AFE0 = 1;
+            D_8013AFCE = 1;
+            D_8013AFCD = 1;
+            activeRacePlayerCountGp = 1;
+            gRacePlayers[0].characterId = 2;
+            gRacePlayers[0].unk015[1] = 1;
+            gRacePlayers[0].isActive = 1;
+            break;
+        case 4:
+            D_8013AFE2 = 1;
+            D_8013AFE0 = 2;
+            D_8013AFCE = 7;
+            D_8013AFCD = 1;
+            activeRacePlayerCountGp = 1;
+            gRacePlayers[0].characterId = 1;
+            gRacePlayers[0].unk015[1] = 0;
+            gRacePlayers[0].isActive = 1;
+            break;
+        case 5:
+            D_8013AFCE = 3;
+            D_8013AFCD = 2;
+            D_8013AFE2 = 0;
+            activeRacePlayerCountGp = 4;
+            for (i = 0; i < 4; i++) {
+                RacePlayer *player = &gRacePlayers[i];
+                u8 characterId = gRaceStartupPlayerPresets5[i][0];
+
+                player->unk015[0] = 0;
+                player->characterId = characterId;
+                player->unk015[1] = gRaceStartupPlayerPresets5[i][1];
+                player->unk015[2] = gRaceStartupPlayerPresets5[i][2];
+                player->unk015[3] = 0;
+                player->isActive = 1;
+                if (i == 0) {
+                    gRacePlayers[0].unk008 = 0;
+                } else {
+                    player->unk008 = 1;
+                    player->unk02C[0] = D_80120484[D_8013AFCE];
+                    player->unk02C[1] = D_80120484[D_8013AFCE];
+                    player->unk025[3] = i;
+                }
+            }
+            break;
+        }
+        if (D_8013AFD7) {
+            D_8013AFD0 = D_80123D80[D_8013AFCE].unk02;
+        }
+        resetGameplayRng();
+        D_8013AFD3 = 0;
+        D_8013AFD4 = 0;
+        D_8013AFD5 = 0;
+        D_8013AFD6 = 0;
+        D_8013AFE1 = 0;
+        D_8013AFD8 = 0;
+        D_8013AFD9 = 0;
+        D_8013AFCC = 0;
+        D_8013AFE4 = 0;
+        queuePlayerResourceReadsAndUploadTextures();
+        initializeActiveRacePlayers();
+        initializeRaceRulesAndCounters();
+        D_8013B1A8 = 1;
+    }
+
+    queueCourseResourceSectorReads();
+    closeMusicSequence();
+    func_800180F4(1);
+    queueCdSectorCommand(0, DAT_ENTRY_125_SECTOR, DAT_ENTRY_125_SECTOR_COUNT, DAT_SCRATCH, 0);
+    queueCdSectorCommand(4, DAT_ENTRY_126_SECTOR, DAT_ENTRY_126_SECTOR_COUNT,
+        RACE_SOUND_HEADER, 0);
+    for (i = 0; i < activeRacePlayerCountGp; i++) {
+        queueCdSectorCommand(0, gRacePlayerSoundSectorRanges[gRacePlayers[i].characterId].bodySector,
+            gRacePlayerSoundSectorRanges[gRacePlayers[i].characterId].bodySectorCount, DAT_SCRATCH, 0);
+        queueCdSectorCommand(i + 5, gRacePlayerSoundSectorRanges[gRacePlayers[i].characterId].headerSector,
+            gRacePlayerSoundSectorRanges[gRacePlayers[i].characterId].headerSectorCount,
+            RACE_PLAYER_SOUND_HEADERS[i], 0);
+    }
+    queueCdSectorCommand(2, DAT_ENTRY_002_SECTOR, DAT_ENTRY_002_SECTOR_COUNT, DAT_SCRATCH, 0);
+    queueCdSectorCommand(2, DAT_ENTRY_003_SECTOR, DAT_ENTRY_003_SECTOR_COUNT, DAT_SCRATCH, 0);
+    if (D_8013AFCE != 7) {
+        queueCdSectorCommand(0, DAT_ENTRY_004_SECTOR, DAT_ENTRY_004_SECTOR_COUNT,
+            RACE_EXTRA_RESOURCE_BUFFER, 0);
+    }
+    if (D_8013AFD7) {
+        queueCdSectorCommand(0, gRacePlaybackSectorRanges[D_8013AFD7 - 1].sector,
+            gRacePlaybackSectorRanges[D_8013AFD7 - 1].sectorCount, D_800E959C, 0);
+    }
+    queueCdSectorCommand(0, DAT_ENTRY_010_SECTOR, DAT_ENTRY_010_SECTOR_COUNT, DAT_SCRATCH, 0);
+    if (!D_8013AFD8 && !D_8013AFD9) {
+        setCurrentTaskCallback(initializeRacePresentationTask);
+    } else {
+        setCurrentTaskCallback(initializeModeRaceTasks);
+    }
+    D_8013AE88->unk10 |= 2;
+}
 
 void initializeRacePresentationTask(void) {
     s16 i;

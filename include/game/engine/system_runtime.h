@@ -65,7 +65,6 @@ void selectMemoryCardLoadFile(u8 slot, void *destination);
 void pollMemoryCardBufferReadTask(void);
 void func_8001C0DC(void);
 void func_8003DEE0(void);
-void func_8001B858(void);
 s32 func_80014838(TaskCallback callback);
 void pollMemoryCardReadTask(void);
 void captureMemoryCardSaveIcon(void);
