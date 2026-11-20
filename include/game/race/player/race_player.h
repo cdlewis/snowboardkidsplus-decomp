@@ -164,10 +164,10 @@ struct RacePlayer {
     s32 unk938;
     s16 unk93C;
     s8 unk93E;
-    u8 unk93F;
+    s8 unk93F;
     s8 unk940;
     u8 heldItem;
-    u8 unk942;
+    s8 unk942;
     u8 unk943;
     u8 randomIndex;
     u8 unk945;

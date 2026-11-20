@@ -1,4 +1,5 @@
 #include "../race/race_presentation_internal.h"
+#include "game/race/ui/race_hud.h"
 
 /* Full-width Shift-JIS labels used by the race HUD. */
 const char gAttackTimeLimitLabel[24] __attribute__((section(".rodata.trick_attack_labels"), aligned(4))) =
@@ -13,6 +14,13 @@ const char gTargetTimeLabel[12] __attribute__((section(".rodata.target_time_labe
 extern char gCourseCoinTotalFormat[] __attribute__((section(".data")));
 extern char gCourseCoinCountMarker[] __attribute__((section(".data")));
 extern char gCourseCoinCountFormat[] __attribute__((section(".data")));
+
+void func_80041554(void);
+void func_80041890(void);
+void func_800418F4(s16 player);
+void func_8004213C(s16 player);
+void func_80042558(void);
+void func_80042894(s16 player);
 
 INCLUDE_ASM("asm/nonmatchings/unclassified/race_8003EE70", func_8003EE70);
 
@@ -190,7 +198,184 @@ void initializeRaceRulesAndCounters(void) {
     times[1].centiseconds = 0;
 }
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/race_8003EE70", func_80040D5C);
+void updateRaceHud(void) {
+    RaceTime difference;
+    s32 progress;
+    s32 distance;
+    s16 player;
+
+    if (D_8013B1A8_gp) {
+        switch (D_8013B620) {
+        case 0:
+            if (gRacePlayers[0].unk93F) {
+                if (gRacePlayers[0].unk93F == 4) {
+                    createPlayerSpriteAnimationTask(-32, -96, 0, 0, 0);
+                }
+                gRacePlayers[0].unk93F--;
+            }
+            if (gRacePlayers[0].unk942) {
+                if (gRacePlayers[0].unk942 == 4) {
+                    createPlayerSpriteAnimationTask(0, -96, 0, 0, 1);
+                }
+                gRacePlayers[0].unk942--;
+            }
+            func_80041554();
+            break;
+        case 1:
+            for (player = 0; player < 2; player++) {
+                if (gRacePlayers[player].unk93F) {
+                    if (gRacePlayers[player].unk93F == 4) {
+                        createPlayerSpriteAnimationTask(-104, -40, player, 1, 0);
+                    }
+                    gRacePlayers[player].unk93F--;
+                }
+                if (gRacePlayers[player].unk942) {
+                    if (gRacePlayers[player].unk942 == 4) {
+                        createPlayerSpriteAnimationTask(-72, -40, player, 1, 1);
+                    }
+                    gRacePlayers[player].unk942--;
+                }
+            }
+            func_80041890();
+            func_800418F4(0);
+            func_800418F4(1);
+            break;
+        case 2:
+            if (!(D_8013AFE4 & 3) && !(gRacePlayers[0].unk128 & 0x40)) {
+                advanceRaceElapsedTime();
+            }
+            if (calculateRaceTimeDifference(&D_80124220[D_8013AFCE], &gRaceElapsedTime, &difference)) {
+                D_8013B18D_gp = 1;
+            }
+            drawCourseCoinHud();
+            break;
+        case 3:
+            if (!(D_8013AFE4 & 3)) {
+                advanceRaceElapsedTime();
+                if (!(gRacePlayers[0].unk128 & 0x40)) {
+                    D_8013B190[0] = gRaceElapsedTime;
+                    if (calculateRaceTimeDifference(&D_80124220[D_8013AFCE], &D_8013B190[0], &difference)) {
+                        D_8013B1A0[0] = 1;
+                    }
+                }
+                if (!(gRacePlayers[1].unk128 & 0x40)) {
+                    D_8013B190[1] = gRaceElapsedTime;
+                    if (calculateRaceTimeDifference(&D_80124220[D_8013AFCE], &D_8013B190[1], &difference)) {
+                        D_8013B1A0[1] = 1;
+                    }
+                }
+            }
+            drawSplitScreenCourseCoinHud(0);
+            drawSplitScreenCourseCoinHud(1);
+            break;
+        case 4:
+            if (!(D_8013AFE4 & 3) && !(gRacePlayers[0].unk128 & 0x40)) {
+                func_80043A4C();
+            }
+            if (!D_8013B184.minutes) {
+                if (!D_8013B184.seconds) {
+                    if (!D_8013B184.centiseconds) {
+                        D_8013B18D_gp = 1;
+                    }
+                }
+            }
+            func_80042558();
+            break;
+        case 5:
+            if (!(D_8013AFE4 & 3)) {
+                func_80043A4C();
+                advanceRaceElapsedTime();
+                if (!(gRacePlayers[0].unk128 & 0x40)) {
+                    D_8013B198[0] = D_8013B184;
+                    if (!D_8013B198[0].minutes) {
+                        if (!D_8013B198[0].seconds) {
+                            if (!D_8013B198[0].centiseconds) {
+                                D_8013B1A0[0] = 1;
+                            }
+                        }
+                    }
+                    D_8013B190[0] = gRaceElapsedTime;
+                }
+                if (!(gRacePlayers[1].unk128 & 0x40)) {
+                    D_8013B198[1] = D_8013B184;
+                    if (!D_8013B198[1].minutes) {
+                        if (!D_8013B198[1].seconds) {
+                            if (!D_8013B198[1].centiseconds) {
+                                D_8013B1A0[1] = 1;
+                            }
+                        }
+                    }
+                    D_8013B190[1] = gRaceElapsedTime;
+                }
+            }
+            func_80042894(0);
+            func_80042894(1);
+            break;
+        case 6:
+            if (!(D_8013AFE4 & 3) && !(gRacePlayers[0].unk128 & 0x40)) {
+                func_80043A4C();
+            }
+            if (!D_8013B184.minutes) {
+                if (!D_8013B184.seconds) {
+                    if (!D_8013B184.centiseconds) {
+                        D_8013B18D_gp = 1;
+                    }
+                }
+            }
+            drawTrickAttackHud();
+            break;
+        case 7:
+            if (!(D_8013AFE4 & 3)) {
+                func_80043A4C();
+                advanceRaceElapsedTime();
+                if (!(gRacePlayers[0].unk128 & 0x40)) {
+                    D_8013B198[0] = D_8013B184;
+                    if (!D_8013B198[0].minutes) {
+                        if (!D_8013B198[0].seconds) {
+                            if (!D_8013B198[0].centiseconds) {
+                                D_8013B1A0[0] = 1;
+                            }
+                        }
+                    }
+                    D_8013B190[0] = gRaceElapsedTime;
+                }
+                if (!(gRacePlayers[1].unk128 & 0x40)) {
+                    D_8013B198[1] = D_8013B184;
+                    if (!D_8013B198[1].minutes) {
+                        if (!D_8013B198[1].seconds) {
+                            if (!D_8013B198[1].centiseconds) {
+                                D_8013B1A0[1] = 1;
+                            }
+                        }
+                    }
+                    D_8013B190[1] = gRaceElapsedTime;
+                }
+            }
+            func_8004213C(0);
+            func_8004213C(1);
+            break;
+        case 8:
+            if (!(D_8013AFE4 & 3)) {
+                if (!(gRacePlayers[0].unk128 & 0x40)) {
+                    advanceRaceElapsedTime();
+                }
+                if (!D_8013B18C) {
+                    getPlayerCourseProgress(0, &progress, &distance);
+                    if (D_80123D80[D_8013AFCE].unk3C * 8 < progress) {
+                        D_8013B188 = gRaceElapsedTime;
+                        D_8013B18C = 1;
+                        func_80014874(initializeRaceTimeDifferenceDisplay);
+                    }
+                }
+            }
+            drawLapTimeHud();
+            break;
+        case 9:
+            drawFirstPlayerStatusHud();
+            break;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/unclassified/race_8003EE70", func_80041554);
 

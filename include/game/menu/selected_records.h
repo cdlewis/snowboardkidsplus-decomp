@@ -15,7 +15,8 @@ typedef struct SelectedCourseRecord {
     u32 unk18[8];
     s16 objectFirstSegment;
     s16 objectLastSegment;
-    u32 unk3C;
+    s16 unk3C;
+    u16 unk3E;
     u32 unk40[2];
 } SelectedCourseRecord;
 

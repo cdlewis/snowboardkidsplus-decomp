@@ -1,4 +1,5 @@
 #include "selection_tasks_internal.h"
+#include "game/race/ui/race_hud.h"
 
 typedef struct NumberSelectionSpriteTable {
     GridSpriteEntry entries[3];
@@ -116,7 +117,7 @@ void advanceTaskAtModeCoursePosition(void) {
         if (gRacePlayers[0].unk92E == 54) reached = 1;
         break;
     }
-    func_80040D5C();
+    updateRaceHud();
     if (reached) {
         stopPlayerSound(0);
         stopPlayerSound(1);

@@ -8,6 +8,7 @@
 #include "game/graphics/graphics.h"
 #include "game/graphics/coordinate.h"
 #include "game/race/camera/race_camera.h"
+#include "game/race/ui/race_hud.h"
 #include "game/engine/linear_random.h"
 #include "game/engine/offset_archive.h"
 #include "game/audio/music.h"
@@ -203,7 +204,6 @@ void advanceTaskWhenFlagAFE4Bit8Set(void);
 void startResourceLoadWhenFlagAFE4Bit9Set(void);
 void func_80015A30(u16 controller);
 void func_8003CAF0(void);
-void func_80040D5C(void);
 void func_8001C9F0(void);
 s16 func_8008C290(s16 characterId, s16 finishPosition);
 void func_8005EBC4(void);
@@ -683,7 +683,7 @@ void updateActiveRaceTask(void) {
     if (D_8013AFD3 & RACE_PAUSE_RESUME_PENDING) {
         D_8013AFD3 = 0;
     }
-    func_80040D5C();
+    updateRaceHud();
     if (!(D_8013AFE4 & 1) && D_8013B1AB) {
         D_8013AE88->data18 = 30;
         configureTaskStateTransition(2, 0, 30);
@@ -831,7 +831,7 @@ void finishRaceTransitionAfterCountdown(void) {
             }
         }
         setCurrentTaskCallback(func_8001C9F0);
-    } else func_80040D5C();
+    } else updateRaceHud();
 }
 
 INCLUDE_ASM("asm/nonmatchings/engine/task_transitions", func_8001C9F0);
@@ -1018,7 +1018,7 @@ void finishRaceExitAfterCountdown(void) {
             setCurrentTaskCallback(initializeGameOptionViewTask);
         }
     } else {
-        func_80040D5C();
+        updateRaceHud();
     }
 }
 

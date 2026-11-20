@@ -84,7 +84,6 @@ void func_800187B8(u8 voice);
 void func_8001814C(void);
 int printf(const char *format, ...);
 
-void func_80040D5C(void);
 void initializeNumberSelectionTask(void);
 void completeModeSelectionTransitionWhenReady(void);
 void updateSelectionMenuTask(void);

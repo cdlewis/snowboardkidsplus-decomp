@@ -1,4 +1,5 @@
 #include "../menu/selection_tasks_internal.h"
+#include "game/race/ui/race_hud.h"
 
 ControllerPlaybackEntry gControllerPlaybackEntries[12] __attribute__((section(".data.controller_playback_entries"))) = {
     {0, 0, 0, 0},
@@ -91,7 +92,7 @@ void advanceTaskWhenFlagB55ESet(void) {
 }
 
 void updateControllerPlaybackUntilFade(void) {
-    func_80040D5C();
+    updateRaceHud();
     if (D_8013AEE8[0] & 0x800) {
         D_8013AE88->data18 = gControllerPlaybackDurations[D_8013AFD9];
     }

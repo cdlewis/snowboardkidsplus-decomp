@@ -114,7 +114,7 @@ segments:
       - {start: 0x1430, type: .rodata, name: race/ui/race_hud, linker_section: .rodata.lap_time_format}
       - {start: 0x1444, type: .rodata, name: unclassified/race_8003EE70, linker_section: .rodata.target_time_label}
       - {start: 0x1450, type: .rodata, name: race/ui/race_hud, linker_section: .rodata.best_lap_label}
-      - [0x1460, rodata]
+      - [0x1460, .rodata, unclassified/race_8003EE70]
       - [0x1488, .rodata, race/ui/race_hud]
       - [0x149C, .rodata, unclassified/graphics_800497B8]
       - {start: 0x14B4, type: .rodata, name: unclassified/graphics_8004D330, linker_section: .rodata.course_model_scale}
