@@ -122,6 +122,7 @@ UNIT_REORDER_src/io/controller_effects.c := 0
 UNIT_REORDER_src/graphics/sprite_draw.c := 0
 UNIT_REORDER_src/menu/task_widgets.c := 0
 UNIT_CCFLAGS_src/menu/task_widgets.c += --rdata-section=cycleSaveRecordUnlockFlags:.rodata.save_record_unlock_flags
+UNIT_CCFLAGS_src/menu/resource_tasks.c += --rdata-section=updateSelectionIndexedMenuTask:.rodata.selection_indexed_menu
 UNIT_REORDER_src/unclassified/menu_8007BE9C.c := 0
 UNIT_REORDER_src/unclassified/menu_8007CC78.c := 0
 UNIT_CCFLAGS_src/unclassified/menu_8007CC78.c += --rdata-section=updateRegisteredPlayerModels:.rodata.registered_player_models

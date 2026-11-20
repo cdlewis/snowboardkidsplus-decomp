@@ -216,7 +216,7 @@ void queueTaskModeSectorRead(void);
 void queueModeIndexedSectorRead(s16 mode, s16 index);
 void initializeControllerPlaybackRaceTask(void);
 void func_8009BDB8(void);
-void func_8009CA90(void);
+void updateSelectionIndexedMenuTask(void);
 void updateLapRecordsMenuTask(void);
 void updateFlagSelectedMenuTask(void);
 

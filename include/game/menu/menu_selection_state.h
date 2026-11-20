@@ -46,7 +46,8 @@ typedef struct ByteMappingDescriptor {
     u8 spacingX;
     u8 spacingY;
     u8 count;
-    u8 unk07[5];
+    u8 unk07;
+    const u8 *textMapping;
     const u8 *textureMapping;
     u8 unk10[4];
 } ByteMappingDescriptor;
