@@ -109,9 +109,9 @@ segments:
       - {start: 0x1450, type: .rodata, name: race/ui/race_hud, linker_section: .rodata.best_lap_label}
       - [0x1460, rodata]
       - [0x1488, .rodata, race/ui/race_hud]
-      - [0x149C, rodata]
+      - [0x149C, .rodata, unclassified/graphics_800497B8]
       - {start: 0x14B4, type: .rodata, name: unclassified/graphics_8004D330, linker_section: .rodata.course_model_scale}
-      - [0x14C4, .rodata, unclassified/graphics_800497B8]
+      - {start: 0x14C4, type: .rodata, name: unclassified/graphics_800497B8, linker_section: .rodata.no_process_message}
       - [0x14D4, .rodata, race/course/course_objects]
       - {start: 0x1538, type: .rodata, name: race/course/course_objects, linker_section: .rodata.course_object_jump_table_padding}
       - [0x153C, rodata]
@@ -717,6 +717,9 @@ segments:
       - [0x114B04, data, player_flag_visual_frames_tail]
       - {start: 0x114B24, type: .data, name: race/effects/coordinate_effects, linker_section: .data.player_particle_history_visual_frames}
       - [0x114B54, data, player_particle_history_visual_frames_tail]
+      - {start: 0x114B84, type: .data, name: unclassified/graphics_800497B8, linker_section: .data.sliding_visual_frames}
+      - {start: 0x114C84, type: .data, name: unclassified/graphics_800497B8, linker_section: .data.sliding_visual_steps}
+      - [0x114D0C, data, sliding_visual_steps_tail]
       - {start: 0x114DD4, type: .data, name: unclassified/graphics_800497B8, linker_section: .data.heading_octant_angles}
       - {start: 0x1152E4, type: .data, name: unclassified/graphics_800497B8, linker_section: .data.debug_text_sprite}
       - [0x115308, data, heading_octant_angles_tail]

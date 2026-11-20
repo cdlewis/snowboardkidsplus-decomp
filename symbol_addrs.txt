@@ -278,6 +278,8 @@ clearSecondaryTaskReference = 0x8007199C; // type:func
 markSecondaryTaskAndClearReference = 0x80071E58; // type:func
 initSprite = 0x8004A0D0; // type:func
 getXZHeading = 0x8004A124; // type:func
+sSlidingVisualFrames = 0x80124384; // size:0x100 defined:true
+sSlidingVisualSteps = 0x80124484; // size:0x88 defined:true
 sHeadingOctantAngles = 0x801245D4; // size:0x510 defined:true
 packTextureColor = 0x800516C4; // type:func
 setTextPalette = 0x80049D34; // type:func
@@ -1845,6 +1847,7 @@ resetUnlockMenuOffsets = 0x800A495C;
 
 drawNoProcessMessage = 0x80052504; // type:func
 gNoProcessMessage = 0x80010CC4; // type:char size:0x10
+updateSlidingVisualSequenceTask = 0x800497B8; // type:func size:0x524
 createResourceLoadTask = 0x8006B2B8; // type:func
 
 rebuildCombinedStateMask = 0x8008C248; // type:func

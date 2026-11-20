@@ -388,7 +388,7 @@ typedef struct BouncingVisualResource {
 typedef struct SlidingVisualResource {
     GsCOORDINATE2 coordinate;
     u8 unk50[0x24];
-    s32 unk74;
+    s32 offsetY;
     u8 unk78[0x50];
     s16 timer;
     s16 framePosition;
@@ -494,7 +494,7 @@ void updatePlayerVisualPairTask5E80(void);
 void updatePlayerVisualPairTask6780(void);
 
 void drawSlidingRaceTimeDisplay(SlidingTimeResource *resource);
-void func_800497B8(void);
+void updateSlidingVisualSequenceTask(void);
 void updateFallingPairedVisualTask(void);
 s32 calculateRaceTimeDifference(const RaceTime *a, const RaceTime *b, RaceTime *difference);
 

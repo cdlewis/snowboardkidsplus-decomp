@@ -1,4 +1,5 @@
 #include "../graphics/render_effects_internal.h"
+#include "../race/race_internal.h"
 #include "psx/stdarg.h"
 
 #define HEADING_RATIO_SCALE 640
@@ -17,6 +18,13 @@
         (sprite)->x += 8;                                                   \
     } while (--(nibble) >= 0)
 
+typedef struct SlidingVisualStep {
+    u8 duration;
+    u8 event;
+    u8 frame;
+    u8 upperFrame;
+} SlidingVisualStep;
+
 ControllerEffectState gControllerEffectStates[2] = {0};
 
 u16 gTextClut = 0;
@@ -32,7 +40,82 @@ CourseTriggerRecord gEmptyCourseTriggers[]
     {-1, 7, 0},
 };
 
-const char gNoProcessMessage[16] = "NO PROCESS...";
+const char gNoProcessMessage[16]
+    __attribute__((section(".rodata.no_process_message"))) = "NO PROCESS...";
+
+static TaskVisualFrame sSlidingVisualFrames[]
+    __attribute__((section(".data.sliding_visual_frames"), aligned(4))) = {
+    {0x00, 0x00, 32, 32, 0xC, 0x3C38},
+    {0x20, 0x00, 32, 32, 0xC, 0x3C38},
+    {0x40, 0x00, 32, 32, 0xC, 0x3C38},
+    {0x60, 0x00, 32, 32, 0xC, 0x3C38},
+    {0x80, 0x00, 32, 32, 0xC, 0x3C38},
+    {0xA0, 0x00, 32, 32, 0xC, 0x3C38},
+    {0xC0, 0x00, 32, 32, 0xC, 0x3C38},
+    {0xE0, 0x00, 32, 32, 0xC, 0x3C38},
+    {0x00, 0x20, 32, 32, 0xC, 0x3C38},
+    {0x20, 0x20, 32, 32, 0xC, 0x3C38},
+    {0x40, 0x20, 32, 32, 0xC, 0x3C38},
+    {0x60, 0x20, 32, 32, 0xC, 0x3C38},
+    {0x80, 0x20, 32, 32, 0xC, 0x3C38},
+    {0xA0, 0x20, 32, 32, 0xC, 0x3C38},
+    {0xC0, 0x20, 32, 32, 0xC, 0x3C38},
+    {0xE0, 0x20, 32, 32, 0xC, 0x3C38},
+    {0x00, 0x40, 32, 32, 0xC, 0x3C38},
+    {0x20, 0x40, 32, 32, 0xC, 0x3C38},
+    {0x40, 0x40, 32, 32, 0xC, 0x3C38},
+    {0x60, 0x40, 32, 32, 0xC, 0x3C38},
+    {0x80, 0x40, 32, 32, 0xC, 0x3C38},
+    {0xA0, 0x40, 32, 32, 0xC, 0x3C38},
+    {0xC0, 0x40, 32, 32, 0xC, 0x3C38},
+    {0xE0, 0x40, 32, 32, 0xC, 0x3C38},
+    {0x00, 0x60, 32, 32, 0xC, 0x3C38},
+    {0x20, 0x60, 32, 32, 0xC, 0x3C38},
+    {0x40, 0x60, 32, 32, 0xC, 0x3C38},
+    {0x60, 0x60, 32, 32, 0xC, 0x3C38},
+    {0x80, 0x60, 32, 32, 0xC, 0x3C38},
+    {0xA0, 0x60, 32, 32, 0xC, 0x3C38},
+    {0xC0, 0x60, 32, 32, 0xC, 0x3C38},
+    {0xE0, 0x60, 32, 32, 0xC, 0x3C38},
+};
+
+static SlidingVisualStep sSlidingVisualSteps[]
+    __attribute__((section(".data.sliding_visual_steps"), aligned(4))) = {
+    {1, 0, 0, 0xFF},
+    {1, 0, 1, 0xFF},
+    {1, 1, 2, 0xFF},
+    {1, 0, 3, 0xFF},
+    {3, 0, 4, 0xFF},
+    {3, 0, 5, 0xFF},
+    {3, 4, 6, 15},
+    {3, 4, 7, 16},
+    {3, 4, 8, 17},
+    {3, 4, 9, 18},
+    {3, 4, 8, 19},
+    {3, 4, 10, 20},
+    {3, 4, 6, 21},
+    {3, 4, 5, 22},
+    {3, 4, 6, 23},
+    {3, 4, 7, 24},
+    {3, 4, 8, 25},
+    {3, 4, 9, 26},
+    {3, 4, 8, 27},
+    {3, 4, 10, 28},
+    {3, 4, 6, 29},
+    {3, 4, 5, 30},
+    {3, 4, 6, 31},
+    {3, 0, 7, 0xFF},
+    {3, 255, 8, 0xFF},
+    {3, 8, 9, 0xFF},
+    {3, 8, 11, 0xFF},
+    {3, 8, 12, 0xFF},
+    {3, 8, 11, 0xFF},
+    {3, 8, 12, 0xFF},
+    {3, 8, 11, 0xFF},
+    {3, 8, 12, 0xFF},
+    {3, 255, 13, 0xFF},
+    {1, 2, 14, 0xFF},
+};
 
 /* First-octant angles indexed by the scaled ratio of the smaller delta to the larger. */
 static s16 sHeadingOctantAngles[]
@@ -95,7 +178,99 @@ static s16 sHeadingOctantAngles[]
 
 GsSPRITE gDebugTextSprite __attribute__((section(".data.debug_text_sprite"), aligned(4))) = {0};
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/graphics_800497B8", func_800497B8);
+void updateSlidingVisualSequenceTask(void) {
+    SlidingVisualResource *resource;
+    u16 playerIndex;
+    RacePlayer *player;
+    s32 amount;
+    s32 counter;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (SlidingVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    if (!D_8013AFD3) {
+        switch (D_8013AE88->data1C) {
+        case 0:
+        case 2:
+            resource->offsetY += resource->velocity;
+            resource->velocity += 2;
+            if (resource->offsetY >= -111) {
+                resource->offsetY = -112;
+                resource->timer = sSlidingVisualSteps[++resource->step].duration;
+                D_8013AE88->data1C++;
+            }
+            break;
+        case 1:
+            if (--resource->timer == 0) {
+                resource->timer = sSlidingVisualSteps[++resource->step].duration;
+                if (sSlidingVisualSteps[resource->step].event == 1) {
+                    resource->velocity = -10;
+                    D_8013AE88->data1C++;
+                }
+            }
+            break;
+        case 3:
+            if (--resource->timer == 0) {
+                resource->timer = sSlidingVisualSteps[++resource->step].duration;
+                if (sSlidingVisualSteps[resource->step].event == 4) {
+                    playOwnedSoundEffect(D_8013AE88->data18, 1, 0xE01, 0x40);
+                    D_8013AE88->data1C++;
+                }
+            }
+            break;
+        case 4:
+            if (--resource->timer == 0) {
+                resource->timer = sSlidingVisualSteps[++resource->step].duration;
+                for (playerIndex = 0; playerIndex < D_8013AFD2; playerIndex++) {
+                    player = &gRacePlayers[playerIndex];
+                    if (player->isActive && playerIndex != D_8013AE88->data18) {
+                        counter = player->unk01C;
+                        if (counter >= 166) {
+                            amount = 166;
+                        } else {
+                            amount = counter;
+                        }
+                        player->unk01C = counter - amount;
+                        addPlayerCappedCounters(D_8013AE88->data18, amount);
+                    }
+                }
+                if (sSlidingVisualSteps[resource->step].event == 0) {
+                    stopMatchingSoundVoice(D_8013AE88->data18, 1, 0xE01);
+                }
+                if (sSlidingVisualSteps[resource->step].event == 8) {
+                    playSoundEffect(1, 0xF01, 0x20);
+                }
+                if (sSlidingVisualSteps[resource->step].event == 2) {
+                    playSoundEffect(1, 2, 0x20);
+                    resource->velocity = 0;
+                    D_8013AE88->data1C++;
+                }
+            }
+            break;
+        case 5:
+            resource->offsetY += resource->velocity;
+            resource->velocity -= 2;
+            if (resource->offsetY < -320) {
+                func_800149A8();
+                return;
+            }
+            break;
+        }
+    }
+    resource->coordinate.coord.t[0] = gRacePlayers[D_8013AE88->data18].worldCoordinate.coord.t[0];
+    resource->coordinate.coord.t[1] = gRacePlayers[D_8013AE88->data18].worldCoordinate.coord.t[1] + resource->offsetY;
+    resource->coordinate.coord.t[2] = gRacePlayers[D_8013AE88->data18].worldCoordinate.coord.t[2];
+    resource->framePosition = sSlidingVisualSteps[resource->step].frame << 8;
+    setTaskVisualFrame((TaskVisualResource *)resource, sSlidingVisualFrames, 0x1C00);
+    drawCameraFacingTaskVisual((TaskVisualResource *)resource, 1);
+    if (sSlidingVisualSteps[resource->step].upperFrame != 0xFF) {
+        resource->coordinate.coord.t[1] -= 56;
+        resource->framePosition = sSlidingVisualSteps[resource->step].upperFrame << 8;
+        setTaskVisualFrame((TaskVisualResource *)resource, sSlidingVisualFrames, 0x1C00);
+        drawCameraFacingTaskVisual((TaskVisualResource *)resource, 0);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/unclassified/graphics_800497B8", func_80049CDC);
 

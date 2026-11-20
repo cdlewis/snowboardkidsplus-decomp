@@ -1363,9 +1363,9 @@ void initializeSlidingVisualSequenceTask(void) {
     resource->step = 0;
     resource->timer = 0;
     resource->framePosition = 0;
-    resource->unk74 = -352;
+    resource->offsetY = -352;
     resource->velocity = 0;
     playSoundEffect(1, 0xD01, 0x20);
     D_8013AE88->data1C = 0;
-    setCurrentTaskCallback(func_800497B8);
+    setCurrentTaskCallback(updateSlidingVisualSequenceTask);
 }
