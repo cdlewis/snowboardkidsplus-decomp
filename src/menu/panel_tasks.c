@@ -1,6 +1,24 @@
 #include "panel_tasks_internal.h"
 #include "game/menu/task_widgets.h"
 
+#define GS_MODEL_OBJECT_HIDDEN 0x80000000u
+
+typedef struct GridModelPreviewState {
+    s16 unk00;
+    u16 rotationStep;
+    s16 unk04;
+    s16 unk06;
+} GridModelPreviewState;
+
+extern const s16 D_80131A9C[], D_80131B08[], D_80131B74[];
+extern const s16 D_80131BE0[], D_80131C4C[], D_80131CB8[];
+
+const s16 *gGridModelPreviewPoses[10]
+    __attribute__((section(".data.grid_model_preview_poses"))) = {
+    D_80131A9C, D_80131B08, D_80131A9C, D_80131B08, D_80131B74,
+    D_80131B08, D_80131B08, D_80131CB8, D_80131BE0, D_80131C4C
+};
+
 PanelModeLabel gRegisteredPanelMode0Label __attribute__((section(".data.registered_panel_mode_labels"))) = {2, 0};
 PanelModeLabel gRegisteredPanelMode1Label __attribute__((section(".data.registered_panel_mode_labels"))) = {3, 0};
 
@@ -883,6 +901,86 @@ void queueGridResourceSectorReads(s16 slot, s16 row, s16 column) {
 
 INCLUDE_ASM("asm/nonmatchings/menu/panel_tasks", func_80096590);
 
-INCLUDE_ASM("asm/nonmatchings/menu/panel_tasks", func_80096AB0);
+void reloadGridModelPreview(GameTask *task, s16 character, s16 modelSlot, s16 paletteRow,
+                            s16 x, s16 y, s16 z) {
+    GridModelPreviewState *state = (GridModelPreviewState *)&D_800D9504[task->resource14];
+    s16 playerIndex = task->data1C;
+    GridModelPreviewState saved;
+    SVECTOR rotation;
+    u32 *source;
+    u32 *destination;
+    u32 *model;
+    s32 i;
+    RacePlayer *rotationPlayer;
+    RacePlayer *attributePlayer;
+    RacePlayer *positionPlayer;
+
+    task->data1A = modelSlot;
+    saved = *state;
+    D_8013B0D8 = &gRacePlayers[task->data1C];
+    D_8013B0D8->characterId = character;
+    D_8013B0D8->unk015[0] = modelSlot;
+    D_8013B0D8->unk015[3] = paletteRow;
+    rotationPlayer = D_8013B0D8;
+    rotation.vx = rotationPlayer->unk0B4;
+    rotation.vy = rotationPlayer->unk0B6;
+    rotation.vz = rotationPlayer->unk0B8;
+
+    {
+        u32 (*sourceBuffers)[4096] = (u32 (*)[4096])DAT_GRID_MODEL_BUFFERS;
+        u32 (*destinationBuffers)[4096] = DAT_PLAYER_MODEL_BUFFERS;
+
+        destination = destinationBuffers[task->data1C];
+        source = sourceBuffers[task->data1A];
+    }
+    for (i = 0; i < 4096; i++) {
+        *destination++ = *source++;
+    }
+
+    model = DAT_PLAYER_MODEL_BUFFERS[task->data1C];
+    model++;
+    GsMapModelingData(model);
+    model++;
+    D_8013B0D8->modelPartCount = *(u8 *)model;
+    model++;
+    if (task->data1C != 0) {
+        offsetTmdObjectTextures(0, (TmdObject *)model, &gPlayerRootTextureOffsets[task->data1C]);
+        for (i = 1; i < D_8013B0D8->modelPartCount; i++) {
+            offsetTmdObjectTextures(i, (TmdObject *)model, &gPlayerPartTextureOffsets[task->data1C]);
+        }
+    }
+
+    GsInitCoordinate2(0, &D_8013B0D8->modelCoordinate);
+    for (i = 0; i < D_8013B0D8->modelPartCount; i++) {
+        GsDOBJ2 *object;
+
+        GsLinkObject4(model, &D_8013B0D8->modelObjects[i], i);
+        object = &D_8013B0D8->modelObjects[i];
+        GsInitCoordinate2(&D_8013B0D8->modelCoordinate, &D_8013B0D8->model.modelCoordinates[i]);
+        object->attribute = 0;
+        object->coord2 = &D_8013B0D8->model.modelCoordinates[i];
+    }
+
+    attributePlayer = D_8013B0D8;
+    if (attributePlayer->modelPartCount >= 2) {
+        attributePlayer->modelObjects[0].attribute |= GS_MODEL_OBJECT_HIDDEN;
+    }
+    uploadTimImageWithOffset(((u32 (*)[4096])DAT_GRID_TEXTURE_BUFFERS)[task->data1A],
+                             (s16 *)&D_801204D4[task->data1C]);
+
+    positionPlayer = D_8013B0D8;
+    positionPlayer->modelCoordinate.coord.t[0] = x;
+    positionPlayer->modelCoordinate.coord.t[1] = y;
+    positionPlayer->modelCoordinate.coord.t[2] = z;
+    positionPlayer->unk0B4 = rotation.vx;
+    positionPlayer->unk0B6 = rotation.vy;
+    positionPlayer->unk0B8 = rotation.vz;
+    state->rotationStep = saved.rotationStep;
+    if (character < 10) {
+        loadCurrentPlayerModelPose(gGridModelPreviewPoses[character]);
+    }
+    initMovement2D((Movement2D *)&D_800D9504[task->resource16], x << 12, y << 12);
+    copyPlayerPaletteRowWithTransition(playerIndex, character, paletteRow, 0);
+}
 
 INCLUDE_ASM("asm/nonmatchings/menu/panel_tasks", func_80096EC8);

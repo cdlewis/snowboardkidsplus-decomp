@@ -2129,6 +2129,14 @@ setTexturedQuadTextureBlend = 0x8006FDE4; // type:func
 
 drawCurrentTaskSelectedPlayerMoneyPanel = 0x80095674; // type:func
 drawCurrentTaskBoardPrice = 0x80095A58; // type:func
+reloadGridModelPreview = 0x80096AB0; // type:func
+D_80131A9C = 0x80131A9C; // size:0x6C
+D_80131B08 = 0x80131B08; // size:0x6C
+D_80131B74 = 0x80131B74; // size:0x6C
+D_80131BE0 = 0x80131BE0; // size:0x6C
+D_80131C4C = 0x80131C4C; // size:0x6C
+D_80131CB8 = 0x80131CB8; // size:0x6C
+gGridModelPreviewPoses = 0x80131D24; // size:0x28 defined:true
 sBoardPriceVerticalOffsets = 0x80131D58; // size:0xC defined:true
 hasStateGridFlag = 0x80095E24; // type:func
 
