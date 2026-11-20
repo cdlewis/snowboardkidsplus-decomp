@@ -42,6 +42,16 @@ typedef struct RadialEffectScratch {
     long flags;
 } RadialEffectScratch;
 
+typedef struct PlayerRingEffectScratch {
+    GsCOORDINATE2 coordinate;
+    POLY_FT4 quad;
+    SVECTOR vertices[4];
+    VECTOR scale;
+    long depth;
+    long cue;
+    long flags;
+} PlayerRingEffectScratch;
+
 const VECTOR gInitialRaceOscillatingQuadPosition
     __attribute__((section(".rodata.race_oscillating_quad_position"))) = {
     -0x1B25, 0x3557, 0x9E5E, 0
@@ -929,7 +939,82 @@ void emitPlayerTurnTripleQuadEffectTask(void) {
 
 INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_80067D88);
 
-INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_80067DD0);
+void updatePlayerRingEffectTask(void) {
+    PlayerRingEffectResource *resource;
+    PlayerRingEffectScratch *scratch;
+    POLY_FT4 *packet;
+    s32 i, j, angle;
+    s32 scale;
+    u8 shade;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (PlayerRingEffectResource *)&D_800D9504[D_8013AE88->resource14];
+    packet = (POLY_FT4 *)GsOUT_PACKET_P;
+    scratch = (PlayerRingEffectScratch *)getScratchAddr(0);
+    if (isPointWithinCameraForwardRange(resource->position[0], resource->position[2],
+                                        (s16)func_80059254())) {
+        scratch->quad.tag = TEXTURED_QUAD_PACKET_WORDS << 24;
+        setcode(&scratch->quad, POLY_FT4_CODE);
+        setSemiTrans(&scratch->quad, 1);
+        scratch->quad.clut = getClut(880, 248);
+        scratch->quad.tpage = getTPage(0, 1, 704, 0);
+        setUV4(&scratch->quad, 0, 64, 63, 64, 0, 127, 63, 127);
+        shade = 128 - (resource->elapsed << 7) / 20;
+        /* Preserve the halfword store order for the two top vertices. */
+        scratch->vertices[0].vx = -20;
+        scratch->vertices[0].vz = 0;
+        scratch->vertices[0].vy = -20;
+        setVector(&scratch->vertices[1], -20, 20, 0);
+        scratch->vertices[2].vx = 20;
+        scratch->vertices[2].vz = 0;
+        scratch->vertices[2].vy = -20;
+        setVector(&scratch->vertices[3], 20, 20, 0);
+        /* The grayscale channels are written in BGR order. */
+        scratch->quad.b0 = shade;
+        scratch->quad.g0 = shade;
+        scratch->quad.r0 = shade;
+        GsInitCoordinate2(0, &scratch->coordinate);
+        scale = 4096 + (resource->elapsed << 12) / 20;
+        scratch->scale.vx = scratch->scale.vy = scratch->scale.vz = scale;
+        for (i = 0, angle = 0; i < 6; i++, angle += 0x2AA) {
+            scratch->coordinate.coord.t[0] =
+                resource->position[0] + (resource->elapsed * (rcos(angle) << 2)) / 4096;
+            scratch->coordinate.coord.t[1] = resource->position[1];
+            scratch->coordinate.coord.t[2] =
+                resource->position[2] + (resource->elapsed * (rsin(angle) << 2)) / 4096;
+            GsGetLs(&scratch->coordinate, &scratch->coordinate.workm);
+            for (j = 0; j < 3; j++) {
+                scratch->coordinate.coord.t[j] = scratch->coordinate.workm.t[j];
+            }
+            RotMatrix(&resource->rotations[i], &scratch->coordinate.coord);
+            ScaleMatrix(&scratch->coordinate.coord, &scratch->scale);
+            GsSetLsMatrix(&scratch->coordinate.coord);
+            scratch->depth = RotTransPers4(
+                &scratch->vertices[0], &scratch->vertices[1],
+                &scratch->vertices[2], &scratch->vertices[3],
+                (long *)&scratch->quad.x0, (long *)&scratch->quad.x1,
+                (long *)&scratch->quad.x2, (long *)&scratch->quad.x3,
+                &scratch->cue, &scratch->flags);
+            *packet = scratch->quad;
+            if (!(scratch->flags & 0x7FFBE000) && scratch->depth >= 0 && scratch->depth < 4096) {
+                addPrim(&D_8013AF6C[scratch->depth >> 2], packet);
+            }
+            packet++;
+        }
+        GsOUT_PACKET_P = (u32)packet;
+    }
+    if (D_8013AFD3 == 0) {
+        resource->position[1] += (-rcos((resource->elapsed << 11) / 20) * 10) / 4096;
+        if (D_8013AFD3 == 0) {
+            resource->elapsed++;
+        }
+    }
+    if (resource->elapsed >= 21) {
+        func_800149A8();
+    }
+}
 
 void createPlayerRingEffectTask(s32 playerIndex) {
     RacePlayer *player;
@@ -937,7 +1022,7 @@ void createPlayerRingEffectTask(s32 playerIndex) {
     s32 i;
     player = &gRacePlayers[playerIndex];
     if (D_8013AFCE != 3) {
-        func_80014930(D_8013B304, func_80067DD0);
+        func_80014930(D_8013B304, updatePlayerRingEffectTask);
         D_8013AE8C->resource14 = allocateTaskResource();
         resource = (PlayerRingEffectResource *)&D_800D9504[D_8013AE8C->resource14];
         for (i = 0; i < 3; i++) {

@@ -2977,6 +2977,7 @@ beginScenePlaybackExitTask = 0x800A7B9C; // type:func
 
 updateCurrentPlayerState23MotionAndTimer = 0x80024F10; // type:func
 
+updatePlayerRingEffectTask = 0x80067DD0; // type:func
 createPlayerRingEffectTask = 0x80068230; // type:func
 
 drawRotatedSpriteByIndex = 0x8006CDA4; // type:func

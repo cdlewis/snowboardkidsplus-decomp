@@ -969,7 +969,7 @@ void func_80062354(void);
 void updateRadialEffectTask(void);
 void emitRadialEffectTask(void);
 void func_80066D18(void);
-void func_80067DD0(void);
+void updatePlayerRingEffectTask(void);
 void func_800659F0(void);
 extern SVECTOR D_8012A5C0[];
 extern GsCOORDINATE2 D_80129C60[];
