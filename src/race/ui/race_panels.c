@@ -536,7 +536,13 @@ void initializeSpriteMotionTask(void) {
     setCurrentTaskCallback(slideInSpriteMotionTask);
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/ui/race_panels", func_8003504C);
+void createTrickAttackMultiplierDisplayTask(s16 playerIndex) {
+    SpriteMotionResource *resource;
+    createChildTaskWithReserve(initializeSpriteMotionTask);
+    D_8013AE8C->resource14 = allocateTaskResource();
+    resource = (SpriteMotionResource *)&D_800D9504[D_8013AE8C->resource14];
+    resource->variant = playerIndex;
+}
 
 void drawSlidingNumberDisplay(SlidingNumberResource *resource) {
     s16 visible = 0;

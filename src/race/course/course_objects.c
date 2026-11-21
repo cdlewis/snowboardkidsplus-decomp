@@ -1567,7 +1567,7 @@ void resolvePlayerRegionCollision(RacePlayer *player, PlayerCollisionRegion *reg
             if (D_8013AFE2 == 1 && D_8013AFE0 == 2) {
                 playSoundEffect(0, 0x501, 0x40);
                 player->trickAttackPointTotal *= 2;
-                func_8003504C(player->playerIndex);
+                createTrickAttackMultiplierDisplayTask(player->playerIndex);
             }
             player->unk12C = 0x16;
         }
