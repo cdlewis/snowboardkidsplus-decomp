@@ -113,7 +113,8 @@ const u16 *gRegisteredPlayerModePanelTexts[3]
 };
 
 void func_80035CF8(void);
-void func_800309EC(s32, s32);
+void createTitleLogoTask(s32 depth, s32 index);
+void updateTitleLogoTask(void);
 void updatePlayerModeSelectionTask(void);
 void func_80032280(s16 x, s16 y, s32 depth, s32 index);
 
@@ -267,7 +268,7 @@ void updateTitleScreenMenuTask(void) {
         D_8013AE88->data18 = 1;
         break;
     case 1:
-        func_800309EC(4, 1);
+        createTitleLogoTask(4, 1);
         D_8013AE88->data18 = 2;
         break;
     case 2:
@@ -406,7 +407,37 @@ void drawFullScreenTexturedBackground(void) {
                   &D_800EBFF0[D_8013AF78], 0xFFF);
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/mode_transitions", func_800309EC);
+void createTitleLogoTask(s32 depth, s32 index) {
+    TitleLogoResource *logo;
+    SelectedTaskEntry *entry;
+
+    createChildTaskWithReserve(updateTitleLogoTask);
+    D_8013AE8C->resource14 = allocateTaskResource();
+    logo = (TitleLogoResource *)&D_800D9504[D_8013AE8C->resource14];
+    D_8013AE8C->data18 = 0;
+    D_8013AE8C->data1C = depth;
+    D_8013AE8C->data1E = index;
+    logo->soundState = 0;
+    D_8013B100 = 0;
+    if (index % 10 == 0) {
+        SelectedTaskEntry *entries;
+        if (D_8013AE88->resource14 == 0xFFFF) {
+            while (1) {}
+        }
+        entries = (SelectedTaskEntry *)&D_800D9504[D_8013AE88->resource14];
+        entry = entries + index / 10;
+    } else {
+        SelectedTaskEntry *entries;
+        if (D_8013AE88->resource16 == 0xFFFF) {
+            while (1) {}
+        }
+        entries = (SelectedTaskEntry *)&D_800D9504[D_8013AE88->resource16];
+        entry = entries + index / 10;
+    }
+    entry->unk04 = 0;
+    entry->unk06 = 1;
+    entry->task = D_8013AE8C;
+}
 
 void updateTitleLogoTask(void) {
     TitleLogoResource *logo;
