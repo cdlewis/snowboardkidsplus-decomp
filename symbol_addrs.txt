@@ -2913,6 +2913,7 @@ initializeCountedDisplayBoundsTask = 0x80094760; // type:func
 prepareRaceResourcesIfSelectionChanged = 0x800A0C6C; // type:func
 
 initializeDelayedEightEntryEffectTask = 0x80065330; // type:func
+startDelayedEightEntryEffectTask = 0x80065464; // type:func
 
 drawCurrentTaskMoneyPanelWithCharacterSprites = 0x8008F474; // type:func
 initializeCountedGroupedSelectionBoundsTask = 0x8008F970; // type:func

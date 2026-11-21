@@ -603,7 +603,7 @@ void startRacePlayerTasks(void) {
     s32 playerIndex;
     for (playerIndex = 0; playerIndex < D_8013AFD2; playerIndex++) {
         func_80064754(playerIndex);
-        func_80065464(playerIndex);
+        startDelayedEightEntryEffectTask(playerIndex);
         createPlayerTrailTask(playerIndex);
         startPlayerTurnTripleQuadEffectTask(playerIndex);
         func_800688C0(playerIndex);
@@ -626,7 +626,7 @@ void initializeRacePlayerEffects(void) {
     } else {
         for (playerIndex = 0; playerIndex < D_8013AFD2; playerIndex++) {
             func_80064754(playerIndex);
-            func_80065464(playerIndex);
+            startDelayedEightEntryEffectTask(playerIndex);
             createPlayerTrailTask(playerIndex);
             startPlayerTurnTripleQuadEffectTask(playerIndex);
             func_800688C0(playerIndex);
@@ -1535,7 +1535,12 @@ void initializeDelayedEightEntryEffectTask(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_80065464);
+s32 startDelayedEightEntryEffectTask(s32 playerIndex) {
+    func_80014930(&gGameTasks[4], initializeDelayedEightEntryEffectTask);
+    D_8013AE8C->data18 = 1;
+    D_8013AE8C->data1A = playerIndex;
+    return 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_800654B4);
 
