@@ -314,7 +314,17 @@ void drawTaskMenuAndSetFlag10OnInput(void) {
     drawCountRecordRows(resource);
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/record_screens", func_80038B34);
+void drawCurrentTaskHitPrizeMenu(void) {
+    TaskResourceRecord *resource;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = &D_800D9504[D_8013AE88->resource14];
+    drawHitCountPanel(resource);
+    drawHitPrizeMoneyValues(resource);
+    drawHitPrizeMoneyLabels((MenuFadeInResource *)resource);
+}
 
 void updateMenuExitInputTask(void) {
     TaskMenuFadeResource *resource;
@@ -327,7 +337,7 @@ void updateMenuExitInputTask(void) {
             setCurrentTaskCallback(drawTaskMenuAndSetFlag10OnInput);
         } else {
             D_8013AFE4 |= 0x10;
-            setCurrentTaskCallback(func_80038B34);
+            setCurrentTaskCallback(drawCurrentTaskHitPrizeMenu);
         }
     }
     drawHitCountPanel((TaskResourceRecord *)resource);

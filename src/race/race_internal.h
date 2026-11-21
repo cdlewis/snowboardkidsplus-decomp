@@ -607,7 +607,7 @@ void drawHitPrizeMoneyLabels(MenuFadeInResource *resource);
 void tickMenuSoundDelayStage0Task(void);
 void waitTaskMenuCountdownAndPlaySound(void);
 void drawTaskMenuAndSetFlag10OnInput(void);
-void func_80038B34(void);
+void drawCurrentTaskHitPrizeMenu(void);
 void startTaskMenuCountdownAndPlaySound(void);
 void drawRaceTimeComparisonPanel(PanelResource *resource);
 void updatePanelExitInputTask(void);
