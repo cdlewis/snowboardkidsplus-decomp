@@ -1975,6 +1975,7 @@ gMusicFadeStep = 0x8013AF2E; // size:0x2
 
 uploadImage64x256 = 0x80016244; // type:func
 resetPaletteRecords = 0x8001628C; // type:func
+findFreeSavedImageEntry = 0x800162C8; // type:func
 
 // Clear both halfwords in each of the 16 table records.
 clearHalfwordPairTable = 0x8007F42C; // type:func

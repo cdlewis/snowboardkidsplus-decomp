@@ -62,7 +62,6 @@ void initializeRaceRestartTask(void);
 void initializeRacePresentationTask(void);
 void updateThreeFrameScreenBlend(void);
 void *memcpy(void *destination, const void *source, unsigned int size);
-u16 func_800162C8(void);
 void initializePaletteTransition(void);
 void updatePaletteTransition(void);
 void selectMemoryCardLoadFile(u8 slot, void *destination);

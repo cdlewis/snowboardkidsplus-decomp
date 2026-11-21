@@ -103,7 +103,15 @@ void resetPaletteRecords(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/graphics/texture_upload", func_800162C8);
+u16 findFreeSavedImageEntry(void) {
+    u16 i;
+    for (i = 0; i < 32; i++) {
+        if (gSavedImageEntries[i].flags == 0) {
+            return i;
+        }
+    }
+    return i;
+}
 
 void releaseSavedImageEntry(u16 index) {
     if (index != 0xFF) {
@@ -112,7 +120,7 @@ void releaseSavedImageEntry(u16 index) {
 }
 
 u16 saveVram16Pixels(s32 x, s32 y) {
-    u16 index = func_800162C8();
+    u16 index = findFreeSavedImageEntry();
     if (index != 32) {
         SavedImageEntry *entries = gSavedImageEntries;
         SavedImageEntry *entry = entries;
