@@ -1012,7 +1012,7 @@ void updateValueInterpolationTask(void);
 void func_80064754(s32 playerIndex);
 s32 func_80065464(s32 playerIndex);
 void createPlayerTrailTask(s32 playerIndex);
-void func_80067D88(s32 playerIndex);
+void startPlayerTurnTripleQuadEffectTask(s32 playerIndex);
 void func_800688C0(s32 playerIndex);
 
 void initializeProximityParticleTask(void);

@@ -605,7 +605,7 @@ void startRacePlayerTasks(void) {
         func_80064754(playerIndex);
         func_80065464(playerIndex);
         createPlayerTrailTask(playerIndex);
-        func_80067D88(playerIndex);
+        startPlayerTurnTripleQuadEffectTask(playerIndex);
         func_800688C0(playerIndex);
     }
 }
@@ -628,7 +628,7 @@ void initializeRacePlayerEffects(void) {
             func_80064754(playerIndex);
             func_80065464(playerIndex);
             createPlayerTrailTask(playerIndex);
-            func_80067D88(playerIndex);
+            startPlayerTurnTripleQuadEffectTask(playerIndex);
             func_800688C0(playerIndex);
         }
     }
@@ -1787,7 +1787,10 @@ void emitPlayerTurnTripleQuadEffectTask(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_80067D88);
+void startPlayerTurnTripleQuadEffectTask(s32 playerIndex) {
+    func_80014930(D_8013B304, emitPlayerTurnTripleQuadEffectTask);
+    D_8013AE8C->data18 = playerIndex;
+}
 
 void updatePlayerRingEffectTask(void) {
     PlayerRingEffectResource *resource;
