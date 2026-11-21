@@ -2603,6 +2603,7 @@ initializeNumberAdjustmentTask = 0x800A52D8; // type:func
 drawRotatingQuadEffectTask = 0x80063DF4; // type:func
 startRotatingQuadEffectTask = 0x8006435C; // type:func
 drawPlayerShadowTask = 0x80064454; // type:func
+startPlayerShadowTask = 0x80064754; // type:func
 
 drawTimeRecordHeader = 0x80039484; // type:func
 

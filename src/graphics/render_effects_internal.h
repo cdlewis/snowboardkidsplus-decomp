@@ -1007,7 +1007,7 @@ void updateTimedSpriteSequence(void);
 void drawTexturedPanel(s16 x, s16 y, s16 w, s16 h, s16 borderW, s16 borderH,
                    s16 style, s16 clutOffset, s16 blendMode, GsOT *ot, u16 depth);
 void updateValueInterpolationTask(void);
-void func_80064754(s32 playerIndex);
+void startPlayerShadowTask(s32 playerIndex);
 s32 startDelayedEightEntryEffectTask(s32 playerIndex);
 void createPlayerTrailTask(s32 playerIndex);
 void startPlayerTurnTripleQuadEffectTask(s32 playerIndex);

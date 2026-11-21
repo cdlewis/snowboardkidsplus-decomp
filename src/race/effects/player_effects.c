@@ -602,7 +602,7 @@ void updatePlayerRenderSnapshots(void) {
 void startRacePlayerTasks(void) {
     s32 playerIndex;
     for (playerIndex = 0; playerIndex < D_8013AFD2; playerIndex++) {
-        func_80064754(playerIndex);
+        startPlayerShadowTask(playerIndex);
         startDelayedEightEntryEffectTask(playerIndex);
         createPlayerTrailTask(playerIndex);
         startPlayerTurnTripleQuadEffectTask(playerIndex);
@@ -619,13 +619,13 @@ void initializeRacePlayerEffects(void) {
     if (D_8013AFD2 == 4) {
         playerIndex = 0;
         do {
-            func_80064754(playerIndex);
+            startPlayerShadowTask(playerIndex);
             createPlayerPositionTrailTask(playerIndex);
             func_800688C0(playerIndex);
         } while (++playerIndex < D_8013AFD2);
     } else {
         for (playerIndex = 0; playerIndex < D_8013AFD2; playerIndex++) {
-            func_80064754(playerIndex);
+            startPlayerShadowTask(playerIndex);
             startDelayedEightEntryEffectTask(playerIndex);
             createPlayerTrailTask(playerIndex);
             startPlayerTurnTripleQuadEffectTask(playerIndex);
@@ -1497,7 +1497,10 @@ void drawPlayerShadowTask(void) {
     GsOUT_PACKET_P = (u32)(packet + 1);
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_80064754);
+void startPlayerShadowTask(s32 playerIndex) {
+    func_80014930(D_8013B304, drawPlayerShadowTask);
+    D_8013AE8C->data18 = playerIndex;
+}
 
 INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_8006479C);
 
