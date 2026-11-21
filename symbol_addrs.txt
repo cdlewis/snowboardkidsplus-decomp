@@ -3447,12 +3447,12 @@ updatePlayerFollowingOrbitTask = 0x80059F68; // type:func
 
 createPlayerGroupedSelectionTask = 0x800846F4; // type:func
 updatePlayerGroupedSelectionTask = 0x80084970; // type:func
-gPlayerGroupedSelectionSprites = 0x801300D8; // size:0x66 defined:true
+gPlayerGroupedSelectionSprites = 0x801300D8; // defined:true
 gPlayerGroupedSelectionSpritesPadding = 0x8013013E; // size:0x2 defined:true
 gPlayerGroupedSelectionDescriptors = 0x80130140; // size:0x78 defined:true
 gPlayerGroupedSelectionTransitionFlags = 0x8013B46C; // size:0x4 defined:true
 gPlayerGroupedSelectionStates = 0x8013B6B8; // size:0x2 defined:true
-gPlayerGroupedSelectionStatesPadding = 0x8013B6BA; // size:0x6 defined:true
+gPlayerGroupedSelectionStatesPadding = 0x8013B6BA; // defined:true
 
 drawCountRecordRows = 0x80038574;
 
