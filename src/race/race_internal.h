@@ -538,7 +538,7 @@ void slideInSlidingDisplayTask(void);
 void SetFogNearFar(s32 near, s32 far, s32 h);
 void queueMode11TransitionResources(void);
 void dispatchMode11TransitionTask(void);
-void func_80030108(void);
+void scheduleMenuTransitionResourcesTask(void);
 void initializeBackgroundCameraTask(void);
 void updateTitleScreenMenuTask(void);
 void updateRepeatedSoundTask(void);

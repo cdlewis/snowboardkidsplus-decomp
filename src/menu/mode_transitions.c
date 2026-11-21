@@ -124,7 +124,7 @@ void dispatchMode11TransitionTask(void) {
     }
     switch (D_8013B108) {
     case 2:
-        func_80014874(func_80030108);
+        func_80014874(scheduleMenuTransitionResourcesTask);
         D_8013AE88->unk10 |= 1;
         break;
     case 25:
@@ -197,7 +197,9 @@ void dispatchGameOptionTransitionTask(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/mode_transitions", func_80030108);
+void scheduleMenuTransitionResourcesTask(void) {
+    setCurrentTaskCallback(initializeMenuTransitionResourcesTask);
+}
 
 void initializeMenuTransitionResourcesTask(void) {
     MenuTransitionResource *resource;
