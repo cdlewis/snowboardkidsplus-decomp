@@ -420,7 +420,7 @@ void setSceneMusicEventTask(SceneEvent *entry) {
         switch (entry->mode) {
         case 0:
             if (entry->parameter14 == 0) {
-                func_80017E7C(0);
+                playMusicSequenceAtDefaultVolume(0);
             } else {
                 playMusicSequence((s16)entry->parameter14, (u8)entry->parameter14, 1);
             }

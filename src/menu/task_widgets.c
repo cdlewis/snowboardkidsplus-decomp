@@ -939,7 +939,7 @@ void setMusicSequenceEnabled(s16 enabled) {
             D_8013B106 = 0;
         }
     } else if (D_8013B106 == 0) {
-        func_80017E7C(0);
+        playMusicSequenceAtDefaultVolume(0);
         D_8013B106 = 1;
     }
 }

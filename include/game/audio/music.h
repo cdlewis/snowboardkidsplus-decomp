@@ -25,9 +25,9 @@ extern u8 gMusicFadeMode;
 extern s16 gMusicFadeStep;
 
 void playMusicSequence(s16 count, u8 left, u8 right);
+void playMusicSequenceAtDefaultVolume(s16 repeatCount);
 void fadeOutMusicSequence(s16 step);
 void updateMusicSequenceFade(void);
-void func_80017E7C(s16 repeatCount);
 void func_80017ED4(s16 step, s16 repeatCount);
 void setMusicSequenceEnabled(s16 enabled);
 void stopMusicSequence(void);

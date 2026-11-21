@@ -104,7 +104,13 @@ void closeMusicSequence(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/audio/sound_manager", func_80017E7C);
+void playMusicSequenceAtDefaultVolume(s16 repeatCount) {
+    if (gMusicSequenceActive) {
+        D_8013AF30 = 0x40 << 8;
+        SsSeqSetVol(gMusicSequenceId, 0x40, 0x40);
+        SsSeqPlay(gMusicSequenceId, 1, repeatCount);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/audio/sound_manager", func_80017ED4);
 
