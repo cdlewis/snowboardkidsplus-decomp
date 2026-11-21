@@ -60,6 +60,7 @@ void repeatByteStore(u8 *destination, s32 value, s32 count) {
     }
 }
 
+/* DECOMP_ATTEMPT: archive 61/63 */
 INCLUDE_ASM("asm/nonmatchings/menu/save_record_tasks", func_800897D0);
 
 void copyGlobalFlagState(GlobalFlagStatePrefix *source, GlobalFlagStatePrefix *destination) {
@@ -87,8 +88,10 @@ void copySaveRecordAndMergeFlags(void) {
     mergeSaveRecordFlags(&((SaveRecord *)&D_8013080C)[1], (SaveRecord *)&D_8013101C);
 }
 
+/* DECOMP_ATTEMPT: archive 33/36 */
 INCLUDE_ASM("asm/nonmatchings/menu/save_record_tasks", func_80089A0C);
 
+/* DECOMP_ATTEMPT: archive 25/27 */
 INCLUDE_ASM("asm/nonmatchings/menu/save_record_tasks", func_80089A98);
 
 u32 calculateByteSum(const u8 *data, u32 size) {
@@ -187,6 +190,7 @@ void startStateValueHistoryTask(void) {
     }
 }
 
+/* DECOMP_ATTEMPT: archive 100/102 */
 INCLUDE_ASM("asm/nonmatchings/menu/save_record_tasks", func_80089EC0);
 
 void updateMemoryCardSaveMenuTask(void) {
@@ -552,6 +556,7 @@ void updateMemoryCardSaveMenuTask(void) {
     }
 }
 
+/* DECOMP_ATTEMPT: archive 713/729 */
 INCLUDE_ASM("asm/nonmatchings/menu/save_record_tasks", func_8008B178);
 
 void drawTaskShadowedText(void) {
@@ -667,6 +672,7 @@ void rebuildCombinedStateMask(GlobalFlagStatePrefix *state) {
     }
 }
 
+/* DECOMP_ATTEMPT: archive 129/131 */
 INCLUDE_ASM("asm/nonmatchings/menu/save_record_tasks", func_8008C290);
 
 u32 getGlobalFlagMask(s16 bitIndex) {

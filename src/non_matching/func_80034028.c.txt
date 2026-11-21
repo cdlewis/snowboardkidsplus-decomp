@@ -1,0 +1,20 @@
+#include "common.h"
+#define TASK_ABSOLUTE_ADDRESSING
+#include "game/task.h"
+
+void func_80033F00(void);
+void func_80033FE8(void);
+
+void func_80034028(void) {
+    s16 i;
+
+    D_8013AE88->data18 = 0;
+    i = 0;
+    while (1) {
+        func_80014874(func_80033F00);
+        if (++i >= 10) {
+            break;
+        }
+    }
+    setCurrentTaskCallback(func_80033FE8);
+}

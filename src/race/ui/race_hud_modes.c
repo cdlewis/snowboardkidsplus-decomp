@@ -48,6 +48,7 @@ void drawSplitScreenTrickAttackHud(s16 player);
 void drawScoreAttackHud(void);
 void func_80042894(s16 player);
 
+/* DECOMP_ATTEMPT: archive 1125/1135 */
 INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud_modes", func_8003EE70);
 
 void addFourWordGpuPacket(GpuPacket4 *source, GsOT *ot, u16 depth) {
@@ -71,6 +72,7 @@ void addTexturedSpritePacket(TexturedSpritePacket *source, GsOT *ot, u16 depth) 
     func_800BF2C8((u32)(packet + 1));
 }
 
+/* DECOMP_ATTEMPT: archive 22/24 */
 INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud_modes", func_800401DC);
 
 void drawMenuKindSprite(s16 x, s16 y, s16 kind, s32 frame, GsOT *ot, u16 depth) {
@@ -153,6 +155,7 @@ void unpackUpperWordBytes(u32 packed, UnpackedWordBytes *out) {
     out->unk0 = packed;
 }
 
+/* DECOMP_ATTEMPT: archive 318/325 */
 INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud_modes", func_8004054C);
 
 void initializeRaceRulesAndCounters(void) {
@@ -408,10 +411,13 @@ void updateRaceHud(void) {
     }
 }
 
+/* DECOMP_ATTEMPT: archive 201/207 */
 INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud_modes", func_80041554);
 
+/* DECOMP_ATTEMPT: archive 23/25 */
 INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud_modes", func_80041890);
 
+/* DECOMP_ATTEMPT: archive 302/307 */
 INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud_modes", func_800418F4);
 
 void drawTrickAttackHud(void) {
@@ -546,6 +552,7 @@ void drawScoreAttackHud(void) {
     func_8006C998(104, -96, 432, 0, -1, ot, depth);
 }
 
+/* DECOMP_ATTEMPT: archive 321/331 */
 INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud_modes", func_80042894);
 
 void drawCourseCoinHud(void) {

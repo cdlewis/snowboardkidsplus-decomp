@@ -1,0 +1,102 @@
+#include "../../graphics/render_effects_internal.h"
+
+extern TaskVisualFrame D_80129764[8][8];
+void func_8002C2D8(Position3D *position, s32 radius, s32 height, s32 strength, u16 flags);
+
+void func_8005D394(void) {
+    TaskVisualResource *resource;
+    u16 cameraIndex;
+    s16 turn;
+    s32 dx, dz, positionZ;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    cameraIndex = func_80059254();
+    if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0],
+            resource->coordinate.coord.t[2], (s16)cameraIndex)) {
+        if (!D_8013AFD3) {
+            if (resource->groundY) {
+                turn = getXZHeading(resource->position.x, resource->position.z,
+                    gMovingVisualPlacements[D_8013AE88->data18].startX,
+                    gMovingVisualPlacements[D_8013AE88->data18].startZ);
+            } else {
+                turn = getXZHeading(resource->position.x, resource->position.z,
+                    gMovingVisualPlacements[D_8013AE88->data18].endX,
+                    gMovingVisualPlacements[D_8013AE88->data18].endZ);
+            }
+            turn = (turn - resource->velocityY) & 0xFFF;
+            if (turn > 0x800) {
+                turn |= 0xF000;
+            }
+            if (turn > resource->unkDC) {
+                turn = resource->unkDC;
+            }
+            if (turn < -resource->unkDC) {
+                turn = -resource->unkDC;
+            }
+            resource->velocityY += turn;
+            resource->position.x += rsin(resource->velocityY) * resource->bounceCount / 0x1000;
+            resource->position.z += rcos(resource->velocityY) * resource->bounceCount / 0x1000;
+            resource->unkC4 = getAdjacentGeometryRegionForPoint(resource->unkC4,
+                resource->position.x >> 8, resource->position.z >> 8);
+            resource->position.y = func_8004A764(resource->unkC4,
+                resource->position.x >> 8, resource->position.z >> 8) << 8;
+
+            if (resource->groundY) {
+                dx = resource->position.x - gMovingVisualPlacements[D_8013AE88->data18].startX;
+                dz = resource->position.z - gMovingVisualPlacements[D_8013AE88->data18].startZ;
+            } else {
+                dx = resource->position.x - gMovingVisualPlacements[D_8013AE88->data18].endX;
+                dz = resource->position.z - gMovingVisualPlacements[D_8013AE88->data18].endZ;
+            }
+            if (dx < 0) {
+                dx = -dx;
+            }
+            if (dz < 0) {
+                dz = -dz;
+            }
+            if (dx < 0xC00 && dz < 0xC00) {
+                resource->groundY ^= 1;
+            }
+
+            func_8002C2D8(&resource->position, 0x1000, 0xC00, 0x1000, 4);
+            resource->unkD8 = (resource->unkD8 + resource->unkE0) & 0xFFFF;
+            if (resource->unkD8 == 0) {
+                switch ((u8)((u8)randomNextSecondary() % 3U)) {
+                case 0:
+                    resource->bounceCount = 0x400;
+                    resource->unkE0 = 0x80;
+                    resource->unkDC = 0x10;
+                    resource->unkC8 = 0x80;
+                    break;
+                case 1:
+                    resource->bounceCount = 0x800;
+                    resource->unkE0 = 0x100;
+                    resource->unkDC = 0x20;
+                    resource->unkC8 = 0x100;
+                    break;
+                case 2:
+                    resource->bounceCount = 0x1000;
+                    resource->unkE0 = 0x200;
+                    resource->unkDC = 0x40;
+                    resource->unkC8 = 0x200;
+                    break;
+                }
+            }
+            resource->framePosition += resource->unkC8;
+            if (resource->framePosition >= resource->unkC6) {
+                resource->framePosition &= 0xFF;
+            }
+            positionZ = resource->position.z;
+            resource->coordinate.coord.t[0] = resource->position.x >> 8;
+            resource->coordinate.coord.t[2] = positionZ >> 8;
+            resource->coordinate.coord.t[1] = resource->position.y >> 8;
+        }
+
+        prepareTaskVisualQuad(resource, D_80129764[0], 0);
+        drawPreparedTaskVisualQuad(resource,
+            D_80129764[((resource->velocityY - D_801241E8[cameraIndex].yaw + 0x100) & 0xFFF) / 0x200], 0);
+    }
+}

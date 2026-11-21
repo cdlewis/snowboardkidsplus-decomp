@@ -1,0 +1,40 @@
+#include "common.h"
+#include "game/byte_search.h"
+#include "game/graphics.h"
+#include "game/game_task_scheduler.h"
+#include "game/linear_random.h"
+#include "game/offset_archive.h"
+#include "game/music.h"
+#include "game/movement.h"
+#include "game/task.h"
+#include "game/selected_sprite.h"
+#include "psx/libsnd.h"
+
+void func_8007240C(s16 x, s16 y, s16 width, s16 height, u8 r, u8 g, u8 b,
+                   s16 blendMode, GsOT *ot, u16 depth) {
+    TILE *packet;
+    TILE *tile;
+    s32 semiTrans;
+    s32 abr;
+    u16 tpage;
+    if (blendMode >= 0) {
+        abr = blendMode;
+        semiTrans = 1;
+    } else {
+        abr = 0;
+        semiTrans = 0;
+    }
+    packet = (TILE *)GsGetWorkBase();
+    SetTile(packet);
+    tile = packet;
+    setXY0(tile, x, y);
+    setWH(tile, width, height);
+    setRGB0(tile, r, g, b);
+    SetSemiTrans(packet, semiTrans);
+    AddPrim(ot->org + depth, packet);
+    tpage = GetTPage(0, abr, 0, 0);
+    packet++;
+    SetDrawMode((DR_MODE *)packet, 1, 1, tpage, NULL);
+    AddPrim(ot->org + depth, packet);
+    func_800BF2C8((u32)((DR_MODE *)packet + 1));
+}

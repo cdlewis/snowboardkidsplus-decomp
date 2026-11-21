@@ -1,0 +1,15 @@
+#include "common.h"
+#define D_8013AE88 taskHeaderCurrent
+#include "game/task.h"
+#undef D_8013AE88
+extern GameTask * volatile D_8013AE88;
+extern GameTask *D_8013AE90;
+extern u8 D_8013AFD3;
+void func_800A2C40(void) {
+    GameTask *task;
+    if (D_8013AFD3) {
+        task = D_8013AE90;
+        task = task->previous;
+        D_8013AE88 = task;
+    }
+}

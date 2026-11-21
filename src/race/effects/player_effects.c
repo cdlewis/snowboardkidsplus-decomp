@@ -686,6 +686,7 @@ void initializeRacePlayerEffects(void) {
     }
 }
 
+/* DECOMP_ATTEMPT: archive 15/18 */
 INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_800612BC);
 
 void createPlayerSnapshotTrailTask(TaskCallback callback) {
@@ -1356,6 +1357,7 @@ void drawTriangleBurstTask(void) {
     if (resource->frame == 30) deleteCurrentTaskSubtree();
 }
 
+/* DECOMP_ATTEMPT: archive 128/134 */
 INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_80063B58);
 
 void createPositionedEffectTask(s32 x, s32 y, s32 z) {
@@ -1526,6 +1528,7 @@ void startPlayerShadowTask(s32 playerIndex) {
     D_8013AE8C->data18 = playerIndex;
 }
 
+/* DECOMP_ATTEMPT: archive 724/741 */
 INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_8006479C);
 
 void initializeDelayedEightEntryEffectTask(void) {
@@ -1569,6 +1572,7 @@ s32 startDelayedEightEntryEffectTask(s32 playerIndex) {
     return 0;
 }
 
+/* DECOMP_ATTEMPT: archive 216/217 */
 INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_800654B4);
 
 void createPlayerPairedQuadEffectTask(s32 playerIndex, s32 variant) {
@@ -1594,6 +1598,7 @@ void createPlayerPairedQuadEffectTask(s32 playerIndex, s32 variant) {
     D_8013AE8C->data18 = playerIndex;
 }
 
+/* DECOMP_ATTEMPT: archive 234/236 */
 INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_800659F0);
 
 GameTask *createQuadAnimationTask(u16 unusedId, VECTOR *position) {
@@ -1743,6 +1748,7 @@ void startPositionEffectTask(const PositionEffectOrigin *position) {
     *resource = *position;
 }
 
+/* DECOMP_ATTEMPT: archive 458/498 */
 INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_80066474);
 
 void createPlayerTrailTask(s32 playerIndex) {
@@ -1763,6 +1769,7 @@ void createPlayerTrailTask(s32 playerIndex) {
     D_8013AE8C->data18 = playerIndex;
 }
 
+/* DECOMP_ATTEMPT: archive 558/578 */
 INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_80066D18);
 
 void createPlayerPositionTrailTask(s32 playerIndex) {
@@ -1783,6 +1790,7 @@ void createPlayerPositionTrailTask(s32 playerIndex) {
     resource->unk4E = 1;
 }
 
+/* DECOMP_ATTEMPT: archive 263/269 */
 INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_800676FC);
 
 void emitPlayerTurnTripleQuadEffectTask(void) {
@@ -2020,6 +2028,7 @@ void updatePlayerParticleTrailTask(void) {
     GsOUT_PACKET_P = (u32)packet;
 }
 
+/* DECOMP_ATTEMPT: archive 69/75 */
 INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_800688C0);
 
 void beginPlayerTripleQuadEffectTask(void) {
@@ -3017,4 +3026,5 @@ void drawStretchedDebugText(s32 x, s32 y, const char *format, ...) {
     GsOUT_PACKET_P = (u32)(page + 1);
 }
 
+/* DECOMP_ATTEMPT: archive 2/4 */
 INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_8006B9EC);

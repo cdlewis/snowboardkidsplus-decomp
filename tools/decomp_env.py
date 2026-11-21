@@ -17,6 +17,7 @@ import build
 from decomp import ROOT, Elf32, PsxImage, active_functions, parse_asm, require_fresh, uncomment
 from match_function import owning_unit
 from m2ctx import generate_context
+from progress_attempts import ARCHIVES
 from validate_commit import verify_image
 
 TEMPLATES = ROOT / "tools/decomp-env"
@@ -138,6 +139,10 @@ def seed_source(workspace, oracle, imported_source=None):
     context = workspace / "context.c"
     context.write_text(generate_context(source))
     body = imported_source if imported_source is not None else existing_body(original, oracle.name)
+    archived = ROOT / ARCHIVES / (oracle.name + ".c.txt")
+    if body is None and archived.is_file():
+        (workspace / "archived.c").write_bytes(archived.read_bytes())
+        print("Saved the historical C snapshot to archived.c.")
     if body is None:
         m2c = shutil.which("m2c")
         if m2c:

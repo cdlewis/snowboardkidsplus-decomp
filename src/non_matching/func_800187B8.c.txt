@@ -1,0 +1,19 @@
+#include "common.h"
+#include "game/graphics.h"
+#include "game/linear_random.h"
+#include "game/offset_archive.h"
+#include "game/music.h"
+#include "game/race_player.h"
+#include "psx/libsnd.h"
+
+typedef struct SoundVoiceEntry {
+    u8 owner;
+    u8 vabId;
+    u16 tone;
+} SoundVoiceEntry;
+extern SoundVoiceEntry D_800EB368[8];
+extern s16 SsUtKeyOffV(s16 voice);
+void func_800187B8(u8 voice) {
+    SsUtKeyOffV(voice);
+    D_800EB368[voice - 12].owner = 0xFF;
+}

@@ -91,6 +91,7 @@ void advanceRaceElapsedTime(void) {
     }
 }
 
+/* DECOMP_ATTEMPT: archive 29/32 */
 INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud", func_80043A4C);
 
 s32 calculateRaceTimeDifference(const RaceTime *a, const RaceTime *b, RaceTime *difference) {
@@ -202,6 +203,7 @@ void resetControllersAndDeleteCurrentTask(void) {
     deleteCurrentTaskSubtree();
 }
 
+/* DECOMP_ATTEMPT: archive 195/198 */
 INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud", func_80043FBC);
 
 s16 isFirstPlayerUsingCallback26D10(void) {

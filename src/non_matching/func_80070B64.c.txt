@@ -1,0 +1,23 @@
+#include "common.h"
+#include "game/graphics.h"
+#include "game/linear_random.h"
+#include "game/offset_archive.h"
+#include "game/music.h"
+#include "game/movement.h"
+#include "game/task.h"
+#include "psx/libsnd.h"
+
+extern GameTask *D_8013BDA8[];
+
+s16 func_80070B64(s16 id, u8 *color) {
+    GameTask *task = *(id + D_8013BDA8);
+    if (task == NULL) {
+        return 0;
+    } else {
+        u8 *value = (u8 *)&D_800D9504[task->resource14].unk00;
+        color[0] = *value;
+        color[1] = *value;
+        color[2] = *value;
+        return 1;
+    }
+}

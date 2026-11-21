@@ -1249,8 +1249,10 @@ void resetCurrentPlayerForCallback240D0(void) {
     setCurrentTaskCallback(updateCurrentPlayerState29MotionAndAnimation);
 }
 
+/* DECOMP_ATTEMPT: archive 51/56 */
 INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_80020018);
 
+/* DECOMP_ATTEMPT: archive 138/140 */
 INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_800200F8);
 
 s32 callCurrentPlayerStateCallbackIfDifferent(u16 state) {
@@ -1855,6 +1857,7 @@ advanceCharge:
     }
 }
 
+/* DECOMP_ATTEMPT: object 2306/2412 */
 INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_80021B20);
 
 void updateCurrentPlayerState29MotionAndAnimation(void) {
@@ -1897,6 +1900,7 @@ void updateCurrentPlayerState29MotionAndAnimation(void) {
     }
 }
 
+/* DECOMP_ATTEMPT: archive 191/207 */
 INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_80024288);
 
 void updateCurrentPlayerState4MotionAndLanding(void) {
@@ -2441,6 +2445,7 @@ void updateCurrentPlayerTaskDecelerationSteps(void) {
     }
 }
 
+/* DECOMP_ATTEMPT: archive 22/26 */
 INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_80025FAC);
 
 void advanceCurrentPlayerTaskPhaseMovement(void) {
@@ -3699,8 +3704,10 @@ s16 isPlayerNearSelectedRecord(s16 index) {
     return distance <= 0x6000;
 }
 
+/* DECOMP_ATTEMPT: archive 37/39 */
 INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_80029DD0);
 
+/* DECOMP_ATTEMPT: archive 25/30 */
 INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_80029E6C);
 
 void assignCurrentPlayerFinishSlot(s32 value) {

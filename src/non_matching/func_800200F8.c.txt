@@ -1,0 +1,55 @@
+#include "common.h"
+#define TASK_ABSOLUTE_ADDRESSING
+#define TASK_FLAGS_ABSOLUTE_ADDRESSING
+#define TASK_TRANSITION_FLAGS_ABSOLUTE_ADDRESSING
+#define RACE_FINISH_ABSOLUTE_ADDRESSING
+#include "game/race_player.h"
+#include "game/race_camera.h"
+#include "game/selected_record.h"
+#include "game/graphics.h"
+#include "game/coordinate.h"
+#include "game/quad_animation.h"
+#include "game/angles.h"
+#include "game/linear_random.h"
+#include "game/random.h"
+#include "game/offset_archive.h"
+#include "game/music.h"
+#include "game/global_flags.h"
+#include "game/game_options.h"
+#include "game/selected_records.h"
+#include "psx/libsnd.h"
+#include "unk_8001E63C.h"
+
+
+extern GsCOORDINATE2 D_80129C60[];
+extern SVECTOR D_8012A5C0[];
+extern s16 D_8013B0C6[5] __attribute__((section(".data")));
+
+void func_800200F8(void) {
+    u16 angle;
+    D_8013B0D8 = &D_80120E90[D_8013AE88->data18];
+    startCurrentPlayerAnimation(D_8013B0D8->unk008 == 0 ? 9 : 10, 1);
+    if (D_8013AE88->data18 == 0) {
+        D_8013B0D8->x = D_80129C60[26].coord.t[0] << 8;
+        D_8013B0D8->y = (D_80129C60[26].coord.t[1] - 74) << 8;
+        D_8013B0D8->z = D_80129C60[26].coord.t[2] << 8;
+        D_8013B0D8->unk0B8 = 0;
+        D_8013B0D8->unk0B4 = 0;
+        D_8013B0D8->unk0B6 = D_8012A5C0[26].vy;
+        D_8013AE88->data1A = 30;
+    } else {
+        D_8013B0D8->x = (D_80129C60[26].coord.t[0] - rsin(D_8012A5C0[26].vy + D_8013B0C6[D_8013AE88->data18]) / 32) << 8;
+        D_8013B0D8->y = D_80129C60[26].coord.t[1] << 8;
+        D_8013B0D8->z = (D_80129C60[26].coord.t[2] - rcos(D_8012A5C0[26].vy + D_8013B0C6[D_8013AE88->data18]) / 32) << 8;
+        D_8013B0D8->unk0B8 = 0;
+        D_8013B0D8->unk0B4 = 0;
+        angle = D_8013B0C6[D_8013AE88->data18] + 0x800;
+        D_8013B0D8->unk0B6 = D_8012A5C0[26].vy + angle;
+    }
+    D_8013B0D8->unk92E = D_80123D80[D_8013AFCE].unk00;
+    D_8013B0D8->unk136[0] = 0;
+    D_8013B0D8->unk128 = 0;
+    D_8013B0D8->unk12C = 73;
+    setCurrentTaskCallback(updateCurrentPlayerTaskCountdown);
+    updateCurrentPlayerTaskCountdown();
+}

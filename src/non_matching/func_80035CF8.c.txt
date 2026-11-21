@@ -1,0 +1,27 @@
+#include "common.h"
+#define TASK_ABSOLUTE_ADDRESSING
+#include "game/task.h"
+#include "game/race_player.h"
+#include "game/graphics.h"
+#include "game/linear_random.h"
+#include "game/offset_archive.h"
+#include "game/music.h"
+#include "game/game_options.h"
+#include "game/cd_queue.h"
+#include "psx/libsnd.h"
+
+extern u8 D_8013B11A;
+s32 func_80014874(TaskCallback callback);
+void func_80035C18(void);
+
+void func_80035CF8(void) {
+    u8 i;
+    D_8013B11A = 0;
+    i = 0;
+    do {
+        func_80014874(func_80035C18);
+        D_8013AE8C->data18 = i;
+        D_8013AE8C->data1A = 0;
+        i++;
+    } while (i < 3);
+}

@@ -1,0 +1,61 @@
+#define SELECTED_RECORDS_ABSOLUTE_ADDRESSING
+#include "../race/race_presentation_internal.h"
+
+void func_800418F4(s16 player) {
+    GsOT *hudOt = &D_800EBFF0[D_8013AF78];
+    GsOT *playerOt;
+    s32 hudY;
+    s32 depth;
+    s16 placement;
+    s16 placementSprite;
+    s16 panelOffset;
+    s8 timer;
+    s16 scale;
+    s16 frame;
+    s32 moneyPalette;
+
+    if (player == 0) {
+        playerOt = &D_800EC018[D_8013AF78];
+        hudY = 0;
+    } else {
+        playerOt = &D_800EC0B8[D_8013AF78];
+        hudY = 105;
+    }
+
+    setSpriteColor(128, 128, 128);
+    drawDecimalNumber16(107, hudY - 73, 1, 0, gRacePlayers[player].unk934 + 1, 8, 1, hudOt, 1);
+    func_8006C998(123, hudY - 75, 481, 8, 1, hudOt, 1);
+    drawDecimalNumber16(132, hudY - 77, 1, 0, (s16)D_8013AFD0, 8, 1, hudOt, 1);
+    func_8006C998(102, hudY - 103, 416, 11, -1, hudOt, 1);
+
+    depth = 1;
+    if (D_8013AFE4 & 1) {
+        placement = 0;
+    } else {
+        placement = gRacePlayers[player].unk935;
+    }
+    placementSprite = placement + 468;
+    func_8006C998(110, hudY - 40, placementSprite, ((const u8 *)&gMenuSpritePaletteGroups)[placementSprite - 468], -1, hudOt, depth);
+    func_8006C998(102, hudY - 56, 415, 10, 0, hudOt, depth);
+    if (player == 1) {
+        hudY += 18;
+    }
+    panelOffset = player + 121;
+    func_8006C998(96, hudY - panelOffset, 417, 12, -1, hudOt, depth);
+
+    if (func_8003D904(player)) {
+        timer = (s8)gRacePlayers[player].unk93F;
+        scale = timer ? 0x1000 / (timer + 1) : 0;
+        drawScaledMenuKindSprite(-112, -40, gRacePlayers[player].unk93E,
+                                 gRacePlayers[player].unk940, scale, scale, playerOt, depth);
+        timer = (s8)gRacePlayers[player].unk942;
+        scale = timer ? 0x1000 / (timer + 1) : 0;
+        drawScaledPaletteMappedIcon(-80, -40, (s8)gRacePlayers[player].heldItem,
+                                    scale, scale, playerOt, depth);
+        frame = (s16)gFrameCounter % 12;
+        func_8006C998(-68, 36, frame / 2 + 472, 7, -1, playerOt, depth);
+        moneyPalette = gRacePlayers[player].unk01C < 100 ? 2 : 3;
+        drawHudDecimalNumber8x16(-110, 36, 5, 0, gRacePlayers[player].unk01C,
+                                 moneyPalette, -1, playerOt, depth);
+    }
+}

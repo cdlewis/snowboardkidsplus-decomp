@@ -243,6 +243,8 @@ void queueModeIndexedSectorRead(s16 mode, s16 index) {
     }
 }
 
+/* DECOMP_ATTEMPT: archive 63/65 */
 INCLUDE_ASM("asm/nonmatchings/text/text_sequence", func_800A1670);
 
+/* DECOMP_ATTEMPT: archive 366/395 */
 INCLUDE_ASM("asm/nonmatchings/text/text_sequence", func_800A1774);

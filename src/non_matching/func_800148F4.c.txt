@@ -1,0 +1,14 @@
+#include "common.h"
+#include "game/task.h"
+
+s16 func_80014838(TaskCallback callback);
+
+s16 func_800148F4(GameTask *parent, TaskCallback callback) {
+    GameTask *previous = D_8013AE88;
+    s16 result;
+
+    D_8013AE88 = parent;
+    result = func_80014838(callback);
+    D_8013AE88 = previous;
+    return result;
+}

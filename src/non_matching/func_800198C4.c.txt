@@ -1,0 +1,21 @@
+#include "common.h"
+#include "game/graphics.h"
+#include "game/linear_random.h"
+#include "game/offset_archive.h"
+#include "game/music.h"
+#include "psx/libsnd.h"
+
+extern s32 D_8013AF34;
+extern s16 D_8013AF38;
+
+void func_800198C4(s32 channel) {
+    D_8013AF34 = channel;
+    switch (channel) {
+    case 0x10:
+        D_8013AF38 = 1;
+        break;
+    default:
+        D_8013AF38 = 0;
+        break;
+    }
+}

@@ -1,0 +1,23 @@
+#include "common.h"
+
+typedef struct ControllerInputRecord {
+    u8 duration;
+    s8 stickX;
+    s8 stickY;
+    u8 unk3;
+    u16 buttons;
+    u16 unk6;
+} ControllerInputRecord;
+
+extern ControllerInputRecord D_800E959C[][256];
+extern ControllerInputRecord *D_8013AED4[];
+extern u16 D_8013AEDC[];
+extern u8 D_8013AEE0[];
+extern u8 D_8013AEE4[1];
+
+void func_80015C94(u16 controller) {
+    *(controller + D_8013AED4) = D_800E959C[controller];
+    *(controller + D_8013AEDC) = 1;
+    *(controller + D_8013AEE0) = (*(controller + D_8013AED4))[1].duration;
+    D_8013AEE4[0] = 1;
+}

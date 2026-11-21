@@ -59,8 +59,13 @@ need full-unit comparisons.
 For a standalone attempt outside the generated workspace, use
 `python3 tools/match_function.py FUNCTION nonmatchings/FUNCTION/attempt.c`.
 
-Useful unfinished C can remain under `NON_MATCHING` with the assembly in the
-default branch and its measured similarity and word counts recorded.
+Keep useful unfinished C under `#ifdef NON_MATCHING` with the existing
+`INCLUDE_ASM` in the `#else` branch. Put `/* DECOMP_ATTEMPT: inline X/Y */`
+directly above the guard, using the matching and compared word counts.
+Remove an older snapshot in `src/non_matching/` when its C is superseded.
+An exact integration removes the annotation, assembly fallback, and snapshot.
+Run `./tools/build-and-verify.sh --expected --objects --non-matching` to
+verify the executable and compile inline attempts.
 
 ## Validate
 

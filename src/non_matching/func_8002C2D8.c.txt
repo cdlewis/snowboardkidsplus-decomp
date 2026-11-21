@@ -1,0 +1,76 @@
+#include "../../src/game/unk_8002B3F4.h"
+s32 func_8002C2D8(Position3D *position, s32 radius, s32 height, s32 threshold, u16 flags)
+{
+  s16 hit = 0;
+  s32 i;
+  RacePlayer *player;
+  s32 x;
+  s32 y;
+  s32 z;
+  RacePlayer *collisionPlayer;
+  s32 range;
+  s32 verticalRange;
+  s16 angle;
+  s32 sine;
+  s32 cosine;
+  for (i = 0; i < D_8013AFD2; i++)
+  {
+    player = &D_80120E90[i];
+    if (player->unk024 && arePositionsWithinXZRange(position, (Position3D *) (&D_80120E90[i].x), 0x18000))
+    {
+      y = position->y - player->unk074;
+      if (y < 0)
+      {
+        y = -y;
+        verticalRange = player->unk0B0 * 2;
+      }
+      else
+      {
+        verticalRange = height;
+      }
+      if (y <= verticalRange)
+      {
+        x = position->x - player->x;
+        range = radius + player->unk0AC;
+        if (x < 0)
+        {
+          x = -x;
+        }
+        if (x < range)
+        {
+          z = position->z - player->z;
+          if (z < 0)
+          {
+            z = -z;
+          }
+          if (z < range)
+          {
+            y = SquareRoot0((x * x) + (z * z));
+            collisionPlayer = player;
+            if (y < range)
+            {
+              if (player->unk0BC < threshold)
+              {
+                y -= range;
+                angle = func_8004A124(position->x, position->z, collisionPlayer->x, collisionPlayer->z);
+                sine = rsin(angle);
+                cosine = rcos(angle);
+                sine = (-sine) * y;
+                cosine *= y;
+                collisionPlayer->x += sine / 4096;
+                collisionPlayer->z -= cosine / 4096;
+              }
+              else
+              {
+                collisionPlayer->unk0E8 |= flags;
+                hit = 1;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return hit;
+}

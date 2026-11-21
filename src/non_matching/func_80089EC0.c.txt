@@ -1,0 +1,41 @@
+#include "common.h"
+#include "game/global_flags.h"
+#include "game/graphics.h"
+#include "game/game_options.h"
+#include "game/linear_random.h"
+#include "game/offset_archive.h"
+#include "game/music.h"
+#include "psx/libsnd.h"
+#define TASK_ABSOLUTE_ADDRESSING
+#include "game/task.h"
+#include "game/race_player.h"
+#include "game/movement.h"
+
+typedef struct SaveRecord {
+ u8 unk_000[0x3AC]; u32 flags_3AC; u32 flags_3B0[10]; u32 flags_3D8; u8 unk_3DC[0x2C];
+} SaveRecord;
+typedef struct SaveTaskResource { u8 unk00[12]; u16 unk0C; } SaveTaskResource;
+void func_80089A98(GlobalFlagStatePrefix *state);
+void startStateValueHistoryTask(void);
+void func_8008A058(void);
+void func_80089EC0(void) {
+ SaveTaskResource *resource;
+ SaveRecord *destination;
+ D_8013AE88->data18 = 0;
+ D_8013AE88->data1A = 0;
+ D_8013AE98->data1C++;
+ if (D_8013AE88->resource14 != 0xFFFF) { while (1) {} }
+ D_8013AE88->resource14 = allocateTaskResource();
+ resource = (SaveTaskResource *)&D_800D9504[D_8013AE88->resource14];
+ if (D_8013AE88->resource16 != 0xFFFF) { while (1) {} }
+ D_8013AE88->resource16 = allocateTaskResource();
+ resource->unk0C = 0;
+ func_80089A98(&D_8013080C);
+ destination = (SaveRecord *)0x801E4000;
+ *destination++ = *(SaveRecord *)&D_8013080C;
+ *destination = *(SaveRecord *)&D_8013080C;
+ startStateValueHistoryTask();
+ setCurrentTaskCallback(func_8008A058);
+ { GameTask *task = D_8013AE88; task->unk10 = task->unk10 | 2; }
+ return;
+}

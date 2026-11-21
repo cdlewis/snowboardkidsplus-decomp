@@ -1144,6 +1144,7 @@ void beginSound601TaskSequence(void) {
     setCurrentTaskCallback(drawSound601SequenceSpriteTask);
 }
 
+/* DECOMP_ATTEMPT: archive 92/96 */
 INCLUDE_ASM("asm/nonmatchings/menu/mode_transitions", func_80033100);
 
 void initializePlayerPromptTask(void) {

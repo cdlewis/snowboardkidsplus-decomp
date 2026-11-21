@@ -70,6 +70,7 @@ void initializeNumberAdjustmentTask(void) {
     D_8013AE88->unk10 |= 2;
 }
 
+/* DECOMP_ATTEMPT: archive 19/23 */
 INCLUDE_ASM("asm/nonmatchings/menu/number_adjustment", func_800A53BC);
 
 void updateNumberAdjustmentTask(void) {

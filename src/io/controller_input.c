@@ -83,6 +83,7 @@ s32 isControllerFlag5Clear(u16 controller) {
     return 1;
 }
 
+/* DECOMP_ATTEMPT: archive 142/155 */
 INCLUDE_ASM("asm/nonmatchings/io/controller_input", func_80014D60);
 
 void setControllerAxesFromButtons(u16 controller) {
@@ -267,10 +268,13 @@ void updateControllers(void) {
     updateControllerActuators(1);
 }
 
+/* DECOMP_ATTEMPT: archive 45/49 */
 INCLUDE_ASM("asm/nonmatchings/io/controller_input", func_8001596C);
 
+/* DECOMP_ATTEMPT: archive 152/153 */
 INCLUDE_ASM("asm/nonmatchings/io/controller_input", func_80015A30);
 
+/* DECOMP_ATTEMPT: archive 23/25 */
 INCLUDE_ASM("asm/nonmatchings/io/controller_input", func_80015C94);
 
 void playbackControllerInput(u16 controller) {

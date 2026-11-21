@@ -833,6 +833,7 @@ void finishRaceTransitionAfterCountdown(void) {
     } else updateRaceHud();
 }
 
+/* DECOMP_ATTEMPT: archive 188/196 */
 INCLUDE_ASM("asm/nonmatchings/engine/task_transitions", func_8001C9F0);
 
 void begin30TickTransitionOnFlag10(void) {

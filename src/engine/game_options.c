@@ -17,6 +17,7 @@ s32 getPlayerOptionFlag(s16 playerIndex) {
     return gGameOptionFlags & (16 << playerIndex);
 }
 
+/* DECOMP_ATTEMPT: archive 16/19 */
 INCLUDE_ASM("asm/nonmatchings/engine/game_options", func_8008C670);
 
 s32 getUnlockNotificationFlag(s16 index) {

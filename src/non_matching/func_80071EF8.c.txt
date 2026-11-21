@@ -1,0 +1,40 @@
+#include "common.h"
+#include "game/byte_search.h"
+#include "game/graphics.h"
+#include "game/game_task_scheduler.h"
+#include "game/linear_random.h"
+#include "game/offset_archive.h"
+#include "game/music.h"
+#include "game/movement.h"
+#include "game/task.h"
+#include "psx/libsnd.h"
+
+void func_80071EF8(s16 x0, s16 y0, s32 width, s32 height, s16 textureDepth, s16 textureX, s16 textureY, s16 clutX, s16 clutY, GsOT *ot, u16 depth) {
+    POLY_FT4 *quad = &gTexturedQuadTemplate;
+    s32 x, y;
+    s32 right;
+    quad->clut = GetClut(clutX, clutY);
+    x = x0;
+    setRGB0(quad, 128, 128, 128);
+    quad->tpage = GetTPage(textureDepth, 1, textureX, textureY);
+    y = y0;
+    quad->y0 = y;
+    quad->y1 = y;
+    right = width + x;
+    y = height + y;
+    quad->x0 = x;
+    quad->x1 = right;
+    quad->x2 = x;
+    quad->y2 = y;
+    quad->x3 = right;
+    quad->y3 = y;
+    quad->u0 = 0;
+    quad->v0 = 0;
+    quad->u1 = width;
+    quad->v1 = 0;
+    quad->u2 = 0;
+    quad->v2 = height;
+    quad->u3 = width;
+    quad->v3 = height;
+    GsSortPoly(quad, ot, depth);
+}

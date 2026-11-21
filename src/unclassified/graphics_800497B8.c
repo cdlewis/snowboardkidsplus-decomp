@@ -284,6 +284,7 @@ void updateSlidingVisualSequenceTask(void) {
     }
 }
 
+/* DECOMP_ATTEMPT: archive 19/22 */
 INCLUDE_ASM("asm/nonmatchings/unclassified/graphics_800497B8", func_80049CDC);
 
 void setTextPalette(s32 palette) {

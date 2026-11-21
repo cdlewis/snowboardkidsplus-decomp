@@ -1,0 +1,70 @@
+#include "psx/libetc.h"
+#include "../graphics/render_effects_internal.h"
+#include "../race/race_internal.h"
+#include "game/menu/selected_records.h"
+#define GAME_LOOP_ABSOLUTE_ADDRESSING
+#include "game/engine/game_loop.h"
+
+extern POLY_G4 D_80124C3C[];
+extern VECTOR D_80124BDC;
+extern TmdObject *D_80125044[3];
+
+void func_8004E718(s16 playerIndex) {
+    GsCOORDINATE2 *coordinate = (GsCOORDINATE2 *)getScratchAddr(0);
+    MATRIX *matrix = (MATRIX *)getScratchAddr(20);
+    GsOT *ot;
+    PlayerCamera *camera;
+    s16 horizon;
+    s32 r, g, b;
+
+    if (playerIndex == 0) {
+        ot = &D_800EC018[D_8013AF78];
+    } else {
+        ot = &D_800EC0B8[D_8013AF78];
+    }
+    *(POLY_G4 *)coordinate = D_80124C3C[0];
+    camera = D_801241E8;
+    camera = playerIndex + camera;
+    rsin(camera->pitch);
+    horizon = camera->pitch / 2;
+    if (horizon < -60) horizon = -60;
+    if (horizon > 120) horizon = 120;
+
+    addGouraudQuad(&D_8013AF6C[4095], -160, -120, 160, -120, -160, horizon, 160, horizon,
+                  255, 64, 0, 255, 64, 0, 255, 255, 128, 255, 255, 128);
+    addGouraudQuad(&D_8013AF6C[4095], -160, -120, 160, -120, -160, horizon, 160, horizon,
+                  255, 64, 0, 255, 64, 0, 255, 255, 128, 255, 255, 128);
+
+    if ((u32)((u16)gRacePlayers[playerIndex].unk92E - 106) < 6) {
+        r = 10;
+        g = 20;
+        b = 128;
+    } else {
+        r = 200;
+        g = 210;
+        b = 240;
+    }
+    if (horizon < 60) {
+        addGouraudQuad(&D_8013AF6C[4095], -160, horizon, 160, horizon, -160, 60, 160, 60,
+                      255, 255, 128, 255, 255, 128, 200, 210, 240, 200, 210, 240);
+        addFlatRectangle(&D_8013AF6C[4095], -160, 60, 320, 60, r, g, b);
+    } else {
+        addGouraudQuad(&D_8013AF6C[4095], -160, horizon, 160, horizon, -160, 120, 160, 120,
+                      255, 255, 128, 255, 255, 128, 200, 210, 240, 200, 210, 240);
+    }
+
+    if (selectedCameraOverlayModeGp) {
+        addFlatRectangleWithDrawMode(D_8013AF6C, getTPage(0, 2, 0, 0), SEMI_TRANSPARENT_FLAG,
+                                     -160, -120, 320, 240, 0, 16, 32);
+    } else {
+        addFlatRectangleWithDrawMode(D_8013AF6C, getTPage(0, 2, 0, 0), SEMI_TRANSPARENT_FLAG,
+                                     -160, -120, 320, 240, 0, 32, 64);
+    }
+    SetFarColor(128, 100, 80);
+    SetFogNearFar(8000, 10000, 400);
+    GsInitCoordinate2(0, coordinate);
+    GsGetLs(coordinate, matrix);
+    ScaleMatrix(matrix, &D_80124BDC);
+    GsSetLsMatrix(matrix);
+    drawProjectedModelPrimitives(D_80125044[0], ot, 2, 1);
+}

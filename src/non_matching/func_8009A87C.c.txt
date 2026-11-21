@@ -1,0 +1,51 @@
+#include "panel_tasks_internal.h"
+#include "game/menu/selected_sprite.h"
+
+extern const u16 D_80131EBC[];
+extern const char D_8013B514[];
+
+void func_8009A87C(void) {
+    Movement2D *position;
+    s32 x, y, panelX, panelY;
+    s32 player;
+    TaskPanelSelectionValue *selection;
+    if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
+    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    x = position->x / 4096;
+    y = position->y / 4096;
+    panelX = x;
+    panelY = y;
+    player = (s16)D_8013AE98->data1A;
+    selection = &D_8013B508[player];
+    if (D_8013AE88->data1A != 0) {
+        if (gRacePlayers[player].unk00D == selection->value && D_8013B517 != 0) {
+            func_8006EF30((s16)(panelX - 112), (s16)(panelY + 52), 4, D_80131EBC, 12, 1,
+                         &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            if (D_8013AE88->data1A == 1) {
+                func_8007240C(panelX - 120, panelY + 48, 72, 22, D_8013B3A4, D_8013B3A5, D_8013B3A6,
+                              2, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            } else {
+                func_8007240C(panelX - 120, panelY + 48, 72, 22, 128, 128, 128,
+                              2, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            }
+        } else {
+            drawDecimalNumber8x8((x -= 112) + 48, (y += 70) + 12, 4, 0, 500, 0, -1,
+                                 &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            drawWrappedText8x8(x + 80, y + 12, 2, D_8013B514, 0, -1,
+                               &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            if (D_8013AE88->data1A == 1) {
+                func_8007240C(x + 44, y + 8, 48, 16, D_8013B3A4, D_8013B3A5, D_8013B3A6,
+                              2, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            } else {
+                func_8007240C(x + 44, y + 8, 48, 16, 128, 128, 128,
+                              2, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            }
+        }
+    }
+    setTexturedQuadColor(128, 128, 128);
+    setSpriteColor(128, 128, 128);
+    drawTexturedFrameStyle9(position->x / 4096 - 140, position->y / 4096 + 8,
+                           128, 92, 5, 1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    func_8006C998(position->x / 4096 - 136, position->y / 4096 + 12,
+                  0x171, 4, 0, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+}

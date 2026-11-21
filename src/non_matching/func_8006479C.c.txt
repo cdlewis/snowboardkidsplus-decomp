@@ -1,0 +1,266 @@
+#define RACE_FINISH_ABSOLUTE_ADDRESSING
+#include "../../src/graphics/render_effects_internal.h"
+#include "psx/libetc.h"
+
+typedef struct EightEntryTrailScratch {
+    GsCOORDINATE2 coordinate;
+    union {
+        long packed;
+        struct { s16 x, y; } point;
+    } displaced[8], origin[8];
+    long depth[8];
+    long flags[8];
+    long cue;
+    s32 emitting;
+    s32 strength;
+    s32 slopeSign;
+    s32 sideSign;
+    SVECTOR offset;
+    u8 u[4];
+    volatile u8 v0;
+    u8 v1, v2, v3;
+    u16 tpage;
+    u16 clut;
+} EightEntryTrailScratch;
+
+extern SVECTOR D_8013B320 __attribute__((section(".data")));
+
+void func_8006479C(void) {
+    EightEntryEffectResource *primary;
+    EightEntryEffectSecondaryResource *secondary;
+    POLY_FT3 *packet;
+    EightEntryTrailScratch *scratch;
+    RacePlayer *player;
+    s32 i;
+    s32 playerIndex;
+    s32 secondaryIndex;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        for (;;) {}
+    }
+    primary = (EightEntryEffectResource *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) {
+        for (;;) {}
+    }
+    secondaryIndex = D_8013AE88->resource16;
+    packet = (POLY_FT3 *)GsOUT_PACKET_P;
+    secondary = (EightEntryEffectSecondaryResource *)&D_800D9504[secondaryIndex];
+    playerIndex = D_8013AE88->data18;
+    scratch = (EightEntryTrailScratch *)getScratchAddr(0);
+    scratch->emitting = 0;
+    player = &gRacePlayers[playerIndex];
+    switch (player->unk96E) {
+    case 0:
+        scratch->tpage = 0x2B;
+        scratch->clut = 0x3D37;
+        scratch->u[0] = 128;
+        scratch->v0 = 0;
+        scratch->emitting = 1;
+        break;
+    case 0x100:
+        scratch->tpage = 0xB;
+        scratch->clut = 0x3DF7;
+        scratch->u[0] = 192;
+        scratch->v0 = 0;
+        scratch->emitting = 1;
+        if (player->unk136 != 0 && player->unk136 != 6) {
+            scratch->emitting = 0;
+        }
+        break;
+    case 0x200:
+        scratch->tpage = 0xB;
+        scratch->clut = 0x3D77;
+        scratch->u[0] = 128;
+        scratch->v0 = 0;
+        scratch->emitting = 1;
+        break;
+    case 0x801:
+        scratch->tpage = 0x2B;
+        scratch->clut = 0x3DB7;
+        scratch->u[0] = 128;
+        scratch->v0 = 0;
+        scratch->emitting = 1;
+        break;
+    default:
+        scratch->tpage = 0x2B;
+        scratch->clut = 0x3D37;
+        scratch->u[0] = 128;
+        scratch->v0 = 0;
+        scratch->emitting = 0;
+        break;
+    }
+    if (player->unk128 & 0x0677DA21) {
+        scratch->emitting = 0;
+    }
+    if (player->unk0BC < 0x800) {
+        scratch->emitting = 0;
+    }
+    if (player->unk128 & 0x100) {
+        scratch->emitting = 0;
+    }
+    if (!isPointWithinCameraForwardRange(player->worldCoordinate.coord.t[0],
+            player->worldCoordinate.coord.t[2], D_8013AE88->data18)) {
+        scratch->emitting = 0;
+    }
+    if ((s16)player->unk92C < 0x800) {
+        scratch->strength = (s16)player->unk92C - 100;
+        scratch->slopeSign = 1;
+    } else {
+        scratch->strength = 3996 - (s16)player->unk92C;
+        scratch->slopeSign = -1;
+    }
+    if (scratch->strength >= 128) {
+        scratch->strength = 128;
+    }
+    if (!(player->unk128 & 0x400)) {
+        scratch->sideSign = 1;
+    } else {
+        scratch->sideSign = -1;
+    }
+
+    if (!D_8013AFD3) {
+        for (i = 7; i >= 2; i--) {
+            primary->positions[i] = primary->positions[i - 1];
+            secondary->vectors[i] = secondary->vectors[i - 1];
+            primary->rotations[i] = primary->rotations[i - 1];
+            primary->values[i] = primary->values[i - 1];
+            secondary->values40[i] = secondary->values40[i - 1];
+            secondary->values50[i] = secondary->values50[i - 1];
+            secondary->values60[i] = secondary->values60[i - 1];
+        }
+
+        setVector(&scratch->offset, 40 * scratch->sideSign, 0, -15 * scratch->slopeSign);
+        ApplyMatrix(&player->model.effect.effectMatrix180, &scratch->offset, &primary->positions[0]);
+        primary->positions[0].vx += player->x >> 8;
+        primary->positions[0].vy += player->y >> 8;
+        primary->positions[0].vz += player->z >> 8;
+        setVector(&secondary->vectors[0], 0, 0, 0);
+        secondary->values40[0] = scratch->tpage;
+        secondary->values50[0] = scratch->clut;
+        secondary->values60[0] = scratch->u[0];
+        if (!scratch->emitting) {
+            primary->values[0] = 32;
+        } else {
+            primary->values[0] = 0;
+        }
+
+        if (scratch->emitting && scratch->strength > 0 && !(primary->elapsed & 1)) {
+            s32 velocityX;
+
+            setVector(&scratch->offset, 40 * scratch->sideSign, 0, -15 * scratch->slopeSign);
+            ApplyMatrix(&player->model.effect.effectMatrix180, &scratch->offset, &primary->positions[1]);
+            primary->positions[1].vx += player->x >> 8;
+            primary->positions[1].vy += player->y >> 8;
+            primary->positions[1].vz += player->z >> 8;
+            setVector(&secondary->vectors[1], 0, 0, 0);
+            secondary->values40[1] = scratch->tpage;
+            secondary->values50[1] = scratch->clut;
+            secondary->values60[1] = scratch->u[0];
+            if (player->unk128 & 0x400) {
+                velocityX = scratch->strength;
+            } else {
+                velocityX = -scratch->strength;
+            }
+            primary->rotations[1].vx = velocityX / 4;
+            primary->rotations[1].vy = 0;
+            primary->rotations[1].vz = scratch->slopeSign * scratch->strength / 4;
+            primary->values[i] = 0;
+            if (D_8013AE88->data1C == 1) {
+                primary->rotations[1].vz = -32;
+            }
+            ApplyMatrixSV(&player->model.effect.effectMatrix180, &primary->rotations[1], &primary->rotations[1]);
+        }
+        for (i = 1; i < 8; i++) {
+            if (primary->values[i] < 32) {
+                secondary->vectors[i].vx += primary->rotations[i].vx;
+                secondary->vectors[i].vy += primary->rotations[i].vy;
+                secondary->vectors[i].vz += primary->rotations[i].vz;
+                primary->rotations[i].vx = primary->rotations[i].vx * 3 / 4;
+                primary->rotations[i].vy += 4;
+                primary->rotations[i].vz = primary->rotations[i].vz * 3 / 4;
+                if (secondary->vectors[i].vy > 0) {
+                    secondary->vectors[i].vy = 0;
+                    primary->values[i] = 32;
+                }
+                if (primary->values[i] < 32) {
+                    primary->values[i]++;
+                }
+            }
+        }
+    }
+
+    GsInitCoordinate2(NULL, &scratch->coordinate);
+    for (i = 0; i < 8; i++) {
+        scratch->coordinate.coord.t[0] = primary->positions[i].vx;
+        scratch->coordinate.coord.t[1] = primary->positions[i].vy;
+        scratch->coordinate.coord.t[2] = primary->positions[i].vz;
+        GsGetLs(&scratch->coordinate, &scratch->coordinate.workm);
+        GsSetLsMatrix(&scratch->coordinate.workm);
+        scratch->depth[i] = RotTransPers(&secondary->vectors[i], &scratch->displaced[i].packed,
+            &scratch->cue, &scratch->flags[i]);
+        RotTransPers(&D_8013B320, &scratch->origin[i].packed, &scratch->cue, &scratch->flags[i]);
+    }
+
+    for (i = 0; i < 7; i++) {
+        if (primary->values[i] < 32 && primary->values[i + 1] < 32 &&
+            scratch->flags[i] >= 0 && scratch->depth[i] >= 0 && scratch->depth[i] < 4096 &&
+            ((u16 *)secondary->values40)[i] != 0) {
+            s32 v;
+
+            scratch->tpage = ((u16 *)secondary->values40)[i];
+            scratch->clut = secondary->values50[i];
+            v = scratch->v0;
+            scratch->u[0] = ((volatile EightEntryEffectSecondaryResource *)secondary)->values60[i];
+            scratch->u[1] = scratch->u[0] + 63;
+            scratch->v3 = scratch->v2 = v + 63;
+            scratch->v1 = scratch->v0;
+            scratch->u[2] = scratch->u[0];
+            scratch->u[3] = scratch->u[1];
+
+            /* Initialize the DMA length and clear the link. */
+            packet->tag = (sizeof(*packet) / sizeof(u32) - 1) << 24;
+            setcode(packet, POLY_FT3_CODE);
+            setSemiTrans(packet, 1);
+            packet->tpage = scratch->tpage;
+            packet->clut = scratch->clut;
+            packet->g0 = packet->b0 = packet->r0 = 128;
+            setXY3(packet, scratch->displaced[i].point.x, scratch->displaced[i].point.y,
+                scratch->origin[i + 1].point.x, scratch->origin[i + 1].point.y,
+                scratch->origin[i].point.x, scratch->origin[i].point.y);
+            packet->u0 = scratch->u[0];
+            packet->u1 = scratch->u[3];
+            packet->u2 = scratch->u[2];
+            packet->v0 = scratch->v0;
+            packet->v1 = scratch->v3;
+            packet->v2 = scratch->v2;
+            addPrim(&D_8013AF6C[scratch->depth[i] >> 2], packet);
+            packet++;
+
+            /* Initialize the DMA length and clear the link. */
+            packet->tag = (sizeof(*packet) / sizeof(u32) - 1) << 24;
+            setcode(packet, POLY_FT3_CODE);
+            setSemiTrans(packet, 1);
+            packet->tpage = scratch->tpage;
+            packet->clut = scratch->clut;
+            packet->g0 = packet->b0 = packet->r0 = 128;
+            setXY3(packet, scratch->displaced[i].point.x, scratch->displaced[i].point.y,
+                scratch->displaced[i + 1].point.x, scratch->displaced[i + 1].point.y,
+                scratch->origin[i + 1].point.x, scratch->origin[i + 1].point.y);
+            packet->u0 = scratch->u[0];
+            packet->u1 = scratch->u[1];
+            packet->u2 = scratch->u[3];
+            packet->v0 = scratch->v0;
+            packet->v1 = scratch->v1;
+            packet->v2 = scratch->v3;
+            addPrim(&D_8013AF6C[scratch->depth[i] >> 2], packet);
+            packet++;
+        }
+    }
+    GsOUT_PACKET_P = (u32)packet;
+    if (!D_8013AFD3) {
+        primary->elapsed++;
+    }
+    if (D_8013AE88->data1A == 2) {
+        func_800149A8();
+    }
+}

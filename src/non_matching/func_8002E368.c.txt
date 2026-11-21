@@ -1,0 +1,19 @@
+#include "common.h"
+#include "game/graphics.h"
+#include "game/linear_random.h"
+#include "game/offset_archive.h"
+#include "game/music.h"
+#include "game/race_player.h"
+#include "psx/libsnd.h"
+
+
+extern RacePlayer *D_8013B0D8 __attribute__((section(".data")));
+extern GameTask *D_8013AE88 __attribute__((section(".data")));
+
+void func_8002E368(void) {
+    if (D_8013B0D8->unk92A & 0x10) {
+        D_8013AE88->data1A++;
+    } else {
+        D_8013B0D8->unk128 |= 0x800;
+    }
+}

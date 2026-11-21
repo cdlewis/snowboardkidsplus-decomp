@@ -1,0 +1,73 @@
+#include "selection_tasks_internal.h"
+
+void func_800A499C(void) {
+    UnlockMenuState *state;
+    u16 resource;
+    s16 leave;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        for (;;) {}
+    }
+    resource = D_8013AE88->resource14;
+    state = (UnlockMenuState *)&D_800D9504[resource];
+    leave = 0;
+
+    if (D_8013AEE8[0] & 0x1000) {
+        u16 selection = state->selection;
+        if ((u16)(selection - 1) < 5 || (u32)(selection - 7) < 6) {
+            state->selection = selection - 1;
+        }
+    }
+    if (D_8013AEE8[0] & 0x4000) {
+        u32 selection = (u16)state->selection;
+        if (selection < 5 || (u32)(selection - 6) < 6) {
+            state->selection = selection + 1;
+        } else if ((s16)selection == 5) {
+            state->selection = 12;
+        }
+    }
+    if (D_8013AEE8[0] & 0x8000) {
+        u16 selection = state->selection;
+        if ((u16)(selection - 6) < 6) {
+            state->selection = selection - 6;
+        }
+    }
+    if (D_8013AEE8[0] & 0x2000) {
+        u16 selection = state->selection;
+        if (selection < 6) {
+            state->selection = selection + 6;
+        }
+    }
+    if (D_8013AEE8[0] & 0x40) {
+        leave = 1;
+    }
+    if (state->selection != state->previousSelection) {
+        playSoundEffect(0, 0x100, 0x20);
+        state->previousSelection = state->selection;
+    }
+    if (state->selection == 12) {
+        if (D_8013AEE8[0] & 0xB0) {
+            leave = 1;
+        }
+    } else if ((D_8013AEE8[0] & 0xB0) &&
+               (s16)hasUnlockNotificationFlag(state->selection)) {
+        void (*callback)(void);
+        u8 selection;
+
+        playSoundEffect(0, 0, 0x20);
+        callback = startUnlockActionAfterCountdown;
+        selection = state->selection;
+        state->unk8C = 1;
+        D_8013AF3A = selection;
+        D_8013AE88->data18 = 15;
+        setCurrentTaskCallback(callback);
+    }
+
+    func_800A4C28();
+    if (leave) {
+        playSoundEffect(0, 0, 0x20);
+        func_800149E0();
+        setCurrentTaskCallback(animateUnlockMenuTransition);
+        D_8013AE88->data18 = 0;
+    }
+}

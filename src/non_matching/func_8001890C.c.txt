@@ -1,0 +1,32 @@
+#define attenuateSoundVolume existingAttenuateSoundVolumeDeclaration
+#include "project/src/engine/resource_services_internal.h"
+#include "game/audio/music.h"
+#include "game/engine/game_options.h"
+#include "game/engine/system_runtime.h"
+#include "game/io/cd_queue.h"
+#include "game/race/camera/race_camera.h"
+#include "game/race/player/race_player.h"
+#include "psx/libcd.h"
+#include "psx/libsnd.h"
+
+#undef attenuateSoundVolume
+s16 attenuateSoundVolume(s32 distance, s16 volume);
+
+void func_8001890C(u8 playerIndex, u8 bank, u16 programAndTone, s16 volume) {
+    RacePlayer *players = gRacePlayers;
+    s16 playbackVolume = volume;
+
+    if (players[playerIndex].unk008) {
+        playbackVolume = attenuateSoundVolume(getNearestCameraManhattanDistance(
+            players[playerIndex].x, players[playerIndex].y, players[playerIndex].z), volume);
+        if (playbackVolume < 24) {
+            playbackVolume = 24;
+        }
+    }
+    if (gSoundBankLoaded[bank]) {
+        SsUtKeyOffV(playerIndex + 20);
+        SsUtKeyOnV(playerIndex + 20, bank, programAndTone & 0xFF,
+                   programAndTone >> 8, programAndTone >> 8, 0,
+                   playbackVolume, playbackVolume);
+    }
+}

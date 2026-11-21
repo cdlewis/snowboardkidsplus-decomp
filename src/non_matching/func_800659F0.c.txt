@@ -1,0 +1,87 @@
+#include "psx/libetc.h"
+#include "../../src/graphics/render_effects_internal.h"
+
+typedef struct QuadAnimationScratch {
+    GsCOORDINATE2 coordinate;
+    VECTOR scale;
+    long depth;
+    long cue;
+    long flags;
+    const QuadAnimationFrame *volatile frame;
+} QuadAnimationScratch;
+
+extern SVECTOR D_8012C90C[4];
+
+void func_800659F0(void) {
+    PrimaryQuadAnimationResource *resource;
+    POLY_FT4 *packet;
+    QuadAnimationScratch *scratch;
+    const QuadAnimationFrame *frame;
+    s32 duration;
+    s32 scale;
+    s32 i;
+    long depth;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    scratch = (QuadAnimationScratch *)getScratchAddr(0);
+    resource = (PrimaryQuadAnimationResource *)&D_800D9504[D_8013AE88->resource14];
+    packet = (POLY_FT4 *)GsOUT_PACKET_P;
+    scratch->frame = frame = &resource->frames[resource->frame];
+    duration = frame->duration;
+    if (duration == -1) {
+        func_800149A8();
+        return;
+    }
+    if (duration == -2) {
+        resource->frame = 0;
+        resource->elapsed = 0;
+        scratch->frame = &resource->frames[resource->frame];
+    }
+    if (D_8013AFD3 == 0) {
+        resource->elapsed++;
+    }
+    if (resource->elapsed == scratch->frame->duration) {
+        resource->elapsed = 0;
+        resource->frame++;
+    }
+
+    if (isPointWithinCameraForwardRange(resource->x, resource->z, (s16)func_80059254())) {
+        scale = ((const volatile QuadAnimationFrame *)scratch->frame)->scale;
+        scratch->scale.vx = scratch->scale.vy = scratch->scale.vz = scale;
+        GsInitCoordinate2(0, ((GsCOORDINATE2 *)getScratchAddr(0)));
+        scratch->coordinate.coord.t[0] = resource->x;
+        scratch->coordinate.coord.t[1] = resource->y;
+        scratch->coordinate.coord.t[2] = resource->z;
+        GsGetLs(((GsCOORDINATE2 *)getScratchAddr(0)), &((GsCOORDINATE2 *)getScratchAddr(0))->workm);
+        for (i = 0; i < 3; i++) {
+            ((GsCOORDINATE2 *)getScratchAddr(0))->coord.t[i] = ((GsCOORDINATE2 *)getScratchAddr(0))->workm.t[i];
+        }
+        ScaleMatrix(&scratch->coordinate.coord, &scratch->scale);
+        GsSetLsMatrix(&scratch->coordinate.coord);
+        scratch->depth = RotTransPers4(&D_8012C90C[0], &D_8012C90C[1],
+            &D_8012C90C[2], &D_8012C90C[3], (long *)&packet->x0, (long *)&packet->x1,
+            (long *)&packet->x2, (long *)&packet->x3, &scratch->cue, &scratch->flags);
+
+        packet->tag = TEXTURED_QUAD_PACKET_WORDS << 24;
+        setcode(packet, POLY_FT4_CODE | scratch->frame->blend);
+        packet->tpage = scratch->frame->tpage;
+        packet->clut = scratch->frame->clut;
+        setRGB0(packet, scratch->frame->r, scratch->frame->g, scratch->frame->b);
+        packet->u0 = scratch->frame->u;
+        frame = scratch->frame;
+        packet->u1 = frame->u + frame->w;
+        packet->u2 = packet->u0;
+        packet->u3 = packet->u1;
+        packet->v0 = scratch->frame->v;
+        packet->v1 = scratch->frame->v;
+        packet->v3 = packet->v2 = packet->v0 + scratch->frame->h;
+
+        depth = (scratch->depth -= 10);
+        if (scratch->flags >= 0 && depth >= 0 && depth < 4096) {
+            addPrim(&D_8013AF6C[scratch->depth >> 2], packet);
+        }
+        GsOUT_PACKET_P = (u32)(packet + 1);
+    }
+}

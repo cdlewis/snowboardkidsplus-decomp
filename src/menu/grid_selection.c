@@ -534,6 +534,7 @@ void drawCurrentTaskPlayerValuePanel(void) {
                             &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
 }
 
+/* DECOMP_ATTEMPT: archive 80/85 */
 INCLUDE_ASM("asm/nonmatchings/menu/grid_selection", func_800995A8);
 
 s32 findLastMappedByteIndexOrZero(const ByteMappingDescriptor *descriptor, s16 value) {
@@ -860,6 +861,7 @@ void drawCurrentTaskSavedValuePanel(void) {
 
 u8 D_8013B517 __attribute__((section(".sdata"))) = 0;
 
+/* DECOMP_ATTEMPT: archive 301/332 */
 INCLUDE_ASM("asm/nonmatchings/menu/grid_selection", func_8009A87C);
 
 void initializeTaskGridPositions(s32 unused, GameTask *task, s32 x, s32 y,

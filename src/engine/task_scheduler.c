@@ -77,6 +77,7 @@ void initializeTaskScheduler(void) {
     }
 }
 
+/* DECOMP_ATTEMPT: archive 30/32 */
 INCLUDE_ASM("asm/nonmatchings/engine/task_scheduler", func_800147B8);
 
 s32 createChildTask(TaskCallback callback) {
@@ -108,10 +109,25 @@ s32 tryCreateChildTaskWith20SlotsReserved(TaskCallback callback) {
     return 1;
 }
 
+/* DECOMP_ATTEMPT: archive 10/15 */
 INCLUDE_ASM("asm/nonmatchings/engine/task_scheduler", func_800148F4);
 
-INCLUDE_ASM("asm/nonmatchings/engine/task_scheduler", func_80014930);
+/* DECOMP_ATTEMPT: inline 15/15 */
+#ifdef NON_MATCHING
+s16 func_80014930(GameTask *parent, TaskCallback callback) {
+    GameTask *previous = D_8013AE88;
+    s16 result;
 
+    D_8013AE88 = parent;
+    result = createChildTaskWithReserve(callback);
+    D_8013AE88 = previous;
+    return result;
+}
+#else
+INCLUDE_ASM("asm/nonmatchings/engine/task_scheduler", func_80014930);
+#endif
+
+/* DECOMP_ATTEMPT: archive 10/15 */
 INCLUDE_ASM("asm/nonmatchings/engine/task_scheduler", func_8001496C);
 
 void deleteCurrentTaskSubtree(void) {
@@ -162,6 +178,7 @@ void deletePendingTaskSubtree(void) {
     }
 }
 
+/* DECOMP_ATTEMPT: archive 9/14 */
 INCLUDE_ASM("asm/nonmatchings/engine/task_scheduler", func_80014B14);
 
 void setCurrentTaskCallback(TaskCallback callback) { D_8013AE88->callback = callback; }

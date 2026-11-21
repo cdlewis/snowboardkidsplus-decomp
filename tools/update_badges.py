@@ -9,12 +9,12 @@ from mapfile_parser import MapFile
 ROOT = Path(__file__).resolve().parent.parent
 
 
-def data_progress():
+def data_progress(root=ROOT):
     # report_data is disabled: without data markers its percentage is a false
     # 100%. Instead count initialized data by linked storage owner. As with the
     # code report, named SDK library objects count as recovered; split asm does not.
     matched = total = 0
-    for segment in MapFile.newFromMapFile(ROOT / "build/slps_018.23.map"):
+    for segment in MapFile.newFromMapFile(root / "build/slps_018.23.map"):
         if segment.name == ".header":
             continue
         for section in segment:

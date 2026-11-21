@@ -1,0 +1,41 @@
+#include "common.h"
+#define SELECTED_RECORD_GP_ADDRESSING
+#include "game/selected_record.h"
+typedef struct Placement { s16 unk00[8]; s16 vertexIndex; u16 angle; s16 first, last; s16 unk18[2]; } Placement;
+typedef struct SurfaceRecord { u16 vertices[3]; u8 surface, flags; s16 unk8, unkA; } SurfaceRecord;
+u8 func_8004AAA0(s16 index, s32 x, s32 z) {
+    s32 i;
+    SurfaceRecord *record;
+    s16 *a, *b;
+    s32 dx, dz, px, pz;
+    s16 *vertices;
+    SurfaceRecord *records;
+    u32 ai, bi;
+    for (i = ((Placement *)D_8013B1F4)[index].first; i < ((Placement *)D_8013B1F4)[index].last + 1; i++) {
+        vertices = D_8013B1EC;
+        records = (SurfaceRecord *)D_8013B1F0;
+        record = &records[i];
+        if (record->flags == 0) {
+            bi = record->vertices[1];
+            ai = record->vertices[0];
+            b = vertices + bi * 3;
+            a = vertices + ai * 3;
+            dx = b[0] - a[0];
+        pz = z / 5 - a[2];
+        dz = b[2] - a[2];
+        px = x / 5 - a[0];
+        if (dx * pz - dz * px > 0) continue;
+        }
+        bi = record->vertices[2];
+        ai = record->vertices[1];
+        b = vertices + bi * 3;
+        a = vertices + ai * 3;
+        dx = b[0] - a[0];
+        pz = z / 5 - a[2];
+        dz = b[2] - a[2];
+        px = x / 5 - a[0];
+        if (dx * pz - dz * px > 0) continue;
+        return record->surface;
+    }
+    return 0;
+}

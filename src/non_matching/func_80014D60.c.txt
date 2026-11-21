@@ -1,0 +1,69 @@
+#include "common.h"
+#include "psx/libcd.h"
+#include "psx/libpad.h"
+#include "psx/libapi.h"
+#include "psx/libapi.h"
+#include "game/graphics.h"
+#include "game/music.h"
+#include "game/cd_queue.h"
+#include "psx/libsnd.h"
+#include "game/controller.h"
+#include "game/task.h"
+#include "game/game_options.h"
+#include "game/controller_effects.h"
+
+
+extern u8 D_8013AEBC[];
+
+void func_80014D60(u16 controller) {
+    u8 flags;
+    if (gControllerFlags[controller]) {
+        if (D_8013AEEC[controller] & 0x1000) {
+            if (gControllerFlags[controller] & 0x2) {
+                if (--D_8013AEBC[controller] == 0) {
+                    D_8013AEE8[controller] |= 0x1000;
+                    D_8013AEBC[controller] = gControllerRepeatInterval;
+                }
+            } else {
+                gControllerFlags[controller] |= (gControllerFlags[controller] & 0xF9) | 0x2;
+                D_8013AEBC[controller] = gControllerRepeatInitialDelay;
+            }
+        }         else if (D_8013AEEC[controller] & 0x4000) {
+            flags = gControllerFlags[controller];
+            if (flags & 0x4) {
+                if (--D_8013AEBC[controller] == 0) {
+                    D_8013AEE8[controller] |= 0x4000;
+                    D_8013AEBC[controller] = gControllerRepeatInterval;
+                }
+            } else {
+                gControllerFlags[controller] |= (flags & 0xF9) | 0x4;
+                D_8013AEBC[controller] = gControllerRepeatInitialDelay;
+            }
+        } else {
+            gControllerFlags[controller] &= 0xF9;
+        }
+        if (D_8013AEEC[controller] & 0x8000) {
+            if (gControllerFlags[controller] & 0x8) {
+                if (--gControllerHorizontalRepeatTimers[controller] == 0) {
+                    D_8013AEE8[controller] |= 0x8000;
+                    gControllerHorizontalRepeatTimers[controller] = gControllerRepeatInterval;
+                }
+            } else {
+                gControllerFlags[controller] |= (gControllerFlags[controller] & 0xE7) | 0x8;
+                gControllerHorizontalRepeatTimers[controller] = gControllerRepeatInitialDelay;
+            }
+        }         else if (D_8013AEEC[controller] & 0x2000) {
+            if (gControllerFlags[controller] & 0x10) {
+                if (--gControllerHorizontalRepeatTimers[controller] == 0) {
+                    D_8013AEE8[controller] |= 0x2000;
+                    gControllerHorizontalRepeatTimers[controller] = gControllerRepeatInterval;
+                }
+            } else {
+                gControllerFlags[controller] |= (gControllerFlags[controller] & 0xE7) | 0x10;
+                gControllerHorizontalRepeatTimers[controller] = gControllerRepeatInitialDelay;
+            }
+        } else {
+            gControllerFlags[controller] &= 0xE7;
+        }
+    }
+}

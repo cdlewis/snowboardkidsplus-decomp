@@ -42,12 +42,14 @@ s32 pollMemoryCardWrite(void) {
     return 0;
 }
 
+/* DECOMP_ATTEMPT: archive 26/34 */
 INCLUDE_ASM("asm/nonmatchings/io/memory_card_tasks", func_8001983C);
 
 void resetMemoryCardTaskState(void) {
     D_8013AF3E = 0;
 }
 
+/* DECOMP_ATTEMPT: archive 7/10 */
 INCLUDE_ASM("asm/nonmatchings/io/memory_card_tasks", func_800198C4);
 
 s32 startMemoryCardReadStatusTask(void *buffer) {

@@ -1,0 +1,15 @@
+#include "common.h"
+#include "game/graphics.h"
+#include "game/linear_random.h"
+#include "game/offset_archive.h"
+#include "game/music.h"
+#include "game/race_player.h"
+#include "psx/libsnd.h"
+
+
+s32 func_800136DC(s32 operation, s32 sector, s32 sectorCount, u32 *destination, s32 parameter);
+
+void func_8002F394(void) {
+    u32 *destination = (u32 *)0x80189800;
+    func_800136DC(2, 0x480, 0x4A, destination, 0);
+}

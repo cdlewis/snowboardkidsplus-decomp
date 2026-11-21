@@ -1537,12 +1537,17 @@ void drawProjectedModelPrimitives(TmdObject *object, GsOT *ot, s32 shift, u32 fl
     SetSp(D_8013B66C);
 }
 
+/* DECOMP_ATTEMPT: archive 2/24 */
 INCLUDE_ASM("asm/nonmatchings/graphics/model_renderer", func_80058560);
 
+/* DECOMP_ATTEMPT: unattempted */
 INCLUDE_ASM("asm/nonmatchings/graphics/model_renderer", func_800585BC);
 
+/* DECOMP_ATTEMPT: unattempted */
 INCLUDE_ASM("asm/nonmatchings/graphics/model_renderer", func_80058664);
 
+/* DECOMP_ATTEMPT: unattempted */
 INCLUDE_ASM("asm/nonmatchings/graphics/model_renderer", func_80058844);
 
+/* DECOMP_ATTEMPT: unattempted */
 INCLUDE_ASM("asm/nonmatchings/graphics/model_renderer", func_800589F0);

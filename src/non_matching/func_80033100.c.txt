@@ -1,0 +1,57 @@
+#define TASK_ABSOLUTE_ADDRESSING
+#define RACE_PLAYER_ABSOLUTE_ADDRESSING
+#include "common.h"
+#include "game/angles.h"
+#include "game/coordinate.h"
+#include "game/movement.h"
+#include "game/task.h"
+#include "game/game_task_scheduler.h"
+#include "game/race_player.h"
+#include "game/race_camera.h"
+#include "game/race_time.h"
+#include "game/selected_records.h"
+#include "game/selected_record.h"
+#include "game/graphics.h"
+#include "game/linear_random.h"
+#include "game/offset_archive.h"
+#include "game/music.h"
+#include "game/game_options.h"
+#include "game/controller.h"
+#include "game/cd_queue.h"
+#include "game/controller_effects.h"
+#include "game/controller.h"
+#include "psx/libsnd.h"
+
+
+extern u8 D_8013B1AA __attribute__((section(".data")));
+extern u8 D_8013B1AB __attribute__((section(".data")));
+extern const char D_80010A1C[];
+extern const char D_80010A2C[];
+void func_80049D48(s32 x, s32 y, const char *format, ...);
+void func_80033100(void) {
+    GameTask *task = D_8013AE88;
+    u32 flags = D_80120E90[task->data18].unk128;
+    GameTask *drawTask;
+    const char *text;
+    u16 frame;
+    if ((flags & 0x40) || D_8013B1AA) {
+        func_800149A8();
+    } else if (!D_8013B1AB) {
+        if (flags & 0x400) {
+            if (task->data1A < 30) task->data1A++;
+        } else {
+            task->data1A = 0;
+        }
+        task = D_8013AE88;
+        if (D_80120E90[task->data18].unk128 & 0x1000) task->data1A = 0;
+        if (!D_8013AFD3) {
+            drawTask = D_8013AE88;
+            if (drawTask->data1A >= 30) {
+                frame = gFrameCounter;
+                if (frame & 2) text = D_80010A1C;
+                else text = D_80010A2C;
+                func_80049D48((s16)(drawTask->data1C - 52), (s16)drawTask->data1E, text);
+            }
+        }
+    }
+}

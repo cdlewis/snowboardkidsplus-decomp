@@ -175,6 +175,7 @@ void updateCurrentPlayerSlopeVelocity(s32 push, s32 boost, s32 lateralDrag, s32 
     currentPlayerAbsolute->unk064 = currentPlayerAbsolute->unk064 * pitchCos / 4096;
 }
 
+/* DECOMP_ATTEMPT: archive 12/14 */
 INCLUDE_ASM("asm/nonmatchings/race/player/player_input", func_8002AE38);
 
 void prepareCurrentPlayerFrame(void) {

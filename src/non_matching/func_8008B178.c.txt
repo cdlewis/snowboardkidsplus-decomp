@@ -1,0 +1,88 @@
+#include "save_record_tasks_internal.h"
+
+extern const u16 D_80130798[9];
+extern s8 D_8013B480[4] __attribute__((section(".data")));
+extern u8 D_8012F20C[12];
+extern TexturedQuadListEntry *D_8013B3C0[2];
+
+#define PANEL_OT (&D_800EBFF0[D_8013AF78])
+#define PANEL_DEPTH (D_8013AE88->data1C)
+
+void func_8008B178(void) {
+    Movement2D *position;
+    s16 slot;
+    s16 course;
+    s16 i;
+    s16 pair;
+    s16 shade;
+    SaveRecord *records;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    slot = D_8013AE98->data1A;
+    course = gRacePlayers[slot].unk009;
+    setSpriteColor(128, 128, 128);
+    func_8006EF30((s16)(position->x / 4096 - 68), (s16)(position->y / 4096 - 96),
+                 9, D_80130798, 14, -1, PANEL_OT, PANEL_DEPTH);
+    drawDecimalNumber8x16(position->x / 4096 + 38, position->y / 4096 - 3, 6, 0,
+                          ((GlobalFlagStatePrefix *)&((SaveRecord *)&D_8013080C)[slot])->unk_3E4,
+                          0, -1, PANEL_OT, PANEL_DEPTH);
+    drawWrappedDoubleByteText(position->x / 4096 + 86, position->y / 4096 - 3,
+                              2, D_8013B480, 0, -1, PANEL_OT, PANEL_DEPTH);
+    func_8007240C(position->x / 4096 + 34, position->y / 4096 - 3,
+                  64, 16, 128, 128, 128, 2, PANEL_OT, PANEL_DEPTH);
+    func_8006C998(position->x / 4096 - 99, position->y / 4096 - 78, 110, 6, -1,
+                  PANEL_OT, PANEL_DEPTH);
+    func_8006C998(position->x / 4096 - 101, position->y / 4096 - 61, 91, 6, -1,
+                  PANEL_OT, PANEL_DEPTH);
+    func_8006C998(position->x / 4096 - 61, position->y / 4096 - 61, 89, 6, -1,
+                  PANEL_OT, PANEL_DEPTH);
+    func_8006C998((s8)D_8012F20C[course] + position->x / 4096 - 71,
+                  position->y / 4096 - 77, course + 254, (s16)(slot + 2), -1,
+                  PANEL_OT, PANEL_DEPTH);
+
+    for (i = 0; i < 3; i++) {
+        records = (SaveRecord *)&D_8013080C;
+        if (records[slot].flags_3B0[course] & (0x1000000U << i)) {
+            setSpriteColor(128, 128, 128);
+        } else {
+            setSpriteColor(32, 32, 32);
+        }
+        func_8006C998(position->x / 4096 - 96, i * 22 + position->y / 4096 - 50,
+                      i + 18, 6, -1, PANEL_OT, PANEL_DEPTH);
+    }
+
+    for (i = 0; i < 9; i++) {
+        setSpriteColor(128, 128, 128);
+        pair = getSaveRecordFlagPair(slot, course, i);
+        if (pair == 3) {
+            func_8006C998((s16)(i % 3) * 16 + position->x / 4096 - 60,
+                          (s16)(i / 3) * 22 + position->y / 4096 - 49,
+                          i + 70, 9, -1, PANEL_OT, PANEL_DEPTH);
+        } else if (pair == 2) {
+            func_8006C998((s16)(i % 3) * 16 + position->x / 4096 - 60,
+                          (s16)(i / 3) * 22 + position->y / 4096 - 49,
+                          i + 70, 10, -1, PANEL_OT, PANEL_DEPTH);
+        } else if (pair == 1) {
+            func_8006C998((s16)(i % 3) * 16 + position->x / 4096 - 60,
+                          (s16)(i / 3) * 22 + position->y / 4096 - 49,
+                          i + 70, 11, -1, PANEL_OT, PANEL_DEPTH);
+        } else {
+            setSpriteColor(32, 32, 32);
+            func_8006C998((s16)(i % 3) * 16 + position->x / 4096 - 60,
+                          (s16)(i / 3) * 22 + position->y / 4096 - 49,
+                          69, 9, -1, PANEL_OT, PANEL_DEPTH);
+        }
+    }
+
+    setTexturedQuadColor(128, 128, 128);
+    drawTexturedQuadList(position->x / 4096 - 104, position->y / 4096 - 80,
+                         D_8013B3C0[slot], 1, PANEL_OT, PANEL_DEPTH);
+    setSpriteColor(128, 128, 128);
+    func_8006C998(position->x / 4096 - 8, position->y / 4096 - 80,
+                  slot * 2 + 241, 0, 0, PANEL_OT, PANEL_DEPTH);
+    func_8006C998(position->x / 4096 - 8, position->y / 4096 - 80,
+                  267, 0, -1, PANEL_OT, PANEL_DEPTH);
+}

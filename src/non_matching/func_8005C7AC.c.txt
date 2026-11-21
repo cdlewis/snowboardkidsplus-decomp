@@ -1,0 +1,65 @@
+#define GAME_LOOP_ABSOLUTE_ADDRESSING
+#define PLAYER_COLLECTION_ABSOLUTE_ADDRESSING
+#include "game/engine/game_loop.h"
+#include "game/save/save_data.h"
+#include "psx/scratchpad.h"
+#include "psx/libetc.h"
+#include "../../graphics/render_effects_internal.h"
+#include "game/audio/music.h"
+#include "game/engine/angles.h"
+#include "game/engine/game_options.h"
+#include "game/engine/game_task_scheduler.h"
+#include "game/engine/random.h"
+#include "game/engine/task.h"
+#include "game/graphics/coordinate.h"
+#include "game/graphics/graphics.h"
+#include "game/io/cd_queue.h"
+#include "game/io/controller.h"
+#include "game/io/controller_effects.h"
+#include "game/io/dat_entries.h"
+#include "game/io/dat_resources.h"
+#include "game/menu/selected_records.h"
+#include "game/race/camera/race_camera.h"
+#include "game/race/course/course_geometry.h"
+#include "game/race/course/course_offset.h"
+#include "game/race/player/race_player.h"
+#include "psx/libapi.h"
+#include "psx/libgpu.h"
+#include "psx/libgs.h"
+#include "psx/libgte.h"
+
+void func_8005C7AC(void) {
+    BobbingTrailEmitterResource *resource;
+    u16 angle;
+    const MATRIX *transform;
+    s32 x;
+    s32 heading;
+
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    resource = (BobbingTrailEmitterResource *)&D_800D9504[D_8013AE88->resource14];
+    GsInitCoordinate2(0, &resource->coordinate);
+
+    resource->geometryIndex = 0x59;
+    resource->rotation.vx = 0;
+    angle = ((GeometryPlacement *)geometryPlacementDataAbsolute)[resource->geometryIndex].angle;
+    resource->rotation.vz = 0;
+    transform = &resource->coordinate.coord;
+    resource->coordinate.coord.t[0] = 0x8AF7;
+    resource->coordinate.coord.t[1] = 0xB658;
+    x = transform->t[0];
+    resource->coordinate.coord.t[2] = 0xE7C2;
+    resource->countdown = 15;
+    resource->headingStep = 8;
+    resource->phase = 0;
+    resource->position.y = resource->coordinate.coord.t[1] << 8;
+    resource->rotation.vy = angle;
+    resource->position.x = x << 8;
+    heading = resource->rotation.vy;
+    resource->baseHeading.value = heading;
+    resource->position.z = resource->coordinate.coord.t[2] << 8;
+    resource->heading.value = heading;
+    setCurrentTaskCallback(updateBobbingTrailEmitterTask);
+}

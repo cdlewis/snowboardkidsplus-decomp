@@ -1,0 +1,160 @@
+#define TASK_WIDGET_COLORS_ABSOLUTE_ADDRESSING
+#include "psx/stdlib.h"
+#include "psx/scratchpad.h"
+#include "psx/libetc.h"
+#include "../menu/save_record_tasks_internal.h"
+#include "game/engine/byte_search.h"
+#include "game/io/cd_queue.h"
+#include "game/menu/selected_records.h"
+#include "game/menu/selected_sprite.h"
+#include "game/menu/task_widgets.h"
+
+typedef struct MenuPlayerModelPosition {
+    s32 x;
+    s32 y;
+    s16 z;
+} MenuPlayerModelPosition;
+static inline RegisteredTaskEntry *getRegisteredMenuTaskEntry(u16 resource, u32 index) {
+    RegisteredTaskEntry *entries = (RegisteredTaskEntry *)&D_800D9504[resource];
+    return &entries[(u16)(index / 10)];
+}
+
+void func_800816D8(void);
+extern u8 D_80130084[];
+
+typedef struct PlayerTextureSelection {
+    s16 current;
+    s16 previous;
+} PlayerTextureSelection;
+
+extern PlayerTextureSelection D_8013B468[2];
+
+void func_80083C3C(void) {
+    MenuPlayerModelPosition *position;
+    RegisteredTaskEntry *children;
+    RegisteredTaskEntry *entry;
+    MenuSelectionState *selection;
+    PlayerTextureSelection *texture;
+    GameTask *task;
+    s16 playerIndex;
+    s32 outgoingSlot;
+    s32 incomingSlot;
+    RECT *incomingBounds;
+    s16 height;
+    s16 i;
+    s32 x;
+
+    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    position = (MenuPlayerModelPosition *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
+    children = (RegisteredTaskEntry *)&D_800D9504[D_8013AE88->resource16];
+    if ((u16)(D_8013AE88->data1E % 10) == 0) {
+        if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
+        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource14, D_8013AE88->data1E);
+    } else {
+        if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
+        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource16, D_8013AE88->data1E);
+    }
+    if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
+    task = D_8013AE88;
+    playerIndex = task->data18;
+    selection = &D_801300AC[playerIndex];
+    texture = &D_8013B468[playerIndex];
+
+    if (task->data1C == 0) {
+        outgoingSlot = 0;
+        incomingSlot = 1;
+    } else {
+        outgoingSlot = 1;
+        incomingSlot = 0;
+    }
+    incomingBounds = &D_801300B8[incomingSlot];
+    height = incomingBounds->h;
+
+    switch (entry->command) {
+    case 1: {
+        RECT *outgoingBounds = &D_801300B8[outgoingSlot];
+        s16 width = 160;
+        s16 top = 60;
+        outgoingBounds->y = top;
+        outgoingBounds->h = top * 2;
+        outgoingBounds->x = width;
+        outgoingBounds->w = width;
+        incomingBounds->y = top;
+        incomingBounds->x = width;
+        incomingBounds->w = width;
+        incomingBounds->h = 0;
+        gPlayerResourceTextureSelections.entries[playerIndex][selection->selection] =
+            D_80130084[texture->current];
+        reloadTaskPlayerModel(children[incomingSlot].task, (s16)(incomingSlot + playerIndex * 2),
+                              playerIndex, selection->selection,
+                              position->x / 4096, position->y / 4096, position->z);
+        playSoundEffect(1, 0x102, 0x20);
+        entry->command++;
+        break;
+    }
+    case 2: {
+        RECT *outgoingBounds = &D_801300B8[outgoingSlot];
+        s16 width = 160;
+        height += 4;
+        if (height <= 120) {
+            outgoingBounds->y = height + 60;
+            outgoingBounds->h = 120 - height;
+            outgoingBounds->w = outgoingBounds->x = width;
+            incomingBounds->y = 60;
+            incomingBounds->w = incomingBounds->x = width;
+            incomingBounds->h = height;
+            if ((u16)(height - 9) < 103) {
+                i = 0;
+                for (;;) {
+                    s16 frame = rand() % 5;
+                    s16 firstY = height - 68;
+                    x = i;
+                    x *= 9;
+                    x -= height - 82;
+                    x += height / 4;
+                    drawAnimatedSprite16(frame, x, firstY, 10, &D_800EBFF0[D_8013AF78], 4);
+                    {
+                        s16 secondFrame = rand() % 5;
+                        s16 secondX = x + 3;
+                        s16 secondY = height - 71;
+                        drawAnimatedSprite16(secondFrame, secondX, secondY, 10, &D_800EBFF0[D_8013AF78], 4);
+                    }
+                    if (++i >= 6) {
+                        break;
+                    }
+                }
+            }
+        } else {
+            entry->command++;
+        }
+        break;
+    }
+    case 3:
+        if (D_8013AE88->data1C == 0) {
+            D_8013AE88->data1C = 1;
+        } else {
+            D_8013AE88->data1C = 0;
+        }
+        initMovement2D((Movement2D *)&D_800D9504[children[outgoingSlot].task->resource16],
+                       position->x + 0x140000, position->y);
+        D_801300B8[outgoingSlot].x = 0;
+        D_801300B8[outgoingSlot].y = 0;
+        D_801300B8[outgoingSlot].w = -1;
+        D_801300B8[outgoingSlot].h = -1;
+        D_801300B8[incomingSlot].x = 0;
+        D_801300B8[incomingSlot].y = 0;
+        D_801300B8[incomingSlot].w = -1;
+        D_801300B8[incomingSlot].h = -1;
+        entry->command = 0;
+        entry->flags = 0;
+        texture->previous = texture->current;
+        setCurrentTaskCallback(func_800816D8);
+        break;
+    default:
+        setCurrentTaskCallback(func_800816D8);
+        entry->command = 0;
+        entry->flags = 0;
+        break;
+    }
+}

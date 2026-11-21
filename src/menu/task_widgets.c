@@ -407,7 +407,20 @@ stop_transition:
     }
 }
 
+/* DECOMP_ATTEMPT: inline 8/10 */
+#ifdef NON_MATCHING
+s16 func_80070794(s32 id) {
+    if (id >= 0x1000 && id < 0x2000) {
+        return 1;
+    }
+    if (id >= 0x2000 && id < 0x3000) {
+        return 2;
+    }
+    return 0;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80070794);
+#endif
 
 s32 hasTaskStateValue6(s32 id) {
     return D_8012D4A4[func_80070794(id)].unk06 != 0;
@@ -417,6 +430,7 @@ s32 isTaskStateTransitionBelowMaximum(s32 id) {
     return D_8012D4A4[func_80070794(id)].unk06 < 0xFFFFu;
 }
 
+/* DECOMP_ATTEMPT: archive 14/16 */
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80070830);
 
 void configureColorCycleTask(s32 mode, s16 minimum, s16 maximum, s32 step, s16 index) {
@@ -488,6 +502,7 @@ void updateColorCycleTask(void) {
     }
 }
 
+/* DECOMP_ATTEMPT: archive 23/26 */
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80070B64);
 
 s32 isTaskResourceTransitionComplete(s16 index) {
@@ -499,10 +514,13 @@ s32 isTaskResourceTransitionComplete(s16 index) {
     return 0;
 }
 
+/* DECOMP_ATTEMPT: archive 18/20 */
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80070C0C);
 
+/* DECOMP_ATTEMPT: archive 58/59 */
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80070C5C);
 
+/* DECOMP_ATTEMPT: archive 58/59 */
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80070D48);
 
 void addDrawAreaPacket(s32 x, s32 y, s32 width, s32 height, GsOT *ot, u16 depth) {
@@ -632,6 +650,7 @@ s32 updateMovement2D(Movement2D *movement) {
     return 0;
 }
 
+/* DECOMP_ATTEMPT: archive 39/44 */
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80071300);
 
 void copyIndexedTaskImagesToVram(s16 index) {
@@ -859,8 +878,10 @@ void markSecondaryTaskAndClearReference(void) {
     }
 }
 
+/* DECOMP_ATTEMPT: archive 24/32 */
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80071E78);
 
+/* DECOMP_ATTEMPT: archive 72/77 */
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80071EF8);
 
 void drawSemiTransparentTextureRect(s16 x, s16 y, s16 width, s16 height,
@@ -936,6 +957,7 @@ void addTilePacket(s32 x, s32 y, s32 width, s32 height, s32 r, s32 g, s32 b,
     func_800BF2C8((u32)(packet + 1));
 }
 
+/* DECOMP_ATTEMPT: archive 81/84 */
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_8007240C);
 
 void setMusicSequenceEnabled(s16 enabled) {
@@ -1056,14 +1078,46 @@ void createRegisteredSpacedChildTask(s16 childIndex, s16 x, s16 y, TaskCallback 
     entry->task = D_8013AE8C;
 }
 
+/* DECOMP_ATTEMPT: archive 639/671 */
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80072C54);
 
+/* DECOMP_ATTEMPT: archive 11/16 */
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_800736D0);
 
+/* DECOMP_ATTEMPT: inline 12/13 */
+#ifdef NON_MATCHING
+u32 func_80073708(const u32 *entries, const u8 *remap, s16 index) {
+    s32 mapped;
+    const u32 *entry;
+    if (remap == NULL) {
+        mapped = index;
+        entry = &entries[mapped];
+    } else {
+        mapped = remap[index];
+        entry = &entries[mapped];
+    }
+    return *entry;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80073708);
+#endif
 
+/* DECOMP_ATTEMPT: inline 9/9 */
+#ifdef NON_MATCHING
+s16 func_8007373C(const u8 *table, s16 index) {
+    s32 value;
+    if (table == NULL) {
+        value = index;
+    } else {
+        value = table[index];
+    }
+    return value;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_8007373C);
+#endif
 
+/* DECOMP_ATTEMPT: archive 15/16 */
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80073760);
 
 s16 findByteIndexOrZero(const u8 *data, s16 value, s16 count) {
@@ -1816,6 +1870,7 @@ void createRegisteredMovingPanelTask(u16 mode, const s16 *values, s16 x, s16 y,
     entry->task = D_8013AE8C;
 }
 
+/* DECOMP_ATTEMPT: archive 424/481 */
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_8007649C);
 
 void createInputTimedSpriteTask(s32 x, s32 y, const TimedSequenceEntry *entries, s32 count,
@@ -2023,8 +2078,10 @@ void initializeDualResourceSequenceTask(void) {
     D_8013AE88->unk10 |= 2;
 }
 
+/* DECOMP_ATTEMPT: unattempted */
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80077770);
 
+/* DECOMP_ATTEMPT: archive 18/20 */
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80077E58);
 
 void createDualSelectionSequenceTask(s16 x, s16 y, s32 depth, s32 index) {
@@ -2067,6 +2124,7 @@ void createDualSelectionSequenceTask(s16 x, s16 y, s32 depth, s32 index) {
     entry->task = D_8013AE8C;
 }
 
+/* DECOMP_ATTEMPT: archive 463/511 */
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80078140);
 
 void createPlayerPanelTask(s16 player, s16 x, s16 y, s32 depth, s32 index) {
@@ -2708,6 +2766,7 @@ void updateShrinkingSpriteTask(void) {
     }
 }
 
+/* DECOMP_ATTEMPT: archive 235/257 */
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_8007B48C);
 
 void cycleSaveRecordUnlockFlags(s16 recordIndex, s16 maskIndex) {

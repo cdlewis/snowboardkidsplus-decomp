@@ -315,9 +315,124 @@ void getPlayerCourseProgress(u16 playerIndex, s32 *progress, s32 *distance) {
     }
 }
 
+/* DECOMP_ATTEMPT: archive 239/260 */
 INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002B820);
 
+/* DECOMP_ATTEMPT: inline 84/196 */
+#ifdef NON_MATCHING
+void func_8002BC2C(void) {
+    RacePlayer *second;
+    RacePlayer *first;
+    s16 heading;
+    s32 shiftX;
+    s32 halfZ;
+    s32 halfX;
+    s32 shiftZ;
+    s32 zProduct;
+    s32 radius;
+    s32 sinAngle;
+    s32 penetration;
+    s32 distance;
+    s32 dx;
+    s32 xProduct;
+    s32 heightDifference;
+    s32 j;
+    s32 i;
+    s32 heightLimit;
+    s32 withinZRadius;
+    s32 secondX;
+    s32 dz;
+    s32 roundedZProduct;
+    s32 secondZ;
+    u32 distanceMinusRadius;
+    u8 playerCount;
+
+    playerCount = (u8) D_8013AFD2;
+    i = 0;
+    if ((D_8013AFD2 - 1) > 0) {
+        first = gRacePlayers;
+        do {
+            j = i + 1;
+            if (j < (s8) playerCount) {
+                second = &gRacePlayers[j];
+                do {
+                    if (first->isActive && second->isActive &&
+                        !(first->unk128 & 0x200000) && !(second->unk128 & 0x200000)) {
+                        heightDifference = first->unk074 - second->unk074;
+                        if (heightDifference < 0) {
+                            heightLimit = first->unk0B0;
+                            heightDifference = -heightDifference;
+                        } else {
+                            heightLimit = second->unk0B0;
+                        }
+                        if ((heightLimit * 2) >= heightDifference) {
+                            dx = first->x - second->x;
+                            radius = first->unk0AC + second->unk0AC;
+                            if (dx < 0) {
+                                dx = -dx;
+                            }
+                            if (dx < radius) {
+                                dz = first->z - second->z;
+                                withinZRadius = dz < radius;
+                                if (dz < 0) {
+                                    dz = -dz;
+                                    withinZRadius = dz < radius;
+                                }
+                                if (withinZRadius != 0) {
+                                    distance = SquareRoot0((dx * dx) + (dz * dz));
+                                    distanceMinusRadius = distance - radius;
+                                    if (distance < radius) {
+                                        penetration = (s32) (distanceMinusRadius + (distanceMinusRadius >> 0x1F)) >> 1;
+                                        heading = getXZHeading(first->x, first->z, second->x, second->z);
+                                        sinAngle = rsin(heading);
+                                        xProduct = -sinAngle * penetration;
+                                        zProduct = rcos(heading) * penetration;
+                                        if (xProduct < 0) {
+                                            xProduct += 0xFFF;
+                                        }
+                                        roundedZProduct = zProduct;
+                                        shiftX = xProduct >> 0xC;
+                                        if (roundedZProduct < 0) {
+                                            roundedZProduct += 0xFFF;
+                                        }
+                                        shiftZ = roundedZProduct >> 0xC;
+                                        if (first->unk128 & 0x1000) {
+                                            if (!(second->unk128 & 0x1000)) {
+                                                secondX = second->x + shiftX;
+                                                secondZ = second->z - shiftZ;
+                                                goto update_second;
+                                            }
+                                        } else if (second->unk128 & 0x1000) {
+                                            first->x -= shiftX;
+                                            first->z += shiftZ;
+                                        } else {
+                                            halfX = (s32) (shiftX + ((u32) xProduct >> 0x1F)) >> 1;
+                                            first->x -= halfX;
+                                            halfZ = (s32) (shiftZ + ((u32) roundedZProduct >> 0x1F)) >> 1;
+                                            first->z += halfZ;
+                                            secondX = second->x + halfX;
+                                            secondZ = second->z - halfZ;
+update_second:
+                                            second->x = secondX;
+                                            second->z = secondZ;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    j += 1;
+                    second++;
+                } while (j < D_8013AFD2);
+            }
+            i += 1;
+            first++;
+        } while (i < (D_8013AFD2 - 1));
+    }
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002BC2C);
+#endif
 
 u16 arePositionsWithinXZRange(const Position3D *a, const Position3D *b, s32 threshold) {
     s32 dx = a->x - b->x;
@@ -404,6 +519,7 @@ void resolvePlayerCollisionsWithCylinder(const Position3D *position, s32 radius,
     }
 }
 
+/* DECOMP_ATTEMPT: archive 128/147 */
 INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002C2D8);
 
 u16 pushPlayerOutOfCylinder(const Position3D *position, s32 radius, s32 height, s16 playerIndex) {
@@ -667,21 +783,121 @@ s32 requestCurrentPlayerAction7(void) {
     return 0;
 }
 
+/* DECOMP_ATTEMPT: inline 17/17 */
+#ifdef NON_MATCHING
+s32 func_8002CE58(void) {
+    s32 result;
+    if (currentPlayerAbsolute->unk128 & 0x37D000) {
+        result = 1;
+    } else {
+        if (D_8013B0E4 < 8) {
+            D_8013B0E4 = 8;
+        }
+        result = 0;
+    }
+    return result;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002CE58);
+#endif
 
+/* DECOMP_ATTEMPT: inline 17/17 */
+#ifdef NON_MATCHING
+s32 func_8002CE9C(void) {
+    s16 result;
+    if (currentPlayerAbsolute->unk128 & 0x77D000) {
+        result = 1;
+    } else {
+        if (D_8013B0E4 < 12) {
+            D_8013B0E4 = 12;
+        }
+        result = 0;
+    }
+    return result;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002CE9C);
+#endif
 
+/* DECOMP_ATTEMPT: inline 17/17 */
+#ifdef NON_MATCHING
+s32 func_8002CEE0(void) {
+    if (currentPlayerAbsolute->unk128 & 0x77D000) {
+        return 1;
+    }
+    if (D_8013B0E4 < 11) {
+        D_8013B0E4 = 11;
+    }
+    return 0;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002CEE0);
+#endif
 
+/* DECOMP_ATTEMPT: inline 17/17 */
+#ifdef NON_MATCHING
+s32 func_8002CF24(void) {
+    if (currentPlayerAbsolute->unk128 & 0x77D000) return 1;
+    if (D_8013B0E4 < 13) D_8013B0E4 = 13;
+    return 0;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002CF24);
+#endif
 
+/* DECOMP_ATTEMPT: inline 17/17 */
+#ifdef NON_MATCHING
+s32 func_8002CF68(void) {
+    s32 result;
+    if (currentPlayerAbsolute->unk128 & 0x77D000) {
+        result = 1;
+    } else {
+        if (D_8013B0E4 < 14) {
+            D_8013B0E4 = 14;
+        }
+        result = 0;
+    }
+    return (s16)result;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002CF68);
+#endif
 
+/* DECOMP_ATTEMPT: inline 17/17 */
+#ifdef NON_MATCHING
+s32 func_8002CFAC(void) {
+    if (currentPlayerAbsolute->unk128 & 0x77D000) {
+        return 1;
+    }
+    if (D_8013B0E4 < 3) {
+        D_8013B0E4 = 3;
+    }
+    return 0;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002CFAC);
+#endif
 
+/* DECOMP_ATTEMPT: archive 16/20 */
 INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002CFF0);
 
+/* DECOMP_ATTEMPT: inline 20/20 */
+#ifdef NON_MATCHING
+s32 func_8002D040(void) {
+    u32 flags = currentPlayerAbsolute->unk128;
+    if (!(flags & 0x43000)) {
+        if (flags & 0x800) {
+            if (D_8013B0E4 < 10) {
+                D_8013B0E4 = 10;
+            }
+            return 0;
+        }
+    }
+    return 1;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002D040);
+#endif
 
 s32 checkCurrentPlayerFlags43040OrAngleRange(void) {
     RacePlayer *player = currentPlayerAbsolute;
@@ -707,7 +923,23 @@ s32 checkCurrentPlayerFlags43040OrAngleRange(void) {
     return 0;
 }
 
+/* DECOMP_ATTEMPT: inline 17/17 */
+#ifdef NON_MATCHING
+s32 func_8002D120(void) {
+    u8 result;
+    if (currentPlayerAbsolute->unk128 & 0x43000) {
+        result = 1;
+    } else {
+        if (D_8013B0E4 <= 0) {
+            D_8013B0E4 = 1;
+        }
+        result = 0;
+    }
+    return result;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002D120);
+#endif
 
 s32 checkCurrentPlayerFlags345001(void) {
     RacePlayer *player = currentPlayerAbsolute;
@@ -720,7 +952,21 @@ s32 checkCurrentPlayerFlags345001(void) {
     return 0;
 }
 
+/* DECOMP_ATTEMPT: inline 17/17 */
+#ifdef NON_MATCHING
+s32 func_8002D1B8(void) {
+    if (currentPlayerAbsolute->unk128 & 0x775000) {
+        return 1;
+    } else {
+        if (D_8013B0E4 < 16) {
+            D_8013B0E4 = 16;
+        }
+        return 0;
+    }
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002D1B8);
+#endif
 
 s32 requestCurrentPlayerAction17(void) {
     RacePlayer *player = currentPlayerAbsolute;
@@ -754,13 +1000,66 @@ s32 checkCurrentPlayerFlags275000OrField134(void) {
     return 0;
 }
 
+/* DECOMP_ATTEMPT: inline 17/17 */
+#ifdef NON_MATCHING
+s32 func_8002D2B4(void) {
+    if (currentPlayerAbsolute->unk128 & 0x775000) {
+        return 1;
+    }
+    if (D_8013B0E4 < 4) {
+        D_8013B0E4 = 4;
+    }
+    return 0;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002D2B4);
+#endif
 
+/* DECOMP_ATTEMPT: inline 17/17 */
+#ifdef NON_MATCHING
+s32 func_8002D2F8(void) {
+    if (currentPlayerAbsolute->unk128 & 0x775000) {
+        return 1;
+    }
+    if (D_8013B0E4 < 5) {
+        D_8013B0E4 = 5;
+    }
+    return 0;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002D2F8);
+#endif
 
+/* DECOMP_ATTEMPT: inline 17/17 */
+#ifdef NON_MATCHING
+s32 func_8002D33C(void) {
+    if (currentPlayerAbsolute->unk128 & 0x41001) {
+        return 1;
+    }
+    if (D_8013B0E4 < 19) {
+        D_8013B0E4 = 19;
+    }
+    return 0;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002D33C);
+#endif
 
+/* DECOMP_ATTEMPT: inline 17/17 */
+#ifdef NON_MATCHING
+s32 func_8002D380(void) {
+    if (currentPlayerAbsolute->unk128 & 0x41001) {
+        return 1;
+    } else {
+        if (D_8013B0E4 < 20) {
+            D_8013B0E4 = 20;
+        }
+        return 0;
+    }
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002D380);
+#endif
 
 s16 processCurrentPlayerActionRequests(s16 suppressWallAction) {
     u16 pending = currentPlayerAbsolute->unk0E8;
@@ -1079,6 +1378,7 @@ void updateCurrentPlayerDirectionalAnimation(void) {
     currentPlayerAbsolute->unk128 |= 0x800;
 }
 
+/* DECOMP_ATTEMPT: archive 19/22 */
 INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002E368);
 
 void func_8002E3C0(void) {
@@ -1131,6 +1431,7 @@ void playCurrentPlayerSoundEffect(s16 index) {
     }
 }
 
+/* DECOMP_ATTEMPT: archive 13/14 */
 INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002E5A0);
 
 void startPlayerTimerTask(RacePlayer *player) {
@@ -1357,4 +1658,5 @@ void loadCurrentPlayerModelBlock(void) {
     }
 }
 
+/* DECOMP_ATTEMPT: archive 223/232 */
 INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002EE0C);

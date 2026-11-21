@@ -548,6 +548,7 @@ void updatePlayerCoordinateEffectTask(void) {
     }
 }
 
+/* DECOMP_ATTEMPT: archive 117/120 */
 INCLUDE_ASM("asm/nonmatchings/race/effects/coordinate_effects", func_80046228);
 
 void initializePlayerVisualHistory(TaskVisualResource *resource, VECTOR *vectors, s32 value, s32 scale) {

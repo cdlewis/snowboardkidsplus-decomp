@@ -404,8 +404,10 @@ void drawLayeredBackgroundAndSetFog(s16 playerIndex) {
     SetFogNearFar(8000, 10000, 400);
 }
 
+/* DECOMP_ATTEMPT: archive 309/312 */
 INCLUDE_ASM("asm/nonmatchings/graphics/course_rendering", func_8004E718);
 
+/* DECOMP_ATTEMPT: archive 219/222 */
 INCLUDE_ASM("asm/nonmatchings/graphics/course_rendering", func_8004EBF8);
 
 void drawCyanBackgroundAndSetFog(s16 playerIndex) {
@@ -604,6 +606,7 @@ void createFlickeringDotsTask(s32 playerIndex) {
     resource->frame = 0;
 }
 
+/* DECOMP_ATTEMPT: archive 323/325 */
 INCLUDE_ASM("asm/nonmatchings/graphics/course_rendering", func_8004FB70);
 
 void drawRipplingBackgroundAndSetFog(s16 playerIndex) {
@@ -867,6 +870,7 @@ void readVramPixelColor(s32 x, s32 y, TextureColor *out) {
     out->stp = pixel >> 15;
 }
 
+/* DECOMP_ATTEMPT: archive 24/26 */
 INCLUDE_ASM("asm/nonmatchings/graphics/course_rendering", func_8005162C);
 
 void unpackPsxColor(u32 color, UnpackedPsxColor *out) {
@@ -888,6 +892,7 @@ u32 packTextureColor(TextureColor *color) {
     return stp | rgb;
 }
 
+/* DECOMP_ATTEMPT: archive 18/28 */
 INCLUDE_ASM("asm/nonmatchings/graphics/course_rendering", func_80051700);
 
 void queueScanlineCopyPackets(void) {
@@ -937,6 +942,7 @@ void queueScanlineCopyPackets(void) {
     }
 }
 
+/* DECOMP_ATTEMPT: archive 161/181 */
 INCLUDE_ASM("asm/nonmatchings/graphics/course_rendering", func_80051A68);
 
 void drawCourseModelsForView(s16 view) {

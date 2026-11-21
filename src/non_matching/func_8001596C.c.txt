@@ -1,0 +1,32 @@
+#include "common.h"
+
+typedef struct ControllerInputRecord {
+    u8 repeatCount;
+    s8 value1;
+    s8 value2;
+    u8 unk3;
+    u16 buttons;
+    u16 buttons2;
+} ControllerInputRecord;
+extern u8 D_8013AFD7 __attribute__((section(".data")));
+extern u8 D_8013AFD9 __attribute__((section(".data")));
+extern ControllerInputRecord *D_8013AED4[2] __attribute__((section(".data")));
+extern ControllerInputRecord D_800E959C[2][256];
+extern u16 D_8013AEDC[2] __attribute__((section(".data")));
+extern u8 D_8013AEE4;
+
+void func_8001596C(u16 controller) {
+    if (D_8013AFD7 || D_8013AFD9) {
+        D_8013AED4[controller] = D_800E959C[controller];
+    } else {
+        ControllerInputRecord **slot = D_8013AED4;
+        ControllerInputRecord *buffer = (ControllerInputRecord *)0x8017B800;
+        slot += controller;
+        *slot = buffer;
+    }
+    D_8013AED4[controller]->repeatCount = 0;
+    D_8013AED4[controller]->buttons = 0xFFFF;
+    D_8013AEE4 = 2;
+    D_8013AED4[controller]->buttons2 = 0xFFFF;
+    D_8013AEDC[controller] = 1;
+}

@@ -1,0 +1,48 @@
+#include "common.h"
+#include "game/graphics.h"
+typedef struct BackgroundTileData {
+    u32 unk00;
+    u8 ncellw, ncellh, cellw, cellh;
+    u16 index[1];
+} BackgroundTileData;
+struct GameBackgroundMap {
+    u8 cellw, cellh;
+    u16 ncellw, ncellh;
+    void *base;
+    u16 *index;
+};
+struct GameBackground {
+    u32 attribute;
+    s16 x, y, w, h, scrollx, scrolly;
+    u8 r, g, b;
+    GameBackgroundMap *map;
+    s16 mx, my, scalex, scaley;
+    s32 rotate;
+};
+void func_80071300(s16 mode, s16 unused, GameBackground *background,
+                   GameBackgroundMap *map, u8 *cells, u8 *tiles) {
+    BackgroundTileData *tileData = (BackgroundTileData *)tiles;
+    u32 attribute;
+    attribute = mode & 3;
+    cells += 8;
+    map->ncellw = tileData->ncellw;
+    map->ncellh = tileData->ncellh;
+    map->cellw = tileData->cellw;
+    tiles += 8;
+    map->cellh = tileData->cellh;
+    map->base = cells;
+    map->index = (u16 *)tiles;
+    background->r = background->g = background->b = 128;
+    background->mx = 160;
+    background->my = 120;
+    background->scalex = background->scaley = 4096;
+    background->w = 320;
+    background->attribute = attribute << 24;
+    background->h = 240;
+    background->x = 0;
+    background->y = 0;
+    background->scrollx = background->scrolly = 0;
+    background->map = map;
+    background->rotate = 0;
+    background->attribute |= 0x08000000;
+}

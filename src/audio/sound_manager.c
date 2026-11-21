@@ -180,12 +180,14 @@ void endSoundSystem(void) {
     }
 }
 
+/* DECOMP_ATTEMPT: archive 20/22 */
 INCLUDE_ASM("asm/nonmatchings/audio/sound_manager", func_800180F4);
 
 void stopAllSoundVoices(void) {
     SsUtAllKeyOff(0);
 }
 
+/* DECOMP_ATTEMPT: archive 15/17 */
 INCLUDE_ASM("asm/nonmatchings/audio/sound_manager", func_8001816C);
 
 s32 playSoundEffect(u8 bank, u16 programAndTone, s16 volume) {
@@ -239,6 +241,7 @@ s32 attenuateSoundVolume(s32 distance, s16 volume) {
     return result;
 }
 
+/* DECOMP_ATTEMPT: archive 78/79 */
 INCLUDE_ASM("asm/nonmatchings/audio/sound_manager", func_800183FC);
 
 s32 playPositionalSoundEffect(s32 x, s32 y, s32 z, u8 bank, u16 programAndTone, s16 volume) {
@@ -291,6 +294,7 @@ void stopMatchingSoundVoice(u8 owner, u8 bank, u16 note) {
     }
 }
 
+/* DECOMP_ATTEMPT: archive 17/19 */
 INCLUDE_ASM("asm/nonmatchings/audio/sound_manager", func_800187B8);
 
 void playPlayerPositionalSoundEffect(u8 playerIndex, u8 bank, u16 programAndTone, s16 volume) {
@@ -307,4 +311,5 @@ void playPlayerPositionalSoundEffect(u8 playerIndex, u8 bank, u16 programAndTone
     }
 }
 
+/* DECOMP_ATTEMPT: archive 74/74 */
 INCLUDE_ASM("asm/nonmatchings/audio/sound_manager", func_8001890C);

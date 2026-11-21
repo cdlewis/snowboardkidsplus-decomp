@@ -363,10 +363,13 @@ void queueCourseResourceSectorReads(void) {
     }
 }
 
+/* DECOMP_ATTEMPT: archive 403/416 */
 INCLUDE_ASM("asm/nonmatchings/race/course/course_objects", func_80058BD4);
 
+/* DECOMP_ATTEMPT: archive 11/15 */
 INCLUDE_ASM("asm/nonmatchings/race/course/course_objects", func_80059254);
 
+/* DECOMP_ATTEMPT: archive 15/19 */
 INCLUDE_ASM("asm/nonmatchings/race/course/course_objects", func_80059290);
 
 void drawTaskObject(u16 index) {
@@ -968,6 +971,7 @@ void initializeObjectVisualTask(void) {
     setCurrentTaskCallback(func_8005B460);
 }
 
+/* DECOMP_ATTEMPT: archive 92/107 */
 INCLUDE_ASM("asm/nonmatchings/race/course/course_objects", func_8005B460);
 
 void initializeInteractionVisualTask(void) {
@@ -1327,6 +1331,7 @@ void updatePlacedObjectBounceTask(void) {
     if (D_8013AE88->data1C == 4) setCurrentTaskCallback(updatePlacedObjectTask);
 }
 
+/* DECOMP_ATTEMPT: archive 66/68 */
 INCLUDE_ASM("asm/nonmatchings/race/course/course_objects", func_8005C7AC);
 
 void updateBobbingTrailEmitterTask(void) {
@@ -1533,6 +1538,7 @@ void initializeMovingVisualTask(void) {
     setCurrentTaskCallback(func_8005D394);
 }
 
+/* DECOMP_ATTEMPT: archive 289/293 */
 INCLUDE_ASM("asm/nonmatchings/race/course/course_objects", func_8005D394);
 
 void resolvePlayerRegionCollision(RacePlayer *player, PlayerCollisionRegion *region) {
@@ -1925,6 +1931,7 @@ void updateOrbitingObstacleTask(void) {
     }
 }
 
+/* DECOMP_ATTEMPT: archive 167/168 */
 INCLUDE_ASM("asm/nonmatchings/race/course/course_objects", func_8005EBC4);
 
 void updateAndDrawCurrentTaskObject(void) {

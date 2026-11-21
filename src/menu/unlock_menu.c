@@ -190,6 +190,7 @@ void updateUnlockOptionsMenuTask(void) {
     }
 }
 
+/* DECOMP_ATTEMPT: archive 259/261 */
 INCLUDE_ASM("asm/nonmatchings/menu/unlock_menu", func_800A42CC);
 
 void finishUnlockMenuTask(void) {
@@ -259,6 +260,7 @@ void resetUnlockMenuOffsets(UnlockMenuState *state) {
     }
 }
 
+/* DECOMP_ATTEMPT: archive 161/163 */
 INCLUDE_ASM("asm/nonmatchings/menu/unlock_menu", func_800A499C);
 
 void drawUnlockNotificationMenu(void) {

@@ -80,8 +80,10 @@ void selectGeometryRecord(s16 index) {
     D_8013B208 = &vertices[D_8013B1F0[index].vertexIndices[2] * 3];
 }
 
+/* DECOMP_ATTEMPT: archive 114/207 */
 INCLUDE_ASM("asm/nonmatchings/race/course/course_geometry", func_8004A764);
 
+/* DECOMP_ATTEMPT: archive 68/102 */
 INCLUDE_ASM("asm/nonmatchings/race/course/course_geometry", func_8004AAA0);
 
 s32 getGeometryPlacementSignedDistance(s16 index, s32 x, s32 z) {

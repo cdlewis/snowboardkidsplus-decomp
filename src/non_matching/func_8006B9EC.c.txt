@@ -1,0 +1,13 @@
+#include "common.h"
+#include "game/graphics.h"
+#include "game/linear_random.h"
+#include "game/offset_archive.h"
+#include "game/music.h"
+#include "psx/libsnd.h"
+
+extern u16 D_8013B376;
+
+void func_8006B9EC(u16 value) {
+    value &= 7;
+    D_8013B376 = value;
+}

@@ -1,0 +1,17 @@
+#include "common.h"
+#define RACE_PLAYER_GP_ADDRESSING
+#include "game/race_player.h"
+#define GAME_TASK_ABSOLUTE_ADDRESSING
+#include "game/task.h"
+
+void func_80025FAC(void) {
+    if (--D_8013B0D8->unk08C == 0) {
+        D_8013AE88->data1A++;
+        D_8013B0D8->unk08C = 19;
+        if (D_8013B0D8->unk128 & 0x400) {
+            D_8013B0D8->unk090 = -0x1000;
+        } else {
+            D_8013B0D8->unk090 = 0x1000;
+        }
+    }
+}

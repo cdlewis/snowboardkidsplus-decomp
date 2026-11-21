@@ -433,6 +433,7 @@ void updateCdAwareCourseSelectionTask(void) {
     }
 }
 
+/* DECOMP_ATTEMPT: archive 35/36 */
 INCLUDE_ASM("asm/nonmatchings/menu/course_selection_tasks", func_8007D47C);
 
 void initializeModeDependentDualResourceTask(void) {
@@ -794,7 +795,23 @@ draw_base_status:
     }
 }
 
+/* DECOMP_ATTEMPT: inline 9/9 */
+#ifdef NON_MATCHING
+s16 func_8007E8CC(const u8 *table, s16 index) {
+    s32 value;
+    switch (table == NULL) {
+    case 1:
+        value = index;
+        break;
+    default:
+        value = table[index];
+        break;
+    }
+    return value;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/menu/course_selection_tasks", func_8007E8CC);
+#endif
 
 void drawSelectionItemDetails(void) {
     Movement2D *position;
@@ -897,6 +914,7 @@ void clearHalfwordPairTable(void) {
     }
 }
 
+/* DECOMP_ATTEMPT: archive 17/20 */
 INCLUDE_ASM("asm/nonmatchings/menu/course_selection_tasks", func_8007F46C);
 
 void initializeCountedPlayerGroupedSelectionBoundsTask(void) {
@@ -1571,6 +1589,7 @@ void createRegisteredPanelTask(s32 mode, s32 value, s16 x, s16 y, s16 depth, s32
     slot->task = D_8013AE8C;
 }
 
+/* DECOMP_ATTEMPT: archive 64/66 */
 INCLUDE_ASM("asm/nonmatchings/menu/course_selection_tasks", func_800815D0);
 
 static inline RegisteredTaskEntry *getRegisteredMenuTaskEntry(u16 resource, u32 index) {
@@ -1673,8 +1692,10 @@ commandChildren:
     entry->flags |= children[1].flags;
 }
 
+/* DECOMP_ATTEMPT: archive 55/57 */
 INCLUDE_ASM("asm/nonmatchings/menu/course_selection_tasks", func_80081AC8);
 
+/* DECOMP_ATTEMPT: archive 18/20 */
 INCLUDE_ASM("asm/nonmatchings/menu/course_selection_tasks", func_80081BAC);
 
 static inline RegisteredTaskEntry *getRegisteredTripletEntry(u16 resource, s32 index) {
@@ -2214,6 +2235,7 @@ void updateRegisteredChildBlinkTransition(void) {
     }
 }
 
+/* DECOMP_ATTEMPT: archive 301/390 */
 INCLUDE_ASM("asm/nonmatchings/menu/course_selection_tasks", func_80083C3C);
 
 void drawTaskOffsetSpriteB8(void) {
@@ -2591,6 +2613,7 @@ void initializeDualResourceTask(void) {
     setCurrentTaskCallback(func_800857C4);
 }
 
+/* DECOMP_ATTEMPT: archive 852/880 */
 INCLUDE_ASM("asm/nonmatchings/menu/course_selection_tasks", func_800857C4);
 
 void drawClippedRegisteredTaskGridSprite(void) {
@@ -3025,6 +3048,7 @@ void createSaveRecordSlotPanelTask(s16 slot, s32 x, s32 y, s16 depth, s32 index)
     panel->task = D_8013AE8C;
 }
 
+/* DECOMP_ATTEMPT: archive 1121/1228 */
 INCLUDE_ASM("asm/nonmatchings/menu/course_selection_tasks", func_80087B84);
 
 void drawSaveRecordProgressPanel(void) {

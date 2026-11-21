@@ -1,0 +1,25 @@
+#include "common.h"
+#include "game/graphics.h"
+#include "game/game_task_scheduler.h"
+#include "game/linear_random.h"
+#include "game/offset_archive.h"
+#include "game/music.h"
+#include "game/task.h"
+#include "psx/libsnd.h"
+
+typedef struct TaskFrameRecord {
+    s16 unk00;
+    u8 unk02;
+    u8 unk03;
+    u16 unk04;
+} TaskFrameRecord;
+
+const TaskFrameRecord *func_800736D0(const TaskFrameRecord *records, const u8 *indices, s16 index) {
+    s16 selected;
+    if (indices == NULL) {
+        selected = index;
+    } else {
+        selected = indices[index];
+    }
+    return &records[selected];
+}

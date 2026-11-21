@@ -1,0 +1,35 @@
+#include "common.h"
+#define SELECTED_RECORD_GP_ADDRESSING
+#include "game/selected_record.h"
+typedef struct Region { s16 unk00[10]; s16 first, last; s16 unk18[2]; } Region;
+typedef struct Vertex { s16 x,y,z; } Vertex;
+typedef struct Triangle { u16 vertices[3]; u8 unk6, skipFirstEdge; s16 unk8,unkA; } Triangle;
+s32 func_8004A764(s16 index, s32 x, s32 z) {
+    s16 i;
+    Triangle *triangle;
+    Vertex *a, *b, *c;
+    s32 dyC, dzB, dzC, dyB, dxB, dxC;
+    for (i = ((Region *)D_8013B1F4)[index].first; i < ((Region *)D_8013B1F4)[index].last + 1; i++) {
+        triangle = &((Triangle *)D_8013B1F0)[i];
+        if (!triangle->skipFirstEdge) {
+            b = &((Vertex *)D_8013B1EC)[triangle->vertices[1]];
+            a = &((Vertex *)D_8013B1EC)[triangle->vertices[0]];
+            if ((b->x-a->x)*(z/5-a->z) - (b->z-a->z)*(x/5-a->x) > 0) continue;
+        }
+        c = &((Vertex *)D_8013B1EC)[triangle->vertices[2]];
+        b = &((Vertex *)D_8013B1EC)[triangle->vertices[1]];
+        if ((c->x-b->x)*(z/5-b->z) - (c->z-b->z)*(x/5-b->x) > 0) continue;
+        selectGeometryRecord(i);
+        c = &((Vertex *)D_8013B1EC)[((Triangle *)D_8013B1F0)[i].vertices[2]];
+        a = &((Vertex *)D_8013B1EC)[((Triangle *)D_8013B1F0)[i].vertices[0]];
+        b = &((Vertex *)D_8013B1EC)[((Triangle *)D_8013B1F0)[i].vertices[1]];
+        dyC = c->y-a->y;
+        dzB = a->z-b->z;
+        dzC = a->z-c->z;
+        dyB = b->y-a->y;
+        dxB = b->x-a->x;
+        dxC = c->x-a->x;
+        return -(((dxC*dyB-dyC*dxB)*(z-a->z*5) - (dyC*dzB-dzC*dyB)*(x-a->x*5))/(dzC*dxB-dxC*dzB)+a->y*5);
+    }
+    return 0x800000;
+}

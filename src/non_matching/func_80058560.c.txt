@@ -1,0 +1,26 @@
+#include "common.h"
+#include "game/graphics.h"
+#include "game/linear_random.h"
+#include "game/offset_archive.h"
+#include "game/music.h"
+#include "game/task.h"
+#include "game/selected_records.h"
+#include "psx/libsnd.h"
+
+extern u32 GsOUT_PACKET_P;
+
+void func_80058560(u32 *orderingTable, const u32 *packet) {
+    u32 length = *packet;
+    u32 *out = (u32 *)GsOUT_PACKET_P;
+    *out = length | (*orderingTable & 0xFFFFFF);
+    *orderingTable = (u32)out & 0xFFFFFF;
+    for (;;) {
+        ++out;
+        ++packet;
+        if (length == 0) break;
+        length -= 0x1000000;
+        *out = *packet;
+        GsOUT_PACKET_P = (u32)out;
+    }
+    GsOUT_PACKET_P = (u32)out;
+}

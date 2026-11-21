@@ -5,13 +5,29 @@ prompt: >-
   identity or a byte match. Follow AGENTS.md and the repo-local
   .agents/skills/psx-match-function/SKILL.md workflow. Create the workspace with
   ./tools/codex --bootstrap-only --id $TASK_ID $INPUT[0]. Consider the purpose of
-  the function and compare its assembly with the references. Preserve useful
-  attempts, obey tool stop instructions, and only integrate exact C. Verify the
-  complete executable with ./tools/build-and-verify.sh --expected --objects
-  before declaring a match. The task runner handles committing successful work.
+  the function and compare its assembly with the references. Review archived.c
+  when the workspace contains a historical attempt. Preserve useful
+  attempts and obey tool stop instructions. If the best attempt matches,
+  integrate it normally and verify with
+  ./tools/build-and-verify.sh --expected --objects before declaring a match.
+  If matching stops short, integrate the best usable measured C from the
+  archived attempt in the owning source file under #ifdef NON_MATCHING.
+  Keep the existing INCLUDE_ASM in the #else branch. Put the structured
+  comment /* DECOMP_ATTEMPT: inline MATCHING_WORDS/COMPARED_WORDS */ immediately
+  above #ifdef NON_MATCHING, replacing the placeholders with the measured counts.
+  Remove the corresponding src/non_matching snapshot when its C is superseded.
+  For an exact integration, remove the fallback's annotation and snapshot.
+  Preserve any existing better inline attempt. Keep associated declarations
+  and candidate-only data scoped so both build modes compile.
+  Run ./tools/build-and-verify.sh --expected --objects --non-matching to verify
+  the default executable and compile the partial C comparison objects.
+  Leave verified exact or annotated partial C for the task runner
+  to commit. If no usable measured implementation can be integrated, preserve
+  the scratch attempts and report the blocker.
 agent: codex
 agent_flags: --config model_reasoning_effort='"xhigh"'
 success_command: >-
   function_name=$(python3 -c 'import json, sys; print(json.loads(sys.argv[1])[0])' $CANDIDATE) &&
-  git add -A && git commit -m "matched $function_name"
+  ./tools/install-git-hooks.sh &&
+  git add -A && git commit -m "Decompile $function_name"
 timeout: 180m

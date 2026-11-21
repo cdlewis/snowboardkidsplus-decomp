@@ -1,0 +1,39 @@
+#include "unk_8002B3F4.h"
+s32 func_80046228(const Position3D *position, s32 radius, s16 facing, s16 excludedPlayer, s16 *bearing) {
+    s32 dx, dy, dz, distance;
+    s32 angle;
+    RacePlayer *player;
+    RacePlayer *players;
+    s32 i;
+    s32 nearest = radius + 0x1000;
+    s32 result = -1;
+    facing &= 0x7FFF;
+    for (i = 0; i < D_8013AFD2; i++) {
+        players = D_80120E90;
+        player = &players[i];
+        if (i != excludedPlayer && player->unk134 == 0 && !(player->unk128 & 0x402000) && player->unk024) {
+            dx = player->x - position->x;
+            if (dx < 0) dx = -dx;
+            if (dx < radius) {
+                dy = player->unk074 - position->y;
+                if (dy < 0) dy = -dy;
+                if (dy < radius) {
+                    dz = player->z - position->z;
+                    if (dz < 0) dz = -dz;
+                    if (dz < radius) {
+                        angle = func_8004A124(position->x, position->z, player->x, player->z);
+                        if (((angle - facing + 0x380) & 0xFFF) < 0x700) {
+                            distance = SquareRoot0(dx * dx + dz * dz);
+                            if (distance < radius && distance < nearest) {
+                                result = i;
+                                nearest = distance;
+                                *bearing = angle;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return result;
+}

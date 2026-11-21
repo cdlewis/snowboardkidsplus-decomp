@@ -1,0 +1,57 @@
+#include "../graphics/render_effects_internal.h"
+#include "../race/race_internal.h"
+
+typedef struct CourseModelPosition { s32 x, y, z; } CourseModelPosition;
+extern CourseModelPosition *D_801250EC[];
+extern CourseModelPosition *D_8013B280 __attribute__((section(".bss")));
+extern u16 D_8013B654[2];
+extern u32 D_8013B658, D_8013B65C;
+extern s32 D_8013B664;
+extern s32 D_80124BEC[], D_80124C14[];
+extern u32 *D_80125044[], *D_8013BBF8[];
+extern GsCOORDINATE2 D_80124FF4;
+extern void func_80051700(void);
+
+void func_80051A68(void) {
+    u32 *model;
+    register u32 *offset;
+    s16 i;
+    CourseModelPosition *positions;
+    bindGeometryRecordData((s16 *)0x801C0000);
+    positions = D_8013B280 = D_801250EC[D_8013AFCE];
+    for (i = 0; i < 100; i++) {
+        positions[i].x *= 5;
+        positions[i].y *= 5;
+        positions[i].z *= 5;
+    }
+    offset = (u32 *)0x801C8804;
+    D_8013B654[0] = *(u16 *)0x801C8800;
+    for (i = 0; i < D_8013B654[0]; i++) {
+        model = (u32 *)0x801C8804;
+        model = (u32 *)((u32)model + *offset);
+        GsMapModelingData(model);
+        model++;
+        D_8013B658 = *model++;
+        D_8013BBF8[i] = model;
+        offset++;
+        D_8013B280[i].x /= 256;
+        D_8013B280[i].y /= 256;
+        D_8013B280[i].z /= 256;
+    }
+    GsInitCoordinate2(0, &D_80124FF4);
+    D_8013B660 = D_80124BEC[D_8013AFCE] / 256;
+    D_8013B664 = D_80124C14[D_8013AFCE] / 256;
+    if ((u16)gCourseOptionalResourceSectors[D_8013AFCE].sector != 0) {
+        offset = (u32 *)0x801F0804;
+        D_8013B654[1] = *(u16 *)0x801F0800;
+        for (i = 0; i < D_8013B654[1]; i++) {
+            model = (u32 *)(*offset++ + 0x801F0800);
+            model++;
+            GsMapModelingData(model);
+            model++;
+            D_8013B65C = *model++;
+            D_80125044[i] = model;
+        }
+    }
+    if (D_8013AFCE == 6) func_80051700();
+}

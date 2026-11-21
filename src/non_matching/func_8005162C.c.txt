@@ -1,0 +1,29 @@
+#include "common.h"
+#include "game/controller_effects.h"
+#include "game/graphics.h"
+#include "game/linear_random.h"
+#include "game/offset_archive.h"
+#include "game/music.h"
+#include "game/task.h"
+#include "game/selected_records.h"
+#include "game/selected_record.h"
+#include "psx/libsnd.h"
+#include "psx/libgpu.h"
+#include "psx/libgs.h"
+
+extern RECT D_8013B248 __attribute__((section(".sdata")));
+void func_8005162C(s32 x, s32 y, u32 r, u32 g, u32 b, u32 stp) {
+    u16 color;
+    u32 rgb = (r & 0xF8) >> 3;
+    u32 alpha = stp & 1;
+    u32 green = (g & 0xF8) << 2;
+    u32 blue;
+    D_8013B248.x = x;
+    D_8013B248.y = y;
+    rgb |= green;
+    blue = (b & 0xF8) << 7;
+    rgb |= blue;
+    alpha <<= 15;
+    color = rgb | alpha;
+    LoadImage(&D_8013B248, (u32 *)&color);
+}

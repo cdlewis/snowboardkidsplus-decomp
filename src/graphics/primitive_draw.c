@@ -69,6 +69,7 @@ void addTexturedTriangle(u32 *orderingTable, s32 x0, s32 y0, s32 x1, s32 y1,
     GsOUT_PACKET_P = (u32)(triangle + 1);
 }
 
+/* DECOMP_ATTEMPT: archive 82/95 */
 INCLUDE_ASM("asm/nonmatchings/graphics/primitive_draw", func_8005FE7C);
 
 void addSemiTransparentTriangle(u32 *orderingTable, s32 tpage, s32 x0, s32 y0,

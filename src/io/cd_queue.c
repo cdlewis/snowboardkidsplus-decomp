@@ -290,6 +290,7 @@ void queueCdStop(void) {
     queueCdCommand(-1, 0);
 }
 
+/* DECOMP_ATTEMPT: archive 97/103 */
 INCLUDE_ASM("asm/nonmatchings/io/cd_queue", func_80013540);
 
 s32 queueCdSectorCommand(s16 command, s16 sector, s16 count, void *destination, s32 value) {

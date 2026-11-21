@@ -25,7 +25,7 @@ def check_includes(root):
 
 
 def build_and_verify(root, *, expected=False, objects=False, non_matching=False,
-                     incremental=False, jobs=1, verbose=False):
+                     docs=False, incremental=False, jobs=1, verbose=False):
     # Keep clean, split, compilation, and verification in one exclusive run.
     # The lock lives outside build/ so cleaning cannot remove it.
     with (root / ".build-and-verify.lock").open("a") as lock:
@@ -33,6 +33,14 @@ def build_and_verify(root, *, expected=False, objects=False, non_matching=False,
         fcntl.flock(lock, fcntl.LOCK_EX)
         _build_and_verify(root, expected=expected, objects=objects, non_matching=non_matching,
                           incremental=incremental, jobs=jobs, verbose=verbose)
+        if objects and non_matching:
+            from progress_attempts import verify_comparison_objects
+
+            verify_comparison_objects(root)
+        if docs:
+            from progress_docs import generate
+
+            generate(root)
 
 
 def _build_and_verify(root, *, expected=False, objects=False, non_matching=False,
@@ -78,6 +86,7 @@ def main():
     parser.add_argument("--expected", action="store_true", help="snapshot verified target objects")
     parser.add_argument("--objects", action="store_true", help="prepare comparison objects after verification")
     parser.add_argument("--non-matching", action="store_true", help="also compile partial C (requires --objects)")
+    parser.add_argument("--docs", action="store_true", help="regenerate the static progress page")
     parser.add_argument("--incremental", action="store_true", help="verify without cleaning unchanged outputs")
     parser.add_argument("--jobs", type=int, default=1, help="parallel Make jobs (default: 1)")
     parser.add_argument("--verbose", action="store_true", help="stream full Splat and build output")
@@ -88,7 +97,7 @@ def main():
         parser.error("--non-matching requires --objects")
     try:
         build_and_verify(ROOT, expected=args.expected, objects=args.objects, non_matching=args.non_matching,
-                         incremental=args.incremental, jobs=args.jobs, verbose=args.verbose)
+                         docs=args.docs, incremental=args.incremental, jobs=args.jobs, verbose=args.verbose)
     except (OSError, ValueError, subprocess.CalledProcessError) as error:
         print(f"BUILD HAS FAILED. {error}", file=sys.stderr)
         return 1

@@ -1,0 +1,14 @@
+#include "common.h"
+#include "game/graphics.h"
+#include "game/linear_random.h"
+#include "game/offset_archive.h"
+#include "game/music.h"
+#include "psx/libsnd.h"
+
+
+void func_8002A8E4(s32 acceleration, s32 forwardAcceleration, s32 lateralDrag,
+                   s32 forwardDrag, s32 backwardDrag);
+
+void func_8002AE38(s32 acceleration, s32 lateralDrag, s32 forwardDrag, s32 backwardDrag) {
+    func_8002A8E4(acceleration, 0, lateralDrag, forwardDrag, backwardDrag);
+}

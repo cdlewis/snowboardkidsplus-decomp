@@ -291,6 +291,7 @@ void setSpriteTemplateSemiTrans(s32 enabled) {
     SetSemiTrans(&gSpriteTemplate, enabled);
 }
 
+/* DECOMP_ATTEMPT: archive 118/118 */
 INCLUDE_ASM("asm/nonmatchings/graphics/sprite_draw", func_8006C998);
 
 void drawSpriteTextureRegion(s16 x, s16 y, s32 index, GsOT *ot, u16 depth) {
@@ -455,6 +456,7 @@ void drawWrappedText8x8(s16 x, s16 y, s16 columns, const char *text,
     }
 }
 
+/* DECOMP_ATTEMPT: archive 75/96 */
 INCLUDE_ASM("asm/nonmatchings/graphics/sprite_draw", func_8006D29C);
 
 void drawLimitedText8x8(s16 x, s16 y, s16 limit, const char *text,
@@ -909,12 +911,16 @@ void drawWrappedDoubleByteText(s16 x, s16 y, s16 columns, s8 *text, s16 palette,
     }
 }
 
+/* DECOMP_ATTEMPT: archive 93/98 */
 INCLUDE_ASM("asm/nonmatchings/graphics/sprite_draw", func_8006EB00);
 
+/* DECOMP_ATTEMPT: archive 158/171 */
 INCLUDE_ASM("asm/nonmatchings/graphics/sprite_draw", func_8006EC84);
 
+/* DECOMP_ATTEMPT: archive 160/198 */
 INCLUDE_ASM("asm/nonmatchings/graphics/sprite_draw", func_8006EF30);
 
+/* DECOMP_ATTEMPT: archive 202/205 */
 INCLUDE_ASM("asm/nonmatchings/graphics/sprite_draw", func_8006F248);
 
 void drawUppercaseProportionalText(s16 x, s16 y, s16 count, const char *text, s16 palette,

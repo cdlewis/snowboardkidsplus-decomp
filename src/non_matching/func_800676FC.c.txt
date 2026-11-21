@@ -1,0 +1,93 @@
+#include "psx/libetc.h"
+#include "../../graphics/render_effects_internal.h"
+#define GAME_LOOP_ABSOLUTE_ADDRESSING
+#include "game/engine/game_loop.h"
+
+#define setGray0(p, shade) ((p)->r0 = (p)->g0 = (p)->b0 = (shade))
+
+typedef struct PlayerTurnQuadScratch {
+    u32 pad[8];
+    VECTOR scale;
+    GsCOORDINATE2 coordinate;
+    POLY_FT4 quad;
+    long depth, cue, flags;
+} PlayerTurnQuadScratch;
+
+extern SVECTOR D_8012CA14[4];
+
+void func_800676FC(void) {
+    PlayerTurnQuadScratch *scratch;
+    PlayerTripleQuadEffectResource *resource;
+    RacePlayer *player;
+    POLY_FT4 *packet;
+    TrailPosition *position;
+    s32 i, scale, elapsed, size;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    scratch = (PlayerTurnQuadScratch *)getScratchAddr(0);
+    resource = (PlayerTripleQuadEffectResource *)&D_800D9504[D_8013AE88->resource14];
+    packet = (POLY_FT4 *)GsOUT_PACKET_P;
+    player = &gRacePlayers[D_8013AE88->data18];
+    if (isPointWithinCameraForwardRange(player->worldCoordinate.coord.t[0],
+            player->worldCoordinate.coord.t[2], D_8013AE88->data18)) {
+        GsInitCoordinate2(0, &scratch->coordinate);
+        RotMatrix(&resource->rotation, &scratch->coordinate.coord);
+        scale = resource->elapsed * 1000 + 4096;
+        size = resource->scale;
+        position = resource->positions;
+        scratch->scale.vx = scratch->scale.vy = scratch->scale.vz = size + scale;
+        ScaleMatrix(&scratch->coordinate.coord, &scratch->scale);
+
+        scratch->quad.tag = TEXTURED_QUAD_PACKET_WORDS << 24;
+        setcode(&scratch->quad, POLY_FT4_CODE);
+        setSemiTrans(&scratch->quad, 1);
+        setUV4(&scratch->quad, 0, 64, 63, 64, 0, 127, 63, 127);
+        scratch->quad.clut = getClut(880, 248);
+        scratch->quad.tpage = getTPage(0, 1, 704, 0);
+
+        do {
+            for (i = 0; i < 3; i++) {
+                scratch->coordinate.coord.t[i] = ((s32 *)position)[i];
+            }
+            GsGetLs(&scratch->coordinate, &scratch->coordinate.workm);
+            for (i = 0; i < 3; i++) {
+                scratch->coordinate.coord.t[i] = scratch->coordinate.workm.t[i];
+            }
+            GsSetLsMatrix(&scratch->coordinate.coord);
+            scratch->depth = RotTransPers4(&D_8012CA14[0], &D_8012CA14[1],
+                &D_8012CA14[2], &D_8012CA14[3],
+                (long *)&scratch->quad.x0, (long *)&scratch->quad.x1,
+                (long *)&scratch->quad.x2, (long *)&scratch->quad.x3,
+                &scratch->cue, &scratch->flags);
+
+            if ((s16)resource->state != 0x200) {
+                s32 shade = 32 - resource->elapsed * 4;
+                scratch->quad.tpage = getTPage(0, 1, 704, 0);
+                scratch->quad.r0 = scratch->quad.b0 = scratch->quad.g0 = shade;
+            } else {
+                scratch->quad.tpage = getTPage(0, 1, 704, 0);
+                scratch->quad.r0 = scratch->quad.g0 = 30 - resource->elapsed * 30 / 8;
+                scratch->quad.b0 = 28 - resource->elapsed * 28 / 8;
+            }
+
+            *packet = scratch->quad;
+            if (!(scratch->flags & 0x7FFBE000) && scratch->depth >= 0 && scratch->depth < 4096) {
+                addPrim(&D_8013AF6C[scratch->depth >> 2], packet);
+            }
+            packet++;
+            if (D_8013AFD3 == 0) {
+                position->y -= 4;
+            }
+            position++;
+        } while ((s32)position < (s32)(resource->positions + 3));
+        GsOUT_PACKET_P = (u32)packet;
+    }
+    if (D_8013AFD3 == 0) {
+        resource->elapsed++;
+    }
+    if (resource->elapsed >= 8) {
+        func_800149A8();
+    }
+}

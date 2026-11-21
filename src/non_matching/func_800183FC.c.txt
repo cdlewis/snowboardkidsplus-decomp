@@ -1,0 +1,33 @@
+#include "game/audio/music.h"
+#include "game/race/camera/race_camera.h"
+#include "game/race/player/race_player.h"
+#include "psx/libsnd.h"
+
+extern u8 D_8013AF29;
+
+s32 func_800183FC(u16 playerIndex, u8 bank, u16 programAndTone, s16 volume) {
+    u16 playbackVolume = volume;
+    const RacePlayer *players = gRacePlayers;
+    const RacePlayer *player = &players[playerIndex];
+
+    if (player->unk008) {
+        playbackVolume = attenuateSoundVolume(
+            getNearestCameraManhattanDistance(player->x, player->y, player->z), volume);
+        if (playbackVolume == 0) {
+            return 0xFF;
+        }
+    }
+
+    if (gSoundBankLoaded[bank]) {
+        D_8013AF29++;
+        if ((s8)D_8013AF29 >= 12) {
+            D_8013AF29 = 0;
+        }
+        SsUtKeyOffV((s8)D_8013AF29);
+        SsUtKeyOnV((s8)D_8013AF29, bank, programAndTone & 0xFF,
+                   programAndTone >> 8, programAndTone >> 8, 0,
+                   playbackVolume, playbackVolume);
+        return (s8)D_8013AF29;
+    }
+    return 0xFF;
+}

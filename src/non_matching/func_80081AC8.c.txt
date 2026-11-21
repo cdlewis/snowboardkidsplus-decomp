@@ -1,0 +1,31 @@
+#include "common.h"
+#include "game/global_flags.h"
+#include "game/graphics.h"
+#include "game/game_options.h"
+#include "game/linear_random.h"
+#include "game/offset_archive.h"
+#include "game/music.h"
+#include "psx/libsnd.h"
+#include "game/task.h"
+#include "game/race_player.h"
+
+#include "game/movement.h"
+
+typedef struct IndexedTaskEntry {
+    GameTask *task;
+    u16 unk04;
+    u16 unk06;
+} IndexedTaskEntry;
+
+void func_80070F10(Movement2D *movement, s32 x, s32 y, s32 speedX, s32 speedY, s32 delay);
+
+void func_80081AC8(s32 index, GameTask *task, s32 x, s32 y, s32 speedX, s32 speedY, s32 delay) {
+    IndexedTaskEntry *entries;
+    Movement2D *movement;
+    initMovement2D((Movement2D *)&D_800D9504[task->resource14], x, y);
+    entries = (IndexedTaskEntry *)&D_800D9504[task->resource16];
+    movement = (Movement2D *)&D_800D9504[entries[index].task->resource16];
+    x = speedX ? x : movement->x;
+    y = speedY ? y : movement->y;
+    func_80070F10(movement, x, y, speedX, speedY, delay);
+}

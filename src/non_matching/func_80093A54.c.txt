@@ -1,0 +1,272 @@
+#include "panel_tasks_internal.h"
+#include "game/menu/task_widgets.h"
+#include "game/menu/selected_sprite.h"
+#include "game/engine/game_task_scheduler.h"
+#include "game/race/player/player_resource_textures.h"
+#include "game/io/dat_resources.h"
+
+typedef struct BoardPanelGroupResource {
+    u8 unk00[0x48];
+    const u8 *mapping;
+} BoardPanelGroupResource;
+
+extern const u8 D_80130084[16];
+extern const u8 D_80131924[];
+extern const u8 *D_8013B4E8[];
+typedef struct BoardPreviewSelection {
+    s16 current, previous;
+} BoardPreviewSelection;
+
+extern BoardPreviewSelection D_8013B468[];
+extern s32 gDatStartupTextures[];
+
+void uploadTimImageAt(s16 x, s16 y, s16 clutX, s16 clutY, u32 *tim);
+void drawCurrentTaskFramedSpritePair16A(void);
+
+#define PANEL_GROUP(task) ((BoardPanelGroupResource *)&D_800D9504[(task)->resource14])
+#define ENTRY_READY(entry) ((s16)(entry).flags == 0)
+static inline s32 *archiveWords(OffsetArchive *archive)
+{
+    return (s32 *)archive;
+}
+
+#define PREVIEW_TIM(index) ((u32 *)((u16 *)DAT_STARTUP_TEXTURES + (archiveWords(DAT_STARTUP_TEXTURES)[(s16)(D_80130084[index] + 1)] >> 1)))
+
+static inline BoardPanelGroupResource *panelGroup(GameTask *task)
+{
+    return (BoardPanelGroupResource *)&D_800D9504[task->resource14];
+}
+
+static inline RegisteredTaskEntry *entryResource(TaskResourceRecord *records, u16 resource)
+{
+    return (RegisteredTaskEntry *)(records + resource);
+}
+
+void func_80093A54(void)
+{
+    FlagSelectedMenuState *input;
+    RegisteredTaskEntry *entries;
+    MenuSelectionState *selection;
+    BoardPreviewSelection *preview;
+    s32 complete;
+    s16 index;
+    u8 padding[0x20];
+
+    if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
+    input = (FlagSelectedMenuState *)&D_800D9504[D_8013AE88->resource14];
+    {
+        GameTask *task = D_8013AE88;
+        u16 resource = task->resource16;
+        u16 state;
+        if (resource == 0xFFFF) { for (;;) {} }
+        entries = entryResource(D_800D9504, resource);
+        selection = D_801300AC;
+        state = task->data18;
+        preview = D_8013B468;
+
+        switch (state) {
+    case 0: {
+        s16 index = findByteIndexOrZero(D_80130084,
+            *(selection->selection + gPlayerResourceTextureSelections.entries[0]), 16);
+        input->mode = 0;
+        if (index >= 8) {
+            input->selectedIndex = index - 8;
+            D_8013AE88->data1A = 1;
+        } else {
+            input->selectedIndex = index;
+            D_8013AE88->data1A = 0;
+        }
+        {
+            s16 selected = input->selectedIndex;
+            GameTask *task = D_8013AE88;
+            input->choiceResult = 0;
+            input->previousIndex = selected;
+            preview->current = index;
+            preview->previous = index;
+            task->data18 = 1;
+        }
+        break;
+    }
+    case 1: {
+        const u8 * const *pages = D_8013B4E8;
+        const u8 *mapping = pages[D_8013AE88->data1A];
+        createRegisteredSpacedChildTasks(1, 0xB0, 0x40, D_80131924,
+            mapping, NULL, 0, 0, 20, -304, -96, 0, 20,
+            10, 0x11F, drawSelectedTaskSprite, drawRegisteredTaskGridSpriteWithColor, 4, 21);
+        createRegisteredCallbackTask(0, 180, 64, drawCurrentTaskFramedSpritePair16A, 3, 31);
+        uploadTimImageAt(576, 256, 768, 238, PREVIEW_TIM(preview->current));
+        D_8013AE88->data18 = 2;
+        break;
+    }
+    case 2:
+        if (ENTRY_READY(entries[2]) && ENTRY_READY(entries[3])) {
+            moveTaskChildrenWithSpacing(0, entries[2].task, -0x7C000, -0x60000, 0x1E000, 0, 1);
+            configureMovement2D(CHILD_MOVEMENT(entries[3]), 0, 0x40000, 0x1E000, 0, 10);
+            D_8013AE88->data18 = 3;
+        }
+        break;
+    case 3:
+        if (ENTRY_READY(entries[2]) && ENTRY_READY(entries[3])) {
+            GameTask *task;
+            entries[2].command = 20;
+            entries[3].command = 20;
+            configureColorCycleTask(1, 0, 128, 8, 0);
+            task = D_8013AE88;
+            D_8013B41F = 0;
+            task->data18 = 4;
+        }
+        break;
+    case 4: {
+        complete = isTaskResourceTransitionComplete(0);
+        if (complete == 1 && D_8013B41F == 0) {
+            entries[2].command = 21;
+            entries[3].command = 22;
+            configureColorCycleTask(2, 64, 128, 4, 0);
+            D_8013B41F = complete;
+        }
+        if (input->selectedIndex != input->previousIndex) {
+            GameTask *child;
+            const u8 *mapping;
+            input->previousIndex = input->selectedIndex;
+            child = entries[2].task;
+            mapping = panelGroup(child)->mapping;
+            index = func_8007373C(mapping, input->selectedIndex) - 3;
+            if ((u16)index >= 16) {
+                break;
+            }
+            preview->current = index;
+            uploadTimImageAt(576, 256, 768, 238, PREVIEW_TIM(index));
+        }
+        if (D_8013AEE8[0] & 0x8000) {
+            D_8013AE88->data1A = D_8013AE88->data1A ? D_8013AE88->data1A - 1 : 1;
+            D_8013AE88->data18 = 10;
+        } else if (input->choiceResult != 0 && ENTRY_READY(entries[2])) {
+            if (D_8013B41F == 0) {
+                entries[2].command = 22;
+                entries[3].command = 22;
+                D_8013B41F = 1;
+            }
+            if (input->choiceResult < 0) {
+                u16 state = 13;
+                D_8013AE88->data18 = state;
+                return;
+            }
+            {
+                GameTask *child = entries[2].task;
+                s16 selected = input->selectedIndex;
+                u16 resource = child->resource14;
+                BoardPanelGroupResource *group = (BoardPanelGroupResource *)&D_800D9504[resource];
+                index = func_8007373C(group->mapping, selected);
+            }
+            if (index == 0 && D_8013AE88->data1A == 0) {
+                D_8013AE88->data1A++;
+                D_8013AE88->data18 = 10;
+            } else if (index == 1 && D_8013AE88->data1A != 0) {
+                D_8013AE88->data1A--;
+                D_8013AE88->data18 = 10;
+            } else if (index == 2) {
+                D_8013AE88->data18 = 15;
+            } else if ((u16)(index - 3) < 16 && preview->current != preview->previous) {
+                D_8013AE88->data1E = 20;
+                D_8013AE88->data18 = 8;
+            } else {
+                D_8013AE88->data18 = 9;
+            }
+        }
+        break;
+    }
+    case 8: {
+        GameTask *task = D_8013AE88;
+        if (task->data1E != 0) {
+            task->data1E = 0;
+        } else {
+            task->data18 = 9;
+        }
+        break;
+    }
+    case 9: {
+        GameTask *task = D_8013AE88;
+        entries[2].command = 21;
+        input->choiceResult = 0;
+        task->data18 = 4;
+        break;
+    }
+    case 15: {
+        GameTask *task = D_8013AE88;
+        entries[2].command = 10;
+        task->data18 = 16;
+        break;
+    }
+    case 16:
+        if (ENTRY_READY(entries[2])) {
+            D_8013AE88->data18 = 5;
+        }
+        break;
+    case 13:
+        moveTaskChildrenWithSpacing(0, entries[2].task, -0x130000, -0x60000, 0x1E000, 0x1E000, -1000);
+        configureMovement2D(CHILD_MOVEMENT(entries[3]), 0xB4000, 0x40000, 0x1E000, 0, 0);
+        D_8013AE88->data18 = 14;
+        break;
+    case 14:
+        if (ENTRY_READY(entries[2]) && ENTRY_READY(entries[3])) {
+            goto finish;
+        }
+        break;
+    case 10: {
+        GameTask *task;
+        moveTaskChildrenWithSpacing(0, entries[2].task, -0x134000, -0x60000, 0x1E000, 0x1E000, -1000);
+        task = D_8013AE88;
+        entries[2].command = 23;
+        task->data18 = 11;
+        break;
+    }
+    case 11:
+        if (ENTRY_READY(entries[2])) {
+            BoardPanelGroupResource *group;
+            GameTask *child = entries[2].task;
+            BoardPanelGroupResource *groupBeforeMove = panelGroup(child);
+            groupBeforeMove->mapping = D_8013B4E8[D_8013AE88->data1A];
+            moveTaskChildrenWithSpacing(0, entries[2].task, -0x80000, -0x60000, 0x1E000, 0, 1);
+            child = entries[2].task;
+            entries[2].command = 23;
+            entries[3].command = 23;
+            group = PANEL_GROUP(child);
+            if (input->selectedIndex < 8) {
+                index = func_8007373C(group->mapping, input->selectedIndex);
+            } else {
+                index = func_8007373C(group->mapping, 7);
+            }
+            index -= 3;
+            preview->current = index;
+            uploadTimImageAt(576, 256, 768, 238, PREVIEW_TIM(index));
+            {
+                GameTask *task = D_8013AE88;
+                input->choiceResult = 0;
+                task->data18 = 3;
+            }
+        }
+        break;
+    case 5:
+        moveTaskChildrenWithSpacing(0, entries[2].task, -0x130000, -0x60000, 0x1E000, 0x1E000, -1000);
+        entries[2].command = 23;
+        configureMovement2D(CHILD_MOVEMENT(entries[3]), 0xB4000, 0x40000, 0x1E000, 0x1E000, -1000);
+        func_80081AC8(0, entries[0].task, 0xF4000, 0, 0x1E000, 0, -1000);
+        func_80081AC8(1, entries[0].task, 0xF4000, 0, 0x1E000, 0, -1000);
+        configureMovement2D(CHILD_MOVEMENT(entries[1]), 0xAC000, -0x48000, 0x1E000, 0x1E000, -1000);
+        D_8013AE88->data18 = 6;
+        break;
+    case 6:
+        if (ENTRY_READY(entries[2]) && ENTRY_READY(entries[3]) &&
+            ENTRY_READY(entries[0]) && ENTRY_READY(entries[1])) {
+            D_8013AE98->data18 = 20;
+            func_800149A8();
+        }
+        break;
+    default:
+finish:
+        D_8013AE98->data18 = 18;
+        func_800149A8();
+        break;
+        }
+    }
+}

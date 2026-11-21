@@ -1,0 +1,77 @@
+#include "psx/scratchpad.h"
+#include "psx/libetc.h"
+#include "../graphics/render_effects_internal.h"
+#include "../race/race_internal.h"
+#define GAME_LOOP_ABSOLUTE_ADDRESSING
+#include "game/engine/game_loop.h"
+
+extern VECTOR D_80124BDC;
+extern u32 D_8013B238;
+
+void func_8004FB70(s16 playerIndex) {
+    GsCOORDINATE2 *coordinate = (GsCOORDINATE2 *)getScratchAddr(0);
+    MATRIX *matrix = (MATRIX *)getScratchAddr(20);
+    GsOT *ot;
+    s16 x, horizon;
+    u32 y;
+
+    if (playerIndex == 0) {
+        ot = &D_800EC040[D_8013AF78];
+    } else {
+        ot = &D_800EC0E0[D_8013AF78];
+    }
+
+    x = -160 - ((D_801241E8[playerIndex].yaw >> 1) & 255);
+    y = (u32)(D_801241E8[playerIndex].pitch / 2) & 0xFFFF;
+    horizon = y;
+    addTexturedSprite(&D_8013AF6C[4093], getTPage(0, 0, 640, 256), getClut(656, 480),
+                      (s16)x, (s16)y, 256, 96, 0, 0, 128, 128, 128);
+    addTexturedSprite(&D_8013AF6C[4093], getTPage(0, 0, 640, 256), getClut(656, 480),
+                      (s16)(x + 256), (s16)y, 256, 96, 0, 0, 128, 128, 128);
+    addTexturedSprite(&D_8013AF6C[4093], getTPage(0, 0, 640, 256), getClut(656, 480),
+                      (s16)(x + 512), (s16)y, 256, 96, 0, 0, 128, 128, 128);
+
+    {
+        s32 right = 160;
+    if (horizon < -248) horizon = -248;
+    if (horizon > 120) horizon = 120;
+    addSemiTransparentGouraudQuadWithDrawMode(&D_8013AF6C[4094], getTPage(0, 1, 0, 0),
+        -160, (s16)(horizon + 96), right, (s16)(horizon + 96),
+        -160, (s16)(horizon + 128), right, (s16)(horizon + 128),
+        0, 24, 32, 0, 24, 32, 0, 0, 0, 0, 0, 0);
+    addFlatRectangle(&D_8013AF6C[4094], -160, (s16)(horizon + 128), 320,
+                     (s16)(-8 - horizon), 0, 0, 0);
+    addSemiTransparentGouraudQuadWithDrawMode(&D_8013AF6C[4095], getTPage(0, 1, 0, 0),
+        -160, (s16)(horizon - 120), right, (s16)(horizon - 120),
+        -160, horizon, right, horizon,
+        0, 64, 128, 0, 64, 128, 0, 24, 32, 0, 24, 32);
+    addSemiTransparentGouraudQuadWithDrawMode(&D_8013AF6C[4095], getTPage(0, 1, 0, 0),
+        -160, -120, right, -120, -160, (s16)(horizon - 120), right, (s16)(horizon - 120),
+        0, 128, 128, 0, 128, 128, 0, 64, 128, 0, 64, 128);
+
+    }
+    if (isPositionInCameraRange(0x102D, 0x3395, playerIndex)) {
+        GsInitCoordinate2(0, coordinate);
+        coordinate->coord.t[0] = 0x102D;
+        coordinate->coord.t[1] = 0x7F1;
+        coordinate->coord.t[2] = 0x3395;
+        RotMatrixY(-D_8013B238 * 64, &coordinate->coord);
+        GsGetLs(coordinate, matrix);
+        ScaleMatrix(matrix, &D_80124BDC);
+        GsSetLsMatrix(matrix);
+        drawProjectedModelPrimitives(D_80125044[1], ot, 2, 1);
+        if (!D_8013AFD3) {
+            D_8013B238++;
+        }
+    }
+
+    if (selectedCameraOverlayModeGp) {
+        addFlatRectangleWithDrawMode(&D_8013AF6C[0], getTPage(0, 2, 0, 0), 2,
+                                     -160, -120, 320, 240, 24, 24, 24);
+    } else {
+        addFlatRectangleWithDrawMode(&D_8013AF6C[0], getTPage(0, 2, 0, 0), 2,
+                                     -160, -120, 320, 240, 48, 48, 48);
+    }
+    SetFarColor(80, 80, 100);
+    SetFogNearFar(8000, 10000, 400);
+}

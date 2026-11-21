@@ -367,6 +367,7 @@ void drawOffsetSelectedTaskSprite(void) {
     }
 }
 
+/* DECOMP_ATTEMPT: archive 9/13 */
 INCLUDE_ASM("asm/nonmatchings/menu/selection_tasks", func_800A2C40);
 
 void initializeSelectionMenuTask(void) {

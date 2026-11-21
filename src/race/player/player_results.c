@@ -290,6 +290,7 @@ void updateAttackResultsAndRecords(void) {
     }
 }
 
+/* DECOMP_ATTEMPT: archive 12/16 */
 INCLUDE_ASM("asm/nonmatchings/race/player/player_results", func_8003D904);
 
 void renderCurrentCameraPlayersAndUpdateSound(void) {
@@ -358,4 +359,5 @@ void stopPlayerSound(u16 playerIndex) {
     }
 }
 
+/* DECOMP_ATTEMPT: archive 19/23 */
 INCLUDE_ASM("asm/nonmatchings/race/player/player_results", func_8003DEE0);

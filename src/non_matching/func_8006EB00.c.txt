@@ -1,0 +1,70 @@
+#include "common.h"
+#include "game/angles.h"
+#include "game/controller.h"
+#include "game/cd_queue.h"
+#include "game/controller_effects.h"
+#include "game/controller.h"
+#include "game/graphics.h"
+#include "game/linear_random.h"
+#include "game/offset_archive.h"
+#include "game/music.h"
+#include "game/game_options.h"
+#include "game/task.h"
+#include "game/race_player.h"
+#include "game/race_camera.h"
+#include "game/selected_records.h"
+#include "game/selected_record.h"
+#include "psx/libsnd.h"
+#include "psx/libgpu.h"
+#include "psx/libgs.h"
+#include "game/quad_animation.h"
+#include "game/coordinate.h"
+#include "psx/libapi.h"
+
+extern s8 D_8012E990[];
+void func_8006EB00(s16 x, s16 y, s16 w, s16 h, s8 *text, s16 palette, s16 blend, GsOT *ot, u16 depth) {
+    s32 semiTrans;
+    s16 v, u;
+    s32 blendMode;
+    s8 *entry;
+    s32 i;
+    s32 searching;
+    u8 padding[8];
+    SPRT *sprite;
+    if (blend >= 0) {
+        blendMode = blend;
+        semiTrans = 1;
+    } else {
+        blendMode = 0;
+        semiTrans = 0;
+    }
+    u = v = -1;
+    entry = D_8012E990;
+    i = 0;
+    while (1) {
+        if (!*entry) break;
+        if (text[0] == entry[0] && text[1] == entry[1]) {
+            u = (i % 32) * 8;
+            v = (i / 32) * 16 + 16;
+            searching = 0;
+        } else {
+            entry += 2;
+            i++;
+            continue;
+        }
+        if (!searching) break;
+    }
+    if (u >= 0 && v >= 0) {
+        setSpriteTextureBlend(0, palette, blendMode);
+        func_8006C970(semiTrans);
+        sprite = &gSpriteTemplate;
+        sprite->x0 = x;
+        sprite->y0 = y;
+        sprite->u0 = u;
+        sprite->v0 = v;
+        sprite->w = w;
+        sprite->h = h;
+        addSpritePacket(sprite, ot, depth);
+        addDrawPagePacket(&gSpritePrimitiveTemplate.drawPage, ot, depth);
+    }
+}

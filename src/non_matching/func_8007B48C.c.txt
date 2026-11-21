@@ -1,0 +1,98 @@
+#include "common.h"
+#include "game/save/save_data.h"
+#include "game/engine/game_options.h"
+#include "game/engine/byte_search.h"
+#include "game/io/controller.h"
+#include "game/io/controller_effects.h"
+#include "game/graphics/graphics.h"
+#include "game/engine/game_task_scheduler.h"
+#include "game/engine/linear_random.h"
+#include "game/engine/offset_archive.h"
+#include "game/audio/music.h"
+#include "game/menu/movement.h"
+#include "game/engine/task.h"
+#include "game/menu/selected_sprite.h"
+#include "game/menu/task_widgets.h"
+#include "game/race/player/race_player.h"
+#include "psx/libsnd.h"
+#include "psx/stdlib.h"
+
+void func_8007B48C(s16 recordIndex, s16 maskIndex) {
+    s16 row;
+    s16 paired[2];
+    GlobalFlagStatePrefix *state;
+    SaveRecord *records;
+
+    if (D_8013AEE8[recordIndex] & 8) {
+        cycleSaveRecordUnlockFlags(recordIndex, maskIndex);
+    } else if (D_8013AEE8[recordIndex] & 2) {
+        if (getSaveRecordMaskTier(recordIndex, maskIndex)) {
+            for (maskIndex = 0; maskIndex < 10; maskIndex++) {
+                setSaveRecordMaskTier(recordIndex, maskIndex, 4);
+                cycleSaveRecordUnlockFlags(recordIndex, maskIndex);
+            }
+        } else {
+            for (maskIndex = 0; maskIndex < 10; maskIndex++) {
+                setSaveRecordMaskTier(recordIndex, maskIndex, 4);
+                cycleSaveRecordUnlockFlags(recordIndex, maskIndex);
+                cycleSaveRecordUnlockFlags(recordIndex, maskIndex);
+                cycleSaveRecordUnlockFlags(recordIndex, maskIndex);
+                cycleSaveRecordUnlockFlags(recordIndex, maskIndex);
+                cycleSaveRecordUnlockFlags(recordIndex, maskIndex);
+                cycleSaveRecordUnlockFlags(recordIndex, maskIndex);
+            }
+        }
+
+        records = (SaveRecord *)&D_8013080C;
+        state = (GlobalFlagStatePrefix *)&records[recordIndex];
+        /* Diagnose the original read of the row register before initialization. */
+        state->masks[maskIndex] |= 0x1000000U << row;
+        state->flags = 0x3FFF;
+        for (row = 0; row < 5; row++) {
+            state->unk_3DC |= 1U << (row * 5 + 1);
+            state->unk_3E0 |= 1U << (row * 5 + 1);
+            state->unk_3DC |= 1U << (row * 5 + 2);
+            state->unk_3E0 |= 1U << (row * 5 + 2);
+            state->unk_3DC |= 1U << (row * 5 + 3);
+            state->unk_3DC |= 1U << (row * 5 + 4);
+            state->unk_3E0 |= 1U << (row * 5 + 3);
+            state->unk_3E0 |= 1U << (row * 5 + 4);
+        }
+        ((GlobalFlagStatePrefix *)&((SaveRecord *)&D_8013080C)[recordIndex])->unk_3E4 = 999999;
+        rebuildCombinedStateMask((GlobalFlagStatePrefix *)&((SaveRecord *)&D_8013080C)[recordIndex]);
+        copySaveRecordAndMergeFlags();
+        for (row = 0; row < 11; row++) {
+            setUnlockNotificationFlag(row);
+        }
+    }
+
+    if (D_8013AEE8[recordIndex] & 4) {
+        s32 flag;
+        paired[0] = getGlobalFlagMask(0);
+        paired[1] = getGlobalFlagMask(1);
+        if (paired[0]) {
+            if (!paired[1]) {
+                goto enableSecond;
+            }
+            flag = -1;
+        } else {
+            flag = 0;
+            if (!paired[1]) {
+enableSecond:
+                flag = 1;
+            }
+        }
+        updatePairedStateFlag(flag);
+    }
+    if (D_8013AEE8[recordIndex] & 1) {
+        if (getSaveRecordFlagPair(recordIndex, maskIndex, 0) > 0) {
+            setSaveRecordFlagPair(recordIndex, maskIndex, 0, 0);
+            setSaveRecordFlagPair(recordIndex, maskIndex, 1, 0);
+            setSaveRecordFlagPair(recordIndex, maskIndex, 2, 0);
+        } else {
+            setSaveRecordFlagPair(recordIndex, maskIndex, 0, 3);
+            setSaveRecordFlagPair(recordIndex, maskIndex, 1, 2);
+            setSaveRecordFlagPair(recordIndex, maskIndex, 2, 1);
+        }
+    }
+}

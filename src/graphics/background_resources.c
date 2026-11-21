@@ -66,6 +66,7 @@ void queueStartupSectorReads(void) {
     queueCdSectorCommand(0, DAT_STARTUP_TEXTURES_SECTOR, DAT_STARTUP_TEXTURES_SECTOR_COUNT, DAT_STARTUP_TEXTURES, 0);
 }
 
+/* DECOMP_ATTEMPT: archive 11/13 */
 INCLUDE_ASM("asm/nonmatchings/graphics/background_resources", func_8002F394);
 
 void uploadTimImageAt(s16 x, s16 y, s16 clutX, s16 clutY, u32 *tim) {

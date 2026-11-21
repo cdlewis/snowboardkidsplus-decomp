@@ -712,6 +712,7 @@ void initializeAlternateCountedTaskResourcePair(void) {
     D_8013AE88->unk10 |= 2;
 }
 
+/* DECOMP_ATTEMPT: archive 551/555 */
 INCLUDE_ASM("asm/nonmatchings/menu/panel_tasks", func_8008DDC0);
 
 void drawCurrentTaskSaveRecordMoneyPanelWithCharacterSprites(void) {
@@ -1196,6 +1197,7 @@ void initializeTaskResourcePair(void) {
     setCurrentTaskCallback(func_80090450);
 }
 
+/* DECOMP_ATTEMPT: archive 943/946 */
 INCLUDE_ASM("asm/nonmatchings/menu/panel_tasks", func_80090450);
 
 extern char gSaveRecordMoneyPanelCurrencyLabel[]
@@ -1833,6 +1835,7 @@ void initializePlayerTextureSelectionTask(void) {
     setCurrentTaskCallback(func_80093A54);
 }
 
+/* DECOMP_ATTEMPT: archive 648/654 */
 INCLUDE_ASM("asm/nonmatchings/menu/panel_tasks", func_80093A54);
 
 void drawCurrentTaskSpriteBA(void) {

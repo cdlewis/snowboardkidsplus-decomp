@@ -110,8 +110,15 @@ is incomplete. Inspect all functions in the changed unit and every consumer of
 changed structs or headers, then fix the mismatch. Never use comparison objects
 or expected snapshots to hide a failing executable.
 
-Useful unfinished C may remain under `NON_MATCHING`, with the original assembly
-in the default branch and the best measured similarity and word counts recorded.
+Put useful unfinished C under `#ifdef NON_MATCHING` and leave the original
+`INCLUDE_ASM` in its `#else` branch. Put
+`/* DECOMP_ATTEMPT: inline MATCHING_WORDS/COMPARED_WORDS */` immediately above the
+guard, using the measured counts. A fallback without a recorded C attempt uses
+`/* DECOMP_ATTEMPT: unattempted */` directly above the fallback. Historical C
+snapshots in `src/non_matching/` use `archive` in their annotation, or `object`
+for scores that mask branch and jump destinations. Remove superseded snapshots
+and remove the annotation when integrating an exact match. The verified build
+checks these annotations, and the docs report reads them directly.
 
 #### Step 3: Finish the requested work
 

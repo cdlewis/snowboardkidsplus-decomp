@@ -1,0 +1,15 @@
+#include "common.h"
+#include "sdk_light.h"
+
+extern GsF_LIGHT D_80124178[3];
+
+void func_8003DEE0(void) {
+    D_80124178[0].vx = 20;
+    D_80124178[0].vy = -100;
+    D_80124178[0].vz = -100;
+    D_80124178[0].r = 245;
+    D_80124178[0].g = 245;
+    D_80124178[0].b = 245;
+    GsSetFlatLight(0, &D_80124178[0]);
+    GsSetAmbient(0xE14, 0xE14, 0xE14);
+}

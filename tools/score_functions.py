@@ -7,6 +7,12 @@ import json
 from decomp import active_functions
 
 
+def complexity(metrics):
+    return (metrics["instructions"] + 4 * metrics["branches"] +
+            8 * metrics["calls"] + 2 * metrics["jumps"] +
+            metrics["stack"] / 8 + 100 * metrics["unknown_words"])
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--sdk", action="store_true", help="also include PsyQ functions")
@@ -16,12 +22,8 @@ def main():
     rows = []
     for function in active_functions(sdk=args.sdk):
         metrics = function.metrics()
-        # Rank by instruction count, control flow, calls, stack, and unknown words.
-        score = (metrics["instructions"] + 4 * metrics["branches"] +
-                 8 * metrics["calls"] + 2 * metrics["jumps"] +
-                 metrics["stack"] / 8 + 100 * metrics["unknown_words"])
         rows.append({"name": function.name, "unit": str(function.unit),
-                     "address": function.address, "heuristic": score, **metrics})
+                     "address": function.address, "heuristic": complexity(metrics), **metrics})
     rows.sort(key=lambda r: (r["heuristic"], r["address"]))
     if args.json:
         print(json.dumps(rows[:args.limit], indent=2))

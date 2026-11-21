@@ -244,6 +244,7 @@ void waitFallingSpriteEffectsExitTask(void) {
     }
 }
 
+/* DECOMP_ATTEMPT: archive 24/26 */
 INCLUDE_ASM("asm/nonmatchings/race/ui/race_panels", func_80034028);
 
 void drawSlidingDisplaySprite(SlidingDisplayResource *resource) {
@@ -813,6 +814,7 @@ void checkControllerInputSequenceTask(void) {
     }
 }
 
+/* DECOMP_ATTEMPT: archive 23/25 */
 INCLUDE_ASM("asm/nonmatchings/race/ui/race_panels", func_80035CF8);
 
 void drawResultDisplayLabels(ResultDisplayResource *resource) {

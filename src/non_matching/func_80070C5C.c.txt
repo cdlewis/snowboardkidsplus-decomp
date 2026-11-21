@@ -1,0 +1,26 @@
+#include "common.h"
+#include "game/byte_search.h"
+#include "game/controller.h"
+#include "game/graphics.h"
+#include "game/game_task_scheduler.h"
+#include "game/linear_random.h"
+#include "game/offset_archive.h"
+#include "game/music.h"
+#include "game/movement.h"
+#include "game/task.h"
+#include "psx/libsnd.h"
+
+void func_80070C5C(s32 intensity, GsOT *ot, u16 depth) {
+    TILE *packet = (TILE *)GsGetWorkBase();
+    u16 tpage;
+    SetTile(packet);
+    setXY0(packet, -170, -130);
+    setWH(packet, 340, 260);
+    setRGB0(packet, intensity, intensity, intensity);
+    SetSemiTrans(packet, 1);
+    AddPrim(ot->org + depth, packet);
+    tpage = GetTPage(0, 2, 0, 0);
+    SetDrawMode((DR_MODE *)++packet, 1, 1, tpage, NULL);
+    AddPrim(ot->org + depth, packet);
+    func_800BF2C8((u32)((DR_MODE *)packet + 1));
+}

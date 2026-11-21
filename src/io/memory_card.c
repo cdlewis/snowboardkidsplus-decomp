@@ -153,6 +153,7 @@ s32 memoryCardFileExists(void) {
     return 0;
 }
 
+/* DECOMP_ATTEMPT: archive 109/114 */
 INCLUDE_ASM("asm/nonmatchings/io/memory_card", func_8001907C);
 
 s32 tryAcceptMemoryCard(void) {

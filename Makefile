@@ -207,6 +207,7 @@ build/slps_018.23.exe: build/slps_018.23.elf
 	$(OBJCOPY) -O binary $< $@
 
 verify: build/slps_018.23.exe dat-split
+	$(PY) tools/progress_attempts.py
 	$(PRINTF) "[$(GREEN) verify $(NO_COL)]  Checking executable SHA1\n"
 	$(PY) tools/verify_image.py
 	$(PY) tools/psyq_sdk.py --verify
