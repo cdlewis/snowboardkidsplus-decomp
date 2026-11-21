@@ -179,7 +179,8 @@ extern u8 D_8013AFCC;
 extern u8 D_8013AFD4;
 
 
-void func_8001D89C(void);
+void initializeAlternatingVramRowTask(void);
+void animateAlternatingVramRow(void);
 void initializeRaceTaskState(void);
 void updateActiveRaceTask(void);
 void finishRaceTransitionAfterCountdown(void);
@@ -347,7 +348,7 @@ void initializeRacePaletteCycles(void) {
         if (palette != 32) {
             startPaletteCycle(0, palette, 0, 15, 1);
         }
-        func_80014930(&gGameTasks[4], func_8001D89C);
+        func_80014930(&gGameTasks[4], initializeAlternatingVramRowTask);
         break;
     case 3:
         palette = saveVram16Pixels(688, 501);
@@ -1090,7 +1091,11 @@ void updateSelectedPlayerPlaybackTask(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/engine/task_transitions", func_8001D89C);
+void initializeAlternatingVramRowTask(void) {
+    D_8013AE88->data18 = 0;
+    D_8013AE88->data1A = 6;
+    setCurrentTaskCallback(animateAlternatingVramRow);
+}
 
 void animateAlternatingVramRow(void) {
     RECT rect;
