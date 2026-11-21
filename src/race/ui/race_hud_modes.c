@@ -49,7 +49,12 @@ void addFourWordGpuPacket(GpuPacket4 *source, GsOT *ot, u16 depth) {
     func_800BF2C8((u32)(packet + 1));
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud_modes", func_800400C4);
+void addOneWordGpuPacket(GpuPacket1 *source, GsOT *ot, u16 depth) {
+    GpuPacket1 *packet = (GpuPacket1 *)GsGetWorkBase();
+    *packet = *source;
+    AddPrim(&ot->org[depth], packet);
+    func_800BF2C8((u32)(packet + 1));
+}
 
 void addTexturedSpritePacket(TexturedSpritePacket *source, GsOT *ot, u16 depth) {
     TexturedSpritePacket *packet = (TexturedSpritePacket *)GsGetWorkBase();

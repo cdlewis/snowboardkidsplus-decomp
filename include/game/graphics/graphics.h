@@ -62,6 +62,12 @@ typedef struct PlayerTextureOrigin {
 extern PlayerTextureOrigin D_801204D4[4];
 extern POLY_F3 gNumberAdjustmentArrow;
 
+/* A DMA packet containing one GPU command word. */
+typedef struct GpuPacket1 {
+    u32 tag;
+    u32 command;
+} GpuPacket1;
+
 /* A DMA packet containing four GPU command words. */
 typedef struct GpuPacket4 {
     u32 tag;
@@ -368,6 +374,7 @@ void drawLimitedText8x8(s16 x, s16 y, s16 limit, const char *text,
 void addDrawPagePacket(DR_TPAGE *source, struct GsOT *ot, u16 depth);
 void addSpritePacket(SPRT *source, struct GsOT *ot, u16 depth);
 void addDrawAreaPacket(s32 x, s32 y, s32 width, s32 height, GsOT *ot, u16 depth);
+void addOneWordGpuPacket(GpuPacket1 *source, GsOT *ot, u16 depth);
 void addFourWordGpuPacket(GpuPacket4 *source, GsOT *ot, u16 depth);
 void addTexturedSpritePacket(TexturedSpritePacket *source, GsOT *ot, u16 depth);
 
