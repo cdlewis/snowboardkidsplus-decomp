@@ -365,11 +365,15 @@ void prepareUnlockSelectionResume(void) {
     D_8013AE88->unk10 |= 2;
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/unlock_menu", func_800A525C);
+void finishUnlockPresentationTask(void) {
+    if (D_8013AFE4 & 0x100) {
+        func_800149A8();
+    }
+}
 
 void startUnlockResourceLoad(void) {
     resetPendingCdRequests();
     D_8013AFE4 &= ~0x100;
     createResourceLoadTask();
-    setCurrentTaskCallback(func_800A525C);
+    setCurrentTaskCallback(finishUnlockPresentationTask);
 }

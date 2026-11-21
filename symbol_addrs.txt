@@ -355,6 +355,7 @@ setUnlockNotificationFlag = 0x8008C6DC; // type:func
 drawUnlockNotificationMenu = 0x800A4C28; // type:func
 hasUnlockNotificationFlag = 0x800A4F78; // type:func
 resumeUnlockSelectionTask = 0x800A51D8; // type:func
+finishUnlockPresentationTask = 0x800A525C; // type:func
 startUnlockResourceLoad = 0x800A528C; // type:func
 gGameOptionFlags = 0x8013B570; // size:0x4 defined:true
 gUnlockNotificationFlags = 0x8013B574; // size:0x2 defined:true

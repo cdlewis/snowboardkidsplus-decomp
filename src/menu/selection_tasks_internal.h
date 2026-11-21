@@ -101,7 +101,6 @@ void func_800A42CC(void);
 void func_800A499C(void);
 void drawUnlockNotificationMenu(void);
 void updateUnlockOptionsMenuTask(void);
-void func_800A525C(void);
 
 typedef struct NumberPanelState {
     u16 mode, selectedIndex, previousIndex;
