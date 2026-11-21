@@ -38,7 +38,7 @@ TaskCallback gInitialTaskCallbacks[6] __attribute__((section(".data.initial_task
     armTaskCleanupOnFlagAFAABit6,
     armTaskCallbackResetOnFlag3,
     armTaskCallbackResetOnFlag3,
-    func_8001E1B8,
+    armSavedStateRestoreOnFlag3,
 };
 
 void func_800147B8(TaskCallback callback);

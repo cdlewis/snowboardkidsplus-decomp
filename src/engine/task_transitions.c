@@ -1312,7 +1312,11 @@ void resetTaskCallbackOnFlag4(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/engine/task_transitions", func_8001E1B8);
+void armSavedStateRestoreOnFlag3(void) {
+    if (D_8013AFAA & 0x8) {
+        setCurrentTaskCallback(restoreSavedStateAndHandleFlag4);
+    }
+}
 
 void restoreSavedStateAndHandleFlag4(void) {
     if (D_8013AFD6) {
@@ -1320,7 +1324,7 @@ void restoreSavedStateAndHandleFlag4(void) {
     }
     if (D_8013AFAA & 0x10) {
         D_8013AFAA &= ~0x18;
-        setCurrentTaskCallback(func_8001E1B8);
+        setCurrentTaskCallback(armSavedStateRestoreOnFlag3);
     }
 }
 

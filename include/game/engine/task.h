@@ -98,7 +98,7 @@ void updateBobbingTrailEmitterTask(void);
 /* Initial scheduler callbacks implemented by the main presentation flow. */
 void armTaskCleanupOnFlagAFAABit6(void);
 void armTaskCallbackResetOnFlag3(void);
-void func_8001E1B8(void);
+void armSavedStateRestoreOnFlag3(void);
 
 /* Creates a child of the current task. On exhaustion, the free-list tail is the fallback in D_8013AE8C. */
 s32 createChildTask(TaskCallback callback);
