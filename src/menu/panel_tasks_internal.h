@@ -212,7 +212,7 @@ void updatePlayerPaletteSelectionTask(void);
 void updateTextSequenceTask(void);
 void func_800A1774(TextSequenceResource *resource);
 void updateBoardSelectionDetailsMenuTask(void);
-void func_80093A20(void);
+void initializePlayerTextureSelectionTask(void);
 void prepareRaceResourcesIfSelectionChanged(void);
 void SetFogNearFar(s32 near, s32 far, s32 h);
 void func_800A0EE8(void);

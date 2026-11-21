@@ -318,6 +318,8 @@ POLY_F3 gNumberAdjustmentArrow __attribute__((section(".data.number_adjustment_a
     4U << 24, 0, 0, 0, POLY_F3_CODE, 0, 0, 0, 0, 0, 0
 };
 
+void func_80093A54(void);
+
 INCLUDE_ASM("asm/nonmatchings/menu/panel_tasks", func_8008C708);
 
 static inline RegisteredTaskEntry *getRegisteredPanelEntry(u32 resource, s32 index) {
@@ -1700,7 +1702,7 @@ void updateBoardSelectionDetailsMenuTask(void) {
     case 16:
         if (panels[0].flags == 0 && panels[1].flags == 0 && panels[2].flags == 0 && parentPanels[0].flags == 0) {
             TaskResourceRecord *resources;
-            createChildTaskWithReserve(func_80093A20);
+            createChildTaskWithReserve(initializePlayerTextureSelectionTask);
             D_8013AE8C->resource14 = allocateTaskResource();
             resources = D_800D9504;
             D_8013AE8C->resource16 = allocateTaskResource();
@@ -1791,7 +1793,11 @@ void drawCurrentTaskBoardStyleAndLevel(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/panel_tasks", func_80093A20);
+void initializePlayerTextureSelectionTask(void) {
+    D_8013AE88->data18 = 0;
+    D_8013AE88->data1E = 0;
+    setCurrentTaskCallback(func_80093A54);
+}
 
 INCLUDE_ASM("asm/nonmatchings/menu/panel_tasks", func_80093A54);
 
