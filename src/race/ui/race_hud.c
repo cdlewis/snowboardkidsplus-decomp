@@ -11,6 +11,7 @@
 #include "game/io/controller_effects.h"
 #include "game/menu/selected_records.h"
 #include "game/race/player/race_player.h"
+#include "game/race/ui/race_hud.h"
 #include "game/save/save_data.h"
 #include "psx/libgs.h"
 
@@ -105,7 +106,12 @@ s32 calculateRaceTimeDifference(const RaceTime *a, const RaceTime *b, RaceTime *
     return smaller;
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud", func_80043C28);
+void initializeRacePauseMenuTask(void) {
+    D_8013AFD5 = 0;
+    D_8013B1AA = 0;
+    D_8013B1AB = 0;
+    setCurrentTaskCallback(updateRacePauseMenu);
+}
 
 void updateRacePauseMenu(void) {
     u8 pause = D_8013AFD3;

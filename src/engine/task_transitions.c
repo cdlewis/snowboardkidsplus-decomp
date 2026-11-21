@@ -184,7 +184,6 @@ void animateAlternatingVramRow(void);
 void initializeRaceTaskState(void);
 void updateActiveRaceTask(void);
 void finishRaceTransitionAfterCountdown(void);
-void func_80043C28(void);
 void func_80015A30(u16 controller);
 void func_8001C9F0(void);
 s16 func_8008C290(s16 characterId, s16 finishPosition);
@@ -746,7 +745,7 @@ void updateActiveRaceTask(void) {
                 if ((D_8013AEE8[0] & RACE_PAUSE_START) || !isControllerInputSupported(0)) {
                     playSoundEffect(0, 0, 32);
                     D_8013AFD3 = 1;
-                    func_80014930(&gGameTasks[4], func_80043C28);
+                    func_80014930(&gGameTasks[4], initializeRacePauseMenuTask);
                 }
             } else {
                 pauseRequested = 0;
@@ -758,7 +757,7 @@ void updateActiveRaceTask(void) {
                     playSoundEffect(0, 0, 32);
                     D_8013AFD3 = ((D_8013AEE8[0] & RACE_PAUSE_START) ||
                                   !isControllerInputSupported(0)) ? 1 : 2;
-                    func_80014930(&gGameTasks[1], func_80043C28);
+                    func_80014930(&gGameTasks[1], initializeRacePauseMenuTask);
                 }
             }
         }

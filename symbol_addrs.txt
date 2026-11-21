@@ -1925,6 +1925,7 @@ releaseTaskResource = 0x80014C40; // type:func
 gTaskResourceFreeBits = 0x800E9504; // size:0x20 defined:true
 
 setControllerFlag5 = 0x80014CCC; // type:func
+initializeRacePauseMenuTask = 0x80043C28; // type:func
 updateRacePauseMenu = 0x80043C5C; // type:func
 resetControllersAndDeleteCurrentTask = 0x80043F84; // type:func
 D_8013AF08 = 0x8013AF08; // size:0x4 defined:true
