@@ -116,7 +116,7 @@ void func_80035CF8(void);
 void createTitleLogoTask(s32 depth, s32 index);
 void updateTitleLogoTask(void);
 void updatePlayerModeSelectionTask(void);
-void func_80032280(s16 x, s16 y, s32 depth, s32 index);
+void createRegisteredPlayerModePanelTask(s16 x, s16 y, s32 depth, s32 index);
 
 void dispatchMode11TransitionTask(void) {
     if (D_8013B109 != 1) {
@@ -764,7 +764,7 @@ void updatePlayerModeSelectionTask(void) {
         setSecondaryDisplayTaskMode(0);
         configureTaskStateTransition(11, 0, 30);
         setTaskBackgroundMode(2, -0x1000, 0x1000);
-        func_80032280(-120, -48, 4, 21);
+        createRegisteredPlayerModePanelTask(-120, -48, 4, 21);
         D_8013AE88->data18 = 2;
         break;
     case 2:
@@ -889,7 +889,33 @@ cancel:
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/mode_transitions", func_80032280);
+void createRegisteredPlayerModePanelTask(s16 x, s16 y, s32 depth, s32 index) {
+    RegisteredTaskEntry *entry;
+
+    createChildTaskWithReserve(updateRegisteredPlayerModePanelTask);
+    D_8013AE8C->data1C = depth;
+    D_8013AE8C->data1E = index;
+    D_8013AE8C->resource14 = allocateTaskResource();
+    initMovement2D((Movement2D *)&D_800D9504[D_8013AE8C->resource14], x * 4096, y * 4096);
+    if (index % 10 == 0) {
+        RegisteredTaskEntry *table;
+        if (D_8013AE88->resource14 == 0xFFFF) {
+            while (1) {}
+        }
+        table = (RegisteredTaskEntry *)&D_800D9504[D_8013AE88->resource14];
+        entry = table + index / 10;
+    } else {
+        RegisteredTaskEntry *table;
+        if (D_8013AE88->resource16 == 0xFFFF) {
+            while (1) {}
+        }
+        table = (RegisteredTaskEntry *)&D_800D9504[D_8013AE88->resource16];
+        entry = table + index / 10;
+    }
+    entry->command = 1;
+    entry->flags = 1;
+    entry->task = D_8013AE8C;
+}
 
 void updateRegisteredPlayerModePanelTask(void) {
     Movement2D *position;

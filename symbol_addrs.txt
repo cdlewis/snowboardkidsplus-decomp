@@ -3154,6 +3154,7 @@ initializeTaskMenuFadeIn = 0x80039360; // type:func
 
 drawPlayerModeMessagePanelTask = 0x80032D48; // type:func
 gPlayerModeMessageTexts = 0x80123C88; // size:0x8
+createRegisteredPlayerModePanelTask = 0x80032280; // type:func
 updateRegisteredPlayerModePanelTask = 0x8003240C; // type:func
 gRegisteredPlayerModePanelText0 = 0x80123B78; // size:0x38
 gRegisteredPlayerModePanelText1 = 0x80123BB0; // size:0x4C
