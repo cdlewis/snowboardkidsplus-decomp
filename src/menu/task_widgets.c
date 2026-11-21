@@ -256,7 +256,8 @@ s8 gShrinkingSpriteOffsets[8] __attribute__((section(".data.shrinking_sprite_off
 };
 
 s16 func_80070794(s32 id);
-void func_80072A88(s16 index, s16 x, s16 y, TaskCallback callback, s32 value, s32 registrationIndex);
+void createRegisteredSpacedChildTask(s16 childIndex, s16 x, s16 y, TaskCallback callback,
+                                     s32 depth, s32 registrationIndex);
 void func_80072C54(void);
 void updateRegisteredTexturePairTask(void);
 void animateRegisteredTexturePairTask(void);
@@ -1009,15 +1010,42 @@ void initializeSpacedChildTasks(void) {
         entry = &entries[D_8013AE88->data1E / 10U];
     }
     for (i = 0; i < state->count; i++) {
-        func_80072A88(i, state->x / 4096 + state->spacingX * i,
-                     state->y / 4096 + state->spacingY * i,
-                     state->callback, state->value, i * 10 + 1);
+        createRegisteredSpacedChildTask(i, state->x / 4096 + state->spacingX * i,
+                                        state->y / 4096 + state->spacingY * i,
+                                        state->callback, state->value, i * 10 + 1);
     }
     entry->flags = 0;
     setCurrentTaskCallback(func_80072C54);
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80072A88);
+void createRegisteredSpacedChildTask(s16 childIndex, s16 x, s16 y, TaskCallback callback,
+                                     s32 depth, s32 registrationIndex) {
+    ByteTriplet *color;
+    RegisteredTaskEntry *entry;
+
+    createChildTaskWithReserve(callback);
+    D_8013AE8C->data18 = 0;
+    D_8013AE8C->data1A = childIndex;
+    D_8013AE8C->data1C = depth;
+    D_8013AE8C->data1E = registrationIndex;
+    D_8013AE8C->resource14 = allocateTaskResource();
+    initMovement2D((Movement2D *)&D_800D9504[D_8013AE8C->resource14], x << 12, y << 12);
+    D_8013AE8C->resource16 = allocateTaskResource();
+    color = (ByteTriplet *)&D_800D9504[D_8013AE8C->resource16];
+    color->bytes[0] = 128;
+    color->bytes[1] = 128;
+    color->bytes[2] = 128;
+    if (registrationIndex % 10 == 0) {
+        if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+        entry = getRegisteredTaskEntry(D_8013AE88->resource14, registrationIndex);
+    } else {
+        if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
+        entry = getRegisteredTaskEntry(D_8013AE88->resource16, registrationIndex);
+    }
+    entry->command = 0;
+    entry->flags = 0;
+    entry->task = D_8013AE8C;
+}
 
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80072C54);
 
