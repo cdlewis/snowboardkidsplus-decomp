@@ -156,7 +156,6 @@ void stopMatchingSoundVoice(u8 owner, u8 bank, u16 note);
 void playPlayerPositionalSoundEffect(u8 playerIndex, u8 bank, u16 programAndTone, s16 volume);
 void initializeMemoryCardSaveHeader(void);
 void captureMemoryCardSaveIcon(void);
-void prepareMemoryCardSave(u8 slot, void *source, u32 size);
 void selectMemoryCardLoadFile(u8 slot, void *destination);
 s16 validateAndCopyMemoryCardSave(void);
 void readMemoryCardDirectory(void);

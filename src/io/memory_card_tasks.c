@@ -4,6 +4,8 @@
 #include "game/io/memory_card.h"
 #include "psx/libmcrd.h"
 
+extern u32 D_8013AF50;
+
 s32 pollMemoryCardWrite(void) {
     s32 command, result;
     D_8013B60C[D_8013AF38] = 0;
@@ -120,7 +122,10 @@ void pollMemoryCardStatusTask(void) {
 
 INCLUDE_ASM("asm/nonmatchings/io/memory_card_tasks", func_80019C40);
 
-INCLUDE_ASM("asm/nonmatchings/io/memory_card_tasks", func_80019C84);
+void prepareMemoryCardWriteTask(void) {
+    prepareMemoryCardSave(0, D_8013AF4C, D_8013AF50);
+    setCurrentTaskCallback(pollMemoryCardWriteTask);
+}
 
 void pollMemoryCardWriteTask(void) {
     s32 result = pollMemoryCardWrite();

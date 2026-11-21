@@ -42,5 +42,6 @@ void pollMemoryCardBufferReadTask(void);
 void pollMemoryCardReadTask(void);
 void waitForMemoryCardAcceptTask(void);
 void pollMemoryCardStatusTask(void);
+void prepareMemoryCardWriteTask(void);
 void pollMemoryCardWriteTask(void);
 void waitForFrameHcount(u32 minimumHcount);

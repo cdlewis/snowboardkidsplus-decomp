@@ -30,6 +30,7 @@ extern u8 D_8013B608[2];
 extern u8 D_8013B60C[2] __attribute__((section(".bss")));
 extern u32 gMemoryCardSaveCapacities[5];
 
+void prepareMemoryCardSave(u8 slot, void *source, u32 size);
 s16 validateAndCopyMemoryCardSave(void);
 s32 pollMemoryCardRead(void);
 s32 pollMemoryCardWrite(void);
