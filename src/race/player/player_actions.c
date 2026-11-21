@@ -400,7 +400,62 @@ void resolvePlayerCollisionsWithCylinder(const Position3D *position, s32 radius,
 
 INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002C2D8);
 
-INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002C520);
+u16 pushPlayerOutOfCylinder(const Position3D *position, s32 radius, s32 height, s16 playerIndex) {
+    RacePlayer *player;
+    RacePlayer *players;
+    s32 x, distance, z, range, verticalRange;
+
+    players = gRacePlayers;
+    player = &players[playerIndex];
+    if (!player->isActive) {
+        return 0;
+    }
+    if (arePositionsWithinXZRange(position, (const Position3D *)&gRacePlayers[playerIndex].x, 0x10000)) {
+        distance = position->y - player->unk074;
+        if (distance < 0) {
+            distance = -distance;
+            verticalRange = height;
+        } else {
+            verticalRange = player->unk0B0;
+        }
+        if (distance < verticalRange) {
+            RacePlayer *horizontalPlayer;
+            RacePlayer *horizontalPlayers = gRacePlayers;
+
+            horizontalPlayer = &horizontalPlayers[playerIndex];
+            x = position->x - horizontalPlayer->x;
+            range = radius + horizontalPlayer->unk0AC;
+            if (x < 0) {
+                x = -x;
+            }
+            if (x < range) {
+                z = position->z - horizontalPlayer->z;
+                if (z < 0) {
+                    z = -z;
+                }
+                if (z < range) {
+                    distance = SquareRoot0(x * x + z * z);
+                    if (distance < range) {
+                        s16 heading;
+                        s32 sine, cosine;
+                        s32 correctionX, correctionZ;
+
+                        distance -= range;
+                        heading = getXZHeading(position->x, position->z, horizontalPlayer->x, horizontalPlayer->z);
+                        sine = rsin(heading);
+                        cosine = rcos(heading);
+                        correctionX = (-sine * distance) / 4096;
+                        correctionZ = (cosine * distance) / 4096;
+                        horizontalPlayer->x += correctionX;
+                        horizontalPlayer->z -= correctionZ;
+                        return 1;
+                    }
+                }
+            }
+        }
+    }
+    return 0;
+}
 
 u16 isPositionWithinPlayerCollisionRange(const Position3D *position, s32 radius, s32 height, s16 playerIndex) {
     RacePlayer *player;

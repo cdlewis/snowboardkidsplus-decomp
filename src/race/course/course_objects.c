@@ -1296,7 +1296,9 @@ void updatePlacedObjectBounceTask(void) {
             break;
         }
         if (D_8013AE88->data1C != 0 || visual->velocity > 0) {
-            for (i = 0; i < D_8013AFD2; i++) func_8002C520(&resource->position, 0x3000, 0x6000, (s16)i);
+            for (i = 0; i < D_8013AFD2; i++) {
+                pushPlayerOutOfCylinder(&resource->position, 0x3000, 0x6000, (s16)i);
+            }
         }
     }
     visual->coordinate.coord.t[1] = resource->groundCoordinate.coord.t[1] + (visual->height >> 8);
@@ -1572,8 +1574,8 @@ void resolvePlayerRegionCollision(RacePlayer *player, PlayerCollisionRegion *reg
             player->unk12C = 0x16;
         }
     } else {
-        func_8002C520(&region->endpoints[0].position, 0xC00, 0x4000, player->playerIndex);
-        func_8002C520(&region->endpoints[1].position, 0xC00, 0x4000, player->playerIndex);
+        pushPlayerOutOfCylinder(&region->endpoints[0].position, 0xC00, 0x4000, player->playerIndex);
+        pushPlayerOutOfCylinder(&region->endpoints[1].position, 0xC00, 0x4000, player->playerIndex);
         height = player->unk92E;
         if (height < region->minHeight || height > region->maxHeight) {
             return;
@@ -1857,7 +1859,7 @@ void updateOrbitingObstacleTask(void) {
         resource->position.z = resource->groundCoordinate.coord.t[2] << 8;
         for (i = 0; i < D_8013AFD2; i++) {
             if (resource->playerCooldowns[i] == 0) {
-                if ((u16)func_8002C520(&resource->position, 0x9000, 0x8000, i)) {
+                if (pushPlayerOutOfCylinder(&resource->position, 0x9000, 0x8000, i)) {
                     s16 heading, delta, limit;
                     func_800183FC(i, 1, 0xC01, 0x20);
                     heading = getXZHeading(resource->position.x, resource->position.z,
