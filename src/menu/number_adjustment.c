@@ -10,6 +10,8 @@
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
 
+extern u16 D_8013AFD0 __attribute__((section(".data")));
+
 const u16 gNumberAdjustmentLabel[]
     __attribute__((section(".data.number_adjustment_label"))) = {
     0x00F7, 0x00CE, 0x0093, 0x00A1, 0x00D2, 0,

@@ -1,4 +1,3 @@
-#define GAME_LOOP_ABSOLUTE_ADDRESSING
 #include "game/engine/game_loop.h"
 #include "game/save/save_data.h"
 #include "psx/scratchpad.h"
@@ -45,6 +44,10 @@ typedef struct ProximityParticleResource {
     s16 geometryIndex;
     u8 unkD2[0x2E];
 } ProximityParticleResource;
+
+extern VECTOR *D_8013AF8C __attribute__((section(".data")));
+extern u32 *D_8013AF70 __attribute__((section(".data")));
+extern u32 *D_8013AF74 __attribute__((section(".data")));
 
 extern s16 D_8013B1D4 __attribute__((section(".data.finish_slot_state")));
 

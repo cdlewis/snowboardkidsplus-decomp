@@ -96,11 +96,7 @@ extern s16 D_8013AFDE __attribute__((section(".data")));
 extern u8 D_8013AFE1 __attribute__((section(".data")));
 #endif
 
-#ifdef SAVE_OVERRIDE_ABSOLUTE_ADDRESSING
-extern u8 gSaveRecordUnlockOverrideFlags __attribute__((section(".data.save_record_unlock_override_flags")));
-#else
 extern u8 gSaveRecordUnlockOverrideFlags;
-#endif
 
 void copySaveRecordAndMergeFlags(void);
 void applySaveRecordUnlockOverrides(s16 index);

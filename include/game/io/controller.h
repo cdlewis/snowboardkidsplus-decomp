@@ -11,15 +11,9 @@ typedef struct ControllerInputRecord {
     u16 pressedButtons;
 } ControllerInputRecord;
 
-#ifdef CONTROLLER_INPUT_ABSOLUTE_ADDRESSING
-extern ControllerInputRecord *D_8013AED4[] __attribute__((section(".data")));
-extern u16 D_8013AEDC[] __attribute__((section(".data")));
-extern u8 D_8013AEE0[] __attribute__((section(".data")));
-#else
 extern ControllerInputRecord *D_8013AED4[];
 extern u16 D_8013AEDC[];
 extern u8 D_8013AEE0[];
-#endif
 
 /* Shared recording/playback buffer; storage remains in the controller data unit. */
 extern u8 D_800E959C[];

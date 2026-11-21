@@ -1,7 +1,6 @@
 #include "psx/libetc.h"
 #include "render_effects_internal.h"
 #include "../race/race_internal.h"
-#define GAME_LOOP_ABSOLUTE_ADDRESSING
 #include "game/engine/game_loop.h"
 #include "game/engine/game_task_scheduler.h"
 #include "game/engine/task.h"

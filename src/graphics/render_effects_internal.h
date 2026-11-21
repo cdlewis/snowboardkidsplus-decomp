@@ -5,10 +5,8 @@
 /* Original unit addressing policy; include before public headers. */
 #include "common.h"
 #include "game/engine/angles.h"
-#define CONTROLLER_INPUT_ABSOLUTE_ADDRESSING
 #include "game/io/controller.h"
 #include "game/io/cd_queue.h"
-#define CONTROLLER_EFFECTS_ABSOLUTE_ADDRESSING
 #include "game/io/controller_effects.h"
 #include "game/io/controller.h"
 #include "game/graphics/graphics.h"

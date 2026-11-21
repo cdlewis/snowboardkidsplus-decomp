@@ -21,6 +21,11 @@ typedef struct NumberSelectionSpriteTable {
     u16 padding;
 } NumberSelectionSpriteTable;
 
+extern u8 D_8013B108 __attribute__((section(".data")));
+extern u8 D_8013B109 __attribute__((section(".data")));
+extern s16 D_8013B106 __attribute__((section(".data")));
+extern u8 D_8013B0F0 __attribute__((section(".data")));
+
 u16 gSceneOneShotSoundKey __attribute__((section(".sdata.scene_sound_state"))) = 0;
 
 u8 gSceneOneShotVoice __attribute__((section(".sdata.scene_sound_state"))) = 0;

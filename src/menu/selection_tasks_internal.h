@@ -8,14 +8,10 @@
 #include "game/io/controller.h"
 #include "game/io/controller_effects.h"
 #include "game/save/save_data.h"
-#define SELECTED_RECORDS_ABSOLUTE_ADDRESSING
 #include "game/menu/selected_records.h"
 #include "game/io/cd_queue.h"
-#define GAME_OPTION_TRANSITION_ABSOLUTE_ADDRESSING
 #include "game/engine/game_options.h"
 #include "game/graphics/graphics.h"
-#define MUSIC_STATE_ABSOLUTE_ADDRESSING
-#define MUSIC_ABSOLUTE_ADDRESSING
 #include "game/audio/music.h"
 #include "psx/libsnd.h"
 #include "psx/libsn.h"
@@ -23,7 +19,6 @@
 #define RACE_PLAYER_ABSOLUTE_ADDRESSING
 #define TASK_ABSOLUTE_ADDRESSING
 #define TASK_FLAGS_ABSOLUTE_ADDRESSING
-#define TASK_MODE_STATE_ABSOLUTE_ADDRESSING
 #include "game/race/player/race_player.h"
 #include "game/race/camera/race_camera.h"
 #include "game/scene/scene_events.h"

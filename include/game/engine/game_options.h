@@ -26,19 +26,10 @@ extern u8 D_8013AFE0 __attribute__((section(".data")));
 extern u8 D_8013AFE1 __attribute__((section(".data")));
 extern u8 D_8013AFE2 __attribute__((section(".data")));
 #endif
-#ifdef GAME_OPTION_TRANSITION_ABSOLUTE_ADDRESSING
-extern u8 D_8013B108 __attribute__((section(".data")));
-extern u8 D_8013B109 __attribute__((section(".data")));
-#else
 extern u8 D_8013B108;
 extern u8 D_8013B109;
-#endif
 extern u8 D_8013B10A;
-#ifdef MODE11_CD_STATE_ABSOLUTE_ADDRESSING
-extern u8 D_8013B564 __attribute__((section(".data")));
-#else
 extern u8 D_8013B564;
-#endif
 
 void initializeGameOptionTask(void);
 void resetGameOptionState(void);

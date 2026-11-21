@@ -1,6 +1,3 @@
-#define GAME_OPTION_TRANSITION_ABSOLUTE_ADDRESSING
-#define MODE11_CD_STATE_ABSOLUTE_ADDRESSING
-#define MUSIC_STATE_ABSOLUTE_ADDRESSING
 #include "panel_tasks_internal.h"
 #include "game/menu/selected_sprite.h"
 #include "game/menu/task_widgets.h"
@@ -22,6 +19,8 @@ typedef struct MainTailSelectionResource {
     s16 unk00;
     s16 selectedIndex;
 } MainTailSelectionResource;
+
+extern u16 D_8013AFD0 __attribute__((section(".data")));
 
 extern ByteMappingDescriptor D_801325FC[];
 extern ByteMappingDescriptor D_80132638[];

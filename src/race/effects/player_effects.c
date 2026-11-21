@@ -2,7 +2,6 @@
 #include "psx/stdarg.h"
 #define RACE_FINISH_ABSOLUTE_ADDRESSING
 #include "../../graphics/render_effects_internal.h"
-#define GAME_LOOP_ABSOLUTE_ADDRESSING
 #include "game/engine/game_loop.h"
 #include "game/audio/music.h"
 #include "game/engine/game_options.h"
@@ -163,6 +162,9 @@ typedef struct PlayerParticleTrailScratch {
     long cue;
     long flags;
 } PlayerParticleTrailScratch;
+
+extern u16 D_8013AFAA __attribute__((section(".data")));
+extern u32 *D_8013AF70 __attribute__((section(".data")));
 
 const VECTOR gInitialRaceOscillatingQuadPosition
     __attribute__((section(".rodata.race_oscillating_quad_position"))) = {

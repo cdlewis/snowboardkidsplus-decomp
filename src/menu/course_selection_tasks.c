@@ -5,7 +5,6 @@
 #include "grouped_selection_internal.h"
 #include "game/engine/byte_search.h"
 #include "game/io/cd_queue.h"
-#define SELECTED_RECORDS_ABSOLUTE_ADDRESSING
 #include "game/menu/selected_records.h"
 #include "game/menu/selected_sprite.h"
 #include "game/menu/task_widgets.h"
@@ -86,6 +85,8 @@ typedef struct SaveRecordTaskStatus {
     u8 unk08[8];
     s16 secondResult;
 } SaveRecordTaskStatus;
+
+extern u16 D_8013AFD0 __attribute__((section(".data")));
 
 extern s16 D_8013AF3E __attribute__((section(".data")));
 

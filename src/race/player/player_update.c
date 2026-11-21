@@ -15,7 +15,6 @@
 #include "game/audio/music.h"
 #include "game/save/save_data.h"
 #include "game/engine/game_options.h"
-#define GAME_LOOP_ABSOLUTE_ADDRESSING
 #include "game/engine/game_loop.h"
 #include "game/menu/selected_records.h"
 #include "psx/libapi.h"
@@ -48,6 +47,8 @@ typedef struct PlayerVariantAttributeTable {
     u16 values[15][9];
     u16 padding;
 } PlayerVariantAttributeTable;
+
+extern VECTOR *D_8013AF8C __attribute__((section(".data")));
 
 extern s16 D_8013B0E4 __attribute__((section(".data")));
 extern u16 D_8013B0E6 __attribute__((section(".data")));

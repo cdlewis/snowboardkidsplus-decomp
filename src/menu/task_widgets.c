@@ -1,7 +1,5 @@
 #define TASK_ABSOLUTE_ADDRESSING
-#define MUSIC_STATE_ABSOLUTE_ADDRESSING
 #include "common.h"
-#define SAVE_OVERRIDE_ABSOLUTE_ADDRESSING
 #include "game/save/save_data.h"
 #include "game/engine/game_options.h"
 #include "game/engine/byte_search.h"
@@ -174,6 +172,8 @@ typedef struct TaskValueState {
     u16 unk04;
     u16 unk06;
 } TaskValueState;
+
+extern s16 D_8013B106 __attribute__((section(".data")));
 
 const u16 gCharacterSelectionConfirmSounds[10]
     __attribute__((section(".data.character_selection_confirm_sounds"), aligned(4))) = {

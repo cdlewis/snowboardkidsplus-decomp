@@ -1,6 +1,3 @@
-#define GAME_OPTION_TRANSITION_ABSOLUTE_ADDRESSING
-#define MODE11_CD_STATE_ABSOLUTE_ADDRESSING
-#define MUSIC_STATE_ABSOLUTE_ADDRESSING
 #include "panel_tasks_internal.h"
 #include "game/menu/selected_sprite.h"
 #include "game/audio/music.h"
@@ -20,6 +17,12 @@ typedef struct Mode11MenuSelection {
     s16 previousIndex;
     s16 choiceResult;
 } Mode11MenuSelection;
+
+extern u8 D_8013B108 __attribute__((section(".data")));
+extern u8 D_8013B564 __attribute__((section(".data")));
+extern s16 D_8013B106 __attribute__((section(".data")));
+extern u8 D_8013B0F0 __attribute__((section(".data")));
+extern u16 D_8013AFD0 __attribute__((section(".data")));
 
 extern const GridSpriteEntry gMode11SelectionSprites[];
 extern const u8 gMode11SelectionMapping[];

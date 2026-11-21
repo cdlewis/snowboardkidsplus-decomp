@@ -22,6 +22,8 @@ typedef struct TextSequenceEntry {
     u16 length;
 } TextSequenceEntry;
 
+extern u16 D_8013AFAA __attribute__((section(".data")));
+
 ResourceSectorRange gMode1SectorRanges[10] __attribute__((section(".data.indexed_sector_ranges"))) = {
     {DAT_MODE1_TEXT_000_SECTOR, DAT_MODE1_TEXT_000_SECTOR_COUNT},
     {DAT_MODE1_TEXT_001_SECTOR, DAT_MODE1_TEXT_001_SECTOR_COUNT},

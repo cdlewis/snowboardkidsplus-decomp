@@ -4,21 +4,11 @@
 
 /* Shared with the sequence loading and playback routines still in assembly. */
 /* Presentation tasks use absolute addressing; other callers use $gp. */
-#ifdef MUSIC_STATE_ABSOLUTE_ADDRESSING
-extern s16 D_8013B106 __attribute__((section(".data")));
-#else
 extern s16 D_8013B106;
-#endif
-#ifdef MUSIC_ABSOLUTE_ADDRESSING
-#define MUSIC_DATA __attribute__((section(".data")))
-#else
-#define MUSIC_DATA
-#endif
-extern s16 gMusicSequenceId MUSIC_DATA;
-extern u8 gMusicSequenceActive MUSIC_DATA;
+extern s16 gMusicSequenceId;
+extern u8 gMusicSequenceActive;
 /* Signed volume with eight fractional bits, shared with the fade updater. */
-extern s16 D_8013AF30 MUSIC_DATA;
-#undef MUSIC_DATA
+extern s16 D_8013AF30;
 extern s8 gSoundBankLoaded[12];
 extern s8 gSoundSystemActive;
 extern u8 gMusicFadeMode;
