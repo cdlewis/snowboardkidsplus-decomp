@@ -528,7 +528,17 @@ void drawCurrentTaskPlayerValuePanel(void) {
 
 INCLUDE_ASM("asm/nonmatchings/menu/grid_selection", func_800995A8);
 
-INCLUDE_ASM("asm/nonmatchings/menu/grid_selection", func_800996F8);
+s32 findLastMappedByteIndexOrZero(const ByteMappingDescriptor *descriptor, s16 value) {
+    s32 result = 0;
+    s32 i;
+
+    for (i = 0; i < descriptor->count; i++) {
+        if (descriptor->mapping[i] == value) {
+            result = i;
+        }
+    }
+    return result;
+}
 
 void initializeCountedFourBoundsTask(void) {
     D_8013AE98->data1C++;

@@ -2649,6 +2649,7 @@ updateFallingPlayerEffectTask = 0x80049404; // type:func
 
 drawRisingTexturedStripTask = 0x80068BC0; // type:func
 
+findLastMappedByteIndexOrZero = 0x800996F8; // type:func
 updatePlayerPaletteSelectionTask = 0x80099880; // type:func
 gPaletteSelectionMainPreviewY = 0x80131D4C; // size:0xC
 gPaletteSelectionSprites = 0x80131DE8; // size:0x54
