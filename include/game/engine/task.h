@@ -177,6 +177,7 @@ void initializeViewAndSelectTaskCallback(void);
 void initializeGameOptionViewTask(void);
 
 void initializeDualResourceTaskAndNotifyParent(void);
+void updateMainMenuSelectionTask(void);
 
 void initializeMainTailDualResourceTask(void);
 

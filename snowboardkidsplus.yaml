@@ -127,7 +127,7 @@ segments:
       - [0x1A38, .rodata, menu/task_widgets]
       - [0x1A78, rodata]
       - {start: 0x1C28, type: .rodata, name: menu/task_widgets, linker_section: .rodata.save_record_unlock_flags}
-      - [0x1C3C, rodata]
+      - {start: 0x1C3C, type: .rodata, name: unclassified/menu_8007BE9C, linker_section: .rodata.main_menu_selection}
       - {start: 0x1C68, type: .rodata, name: menu/course_selection_tasks, linker_section: .rodata.course_selection}
       - {start: 0x1D38, type: .rodata, name: menu/course_selection_tasks, linker_section: .rodata.selection_prize_menu}
       - {start: 0x1DC0, type: .rodata, name: menu/course_selection_tasks, linker_section: .rodata.grouped_course_menu}
@@ -823,7 +823,10 @@ segments:
       - [0x11FA18, data, 11FA18]
       - {start: 0x11FBC8, type: .data, name: menu/task_widgets, linker_section: .data.value_panel_label}
       - {start: 0x11FBDC, type: .data, name: menu/task_widgets, linker_section: .data.text_panel_message}
-      - [0x11FC00, data, 11FC00]
+      - {start: 0x11FC00, type: .data, name: unclassified/menu_8007BE9C, linker_section: .data.main_menu_sprites}
+      - [0x11FC24, data, main_menu_text_bodies]
+      - {start: 0x11FF6C, type: .data, name: unclassified/menu_8007BE9C, linker_section: .data.main_menu_texts}
+      - [0x11FF98, data, main_menu_data_tail]
       - {start: 0x120560, type: .data, name: menu/course_selection_tasks, linker_section: .data.record_flag_menu_sprites}
       - [0x1205CC, data, record_flag_menu_data_tail]
       - {start: 0x12080C, type: .data, name: menu/course_selection_tasks, linker_section: .data.grouped_course_menu_descriptors}
@@ -1035,7 +1038,7 @@ segments:
       - {start: 0x12BBB4, type: .sdata, name: menu/task_widgets, linker_section: .sdata.animated_sprite16_page, linker_section_order: .data}
       - [0x12BBBC, data, 12BBBC]
       - {start: 0x12BBC8, type: .data, name: menu/task_widgets, linker_section: .data.shrinking_sprite_offsets}
-      - [0x12BBD0, data, 12BBD0]
+      - {start: 0x12BBD0, type: .data, name: unclassified/menu_8007BE9C, linker_section: .data.main_menu_mappings}
       - {start: 0x12BBF8, type: .data, name: unclassified/menu_8007BE9C, linker_section: .data.selection_money_currency_label}
       - [0x12BBFC, data, 12BBD0_tail]
       - {start: 0x12BC1C, type: .data, name: menu/course_selection_tasks, linker_section: .data.selection_prize_currency_label}

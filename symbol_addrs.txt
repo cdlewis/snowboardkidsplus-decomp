@@ -283,6 +283,8 @@ dispatchBackgroundMenuTask = 0x8002F698; // type:func
 // Clear the task counter and advance its callback when the shared flag is set.
 advanceTaskWhenFlagB55ESet = 0x800A3970; // type:func
 
+updateMainMenuSelectionTask = 0x8007BE9C; // type:func size:0x900
+
 // Return the selection byte when it is in 0..4, otherwise zero.
 getValidatedSelectionIndex = 0x8007C79C; // type:func
 
@@ -3763,6 +3765,24 @@ drawRegisteredTextPanelTask = 0x8008C8BC; // type:func
 gRegisteredPanelMode0Label = 0x8013B470; // size:0x4
 gRegisteredPanelMode1Label = 0x8013B474; // size:0x4
 drawCurrentTaskMoneyPanel = 0x8008D958; // type:func
+gMainMenuSprites = 0x8012F400; // size:0x24 defined:true
+D_8012F424 = 0x8012F424; // size:0x6C
+D_8012F490 = 0x8012F490; // size:0x38
+D_8012F4C8 = 0x8012F4C8; // size:0x7C
+D_8012F544 = 0x8012F544; // size:0x88
+D_8012F5CC = 0x8012F5CC; // size:0x64
+D_8012F630 = 0x8012F630; // size:0x68
+D_8012F698 = 0x8012F698; // size:0x3C
+D_8012F6D4 = 0x8012F6D4; // size:0x38
+D_8012F70C = 0x8012F70C; // size:0x1C
+D_8012F728 = 0x8012F728; // size:0x28
+D_8012F750 = 0x8012F750; // size:0x1C
+gMainMenuTexts = 0x8012F76C; // size:0x2C defined:true
+gMainMenuSinglePlayerSpriteMapping = 0x8013B3D0; // size:0x8 defined:true
+gMainMenuMultiplayerSpriteMapping = 0x8013B3D8; // size:0x8 defined:true
+gMainMenuSinglePlayerTextMapping = 0x8013B3E0; // size:0x8 defined:true
+gMainMenuMultiplayerTextMapping = 0x8013B3E8; // size:0x8 defined:true
+gMainMenuParentStates = 0x8013B3F0; // size:0x8 defined:true
 gSelectionMoneyCurrencyLabel = 0x8013B3F8; // size:0x4
 gSelectionPrizeCurrencyLabel = 0x8013B41C; // size:0x3
 D_8013B41F = 0x8013B41F; // size:0x1

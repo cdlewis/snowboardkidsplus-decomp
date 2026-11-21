@@ -283,7 +283,6 @@ void updatePlayerCharacterSelection(s16 playerIndex, SelectionEntry *entries);
 void createRegisteredSelectionPanelTask(s16 playerIndex, SelectionPanelRecord *record, s32 depth, s32 index);
 void updateRegisteredSelectionPanelTask(void);
 void GsSortBg(GameBackground *background, GsOT *ot, u16 depth);
-void func_8007BE9C(void);
 void updateShrinkingSpriteTask(void);
 void updateValuePanelTask(void);
 void updateAnimatedSpriteTask(void);
@@ -2768,6 +2767,6 @@ void initializeDualResourceTaskAndNotifyParent(void) {
         while (1) {}
     }
     D_8013AE88->resource16 = allocateTaskResource();
-    setCurrentTaskCallback(func_8007BE9C);
+    setCurrentTaskCallback(updateMainMenuSelectionTask);
     D_8013AE88->unk10 |= 2;
 }
