@@ -320,11 +320,36 @@ POLY_F3 gNumberAdjustmentArrow __attribute__((section(".data.number_adjustment_a
 
 void func_80093A54(void);
 
-INCLUDE_ASM("asm/nonmatchings/menu/panel_tasks", func_8008C708);
-
 static inline RegisteredTaskEntry *getRegisteredPanelEntry(u32 resource, s32 index) {
     RegisteredTaskEntry *entries = (RegisteredTaskEntry *)&D_800D9504[resource];
     return &entries[index / 10];
+}
+
+void createRegisteredStaticTextPanelTask(s16 x, s16 y, s16 textX, s16 textY,
+                                         const u16 *text, s32 mode, s32 depth, s32 index) {
+    RegisteredTextPanelResource *resource;
+    RegisteredTaskEntry *entry;
+    createChildTaskWithReserve(drawRegisteredTextPanelTask);
+    D_8013AE8C->resource14 = allocateTaskResource();
+    resource = (RegisteredTextPanelResource *)&D_800D9504[D_8013AE8C->resource14];
+    resource->index = index;
+    resource->depth = depth;
+    resource->mode = mode;
+    resource->x = x;
+    resource->y = y;
+    resource->textX = textX;
+    resource->textY = textY;
+    resource->text = text;
+    if (index % 10 == 0) {
+        if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
+        entry = getRegisteredPanelEntry(D_8013AE88->resource14, index);
+    } else {
+        if (D_8013AE88->resource16 == 0xFFFF) { for (;;) {} }
+        entry = getRegisteredPanelEntry(D_8013AE88->resource16, index);
+    }
+    entry->command = 0;
+    entry->flags = 0;
+    entry->task = D_8013AE8C;
 }
 
 void drawRegisteredTextPanelTask(void) {
@@ -418,8 +443,8 @@ void updateRegisteredDetailedTextPanelTask(void) {
     if (entry->task == D_8013AE88 && entry->command != 99) {
         switch (D_8013AE88->data18) {
         case 0:
-            func_8008C708(state->x, state->y, state->textX, state->textY,
-                          state->text, state->value, state->depth + 1, 1);
+            createRegisteredStaticTextPanelTask(state->x, state->y, state->textX, state->textY,
+                                                state->text, state->value, state->depth + 1, 1);
             if (state->mode == 0) {
                 entry->flags = 2;
                 D_8013AE88->data18 = 3;

@@ -273,7 +273,7 @@ void updateMemoryCardSaveMenuTask(void) {
             break;
         case 1:
         case 2:
-            func_8008C708(x, y, x + 4, y + 2, D_801302BC, menu->slot, 4, 11);
+            createRegisteredStaticTextPanelTask(x, y, x + 4, y + 2, D_801302BC, menu->slot, 4, 11);
             break;
         case 6:
             D_8013BE30.previous[menu->slot] = D_8013BE30.current[menu->slot];
@@ -299,7 +299,7 @@ void updateMemoryCardSaveMenuTask(void) {
         case 8:
         case 12:
             D_8013AE88->data18 = 24;
-            func_8008C708(x, y, x + 4, y + 2, D_80130390, player, 4, 11);
+            createRegisteredStaticTextPanelTask(x, y, x + 4, y + 2, D_80130390, player, 4, 11);
             D_8013BE30.previous[menu->slot] = D_8013BE30.current[menu->slot];
             break;
         case 9:
@@ -351,7 +351,7 @@ void updateMemoryCardSaveMenuTask(void) {
         goto showRetry;
     case 16:
         D_8013BE30.unk_12[menu->slot] = 3;
-        func_8008C708(x, y, x + 4, y + 2, D_80130578, -1, 4, 11);
+        createRegisteredStaticTextPanelTask(x, y, x + 4, y + 2, D_80130578, -1, 4, 11);
         D_8013AE88->data18 = 17;
         break;
     case 17:
@@ -373,7 +373,7 @@ void updateMemoryCardSaveMenuTask(void) {
         if (status == 4)
             break;
         if (status == 0 || status == 5) {
-            func_8008C708(x, y, x + 20, y + 12, D_801306DC, -1, 4, 11);
+            createRegisteredStaticTextPanelTask(x, y, x + 20, y + 12, D_801306DC, -1, 4, 11);
             D_8013AE88->data18 = (D_8013B47C = 1, 22);
             break;
         }
@@ -480,7 +480,7 @@ void updateMemoryCardSaveMenuTask(void) {
         D_8013AE88->data18 = 35;
         break;
     case 35:
-        func_8008C708(x, y, x + 4, y + 2, D_801302BC, menu->slot, 4, 11);
+        createRegisteredStaticTextPanelTask(x, y, x + 4, y + 2, D_801302BC, menu->slot, 4, 11);
         D_8013BE30.unk_12[menu->slot] = 2;
         D_8013AE88->data18 = 36;
         break;
@@ -497,7 +497,7 @@ void updateMemoryCardSaveMenuTask(void) {
         formatResult = func_8001983C();
         D_8013BE30.unk_0E[menu->slot] = 5;
         if (formatResult == 0) {
-            func_8008C708(x, y, x + 4, y + 2, D_80130460, -1, 4, 11);
+            createRegisteredStaticTextPanelTask(x, y, x + 4, y + 2, D_80130460, -1, 4, 11);
             D_8013BE30.unk_12[menu->slot] = 3;
     startSave:
             D_8013AE88->data18 = 16;
