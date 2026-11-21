@@ -2788,6 +2788,7 @@ drawRadialTriangleAndQuadEffect = 0x80062EA0; // type:func
 drawPlayerParticlesTask = 0x800632C4; // type:func
 createPlayerParticleTask = 0x80063788; // type:func
 
+startSecondaryDisplayTask = 0x8007195C; // type:func
 setSecondaryDisplayTaskMode = 0x800719A8; // type:func
 drawSecondaryDisplayTask = 0x80071A80; // type:func
 gSecondaryDisplayLabel = 0x8012D498; // size:0xC defined:true

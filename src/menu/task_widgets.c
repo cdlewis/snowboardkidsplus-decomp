@@ -265,7 +265,7 @@ void addTilePacket(s32 x, s32 y, s32 width, s32 height, s32 r, s32 g, s32 b,
                    GsOT *ot, u16 depth);
 void updateScrollingBackgroundTask(void);
 void drawTaskImagesOnBlackBackground(void);
-void func_8007195C(void);
+void startSecondaryDisplayTask(void);
 void updateTaskStateTransition(void);
 void func_8007197C(void);
 void drawSecondaryDisplayTask(void);
@@ -694,7 +694,7 @@ void setTaskBackgroundMode(s32 mode, s32 value1, s32 value2) {
         D_8013B378->data1A = value1;
         D_8013B378->data1C = 0;
         copyIndexedTaskImagesToVram(value1);
-        func_8007195C();
+        startSecondaryDisplayTask();
         break;
     case 0:
     default:
@@ -754,7 +754,9 @@ void resetTaskControlState(void) {
     func_8007197C();
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_8007195C);
+void startSecondaryDisplayTask(void) {
+    setSecondaryDisplayTaskMode(1);
+}
 
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_8007197C);
 
