@@ -653,7 +653,7 @@ void updateMovingTaskObject(void) {
         drawTaskObject(D_8013AE88->data1C);
     }
     if (D_8013AE88->data1A == 0) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     }
 }
 
@@ -842,7 +842,7 @@ void initializePickupVisualTask(void) {
     TaskVisualResource *resource;
     u16 i;
     if ((s16)getModeFilteredGameOptionFlag2() == 0) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     } else {
         for (i = D_8013B2B5; i < D_8013B2B5 + D_8013B2B6; i++) {
             if (D_8013B2BC[i].flags & 0x40) {
@@ -1085,7 +1085,7 @@ void initializePlacedObjectTask(void) {
     TaskVisualResource *visual;
     if ((s16)getStateAdjustedGameOptionFlag1() == 0) {
         if ((u32)(D_8013B2BC[D_8013AE88->data18].unk01 - 2) < 2) {
-            func_800149A8();
+            deleteCurrentTaskSubtree();
             return;
         }
     }
@@ -1447,7 +1447,7 @@ void updateProximityParticleTask(void) {
                         D_8013AE88->data18 = 1;
                         D_8013AE88->data1C = 6;
                     } else {
-                        func_800149A8();
+                        deleteCurrentTaskSubtree();
                         return;
                     }
                 }
@@ -1768,12 +1768,12 @@ void updateLandedTaskObject(void) {
     resource = (FallingTaskResource *)&D_800D9504[D_8013AE88->resource14];
     if (!D_8013AFD3) {
         if (--D_8013AE88->data1A == 0) {
-            func_800149A8();
+            deleteCurrentTaskSubtree();
             return;
         }
         for (i = 0; i < D_8013AFD2; i++) {
             if (addPlayerFlagsIfWithinRadius(&resource->position, 0xC00, 4, i)) {
-                func_800149A8();
+                deleteCurrentTaskSubtree();
                 return;
             }
         }

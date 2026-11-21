@@ -408,7 +408,7 @@ void updateCdAwareCourseSelectionTask(void) {
         break;
     default:
         D_8013AE98->data1C--;
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         break;
     }
 }
@@ -611,7 +611,7 @@ void updateSelectionPrizeMenuTask(void) {
         resumeTask->data18 = parentNextState;
         /* fall through */
     default:
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         break;
     }
 }
@@ -681,7 +681,7 @@ void updatePaletteRotationTask(void) {
         LoadImage(&resource->rect, (u32 *)resource->original);
         slot->task = 0;
         slot->unk06 = 0;
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         return;
     }
     if (++resource->timer > resource->interval) {
@@ -734,7 +734,7 @@ void drawRegisteredSelectionItemStatus(void) {
         sprite = D_8012F798;
         if (entry->command == 99) {
             entry->task = 0;
-            func_800149A8();
+            deleteCurrentTaskSubtree();
         } else {
             sprite = func_800736D0(sprite, parent->values, (s16)D_8013AE88->data1A);
             setSpriteColor(color->bytes[0], color->bytes[1], color->bytes[2]);
@@ -1091,7 +1091,7 @@ finishExit:
         break;
     default:
         D_8013AE98->data1C--;
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         break;
     }
 }
@@ -1283,7 +1283,7 @@ void updateRecordFlagSelectionMenuTask(void) {
         break;
     default:
 finish:
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         break;
     }
 }
@@ -1646,7 +1646,7 @@ commandChildren:
     case 99:
     default:
         entry->task = 0;
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         return;
     }
     entry->flags |= children[0].flags;
@@ -1755,7 +1755,7 @@ clearFlags:
 
 remove:
     entry->task = 0;
-    func_800149A8();
+    deleteCurrentTaskSubtree();
     return;
 
 update:
@@ -1998,7 +1998,7 @@ clearFlags:
 remove:
     entry->task = 0;
     entry->flags = 0;
-    func_800149A8();
+    deleteCurrentTaskSubtree();
     return;
 
 update:
@@ -2285,7 +2285,7 @@ void updatePlayerGroupedSelectionMenu(void) {
     default:
         queueMenuResourceReads((s16)D_8013AE98->data18);
         D_8013AE98->data1C--;
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         break;
     }
 }
@@ -2549,7 +2549,7 @@ finish:
     default:
         parentSlot->flags = 0;
         gPlayerGroupedSelectionStates[player] = 6;
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         return;
     }
 
@@ -2600,7 +2600,7 @@ void drawClippedRegisteredTaskGridSprite(void) {
     if (parent->mapping != 0) {
         if (entry->command == 99) {
             entry->task = 0;
-            func_800149A8();
+            deleteCurrentTaskSubtree();
         } else {
             row = (parent->mode & 1) ^ 1;
             if (parent->alternateSprites == 1) {
@@ -2712,7 +2712,7 @@ void updatePaletteEntryTask(void) {
         LoadImage(&resource->rect, (u32 *)resource->original);
         slot->task = 0;
         slot->unk06 = 0;
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         break;
     }
 }
@@ -2966,7 +2966,7 @@ void updateSaveRecordTask(void) {
     case 9:
     default:
         D_8013AE98->data1C--;
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         break;
     }
 }

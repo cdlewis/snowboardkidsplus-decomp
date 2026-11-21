@@ -112,7 +112,7 @@ void initializeViewAndSelectTaskCallback(void) {
         }
     } else {
 restore:
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         return;
     }
     setCurrentTaskCallback(prepareRacePlayersAndQueueResources);
@@ -140,7 +140,7 @@ void dispatchBackgroundMenuTask(void) {
             configureColorCycleTask(0, 0, 0, 0, 0);
             configureColorCycleTask(0, 0, 0, 0, 1);
             setMusicSequenceEnabled(0);
-            func_800149A8();
+            deleteCurrentTaskSubtree();
             return;
         case 3:
             createChildTaskWithReserve(initializePlayerModeSelectionTask);
@@ -232,7 +232,7 @@ void dispatchBackgroundMenuTask(void) {
                 break;
             }
             D_8013AE98->data1E = 1;
-            func_800149A8();
+            deleteCurrentTaskSubtree();
             return;
         }
     selectFallback:

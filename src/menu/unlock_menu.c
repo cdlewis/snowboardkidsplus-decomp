@@ -228,7 +228,7 @@ void finishUnlockMenuTask(void) {
         }
         break;
     case 3:
-        if (isTaskStateTransitionBelowMaximum(0) == 0) { func_800149A8(); }
+        if (isTaskStateTransitionBelowMaximum(0) == 0) { deleteCurrentTaskSubtree(); }
         break;
     }
 }
@@ -367,7 +367,7 @@ void prepareUnlockSelectionResume(void) {
 
 void finishUnlockPresentationTask(void) {
     if (D_8013AFE4 & 0x100) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     }
 }
 

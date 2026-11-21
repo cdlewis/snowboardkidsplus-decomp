@@ -340,7 +340,7 @@ void drawRegisteredTextPanelTask(void) {
         entry = getRegisteredPanelEntry(D_8013AE98->resource16, state->index);
     }
     if (entry->task != D_8013AE88 || entry->command == 99) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     } else {
         setSpriteColor(128, 128, 128);
         func_8006EC84(state->textX, state->textY, 18, state->text, 7, -1,
@@ -469,7 +469,7 @@ void updateRegisteredDetailedTextPanelTask(void) {
         }
     } else {
     finish:
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     }
 }
 
@@ -630,7 +630,7 @@ void updateShopMenuTask(void) {
         break;
     default:
         D_8013AE98->data1C--;
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         break;
     }
 }
@@ -905,7 +905,7 @@ beginExit:
         break;
     default:
         D_8013AE98->data1C--;
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         break;
     }
 }
@@ -1144,7 +1144,7 @@ finishExit:
         break;
     default:
         D_8013AE98->data1C--;
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         break;
     }
 }
@@ -1509,7 +1509,7 @@ finishExit:
         break;
     default:
         D_8013AE98->data1C--;
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         break;
     }
 }
@@ -1680,7 +1680,7 @@ void updateBoardSelectionDetailsMenuTask(void) {
     case 14:
         parentSelection->choiceResult = 0;
         D_8013AE98->data18 = 4;
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         break;
     case 21:
         panels[0].command = 10;
@@ -1743,7 +1743,7 @@ showSelection:
         break;
     case 20:
         D_8013AE98->data18 = 12;
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         break;
     case 7:
         moveTaskChildrenWithSpacing(0, panels[0].task, -0x128000, -0x4C000, 0x1E000, 0x1E000, -1000);
@@ -1763,12 +1763,12 @@ showSelection:
             parentPanels[0].flags == 0 && parentPanels[1].flags == 0 && parentPanels[2].flags == 0 &&
             parentPanels[3].flags == 0 && parentPanels[4].flags == 0) {
             D_8013AE98->data18 = 11;
-            func_800149A8();
+            deleteCurrentTaskSubtree();
         }
         break;
     default:
         D_8013AE88->data18 = 9;
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         break;
     }
 }
@@ -2124,7 +2124,7 @@ leave:
         break;
     default:
         D_8013AE98->data1C--;
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         break;
     }
 }
@@ -2540,7 +2540,7 @@ void updateGridModelPreviewTask(void) {
     default:
         entry->task = 0;
         entry->flags = 0;
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         return;
     }
 

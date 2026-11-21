@@ -375,7 +375,7 @@ void updateTaskStateTransition(void) {
         }
         if (D_8013AE88->data18 == 4 && state->unk06 == 0) {
 end_task:
-            func_800149A8();
+            deleteCurrentTaskSubtree();
             return;
         }
         task = D_8013AE88;
@@ -457,7 +457,7 @@ void updateColorCycleTask(void) {
     resource = (ColorCycleResource *)&D_800D9504[D_8013AE88->resource14];
     if (D_8013AE88->data18 == 0) {
         D_8013BDA8[D_8013AE88->data1A] = NULL;
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     } else {
         D_8013AE88->data1E = 0;
         switch (D_8013AE88->data18) {
@@ -710,7 +710,7 @@ void setTaskBackgroundMode(s32 mode, s32 value1, s32 value2) {
 
 void drawBlackScreenTask(void) {
     if (D_8013AE88->data18 == 0) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     } else {
         addTilePacket(-160, -120, 320, 240, 0, 0, 0,
                      &D_800EBFF0[D_8013AF78], 0xFFE);
@@ -724,7 +724,7 @@ void updateScrollingBackgroundTask(void) {
     }
     resource = (ScrollingBackgroundResource *)&D_800D9504[D_8013AE88->resource14];
     if (D_8013AE88->data18 == 0) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     } else {
         GsSortBg(&resource->background, &D_800EBFF0[D_8013AF78], 0xFFE);
         resource->x += resource->stepX;
@@ -736,7 +736,7 @@ void updateScrollingBackgroundTask(void) {
 
 void drawTaskImagesOnBlackBackground(void) {
     if (D_8013AE88->data18 == 0) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     } else {
         setSpriteColor(128, 128, 128);
         func_8006C998(-76, -11, 296, 0, -1, &D_800EBFF0[D_8013AF78], 1);
@@ -801,7 +801,7 @@ void drawSecondaryDisplayTask(void) {
         while (1) {}
     }
     if (D_8013AE88->data18 == 0) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     } else {
         setSpriteColor(128, 128, 128);
         func_8006EF30(36, 88, 15, gSecondaryDisplayLabel, 15, -1,
@@ -1217,7 +1217,7 @@ void drawRegisteredTaskGridSpriteWithColor(void) {
     if (parent->mapping != 0) {
         if (entry->command == 99) {
             entry->task = 0;
-            func_800149A8();
+            deleteCurrentTaskSubtree();
         } else {
             if (parent->mode == 1 && parent->selectedIndex != D_8013AE88->data1A) {
                 sprite = func_800736D0(parent->sprites, parent->mapping,
@@ -1315,7 +1315,7 @@ void updateRegisteredTextPanelTask(void) {
     case 99:
     default:
         entry->task = 0;
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         return;
     }
 
@@ -1405,7 +1405,7 @@ void updateRegisteredCallbackTask(void) {
     case 22: D_8013AE88->data1A = 3; entry->command = 0; entry->flags = 0; break;
     case 23: D_8013AE88->data1A = 0; entry->command = 0; entry->flags = 0; break;
     case 0: entry->flags = 0; break;
-    case 99: entry->task = 0; func_800149A8(); return;
+    case 99: entry->task = 0; deleteCurrentTaskSubtree(); return;
     }
     entry->flags |= updateMovement2D(movement);
     if (D_8013AE88->data1A != 0) {
@@ -1483,7 +1483,7 @@ void updateRegisteredTexturePairTask(void) {
     parent = (TexturePairParent *)&D_800D9504[D_8013AE98->resource14];
     if (entry->command != 0) {
         entry->task = 0;
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         return;
     }
     entry->flags = 0;
@@ -1587,7 +1587,7 @@ void animateRegisteredTexturePairTask(void) {
     }
     if (entry->command != 0) {
         entry->task = 0;
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         return;
     }
     entry->flags = 0;
@@ -1705,7 +1705,7 @@ void updateValueTransitionTask(void) {
     resource = (ValueTransitionResource *)&D_800D9504[D_8013AE88->resource14];
     value = *resource->value;
     if (D_8013AE88->data18 != 0) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     } else {
         switch (resource->direction) {
         case 1:
@@ -1757,7 +1757,7 @@ void updateCountdownTask(void) {
     }
     resource = &D_800D9504[D_8013AE88->resource14];
     if (D_8013AE88->data18 != 0) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     } else if (resource->unk04 != 0) {
         resource->unk04--;
         D_8013AE88->data1A = 0;
@@ -1867,18 +1867,18 @@ void updateInputTimedSpriteTask(void) {
     }
     if (entry->flags == 99) {
         entry->active = 0;
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     } else {
         if (state->controllers & 1) input |= D_8013AEE8[0];
         if (state->controllers & 2) input |= D_8013AEE8[1];
         if (input & state->acceptMask) {
             playSoundEffect(0, 0, 32);
             entry->active = 0;
-            func_800149A8();
+            deleteCurrentTaskSubtree();
         } else if (input & state->cancelMask) {
             playSoundEffect(0, 0, 32);
             entry->active = -1;
-            func_800149A8();
+            deleteCurrentTaskSubtree();
         } else if (state->entries != NULL) {
             frame = state->frame;
             setTexturedQuadColor(128, 128, 128);
@@ -1934,7 +1934,7 @@ void updateTimedSpriteB5Task(void) {
     }
     lifetime = &D_800D9504[D_8013AE88->resource16];
     if (lifetime->unk04 == 0) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     }
     setSpriteColor(128, 128, 128);
     func_8006C998(movement->x / 4096, movement->y / 4096, 0xB5, 0, -1,
@@ -1972,7 +1972,7 @@ void updateAnimatedSpriteTask(void) {
     }
     sprite = (AnimatedSpriteResource *)&D_800D9504[D_8013AE88->resource16];
     if (sprite->repeats == 0) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     } else {
         drawAnimatedSprite16(sprite->frame, movement->x / 4096, movement->y / 4096,
                              sprite->unk02, &D_800EBFF0[D_8013AF78], sprite->depth);
@@ -2173,7 +2173,7 @@ clearActive:
     goto render;
 
 remove:
-    func_800149A8();
+    deleteCurrentTaskSubtree();
     return;
 
 render:
@@ -2593,7 +2593,7 @@ void updateValuePanelTask(void) {
     case 99:
     default:
         entry->active = 0;
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         return;
     }
     setSpriteColor(128, 128, 128);
@@ -2675,7 +2675,7 @@ void updateShrinkingSpriteTask(void) {
         break;
     case 0:
     case 99:
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         break;
     }
 

@@ -248,18 +248,18 @@ void updateSceneImageTask(void) {
             if (owner->tick > resource->deadline) {
                 owner->imageTask = NULL;
                 if (owner->completionTick < resource->deadline) owner->completionTick = resource->deadline;
-                func_800149A8();
+                deleteCurrentTaskSubtree();
             }
             break;
         }
     } else {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     }
 }
 
 void drawSceneImageTask(void) {
     if (gSceneImageDisplayTask != D_8013AE88) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     } else {
         if (D_8013B59F) {
             setSpriteColor(128, 128, 128);
@@ -308,7 +308,7 @@ void updateSceneTextTask(void) {
     entry = resource->entry;
     depth = 6;
     if (owner->tasks[SCENE_EVENT_TEXT] != D_8013AE88) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         return;
     }
     if (entry->resourceId == 0) {
@@ -318,7 +318,7 @@ void updateSceneTextTask(void) {
             D_8013B59F = 1;
         }
         owner->tasks[SCENE_EVENT_TEXT] = NULL;
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         return;
     }
 
@@ -349,7 +349,7 @@ void updateSceneTextTask(void) {
                 }
                 owner->flags &= ~2;
                 resource->revealState = 2;
-                func_800149A8();
+                deleteCurrentTaskSubtree();
                 return;
             }
         } else if (resource->revealState == 0) {
@@ -468,7 +468,7 @@ void finishSceneMusicTaskAtDeadline(void) {
             owner->completionTick = state->unk04;
         }
     }
-    func_800149A8();
+    deleteCurrentTaskSubtree();
 }
 
 void setSceneCdAudioEventTask(SceneEvent *entry) {
@@ -520,7 +520,7 @@ void updateSceneCdAudioTask(void) {
             if (owner->completionTick < resource->deadline) owner->completionTick = resource->deadline;
         }
     }
-    func_800149A8();
+    deleteCurrentTaskSubtree();
 }
 
 void processSceneSoundEvent(SceneEvent *entry) {
@@ -601,6 +601,6 @@ void beginScenePlaybackExitTask(void) {
 void finishScenePlaybackExitTask(void) {
     if (--D_8013AE88->data18 == 0) {
         D_8013AFE4 |= 0x200;
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     }
 }

@@ -105,7 +105,15 @@ INCLUDE_ASM("asm/nonmatchings/engine/task_scheduler", func_80014930);
 
 INCLUDE_ASM("asm/nonmatchings/engine/task_scheduler", func_8001496C);
 
-INCLUDE_ASM("asm/nonmatchings/engine/task_scheduler", func_800149A8);
+void deleteCurrentTaskSubtree(void) {
+    GameTask *task = D_8013AE88;
+
+    D_8013AEB0 = task;
+    D_8013AEAC = task;
+    deletePendingTaskSubtree();
+    /* Resume traversal from the predecessor of the removed subtree. */
+    D_8013AE88 = D_8013AEA8;
+}
 
 INCLUDE_ASM("asm/nonmatchings/engine/task_scheduler", func_800149E0);
 
@@ -143,7 +151,7 @@ void setCurrentTaskCallback(TaskCallback callback) { D_8013AE88->callback = call
 
 INCLUDE_ASM("asm/nonmatchings/engine/task_scheduler", func_80014B58);
 
-void deleteCurrentTask(void) { func_800149A8(); }
+void deleteCurrentTask(void) { deleteCurrentTaskSubtree(); }
 
 u32 allocateTaskResource(void) {
     u16 i, bit;

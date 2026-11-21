@@ -174,7 +174,7 @@ void finishNumberAdjustmentTask(void) {
         if (isTaskStateTransitionBelowMaximum(0) != 0) break;
     case 2:
         D_8013AE98->data1C--;
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         return;
     }
     drawNumberAdjustmentPanel();

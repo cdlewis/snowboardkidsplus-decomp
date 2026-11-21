@@ -70,7 +70,7 @@ void pollMemoryCardBufferReadTask(void) {
     case 7: D_8013AF3E = 10; break;
     case 8: D_8013AF3E = 11; break;
     }
-    func_800149A8();
+    deleteCurrentTaskSubtree();
 }
 
 s32 startMemoryCardReadTask(void) {
@@ -92,7 +92,7 @@ void pollMemoryCardReadTask(void) {
         case 4: D_8013AF3E = 11; break;
         case 5: D_8013AF3E = 12; break;
         }
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     }
 }
 
@@ -117,7 +117,7 @@ void pollMemoryCardStatusTask(void) {
     case 6: D_8013AF3E = 9; break;
     case 7: D_8013AF3E = 10; break;
     }
-    func_800149A8();
+    deleteCurrentTaskSubtree();
 }
 
 s32 startMemoryCardWriteTask(void) {
@@ -144,6 +144,6 @@ void pollMemoryCardWriteTask(void) {
         case 4: D_8013AF3E = 9; break;
         case 5: D_8013AF3E = 10; break;
         }
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     }
 }

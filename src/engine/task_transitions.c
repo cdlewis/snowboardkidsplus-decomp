@@ -653,7 +653,7 @@ void updateSplitScreenTransitionTask(void) {
             D_8013AFAA |= 0x5000;
         }
     }
-    if (--D_8013AE88->data1A == 0) func_800149A8();
+    if (--D_8013AE88->data1A == 0) deleteCurrentTaskSubtree();
 }
 
 void updateActiveRaceTask(void) {
@@ -1266,7 +1266,7 @@ void initializeRaceTaskState(void) {
     }
     initializeActiveRacePlayers();
     initializeRaceRulesAndCounters();
-    func_800149A8();
+    deleteCurrentTaskSubtree();
 }
 
 void initializeSelectedCourseTransition(void) {

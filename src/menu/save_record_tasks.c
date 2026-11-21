@@ -538,7 +538,7 @@ void updateMemoryCardSaveMenuTask(void) {
     case 42:
     default:
         D_8013AE98->data1C--;
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         break;
     }
 }

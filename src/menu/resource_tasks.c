@@ -259,7 +259,7 @@ void updateMainTailSelectionMenuTask(void) {
         GameTask *parent = D_8013AE98;
         D_8013AFE0 = mainTailSelectionGp - 1;
         parent->data1C--;
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         break;
     }
     }
@@ -507,7 +507,7 @@ void updateSelectionIndexedMenuTask(void) {
         break;
     default:
         D_8013AE98->data1C--;
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         break;
     }
 }
@@ -707,7 +707,7 @@ void updateModeDependentRecordsMenuTask(void) {
         resumeTask->data18 = parentNextState;
         /* fall through */
     default:
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         break;
     }
 }
@@ -749,7 +749,7 @@ void drawRegisteredTaskGridSpriteWithNumber(void) {
     if (parent->mapping != 0) {
         if (entry->command == 99) {
             entry->task = 0;
-            func_800149A8();
+            deleteCurrentTaskSubtree();
         } else {
             sprite = func_800736D0(parent->sprites, parent->mapping, (s16)D_8013AE88->data1A);
             setSpriteColor(color->bytes[0], color->bytes[1], color->bytes[2]);
@@ -1120,7 +1120,7 @@ void updateFlagSelectedMenuTask(void) {
         break;
     default:
         D_8013AE98->data1C--;
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         break;
     }
 }
@@ -1302,7 +1302,7 @@ void updateLapRecordsMenuTask(void) {
         resumeTask->data18 = parentNextState;
         /* fall through */
     default:
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         break;
     }
 }

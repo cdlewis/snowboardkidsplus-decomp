@@ -405,7 +405,7 @@ exitSelection:
         break;
     default:
         D_8013AE98->data1C--;
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         break;
     }
 }
@@ -804,7 +804,7 @@ leave:
         break;
     default:
         D_8013AE98->data1C--;
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         break;
     }
 }
@@ -950,7 +950,7 @@ void drawRegisteredTaskGridSprite(void) {
     if (parent->mapping != 0) {
         if (entry->command == 99) {
             entry->task = 0;
-            func_800149A8();
+            deleteCurrentTaskSubtree();
         } else {
             if (parent->mode == 1 && parent->selectedIndex != D_8013AE88->data1A) {
                 sprite = func_800736D0(parent->sprites, parent->mapping,

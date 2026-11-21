@@ -698,7 +698,7 @@ void drawPlayerSnapshotTrailTask(void) {
         addCopiedPrimitive(&D_8013AF6C[depth >> 4], (u32 *)packet);
     }
     if (--resource->remainingFrames == -1 || gPlayerSnapshotTrailPacket.y0 > 160) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         D_8013B300--;
     }
 }
@@ -762,7 +762,7 @@ void drawTrickTriangleRingTask(void) {
         ot = D_800EC0E0[D_8013AF78].org;
     }
     if (D_8013AFD6 && player->unk0C8 < 9) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     }
     switch (resource->state) {
     case 0:
@@ -783,7 +783,7 @@ void drawTrickTriangleRingTask(void) {
     case 3:
         radius = 192 - (10 - resource->frame) * 128 / 10;
         if (resource->frame == 10) {
-            func_800149A8();
+            deleteCurrentTaskSubtree();
         }
         break;
     case 4:
@@ -874,7 +874,7 @@ void drawTrickRingTask(void) {
         ot = D_800EC0E0[D_8013AF78].org;
     }
     if (D_8013AFD6 && player->unk0C8 < 9) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     }
     switch (resource->state) {
     case 0:
@@ -907,7 +907,7 @@ void drawTrickRingTask(void) {
         }
         break;
     case 4:
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         return;
     }
     if (D_8013AFAA & 0x400) {
@@ -946,7 +946,7 @@ advance:
         resource->frame++;
     }
     if (resource->frame >= 31) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     }
 }
 
@@ -977,7 +977,7 @@ void drawTrickSparkRingTask(void) {
         ot = D_800EC0E0[D_8013AF78].org;
     }
     if (D_8013AFD6 && player->unk0C8 < 9) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     }
     if (player->unk0C8 < 9 && *frame < 30) {
         *frame = 30;
@@ -1068,7 +1068,7 @@ advance:
         ++*frame;
     }
     if (*frame >= 41) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     }
 }
 
@@ -1329,7 +1329,7 @@ void drawTriangleBurstTask(void) {
         }
     }
     if (!D_8013AFD3) resource->frame++;
-    if (resource->frame == 30) func_800149A8();
+    if (resource->frame == 30) deleteCurrentTaskSubtree();
 }
 
 INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_80063B58);
@@ -1362,7 +1362,7 @@ void drawRotatingQuadEffectTask(void) {
             resource->elapsed++;
         }
     } else {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         return;
     }
 
@@ -1529,7 +1529,7 @@ void initializeDelayedEightEntryEffectTask(void) {
             primary->values[i] = 32;
         }
         primary->elapsed = 0;
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     } else {
         D_8013AE88->data18--;
     }
@@ -1670,7 +1670,7 @@ void updateRadialEffectTask(void) {
     }
 
     if (resource->elapsed >= 30) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     }
 }
 
@@ -1702,7 +1702,7 @@ void emitRadialEffectTask(void) {
         }
         resource->elapsed = 0;
         if (--D_8013AE88->data18 == 0) {
-            func_800149A8();
+            deleteCurrentTaskSubtree();
         }
     }
 }
@@ -1870,7 +1870,7 @@ void updatePlayerRingEffectTask(void) {
         }
     }
     if (resource->elapsed >= 21) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     }
 }
 
@@ -2381,7 +2381,7 @@ void updateQuadTransitionSequenceTask(void) {
     if (frame == 40) startSlidingQuadTask(D_8013AE88->data1A);
     if (frame == 50) func_80069E08(10);
     D_8013B338++;
-    if (D_8013B338 == 100) func_800149A8();
+    if (D_8013B338 == 100) deleteCurrentTaskSubtree();
 }
 
 void startQuadTransitionSequenceTask(s32 transitionIndex) {
@@ -2399,7 +2399,7 @@ void updatePrimaryValueTransition(void) {
     D_8013AE88->data18++;
     D_8013B364 = 0;
     if (D_8013AE88->data18 >= D_8013AE88->data1A) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         D_8013B364 = 1;
     }
 }
@@ -2421,7 +2421,7 @@ void updateValueInterpolationTask(void) {
     D_8013AE88->data18++;
     D_8013B364 = 0;
     if (D_8013AE88->data18 >= D_8013AE88->data1A) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         D_8013B364 = 1;
     }
 }
@@ -2452,7 +2452,7 @@ void drawFullScreenSpriteTask(void) {
     }
     GsOUT_PACKET_P = (u32)(packets + 2);
     if (++resource->elapsed >= resource->duration || (D_8013AFE4 & 0x100)) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     }
 }
 
@@ -2584,7 +2584,7 @@ void updateFadingTextTask(void) {
     drawFadingText(resource);
     D_8013B368 = 0;
     if (++resource->elapsed == resource->duration) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         D_8013B368 = 1;
     }
 }
@@ -2610,7 +2610,7 @@ void finishTimedSpriteSequence(void) {
     }
     resource = (TimedSpriteSequenceResource *)&D_800D9504[D_8013AE88->resource14];
     if (--resource->duration < 0) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     }
 }
 
@@ -2646,7 +2646,7 @@ void finishTimedSpritePresentation(void) {
         startCdVolumeFade(103, 20, 0, 1);
         D_8013AFE4 |= 0x100;
         func_800149E0();
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     }
 }
 

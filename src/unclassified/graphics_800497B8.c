@@ -260,7 +260,7 @@ void updateSlidingVisualSequenceTask(void) {
             resource->offsetY += resource->velocity;
             resource->velocity -= 2;
             if (resource->offsetY < -320) {
-                func_800149A8();
+                deleteCurrentTaskSubtree();
                 return;
             }
             break;

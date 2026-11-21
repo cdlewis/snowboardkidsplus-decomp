@@ -127,7 +127,8 @@ class MaspsxProcessor:
                 # as the existing bare `.text`/`.data`/`.rdata` handling above.
                 m = re.match(r"^\.section\s+\.?([A-Za-z0-9_.]+)", line)
                 name = m.group(1) if m else ""
-                in_sdata = name in ("sdata", "sbss")
+                # GNU as also addresses small-data subsections through $gp.
+                in_sdata = name.split(".", 1)[0] in ("sdata", "sbss")
                 continue
 
             if line.startswith("#"):

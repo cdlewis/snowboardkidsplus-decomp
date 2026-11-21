@@ -140,7 +140,7 @@ void updateMode11SelectionMenuTask(void) {
         break;
     case 6:
     default:
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         return;
     }
 

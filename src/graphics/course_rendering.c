@@ -526,7 +526,7 @@ void drawMovingLineTask(void) {
         resource->x -= 8;
         resource->y += 4;
         if (++resource->elapsed == resource->duration) {
-            func_800149A8();
+            deleteCurrentTaskSubtree();
         }
     }
 }

@@ -38,7 +38,7 @@ void slideRaceTimeDisplayOut(void) {
     resource->x -= resource->speed;
     resource->speed += 4;
     if (resource->speed == 56) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     } else {
         drawSlidingRaceTimeDisplay(resource);
     }
@@ -246,7 +246,7 @@ void slideOutSlidingDisplayTask(void) {
     resource->position += resource->velocity;
     resource->velocity += 4;
     if (resource->velocity == 56) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     } else {
         drawSlidingDisplaySprite(resource);
     }
@@ -322,7 +322,7 @@ void advancePlayerSpriteAnimationTask(void) {
     }
     resource = (SpriteAnimationResource *)&D_800D9504[D_8013AE88->resource14];
     if (++resource->frame >= 16) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     } else {
         drawPlayerSpriteAnimation(resource);
     }
@@ -382,7 +382,7 @@ void slideOutPlayerNumberDisplayTask(void) {
     resource->x += resource->speed;
     resource->speed += 4;
     if (resource->speed >= 56) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     } else {
         drawPlayerNumberDisplay(resource);
     }
@@ -486,7 +486,7 @@ void slideOutSpriteMotionTask(void) {
     resource->unk04 += resource->unk14;
     resource->unk14 += 4;
     if (resource->unk14 >= 56) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     } else {
         drawSpriteMotionDisplay(resource);
     }
@@ -579,7 +579,7 @@ void slideOutSlidingNumberDisplayTask(void) {
     resource->x += resource->speed;
     resource->speed += 4;
     if (resource->speed >= 56) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     } else {
         drawSlidingNumberDisplay(resource);
     }
@@ -781,7 +781,7 @@ void checkControllerInputSequenceTask(void) {
             if (gControllerInputSequences[D_8013AE88->data18][D_8013AE88->data1A] == 0xFFFF) {
                 gSaveRecordUnlockOverrideFlags |= 1 << D_8013AE88->data18;
                 playSoundEffect(0, 0, 0x20);
-                func_800149A8();
+                deleteCurrentTaskSubtree();
             }
         } else {
             D_8013AE88->data1A = 0;
@@ -856,7 +856,7 @@ void waitResultDisplayTaskFlagsTask(void) {
     }
     resource = (ResultDisplayResource *)&D_800D9504[D_8013AE88->resource14];
     if ((D_8013AFE4 & 0x50) != 0x10) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     }
     drawResultDisplayLabels(resource);
     drawResultNumberAndIcon(resource);
@@ -1174,7 +1174,7 @@ void drawCurrentTaskPlayerResults(void) {
     }
     resource = (TaskFadeResource *)&D_800D9504[D_8013AE88->resource14];
     if (!(D_8013AFE4 & 0x10)) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     }
     updatePlayerResultOrder(resource);
     drawPlayerResultIcons(resource);

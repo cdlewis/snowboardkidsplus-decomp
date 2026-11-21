@@ -509,7 +509,7 @@ void addPlayerFlagsWithinRadius(const Position3D *position, s32 radius, u16 flag
 void updateRacePlayerFinishSlotsTask(void) {
     u16 i;
     if (D_8013AFE4 & 0x40) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     } else {
         if (D_8013AFE2 == 1 && D_8013AFE0 == 1) {
             D_8013B1D4 = 0;

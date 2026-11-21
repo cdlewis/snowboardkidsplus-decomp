@@ -250,7 +250,7 @@ void updateMainMenuSelectionTask(void) {
         break;
     default:
         D_8013AE98->data1C--;
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         break;
     }
 }

@@ -320,6 +320,6 @@ void updatePaletteTransition(void) {
             gSavedImageEntries[D_8013AE88->data1A].transitionPixels[i] = resource->pixels[i];
         }
         gSavedImageEntries[D_8013AE88->data1A].flags = 0x20;
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     }
 }

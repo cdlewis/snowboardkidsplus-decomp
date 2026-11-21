@@ -216,7 +216,7 @@ void updatePlayerModelPreviewTask(void) {
     case 99:
         entry->task = 0;
         entry->flags = 0;
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         return;
     }
     D_8013B0D8->unk0B6 = (D_8013B0D8->unk0B6 + state->rotationStep) & 0xFFF;

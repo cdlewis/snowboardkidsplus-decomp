@@ -134,7 +134,7 @@ void updateRacePauseMenu(void) {
             resumeState = D_8013AFD3 | PAUSE_MENU_RESUME_PENDING;
 resume:
             D_8013AFD3 = resumeState;
-            func_800149A8();
+            deleteCurrentTaskSubtree();
             return;
         }
         break;
@@ -187,7 +187,7 @@ void resetControllersAndDeleteCurrentTask(void) {
     setControllerFlag5(0);
     setControllerFlag5(1);
     resetControllerEffects();
-    func_800149A8();
+    deleteCurrentTaskSubtree();
 }
 
 INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud", func_80043FBC);

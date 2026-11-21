@@ -119,7 +119,7 @@ void func_80032280(s16 x, s16 y, s32 depth, s32 index);
 
 void dispatchMode11TransitionTask(void) {
     if (D_8013B109 != 1) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         return;
     }
     switch (D_8013B108) {
@@ -192,7 +192,7 @@ void dispatchGameOptionTransitionTask(void) {
     case 3:
         D_8013B109 = 1;
         D_8013B0F0 = 0;
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         break;
     }
 }
@@ -358,7 +358,7 @@ void updateTitleScreenMenuTask(void) {
     case 8:
     default:
         resetPendingCdRequests();
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         return;
     }
 
@@ -578,7 +578,7 @@ void updateTitleLogoTask(void) {
     }
 
     if (entry->unk04 == 99) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         return;
     }
     if (logo->soundState == 1) {
@@ -670,7 +670,7 @@ void drawRegisteredTaskGridSpriteWithDefaultBlend(void) {
     if (parent->mapping != 0) {
         if (entry->command == 99) {
             entry->task = 0;
-            func_800149A8();
+            deleteCurrentTaskSubtree();
         } else {
             if (parent->mode == 1 && parent->selectedIndex != D_8013AE88->data1A) {
                 sprite = func_800736D0(parent->sprites, parent->mapping,
@@ -853,7 +853,7 @@ cancel:
         /* fall through */
     default:
         D_8013AE98->data1C--;
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         break;
     }
 }
@@ -882,7 +882,7 @@ void updateRegisteredPlayerModePanelTask(void) {
     }
     if (entry->command == 99) {
         entry->flags = 0;
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     } else {
         entry->flags = updateMovement2D(position);
         setSpriteColor(128, 128, 128);
@@ -948,7 +948,7 @@ void drawRegisteredTaskTexturedQuadList(void) {
     if (parent->mapping != 0) {
         if (entry->command == 99) {
             entry->task = 0;
-            func_800149A8();
+            deleteCurrentTaskSubtree();
         } else {
             setTexturedQuadColor(color->r, color->g, color->b);
             if (parent->mode == 1 && parent->selectedIndex != D_8013AE88->data1A) {
@@ -988,7 +988,7 @@ void updateRepeatedSoundTask(void) {
     resource = (RepeatedSoundResource *)&D_800D9504[D_8013AE88->resource14];
     sound = resource->sound;
     if (D_8013AE88->data1E == 0) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     } else if (D_8013AE88->data18 != 0) {
         D_8013AE88->data18--;
     } else {
@@ -1016,7 +1016,7 @@ void updateRepeatedSoundTask(void) {
 
 void drawPlayerModeMessagePanelTask(void) {
     if (D_8013AE88->data18 == 99) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     }
     setSpriteColor(128, 128, 128);
     setTexturedQuadColor(128, 128, 128);
@@ -1053,7 +1053,7 @@ void waitUnlockNotification0TransitionTask(void) {
 void finishUnlockNotification0TransitionTask(void) {
     configureTaskStateTransition(2, 0, 30);
     D_8013AE98->data1C--;
-    func_800149A8();
+    deleteCurrentTaskSubtree();
 }
 
 void drawSound601SequenceSpriteTask(void) {
@@ -1069,7 +1069,7 @@ void drawSound601SequenceSpriteTask(void) {
         }
     }
     if (D_8013AFE4 & 8) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     }
 }
 
@@ -1101,7 +1101,7 @@ void drawGrowingSprite179Task(void) {
         }
     }
     if (--D_8013AE88->data1A == 0) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     }
     setSpriteColor(128, 128, 128);
     drawTransformedSpriteByIndex((s16)D_8013AE88->data18, 0, 0x179, 6, -1,

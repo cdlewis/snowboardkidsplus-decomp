@@ -191,7 +191,7 @@ void animateTextSequenceExitTask(void) {
         D_8013AFE4 = 0;
         D_8013AFAA |= 0x1000;
         queueCdCommand(D_80124164[D_8013AFCE], 0);
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     } else {
         func_800A1774(resource);
     }
@@ -214,7 +214,7 @@ void advanceModeAfterTextSequenceFadeTask(void) {
         if (isTaskStateTransitionBelowMaximum(0) == 0) {
             D_8013B55E = 2;
             D_8013AFD8++;
-            func_800149A8();
+            deleteCurrentTaskSubtree();
         }
         break;
     }

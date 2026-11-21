@@ -657,7 +657,7 @@ void drawCurrentTaskTimeRecords(void) {
     }
     resource = &D_800D9504[D_8013AE88->resource14];
     if (!(D_8013AFE4 & 0x10)) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     }
     drawTimeRecordHeader((TimeRecordHeaderResource *)resource);
     drawTimeRecordListRows((TimeRecordListResource *)resource);
@@ -686,7 +686,7 @@ void drawCurrentTaskTimeRecordDetails(void) {
     }
     resource = &D_800D9504[D_8013AE88->resource14];
     if (!(D_8013AFE4 & 0x10)) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     }
     drawTimeRecordHeader((TimeRecordHeaderResource *)resource);
     drawRaceResultsMoneyValues(resource);
@@ -1035,7 +1035,7 @@ void drawCurrentTaskStatsSelection(void) {
     }
     resource = &D_800D9504[D_8013AE88->resource14];
     if (!(D_8013AFE4 & 0x10)) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     }
     drawStatsMenuValues(resource);
     drawStatsRecordRows(resource);
@@ -1320,7 +1320,7 @@ void drawCurrentTaskPanel(void) {
     }
     resource = (PanelResource *)&D_800D9504[D_8013AE88->resource14];
     if (!(D_8013AFE4 & 0x10)) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     }
     drawRaceTimeComparisonPanel(resource);
 }

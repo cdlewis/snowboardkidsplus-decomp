@@ -122,7 +122,7 @@ void drawPaletteBurstTask(void) {
     GsOUT_PACKET_P = (u32)packet;
 
     if (++resource->age >= 9) {
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     }
 }
 

@@ -129,7 +129,7 @@ void updatePlayerSideVisualTask(void) {
     drawCameraFacingTaskVisual((TaskVisualResource *)resource, 1);
     if (!D_8013AFD3) {
         if (!func_80059290((TaskVisualResource *)resource)) {
-            func_800149A8();
+            deleteCurrentTaskSubtree();
         }
     }
 }
@@ -144,7 +144,7 @@ void updateOneShotTaskVisual(void) {
     drawCameraFacingTaskVisual(resource, 1);
     if (!D_8013AFD3) {
         if (!func_80059290(resource)) {
-            func_800149A8();
+            deleteCurrentTaskSubtree();
         }
     }
 }
@@ -212,7 +212,7 @@ void updateExpandingCoordinateEffectTask(void) {
         ScaleMatrix(&resource->coordinate.coord, &resource->scale);
         drawTaskObject(15);
     }
-    if (!D_8013AE88->data1A) { func_800149A8(); }
+    if (!D_8013AE88->data1A) { deleteCurrentTaskSubtree(); }
 }
 
 void resetTaskVisualState(TaskVisualResource *resource) {
@@ -295,7 +295,7 @@ void updatePlayerState23CoordinateEffectTask(void) {
             D_8013AE88->callback = deleteCurrentTask;
             D_8013AE88->unk10 |= 1;
         } else if (isFirstPlayerUsingCallback26D10()) {
-            func_800149A8();
+            deleteCurrentTaskSubtree();
         }
     }
 }
@@ -359,7 +359,7 @@ void updateFallingRotatingObjectTask(void) {
         resource->coordinate.coord.t[2] += resource->velocity.z;
         resource->velocity.y += 6;
         if (resource->coordinate.coord.t[1] > resource->heightLimit) {
-            func_800149A8();
+            deleteCurrentTaskSubtree();
             return;
         }
     }
@@ -465,7 +465,7 @@ void updatePlayerParticleHistoryTask(void) {
             }
             if (D_8013AE88->data1E) {
                 if (--D_8013AE88->data1A == 0) {
-                    func_800149A8();
+                    deleteCurrentTaskSubtree();
                     return;
                 }
             }
@@ -520,14 +520,14 @@ void updatePlayerCoordinateEffectTask(void) {
             }
         } else {
             if (isFirstPlayerUsingCallback26D10()) {
-                func_800149A8();
+                deleteCurrentTaskSubtree();
                 return;
             }
             if (resource->scale.vy == 0) {
                 resource->scale.vx -= 0x400;
                 resource->scale.vz -= 0x400;
                 if (resource->scale.vx <= 0) {
-                    func_800149A8();
+                    deleteCurrentTaskSubtree();
                     return;
                 }
             } else {
@@ -1244,7 +1244,7 @@ void fadeOutPlayerTimerTask(void) {
             gRacePlayers[D_8013AE88->data18].timer.unk60 = 0;
             gRacePlayers[D_8013AE88->data18].unk0FE = 0;
         }
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     }
 }
 
@@ -1381,7 +1381,7 @@ void updateOrbitingPlayerVisualTask(void) {
             resource->angle += 0x60;
             if (--resource->countdown == 0) {
                 gRacePlayers[D_8013AE88->data18].unk0FA--;
-                func_800149A8();
+                deleteCurrentTaskSubtree();
                 return;
             }
             break;
@@ -1484,7 +1484,7 @@ void updateFallingPlayerEffectTask(void) {
             break;
         case 1:
             if (--resource->countdown == 0) {
-                func_800149A8();
+                deleteCurrentTaskSubtree();
                 return;
             }
             break;

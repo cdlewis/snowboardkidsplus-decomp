@@ -25,7 +25,7 @@ void updateTaskViewAndCheckPlayerLimit(void) {
             setCurrentTaskCallback(func_8003EE70);
             return;
         }
-        func_800149A8();
+        deleteCurrentTaskSubtree();
     }
     updatePlayerCameraPosition(D_8013AE88->data18);
 }

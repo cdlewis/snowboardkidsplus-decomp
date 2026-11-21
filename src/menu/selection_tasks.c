@@ -304,7 +304,7 @@ void updateNumberSelectionTask(void) {
     case 8:
     default:
         taskTransitionFlagGp = 1;
-        func_800149A8();
+        deleteCurrentTaskSubtree();
         return;
     }
     drawNumberSelectionPanel(state);
@@ -470,7 +470,7 @@ void finishSelectionMenuTask(void) {
         if (state->unk0A != 0) {
             D_8013B108 = 2;
             D_8013B109 = 1;
-            func_800149A8();
+            deleteCurrentTaskSubtree();
         } else {
             queueStartupSectorReads();
             setCurrentTaskCallback(initializeControllerPlaybackRaceTask);
