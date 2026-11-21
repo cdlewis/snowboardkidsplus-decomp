@@ -88,7 +88,7 @@ void initializeBackgroundCameraTask(void) {
     D_8013AF84 = 400;
     initPlayerCamera(0);
     func_8003DEE0();
-    func_80014838(func_8002F65C);
+    func_80014838(scheduleMode2SequenceWhenCdQueueIdle);
     D_8013AE8C->data18 = D_8013AE88->data18;
     D_8013AE8C->data1C = 0;
     queueMenuResourceReads((s16)D_8013AE8C->data18);
@@ -122,7 +122,10 @@ void beginMode2TaskSequence(void) {
     setCurrentTaskCallback(func_8002F5F8);
 }
 
-INCLUDE_ASM("asm/nonmatchings/graphics/background_resources", func_8002F65C);
+void scheduleMode2SequenceWhenCdQueueIdle(void) {
+    setCurrentTaskCallback(beginMode2TaskSequence);
+    D_8013AE88->unk10 |= 2;
+}
 
 void dispatchBackgroundMenuTask(void) {
     GameTask *task = D_8013AE88;

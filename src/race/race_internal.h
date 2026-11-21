@@ -524,7 +524,7 @@ void uploadTimImageAt(s16 x, s16 y, s16 clutX, s16 clutY, u32 *tim);
 void func_8003EE70(void);
 void func_8002F5F8(void);
 void func_8002F548(void);
-void func_8002F65C(void);
+void scheduleMode2SequenceWhenCdQueueIdle(void);
 void dispatchBackgroundMenuTask(void);
 void func_8003DEE0(void);
 void drawSound601SequenceSpriteTask(void);
