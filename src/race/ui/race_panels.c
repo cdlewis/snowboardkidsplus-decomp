@@ -330,7 +330,7 @@ void advancePlayerSpriteAnimationTask(void) {
 
 void createPlayerSpriteAnimationTask(s32 x, s32 y, s32 player, s32 checkPlayer, u16 alternateLayer) {
     SpriteAnimationResource *resource;
-    func_80014874(advancePlayerSpriteAnimationTask);
+    createChildTaskWithReserve(advancePlayerSpriteAnimationTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     resource = (SpriteAnimationResource *)&D_800D9504[D_8013AE8C->resource14];
     resource->x = x - 8;
@@ -437,7 +437,7 @@ void initializePlayerNumberDisplayTask(void) {
 
 void createPlayerNumberDisplayTask(s32 value, s32 showExtraValue, s32 player) {
     PlayerNumberResource *resource;
-    func_80014874(initializePlayerNumberDisplayTask);
+    createChildTaskWithReserve(initializePlayerNumberDisplayTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     resource = (PlayerNumberResource *)&D_800D9504[D_8013AE8C->resource14];
     resource->value = value;
@@ -633,7 +633,7 @@ void initializeSlidingNumberDisplayTask(void) {
 void createActivePlayerSlidingNumberTask(s32 value, s16 player) {
     SlidingNumberResource *resource;
     if (gRacePlayers[player].isActive != 0) {
-        func_80014874(initializeSlidingNumberDisplayTask);
+        createChildTaskWithReserve(initializeSlidingNumberDisplayTask);
         D_8013AE8C->resource14 = allocateTaskResource();
         resource = (SlidingNumberResource *)&D_800D9504[D_8013AE8C->resource14];
         resource->value = value;

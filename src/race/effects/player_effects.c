@@ -1337,7 +1337,7 @@ INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_80063B58);
 void createPositionedEffectTask(s32 x, s32 y, s32 z) {
     PositionedEffectResource *resource;
 
-    func_80014874(func_80063B58);
+    createChildTaskWithReserve(func_80063B58);
     D_8013AE8C->resource14 = allocateTaskResource();
     resource = (PositionedEffectResource *)&D_800D9504[D_8013AE8C->resource14];
     resource->x = x >> 8;
@@ -1430,7 +1430,7 @@ void drawRotatingQuadEffectTask(void) {
 
 void startRotatingQuadEffectTask(s32 variant, const VECTOR *position, s32 pitch, s32 yaw, s32 roll) {
     RotatingEffectResource *resource;
-    func_80014874(drawRotatingQuadEffectTask);
+    createChildTaskWithReserve(drawRotatingQuadEffectTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     resource = (RotatingEffectResource *)&D_800D9504[D_8013AE8C->resource14];
     resource->x = position->vx >> 8;

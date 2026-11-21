@@ -88,7 +88,14 @@ s32 createChildTask(TaskCallback callback) {
     return 1;
 }
 
-INCLUDE_ASM("asm/nonmatchings/engine/task_scheduler", func_80014874);
+s32 createChildTaskWithReserve(TaskCallback callback) {
+    if (D_8013AEB4 <= 10) {
+        D_8013AE8C = D_8013AEA0;
+        return 0;
+    }
+    func_800147B8(callback);
+    return 1;
+}
 
 INCLUDE_ASM("asm/nonmatchings/engine/task_scheduler", func_800148B4);
 

@@ -2516,7 +2516,7 @@ void updateCurrentPlayerTaskLapTransition(void) {
                 configureTaskStateTransition(1, 0x2000, 60);
             }
             if (D_8013B0D8->unk934 >= selectedFinishLapCountAbsolute - 1) {
-                func_80014874(initializeTaskMotionResource);
+                createChildTaskWithReserve(initializeTaskMotionResource);
                 D_8013AE8C->data18 = D_8013AE88->data18;
             }
         }
@@ -3691,7 +3691,7 @@ void assignCurrentPlayerFinishSlot(s32 value) {
         player->unk128 = flags | 0x40;
         if (!D_8013AFD6) {
             if (!player->unk008) {
-                func_80014874(beginSound601TaskSequence);
+                createChildTaskWithReserve(beginSound601TaskSequence);
                 D_8013AE8C->data18 = value;
             }
             currentPlayerAbsolute->unk100[0] = D_8013AFDB;

@@ -118,7 +118,7 @@ void createPlayerModelPreviewTask(u16 playerIndex, u16 characterId, u16 modelSlo
     Movement2D *position;
     RegisteredTaskEntry *entry;
 
-    func_80014874(updatePlayerModelPreviewTask);
+    createChildTaskWithReserve(updatePlayerModelPreviewTask);
     D_8013AE8C->data18 = 0;
     D_8013AE8C->data1A = modelSlot;
     D_8013AE8C->data1C = playerIndex;

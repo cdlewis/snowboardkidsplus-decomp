@@ -75,7 +75,7 @@ void pollMemoryCardBufferReadTask(void) {
 
 s32 startMemoryCardReadTask(void) {
     if (D_8013AF3E == 5) {
-        func_80014874(pollMemoryCardReadTask);
+        createChildTaskWithReserve(pollMemoryCardReadTask);
         D_8013AF3E = 3;
         return 1;
     }

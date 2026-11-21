@@ -13,7 +13,7 @@ void startUnlockNotification(s16 index) {
         D_8013AF3A = index;
         D_8013AFE4 &= ~0x200;
         setUnlockNotificationFlag(index);
-        func_80014874(initializeScenePlaybackResourcesTask);
+        createChildTaskWithReserve(initializeScenePlaybackResourcesTask);
     } else {
         D_8013AFE4 |= 0x200;
     }

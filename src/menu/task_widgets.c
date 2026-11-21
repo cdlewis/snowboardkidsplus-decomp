@@ -954,7 +954,7 @@ void createRegisteredSpacedChildTasks(s16 mode, u32 acceptMask, u32 cancelMask,
     SpacedGroupResource *state;
     RegisteredTaskEntry *entry;
     if (count != 0) {
-        func_80014874(initializeSpacedChildTasks);
+        createChildTaskWithReserve(initializeSpacedChildTasks);
         D_8013AE8C->data1E = index;
         D_8013AE8C->resource14 = allocateTaskResource();
         state = (SpacedGroupResource *)&D_800D9504[D_8013AE8C->resource14];
@@ -1210,7 +1210,7 @@ void drawRegisteredTaskGridSpriteWithColor(void) {
 void createRegisteredTextPanelTask(s16 x, s16 y, const u16 **texts, const u8 *mapping, s32 depth, s32 index) {
     RegisteredTextResource *resource;
     RegisteredTaskEntry *entry;
-    func_80014874(updateRegisteredTextPanelTask);
+    createChildTaskWithReserve(updateRegisteredTextPanelTask);
     D_8013AE8C->data1A = 0;
     D_8013AE8C->data1C = depth;
     D_8013AE8C->data1E = index;
@@ -1330,7 +1330,7 @@ s16 hasTaskResource16Value(GameTask *task) {
 void createRegisteredCallbackTask(s32 mode, s16 x, s16 y, TaskCallback callback, s32 value, s32 index) {
     CallbackResource *resource;
     RegisteredTaskEntry *entry;
-    func_80014874(updateRegisteredCallbackTask);
+    createChildTaskWithReserve(updateRegisteredCallbackTask);
     D_8013AE8C->data18 = mode;
     D_8013AE8C->data1A = 0;
     D_8013AE8C->data1C = value;
@@ -1396,7 +1396,7 @@ void createRegisteredTexturePairTask(s16 x, s16 y, const u8 *mapping, s32 mode, 
     RegisteredTaskEntry *entry;
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
     parent = (TexturePairParent *)&D_800D9504[D_8013AE88->resource14];
-    func_80014874(updateRegisteredTexturePairTask);
+    createChildTaskWithReserve(updateRegisteredTexturePairTask);
     D_8013AE8C->data1A = 0;
     D_8013AE8C->data1C = depth;
     D_8013AE8C->data1E = index;
@@ -1654,7 +1654,7 @@ void animateRegisteredTexturePairTask(void) {
 
 GameTask *createValueTransitionTask(u32 *value, u32 target, u32 step) {
     ValueTransitionResource *resource;
-    func_80014874(updateValueTransitionTask);
+    createChildTaskWithReserve(updateValueTransitionTask);
     D_8013AE8C->data18 = 0;
     D_8013AE8C->data1A = 0;
     D_8013AE8C->resource14 = allocateTaskResource();
@@ -1711,7 +1711,7 @@ GameTask *createCountdownTask(u32 frames) {
     GameTask *task;
     TaskResourceRecord *resource;
 
-    func_80014874(updateCountdownTask);
+    createChildTaskWithReserve(updateCountdownTask);
     D_8013AE8C->data18 = 0;
     D_8013AE8C->data1A = 0;
     D_8013AE8C->resource14 = allocateTaskResource();
@@ -1742,7 +1742,7 @@ void createRegisteredMovingPanelTask(u16 mode, const s16 *values, s16 x, s16 y,
                                      s16 x2, s16 y2, s16 x3, s16 y3, s32 depth, s32 index) {
     RegisteredSelectionPanelResource *resource;
     ValuePanelEntry *entry;
-    func_80014874(func_8007649C);
+    createChildTaskWithReserve(func_8007649C);
     D_8013AE8C->data18 = 0;
     D_8013AE8C->data1A = mode & 0xFF;
     D_8013AE8C->data1C = depth;
@@ -1786,7 +1786,7 @@ void createInputTimedSpriteTask(s32 x, s32 y, const TimedSequenceEntry *entries,
     InputTimedSpriteResource *resource;
     ValuePanelEntry *entry;
 
-    func_80014874(updateInputTimedSpriteTask);
+    createChildTaskWithReserve(updateInputTimedSpriteTask);
     D_8013AE8C->data1C = depth;
     D_8013AE8C->data1E = index;
     D_8013AE8C->resource14 = allocateTaskResource();
@@ -1882,7 +1882,7 @@ void updateTimedSequence(TimedSequence *sequence) {
 GameTask *createTimedSpriteB5Task(s16 x, s16 y, u32 frames) {
     GameTask *task;
     TaskResourceRecord *resource;
-    func_80014874(updateTimedSpriteB5Task);
+    createChildTaskWithReserve(updateTimedSpriteB5Task);
     D_8013AE8C->data18 = 0;
     D_8013AE8C->data1A = 0;
     D_8013AE8C->resource14 = allocateTaskResource();
@@ -1917,7 +1917,7 @@ void updateTimedSpriteB5Task(void) {
 GameTask *createAnimatedSpriteTask(s16 x, s16 y, s16 unk02, s16 repeats, u16 depth) {
     GameTask *task;
     AnimatedSpriteResource *resource;
-    func_80014874(updateAnimatedSpriteTask);
+    createChildTaskWithReserve(updateAnimatedSpriteTask);
     D_8013AE8C->data18 = 0;
     D_8013AE8C->data1A = 0;
     D_8013AE8C->resource14 = allocateTaskResource();
@@ -1998,7 +1998,7 @@ void createDualSelectionSequenceTask(s16 x, s16 y, s32 depth, s32 index) {
     u8 type;
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
     selection = (SelectionEntry *)&D_800D9504[D_8013AE88->resource14];
-    func_80014874(func_80078140);
+    createChildTaskWithReserve(func_80078140);
     D_8013AE8C->data1A = 0;
     D_8013AE8C->data1C = depth;
     D_8013AE8C->data1E = index;
@@ -2035,7 +2035,7 @@ INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80078140);
 void createPlayerPanelTask(s16 player, s16 x, s16 y, s32 depth, s32 index) {
     ValuePanelEntry *entry;
 
-    func_80014874(updatePlayerPanelTask);
+    createChildTaskWithReserve(updatePlayerPanelTask);
     D_8013AE8C->data1A = player;
     D_8013AE8C->data1C = depth;
     D_8013AE8C->data1E = index;
@@ -2334,7 +2334,7 @@ void createRegisteredSelectionPanelTask(s16 playerIndex, SelectionPanelRecord *r
     SelectionPanelResource *resource;
     ValuePanelEntry *entry;
     s32 player;
-    func_80014874(updateRegisteredSelectionPanelTask);
+    createChildTaskWithReserve(updateRegisteredSelectionPanelTask);
     D_8013AE8C->data1A = playerIndex;
     D_8013AE8C->data1C = depth;
     D_8013AE8C->data1E = index;
@@ -2470,7 +2470,7 @@ void createValuePanelTask(s16 x, s16 y, s16 *values, s32 depth, s32 index) {
     ValuePanelResource *resource;
     ValuePanelEntry *entry;
 
-    func_80014874(updateValuePanelTask);
+    createChildTaskWithReserve(updateValuePanelTask);
     D_8013AE8C->data1C = depth;
     D_8013AE8C->data1E = index;
     D_8013AE8C->resource14 = allocateTaskResource();
@@ -2580,7 +2580,7 @@ void updateValuePanelTask(void) {
 GameTask *createShrinkingSpriteTask(s16 motionEnabled, s32 spriteIndex) {
     SpriteZoomResource *resource;
     TaskResourceRecord *resources;
-    func_80014874(updateShrinkingSpriteTask);
+    createChildTaskWithReserve(updateShrinkingSpriteTask);
     D_8013AE8C->data18 = 1;
     D_8013AE8C->data1A = 1;
     D_8013AE8C->data1C = spriteIndex;

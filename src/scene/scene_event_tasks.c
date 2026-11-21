@@ -168,7 +168,7 @@ void setSceneImageEventTask(SceneEvent *entry) {
         owner->imageTask = NULL;
         gSceneImageDisplayTask = NULL;
     } else {
-        func_80014874(initializeSceneImageTask);
+        createChildTaskWithReserve(initializeSceneImageTask);
         D_8013AE8C->resource14 = allocateTaskResource();
         resource = (SceneImageResource *)&D_800D9504[D_8013AE8C->resource14];
         resource->entry = entry;
@@ -279,7 +279,7 @@ void setSceneTextEventTask(SceneEvent *entry) {
     if (entry == NULL) {
         resource->task = NULL;
     } else {
-        func_80014874(updateSceneTextTask);
+        createChildTaskWithReserve(updateSceneTextTask);
         D_8013AE8C->resource14 = allocateTaskResource();
         ((SceneTextTaskResource *)&D_800D9504[D_8013AE8C->resource14])->entry = entry;
         D_8013AE8C->data18 = 0;
@@ -412,7 +412,7 @@ void setSceneMusicEventTask(SceneEvent *entry) {
         stopMusicSequence();
         owner->musicTask = NULL;
     } else {
-        func_80014874(finishSceneMusicTaskAtDeadline);
+        createChildTaskWithReserve(finishSceneMusicTaskAtDeadline);
         owner->musicTask = D_8013AE8C;
         D_8013AE8C->resource14 = allocateTaskResource();
         resource = (SceneMusicResource *)&D_800D9504[D_8013AE8C->resource14];
@@ -485,7 +485,7 @@ void setSceneCdAudioEventTask(SceneEvent *entry) {
         if (entry->parameter14 == 0) SsSetSerialVol(0, 103, 103);
         else SsSetSerialVol(0, entry->parameter14, entry->parameter14);
         queueCdCommand(gSceneCdCommands[entry->resourceId], 1);
-        func_80014874(updateSceneCdAudioTask);
+        createChildTaskWithReserve(updateSceneCdAudioTask);
         owner->task = D_8013AE8C;
         D_8013AE8C->resource14 = allocateTaskResource();
         resource = (SceneCdAudioResource *)&D_800D9504[D_8013AE8C->resource14];

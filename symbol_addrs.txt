@@ -118,6 +118,7 @@ gMode11SelectionMapping = 0x8013B550; // size:0x8
 gMode11SelectionJumpTablePadding = 0x80012208; // size:0x4
 initializeTaskScheduler = 0x8001467C; // type:func
 createChildTask = 0x80014838; // type:func
+createChildTaskWithReserve = 0x80014874; // type:func
 gInitialTaskCallbacks = 0x800D7BEC; // size:0x18 defined:true
 gGameTasks = 0x800D7C04; // size:0x1900 defined:true
 sortRacePlayerModelForView = 0x8001AF64; // type:func

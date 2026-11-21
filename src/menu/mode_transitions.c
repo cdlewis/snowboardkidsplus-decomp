@@ -124,32 +124,32 @@ void dispatchMode11TransitionTask(void) {
     }
     switch (D_8013B108) {
     case 2:
-        func_80014874(scheduleMenuTransitionResourcesTask);
+        createChildTaskWithReserve(scheduleMenuTransitionResourcesTask);
         D_8013AE88->unk10 |= 1;
         break;
     case 25:
-        func_80014874(initializeTaskResourcePairWithOneTickTransition);
+        createChildTaskWithReserve(initializeTaskResourcePairWithOneTickTransition);
         D_8013AE88->unk10 |= 1;
         break;
     case 27:
-        func_80014874(initializeMode1Task);
+        createChildTaskWithReserve(initializeMode1Task);
         D_8013AE88->unk10 |= 1;
         D_8013B109 = 3;
         D_8013AFD7 = 0;
         break;
     case 28:
-        func_80014874(initializeSelectionMenuTask);
+        createChildTaskWithReserve(initializeSelectionMenuTask);
         D_8013AE88->unk10 |= 1;
         D_8013B109 = 3;
         D_8013AFD7 = 0;
         break;
     case 26:
-        func_80014874(initializeUnlockMenuResourceTask);
+        createChildTaskWithReserve(initializeUnlockMenuResourceTask);
         D_8013AE88->unk10 |= 1;
         D_8013B108 = 2;
         break;
     default:
-        func_80014874(initializeBackgroundCameraTask);
+        createChildTaskWithReserve(initializeBackgroundCameraTask);
         D_8013AE8C->data18 = D_8013B108;
         D_8013AE88->unk10 |= 1;
         D_8013B0F0 = 0;
@@ -177,7 +177,7 @@ void dispatchGameOptionTransitionTask(void) {
         D_8013B0F0 = 0;
         break;
     case 1:
-        func_80014874(initializeMode11TransitionTask);
+        createChildTaskWithReserve(initializeMode11TransitionTask);
         D_8013AE88->unk10 |= 1;
         break;
     case 2:
@@ -968,7 +968,7 @@ void drawRegisteredTaskTexturedQuadList(void) {
 void createRepeatedSoundTask(s32 sound, s32 delay, s32 interval, s32 count) {
     RepeatedSoundResource *resource;
 
-    func_80014874(updateRepeatedSoundTask);
+    createChildTaskWithReserve(updateRepeatedSoundTask);
     D_8013AE8C->data18 = delay;
     D_8013AE8C->data1A = interval;
     D_8013AE8C->data1C = 0;

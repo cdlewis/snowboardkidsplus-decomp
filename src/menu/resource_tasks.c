@@ -471,7 +471,7 @@ void updateSelectionIndexedMenuTask(void) {
         break;
     }
     case 9:
-        func_80014874(initializeModeDependentTaskResourcePair);
+        createChildTaskWithReserve(initializeModeDependentTaskResourcePair);
         D_8013AE8C->data18 = 1;
         D_8013AE88->data18 = 10;
         break;
@@ -1086,7 +1086,7 @@ void updateFlagSelectedMenuTask(void) {
         }
         break;
     case 10:
-        func_80014874(initializeModeDependentTailResourcePairTask);
+        createChildTaskWithReserve(initializeModeDependentTailResourcePairTask);
         D_8013AE8C->data18 = 1;
         D_8013AE88->data18 = 11;
         break;

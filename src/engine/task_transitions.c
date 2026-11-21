@@ -700,7 +700,7 @@ void updateActiveRaceTask(void) {
                 if (!(gRacePlayers[0].unk100[0] | gRacePlayers[1].unk100[0])) {
                     return;
                 }
-                func_80014874(beginTask60TickCountdown);
+                createChildTaskWithReserve(beginTask60TickCountdown);
                 if (gRacePlayers[0].unk100[0] < gRacePlayers[1].unk100[0]) {
                     D_8013AE8C->data18 = 0;
                 } else {
@@ -713,7 +713,7 @@ void updateActiveRaceTask(void) {
                 return;
             }
             updateAttackResultsAndRecords();
-            func_80014874(beginTask60TickCountdown);
+            createChildTaskWithReserve(beginTask60TickCountdown);
             if (gRacePlayers[0].unk100[0] < gRacePlayers[1].unk100[0]) {
                 D_8013AE8C->data18 = 0;
             } else {
@@ -1050,7 +1050,7 @@ void initializeDemoPlaybackTask(void) {
     D_8013AEE4 = 0;
     D_8013AE88->data18 = 0;
     D_8013AE88->data1A = 0;
-    func_80014874(drawFixedSpriteAndBottomBarTask);
+    createChildTaskWithReserve(drawFixedSpriteAndBottomBarTask);
     setCurrentTaskCallback(updateSelectedPlayerPlaybackTask);
 }
 

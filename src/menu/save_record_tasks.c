@@ -165,7 +165,7 @@ void updateStateValueHistoryTask(void) {
 
 void startStateValueHistoryTask(void) {
     s16 i;
-    func_80014874(updateStateValueHistoryTask);
+    createChildTaskWithReserve(updateStateValueHistoryTask);
     D_8013AE8C->data18 = 0;
     D_8013BE30.unk_00 = 16;
     D_8013BE30.activeIndex = 1;

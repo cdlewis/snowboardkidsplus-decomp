@@ -376,7 +376,7 @@ void updateRaceHud(void) {
                     if (D_80123D80[D_8013AFCE].unk3C * 8 < progress) {
                         D_8013B188 = gRaceElapsedTime;
                         D_8013B18C = 1;
-                        func_80014874(initializeRaceTimeDifferenceDisplay);
+                        createChildTaskWithReserve(initializeRaceTimeDifferenceDisplay);
                     }
                 }
             }

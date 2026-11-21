@@ -102,7 +102,8 @@ void func_8001E1B8(void);
 
 /* Creates a child of the current task. On exhaustion, the free-list tail is the fallback in D_8013AE8C. */
 s32 createChildTask(TaskCallback callback);
-s32 func_80014874(TaskCallback callback);
+/* Leaves ten free task slots in reserve and uses the same fallback as createChildTask. */
+s32 createChildTaskWithReserve(TaskCallback callback);
 s32 func_800148B4(TaskCallback callback);
 s16 func_80014930(GameTask *parent, TaskCallback callback);
 s16 func_8001496C(GameTask *parent, TaskCallback callback);

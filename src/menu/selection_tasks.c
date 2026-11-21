@@ -43,7 +43,7 @@ void initializeModeRaceTasks(void) {
     }
     initializeRacePlayerEffects();
     taskTransitionFlagGp = 0;
-    func_80014874(initializeModeSectorReadResourcesTask);
+    createChildTaskWithReserve(initializeModeSectorReadResourcesTask);
     if (D_8013AFCD == 2) {
         D_8013AFAA |= 0x800;
         func_800148F4(&gGameTasks[3], initializeTaskPlayerCamera);
@@ -138,7 +138,7 @@ void advanceTaskAtModeCoursePosition(void) {
         stopPlayerSound(1);
         startCdVolumeFade(103, 20, 0, 1);
         taskTransitionFlagGp = 0;
-        func_80014874(initializeNumberSelectionTask);
+        createChildTaskWithReserve(initializeNumberSelectionTask);
         setCurrentTaskCallback(completeModeSelectionTransitionWhenReady);
     }
 }
@@ -154,7 +154,7 @@ void completeModeSelectionTransitionWhenReady(void) {
         switch (D_8013AFD8) {
         case 10:
             taskTransitionFlagGp = 0;
-            func_80014874(initializeModeSectorReadResourcesTask);
+            createChildTaskWithReserve(initializeModeSectorReadResourcesTask);
             D_8013AE88->unk10 |= 1;
             break;
         case 11:
@@ -212,7 +212,7 @@ void initializeNumberSelectionTask(void) {
     setControllerFlag5(0);
     setControllerFlag5(1);
     resetPendingCdRequests();
-    func_80014874(func_800A2C40);
+    createChildTaskWithReserve(func_800A2C40);
     setCurrentTaskCallback(updateNumberSelectionTask);
 }
 

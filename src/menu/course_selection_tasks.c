@@ -356,7 +356,7 @@ void updateCdAwareCourseSelectionTask(void) {
         break;
     }
     case 30:
-        func_80014874(initializeModeDependentDualResourceTask);
+        createChildTaskWithReserve(initializeModeDependentDualResourceTask);
         D_8013AE8C->data18 = 1;
         D_8013AE88->data18 = 31;
         break;
@@ -624,7 +624,7 @@ static inline PaletteRotationSlot *getPaletteRotationSlot(u16 resourceIndex, s32
 void createPaletteRotationTask(s32 x, s32 y, s32 first, s32 last, s32 steps, s32 interval, s32 index) {
     PaletteRotationResource *resource;
     PaletteRotationSlot *slot;
-    func_80014874(updatePaletteRotationTask);
+    createChildTaskWithReserve(updatePaletteRotationTask);
     D_8013AE8C->data18 = 0;
     D_8013AE8C->data1E = index;
     D_8013AE8C->resource14 = allocateTaskResource();
@@ -1051,7 +1051,7 @@ void updatePlayerGroupedCourseSelectionTask(void) {
         D_8013AE88->data18 = 5;
         break;
     case 9:
-        func_80014874(initializeDualResourceTaskAndClearState);
+        createChildTaskWithReserve(initializeDualResourceTaskAndClearState);
         D_8013AE8C->data18 = 1;
         descriptor = &gGroupedCourseMenuDescriptors[D_8013AE88->data1A];
         D_8013AE8C->data1A = func_8007E8CC(descriptor->mapping, selection->selectedIndex);
@@ -1529,7 +1529,7 @@ static inline RegisteredPanelSlot *getPanelSlot(u32 resource, s32 index) {
 void createRegisteredPanelTask(s32 mode, s32 value, s16 x, s16 y, s16 depth, s32 index) {
     Movement2D *movement;
     RegisteredPanelSlot *slot;
-    func_80014874(func_800815D0);
+    createChildTaskWithReserve(func_800815D0);
     D_8013AE8C->data18 = mode;
     D_8013AE8C->data1A = value;
     D_8013AE8C->data1C = 0;
@@ -1665,7 +1665,7 @@ static inline RegisteredTaskEntry *getRegisteredTripletEntry(u16 resource, s32 i
 void createRegisteredTripletTask(s32 x, s32 y, s32 offsetX, s32 offsetY, ByteTriplet *records, u8 *indices, s32 depth, s32 index) {
     RegisteredTripletData *data;
     RegisteredTaskEntry *entry;
-    func_80014874(updateRegisteredTripletTask);
+    createChildTaskWithReserve(updateRegisteredTripletTask);
     D_8013AE8C->data1A = 0;
     D_8013AE8C->data1C = depth;
     D_8013AE8C->data1E = index;
@@ -1823,7 +1823,7 @@ void createRegisteredPlayerModelTask(s16 slot, s16 selection, s16 modelIndex,
     u32 i;
     RegisteredTaskEntry *registration;
 
-    func_80014874(updateRegisteredPlayerModelTask);
+    createChildTaskWithReserve(updateRegisteredPlayerModelTask);
     D_8013AE8C->data18 = selection;
     D_8013AE8C->data1A = modelIndex;
     D_8013AE8C->data1C = slot;
@@ -2294,7 +2294,7 @@ void createPlayerGroupedSelectionTask(s32 player, s32 index) {
     MenuSelectionState *selection;
     RegisteredPanelSlot *slot;
     RECT *bounds;
-    func_80014874(updatePlayerGroupedSelectionTask);
+    createChildTaskWithReserve(updatePlayerGroupedSelectionTask);
     D_8013AE8C->data18 = 1;
     D_8013AE8C->data1A = getPlayerRecordFlagMode(player + 10);
     D_8013AE8C->data1C = player;
@@ -2486,7 +2486,7 @@ void updatePlayerGroupedSelectionTask(void) {
         }
         break;
     case 30:
-        func_80014874(initializeDualResourceTask);
+        createChildTaskWithReserve(initializeDualResourceTask);
         D_8013AE8C->data18 = 1;
         descriptor = &gPlayerGroupedSelectionDescriptors[D_8013AE88->data1A];
         D_8013AE8C->data1A = func_8007E8CC(descriptor->mapping, selection->selectedIndex);
@@ -2786,7 +2786,7 @@ void updateMemoryCardSlotTask(void) {
 void startClearedStateValueHistoryTask(void) {
     s16 i;
 
-    func_80014874(updateMemoryCardSlotTask);
+    createChildTaskWithReserve(updateMemoryCardSlotTask);
     D_8013AE8C->data18 = 0;
     D_8013BE30.unk_00 = 16;
     D_8013BE30.activeIndex = 1;
@@ -2954,7 +2954,7 @@ void resetUnlockNotificationStateForMode2(void) {
 void createSaveRecordSlotPanelTask(s16 slot, s32 x, s32 y, s16 depth, s32 index) {
     RegisteredPanelSlot *panel;
 
-    func_80014874(func_80087B84);
+    createChildTaskWithReserve(func_80087B84);
     D_8013AE8C->data18 = 0;
     D_8013AE8C->data1A = slot;
     D_8013AE8C->data1C = depth;

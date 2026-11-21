@@ -351,7 +351,7 @@ void createRegisteredDetailedTextPanelTask(s16 x, s16 y, s16 textX, s16 textY,
                                    const u16 *content, s32 depth, s32 index) {
     RegisteredDetailedPanelResource *resource;
     RegisteredTaskEntry *entry;
-    func_80014874(updateRegisteredDetailedTextPanelTask);
+    createChildTaskWithReserve(updateRegisteredDetailedTextPanelTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     resource = (RegisteredDetailedPanelResource *)&D_800D9504[D_8013AE8C->resource14];
     resource->unk00 = 0;
@@ -1098,7 +1098,7 @@ startExit:
         break;
     }
     case 9:
-        func_80014874(initializeTaskResourcePair);
+        createChildTaskWithReserve(initializeTaskResourcePair);
         D_8013AE8C->data18 = 0;
         descriptor = &D_801318D4[D_8013AE88->data1A];
         D_8013AE8C->data1A = func_8007E8CC(descriptor->mapping, input->selectedIndex);
@@ -1453,7 +1453,7 @@ beginExit:
         }
         break;
     case 9:
-        func_80014874(initializeTaskResourcesAndClearData18);
+        createChildTaskWithReserve(initializeTaskResourcesAndClearData18);
         D_8013AE8C->data18 = 0;
         descriptor = &D_801318D4[D_8013AE88->data1A];
         D_8013AE8C->data1A = func_8007E8CC(descriptor->mapping, selection->selectedIndex);
@@ -1690,7 +1690,7 @@ void updateBoardSelectionDetailsMenuTask(void) {
     case 16:
         if (panels[0].flags == 0 && panels[1].flags == 0 && panels[2].flags == 0 && parentPanels[0].flags == 0) {
             TaskResourceRecord *resources;
-            func_80014874(func_80093A20);
+            createChildTaskWithReserve(func_80093A20);
             D_8013AE8C->resource14 = allocateTaskResource();
             resources = D_800D9504;
             D_8013AE8C->resource16 = allocateTaskResource();
@@ -2045,7 +2045,7 @@ void createGridModelPreviewTask(s16 playerIndex, s16 character, s16 modelSlot, s
     RacePlayer *attributePlayer;
     RacePlayer *positionPlayer;
 
-    func_80014874(updateGridModelPreviewTask);
+    createChildTaskWithReserve(updateGridModelPreviewTask);
     i = 0;
     D_8013AE8C->data1A = modelSlot;
     D_8013AE8C->data1C = playerIndex;

@@ -307,9 +307,9 @@ s32 hasUnlockNotificationFlag(s16 index) {
 void startUnlockActionAfterCountdown(void) {
     if (--D_8013AE88->data18 == 0) {
         if (D_8013AF3A < 11) {
-            func_80014874(initializeScenePlaybackResourcesTask);
+            createChildTaskWithReserve(initializeScenePlaybackResourcesTask);
         } else {
-            func_80014874(startUnlockResourceLoad);
+            createChildTaskWithReserve(startUnlockResourceLoad);
         }
         setCurrentTaskCallback(prepareUnlockSelectionResume);
         D_8013AE88->unk10 |= 1;

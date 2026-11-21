@@ -140,66 +140,66 @@ void dispatchBackgroundMenuTask(void) {
             func_800149A8();
             return;
         case 3:
-            func_80014874(initializePlayerModeSelectionTask);
+            createChildTaskWithReserve(initializePlayerModeSelectionTask);
             return;
         case 4:
-            func_80014874(initializeSaveRecordTask);
+            createChildTaskWithReserve(initializeSaveRecordTask);
             return;
         case 30:
-            func_80014874(startUnlockNotification0Task);
+            createChildTaskWithReserve(startUnlockNotification0Task);
             return;
         case 5:
-            func_80014874(initializeDualResourceSequenceTask);
+            createChildTaskWithReserve(initializeDualResourceSequenceTask);
             return;
         case 6:
-            func_80014874(initializeDualResourceTaskAndNotifyParent);
+            createChildTaskWithReserve(initializeDualResourceTaskAndNotifyParent);
             return;
         case 7:
-            func_80014874(initializeFlagSelectedCdAwareTask);
+            createChildTaskWithReserve(initializeFlagSelectedCdAwareTask);
             return;
         case 8:
-            func_80014874(initializeCountedPlayerGroupedSelectionBoundsTask);
+            createChildTaskWithReserve(initializeCountedPlayerGroupedSelectionBoundsTask);
             return;
         case 9:
-            func_80014874(initializeMainTailDualResourceTask);
+            createChildTaskWithReserve(initializeMainTailDualResourceTask);
             return;
         case 10:
-            func_80014874(initializeFlagSelectedDualResourceTask);
+            createChildTaskWithReserve(initializeFlagSelectedDualResourceTask);
             return;
         case 11:
-            func_80014874(initializeCountedTaskResourcePair);
+            createChildTaskWithReserve(initializeCountedTaskResourcePair);
             return;
         case 12:
-            func_80014874(initializeAlternateCountedTaskResourcePair);
+            createChildTaskWithReserve(initializeAlternateCountedTaskResourcePair);
             return;
         case 16:
-            func_80014874(initializeCountedGroupedSelectionBoundsTask);
+            createChildTaskWithReserve(initializeCountedGroupedSelectionBoundsTask);
             return;
         case 17:
-            func_80014874(initializeCountedSelectionBoundsTask);
+            createChildTaskWithReserve(initializeCountedSelectionBoundsTask);
             return;
         case 13:
-            func_80014874(initializeCountedTaskResourcePairEC50);
+            createChildTaskWithReserve(initializeCountedTaskResourcePairEC50);
             return;
         case 18:
-            func_80014874(initializeCountedDisplayBoundsTask);
+            createChildTaskWithReserve(initializeCountedDisplayBoundsTask);
             return;
         case 19:
-            func_80014874(initializeCountedSplitSelectionBoundsTask);
+            createChildTaskWithReserve(initializeCountedSplitSelectionBoundsTask);
             return;
         case 14:
-            func_80014874(initializeCountedFourBoundsTask);
+            createChildTaskWithReserve(initializeCountedFourBoundsTask);
             return;
         case 15:
-            func_80014874(func_80089EC0);
+            createChildTaskWithReserve(func_80089EC0);
             return;
         case 20:
         case 21:
         case 22:
-            func_80014874(initializeSelectionIndexedDualResourceTask);
+            createChildTaskWithReserve(initializeSelectionIndexedDualResourceTask);
             return;
         case 29:
-            func_80014874(initializeNumberAdjustmentTask);
+            createChildTaskWithReserve(initializeNumberAdjustmentTask);
             return;
         case 23:
             queueMenuResourceReads(D_8013AE88->data18);
