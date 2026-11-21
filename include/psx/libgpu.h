@@ -117,6 +117,15 @@ typedef struct LINE_F2 {
 /* PSY-Q 4.2 LIBGPU.H: Gouraud line opcode used by setLineG2. */
 #define LINE_G2_CODE 0x50
 
+/* Psy-Q 4.2 LIBGPU.H flat polyline packet. */
+typedef struct LINE_F4 {
+    u32 tag;
+    u8 r0, g0, b0, code;
+    s16 x0, y0, x1, y1, x2, y2, x3, y3;
+    u32 pad;
+} LINE_F4;
+#define LINE_F4_CODE 0x4C
+
 typedef struct POLY_F4 {
     u32 tag;
     u8 r0, g0, b0, code;

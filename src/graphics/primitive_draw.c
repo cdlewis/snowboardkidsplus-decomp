@@ -241,7 +241,24 @@ void addFlatLine(u32 *orderingTable, s32 x0, s32 y0, s32 x1, s32 y1,
     GsOUT_PACKET_P = (u32)(line + 1);
 }
 
-INCLUDE_ASM("asm/nonmatchings/graphics/primitive_draw", func_80060A04);
+void addFlatPolyline4(u32 *orderingTable, s32 x0, s32 y0, s32 x1, s32 y1,
+                      s32 x2, s32 unusedY2, s32 x3, s32 y3, s32 r, s32 g, s32 b) {
+    LINE_F4 *line = (LINE_F4 *)GsOUT_PACKET_P;
+
+    line->tag = (sizeof(*line) / sizeof(u32) - 1) << 24;
+    setcode(line, LINE_F4_CODE);
+    /* The packet retains its existing y2 and terminator fields. */
+    line->y0 = y0;
+    line->x1 = x1;
+    line->y1 = y1;
+    line->x2 = x2;
+    line->y3 = y3;
+    line->x3 = x3;
+    line->x0 = x0;
+    setRGB0(line, r, g, b);
+    addPrim(orderingTable, line);
+    GsOUT_PACKET_P = (u32)(line + 1);
+}
 
 void addFlatRectangle(u32 *orderingTable, s32 x, s32 y, s32 w, s32 h,
                    s32 r, s32 g, s32 b) {

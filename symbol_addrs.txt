@@ -2032,6 +2032,7 @@ addFlatQuad = 0x800601C4; // type:func
 addSemiTransparentFlatQuadWithDrawMode = 0x80060740; // type:func
 addSemiTransparentGouraudQuadWithDrawMode = 0x8006081C; // type:func
 addFlatLine = 0x80060978; // type:func
+addFlatPolyline4 = 0x80060A04; // type:func
 
 addFlatRectangle = 0x80060AA8; // type:func
 addFlatRectangleWithDrawMode = 0x80060B34; // type:func
