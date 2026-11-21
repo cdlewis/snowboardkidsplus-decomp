@@ -36,11 +36,7 @@ extern u8 D_8013AFDB;
 #else
 extern u8 D_8013AFDB __attribute__((section(".data")));
 #endif
-#ifdef RACE_FINISH_ABSOLUTE_ADDRESSING
-extern u8 D_8013AFD6 __attribute__((section(".data")));
-#else
 extern u8 D_8013AFD6;
-#endif
 
 void resetSelectedRecordStates(void);
 s32 updatePlayerField94CFromSelectedTable(u16 tableIndex, s16 sampleIndex,

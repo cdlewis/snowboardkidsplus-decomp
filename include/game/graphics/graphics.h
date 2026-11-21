@@ -4,13 +4,7 @@
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
 
-#ifdef TASK_WIDGET_COLORS_ABSOLUTE_ADDRESSING
-extern u8 D_8013B3A4 __attribute__((section(".data")));
-extern u8 D_8013B3A5 __attribute__((section(".data")));
-extern u8 D_8013B3A6 __attribute__((section(".data")));
-#else
 extern u8 D_8013B3A4, D_8013B3A5, D_8013B3A6;
-#endif
 
 /* Absolute views for task callbacks in units that also use $gp color access. */
 extern u8 gTaskWidgetRedAbsolute __attribute__((section(".data")));

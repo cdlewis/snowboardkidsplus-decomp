@@ -22,6 +22,9 @@ typedef struct TextSequenceEntry {
     u16 length;
 } TextSequenceEntry;
 
+extern GameTask *D_8013AE88 __attribute__((section(".data")));
+extern u32 D_8013AFE4 __attribute__((section(".data")));
+
 extern u16 D_8013AFAA __attribute__((section(".data")));
 
 ResourceSectorRange gMode1SectorRanges[10] __attribute__((section(".data.indexed_sector_ranges"))) = {

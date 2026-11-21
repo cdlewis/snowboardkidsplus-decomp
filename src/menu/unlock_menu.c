@@ -10,6 +10,9 @@
 #include "game/scene/scene_events.h"
 #include "unlock_menu_types.h"
 
+extern GameTask *D_8013AE88 __attribute__((section(".data")));
+extern u32 D_8013AFE4 __attribute__((section(".data")));
+
 s16 gUnlockNotificationSprites[14] __attribute__((section(".data.unlock_notification_sprites"))) = {
     0x216, 0x217, 0x218, 0x219, 0x21A, 0x21B,
     0x21D, 0x21E, 0x21F, 0x220, 0x221, 0x222,

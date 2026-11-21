@@ -45,6 +45,11 @@ typedef struct ProximityParticleResource {
     u8 unkD2[0x2E];
 } ProximityParticleResource;
 
+extern GameTask *D_8013AE88 __attribute__((section(".data")));
+extern GameTask *D_8013AE8C __attribute__((section(".data")));
+extern GameTask *D_8013AE98 __attribute__((section(".data")));
+extern u32 D_8013AFE4 __attribute__((section(".data")));
+
 extern VECTOR *D_8013AF8C __attribute__((section(".data")));
 extern u32 *D_8013AF70 __attribute__((section(".data")));
 extern u32 *D_8013AF74 __attribute__((section(".data")));

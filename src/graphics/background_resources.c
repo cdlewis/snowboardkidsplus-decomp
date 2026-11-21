@@ -17,6 +17,11 @@
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
 
+extern GameTask *D_8013AE88 __attribute__((section(".data")));
+extern GameTask *D_8013AE8C __attribute__((section(".data")));
+extern GameTask *D_8013AE98 __attribute__((section(".data")));
+extern u8 D_8013AFD7 __attribute__((section(".data")));
+
 void resetGameOptionState(void) {
     D_8013B108 = 2;
     D_8013B109 = 0;

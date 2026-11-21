@@ -15,6 +15,10 @@
 #include "psx/libgs.h"
 #include "psx/libgte.h"
 
+extern GameTask *D_8013AE88 __attribute__((section(".data")));
+extern u32 D_8013AFE4 __attribute__((section(".data")));
+extern u8 D_8013AFD7 __attribute__((section(".data")));
+
 void initPlayerCamera(u16 index) {
     GsRVIEW2 *view;
     GsRVIEW2 *initialView;

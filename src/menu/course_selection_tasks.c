@@ -1,4 +1,3 @@
-#define TASK_WIDGET_COLORS_ABSOLUTE_ADDRESSING
 #include "game/menu/save_record_tasks.h"
 #include "psx/libetc.h"
 #include "save_record_tasks_internal.h"
@@ -85,6 +84,13 @@ typedef struct SaveRecordTaskStatus {
     u8 unk08[8];
     s16 secondResult;
 } SaveRecordTaskStatus;
+
+extern GameTask *D_8013AE88 __attribute__((section(".data")));
+extern GameTask *D_8013AE8C __attribute__((section(".data")));
+extern GameTask *D_8013AE98 __attribute__((section(".data")));
+extern u8 D_8013B3A4 __attribute__((section(".data")));
+extern u8 D_8013B3A5 __attribute__((section(".data")));
+extern u8 D_8013B3A6 __attribute__((section(".data")));
 
 extern u16 D_8013AFD0 __attribute__((section(".data")));
 

@@ -15,6 +15,11 @@
 #include "psx/libgs.h"
 #include "psx/libsnd.h"
 
+extern GameTask *D_8013AE88 __attribute__((section(".data")));
+extern GameTask *D_8013AE8C __attribute__((section(".data")));
+extern GameTask *D_8013AE98 __attribute__((section(".data")));
+extern u32 D_8013AFE4 __attribute__((section(".data")));
+
 extern s16 gMusicSequenceId __attribute__((section(".data")));
 
 s16 gSceneCdCommands[230] __attribute__((section(".data.scene_cd_commands"))) = {

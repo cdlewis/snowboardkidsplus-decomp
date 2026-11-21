@@ -33,6 +33,8 @@ typedef struct SlidingVisualStep {
     u8 upperFrame;
 } SlidingVisualStep;
 
+extern GameTask *D_8013AE88 __attribute__((section(".data")));
+
 ControllerEffectState gControllerEffectStates[2] = {0};
 
 u16 gTextClut = 0;

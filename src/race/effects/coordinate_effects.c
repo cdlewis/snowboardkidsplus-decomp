@@ -23,6 +23,10 @@ typedef union CollectionTaskResource {
     } trail;
 } CollectionTaskResource;
 
+extern GameTask *D_8013AE88 __attribute__((section(".data")));
+extern GameTask *D_8013AE8C __attribute__((section(".data")));
+extern GameTask *D_8013AE98 __attribute__((section(".data")));
+
 TaskVisualFrame gPlayerParticleHistoryVisualFrames[6]
     __attribute__((section(".data.player_particle_history_visual_frames"), aligned(4))) = {
         {0x30, 0x28, 32, 32, 0xD, 0x3D79},

@@ -21,6 +21,9 @@ typedef struct NumberSelectionSpriteTable {
     u16 padding;
 } NumberSelectionSpriteTable;
 
+extern GameTask *D_8013AE88 __attribute__((section(".data")));
+extern GameTask *D_8013AE8C __attribute__((section(".data")));
+
 extern u8 D_8013B108 __attribute__((section(".data")));
 extern u8 D_8013B109 __attribute__((section(".data")));
 extern s16 D_8013B106 __attribute__((section(".data")));

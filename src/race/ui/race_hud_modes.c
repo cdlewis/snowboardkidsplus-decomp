@@ -13,6 +13,8 @@
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
 
+extern u32 D_8013AFE4 __attribute__((section(".data")));
+
 /* Full-width Shift-JIS labels used by the race HUD. */
 const char gAttackTimeLimitLabel[24] __attribute__((section(".rodata.trick_attack_labels"), aligned(4))) =
     "\x82\x73\x82\x68\x82\x6C\x82\x64  \x82\x6B\x82\x68\x82\x6C\x82\x68\x82\x73";

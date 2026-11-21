@@ -16,8 +16,6 @@
 #include "game/audio/music.h"
 #include "game/engine/game_options.h"
 #include "game/engine/game_task_scheduler.h"
-#define TASK_TRANSITION_FLAGS_ABSOLUTE_ADDRESSING
-#define TASK_ABSOLUTE_ADDRESSING
 #include "game/engine/task.h"
 #include "game/race/player/race_player.h"
 #include "game/race/camera/race_camera.h"

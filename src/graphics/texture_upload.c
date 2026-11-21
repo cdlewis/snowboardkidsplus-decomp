@@ -5,6 +5,9 @@
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
 
+extern GameTask *D_8013AE88 __attribute__((section(".data")));
+extern GameTask *D_8013AE8C __attribute__((section(".data")));
+
 SavedImageEntry gSavedImageEntries[32] __attribute__((section(".data.saved_image_entries"))) = {0};
 
 void uploadTimImageWithOffset(u32 *tim, s16 *position) {

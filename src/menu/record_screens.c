@@ -13,6 +13,9 @@
 #include "psx/libc.h"
 #include "psx/libgs.h"
 
+extern GameTask *D_8013AE88 __attribute__((section(".data")));
+extern u32 D_8013AFE4 __attribute__((section(".data")));
+
 const char gHitCountTimeOutLabel[12] __attribute__((section(".rodata.hit_count_time_out"), aligned(4))) = "TIME OUT";
 char gHitCountTotalFormat[4] __attribute__((section(".data.hit_count_labels"), aligned(4))) = "/%d";
 char gHitCountMarker[4] __attribute__((section(".data.hit_count_labels"), aligned(4))) = "*";

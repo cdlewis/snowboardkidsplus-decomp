@@ -1,6 +1,5 @@
 #pragma once
 
-/* Original unit addressing policy; include before public headers. */
 #include "common.h"
 #include "game/save/save_data.h"
 #include "game/graphics/graphics.h"
@@ -9,7 +8,6 @@
 #include "game/engine/offset_archive.h"
 #include "game/audio/music.h"
 #include "psx/libsnd.h"
-#define TASK_ABSOLUTE_ADDRESSING
 #include "game/engine/task.h"
 #include "game/engine/system_runtime.h"
 #include "game/race/player/race_player.h"

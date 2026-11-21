@@ -8,6 +8,8 @@
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
 
+extern u32 D_8013AFE4 __attribute__((section(".data")));
+
 void startUnlockNotification(s16 index) {
     if ((u16)index < 11 && (s16)getUnlockNotificationFlag(index) == 0) {
         D_8013AF3A = index;

@@ -26,6 +26,12 @@ typedef struct PaletteSelectionMapping {
     u8 padding[2];
 } PaletteSelectionMapping;
 
+extern GameTask *D_8013AE88 __attribute__((section(".data")));
+extern GameTask *D_8013AE98 __attribute__((section(".data")));
+extern u8 D_8013B3A4 __attribute__((section(".data")));
+extern u8 D_8013B3A5 __attribute__((section(".data")));
+extern u8 D_8013B3A6 __attribute__((section(".data")));
+
 const s8 gPaletteSelectionMainPreviewY[12]
     __attribute__((section(".data.palette_selection_main_preview_y"), aligned(4))) = {
     0, 0, 0, 0, 8, 0, 0, 6, 0, 0, 0, 0

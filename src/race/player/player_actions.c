@@ -17,6 +17,10 @@
 #include "psx/libgs.h"
 #include "psx/libgte.h"
 
+extern GameTask *D_8013AE88 __attribute__((section(".data")));
+extern GameTask *D_8013AE8C __attribute__((section(".data")));
+extern u32 D_8013AFE4 __attribute__((section(".data")));
+
 u16 gPlayerSoundVariantsA[2] __attribute__((section(".data.player_sound_variants"))) = {0x100, 0x200};
 
 u16 gPlayerSoundVariantsB[2] __attribute__((section(".data.player_sound_variants"))) = {0x300, 0x400};

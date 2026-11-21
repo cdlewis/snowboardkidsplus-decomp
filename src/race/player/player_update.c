@@ -1,8 +1,4 @@
 #include "common.h"
-#define TASK_TRANSITION_FLAGS_ABSOLUTE_ADDRESSING
-#define TASK_FLAGS_ABSOLUTE_ADDRESSING
-#define TASK_ABSOLUTE_ADDRESSING
-#define RACE_FINISH_ABSOLUTE_ADDRESSING
 #include "game/race/player/race_player.h"
 #include "game/race/camera/race_camera.h"
 #include "game/race/course/course_geometry.h"
@@ -47,6 +43,12 @@ typedef struct PlayerVariantAttributeTable {
     u16 values[15][9];
     u16 padding;
 } PlayerVariantAttributeTable;
+
+extern GameTask *D_8013AE88 __attribute__((section(".data")));
+extern GameTask *D_8013AE8C __attribute__((section(".data")));
+extern u32 D_8013AFE4 __attribute__((section(".data")));
+extern u8 D_8013AFD7 __attribute__((section(".data")));
+extern u8 D_8013AFD6 __attribute__((section(".data")));
 
 extern VECTOR *D_8013AF8C __attribute__((section(".data")));
 

@@ -1,6 +1,5 @@
 #include "common.h"
 #define RACE_PLAYER_ABSOLUTE_ADDRESSING
-#define TASK_ABSOLUTE_ADDRESSING
 #include "game/race/player/race_player.h"
 #include "game/engine/angles.h"
 #include "game/engine/game_options.h"
@@ -16,6 +15,8 @@ typedef struct PlayerRankSpeedAdjustment {
     s16 adjustment;
     s16 unk02;
 } PlayerRankSpeedAdjustment;
+
+extern GameTask *D_8013AE88 __attribute__((section(".data")));
 
 const PlayerRankSpeedAdjustment gPlayerRankSpeedAdjustments[4]
     __attribute__((section(".data.player_rank_speed_adjustments"))) = {

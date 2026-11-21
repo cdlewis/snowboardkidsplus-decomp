@@ -4,6 +4,8 @@
 #include "game/race/camera/race_camera.h"
 #include "game/race/player/race_player.h"
 
+extern GameTask *D_8013AE88 __attribute__((section(".data")));
+
 void initializeTaskPlayerCamera(void) {
     PlayerCamera *cameras;
     D_8013B0D8 = &gRacePlayers[D_8013AE88->data18];

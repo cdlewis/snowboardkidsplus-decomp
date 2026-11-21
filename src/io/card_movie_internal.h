@@ -2,7 +2,6 @@
 
 /* Original unit addressing policy; include before public headers. */
 #include "common.h"
-#define TASK_ABSOLUTE_ADDRESSING
 #include "game/engine/task.h"
 #include "game/graphics/graphics.h"
 #include "game/graphics/coordinate.h"

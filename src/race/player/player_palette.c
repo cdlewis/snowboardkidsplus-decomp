@@ -18,6 +18,9 @@ typedef struct PaletteBurstScratch {
     long flags;
 } PaletteBurstScratch;
 
+extern GameTask *D_8013AE88 __attribute__((section(".data")));
+extern GameTask *D_8013AE8C __attribute__((section(".data")));
+
 extern u32 GsOUT_PACKET_P __attribute__((section(".data")));
 
 SVECTOR gPaletteBurstVertices[4] __attribute__((section(".data.palette_burst_vertices"))) = {

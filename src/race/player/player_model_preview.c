@@ -11,6 +11,10 @@
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
 
+extern GameTask *D_8013AE88 __attribute__((section(".data")));
+extern GameTask *D_8013AE8C __attribute__((section(".data")));
+extern GameTask *D_8013AE98 __attribute__((section(".data")));
+
 u16 playerModelDrawAreaDepths[4] __attribute__((section(".data.player_model_draw_area_depths"))) = {
     0x70, 0x40, 0x20, 0
 };

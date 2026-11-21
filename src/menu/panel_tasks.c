@@ -55,6 +55,13 @@ typedef struct MoneyMenuSelection {
     s16 choiceResult;
 } MoneyMenuSelection;
 
+extern GameTask *D_8013AE88 __attribute__((section(".data")));
+extern GameTask *D_8013AE8C __attribute__((section(".data")));
+extern GameTask *D_8013AE98 __attribute__((section(".data")));
+extern u8 D_8013B3A4 __attribute__((section(".data")));
+extern u8 D_8013B3A5 __attribute__((section(".data")));
+extern u8 D_8013B3A6 __attribute__((section(".data")));
+
 static const u32 sBoardSelectionDetailsJumpTablePadding
     __attribute__((section(".rodata.board_selection_details_padding"))) = 0;
 

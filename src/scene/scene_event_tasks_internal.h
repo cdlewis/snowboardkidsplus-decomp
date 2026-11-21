@@ -15,8 +15,6 @@
 #include "psx/libsn.h"
 #include "psx/libc.h"
 #define RACE_PLAYER_ABSOLUTE_ADDRESSING
-#define TASK_ABSOLUTE_ADDRESSING
-#define TASK_FLAGS_ABSOLUTE_ADDRESSING
 #include "game/race/player/race_player.h"
 #include "game/scene/scene_events.h"
 #include "game/text/text_layout.h"

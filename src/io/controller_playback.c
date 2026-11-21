@@ -13,6 +13,9 @@
 #include "game/race/player/race_player.h"
 #include "game/save/save_data.h"
 
+extern GameTask *D_8013AE88 __attribute__((section(".data")));
+extern u8 D_8013AFD6 __attribute__((section(".data")));
+
 extern u8 D_8013B108 __attribute__((section(".data")));
 extern u8 D_8013B109 __attribute__((section(".data")));
 extern s16 D_8013B106 __attribute__((section(".data")));

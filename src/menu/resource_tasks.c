@@ -20,6 +20,13 @@ typedef struct MainTailSelectionResource {
     s16 selectedIndex;
 } MainTailSelectionResource;
 
+extern GameTask *D_8013AE88 __attribute__((section(".data")));
+extern GameTask *D_8013AE8C __attribute__((section(".data")));
+extern GameTask *D_8013AE98 __attribute__((section(".data")));
+extern u8 D_8013B3A4 __attribute__((section(".data")));
+extern u8 D_8013B3A5 __attribute__((section(".data")));
+extern u8 D_8013B3A6 __attribute__((section(".data")));
+
 extern u16 D_8013AFD0 __attribute__((section(".data")));
 
 extern ByteMappingDescriptor D_801325FC[];

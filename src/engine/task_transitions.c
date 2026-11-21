@@ -3,7 +3,6 @@
 #include "psx/libetc.h"
 #include "common.h"
 #define RACE_SETUP_GP_ADDRESSING
-#define TASK_ABSOLUTE_ADDRESSING
 #include "game/engine/task.h"
 #include "game/graphics/graphics.h"
 #include "game/graphics/coordinate.h"
@@ -52,6 +51,11 @@ typedef struct RacePlayerSoundSectorRanges {
     s16 headerSector;
     s16 headerSectorCount;
 } RacePlayerSoundSectorRanges;
+
+extern GameTask *D_8013AE88 __attribute__((section(".data")));
+extern GameTask *D_8013AE8C __attribute__((section(".data")));
+extern GameTask *D_8013AE90 __attribute__((section(".data")));
+extern GameTask *D_8013B304 __attribute__((section(".data.player_snapshot_tasks")));
 
 extern u8 D_8013AEE4 __attribute__((section(".data")));
 

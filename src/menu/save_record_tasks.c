@@ -24,6 +24,10 @@ typedef struct SaveMenuResource {
     s16 result1E;
 } SaveMenuResource;
 
+extern GameTask *D_8013AE88 __attribute__((section(".data")));
+extern GameTask *D_8013AE8C __attribute__((section(".data")));
+extern GameTask *D_8013AE98 __attribute__((section(".data")));
+
 extern s16 D_8013AF3E __attribute__((section(".data")));
 
 const u32 gStateValueHistoryPadding

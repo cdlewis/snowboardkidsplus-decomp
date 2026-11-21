@@ -1,6 +1,5 @@
 #include "psx/libetc.h"
 #include "psx/stdarg.h"
-#define RACE_FINISH_ABSOLUTE_ADDRESSING
 #include "../../graphics/render_effects_internal.h"
 #include "game/engine/game_loop.h"
 #include "game/audio/music.h"
@@ -162,6 +161,11 @@ typedef struct PlayerParticleTrailScratch {
     long cue;
     long flags;
 } PlayerParticleTrailScratch;
+
+extern GameTask *D_8013AE88 __attribute__((section(".data")));
+extern GameTask *D_8013AE8C __attribute__((section(".data")));
+extern u32 D_8013AFE4 __attribute__((section(".data")));
+extern u8 D_8013AFD6 __attribute__((section(".data")));
 
 extern u16 D_8013AFAA __attribute__((section(".data")));
 extern u32 *D_8013AF70 __attribute__((section(".data")));

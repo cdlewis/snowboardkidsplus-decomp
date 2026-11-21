@@ -10,6 +10,9 @@
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
 
+extern GameTask *D_8013AE88 __attribute__((section(".data")));
+extern GameTask *D_8013AE98 __attribute__((section(".data")));
+
 extern u16 D_8013AFD0 __attribute__((section(".data")));
 
 const u16 gNumberAdjustmentLabel[]

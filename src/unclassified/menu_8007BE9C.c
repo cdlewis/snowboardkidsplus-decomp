@@ -1,8 +1,6 @@
 #include "common.h"
-#define TASK_ABSOLUTE_ADDRESSING
 #include "game/engine/task.h"
 #include "game/io/cd_queue.h"
-#define TASK_WIDGET_COLORS_ABSOLUTE_ADDRESSING
 #include "game/graphics/graphics.h"
 #include "game/engine/game_options.h"
 #include "game/menu/movement.h"
@@ -17,6 +15,12 @@ typedef struct MainMenuSelection {
     s16 previousIndex;
     s16 choiceResult;
 } MainMenuSelection;
+
+extern GameTask *D_8013AE88 __attribute__((section(".data")));
+extern GameTask *D_8013AE98 __attribute__((section(".data")));
+extern u8 D_8013B3A4 __attribute__((section(".data")));
+extern u8 D_8013B3A5 __attribute__((section(".data")));
+extern u8 D_8013B3A6 __attribute__((section(".data")));
 
 extern const u16 D_8012F424[], D_8012F4C8[], D_8012F5CC[], D_8012F630[];
 extern const u16 D_8012F698[], D_8012F6D4[], D_8012F70C[], D_8012F728[];

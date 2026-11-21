@@ -16,6 +16,12 @@
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
 
+extern GameTask *D_8013AE88 __attribute__((section(".data")));
+extern GameTask *D_8013AE8C __attribute__((section(".data")));
+extern GameTask *D_8013AE98 __attribute__((section(".data")));
+extern u32 D_8013AFE4 __attribute__((section(".data")));
+extern u8 D_8013AFD6 __attribute__((section(".data")));
+
 void drawSlidingRaceTimeDisplay(SlidingTimeResource *resource) {
     u8 padding[0x20];
     GsOT *ot = &D_800EBFF0[D_8013AF78];

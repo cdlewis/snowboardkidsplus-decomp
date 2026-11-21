@@ -1,6 +1,5 @@
 #include "psx/libetc.h"
 #define FRAME_COUNTER_GP_ADDRESSING
-#define TASK_ABSOLUTE_ADDRESSING
 #define GRAPHICS_GP_ADDRESSING
 #define COORDINATE_GP_ADDRESSING
 #include "common.h"
@@ -30,6 +29,9 @@ typedef struct GameScratchpad {
 } GameScratchpad;
 
 #define GAME_SCRATCHPAD ((GameScratchpad *)getScratchAddr(0))
+
+extern GameTask *D_8013AE88 __attribute__((section(".data")));
+extern GameTask *D_8013AE98 __attribute__((section(".data")));
 
 GsOT D_800EBFF0[2] __attribute__((section(".data.render_state"))) = {0};
 GsOT D_800EC018[2] __attribute__((section(".data.render_state"))) = {0};

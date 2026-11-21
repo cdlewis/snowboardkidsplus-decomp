@@ -29,6 +29,9 @@ typedef struct AnimatedBackgroundScratchpad {
     SVECTOR rotation;
 } AnimatedBackgroundScratchpad;
 
+extern GameTask *D_8013AE88 __attribute__((section(".data")));
+extern GameTask *D_8013AE8C __attribute__((section(".data")));
+
 void drawLayeredBackgroundAndSetFog(s16 playerIndex);
 void func_8004E718(s16 playerIndex);
 void func_8004EBF8(s16 playerIndex);

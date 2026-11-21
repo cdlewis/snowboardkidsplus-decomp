@@ -55,26 +55,14 @@ extern u16 gTaskResourceFreeBits[16];
 
 /* Scheduler storage remains in its original data object. */
 /* Some task flows address this pointer absolutely; the scheduler uses $gp. */
-#ifdef TASK_ABSOLUTE_ADDRESSING
-extern GameTask *D_8013AE88 __attribute__((section(".data")));
-extern GameTask *D_8013AE8C __attribute__((section(".data")));
-extern GameTask *D_8013AE90 __attribute__((section(".data")));
-extern GameTask *D_8013AE98 __attribute__((section(".data")));
-extern GameTask *D_8013B304 __attribute__((section(".data.player_snapshot_tasks")));
-#else
 extern GameTask *D_8013AE88;
 extern GameTask *D_8013AE8C;
 extern GameTask *D_8013AE98;
 extern GameTask *D_8013B304;
-#endif
 /* GP-relative alias for the player snapshot task pointer. */
 extern GameTask *playerSnapshotTaskGp;
 /* Task transition flags consumed by the main presentation flow. */
-#if defined(TASK_TRANSITION_FLAGS_ABSOLUTE_ADDRESSING) || defined(TASK_FLAGS_ABSOLUTE_ADDRESSING)
-extern u32 D_8013AFE4 __attribute__((section(".data")));
-#else
 extern u32 D_8013AFE4;
-#endif
 extern u32 taskTransitionFlagsAbsolute __attribute__((section(".data")));
 extern GameTask gGameTasks[200];
 /* The resource allocator supplies 256-byte records to task-specific users. */
@@ -161,11 +149,7 @@ void copyIndexedTaskImagesToVram(s16 index);
 
 void resetStateAndBeginResourceLoadTransition(u8 requestLoad);
 
-#if defined(TASK_FLAGS_ABSOLUTE_ADDRESSING)
-extern u8 D_8013AFD7 __attribute__((section(".data")));
-#else
 extern u8 D_8013AFD7;
-#endif
 
 #ifdef RACE_SETUP_GP_ADDRESSING
 extern u8 D_8013AFD5;

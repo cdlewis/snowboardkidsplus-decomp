@@ -1,4 +1,3 @@
-#define TASK_ABSOLUTE_ADDRESSING
 #include "common.h"
 #include "game/save/save_data.h"
 #include "game/engine/game_options.h"
@@ -9,7 +8,6 @@
 #include "game/engine/game_task_scheduler.h"
 #include "game/audio/music.h"
 #include "game/menu/movement.h"
-#define TASK_ABSOLUTE_ADDRESSING
 #include "game/engine/task.h"
 #include "game/menu/selected_sprite.h"
 #include "game/menu/task_widgets.h"
@@ -172,6 +170,10 @@ typedef struct TaskValueState {
     u16 unk04;
     u16 unk06;
 } TaskValueState;
+
+extern GameTask *D_8013AE88 __attribute__((section(".data")));
+extern GameTask *D_8013AE8C __attribute__((section(".data")));
+extern GameTask *D_8013AE98 __attribute__((section(".data")));
 
 extern s16 D_8013B106 __attribute__((section(".data")));
 
