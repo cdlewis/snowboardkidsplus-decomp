@@ -1249,7 +1249,28 @@ void fadeInStatsMenuTask(void) {
     drawStatsMenuMoneyLabels(resource);
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/record_screens", func_8003BD70);
+void initializeStatsMenuTask(void) {
+    StatsMenuFadeResource *resource;
+
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    resource = (StatsMenuFadeResource *)&D_800D9504[D_8013AE88->resource14];
+    resource->brightness = 0;
+    resource->makeBonus = 0;
+    resource->completeBonus = 300;
+    if (D_8013B18D) {
+        resource->trickPrize = 0;
+        resource->makeBonus = 0;
+    } else {
+        resource->trickPrize = gRacePlayers[0].trickAttackPointTotal * 3;
+        resource->makeBonus = gRacePlayers[0].trickAttackMakeCount * 10;
+    }
+    resource->unk00 = gRacePlayers[0].unk100[0];
+    gRacePlayers[0].money = D_80130BF0[0];
+    setCurrentTaskCallback(fadeInStatsMenuTask);
+}
 
 void drawRaceTimeComparisonPanel(PanelResource *resource) {
     char text[32];

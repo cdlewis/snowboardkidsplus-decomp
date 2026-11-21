@@ -157,6 +157,7 @@ void advanceTaskStatsCountdownAndPlaySound(void);
 void resetTaskStatsCountdown(void);
 void waitTaskStatsCountdownAndPlaySound(void);
 void fadeInStatsMenuTask(void);
+void initializeStatsMenuTask(void);
 void drawCurrentTaskPanel(void);
 void updatePanelExitInputTask(void);
 void advanceCurrentTaskPanelTimer(void);
