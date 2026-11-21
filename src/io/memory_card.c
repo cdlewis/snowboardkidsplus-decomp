@@ -6,6 +6,8 @@
 #include "psx/libgpu.h"
 #include "psx/libmcrd.h"
 
+extern s16 D_8013AFCE __attribute__((section(".data")));
+
 char *gMemoryCardFileNames[5] __attribute__((section(".data.memory_card_file_names"))) = {
     D_800101B8, D_800101D0, D_800101E8, D_80010200, D_80010218
 };

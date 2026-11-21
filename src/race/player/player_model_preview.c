@@ -11,6 +11,9 @@
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
 
+extern VECTOR *D_8013AF88 __attribute__((section(".data")));
+extern SVECTOR *D_8013AF90 __attribute__((section(".data")));
+extern u16 D_8013AF78 __attribute__((section(".data")));
 extern GameTask *D_8013AE88 __attribute__((section(".data")));
 extern GameTask *D_8013AE8C __attribute__((section(".data")));
 extern GameTask *D_8013AE98 __attribute__((section(".data")));
@@ -25,7 +28,7 @@ void sortPlayerModelWithDrawArea(u16 playerIndex, u16 depthIndex, RECT *bounds) 
     GsDOBJ2 *object = player->modelObjects;
     s16 i;
     s16 count;
-    D_8013B0D8 = player;
+    currentPlayerAbsolute = player;
     count = player->modelPartCount;
     for (i = 0; i < count; i++, object++) {
         GsGetLw(object->coord2, &matrix);
@@ -45,14 +48,14 @@ void loadCurrentPlayerModelPose(const s16 *values) {
     RacePlayer *player;
     s16 i;
     initCurrentPlayerModelParts();
-    player = D_8013B0D8;
+    player = currentPlayerAbsolute;
     for (i = 0; i < player->modelPartCount; i++) {
         player->unk5BC[i].x = *values++;
         player->unk5BC[i].y = *values++;
         player->unk5BC[i].z = *values++;
     }
     {
-        RacePlayer *translationPlayer = D_8013B0D8;
+        RacePlayer *translationPlayer = currentPlayerAbsolute;
         translationPlayer->unk62C[0].x = (*values + 2) / 4;
         values++;
         translationPlayer->unk62C[0].y = (*values + 2) / 4;
@@ -71,7 +74,7 @@ void loadCurrentPlayerModelPose(const s16 *values) {
 }
 
 void setCurrentPlayerFinalPartTranslations(const s16 *values) {
-    RacePlayer *player = D_8013B0D8;
+    RacePlayer *player = currentPlayerAbsolute;
     s32 index = player->modelPartCount - 2;
     player->unk62C[index].x = *values++;
     player->unk62C[index].y = *values++;
@@ -85,24 +88,24 @@ void setCurrentPlayerFinalPartTranslations(const s16 *values) {
 void updateCurrentPlayerModelPartCoordinates(void) {
     s16 i;
     u8 parent;
-    for (i = 0; i < D_8013B0D8->modelPartCount; i++) {
-        parent = D_8013B0D8->unk13E[i];
-        RotMatrix((SVECTOR *)&D_8013B0D8->unk5BC[i], &D_8013B0D8->model.modelCoordinates[i].coord);
+    for (i = 0; i < currentPlayerAbsolute->modelPartCount; i++) {
+        parent = currentPlayerAbsolute->unk13E[i];
+        RotMatrix((SVECTOR *)&currentPlayerAbsolute->unk5BC[i], &currentPlayerAbsolute->model.modelCoordinates[i].coord);
         if (i == 0) {
             D_8013AF90->vx = 0;
             D_8013AF90->vy = 0;
             D_8013AF90->vz = 0;
-            ApplyMatrix(&D_8013B0D8->model.modelCoordinates[0].coord, D_8013AF90, D_8013AF88);
-            D_8013B0D8->model.modelCoordinates[0].coord.t[0] = D_8013AF88->vx + D_8013B0D8->unk62C[0].x;
-            D_8013B0D8->model.modelCoordinates[0].coord.t[1] = D_8013AF88->vy + D_8013B0D8->unk62C[0].y;
-            D_8013B0D8->model.modelCoordinates[0].coord.t[2] = D_8013AF88->vz + D_8013B0D8->unk62C[0].z;
+            ApplyMatrix(&currentPlayerAbsolute->model.modelCoordinates[0].coord, D_8013AF90, D_8013AF88);
+            currentPlayerAbsolute->model.modelCoordinates[0].coord.t[0] = D_8013AF88->vx + currentPlayerAbsolute->unk62C[0].x;
+            currentPlayerAbsolute->model.modelCoordinates[0].coord.t[1] = D_8013AF88->vy + currentPlayerAbsolute->unk62C[0].y;
+            currentPlayerAbsolute->model.modelCoordinates[0].coord.t[2] = D_8013AF88->vz + currentPlayerAbsolute->unk62C[0].z;
         } else {
-            ApplyMatrix(&D_8013B0D8->model.modelCoordinates[parent].coord, (SVECTOR *)&D_8013B0D8->unk62C[i], &D_800EB22C);
-            D_8013B0D8->model.modelCoordinates[i].coord.t[0] = D_800EB22C.vx + D_8013B0D8->model.modelCoordinates[parent].coord.t[0];
-            D_8013B0D8->model.modelCoordinates[i].coord.t[1] = D_800EB22C.vy + D_8013B0D8->model.modelCoordinates[parent].coord.t[1];
-            D_8013B0D8->model.modelCoordinates[i].coord.t[2] = D_800EB22C.vz + D_8013B0D8->model.modelCoordinates[parent].coord.t[2];
+            ApplyMatrix(&currentPlayerAbsolute->model.modelCoordinates[parent].coord, (SVECTOR *)&currentPlayerAbsolute->unk62C[i], &D_800EB22C);
+            currentPlayerAbsolute->model.modelCoordinates[i].coord.t[0] = D_800EB22C.vx + currentPlayerAbsolute->model.modelCoordinates[parent].coord.t[0];
+            currentPlayerAbsolute->model.modelCoordinates[i].coord.t[1] = D_800EB22C.vy + currentPlayerAbsolute->model.modelCoordinates[parent].coord.t[1];
+            currentPlayerAbsolute->model.modelCoordinates[i].coord.t[2] = D_800EB22C.vz + currentPlayerAbsolute->model.modelCoordinates[parent].coord.t[2];
         }
-        setCoordinateRotation((SVECTOR *)&D_8013B0D8->unk5BC[i], &D_8013B0D8->model.modelCoordinates[i]);
+        setCoordinateRotation((SVECTOR *)&currentPlayerAbsolute->unk5BC[i], &currentPlayerAbsolute->model.modelCoordinates[i]);
     }
 }
 
@@ -129,9 +132,9 @@ void createPlayerModelPreviewTask(u16 playerIndex, u16 characterId, u16 modelSlo
     D_8013AE8C->data1E = index;
     D_8013AE8C->resource14 = allocateTaskResource();
 
-    D_8013B0D8 = &gRacePlayers[D_8013AE8C->data1C];
+    currentPlayerAbsolute = &gRacePlayers[D_8013AE8C->data1C];
     state = (ModelPreviewState *)&D_800D9504[D_8013AE8C->resource14];
-    D_8013B0D8->characterId = characterId;
+    currentPlayerAbsolute->characterId = characterId;
     {
         u32 (*sourceBuffers)[4096] = (u32 (*)[4096])DAT_GRID_MODEL_BUFFERS;
         u32 (*destinationBuffers)[4096] = DAT_PLAYER_MODEL_BUFFERS;
@@ -147,20 +150,20 @@ void createPlayerModelPreviewTask(u16 playerIndex, u16 characterId, u16 modelSlo
     model++;
     GsMapModelingData(model);
     model++;
-    D_8013B0D8->modelPartCount = *(u8 *)model;
-    GsInitCoordinate2(0, &D_8013B0D8->worldCoordinate);
-    GsInitCoordinate2(&D_8013B0D8->worldCoordinate, &D_8013B0D8->modelCoordinate);
+    currentPlayerAbsolute->modelPartCount = *(u8 *)model;
+    GsInitCoordinate2(0, &currentPlayerAbsolute->worldCoordinate);
+    GsInitCoordinate2(&currentPlayerAbsolute->worldCoordinate, &currentPlayerAbsolute->modelCoordinate);
     model++;
-    for (i = 0; i < D_8013B0D8->modelPartCount; i++) {
+    for (i = 0; i < currentPlayerAbsolute->modelPartCount; i++) {
         GsDOBJ2 *object;
-        GsLinkObject4(model, &D_8013B0D8->modelObjects[i], i);
-        object = &D_8013B0D8->modelObjects[i];
-        GsInitCoordinate2(&D_8013B0D8->modelCoordinate, &D_8013B0D8->model.modelCoordinates[i]);
+        GsLinkObject4(model, &currentPlayerAbsolute->modelObjects[i], i);
+        object = &currentPlayerAbsolute->modelObjects[i];
+        GsInitCoordinate2(&currentPlayerAbsolute->modelCoordinate, &currentPlayerAbsolute->model.modelCoordinates[i]);
         object->attribute = 0;
-        object->coord2 = &D_8013B0D8->model.modelCoordinates[i];
+        object->coord2 = &currentPlayerAbsolute->model.modelCoordinates[i];
     }
 
-    player = D_8013B0D8;
+    player = currentPlayerAbsolute;
     player->worldCoordinate.coord.t[0] = x;
     player->worldCoordinate.coord.t[1] = y;
     player->worldCoordinate.coord.t[2] = z;
@@ -202,7 +205,7 @@ void updatePlayerModelPreviewTask(void) {
     u8 padding[0x10];
     ModelPreviewState *state;
     RegisteredTaskEntry *entry;
-    D_8013B0D8 = &gRacePlayers[D_8013AE88->data1C];
+    currentPlayerAbsolute = &gRacePlayers[D_8013AE88->data1C];
     if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
     state = (ModelPreviewState *)&D_800D9504[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) { for (;;) {} }
@@ -223,9 +226,9 @@ void updatePlayerModelPreviewTask(void) {
         deleteCurrentTaskSubtree();
         return;
     }
-    D_8013B0D8->unk0B6 = (D_8013B0D8->unk0B6 + state->rotationStep) & 0xFFF;
-    setCoordinateRotation((SVECTOR *)&D_8013B0D8->unk0B4, &D_8013B0D8->worldCoordinate);
-    setCoordinateRotation(&D_8013B0D8->modelRotation, &D_8013B0D8->modelCoordinate);
-    setCoordinateRotation((SVECTOR *)D_8013B0D8->unk5BC, D_8013B0D8->model.modelCoordinates);
+    currentPlayerAbsolute->unk0B6 = (currentPlayerAbsolute->unk0B6 + state->rotationStep) & 0xFFF;
+    setCoordinateRotation((SVECTOR *)&currentPlayerAbsolute->unk0B4, &currentPlayerAbsolute->worldCoordinate);
+    setCoordinateRotation(&currentPlayerAbsolute->modelRotation, &currentPlayerAbsolute->modelCoordinate);
+    setCoordinateRotation((SVECTOR *)currentPlayerAbsolute->unk5BC, currentPlayerAbsolute->model.modelCoordinates);
     sortPlayerModelWithDrawArea(D_8013AE88->data1C, 0, &D_801300B8[D_8013AE88->data1C]);
 }

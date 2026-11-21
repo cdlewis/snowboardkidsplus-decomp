@@ -17,6 +17,8 @@
 #include "psx/libgs.h"
 #include "psx/libgte.h"
 
+extern s16 D_8013AFCE __attribute__((section(".data")));
+extern VECTOR *D_8013AF88 __attribute__((section(".data")));
 extern GameTask *D_8013AE88 __attribute__((section(".data")));
 extern GameTask *D_8013AE8C __attribute__((section(".data")));
 extern u32 D_8013AFE4 __attribute__((section(".data")));
@@ -584,14 +586,14 @@ void updateRacePlayerFinishSlotsTask(void) {
         func_8002BC2C();
         func_8002B820();
         for (i = 0; i < D_8013AFD2; i++) {
-            D_8013B0D8 = &gRacePlayers[i];
+            currentPlayerAbsolute = &gRacePlayers[i];
             assignCurrentPlayerFinishSlot(i);
         }
     }
 }
 
 s32 requestCurrentPlayerAction6(void) {
-    RacePlayer *player = D_8013B0D8;
+    RacePlayer *player = currentPlayerAbsolute;
     s16 angle;
     s32 difference;
 
@@ -616,7 +618,7 @@ s32 requestCurrentPlayerAction6(void) {
 }
 
 s32 requestCurrentPlayerAction6NarrowAngle(void) {
-    RacePlayer *player = D_8013B0D8;
+    RacePlayer *player = currentPlayerAbsolute;
     s16 angle;
     s32 difference;
 
@@ -641,7 +643,7 @@ s32 requestCurrentPlayerAction6NarrowAngle(void) {
 }
 
 s32 requestCurrentPlayerAction7(void) {
-    RacePlayer *player = D_8013B0D8;
+    RacePlayer *player = currentPlayerAbsolute;
     s16 angle;
     s32 difference;
 
@@ -682,7 +684,7 @@ INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002CFF0);
 INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002D040);
 
 s32 checkCurrentPlayerFlags43040OrAngleRange(void) {
-    RacePlayer *player = D_8013B0D8;
+    RacePlayer *player = currentPlayerAbsolute;
     s32 difference;
     s32 angle;
     if (player->unk128 & 0x43040) {
@@ -708,7 +710,7 @@ s32 checkCurrentPlayerFlags43040OrAngleRange(void) {
 INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002D120);
 
 s32 checkCurrentPlayerFlags345001(void) {
-    RacePlayer *player = D_8013B0D8;
+    RacePlayer *player = currentPlayerAbsolute;
     if (player->unk12C != 14 && (player->unk128 & 0x345001)) {
         return 1;
     }
@@ -721,7 +723,7 @@ s32 checkCurrentPlayerFlags345001(void) {
 INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002D1B8);
 
 s32 requestCurrentPlayerAction17(void) {
-    RacePlayer *player = D_8013B0D8;
+    RacePlayer *player = currentPlayerAbsolute;
 
     if (player->unk128 & 0x275000) {
         return 1;
@@ -739,7 +741,7 @@ s32 requestCurrentPlayerAction17(void) {
 }
 
 s32 checkCurrentPlayerFlags275000OrField134(void) {
-    RacePlayer *player = D_8013B0D8;
+    RacePlayer *player = currentPlayerAbsolute;
     if (player->unk128 & 0x275000) {
         return 1;
     }
@@ -761,74 +763,74 @@ INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002D33C);
 INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002D380);
 
 s16 processCurrentPlayerActionRequests(s16 suppressWallAction) {
-    u16 pending = D_8013B0D8->unk0E8;
+    u16 pending = currentPlayerAbsolute->unk0E8;
 
     D_8013B0E4 = 0;
     if (pending) {
         if ((pending & 0x200) && !suppressWallAction) {
-            D_8013B0D8->unk0E8 = pending | 1;
+            currentPlayerAbsolute->unk0E8 = pending | 1;
         }
-        if ((D_8013B0D8->unk0E8 & 1) && func_8002CFF0() &&
+        if ((currentPlayerAbsolute->unk0E8 & 1) && func_8002CFF0() &&
             requestCurrentPlayerAction6() && checkCurrentPlayerFlags43040OrAngleRange()) {
             func_8002D120();
         }
-        if ((D_8013B0D8->unk0E8 & 2) && func_8002CFF0()) {
+        if ((currentPlayerAbsolute->unk0E8 & 2) && func_8002CFF0()) {
             requestCurrentPlayerAction6NarrowAngle();
         }
-        if (D_8013B0D8->unk0E8 & 0x800) {
+        if (currentPlayerAbsolute->unk0E8 & 0x800) {
             requestCurrentPlayerAction7();
         }
-        if ((D_8013B0D8->unk0E8 & 0x400) && func_8002CEE0()) {
+        if ((currentPlayerAbsolute->unk0E8 & 0x400) && func_8002CEE0()) {
             func_8002CEE0();
         }
-        if ((D_8013B0D8->unk0E8 & 4) && func_8002D040()) {
+        if ((currentPlayerAbsolute->unk0E8 & 4) && func_8002D040()) {
             func_8002CE58();
         }
-        if (D_8013B0D8->unk0E8 & 8) {
+        if (currentPlayerAbsolute->unk0E8 & 8) {
             func_8002CE9C();
         }
-        if (D_8013B0D8->unk0E8 & 0x100) {
+        if (currentPlayerAbsolute->unk0E8 & 0x100) {
             func_8002CF68();
         }
-        if (D_8013B0D8->unk0E8 & 0x4000) {
+        if (currentPlayerAbsolute->unk0E8 & 0x4000) {
             func_8002CFAC();
         }
-        if (D_8013B0D8->unk0E8 & 0x20) {
+        if (currentPlayerAbsolute->unk0E8 & 0x20) {
             requestCurrentPlayerAction17();
         }
-        if (D_8013B0D8->unk0E8 & 0x1000) {
+        if (currentPlayerAbsolute->unk0E8 & 0x1000) {
             checkCurrentPlayerFlags275000OrField134();
         }
-        if (D_8013B0D8->unk0E8 & 0x10) {
+        if (currentPlayerAbsolute->unk0E8 & 0x10) {
             func_8002D1B8();
         }
-        if (D_8013B0D8->unk0E8 & 0x40) {
+        if (currentPlayerAbsolute->unk0E8 & 0x40) {
             func_8002D2B4();
         }
-        if (D_8013B0D8->unk0E8 & 0x2000) {
+        if (currentPlayerAbsolute->unk0E8 & 0x2000) {
             func_8002D2F8();
         }
-        if (D_8013B0D8->unk0E8 & 0x80) {
+        if (currentPlayerAbsolute->unk0E8 & 0x80) {
             func_8002CF24();
         }
-        D_8013B0D8->unk0E8 = 0;
+        currentPlayerAbsolute->unk0E8 = 0;
     }
 
-    if ((D_8013B0D8->surfaceState.word & 0xFFFF0000) == 0x03030000 || D_8013B0D8->surfaceState.fields.unk136 == 8) {
+    if ((currentPlayerAbsolute->surfaceState.word & 0xFFFF0000) == 0x03030000 || currentPlayerAbsolute->surfaceState.fields.unk136 == 8) {
         checkCurrentPlayerFlags345001();
     }
-    if (D_8013B0D8->surfaceState.fields.unk136 == 6 || D_8013B0D8->surfaceState.fields.unk136 == 12 || D_8013B0D8->surfaceState.fields.unk136 == 16) {
+    if (currentPlayerAbsolute->surfaceState.fields.unk136 == 6 || currentPlayerAbsolute->surfaceState.fields.unk136 == 12 || currentPlayerAbsolute->surfaceState.fields.unk136 == 16) {
         func_8002D33C();
     }
-    if (D_8013B0D8->surfaceState.fields.unk136 == 7 || D_8013B0D8->surfaceState.fields.unk136 == 14 || D_8013B0D8->surfaceState.fields.unk136 == 15) {
+    if (currentPlayerAbsolute->surfaceState.fields.unk136 == 7 || currentPlayerAbsolute->surfaceState.fields.unk136 == 14 || currentPlayerAbsolute->surfaceState.fields.unk136 == 15) {
         func_8002D380();
     }
 
     if (!D_8013B0E4) {
         return 0;
     }
-    if (D_8013B0D8->unk128 & 0x800) {
-        D_8013B0D8->trickAttackMakeCount = 0;
+    if (currentPlayerAbsolute->unk128 & 0x800) {
+        currentPlayerAbsolute->trickAttackMakeCount = 0;
     }
 
     switch ((s16)(D_8013B0E4 - 1)) {
@@ -839,106 +841,106 @@ s16 processCurrentPlayerActionRequests(s16 suppressWallAction) {
             if (D_8013B0E4 != 7) {
                 playCurrentPlayerSoundEffect(2);
             }
-            D_8013B0D8->unk12C = 4;
-            D_8013B0D8->unk102 = D_8013B0E6;
-            D_8013B0D8->unk104.word = D_8013B0D8->unk0EC;
-            D_8013B0D8->unk108.word = D_8013B0D8->unk0F0;
+            currentPlayerAbsolute->unk12C = 4;
+            currentPlayerAbsolute->unk102 = D_8013B0E6;
+            currentPlayerAbsolute->unk104.word = currentPlayerAbsolute->unk0EC;
+            currentPlayerAbsolute->unk108.word = currentPlayerAbsolute->unk0F0;
             func_800183FC(D_8013AE88->data18, 1, 0x201, 0x20);
-            D_8013AF88->vx = D_8013B0D8->worldCoordinate.coord.t[0];
-            D_8013AF88->vy = D_8013B0D8->worldCoordinate.coord.t[1] - 48;
-            D_8013AF88->vz = D_8013B0D8->worldCoordinate.coord.t[2];
+            D_8013AF88->vx = currentPlayerAbsolute->worldCoordinate.coord.t[0];
+            D_8013AF88->vy = currentPlayerAbsolute->worldCoordinate.coord.t[1] - 48;
+            D_8013AF88->vz = currentPlayerAbsolute->worldCoordinate.coord.t[2];
             startAlternateQuadAnimationTask(D_8013AE88->data18, (const PositionEffectOrigin *)D_8013AF88);
             break;
         case 9 - 1:
             playCurrentPlayerSoundEffect(2);
-            D_8013B0D8->unk12C = 14;
+            currentPlayerAbsolute->unk12C = 14;
             func_800183FC(D_8013AE88->data18, 1, 0x201, 0x20);
-            D_8013AF88->vx = D_8013B0D8->worldCoordinate.coord.t[0];
-            D_8013AF88->vy = D_8013B0D8->worldCoordinate.coord.t[1] - 48;
-            D_8013AF88->vz = D_8013B0D8->worldCoordinate.coord.t[2];
+            D_8013AF88->vx = currentPlayerAbsolute->worldCoordinate.coord.t[0];
+            D_8013AF88->vy = currentPlayerAbsolute->worldCoordinate.coord.t[1] - 48;
+            D_8013AF88->vz = currentPlayerAbsolute->worldCoordinate.coord.t[2];
             startAlternateQuadAnimationTask(D_8013AE88->data18, (const PositionEffectOrigin *)D_8013AF88);
             break;
         case 10 - 1:
             playCurrentPlayerSoundEffect(2);
-            D_8013B0D8->unk12C = 14;
-            D_8013B0D8->unk102 = D_8013B0E6;
-            D_8013B0D8->unk104.word = D_8013B0D8->unk0EC;
-            D_8013B0D8->unk108.word = D_8013B0D8->unk0F0;
+            currentPlayerAbsolute->unk12C = 14;
+            currentPlayerAbsolute->unk102 = D_8013B0E6;
+            currentPlayerAbsolute->unk104.word = currentPlayerAbsolute->unk0EC;
+            currentPlayerAbsolute->unk108.word = currentPlayerAbsolute->unk0F0;
             break;
         case 2 - 1:
             playCurrentPlayerSoundEffect(2);
-            D_8013B0D8->unk12C = 3;
-            D_8013B0D8->unk102 = D_8013B0E6;
-            D_8013B0D8->unk104.word = D_8013B0D8->unk0EC;
-            D_8013B0D8->unk108.word = D_8013B0D8->unk0F0;
+            currentPlayerAbsolute->unk12C = 3;
+            currentPlayerAbsolute->unk102 = D_8013B0E6;
+            currentPlayerAbsolute->unk104.word = currentPlayerAbsolute->unk0EC;
+            currentPlayerAbsolute->unk108.word = currentPlayerAbsolute->unk0F0;
             func_800183FC(D_8013AE88->data18, 1, 0x201, 0x20);
-            D_8013AF88->vx = D_8013B0D8->worldCoordinate.coord.t[0];
-            D_8013AF88->vy = D_8013B0D8->worldCoordinate.coord.t[1] - 48;
-            D_8013AF88->vz = D_8013B0D8->worldCoordinate.coord.t[2];
+            D_8013AF88->vx = currentPlayerAbsolute->worldCoordinate.coord.t[0];
+            D_8013AF88->vy = currentPlayerAbsolute->worldCoordinate.coord.t[1] - 48;
+            D_8013AF88->vz = currentPlayerAbsolute->worldCoordinate.coord.t[2];
             startAlternateQuadAnimationTask(D_8013AE88->data18, (const PositionEffectOrigin *)D_8013AF88);
             break;
         case 3 - 1:
             playCurrentPlayerSoundEffect(2);
-            D_8013B0D8->unk12C = 3;
-            D_8013B0D8->unk102 = -1;
-            D_8013B0D8->unk104.word = 0;
-            D_8013B0D8->unk108.word = 0;
+            currentPlayerAbsolute->unk12C = 3;
+            currentPlayerAbsolute->unk102 = -1;
+            currentPlayerAbsolute->unk104.word = 0;
+            currentPlayerAbsolute->unk108.word = 0;
             break;
         case 1 - 1:
-            D_8013B0D8->unk12E = 0x300;
+            currentPlayerAbsolute->unk12E = 0x300;
             break;
         case 8 - 1:
         case 11 - 1:
             playCurrentPlayerSoundEffect(2);
-            D_8013B0D8->unk12C = 11;
+            currentPlayerAbsolute->unk12C = 11;
             break;
         case 12 - 1:
-            gRacePlayers[D_8013B0D8->unk0F4 & 3].unk943 = 1;
-            playCurrentPlayerSoundEffect(gRacePlayers[D_8013B0D8->unk0F4 & 3].unk008 ? 2 : 3);
-            D_8013B0D8->unk12C = 40;
+            gRacePlayers[currentPlayerAbsolute->unk0F4 & 3].unk943 = 1;
+            playCurrentPlayerSoundEffect(gRacePlayers[currentPlayerAbsolute->unk0F4 & 3].unk008 ? 2 : 3);
+            currentPlayerAbsolute->unk12C = 40;
             break;
         case 13 - 1:
-            gRacePlayers[D_8013B0D8->unk0F4 & 3].unk943 = 1;
-            playCurrentPlayerSoundEffect(gRacePlayers[D_8013B0D8->unk0F4 & 3].unk008 ? 2 : 3);
-            D_8013B0D8->unk12C = 26;
+            gRacePlayers[currentPlayerAbsolute->unk0F4 & 3].unk943 = 1;
+            playCurrentPlayerSoundEffect(gRacePlayers[currentPlayerAbsolute->unk0F4 & 3].unk008 ? 2 : 3);
+            currentPlayerAbsolute->unk12C = 26;
             break;
         case 14 - 1:
-            gRacePlayers[D_8013B0D8->unk0F4 & 3].unk943 = 1;
-            playCurrentPlayerSoundEffect(gRacePlayers[D_8013B0D8->unk0F4 & 3].unk008 ? 2 : 3);
-            D_8013B0D8->unk12C = 27;
+            gRacePlayers[currentPlayerAbsolute->unk0F4 & 3].unk943 = 1;
+            playCurrentPlayerSoundEffect(gRacePlayers[currentPlayerAbsolute->unk0F4 & 3].unk008 ? 2 : 3);
+            currentPlayerAbsolute->unk12C = 27;
             break;
         case 15 - 1:
             playCurrentPlayerSoundEffect(4);
-            D_8013B0D8->unk12C = 10;
+            currentPlayerAbsolute->unk12C = 10;
             break;
         case 17 - 1:
         case 18 - 1:
             if (D_8013B0E4 == 18) {
-                playCurrentPlayerSoundEffect(gRacePlayers[D_8013B0D8->unk0F4 & 3].unk008 ? 2 : 3);
+                playCurrentPlayerSoundEffect(gRacePlayers[currentPlayerAbsolute->unk0F4 & 3].unk008 ? 2 : 3);
             } else {
                 playCurrentPlayerSoundEffect(2);
             }
-            D_8013B0D8->unk12C = 24;
+            currentPlayerAbsolute->unk12C = 24;
             break;
         case 16 - 1:
-            gRacePlayers[D_8013B0D8->unk0F4 & 3].unk943 = 1;
-            playCurrentPlayerSoundEffect(gRacePlayers[D_8013B0D8->unk0F4 & 3].unk008 ? 2 : 3);
-            D_8013B0D8->unk12C = 23;
+            gRacePlayers[currentPlayerAbsolute->unk0F4 & 3].unk943 = 1;
+            playCurrentPlayerSoundEffect(gRacePlayers[currentPlayerAbsolute->unk0F4 & 3].unk008 ? 2 : 3);
+            currentPlayerAbsolute->unk12C = 23;
             break;
         case 4 - 1:
-            gRacePlayers[D_8013B0D8->unk0F4 & 3].unk943 = 1;
-            playCurrentPlayerSoundEffect(gRacePlayers[D_8013B0D8->unk0F4 & 3].unk008 ? 2 : 3);
-            D_8013B0D8->unk12C = 25;
+            gRacePlayers[currentPlayerAbsolute->unk0F4 & 3].unk943 = 1;
+            playCurrentPlayerSoundEffect(gRacePlayers[currentPlayerAbsolute->unk0F4 & 3].unk008 ? 2 : 3);
+            currentPlayerAbsolute->unk12C = 25;
             break;
         case 5 - 1:
             playCurrentPlayerSoundEffect(2);
-            D_8013B0D8->unk12C = 25;
+            currentPlayerAbsolute->unk12C = 25;
             break;
         case 19 - 1:
-            D_8013B0D8->unk12C = 6;
+            currentPlayerAbsolute->unk12C = 6;
             break;
         case 20 - 1:
-            D_8013B0D8->unk12C = 9;
+            currentPlayerAbsolute->unk12C = 9;
             break;
     }
 
@@ -946,7 +948,7 @@ s16 processCurrentPlayerActionRequests(s16 suppressWallAction) {
 }
 
 s16 checkCurrentPlayerSurfaceType(void) {
-    RacePlayer *player = D_8013B0D8;
+    RacePlayer *player = currentPlayerAbsolute;
     u8 surface = func_8004AAA0(player->unk92E, player->x >> 8, player->z >> 8);
     if (surface == 3 || surface == 6 || surface == 7 || surface == 8 ||
         surface == 12 || surface == 14 || surface == 15 || surface == 16) {
@@ -958,7 +960,7 @@ s16 checkCurrentPlayerSurfaceType(void) {
 s16 countCurrentPlayerInputGroups(void) {
     s32 count = 0;
     u16 buttons;
-    if (D_8013B0D8->unk008) {
+    if (currentPlayerAbsolute->unk008) {
         return (randomNextMain() & 3) == 0;
     }
     buttons = D_8013AEE8[D_8013AE88->data18];
@@ -973,7 +975,7 @@ s16 countCurrentPlayerInputGroups(void) {
 
 void clearCurrentPlayerTaskState(void) {
     GameTask *task = D_8013AE88;
-    RacePlayer *player = D_8013B0D8;
+    RacePlayer *player = currentPlayerAbsolute;
 
     task->data1A = 0;
     task->data1C = 0;
@@ -986,7 +988,7 @@ void dispatchCurrentPlayerDirectionalAnimation(void) {
 }
 
 void startCurrentPlayerDirectionalAnimation(void) {
-    RacePlayer *player = D_8013B0D8;
+    RacePlayer *player = currentPlayerAbsolute;
     player->unk0C4 = 0;
     player->unk0C6 = 0;
     if (!player->unk008) {
@@ -996,22 +998,22 @@ void startCurrentPlayerDirectionalAnimation(void) {
         }
         if (D_8013AEE8[D_8013AE88->data18] & 4) {
             D_8013AE88->data1C = 4;
-            D_8013B0D8->unk0C4 = 3;
+            currentPlayerAbsolute->unk0C4 = 3;
         }
         if (D_8013AEE8[D_8013AE88->data18] & 1) {
             D_8013AE88->data1C = 1;
-            D_8013B0D8->unk0C4 = 7;
+            currentPlayerAbsolute->unk0C4 = 7;
         }
         if (D_8013AEE8[D_8013AE88->data18] & 2) {
             D_8013AE88->data1C = 2;
-            D_8013B0D8->unk0C4 = 5;
+            currentPlayerAbsolute->unk0C4 = 5;
         }
         if (D_8013AE88->data1C) {
-            if ((s16)D_8013B0D8->unk0C2 < 6) {
-                D_8013B0D8->unk0C4++;
+            if ((s16)currentPlayerAbsolute->unk0C2 < 6) {
+                currentPlayerAbsolute->unk0C4++;
             }
             D_8013AE88->data1A++;
-            if (D_8013B0D8->unk128 & 0x400) {
+            if (currentPlayerAbsolute->unk128 & 0x400) {
                 if (D_8013AE88->data1C & 8) {
                     startCurrentPlayerAnimation(0x1C, 2);
                 }
@@ -1032,9 +1034,9 @@ void startCurrentPlayerDirectionalAnimation(void) {
             if (D_8013AE88->data1C & 2) {
                 startCurrentPlayerAnimation(0x20, 2);
             }
-            D_8013B0D8->unk128 |= 0x800;
+            currentPlayerAbsolute->unk128 |= 0x800;
         }
-        D_8013B0D8->unk0C2++;
+        currentPlayerAbsolute->unk0C2++;
     }
 }
 
@@ -1044,7 +1046,7 @@ void updateCurrentPlayerDirectionalAnimation(void) {
     if (!(D_8013AEEC[task->data18] & task->data1C)) {
         task->data1E = 1;
     }
-    player = D_8013B0D8;
+    player = currentPlayerAbsolute;
     if (player->animationFlags & 0x10) {
         GameTask *animationTask = D_8013AE88;
         if (animationTask->data1E) {
@@ -1074,7 +1076,7 @@ void updateCurrentPlayerDirectionalAnimation(void) {
             player->unk0C6++;
         }
     }
-    D_8013B0D8->unk128 |= 0x800;
+    currentPlayerAbsolute->unk128 |= 0x800;
 }
 
 INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002E368);
@@ -1146,23 +1148,23 @@ void startPlayerTimerTask(RacePlayer *player) {
 void updateCurrentPlayerProjectileUse(u16 playerIndex) {
     s32 activate = 0;
 
-    if (!D_8013B0D8->unk008) {
+    if (!currentPlayerAbsolute->unk008) {
         activate = ((u8)D_8013AEE8[D_8013AE88->data18]) >> 7;
     } else {
-        if (D_8013B0D8->projectileUseCooldown == 0) {
-            D_8013B0D8->projectileUseCooldown = 10;
-            if ((u8)randomNextMain() <= D_8013B0D8->unk02C[1]) {
+        if (currentPlayerAbsolute->projectileUseCooldown == 0) {
+            currentPlayerAbsolute->projectileUseCooldown = 10;
+            if ((u8)randomNextMain() <= currentPlayerAbsolute->unk02C[1]) {
                 activate = 1;
             }
         } else {
-            D_8013B0D8->projectileUseCooldown--;
+            currentPlayerAbsolute->projectileUseCooldown--;
         }
 
         if (!activate) {
             return;
         }
 
-        if (!D_8013B0D8->unk940) {
+        if (!currentPlayerAbsolute->unk940) {
             goto tryActivation;
         }
         {
@@ -1172,15 +1174,15 @@ void updateCurrentPlayerProjectileUse(u16 playerIndex) {
             activate = i;
             for (; i < D_8013AFD2; i++) {
                 if (!gRacePlayers[i].unk008) {
-                    s32 dx = gRacePlayers[i].x - D_8013B0D8->x;
-                    s32 dz = gRacePlayers[i].z - D_8013B0D8->z;
+                    s32 dx = gRacePlayers[i].x - currentPlayerAbsolute->x;
+                    s32 dz = gRacePlayers[i].z - currentPlayerAbsolute->z;
 
                     if (dx >= -0x5FFFF && dx <= 0x5FFFF &&
                         dz <= 0x5FFFF && dz > -0x60000) {
                         s32 angle = getXZHeading(0, 0, dx, dz) & 0xFFF;
-                        if ((u32)(((angle - D_8013B0D8->unk110) & 0xFFF) - 0x200) > 0xC00) {
+                        if ((u32)(((angle - currentPlayerAbsolute->unk110) & 0xFFF) - 0x200) > 0xC00) {
                             activate = 1;
-                            D_8013B0D8->projectileUseCooldown = -62;
+                            currentPlayerAbsolute->projectileUseCooldown = -62;
                         }
                     }
                 }
@@ -1193,8 +1195,8 @@ tryActivation:
         return;
     }
 
-    if (D_8013B0D8->unk940) {
-        switch ((s8)(D_8013B0D8->unk93E - 1)) {
+    if (currentPlayerAbsolute->unk940) {
+        switch ((s8)(currentPlayerAbsolute->unk93E - 1)) {
         case 0:
             func_80014930(&gGameTasks[4], initializePlayerDualResourceEffectTask);
             break;
@@ -1209,11 +1211,11 @@ tryActivation:
             break;
         case 4: {
             u8 bounce = 0;
-            if (!D_8013B0D8->unk008) {
+            if (!currentPlayerAbsolute->unk008) {
                 bounce = (D_8013AEEC[playerIndex] & 0xE000) == 0x4000;
             } else {
                 s32 roll = randomNextSecondary();
-                if (gPlayerProjectileBounceChoices[D_8013B0D8->unk935][roll & 7]) {
+                if (gPlayerProjectileBounceChoices[currentPlayerAbsolute->unk935][roll & 7]) {
                     bounce = 1;
                 }
             }
@@ -1228,37 +1230,37 @@ tryActivation:
             goto clearEmptyEffect;
         }
         D_8013AE8C->data18 = playerIndex;
-        D_8013B0D8->unk940--;
+        currentPlayerAbsolute->unk940--;
 
     clearEmptyEffect:
-        if (!D_8013B0D8->unk940) {
-            D_8013B0D8->unk93E = 0;
+        if (!currentPlayerAbsolute->unk940) {
+            currentPlayerAbsolute->unk93E = 0;
         }
     }
 
-    if (D_8013B0D8->unk93C) {
+    if (currentPlayerAbsolute->unk93C) {
         func_80014930(&gGameTasks[4], initializeDualResource5100EffectTask);
         D_8013AE8C->data18 = playerIndex;
-        D_8013B0D8->unk93C--;
+        currentPlayerAbsolute->unk93C--;
     }
 }
 
 void updateCurrentPlayerItemUse(u16 playerIndex) {
     u16 activate = 0;
 
-    if (!D_8013B0D8->unk008) {
+    if (!currentPlayerAbsolute->unk008) {
         activate = (D_8013AEE8[playerIndex] >> 5) & 1;
     } else {
-        if ((s8)D_8013B0D8->itemUseCooldown != 0) {
-            D_8013B0D8->itemUseCooldown--;
+        if ((s8)currentPlayerAbsolute->itemUseCooldown != 0) {
+            currentPlayerAbsolute->itemUseCooldown--;
         } else {
-            if ((u8)randomNextMain() <= D_8013B0D8->unk02C[0]) {
+            if ((u8)randomNextMain() <= currentPlayerAbsolute->unk02C[0]) {
                 activate = 1;
             }
-            D_8013B0D8->itemUseCooldown = 10;
+            currentPlayerAbsolute->itemUseCooldown = 10;
         }
-        if ((s8)D_8013B0D8->heldItem == 6) {
-            activate = D_8013B0D8->unk946 != 0;
+        if ((s8)currentPlayerAbsolute->heldItem == 6) {
+            activate = currentPlayerAbsolute->unk946 != 0;
         }
     }
 
@@ -1266,18 +1268,18 @@ void updateCurrentPlayerItemUse(u16 playerIndex) {
         return;
     }
 
-    switch ((s8)(D_8013B0D8->heldItem - 1)) {
+    switch ((s8)(currentPlayerAbsolute->heldItem - 1)) {
     case 0:
-        if (D_8013B0D8->unk0FC != 0) {
+        if (currentPlayerAbsolute->unk0FC != 0) {
             return;
         }
-        startPlayerTimerTask(D_8013B0D8);
+        startPlayerTimerTask(currentPlayerAbsolute);
         func_8002E5A0(playerIndex, 13);
         goto clearItem;
     case 1:
         func_8001496C(&gGameTasks[4], initializeOrbitingPlayerVisualTask);
         D_8013AE8C->data18 = playerIndex;
-        D_8013B0D8->heldItem = 0;
+        currentPlayerAbsolute->heldItem = 0;
         return;
     case 2: {
         u16 count = 0;
@@ -1301,15 +1303,15 @@ void updateCurrentPlayerItemUse(u16 playerIndex) {
         func_800183FC(D_8013AE88->data18, 1, 2, 32);
         goto clearItem;
     case 4:
-        if (!D_8013B0D8->unk008) {
+        if (!currentPlayerAbsolute->unk008) {
             func_8001496C(&gGameTasks[4], initializeSlidingVisualSequenceTask);
             D_8013AE8C->data18 = playerIndex;
         }
     clearItem:
-        D_8013B0D8->heldItem = 0;
+        currentPlayerAbsolute->heldItem = 0;
         return;
     case 5: {
-        RacePlayer *player = D_8013B0D8;
+        RacePlayer *player = currentPlayerAbsolute;
         if (player->surfaceState.fields.unk134 == 0) {
             player->heldItem = 0;
             player->surfaceState.fields.unk134 = 180;

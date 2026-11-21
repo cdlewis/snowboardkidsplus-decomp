@@ -44,6 +44,21 @@ typedef struct PlayerVariantAttributeTable {
     u16 padding;
 } PlayerVariantAttributeTable;
 
+extern SelectedRecord *D_8013B1F0 __attribute__((section(".data")));
+extern s16 D_8013B1FE __attribute__((section(".data")));
+extern s16 *D_8013B200 __attribute__((section(".data")));
+extern s16 *D_8013B204 __attribute__((section(".data")));
+extern s16 *D_8013B208 __attribute__((section(".data")));
+extern u8 D_8013AFD8 __attribute__((section(".data")));
+extern u8 D_8013AFD9 __attribute__((section(".data")));
+extern u8 D_8013AFE1 __attribute__((section(".data")));
+extern s16 gFrameCounter __attribute__((section(".data")));
+extern s16 D_8013AFCE __attribute__((section(".data")));
+extern u8 D_8013AFDB __attribute__((section(".data")));
+extern VECTOR *D_8013AF88 __attribute__((section(".data")));
+extern SVECTOR *D_8013AF90 __attribute__((section(".data")));
+extern MATRIX *D_8013AF98 __attribute__((section(".data")));
+extern u8 D_8013AFCD __attribute__((section(".data")));
 extern GameTask *D_8013AE88 __attribute__((section(".data")));
 extern GameTask *D_8013AE8C __attribute__((section(".data")));
 extern u32 D_8013AFE4 __attribute__((section(".data")));

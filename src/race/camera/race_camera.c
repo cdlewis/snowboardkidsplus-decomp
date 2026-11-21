@@ -15,6 +15,13 @@
 #include "psx/libgs.h"
 #include "psx/libgte.h"
 
+extern s16 D_8013AFCE __attribute__((section(".data")));
+extern VECTOR *D_8013AF88 __attribute__((section(".data")));
+extern SVECTOR *D_8013AF90 __attribute__((section(".data")));
+extern SVECTOR *D_8013AF94 __attribute__((section(".data")));
+extern MATRIX *D_8013AF98 __attribute__((section(".data")));
+extern u8 D_8013AFCD __attribute__((section(".data")));
+extern u8 D_8013B1AB __attribute__((section(".data")));
 extern GameTask *D_8013AE88 __attribute__((section(".data")));
 extern u32 D_8013AFE4 __attribute__((section(".data")));
 extern u8 D_8013AFD7 __attribute__((section(".data")));

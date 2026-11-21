@@ -1,6 +1,5 @@
 #pragma once
 
-/* Original unit addressing policy; include before public headers. */
 #include "common.h"
 #include "psx/libcd.h"
 #include "psx/libpad.h"

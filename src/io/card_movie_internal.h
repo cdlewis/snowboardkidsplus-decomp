@@ -1,6 +1,5 @@
 #pragma once
 
-/* Original unit addressing policy; include before public headers. */
 #include "common.h"
 #include "game/engine/task.h"
 #include "game/graphics/graphics.h"
@@ -9,7 +8,6 @@
 #include "game/engine/linear_random.h"
 #include "game/engine/offset_archive.h"
 #include "game/audio/music.h"
-#define RACE_PLAYER_ABSOLUTE_ADDRESSING
 #include "game/io/cd_queue.h"
 #include "game/io/controller.h"
 #include "game/race/player/race_player.h"

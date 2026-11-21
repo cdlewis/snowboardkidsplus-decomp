@@ -22,6 +22,11 @@ typedef struct TextSequenceEntry {
     u16 length;
 } TextSequenceEntry;
 
+extern u8 D_8013AFD8 __attribute__((section(".data")));
+extern s16 D_8013AFCE __attribute__((section(".data")));
+extern u16 D_8013AF7C __attribute__((section(".data")));
+extern s16 D_8013AF80 __attribute__((section(".data")));
+extern u8 D_8013AFCD __attribute__((section(".data")));
 extern GameTask *D_8013AE88 __attribute__((section(".data")));
 extern u32 D_8013AFE4 __attribute__((section(".data")));
 

@@ -43,12 +43,6 @@ extern ModelTextureOffset gPlayerRootTextureOffsets[4];
 extern ModelTextureOffset gPlayerPartTextureOffsets[4];
 void offsetTmdObjectTextures(u16 part, TmdObject *model, ModelTextureOffset *offset);
 
-#ifdef GRAPHICS_GP_ADDRESSING
-#define GRAPHICS_DATA
-#else
-#define GRAPHICS_DATA __attribute__((section(".data")))
-#endif
-
 typedef struct PlayerTextureOrigin {
     s16 x, y;
 } PlayerTextureOrigin;
@@ -152,12 +146,12 @@ void drawTaskObjectAlternateLayer(u16 index);
 extern GsDOBJ2 D_80129A80[30];
 void sortLitObject(GsDOBJ2 *object);
 void sortLitObjectWithDrawArea(GsDOBJ2 *object, u16 index, RECT *bounds);
-extern u32 *D_8013AF6C GRAPHICS_DATA;
-extern u16 D_8013AF7A GRAPHICS_DATA;
-extern u16 D_8013AF7C GRAPHICS_DATA;
+extern u32 *D_8013AF6C;
+extern u16 D_8013AF7A;
+extern u16 D_8013AF7C;
 
 void drawFixedSpriteAndBottomBarTask(void);
-extern u16 D_8013AF78 GRAPHICS_DATA;
+extern u16 D_8013AF78;
 
 extern POLY_FT4 gTexturedQuadTemplate;
 typedef struct SpritePrimitiveTemplate {
@@ -440,13 +434,12 @@ void drawSemiTransparentTextureRectUV(s16 x, s16 y, s16 width, s16 height,
 
 /* Full-screen rectangle followed by the two animated player view rectangles. */
 extern RECT D_800EC158[3];
-extern s16 D_8013AF7E GRAPHICS_DATA;
-extern s16 D_8013AF80 GRAPHICS_DATA;
+extern s16 D_8013AF7E;
+extern s16 D_8013AF80;
 
 void updateSplitScreenTransitionTask(void);
 
 void drawFirstPlayerStatusHud(void);
-#undef GRAPHICS_DATA
 
 void drawCurrentTaskPlayerValuePanel(void);
 void queueScanlineCopyPackets(void);

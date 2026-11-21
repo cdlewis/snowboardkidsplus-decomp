@@ -1,7 +1,7 @@
 #include "common.h"
 #include "game/engine/game_options.h"
 
-u32 gGameOptionFlags = 0x3E;
+u32 gGameOptionFlags __attribute__((section(".data"))) = 0x3E;
 u16 gUnlockNotificationFlags = 0;
 static u16 sUnlockNotificationPadding __attribute__((section(".data"))) = 0;
 

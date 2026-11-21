@@ -162,6 +162,12 @@ typedef struct PlayerParticleTrailScratch {
     long flags;
 } PlayerParticleTrailScratch;
 
+extern s16 gFrameCounter __attribute__((section(".data")));
+extern s16 D_8013AFCE __attribute__((section(".data")));
+extern u32 *D_8013AF6C __attribute__((section(".data")));
+extern u16 D_8013AF78 __attribute__((section(".data")));
+extern u8 D_8013AFCD __attribute__((section(".data")));
+extern u8 D_8013AFD3 __attribute__((section(".data")));
 extern GameTask *D_8013AE88 __attribute__((section(".data")));
 extern GameTask *D_8013AE8C __attribute__((section(".data")));
 extern u32 D_8013AFE4 __attribute__((section(".data")));

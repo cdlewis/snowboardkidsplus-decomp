@@ -1,6 +1,5 @@
 #pragma once
 
-/* Original unit addressing policy; include before public headers. */
 #include "race_internal.h"
 #include "game/engine/system_runtime.h"
 #include "game/save/save_data.h"

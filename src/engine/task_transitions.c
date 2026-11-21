@@ -2,7 +2,6 @@
 #include "psx/libapi.h"
 #include "psx/libetc.h"
 #include "common.h"
-#define RACE_SETUP_GP_ADDRESSING
 #include "game/engine/task.h"
 #include "game/graphics/graphics.h"
 #include "game/graphics/coordinate.h"
@@ -11,22 +10,17 @@
 #include "game/race/ui/race_hud.h"
 #include "game/engine/offset_archive.h"
 #include "game/audio/music.h"
-#define RACE_PLAYER_ABSOLUTE_ADDRESSING
 #include "game/io/cd_queue.h"
 #include "game/io/controller.h"
 #include "game/io/controller_effects.h"
 #include "game/race/player/race_player.h"
 #include "game/race/player/player_resource_textures.h"
-#define GAME_OPTIONS_GP_ADDRESSING
 #include "game/engine/game_options.h"
-#define SELECTED_RECORDS_GP_ADDRESSING
-#define SELECTED_RECORD_COUNTER_GP_ADDRESSING
 #include "game/menu/selected_records.h"
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
 #include "psx/libetc.h"
 
-#define GLOBAL_FLAGS_GP_ADDRESSING
 #include "game/save/save_data.h"
 #include "game/engine/game_loop.h"
 #include "game/engine/game_task_scheduler.h"
@@ -52,6 +46,18 @@ typedef struct RacePlayerSoundSectorRanges {
     s16 headerSectorCount;
 } RacePlayerSoundSectorRanges;
 
+extern s16 gFrameCounter __attribute__((section(".data")));
+extern VECTOR *D_8013AF88 __attribute__((section(".data")));
+extern MATRIX *D_8013AF98 __attribute__((section(".data")));
+extern u16 D_8013AF7A __attribute__((section(".data")));
+extern u16 D_8013AF7C __attribute__((section(".data")));
+extern u16 D_8013AF78 __attribute__((section(".data")));
+extern s16 D_8013AF7E __attribute__((section(".data")));
+extern s16 D_8013AF80 __attribute__((section(".data")));
+extern u16 D_8013AFAA __attribute__((section(".data")));
+extern s16 D_8013B104 __attribute__((section(".data")));
+extern u8 D_8013B1AA __attribute__((section(".data")));
+extern u8 D_8013B1AB __attribute__((section(".data")));
 extern GameTask *D_8013AE88 __attribute__((section(".data")));
 extern GameTask *D_8013AE8C __attribute__((section(".data")));
 extern GameTask *D_8013AE90 __attribute__((section(".data")));
@@ -212,11 +218,11 @@ void initCurrentPlayerModelParts(void) {
     s16 *values;
     RacePlayer *player;
     for (i = 0; i < 14; i++) {
-        D_8013B0D8->unk13E[i] = D_80120200[i];
-        D_8013B0D8->unk14C[i] = D_80120210[i];
+        currentPlayerAbsolute->unk13E[i] = D_80120200[i];
+        currentPlayerAbsolute->unk14C[i] = D_80120210[i];
     }
-    values = D_801203C4[D_8013B0D8->characterId];
-    player = D_8013B0D8;
+    values = D_801203C4[currentPlayerAbsolute->characterId];
+    player = currentPlayerAbsolute;
     for (i = 0; i < 14; i++) {
         player->unk5BC[i].x = player->unk5BC[i].y = player->unk5BC[i].z = 0;
         player->unk62C[i].x = *values++;
@@ -237,7 +243,7 @@ void sortRacePlayerModelForView(u16 playerIndex, u16 view) {
 
     gRacePlayerSortSavedStackPointer = SetSp((u32)getScratchAddr(255));
     player = &gRacePlayers[playerIndex];
-    D_8013B0D8 = player;
+    currentPlayerAbsolute = player;
     objects = player->modelObjects;
     timer = player->surfaceState.fields.unk134;
     drawRootOnly = 0;
@@ -255,7 +261,7 @@ void sortRacePlayerModelForView(u16 playerIndex, u16 view) {
     count = 1;
     if (!drawRootOnly) {
         count = 12;
-        if (D_8013B0D8->unk12C == 25) {
+        if (currentPlayerAbsolute->unk12C == 25) {
             count = 1;
         }
     }
@@ -264,12 +270,12 @@ void sortRacePlayerModelForView(u16 playerIndex, u16 view) {
         GsGetLs(objects[i].coord2, D_800EC170[i]);
     }
     for (i = 0; i < count; i++, objects++) {
-        if (i == 0 && D_8013B0D8->unk0FE) {
-            D_8013B0D8->timer.coordinate.coord = *D_800EC170[0];
+        if (i == 0 && currentPlayerAbsolute->unk0FE) {
+            currentPlayerAbsolute->timer.coordinate.coord = *D_800EC170[0];
         }
-        if (D_8013B0D8->unk128 & 0x200000) {
+        if (currentPlayerAbsolute->unk128 & 0x200000) {
             D_8013AF88->vx = D_8013AF88->vz = 0x1000;
-            D_8013AF88->vy = D_8013B0D8->unk0F8 * 512;
+            D_8013AF88->vy = currentPlayerAbsolute->unk0F8 * 512;
             ScaleMatrix(D_800EC170[i], D_8013AF88);
         }
         GsSetLsMatrix(D_800EC170[i]);
@@ -295,16 +301,16 @@ void sortRacePlayerModelForView(u16 playerIndex, u16 view) {
                     GsSortObject4(extra, &D_800EC0B8[D_8013AF78], 2, getScratchAddr(0));
                 }
             }
-            if (D_8013B0D8->unk0FE) {
-                if (D_8013B0D8->unk0FF) {
-                    setVector(D_8013AF88, D_8013B0D8->timer.unk60,
-                              D_8013B0D8->timer.unk60, D_8013B0D8->timer.unk60);
+            if (currentPlayerAbsolute->unk0FE) {
+                if (currentPlayerAbsolute->unk0FF) {
+                    setVector(D_8013AF88, currentPlayerAbsolute->timer.unk60,
+                              currentPlayerAbsolute->timer.unk60, currentPlayerAbsolute->timer.unk60);
                 } else {
-                    setVector(D_8013AF88, -D_8013B0D8->timer.unk60,
-                              D_8013B0D8->timer.unk60, -D_8013B0D8->timer.unk60);
+                    setVector(D_8013AF88, -currentPlayerAbsolute->timer.unk60,
+                              currentPlayerAbsolute->timer.unk60, -currentPlayerAbsolute->timer.unk60);
                 }
-                ScaleMatrix(&D_8013B0D8->timer.coordinate.coord, D_8013AF88);
-                GsSetLsMatrix(&D_8013B0D8->timer.coordinate.coord);
+                ScaleMatrix(&currentPlayerAbsolute->timer.coordinate.coord, D_8013AF88);
+                GsSetLsMatrix(&currentPlayerAbsolute->timer.coordinate.coord);
                 if (view == 0) {
                     GsSortObject4(&gPlayerTimerModelObject, &D_800EC018[D_8013AF78], 2, getScratchAddr(0));
                 } else {
@@ -1332,9 +1338,6 @@ void restoreSavedStateAndHandleFlag4(void) {
         setCurrentTaskCallback(armSavedStateRestoreOnFlag3);
     }
 }
-
-/* Model setup uses the GP-relative current player pointer. */
-#undef D_8013B0D8
 
 void initializeCurrentPlayerModelObjects(u32 *model) {
     s32 i;

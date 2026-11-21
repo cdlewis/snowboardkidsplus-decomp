@@ -1,4 +1,3 @@
-#define PAUSE_MENU_FLAGS_GP_ADDRESSING
 #include "../race_presentation_internal.h"
 #include "../race_internal.h"
 #include "game/audio/music.h"
@@ -20,6 +19,13 @@
 #define PAUSE_MENU_DOWN 0x4000
 #define PAUSE_MENU_CONFIRM 0x00B0
 #define PAUSE_MENU_RESUME_PENDING 0x80
+
+extern s16 gFrameCounter __attribute__((section(".data")));
+extern s16 D_8013AFCE __attribute__((section(".data")));
+extern u16 D_8013AF78 __attribute__((section(".data")));
+extern u32 gGameOptionFlags __attribute__((section(".data")));
+extern u8 D_8013AFD5 __attribute__((section(".data")));
+extern u8 D_8013AFD3 __attribute__((section(".data")));
 
 const char gLapTimeLabel[12] __attribute__((section(".rodata.lap_time_label"), aligned(4))) = "LAP TIME";
 

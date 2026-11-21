@@ -16,6 +16,9 @@ typedef struct MainMenuSelection {
     s16 choiceResult;
 } MainMenuSelection;
 
+extern u16 D_8013AF78 __attribute__((section(".data")));
+extern u8 D_8013AFCD __attribute__((section(".data")));
+extern u8 D_8013AFE2 __attribute__((section(".data")));
 extern GameTask *D_8013AE88 __attribute__((section(".data")));
 extern GameTask *D_8013AE98 __attribute__((section(".data")));
 extern u8 D_8013B3A4 __attribute__((section(".data")));

@@ -18,7 +18,6 @@ typedef struct SelectedRecord {
     s16 unkA;
 } SelectedRecord;
 
-#ifdef SELECTED_RECORD_GP_ADDRESSING
 extern s16 *D_8013B1EC;
 extern SelectedRecord *D_8013B1F0;
 extern s16 *D_8013B1F4;
@@ -29,13 +28,6 @@ extern s16 D_8013B1FE;
 extern s16 *D_8013B200;
 extern s16 *D_8013B204;
 extern s16 *D_8013B208;
-#else
-extern SelectedRecord *D_8013B1F0 __attribute__((section(".data")));
-extern s16 D_8013B1FE __attribute__((section(".data")));
-extern s16 *D_8013B200 __attribute__((section(".data")));
-extern s16 *D_8013B204 __attribute__((section(".data")));
-extern s16 *D_8013B208 __attribute__((section(".data")));
-#endif
 
 
 /* Absolute-addressed view of the placement data used by task effects. */

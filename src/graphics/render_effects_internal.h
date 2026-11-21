@@ -2,7 +2,6 @@
 
 #include "psx/scratchpad.h"
 #include "psx/libetc.h"
-/* Original unit addressing policy; include before public headers. */
 #include "common.h"
 #include "game/engine/angles.h"
 #include "game/io/controller.h"
@@ -20,7 +19,6 @@
 #include "game/race/player/race_player.h"
 #include "game/race/camera/race_camera.h"
 #include "game/menu/selected_records.h"
-#define SELECTED_RECORD_GP_ADDRESSING
 #include "game/race/course/course_geometry.h"
 #include "psx/libsnd.h"
 #include "psx/libgpu.h"

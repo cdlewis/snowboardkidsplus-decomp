@@ -13,6 +13,10 @@
 #include "psx/libc.h"
 #include "psx/libgs.h"
 
+extern u8 D_8013AFE1 __attribute__((section(".data")));
+extern s16 gFrameCounter __attribute__((section(".data")));
+extern s16 D_8013AFCE __attribute__((section(".data")));
+extern u16 D_8013AF78 __attribute__((section(".data")));
 extern GameTask *D_8013AE88 __attribute__((section(".data")));
 extern u32 D_8013AFE4 __attribute__((section(".data")));
 

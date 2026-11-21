@@ -23,6 +23,7 @@ typedef union CollectionTaskResource {
     } trail;
 } CollectionTaskResource;
 
+extern u8 D_8013AFD3 __attribute__((section(".data")));
 extern GameTask *D_8013AE88 __attribute__((section(".data")));
 extern GameTask *D_8013AE8C __attribute__((section(".data")));
 extern GameTask *D_8013AE98 __attribute__((section(".data")));

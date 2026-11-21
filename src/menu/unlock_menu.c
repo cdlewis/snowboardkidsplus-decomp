@@ -1,4 +1,3 @@
-#define GAME_OPTIONS_GP_ADDRESSING
 #include "selection_tasks_internal.h"
 #include "game/audio/music.h"
 #include "game/engine/game_options.h"
@@ -10,6 +9,7 @@
 #include "game/scene/scene_events.h"
 #include "unlock_menu_types.h"
 
+extern u16 D_8013AF78 __attribute__((section(".data")));
 extern GameTask *D_8013AE88 __attribute__((section(".data")));
 extern u32 D_8013AFE4 __attribute__((section(".data")));
 

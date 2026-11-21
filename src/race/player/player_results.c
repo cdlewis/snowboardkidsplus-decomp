@@ -21,6 +21,10 @@
 #define RECORD_ICON(player) \
     ((player).characterId + (player).unk015[1] * 16)
 
+extern u8 D_8013AFE1 __attribute__((section(".data")));
+extern s16 D_8013AFCE __attribute__((section(".data")));
+extern u8 D_8013AFCD __attribute__((section(".data")));
+extern u8 D_8013AFD3 __attribute__((section(".data")));
 extern GameTask *D_8013AE88 __attribute__((section(".data")));
 extern RaceTime gRaceElapsedTime __attribute__((section(".data")));
 extern RaceTime D_8013B188 __attribute__((section(".data")));

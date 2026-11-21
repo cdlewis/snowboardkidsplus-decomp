@@ -13,6 +13,12 @@
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
 
+extern u8 D_8013AFD8 __attribute__((section(".data")));
+extern u8 D_8013AFD9 __attribute__((section(".data")));
+extern s16 gFrameCounter __attribute__((section(".data")));
+extern s16 D_8013AFCE __attribute__((section(".data")));
+extern u16 D_8013AF78 __attribute__((section(".data")));
+extern u8 D_8013AFCD __attribute__((section(".data")));
 extern u32 D_8013AFE4 __attribute__((section(".data")));
 
 /* Full-width Shift-JIS labels used by the race HUD. */

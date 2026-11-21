@@ -1,6 +1,5 @@
 #include "../race/player/player_actions_internal.h"
 #include "game/menu/save_record_tasks.h"
-#define BACKGROUND_MODE_GP_ADDRESSING
 #include "game/engine/system_runtime.h"
 #include "game/menu/menu_selection_state.h"
 #include "../race/race_internal.h"
@@ -17,6 +16,9 @@
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
 
+extern u16 D_8013AF7A __attribute__((section(".data")));
+extern u16 D_8013AF7C __attribute__((section(".data")));
+extern u32 gGameOptionFlags __attribute__((section(".data")));
 extern GameTask *D_8013AE88 __attribute__((section(".data")));
 extern GameTask *D_8013AE8C __attribute__((section(".data")));
 extern GameTask *D_8013AE98 __attribute__((section(".data")));

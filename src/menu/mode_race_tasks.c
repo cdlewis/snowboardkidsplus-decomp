@@ -18,6 +18,15 @@ typedef struct Mode11MenuSelection {
     s16 choiceResult;
 } Mode11MenuSelection;
 
+extern u8 D_8013AFD8 __attribute__((section(".data")));
+extern u8 D_8013AFD9 __attribute__((section(".data")));
+extern s16 D_8013AFDE __attribute__((section(".data")));
+extern u8 D_8013AFE1 __attribute__((section(".data")));
+extern s16 D_8013AFCE __attribute__((section(".data")));
+extern u16 D_8013AF78 __attribute__((section(".data")));
+extern u8 D_8013AFE0 __attribute__((section(".data")));
+extern u8 D_8013AFE2 __attribute__((section(".data")));
+extern u8 D_8013AFD3 __attribute__((section(".data")));
 extern GameTask *D_8013AE88 __attribute__((section(".data")));
 extern u8 D_8013AFD6 __attribute__((section(".data")));
 

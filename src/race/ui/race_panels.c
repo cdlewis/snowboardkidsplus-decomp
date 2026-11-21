@@ -16,6 +16,14 @@
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
 
+extern s16 gFrameCounter __attribute__((section(".data")));
+extern s16 D_8013AFCE __attribute__((section(".data")));
+extern u32 *D_8013AF6C __attribute__((section(".data")));
+extern u16 D_8013AF7A __attribute__((section(".data")));
+extern u16 D_8013AF7C __attribute__((section(".data")));
+extern u16 D_8013AF78 __attribute__((section(".data")));
+extern u8 D_8013AFCD __attribute__((section(".data")));
+extern u8 D_8013AFD3 __attribute__((section(".data")));
 extern GameTask *D_8013AE88 __attribute__((section(".data")));
 extern GameTask *D_8013AE8C __attribute__((section(".data")));
 extern GameTask *D_8013AE98 __attribute__((section(".data")));
@@ -769,7 +777,7 @@ void drawDemonstrationOverlay(void) {
 
 void drawAutoPilotLabelTask(void) {
     s32 frame;
-    if (!(D_8013B0D8->unk128 & 0x40) && !D_8013AFD6) {
+    if (!(currentPlayerAbsolute->unk128 & 0x40) && !D_8013AFD6) {
         setSpriteColor(128, 128, 128);
         if (D_8013AFCD == 1) {
             frame = gFrameCounter & 2;

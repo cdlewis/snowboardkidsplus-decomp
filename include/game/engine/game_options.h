@@ -13,19 +13,11 @@ extern u16 gUnlockNotificationFlags __attribute__((section(".data")));
  * audio in applyStereoSoundOption. The purpose of option bit 0 is still unidentified.
  * The per-player option occupies bit (4 + playerIndex).
  */
-#ifdef GAME_OPTIONS_GP_ADDRESSING
 extern u32 gGameOptionFlags;
 extern u8 D_8013AFCD;
 extern u8 D_8013AFE0;
 extern u8 D_8013AFE1;
 extern u8 D_8013AFE2;
-#else
-extern u32 gGameOptionFlags __attribute__((section(".data")));
-extern u8 D_8013AFCD __attribute__((section(".data")));
-extern u8 D_8013AFE0 __attribute__((section(".data")));
-extern u8 D_8013AFE1 __attribute__((section(".data")));
-extern u8 D_8013AFE2 __attribute__((section(".data")));
-#endif
 extern u8 D_8013B108;
 extern u8 D_8013B109;
 extern u8 D_8013B10A;

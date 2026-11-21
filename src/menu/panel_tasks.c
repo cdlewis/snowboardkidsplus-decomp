@@ -55,6 +55,8 @@ typedef struct MoneyMenuSelection {
     s16 choiceResult;
 } MoneyMenuSelection;
 
+extern s16 gFrameCounter __attribute__((section(".data")));
+extern u16 D_8013AF78 __attribute__((section(".data")));
 extern GameTask *D_8013AE88 __attribute__((section(".data")));
 extern GameTask *D_8013AE8C __attribute__((section(".data")));
 extern GameTask *D_8013AE98 __attribute__((section(".data")));
@@ -2365,11 +2367,11 @@ void createGridModelPreviewTask(s16 playerIndex, s16 character, s16 modelSlot, s
     D_8013AE8C->resource14 = allocateTaskResource();
     sourceBuffers = (u32 (*)[4096])DAT_GRID_MODEL_BUFFERS;
     destinationBuffers = DAT_PLAYER_MODEL_BUFFERS;
-    D_8013B0D8 = &gRacePlayers[D_8013AE8C->data1C];
+    currentPlayerAbsolute = &gRacePlayers[D_8013AE8C->data1C];
     state = (GridModelPreviewState *)&D_800D9504[D_8013AE8C->resource14];
-    D_8013B0D8->characterId = character;
-    D_8013B0D8->unk015[0] = modelSlot;
-    D_8013B0D8->unk015[3] = paletteRow;
+    currentPlayerAbsolute->characterId = character;
+    currentPlayerAbsolute->unk015[0] = modelSlot;
+    currentPlayerAbsolute->unk015[3] = paletteRow;
 
     destination = destinationBuffers[D_8013AE8C->data1C];
     source = sourceBuffers[D_8013AE8C->data1A];
@@ -2381,34 +2383,34 @@ void createGridModelPreviewTask(s16 playerIndex, s16 character, s16 modelSlot, s
     model++;
     GsMapModelingData(model);
     model++;
-    D_8013B0D8->modelPartCount = *(u8 *)model;
+    currentPlayerAbsolute->modelPartCount = *(u8 *)model;
     model++;
     if (D_8013AE8C->data1C != 0) {
         offsetTmdObjectTextures(0, (TmdObject *)model, &gPlayerRootTextureOffsets[D_8013AE8C->data1C]);
-        for (i = 1; i < D_8013B0D8->modelPartCount; i++) {
+        for (i = 1; i < currentPlayerAbsolute->modelPartCount; i++) {
             offsetTmdObjectTextures(i, (TmdObject *)model, &gPlayerPartTextureOffsets[D_8013AE8C->data1C]);
         }
     }
 
-    GsInitCoordinate2(0, &D_8013B0D8->modelCoordinate);
-    for (i = 0; i < D_8013B0D8->modelPartCount; i++) {
+    GsInitCoordinate2(0, &currentPlayerAbsolute->modelCoordinate);
+    for (i = 0; i < currentPlayerAbsolute->modelPartCount; i++) {
         GsDOBJ2 *object;
 
-        GsLinkObject4(model, &D_8013B0D8->modelObjects[i], i);
-        object = &D_8013B0D8->modelObjects[i];
-        GsInitCoordinate2(&D_8013B0D8->modelCoordinate, &D_8013B0D8->model.modelCoordinates[i]);
+        GsLinkObject4(model, &currentPlayerAbsolute->modelObjects[i], i);
+        object = &currentPlayerAbsolute->modelObjects[i];
+        GsInitCoordinate2(&currentPlayerAbsolute->modelCoordinate, &currentPlayerAbsolute->model.modelCoordinates[i]);
         object->attribute = 0;
-        object->coord2 = &D_8013B0D8->model.modelCoordinates[i];
+        object->coord2 = &currentPlayerAbsolute->model.modelCoordinates[i];
     }
 
-    attributePlayer = D_8013B0D8;
+    attributePlayer = currentPlayerAbsolute;
     if (attributePlayer->modelPartCount >= 2) {
         attributePlayer->modelObjects[0].attribute |= GS_MODEL_OBJECT_HIDDEN;
     }
     uploadTimImageWithOffset(((u32 (*)[4096])DAT_GRID_TEXTURE_BUFFERS)[D_8013AE8C->data1A],
                              (s16 *)&D_801204D4[D_8013AE8C->data1C]);
 
-    positionPlayer = D_8013B0D8;
+    positionPlayer = currentPlayerAbsolute;
     positionPlayer->modelCoordinate.coord.t[0] = x;
     positionPlayer->modelCoordinate.coord.t[1] = y;
     positionPlayer->modelCoordinate.coord.t[2] = z;
@@ -2454,11 +2456,11 @@ void reloadGridModelPreview(GameTask *task, s16 character, s16 modelSlot, s16 pa
 
     task->data1A = modelSlot;
     saved = *state;
-    D_8013B0D8 = &gRacePlayers[task->data1C];
-    D_8013B0D8->characterId = character;
-    D_8013B0D8->unk015[0] = modelSlot;
-    D_8013B0D8->unk015[3] = paletteRow;
-    rotationPlayer = D_8013B0D8;
+    currentPlayerAbsolute = &gRacePlayers[task->data1C];
+    currentPlayerAbsolute->characterId = character;
+    currentPlayerAbsolute->unk015[0] = modelSlot;
+    currentPlayerAbsolute->unk015[3] = paletteRow;
+    rotationPlayer = currentPlayerAbsolute;
     rotation.vx = rotationPlayer->unk0B4;
     rotation.vy = rotationPlayer->unk0B6;
     rotation.vz = rotationPlayer->unk0B8;
@@ -2478,34 +2480,34 @@ void reloadGridModelPreview(GameTask *task, s16 character, s16 modelSlot, s16 pa
     model++;
     GsMapModelingData(model);
     model++;
-    D_8013B0D8->modelPartCount = *(u8 *)model;
+    currentPlayerAbsolute->modelPartCount = *(u8 *)model;
     model++;
     if (task->data1C != 0) {
         offsetTmdObjectTextures(0, (TmdObject *)model, &gPlayerRootTextureOffsets[task->data1C]);
-        for (i = 1; i < D_8013B0D8->modelPartCount; i++) {
+        for (i = 1; i < currentPlayerAbsolute->modelPartCount; i++) {
             offsetTmdObjectTextures(i, (TmdObject *)model, &gPlayerPartTextureOffsets[task->data1C]);
         }
     }
 
-    GsInitCoordinate2(0, &D_8013B0D8->modelCoordinate);
-    for (i = 0; i < D_8013B0D8->modelPartCount; i++) {
+    GsInitCoordinate2(0, &currentPlayerAbsolute->modelCoordinate);
+    for (i = 0; i < currentPlayerAbsolute->modelPartCount; i++) {
         GsDOBJ2 *object;
 
-        GsLinkObject4(model, &D_8013B0D8->modelObjects[i], i);
-        object = &D_8013B0D8->modelObjects[i];
-        GsInitCoordinate2(&D_8013B0D8->modelCoordinate, &D_8013B0D8->model.modelCoordinates[i]);
+        GsLinkObject4(model, &currentPlayerAbsolute->modelObjects[i], i);
+        object = &currentPlayerAbsolute->modelObjects[i];
+        GsInitCoordinate2(&currentPlayerAbsolute->modelCoordinate, &currentPlayerAbsolute->model.modelCoordinates[i]);
         object->attribute = 0;
-        object->coord2 = &D_8013B0D8->model.modelCoordinates[i];
+        object->coord2 = &currentPlayerAbsolute->model.modelCoordinates[i];
     }
 
-    attributePlayer = D_8013B0D8;
+    attributePlayer = currentPlayerAbsolute;
     if (attributePlayer->modelPartCount >= 2) {
         attributePlayer->modelObjects[0].attribute |= GS_MODEL_OBJECT_HIDDEN;
     }
     uploadTimImageWithOffset(((u32 (*)[4096])DAT_GRID_TEXTURE_BUFFERS)[task->data1A],
                              (s16 *)&D_801204D4[task->data1C]);
 
-    positionPlayer = D_8013B0D8;
+    positionPlayer = currentPlayerAbsolute;
     positionPlayer->modelCoordinate.coord.t[0] = x;
     positionPlayer->modelCoordinate.coord.t[1] = y;
     positionPlayer->modelCoordinate.coord.t[2] = z;
@@ -2527,7 +2529,7 @@ void updateGridModelPreviewTask(void) {
     TaskPanelSelectionValue *selection;
     RegisteredTaskEntry *entry;
 
-    D_8013B0D8 = &gRacePlayers[D_8013AE88->data1C];
+    currentPlayerAbsolute = &gRacePlayers[D_8013AE88->data1C];
     selection = &D_8013B508[(s16)D_8013AE98->data1A];
     if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
     state = (GridModelPreviewState *)&D_800D9504[D_8013AE88->resource14];
@@ -2577,14 +2579,14 @@ void updateGridModelPreviewTask(void) {
     }
 
     entry->flags |= updateMovement2D(position);
-    D_8013B0D8->modelCoordinate.coord.t[0] = position->x / 4096;
-    D_8013B0D8->modelCoordinate.coord.t[1] = position->y / 4096;
-    D_8013B0D8->modelCoordinate.coord.t[2] = position->unk08;
+    currentPlayerAbsolute->modelCoordinate.coord.t[0] = position->x / 4096;
+    currentPlayerAbsolute->modelCoordinate.coord.t[1] = position->y / 4096;
+    currentPlayerAbsolute->modelCoordinate.coord.t[2] = position->unk08;
     if (state->rotationStep > 0) {
-        D_8013B0D8->unk0B6 = (-32 * gFrameCounter) & 0xFFF;
+        currentPlayerAbsolute->unk0B6 = (-32 * gFrameCounter) & 0xFFF;
     } else {
-        D_8013B0D8->unk0B6 = 0x480;
+        currentPlayerAbsolute->unk0B6 = 0x480;
     }
-    setCoordinateRotation((SVECTOR *)&D_8013B0D8->unk0B4, &D_8013B0D8->modelCoordinate);
+    setCoordinateRotation((SVECTOR *)&currentPlayerAbsolute->unk0B4, &currentPlayerAbsolute->modelCoordinate);
     sortPlayerModelWithDrawArea(D_8013AE88->data1C, D_8013AE88->data1C, &D_801300B8[D_8013AE88->data1C]);
 }

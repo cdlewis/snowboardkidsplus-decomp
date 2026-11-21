@@ -5,7 +5,6 @@
 #include "game/engine/angles.h"
 #include "game/graphics/coordinate.h"
 #include "game/menu/movement.h"
-#define RACE_PLAYER_ABSOLUTE_ADDRESSING
 #include "game/engine/task.h"
 #include "game/engine/game_task_scheduler.h"
 #include "game/race/player/race_player.h"

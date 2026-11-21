@@ -1,6 +1,5 @@
 #pragma once
 
-/* Original unit addressing policy; include before public headers. */
 #include "common.h"
 #include "game/text/text_layout.h"
 #include "game/scene/scene_sound_slots.h"
@@ -15,7 +14,6 @@
 #include "psx/libsnd.h"
 #include "psx/libsn.h"
 #include "psx/libc.h"
-#define RACE_PLAYER_ABSOLUTE_ADDRESSING
 #include "game/race/player/race_player.h"
 #include "game/race/camera/race_camera.h"
 #include "game/scene/scene_events.h"

@@ -1,7 +1,4 @@
 #include "psx/libetc.h"
-#define FRAME_COUNTER_GP_ADDRESSING
-#define GRAPHICS_GP_ADDRESSING
-#define COORDINATE_GP_ADDRESSING
 #include "common.h"
 #include "game/engine/task.h"
 #include "game/engine/game_task_scheduler.h"

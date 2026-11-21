@@ -217,10 +217,6 @@ extern s32 D_8013B0E8;
 extern RacePlayer *D_8013B0D8;
 extern RacePlayer *currentPlayerAbsolute
     __attribute__((section(".data")));
-#ifdef RACE_PLAYER_ABSOLUTE_ADDRESSING
-#define D_8013B0D8 currentPlayerAbsolute
-#endif
-
 
 void updateCurrentPlayerTaskCountdown(void);
 s16 isFirstPlayerUsingCallback26D10(void);

@@ -4,6 +4,6 @@
 /* Shared with the JP scheduler and runGameLoop. Keep its initialized
  * storage at the original data address.
  */
-s16 gFrameCounter = 0;
+s16 gFrameCounter __attribute__((section(".data"))) = 0;
 /* Unreferenced alignment padding, also present after the JP frame counter. */
 static u16 sFrameCounterPadding = 0;

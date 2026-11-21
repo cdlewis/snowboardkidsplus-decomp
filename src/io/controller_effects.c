@@ -9,6 +9,8 @@ typedef struct ControllerEffectDefinition {
     s32 duration;
 } ControllerEffectDefinition;
 
+extern u8 D_8013AFD3 __attribute__((section(".data")));
+
 static ControllerEffectStep gControllerEffectSteps0[] = {
     {200, -20, {0, 0}, 10},
     {0, 0, {0, 0}, 0},

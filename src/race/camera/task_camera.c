@@ -4,16 +4,17 @@
 #include "game/race/camera/race_camera.h"
 #include "game/race/player/race_player.h"
 
+extern u8 D_8013AFCD __attribute__((section(".data")));
 extern GameTask *D_8013AE88 __attribute__((section(".data")));
 
 void initializeTaskPlayerCamera(void) {
     PlayerCamera *cameras;
-    D_8013B0D8 = &gRacePlayers[D_8013AE88->data18];
+    currentPlayerAbsolute = &gRacePlayers[D_8013AE88->data18];
     initPlayerCameraAndTarget(D_8013AE88->data18);
     cameras = D_801241E8;
-    cameras[D_8013AE88->data18].yaw = D_8013B0D8->unk110;
+    cameras[D_8013AE88->data18].yaw = currentPlayerAbsolute->unk110;
     cameras[D_8013AE88->data18].pitch = 0;
-    cameras[D_8013AE88->data18].unk18 = D_8013B0D8->unk92E;
+    cameras[D_8013AE88->data18].unk18 = currentPlayerAbsolute->unk92E;
     updatePlayerCameraPosition(D_8013AE88->data18);
     clampPlayerCameraHeight(D_8013AE88->data18);
     cameras[D_8013AE88->data18].unk10 = -0x230;

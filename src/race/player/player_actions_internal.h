@@ -1,6 +1,5 @@
 #pragma once
 
-/* Original unit addressing policy; include before public headers. */
 #include "../race_internal.h"
 
 extern u16 gPlayerSoundVariantsA[2] __attribute__((section(".data.player_sound_variants")));

@@ -45,13 +45,8 @@ typedef struct GlobalFlagStatePrefix {
     u32 unk_3E4;
 } GlobalFlagStatePrefix;
 
-#ifdef GLOBAL_FLAGS_GP_ADDRESSING
 extern u8 D_8013AFD8;
 extern u8 D_8013AFD9;
-#else
-extern u8 D_8013AFD8 __attribute__((section(".data")));
-extern u8 D_8013AFD9 __attribute__((section(".data")));
-#endif
 /* GP-relative view of the shared task transition flag at D_8013B55E. */
 extern u8 taskTransitionFlagGp;
 
@@ -89,12 +84,7 @@ s32 hasStateGridFlag(GlobalFlagStatePrefix *state, s16 row, s16 column);
 
 s32 getPlayerRecordFlagMode(s16 index);
 
-#ifdef RACE_SETUP_GP_ADDRESSING
 extern s16 D_8013AFDE;
-#else
-extern s16 D_8013AFDE __attribute__((section(".data")));
-extern u8 D_8013AFE1 __attribute__((section(".data")));
-#endif
 
 extern u8 gSaveRecordUnlockOverrideFlags;
 

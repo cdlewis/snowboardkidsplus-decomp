@@ -18,6 +18,7 @@ typedef struct PaletteBurstScratch {
     long flags;
 } PaletteBurstScratch;
 
+extern u16 D_8013AF78 __attribute__((section(".data")));
 extern GameTask *D_8013AE88 __attribute__((section(".data")));
 extern GameTask *D_8013AE8C __attribute__((section(".data")));
 
