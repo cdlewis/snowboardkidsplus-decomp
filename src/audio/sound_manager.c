@@ -112,7 +112,15 @@ void playMusicSequenceAtDefaultVolume(s16 repeatCount) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/audio/sound_manager", func_80017ED4);
+void fadeInMusicSequence(s16 step, s16 repeatCount) {
+    if (gMusicSequenceActive && gMusicFadeMode == 0) {
+        gMusicFadeMode = 1;
+        gMusicFadeStep = step;
+        D_8013AF30 = 0;
+        SsSeqSetVol(gMusicSequenceId, 0, 0);
+        SsSeqPlay(gMusicSequenceId, 1, repeatCount);
+    }
+}
 
 void fadeOutMusicSequence(s16 step) {
     if (gMusicSequenceActive) {

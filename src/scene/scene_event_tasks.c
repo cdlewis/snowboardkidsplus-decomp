@@ -428,10 +428,10 @@ void setSceneMusicEventTask(SceneEvent *entry) {
             break;
         case 1:
             if (entry->duration == 0) {
-                func_80017ED4(0x100, 0);
+                fadeInMusicSequence(0x100, 0);
                 resource->deadline = owner->tick + 15;
             } else {
-                func_80017ED4((s16)(0x400 - entry->duration), 0);
+                fadeInMusicSequence((s16)(0x400 - entry->duration), 0);
                 resource->deadline = owner->tick + entry->duration;
             }
             break;
