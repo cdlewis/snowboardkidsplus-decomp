@@ -93,11 +93,14 @@ void initializeBackgroundCameraTask(void) {
     D_8013AE8C->data1C = 0;
     queueMenuResourceReads((s16)D_8013AE8C->data18);
     D_8013AE88->data1E = 0;
-    setCurrentTaskCallback(func_8002F548);
+    setCurrentTaskCallback(scheduleBackgroundViewAfterChildTasks);
     D_8013AE88->unk10 |= 2;
 }
 
-INCLUDE_ASM("asm/nonmatchings/graphics/background_resources", func_8002F548);
+void scheduleBackgroundViewAfterChildTasks(void) {
+    setCurrentTaskCallback(initializeViewAndSelectTaskCallback);
+    D_8013AE88->unk10 |= 1;
+}
 
 void initializeViewAndSelectTaskCallback(void) {
     if (D_8013AE88->data1E != 0) {

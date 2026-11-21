@@ -3157,6 +3157,7 @@ updateBouncingTaskVisual = 0x80047A3C; // type:func
 updateAcceleratingTaskVisualCountdown = 0x80047BAC; // type:func
 
 initializeBackgroundCameraTask = 0x8002F468; // type:func
+scheduleBackgroundViewAfterChildTasks = 0x8002F548; // type:func
 
 drawResultPrizeLabels = 0x800361C4; // type:func
 gResultRankPrizeLabel = 0x80010A64; // type:char size:0x10
