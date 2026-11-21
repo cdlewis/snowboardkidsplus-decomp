@@ -190,8 +190,71 @@ void updateUnlockOptionsMenuTask(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: archive 259/261 */
+/* DECOMP_ATTEMPT: inline 259/261 */
+#ifdef NON_MATCHING
+extern u16 D_80132854[8];
+extern u16 D_80132864[];
+extern u16 D_80132866[];
+extern u8 D_8013B568[8];
+
+void func_800A42CC(void) {
+    UnlockMenuState *state;
+    s16 row;
+    s16 offset;
+    s32 palette;
+    u8 centerPalette;
+    const u16 *centerSprite;
+    s32 leftPalette;
+    s32 rightPalette;
+    s32 optionMask;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        for (;;) {}
+    }
+
+    state = (UnlockMenuState *)&D_800D9504[D_8013AE88->resource14];
+    setSpriteColor(128, 128, 128);
+    func_8006C998(-56, -96 - state->unk3C[0] / 4096, 0x230, 2, -1,
+                  &D_800EBFF0[D_8013AF78], 4);
+    for (row = 0; row < 5; row++) {
+        offset = state->unk04[row] / 4096;
+        leftPalette = 1;
+        if (state->selection == row) {
+            leftPalette = 3;
+        }
+        func_8006C998(-128 - offset, row * 24 - 56, D_80132854[row], leftPalette,
+                      -1, &D_800EBFF0[D_8013AF78], 4);
+
+        optionMask = 1 << D_8013B568[row];
+        if (gGameOptionFlags & optionMask) {
+            palette = (state->selection != row) * 4;
+        } else {
+            palette = 1;
+        }
+        centerSprite = &D_80132864[row * 2];
+        centerPalette = palette;
+        func_8006C998(offset + 32, row * 24 - 56, *centerSprite, (s16)palette,
+                      -1, &D_800EBFF0[D_8013AF78], 4);
+
+        rightPalette = centerPalette == 1 ? (state->selection != row) * 4 : 1;
+        func_8006C998(offset + 92, row * 24 - 56, D_80132866[row * 2], rightPalette,
+                      -1, &D_800EBFF0[D_8013AF78], 4);
+    }
+
+    for (row = 5; row < 7; row++) {
+        s16 verticalOffset = state->unk3C[row - 5] / 4096;
+        s32 rowY = row * 24;
+        s16 y = (s16)rowY + (s16)(verticalOffset - 56);
+        leftPalette = state->selection != row;
+        func_8006C998(-56, y, D_80132854[row],
+                      leftPalette, -1, &D_800EBFF0[D_8013AF78], 4);
+    }
+    func_8007240C(-160, -120, 320, 240, 192, 192, 192, 2, &D_800EBFF0[D_8013AF78], 4);
+    drawFullScreenTexturedBackground();
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/menu/unlock_menu", func_800A42CC);
+#endif
 
 void finishUnlockMenuTask(void) {
     UnlockMenuState *state;
@@ -260,8 +323,82 @@ void resetUnlockMenuOffsets(UnlockMenuState *state) {
     }
 }
 
-/* DECOMP_ATTEMPT: archive 161/163 */
+/* DECOMP_ATTEMPT: inline 161/163 */
+#ifdef NON_MATCHING
+void func_800A499C(void) {
+    UnlockMenuState *state;
+    u16 resource;
+    s16 leave;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        for (;;) {}
+    }
+    resource = D_8013AE88->resource14;
+    state = (UnlockMenuState *)&D_800D9504[resource];
+    leave = 0;
+
+    if (D_8013AEE8[0] & 0x1000) {
+        u16 selection = state->selection;
+        if ((u16)(selection - 1) < 5 || (u32)(selection - 7) < 6) {
+            state->selection = selection - 1;
+        }
+    }
+    if (D_8013AEE8[0] & 0x4000) {
+        u32 selection = (u16)state->selection;
+        if (selection < 5 || (u32)(selection - 6) < 6) {
+            state->selection = selection + 1;
+        } else if ((s16)selection == 5) {
+            state->selection = 12;
+        }
+    }
+    if (D_8013AEE8[0] & 0x8000) {
+        u16 selection = state->selection;
+        if ((u16)(selection - 6) < 6) {
+            state->selection = selection - 6;
+        }
+    }
+    if (D_8013AEE8[0] & 0x2000) {
+        u16 selection = state->selection;
+        if (selection < 6) {
+            state->selection = selection + 6;
+        }
+    }
+    if (D_8013AEE8[0] & 0x40) {
+        leave = 1;
+    }
+    if (state->selection != state->previousSelection) {
+        playSoundEffect(0, 0x100, 0x20);
+        state->previousSelection = state->selection;
+    }
+    if (state->selection == 12) {
+        if (D_8013AEE8[0] & 0xB0) {
+            leave = 1;
+        }
+    } else if ((D_8013AEE8[0] & 0xB0) &&
+               (s16)hasUnlockNotificationFlag(state->selection)) {
+        void (*callback)(void);
+        u8 selection;
+
+        playSoundEffect(0, 0, 0x20);
+        callback = startUnlockActionAfterCountdown;
+        selection = state->selection;
+        state->unk8C = 1;
+        D_8013AF3A = selection;
+        D_8013AE88->data18 = 15;
+        setCurrentTaskCallback(callback);
+    }
+
+    drawUnlockNotificationMenu();
+    if (leave) {
+        playSoundEffect(0, 0, 0x20);
+        deleteCurrentTaskDescendants();
+        setCurrentTaskCallback(animateUnlockMenuTransition);
+        D_8013AE88->data18 = 0;
+    }
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/menu/unlock_menu", func_800A499C);
+#endif
 
 void drawUnlockNotificationMenu(void) {
     UnlockMenuState *state;

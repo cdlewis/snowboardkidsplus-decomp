@@ -833,8 +833,101 @@ void finishRaceTransitionAfterCountdown(void) {
     } else updateRaceHud();
 }
 
-/* DECOMP_ATTEMPT: archive 188/196 */
+/* DECOMP_ATTEMPT: inline 188/196 */
+#ifdef NON_MATCHING
+typedef struct CourseResultRecords {
+    u8 unk00[0xC];
+    u32 bestScore[11];
+    u8 bestPlace[10];
+} CourseResultRecords;
+
+extern u8 D_8013B18D __attribute__((section(".data")));
+extern u8 D_8013B1A0[];
+void initializeResultDisplayTask(void);
+void initializeTaskFade(void);
+void initializeRaceResultsTask(void);
+void initializeRaceTimeComparisonPanel(void);
+void initializeTaskMenuFadeIn(void);
+void initializeTaskMenuFade(void);
+void initializeStatsMenuTask(void);
+u32 func_8007F46C(s16 course, s16 place);
+
+void func_8001C9F0(void) {
+    u8 padding[8];
+    s16 i;
+    u32 score;
+
+    if (D_8013AE78 != 0) {
+        return;
+    }
+    queueCdCommand(3, 0);
+    if (D_8013AFCD == 1 || gRacePlayers[0].unk935 < gRacePlayers[1].unk935) {
+        D_801241E8[0].unk16 = 6;
+    } else {
+        D_801241E8[1].unk16 = 6;
+    }
+    switch (D_8013AFE2) {
+    case 0:
+        if (D_8013AFCD == 1) {
+            createChildTaskWithReserve(initializeResultDisplayTask);
+            if (gRacePlayers[0].unk935 != 3) {
+                int bestPlace = ((volatile CourseResultRecords *)&D_8013080C)->bestPlace[D_8013AFCE];
+                int nextPlace = gRacePlayers[0].unk935 + 1;
+                if (bestPlace == 0 || (bestPlace = ((volatile CourseResultRecords *)&D_8013080C)->bestPlace[D_8013AFCE], nextPlace < bestPlace)) {
+                    ((volatile CourseResultRecords *)&D_8013080C)->bestPlace[D_8013AFCE] = gRacePlayers[0].unk935 + 1;
+                }
+                score = gRacePlayers[0].unk01C + func_8007F46C(D_8013AFCE, gRacePlayers[0].unk935);
+                if (((CourseResultRecords *)&D_8013080C)->bestScore[D_8013AFCE] < score) {
+                    ((CourseResultRecords *)&D_8013080C)->bestScore[D_8013AFCE] = score;
+                }
+            }
+        } else {
+            createChildTaskWithReserve(initializeTaskFade);
+            for (i = 0; i < 4; i++) {
+                if (gRacePlayers[i].unk935 == 0) {
+                    if (++gRacePlayers[i].unk02A >= 100) {
+                        gRacePlayers[i].unk02A = 99;
+                    }
+                }
+            }
+        }
+        break;
+    case 1:
+        if (D_8013AFE0 == 0) {
+            if (D_8013AFCD == 1) {
+                createChildTaskWithReserve(initializeRaceResultsTask);
+                D_8013B190[0] = gRaceElapsedTime;
+                D_8013B1A0[0] = D_8013B18D;
+            } else {
+                createChildTaskWithReserve(initializeRaceTimeComparisonPanel);
+            }
+        } else if (D_8013AFE0 == 1) {
+            if (D_8013AFCD == 1) {
+                createChildTaskWithReserve(initializeTaskMenuFadeIn);
+                D_8013B1A0[0] = D_8013B18D;
+            } else {
+                createChildTaskWithReserve(initializeRaceTimeComparisonPanel);
+            }
+        } else if (D_8013AFE0 == 2) {
+            if (D_8013AFCD == 1) {
+                createChildTaskWithReserve(initializeStatsMenuTask);
+                D_8013B1A0[0] = D_8013B18D;
+            } else {
+                createChildTaskWithReserve(initializeRaceTimeComparisonPanel);
+            }
+        }
+        break;
+    case 2:
+        createChildTaskWithReserve(initializeTaskMenuFade);
+        break;
+    }
+    setControllerFlag5(0);
+    setControllerFlag5(1);
+    setCurrentTaskCallback(begin30TickTransitionOnFlag10);
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/engine/task_transitions", func_8001C9F0);
+#endif
 
 void begin30TickTransitionOnFlag10(void) {
     if (D_8013AFE4 & 0x10) {

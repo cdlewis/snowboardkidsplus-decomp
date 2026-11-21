@@ -430,8 +430,18 @@ s32 isTaskStateTransitionBelowMaximum(s32 id) {
     return D_8012D4A4[func_80070794(id)].unk06 < 0xFFFFu;
 }
 
-/* DECOMP_ATTEMPT: archive 14/16 */
+/* DECOMP_ATTEMPT: inline 14/16 */
+#ifdef NON_MATCHING
+void func_80070830(void) {
+    s16 i;
+    for (i = 0; i < 4; ) {
+        D_8013BDA8[i] = NULL;
+        i = (s16)(i + 1);
+    }
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80070830);
+#endif
 
 void configureColorCycleTask(s32 mode, s16 minimum, s16 maximum, s32 step, s16 index) {
     GameTask *task;
@@ -502,8 +512,23 @@ void updateColorCycleTask(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: archive 23/26 */
+/* DECOMP_ATTEMPT: inline 23/26 */
+#ifdef NON_MATCHING
+s32 func_80070B64(s16 id, u8 *color) {
+    GameTask *task = *(id + D_8013BDA8);
+    if (task == NULL) {
+        return 0;
+    } else {
+        u8 *value = (u8 *)&D_800D9504[task->resource14].unk00;
+        color[0] = *value;
+        color[1] = *value;
+        color[2] = *value;
+        return 1;
+    }
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80070B64);
+#endif
 
 s32 isTaskResourceTransitionComplete(s16 index) {
     GameTask *task;
@@ -514,14 +539,63 @@ s32 isTaskResourceTransitionComplete(s16 index) {
     return 0;
 }
 
-/* DECOMP_ATTEMPT: archive 18/20 */
+/* DECOMP_ATTEMPT: inline 18/20 */
+#ifdef NON_MATCHING
+s32 func_80070C0C(void) {
+    s32 found = 0;
+    s16 i = 0;
+
+    do {
+        if (D_8013BDA8[i] != NULL) {
+            found = 1;
+        }
+    } while (++i < 4);
+    return found;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80070C0C);
+#endif
 
-/* DECOMP_ATTEMPT: archive 58/59 */
+/* DECOMP_ATTEMPT: inline 58/59 */
+#ifdef NON_MATCHING
+void func_80070C5C(s32 intensity, GsOT *ot, u16 depth) {
+    TILE *packet = (TILE *)GsGetWorkBase();
+    u16 tpage;
+    SetTile(packet);
+    setXY0(packet, -170, -130);
+    setWH(packet, 340, 260);
+    setRGB0(packet, intensity, intensity, intensity);
+    SetSemiTrans(packet, 1);
+    AddPrim(ot->org + depth, packet);
+    tpage = GetTPage(0, 2, 0, 0);
+    SetDrawMode((DR_MODE *)++packet, 1, 1, tpage, NULL);
+    AddPrim(ot->org + depth, packet);
+    func_800BF2C8((u32)((DR_MODE *)packet + 1));
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80070C5C);
+#endif
 
-/* DECOMP_ATTEMPT: archive 58/59 */
+/* DECOMP_ATTEMPT: inline 58/59 */
+#ifdef NON_MATCHING
+void func_80070D48(s32 brightness, GsOT *ot, u16 depth) {
+    TILE *packet = (TILE *)GsGetWorkBase();
+    DR_MODE *mode;
+    SetTile(packet);
+    setXY0(packet, -170, -130);
+    setWH(packet, 340, 260);
+    setRGB0(packet, brightness, brightness, brightness);
+    SetSemiTrans(packet, 1);
+    AddPrim(ot->org + depth, packet);
+    mode = (DR_MODE *)++packet;
+    SetDrawMode(mode, 1, 1, GetTPage(0, 1, 0, 0), NULL);
+    AddPrim(ot->org + depth, mode);
+    mode++;
+    func_800BF2C8((u32)mode);
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80070D48);
+#endif
 
 void addDrawAreaPacket(s32 x, s32 y, s32 width, s32 height, GsOT *ot, u16 depth) {
     RECT area;
@@ -650,8 +724,51 @@ s32 updateMovement2D(Movement2D *movement) {
     return 0;
 }
 
-/* DECOMP_ATTEMPT: archive 39/44 */
+/* DECOMP_ATTEMPT: inline 39/44 */
+#ifdef NON_MATCHING
+struct GameBackgroundMap {
+    u8 cellw, cellh;
+    u16 ncellw, ncellh;
+    void *base;
+    u16 *index;
+};
+
+typedef struct BackgroundTileData {
+    u32 unk00;
+    u8 ncellw, ncellh, cellw, cellh;
+    u16 index[1];
+} BackgroundTileData;
+
+void func_80071300(s16 mode, s16 unused, GameBackground *background,
+                   GameBackgroundMap *map, u8 *cells, u8 *tiles) {
+    BackgroundTileData *tileData = (BackgroundTileData *)tiles;
+    u32 attribute;
+    attribute = mode & 3;
+    cells += 8;
+    map->ncellw = tileData->ncellw;
+    map->ncellh = tileData->ncellh;
+    map->cellw = tileData->cellw;
+    tiles += 8;
+    map->cellh = tileData->cellh;
+    map->base = cells;
+    map->index = (u16 *)tiles;
+    background->r = background->g = background->b = 128;
+    background->mx = 160;
+    background->my = 120;
+    background->scalex = background->scaley = 4096;
+    background->w = 320;
+    background->attribute = attribute << 24;
+    background->h = 240;
+    background->x = 0;
+    background->y = 0;
+    background->scrollX = background->scrollY = 0;
+    background->map = map;
+    background->rotate = 0;
+    background->attribute |= 0x08000000;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80071300);
+#endif
 
 void copyIndexedTaskImagesToVram(s16 index) {
     RECT rect;
@@ -878,11 +995,73 @@ void markSecondaryTaskAndClearReference(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: archive 24/32 */
-INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80071E78);
+/* DECOMP_ATTEMPT: inline 24/32 */
+#ifdef NON_MATCHING
+s32 func_80071E78(TextureColor *color, s8 *stepPtr, u8 minimum, u8 maximum) {
+    s32 reversed = 0;
+    s32 step = *stepPtr;
+    u8 value = color->r;
+    s8 nextStep = step;
 
-/* DECOMP_ATTEMPT: archive 72/77 */
+    if (step > 0) {
+        if (value + step > maximum) {
+            value = maximum;
+            goto reverse;
+        } else {
+            value += nextStep;
+        }
+    } else if (step < 0) {
+        if (value - minimum < -step) {
+            value = minimum;
+reverse:
+            nextStep = -nextStep;
+            reversed = 1;
+        } else {
+            value += nextStep;
+        }
+    }
+    color->r = color->g = color->b = value;
+    *stepPtr = nextStep;
+    return reversed;
+}
+#else
+INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80071E78);
+#endif
+
+/* DECOMP_ATTEMPT: inline 72/77 */
+#ifdef NON_MATCHING
+void func_80071EF8(s16 x0, s16 y0, s32 width, s32 height, s16 textureDepth, s16 textureX, s16 textureY, s16 clutX, s16 clutY, GsOT *ot, u16 depth) {
+    POLY_FT4 *quad = &gTexturedQuadTemplate;
+    s32 x, y;
+    s32 right;
+    quad->clut = GetClut(clutX, clutY);
+    x = x0;
+    setRGB0(quad, 128, 128, 128);
+    quad->tpage = GetTPage(textureDepth, 1, textureX, textureY);
+    y = y0;
+    quad->y0 = y;
+    quad->y1 = y;
+    right = width + x;
+    y = height + y;
+    quad->x0 = x;
+    quad->x1 = right;
+    quad->x2 = x;
+    quad->y2 = y;
+    quad->x3 = right;
+    quad->y3 = y;
+    quad->u0 = 0;
+    quad->v0 = 0;
+    quad->u1 = width;
+    quad->v1 = 0;
+    quad->u2 = 0;
+    quad->v2 = height;
+    quad->u3 = width;
+    quad->v3 = height;
+    GsSortPoly(quad, ot, depth);
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80071EF8);
+#endif
 
 void drawSemiTransparentTextureRect(s16 x, s16 y, s16 width, s16 height,
                    s16 textureDepth, s16 blendMode, s16 pageX, s16 pageY,
@@ -957,8 +1136,39 @@ void addTilePacket(s32 x, s32 y, s32 width, s32 height, s32 r, s32 g, s32 b,
     func_800BF2C8((u32)(packet + 1));
 }
 
-/* DECOMP_ATTEMPT: archive 81/84 */
+/* DECOMP_ATTEMPT: inline 81/84 */
+#ifdef NON_MATCHING
+void func_8007240C(s16 x, s16 y, s16 width, s16 height, u8 r, u8 g, u8 b,
+                   s16 blendMode, GsOT *ot, u16 depth) {
+    TILE *packet;
+    TILE *tile;
+    s32 semiTrans;
+    s32 abr;
+    u16 tpage;
+    if (blendMode >= 0) {
+        abr = blendMode;
+        semiTrans = 1;
+    } else {
+        abr = 0;
+        semiTrans = 0;
+    }
+    packet = (TILE *)GsGetWorkBase();
+    SetTile(packet);
+    tile = packet;
+    setXY0(tile, x, y);
+    setWH(tile, width, height);
+    setRGB0(tile, r, g, b);
+    SetSemiTrans(packet, semiTrans);
+    AddPrim(ot->org + depth, packet);
+    tpage = GetTPage(0, abr, 0, 0);
+    packet++;
+    SetDrawMode((DR_MODE *)packet, 1, 1, tpage, NULL);
+    AddPrim(ot->org + depth, packet);
+    func_800BF2C8((u32)((DR_MODE *)packet + 1));
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_8007240C);
+#endif
 
 void setMusicSequenceEnabled(s16 enabled) {
     if (enabled == 0) {
@@ -1078,11 +1288,312 @@ void createRegisteredSpacedChildTask(s16 childIndex, s16 x, s16 y, TaskCallback 
     entry->task = D_8013AE8C;
 }
 
-/* DECOMP_ATTEMPT: archive 639/671 */
-INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80072C54);
+/* DECOMP_ATTEMPT: inline 639/671 */
+#ifdef NON_MATCHING
+typedef struct SpacedGroupSelection {
+    s16 mode, selectedIndex, previousIndex, choiceResult;
+} SpacedGroupSelection;
 
-/* DECOMP_ATTEMPT: archive 11/16 */
+typedef struct SelectionGroupState {
+    Movement2D movement;
+    u32 acceptMask, cancelMask;
+    SpacedGroupSelection selection;
+    u8 unk38[4];
+    TaskCallback callback3C, callback40;
+    const u8 *data44, *data48, *data4C;
+    s32 value;
+    s16 mode, spacingX, spacingY, count;
+    u8 unk5C, unk5D;
+    s8 unk5E;
+    u8 unk5F;
+    s16 unk60;
+    u8 r, g, b;
+} SelectionGroupState;
+
+typedef struct SpacedGroupSounds {
+    u8 bank;
+    u16 programAndTone;
+} SpacedGroupSounds;
+
+typedef struct SpacedGroupConfirmSound {
+    s16 sprite;
+    u8 color;
+    u8 bank;
+    u16 programAndTone;
+} SpacedGroupConfirmSound;
+
+void func_80072C54(void) {
+    u16 input = 0;
+    SelectionGroupState *state;
+    RegisteredTaskEntry *children;
+    RegisteredTaskEntry *entry;
+    RegisteredTaskEntry *entries;
+    SpacedGroupSelection *selection;
+    s16 i;
+    CVECTOR *color;
+    const SpacedGroupConfirmSound *confirm;
+
+    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    state = (SelectionGroupState *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
+    children = (RegisteredTaskEntry *)&D_800D9504[D_8013AE88->resource16];
+    if ((u16)(D_8013AE88->data1E % 10U) == 0) {
+        if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
+        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource14];
+        entry = &entries[D_8013AE88->data1E / 10U];
+    } else {
+        if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
+        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource16];
+        entry = &entries[D_8013AE88->data1E / 10U];
+    }
+    if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
+    selection = (SpacedGroupSelection *)&D_800D9504[D_8013AE98->resource14];
+    state->selection.mode = selection->mode;
+    state->selection.selectedIndex = selection->selectedIndex;
+    state->selection.previousIndex = selection->previousIndex;
+    state->selection.choiceResult = selection->choiceResult;
+
+    switch (entry->command) {
+    case 1:
+        for (i = 0; i < state->count; i++) {
+            GameTask *child = children[i].task;
+            if (child != NULL) {
+                if (i == state->selection.selectedIndex) {
+                    color = (CVECTOR *)&D_800D9504[child->resource16];
+                    color->r = 128;
+                    color->g = 128;
+                    color->b = 128;
+                } else {
+                    color = (CVECTOR *)&D_800D9504[child->resource16];
+                    color->r = 64;
+                    color->g = 64;
+                    color->b = 64;
+                }
+            }
+        }
+        goto clearCommand;
+    case 2:
+        for (i = 0; i < state->count; i++) {
+            GameTask *child = children[i].task;
+            if (child != NULL) {
+                color = (CVECTOR *)&D_800D9504[child->resource16];
+                color->r = 128;
+                color->g = 128;
+                color->b = 128;
+            }
+        }
+        goto clearCommand;
+    case 3:
+        for (i = 0; i < state->count; i++) {
+            GameTask *child = children[i].task;
+            if (child != NULL) {
+                color = (CVECTOR *)&D_800D9504[child->resource16];
+                color->r = 64;
+                color->g = 64;
+                color->b = 64;
+            }
+        }
+        goto clearCommand;
+    case 10:
+        if (state->unk5D != 0) {
+            D_8013AE88->data18 = state->unk5D;
+            entry->command = 11;
+            entry->flags = 1;
+        }
+        break;
+    case 11:
+        if (D_8013AE88->data18 == 0) {
+            GameTask *child = children[state->selection.selectedIndex].task;
+            if (child != NULL) {
+                color = (CVECTOR *)&D_800D9504[child->resource16];
+                color->r = 128;
+                color->g = 128;
+                color->b = 128;
+            }
+            goto clearCommand;
+        }
+        if ((D_8013AE88->data18 & 1) == 0) {
+            GameTask *child = children[state->selection.selectedIndex].task;
+            if (child != NULL) {
+                color = (CVECTOR *)&D_800D9504[child->resource16];
+                color->r = 128;
+                color->g = 128;
+                color->b = 128;
+            }
+        } else {
+            GameTask *child = children[state->selection.selectedIndex].task;
+            if (child != NULL) {
+                color = (CVECTOR *)&D_800D9504[child->resource16];
+                color->r = 64;
+                color->g = 64;
+                color->b = 64;
+            }
+        }
+        D_8013AE88->data18--;
+        entry->flags = 1;
+        break;
+    case 20:
+        state->selection.mode = 1;
+        goto clearCommand;
+    case 21:
+        state->selection.mode = 2;
+        goto clearCommand;
+    case 22:
+        state->selection.mode = 3;
+        goto clearCommand;
+    case 23:
+        state->selection.mode = 0;
+clearCommand:
+        entry->command = 0;
+        /* fall through */
+    case 0:
+        entry->flags = 0;
+        break;
+    case 99:
+    default:
+        entry->task = NULL;
+        deleteCurrentTaskSubtree();
+        return;
+    }
+
+    for (i = 0; i < state->count; i++) {
+        GameTask *child = children[i].task;
+        if (child != NULL) {
+            entry->flags |= updateMovement2D((Movement2D *)&D_800D9504[child->resource14]);
+        }
+    }
+    func_80070B64(0, &state->r);
+    if ((u32)((u16)entry->command - 1) >= 3 && entry->command != 11) {
+        for (i = 0; i < state->count; i++) {
+            GameTask *child = children[i].task;
+            if (child != NULL) {
+                color = (CVECTOR *)&D_800D9504[child->resource16];
+                if (i == state->selection.selectedIndex) {
+                    color->r = 128;
+                    color->g = 128;
+                    color->b = 128;
+                } else {
+                    color->r = 64;
+                    color->g = 64;
+                    color->b = 64;
+                }
+            }
+        }
+    }
+
+    if (state->selection.choiceResult == 0 && state->selection.mode > 0) {
+        if (state->mode & 1) input |= D_8013AEE8[0];
+        if (state->mode & 2) input |= D_8013AEE8[1];
+        i = state->selection.selectedIndex;
+        if (state->unk60 >= 0) {
+            if (input & 0x1000) {
+                i--;
+                if (i < 0) {
+                    i = 0;
+                    if (state->unk5E == 1) i = state->count - 1;
+                }
+            }
+            if (input & 0x4000) {
+                i++;
+                if (i >= state->count) {
+                    if (state->unk5E == 1) i = 0;
+                    else i = state->count - 1;
+                }
+            }
+        } else {
+            if (input & 0x8000) {
+                i--;
+                if (i < 0) {
+                    i = 0;
+                    if (state->unk5E == 1) i = state->count - 1;
+                }
+            }
+            if (input & 0x2000) {
+                i++;
+                if (i >= state->count) {
+                    if (state->unk5E == 1) i = 0;
+                    else i = state->count - 1;
+                }
+            }
+            if (input & 0x1000) {
+                if (i == state->count - 1) i--;
+                else if (i >= 4) i -= 4;
+                if (i < 0) {
+                    i = 0;
+                    if (state->unk5E == 1) i = state->count - 1;
+                }
+            }
+            if (input & 0x4000) {
+                if (i < 4) {
+                    i += 4;
+                } else {
+                    if (i < state->count - 1) i = state->count - 1;
+                    else i += 4;
+                }
+                if (i >= state->count) {
+                    if (state->unk5E == 1) i = 0;
+                    else i = state->count - 1;
+                }
+            }
+        }
+        if (D_8013B108 == 3 && !isControllerInputSupported(1)) i = 0;
+        if (i != state->selection.selectedIndex) {
+            state->selection.previousIndex = state->selection.selectedIndex;
+            state->selection.selectedIndex = i;
+            if (state->data4C != NULL) {
+                const SpacedGroupSounds *sound = (const SpacedGroupSounds *)state->data4C;
+                if (sound->bank != 0xFF) {
+                    playSoundEffect(sound->bank, sound->programAndTone, 0x20);
+                }
+            } else {
+                playSoundEffect(0, 0x100, 0x20);
+            }
+        }
+        if (input & state->acceptMask) {
+            state->selection.choiceResult = 1;
+            state->selection.mode = 3;
+            confirm = (const SpacedGroupConfirmSound *)func_800736D0(
+                (const GridSpriteEntry *)state->data44, state->data48, state->selection.selectedIndex);
+            if (confirm->bank != 0xFF) playSoundEffect(confirm->bank, confirm->programAndTone, 0x20);
+        }
+        if (input & state->cancelMask) {
+            state->selection.choiceResult = -1;
+            if (state->data4C != NULL) {
+                const SpacedGroupSounds *sound = &((const SpacedGroupSounds *)state->data4C)[1];
+                if (sound->bank != 0xFF) {
+                    playSoundEffect(sound->bank, sound->programAndTone, 0x20);
+                }
+            } else {
+                playSoundEffect(0, 0, 0x20);
+            }
+        }
+    }
+
+    if (state->callback3C != NULL) state->callback3C();
+    state = (SelectionGroupState *)&D_800D9504[D_8013AE88->resource14];
+    selection->mode = state->selection.mode;
+    selection->selectedIndex = state->selection.selectedIndex;
+    selection->previousIndex = state->selection.previousIndex;
+    selection->choiceResult = state->selection.choiceResult;
+}
+#else
+INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80072C54);
+#endif
+
+/* DECOMP_ATTEMPT: inline 11/16 */
+#ifdef NON_MATCHING
+const GridSpriteEntry *func_800736D0(const GridSpriteEntry *records, const u8 *indices, s16 index) {
+    s16 selected;
+    if (indices == NULL) {
+        selected = index;
+    } else {
+        selected = indices[index];
+    }
+    return &records[selected];
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_800736D0);
+#endif
 
 /* DECOMP_ATTEMPT: inline 12/13 */
 #ifdef NON_MATCHING
@@ -1117,8 +1628,31 @@ s16 func_8007373C(const u8 *table, s16 index) {
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_8007373C);
 #endif
 
-/* DECOMP_ATTEMPT: archive 15/16 */
+/* DECOMP_ATTEMPT: inline 15/16 */
+#ifdef NON_MATCHING
+typedef struct TaskResource {
+    u8 unk00[8];
+    const u16 *unk08;
+    u8 unk0C[0x3C];
+    const u8 *unk48;
+    u8 unk4C[0xB4];
+} TaskResource;
+
+s16 func_80073760(GameTask *task, s16 index) {
+    u32 resourceIndex = task->resource14;
+    TaskResource *resource = (TaskResource *)&D_800D9504[resourceIndex];
+    const u8 *table = resource->unk48;
+    s32 result;
+    if (table == NULL) {
+        result = index;
+    } else {
+        result = table[index];
+    }
+    return result;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80073760);
+#endif
 
 s16 findByteIndexOrZero(const u8 *data, s16 value, s16 count) {
     s16 result = 0;
@@ -1870,8 +2404,162 @@ void createRegisteredMovingPanelTask(u16 mode, const s16 *values, s16 x, s16 y,
     entry->task = D_8013AE8C;
 }
 
-/* DECOMP_ATTEMPT: archive 424/481 */
+/* DECOMP_ATTEMPT: inline 424/481 */
+#ifdef NON_MATCHING
+typedef struct MovingPanelState {
+    s16 highlight;
+    s16 selection;
+    s16 respondingControllers;
+    s16 closing;
+} MovingPanelState;
+
+typedef struct MovingPanelResource {
+    Movement2D movement;
+    u8 color[3];
+    u8 pad2B;
+    s16 x, y;
+    s16 spacingX, spacingY;
+    s16 targetX, targetY;
+    s16 values[6];
+    u16 mode;
+} MovingPanelResource;
+
+void func_8007649C(void) {
+    MovingPanelResource *panel;
+    MovingPanelState *state;
+    ValuePanelEntry *entry;
+    u16 input;
+    s16 selection;
+    s16 x, y;
+    s32 ready;
+    s32 color;
+
+    input = 0;
+    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    panel = (MovingPanelResource *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
+    state = (MovingPanelState *)&D_800D9504[D_8013AE88->resource16];
+
+    if ((u16)(D_8013AE88->data1E % 10U) == 0) {
+        ValuePanelEntry *table;
+        if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
+        table = (ValuePanelEntry *)&D_800D9504[D_8013AE98->resource14];
+        entry = table + D_8013AE88->data1E / 10U;
+    } else {
+        ValuePanelEntry *table;
+        if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
+        table = (ValuePanelEntry *)&D_800D9504[D_8013AE98->resource16];
+        entry = table + D_8013AE88->data1E / 10U;
+    }
+
+    switch (entry->flags) {
+    case 1:
+        initMovement2D(&panel->movement, panel->x << 12, panel->y << 12);
+        configureMovement2D(&panel->movement, panel->targetX << 12, panel->targetY << 12, 0x8000, 0x8000, 0);
+        state->highlight = 0;
+        state->selection = panel->mode;
+        state->closing = 0;
+        goto advance;
+    case 2:
+        if (updateMovement2D(&panel->movement) == 0) {
+            configureColorCycleTask(1, 0, 128, 8, 0);
+            D_8013AE88->data18 = 0;
+            state->highlight = 1;
+            state->respondingControllers = 0;
+            goto advance;
+        }
+        break;
+    case 3:
+        ready = isTaskResourceTransitionComplete(0);
+        if (ready == 1 && D_8013AE88->data18 == 0) {
+            configureColorCycleTask(2, 64, 128, 4, 0);
+            state->highlight = 2;
+            D_8013AE88->data18 = ready;
+        }
+        if (D_8013AE88->data1A & 1) input |= D_8013AEE8[0];
+        if (D_8013AE88->data1A & 2) input |= D_8013AEE8[1];
+
+        selection = state->selection;
+        if (input & 0x1000) selection--;
+        if (input & 0x4000) selection++;
+        if (selection < 0) selection = 0;
+        if (selection >= 2) selection = 1;
+        if (state->selection != selection) {
+            state->selection = selection;
+            playSoundEffect(0, 0x100, 32);
+        }
+        if (input & 0xB0) {
+            state->closing = 1;
+            playSoundEffect(0, 0, 32);
+            if ((D_8013AE88->data1A & 1) && (D_8013AEE8[0] & 0xB0)) {
+                state->respondingControllers |= 1;
+            }
+            if ((D_8013AE88->data1A & 2) && (D_8013AEE8[1] & 0xB0)) {
+                state->respondingControllers |= 2;
+            }
+        }
+        if (input & 0x40) {
+            state->selection = 2;
+            state->highlight = 0;
+            state->closing = 1;
+            playSoundEffect(0, 0, 32);
+            if ((D_8013AE88->data1A & 1) && (D_8013AEE8[0] & 0x40)) {
+                state->respondingControllers |= 1;
+            }
+            if ((D_8013AE88->data1A & 2) && (D_8013AEE8[1] & 0x40)) {
+                state->respondingControllers |= 2;
+            }
+        }
+        if (state->closing == 1) {
+            configureMovement2D(&panel->movement, panel->x << 12, panel->y << 12, 0x8000, 0x8000, -1000);
+            state->highlight = 0;
+            goto advance;
+        }
+        break;
+    case 4:
+        if (updateMovement2D(&panel->movement) == 0) {
+advance:
+            entry->active = -1;
+            entry->flags++;
+        }
+        break;
+    default:
+finish:
+        entry->active = state->selection;
+        entry->flags = state->respondingControllers;
+        deleteCurrentTaskSubtree();
+        return;
+    case 99:
+        goto finish;
+    }
+
+    x = panel->movement.x / 4096;
+    y = panel->movement.y / 4096;
+    if (state->highlight > 0) {
+        if ((u16)state->highlight == 1 || (u16)state->highlight == 2) {
+            func_80070B64(0, panel->color);
+            setSpriteColor(panel->color[0], panel->color[1], panel->color[2]);
+        } else {
+            setSpriteColor(128, 128, 128);
+        }
+        func_8006C998(x + state->selection * panel->spacingX, y + state->selection * panel->spacingY,
+                     panel->values[4], panel->values[5], -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    }
+
+    color = state->selection == 0 ? 128 : 64;
+    setSpriteColor(color, color, color);
+    if (panel->targetY - 16 <= y) {
+        func_8006C998(x, y, panel->values[0], panel->values[1], -1,
+                     &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    }
+    color = state->selection == 1 ? 128 : 64;
+    setSpriteColor(color, color, color);
+    func_8006C998(x + panel->spacingX, y + panel->spacingY, panel->values[2], panel->values[3], -1,
+                 &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_8007649C);
+#endif
 
 void createInputTimedSpriteTask(s32 x, s32 y, const TimedSequenceEntry *entries, s32 count,
     s32 controllers, u32 acceptMask, u32 cancelMask, s32 depth, s32 index) {
@@ -2081,8 +2769,22 @@ void initializeDualResourceSequenceTask(void) {
 /* DECOMP_ATTEMPT: unattempted */
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80077770);
 
-/* DECOMP_ATTEMPT: archive 18/20 */
+/* DECOMP_ATTEMPT: inline 18/20 */
+#ifdef NON_MATCHING
+s16 func_80077E58(s16 value) {
+    s32 result = -1;
+    s32 i;
+    for (i = 0; i < 10; i++) {
+        if (value == D_8012D460[i]) {
+            result = i;
+            break;
+        }
+    }
+    return result;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80077E58);
+#endif
 
 void createDualSelectionSequenceTask(s16 x, s16 y, s32 depth, s32 index) {
     SelectionEntry *selection;
@@ -2124,8 +2826,171 @@ void createDualSelectionSequenceTask(s16 x, s16 y, s32 depth, s32 index) {
     entry->task = D_8013AE8C;
 }
 
-/* DECOMP_ATTEMPT: archive 463/511 */
+/* DECOMP_ATTEMPT: inline 463/511 */
+#ifdef NON_MATCHING
+extern u8 D_8013B3A8 __attribute__((section(".data")));
+extern u8 D_8013B3A9 __attribute__((section(".data")));
+extern u8 D_8013B3AA __attribute__((section(".data")));
+
+void func_80078140(void) {
+    Movement2D *movement;
+    TimedSequence *sequences;
+    ValuePanelEntry *entry;
+    SelectionEntry *selection;
+    s32 sprites[2];
+    s32 yOffsets[2];
+    s32 depths[2];
+    s32 shiftLastPortrait;
+    s32 i;
+    s32 xOffset;
+    s32 frame;
+    u8 type;
+
+    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    movement = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
+    sequences = (TimedSequence *)&D_800D9504[D_8013AE88->resource16];
+
+    if ((u16)(D_8013AE88->data1E % 10U) == 0) {
+        ValuePanelEntry *entries;
+        if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
+        entries = (ValuePanelEntry *)&D_800D9504[D_8013AE98->resource14];
+        entry = &entries[D_8013AE88->data1E / 10U];
+    } else {
+        ValuePanelEntry *entries;
+        if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
+        entries = (ValuePanelEntry *)&D_800D9504[D_8013AE98->resource16];
+        entry = &entries[D_8013AE88->data1E / 10U];
+    }
+
+    if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
+    selection = (SelectionEntry *)&D_800D9504[D_8013AE98->resource14];
+
+    if (entry->flags != 0) {
+        deleteCurrentTaskSubtree();
+        return;
+    }
+
+    entry->active = 0;
+    entry->active |= updateMovement2D(movement);
+
+    if (selection[0].unk00 > 0 && selection[1].unk00 > 0) {
+        if (selection[0].selected != selection[1].selected) {
+            sprites[0] = 42;
+            sprites[1] = 43;
+            yOffsets[0] = 0;
+            yOffsets[1] = 0;
+        } else {
+            sprites[0] = 44;
+            sprites[1] = 45;
+            yOffsets[0] = 0;
+            yOffsets[1] = 20;
+        }
+        if (selection[0].selected < selection[1].selected) {
+            depths[0] = D_8013AE88->data1C;
+            depths[1] = D_8013AE88->data1C - 1;
+        } else {
+            depths[0] = D_8013AE88->data1C;
+            depths[1] = D_8013AE88->data1C;
+        }
+    } else {
+        sprites[0] = 42;
+        sprites[1] = 43;
+        yOffsets[0] = 0;
+        yOffsets[1] = 0;
+        depths[0] = D_8013AE88->data1C;
+        depths[1] = D_8013AE88->data1C;
+    }
+
+    if ((D_801313C8[0] & 3) == 2) {
+        shiftLastPortrait = 1;
+    }
+
+    for (i = 0; i < 2; i++) {
+        if (selection[i].unk00 > 0) {
+            s32 selected;
+            s16 x;
+            s16 y;
+            if (selection[i].unk00 == 1) {
+                setSpriteColor(D_8013B3A8, D_8013B3A9, D_8013B3AA);
+            } else if (selection[i].unk00 == 2) {
+                setSpriteColor(gTaskWidgetRedAbsolute, gTaskWidgetGreenAbsolute, gTaskWidgetBlueAbsolute);
+            } else {
+                setSpriteColor(128, 128, 128);
+            }
+            xOffset = 0;
+            selected = selection[i].selected;
+            if (selected == 9 && (shiftLastPortrait & 1)) {
+                xOffset = -16;
+            }
+            x = xOffset + 4;
+            x += selected % 2 * 32;
+            x += movement->x / 4096;
+            y = selected / 2 * 32 + ((u16)yOffsets[i] + 36);
+            y += movement->y / 4096;
+            func_8006C998(x, y,
+                          sprites[i], (s16)i, -1, &D_800EBFF0[D_8013AF78], depths[i]);
+            if (selection[i].selected != selection[i].previous) {
+                type = D_8012D460[selection[i].selected];
+                if (type == 3 || type == 4 || type == 8) {
+                    initTimedSequence(&sequences[i], D_8012F1AC, 0, 8);
+                } else {
+                    initTimedSequence(&sequences[i], D_8012F18C, 0, 4);
+                }
+            }
+        }
+    }
+
+    setSpriteColor(128, 128, 128);
+    func_8006C998(movement->x / 4096, movement->y / 4096, 92, 13, -1,
+                  &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+
+    for (i = 0; i < 10; i++) {
+        s16 x;
+        s16 y;
+        xOffset = 0;
+        if (i >= 8) {
+            if (!(D_8013101C.flags & (1U << (i - 8)))) {
+                continue;
+            }
+            if (i == 9 && (shiftLastPortrait & 1)) {
+                xOffset = -16;
+            }
+        }
+        if (i == selection[0].selected || i == selection[1].selected) {
+            setSpriteColor(128, 128, 128);
+            if (i == selection[0].selected) {
+                frame = *(const s16 *)&sequences[0].entries[sequences[0].index].unk00;
+            } else {
+                frame = *(const s16 *)&sequences[1].entries[sequences[1].index].unk00;
+            }
+            x = xOffset + 4;
+            x += i % 2 * 32;
+            x += movement->x / 4096;
+            y = movement->y / 4096 + 40;
+            y = i / 2 * 32 + y;
+            func_8006C998(x, y,
+                          D_8012D460[i] * 3 + (frame + 112), 0, -1,
+                          &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        } else {
+            setSpriteColor(64, 64, 64);
+            x = xOffset + 4;
+            x += i % 2 * 32;
+            x += movement->x / 4096;
+            y = movement->y / 4096 + 40;
+            y = i / 2 * 32 + y;
+            func_8006C998(x, y,
+                          D_8012D460[i] * 3 + 112, 0, -1,
+                          &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        }
+    }
+
+    updateTimedSequence(&sequences[0]);
+    updateTimedSequence(&sequences[1]);
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80078140);
+#endif
 
 void createPlayerPanelTask(s16 player, s16 x, s16 y, s32 depth, s32 index) {
     ValuePanelEntry *entry;
@@ -2766,8 +3631,92 @@ void updateShrinkingSpriteTask(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: archive 235/257 */
+/* DECOMP_ATTEMPT: inline 235/257 */
+#ifdef NON_MATCHING
+void cycleSaveRecordUnlockFlags(s16 recordIndex, s16 maskIndex);
+
+void func_8007B48C(s16 recordIndex, s16 maskIndex) {
+    s16 row;
+    s16 paired[2];
+    GlobalFlagStatePrefix *state;
+    SaveRecord *records;
+
+    if (D_8013AEE8[recordIndex] & 8) {
+        cycleSaveRecordUnlockFlags(recordIndex, maskIndex);
+    } else if (D_8013AEE8[recordIndex] & 2) {
+        if (getSaveRecordMaskTier(recordIndex, maskIndex)) {
+            for (maskIndex = 0; maskIndex < 10; maskIndex++) {
+                setSaveRecordMaskTier(recordIndex, maskIndex, 4);
+                cycleSaveRecordUnlockFlags(recordIndex, maskIndex);
+            }
+        } else {
+            for (maskIndex = 0; maskIndex < 10; maskIndex++) {
+                setSaveRecordMaskTier(recordIndex, maskIndex, 4);
+                cycleSaveRecordUnlockFlags(recordIndex, maskIndex);
+                cycleSaveRecordUnlockFlags(recordIndex, maskIndex);
+                cycleSaveRecordUnlockFlags(recordIndex, maskIndex);
+                cycleSaveRecordUnlockFlags(recordIndex, maskIndex);
+                cycleSaveRecordUnlockFlags(recordIndex, maskIndex);
+                cycleSaveRecordUnlockFlags(recordIndex, maskIndex);
+            }
+        }
+
+        records = (SaveRecord *)&D_8013080C;
+        state = (GlobalFlagStatePrefix *)&records[recordIndex];
+        /* Diagnose the original read of the row register before initialization. */
+        state->masks[maskIndex] |= 0x1000000U << row;
+        state->flags = 0x3FFF;
+        for (row = 0; row < 5; row++) {
+            state->unk_3DC |= 1U << (row * 5 + 1);
+            state->unk_3E0 |= 1U << (row * 5 + 1);
+            state->unk_3DC |= 1U << (row * 5 + 2);
+            state->unk_3E0 |= 1U << (row * 5 + 2);
+            state->unk_3DC |= 1U << (row * 5 + 3);
+            state->unk_3DC |= 1U << (row * 5 + 4);
+            state->unk_3E0 |= 1U << (row * 5 + 3);
+            state->unk_3E0 |= 1U << (row * 5 + 4);
+        }
+        ((GlobalFlagStatePrefix *)&((SaveRecord *)&D_8013080C)[recordIndex])->unk_3E4 = 999999;
+        rebuildCombinedStateMask((GlobalFlagStatePrefix *)&((SaveRecord *)&D_8013080C)[recordIndex]);
+        copySaveRecordAndMergeFlags();
+        for (row = 0; row < 11; row++) {
+            setUnlockNotificationFlag(row);
+        }
+    }
+
+    if (D_8013AEE8[recordIndex] & 4) {
+        s32 flag;
+        paired[0] = getGlobalFlagMask(0);
+        paired[1] = getGlobalFlagMask(1);
+        if (paired[0]) {
+            if (!paired[1]) {
+                goto enableSecond;
+            }
+            flag = -1;
+        } else {
+            flag = 0;
+            if (!paired[1]) {
+enableSecond:
+                flag = 1;
+            }
+        }
+        updatePairedStateFlag(flag);
+    }
+    if (D_8013AEE8[recordIndex] & 1) {
+        if (getSaveRecordFlagPair(recordIndex, maskIndex, 0) > 0) {
+            setSaveRecordFlagPair(recordIndex, maskIndex, 0, 0);
+            setSaveRecordFlagPair(recordIndex, maskIndex, 1, 0);
+            setSaveRecordFlagPair(recordIndex, maskIndex, 2, 0);
+        } else {
+            setSaveRecordFlagPair(recordIndex, maskIndex, 0, 3);
+            setSaveRecordFlagPair(recordIndex, maskIndex, 1, 2);
+            setSaveRecordFlagPair(recordIndex, maskIndex, 2, 1);
+        }
+    }
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_8007B48C);
+#endif
 
 void cycleSaveRecordUnlockFlags(s16 recordIndex, s16 maskIndex) {
     s16 pairIndex;

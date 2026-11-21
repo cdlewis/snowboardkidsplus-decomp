@@ -62,8 +62,9 @@ For a standalone attempt outside the generated workspace, use
 Keep useful unfinished C under `#ifdef NON_MATCHING` with the existing
 `INCLUDE_ASM` in the `#else` branch. Put `/* DECOMP_ATTEMPT: inline X/Y */`
 directly above the guard, using the matching and compared word counts.
-Remove an older snapshot in `src/non_matching/` when its C is superseded.
-An exact integration removes the annotation, assembly fallback, and snapshot.
+Use `object` in place of `inline` for measured comparisons that mask branch
+and jump destinations. An exact integration removes the annotation and
+assembly fallback.
 Run `./tools/build-and-verify.sh --expected --objects --non-matching` to
 verify the executable and compile inline attempts.
 

@@ -1537,8 +1537,26 @@ void drawProjectedModelPrimitives(TmdObject *object, GsOT *ot, s32 shift, u32 fl
     SetSp(D_8013B66C);
 }
 
-/* DECOMP_ATTEMPT: archive 2/24 */
+/* DECOMP_ATTEMPT: inline 2/24 */
+#ifdef NON_MATCHING
+void func_80058560(u32 *orderingTable, const u32 *packet) {
+    u32 length = *packet;
+    u32 *out = (u32 *)GsOUT_PACKET_P;
+    *out = length | (*orderingTable & 0xFFFFFF);
+    *orderingTable = (u32)out & 0xFFFFFF;
+    for (;;) {
+        ++out;
+        ++packet;
+        if (length == 0) break;
+        length -= 0x1000000;
+        *out = *packet;
+        GsOUT_PACKET_P = (u32)out;
+    }
+    GsOUT_PACKET_P = (u32)out;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/graphics/model_renderer", func_80058560);
+#endif
 
 /* DECOMP_ATTEMPT: unattempted */
 INCLUDE_ASM("asm/nonmatchings/graphics/model_renderer", func_800585BC);

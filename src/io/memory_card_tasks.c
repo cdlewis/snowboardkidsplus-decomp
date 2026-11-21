@@ -42,15 +42,42 @@ s32 pollMemoryCardWrite(void) {
     return 0;
 }
 
-/* DECOMP_ATTEMPT: archive 26/34 */
+/* DECOMP_ATTEMPT: inline 26/34 */
+#ifdef NON_MATCHING
+s32 MemCardFormat(s32 chan);
+
+s32 func_8001983C(void) {
+    switch (MemCardFormat(D_8013AF34)) {
+    case 1: return 1;
+    default: D_8013B600[D_8013AF38] = 0; break;
+    case 0: return 0;
+    case 2: return 2;
+    }
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/io/memory_card_tasks", func_8001983C);
+#endif
 
 void resetMemoryCardTaskState(void) {
     D_8013AF3E = 0;
 }
 
-/* DECOMP_ATTEMPT: archive 7/10 */
+/* DECOMP_ATTEMPT: inline 7/10 */
+#ifdef NON_MATCHING
+void func_800198C4(s32 channel) {
+    D_8013AF34 = channel;
+    switch (channel) {
+    case 0x10:
+        D_8013AF38 = 1;
+        break;
+    default:
+        D_8013AF38 = 0;
+        break;
+    }
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/io/memory_card_tasks", func_800198C4);
+#endif
 
 s32 startMemoryCardReadStatusTask(void *buffer) {
     if (D_8013AF3E == 0) {

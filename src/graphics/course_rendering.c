@@ -157,7 +157,7 @@ extern GsCOORDINATE2 D_80124FF4;
 extern s32 D_8013AFB8 __attribute__((section(".data")));
 extern s16 D_8013B22C, D_8013B22E;
 extern Position3D *D_8013B280 __attribute__((section(".data")));
-extern u16 D_8013B654;
+extern u16 D_8013B654[2];
 extern s32 D_8013B664;
 extern TmdObject *D_8013BBF8[];
 
@@ -404,11 +404,108 @@ void drawLayeredBackgroundAndSetFog(s16 playerIndex) {
     SetFogNearFar(8000, 10000, 400);
 }
 
-/* DECOMP_ATTEMPT: archive 309/312 */
-INCLUDE_ASM("asm/nonmatchings/graphics/course_rendering", func_8004E718);
+/* DECOMP_ATTEMPT: inline 309/312 */
+#ifdef NON_MATCHING
+extern POLY_G4 D_80124C3C[];
 
-/* DECOMP_ATTEMPT: archive 219/222 */
+void func_8004E718(s16 playerIndex) {
+    GsCOORDINATE2 *coordinate = (GsCOORDINATE2 *)getScratchAddr(0);
+    MATRIX *matrix = (MATRIX *)getScratchAddr(20);
+    GsOT *ot;
+    PlayerCamera *camera;
+    s16 horizon;
+    s32 r, g, b;
+
+    if (playerIndex == 0) {
+        ot = &D_800EC018[D_8013AF78];
+    } else {
+        ot = &D_800EC0B8[D_8013AF78];
+    }
+    *(POLY_G4 *)coordinate = D_80124C3C[0];
+    camera = D_801241E8;
+    camera = playerIndex + camera;
+    rsin(camera->pitch);
+    horizon = camera->pitch / 2;
+    if (horizon < -60) horizon = -60;
+    if (horizon > 120) horizon = 120;
+
+    addGouraudQuad(&D_8013AF6C[4095], -160, -120, 160, -120, -160, horizon, 160, horizon,
+                  255, 64, 0, 255, 64, 0, 255, 255, 128, 255, 255, 128);
+    addGouraudQuad(&D_8013AF6C[4095], -160, -120, 160, -120, -160, horizon, 160, horizon,
+                  255, 64, 0, 255, 64, 0, 255, 255, 128, 255, 255, 128);
+
+    if ((u32)((u16)gRacePlayers[playerIndex].unk92E - 106) < 6) {
+        r = 10;
+        g = 20;
+        b = 128;
+    } else {
+        r = 200;
+        g = 210;
+        b = 240;
+    }
+    if (horizon < 60) {
+        addGouraudQuad(&D_8013AF6C[4095], -160, horizon, 160, horizon, -160, 60, 160, 60,
+                      255, 255, 128, 255, 255, 128, 200, 210, 240, 200, 210, 240);
+        addFlatRectangle(&D_8013AF6C[4095], -160, 60, 320, 60, r, g, b);
+    } else {
+        addGouraudQuad(&D_8013AF6C[4095], -160, horizon, 160, horizon, -160, 120, 160, 120,
+                      255, 255, 128, 255, 255, 128, 200, 210, 240, 200, 210, 240);
+    }
+
+    if (selectedCameraOverlayModeGp) {
+        addFlatRectangleWithDrawMode(D_8013AF6C, getTPage(0, 2, 0, 0), SEMI_TRANSPARENT_FLAG,
+                                     -160, -120, 320, 240, 0, 16, 32);
+    } else {
+        addFlatRectangleWithDrawMode(D_8013AF6C, getTPage(0, 2, 0, 0), SEMI_TRANSPARENT_FLAG,
+                                     -160, -120, 320, 240, 0, 32, 64);
+    }
+    SetFarColor(128, 100, 80);
+    SetFogNearFar(8000, 10000, 400);
+    GsInitCoordinate2(0, coordinate);
+    GsGetLs(coordinate, matrix);
+    ScaleMatrix(matrix, &D_80124BDC);
+    GsSetLsMatrix(matrix);
+    drawProjectedModelPrimitives(D_80125044[0], ot, 2, 1);
+}
+#else
+INCLUDE_ASM("asm/nonmatchings/graphics/course_rendering", func_8004E718);
+#endif
+
+/* DECOMP_ATTEMPT: inline 219/222 */
+#ifdef NON_MATCHING
+void func_8004EBF8(s16 playerIndex) {
+    s16 x = -160 - ((D_801241E8[playerIndex].yaw >> 1) & 255);
+    s32 y = D_801241E8[playerIndex].pitch / 2;
+    s16 spriteY = y;
+
+    addTexturedSprite(&D_8013AF6C[4095], getTPage(0, 0, 640, 256), getClut(656, 496),
+                      x, (s16)spriteY, 256, 128, 0, 0, 128, 128, 128);
+    addTexturedSprite(&D_8013AF6C[4095], getTPage(0, 0, 640, 256), getClut(656, 496),
+                      (s16)(x + 256), (s16)spriteY, 256, 128, 0, 0, 128, 128, 128);
+    addTexturedSprite(&D_8013AF6C[4095], getTPage(0, 0, 640, 256), getClut(656, 496),
+                      (s16)(x + 512), (s16)spriteY, 256, 128, 0, 0, 128, 128, 128);
+    addGouraudQuad(&D_8013AF6C[4095], -160, (s16)(y - 120), 160, (s16)(y - 120),
+                   -160, (s16)spriteY, 160, (s16)spriteY, 0, 0, 0, 0, 0, 0, 0, 32, 80, 0, 32, 80);
+    addGouraudQuad(&D_8013AF6C[4095], -160, (s16)(y + 128), 160, (s16)(y + 128),
+                   -160, (s16)(y + 248), 160, (s16)(y + 248),
+                   0, 0, 16, 0, 0, 16, 0, 0, 16, 0, 0, 16);
+    if ((s16)spriteY > -120) {
+        addFlatRectangle(&D_8013AF6C[4095], -160, -120, 320, (s16)(y + 120), 0, 0, 0);
+    }
+    addFlatRectangle(&D_8013AF6C[4095], -160, (s16)(y + 248), 320, 120, 0, 0, 16);
+    if (D_8013B20C) {
+        addFlatRectangleWithDrawMode(D_8013AF6C, getTPage(0, 2, 0, 0),
+                                    SEMI_TRANSPARENT_FLAG, -160, -120, 320, 240, 24, 24, 16);
+    } else {
+        addFlatRectangleWithDrawMode(D_8013AF6C, getTPage(0, 2, 0, 0),
+                                    SEMI_TRANSPARENT_FLAG, -160, -120, 320, 240, 48, 48, 32);
+    }
+    SetFarColor(32, 32, 80);
+    SetFogNearFar(8000, 10000, 400);
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/graphics/course_rendering", func_8004EBF8);
+#endif
 
 void drawCyanBackgroundAndSetFog(s16 playerIndex) {
     addFlatRectangle(&D_8013AF6C[4095], -160, -120, 320, 240, 0, 235, 230);
@@ -606,8 +703,80 @@ void createFlickeringDotsTask(s32 playerIndex) {
     resource->frame = 0;
 }
 
-/* DECOMP_ATTEMPT: archive 323/325 */
+/* DECOMP_ATTEMPT: inline 323/325 */
+#ifdef NON_MATCHING
+extern u32 D_8013B238;
+
+void func_8004FB70(s16 playerIndex) {
+    GsCOORDINATE2 *coordinate = (GsCOORDINATE2 *)getScratchAddr(0);
+    MATRIX *matrix = (MATRIX *)getScratchAddr(20);
+    GsOT *ot;
+    s16 x, horizon;
+    u32 y;
+
+    if (playerIndex == 0) {
+        ot = &D_800EC040[D_8013AF78];
+    } else {
+        ot = &D_800EC0E0[D_8013AF78];
+    }
+
+    x = -160 - ((D_801241E8[playerIndex].yaw >> 1) & 255);
+    y = (u32)(D_801241E8[playerIndex].pitch / 2) & 0xFFFF;
+    horizon = y;
+    addTexturedSprite(&D_8013AF6C[4093], getTPage(0, 0, 640, 256), getClut(656, 480),
+                      (s16)x, (s16)y, 256, 96, 0, 0, 128, 128, 128);
+    addTexturedSprite(&D_8013AF6C[4093], getTPage(0, 0, 640, 256), getClut(656, 480),
+                      (s16)(x + 256), (s16)y, 256, 96, 0, 0, 128, 128, 128);
+    addTexturedSprite(&D_8013AF6C[4093], getTPage(0, 0, 640, 256), getClut(656, 480),
+                      (s16)(x + 512), (s16)y, 256, 96, 0, 0, 128, 128, 128);
+
+    {
+        s32 right = 160;
+    if (horizon < -248) horizon = -248;
+    if (horizon > 120) horizon = 120;
+    addSemiTransparentGouraudQuadWithDrawMode(&D_8013AF6C[4094], getTPage(0, 1, 0, 0),
+        -160, (s16)(horizon + 96), right, (s16)(horizon + 96),
+        -160, (s16)(horizon + 128), right, (s16)(horizon + 128),
+        0, 24, 32, 0, 24, 32, 0, 0, 0, 0, 0, 0);
+    addFlatRectangle(&D_8013AF6C[4094], -160, (s16)(horizon + 128), 320,
+                     (s16)(-8 - horizon), 0, 0, 0);
+    addSemiTransparentGouraudQuadWithDrawMode(&D_8013AF6C[4095], getTPage(0, 1, 0, 0),
+        -160, (s16)(horizon - 120), right, (s16)(horizon - 120),
+        -160, horizon, right, horizon,
+        0, 64, 128, 0, 64, 128, 0, 24, 32, 0, 24, 32);
+    addSemiTransparentGouraudQuadWithDrawMode(&D_8013AF6C[4095], getTPage(0, 1, 0, 0),
+        -160, -120, right, -120, -160, (s16)(horizon - 120), right, (s16)(horizon - 120),
+        0, 128, 128, 0, 128, 128, 0, 64, 128, 0, 64, 128);
+
+    }
+    if (isPositionInCameraRange(0x102D, 0x3395, playerIndex)) {
+        GsInitCoordinate2(0, coordinate);
+        coordinate->coord.t[0] = 0x102D;
+        coordinate->coord.t[1] = 0x7F1;
+        coordinate->coord.t[2] = 0x3395;
+        RotMatrixY(-D_8013B238 * 64, &coordinate->coord);
+        GsGetLs(coordinate, matrix);
+        ScaleMatrix(matrix, &D_80124BDC);
+        GsSetLsMatrix(matrix);
+        drawProjectedModelPrimitives(D_80125044[1], ot, 2, 1);
+        if (!D_8013AFD3) {
+            D_8013B238++;
+        }
+    }
+
+    if (selectedCameraOverlayModeGp) {
+        addFlatRectangleWithDrawMode(&D_8013AF6C[0], getTPage(0, 2, 0, 0), 2,
+                                     -160, -120, 320, 240, 24, 24, 24);
+    } else {
+        addFlatRectangleWithDrawMode(&D_8013AF6C[0], getTPage(0, 2, 0, 0), 2,
+                                     -160, -120, 320, 240, 48, 48, 48);
+    }
+    SetFarColor(80, 80, 100);
+    SetFogNearFar(8000, 10000, 400);
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/graphics/course_rendering", func_8004FB70);
+#endif
 
 void drawRipplingBackgroundAndSetFog(s16 playerIndex) {
     s32 column, strip, offset, x, y;
@@ -870,8 +1039,28 @@ void readVramPixelColor(s32 x, s32 y, TextureColor *out) {
     out->stp = pixel >> 15;
 }
 
-/* DECOMP_ATTEMPT: archive 24/26 */
+/* DECOMP_ATTEMPT: inline 24/26 */
+#ifdef NON_MATCHING
+extern RECT D_8013B248 __attribute__((section(".sdata")));
+
+void func_8005162C(s32 x, s32 y, u32 r, u32 g, u32 b, u32 stp) {
+    u16 color;
+    u32 rgb = (r & 0xF8) >> 3;
+    u32 alpha = stp & 1;
+    u32 green = (g & 0xF8) << 2;
+    u32 blue;
+    D_8013B248.x = x;
+    D_8013B248.y = y;
+    rgb |= green;
+    blue = (b & 0xF8) << 7;
+    rgb |= blue;
+    alpha <<= 15;
+    color = rgb | alpha;
+    LoadImage(&D_8013B248, (u32 *)&color);
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/graphics/course_rendering", func_8005162C);
+#endif
 
 void unpackPsxColor(u32 color, UnpackedPsxColor *out) {
     out->r = color & 0x1F;
@@ -892,8 +1081,17 @@ u32 packTextureColor(TextureColor *color) {
     return stp | rgb;
 }
 
-/* DECOMP_ATTEMPT: archive 18/28 */
+/* DECOMP_ATTEMPT: inline 18/28 */
+#ifdef NON_MATCHING
+void func_80051700(void) {
+    s32 i;
+    for (i = 0; i < 0x40; i++) {
+        func_8005162C((s16)(i + 704), 0x90, 0xE0, 0xE0, 0xE8, 0);
+    }
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/graphics/course_rendering", func_80051700);
+#endif
 
 void queueScanlineCopyPackets(void) {
     DR_MOVE *move;
@@ -942,8 +1140,59 @@ void queueScanlineCopyPackets(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: archive 161/181 */
+/* DECOMP_ATTEMPT: inline 161/181 */
+#ifdef NON_MATCHING
+extern Position3D *D_801250EC[];
+extern u32 D_8013B658, D_8013B65C;
+extern s32 D_80124BEC[], D_80124C14[];
+extern void func_80051700(void);
+
+void func_80051A68(void) {
+    u32 *model;
+    register u32 *offset;
+    s16 i;
+    Position3D *positions;
+    bindGeometryRecordData((s16 *)0x801C0000);
+    positions = D_8013B280 = D_801250EC[D_8013AFCE];
+    for (i = 0; i < 100; i++) {
+        positions[i].x *= 5;
+        positions[i].y *= 5;
+        positions[i].z *= 5;
+    }
+    offset = (u32 *)0x801C8804;
+    D_8013B654[0] = *(u16 *)0x801C8800;
+    for (i = 0; i < D_8013B654[0]; i++) {
+        model = (u32 *)0x801C8804;
+        model = (u32 *)((u32)model + *offset);
+        GsMapModelingData(model);
+        model++;
+        D_8013B658 = *model++;
+        D_8013BBF8[i] = (TmdObject *)model;
+        offset++;
+        D_8013B280[i].x /= 256;
+        D_8013B280[i].y /= 256;
+        D_8013B280[i].z /= 256;
+    }
+    GsInitCoordinate2(0, &D_80124FF4);
+    D_8013B660 = D_80124BEC[D_8013AFCE] / 256;
+    D_8013B664 = D_80124C14[D_8013AFCE] / 256;
+    if ((u16)gCourseOptionalResourceSectors[D_8013AFCE].sector != 0) {
+        offset = (u32 *)0x801F0804;
+        D_8013B654[1] = *(u16 *)0x801F0800;
+        for (i = 0; i < D_8013B654[1]; i++) {
+            model = (u32 *)(*offset++ + 0x801F0800);
+            model++;
+            GsMapModelingData(model);
+            model++;
+            D_8013B65C = *model++;
+            D_80125044[i] = (TmdObject *)model;
+        }
+    }
+    if (D_8013AFCE == 6) func_80051700();
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/graphics/course_rendering", func_80051A68);
+#endif
 
 void drawCourseModelsForView(s16 view) {
     MATRIX *matrix = (MATRIX *)getScratchAddr(0);
@@ -1000,7 +1249,7 @@ void drawCourseModelsForView(s16 view) {
         const Position3D *positions;
         s32 x, z, dx, dz;
 
-        if (i >= D_8013B654) {
+        if (i >= D_8013B654[0]) {
             goto queue_draw_mode;
         }
         positions = D_8013B280;

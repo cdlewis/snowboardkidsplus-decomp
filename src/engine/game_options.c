@@ -17,8 +17,20 @@ s32 getPlayerOptionFlag(s16 playerIndex) {
     return gGameOptionFlags & (16 << playerIndex);
 }
 
-/* DECOMP_ATTEMPT: archive 16/19 */
+/* DECOMP_ATTEMPT: inline 16/19 */
+#ifdef NON_MATCHING
+extern u8 D_8013AFD8 __attribute__((section(".data")));
+
+s16 func_8008C670(s16 playerIndex) {
+    if (D_8013AFD8) goto zero;
+    if (D_8013AFE2) goto zero;
+    return gGameOptionFlags & (16 << playerIndex);
+zero:
+    return 0;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/engine/game_options", func_8008C670);
+#endif
 
 s32 getUnlockNotificationFlag(s16 index) {
     return gUnlockNotificationFlags & (1 << index);

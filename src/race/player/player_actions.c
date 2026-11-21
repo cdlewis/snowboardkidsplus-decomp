@@ -315,8 +315,83 @@ void getPlayerCourseProgress(u16 playerIndex, s32 *progress, s32 *distance) {
     }
 }
 
-/* DECOMP_ATTEMPT: archive 239/260 */
+/* DECOMP_ATTEMPT: inline 239/260 */
+#ifdef NON_MATCHING
+void func_8002B820(void) {
+    s8 order[4];
+    s32 progress[4];
+    s32 distance[4];
+    s32 i, j;
+    RacePlayer *player;
+
+    if (D_8013AFE2 == 2) {
+        return;
+    }
+    if (D_8013AFE4 & 1) {
+        D_8013B0EC[0] = 0;
+        D_8013B0EC[1] = 1;
+        D_8013B0EC[2] = 2;
+        D_8013B0EC[3] = 3;
+        return;
+    }
+
+    order[0] = 0;
+    order[1] = 1;
+    order[2] = 2;
+    order[3] = 3;
+    for (i = 0; i < D_8013AFD2; i++) {
+        player = &gRacePlayers[i];
+        player->coursePlacementDistance =
+            -getGeometryPlacementSignedDistance(player->unk92E, player->x >> 8, player->z >> 8);
+        getPlayerCourseProgress(i, &progress[i], &distance[i]);
+        if (player->unk128 & 0x4000000) {
+            progress[i] += player->unk966;
+        }
+    }
+
+    for (i = 0; i < D_8013AFD2 - 1; i++) {
+        for (j = i + 1; j < D_8013AFD2; j++) {
+            if (gRacePlayers[order[i]].unk935 > gRacePlayers[order[j]].unk935) {
+                s32 slot = order[i];
+                order[i] = order[j];
+                order[j] = slot;
+            }
+        }
+    }
+
+    for (i = 0; i < D_8013AFD2 - 1; i++) {
+        for (j = i + 1; j < D_8013AFD2; j++) {
+            s32 firstIndex = order[i];
+            RacePlayer *first = &gRacePlayers[firstIndex];
+            s32 secondIndex;
+            RacePlayer *second;
+            s32 secondSlot;
+
+            if (!(first->unk128 & 0x40)) {
+                secondIndex = order[j];
+                second = &gRacePlayers[secondIndex];
+                secondSlot = (u8)order[j];
+                if (!(second->unk128 & 0x40) &&
+                    (first->unk934 < second->unk934 ||
+                     (first->unk934 == second->unk934 &&
+                      (progress[firstIndex] < progress[secondIndex] ||
+                       (progress[firstIndex] == progress[secondIndex] &&
+                        distance[firstIndex] < distance[secondIndex]))))) {
+                    order[i] = secondSlot;
+                    order[j] = firstIndex;
+                }
+            }
+        }
+    }
+
+    for (i = 0; i < D_8013AFD2; i++) {
+        gRacePlayers[order[i]].unk935 = i;
+        D_8013B0EC[i] = gRacePlayers[order[i]].playerIndex;
+    }
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002B820);
+#endif
 
 /* DECOMP_ATTEMPT: inline 84/196 */
 #ifdef NON_MATCHING
@@ -519,8 +594,86 @@ void resolvePlayerCollisionsWithCylinder(const Position3D *position, s32 radius,
     }
 }
 
-/* DECOMP_ATTEMPT: archive 128/147 */
+/* DECOMP_ATTEMPT: inline 128/147 */
+#ifdef NON_MATCHING
+s32 func_8002C2D8(Position3D *position, s32 radius, s32 height, s32 threshold, u16 flags)
+{
+  s16 hit = 0;
+  s32 i;
+  RacePlayer *player;
+  s32 x;
+  s32 y;
+  s32 z;
+  RacePlayer *collisionPlayer;
+  s32 range;
+  s32 verticalRange;
+  s16 angle;
+  s32 sine;
+  s32 cosine;
+  for (i = 0; i < D_8013AFD2; i++)
+  {
+    player = &gRacePlayers[i];
+    if (player->isActive && arePositionsWithinXZRange(position, (Position3D *) (&gRacePlayers[i].x), 0x18000))
+    {
+      y = position->y - player->unk074;
+      if (y < 0)
+      {
+        y = -y;
+        verticalRange = player->unk0B0 * 2;
+      }
+      else
+      {
+        verticalRange = height;
+      }
+      if (y <= verticalRange)
+      {
+        x = position->x - player->x;
+        range = radius + player->unk0AC;
+        if (x < 0)
+        {
+          x = -x;
+        }
+        if (x < range)
+        {
+          z = position->z - player->z;
+          if (z < 0)
+          {
+            z = -z;
+          }
+          if (z < range)
+          {
+            y = SquareRoot0((x * x) + (z * z));
+            collisionPlayer = player;
+            if (y < range)
+            {
+              if (player->unk0BC < threshold)
+              {
+                y -= range;
+                angle = getXZHeading(position->x, position->z, collisionPlayer->x, collisionPlayer->z);
+                sine = rsin(angle);
+                cosine = rcos(angle);
+                sine = (-sine) * y;
+                cosine *= y;
+                collisionPlayer->x += sine / 4096;
+                collisionPlayer->z -= cosine / 4096;
+              }
+              else
+              {
+                collisionPlayer->unk0E8 |= flags;
+                hit = 1;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return hit;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002C2D8);
+#endif
 
 u16 pushPlayerOutOfCylinder(const Position3D *position, s32 radius, s32 height, s16 playerIndex) {
     RacePlayer *player;
@@ -878,8 +1031,23 @@ s32 func_8002CFAC(void) {
 INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002CFAC);
 #endif
 
-/* DECOMP_ATTEMPT: archive 16/20 */
+/* DECOMP_ATTEMPT: inline 16/20 */
+#ifdef NON_MATCHING
+s32 func_8002CFF0(void) {
+    u32 flags = D_8013B0D8->unk128;
+    s32 result;
+    do {
+        result = 1;
+        if (flags & 0x43000) break;
+        if (!(flags & 0x800)) { result = 1; break; }
+        if (D_8013B0E4 < 9) D_8013B0E4 = 9;
+        result = 0;
+    } while (0);
+    return result;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002CFF0);
+#endif
 
 /* DECOMP_ATTEMPT: inline 20/20 */
 #ifdef NON_MATCHING
@@ -1378,8 +1546,18 @@ void updateCurrentPlayerDirectionalAnimation(void) {
     currentPlayerAbsolute->unk128 |= 0x800;
 }
 
-/* DECOMP_ATTEMPT: archive 19/22 */
+/* DECOMP_ATTEMPT: inline 19/22 */
+#ifdef NON_MATCHING
+void func_8002E368(void) {
+    if (D_8013B0D8->animationFlags & 0x10) {
+        D_8013AE88->data1A++;
+    } else {
+        D_8013B0D8->unk128 |= 0x800;
+    }
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002E368);
+#endif
 
 void func_8002E3C0(void) {
 }
@@ -1431,8 +1609,16 @@ void playCurrentPlayerSoundEffect(s16 index) {
     }
 }
 
-/* DECOMP_ATTEMPT: archive 13/14 */
+/* DECOMP_ATTEMPT: inline 13/14 */
+#ifdef NON_MATCHING
+void func_8002E5A0(u16 controller, s16 value) {
+    if (D_8013B0D8->unk008 == 0) {
+        D_8013AF08[controller] = value;
+    }
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002E5A0);
+#endif
 
 void startPlayerTimerTask(RacePlayer *player) {
     player->unk0FC = 240;
@@ -1658,5 +1844,114 @@ void loadCurrentPlayerModelBlock(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: archive 223/232 */
+/* DECOMP_ATTEMPT: inline 223/232 */
+#ifdef NON_MATCHING
+extern volatile u8 gShopMenuRememberedSelection;
+
+typedef struct InitialRecord {
+ u8 unk000[12]; u32 courseValues[11]; u8 unk038[12];
+ RaceTime lapRecords[11][5], courseTimes[11], timeRecords[11][5];
+ u16 statsRecordValues[11][5];
+ u8 statsRecordIcons[11][5], lapRecordIcons[11][5], countRecordValues[11][5], countRecordIcons[11][5], timeRecordCharacters[11][5];
+} InitialRecord;
+
+extern RaceTime D_80132204[3][5], D_8013264C[10][5];
+extern u8 D_8013B47C __attribute__((section(".data")));
+extern u8 D_8013B4BC __attribute__((section(".data")));
+extern u8 D_8013B4BD __attribute__((section(".data")));
+extern u8 D_8013B527 __attribute__((section(".data")));
+extern u8 D_8013B110;
+extern s16 D_8013B104;
+void func_800897D0(SaveRecord *record);
+void mergeSaveRecordFlags(SaveRecord *source, SaveRecord *destination);
+void clearHalfwordPairTable(void);
+
+void func_8002EE0C(void) {
+ u16 i, j;
+ InitialRecord *record;
+ SaveRecord *first = (SaveRecord *)&D_8013080C;
+ SaveRecord *second;
+ GlobalFlagStatePrefix *destination;
+ func_800897D0(first);
+ second = first + 1;
+ func_800897D0(second);
+ destination = &D_8013101C;
+ copyGlobalFlagState((GlobalFlagStatePrefix *)first, destination);
+ mergeSaveRecordFlags(second, (SaveRecord *)destination);
+ record = (InitialRecord *)first;
+ for(i=0;i<11;i++) {
+  for(j=0;j<5;j++) {
+   ((i * 5 + j) + record->lapRecords[0])->minutes=3;
+   ((i * 5 + j) + record->lapRecords[0])->seconds=59;
+   ((i * 5 + j) + record->lapRecords[0])->centiseconds=0;
+   ((i * 5 + j) + record->timeRecords[0])->minutes=3;
+   ((i * 5 + j) + record->timeRecords[0])->seconds=0;
+   ((i * 5 + j) + record->timeRecords[0])->centiseconds=0;
+   record->lapRecordIcons[i][j]=j;
+   record->countRecordValues[i][j]=0;
+   record->countRecordIcons[i][j]=j;
+   record->timeRecordCharacters[i][j]=j;
+   record->statsRecordValues[i][j]=0;
+   record->statsRecordIcons[i][j]=j;
+  }
+  (i + record->courseTimes)->minutes=1;
+  record->courseTimes[i].seconds=24;
+  record->courseTimes[i].centiseconds=0;
+  *(i + record->courseValues)=0;
+ }
+ for(j=0;j<5;j++) {
+  ((InitialRecord *)&D_8013080C)->timeRecords[9][j]=D_80132204[0][j];
+  ((InitialRecord *)&D_8013080C)->timeRecords[0][j]=D_80132204[1][j];
+  ((InitialRecord *)&D_8013080C)->timeRecords[1][j]=D_80132204[2][j];
+ }
+ for(i=0;i<10;i++) {
+  for(j=0;j<5;j++) {
+   ((InitialRecord *)&D_8013080C)->lapRecords[i][j]=D_8013264C[i][j];
+  }
+ }
+ D_8013AFCD=1;
+ D_8013AFE0=0;
+ for(i=0;i<4;i++) {
+  gRacePlayers[i].unk009=i;
+  gRacePlayers[i].unk00A[0]=0;
+  gRacePlayers[i].unk00D=0;
+  gRacePlayers[i].unk00A[1]=0;
+  gRacePlayers[i].unk00A[2]=0;
+  gRacePlayers[i].money=0;
+  gRacePlayers[i].unk02A=0;
+  gRacePlayers[i].unk015[0]=0;
+  gRacePlayers[i].unk015[3]=0;
+ }
+ for(i=0;i<15;i++) {
+  gPlayerResourceTextureSelections.entries[0][i]=D_80123650[i];
+  gPlayerResourceTextureSelections.entries[1][i]=D_80123650[i];
+ }
+ D_8013AFCD=1;
+ D_8013AFD2=1;
+ D_8013AF7A=320;
+ D_8013AF7C=240;
+ D_8013B10C=-1;
+ D_8013B10E=-1;
+ D_8013AFCE=0;
+ D_8013AFE2=0;
+ D_8013AFD6=0;
+ D_8013B47C=0;
+ D_8013B104=0;
+ gShopMenuRememberedSelection=0;
+ D_8013B4BC=0;
+ D_8013B4BD=0;
+ D_8013B527=0;
+ gRacePlayers[0].unk009=0;
+ gRacePlayers[0].unk00A[0]=0;
+ gRacePlayers[0].unk00D=0;
+ gRacePlayers[1].unk009=6;
+ gRacePlayers[1].unk00A[0]=0;
+ gRacePlayers[1].unk00D=0;
+ D_8013AFD7=0;
+ clearHalfwordPairTable();
+ D_8013B106=0;
+ D_8013B110=0;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002EE0C);
+#endif

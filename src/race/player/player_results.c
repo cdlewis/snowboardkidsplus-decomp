@@ -290,8 +290,17 @@ void updateAttackResultsAndRecords(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: archive 12/16 */
+/* DECOMP_ATTEMPT: inline 12/16 */
+#ifdef NON_MATCHING
+s16 func_8003D904(u16 parity) {
+    if (!(D_8013AFAA & 0x400) || ((gFrameCounter & 1) == parity)) {
+        return 1;
+    }
+    return 0;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/race/player/player_results", func_8003D904);
+#endif
 
 void renderCurrentCameraPlayersAndUpdateSound(void) {
     u16 i;
@@ -359,5 +368,25 @@ void stopPlayerSound(u16 playerIndex) {
     }
 }
 
-/* DECOMP_ATTEMPT: archive 19/23 */
+/* DECOMP_ATTEMPT: inline 19/23 */
+#ifdef NON_MATCHING
+typedef struct FlatLight {
+    s32 vx, vy, vz;
+    u8 r, g, b;
+} FlatLight;
+
+extern FlatLight D_80124178[3];
+
+void func_8003DEE0(void) {
+    D_80124178[0].vx = 20;
+    D_80124178[0].vy = -100;
+    D_80124178[0].vz = -100;
+    D_80124178[0].r = 245;
+    D_80124178[0].g = 245;
+    D_80124178[0].b = 245;
+    GsSetFlatLight(0, &D_80124178[0]);
+    GsSetAmbient(0xE14, 0xE14, 0xE14);
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/race/player/player_results", func_8003DEE0);
+#endif

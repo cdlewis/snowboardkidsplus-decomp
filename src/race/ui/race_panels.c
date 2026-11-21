@@ -244,8 +244,27 @@ void waitFallingSpriteEffectsExitTask(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: archive 24/26 */
+/* DECOMP_ATTEMPT: inline 24/26 */
+#ifdef NON_MATCHING
+void initializeFallingSpriteEffectsTask(void);
+void waitFallingSpriteEffectsExitTask(void);
+
+void func_80034028(void) {
+    s16 i;
+
+    D_8013AE88->data18 = 0;
+    i = 0;
+    while (1) {
+        createChildTaskWithReserve(initializeFallingSpriteEffectsTask);
+        if (++i >= 10) {
+            break;
+        }
+    }
+    setCurrentTaskCallback(waitFallingSpriteEffectsExitTask);
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/race/ui/race_panels", func_80034028);
+#endif
 
 void drawSlidingDisplaySprite(SlidingDisplayResource *resource) {
     s32 x = (resource->position >> 1) - 56;
@@ -814,8 +833,25 @@ void checkControllerInputSequenceTask(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: archive 23/25 */
+/* DECOMP_ATTEMPT: inline 23/25 */
+#ifdef NON_MATCHING
+s32 createChildTaskWithReserve(TaskCallback callback);
+void checkControllerInputSequenceTask(void);
+
+void func_80035CF8(void) {
+    u8 i;
+    gSaveRecordUnlockOverrideFlags = 0;
+    i = 0;
+    do {
+        createChildTaskWithReserve(checkControllerInputSequenceTask);
+        D_8013AE8C->data18 = i;
+        D_8013AE8C->data1A = 0;
+        i++;
+    } while (i < 3);
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/race/ui/race_panels", func_80035CF8);
+#endif
 
 void drawResultDisplayLabels(ResultDisplayResource *resource) {
     if (resource->brightness != 128) {

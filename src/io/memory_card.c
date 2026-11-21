@@ -153,8 +153,31 @@ s32 memoryCardFileExists(void) {
     return 0;
 }
 
-/* DECOMP_ATTEMPT: archive 109/114 */
+/* DECOMP_ATTEMPT: inline 109/114 */
+#ifdef NON_MATCHING
+s32 func_8001907C(void) {
+    s16 i = 0;
+    s16 blocks = 0;
+    s32 size;
+    s16 wholeBlocks;
+    for (; i < D_8013B600[D_8013AF38]; i++) {
+        size = D_8013B700[D_8013AF38][i].size;
+        wholeBlocks = size / 8192;
+        blocks += (size % 8192 ? 1 : 0) + wholeBlocks;
+    }
+    if (blocks < 15) {
+        return 0;
+    }
+    for (i = 0; i < D_8013B600[D_8013AF38]; i++) {
+        if (strcmp(D_8013B700[D_8013AF38][i].name, D_8013AF40) == 0) {
+            return 0;
+        }
+    }
+    return 1;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/io/memory_card", func_8001907C);
+#endif
 
 s32 tryAcceptMemoryCard(void) {
     if (MemCardSync(1, 0, 0) == -1) {

@@ -180,15 +180,43 @@ void endSoundSystem(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: archive 20/22 */
+/* DECOMP_ATTEMPT: inline 20/22 */
+#ifdef NON_MATCHING
+void SsVabClose(s16 id);
+
+void func_800180F4(s16 id) {
+    s8 *open;
+    if (gSoundSystemActive) {
+        open = &gSoundBankLoaded[id];
+        if (*open) {
+            SsVabClose(id);
+            *open = 0;
+        }
+    }
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/audio/sound_manager", func_800180F4);
+#endif
 
 void stopAllSoundVoices(void) {
     SsUtAllKeyOff(0);
 }
 
-/* DECOMP_ATTEMPT: archive 15/17 */
+/* DECOMP_ATTEMPT: inline 15/17 */
+#ifdef NON_MATCHING
+void stopAllSoundVoices(void);
+
+void func_8001816C(void) {
+    u32 bank;
+
+    stopAllSoundVoices();
+    for (bank = 0; (u8)bank < 9; bank++) {
+        func_800180F4((u8)bank);
+    }
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/audio/sound_manager", func_8001816C);
+#endif
 
 s32 playSoundEffect(u8 bank, u16 programAndTone, s16 volume) {
     u16 note = programAndTone;
@@ -241,8 +269,37 @@ s32 attenuateSoundVolume(s32 distance, s16 volume) {
     return result;
 }
 
-/* DECOMP_ATTEMPT: archive 78/79 */
+/* DECOMP_ATTEMPT: inline 78/79 */
+#ifdef NON_MATCHING
+s32 func_800183FC(u16 playerIndex, u8 bank, u16 programAndTone, s16 volume) {
+    u16 playbackVolume = volume;
+    const RacePlayer *players = gRacePlayers;
+    const RacePlayer *player = &players[playerIndex];
+
+    if (player->unk008) {
+        playbackVolume = attenuateSoundVolume(
+            getNearestCameraManhattanDistance(player->x, player->y, player->z), volume);
+        if (playbackVolume == 0) {
+            return 0xFF;
+        }
+    }
+
+    if (gSoundBankLoaded[bank]) {
+        D_8013AF29++;
+        if ((s8)D_8013AF29 >= 12) {
+            D_8013AF29 = 0;
+        }
+        SsUtKeyOffV((s8)D_8013AF29);
+        SsUtKeyOnV((s8)D_8013AF29, bank, programAndTone & 0xFF,
+                   programAndTone >> 8, programAndTone >> 8, 0,
+                   playbackVolume, playbackVolume);
+        return (s8)D_8013AF29;
+    }
+    return 0xFF;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/audio/sound_manager", func_800183FC);
+#endif
 
 s32 playPositionalSoundEffect(s32 x, s32 y, s32 z, u8 bank, u16 programAndTone, s16 volume) {
     u16 note;
@@ -294,8 +351,15 @@ void stopMatchingSoundVoice(u8 owner, u8 bank, u16 note) {
     }
 }
 
-/* DECOMP_ATTEMPT: archive 17/19 */
+/* DECOMP_ATTEMPT: inline 17/19 */
+#ifdef NON_MATCHING
+void func_800187B8(u8 voice) {
+    SsUtKeyOffV(voice);
+    gSoundVoiceRecords[voice - 12].owner = 0xFF;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/audio/sound_manager", func_800187B8);
+#endif
 
 void playPlayerPositionalSoundEffect(u8 playerIndex, u8 bank, u16 programAndTone, s16 volume) {
     u16 note;
@@ -311,5 +375,26 @@ void playPlayerPositionalSoundEffect(u8 playerIndex, u8 bank, u16 programAndTone
     }
 }
 
-/* DECOMP_ATTEMPT: archive 74/74 */
+/* DECOMP_ATTEMPT: inline 74/74 */
+#ifdef NON_MATCHING
+void func_8001890C(u8 playerIndex, u8 bank, u16 programAndTone, s16 volume) {
+    RacePlayer *players = gRacePlayers;
+    s16 playbackVolume = volume;
+
+    if (players[playerIndex].unk008) {
+        playbackVolume = attenuateSoundVolume(getNearestCameraManhattanDistance(
+            players[playerIndex].x, players[playerIndex].y, players[playerIndex].z), volume);
+        if (playbackVolume < 24) {
+            playbackVolume = 24;
+        }
+    }
+    if (gSoundBankLoaded[bank]) {
+        SsUtKeyOffV(playerIndex + 20);
+        SsUtKeyOnV(playerIndex + 20, bank, programAndTone & 0xFF,
+                   programAndTone >> 8, programAndTone >> 8, 0,
+                   playbackVolume, playbackVolume);
+    }
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/audio/sound_manager", func_8001890C);
+#endif

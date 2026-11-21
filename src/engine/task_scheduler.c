@@ -77,8 +77,31 @@ void initializeTaskScheduler(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: archive 30/32 */
+/* DECOMP_ATTEMPT: inline 30/32 */
+#ifdef NON_MATCHING
+void func_800147B8(TaskCallback callback) {
+    GameTask *next;
+    D_8013AEB4--;
+    D_8013AE8C = D_8013AE9C;
+    D_8013AE9C = D_8013AE9C->next;
+    next = D_8013AE88->next;
+    D_8013AE8C->next = next;
+    D_8013AEA4 = next;
+    if (next != 0) {
+        next->previous = D_8013AE8C;
+    }
+    D_8013AE88->next = D_8013AE8C;
+    D_8013AE8C->previous = D_8013AE88;
+    D_8013AE8C->parent = D_8013AE88;
+    D_8013AE8C->callback = callback;
+    D_8013AE8C->depth = D_8013AE88->depth + 1;
+    D_8013AE8C->unk10 = 0;
+    D_8013AE8C->resource16 = 0xFFFF;
+    D_8013AE8C->resource14 = 0xFFFF;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/engine/task_scheduler", func_800147B8);
+#endif
 
 s32 createChildTask(TaskCallback callback) {
     if (D_8013AEB4 == 0) {
@@ -109,8 +132,20 @@ s32 tryCreateChildTaskWith20SlotsReserved(TaskCallback callback) {
     return 1;
 }
 
-/* DECOMP_ATTEMPT: archive 10/15 */
+/* DECOMP_ATTEMPT: inline 10/15 */
+#ifdef NON_MATCHING
+s16 func_800148F4(GameTask *parent, TaskCallback callback) {
+    GameTask *previous = D_8013AE88;
+    s16 result;
+
+    D_8013AE88 = parent;
+    result = createChildTask(callback);
+    D_8013AE88 = previous;
+    return result;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/engine/task_scheduler", func_800148F4);
+#endif
 
 /* DECOMP_ATTEMPT: inline 15/15 */
 #ifdef NON_MATCHING
@@ -127,8 +162,14 @@ s16 func_80014930(GameTask *parent, TaskCallback callback) {
 INCLUDE_ASM("asm/nonmatchings/engine/task_scheduler", func_80014930);
 #endif
 
-/* DECOMP_ATTEMPT: archive 10/15 */
+/* DECOMP_ATTEMPT: inline 10/15 */
+#ifdef NON_MATCHING
+s32 tryCreateChildTaskWith20SlotsReserved(TaskCallback callback);
+
+s16 func_8001496C(GameTask *parent, TaskCallback callback) {     GameTask *previous = D_8013AE88;     s16 result;      D_8013AE88 = parent;     result = tryCreateChildTaskWith20SlotsReserved(callback);     D_8013AE88 = previous;     return result; }
+#else
 INCLUDE_ASM("asm/nonmatchings/engine/task_scheduler", func_8001496C);
+#endif
 
 void deleteCurrentTaskSubtree(void) {
     GameTask *task = D_8013AE88;
@@ -178,8 +219,19 @@ void deletePendingTaskSubtree(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: archive 9/14 */
+/* DECOMP_ATTEMPT: inline 9/14 */
+#ifdef NON_MATCHING
+u16 func_80014B14(void) {
+    GameTask *current=D_8013AE88;
+    u16 result;
+    D_8013AEA4=current->next;
+    if (D_8013AEA4) result=D_8013AEA4->depth > current->depth;
+    else result=0;
+    return result;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/engine/task_scheduler", func_80014B14);
+#endif
 
 void setCurrentTaskCallback(TaskCallback callback) { D_8013AE88->callback = callback; }
 

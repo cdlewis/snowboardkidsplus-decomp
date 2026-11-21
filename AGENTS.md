@@ -114,11 +114,10 @@ Put useful unfinished C under `#ifdef NON_MATCHING` and leave the original
 `INCLUDE_ASM` in its `#else` branch. Put
 `/* DECOMP_ATTEMPT: inline MATCHING_WORDS/COMPARED_WORDS */` immediately above the
 guard, using the measured counts. A fallback without a recorded C attempt uses
-`/* DECOMP_ATTEMPT: unattempted */` directly above the fallback. Historical C
-snapshots in `src/non_matching/` use `archive` in their annotation, or `object`
-for scores that mask branch and jump destinations. Remove superseded snapshots
-and remove the annotation when integrating an exact match. The verified build
-checks these annotations, and the docs report reads them directly.
+`/* DECOMP_ATTEMPT: unattempted */` directly above the fallback. Use `object`
+in place of `inline` for scores that mask branch and jump destinations.
+Remove the annotation when integrating an exact match. The verified build checks
+these annotations, and the docs report reads them directly.
 
 #### Step 3: Finish the requested work
 

@@ -1144,8 +1144,42 @@ void beginSound601TaskSequence(void) {
     setCurrentTaskCallback(drawSound601SequenceSpriteTask);
 }
 
-/* DECOMP_ATTEMPT: archive 92/96 */
+/* DECOMP_ATTEMPT: inline 92/96 */
+#ifdef NON_MATCHING
+extern const char D_80010A1C[];
+extern const char D_80010A2C[];
+void drawDebugText(s32 x, s32 y, const char *format, ...);
+
+void func_80033100(void) {
+    GameTask *task = D_8013AE88;
+    u32 flags = gRacePlayers[task->data18].unk128;
+    GameTask *drawTask;
+    const char *text;
+    u16 frame;
+    if ((flags & 0x40) || D_8013B1AA) {
+        deleteCurrentTaskSubtree();
+    } else if (!D_8013B1AB) {
+        if (flags & 0x400) {
+            if (task->data1A < 30) task->data1A++;
+        } else {
+            task->data1A = 0;
+        }
+        task = D_8013AE88;
+        if (gRacePlayers[task->data18].unk128 & 0x1000) task->data1A = 0;
+        if (!D_8013AFD3) {
+            drawTask = D_8013AE88;
+            if (drawTask->data1A >= 30) {
+                frame = gFrameCounter;
+                if (frame & 2) text = D_80010A1C;
+                else text = D_80010A2C;
+                drawDebugText((s16)(drawTask->data1C - 52), (s16)drawTask->data1E, text);
+            }
+        }
+    }
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/menu/mode_transitions", func_80033100);
+#endif
 
 void initializePlayerPromptTask(void) {
     if (D_8013AFCD == 1) {

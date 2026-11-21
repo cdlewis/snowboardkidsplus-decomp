@@ -48,8 +48,276 @@ void drawSplitScreenTrickAttackHud(s16 player);
 void drawScoreAttackHud(void);
 void func_80042894(s16 player);
 
-/* DECOMP_ATTEMPT: archive 1125/1135 */
+/* DECOMP_ATTEMPT: inline 1125/1135 */
+#ifdef NON_MATCHING
+#define CAMERA D_801241E8[D_8013AE88->data18]
+#define PLAYER gRacePlayers[D_8013AE88->data18]
+#define VIEW gPlayerCameraViews[D_8013AE88->data18]
+
+void func_8003EE70(void) {
+    PlayerCamera *shiftedCameras;
+    u16 updateIndex;
+    s32 cameraValue;
+    if (D_8013AFD6 == 0) {
+        if (D_8013AFD3 != 0) {
+            if (CAMERA.unk16 != 0) {
+                CAMERA.unk17 = CAMERA.unk16;
+                CAMERA.unk16 = 0;
+            }
+        }
+        if (D_8013AFD3 == 0) {
+            if (CAMERA.unk16 == 0) {
+                CAMERA.unk16 = CAMERA.unk17;
+            }
+        }
+    }
+
+    switch (CAMERA.unk16) {
+    case 1:
+    case 4:
+    case 7: {
+        s32 height;
+        s16 previousRegion;
+        PlayerCamera *cameras;
+        GsRVIEW2 *views;
+        PlayerCamera *regionCameras;
+
+        if (!(D_8013AFAA & 0xC00)) {
+            CAMERA.unk10 = -320;
+        } else {
+            CAMERA.unk10 = -576;
+        }
+
+        if (PLAYER.unk0BC > 512) {
+            s32 dx = PLAYER.x - CAMERA.x;
+            s32 dy = PLAYER.y - CAMERA.y;
+            s32 dz = PLAYER.z - CAMERA.z;
+            s32 scale;
+
+            CAMERA.yaw = getXZHeading(CAMERA.x, CAMERA.z, PLAYER.x, PLAYER.z);
+            if (D_8013AFCD == 1 && PLAYER.unk0BC > 4096) {
+                s32 delta = ((u16)CAMERA.yaw - PLAYER.unk0BE) & 0xFFF;
+                if ((u32)(delta + 16) > 32) {
+                    s16 step;
+                    if (delta > 2048) {
+                        step = (4096 - delta) / 32;
+                        if (step > 8) {
+                            step = 8;
+                        }
+                    } else {
+                        step = -(delta / 32);
+                        if (step < -8) {
+                            step = -8;
+                        }
+                    }
+                    CAMERA.yaw += step;
+                }
+            }
+
+            dx /= 8;
+            dy /= 8;
+            dz /= 8;
+            scale = 1;
+            while (1) {
+                if ((u32)(dx + 32767) <= 65534 && (u32)(dz + 32767) <= 65534) {
+                    break;
+                }
+                scale *= 2;
+                dx /= 2;
+                dz /= 2;
+            }
+            CAMERA.pitch = getXZHeading(0, 0, SquareRoot0(dx * dx + dz * dz), dy / scale) - 1024;
+            if (CAMERA.pitch < -1024) {
+                CAMERA.pitch = -1024;
+            }
+            if (PLAYER.unk062 > 10240 && !(CAMERA.unk1A & 1)) {
+                if (PLAYER.unk128 & 0x201) {
+                    if (PLAYER.unk062 > 0) {
+                        CAMERA.pitch += PLAYER.unk062 >> 10;
+                    }
+                } else {
+                    CAMERA.pitch += PLAYER.unk0BC >> 10;
+                }
+            }
+        }
+
+        switch (CAMERA.unk16) {
+        case 1: {
+            s16 target = PLAYER.unk0BC / 100;
+            s16 step;
+            if (target > 64) {
+                target = 32;
+            }
+            step = CAMERA.unk12 / 8;
+            if (step <= 0) {
+                step = 1;
+            }
+            if (CAMERA.unk12 < target) {
+                CAMERA.unk12 += step;
+                if (CAMERA.unk12 > target) {
+                    CAMERA.unk12 = target;
+                }
+            } else if (CAMERA.unk12 > target) {
+                CAMERA.unk12 -= step;
+                if (CAMERA.unk12 < target) {
+                    CAMERA.unk12 = target;
+                }
+            }
+            break;
+        }
+        case 4:
+            if (CAMERA.unk12 < 128) {
+                CAMERA.unk12 += PLAYER.unk0BC / 2048;
+            }
+            break;
+        }
+
+        if (PLAYER.unk128 & 0x800) {
+            if (CAMERA.unk14 < 96) {
+                CAMERA.unk14 += 24;
+            }
+        } else {
+            if (CAMERA.unk14 != 0) {
+                CAMERA.unk14 -= 8;
+            }
+        }
+
+        updatePlayerCameraPosition(D_8013AE88->data18);
+        CAMERA.unk18 = PLAYER.unk92E;
+        do {
+            previousRegion = CAMERA.unk18;
+            CAMERA.unk18 = getAdjacentGeometryRegionForPoint(
+                previousRegion, VIEW.vpx, VIEW.vpz);
+        } while (previousRegion != CAMERA.unk18);
+
+        cameras = D_801241E8;
+        views = gPlayerCameraViews;
+        height = func_8004A764(cameras[D_8013AE88->data18].unk18,
+                              views[D_8013AE88->data18].vpx, views[D_8013AE88->data18].vpz);
+        if (cameras[D_8013AE88->data18].unk16 != 7) {
+            if (height - 120 < views[D_8013AE88->data18].vpy) {
+                views[D_8013AE88->data18].vpy = height - 120;
+                cameras[D_8013AE88->data18].y = height << 8;
+                updatePlayerCameraPitch(D_8013AE88->data18);
+                cameras[D_8013AE88->data18].unk1A |= 1;
+            } else {
+                cameras[D_8013AE88->data18].unk1A &= ~1;
+            }
+            VIEW.vpy += CAMERA.unk14 / 8;
+        } else {
+            views[D_8013AE88->data18].vpy = D_80123D80[D_8013AFCE].unk0C / 256 - 120;
+            cameras[D_8013AE88->data18].y = (views[D_8013AE88->data18].vpy + 120) << 8;
+            updatePlayerCameraPitch(D_8013AE88->data18);
+            if (views[D_8013AE88->data18].vpy < height - 120) {
+                cameras[D_8013AE88->data18].unk16 = 1;
+            }
+        }
+        updateCurrentPlayerCameraTarget();
+        if (D_8013AFCD == 1 && D_8013AFCE == 7 && PLAYER.unk92E < 4) {
+            clampPlayerCameraDistance(D_8013AE88->data18);
+        }
+        break;
+    }
+    case 3: {
+        SelectedCourseRecord *records = D_80123D80;
+        SelectedCourseRecord *record = &records[D_8013AFCE];
+        s32 dx = (s32)record->unk18[6] - CAMERA.x;
+        s32 dz = (s32)record->unk18[7] - CAMERA.z;
+        CAMERA.x += dx / 50;
+        CAMERA.z += dz / 50;
+        VIEW.vpx = CAMERA.x / 256;
+        VIEW.vpz = CAMERA.z / 256;
+        updateIndex = D_8013AE88->data18;
+        goto updateAngles;
+    }
+    case 5: {
+        u16 yaw;
+        s16 delta;
+        cameraValue = (u16)CAMERA.yaw;
+        yaw = cameraValue;
+        delta = (yaw - PLAYER.unk0B6) & 0xFFF;
+        if (delta >= 2048) {
+            delta |= 0xF000;
+        }
+        if (delta > 48) {
+            CAMERA.yaw = yaw - 48;
+        } else if (delta < -48) {
+            CAMERA.yaw = yaw + 48;
+        } else {
+            CAMERA.yaw = PLAYER.unk0B6;
+        }
+        if (CAMERA.pitch > 8) {
+            CAMERA.pitch -= 8;
+        } else if (CAMERA.pitch < -8) {
+            CAMERA.pitch += 8;
+        } else {
+            CAMERA.pitch = 0;
+        }
+        if (CAMERA.unk12 > -64) {
+            CAMERA.unk12 -= 8;
+            if (CAMERA.unk12 < -64) {
+                CAMERA.unk12 = -64;
+            }
+        }
+        shiftedCameras = D_801241E8;
+        if (shiftedCameras[D_8013AE88->data18].unk14 != 0) {
+            shiftedCameras[D_8013AE88->data18].unk14 -= 8;
+        }
+        updateIndex = D_8013AE88->data18;
+        goto updateShiftedTarget;
+    }
+    case 6:
+        shiftedCameras = D_801241E8;
+        if (shiftedCameras[D_8013AE88->data18].unk12 < -24) {
+            shiftedCameras[D_8013AE88->data18].unk12 += 2;
+        }
+        if (shiftedCameras[D_8013AE88->data18].pitch > -80) {
+            shiftedCameras[D_8013AE88->data18].pitch -= 4;
+        }
+        shiftedCameras[D_8013AE88->data18].yaw -= 8;
+        updateIndex = D_8013AE88->data18;
+    updateShiftedTarget:
+        updatePlayerCameraPosition(updateIndex);
+        updateCurrentPlayerCameraTarget();
+        VIEW.vry -= (s16)(shiftedCameras[D_8013AE88->data18].unk12 / 6);
+        break;
+    case 8:
+        cameraValue = CAMERA.x;
+        VIEW.vpx = cameraValue / 256;
+        VIEW.vpy = CAMERA.y / 256 - 120;
+        VIEW.vpz = CAMERA.z / 256;
+        updateIndex = D_8013AE88->data18;
+    updateAngles:
+        updatePlayerCameraAngles(updateIndex);
+        updateCurrentPlayerCameraTarget();
+        break;
+    case 9:
+        updatePlayerCameraPosition(D_8013AE88->data18);
+        VIEW.vrx = PLAYER.worldCoordinate.coord.t[0];
+        VIEW.vry = PLAYER.worldCoordinate.coord.t[1] - 60;
+        VIEW.vrz = PLAYER.worldCoordinate.coord.t[2];
+        break;
+    }
+
+    if (D_8013AE88->data18 == 0) {
+        if (D_8013AFAA & 0x2000) {
+            goto stopCamera;
+        }
+    } else if (!(D_8013AFAA & 0x2400)) {
+    stopCamera:
+        stopPlayerSound(D_8013AE88->data18);
+        deleteCurrentTaskSubtree();
+        return;
+    }
+    renderCurrentCameraPlayersAndUpdateSound();
+}
+
+#undef CAMERA
+#undef PLAYER
+#undef VIEW
+#else
 INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud_modes", func_8003EE70);
+#endif
 
 void addFourWordGpuPacket(GpuPacket4 *source, GsOT *ot, u16 depth) {
     GpuPacket4 *packet = (GpuPacket4 *)GsGetWorkBase();
@@ -72,8 +340,15 @@ void addTexturedSpritePacket(TexturedSpritePacket *source, GsOT *ot, u16 depth) 
     func_800BF2C8((u32)(packet + 1));
 }
 
-/* DECOMP_ATTEMPT: archive 22/24 */
+/* DECOMP_ATTEMPT: inline 22/24 */
+#ifdef NON_MATCHING
+void func_800401DC(s16 x, s16 y, s16 index, GsOT *ot, u16 depth) {
+    u32 z = (u16)depth;
+    func_8006C998(x, y, index + 0x1D4, ((const u8 *)&gMenuSpritePaletteGroups)[index], -1, ot, z);
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud_modes", func_800401DC);
+#endif
 
 void drawMenuKindSprite(s16 x, s16 y, s16 kind, s32 frame, GsOT *ot, u16 depth) {
     s32 frameIndex = frame;
@@ -155,8 +430,113 @@ void unpackUpperWordBytes(u32 packed, UnpackedWordBytes *out) {
     out->unk0 = packed;
 }
 
-/* DECOMP_ATTEMPT: archive 318/325 */
+/* DECOMP_ATTEMPT: inline 318/325 */
+#ifdef NON_MATCHING
+#include "game/graphics/draw_mode_sprite.h"
+
+
+typedef struct CourseProgressScratch {
+    u32 reserved[6];
+    s16 playerOrder[4];
+    s32 progress;
+    s32 distance;
+} CourseProgressScratch;
+
+extern u8 D_80124270[][2];
+extern u8 D_80124290[];
+
+void func_8004054C(s32 x, s32 y, GsOT *ot, u16 depth) {
+    CourseProgressScratch *scratch = (CourseProgressScratch *)getScratchAddr(0);
+    s16 i = 0;
+    s16 j;
+    DrawModeSpritePacket sprite;
+    DrawModeSpritePacket *packet;
+    u16 packetDepth;
+    s16 iconSize;
+
+    scratch->playerOrder[0] = 0;
+    scratch->playerOrder[1] = 1;
+    scratch->playerOrder[2] = 2;
+    scratch->playerOrder[3] = 3;
+    packetDepth = depth;
+    for (; i < D_8013AFD2 - 1; i++) {
+        for (j = i + 1; j < D_8013AFD2; j++) {
+            if (gRacePlayers[scratch->playerOrder[i]].unk935 >
+                gRacePlayers[scratch->playerOrder[j]].unk935) {
+                s16 swap = scratch->playerOrder[i];
+                scratch->playerOrder[i] = scratch->playerOrder[j];
+                scratch->playerOrder[j] = swap;
+            }
+        }
+    }
+
+    j = 0;
+    packet = &sprite;
+    sprite.tag = 5u << 24;
+    packet->tpage = getTPage(0, 0, 832, 256);
+    setRGB0(packet, 128, 128, 128);
+    packet->code = 0x64;
+    packet->drawModeCode = (getTPage(0, 0, 0, 0) | 0xE100);
+    for (; j < D_8013AFD2; j++) {
+        RacePlayer *player;
+        s16 progress;
+        u8 *uv;
+        u8 character;
+
+        i = scratch->playerOrder[j];
+
+        if ((gRacePlayers[i].unk128 & 0x200000) || gRacePlayers[i].unk96A) {
+            gRacePlayers[i].unk96A++;
+        }
+        iconSize = 16;
+        if (gRacePlayers[i].unk128 & 0x200000) {
+            if (gRacePlayers[i].unk96A > 4) {
+                gRacePlayers[i].unk96A = 4;
+            }
+        }
+        player = &gRacePlayers[i];
+        if (player->unk96A > 5) {
+            player->unk96A = 0;
+        }
+
+        packet->x0 = x - 4;
+        getPlayerCourseProgress(i, &scratch->progress, &scratch->distance);
+        progress = (scratch->progress << 7) / ((s16)D_80123D80[D_8013AFCE].unk00 << 3);
+        if (progress < 0) {
+            progress = 0;
+        }
+        if (progress > 128) {
+            progress = 128;
+        }
+        packet->y0 = (s16)(progress - 6) + y;
+
+        character = player->characterId;
+        player->unk968 = progress;
+        uv = D_80124270[character];
+        if (player->unk96A > 0) {
+            if (player->unk96A < 3) {
+                packet->u0 = uv[0] + 36;
+            } else {
+                packet->u0 = uv[0] + 16;
+            }
+            packet->v0 = uv[1];
+            setWH(packet, 20, iconSize);
+        } else {
+            setUV0(packet, uv[0], uv[1]);
+            setWH(packet, iconSize, iconSize);
+        }
+        if (gRacePlayers[i].unk0FA) {
+            packet->clut = getClut(784, D_80124290[character] + 240);
+        } else {
+            packet->clut = getClut(800, D_80124284[character] + 240);
+        }
+        addTexturedSpritePacket((TexturedSpritePacket *)packet, ot, packetDepth);
+    }
+    func_8006C998(x, y, 0x1DE, 15, -1, ot, packetDepth);
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud_modes", func_8004054C);
+#endif
 
 void initializeRaceRulesAndCounters(void) {
     RaceTime *times;
@@ -411,14 +791,134 @@ void updateRaceHud(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: archive 201/207 */
+/* DECOMP_ATTEMPT: inline 201/207 */
+#ifdef NON_MATCHING
+extern const char D_80010BE8[];
+
+void func_80041554(void) {
+    GsOT *ot = &D_800EC018[D_8013AF78];
+    RacePlayer *player;
+    s16 scale;
+    RacePlayer *firstPlayer;
+    s32 timer;
+    s16 frame;
+    s32 palette;
+    s32 time;
+    s32 rank;
+    u8 *rankPalettes;
+    u16 depth = 1;
+
+    setSpriteColor(128, 128, 128);
+    timer = (s8)gRacePlayers[0].unk936[9];
+    if (timer != 0) {
+        scale = 4096 / (timer + 1);
+    } else {
+        scale = 0;
+    }
+    firstPlayer = gRacePlayers;
+    drawScaledMenuKindSprite(-32, -96, (s8)firstPlayer->unk936[8], (s8)firstPlayer->unk936[10],
+                             scale, scale, ot, depth);
+    timer = (s8)firstPlayer->unk942;
+    if (timer != 0) {
+        scale = 4096 / (timer + 1);
+    } else {
+        scale = 0;
+    }
+    player = gRacePlayers;
+    drawScaledPaletteMappedIcon(0, -96, (s8)player->heldItem, scale, scale, ot, depth);
+    rank = player->unk935;
+    rankPalettes = gMenuSpritePaletteGroups.unk00;
+    func_8006C998(-136, 64, (u32)rank + 468, rankPalettes[rank], -1, ot, depth);
+    drawWrappedText8x8(-136, 54, 4, D_80010BE8, 4, -1, ot, depth);
+    func_8006C998(70, -96, 434, 3, -1, ot, depth);
+    drawHudDecimalNumber8x16(104, -96, 1, 0, player->unk934 + 1, 3, -1, ot, depth);
+    func_8006C998(116, -96, 27, 4, -1, ot, depth);
+    drawHudDecimalNumber8x16(128, -96, 1, 0, (s16)D_8013AFD0, 3, -1, ot, depth);
+    func_8004054C(124, -68, ot, depth);
+    frame = (s16)gFrameCounter % 12;
+    func_8006C998(120, 80, frame / 2 + 472, 7, -1, ot, depth);
+    time = player->unk01C;
+    palette = time < 100 ? 2 : 3;
+    drawHudDecimalNumber8x16(78, 80, 5, 0, time, palette, -1, ot, depth);
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud_modes", func_80041554);
+#endif
 
-/* DECOMP_ATTEMPT: archive 23/25 */
+/* DECOMP_ATTEMPT: inline 23/25 */
+#ifdef NON_MATCHING
+void func_80041890(void) {
+    GsOT *ot = &D_800EBFF0[D_8013AF78];
+    setSpriteColor(128, 128, 128);
+    return func_8004054C(81, -68, ot, 1);
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud_modes", func_80041890);
+#endif
 
-/* DECOMP_ATTEMPT: archive 302/307 */
+/* DECOMP_ATTEMPT: inline 302/307 */
+#ifdef NON_MATCHING
+void func_800418F4(s16 player) {
+    GsOT *hudOt = &D_800EBFF0[D_8013AF78];
+    GsOT *playerOt;
+    s32 hudY;
+    s32 depth;
+    s16 placement;
+    s16 placementSprite;
+    s16 panelOffset;
+    s8 timer;
+    s16 scale;
+    s16 frame;
+    s32 moneyPalette;
+
+    if (player == 0) {
+        playerOt = &D_800EC018[D_8013AF78];
+        hudY = 0;
+    } else {
+        playerOt = &D_800EC0B8[D_8013AF78];
+        hudY = 105;
+    }
+
+    setSpriteColor(128, 128, 128);
+    drawDecimalNumber16(107, hudY - 73, 1, 0, gRacePlayers[player].unk934 + 1, 8, 1, hudOt, 1);
+    func_8006C998(123, hudY - 75, 481, 8, 1, hudOt, 1);
+    drawDecimalNumber16(132, hudY - 77, 1, 0, (s16)D_8013AFD0, 8, 1, hudOt, 1);
+    func_8006C998(102, hudY - 103, 416, 11, -1, hudOt, 1);
+
+    depth = 1;
+    if (D_8013AFE4 & 1) {
+        placement = 0;
+    } else {
+        placement = gRacePlayers[player].unk935;
+    }
+    placementSprite = placement + 468;
+    func_8006C998(110, hudY - 40, placementSprite, ((const u8 *)&gMenuSpritePaletteGroups)[placementSprite - 468], -1, hudOt, depth);
+    func_8006C998(102, hudY - 56, 415, 10, 0, hudOt, depth);
+    if (player == 1) {
+        hudY += 18;
+    }
+    panelOffset = player + 121;
+    func_8006C998(96, hudY - panelOffset, 417, 12, -1, hudOt, depth);
+
+    if (func_8003D904(player)) {
+        timer = (s8)gRacePlayers[player].unk93F;
+        scale = timer ? 0x1000 / (timer + 1) : 0;
+        drawScaledMenuKindSprite(-112, -40, gRacePlayers[player].unk93E,
+                                 gRacePlayers[player].unk940, scale, scale, playerOt, depth);
+        timer = (s8)gRacePlayers[player].unk942;
+        scale = timer ? 0x1000 / (timer + 1) : 0;
+        drawScaledPaletteMappedIcon(-80, -40, (s8)gRacePlayers[player].heldItem,
+                                    scale, scale, playerOt, depth);
+        frame = (s16)gFrameCounter % 12;
+        func_8006C998(-68, 36, frame / 2 + 472, 7, -1, playerOt, depth);
+        moneyPalette = gRacePlayers[player].unk01C < 100 ? 2 : 3;
+        drawHudDecimalNumber8x16(-110, 36, 5, 0, gRacePlayers[player].unk01C,
+                                 moneyPalette, -1, playerOt, depth);
+    }
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud_modes", func_800418F4);
+#endif
 
 void drawTrickAttackHud(void) {
     s16 palette = 1;
@@ -552,8 +1052,78 @@ void drawScoreAttackHud(void) {
     func_8006C998(104, -96, 432, 0, -1, ot, depth);
 }
 
-/* DECOMP_ATTEMPT: archive 321/331 */
+/* DECOMP_ATTEMPT: inline 321/331 */
+#ifdef NON_MATCHING
+extern volatile u16 D_8013B17A __attribute__((section(".data")));
+
+void func_80042894(s16 player) {
+    GsOT *timeOt;
+    s16 hudY;
+    u8 padding[16];
+    s16 timeY;
+    GsOT *hudOt = &D_800EBFF0[D_8013AF78];
+    s16 palette;
+    s32 iconX;
+    u16 depth;
+    const volatile u16 *depthSource = &D_8013B17A;
+    u16 fixedDepth = 1;
+
+
+    if (player == 0) {
+        timeOt = &D_800EC018[D_8013AF78];
+        timeY = hudY = 0;
+    } else {
+        timeOt = &D_800EC0B8[D_8013AF78];
+        hudY = 104;
+        timeY = 0;
+    }
+    palette = 1;
+    if (D_8013B198[player].minutes == 0 && D_8013B198[player].seconds < 10 &&
+        ((gFrameCounter >> 1) & 1)) {
+        palette = 2;
+    }
+
+    setSpriteColor(128, 128, 128);
+    if (func_8003D904(player)) {
+        s16 i;
+        s16 timeDigitsY;
+        if (D_8013B1A0[player]) {
+            func_8006C998(-112, timeY + 39, 398, 5, -1, timeOt, fixedDepth);
+            palette = 2;
+        }
+
+        drawHudDecimalNumber8x16(-112, (timeDigitsY = timeY + 36), 2, 1, D_8013B198[player].minutes, palette, -1, timeOt, (depth = *depthSource));
+        iconX = -112;
+        drawHudDecimalNumber8x16(-88, timeDigitsY, 2, 1, D_8013B198[player].seconds, palette, -1, timeOt, depth);
+        drawHudDecimalNumber8x16(-64, timeDigitsY, 2, 1, D_8013B198[player].centiseconds >> 8, palette, -1, timeOt, depth);
+        func_8006C998(-96, timeDigitsY, 25, palette, -1, timeOt, depth);
+        func_8006C998(-72, timeDigitsY, 24, palette, -1, timeOt, depth);
+        drawLimitedText8x8(iconX, timeY + 28, 11, gSplitScreenTimeLimitLabel, 5, -1, timeOt, depth);
+
+        for (i = 0; i < gRacePlayers[player].unk93C; i++) {
+            func_8006C998(iconX, -36, 445, 13, -1, timeOt, fixedDepth);
+            iconX += 8;
+        }
+    }
+
+    drawTransformedSpriteByIndex(112, (s16)(hudY - 80), 432, 0, -1, 0x7FFF, 0x7FFF,
+                                 0xC00, 0xC00, 0, hudOt, (depth = *depthSource));
+    drawLimitedText8x8(124, hudY - 76, 1, gCourseCoinCountMarker, 6, -1, hudOt, depth);
+    drawHudDecimalNumber8x16(132, hudY - 84, 2, 0,
+                            gRacePlayers[player].scoreAttackPointTotal, 1, -1, hudOt, depth);
+    timeY = hudY - 24;
+    drawTransformedSpriteByIndex(135, timeY, 424, 0, -1, 0x7FFF, 0x7FFF,
+                                 0x1000, 0x1000, 0, hudOt, depth);
+    drawTransformedSpriteByIndex(120, timeY, 421, 14, -1, 0x7FFF, 0x7FFF,
+                                 0x1000, 0x1000, 0, hudOt, depth);
+    if (player == 1) {
+        hudY += 18;
+    }
+    func_8006C998(96, hudY - 121, 417, 12, -1, hudOt, depth);
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud_modes", func_80042894);
+#endif
 
 void drawCourseCoinHud(void) {
     GsOT *ot = &D_800EBFF0[D_8013AF78];

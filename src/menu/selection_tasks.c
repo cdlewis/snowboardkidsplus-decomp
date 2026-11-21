@@ -367,8 +367,21 @@ void drawOffsetSelectedTaskSprite(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: archive 9/13 */
+/* DECOMP_ATTEMPT: inline 9/13 */
+#ifdef NON_MATCHING
+extern GameTask *D_8013AE90;
+
+void func_800A2C40(void) {
+    GameTask *task;
+    if (D_8013AFD3) {
+        task = D_8013AE90;
+        task = task->previous;
+        D_8013AE88 = task;
+    }
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/menu/selection_tasks", func_800A2C40);
+#endif
 
 void initializeSelectionMenuTask(void) {
     SelectionMenuState *state;

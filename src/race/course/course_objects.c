@@ -363,14 +363,210 @@ void queueCourseResourceSectorReads(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: archive 403/416 */
+/* DECOMP_ATTEMPT: inline 403/416 */
+#ifdef NON_MATCHING
+void initializeCourseObjectTask(void);
+
+#define RACE_EXTRA_MODEL_ARCHIVE ((OffsetArchive *)0x801F3000)
+
+extern VisualPlacement *D_801293DC[10];
+extern VisualPlacement *D_80129404[3][10];
+extern u8 D_8013B2B7, D_8013B2B8;
+void func_8005C7AC(void);
+
+void func_80058BD4(void) {
+    u8 i;
+    const u32 *offset;
+    u16 modelCount;
+    u32 *model;
+    s16 modelIndex;
+    s32 course;
+
+    if (D_8013AFCE == 7) {
+        func_80014930(&gGameTasks[3], updateActivePlayerRegionCollisions);
+        D_8013AE8C->data18 = 1;
+        return;
+    }
+
+    offset = RACE_EXTRA_MODEL_ARCHIVE->offsets;
+    modelCount = *(u16 *)&RACE_EXTRA_MODEL_ARCHIVE->count;
+    for (i = 0; i < modelCount; i++) {
+        model = RACE_EXTRA_MODEL_ARCHIVE->offsets;
+        model = (u32 *)((u8 *)model + *offset++);
+        GsMapModelingData(model);
+        model += 2;
+        modelIndex = i;
+        GsLinkObject4(model, &D_80129A80[modelIndex], 0);
+        D_80129A80[modelIndex].coord2 = &D_80129C60[modelIndex];
+        D_80129A80[modelIndex].tmd = model;
+        D_80129A80[modelIndex].attribute = 0;
+        GsInitCoordinate2(0, &D_80129C60[modelIndex]);
+    }
+
+    for (i = 0; i < 4; i++) {
+        func_80014930(&gGameTasks[4], initializeCourseObjectTask);
+        D_8013AE8C->data18 = i;
+    }
+
+    course = D_8013AFCE;
+    switch (course) {
+    case 1:
+        if (D_8013AFE2 == 0) {
+            func_80014930(&gGameTasks[4], func_8005C7AC);
+        }
+        func_80014930(&gGameTasks[4], initializeProximityEmitterTask);
+        D_8013AE8C->data18 = 0;
+        func_80014930(&gGameTasks[4], initializeProximityEmitterTask);
+        D_8013AE8C->data18 = course;
+        func_80014930(&gGameTasks[3], updateActivePlayerRegionCollisions);
+        D_8013AE8C->data18 = 0;
+        for (i = 0; i < 9; i++) {
+            func_80014930(&gGameTasks[4], initializeMovingVisualTask);
+            D_8013AE8C->data18 = i;
+        }
+        break;
+    case 4:
+        for (i = 0; i < 3; i++) {
+            func_80014930(&gGameTasks[4], initializeOrbitingTaskObject);
+            D_8013AE8C->data18 = 0;
+            D_8013AE8C->data1A = 3;
+            D_8013AE8C->data1C = i;
+        }
+        for (i = 0; i < 4; i++) {
+            func_80014930(&gGameTasks[4], initializeOrbitingTaskObject);
+            D_8013AE8C->data18 = 1;
+            D_8013AE8C->data1A = 4;
+            D_8013AE8C->data1C = i;
+        }
+        break;
+    }
+
+    D_8013B2B6 = D_8013B2B8 = D_8013B2BA = 0;
+    D_8013B2B5 = D_8013B2B7 = D_8013B2B9 = 255;
+    D_8013B2BC = D_801293DC[D_8013AFCE];
+    i = 0;
+    do {
+        VisualPlacement *placements = D_8013B2BC;
+        VisualPlacement *placement = (VisualPlacement *)(i * sizeof(*placement) + (u32)placements);
+        s8 type = (s8)placement->unk01;
+        if ((u8)type == 255) {
+            break;
+        }
+        if ((u8)type < 7) {
+            if ((u8)type != 5 && !((type == 2 || type == 3) && D_8013AFE2)) {
+                func_8001496C(&gGameTasks[4], initializePlacedObjectTask);
+                D_8013AE8C->resource14 = allocateTaskResource();
+                if ((u32)(D_8013B2BC[i].unk01 - 2) < 2) {
+                    D_8013AE8C->resource16 = allocateTaskResource();
+                }
+                D_8013AE8C->data18 = i;
+            }
+        } else {
+            switch (placement->unk01) {
+            case 7:
+                if (D_8013AFE2 == 0) {
+                    if (i < D_8013B2B5) {
+                        D_8013B2B5 = i;
+                    }
+                    D_8013B2B6++;
+                }
+                break;
+            case 8:
+            case 9:
+                if (D_8013AFE2 != 1 || D_8013AFE0 != 1) {
+                    if (i < D_8013B2B7) {
+                        D_8013B2B7 = i;
+                    }
+                    D_8013B2B8++;
+                }
+                break;
+            default:
+                if (i < D_8013B2B9) {
+                    D_8013B2B9 = i;
+                }
+                D_8013B2BA++;
+                break;
+            }
+        }
+        i++;
+    } while (i != 140);
+
+    if (D_8013AFE2 == 1) {
+        switch (D_8013AFE0) {
+        case 0:
+            gInteractionVisualPlacements = D_80129404[D_8013AFCD][D_8013AFCE];
+            i = 0;
+            if (gInteractionVisualPlacements[0].unk01 != 255) {
+                for (;;) {
+                    VisualPlacement *placements = gInteractionVisualPlacements;
+                    u8 index = i;
+                    VisualPlacement *placement = (VisualPlacement *)(index * sizeof(*placement) + (u32)placements);
+                    u8 type = placement->unk01;
+                    if (type == 255) {
+                        break;
+                    }
+                    placement->flags &= 0xBF;
+                    i++;
+                }
+                func_80014930(&gGameTasks[4], initializeInteractionVisualTask);
+            }
+            break;
+        case 1:
+            i = 0;
+            D_8013B2C0 = (PickupPlacement *)D_80129404[0][D_8013AFCE];
+            for (;;) {
+                if (((VisualPlacement *)D_8013B2C0)[i].unk01 == 255) {
+                    goto createVisualTasks;
+                }
+                func_8001496C(&gGameTasks[4], initializeCollectibleTask);
+                D_8013AE8C->data18 = i;
+                i++;
+            }
+        }
+    }
+
+createVisualTasks:
+    func_80014930(&gGameTasks[4], initializePickupVisualTask);
+    if (D_8013B2B8) {
+        func_80014930(&gGameTasks[4], initializeObjectVisualTask);
+    }
+    if (D_8013B2BA) {
+        func_80014930(&gGameTasks[4], initializeCourseVisualTask);
+    }
+}
+
+#undef RACE_EXTRA_MODEL_ARCHIVE
+#else
 INCLUDE_ASM("asm/nonmatchings/race/course/course_objects", func_80058BD4);
+#endif
 
-/* DECOMP_ATTEMPT: archive 11/15 */
+/* DECOMP_ATTEMPT: inline 11/15 */
+#ifdef NON_MATCHING
+u16 func_80059254(void) {
+    if (D_8013AFAA & 0x400) {
+        if (gFrameCounter & 1) {
+            return 1;
+        }
+    }
+    return 0;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/race/course/course_objects", func_80059254);
+#endif
 
-/* DECOMP_ATTEMPT: archive 15/19 */
+/* DECOMP_ATTEMPT: inline 15/19 */
+#ifdef NON_MATCHING
+s16 func_80059290(TaskVisualResource *resource) {
+    resource->framePosition += resource->unkC8;
+    if (resource->framePosition < resource->unkC6) {
+        return 1;
+    }
+    resource->framePosition = (resource->framePosition - resource->unkC8) & 0xFF00;
+    return 0;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/race/course/course_objects", func_80059290);
+#endif
 
 void drawTaskObject(u16 index) {
     GsDOBJ2 *object;
@@ -971,8 +1167,41 @@ void initializeObjectVisualTask(void) {
     setCurrentTaskCallback(func_8005B460);
 }
 
-/* DECOMP_ATTEMPT: archive 92/107 */
+/* DECOMP_ATTEMPT: inline 92/107 */
+#ifdef NON_MATCHING
+extern TaskVisualFrame D_8013B284[1];
+extern TaskVisualFrame *D_8013B28C[];
+
+void func_8005B460(void) {
+    TaskVisualResource *resource;
+    u8 i;
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    prepareTaskVisualQuad(resource, D_8013B284, 0);
+    for (i = D_8013B2B7; i < D_8013B2B7 + D_8013B2B8; i++) {
+        if (isPointWithinCameraForwardRange(D_8013B2BC[i].x, D_8013B2BC[i].z, (s16)func_80059254())) {
+            resource->coordinate.coord.t[0] = D_8013B2BC[i].x;
+            resource->coordinate.coord.t[1] = D_8013B2BC[i].y;
+            resource->coordinate.coord.t[2] = D_8013B2BC[i].z;
+            if (D_8013AFD3 == 0) {
+                resource->position.x = resource->coordinate.coord.t[0] << 8;
+                resource->position.y = resource->coordinate.coord.t[1] << 8;
+                resource->position.z = resource->coordinate.coord.t[2] << 8;
+                if (D_8013B2BC[i].unk01 == 8) {
+                    resolvePlayerCollisionsWithCylinder(&resource->position, 0x4000, 0x12000, 2);
+                } else {
+                    resolvePlayerCollisionsWithCylinder(&resource->position, 0x2000, 0x12000, 2);
+                }
+            }
+            drawPreparedTaskVisualQuad(resource, D_8013B28C[D_8013B2BC[i].unk01], 0);
+        }
+    }
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/race/course/course_objects", func_8005B460);
+#endif
 
 void initializeInteractionVisualTask(void) {
     TaskVisualResource *resource;
@@ -1331,8 +1560,46 @@ void updatePlacedObjectBounceTask(void) {
     if (D_8013AE88->data1C == 4) setCurrentTaskCallback(updatePlacedObjectTask);
 }
 
-/* DECOMP_ATTEMPT: archive 66/68 */
+/* DECOMP_ATTEMPT: inline 66/68 */
+#ifdef NON_MATCHING
+void func_8005C7AC(void) {
+    BobbingTrailEmitterResource *resource;
+    u16 angle;
+    const MATRIX *transform;
+    s32 x;
+    s32 heading;
+
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    resource = (BobbingTrailEmitterResource *)&D_800D9504[D_8013AE88->resource14];
+    GsInitCoordinate2(0, &resource->coordinate);
+
+    resource->geometryIndex = 0x59;
+    resource->rotation.vx = 0;
+    angle = ((GeometryPlacement *)geometryPlacementDataAbsolute)[resource->geometryIndex].angle;
+    resource->rotation.vz = 0;
+    transform = &resource->coordinate.coord;
+    resource->coordinate.coord.t[0] = 0x8AF7;
+    resource->coordinate.coord.t[1] = 0xB658;
+    x = transform->t[0];
+    resource->coordinate.coord.t[2] = 0xE7C2;
+    resource->countdown = 15;
+    resource->headingStep = 8;
+    resource->phase = 0;
+    resource->position.y = resource->coordinate.coord.t[1] << 8;
+    resource->rotation.vy = angle;
+    resource->position.x = x << 8;
+    heading = resource->rotation.vy;
+    resource->baseHeading.value = heading;
+    resource->position.z = resource->coordinate.coord.t[2] << 8;
+    resource->heading.value = heading;
+    setCurrentTaskCallback(updateBobbingTrailEmitterTask);
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/race/course/course_objects", func_8005C7AC);
+#endif
 
 void updateBobbingTrailEmitterTask(void) {
     BobbingTrailEmitterResource *resource;
@@ -1538,8 +1805,111 @@ void initializeMovingVisualTask(void) {
     setCurrentTaskCallback(func_8005D394);
 }
 
-/* DECOMP_ATTEMPT: archive 289/293 */
+/* DECOMP_ATTEMPT: inline 289/293 */
+#ifdef NON_MATCHING
+extern TaskVisualFrame D_80129764[8][8];
+void func_8002C2D8(Position3D *position, s32 radius, s32 height, s32 strength, u16 flags);
+
+void func_8005D394(void) {
+    TaskVisualResource *resource;
+    u16 cameraIndex;
+    s16 turn;
+    s32 dx, dz, positionZ;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    cameraIndex = func_80059254();
+    if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0],
+            resource->coordinate.coord.t[2], (s16)cameraIndex)) {
+        if (!D_8013AFD3) {
+            if (resource->groundY) {
+                turn = getXZHeading(resource->position.x, resource->position.z,
+                    gMovingVisualPlacements[D_8013AE88->data18].startX,
+                    gMovingVisualPlacements[D_8013AE88->data18].startZ);
+            } else {
+                turn = getXZHeading(resource->position.x, resource->position.z,
+                    gMovingVisualPlacements[D_8013AE88->data18].endX,
+                    gMovingVisualPlacements[D_8013AE88->data18].endZ);
+            }
+            turn = (turn - resource->velocityY) & 0xFFF;
+            if (turn > 0x800) {
+                turn |= 0xF000;
+            }
+            if (turn > resource->unkDC) {
+                turn = resource->unkDC;
+            }
+            if (turn < -resource->unkDC) {
+                turn = -resource->unkDC;
+            }
+            resource->velocityY += turn;
+            resource->position.x += rsin(resource->velocityY) * resource->bounceCount / 0x1000;
+            resource->position.z += rcos(resource->velocityY) * resource->bounceCount / 0x1000;
+            resource->unkC4 = getAdjacentGeometryRegionForPoint(resource->unkC4,
+                resource->position.x >> 8, resource->position.z >> 8);
+            resource->position.y = func_8004A764(resource->unkC4,
+                resource->position.x >> 8, resource->position.z >> 8) << 8;
+
+            if (resource->groundY) {
+                dx = resource->position.x - gMovingVisualPlacements[D_8013AE88->data18].startX;
+                dz = resource->position.z - gMovingVisualPlacements[D_8013AE88->data18].startZ;
+            } else {
+                dx = resource->position.x - gMovingVisualPlacements[D_8013AE88->data18].endX;
+                dz = resource->position.z - gMovingVisualPlacements[D_8013AE88->data18].endZ;
+            }
+            if (dx < 0) {
+                dx = -dx;
+            }
+            if (dz < 0) {
+                dz = -dz;
+            }
+            if (dx < 0xC00 && dz < 0xC00) {
+                resource->groundY ^= 1;
+            }
+
+            func_8002C2D8(&resource->position, 0x1000, 0xC00, 0x1000, 4);
+            resource->unkD8 = (resource->unkD8 + resource->unkE0) & 0xFFFF;
+            if (resource->unkD8 == 0) {
+                switch ((u8)((u8)randomNextSecondary() % 3U)) {
+                case 0:
+                    resource->bounceCount = 0x400;
+                    resource->unkE0 = 0x80;
+                    resource->unkDC = 0x10;
+                    resource->unkC8 = 0x80;
+                    break;
+                case 1:
+                    resource->bounceCount = 0x800;
+                    resource->unkE0 = 0x100;
+                    resource->unkDC = 0x20;
+                    resource->unkC8 = 0x100;
+                    break;
+                case 2:
+                    resource->bounceCount = 0x1000;
+                    resource->unkE0 = 0x200;
+                    resource->unkDC = 0x40;
+                    resource->unkC8 = 0x200;
+                    break;
+                }
+            }
+            resource->framePosition += resource->unkC8;
+            if (resource->framePosition >= resource->unkC6) {
+                resource->framePosition &= 0xFF;
+            }
+            positionZ = resource->position.z;
+            resource->coordinate.coord.t[0] = resource->position.x >> 8;
+            resource->coordinate.coord.t[2] = positionZ >> 8;
+            resource->coordinate.coord.t[1] = resource->position.y >> 8;
+        }
+
+        prepareTaskVisualQuad(resource, D_80129764[0], 0);
+        drawPreparedTaskVisualQuad(resource,
+            D_80129764[((resource->velocityY - D_801241E8[cameraIndex].yaw + 0x100) & 0xFFF) / 0x200], 0);
+    }
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/race/course/course_objects", func_8005D394);
+#endif
 
 void resolvePlayerRegionCollision(RacePlayer *player, PlayerCollisionRegion *region) {
     s32 dx, dz;
@@ -1931,8 +2301,30 @@ void updateOrbitingObstacleTask(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: archive 167/168 */
+/* DECOMP_ATTEMPT: inline 167/168 */
+#ifdef NON_MATCHING
+void func_800200F8(void);
+
+void func_8005EBC4(void) {
+ s16 index; GeometryRegion *region; GeometryRegion *regions; s16 *vertices; s16 i;
+ index = D_80123D80[D_8013AFCE].unk00;
+ vertices = D_8013B1EC;
+ regions = (GeometryRegion *)D_8013B1F4; region = &regions[index];
+ D_80129C60[26].coord.t[0] = ((vertices[region->vertices[0]*3] + vertices[region->vertices[1]*3] + vertices[region->vertices[2]*3] + vertices[region->vertices[3]*3])/4)*5;
+ D_80129C60[26].coord.t[2] = ((vertices[region->vertices[0]*3+2] + vertices[region->vertices[1]*3+2] + vertices[region->vertices[2]*3+2] + vertices[region->vertices[3]*3+2])/4)*5;
+ D_80129C60[26].coord.t[1] = func_8004A764(index,D_80129C60[26].coord.t[0],D_80129C60[26].coord.t[2]);
+ D_8012A5C0[26].vz = 0; D_8012A5C0[26].vx = 0;
+ D_8012A5C0[26].vy = getXZHeading(D_80129C60[26].coord.t[0],D_80129C60[26].coord.t[2],(s32)D_80123D80[D_8013AFCE].unk18[10] >> 8,(s32)D_80123D80[D_8013AFCE].unk18[10] >> 8);
+ createChildTaskWithReserve(copySlot26TransformToCurrentTaskObject);
+ D_8013AE8C->data18 = D_8013AE88->data18 + 26; D_8013AE88->data18 = 26;
+ D_801241E8[0].pitch = 0x20; D_801241E8[0].unk10 = -0x180;
+ D_801241E8[0].yaw = D_8012A5C0[26].vy; D_801241E8[0].unk16 = 9;
+ i=0; while (1) { if (i >= D_8013AFD2) break; gRacePlayers[i].task->callback = func_800200F8; i++; }
+ setCurrentTaskCallback(updateAndDrawCurrentTaskObject);
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/race/course/course_objects", func_8005EBC4);
+#endif
 
 void updateAndDrawCurrentTaskObject(void) {
     setCoordinateRotation(&D_8012A5C0[D_8013AE88->data18],

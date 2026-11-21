@@ -60,8 +60,35 @@ void repeatByteStore(u8 *destination, s32 value, s32 count) {
     }
 }
 
-/* DECOMP_ATTEMPT: archive 61/63 */
+/* DECOMP_ATTEMPT: inline 61/63 */
+#ifdef NON_MATCHING
+void func_800897D0(SaveRecord *record) {
+    GlobalFlagStatePrefix *flags = (GlobalFlagStatePrefix *)record;
+    s16 i;
+    repeatByteStore((u8 *)record, 0, sizeof(*record));
+    record->flags_3AC = 0;
+    flags->unk_3DC = 0;
+    for (i = 0; i < 10; i++) {
+        record->flags_3B0[i] = 0;
+    }
+    record->flags_3D8 = 0;
+    flags->unk_3E0 = 0;
+    for (i = 0; i < 5; i++) {
+        flags->unk_3DC |= 1 << (i * 5);
+        flags->unk_3E0 |= 1 << (i * 5);
+    }
+    record->flags_3AC |= 0x124;
+    flags->unk_3E4 = 0;
+    i = 0;
+    do {
+        record->unk_3EC[i] = 0;
+        record->unk_3F6[i] = 0;
+        i++;
+    } while (i < 10);
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/menu/save_record_tasks", func_800897D0);
+#endif
 
 void copyGlobalFlagState(GlobalFlagStatePrefix *source, GlobalFlagStatePrefix *destination) {
     s16 i;
@@ -88,11 +115,50 @@ void copySaveRecordAndMergeFlags(void) {
     mergeSaveRecordFlags(&((SaveRecord *)&D_8013080C)[1], (SaveRecord *)&D_8013101C);
 }
 
-/* DECOMP_ATTEMPT: archive 33/36 */
-INCLUDE_ASM("asm/nonmatchings/menu/save_record_tasks", func_80089A0C);
+/* DECOMP_ATTEMPT: inline 33/36 */
+#ifdef NON_MATCHING
+typedef struct SaveFlagsTail {
+    u16 unlockNotificationFlags;
+    u16 unk02;
+    u32 checksum;
+} SaveFlagsTail;
 
-/* DECOMP_ATTEMPT: archive 25/27 */
+#include "game/race/player/player_resource_textures.h"
+
+
+void func_80089A0C(SaveRecord *source, s16 index) {
+    const SaveFlagsTail *tail = (const SaveFlagsTail *)&source->unk_400;
+    s16 i;
+    for (i = 0; i < 9; i++) {
+        gPlayerResourceTextureSelections.entries[index][i] = ((const u8 *)source)[i];
+    }
+    if (D_8013AFCD == 1) {
+        *(volatile u16 *)&gUnlockNotificationFlags = tail->unlockNotificationFlags;
+    } else {
+        *(volatile u16 *)&gUnlockNotificationFlags = 0;
+    }
+}
+#else
+INCLUDE_ASM("asm/nonmatchings/menu/save_record_tasks", func_80089A0C);
+#endif
+
+/* DECOMP_ATTEMPT: inline 25/27 */
+#ifdef NON_MATCHING
+#include "game/race/player/player_resource_textures.h"
+
+void func_80089A98(GlobalFlagStatePrefix *state) {
+    SaveRecord *record = (SaveRecord *)state;
+    SaveFlagsTail *tail = (SaveFlagsTail *)&record->unk_400;
+    u32 i;
+    for (i = 0; i < 9; i++) {
+        state->unk_000[i] = gPlayerResourceTextureSelections.entries[0][i];
+    }
+    tail->unlockNotificationFlags = gUnlockNotificationFlags;
+    tail->checksum = calculateByteSum((const u8 *)record, 0x404);
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/menu/save_record_tasks", func_80089A98);
+#endif
 
 u32 calculateByteSum(const u8 *data, u32 size) {
     u32 sum;
@@ -190,8 +256,36 @@ void startStateValueHistoryTask(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: archive 100/102 */
+/* DECOMP_ATTEMPT: inline 100/102 */
+#ifdef NON_MATCHING
+typedef struct SaveTaskResource { u8 unk00[12]; u16 unk0C; } SaveTaskResource;
+
+void updateMemoryCardSaveMenuTask(void);
+
+void func_80089EC0(void) {
+ SaveTaskResource *resource;
+ SaveRecord *destination;
+ D_8013AE88->data18 = 0;
+ D_8013AE88->data1A = 0;
+ D_8013AE98->data1C++;
+ if (D_8013AE88->resource14 != 0xFFFF) { while (1) {} }
+ D_8013AE88->resource14 = allocateTaskResource();
+ resource = (SaveTaskResource *)&D_800D9504[D_8013AE88->resource14];
+ if (D_8013AE88->resource16 != 0xFFFF) { while (1) {} }
+ D_8013AE88->resource16 = allocateTaskResource();
+ resource->unk0C = 0;
+ func_80089A98(&D_8013080C);
+ destination = (SaveRecord *)0x801E4000;
+ *destination++ = *(SaveRecord *)&D_8013080C;
+ *destination = *(SaveRecord *)&D_8013080C;
+ startStateValueHistoryTask();
+ setCurrentTaskCallback(updateMemoryCardSaveMenuTask);
+ { GameTask *task = D_8013AE88; task->unk10 = task->unk10 | 2; }
+ return;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/menu/save_record_tasks", func_80089EC0);
+#endif
 
 void updateMemoryCardSaveMenuTask(void) {
     SaveMenuResource *primary;
@@ -556,8 +650,101 @@ void updateMemoryCardSaveMenuTask(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: archive 713/729 */
+/* DECOMP_ATTEMPT: inline 713/729 */
+#ifdef NON_MATCHING
+extern u8 gSelectionPanelLabelOffsets[12];
+
+#define PANEL_OT (&D_800EBFF0[D_8013AF78])
+#define PANEL_DEPTH (D_8013AE88->data1C)
+
+extern const u16 D_80130798[9];
+extern s8 D_8013B480[4] __attribute__((section(".data")));
+extern TexturedQuadListEntry *D_8013B3C0[2];
+
+void func_8008B178(void) {
+    Movement2D *position;
+    s16 slot;
+    s16 course;
+    s16 i;
+    s16 pair;
+    s16 shade;
+    SaveRecord *records;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    slot = D_8013AE98->data1A;
+    course = gRacePlayers[slot].unk009;
+    setSpriteColor(128, 128, 128);
+    func_8006EF30((s16)(position->x / 4096 - 68), (s16)(position->y / 4096 - 96),
+                 9, D_80130798, 14, -1, PANEL_OT, PANEL_DEPTH);
+    drawDecimalNumber8x16(position->x / 4096 + 38, position->y / 4096 - 3, 6, 0,
+                          ((GlobalFlagStatePrefix *)&((SaveRecord *)&D_8013080C)[slot])->unk_3E4,
+                          0, -1, PANEL_OT, PANEL_DEPTH);
+    drawWrappedDoubleByteText(position->x / 4096 + 86, position->y / 4096 - 3,
+                              2, D_8013B480, 0, -1, PANEL_OT, PANEL_DEPTH);
+    func_8007240C(position->x / 4096 + 34, position->y / 4096 - 3,
+                  64, 16, 128, 128, 128, 2, PANEL_OT, PANEL_DEPTH);
+    func_8006C998(position->x / 4096 - 99, position->y / 4096 - 78, 110, 6, -1,
+                  PANEL_OT, PANEL_DEPTH);
+    func_8006C998(position->x / 4096 - 101, position->y / 4096 - 61, 91, 6, -1,
+                  PANEL_OT, PANEL_DEPTH);
+    func_8006C998(position->x / 4096 - 61, position->y / 4096 - 61, 89, 6, -1,
+                  PANEL_OT, PANEL_DEPTH);
+    func_8006C998((s8)gSelectionPanelLabelOffsets[course] + position->x / 4096 - 71,
+                  position->y / 4096 - 77, course + 254, (s16)(slot + 2), -1,
+                  PANEL_OT, PANEL_DEPTH);
+
+    for (i = 0; i < 3; i++) {
+        records = (SaveRecord *)&D_8013080C;
+        if (records[slot].flags_3B0[course] & (0x1000000U << i)) {
+            setSpriteColor(128, 128, 128);
+        } else {
+            setSpriteColor(32, 32, 32);
+        }
+        func_8006C998(position->x / 4096 - 96, i * 22 + position->y / 4096 - 50,
+                      i + 18, 6, -1, PANEL_OT, PANEL_DEPTH);
+    }
+
+    for (i = 0; i < 9; i++) {
+        setSpriteColor(128, 128, 128);
+        pair = getSaveRecordFlagPair(slot, course, i);
+        if (pair == 3) {
+            func_8006C998((s16)(i % 3) * 16 + position->x / 4096 - 60,
+                          (s16)(i / 3) * 22 + position->y / 4096 - 49,
+                          i + 70, 9, -1, PANEL_OT, PANEL_DEPTH);
+        } else if (pair == 2) {
+            func_8006C998((s16)(i % 3) * 16 + position->x / 4096 - 60,
+                          (s16)(i / 3) * 22 + position->y / 4096 - 49,
+                          i + 70, 10, -1, PANEL_OT, PANEL_DEPTH);
+        } else if (pair == 1) {
+            func_8006C998((s16)(i % 3) * 16 + position->x / 4096 - 60,
+                          (s16)(i / 3) * 22 + position->y / 4096 - 49,
+                          i + 70, 11, -1, PANEL_OT, PANEL_DEPTH);
+        } else {
+            setSpriteColor(32, 32, 32);
+            func_8006C998((s16)(i % 3) * 16 + position->x / 4096 - 60,
+                          (s16)(i / 3) * 22 + position->y / 4096 - 49,
+                          69, 9, -1, PANEL_OT, PANEL_DEPTH);
+        }
+    }
+
+    setTexturedQuadColor(128, 128, 128);
+    drawTexturedQuadList(position->x / 4096 - 104, position->y / 4096 - 80,
+                         D_8013B3C0[slot], 1, PANEL_OT, PANEL_DEPTH);
+    setSpriteColor(128, 128, 128);
+    func_8006C998(position->x / 4096 - 8, position->y / 4096 - 80,
+                  slot * 2 + 241, 0, 0, PANEL_OT, PANEL_DEPTH);
+    func_8006C998(position->x / 4096 - 8, position->y / 4096 - 80,
+                  267, 0, -1, PANEL_OT, PANEL_DEPTH);
+}
+
+#undef PANEL_OT
+#undef PANEL_DEPTH
+#else
 INCLUDE_ASM("asm/nonmatchings/menu/save_record_tasks", func_8008B178);
+#endif
 
 void drawTaskShadowedText(void) {
     Movement2D *resource;
@@ -672,8 +859,54 @@ void rebuildCombinedStateMask(GlobalFlagStatePrefix *state) {
     }
 }
 
-/* DECOMP_ATTEMPT: archive 129/131 */
+/* DECOMP_ATTEMPT: inline 129/131 */
+#ifdef NON_MATCHING
+extern u8 D_8012D478[];
+extern s16 D_8013AFCE __attribute__((section(".data")));
+
+s16 func_8008C290(s16 maskIndex, s16 place) {
+    s16 savedMask = maskIndex;
+    s16 result;
+    s16 pair;
+    s16 value;
+    s16 i;
+    s16 recordIndex;
+    if (place >= 4) return 0;
+    result = 0;
+    pair = D_8012D478[D_8013AFCE];
+    value = 3 - place;
+    if (getSaveRecordFlagPair(0, maskIndex, pair) < value) {
+        setSaveRecordFlagPair(0, maskIndex, pair, value);
+        switch (getSaveRecordMaskTier(0, maskIndex)) {
+        case 2:
+            if (value == 3 && pair == 7) result = 3;
+            break;
+        case 1:
+            if (value == 3 && pair == 6) result = 2;
+            break;
+        case 0:
+            result = 1;
+            recordIndex = 0;
+            for (i = 0; i < 6; i++) {
+                if (getSaveRecordFlagPair(recordIndex, maskIndex, i) < 3) {
+                    result = 0;
+                    break;
+                }
+            }
+            break;
+        }
+    }
+    if (value == 3 && pair == 8) result = 4;
+    if (result != 0) setSaveRecordMaskTier(0, savedMask, result);
+    {
+        u8 padding[8];
+        copySaveRecordAndMergeFlags();
+    }
+    return result;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/menu/save_record_tasks", func_8008C290);
+#endif
 
 u32 getGlobalFlagMask(s16 bitIndex) {
     return D_801313C8[0] & (1U << bitIndex);

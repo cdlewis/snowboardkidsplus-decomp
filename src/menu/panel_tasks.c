@@ -712,8 +712,194 @@ void initializeAlternateCountedTaskResourcePair(void) {
     D_8013AE88->unk10 |= 2;
 }
 
-/* DECOMP_ATTEMPT: archive 551/555 */
+/* DECOMP_ATTEMPT: inline 551/555 */
+#ifdef NON_MATCHING
+extern const u8 D_801317D0[];
+extern const u8 D_8013B49C[];
+extern const u8 D_8013B4B0[];
+
+void func_8008DDC0(void) {
+    MoneyMenuSelection *selection;
+    RegisteredTaskEntry *entries;
+    s32 complete;
+    u8 padding[8];
+    s16 mode;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        for (;;) {}
+    }
+    selection = (MoneyMenuSelection *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) {
+        for (;;) {}
+    }
+    entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE88->resource16];
+
+    switch (D_8013AE88->data18) {
+    case 0:
+        mode = 1;
+        setMusicSequenceEnabled(mode);
+        selection->mode = 0;
+        if (D_8013B4BC != 0) {
+            selection->selectedIndex = D_8013B4BC - 1;
+        } else {
+            selection->selectedIndex = D_8013B4BC;
+        }
+        selection->previousIndex = selection->selectedIndex;
+        selection->choiceResult = 0;
+        createRegisteredSpacedChildTasks(mode, 0xB0, 0x40, D_801317D0, D_8013B4B0,
+                                         NULL, 0, 0, 20, -308, -80, 0, 24, 3, 176,
+                                         drawSelectedTaskSprite, drawRegisteredTaskGridSpriteWithColor, 4, 1);
+        createRegisteredTextPanelTask(-320, 8, sShopMenuTexts, D_8013B49C, 4, 11);
+        createRegisteredCallbackTask(0, 172, -72, drawCurrentTaskSaveRecordMoneyPanelWithCharacterSprites, 4, 21);
+        uploadTextureArchiveEntry(320, 0, 768, 0xE9, D_801317E4[gRacePlayers[0].unk009]);
+        uploadTextureArchiveEntry(320, 256, 768, 0xEA, 0);
+        createRegisteredTexturePairTask(172, -72, D_8013B4B4, 3, selection->selectedIndex, 1, 5, 31);
+        D_8013AE88->data18 = 2;
+        break;
+    case 2:
+        if ((s16)entries[0].flags == 0 && (s16)entries[1].flags == 0 &&
+            (s16)entries[2].flags == 0 && (s16)entries[3].flags == 0) {
+            moveTaskChildrenWithSpacing(0, entries[0].task, -0x80000, -0x50000, 0x1E000, 0, 1);
+            configureMovement2D((Movement2D *)&D_800D9504[entries[1].task->resource14],
+                                -0x8C000, 0x8000, 0x1E000, 0, 4);
+            if (D_8013B4BC == 0) {
+                s16 i;
+                s16 hasUnavailableBoards = 0;
+
+                for (i = 0; i < 3; i++) {
+                    if ((D_8013080C.flags & (0x800 << (i + 3))) &&
+                        !(D_8013080C.flags & (0x800 << i))) {
+                        hasUnavailableBoards = 1;
+                    }
+                }
+                if (hasUnavailableBoards) {
+                    setTaskSecondaryResourceData(entries[1].task, sShopMenuTexts[10]);
+                } else {
+                    setTaskSecondaryResourceData(entries[1].task, sShopMenuTexts[5]);
+                }
+            }
+            configureMovement2D((Movement2D *)&D_800D9504[entries[2].task->resource14],
+                                -0x8000, -0x48000, -0x1E000, 0, 4);
+            configureMovement2D((Movement2D *)&D_800D9504[entries[3].task->resource14],
+                                -0x8000, -0x48000, -0x1E000, 0, 4);
+            D_8013AE88->data18 = 3;
+        }
+        break;
+    case 3:
+        if ((s16)entries[0].flags == 0 && (s16)entries[1].flags == 0 &&
+            (s16)entries[2].flags == 0 && (s16)entries[3].flags == 0) {
+            entries[0].command = 20;
+            entries[1].command = 20;
+            entries[2].command = 20;
+            configureColorCycleTask(1, 0, 128, 8, 0);
+            D_8013B41F = 0;
+            D_8013AE88->data18 = 4;
+        }
+        break;
+    case 4:
+        if (D_8013B4BC == 0) {
+            playSoundEffect(0, 2, 32);
+        }
+        D_8013AE88->data18 = 5;
+        break;
+    case 5:
+        complete = isTaskResourceTransitionComplete(0);
+        if (complete == 1 && D_8013B41F == 0) {
+            entries[0].command = 21;
+            entries[1].command = 22;
+            entries[2].command = 22;
+            configureColorCycleTask(2, 64, 128, 4, 0);
+            D_8013B41F = complete;
+        }
+        if (selection->selectedIndex != selection->previousIndex) {
+            setTaskSecondaryResourceData(entries[1].task, NULL);
+        }
+        if (selection->choiceResult != 0 && (s16)entries[0].flags == 0) {
+            if (D_8013B41F == 0) {
+                entries[0].command = 21;
+                entries[1].command = 22;
+                entries[2].command = 22;
+                D_8013B41F = 1;
+            }
+            if (selection->choiceResult < 0) {
+                goto returnToParentMenu;
+            }
+            switch (selection->selectedIndex) {
+            case 0:
+                D_8013AE98->data18 = 16;
+                break;
+            case 1:
+                D_8013AE98->data18 = 17;
+                break;
+            case 2:
+returnToParentMenu:
+                D_8013AE98->data18 = 11;
+                break;
+            }
+            if (D_8013AE98->data18 == 11) {
+                D_8013B4BC = 0;
+            } else {
+                D_8013B4BC = selection->selectedIndex + 1;
+            }
+            if (selection->choiceResult < 0) {
+                goto finishChoice;
+            }
+            D_8013AE88->data18 = 9;
+        }
+        break;
+    case 9: {
+        GameTask *task = D_8013AE88;
+        entries[0].command = 10;
+        task->data18 = 10;
+        break;
+    }
+    case 10:
+        if ((s16)entries[0].flags == 0) {
+finishChoice:
+            D_8013AE88->data18 = 11;
+        }
+        break;
+    case 11:
+        if (D_8013AE98->data18 == 11) {
+            D_8013AE88->data18 = 12;
+            break;
+        }
+        goto beginExit;
+    case 12:
+        playSoundEffect(0, 0x202, 32);
+beginExit:
+        D_8013AE88->data18 = 6;
+        break;
+    case 6:
+        if ((s16)entries[0].flags == 0 && (s16)entries[1].flags == 0 &&
+            (s16)entries[2].flags == 0 && (s16)entries[3].flags == 0) {
+            queueMenuResourceReads((s16)D_8013AE98->data18);
+            moveTaskChildrenWithSpacing(0, entries[0].task, -0x134000, -0x50000, 0x1E000, 0x1E000, -1000);
+            entries[0].command = 23;
+            configureMovement2D((Movement2D *)&D_800D9504[entries[1].task->resource14],
+                                -0x140000, 0x8000, -0x1E000, 0x1E000, -1000);
+            configureMovement2D((Movement2D *)&D_800D9504[entries[2].task->resource14],
+                                0xAC000, -0x48000, 0x1E000, 0x1E000, -1000);
+            configureMovement2D((Movement2D *)&D_800D9504[entries[3].task->resource14],
+                                0xAC000, -0x48000, -0x1E000, 0x1E000, -1000);
+            D_8013AE88->data18 = 7;
+        }
+        break;
+    case 7:
+        if ((s16)entries[0].flags == 0 && (s16)entries[1].flags == 0 &&
+            (s16)entries[2].flags == 0 && (s16)entries[3].flags == 0) {
+            D_8013AE88->data18 = 8;
+        }
+        break;
+    default:
+        D_8013AE98->data1C--;
+        deleteCurrentTaskSubtree();
+        break;
+    }
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/menu/panel_tasks", func_8008DDC0);
+#endif
 
 void drawCurrentTaskSaveRecordMoneyPanelWithCharacterSprites(void) {
     Movement2D *position;
@@ -1197,8 +1383,360 @@ void initializeTaskResourcePair(void) {
     setCurrentTaskCallback(func_80090450);
 }
 
-/* DECOMP_ATTEMPT: archive 943/946 */
+/* DECOMP_ATTEMPT: inline 943/946 */
+#ifdef NON_MATCHING
+extern RecordFlagMenuEntries D_80131910;
+extern u8 D_80130094[][5];
+extern u8 D_801300A0[][5];
+extern const u8 D_8013B4E0[4];
+
+void func_80090450(void) {
+    MoneyMenuSelection *parentSelection;
+    RegisteredPanelSlot *parentPanels;
+    MoneyMenuSelection *selection;
+    RegisteredPanelSlot *panels;
+    MenuSelectionState *groupedSelection;
+    RecordFlagMenuEntries entryStorage;
+    u8 padding[8];
+    RecordFlagMenuEntries *entries;
+    s32 complete;
+    u32 price;
+    s16 value;
+    s16 i;
+    s32 recordIndex;
+
+    if (D_8013AE98->resource14 == 0xFFFF) { for (;;) {} }
+    parentSelection = (MoneyMenuSelection *)&D_800D9504[D_8013AE98->resource14];
+    if (D_8013AE98->resource16 == 0xFFFF) { for (;;) {} }
+    parentPanels = (RegisteredPanelSlot *)&D_800D9504[D_8013AE98->resource16];
+    if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
+    selection = (MoneyMenuSelection *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) { for (;;) {} }
+    panels = (RegisteredPanelSlot *)&D_800D9504[D_8013AE88->resource16];
+    recordIndex = 0;
+    groupedSelection = &D_801300AC[0];
+
+    switch (D_8013AE88->data18) {
+    case 0:
+        moveTaskChildrenWithSpacing(2, parentPanels[0].task, -0x1BC000, -0x60000, 0x1E000, 0x1E000, -1000);
+        D_8013AE88->data18 = 1;
+        break;
+    case 1:
+        if (parentPanels[0].flags == 0) {
+            parentPanels[0].command = 23;
+            parentPanels[1].command = 23;
+            parentPanels[4].command = 23;
+            configureTaskGridMovement(1, parentPanels[0].task, -0x7C000, -0x60000, 0x1E000, 0x1E000, 0);
+            D_8013AE88->data18 = 2;
+        }
+        break;
+    case 2:
+        if (parentPanels[0].flags == 0) {
+            s32 depth;
+            s16 gridMode;
+            if (D_8013AE88->data1A == 4) {
+                GlobalFlagStatePrefix *record;
+                entries = &entryStorage;
+                i = 0;
+                record = &D_8013080C;
+                entries->unk_05 = 20;
+                entries->unk_04 = 0;
+                entries->entries = D_80130094[0];
+                entries->count = 0;
+                entries->textIndices = D_801300A0[0];
+                entries->unk_10 = 0;
+                for (; i < 3; i++) {
+                    if (record->flags & (0x800U << (i + 3))) {
+                        entries->entries[entries->count] = i + 11;
+                        entries->textIndices[entries->count] = i + 5;
+                        entries->count++;
+                    }
+                }
+                gridMode = 1;
+            } else {
+                entries = &D_80131910;
+                gridMode = 1;
+            }
+            createRegisteredSpacedChildTasks(gridMode, 0xB0, 0x40, D_80131868,
+                                             entries->entries, NULL, 0, 0, 0, -444, -96,
+                                             entries->unk_04, entries->unk_05, entries->count, 222,
+                                             drawSelectedTaskSprite, drawRegisteredTaskGridSpriteWithColor, 5, 1);
+            if (D_8013AE88->data1A == 4) {
+                createRegisteredTextPanelTask(-136, 8, D_8012FFD4, entries->textIndices, 4, 11);
+            } else {
+                createRegisteredTextPanelTask(-136, 8, NULL, entries->textIndices, 4, 11);
+            }
+            depth = 3;
+            createRegisteredCallbackTask(0, 0, 0, drawCurrentTaskSelectedBoardDetails, depth, 21);
+            createRegisteredCallbackTask(0, 0, 0, drawCurrentTaskSelectedBoardPrice, depth, 31);
+            selection->mode = 0;
+            selection->selectedIndex = getGroupedIndexOffsetPlus216(groupedSelection->selection);
+            value = findIndexedHalfwordRecord((IndexedHalfwordRecord *)D_80131868, entries->entries,
+                entries->count, selection->selectedIndex);
+            selection->selectedIndex = value;
+            selection->previousIndex = value;
+            selection->choiceResult = 0;
+            D_8013AE88->data18 = 3;
+        }
+        break;
+    case 3:
+        if (panels[0].flags == 0 && panels[1].flags == 0 &&
+            panels[2].flags == 0 && panels[3].flags == 0) {
+            initializeSpacedTaskGridPositions(0, panels[0].task, -0x74000, -0x60000, 0, 0);
+            configureVerticalTaskGridMovement(0, panels[0].task, -0x74000, -0x4C000, 0x8000, 0x8000, 2);
+            initMovement2D((Movement2D *)&D_800D9504[parentPanels[1].task->resource14], -0x1C8000, 0x8000);
+            goto showSelection;
+        }
+        break;
+    case 4:
+        if (panels[0].flags == 0 && parentPanels[1].flags == 0) {
+            GameTask *task;
+
+            panels[0].command = 20;
+            panels[1].command = 20;
+            panels[2].command = 20;
+            panels[3].command = 20;
+            configureColorCycleTask(1, 0, 128, 8, 0);
+            task = D_8013AE88;
+            D_8013B41F = 0;
+            task->data18 = 5;
+        }
+        break;
+    case 5:
+        complete = isTaskResourceTransitionComplete(0);
+        if (complete == 1 && D_8013B41F == 0) {
+            panels[0].command = 21;
+            panels[1].command = 22;
+            panels[2].command = 22;
+            panels[3].command = 22;
+            configureColorCycleTask(2, 64, 128, 4, 0);
+            D_8013B41F = complete;
+        }
+        if (hasTaskResource16Value(panels[1].task) != 0) {
+            panels[2].command = 23;
+        } else if (D_8013B41F != 0) {
+            panels[2].command = 22;
+        } else {
+            panels[2].command = 20;
+        }
+        if (parentPanels[2].flags == 0 && selection->choiceResult != 0) {
+            D_8013AE88->data18 = 6;
+        }
+        if (groupedSelection->selection == groupedSelection->previousSelection &&
+            selection->selectedIndex != selection->previousIndex) {
+            groupedSelection->previousSelection = groupedSelection->selection;
+            groupedSelection->selection = getTaskResourceAdjustedGroupedIndex(D_8013AE88->data1A, panels[0].task, selection->selectedIndex);
+            if (groupedSelection->selection < 0) {
+                groupedSelection->selection = groupedSelection->previousSelection;
+                selection->previousIndex = selection->selectedIndex;
+            } else {
+                parentPanels[2].command = 13;
+                selection->previousIndex = selection->selectedIndex;
+                setTaskSecondaryResourceData(panels[1].task, NULL);
+            }
+        } else if (D_8013AE88->data18 != 5 && D_8013B41F == 0) {
+            panels[0].command = 22;
+            panels[1].command = 22;
+            panels[2].command = 22;
+            panels[3].command = 22;
+            D_8013B41F = 1;
+        }
+        break;
+    case 6:
+        if (selection->choiceResult != 0 && panels[0].flags == 0) {
+            if (selection->choiceResult < 0) {
+                D_8013AE88->data18 = 9;
+            } else {
+                D_8013AE88->data18 = 14;
+            }
+        }
+        break;
+    case 9: {
+        GameTask *task;
+
+        configureTaskGridMovement(0, panels[0].task, -0x74000, -0x60000, 0x1E000, 0x1E000, 0);
+        task = D_8013AE88;
+        panels[0].command = 23;
+        task->data18 = 10;
+        break;
+    }
+    case 10:
+        if (panels[0].flags == 0) {
+            initializeSpacedTaskGridPositions(0, panels[0].task, -0x1B4000, -0x60000, 0, 0);
+            moveTaskChildrenWithSpacing(1, parentPanels[0].task, -0x7C000, -0x60000, 0x1E000, 0x1E000, 0);
+            D_8013AE88->data18 = 11;
+        }
+        break;
+    case 11:
+        if (parentPanels[0].flags == 0) {
+            moveTaskChildrenWithSpacing(2, parentPanels[0].task, -0x7C000, -0x60000, 0x1E000, 0x1E000, 0);
+            D_8013AE88->data18 = 12;
+        }
+        break;
+    case 12:
+        if (parentPanels[0].flags == 0) {
+            GameTask *task;
+
+            initMovement2D((Movement2D *)&D_800D9504[panels[1].task->resource14], -0x1C8000, 0x8000);
+            initMovement2D((Movement2D *)&D_800D9504[parentPanels[1].task->resource14], -0x88000, 0x8000);
+            parentPanels[2].command = 1;
+            parentPanels[0].command = 20;
+            parentPanels[1].command = 20;
+            parentPanels[4].command = 20;
+            configureColorCycleTask(1, 0, 128, 8, 0);
+            task = D_8013AE88;
+            D_8013B41F = 0;
+            task->data18 = 13;
+        }
+        break;
+    case 13:
+        parentSelection->choiceResult = 0;
+        D_8013AE98->data18 = 4;
+        goto finish;
+    case 14: {
+        s16 board = groupedSelection->selection;
+        u8 flagIndex = D_80131804[board];
+        GlobalFlagStatePrefix *record = (GlobalFlagStatePrefix *)&((SaveRecord *)&D_8013080C)[recordIndex];
+
+        if (record->flags & (4U << flagIndex)) {
+            GameTask *task;
+
+            setTaskSecondaryResourceData(panels[1].task, sShopMenuTexts[7]);
+            task = D_8013AE88;
+            panels[0].command = 21;
+            parentPanels[2].command = 1;
+            selection->choiceResult = 0;
+            task->data18 = 5;
+        } else if ((price = D_80131810[board], record->unk_3E4 < price)) {
+            setTaskSecondaryResourceData(panels[1].task, sShopMenuTexts[6]);
+            panels[0].command = 21;
+            parentPanels[2].command = 1;
+            selection->choiceResult = 0;
+            playSoundEffect(0, 0x302, 32);
+            D_8013AE88->data18 = 5;
+        } else {
+            parentPanels[2].command = 2;
+            createValuePanelTask(-120, -48, &selection->mode, 2, 41);
+            playSoundEffect(0, 0x502, 32);
+            D_8013AE88->data18 = 15;
+        }
+        break;
+    }
+    case 15:
+        if (panels[4].flags == 0) {
+            if (selection->choiceResult != 1) {
+                parentPanels[2].command = 1;
+showSelection:
+                D_8013AE88->data18 = 4;
+            } else {
+                u32 *balance = (u32 *)&D_80130BF0[(s16)recordIndex];
+                u32 target;
+                GameTask *transition;
+                GameTask *task;
+                s16 board = groupedSelection->selection;
+
+                target = *balance;
+                price = D_80131810[board];
+                target -= price;
+                transition = createValueTransitionTask(balance, target, 100);
+                task = D_8013AE88;
+
+                panels[5].task = transition;
+                task->data18 = 16;
+            }
+        }
+        break;
+    case 16: {
+        GameTask *transition;
+        s16 group;
+        s16 groupComplete;
+        s32 shift;
+
+        if (gFrameCounter & 1) {
+            playSoundEffect(1, 2, 32);
+        }
+        transition = panels[5].task;
+        if (transition->data1A == 1) {
+            SaveRecord *records = (SaveRecord *)&D_8013080C;
+            SaveRecord *record = records;
+            s32 player;
+            u8 flagIndex;
+            group = 0;
+            player = 0;
+            transition->data18 = 1;
+            flagIndex = D_80131804[groupedSelection->selection];
+            record[recordIndex].flags_3AC |= 4U << flagIndex;
+            for (; group < 3; group++) {
+                groupComplete = 1;
+                for (i = 0; i < 3; i++) {
+                    u32 flags;
+                    shift = group * 3 + i;
+                    flags = records[(s16)player].flags_3AC;
+                    if ((flags & (4 << shift)) == 0) {
+                        groupComplete = 0;
+                        break;
+                    }
+                }
+                if (groupComplete) {
+                    setPairedStateIndexedFlag(D_8013B4E0[group]);
+                }
+            }
+            panels[5].task = createCountdownTask(15);
+            playSoundEffect(1, 2, 32);
+            D_8013AE88->data18 = 17;
+        }
+        break;
+    }
+    case 17: {
+        u16 done = panels[5].task->data1A;
+        if (done == 1) {
+            GameTask *task;
+
+            playSoundEffect(0, 0x102, 32);
+            task = D_8013AE88;
+            panels[5].task->data18 = done;
+            task->data18 = 7;
+        }
+        break;
+    }
+    case 7:
+        moveTaskChildrenWithSpacing(0, panels[0].task, -0x1B4000, -0x4C000, 0x1E000, 0x1E000, -1000);
+        panels[0].command = 23;
+        configureMovement2D((Movement2D *)&D_800D9504[panels[1].task->resource14],
+                            -0x1C8000, 0x8000, 0x1E000, 0x1E000, -1000);
+        configureMovement2D((Movement2D *)&D_800D9504[panels[2].task->resource14],
+                            -0x140000, 0, 0x1E000, 0x1E000, -1000);
+        configureMovement2D((Movement2D *)&D_800D9504[panels[3].task->resource14],
+                            0x140000, 0, 0x1E000, 0x1E000, -1000);
+        configureTaskGridMovement(0, parentPanels[0].task, -0x1BC000, -0x60000, 0x1E000, 0x1E000, -1000);
+        configureMovement2D((Movement2D *)&D_800D9504[parentPanels[1].task->resource14],
+                            -0x1C8000, 0x8000, 0x1E000, 0x1E000, -1000);
+        func_80081AC8(0, parentPanels[2].task, 0x180000, 0, 0x1E000, 0, -1000);
+        func_80081AC8(1, parentPanels[2].task, 0x180000, 0, 0x1E000, 0, -1000);
+        configureMovement2D((Movement2D *)&D_800D9504[parentPanels[3].task->resource14],
+                            0x138000, -0x48000, 0x1E000, 0x1E000, -1000);
+        configureMovement2D((Movement2D *)&D_800D9504[parentPanels[4].task->resource14],
+                            -0x1B4000, 0x30000, 0x1E000, 0x1E000, -1000);
+        D_8013AE88->data18 = 8;
+        break;
+    case 8:
+        if (panels[0].flags == 0 && panels[1].flags == 0 &&
+            panels[2].flags == 0 && panels[3].flags == 0 &&
+            parentPanels[0].flags == 0 && parentPanels[1].flags == 0 &&
+            parentPanels[2].flags == 0 && parentPanels[3].flags == 0 && parentPanels[4].flags == 0) {
+            D_8013AE98->data18 = 11;
+            goto finish;
+        }
+        break;
+    default:
+finish:
+        deleteCurrentTaskSubtree();
+        break;
+    }
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/menu/panel_tasks", func_80090450);
+#endif
 
 extern char gSaveRecordMoneyPanelCurrencyLabel[]
     __attribute__((section(".data.save_record_money_panel_currency_label")));
@@ -1835,8 +2373,264 @@ void initializePlayerTextureSelectionTask(void) {
     setCurrentTaskCallback(func_80093A54);
 }
 
-/* DECOMP_ATTEMPT: archive 648/654 */
+/* DECOMP_ATTEMPT: inline 648/654 */
+#ifdef NON_MATCHING
+#include "game/race/player/player_resource_textures.h"
+
+#define PANEL_GROUP(task) ((BoardPanelGroupResource *)&D_800D9504[(task)->resource14])
+#define ENTRY_READY(entry) ((s16)(entry).flags == 0)
+#define PREVIEW_TIM(index) ((u32 *)((u16 *)DAT_STARTUP_TEXTURES + (((s32 *)DAT_STARTUP_TEXTURES)[(s16)(D_80130084[index] + 1)] >> 1)))
+
+typedef struct BoardPanelGroupResource {
+    u8 unk00[0x48];
+    const u8 *mapping;
+} BoardPanelGroupResource;
+
+typedef struct BoardPreviewSelection {
+    s16 current, previous;
+} BoardPreviewSelection;
+
+extern const u8 D_80130084[16];
+extern const u8 D_80131924[];
+extern const u8 *D_8013B4E8[];
+extern BoardPreviewSelection D_8013B468[];
+void uploadTimImageAt(s16 x, s16 y, s16 clutX, s16 clutY, u32 *tim);
+
+void func_80093A54(void)
+{
+    FlagSelectedMenuState *input;
+    RegisteredTaskEntry *entries;
+    MenuSelectionState *selection;
+    BoardPreviewSelection *preview;
+    s32 complete;
+    s16 index;
+    u8 padding[0x20];
+
+    if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
+    input = (FlagSelectedMenuState *)&D_800D9504[D_8013AE88->resource14];
+    {
+        GameTask *task = D_8013AE88;
+        u16 resource = task->resource16;
+        u16 state;
+        if (resource == 0xFFFF) { for (;;) {} }
+        entries = (RegisteredTaskEntry *)&D_800D9504[resource];
+        selection = D_801300AC;
+        state = task->data18;
+        preview = D_8013B468;
+
+        switch (state) {
+    case 0: {
+        s16 index = findByteIndexOrZero(D_80130084,
+            *(selection->selection + gPlayerResourceTextureSelections.entries[0]), 16);
+        input->mode = 0;
+        if (index >= 8) {
+            input->selectedIndex = index - 8;
+            D_8013AE88->data1A = 1;
+        } else {
+            input->selectedIndex = index;
+            D_8013AE88->data1A = 0;
+        }
+        {
+            s16 selected = input->selectedIndex;
+            GameTask *task = D_8013AE88;
+            input->choiceResult = 0;
+            input->previousIndex = selected;
+            preview->current = index;
+            preview->previous = index;
+            task->data18 = 1;
+        }
+        break;
+    }
+    case 1: {
+        const u8 * const *pages = D_8013B4E8;
+        const u8 *mapping = pages[D_8013AE88->data1A];
+        createRegisteredSpacedChildTasks(1, 0xB0, 0x40, D_80131924,
+            mapping, NULL, 0, 0, 20, -304, -96, 0, 20,
+            10, 0x11F, drawSelectedTaskSprite, drawRegisteredTaskGridSpriteWithColor, 4, 21);
+        createRegisteredCallbackTask(0, 180, 64, drawCurrentTaskFramedSpritePair16A, 3, 31);
+        uploadTimImageAt(576, 256, 768, 238, PREVIEW_TIM(preview->current));
+        D_8013AE88->data18 = 2;
+        break;
+    }
+    case 2:
+        if (ENTRY_READY(entries[2]) && ENTRY_READY(entries[3])) {
+            moveTaskChildrenWithSpacing(0, entries[2].task, -0x7C000, -0x60000, 0x1E000, 0, 1);
+            configureMovement2D(CHILD_MOVEMENT(entries[3]), 0, 0x40000, 0x1E000, 0, 10);
+            D_8013AE88->data18 = 3;
+        }
+        break;
+    case 3:
+        if (ENTRY_READY(entries[2]) && ENTRY_READY(entries[3])) {
+            GameTask *task;
+            entries[2].command = 20;
+            entries[3].command = 20;
+            configureColorCycleTask(1, 0, 128, 8, 0);
+            task = D_8013AE88;
+            D_8013B41F = 0;
+            task->data18 = 4;
+        }
+        break;
+    case 4: {
+        complete = isTaskResourceTransitionComplete(0);
+        if (complete == 1 && D_8013B41F == 0) {
+            entries[2].command = 21;
+            entries[3].command = 22;
+            configureColorCycleTask(2, 64, 128, 4, 0);
+            D_8013B41F = complete;
+        }
+        if (input->selectedIndex != input->previousIndex) {
+            GameTask *child;
+            const u8 *mapping;
+            input->previousIndex = input->selectedIndex;
+            child = entries[2].task;
+            mapping = PANEL_GROUP(child)->mapping;
+            index = func_8007373C(mapping, input->selectedIndex) - 3;
+            if ((u16)index >= 16) {
+                break;
+            }
+            preview->current = index;
+            uploadTimImageAt(576, 256, 768, 238, PREVIEW_TIM(index));
+        }
+        if (D_8013AEE8[0] & 0x8000) {
+            D_8013AE88->data1A = D_8013AE88->data1A ? D_8013AE88->data1A - 1 : 1;
+            D_8013AE88->data18 = 10;
+        } else if (input->choiceResult != 0 && ENTRY_READY(entries[2])) {
+            if (D_8013B41F == 0) {
+                entries[2].command = 22;
+                entries[3].command = 22;
+                D_8013B41F = 1;
+            }
+            if (input->choiceResult < 0) {
+                u16 state = 13;
+                D_8013AE88->data18 = state;
+                return;
+            }
+            {
+                GameTask *child = entries[2].task;
+                s16 selected = input->selectedIndex;
+                u16 resource = child->resource14;
+                BoardPanelGroupResource *group = (BoardPanelGroupResource *)&D_800D9504[resource];
+                index = func_8007373C(group->mapping, selected);
+            }
+            if (index == 0 && D_8013AE88->data1A == 0) {
+                D_8013AE88->data1A++;
+                D_8013AE88->data18 = 10;
+            } else if (index == 1 && D_8013AE88->data1A != 0) {
+                D_8013AE88->data1A--;
+                D_8013AE88->data18 = 10;
+            } else if (index == 2) {
+                D_8013AE88->data18 = 15;
+            } else if ((u16)(index - 3) < 16 && preview->current != preview->previous) {
+                D_8013AE88->data1E = 20;
+                D_8013AE88->data18 = 8;
+            } else {
+                D_8013AE88->data18 = 9;
+            }
+        }
+        break;
+    }
+    case 8: {
+        GameTask *task = D_8013AE88;
+        if (task->data1E != 0) {
+            task->data1E = 0;
+        } else {
+            task->data18 = 9;
+        }
+        break;
+    }
+    case 9: {
+        GameTask *task = D_8013AE88;
+        entries[2].command = 21;
+        input->choiceResult = 0;
+        task->data18 = 4;
+        break;
+    }
+    case 15: {
+        GameTask *task = D_8013AE88;
+        entries[2].command = 10;
+        task->data18 = 16;
+        break;
+    }
+    case 16:
+        if (ENTRY_READY(entries[2])) {
+            D_8013AE88->data18 = 5;
+        }
+        break;
+    case 13:
+        moveTaskChildrenWithSpacing(0, entries[2].task, -0x130000, -0x60000, 0x1E000, 0x1E000, -1000);
+        configureMovement2D(CHILD_MOVEMENT(entries[3]), 0xB4000, 0x40000, 0x1E000, 0, 0);
+        D_8013AE88->data18 = 14;
+        break;
+    case 14:
+        if (ENTRY_READY(entries[2]) && ENTRY_READY(entries[3])) {
+            goto finish;
+        }
+        break;
+    case 10: {
+        GameTask *task;
+        moveTaskChildrenWithSpacing(0, entries[2].task, -0x134000, -0x60000, 0x1E000, 0x1E000, -1000);
+        task = D_8013AE88;
+        entries[2].command = 23;
+        task->data18 = 11;
+        break;
+    }
+    case 11:
+        if (ENTRY_READY(entries[2])) {
+            BoardPanelGroupResource *group;
+            GameTask *child = entries[2].task;
+            BoardPanelGroupResource *groupBeforeMove = PANEL_GROUP(child);
+            groupBeforeMove->mapping = D_8013B4E8[D_8013AE88->data1A];
+            moveTaskChildrenWithSpacing(0, entries[2].task, -0x80000, -0x60000, 0x1E000, 0, 1);
+            child = entries[2].task;
+            entries[2].command = 23;
+            entries[3].command = 23;
+            group = PANEL_GROUP(child);
+            if (input->selectedIndex < 8) {
+                index = func_8007373C(group->mapping, input->selectedIndex);
+            } else {
+                index = func_8007373C(group->mapping, 7);
+            }
+            index -= 3;
+            preview->current = index;
+            uploadTimImageAt(576, 256, 768, 238, PREVIEW_TIM(index));
+            {
+                GameTask *task = D_8013AE88;
+                input->choiceResult = 0;
+                task->data18 = 3;
+            }
+        }
+        break;
+    case 5:
+        moveTaskChildrenWithSpacing(0, entries[2].task, -0x130000, -0x60000, 0x1E000, 0x1E000, -1000);
+        entries[2].command = 23;
+        configureMovement2D(CHILD_MOVEMENT(entries[3]), 0xB4000, 0x40000, 0x1E000, 0x1E000, -1000);
+        func_80081AC8(0, entries[0].task, 0xF4000, 0, 0x1E000, 0, -1000);
+        func_80081AC8(1, entries[0].task, 0xF4000, 0, 0x1E000, 0, -1000);
+        configureMovement2D(CHILD_MOVEMENT(entries[1]), 0xAC000, -0x48000, 0x1E000, 0x1E000, -1000);
+        D_8013AE88->data18 = 6;
+        break;
+    case 6:
+        if (ENTRY_READY(entries[2]) && ENTRY_READY(entries[3]) &&
+            ENTRY_READY(entries[0]) && ENTRY_READY(entries[1])) {
+            D_8013AE98->data18 = 20;
+            deleteCurrentTaskSubtree();
+        }
+        break;
+    default:
+finish:
+        D_8013AE98->data18 = 18;
+        deleteCurrentTaskSubtree();
+        break;
+        }
+    }
+}
+
+#undef PANEL_GROUP
+#undef ENTRY_READY
+#undef PREVIEW_TIM
+#else
 INCLUDE_ASM("asm/nonmatchings/menu/panel_tasks", func_80093A54);
+#endif
 
 void drawCurrentTaskSpriteBA(void) {
     Movement2D *position;

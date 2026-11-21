@@ -70,8 +70,24 @@ void initializeNumberAdjustmentTask(void) {
     D_8013AE88->unk10 |= 2;
 }
 
-/* DECOMP_ATTEMPT: archive 19/23 */
+/* DECOMP_ATTEMPT: inline 19/23 */
+#ifdef NON_MATCHING
+extern u8 D_8012D478[];
+void setTaskBackgroundMode(s32 mode, s32 value1, s32 value2);
+void copyIndexedTaskImagesToVram(s16 index);
+void updateNumberAdjustmentTask(void);
+
+void func_800A53BC(void) {
+    s16 index;
+    setTaskBackgroundMode(2, -0x1000, 0x1000);
+    setSecondaryDisplayTaskMode(0);
+    index = D_8012D478[D_8013AFCE];
+    copyIndexedTaskImagesToVram(index);
+    setCurrentTaskCallback(updateNumberAdjustmentTask);
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/menu/number_adjustment", func_800A53BC);
+#endif
 
 void updateNumberAdjustmentTask(void) {
     NumberAdjustmentState *state;

@@ -66,8 +66,15 @@ void queueStartupSectorReads(void) {
     queueCdSectorCommand(0, DAT_STARTUP_TEXTURES_SECTOR, DAT_STARTUP_TEXTURES_SECTOR_COUNT, DAT_STARTUP_TEXTURES, 0);
 }
 
-/* DECOMP_ATTEMPT: archive 11/13 */
+/* DECOMP_ATTEMPT: inline 11/13 */
+#ifdef NON_MATCHING
+void func_8002F394(void) {
+    u32 *destination = (u32 *)0x80189800;
+    queueCdSectorCommand(2, 0x480, 0x4A, destination, 0);
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/graphics/background_resources", func_8002F394);
+#endif
 
 void uploadTimImageAt(s16 x, s16 y, s16 clutX, s16 clutY, u32 *tim) {
     GsIMAGE image;

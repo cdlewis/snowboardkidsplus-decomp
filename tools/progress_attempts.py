@@ -4,12 +4,10 @@ import re
 import sys
 from dataclasses import dataclass
 from fractions import Fraction
-from pathlib import Path
 
 from decomp import Elf32, INCLUDE, ROOT, parse_asm, uncomment
 
-ARCHIVES = Path("src/non_matching")
-MARKER = re.compile(r"/\* DECOMP_ATTEMPT: (unattempted|(?:archive|object|inline) (?:0|[1-9][0-9]*)/[1-9][0-9]*) \*/")
+MARKER = re.compile(r"/\* DECOMP_ATTEMPT: (unattempted|(?:object|inline) (?:0|[1-9][0-9]*)/[1-9][0-9]*) \*/")
 INLINE_START = "#ifdef NON_MATCHING"
 DIRECTIVE = re.compile(r"^\s*#\s*(if|ifdef|ifndef|else|elif|endif)\b", re.M)
 
@@ -18,7 +16,7 @@ DIRECTIVE = re.compile(r"^\s*#\s*(if|ifdef|ifndef|else|elif|endif)\b", re.M)
 class Attempt:
     kind: str
     score: Fraction | None
-    path: Path | None = None
+    line: int
 
 
 def has_definition(text, name):
@@ -47,67 +45,69 @@ def annotation(lines, line, name):
                 or line + 1 == len(lines) or lines[line + 1].strip() != "#endif"
                 or not has_definition("\n".join(lines[start + 1:end]), name)):
             raise ValueError("expected #ifdef NON_MATCHING with a C definition and an assembly #else")
-        return lines[start - 1].strip(), "inline", start - 1
-    return lines[line - 1].strip() if line else "", "archive", line - 1
+        return lines[start - 1].strip(), True, start - 1
+    return lines[line - 1].strip() if line else "", False, line - 1
+
+
+def inline_source(text, name):
+    """Return a scored candidate with the declarations in its guard."""
+    lines = text.splitlines()
+    stripped = uncomment(text)
+    for fallback in INCLUDE.finditer(stripped):
+        if fallback[2] == name:
+            line = stripped.count("\n", 0, fallback.start())
+            _, inline, marker_line = annotation(lines, line, name)
+            if inline:
+                return "\n".join(lines[marker_line + 2:line - 1]) + "\n"
+            break
+    return None
 
 
 def read_attempts(root):
     attempts = {}
-    referenced = set()
-    used_annotations = set()
     for source in sorted((root / "src").rglob("*.c")):
         text = source.read_text()
         lines = text.splitlines()
         stripped = uncomment(text)
+        used_annotations = set()
         for fallback in INCLUDE.finditer(stripped):
             line = stripped.count("\n", 0, fallback.start())
             name = fallback[2]
             try:
-                raw, branch, marker_line = annotation(lines, line, name)
+                raw, inline, marker_line = annotation(lines, line, name)
                 match = MARKER.fullmatch(raw)
                 if match is None:
                     raise ValueError("missing or invalid DECOMP_ATTEMPT annotation")
-                if (source, marker_line) in used_annotations:
+                if marker_line in used_annotations:
                     raise ValueError("DECOMP_ATTEMPT annotation covers multiple fallbacks")
-                used_annotations.add((source, marker_line))
+                used_annotations.add(marker_line)
                 kind, _, words = match[1].partition(" ")
                 if kind == "unattempted":
-                    if branch == "inline":
+                    if inline:
                         raise ValueError("inline comparison C requires measured word counts")
-                    attempts[source.relative_to(root), name] = Attempt(kind, None)
+                    attempts[source.relative_to(root), name] = Attempt(kind, None, marker_line + 1)
                     continue
-                if kind != branch and (kind, branch) != ("object", "archive"):
-                    raise ValueError(f"expected an {branch} annotation")
+                if not inline:
+                    raise ValueError("measured attempts require inline C under #ifdef NON_MATCHING")
                 matched, total = map(int, words.split("/"))
                 asm = root / fallback[1] / (name + ".s")
                 target_words = len(parse_asm(asm).data) // 4
                 if matched > target_words or total < target_words:
                     raise ValueError(f"invalid {words} comparison for a {target_words}-word target")
-                path = None
-                if branch == "archive":
-                    path = ARCHIVES / (name + ".c.txt")
-                    snapshot = root / path
-                    if not snapshot.is_file() or not has_definition(snapshot.read_text(), name):
-                        raise ValueError(f"missing C definition in {path}")
-                    referenced.add(path)
-                attempts[source.relative_to(root), name] = Attempt(kind, Fraction(matched, total), path)
+                attempts[source.relative_to(root), name] = Attempt(kind, Fraction(matched, total), marker_line + 1)
             except ValueError as error:
                 raise ValueError(f"{source.relative_to(root)}:{line + 1}: {name}: {error}") from error
 
         for index, line in enumerate(lines):
-            if line.lstrip().startswith("/* DECOMP_ATTEMPT:") and (source, index) not in used_annotations:
+            if line.lstrip().startswith("/* DECOMP_ATTEMPT:") and index not in used_annotations:
                 raise ValueError(f"{source.relative_to(root)}:{index + 1}: orphaned DECOMP_ATTEMPT annotation")
-
-    archived = {path.relative_to(root) for path in (root / ARCHIVES).glob("*.c.txt")}
-    if orphaned := archived - referenced:
-        raise ValueError("orphaned C attempt archives: " + ", ".join(map(str, sorted(orphaned))))
     return attempts
 
 
 def verify_comparison_objects(root):
     units = {}
     for (unit, name), attempt in read_attempts(root).items():
-        if attempt.kind != "inline":
+        if attempt.score is None:
             continue
         if unit not in units:
             units[unit] = Elf32(root / "build/compare" / unit.with_suffix(".o"))

@@ -91,8 +91,29 @@ void advanceRaceElapsedTime(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: archive 29/32 */
+/* DECOMP_ATTEMPT: inline 29/32 */
+#ifdef NON_MATCHING
+void func_80043A4C(void) {
+    if (D_8013AFD3 == 0) {
+        D_8013B184.centiseconds -= 0x358;
+        if (D_8013B184.centiseconds < 0) {
+            D_8013B184.centiseconds = 0x60F8;
+            D_8013B184.seconds--;
+            if (D_8013B184.seconds < 0) {
+                D_8013B184.seconds = 59;
+                D_8013B184.minutes--;
+                if (D_8013B184.minutes < 0) {
+                    D_8013B184.centiseconds = 0;
+                    D_8013B184.seconds = 0;
+                    D_8013B184.minutes = 0;
+                }
+            }
+        }
+    }
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud", func_80043A4C);
+#endif
 
 s32 calculateRaceTimeDifference(const RaceTime *a, const RaceTime *b, RaceTime *difference) {
     s32 first = (a->centiseconds & 0xFF00) + a->seconds * 25600 + a->minutes * 1536000;
@@ -203,8 +224,58 @@ void resetControllersAndDeleteCurrentTask(void) {
     deleteCurrentTaskSubtree();
 }
 
-/* DECOMP_ATTEMPT: archive 195/198 */
+/* DECOMP_ATTEMPT: inline 195/198 */
+#ifdef NON_MATCHING
+void func_80043FBC(void) {
+    s16 player = D_8013AFD3 - 1;
+    s16 x, y, row;
+    s32 palette, sprite;
+
+    setSpriteColor(128, 128, 128);
+    if (D_8013AFCD == 2 && (gFrameCounter & 8)) {
+        if (player == 0) {
+            func_8006C998(-53, -48, 490, 13, 0, &D_800EBFF0[D_8013AF78], 0);
+        } else {
+            func_8006C998(29, -48, 491, 14, 0, &D_800EBFF0[D_8013AF78], 0);
+        }
+    }
+
+    func_8006C998(-27, -41, 399, 5, -1, &D_800EBFF0[D_8013AF78], 0);
+    y = -20;
+    row = 0;
+    x = -20;
+    for (; row < 3; row++) {
+        palette = 6;
+        if (row == D_8013AFD5) {
+            palette = 7;
+        }
+        func_8006C998(x - 28, y, 412 + row, palette, -1, &D_800EBFF0[D_8013AF78], 0);
+        y += 14;
+    }
+
+    palette = 6;
+    if (D_8013AFD5 == 3) {
+        palette = 7;
+    }
+    x -= 28;
+    sprite = D_8013AEC4[player];
+    sprite = sprite != 0;
+    sprite += 161;
+    func_8006C998(x, y, sprite, palette, -1, &D_800EBFF0[D_8013AF78], 0);
+    palette = 6;
+    y += 14;
+    if (D_8013AFD5 == 4) {
+        palette = 7;
+    }
+    sprite = (s16)getPlayerOptionFlag(player);
+    sprite = !sprite;
+    func_8006C998(x, y, 570 | sprite, palette, -1, &D_800EBFF0[D_8013AF78], 0);
+    setTexturedQuadColor(128, 128, 128);
+    drawStyle20DTexturedPanel(-58, -58, 116, 124, 15, 0, &D_800EBFF0[D_8013AF78], 0);
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud", func_80043FBC);
+#endif
 
 s16 isFirstPlayerUsingCallback26D10(void) {
     return gRacePlayers[0].task->callback == updateCurrentPlayerTaskCountdown;

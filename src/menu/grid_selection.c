@@ -534,8 +534,52 @@ void drawCurrentTaskPlayerValuePanel(void) {
                             &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
 }
 
-/* DECOMP_ATTEMPT: archive 80/85 */
+/* DECOMP_ATTEMPT: inline 80/85 */
+#ifdef NON_MATCHING
+typedef struct GridFlagRecord
+{
+  GlobalFlagStatePrefix state;
+  u8 unk3E8[0x20];
+} GridFlagRecord;
+
+extern RacePlayer gRacePlayers[];
+extern u8 D_8013B50C[];
+
+void func_800995A8(s16 playerIndex, s16 row, u8 spacingX, u8 spacingY, ByteMappingDescriptor *menu)
+{
+  ByteMappingDescriptor *next;
+  s16 i;
+  u8 currentColumn;
+  menu->mapping = D_8013B50C;
+  menu->spacingX = spacingX;
+  menu->spacingY = spacingY;
+  menu->count = 0;
+  currentColumn = gRacePlayers[playerIndex].unk00A[0];
+  for (i = 0; i < 5; i++)
+  {
+    next = menu;
+    if (currentColumn != i)
+    {
+      if (hasStateGridFlag((GlobalFlagStatePrefix *) (&((GridFlagRecord *) (&D_8013080C))[playerIndex]), row, i) == 1)
+      {
+        D_8013B50C[menu->count] = i;
+        next->textMapping = 0;
+        next->textureMapping = 0;
+        next->unk10[0] = next->unk10[1] = next->unk10[2] = next->unk10[3] = 0;
+        next->count++;
+      }
+    }
+  }
+
+  D_8013B50C[next->count] = 5;
+  next->textMapping = 0;
+  next->textureMapping = 0;
+  next->unk10[0] = next->unk10[1] = next->unk10[2] = next->unk10[3] = 0;
+  next->count++;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/menu/grid_selection", func_800995A8);
+#endif
 
 s32 findLastMappedByteIndexOrZero(const ByteMappingDescriptor *descriptor, s16 value) {
     s32 result = 0;
@@ -861,8 +905,59 @@ void drawCurrentTaskSavedValuePanel(void) {
 
 u8 D_8013B517 __attribute__((section(".sdata"))) = 0;
 
-/* DECOMP_ATTEMPT: archive 301/332 */
+/* DECOMP_ATTEMPT: inline 301/332 */
+#ifdef NON_MATCHING
+extern const u16 D_80131EBC[];
+extern const char D_8013B514[];
+
+void func_8009A87C(void) {
+    Movement2D *position;
+    s32 x, y, panelX, panelY;
+    s32 player;
+    TaskPanelSelectionValue *selection;
+    if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
+    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    x = position->x / 4096;
+    y = position->y / 4096;
+    panelX = x;
+    panelY = y;
+    player = (s16)D_8013AE98->data1A;
+    selection = &D_8013B508[player];
+    if (D_8013AE88->data1A != 0) {
+        if (gRacePlayers[player].unk00D == selection->value && D_8013B517 != 0) {
+            func_8006EF30((s16)(panelX - 112), (s16)(panelY + 52), 4, D_80131EBC, 12, 1,
+                         &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            if (D_8013AE88->data1A == 1) {
+                func_8007240C(panelX - 120, panelY + 48, 72, 22, D_8013B3A4, D_8013B3A5, D_8013B3A6,
+                              2, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            } else {
+                func_8007240C(panelX - 120, panelY + 48, 72, 22, 128, 128, 128,
+                              2, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            }
+        } else {
+            drawDecimalNumber8x8((x -= 112) + 48, (y += 70) + 12, 4, 0, 500, 0, -1,
+                                 &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            drawWrappedText8x8(x + 80, y + 12, 2, D_8013B514, 0, -1,
+                               &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            if (D_8013AE88->data1A == 1) {
+                func_8007240C(x + 44, y + 8, 48, 16, D_8013B3A4, D_8013B3A5, D_8013B3A6,
+                              2, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            } else {
+                func_8007240C(x + 44, y + 8, 48, 16, 128, 128, 128,
+                              2, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            }
+        }
+    }
+    setTexturedQuadColor(128, 128, 128);
+    setSpriteColor(128, 128, 128);
+    drawTexturedFrameStyle9(position->x / 4096 - 140, position->y / 4096 + 8,
+                           128, 92, 5, 1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    func_8006C998(position->x / 4096 - 136, position->y / 4096 + 12,
+                  0x171, 4, 0, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/menu/grid_selection", func_8009A87C);
+#endif
 
 void initializeTaskGridPositions(s32 unused, GameTask *task, s32 x, s32 y,
                                  s32 unusedStep, s32 unusedDelay) {

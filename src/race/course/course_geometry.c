@@ -80,11 +80,92 @@ void selectGeometryRecord(s16 index) {
     D_8013B208 = &vertices[D_8013B1F0[index].vertexIndices[2] * 3];
 }
 
-/* DECOMP_ATTEMPT: archive 114/207 */
-INCLUDE_ASM("asm/nonmatchings/race/course/course_geometry", func_8004A764);
+/* DECOMP_ATTEMPT: inline 114/207 */
+#ifdef NON_MATCHING
+typedef struct Region { s16 unk00[10]; s16 first, last; s16 unk18[2]; } Region;
 
-/* DECOMP_ATTEMPT: archive 68/102 */
+typedef struct Vertex { s16 x,y,z; } Vertex;
+
+typedef struct Triangle { u16 vertices[3]; u8 unk6, skipFirstEdge; s16 unk8,unkA; } Triangle;
+
+s32 func_8004A764(s16 index, s32 x, s32 z) {
+    s16 i;
+    Triangle *triangle;
+    Vertex *a, *b, *c;
+    s32 dyC, dzB, dzC, dyB, dxB, dxC;
+    for (i = ((Region *)D_8013B1F4)[index].first; i < ((Region *)D_8013B1F4)[index].last + 1; i++) {
+        triangle = &((Triangle *)D_8013B1F0)[i];
+        if (!triangle->skipFirstEdge) {
+            b = &((Vertex *)D_8013B1EC)[triangle->vertices[1]];
+            a = &((Vertex *)D_8013B1EC)[triangle->vertices[0]];
+            if ((b->x-a->x)*(z/5-a->z) - (b->z-a->z)*(x/5-a->x) > 0) continue;
+        }
+        c = &((Vertex *)D_8013B1EC)[triangle->vertices[2]];
+        b = &((Vertex *)D_8013B1EC)[triangle->vertices[1]];
+        if ((c->x-b->x)*(z/5-b->z) - (c->z-b->z)*(x/5-b->x) > 0) continue;
+        selectGeometryRecord(i);
+        c = &((Vertex *)D_8013B1EC)[((Triangle *)D_8013B1F0)[i].vertices[2]];
+        a = &((Vertex *)D_8013B1EC)[((Triangle *)D_8013B1F0)[i].vertices[0]];
+        b = &((Vertex *)D_8013B1EC)[((Triangle *)D_8013B1F0)[i].vertices[1]];
+        dyC = c->y-a->y;
+        dzB = a->z-b->z;
+        dzC = a->z-c->z;
+        dyB = b->y-a->y;
+        dxB = b->x-a->x;
+        dxC = c->x-a->x;
+        return -(((dxC*dyB-dyC*dxB)*(z-a->z*5) - (dyC*dzB-dzC*dyB)*(x-a->x*5))/(dzC*dxB-dxC*dzB)+a->y*5);
+    }
+    return 0x800000;
+}
+#else
+INCLUDE_ASM("asm/nonmatchings/race/course/course_geometry", func_8004A764);
+#endif
+
+/* DECOMP_ATTEMPT: inline 68/102 */
+#ifdef NON_MATCHING
+typedef struct Placement { s16 unk00[8]; s16 vertexIndex; u16 angle; s16 first, last; s16 unk18[2]; } Placement;
+
+typedef struct SurfaceRecord { u16 vertices[3]; u8 surface, flags; s16 unk8, unkA; } SurfaceRecord;
+
+u8 func_8004AAA0(s16 index, s32 x, s32 z) {
+    s32 i;
+    SurfaceRecord *record;
+    s16 *a, *b;
+    s32 dx, dz, px, pz;
+    s16 *vertices;
+    SurfaceRecord *records;
+    u32 ai, bi;
+    for (i = ((Placement *)D_8013B1F4)[index].first; i < ((Placement *)D_8013B1F4)[index].last + 1; i++) {
+        vertices = D_8013B1EC;
+        records = (SurfaceRecord *)D_8013B1F0;
+        record = &records[i];
+        if (record->flags == 0) {
+            bi = record->vertices[1];
+            ai = record->vertices[0];
+            b = vertices + bi * 3;
+            a = vertices + ai * 3;
+            dx = b[0] - a[0];
+        pz = z / 5 - a[2];
+        dz = b[2] - a[2];
+        px = x / 5 - a[0];
+        if (dx * pz - dz * px > 0) continue;
+        }
+        bi = record->vertices[2];
+        ai = record->vertices[1];
+        b = vertices + bi * 3;
+        a = vertices + ai * 3;
+        dx = b[0] - a[0];
+        pz = z / 5 - a[2];
+        dz = b[2] - a[2];
+        px = x / 5 - a[0];
+        if (dx * pz - dz * px > 0) continue;
+        return record->surface;
+    }
+    return 0;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/race/course/course_geometry", func_8004AAA0);
+#endif
 
 s32 getGeometryPlacementSignedDistance(s16 index, s32 x, s32 z) {
     s32 vertexIndex;

@@ -290,8 +290,72 @@ void queueCdStop(void) {
     queueCdCommand(-1, 0);
 }
 
-/* DECOMP_ATTEMPT: archive 97/103 */
+/* DECOMP_ATTEMPT: inline 97/103 */
+#ifdef NON_MATCHING
+void func_80013540(void) {
+    u8 result[16];
+    s32 phase;
+    s32 delay;
+    s32 status;
+    s32 complete;
+    s32 diskError;
+    if (D_8013AE7C & 0x02000000) {
+        CdReadSync(0, result);
+        D_8013AE7C &= ~0x02000000;
+    }
+    startCdVolumeFade(0, 1, 0, 1);
+    gCdVolumeFadeActive = 0;
+    phase = 0;
+    while (1) {
+        s32 diskError = 5;
+        s32 complete = 2;
+        VSync(0);
+        switch (phase) {
+        case 0:
+            if (CdSync(1, result) != 0) {
+                D_8013AE7C &= ~0x04000000;
+                phase++;
+            }
+            continue;
+        case 1:
+            if (!(D_8013AE68 & 1)) {
+                phase = 3;
+            } else {
+                CdControlF(9, 0);
+                phase++;
+            }
+            continue;
+        case 3:
+            result[0] = CdlModeSpeed;
+            D_8013AE68 &= ~1;
+            CdControlF(CdlSetmode, result);
+            delay = 3;
+            phase++;
+            continue;
+        case 2:
+        case 4:
+            status = CdSync(1, result);
+            if (status == diskError) phase = 0;
+            if (status == complete) phase++;
+            continue;
+        case 5:
+            if (--delay > 0) continue;
+            break;
+        default:
+            continue;
+        }
+        break;
+    }
+                gCdRequestReadIndex = 0;
+                gCdRequestWriteIndex = 0;
+                gCdRequestPhase = 0;
+                D_8013AE50 = 0;
+                D_8013AE4E = 0;
+                D_8013AE78 = 0;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/io/cd_queue", func_80013540);
+#endif
 
 s32 queueCdSectorCommand(s16 command, s16 sector, s16 count, void *destination, s32 value) {
     CdRequest *entry;

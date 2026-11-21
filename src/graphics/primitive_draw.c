@@ -69,8 +69,35 @@ void addTexturedTriangle(u32 *orderingTable, s32 x0, s32 y0, s32 x1, s32 y1,
     GsOUT_PACKET_P = (u32)(triangle + 1);
 }
 
-/* DECOMP_ATTEMPT: archive 82/95 */
+/* DECOMP_ATTEMPT: inline 82/95 */
+#ifdef NON_MATCHING
+void func_8005FE7C(u32 *orderingTable, s32 x0, s32 y0, s32 x1, s32 y1,
+                  s32 x2, s32 y2, u8 tpage, s32 clut,
+                  s32 u0, s32 v0, s32 u1, s32 v1, s32 u2, s32 v2,
+                  s32 r0, s32 g0, s32 b0, s32 r1, s32 g1, s32 b1,
+                  s32 r2, s32 g2, s32 b2) {
+    u8 padding[8];
+    POLY_GT3 *poly = (POLY_GT3 *)GsOUT_PACKET_P;
+    poly->tag = (sizeof(*poly) / sizeof(u32) - 1) << 24;
+    setcode(poly, POLY_GT3_CODE);
+    poly->tpage = tpage;
+    poly->clut = clut;
+    setXY3(poly, x0, y0, x1, y1, x2, y2);
+    poly->u0 = u0;
+    poly->v0 = v0;
+    poly->u1 = u1;
+    poly->v1 = v1;
+    poly->u2 = u2;
+    poly->v2 = v2;
+    setRGB0(poly, r0, g0, b0);
+    setRGB1(poly, r1, g1, b1);
+    setRGB2(poly, r2, g2, b2);
+    addPrim(orderingTable, poly);
+    GsOUT_PACKET_P = (u32)(poly + 1);
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/graphics/primitive_draw", func_8005FE7C);
+#endif
 
 void addSemiTransparentTriangle(u32 *orderingTable, s32 tpage, s32 x0, s32 y0,
                    s32 x1, s32 y1, s32 x2, s32 y2, s32 r, s32 g, s32 b) {

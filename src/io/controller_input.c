@@ -83,8 +83,65 @@ s32 isControllerFlag5Clear(u16 controller) {
     return 1;
 }
 
-/* DECOMP_ATTEMPT: archive 142/155 */
+/* DECOMP_ATTEMPT: inline 142/155 */
+#ifdef NON_MATCHING
+extern u8 D_8013AEBC[];
+
+void func_80014D60(u16 controller) {
+    u8 flags;
+    if (gControllerFlags[controller]) {
+        if (D_8013AEEC[controller] & 0x1000) {
+            if (gControllerFlags[controller] & 0x2) {
+                if (--D_8013AEBC[controller] == 0) {
+                    D_8013AEE8[controller] |= 0x1000;
+                    D_8013AEBC[controller] = gControllerRepeatInterval;
+                }
+            } else {
+                gControllerFlags[controller] |= (gControllerFlags[controller] & 0xF9) | 0x2;
+                D_8013AEBC[controller] = gControllerRepeatInitialDelay;
+            }
+        }         else if (D_8013AEEC[controller] & 0x4000) {
+            flags = gControllerFlags[controller];
+            if (flags & 0x4) {
+                if (--D_8013AEBC[controller] == 0) {
+                    D_8013AEE8[controller] |= 0x4000;
+                    D_8013AEBC[controller] = gControllerRepeatInterval;
+                }
+            } else {
+                gControllerFlags[controller] |= (flags & 0xF9) | 0x4;
+                D_8013AEBC[controller] = gControllerRepeatInitialDelay;
+            }
+        } else {
+            gControllerFlags[controller] &= 0xF9;
+        }
+        if (D_8013AEEC[controller] & 0x8000) {
+            if (gControllerFlags[controller] & 0x8) {
+                if (--gControllerHorizontalRepeatTimers[controller] == 0) {
+                    D_8013AEE8[controller] |= 0x8000;
+                    gControllerHorizontalRepeatTimers[controller] = gControllerRepeatInterval;
+                }
+            } else {
+                gControllerFlags[controller] |= (gControllerFlags[controller] & 0xE7) | 0x8;
+                gControllerHorizontalRepeatTimers[controller] = gControllerRepeatInitialDelay;
+            }
+        }         else if (D_8013AEEC[controller] & 0x2000) {
+            if (gControllerFlags[controller] & 0x10) {
+                if (--gControllerHorizontalRepeatTimers[controller] == 0) {
+                    D_8013AEE8[controller] |= 0x2000;
+                    gControllerHorizontalRepeatTimers[controller] = gControllerRepeatInterval;
+                }
+            } else {
+                gControllerFlags[controller] |= (gControllerFlags[controller] & 0xE7) | 0x10;
+                gControllerHorizontalRepeatTimers[controller] = gControllerRepeatInitialDelay;
+            }
+        } else {
+            gControllerFlags[controller] &= 0xE7;
+        }
+    }
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/io/controller_input", func_80014D60);
+#endif
 
 void setControllerAxesFromButtons(u16 controller) {
     if (D_8013AEEC[controller] & 0x2000) {
@@ -268,14 +325,79 @@ void updateControllers(void) {
     updateControllerActuators(1);
 }
 
-/* DECOMP_ATTEMPT: archive 45/49 */
+/* DECOMP_ATTEMPT: inline 45/49 */
+#ifdef NON_MATCHING
+extern u8 D_8013AFD9 __attribute__((section(".data")));
+
+void func_8001596C(u16 controller) {
+    if (D_8013AFD7 || D_8013AFD9) {
+        D_8013AED4[controller] = ((ControllerInputRecord (*)[256])D_800E959C)[controller];
+    } else {
+        ControllerInputRecord **slot = D_8013AED4;
+        ControllerInputRecord *buffer = (ControllerInputRecord *)0x8017B800;
+        slot += controller;
+        *slot = buffer;
+    }
+    D_8013AED4[controller]->repeatCount = 0;
+    D_8013AED4[controller]->buttons = 0xFFFF;
+    D_8013AEE4 = 2;
+    D_8013AED4[controller]->pressedButtons = 0xFFFF;
+    D_8013AEDC[controller] = 1;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/io/controller_input", func_8001596C);
+#endif
 
-/* DECOMP_ATTEMPT: archive 152/153 */
+/* DECOMP_ATTEMPT: inline 152/153 */
+#ifdef NON_MATCHING
+void func_80015A30(u16 controller) {
+    ControllerInputRecord *previous;
+    previous = D_8013AED4[controller] + D_8013AEDC[controller] + -1;
+    if (previous->buttons == D_8013AEEC[controller] &&
+        previous->pressedButtons == D_8013AEE8[controller] &&
+        (s8)previous->horizontal == D_8013AEF8[controller] &&
+        (s8)previous->vertical == D_8013AEFC[controller] &&
+        previous->repeatCount < 255) {
+        previous->repeatCount++;
+        if (!D_8013AFD7) captureSelectedPlayerStates();
+    } else {
+        D_8013AED4[controller][D_8013AEDC[controller]].repeatCount = 0;
+        D_8013AED4[controller][D_8013AEDC[controller]].horizontal = D_8013AEF8[controller];
+        D_8013AED4[controller][D_8013AEDC[controller]].vertical = D_8013AEFC[controller];
+        D_8013AED4[controller][D_8013AEDC[controller]].buttons = D_8013AEEC[controller] & 0xF7FF;
+        D_8013AED4[controller][D_8013AEDC[controller]].pressedButtons = D_8013AEE8[controller] & 0xF7FF;
+        D_8013AEDC[controller]++;
+        if (D_8013AFD7) {
+            if (D_8013AEDC[controller] + 1 >= 0x200U) {
+                D_8013AEE4 = 8;
+                D_8013AEDC[controller]--;
+            }
+        } else if (D_8013AFD9) {
+            if (D_8013AEDC[controller] + 1 >= 0x100U) {
+                D_8013AEE4 = 8;
+                D_8013AEDC[controller]--;
+            }
+        } else {
+            if (D_8013AEDC[controller] + 1 >= 0x900U) D_8013AEE4 = 8;
+            else captureSelectedPlayerStates();
+        }
+    }
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/io/controller_input", func_80015A30);
+#endif
 
-/* DECOMP_ATTEMPT: archive 23/25 */
+/* DECOMP_ATTEMPT: inline 23/25 */
+#ifdef NON_MATCHING
+void func_80015C94(u16 controller) {
+    *(controller + D_8013AED4) = ((ControllerInputRecord (*)[256])D_800E959C)[controller];
+    *(controller + D_8013AEDC) = 1;
+    *(controller + D_8013AEE0) = (*(controller + D_8013AED4))[1].repeatCount;
+    D_8013AEE4 = 1;
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/io/controller_input", func_80015C94);
+#endif
 
 void playbackControllerInput(u16 controller) {
     u8 *counter;

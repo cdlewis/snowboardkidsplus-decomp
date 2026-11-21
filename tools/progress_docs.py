@@ -26,6 +26,7 @@ def function_row(rank, function, attempt):
     address = f"0x{function.address:08X}"
     size = len(function.data)
     unit = function.unit.as_posix()
+    source = f"{REPOSITORY}/blob/main/{escape(unit)}#L{attempt.line}"
     score = attempt.score
     if score is None:
         match = '<span class="unscored">Unattempted</span>'
@@ -35,13 +36,12 @@ def function_row(rank, function, attempt):
         label = "99.99%" if score < 1 and percent >= 99.995 else f"{float(percent):.2f}%"
         if attempt.kind == "object":
             label += " (object)"
-        if attempt.path:
-            label = f'<a href="{REPOSITORY}/blob/main/{escape(attempt.path.as_posix())}">{label}</a>'
+        label = f'<a href="{source}">{label}</a>'
         match = (f'<div class="match"><meter min="0" max="1" value="{float(score)}" '
                  f'aria-hidden="true"></meter><span>{label}</span></div>')
     return (f'          <tr data-size="{size}"><td class="rank">{rank}</td>'
             f'<th scope="row"><code>{escape(function.name)}</code>'
-            f'<a class="unit" href="{REPOSITORY}/blob/main/{escape(unit)}">{escape(unit)}</a></th>'
+            f'<a class="unit" href="{source}">{escape(unit)}</a></th>'
             f'<td class="address"><code>{address}</code></td>'
             f'<td class="size">{size:,}</td><td class="score">{match}</td></tr>')
 
