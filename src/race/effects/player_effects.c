@@ -2330,7 +2330,12 @@ void startSlidingQuadTask(s32 index) {
     resource->textureV = (index << 4) + 32;
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_80069BAC);
+void waitThenStartPaletteColorCycle(void) {
+    if (++D_8013AE88->data1A >= 90) {
+        setCurrentTaskCallback(capturePaletteForColorCycle);
+        D_8013AE88->data1A = 0;
+    }
+}
 
 void updatePaletteWhitePulse(void) {
     s32 amount, i;
