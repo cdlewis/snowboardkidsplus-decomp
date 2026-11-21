@@ -92,7 +92,7 @@ s32 createChildTask(TaskCallback callback);
 /* Leaves ten free task slots in reserve and uses the same fallback as createChildTask. */
 s32 createChildTaskWithReserve(TaskCallback callback);
 s32 tryCreateChildTaskWith20SlotsReserved(TaskCallback callback);
-s16 func_80014930(GameTask *parent, TaskCallback callback);
+s16 createChildTaskForParentWithReserve(GameTask *parent, TaskCallback callback);
 s16 func_8001496C(GameTask *parent, TaskCallback callback);
 void deleteCurrentTaskSubtree(void);
 void deleteCurrentTaskDescendants(void);
@@ -233,8 +233,6 @@ void startUnlockNotification0Task(void);
 void updateSelectedPlayerPlaybackTask(void);
 
 void drawTaskGridSelectionMarker(void);
-
-s16 func_8007E8CC(const u8 *mapping, s16 index);
 
 void createRegisteredSpacedChildTasks(s16 mode, u32 acceptMask, u32 cancelMask,
                                       const u8 *data44, const u8 *data48,

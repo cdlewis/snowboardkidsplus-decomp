@@ -1018,10 +1018,10 @@ void drawRegisteredTaskTexturedQuadList(void) {
         } else {
             setTexturedQuadColor(color->r, color->g, color->b);
             if (parent->mode == 1 && parent->selectedIndex != D_8013AE88->data1A) {
-                texture = func_8007373C(parent->mapping,
+                texture = mapMenuByteIndex(parent->mapping,
                     (s16)(D_8013AE88->data1A + parent->count));
             } else {
-                texture = func_8007373C(parent->mapping, (s16)D_8013AE88->data1A);
+                texture = mapMenuByteIndex(parent->mapping, (s16)D_8013AE88->data1A);
             }
             list = gRegisteredTaskQuadLists[texture];
             drawTexturedQuadList((s16)(position->x / 4096), (s16)(position->y / 4096),

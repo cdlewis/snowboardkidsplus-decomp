@@ -291,7 +291,7 @@ void setSpriteTemplateSemiTrans(s32 enabled) {
     SetSemiTrans(&gSpriteTemplate, enabled);
 }
 
-/* DECOMP_ATTEMPT: inline 118/118 */
+/* DECOMP_ATTEMPT: inline 108/118 */
 #ifdef NON_MATCHING
 void func_8006C998(s16 x, s16 y, s32 index, s32 palette, s32 blendMode, GsOT *ot, u16 depth) {
     TexturedQuadFrame *frame = &D_8012DFF4[index];

@@ -1160,7 +1160,7 @@ void initializeCurrentPlayerState25(void) {
     player->unk128 = (player->unk128 & 0xFF0C1FFB) | 0x400000;
     player->unk08C = 240 - reduction / 8;
     startCurrentPlayerAnimation(1, 1);
-    func_80014930(&gGameTasks[4], initializeScaledTaskCoordinateResource);
+    createChildTaskForParentWithReserve(&gGameTasks[4], initializeScaledTaskCoordinateResource);
     D_8013AE8C->data18 = D_8013AE88->data18;
     func_8002E5A0(D_8013AE88->data18, 6);
     setCurrentTaskCallback(updateCurrentPlayerState25MotionAndTimer);
@@ -1178,7 +1178,7 @@ void resetCurrentPlayerForCallback25508(void) {
     D_8013B0D8->unk0BC = 0;
     D_8013B0D8->unk094 = 0;
     func_8002E5A0(D_8013AE88->data18, 3);
-    func_80014930(&gGameTasks[4], initializePlayerParticleHistoryTask);
+    createChildTaskForParentWithReserve(&gGameTasks[4], initializePlayerParticleHistoryTask);
     D_8013AE8C->data18 = D_8013AE88->data18;
     setCurrentTaskCallback(updateCurrentPlayerVerticalMotionUntilLanding);
 }
@@ -1210,7 +1210,7 @@ void initializeCurrentPlayerState23(void) {
     D_8013B0D8->unk060 = 0;
     D_8013B0D8->unk0BC = 0;
     D_8013B0D8->unk094 = 0;
-    func_80014930(&gGameTasks[4], initializePlayerState23CoordinateEffectTask);
+    createChildTaskForParentWithReserve(&gGameTasks[4], initializePlayerState23CoordinateEffectTask);
     D_8013AE8C->data18 = D_8013AE88->data18;
     func_8002E5A0(D_8013AE88->data18, 6);
     func_800183FC(D_8013AE88->data18, 1, 0xD00, 0x20);
@@ -1332,7 +1332,7 @@ s32 callCurrentPlayerStateCallbackIfDifferent(u16 state) {
 void initializeCurrentPlayerModelAndHeight(void) {
     RacePlayer *player;
     if (D_8013AFE2 == 0) {
-        func_80014930(&gGameTasks[4], initializeTaskCoordinateResource);
+        createChildTaskForParentWithReserve(&gGameTasks[4], initializeTaskCoordinateResource);
         D_8013AE8C->data18 = D_8013AE88->data18;
     }
     player = &gRacePlayers[D_8013AE88->data18];
@@ -3710,7 +3710,7 @@ void updateCurrentPlayerAirborneDragUntilLanding(void) {
     } else {
         if (D_8013AE88->data1C == 0) {
             D_8013AE88->data1C++;
-            func_80014930(&gGameTasks[4], initializePlayerCoordinateEffectTask);
+            createChildTaskForParentWithReserve(&gGameTasks[4], initializePlayerCoordinateEffectTask);
             D_8013AE8C->data18 = D_8013AE88->data18;
         }
         D_8013B0D8->unk0B6 += 0x40;
@@ -3836,7 +3836,7 @@ void updateCurrentPlayerTaskJumpAndSpawnCourseOffset(void) {
     if (--player->unk08C == 0) {
         D_8013AE88->data1A++;
         player->unk08C = 0x20;
-        func_80014930(&gGameTasks[4], initializeSelectedCourseOffsetTask);
+        createChildTaskForParentWithReserve(&gGameTasks[4], initializeSelectedCourseOffsetTask);
         D_8013AE8C->data18 = D_8013AE88->data18;
         D_8013AE8C->resource14 = allocateTaskResource();
         resource = (CourseOffsetResource *)&D_800D9504[D_8013AE8C->resource14];
@@ -4990,7 +4990,7 @@ void initializeCurrentRacePlayer(void) {
     }
     if (!currentPlayerAbsolute->unk008 && !D_8013AFD6 &&
         (s16)currentPlayerAbsolute->unk0A8 != (s16)currentPlayerAbsolute->unk0AA) {
-        func_80014930(&gGameTasks[1], initializePlayerPromptTask);
+        createChildTaskForParentWithReserve(&gGameTasks[1], initializePlayerPromptTask);
         D_8013AE8C->data18 = currentPlayerAbsolute->playerIndex;
     }
 

@@ -375,7 +375,7 @@ void playPlayerPositionalSoundEffect(u8 playerIndex, u8 bank, u16 programAndTone
     }
 }
 
-/* DECOMP_ATTEMPT: inline 74/74 */
+/* DECOMP_ATTEMPT: inline 73/74 */
 #ifdef NON_MATCHING
 void func_8001890C(u8 playerIndex, u8 bank, u16 programAndTone, s16 volume) {
     RacePlayer *players = gRacePlayers;

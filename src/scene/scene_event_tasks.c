@@ -248,7 +248,7 @@ void updateSceneImageTask(void) {
                 D_8013B59C = entry->duration;
                 break;
             }
-            func_80014930(&gGameTasks[4], drawSceneImageTask);
+            createChildTaskForParentWithReserve(&gGameTasks[4], drawSceneImageTask);
             gSceneImageDisplayTask = D_8013AE8C;
             D_8013AE88->data18 = 1;
             break;

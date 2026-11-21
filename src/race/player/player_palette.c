@@ -136,7 +136,7 @@ void spawnPaletteBurstTask(u8 paletteIndex) {
     RECT rect;
     PaletteBurstResource *resource;
     u8 row;
-    func_80014930(&gGameTasks[4], drawPaletteBurstTask);
+    createChildTaskForParentWithReserve(&gGameTasks[4], drawPaletteBurstTask);
     row = paletteIndex;
     D_8013AE8C->resource14 = allocateTaskResource();
     resource = (PaletteBurstResource *)&D_800D9504[D_8013AE8C->resource14];

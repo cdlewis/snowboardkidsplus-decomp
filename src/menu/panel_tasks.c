@@ -1334,7 +1334,7 @@ startExit:
         createChildTaskWithReserve(initializeTaskResourcePair);
         D_8013AE8C->data18 = 0;
         descriptor = &D_801318D4[D_8013AE88->data1A];
-        D_8013AE8C->data1A = func_8007E8CC(descriptor->mapping, input->selectedIndex);
+        D_8013AE8C->data1A = mapCourseMenuByteIndex(descriptor->mapping, input->selectedIndex);
         D_8013AE88->data18 = 10;
         break;
     case 11:
@@ -2042,7 +2042,7 @@ beginExit:
         createChildTaskWithReserve(initializeTaskResourcesAndClearData18);
         D_8013AE8C->data18 = 0;
         descriptor = &D_801318D4[D_8013AE88->data1A];
-        D_8013AE8C->data1A = func_8007E8CC(descriptor->mapping, selection->selectedIndex);
+        D_8013AE8C->data1A = mapCourseMenuByteIndex(descriptor->mapping, selection->selectedIndex);
         D_8013AE88->data18 = 10;
         break;
     case 10:
@@ -2484,7 +2484,7 @@ void func_80093A54(void)
             input->previousIndex = input->selectedIndex;
             child = entries[2].task;
             mapping = PANEL_GROUP(child)->mapping;
-            index = func_8007373C(mapping, input->selectedIndex) - 3;
+            index = mapMenuByteIndex(mapping, input->selectedIndex) - 3;
             if ((u16)index >= 16) {
                 break;
             }
@@ -2510,7 +2510,7 @@ void func_80093A54(void)
                 s16 selected = input->selectedIndex;
                 u16 resource = child->resource14;
                 BoardPanelGroupResource *group = (BoardPanelGroupResource *)&D_800D9504[resource];
-                index = func_8007373C(group->mapping, selected);
+                index = mapMenuByteIndex(group->mapping, selected);
             }
             if (index == 0 && D_8013AE88->data1A == 0) {
                 D_8013AE88->data1A++;
@@ -2586,9 +2586,9 @@ void func_80093A54(void)
             entries[3].command = 23;
             group = PANEL_GROUP(child);
             if (input->selectedIndex < 8) {
-                index = func_8007373C(group->mapping, input->selectedIndex);
+                index = mapMenuByteIndex(group->mapping, input->selectedIndex);
             } else {
-                index = func_8007373C(group->mapping, 7);
+                index = mapMenuByteIndex(group->mapping, 7);
             }
             index -= 3;
             preview->current = index;

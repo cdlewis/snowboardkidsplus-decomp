@@ -465,7 +465,7 @@ void updateSelectionIndexedMenuTask(void) {
             parent->data18 = 9;
             task->data18 = 6;
         } else {
-            selectedIndex = D_8013B104 = func_8007373C(group->mapping, selectedIndex);
+            selectedIndex = D_8013B104 = mapMenuByteIndex(group->mapping, selectedIndex);
             course = D_8012D46C[selectedIndex];
             D_8013AFD0 = 1;
             D_8013AFCE = course;
@@ -766,7 +766,7 @@ void drawRegisteredTaskGridSpriteWithNumber(void) {
             setSpriteColor(color->bytes[0], color->bytes[1], color->bytes[2]);
             func_8006C998((s16)(position->x / 4096), (s16)(position->y / 4096),
                 sprite->sprite, sprite->color, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
-            mappedIndex = func_8007373C(parent->mapping, (s16)D_8013AE88->data1A);
+            mappedIndex = mapMenuByteIndex(parent->mapping, (s16)D_8013AE88->data1A);
             setSpriteColor(128, 128, 128);
             if (mappedIndex < 10) {
                 drawMenuDecimalNumber8x16(position->x / 4096 - 17, position->y / 4096 + 1,
@@ -798,7 +798,7 @@ void drawMainTailSelectionItemDetails(void) {
     func_8006C998(position->x / 4096 + 8, position->y / 4096 - 22,
                  0xB3, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     group = &D_801325FC[D_8013AE98->data1A];
-    index = func_8007373C(group->mapping, selection->selectedIndex);
+    index = mapMenuByteIndex(group->mapping, selection->selectedIndex);
     if ((u16)index >= 10) {
         return;
     }
@@ -1088,7 +1088,7 @@ void updateFlagSelectedMenuTask(void) {
             menuParent->data18 = 6;
             selectionTask->data18 = 6;
         } else {
-            selectedIndex = D_8013B104 = func_8007373C(group->mapping, selectedIndex);
+            selectedIndex = D_8013B104 = mapMenuByteIndex(group->mapping, selectedIndex);
             value = D_8012D46C[selectedIndex];
             D_8013AFD0 = 1;
             D_8013AFCE = value;
@@ -1361,7 +1361,7 @@ s16 findIdentityMappedIndexOrZero(ByteMappingDescriptor *descriptor, s16 value) 
     s16 i;
 
     for (i = 0; i < descriptor->count; i++) {
-        if (value == func_8007373C(descriptor->mapping, value)) {
+        if (value == mapMenuByteIndex(descriptor->mapping, value)) {
             result = i;
             break;
         }

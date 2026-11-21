@@ -359,7 +359,7 @@ void initializeRacePaletteCycles(void) {
         if (palette != 32) {
             startPaletteCycle(0, palette, 0, 15, 1);
         }
-        func_80014930(&gGameTasks[4], initializeAlternatingVramRowTask);
+        createChildTaskForParentWithReserve(&gGameTasks[4], initializeAlternatingVramRowTask);
         break;
     case 3:
         palette = saveVram16Pixels(688, 501);
@@ -757,7 +757,7 @@ void updateActiveRaceTask(void) {
                 if ((D_8013AEE8[0] & RACE_PAUSE_START) || !isControllerInputSupported(0)) {
                     playSoundEffect(0, 0, 32);
                     D_8013AFD3 = 1;
-                    func_80014930(&gGameTasks[4], initializeRacePauseMenuTask);
+                    createChildTaskForParentWithReserve(&gGameTasks[4], initializeRacePauseMenuTask);
                 }
             } else {
                 pauseRequested = 0;
@@ -769,7 +769,7 @@ void updateActiveRaceTask(void) {
                     playSoundEffect(0, 0, 32);
                     D_8013AFD3 = ((D_8013AEE8[0] & RACE_PAUSE_START) ||
                                   !isControllerInputSupported(0)) ? 1 : 2;
-                    func_80014930(&gGameTasks[1], initializeRacePauseMenuTask);
+                    createChildTaskForParentWithReserve(&gGameTasks[1], initializeRacePauseMenuTask);
                 }
             }
         }
@@ -1054,7 +1054,7 @@ void finishRaceExitAfterCountdown(void) {
                 case 1:
                 case 2:
                 case 3:
-                    func_80014930(&gGameTasks[4], func_8005EBC4);
+                    createChildTaskForParentWithReserve(&gGameTasks[4], func_8005EBC4);
                     D_8013AE8C->data18 = unlockTier;
                     D_8013AE88->data18 = 30;
                     D_8013AE88->data1A = unlockTier;
@@ -1183,8 +1183,8 @@ void updateSelectedPlayerPlaybackTask(void) {
             D_8013AE88->data1A++;
             gRacePlayers[0].unk970 = 0xFFFF;
             if (gRacePlayers[0].task->next->depth != 2 && gRacePlayers[0].unk0FE) {
-                if (gRacePlayers[0].unk0FC) func_80014930(gRacePlayers[0].task, updatePlayerTimerTask);
-                else func_80014930(gRacePlayers[0].task, fadeOutPlayerTimerTask);
+                if (gRacePlayers[0].unk0FC) createChildTaskForParentWithReserve(gRacePlayers[0].task, updatePlayerTimerTask);
+                else createChildTaskForParentWithReserve(gRacePlayers[0].task, fadeOutPlayerTimerTask);
                 D_8013AE8C->data18 = 0;
             }
         } else buttons = 0x800;

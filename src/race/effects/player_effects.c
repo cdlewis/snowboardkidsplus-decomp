@@ -634,7 +634,7 @@ void initializeRacePlayerEffects(void) {
     s32 playerIndex;
     VECTOR position;
 
-    func_80014930(&gGameTasks[4], updatePlayerRenderSnapshots);
+    createChildTaskForParentWithReserve(&gGameTasks[4], updatePlayerRenderSnapshots);
     playerSnapshotTaskGp = D_8013AE8C;
     if (D_8013AFD2 == 4) {
         playerIndex = 0;
@@ -703,7 +703,7 @@ INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_800612BC);
 #endif
 
 void createPlayerSnapshotTrailTask(TaskCallback callback) {
-    func_80014930(playerSnapshotTaskGp, callback);
+    createChildTaskForParentWithReserve(playerSnapshotTaskGp, callback);
     D_8013AE8C->data18 = 0x101;
     playerSnapshotTrailCountGp++;
 }
@@ -882,7 +882,7 @@ advance:
 
 void startIndexedRenderTask(s32 index) {
     TaskResourceRecord *resource;
-    func_80014930(D_8013B304, drawTrickTriangleRingTask);
+    createChildTaskForParentWithReserve(D_8013B304, drawTrickTriangleRingTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     D_8013AE8C->data18 = index;
     resource = &D_800D9504[D_8013AE8C->resource14];
@@ -1112,13 +1112,13 @@ advance:
 
 void startIndexedRenderTaskPair(s32 index) {
     TaskResourceRecord *resource;
-    func_80014930(D_8013B304, drawTrickRingTask);
+    createChildTaskForParentWithReserve(D_8013B304, drawTrickRingTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     D_8013AE8C->data18 = index;
     resource = &D_800D9504[D_8013AE8C->resource14];
     resource->unk00 = 0;
     resource->unk04 = 0;
-    func_80014930(D_8013B304, drawTrickSparkRingTask);
+    createChildTaskForParentWithReserve(D_8013B304, drawTrickSparkRingTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     D_8013AE8C->data18 = index;
     resource = &D_800D9504[D_8013AE8C->resource14];
@@ -1163,7 +1163,7 @@ void drawFallingParticlesTask(void) {
 void createFallingParticleTask(void) {
     FallingParticleResource *resource;
     s32 i;
-    func_80014930(&gGameTasks[4], drawFallingParticlesTask);
+    createChildTaskForParentWithReserve(&gGameTasks[4], drawFallingParticlesTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     resource = (FallingParticleResource *)&D_800D9504[D_8013AE8C->resource14];
     for (i = 0; i < 40; i++) {
@@ -1320,7 +1320,7 @@ void drawPlayerParticlesTask(void) {
 void createPlayerParticleTask(s32 playerIndex) {
     PlayerParticlePosition *position;
     s32 i;
-    func_80014930(&gGameTasks[4], drawPlayerParticlesTask);
+    createChildTaskForParentWithReserve(&gGameTasks[4], drawPlayerParticlesTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     position = (PlayerParticlePosition *)&D_800D9504[D_8013AE8C->resource14];
     for (i = 0; i < 40; i++) {
@@ -1587,7 +1587,7 @@ void drawPlayerShadowTask(void) {
 }
 
 void startPlayerShadowTask(s32 playerIndex) {
-    func_80014930(D_8013B304, drawPlayerShadowTask);
+    createChildTaskForParentWithReserve(D_8013B304, drawPlayerShadowTask);
     D_8013AE8C->data18 = playerIndex;
 }
 
@@ -1864,7 +1864,7 @@ void initializeDelayedEightEntryEffectTask(void) {
     EightEntryEffectSecondaryResource *secondary;
     s32 i;
     if (D_8013AE88->data18 == 0) {
-        func_80014930(D_8013B304, func_8006479C);
+        createChildTaskForParentWithReserve(D_8013B304, func_8006479C);
         D_8013AE8C->resource14 = allocateTaskResource();
         primary = (EightEntryEffectResource *)&D_800D9504[D_8013AE8C->resource14];
         D_8013AE8C->resource16 = allocateTaskResource();
@@ -1894,7 +1894,7 @@ void initializeDelayedEightEntryEffectTask(void) {
 }
 
 s32 startDelayedEightEntryEffectTask(s32 playerIndex) {
-    func_80014930(&gGameTasks[4], initializeDelayedEightEntryEffectTask);
+    createChildTaskForParentWithReserve(&gGameTasks[4], initializeDelayedEightEntryEffectTask);
     D_8013AE8C->data18 = 1;
     D_8013AE8C->data1A = playerIndex;
     return 0;
@@ -1983,7 +1983,7 @@ void createPlayerPairedQuadEffectTask(s32 playerIndex, s32 variant) {
     PairedEffectResource *resource;
     RacePlayer *player;
     s32 i;
-    func_80014930(D_8013B304, func_800654B4);
+    createChildTaskForParentWithReserve(D_8013B304, func_800654B4);
     D_8013AE8C->resource14 = allocateTaskResource();
     player = &gRacePlayers[playerIndex];
     resource = (PairedEffectResource *)&D_800D9504[D_8013AE8C->resource14];
@@ -2094,7 +2094,7 @@ INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_800659F0);
 
 GameTask *createQuadAnimationTask(u16 unusedId, VECTOR *position) {
     PrimaryQuadAnimationResource *resource;
-    func_80014930(D_8013B304, func_800659F0);
+    createChildTaskForParentWithReserve(D_8013B304, func_800659F0);
     D_8013AE8C->resource14 = allocateTaskResource();
     resource = (PrimaryQuadAnimationResource *)&D_800D9504[D_8013AE8C->resource14];
     resource->x = position->vx;
@@ -2109,7 +2109,7 @@ GameTask *createQuadAnimationTask(u16 unusedId, VECTOR *position) {
 GameTask *startAlternateQuadAnimationTask(s32 unused, const PositionEffectOrigin *position) {
     QuadAnimationResource *resource;
     GameTask *task;
-    func_80014930(D_8013B304, func_800659F0);
+    createChildTaskForParentWithReserve(D_8013B304, func_800659F0);
     D_8013AE8C->resource14 = allocateTaskResource();
     task = D_8013AE8C;
     resource = (QuadAnimationResource *)&D_800D9504[task->resource14];
@@ -2207,7 +2207,7 @@ void emitRadialEffectTask(void) {
     }
     origin = (PositionEffectOrigin *)&D_800D9504[D_8013AE88->resource14];
     if (D_8013AFD3 == 0 && (gFrameCounter & 3) == 0) {
-        func_80014930(D_8013B304, updateRadialEffectTask);
+        createChildTaskForParentWithReserve(D_8013B304, updateRadialEffectTask);
         D_8013AE8C->resource14 = allocateTaskResource();
         resource = (RadialEffectResource *)&D_800D9504[D_8013AE8C->resource14];
         GsInitCoordinate2(0, &resource->coordinate);
@@ -2232,7 +2232,7 @@ void emitRadialEffectTask(void) {
 
 void startPositionEffectTask(const PositionEffectOrigin *position) {
     PositionEffectOrigin *resource;
-    func_80014930(D_8013B304, emitRadialEffectTask);
+    createChildTaskForParentWithReserve(D_8013B304, emitRadialEffectTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     D_8013AE8C->data18 = 3;
     resource = (PositionEffectOrigin *)&D_800D9504[D_8013AE8C->resource14];
@@ -2446,7 +2446,7 @@ void createPlayerTrailTask(s32 playerIndex) {
     PlayerTrailResource *first;
     PlayerTrailResource *second;
     s32 i;
-    func_80014930(D_8013B304, func_80066474);
+    createChildTaskForParentWithReserve(D_8013B304, func_80066474);
     D_8013AE8C->resource14 = allocateTaskResource();
     first = (PlayerTrailResource *)&D_800D9504[D_8013AE8C->resource14];
     D_8013AE8C->resource16 = allocateTaskResource();
@@ -2648,7 +2648,7 @@ void createPlayerPositionTrailTask(s32 playerIndex) {
     s32 i, j;
 
     player = &gRacePlayers[playerIndex];
-    func_80014930(D_8013B304, func_80066D18);
+    createChildTaskForParentWithReserve(D_8013B304, func_80066D18);
     D_8013AE8C->resource14 = allocateTaskResource();
     D_8013AE8C->data18 = playerIndex;
     resource = (PlayerPositionTrailResource *)&D_800D9504[D_8013AE8C->resource14];
@@ -2764,7 +2764,7 @@ void emitPlayerTurnTripleQuadEffectTask(void) {
     sine = rsin((s16)player->unk0BE - (s16)player->unk110);
     if (sine < 0) sine = -sine;
     if ((gFrameCounter & 3) == 0 && !(player->unk128 & 0x677DA21) && player->unk0BC >= 0x800 && sine >= 0x200) {
-        func_80014930(D_8013B304, func_800676FC);
+        createChildTaskForParentWithReserve(D_8013B304, func_800676FC);
         D_8013AE8C->resource14 = allocateTaskResource();
         resource = (PlayerTripleQuadEffectResource *)&D_800D9504[D_8013AE8C->resource14];
         vertex = gPlayerTripleQuadOffsets;
@@ -2787,7 +2787,7 @@ void emitPlayerTurnTripleQuadEffectTask(void) {
 }
 
 void startPlayerTurnTripleQuadEffectTask(s32 playerIndex) {
-    func_80014930(D_8013B304, emitPlayerTurnTripleQuadEffectTask);
+    createChildTaskForParentWithReserve(D_8013B304, emitPlayerTurnTripleQuadEffectTask);
     D_8013AE8C->data18 = playerIndex;
 }
 
@@ -2874,7 +2874,7 @@ void createPlayerRingEffectTask(s32 playerIndex) {
     s32 i;
     player = &gRacePlayers[playerIndex];
     if (D_8013AFCE != 3) {
-        func_80014930(D_8013B304, updatePlayerRingEffectTask);
+        createChildTaskForParentWithReserve(D_8013B304, updatePlayerRingEffectTask);
         D_8013AE8C->resource14 = allocateTaskResource();
         resource = (PlayerRingEffectResource *)&D_800D9504[D_8013AE8C->resource14];
         for (i = 0; i < 3; i++) {
@@ -3004,7 +3004,7 @@ void func_800688C0(s32 playerIndex) {
     s32 j;
 
     player = &gRacePlayers[playerIndex];
-    func_80014930(D_8013B304, updatePlayerParticleTrailTask);
+    createChildTaskForParentWithReserve(D_8013B304, updatePlayerParticleTrailTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     resource = (PlayerParticleTrailWithTail *)&D_800D9504[D_8013AE8C->resource14];
     position = resource->trail.positions[0];
@@ -3042,7 +3042,7 @@ s32 createPlayerTripleQuadEffectTask(s32 playerIndex) {
     if (!(player->unk128 & 8) && player->unk96E != 0 && player->unk96E != 0x801 && player->unk96E != 0x200) {
         return 0;
     }
-    func_80014930(D_8013B304, beginPlayerTripleQuadEffectTask);
+    createChildTaskForParentWithReserve(D_8013B304, beginPlayerTripleQuadEffectTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     resource = (PlayerTripleQuadEffectResource *)&D_800D9504[D_8013AE8C->resource14];
     vertex = gPlayerTripleQuadOffsets;
@@ -3173,7 +3173,7 @@ void createRotatingQuadTrailTask(void) {
     RotatingQuadTrailResource *resource;
     s32 i;
 
-    func_80014930(&gGameTasks[4], drawRotatingQuadTrailTask);
+    createChildTaskForParentWithReserve(&gGameTasks[4], drawRotatingQuadTrailTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     resource = (RotatingQuadTrailResource *)&D_800D9504[D_8013AE8C->resource14];
     resource->countdown = 30;
@@ -3241,7 +3241,7 @@ void drawShrinkingTexturedQuadTask(void) {
 void createQuadShrinkTask(void) {
     QuadTransitionResource *resource;
 
-    func_80014930(&gGameTasks[4], drawShrinkingTexturedQuadTask);
+    createChildTaskForParentWithReserve(&gGameTasks[4], drawShrinkingTexturedQuadTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     resource = (QuadTransitionResource *)&D_800D9504[D_8013AE8C->resource14];
     resource->frames = 5;
@@ -3252,7 +3252,7 @@ void createQuadShrinkTask(void) {
 void startMiddleQuadShrinkTask(void) {
     ShrinkingQuadResource *resource;
 
-    func_80014930(&gGameTasks[4], drawShrinkingTexturedQuadTask);
+    createChildTaskForParentWithReserve(&gGameTasks[4], drawShrinkingTexturedQuadTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     resource = (ShrinkingQuadResource *)&D_800D9504[D_8013AE8C->resource14];
     resource->countdown = 5;
@@ -3263,7 +3263,7 @@ void startMiddleQuadShrinkTask(void) {
 void createRightQuadShrinkTask(void) {
     QuadTransitionResource *resource;
 
-    func_80014930(&gGameTasks[4], drawShrinkingTexturedQuadTask);
+    createChildTaskForParentWithReserve(&gGameTasks[4], drawShrinkingTexturedQuadTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     resource = (QuadTransitionResource *)&D_800D9504[D_8013AE8C->resource14];
     resource->frames = 5;
@@ -3353,7 +3353,7 @@ void drawSlidingQuadTask(void) {
 
 void startSlidingQuadTask(s32 index) {
     SlidingQuadResource *resource;
-    func_80014930(&gGameTasks[4], drawSlidingQuadTask);
+    createChildTaskForParentWithReserve(&gGameTasks[4], drawSlidingQuadTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     D_8013AE8C->data18 = index;
     resource = (SlidingQuadResource *)&D_800D9504[D_8013AE8C->resource14];
@@ -3403,7 +3403,7 @@ void capturePaletteForColorCycle(void) {
 }
 
 void startPaletteWhitePulseTask(s32 duration) {
-    func_80014930(&gGameTasks[4], capturePaletteForColorCycle);
+    createChildTaskForParentWithReserve(&gGameTasks[4], capturePaletteForColorCycle);
     D_8013AE8C->data18 = 0;
     D_8013AE8C->data1A = duration;
 }
@@ -3421,7 +3421,7 @@ void updateQuadTransitionSequenceTask(void) {
 }
 
 void startQuadTransitionSequenceTask(s32 transitionIndex) {
-    func_80014930(&gGameTasks[4], updateQuadTransitionSequenceTask);
+    createChildTaskForParentWithReserve(&gGameTasks[4], updateQuadTransitionSequenceTask);
     D_8013B338 = 0;
     D_8013AE8C->data1A = transitionIndex;
 }
@@ -3441,7 +3441,7 @@ void updatePrimaryValueTransition(void) {
 }
 
 void startPrimaryValueTransition(s32 duration, s32 start, s32 end) {
-    func_80014930(D_8013AE88, updatePrimaryValueTransition);
+    createChildTaskForParentWithReserve(D_8013AE88, updatePrimaryValueTransition);
     D_8013AE8C->data18 = 0;
     D_8013AE8C->data1A = duration;
     D_8013AE8C->data1C = start;
@@ -3463,7 +3463,7 @@ void updateValueInterpolationTask(void) {
 }
 
 void startValueInterpolationTask(s32 duration, s32 start, s32 end) {
-    func_80014930(D_8013AE88, updateValueInterpolationTask);
+    createChildTaskForParentWithReserve(D_8013AE88, updateValueInterpolationTask);
     D_8013AE8C->data18 = 0;
     D_8013AE8C->data1A = duration;
     D_8013AE8C->data1C = start;
@@ -3497,7 +3497,7 @@ void createFullScreenSpriteTask(s32 duration, s32 tpage, u16 clut, u16 u, u16 v,
     ScreenSpriteResource *resource;
     s32 i;
 
-    func_80014930(&gGameTasks[4], drawFullScreenSpriteTask);
+    createChildTaskForParentWithReserve(&gGameTasks[4], drawFullScreenSpriteTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     resource = (ScreenSpriteResource *)&D_800D9504[D_8013AE8C->resource14];
     for (i = 0; i < 2; i++) {
@@ -3627,7 +3627,7 @@ void updateFadingTextTask(void) {
 
 void createFadingTextTask(s32 duration, s32 x, s32 y, const char *text, s32 palette) {
     FadingTextResource *resource;
-    func_80014930(D_8013AE88, updateFadingTextTask);
+    createChildTaskForParentWithReserve(D_8013AE88, updateFadingTextTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     resource = (FadingTextResource *)&D_800D9504[D_8013AE8C->resource14];
     resource->duration = duration;
@@ -3670,7 +3670,7 @@ void updateTimedSpriteSequence(void) {
 
 void startTimedSpriteSequence(const TimedSpriteStep *steps) {
     TimedSpriteSequenceResource *resource;
-    func_80014930(D_8013AE88, updateTimedSpriteSequence);
+    createChildTaskForParentWithReserve(D_8013AE88, updateTimedSpriteSequence);
     D_8013AE8C->resource14 = allocateTaskResource();
     resource = (TimedSpriteSequenceResource *)&D_800D9504[D_8013AE8C->resource14];
     resource->step = steps;
@@ -3847,7 +3847,7 @@ void loadTimedSpritePresentationResources(void) {
 }
 
 void createResourceLoadTask(void) {
-    func_80014930(&gGameTasks[4], loadTimedSpritePresentationResources);
+    createChildTaskForParentWithReserve(&gGameTasks[4], loadTimedSpritePresentationResources);
 }
 
 void addTextCharacter(s32 x, s32 y, u32 character) {

@@ -365,7 +365,7 @@ void updateCdAwareCourseSelectionTask(void) {
             task->data18 = 40;
             break;
         default:
-            selectedIndex = D_8013B104 = func_8007373C(group->mapping, selection->selectedIndex);
+            selectedIndex = D_8013B104 = mapMenuByteIndex(group->mapping, selection->selectedIndex);
             course = D_8012D46C[selectedIndex];
             courseParameter = D_80123D80[course].unk02;
             D_8013AFCE = course;
@@ -785,7 +785,7 @@ void drawRegisteredSelectionItemStatus(void) {
                 sprite->color, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             setSpriteColor(128, 128, 128);
             character = gRacePlayers[0].unk009;
-            index = func_8007E8CC(parent->values, (s16)D_8013AE88->data1A);
+            index = mapCourseMenuByteIndex(parent->values, (s16)D_8013AE88->data1A);
             if ((u16)index < 10) {
                 if (D_8013AFCD == 1) {
                     if ((D_8013101C.masks[character] & (1U << (index * 2))) > 0) {
@@ -817,9 +817,7 @@ draw_base_status:
     }
 }
 
-/* DECOMP_ATTEMPT: inline 9/9 */
-#ifdef NON_MATCHING
-s16 func_8007E8CC(const u8 *table, s16 index) {
+s16 mapCourseMenuByteIndex(const u8 *table, s16 index) {
     s32 value;
     switch (table == NULL) {
     case 1:
@@ -831,9 +829,6 @@ s16 func_8007E8CC(const u8 *table, s16 index) {
     }
     return value;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/menu/course_selection_tasks", func_8007E8CC);
-#endif
 
 void drawSelectionItemDetails(void) {
     Movement2D *position;
@@ -856,7 +851,7 @@ void drawSelectionItemDetails(void) {
     func_8006C998(position->x / 4096 + 8, position->y / 4096 - 22,
                  0xB3, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     group = &D_8012FD10[D_8013AE98->data1A];
-    index = func_8007373C(group->mapping, selection->unk_02);
+    index = mapMenuByteIndex(group->mapping, selection->unk_02);
     if ((u16)index >= 10) {
         return;
     }
@@ -1131,7 +1126,7 @@ void updatePlayerGroupedCourseSelectionTask(void) {
         createChildTaskWithReserve(initializeDualResourceTaskAndClearState);
         D_8013AE8C->data18 = 1;
         descriptor = &gGroupedCourseMenuDescriptors[D_8013AE88->data1A];
-        D_8013AE8C->data1A = func_8007E8CC(descriptor->mapping, selection->selectedIndex);
+        D_8013AE8C->data1A = mapCourseMenuByteIndex(descriptor->mapping, selection->selectedIndex);
         D_8013AE88->data18 = 10;
         break;
     case 10:
@@ -2766,7 +2761,7 @@ void updatePlayerGroupedSelectionTask(void) {
         createChildTaskWithReserve(initializeDualResourceTask);
         D_8013AE8C->data18 = 1;
         descriptor = &gPlayerGroupedSelectionDescriptors[D_8013AE88->data1A];
-        D_8013AE8C->data1A = func_8007E8CC(descriptor->mapping, selection->selectedIndex);
+        D_8013AE8C->data1A = mapCourseMenuByteIndex(descriptor->mapping, selection->selectedIndex);
         D_8013AE8C->data1E = 41;
         D_8013AE8C->data1C = player;
         panels[4].task = D_8013AE8C;

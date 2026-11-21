@@ -311,7 +311,7 @@ void configureTaskStateTransition(s32 mode, s32 id, u16 duration) {
     switch (mode) {
     case 1: case 2: case 4: case 5: case 6: case 7:
     case 11: case 12: case 14: case 15:
-        func_80014930(&gGameTasks[4], updateTaskStateTransition);
+        createChildTaskForParentWithReserve(&gGameTasks[4], updateTaskStateTransition);
         if (mode >= 10) D_8013AE8C->data18 = mode - 10;
         else D_8013AE8C->data18 = mode;
         D_8013AE8C->data1A = index;
@@ -455,7 +455,7 @@ void configureColorCycleTask(s32 mode, s16 minimum, s16 maximum, s32 step, s16 i
         missing = task == NULL;
         if (mode != 0 && (mode < 0 ? 0 : (mode < 5))) {
             if (missing == 1) {
-                func_80014930(&gGameTasks[3], updateColorCycleTask);
+                createChildTaskForParentWithReserve(&gGameTasks[3], updateColorCycleTask);
                 task = D_8013BDA8[index] = D_8013AE8C;
                 task->data1A = index;
                 D_8013AE8C->resource14 = allocateTaskResource();
@@ -802,7 +802,7 @@ void setTaskBackgroundMode(s32 mode, s32 value1, s32 value2) {
             if (D_8013B378->data18 == mode) return;
             D_8013B378->data18 = 0;
         }
-        func_80014930(&gGameTasks[3], drawBlackScreenTask);
+        createChildTaskForParentWithReserve(&gGameTasks[3], drawBlackScreenTask);
         D_8013B378 = D_8013AE8C;
         D_8013B378->data18 = mode;
         break;
@@ -816,7 +816,7 @@ void setTaskBackgroundMode(s32 mode, s32 value1, s32 value2) {
             }
             D_8013B378->data18 = 0;
         }
-        func_80014930(&gGameTasks[3], updateScrollingBackgroundTask);
+        createChildTaskForParentWithReserve(&gGameTasks[3], updateScrollingBackgroundTask);
         D_8013AE8C->resource14 = allocateTaskResource();
         resource = (ScrollingBackgroundResource *)&D_800D9504[D_8013AE8C->resource14];
         initDefaultBackground(0, -1, &resource->background, (GameBackgroundMap *)resource->map);
@@ -832,7 +832,7 @@ void setTaskBackgroundMode(s32 mode, s32 value1, s32 value2) {
             if (D_8013B378->data18 == mode) return;
             D_8013B378->data18 = 0;
         }
-        func_80014930(&gGameTasks[3], drawTaskImagesOnBlackBackground);
+        createChildTaskForParentWithReserve(&gGameTasks[3], drawTaskImagesOnBlackBackground);
         D_8013B378 = D_8013AE8C;
         D_8013B378->data18 = mode;
         D_8013B378->data1A = value1;
@@ -916,7 +916,7 @@ void setSecondaryDisplayTaskMode(s16 mode) {
         if (D_8013B37C != NULL) {
             D_8013B37C->data18 = 0;
         }
-        func_80014930(&gGameTasks[3], drawSecondaryDisplayTask);
+        createChildTaskForParentWithReserve(&gGameTasks[3], drawSecondaryDisplayTask);
         D_8013B37C = D_8013AE8C;
         D_8013AE8C->data18 = mode;
         D_8013AE8C->data1C = 0;
@@ -984,7 +984,7 @@ void drawSecondaryDisplayTask(void) {
 }
 
 void createSecondaryDisplayTask(TaskCallback callback) {
-    func_80014930(&gGameTasks[4], callback);
+    createChildTaskForParentWithReserve(&gGameTasks[4], callback);
     D_8013B37C = D_8013AE8C;
 }
 
@@ -1613,9 +1613,7 @@ u32 func_80073708(const u32 *entries, const u8 *remap, s16 index) {
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80073708);
 #endif
 
-/* DECOMP_ATTEMPT: inline 9/9 */
-#ifdef NON_MATCHING
-s16 func_8007373C(const u8 *table, s16 index) {
+s16 mapMenuByteIndex(const u8 *table, s16 index) {
     s32 value;
     if (table == NULL) {
         value = index;
@@ -1624,9 +1622,6 @@ s16 func_8007373C(const u8 *table, s16 index) {
     }
     return value;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_8007373C);
-#endif
 
 /* DECOMP_ATTEMPT: inline 15/16 */
 #ifdef NON_MATCHING
@@ -1929,7 +1924,7 @@ void updateRegisteredTextPanelTask(void) {
             func_8006EC84((s16)(movement->x / 4096 + 4), (s16)(movement->y / 4096 + 4),
                           14, resource->text, 7, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         } else if (resource->texts != 0) {
-            s16 textIndex = func_8007373C(resource->mapping, selection->selected);
+            s16 textIndex = mapMenuByteIndex(resource->mapping, selection->selected);
 
             func_8006EC84((s16)(movement->x / 4096 + 4), (s16)(movement->y / 4096 + 4),
                           14, resource->texts[textIndex], 7, -1,
@@ -2032,8 +2027,8 @@ void createRegisteredTexturePairTask(s16 x, s16 y, const u8 *mapping, s32 mode, 
     resource->unk08 = 0;
     resource->unk0C = mode;
     resource->mapping = mapping;
-    resource->textureA = func_8007373C(mapping, parent->selectedIndex);
-    resource->textureB = func_8007373C(resource->mapping, parent->previousIndex);
+    resource->textureA = mapMenuByteIndex(mapping, parent->selectedIndex);
+    resource->textureB = mapMenuByteIndex(resource->mapping, parent->previousIndex);
     if (resource->textureA < 255) uploadTextureArchiveEntry(576, 256, 768, 238, resource->textureA);
     if (resource->textureB < 255) uploadTextureArchiveEntry(704, 256, 768, 237, resource->textureB);
     resource->x = 144;
@@ -2111,8 +2106,8 @@ void updateRegisteredTexturePairTask(void) {
             resource->y = 108;
             resource->stepX = 0;
             resource->stepY = -36;
-            resource->textureA = func_8007373C(resource->mapping, parent->previousIndex);
-            resource->textureB = func_8007373C(resource->mapping, parent->selectedIndex);
+            resource->textureA = mapMenuByteIndex(resource->mapping, parent->previousIndex);
+            resource->textureB = mapMenuByteIndex(resource->mapping, parent->selectedIndex);
             resource->unk08 = active;
         }
         if (direction == 2) {
@@ -2120,8 +2115,8 @@ void updateRegisteredTexturePairTask(void) {
             resource->y = 36;
             resource->stepX = 0;
             resource->stepY = 36;
-            resource->textureA = func_8007373C(resource->mapping, parent->selectedIndex);
-            resource->textureB = func_8007373C(resource->mapping, parent->previousIndex);
+            resource->textureA = mapMenuByteIndex(resource->mapping, parent->selectedIndex);
+            resource->textureB = mapMenuByteIndex(resource->mapping, parent->previousIndex);
             resource->unk08 = active;
         }
         parent->previousIndex = parent->selectedIndex;
@@ -2226,17 +2221,17 @@ void animateRegisteredTexturePairTask(void) {
             }
             break;
         case 3:
-            resource->textureA = func_8007373C(resource->mapping, parent->selectedIndex);
+            resource->textureA = mapMenuByteIndex(resource->mapping, parent->selectedIndex);
             if (parent->selectedIndex > 0) {
-                resource->textureB = func_8007373C(resource->mapping, (s16)(parent->selectedIndex - 1));
+                resource->textureB = mapMenuByteIndex(resource->mapping, (s16)(parent->selectedIndex - 1));
             } else {
                 resource->textureB = 255;
             }
             goto upload;
         case 4:
-            resource->textureA = func_8007373C(resource->mapping, parent->previousIndex);
+            resource->textureA = mapMenuByteIndex(resource->mapping, parent->previousIndex);
             if (parent->selectedIndex > 0) {
-                resource->textureB = func_8007373C(resource->mapping, (s16)(parent->selectedIndex - 1));
+                resource->textureB = mapMenuByteIndex(resource->mapping, (s16)(parent->selectedIndex - 1));
             } else {
                 resource->textureB = 255;
             }

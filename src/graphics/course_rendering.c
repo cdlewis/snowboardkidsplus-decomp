@@ -575,7 +575,7 @@ void drawOscillatingQuadTask(void) {
 
 void createOscillatingQuadTask(s32 value, VECTOR *position, s32 amplitude, s32 r, s32 g, s32 b) {
     OscillatingQuadResource *resource;
-    func_80014930(&gGameTasks[4], drawOscillatingQuadTask);
+    createChildTaskForParentWithReserve(&gGameTasks[4], drawOscillatingQuadTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     resource = (OscillatingQuadResource *)&D_800D9504[D_8013AE8C->resource14];
     resource->unk68 = value;
@@ -641,7 +641,7 @@ void drawMovingLineTask(void) {
 
 void createMovingLineTask(s32 index) {
     MovingLineResource *resource;
-    func_80014930(&gGameTasks[4], drawMovingLineTask);
+    createChildTaskForParentWithReserve(&gGameTasks[4], drawMovingLineTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     D_8013AE8C->data18 = index;
     resource = (MovingLineResource *)&D_800D9504[D_8013AE8C->resource14];
@@ -692,7 +692,7 @@ void drawFlickeringDotsTask(void) {
 void createFlickeringDotsTask(s32 playerIndex) {
     FlickeringDotsResource *resource;
     s32 i;
-    func_80014930(&gGameTasks[4], drawFlickeringDotsTask);
+    createChildTaskForParentWithReserve(&gGameTasks[4], drawFlickeringDotsTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     D_8013AE8C->data18 = playerIndex;
     resource = (FlickeringDotsResource *)&D_800D9504[D_8013AE8C->resource14];

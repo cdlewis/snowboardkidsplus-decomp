@@ -147,9 +147,7 @@ s16 func_800148F4(GameTask *parent, TaskCallback callback) {
 INCLUDE_ASM("asm/nonmatchings/engine/task_scheduler", func_800148F4);
 #endif
 
-/* DECOMP_ATTEMPT: inline 15/15 */
-#ifdef NON_MATCHING
-s16 func_80014930(GameTask *parent, TaskCallback callback) {
+s16 createChildTaskForParentWithReserve(GameTask *parent, TaskCallback callback) {
     GameTask *previous = D_8013AE88;
     s16 result;
 
@@ -158,9 +156,6 @@ s16 func_80014930(GameTask *parent, TaskCallback callback) {
     D_8013AE88 = previous;
     return result;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/engine/task_scheduler", func_80014930);
-#endif
 
 /* DECOMP_ATTEMPT: inline 10/15 */
 #ifdef NON_MATCHING

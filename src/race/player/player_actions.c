@@ -203,20 +203,20 @@ const u32 gPlayerProjectileUseTablePadding
 
 RaceTime gRaceElapsedTime = {0, 0, 0};
 
-s32 func_8002CE58(void);
-s32 func_8002CE9C(void);
-s32 func_8002CEE0(void);
-s32 func_8002CF24(void);
-s32 func_8002CF68(void);
-s32 func_8002CFAC(void);
+s32 requestPlayerAction8(void);
+s32 requestPlayerAction12(void);
+s32 requestPlayerAction11(void);
+s32 requestPlayerAction13(void);
+s32 requestPlayerAction14(void);
+s32 requestPlayerAction3(void);
 s32 func_8002CFF0(void);
-s32 func_8002D040(void);
-s32 func_8002D120(void);
-s32 func_8002D1B8(void);
-s32 func_8002D2B4(void);
-s32 func_8002D2F8(void);
-s32 func_8002D33C(void);
-s32 func_8002D380(void);
+s32 requestPlayerAction10(void);
+s32 requestPlayerAction1(void);
+s32 requestPlayerAction16(void);
+s32 requestPlayerAction4(void);
+s32 requestPlayerAction5(void);
+s32 requestPlayerAction19(void);
+s32 requestPlayerAction20(void);
 
 void getPlayerCourseProgress(u16 playerIndex, s32 *progress, s32 *distance) {
     RacePlayer *players = gRacePlayers;
@@ -936,9 +936,7 @@ s32 requestCurrentPlayerAction7(void) {
     return 0;
 }
 
-/* DECOMP_ATTEMPT: inline 17/17 */
-#ifdef NON_MATCHING
-s32 func_8002CE58(void) {
+s32 requestPlayerAction8(void) {
     s32 result;
     if (currentPlayerAbsolute->unk128 & 0x37D000) {
         result = 1;
@@ -950,13 +948,8 @@ s32 func_8002CE58(void) {
     }
     return result;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002CE58);
-#endif
 
-/* DECOMP_ATTEMPT: inline 17/17 */
-#ifdef NON_MATCHING
-s32 func_8002CE9C(void) {
+s32 requestPlayerAction12(void) {
     s16 result;
     if (currentPlayerAbsolute->unk128 & 0x77D000) {
         result = 1;
@@ -968,13 +961,8 @@ s32 func_8002CE9C(void) {
     }
     return result;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002CE9C);
-#endif
 
-/* DECOMP_ATTEMPT: inline 17/17 */
-#ifdef NON_MATCHING
-s32 func_8002CEE0(void) {
+s32 requestPlayerAction11(void) {
     if (currentPlayerAbsolute->unk128 & 0x77D000) {
         return 1;
     }
@@ -983,24 +971,14 @@ s32 func_8002CEE0(void) {
     }
     return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002CEE0);
-#endif
 
-/* DECOMP_ATTEMPT: inline 17/17 */
-#ifdef NON_MATCHING
-s32 func_8002CF24(void) {
+s32 requestPlayerAction13(void) {
     if (currentPlayerAbsolute->unk128 & 0x77D000) return 1;
     if (D_8013B0E4 < 13) D_8013B0E4 = 13;
     return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002CF24);
-#endif
 
-/* DECOMP_ATTEMPT: inline 17/17 */
-#ifdef NON_MATCHING
-s32 func_8002CF68(void) {
+s32 requestPlayerAction14(void) {
     s32 result;
     if (currentPlayerAbsolute->unk128 & 0x77D000) {
         result = 1;
@@ -1012,13 +990,8 @@ s32 func_8002CF68(void) {
     }
     return (s16)result;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002CF68);
-#endif
 
-/* DECOMP_ATTEMPT: inline 17/17 */
-#ifdef NON_MATCHING
-s32 func_8002CFAC(void) {
+s32 requestPlayerAction3(void) {
     if (currentPlayerAbsolute->unk128 & 0x77D000) {
         return 1;
     }
@@ -1027,9 +1000,6 @@ s32 func_8002CFAC(void) {
     }
     return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002CFAC);
-#endif
 
 /* DECOMP_ATTEMPT: inline 16/20 */
 #ifdef NON_MATCHING
@@ -1049,9 +1019,7 @@ s32 func_8002CFF0(void) {
 INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002CFF0);
 #endif
 
-/* DECOMP_ATTEMPT: inline 20/20 */
-#ifdef NON_MATCHING
-s32 func_8002D040(void) {
+s32 requestPlayerAction10(void) {
     u32 flags = currentPlayerAbsolute->unk128;
     if (!(flags & 0x43000)) {
         if (flags & 0x800) {
@@ -1063,9 +1031,6 @@ s32 func_8002D040(void) {
     }
     return 1;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002D040);
-#endif
 
 s32 checkCurrentPlayerFlags43040OrAngleRange(void) {
     RacePlayer *player = currentPlayerAbsolute;
@@ -1091,9 +1056,7 @@ s32 checkCurrentPlayerFlags43040OrAngleRange(void) {
     return 0;
 }
 
-/* DECOMP_ATTEMPT: inline 17/17 */
-#ifdef NON_MATCHING
-s32 func_8002D120(void) {
+s32 requestPlayerAction1(void) {
     u8 result;
     if (currentPlayerAbsolute->unk128 & 0x43000) {
         result = 1;
@@ -1105,9 +1068,6 @@ s32 func_8002D120(void) {
     }
     return result;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002D120);
-#endif
 
 s32 checkCurrentPlayerFlags345001(void) {
     RacePlayer *player = currentPlayerAbsolute;
@@ -1120,9 +1080,7 @@ s32 checkCurrentPlayerFlags345001(void) {
     return 0;
 }
 
-/* DECOMP_ATTEMPT: inline 17/17 */
-#ifdef NON_MATCHING
-s32 func_8002D1B8(void) {
+s32 requestPlayerAction16(void) {
     if (currentPlayerAbsolute->unk128 & 0x775000) {
         return 1;
     } else {
@@ -1132,9 +1090,6 @@ s32 func_8002D1B8(void) {
         return 0;
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002D1B8);
-#endif
 
 s32 requestCurrentPlayerAction17(void) {
     RacePlayer *player = currentPlayerAbsolute;
@@ -1168,9 +1123,7 @@ s32 checkCurrentPlayerFlags275000OrField134(void) {
     return 0;
 }
 
-/* DECOMP_ATTEMPT: inline 17/17 */
-#ifdef NON_MATCHING
-s32 func_8002D2B4(void) {
+s32 requestPlayerAction4(void) {
     if (currentPlayerAbsolute->unk128 & 0x775000) {
         return 1;
     }
@@ -1179,13 +1132,8 @@ s32 func_8002D2B4(void) {
     }
     return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002D2B4);
-#endif
 
-/* DECOMP_ATTEMPT: inline 17/17 */
-#ifdef NON_MATCHING
-s32 func_8002D2F8(void) {
+s32 requestPlayerAction5(void) {
     if (currentPlayerAbsolute->unk128 & 0x775000) {
         return 1;
     }
@@ -1194,13 +1142,8 @@ s32 func_8002D2F8(void) {
     }
     return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002D2F8);
-#endif
 
-/* DECOMP_ATTEMPT: inline 17/17 */
-#ifdef NON_MATCHING
-s32 func_8002D33C(void) {
+s32 requestPlayerAction19(void) {
     if (currentPlayerAbsolute->unk128 & 0x41001) {
         return 1;
     }
@@ -1209,13 +1152,8 @@ s32 func_8002D33C(void) {
     }
     return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002D33C);
-#endif
 
-/* DECOMP_ATTEMPT: inline 17/17 */
-#ifdef NON_MATCHING
-s32 func_8002D380(void) {
+s32 requestPlayerAction20(void) {
     if (currentPlayerAbsolute->unk128 & 0x41001) {
         return 1;
     } else {
@@ -1225,9 +1163,6 @@ s32 func_8002D380(void) {
         return 0;
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002D380);
-#endif
 
 s16 processCurrentPlayerActionRequests(s16 suppressWallAction) {
     u16 pending = currentPlayerAbsolute->unk0E8;
@@ -1239,7 +1174,7 @@ s16 processCurrentPlayerActionRequests(s16 suppressWallAction) {
         }
         if ((currentPlayerAbsolute->unk0E8 & 1) && func_8002CFF0() &&
             requestCurrentPlayerAction6() && checkCurrentPlayerFlags43040OrAngleRange()) {
-            func_8002D120();
+            requestPlayerAction1();
         }
         if ((currentPlayerAbsolute->unk0E8 & 2) && func_8002CFF0()) {
             requestCurrentPlayerAction6NarrowAngle();
@@ -1247,20 +1182,20 @@ s16 processCurrentPlayerActionRequests(s16 suppressWallAction) {
         if (currentPlayerAbsolute->unk0E8 & 0x800) {
             requestCurrentPlayerAction7();
         }
-        if ((currentPlayerAbsolute->unk0E8 & 0x400) && func_8002CEE0()) {
-            func_8002CEE0();
+        if ((currentPlayerAbsolute->unk0E8 & 0x400) && requestPlayerAction11()) {
+            requestPlayerAction11();
         }
-        if ((currentPlayerAbsolute->unk0E8 & 4) && func_8002D040()) {
-            func_8002CE58();
+        if ((currentPlayerAbsolute->unk0E8 & 4) && requestPlayerAction10()) {
+            requestPlayerAction8();
         }
         if (currentPlayerAbsolute->unk0E8 & 8) {
-            func_8002CE9C();
+            requestPlayerAction12();
         }
         if (currentPlayerAbsolute->unk0E8 & 0x100) {
-            func_8002CF68();
+            requestPlayerAction14();
         }
         if (currentPlayerAbsolute->unk0E8 & 0x4000) {
-            func_8002CFAC();
+            requestPlayerAction3();
         }
         if (currentPlayerAbsolute->unk0E8 & 0x20) {
             requestCurrentPlayerAction17();
@@ -1269,16 +1204,16 @@ s16 processCurrentPlayerActionRequests(s16 suppressWallAction) {
             checkCurrentPlayerFlags275000OrField134();
         }
         if (currentPlayerAbsolute->unk0E8 & 0x10) {
-            func_8002D1B8();
+            requestPlayerAction16();
         }
         if (currentPlayerAbsolute->unk0E8 & 0x40) {
-            func_8002D2B4();
+            requestPlayerAction4();
         }
         if (currentPlayerAbsolute->unk0E8 & 0x2000) {
-            func_8002D2F8();
+            requestPlayerAction5();
         }
         if (currentPlayerAbsolute->unk0E8 & 0x80) {
-            func_8002CF24();
+            requestPlayerAction13();
         }
         currentPlayerAbsolute->unk0E8 = 0;
     }
@@ -1287,10 +1222,10 @@ s16 processCurrentPlayerActionRequests(s16 suppressWallAction) {
         checkCurrentPlayerFlags345001();
     }
     if (currentPlayerAbsolute->surfaceState.fields.unk136 == 6 || currentPlayerAbsolute->surfaceState.fields.unk136 == 12 || currentPlayerAbsolute->surfaceState.fields.unk136 == 16) {
-        func_8002D33C();
+        requestPlayerAction19();
     }
     if (currentPlayerAbsolute->surfaceState.fields.unk136 == 7 || currentPlayerAbsolute->surfaceState.fields.unk136 == 14 || currentPlayerAbsolute->surfaceState.fields.unk136 == 15) {
-        func_8002D380();
+        requestPlayerAction20();
     }
 
     if (!D_8013B0E4) {
@@ -1627,7 +1562,7 @@ void startPlayerTimerTask(RacePlayer *player) {
     } else {
         player->unk0FF = 0;
     }
-    func_80014930(player->task, initPlayerTimerTask);
+    createChildTaskForParentWithReserve(player->task, initPlayerTimerTask);
     D_8013AE8C->data18 = player->playerIndex;
 }
 
@@ -1685,16 +1620,16 @@ tryActivation:
     if (currentPlayerAbsolute->unk940) {
         switch ((s8)(currentPlayerAbsolute->unk93E - 1)) {
         case 0:
-            func_80014930(&gGameTasks[4], initializePlayerDualResourceEffectTask);
+            createChildTaskForParentWithReserve(&gGameTasks[4], initializePlayerDualResourceEffectTask);
             break;
         case 1:
-            func_80014930(&gGameTasks[4], initializePlayerVisualPairTask);
+            createChildTaskForParentWithReserve(&gGameTasks[4], initializePlayerVisualPairTask);
             break;
         case 2:
-            func_80014930(&gGameTasks[4], initializePlayerVisualPairTask5E80);
+            createChildTaskForParentWithReserve(&gGameTasks[4], initializePlayerVisualPairTask5E80);
             break;
         case 3:
-            func_80014930(&gGameTasks[4], initializePlayerVisualPairTask6780);
+            createChildTaskForParentWithReserve(&gGameTasks[4], initializePlayerVisualPairTask6780);
             break;
         case 4: {
             u8 bounce = 0;
@@ -1707,9 +1642,9 @@ tryActivation:
                 }
             }
             if (bounce) {
-                func_80014930(&gGameTasks[4], initializeBouncingTaskVisual);
+                createChildTaskForParentWithReserve(&gGameTasks[4], initializeBouncingTaskVisual);
             } else {
-                func_80014930(&gGameTasks[4], initializeDualResource4C80EffectTask);
+                createChildTaskForParentWithReserve(&gGameTasks[4], initializeDualResource4C80EffectTask);
             }
             break;
         }
@@ -1726,7 +1661,7 @@ tryActivation:
     }
 
     if (currentPlayerAbsolute->unk93C) {
-        func_80014930(&gGameTasks[4], initializeDualResource5100EffectTask);
+        createChildTaskForParentWithReserve(&gGameTasks[4], initializeDualResource5100EffectTask);
         D_8013AE8C->data18 = playerIndex;
         currentPlayerAbsolute->unk93C--;
     }
@@ -1774,7 +1709,7 @@ void updateCurrentPlayerItemUse(u16 playerIndex) {
         for (index = 0; index < D_8013AFD2; index++) {
             if (index != playerIndex) {
                 s32 delay;
-                func_80014930(&gGameTasks[4], initializeDelayedPlayerRiseEffectTask);
+                createChildTaskForParentWithReserve(&gGameTasks[4], initializeDelayedPlayerRiseEffectTask);
                 delay = count * 3;
                 count++;
                 D_8013AE8C->data18 = index;

@@ -238,9 +238,9 @@ void updateRaceIntroCameraTask(void) {
             D_8013B1A8 = 1;
             if (D_8013AE88->data18 == 0) {
                 tasks = gGameTasks;
-                func_80014930(&tasks[0], beginSpriteScaleTransitionDelay);
+                createChildTaskForParentWithReserve(&tasks[0], beginSpriteScaleTransitionDelay);
                 if (D_8013AE88->data18 == 0) {
-                    func_80014930(&tasks[4], initializeBouncingVisualTask);
+                    createChildTaskForParentWithReserve(&tasks[4], initializeBouncingVisualTask);
                 }
             }
         }

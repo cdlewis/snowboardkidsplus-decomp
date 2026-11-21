@@ -383,7 +383,7 @@ void func_80058BD4(void) {
     s32 course;
 
     if (D_8013AFCE == 7) {
-        func_80014930(&gGameTasks[3], updateActivePlayerRegionCollisions);
+        createChildTaskForParentWithReserve(&gGameTasks[3], updateActivePlayerRegionCollisions);
         D_8013AE8C->data18 = 1;
         return;
     }
@@ -404,7 +404,7 @@ void func_80058BD4(void) {
     }
 
     for (i = 0; i < 4; i++) {
-        func_80014930(&gGameTasks[4], initializeCourseObjectTask);
+        createChildTaskForParentWithReserve(&gGameTasks[4], initializeCourseObjectTask);
         D_8013AE8C->data18 = i;
     }
 
@@ -412,28 +412,28 @@ void func_80058BD4(void) {
     switch (course) {
     case 1:
         if (D_8013AFE2 == 0) {
-            func_80014930(&gGameTasks[4], func_8005C7AC);
+            createChildTaskForParentWithReserve(&gGameTasks[4], func_8005C7AC);
         }
-        func_80014930(&gGameTasks[4], initializeProximityEmitterTask);
+        createChildTaskForParentWithReserve(&gGameTasks[4], initializeProximityEmitterTask);
         D_8013AE8C->data18 = 0;
-        func_80014930(&gGameTasks[4], initializeProximityEmitterTask);
+        createChildTaskForParentWithReserve(&gGameTasks[4], initializeProximityEmitterTask);
         D_8013AE8C->data18 = course;
-        func_80014930(&gGameTasks[3], updateActivePlayerRegionCollisions);
+        createChildTaskForParentWithReserve(&gGameTasks[3], updateActivePlayerRegionCollisions);
         D_8013AE8C->data18 = 0;
         for (i = 0; i < 9; i++) {
-            func_80014930(&gGameTasks[4], initializeMovingVisualTask);
+            createChildTaskForParentWithReserve(&gGameTasks[4], initializeMovingVisualTask);
             D_8013AE8C->data18 = i;
         }
         break;
     case 4:
         for (i = 0; i < 3; i++) {
-            func_80014930(&gGameTasks[4], initializeOrbitingTaskObject);
+            createChildTaskForParentWithReserve(&gGameTasks[4], initializeOrbitingTaskObject);
             D_8013AE8C->data18 = 0;
             D_8013AE8C->data1A = 3;
             D_8013AE8C->data1C = i;
         }
         for (i = 0; i < 4; i++) {
-            func_80014930(&gGameTasks[4], initializeOrbitingTaskObject);
+            createChildTaskForParentWithReserve(&gGameTasks[4], initializeOrbitingTaskObject);
             D_8013AE8C->data18 = 1;
             D_8013AE8C->data1A = 4;
             D_8013AE8C->data1C = i;
@@ -508,7 +508,7 @@ void func_80058BD4(void) {
                     placement->flags &= 0xBF;
                     i++;
                 }
-                func_80014930(&gGameTasks[4], initializeInteractionVisualTask);
+                createChildTaskForParentWithReserve(&gGameTasks[4], initializeInteractionVisualTask);
             }
             break;
         case 1:
@@ -526,12 +526,12 @@ void func_80058BD4(void) {
     }
 
 createVisualTasks:
-    func_80014930(&gGameTasks[4], initializePickupVisualTask);
+    createChildTaskForParentWithReserve(&gGameTasks[4], initializePickupVisualTask);
     if (D_8013B2B8) {
-        func_80014930(&gGameTasks[4], initializeObjectVisualTask);
+        createChildTaskForParentWithReserve(&gGameTasks[4], initializeObjectVisualTask);
     }
     if (D_8013B2BA) {
-        func_80014930(&gGameTasks[4], initializeCourseVisualTask);
+        createChildTaskForParentWithReserve(&gGameTasks[4], initializeCourseVisualTask);
     }
 }
 
