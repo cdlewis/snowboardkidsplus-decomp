@@ -54,6 +54,7 @@ Read the relevant repo-local skill when using its workflow:
 
 - [Function matching](.agents/skills/psx-match-function/SKILL.md)
 - [Data matching](.agents/skills/psx-match-data/SKILL.md)
+- [Removing addressing defines](.agents/skills/psx-remove-addressing-defines/SKILL.md)
 - [Symbol renaming](.agents/skills/psx-rename-symbol/SKILL.md)
 - [Permuter experiments](.agents/skills/psx-permuter/SKILL.md)
 
@@ -201,6 +202,11 @@ accesses, target-compiler sizes, and all affected functions afterward. PSX is
 little endian; verify layouts with the target compiler.
 
 ### Avoid redundant declarations
+
+Never introduce preprocessor defines that select absolute or `$gp`-relative
+addressing, including new uses of existing addressing switches. Use unconditional
+shared declarations and explicit typed declarations in consuming C files where
+required to preserve the original instructions.
 
 Use `rg` to search `src/` and `include/` for existing prototypes and types.
 Reuse canonical headers; remove redundant local declarations when integrating

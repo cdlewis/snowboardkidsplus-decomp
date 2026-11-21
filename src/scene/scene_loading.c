@@ -1,8 +1,5 @@
 #include "common.h"
-#define TASK_ABSOLUTE_ADDRESSING
-#define TASK_TRANSITION_FLAGS_ABSOLUTE_ADDRESSING
 #include "game/engine/task.h"
-#define SCENE_INDEX_ABSOLUTE_ADDRESSING
 #include "game/engine/system_runtime.h"
 #include "game/audio/music.h"
 #include "game/io/cd_queue.h"
@@ -19,6 +16,10 @@ typedef struct SceneSoundBankSectors {
     s16 headerSector;
     s16 headerSectorCount;
 } SceneSoundBankSectors;
+
+extern GameTask *D_8013AE88 __attribute__((section(".data")));
+extern u32 D_8013AFE4 __attribute__((section(".data")));
+extern u8 D_8013AF3A __attribute__((section(".data")));
 
 static ResourceSectorRange sSceneTextSectors[11] __attribute__((section(".data.scene_text_sectors"))) = {
     { DAT_SCENE_TEXT_DATA_00_SECTOR, DAT_SCENE_TEXT_DATA_00_SECTOR_COUNT },
