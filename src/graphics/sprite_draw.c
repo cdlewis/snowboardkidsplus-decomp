@@ -58,7 +58,9 @@ void setTexturedQuadColor(s32 r, s32 g, s32 b) {
     setRGB0(&gTexturedQuadTemplate, r, g, b);
 }
 
-INCLUDE_ASM("asm/nonmatchings/graphics/sprite_draw", func_8006BEEC);
+void setTexturedQuadSemiTrans(s32 enabled) {
+    SetSemiTrans(&gTexturedQuadTemplate, enabled);
+}
 
 void drawTexturedQuad(s16 x, s16 y, s32 index, GsOT *ot, u16 depth) {
     POLY_FT4 *quad = &gTexturedQuadTemplate;
@@ -129,7 +131,7 @@ void drawTexturedQuadByIndexWithBlend(s16 x, s16 y, s32 index, s16 palette, s16 
     }
     frame = &D_8012DFF4[index];
     setTexturedQuadTextureBlend(frame->textureIndex, palette, blend);
-    func_8006BEEC(semiTrans);
+    setTexturedQuadSemiTrans(semiTrans);
     drawTexturedQuad(x, y, frame->frameIndex, ot, depth);
 }
 
@@ -147,7 +149,7 @@ void drawStretchedTexturedQuadByIndexWithBlend(s16 x, s16 y, s16 width, s16 heig
     }
     frame = &D_8012DFF4[index];
     setTexturedQuadTextureBlend(frame->textureIndex, palette, blend);
-    func_8006BEEC(semiTrans);
+    setTexturedQuadSemiTrans(semiTrans);
     region = &D_8013B6AC[frame->frameIndex];
     if (width == 0) width = region->w;
     if (height == 0) height = region->h;
@@ -177,7 +179,7 @@ void drawSkewedTexturedQuadByIndexWithBlend(s16 x, s16 y, s16 width, s16 height,
     }
     frame = &D_8012DFF4[index];
     setTexturedQuadTextureBlend(frame->textureIndex, palette, blend);
-    func_8006BEEC(semiTrans);
+    setTexturedQuadSemiTrans(semiTrans);
     region = &D_8013B6AC[frame->frameIndex];
     if (width == 0) width = region->w;
     if (height == 0) height = region->h;
@@ -260,7 +262,7 @@ void drawInclusiveTexturedQuadByIndexWithBlend(s16 x, s16 y, s32 index, s16 pale
     }
     frame = &D_8012DFF4[index];
     setTexturedQuadTextureBlend(frame->textureIndex, palette, blend);
-    func_8006BEEC(semiTrans);
+    setTexturedQuadSemiTrans(semiTrans);
     drawInclusiveTexturedQuad(x, y, frame->frameIndex, ot, depth);
 }
 
@@ -1121,7 +1123,7 @@ void drawTexturedPanel(s16 x, s16 y, s16 w, s16 h, s16 borderW, s16 borderH,
     entry = &D_8012DFF4[style];
     frame = entry->frameIndex;
     setTexturedQuadTextureBlend(entry->textureIndex, palette, blend);
-    func_8006BEEC(semiTrans);
+    setTexturedQuadSemiTrans(semiTrans);
     right = x + w - borderW;
     bottom = y + h - borderH;
     drawTexturedQuad(x, y, frame, ot, depth);

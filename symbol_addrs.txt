@@ -1909,6 +1909,7 @@ fev13 = 0x80141634; // defined:true
 hasTaskReference = 0x80071910; // type:func
 resetTaskControlState = 0x8007191C; // type:func
 setTexturedQuadColor = 0x8006BED4; // type:func
+setTexturedQuadSemiTrans = 0x8006BEEC; // type:func
 gTexturedQuadTemplate = 0x8013BDB8; // size:0x28 defined:true
 setSpriteColor = 0x8006C944; // type:func
 setSpriteTemplateSemiTrans = 0x8006C970; // type:func
