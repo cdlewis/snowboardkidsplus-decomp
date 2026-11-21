@@ -29,6 +29,7 @@ void queueMenuResourceReads(s16 resource);
 void queueStartupSectorReads(void);
 void queueCourseResourceSectorReads(void);
 void queueCdCommand(s16 command, s16 value);
+void queueCdStop(void);
 void queueBackgroundTextureSectorCommands(void);
 void queueMode11TransitionResources(void);
 void resetPendingCdRequests(void);

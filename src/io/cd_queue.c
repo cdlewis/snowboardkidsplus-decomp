@@ -279,7 +279,9 @@ void initializeCdFiles(void) {
 
 INCLUDE_ASM("asm/nonmatchings/io/cd_queue", func_800134E4);
 
-INCLUDE_ASM("asm/nonmatchings/io/cd_queue", func_8001351C);
+void queueCdStop(void) {
+    queueCdCommand(-1, 0);
+}
 
 INCLUDE_ASM("asm/nonmatchings/io/cd_queue", func_80013540);
 
