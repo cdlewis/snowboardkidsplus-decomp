@@ -477,7 +477,7 @@ void (*currentPlayerStateCallbacks[74])(void) = {
     initializeCurrentPlayerState3,
     initializeCurrentPlayerState4,
     initializeCurrentPlayerState5,
-    func_8001F6D8,
+    initializeCurrentPlayerState6,
     initializeCurrentPlayerState7,
     resetCurrentPlayerForCallback26DAC,
     func_8001F6F8,
@@ -1010,7 +1010,9 @@ void initializeCurrentPlayerTimedEffectState(s32 value) {
     setCurrentTaskCallback(updateCurrentPlayerTimedEffect);
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_8001F6D8);
+void initializeCurrentPlayerState6(void) {
+    initializeCurrentPlayerTimedEffectState(0);
+}
 
 INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_8001F6F8);
 
