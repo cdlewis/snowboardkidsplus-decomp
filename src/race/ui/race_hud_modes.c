@@ -37,7 +37,7 @@ void func_80041554(void);
 void func_80041890(void);
 void func_800418F4(s16 player);
 void drawSplitScreenTrickAttackHud(s16 player);
-void func_80042558(void);
+void drawScoreAttackHud(void);
 void func_80042894(s16 player);
 
 INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud_modes", func_8003EE70);
@@ -302,7 +302,7 @@ void updateRaceHud(void) {
                     }
                 }
             }
-            func_80042558();
+            drawScoreAttackHud();
             break;
         case 5:
             if (!(D_8013AFE4 & 3)) {
@@ -496,7 +496,47 @@ void drawSplitScreenTrickAttackHud(s16 player) {
     func_8006C998(96, hudY - 121, 417, 12, -1, hudOt, depth[0]);
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud_modes", func_80042558);
+void drawScoreAttackHud(void) {
+    s16 palette = 1;
+    GsOT *ot = &D_800EBFF0[D_8013AF78];
+    u16 depth = palette;
+    s32 xOffset;
+    s16 i;
+    char text[16];
+
+    if (D_8013B184.minutes == 0 && D_8013B184.seconds < 10 && (gFrameCounter & 1)) {
+        palette = 2;
+    }
+
+    setSpriteColor(128, 128, 128);
+    if (D_8013B18D_gp) {
+        func_8006C998(64, 84, 398, 5, -1, ot, depth);
+        palette = 2;
+    }
+    drawHudDecimalNumber8x16(64, 80, 2, 1, D_8013B184.minutes, palette, -1, ot, depth);
+    drawHudDecimalNumber8x16(88, 80, 2, 1, D_8013B184.seconds, palette, -1, ot, depth);
+    drawHudDecimalNumber8x16(112, 80, 2, 1, D_8013B184.centiseconds >> 8, palette, -1, ot, depth);
+    func_8006C998(80, 80, 25, palette, -1, ot, depth);
+    func_8006C998(104, 80, 24, palette, -1, ot, depth);
+    drawWrappedText8x8(56, 71, 10, gAttackTimeLimitLabel, 5, -1, ot, depth);
+
+    i = 0;
+    if (gRacePlayers[0].unk93C > 0) {
+        xOffset = 0;
+        do {
+            func_8006C998(xOffset - 136, -96, 445, 13, -1, ot, depth);
+            xOffset += 8;
+            i++;
+        } while (i < gRacePlayers[0].unk93C);
+    }
+
+    func_8006C998(-112, 64, 424, 0, -1, ot, depth);
+    func_8006C998(-136, 64, 421, 14, -1, ot, depth);
+    drawHudDecimalNumber8x16(96, -80, 2, 0, gRacePlayers[0].scoreAttackPointTotal, 1, -1, ot, depth);
+    sprintf(text, gCourseCoinTotalFormat, gRacePlayers[0].scoreAttackPointTarget);
+    drawLimitedText8x8(112, -72, 10, text, 6, -1, ot, depth);
+    func_8006C998(104, -96, 432, 0, -1, ot, depth);
+}
 
 INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud_modes", func_80042894);
 
