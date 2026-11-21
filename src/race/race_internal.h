@@ -636,6 +636,7 @@ void waitMode2TransitionTask(void);
 void initializeRaceTimeComparisonPanel(void);
 void updateFallingRotatingObjectTask(void);
 
+void dispatchCurrentPlayerDirectionalAnimation(void);
 void updateCurrentPlayerDirectionalAnimation(void);
 
 void drawLapTimeHud(void);

@@ -323,6 +323,8 @@ initDefaultBackground = 0x8002F308; // type:func
 
 // Clear current task state fields and the current player's halfword at 0xC2.
 clearCurrentPlayerTaskState = 0x8002DE80; // type:func
+dispatchCurrentPlayerDirectionalAnimation = 0x8002DEA4; // type:func
+gCurrentPlayerDirectionalAnimationCallbacks = 0x80123610; // size:0x10 defined:true
 processCurrentPlayerActionRequests = 0x8002D3C4; // type:func
 
 // Extract bits 8-31 into a byte, byte, halfword layout.

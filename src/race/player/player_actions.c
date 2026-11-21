@@ -176,6 +176,14 @@ const char gComputerPlayerLabel[4] __attribute__((section(".data.result_row_labe
 const u32 gPlayerCourseProgressTablePadding
     __attribute__((section(".rodata.player_course_progress_padding"))) = 0;
 
+TaskCallback gCurrentPlayerDirectionalAnimationCallbacks[4]
+    __attribute__((section(".data.player_directional_animation_callbacks"), aligned(4))) = {
+        startCurrentPlayerDirectionalAnimation,
+        updateCurrentPlayerDirectionalAnimation,
+        func_8002E368,
+        func_8002E3C0
+    };
+
 u8 gPlayerProjectileBounceChoices[4][8]
     __attribute__((section(".data.player_projectile_bounce_choices"), aligned(4))) = {
         {1, 1, 1, 1, 1, 1, 1, 1},
@@ -914,7 +922,9 @@ void clearCurrentPlayerTaskState(void) {
     player->unk0C2 = 0;
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002DEA4);
+void dispatchCurrentPlayerDirectionalAnimation(void) {
+    gCurrentPlayerDirectionalAnimationCallbacks[D_8013AE88->data1A]();
+}
 
 void startCurrentPlayerDirectionalAnimation(void) {
     RacePlayer *player = D_8013B0D8;
