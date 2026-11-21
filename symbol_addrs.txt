@@ -3397,6 +3397,7 @@ updateSceneCdAudioTask = 0x800A77B0; // type:func
 
 initializeCurrentPlayerTimedEffectState = 0x8001F528; // type:func
 initializeCurrentPlayerState6 = 0x8001F6D8; // type:func
+initializeCurrentPlayerState9 = 0x8001F6F8; // type:func
 
 updateCurrentPlayerState5MotionAndTimer = 0x80024804; // type:func
 

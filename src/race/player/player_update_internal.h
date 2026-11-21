@@ -17,7 +17,7 @@ void initializeCurrentPlayerState4(void);
 void initializeCurrentPlayerState5(void);
 void initializeCurrentPlayerTimedEffectState(s32 value);
 void initializeCurrentPlayerState6(void);
-void func_8001F6F8(void);
+void initializeCurrentPlayerState9(void);
 void resetCurrentPlayerForCallback26DAC(void);
 void initializeCurrentPlayerState10(void);
 void initializeCurrentPlayerState14(void);

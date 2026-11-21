@@ -480,7 +480,7 @@ void (*currentPlayerStateCallbacks[74])(void) = {
     initializeCurrentPlayerState6,
     initializeCurrentPlayerState7,
     resetCurrentPlayerForCallback26DAC,
-    func_8001F6F8,
+    initializeCurrentPlayerState9,
     initializeCurrentPlayerState10,
     initializeCurrentPlayerState11,
     initializeCurrentPlayerState12,
@@ -1014,7 +1014,9 @@ void initializeCurrentPlayerState6(void) {
     initializeCurrentPlayerTimedEffectState(0);
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_8001F6F8);
+void initializeCurrentPlayerState9(void) {
+    initializeCurrentPlayerTimedEffectState(1);
+}
 
 void resetCurrentPlayerForCallback26DAC(void) {
     RacePlayer *player;
