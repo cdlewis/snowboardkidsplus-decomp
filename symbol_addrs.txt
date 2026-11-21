@@ -214,6 +214,7 @@ requestCurrentPlayerAction6NarrowAngle = 0x8002CD18; // type:func
 requestCurrentPlayerAction6 = 0x8002CC78; // type:func
 requestCurrentPlayerAction7 = 0x8002CDB8; // type:func
 drawLapTimeLabel = 0x80037C80; // type:func
+stopCdAndResetRequestQueue = 0x800134E4; // type:func
 queueCdStop = 0x8001351C; // type:func
 queueCdSectorCommand = 0x800136DC; // type:func
 createPlayerSpriteAnimationTask = 0x800345BC; // type:func

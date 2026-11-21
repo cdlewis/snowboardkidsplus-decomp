@@ -277,7 +277,14 @@ void initializeCdFiles(void) {
     gDatStartSector = CdPosToInt(&gDatFile.pos);
 }
 
-INCLUDE_ASM("asm/nonmatchings/io/cd_queue", func_800134E4);
+void stopCdAndResetRequestQueue(void) {
+    D_8013AE76 = 1;
+    func_80013540();
+    gCdRequestReadIndex = 0;
+    gCdRequestWriteIndex = 0;
+    gCdRequestPhase = 0;
+    D_8013AE76 = 0;
+}
 
 void queueCdStop(void) {
     queueCdCommand(-1, 0);
