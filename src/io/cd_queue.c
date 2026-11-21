@@ -564,7 +564,20 @@ void resetPendingCdRequests(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/io/cd_queue", func_80013F28);
+void stopCdAudioPlayback(void) {
+    startCdVolumeFade(0, 1, 0, 1);
+    gCdVolumeFadeActive = 0;
+    if (D_8013AE78 != 0) {
+        D_8013AE50 &= 7;
+        D_8013AE4E &= 7;
+        if (D_8013AE50 != D_8013AE4E) {
+            D_8013AE50 = 0;
+            D_8013AE4E = 0;
+        }
+        D_8013AE78 = 0;
+        func_80013540();
+    }
+}
 
 void updateCdCommandQueue(void) {
     XaCommandResult result;

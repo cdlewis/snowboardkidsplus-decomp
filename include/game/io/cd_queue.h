@@ -34,6 +34,7 @@ void queueCdStop(void);
 void queueBackgroundTextureSectorCommands(void);
 void queueMode11TransitionResources(void);
 void resetPendingCdRequests(void);
+void stopCdAudioPlayback(void);
 void resetCdCommandState(void);
 
 extern u8 gCdVolumeFadeActive;
