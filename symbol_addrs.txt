@@ -2166,6 +2166,7 @@ drawTexturedQuadByIndex = 0x8006C104; // type:func
 drawTexturedQuadByIndexWithBlend = 0x8006C190; // type:func
 drawInclusiveTexturedQuad = 0x8006C5F4; // type:func
 drawInclusiveTexturedQuadByIndex = 0x8006C70C; // type:func
+drawInclusiveTexturedQuadByIndexWithBlend = 0x8006C798; // type:func
 
 stopSceneSoundVoices = 0x800A7B0C; // type:func
 gSceneSoundSlots = 0x8013BE50; // size:0x20 defined:true

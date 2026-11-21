@@ -245,7 +245,24 @@ void drawInclusiveTexturedQuadByIndex(s16 x, s16 y, s32 index, GsOT *ot, u16 dep
     drawInclusiveTexturedQuad(x, y, frame->frameIndex, ot, depth);
 }
 
-INCLUDE_ASM("asm/nonmatchings/graphics/sprite_draw", func_8006C798);
+void drawInclusiveTexturedQuadByIndexWithBlend(s16 x, s16 y, s32 index, s16 palette,
+                                              s16 blendMode, GsOT *ot, u16 depth) {
+    TexturedQuadFrame *frame;
+    s32 semiTrans;
+    s32 blend;
+
+    if (blendMode >= 0) {
+        blend = blendMode;
+        semiTrans = 1;
+    } else {
+        blend = 0;
+        semiTrans = 0;
+    }
+    frame = &D_8012DFF4[index];
+    setTexturedQuadTextureBlend(frame->textureIndex, palette, blend);
+    func_8006BEEC(semiTrans);
+    drawInclusiveTexturedQuad(x, y, frame->frameIndex, ot, depth);
+}
 
 void initSpritePrimitiveTemplate(void) {
     SPRT *sprite = &gSpritePrimitiveTemplate.sprite;
