@@ -133,13 +133,16 @@ def main():
     eligible = {f.name for f in functions}
 
     if args.task == "decompile-similar":
-        rows = project_ranking(include_game=True)
+        rows = project_ranking(include_game=True, include_game_references=True, minimum=0.60)
+        # Keep clear, high-scoring references first, followed by the wider queue
+        # in similarity order. The prompt already gives agents the alternatives.
+        rows.sort(key=lambda row: row["ambiguous"] or row["similarity"] < 0.75)
         candidates = [
             [row["name"],
              f'{row["reference"]} ({row["reference_source"]}:{row["reference_line"]})',
              *[f'{ref["name"]} ({ref["source"]}:{ref["line"]})'
                for ref in row["alternatives"]]]
-            for row in rows if not row["ambiguous"] and row["name"] in eligible
+            for row in rows if row["name"] in eligible
         ]
     elif args.task == "decompile-library":
         rows = project_ranking()

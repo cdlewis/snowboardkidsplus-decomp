@@ -18,6 +18,9 @@ from decomp import (ROOT, INCLUDE, WORD, AsmFunction, PsxImage, active_functions
 from find_similar_functions import normalize_instruction
 
 
+MATCHING_ASM = ROOT / "asm/matchings"
+
+
 @dataclass
 class Reference:
     function: AsmFunction
@@ -53,6 +56,7 @@ def load_references(pairs, image=None):
     for assembly_root, source_root in pairs:
         if not assembly_root.is_dir() or not source_root.is_dir():
             raise ValueError(f"reference directories must exist: {assembly_root}, {source_root}")
+        verify_bytes = image is not None and assembly_root.resolve().is_relative_to(MATCHING_ASM.resolve())
         source_cache = {}
         for path in sorted(assembly_root.rglob("*.s")):
             source = (source_root / path.relative_to(assembly_root).parent).with_suffix(".c")
@@ -68,9 +72,8 @@ def load_references(pairs, image=None):
             identity = (source.resolve(), function.name)
             if identity in seen:
                 continue
-            if image is not None and assembly_root.resolve() == (ROOT / "asm/matchings/syslib").resolve():
-                if image.read(function.address, len(function.data)) != function.data:
-                    raise ValueError(f"reference differs from the verified image: {path}")
+            if verify_bytes and image.read(function.address, len(function.data)) != function.data:
+                raise ValueError(f"reference differs from the verified image: {path}")
             tokens = instruction_tokens(function)
             if not tokens:
                 continue
@@ -166,11 +169,14 @@ def print_ranking(rows, *, as_json=False, limit=20):
                   f'{alternative["name"]} ({alternative["source"]}:{alternative["line"]})')
 
 
-def project_ranking(*, include_game=False, extra_references=(), minimum=0.75, min_words=8,
-                    unattempted=False):
+def project_ranking(*, include_game=False, include_game_references=False,
+                    extra_references=(), minimum=0.75, min_words=8, unattempted=False):
     require_fresh()
     image = PsxImage((ROOT / "disc/SLPS_018.23").read_bytes())
-    pairs = [(ROOT / "asm/matchings/syslib", ROOT / "src/syslib"), *extra_references]
+    project_pair = (MATCHING_ASM, ROOT / "src") if include_game_references else (
+        MATCHING_ASM / "syslib", ROOT / "src/syslib"
+    )
+    pairs = [project_pair, *extra_references]
     references = load_references(pairs, image)
     candidates = [function for function in active_functions(sdk=True)
                   if include_game or function.unit.parts[:2] == ("src", "syslib")]
