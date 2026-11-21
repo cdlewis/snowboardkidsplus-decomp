@@ -34,8 +34,8 @@ u16 gTaskResourceFreeBits[16] __attribute__((section(".data.task_resource_bitmap
 
 TaskCallback gInitialTaskCallbacks[6] __attribute__((section(".data.initial_task_callbacks"))) = {
     initializeGameOptionTask,
-    func_8001E0C0,
-    func_8001E0C0,
+    armTaskCleanupOnFlagAFAABit6,
+    armTaskCleanupOnFlagAFAABit6,
     armTaskCallbackResetOnFlag3,
     armTaskCallbackResetOnFlag3,
     func_8001E1B8,

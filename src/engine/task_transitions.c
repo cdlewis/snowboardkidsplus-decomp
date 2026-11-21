@@ -188,6 +188,7 @@ void func_80015A30(u16 controller);
 void func_8001C9F0(void);
 s16 func_8008C290(s16 characterId, s16 finishPosition);
 void func_8005EBC4(void);
+void processTaskWhenFlagAFAABit7Set(void);
 
 void runMovieAndGameLoop(void) {
     func_800131B4();
@@ -1284,13 +1285,17 @@ void initializeSelectedCourseTransition(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/engine/task_transitions", func_8001E0C0);
+void armTaskCleanupOnFlagAFAABit6(void) {
+    if (D_8013AFAA & 0x40) {
+        setCurrentTaskCallback(processTaskWhenFlagAFAABit7Set);
+    }
+}
 
 void processTaskWhenFlagAFAABit7Set(void) {
     if (D_8013AFAA & 0x80) {
         deleteCurrentTaskDescendants();
         D_8013AFAA &= ~0xC0;
-        setCurrentTaskCallback(func_8001E0C0);
+        setCurrentTaskCallback(armTaskCleanupOnFlagAFAABit6);
     }
 }
 

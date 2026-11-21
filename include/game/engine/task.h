@@ -96,7 +96,7 @@ void initializeOrbitingTaskObject(void);
 void initializeVisualTrailTask(void);
 void updateBobbingTrailEmitterTask(void);
 /* Initial scheduler callbacks implemented by the main presentation flow. */
-void func_8001E0C0(void);
+void armTaskCleanupOnFlagAFAABit6(void);
 void armTaskCallbackResetOnFlag3(void);
 void func_8001E1B8(void);
 
