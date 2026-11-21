@@ -4,7 +4,8 @@
 #include "game/io/memory_card.h"
 #include "psx/libmcrd.h"
 
-extern u32 D_8013AF50;
+void *gMemoryCardTaskBuffer = NULL;
+u32 gMemoryCardSaveBufferSize = 0;
 
 s32 pollMemoryCardWrite(void) {
     s32 command, result;
@@ -53,7 +54,7 @@ INCLUDE_ASM("asm/nonmatchings/io/memory_card_tasks", func_800198EC);
 
 void beginMemoryCardBufferRead(void) {
     if (tryAcceptMemoryCard() == 1) {
-        selectMemoryCardLoadFile(0, D_8013AF4C);
+        selectMemoryCardLoadFile(0, gMemoryCardTaskBuffer);
         setCurrentTaskCallback(pollMemoryCardBufferReadTask);
     }
 }
@@ -96,7 +97,16 @@ void pollMemoryCardReadTask(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/io/memory_card_tasks", func_80019AF4);
+s32 startMemoryCardSaveStatusTask(void *buffer, u32 size) {
+    if (D_8013AF3E == 0) {
+        createChildTaskWithReserve(waitForMemoryCardAcceptTask);
+        D_8013AF3E = 1;
+        gMemoryCardTaskBuffer = buffer;
+        gMemoryCardSaveBufferSize = size;
+        return 1;
+    }
+    return 0;
+}
 
 void waitForMemoryCardAcceptTask(void) {
     if (tryAcceptMemoryCard() == 1) {
@@ -130,7 +140,7 @@ s32 startMemoryCardWriteTask(void) {
 }
 
 void prepareMemoryCardWriteTask(void) {
-    prepareMemoryCardSave(0, D_8013AF4C, D_8013AF50);
+    prepareMemoryCardSave(0, gMemoryCardTaskBuffer, gMemoryCardSaveBufferSize);
     setCurrentTaskCallback(pollMemoryCardWriteTask);
 }
 

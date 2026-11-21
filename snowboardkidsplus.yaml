@@ -961,6 +961,7 @@ segments:
       - {start: 0x12B728, type: .sdata, name: audio/sound_manager, linker_section_order: .data}
       - {start: 0x12B72C, type: .sdata, name: audio/sound_manager, linker_section: .sdata.music_state, linker_section_order: .data}
       - [0x12B734, data, 12B734]
+      - {start: 0x12B74C, type: .sdata, name: io/memory_card_tasks, linker_section_order: .data}
       - {start: 0x12B754, type: .sdata, name: io/movie_stream, linker_section: .sdata.movie_dimensions, linker_section_order: .data}
       - {start: 0x12B758, type: .sdata, name: io/movie_stream, linker_section_order: .data}
       - {start: 0x12B760, type: .sdata, name: io/movie_stream, linker_section: .sdata.movie_index, linker_section_order: .data}

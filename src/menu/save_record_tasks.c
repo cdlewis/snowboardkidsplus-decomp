@@ -157,7 +157,7 @@ void updateStateValueHistoryTask(void) {
             D_8013AE88->data18 = 0;
             break;
         }
-        if ((s16)func_80019AF4((void *)0x801E4000, 0x810) == 1)
+        if ((s16)startMemoryCardSaveStatusTask((void *)0x801E4000, 0x810) == 1)
             D_8013BE30.unk_0E[D_8013BE30.activeIndex] = 0;
         break;
     }
