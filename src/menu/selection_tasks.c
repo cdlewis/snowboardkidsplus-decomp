@@ -165,7 +165,7 @@ void completeModeSelectionTransitionWhenReady(void) {
             D_8013AFD8 = 0;
             D_8013B562 = 0;
             SetFogNearFar(5000, 6000, 400);
-            setCurrentTaskCallback(func_800A24EC);
+            setCurrentTaskCallback(scheduleMode1TaskTransition);
             D_8013B108 = 2;
             return;
         default:
@@ -193,7 +193,9 @@ void startMode1TaskTransition(void) {
     setCurrentTaskCallback(initializeGameOptionViewTask);
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/selection_tasks", func_800A24EC);
+void scheduleMode1TaskTransition(void) {
+    setCurrentTaskCallback(startMode1TaskTransition);
+}
 
 void initializeNumberSelectionTask(void) {
     NumberPanelState *state;

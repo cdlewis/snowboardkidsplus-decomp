@@ -2065,6 +2065,7 @@ getSaveRecordMaskTier = 0x8008BEA4; // type:func
 getStateMaskTier = 0x8008BFF0; // type:func
 selectTaskBySelectedRecordMatch = 0x800A2460; // type:func
 startMode1TaskTransition = 0x800A24B0; // type:func
+scheduleMode1TaskTransition = 0x800A24EC; // type:func
 initializeNumberSelectionTask = 0x800A2510; // type:func
 updateNumberSelectionTask = 0x800A25F8; // type:func
 
