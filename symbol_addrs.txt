@@ -286,9 +286,11 @@ stopCdAudioPlayback = 0x80013F28; // type:func
 unpackPsxColor = 0x80051694; // type:func
 finishScenePlaybackExitTask = 0x800A7C8C; // type:func
 
-// Start mode 2 for id 0 with duration 30, then install callback 8002F5F8.
+// Start the mode 2 transition and wait for it to finish.
 beginMode2TaskSequence = 0x8002F628; // type:func
 scheduleMode2SequenceWhenCdQueueIdle = 0x8002F65C; // type:func
+
+waitForBackgroundMenuTransition = 0x8002F5F8; // type:func
 
 // Dispatch the current menu selection or prepare its background transition.
 dispatchBackgroundMenuTask = 0x8002F698; // type:func

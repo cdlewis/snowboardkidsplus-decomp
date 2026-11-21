@@ -118,11 +118,15 @@ restore:
     setCurrentTaskCallback(prepareRacePlayersAndQueueResources);
 }
 
-INCLUDE_ASM("asm/nonmatchings/graphics/background_resources", func_8002F5F8);
+void waitForBackgroundMenuTransition(void) {
+    if (isTaskStateTransitionBelowMaximum(0) == 0) {
+        setCurrentTaskCallback(dispatchBackgroundMenuTask);
+    }
+}
 
 void beginMode2TaskSequence(void) {
     configureTaskStateTransition(2, 0, 30);
-    setCurrentTaskCallback(func_8002F5F8);
+    setCurrentTaskCallback(waitForBackgroundMenuTransition);
 }
 
 void scheduleMode2SequenceWhenCdQueueIdle(void) {
