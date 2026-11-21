@@ -98,7 +98,7 @@ void updateCurrentPlayerModelPartCoordinates(void) {
             D_8013B0D8->model.modelCoordinates[i].coord.t[1] = D_800EB22C.vy + D_8013B0D8->model.modelCoordinates[parent].coord.t[1];
             D_8013B0D8->model.modelCoordinates[i].coord.t[2] = D_800EB22C.vz + D_8013B0D8->model.modelCoordinates[parent].coord.t[2];
         }
-        func_8001E3E4((SVECTOR *)&D_8013B0D8->unk5BC[i], &D_8013B0D8->model.modelCoordinates[i]);
+        setCoordinateRotation((SVECTOR *)&D_8013B0D8->unk5BC[i], &D_8013B0D8->model.modelCoordinates[i]);
     }
 }
 
@@ -220,8 +220,8 @@ void updatePlayerModelPreviewTask(void) {
         return;
     }
     D_8013B0D8->unk0B6 = (D_8013B0D8->unk0B6 + state->rotationStep) & 0xFFF;
-    func_8001E3E4((SVECTOR *)&D_8013B0D8->unk0B4, &D_8013B0D8->worldCoordinate);
-    func_8001E3E4(&D_8013B0D8->modelRotation, &D_8013B0D8->modelCoordinate);
-    func_8001E3E4((SVECTOR *)D_8013B0D8->unk5BC, D_8013B0D8->model.modelCoordinates);
+    setCoordinateRotation((SVECTOR *)&D_8013B0D8->unk0B4, &D_8013B0D8->worldCoordinate);
+    setCoordinateRotation(&D_8013B0D8->modelRotation, &D_8013B0D8->modelCoordinate);
+    setCoordinateRotation((SVECTOR *)D_8013B0D8->unk5BC, D_8013B0D8->model.modelCoordinates);
     sortPlayerModelWithDrawArea(D_8013AE88->data1C, 0, &D_801300B8[D_8013AE88->data1C]);
 }

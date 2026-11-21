@@ -101,7 +101,7 @@ void updateCurrentPlayerModelTransforms(RacePlayer *unused) {
             currentPlayerAbsolute->model.modelCoordinates[i].coord.t[1] = D_8013AF88->vy + currentPlayerAbsolute->model.modelCoordinates[parent].coord.t[1];
             currentPlayerAbsolute->model.modelCoordinates[i].coord.t[2] = D_8013AF88->vz + currentPlayerAbsolute->model.modelCoordinates[parent].coord.t[2];
         }
-        func_8001E3E4((SVECTOR *)&currentPlayerAbsolute->unk5BC[i], &currentPlayerAbsolute->model.modelCoordinates[i]);
+        setCoordinateRotation((SVECTOR *)&currentPlayerAbsolute->unk5BC[i], &currentPlayerAbsolute->model.modelCoordinates[i]);
     }
 }
 

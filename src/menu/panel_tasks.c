@@ -2097,6 +2097,6 @@ void updateGridModelPreviewTask(void) {
     } else {
         D_8013B0D8->unk0B6 = 0x480;
     }
-    func_8001E3E4((SVECTOR *)&D_8013B0D8->unk0B4, &D_8013B0D8->modelCoordinate);
+    setCoordinateRotation((SVECTOR *)&D_8013B0D8->unk0B4, &D_8013B0D8->modelCoordinate);
     sortPlayerModelWithDrawArea(D_8013AE88->data1C, D_8013AE88->data1C, &D_801300B8[D_8013AE88->data1C]);
 }

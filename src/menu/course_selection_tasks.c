@@ -2007,8 +2007,8 @@ update:
     model->world.coord.t[1] = movement->y / 4096;
     model->worldRotation.vy += model->unkC2;
     gMenuPlayerModelYaw[D_8013AE88->data18] = model->worldRotation.vy;
-    func_8001E3E4(&model->worldRotation, &model->world);
-    func_8001E3E4(&model->localRotation, &model->local);
+    setCoordinateRotation(&model->worldRotation, &model->world);
+    setCoordinateRotation(&model->localRotation, &model->local);
     if (model->world.coord.t[2] >= 512) {
         sortLitObjectWithDrawArea(&model->object, D_8013AE88->data18 + 2, &D_801300B8[D_8013AE88->data18]);
     } else {

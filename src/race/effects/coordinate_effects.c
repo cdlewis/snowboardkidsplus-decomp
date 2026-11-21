@@ -207,8 +207,8 @@ void updateExpandingCoordinateEffectTask(void) {
     }
     if (isPositionInCameraRange(resource->parent.coord.t[0], resource->parent.coord.t[2], (s16)func_80059254())) {
         D_80129A80[15].coord2 = &resource->coordinate;
-        func_8001E3E4((SVECTOR *)&resource->pitch, &resource->parent);
-        func_8001E3E4(&resource->rotation, &resource->coordinate);
+        setCoordinateRotation((SVECTOR *)&resource->pitch, &resource->parent);
+        setCoordinateRotation(&resource->rotation, &resource->coordinate);
         ScaleMatrix(&resource->coordinate.coord, &resource->scale);
         drawTaskObject(15);
     }
@@ -281,8 +281,8 @@ void updatePlayerState23CoordinateEffectTask(void) {
     }
     if (isPositionInCameraRange(resource->parent.coord.t[0], resource->parent.coord.t[2], (s16)func_80059254())) {
         D_80129A80[13].coord2 = &resource->coordinate;
-        func_8001E3E4((SVECTOR *)&resource->pitch, &resource->parent);
-        func_8001E3E4(&resource->rotation, &resource->coordinate);
+        setCoordinateRotation((SVECTOR *)&resource->pitch, &resource->parent);
+        setCoordinateRotation(&resource->rotation, &resource->coordinate);
         ScaleMatrix(&resource->coordinate.coord, &resource->scale);
         drawTaskObject(13);
     }
@@ -365,8 +365,8 @@ void updateFallingRotatingObjectTask(void) {
     }
     if (isPositionInCameraRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
         D_80129A80[D_8013AE88->data1C].coord2 = &resource->coordinate;
-        func_8001E3E4(&resource->parentRotation, &resource->parent);
-        func_8001E3E4(&resource->rotation, &resource->coordinate);
+        setCoordinateRotation(&resource->parentRotation, &resource->parent);
+        setCoordinateRotation(&resource->rotation, &resource->coordinate);
         drawTaskObject(D_8013AE88->data1C);
     }
 }
@@ -397,7 +397,7 @@ void updatePlayerScaledObjectTask(void) {
     resource->rotation.vz = players[D_8013AE88->data18].unk0B8;
     if (isPositionInCameraRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
         D_80129A80[10].coord2 = &resource->coordinate;
-        func_8001E3E4(&resource->rotation, &resource->coordinate);
+        setCoordinateRotation(&resource->rotation, &resource->coordinate);
         ScaleMatrix(&resource->coordinate.coord, &resource->scale);
         drawTaskObject(10);
     }
@@ -537,7 +537,7 @@ void updatePlayerCoordinateEffectTask(void) {
     }
     if (isPositionInCameraRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
         D_80129A80[11].coord2 = &resource->coordinate;
-        func_8001E3E4(&resource->rotation, &resource->coordinate);
+        setCoordinateRotation(&resource->rotation, &resource->coordinate);
         ScaleMatrix(&resource->coordinate.coord, &resource->scale);
         drawTaskObject(11);
     }
@@ -1451,7 +1451,7 @@ void updateRisingPlayerEffectTask(void) {
     }
     if (isPositionInCameraRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
         D_80129A80[12].coord2 = &resource->coordinate;
-        func_8001E3E4(&resource->rotation, &resource->coordinate);
+        setCoordinateRotation(&resource->rotation, &resource->coordinate);
         ScaleMatrix(&resource->coordinate.coord, &resource->scale);
         drawTaskObject(12);
     }
@@ -1495,7 +1495,7 @@ void updateFallingPlayerEffectTask(void) {
     }
     if (isPositionInCameraRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
         D_80129A80[12].coord2 = &resource->coordinate;
-        func_8001E3E4(&resource->rotation, &resource->coordinate);
+        setCoordinateRotation(&resource->rotation, &resource->coordinate);
         ScaleMatrix(&resource->coordinate.coord, &resource->scale);
         drawTaskObject(12);
     }

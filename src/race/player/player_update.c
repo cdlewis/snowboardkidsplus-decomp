@@ -873,7 +873,7 @@ void updateCurrentPlayerPartTransforms(void) {
             D_8013B0D8->model.modelCoordinates[i].coord.t[1] = D_8013AF88->vy + D_8013B0D8->model.modelCoordinates[parent].coord.t[1];
             D_8013B0D8->model.modelCoordinates[i].coord.t[2] = D_8013AF88->vz + D_8013B0D8->model.modelCoordinates[parent].coord.t[2];
         }
-        func_8001E3E4((SVECTOR *)&D_8013B0D8->unk5BC[i], &D_8013B0D8->model.modelCoordinates[i]);
+        setCoordinateRotation((SVECTOR *)&D_8013B0D8->unk5BC[i], &D_8013B0D8->model.modelCoordinates[i]);
     }
 }
 

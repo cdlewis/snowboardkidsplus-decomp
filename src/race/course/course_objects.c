@@ -501,7 +501,7 @@ void updateCourseObjectTask(void) {
     if (isPositionInCameraRange(coordinates[objectIndex].coord.t[0],
                                 coordinates[objectIndex].coord.t[2], cameraIndex)) {
         objectIndex = D_8013AE88->data18;
-        func_8001E3E4(&D_8012A5C0[objectIndex], &coordinates[objectIndex]);
+        setCoordinateRotation(&D_8012A5C0[objectIndex], &coordinates[objectIndex]);
         drawTaskObjectAlternateLayer(D_8013AE88->data18);
     }
 }
@@ -559,7 +559,7 @@ void updateSelectedCourseOffsetTask(void) {
     if (D_8013AE88->data1E == 0) {
         if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
             D_80129A80[D_8013AE88->data1C].coord2 = &resource->coordinate;
-            func_8001E3E4(&resource->rotation, &resource->coordinate);
+            setCoordinateRotation(&resource->rotation, &resource->coordinate);
             drawTaskObject(D_8013AE88->data1C);
         }
     }
@@ -597,7 +597,7 @@ void updatePlayerFollowingOrbitTask(void) {
     }
     if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
         D_80129A80[D_8013AE88->data1C].coord2 = &resource->coordinate;
-        func_8001E3E4(&resource->rotation, &resource->coordinate);
+        setCoordinateRotation(&resource->rotation, &resource->coordinate);
         drawTaskObject(D_8013AE88->data1C);
     }
 }
@@ -620,7 +620,7 @@ void updateOrbitingTaskObject(void) {
     }
     if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
         D_80129A80[D_8013AE88->data1C].coord2 = &resource->coordinate;
-        func_8001E3E4(&resource->rotation, &resource->coordinate);
+        setCoordinateRotation(&resource->rotation, &resource->coordinate);
         drawTaskObject(D_8013AE88->data1C);
     }
     if (!D_8013AFD3) {
@@ -649,7 +649,7 @@ void updateMovingTaskObject(void) {
     }
     if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
         D_80129A80[D_8013AE88->data1C].coord2 = &resource->coordinate;
-        func_8001E3E4(&resource->rotation, &resource->coordinate);
+        setCoordinateRotation(&resource->rotation, &resource->coordinate);
         drawTaskObject(D_8013AE88->data1C);
     }
     if (D_8013AE88->data1A == 0) {
@@ -1163,8 +1163,8 @@ void updatePlacedObjectTask(void) {
                 D_8013AF90->vx = 0;
                 D_8013AF90->vy = 0;
                 D_8013AF90->vz = 0;
-                func_8001E3E4(D_8013AF90, &resource->groundCoordinate);
-                func_8001E3E4(&resource->rotation, &resource->coordinate);
+                setCoordinateRotation(D_8013AF90, &resource->groundCoordinate);
+                setCoordinateRotation(&resource->rotation, &resource->coordinate);
                 D_8013AF88->vx = 0x2000;
                 D_8013AF88->vy = 0x2000;
                 D_8013AF88->vz = 0x2000;
@@ -1178,8 +1178,8 @@ void updatePlacedObjectTask(void) {
             drawCameraFacingTaskVisual((TaskVisualResource *)&D_800D9504[D_8013AE88->resource16], 0);
         }
         D_80129A80[gPlacedObjectModelIds[D_8013AE88->data1A]].coord2 = &resource->coordinate;
-        func_8001E3E4(&resource->groundRotation, &resource->groundCoordinate);
-        func_8001E3E4(&resource->rotation, &resource->coordinate);
+        setCoordinateRotation(&resource->groundRotation, &resource->groundCoordinate);
+        setCoordinateRotation(&resource->rotation, &resource->coordinate);
         if (D_8013AE88->data1A == 5) {
             D_8013AF88->vx = 0x3000;
             D_8013AF88->vy = 0x3000;
@@ -1337,7 +1337,7 @@ void updateBobbingTrailEmitterTask(void) {
             }
         }
         D_80129A80[10].coord2 = &resource->coordinate;
-        func_8001E3E4(&resource->rotation, &resource->coordinate);
+        setCoordinateRotation(&resource->rotation, &resource->coordinate);
         D_8013AF88->vx = 0x3000;
         D_8013AF88->vy = 0x3000;
         D_8013AF88->vz = 0x3000;
@@ -1471,7 +1471,7 @@ void updateProximityParticleTask(void) {
             }
         }
         D_80129A80[7].coord2 = &resource->coordinate;
-        func_8001E3E4(&resource->rotation, &resource->coordinate);
+        setCoordinateRotation(&resource->rotation, &resource->coordinate);
         drawTaskObject(7);
     }
 }
@@ -1686,7 +1686,7 @@ void updateCollectibleTask(void) {
     resource = (PickupResource *)&D_800D9504[D_8013AE88->resource14];
     if (isPositionInCameraRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
         D_80129A80[10].coord2 = &resource->coordinate;
-        func_8001E3E4(&resource->rotation, &resource->coordinate);
+        setCoordinateRotation(&resource->rotation, &resource->coordinate);
         drawTaskObject(10);
         if (!D_8013AFD3) {
             resolvePlayerCollisionsWithCylinder(&resource->position, 0x2800, 0x8000, 2);
@@ -1750,7 +1750,7 @@ void updateFallingTaskObject(void) {
     }
     if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
         D_80129A80[9].coord2 = &resource->coordinate;
-        func_8001E3E4(&resource->rotation, &resource->coordinate);
+        setCoordinateRotation(&resource->rotation, &resource->coordinate);
         drawTaskObject(9);
     }
     if (landed) {
@@ -1780,7 +1780,7 @@ void updateLandedTaskObject(void) {
     }
     if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
         D_80129A80[9].coord2 = &resource->coordinate;
-        func_8001E3E4(&resource->rotation, &resource->coordinate);
+        setCoordinateRotation(&resource->rotation, &resource->coordinate);
         drawTaskObject(9);
     }
 }
@@ -1890,8 +1890,8 @@ void updateOrbitingObstacleTask(void) {
     }
     if (isPositionInCameraRange(resource->groundCoordinate.coord.t[0],
         resource->groundCoordinate.coord.t[2], (s16)func_80059254())) {
-        func_8001E3E4(&resource->groundRotation, &resource->groundCoordinate);
-        func_8001E3E4(&resource->rotation, &resource->coordinate);
+        setCoordinateRotation(&resource->groundRotation, &resource->groundCoordinate);
+        setCoordinateRotation(&resource->rotation, &resource->coordinate);
         GsGetLs(&resource->coordinate, D_8013AF98);
         GsSetLsMatrix(D_8013AF98);
         if (func_80059254()) {
@@ -1905,8 +1905,8 @@ void updateOrbitingObstacleTask(void) {
 INCLUDE_ASM("asm/nonmatchings/race/course/course_objects", func_8005EBC4);
 
 void updateAndDrawCurrentTaskObject(void) {
-    func_8001E3E4(&D_8012A5C0[D_8013AE88->data18],
-                  &D_80129C60[D_8013AE88->data18]);
+    setCoordinateRotation(&D_8012A5C0[D_8013AE88->data18],
+                          &D_80129C60[D_8013AE88->data18]);
     drawTaskObject(D_8013AE88->data18);
 }
 

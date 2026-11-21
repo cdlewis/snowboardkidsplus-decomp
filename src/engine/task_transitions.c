@@ -1338,7 +1338,14 @@ void initializeCurrentPlayerModelObjects(u32 *model) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/engine/task_transitions", func_8001E3E4);
+void setCoordinateRotation(SVECTOR *rotation, GsCOORDINATE2 *coordinate) {
+    D_8013AF98->t[0] = coordinate->coord.t[0];
+    D_8013AF98->t[1] = coordinate->coord.t[1];
+    D_8013AF98->t[2] = coordinate->coord.t[2];
+    RotMatrix(rotation, D_8013AF98);
+    coordinate->coord = *D_8013AF98;
+    coordinate->flg = 0;
+}
 
 void setCoordinateRotationZYX(SVECTOR *rotation, GsCOORDINATE2 *coordinate) {
     D_8013AF98->t[0] = coordinate->coord.t[0];
