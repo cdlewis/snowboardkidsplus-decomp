@@ -300,8 +300,11 @@ void queueTaskModeSectorRead(void) {
         state->sectorIndex = D_8013AFD9 - 1;
     }
     queueModeIndexedSectorRead(state->mode, state->sectorIndex);
-    setCurrentTaskCallback(func_800A0EE8);
+    setCurrentTaskCallback(prepareLoadedTextSequenceTask);
     D_8013AE88->unk10 |= 2;
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/mode_race_tasks", func_800A0EE8);
+void prepareLoadedTextSequenceTask(void) {
+    func_800A1670();
+    setCurrentTaskCallback(initializeTextSequenceTask);
+}
