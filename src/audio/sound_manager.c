@@ -168,7 +168,9 @@ void endSoundSystem(void) {
 
 INCLUDE_ASM("asm/nonmatchings/audio/sound_manager", func_800180F4);
 
-INCLUDE_ASM("asm/nonmatchings/audio/sound_manager", func_8001814C);
+void stopAllSoundVoices(void) {
+    SsUtAllKeyOff(0);
+}
 
 INCLUDE_ASM("asm/nonmatchings/audio/sound_manager", func_8001816C);
 

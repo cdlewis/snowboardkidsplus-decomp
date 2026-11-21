@@ -80,7 +80,6 @@ extern char D_8001232C[];
 extern char D_8013B5C8[];
 
 void func_800187B8(u8 voice);
-void func_8001814C(void);
 int printf(const char *format, ...);
 
 void initializeNumberSelectionTask(void);

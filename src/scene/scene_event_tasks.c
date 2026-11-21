@@ -588,7 +588,7 @@ void beginScenePlaybackExitTask(void) {
         state->tasks[i] = NULL;
     }
     gSceneImageDisplayTask = NULL;
-    func_8001814C();
+    stopAllSoundVoices();
     SsSeqSetVol(gMusicSequenceId, 64, 64);
     fadeOutMusicSequence(0x200);
     resetPendingCdRequests();
