@@ -3813,7 +3813,10 @@ drawStatsMenuValues = 0x8003AAE0; // type:func
 gStatsTrickLabel = 0x8013B144; // size:0x8 defined:true
 gStatsMakeLabel = 0x8013B14C; // size:0x8 defined:true
 
+createPlayerSnapshotTrailTask = 0x80061304; // type:func
 drawPlayerSnapshotTrailTask = 0x80061348; // type:func
+gPlayerSnapshotTrailCount = 0x8013B300; // size:0x4 defined:true
+D_8013B304 = 0x8013B304; // size:0x4 defined:true
 gPlayerSnapshotTrailPacket = 0x8012C82C; // size:0x28 defined:true
 gPlayerSnapshotTrailEndpoints = 0x8012C854; // size:0x10 defined:true
 gPlayerShadowPacket = 0x8012C884; // size:0x28 defined:true

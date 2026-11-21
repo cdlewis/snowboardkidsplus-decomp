@@ -60,14 +60,14 @@ extern GameTask *D_8013AE88 __attribute__((section(".data")));
 extern GameTask *D_8013AE8C __attribute__((section(".data")));
 extern GameTask *D_8013AE90 __attribute__((section(".data")));
 extern GameTask *D_8013AE98 __attribute__((section(".data")));
-extern GameTask *D_8013B304 __attribute__((section(".data")));
+extern GameTask *D_8013B304 __attribute__((section(".data.player_snapshot_tasks")));
 #else
 extern GameTask *D_8013AE88;
 extern GameTask *D_8013AE8C;
 extern GameTask *D_8013AE98;
 extern GameTask *D_8013B304;
 #endif
-/* GP-relative alias used when registering the player snapshot task. */
+/* GP-relative alias for the player snapshot task pointer. */
 extern GameTask *playerSnapshotTaskGp;
 /* Task transition flags consumed by the main presentation flow. */
 #if defined(TASK_TRANSITION_FLAGS_ABSOLUTE_ADDRESSING) || defined(TASK_FLAGS_ABSOLUTE_ADDRESSING)

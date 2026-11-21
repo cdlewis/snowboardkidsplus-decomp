@@ -559,6 +559,10 @@ POLY_FT4 gSlidingQuadPacket
 PaletteColor gCapturedColorCyclePalette[16]
     __attribute__((section(".data.color_cycle_palette"), aligned(4))) = {0};
 
+s32 gPlayerSnapshotTrailCount __attribute__((section(".data.player_snapshot_tasks"))) = 0;
+
+GameTask *D_8013B304 __attribute__((section(".data.player_snapshot_tasks"))) = 0;
+
 u16 gWhitePulsePalette[16]
     __attribute__((section(".bss.white_pulse_palette"), aligned(4)));
 
@@ -579,6 +583,8 @@ RECT gColorCycleCaptureRect
 
 u16 gStretchedTextWidth __attribute__((section(".sdata.stretched_text"), aligned(2))) = 8;
 u16 gTextGlyphPalette __attribute__((section(".sdata.stretched_text"), aligned(2))) = 0;
+
+extern s32 playerSnapshotTrailCountGp;
 
 void updatePlayerRenderSnapshots(void) {
     GsCOORDINATE2 coordinate;
@@ -668,7 +674,11 @@ void initializeRacePlayerEffects(void) {
 
 INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_800612BC);
 
-INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_80061304);
+void createPlayerSnapshotTrailTask(TaskCallback callback) {
+    func_80014930(playerSnapshotTaskGp, callback);
+    D_8013AE8C->data18 = 0x101;
+    playerSnapshotTrailCountGp++;
+}
 
 void drawPlayerSnapshotTrailTask(void) {
     s32 p, flag;
@@ -699,7 +709,7 @@ void drawPlayerSnapshotTrailTask(void) {
     }
     if (--resource->remainingFrames == -1 || gPlayerSnapshotTrailPacket.y0 > 160) {
         deleteCurrentTaskSubtree();
-        D_8013B300--;
+        gPlayerSnapshotTrailCount--;
     }
 }
 

@@ -764,7 +764,6 @@ extern SVECTOR *D_8013AF90 __attribute__((section(".data")));
 extern MATRIX D_8012A6B0, D_8012A6D0;
 extern MATRIX *D_8013AF9C __attribute__((section(".data")));
 extern POLY_FT4 D_8012967C;
-extern s32 D_8013B300 __attribute__((section(".data")));
 typedef struct PairedEffectResource {
     u8 unk00[0x20];
     VECTOR positions[2];
@@ -843,7 +842,6 @@ extern char gDebugPositionXFormat[];
 extern char gDebugPositionYFormat[];
 extern char gDebugPositionZFormat[];
 
-extern GameTask *D_8013B304 __attribute__((section(".data")));
 extern RECT gReadPixelRect;
 extern RECT gScanlineCopyRect;
 extern RECT gScanlineSeedRect __attribute__((section(".data.scanline_copy_rects")));
@@ -956,6 +954,7 @@ void drawLoweringQuadStripTask(void);
 void drawSlidingQuadTask(void);
 void drawFallingParticlesTask(void);
 void drawPlayerParticlesTask(void);
+void createPlayerSnapshotTrailTask(TaskCallback callback);
 void drawPlayerSnapshotTrailTask(void);
 void drawTrickTriangleRingTask(void);
 void drawTrickRingTask(void);

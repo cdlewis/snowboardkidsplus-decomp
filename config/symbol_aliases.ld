@@ -7,6 +7,7 @@ raceFinishFlagAbsolute = D_8013AFD6;
 selectionMenuFadeStartedGp = D_8013B41F;
 activeRacePlayerCountGp = D_8013AFD2;
 playerSnapshotTaskGp = D_8013B304;
+playerSnapshotTrailCountGp = gPlayerSnapshotTrailCount;
 gameOptionPlayerModeAbsolute = D_8013AFCD;
 taskTransitionFlagsAbsolute = D_8013AFE4;
 selectedFinishLapCountAbsolute = D_8013AFD0;
