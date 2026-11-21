@@ -1283,12 +1283,16 @@ void processTaskWhenFlagAFAABit7Set(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/engine/task_transitions", func_8001E148);
+void armTaskCallbackResetOnFlag3(void) {
+    if (D_8013AFAA & 0x8) {
+        setCurrentTaskCallback(resetTaskCallbackOnFlag4);
+    }
+}
 
 void resetTaskCallbackOnFlag4(void) {
     if (D_8013AFAA & 0x10) {
         func_800149E0();
-        setCurrentTaskCallback(func_8001E148);
+        setCurrentTaskCallback(armTaskCallbackResetOnFlag3);
     }
 }
 

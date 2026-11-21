@@ -36,8 +36,8 @@ TaskCallback gInitialTaskCallbacks[6] __attribute__((section(".data.initial_task
     initializeGameOptionTask,
     func_8001E0C0,
     func_8001E0C0,
-    func_8001E148,
-    func_8001E148,
+    armTaskCallbackResetOnFlag3,
+    armTaskCallbackResetOnFlag3,
     func_8001E1B8,
 };
 
