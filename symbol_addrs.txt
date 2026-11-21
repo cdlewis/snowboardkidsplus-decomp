@@ -2229,6 +2229,9 @@ gRightQuadShrinkPacket = 0x8012CB44; // type:POLY_FT4 size:0x28
 
 isControllerInputSupported = 0x800154D0; // type:func
 
+drawSplitScreenTrickAttackHud = 0x8004213C; // type:func
+gSplitScreenTimeLimitLabel = 0x80010C18; // type:char size:0xC
+gSplitScreenTrickAttackPointLabel = 0x8013B16C; // type:char size:0x6
 drawCourseCoinHud = 0x80042DC0; // type:func
 drawSplitScreenCourseCoinHud = 0x80043120; // type:func
 drawPaletteMappedIcon = 0x800403C8; // type:func

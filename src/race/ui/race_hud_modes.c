@@ -20,8 +20,14 @@ const char gAttackTimeLimitLabel[24] __attribute__((section(".rodata.trick_attac
 const char gTrickAttackPointLabel[12] __attribute__((section(".rodata.trick_attack_labels"), aligned(4))) =
     "\x82\x6F\x82\x6E\x82\x68\x82\x6D\x82\x73";
 
+const char gSplitScreenTimeLimitLabel[12] __attribute__((section(".rodata.trick_attack_labels"), aligned(4))) =
+    "TIME LIMIT";
+
 const char gTargetTimeLabel[12] __attribute__((section(".rodata.target_time_label"), aligned(4))) =
     "TARGET TIME";
+
+char gSplitScreenTrickAttackPointLabel[6] __attribute__((section(".data.trick_attack_point_label"), aligned(4))) =
+    "POINT";
 
 extern char gCourseCoinTotalFormat[] __attribute__((section(".data")));
 extern char gCourseCoinCountMarker[] __attribute__((section(".data")));
@@ -30,7 +36,7 @@ extern char gCourseCoinCountFormat[] __attribute__((section(".data")));
 void func_80041554(void);
 void func_80041890(void);
 void func_800418F4(s16 player);
-void func_8004213C(s16 player);
+void drawSplitScreenTrickAttackHud(s16 player);
 void func_80042558(void);
 void func_80042894(s16 player);
 
@@ -363,8 +369,8 @@ void updateRaceHud(void) {
                     D_8013B190[1] = gRaceElapsedTime;
                 }
             }
-            func_8004213C(0);
-            func_8004213C(1);
+            drawSplitScreenTrickAttackHud(0);
+            drawSplitScreenTrickAttackHud(1);
             break;
         case 8:
             if (!(D_8013AFE4 & 3)) {
@@ -435,7 +441,55 @@ void drawTrickAttackHud(void) {
     func_8006C998(-136, 64, 419, 14, -1, ot, depth);
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud_modes", func_8004213C);
+void drawSplitScreenTrickAttackHud(s16 player) {
+    GsOT *hudOt = &D_800EBFF0[D_8013AF78];
+    GsOT *timeOt;
+    s32 hudY;
+    s16 timeY;
+    s16 palette;
+    u16 depth[1] = {1};
+    u8 padding[0x10]; /* Preserve the original stack frame. */
+
+    if (player == 0) {
+        timeOt = &D_800EC018[D_8013AF78];
+        hudY = 0;
+        timeY = 0;
+    } else {
+        timeOt = &D_800EC0B8[D_8013AF78];
+        hudY = 104;
+        timeY = 0;
+    }
+
+    palette = 1;
+    if (D_8013B198[player].minutes == 0 && D_8013B198[player].seconds < 10 && ((gFrameCounter >> 1) & 1)) {
+        palette = 2;
+    }
+
+    setSpriteColor(128, 128, 128);
+    if (func_8003D904(player)) {
+        if (D_8013B1A0[player]) {
+            func_8006C998(-112, timeY + 39, 398, 5, -1, timeOt, depth[0]);
+            palette = 2;
+        }
+        drawHudDecimalNumber8x16(-112, timeY + 36, 2, 1, D_8013B198[player].minutes, palette, -1, timeOt, depth[0]);
+        drawHudDecimalNumber8x16(-88, timeY + 36, 2, 1, D_8013B198[player].seconds, palette, -1, timeOt, depth[0]);
+        drawHudDecimalNumber8x16(-64, timeY + 36, 2, 1, D_8013B198[player].centiseconds >> 8, palette, -1, timeOt, depth[0]);
+        func_8006C998(-96, timeY + 36, 25, palette, -1, timeOt, depth[0]);
+        func_8006C998(-72, timeY + 36, 24, palette, -1, timeOt, depth[0]);
+        drawLimitedText8x8(-112, timeY + 28, 11, gSplitScreenTimeLimitLabel, 5, -1, timeOt, depth[0]);
+    }
+
+    drawHudDecimalNumber8x16(104, hudY - 88, 5, 0, gRacePlayers[player].trickAttackPointTotal, 1, -1, hudOt, depth[0]);
+    drawLimitedText8x8(104, hudY - 96, 5, gSplitScreenTrickAttackPointLabel, 5, -1, hudOt, depth[0]);
+    drawTransformedSpriteByIndex(135, (s16)(hudY - 24), 422, 2, -1, 0x7FFF, 0x7FFF,
+                                 0x1000, 0x1000, 0, hudOt, depth[0]);
+    drawTransformedSpriteByIndex(120, (s16)(hudY - 24), 419, 14, -1, 0x7FFF, 0x7FFF,
+                                 0x1000, 0x1000, 0, hudOt, depth[0]);
+    if (player == 1) {
+        hudY += 18;
+    }
+    func_8006C998(96, hudY - 121, 417, 12, -1, hudOt, depth[0]);
+}
 
 INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud_modes", func_80042558);
 
