@@ -223,7 +223,7 @@ void updateRegisteredPlayerModelTask(void);
 void transitionRegisteredPlayerModels(void);
 void transitionRegisteredPlayerModelsUp(void);
 void func_80083C3C(void);
-void func_80086C34(s32 x, s32 y, s32 destination, s32 source, s32 index);
+void createPaletteEntryCopyTask(s32 x, s32 y, s32 destination, s32 source, s32 index);
 void func_80087B84(void);
 
 void updateCdAwareCourseSelectionTask(void) {
@@ -2236,8 +2236,8 @@ void updatePlayerGroupedSelectionMenu(void) {
         setMusicSequenceEnabled(1);
         createPlayerGroupedSelectionTask(0, 1);
         createPlayerGroupedSelectionTask(1, 11);
-        func_80086C34(816, 240, 15, 0, 21);
-        func_80086C34(816, 241, 15, 0, 31);
+        createPaletteEntryCopyTask(816, 240, 15, 0, 21);
+        createPaletteEntryCopyTask(816, 241, 15, 0, 31);
         D_8013AE88->data18 = 3;
         break;
     case 3:
@@ -2657,7 +2657,34 @@ s16 mapGroupedValueToTableIndex(s16 value) {
     return result;
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/course_selection_tasks", func_80086C34);
+void createPaletteEntryCopyTask(s32 x, s32 y, s32 destination, s32 source, s32 index) {
+    PaletteEntryResource *resource;
+    PaletteRotationSlot *slot;
+
+    createChildTaskWithReserve(updatePaletteEntryTask);
+    D_8013AE8C->data18 = 0;
+    D_8013AE8C->data1E = index;
+    D_8013AE8C->resource14 = allocateTaskResource();
+    resource = (PaletteEntryResource *)&D_800D9504[D_8013AE8C->resource14];
+    resource->rect.w = 16;
+    resource->rect.x = x;
+    resource->rect.y = y;
+    resource->rect.h = 1;
+    StoreImage(&resource->rect, (u32 *)resource->original);
+    resource->destination = destination;
+    resource->source = source;
+
+    if (index % 10 == 0) {
+        if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+        slot = getPaletteRotationSlot(D_8013AE88->resource14, index);
+    } else {
+        if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
+        slot = getPaletteRotationSlot(D_8013AE88->resource16, index);
+    }
+    slot->state = 1;
+    slot->unk06 = 0;
+    slot->task = D_8013AE8C;
+}
 
 void updatePaletteEntryTask(void) {
     PaletteEntryResource *resource;

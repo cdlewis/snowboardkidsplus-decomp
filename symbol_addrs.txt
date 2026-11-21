@@ -3464,6 +3464,7 @@ updatePlayerVisualPairTask6780 = 0x80047380; // type:func
 gPlayerVisualPair6780Frame = 0x8013B1C4; // size:0x8 defined:true
 gPlayerDualResource5100EffectFrame = 0x8013B1CC; // size:0x8 defined:true
 
+createPaletteEntryCopyTask = 0x80086C34; // type:func
 updatePaletteEntryTask = 0x80086DEC; // type:func
 
 emitProjectedGouraudTexturedQuad = 0x80053180; // type:func
