@@ -834,7 +834,7 @@ cancel:
         if ((s16)entries[2].flags != 0) {
             break;
         }
-        func_80071E20(drawPlayerModeMessagePanelTask);
+        createSecondaryDisplayTask(drawPlayerModeMessagePanelTask);
         D_8013AE88->data18 = 99;
         break;
     case 10:

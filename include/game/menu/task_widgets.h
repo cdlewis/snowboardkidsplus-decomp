@@ -37,7 +37,7 @@ void createInputTimedSpriteTask(s32 x, s32 y, const TimedSequenceEntry *entries,
                                 s32 controllers, u32 acceptMask, u32 cancelMask, s32 depth, s32 index);
 
 s32 func_80070B64(s16 index, u8 *color);
-void func_80071E20(TaskCallback callback);
+void createSecondaryDisplayTask(TaskCallback callback);
 void markSecondaryTaskAndClearReference(void);
 
 void createPlayerPanelTask(s16 player, s16 x, s16 y, s32 depth, s32 index);

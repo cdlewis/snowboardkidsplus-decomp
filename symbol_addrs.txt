@@ -2842,6 +2842,7 @@ startSecondaryDisplayTask = 0x8007195C; // type:func
 stopSecondaryDisplayTask = 0x8007197C; // type:func
 setSecondaryDisplayTaskMode = 0x800719A8; // type:func
 drawSecondaryDisplayTask = 0x80071A80; // type:func
+createSecondaryDisplayTask = 0x80071E20; // type:func
 gSecondaryDisplayLabel = 0x8012D498; // size:0xC defined:true
 gSecondaryDisplayPulseGlyph = 0x8013B39C; // size:0x8 defined:true
 gSecondaryTaskSequenceEntries = 0x8012F10C; // size:0x30

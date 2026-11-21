@@ -841,7 +841,10 @@ void drawSecondaryDisplayTask(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80071E20);
+void createSecondaryDisplayTask(TaskCallback callback) {
+    func_80014930(&gGameTasks[4], callback);
+    D_8013B37C = D_8013AE8C;
+}
 
 void markSecondaryTaskAndClearReference(void) {
     if (D_8013B37C != NULL) {
