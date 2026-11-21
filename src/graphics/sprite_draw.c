@@ -268,7 +268,9 @@ void setSpriteColor(s32 r, s32 g, s32 b) {
     setRGB0(&gTexturedSpriteTemplate, r, g, b);
 }
 
-INCLUDE_ASM("asm/nonmatchings/graphics/sprite_draw", func_8006C970);
+void setSpriteTemplateSemiTrans(s32 enabled) {
+    SetSemiTrans(&gSpriteTemplate, enabled);
+}
 
 INCLUDE_ASM("asm/nonmatchings/graphics/sprite_draw", func_8006C998);
 
@@ -469,7 +471,7 @@ void drawSizedTextGlyph(s16 x, s16 y, s16 width, s16 height, const char *text,
     v = (((s8)*text - 32) / 32) * 8;
     if (u >= 0 && v >= 0) {
         setSpriteTextureBlend(0, palette, blendMode);
-        func_8006C970(semiTrans);
+        setSpriteTemplateSemiTrans(semiTrans);
         sprite = &gSpriteTemplate;
         sprite->x0 = x;
         sprite->y0 = y;

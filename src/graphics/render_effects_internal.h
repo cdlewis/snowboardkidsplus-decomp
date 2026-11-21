@@ -995,7 +995,6 @@ void drawTaskObject(u16 index);
 void updateMovingTaskObject(void);
 void drawDebugText(s32 x, s32 y, const char *format, ...);
 void func_8006BEEC(s32 enabled);
-void func_8006C970(s32 enabled);
 void func_80063B58(void);
 void drawRotatingQuadEffectTask(void);
 void drawFullScreenSpriteTask(void);
@@ -1206,6 +1205,7 @@ void drawInclusiveTexturedQuadByIndex(s16 x, s16 y, s32 index, GsOT *ot, u16 dep
 void initSpritePrimitiveTemplate(void);
 void setSpriteTextureBlend(s32 index, s32 palette, s32 blend);
 void setSpriteColor(s32 r, s32 g, s32 b);
+void setSpriteTemplateSemiTrans(s32 enabled);
 void drawSpriteTextureRegion(s16 x, s16 y, s32 index, GsOT *ot, u16 depth);
 void addSpritePacket(SPRT *source, GsOT *ot, u16 depth);
 void addDrawPagePacket(DR_TPAGE *source, GsOT *ot, u16 depth);
