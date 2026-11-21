@@ -50,7 +50,15 @@ void resetMemoryCardTaskState(void) {
 
 INCLUDE_ASM("asm/nonmatchings/io/memory_card_tasks", func_800198C4);
 
-INCLUDE_ASM("asm/nonmatchings/io/memory_card_tasks", func_800198EC);
+s32 startMemoryCardReadStatusTask(void *buffer) {
+    if (D_8013AF3E == 0) {
+        createChildTaskWithReserve(beginMemoryCardBufferRead);
+        D_8013AF3E = 1;
+        gMemoryCardTaskBuffer = buffer;
+        return 1;
+    }
+    return 0;
+}
 
 void beginMemoryCardBufferRead(void) {
     if (tryAcceptMemoryCard() == 1) {

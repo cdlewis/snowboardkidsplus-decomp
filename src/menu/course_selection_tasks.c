@@ -2802,8 +2802,8 @@ void updateMemoryCardSlotTask(void) {
             D_8013AE88->data18 = 0;
             break;
         }
-        if ((s16)func_800198EC(MEMORY_CARD_SLOT_BUFFER_BASE +
-                             D_8013BE30.activeIndex * MEMORY_CARD_SLOT_BUFFER_STRIDE) == 1) {
+        if ((s16)startMemoryCardReadStatusTask(MEMORY_CARD_SLOT_BUFFER_BASE +
+                                              D_8013BE30.activeIndex * MEMORY_CARD_SLOT_BUFFER_STRIDE) == 1) {
             D_8013BE30.unk_0E[D_8013BE30.activeIndex] = 0;
         }
         break;
