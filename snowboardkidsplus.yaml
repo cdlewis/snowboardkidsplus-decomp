@@ -757,7 +757,7 @@ segments:
       - {start: 0x115584, type: .data, name: graphics/course_rendering, linker_section: .data.layered_background_model_positions}
       - {start: 0x1155A4, type: .data, name: graphics/course_rendering, linker_section: .data.oscillating_quad_vertices}
       - {start: 0x1155C4, type: .data, name: graphics/course_rendering, linker_section: .data.rippling_background}
-      - [0x1155EC, data, oscillating_quad_vertices_tail]
+      - {start: 0x1155EC, type: .data, name: graphics/course_rendering, linker_section: .data.course_background_callbacks}
       - {start: 0x115614, type: .data, name: graphics/course_rendering, linker_section: .data.camera_overlay_packets}
       - {start: 0x115714, type: .data, name: graphics/course_rendering, linker_section: .data.offset_screen_copy_sprites}
       - [0x1157D4, data, offset_screen_copy_sprites_tail]

@@ -1023,7 +1023,6 @@ void updateLandedTaskObject(void);
 void setTextPalette(s32 palette);
 void initSprite(GsSPRITE *sprite);
 void adjustDebugPositionAndDisplay(VECTOR *position);
-void drawCyanBackgroundAndSetFog(void);
 void createOscillatingQuadTask(s32 value, VECTOR *position, s32 amplitude, s32 r, s32 g, s32 b);
 void createMovingLineTask(s32 index);
 void createFlickeringDotsTask(s32 playerIndex);

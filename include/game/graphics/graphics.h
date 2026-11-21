@@ -171,7 +171,7 @@ extern GsSPRITE gRotatedSpriteTemplate;
 extern TexturedSpritePacket gTexturedSpriteTemplate;
 
 void drawNoProcessMessage(void);
-void drawCyanBackgroundAndSetFog(void);
+void drawCyanBackgroundAndSetFog(s16 playerIndex);
 void createResourceLoadTask(void);
 void initializeObjectVisualTask(void);
 void initializeInteractionVisualTask(void);

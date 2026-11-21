@@ -3650,6 +3650,8 @@ gRipplingBackgroundStripData = 0x80124DC4; // size:0x28 defined:true
 drawSnowBackgroundAndSetFog = 0x800508D4; // type:func
 drawCameraCulledBackgroundAndSetFog = 0x80050B18; // type:func
 drawBackgroundModelsAndSetFog = 0x80050F84; // type:func
+drawCourseBackgroundForView = 0x800512A4; // type:func
+sCourseBackgroundCallbacks = 0x80124DEC; // size:0x28 defined:true
 
 createRegisteredSpacedChildTasks = 0x800725D0; // type:func
 

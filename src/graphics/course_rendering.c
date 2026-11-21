@@ -30,6 +30,12 @@ typedef struct AnimatedBackgroundScratchpad {
     SVECTOR rotation;
 } AnimatedBackgroundScratchpad;
 
+void drawLayeredBackgroundAndSetFog(s16 playerIndex);
+void func_8004E718(s16 playerIndex);
+void func_8004EBF8(s16 playerIndex);
+void func_8004FB70(s16 playerIndex);
+void drawRipplingBackgroundAndSetFog(s16 playerIndex);
+
 TILE gLapAnimatedBackgroundTile __attribute__((section(".data.lap_animated_background_tile"))) = {
     3 << 24, 224, 224, 232, TILE_CODE, -160, -120, 320, 240,
 };
@@ -55,6 +61,20 @@ SVECTOR gOscillatingQuadVertices[4] __attribute__((section(".data.oscillating_qu
 s16 gRipplingBackgroundStripData[20] __attribute__((section(".data.rippling_background"), aligned(4))) = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0x5000, 0, 0x5000, 0, 0x5000, 0, 0, 0,
+};
+
+static void (*sCourseBackgroundCallbacks[10])(s16 playerIndex)
+    __attribute__((section(".data.course_background_callbacks"))) = {
+    drawLayeredBackgroundAndSetFog,
+    func_8004E718,
+    func_8004EBF8,
+    drawCyanBackgroundAndSetFog,
+    func_8004FB70,
+    drawRipplingBackgroundAndSetFog,
+    drawLapAnimatedBackgroundAndSetFog,
+    drawSnowBackgroundAndSetFog,
+    drawCameraCulledBackgroundAndSetFog,
+    drawBackgroundModelsAndSetFog,
 };
 
 TexturedSpritePacket gCameraOverlaySpritesBuffer0[2] __attribute__((section(".data.camera_overlay_packets"))) = {
@@ -133,8 +153,6 @@ extern Position3D *D_8013B280 __attribute__((section(".data")));
 extern u16 D_8013B654;
 extern s32 D_8013B664;
 extern TmdObject *D_8013BBF8[];
-
-void func_800512A4(s16 view);
 
 void getCourseSteeringTarget(s16 region, s32 x, s32 z, s32 *targetX, s32 *targetZ,
                              u16 tableIndex, u16 playerIndex) {
@@ -381,7 +399,7 @@ INCLUDE_ASM("asm/nonmatchings/graphics/course_rendering", func_8004E718);
 
 INCLUDE_ASM("asm/nonmatchings/graphics/course_rendering", func_8004EBF8);
 
-void drawCyanBackgroundAndSetFog(void) {
+void drawCyanBackgroundAndSetFog(s16 playerIndex) {
     addFlatRectangle(&D_8013AF6C[4095], -160, -120, 320, 240, 0, 235, 230);
     SetFarColor(80, 128, 104);
     SetFogNearFar(5500, 10000, 400);
@@ -802,7 +820,9 @@ void drawBackgroundModelsAndSetFog(s16 playerIndex) {
     SetFogNearFar(8000, 10000, 400);
 }
 
-INCLUDE_ASM("asm/nonmatchings/graphics/course_rendering", func_800512A4);
+void drawCourseBackgroundForView(s16 view) {
+    sCourseBackgroundCallbacks[D_8013AFCE](view);
+}
 
 s32 isPositionInCameraRange(s32 x, s32 z, s16 playerIndex) {
     s32 centerX, centerZ;
@@ -934,7 +954,7 @@ void drawCourseModelsForView(s16 view) {
     if (D_8013AFB8 != 0) {
         return;
     }
-    func_800512A4(view);
+    drawCourseBackgroundForView(view);
     if (D_8013AFCE == 6) {
         queueScanlineCopyPackets();
     }
