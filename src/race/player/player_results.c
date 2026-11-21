@@ -1,4 +1,3 @@
-#define RACE_TIME_ABSOLUTE_ADDRESSING
 #include "../race_presentation_internal.h"
 #include "game/race/player/player_results.h"
 #include "../race_internal.h"
@@ -21,6 +20,9 @@
     ((time).centiseconds + (time).seconds * 25600 + (time).minutes * 1536000)
 #define RECORD_ICON(player) \
     ((player).characterId + (player).unk015[1] * 16)
+
+extern RaceTime gRaceElapsedTime __attribute__((section(".data")));
+extern RaceTime D_8013B188 __attribute__((section(".data")));
 
 s16 compareRaceTimes(const RaceTime *a, const RaceTime *b) {
     s32 first = (a->centiseconds & 0xFF00) + a->seconds * 25600 + a->minutes * 1536000;
