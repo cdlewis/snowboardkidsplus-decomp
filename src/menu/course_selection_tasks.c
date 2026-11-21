@@ -119,6 +119,12 @@ TexturedQuadListEntry taskIndexPanelQuadsPalette1[10] __attribute__((section(".d
     {0, 255, 0, 0, 0, 0},
 };
 
+const u16 gSaveRecordPushAnyButtonText[16]
+    __attribute__((section(".data.save_record_push_any_button_text"), aligned(4))) = {
+    0x001A, 0x001F, 0x001D, 0x0012, 0x8020, 0x000B, 0x0018, 0x0023,
+    0x8020, 0x000C, 0x001F, 0x001E, 0x001E, 0x0019, 0x0018, 0,
+};
+
 s16 gMenuPlayerModelYaw[2] __attribute__((section(".sdata"))) = {0};
 
 IndexedHalfwordRecord gRecordFlagMenuSpriteRecords[]
@@ -3120,4 +3126,21 @@ void drawSaveRecordProgressPanel(void) {
 u16 gSaveRecordProgressCurrencyLabel[2]
     __attribute__((section(".data.save_record_progress_currency_label"), aligned(4))) = {0x11, 0};
 
-INCLUDE_ASM("asm/nonmatchings/menu/course_selection_tasks", func_800895DC);
+void drawSaveRecordPushAnyButtonPrompt(void) {
+    Movement2D *position;
+    s32 x, y;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    x = position->x / 4096;
+    y = position->y / 4096;
+    func_8006EC84(x + 134, y - 6, 20, gSaveRecordPushAnyButtonText, 0, -1,
+                  &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    setSpriteColor(0, 0, 0);
+    func_8006EC84(x + 135, y - 5, 20, gSaveRecordPushAnyButtonText, 0, -1,
+                  &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    func_8006EC84(x + 136, y - 5, 20, gSaveRecordPushAnyButtonText, 0, -1,
+                  &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+}
