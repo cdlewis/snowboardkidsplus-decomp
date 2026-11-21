@@ -134,7 +134,7 @@ void updateMode11SelectionMenuTask(void) {
         D_8013AE88->data18 = 5;
         break;
     case 5:
-        if (func_800707F0(0) == 0) {
+        if (isTaskStateTransitionBelowMaximum(0) == 0) {
             D_8013AE88->data18 = 6;
         }
         break;

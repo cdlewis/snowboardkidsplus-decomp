@@ -1986,6 +1986,7 @@ resetControllerEffects = 0x8006B9FC; // type:func
 gControllerEffectStates = 0x8012D438; // size:0x28 defined:true
 
 hasTaskStateValue6 = 0x800707B8; // type:func
+isTaskStateTransitionBelowMaximum = 0x800707F0; // type:func
 
 playMovie = 0x80019D3C; // type:func
 

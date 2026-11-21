@@ -211,7 +211,7 @@ void advanceModeAfterTextSequenceFadeTask(void) {
         D_8013AE88->data18 = 2;
         break;
     case 2:
-        if (func_800707F0(0) == 0) {
+        if (isTaskStateTransitionBelowMaximum(0) == 0) {
             D_8013B55E = 2;
             D_8013AFD8++;
             func_800149A8();

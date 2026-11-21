@@ -123,7 +123,7 @@ void updateControllerPlaybackUntilFade(void) {
 void finishControllerPlaybackTransition(void) {
     switch (D_8013AE88->data18) {
     case 0:
-        if (func_800707F0(0)) {
+        if (isTaskStateTransitionBelowMaximum(0)) {
             playbackControllerInput(0);
             playbackControllerInput(1);
         } else {

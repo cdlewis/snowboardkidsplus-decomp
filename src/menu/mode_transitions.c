@@ -230,7 +230,7 @@ void waitMode2TransitionTask(void) {
         D_8013AE88->data18 = 1;
         break;
     case 1:
-        if (func_800707F0(0) == 0) {
+        if (isTaskStateTransitionBelowMaximum(0) == 0) {
             D_8013AE88->data18 = 0;
             setCurrentTaskCallback(updateTitleScreenMenuTask);
         }
@@ -330,7 +330,7 @@ void updateTitleScreenMenuTask(void) {
         }
         break;
     case 5:
-        if (func_800707F0(0)) {
+        if (isTaskStateTransitionBelowMaximum(0)) {
             break;
         }
         switch (input->selection) {
@@ -349,7 +349,7 @@ void updateTitleScreenMenuTask(void) {
         D_8013AE88->data18 = 8;
         break;
     case 7:
-        if (!func_800707F0(0)) {
+        if (!isTaskStateTransitionBelowMaximum(0)) {
             D_8013AE88->data18 = 8;
         }
         break;
@@ -843,7 +843,7 @@ cancel:
         D_8013AE88->data18 = 11;
         break;
     case 11:
-        if (func_800707F0(0)) {
+        if (isTaskStateTransitionBelowMaximum(0)) {
             break;
         }
         configureTaskStateTransition(1, 0, 30);

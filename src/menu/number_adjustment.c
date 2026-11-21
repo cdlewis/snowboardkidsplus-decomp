@@ -171,7 +171,7 @@ void finishNumberAdjustmentTask(void) {
         }
         break;
     case 1:
-        if (func_800707F0(0) != 0) break;
+        if (isTaskStateTransitionBelowMaximum(0) != 0) break;
     case 2:
         D_8013AE98->data1C--;
         func_800149A8();

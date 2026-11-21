@@ -532,7 +532,7 @@ void updateMemoryCardSaveMenuTask(void) {
         D_8013AE88->data18 = 41;
         break;
     case 41:
-        if (func_800707F0(0) == 0)
+        if (isTaskStateTransitionBelowMaximum(0) == 0)
             D_8013AE88->data18 = 42;
         break;
     case 42:

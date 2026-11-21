@@ -1085,7 +1085,7 @@ finishExit:
         }
         break;
     case 7:
-        if (selection->choiceResult <= 0 || func_800707F0(0) == 0) {
+        if (selection->choiceResult <= 0 || isTaskStateTransitionBelowMaximum(0) == 0) {
             D_8013AE88->data18 = 8;
         }
         break;
@@ -2278,7 +2278,7 @@ void updatePlayerGroupedSelectionMenu(void) {
         }
         break;
     case 9:
-        if (D_8013AE98->data18 != 23 || func_800707F0(0) == 0) {
+        if (D_8013AE98->data18 != 23 || isTaskStateTransitionBelowMaximum(0) == 0) {
             D_8013AE88->data18 = 99;
         }
         break;
@@ -2927,7 +2927,7 @@ void updateSaveRecordTask(void) {
             D_8013AE98->data18 = 5;
             queueMenuResourceReads(5);
         } else {
-            if (func_800707F0(0) != 0) {
+            if (isTaskStateTransitionBelowMaximum(0) != 0) {
                 break;
             }
             setMusicSequenceEnabled(0);

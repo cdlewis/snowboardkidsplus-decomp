@@ -407,7 +407,9 @@ s32 hasTaskStateValue6(s32 id) {
     return D_8012D4A4[func_80070794(id)].unk06 != 0;
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_800707F0);
+s32 isTaskStateTransitionBelowMaximum(s32 id) {
+    return D_8012D4A4[func_80070794(id)].unk06 < 0xFFFFu;
+}
 
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80070830);
 

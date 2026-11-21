@@ -297,7 +297,7 @@ void updateNumberSelectionTask(void) {
         D_8013AE88->data18 = 7;
         break;
     case 7:
-        if (func_800707F0(0) == 0) {
+        if (isTaskStateTransitionBelowMaximum(0) == 0) {
             D_8013AE88->data18 = 8;
         }
         break;
@@ -460,7 +460,7 @@ void finishSelectionMenuTask(void) {
         }
         break;
     case 1:
-        if (func_800707F0(0) == 0) {
+        if (isTaskStateTransitionBelowMaximum(0) == 0) {
             D_8013AE88->data18 = 2;
         }
         break;

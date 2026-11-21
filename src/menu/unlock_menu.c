@@ -228,7 +228,7 @@ void finishUnlockMenuTask(void) {
         }
         break;
     case 3:
-        if (func_800707F0(0) == 0) { func_800149A8(); }
+        if (isTaskStateTransitionBelowMaximum(0) == 0) { func_800149A8(); }
         break;
     }
 }
