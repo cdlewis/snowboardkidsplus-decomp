@@ -2375,7 +2375,11 @@ void capturePaletteForColorCycle(void) {
     setCurrentTaskCallback(updatePaletteWhitePulse);
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_80069E08);
+void startPaletteWhitePulseTask(s32 duration) {
+    func_80014930(&gGameTasks[4], capturePaletteForColorCycle);
+    D_8013AE8C->data18 = 0;
+    D_8013AE8C->data1A = duration;
+}
 
 void updateQuadTransitionSequenceTask(void) {
     s32 frame = D_8013B338;
@@ -2384,7 +2388,7 @@ void updateQuadTransitionSequenceTask(void) {
     if (frame == 30) startMiddleQuadShrinkTask();
     if (frame == 35) createRightQuadShrinkTask();
     if (frame == 40) startSlidingQuadTask(D_8013AE88->data1A);
-    if (frame == 50) func_80069E08(10);
+    if (frame == 50) startPaletteWhitePulseTask(10);
     D_8013B338++;
     if (D_8013B338 == 100) deleteCurrentTaskSubtree();
 }
