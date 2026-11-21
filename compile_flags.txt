@@ -1,0 +1,10 @@
+--target=mipsel-none-elf
+-march=mips1
+-mabi=32
+-std=gnu89
+-nostdinc
+-fno-builtin
+-DPSX
+-DINCLUDE_ASM_USE_MACRO_INC=1
+-Iinclude
+-Ibuild/include
