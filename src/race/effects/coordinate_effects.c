@@ -229,7 +229,7 @@ void resetTaskVisualState(TaskVisualResource *resource) {
 void createNineIndexedChildTasks(u16 value, u16 mode) {
     u16 i;
     for (i = 0; i < 9; i++) {
-        func_800148B4(initializeFallingRotatingObjectTask);
+        tryCreateChildTaskWith20SlotsReserved(initializeFallingRotatingObjectTask);
         D_8013AE8C->data18 = D_8013AE88->data18;
         D_8013AE8C->data1A = i;
         D_8013AE8C->data1C = value;

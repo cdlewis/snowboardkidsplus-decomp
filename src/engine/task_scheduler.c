@@ -97,7 +97,16 @@ s32 createChildTaskWithReserve(TaskCallback callback) {
     return 1;
 }
 
-INCLUDE_ASM("asm/nonmatchings/engine/task_scheduler", func_800148B4);
+s32 tryCreateChildTaskWith20SlotsReserved(TaskCallback callback) {
+    if (D_8013AEB4 <= 20) {
+        /* Expose the free-list tail as the fallback task. */
+        D_8013AE8C = D_8013AEA0;
+        return 0;
+    }
+
+    func_800147B8(callback);
+    return 1;
+}
 
 INCLUDE_ASM("asm/nonmatchings/engine/task_scheduler", func_800148F4);
 

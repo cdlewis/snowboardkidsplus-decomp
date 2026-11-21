@@ -177,7 +177,7 @@ s32 startPaletteTransition(s16 x, s16 y, u32 *pixels, u16 duration) {
     GameTask *task;
     PaletteTransitionResource *resource;
     if (index != 32) {
-        if ((s16)func_800148B4(initializePaletteTransition) != 0) {
+        if ((s16)tryCreateChildTaskWith20SlotsReserved(initializePaletteTransition) != 0) {
             D_8013AE8C->resource14 = allocateTaskResource();
             task = D_8013AE8C;
             resource = (PaletteTransitionResource *)&D_800D9504[task->resource14];

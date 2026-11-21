@@ -104,7 +104,7 @@ void func_8001E1B8(void);
 s32 createChildTask(TaskCallback callback);
 /* Leaves ten free task slots in reserve and uses the same fallback as createChildTask. */
 s32 createChildTaskWithReserve(TaskCallback callback);
-s32 func_800148B4(TaskCallback callback);
+s32 tryCreateChildTaskWith20SlotsReserved(TaskCallback callback);
 s16 func_80014930(GameTask *parent, TaskCallback callback);
 s16 func_8001496C(GameTask *parent, TaskCallback callback);
 void deleteCurrentTaskSubtree(void);

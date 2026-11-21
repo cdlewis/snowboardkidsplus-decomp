@@ -1323,7 +1323,7 @@ void updateBobbingTrailEmitterTask(void) {
             if (--resource->countdown == 0) {
                 resource->countdown = 15;
                 playPositionalSoundEffect(resource->position.x, resource->position.y, resource->position.z, 1, 0xA00, 0x18);
-                if ((s16)func_800148B4(initializeVisualTrailTask) == 1) {
+                if ((s16)tryCreateChildTaskWith20SlotsReserved(initializeVisualTrailTask) == 1) {
                     D_8013AE8C->data18 = 0xFF;
                     D_8013AE8C->resource14 = allocateTaskResource();
                     trail = (EmitterTrailResource *)&D_800D9504[D_8013AE8C->resource14];
@@ -1375,7 +1375,7 @@ void updateProximityEmitterTask(void) {
         if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
             if (--resource->countdown == 0) {
                 resource->countdown = 0x20;
-                func_800148B4(initializeProximityParticleTask);
+                tryCreateChildTaskWith20SlotsReserved(initializeProximityParticleTask);
             }
         }
     }
