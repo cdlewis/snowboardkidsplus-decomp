@@ -2195,4 +2195,17 @@ s32 restoreSelectedPlayerState(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/course/course_objects", func_8005FAE0);
+s32 hasCapturedSelectedPlayerState(void) {
+    const SelectedStateRecord *record = D_8012C6F4[D_8013AFCE];
+
+    for (;; record++) {
+        if (record->state == -2) {
+            goto noState;
+        }
+        if (record->state != -1) {
+            return 1;
+        }
+    }
+noState:
+    return 0;
+}
