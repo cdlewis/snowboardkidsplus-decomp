@@ -120,7 +120,14 @@ void pollMemoryCardStatusTask(void) {
     func_800149A8();
 }
 
-INCLUDE_ASM("asm/nonmatchings/io/memory_card_tasks", func_80019C40);
+s32 startMemoryCardWriteTask(void) {
+    if (D_8013AF3E == 5) {
+        createChildTaskWithReserve(prepareMemoryCardWriteTask);
+        D_8013AF3E = 4;
+        return 1;
+    }
+    return 0;
+}
 
 void prepareMemoryCardWriteTask(void) {
     prepareMemoryCardSave(0, D_8013AF4C, D_8013AF50);

@@ -41,6 +41,6 @@ void func_800198C4(s32 channel);
 s32 func_800198EC(void *buffer);
 s32 startMemoryCardReadTask(void);
 s32 func_80019AF4(void *buffer, s32 size);
-s32 func_80019C40(void);
+s32 startMemoryCardWriteTask(void);
 
 typedef char MemoryCardSaveHeaderSizeCheck[(sizeof(MemoryCardSaveHeader) == 0xA80) ? 1 : -1];

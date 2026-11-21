@@ -363,7 +363,7 @@ void updateMemoryCardSaveMenuTask(void) {
     case 18:
         D_8013AF3E = 5;
         D_8013BE30.unk_12[menu->slot] = 4;
-        func_80019C40();
+        startMemoryCardWriteTask();
         D_8013AE88->data18 = 19;
         break;
     case 19:
