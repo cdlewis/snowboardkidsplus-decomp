@@ -6,7 +6,6 @@ typedef void (*TaskCallback)(void);
 
 extern TaskCallback D_8013AFC8;
 u16 func_80014B14(void);
-void func_80014B58(void);
 void dispatchGameOptionTransitionTask(void);
 void beginMode2SequenceAndFadeMusic(void);
 
@@ -114,6 +113,7 @@ void setCurrentTaskCallback(TaskCallback callback);
 void resetTaskCallbackOnFlag4(void);
 void restoreSavedStateAndHandleFlag4(void);
 void setSecondaryDisplayTaskMode(s16 mode);
+void deleteCurrentTaskWhenCdCommandQueueIdle(void);
 void deleteCurrentTask(void);
 u32 allocateTaskResource(void);
 void releaseTaskResource(u16 resource);

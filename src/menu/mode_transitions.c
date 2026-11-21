@@ -188,7 +188,7 @@ void dispatchGameOptionTransitionTask(void) {
         queueCdSectorCommand(0, DAT_STARTUP_TEXTURES_SECTOR, DAT_STARTUP_TEXTURES_SECTOR_COUNT, DAT_STARTUP_TEXTURES, 0);
         D_8013B109 = 1;
         D_8013B0F0 = 0;
-        D_8013AE88->callback = func_80014B58;
+        D_8013AE88->callback = deleteCurrentTaskWhenCdCommandQueueIdle;
         break;
     case 3:
         D_8013B109 = 1;

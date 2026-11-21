@@ -166,7 +166,11 @@ INCLUDE_ASM("asm/nonmatchings/engine/task_scheduler", func_80014B14);
 
 void setCurrentTaskCallback(TaskCallback callback) { D_8013AE88->callback = callback; }
 
-INCLUDE_ASM("asm/nonmatchings/engine/task_scheduler", func_80014B58);
+void deleteCurrentTaskWhenCdCommandQueueIdle(void) {
+    if (isCdCommandQueueIdle() == 1) {
+        deleteCurrentTaskSubtree();
+    }
+}
 
 void deleteCurrentTask(void) { deleteCurrentTaskSubtree(); }
 
