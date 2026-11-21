@@ -996,9 +996,9 @@ segments:
       - {start: 0x12BA14, type: .data, name: unclassified/graphics_800497B8, linker_section: .data.debug_position_formats}
       - [0x12BA2C, data, debug_position_formats_tail]
       - {start: 0x12BA3C, type: .sdata, name: graphics/course_rendering, linker_section: .sdata.lap_animated_background_frame, linker_section_order: .data}
-      - {start: 0x12BA40, type: .data, name: graphics/course_rendering, linker_section: .data.read_pixel_rect}
+      - {start: 0x12BA40, type: .data, name: graphics/vram_transfer_rects, linker_section: .data.read_pixel_rect}
       - [0x12BA48, data, 12BA48]
-      - {start: 0x12BA50, type: .data, name: graphics/course_rendering, linker_section: .data.scanline_copy_rects}
+      - {start: 0x12BA50, type: .data, name: graphics/vram_transfer_rects, linker_section: .data.scanline_copy_rects}
       - [0x12BA60, data, scanline_copy_rects_tail]
       - {start: 0x12BA68, type: .data, name: graphics/course_rendering, linker_section: .data.course_model_texture_window}
       - [0x12BA70, data]
@@ -1086,8 +1086,8 @@ segments:
       - {start: 0x12BEA8, type: .sdata, name: race/course/course_objects, linker_section: .sdata.alternate_object_sort_saved_stack, linker_section_order: .data}
       - [0x12BEAC, data]
       - {start: 0x12BEB4, type: .sdata, name: menu/course_selection_tasks, linker_section_order: .data}
-      - {start: 0x12BEB8, type: .sdata, name: menu/course_selection_tasks, linker_section: .sdata.player_grouped_selection_states, linker_section_order: .data}
-      - {start: 0x12BEBA, type: .data, name: menu/course_selection_tasks, linker_section: .data.player_grouped_selection_states_padding}
+      - {start: 0x12BEB8, type: .sdata, name: menu/grouped_selection_state, linker_section: .sdata.player_grouped_selection_states, linker_section_order: .data}
+      - {start: 0x12BEBA, type: .data, name: menu/grouped_selection_state, linker_section: .data.player_grouped_selection_states_padding}
       - {start: 0x12BEC0, type: .sdata, name: scene/scene_event_tasks, linker_section: .sdata.scene_image_display_task, linker_section_order: .data}
       - {start: 0x12BEC4, type: .sdata, name: menu/selection_tasks, linker_section: .sdata.scene_sound_state, linker_section_order: .data}
 

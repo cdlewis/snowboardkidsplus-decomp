@@ -106,12 +106,6 @@ TexturedSpritePacket gScreenCopyMinusBuffer0[2] __attribute__((section(".data.of
      95, -120, 0, 0, 0, 64, 240}
 };
 
-RECT gReadPixelRect __attribute__((section(".data.read_pixel_rect"))) = {0, 0, 1, 1};
-
-RECT gScanlineCopyRect __attribute__((section(".data.scanline_copy_rects"))) = {640, 256, 64, 1};
-
-RECT gScanlineSeedRect __attribute__((section(".data.scanline_copy_rects"))) = {704, 144, 64, 1};
-
 const VECTOR gCourseModelScale __attribute__((section(".rodata.course_model_scale"))) = {
     5 * 4096, 5 * 4096, 5 * 4096, 0,
 };
@@ -194,9 +188,9 @@ void adjustDebugPositionAndDisplay(VECTOR *position) {
     if (D_8013AEEC[1] & 0x2000) position->vz -= 32;
     if (D_8013AEEC[1] & 8) position->vy += 32;
     if (D_8013AEEC[1] & 2) position->vy -= 32;
-    drawStretchedDebugText(0, 10, debugPositionXFormatAbsolute, position->vx);
-    drawStretchedDebugText(0, 11, debugPositionYFormatAbsolute, position->vy);
-    drawStretchedDebugText(0, 12, debugPositionZFormatAbsolute, position->vz);
+    drawStretchedDebugText(0, 10, gDebugPositionXFormat, position->vx);
+    drawStretchedDebugText(0, 11, gDebugPositionYFormat, position->vy);
+    drawStretchedDebugText(0, 12, gDebugPositionZFormat, position->vz);
 }
 
 void drawBackgroundLensFlare(s16 playerIndex) {
@@ -824,8 +818,8 @@ s32 isPointWithinCameraForwardRange(s32 x, s32 z, s16 player) {
 
 void readVramPixelColor(s32 x, s32 y, TextureColor *out) {
     u16 pixel;
-    readPixelRectGp.x = x;
-    readPixelRectGp.y = y;
+    gReadPixelRect.x = x;
+    gReadPixelRect.y = y;
     StoreImage(&gReadPixelRect, (u32 *)&pixel);
     out->r = pixel << 3;
     out->g = (pixel >> 2) & 0xF8;
@@ -868,7 +862,7 @@ void queueScanlineCopyPackets(void) {
         move += 2;
     }
     GsOUT_PACKET_P = (u32)move;
-    if (selectedCameraStateGp) {
+    if (selectedCameraOverlayModeGp) {
         stp = (DR_STP *)GsOUT_PACKET_P;
         for (i = 0; i < 15; i++) {
             depth = (i * 200) / 15 + 150;
@@ -881,17 +875,17 @@ void queueScanlineCopyPackets(void) {
     move = (DR_MOVE *)GsOUT_PACKET_P;
     for (i = 0; i < 15; i++) {
         y = 256;
-        scanlineCopyRectGp.y = i + 257;
+        gScanlineCopyRect.y = i + 257;
         depth = (i * 200) / 15 + 150;
         for (; y < 512; y += 16) {
             SetDrawMove(move, &gScanlineCopyRect, 640, y);
             addPrim(&D_8013AF6C[depth], move);
-            scanlineCopyRectGp.y += 16;
+            gScanlineCopyRect.y += 16;
             move++;
         }
     }
     GsOUT_PACKET_P = (u32)move;
-    if (selectedCameraStateGp) {
+    if (selectedCameraOverlayModeGp) {
         stp = (DR_STP *)GsOUT_PACKET_P;
         for (i = 0; i < 15; i++) {
             depth = (i * 200) / 15 + 150;
@@ -983,7 +977,7 @@ void drawCourseModelsForView(s16 view) {
 queue_draw_mode:
     SetDrawMode(&gCourseModelDrawMode, 0, 1, 0, &gCourseModelTextureWindow);
     addPrim(&D_8013AF6C[4095], &gCourseModelDrawMode);
-    if (selectedCameraStateGp) {
+    if (selectedCameraOverlayModeGp) {
         queueSelectedCameraOverlayPackets();
     }
 }

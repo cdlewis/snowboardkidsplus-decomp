@@ -839,25 +839,14 @@ extern POLY_FT4 gMiddleShrinkQuadPacket
 extern POLY_FT4 gSlidingQuadPacket
     __attribute__((section(".data.sliding_quad_packet")));
 
-extern char gDebugPositionXFormat[8] __attribute__((section(".data.debug_position_formats")));
-extern char gDebugPositionYFormat[8] __attribute__((section(".data.debug_position_formats")));
-extern char gDebugPositionZFormat[8] __attribute__((section(".data.debug_position_formats")));
-
-/* Incomplete declarations retain the original absolute address loads. */
-extern char debugPositionXFormatAbsolute[];
-extern char debugPositionYFormatAbsolute[];
-extern char debugPositionZFormatAbsolute[];
+extern char gDebugPositionXFormat[];
+extern char gDebugPositionYFormat[];
+extern char gDebugPositionZFormat[];
 
 extern GameTask *D_8013B304 __attribute__((section(".data")));
-extern RECT gReadPixelRect __attribute__((section(".data.read_pixel_rect")));
-extern RECT gScanlineCopyRect __attribute__((section(".data.scanline_copy_rects")));
+extern RECT gReadPixelRect;
+extern RECT gScanlineCopyRect;
 extern RECT gScanlineSeedRect __attribute__((section(".data.scanline_copy_rects")));
-
-/* Coordinate updates use GP-relative accesses. */
-extern RECT scanlineCopyRectGp;
-
-/* The original stores coordinates through GP but passes an absolute address. */
-extern RECT readPixelRectGp;
 
 /* Shared collision regions remain in player_camera_state_tail. */
 extern PlayerCollisionRegion D_80129A18[2];

@@ -129,7 +129,7 @@ void advanceTaskAtModeCoursePosition(void) {
 }
 
 void completeModeSelectionTransitionWhenReady(void) {
-    if (modeTransitionReadyGp != 0) {
+    if (taskTransitionFlagGp != 0) {
         D_8013AFAA = (D_8013AFAA | 0x1090) & ~0x2000;
         resetPendingCdRequests();
         resetPaletteRecords();
@@ -138,7 +138,7 @@ void completeModeSelectionTransitionWhenReady(void) {
         D_8013AFAA |= 0x48;
         switch (D_8013AFD8) {
         case 10:
-            modeTransitionReadyGp = 0;
+            taskTransitionFlagGp = 0;
             func_80014874(initializeModeSectorReadResourcesTask);
             D_8013AE88->unk10 |= 1;
             break;

@@ -69,7 +69,6 @@ extern s16 D_8013B10E __attribute__((section(".data")));
 extern s16 D_8013B10C __attribute__((section(".data")));
 extern u8 D_8013B55E __attribute__((section(".data")));
 /* This transition uses $gp; the playback transition below uses absolute access. */
-extern u8 modeTransitionReadyGp;
 
 extern s16 D_8013B560;
 extern s16 selectionMenuRecordAbsolute __attribute__((section(".data")));

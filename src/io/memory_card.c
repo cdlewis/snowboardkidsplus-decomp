@@ -97,8 +97,8 @@ void selectMemoryCardLoadFile(u8 slot, void *destination) {
     case 1:
     case 2:
     case 3:
-        gMemoryCardFileNames[slot][18] = (selectedCourseIndexAbsolute / 10) | 0x30;
-        gMemoryCardFileNames[slot][19] = (selectedCourseIndexAbsolute % 10) | 0x30;
+        gMemoryCardFileNames[slot][18] = (D_8013AFCE / 10) | 0x30;
+        gMemoryCardFileNames[slot][19] = (D_8013AFCE % 10) | 0x30;
         break;
     case 4:
         gMemoryCardFileNames[4][18] = (D_8013AF3A / 10) | 0x30;

@@ -184,7 +184,6 @@ extern u8 D_8013B1AB __attribute__((section(".data")));
 extern u16 D_8013AFE8;
 extern u8 D_8013AFCC;
 extern u8 D_8013AFD4;
-extern u8 raceResultsModeGp;
 
 
 void func_800131B4(void);
@@ -570,7 +569,7 @@ void initializeRacePresentationTask(void) {
         func_80051A68();
     }
     initializeRacePlayerEffects();
-    if (gameOptionPlayerModeGp == 2) {
+    if (D_8013AFCD == 2) {
         func_800148F4(&gGameTasks[3], initCurrentPlayerCameraTask);
         D_8013AE8C->data18 = 1;
     }
@@ -596,7 +595,7 @@ void initializeRacePresentationTask(void) {
     D_800EC158[0].w = D_8013AF7A;
     D_800EC158[0].h = D_8013AF7C;
 
-    if (gameOptionPlayerModeGp == 2) {
+    if (D_8013AFCD == 2) {
         D_8013AF7E = 64;
         D_8013AF80 = D_8013AF7C / 4;
         D_800EC158[1].x = 0;
@@ -610,7 +609,7 @@ void initializeRacePresentationTask(void) {
     }
 
     initializeRacePaletteCycles();
-    for (i = 0; i < gameOptionPlayerModeGp; i++) {
+    for (i = 0; i < D_8013AFCD; i++) {
         copyPlayerPaletteRow(i);
     }
     resetTaskControlState();
@@ -727,7 +726,7 @@ void updateActiveRaceTask(void) {
                     D_8013AE8C->data18 = 1;
                 }
             }
-            raceResultsModeGp = 1;
+            D_8013AFE1 = 1;
         } else if (D_8013AFCD == 2) {
             if (!(gRacePlayers[0].unk100[0] | gRacePlayers[1].unk100[0])) {
                 return;
@@ -815,8 +814,8 @@ void finishRaceTransitionAfterCountdown(void) {
     if (--D_8013AE88->data18 == 0) {
         D_8013B1A8 = 0;
         D_8013AFE4 |= 8;
-        if (gameOptionPlayerModeGp == 1) updateAttackResultsAndRecords();
-        for (i = 0; i < gameOptionPlayerModeGp; i++) {
+        if (D_8013AFCD == 1) updateAttackResultsAndRecords();
+        for (i = 0; i < D_8013AFCD; i++) {
             if (gRacePlayers[i].unk935 == 0) {
                 createFallingParticleTask();
                 D_8013AE8C->data18 = 0;
@@ -851,7 +850,7 @@ void initializeRaceRestartTask(void) {
     D_8013AF08[0] = 0;
     D_8013AFE4 = 1;
     stopPlayerSound(0);
-    if (gameOptionPlayerModeGp == 2) {
+    if (D_8013AFCD == 2) {
         stopPlayerSound(1);
     }
     for (i = 0; i < activeRacePlayerCountGp; i++) {
@@ -1140,7 +1139,7 @@ void queuePlayerResourceReadsAndUploadTextures(void) {
         queueCdSectorCommand(1, gGridResourceSecondSectorRanges[gRacePlayers[i].characterId][gRacePlayers[i].unk015[0]].sector,
             gGridResourceSecondSectorRanges[gRacePlayers[i].characterId][gRacePlayers[i].unk015[0]].sectorCount,
             DAT_SCRATCH, (s32)&D_801204D4[i]);
-        if (i < gameOptionPlayerModeGp && !D_8013AFD7 && !D_8013AFD8 && !D_8013AFD9) {
+        if (i < D_8013AFCD && !D_8013AFD7 && !D_8013AFD8 && !D_8013AFD9) {
             offset = &(DAT_STARTUP_TEXTURES)->offsets[gPlayerResourceTextureSelections.entries[i][gRacePlayers[i].unk015[1]]];
         } else {
             offset = &(DAT_STARTUP_TEXTURES)->offsets[gRacePlayers[i].unk015[2]];
@@ -1165,14 +1164,14 @@ void prepareRacePlayersAndQueueResources(void) {
     D_8013AFD9 = 0;
     D_8013AFCC = 0;
     for (i = 0; i < 4; i++) {
-        if (i < gameOptionPlayerModeGp) {
+        if (i < D_8013AFCD) {
             gRacePlayers[i].unk008 = 0;
         } else {
             gRacePlayers[i].unk008 = 1;
         }
         gRacePlayers[i].unk02C[0] = D_80120484[D_8013AFCE];
         gRacePlayers[i].unk02C[1] = D_80120484[D_8013AFCE];
-        if (gameOptionPlayerModeGp != 1) {
+        if (D_8013AFCD != 1) {
             gRacePlayers[i].unk02C[0] = 0;
             gRacePlayers[i].unk02C[1] = 0;
         }
@@ -1180,13 +1179,13 @@ void prepareRacePlayersAndQueueResources(void) {
         gRacePlayers[i].characterId = gRacePlayers[i].unk009;
         gRacePlayers[i].unk015[0] = gRacePlayers[i].unk00A[0];
         gRacePlayers[i].unk015[1] = gRacePlayers[i].unk00A[1];
-        if (i < gameOptionPlayerModeGp) {
+        if (i < D_8013AFCD) {
             gRacePlayers[i].unk015[2] = gPlayerResourceTextureSelections.entries[i][gRacePlayers[i].unk015[1]];
         }
     }
 
     if (D_8013AFCE == 8) {
-        if (gameOptionPlayerModeGp == 1) {
+        if (D_8013AFCD == 1) {
             if (gRacePlayers[0].characterId >= 8) {
                 if (gRacePlayers[0].characterId == 8) {
                     gCourseOpponentCharacters[8][0] = 9;
@@ -1233,13 +1232,13 @@ selectRandom:
         D_8013AFDE = 100;
     } else {
         for (i = 0; i < 4; i++) {
-            if (i < gameOptionPlayerModeGp) {
+            if (i < D_8013AFCD) {
                 gRacePlayers[i].isActive = 1;
             } else {
                 gRacePlayers[i].isActive = 0;
             }
         }
-        activeRacePlayerCountGp = gameOptionPlayerModeGp;
+        activeRacePlayerCountGp = D_8013AFCD;
         D_8013AFD0 = 1;
         D_8013AFDE = 100;
     }
@@ -1250,11 +1249,11 @@ selectRandom:
     }
 
     opponentIndex = 0;
-    for (i = gameOptionPlayerModeGp; i < activeRacePlayerCountGp; i++) {
+    for (i = D_8013AFCD; i < activeRacePlayerCountGp; i++) {
         do {
             gRacePlayers[i].characterId = gCourseOpponentCharacters[D_8013AFCE][opponentIndex++];
             available = 1;
-            for (j = 0; j < gameOptionPlayerModeGp; j++) {
+            for (j = 0; j < D_8013AFCD; j++) {
                 if (gRacePlayers[i].characterId == gRacePlayers[j].characterId) {
                     available = 0;
                 }

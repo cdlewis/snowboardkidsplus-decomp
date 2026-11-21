@@ -182,12 +182,6 @@ GroupedSelectionMenuDescriptor gPlayerGroupedSelectionDescriptors[6]
 u8 gPlayerGroupedSelectionTransitionFlags[4]
     __attribute__((section(".data.player_grouped_selection_transition_flags"))) = {0};
 
-u8 gPlayerGroupedSelectionStates[2]
-    __attribute__((section(".sdata.player_grouped_selection_states"))) = {0};
-
-const u8 gPlayerGroupedSelectionStatesPadding[6]
-    __attribute__((section(".data.player_grouped_selection_states_padding"))) = {0};
-
 const u32 gGroupedCourseMenuTablePadding
     __attribute__((section(".rodata.grouped_course_menu_padding"))) = 0;
 
@@ -206,7 +200,7 @@ extern const u16 *D_8012FC2C[10];
 extern u8 D_80130094[][5];
 extern u8 D_801300A0[][5];
 extern MenuModelSelectionPair D_8013B468[];
-extern u8 gPlayerGroupedSelectionStatesReference[2];
+extern u8 gPlayerGroupedSelectionStates[2];
 void drawClippedRegisteredTaskGridSprite(void);
 extern u16 gSaveRecordProgressCurrencyLabel[2];
 extern char gSelectionPrizeCurrencyLabel[] __attribute__((section(".data")));
@@ -2202,8 +2196,8 @@ void drawTaskOffsetSpriteB8(void) {
 
 void initializeDualResourceTaskAndResetByteState(void) {
     D_8013AE88->data18 = 1;
-    gPlayerGroupedSelectionStatesReference[0] = 0;
-    gPlayerGroupedSelectionStatesReference[1] = 0;
+    gPlayerGroupedSelectionStates[0] = 0;
+    gPlayerGroupedSelectionStates[1] = 0;
     if (D_8013AE88->resource14 != 0xFFFF) {
         while (1) {}
     }
@@ -2233,9 +2227,9 @@ void updatePlayerGroupedSelectionMenu(void) {
         D_8013AE88->data18 = 3;
         break;
     case 3:
-        if (gPlayerGroupedSelectionStatesReference[0] == 4 || gPlayerGroupedSelectionStatesReference[1] == 4) {
+        if (gPlayerGroupedSelectionStates[0] == 4 || gPlayerGroupedSelectionStates[1] == 4) {
             D_8013AE88->data18 = 40;
-        } else if (gPlayerGroupedSelectionStatesReference[0] == 6 || gPlayerGroupedSelectionStatesReference[1] == 6) {
+        } else if (gPlayerGroupedSelectionStates[0] == 6 || gPlayerGroupedSelectionStates[1] == 6) {
             if (D_8013AFE2 == 0 && (s16)getGameOptionFlag0() != 0) {
                 D_8013AE98->data18 = 29;
             } else {
@@ -2246,14 +2240,14 @@ void updatePlayerGroupedSelectionMenu(void) {
         }
         break;
     case 40:
-        if (gPlayerGroupedSelectionStatesReference[0] == 4 && gPlayerGroupedSelectionStatesReference[1] == 4) {
-            gPlayerGroupedSelectionStatesReference[0] = 5;
-            gPlayerGroupedSelectionStatesReference[1] = 5;
+        if (gPlayerGroupedSelectionStates[0] == 4 && gPlayerGroupedSelectionStates[1] == 4) {
+            gPlayerGroupedSelectionStates[0] = 5;
+            gPlayerGroupedSelectionStates[1] = 5;
             D_8013AE88->data18 = 41;
         }
         break;
     case 41:
-        if (gPlayerGroupedSelectionStatesReference[0] == 6 || gPlayerGroupedSelectionStatesReference[1] == 6) {
+        if (gPlayerGroupedSelectionStates[0] == 6 || gPlayerGroupedSelectionStates[1] == 6) {
             switch (D_8013AFE2) {
             case 0:
             case 2:
@@ -2353,9 +2347,9 @@ void updatePlayerGroupedSelectionTask(void) {
     }
 
     player = D_8013AE88->data1C;
-    if ((gPlayerGroupedSelectionStatesReference[0] == 4 || gPlayerGroupedSelectionStatesReference[1] == 4) &&
-        (gPlayerGroupedSelectionStatesReference[player] < 2 || gPlayerGroupedSelectionStatesReference[player] > 4)) {
-        gPlayerGroupedSelectionStatesReference[player] = 4;
+    if ((gPlayerGroupedSelectionStates[0] == 4 || gPlayerGroupedSelectionStates[1] == 4) &&
+        (gPlayerGroupedSelectionStates[player] < 2 || gPlayerGroupedSelectionStates[player] > 4)) {
+        gPlayerGroupedSelectionStates[player] = 4;
         D_8013AE88->data18 = 7;
     }
     groupedSelection = &D_801300AC[player];
@@ -2411,8 +2405,8 @@ void updatePlayerGroupedSelectionTask(void) {
         break;
     case 5:
         if (panels[1].flags == 0 && panels[2].flags == 0) {
-            gPlayerGroupedSelectionStatesReference[player] = 1;
-            if (gPlayerGroupedSelectionStatesReference[0] == 1 && gPlayerGroupedSelectionStatesReference[1] == 1) {
+            gPlayerGroupedSelectionStates[player] = 1;
+            if (gPlayerGroupedSelectionStates[0] == 1 && gPlayerGroupedSelectionStates[1] == 1) {
                 panels[2].command = 1;
                 panels[0].command = 20;
                 panels[1].command = 20;
@@ -2460,7 +2454,7 @@ void updatePlayerGroupedSelectionTask(void) {
                 gPlayerGroupedSelectionTransitionFlags[player] = 1;
             }
             if (selection->choiceResult < 0) {
-                gPlayerGroupedSelectionStatesReference[player] = 4;
+                gPlayerGroupedSelectionStates[player] = 4;
                 D_8013AE88->data18 = 7;
                 parentSlot->flags = 1;
             } else {
@@ -2487,16 +2481,16 @@ void updatePlayerGroupedSelectionTask(void) {
         panels[4].task = D_8013AE8C;
         panels[4].command = 0;
         panels[4].flags = 1;
-        gPlayerGroupedSelectionStatesReference[player] = 2;
+        gPlayerGroupedSelectionStates[player] = 2;
         D_8013AE88->data18 = 31;
         break;
     case 31:
-        if (gPlayerGroupedSelectionStatesReference[player] != 6) {
+        if (gPlayerGroupedSelectionStates[player] != 6) {
             break;
         }
         goto finish;
     case 7:
-        if (gPlayerGroupedSelectionStatesReference[player] == 5) {
+        if (gPlayerGroupedSelectionStates[player] == 5) {
             moveTaskChildrenWithSpacing(0, panels[1].task, -0x134000, (player * 104 - 72) * 4096, 0x1E000, 0x1E000, -1000);
             panels[1].command = 23;
             func_80081AC8(0, panels[2].task, 0x11C000, (player * 142 - 60) * 4096, 0x1E000, 0, -1000);
@@ -2540,7 +2534,7 @@ finish:
         break;
     default:
         parentSlot->flags = 0;
-        gPlayerGroupedSelectionStatesReference[player] = 6;
+        gPlayerGroupedSelectionStates[player] = 6;
         func_800149A8();
         return;
     }

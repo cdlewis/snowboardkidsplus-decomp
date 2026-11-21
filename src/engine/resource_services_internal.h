@@ -15,9 +15,7 @@
 #include "game/io/cd_queue.h"
 #include "game/io/controller.h"
 #include "game/race/player/race_player.h"
-#define GAME_OPTIONS_GP_ADDRESSING
 #include "game/engine/game_options.h"
-#define SELECTED_RECORDS_GP_ADDRESSING
 #include "game/menu/selected_records.h"
 #include "psx/libsnd.h"
 #include "psx/libcd.h"

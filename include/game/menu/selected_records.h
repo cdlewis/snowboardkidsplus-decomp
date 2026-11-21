@@ -50,7 +50,6 @@ void resetSelectedRecordStates(void);
 s32 updatePlayerField94CFromSelectedTable(u16 tableIndex, s16 sampleIndex,
                                           u16 playerIndex);
 
-extern s16 selectedCourseIndexAbsolute __attribute__((section(".data")));
 extern s16 selectedFinishLapCountAbsolute __attribute__((section(".data")));
 extern u8 raceFinishFlagAbsolute __attribute__((section(".data")));
 
@@ -64,4 +63,3 @@ extern u32 selectedCameraOverlayModeGp;
 s32 restoreSelectedPlayerState(void);
 
 /* GP-relative access to the same saved camera state. */
-extern u32 selectedCameraStateGp;
