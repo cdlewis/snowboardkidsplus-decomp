@@ -16,6 +16,8 @@
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
 
+void func_80033FAC(void);
+
 void drawSlidingRaceTimeDisplay(SlidingTimeResource *resource) {
     u8 padding[0x20];
     GsOT *ot = &D_800EBFF0[D_8013AF78];
@@ -218,7 +220,12 @@ void initializeFallingSpriteEffectsTask(void) {
 
 INCLUDE_ASM("asm/nonmatchings/race/ui/race_panels", func_80033FAC);
 
-INCLUDE_ASM("asm/nonmatchings/race/ui/race_panels", func_80033FE8);
+void waitFallingSpriteEffectsExitTask(void) {
+    D_8013AE88->data18 = 0;
+    if (D_8013AFE4 & 0x10) {
+        setCurrentTaskCallback(func_80033FAC);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/race/ui/race_panels", func_80034028);
 
