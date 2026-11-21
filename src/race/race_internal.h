@@ -543,7 +543,7 @@ void initializeBackgroundCameraTask(void);
 void updateTitleScreenMenuTask(void);
 void updateRepeatedSoundTask(void);
 void waitUnlockNotification0TransitionTask(void);
-void func_80032F3C(void);
+void finishUnlockNotification0TransitionTask(void);
 void queueBackgroundTextureSectorCommands(void);
 void initializePlayerNumberDisplayTask(void);
 void slideOutPlayerNumberDisplayTask(void);

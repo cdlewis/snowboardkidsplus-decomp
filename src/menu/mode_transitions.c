@@ -1045,12 +1045,16 @@ void waitUnlockNotification0TransitionTask(void) {
         queueMode11TransitionResources();
         queueBackgroundTextureSectorCommands();
         queueMenuResourceReads((s16)D_8013AE98->data18);
-        setCurrentTaskCallback(func_80032F3C);
+        setCurrentTaskCallback(finishUnlockNotification0TransitionTask);
         D_8013AE88->unk10 |= 2;
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/mode_transitions", func_80032F3C);
+void finishUnlockNotification0TransitionTask(void) {
+    configureTaskStateTransition(2, 0, 30);
+    D_8013AE98->data1C--;
+    func_800149A8();
+}
 
 void drawSound601SequenceSpriteTask(void) {
     if (gameOptionPlayerModeAbsolute == 1) {
