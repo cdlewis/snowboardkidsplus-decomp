@@ -224,6 +224,7 @@ void transitionRegisteredPlayerModels(void);
 void transitionRegisteredPlayerModelsUp(void);
 void func_80083C3C(void);
 void func_80086C34(s32 x, s32 y, s32 destination, s32 source, s32 index);
+void func_80087B84(void);
 
 void updateCdAwareCourseSelectionTask(void) {
     s32 mode;
@@ -2798,7 +2799,7 @@ void startClearedStateValueHistoryTask(void) {
     }
 }
 
-void func_800879CC(s16 slot, s32 x, s32 y, s16 depth, s32 index);
+void createSaveRecordSlotPanelTask(s16 slot, s32 x, s32 y, s16 depth, s32 index);
 
 void initializeSaveRecordTask(void) {
     s16 i;
@@ -2850,8 +2851,8 @@ void updateSaveRecordTask(void) {
         status->first.flags = 0;
         status->secondResult = 0;
         uploadBufferedTexturePair();
-        func_800879CC(0, -136, -96, 6, 1);
-        func_800879CC(1, -136, 8, 6, 11);
+        createSaveRecordSlotPanelTask(0, -136, -96, 6, 1);
+        createSaveRecordSlotPanelTask(1, -136, 8, 6, 11);
         D_8013AE88->data18 = 2;
         break;
     case 2:
@@ -2950,7 +2951,32 @@ void resetUnlockNotificationStateForMode2(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/course_selection_tasks", func_800879CC);
+void createSaveRecordSlotPanelTask(s16 slot, s32 x, s32 y, s16 depth, s32 index) {
+    RegisteredPanelSlot *panel;
+
+    func_80014874(func_80087B84);
+    D_8013AE8C->data18 = 0;
+    D_8013AE8C->data1A = slot;
+    D_8013AE8C->data1C = depth;
+    D_8013AE8C->data1E = index;
+    D_8013AE8C->resource14 = allocateTaskResource();
+    initMovement2D((Movement2D *)&D_800D9504[D_8013AE8C->resource14], (s16)x * 4096, (s16)y * 4096);
+    D_8013AE8C->resource16 = allocateTaskResource();
+    if (index % 10 == 0) {
+        if (D_8013AE88->resource14 == 0xFFFF) {
+            while (1) {}
+        }
+        panel = getPanelSlot(D_8013AE88->resource14, index);
+    } else {
+        if (D_8013AE88->resource16 == 0xFFFF) {
+            while (1) {}
+        }
+        panel = getPanelSlot(D_8013AE88->resource16, index);
+    }
+    panel->command = 0;
+    panel->flags = 1;
+    panel->task = D_8013AE8C;
+}
 
 INCLUDE_ASM("asm/nonmatchings/menu/course_selection_tasks", func_80087B84);
 

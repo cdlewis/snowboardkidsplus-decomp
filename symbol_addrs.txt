@@ -3385,6 +3385,7 @@ gPlayerTripleQuadOffsets = 0x8012CA34; // size:0x18 defined:true
 
 initializeSaveRecordTask = 0x80087464; // type:func
 updateSaveRecordTask = 0x800875D0; // type:func
+createSaveRecordSlotPanelTask = 0x800879CC; // type:func
 
 moveCurrentPlayerToTaskTarget = 0x80025840; // type:func
 
