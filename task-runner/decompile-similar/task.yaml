@@ -11,5 +11,7 @@ prompt: >-
   before declaring a match. The task runner handles committing successful work.
 agent: codex
 agent_flags: --config model_reasoning_effort='"xhigh"'
-success_command: 'git add -A && git commit -m "matched $CANDIDATE"'
+success_command: >-
+  function_name=$(python3 -c 'import json, sys; print(json.loads(sys.argv[1])[0])' $CANDIDATE) &&
+  git add -A && git commit -m "matched $function_name"
 timeout: 180m
