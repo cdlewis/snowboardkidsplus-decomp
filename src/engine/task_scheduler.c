@@ -115,7 +115,15 @@ void deleteCurrentTaskSubtree(void) {
     D_8013AE88 = D_8013AEA8;
 }
 
-INCLUDE_ASM("asm/nonmatchings/engine/task_scheduler", func_800149E0);
+void deleteCurrentTaskDescendants(void) {
+    if (func_80014B14()) {
+        GameTask *firstDescendant = D_8013AE88->next;
+
+        D_8013AEB0 = firstDescendant;
+        D_8013AEAC = firstDescendant;
+        deletePendingTaskSubtree();
+    }
+}
 
 void deletePendingTaskSubtree(void) {
     u32 depth = D_8013AE88->depth;

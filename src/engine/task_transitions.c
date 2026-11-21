@@ -882,10 +882,10 @@ void resetStateAndBeginResourceLoadTransition(u8 requestLoad) {
     D_8013AFD6 = 0;
     D_8013B20C = 0;
     resetPaletteRecords();
-    func_800149E0();
+    deleteCurrentTaskDescendants();
     savedTask = D_8013AE88;
     D_8013AE88 = D_8013B304;
-    func_800149E0();
+    deleteCurrentTaskDescendants();
     D_8013AE88 = savedTask;
     D_8013AFAA |= 0x90;
     if (requestLoad) {
@@ -915,7 +915,7 @@ void finishTaskTransitionAfterCountdown(void) {
         D_8013B20C = 0;
         D_8013AFE4 &= ~0x10;
         resetPaletteRecords();
-        func_800149E0();
+        deleteCurrentTaskDescendants();
         if (D_8013AE88->data1A == 3) {
             resetStateAndBeginResourceLoadTransition(0);
         } else {
@@ -958,7 +958,7 @@ void finishRaceExitAfterCountdown(void) {
                     queueCdCommand(7, 0);
                     savedTask = D_8013AE88;
                     D_8013AE88 = D_8013B304;
-                    func_800149E0();
+                    deleteCurrentTaskDescendants();
                     D_8013AE88 = savedTask;
                     startQuadTransitionSequenceTask(transitionIndex - 1);
                     player->unk0F8 = 8;
@@ -986,7 +986,7 @@ void finishRaceExitAfterCountdown(void) {
         D_8013B20C = 0;
         D_8013AFE4 &= ~0x10;
         resetPaletteRecords();
-        func_800149E0();
+        deleteCurrentTaskDescendants();
 
         if (D_8013AFE2 == 2) {
             if (D_8013AEE4 & 4) {
@@ -1069,7 +1069,7 @@ void updateSelectedPlayerPlaybackTask(void) {
         stopPlayerSound(0);
         savedTask = D_8013AE88;
         D_8013AE88 = D_8013B304;
-        func_800149E0();
+        deleteCurrentTaskDescendants();
         D_8013AE88 = savedTask;
         startRacePlayerTasks();
         if ((s16)restoreSelectedPlayerState()) {
@@ -1289,7 +1289,7 @@ INCLUDE_ASM("asm/nonmatchings/engine/task_transitions", func_8001E0C0);
 
 void processTaskWhenFlagAFAABit7Set(void) {
     if (D_8013AFAA & 0x80) {
-        func_800149E0();
+        deleteCurrentTaskDescendants();
         D_8013AFAA &= ~0xC0;
         setCurrentTaskCallback(func_8001E0C0);
     }
@@ -1303,7 +1303,7 @@ void armTaskCallbackResetOnFlag3(void) {
 
 void resetTaskCallbackOnFlag4(void) {
     if (D_8013AFAA & 0x10) {
-        func_800149E0();
+        deleteCurrentTaskDescendants();
         setCurrentTaskCallback(armTaskCallbackResetOnFlag3);
     }
 }

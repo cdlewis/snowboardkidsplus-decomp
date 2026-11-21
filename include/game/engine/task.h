@@ -108,7 +108,7 @@ s32 func_800148B4(TaskCallback callback);
 s16 func_80014930(GameTask *parent, TaskCallback callback);
 s16 func_8001496C(GameTask *parent, TaskCallback callback);
 void deleteCurrentTaskSubtree(void);
-void func_800149E0(void);
+void deleteCurrentTaskDescendants(void);
 void deletePendingTaskSubtree(void);
 void setCurrentTaskCallback(TaskCallback callback);
 void resetTaskCallbackOnFlag4(void);

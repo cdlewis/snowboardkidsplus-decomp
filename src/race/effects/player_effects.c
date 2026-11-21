@@ -2645,7 +2645,7 @@ void finishTimedSpritePresentation(void) {
     if (D_8013AE88->data18++ >= 30) {
         startCdVolumeFade(103, 20, 0, 1);
         D_8013AFE4 |= 0x100;
-        func_800149E0();
+        deleteCurrentTaskDescendants();
         deleteCurrentTaskSubtree();
     }
 }
@@ -2775,7 +2775,7 @@ void updateTimedSpritePresentation(void) {
     if (frame == 4950 || (D_8013AEE8[0] & PRESENTATION_SKIP_BUTTON)) {
         D_8013B36C = 1;
         D_8013AE88->data18 = 0;
-        func_800149E0();
+        deleteCurrentTaskDescendants();
         startPrimaryValueTransition(30, (s16)D_8013B35C, 0);
         startValueInterpolationTask(30, (s16)D_8013B360, 0);
         setCurrentTaskCallback(finishTimedSpritePresentation);

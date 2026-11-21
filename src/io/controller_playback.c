@@ -131,7 +131,7 @@ void finishControllerPlaybackTransition(void) {
             D_8013AFAA = (D_8013AFAA | 0x1090) & ~0x2000;
             resetPendingCdRequests();
             resetPaletteRecords();
-            func_800149E0();
+            deleteCurrentTaskDescendants();
             D_8013B10C = -1;
             D_8013AFAA |= 0x48;
             queueMenuResourceReads(2);

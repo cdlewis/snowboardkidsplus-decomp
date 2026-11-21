@@ -148,7 +148,7 @@ void completeModeSelectionTransitionWhenReady(void) {
         D_8013AFAA = (D_8013AFAA | 0x1090) & ~0x2000;
         resetPendingCdRequests();
         resetPaletteRecords();
-        func_800149E0();
+        deleteCurrentTaskDescendants();
         D_8013AFD3 = 0;
         D_8013AFAA |= 0x48;
         switch (D_8013AFD8) {

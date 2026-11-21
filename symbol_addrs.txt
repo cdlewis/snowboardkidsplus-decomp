@@ -2813,6 +2813,7 @@ initializeTextSequenceTask = 0x800A0F14; // type:func
 updateTextSequenceTask = 0x800A0FDC; // type:func
 
 deleteCurrentTaskSubtree = 0x800149A8; // type:func
+deleteCurrentTaskDescendants = 0x800149E0; // type:func
 deletePendingTaskSubtree = 0x80014A2C; // type:func
 
 waitResultDisplayTask = 0x80036940; // type:func
