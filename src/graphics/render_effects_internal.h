@@ -11,7 +11,6 @@
 #define CONTROLLER_EFFECTS_ABSOLUTE_ADDRESSING
 #include "game/io/controller_effects.h"
 #include "game/io/controller.h"
-#define GS_PACKET_ABSOLUTE_ADDRESSING
 #include "game/graphics/graphics.h"
 #include "game/engine/linear_random.h"
 #include "game/engine/random.h"

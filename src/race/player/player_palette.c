@@ -1,4 +1,3 @@
-#define GS_PACKET_ABSOLUTE_ADDRESSING
 #include "../../menu/panel_tasks_internal.h"
 #include "psx/libetc.h"
 #include "game/engine/linear_random.h"
@@ -18,6 +17,8 @@ typedef struct PaletteBurstScratch {
     long cue;
     long flags;
 } PaletteBurstScratch;
+
+extern u32 GsOUT_PACKET_P __attribute__((section(".data")));
 
 SVECTOR gPaletteBurstVertices[4] __attribute__((section(".data.palette_burst_vertices"))) = {
     {-10, -10, 0, 0},

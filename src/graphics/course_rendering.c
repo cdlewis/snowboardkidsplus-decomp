@@ -154,6 +154,8 @@ extern u16 D_8013B654;
 extern s32 D_8013B664;
 extern TmdObject *D_8013BBF8[];
 
+extern u32 GsOUT_PACKET_P __attribute__((section(".data")));
+
 void getCourseSteeringTarget(s16 region, s32 x, s32 z, s32 *targetX, s32 *targetZ,
                              u16 tableIndex, u16 playerIndex) {
     s32 dx, dz, forward, cosine, lateral;

@@ -3,6 +3,8 @@
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
 
+extern u32 GsOUT_PACKET_P __attribute__((section(".data")));
+
 void addCopiedPrimitive(u32 *orderingTable, u32 *packet) {
     u32 length = ((P_TAG *)packet)->len;
     u32 *out = (u32 *)GsOUT_PACKET_P;

@@ -11,7 +11,6 @@
 #include "psx/libsnd.h"
 #define TASK_ABSOLUTE_ADDRESSING
 #include "game/engine/task.h"
-#define MEMORY_CARD_STATUS_ABSOLUTE_ADDRESSING
 #include "game/engine/system_runtime.h"
 #include "game/race/player/race_player.h"
 #include "game/menu/movement.h"

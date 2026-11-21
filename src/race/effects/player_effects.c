@@ -586,6 +586,8 @@ u16 gTextGlyphPalette __attribute__((section(".sdata.stretched_text"), aligned(2
 
 extern s32 playerSnapshotTrailCountGp;
 
+extern u32 GsOUT_PACKET_P __attribute__((section(".data")));
+
 void updatePlayerRenderSnapshots(void) {
     GsCOORDINATE2 coordinate;
     u32 i;

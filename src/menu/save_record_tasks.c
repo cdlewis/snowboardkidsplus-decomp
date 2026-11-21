@@ -24,6 +24,8 @@ typedef struct SaveMenuResource {
     s16 result1E;
 } SaveMenuResource;
 
+extern s16 D_8013AF3E __attribute__((section(".data")));
+
 const u32 gStateValueHistoryPadding
     __attribute__((section(".rodata.state_value_history_padding"))) = 0;
 

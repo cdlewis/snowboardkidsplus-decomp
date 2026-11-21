@@ -209,18 +209,9 @@ extern s32 D_80130BF0[];
 extern s8 D_8013AFD2 __attribute__((section(".data")));
 /* GP-relative alias of D_8013AFD2. */
 extern s8 activeRacePlayerCountGp;
-#if defined(PLAYER_STATE_RESULT_ABSOLUTE_ADDRESSING) || defined(RACE_PLAYER_STATE_FLAG_ABSOLUTE_ADDRESSING)
-extern s16 D_8013B0E4 __attribute__((section(".data")));
-#else
 extern s16 D_8013B0E4;
-#endif
-#if defined(PLAYER_STATE_RESULT_ABSOLUTE_ADDRESSING)
-extern u16 D_8013B0E6 __attribute__((section(".data")));
-extern s32 D_8013B0E8 __attribute__((section(".data")));
-#else
 extern u16 D_8013B0E6;
 extern s32 D_8013B0E8;
-#endif
 /* Two declarations preserve the original GP-relative and absolute accesses
  * to this shared pointer. The absolute alias is resolved by the symbol map. */
 extern RacePlayer *D_8013B0D8;
@@ -329,11 +320,7 @@ typedef struct PlayerCollectionEntry {
 } PlayerCollectionEntry;
 
 extern PlayerCollectionEntry D_8012450C[];
-#ifdef PLAYER_COLLECTION_ABSOLUTE_ADDRESSING
-extern s16 D_8013B1D4 __attribute__((section(".data.finish_slot_state")));
-#else
 extern s16 D_8013B1D4;
-#endif
 
 u16 arePositionsWithinXZRange(const Position3D *a, const Position3D *b, s32 threshold);
 u16 pushPlayerOutOfCylinder(const Position3D *position, s32 radius, s32 height, s16 playerIndex);

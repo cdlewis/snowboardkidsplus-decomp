@@ -14,7 +14,6 @@
 #include "game/audio/music.h"
 #define RACE_PLAYER_ABSOLUTE_ADDRESSING
 #include "game/io/cd_queue.h"
-#define CONTROLLER_STATE_ABSOLUTE_ADDRESSING
 #include "game/io/controller.h"
 #include "game/io/controller_effects.h"
 #include "game/race/player/race_player.h"
@@ -53,6 +52,8 @@ typedef struct RacePlayerSoundSectorRanges {
     s16 headerSector;
     s16 headerSectorCount;
 } RacePlayerSoundSectorRanges;
+
+extern u8 D_8013AEE4 __attribute__((section(".data")));
 
 const char gRaceVsyncDebugFormat[16]
     __attribute__((section(".rodata.race_vsync_debug_format"), aligned(4))) = "VSYNC=%4d";

@@ -2,10 +2,11 @@
 #include "common.h"
 #include "game/scene/scene_sound_slots.h"
 #include "game/io/controller.h"
-#define TASK_ABSOLUTE_ADDRESSING
 #include "game/engine/task.h"
 #include "game/scene/scene_events.h"
 #include "game/scene/scene_task_types.h"
+
+extern GameTask *D_8013AE88 __attribute__((section(".data")));
 
 /* Preserve the zero word following the playback dispatch table. */
 static const u32 sScenePlaybackTablePadding

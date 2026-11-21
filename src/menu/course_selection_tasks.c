@@ -87,6 +87,8 @@ typedef struct SaveRecordTaskStatus {
     s16 secondResult;
 } SaveRecordTaskStatus;
 
+extern s16 D_8013AF3E __attribute__((section(".data")));
+
 u16 litObjectDrawAreaDepths[4] __attribute__((section(".data.lit_object_draw_area_depths"))) = {
     0x30, 0x20, 0x50, 0x3E
 };

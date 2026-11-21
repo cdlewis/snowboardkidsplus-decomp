@@ -34,6 +34,8 @@ typedef struct QuadSubdivisionScratchpad {
     u8 textured, gouraud;
 } QuadSubdivisionScratchpad;
 
+extern u32 GsOUT_PACKET_P __attribute__((section(".data")));
+
 void emitProjectedFlatTriangle(TriangleScratchVertex *vertices) {
     TriangleScratchpad *scratch = TRIANGLE_SCRATCHPAD;
     POLY_F3 *packet = (POLY_F3 *)GsOUT_PACKET_P;
