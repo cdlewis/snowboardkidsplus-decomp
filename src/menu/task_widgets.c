@@ -267,7 +267,7 @@ void updateScrollingBackgroundTask(void);
 void drawTaskImagesOnBlackBackground(void);
 void startSecondaryDisplayTask(void);
 void updateTaskStateTransition(void);
-void func_8007197C(void);
+void stopSecondaryDisplayTask(void);
 void drawSecondaryDisplayTask(void);
 void initTimedSequence(TimedSequence *sequence, const TimedSequenceEntry *entries, s16 index, s16 count);
 void updateCountdownTask(void);
@@ -752,14 +752,16 @@ s32 hasTaskReference(void) {
 void resetTaskControlState(void) {
     configureTaskStateTransition(0, 0, 30);
     setTaskBackgroundMode(0, 0, 0);
-    func_8007197C();
+    stopSecondaryDisplayTask();
 }
 
 void startSecondaryDisplayTask(void) {
     setSecondaryDisplayTaskMode(1);
 }
 
-INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_8007197C);
+void stopSecondaryDisplayTask(void) {
+    setSecondaryDisplayTaskMode(0);
+}
 
 void clearSecondaryTaskReference(void) {
     D_8013B37C = NULL;
