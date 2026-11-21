@@ -618,10 +618,17 @@ void initializeRacePresentationTask(void) {
 
 void beginTask60TickCountdown(void) {
     D_8013AE88->data1A = 60;
-    setCurrentTaskCallback(func_8001C0DC);
+    setCurrentTaskCallback(waitThenStartSplitScreenTransition);
 }
 
-INCLUDE_ASM("asm/nonmatchings/engine/task_transitions", func_8001C0DC);
+void waitThenStartSplitScreenTransition(void) {
+    GameTask *task = D_8013AE88;
+
+    if (--task->data1A == 0) {
+        task->data1A = 16;
+        setCurrentTaskCallback(updateSplitScreenTransitionTask);
+    }
+}
 
 void updateSplitScreenTransitionTask(void) {
     D_8013AF7E -= 4;

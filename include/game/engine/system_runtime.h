@@ -66,7 +66,7 @@ void initializePaletteTransition(void);
 void updatePaletteTransition(void);
 void selectMemoryCardLoadFile(u8 slot, void *destination);
 void pollMemoryCardBufferReadTask(void);
-void func_8001C0DC(void);
+void waitThenStartSplitScreenTransition(void);
 void func_8003DEE0(void);
 void pollMemoryCardReadTask(void);
 void captureMemoryCardSaveIcon(void);
