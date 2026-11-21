@@ -1,4 +1,5 @@
 #include "psx/scratchpad.h"
+#include "game/race/player/player_results.h"
 #include "psx/libapi.h"
 #include "psx/libetc.h"
 #include "common.h"

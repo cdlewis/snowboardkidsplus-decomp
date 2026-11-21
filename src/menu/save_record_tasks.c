@@ -1,4 +1,5 @@
 #include "save_record_tasks_internal.h"
+#include "game/menu/save_record_tasks.h"
 #include "game/io/cd_queue.h"
 #include "game/io/memory_card.h"
 #include "game/menu/task_widgets.h"

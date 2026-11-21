@@ -52,12 +52,6 @@ typedef struct PlayerSelectionRecord {
     u8 unk0D[0x9CF];
 } PlayerSelectionRecord;
 
-typedef struct RegisteredPanelSlot {
-    GameTask *task;
-    s16 command;
-    s16 flags;
-} RegisteredPanelSlot;
-
 typedef struct GroupedIndexResource {
     u8 unk00[0x48];
     const u8 *values;
@@ -75,22 +69,6 @@ typedef struct HalfwordPair {
     s16 unk_00;
     s16 unk_02;
 } HalfwordPair;
-
-typedef struct RecordFlagMenuEntries {
-    u8 *entries;
-    u8 unk_04;
-    u8 unk_05;
-    u8 count;
-    u8 *textIndices;
-    u32 unk_0C;
-    u32 unk_10;
-} RecordFlagMenuEntries;
-
-typedef struct IndexedHalfwordRecord {
-    s16 value;
-    s16 unk_02;
-    s16 unk_04;
-} IndexedHalfwordRecord;
 
 typedef struct SelectionTransitionEntry {
     s16 selection;
@@ -134,42 +112,23 @@ void updatePlayerGroupedSelectionTask(void);
 void updateRecordFlagSelectionMenuTask(void);
 void func_800815D0(void);
 void initializeDualResourceTaskAndResetByteState(void);
-void adjustGroupedIndexForMode(s16 mode, u8 *index);
 void updatePlayerGroupedCourseSelectionTask(void);
 void updateRegisteredTripletTask(void);
 void updateRegisteredPlayerModels(void);
 
-void initializeModeDependentDualResourceTask(void);
-void createPaletteRotationTask(s32 x, s32 y, s32 first, s32 last, s32 steps, s32 interval, s32 index);
 void clearHalfwordPairTable(void);
-void initializeCountedPlayerGroupedSelectionBoundsTask(void);
 void initializeDualResourceTaskAndClearState(void);
-s32 getPlayerRecordFlagMode(s16 index);
-void buildRecordFlagMenuEntries(s16 index, s16 mode, s16 group, u16 arg4, u16 arg5,
-                                RecordFlagMenuEntries *out);
-s32 getSaveRecordFlagGroupIndex(s16 recordIndex, s16 groupIndex);
-s16 getTaskResourceGroupedIndex(GameTask *task, s16 index);
-s16 getTaskResourceAdjustedGroupedIndex(s16 value, GameTask *task, s16 index);
-s16 getGroupedIndexBase(s16 index);
-s16 getGroupedIndexOffset(s16 index);
-s16 getGroupedIndexOffsetPlus216(s16 index);
-s16 findIndexedHalfwordRecord(IndexedHalfwordRecord *records, u8 *indices, s16 count, s16 value);
-void createRegisteredPanelTask(s32 mode, s32 value, s16 x, s16 y, s16 depth, s32 index);
-void createRegisteredTripletTask(s32 x, s32 y, s32 offsetX, s32 offsetY, ByteTriplet *records, u8 *indices, s32 depth, s32 index);
 void sortLitObjectWithDrawArea(GsDOBJ2 *object, u16 index, RECT *bounds);
 ByteTriplet *lookupByteTriplet(ByteTriplet *records, u8 *indices, s16 index);
 void updateRegisteredChildBlinkTransition(void);
 void drawTaskOffsetSpriteB8(void);
 void drawTaskIndexPanel(void);
 void drawSaveRecordProgressPanel(void);
-void createPlayerGroupedSelectionTask(s32 player, s32 index);
 void initializeDualResourceTask(void);
-s16 mapGroupedValueToTableIndex(s16 value);
 void updatePaletteEntryTask(void);
 s32 isValue16(s32 value);
 s16 hasStateValueChanged(s16 index);
 void startClearedStateValueHistoryTask(void);
-void initializeSaveRecordTask(void);
 void resetUnlockNotificationStateForMode2(void);
 void repeatByteStore(u8 *destination, s32 value, s32 count);
 void copyGlobalFlagState(GlobalFlagStatePrefix *source, GlobalFlagStatePrefix *destination);

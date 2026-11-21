@@ -1,5 +1,6 @@
 #define RACE_TIME_ABSOLUTE_ADDRESSING
 #include "../race_presentation_internal.h"
+#include "game/race/player/player_results.h"
 
 #define ATTACK_SAVE_RECORD ((SaveRecord *)&D_8013080C)
 #define FULL_RACE_TIME(time) \

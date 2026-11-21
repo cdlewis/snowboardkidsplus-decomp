@@ -1,4 +1,5 @@
 #include "../race/player/player_actions_internal.h"
+#include "game/menu/save_record_tasks.h"
 #define BACKGROUND_MODE_GP_ADDRESSING
 #include "game/engine/system_runtime.h"
 #include "game/menu/menu_selection_state.h"

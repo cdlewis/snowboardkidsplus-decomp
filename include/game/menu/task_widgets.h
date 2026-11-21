@@ -39,3 +39,23 @@ void createInputTimedSpriteTask(s32 x, s32 y, const TimedSequenceEntry *entries,
 s32 func_80070B64(s16 index, u8 *color);
 void func_80071E20(TaskCallback callback);
 void markSecondaryTaskAndClearReference(void);
+
+void createPlayerPanelTask(s16 player, s16 x, s16 y, s32 depth, s32 index);
+void createValuePanelTask(s16 x, s16 y, s16 *values, s32 depth, s32 index);
+void createPaletteRotationTask(s32 x, s32 y, s32 first, s32 last, s32 steps, s32 interval, s32 index);
+void func_80081AC8(s32 index, GameTask *task, s32 x, s32 y, s32 stepX, s32 stepY, s32 delay);
+void createRegisteredPanelTask(s32 mode, s32 value, s16 x, s16 y, s16 depth, s32 index);
+void createRegisteredTextPanelTask(s16 x, s16 y, const u16 **texts,
+                                   const u8 *mapping, s32 depth, s32 index);
+void func_8008C708(s16 x, s16 y, s16 textX, s16 textY,
+                   const u16 *text, s32 mode, s32 depth, s32 index);
+void createRegisteredDetailedTextPanelTask(s16 x, s16 y, s16 textX, s16 textY,
+                                   const u16 *text, s32 value, s32 color, s32 mode,
+                                   const u16 *content, s32 depth, s32 index);
+void createRegisteredTripletTask(s32 x, s32 y, s32 offsetX, s32 offsetY,
+                                 ByteTriplet *records, u8 *indices, s32 depth, s32 index);
+void createRegisteredMovingPanelTask(u16 mode, const s16 *values, s16 x, s16 y,
+                                     s16 x2, s16 y2, s16 x3, s16 y3,
+                                     s32 depth, s32 index);
+void createRegisteredTexturePairTask(s16 x, s16 y, const u8 *mapping, s32 mode,
+                                     s32 unused, u16 arg5, s32 depth, s32 index);

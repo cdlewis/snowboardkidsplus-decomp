@@ -235,9 +235,6 @@ void renderCurrentCameraPlayersAndUpdateSound(void);
 void func_8003EE70(void);
 void updateTaskViewAndCheckPlayerLimit(void);
 
-void createRegisteredDetailedTextPanelTask(s16 x, s16 y, s16 textX, s16 textY,
-                                   const u16 *text, s32 value, s32 color, s32 mode,
-                                   const u16 *content, s32 depth, s32 index);
 void initializeCountedGroupedSelectionBoundsTask(void);
 void initializeTaskResourcePair(void);
 void initializeCountedSelectionBoundsTask(void);

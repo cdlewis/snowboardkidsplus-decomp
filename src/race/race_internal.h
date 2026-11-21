@@ -17,7 +17,7 @@
 #include "game/graphics/coordinate.h"
 #include "game/race/ui/race_time.h"
 #include "game/menu/selected_records.h"
-#include "game/menu/selected_record.h"
+#include "game/race/course/course_geometry.h"
 #include "game/graphics/graphics.h"
 #include "game/engine/linear_random.h"
 #include "game/engine/offset_archive.h"

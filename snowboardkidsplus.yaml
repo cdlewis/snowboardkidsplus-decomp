@@ -108,16 +108,16 @@ segments:
       - {start: 0x1360, type: .rodata, name: race/player/player_actions, linker_section: .rodata.money_labels}
       - {start: 0x1390, type: .rodata, name: menu/record_screens, linker_section: .rodata.race_comparison_labels}
       - [0x13C4, rodata]
-      - {start: 0x13F4, type: .rodata, name: unclassified/race_8003EE70, linker_section: .rodata.trick_attack_labels}
+      - {start: 0x13F4, type: .rodata, name: race/ui/race_hud_modes, linker_section: .rodata.trick_attack_labels}
       - [0x1418, rodata]
       - {start: 0x1424, type: .rodata, name: race/ui/race_hud, linker_section: .rodata.lap_time_label}
       - {start: 0x1430, type: .rodata, name: race/ui/race_hud, linker_section: .rodata.lap_time_format}
-      - {start: 0x1444, type: .rodata, name: unclassified/race_8003EE70, linker_section: .rodata.target_time_label}
+      - {start: 0x1444, type: .rodata, name: race/ui/race_hud_modes, linker_section: .rodata.target_time_label}
       - {start: 0x1450, type: .rodata, name: race/ui/race_hud, linker_section: .rodata.best_lap_label}
-      - [0x1460, .rodata, unclassified/race_8003EE70]
+      - [0x1460, .rodata, race/ui/race_hud_modes]
       - [0x1488, .rodata, race/ui/race_hud]
       - [0x149C, .rodata, unclassified/graphics_800497B8]
-      - {start: 0x14B4, type: .rodata, name: unclassified/graphics_8004D330, linker_section: .rodata.course_model_scale}
+      - {start: 0x14B4, type: .rodata, name: graphics/course_rendering, linker_section: .rodata.course_model_scale}
       - {start: 0x14C4, type: .rodata, name: unclassified/graphics_800497B8, linker_section: .rodata.no_process_message}
       - [0x14D4, .rodata, race/course/course_objects]
       - {start: 0x1554, type: .rodata, name: race/effects/player_effects, linker_section: .rodata.race_oscillating_quad_position}
@@ -128,21 +128,21 @@ segments:
       - [0x1A78, rodata]
       - {start: 0x1C28, type: .rodata, name: menu/task_widgets, linker_section: .rodata.save_record_unlock_flags}
       - [0x1C3C, rodata]
-      - {start: 0x1C68, type: .rodata, name: unclassified/menu_8007CC78, linker_section: .rodata.course_selection}
-      - {start: 0x1D38, type: .rodata, name: unclassified/menu_8007CC78, linker_section: .rodata.selection_prize_menu}
-      - {start: 0x1DC0, type: .rodata, name: unclassified/menu_8007CC78, linker_section: .rodata.grouped_course_menu}
-      - {start: 0x1DFC, type: .rodata, name: unclassified/menu_8007CC78, linker_section: .rodata.grouped_course_menu_padding}
-      - {start: 0x1E00, type: .rodata, name: unclassified/menu_8007CC78, linker_section: .rodata.record_flag_selection_menu}
-      - {start: 0x1E3C, type: .rodata, name: unclassified/menu_8007CC78, linker_section: .rodata.record_flag_selection_menu_padding}
-      - [0x1E40, .rodata, unclassified/menu_8007CC78]
-      - {start: 0x1ED8, type: .rodata, name: unclassified/menu_8007CC78, linker_section: .rodata.registered_player_models}
-      - {start: 0x2068, type: .rodata, name: unclassified/menu_8007CC78, linker_section: .rodata.grouped_selection_menu}
-      - {start: 0x210C, type: .rodata, name: unclassified/menu_8007CC78, linker_section: .rodata.grouped_selection_menu_padding}
-      - {start: 0x2110, type: .rodata, name: unclassified/menu_8007CC78, linker_section: .rodata.player_grouped_selection}
+      - {start: 0x1C68, type: .rodata, name: menu/course_selection_tasks, linker_section: .rodata.course_selection}
+      - {start: 0x1D38, type: .rodata, name: menu/course_selection_tasks, linker_section: .rodata.selection_prize_menu}
+      - {start: 0x1DC0, type: .rodata, name: menu/course_selection_tasks, linker_section: .rodata.grouped_course_menu}
+      - {start: 0x1DFC, type: .rodata, name: menu/course_selection_tasks, linker_section: .rodata.grouped_course_menu_padding}
+      - {start: 0x1E00, type: .rodata, name: menu/course_selection_tasks, linker_section: .rodata.record_flag_selection_menu}
+      - {start: 0x1E3C, type: .rodata, name: menu/course_selection_tasks, linker_section: .rodata.record_flag_selection_menu_padding}
+      - [0x1E40, .rodata, menu/course_selection_tasks]
+      - {start: 0x1ED8, type: .rodata, name: menu/course_selection_tasks, linker_section: .rodata.registered_player_models}
+      - {start: 0x2068, type: .rodata, name: menu/course_selection_tasks, linker_section: .rodata.grouped_selection_menu}
+      - {start: 0x210C, type: .rodata, name: menu/course_selection_tasks, linker_section: .rodata.grouped_selection_menu_padding}
+      - {start: 0x2110, type: .rodata, name: menu/course_selection_tasks, linker_section: .rodata.player_grouped_selection}
       - [0x2230, rodata]
-      - {start: 0x22B8, type: .rodata, name: unclassified/menu_8007CC78, linker_section: .rodata.memory_card_slot_task}
-      - {start: 0x22EC, type: .rodata, name: unclassified/menu_8007CC78, linker_section: .rodata.memory_card_slot_task_padding}
-      - {start: 0x22F0, type: .rodata, name: unclassified/menu_8007CC78, linker_section: .rodata.save_record_task}
+      - {start: 0x22B8, type: .rodata, name: menu/course_selection_tasks, linker_section: .rodata.memory_card_slot_task}
+      - {start: 0x22EC, type: .rodata, name: menu/course_selection_tasks, linker_section: .rodata.memory_card_slot_task_padding}
+      - {start: 0x22F0, type: .rodata, name: menu/course_selection_tasks, linker_section: .rodata.save_record_task}
       - [0x2318, rodata]
       - [0x2400, .rodata, menu/save_record_tasks]
       - {start: 0x2434, type: .rodata, name: menu/save_record_tasks, linker_section: .rodata.state_value_history_padding}
@@ -235,12 +235,12 @@ segments:
       - [0x28050, c, menu/record_screens]
       - [0x2D1A4, c, race/player/player_results]
       - [0x2E73C, c, race/camera/race_camera]
-      - [0x2F670, c, unclassified/race_8003EE70]
+      - [0x2F670, c, race/ui/race_hud_modes]
       - [0x33DAC, c, race/ui/race_hud]
       - [0x34AF4, c, race/effects/coordinate_effects]
       - [0x39FB8, c, unclassified/graphics_800497B8]
       - [0x3AC54, c, race/course/course_geometry]
-      - [0x3DB30, c, unclassified/graphics_8004D330]
+      - [0x3DB30, c, graphics/course_rendering]
       - [0x42D30, c, graphics/model_renderer]
       - [0x49278, c, race/course/course_objects]
       - [0x50334, c, graphics/primitive_draw]
@@ -251,7 +251,7 @@ segments:
       - [0x5C5DC, c, graphics/sprite_draw]
       - [0x60A74, c, menu/task_widgets]
       - [0x6C69C, c, unclassified/menu_8007BE9C]
-      - [0x6D478, c, unclassified/menu_8007CC78]
+      - [0x6D478, c, menu/course_selection_tasks]
       - [0x79FA4, c, menu/save_record_tasks]
       - [0x7CE30, c, engine/game_options]
       - [0x7CF08, c, menu/panel_tasks]
@@ -753,13 +753,13 @@ segments:
       - {start: 0x114DD4, type: .data, name: unclassified/graphics_800497B8, linker_section: .data.heading_octant_angles}
       - {start: 0x1152E4, type: .data, name: unclassified/graphics_800497B8, linker_section: .data.debug_text_sprite}
       - [0x115308, data, heading_octant_angles_tail]
-      - {start: 0x115574, type: .data, name: unclassified/graphics_8004D330, linker_section: .data.lap_animated_background_tile}
-      - {start: 0x115584, type: .data, name: unclassified/graphics_8004D330, linker_section: .data.layered_background_model_positions}
-      - {start: 0x1155A4, type: .data, name: unclassified/graphics_8004D330, linker_section: .data.oscillating_quad_vertices}
-      - {start: 0x1155C4, type: .data, name: unclassified/graphics_8004D330, linker_section: .data.rippling_background}
+      - {start: 0x115574, type: .data, name: graphics/course_rendering, linker_section: .data.lap_animated_background_tile}
+      - {start: 0x115584, type: .data, name: graphics/course_rendering, linker_section: .data.layered_background_model_positions}
+      - {start: 0x1155A4, type: .data, name: graphics/course_rendering, linker_section: .data.oscillating_quad_vertices}
+      - {start: 0x1155C4, type: .data, name: graphics/course_rendering, linker_section: .data.rippling_background}
       - [0x1155EC, data, oscillating_quad_vertices_tail]
-      - {start: 0x115614, type: .data, name: unclassified/graphics_8004D330, linker_section: .data.camera_overlay_packets}
-      - {start: 0x115714, type: .data, name: unclassified/graphics_8004D330, linker_section: .data.offset_screen_copy_sprites}
+      - {start: 0x115614, type: .data, name: graphics/course_rendering, linker_section: .data.camera_overlay_packets}
+      - {start: 0x115714, type: .data, name: graphics/course_rendering, linker_section: .data.offset_screen_copy_sprites}
       - [0x1157D4, data, offset_screen_copy_sprites_tail]
       - {start: 0x115914, type: .data, name: race/course/course_objects, linker_section: .data.course_sector_resources}
       - [0x1161DC, data, course_sector_resources_tail]
@@ -814,7 +814,7 @@ segments:
       - [0x11F404, data, uppercase_glyph_metrics_tail]
       - [0x11F900, .data, menu/task_widgets]
       - {start: 0x11F90C, type: .data, name: menu/task_widgets, linker_section: .data.secondary_task_sequence}
-      - [0x11F93C, .data, unclassified/menu_8007CC78]
+      - [0x11F93C, .data, menu/course_selection_tasks]
       - {start: 0x11F97C, type: .data, name: menu/task_widgets, linker_section: .data.animated_sprite16}
       - [0x11F98C, data, 11F98C]
       - {start: 0x11F9EC, type: .data, name: menu/task_widgets, linker_section: .data.selection_panel_character_stats}
@@ -823,15 +823,15 @@ segments:
       - {start: 0x11FBC8, type: .data, name: menu/task_widgets, linker_section: .data.value_panel_label}
       - {start: 0x11FBDC, type: .data, name: menu/task_widgets, linker_section: .data.text_panel_message}
       - [0x11FC00, data, 11FC00]
-      - {start: 0x120560, type: .data, name: unclassified/menu_8007CC78, linker_section: .data.record_flag_menu_sprites}
+      - {start: 0x120560, type: .data, name: menu/course_selection_tasks, linker_section: .data.record_flag_menu_sprites}
       - [0x1205CC, data, record_flag_menu_data_tail]
-      - {start: 0x12080C, type: .data, name: unclassified/menu_8007CC78, linker_section: .data.grouped_course_menu_descriptors}
+      - {start: 0x12080C, type: .data, name: menu/course_selection_tasks, linker_section: .data.grouped_course_menu_descriptors}
       - [0x120884, data, grouped_course_menu_data_tail]
-      - {start: 0x1208D8, type: .data, name: unclassified/menu_8007CC78, linker_section: .data.player_grouped_selection_sprites}
-      - {start: 0x12093E, type: .data, name: unclassified/menu_8007CC78, linker_section: .data.player_grouped_selection_sprites_padding}
-      - {start: 0x120940, type: .data, name: unclassified/menu_8007CC78, linker_section: .data.player_grouped_selection_descriptors}
+      - {start: 0x1208D8, type: .data, name: menu/course_selection_tasks, linker_section: .data.player_grouped_selection_sprites}
+      - {start: 0x12093E, type: .data, name: menu/course_selection_tasks, linker_section: .data.player_grouped_selection_sprites_padding}
+      - {start: 0x120940, type: .data, name: menu/course_selection_tasks, linker_section: .data.player_grouped_selection_descriptors}
       - [0x1209B8, data, grouped_course_menu_data_end]
-      - {start: 0x1209CC, type: .data, name: unclassified/menu_8007CC78, linker_section: .data.task_index_panel_quads}
+      - {start: 0x1209CC, type: .data, name: menu/course_selection_tasks, linker_section: .data.task_index_panel_quads}
       - [0x120ABC, data, task_index_panel_tail]
       - {start: 0x120F24, type: .data, name: menu/save_record_tasks, linker_section: .data.task_shadowed_text}
       - [0x120F40, data, task_shadowed_text_tail]
@@ -980,7 +980,7 @@ segments:
       - {start: 0x12B954, type: .data, name: race/player/player_actions, linker_section: .data.menu_sprite_palettes_prefix}
       - {start: 0x12B958, type: .data, name: race/player/player_actions, linker_section: .data.menu_sprite_palettes}
       - [0x12B96C, data, 12B96C]
-      - [0x12B974, .data, unclassified/race_8003EE70]
+      - [0x12B974, .data, race/ui/race_hud_modes]
       - {start: 0x12B980, type: .sdata, name: race/player/player_actions, linker_section_order: .data}
       - [0x12B984, data, 12B984]
       - {start: 0x12B9AC, type: .data, name: race/player/player_actions, linker_section: .data.player_dual_resource_effect_frame}
@@ -995,12 +995,12 @@ segments:
       - [0x12B9DC, data, 12B9DC]
       - {start: 0x12BA14, type: .data, name: unclassified/graphics_800497B8, linker_section: .data.debug_position_formats}
       - [0x12BA2C, data, debug_position_formats_tail]
-      - {start: 0x12BA3C, type: .sdata, name: unclassified/graphics_8004D330, linker_section: .sdata.lap_animated_background_frame, linker_section_order: .data}
-      - {start: 0x12BA40, type: .data, name: unclassified/graphics_8004D330, linker_section: .data.read_pixel_rect}
+      - {start: 0x12BA3C, type: .sdata, name: graphics/course_rendering, linker_section: .sdata.lap_animated_background_frame, linker_section_order: .data}
+      - {start: 0x12BA40, type: .data, name: graphics/course_rendering, linker_section: .data.read_pixel_rect}
       - [0x12BA48, data, 12BA48]
-      - {start: 0x12BA50, type: .data, name: unclassified/graphics_8004D330, linker_section: .data.scanline_copy_rects}
+      - {start: 0x12BA50, type: .data, name: graphics/course_rendering, linker_section: .data.scanline_copy_rects}
       - [0x12BA60, data, scanline_copy_rects_tail]
-      - {start: 0x12BA68, type: .data, name: unclassified/graphics_8004D330, linker_section: .data.course_model_texture_window}
+      - {start: 0x12BA68, type: .data, name: graphics/course_rendering, linker_section: .data.course_model_texture_window}
       - [0x12BA70, data]
       - {start: 0x12BA94, type: .data, name: race/course/course_objects, linker_section: .data.interaction_visual_frame, linker_section_order: .data}
       - [0x12BA9C, data, interaction_visual_frame_tail]
@@ -1033,14 +1033,14 @@ segments:
       - [0x12BBD0, data, 12BBD0]
       - {start: 0x12BBF8, type: .data, name: unclassified/menu_8007BE9C, linker_section: .data.selection_money_currency_label}
       - [0x12BBFC, data, 12BBD0_tail]
-      - {start: 0x12BC1C, type: .data, name: unclassified/menu_8007CC78, linker_section: .data.selection_prize_currency_label}
+      - {start: 0x12BC1C, type: .data, name: menu/course_selection_tasks, linker_section: .data.selection_prize_currency_label}
       - [0x12BC20, data, selection_prize_currency_label_tail]
-      - {start: 0x12BC5C, type: .data, name: unclassified/menu_8007CC78, linker_section: .data.registered_triplet_unavailable_label}
-      - {start: 0x12BC60, type: .data, name: unclassified/menu_8007CC78, linker_section: .data.lit_object_draw_area_depths}
+      - {start: 0x12BC5C, type: .data, name: menu/course_selection_tasks, linker_section: .data.registered_triplet_unavailable_label}
+      - {start: 0x12BC60, type: .data, name: menu/course_selection_tasks, linker_section: .data.lit_object_draw_area_depths}
       - [0x12BC68, data, 12BC68]
-      - {start: 0x12BC6C, type: .data, name: unclassified/menu_8007CC78, linker_section: .data.player_grouped_selection_transition_flags}
+      - {start: 0x12BC6C, type: .data, name: menu/course_selection_tasks, linker_section: .data.player_grouped_selection_transition_flags}
       - {start: 0x12BC70, type: .data, name: menu/panel_tasks, linker_section: .data.registered_panel_mode_labels}
-      - {start: 0x12BC78, type: .data, name: unclassified/menu_8007CC78, linker_section: .data.save_record_progress_currency_label}
+      - {start: 0x12BC78, type: .data, name: menu/course_selection_tasks, linker_section: .data.save_record_progress_currency_label}
       - [0x12BC7C, data, 12BC7C]
       - [0x12BCAC, .data, menu/panel_tasks]
       - [0x12BCB0, data, 12BC78_tail]
@@ -1085,9 +1085,9 @@ segments:
       - {start: 0x12BEA4, type: .sdata, name: race/course/course_objects, linker_section: .sdata.object_sort_saved_stack, linker_section_order: .data}
       - {start: 0x12BEA8, type: .sdata, name: race/course/course_objects, linker_section: .sdata.alternate_object_sort_saved_stack, linker_section_order: .data}
       - [0x12BEAC, data]
-      - {start: 0x12BEB4, type: .sdata, name: unclassified/menu_8007CC78, linker_section_order: .data}
-      - {start: 0x12BEB8, type: .sdata, name: unclassified/menu_8007CC78, linker_section: .sdata.player_grouped_selection_states, linker_section_order: .data}
-      - {start: 0x12BEBA, type: .data, name: unclassified/menu_8007CC78, linker_section: .data.player_grouped_selection_states_padding}
+      - {start: 0x12BEB4, type: .sdata, name: menu/course_selection_tasks, linker_section_order: .data}
+      - {start: 0x12BEB8, type: .sdata, name: menu/course_selection_tasks, linker_section: .sdata.player_grouped_selection_states, linker_section_order: .data}
+      - {start: 0x12BEBA, type: .data, name: menu/course_selection_tasks, linker_section: .data.player_grouped_selection_states_padding}
       - {start: 0x12BEC0, type: .sdata, name: scene/scene_event_tasks, linker_section: .sdata.scene_image_display_task, linker_section_order: .data}
       - {start: 0x12BEC4, type: .sdata, name: menu/selection_tasks, linker_section: .sdata.scene_sound_state, linker_section_order: .data}
 
@@ -1114,7 +1114,7 @@ segments:
     subalign: 1
     section_order: [".bss"]
     subsegments:
-      - {start: 0x12C000, type: .bss, name: unclassified/graphics_8004D330, linker_section: .bss.course_model_draw_mode}
+      - {start: 0x12C000, type: .bss, name: graphics/course_rendering, linker_section: .bss.course_model_draw_mode}
 
   - name: white_pulse_palette_bss
     type: code
@@ -1164,7 +1164,7 @@ segments:
     subalign: 1
     section_order: [".bss"]
     subsegments:
-      - {start: 0x12C000, type: .bss, name: unclassified/menu_8007CC78, linker_section: .bss.state_value_history}
+      - {start: 0x12C000, type: .bss, name: menu/course_selection_tasks, linker_section: .bss.state_value_history}
 
   - name: game_scene_sound_slots_bss
     type: code

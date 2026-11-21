@@ -1,4 +1,4 @@
-#include "../race/race_presentation_internal.h"
+#include "../race_presentation_internal.h"
 #include "game/race/ui/race_hud.h"
 
 /* Full-width Shift-JIS labels used by the race HUD. */
@@ -22,7 +22,7 @@ void func_8004213C(s16 player);
 void func_80042558(void);
 void func_80042894(s16 player);
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/race_8003EE70", func_8003EE70);
+INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud_modes", func_8003EE70);
 
 void addFourWordGpuPacket(GpuPacket4 *source, GsOT *ot, u16 depth) {
     GpuPacket4 *packet = (GpuPacket4 *)GsGetWorkBase();
@@ -31,7 +31,7 @@ void addFourWordGpuPacket(GpuPacket4 *source, GsOT *ot, u16 depth) {
     func_800BF2C8((u32)(packet + 1));
 }
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/race_8003EE70", func_800400C4);
+INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud_modes", func_800400C4);
 
 void addTexturedSpritePacket(TexturedSpritePacket *source, GsOT *ot, u16 depth) {
     TexturedSpritePacket *packet = (TexturedSpritePacket *)GsGetWorkBase();
@@ -40,7 +40,7 @@ void addTexturedSpritePacket(TexturedSpritePacket *source, GsOT *ot, u16 depth) 
     func_800BF2C8((u32)(packet + 1));
 }
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/race_8003EE70", func_800401DC);
+INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud_modes", func_800401DC);
 
 void drawMenuKindSprite(s16 x, s16 y, s16 kind, s32 frame, GsOT *ot, u16 depth) {
     s32 frameIndex = frame;
@@ -122,7 +122,7 @@ void unpackUpperWordBytes(u32 packed, UnpackedWordBytes *out) {
     out->unk0 = packed;
 }
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/race_8003EE70", func_8004054C);
+INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud_modes", func_8004054C);
 
 void initializeRaceRulesAndCounters(void) {
     RaceTime *times;
@@ -377,11 +377,11 @@ void updateRaceHud(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/race_8003EE70", func_80041554);
+INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud_modes", func_80041554);
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/race_8003EE70", func_80041890);
+INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud_modes", func_80041890);
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/race_8003EE70", func_800418F4);
+INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud_modes", func_800418F4);
 
 void drawTrickAttackHud(void) {
     s16 palette = 1;
@@ -423,11 +423,11 @@ void drawTrickAttackHud(void) {
     func_8006C998(-136, 64, 419, 14, -1, ot, depth);
 }
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/race_8003EE70", func_8004213C);
+INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud_modes", func_8004213C);
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/race_8003EE70", func_80042558);
+INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud_modes", func_80042558);
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/race_8003EE70", func_80042894);
+INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud_modes", func_80042894);
 
 void drawCourseCoinHud(void) {
     GsOT *ot = &D_800EBFF0[D_8013AF78];

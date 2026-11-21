@@ -2,7 +2,7 @@
 #include "game/menu/task_widgets.h"
 #include "game/menu/selected_sprite.h"
 #include "game/engine/game_task_scheduler.h"
-#include "save_record_tasks_internal.h"
+#include "grouped_selection_internal.h"
 
 #define GS_MODEL_OBJECT_HIDDEN 0x80000000u
 #define TASK_POSITION(task) ((Movement2D *)&D_800D9504[(task)->resource14])

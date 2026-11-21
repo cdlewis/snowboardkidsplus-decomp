@@ -1,6 +1,6 @@
 #include "psx/scratchpad.h"
 #include "psx/libetc.h"
-#include "../graphics/render_effects_internal.h"
+#include "render_effects_internal.h"
 #include "../race/race_internal.h"
 #define GAME_LOOP_ABSOLUTE_ADDRESSING
 #include "game/engine/game_loop.h"
@@ -372,9 +372,9 @@ void drawLayeredBackgroundAndSetFog(s16 playerIndex) {
     SetFogNearFar(8000, 10000, 400);
 }
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/graphics_8004D330", func_8004E718);
+INCLUDE_ASM("asm/nonmatchings/graphics/course_rendering", func_8004E718);
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/graphics_8004D330", func_8004EBF8);
+INCLUDE_ASM("asm/nonmatchings/graphics/course_rendering", func_8004EBF8);
 
 void drawCyanBackgroundAndSetFog(void) {
     addFlatRectangle(&D_8013AF6C[4095], -160, -120, 320, 240, 0, 235, 230);
@@ -572,7 +572,7 @@ void createFlickeringDotsTask(s32 playerIndex) {
     resource->frame = 0;
 }
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/graphics_8004D330", func_8004FB70);
+INCLUDE_ASM("asm/nonmatchings/graphics/course_rendering", func_8004FB70);
 
 void drawRipplingBackgroundAndSetFog(s16 playerIndex) {
     s32 column, strip, offset, x, y;
@@ -797,7 +797,7 @@ void drawBackgroundModelsAndSetFog(s16 playerIndex) {
     SetFogNearFar(8000, 10000, 400);
 }
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/graphics_8004D330", func_800512A4);
+INCLUDE_ASM("asm/nonmatchings/graphics/course_rendering", func_800512A4);
 
 s32 isPositionInCameraRange(s32 x, s32 z, s16 playerIndex) {
     s32 centerX, centerZ;
@@ -833,7 +833,7 @@ void readVramPixelColor(s32 x, s32 y, TextureColor *out) {
     out->stp = pixel >> 15;
 }
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/graphics_8004D330", func_8005162C);
+INCLUDE_ASM("asm/nonmatchings/graphics/course_rendering", func_8005162C);
 
 void unpackPsxColor(u32 color, UnpackedPsxColor *out) {
     out->r = color & 0x1F;
@@ -854,7 +854,7 @@ u32 packTextureColor(TextureColor *color) {
     return stp | rgb;
 }
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/graphics_8004D330", func_80051700);
+INCLUDE_ASM("asm/nonmatchings/graphics/course_rendering", func_80051700);
 
 void queueScanlineCopyPackets(void) {
     DR_MOVE *move;
@@ -903,7 +903,7 @@ void queueScanlineCopyPackets(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/graphics_8004D330", func_80051A68);
+INCLUDE_ASM("asm/nonmatchings/graphics/course_rendering", func_80051A68);
 
 void drawCourseModelsForView(s16 view) {
     MATRIX *matrix = (MATRIX *)getScratchAddr(0);

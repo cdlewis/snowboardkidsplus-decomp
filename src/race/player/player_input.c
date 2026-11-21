@@ -5,7 +5,7 @@
 #include "game/engine/angles.h"
 #include "game/engine/game_options.h"
 #include "game/graphics/coordinate.h"
-#include "game/menu/selected_record.h"
+#include "game/race/course/course_geometry.h"
 #include "game/menu/selected_records.h"
 
 typedef struct PlayerRankSpeedAdjustment {

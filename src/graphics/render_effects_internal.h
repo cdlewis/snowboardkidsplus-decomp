@@ -26,7 +26,7 @@
 #include "game/race/camera/race_camera.h"
 #include "game/menu/selected_records.h"
 #define SELECTED_RECORD_GP_ADDRESSING
-#include "game/menu/selected_record.h"
+#include "game/race/course/course_geometry.h"
 #include "psx/libsnd.h"
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
@@ -1034,13 +1034,6 @@ void updateLandedTaskObject(void);
 
 void setTextPalette(s32 palette);
 void initSprite(GsSPRITE *sprite);
-void bindGeometryRecordData(s16 *data);
-s32 getAdjacentGeometryRegionForPoint(s16 index, s32 x, s32 z);
-void selectGeometryRecord(s16 index);
-s32 getGeometryPlacementSignedDistance(s16 index, s32 x, s32 z);
-void getGeometryPlacementTransform(s16 index, s32 *x, s32 *y, s32 *z, u16 *angle);
-void reflectVelocityAndEnforceGeometryEdgeDistance(s32 *velocityX, s32 *velocityZ, s32 limit);
-void enforceGeometryEdgeDistance(s32 limit);
 void adjustDebugPositionAndDisplay(VECTOR *position);
 void drawCyanBackgroundAndSetFog(void);
 void createOscillatingQuadTask(s32 value, VECTOR *position, s32 amplitude, s32 r, s32 g, s32 b);

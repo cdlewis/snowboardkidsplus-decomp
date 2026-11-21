@@ -7,7 +7,7 @@
 #define PLAYER_STATE_RESULT_ABSOLUTE_ADDRESSING
 #include "game/race/player/race_player.h"
 #include "game/race/camera/race_camera.h"
-#include "game/menu/selected_record.h"
+#include "game/race/course/course_geometry.h"
 #include "game/graphics/graphics.h"
 #include "game/graphics/coordinate.h"
 #include "game/race/course/course_offset.h"

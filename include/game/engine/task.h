@@ -146,22 +146,14 @@ void initializeDelayedPlayerRiseEffectTask(void);
 void initializeOrbitingPlayerVisualTask(void);
 void initializeFallingTaskObject(void);
 void initializeDualResourceSequenceTask(void);
-void initializeModeDependentDualResourceTask(void);
 void initializeScaledTaskCoordinateResource(void);
 GameTask *createCountdownTask(u32 frames);
 GameTask *createTimedSpriteB5Task(s16 x, s16 y, u32 frames);
 GameTask *createValueTransitionTask(u32 *value, u32 target, u32 step);
 GameTask *createAnimatedSpriteTask(s16 x, s16 y, s16 unk02, s16 repeats, u16 depth);
-void createPlayerPanelTask(s16 player, s16 x, s16 y, s32 depth, s32 index);
-void createValuePanelTask(s16 x, s16 y, s16 *values, s32 depth, s32 index);
 GameTask *createShrinkingSpriteTask(s16 motionEnabled, s32 spriteIndex);
 
-
 void begin30TickTransitionOnFlag10(void);
-
-s16 getGroupedIndexBase(s16 index);
-s16 getTaskResourceGroupedIndex(GameTask *task, s16 index);
-s16 getTaskResourceAdjustedGroupedIndex(s16 value, GameTask *task, s16 index);
 
 void copyIndexedTaskImagesToVram(s16 index);
 
@@ -229,7 +221,6 @@ void initializeExpandingCoordinateEffectTask(void);
 
 void createPlayerPairedQuadEffectTask(s32 playerIndex, s32 variant);
 
-void createPaletteRotationTask(s32 x, s32 y, s32 first, s32 last, s32 steps, s32 interval, s32 index);
 void initializePlayerModeSelectionTask(void);
 
 void configureTaskGridMovement(s32 mode, GameTask *task, s32 x, s32 y,
@@ -258,37 +249,13 @@ void initializeMode1RacePlayers(void);
 void initializeModeRaceTasks(void);
 void queueRaceStartupResourcesTask(void);
 
-void func_80081AC8(s32 index, GameTask *task, s32 x, s32 y, s32 stepX, s32 stepY, s32 delay);
-void createRegisteredPanelTask(s32 mode, s32 value, s16 x, s16 y, s16 depth, s32 index);
-
-void createRegisteredTextPanelTask(s16 x, s16 y, const u16 **texts,
-                                   const u8 *mapping, s32 depth, s32 index);
-
-void initializeSaveRecordTask(void);
-void func_80089EC0(void);
-void updateMemoryCardSaveMenuTask(void);
-
 void startUnlockNotification0Task(void);
 
 void updateSelectedPlayerPlaybackTask(void);
-void func_8008C708(s16 x, s16 y, s16 textX, s16 textY,
-                   const u16 *text, s32 mode, s32 depth, s32 index);
-void createRegisteredDetailedTextPanelTask(s16 x, s16 y, s16 textX, s16 textY,
-                                   const u16 *text, s32 value, s32 color, s32 mode,
-                                   const u16 *content, s32 depth, s32 index);
-
-void createRegisteredTripletTask(s32 x, s32 y, s32 offsetX, s32 offsetY,
-                                 ByteTriplet *records, u8 *indices, s32 depth, s32 index);
 
 void drawTaskGridSelectionMarker(void);
 
 s16 func_8007E8CC(const u8 *mapping, s16 index);
-void func_80081AC8(s32 index, GameTask *task, s32 x, s32 y,
-                   s32 speedX, s32 speedY, s32 duration);
-
-void createRegisteredMovingPanelTask(u16 mode, const s16 *values, s16 x, s16 y,
-                                     s16 x2, s16 y2, s16 x3, s16 y3,
-                                     s32 depth, s32 index);
 
 void createRegisteredSpacedChildTasks(s16 mode, u32 acceptMask, u32 cancelMask,
                                       const u8 *data44, const u8 *data48,
@@ -303,6 +270,3 @@ void initializeDemoPlaybackTask(void);
 
 typedef char GameTaskSizeCheck[(sizeof(GameTask) == 0x20) ? 1 : -1];
 typedef char TaskResourceRecordSizeCheck[(sizeof(TaskResourceRecord) == 0x100) ? 1 : -1];
-
-void createRegisteredTexturePairTask(s16 x, s16 y, const u8 *mapping, s32 mode,
-                                     s32 unused, u16 arg5, s32 depth, s32 index);

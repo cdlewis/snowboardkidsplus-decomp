@@ -1,7 +1,9 @@
 #define TASK_WIDGET_COLORS_ABSOLUTE_ADDRESSING
 #include "psx/scratchpad.h"
+#include "game/menu/save_record_tasks.h"
 #include "psx/libetc.h"
-#include "../menu/save_record_tasks_internal.h"
+#include "save_record_tasks_internal.h"
+#include "grouped_selection_internal.h"
 #include "game/engine/byte_search.h"
 #include "game/io/cd_queue.h"
 #define SELECTED_RECORDS_ABSOLUTE_ADDRESSING
@@ -403,7 +405,7 @@ void updateCdAwareCourseSelectionTask(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_8007D47C);
+INCLUDE_ASM("asm/nonmatchings/menu/course_selection_tasks", func_8007D47C);
 
 void initializeModeDependentDualResourceTask(void) {
     D_8013AE88->data18 = 1;
@@ -764,7 +766,7 @@ draw_base_status:
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_8007E8CC);
+INCLUDE_ASM("asm/nonmatchings/menu/course_selection_tasks", func_8007E8CC);
 
 void drawSelectionItemDetails(void) {
     Movement2D *position;
@@ -867,7 +869,7 @@ void clearHalfwordPairTable(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_8007F46C);
+INCLUDE_ASM("asm/nonmatchings/menu/course_selection_tasks", func_8007F46C);
 
 void initializeCountedPlayerGroupedSelectionBoundsTask(void) {
     RECT *bounds;
@@ -1541,7 +1543,7 @@ void createRegisteredPanelTask(s32 mode, s32 value, s16 x, s16 y, s16 depth, s32
     slot->task = D_8013AE8C;
 }
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_800815D0);
+INCLUDE_ASM("asm/nonmatchings/menu/course_selection_tasks", func_800815D0);
 
 static inline RegisteredTaskEntry *getRegisteredMenuTaskEntry(u16 resource, u32 index) {
     RegisteredTaskEntry *entries = (RegisteredTaskEntry *)&D_800D9504[resource];
@@ -1643,9 +1645,9 @@ commandChildren:
     entry->flags |= children[1].flags;
 }
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_80081AC8);
+INCLUDE_ASM("asm/nonmatchings/menu/course_selection_tasks", func_80081AC8);
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_80081BAC);
+INCLUDE_ASM("asm/nonmatchings/menu/course_selection_tasks", func_80081BAC);
 
 static inline RegisteredTaskEntry *getRegisteredTripletEntry(u16 resource, s32 index) {
     RegisteredTaskEntry *entries = (RegisteredTaskEntry *)&D_800D9504[resource];
@@ -2184,7 +2186,7 @@ void updateRegisteredChildBlinkTransition(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_80083C3C);
+INCLUDE_ASM("asm/nonmatchings/menu/course_selection_tasks", func_80083C3C);
 
 void drawTaskOffsetSpriteB8(void) {
     Movement2D *resource;
@@ -2561,7 +2563,7 @@ void initializeDualResourceTask(void) {
     setCurrentTaskCallback(func_800857C4);
 }
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_800857C4);
+INCLUDE_ASM("asm/nonmatchings/menu/course_selection_tasks", func_800857C4);
 
 void drawClippedRegisteredTaskGridSprite(void) {
     Movement2D *position;
@@ -2647,7 +2649,7 @@ s16 mapGroupedValueToTableIndex(s16 value) {
     return result;
 }
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_80086C34);
+INCLUDE_ASM("asm/nonmatchings/menu/course_selection_tasks", func_80086C34);
 
 void updatePaletteEntryTask(void) {
     PaletteEntryResource *resource;
@@ -2941,9 +2943,9 @@ void resetUnlockNotificationStateForMode2(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_800879CC);
+INCLUDE_ASM("asm/nonmatchings/menu/course_selection_tasks", func_800879CC);
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_80087B84);
+INCLUDE_ASM("asm/nonmatchings/menu/course_selection_tasks", func_80087B84);
 
 void drawSaveRecordProgressPanel(void) {
     Movement2D *position;
@@ -3058,4 +3060,4 @@ void drawSaveRecordProgressPanel(void) {
 u16 gSaveRecordProgressCurrencyLabel[2]
     __attribute__((section(".data.save_record_progress_currency_label"), aligned(4))) = {0x11, 0};
 
-INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007CC78", func_800895DC);
+INCLUDE_ASM("asm/nonmatchings/menu/course_selection_tasks", func_800895DC);

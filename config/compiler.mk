@@ -25,12 +25,12 @@ MAIN_GAME_UNITS := src/main.c \
     src/menu/record_screens.c \
     src/race/player/player_results.c \
     src/race/camera/race_camera.c \
-    src/unclassified/race_8003EE70.c \
+    src/race/ui/race_hud_modes.c \
     src/race/ui/race_hud.c \
     src/race/effects/coordinate_effects.c \
     src/unclassified/graphics_800497B8.c \
     src/race/course/course_geometry.c \
-    src/unclassified/graphics_8004D330.c \
+    src/graphics/course_rendering.c \
     src/graphics/model_renderer.c \
     src/race/course/course_objects.c \
     src/graphics/primitive_draw.c \
@@ -41,7 +41,7 @@ MAIN_GAME_UNITS := src/main.c \
     src/graphics/sprite_draw.c \
     src/menu/task_widgets.c \
     src/unclassified/menu_8007BE9C.c \
-    src/unclassified/menu_8007CC78.c \
+    src/menu/course_selection_tasks.c \
     src/menu/save_record_tasks.c
 
 G8_UNITS := \
@@ -104,12 +104,12 @@ UNIT_REORDER_src/race/ui/race_panels.c := 0
 UNIT_REORDER_src/menu/record_screens.c := 0
 UNIT_REORDER_src/race/player/player_results.c := 0
 UNIT_REORDER_src/race/camera/race_camera.c := 0
-UNIT_REORDER_src/unclassified/race_8003EE70.c := 0
+UNIT_REORDER_src/race/ui/race_hud_modes.c := 0
 UNIT_REORDER_src/race/ui/race_hud.c := 0
 UNIT_REORDER_src/race/effects/coordinate_effects.c := 0
 UNIT_REORDER_src/unclassified/graphics_800497B8.c := 0
 UNIT_REORDER_src/race/course/course_geometry.c := 0
-UNIT_REORDER_src/unclassified/graphics_8004D330.c := 0
+UNIT_REORDER_src/graphics/course_rendering.c := 0
 UNIT_REORDER_src/graphics/model_renderer.c := 0
 UNIT_REORDER_src/race/course/course_objects.c := 0
 UNIT_REORDER_src/graphics/primitive_draw.c := 0
@@ -130,16 +130,16 @@ UNIT_CCFLAGS_src/menu/resource_tasks.c += --rdata-section=updateMainTailSelectio
 UNIT_CCFLAGS_src/menu/resource_tasks.c += --rdata-section=updateSelectionIndexedMenuTask:.rodata.selection_indexed_menu
 UNIT_CCFLAGS_src/menu/resource_tasks.c += --rdata-section=updateModeDependentRecordsMenuTask:.rodata.records_menu
 UNIT_REORDER_src/unclassified/menu_8007BE9C.c := 0
-UNIT_REORDER_src/unclassified/menu_8007CC78.c := 0
-UNIT_CCFLAGS_src/unclassified/menu_8007CC78.c += --rdata-section=updateCdAwareCourseSelectionTask:.rodata.course_selection
-UNIT_CCFLAGS_src/unclassified/menu_8007CC78.c += --rdata-section=updateSelectionPrizeMenuTask:.rodata.selection_prize_menu
-UNIT_CCFLAGS_src/unclassified/menu_8007CC78.c += --rdata-section=updatePlayerGroupedCourseSelectionTask:.rodata.grouped_course_menu
-UNIT_CCFLAGS_src/unclassified/menu_8007CC78.c += --rdata-section=updateRecordFlagSelectionMenuTask:.rodata.record_flag_selection_menu
-UNIT_CCFLAGS_src/unclassified/menu_8007CC78.c += --rdata-section=updateRegisteredPlayerModels:.rodata.registered_player_models
-UNIT_CCFLAGS_src/unclassified/menu_8007CC78.c += --rdata-section=updatePlayerGroupedSelectionMenu:.rodata.grouped_selection_menu
-UNIT_CCFLAGS_src/unclassified/menu_8007CC78.c += --rdata-section=updatePlayerGroupedSelectionTask:.rodata.player_grouped_selection
-UNIT_CCFLAGS_src/unclassified/menu_8007CC78.c += --rdata-section=updateMemoryCardSlotTask:.rodata.memory_card_slot_task
-UNIT_CCFLAGS_src/unclassified/menu_8007CC78.c += --rdata-section=updateSaveRecordTask:.rodata.save_record_task
+UNIT_REORDER_src/menu/course_selection_tasks.c := 0
+UNIT_CCFLAGS_src/menu/course_selection_tasks.c += --rdata-section=updateCdAwareCourseSelectionTask:.rodata.course_selection
+UNIT_CCFLAGS_src/menu/course_selection_tasks.c += --rdata-section=updateSelectionPrizeMenuTask:.rodata.selection_prize_menu
+UNIT_CCFLAGS_src/menu/course_selection_tasks.c += --rdata-section=updatePlayerGroupedCourseSelectionTask:.rodata.grouped_course_menu
+UNIT_CCFLAGS_src/menu/course_selection_tasks.c += --rdata-section=updateRecordFlagSelectionMenuTask:.rodata.record_flag_selection_menu
+UNIT_CCFLAGS_src/menu/course_selection_tasks.c += --rdata-section=updateRegisteredPlayerModels:.rodata.registered_player_models
+UNIT_CCFLAGS_src/menu/course_selection_tasks.c += --rdata-section=updatePlayerGroupedSelectionMenu:.rodata.grouped_selection_menu
+UNIT_CCFLAGS_src/menu/course_selection_tasks.c += --rdata-section=updatePlayerGroupedSelectionTask:.rodata.player_grouped_selection
+UNIT_CCFLAGS_src/menu/course_selection_tasks.c += --rdata-section=updateMemoryCardSlotTask:.rodata.memory_card_slot_task
+UNIT_CCFLAGS_src/menu/course_selection_tasks.c += --rdata-section=updateSaveRecordTask:.rodata.save_record_task
 UNIT_REORDER_src/menu/save_record_tasks.c := 0
 UNIT_CCFLAGS_src/menu/panel_tasks.c += --rdata-section=updateGroupedSelectionBoundsTask:.rodata.grouped_selection_bounds
 UNIT_CCFLAGS_src/menu/grid_selection.c += --rdata-section=updateSplitBoardSelectionTask:.rodata.split_board_selection

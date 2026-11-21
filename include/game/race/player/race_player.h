@@ -294,9 +294,6 @@ s32 callCurrentPlayerStateCallbackIfDifferent(u16 state);
 
 void initializeActiveRacePlayers(void);
 
-void assignTwoPlayerResultSlots(s16 result);
-void updateAttackResultsAndRecords(void);
-
 
 void updateActivePlayerRegionCollisions(void);
 
@@ -305,7 +302,6 @@ u16 advanceCurrentPlayerInputSequence(u8 sequence[][2], s16 slot);
 void createPlayerPositionTrailTask(s32 playerIndex);
 void createPlayerRingEffectTask(s32 playerIndex);
 
-s32 func_8004A764(s16 index, s32 x, s32 z);
 
 void updatePlayerRenderSnapshots(void);
 

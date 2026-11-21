@@ -162,7 +162,6 @@ void advanceCurrentTaskPanelTimer(void);
 void fadeInCurrentTaskPanel(void);
 void initializeRaceTimeComparisonPanel(void);
 s16 compareRaceTimes(const RaceTime *a, const RaceTime *b);
-void assignTwoPlayerResultSlots(s16 result);
 void updateCurrentPlayerSound(void);
 void stopPlayerSound(u16 playerIndex);
 void initPlayerCamera(u16 index);
