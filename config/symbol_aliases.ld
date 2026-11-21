@@ -14,6 +14,7 @@ geometryPlacementDataAbsolute = D_8013B1F4;
 selectionMenuRecordAbsolute = D_8013B560;
 mainTailSelectionGp = D_8013B527;
 shopMenuRememberedSelectionGp = gShopMenuRememberedSelection;
+boardMenuRememberedSelectionAbsolute = D_8013B4BD;
 taskTransitionFlagGp = D_8013B55E;
 
 /* GP-addressed view of the saved camera overlay selector. */

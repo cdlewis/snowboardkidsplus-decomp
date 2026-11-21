@@ -172,6 +172,9 @@ extern ResourceSectorRange gOtherModeSectorRanges[11] __attribute__((section(".d
 
 extern POLY_F3 gNumberAdjustmentArrow __attribute__((section(".data.number_adjustment_arrow")));
 
+extern const s8 gPaletteSelectionMainPreviewY[12];
+extern const s8 gPaletteSelectionSidePreviewY[12];
+
 extern SplitSelectionBoundsConfigs gSplitSelectionBoundsConfigs __attribute__((section(".data.split_selection_bounds_configs")));
 
 extern u16 playerModelDrawAreaDepths[4] __attribute__((section(".data.player_model_draw_area_depths")));
@@ -182,7 +185,7 @@ extern s16 D_8013B560;
 extern u8 D_8013B562;
 extern u8 D_8013AF3A __attribute__((section(".data")));
 
-void func_8009488C(void);
+void updateBoardPurchaseMenuTask(void);
 void func_800187B8(u8 voice);
 
 void updateRegisteredDetailedTextPanelTask(void);

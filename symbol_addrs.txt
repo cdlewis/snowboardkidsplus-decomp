@@ -2913,6 +2913,9 @@ gPlayerCharacterAttributes = 0x80123790; // type:u16 size:0x8C
 drawFullScreenSpriteTask = 0x8006A194; // type:func
 
 initializeCountedDisplayBoundsTask = 0x80094760; // type:func
+updateBoardPurchaseMenuTask = 0x8009488C; // type:func size:0xDE8
+sBoardPurchaseSpriteMapping = 0x8013B4F0; // size:0x4 defined:true
+sBoardPurchaseFullSpriteMapping = 0x8013B4F4; // size:0x8 defined:true
 
 prepareRaceResourcesIfSelectionChanged = 0x800A0C6C; // type:func
 

@@ -98,7 +98,6 @@ SplitSelectionBoundsConfigs gSplitSelectionBoundsConfigs __attribute__((section(
 
 extern u8 D_8013B4BD __attribute__((section(".data")));
 
-s16 func_80073760(GameTask *task, s16 index);
 void func_800995A8(s16 player, s16 character, u8 spacingX, u8 spacingY, ByteMappingDescriptor *descriptor);
 void func_8009A87C(void);
 
