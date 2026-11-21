@@ -7,6 +7,7 @@
 #include "game/engine/task.h"
 #include "game/graphics/graphics.h"
 #include "game/graphics/coordinate.h"
+#include "game/graphics/quad_animation.h"
 #include "game/race/camera/race_camera.h"
 #include "game/race/ui/race_hud.h"
 #include "game/engine/offset_archive.h"
@@ -187,7 +188,6 @@ void func_80015A30(u16 controller);
 void func_8001C9F0(void);
 s16 func_8008C290(s16 characterId, s16 finishPosition);
 void func_8005EBC4(void);
-void func_80069F1C(s32 transitionIndex);
 
 void runMovieAndGameLoop(void) {
     func_800131B4();
@@ -952,7 +952,7 @@ void finishRaceExitAfterCountdown(void) {
                     D_8013AE88 = D_8013B304;
                     func_800149E0();
                     D_8013AE88 = savedTask;
-                    func_80069F1C(transitionIndex - 1);
+                    startQuadTransitionSequenceTask(transitionIndex - 1);
                     player->unk0F8 = 8;
                     setCurrentTaskCallback(startTaskTransitionWhenFlagAEE8Set);
                     return;

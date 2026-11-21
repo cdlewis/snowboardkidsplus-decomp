@@ -2374,7 +2374,11 @@ void updateQuadTransitionSequenceTask(void) {
     if (D_8013B338 == 100) func_800149A8();
 }
 
-INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_80069F1C);
+void startQuadTransitionSequenceTask(s32 transitionIndex) {
+    func_80014930(&gGameTasks[4], updateQuadTransitionSequenceTask);
+    D_8013B338 = 0;
+    D_8013AE8C->data1A = transitionIndex;
+}
 
 void updatePrimaryValueTransition(void) {
     s32 value;
