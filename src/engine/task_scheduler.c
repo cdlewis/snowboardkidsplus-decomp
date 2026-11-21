@@ -41,6 +41,8 @@ TaskCallback gInitialTaskCallbacks[6] __attribute__((section(".data.initial_task
     func_8001E1B8,
 };
 
+void func_800147B8(TaskCallback callback);
+
 void initializeTaskScheduler(void) {
     u16 i;
     for (i = 0; i < 6; i++) {
@@ -77,7 +79,14 @@ void initializeTaskScheduler(void) {
 
 INCLUDE_ASM("asm/nonmatchings/engine/task_scheduler", func_800147B8);
 
-INCLUDE_ASM("asm/nonmatchings/engine/task_scheduler", func_80014838);
+s32 createChildTask(TaskCallback callback) {
+    if (D_8013AEB4 == 0) {
+        D_8013AE8C = D_8013AEA0;
+        return 0;
+    }
+    func_800147B8(callback);
+    return 1;
+}
 
 INCLUDE_ASM("asm/nonmatchings/engine/task_scheduler", func_80014874);
 

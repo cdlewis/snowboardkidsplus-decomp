@@ -52,9 +52,9 @@ void initializeModeRaceTasks(void) {
     func_800148F4(&gGameTasks[3], initializeTaskPlayerCamera);
     D_8013AE8C->data18 = 0;
     func_80058BD4();
-    func_80014838(updateRacePlayerFinishSlotsTask);
+    createChildTask(updateRacePlayerFinishSlotsTask);
     for (player = D_8013AFD2 - 1; player >= 0; player--) {
-        func_80014838(initializeCurrentPlayerModelAndHeight);
+        createChildTask(initializeCurrentPlayerModelAndHeight);
         D_8013AE8C->data18 = player;
         gRacePlayers[player].task = D_8013AE8C;
     }
@@ -169,7 +169,7 @@ void completeModeSelectionTransitionWhenReady(void) {
             D_8013B108 = 2;
             return;
         default:
-            func_80014838(initializeMode1RacePlayers);
+            createChildTask(initializeMode1RacePlayers);
             setCurrentTaskCallback(selectTaskBySelectedRecordMatch);
             D_8013AE88->unk10 |= 1;
             break;

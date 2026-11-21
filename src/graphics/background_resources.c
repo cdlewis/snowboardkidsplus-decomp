@@ -88,7 +88,7 @@ void initializeBackgroundCameraTask(void) {
     D_8013AF84 = 400;
     initPlayerCamera(0);
     func_8003DEE0();
-    func_80014838(scheduleMode2SequenceWhenCdQueueIdle);
+    createChildTask(scheduleMode2SequenceWhenCdQueueIdle);
     D_8013AE8C->data18 = D_8013AE88->data18;
     D_8013AE8C->data1C = 0;
     queueMenuResourceReads((s16)D_8013AE8C->data18);

@@ -401,7 +401,7 @@ void initializeGameOptionViewTask(void) {
     setControllerFlag0(0);
     setControllerFlag0(1);
     setCurrentTaskCallback(queueRaceStartupResourcesTask);
-    func_80014838(dispatchGameOptionTransitionTask);
+    createChildTask(dispatchGameOptionTransitionTask);
     D_8013AE88->unk10 |= 1;
 }
 
@@ -557,9 +557,9 @@ void initializeRacePresentationTask(void) {
     func_800148F4(&gGameTasks[3], initCurrentPlayerCameraTask);
     D_8013AE8C->data18 = 0;
     func_80058BD4();
-    func_80014838(updateRacePlayerFinishSlotsTask);
+    createChildTask(updateRacePlayerFinishSlotsTask);
     for (i = activeRacePlayerCountGp - 1; i >= 0; i--) {
-        func_80014838(initializeCurrentPlayerModelAndHeight);
+        createChildTask(initializeCurrentPlayerModelAndHeight);
         D_8013AE8C->data18 = i;
         gRacePlayers[i].task = D_8013AE8C;
     }
@@ -1027,8 +1027,8 @@ void initializeDemoPlaybackTask(void) {
     func_800148F4(&gGameTasks[3], initPlayerZeroTask);
     D_8013AE8C->data18 = 0;
     func_80058BD4();
-    func_80014838(updateRacePlayerFinishSlotsTask);
-    func_80014838(initializeCurrentPlayerModelAndHeight);
+    createChildTask(updateRacePlayerFinishSlotsTask);
+    createChildTask(initializeCurrentPlayerModelAndHeight);
     D_8013AE8C->data18 = 0;
     gRacePlayers[0].task = D_8013AE8C;
     configureTaskStateTransition(1, 0, 0);

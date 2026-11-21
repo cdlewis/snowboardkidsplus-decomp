@@ -100,7 +100,8 @@ void func_8001E0C0(void);
 void armTaskCallbackResetOnFlag3(void);
 void func_8001E1B8(void);
 
-s32 func_80014838(TaskCallback callback);
+/* Creates a child of the current task. On exhaustion, the free-list tail is the fallback in D_8013AE8C. */
+s32 createChildTask(TaskCallback callback);
 s32 func_80014874(TaskCallback callback);
 s32 func_800148B4(TaskCallback callback);
 s16 func_80014930(GameTask *parent, TaskCallback callback);
