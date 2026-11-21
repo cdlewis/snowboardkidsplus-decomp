@@ -1,4 +1,12 @@
 #include "../engine/resource_services_internal.h"
+#include "game/audio/music.h"
+#include "game/engine/game_options.h"
+#include "game/engine/system_runtime.h"
+#include "game/io/cd_queue.h"
+#include "game/race/camera/race_camera.h"
+#include "game/race/player/race_player.h"
+#include "psx/libcd.h"
+#include "psx/libsnd.h"
 
 s8 gSoundBankLoaded[12] __attribute__((section(".data.sound_bank_loaded"), aligned(4))) = {0};
 

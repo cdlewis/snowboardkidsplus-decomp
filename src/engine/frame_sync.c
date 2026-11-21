@@ -1,5 +1,6 @@
 #include "game/graphics/graphics.h"
 #include "psx/libetc.h"
+#include "psx/libgpu.h"
 
 u32 gSynchronizedFrameCount __attribute__((section(".sdata.synchronized_frame_count"))) = 0;
 

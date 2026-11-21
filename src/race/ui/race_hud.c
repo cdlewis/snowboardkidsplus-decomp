@@ -1,5 +1,18 @@
 #define PAUSE_MENU_FLAGS_GP_ADDRESSING
 #include "../race_presentation_internal.h"
+#include "../race_internal.h"
+#include "game/audio/music.h"
+#include "game/engine/game_options.h"
+#include "game/engine/game_task_scheduler.h"
+#include "game/engine/system_runtime.h"
+#include "game/engine/task.h"
+#include "game/graphics/graphics.h"
+#include "game/io/controller.h"
+#include "game/io/controller_effects.h"
+#include "game/menu/selected_records.h"
+#include "game/race/player/race_player.h"
+#include "game/save/save_data.h"
+#include "psx/libgs.h"
 
 #define PAUSE_MENU_START 0x0800
 #define PAUSE_MENU_UP 0x1000
@@ -44,7 +57,7 @@ void drawFirstPlayerStatusHud(void) {
     player = gRacePlayers;
     drawMenuKindSprite(-32, -96, player->unk93E, player->unk940, ot, 1);
     drawPaletteMappedIcon(0, -96, (s8)player->heldItem, ot, 1);
-    frame = (s16)gFrameCounter % 12;
+    frame = gFrameCounter % 12;
     func_8006C998(120, 80, (s16)(frame / 2) + 472, 7, -1, ot, 1);
     palette = player->unk01C < 100 ? 2 : 3;
     drawHudDecimalNumber8x16(78, 80, 5, 0, player->unk01C, palette, -1, ot, 1);

@@ -1,7 +1,15 @@
 #include "game/io/dat_resources.h"
-#include "psx/scratchpad.h"
 #include "psx/libetc.h"
 #include "../../menu/panel_tasks_internal.h"
+#include "game/engine/random.h"
+#include "game/engine/task.h"
+#include "game/graphics/coordinate.h"
+#include "game/graphics/graphics.h"
+#include "game/menu/menu_selection_state.h"
+#include "game/menu/movement.h"
+#include "game/race/player/race_player.h"
+#include "psx/libgpu.h"
+#include "psx/libgs.h"
 
 u16 playerModelDrawAreaDepths[4] __attribute__((section(".data.player_model_draw_area_depths"))) = {
     0x70, 0x40, 0x20, 0

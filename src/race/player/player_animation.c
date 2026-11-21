@@ -1,4 +1,9 @@
 #include "../../engine/resource_services_internal.h"
+#include "game/engine/random.h"
+#include "game/graphics/coordinate.h"
+#include "game/io/dat_resources.h"
+#include "game/race/player/race_player.h"
+#include "psx/libgs.h"
 
 u8 D_80120200[16] __attribute__((section(".data.player_model_parts"))) = {
     255, 0, 1, 2, 1, 4, 1, 6, 6, 8, 6, 10, 0, 0, 0, 0

@@ -1,4 +1,8 @@
 #include "card_movie_internal.h"
+#include "game/engine/system_runtime.h"
+#include "game/engine/task.h"
+#include "game/io/memory_card.h"
+#include "psx/libmcrd.h"
 
 s32 pollMemoryCardWrite(void) {
     s32 command, result;

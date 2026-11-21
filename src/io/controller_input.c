@@ -1,4 +1,7 @@
 #include "../engine/input_scheduler_internal.h"
+#include "game/io/controller.h"
+#include "game/io/controller_effects.h"
+#include "psx/libpad.h"
 
 ControllerReceiveBuffer D_800E9558[2] __attribute__((section(".data.controller_receive_buffers"))) = {0};
 

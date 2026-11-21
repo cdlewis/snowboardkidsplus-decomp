@@ -1,4 +1,7 @@
 #include "render_effects_internal.h"
+#include "game/engine/offset_archive.h"
+#include "psx/libgpu.h"
+#include "psx/libgs.h"
 
 void unusedVariadicStub(s32 unused0, s32 unused1, s32 unused2, ...) {
 }

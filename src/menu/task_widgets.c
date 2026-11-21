@@ -9,8 +9,6 @@
 #include "game/io/controller_effects.h"
 #include "game/graphics/graphics.h"
 #include "game/engine/game_task_scheduler.h"
-#include "game/engine/linear_random.h"
-#include "game/engine/offset_archive.h"
 #include "game/audio/music.h"
 #include "game/menu/movement.h"
 #define TASK_ABSOLUTE_ADDRESSING
@@ -18,8 +16,10 @@
 #include "game/menu/selected_sprite.h"
 #include "game/menu/task_widgets.h"
 #include "game/race/player/race_player.h"
-#include "psx/libsnd.h"
 #include "psx/stdlib.h"
+#include "game/engine/random.h"
+#include "psx/libgpu.h"
+#include "psx/libgs.h"
 
 
 typedef struct SpacedTaskResource {

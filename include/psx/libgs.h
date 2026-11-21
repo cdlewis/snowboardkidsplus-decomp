@@ -40,7 +40,6 @@ void GsMapModelingData(u32 *data);
 void GsLinkObject4(u32 *model, GsDOBJ2 *object, s32 index);
 
 void GsInitCoordinate2(GsCOORDINATE2 *super, GsCOORDINATE2 *coord);
-void GsGetLs(GsCOORDINATE2 *coord, MATRIX *matrix);
 
 #ifdef GS_PACKET_ABSOLUTE_ADDRESSING
 extern u32 GsOUT_PACKET_P __attribute__((section(".data")));
@@ -85,7 +84,6 @@ long RotTransPers4(SVECTOR *v0, SVECTOR *v1, SVECTOR *v2, SVECTOR *v3,
                    long *depthCue, long *flags);
 MATRIX *RotMatrixZYX(SVECTOR *rotation, MATRIX *matrix);
 
-MATRIX *RotMatrix(SVECTOR *rotation, MATRIX *matrix);
 MATRIX *RotMatrixYXZ(SVECTOR *rotation, MATRIX *matrix);
 
 MATRIX *ScaleMatrix(MATRIX *matrix, VECTOR *scale);

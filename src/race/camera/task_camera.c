@@ -1,4 +1,8 @@
 #include "../../menu/panel_tasks_internal.h"
+#include "game/engine/game_options.h"
+#include "game/engine/task.h"
+#include "game/race/camera/race_camera.h"
+#include "game/race/player/race_player.h"
 
 void initializeTaskPlayerCamera(void) {
     PlayerCamera *cameras;

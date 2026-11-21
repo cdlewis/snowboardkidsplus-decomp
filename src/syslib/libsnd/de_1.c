@@ -1,7 +1,7 @@
 #include "common.h"
 #include "libsnd_private.h"
+#include "psx/libsnd.h"
 
-extern void SsUtReverbOff(void), SsUtReverbOn(void);
 
 void _SsSetNrpnVabAttr1(s16 vab_id, s16 program, s16 tone, VagAtr attr, s16 function, u8 value) {
     SsUtGetVagAtr(vab_id, program, tone, &attr);

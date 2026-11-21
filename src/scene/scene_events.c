@@ -1,5 +1,9 @@
 #include "game/text/text_layout.h"
 #include "../menu/selection_tasks_internal.h"
+#include "game/io/dat_entries.h"
+#include "game/io/dat_resources.h"
+#include "game/scene/scene_events.h"
+#include "game/scene/scene_task_types.h"
 
 u8 gSceneCdAudioDefaultResources[12] __attribute__((section(".data.scene_cd_audio_default_resources"))) = {
     0x00, 0x54, 0x60, 0x75, 0x82, 0x92, 0x9E, 0xB0, 0xC3, 0xD4, 0xDB, 0xE3

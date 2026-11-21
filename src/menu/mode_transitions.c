@@ -1,6 +1,20 @@
 #include "../race/race_presentation_internal.h"
 #include "game/menu/selected_sprite.h"
 #include "game/menu/task_widgets.h"
+#include "../race/race_internal.h"
+#include "game/audio/music.h"
+#include "game/engine/game_options.h"
+#include "game/engine/game_task_scheduler.h"
+#include "game/engine/system_runtime.h"
+#include "game/engine/task.h"
+#include "game/graphics/graphics.h"
+#include "game/io/cd_queue.h"
+#include "game/io/controller.h"
+#include "game/io/dat_entries.h"
+#include "game/io/dat_resources.h"
+#include "game/io/movie_stream.h"
+#include "game/menu/movement.h"
+#include "game/race/player/race_player.h"
 
 typedef struct TitleLogoResource {
     s32 logoX, logoY;

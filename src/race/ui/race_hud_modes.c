@@ -1,5 +1,17 @@
 #include "../race_presentation_internal.h"
 #include "game/race/ui/race_hud.h"
+#include "../race_internal.h"
+#include "game/engine/game_options.h"
+#include "game/engine/game_task_scheduler.h"
+#include "game/engine/task.h"
+#include "game/graphics/graphics.h"
+#include "game/menu/selected_records.h"
+#include "game/race/player/race_player.h"
+#include "game/race/ui/race_time.h"
+#include "game/save/save_data.h"
+#include "psx/libc.h"
+#include "psx/libgpu.h"
+#include "psx/libgs.h"
 
 /* Full-width Shift-JIS labels used by the race HUD. */
 const char gAttackTimeLimitLabel[24] __attribute__((section(".rodata.trick_attack_labels"), aligned(4))) =

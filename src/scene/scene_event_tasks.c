@@ -1,4 +1,19 @@
 #include "scene_event_tasks_internal.h"
+#include "../race/race_internal.h"
+#include "game/audio/music.h"
+#include "game/engine/task.h"
+#include "game/graphics/graphics.h"
+#include "game/io/cd_queue.h"
+#include "game/io/controller.h"
+#include "game/io/dat_entries.h"
+#include "game/io/dat_resources.h"
+#include "game/scene/scene_audio_types.h"
+#include "game/scene/scene_events.h"
+#include "game/scene/scene_sound_slots.h"
+#include "game/scene/scene_task_types.h"
+#include "game/text/text_layout.h"
+#include "psx/libgs.h"
+#include "psx/libsnd.h"
 
 s16 gSceneCdCommands[230] __attribute__((section(".data.scene_cd_commands"))) = {
     0x0000, 0x0010, 0x0011, 0x0077, 0x00BE, 0x0047, 0x00A5, 0x0000, 0x00E1, 0x008E,

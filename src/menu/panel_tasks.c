@@ -3,6 +3,19 @@
 #include "game/menu/selected_sprite.h"
 #include "game/engine/game_task_scheduler.h"
 #include "grouped_selection_internal.h"
+#include "game/audio/music.h"
+#include "game/engine/task.h"
+#include "game/graphics/coordinate.h"
+#include "game/graphics/graphics.h"
+#include "game/io/cd_queue.h"
+#include "game/io/dat_entries.h"
+#include "game/io/dat_resources.h"
+#include "game/menu/menu_selection_state.h"
+#include "game/menu/movement.h"
+#include "game/race/player/race_player.h"
+#include "game/save/save_data.h"
+#include "psx/libgpu.h"
+#include "psx/libgs.h"
 
 #define GS_MODEL_OBJECT_HIDDEN 0x80000000u
 #define TASK_POSITION(task) ((Movement2D *)&D_800D9504[(task)->resource14])

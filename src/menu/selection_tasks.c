@@ -1,5 +1,20 @@
 #include "selection_tasks_internal.h"
 #include "game/race/ui/race_hud.h"
+#include "game/audio/music.h"
+#include "game/engine/game_options.h"
+#include "game/engine/task.h"
+#include "game/graphics/graphics.h"
+#include "game/io/cd_queue.h"
+#include "game/io/controller.h"
+#include "game/io/controller_effects.h"
+#include "game/menu/movement.h"
+#include "game/menu/selected_records.h"
+#include "game/menu/selected_sprite.h"
+#include "game/race/camera/race_camera.h"
+#include "game/race/player/race_player.h"
+#include "game/save/save_data.h"
+#include "psx/libgpu.h"
+#include "psx/libgs.h"
 
 typedef struct NumberSelectionSpriteTable {
     GridSpriteEntry entries[3];

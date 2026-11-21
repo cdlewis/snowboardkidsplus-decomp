@@ -5,6 +5,28 @@
 #include "psx/scratchpad.h"
 #include "psx/libetc.h"
 #include "../../graphics/render_effects_internal.h"
+#include "game/audio/music.h"
+#include "game/engine/angles.h"
+#include "game/engine/game_options.h"
+#include "game/engine/game_task_scheduler.h"
+#include "game/engine/random.h"
+#include "game/engine/task.h"
+#include "game/graphics/coordinate.h"
+#include "game/graphics/graphics.h"
+#include "game/io/cd_queue.h"
+#include "game/io/controller.h"
+#include "game/io/controller_effects.h"
+#include "game/io/dat_entries.h"
+#include "game/io/dat_resources.h"
+#include "game/menu/selected_records.h"
+#include "game/race/camera/race_camera.h"
+#include "game/race/course/course_geometry.h"
+#include "game/race/course/course_offset.h"
+#include "game/race/player/race_player.h"
+#include "psx/libapi.h"
+#include "psx/libgpu.h"
+#include "psx/libgs.h"
+#include "psx/libgte.h"
 
 typedef struct PlacedObjectBounceVisual {
     GsCOORDINATE2 coordinate;
@@ -1415,7 +1437,7 @@ void updateProximityParticleTask(void) {
                 groundY = func_8004A764(resource->geometryIndex, resource->coordinate.coord.t[0],
                     resource->coordinate.coord.t[2]) - 0x10;
                 if (resource->coordinate.coord.t[1] > groundY) {
-                    if (!D_8013AE88->data18 || !(u8)func_8004AAA0(resource->geometryIndex,
+                    if (!D_8013AE88->data18 || !func_8004AAA0(resource->geometryIndex,
                             resource->coordinate.coord.t[0], resource->coordinate.coord.t[2])) {
                         resource->coordinate.coord.t[1] = groundY;
                         resource->position.y = groundY << 8;
@@ -1855,8 +1877,8 @@ void updateOrbitingObstacleTask(void) {
                     } else {
                         heading = trackHeading;
                     }
-                    gRacePlayers[i].unk060 = rsin((s16)heading) * 3;
-                    gRacePlayers[i].unk064 = rcos((s16)heading) * 3;
+                    gRacePlayers[i].unk060 = rsin(heading) * 3;
+                    gRacePlayers[i].unk064 = rcos(heading) * 3;
                     gRacePlayers[i].unk050 = gRacePlayers[i].x - gRacePlayers[i].unk060;
                     gRacePlayers[i].unk058 = gRacePlayers[i].z - gRacePlayers[i].unk064;
                     resource->playerCooldowns[i] = 6;
@@ -1872,7 +1894,7 @@ void updateOrbitingObstacleTask(void) {
         func_8001E3E4(&resource->rotation, &resource->coordinate);
         GsGetLs(&resource->coordinate, D_8013AF98);
         GsSetLsMatrix(D_8013AF98);
-        if ((u16)func_80059254()) {
+        if (func_80059254()) {
             drawProjectedModelPrimitives(D_80125044[0], &D_800EC0B8[D_8013AF78], 2, 1);
         } else {
             drawProjectedModelPrimitives(D_80125044[0], &D_800EC018[D_8013AF78], 2, 1);

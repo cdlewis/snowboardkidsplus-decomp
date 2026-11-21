@@ -28,6 +28,7 @@ LD := $(CROSS)ld
 OBJCOPY := $(CROSS)objcopy
 AR := $(CROSS)ar
 CPP := $(or $(SKP_CPP),cpp)
+CLANG_TIDY ?= clang-tidy
 CC1 := $(or $(SKP_CC1),tools/cc1psx.py)
 SDK_CC1 := $(or $(SKP_SDK_CC1),tools/gcc/gcc-2.8.1-psx/cc1)
 MASPSX := $(or $(SKP_MASPSX),tools/maspsx/maspsx.py)
@@ -70,7 +71,7 @@ endif
 SPLIT_INPUTS := snowboardkidsplus.yaml symbol_addrs.txt reloc_addrs.txt disc/SLPS_018.23 Makefile
 SPLIT_OUTPUTS := linkers/slps_018.23.ld linkers/slps_018.23.d linkers/undefined_funcs_auto.txt linkers/undefined_syms_auto.txt include/include_asm.h include/macro.inc include/labels.inc include/gte_macros.inc
 DAT_METADATA := build/dat/snb_dat.yaml build/include/game/io/dat_entries.h
-.PHONY: all verify objects all-objects expected split extract clean hooks report badges scratch print-settings FORCE
+.PHONY: all verify objects all-objects expected split extract clean hooks report badges scratch print-settings tidy FORCE
 ifeq ($(COMPARISON),1)
 ifeq ($(abspath $(BUILD_DIR)),$(ROOT)/build)
 $(error comparison objects require a separate BUILD_DIR, such as build/compare)
@@ -86,7 +87,7 @@ all: verify
 endif
 
 ifneq ($(COMPARISON),1)
-ifeq ($(filter clean extract hooks print-settings scratch objects badges,$(MAKECMDGOALS)),)
+ifeq ($(filter clean extract hooks print-settings scratch objects badges tidy,$(MAKECMDGOALS)),)
 include linkers/slps_018.23.d
 endif
 endif
@@ -140,6 +141,7 @@ endef
 FORCE:
 
 C_SOURCES := $(if $(UNIT),$(UNIT),$(shell find src -name '*.c' -type f | sort))
+TIDY_FILES ?= $(C_SOURCES)
 LINK_OBJECTS := $(shell sed -n 's/^[[:space:]]*\(build\/[^[:space:]]*\.[oa]\).*/\1/p' linkers/slps_018.23.d 2>/dev/null)
 SDK_LIBRARIES := $(sort $(filter %.a,$(LINK_OBJECTS)))
 C_OBJECTS := $(addprefix $(BUILD_DIR)/,$(C_SOURCES:.c=.o))
@@ -244,6 +246,9 @@ hooks:
 report: verify
 	$(PRINTF) "[$(CYAN) report $(NO_COL)]  Generating progress report\n"
 	$(PY) -m mapfile_parser objdiff_report
+
+tidy:
+	$(CLANG_TIDY) -p "$(ROOT)" --fix $(TIDY_FILES)
 
 badges:
 	./tools/build-and-verify.sh

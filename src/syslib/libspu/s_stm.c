@@ -1,4 +1,5 @@
 #include "libspu_private.h"
+#include "psx/libspu.h"
 
 s32 SpuSetTransferMode(s32 mode) {
     s32 transMode;

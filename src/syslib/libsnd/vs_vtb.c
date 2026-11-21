@@ -1,6 +1,7 @@
 #include "common.h"
 
 #include "../libspu/libspu_private.h"
+#include "psx/libspu.h"
 extern u8 _svm_vab_used[];
 extern u32 _svm_vab_start[], _svm_vab_total[];
 s16 SsVabTransBody(u8 *body, s16 id) {

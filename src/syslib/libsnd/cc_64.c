@@ -2,7 +2,6 @@
 
 #include "libsnd_private.h"
 extern s32 _SsReadDeltaValue(s16, s16);
-extern void _SsVmDamperOff(void), _SsVmDamperOn(void);
 void _SsContDamper(s16 id, s16 seq, u8 value) {
     struct SeqStruct *s = &_ss_score[id][seq];
     if (value < 64)

@@ -2,7 +2,6 @@
 
 #include "libsnd_private.h"
 extern s32 _SsReadDeltaValue(s16, s16);
-extern void SsUtReverbOff(void), _SsVmDamperOff(void);
 void _SsContResetAll(s16 id, s16 seq) {
     struct SeqStruct *s = &_ss_score[id][seq];
     SsUtReverbOff();

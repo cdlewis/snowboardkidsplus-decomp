@@ -1,4 +1,6 @@
 #include "../graphics/render_effects_internal.h"
+#include "game/io/controller.h"
+#include "game/io/controller_effects.h"
 
 typedef struct ControllerEffectDefinition {
     u8 priority;

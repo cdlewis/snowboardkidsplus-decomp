@@ -7,6 +7,9 @@
 #include "game/audio/music.h"
 #include "game/io/cd_queue.h"
 #include "game/scene/scene_task_types.h"
+#include "game/io/dat_entries.h"
+#include "game/io/dat_resources.h"
+#include "game/scene/scene_events.h"
 
 #define DAT_SCENE_TEXT (((SceneTextWorkspace *)DAT_SCRATCH_ADDRESS)->text)
 

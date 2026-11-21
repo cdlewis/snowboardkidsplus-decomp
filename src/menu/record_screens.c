@@ -1,4 +1,17 @@
 #include "../race/race_presentation_internal.h"
+#include "../race/race_internal.h"
+#include "game/audio/music.h"
+#include "game/engine/game_options.h"
+#include "game/engine/game_task_scheduler.h"
+#include "game/engine/task.h"
+#include "game/graphics/graphics.h"
+#include "game/io/controller.h"
+#include "game/menu/selected_records.h"
+#include "game/race/player/race_player.h"
+#include "game/race/ui/race_time.h"
+#include "game/save/save_data.h"
+#include "psx/libc.h"
+#include "psx/libgs.h"
 
 const char gHitCountTimeOutLabel[12] __attribute__((section(".rodata.hit_count_time_out"), aligned(4))) = "TIME OUT";
 char gHitCountTotalFormat[4] __attribute__((section(".data.hit_count_labels"), aligned(4))) = "/%d";
@@ -471,7 +484,7 @@ void waitTaskMenuCountdownAndPlaySound(void) {
         setCurrentTaskCallback(tickMenuSoundDelayStage0Task);
     }
     drawHitCountPanel((TaskResourceRecord *)resource);
-    drawHitPrizeMoneyLabels((MenuFadeInResource *)resource);
+    drawHitPrizeMoneyLabels(resource);
 }
 
 void updateTaskMenuFadeIn(void) {
@@ -487,7 +500,7 @@ void updateTaskMenuFadeIn(void) {
         setCurrentTaskCallback(waitTaskMenuCountdownAndPlaySound);
     }
     drawHitCountPanel((TaskResourceRecord *)resource);
-    drawHitPrizeMoneyLabels((MenuFadeInResource *)resource);
+    drawHitPrizeMoneyLabels(resource);
 }
 
 void initializeTaskMenuFadeIn(void) {
@@ -676,7 +689,7 @@ void drawCurrentTaskTimeRecordDetails(void) {
         func_800149A8();
     }
     drawTimeRecordHeader((TimeRecordHeaderResource *)resource);
-    drawRaceResultsMoneyValues((TaskResourceRecord *)resource);
+    drawRaceResultsMoneyValues(resource);
     drawRaceResultsLabels((RaceResultsFadeResource *)resource);
 }
 
@@ -1072,7 +1085,7 @@ void updateStatsMenuPostCountInputTask(void) {
     }
     drawStatsMenuValues((TaskResourceRecord *)resource);
     drawStatsMenuMoneyValues((TaskResourceRecord *)resource);
-    drawStatsMenuMoneyLabels((StatsMenuFadeResource *)resource);
+    drawStatsMenuMoneyLabels(resource);
 }
 
 void countStatsMenuMoneyTask(void) {
@@ -1133,7 +1146,7 @@ void waitForStatsScoreCountTask(void) {
     }
     drawStatsMenuValues((TaskResourceRecord *)resource);
     drawStatsMenuMoneyValues((TaskResourceRecord *)resource);
-    drawStatsMenuMoneyLabels((StatsMenuFadeResource *)resource);
+    drawStatsMenuMoneyLabels(resource);
 }
 
 void waitForStatsScoreCountStartTask(void) {
@@ -1150,7 +1163,7 @@ void waitForStatsScoreCountStartTask(void) {
     }
     drawStatsMenuValues((TaskResourceRecord *)resource);
     drawStatsMenuMoneyValues((TaskResourceRecord *)resource);
-    drawStatsMenuMoneyLabels((StatsMenuFadeResource *)resource);
+    drawStatsMenuMoneyLabels(resource);
 }
 
 void startTaskStatsCountdownAndPlaySound(void) {
@@ -1233,7 +1246,7 @@ void fadeInStatsMenuTask(void) {
         setCurrentTaskCallback(waitTaskStatsCountdownAndPlaySound);
     }
     drawStatsMenuValues((TaskResourceRecord *)resource);
-    drawStatsMenuMoneyLabels((StatsMenuFadeResource *)resource);
+    drawStatsMenuMoneyLabels(resource);
 }
 
 INCLUDE_ASM("asm/nonmatchings/menu/record_screens", func_8003BD70);

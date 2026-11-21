@@ -1,4 +1,3 @@
-#include "psx/scratchpad.h"
 #include "game/race/player/player_results.h"
 #include "psx/libapi.h"
 #include "psx/libetc.h"
@@ -10,7 +9,6 @@
 #include "game/graphics/coordinate.h"
 #include "game/race/camera/race_camera.h"
 #include "game/race/ui/race_hud.h"
-#include "game/engine/linear_random.h"
 #include "game/engine/offset_archive.h"
 #include "game/audio/music.h"
 #define RACE_PLAYER_ABSOLUTE_ADDRESSING
@@ -25,14 +23,9 @@
 #define SELECTED_RECORDS_GP_ADDRESSING
 #define SELECTED_RECORD_COUNTER_GP_ADDRESSING
 #include "game/menu/selected_records.h"
-#include "psx/libsnd.h"
-#include "psx/libcd.h"
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
 #include "psx/libetc.h"
-#include "psx/libmcrd.h"
-#include "psx/libcd.h"
-#include "psx/libpress.h"
 
 #define GLOBAL_FLAGS_GP_ADDRESSING
 #include "game/save/save_data.h"
@@ -41,6 +34,10 @@
 #include "game/engine/system_runtime.h"
 
 #include "game/race/player/player_resource_textures.h"
+#include "game/engine/random.h"
+#include "game/io/dat_entries.h"
+#include "game/io/dat_resources.h"
+#include "game/io/movie_stream.h"
 
 #define RACE_SOUND_HEADER ((u8 *)0x80165800)
 #define RACE_PLAYER_SOUND_HEADERS ((u8 (*)[0x1000])0x80167000)
@@ -177,31 +174,15 @@ GsDOBJ2 gPlayerTimerModelObject
 u32 gRacePlayerSortSavedStackPointer
     __attribute__((section(".sdata.race_player_sort_saved_stack"))) = 0;
 
-extern u16 D_8013AFAA __attribute__((section(".data")));
-extern u8 D_8013B562 __attribute__((section(".data")));
-extern u8 D_8013AFE2;
-extern u8 D_8013B1AB __attribute__((section(".data")));
-extern u16 D_8013AFE8;
 extern u8 D_8013AFCC;
 extern u8 D_8013AFD4;
 
 
-void func_800131B4(void);
-void func_8002EE0C(void);
-void finishTaskTransitionAfterCountdown(void);
-void updateThreeFrameScreenBlend(void);
 void func_8001D89C(void);
 void initializeRaceTaskState(void);
-void resetStateAndBeginResourceLoadTransition(u8 loadResources);
-void initializeRaceRestartTask(void);
 void updateActiveRaceTask(void);
 void finishRaceTransitionAfterCountdown(void);
 void func_80043C28(void);
-void func_8001C0DC(void);
-void func_8003DEE0(void);
-s32 func_80014838(TaskCallback callback);
-void advanceTaskWhenFlagAFE4Bit8Set(void);
-void startResourceLoadWhenFlagAFE4Bit9Set(void);
 void func_80015A30(u16 controller);
 void func_8001C9F0(void);
 s16 func_8008C290(s16 characterId, s16 finishPosition);

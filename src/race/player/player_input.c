@@ -7,6 +7,10 @@
 #include "game/graphics/coordinate.h"
 #include "game/race/course/course_geometry.h"
 #include "game/menu/selected_records.h"
+#include "game/engine/random.h"
+#include "game/engine/task.h"
+#include "psx/libgs.h"
+#include "psx/libgte.h"
 
 typedef struct PlayerRankSpeedAdjustment {
     s16 adjustment;

@@ -1,4 +1,19 @@
 #include "../race_presentation_internal.h"
+#include "../race_internal.h"
+#include "game/audio/music.h"
+#include "game/engine/angles.h"
+#include "game/engine/game_options.h"
+#include "game/engine/random.h"
+#include "game/engine/system_runtime.h"
+#include "game/engine/task.h"
+#include "game/graphics/coordinate.h"
+#include "game/io/cd_queue.h"
+#include "game/menu/selected_records.h"
+#include "game/race/camera/race_camera.h"
+#include "game/race/course/course_geometry.h"
+#include "game/race/player/race_player.h"
+#include "psx/libgs.h"
+#include "psx/libgte.h"
 
 void initPlayerCamera(u16 index) {
     GsRVIEW2 *view;

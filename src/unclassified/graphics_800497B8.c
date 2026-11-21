@@ -1,6 +1,14 @@
 #include "../graphics/render_effects_internal.h"
 #include "../race/race_internal.h"
 #include "psx/stdarg.h"
+#include "game/audio/music.h"
+#include "game/engine/random.h"
+#include "game/engine/task.h"
+#include "game/graphics/graphics.h"
+#include "game/io/controller_effects.h"
+#include "game/race/player/race_player.h"
+#include "psx/libgs.h"
+#include "psx/sprite.h"
 
 #define HEADING_RATIO_SCALE 640
 

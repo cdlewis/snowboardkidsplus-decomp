@@ -1,4 +1,3 @@
-#include "psx/scratchpad.h"
 #include "psx/libetc.h"
 #define FRAME_COUNTER_GP_ADDRESSING
 #define TASK_ABSOLUTE_ADDRESSING
@@ -14,9 +13,11 @@
 #include "game/audio/music.h"
 #include "game/io/controller.h"
 #include "game/race/camera/race_camera.h"
-#include "game/engine/linear_random.h"
 #include "psx/libetc.h"
 #include "game/engine/system_runtime.h"
+#include "psx/libgpu.h"
+#include "psx/libgs.h"
+#include "psx/libgte.h"
 
 /* Reused workspace views published by initializeGameSystems. */
 typedef struct GameScratchpad {
@@ -48,12 +49,10 @@ u32 D_800F4200[8192] __attribute__((section(".data.render_buffers"))) = {0};
 u32 D_800FC200[4096] __attribute__((section(".data.render_buffers"))) = {0};
 u8 D_80100200[2][0x10000] __attribute__((section(".data.render_buffers"))) = {0};
 
-void updateCdVolumeFade(void);
-void initializeControllers(void);
-void initializeSoundSystem(s32);
+extern u32 gSynchronizedFrameCount;
+
 void func_80049CDC(void);
 void func_8001AB34(void);
-void func_8003DEE0(void);
 
 void runGameLoop(void) {
     GameTask *nextTask;
@@ -73,7 +72,7 @@ void runGameLoop(void) {
             if (D_8013AFAA & 0x1000) {
                 D_8013AFAA &= 0xFBFF;
                 DrawSync(0);
-                GsSetOffset((u16)D_8013AF7A >> 1, (u16)D_8013AF7C >> 1);
+                GsSetOffset(D_8013AF7A >> 1, D_8013AF7C >> 1);
                 GsSetClip(&D_800EC158[0]);
             }
             if (D_8013AFAA & 0x4000) {
@@ -146,20 +145,20 @@ void runGameLoop(void) {
                 updatePaletteRecords();
                 GsSwapDispBuff();
                 GsSortClear(0, 0, 0, &D_800EC018[D_8013AF78]);
-                GsSetOffset(((u16)D_8013AF7A >> 1) - ((s16)D_8013AF7E / 2),
-                            ((u16)D_8013AF7C >> 1) - D_8013AF80);
+                GsSetOffset((D_8013AF7A >> 1) - (D_8013AF7E / 2),
+                            (D_8013AF7C >> 1) - D_8013AF80);
                 GsSetClip(&D_800EC158[1]);
                 GsDrawOt(&D_800EC018[D_8013AF78]);
                 continue;
             }
             updatePaletteRecords();
             DrawSync(0);
-            GsSetOffset(((u16)D_8013AF7A >> 1) - ((s16)D_8013AF7E / 2),
-                        (((u16)D_8013AF7C >> 1) + D_8013AF80) - 8);
+            GsSetOffset((D_8013AF7A >> 1) - (D_8013AF7E / 2),
+                        ((D_8013AF7C >> 1) + D_8013AF80) - 8);
             GsSetClip(&D_800EC158[2]);
             GsDrawOt(&D_800EC0B8[D_8013AF78]);
             DrawSync(0);
-            GsSetOffset((u16)D_8013AF7A >> 1, (u16)D_8013AF7C >> 1);
+            GsSetOffset(D_8013AF7A >> 1, D_8013AF7C >> 1);
             GsSetClip(&D_800EC158[0]);
             GsDrawOt(&D_800EBFF0[D_8013AF78]);
         }
@@ -235,8 +234,8 @@ void initializeGameSystems(void) {
     D_800EC0B8[1].length = 0xC;
     D_800EC0B8[0].length = 0xC;
     D_800EC0E0[1].length = 0xC;
-    clip->w = (u16)D_8013AF7A;
-    clip->h = (u16)D_8013AF7C;
+    clip->w = D_8013AF7A;
+    clip->h = D_8013AF7C;
     D_800EC0E0[0].length = 0xC;
     D_800EC108[1].length = 0xC;
     D_800EC108[0].length = 0xC;

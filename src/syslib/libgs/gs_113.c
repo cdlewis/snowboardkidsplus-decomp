@@ -1,4 +1,4 @@
-#include "libgs_private.h"
+#include "psx/libgs.h"
 
 extern u32 *ClearOTagR(u32 *ot, s32 count);
 

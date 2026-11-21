@@ -1,5 +1,17 @@
 #include "../menu/selection_tasks_internal.h"
 #include "game/race/ui/race_hud.h"
+#include "game/audio/music.h"
+#include "game/engine/game_options.h"
+#include "game/engine/random.h"
+#include "game/engine/task.h"
+#include "game/graphics/graphics.h"
+#include "game/io/cd_queue.h"
+#include "game/io/controller.h"
+#include "game/io/controller_effects.h"
+#include "game/io/dat_entries.h"
+#include "game/menu/selected_records.h"
+#include "game/race/player/race_player.h"
+#include "game/save/save_data.h"
 
 ControllerPlaybackEntry gControllerPlaybackEntries[12] __attribute__((section(".data.controller_playback_entries"))) = {
     {0, 0, 0, 0},

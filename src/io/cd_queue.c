@@ -1,4 +1,11 @@
 #include "../engine/input_scheduler_internal.h"
+#include "game/audio/music.h"
+#include "game/graphics/graphics.h"
+#include "game/io/cd_queue.h"
+#include "game/io/dat_resources.h"
+#include "psx/libapi.h"
+#include "psx/libcd.h"
+#include "psx/libsnd.h"
 
 #define CD_READ_PENDING 0x02000000
 #define CD_CONTROL_PENDING 0x04000000
@@ -346,7 +353,7 @@ void updateCdRequestQueue(void) {
     s16 index;
     s32 status;
     s32 readStatus;
-    if ((s16)D_8013AE76 != 0)
+    if (D_8013AE76 != 0)
         return;
     i = 15;
     clear = &result[15];

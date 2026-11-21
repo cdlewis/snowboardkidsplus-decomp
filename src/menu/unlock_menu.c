@@ -1,5 +1,14 @@
 #define GAME_OPTIONS_GP_ADDRESSING
 #include "selection_tasks_internal.h"
+#include "game/audio/music.h"
+#include "game/engine/game_options.h"
+#include "game/engine/task.h"
+#include "game/graphics/graphics.h"
+#include "game/io/cd_queue.h"
+#include "game/io/controller.h"
+#include "game/save/save_data.h"
+#include "game/scene/scene_events.h"
+#include "unlock_menu_types.h"
 
 s16 gUnlockNotificationSprites[14] __attribute__((section(".data.unlock_notification_sprites"))) = {
     0x216, 0x217, 0x218, 0x219, 0x21A, 0x21B,

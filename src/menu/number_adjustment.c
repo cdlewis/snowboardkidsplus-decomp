@@ -1,4 +1,14 @@
 #include "selection_tasks_internal.h"
+#include "game/audio/music.h"
+#include "game/engine/game_task_scheduler.h"
+#include "game/engine/task.h"
+#include "game/graphics/graphics.h"
+#include "game/io/cd_queue.h"
+#include "game/io/controller.h"
+#include "game/menu/number_selection_types.h"
+#include "game/menu/selected_records.h"
+#include "psx/libgpu.h"
+#include "psx/libgs.h"
 
 const u16 gNumberAdjustmentLabel[]
     __attribute__((section(".data.number_adjustment_label"))) = {

@@ -1,5 +1,19 @@
 #include "../race_presentation_internal.h"
 #include "game/engine/random.h"
+#include "../race_internal.h"
+#include "game/audio/music.h"
+#include "game/engine/angles.h"
+#include "game/engine/task.h"
+#include "game/graphics/coordinate.h"
+#include "game/graphics/graphics.h"
+#include "game/io/controller.h"
+#include "game/io/controller_effects.h"
+#include "game/race/camera/race_camera.h"
+#include "game/race/course/course_geometry.h"
+#include "game/race/player/race_player.h"
+#include "psx/libgpu.h"
+#include "psx/libgs.h"
+#include "psx/libgte.h"
 
 typedef union CollectionTaskResource {
     TaskVisualResource visual;

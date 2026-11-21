@@ -1,9 +1,20 @@
-#include "psx/scratchpad.h"
 #include "psx/libetc.h"
 #include "render_effects_internal.h"
 #include "../race/race_internal.h"
 #define GAME_LOOP_ABSOLUTE_ADDRESSING
 #include "game/engine/game_loop.h"
+#include "game/engine/game_task_scheduler.h"
+#include "game/engine/task.h"
+#include "game/graphics/graphics.h"
+#include "game/io/controller.h"
+#include "game/io/controller_effects.h"
+#include "game/menu/selected_records.h"
+#include "game/race/camera/race_camera.h"
+#include "game/race/course/course_geometry.h"
+#include "game/race/player/race_player.h"
+#include "psx/libgpu.h"
+#include "psx/libgs.h"
+#include "psx/libgte.h"
 
 typedef struct OscillatingQuadScratchpad {
     GsCOORDINATE2 coordinate;
@@ -697,13 +708,13 @@ void drawSnowBackgroundAndSetFog(s16 playerIndex) {
     y = D_801241E8[playerIndex].pitch / 2;
     x = -160 - ((D_801241E8[playerIndex].yaw >> 1) & 255);
     if (y > 240) y = 240;
-    addTexturedSprite(&D_8013AF6C[1024], 26, 0x7C29, (s16)x, (s16)y, 256, 64, 0, 0, 128, 128, 128);
-    addTexturedSprite(&D_8013AF6C[1024], 26, 0x7C29, (s16)(x + 256), (s16)y, 256, 64, 0, 0, 128, 128, 128);
-    addTexturedSprite(&D_8013AF6C[1024], 26, 0x7C29, (s16)(x + 512), (s16)y, 256, 64, 0, 0, 128, 128, 128);
-    if ((s16)y >= -119) {
+    addTexturedSprite(&D_8013AF6C[1024], 26, 0x7C29, x, y, 256, 64, 0, 0, 128, 128, 128);
+    addTexturedSprite(&D_8013AF6C[1024], 26, 0x7C29, (s16)(x + 256), y, 256, 64, 0, 0, 128, 128, 128);
+    addTexturedSprite(&D_8013AF6C[1024], 26, 0x7C29, (s16)(x + 512), y, 256, 64, 0, 0, 128, 128, 128);
+    if (y >= -119) {
         addFlatRectangle(&D_8013AF6C[1024], -160, -120, 320, (s16)(y + 120), 0, 168, 248);
     }
-    if ((s16)y < -120) y = -184;
+    if (y < -120) y = -184;
     addFlatRectangle(&D_8013AF6C[1024], -160, (s16)(y + 64), 320, (s16)(120 - y), 248, 248, 248);
     SetFarColor(248, 248, 248);
     SetFogNearFar(8000, 10000, 400);
@@ -723,13 +734,13 @@ void drawCameraCulledBackgroundAndSetFog(s16 playerIndex) {
     x = -160 - ((D_801241E8[playerIndex].yaw >> 1) & 255);
     y = D_801241E8[playerIndex].pitch / 4;
     horizon = y;
-    addTexturedSprite(&D_8013AF6C[512], 26, 0x7C29, (s16)x, y, 256, 64, 0, 0, 128, 128, 128);
+    addTexturedSprite(&D_8013AF6C[512], 26, 0x7C29, x, y, 256, 64, 0, 0, 128, 128, 128);
     addTexturedSprite(&D_8013AF6C[512], 26, 0x7C29, (s16)(x + 256), y, 256, 64, 0, 0, 128, 128, 128);
     addTexturedSprite(&D_8013AF6C[512], 26, 0x7C29, (s16)(x + 512), y, 256, 64, 0, 0, 128, 128, 128);
     if (horizon < -120) horizon = -120;
     if (horizon > 120) horizon = 120;
     addFlatRectangle(&D_8013AF6C[1024], -160, -120, 320, (s16)(horizon + 120), 112, 168, 248);
-    addFlatRectangle(&D_8013AF6C[1024], -160, (s16)horizon, 320, (s16)(120 - horizon), 200, 216, 240);
+    addFlatRectangle(&D_8013AF6C[1024], -160, horizon, 320, (s16)(120 - horizon), 200, 216, 240);
     GsInitCoordinate2(0, coordinate);
     GsGetLs(coordinate, matrix);
     ScaleMatrix(matrix, &D_80124BDC);
@@ -773,13 +784,13 @@ void drawBackgroundModelsAndSetFog(s16 playerIndex) {
     x = -160 - ((D_801241E8[playerIndex].yaw >> 1) & 255);
     y = D_801241E8[playerIndex].pitch / 2;
     horizon = y;
-    addTexturedSprite(&D_8013AF6C[512], 26, 0x7C2A, (s16)x, y, 256, 64, 0, 128, 128, 128, 128);
+    addTexturedSprite(&D_8013AF6C[512], 26, 0x7C2A, x, y, 256, 64, 0, 128, 128, 128, 128);
     addTexturedSprite(&D_8013AF6C[512], 26, 0x7C2A, (s16)(x + 256), y, 256, 64, 0, 128, 128, 128, 128);
     addTexturedSprite(&D_8013AF6C[512], 26, 0x7C2A, (s16)(x + 512), y, 256, 64, 0, 128, 128, 128, 128);
     if (horizon < -120) horizon = -120;
     if (horizon > 120) horizon = 120;
     addFlatRectangle(&D_8013AF6C[4095], -160, -120, 320, (s16)(horizon + 120), 0, 120, 240);
-    addFlatRectangle(&D_8013AF6C[4095], -160, (s16)horizon, 320, (s16)(120 - horizon), 255, 255, 255);
+    addFlatRectangle(&D_8013AF6C[4095], -160, horizon, 320, (s16)(120 - horizon), 255, 255, 255);
     GsInitCoordinate2(0, coordinate);
     GsGetLs(coordinate, matrix);
     ScaleMatrix(matrix, &D_80124BDC);

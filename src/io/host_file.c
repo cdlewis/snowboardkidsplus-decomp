@@ -1,4 +1,7 @@
 #include "../scene/scene_event_tasks_internal.h"
+#include "game/graphics/graphics.h"
+#include "psx/libc.h"
+#include "psx/libsn.h"
 
 int readHostFile(char *path, char *buffer) {
     int length;

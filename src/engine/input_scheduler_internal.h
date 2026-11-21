@@ -119,14 +119,6 @@ extern s32 D_8013AE64 __attribute__((section(".sdata.cd_command_state")));
 extern s16 D_8013AE78 __attribute__((section(".sdata.cd_command_active")));
 
 extern TaskCallback gInitialTaskCallbacks[6] __attribute__((section(".data.initial_task_callbacks")));
-/* Scratch links used while removing a subtree from the task list. */
-extern GameTask *D_8013AEA0;
-extern GameTask *D_8013AEA4;
-extern GameTask *D_8013AEA8;
-extern GameTask *D_8013AEAC;
-extern GameTask *D_8013AEB0;
-extern u16 D_8013AEB4;
-
 void func_80013540(void);
 void updateControllerAxesFromAnalog(u16 controller);
 

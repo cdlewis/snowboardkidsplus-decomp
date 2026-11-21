@@ -1,6 +1,17 @@
 #include "panel_tasks_internal.h"
 #include "game/menu/selected_sprite.h"
 #include "game/menu/task_widgets.h"
+#include "game/audio/music.h"
+#include "game/engine/game_task_scheduler.h"
+#include "game/engine/task.h"
+#include "game/graphics/graphics.h"
+#include "game/io/cd_queue.h"
+#include "game/menu/menu_selection_state.h"
+#include "game/menu/movement.h"
+#include "game/race/player/race_player.h"
+#include "game/save/save_data.h"
+#include "psx/libgpu.h"
+#include "psx/libgs.h"
 
 #define CHILD_MOVEMENT(entry, resource) ((Movement2D *)&D_800D9504[(entry).task->resource])
 #define FIRST_FOUR_READY(entries) \

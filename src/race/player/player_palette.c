@@ -1,6 +1,13 @@
 #define GS_PACKET_ABSOLUTE_ADDRESSING
 #include "../../menu/panel_tasks_internal.h"
 #include "psx/libetc.h"
+#include "game/engine/linear_random.h"
+#include "game/engine/task.h"
+#include "game/graphics/graphics.h"
+#include "game/race/player/race_player.h"
+#include "psx/libgpu.h"
+#include "psx/libgs.h"
+#include "psx/libgte.h"
 
 typedef struct PaletteBurstScratch {
     GsCOORDINATE2 coordinate;

@@ -1,5 +1,4 @@
 #define TASK_WIDGET_COLORS_ABSOLUTE_ADDRESSING
-#include "psx/scratchpad.h"
 #include "game/menu/save_record_tasks.h"
 #include "psx/libetc.h"
 #include "save_record_tasks_internal.h"
@@ -10,6 +9,20 @@
 #include "game/menu/selected_records.h"
 #include "game/menu/selected_sprite.h"
 #include "game/menu/task_widgets.h"
+#include "game/audio/music.h"
+#include "game/engine/game_options.h"
+#include "game/engine/system_runtime.h"
+#include "game/engine/task.h"
+#include "game/graphics/graphics.h"
+#include "game/io/dat_resources.h"
+#include "game/io/memory_card.h"
+#include "game/menu/menu_selection_state.h"
+#include "game/menu/movement.h"
+#include "game/race/player/player_resource_textures.h"
+#include "game/race/player/race_player.h"
+#include "game/save/save_data.h"
+#include "psx/libgpu.h"
+#include "psx/libgs.h"
 
 #define MEMORY_CARD_SLOT_BUFFER_BASE ((u8 *)0x801E4000)
 #define MEMORY_CARD_SLOT_BUFFER_STRIDE 0x2000
@@ -1848,7 +1861,7 @@ void createRegisteredPlayerModelTask(s16 slot, s16 selection, s16 modelIndex,
     resource->worldRotation.vx = 0;
     resource->worldRotation.vy = 0;
     resource->worldRotation.vz = 0;
-    gMenuPlayerModelYaw[(s16)selection] = resource->worldRotation.vy;
+    gMenuPlayerModelYaw[selection] = resource->worldRotation.vy;
     resource->local.coord.t[0] = 0;
     resource->local.coord.t[1] = 0;
     resource->local.coord.t[2] = 0;

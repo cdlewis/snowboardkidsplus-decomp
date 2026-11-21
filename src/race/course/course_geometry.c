@@ -1,5 +1,7 @@
 #include "../../graphics/render_effects_internal.h"
 #include "game/graphics/coordinate.h"
+#include "game/race/course/course_geometry.h"
+#include "psx/libgte.h"
 
 typedef struct CourseGeometryVertex {
     s16 x, y, z;

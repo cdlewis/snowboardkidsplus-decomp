@@ -1,4 +1,7 @@
 #include "render_effects_internal.h"
+#include "game/graphics/draw_mode_sprite.h"
+#include "psx/libgpu.h"
+#include "psx/libgs.h"
 
 void addCopiedPrimitive(u32 *orderingTable, u32 *packet) {
     u32 length = ((P_TAG *)packet)->len;

@@ -1,4 +1,20 @@
 #include "../race_presentation_internal.h"
+#include "../race_internal.h"
+#include "game/audio/music.h"
+#include "game/engine/game_options.h"
+#include "game/engine/game_task_scheduler.h"
+#include "game/engine/random.h"
+#include "game/engine/task.h"
+#include "game/graphics/graphics.h"
+#include "game/io/controller.h"
+#include "game/io/controller_effects.h"
+#include "game/menu/selected_records.h"
+#include "game/race/player/race_player.h"
+#include "game/race/ui/race_time.h"
+#include "game/save/save_data.h"
+#include "psx/libc.h"
+#include "psx/libgpu.h"
+#include "psx/libgs.h"
 
 void drawSlidingRaceTimeDisplay(SlidingTimeResource *resource) {
     u8 padding[0x20];
@@ -1032,7 +1048,7 @@ void initializeResultDisplayTask(void) {
     D_8013AE88->resource14 = allocateTaskResource();
     resource = (ResultDisplayResource *)&D_800D9504[D_8013AE88->resource14];
     resource->brightness = 0;
-    resource->unk06 = (s8)gRacePlayers[0].unk935;
+    resource->unk06 = gRacePlayers[0].unk935;
     resource->unk04 = 0;
     if (resource->unk06 < 3) {
         resource->unk04 = D_8012FC6C[D_8013AFCE][resource->unk06];
@@ -1189,7 +1205,7 @@ void fadeInPlayerResultsTask(void) {
         resource->brightness = 128;
         setCurrentTaskCallback(waitPlayerResultsInputTask);
     }
-    updatePlayerResultOrder((TaskFadeResource *)resource);
+    updatePlayerResultOrder(resource);
     drawPlayerResultIcons(resource);
     drawPlayerResultRows(resource);
 }

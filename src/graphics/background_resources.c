@@ -3,6 +3,19 @@
 #define BACKGROUND_MODE_GP_ADDRESSING
 #include "game/engine/system_runtime.h"
 #include "game/menu/menu_selection_state.h"
+#include "../race/race_internal.h"
+#include "game/audio/music.h"
+#include "game/engine/game_options.h"
+#include "game/engine/offset_archive.h"
+#include "game/engine/task.h"
+#include "game/graphics/graphics.h"
+#include "game/io/cd_queue.h"
+#include "game/io/dat_entries.h"
+#include "game/io/dat_resources.h"
+#include "game/race/camera/race_camera.h"
+#include "game/race/player/race_player.h"
+#include "psx/libgpu.h"
+#include "psx/libgs.h"
 
 void resetGameOptionState(void) {
     D_8013B108 = 2;

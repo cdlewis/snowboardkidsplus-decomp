@@ -1,5 +1,6 @@
 #include "../libspu/libspu_private.h"
 #include "vm_registers.h"
+#include "psx/libspu.h"
 
 extern u8 _svm_sreg_dirty[];
 

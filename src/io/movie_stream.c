@@ -1,5 +1,13 @@
 #include "game/io/dat_resources.h"
 #include "card_movie_internal.h"
+#include "game/io/cd_queue.h"
+#include "game/io/controller.h"
+#include "game/io/movie_stream.h"
+#include "psx/libcd.h"
+#include "psx/libetc.h"
+#include "psx/libgpu.h"
+#include "psx/libpress.h"
+#include "psx/libsnd.h"
 
 #define MOVIE_SKIP_BUTTON 0x0800
 

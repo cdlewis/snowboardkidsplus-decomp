@@ -1,4 +1,4 @@
-#include "libsnd_private.h"
+#include "vm_voice.h"
 
 void vmNoiseOff(u8 voice) {
     _svm_voice[voice].field1d = 0;

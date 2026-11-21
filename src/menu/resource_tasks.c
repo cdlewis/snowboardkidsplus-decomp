@@ -5,6 +5,18 @@
 #include "game/menu/selected_sprite.h"
 #include "game/menu/task_widgets.h"
 #include "game/engine/system_runtime.h"
+#include "game/audio/music.h"
+#include "game/engine/byte_search.h"
+#include "game/engine/game_options.h"
+#include "game/engine/task.h"
+#include "game/graphics/graphics.h"
+#include "game/io/cd_queue.h"
+#include "game/menu/menu_selection_state.h"
+#include "game/menu/movement.h"
+#include "game/menu/selected_records.h"
+#include "game/race/player/race_player.h"
+#include "game/race/ui/race_time.h"
+#include "game/save/save_data.h"
 
 typedef struct MainTailSelectionResource {
     s16 unk00;
@@ -1338,7 +1350,7 @@ s16 findIdentityMappedIndexOrZero(ByteMappingDescriptor *descriptor, s16 value) 
     s16 i;
 
     for (i = 0; i < descriptor->count; i++) {
-        if (value == (s16)func_8007373C(descriptor->mapping, value)) {
+        if (value == func_8007373C(descriptor->mapping, value)) {
             result = i;
             break;
         }

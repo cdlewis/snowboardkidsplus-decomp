@@ -263,7 +263,6 @@ void prepareTaskVisualQuad(TaskVisualResource *resource, TaskVisualFrame *frame,
 extern TaskVisualFrame D_80124304[];
 extern TaskVisualFrame D_80124354[];
 void drawCameraFacingTaskVisual(TaskVisualResource *resource, u8 mode);
-u16 func_80059254(void);
 s16 func_80059290(TaskVisualResource *resource);
 void setTaskVisualFrame(TaskVisualResource *resource, TaskVisualFrame *frames,
                         s32 scale);
@@ -363,8 +362,6 @@ void drawMenuKindSprite(s16 x, s16 y, s16 kind, s32 frame, GsOT *ot, u16 depth);
 void drawScaledMenuKindSprite(s16 x, s16 y, s16 kind, s32 frame,
                               s16 scaleX, s16 scaleY, GsOT *ot, u16 depth);
 struct GsOT;
-extern struct GsOT D_800EBFF0[2];
-extern u16 D_8013AF78 GRAPHICS_DATA;
 
 void drawLimitedText8x8(s16 x, s16 y, s16 limit, const char *text,
                    s16 palette, s16 blend, struct GsOT *ot, u16 depth);
@@ -381,7 +378,6 @@ void drawPaletteMappedIcon(s16 x, s16 y, s16 index, struct GsOT *ot, u16 depth);
 void drawScaledPaletteMappedIcon(s16 x, s16 y, s16 index, s16 scaleX,
                                  s16 scaleY, GsOT *ot, u16 depth);
 
-extern u32 gSynchronizedFrameCount;
 void waitForFrameHcount(u32 minimumHcount);
 
 void drawSkewedTexturedQuadByIndexWithBlend(s16 x, s16 y, s16 width, s16 height, s16 unused,

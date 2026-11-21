@@ -4,15 +4,9 @@
 #include "game/io/cd_queue.h"
 #define TASK_WIDGET_COLORS_ABSOLUTE_ADDRESSING
 #include "game/graphics/graphics.h"
-#include "game/engine/linear_random.h"
-#include "game/engine/offset_archive.h"
-#include "game/audio/music.h"
-#include "psx/libsnd.h"
 #include "game/engine/game_options.h"
 #include "game/menu/movement.h"
 #include "game/race/player/race_player.h"
-
-extern u8 D_8013AFE2 __attribute__((section(".data")));
 
 INCLUDE_ASM("asm/nonmatchings/unclassified/menu_8007BE9C", func_8007BE9C);
 

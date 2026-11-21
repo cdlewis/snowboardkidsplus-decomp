@@ -1,4 +1,4 @@
-#include "libgs_private.h"
+#include "psx/libgs.h"
 
 extern void DrawOTag(u32 *tag);
 

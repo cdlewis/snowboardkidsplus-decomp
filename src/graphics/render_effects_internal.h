@@ -759,7 +759,7 @@ extern TexturedSpritePacket gScreenCopyMinusBuffer0[2] __attribute__((section(".
 
 extern struct VisualPlacementHeightData gVisualPlacementHeightData __attribute__((section(".data.visual_placement_heights")));
 
-extern SVECTOR *D_8013B688;
+extern SVECTOR *D_8013B688 __attribute__((section(".sdata")));
 extern SVECTOR *D_8013AF90 __attribute__((section(".data")));
 extern MATRIX D_8012A6B0, D_8012A6D0;
 extern MATRIX *D_8013AF9C __attribute__((section(".data")));
@@ -918,7 +918,6 @@ extern u32 D_8013B668;
 extern u32 D_8013B66C;
 extern u32 D_8013B68C;
 extern ModelFlatTriangle *D_8013B680 __attribute__((section(".sdata")));
-extern SVECTOR *D_8013B688 __attribute__((section(".sdata")));
 
 extern GsOT *D_8013B670;
 extern s32 D_8013B69C;
@@ -1040,12 +1039,6 @@ void queueScanlineCopyPackets(void);
 void queueSelectedCameraOverlayPackets(void);
 void queueOffsetScreenCopySprites(void);
 void drawNoProcessMessage(void);
-void emitProjectedGouraudTriangle(TriangleScratchVertex *vertices);
-void emitProjectedTexturedTriangle(TriangleScratchVertex *vertices);
-void emitProjectedGouraudTexturedTriangle(TriangleScratchVertex *vertices);
-void emitProjectedGouraudQuad(TriangleScratchVertex *vertices);
-void emitProjectedTexturedQuad(TriangleScratchVertex *vertices);
-void emitProjectedGouraudTexturedQuad(TriangleScratchVertex *vertices);
 void drawIndexedFlatTriangle(void);
 void processGouraudTrianglePrimitive(void);
 void processTexturedTrianglePrimitive(void);

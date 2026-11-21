@@ -1,4 +1,5 @@
-#include "libsnd_private.h"
+#include "vm_g.h"
+#include "vm_voice.h"
 
 extern u16 _svm_okof1, _svm_okof2, _svm_okon1, _svm_okon2;
 void _SsVmKeyOffNow(int mode) {

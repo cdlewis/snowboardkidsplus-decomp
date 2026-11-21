@@ -1,4 +1,6 @@
 #include "input_scheduler_internal.h"
+#include "game/engine/game_options.h"
+#include "game/engine/task.h"
 
 GameTask gGameTasks[200] __attribute__((section(".data.game_tasks"))) = {0};
 

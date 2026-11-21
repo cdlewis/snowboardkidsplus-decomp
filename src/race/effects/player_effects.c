@@ -1,10 +1,30 @@
-#include "psx/scratchpad.h"
 #include "psx/libetc.h"
 #include "psx/stdarg.h"
 #define RACE_FINISH_ABSOLUTE_ADDRESSING
 #include "../../graphics/render_effects_internal.h"
 #define GAME_LOOP_ABSOLUTE_ADDRESSING
 #include "game/engine/game_loop.h"
+#include "game/audio/music.h"
+#include "game/engine/game_options.h"
+#include "game/engine/game_task_scheduler.h"
+#include "game/engine/offset_archive.h"
+#include "game/engine/random.h"
+#include "game/engine/task.h"
+#include "game/graphics/draw_mode_sprite.h"
+#include "game/graphics/graphics.h"
+#include "game/graphics/quad_animation.h"
+#include "game/io/cd_queue.h"
+#include "game/io/controller.h"
+#include "game/io/controller_effects.h"
+#include "game/io/dat_entries.h"
+#include "game/io/dat_resources.h"
+#include "game/menu/selected_records.h"
+#include "game/race/camera/race_camera.h"
+#include "game/race/course/course_geometry.h"
+#include "game/race/player/race_player.h"
+#include "psx/libgpu.h"
+#include "psx/libgs.h"
+#include "psx/libgte.h"
 
 #define PRESENTATION_SKIP_BUTTON 0x0800
 
@@ -2324,7 +2344,7 @@ void updatePaletteWhitePulse(void) {
             g += (31 - g) * amount / 10;
             b += (31 - b) * amount / 10;
         }
-        gWhitePulsePalette[i] = (u8)r | ((u8)g << 5) | ((u8)b << 10);
+        gWhitePulsePalette[i] = r | (g << 5) | (b << 10);
     }
     LoadImage(&gWhitePulsePaletteRect, (u32 *)gWhitePulsePalette);
     DrawSync(0);

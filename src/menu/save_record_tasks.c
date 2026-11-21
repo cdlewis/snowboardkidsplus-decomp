@@ -3,6 +3,14 @@
 #include "game/io/cd_queue.h"
 #include "game/io/memory_card.h"
 #include "game/menu/task_widgets.h"
+#include "game/audio/music.h"
+#include "game/engine/game_options.h"
+#include "game/engine/system_runtime.h"
+#include "game/engine/task.h"
+#include "game/graphics/graphics.h"
+#include "game/menu/movement.h"
+#include "game/race/player/race_player.h"
+#include "game/save/save_data.h"
 
 typedef struct SaveMenuResource {
     u8 unk00[4];

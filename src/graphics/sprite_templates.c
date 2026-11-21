@@ -1,4 +1,5 @@
 #include "game/graphics/graphics.h"
+#include "psx/sprite.h"
 
 SpritePrimitiveTemplate gSpritePrimitiveTemplate;
 GsSPRITE gRotatedSpriteTemplate __attribute__((section(".bss.rotated_sprite")));

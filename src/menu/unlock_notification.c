@@ -1,6 +1,12 @@
-#include "psx/scratchpad.h"
 #include "psx/libetc.h"
 #include "../scene/scene_event_tasks_internal.h"
+#include "game/engine/game_options.h"
+#include "game/engine/task.h"
+#include "game/graphics/draw_mode_sprite.h"
+#include "game/graphics/graphics.h"
+#include "game/scene/scene_events.h"
+#include "psx/libgpu.h"
+#include "psx/libgs.h"
 
 void startUnlockNotification(s16 index) {
     if ((u16)index < 11 && (s16)getUnlockNotificationFlag(index) == 0) {

@@ -1,6 +1,20 @@
 #define RACE_TIME_ABSOLUTE_ADDRESSING
 #include "../race_presentation_internal.h"
 #include "game/race/player/player_results.h"
+#include "../race_internal.h"
+#include "game/audio/music.h"
+#include "game/engine/game_options.h"
+#include "game/engine/task.h"
+#include "game/graphics/coordinate.h"
+#include "game/io/controller_effects.h"
+#include "game/menu/selected_records.h"
+#include "game/race/camera/race_camera.h"
+#include "game/race/player/race_player.h"
+#include "game/race/ui/race_time.h"
+#include "game/save/save_data.h"
+#include "psx/libgs.h"
+#include "psx/libsnd.h"
+#include "psx/stdlib.h"
 
 #define ATTACK_SAVE_RECORD ((SaveRecord *)&D_8013080C)
 #define FULL_RACE_TIME(time) \

@@ -3,6 +3,16 @@
 #define MUSIC_STATE_ABSOLUTE_ADDRESSING
 #include "panel_tasks_internal.h"
 #include "game/menu/selected_sprite.h"
+#include "game/audio/music.h"
+#include "game/engine/game_options.h"
+#include "game/engine/task.h"
+#include "game/graphics/graphics.h"
+#include "game/io/cd_queue.h"
+#include "game/io/controller.h"
+#include "game/io/controller_effects.h"
+#include "game/menu/selected_records.h"
+#include "game/race/player/race_player.h"
+#include "game/save/save_data.h"
 
 typedef struct Mode11MenuSelection {
     s16 mode;

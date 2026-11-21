@@ -1,5 +1,16 @@
 #include "../menu/panel_tasks_internal.h"
 #include "game/menu/task_widgets.h"
+#include "game/audio/music.h"
+#include "game/engine/game_loop.h"
+#include "game/engine/game_options.h"
+#include "game/engine/task.h"
+#include "game/graphics/graphics.h"
+#include "game/io/cd_queue.h"
+#include "game/io/controller.h"
+#include "game/io/dat_entries.h"
+#include "game/menu/selected_records.h"
+#include "game/race/camera/race_camera.h"
+#include "game/save/save_data.h"
 
 /* The parser builds this table immediately before the indexed sector buffer. */
 #define TEXT_SEQUENCE_ENTRIES ((TextSequenceEntry *)0x801F2000)

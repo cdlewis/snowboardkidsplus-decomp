@@ -1,4 +1,9 @@
 #include "../engine/resource_services_internal.h"
+#include "game/engine/system_runtime.h"
+#include "game/engine/task.h"
+#include "game/graphics/graphics.h"
+#include "psx/libgpu.h"
+#include "psx/libgs.h"
 
 SavedImageEntry gSavedImageEntries[32] __attribute__((section(".data.saved_image_entries"))) = {0};
 
@@ -38,7 +43,7 @@ void uploadTimArchive(TimArchive *archive, s16 *position) {
         if (i >= count) {
             break;
         }
-        index = (u16)i + 1;
+        index = i + 1;
         offset = archive->words[(s16)index];
         uploadTimImageWithOffset((u32 *)((u8 *)archive + ((offset >> 1) << 1)), position);
         i++;

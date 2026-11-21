@@ -1,6 +1,21 @@
 #include "player_actions_internal.h"
 #include "game/engine/random.h"
 #include "game/graphics/quad_animation.h"
+#include "../race_internal.h"
+#include "game/audio/music.h"
+#include "game/engine/angles.h"
+#include "game/engine/task.h"
+#include "game/graphics/coordinate.h"
+#include "game/graphics/graphics.h"
+#include "game/io/controller.h"
+#include "game/io/dat_resources.h"
+#include "game/menu/selected_records.h"
+#include "game/race/course/course_geometry.h"
+#include "game/race/player/player_resource_textures.h"
+#include "game/race/player/race_player.h"
+#include "game/race/ui/race_time.h"
+#include "psx/libgs.h"
+#include "psx/libgte.h"
 
 u16 gPlayerSoundVariantsA[2] __attribute__((section(".data.player_sound_variants"))) = {0x100, 0x200};
 

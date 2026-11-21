@@ -1,6 +1,10 @@
-#include "psx/scratchpad.h"
 #include "psx/libetc.h"
 #include "render_effects_internal.h"
+#include "game/graphics/draw_mode_sprite.h"
+#include "game/graphics/graphics.h"
+#include "psx/libgpu.h"
+#include "psx/libgs.h"
+#include "psx/sprite.h"
 
 typedef struct DigitSpritePacket {
     u32 tag;
@@ -984,8 +988,8 @@ void drawDoubleByteGlyph16x16(s16 x, s16 y, s16 unusedWidth, s16 unusedHeight, c
             }
         } else {
             if ((s8)glyphText[0] == firstByte && (s8)glyphText[1] == first[1]) {
-                u = ((s16)offset / 2 % 16) * 16;
-                v = ((s16)offset / 32) * 16 + 160;
+                u = (offset / 2 % 16) * 16;
+                v = (offset / 32) * 16 + 160;
                 page = 0;
                 break;
             }
@@ -993,8 +997,8 @@ void drawDoubleByteGlyph16x16(s16 x, s16 y, s16 unusedWidth, s16 unusedHeight, c
         }
         if (*second) {
             if ((s8)glyphText[0] == second[0] && (s8)glyphText[1] == second[1]) {
-                u = ((s16)offset / 2 % 16) * 16;
-                v = ((s16)offset / 32) * 16;
+                u = (offset / 2 % 16) * 16;
+                v = (offset / 32) * 16;
                 page = 1;
                 break;
             }
@@ -1002,8 +1006,8 @@ void drawDoubleByteGlyph16x16(s16 x, s16 y, s16 unusedWidth, s16 unusedHeight, c
         }
         if (*third) {
             if ((s8)glyphText[0] == third[0] && (s8)glyphText[1] == third[1]) {
-                u = ((s16)offset / 2 % 16) * 16;
-                v = ((s16)offset / 32) * 16;
+                u = (offset / 2 % 16) * 16;
+                v = (offset / 32) * 16;
                 page = 29;
                 break;
             }

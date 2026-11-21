@@ -1,6 +1,10 @@
-#include "psx/scratchpad.h"
 #include "psx/libetc.h"
 #include "render_effects_internal.h"
+#include "game/graphics/graphics.h"
+#include "psx/libapi.h"
+#include "psx/libgpu.h"
+#include "psx/libgs.h"
+#include "psx/libgte.h"
 
 typedef struct SubdivisionScratchpad {
     u32 unk00;

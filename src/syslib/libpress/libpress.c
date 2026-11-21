@@ -1,4 +1,6 @@
 #include "libpress_private.h"
+#include "psx/libetc.h"
+#include "psx/libpress.h"
 
 #define MDEC_DATA __attribute__((section(".data.mdec"), aligned(4)))
 #define MDEC_RODATA __attribute__((section(".rodata.mdec"), aligned(4)))
@@ -89,13 +91,13 @@ int DecDCTBufSize(u32* bs) { return *(u16*)bs; }
 
 void DecDCTin(u32* buf, int mode) {
     if (mode & 1)
-        *(u32*)buf &= ~0x08000000;
+        *buf &= ~0x08000000;
     else
-        *(u32*)buf |= 0x08000000;
+        *buf |= 0x08000000;
     if (mode & 2)
-        *(u32*)buf |= 0x02000000;
+        *buf |= 0x02000000;
     else
-        *(u32*)buf &= ~0x02000000;
+        *buf &= ~0x02000000;
     MDEC_in(buf, *(u16*)buf);
 }
 

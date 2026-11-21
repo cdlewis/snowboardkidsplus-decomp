@@ -13,9 +13,7 @@
 #include "game/race/course/course_offset.h"
 #include "game/graphics/quad_animation.h"
 #include "game/engine/angles.h"
-#include "game/engine/linear_random.h"
 #include "game/engine/random.h"
-#include "game/engine/offset_archive.h"
 #include "game/audio/music.h"
 #include "game/save/save_data.h"
 #include "game/engine/game_options.h"
@@ -24,13 +22,16 @@
 #include "game/menu/selected_records.h"
 #include "psx/libapi.h"
 #include "psx/libetc.h"
-#include "psx/libsnd.h"
 #include "psx/scratchpad.h"
 #include "player_update_internal.h"
 #include "game/io/dat_resources.h"
 #include "game/io/controller.h"
 #include "../race_presentation_internal.h"
 #include "../race_internal.h"
+#include "game/engine/game_task_scheduler.h"
+#include "game/engine/task.h"
+#include "psx/libgs.h"
+#include "psx/libgte.h"
 
 
 typedef struct PlayerState2Trick {
@@ -437,13 +438,10 @@ u32 gPlayerTerrainContactSavedStackPointer
 u32 gPlayerGroundContactSavedStackPointer
     __attribute__((section(".sdata.player_ground_contact_saved_stack"))) = 0;
 
-void updateCurrentPlayerMotionEffects(void);
-void initializeScaledTaskCoordinateResource(void);
 void updateCurrentPlayerState24MotionAndScale(void);
 void func_80024288(void);
 void updateCurrentPlayerTimedEffect(void);
 void updateCurrentPlayerRiding(void);
-s16 func_8008C670(s16 playerIndex);
 s16 func_80029DD0(s16 playerIndex);
 void updateCurrentPlayerAirborneDragUntilLanding(void);
 s32 snapCurrentPlayerToTerrain(void);
@@ -798,7 +796,7 @@ void updateCurrentPlayerMotionEffects(void) {
 
     difference = (s16)(getXZHeading(0, 0,
         D_8013B0D8->x - D_8013B0D8->unk050,
-        D_8013B0D8->z - D_8013B0D8->unk058) - (u16)D_8013B0D8->unk110) & 0xFFF;
+        D_8013B0D8->z - D_8013B0D8->unk058) - D_8013B0D8->unk110) & 0xFFF;
     angle = difference;
     if (difference > 0x800) {
         angle = 0x1000 - difference;
@@ -1606,7 +1604,7 @@ applySteering:
         updateCurrentPlayerItemUse(D_8013AE88->data18);
     }
 
-    if (*(s8 *)&D_8013B0D8->unk943) {
+    if (D_8013B0D8->unk943) {
         playCurrentPlayerSoundEffect(5);
     }
     steer = updateCurrentPlayerGroundContact();
@@ -2774,10 +2772,10 @@ void updateCurrentPlayerState8Steering(void) {
         if (difference > 0x800) {
             angle = difference | 0xF000;
         }
-        if ((s16)angle > 0x66) {
+        if (angle > 0x66) {
             angle = 0x66;
         }
-        if ((s16)angle < -0x66) {
+        if (angle < -0x66) {
             angle = -0x66;
         }
         player->unk0B6 += angle;
@@ -2795,10 +2793,10 @@ void updateCurrentPlayerState8Steering(void) {
         if (difference > 0x800) {
             angle = difference | 0xF000;
         }
-        if ((s16)angle > 0x66) {
+        if (angle > 0x66) {
             angle = 0x66;
         }
-        if ((s16)angle < -0x66) {
+        if (angle < -0x66) {
             angle = -0x66;
         }
         player->unk0B6 += angle;
