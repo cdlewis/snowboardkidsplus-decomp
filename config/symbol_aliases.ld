@@ -13,6 +13,7 @@ selectedFinishLapCountAbsolute = D_8013AFD0;
 geometryPlacementDataAbsolute = D_8013B1F4;
 selectionMenuRecordAbsolute = D_8013B560;
 mainTailSelectionGp = D_8013B527;
+shopMenuRememberedSelectionGp = gShopMenuRememberedSelection;
 taskTransitionFlagGp = D_8013B55E;
 
 /* GP-addressed view of the saved camera overlay selector. */

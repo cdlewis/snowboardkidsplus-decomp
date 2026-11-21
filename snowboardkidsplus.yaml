@@ -149,7 +149,8 @@ segments:
       - {start: 0x2438, type: .rodata, name: menu/save_record_tasks, linker_section: .rodata.memory_card_save_menu}
       - {start: 0x251C, type: .rodata, name: menu/save_record_tasks, linker_section: .rodata.memory_card_save_menu_padding}
       - [0x2520, .rodata, menu/panel_tasks]
-      - [0x2534, rodata]
+      - {start: 0x2534, type: .rodata, name: menu/panel_tasks, linker_section: .rodata.shop_menu}
+      - [0x255C, rodata]
       - {start: 0x2594, type: .rodata, name: menu/panel_tasks, linker_section: .rodata.money_panel_selection}
       - [0x25C8, rodata]
       - {start: 0x2600, type: .rodata, name: menu/panel_tasks, linker_section: .rodata.selected_board_details}
@@ -835,6 +836,10 @@ segments:
       - [0x120ABC, data, task_index_panel_tail]
       - {start: 0x120F24, type: .data, name: menu/save_record_tasks, linker_section: .data.task_shadowed_text}
       - [0x120F40, data, task_shadowed_text_tail]
+      - {start: 0x121C24, type: .data, name: menu/panel_tasks, linker_section: .data.shop_menu_sprites}
+      - [0x121C3C, data, shop_menu_text_bodies]
+      - {start: 0x121F94, type: .data, name: menu/panel_tasks, linker_section: .data.shop_menu_texts}
+      - [0x121FD0, data, shop_menu_data_tail]
       - {start: 0x122040, type: .data, name: menu/panel_tasks, linker_section: .data.board_selection_levels}
       - {start: 0x12204C, type: .data, name: menu/panel_tasks, linker_section: .data.board_style_text}
       - {start: 0x12205C, type: .data, name: menu/panel_tasks, linker_section: .data.board_selection_styles}
@@ -1042,8 +1047,13 @@ segments:
       - {start: 0x12BC70, type: .data, name: menu/panel_tasks, linker_section: .data.registered_panel_mode_labels}
       - {start: 0x12BC78, type: .data, name: menu/course_selection_tasks, linker_section: .data.save_record_progress_currency_label}
       - [0x12BC7C, data, 12BC7C]
+      - {start: 0x12BC8C, type: .data, name: menu/panel_tasks, linker_section: .data.shop_menu_mappings}
+      - [0x12BC9C, data]
+      - {start: 0x12BCA4, type: .data, name: menu/panel_tasks, linker_section: .data.shop_menu_destinations}
       - [0x12BCAC, .data, menu/panel_tasks]
       - [0x12BCB0, data, 12BC78_tail]
+      - {start: 0x12BCB8, type: .data, name: menu/panel_tasks, linker_section: .data.shop_menu_selection}
+      - [0x12BCBC, data]
       - {start: 0x12BCE4, type: .data, name: menu/panel_tasks, linker_section: .data.save_record_money_panel_currency_label}
       - [0x12BCE8, data, 12BCE8]
       - {start: 0x12BD00, type: .data, name: race/player/player_model_preview, linker_section: .data.player_model_draw_area_depths}

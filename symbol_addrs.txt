@@ -2454,6 +2454,32 @@ drawCurrentTaskFramedSpritePair16A = 0x80094564; // type:func
 drawCurrentTaskSpriteB7 = 0x80098F38; // type:func
 
 initializeCountedTaskResourcePair = 0x8008D144; // type:func
+updateShopMenuTask = 0x8008D200; // type:func
+sShopMenuSprites = 0x80131424; // size:0x18 defined:true
+D_8013143C = 0x8013143C; // size:0x5C
+D_80131498 = 0x80131498; // size:0x64
+D_801314FC = 0x801314FC; // size:0x4C
+D_80131548 = 0x80131548; // size:0x2C
+D_80131574 = 0x80131574; // size:0x18
+D_8013158C = 0x8013158C; // size:0x18
+D_801315A4 = 0x801315A4; // size:0x1C
+D_801315C0 = 0x801315C0; // size:0x20
+D_801315E0 = 0x801315E0; // size:0x50
+D_80131630 = 0x80131630; // size:0x4C
+D_8013167C = 0x8013167C; // size:0x40
+D_801316BC = 0x801316BC; // size:0x2C
+D_801316E8 = 0x801316E8; // size:0x40
+D_80131728 = 0x80131728; // size:0x38
+D_80131760 = 0x80131760; // size:0x34
+sShopMenuTexts = 0x80131794; // size:0x3C defined:true
+sShopMenuSpriteMapping = 0x8013B48C; // size:0x4 defined:true
+sShopMenuTextMapping = 0x8013B490; // size:0x4 defined:true
+sShopMenuCharacter8TextMapping = 0x8013B494; // size:0x4 defined:true
+sShopMenuCharacter9TextMapping = 0x8013B498; // size:0x4 defined:true
+sShopMenuParentStates = 0x8013B4A4; // size:0x4 defined:true
+sShopMenuTextureMapping = 0x8013B4A8; // size:0x4 defined:true
+sMoneyPanelSelectionSpriteMapping = 0x8013B4B8; // size:0x3 defined:true
+gShopMenuRememberedSelection = 0x8013B4BB; // size:0x1 defined:true
 
 initializeAlternateCountedTaskResourcePair = 0x8008DD04; // type:func
 

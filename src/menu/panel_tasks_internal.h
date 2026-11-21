@@ -188,7 +188,7 @@ void func_800187B8(u8 voice);
 void updateRegisteredDetailedTextPanelTask(void);
 void drawRegisteredTextPanelTask(void);
 void updateGroupedSelectionBoundsTask(void);
-void func_8008D200(void);
+void updateShopMenuTask(void);
 void drawCurrentTaskMoneyPanel(void);
 void drawCurrentTaskMoneyPanelWithCharacterSprites(void);
 extern s8 D_801317E4[];
