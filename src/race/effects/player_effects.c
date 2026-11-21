@@ -1995,7 +1995,9 @@ void updatePlayerParticleTrailTask(void) {
 
 INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_800688C0);
 
-INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_800689EC);
+void beginPlayerTripleQuadEffectTask(void) {
+    setCurrentTaskCallback(func_800676FC);
+}
 
 s32 createPlayerTripleQuadEffectTask(s32 playerIndex) {
     RacePlayer *player;
@@ -2010,7 +2012,7 @@ s32 createPlayerTripleQuadEffectTask(s32 playerIndex) {
     if (!(player->unk128 & 8) && player->unk96E != 0 && player->unk96E != 0x801 && player->unk96E != 0x200) {
         return 0;
     }
-    func_80014930(D_8013B304, func_800689EC);
+    func_80014930(D_8013B304, beginPlayerTripleQuadEffectTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     resource = (PlayerTripleQuadEffectResource *)&D_800D9504[D_8013AE8C->resource14];
     vertex = gPlayerTripleQuadOffsets;

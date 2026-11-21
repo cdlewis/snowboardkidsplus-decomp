@@ -3464,6 +3464,7 @@ configureColorCycleTask = 0x80070870; // type:func
 
 drawSpriteMotionDisplay = 0x80034C40; // type:func
 
+beginPlayerTripleQuadEffectTask = 0x800689EC; // type:func
 createPlayerTripleQuadEffectTask = 0x80068A10; // type:func
 gPlayerTripleQuadOffsets = 0x8012CA34; // size:0x18 defined:true
 
