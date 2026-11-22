@@ -12,7 +12,7 @@ has correct calls, control flow, types, offsets, and expressions. Try localized
 source changes before random search.
 
 The project launcher prepares a fresh experiment, smoke-tests its compiler
-wrapper, and runs a bounded local search:
+wrapper, and runs a local search:
 
 ```sh
 ./tools/permuter FUNCTION -s nonmatchings/FUNCTION/attempt.c -j 2 --seconds 300
@@ -36,8 +36,13 @@ live under a new `nonmatchings/FUNCTION[-N]/permuter/`; the input is preserved a
 `original.c`. The launcher looks for decomp-permuter in `tools/decomp-permuter`,
 `../decomp-permuter`, and `../snowboardkids-decomp/tools/decomp-permuter`, in
 that order. Override discovery with `--permuter-dir` or `DECOMP_PERMUTER`.
-Install its Python dependencies in the project's `.venv` (`toml`, optionally
-`Levenshtein` for `--algorithm levenshtein`).
+Install `toml` and `Levenshtein` in the project's `.venv`. The search defaults to
+16 local workers and Levenshtein scoring. Use `-j` to override the worker count
+or `--algorithm difflib` to score without `Levenshtein`. The default search
+output shows the base score and saved candidates that improve or tie the best
+score. Use `--verbose` for per-iteration progress.
+
+Pass `--seconds` to bound an experiment. Without it, the launcher sets no time limit.
 Timeout returns 124 and Ctrl-C returns 130, preserving candidate outputs.
 The search uses decomp-permuter's scorer, which can report a different score
 than decomp.me. Verify linked bytes separately, including at zero score.

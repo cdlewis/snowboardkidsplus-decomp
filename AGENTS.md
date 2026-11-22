@@ -39,8 +39,9 @@ Change source/configuration and regenerate them; never edit them by hand.
   compile one attempt with the owning unit's settings and compare linked bytes.
 - `python3 tools/data_diff.py SYMBOL [--size 0xSIZE]`: check data bytes and address.
 - `python3 tools/data_diff.py --find-first-mismatch`: locate an executable mismatch.
-- `./tools/permuter FUNCTION -s ATTEMPT.c [-j 2] [--seconds 300]`: prepare and
-  run a bounded PSX permuter experiment; `--prepare-only` imports without searching.
+- `./tools/permuter FUNCTION -s ATTEMPT.c [-j JOBS] [--seconds SECONDS]`: prepare
+  and run a PSX permuter experiment. Pass `--seconds` to set a time limit or
+  `--prepare-only` to import without searching.
 - `./tools/install-git-hooks.sh`: install the tracked commit validation hook.
 
 Use the wrapper for every full build, split regeneration, and progress report.

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Prepare and run bounded decomp-permuter searches with the real PSX pipeline."""
+"""Prepare and run decomp-permuter searches with the real PSX pipeline."""
 
 import argparse
 from importlib import import_module
@@ -175,18 +175,16 @@ def prepare(args, permuter, scratch):
     subprocess.run([str(wrapper), str(smoke_source), "-o", str(experiment / "base.o")],
                    cwd=ROOT, check=True)
     print(f"Prepared experiment: {experiment}", flush=True)
-    print("Scores are search hints. Check winners with tools/match_function.py; "
-          "integration still requires the full-image gate.", flush=True)
     return experiment
 
 
 def run_search(args, permuter, experiment):
-    command = [sys.executable, str(permuter / "permuter.py"), "-j", str(args.jobs),
-               "--best-only", "--stop-on-zero", "--stack-diffs", "--algorithm",
-               args.algorithm]
-    if args.quiet:
+    command = [sys.executable, "-u", str(permuter / "permuter.py"), "-j", str(args.jobs),
+               "--best-only", "--stop-on-zero", "--stack-diffs"]
+    if not args.verbose:
         command.append("--quiet")
-    command.append(str(experiment))
+    command.extend(["--algorithm", args.algorithm, str(experiment)])
+    print("Running permuter...", flush=True)
     # A separate process group lets timeout/Ctrl-C stop workers and compilers too.
     process = subprocess.Popen(command, cwd=ROOT, start_new_session=True)
     try:
@@ -199,8 +197,8 @@ def run_search(args, permuter, experiment):
         except subprocess.TimeoutExpired:
             os.killpg(process.pid, signal.SIGKILL)
             process.wait()
-        print(f"Search {'time limit reached' if timed_out else 'interrupted'}; "
-              f"candidates preserved in {experiment}.", flush=True)
+        print(f"Search {'time limit reached' if timed_out else 'interrupted'}. "
+              f"Experiment: {experiment}", file=sys.stderr, flush=True)
         return 124 if timed_out else 130
 
 
@@ -229,14 +227,21 @@ def main():
     parser.add_argument("--prepare-only", action="store_true")
     parser.add_argument("--preserve-macros", metavar="REGEX",
                         help="preserve matching SDK macros, for example 'gte_.*'")
-    parser.add_argument("--quiet", action="store_true", help="suppress search updates")
-    parser.add_argument("-j", "--jobs", type=int, default=2)
-    parser.add_argument("--seconds", type=float, default=300,
-                        help="search time limit in seconds (default: 300)")
-    parser.add_argument("--algorithm", choices=["difflib", "levenshtein"], default="difflib")
+    output = parser.add_mutually_exclusive_group()
+    output.add_argument("--quiet", dest="verbose", action="store_false",
+                        help="hide per-iteration progress (default)")
+    output.add_argument("--verbose", action="store_true", help="show per-iteration progress")
+    parser.set_defaults(verbose=False)
+    parser.add_argument("-j", "--jobs", type=int, default=16,
+                        help="number of local workers (default: 16)")
+    parser.add_argument("--seconds", type=float, help="optional search time limit in seconds")
+    parser.add_argument("--algorithm", choices=["difflib", "levenshtein"], default="levenshtein",
+                        help="scoring algorithm (default: levenshtein)")
     args = parser.parse_args()
-    if args.jobs < 1 or not math.isfinite(args.seconds) or args.seconds <= 0:
-        parser.error("jobs and seconds must be positive finite values")
+    if args.jobs < 1:
+        parser.error("jobs must be positive")
+    if args.seconds is not None and (not math.isfinite(args.seconds) or args.seconds <= 0):
+        parser.error("seconds must be a positive finite value")
     if args.preserve_macros:
         try:
             re.compile(f"^(?:{args.preserve_macros})$")
@@ -253,6 +258,11 @@ def main():
         if not (permuter / name).is_file():
             parser.error(f"missing {permuter / name}; supply --permuter-dir or DECOMP_PERMUTER")
     # Check dependencies before creating an experiment.
+    if not args.prepare_only and args.algorithm == "levenshtein":
+        try:
+            import_module("Levenshtein")
+        except ImportError:
+            parser.error("install Levenshtein in .venv or use --algorithm difflib")
     subprocess.run([sys.executable, str(permuter / "permuter.py"), "--help"],
                    stdout=subprocess.DEVNULL, check=True)
     check_image()
