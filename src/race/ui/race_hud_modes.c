@@ -900,7 +900,7 @@ void func_800418F4(s16 player) {
     panelOffset = player + 121;
     func_8006C998(96, hudY - panelOffset, 417, 12, -1, hudOt, depth);
 
-    if (func_8003D904(player)) {
+    if (shouldRenderPlayerView(player)) {
         timer = (s8)gRacePlayers[player].unk93F;
         scale = timer ? 0x1000 / (timer + 1) : 0;
         drawScaledMenuKindSprite(-112, -40, gRacePlayers[player].unk93E,
@@ -985,7 +985,7 @@ void drawSplitScreenTrickAttackHud(s16 player) {
     }
 
     setSpriteColor(128, 128, 128);
-    if (func_8003D904(player)) {
+    if (shouldRenderPlayerView(player)) {
         if (D_8013B1A0[player]) {
             func_8006C998(-112, timeY + 39, 398, 5, -1, timeOt, depth[0]);
             palette = 2;
@@ -1084,7 +1084,7 @@ void func_80042894(s16 player) {
     }
 
     setSpriteColor(128, 128, 128);
-    if (func_8003D904(player)) {
+    if (shouldRenderPlayerView(player)) {
         s16 i;
         s16 timeDigitsY;
         if (D_8013B1A0[player]) {
@@ -1178,7 +1178,7 @@ void drawSplitScreenCourseCoinHud(s16 player) {
 
     depth = 1;
     setSpriteColor(128, 128, 128);
-    if (func_8003D904(player)) {
+    if (shouldRenderPlayerView(player)) {
         if (D_8013B1A0[player]) {
             func_8006C998(-112, timeY + 39, 398, 5, -1, timeOt, 1);
         }

@@ -351,11 +351,11 @@ void updateTaskStateTransition(void) {
         break;
     case 1:
         ot = &D_800EC018[D_8013AF78];
-        draw = func_8003D904(0);
+        draw = shouldRenderPlayerView(0);
         break;
     case 2:
         ot = &D_800EC0B8[D_8013AF78];
-        draw = func_8003D904(1);
+        draw = shouldRenderPlayerView(1);
         break;
     }
 

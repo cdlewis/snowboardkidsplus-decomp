@@ -271,11 +271,11 @@ void drawSlidingDisplaySprite(SlidingDisplayResource *resource) {
     if (gameOptionPlayerModeAbsolute == 1) {
         func_8006C998(x, 8, 0x1DF, 6, -1, &D_800EC018[D_8013AF78], 1);
     } else if (D_8013AE88->data18 == 0) {
-        if (func_8003D904(0)) {
+        if (shouldRenderPlayerView(0)) {
             func_8006C998(x, 8, 0x1DF, 6, -1, &D_800EC018[D_8013AF78], 1);
         }
     } else {
-        if (func_8003D904(1)) {
+        if (shouldRenderPlayerView(1)) {
             func_8006C998(x, 8, 0x1DF, 6, -1, &D_800EC0B8[D_8013AF78], 1);
         }
     }
@@ -345,7 +345,7 @@ void drawPlayerSpriteAnimation(SpriteAnimationResource *resource) {
     GsOT *ot;
     s32 palette;
     if (resource->checkPlayer == 1) {
-        if (!func_8003D904(resource->player)) return;
+        if (!shouldRenderPlayerView(resource->player)) return;
     }
     if (resource->player == 0) {
         ot = &D_800EC018[D_8013AF78];
@@ -394,12 +394,12 @@ void drawPlayerNumberDisplay(PlayerNumberResource *resource) {
         visible = 1;
         ot = &D_800EC018[D_8013AF78];
     } else if (resource->player == 0) {
-        if (func_8003D904(0)) {
+        if (shouldRenderPlayerView(0)) {
             visible = 1;
             ot = &D_800EC018[D_8013AF78];
         }
     } else {
-        if (func_8003D904(1)) {
+        if (shouldRenderPlayerView(1)) {
             visible = 1;
             ot = &D_800EC0B8[D_8013AF78];
         }
@@ -498,12 +498,12 @@ void drawSpriteMotionDisplay(SpriteMotionResource *resource) {
         draw = 1;
         ot = &D_800EC018[D_8013AF78];
     } else if (resource->variant == 0) {
-        if (func_8003D904(0)) {
+        if (shouldRenderPlayerView(0)) {
             draw = 1;
             ot = &D_800EC018[D_8013AF78];
         }
     } else {
-        if (func_8003D904(1)) {
+        if (shouldRenderPlayerView(1)) {
             draw = 1;
             ot = &D_800EC0B8[D_8013AF78];
         }
@@ -596,12 +596,12 @@ void drawSlidingNumberDisplay(SlidingNumberResource *resource) {
         visible = 1;
         ot = &D_800EC018[D_8013AF78];
     } else if (resource->player == 0) {
-        if (func_8003D904(0)) {
+        if (shouldRenderPlayerView(0)) {
             visible = 1;
             ot = &D_800EC018[D_8013AF78];
         }
     } else {
-        if (func_8003D904(1)) {
+        if (shouldRenderPlayerView(1)) {
             visible = 1;
             ot = &D_800EC0B8[D_8013AF78];
         }

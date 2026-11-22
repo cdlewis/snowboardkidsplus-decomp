@@ -1127,11 +1127,11 @@ void drawSound601SequenceSpriteTask(void) {
     if (gameOptionPlayerModeAbsolute == 1) {
         func_8006C998(-48, -12, 0x1E0, 6, -1, &D_800EC018[D_8013AF78], 1);
     } else if (D_8013AE88->data18 == 0) {
-        if (func_8003D904(0)) {
+        if (shouldRenderPlayerView(0)) {
             func_8006C998(-40, -12, 0x1E0, 6, -1, &D_800EC018[D_8013AF78], 1);
         }
     } else {
-        if (func_8003D904(1)) {
+        if (shouldRenderPlayerView(1)) {
             func_8006C998(-40, -12, 0x1E0, 6, -1, &D_800EC0B8[D_8013AF78], 1);
         }
     }

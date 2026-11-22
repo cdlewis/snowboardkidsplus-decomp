@@ -28,6 +28,7 @@ extern u8 D_8013AFD3 __attribute__((section(".data")));
 extern GameTask *D_8013AE88 __attribute__((section(".data")));
 extern RaceTime gRaceElapsedTime __attribute__((section(".data")));
 extern RaceTime D_8013B188 __attribute__((section(".data")));
+extern s16 gFrameCounter __attribute__((section(".data")));
 
 s16 compareRaceTimes(const RaceTime *a, const RaceTime *b) {
     s32 first = (a->centiseconds & 0xFF00) + a->seconds * 25600 + a->minutes * 1536000;
@@ -290,21 +291,16 @@ void updateAttackResultsAndRecords(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: inline 12/16 */
-#ifdef NON_MATCHING
-s16 func_8003D904(u16 parity) {
-    if (!(D_8013AFAA & 0x400) || ((gFrameCounter & 1) == parity)) {
+s16 shouldRenderPlayerView(u16 player) {
+    if (!(D_8013AFAA & 0x400) || ((gFrameCounter & 1) == player)) {
         return 1;
     }
     return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/player/player_results", func_8003D904);
-#endif
 
 void renderCurrentCameraPlayersAndUpdateSound(void) {
     u16 i;
-    if (func_8003D904(D_8013AE88->data18)) {
+    if (shouldRenderPlayerView(D_8013AE88->data18)) {
         GsSetRefView2L(&gPlayerCameraViews[D_8013AE88->data18]);
         updateCameraRotationMatrices(D_8013AE88->data18);
         if (D_8013AE88->data18 != 0 && (D_8013AFAA & 0x2000)) {

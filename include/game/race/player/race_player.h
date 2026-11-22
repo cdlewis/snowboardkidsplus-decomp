@@ -325,7 +325,7 @@ void resolvePlayerCollisionsWithCylinder(const Position3D *position, s32 radius,
 
 void updatePlayerTimerTask(void);
 void startRacePlayerTasks(void);
-s16 func_8003D904(u16 player);
+s16 shouldRenderPlayerView(u16 player);
 s16 processCurrentPlayerActionRequests(s16 suppressWallAction);
 
 void updateCpuRacerSpeedControl(void);
