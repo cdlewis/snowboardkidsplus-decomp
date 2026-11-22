@@ -3972,6 +3972,7 @@ sXaModeDelay = 0x8013B5EC; // type:u8 size:0x4
 sXaSeekPosition = 0x8013B5F0; // size:0x4
 sXaFilter = 0x8013B5F4; // size:0x4
 
+createChildTaskForParent = 0x800148F4; // type:func
 createChildTaskForParentWithReserve = 0x80014930; // type:func
 requestPlayerAction8 = 0x8002CE58; // type:func
 requestPlayerAction12 = 0x8002CE9C; // type:func

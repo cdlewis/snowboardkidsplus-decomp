@@ -65,10 +65,10 @@ void initializeModeRaceTasks(void) {
     createChildTaskWithReserve(initializeModeSectorReadResourcesTask);
     if (D_8013AFCD == 2) {
         D_8013AFAA |= 0x800;
-        func_800148F4(&gGameTasks[3], initializeTaskPlayerCamera);
+        createChildTaskForParent(&gGameTasks[3], initializeTaskPlayerCamera);
         D_8013AE8C->data18 = 1;
     }
-    func_800148F4(&gGameTasks[3], initializeTaskPlayerCamera);
+    createChildTaskForParent(&gGameTasks[3], initializeTaskPlayerCamera);
     D_8013AE8C->data18 = 0;
     func_80058BD4();
     createChildTask(updateRacePlayerFinishSlotsTask);

@@ -92,6 +92,7 @@ s32 createChildTask(TaskCallback callback);
 /* Leaves ten free task slots in reserve and uses the same fallback as createChildTask. */
 s32 createChildTaskWithReserve(TaskCallback callback);
 s32 tryCreateChildTaskWith20SlotsReserved(TaskCallback callback);
+s16 createChildTaskForParent(GameTask *parent, TaskCallback callback);
 s16 createChildTaskForParentWithReserve(GameTask *parent, TaskCallback callback);
 s16 func_8001496C(GameTask *parent, TaskCallback callback);
 void deleteCurrentTaskSubtree(void);
@@ -242,7 +243,6 @@ void createRegisteredSpacedChildTasks(s16 mode, u32 acceptMask, u32 cancelMask,
                                       TaskCallback callback40, s32 value, s32 index);
 void initializeSpacedChildTasks(void);
 
-s16 func_800148F4(GameTask *parent, TaskCallback callback);
 void initializeDemoPlaybackTask(void);
 
 typedef char GameTaskSizeCheck[(sizeof(GameTask) == 0x20) ? 1 : -1];

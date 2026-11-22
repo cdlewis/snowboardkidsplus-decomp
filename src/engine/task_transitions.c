@@ -563,10 +563,10 @@ void initializeRacePresentationTask(void) {
     }
     initializeRacePlayerEffects();
     if (D_8013AFCD == 2) {
-        func_800148F4(&gGameTasks[3], initCurrentPlayerCameraTask);
+        createChildTaskForParent(&gGameTasks[3], initCurrentPlayerCameraTask);
         D_8013AE8C->data18 = 1;
     }
-    func_800148F4(&gGameTasks[3], initCurrentPlayerCameraTask);
+    createChildTaskForParent(&gGameTasks[3], initCurrentPlayerCameraTask);
     D_8013AE8C->data18 = 0;
     func_80058BD4();
     createChildTask(updateRacePlayerFinishSlotsTask);
@@ -1131,7 +1131,7 @@ void initializeDemoPlaybackTask(void) {
     initPlayerCamera(0);
     func_8003DEE0();
     initializeRacePlayerEffects();
-    func_800148F4(&gGameTasks[3], initPlayerZeroTask);
+    createChildTaskForParent(&gGameTasks[3], initPlayerZeroTask);
     D_8013AE8C->data18 = 0;
     func_80058BD4();
     createChildTask(updateRacePlayerFinishSlotsTask);
