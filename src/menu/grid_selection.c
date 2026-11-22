@@ -260,7 +260,7 @@ void updateSplitBoardSelectionTask(void) {
         if (input->selectedIndex != input->previousIndex) {
             s16 model;
             selection->unk02 = selection->value;
-            model = func_80073760(entries[0].task, input->selectedIndex);
+            model = mapSpacedGroupIndex(entries[0].task, input->selectedIndex);
             if ((u16)model < 5U) {
                 selection->value = model;
                 if (model != selection->unk02) {
@@ -279,7 +279,7 @@ void updateSplitBoardSelectionTask(void) {
                 D_8013AE98->data18 = 13;
                 goto exitSelection;
             }
-            if (func_80073760(entries[0].task, input->selectedIndex) == 5) {
+            if (mapSpacedGroupIndex(entries[0].task, input->selectedIndex) == 5) {
                 D_8013B4BD = 0;
                 D_8013AE98->data18 = 11;
                 playSoundEffect(0, 0x202, 32);
@@ -338,7 +338,7 @@ void updateSplitBoardSelectionTask(void) {
         break;
     }
     case 17: {
-        s16 model = func_80073760(entries[0].task, input->selectedIndex);
+        s16 model = mapSpacedGroupIndex(entries[0].task, input->selectedIndex);
         if ((u16)model < 5U) {
             selection->value = model;
             entries[5].command = 13;
@@ -720,7 +720,7 @@ void updatePlayerPaletteSelectionTask(void) {
         }
         if (input->selectedIndex != input->previousIndex) {
             selection->unk02 = selection->value;
-            if ((u16)func_80073760(entries[0].task, input->selectedIndex) < 13) {
+            if ((u16)mapSpacedGroupIndex(entries[0].task, input->selectedIndex) < 13) {
                 selection->value = input->selectedIndex;
                 if (selection->value != selection->unk02) {
                     copyPlayerPaletteRowWithTransition(2, character, selection->value, 0);
@@ -738,7 +738,7 @@ void updatePlayerPaletteSelectionTask(void) {
                 D_8013AE98->data18 = 11;
                 goto leave;
             }
-            if (func_80073760(entries[0].task, input->selectedIndex) == 13) {
+            if (mapSpacedGroupIndex(entries[0].task, input->selectedIndex) == 13) {
                 D_8013AE98->data18 = 11;
                 D_8013AE88->data18 = 16;
             } else if (selection->value == gRacePlayers[player].unk00D) {

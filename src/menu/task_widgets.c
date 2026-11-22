@@ -1600,31 +1600,19 @@ s16 mapMenuByteIndex(const u8 *table, s16 index) {
     return value;
 }
 
-/* DECOMP_ATTEMPT: inline 15/16 */
-#ifdef NON_MATCHING
-typedef struct TaskResource {
-    u8 unk00[8];
-    const u16 *unk08;
-    u8 unk0C[0x3C];
-    const u8 *unk48;
-    u8 unk4C[0xB4];
-} TaskResource;
-
-s16 func_80073760(GameTask *task, s16 index) {
+s16 mapSpacedGroupIndex(GameTask *task, s16 index) {
     u32 resourceIndex = task->resource14;
-    TaskResource *resource = (TaskResource *)&D_800D9504[resourceIndex];
-    const u8 *table = resource->unk48;
+    const SpacedGroupResource *resource = (const SpacedGroupResource *)&D_800D9504[resourceIndex];
+    const u8 *mapping = resource->data48;
     s32 result;
-    if (table == NULL) {
+
+    if (mapping == NULL) {
         result = index;
     } else {
-        result = table[index];
+        result = mapping[index];
     }
     return result;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80073760);
-#endif
 
 s16 findByteIndexOrZero(const u8 *data, s16 value, s16 count) {
     s16 result = 0;

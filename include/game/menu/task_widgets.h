@@ -61,3 +61,4 @@ void createRegisteredTexturePairTask(s16 x, s16 y, const u8 *mapping, s32 mode,
                                      s32 unused, u16 arg5, s32 depth, s32 index);
 
 u32 getMappedMenuWord(const u32 *entries, const u8 *remap, s16 index);
+s16 mapSpacedGroupIndex(GameTask *task, s16 index);

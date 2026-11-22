@@ -4002,4 +4002,5 @@ requestPlayerAction20 = 0x8002D380; // type:func
 getMappedGridSpriteEntry = 0x800736D0; // type:func
 getMappedMenuWord = 0x80073708; // type:func
 mapMenuByteIndex = 0x8007373C; // type:func
+mapSpacedGroupIndex = 0x80073760; // type:func
 mapCourseMenuByteIndex = 0x8007E8CC; // type:func

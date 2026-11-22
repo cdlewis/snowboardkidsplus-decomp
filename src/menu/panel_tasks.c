@@ -2806,7 +2806,7 @@ void updateBoardPurchaseMenuTask(void) {
         }
         if (input->selectedIndex != input->previousIndex) {
             selection->unk02 = selection->value;
-            if ((u16)func_80073760(entries[0].task, input->selectedIndex) < 5U) {
+            if ((u16)mapSpacedGroupIndex(entries[0].task, input->selectedIndex) < 5U) {
                 selection->value = input->selectedIndex + 1;
                 if (selection->value != selection->unk02) {
                     entries[4].command = 13;
@@ -2824,7 +2824,7 @@ void updateBoardPurchaseMenuTask(void) {
                 D_8013AE98->data18 = 13;
                 goto leave;
             }
-            if (func_80073760(entries[0].task, input->selectedIndex) == 5) {
+            if (mapSpacedGroupIndex(entries[0].task, input->selectedIndex) == 5) {
                 boardMenuRememberedSelectionAbsolute = 0;
                 D_8013AE98->data18 = 11;
                 playSoundEffect(0, 0x202, 32);
