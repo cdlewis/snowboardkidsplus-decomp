@@ -777,7 +777,7 @@ void drawRegisteredSelectionItemStatus(void) {
             entry->task = 0;
             deleteCurrentTaskSubtree();
         } else {
-            sprite = func_800736D0(sprite, parent->values, (s16)D_8013AE88->data1A);
+            sprite = getMappedGridSpriteEntry(sprite, parent->values, (s16)D_8013AE88->data1A);
             setSpriteColor(color->bytes[0], color->bytes[1], color->bytes[2]);
             func_8006C998(position->x / 4096, position->y / 4096, sprite->sprite,
                 sprite->color, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
@@ -3140,10 +3140,11 @@ void drawClippedRegisteredTaskGridSprite(void) {
         } else {
             row = (parent->mode & 1) ^ 1;
             if (parent->alternateSprites == 1) {
-                sprite = func_800736D0(parent->sprites, parent->mapping,
+                sprite = getMappedGridSpriteEntry(parent->sprites, parent->mapping,
                     (s16)(D_8013AE88->data1A + parent->count));
             } else {
-                sprite = func_800736D0(parent->sprites, parent->mapping, (s16)D_8013AE88->data1A);
+                sprite = getMappedGridSpriteEntry(parent->sprites, parent->mapping,
+                    (s16)D_8013AE88->data1A);
             }
             setSpriteColor(color->bytes[0], color->bytes[1], color->bytes[2]);
             addDrawAreaPacket(0, 0, 320, 240, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);

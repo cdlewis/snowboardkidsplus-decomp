@@ -1552,7 +1552,7 @@ clearCommand:
         if (input & state->acceptMask) {
             state->selection.choiceResult = 1;
             state->selection.mode = 3;
-            confirm = (const SpacedGroupConfirmSound *)func_800736D0(
+            confirm = (const SpacedGroupConfirmSound *)getMappedGridSpriteEntry(
                 (const GridSpriteEntry *)state->data44, state->data48, state->selection.selectedIndex);
             if (confirm->bank != 0xFF) playSoundEffect(confirm->bank, confirm->programAndTone, 0x20);
         }
@@ -1580,20 +1580,17 @@ clearCommand:
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80072C54);
 #endif
 
-/* DECOMP_ATTEMPT: inline 11/16 */
-#ifdef NON_MATCHING
-const GridSpriteEntry *func_800736D0(const GridSpriteEntry *records, const u8 *indices, s16 index) {
-    s16 selected;
-    if (indices == NULL) {
-        selected = index;
+const GridSpriteEntry *getMappedGridSpriteEntry(const GridSpriteEntry *sprites,
+                                              const u8 *mapping, s16 index) {
+    /* The signed right shift restores the original index on the direct path. */
+    s32 selected = (s32)((u32)(u16)index << 16);
+    if (mapping == NULL) {
+        selected >>= 16;
     } else {
-        selected = indices[index];
+        selected = mapping[index];
     }
-    return &records[selected];
+    return &sprites[selected];
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_800736D0);
-#endif
 
 u32 getMappedMenuWord(const u32 *entries, const u8 *remap, s16 index) {
     u32 offset;
@@ -1805,10 +1802,11 @@ void drawRegisteredTaskGridSpriteWithColor(void) {
             deleteCurrentTaskSubtree();
         } else {
             if (parent->mode == 1 && parent->selectedIndex != D_8013AE88->data1A) {
-                sprite = func_800736D0(parent->sprites, parent->mapping,
+                sprite = getMappedGridSpriteEntry(parent->sprites, parent->mapping,
                     (s16)(D_8013AE88->data1A + parent->count));
             } else {
-                sprite = func_800736D0(parent->sprites, parent->mapping, (s16)D_8013AE88->data1A);
+                sprite = getMappedGridSpriteEntry(parent->sprites, parent->mapping,
+                    (s16)D_8013AE88->data1A);
             }
             setSpriteColor(color->bytes[0], color->bytes[1], color->bytes[2]);
             func_8006C998((s16)(position->x / 4096), (s16)(position->y / 4096),

@@ -713,10 +713,11 @@ void drawRegisteredTaskGridSpriteWithDefaultBlend(void) {
             deleteCurrentTaskSubtree();
         } else {
             if (parent->mode == 1 && parent->selectedIndex != D_8013AE88->data1A) {
-                sprite = func_800736D0(parent->sprites, parent->mapping,
+                sprite = getMappedGridSpriteEntry(parent->sprites, parent->mapping,
                     (s16)(D_8013AE88->data1A + parent->count));
             } else {
-                sprite = func_800736D0(parent->sprites, parent->mapping, (s16)D_8013AE88->data1A);
+                sprite = getMappedGridSpriteEntry(parent->sprites, parent->mapping,
+                    (s16)D_8013AE88->data1A);
             }
             setSpriteColor(128, 128, 128);
             func_8006C998((s16)(position->x / 4096), (s16)(position->y / 4096),

@@ -3990,6 +3990,7 @@ requestPlayerAction4 = 0x8002D2B4; // type:func
 requestPlayerAction5 = 0x8002D2F8; // type:func
 requestPlayerAction19 = 0x8002D33C; // type:func
 requestPlayerAction20 = 0x8002D380; // type:func
+getMappedGridSpriteEntry = 0x800736D0; // type:func
 getMappedMenuWord = 0x80073708; // type:func
 mapMenuByteIndex = 0x8007373C; // type:func
 mapCourseMenuByteIndex = 0x8007E8CC; // type:func

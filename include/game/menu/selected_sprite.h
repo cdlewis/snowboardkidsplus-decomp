@@ -44,8 +44,8 @@ void moveTaskChildrenWithSpacing(s32 mode, GameTask *task, s32 x, s32 y,
                                  s32 speedX, s32 speedY, s32 delay);
 
 s16 func_80073760(GameTask *task, s16 index);
-const GridSpriteEntry *func_800736D0(const GridSpriteEntry *sprites,
-                                   const u8 *mapping, s16 index);
+const GridSpriteEntry *getMappedGridSpriteEntry(const GridSpriteEntry *sprites,
+                                              const u8 *mapping, s16 index);
 void drawRegisteredTaskGridSprite(void);
 void drawRegisteredTaskGridSpriteWithColor(void);
 
