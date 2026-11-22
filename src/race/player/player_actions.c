@@ -1232,7 +1232,7 @@ s16 processCurrentPlayerActionRequests(s16 suppressWallAction) {
 
     switch ((s16)(D_8013B0E4 - 1)) {
         case 7 - 1:
-            func_800183FC(D_8013AE88->data18, 0, 0x302, 0x40);
+            playPlayerSoundEffect(D_8013AE88->data18, 0, 0x302, 0x40);
             /* fall through */
         case 6 - 1:
             if (D_8013B0E4 != 7) {
@@ -1242,7 +1242,7 @@ s16 processCurrentPlayerActionRequests(s16 suppressWallAction) {
             currentPlayerAbsolute->unk102 = D_8013B0E6;
             currentPlayerAbsolute->unk104.word = currentPlayerAbsolute->unk0EC;
             currentPlayerAbsolute->unk108.word = currentPlayerAbsolute->unk0F0;
-            func_800183FC(D_8013AE88->data18, 1, 0x201, 0x20);
+            playPlayerSoundEffect(D_8013AE88->data18, 1, 0x201, 0x20);
             D_8013AF88->vx = currentPlayerAbsolute->worldCoordinate.coord.t[0];
             D_8013AF88->vy = currentPlayerAbsolute->worldCoordinate.coord.t[1] - 48;
             D_8013AF88->vz = currentPlayerAbsolute->worldCoordinate.coord.t[2];
@@ -1251,7 +1251,7 @@ s16 processCurrentPlayerActionRequests(s16 suppressWallAction) {
         case 9 - 1:
             playCurrentPlayerSoundEffect(2);
             currentPlayerAbsolute->unk12C = 14;
-            func_800183FC(D_8013AE88->data18, 1, 0x201, 0x20);
+            playPlayerSoundEffect(D_8013AE88->data18, 1, 0x201, 0x20);
             D_8013AF88->vx = currentPlayerAbsolute->worldCoordinate.coord.t[0];
             D_8013AF88->vy = currentPlayerAbsolute->worldCoordinate.coord.t[1] - 48;
             D_8013AF88->vz = currentPlayerAbsolute->worldCoordinate.coord.t[2];
@@ -1270,7 +1270,7 @@ s16 processCurrentPlayerActionRequests(s16 suppressWallAction) {
             currentPlayerAbsolute->unk102 = D_8013B0E6;
             currentPlayerAbsolute->unk104.word = currentPlayerAbsolute->unk0EC;
             currentPlayerAbsolute->unk108.word = currentPlayerAbsolute->unk0F0;
-            func_800183FC(D_8013AE88->data18, 1, 0x201, 0x20);
+            playPlayerSoundEffect(D_8013AE88->data18, 1, 0x201, 0x20);
             D_8013AF88->vx = currentPlayerAbsolute->worldCoordinate.coord.t[0];
             D_8013AF88->vy = currentPlayerAbsolute->worldCoordinate.coord.t[1] - 48;
             D_8013AF88->vz = currentPlayerAbsolute->worldCoordinate.coord.t[2];
@@ -1718,7 +1718,7 @@ void updateCurrentPlayerItemUse(u16 playerIndex) {
     case 3:
         tryCreateChildTaskForParentWith20SlotsReserved(&gGameTasks[4], initializeFallingTaskObject);
         D_8013AE8C->data18 = playerIndex;
-        func_800183FC(D_8013AE88->data18, 1, 2, 32);
+        playPlayerSoundEffect(D_8013AE88->data18, 1, 2, 32);
         goto clearItem;
     case 4:
         if (!currentPlayerAbsolute->unk008) {
@@ -1733,7 +1733,7 @@ void updateCurrentPlayerItemUse(u16 playerIndex) {
         if (player->surfaceState.fields.unk134 == 0) {
             player->heldItem = 0;
             player->surfaceState.fields.unk134 = 180;
-            func_800183FC(D_8013AE88->data18, 1, 0xE00, 32);
+            playPlayerSoundEffect(D_8013AE88->data18, 1, 0xE00, 32);
         }
         return;
     }

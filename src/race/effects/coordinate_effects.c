@@ -109,7 +109,7 @@ void initializePlayerSideVisualTask(void) {
     resource->r0 = resource->g0 = resource->b0 = 0x80;
     resource->code = POLY_FT4_CODE;
     resource->framePosition = 0;
-    func_800183FC(D_8013AE88->data18, 1, 0x600, 0x20);
+    playPlayerSoundEffect(D_8013AE88->data18, 1, 0x600, 0x20);
     func_8002E5A0(D_8013AE88->data18, 12);
     if (gRacePlayers[D_8013AE88->data18].unk128 & 0x400) {
         resource->radius = -52;
@@ -295,7 +295,7 @@ void updatePlayerState23CoordinateEffectTask(void) {
         RacePlayer *players = gRacePlayers;
         if (players[D_8013AE88->data18].unk12C != 0x17) {
             players[D_8013AE88->data18].isActive = 1;
-            func_800183FC(D_8013AE88->data18, 1, 0x301, 0x20);
+            playPlayerSoundEffect(D_8013AE88->data18, 1, 0x301, 0x20);
             createNineIndexedChildTasks(0x12, 0);
             D_8013AE88->callback = deleteCurrentTask;
             D_8013AE88->unk10 |= 1;
@@ -407,7 +407,7 @@ void updatePlayerScaledObjectTask(void) {
         drawTaskObject(10);
     }
     if (players[D_8013AE88->data18].unk12C != 25) {
-        func_800183FC(D_8013AE88->data18, 1, 0xF00, 0x20);
+        playPlayerSoundEffect(D_8013AE88->data18, 1, 0xF00, 0x20);
         createNineIndexedChildTasks(0x15, 0);
         D_8013AE88->callback = deleteCurrentTask;
         D_8013AE88->unk10 |= 1;
@@ -503,7 +503,7 @@ void initializePlayerCoordinateEffectTask(void) {
     D_8013AE88->data1A = 0;
     resource->rotation.vx = resource->rotation.vy = resource->rotation.vz = 0;
     resource->scale.vx = resource->scale.vy = resource->scale.vz = 0;
-    func_800183FC(D_8013AE88->data18, 1, 0x800, 0x20);
+    playPlayerSoundEffect(D_8013AE88->data18, 1, 0x800, 0x20);
     setCurrentTaskCallback(updatePlayerCoordinateEffectTask);
 }
 
@@ -991,7 +991,7 @@ void initializeBouncingTaskVisual(void) {
     resource->velocityY = -0xA00;
     resource->groundY = func_8004A764(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8) << 8;
     resource->bounceCount = 0;
-    func_800183FC(D_8013AE88->data18, 1, 2, 0x20);
+    playPlayerSoundEffect(D_8013AE88->data18, 1, 2, 0x20);
     setCurrentTaskCallback(updateBouncingTaskVisual);
 }
 
@@ -1313,7 +1313,7 @@ void initializeOrbitingPlayerVisualTask(void) {
     resource->framePosition = 0;
     resource->scale = 0x1800;
     resource->angle = 0;
-    func_800183FC(D_8013AE88->data18, 1, 0xE00, 0x20);
+    playPlayerSoundEffect(D_8013AE88->data18, 1, 0xE00, 0x20);
     resource->countdown = 0x10;
     D_8013AE88->data1C = 0;
     setCurrentTaskCallback(updateOrbitingPlayerVisualTask);
@@ -1400,7 +1400,7 @@ void updateOrbitingPlayerVisualTask(void) {
                 resource->code |= 2;
                 resource->countdown = 300;
                 resource->unkD0 = 0;
-                func_800183FC(D_8013AE88->data18, 1, 0xE00, 0x20);
+                playPlayerSoundEffect(D_8013AE88->data18, 1, 0xE00, 0x20);
                 D_8013AE88->data1C++;
             }
             break;
@@ -1517,7 +1517,7 @@ void updateFallingPlayerEffectTask(void) {
         case 0:
             gRacePlayers[D_8013AE88->data18].unk946 = 1;
             if (resource->offset.y > -128 && resource->unkD8) {
-                func_800183FC(D_8013AE88->data18, 1, 0x900, 0x20);
+                playPlayerSoundEffect(D_8013AE88->data18, 1, 0x900, 0x20);
                 gRacePlayers[D_8013AE88->data18].unk0E8 |= 0x1000;
                 gRacePlayers[D_8013AE88->data18].unk0F4 = D_8013AE88->data1A;
                 resource->unkD8 = 0;

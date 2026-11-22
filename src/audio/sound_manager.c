@@ -269,9 +269,7 @@ s32 attenuateSoundVolume(s32 distance, s16 volume) {
     return result;
 }
 
-/* DECOMP_ATTEMPT: inline 78/79 */
-#ifdef NON_MATCHING
-s32 func_800183FC(u16 playerIndex, u8 bank, u16 programAndTone, s16 volume) {
+s32 playPlayerSoundEffect(u16 playerIndex, u8 bank, u16 programAndTone, s16 volume) {
     u16 playbackVolume = volume;
     const RacePlayer *players = gRacePlayers;
     const RacePlayer *player = &players[playerIndex];
@@ -279,7 +277,8 @@ s32 func_800183FC(u16 playerIndex, u8 bank, u16 programAndTone, s16 volume) {
     if (player->unk008) {
         playbackVolume = attenuateSoundVolume(
             getNearestCameraManhattanDistance(player->x, player->y, player->z), volume);
-        if (playbackVolume == 0) {
+        /* Shift the 16-bit volume into the upper word half for the zero test. */
+        if (((u32)playbackVolume << 16) == 0) {
             return 0xFF;
         }
     }
@@ -297,9 +296,6 @@ s32 func_800183FC(u16 playerIndex, u8 bank, u16 programAndTone, s16 volume) {
     }
     return 0xFF;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/audio/sound_manager", func_800183FC);
-#endif
 
 s32 playPositionalSoundEffect(s32 x, s32 y, s32 z, u8 bank, u16 programAndTone, s16 volume) {
     u16 note;

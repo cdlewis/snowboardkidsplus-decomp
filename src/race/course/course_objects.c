@@ -1120,7 +1120,7 @@ void updatePickupVisualTask(void) {
                 for (; player < D_8013AFD2; player++) {
                     if (isPositionWithinPlayerCollisionRange(&resource->position, 0x1A00, 0x3800, player)) {
                         addPlayerCappedCounters(player, 100);
-                        func_800183FC(player, 0, 0x700, 0x20);
+                        playPlayerSoundEffect(player, 0, 0x700, 0x20);
                         D_8013B2BC[i].flags |= 0x40;
                         break;
                     }
@@ -1472,7 +1472,7 @@ void updatePlacedObjectTask(void) {
                     } else {
                         buyer->unk01C = balance - 100;
                     }
-                    func_800183FC(i, 1, 0x901, 0x20);
+                    playPlayerSoundEffect(i, 1, 0x901, 0x20);
                     if (D_8013AE88->data1A == 2) {
                         player = (RacePlayer *)(i * sizeof(*players) + (u32)players);
                         reward = gPlacedObjectEffectChoices[player->unk935][randomNextObject(player) & 15];
@@ -2258,7 +2258,7 @@ void updateOrbitingObstacleTask(void) {
             if (resource->playerCooldowns[i] == 0) {
                 if (pushPlayerOutOfCylinder(&resource->position, 0x9000, 0x8000, i)) {
                     s16 heading, delta, limit;
-                    func_800183FC(i, 1, 0xC01, 0x20);
+                    playPlayerSoundEffect(i, 1, 0xC01, 0x20);
                     heading = getXZHeading(resource->position.x, resource->position.z,
                         gRacePlayers[i].x, gRacePlayers[i].z);
                     getGeometryPlacementTransform(gRacePlayers[i].unk92E, &x, &y, &z, &trackHeading);

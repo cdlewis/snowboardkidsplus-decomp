@@ -40,7 +40,8 @@ s32 attenuateSoundVolume(s32 distance, s16 volume);
 /* Returns the allocated voice, or 0xFF when the bank is unavailable. */
 s32 playSoundEffect(u8 bank, u16 programAndTone, s16 volume);
 
-s32 func_800183FC(u16 playerIndex, u8 bank, u16 sound, s16 volume);
+/* Attenuates CPU player sounds by distance. Returns the voice or 0xFF if skipped. */
+s32 playPlayerSoundEffect(u16 playerIndex, u8 bank, u16 programAndTone, s16 volume);
 
 /* Positional counterpart of playSoundEffect; returns the voice or 0xFF. */
 s32 playPositionalSoundEffect(s32 x, s32 y, s32 z, u8 bank, u16 programAndTone, s16 volume);

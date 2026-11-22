@@ -992,7 +992,7 @@ void initializeCurrentPlayerState5(void) {
     D_8013B0D8->unk128 &= ~0x200;
     D_8013B0D8->unk128 |= 0x12000;
     D_8013B0D8->unk08C -= D_8013B0D8->unk08C * D_8013B0D8->unk935 / 8;
-    func_800183FC(D_8013AE88->data18, 1, 0xB00, 0x20);
+    playPlayerSoundEffect(D_8013AE88->data18, 1, 0xB00, 0x20);
     func_8002E5A0(D_8013AE88->data18, 9);
     setCurrentTaskCallback(updateCurrentPlayerState5MotionAndTimer);
 }
@@ -1008,12 +1008,12 @@ void initializeCurrentPlayerTimedEffectState(s32 value) {
     switch (player->surfaceState.fields.unk136) {
     case 6:
         createPlayerRingEffectTask(D_8013AE88->data18);
-        func_800183FC(D_8013AE88->data18, 1, 0xF00, 0x30);
+        playPlayerSoundEffect(D_8013AE88->data18, 1, 0xF00, 0x30);
         break;
     case 7:
     case 12:
         startPositionEffectTask((const PositionEffectOrigin *)gRacePlayers[D_8013AE88->data18].worldCoordinate.coord.t);
-        func_800183FC(D_8013AE88->data18, 1, 1, 0x30);
+        playPlayerSoundEffect(D_8013AE88->data18, 1, 1, 0x30);
         break;
     case 14:
         createPlayerRingEffectTask(D_8013AE88->data18);
@@ -1106,7 +1106,7 @@ void initializeCurrentPlayerState12(void) {
     D_8013B0D8->unk128 |= 0x22000;
     D_8013B0D8->unk08C -= D_8013B0D8->unk08C * D_8013B0D8->unk935 / 8;
     D_8013AE88->data1A = 0;
-    func_800183FC(D_8013AE88->data18, 1, 0xB00, 0x20);
+    playPlayerSoundEffect(D_8013AE88->data18, 1, 0xB00, 0x20);
     func_8002E5A0(D_8013AE88->data18, 4);
     setCurrentTaskCallback(updateCurrentPlayerState12MotionAndTimer);
 }
@@ -1213,7 +1213,7 @@ void initializeCurrentPlayerState23(void) {
     createChildTaskForParentWithReserve(&gGameTasks[4], initializePlayerState23CoordinateEffectTask);
     D_8013AE8C->data18 = D_8013AE88->data18;
     func_8002E5A0(D_8013AE88->data18, 6);
-    func_800183FC(D_8013AE88->data18, 1, 0xD00, 0x20);
+    playPlayerSoundEffect(D_8013AE88->data18, 1, 0xD00, 0x20);
     setCurrentTaskCallback(updateCurrentPlayerState23MotionAndTimer);
 }
 
@@ -1229,7 +1229,7 @@ void initializeCurrentPlayerState7(void) {
     D_8013B0D8->surfaceState.fields.unk134 = 0;
     D_8013AFE4 |= 4;
     startCurrentPlayerAnimation(1, 1);
-    func_800183FC(D_8013AE88->data18, 1, 0x401, 0x20);
+    playPlayerSoundEffect(D_8013AE88->data18, 1, 0x401, 0x20);
     setCurrentTaskCallback(updateCurrentPlayerFromTaskPhase);
 }
 
@@ -1866,7 +1866,7 @@ advanceCharge:
             }
             D_8013B0D8->unk0C4 = 0;
             if (trick) {
-                func_800183FC(D_8013AE88->data18, 1, 0x501, 0x30);
+                playPlayerSoundEffect(D_8013AE88->data18, 1, 0x501, 0x30);
                 rewardTable = gPlayerLaunchTricks;
                 reward = &rewardTable[trick];
                 playCurrentPlayerSoundEffect(reward->sound);
@@ -3149,13 +3149,13 @@ block_340:
     temp_v1_12 = D_8013B0D8->unk062;
     if (temp_v1_12 < 0x1000) {
         func_8002E5A0(D_8013AE88->data18, 0xB);
-        func_800183FC(D_8013AE88->data18, 1, 0xB01, 0x10);
+        playPlayerSoundEffect(D_8013AE88->data18, 1, 0xB01, 0x10);
     } else if (temp_v1_12 < 0x3000) {
         func_8002E5A0(D_8013AE88->data18, 0xA);
-        func_800183FC(D_8013AE88->data18, 1, 0xB01, 0x18);
+        playPlayerSoundEffect(D_8013AE88->data18, 1, 0xB01, 0x18);
     } else {
         func_8002E5A0(D_8013AE88->data18, 9);
-        func_800183FC(D_8013AE88->data18, 1, 0xB01, 0x20);
+        playPlayerSoundEffect(D_8013AE88->data18, 1, 0xB01, 0x20);
     }
     startCurrentPlayerAnimation(0U, 2U);
     temp_v1_13 = func_8004AAA0(D_8013B0D8->unk92E, (s32) D_8013B0D8->x >> 8, (s32) D_8013B0D8->z >> 8) & 0xFF;
@@ -3329,7 +3329,7 @@ void func_80024288(void) {
         updateCurrentPlayerGroundContact();
     } else if (resolveCurrentPlayerTerrainContact()) {
         func_8002E5A0(D_8013AE88->data18, 0xA);
-        func_800183FC(D_8013AE88->data18, 1, 0xB01, 0x18);
+        playPlayerSoundEffect(D_8013AE88->data18, 1, 0xB01, 0x18);
         createPlayerTripleQuadEffectTask(D_8013AE88->data18);
     }
 
@@ -3377,7 +3377,7 @@ void updateCurrentPlayerState4MotionAndLanding(void) {
         updateCurrentPlayerGroundContact();
     } else if (resolveCurrentPlayerTerrainContact()) {
         func_8002E5A0(D_8013AE88->data18, 9);
-        func_800183FC(D_8013AE88->data18, 1, 0xB01, 0x20);
+        playPlayerSoundEffect(D_8013AE88->data18, 1, 0xB01, 0x20);
         createPlayerTripleQuadEffectTask(D_8013AE88->data18);
     }
     updateCurrentPlayerAnimation();
@@ -3590,7 +3590,7 @@ void updateCurrentPlayerState24MotionAndScale(void) {
         updateCurrentPlayerGroundContact();
     } else if ((landed = resolveCurrentPlayerTerrainContact()) != 0) {
         func_8002E5A0(D_8013AE88->data18, 9);
-        func_800183FC(D_8013AE88->data18, 1, 0xB01, 0x20);
+        playPlayerSoundEffect(D_8013AE88->data18, 1, 0xB01, 0x20);
         createPlayerTripleQuadEffectTask(D_8013AE88->data18);
     }
 
@@ -3658,7 +3658,7 @@ void updateCurrentPlayerState25MotionAndTimer(void) {
         D_8013B0D8->z += D_8013B0D8->unk064;
         if (resolveCurrentPlayerTerrainContact()) {
             func_8002E5A0(D_8013AE88->data18, 10);
-            func_800183FC(D_8013AE88->data18, 1, 0xB01, 0x18);
+            playPlayerSoundEffect(D_8013AE88->data18, 1, 0xB01, 0x18);
             createPlayerTripleQuadEffectTask(D_8013AE88->data18);
         }
     }
@@ -3776,7 +3776,7 @@ void advanceCurrentPlayerTaskOnAnimationFlag(void) {
     RacePlayer *player;
     if (D_8013B0D8->animationFlags & 0x10) {
         D_8013AE88->data1A++;
-        func_800183FC(D_8013AE88->data18, 1, 0x601, 0x20);
+        playPlayerSoundEffect(D_8013AE88->data18, 1, 0x601, 0x20);
         player = D_8013B0D8;
         player->unk0B6 = player->unk126;
         player->x = D_80123D80[D_8013AFCE].unk18[0];
@@ -3824,7 +3824,7 @@ void updateCurrentPlayerTaskJumpAndSpawnCourseOffset(void) {
         landingPlayer->y = D_80123D80[D_8013AFCE].unk18[1];
         if (landingPlayer->animationIndex != D_800EB09C[landingPlayer->characterId][1]) {
             startCurrentPlayerAnimation(1, 1);
-            func_800183FC(D_8013AE88->data18, 1, 0x701, 0x20);
+            playPlayerSoundEffect(D_8013AE88->data18, 1, 0x701, 0x20);
             D_8013AFE4 &= ~4;
         }
         updateCurrentPlayerMotionEffects();
@@ -4488,7 +4488,7 @@ void updateCurrentPlayerState12MotionAndTimer(void) {
         D_8013B0D8->z += D_8013B0D8->unk064;
         if (resolveCurrentPlayerTerrainContact()) {
             func_8002E5A0(D_8013AE88->data18, 9);
-            func_800183FC(D_8013AE88->data18, 1, 0xB01, 0x20);
+            playPlayerSoundEffect(D_8013AE88->data18, 1, 0xB01, 0x20);
             createPlayerTripleQuadEffectTask(D_8013AE88->data18);
         }
         D_8013B0D8->unk08C = 30;
