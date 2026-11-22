@@ -1630,7 +1630,7 @@ void func_80090450(void) {
 showSelection:
                 D_8013AE88->data18 = 4;
             } else {
-                u32 *balance = &gPlayerSaveRecords[0].money;
+                u32 *balance = &gPlayerSaveRecords[recordIndex].money;
                 u32 target;
                 GameTask *transition;
                 GameTask *task;
