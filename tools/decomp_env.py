@@ -9,6 +9,7 @@ import re
 import shutil
 import subprocess
 import sys
+from dataclasses import dataclass
 from pathlib import Path
 from urllib.error import URLError
 from urllib.request import Request, urlopen
@@ -21,6 +22,16 @@ from progress_attempts import inline_source
 from validate_commit import verify_image
 
 TEMPLATES = ROOT / "tools/decomp-env"
+
+
+@dataclass
+class Scratch:
+    function: str
+    source: str
+    context: str
+    platform: str
+    compiler: str
+    compiler_flags: str
 
 
 def scratch_id(value):
@@ -58,7 +69,10 @@ def fetch_scratch(identifier):
     context = scratch.get("context")
     if context is not None and not isinstance(context, str):
         raise ValueError("decomp.me scratch has an invalid context")
-    return label.removesuffix(".s"), source, context or ""
+    return Scratch(label.removesuffix(".s"), source.replace("\r\n", "\n"),
+                   (context or "").replace("\r\n", "\n"),
+                   scratch.get("platform", ""), scratch.get("compiler", ""),
+                   scratch.get("compiler_flags", ""))
 
 
 def check_image():
@@ -118,21 +132,29 @@ def assemble_target(workspace, oracle):
     (workspace / "target.bin").write_bytes(text)
 
 
-def existing_body(source, name):
-    source = uncomment(source)
-    start = re.search(r"^[^\n;{}#]*\b" + re.escape(name) + r"\s*\([^;{}]*\)\s*\{", source, re.M)
+def function_span(source, name, *, body_only=False):
+    masked = uncomment(source, preserve_offsets=True)
+    start = re.search(r"^[^\n;{}#]*\b" + re.escape(name) + r"\s*\([^;{}]*\)\s*\{", masked, re.M)
     if start is None:
         return None
     depth = 1
     tokens = r'"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'|[{}]'
-    for token in re.finditer(tokens, source[start.end():]):
+    for token in re.finditer(tokens, masked[start.end():]):
         if token[0] == "{":
             depth += 1
         elif token[0] == "}":
             depth -= 1
             if depth == 0:
-                return source[start.start():start.end() + token.end()] + "\n"
+                first = start.end() - 1 if body_only else start.start()
+                return first, start.end() + token.end()
     raise ValueError(f"cannot find end of {name}")
+
+
+def existing_body(source, name):
+    source = uncomment(source)
+    span = function_span(source, name)
+    if span is not None:
+        return source[span[0]:span[1]] + "\n"
 
 
 def seed_source(workspace, oracle, imported_source=None):
@@ -303,8 +325,9 @@ def main():
     if scratch:
         if args.id is not None:
             parser.error("--id cannot be used when importing a decomp.me scratch")
-        function, imported_source, _ = fetch_scratch(scratch)
-        imported_source = f"// Imported from https://decomp.me/scratch/{scratch}\n\n" + imported_source
+        imported = fetch_scratch(scratch)
+        function = imported.function
+        imported_source = f"// Imported from https://decomp.me/scratch/{scratch}\n\n" + imported.source
     oracle = resolve_function(function, args.unit)
     workspace = bootstrap(oracle, args.id, imported_source)
     print(f"Environment ready: {workspace.relative_to(ROOT)}", flush=True)

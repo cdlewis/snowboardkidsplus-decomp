@@ -12,10 +12,18 @@ BRANCHES = {"beq", "bne", "beqz", "bnez", "blez", "bgtz", "bltz", "bgez",
             "bltzal", "bgezal", "bc2f", "bc2t"}
 
 
-def uncomment(source):
+def uncomment(source, *, preserve_offsets=False):
     pattern = r'"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'|//[^\n]*|/\*.*?\*/'
-    return re.sub(pattern, lambda m: "\n" * m[0].count("\n")
-                  if m[0].startswith(("//", "/*")) else m[0], source, flags=re.S)
+
+    def replace(match):
+        value = match[0]
+        if not value.startswith(("//", "/*")):
+            return value
+        if preserve_offsets:
+            return re.sub(r"[^\n]", " ", value)
+        return "\n" * value.count("\n")
+
+    return re.sub(pattern, replace, source, flags=re.S)
 
 
 @dataclass

@@ -16,9 +16,64 @@ import sys
 import tempfile
 
 import build
-from decomp_env import bootstrap, check_image, fetch_scratch, resolve_function, scratch_id
+from decomp_env import bootstrap, check_image, fetch_scratch, function_span, resolve_function, scratch_id
 
 ROOT = build.ROOT
+
+
+def scratch_compiler(scratch, compiler_root):
+    if scratch.platform != "ps1" or scratch.compiler not in ("psyq4.1", "psyq4.4", "psyq4.5", "psyq4.6"):
+        raise ValueError(f"unsupported scratch compiler: {scratch.platform}/{scratch.compiler}")
+    if not isinstance(scratch.compiler_flags, str):
+        raise ValueError("scratch compiler flags must be text")
+    flags = shlex.split(scratch.compiler_flags)
+    # Accept compiler options without allowing a scratch to redirect tools,
+    # supply input files, or inject extra assembler arguments into CCPSX.
+    options = re.compile(
+        r"-(?:O[0-3s]?|g[0-3]?|G\d+|[fW][\w-]+"
+        r"|m[\w-]+(?:=r?\d+)?|[DU]\w+(?:=[^\r\n]*)?)"
+    )
+    for flag in flags:
+        if not options.fullmatch(flag):
+            raise ValueError(f"unsupported scratch compiler flag: {flag}")
+    compiler = (compiler_root / scratch.compiler).resolve()
+    for filename in ("CCPSX.EXE", "CPPPSX.EXE", "CC1PSX.EXE", "ASPSX.EXE", "psyq-obj-parser"):
+        if not (compiler / filename).is_file():
+            raise ValueError(f"missing {compiler / filename}; supply --decompme-compilers")
+    env = dict(os.environ)
+    env.setdefault("WINEDEBUG", "-all")
+    windows_path = subprocess.check_output(["winepath", "-w", str(compiler)], env=env, text=True).strip()
+    return {"directory": str(compiler), "windows_path": windows_path, "flags": flags}
+
+
+def psyq(compiler, directory, *args, stdout=None):
+    compiler_path = Path(compiler["directory"])
+    windows_path = compiler["windows_path"]
+    (directory / "SN.INI").write_text(
+        f"[ccpsx]\ncompiler_path={windows_path}\nassembler_path={windows_path}\ntmpdir=.\n"
+    )
+    env = dict(os.environ, SN_PATH=".")
+    env.setdefault("WINEDEBUG", "-all")
+    subprocess.run(["wine", str(compiler_path / "CCPSX.EXE"), *compiler["flags"], *args],
+                   cwd=directory, env=env, stdout=stdout, check=True)
+
+
+def compile_scratch(workspace, source, output, metadata, scratch_dir):
+    original = workspace / "original.c"
+    text = original.read_text()
+    if source != original:
+        candidate = source.read_text()
+        span = function_span(candidate, metadata["function"], body_only=True)
+        if span is None:
+            raise ValueError(f"candidate has no definition of {metadata['function']}")
+        start, end = metadata["scratch_span"]
+        text = text[:start] + candidate[span[0]:span[1]] + text[end:]
+    # Keep the preprocessor context, declarations, and helper functions intact.
+    (scratch_dir / "code.c").write_text(text)
+    compiler = metadata["scratch_compiler"]
+    psyq(compiler, scratch_dir, "-c", "code.c", "-o", "output.obj")
+    subprocess.run([str(Path(compiler["directory"]) / "psyq-obj-parser"), "output.obj",
+                    "-o", str(output)], cwd=scratch_dir, stdout=subprocess.DEVNULL, check=True)
 
 
 def compile_candidate(workspace, source, output):
@@ -26,6 +81,9 @@ def compile_candidate(workspace, source, output):
     # Workers must never share intermediate preprocessor/assembler outputs.
     with tempfile.TemporaryDirectory(prefix="psx-permuter-") as scratch:
         scratch = Path(scratch)
+        if "scratch_compiler" in metadata:
+            compile_scratch(workspace, source, output, metadata, scratch)
+            return
         # PERMUTER preprocessing suppresses the SDK assembler macro prelude.
         candidate = scratch / "candidate.c"
         include_path = json.dumps(str(source), ensure_ascii=False)
@@ -39,10 +97,14 @@ def compile_candidate(workspace, source, output):
 def prepare(args, permuter, scratch):
     function = args.function
     imported_source = None
-    context = ""
     if scratch:
-        function, imported_source, context = fetch_scratch(scratch)
-        imported_source = f"// Imported from https://decomp.me/scratch/{scratch}\n\n" + imported_source
+        imported = fetch_scratch(scratch)
+        function = imported.function
+        compiler = scratch_compiler(imported, args.decompme_compilers)
+        span = function_span(imported.source, function, body_only=True)
+        if span is None:
+            raise ValueError(f"scratch source has no definition of {function}")
+        imported_source = f"// Imported from https://decomp.me/scratch/{scratch}\n\n" + imported.source
     oracle = resolve_function(function, args.unit)
     source = args.source_file.resolve() if args.source_file else None
     if source is not None and not source.is_file():
@@ -51,11 +113,15 @@ def prepare(args, permuter, scratch):
     experiment = workspace / "permuter"
     experiment.mkdir()
     original = experiment / "original.c"
-    if context.strip():
-        original.write_text(context + "\n\n" + imported_source)
+    metadata = json.loads((workspace / "workspace.json").read_text())
+    if scratch:
+        prefix = '#line 1 "ctx.c"\n' + imported.context + '\n#line 1 "src.c"\n'
+        original.write_text(prefix + imported.source + "\n")
         source = original
+        metadata.update(scratch_compiler=compiler,
+                        scratch_span=[len(prefix) + offset for offset in span])
+        print(f"Scratch {scratch} uses {imported.compiler} {shlex.join(compiler['flags'])}", flush=True)
     else:
-        source = source or workspace / "base.c"
         shutil.copyfile(source, original)
     settings = build.get_settings(oracle.unit, oracle.name, comparison=True)
     # Flatten real project headers once. PERM_* invocations survive cpp and are
@@ -72,21 +138,35 @@ def prepare(args, permuter, scratch):
         preprocessed, macros = importer.preprocess_c_with_macros(cpp, ROOT, preserve)
         base.write_text(preprocessed)
         print("Preserved macros: " + (", ".join(macros) or "(none found)"), flush=True)
+    elif scratch:
+        with tempfile.TemporaryDirectory(prefix="psx-permuter-") as temporary:
+            scratch_dir = Path(temporary)
+            shutil.copyfile(original, scratch_dir / "code.c")
+            with base.open("w") as preprocessed:
+                psyq(compiler, scratch_dir, "-E", "-P", "-DPERMUTER", "code.c", stdout=preprocessed)
     else:
         subprocess.run([*cpp, "-o", str(base)], cwd=ROOT, check=True)
     subprocess.run([sys.executable, str(permuter / "strip_other_fns.py"),
                     str(base), oracle.name], check=True)
     shutil.copyfile(workspace / "target.o", experiment / "target.o")
-    shutil.copyfile(workspace / "workspace.json", experiment / "workspace.json")
+    (experiment / "workspace.json").write_text(json.dumps(metadata, indent=2) + "\n")
     command = shlex.join([sys.executable, str(ROOT / "tools/permuter.py"),
                           "--compile", str(experiment)])
     wrapper = experiment / "compile.sh"
     wrapper.write_text('#!/bin/sh\nset -eu\nexec ' + command + ' "$@"\n')
     wrapper.chmod(0o755)
-    (experiment / "settings.toml").write_text(
+    settings_text = (
         'compiler_type = "gcc"\nfunc_name = ' + json.dumps(oracle.name) +
         '\nobjdump_command = ' + json.dumps(shlex.join(
-            [settings["CROSS"] + "objdump", "-drz", "-m", "mips:3000"])) + '\n')
+            [settings["CROSS"] + "objdump", "-drz", "-m", "mips:3000",
+             f"--disassemble={oracle.name}"])) + '\n')
+    if scratch:
+        # These passes edit declarations or add helpers outside the scored body.
+        settings_text += (
+            "\n[weight_overrides]\nperm_randomize_external_type = 0.0\n"
+            "perm_randomize_function_type = 0.0\nperm_inline = 0.0\n"
+        )
+    (experiment / "settings.toml").write_text(settings_text)
     # Smoke-test the exact wrapper used by workers before starting a search.
     smoke_source = base
     if args.preserve_macros:
@@ -143,6 +223,9 @@ def main():
     parser.add_argument("--permuter-dir", type=Path,
                         default=os.environ.get("DECOMP_PERMUTER"),
                         help="decomp-permuter checkout (overrides DECOMP_PERMUTER and checkout discovery)")
+    parser.add_argument("--decompme-compilers", type=Path, default=os.environ.get(
+        "DECOMP_ME_COMPILERS", ROOT.parent / "decomp.me/backend/compilers/ps1"),
+        help="directory containing decomp.me's Psy-Q toolchains (or DECOMP_ME_COMPILERS)")
     parser.add_argument("--prepare-only", action="store_true")
     parser.add_argument("--preserve-macros", metavar="REGEX",
                         help="preserve matching SDK macros, for example 'gte_.*'")

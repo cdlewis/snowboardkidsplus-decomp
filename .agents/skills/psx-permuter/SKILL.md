@@ -20,10 +20,16 @@ wrapper, and runs a bounded local search:
 ```
 
 Local attempts accept a function name or its generated assembly path.
-Pass a decomp.me scratch ID or URL to use its C source and context with the
-target bytes and compiler settings from this repository. Use
-`--preserve-macros 'gte_.*|setRGB0'` to keep those PSX SDK calls visible to the
-permuter.
+Pass a decomp.me scratch ID or URL to use its compiler, flags, and original
+context with the target bytes from this repository. Scratch mode supports
+Psy-Q 4.1, 4.4, 4.5, and 4.6 through Wine. It discovers the toolchains in
+`../decomp.me/backend/compilers/ps1`. Use `--decompme-compilers` or
+`DECOMP_ME_COMPILERS` to point to a different directory containing the
+versioned toolchains and their `psyq-obj-parser` executables.
+Each scratch candidate replaces the target function body in the downloaded
+translation unit, preserving the original declarations and helper functions.
+Use `--preserve-macros 'gte_.*|setRGB0'` to keep those PSX SDK calls visible
+to the permuter.
 
 Use `--prepare-only` to inspect the imported files before searching. Experiments
 live under a new `nonmatchings/FUNCTION[-N]/permuter/`; the input is preserved as
@@ -33,14 +39,16 @@ that order. Override discovery with `--permuter-dir` or `DECOMP_PERMUTER`.
 Install its Python dependencies in the project's `.venv` (`toml`, optionally
 `Levenshtein` for `--algorithm levenshtein`).
 Timeout returns 124 and Ctrl-C returns 130, preserving candidate outputs.
-A zero score is not proof of linked bytes matching.
+The search uses decomp-permuter's scorer, which can report a different score
+than decomp.me. Verify linked bytes separately, including at zero score.
 
 For manual setup, use an installed decomp-permuter, such as `../decomp-permuter/`, and read its
 usage instructions. Keep the experiment under `nonmatchings/` with `base.c`,
 an original `target.o`, an executable `compile.sh`, and optional settings.
 Use real project headers. Verify the target object's original text bytes.
 
-The compile wrapper accepts `input.c -o output.o`. Import `tools/build.py` and
+For local attempts, the compile wrapper accepts `input.c -o output.o`.
+Import `tools/build.py` and
 call `compile_c(input_path, True, output_root=unique_scratch_dir,
 unit_path=Path("src/OWNING_UNIT.c"), only_function="FUNCTION")`, then copy the
 returned object to the requested output. Use a separate temporary directory
