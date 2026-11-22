@@ -5,7 +5,6 @@
 typedef void (*TaskCallback)(void);
 
 extern TaskCallback D_8013AFC8;
-u16 func_80014B14(void);
 void dispatchGameOptionTransitionTask(void);
 void beginMode2SequenceAndFadeMusic(void);
 
@@ -98,6 +97,7 @@ s16 tryCreateChildTaskForParentWith20SlotsReserved(GameTask *parent, TaskCallbac
 void deleteCurrentTaskSubtree(void);
 void deleteCurrentTaskDescendants(void);
 void deletePendingTaskSubtree(void);
+u16 currentTaskHasChildren(void);
 void setCurrentTaskCallback(TaskCallback callback);
 void resetTaskCallbackOnFlag4(void);
 void restoreSavedStateAndHandleFlag4(void);

@@ -102,7 +102,7 @@ void runGameLoop(void) {
         do {
             waitFlags = D_8013AE88->unk10;
             if (waitFlags & 3) {
-                if ((waitFlags & 1) && !(func_80014B14() & 0xFFFF)) {
+                if ((waitFlags & 1) && !(currentTaskHasChildren() & 0xFFFF)) {
                     D_8013AE88->unk10 &= 0xFFFE;
                 }
                 if ((D_8013AE88->unk10 & 2) && (isCdCommandQueueIdle() == 1)) {

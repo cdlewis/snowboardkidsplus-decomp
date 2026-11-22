@@ -2850,6 +2850,7 @@ tryCreateChildTaskWith20SlotsReserved = 0x800148B4; // type:func
 deleteCurrentTaskSubtree = 0x800149A8; // type:func
 deleteCurrentTaskDescendants = 0x800149E0; // type:func
 deletePendingTaskSubtree = 0x80014A2C; // type:func
+currentTaskHasChildren = 0x80014B14; // type:func
 
 waitResultDisplayTask = 0x80036940; // type:func
 

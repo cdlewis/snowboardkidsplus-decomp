@@ -173,7 +173,7 @@ void deleteCurrentTaskSubtree(void) {
 }
 
 void deleteCurrentTaskDescendants(void) {
-    if (func_80014B14()) {
+    if (currentTaskHasChildren()) {
         GameTask *firstDescendant = D_8013AE88->next;
 
         D_8013AEB0 = firstDescendant;
@@ -210,19 +210,18 @@ void deletePendingTaskSubtree(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: inline 9/14 */
-#ifdef NON_MATCHING
-u16 func_80014B14(void) {
-    GameTask *current=D_8013AE88;
+u16 currentTaskHasChildren(void) {
+    GameTask *current = D_8013AE88;
     u16 result;
-    D_8013AEA4=current->next;
-    if (D_8013AEA4) result=D_8013AEA4->depth > current->depth;
-    else result=0;
+
+    D_8013AEA4 = current->next;
+    if (D_8013AEA4 != NULL) {
+        result = D_8013AEA4->depth > current->depth;
+    } else {
+        result = 0;
+    }
     return result;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/engine/task_scheduler", func_80014B14);
-#endif
 
 void setCurrentTaskCallback(TaskCallback callback) { D_8013AE88->callback = callback; }
 
