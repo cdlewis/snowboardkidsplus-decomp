@@ -261,7 +261,7 @@ s8 gShrinkingSpriteOffsets[8] __attribute__((section(".data.shrinking_sprite_off
     0, 1, 0, -1, 0, 1, 0, -1
 };
 
-s16 func_80070794(s32 id);
+s16 getTaskTransitionViewportIndex(s32 id);
 void createRegisteredSpacedChildTask(s16 childIndex, s16 x, s16 y, TaskCallback callback,
                                      s32 depth, s32 registrationIndex);
 void func_80072C54(void);
@@ -299,7 +299,7 @@ void updateRegisteredCallbackTask(void);
 void configureTaskStateTransition(s32 mode, s32 id, u16 duration) {
     TaskValueState *state;
     s16 index;
-    index = func_80070794(id);
+    index = getTaskTransitionViewportIndex(id);
     switch (index) {
     case 0: break;
     case 1: id -= 0xFFC; break;
@@ -407,27 +407,19 @@ stop_transition:
     }
 }
 
-/* DECOMP_ATTEMPT: inline 8/10 */
-#ifdef NON_MATCHING
-s16 func_80070794(s32 id) {
+s16 getTaskTransitionViewportIndex(s32 id) {
     if (id >= 0x1000 && id < 0x2000) {
         return 1;
     }
-    if (id >= 0x2000 && id < 0x3000) {
-        return 2;
-    }
-    return 0;
+    return 2 * (id >= 0x2000 && id < 0x3000);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80070794);
-#endif
 
 s32 hasTaskStateValue6(s32 id) {
-    return D_8012D4A4[func_80070794(id)].unk06 != 0;
+    return D_8012D4A4[getTaskTransitionViewportIndex(id)].unk06 != 0;
 }
 
 s32 isTaskStateTransitionBelowMaximum(s32 id) {
-    return D_8012D4A4[func_80070794(id)].unk06 < 0xFFFFu;
+    return D_8012D4A4[getTaskTransitionViewportIndex(id)].unk06 < 0xFFFFu;
 }
 
 /* DECOMP_ATTEMPT: inline 14/16 */
