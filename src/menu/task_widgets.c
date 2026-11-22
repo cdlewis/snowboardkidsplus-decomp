@@ -422,18 +422,13 @@ s32 isTaskStateTransitionBelowMaximum(s32 id) {
     return D_8012D4A4[getTaskTransitionViewportIndex(id)].unk06 < 0xFFFFu;
 }
 
-/* DECOMP_ATTEMPT: inline 14/16 */
-#ifdef NON_MATCHING
-void func_80070830(void) {
+void clearColorCycleTaskReferences(void) {
     s16 i;
     for (i = 0; i < 4; ) {
         D_8013BDA8[i] = NULL;
         i = (s16)(i + 1);
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80070830);
-#endif
 
 void configureColorCycleTask(s32 mode, s16 minimum, s16 maximum, s32 step, s16 index) {
     GameTask *task;
