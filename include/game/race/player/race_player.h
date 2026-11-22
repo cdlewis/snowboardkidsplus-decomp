@@ -267,7 +267,7 @@ void resetCurrentPlayerForCallback26DAC(void);
 void resetCurrentPlayerForCallback205B8(void);
 
 void playCurrentPlayerSoundEffect(s16 index);
-void func_8002E5A0(u16 index, s16 value);
+void queuePlayerControllerEffect(u16 controller, s16 effect);
 void updateCurrentPlayerItemUse(u16 playerIndex);
 
 void startCurrentPlayerAnimation(u8 animation, u8 mode);

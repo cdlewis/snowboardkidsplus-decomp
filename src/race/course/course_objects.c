@@ -1260,7 +1260,7 @@ void updateInteractionVisualTask(void) {
                             } else {
                                 startPlayerTimerTask(&gRacePlayers[player]);
                             }
-                            func_8002E5A0(gRacePlayers[player].playerIndex, 0xD);
+                            queuePlayerControllerEffect(gRacePlayers[player].playerIndex, 0xD);
                             playSoundEffect(0, 0, 0x20);
                             gInteractionVisualPlacements[i].flags |= 0x40;
                             break;

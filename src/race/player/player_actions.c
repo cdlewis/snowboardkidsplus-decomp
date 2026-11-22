@@ -1540,16 +1540,11 @@ void playCurrentPlayerSoundEffect(s16 index) {
     }
 }
 
-/* DECOMP_ATTEMPT: inline 13/14 */
-#ifdef NON_MATCHING
-void func_8002E5A0(u16 controller, s16 value) {
-    if (D_8013B0D8->unk008 == 0) {
-        D_8013AF08[controller] = value;
+void queuePlayerControllerEffect(u16 controller, s16 effect) {
+    if (currentPlayerAbsolute->unk008 == 0) {
+        D_8013AF08[controller] = effect;
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002E5A0);
-#endif
 
 void startPlayerTimerTask(RacePlayer *player) {
     player->unk0FC = 240;
@@ -1692,7 +1687,7 @@ void updateCurrentPlayerItemUse(u16 playerIndex) {
             return;
         }
         startPlayerTimerTask(currentPlayerAbsolute);
-        func_8002E5A0(playerIndex, 13);
+        queuePlayerControllerEffect(playerIndex, 13);
         goto clearItem;
     case 1:
         tryCreateChildTaskForParentWith20SlotsReserved(&gGameTasks[4], initializeOrbitingPlayerVisualTask);

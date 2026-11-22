@@ -110,7 +110,7 @@ void initializePlayerSideVisualTask(void) {
     resource->code = POLY_FT4_CODE;
     resource->framePosition = 0;
     playPlayerSoundEffect(D_8013AE88->data18, 1, 0x600, 0x20);
-    func_8002E5A0(D_8013AE88->data18, 12);
+    queuePlayerControllerEffect(D_8013AE88->data18, 12);
     if (gRacePlayers[D_8013AE88->data18].unk128 & 0x400) {
         resource->radius = -52;
     } else {

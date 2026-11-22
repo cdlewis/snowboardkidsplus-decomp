@@ -256,6 +256,7 @@ findIndexedHalfwordRecord = 0x80081380; // type:func
 adjustGroupedIndexForMode = 0x800811E0; // type:func
 getGroupedIndexBase = 0x80081244; // type:func
 
+queuePlayerControllerEffect = 0x8002E5A0; // type:func
 startPlayerTimerTask = 0x8002E5D8; // type:func
 updateCurrentPlayerProjectileUse = 0x8002E644; // type:func
 updateCurrentPlayerItemUse = 0x8002EA0C; // type:func
