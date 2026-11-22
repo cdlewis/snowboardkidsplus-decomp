@@ -46,6 +46,7 @@ typedef struct ProximityParticleResource {
 } ProximityParticleResource;
 
 extern u8 D_8013AFD8 __attribute__((section(".data")));
+extern u16 D_8013AFAA __attribute__((section(".data")));
 extern s16 gFrameCounter __attribute__((section(".data")));
 extern s16 D_8013AFCE __attribute__((section(".data")));
 extern VECTOR *D_8013AF88 __attribute__((section(".data")));
@@ -540,9 +541,7 @@ createVisualTasks:
 INCLUDE_ASM("asm/nonmatchings/race/course/course_objects", func_80058BD4);
 #endif
 
-/* DECOMP_ATTEMPT: inline 11/15 */
-#ifdef NON_MATCHING
-u16 func_80059254(void) {
+u16 getRenderCameraIndex(void) {
     if (D_8013AFAA & 0x400) {
         if (gFrameCounter & 1) {
             return 1;
@@ -550,9 +549,6 @@ u16 func_80059254(void) {
     }
     return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/course/course_objects", func_80059254);
-#endif
 
 /* DECOMP_ATTEMPT: inline 15/19 */
 #ifdef NON_MATCHING
@@ -576,7 +572,7 @@ void drawTaskObject(u16 index) {
     object = &objects[index];
     GsGetLs(object->coord2, D_8013AF98);
     GsSetLsMatrix(D_8013AF98);
-    if (func_80059254()) {
+    if (getRenderCameraIndex()) {
         GsSortObject4(object, &D_800EC0B8[D_8013AF78], 2, (u32 *)getScratchAddr(0));
     } else {
         GsSortObject4(object, &D_800EC018[D_8013AF78], 2, (u32 *)getScratchAddr(0));
@@ -592,7 +588,7 @@ void drawTaskObjectAlternateLayer(u16 index) {
     object = &objects[index];
     GsGetLs(object->coord2, D_8013AF98);
     GsSetLsMatrix(D_8013AF98);
-    if (func_80059254()) {
+    if (getRenderCameraIndex()) {
         GsSortObject4(object, &D_800EC130[D_8013AF78], 2, (u32 *)getScratchAddr(0));
     } else {
         GsSortObject4(object, &D_800EC090[D_8013AF78], 2, (u32 *)getScratchAddr(0));
@@ -705,17 +701,17 @@ void updateCourseObjectTask(void) {
 
     if (D_8013AFCE != 9 && D_8013AE88->data18 == 3) {
         players = gRacePlayers;
-        cameraPlayer = &players[func_80059254()];
+        cameraPlayer = &players[getRenderCameraIndex()];
         records = D_80123D80;
         if (cameraPlayer->unk92E < records[D_8013AFCE].objectFirstSegment) {
             return;
         }
-        if (players[func_80059254()].unk92E > records[D_8013AFCE].objectLastSegment) {
+        if (players[getRenderCameraIndex()].unk92E > records[D_8013AFCE].objectLastSegment) {
             return;
         }
     }
 
-    cameraIndex = func_80059254();
+    cameraIndex = getRenderCameraIndex();
     coordinates = D_80129C60;
     objectIndex = D_8013AE88->data18;
     if (isPositionInCameraRange(coordinates[objectIndex].coord.t[0],
@@ -777,7 +773,7 @@ void updateSelectedCourseOffsetTask(void) {
         }
     }
     if (D_8013AE88->data1E == 0) {
-        if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
+        if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)getRenderCameraIndex())) {
             D_80129A80[D_8013AE88->data1C].coord2 = &resource->coordinate;
             setCoordinateRotation(&resource->rotation, &resource->coordinate);
             drawTaskObject(D_8013AE88->data1C);
@@ -815,7 +811,7 @@ void updatePlayerFollowingOrbitTask(void) {
             resource->rotation.vy = gRacePlayers[D_8013AE88->data18].unk110;
         }
     }
-    if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
+    if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)getRenderCameraIndex())) {
         D_80129A80[D_8013AE88->data1C].coord2 = &resource->coordinate;
         setCoordinateRotation(&resource->rotation, &resource->coordinate);
         drawTaskObject(D_8013AE88->data1C);
@@ -838,7 +834,7 @@ void updateOrbitingTaskObject(void) {
         resource->coordinate.coord.t[0] = resource->position.vx + D_8013AF88->vx;
         resource->coordinate.coord.t[2] = resource->position.vz + D_8013AF88->vz;
     }
-    if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
+    if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)getRenderCameraIndex())) {
         D_80129A80[D_8013AE88->data1C].coord2 = &resource->coordinate;
         setCoordinateRotation(&resource->rotation, &resource->coordinate);
         drawTaskObject(D_8013AE88->data1C);
@@ -867,7 +863,7 @@ void updateMovingTaskObject(void) {
         resource->coordinate.coord.t[2] += D_8013AF88->vz;
         D_8013AE88->data1A--;
     }
-    if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
+    if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)getRenderCameraIndex())) {
         D_80129A80[D_8013AE88->data1C].coord2 = &resource->coordinate;
         setCoordinateRotation(&resource->rotation, &resource->coordinate);
         drawTaskObject(D_8013AE88->data1C);
@@ -897,8 +893,8 @@ void updateCameraRotationMatrices(u16 playerIndex) {
     D_8013AF90->vy = cameras[playerIndex].yaw;
     D_8013AF90->vz = 0;
     RotMatrix(D_8013AF90, &D_8012A6B0);
-    D_8013AF90->vx = cameras[func_80059254()].pitch;
-    D_8013AF90->vy = cameras[func_80059254()].yaw;
+    D_8013AF90->vx = cameras[getRenderCameraIndex()].pitch;
+    D_8013AF90->vy = cameras[getRenderCameraIndex()].yaw;
     D_8013AF90->vz = 0;
     RotMatrixYXZ(D_8013AF90, &D_8012A6D0);
 }
@@ -1024,11 +1020,11 @@ void drawCameraFacingTaskVisual(TaskVisualResource *resource, u8 mode) {
     long depth;
     if (mode == 0) {
         D_8013AF90->vx = 0;
-        D_8013AF90->vy = D_801241E8[func_80059254()].yaw;
+        D_8013AF90->vy = D_801241E8[getRenderCameraIndex()].yaw;
         D_8013AF90->vz = 0;
     } else {
-        D_8013AF90->vx = D_801241E8[func_80059254()].pitch;
-        D_8013AF90->vy = D_801241E8[func_80059254()].yaw;
+        D_8013AF90->vx = D_801241E8[getRenderCameraIndex()].pitch;
+        D_8013AF90->vy = D_801241E8[getRenderCameraIndex()].yaw;
         D_8013AF90->vz = 0;
     }
     RotMatrixYXZ(D_8013AF90, D_8013AF98);
@@ -1100,7 +1096,7 @@ void updatePickupVisualTask(void) {
     prepareTaskVisualQuad(resource, gPickupVisualFrames, 0);
     for (i = D_8013B2B5; i < D_8013B2B5 + D_8013B2B6; i++) {
         if (!(D_8013B2BC[i].flags & 0x40)) {
-            if (!isPointWithinCameraForwardRange(D_8013B2BC[i].x, D_8013B2BC[i].z, (s16)func_80059254())) {
+            if (!isPointWithinCameraForwardRange(D_8013B2BC[i].x, D_8013B2BC[i].z, (s16)getRenderCameraIndex())) {
                 continue;
             }
             resource->unkC4 = D_8013B2BC[i].geometryIndex;
@@ -1181,7 +1177,7 @@ void func_8005B460(void) {
     resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
     prepareTaskVisualQuad(resource, D_8013B284, 0);
     for (i = D_8013B2B7; i < D_8013B2B7 + D_8013B2B8; i++) {
-        if (isPointWithinCameraForwardRange(D_8013B2BC[i].x, D_8013B2BC[i].z, (s16)func_80059254())) {
+        if (isPointWithinCameraForwardRange(D_8013B2BC[i].x, D_8013B2BC[i].z, (s16)getRenderCameraIndex())) {
             resource->coordinate.coord.t[0] = D_8013B2BC[i].x;
             resource->coordinate.coord.t[1] = D_8013B2BC[i].y;
             resource->coordinate.coord.t[2] = D_8013B2BC[i].z;
@@ -1237,7 +1233,7 @@ void updateInteractionVisualTask(void) {
             return;
         }
         if (!(gInteractionVisualPlacements[i].flags & 0x40)) {
-            if (isPositionInCameraRange(gInteractionVisualPlacements[i].x, gInteractionVisualPlacements[i].z, (s16)func_80059254())) {
+            if (isPositionInCameraRange(gInteractionVisualPlacements[i].x, gInteractionVisualPlacements[i].z, (s16)getRenderCameraIndex())) {
                 resource->unkC4 = gInteractionVisualPlacements[i].geometryIndex;
                 resource->coordinate.coord.t[0] = gInteractionVisualPlacements[i].x;
                 resource->coordinate.coord.t[1] = gInteractionVisualPlacements[i].y;
@@ -1316,7 +1312,7 @@ void updateCourseVisualTask(void) {
     resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
     prepareTaskVisualQuad(resource, gCourseVisualFrames, 0);
     for (i = D_8013B2B9; i < D_8013B2B9 + D_8013B2BA; i++) {
-        if (isPointWithinCameraForwardRange(D_8013B2BC[i].x, D_8013B2BC[i].z, (s16)func_80059254())) {
+        if (isPointWithinCameraForwardRange(D_8013B2BC[i].x, D_8013B2BC[i].z, (s16)getRenderCameraIndex())) {
             resource->coordinate.coord.t[0] = D_8013B2BC[i].x;
             resource->coordinate.coord.t[1] = D_8013B2BC[i].y;
             resource->coordinate.coord.t[2] = D_8013B2BC[i].z;
@@ -1403,9 +1399,9 @@ void updatePlacedObjectTask(void) {
     }
     resource = (PlacedObjectResource *)&D_800D9504[D_8013AE88->resource14];
     if (isPositionInCameraRange(resource->groundCoordinate.coord.t[0],
-                                resource->groundCoordinate.coord.t[2], (s16)func_80059254())) {
+                                resource->groundCoordinate.coord.t[2], (s16)getRenderCameraIndex())) {
         if ((u32)(D_8013AE88->data1A - 2) < 2) {
-            if (gRacePlayers[func_80059254()].unk01C >= 100) {
+            if (gRacePlayers[getRenderCameraIndex()].unk01C >= 100) {
                 if (D_8013AE88->data1A == 2) {
                     model = 17;
                 } else {
@@ -1595,7 +1591,7 @@ void updateBobbingTrailEmitterTask(void) {
     EmitterTrailResource *trail;
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
     resource = (BobbingTrailEmitterResource *)&D_800D9504[D_8013AE88->resource14];
-    if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
+    if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)getRenderCameraIndex())) {
         if (!D_8013AFD3) {
             resolvePlayerCollisionsWithCylinder(&resource->position, 0x7000, 0x18000, 2);
             resource->heading.value += resource->headingStep;
@@ -1656,7 +1652,7 @@ void updateProximityEmitterTask(void) {
     }
     resource = (ProximityEmitterResource *)&D_800D9504[D_8013AE88->resource14];
     if (!D_8013AFD3) {
-        if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
+        if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)getRenderCameraIndex())) {
             if (--resource->countdown == 0) {
                 resource->countdown = 0x20;
                 tryCreateChildTaskWith20SlotsReserved(initializeProximityParticleTask);
@@ -1742,7 +1738,7 @@ void updateProximityParticleTask(void) {
     }
 
     if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0],
-            resource->coordinate.coord.t[2], (s16)func_80059254())) {
+            resource->coordinate.coord.t[2], (s16)getRenderCameraIndex())) {
         if (!D_8013AFD3) {
             if (resource->velocityY > 0) {
                 addPlayerFlagsWithinRadius(&resource->position, 0x5C00, 0x20);
@@ -1809,7 +1805,7 @@ void func_8005D394(void) {
         while (1) {}
     }
     resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
-    cameraIndex = func_80059254();
+    cameraIndex = getRenderCameraIndex();
     if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0],
             resource->coordinate.coord.t[2], (s16)cameraIndex)) {
         if (!D_8013AFD3) {
@@ -2072,7 +2068,7 @@ void updateCollectibleTask(void) {
     u16 i;
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
     resource = (PickupResource *)&D_800D9504[D_8013AE88->resource14];
-    if (isPositionInCameraRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
+    if (isPositionInCameraRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)getRenderCameraIndex())) {
         D_80129A80[10].coord2 = &resource->coordinate;
         setCoordinateRotation(&resource->rotation, &resource->coordinate);
         drawTaskObject(10);
@@ -2136,7 +2132,7 @@ void updateFallingTaskObject(void) {
         }
         resource->coordinate.coord.t[1] = resource->position.y >> 8;
     }
-    if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
+    if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)getRenderCameraIndex())) {
         D_80129A80[9].coord2 = &resource->coordinate;
         setCoordinateRotation(&resource->rotation, &resource->coordinate);
         drawTaskObject(9);
@@ -2166,7 +2162,7 @@ void updateLandedTaskObject(void) {
             }
         }
     }
-    if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
+    if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)getRenderCameraIndex())) {
         D_80129A80[9].coord2 = &resource->coordinate;
         setCoordinateRotation(&resource->rotation, &resource->coordinate);
         drawTaskObject(9);
@@ -2277,12 +2273,12 @@ void updateOrbitingObstacleTask(void) {
         }
     }
     if (isPositionInCameraRange(resource->groundCoordinate.coord.t[0],
-        resource->groundCoordinate.coord.t[2], (s16)func_80059254())) {
+        resource->groundCoordinate.coord.t[2], (s16)getRenderCameraIndex())) {
         setCoordinateRotation(&resource->groundRotation, &resource->groundCoordinate);
         setCoordinateRotation(&resource->rotation, &resource->coordinate);
         GsGetLs(&resource->coordinate, D_8013AF98);
         GsSetLsMatrix(D_8013AF98);
-        if (func_80059254()) {
+        if (getRenderCameraIndex()) {
             drawProjectedModelPrimitives(D_80125044[0], &D_800EC0B8[D_8013AF78], 2, 1);
         } else {
             drawProjectedModelPrimitives(D_80125044[0], &D_800EC018[D_8013AF78], 2, 1);

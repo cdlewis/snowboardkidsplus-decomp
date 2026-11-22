@@ -48,8 +48,8 @@ static TaskVisualFrame sOrbitingPlayerVisualFrames[4]
 
 void drawPlayerFlagTaskVisual(TaskVisualResource *resource) {
     PlayerCamera *cameras = D_801241E8;
-    D_800EB22C.vx = rcos(-cameras[func_80059254()].yaw) * 40 / 4096;
-    D_800EB22C.vz = rsin(-cameras[func_80059254()].yaw) * 40 / 4096;
+    D_800EB22C.vx = rcos(-cameras[getRenderCameraIndex()].yaw) * 40 / 4096;
+    D_800EB22C.vz = rsin(-cameras[getRenderCameraIndex()].yaw) * 40 / 4096;
     resource->coordinate.coord.t[0] = gRacePlayers[D_8013AE88->data18].worldCoordinate.coord.t[0] + D_800EB22C.vx;
     resource->coordinate.coord.t[1] = gRacePlayers[D_8013AE88->data18].worldCoordinate.coord.t[1] - 80;
     resource->coordinate.coord.t[2] = gRacePlayers[D_8013AE88->data18].worldCoordinate.coord.t[2] + D_800EB22C.vz;
@@ -210,7 +210,7 @@ void updateExpandingCoordinateEffectTask(void) {
         resource->rotation.vy += 0x80;
         D_8013AE88->data1A--;
     }
-    if (isPositionInCameraRange(resource->parent.coord.t[0], resource->parent.coord.t[2], (s16)func_80059254())) {
+    if (isPositionInCameraRange(resource->parent.coord.t[0], resource->parent.coord.t[2], (s16)getRenderCameraIndex())) {
         D_80129A80[15].coord2 = &resource->coordinate;
         setCoordinateRotation((SVECTOR *)&resource->pitch, &resource->parent);
         setCoordinateRotation(&resource->rotation, &resource->coordinate);
@@ -284,7 +284,7 @@ void updatePlayerState23CoordinateEffectTask(void) {
             resource->scale.vy = resource->scale.vz = resource->scale.vx;
         }
     }
-    if (isPositionInCameraRange(resource->parent.coord.t[0], resource->parent.coord.t[2], (s16)func_80059254())) {
+    if (isPositionInCameraRange(resource->parent.coord.t[0], resource->parent.coord.t[2], (s16)getRenderCameraIndex())) {
         D_80129A80[13].coord2 = &resource->coordinate;
         setCoordinateRotation((SVECTOR *)&resource->pitch, &resource->parent);
         setCoordinateRotation(&resource->rotation, &resource->coordinate);
@@ -368,7 +368,7 @@ void updateFallingRotatingObjectTask(void) {
             return;
         }
     }
-    if (isPositionInCameraRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
+    if (isPositionInCameraRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)getRenderCameraIndex())) {
         D_80129A80[D_8013AE88->data1C].coord2 = &resource->coordinate;
         setCoordinateRotation(&resource->parentRotation, &resource->parent);
         setCoordinateRotation(&resource->rotation, &resource->coordinate);
@@ -400,7 +400,7 @@ void updatePlayerScaledObjectTask(void) {
     resource->rotation.vx = players[D_8013AE88->data18].unk0B4;
     resource->rotation.vy = players[D_8013AE88->data18].unk0B6;
     resource->rotation.vz = players[D_8013AE88->data18].unk0B8;
-    if (isPositionInCameraRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
+    if (isPositionInCameraRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)getRenderCameraIndex())) {
         D_80129A80[10].coord2 = &resource->coordinate;
         setCoordinateRotation(&resource->rotation, &resource->coordinate);
         ScaleMatrix(&resource->coordinate.coord, &resource->scale);
@@ -540,7 +540,7 @@ void updatePlayerCoordinateEffectTask(void) {
             }
         }
     }
-    if (isPositionInCameraRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
+    if (isPositionInCameraRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)getRenderCameraIndex())) {
         D_80129A80[11].coord2 = &resource->coordinate;
         setCoordinateRotation(&resource->rotation, &resource->coordinate);
         ScaleMatrix(&resource->coordinate.coord, &resource->scale);
@@ -1433,10 +1433,10 @@ void updateOrbitingPlayerVisualTask(void) {
             }
             break;
         }
-        cameraIndex = func_80059254();
+        cameraIndex = getRenderCameraIndex();
         cameras = D_801241E8;
         resource->offset.x = rsin(cameras[cameraIndex].yaw + resource->angle) * resource->radius / 4096;
-        resource->offset.z = rcos(cameras[func_80059254()].yaw + resource->angle) * resource->radius / 4096;
+        resource->offset.z = rcos(cameras[getRenderCameraIndex()].yaw + resource->angle) * resource->radius / 4096;
         resource->coordinate.coord.t[0] = gRacePlayers[D_8013AE88->data18].worldCoordinate.coord.t[0] + resource->offset.x;
         resource->coordinate.coord.t[1] = gRacePlayers[D_8013AE88->data18].worldCoordinate.coord.t[1] + resource->offset.y;
         resource->coordinate.coord.t[2] = gRacePlayers[D_8013AE88->data18].worldCoordinate.coord.t[2] + resource->offset.z;
@@ -1496,7 +1496,7 @@ void updateRisingPlayerEffectTask(void) {
             resource->scale.vz += 0x100;
         }
     }
-    if (isPositionInCameraRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
+    if (isPositionInCameraRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)getRenderCameraIndex())) {
         D_80129A80[12].coord2 = &resource->coordinate;
         setCoordinateRotation(&resource->rotation, &resource->coordinate);
         ScaleMatrix(&resource->coordinate.coord, &resource->scale);
@@ -1540,7 +1540,7 @@ void updateFallingPlayerEffectTask(void) {
         resource->coordinate.coord.t[1] = gRacePlayers[D_8013AE88->data18].worldCoordinate.coord.t[1] + resource->offset.y;
         resource->coordinate.coord.t[2] = gRacePlayers[D_8013AE88->data18].worldCoordinate.coord.t[2];
     }
-    if (isPositionInCameraRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)func_80059254())) {
+    if (isPositionInCameraRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)getRenderCameraIndex())) {
         D_80129A80[12].coord2 = &resource->coordinate;
         setCoordinateRotation(&resource->rotation, &resource->coordinate);
         ScaleMatrix(&resource->coordinate.coord, &resource->scale);

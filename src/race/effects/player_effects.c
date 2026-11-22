@@ -1547,7 +1547,7 @@ void drawPlayerShadowTask(void) {
         return;
     }
     if (!isPointWithinCameraForwardRange(player->worldCoordinate.coord.t[0],
-            player->worldCoordinate.coord.t[2], (s16)func_80059254())) {
+            player->worldCoordinate.coord.t[2], (s16)getRenderCameraIndex())) {
         return;
     }
     *packet = gPlayerShadowPacket;
@@ -1929,7 +1929,7 @@ void func_800654B4(void) {
     player = &gRacePlayers[D_8013AE88->data18];
     scratch = (PairedQuadScratchpad *)getScratchAddr(0);
     if (isPointWithinCameraForwardRange(player->worldCoordinate.coord.t[0],
-            player->worldCoordinate.coord.t[2], (s16)func_80059254())) {
+            player->worldCoordinate.coord.t[2], (s16)getRenderCameraIndex())) {
         for (i = 0; i < 2; i++) {
             GsInitCoordinate2(NULL, &scratch->coordinate);
             setVector((VECTOR *)scratch->coordinate.coord.t,
@@ -2050,7 +2050,7 @@ void func_800659F0(void) {
         resource->frame++;
     }
 
-    if (isPointWithinCameraForwardRange(resource->x, resource->z, (s16)func_80059254())) {
+    if (isPointWithinCameraForwardRange(resource->x, resource->z, (s16)getRenderCameraIndex())) {
         scale = ((const volatile QuadAnimationFrame *)scratch->frame)->scale;
         scratch->scale.vx = scratch->scale.vy = scratch->scale.vz = scale;
         GsInitCoordinate2(0, ((GsCOORDINATE2 *)getScratchAddr(0)));
@@ -2153,7 +2153,7 @@ void updateRadialEffectTask(void) {
     }
 
     if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0],
-            resource->coordinate.coord.t[2], (s16)func_80059254())) {
+            resource->coordinate.coord.t[2], (s16)getRenderCameraIndex())) {
         resource->coordinate.flg = 0;
         GsGetLs(&resource->coordinate, &scratch->localScreen);
         GsSetLsMatrix(&scratch->localScreen);
@@ -2399,7 +2399,7 @@ void func_80066474(void) {
             scratch->uv[2].u, scratch->uv[2].v, scratch->uv[3].u, scratch->uv[3].v);
         setGray0(packet, 48 - i * 48 / 15);
         left = &first->positions[i];
-        if (!isPointWithinCameraForwardRange(left->point.x, left->point.z, (s16)func_80059254())) {
+        if (!isPointWithinCameraForwardRange(left->point.x, left->point.z, (s16)getRenderCameraIndex())) {
             continue;
         }
         for (j = 0; j < 3; j++) {
@@ -2496,7 +2496,7 @@ void func_80066D18(void) {
     player = &gRacePlayers[D_8013AE88->data18];
     scratch = (PlayerPositionTrailScratch *)getScratchAddr(0);
     if (!isPointWithinCameraForwardRange(player->worldCoordinate.coord.t[0],
-            player->worldCoordinate.coord.t[2], (s16)func_80059254())) {
+            player->worldCoordinate.coord.t[2], (s16)getRenderCameraIndex())) {
         return;
     }
 
@@ -2759,7 +2759,7 @@ void emitPlayerTurnTripleQuadEffectTask(void) {
     s32 i, sine;
     player = &gRacePlayers[D_8013AE88->data18];
     if (D_8013AFD3 != 0) return;
-    if (!isPointWithinCameraForwardRange(player->worldCoordinate.coord.t[0], player->worldCoordinate.coord.t[2], (s16)func_80059254())) return;
+    if (!isPointWithinCameraForwardRange(player->worldCoordinate.coord.t[0], player->worldCoordinate.coord.t[2], (s16)getRenderCameraIndex())) return;
     if (!(player->unk128 & 8) && player->unk96E != 0 && player->unk96E != 0x801 && player->unk96E != 0x200) return;
     sine = rsin((s16)player->unk0BE - (s16)player->unk110);
     if (sine < 0) sine = -sine;
@@ -2806,7 +2806,7 @@ void updatePlayerRingEffectTask(void) {
     packet = (POLY_FT4 *)GsOUT_PACKET_P;
     scratch = (PlayerRingEffectScratch *)getScratchAddr(0);
     if (isPointWithinCameraForwardRange(resource->position[0], resource->position[2],
-                                        (s16)func_80059254())) {
+                                        (s16)getRenderCameraIndex())) {
         scratch->quad.tag = TEXTURED_QUAD_PACKET_WORDS << 24;
         setcode(&scratch->quad, POLY_FT4_CODE);
         setSemiTrans(&scratch->quad, 1);
@@ -2931,7 +2931,7 @@ void updatePlayerParticleTrailTask(void) {
         }
         if (player->unk0FC && isPointWithinCameraForwardRange(
                 player->worldCoordinate.coord.t[0], player->worldCoordinate.coord.t[2],
-                (s16)func_80059254())) {
+                (s16)getRenderCameraIndex())) {
             resource->ages[0] = 0;
             resource->angles[0] = randomNextLinear() % 4096;
             resource->positions[0][0] = player->unk0FF ? 60 : -60;
@@ -3036,7 +3036,7 @@ s32 createPlayerTripleQuadEffectTask(s32 playerIndex) {
     s32 i;
     s32 state;
     player = &gRacePlayers[playerIndex];
-    if (!isPointWithinCameraForwardRange(player->worldCoordinate.coord.t[0], player->worldCoordinate.coord.t[2], (s16)func_80059254())) {
+    if (!isPointWithinCameraForwardRange(player->worldCoordinate.coord.t[0], player->worldCoordinate.coord.t[2], (s16)getRenderCameraIndex())) {
         return 0;
     }
     if (!(player->unk128 & 8) && player->unk96E != 0 && player->unk96E != 0x801 && player->unk96E != 0x200) {

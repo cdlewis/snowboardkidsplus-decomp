@@ -525,7 +525,7 @@ void drawOscillatingQuadTask(void) {
     }
     resource = (OscillatingQuadResource *)&D_800D9504[D_8013AE88->resource14];
     packet = (GouraudQuadPacket *)GsOUT_PACKET_P;
-    cameraIndex = (s16)func_80059254();
+    cameraIndex = (s16)getRenderCameraIndex();
     scratch = (OscillatingQuadScratchpad *)getScratchAddr(0);
     if (isPositionInCameraRange(resource->position[0], resource->position[2], cameraIndex)) {
         /* The draw-mode command shares the quad tag and adds one packet word. */
@@ -944,25 +944,25 @@ void drawCameraCulledBackgroundAndSetFog(s16 playerIndex) {
     GsGetLs(coordinate, matrix);
     ScaleMatrix(matrix, &D_80124BDC);
     GsSetLsMatrix(matrix);
-    if (isPositionInCameraRange(0xADA, 0xCD1, (s16)func_80059254())) {
+    if (isPositionInCameraRange(0xADA, 0xCD1, (s16)getRenderCameraIndex())) {
         drawProjectedModelPrimitives(D_80125044[0], ot, 2, 1);
     }
-    if (isPositionInCameraRange(0xA61, 0x18D4, (s16)func_80059254())) {
+    if (isPositionInCameraRange(0xA61, 0x18D4, (s16)getRenderCameraIndex())) {
         drawProjectedModelPrimitives(D_80125044[1], ot, 2, 1);
     }
-    if (isPositionInCameraRange(0x24E0, 0x1F11, (s16)func_80059254())) {
+    if (isPositionInCameraRange(0x24E0, 0x1F11, (s16)getRenderCameraIndex())) {
         drawProjectedModelPrimitives(D_80125044[2], ot, 2, 1);
     }
-    if (isPositionInCameraRange(0x47E0, 0x2B52, (s16)func_80059254())) {
+    if (isPositionInCameraRange(0x47E0, 0x2B52, (s16)getRenderCameraIndex())) {
         drawProjectedModelPrimitives(D_80125044[3], ot, 2, 1);
     }
-    if (isPositionInCameraRange(0x6356, 0x32B7, (s16)func_80059254())) {
+    if (isPositionInCameraRange(0x6356, 0x32B7, (s16)getRenderCameraIndex())) {
         drawProjectedModelPrimitives(D_80125044[4], ot, 2, 1);
     }
-    if (isPositionInCameraRange(0x6B5E, 0x5C1C, (s16)func_80059254())) {
+    if (isPositionInCameraRange(0x6B5E, 0x5C1C, (s16)getRenderCameraIndex())) {
         drawProjectedModelPrimitives(D_80125044[5], ot, 2, 1);
     }
-    if (isPositionInCameraRange(0x6B5E, 0x5C1C, (s16)func_80059254())) {
+    if (isPositionInCameraRange(0x6B5E, 0x5C1C, (s16)getRenderCameraIndex())) {
         drawProjectedModelPrimitives(D_80125044[6], ot, 2, 1);
     }
     SetFarColor(112, 168, 248);
