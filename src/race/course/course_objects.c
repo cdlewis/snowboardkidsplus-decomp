@@ -349,6 +349,7 @@ u8 gPlacedObjectItemChoices[4][16]
 };
 
 void updateCourseObjectTask(void);
+void initializeBobbingTrailEmitterTask(void);
 
 void queueCourseResourceSectorReads(void) {
     queueCdSectorCommand(0, gCourseResourceSectors[D_8013AFCE][0].sector, gCourseResourceSectors[D_8013AFCE][0].count, DAT_COURSE_FIRST, 0);
@@ -372,7 +373,6 @@ void initializeCourseObjectTask(void);
 extern VisualPlacement *D_801293DC[10];
 extern VisualPlacement *D_80129404[3][10];
 extern u8 D_8013B2B7, D_8013B2B8;
-void func_8005C7AC(void);
 
 void func_80058BD4(void) {
     u8 i;
@@ -412,7 +412,7 @@ void func_80058BD4(void) {
     switch (course) {
     case 1:
         if (D_8013AFE2 == 0) {
-            createChildTaskForParentWithReserve(&gGameTasks[4], func_8005C7AC);
+            createChildTaskForParentWithReserve(&gGameTasks[4], initializeBobbingTrailEmitterTask);
         }
         createChildTaskForParentWithReserve(&gGameTasks[4], initializeProximityEmitterTask);
         D_8013AE8C->data18 = 0;
@@ -1560,14 +1560,9 @@ void updatePlacedObjectBounceTask(void) {
     if (D_8013AE88->data1C == 4) setCurrentTaskCallback(updatePlacedObjectTask);
 }
 
-/* DECOMP_ATTEMPT: inline 66/68 */
-#ifdef NON_MATCHING
-void func_8005C7AC(void) {
+void initializeBobbingTrailEmitterTask(void) {
     BobbingTrailEmitterResource *resource;
     u16 angle;
-    const MATRIX *transform;
-    s32 x;
-    s32 heading;
 
     if (D_8013AE88->resource14 != 0xFFFF) {
         while (1) {}
@@ -1580,26 +1575,20 @@ void func_8005C7AC(void) {
     resource->rotation.vx = 0;
     angle = ((GeometryPlacement *)geometryPlacementDataAbsolute)[resource->geometryIndex].angle;
     resource->rotation.vz = 0;
-    transform = &resource->coordinate.coord;
     resource->coordinate.coord.t[0] = 0x8AF7;
     resource->coordinate.coord.t[1] = 0xB658;
-    x = transform->t[0];
     resource->coordinate.coord.t[2] = 0xE7C2;
     resource->countdown = 15;
     resource->headingStep = 8;
     resource->phase = 0;
-    resource->position.y = resource->coordinate.coord.t[1] << 8;
     resource->rotation.vy = angle;
-    resource->position.x = x << 8;
-    heading = resource->rotation.vy;
-    resource->baseHeading.value = heading;
+    resource->position.x = resource->coordinate.coord.t[0] << 8;
+    resource->position.y = resource->coordinate.coord.t[1] << 8;
+    resource->baseHeading.value = resource->rotation.vy;
     resource->position.z = resource->coordinate.coord.t[2] << 8;
-    resource->heading.value = heading;
+    resource->heading.value = resource->baseHeading.value;
     setCurrentTaskCallback(updateBobbingTrailEmitterTask);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/course/course_objects", func_8005C7AC);
-#endif
 
 void updateBobbingTrailEmitterTask(void) {
     BobbingTrailEmitterResource *resource;
