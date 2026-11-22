@@ -2108,6 +2108,7 @@ snapCurrentPlayerToTerrain = 0x80028C80; // type:func
 addTextCharacter = 0x8006B2E4; // type:func
 addStretchedTextCharacter = 0x8006B38C; // type:func
 drawStretchedDebugText = 0x8006B4A0; // type:func
+setTextGlyphPalette = 0x8006B9EC; // type:func
 gStretchedTextWidth = 0x8013B374; // type:u16 size:0x2 defined:true
 gTextGlyphPalette = 0x8013B376; // type:u16 size:0x2 defined:true
 

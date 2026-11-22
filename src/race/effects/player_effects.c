@@ -4020,12 +4020,7 @@ void drawStretchedDebugText(s32 x, s32 y, const char *format, ...) {
     GsOUT_PACKET_P = (u32)(page + 1);
 }
 
-/* DECOMP_ATTEMPT: inline 2/4 */
-#ifdef NON_MATCHING
-void func_8006B9EC(u16 value) {
-    value &= 7;
-    gTextGlyphPalette = value;
+void setTextGlyphPalette(u16 palette) {
+    palette &= 7;
+    gTextGlyphPalette = palette;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_8006B9EC);
-#endif

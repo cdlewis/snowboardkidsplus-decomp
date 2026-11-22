@@ -264,6 +264,7 @@ void setTaskVisualFrame(TaskVisualResource *resource, TaskVisualFrame *frames,
                         s32 scale);
 void unpackPsxColor(u32 color, UnpackedPsxColor *out);
 void setTextPalette(s32 palette);
+void setTextGlyphPalette(u16 palette);
 void addTextCharacter(s32 x, s32 y, u32 character);
 void addStretchedTextCharacter(s32 x, s32 y, s32 width, u32 character);
 void initPrimitiveTemplates(void);
