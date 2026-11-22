@@ -81,7 +81,7 @@ void initializeModeSectorReadResourcesTask(void);
 void scheduleMode1TaskTransition(void);
 void selectTaskBySelectedRecordMatch(void);
 void SetFogNearFar(s32 near, s32 far, s32 h);
-void func_800A2C40(void);
+void skipRemainingRaceTasksDuringNumberSelection(void);
 void updateNumberSelectionTask(void);
 void initializeControllerPlaybackRaceTask(void);
 void initializeRaceTaskState(void);

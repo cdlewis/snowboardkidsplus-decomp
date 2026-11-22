@@ -34,6 +34,7 @@ extern u8 D_8013AFCD __attribute__((section(".data")));
 extern u8 D_8013AFD3 __attribute__((section(".data")));
 extern GameTask *D_8013AE88 __attribute__((section(".data")));
 extern GameTask *D_8013AE8C __attribute__((section(".data")));
+extern GameTask *D_8013AE90 __attribute__((section(".data")));
 
 extern u8 D_8013B108 __attribute__((section(".data")));
 extern u8 D_8013B109 __attribute__((section(".data")));
@@ -233,7 +234,7 @@ void initializeNumberSelectionTask(void) {
     setControllerFlag5(0);
     setControllerFlag5(1);
     resetPendingCdRequests();
-    createChildTaskWithReserve(func_800A2C40);
+    createChildTaskWithReserve(skipRemainingRaceTasksDuringNumberSelection);
     setCurrentTaskCallback(updateNumberSelectionTask);
 }
 
@@ -367,21 +368,11 @@ void drawOffsetSelectedTaskSprite(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: inline 9/13 */
-#ifdef NON_MATCHING
-extern GameTask *D_8013AE90;
-
-void func_800A2C40(void) {
-    GameTask *task;
+void skipRemainingRaceTasksDuringNumberSelection(void) {
     if (D_8013AFD3) {
-        task = D_8013AE90;
-        task = task->previous;
-        D_8013AE88 = task;
+        D_8013AE88 = D_8013AE90->previous;
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/menu/selection_tasks", func_800A2C40);
-#endif
 
 void initializeSelectionMenuTask(void) {
     SelectionMenuState *state;
