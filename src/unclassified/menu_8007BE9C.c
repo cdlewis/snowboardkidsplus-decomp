@@ -8,6 +8,7 @@
 #include "game/audio/music.h"
 #include "game/menu/selected_sprite.h"
 #include "game/menu/task_widgets.h"
+#include "game/save/save_data.h"
 
 typedef struct MainMenuSelection {
     s16 mode;
@@ -296,7 +297,7 @@ void drawSelectionHeaderAndMoneyPanel(void) {
     func_8006C998(position->x / 4096 + 74, position->y / 4096 + 140,
                  0xBD, 10, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     drawDecimalNumber8x8(position->x / 4096 + 74, position->y / 4096 + 152,
-                         6, 0, D_80130BF0[0], 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                         6, 0, gPlayerSaveRecords[0].money, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     drawWrappedText8x8(position->x / 4096 + 122, position->y / 4096 + 152,
                        2, gSelectionMoneyCurrencyLabel, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     if (D_8013AE88->data1A == playerCount) {

@@ -683,7 +683,7 @@ void drawCurrentTaskMoneyPanel(void) {
         func_8006C998(position->x / 4096 + 74, position->y / 4096 + 140,
                      0xBD, 10, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         drawDecimalNumber8x8(position->x / 4096 + 74, position->y / 4096 + 152,
-                             6, 0, D_80130BF0[0], 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                             6, 0, gPlayerSaveRecords[0].money, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         drawWrappedText8x8(position->x / 4096 + 122, position->y / 4096 + 152,
                            2, gMoneyPanelCurrencyLabel, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         if (D_8013AE88->data1A == 1) {
@@ -767,8 +767,8 @@ void func_8008DDC0(void) {
                 s16 hasUnavailableBoards = 0;
 
                 for (i = 0; i < 3; i++) {
-                    if ((D_8013080C.flags & (0x800 << (i + 3))) &&
-                        !(D_8013080C.flags & (0x800 << i))) {
+                    if ((gPlayerSaveRecords[0].flags & (0x800 << (i + 3))) &&
+                        !(gPlayerSaveRecords[0].flags & (0x800 << i))) {
                         hasUnavailableBoards = 1;
                     }
                 }
@@ -916,9 +916,9 @@ void drawCurrentTaskSaveRecordMoneyPanelWithCharacterSprites(void) {
         {
             s32 amountX = (s16)(position->x / 4096 + 74);
             s32 amountY = (s16)(position->y / 4096 + 152);
-            SaveRecord *records = (SaveRecord *)&D_8013080C;
+            SaveRecord *records = gPlayerSaveRecords;
             drawDecimalNumber8x8(amountX, amountY, 6, 0,
-                                 ((GlobalFlagStatePrefix *)&records[(s16)recordIndex])->unk_3E4,
+                                 records[(s16)recordIndex].money,
                                  0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         }
         drawWrappedText8x8(position->x / 4096 + 122, position->y / 4096 + 152,
@@ -1142,7 +1142,7 @@ void drawCurrentTaskMoneyPanelWithCharacterSprites(void) {
         func_8006C998(position->x / 4096 + 74, position->y / 4096 + 140,
                      0xBD, 10, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         drawDecimalNumber8x8(position->x / 4096 + 74, position->y / 4096 + 152,
-                             6, 0, D_80130BF0[0], 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                             6, 0, gPlayerSaveRecords[0].money, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         drawWrappedText8x8(position->x / 4096 + 122, position->y / 4096 + 152,
                            2, gMoneyPanelCurrencyLabel, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         if (D_8013AE88->data1A == 1) {
@@ -1181,7 +1181,7 @@ void initializeCountedGroupedSelectionBoundsTask(void) {
     s16 selection;
     D_8013AE98->data1C++;
     D_8013AE88->data18 = 0;
-    if (D_8013080C.flags & 0x1C000) {
+    if (gPlayerSaveRecords[0].flags & 0x1C000) {
         D_8013AE88->data1A = 1;
     } else {
         D_8013AE88->data1A = 0;
@@ -1435,10 +1435,10 @@ void func_80090450(void) {
             s32 depth;
             s16 gridMode;
             if (D_8013AE88->data1A == 4) {
-                GlobalFlagStatePrefix *record;
+                SaveRecord *record;
                 entries = &entryStorage;
                 i = 0;
-                record = &D_8013080C;
+                record = &gPlayerSaveRecords[0];
                 entries->unk_05 = 20;
                 entries->unk_04 = 0;
                 entries->entries = D_80130094[0];
@@ -1596,7 +1596,7 @@ void func_80090450(void) {
     case 14: {
         s16 board = groupedSelection->selection;
         u8 flagIndex = D_80131804[board];
-        GlobalFlagStatePrefix *record = (GlobalFlagStatePrefix *)&((SaveRecord *)&D_8013080C)[recordIndex];
+        SaveRecord *record = &gPlayerSaveRecords[recordIndex];
 
         if (record->flags & (4U << flagIndex)) {
             GameTask *task;
@@ -1607,7 +1607,7 @@ void func_80090450(void) {
             parentPanels[2].command = 1;
             selection->choiceResult = 0;
             task->data18 = 5;
-        } else if ((price = D_80131810[board], record->unk_3E4 < price)) {
+        } else if ((price = D_80131810[board], record->money < price)) {
             setTaskSecondaryResourceData(panels[1].task, sShopMenuTexts[6]);
             panels[0].command = 21;
             parentPanels[2].command = 1;
@@ -1629,7 +1629,7 @@ void func_80090450(void) {
 showSelection:
                 D_8013AE88->data18 = 4;
             } else {
-                u32 *balance = (u32 *)&D_80130BF0[(s16)recordIndex];
+                u32 *balance = &gPlayerSaveRecords[0].money;
                 u32 target;
                 GameTask *transition;
                 GameTask *task;
@@ -1657,7 +1657,7 @@ showSelection:
         }
         transition = panels[5].task;
         if (transition->data1A == 1) {
-            SaveRecord *records = (SaveRecord *)&D_8013080C;
+            SaveRecord *records = gPlayerSaveRecords;
             SaveRecord *record = records;
             s32 player;
             u8 flagIndex;
@@ -1665,13 +1665,13 @@ showSelection:
             player = 0;
             transition->data18 = 1;
             flagIndex = D_80131804[groupedSelection->selection];
-            record[recordIndex].flags_3AC |= 4U << flagIndex;
+            record[recordIndex].flags |= 4U << flagIndex;
             for (; group < 3; group++) {
                 groupComplete = 1;
                 for (i = 0; i < 3; i++) {
                     u32 flags;
                     shift = group * 3 + i;
-                    flags = records[(s16)player].flags_3AC;
+                    flags = records[(s16)player].flags;
                     if ((flags & (4 << shift)) == 0) {
                         groupComplete = 0;
                         break;
@@ -1756,9 +1756,9 @@ void drawCurrentTaskSaveRecordMoneyPanel(void) {
         {
             s32 amountX = (s16)(position->x / 4096 + 74);
             s32 amountY = (s16)(position->y / 4096 + 152);
-            SaveRecord *records = (SaveRecord *)&D_8013080C;
+            SaveRecord *records = gPlayerSaveRecords;
             drawDecimalNumber8x8(amountX, amountY, 6, 0,
-                                 ((GlobalFlagStatePrefix *)&records[(s16)recordIndex])->unk_3E4,
+                                 records[(s16)recordIndex].money,
                                  0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         }
         drawWrappedText8x8(position->x / 4096 + 122, position->y / 4096 + 152,
@@ -1858,8 +1858,8 @@ void drawCurrentTaskSelectedBoardPrice(void) {
         s16 board = entry->index;
         u8 flagIndex = D_80131804[board];
         u32 price = D_80131810[board];
-        SaveRecord *records = (SaveRecord *)&D_8013080C;
-        if (records[player].flags_3AC & (4U << flagIndex)) {
+        SaveRecord *records = gPlayerSaveRecords;
+        if (records[player].flags & (4U << flagIndex)) {
             func_8006C998(position->x / 4096 + 36, position->y / 4096 - 8, 0xC3, 15, -1,
                          &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         } else {
@@ -2735,7 +2735,7 @@ void updateBoardPurchaseMenuTask(void) {
         allOwned = 1;
         board = 0;
         do {
-            result = hasStateGridFlag((GlobalFlagStatePrefix *)&((SaveRecord *)&D_8013080C)[(s16)player], character, board);
+            result = hasStateGridFlag(&gPlayerSaveRecords[(s16)player], character, board);
             if (result != 1) {
                 allOwned = 0;
             }
@@ -2848,11 +2848,11 @@ leave:
         break;
     case 11: {
         s16 recordIndex = player;
-        GlobalFlagStatePrefix *record = (GlobalFlagStatePrefix *)&((SaveRecord *)&D_8013080C)[recordIndex];
+        SaveRecord *record = &gPlayerSaveRecords[recordIndex];
         s16 boardCharacter = character;
         if (hasStateGridFlag(record, boardCharacter, selection->value) == 1) {
             D_8013AE88->data18 = 17;
-        } else if ((price = D_801319B0[boardCharacter * 5 + selection->value]) > record->unk_3E4) {
+        } else if ((price = D_801319B0[boardCharacter * 5 + selection->value]) > record->money) {
             playSoundEffect(0, 0x302, 32);
             D_8013AE88->data18 = 17;
         } else {
@@ -2877,8 +2877,8 @@ leave:
             } else {
                 price = D_801319B0[character * 5 + selection->value];
                 entries[12].task = createValueTransitionTask(
-                    &((GlobalFlagStatePrefix *)&((SaveRecord *)&D_8013080C)[(s16)player])->unk_3E4,
-                    ((GlobalFlagStatePrefix *)&((SaveRecord *)&D_8013080C)[(s16)player])->unk_3E4 - price, 100);
+                    &gPlayerSaveRecords[(s16)player].money,
+                    gPlayerSaveRecords[(s16)player].money - price, 100);
                 D_8013AE88->data18 = 13;
             }
         }
@@ -2894,7 +2894,7 @@ leave:
             transition->data18 = 1;
             playSoundEffect(0, 0x102, 32);
             recordIndex = player;
-            setStateGridFlag((GlobalFlagStatePrefix *)&((SaveRecord *)&D_8013080C)[recordIndex], character, selection->value);
+            setStateGridFlag(&gPlayerSaveRecords[recordIndex], character, selection->value);
             createRegisteredCallbackTask(recordIndex, 0, -28, drawCurrentTaskSelectionPanel, 2, 101);
             entries[12].task = createCountdownTask(15);
             D_8013AE88->data18 = 14;
@@ -2975,9 +2975,9 @@ void drawCurrentTaskSelectedPlayerMoneyPanel(void) {
         {
             s32 amountX = (s16)(position->x / 4096 + 74);
             s32 amountY = (s16)(position->y / 4096 + 152);
-            SaveRecord *records = (SaveRecord *)&D_8013080C;
+            SaveRecord *records = gPlayerSaveRecords;
             drawDecimalNumber8x8(amountX, amountY, 6, 0,
-                                 ((GlobalFlagStatePrefix *)&records[(s16)recordIndex])->unk_3E4,
+                                 records[(s16)recordIndex].money,
                                  0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         }
         drawWrappedText8x8(position->x / 4096 + 122, position->y / 4096 + 152,
@@ -3025,11 +3025,11 @@ void drawCurrentTaskBoardPrice(void) {
     priceY = y;
 
     if (D_8013AE88->data1A != 0) {
-        SaveRecord *record = (SaveRecord *)&D_8013080C + player;
+        SaveRecord *record = gPlayerSaveRecords + player;
         s16 column = selection->value;
 
         price = D_801319B0[character * 5 + column];
-        if (hasStateGridFlag((GlobalFlagStatePrefix *)record, character, column) == 1) {
+        if (hasStateGridFlag(record, character, column) == 1) {
             func_8006C998(x + 36, y + 8, 0xC3, 15, -1,
                           &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         } else {
@@ -3060,24 +3060,24 @@ void drawCurrentTaskBoardPrice(void) {
     }
 }
 
-s32 hasStateGridFlag(GlobalFlagStatePrefix *state, s16 row, s16 column) {
+s32 hasStateGridFlag(SaveRecord *state, s16 row, s16 column) {
     if (row < 5) {
-        if (state->unk_3DC & (1 << (row * 5 + column))) {
+        if (state->boardUnlockFlagsLow & (1 << (row * 5 + column))) {
             return 1;
         }
     } else if (row < 10) {
-        if (state->unk_3E0 & (1 << ((row - 5) * 5 + column))) {
+        if (state->boardUnlockFlagsHigh & (1 << ((row - 5) * 5 + column))) {
             return 1;
         }
     }
     return 0;
 }
 
-void setStateGridFlag(GlobalFlagStatePrefix *state, s16 row, s16 column) {
+void setStateGridFlag(SaveRecord *state, s16 row, s16 column) {
     if (row < 5) {
-        state->unk_3DC |= 1 << (row * 5 + column);
+        state->boardUnlockFlagsLow |= 1 << (row * 5 + column);
     } else if (row < 10) {
-        state->unk_3E0 |= 1 << ((row - 5) * 5 + column);
+        state->boardUnlockFlagsHigh |= 1 << ((row - 5) * 5 + column);
     }
 }
 

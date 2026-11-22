@@ -2897,7 +2897,7 @@ void func_80078140(void) {
         depths[1] = D_8013AE88->data1C;
     }
 
-    if ((D_801313C8[0] & 3) == 2) {
+    if ((gMergedSaveRecord.flags & 3) == 2) {
         shiftLastPortrait = 1;
     }
 
@@ -2945,7 +2945,7 @@ void func_80078140(void) {
         s16 y;
         xOffset = 0;
         if (i >= 8) {
-            if (!(D_8013101C.flags & (1U << (i - 8)))) {
+            if (!(gMergedSaveRecord.flags & (1U << (i - 8)))) {
                 continue;
             }
             if (i == 9 && (shiftLastPortrait & 1)) {
@@ -3108,8 +3108,8 @@ render:
     i = 0;
     if (player < D_8013AFCD) {
         for (; i < 3; i++) {
-            SaveRecord *records = (SaveRecord *)&D_8013080C;
-            if (records[player].flags_3B0[character] & (0x1000000U << i)) {
+            SaveRecord *records = gPlayerSaveRecords;
+            if (records[player].masks[character] & (0x1000000U << i)) {
                 setSpriteColor(0x80, 0x80, 0x80);
             } else {
                 setSpriteColor(0x20, 0x20, 0x20);
@@ -3119,20 +3119,20 @@ render:
                           i + 18, 6, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         }
         for (i = 0; i < 9; i++) {
-            SaveRecord *records = (SaveRecord *)&D_8013080C;
+            SaveRecord *records = gPlayerSaveRecords;
             u32 first;
             setSpriteColor(0x80, 0x80, 0x80);
-            first = records[player].flags_3B0[character] & (1U << (i * 2));
-            if (first && (records[player].flags_3B0[character] & (2U << (i * 2)))) {
+            first = records[player].masks[character] & (1U << (i * 2));
+            if (first && (records[player].masks[character] & (2U << (i * 2)))) {
                 func_8006C998((s16)(i % 3 * 16 + (s16)(position->x / 4096 + 44)),
                               (s16)(i / 3 * 22 + (s16)(position->y / 4096 + 31)),
                               i + 70, 9, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
-            } else if (records[player].flags_3B0[character] & (2U << (i * 2))) {
+            } else if (records[player].masks[character] & (2U << (i * 2))) {
                 func_8006C998((s16)(i % 3 * 16 + (s16)(position->x / 4096 + 44)),
                               (s16)(i / 3 * 22 + (s16)(position->y / 4096 + 31)),
                               i + 70, 10, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             } else {
-                u32 firstOnly = records[player].flags_3B0[character] & (1U << (i * 2));
+                u32 firstOnly = records[player].masks[character] & (1U << (i * 2));
                 if (firstOnly) {
                     func_8006C998((s16)(i % 3 * 16 + (s16)(position->x / 4096 + 44)),
                                   (s16)(i / 3 * 22 + (s16)(position->y / 4096 + 31)),
@@ -3203,7 +3203,7 @@ void updatePlayerCharacterSelection(s16 playerIndex, SelectionEntry *entries) {
         s16 current = *(volatile s16 *)&entry->selected;
         entry->selected = (current & 1) ? current - 1 : current + 1;
         selection = entry->selected - 8;
-        if ((u16)selection < 2 && !(D_801313C8[0] & (1 << selection))) {
+        if ((u16)selection < 2 && !(gMergedSaveRecord.flags & (1 << selection))) {
             entry->selected = previous;
         }
     }
@@ -3215,7 +3215,7 @@ void updatePlayerCharacterSelection(s16 playerIndex, SelectionEntry *entries) {
             entry->selected = current - 2;
         }
         selection = entry->selected - 8;
-        if ((u16)selection < 2 && !(D_801313C8[0] & (1 << selection))) {
+        if ((u16)selection < 2 && !(gMergedSaveRecord.flags & (1 << selection))) {
             entry->selected = previous;
         }
     }
@@ -3225,7 +3225,7 @@ void updatePlayerCharacterSelection(s16 playerIndex, SelectionEntry *entries) {
         if (entry->selected < 0) {
             entry->selected = upSelection + 8;
             selection = upSelection;
-            if ((u16)selection < 2 && !(D_801313C8[0] & (1 << selection))) {
+            if ((u16)selection < 2 && !(gMergedSaveRecord.flags & (1 << selection))) {
                 entry->selected = selection + 6;
             }
         }
@@ -3233,7 +3233,7 @@ void updatePlayerCharacterSelection(s16 playerIndex, SelectionEntry *entries) {
     if (D_8013AEE8[playerIndex] & 0x4000) {
         selection = entry->selected;
         entry->selected = selection + 2;
-        if ((u16)(selection - 6) < 2 && !(D_801313C8[0] & (1 << (s16)(selection - 6)))) {
+        if ((u16)(selection - 6) < 2 && !(gMergedSaveRecord.flags & (1 << (s16)(selection - 6)))) {
             entry->selected = selection + 4;
         }
         if (entry->selected >= 10) {
@@ -3247,12 +3247,12 @@ void updatePlayerCharacterSelection(s16 playerIndex, SelectionEntry *entries) {
     if (D_8013AEE8[playerIndex] & 0xB0) {
         entry->unk06 = 1;
         mapping = &D_8012D460[entry->selected];
-        records = (SaveRecord *)&D_8013080C;
+        records = gPlayerSaveRecords;
         players = gRacePlayers;
         player = &players[playerIndex];
         player->unk009 = *mapping;
-        player->unk00A[0] = records[playerIndex].unk_3EC[player->unk009];
-        player->unk00D = records[playerIndex].unk_3F6[player->unk009];
+        player->unk00A[0] = records[playerIndex].boardSelections[player->unk009];
+        player->unk00D = records[playerIndex].paletteSelections[player->unk009];
         if (D_8013AFCD != 2 || other->unk00 < 0 || other->unk06 != 1 ||
             gRacePlayers[0].unk009 != gRacePlayers[1].unk009) {
             goto confirm;
@@ -3633,7 +3633,7 @@ void cycleSaveRecordUnlockFlags(s16 recordIndex, s16 maskIndex);
 void func_8007B48C(s16 recordIndex, s16 maskIndex) {
     s16 row;
     s16 paired[2];
-    GlobalFlagStatePrefix *state;
+    SaveRecord *state;
     SaveRecord *records;
 
     if (D_8013AEE8[recordIndex] & 8) {
@@ -3656,23 +3656,23 @@ void func_8007B48C(s16 recordIndex, s16 maskIndex) {
             }
         }
 
-        records = (SaveRecord *)&D_8013080C;
-        state = (GlobalFlagStatePrefix *)&records[recordIndex];
+        records = gPlayerSaveRecords;
+        state = &records[recordIndex];
         /* Diagnose the original read of the row register before initialization. */
         state->masks[maskIndex] |= 0x1000000U << row;
         state->flags = 0x3FFF;
         for (row = 0; row < 5; row++) {
-            state->unk_3DC |= 1U << (row * 5 + 1);
-            state->unk_3E0 |= 1U << (row * 5 + 1);
-            state->unk_3DC |= 1U << (row * 5 + 2);
-            state->unk_3E0 |= 1U << (row * 5 + 2);
-            state->unk_3DC |= 1U << (row * 5 + 3);
-            state->unk_3DC |= 1U << (row * 5 + 4);
-            state->unk_3E0 |= 1U << (row * 5 + 3);
-            state->unk_3E0 |= 1U << (row * 5 + 4);
+            state->boardUnlockFlagsLow |= 1U << (row * 5 + 1);
+            state->boardUnlockFlagsHigh |= 1U << (row * 5 + 1);
+            state->boardUnlockFlagsLow |= 1U << (row * 5 + 2);
+            state->boardUnlockFlagsHigh |= 1U << (row * 5 + 2);
+            state->boardUnlockFlagsLow |= 1U << (row * 5 + 3);
+            state->boardUnlockFlagsLow |= 1U << (row * 5 + 4);
+            state->boardUnlockFlagsHigh |= 1U << (row * 5 + 3);
+            state->boardUnlockFlagsHigh |= 1U << (row * 5 + 4);
         }
-        ((GlobalFlagStatePrefix *)&((SaveRecord *)&D_8013080C)[recordIndex])->unk_3E4 = 999999;
-        rebuildCombinedStateMask((GlobalFlagStatePrefix *)&((SaveRecord *)&D_8013080C)[recordIndex]);
+        gPlayerSaveRecords[recordIndex].money = 999999;
+        rebuildCombinedStateMask(&gPlayerSaveRecords[recordIndex]);
         copySaveRecordAndMergeFlags();
         for (row = 0; row < 11; row++) {
             setUnlockNotificationFlag(row);
@@ -3781,8 +3781,8 @@ void applySaveRecordUnlockOverrides(s16 index) {
         gUnlockNotificationFlags = 0x7FF;
     }
     if (gSaveRecordUnlockOverrideFlags & 4) {
-        SaveRecord *records = (SaveRecord *)&D_8013080C;
-        records[index].flags_3AC |= 0x1FFFC;
+        SaveRecord *records = gPlayerSaveRecords;
+        records[index].flags |= 0x1FFFC;
     }
     copySaveRecordAndMergeFlags();
 }

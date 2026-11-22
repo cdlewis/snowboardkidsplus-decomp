@@ -1783,13 +1783,6 @@ void loadCurrentPlayerModelBlock(void) {
 #ifdef NON_MATCHING
 extern volatile u8 gShopMenuRememberedSelection;
 
-typedef struct InitialRecord {
- u8 unk000[12]; u32 courseValues[11]; u8 unk038[12];
- RaceTime lapRecords[11][5], courseTimes[11], timeRecords[11][5];
- u16 statsRecordValues[11][5];
- u8 statsRecordIcons[11][5], lapRecordIcons[11][5], countRecordValues[11][5], countRecordIcons[11][5], timeRecordCharacters[11][5];
-} InitialRecord;
-
 extern RaceTime D_80132204[3][5], D_8013264C[10][5];
 extern u8 D_8013B47C __attribute__((section(".data")));
 extern u8 D_8013B4BC __attribute__((section(".data")));
@@ -1803,25 +1796,25 @@ void clearHalfwordPairTable(void);
 
 void func_8002EE0C(void) {
  u16 i, j;
- InitialRecord *record;
- SaveRecord *first = (SaveRecord *)&D_8013080C;
+ SaveRecord *record;
+ SaveRecord *first = gPlayerSaveRecords;
  SaveRecord *second;
- GlobalFlagStatePrefix *destination;
+ SaveRecord *destination;
  func_800897D0(first);
  second = first + 1;
  func_800897D0(second);
- destination = &D_8013101C;
- copyGlobalFlagState((GlobalFlagStatePrefix *)first, destination);
- mergeSaveRecordFlags(second, (SaveRecord *)destination);
- record = (InitialRecord *)first;
+ destination = &gMergedSaveRecord;
+ copyGlobalFlagState(first, destination);
+ mergeSaveRecordFlags(second, destination);
+ record = first;
  for(i=0;i<11;i++) {
   for(j=0;j<5;j++) {
-   ((i * 5 + j) + record->lapRecords[0])->minutes=3;
-   ((i * 5 + j) + record->lapRecords[0])->seconds=59;
-   ((i * 5 + j) + record->lapRecords[0])->centiseconds=0;
-   ((i * 5 + j) + record->timeRecords[0])->minutes=3;
-   ((i * 5 + j) + record->timeRecords[0])->seconds=0;
-   ((i * 5 + j) + record->timeRecords[0])->centiseconds=0;
+   record->lapRecords[i][j].minutes=3;
+   record->lapRecords[i][j].seconds=59;
+   record->lapRecords[i][j].centiseconds=0;
+   record->timeRecords[i][j].minutes=3;
+   record->timeRecords[i][j].seconds=0;
+   record->timeRecords[i][j].centiseconds=0;
    record->lapRecordIcons[i][j]=j;
    record->countRecordValues[i][j]=0;
    record->countRecordIcons[i][j]=j;
@@ -1829,19 +1822,19 @@ void func_8002EE0C(void) {
    record->statsRecordValues[i][j]=0;
    record->statsRecordIcons[i][j]=j;
   }
-  (i + record->courseTimes)->minutes=1;
-  record->courseTimes[i].seconds=24;
-  record->courseTimes[i].centiseconds=0;
-  *(i + record->courseValues)=0;
+  record->bestLapSplitTimes[i].minutes=1;
+  record->bestLapSplitTimes[i].seconds=24;
+  record->bestLapSplitTimes[i].centiseconds=0;
+  record->bestScore[i]=0;
  }
  for(j=0;j<5;j++) {
-  ((InitialRecord *)&D_8013080C)->timeRecords[9][j]=D_80132204[0][j];
-  ((InitialRecord *)&D_8013080C)->timeRecords[0][j]=D_80132204[1][j];
-  ((InitialRecord *)&D_8013080C)->timeRecords[1][j]=D_80132204[2][j];
+  gPlayerSaveRecords[0].timeRecords[9][j]=D_80132204[0][j];
+  gPlayerSaveRecords[0].timeRecords[0][j]=D_80132204[1][j];
+  gPlayerSaveRecords[0].timeRecords[1][j]=D_80132204[2][j];
  }
  for(i=0;i<10;i++) {
   for(j=0;j<5;j++) {
-   ((InitialRecord *)&D_8013080C)->lapRecords[i][j]=D_8013264C[i][j];
+   gPlayerSaveRecords[0].lapRecords[i][j]=D_8013264C[i][j];
   }
  }
  D_8013AFCD=1;

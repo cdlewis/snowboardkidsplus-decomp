@@ -320,7 +320,7 @@ void updateSplitBoardSelectionTask(void) {
         selection->unk02 = currentPlayer->unk00A[0];
         model = selection->value;
         currentPlayer->unk00A[0] = model;
-        ((SaveRecord *)&D_8013080C)[(s16)player].unk_3EC[currentPlayer->unk009] = model;
+        gPlayerSaveRecords[(s16)player].boardSelections[currentPlayer->unk009] = model;
         D_8013AE88->data18 = 19;
         setCurrentTaskCallback(updateSplitSelectionBoundsTransition);
         break;
@@ -536,12 +536,6 @@ void drawCurrentTaskPlayerValuePanel(void) {
 
 /* DECOMP_ATTEMPT: inline 80/85 */
 #ifdef NON_MATCHING
-typedef struct GridFlagRecord
-{
-  GlobalFlagStatePrefix state;
-  u8 unk3E8[0x20];
-} GridFlagRecord;
-
 extern RacePlayer gRacePlayers[];
 extern u8 D_8013B50C[];
 
@@ -560,7 +554,7 @@ void func_800995A8(s16 playerIndex, s16 row, u8 spacingX, u8 spacingY, ByteMappi
     next = menu;
     if (currentColumn != i)
     {
-      if (hasStateGridFlag((GlobalFlagStatePrefix *) (&((GridFlagRecord *) (&D_8013080C))[playerIndex]), row, i) == 1)
+      if (hasStateGridFlag(&gPlayerSaveRecords[playerIndex], row, i) == 1)
       {
         D_8013B50C[menu->count] = i;
         next->textMapping = 0;
@@ -749,7 +743,7 @@ void updatePlayerPaletteSelectionTask(void) {
                 D_8013AE88->data18 = 16;
             } else if (selection->value == gRacePlayers[player].unk00D) {
                 goto resume;
-            } else if (((GlobalFlagStatePrefix *)&((SaveRecord *)&D_8013080C)[player])->unk_3E4 < 500) {
+            } else if (gPlayerSaveRecords[player].money < 500) {
                 playSoundEffect(0, 0x302, 32);
 resume:
                 D_8013AE88->data18 = 9;
@@ -772,8 +766,8 @@ resume:
                 {
                     RacePlayer *players = gRacePlayers;
                     RacePlayer *racePlayer = &players[player];
-                    SaveRecord *records = (SaveRecord *)&D_8013080C;
-                    records[player].unk_3F6[racePlayer->unk009] =
+                    SaveRecord *records = gPlayerSaveRecords;
+                    records[player].paletteSelections[racePlayer->unk009] =
                         (racePlayer->unk00D = selection->value);
                 }
                 entries[6].task = createCountdownTask(129);
@@ -793,8 +787,8 @@ resume:
             createTimedSpriteB5Task(16, -50, 15);
             D_8013B517 = 1;
             entries[6].task = createValueTransitionTask(
-                &((GlobalFlagStatePrefix *)&((SaveRecord *)&D_8013080C)[player])->unk_3E4,
-                ((GlobalFlagStatePrefix *)&((SaveRecord *)&D_8013080C)[player])->unk_3E4 - 500, 100);
+                &gPlayerSaveRecords[player].money,
+                gPlayerSaveRecords[player].money - 500, 100);
             D_8013AE88->data18 = 8;
         }
         break;
@@ -886,9 +880,9 @@ void drawCurrentTaskSavedValuePanel(void) {
     if (D_8013AE88->data1A != 0) {
         func_8006C998(x + 8, y - 22, 0xBB, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         func_8006C998(x + 74, y + 140, 0xBD, 10, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
-        records = (SaveRecord *)&D_8013080C;
+        records = gPlayerSaveRecords;
         drawDecimalNumber8x8(x + 74, y + 152, 6, 0,
-            ((GlobalFlagStatePrefix *)&records[(s16)index])->unk_3E4,
+            records[(s16)index].money,
             0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         ot = &D_800EBFF0[D_8013AF78];
         drawWrappedText8x8(x + 122, y + 152, 2, "\x82" "f", 0, -1,

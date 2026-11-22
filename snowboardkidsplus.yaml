@@ -840,6 +840,8 @@ segments:
       - [0x120EDC, data, task_index_panel_text_tail]
       - {start: 0x120F24, type: .data, name: menu/save_record_tasks, linker_section: .data.task_shadowed_text}
       - [0x120F40, data, task_shadowed_text_tail]
+      - {start: 0x12100C, type: .data, name: menu/save_record_tasks, linker_section: .data.save_records}
+      - {start: 0x12181C, type: .data, name: menu/save_record_tasks, linker_section: .data.merged_save_record}
       - {start: 0x121C24, type: .data, name: menu/panel_tasks, linker_section: .data.shop_menu_sprites}
       - [0x121C3C, data, shop_menu_text_bodies]
       - {start: 0x121F94, type: .data, name: menu/panel_tasks, linker_section: .data.shop_menu_texts}

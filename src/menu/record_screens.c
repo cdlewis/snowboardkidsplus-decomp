@@ -66,14 +66,14 @@ void drawTimeRecordRows(MenuTimeResource *resource) {
             mode = 4;
         }
         func_8006C998(-8, y, i + 0x136, mode, -1, &D_800EBFF0[D_8013AF78], 1);
-        drawRaceTime(&((SaveRecord *)&D_8013080C)->lapRecords[D_8013AFCE][i],
+        drawRaceTime(&gPlayerSaveRecords[0].lapRecords[D_8013AFCE][i],
                      16, y, mode, &D_800EBFF0[D_8013AF78], 1);
         func_8006C998(88, y,
-                     (((SaveRecord *)&D_8013080C)->lapRecordIcons[D_8013AFCE][i] & 15) * 3 + 0x14A,
-                     D_80124284[((SaveRecord *)&D_8013080C)->lapRecordIcons[D_8013AFCE][i] & 15],
+                     (gPlayerSaveRecords[0].lapRecordIcons[D_8013AFCE][i] & 15) * 3 + 0x14A,
+                     D_80124284[gPlayerSaveRecords[0].lapRecordIcons[D_8013AFCE][i] & 15],
                      -1, &D_800EBFF0[D_8013AF78], 1);
         func_8006C998(108, y,
-                     (((SaveRecord *)&D_8013080C)->lapRecordIcons[D_8013AFCE][i] >> 4) + 0x13B,
+                     (gPlayerSaveRecords[0].lapRecordIcons[D_8013AFCE][i] >> 4) + 0x13B,
                      7, -1, &D_800EBFF0[D_8013AF78], 1);
         y += 32;
     }
@@ -262,10 +262,10 @@ void drawCountRecordRows(TaskResourceRecord *resource) {
             textMode = 4;
         }
         func_8006C998(-8, y, i + 0x136, mode, -1, &D_800EBFF0[D_8013AF78], 1);
-        drawHudDecimalNumber8x16(16, y, 2, 0, ((SaveRecord *)&D_8013080C)->countRecordValues[D_8013AFCE][i], mode, -1, &D_800EBFF0[D_8013AF78], 1);
-        func_8006C998(70, y, (((SaveRecord *)&D_8013080C)->countRecordIcons[D_8013AFCE][i] & 15) * 3 + 0x14A,
-            D_80124284[((SaveRecord *)&D_8013080C)->countRecordIcons[D_8013AFCE][i] & 15], -1, &D_800EBFF0[D_8013AF78], 1);
-        func_8006C998(88, y, (((SaveRecord *)&D_8013080C)->countRecordIcons[D_8013AFCE][i] >> 4) + 0x13B, 7, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawHudDecimalNumber8x16(16, y, 2, 0, gPlayerSaveRecords[0].countRecordValues[D_8013AFCE][i], mode, -1, &D_800EBFF0[D_8013AF78], 1);
+        func_8006C998(70, y, (gPlayerSaveRecords[0].countRecordIcons[D_8013AFCE][i] & 15) * 3 + 0x14A,
+            D_80124284[gPlayerSaveRecords[0].countRecordIcons[D_8013AFCE][i] & 15], -1, &D_800EBFF0[D_8013AF78], 1);
+        func_8006C998(88, y, (gPlayerSaveRecords[0].countRecordIcons[D_8013AFCE][i] >> 4) + 0x13B, 7, -1, &D_800EBFF0[D_8013AF78], 1);
         drawLimitedText8x8(32, i * 32 - 72, 3, D_8013B138, textMode, -1, &D_800EBFF0[D_8013AF78], 1);
         y += 32;
     }
@@ -392,7 +392,7 @@ void transferHitPrizeMoneyTask(void) {
     if (gRacePlayers[0].money > 999999) {
         gRacePlayers[0].money = 999999;
     }
-    D_80130BF0[0] = gRacePlayers[0].money;
+    gPlayerSaveRecords[0].money = gRacePlayers[0].money;
     if (resource->unk08 == 0 && resource->unk0A == 0 && resource->unk0C == 0) {
         playSoundEffect(0, 0x700, 0x20);
         resource->timer = 20;
@@ -544,7 +544,7 @@ void initializeTaskMenuFadeIn(void) {
         }
     }
     resource->unk00 = gRacePlayers[0].unk100[0];
-    gRacePlayers[0].money = D_80130BF0[0];
+    gRacePlayers[0].money = gPlayerSaveRecords[0].money;
     setCurrentTaskCallback(updateTaskMenuFadeIn);
 }
 
@@ -620,10 +620,10 @@ void drawTimeRecordListRows(TimeRecordListResource *resource) {
             palette = 4;
         }
         func_8006C998(-8, y, row + 0x136, palette, -1, &D_800EBFF0[D_8013AF78], 1);
-        drawRaceTime(&((SaveRecord *)&D_8013080C)->timeRecords[D_8013AFCE][row], 16, y, palette, &D_800EBFF0[D_8013AF78], 1);
-        func_8006C998(88, y, (((SaveRecord *)&D_8013080C)->timeRecordCharacters[D_8013AFCE][row] & 15) * 3 + 0x14A,
-            D_80124284[((SaveRecord *)&D_8013080C)->timeRecordCharacters[D_8013AFCE][row] & 15], -1, &D_800EBFF0[D_8013AF78], 1);
-        func_8006C998(108, y, (((SaveRecord *)&D_8013080C)->timeRecordCharacters[D_8013AFCE][row] >> 4) + 0x13B, 7, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawRaceTime(&gPlayerSaveRecords[0].timeRecords[D_8013AFCE][row], 16, y, palette, &D_800EBFF0[D_8013AF78], 1);
+        func_8006C998(88, y, (gPlayerSaveRecords[0].timeRecordCharacters[D_8013AFCE][row] & 15) * 3 + 0x14A,
+            D_80124284[gPlayerSaveRecords[0].timeRecordCharacters[D_8013AFCE][row] & 15], -1, &D_800EBFF0[D_8013AF78], 1);
+        func_8006C998(108, y, (gPlayerSaveRecords[0].timeRecordCharacters[D_8013AFCE][row] >> 4) + 0x13B, 7, -1, &D_800EBFF0[D_8013AF78], 1);
         y += 32;
     }
 }
@@ -769,7 +769,7 @@ void countRaceResultsMoneyTask(void) {
     if (gRacePlayers[0].money > 999999) {
         gRacePlayers[0].money = 999999;
     }
-    D_80130BF0[0] = gRacePlayers[0].money;
+    gPlayerSaveRecords[0].money = gRacePlayers[0].money;
     if (resource->scoreBonus == 0 && resource->timeBonus == 0 && resource->bonusTimer == 0 && resource->displayTimer == 0) {
         playSoundEffect(0, 0x700, 0x20);
         resource->timer = 20;
@@ -944,7 +944,7 @@ void initializeRaceResultsTask(void) {
     }
     resource->scoreBonus = gRacePlayers[0].collectedCourseCoinMarkerCount * 10;
     resource->unk00 = gRacePlayers[0].unk100[0];
-    gRacePlayers[0].money = D_80130BF0[0];
+    gRacePlayers[0].money = gPlayerSaveRecords[0].money;
     setCurrentTaskCallback(fadeInRaceResultsTask);
 }
 
@@ -1022,10 +1022,10 @@ void drawStatsRecordRows(TaskResourceRecord *resource) {
             textMode = 4;
         }
         func_8006C998(24, y, i + 0x136, mode, -1, &D_800EBFF0[D_8013AF78], 1);
-        drawHudDecimalNumber8x16(44, y, 5, 0, ((SaveRecord *)&D_8013080C)->statsRecordValues[D_8013AFCE][i], mode, -1, &D_800EBFF0[D_8013AF78], 1);
-        func_8006C998(102, y, (((SaveRecord *)&D_8013080C)->statsRecordIcons[D_8013AFCE][i] & 15) * 3 + 0x14A,
-            D_80124284[((SaveRecord *)&D_8013080C)->statsRecordIcons[D_8013AFCE][i] & 15], -1, &D_800EBFF0[D_8013AF78], 1);
-        func_8006C998(120, y, (((SaveRecord *)&D_8013080C)->statsRecordIcons[D_8013AFCE][i] >> 4) + 0x13B, 7, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawHudDecimalNumber8x16(44, y, 5, 0, gPlayerSaveRecords[0].statsRecordValues[D_8013AFCE][i], mode, -1, &D_800EBFF0[D_8013AF78], 1);
+        func_8006C998(102, y, (gPlayerSaveRecords[0].statsRecordIcons[D_8013AFCE][i] & 15) * 3 + 0x14A,
+            D_80124284[gPlayerSaveRecords[0].statsRecordIcons[D_8013AFCE][i] & 15], -1, &D_800EBFF0[D_8013AF78], 1);
+        func_8006C998(120, y, (gPlayerSaveRecords[0].statsRecordIcons[D_8013AFCE][i] >> 4) + 0x13B, 7, -1, &D_800EBFF0[D_8013AF78], 1);
         drawLimitedText8x8(84, y + 8, 1, gPlayerNumberSuffixLabel, textMode, -1, &D_800EBFF0[D_8013AF78], 1);
         y += 32;
     }
@@ -1139,7 +1139,7 @@ void countStatsMenuMoneyTask(void) {
     if (gRacePlayers[0].money > 999999) {
         gRacePlayers[0].money = 999999;
     }
-    D_80130BF0[0] = gRacePlayers[0].money;
+    gPlayerSaveRecords[0].money = gRacePlayers[0].money;
     if (resource->trickPrize == 0 && resource->makeBonus == 0 && resource->completeBonus == 0) {
         playSoundEffect(0, 0x700, 0x20);
         resource->timer = 20;
@@ -1285,7 +1285,7 @@ void initializeStatsMenuTask(void) {
         resource->makeBonus = gRacePlayers[0].trickAttackMakeCount * 10;
     }
     resource->unk00 = gRacePlayers[0].unk100[0];
-    gRacePlayers[0].money = D_80130BF0[0];
+    gRacePlayers[0].money = gPlayerSaveRecords[0].money;
     setCurrentTaskCallback(fadeInStatsMenuTask);
 }
 

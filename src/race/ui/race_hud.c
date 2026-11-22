@@ -46,7 +46,7 @@ void drawLapTimeHud(void) {
     func_8006C998(88,80,25,1,-1,ot,1);
     func_8006C998(112,80,24,1,-1,ot,1);
     drawLimitedText8x8(72,71,10,gLapTimeLabel,5,-1,ot,1);
-    sprintf(text,gLapTimeFormat,((SaveRecord *)&D_8013080C)->lapRecords[D_8013AFCE][0].minutes,((SaveRecord *)&D_8013080C)->lapRecords[D_8013AFCE][0].seconds,((SaveRecord *)&D_8013080C)->lapRecords[D_8013AFCE][0].centiseconds >> 8);
+    sprintf(text,gLapTimeFormat,gPlayerSaveRecords[0].lapRecords[D_8013AFCE][0].minutes,gPlayerSaveRecords[0].lapRecords[D_8013AFCE][0].seconds,gPlayerSaveRecords[0].lapRecords[D_8013AFCE][0].centiseconds >> 8);
     drawLimitedText8x8(72,-88,20,text,7,-1,ot,1);
     drawLimitedText8x8(72,-97,10,gBestLapLabel,7,-1,ot,1);
     icon = (s8)gRacePlayers[0].heldItem;

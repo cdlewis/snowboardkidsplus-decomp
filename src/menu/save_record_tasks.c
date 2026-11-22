@@ -44,6 +44,9 @@ u16 gTaskShadowedText[14] __attribute__((section(".data.task_shadowed_text"))) =
     0x001F, 0x001E, 0x001E, 0x0019, 0x0018, 0, 0
 };
 
+SaveRecord gPlayerSaveRecords[2] __attribute__((section(".data.save_records"))) = {0};
+SaveRecord gMergedSaveRecord __attribute__((section(".data.merged_save_record"))) = {0};
+
 extern const u16 D_801302BC[], D_80130390[], D_801303EC[], D_80130428[];
 extern const u16 D_80130460[], D_8013047C[], D_80130578[], D_801305C4[];
 extern const u16 D_801305F0[], D_80130638[], D_80130694[], D_801306DC[];
@@ -63,26 +66,25 @@ void repeatByteStore(u8 *destination, s32 value, s32 count) {
 /* DECOMP_ATTEMPT: inline 61/63 */
 #ifdef NON_MATCHING
 void func_800897D0(SaveRecord *record) {
-    GlobalFlagStatePrefix *flags = (GlobalFlagStatePrefix *)record;
     s16 i;
     repeatByteStore((u8 *)record, 0, sizeof(*record));
-    record->flags_3AC = 0;
-    flags->unk_3DC = 0;
+    record->flags = 0;
+    record->boardUnlockFlagsLow = 0;
     for (i = 0; i < 10; i++) {
-        record->flags_3B0[i] = 0;
+        record->masks[i] = 0;
     }
-    record->flags_3D8 = 0;
-    flags->unk_3E0 = 0;
+    record->combinedMask = 0;
+    record->boardUnlockFlagsHigh = 0;
     for (i = 0; i < 5; i++) {
-        flags->unk_3DC |= 1 << (i * 5);
-        flags->unk_3E0 |= 1 << (i * 5);
+        record->boardUnlockFlagsLow |= 1 << (i * 5);
+        record->boardUnlockFlagsHigh |= 1 << (i * 5);
     }
-    record->flags_3AC |= 0x124;
-    flags->unk_3E4 = 0;
+    record->flags |= 0x124;
+    record->money = 0;
     i = 0;
     do {
-        record->unk_3EC[i] = 0;
-        record->unk_3F6[i] = 0;
+        record->boardSelections[i] = 0;
+        record->paletteSelections[i] = 0;
         i++;
     } while (i < 10);
 }
@@ -90,7 +92,7 @@ void func_800897D0(SaveRecord *record) {
 INCLUDE_ASM("asm/nonmatchings/menu/save_record_tasks", func_800897D0);
 #endif
 
-void copyGlobalFlagState(GlobalFlagStatePrefix *source, GlobalFlagStatePrefix *destination) {
+void copyGlobalFlagState(SaveRecord *source, SaveRecord *destination) {
     s16 i;
 
     destination->flags = source->flags;
@@ -98,42 +100,34 @@ void copyGlobalFlagState(GlobalFlagStatePrefix *source, GlobalFlagStatePrefix *d
         i[destination->masks] = i[source->masks];
     }
     destination->combinedMask = source->combinedMask;
-    destination->unk_3E4 = source->unk_3E4;
+    destination->money = source->money;
 }
 
 void mergeSaveRecordFlags(SaveRecord *source, SaveRecord *destination) {
     s16 i;
-    destination->flags_3AC |= source->flags_3AC;
+    destination->flags |= source->flags;
     for (i = 0; i < 10; i++) {
-        i[destination->flags_3B0] |= i[source->flags_3B0];
+        i[destination->masks] |= i[source->masks];
     }
-    destination->flags_3D8 |= source->flags_3D8;
+    destination->combinedMask |= source->combinedMask;
 }
 
 void copySaveRecordAndMergeFlags(void) {
-    *(SaveRecord *)&D_8013101C = *(SaveRecord *)&D_8013080C;
-    mergeSaveRecordFlags(&((SaveRecord *)&D_8013080C)[1], (SaveRecord *)&D_8013101C);
+    gMergedSaveRecord = gPlayerSaveRecords[0];
+    mergeSaveRecordFlags(&gPlayerSaveRecords[1], &gMergedSaveRecord);
 }
 
 /* DECOMP_ATTEMPT: inline 33/36 */
 #ifdef NON_MATCHING
-typedef struct SaveFlagsTail {
-    u16 unlockNotificationFlags;
-    u16 unk02;
-    u32 checksum;
-} SaveFlagsTail;
-
 #include "game/race/player/player_resource_textures.h"
 
-
 void func_80089A0C(SaveRecord *source, s16 index) {
-    const SaveFlagsTail *tail = (const SaveFlagsTail *)&source->unk_400;
     s16 i;
     for (i = 0; i < 9; i++) {
-        gPlayerResourceTextureSelections.entries[index][i] = ((const u8 *)source)[i];
+        gPlayerResourceTextureSelections.entries[index][i] = source->resourceTextureSelections[i];
     }
     if (D_8013AFCD == 1) {
-        *(volatile u16 *)&gUnlockNotificationFlags = tail->unlockNotificationFlags;
+        *(volatile u16 *)&gUnlockNotificationFlags = source->unlockNotificationFlags;
     } else {
         *(volatile u16 *)&gUnlockNotificationFlags = 0;
     }
@@ -146,15 +140,13 @@ INCLUDE_ASM("asm/nonmatchings/menu/save_record_tasks", func_80089A0C);
 #ifdef NON_MATCHING
 #include "game/race/player/player_resource_textures.h"
 
-void func_80089A98(GlobalFlagStatePrefix *state) {
-    SaveRecord *record = (SaveRecord *)state;
-    SaveFlagsTail *tail = (SaveFlagsTail *)&record->unk_400;
+void func_80089A98(SaveRecord *state) {
     u32 i;
     for (i = 0; i < 9; i++) {
-        state->unk_000[i] = gPlayerResourceTextureSelections.entries[0][i];
+        state->resourceTextureSelections[i] = gPlayerResourceTextureSelections.entries[0][i];
     }
-    tail->unlockNotificationFlags = gUnlockNotificationFlags;
-    tail->checksum = calculateByteSum((const u8 *)record, 0x404);
+    state->unlockNotificationFlags = gUnlockNotificationFlags;
+    state->checksum = calculateByteSum((const u8 *)state, sizeof(*state) - sizeof(state->checksum));
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/menu/save_record_tasks", func_80089A98);
@@ -274,10 +266,10 @@ void func_80089EC0(void) {
  if (D_8013AE88->resource16 != 0xFFFF) { while (1) {} }
  D_8013AE88->resource16 = allocateTaskResource();
  resource->unk0C = 0;
- func_80089A98(&D_8013080C);
+ func_80089A98(&gPlayerSaveRecords[0]);
  destination = (SaveRecord *)0x801E4000;
- *destination++ = *(SaveRecord *)&D_8013080C;
- *destination = *(SaveRecord *)&D_8013080C;
+ *destination++ = gPlayerSaveRecords[0];
+ *destination = gPlayerSaveRecords[0];
  startStateValueHistoryTask();
  setCurrentTaskCallback(updateMemoryCardSaveMenuTask);
  { GameTask *task = D_8013AE88; task->unk10 = task->unk10 | 2; }
@@ -680,7 +672,7 @@ void func_8008B178(void) {
     func_8006EF30((s16)(position->x / 4096 - 68), (s16)(position->y / 4096 - 96),
                  9, D_80130798, 14, -1, PANEL_OT, PANEL_DEPTH);
     drawDecimalNumber8x16(position->x / 4096 + 38, position->y / 4096 - 3, 6, 0,
-                          ((GlobalFlagStatePrefix *)&((SaveRecord *)&D_8013080C)[slot])->unk_3E4,
+                          gPlayerSaveRecords[slot].money,
                           0, -1, PANEL_OT, PANEL_DEPTH);
     drawWrappedDoubleByteText(position->x / 4096 + 86, position->y / 4096 - 3,
                               2, D_8013B480, 0, -1, PANEL_OT, PANEL_DEPTH);
@@ -697,8 +689,8 @@ void func_8008B178(void) {
                   PANEL_OT, PANEL_DEPTH);
 
     for (i = 0; i < 3; i++) {
-        records = (SaveRecord *)&D_8013080C;
-        if (records[slot].flags_3B0[course] & (0x1000000U << i)) {
+        records = gPlayerSaveRecords;
+        if (records[slot].masks[course] & (0x1000000U << i)) {
             setSpriteColor(128, 128, 128);
         } else {
             setSpriteColor(32, 32, 32);
@@ -770,8 +762,8 @@ s16 getSaveRecordMaskTier(s16 recordIndex, s16 maskIndex) {
     SaveRecord *records;
 
     for (; i >= 0; i--) {
-        records = (SaveRecord *)&D_8013080C;
-        if (records[recordIndex].flags_3B0[maskIndex] & (0x1000000 << i)) {
+        records = gPlayerSaveRecords;
+        if (records[recordIndex].masks[maskIndex] & (0x1000000 << i)) {
             result = i + 1;
             break;
         }
@@ -781,15 +773,15 @@ s16 getSaveRecordMaskTier(s16 recordIndex, s16 maskIndex) {
 
 void setSaveRecordMaskTier(s16 recordIndex, s16 maskIndex, s16 tier) {
     s16 i;
-    SaveRecord *records = (SaveRecord *)&D_8013080C;
+    SaveRecord *records = gPlayerSaveRecords;
 
-    records[recordIndex].flags_3B0[maskIndex] &= 0xF0FFFFFF;
+    records[recordIndex].masks[maskIndex] &= 0xF0FFFFFF;
     for (i = 3; i >= 0; i--) {
         if (i < tier) {
-            records[recordIndex].flags_3B0[maskIndex] |= 0x1000000 << i;
+            records[recordIndex].masks[maskIndex] |= 0x1000000 << i;
         }
     }
-    rebuildCombinedStateMask((GlobalFlagStatePrefix *)&((SaveRecord *)&D_8013080C)[recordIndex]);
+    rebuildCombinedStateMask(&gPlayerSaveRecords[recordIndex]);
     copySaveRecordAndMergeFlags();
 }
 
@@ -812,10 +804,10 @@ s16 getSaveRecordFlagPair(s16 recordIndex, s16 maskIndex, s16 pairIndex) {
     u32 first;
     u32 second;
     s16 result;
-    SaveRecord *records = (SaveRecord *)&D_8013080C;
+    SaveRecord *records = gPlayerSaveRecords;
 
-    first = records[recordIndex].flags_3B0[maskIndex] & (1U << (pairIndex * 2));
-    second = records[recordIndex].flags_3B0[maskIndex] & (2U << (pairIndex * 2));
+    first = records[recordIndex].masks[maskIndex] & (1U << (pairIndex * 2));
+    second = records[recordIndex].masks[maskIndex] & (2U << (pairIndex * 2));
     if (first && second) {
         result = 3;
     } else if (second) {
@@ -829,17 +821,17 @@ s16 getSaveRecordFlagPair(s16 recordIndex, s16 maskIndex, s16 pairIndex) {
 }
 
 void setSaveRecordFlagPair(s16 recordIndex, s16 maskIndex, s16 pairIndex, s16 value) {
-    GlobalFlagStatePrefix *state = &D_8013080C;
+    SaveRecord *state = &gPlayerSaveRecords[0];
 
-    ((SaveRecord *)state)[recordIndex].flags_3B0[maskIndex] &= ~(3 << (pairIndex * 2));
+    state[recordIndex].masks[maskIndex] &= ~(3 << (pairIndex * 2));
     if (value == 1 || value == 3) {
-        ((SaveRecord *)&D_8013080C)[recordIndex].flags_3B0[maskIndex] |= 1 << (pairIndex * 2);
+        gPlayerSaveRecords[recordIndex].masks[maskIndex] |= 1 << (pairIndex * 2);
     }
     if (value == 2 || value == 3) {
-        GlobalFlagStatePrefix *secondState = &D_8013080C;
-        ((SaveRecord *)secondState)[recordIndex].flags_3B0[maskIndex] |= 2 << (pairIndex * 2);
+        SaveRecord *secondState = &gPlayerSaveRecords[0];
+        secondState[recordIndex].masks[maskIndex] |= 2 << (pairIndex * 2);
     }
-    rebuildCombinedStateMask((GlobalFlagStatePrefix *)&((SaveRecord *)&D_8013080C)[recordIndex]);
+    rebuildCombinedStateMask(&gPlayerSaveRecords[recordIndex]);
     copySaveRecordAndMergeFlags();
 }
 
@@ -850,7 +842,7 @@ s32 getStateMaskPair(s16 stateIndex, s16 maskIndex, s16 pairIndex) {
     return low && high ? 3 : high ? 2 : low ? 1 : 0;
 }
 
-void rebuildCombinedStateMask(GlobalFlagStatePrefix *state) {
+void rebuildCombinedStateMask(SaveRecord *state) {
     s16 i;
 
     state->combinedMask = 0;
@@ -909,23 +901,23 @@ INCLUDE_ASM("asm/nonmatchings/menu/save_record_tasks", func_8008C290);
 #endif
 
 u32 getGlobalFlagMask(s16 bitIndex) {
-    return D_801313C8[0] & (1U << bitIndex);
+    return gMergedSaveRecord.flags & (1U << bitIndex);
 }
 
 void updatePairedStateFlag(s16 index) {
     if (index < 0) {
-        D_8013080C.flags &= ~3U;
-        D_8013101C.flags &= ~3U;
+        gPlayerSaveRecords[0].flags &= ~3U;
+        gMergedSaveRecord.flags &= ~3U;
     } else {
-        D_8013080C.flags |= 1U << index;
-        D_8013101C.flags |= 1U << index;
+        gPlayerSaveRecords[0].flags |= 1U << index;
+        gMergedSaveRecord.flags |= 1U << index;
     }
 }
 
 void setPairedStateIndexedFlag(s16 index) {
-    GlobalFlagStatePrefix *first = &D_8013080C;
+    SaveRecord *first = &gPlayerSaveRecords[0];
     u32 mask = 0x800U << (index + 3);
-    GlobalFlagStatePrefix *second = &D_8013101C;
+    SaveRecord *second = &gMergedSaveRecord;
 
     first->flags |= mask;
     second->flags |= mask;

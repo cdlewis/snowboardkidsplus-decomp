@@ -984,7 +984,7 @@ void transferResultPrizeMoneyTask(void) {
     if (gRacePlayers[0].money > 999999) {
         gRacePlayers[0].money = 999999;
     }
-    D_80130BF0[0] = gRacePlayers[0].money;
+    gPlayerSaveRecords[0].money = gRacePlayers[0].money;
     if (resource->unk06 != 3) {
         if (resource->unk04 == 0 && gRacePlayers[0].unk01C == 0) {
             playSoundEffect(0, 0x700, 0x20);
@@ -1121,7 +1121,7 @@ void initializeResultDisplayTask(void) {
     if (resource->unk06 < 3) {
         resource->unk04 = D_8012FC6C[D_8013AFCE][resource->unk06];
     }
-    gRacePlayers[0].money = D_80130BF0[0];
+    gRacePlayers[0].money = gPlayerSaveRecords[0].money;
     resource->unk08 = gRacePlayers[0].characterId;
     setCurrentTaskCallback(fadeInResultDisplayTask);
 }

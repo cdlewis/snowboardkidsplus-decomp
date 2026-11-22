@@ -835,12 +835,6 @@ void finishRaceTransitionAfterCountdown(void) {
 
 /* DECOMP_ATTEMPT: inline 188/196 */
 #ifdef NON_MATCHING
-typedef struct CourseResultRecords {
-    u8 unk00[0xC];
-    u32 bestScore[11];
-    u8 bestPlace[10];
-} CourseResultRecords;
-
 extern u8 D_8013B18D __attribute__((section(".data")));
 extern u8 D_8013B1A0[];
 void initializeResultDisplayTask(void);
@@ -871,14 +865,14 @@ void func_8001C9F0(void) {
         if (D_8013AFCD == 1) {
             createChildTaskWithReserve(initializeResultDisplayTask);
             if (gRacePlayers[0].unk935 != 3) {
-                int bestPlace = ((volatile CourseResultRecords *)&D_8013080C)->bestPlace[D_8013AFCE];
+                int bestPlace = ((volatile SaveRecord *)&gPlayerSaveRecords[0])->bestPlace[D_8013AFCE];
                 int nextPlace = gRacePlayers[0].unk935 + 1;
-                if (bestPlace == 0 || (bestPlace = ((volatile CourseResultRecords *)&D_8013080C)->bestPlace[D_8013AFCE], nextPlace < bestPlace)) {
-                    ((volatile CourseResultRecords *)&D_8013080C)->bestPlace[D_8013AFCE] = gRacePlayers[0].unk935 + 1;
+                if (bestPlace == 0 || (bestPlace = ((volatile SaveRecord *)&gPlayerSaveRecords[0])->bestPlace[D_8013AFCE], nextPlace < bestPlace)) {
+                    ((volatile SaveRecord *)&gPlayerSaveRecords[0])->bestPlace[D_8013AFCE] = gRacePlayers[0].unk935 + 1;
                 }
                 score = gRacePlayers[0].unk01C + func_8007F46C(D_8013AFCE, gRacePlayers[0].unk935);
-                if (((CourseResultRecords *)&D_8013080C)->bestScore[D_8013AFCE] < score) {
-                    ((CourseResultRecords *)&D_8013080C)->bestScore[D_8013AFCE] = score;
+                if (gPlayerSaveRecords[0].bestScore[D_8013AFCE] < score) {
+                    gPlayerSaveRecords[0].bestScore[D_8013AFCE] = score;
                 }
             }
         } else {

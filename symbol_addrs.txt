@@ -3129,6 +3129,8 @@ createInputTimedSpriteTask = 0x80076C20; // type:func
 
 drawTaskShadowedText = 0x8008BCDC; // type:func
 gTaskShadowedText = 0x80130724; // size:0x1C
+gPlayerSaveRecords = 0x8013080C; // size:0x810 defined:true allow_addend:true
+gMergedSaveRecord = 0x8013101C; // size:0x408 defined:true allow_addend:true
 
 animateUnlockMenuTransition = 0x800A5050; // type:func
 

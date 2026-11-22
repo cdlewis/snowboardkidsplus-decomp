@@ -435,18 +435,16 @@ void updateCdAwareCourseSelectionTask(void) {
 
 /* DECOMP_ATTEMPT: inline 35/36 */
 #ifdef NON_MATCHING
-extern u32 D_801313F4[];
-
 s32 func_8007D47C(void) {
     s16 result;
     if (D_8013AFCD == 1) {
-        u32 mask = D_8013080C.masks[gRacePlayers[0].unk009];
+        u32 mask = gPlayerSaveRecords[0].masks[gRacePlayers[0].unk009];
         if (mask & 0x4000000) result = 3;
         else if (mask & 0x2000000) result = 2;
         else if (mask & 0x1000000) result = 1;
         else result = 0;
     } else {
-        u32 mask = D_801313F4[0];
+        u32 mask = gMergedSaveRecord.combinedMask;
         if (mask & 0x4000000) result = 3;
         else if (mask & 0x2000000) result = 2;
         else if (mask & 0x1000000) result = 1;
@@ -788,18 +786,18 @@ void drawRegisteredSelectionItemStatus(void) {
             index = mapCourseMenuByteIndex(parent->values, (s16)D_8013AE88->data1A);
             if ((u16)index < 10) {
                 if (D_8013AFCD == 1) {
-                    if ((D_8013101C.masks[character] & (1U << (index * 2))) > 0) {
-                        if (!(D_8013101C.masks[character] & (2U << (index * 2)))) {
+                    if ((gMergedSaveRecord.masks[character] & (1U << (index * 2))) > 0) {
+                        if (!(gMergedSaveRecord.masks[character] & (2U << (index * 2)))) {
                             goto draw_base_status;
                         }
                         func_8006C998(position->x / 4096 - 17, position->y / 4096 - 1,
                             index + 70, 9, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
-                    } else if (D_8013101C.masks[character] & (2U << (index * 2))) {
+                    } else if (gMergedSaveRecord.masks[character] & (2U << (index * 2))) {
                         func_8006C998(position->x / 4096 - 17, position->y / 4096 - 1,
                             index + 70, 10, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
                     } else {
 draw_base_status:
-                        if ((D_8013101C.masks[character] & (1U << (index * 2))) > 0) {
+                        if ((gMergedSaveRecord.masks[character] & (1U << (index * 2))) > 0) {
                             func_8006C998(position->x / 4096 - 17, position->y / 4096 - 1,
                                 index + 70, 11, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
                         } else {
@@ -901,7 +899,7 @@ void drawSelectionPrizeAndPlayerCounters(void) {
             func_8006C998(position->x / 4096 + 6, position->y / 4096 + 35,
                           0xC2, 14, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             drawDecimalNumber8x8(position->x / 4096 + 26, position->y / 4096 + 42,
-                                 5, 0, ((SaveRecord *)&D_8013080C)->unk_00C[D_8013AFCE],
+                                 5, 0, gPlayerSaveRecords[0].bestScore[D_8013AFCE],
                                  0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             drawWrappedText8x8(position->x / 4096 + 66, position->y / 4096 + 42,
                                2, gSelectionPrizeCurrencyLabel, 6, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
@@ -1365,17 +1363,17 @@ s32 getPlayerRecordFlagMode(s16 index) {
     SaveRecord *record;
     s16 playerIndex = index;
     if (index >= 10) {
-        record = (SaveRecord *)&D_8013101C;
+        record = &gMergedSaveRecord;
         playerIndex = index - 10;
     } else {
-        record = &((SaveRecord *)&D_8013080C)[index];
+        record = &gPlayerSaveRecords[index];
     }
     if (gRacePlayers[playerIndex].unk009 == 8) {
         result = 2;
     } else if (gRacePlayers[playerIndex].unk009 == 9) {
         result = 5;
     } else {
-        result = (record->flags_3AC & 0x3800) != 0;
+        result = (record->flags & 0x3800) != 0;
     }
     return result;
 }
@@ -1388,10 +1386,10 @@ void buildRecordFlagMenuEntries(s16 index, s16 mode, s16 group, u16 arg4, u16 ar
     out->unk_05 = arg5;
     out->unk_04 = arg4;
     if (index >= 10) {
-        record = (SaveRecord *)&D_8013101C;
+        record = &gMergedSaveRecord;
         index -= 10;
     } else {
-        record = &((SaveRecord *)&D_8013080C)[index];
+        record = &gPlayerSaveRecords[index];
     }
 
     switch (mode) {
@@ -1412,7 +1410,7 @@ void buildRecordFlagMenuEntries(s16 index, s16 mode, s16 group, u16 arg4, u16 ar
         out->textIndices = D_801300A0[index];
         out->unk_10 = 0;
         for (i = 0; i < 3; i++) {
-            if (record->flags_3AC & (0x800 << i)) {
+            if (record->flags & (0x800 << i)) {
                 out->entries[out->count] = i + 11;
                 out->textIndices[out->count] = i + 5;
                 out->count++;
@@ -1428,7 +1426,7 @@ standardGroups:
             out->unk_10 = 0;
             if (group == 0) {
                 for (i = 0; i < 3; i++) {
-                    if (record->flags_3AC & (4 << i)) {
+                    if (record->flags & (4 << i)) {
                         out->entries[out->count] = i + 8;
                         out->textIndices[out->count] = 8;
                         out->count++;
@@ -1436,7 +1434,7 @@ standardGroups:
                 }
             } else if (group == 1) {
                 for (i = 0; i < 3; i++) {
-                    if (record->flags_3AC & (0x20 << i)) {
+                    if (record->flags & (0x20 << i)) {
                         out->entries[out->count] = i + 8;
                         out->textIndices[out->count] = 8;
                         out->count++;
@@ -1444,7 +1442,7 @@ standardGroups:
                 }
             } else if (group == 2) {
                 for (i = 0; i < 3; i++) {
-                    if (record->flags_3AC & (0x100 << i)) {
+                    if (record->flags & (0x100 << i)) {
                         out->entries[out->count] = i + 8;
                         out->textIndices[out->count] = 8;
                         out->count++;
@@ -1466,12 +1464,12 @@ s32 getSaveRecordFlagGroupIndex(s16 recordIndex, s16 groupIndex) {
     SaveRecord *record;
     s16 i;
     if (recordIndex >= 10) {
-        record = (SaveRecord *)&D_8013101C;
+        record = &gMergedSaveRecord;
     } else {
-        record = &((SaveRecord *)&D_8013080C)[recordIndex];
+        record = &gPlayerSaveRecords[recordIndex];
     }
     for (i = 0; i < 3; i++) {
-        if (record->flags_3AC & (0x800 << (groupIndex * 3 + i))) {
+        if (record->flags & (0x800 << (groupIndex * 3 + i))) {
             return i;
         }
     }
@@ -3379,14 +3377,14 @@ void initializeSaveRecordTask(void) {
         while (1) {}
     }
     D_8013AE88->resource16 = allocateTaskResource();
-    func_800897D0((SaveRecord *)&D_8013080C);
-    func_800897D0(&((SaveRecord *)&D_8013080C)[1]);
-    copyGlobalFlagState(&D_8013080C, &D_8013101C);
-    mergeSaveRecordFlags(&((SaveRecord *)&D_8013080C)[1], (SaveRecord *)&D_8013101C);
-    D_8013B484[0] = (GlobalFlagStatePrefix *)&SAVE_RECORD_WORKSPACE[0];
-    D_8013B484[1] = (GlobalFlagStatePrefix *)&SAVE_RECORD_WORKSPACE[1];
-    func_800897D0((SaveRecord *)D_8013B484[0]);
-    func_800897D0((SaveRecord *)D_8013B484[1]);
+    func_800897D0(gPlayerSaveRecords);
+    func_800897D0(&gPlayerSaveRecords[1]);
+    copyGlobalFlagState(&gPlayerSaveRecords[0], &gMergedSaveRecord);
+    mergeSaveRecordFlags(&gPlayerSaveRecords[1], &gMergedSaveRecord);
+    D_8013B484[0] = &SAVE_RECORD_WORKSPACE[0];
+    D_8013B484[1] = &SAVE_RECORD_WORKSPACE[1];
+    func_800897D0(D_8013B484[0]);
+    func_800897D0(D_8013B484[1]);
     for (i = 0; i < 15; i++) {
         gPlayerResourceTextureSelections.entries[0][i] = D_80123650[i];
         gPlayerResourceTextureSelections.entries[1][i] = D_80123650[i];
@@ -3558,11 +3556,6 @@ typedef struct SavePanelResources {
     s16 command2C;
 } SavePanelResources;
 
-typedef struct CardSaveRecord {
-    u8 payload[0x404];
-    u32 checksum;
-} CardSaveRecord;
-
 extern const u16 D_801302BC[], D_80130308[], D_80130348[], D_80130390[], D_801303CC[];
 extern const u16 D_8013052C[], D_8013066C[], D_801306EC[], D_80130770[], D_80130780[];
 extern const u16 D_801307AC[], D_80130800[];
@@ -3582,7 +3575,7 @@ void func_80087B84(void) {
     GameTask *recordTask;
     s32 color;
     u8 padding[0x10];
-    CardSaveRecord *card;
+    SaveRecord *card;
     u16 slotIndex;
     RegisteredPanelSlot *slots;
 
@@ -3770,8 +3763,8 @@ void func_80087B84(void) {
             D_8013AE88->data18 = 40;
         break;
     case 13:
-        card = (CardSaveRecord *)(MEMORY_CARD_SLOT_BUFFER_BASE + menu->cardSlot * MEMORY_CARD_SLOT_BUFFER_STRIDE);
-        *(SaveRecord *)D_8013B484[player] = *(SaveRecord *)card;
+        card = (SaveRecord *)(MEMORY_CARD_SLOT_BUFFER_BASE + menu->cardSlot * MEMORY_CARD_SLOT_BUFFER_STRIDE);
+        *D_8013B484[player] = *card;
         recordTask = D_8013AE88;
         resources->panels[1].command = 99;
         goto showRecord;
@@ -3814,15 +3807,15 @@ void func_80087B84(void) {
             goto resetRecord;
         goto selectCard;
     case 42:
-        card = (CardSaveRecord *)(MEMORY_CARD_SLOT_BUFFER_BASE + menu->cardSlot * MEMORY_CARD_SLOT_BUFFER_STRIDE);
-        if (calculateByteSum(card->payload, sizeof(card->payload)) == card->checksum) {
-            *(SaveRecord *)D_8013B484[player] = *(SaveRecord *)card;
+        card = (SaveRecord *)(MEMORY_CARD_SLOT_BUFFER_BASE + menu->cardSlot * MEMORY_CARD_SLOT_BUFFER_STRIDE);
+        if (calculateByteSum((const u8 *)card, sizeof(*card) - sizeof(card->checksum)) == card->checksum) {
+            *D_8013B484[player] = *card;
         } else {
             card++;
-            if (calculateByteSum(card->payload, sizeof(card->payload)) != card->checksum) {
+            if (calculateByteSum((const u8 *)card, sizeof(*card) - sizeof(card->checksum)) != card->checksum) {
                 goto corruptCard;
             }
-            *(SaveRecord *)D_8013B484[player] = *(SaveRecord *)card;
+            *D_8013B484[player] = *card;
         }
         recordTask = D_8013AE88;
     showRecord:
@@ -3914,9 +3907,9 @@ void func_80087B84(void) {
         if (result == 1)
             goto drawRecord;
         if (result == 2) {
-            ((SaveRecord *)&D_8013080C)[player] = *(SaveRecord *)D_8013B484[player];
+            gPlayerSaveRecords[player] = *D_8013B484[player];
             copySaveRecordAndMergeFlags();
-            func_80089A0C(&((SaveRecord *)&D_8013080C)[player], player);
+            func_80089A0C(&gPlayerSaveRecords[player], player);
             D_8013B47C = 1;
             D_8013AE88->data18 = 24;
         } else if (result == 3) {
@@ -3930,7 +3923,7 @@ void func_80087B84(void) {
         }
         break;
     case 22:
-        copyGlobalFlagState((GlobalFlagStatePrefix *)&((SaveRecord *)&D_8013080C)[player], D_8013B484[player]);
+        copyGlobalFlagState(&gPlayerSaveRecords[player], D_8013B484[player]);
         gUnlockNotificationFlags = 0;
         resources->panels[0].command = 20;
         configureColorCycleTask(1, 0, 128, 8, player);
@@ -4069,7 +4062,7 @@ void drawSaveRecordProgressPanel(void) {
             }
             func_8006C998(x + 72, y + 19, 0x5A, 3, -1,
                           &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
-            drawDecimalNumber16(x + 72, y + 30, 6, 0, D_8013B484[slot]->unk_3E4,
+            drawDecimalNumber16(x + 72, y + 30, 6, 0, D_8013B484[slot]->money,
                                 8, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             func_8006EF30((s16)(x + 168), (s16)(y + 30), 1, gSaveRecordProgressCurrencyLabel, 8, -1,
                           &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);

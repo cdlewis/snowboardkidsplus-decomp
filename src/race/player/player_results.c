@@ -15,7 +15,7 @@
 #include "psx/libsnd.h"
 #include "psx/stdlib.h"
 
-#define ATTACK_SAVE_RECORD ((SaveRecord *)&D_8013080C)
+#define ATTACK_SAVE_RECORD (&gPlayerSaveRecords[0])
 #define FULL_RACE_TIME(time) \
     ((time).centiseconds + (time).seconds * 25600 + (time).minutes * 1536000)
 #define RECORD_ICON(player) \

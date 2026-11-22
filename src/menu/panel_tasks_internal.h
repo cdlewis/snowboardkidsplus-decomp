@@ -237,8 +237,6 @@ void drawCurrentTaskSpriteBA(void);
 void drawCurrentTaskFramedSpritePair16A(void);
 void initializeCountedDisplayBoundsTask(void);
 void drawCurrentTaskBoardPrice(void);
-s32 hasStateGridFlag(GlobalFlagStatePrefix *state, s16 row, s16 column);
-void setStateGridFlag(GlobalFlagStatePrefix *state, s16 row, s16 column);
 void drawCurrentTaskFramedSprite20C(void);
 void drawCurrentTaskTextPanel(void);
 void drawCurrentTaskSelectionPanel(void);
