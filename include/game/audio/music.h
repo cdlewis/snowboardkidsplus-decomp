@@ -56,4 +56,6 @@ void stopMatchingSoundVoice(u8 owner, u8 bank, u16 note);
 
 /* Replaces voice playerIndex + 20 using the player position for attenuation. */
 void playPlayerPositionalSoundEffect(u8 playerIndex, u8 bank, u16 programAndTone, s16 volume);
-void func_8001890C(u8 player, u8 bank, u16 sound, s16 volume);
+
+/* Applies distance attenuation to CPU players with a minimum playback volume of 24. */
+void playPlayerSoundEffectWithVolumeFloor(u8 playerIndex, u8 bank, u16 programAndTone, s16 volume);

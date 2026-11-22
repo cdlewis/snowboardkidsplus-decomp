@@ -375,16 +375,18 @@ void playPlayerPositionalSoundEffect(u8 playerIndex, u8 bank, u16 programAndTone
     }
 }
 
-/* DECOMP_ATTEMPT: inline 73/74 */
-#ifdef NON_MATCHING
-void func_8001890C(u8 playerIndex, u8 bank, u16 programAndTone, s16 volume) {
+void playPlayerSoundEffectWithVolumeFloor(u8 playerIndex, u8 bank, u16 programAndTone, s16 volume) {
     RacePlayer *players = gRacePlayers;
     s16 playbackVolume = volume;
 
     if (players[playerIndex].unk008) {
+        s32 signedVolume;
+
         playbackVolume = attenuateSoundVolume(getNearestCameraManhattanDistance(
             players[playerIndex].x, players[playerIndex].y, players[playerIndex].z), volume);
-        if (playbackVolume < 24) {
+        /* Sign-extend the stored 16-bit volume before applying the floor. */
+        signedVolume = (s32)((u32)(u16)playbackVolume << 16) >> 16;
+        if (signedVolume < 24) {
             playbackVolume = 24;
         }
     }
@@ -395,6 +397,3 @@ void func_8001890C(u8 playerIndex, u8 bank, u16 programAndTone, s16 volume) {
                    playbackVolume, playbackVolume);
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/audio/sound_manager", func_8001890C);
-#endif

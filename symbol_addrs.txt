@@ -2371,6 +2371,7 @@ blendCurrentPlayerSteeringPose = 0x8001758C; // type:func
 playOwnedSoundEffect = 0x80018624; // type:func
 stopMatchingSoundVoice = 0x80018720; // type:func
 playPlayerPositionalSoundEffect = 0x80018804; // type:func
+playPlayerSoundEffectWithVolumeFloor = 0x8001890C; // type:func
 gSoundVoiceRecords = 0x800EB368; // size:0x20
 
 setControllerRepeatTiming = 0x80014CBC; // type:func

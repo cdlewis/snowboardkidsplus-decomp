@@ -1522,7 +1522,8 @@ void playCurrentPlayerSoundEffect(s16 index) {
         playPlayerPositionalSoundEffect(D_8013AE88->data18, D_8013AE88->data18 + 2, gPlayerSoundVariantsB[randomNextMain() & 1], 64);
         break;
     case 3:
-        func_8001890C(D_8013AE88->data18, D_8013AE88->data18 + 2, gPlayerSoundVariantsB[randomNextMain() & 1], 64);
+        playPlayerSoundEffectWithVolumeFloor(D_8013AE88->data18, D_8013AE88->data18 + 2,
+                                            gPlayerSoundVariantsB[randomNextMain() & 1], 64);
         break;
     case 4:
         playPlayerPositionalSoundEffect(D_8013AE88->data18, D_8013AE88->data18 + 2, 0x500, 64);
