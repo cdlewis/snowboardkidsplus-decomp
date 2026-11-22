@@ -26,4 +26,7 @@ prompt: >-
   Commit the verified changes yourself using the tracked validation hook.
   Include the commit hash in your final report.
 agent: codex
+success_command: >-
+  ./tools/install-git-hooks.sh &&
+  git add -A && git commit -m "matched library function $CANDIDATE"
 timeout: 20m

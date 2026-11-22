@@ -1,5 +1,8 @@
 # Central task-runner configuration
 claude_command: "~/.local/bin/glaude"
-success_command: 'test -z "$(git status --porcelain)"'
+# Nigel skips the fallback commit when the agent leaves a clean tree.
+success_command: >-
+  ./tools/install-git-hooks.sh &&
+  git add -A && git commit -m "task-runner($TASK_NAME): fix $CANDIDATE"
 reset_command: "git clean -f; git reset --hard HEAD || true"
 verify_command: "./tools/build-and-verify.sh"
