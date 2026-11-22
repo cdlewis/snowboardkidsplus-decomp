@@ -172,7 +172,7 @@ void updateStateValueHistoryTask(void) {
         } else {
             D_8013BE30.activeIndex = isValue16(D_8013BE30.unk_00 = 0);
         }
-        func_800198C4(D_8013BE30.unk_00);
+        setMemoryCardChannel(D_8013BE30.unk_00);
         D_8013AE88->data18 = 1;
         break;
     case 1:
@@ -590,9 +590,9 @@ void updateMemoryCardSaveMenuTask(void) {
             break;
         resetMemoryCardTaskState();
         if (menu->slot == 0)
-            func_800198C4(0);
+            setMemoryCardChannel(0);
         else
-            func_800198C4(16);
+            setMemoryCardChannel(16);
         formatResult = func_8001983C();
         D_8013BE30.unk_0E[menu->slot] = 5;
         if (formatResult == 0) {

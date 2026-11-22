@@ -3271,7 +3271,7 @@ void updateMemoryCardSlotTask(void) {
         } else {
             D_8013BE30.activeIndex = isValue16(D_8013BE30.unk_00 = 0);
         }
-        func_800198C4(D_8013BE30.unk_00);
+        setMemoryCardChannel(D_8013BE30.unk_00);
         D_8013AE88->data18 = 1;
         break;
     case 1:

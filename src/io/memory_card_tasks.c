@@ -62,9 +62,7 @@ void resetMemoryCardTaskState(void) {
     D_8013AF3E = 0;
 }
 
-/* DECOMP_ATTEMPT: inline 7/10 */
-#ifdef NON_MATCHING
-void func_800198C4(s32 channel) {
+void setMemoryCardChannel(s32 channel) {
     D_8013AF34 = channel;
     switch (channel) {
     case 0x10:
@@ -75,9 +73,6 @@ void func_800198C4(s32 channel) {
         break;
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/io/memory_card_tasks", func_800198C4);
-#endif
 
 s32 startMemoryCardReadStatusTask(void *buffer) {
     if (D_8013AF3E == 0) {
