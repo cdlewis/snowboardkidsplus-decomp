@@ -8,7 +8,7 @@ import struct
 
 from decomp import WORD, active_functions, require_fresh
 from build import get_settings
-from rank_library_functions import complexity, project_ranking
+from rank_library_functions import complexity, print_ranking, project_ranking
 
 
 def body_words(function):
@@ -123,9 +123,21 @@ def main():
     parser.add_argument("task", choices=("decompile-similar", "decompile-unmatched",
                                          "decompile-library"))
     parser.add_argument("--limit", type=int, help="limit candidates; default: all")
+    parser.add_argument("--references", metavar="FUNCTION",
+                        help="show the matched C references for a decompile-similar candidate")
     args = parser.parse_args()
     if args.limit is not None and args.limit < 1:
         parser.error("limit must be positive")
+    if args.references and args.task != "decompile-similar":
+        parser.error("--references requires decompile-similar")
+
+    if args.references:
+        rows = project_ranking(include_game=True, include_game_references=True, minimum=0.60,
+                               function_name=args.references)
+        print_ranking(rows, limit=1)
+        if not rows:
+            print(f"No ranked references for {args.references}.")
+        return
 
     require_fresh()
     functions = [f for f in active_functions(sdk=True)
@@ -135,15 +147,9 @@ def main():
     if args.task == "decompile-similar":
         rows = project_ranking(include_game=True, include_game_references=True, minimum=0.60)
         # Keep clear, high-scoring references first, followed by the wider queue
-        # in similarity order. The prompt already gives agents the alternatives.
+        # in similarity order. Nigel tracks the names across reference changes.
         rows.sort(key=lambda row: row["ambiguous"] or row["similarity"] < 0.75)
-        candidates = [
-            [row["name"],
-             f'{row["reference"]} ({row["reference_source"]}:{row["reference_line"]})',
-             *[f'{ref["name"]} ({ref["source"]}:{ref["line"]})'
-               for ref in row["alternatives"]]]
-            for row in rows if row["name"] in eligible
-        ]
+        candidates = [row["name"] for row in rows if row["name"] in eligible]
     elif args.task == "decompile-library":
         rows = project_ranking()
         priority = {row["name"]: index for index, row in enumerate(

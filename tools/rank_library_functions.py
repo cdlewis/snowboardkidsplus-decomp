@@ -170,7 +170,8 @@ def print_ranking(rows, *, as_json=False, limit=20):
 
 
 def project_ranking(*, include_game=False, include_game_references=False,
-                    extra_references=(), minimum=0.75, min_words=8, unattempted=False):
+                    extra_references=(), minimum=0.75, min_words=8, unattempted=False,
+                    function_name=None):
     require_fresh()
     image = PsxImage((ROOT / "disc/SLPS_018.23").read_bytes())
     project_pair = (MATCHING_ASM, ROOT / "src") if include_game_references else (
@@ -179,7 +180,8 @@ def project_ranking(*, include_game=False, include_game_references=False,
     pairs = [project_pair, *extra_references]
     references = load_references(pairs, image)
     candidates = [function for function in active_functions(sdk=True)
-                  if include_game or function.unit.parts[:2] == ("src", "syslib")]
+                  if (include_game or function.unit.parts[:2] == ("src", "syslib"))
+                  and (function_name is None or function.name == function_name)]
     if unattempted:
         sources = {unit: (ROOT / unit).read_text() for unit in {f.unit for f in candidates}}
         candidates = [function for function in candidates
