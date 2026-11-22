@@ -209,7 +209,7 @@ s32 requestPlayerAction11(void);
 s32 requestPlayerAction13(void);
 s32 requestPlayerAction14(void);
 s32 requestPlayerAction3(void);
-s32 func_8002CFF0(void);
+s32 requestPlayerAction9(void);
 s32 requestPlayerAction10(void);
 s32 requestPlayerAction1(void);
 s32 requestPlayerAction16(void);
@@ -1001,23 +1001,18 @@ s32 requestPlayerAction3(void) {
     return 0;
 }
 
-/* DECOMP_ATTEMPT: inline 16/20 */
-#ifdef NON_MATCHING
-s32 func_8002CFF0(void) {
-    u32 flags = D_8013B0D8->unk128;
-    s32 result;
-    do {
-        result = 1;
-        if (flags & 0x43000) break;
-        if (!(flags & 0x800)) { result = 1; break; }
-        if (D_8013B0E4 < 9) D_8013B0E4 = 9;
-        result = 0;
-    } while (0);
-    return result;
+s32 requestPlayerAction9(void) {
+    u32 flags = currentPlayerAbsolute->unk128;
+    if (!(flags & 0x43000)) {
+        if (flags & 0x800) {
+            if (D_8013B0E4 < 9) {
+                D_8013B0E4 = 9;
+            }
+            return 0;
+        }
+    }
+    return 1;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002CFF0);
-#endif
 
 s32 requestPlayerAction10(void) {
     u32 flags = currentPlayerAbsolute->unk128;
@@ -1172,11 +1167,11 @@ s16 processCurrentPlayerActionRequests(s16 suppressWallAction) {
         if ((pending & 0x200) && !suppressWallAction) {
             currentPlayerAbsolute->unk0E8 = pending | 1;
         }
-        if ((currentPlayerAbsolute->unk0E8 & 1) && func_8002CFF0() &&
+        if ((currentPlayerAbsolute->unk0E8 & 1) && requestPlayerAction9() &&
             requestCurrentPlayerAction6() && checkCurrentPlayerFlags43040OrAngleRange()) {
             requestPlayerAction1();
         }
-        if ((currentPlayerAbsolute->unk0E8 & 2) && func_8002CFF0()) {
+        if ((currentPlayerAbsolute->unk0E8 & 2) && requestPlayerAction9()) {
             requestCurrentPlayerAction6NarrowAngle();
         }
         if (currentPlayerAbsolute->unk0E8 & 0x800) {

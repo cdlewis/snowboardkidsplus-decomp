@@ -3980,6 +3980,7 @@ requestPlayerAction11 = 0x8002CEE0; // type:func
 requestPlayerAction13 = 0x8002CF24; // type:func
 requestPlayerAction14 = 0x8002CF68; // type:func
 requestPlayerAction3 = 0x8002CFAC; // type:func
+requestPlayerAction9 = 0x8002CFF0; // type:func
 requestPlayerAction10 = 0x8002D040; // type:func
 requestPlayerAction1 = 0x8002D120; // type:func
 requestPlayerAction16 = 0x8002D1B8; // type:func
