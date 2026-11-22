@@ -1595,23 +1595,16 @@ const GridSpriteEntry *func_800736D0(const GridSpriteEntry *records, const u8 *i
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_800736D0);
 #endif
 
-/* DECOMP_ATTEMPT: inline 12/13 */
-#ifdef NON_MATCHING
-u32 func_80073708(const u32 *entries, const u8 *remap, s16 index) {
-    s32 mapped;
-    const u32 *entry;
+u32 getMappedMenuWord(const u32 *entries, const u8 *remap, s16 index) {
+    u32 offset;
+
     if (remap == NULL) {
-        mapped = index;
-        entry = &entries[mapped];
+        offset = index * sizeof(*entries);
     } else {
-        mapped = remap[index];
-        entry = &entries[mapped];
+        offset = remap[index] * sizeof(*entries);
     }
-    return *entry;
+    return *(const u32 *)(offset + (u32)entries);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80073708);
-#endif
 
 s16 mapMenuByteIndex(const u8 *table, s16 index) {
     s32 value;
