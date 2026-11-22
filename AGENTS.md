@@ -167,6 +167,10 @@ changes to the reference.
 Do not write unit tests unless directly instructed by the user.
 Do not edit README files unless directly instructed by the user.
 
+Write explanatory comments only when the code or behavior is non-obvious and
+the comment adds useful context for a reader. Make comments understandable on
+their own. Avoid addressing the task prompt or assuming the reader has seen it.
+
 ### Use C and proper SDK macros
 
 Use authored SDK assembly only when an established PSX decomp explicitly treats
