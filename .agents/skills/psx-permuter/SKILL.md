@@ -16,13 +16,22 @@ wrapper, and runs a bounded local search:
 
 ```sh
 ./tools/permuter FUNCTION -s nonmatchings/FUNCTION/attempt.c -j 2 --seconds 300
+./tools/permuter https://decomp.me/scratch/SCRATCH_ID --prepare-only
 ```
+
+Local attempts accept a function name or its generated assembly path.
+Pass a decomp.me scratch ID or URL to use its C source and context with the
+target bytes and compiler settings from this repository. Use
+`--preserve-macros 'gte_.*|setRGB0'` to keep those PSX SDK calls visible to the
+permuter.
 
 Use `--prepare-only` to inspect the imported files before searching. Experiments
 live under a new `nonmatchings/FUNCTION[-N]/permuter/`; the input is preserved as
-`original.c`. The default dependency is `../decomp-permuter`; override it with
-`--permuter-dir` or `DECOMP_PERMUTER`. Install its Python dependencies in the
-project's `.venv` (`toml`, optionally `Levenshtein` for `--algorithm levenshtein`).
+`original.c`. The launcher looks for decomp-permuter in `tools/decomp-permuter`,
+`../decomp-permuter`, and `../snowboardkids-decomp/tools/decomp-permuter`, in
+that order. Override discovery with `--permuter-dir` or `DECOMP_PERMUTER`.
+Install its Python dependencies in the project's `.venv` (`toml`, optionally
+`Levenshtein` for `--algorithm levenshtein`).
 Timeout returns 124 and Ctrl-C returns 130, preserving candidate outputs.
 A zero score is not proof of linked bytes matching.
 

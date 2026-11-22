@@ -2,10 +2,12 @@
 """Prepare and run bounded decomp-permuter searches with the real PSX pipeline."""
 
 import argparse
+from importlib import import_module
 import json
 import math
 import os
 from pathlib import Path
+import re
 import shlex
 import shutil
 import signal
@@ -14,7 +16,7 @@ import sys
 import tempfile
 
 import build
-from decomp_env import bootstrap, check_image, resolve_function
+from decomp_env import bootstrap, check_image, fetch_scratch, resolve_function, scratch_id
 
 ROOT = build.ROOT
 
@@ -23,31 +25,57 @@ def compile_candidate(workspace, source, output):
     metadata = json.loads((workspace / "workspace.json").read_text())
     # Workers must never share intermediate preprocessor/assembler outputs.
     with tempfile.TemporaryDirectory(prefix="psx-permuter-") as scratch:
-        obj = build.compile_c(source, True, output_root=Path(scratch),
+        scratch = Path(scratch)
+        # PERMUTER preprocessing suppresses the SDK assembler macro prelude.
+        candidate = scratch / "candidate.c"
+        include_path = json.dumps(str(source), ensure_ascii=False)
+        candidate.write_text(f'#include "include_asm.h"\n#include {include_path}\n')
+        obj = build.compile_c(candidate, True, output_root=scratch,
                               unit_path=Path(metadata["unit"]),
                               only_function=metadata["function"])
         shutil.copyfile(obj, output)
 
 
-def prepare(args, permuter):
-    check_image()
-    oracle = resolve_function(args.function, args.unit)
-    source = args.source_file.resolve()
-    if not source.is_file():
+def prepare(args, permuter, scratch):
+    function = args.function
+    imported_source = None
+    context = ""
+    if scratch:
+        function, imported_source, context = fetch_scratch(scratch)
+        imported_source = f"// Imported from https://decomp.me/scratch/{scratch}\n\n" + imported_source
+    oracle = resolve_function(function, args.unit)
+    source = args.source_file.resolve() if args.source_file else None
+    if source is not None and not source.is_file():
         raise ValueError(f"source does not exist: {source}")
-    workspace = bootstrap(oracle, None)
+    workspace = bootstrap(oracle, None, imported_source)
     experiment = workspace / "permuter"
     experiment.mkdir()
-    shutil.copyfile(source, experiment / "original.c")
+    original = experiment / "original.c"
+    if context.strip():
+        original.write_text(context + "\n\n" + imported_source)
+        source = original
+    else:
+        source = source or workspace / "base.c"
+        shutil.copyfile(source, original)
     settings = build.get_settings(oracle.unit, oracle.name, comparison=True)
     # Flatten real project headers once. PERM_* invocations survive cpp and are
     # expanded by decomp-permuter before compile.sh sees each candidate.
-    subprocess.run([settings["CPP"], *settings["CPP_FLAGS"], "-DNON_MATCHING",
-                    "-DPERMUTER", "-I" + str(source.parent),
-                    "-I" + str((ROOT / oracle.unit).parent), "-P", str(source),
-                    "-o", str(experiment / "base.c")], cwd=ROOT, check=True)
+    cpp = [settings["CPP"], *settings["CPP_FLAGS"], "-DNON_MATCHING", "-DPERMUTER",
+           "-I" + str(source.parent), "-I" + str((ROOT / oracle.unit).parent),
+           "-P", str(source)]
+    base = experiment / "base.c"
+    if args.preserve_macros:
+        sys.path.insert(0, str(permuter))
+        importer = import_module("import")
+        pragmas = import_module("src.ast_util")
+        preserve = importer.build_preserve_macros(str(ROOT), args.preserve_macros, {})
+        preprocessed, macros = importer.preprocess_c_with_macros(cpp, ROOT, preserve)
+        base.write_text(preprocessed)
+        print("Preserved macros: " + (", ".join(macros) or "(none found)"), flush=True)
+    else:
+        subprocess.run([*cpp, "-o", str(base)], cwd=ROOT, check=True)
     subprocess.run([sys.executable, str(permuter / "strip_other_fns.py"),
-                    str(experiment / "base.c"), oracle.name], check=True)
+                    str(base), oracle.name], check=True)
     shutil.copyfile(workspace / "target.o", experiment / "target.o")
     shutil.copyfile(workspace / "workspace.json", experiment / "workspace.json")
     command = shlex.join([sys.executable, str(ROOT / "tools/permuter.py"),
@@ -60,8 +88,12 @@ def prepare(args, permuter):
         '\nobjdump_command = ' + json.dumps(shlex.join(
             [settings["CROSS"] + "objdump", "-drz", "-m", "mips:3000"])) + '\n')
     # Smoke-test the exact wrapper used by workers before starting a search.
-    subprocess.run([str(wrapper), str(experiment / "base.c"), "-o",
-                    str(experiment / "base.o")], cwd=ROOT, check=True)
+    smoke_source = base
+    if args.preserve_macros:
+        smoke_source = experiment / "smoke.c"
+        smoke_source.write_text(pragmas.process_pragmas(base.read_text()))
+    subprocess.run([str(wrapper), str(smoke_source), "-o", str(experiment / "base.o")],
+                   cwd=ROOT, check=True)
     print(f"Prepared experiment: {experiment}", flush=True)
     print("Scores are search hints. Check winners with tools/match_function.py; "
           "integration still requires the full-image gate.", flush=True)
@@ -71,7 +103,10 @@ def prepare(args, permuter):
 def run_search(args, permuter, experiment):
     command = [sys.executable, str(permuter / "permuter.py"), "-j", str(args.jobs),
                "--best-only", "--stop-on-zero", "--stack-diffs", "--algorithm",
-               args.algorithm, str(experiment)]
+               args.algorithm]
+    if args.quiet:
+        command.append("--quiet")
+    command.append(str(experiment))
     # A separate process group lets timeout/Ctrl-C stop workers and compilers too.
     process = subprocess.Popen(command, cwd=ROOT, start_new_session=True)
     try:
@@ -100,15 +135,18 @@ def main():
         compile_candidate(args.compile, args.source.resolve(), args.o.resolve())
         return 0
 
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("function", help="function name or generated assembly path")
-    parser.add_argument("-s", "--source-file", type=Path, required=True,
-                        help="C attempt using real project headers")
+    parser = argparse.ArgumentParser(prog="tools/permuter", description=__doc__)
+    parser.add_argument("function", help="function name, generated assembly path, or decomp.me scratch ID/URL")
+    parser.add_argument("-s", "--source-file", type=Path,
+                        help="C attempt for a local function or assembly path")
     parser.add_argument("--unit", type=Path, help="owning repository-relative C unit")
     parser.add_argument("--permuter-dir", type=Path,
-                        default=Path(os.environ.get("DECOMP_PERMUTER", ROOT.parent / "decomp-permuter")),
-                        help="decomp-permuter checkout (default: ../decomp-permuter or DECOMP_PERMUTER)")
+                        default=os.environ.get("DECOMP_PERMUTER"),
+                        help="decomp-permuter checkout (overrides DECOMP_PERMUTER and checkout discovery)")
     parser.add_argument("--prepare-only", action="store_true")
+    parser.add_argument("--preserve-macros", metavar="REGEX",
+                        help="preserve matching SDK macros, for example 'gte_.*'")
+    parser.add_argument("--quiet", action="store_true", help="suppress search updates")
     parser.add_argument("-j", "--jobs", type=int, default=2)
     parser.add_argument("--seconds", type=float, default=300,
                         help="search time limit in seconds (default: 300)")
@@ -116,14 +154,29 @@ def main():
     args = parser.parse_args()
     if args.jobs < 1 or not math.isfinite(args.seconds) or args.seconds <= 0:
         parser.error("jobs and seconds must be positive finite values")
-    permuter = args.permuter_dir.resolve()
-    for name in ("permuter.py", "strip_other_fns.py"):
+    if args.preserve_macros:
+        try:
+            re.compile(f"^(?:{args.preserve_macros})$")
+        except re.error as error:
+            parser.error(f"invalid --preserve-macros regex: {error}")
+    checkouts = [ROOT / "tools/decomp-permuter", ROOT.parent / "decomp-permuter",
+                 ROOT.parent / "snowboardkids-decomp/tools/decomp-permuter"]
+    required_scripts = ("permuter.py", "strip_other_fns.py")
+    permuter = (args.permuter_dir or next(
+        (path for path in checkouts if all((path / name).is_file() for name in required_scripts)),
+        checkouts[1],
+    )).resolve()
+    for name in required_scripts:
         if not (permuter / name).is_file():
             parser.error(f"missing {permuter / name}; supply --permuter-dir or DECOMP_PERMUTER")
     # Check dependencies before creating an experiment.
     subprocess.run([sys.executable, str(permuter / "permuter.py"), "--help"],
                    stdout=subprocess.DEVNULL, check=True)
-    experiment = prepare(args, permuter)
+    check_image()
+    scratch = scratch_id(args.function) if args.source_file is None else None
+    if not scratch and args.source_file is None:
+        parser.error("local functions and assembly paths require -s/--source-file")
+    experiment = prepare(args, permuter, scratch)
     return 0 if args.prepare_only else run_search(args, permuter, experiment)
 
 

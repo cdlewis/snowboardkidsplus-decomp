@@ -55,7 +55,10 @@ def fetch_scratch(identifier):
         raise ValueError("decomp.me scratch has no valid function diff_label")
     if not isinstance(source, str) or not source.strip():
         raise ValueError("decomp.me scratch has no source_code")
-    return label.removesuffix(".s"), source
+    context = scratch.get("context")
+    if context is not None and not isinstance(context, str):
+        raise ValueError("decomp.me scratch has an invalid context")
+    return label.removesuffix(".s"), source, context or ""
 
 
 def check_image():
@@ -300,7 +303,7 @@ def main():
     if scratch:
         if args.id is not None:
             parser.error("--id cannot be used when importing a decomp.me scratch")
-        function, imported_source = fetch_scratch(scratch)
+        function, imported_source, _ = fetch_scratch(scratch)
         imported_source = f"// Imported from https://decomp.me/scratch/{scratch}\n\n" + imported_source
     oracle = resolve_function(function, args.unit)
     workspace = bootstrap(oracle, args.id, imported_source)
