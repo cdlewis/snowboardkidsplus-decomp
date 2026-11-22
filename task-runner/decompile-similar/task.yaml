@@ -20,13 +20,10 @@ prompt: >-
   and candidate-only data scoped so both build modes compile.
   Run ./tools/build-and-verify.sh --expected --objects --non-matching to verify
   the default executable and compile the partial C comparison objects.
-  Leave verified exact or annotated partial C for the task runner
-  to commit. If no usable measured implementation can be integrated, preserve
-  the scratch attempts and report the blocker.
+  Commit verified exact or annotated partial C yourself using the tracked
+  validation hook and include the commit hash in your final report. If no usable
+  measured implementation can be integrated, preserve the scratch attempts
+  and report the blocker.
 agent: codex
 agent_flags: --config model_reasoning_effort='"xhigh"'
-success_command: >-
-  function_name=$(python3 -c 'import json, sys; print(json.loads(sys.argv[1])[0])' $CANDIDATE) &&
-  ./tools/install-git-hooks.sh &&
-  git add -A && git commit -m "Decompile $function_name"
 timeout: 180m

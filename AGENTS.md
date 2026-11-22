@@ -122,9 +122,12 @@ these annotations, and the docs report reads them directly.
 
 #### Step 3: Finish the requested work
 
-Report the result and verification. Commit only when requested. Before a commit,
-stage the complete build-input change and use the tracked validation hook.
-Fix a failed hook; never bypass it. Stay within the user's requested scope.
+Report the result and verification. For Nigel decompilation tasks, commit the
+verified changes yourself before reporting the result and include the commit
+hash. The task prompt authorizes the commit. For manual work, commit only when
+requested. Run `./tools/install-git-hooks.sh` before committing and stage the
+complete build-input change. Fix a failed hook and retry. Stay within the
+user's requested scope.
 
 #### When to stop
 

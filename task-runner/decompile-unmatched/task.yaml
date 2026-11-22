@@ -7,5 +7,7 @@ prompt: >-
   appropriate. Preserve useful attempts and obey tool stop instructions. Only
   integrate exact C and verify the complete executable with
   ./tools/build-and-verify.sh --expected --objects before declaring a match.
+  Commit the verified changes yourself using the tracked validation hook.
+  Include the commit hash in your final report.
 agent: codex
 timeout: 20m
