@@ -717,6 +717,7 @@ void initializeAlternateCountedTaskResourcePair(void) {
 extern const u8 D_801317D0[];
 extern const u8 D_8013B49C[];
 extern const u8 D_8013B4B0[];
+extern u8 saveRecordMenuRememberedSelectionGp;
 
 void func_8008DDC0(void) {
     MoneyMenuSelection *selection;
@@ -739,10 +740,10 @@ void func_8008DDC0(void) {
         mode = 1;
         setMusicSequenceEnabled(mode);
         selection->mode = 0;
-        if (D_8013B4BC != 0) {
-            selection->selectedIndex = D_8013B4BC - 1;
+        if (saveRecordMenuRememberedSelectionGp != 0) {
+            selection->selectedIndex = saveRecordMenuRememberedSelectionGp - 1;
         } else {
-            selection->selectedIndex = D_8013B4BC;
+            selection->selectedIndex = saveRecordMenuRememberedSelectionGp;
         }
         selection->previousIndex = selection->selectedIndex;
         selection->choiceResult = 0;
@@ -762,7 +763,7 @@ void func_8008DDC0(void) {
             moveTaskChildrenWithSpacing(0, entries[0].task, -0x80000, -0x50000, 0x1E000, 0, 1);
             configureMovement2D((Movement2D *)&D_800D9504[entries[1].task->resource14],
                                 -0x8C000, 0x8000, 0x1E000, 0, 4);
-            if (D_8013B4BC == 0) {
+            if (saveRecordMenuRememberedSelectionGp == 0) {
                 s16 i;
                 s16 hasUnavailableBoards = 0;
 
@@ -797,7 +798,7 @@ void func_8008DDC0(void) {
         }
         break;
     case 4:
-        if (D_8013B4BC == 0) {
+        if (saveRecordMenuRememberedSelectionGp == 0) {
             playSoundEffect(0, 2, 32);
         }
         D_8013AE88->data18 = 5;
@@ -837,9 +838,9 @@ returnToParentMenu:
                 break;
             }
             if (D_8013AE98->data18 == 11) {
-                D_8013B4BC = 0;
+                saveRecordMenuRememberedSelectionGp = 0;
             } else {
-                D_8013B4BC = selection->selectedIndex + 1;
+                saveRecordMenuRememberedSelectionGp = selection->selectedIndex + 1;
             }
             if (selection->choiceResult < 0) {
                 goto finishChoice;
