@@ -1694,7 +1694,7 @@ void updateCurrentPlayerItemUse(u16 playerIndex) {
         func_8002E5A0(playerIndex, 13);
         goto clearItem;
     case 1:
-        func_8001496C(&gGameTasks[4], initializeOrbitingPlayerVisualTask);
+        tryCreateChildTaskForParentWith20SlotsReserved(&gGameTasks[4], initializeOrbitingPlayerVisualTask);
         D_8013AE8C->data18 = playerIndex;
         currentPlayerAbsolute->heldItem = 0;
         return;
@@ -1715,13 +1715,13 @@ void updateCurrentPlayerItemUse(u16 playerIndex) {
         goto clearItem;
     }
     case 3:
-        func_8001496C(&gGameTasks[4], initializeFallingTaskObject);
+        tryCreateChildTaskForParentWith20SlotsReserved(&gGameTasks[4], initializeFallingTaskObject);
         D_8013AE8C->data18 = playerIndex;
         func_800183FC(D_8013AE88->data18, 1, 2, 32);
         goto clearItem;
     case 4:
         if (!currentPlayerAbsolute->unk008) {
-            func_8001496C(&gGameTasks[4], initializeSlidingVisualSequenceTask);
+            tryCreateChildTaskForParentWith20SlotsReserved(&gGameTasks[4], initializeSlidingVisualSequenceTask);
             D_8013AE8C->data18 = playerIndex;
         }
     clearItem:

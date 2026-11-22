@@ -631,7 +631,7 @@ void initializePlayerVisualHistory(TaskVisualResource *resource, VECTOR *vectors
         entry->pad = 0;
     }
     D_8013AE88->data1A = 0;
-    func_8001496C(&gGameTasks[4], initializePlayerSideVisualTask);
+    tryCreateChildTaskForParentWith20SlotsReserved(&gGameTasks[4], initializePlayerSideVisualTask);
     D_8013AE8C->data18 = D_8013AE88->data18;
 }
 

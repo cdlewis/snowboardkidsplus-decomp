@@ -3974,6 +3974,7 @@ sXaFilter = 0x8013B5F4; // size:0x4
 
 createChildTaskForParent = 0x800148F4; // type:func
 createChildTaskForParentWithReserve = 0x80014930; // type:func
+tryCreateChildTaskForParentWith20SlotsReserved = 0x8001496C; // type:func
 requestPlayerAction8 = 0x8002CE58; // type:func
 requestPlayerAction12 = 0x8002CE9C; // type:func
 requestPlayerAction11 = 0x8002CEE0; // type:func

@@ -152,14 +152,15 @@ s16 createChildTaskForParentWithReserve(GameTask *parent, TaskCallback callback)
     return result;
 }
 
-/* DECOMP_ATTEMPT: inline 10/15 */
-#ifdef NON_MATCHING
-s32 tryCreateChildTaskWith20SlotsReserved(TaskCallback callback);
+s16 tryCreateChildTaskForParentWith20SlotsReserved(GameTask *parent, TaskCallback callback) {
+    GameTask *previous = D_8013AE88;
+    s16 result;
 
-s16 func_8001496C(GameTask *parent, TaskCallback callback) {     GameTask *previous = D_8013AE88;     s16 result;      D_8013AE88 = parent;     result = tryCreateChildTaskWith20SlotsReserved(callback);     D_8013AE88 = previous;     return result; }
-#else
-INCLUDE_ASM("asm/nonmatchings/engine/task_scheduler", func_8001496C);
-#endif
+    D_8013AE88 = parent;
+    result = tryCreateChildTaskWith20SlotsReserved(callback);
+    D_8013AE88 = previous;
+    return result;
+}
 
 void deleteCurrentTaskSubtree(void) {
     GameTask *task = D_8013AE88;

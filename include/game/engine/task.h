@@ -94,7 +94,7 @@ s32 createChildTaskWithReserve(TaskCallback callback);
 s32 tryCreateChildTaskWith20SlotsReserved(TaskCallback callback);
 s16 createChildTaskForParent(GameTask *parent, TaskCallback callback);
 s16 createChildTaskForParentWithReserve(GameTask *parent, TaskCallback callback);
-s16 func_8001496C(GameTask *parent, TaskCallback callback);
+s16 tryCreateChildTaskForParentWith20SlotsReserved(GameTask *parent, TaskCallback callback);
 void deleteCurrentTaskSubtree(void);
 void deleteCurrentTaskDescendants(void);
 void deletePendingTaskSubtree(void);

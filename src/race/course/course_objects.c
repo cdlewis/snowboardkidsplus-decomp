@@ -454,7 +454,7 @@ void func_80058BD4(void) {
         }
         if ((u8)type < 7) {
             if ((u8)type != 5 && !((type == 2 || type == 3) && D_8013AFE2)) {
-                func_8001496C(&gGameTasks[4], initializePlacedObjectTask);
+                tryCreateChildTaskForParentWith20SlotsReserved(&gGameTasks[4], initializePlacedObjectTask);
                 D_8013AE8C->resource14 = allocateTaskResource();
                 if ((u32)(D_8013B2BC[i].unk01 - 2) < 2) {
                     D_8013AE8C->resource16 = allocateTaskResource();
@@ -518,7 +518,7 @@ void func_80058BD4(void) {
                 if (((VisualPlacement *)D_8013B2C0)[i].unk01 == 255) {
                     goto createVisualTasks;
                 }
-                func_8001496C(&gGameTasks[4], initializeCollectibleTask);
+                tryCreateChildTaskForParentWith20SlotsReserved(&gGameTasks[4], initializeCollectibleTask);
                 D_8013AE8C->data18 = i;
                 i++;
             }
