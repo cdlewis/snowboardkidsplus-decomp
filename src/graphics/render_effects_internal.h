@@ -947,6 +947,7 @@ void drawLoweringQuadStripTask(void);
 void drawSlidingQuadTask(void);
 void drawFallingParticlesTask(void);
 void drawPlayerParticlesTask(void);
+void clearPlayerSnapshotTasks(void);
 void createPlayerSnapshotTrailTask(TaskCallback callback);
 void drawPlayerSnapshotTrailTask(void);
 void drawTrickTriangleRingTask(void);

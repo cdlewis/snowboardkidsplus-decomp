@@ -686,21 +686,13 @@ void initializeRacePlayerEffects(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: inline 15/18 */
-#ifdef NON_MATCHING
-void deleteCurrentTaskDescendants(void);
-
-void func_800612BC(void)
-{
-  GameTask *savedTask = D_8013AE88;
-  D_8013AE88 = D_8013B304;
- do { deleteCurrentTaskDescendants(); } while (0);
-  D_8013AE88 = savedTask;
-  gPlayerSnapshotTrailCount = 0;
+void clearPlayerSnapshotTasks(void) {
+    GameTask *savedTask = D_8013AE88;
+    D_8013AE88 = playerSnapshotTaskGp;
+    deleteCurrentTaskDescendants();
+    D_8013AE88 = savedTask;
+    playerSnapshotTrailCountGp = 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_800612BC);
-#endif
 
 void createPlayerSnapshotTrailTask(TaskCallback callback) {
     createChildTaskForParentWithReserve(playerSnapshotTaskGp, callback);

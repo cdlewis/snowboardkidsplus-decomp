@@ -3837,6 +3837,7 @@ drawStatsMenuValues = 0x8003AAE0; // type:func
 gStatsTrickLabel = 0x8013B144; // size:0x8 defined:true
 gStatsMakeLabel = 0x8013B14C; // size:0x8 defined:true
 
+clearPlayerSnapshotTasks = 0x800612BC; // type:func
 createPlayerSnapshotTrailTask = 0x80061304; // type:func
 drawPlayerSnapshotTrailTask = 0x80061348; // type:func
 gPlayerSnapshotTrailCount = 0x8013B300; // size:0x4 defined:true
