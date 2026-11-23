@@ -1,0 +1,32 @@
+candidate_source: python3 tools/task_candidates.py decompile-duos
+prompt: >-
+  Match $INPUT[0] and then $INPUT[1] in this single Codex run. Follow AGENTS.md
+  and the repo-local .agents/skills/psx-match-function/SKILL.md workflow.
+  Start with a green ./tools/build-and-verify.sh and run
+  python3 tools/task_candidates.py decompile-duos --duo-status
+  to find the current names, source locations, and baseline attempt scores.
+  Skip a member that already has exact C. For each remaining member, use
+  ./tools/codex --bootstrap-only --id $TASK_ID with its current symbol and
+  start with its existing inline C. Use separate scratch workspaces and
+  preserve each function's own measured results. Work on the first member for
+  at most half of the 30-minute task, then move to the second. Apply any shared
+  type, compiler, and reference findings from the first member to the second.
+  Preserve useful attempts and obey tool stop instructions for each member.
+  Replace a fallback when its C matches exactly. For a strictly improved
+  measured partial, keep the fallback and use the repo's NON_MATCHING guard
+  and DECOMP_ATTEMPT annotation. For each member's source changes, verify the
+  executable and comparison objects with
+  ./tools/build-and-verify.sh --expected --objects --non-matching and commit
+  through the tracked validation hook. Commit the first member's verified
+  changes before bootstrapping the second so the first result survives if the
+  second stalls.
+  Report each member as exact, improved partial with before and after word
+  counts, or unchanged with its best archived attempt and blocker. Include the
+  commit hashes when changes were committed.
+agent: codex
+accept_best_effort: true
+success_command: >-
+  ./tools/build-and-verify.sh --expected --objects --non-matching &&
+  ./tools/install-git-hooks.sh &&
+  git add -A && git commit -m "Decompile function duo" -m $CANDIDATE
+timeout: 30m

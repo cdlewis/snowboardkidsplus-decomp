@@ -9,12 +9,51 @@ from hashlib import sha256
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 
-from decomp import ROOT, WORD, active_functions, require_fresh
+from decomp import ROOT, WORD, Elf32, active_functions, require_fresh
 from build import get_settings
-from rank_library_functions import complexity, print_ranking, project_ranking
+from progress_attempts import MARKER, read_attempts
+from rank_library_functions import complexity, print_ranking, project_ranking, source_definition
 
 
 SIMILAR_CACHE = ROOT / "nonmatchings/.similar-references.json"
+# Store the original addresses so Nigel's candidate key survives a match or rename.
+DECOMPILE_DUOS = (
+    ("src/graphics/sprite_draw.c", (0x8006EF30, 0x8006F248)),
+)
+
+
+def duo_statuses():
+    active = {function.address: function for function in active_functions(sdk=True)}
+    attempts = read_attempts(ROOT)
+    linked = Elf32(ROOT / "build/slps_018.23.elf").symbols
+    duos = []
+    for unit_name, addresses in DECOMPILE_DUOS:
+        duo = []
+        source = (ROOT / unit_name).read_text()
+        for address in addresses:
+            target = f"func_{address:08X}"
+            if fallback := active.get(address):
+                attempt = attempts[fallback.unit, fallback.name]
+                lines = (ROOT / fallback.unit).read_text().splitlines()
+                marker = MARKER.fullmatch(lines[attempt.line - 1].strip())
+                duo.append({"target": target, "status": "fallback", "symbol": fallback.name,
+                            "source": f"{fallback.unit}:{attempt.line}", "attempt": marker[1]})
+                continue
+            for symbol in linked.values():
+                if symbol.kind == 2 and symbol.address == address:
+                    if line := source_definition(source, symbol.name):
+                        duo.append({"target": target, "status": "exact", "symbol": symbol.name,
+                                    "source": f"{unit_name}:{line}"})
+                        break
+            else:
+                duo.append({"target": target, "status": "unresolved", "source": unit_name})
+        duos.append(duo)
+    return duos
+
+
+def duos_with_remaining_work(duos):
+    return [[member["target"] for member in duo]
+            for duo in duos if any(member["status"] != "exact" for member in duo)]
 
 
 def similar_inputs():
@@ -173,15 +212,19 @@ def is_c_candidate(function):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("task", choices=("decompile-similar", "decompile-unmatched",
-                                         "decompile-library"))
+                                         "decompile-library", "decompile-duos"))
     parser.add_argument("--limit", type=int, help="limit candidates; default: all")
     parser.add_argument("--references", metavar="FUNCTION",
                         help="show the matched C references for a decompile-similar candidate")
+    parser.add_argument("--duo-status", action="store_true",
+                        help="show the current source and match status for each decompile-duos member")
     args = parser.parse_args()
     if args.limit is not None and args.limit < 1:
         parser.error("limit must be positive")
     if args.references and args.task != "decompile-similar":
         parser.error("--references requires decompile-similar")
+    if args.duo_status and args.task != "decompile-duos":
+        parser.error("--duo-status requires decompile-duos")
 
     if args.references:
         row = similar_reference_row(args.references)
@@ -192,6 +235,12 @@ def main():
         return
 
     require_fresh()
+    if args.task == "decompile-duos":
+        duos = duo_statuses()
+        results = duos if args.duo_status else duos_with_remaining_work(duos)
+        print(json.dumps(results[:args.limit], indent=2))
+        return
+
     functions = [f for f in active_functions(sdk=True)
                  if is_c_candidate(f)]
     eligible = {f.name for f in functions}
