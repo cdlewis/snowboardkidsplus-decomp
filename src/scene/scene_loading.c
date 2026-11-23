@@ -91,7 +91,7 @@ void initializeScenePlaybackResourcesTask(void) {
     D_8013AFE4 &= ~0x200;
     configureTaskStateTransition(0, 0, 0);
     closeMusicSequence();
-    func_8001816C();
+    closeAllSoundBanks();
 
     queueCdSectorCommand(0, DAT_MODE11_RESOURCE_07CD_SECTOR, DAT_MODE11_RESOURCE_07CD_SECTOR_COUNT, DAT_SCRATCH, 0);
     queueCdSectorCommand(3, DAT_MODE11_RESOURCE_0801_SECTOR, DAT_MODE11_RESOURCE_0801_SECTOR_COUNT, DAT_SOUND_HEADER_0, 0);

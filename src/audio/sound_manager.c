@@ -202,11 +202,7 @@ void stopAllSoundVoices(void) {
     SsUtAllKeyOff(0);
 }
 
-/* DECOMP_ATTEMPT: inline 15/17 */
-#ifdef NON_MATCHING
-void stopAllSoundVoices(void);
-
-void func_8001816C(void) {
+void closeAllSoundBanks(void) {
     u32 bank;
 
     stopAllSoundVoices();
@@ -214,9 +210,6 @@ void func_8001816C(void) {
         func_800180F4((u8)bank);
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/audio/sound_manager", func_8001816C);
-#endif
 
 s32 playSoundEffect(u8 bank, u16 programAndTone, s16 volume) {
     u16 note = programAndTone;
