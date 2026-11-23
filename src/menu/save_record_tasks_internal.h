@@ -106,7 +106,7 @@ void func_800857C4(void);
 void updatePlayerGroupedSelectionMenu(void);
 void updatePlayerGroupedSelectionTask(void);
 void updateRecordFlagSelectionMenuTask(void);
-void func_800815D0(void);
+void initRegisteredPlayerModels(void);
 void initializeDualResourceTaskAndResetByteState(void);
 void updatePlayerGroupedCourseSelectionTask(void);
 void updateRegisteredTripletTask(void);

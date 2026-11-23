@@ -1603,7 +1603,7 @@ static inline RegisteredPanelSlot *getPanelSlot(u32 resource, s32 index) {
 void createRegisteredPanelTask(s32 mode, s32 value, s16 x, s16 y, s16 depth, s32 index) {
     Movement2D *movement;
     RegisteredPanelSlot *slot;
-    createChildTaskWithReserve(func_800815D0);
+    createChildTaskWithReserve(initRegisteredPlayerModels);
     D_8013AE8C->data18 = mode;
     D_8013AE8C->data1A = value;
     D_8013AE8C->data1C = 0;
@@ -1625,35 +1625,21 @@ void createRegisteredPanelTask(s32 mode, s32 value, s16 x, s16 y, s16 depth, s32
     slot->task = D_8013AE8C;
 }
 
-/* DECOMP_ATTEMPT: inline 64/66 */
-#ifdef NON_MATCHING
-typedef struct TaskChildOrigin {
-    s32 x;
-    s32 y;
-    s16 unk08;
-} TaskChildOrigin;
-
-void updateRegisteredPlayerModels(void);
-void createRegisteredPlayerModelTask(s16 slot, s16 index, s16 mode, s16 x, s16 y, s16 value, s32 flags);
-
-void func_800815D0(void) {
-    TaskChildOrigin *resource;
+void initRegisteredPlayerModels(void) {
+    MenuPlayerModelPosition *position;
     s16 index;
+
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
-    }
-    else {
-    resource = (TaskChildOrigin *)&D_800D9504[D_8013AE88->resource14];
-    index = D_8013AE88->data18;
-    createRegisteredPlayerModelTask(index * 2, index, D_8013AE88->data1A,
-                   resource->x / 4096, resource->y / 4096, resource->unk08, 1);
-    createRegisteredPlayerModelTask(index * 2 + 1, index, 0, 320, 240, resource->unk08, 11);
-    setCurrentTaskCallback(updateRegisteredPlayerModels);
+    } else {
+        position = (MenuPlayerModelPosition *)&D_800D9504[D_8013AE88->resource14];
+        index = D_8013AE88->data18;
+        createRegisteredPlayerModelTask(index * 2, index, D_8013AE88->data1A,
+                                        position->x / 4096, position->y / 4096, position->z, 1);
+        createRegisteredPlayerModelTask(index * 2 + 1, index, 0, 320, 240, position->z, 11);
+        setCurrentTaskCallback(updateRegisteredPlayerModels);
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/menu/course_selection_tasks", func_800815D0);
-#endif
 
 static inline RegisteredTaskEntry *getRegisteredMenuTaskEntry(u16 resource, u32 index) {
     RegisteredTaskEntry *entries = (RegisteredTaskEntry *)&D_800D9504[resource];

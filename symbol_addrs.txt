@@ -3355,6 +3355,7 @@ isPointWithinCameraForwardRange = 0x8005143C; // type:func
 
 drawSemiTransparentTextureRectUV = 0x8007219C; // type:func
 
+initRegisteredPlayerModels = 0x800815D0; // type:func
 updateRegisteredPlayerModels = 0x800816D8; // type:func
 configureRegisteredChildMovement = 0x80081AC8; // type:func
 initRegisteredChildMovement = 0x80081BAC; // type:func
