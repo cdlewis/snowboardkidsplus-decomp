@@ -55,7 +55,7 @@ void drawPlayerFlagTaskVisual(TaskVisualResource *resource) {
     resource->coordinate.coord.t[2] = gRacePlayers[D_8013AE88->data18].worldCoordinate.coord.t[2] + D_800EB22C.vz;
     setTaskVisualFrame(resource, gPlayerFlagVisualFrames, 0x1800);
     drawCameraFacingTaskVisual(resource, 1);
-    func_80059290(resource);
+    advanceTaskVisualFrame(resource);
 }
 
 void initializeTaskCoordinateResource(void) {
@@ -133,7 +133,7 @@ void updatePlayerSideVisualTask(void) {
     setTaskVisualFrame((TaskVisualResource *)resource, gPlayerSideVisualFrames, 0x2000);
     drawCameraFacingTaskVisual((TaskVisualResource *)resource, 1);
     if (!D_8013AFD3) {
-        if (!func_80059290((TaskVisualResource *)resource)) {
+        if (!advanceTaskVisualFrame((TaskVisualResource *)resource)) {
             deleteCurrentTaskSubtree();
         }
     }
@@ -148,7 +148,7 @@ void updateOneShotTaskVisual(void) {
     setTaskVisualFrame(resource, D_80124304, 0x2000);
     drawCameraFacingTaskVisual(resource, 1);
     if (!D_8013AFD3) {
-        if (!func_80059290(resource)) {
+        if (!advanceTaskVisualFrame(resource)) {
             deleteCurrentTaskSubtree();
         }
     }

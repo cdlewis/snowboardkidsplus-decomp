@@ -259,7 +259,7 @@ void prepareTaskVisualQuad(TaskVisualResource *resource, TaskVisualFrame *frame,
 extern TaskVisualFrame D_80124304[];
 extern TaskVisualFrame D_80124354[];
 void drawCameraFacingTaskVisual(TaskVisualResource *resource, u8 mode);
-s16 func_80059290(TaskVisualResource *resource);
+s16 advanceTaskVisualFrame(TaskVisualResource *resource);
 void setTaskVisualFrame(TaskVisualResource *resource, TaskVisualFrame *frames,
                         s32 scale);
 void unpackPsxColor(u32 color, UnpackedPsxColor *out);

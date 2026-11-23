@@ -550,19 +550,14 @@ u16 getRenderCameraIndex(void) {
     return 0;
 }
 
-/* DECOMP_ATTEMPT: inline 15/19 */
-#ifdef NON_MATCHING
-s16 func_80059290(TaskVisualResource *resource) {
+s16 advanceTaskVisualFrame(TaskVisualResource *resource) {
     resource->framePosition += resource->unkC8;
-    if (resource->framePosition < resource->unkC6) {
-        return 1;
+    if (resource->framePosition >= resource->unkC6) {
+        resource->framePosition = (resource->framePosition - resource->unkC8) & 0xFF00;
+        return 0;
     }
-    resource->framePosition = (resource->framePosition - resource->unkC8) & 0xFF00;
-    return 0;
+    return 1;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/course/course_objects", func_80059290);
-#endif
 
 void drawTaskObject(u16 index) {
     GsDOBJ2 *object;
