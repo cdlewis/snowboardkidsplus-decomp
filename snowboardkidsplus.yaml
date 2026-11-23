@@ -144,7 +144,8 @@ segments:
       - {start: 0x22B8, type: .rodata, name: menu/course_selection_tasks, linker_section: .rodata.memory_card_slot_task}
       - {start: 0x22EC, type: .rodata, name: menu/course_selection_tasks, linker_section: .rodata.memory_card_slot_task_padding}
       - {start: 0x22F0, type: .rodata, name: menu/course_selection_tasks, linker_section: .rodata.save_record_task}
-      - [0x2318, rodata]
+      - {start: 0x2318, type: .rodata, name: menu/course_selection_tasks, linker_section: .rodata.save_record_load_panel}
+      - {start: 0x23FC, type: .rodata, name: menu/course_selection_tasks, linker_section: .rodata.save_record_load_panel_padding}
       - [0x2400, .rodata, menu/save_record_tasks]
       - {start: 0x2434, type: .rodata, name: menu/save_record_tasks, linker_section: .rodata.state_value_history_padding}
       - {start: 0x2438, type: .rodata, name: menu/save_record_tasks, linker_section: .rodata.memory_card_save_menu}

@@ -4,6 +4,7 @@
 #include "grouped_selection_internal.h"
 #include "game/engine/byte_search.h"
 #include "game/io/cd_queue.h"
+#include "game/io/controller.h"
 #include "game/menu/selected_records.h"
 #include "game/menu/selected_sprite.h"
 #include "game/menu/task_widgets.h"
@@ -36,6 +37,17 @@ typedef struct PlayerGroupedSelectionStatus {
     CourseSelectionResource selection;
     s16 unk08;
 } PlayerGroupedSelectionStatus;
+
+typedef struct SavePanelPosition {
+    Movement2D movement;
+    s16 cardSlot;
+} SavePanelPosition;
+
+typedef struct SavePanelResources {
+    RegisteredPanelSlot panels[5];
+    GameTask *countdown;
+    s16 command2C;
+} SavePanelResources;
 
 typedef struct GroupedSelectionMenuDescriptor {
     const u8 *mapping;
@@ -227,6 +239,9 @@ const u32 gGroupedSelectionMenuTablePadding
 const u32 gMemoryCardSlotTaskTablePadding
     __attribute__((section(".rodata.memory_card_slot_task_padding"))) = 0;
 
+const u32 gSaveRecordLoadPanelTablePadding
+    __attribute__((section(".rodata.save_record_load_panel_padding"))) = 0;
+
 StateValueHistory D_8013BE30 __attribute__((section(".bss.state_value_history")));
 
 extern const u16 *D_8012FC2C[10];
@@ -244,7 +259,11 @@ void transitionRegisteredPlayerModels(void);
 void transitionRegisteredPlayerModelsUp(void);
 void func_80083C3C(void);
 void createPaletteEntryCopyTask(s32 x, s32 y, s32 destination, s32 source, s32 index);
-void func_80087B84(void);
+extern const u16 D_80130308[], D_80130348[], D_801303CC[], D_8013052C[];
+extern const u16 D_8013066C[], D_801306EC[], D_80130780[];
+
+void updateSaveRecordLoadPanelTask(void);
+void drawSaveRecordPushAnyButtonPrompt(void);
 
 void updateCdAwareCourseSelectionTask(void) {
     s32 mode;
@@ -3486,7 +3505,7 @@ void resetUnlockNotificationStateForMode2(void) {
 void createSaveRecordSlotPanelTask(s16 slot, s32 x, s32 y, s16 depth, s32 index) {
     RegisteredPanelSlot *panel;
 
-    createChildTaskWithReserve(func_80087B84);
+    createChildTaskWithReserve(updateSaveRecordLoadPanelTask);
     D_8013AE8C->data18 = 0;
     D_8013AE8C->data1A = slot;
     D_8013AE8C->data1C = depth;
@@ -3510,27 +3529,7 @@ void createSaveRecordSlotPanelTask(s16 slot, s32 x, s32 y, s16 depth, s32 index)
     panel->task = D_8013AE8C;
 }
 
-/* DECOMP_ATTEMPT: inline 1121/1228 */
-#ifdef NON_MATCHING
-#include "game/io/controller.h"
-
-typedef struct SavePanelPosition {
-    Movement2D movement;
-    s16 cardSlot;
-} SavePanelPosition;
-
-typedef struct SavePanelResources {
-    RegisteredPanelSlot panels[5];
-    GameTask *countdown;
-    s16 command2C;
-} SavePanelResources;
-
-extern const u16 D_801302BC[], D_80130308[], D_80130348[], D_80130390[], D_801303CC[];
-extern const u16 D_8013052C[], D_8013066C[], D_801306EC[], D_80130770[], D_80130780[];
-extern const u16 D_801307AC[], D_80130800[];
-void drawSaveRecordPushAnyButtonPrompt(void);
-
-void func_80087B84(void) {
+void updateSaveRecordLoadPanelTask(void) {
     Movement2D *position;
     SavePanelPosition *menu;
     SavePanelResources *resources;
@@ -3538,8 +3537,9 @@ void func_80087B84(void) {
     CourseSelectionResource *selection;
     PlayerGroupedSelectionStatus *selections;
     s16 player, x, y, result, offset;
-    s16 accept;
-    GameTask *exitTask;
+    s32 accept;
+    GameTask *task;
+    u16 countdownStatus;
     GameTask *recordTask;
     s32 color;
     u8 padding[0x10];
@@ -3614,9 +3614,9 @@ void func_80087B84(void) {
         break;
     case 3:
         if (player >= D_8013AFCD) {
-            exitTask = D_8013AE88;
             selection->choiceResult = 1;
-            goto exitPanel;
+            D_8013AE88->data18 = 26;
+            break;
         }
         selection->choiceResult = 0;
         parentPanel->flags = 1;
@@ -3636,11 +3636,11 @@ void func_80087B84(void) {
             selection->choiceResult = -1;
             D_8013AE88->data18 = 14;
         } else if (result == 2) {
-            goto selectCard;
+            D_8013AE88->data18 = 30;
         } else if (result == 3) {
             goto resetRecord;
         } else {
-            D_8013AE88->data18 = 4;
+            goto showCardOptions;
         }
         break;
     case 30: {
@@ -3656,17 +3656,20 @@ void func_80087B84(void) {
         if (result == 0)
             break;
         if (result == 1) {
+        showCardOptions:
             D_8013AE88->data18 = 4;
+            break;
         } else if (result == 2) {
             menu->cardSlot = 0;
             goto inspectCard;
         } else if (result == 3) {
-            menu->cardSlot = 1;
-            goto inspectCard;
-        } else {
-            D_8013AE88->data18 = 30;
+            goto selectSecondCard;
         }
+        D_8013AE88->data18 = 30;
         break;
+    selectSecondCard:
+        menu->cardSlot = 1;
+        goto inspectCard;
     case 33:
         switch (D_8013BE30.current[menu->cardSlot]) {
         case 0:
@@ -3751,13 +3754,13 @@ void func_80087B84(void) {
         result = resources->panels[1].flags;
         if (result == 0)
             break;
-        if (result == accept) {
-            D_8013AE88->data18 = 30;
-            break;
-        }
+        if (result == accept)
+            goto retryUnformattedCard;
         if (result == 2)
             goto resetRecord;
-        goto selectCard;
+    retryUnformattedCard:
+        D_8013AE88->data18 = 30;
+        break;
     case 36:
         createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_80130348, menu->cardSlot, color,
                                               1, D_801307AC, D_8013AE88->data1C - 3, 11);
@@ -3771,9 +3774,13 @@ void func_80087B84(void) {
         result = resources->panels[1].flags;
         if (result == 0)
             break;
+        if (result == accept)
+            goto retryUnreadableCard;
         if (result == 2)
             goto resetRecord;
-        goto selectCard;
+    retryUnreadableCard:
+        D_8013AE88->data18 = 30;
+        break;
     case 42:
         card = (SaveRecord *)(MEMORY_CARD_SLOT_BUFFER_BASE + menu->cardSlot * MEMORY_CARD_SLOT_BUFFER_STRIDE);
         if (calculateByteSum((const u8 *)card, sizeof(*card) - sizeof(card->checksum)) == card->checksum) {
@@ -3812,15 +3819,16 @@ void func_80087B84(void) {
         result = resources->panels[1].flags;
         if (result == 0)
             break;
-        if (result == accept) {
-            D_8013AE88->data18 = 30;
-            break;
-        }
+        if (result == accept)
+            goto retryCardSelection;
         if (result != 2)
-            goto selectCard;
+            goto retryCardSelection;
     resetRecord:
         selection->choiceResult = accept;
         D_8013AE88->data18 = 22;
+        break;
+    retryCardSelection:
+        D_8013AE88->data18 = 30;
         break;
     case 15:
         parentPanel->flags = 1;
@@ -3881,9 +3889,9 @@ void func_80087B84(void) {
             D_8013B47C = 1;
             D_8013AE88->data18 = 24;
         } else if (result == 3) {
+            task = D_8013AE88;
             resources->panels[0].command = 23;
-        selectCard:
-            D_8013AE88->data18 = 30;
+            task->data18 = 30;
         } else {
         drawRecord:
             resources->panels[1].command = 99;
@@ -3900,9 +3908,8 @@ void func_80087B84(void) {
         break;
     case 23:
         if (isTaskResourceTransitionComplete(player) == 1) {
-            exitTask = D_8013AE88;
             resources->panels[0].command = 22;
-            goto exitPanel;
+            D_8013AE88->data18 = 26;
         }
         break;
     case 24:
@@ -3910,12 +3917,11 @@ void func_80087B84(void) {
         D_8013AE88->data18 = 25;
         break;
     case 25:
-        if (resources->countdown->data1A != 1)
+        countdownStatus = resources->countdown->data1A;
+        if (countdownStatus != 1)
             break;
-        resources->countdown->data18 = 1;
-        exitTask = D_8013AE88;
-    exitPanel:
-        exitTask->data18 = 26;
+        resources->countdown->data18 = countdownStatus;
+        D_8013AE88->data18 = 26;
         break;
     case 27:
         offset = 180;
@@ -3942,11 +3948,7 @@ void func_80087B84(void) {
         break;
     }
     return;
-
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/menu/course_selection_tasks", func_80087B84);
-#endif
 
 void drawSaveRecordProgressPanel(void) {
     Movement2D *position;

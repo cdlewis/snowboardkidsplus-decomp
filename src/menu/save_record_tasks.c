@@ -52,11 +52,10 @@ u16 gTaskShadowedText[14] __attribute__((section(".data.task_shadowed_text"))) =
 SaveRecord gPlayerSaveRecords[2] __attribute__((section(".data.save_records"))) = {0};
 SaveRecord gMergedSaveRecord __attribute__((section(".data.merged_save_record"))) = {0};
 
-extern const u16 D_801302BC[], D_80130390[], D_801303EC[], D_80130428[];
+extern const u16 D_801303EC[], D_80130428[];
 extern const u16 D_80130460[], D_8013047C[], D_80130578[], D_801305C4[];
 extern const u16 D_801305F0[], D_80130638[], D_80130694[], D_801306DC[];
-extern const u16 D_80130708[], D_80130740[], D_8013075C[], D_80130770[];
-extern const u16 D_801307AC[], D_80130800[];
+extern const u16 D_80130708[], D_80130740[], D_8013075C[];
 void func_8008B178(void);
 
 void repeatByteStore(u8 *destination, s32 value, s32 count) {

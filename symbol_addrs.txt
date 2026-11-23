@@ -231,6 +231,7 @@ beginSound601TaskSequence = 0x800330CC; // type:func
 beginMemoryCardBufferRead = 0x8001993C; // type:func
 updateMemoryCardSlotTask = 0x80087030; // type:func
 gMemoryCardSlotTaskTablePadding = 0x80011AEC; // size:0x4 defined:true
+gSaveRecordLoadPanelTablePadding = 0x80011BFC; // size:0x4 defined:true
 startClearedStateValueHistoryTask = 0x800873DC; // type:func
 requestCurrentPlayerAction6NarrowAngle = 0x8002CD18; // type:func
 requestCurrentPlayerAction6 = 0x8002CC78; // type:func
@@ -386,6 +387,7 @@ gFrameCounter = 0x8013AFAC; // size:0x2 defined:true
 
 // Runtime options and the notification mask used by the unlock-message flow.
 resetUnlockNotificationStateForMode2 = 0x800879A4; // type:func
+updateSaveRecordLoadPanelTask = 0x80087B84; // type:func size:0x1330
 drawSaveRecordProgressPanel = 0x80088EB4; // type:func
 gSaveRecordProgressCurrencyLabel = 0x8013B478; // size:0x4 defined:true
 drawSaveRecordPushAnyButtonPrompt = 0x800895DC; // type:func size:0x1C8

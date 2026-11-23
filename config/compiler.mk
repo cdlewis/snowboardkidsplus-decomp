@@ -145,6 +145,7 @@ UNIT_CCFLAGS_src/menu/course_selection_tasks.c += --rdata-section=updatePlayerGr
 UNIT_CCFLAGS_src/menu/course_selection_tasks.c += --rdata-section=updatePlayerGroupedSelectionTask:.rodata.player_grouped_selection
 UNIT_CCFLAGS_src/menu/course_selection_tasks.c += --rdata-section=updateMemoryCardSlotTask:.rodata.memory_card_slot_task
 UNIT_CCFLAGS_src/menu/course_selection_tasks.c += --rdata-section=updateSaveRecordTask:.rodata.save_record_task
+UNIT_CCFLAGS_src/menu/course_selection_tasks.c += --rdata-section=updateSaveRecordLoadPanelTask:.rodata.save_record_load_panel
 UNIT_REORDER_src/menu/save_record_tasks.c := 0
 UNIT_CCFLAGS_src/menu/panel_tasks.c += --rdata-section=updateGroupedSelectionBoundsTask:.rodata.grouped_selection_bounds
 UNIT_CCFLAGS_src/menu/grid_selection.c += --rdata-section=updateSplitBoardSelectionTask:.rodata.split_board_selection
