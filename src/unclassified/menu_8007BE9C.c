@@ -289,13 +289,13 @@ void drawSelectionHeaderAndMoneyPanel(void) {
     if (D_8013AE88->data1A == 0) {
         return;
     }
-    func_8006C998(position->x / 4096 + 8, position->y / 4096 - 22,
+    drawSpriteByIndexWithBlend(position->x / 4096 + 8, position->y / 4096 - 22,
                  0xB1, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     playerCount = D_8013AFCD;
     if (playerCount != 1) {
         return;
     }
-    func_8006C998(position->x / 4096 + 74, position->y / 4096 + 140,
+    drawSpriteByIndexWithBlend(position->x / 4096 + 74, position->y / 4096 + 140,
                  0xBD, 10, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     drawDecimalNumber8x8(position->x / 4096 + 74, position->y / 4096 + 152,
                          6, 0, gPlayerSaveRecords[0].money, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);

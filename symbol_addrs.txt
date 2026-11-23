@@ -1937,6 +1937,7 @@ setTexturedQuadSemiTrans = 0x8006BEEC; // type:func
 gTexturedQuadTemplate = 0x8013BDB8; // size:0x28 defined:true
 setSpriteColor = 0x8006C944; // type:func
 setSpriteTemplateSemiTrans = 0x8006C970; // type:func
+drawSpriteByIndexWithBlend = 0x8006C998; // type:func
 gSpriteTemplate = 0x8013BDF0; // size:0x14
 gSpritePrimitiveTemplate = 0x8013BDE8; // size:0x1C defined:true
 gTexturedSpriteTemplate = 0x8012E8E4; // size:0x18 defined:true

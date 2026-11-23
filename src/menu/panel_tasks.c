@@ -678,9 +678,9 @@ void drawCurrentTaskMoneyPanel(void) {
     if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
     position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
     if (D_8013AE88->data1A != 0) {
-        func_8006C998(position->x / 4096 + 32, position->y / 4096 - 22,
+        drawSpriteByIndexWithBlend(position->x / 4096 + 32, position->y / 4096 - 22,
                      0xB6, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
-        func_8006C998(position->x / 4096 + 74, position->y / 4096 + 140,
+        drawSpriteByIndexWithBlend(position->x / 4096 + 74, position->y / 4096 + 140,
                      0xBD, 10, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         drawDecimalNumber8x8(position->x / 4096 + 74, position->y / 4096 + 152,
                              6, 0, gPlayerSaveRecords[0].money, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
@@ -910,9 +910,9 @@ void drawCurrentTaskSaveRecordMoneyPanelWithCharacterSprites(void) {
     position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
     recordIndex = D_8013AE88->data18;
     if (D_8013AE88->data1A != 0) {
-        func_8006C998(position->x / 4096 + 8, position->y / 4096 - 22,
+        drawSpriteByIndexWithBlend(position->x / 4096 + 8, position->y / 4096 - 22,
                      0xB9, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
-        func_8006C998(position->x / 4096 + 74, position->y / 4096 + 140,
+        drawSpriteByIndexWithBlend(position->x / 4096 + 74, position->y / 4096 + 140,
                      0xBD, 10, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         {
             s32 amountX = (s16)(position->x / 4096 + 74);
@@ -946,10 +946,10 @@ void drawCurrentTaskSaveRecordMoneyPanelWithCharacterSprites(void) {
             offsetX = 48;
             sprite = 0x169;
         }
-        func_8006C998(offsetX + position->x / 4096, position->y / 4096,
+        drawSpriteByIndexWithBlend(offsetX + position->x / 4096, position->y / 4096,
                       sprite, 0, 0, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C + 2);
     }
-    func_8006C998(position->x / 4096, position->y / 4096,
+    drawSpriteByIndexWithBlend(position->x / 4096, position->y / 4096,
                   0x168, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C + 2);
 }
 
@@ -1138,9 +1138,9 @@ void drawCurrentTaskMoneyPanelWithCharacterSprites(void) {
     if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
     position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
     if (D_8013AE88->data1A != 0) {
-        func_8006C998(position->x / 4096 + 8, position->y / 4096 - 22,
+        drawSpriteByIndexWithBlend(position->x / 4096 + 8, position->y / 4096 - 22,
                      0xB7, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
-        func_8006C998(position->x / 4096 + 74, position->y / 4096 + 140,
+        drawSpriteByIndexWithBlend(position->x / 4096 + 74, position->y / 4096 + 140,
                      0xBD, 10, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         drawDecimalNumber8x8(position->x / 4096 + 74, position->y / 4096 + 152,
                              6, 0, gPlayerSaveRecords[0].money, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
@@ -1168,10 +1168,10 @@ void drawCurrentTaskMoneyPanelWithCharacterSprites(void) {
             offsetX = 48;
             sprite = 0x169;
         }
-        func_8006C998(offsetX + position->x / 4096, position->y / 4096,
+        drawSpriteByIndexWithBlend(offsetX + position->x / 4096, position->y / 4096,
                       sprite, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C + 2);
     }
-    func_8006C998(position->x / 4096, position->y / 4096,
+    drawSpriteByIndexWithBlend(position->x / 4096, position->y / 4096,
                   0x168, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C + 2);
 }
 
@@ -1750,9 +1750,9 @@ void drawCurrentTaskSaveRecordMoneyPanel(void) {
     position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
     recordIndex = D_8013AE88->data18;
     if (D_8013AE88->data1A != 0) {
-        func_8006C998(position->x / 4096 + 8, position->y / 4096 - 22,
+        drawSpriteByIndexWithBlend(position->x / 4096 + 8, position->y / 4096 - 22,
                      0xB9, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
-        func_8006C998(position->x / 4096 + 74, position->y / 4096 + 140,
+        drawSpriteByIndexWithBlend(position->x / 4096 + 74, position->y / 4096 + 140,
                      0xBD, 10, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         {
             s32 amountX = (s16)(position->x / 4096 + 74);
@@ -1861,7 +1861,7 @@ void drawCurrentTaskSelectedBoardPrice(void) {
         u32 price = D_80131810[board];
         SaveRecord *records = gPlayerSaveRecords;
         if (records[player].flags & (4U << flagIndex)) {
-            func_8006C998(position->x / 4096 + 36, position->y / 4096 - 8, 0xC3, 15, -1,
+            drawSpriteByIndexWithBlend(position->x / 4096 + 36, position->y / 4096 - 8, 0xC3, 15, -1,
                          &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         } else {
             u32 remaining = price;
@@ -2640,7 +2640,7 @@ void drawCurrentTaskSpriteBA(void) {
     }
     position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
     if (D_8013AE88->data1A != 0) {
-        func_8006C998(position->x / 4096 + 8, position->y / 4096 - 22,
+        drawSpriteByIndexWithBlend(position->x / 4096 + 8, position->y / 4096 - 22,
                       0xBA, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     }
 }
@@ -2650,9 +2650,9 @@ void drawCurrentTaskFramedSpritePair16A(void) {
     if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
     position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
     if (D_8013AE88->data1A != 0) {
-        func_8006C998(position->x / 4096, position->y / 4096,
+        drawSpriteByIndexWithBlend(position->x / 4096, position->y / 4096,
                       0x16A, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
-        func_8006C998(position->x / 4096 + 64, position->y / 4096,
+        drawSpriteByIndexWithBlend(position->x / 4096 + 64, position->y / 4096,
                       0x16B, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     }
     setTexturedQuadColor(128, 128, 128);
@@ -2969,9 +2969,9 @@ void drawCurrentTaskSelectedPlayerMoneyPanel(void) {
     position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
     recordIndex = D_8013AE98->data1A;
     if (D_8013AE88->data1A != 0) {
-        func_8006C998(position->x / 4096 + 8, position->y / 4096 - 22,
+        drawSpriteByIndexWithBlend(position->x / 4096 + 8, position->y / 4096 - 22,
                      0xB7, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
-        func_8006C998(position->x / 4096 + 74, position->y / 4096 + 140,
+        drawSpriteByIndexWithBlend(position->x / 4096 + 74, position->y / 4096 + 140,
                      0xBD, 10, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         {
             s32 amountX = (s16)(position->x / 4096 + 74);
@@ -3031,7 +3031,7 @@ void drawCurrentTaskBoardPrice(void) {
 
         price = D_801319B0[character * 5 + column];
         if (hasStateGridFlag(record, character, column) == 1) {
-            func_8006C998(x + 36, y + 8, 0xC3, 15, -1,
+            drawSpriteByIndexWithBlend(x + 36, y + 8, 0xC3, 15, -1,
                           &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         } else {
             remaining = price;
@@ -3090,7 +3090,7 @@ void drawCurrentTaskFramedSprite20C(void) {
     setSpriteColor(128, 128, 128);
     drawTexturedFrameStyle9(position->x / 4096 - 140, position->y / 4096 + 8,
                            128, 92, 5, 1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
-    func_8006C998(position->x / 4096 - 136, position->y / 4096 + 12,
+    drawSpriteByIndexWithBlend(position->x / 4096 - 136, position->y / 4096 + 12,
                   0x20C, 1, 0, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
 }
 

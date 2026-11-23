@@ -383,21 +383,21 @@ void updateSceneTextTask(void) {
     setSpriteColor(128, 128, 128);
     if (block->metadata.fields.unk06 != 0) {
         drawWrappedDoubleByteText(-96, 48, 1, D_8013B5C4, 2, -1, ot, depth);
-        func_8006C998(-136, 48, block->metadata.fields.unk06 + 502,
+        drawSpriteByIndexWithBlend(-136, 48, block->metadata.fields.unk06 + 502,
                       block->metadata.fields.unk07 + 14, 1, ot, depth);
     }
     if (block->metadata.fields.unk08 != 0) {
         if (block->metadata.fields.unk08 != 17) {
             drawWrappedDoubleByteText(-96, 64, 1, D_8013B5C4, 2, -1, ot, depth);
         }
-        func_8006C998(-136, 64, block->metadata.fields.unk08 + 502,
+        drawSpriteByIndexWithBlend(-136, 64, block->metadata.fields.unk08 + 502,
                       block->metadata.fields.unk09 + 14, 1, ot, depth);
     }
     if (block->metadata.fields.unk0A != 0) {
         if (block->metadata.fields.unk0A != 17) {
             drawWrappedDoubleByteText(-96, 80, 1, D_8013B5C4, 2, -1, ot, depth);
         }
-        func_8006C998(-136, 80, block->metadata.fields.unk0A + 502,
+        drawSpriteByIndexWithBlend(-136, 80, block->metadata.fields.unk0A + 502,
                       block->metadata.fields.unk0B + 14, 1, ot, depth);
     }
     if (entry->resourceId != 0) {

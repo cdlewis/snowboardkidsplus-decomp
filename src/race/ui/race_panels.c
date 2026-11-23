@@ -35,10 +35,10 @@ void drawSlidingRaceTimeDisplay(SlidingTimeResource *resource) {
     GsOT *ot = &D_800EBFF0[D_8013AF78];
     setSpriteColor(128, 128, 128);
     if (resource->hasExtraTime) {
-        func_8006C998(resource->x - 102, resource->y, 0x1AE, 0, -1, ot, 1);
+        drawSpriteByIndexWithBlend(resource->x - 102, resource->y, 0x1AE, 0, -1, ot, 1);
         drawRaceTime(&resource->time, resource->x + 38, resource->y, 1, ot, 1);
     } else {
-        func_8006C998(resource->x - 98, resource->y, 0x1AD, 4, -1, ot, 1);
+        drawSpriteByIndexWithBlend(resource->x - 98, resource->y, 0x1AD, 4, -1, ot, 1);
         drawRaceTime(&resource->time, resource->x + 34, resource->y, 2, ot, 1);
     }
 }
@@ -257,14 +257,14 @@ void createFallingSpriteEffectsTasks(void) {
 void drawSlidingDisplaySprite(SlidingDisplayResource *resource) {
     s32 x = (resource->position >> 1) - 56;
     if (gameOptionPlayerModeAbsolute == 1) {
-        func_8006C998(x, 8, 0x1DF, 6, -1, &D_800EC018[D_8013AF78], 1);
+        drawSpriteByIndexWithBlend(x, 8, 0x1DF, 6, -1, &D_800EC018[D_8013AF78], 1);
     } else if (D_8013AE88->data18 == 0) {
         if (shouldRenderPlayerView(0)) {
-            func_8006C998(x, 8, 0x1DF, 6, -1, &D_800EC018[D_8013AF78], 1);
+            drawSpriteByIndexWithBlend(x, 8, 0x1DF, 6, -1, &D_800EC018[D_8013AF78], 1);
         }
     } else {
         if (shouldRenderPlayerView(1)) {
-            func_8006C998(x, 8, 0x1DF, 6, -1, &D_800EC0B8[D_8013AF78], 1);
+            drawSpriteByIndexWithBlend(x, 8, 0x1DF, 6, -1, &D_800EC0B8[D_8013AF78], 1);
         }
     }
 }
@@ -343,7 +343,7 @@ void drawPlayerSpriteAnimation(SpriteAnimationResource *resource) {
     setSpriteColor(128, 128, 128);
     palette = 3;
     if (!resource->alternateLayer) palette = 2;
-    func_8006C998(resource->x, resource->y, (resource->frame >> 1) + 0x1E2,
+    drawSpriteByIndexWithBlend(resource->x, resource->y, (resource->frame >> 1) + 0x1E2,
                  palette, -1, ot, 0);
 }
 
@@ -394,13 +394,13 @@ void drawPlayerNumberDisplay(PlayerNumberResource *resource) {
     }
     if (visible) {
         drawHudDecimalNumber8x16(resource->x + 8, resource->y, 2, 0, resource->value, 3, -1, ot, depth);
-        func_8006C998(resource->x - 70, resource->y + 4, 0x1B4, 4, -1, ot, depth);
-        func_8006C998(resource->x - 26, resource->y + 4, 0x1B5, 4, -1, ot, depth);
-        func_8006C998(resource->x + 32, resource->y + 4, 0x1B6, 4, -1, ot, depth);
+        drawSpriteByIndexWithBlend(resource->x - 70, resource->y + 4, 0x1B4, 4, -1, ot, depth);
+        drawSpriteByIndexWithBlend(resource->x - 26, resource->y + 4, 0x1B5, 4, -1, ot, depth);
+        drawSpriteByIndexWithBlend(resource->x + 32, resource->y + 4, 0x1B6, 4, -1, ot, depth);
         if (resource->showExtraValue) {
             drawHudDecimalNumber8x16(resource->x + 8, resource->y + 18, 3, 0, 300, 3, -1, ot, depth);
-            func_8006C998(resource->x - 76, resource->y + 22, 0x1B3, 5, -1, ot, depth);
-            func_8006C998(resource->x + 40, resource->y + 22, 0x1B6, 4, -1, ot, depth);
+            drawSpriteByIndexWithBlend(resource->x - 76, resource->y + 22, 0x1B3, 5, -1, ot, depth);
+            drawSpriteByIndexWithBlend(resource->x + 40, resource->y + 22, 0x1B6, 4, -1, ot, depth);
         }
     }
 }
@@ -499,12 +499,12 @@ void drawSpriteMotionDisplay(SpriteMotionResource *resource) {
     if (draw) {
         if (D_8013AFCD == 1) {
             if (D_8013AFE2 == 1 && D_8013AFE0 == 2) {
-                func_8006C998(-60, resource->unk08, 0x1AB, 8, -1, ot, depth);
+                drawSpriteByIndexWithBlend(-60, resource->unk08, 0x1AB, 8, -1, ot, depth);
             } else {
-                func_8006C998(-36, resource->unk08, 0x1AB, 8, -1, ot, depth);
+                drawSpriteByIndexWithBlend(-36, resource->unk08, 0x1AB, 8, -1, ot, depth);
             }
         } else {
-            func_8006C998(-30, (s16)(resource->unk08 + 32), 0x1AB, 8, -1, ot, depth);
+            drawSpriteByIndexWithBlend(-30, (s16)(resource->unk08 + 32), 0x1AB, 8, -1, ot, depth);
         }
     }
 }
@@ -597,8 +597,8 @@ void drawSlidingNumberDisplay(SlidingNumberResource *resource) {
     if (visible) {
         drawHudDecimalNumber8x16((s16)(resource->x - 8), (s16)(resource->y - 8), 5, 0,
                      resource->value, 3, -1, ot, 1);
-        func_8006C998((s16)(resource->x - 60), (s16)(resource->y - 4), 0x1B4, 4, -1, ot, 1);
-        func_8006C998((s16)(resource->x + 44), (s16)(resource->y - 4), 0x1B5, 4, -1, ot, 1);
+        drawSpriteByIndexWithBlend((s16)(resource->x - 60), (s16)(resource->y - 4), 0x1B4, 4, -1, ot, 1);
+        drawSpriteByIndexWithBlend((s16)(resource->x + 44), (s16)(resource->y - 4), 0x1B5, 4, -1, ot, 1);
     }
 }
 
@@ -839,12 +839,12 @@ void drawResultDisplayLabels(ResultDisplayResource *resource) {
     } else {
         setSpriteColor(128, 128, 128);
     }
-    func_8006C998(-104, -44, 392, 6, -1, &D_800EBFF0[D_8013AF78], 1);
-    func_8006C998((s16)(-104 - gResultLabelXOffsets[resource->unk08]), 6,
+    drawSpriteByIndexWithBlend(-104, -44, 392, 6, -1, &D_800EBFF0[D_8013AF78], 1);
+    drawSpriteByIndexWithBlend((s16)(-104 - gResultLabelXOffsets[resource->unk08]), 6,
                   resource->unk08 + 382, gResultLabelPalettes[resource->unk08], -1,
                   &D_800EBFF0[D_8013AF78], 1);
     drawRacePlacementSprite(-66, -12, resource->unk06, &D_800EBFF0[D_8013AF78], 1);
-    func_8006C998(-34, 4, resource->unk06 + 393, gResultIconPalettes[resource->unk06], -1,
+    drawSpriteByIndexWithBlend(-34, 4, resource->unk06 + 393, gResultIconPalettes[resource->unk06], -1,
                   &D_800EBFF0[D_8013AF78], 1);
 }
 
@@ -852,7 +852,7 @@ void drawResultNumberAndIcon(ResultDisplayResource *resource) {
     setSpriteColor(128, 128, 128);
     drawHudDecimalNumber8x16(32, -63, 5, 0, resource->unk04, 1, -1,
                   &D_800EBFF0[D_8013AF78], 1);
-    func_8006C998(72, -63, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+    drawSpriteByIndexWithBlend(72, -63, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
 }
 
 void drawFirstPlayerResultCounterAndIcon(ResultDisplayResource *resource) {
@@ -862,18 +862,18 @@ void drawFirstPlayerResultCounterAndIcon(ResultDisplayResource *resource) {
     }
     setSpriteColor(128, 128, 128);
     if (resource->unk06 == 3) {
-        func_8006C998(24, -11, 397, 5, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawSpriteByIndexWithBlend(24, -11, 397, 5, -1, &D_800EBFF0[D_8013AF78], 1);
     }
     drawHudDecimalNumber8x16(32, -15, 5, 0, gRacePlayers[0].unk01C, palette, -1,
                   &D_800EBFF0[D_8013AF78], 1);
-    func_8006C998(72, -15, 26, palette, -1, &D_800EBFF0[D_8013AF78], 1);
+    drawSpriteByIndexWithBlend(72, -15, 26, palette, -1, &D_800EBFF0[D_8013AF78], 1);
 }
 
 void drawFirstPlayerResultNumberAndIcon(ResultDisplayResource *resource) {
     setSpriteColor(128, 128, 128);
     drawHudDecimalNumber8x16(24, 33, 6, 0, gRacePlayers[0].money, 1, -1,
                   &D_800EBFF0[D_8013AF78], 1);
-    func_8006C998(72, 33, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+    drawSpriteByIndexWithBlend(72, 33, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
 }
 
 void drawResultPrizeLabels(ResultDisplayResource *resource) {
@@ -1112,35 +1112,35 @@ void drawPlayerResultIcons(TaskFadeResource *resource) {
     setSpriteColor(brightness, brightness, brightness);
     if (resource->playerOrder[0] != -1) {
         drawRacePlacementSprite(-136, -80, 0, &D_800EBFF0[D_8013AF78], 1);
-        func_8006C998(-104, -64, 0x189, gResultIconPalettes[0], -1,
+        drawSpriteByIndexWithBlend(-104, -64, 0x189, gResultIconPalettes[0], -1,
                      &D_800EBFF0[D_8013AF78], 1);
-        func_8006C998(-84, -80, gRacePlayers[resource->playerOrder[0]].characterId + 0x1EC,
+        drawSpriteByIndexWithBlend(-84, -80, gRacePlayers[resource->playerOrder[0]].characterId + 0x1EC,
                      0, -1, &D_800EBFF0[D_8013AF78], 1);
-        func_8006C998(-48, -66, 0x1B1, 3, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawSpriteByIndexWithBlend(-48, -66, 0x1B1, 3, -1, &D_800EBFF0[D_8013AF78], 1);
     }
     if (resource->playerOrder[1] != -1) {
         drawRacePlacementSprite(8, -48, 1, &D_800EBFF0[D_8013AF78], 1);
-        func_8006C998(40, -32, 0x18A, gResultIconPalettes[1], -1,
+        drawSpriteByIndexWithBlend(40, -32, 0x18A, gResultIconPalettes[1], -1,
                      &D_800EBFF0[D_8013AF78], 1);
-        func_8006C998(60, -48, gRacePlayers[resource->playerOrder[1]].characterId + 0x1EC,
+        drawSpriteByIndexWithBlend(60, -48, gRacePlayers[resource->playerOrder[1]].characterId + 0x1EC,
                      0, -1, &D_800EBFF0[D_8013AF78], 1);
-        func_8006C998(96, -34, 0x1B1, 3, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawSpriteByIndexWithBlend(96, -34, 0x1B1, 3, -1, &D_800EBFF0[D_8013AF78], 1);
     }
     if (resource->playerOrder[2] != -1) {
         drawRacePlacementSprite(-136, -16, 2, &D_800EBFF0[D_8013AF78], 1);
-        func_8006C998(-104, 0, 0x18B, gResultIconPalettes[2], -1,
+        drawSpriteByIndexWithBlend(-104, 0, 0x18B, gResultIconPalettes[2], -1,
                      &D_800EBFF0[D_8013AF78], 1);
-        func_8006C998(-84, -16, gRacePlayers[resource->playerOrder[2]].characterId + 0x1EC,
+        drawSpriteByIndexWithBlend(-84, -16, gRacePlayers[resource->playerOrder[2]].characterId + 0x1EC,
                      0, -1, &D_800EBFF0[D_8013AF78], 1);
-        func_8006C998(-48, -2, 0x1B1, 3, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawSpriteByIndexWithBlend(-48, -2, 0x1B1, 3, -1, &D_800EBFF0[D_8013AF78], 1);
     }
     if (resource->playerOrder[3] != -1) {
         drawRacePlacementSprite(8, 16, 3, &D_800EBFF0[D_8013AF78], 1);
-        func_8006C998(40, 32, 0x18C, gResultIconPalettes[3], -1,
+        drawSpriteByIndexWithBlend(40, 32, 0x18C, gResultIconPalettes[3], -1,
                      &D_800EBFF0[D_8013AF78], 1);
-        func_8006C998(60, 16, gRacePlayers[resource->playerOrder[3]].characterId + 0x1EC,
+        drawSpriteByIndexWithBlend(60, 16, gRacePlayers[resource->playerOrder[3]].characterId + 0x1EC,
                      0, -1, &D_800EBFF0[D_8013AF78], 1);
-        func_8006C998(96, 30, 0x1B1, 3, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawSpriteByIndexWithBlend(96, 30, 0x1B1, 3, -1, &D_800EBFF0[D_8013AF78], 1);
     }
 }
 

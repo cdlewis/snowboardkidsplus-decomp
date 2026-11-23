@@ -337,7 +337,7 @@ void drawNumberSelectionPanel(NumberPanelState *state) {
     setSpriteColor(128, 128, 128);
     setTexturedQuadColor(128, 128, 128);
     drawDecimalNumber8x16(23, -39, 1, 0, state->number + 1, 5, -1, ot, 2);
-    func_8006C998(-40, -36, 404, 8, -1, ot, 2);
+    drawSpriteByIndexWithBlend(-40, -36, 404, 8, -1, ot, 2);
     drawDefaultTexturedPanel(-56, -48, 112, 96, 5, 0, ot, 2);
     drawScreenDarkeningOverlay(128, ot, 2);
 }
@@ -363,7 +363,7 @@ void drawOffsetSelectedTaskSprite(void) {
             setSpriteColor(128, 128, 128);
         }
         position = (Movement2D *)&D_800D9504[children[state->selectedIndex].task->resource14];
-        func_8006C998(position->x / 4096 - 8, position->y / 4096 + 2, state->sprite, 0, -1,
+        drawSpriteByIndexWithBlend(position->x / 4096 - 8, position->y / 4096 + 2, state->sprite, 0, -1,
                      &D_800EBFF0[D_8013AF78], state->depth - 1);
     }
 }
@@ -564,7 +564,7 @@ void drawPlaybackSelectionMenu(SelectionMenuState *state) {
     if (state->selection == 11) {
         highlight = state->unk04 + 32;
         setSpriteColor((u8)highlight, (u8)highlight, (u8)highlight);
-        func_8006C998(-56, 84, 403, 0, -1, &D_800EBFF0[D_8013AF78], 4);
+        drawSpriteByIndexWithBlend(-56, 84, 403, 0, -1, &D_800EBFF0[D_8013AF78], 4);
         highlight = 0;
         if (state->unk06 > 0) {
             state->unk06 = 8;
@@ -580,7 +580,7 @@ void drawPlaybackSelectionMenu(SelectionMenuState *state) {
         }
     }
     setSpriteColor(128, 128, 128);
-    func_8006C998(-56, 84, 402, highlight, -1, &D_800EBFF0[D_8013AF78], 4);
+    drawSpriteByIndexWithBlend(-56, 84, 402, highlight, -1, &D_800EBFF0[D_8013AF78], 4);
     drawScreenDarkeningOverlay(128, &D_800EBFF0[D_8013AF78], 4);
     drawFullScreenTexturedBackground();
 }

@@ -214,7 +214,7 @@ void func_800A42CC(void) {
 
     state = (UnlockMenuState *)&D_800D9504[D_8013AE88->resource14];
     setSpriteColor(128, 128, 128);
-    func_8006C998(-56, -96 - state->unk3C[0] / 4096, 0x230, 2, -1,
+    drawSpriteByIndexWithBlend(-56, -96 - state->unk3C[0] / 4096, 0x230, 2, -1,
                   &D_800EBFF0[D_8013AF78], 4);
     for (row = 0; row < 5; row++) {
         offset = state->unk04[row] / 4096;
@@ -222,7 +222,7 @@ void func_800A42CC(void) {
         if (state->selection == row) {
             leftPalette = 3;
         }
-        func_8006C998(-128 - offset, row * 24 - 56, D_80132854[row], leftPalette,
+        drawSpriteByIndexWithBlend(-128 - offset, row * 24 - 56, D_80132854[row], leftPalette,
                       -1, &D_800EBFF0[D_8013AF78], 4);
 
         optionMask = 1 << D_8013B568[row];
@@ -233,11 +233,11 @@ void func_800A42CC(void) {
         }
         centerSprite = &D_80132864[row * 2];
         centerPalette = palette;
-        func_8006C998(offset + 32, row * 24 - 56, *centerSprite, (s16)palette,
+        drawSpriteByIndexWithBlend(offset + 32, row * 24 - 56, *centerSprite, (s16)palette,
                       -1, &D_800EBFF0[D_8013AF78], 4);
 
         rightPalette = centerPalette == 1 ? (state->selection != row) * 4 : 1;
-        func_8006C998(offset + 92, row * 24 - 56, D_80132866[row * 2], rightPalette,
+        drawSpriteByIndexWithBlend(offset + 92, row * 24 - 56, D_80132866[row * 2], rightPalette,
                       -1, &D_800EBFF0[D_8013AF78], 4);
     }
 
@@ -246,7 +246,7 @@ void func_800A42CC(void) {
         s32 rowY = row * 24;
         s16 y = (s16)rowY + (s16)(verticalOffset - 56);
         leftPalette = state->selection != row;
-        func_8006C998(-56, y, D_80132854[row],
+        drawSpriteByIndexWithBlend(-56, y, D_80132854[row],
                       leftPalette, -1, &D_800EBFF0[D_8013AF78], 4);
     }
     func_8007240C(-160, -120, 320, 240, 192, 192, 192, 2, &D_800EBFF0[D_8013AF78], 4);
@@ -411,7 +411,7 @@ void drawUnlockNotificationMenu(void) {
     state = (UnlockMenuState *)&D_800D9504[D_8013AE88->resource14];
     setSpriteColor(128, 128, 128);
     verticalOffset = state->unk3C[0] / 4096;
-    func_8006C998(-68, -96 - verticalOffset, 0x22F, 2, -1, &D_800EBFF0[D_8013AF78], 4);
+    drawSpriteByIndexWithBlend(-68, -96 - verticalOffset, 0x22F, 2, -1, &D_800EBFF0[D_8013AF78], 4);
     for (row = 0; row < 6; row++) {
         s16 sprite;
         s16 rightIndex;
@@ -422,7 +422,7 @@ void drawUnlockNotificationMenu(void) {
         } else {
             sprite = 0x233;
         }
-        func_8006C998(-136 - horizontalOffset, row * 20 - 56, sprite,
+        drawSpriteByIndexWithBlend(-136 - horizontalOffset, row * 20 - 56, sprite,
                       state->selection != row, -1, &D_800EBFF0[D_8013AF78], 4);
         rightIndex = row + 6;
         if ((s16)hasUnlockNotificationFlag(rightIndex)) {
@@ -430,10 +430,10 @@ void drawUnlockNotificationMenu(void) {
         } else {
             sprite = 0x233;
         }
-        func_8006C998(horizontalOffset + 8, row * 20 - 56, sprite,
+        drawSpriteByIndexWithBlend(horizontalOffset + 8, row * 20 - 56, sprite,
                       state->selection != rightIndex, -1, &D_800EBFF0[D_8013AF78], 4);
     }
-    func_8006C998(-64, verticalOffset + 72, 0x21C, state->selection != 12, -1,
+    drawSpriteByIndexWithBlend(-64, verticalOffset + 72, 0x21C, state->selection != 12, -1,
                   &D_800EBFF0[D_8013AF78], 4);
     func_8007240C(-160, -120, 320, 240, 192, 192, 192, 2, &D_800EBFF0[D_8013AF78], 4);
     drawFullScreenTexturedBackground();

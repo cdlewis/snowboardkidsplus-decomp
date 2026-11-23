@@ -291,45 +291,46 @@ void setSpriteTemplateSemiTrans(s32 enabled) {
     SetSemiTrans(&gSpriteTemplate, enabled);
 }
 
-/* DECOMP_ATTEMPT: inline 108/118 */
-#ifdef NON_MATCHING
-void func_8006C998(s16 x, s16 y, s32 index, s32 palette, s32 blendMode, GsOT *ot, u16 depth) {
+/* The old-style definition keeps the promoted palette parameter in the public
+ * prototype and uses a 16-bit palette when building the CLUT. */
+void drawSpriteByIndexWithBlend(x, y, index, palette, blendMode, ot, depth)
+s16 x, y, palette;
+s32 index, blendMode;
+GsOT *ot;
+u16 depth;
+{
     TexturedQuadFrame *frame = &D_8012DFF4[index];
     TextureRegionSet *texture = &D_8012DDA4[frame->textureIndex];
     TextureRegion *region = &texture->regions[frame->frameIndex];
     DrawModeSpritePacket *sprite = (DrawModeSpritePacket *)GsGetWorkBase();
+
     sprite->tag = (sizeof(*sprite) / sizeof(u32) - 1) << 24;
-    sprite->drawModeCode = 0xE100;
+    sprite->drawModeCode = DRAW_MODE_COMMAND_HIGH;
     setRGB0(sprite, gTexturedSpriteTemplate.r0, gTexturedSpriteTemplate.g0, gTexturedSpriteTemplate.b0);
     if ((s16)blendMode >= 0) {
         u16 tp = texture->depth;
         s16 ty = texture->y;
         u16 tx = texture->x;
-        sprite->code = 0x64 | 2;
+        sprite->code = TEXTURED_SPRITE_CODE | SEMI_TRANSPARENT_FLAG;
         sprite->tpage = getTPage(tp, blendMode, tx, ty);
     } else {
         u16 tp = texture->depth;
         s16 ty = texture->y;
         u16 tx = texture->x;
-        sprite->code = 0x64;
+        sprite->code = TEXTURED_SPRITE_CODE;
         sprite->tpage = getTPage(tp, 0, tx, ty);
     }
+
     {
-    u16 clut = getClut(texture->clutX, texture->clutY + palette);
-    sprite->x0 = x;
-    sprite->y0 = y;
-    sprite->clut = clut;
+        u16 clut = getClut(texture->clutX, texture->clutY + palette);
+        setXY0(sprite, x, y);
+        sprite->clut = clut;
     }
-    sprite->u0 = region->u;
-    sprite->v0 = region->v;
-    sprite->w = region->w;
-    sprite->h = region->h;
+    setUV0(sprite, region->u, region->v);
+    setWH(sprite, region->w, region->h);
     AddPrim(&ot->org[depth], sprite);
     func_800BF2C8((u32)(sprite + 1));
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/graphics/sprite_draw", func_8006C998);
-#endif
 
 void drawSpriteTextureRegion(s16 x, s16 y, s32 index, GsOT *ot, u16 depth) {
     SPRT *sprite = (SPRT *)GsGetWorkBase();
@@ -954,10 +955,10 @@ void drawPackedTime(s16 x, s16 y, u32 value, s16 palette, s16 blend, GsOT *ot, u
     field = value & 255;
     drawHudDecimalNumber8x16(x + 48, y, 2, 1, field, palette, blend, ot, depth);
     value >>= 8;
-    func_8006C998(x + 40, y, 24, palette, blend, ot, depth);
+    drawSpriteByIndexWithBlend(x + 40, y, 24, palette, blend, ot, depth);
     field = value & 255;
     drawHudDecimalNumber8x16(x + 24, y, 2, 1, field, 1, -1, ot, depth);
-    func_8006C998(x + 16, y, 25, palette, blend, ot, depth);
+    drawSpriteByIndexWithBlend(x + 16, y, 25, palette, blend, ot, depth);
     value >>= 8;
     drawHudDecimalNumber8x16(x, y, 2, 1, value, 1, -1, ot, depth);
 }

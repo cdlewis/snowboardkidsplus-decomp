@@ -345,7 +345,7 @@ void drawRacePlacementSprite(s16 x, s16 y, s16 placement, GsOT *ot, u16 depth) {
     u32 packetDepth = (u16)depth;
 
     /* Fourth place uses the byte immediately after the first palette group. */
-    func_8006C998(x, y, placement + 0x1D4, ((const u8 *)&gMenuSpritePaletteGroups)[placement],
+    drawSpriteByIndexWithBlend(x, y, placement + 0x1D4, ((const u8 *)&gMenuSpritePaletteGroups)[placement],
                   -1, ot, packetDepth);
 }
 
@@ -361,7 +361,7 @@ void drawMenuKindSprite(s16 x, s16 y, s16 kind, s32 frame, GsOT *ot, u16 depth) 
         frame = palettes[kind];
         sprite = (kind - 1) * 3 + (frameIndex + baseSprite);
     }
-    func_8006C998(x, y, (s16)sprite, frame, -1, ot, depth);
+    drawSpriteByIndexWithBlend(x, y, (s16)sprite, frame, -1, ot, depth);
 }
 
 void drawScaledMenuKindSprite(s16 x, s16 y, s16 kind, s32 frame, s16 scaleX, s16 scaleY, GsOT *ot, u16 depth) {
@@ -380,7 +380,7 @@ void drawScaledMenuKindSprite(s16 x, s16 y, s16 kind, s32 frame, s16 scaleX, s16
         drawTransformedSpriteByIndex((s16)(x + 16), (s16)(y + 16), (s16)sprite, frame, -1,
                      0x7FFF, 0x7FFF, scaleX, scaleY, 0, ot, depth);
     } else {
-        func_8006C998(x, y, (s16)sprite, frame, -1, ot, depth);
+        drawSpriteByIndexWithBlend(x, y, (s16)sprite, frame, -1, ot, depth);
     }
 }
 
@@ -395,7 +395,7 @@ void drawPaletteMappedIcon(s16 x, s16 y, s16 index, struct GsOT *ot, u16 depth) 
         palette = palettes[index];
         sprite = index + 461;
     }
-    func_8006C998(x, y, sprite, palette, -1, ot, depth);
+    drawSpriteByIndexWithBlend(x, y, sprite, palette, -1, ot, depth);
 }
 
 void drawScaledPaletteMappedIcon(s16 x, s16 y, s16 index, s16 scaleX, s16 scaleY, GsOT *ot, u16 depth) {
@@ -413,7 +413,7 @@ void drawScaledPaletteMappedIcon(s16 x, s16 y, s16 index, s16 scaleX, s16 scaleY
         drawTransformedSpriteByIndex((s16)(x + 16), (s16)(y + 16), sprite, palette, -1,
                        0x7FFF, 0x7FFF, scaleX, scaleY, 0, ot, depth);
     } else {
-        func_8006C998(x, y, sprite, palette, -1, ot, depth);
+        drawSpriteByIndexWithBlend(x, y, sprite, palette, -1, ot, depth);
     }
 }
 
@@ -531,7 +531,7 @@ void func_8004054C(s32 x, s32 y, GsOT *ot, u16 depth) {
         }
         addTexturedSpritePacket((TexturedSpritePacket *)packet, ot, packetDepth);
     }
-    func_8006C998(x, y, 0x1DE, 15, -1, ot, packetDepth);
+    drawSpriteByIndexWithBlend(x, y, 0x1DE, 15, -1, ot, packetDepth);
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud_modes", func_8004054C);
@@ -827,15 +827,15 @@ void func_80041554(void) {
     drawScaledPaletteMappedIcon(0, -96, (s8)player->heldItem, scale, scale, ot, depth);
     rank = player->unk935;
     rankPalettes = gMenuSpritePaletteGroups.unk00;
-    func_8006C998(-136, 64, (u32)rank + 468, rankPalettes[rank], -1, ot, depth);
+    drawSpriteByIndexWithBlend(-136, 64, (u32)rank + 468, rankPalettes[rank], -1, ot, depth);
     drawWrappedText8x8(-136, 54, 4, D_80010BE8, 4, -1, ot, depth);
-    func_8006C998(70, -96, 434, 3, -1, ot, depth);
+    drawSpriteByIndexWithBlend(70, -96, 434, 3, -1, ot, depth);
     drawHudDecimalNumber8x16(104, -96, 1, 0, player->unk934 + 1, 3, -1, ot, depth);
-    func_8006C998(116, -96, 27, 4, -1, ot, depth);
+    drawSpriteByIndexWithBlend(116, -96, 27, 4, -1, ot, depth);
     drawHudDecimalNumber8x16(128, -96, 1, 0, (s16)D_8013AFD0, 3, -1, ot, depth);
     func_8004054C(124, -68, ot, depth);
     frame = (s16)gFrameCounter % 12;
-    func_8006C998(120, 80, frame / 2 + 472, 7, -1, ot, depth);
+    drawSpriteByIndexWithBlend(120, 80, frame / 2 + 472, 7, -1, ot, depth);
     time = player->unk01C;
     palette = time < 100 ? 2 : 3;
     drawHudDecimalNumber8x16(78, 80, 5, 0, time, palette, -1, ot, depth);
@@ -876,9 +876,9 @@ void func_800418F4(s16 player) {
 
     setSpriteColor(128, 128, 128);
     drawDecimalNumber16(107, hudY - 73, 1, 0, gRacePlayers[player].unk934 + 1, 8, 1, hudOt, 1);
-    func_8006C998(123, hudY - 75, 481, 8, 1, hudOt, 1);
+    drawSpriteByIndexWithBlend(123, hudY - 75, 481, 8, 1, hudOt, 1);
     drawDecimalNumber16(132, hudY - 77, 1, 0, (s16)D_8013AFD0, 8, 1, hudOt, 1);
-    func_8006C998(102, hudY - 103, 416, 11, -1, hudOt, 1);
+    drawSpriteByIndexWithBlend(102, hudY - 103, 416, 11, -1, hudOt, 1);
 
     depth = 1;
     if (D_8013AFE4 & 1) {
@@ -887,13 +887,13 @@ void func_800418F4(s16 player) {
         placement = gRacePlayers[player].unk935;
     }
     placementSprite = placement + 468;
-    func_8006C998(110, hudY - 40, placementSprite, ((const u8 *)&gMenuSpritePaletteGroups)[placementSprite - 468], -1, hudOt, depth);
-    func_8006C998(102, hudY - 56, 415, 10, 0, hudOt, depth);
+    drawSpriteByIndexWithBlend(110, hudY - 40, placementSprite, ((const u8 *)&gMenuSpritePaletteGroups)[placementSprite - 468], -1, hudOt, depth);
+    drawSpriteByIndexWithBlend(102, hudY - 56, 415, 10, 0, hudOt, depth);
     if (player == 1) {
         hudY += 18;
     }
     panelOffset = player + 121;
-    func_8006C998(96, hudY - panelOffset, 417, 12, -1, hudOt, depth);
+    drawSpriteByIndexWithBlend(96, hudY - panelOffset, 417, 12, -1, hudOt, depth);
 
     if (shouldRenderPlayerView(player)) {
         timer = (s8)gRacePlayers[player].unk93F;
@@ -905,7 +905,7 @@ void func_800418F4(s16 player) {
         drawScaledPaletteMappedIcon(-80, -40, (s8)gRacePlayers[player].heldItem,
                                     scale, scale, playerOt, depth);
         frame = (s16)gFrameCounter % 12;
-        func_8006C998(-68, 36, frame / 2 + 472, 7, -1, playerOt, depth);
+        drawSpriteByIndexWithBlend(-68, 36, frame / 2 + 472, 7, -1, playerOt, depth);
         moneyPalette = gRacePlayers[player].unk01C < 100 ? 2 : 3;
         drawHudDecimalNumber8x16(-110, 36, 5, 0, gRacePlayers[player].unk01C,
                                  moneyPalette, -1, playerOt, depth);
@@ -928,14 +928,14 @@ void drawTrickAttackHud(void) {
 
     setSpriteColor(128, 128, 128);
     if (D_8013B18D_gp) {
-        func_8006C998(64, 84, 398, 5, -1, ot, depth);
+        drawSpriteByIndexWithBlend(64, 84, 398, 5, -1, ot, depth);
         palette = 2;
     }
     drawHudDecimalNumber8x16(64, 80, 2, 1, D_8013B184.minutes, palette, -1, ot, depth);
     drawHudDecimalNumber8x16(88, 80, 2, 1, D_8013B184.seconds, palette, -1, ot, depth);
     drawHudDecimalNumber8x16(112, 80, 2, 1, D_8013B184.centiseconds >> 8, palette, -1, ot, depth);
-    func_8006C998(80, 80, 25, palette, -1, ot, depth);
-    func_8006C998(104, 80, 24, palette, -1, ot, depth);
+    drawSpriteByIndexWithBlend(80, 80, 25, palette, -1, ot, depth);
+    drawSpriteByIndexWithBlend(104, 80, 24, palette, -1, ot, depth);
     drawWrappedText8x8(56, 71, 10, gAttackTimeLimitLabel, 5, -1, ot, depth);
 
     if (gRacePlayers[0].trickAttackMakeCount < 10) {
@@ -945,14 +945,14 @@ void drawTrickAttackHud(void) {
             x += 8;
         }
     } else {
-        func_8006C998(-132, -96, 431, 13, -1, ot, depth);
+        drawSpriteByIndexWithBlend(-132, -96, 431, 13, -1, ot, depth);
         drawHudDecimalNumber8x16(-100, -89, 2, 0, gRacePlayers[0].trickAttackMakeCount, 1, -1, ot, depth);
     }
 
     drawHudDecimalNumber8x16(92, -88, 5, 0, gRacePlayers[0].trickAttackPointTotal, 1, -1, ot, depth);
     drawWrappedText8x8(96, -97, 5, gTrickAttackPointLabel, 5, -1, ot, depth);
-    func_8006C998(-112, 64, 422, 2, -1, ot, depth);
-    func_8006C998(-136, 64, 419, 14, -1, ot, depth);
+    drawSpriteByIndexWithBlend(-112, 64, 422, 2, -1, ot, depth);
+    drawSpriteByIndexWithBlend(-136, 64, 419, 14, -1, ot, depth);
 }
 
 void drawSplitScreenTrickAttackHud(s16 player) {
@@ -982,14 +982,14 @@ void drawSplitScreenTrickAttackHud(s16 player) {
     setSpriteColor(128, 128, 128);
     if (shouldRenderPlayerView(player)) {
         if (D_8013B1A0[player]) {
-            func_8006C998(-112, timeY + 39, 398, 5, -1, timeOt, depth[0]);
+            drawSpriteByIndexWithBlend(-112, timeY + 39, 398, 5, -1, timeOt, depth[0]);
             palette = 2;
         }
         drawHudDecimalNumber8x16(-112, timeY + 36, 2, 1, D_8013B198[player].minutes, palette, -1, timeOt, depth[0]);
         drawHudDecimalNumber8x16(-88, timeY + 36, 2, 1, D_8013B198[player].seconds, palette, -1, timeOt, depth[0]);
         drawHudDecimalNumber8x16(-64, timeY + 36, 2, 1, D_8013B198[player].centiseconds >> 8, palette, -1, timeOt, depth[0]);
-        func_8006C998(-96, timeY + 36, 25, palette, -1, timeOt, depth[0]);
-        func_8006C998(-72, timeY + 36, 24, palette, -1, timeOt, depth[0]);
+        drawSpriteByIndexWithBlend(-96, timeY + 36, 25, palette, -1, timeOt, depth[0]);
+        drawSpriteByIndexWithBlend(-72, timeY + 36, 24, palette, -1, timeOt, depth[0]);
         drawLimitedText8x8(-112, timeY + 28, 11, gSplitScreenTimeLimitLabel, 5, -1, timeOt, depth[0]);
     }
 
@@ -1002,7 +1002,7 @@ void drawSplitScreenTrickAttackHud(s16 player) {
     if (player == 1) {
         hudY += 18;
     }
-    func_8006C998(96, hudY - 121, 417, 12, -1, hudOt, depth[0]);
+    drawSpriteByIndexWithBlend(96, hudY - 121, 417, 12, -1, hudOt, depth[0]);
 }
 
 void drawScoreAttackHud(void) {
@@ -1019,32 +1019,32 @@ void drawScoreAttackHud(void) {
 
     setSpriteColor(128, 128, 128);
     if (D_8013B18D_gp) {
-        func_8006C998(64, 84, 398, 5, -1, ot, depth);
+        drawSpriteByIndexWithBlend(64, 84, 398, 5, -1, ot, depth);
         palette = 2;
     }
     drawHudDecimalNumber8x16(64, 80, 2, 1, D_8013B184.minutes, palette, -1, ot, depth);
     drawHudDecimalNumber8x16(88, 80, 2, 1, D_8013B184.seconds, palette, -1, ot, depth);
     drawHudDecimalNumber8x16(112, 80, 2, 1, D_8013B184.centiseconds >> 8, palette, -1, ot, depth);
-    func_8006C998(80, 80, 25, palette, -1, ot, depth);
-    func_8006C998(104, 80, 24, palette, -1, ot, depth);
+    drawSpriteByIndexWithBlend(80, 80, 25, palette, -1, ot, depth);
+    drawSpriteByIndexWithBlend(104, 80, 24, palette, -1, ot, depth);
     drawWrappedText8x8(56, 71, 10, gAttackTimeLimitLabel, 5, -1, ot, depth);
 
     i = 0;
     if (gRacePlayers[0].unk93C > 0) {
         xOffset = 0;
         do {
-            func_8006C998(xOffset - 136, -96, 445, 13, -1, ot, depth);
+            drawSpriteByIndexWithBlend(xOffset - 136, -96, 445, 13, -1, ot, depth);
             xOffset += 8;
             i++;
         } while (i < gRacePlayers[0].unk93C);
     }
 
-    func_8006C998(-112, 64, 424, 0, -1, ot, depth);
-    func_8006C998(-136, 64, 421, 14, -1, ot, depth);
+    drawSpriteByIndexWithBlend(-112, 64, 424, 0, -1, ot, depth);
+    drawSpriteByIndexWithBlend(-136, 64, 421, 14, -1, ot, depth);
     drawHudDecimalNumber8x16(96, -80, 2, 0, gRacePlayers[0].scoreAttackPointTotal, 1, -1, ot, depth);
     sprintf(text, gCourseCoinTotalFormat, gRacePlayers[0].scoreAttackPointTarget);
     drawLimitedText8x8(112, -72, 10, text, 6, -1, ot, depth);
-    func_8006C998(104, -96, 432, 0, -1, ot, depth);
+    drawSpriteByIndexWithBlend(104, -96, 432, 0, -1, ot, depth);
 }
 
 /* DECOMP_ATTEMPT: inline 321/331 */
@@ -1083,7 +1083,7 @@ void func_80042894(s16 player) {
         s16 i;
         s16 timeDigitsY;
         if (D_8013B1A0[player]) {
-            func_8006C998(-112, timeY + 39, 398, 5, -1, timeOt, fixedDepth);
+            drawSpriteByIndexWithBlend(-112, timeY + 39, 398, 5, -1, timeOt, fixedDepth);
             palette = 2;
         }
 
@@ -1091,12 +1091,12 @@ void func_80042894(s16 player) {
         iconX = -112;
         drawHudDecimalNumber8x16(-88, timeDigitsY, 2, 1, D_8013B198[player].seconds, palette, -1, timeOt, depth);
         drawHudDecimalNumber8x16(-64, timeDigitsY, 2, 1, D_8013B198[player].centiseconds >> 8, palette, -1, timeOt, depth);
-        func_8006C998(-96, timeDigitsY, 25, palette, -1, timeOt, depth);
-        func_8006C998(-72, timeDigitsY, 24, palette, -1, timeOt, depth);
+        drawSpriteByIndexWithBlend(-96, timeDigitsY, 25, palette, -1, timeOt, depth);
+        drawSpriteByIndexWithBlend(-72, timeDigitsY, 24, palette, -1, timeOt, depth);
         drawLimitedText8x8(iconX, timeY + 28, 11, gSplitScreenTimeLimitLabel, 5, -1, timeOt, depth);
 
         for (i = 0; i < gRacePlayers[player].unk93C; i++) {
-            func_8006C998(iconX, -36, 445, 13, -1, timeOt, fixedDepth);
+            drawSpriteByIndexWithBlend(iconX, -36, 445, 13, -1, timeOt, fixedDepth);
             iconX += 8;
         }
     }
@@ -1114,7 +1114,7 @@ void func_80042894(s16 player) {
     if (player == 1) {
         hudY += 18;
     }
-    func_8006C998(96, hudY - 121, 417, 12, -1, hudOt, depth);
+    drawSpriteByIndexWithBlend(96, hudY - 121, 417, 12, -1, hudOt, depth);
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud_modes", func_80042894);
@@ -1127,13 +1127,13 @@ void drawCourseCoinHud(void) {
 
     setSpriteColor(128, 128, 128);
     if (D_8013B18D_gp) {
-        func_8006C998(72, 84, 398, 5, -1, ot, 1);
+        drawSpriteByIndexWithBlend(72, 84, 398, 5, -1, ot, 1);
     }
     drawHudDecimalNumber8x16(72, 80, 2, 1, gRaceElapsedTime.minutes, 1, -1, ot, 1);
     drawHudDecimalNumber8x16(96, 80, 2, 1, gRaceElapsedTime.seconds, 1, -1, ot, 1);
     drawHudDecimalNumber8x16(120, 80, 2, 1, gRaceElapsedTime.centiseconds >> 8, 1, -1, ot, 1);
-    func_8006C998(88, 80, 25, 1, -1, ot, 1);
-    func_8006C998(112, 80, 24, 1, -1, ot, 1);
+    drawSpriteByIndexWithBlend(88, 80, 25, 1, -1, ot, 1);
+    drawSpriteByIndexWithBlend(112, 80, 24, 1, -1, ot, 1);
     drawLimitedText8x8(72, 71, 10, gLapTimeLabel, 5, -1, ot, 1);
 
     sprintf(text, gLapTimeFormat, D_80124220[D_8013AFCE].minutes,
@@ -1149,8 +1149,8 @@ void drawCourseCoinHud(void) {
     sprintf(text, gCourseCoinTotalFormat, gRacePlayers[0].totalCourseCoinMarkerCount);
     drawLimitedText8x8(-96 + digits * 8, -72, 10, text, 6, -1, ot, 1);
 
-    func_8006C998(-112, 64, 423, 3, -1, ot, 1);
-    func_8006C998(-136, 64, 420, 14, -1, ot, 1);
+    drawSpriteByIndexWithBlend(-112, 64, 423, 3, -1, ot, 1);
+    drawSpriteByIndexWithBlend(-136, 64, 420, 14, -1, ot, 1);
 }
 
 void drawSplitScreenCourseCoinHud(s16 player) {
@@ -1175,13 +1175,13 @@ void drawSplitScreenCourseCoinHud(s16 player) {
     setSpriteColor(128, 128, 128);
     if (shouldRenderPlayerView(player)) {
         if (D_8013B1A0[player]) {
-            func_8006C998(-112, timeY + 39, 398, 5, -1, timeOt, 1);
+            drawSpriteByIndexWithBlend(-112, timeY + 39, 398, 5, -1, timeOt, 1);
         }
         drawHudDecimalNumber8x16(-112, timeY + 36, 2, 1, D_8013B190[player].minutes, 1, -1, timeOt, 1);
         drawHudDecimalNumber8x16(-88, timeY + 36, 2, 1, D_8013B190[player].seconds, 1, -1, timeOt, 1);
         drawHudDecimalNumber8x16(-64, timeY + 36, 2, 1, D_8013B190[player].centiseconds >> 8, 1, -1, timeOt, 1);
-        func_8006C998(-96, timeY + 36, 25, 1, -1, timeOt, 1);
-        func_8006C998(-72, timeY + 36, 24, 1, -1, timeOt, 1);
+        drawSpriteByIndexWithBlend(-96, timeY + 36, 25, 1, -1, timeOt, 1);
+        drawSpriteByIndexWithBlend(-72, timeY + 36, 24, 1, -1, timeOt, 1);
         drawLimitedText8x8(-112, timeY + 28, 10, gLapTimeLabel, 5, -1, timeOt, 1);
         sprintf(text, gLapTimeFormat, D_80124220[D_8013AFCE].minutes,
                 D_80124220[D_8013AFCE].seconds, D_80124220[D_8013AFCE].centiseconds >> 8);
@@ -1201,7 +1201,7 @@ void drawSplitScreenCourseCoinHud(s16 player) {
     if (player == 1) {
         hudY += 18;
     }
-    func_8006C998(96, hudY - 121, 417, 12, -1, hudOt, depth);
+    drawSpriteByIndexWithBlend(96, hudY - 121, 417, 12, -1, hudOt, depth);
 }
 
 char gCourseCoinTotalFormat[4] __attribute__((section(".data"), aligned(4))) = "/%d";

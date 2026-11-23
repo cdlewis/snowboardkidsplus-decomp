@@ -342,8 +342,8 @@ void drawScreenBrighteningOverlay(s32 intensity, struct GsOT *ot, u16 depth);
 void startThreeFrameScreenBlend(void);
 
 void drawSpriteTextureRegion(s16 x, s16 y, s32 index, GsOT *ot, u16 depth);
-void func_8006C998(s16 x, s16 y, s32 sprite, s32 palette, s32 blendMode,
-                   GsOT *ot, u16 depth);
+void drawSpriteByIndexWithBlend(s16 x, s16 y, s32 index, s32 palette, s32 blendMode,
+                                GsOT *ot, u16 depth);
 void drawDecimalNumber8x16(s16 x, s16 y, s16 digits, s16 zeroFill, s32 value,
                           s16 palette, s16 blend, GsOT *ot, u16 depth);
 void drawDecimalNumber8x8(s16 x, s16 y, s16 digits, s16 zeroFill, s32 value,

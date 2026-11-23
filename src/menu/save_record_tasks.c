@@ -665,13 +665,13 @@ void func_8008B178(void) {
                               2, D_8013B480, 0, -1, PANEL_OT, PANEL_DEPTH);
     func_8007240C(position->x / 4096 + 34, position->y / 4096 - 3,
                   64, 16, 128, 128, 128, 2, PANEL_OT, PANEL_DEPTH);
-    func_8006C998(position->x / 4096 - 99, position->y / 4096 - 78, 110, 6, -1,
+    drawSpriteByIndexWithBlend(position->x / 4096 - 99, position->y / 4096 - 78, 110, 6, -1,
                   PANEL_OT, PANEL_DEPTH);
-    func_8006C998(position->x / 4096 - 101, position->y / 4096 - 61, 91, 6, -1,
+    drawSpriteByIndexWithBlend(position->x / 4096 - 101, position->y / 4096 - 61, 91, 6, -1,
                   PANEL_OT, PANEL_DEPTH);
-    func_8006C998(position->x / 4096 - 61, position->y / 4096 - 61, 89, 6, -1,
+    drawSpriteByIndexWithBlend(position->x / 4096 - 61, position->y / 4096 - 61, 89, 6, -1,
                   PANEL_OT, PANEL_DEPTH);
-    func_8006C998((s8)gSelectionPanelLabelOffsets[course] + position->x / 4096 - 71,
+    drawSpriteByIndexWithBlend((s8)gSelectionPanelLabelOffsets[course] + position->x / 4096 - 71,
                   position->y / 4096 - 77, course + 254, (s16)(slot + 2), -1,
                   PANEL_OT, PANEL_DEPTH);
 
@@ -682,7 +682,7 @@ void func_8008B178(void) {
         } else {
             setSpriteColor(32, 32, 32);
         }
-        func_8006C998(position->x / 4096 - 96, i * 22 + position->y / 4096 - 50,
+        drawSpriteByIndexWithBlend(position->x / 4096 - 96, i * 22 + position->y / 4096 - 50,
                       i + 18, 6, -1, PANEL_OT, PANEL_DEPTH);
     }
 
@@ -690,20 +690,20 @@ void func_8008B178(void) {
         setSpriteColor(128, 128, 128);
         pair = getSaveRecordFlagPair(slot, course, i);
         if (pair == 3) {
-            func_8006C998((s16)(i % 3) * 16 + position->x / 4096 - 60,
+            drawSpriteByIndexWithBlend((s16)(i % 3) * 16 + position->x / 4096 - 60,
                           (s16)(i / 3) * 22 + position->y / 4096 - 49,
                           i + 70, 9, -1, PANEL_OT, PANEL_DEPTH);
         } else if (pair == 2) {
-            func_8006C998((s16)(i % 3) * 16 + position->x / 4096 - 60,
+            drawSpriteByIndexWithBlend((s16)(i % 3) * 16 + position->x / 4096 - 60,
                           (s16)(i / 3) * 22 + position->y / 4096 - 49,
                           i + 70, 10, -1, PANEL_OT, PANEL_DEPTH);
         } else if (pair == 1) {
-            func_8006C998((s16)(i % 3) * 16 + position->x / 4096 - 60,
+            drawSpriteByIndexWithBlend((s16)(i % 3) * 16 + position->x / 4096 - 60,
                           (s16)(i / 3) * 22 + position->y / 4096 - 49,
                           i + 70, 11, -1, PANEL_OT, PANEL_DEPTH);
         } else {
             setSpriteColor(32, 32, 32);
-            func_8006C998((s16)(i % 3) * 16 + position->x / 4096 - 60,
+            drawSpriteByIndexWithBlend((s16)(i % 3) * 16 + position->x / 4096 - 60,
                           (s16)(i / 3) * 22 + position->y / 4096 - 49,
                           69, 9, -1, PANEL_OT, PANEL_DEPTH);
         }
@@ -713,9 +713,9 @@ void func_8008B178(void) {
     drawTexturedQuadList(position->x / 4096 - 104, position->y / 4096 - 80,
                          D_8013B3C0[slot], 1, PANEL_OT, PANEL_DEPTH);
     setSpriteColor(128, 128, 128);
-    func_8006C998(position->x / 4096 - 8, position->y / 4096 - 80,
+    drawSpriteByIndexWithBlend(position->x / 4096 - 8, position->y / 4096 - 80,
                   slot * 2 + 241, 0, 0, PANEL_OT, PANEL_DEPTH);
-    func_8006C998(position->x / 4096 - 8, position->y / 4096 - 80,
+    drawSpriteByIndexWithBlend(position->x / 4096 - 8, position->y / 4096 - 80,
                   267, 0, -1, PANEL_OT, PANEL_DEPTH);
 }
 

@@ -49,8 +49,8 @@ void drawRaceTime(const RaceTime *value, s32 x, s32 y, s16 mode, GsOT *ot, u16 d
     drawHudDecimalNumber8x16(x, y, 2, 1, value->minutes, mode, -1, ot, depth);
     drawHudDecimalNumber8x16(x + 24, y, 2, 1, value->seconds, mode, -1, ot, depth);
     drawHudDecimalNumber8x16(x + 48, y, 2, 1, value->centiseconds >> 8, mode, -1, ot, depth);
-    func_8006C998(x + 16, y, 25, mode, -1, ot, depth);
-    func_8006C998(x + 40, y, 24, mode, -1, ot, depth);
+    drawSpriteByIndexWithBlend(x + 16, y, 25, mode, -1, ot, depth);
+    drawSpriteByIndexWithBlend(x + 40, y, 24, mode, -1, ot, depth);
 }
 
 void drawTimeRecordRows(MenuTimeResource *resource) {
@@ -65,14 +65,14 @@ void drawTimeRecordRows(MenuTimeResource *resource) {
         } else {
             mode = 4;
         }
-        func_8006C998(-8, y, i + 0x136, mode, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawSpriteByIndexWithBlend(-8, y, i + 0x136, mode, -1, &D_800EBFF0[D_8013AF78], 1);
         drawRaceTime(&gPlayerSaveRecords[0].lapRecords[D_8013AFCE][i],
                      16, y, mode, &D_800EBFF0[D_8013AF78], 1);
-        func_8006C998(88, y,
+        drawSpriteByIndexWithBlend(88, y,
                      (gPlayerSaveRecords[0].lapRecordIcons[D_8013AFCE][i] & 15) * 3 + 0x14A,
                      D_80124284[gPlayerSaveRecords[0].lapRecordIcons[D_8013AFCE][i] & 15],
                      -1, &D_800EBFF0[D_8013AF78], 1);
-        func_8006C998(108, y,
+        drawSpriteByIndexWithBlend(108, y,
                      (gPlayerSaveRecords[0].lapRecordIcons[D_8013AFCE][i] >> 4) + 0x13B,
                      7, -1, &D_800EBFF0[D_8013AF78], 1);
         y += 32;
@@ -203,7 +203,7 @@ void drawHitCountPanel(TaskResourceRecord *record) {
     if (D_8013B18D) {
         drawLimitedText8x8(-104, -4, 10, gHitCountTimeOutLabel, 4, -1, &D_800EBFF0[D_8013AF78], 1);
     }
-    func_8006C998(-108, -36, 432, 0, -1, &D_800EBFF0[D_8013AF78], 1);
+    drawSpriteByIndexWithBlend(-108, -36, 432, 0, -1, &D_800EBFF0[D_8013AF78], 1);
 }
 
 void drawHitPrizeMoneyValues(TaskResourceRecord *record) {
@@ -220,7 +220,7 @@ void drawHitPrizeMoneyValues(TaskResourceRecord *record) {
     }
     drawHudDecimalNumber8x16(32, y, 5, 0, resource->unk08, 1, -1,
                   &D_800EBFF0[D_8013AF78], 1);
-    func_8006C998(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+    drawSpriteByIndexWithBlend(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
     y += 40;
     stage = resource->unk06;
     if (stage <= 0) {
@@ -229,7 +229,7 @@ void drawHitPrizeMoneyValues(TaskResourceRecord *record) {
     if (resource->unk0E != 0) {
         drawHudDecimalNumber8x16(32, y, 5, 0, resource->unk0A, 1, -1,
                       &D_800EBFF0[D_8013AF78], 1);
-        func_8006C998(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawSpriteByIndexWithBlend(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
         y += 40;
     }
     stage = resource->unk06;
@@ -237,13 +237,13 @@ draw_completion:
     if (stage >= 2) {
         drawHudDecimalNumber8x16(32, y, 5, 0, resource->unk0C, 1, -1,
                       &D_800EBFF0[D_8013AF78], 1);
-        func_8006C998(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawSpriteByIndexWithBlend(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
         y += 40;
     }
     if (resource->unk06 >= 3) {
         drawHudDecimalNumber8x16(24, y, 6, 0, gRacePlayers[0].money, 1, -1,
                       &D_800EBFF0[D_8013AF78], 1);
-        func_8006C998(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawSpriteByIndexWithBlend(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
     }
 }
 
@@ -261,11 +261,11 @@ void drawCountRecordRows(TaskResourceRecord *resource) {
             mode = 4;
             textMode = 4;
         }
-        func_8006C998(-8, y, i + 0x136, mode, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawSpriteByIndexWithBlend(-8, y, i + 0x136, mode, -1, &D_800EBFF0[D_8013AF78], 1);
         drawHudDecimalNumber8x16(16, y, 2, 0, gPlayerSaveRecords[0].countRecordValues[D_8013AFCE][i], mode, -1, &D_800EBFF0[D_8013AF78], 1);
-        func_8006C998(70, y, (gPlayerSaveRecords[0].countRecordIcons[D_8013AFCE][i] & 15) * 3 + 0x14A,
+        drawSpriteByIndexWithBlend(70, y, (gPlayerSaveRecords[0].countRecordIcons[D_8013AFCE][i] & 15) * 3 + 0x14A,
             D_80124284[gPlayerSaveRecords[0].countRecordIcons[D_8013AFCE][i] & 15], -1, &D_800EBFF0[D_8013AF78], 1);
-        func_8006C998(88, y, (gPlayerSaveRecords[0].countRecordIcons[D_8013AFCE][i] >> 4) + 0x13B, 7, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawSpriteByIndexWithBlend(88, y, (gPlayerSaveRecords[0].countRecordIcons[D_8013AFCE][i] >> 4) + 0x13B, 7, -1, &D_800EBFF0[D_8013AF78], 1);
         drawLimitedText8x8(32, i * 32 - 72, 3, D_8013B138, textMode, -1, &D_800EBFF0[D_8013AF78], 1);
         y += 32;
     }
@@ -574,13 +574,13 @@ void drawRaceResultsMoneyValues(TaskResourceRecord *record) {
     if (stage >= 0) {
         drawHudDecimalNumber8x16(32, y, 5, 0, resource->timeBonus, 1, -1,
                                 &D_800EBFF0[D_8013AF78], 1);
-        func_8006C998(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawSpriteByIndexWithBlend(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
         y += 32;
         stage = resource->unk0A;
         if (stage >= 1) {
             drawHudDecimalNumber8x16(32, y, 5, 0, resource->scoreBonus, 1, -1,
                                     &D_800EBFF0[D_8013AF78], 1);
-            func_8006C998(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+            drawSpriteByIndexWithBlend(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
             y += 32;
             stage = resource->unk0A;
         }
@@ -588,19 +588,19 @@ void drawRaceResultsMoneyValues(TaskResourceRecord *record) {
     if (stage >= 2 && resource->hasBonus) {
         drawHudDecimalNumber8x16(32, y, 5, 0, resource->bonusTimer, 1, -1,
                                 &D_800EBFF0[D_8013AF78], 1);
-        func_8006C998(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawSpriteByIndexWithBlend(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
         y += 32;
     }
     if (resource->unk0A >= 3) {
         drawHudDecimalNumber8x16(32, y, 5, 0, resource->displayTimer, 1, -1,
                                 &D_800EBFF0[D_8013AF78], 1);
-        func_8006C998(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawSpriteByIndexWithBlend(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
         y += 32;
     }
     if (resource->unk0A >= 4) {
         drawHudDecimalNumber8x16(24, y, 6, 0, gRacePlayers[0].money, 1, -1,
                                 &D_800EBFF0[D_8013AF78], 1);
-        func_8006C998(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawSpriteByIndexWithBlend(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
     }
 }
 
@@ -619,11 +619,11 @@ void drawTimeRecordListRows(TimeRecordListResource *resource) {
         } else {
             palette = 4;
         }
-        func_8006C998(-8, y, row + 0x136, palette, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawSpriteByIndexWithBlend(-8, y, row + 0x136, palette, -1, &D_800EBFF0[D_8013AF78], 1);
         drawRaceTime(&gPlayerSaveRecords[0].timeRecords[D_8013AFCE][row], 16, y, palette, &D_800EBFF0[D_8013AF78], 1);
-        func_8006C998(88, y, (gPlayerSaveRecords[0].timeRecordCharacters[D_8013AFCE][row] & 15) * 3 + 0x14A,
+        drawSpriteByIndexWithBlend(88, y, (gPlayerSaveRecords[0].timeRecordCharacters[D_8013AFCE][row] & 15) * 3 + 0x14A,
             D_80124284[gPlayerSaveRecords[0].timeRecordCharacters[D_8013AFCE][row] & 15], -1, &D_800EBFF0[D_8013AF78], 1);
-        func_8006C998(108, y, (gPlayerSaveRecords[0].timeRecordCharacters[D_8013AFCE][row] >> 4) + 0x13B, 7, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawSpriteByIndexWithBlend(108, y, (gPlayerSaveRecords[0].timeRecordCharacters[D_8013AFCE][row] >> 4) + 0x13B, 7, -1, &D_800EBFF0[D_8013AF78], 1);
         y += 32;
     }
 }
@@ -986,24 +986,24 @@ void drawStatsMenuMoneyValues(TaskResourceRecord *record) {
     stage = ((StatsMenuFadeResource *)record)->unk06;
     if (stage >= 0) {
         drawHudDecimalNumber8x16(32, y, 5, 0, ((StatsMenuFadeResource *)record)->trickPrize, 1, -1, &D_800EBFF0[D_8013AF78], 1);
-        func_8006C998(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawSpriteByIndexWithBlend(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
         y += 40;
         stage = ((StatsMenuFadeResource *)record)->unk06;
         if (stage >= 1) {
             drawHudDecimalNumber8x16(32, y, 5, 0, ((StatsMenuFadeResource *)record)->makeBonus, 1, -1, &D_800EBFF0[D_8013AF78], 1);
-            func_8006C998(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+            drawSpriteByIndexWithBlend(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
             y += 40;
             stage = ((StatsMenuFadeResource *)record)->unk06;
         }
     }
     if (stage >= 2) {
         drawHudDecimalNumber8x16(32, y, 5, 0, ((StatsMenuFadeResource *)record)->completeBonus, 1, -1, &D_800EBFF0[D_8013AF78], 1);
-        func_8006C998(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawSpriteByIndexWithBlend(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
         y += 40;
     }
     if (((StatsMenuFadeResource *)record)->unk06 >= 3) {
         drawHudDecimalNumber8x16(24, y, 6, 0, gRacePlayers[0].money, 1, -1, &D_800EBFF0[D_8013AF78], 1);
-        func_8006C998(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawSpriteByIndexWithBlend(72, y, 26, 1, -1, &D_800EBFF0[D_8013AF78], 1);
     }
 }
 
@@ -1021,11 +1021,11 @@ void drawStatsRecordRows(TaskResourceRecord *resource) {
             mode = 4;
             textMode = 4;
         }
-        func_8006C998(24, y, i + 0x136, mode, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawSpriteByIndexWithBlend(24, y, i + 0x136, mode, -1, &D_800EBFF0[D_8013AF78], 1);
         drawHudDecimalNumber8x16(44, y, 5, 0, gPlayerSaveRecords[0].statsRecordValues[D_8013AFCE][i], mode, -1, &D_800EBFF0[D_8013AF78], 1);
-        func_8006C998(102, y, (gPlayerSaveRecords[0].statsRecordIcons[D_8013AFCE][i] & 15) * 3 + 0x14A,
+        drawSpriteByIndexWithBlend(102, y, (gPlayerSaveRecords[0].statsRecordIcons[D_8013AFCE][i] & 15) * 3 + 0x14A,
             D_80124284[gPlayerSaveRecords[0].statsRecordIcons[D_8013AFCE][i] & 15], -1, &D_800EBFF0[D_8013AF78], 1);
-        func_8006C998(120, y, (gPlayerSaveRecords[0].statsRecordIcons[D_8013AFCE][i] >> 4) + 0x13B, 7, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawSpriteByIndexWithBlend(120, y, (gPlayerSaveRecords[0].statsRecordIcons[D_8013AFCE][i] >> 4) + 0x13B, 7, -1, &D_800EBFF0[D_8013AF78], 1);
         drawLimitedText8x8(84, y + 8, 1, gPlayerNumberSuffixLabel, textMode, -1, &D_800EBFF0[D_8013AF78], 1);
         y += 32;
     }
@@ -1299,7 +1299,7 @@ void drawRaceTimeComparisonPanel(PanelResource *resource) {
         } else {
             setSpriteColor(128, 128, 128);
         }
-        func_8006C998(-124, i * 104 - 88, i + 490, (s16)(i + 13), 0, &D_800EBFF0[D_8013AF78], 1);
+        drawSpriteByIndexWithBlend(-124, i * 104 - 88, i + 490, (s16)(i + 13), 0, &D_800EBFF0[D_8013AF78], 1);
         drawLimitedText8x8(-80, i * 104 - 56, 20, gRaceComparisonLapTimeLabel, 5, -1, &D_800EBFF0[D_8013AF78], 1);
         drawRaceTime(&D_8013B190[i], -80, i * 104 - 48, 1, &D_800EBFF0[D_8013AF78], 1);
         if (D_8013B1A0[i] == 0) {
@@ -1316,7 +1316,7 @@ void drawRaceTimeComparisonPanel(PanelResource *resource) {
                 drawUppercaseProportionalText(8, i * 104 - 56, 20, gRaceComparisonSpeedFanLabel, 3, -1, &D_800EBFF0[D_8013AF78], 1);
                 drawHudDecimalNumber8x16(64, i * 104 - 40, 2, 0, gRacePlayers[i].collectedCourseCoinMarkerCount,
                                         1, -1, &D_800EBFF0[D_8013AF78], 1);
-                func_8006C998(80, i * 104 - 40, 27, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+                drawSpriteByIndexWithBlend(80, i * 104 - 40, 27, 1, -1, &D_800EBFF0[D_8013AF78], 1);
                 drawHudDecimalNumber8x16(88, i * 104 - 40, 2, 0, gRacePlayers[i].totalCourseCoinMarkerCount,
                                         1, -1, &D_800EBFF0[D_8013AF78], 1);
                 break;
@@ -1324,7 +1324,7 @@ void drawRaceTimeComparisonPanel(PanelResource *resource) {
                 drawUppercaseProportionalText(8, i * 104 - 56, 20, gRaceComparisonHitCountLabel, 3, -1, &D_800EBFF0[D_8013AF78], 1);
                 drawHudDecimalNumber8x16(64, i * 104 - 40, 2, 0, gRacePlayers[i].scoreAttackPointTotal,
                                         1, -1, &D_800EBFF0[D_8013AF78], 1);
-                func_8006C998(80, i * 104 - 40, 27, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+                drawSpriteByIndexWithBlend(80, i * 104 - 40, 27, 1, -1, &D_800EBFF0[D_8013AF78], 1);
                 drawHudDecimalNumber8x16(88, i * 104 - 40, 2, 0, gRacePlayers[i].scoreAttackPointTarget,
                                         1, -1, &D_800EBFF0[D_8013AF78], 1);
                 break;
@@ -1344,7 +1344,7 @@ void drawRaceTimeComparisonPanel(PanelResource *resource) {
                 setSpriteColor(128, 128, 128);
                 palette = resource->resultIcon[i] + 9;
             }
-            func_8006C998(-80, i * 104 - 84, resource->resultIcon[i] + 567, palette,
+            drawSpriteByIndexWithBlend(-80, i * 104 - 84, resource->resultIcon[i] + 567, palette,
                           -1, &D_800EBFF0[D_8013AF78], 1);
         }
     }

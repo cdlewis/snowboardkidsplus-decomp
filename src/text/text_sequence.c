@@ -328,13 +328,13 @@ void func_800A1774(TextSequenceResource *resource) {
                                      resource->bodyText, 15, 1, ot, depth);
     drawDefaultTexturedPanel(bodyX, bodyY, 272, 74, 5, 0, ot, depth);
 
-    func_8006C998((u16)-136 - (u32)resource->unk3A / 3, (u16)-96 - (u32)resource->unk3A / 2,
+    drawSpriteByIndexWithBlend((u16)-136 - (u32)resource->unk3A / 3, (u16)-96 - (u32)resource->unk3A / 2,
                   0x198, 0, -1, ot, (depth | 1));
-    func_8006C998(120 + (u32)resource->unk3A / 3, (u16)-96 - (u32)resource->unk3A / 2,
+    drawSpriteByIndexWithBlend(120 + (u32)resource->unk3A / 3, (u16)-96 - (u32)resource->unk3A / 2,
                   0x199, 0, -1, ot, (depth | 1));
-    func_8006C998((u16)-136 - (u32)resource->unk3A / 3, (u32)resource->unk3A / 2,
+    drawSpriteByIndexWithBlend((u16)-136 - (u32)resource->unk3A / 3, (u32)resource->unk3A / 2,
                   0x19A, 0, -1, ot, (depth | 1));
-    func_8006C998(120 + (u32)resource->unk3A / 3, (u32)resource->unk3A / 2,
+    drawSpriteByIndexWithBlend(120 + (u32)resource->unk3A / 3, (u32)resource->unk3A / 2,
                   0x19B, 0, -1, ot, (depth | 1));
 
     func_8007240C(-D_8013AF7A / 2, -D_8013AF7C / 2 - (u32)resource->unk3A / 2,

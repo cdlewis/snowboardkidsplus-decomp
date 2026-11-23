@@ -43,16 +43,16 @@ void drawLapTimeHud(void) {
     drawHudDecimalNumber8x16(72,80,2,1,gRaceElapsedTime.minutes,1,-1,ot,1);
     drawHudDecimalNumber8x16(96,80,2,1,gRaceElapsedTime.seconds,1,-1,ot,1);
     drawHudDecimalNumber8x16(120,80,2,1,gRaceElapsedTime.centiseconds >> 8,1,-1,ot,1);
-    func_8006C998(88,80,25,1,-1,ot,1);
-    func_8006C998(112,80,24,1,-1,ot,1);
+    drawSpriteByIndexWithBlend(88,80,25,1,-1,ot,1);
+    drawSpriteByIndexWithBlend(112,80,24,1,-1,ot,1);
     drawLimitedText8x8(72,71,10,gLapTimeLabel,5,-1,ot,1);
     sprintf(text,gLapTimeFormat,gPlayerSaveRecords[0].lapRecords[D_8013AFCE][0].minutes,gPlayerSaveRecords[0].lapRecords[D_8013AFCE][0].seconds,gPlayerSaveRecords[0].lapRecords[D_8013AFCE][0].centiseconds >> 8);
     drawLimitedText8x8(72,-88,20,text,7,-1,ot,1);
     drawLimitedText8x8(72,-97,10,gBestLapLabel,7,-1,ot,1);
     icon = (s8)gRacePlayers[0].heldItem;
     if (icon) drawPaletteMappedIcon(-16,-96,icon,ot,1);
-    func_8006C998(-116,64,425,1,-1,ot,1);
-    func_8006C998(-136,64,420,14,-1,ot,1);
+    drawSpriteByIndexWithBlend(-116,64,425,1,-1,ot,1);
+    drawSpriteByIndexWithBlend(-136,64,420,14,-1,ot,1);
 }
 
 void drawFirstPlayerStatusHud(void) {
@@ -65,11 +65,11 @@ void drawFirstPlayerStatusHud(void) {
     drawMenuKindSprite(-32, -96, player->unk93E, player->unk940, ot, 1);
     drawPaletteMappedIcon(0, -96, (s8)player->heldItem, ot, 1);
     frame = gFrameCounter % 12;
-    func_8006C998(120, 80, (s16)(frame / 2) + 472, 7, -1, ot, 1);
+    drawSpriteByIndexWithBlend(120, 80, (s16)(frame / 2) + 472, 7, -1, ot, 1);
     palette = player->unk01C < 100 ? 2 : 3;
     drawHudDecimalNumber8x16(78, 80, 5, 0, player->unk01C, palette, -1, ot, 1);
-    func_8006C998(-116, 80, 426, 1, -1, ot, 1);
-    func_8006C998(-136, 64, 420, 14, -1, ot, 1);
+    drawSpriteByIndexWithBlend(-116, 80, 426, 1, -1, ot, 1);
+    drawSpriteByIndexWithBlend(-136, 64, 420, 14, -1, ot, 1);
 }
 
 void advanceRaceElapsedTime(void) {
@@ -229,13 +229,13 @@ void func_80043FBC(void) {
     setSpriteColor(128, 128, 128);
     if (D_8013AFCD == 2 && (gFrameCounter & 8)) {
         if (player == 0) {
-            func_8006C998(-53, -48, 490, 13, 0, &D_800EBFF0[D_8013AF78], 0);
+            drawSpriteByIndexWithBlend(-53, -48, 490, 13, 0, &D_800EBFF0[D_8013AF78], 0);
         } else {
-            func_8006C998(29, -48, 491, 14, 0, &D_800EBFF0[D_8013AF78], 0);
+            drawSpriteByIndexWithBlend(29, -48, 491, 14, 0, &D_800EBFF0[D_8013AF78], 0);
         }
     }
 
-    func_8006C998(-27, -41, 399, 5, -1, &D_800EBFF0[D_8013AF78], 0);
+    drawSpriteByIndexWithBlend(-27, -41, 399, 5, -1, &D_800EBFF0[D_8013AF78], 0);
     y = -20;
     row = 0;
     x = -20;
@@ -244,7 +244,7 @@ void func_80043FBC(void) {
         if (row == D_8013AFD5) {
             palette = 7;
         }
-        func_8006C998(x - 28, y, 412 + row, palette, -1, &D_800EBFF0[D_8013AF78], 0);
+        drawSpriteByIndexWithBlend(x - 28, y, 412 + row, palette, -1, &D_800EBFF0[D_8013AF78], 0);
         y += 14;
     }
 
@@ -256,7 +256,7 @@ void func_80043FBC(void) {
     sprite = D_8013AEC4[player];
     sprite = sprite != 0;
     sprite += 161;
-    func_8006C998(x, y, sprite, palette, -1, &D_800EBFF0[D_8013AF78], 0);
+    drawSpriteByIndexWithBlend(x, y, sprite, palette, -1, &D_800EBFF0[D_8013AF78], 0);
     palette = 6;
     y += 14;
     if (D_8013AFD5 == 4) {
@@ -264,7 +264,7 @@ void func_80043FBC(void) {
     }
     sprite = (s16)getPlayerOptionFlag(player);
     sprite = !sprite;
-    func_8006C998(x, y, 570 | sprite, palette, -1, &D_800EBFF0[D_8013AF78], 0);
+    drawSpriteByIndexWithBlend(x, y, 570 | sprite, palette, -1, &D_800EBFF0[D_8013AF78], 0);
     setTexturedQuadColor(128, 128, 128);
     drawStyle20DTexturedPanel(-58, -58, 116, 124, 15, 0, &D_800EBFF0[D_8013AF78], 0);
 }

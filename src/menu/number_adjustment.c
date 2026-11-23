@@ -143,9 +143,9 @@ void drawNumberAdjustmentPanel(void) {
     setSpriteColor(128, 128, 128);
     setTexturedQuadColor(128, 128, 128);
     scroll = state->unk20[0] / 4096;
-    func_8006C998(-76, scroll - 91, 296, 0, -1, &D_800EBFF0[D_8013AF78], 4);
+    drawSpriteByIndexWithBlend(-76, scroll - 91, 296, 0, -1, &D_800EBFF0[D_8013AF78], 4);
     palette = 13;
-    func_8006C998(-84, scroll - 96, 295, 1, -1, &D_800EBFF0[D_8013AF78], 4);
+    drawSpriteByIndexWithBlend(-84, scroll - 96, 295, 1, -1, &D_800EBFF0[D_8013AF78], 4);
     if (state->countdown > 0) {
         if (state->countdown & 1) {
             palette = 8;

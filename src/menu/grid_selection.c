@@ -482,7 +482,7 @@ void drawCurrentTaskSpriteB7(void) {
     }
     position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
     if (D_8013AE88->data1A != 0) {
-        func_8006C998(position->x / 4096 + 8, position->y / 4096 - 22,
+        drawSpriteByIndexWithBlend(position->x / 4096 + 8, position->y / 4096 - 22,
                       0xB7, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     }
 }
@@ -495,7 +495,7 @@ void drawCurrentTaskFramedSprite20B(void) {
     setSpriteColor(128, 128, 128);
     drawTexturedFrameStyle9(position->x / 4096 - 140, position->y / 4096 + 8,
                            128, 92, 5, 1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
-    func_8006C998(position->x / 4096 - 136, position->y / 4096 + 12,
+    drawSpriteByIndexWithBlend(position->x / 4096 - 136, position->y / 4096 + 12,
                   0x20B, 1, 0, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
 }
 
@@ -878,8 +878,8 @@ void drawCurrentTaskSavedValuePanel(void) {
     y = position->y / 4096;
     index = D_8013AE98->data1A;
     if (D_8013AE88->data1A != 0) {
-        func_8006C998(x + 8, y - 22, 0xBB, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
-        func_8006C998(x + 74, y + 140, 0xBD, 10, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        drawSpriteByIndexWithBlend(x + 8, y - 22, 0xBB, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        drawSpriteByIndexWithBlend(x + 74, y + 140, 0xBD, 10, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         records = gPlayerSaveRecords;
         drawDecimalNumber8x8(x + 74, y + 152, 6, 0,
             records[(s16)index].money,
@@ -946,7 +946,7 @@ void func_8009A87C(void) {
     setSpriteColor(128, 128, 128);
     drawTexturedFrameStyle9(position->x / 4096 - 140, position->y / 4096 + 8,
                            128, 92, 5, 1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
-    func_8006C998(position->x / 4096 - 136, position->y / 4096 + 12,
+    drawSpriteByIndexWithBlend(position->x / 4096 - 136, position->y / 4096 + 12,
                   0x171, 4, 0, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
 }
 #else
@@ -1027,10 +1027,10 @@ void drawTaskGridSelectionMarker(void) {
         }
         position = (Movement2D *)&D_800D9504[entries[state->selectedIndex].task->resource14];
         if (state->selectedIndex < 8) {
-            func_8006C998(position->x / 4096, position->y / 4096, 0x16F, 8, -1,
+            drawSpriteByIndexWithBlend(position->x / 4096, position->y / 4096, 0x16F, 8, -1,
                          &D_800EBFF0[D_8013AF78], (u16)(state->depth - 1));
         } else {
-            func_8006C998(position->x / 4096, position->y / 4096, 0xB0, 0, -1,
+            drawSpriteByIndexWithBlend(position->x / 4096, position->y / 4096, 0xB0, 0, -1,
                          &D_800EBFF0[D_8013AF78], (u16)(state->depth - 1));
         }
     }
@@ -1069,7 +1069,7 @@ void drawRegisteredTaskGridSprite(void) {
                     (s16)D_8013AE88->data1A);
             }
             setSpriteColor(128, 128, 128);
-            func_8006C998((s16)(position->x / 4096), (s16)(position->y / 4096),
+            drawSpriteByIndexWithBlend((s16)(position->x / 4096), (s16)(position->y / 4096),
                 sprite->sprite, sprite->color, 0, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             entry->flags = 0;
         }

@@ -848,8 +848,8 @@ void drawTaskImagesOnBlackBackground(void) {
         deleteCurrentTaskSubtree();
     } else {
         setSpriteColor(128, 128, 128);
-        func_8006C998(-76, -11, 296, 0, -1, &D_800EBFF0[D_8013AF78], 1);
-        func_8006C998(-84, -16, 295, 1, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawSpriteByIndexWithBlend(-76, -11, 296, 0, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawSpriteByIndexWithBlend(-84, -16, 295, 1, -1, &D_800EBFF0[D_8013AF78], 1);
         addTilePacket(-160, -120, 320, 240, 0, 0, 0,
                       &D_800EBFF0[D_8013AF78], 0xFFE);
     }
@@ -944,7 +944,7 @@ void drawSecondaryDisplayTask(void) {
             if (++D_8013AE88->data1E >= 36) {
                 D_8013AE88->data1E = 0;
             }
-            func_8006C998(2, 76, (u16)((u32)D_8013AE88->data1E / 6) + 370,
+            drawSpriteByIndexWithBlend(2, 76, (u16)((u32)D_8013AE88->data1E / 6) + 370,
                           12, -1, &D_800EBFF0[D_8013AF78], 1);
         }
     }
@@ -1718,7 +1718,7 @@ void drawSelectedTaskSprite(void) {
             setSpriteColor(128, 128, 128);
         }
         position = (Movement2D *)&D_800D9504[children[state->selectedIndex].task->resource14];
-        func_8006C998(position->x / 4096, position->y / 4096, state->sprite, 0, -1,
+        drawSpriteByIndexWithBlend(position->x / 4096, position->y / 4096, state->sprite, 0, -1,
                      &D_800EBFF0[D_8013AF78], state->depth - 1);
     }
 }
@@ -1758,7 +1758,7 @@ void drawRegisteredTaskGridSpriteWithColor(void) {
                     (s16)D_8013AE88->data1A);
             }
             setSpriteColor(color->bytes[0], color->bytes[1], color->bytes[2]);
-            func_8006C998((s16)(position->x / 4096), (s16)(position->y / 4096),
+            drawSpriteByIndexWithBlend((s16)(position->x / 4096), (s16)(position->y / 4096),
                 sprite->sprite, sprite->color, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             entry->flags = 0;
         }
@@ -2080,14 +2080,14 @@ void updateRegisteredTexturePairTask(void) {
     if (resource->textureA < 255) {
         color = (D_8013B3BC & (1U << resource->textureA)) ? 40 : 128;
         setSpriteColor(color, color, color);
-        func_8006C998((s16)(movement->x / 4096 + (s16)(resource->x - 144)),
+        drawSpriteByIndexWithBlend((s16)(movement->x / 4096 + (s16)(resource->x - 144)),
                      (s16)(movement->y / 4096 + (s16)(resource->y - 144)), 142, 0, -1,
                      &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     }
     if (resource->textureB < 255) {
         color = (D_8013B3BC & (1U << resource->textureB)) ? 40 : 128;
         setSpriteColor(color, color, color);
-        func_8006C998((s16)(movement->x / 4096), (s16)(movement->y / 4096), 143, 0, -1,
+        drawSpriteByIndexWithBlend((s16)(movement->x / 4096), (s16)(movement->y / 4096), 143, 0, -1,
                      &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     }
     addDrawAreaPacket((s16)(movement->x / 4096 + 160), (s16)(movement->y / 4096 + 120),
@@ -2198,14 +2198,14 @@ void animateRegisteredTexturePairTask(void) {
     if (resource->textureA < 255) {
         color = (D_8013B3BC & (1U << resource->textureA)) ? 40 : 128;
         setSpriteColor(color, color, color);
-        func_8006C998((s16)(movement->x / 4096 + (s16)(resource->x - 144)),
+        drawSpriteByIndexWithBlend((s16)(movement->x / 4096 + (s16)(resource->x - 144)),
                      (s16)(movement->y / 4096 + (s16)(resource->y - 144)), 142, 0, -1,
                      &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     }
     if (resource->textureB < 255) {
         color = (D_8013B3BC & (1U << resource->textureB)) ? 40 : 128;
         setSpriteColor(color, color, color);
-        func_8006C998((s16)(movement->x / 4096), (s16)(movement->y / 4096), 143, 0, -1,
+        drawSpriteByIndexWithBlend((s16)(movement->x / 4096), (s16)(movement->y / 4096), 143, 0, -1,
                      &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     }
     addDrawAreaPacket((s16)(movement->x / 4096 + 160), (s16)(movement->y / 4096 + 120),
@@ -2477,19 +2477,19 @@ finish:
         } else {
             setSpriteColor(128, 128, 128);
         }
-        func_8006C998(x + state->selection * panel->spacingX, y + state->selection * panel->spacingY,
+        drawSpriteByIndexWithBlend(x + state->selection * panel->spacingX, y + state->selection * panel->spacingY,
                      panel->values[4], panel->values[5], -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     }
 
     color = state->selection == 0 ? 128 : 64;
     setSpriteColor(color, color, color);
     if (panel->targetY - 16 <= y) {
-        func_8006C998(x, y, panel->values[0], panel->values[1], -1,
+        drawSpriteByIndexWithBlend(x, y, panel->values[0], panel->values[1], -1,
                      &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     }
     color = state->selection == 1 ? 128 : 64;
     setSpriteColor(color, color, color);
-    func_8006C998(x + panel->spacingX, y + panel->spacingY, panel->values[2], panel->values[3], -1,
+    drawSpriteByIndexWithBlend(x + panel->spacingX, y + panel->spacingY, panel->values[2], panel->values[3], -1,
                  &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
 }
 #else
@@ -2624,7 +2624,7 @@ void updateTimedSpriteB5Task(void) {
         deleteCurrentTaskSubtree();
     }
     setSpriteColor(128, 128, 128);
-    func_8006C998(movement->x / 4096, movement->y / 4096, 0xB5, 0, -1,
+    drawSpriteByIndexWithBlend(movement->x / 4096, movement->y / 4096, 0xB5, 0, -1,
                  &D_800EBFF0[D_8013AF78], 3);
     lifetime->unk04--;
 }
@@ -2859,7 +2859,7 @@ void func_80078140(void) {
             x += movement->x / 4096;
             y = selected / 2 * 32 + ((u16)yOffsets[i] + 36);
             y += movement->y / 4096;
-            func_8006C998(x, y,
+            drawSpriteByIndexWithBlend(x, y,
                           sprites[i], (s16)i, -1, &D_800EBFF0[D_8013AF78], depths[i]);
             if (selection[i].selected != selection[i].previous) {
                 type = D_8012D460[selection[i].selected];
@@ -2873,7 +2873,7 @@ void func_80078140(void) {
     }
 
     setSpriteColor(128, 128, 128);
-    func_8006C998(movement->x / 4096, movement->y / 4096, 92, 13, -1,
+    drawSpriteByIndexWithBlend(movement->x / 4096, movement->y / 4096, 92, 13, -1,
                   &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
 
     for (i = 0; i < 10; i++) {
@@ -2900,7 +2900,7 @@ void func_80078140(void) {
             x += movement->x / 4096;
             y = movement->y / 4096 + 40;
             y = i / 2 * 32 + y;
-            func_8006C998(x, y,
+            drawSpriteByIndexWithBlend(x, y,
                           D_8012D460[i] * 3 + (frame + 112), 0, -1,
                           &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         } else {
@@ -2910,7 +2910,7 @@ void func_80078140(void) {
             x += movement->x / 4096;
             y = movement->y / 4096 + 40;
             y = i / 2 * 32 + y;
-            func_8006C998(x, y,
+            drawSpriteByIndexWithBlend(x, y,
                           D_8012D460[i] * 3 + 112, 0, -1,
                           &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         }
@@ -3050,7 +3050,7 @@ render:
             } else {
                 setSpriteColor(0x20, 0x20, 0x20);
             }
-            func_8006C998((s16)(position->x / 4096 + 8),
+            drawSpriteByIndexWithBlend((s16)(position->x / 4096 + 8),
                           (s16)(i * 22 + (s16)(position->y / 4096 + 30)),
                           i + 18, 6, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         }
@@ -3060,22 +3060,22 @@ render:
             setSpriteColor(0x80, 0x80, 0x80);
             first = records[player].masks[character] & (1U << (i * 2));
             if (first && (records[player].masks[character] & (2U << (i * 2)))) {
-                func_8006C998((s16)(i % 3 * 16 + (s16)(position->x / 4096 + 44)),
+                drawSpriteByIndexWithBlend((s16)(i % 3 * 16 + (s16)(position->x / 4096 + 44)),
                               (s16)(i / 3 * 22 + (s16)(position->y / 4096 + 31)),
                               i + 70, 9, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             } else if (records[player].masks[character] & (2U << (i * 2))) {
-                func_8006C998((s16)(i % 3 * 16 + (s16)(position->x / 4096 + 44)),
+                drawSpriteByIndexWithBlend((s16)(i % 3 * 16 + (s16)(position->x / 4096 + 44)),
                               (s16)(i / 3 * 22 + (s16)(position->y / 4096 + 31)),
                               i + 70, 10, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             } else {
                 u32 firstOnly = records[player].masks[character] & (1U << (i * 2));
                 if (firstOnly) {
-                    func_8006C998((s16)(i % 3 * 16 + (s16)(position->x / 4096 + 44)),
+                    drawSpriteByIndexWithBlend((s16)(i % 3 * 16 + (s16)(position->x / 4096 + 44)),
                                   (s16)(i / 3 * 22 + (s16)(position->y / 4096 + 31)),
                                   i + 70, 11, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
                 } else {
                     setSpriteColor(0x20, 0x20, 0x20);
-                    func_8006C998((s16)(i % 3 * 16 + (s16)(position->x / 4096 + 44)),
+                    drawSpriteByIndexWithBlend((s16)(i % 3 * 16 + (s16)(position->x / 4096 + 44)),
                                   (s16)(i / 3 * 22 + (s16)(position->y / 4096 + 31)),
                                   69, 9, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
                 }
@@ -3083,7 +3083,7 @@ render:
         }
     } else {
         setSpriteColor(0x80, 0x80, 0x80);
-        func_8006C998((s16)(position->x / 4096 + 48), (s16)(position->y / 4096 + 32),
+        drawSpriteByIndexWithBlend((s16)(position->x / 4096 + 48), (s16)(position->y / 4096 + 32),
                       180, 1, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     }
     if (player < D_8013AFCD) {
@@ -3094,18 +3094,18 @@ render:
         setSpriteColor(0x40, 0x40, 0x40);
     }
     if (player == 0) {
-        func_8006C998((s16)(position->x / 4096 + 5), (s16)(position->y / 4096 + 2),
+        drawSpriteByIndexWithBlend((s16)(position->x / 4096 + 5), (s16)(position->y / 4096 + 2),
                       110, 6, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
-        func_8006C998((s16)(position->x / 4096 + 3), (s16)(position->y / 4096 + 19),
+        drawSpriteByIndexWithBlend((s16)(position->x / 4096 + 3), (s16)(position->y / 4096 + 19),
                       91, 6, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
-        func_8006C998((s16)(position->x / 4096 + 43), (s16)(position->y / 4096 + 19),
+        drawSpriteByIndexWithBlend((s16)(position->x / 4096 + 43), (s16)(position->y / 4096 + 19),
                       89, 6, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     } else {
-        func_8006C998((s16)(position->x / 4096 + 5), (s16)(position->y / 4096 + 2),
+        drawSpriteByIndexWithBlend((s16)(position->x / 4096 + 5), (s16)(position->y / 4096 + 2),
                       111, 5, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
-        func_8006C998((s16)(position->x / 4096 + 3), (s16)(position->y / 4096 + 19),
+        drawSpriteByIndexWithBlend((s16)(position->x / 4096 + 3), (s16)(position->y / 4096 + 19),
                       91, 5, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
-        func_8006C998((s16)(position->x / 4096 + 43), (s16)(position->y / 4096 + 19),
+        drawSpriteByIndexWithBlend((s16)(position->x / 4096 + 43), (s16)(position->y / 4096 + 19),
                       89, 5, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     }
     drawTexturedQuadList((s16)(position->x / 4096), (s16)(position->y / 4096),
@@ -3285,7 +3285,7 @@ void updateRegisteredSelectionPanelTask(void) {
     setSpriteColor(shade, shade, shade);
     if (player >= D_8013AFCD) {
         setSpriteColor(64, 64, 64);
-        func_8006C998((s16)(position->x / 4096 + 96), (s16)(position->y / 4096),
+        drawSpriteByIndexWithBlend((s16)(position->x / 4096 + 96), (s16)(position->y / 4096),
                      241 + player * 2, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     } else {
         if (!resource->transitioning && record->selection != record->previousSelection) {
@@ -3312,24 +3312,24 @@ void updateRegisteredSelectionPanelTask(void) {
             }
         }
 
-        func_8006C998((s16)(position->x / 4096 + 112), (s16)(position->y / 4096 + 70),
+        drawSpriteByIndexWithBlend((s16)(position->x / 4096 + 112), (s16)(position->y / 4096 + 70),
                      30, 1, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
-        func_8006C998((s16)(position->x / 4096 + 112), (s16)(position->y / 4096 + 78),
+        drawSpriteByIndexWithBlend((s16)(position->x / 4096 + 112), (s16)(position->y / 4096 + 78),
                      31, 1, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
-        func_8006C998((s16)(position->x / 4096 + 112), (s16)(position->y / 4096 + 86),
+        drawSpriteByIndexWithBlend((s16)(position->x / 4096 + 112), (s16)(position->y / 4096 + 86),
                      32, 1, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         if (resource->transitioning == 1) {
             addDrawAreaPacket(0, 0, 320, 240, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             {
                 s32 slideX = position->x / 4096 - 16;
-                func_8006C998((s16)(slideX + (s32)resource->slideX),
+                drawSpriteByIndexWithBlend((s16)(slideX + (s32)resource->slideX),
                              (s16)(position->y / 4096), 241 + player * 2, 0, 0,
                              &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             }
-            func_8006C998((s16)(resource->slideX + 96 + position->x / 4096),
+            drawSpriteByIndexWithBlend((s16)(resource->slideX + 96 + position->x / 4096),
                          (s16)(position->y / 4096), 242 + player * 2, 0, 0,
                          &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
-            func_8006C998((s16)(position->x / 4096 + 96), (s16)(position->y / 4096),
+            drawSpriteByIndexWithBlend((s16)(position->x / 4096 + 96), (s16)(position->y / 4096),
                          267, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             addDrawAreaPacket((s16)(position->x / 4096 + 256), (s16)(position->y / 4096 + 120),
                               112, 96, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
@@ -3344,12 +3344,12 @@ void updateRegisteredSelectionPanelTask(void) {
                                   stats[1], 5, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             drawHalfStepSpriteBar((s16)(position->x / 4096 + 168), (s16)(position->y / 4096 + 86),
                                   stats[2], 5, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
-            func_8006C998((s16)(position->x / 4096 + 96), (s16)(position->y / 4096),
+            drawSpriteByIndexWithBlend((s16)(position->x / 4096 + 96), (s16)(position->y / 4096),
                          241 + player * 2, 0, 0, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
-            func_8006C998((s16)(position->x / 4096 + 96), (s16)(position->y / 4096),
+            drawSpriteByIndexWithBlend((s16)(position->x / 4096 + 96), (s16)(position->y / 4096),
                          267, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             labelOffset = gSelectionPanelLabelOffsets[character];
-            func_8006C998((s16)(labelOffset + (s16)(position->x / 4096 + 33)),
+            drawSpriteByIndexWithBlend((s16)(labelOffset + (s16)(position->x / 4096 + 33)),
                          (s16)(position->y / 4096 + 3), 254 + character,
                          (s16)(player + 2), -1,
                          &D_800EBFF0[D_8013AF78], (u16)(D_8013AE88->data1C - 2));

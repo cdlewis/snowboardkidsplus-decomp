@@ -788,7 +788,7 @@ void drawRegisteredSelectionItemStatus(void) {
         } else {
             sprite = getMappedGridSpriteEntry(sprite, parent->values, (s16)D_8013AE88->data1A);
             setSpriteColor(color->bytes[0], color->bytes[1], color->bytes[2]);
-            func_8006C998(position->x / 4096, position->y / 4096, sprite->sprite,
+            drawSpriteByIndexWithBlend(position->x / 4096, position->y / 4096, sprite->sprite,
                 sprite->color, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             setSpriteColor(128, 128, 128);
             character = gRacePlayers[0].unk009;
@@ -799,15 +799,15 @@ void drawRegisteredSelectionItemStatus(void) {
                         if (!(gMergedSaveRecord.masks[character] & (2U << (index * 2)))) {
                             goto draw_base_status;
                         }
-                        func_8006C998(position->x / 4096 - 17, position->y / 4096 - 1,
+                        drawSpriteByIndexWithBlend(position->x / 4096 - 17, position->y / 4096 - 1,
                             index + 70, 9, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
                     } else if (gMergedSaveRecord.masks[character] & (2U << (index * 2))) {
-                        func_8006C998(position->x / 4096 - 17, position->y / 4096 - 1,
+                        drawSpriteByIndexWithBlend(position->x / 4096 - 17, position->y / 4096 - 1,
                             index + 70, 10, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
                     } else {
 draw_base_status:
                         if ((gMergedSaveRecord.masks[character] & (1U << (index * 2))) > 0) {
-                            func_8006C998(position->x / 4096 - 17, position->y / 4096 - 1,
+                            drawSpriteByIndexWithBlend(position->x / 4096 - 17, position->y / 4096 - 1,
                                 index + 70, 11, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
                         } else {
                             drawMenuDecimalNumber8x16(position->x / 4096 - 20, position->y / 4096 + 1,
@@ -855,7 +855,7 @@ void drawSelectionItemDetails(void) {
     if (D_8013AE88->data1A == 0) {
         return;
     }
-    func_8006C998(position->x / 4096 + 8, position->y / 4096 - 22,
+    drawSpriteByIndexWithBlend(position->x / 4096 + 8, position->y / 4096 - 22,
                  0xB3, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     group = &D_8012FD10[D_8013AE98->data1A];
     index = mapMenuByteIndex(group->mapping, selection->unk_02);
@@ -864,13 +864,13 @@ void drawSelectionItemDetails(void) {
     }
     stats = &D_8012FCE4[index];
     if (stats->price && stats->rating) {
-        func_8006C998(position->x / 4096 + 84, position->y / 4096 + 128,
+        drawSpriteByIndexWithBlend(position->x / 4096 + 84, position->y / 4096 + 128,
                      0xBC, 10, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         drawDecimalNumber8x8(position->x / 4096 + 88, position->y / 4096 + 136,
                              4, 0, stats->price, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
-        func_8006C998(position->x / 4096 + 122, position->y / 4096 + 138,
+        drawSpriteByIndexWithBlend(position->x / 4096 + 122, position->y / 4096 + 138,
                      0xBF, 10, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
-        func_8006C998(position->x / 4096 + 84, position->y / 4096 + 148,
+        drawSpriteByIndexWithBlend(position->x / 4096 + 84, position->y / 4096 + 148,
                      0xBE, 10, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         drawHalfStepSpriteBar(position->x / 4096 + 88, position->y / 4096 + 156,
                               stats->rating, 5, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
@@ -895,7 +895,7 @@ void drawSelectionPrizeAndPlayerCounters(void) {
     position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
     if (D_8013AE88->data1A != 0) {
         if (D_8013AFCD == 1) {
-            func_8006C998(position->x / 4096, position->y / 4096,
+            drawSpriteByIndexWithBlend(position->x / 4096, position->y / 4096,
                           0xC1, 14, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             for (row = 0; row < 3; row++) {
                 s32 *prizes = D_8012FC6C[D_8013AFCE];
@@ -905,7 +905,7 @@ void drawSelectionPrizeAndPlayerCounters(void) {
                 drawWrappedText8x8(position->x / 4096 + 88, row * 8 + (s16)(position->y / 4096 + 9),
                                    2, gSelectionPrizeCurrencyLabel, 6, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             }
-            func_8006C998(position->x / 4096 + 6, position->y / 4096 + 35,
+            drawSpriteByIndexWithBlend(position->x / 4096 + 6, position->y / 4096 + 35,
                           0xC2, 14, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             drawDecimalNumber8x8(position->x / 4096 + 26, position->y / 4096 + 42,
                                  5, 0, gPlayerSaveRecords[0].bestScore[D_8013AFCE],
@@ -913,7 +913,7 @@ void drawSelectionPrizeAndPlayerCounters(void) {
             drawWrappedText8x8(position->x / 4096 + 66, position->y / 4096 + 42,
                                2, gSelectionPrizeCurrencyLabel, 6, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         } else {
-            func_8006C998(position->x / 4096, position->y / 4096,
+            drawSpriteByIndexWithBlend(position->x / 4096, position->y / 4096,
                           0xC0, 14, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             drawMenuDecimalNumber8x16(position->x / 4096 + 64, position->y / 4096 + 19,
                                       2, 0, gRacePlayers[0].unk02A, 5, -1,
@@ -1879,11 +1879,11 @@ update:
         return;
     }
 
-    func_8006C998(position->x / 4096, position->y / 4096, 30, 1, -1,
+    drawSpriteByIndexWithBlend(position->x / 4096, position->y / 4096, 30, 1, -1,
                   &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
-    func_8006C998(position->x / 4096 + data->offsetX, position->y / 4096 + data->offsetY,
+    drawSpriteByIndexWithBlend(position->x / 4096 + data->offsetX, position->y / 4096 + data->offsetY,
                   31, 1, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
-    func_8006C998(data->offsetX * 2 + position->x / 4096, data->offsetY * 2 + position->y / 4096,
+    drawSpriteByIndexWithBlend(data->offsetX * 2 + position->x / 4096, data->offsetY * 2 + position->y / 4096,
                   32, 1, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
 
     if (values->bytes[0] == 255) {
@@ -2441,7 +2441,7 @@ void drawTaskOffsetSpriteB8(void) {
     }
     resource = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
     if (D_8013AE88->data1A != 0) {
-        func_8006C998(resource->x / 4096 + 8, resource->y / 4096 - 22,
+        drawSpriteByIndexWithBlend(resource->x / 4096 + 8, resource->y / 4096 - 22,
                       0xB8, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     }
 }
@@ -3116,7 +3116,7 @@ void drawClippedRegisteredTaskGridSprite(void) {
             }
             setSpriteColor(color->bytes[0], color->bytes[1], color->bytes[2]);
             addDrawAreaPacket(0, 0, 320, 240, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
-            func_8006C998((s16)(position->x / 4096), (s16)(position->y / 4096),
+            drawSpriteByIndexWithBlend((s16)(position->x / 4096), (s16)(position->y / 4096),
                 sprite->sprite, sprite->color, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             addDrawAreaPacket(25, row * 104 + 40, 270, 94,
                 &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
@@ -3134,9 +3134,9 @@ void drawTaskIndexPanel(void) {
     resource = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
     index = D_8013AE88->data18;
     if (D_8013AE88->data1A != 0) {
-        func_8006C998(resource->x / 4096 + 8, resource->y / 4096 + 80,
+        drawSpriteByIndexWithBlend(resource->x / 4096 + 8, resource->y / 4096 + 80,
                       0x133, 10, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
-        func_8006C998(resource->x / 4096 + 24, resource->y / 4096 + 80,
+        drawSpriteByIndexWithBlend(resource->x / 4096 + 24, resource->y / 4096 + 80,
                       0x31, 2, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     }
     setSpriteColor(128, 128, 128);
@@ -3994,10 +3994,10 @@ void drawSaveRecordProgressPanel(void) {
                     palette = 0;
                 }
                 if (sprite >= 0) {
-                    func_8006C998(i * 32 + (s16)(x + 9), y + 54, sprite, palette, -1,
+                    drawSpriteByIndexWithBlend(i * 32 + (s16)(x + 9), y + 54, sprite, palette, -1,
                                   &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
                 }
-                func_8006C998(i * 32 + (s16)(x + 8), y + 60, 0x70 + i * 3, 0, -1,
+                drawSpriteByIndexWithBlend(i * 32 + (s16)(x + 8), y + 60, 0x70 + i * 3, 0, -1,
                               &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             }
             for (i = 8; i < 10; i++) {
@@ -4019,16 +4019,16 @@ void drawSaveRecordProgressPanel(void) {
                     palette = 0;
                 }
                 if (sprite >= 0) {
-                    func_8006C998(x + i * 32 - 55, y + 13, sprite, palette, -1,
+                    drawSpriteByIndexWithBlend(x + i * 32 - 55, y + 13, sprite, palette, -1,
                                   &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
                 }
                 if (D_8013B484[slot]->flags & (1u << (i - 8))) {
-                    func_8006C998((i - 8) * 32 + (s16)(x + 200), y + 19,
+                    drawSpriteByIndexWithBlend((i - 8) * 32 + (s16)(x + 200), y + 19,
                                   0x70 + D_8012D460[i] * 3, 0, -1,
                                   &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
                 }
             }
-            func_8006C998(x + 72, y + 19, 0x5A, 3, -1,
+            drawSpriteByIndexWithBlend(x + 72, y + 19, 0x5A, 3, -1,
                           &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             drawDecimalNumber16(x + 72, y + 30, 6, 0, D_8013B484[slot]->money,
                                 8, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
@@ -4037,7 +4037,7 @@ void drawSaveRecordProgressPanel(void) {
         }
     } else {
         setSpriteColor(128, 128, 128);
-        func_8006C998(x + 64, y + 32, 0xB4, 1, -1,
+        drawSpriteByIndexWithBlend(x + 64, y + 32, 0xB4, 1, -1,
                       &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     }
 

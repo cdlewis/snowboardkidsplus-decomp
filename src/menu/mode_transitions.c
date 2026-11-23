@@ -404,7 +404,7 @@ void updateTitleScreenMenuTask(void) {
                 state->promptState = 1;
             }
         }
-        func_8006C998(-72, 96, 53, 10, -1, &D_800EBFF0[D_8013AF78], 4);
+        drawSpriteByIndexWithBlend(-72, 96, 53, 10, -1, &D_800EBFF0[D_8013AF78], 4);
     }
     drawFullScreenTexturedBackground();
 }
@@ -647,9 +647,9 @@ void updateTitleLogoTask(void) {
                                 0, 72, logo->logoScaleX, logo->logoScaleY, 0, &D_800EBFF0[D_8013AF78], 4);
     if (logo->flash == 1) {
         setSpriteColor(logo->brightness, logo->brightness, logo->brightness);
-        func_8006C998((s16)logoX, (s16)(logoY - 72), 0x1B7, 0, 1, &D_800EBFF0[D_8013AF78], 4);
-        func_8006C998((s16)(logoX + 128), (s16)(logoY - 72), 0x1B8, 0, 1, &D_800EBFF0[D_8013AF78], 4);
-        func_8006C998((s16)(logoX + 256), (s16)(logoY - 72), 0x1B9, 0, 1, &D_800EBFF0[D_8013AF78], 4);
+        drawSpriteByIndexWithBlend((s16)logoX, (s16)(logoY - 72), 0x1B7, 0, 1, &D_800EBFF0[D_8013AF78], 4);
+        drawSpriteByIndexWithBlend((s16)(logoX + 128), (s16)(logoY - 72), 0x1B8, 0, 1, &D_800EBFF0[D_8013AF78], 4);
+        drawSpriteByIndexWithBlend((s16)(logoX + 256), (s16)(logoY - 72), 0x1B9, 0, 1, &D_800EBFF0[D_8013AF78], 4);
     }
 }
 
@@ -681,7 +681,7 @@ void drawSelectedTaskSideMarkerSprite(void) {
             break;
         }
         position = (Movement2D *)&D_800D9504[entries[selection].task->resource14];
-        func_8006C998(position->x / 4096 + (s16)(offset - 32), position->y / 4096 - 4,
+        drawSpriteByIndexWithBlend(position->x / 4096 + (s16)(offset - 32), position->y / 4096 - 4,
                       0x44, 0, -1, &D_800EBFF0[D_8013AF78], (u16)(resource->depth - 1));
     }
 }
@@ -719,7 +719,7 @@ void drawRegisteredTaskGridSpriteWithDefaultBlend(void) {
                     (s16)D_8013AE88->data1A);
             }
             setSpriteColor(128, 128, 128);
-            func_8006C998((s16)(position->x / 4096), (s16)(position->y / 4096),
+            drawSpriteByIndexWithBlend((s16)(position->x / 4096), (s16)(position->y / 4096),
                 sprite->sprite, sprite->color, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             entry->flags = 0;
         }
@@ -983,7 +983,7 @@ void drawSelectedTaskMarkerSprite(void) {
             setSpriteColor(128, 128, 128);
         }
         position = (Movement2D *)&D_800D9504[entries[resource->selection].task->resource14];
-        func_8006C998(position->x / 4096 - 30, position->y / 4096 + 20,
+        drawSpriteByIndexWithBlend(position->x / 4096 - 30, position->y / 4096 + 20,
                       0x44, 0, -1, &D_800EBFF0[D_8013AF78], (u16)(resource->depth - 1));
     }
 }
@@ -1124,14 +1124,14 @@ void finishUnlockNotification0TransitionTask(void) {
 
 void drawSound601SequenceSpriteTask(void) {
     if (gameOptionPlayerModeAbsolute == 1) {
-        func_8006C998(-48, -12, 0x1E0, 6, -1, &D_800EC018[D_8013AF78], 1);
+        drawSpriteByIndexWithBlend(-48, -12, 0x1E0, 6, -1, &D_800EC018[D_8013AF78], 1);
     } else if (D_8013AE88->data18 == 0) {
         if (shouldRenderPlayerView(0)) {
-            func_8006C998(-40, -12, 0x1E0, 6, -1, &D_800EC018[D_8013AF78], 1);
+            drawSpriteByIndexWithBlend(-40, -12, 0x1E0, 6, -1, &D_800EC018[D_8013AF78], 1);
         }
     } else {
         if (shouldRenderPlayerView(1)) {
-            func_8006C998(-40, -12, 0x1E0, 6, -1, &D_800EC0B8[D_8013AF78], 1);
+            drawSpriteByIndexWithBlend(-40, -12, 0x1E0, 6, -1, &D_800EC0B8[D_8013AF78], 1);
         }
     }
     if (D_8013AFE4 & 8) {
