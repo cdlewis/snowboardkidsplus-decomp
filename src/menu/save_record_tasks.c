@@ -118,12 +118,12 @@ void copySaveRecordAndMergeFlags(void) {
     mergeSaveRecordFlags(&gPlayerSaveRecords[1], &gMergedSaveRecord);
 }
 
-/* DECOMP_ATTEMPT: inline 33/36 */
-#ifdef NON_MATCHING
-void func_80089A0C(SaveRecord *source, s16 index) {
-    s16 i;
-    for (i = 0; i < 9; i++) {
-        gPlayerResourceTextureSelections.entries[index][i] = source->resourceTextureSelections[i];
+void applyLoadedSaveRecordSettings(SaveRecord *source, s16 index) {
+    s16 i = 0;
+    s32 playerIndex = index;
+
+    for (; i < 9; i++) {
+        gPlayerResourceTextureSelections.entries[playerIndex][i] = source->resourceTextureSelections[i];
     }
     if (D_8013AFCD == 1) {
         *(volatile u16 *)&gUnlockNotificationFlags = source->unlockNotificationFlags;
@@ -131,9 +131,6 @@ void func_80089A0C(SaveRecord *source, s16 index) {
         *(volatile u16 *)&gUnlockNotificationFlags = 0;
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/menu/save_record_tasks", func_80089A0C);
-#endif
 
 void prepareSaveRecordForWrite(SaveRecord *state) {
     u32 i;

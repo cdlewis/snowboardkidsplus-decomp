@@ -3546,7 +3546,6 @@ extern const u16 D_801302BC[], D_80130308[], D_80130348[], D_80130390[], D_80130
 extern const u16 D_8013052C[], D_8013066C[], D_801306EC[], D_80130770[], D_80130780[];
 extern const u16 D_801307AC[], D_80130800[];
 void drawSaveRecordPushAnyButtonPrompt(void);
-void func_80089A0C(SaveRecord *record, s16 player);
 
 void func_80087B84(void) {
     Movement2D *position;
@@ -3895,7 +3894,7 @@ void func_80087B84(void) {
         if (result == 2) {
             gPlayerSaveRecords[player] = *D_8013B484[player];
             copySaveRecordAndMergeFlags();
-            func_80089A0C(&gPlayerSaveRecords[player], player);
+            applyLoadedSaveRecordSettings(&gPlayerSaveRecords[player], player);
             D_8013B47C = 1;
             D_8013AE88->data18 = 24;
         } else if (result == 3) {

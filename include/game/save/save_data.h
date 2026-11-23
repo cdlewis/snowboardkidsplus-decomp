@@ -76,6 +76,7 @@ extern s16 D_8013AFDE;
 extern u8 gSaveRecordUnlockOverrideFlags;
 
 void copySaveRecordAndMergeFlags(void);
+void applyLoadedSaveRecordSettings(SaveRecord *source, s16 index);
 void applySaveRecordUnlockOverrides(s16 index);
 
 typedef char SaveRecordSizeCheck[(sizeof(SaveRecord) == 0x408) ? 1 : -1];

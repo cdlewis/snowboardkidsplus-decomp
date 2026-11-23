@@ -352,6 +352,7 @@ hasTaskResource16Value = 0x80074968; // type:func
 // Equality predicate; the argument's game-specific meaning is unknown.
 isValue16 = 0x80086FF8; // type:func
 
+applyLoadedSaveRecordSettings = 0x80089A0C; // type:func
 prepareSaveRecordForWrite = 0x80089A98; // type:func
 
 // Sum unsigned bytes for the save-data checksum.
