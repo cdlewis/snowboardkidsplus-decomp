@@ -409,7 +409,7 @@ void initializeGameOptionTask(void) {
 
 void initializeGameOptionViewTask(void) {
     initPlayerCamera(0);
-    func_8003DEE0();
+    initializeDefaultSceneLighting();
     setControllerFlag0(0);
     setControllerFlag0(1);
     setCurrentTaskCallback(queueRaceStartupResourcesTask);
@@ -1128,7 +1128,7 @@ void startThreeFrameScreenBlend(void) {
 
 void initializeDemoPlaybackTask(void) {
     initPlayerCamera(0);
-    func_8003DEE0();
+    initializeDefaultSceneLighting();
     initializeRacePlayerEffects();
     createChildTaskForParent(&gGameTasks[3], initPlayerZeroTask);
     D_8013AE8C->data18 = 0;

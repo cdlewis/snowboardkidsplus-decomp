@@ -177,7 +177,7 @@ void initializeMode11TransitionTask(void) {
 void dispatchGameOptionTransitionTask(void) {
     D_8013AF84 = 0x100;
     initPlayerCamera(0);
-    func_8003DEE0();
+    initializeDefaultSceneLighting();
     switch (D_8013B109) {
     case 0:
         playMovie(2);

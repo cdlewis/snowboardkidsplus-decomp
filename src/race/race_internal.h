@@ -522,7 +522,6 @@ void waitForBackgroundMenuTransition(void);
 void scheduleBackgroundViewAfterChildTasks(void);
 void scheduleMode2SequenceWhenCdQueueIdle(void);
 void dispatchBackgroundMenuTask(void);
-void func_8003DEE0(void);
 void drawSound601SequenceSpriteTask(void);
 void drawGrowingSprite178Task(void);
 void updateFallingSpriteEffectsTask(void);

@@ -97,7 +97,7 @@ void initializeBackgroundCameraTask(void) {
     queueBackgroundTextureSectorCommands();
     D_8013AF84 = 400;
     initPlayerCamera(0);
-    func_8003DEE0();
+    initializeDefaultSceneLighting();
     createChildTask(scheduleMode2SequenceWhenCdQueueIdle);
     D_8013AE8C->data18 = D_8013AE88->data18;
     D_8013AE8C->data1C = 0;
@@ -116,7 +116,7 @@ void initializeViewAndSelectTaskCallback(void) {
     if (D_8013AE88->data1E != 0) {
         D_8013AF84 = 0x100;
         initPlayerCamera(0);
-        func_8003DEE0();
+        initializeDefaultSceneLighting();
         if (D_8013AFD7 != 0) {
             goto restore;
         }

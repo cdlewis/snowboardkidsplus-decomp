@@ -33,8 +33,15 @@ typedef struct GsRVIEW2 {
     GsCOORDINATE2 *super;
 } GsRVIEW2;
 
+typedef struct {
+    s32 vx, vy, vz;
+    u8 r, g, b;
+} GsF_LIGHT;
+
 void GsSetProjection(s32 projection);
 int GsSetRefView2L(GsRVIEW2 *view);
+int GsSetFlatLight(int id, GsF_LIGHT *light);
+void GsSetAmbient(s32 red, s32 green, s32 blue);
 
 void GsMapModelingData(u32 *data);
 void GsLinkObject4(u32 *model, GsDOBJ2 *object, s32 index);

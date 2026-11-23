@@ -735,6 +735,7 @@ segments:
       - {start: 0x1148B0, type: .data, name: race/player/player_actions, linker_section: .data.controller_input_sequences}
       - {start: 0x11494C, type: .data, name: race/player/player_actions, linker_section: .data.result_label_tables}
       - [0x114964, data, controller_input_sequences_tail]
+      - {start: 0x114978, type: .data, name: race/player/player_results, linker_section: .data.default_scene_lights}
       - {start: 0x1149A8, type: .data, name: race/player/player_actions, linker_section: .data.player_camera_views}
       - [0x1149E8, data, player_camera_state_tail]
       - {start: 0x114A48, type: .data, name: race/player/player_actions, linker_section: .data.course_hit_time_limits}

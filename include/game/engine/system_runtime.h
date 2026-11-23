@@ -45,7 +45,7 @@ void updatePaletteTransition(void);
 void selectMemoryCardLoadFile(u8 slot, void *destination);
 void pollMemoryCardBufferReadTask(void);
 void waitThenStartSplitScreenTransition(void);
-void func_8003DEE0(void);
+void initializeDefaultSceneLighting(void);
 void pollMemoryCardReadTask(void);
 void captureMemoryCardSaveIcon(void);
 s32 pollMemoryCardAvailability(void);

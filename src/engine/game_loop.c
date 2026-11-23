@@ -252,6 +252,6 @@ void initializeGameSystems(void) {
     D_800EC130[0].org = (D_800F4200 + 0xa);
     D_800EC130[1].org = (void *)(D_800FC200 + 0xa);
     initPlayerCamera(0U);
-    func_8003DEE0();
+    initializeDefaultSceneLighting();
     initPrimitiveTemplates();
 }
