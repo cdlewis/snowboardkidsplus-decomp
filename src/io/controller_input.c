@@ -3,6 +3,8 @@
 #include "game/io/controller_effects.h"
 #include "psx/libpad.h"
 
+#define CONTROLLER_INPUT_RECORDING_BUFFER ((ControllerInputRecord *)0x8017B800)
+
 ControllerReceiveBuffer D_800E9558[2] __attribute__((section(".data.controller_receive_buffers"))) = {0};
 
 u8 D_8013AEE4 __attribute__((section(".sdata.controller_input_state"))) = 0;
@@ -50,6 +52,9 @@ u8 gControllerActuatorAlignment[6] __attribute__((section(".data.controller_actu
 static u16 sControllerActuatorAlignmentPadding __attribute__((section(".data.controller_actuator_alignment"))) = 0;
 
 s16 D_8013AF08[2] __attribute__((section(".data.controller_values"))) = {0, 0};
+
+extern u8 D_8013AFD7 __attribute__((section(".data")));
+extern u8 D_8013AFD9 __attribute__((section(".data")));
 
 void setControllerFlag0(u16 controller) { gControllerFlags[controller] |= 1; }
 
@@ -325,18 +330,11 @@ void updateControllers(void) {
     updateControllerActuators(1);
 }
 
-/* DECOMP_ATTEMPT: inline 45/49 */
-#ifdef NON_MATCHING
-extern u8 D_8013AFD9 __attribute__((section(".data")));
-
-void func_8001596C(u16 controller) {
+void initializeControllerInputRecording(u16 controller) {
     if (D_8013AFD7 || D_8013AFD9) {
         D_8013AED4[controller] = ((ControllerInputRecord (*)[256])D_800E959C)[controller];
     } else {
-        ControllerInputRecord **slot = D_8013AED4;
-        ControllerInputRecord *buffer = (ControllerInputRecord *)0x8017B800;
-        slot += controller;
-        *slot = buffer;
+        D_8013AED4[controller] = CONTROLLER_INPUT_RECORDING_BUFFER;
     }
     D_8013AED4[controller]->repeatCount = 0;
     D_8013AED4[controller]->buttons = 0xFFFF;
@@ -344,10 +342,6 @@ void func_8001596C(u16 controller) {
     D_8013AED4[controller]->pressedButtons = 0xFFFF;
     D_8013AEDC[controller] = 1;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/io/controller_input", func_8001596C);
-#endif
-
 /* DECOMP_ATTEMPT: inline 152/153 */
 #ifdef NON_MATCHING
 void func_80015A30(u16 controller) {

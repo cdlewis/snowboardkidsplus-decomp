@@ -163,6 +163,7 @@ drawRacePlacementSprite = 0x800401DC; // type:func
 initializeGameOptionTask = 0x8001B778; // type:func
 slideOutPlayerNumberDisplayTask = 0x80034928; // type:func
 updateControllers = 0x80015924; // type:func
+initializeControllerInputRecording = 0x8001596C; // type:func
 slideRaceTimeDisplayIn = 0x80033820; // type:func
 updateCurrentPlayerFromTaskPhase = 0x800257AC; // type:func
 gPlayerTimedEffectPlacementOffsets = 0x80120A5C; // size:0x10 defined:true

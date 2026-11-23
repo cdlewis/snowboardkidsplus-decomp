@@ -465,7 +465,6 @@ void updateCurrentPlayerRiding(void);
 s16 func_80029DD0(s16 playerIndex);
 void updateCurrentPlayerAirborneDragUntilLanding(void);
 s32 snapCurrentPlayerToTerrain(void);
-void func_8001596C(u16 playerIndex);
 void moveCurrentPlayerToTaskTarget(void);
 void advanceCurrentPlayerTaskOnAnimationFlag(void);
 void updateCurrentPlayerTaskDecelerationSteps(void);
@@ -1360,7 +1359,7 @@ void updateCurrentPlayerAndResetState(void) {
             if (D_8013AFD7 || D_8013AFD9) {
                 initializeControllerInputPlayback(D_8013AE88->data18);
             } else if (D_8013AFE2 == 2 && D_8013AFD6 == 0) {
-                func_8001596C(0);
+                initializeControllerInputRecording(0);
                 resetSelectedRecordStates();
             }
         }
