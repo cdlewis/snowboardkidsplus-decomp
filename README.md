@@ -1,6 +1,6 @@
 Snowboard Kids Plus  
 [![Build](https://github.com/cdlewis/snowboardkidsplus-decomp/actions/workflows/build.yaml/badge.svg?branch=main)](https://github.com/cdlewis/snowboardkidsplus-decomp/actions/workflows/build.yaml?query=branch%3Amain)
-[![Code](https://img.shields.io/badge/Code-87.61%25-blue)](#building)
+[![Code](https://img.shields.io/badge/Code-87.73%25-blue)](#building)
 [![Data](https://img.shields.io/badge/Data-63.69%25-blue)](#building)
 [![Chat](https://img.shields.io/discord/729856662357278750?color=%237289DA&logo=discord&logoColor=%23FFFFFF)](https://discord.gg/PJzG4F8SpF)
 ===================
@@ -98,20 +98,6 @@ For parallel or incremental builds:
 ./tools/build-and-verify.sh --jobs 8
 ./tools/build-and-verify.sh --incremental --jobs 8
 ```
-
-## Reverse-engineering notes
-
-The current build covers the boot executable, `SLPS_018.23`. `SNB/SNB.DAT` is
-extracted unchanged; its contents are not yet split or rebuilt. The executable
-checksum does not verify a rebuilt DAT file or disc image.
-
-- [AGENTS.md](AGENTS.md) describes the project layout, matching workflow, and
-  validation requirements.
-- [Function matching](.agents/skills/psx-match-function/SKILL.md) and
-  [data matching](.agents/skills/psx-match-data/SKILL.md) cover the matching tools.
-- Run `./tools/build-and-verify.sh --expected --objects` to prepare verified
-  targets and comparison objects for [objdiff](https://github.com/encounter/objdiff).
-  Add `--non-matching` to include partial C in comparison objects.
 
 ## Contributing
 
