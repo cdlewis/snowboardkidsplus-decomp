@@ -973,38 +973,32 @@ void markSecondaryTaskAndClearReference(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: inline 24/32 */
-#ifdef NON_MATCHING
-s32 func_80071E78(TextureColor *color, s8 *stepPtr, u8 minimum, u8 maximum) {
+s32 stepGrayscaleColor(TextureColor *color, s8 *stepPtr, u8 minimum, u8 maximum) {
     s32 reversed = 0;
-    s32 step = *stepPtr;
+    s8 step = *stepPtr;
     u8 value = color->r;
-    s8 nextStep = step;
 
     if (step > 0) {
         if (value + step > maximum) {
             value = maximum;
-            goto reverse;
+            step = -step;
+            reversed = 1;
         } else {
-            value += nextStep;
+            value += step;
         }
     } else if (step < 0) {
         if (value - minimum < -step) {
             value = minimum;
-reverse:
-            nextStep = -nextStep;
+            step = -step;
             reversed = 1;
         } else {
-            value += nextStep;
+            value += step;
         }
     }
     color->r = color->g = color->b = value;
-    *stepPtr = nextStep;
+    *stepPtr = step;
     return reversed;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80071E78);
-#endif
 
 /* DECOMP_ATTEMPT: inline 72/77 */
 #ifdef NON_MATCHING

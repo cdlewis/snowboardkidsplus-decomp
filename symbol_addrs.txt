@@ -399,6 +399,7 @@ drawBlackScreenTask = 0x80071678; // type:func
 clearSecondaryTaskReference = 0x8007199C; // type:func
 // Set the secondary task's data18 to 99, then clear its reference.
 markSecondaryTaskAndClearReference = 0x80071E58; // type:func
+stepGrayscaleColor = 0x80071E78; // type:func
 initSprite = 0x8004A0D0; // type:func
 getXZHeading = 0x8004A124; // type:func
 sSlidingVisualFrames = 0x80124384; // size:0x100 defined:true
