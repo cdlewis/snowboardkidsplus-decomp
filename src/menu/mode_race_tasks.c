@@ -320,6 +320,6 @@ void queueTaskModeSectorRead(void) {
 }
 
 void prepareLoadedTextSequenceTask(void) {
-    func_800A1670();
+    parseLoadedTextSequence();
     setCurrentTaskCallback(initializeTextSequenceTask);
 }

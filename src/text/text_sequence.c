@@ -14,6 +14,7 @@
 
 /* The parser builds this table immediately before the indexed sector buffer. */
 #define TEXT_SEQUENCE_ENTRIES ((TextSequenceEntry *)0x801F2000)
+#define TEXT_SEQUENCE_MAX_ENTRIES 16
 #define TEXT_SEQUENCE_ADVANCE_BUTTONS 0xB0
 
 typedef struct TextSequenceEntry {
@@ -243,36 +244,28 @@ void queueModeIndexedSectorRead(s16 mode, s16 index) {
     }
 }
 
-/* DECOMP_ATTEMPT: inline 63/65 */
-#ifdef NON_MATCHING
-typedef struct LoadedTextDescriptor {
-    u16 *text;
-    u16 type;
-    u16 width;
-} LoadedTextDescriptor;
+void parseLoadedTextSequence(void) {
+    TextSequenceEntry *entry = TEXT_SEQUENCE_ENTRIES;
+    u16 *text = (u16 *)INDEXED_SECTOR_READ_DESTINATION;
+    TextSequenceEntry *metadata = entry;
+    s16 entryIndex;
 
-void func_800A1670(void) {
-    LoadedTextDescriptor *entry = (LoadedTextDescriptor *)0x801F2000;
-    u16 *text = (u16 *)0x801F2080;
-    LoadedTextDescriptor *current;
-    s16 i;
-    for (i = 0; i < 16; entry++) {
-        current = entry;
+    for (entryIndex = 0; entryIndex < TEXT_SEQUENCE_MAX_ENTRIES; entry++) {
         if (*text == 0x807A) {
-            current->text = 0;
-            current->type = 2;
-            current->width = 0;
+            entry->text = 0;
+            metadata->kind = 2;
+            metadata->length = 0;
             return;
         }
         if (*text == 0x8074) {
             text++;
-            current->text = text;
-            current->type = 0;
+            entry->text = text;
+            metadata->kind = 0;
         } else {
-            current->text = text;
-            current->type = 1;
+            entry->text = text;
+            metadata->kind = 1;
         }
-        current->width = 0;
+        metadata->length = 0;
         for (;;) {
             u16 ch = *text;
             if (ch == 0x800A) {
@@ -284,7 +277,7 @@ void func_800A1670(void) {
                 break;
             }
             if (ch == 0x8020 || !(ch & 0xC000)) {
-                current->width++;
+                metadata->length++;
                 text++;
             } else {
                 text++;
@@ -293,13 +286,13 @@ void func_800A1670(void) {
         text++;
         while (*text++ == 0) {}
         text--;
-        i++;
-        if (i >= 16) break;
+        entryIndex++;
+        metadata++;
+        if (entryIndex >= TEXT_SEQUENCE_MAX_ENTRIES) {
+            break;
+        }
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/text/text_sequence", func_800A1670);
-#endif
 
 /* DECOMP_ATTEMPT: inline 366/395 */
 #ifdef NON_MATCHING

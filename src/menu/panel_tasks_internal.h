@@ -199,7 +199,7 @@ void updateBoardSelectionMenuTask(void);
 void updateSplitBoardSelectionTask(void);
 void updatePlayerPaletteSelectionTask(void);
 void updateTextSequenceTask(void);
-void func_800A1670(void);
+void parseLoadedTextSequence(void);
 void func_800A1774(TextSequenceResource *resource);
 void updateBoardSelectionDetailsMenuTask(void);
 void initializePlayerTextureSelectionTask(void);
