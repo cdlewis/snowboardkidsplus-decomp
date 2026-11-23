@@ -2310,6 +2310,7 @@ drawCurrentTaskHitPrizeMenu = 0x80038B34; // type:func
 
 compareRaceTimes = 0x8003C9A4; // type:func
 advanceRaceElapsedTime = 0x800439AC; // type:func
+decrementRaceCountdown = 0x80043A4C; // type:func
 gRaceElapsedTime = 0x8013B180; // type:RaceTime size:0x4
 
 setTexturedQuadTexture = 0x8006BE50; // type:func

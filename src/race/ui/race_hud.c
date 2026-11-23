@@ -91,9 +91,7 @@ void advanceRaceElapsedTime(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: inline 29/32 */
-#ifdef NON_MATCHING
-void func_80043A4C(void) {
+void decrementRaceCountdown(void) {
     if (D_8013AFD3 == 0) {
         D_8013B184.centiseconds -= 0x358;
         if (D_8013B184.centiseconds < 0) {
@@ -111,9 +109,6 @@ void func_80043A4C(void) {
         }
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud", func_80043A4C);
-#endif
 
 s32 calculateRaceTimeDifference(const RaceTime *a, const RaceTime *b, RaceTime *difference) {
     s32 first = (a->centiseconds & 0xFF00) + a->seconds * 25600 + a->minutes * 1536000;

@@ -683,7 +683,7 @@ void updateRaceHud(void) {
             break;
         case 4:
             if (!(D_8013AFE4 & 3) && !(gRacePlayers[0].unk128 & 0x40)) {
-                func_80043A4C();
+                decrementRaceCountdown();
             }
             if (!D_8013B184.minutes) {
                 if (!D_8013B184.seconds) {
@@ -696,7 +696,7 @@ void updateRaceHud(void) {
             break;
         case 5:
             if (!(D_8013AFE4 & 3)) {
-                func_80043A4C();
+                decrementRaceCountdown();
                 advanceRaceElapsedTime();
                 if (!(gRacePlayers[0].unk128 & 0x40)) {
                     D_8013B198[0] = D_8013B184;
@@ -726,7 +726,7 @@ void updateRaceHud(void) {
             break;
         case 6:
             if (!(D_8013AFE4 & 3) && !(gRacePlayers[0].unk128 & 0x40)) {
-                func_80043A4C();
+                decrementRaceCountdown();
             }
             if (!D_8013B184.minutes) {
                 if (!D_8013B184.seconds) {
@@ -739,7 +739,7 @@ void updateRaceHud(void) {
             break;
         case 7:
             if (!(D_8013AFE4 & 3)) {
-                func_80043A4C();
+                decrementRaceCountdown();
                 advanceRaceElapsedTime();
                 if (!(gRacePlayers[0].unk128 & 0x40)) {
                     D_8013B198[0] = D_8013B184;

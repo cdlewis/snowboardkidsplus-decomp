@@ -189,7 +189,7 @@ void drawScaledPaletteMappedIcon(s16 x, s16 y, s16 index, s16 scaleX, s16 scaleY
 void unpackUpperWordBytes(u32 packed, UnpackedWordBytes *out);
 void initializeRaceRulesAndCounters(void);
 void drawLapTimeHud(void);
-void func_80043A4C(void);
+void decrementRaceCountdown(void);
 void drawFirstPlayerStatusHud(void);
 void advanceRaceElapsedTime(void);
 s32 calculateRaceTimeDifference(const RaceTime *a, const RaceTime *b, RaceTime *difference);
