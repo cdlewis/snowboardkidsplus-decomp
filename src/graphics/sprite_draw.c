@@ -1109,53 +1109,92 @@ void func_8006EC84(s16 x, s16 y, s16 columns, const u16 *text, s16 palette, s16 
 INCLUDE_ASM("asm/nonmatchings/graphics/sprite_draw", func_8006EC84);
 #endif
 
-/* DECOMP_ATTEMPT: inline 160/198 */
+/* DECOMP_ATTEMPT: inline 185/200 */
 #ifdef NON_MATCHING
-void func_8006EF30(s32 x, s32 y, s16 columns, const u16 *text, s32 palette, s16 blendMode, GsOT *ot, u16 depth) {
- s16 column;
- s16 v;
- u16 glyph, code;
- DrawModeSpritePacket *template = (DrawModeSpritePacket *)getScratchAddr(0);
- s16 previous;
- DrawModeSpritePacket *packet;
- s16 currentX = x;
- column = 0;
- template->tag = (sizeof(*template)/sizeof(u32)-1)<<24;
- template->drawModeCode = (getTPage(0, 0, 0, 0) | 0xE100);
- setcode((SPRT *)&template->tpage, 0x64);
- setRGB0(template,gTexturedSpriteTemplate.r0,gTexturedSpriteTemplate.g0,gTexturedSpriteTemplate.b0);
- setWH(template,16,16);
- template->clut = getClut(768,palette+240);
- packet = (DrawModeSpritePacket *)GsGetWorkBase();
- { s16 startX=x;
- s16 savedColumns=columns;
- while (*text) {
-  if(column>=columns) { currentX=startX; y+=16; column=0; }
-  code=*text;
-  if(code==0x800A) {
-   if(previous!=2 || column!=0) column=savedColumns;
-   text++; previous=0; continue;
-  }
-  if((code&0xC000)==0xC000) {
-   template->clut=getClut(768,(code&15)+240);
-   text++; previous=1; continue;
-  }
-  if(code==0x8020) { currentX+=16; column++; text++; previous=2; continue; }
-  glyph=code-1;
-  if(glyph<0x60) { template->tpage=getTPage(0,0,960,256); v=160; }
-  else if(glyph<0x160) { template->tpage=getTPage(0,0,896,256); v=0; glyph=code-0x61; }
-  else if(glyph<0x260) { template->tpage=getTPage(0,0,768,256); v=0; glyph=code-0x161; }
-  if(blendMode>=0) { setSemiTrans((SPRT *)&template->tpage,1); template->tpage|=blendMode<<5; }
-  *packet=*template;
-  setUV0(packet,(glyph%16)*16,v+(glyph/16)*16);
-  setXY0(packet,currentX,y);
-  AddPrim(&ot->org[depth],packet++);
-  currentX+=16; column++; previous=2;
-  *packet=*template;
-  text++;
- }
- }
- func_800BF2C8((u32)packet);
+void func_8006EF30(s32 x, s32 y, s32 columnsArg, const u16 *text,
+                   s32 palette, s16 blendMode, GsOT *ot, u16 depth) {
+    struct {
+        s16 x;
+        s16 columns;
+    } wrap;
+    s16 column;
+    s16 textureY;
+    u16 glyph, code;
+    DrawModeSpritePacket *scratch = (DrawModeSpritePacket *)getScratchAddr(0);
+    s16 previous;
+    DrawModeSpritePacket *packet;
+    s16 currentX = x;
+    s16 columns = columnsArg;
+
+    column = 0;
+    scratch->tag = (sizeof(*scratch) / sizeof(u32) - 1) << 24;
+    scratch->drawModeCode = DRAW_MODE_COMMAND_HIGH;
+    setcode((SPRT *)&scratch->tpage, TEXTURED_SPRITE_CODE);
+    setRGB0(scratch, gTexturedSpriteTemplate.r0, gTexturedSpriteTemplate.g0, gTexturedSpriteTemplate.b0);
+    setWH(scratch, 16, 16);
+    scratch->clut = getClut(768, palette + 240);
+    packet = (DrawModeSpritePacket *)GsGetWorkBase();
+    wrap.x = x;
+
+    if (*text) {
+        wrap.columns = columns;
+        do {
+            if (column >= columns) {
+                currentX = wrap.x;
+                y += 16;
+                column = 0;
+            }
+            code = *text;
+            if (code == 0x800A) {
+                if (previous != 2 || column != 0) {
+                    column = wrap.columns;
+                }
+                text++;
+                previous = 0;
+                continue;
+            }
+            if ((code & 0xC000) == 0xC000) {
+                scratch->clut = getClut(768, (code & 15) + 240);
+                text++;
+                previous = 1;
+                continue;
+            }
+            if (code == 0x8020) {
+                currentX += 16;
+                column++;
+                text++;
+                previous = 2;
+                continue;
+            }
+            glyph = code - 1;
+            if (glyph < 0x60) {
+                scratch->tpage = getTPage(0, 0, 960, 256);
+                textureY = 160;
+            } else if (glyph < 0x160) {
+                scratch->tpage = getTPage(0, 0, 896, 256);
+                textureY = 0;
+                glyph = code - 0x61;
+            } else if (glyph < 0x260) {
+                scratch->tpage = getTPage(0, 0, 768, 256);
+                textureY = 0;
+                glyph = code - 0x161;
+            }
+            if (blendMode >= 0) {
+                setSemiTrans((SPRT *)&scratch->tpage, 1);
+                scratch->tpage |= blendMode << 5;
+            }
+            *packet = *scratch;
+            setUV0(packet, (glyph % 16) * 16, textureY + (glyph / 16) * 16);
+            setXY0(packet, currentX, y);
+            AddPrim(&ot->org[depth], packet++);
+            currentX += 16;
+            column++;
+            previous = 2;
+            *packet = *scratch;
+            text++;
+        } while (*text);
+    }
+    func_800BF2C8((u32)packet);
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/graphics/sprite_draw", func_8006EF30);
