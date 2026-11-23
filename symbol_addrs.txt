@@ -2010,6 +2010,8 @@ findFreeSavedImageEntry = 0x800162C8; // type:func
 clearHalfwordPairTable = 0x8007F42C; // type:func
 D_8012F13C = 0x8012F13C; // size:0x40
 
+getSelectedCoursePrize = 0x8007F46C; // type:func
+
 setPaletteRecordColor = 0x80016420; // type:func
 
 beginTask60TickCountdown = 0x8001C0A8; // type:func

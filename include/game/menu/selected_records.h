@@ -30,6 +30,7 @@ extern s32 D_8012FC6C[10][3];
 extern u8 D_8013AFDB;
 extern u8 D_8013AFD6;
 
+u32 getSelectedCoursePrize(s16 unusedCourse, s16 place);
 void resetSelectedRecordStates(void);
 s32 updatePlayerField94CFromSelectedTable(u16 tableIndex, s16 sampleIndex,
                                           u16 playerIndex);

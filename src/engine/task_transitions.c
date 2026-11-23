@@ -844,7 +844,6 @@ void initializeRaceTimeComparisonPanel(void);
 void initializeTaskMenuFadeIn(void);
 void initializeTaskMenuFade(void);
 void initializeStatsMenuTask(void);
-u32 func_8007F46C(s16 course, s16 place);
 
 void func_8001C9F0(void) {
     u8 padding[8];
@@ -870,7 +869,7 @@ void func_8001C9F0(void) {
                 if (bestPlace == 0 || (bestPlace = ((volatile SaveRecord *)&gPlayerSaveRecords[0])->bestPlace[D_8013AFCE], nextPlace < bestPlace)) {
                     ((volatile SaveRecord *)&gPlayerSaveRecords[0])->bestPlace[D_8013AFCE] = gRacePlayers[0].unk935 + 1;
                 }
-                score = gRacePlayers[0].unk01C + func_8007F46C(D_8013AFCE, gRacePlayers[0].unk935);
+                score = gRacePlayers[0].unk01C + getSelectedCoursePrize(D_8013AFCE, gRacePlayers[0].unk935);
                 if (gPlayerSaveRecords[0].bestScore[D_8013AFCE] < score) {
                     gPlayerSaveRecords[0].bestScore[D_8013AFCE] = score;
                 }

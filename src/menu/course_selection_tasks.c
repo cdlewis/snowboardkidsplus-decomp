@@ -929,25 +929,20 @@ void clearHalfwordPairTable(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: inline 17/20 */
-#ifdef NON_MATCHING
-u32 func_8007F46C(s16 unused, s16 index) {
+u32 getSelectedCoursePrize(s16 unusedCourse, s16 place) {
     u32 result;
     s32 (*table)[3];
     s32 *row;
 
-    if (index >= 0 && index < 3) {
+    if (place >= 0 && place < 3) {
         table = D_8012FC6C;
         row = table[D_8013AFCE];
-        result = row[index];
+        result = row[place];
     } else {
         result = 0;
     }
     return result;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/menu/course_selection_tasks", func_8007F46C);
-#endif
 
 void initializeCountedPlayerGroupedSelectionBoundsTask(void) {
     RECT *bounds;
