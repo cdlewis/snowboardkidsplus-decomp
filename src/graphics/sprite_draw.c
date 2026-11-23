@@ -1109,7 +1109,7 @@ void func_8006EC84(s16 x, s16 y, s16 columns, const u16 *text, s16 palette, s16 
 INCLUDE_ASM("asm/nonmatchings/graphics/sprite_draw", func_8006EC84);
 #endif
 
-/* DECOMP_ATTEMPT: inline 185/200 */
+/* DECOMP_ATTEMPT: inline 191/198 */
 #ifdef NON_MATCHING
 void func_8006EF30(s32 x, s32 y, s32 columnsArg, const u16 *text,
                    s32 palette, s16 blendMode, GsOT *ot, u16 depth) {
@@ -1135,9 +1135,10 @@ void func_8006EF30(s32 x, s32 y, s32 columnsArg, const u16 *text,
     scratch->clut = getClut(768, palette + 240);
     packet = (DrawModeSpritePacket *)GsGetWorkBase();
     wrap.x = x;
+    code = *text;
+    wrap.columns = columns;
 
-    if (*text) {
-        wrap.columns = columns;
+    if (code) {
         do {
             if (column >= columns) {
                 currentX = wrap.x;
