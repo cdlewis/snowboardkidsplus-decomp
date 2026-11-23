@@ -3487,6 +3487,7 @@ finishRaceTransitionAfterCountdown = 0x8001C85C; // type:func
 
 clearColorCycleTaskReferences = 0x80070830; // type:func
 configureColorCycleTask = 0x80070870; // type:func
+hasColorCycleTaskReferences = 0x80070C0C; // type:func
 
 drawSpriteMotionDisplay = 0x80034C40; // type:func
 

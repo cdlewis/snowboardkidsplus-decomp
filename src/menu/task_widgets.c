@@ -526,9 +526,7 @@ s32 isTaskResourceTransitionComplete(s16 index) {
     return 0;
 }
 
-/* DECOMP_ATTEMPT: inline 18/20 */
-#ifdef NON_MATCHING
-s32 func_80070C0C(void) {
+s32 hasColorCycleTaskReferences(void) {
     s32 found = 0;
     s16 i = 0;
 
@@ -539,9 +537,6 @@ s32 func_80070C0C(void) {
     } while (++i < 4);
     return found;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80070C0C);
-#endif
 
 /* DECOMP_ATTEMPT: inline 58/59 */
 #ifdef NON_MATCHING

@@ -37,6 +37,7 @@ void createInputTimedSpriteTask(s32 x, s32 y, const TimedSequenceEntry *entries,
                                 s32 controllers, u32 acceptMask, u32 cancelMask, s32 depth, s32 index);
 
 s32 func_80070B64(s16 index, u8 *color);
+s32 hasColorCycleTaskReferences(void);
 void createSecondaryDisplayTask(TaskCallback callback);
 void markSecondaryTaskAndClearReference(void);
 
