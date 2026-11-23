@@ -2718,6 +2718,8 @@ gPaletteSelectionSpriteMapping = 0x80131E3C; // size:0x5C
 gPaletteSelectionSidePreviewY = 0x80131E98; // size:0xC
 gPaletteSelectionSidePreviewRotation = 0x80131EA4; // size:0xC
 gPaletteSelectionPurchasePreviewY = 0x80131EB0; // size:0xC
+gCurrentPaletteLabel = 0x80131EBC; // size:0xC
+drawPaletteSelectionPricePanel = 0x8009A87C; // type:func
 initializeTaskGridPositions = 0x8009ADAC; // type:func
 configureFourColumnTaskGridMovement = 0x8009AEC0; // type:func
 

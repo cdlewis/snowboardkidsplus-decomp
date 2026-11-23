@@ -13,6 +13,7 @@
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
 
+#define PALETTE_SELECTION_CURRENCY_LABEL "\x82" "f"
 #define CHILD_MOVEMENT(entry, resource) ((Movement2D *)&D_800D9504[(entry).task->resource])
 #define FIRST_FOUR_READY(entries) \
     ((s16)(entries)[0].flags == 0 && (s16)(entries)[1].flags == 0 && \
@@ -104,10 +105,15 @@ SplitSelectionBoundsConfigs gSplitSelectionBoundsConfigs __attribute__((section(
     {60, 120, 4}, {60, 120, 4}
 }, {0, 0}};
 
+const u16 gCurrentPaletteLabel[6]
+    __attribute__((section(".data.current_palette_label"), aligned(4))) = {
+    0x15F, 0x160, 0x110, 0x33, 0, 0
+};
+
 extern u8 D_8013B4BD __attribute__((section(".data")));
 
 void func_800995A8(s16 player, s16 character, u8 spacingX, u8 spacingY, ByteMappingDescriptor *descriptor);
-void func_8009A87C(void);
+void drawPaletteSelectionPricePanel(void);
 
 void initializeCountedSplitSelectionBoundsTask(void) {
     D_8013AE98->data1C++;
@@ -665,7 +671,7 @@ void updatePlayerPaletteSelectionTask(void) {
                                          NULL, 0, 0, 20, -316, -96, 5, 5, 9, -1,
                                          drawTaskGridSelectionMarker, drawRegisteredTaskGridSprite, 4, 1);
         createRegisteredCallbackTask(0, 172, -72, drawCurrentTaskSavedValuePanel, 4, 11);
-        createRegisteredCallbackTask(0, -180, 0, func_8009A87C, 4, 21);
+        createRegisteredCallbackTask(0, -180, 0, drawPaletteSelectionPricePanel, 4, 21);
         previewPalette = palette;
         createGridModelPreviewTask(0, previewCharacter, 0, previewPalette, 244, gPaletteSelectionMainPreviewY[previewCharacter] + 50, 384, 31);
         createGridModelPreviewTask(2, previewCharacter, 0, previewPalette, -240, gPaletteSelectionSidePreviewY[previewCharacter] + 118, 352, 41);
@@ -885,7 +891,7 @@ void drawCurrentTaskSavedValuePanel(void) {
             records[(s16)index].money,
             0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         ot = &D_800EBFF0[D_8013AF78];
-        drawWrappedText8x8(x + 122, y + 152, 2, "\x82" "f", 0, -1,
+        drawWrappedText8x8(x + 122, y + 152, 2, PALETTE_SELECTION_CURRENCY_LABEL, 0, -1,
             ot, D_8013AE88->data1C);
         if (D_8013AE88->data1A == 1) {
             func_8007240C(x + 68, y + 136, 68, 32, D_8013B3A4, D_8013B3A5, D_8013B3A6,
@@ -899,27 +905,21 @@ void drawCurrentTaskSavedValuePanel(void) {
 
 u8 D_8013B517 __attribute__((section(".sdata"))) = 0;
 
-/* DECOMP_ATTEMPT: inline 301/332 */
-#ifdef NON_MATCHING
-extern const u16 D_80131EBC[];
-extern const char D_8013B514[];
-
-void func_8009A87C(void) {
+void drawPaletteSelectionPricePanel(void) {
     Movement2D *position;
-    s32 x, y, panelX, panelY;
+    s32 panelX, panelY;
+    u16 priceX, priceY;
     s32 player;
     TaskPanelSelectionValue *selection;
     if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
     position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
-    x = position->x / 4096;
-    y = position->y / 4096;
-    panelX = x;
-    panelY = y;
+    priceX = panelX = position->x / 4096;
+    priceY = panelY = position->y / 4096;
     player = (s16)D_8013AE98->data1A;
     selection = &D_8013B508[player];
     if (D_8013AE88->data1A != 0) {
         if (gRacePlayers[player].unk00D == selection->value && D_8013B517 != 0) {
-            func_8006EF30((s16)(panelX - 112), (s16)(panelY + 52), 4, D_80131EBC, 12, 1,
+            func_8006EF30((s16)(panelX - 112), (s16)(panelY + 52), 4, gCurrentPaletteLabel, 12, 1,
                          &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             if (D_8013AE88->data1A == 1) {
                 func_8007240C(panelX - 120, panelY + 48, 72, 22, D_8013B3A4, D_8013B3A5, D_8013B3A6,
@@ -929,15 +929,15 @@ void func_8009A87C(void) {
                               2, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             }
         } else {
-            drawDecimalNumber8x8((x -= 112) + 48, (y += 70) + 12, 4, 0, 500, 0, -1,
+            drawDecimalNumber8x8((priceX -= 112) + 48, (priceY += 70) + 12, 4, 0, 500, 0, -1,
                                  &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
-            drawWrappedText8x8(x + 80, y + 12, 2, D_8013B514, 0, -1,
+            drawWrappedText8x8(priceX + 80, priceY + 12, 2, PALETTE_SELECTION_CURRENCY_LABEL, 0, -1,
                                &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             if (D_8013AE88->data1A == 1) {
-                func_8007240C(x + 44, y + 8, 48, 16, D_8013B3A4, D_8013B3A5, D_8013B3A6,
+                func_8007240C(priceX + 44, priceY + 8, 48, 16, D_8013B3A4, D_8013B3A5, D_8013B3A6,
                               2, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             } else {
-                func_8007240C(x + 44, y + 8, 48, 16, 128, 128, 128,
+                func_8007240C(priceX + 44, priceY + 8, 48, 16, 128, 128, 128,
                               2, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             }
         }
@@ -949,9 +949,6 @@ void func_8009A87C(void) {
     drawSpriteByIndexWithBlend(position->x / 4096 - 136, position->y / 4096 + 12,
                   0x171, 4, 0, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/menu/grid_selection", func_8009A87C);
-#endif
 
 void initializeTaskGridPositions(s32 unused, GameTask *task, s32 x, s32 y,
                                  s32 unusedStep, s32 unusedDelay) {

@@ -866,7 +866,7 @@ segments:
       - {start: 0x122698, type: .data, name: menu/grid_selection, linker_section: .data.palette_selection_side_preview_y}
       - {start: 0x1226A4, type: .data, name: menu/grid_selection, linker_section: .data.palette_selection_side_preview_rotation}
       - {start: 0x1226B0, type: .data, name: menu/grid_selection, linker_section: .data.palette_selection_purchase_preview_y}
-      - [0x1226BC, data, 1226BC]
+      - {start: 0x1226BC, type: .data, name: menu/grid_selection, linker_section: .data.current_palette_label}
       - {start: 0x1226C8, type: .data, name: race/player/player_palette, linker_section: .data.palette_burst_vertices}
       - {start: 0x1226E8, type: .data, name: race/player/player_palette, linker_section: .data.player_palette_transition_pixels}
       - {start: 0x122708, type: .data, name: menu/resource_tasks, linker_section: .data.main_tail_selection_sprites}
