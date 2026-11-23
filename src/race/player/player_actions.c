@@ -186,7 +186,7 @@ TaskCallback gCurrentPlayerDirectionalAnimationCallbacks[4]
     __attribute__((section(".data.player_directional_animation_callbacks"), aligned(4))) = {
         startCurrentPlayerDirectionalAnimation,
         updateCurrentPlayerDirectionalAnimation,
-        func_8002E368,
+        waitForCurrentPlayerDirectionalAnimationEnd,
         func_8002E3C0
     };
 
@@ -1476,18 +1476,13 @@ void updateCurrentPlayerDirectionalAnimation(void) {
     currentPlayerAbsolute->unk128 |= 0x800;
 }
 
-/* DECOMP_ATTEMPT: inline 19/22 */
-#ifdef NON_MATCHING
-void func_8002E368(void) {
-    if (D_8013B0D8->animationFlags & 0x10) {
+void waitForCurrentPlayerDirectionalAnimationEnd(void) {
+    if (currentPlayerAbsolute->animationFlags & 0x10) {
         D_8013AE88->data1A++;
     } else {
-        D_8013B0D8->unk128 |= 0x800;
+        currentPlayerAbsolute->unk128 |= 0x800;
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002E368);
-#endif
 
 void func_8002E3C0(void) {
 }
