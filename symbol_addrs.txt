@@ -160,6 +160,7 @@ drawAdaptiveTriangle = 0x80053A34; // type:func
 drawAdaptiveQuad = 0x800542BC; // type:func
 drawIndexedFlatTriangle = 0x80054E70; // type:func
 initializeViewAndSelectTaskCallback = 0x8002F584; // type:func
+initializeCurrentPlayerState30 = 0x80020018; // type:func
 initializeCurrentPlayerUnlockScene = 0x800200F8; // type:func
 updateCurrentPlayerTaskCountdown = 0x80026D10; // type:func
 updateCurrentPlayerState8Steering = 0x80026DAC; // type:func

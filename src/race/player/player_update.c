@@ -529,7 +529,7 @@ void (*currentPlayerStateCallbacks[74])(void) = {
     resetCurrentPlayerForCallback255C4,
     NULL,
     resetCurrentPlayerForCallback240D0,
-    func_80020018,
+    initializeCurrentPlayerState30,
     initializeCurrentPlayerDefaultState,
     initializeCurrentPlayerDefaultState,
     initializeCurrentPlayerDefaultState,
@@ -1257,15 +1257,13 @@ void resetCurrentPlayerForCallback240D0(void) {
     setCurrentTaskCallback(updateCurrentPlayerState29MotionAndAnimation);
 }
 
-/* DECOMP_ATTEMPT: inline 51/56 */
-#ifdef NON_MATCHING
-void func_80020018(void) {
+void initializeCurrentPlayerState30(void) {
     u8 padding[0x10];
-    RacePlayer *other;
     GameTask *task = D_8013AE88;
     RacePlayer *player = D_8013B0D8;
+
     task->data1A = 0;
-    if (player->unk0BC > 0x800) {
+    if (0x800 < player->unk0BC) {
         task->data1E = 1;
         if (player->unk128 & 0x400) {
             player->unk0BE += 0x800;
@@ -1275,18 +1273,21 @@ void func_80020018(void) {
         } else {
             D_8013AE88->data1C = 1;
         }
-        other = D_8013B0D8;
-        other->unk0BE += 0x400;
-        D_8013B0D8->unk08C = 0;
+        {
+            RacePlayer *volatile *currentPlayer = &D_8013B0D8;
+
+            D_8013B0D8->unk0BE += 0x400;
+            /* The single-iteration loop preserves the register allocation for the heading update. */
+            do {
+                (*currentPlayer)->unk08C = 0;
+            } while (0);
+        }
     } else {
         task->data1E = 0;
         startCurrentPlayerAnimation(1, 1);
     }
     setCurrentTaskCallback(updateCurrentPlayerAndRequestState30);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_80020018);
-#endif
 
 void initializeCurrentPlayerUnlockScene(void) {
     u16 angle;

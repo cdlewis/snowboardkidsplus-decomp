@@ -33,7 +33,7 @@ void updateCurrentPlayerState23MotionAndTimer(void);
 void initializeCurrentPlayerState7(void);
 void resetCurrentPlayerForCallback240D0(void);
 void updateCurrentPlayerState29MotionAndAnimation(void);
-void func_80020018(void);
+void initializeCurrentPlayerState30(void);
 
 void updateCurrentPlayerTimedMotion(void);
 
