@@ -2110,6 +2110,7 @@ startPrimaryValueTransition = 0x8006A010; // type:func
 
 startPaletteCycle = 0x80016470; // type:func
 
+memoryCardIsFullWithoutSelectedFile = 0x8001907C; // type:func
 tryAcceptMemoryCard = 0x80019244; // type:func
 
 pollMemoryCardAvailability = 0x80019288; // type:func

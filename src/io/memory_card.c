@@ -28,8 +28,6 @@ const u32 gMemoryCardAvailabilityTablePadding
 u8 D_8013B608[2] __attribute__((section(".data.memory_card_poll_flags"))) = {0};
 u8 gMemoryCardAcceptRetryCounts[2] __attribute__((section(".data.memory_card_accept_retry_counts"))) = {0};
 
-s32 func_8001907C(void);
-
 void initializeMemoryCardSaveHeader(void) {
     u16 i;
     MemCardInit(0);
@@ -153,17 +151,17 @@ s32 memoryCardFileExists(void) {
     return 0;
 }
 
-/* DECOMP_ATTEMPT: inline 109/114 */
-#ifdef NON_MATCHING
-s32 func_8001907C(void) {
+s32 memoryCardIsFullWithoutSelectedFile(void) {
     s16 i = 0;
     s16 blocks = 0;
     s32 size;
-    s16 wholeBlocks;
+    s32 wholeBlocks;
+    s32 total;
     for (; i < D_8013B600[D_8013AF38]; i++) {
         size = D_8013B700[D_8013AF38][i].size;
         wholeBlocks = size / 8192;
-        blocks += (size % 8192 ? 1 : 0) + wholeBlocks;
+        total = blocks + ((size % 8192 ? 1 : 0) + wholeBlocks);
+        blocks = total;
     }
     if (blocks < 15) {
         return 0;
@@ -175,9 +173,6 @@ s32 func_8001907C(void) {
     }
     return 1;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/io/memory_card", func_8001907C);
-#endif
 
 s32 tryAcceptMemoryCard(void) {
     if (MemCardSync(1, 0, 0) == -1) {
@@ -214,7 +209,7 @@ s32 pollMemoryCardAvailability(void) {
                 }
                 goto newCard;
             checkExistingCard:
-                if ((s16)func_8001907C()) {
+                if ((s16)memoryCardIsFullWithoutSelectedFile()) {
                     return 7;
                 }
                 if (!(s16)memoryCardFileExists()) {
@@ -233,7 +228,7 @@ s32 pollMemoryCardAvailability(void) {
         case 2:
             switch (result) {
             case 0:
-                if ((s16)func_8001907C()) {
+                if ((s16)memoryCardIsFullWithoutSelectedFile()) {
                     return 7;
                 }
                 if (!(s16)memoryCardFileExists()) {
@@ -248,7 +243,7 @@ s32 pollMemoryCardAvailability(void) {
             case 3:
                 D_8013B60C[D_8013AF38] = 1;
                 readMemoryCardDirectory();
-                if ((s16)func_8001907C()) {
+                if ((s16)memoryCardIsFullWithoutSelectedFile()) {
                     return 7;
                 }
                 if (!(s16)memoryCardFileExists()) {
