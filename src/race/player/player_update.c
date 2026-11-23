@@ -55,6 +55,7 @@ extern u8 D_8013AFE1 __attribute__((section(".data")));
 extern s16 gFrameCounter __attribute__((section(".data")));
 extern s16 D_8013AFCE __attribute__((section(".data")));
 extern u8 D_8013AFDB __attribute__((section(".data")));
+extern s16 D_8013AFDE __attribute__((section(".data")));
 extern VECTOR *D_8013AF88 __attribute__((section(".data")));
 extern SVECTOR *D_8013AF90 __attribute__((section(".data")));
 extern MATRIX *D_8013AF98 __attribute__((section(".data")));
@@ -462,7 +463,7 @@ void updateCurrentPlayerState24MotionAndScale(void);
 void func_80024288(void);
 void updateCurrentPlayerTimedEffect(void);
 void updateCurrentPlayerRiding(void);
-s16 func_80029DD0(s16 playerIndex);
+s16 tryStartPlayerSelectedRecordTransition(s16 playerIndex);
 void updateCurrentPlayerAirborneDragUntilLanding(void);
 s32 snapCurrentPlayerToTerrain(void);
 void moveCurrentPlayerToTaskTarget(void);
@@ -1707,7 +1708,7 @@ applySteering:
             if (D_8013B0D8->unk128 & 0x40) {
                 D_8013B0D8->unk12C = 0x1E;
             }
-            if (func_80029DD0(D_8013AE88->data18)) {
+            if (tryStartPlayerSelectedRecordTransition(D_8013AE88->data18)) {
                 D_8013B0D8->unk12C = 7;
             }
         }
@@ -1910,7 +1911,7 @@ advanceCharge:
             if (D_8013B0D8->unk128 & 0x40) {
                 D_8013B0D8->unk12C = 30;
             }
-            if (func_80029DD0((s16)D_8013AE88->data18)) {
+            if (tryStartPlayerSelectedRecordTransition((s16)D_8013AE88->data18)) {
                 D_8013B0D8->unk12C = 7;
             }
         }
@@ -3184,7 +3185,7 @@ block_340:
     createPlayerTripleQuadEffectTask((s32) D_8013AE88->data18);
     awardCurrentPlayerTrickRewards();
 block_354:
-    if (func_80029DD0((s16) D_8013AE88->data18) == 0) {
+    if (tryStartPlayerSelectedRecordTransition((s16) D_8013AE88->data18) == 0) {
         goto block_356;
     }
     D_8013B0D8->unk12C = 7;
@@ -5160,11 +5161,7 @@ s16 isPlayerNearSelectedRecord(s16 index) {
     return distance <= 0x6000;
 }
 
-/* DECOMP_ATTEMPT: inline 37/39 */
-#ifdef NON_MATCHING
-s16 isPlayerNearSelectedRecord(s16 playerIndex);
-
-s16 func_80029DD0(s16 playerIndex) {
+s16 tryStartPlayerSelectedRecordTransition(s16 playerIndex) {
     RacePlayer *player;
     if (isPlayerNearSelectedRecord(playerIndex)) {
         player = gRacePlayers;
@@ -5177,9 +5174,6 @@ s16 func_80029DD0(s16 playerIndex) {
     }
     return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_80029DD0);
-#endif
 
 s16 markPlayerNearSelectedRecord(s16 playerIndex) {
     if (isPlayerNearSelectedRecord(playerIndex)) {
