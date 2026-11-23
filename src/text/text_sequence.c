@@ -304,8 +304,6 @@ INCLUDE_ASM("asm/nonmatchings/text/text_sequence", func_800A1670);
 /* DECOMP_ATTEMPT: inline 366/395 */
 #ifdef NON_MATCHING
 extern u16 D_801327B0[];
-void func_8006F248(s16 x, s16 y, s16 count, s16 columns, const u16 *text,
-                   s32 palette, s16 blend, GsOT *ot, u16 depth);
 
 void func_800A1774(TextSequenceResource *resource) {
     s32 x, y, bodyX, bodyY, labelY;
@@ -333,7 +331,8 @@ void func_800A1774(TextSequenceResource *resource) {
 
     bodyX = resource->bodyX / 4096;
     bodyY = resource->displacement / 4096;
-    func_8006F248(bodyX + 8, bodyY + 4, resource->progress >> 8, 16, resource->bodyText, 15, 1, ot, depth);
+    drawLimitedWrappedGlyphText16x16(bodyX + 8, bodyY + 4, (s16)(resource->progress >> 8), 16,
+                                     resource->bodyText, 15, 1, ot, depth);
     drawDefaultTexturedPanel(bodyX, bodyY, 272, 74, 5, 0, ot, depth);
 
     func_8006C998((u16)-136 - (u32)resource->unk3A / 3, (u16)-96 - (u32)resource->unk3A / 2,

@@ -1200,10 +1200,8 @@ void func_8006EF30(s32 x, s32 y, s32 columnsArg, const u16 *text,
 INCLUDE_ASM("asm/nonmatchings/graphics/sprite_draw", func_8006EF30);
 #endif
 
-/* DECOMP_ATTEMPT: inline 202/205 */
-#ifdef NON_MATCHING
-void func_8006F248(s16 x, s16 yArg, s32 countArg, s32 columnsArg, const u16 *text,
-                   s16 palette, s32 blendArg, GsOT *ot, u32 depthArg) {
+void drawLimitedWrappedGlyphText16x16(s16 x, s16 yArg, s32 countArg, s32 columnsArg, const u16 *text,
+                                       s16 palette, s32 blendArg, GsOT *ot, u32 depthArg) {
     s16 currentX = x;
     s16 column = 0;
     s16 drawn;
@@ -1222,8 +1220,8 @@ void func_8006F248(s16 x, s16 yArg, s32 countArg, s32 columnsArg, const u16 *tex
     u16 clut = getClut(768, palette + 240);
 
     scratch->tag = (sizeof(*scratch) / sizeof(u32) - 1) << 24;
-    scratch->drawModeCode = (getTPage(0, 0, 0, 0) | 0xE100);
-    setcode((SPRT *)&scratch->tpage, 0x64);
+    scratch->drawModeCode = DRAW_MODE_COMMAND_HIGH;
+    setcode((SPRT *)&scratch->tpage, TEXTURED_SPRITE_CODE);
     red = gTexturedSpriteTemplate.r0;
     green = gTexturedSpriteTemplate.g0;
     blue = gTexturedSpriteTemplate.b0;
@@ -1290,20 +1288,17 @@ void func_8006F248(s16 x, s16 yArg, s32 countArg, s32 columnsArg, const u16 *tex
         glyphPacket = packet;
         setUV0(packet, u, v);
         setXY0(packet, currentX, y);
+        packet++;
         currentX += 16;
         column++;
-        packet++;
+        AddPrim(&ot->org[depth], glyphPacket);
         drawn++;
         previous = 2;
-        AddPrim(&ot->org[depth], glyphPacket);
         *packet = *scratch;
         text++;
     }
     func_800BF2C8((u32)packet);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/graphics/sprite_draw", func_8006F248);
-#endif
 
 void drawUppercaseProportionalText(s16 x, s16 y, s16 count, const char *text, s16 palette,
                    s16 blend, GsOT *ot, u16 depth) {

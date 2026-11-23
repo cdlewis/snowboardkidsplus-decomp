@@ -3251,6 +3251,7 @@ D_8013B527 = 0x8013B527; // size:0x1 defined:true
 D_8013B514 = 0x8013B514; // size:0x3 defined:true
 drawCurrentTaskSavedValuePanel = 0x8009A560; // type:func
 
+drawLimitedWrappedGlyphText16x16 = 0x8006F248; // type:func
 drawWrappedText16x16 = 0x8006F754; // type:func
 drawDoubleByteGlyph16x16 = 0x8006F8A4; // type:func
 drawLimitedWrappedText16x16 = 0x8006FC40; // type:func
