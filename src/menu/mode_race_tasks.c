@@ -160,7 +160,7 @@ void updateMode11SelectionMenuTask(void) {
     }
 
     if (D_8013AE88->data18 >= 2) {
-        func_80070C5C(128, &D_800EBFF0[D_8013AF78], 4);
+        drawScreenDarkeningOverlay(128, &D_800EBFF0[D_8013AF78], 4);
         drawFullScreenTexturedBackground();
     }
 }

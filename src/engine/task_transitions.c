@@ -1116,12 +1116,12 @@ void updateThreeFrameScreenBlend(void) {
             setCurrentTaskCallback(initializeGameOptionViewTask);
         }
     } else {
-        func_80070C5C(255, &D_800EBFF0[D_8013AF78], 0);
+        drawScreenDarkeningOverlay(255, &D_800EBFF0[D_8013AF78], 0);
     }
 }
 
 void startThreeFrameScreenBlend(void) {
-    func_80070C5C(255, &D_800EBFF0[D_8013AF78], 0);
+    drawScreenDarkeningOverlay(255, &D_800EBFF0[D_8013AF78], 0);
     D_8013AE88->data18 = 3;
     setCurrentTaskCallback(updateThreeFrameScreenBlend);
 }

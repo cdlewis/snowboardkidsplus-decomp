@@ -365,7 +365,7 @@ void updateTaskStateTransition(void) {
         GameTask *drawTask = D_8013AE88;
         mode = drawTask->data18;
         if (mode == 1 || mode == 2 || mode == 6 || mode == 7) {
-            func_80070C5C(state->unk06 >> 8, ot, D_8013AE88->data1C);
+            drawScreenDarkeningOverlay(state->unk06 >> 8, ot, D_8013AE88->data1C);
         } else if (mode == 4 || mode == 5) {
             func_80070D48(state->unk06 >> 8, ot, drawTask->data1C);
         }
@@ -534,9 +534,7 @@ s32 hasColorCycleTaskReferences(void) {
     return found;
 }
 
-/* DECOMP_ATTEMPT: inline 58/59 */
-#ifdef NON_MATCHING
-void func_80070C5C(s32 intensity, GsOT *ot, u16 depth) {
+void drawScreenDarkeningOverlay(s32 intensity, GsOT *ot, u16 depth) {
     TILE *packet = (TILE *)GsGetWorkBase();
     u16 tpage;
     SetTile(packet);
@@ -546,13 +544,10 @@ void func_80070C5C(s32 intensity, GsOT *ot, u16 depth) {
     SetSemiTrans(packet, 1);
     AddPrim(ot->org + depth, packet);
     tpage = GetTPage(0, 2, 0, 0);
-    SetDrawMode((DR_MODE *)++packet, 1, 1, tpage, NULL);
-    AddPrim(ot->org + depth, packet);
+    SetDrawMode((DR_MODE *)(packet + 1), 1, 1, tpage, NULL);
+    AddPrim(ot->org + depth, ++packet);
     func_800BF2C8((u32)((DR_MODE *)packet + 1));
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80070C5C);
-#endif
 
 /* DECOMP_ATTEMPT: inline 58/59 */
 #ifdef NON_MATCHING
@@ -3476,7 +3471,7 @@ void updateValuePanelTask(void) {
                    14, gValuePanelLabel, 15, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C - 2);
     drawDefaultTexturedPanel((s16)(resource->x / 4096), (s16)(resource->y / 4096),
                              240, 64, 5, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C - 2);
-    func_80070C5C(64, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    drawScreenDarkeningOverlay(64, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
 }
 
 GameTask *createShrinkingSpriteTask(s16 motionEnabled, s32 spriteIndex) {

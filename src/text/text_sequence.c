@@ -345,7 +345,7 @@ void func_800A1774(TextSequenceResource *resource) {
                   (u32)D_8013AF7A / 2 - 136, D_8013AF7C, 0, 0, 0, -1, ot, (depth | 1));
     func_8007240C(-D_8013AF7A / 2, 16 + (u32)resource->unk3A / 2,
                   D_8013AF7A, (u32)D_8013AF7C / 2, 0, 0, 0, -1, ot, (depth | 1));
-    func_80070C5C(resource->intensity, ot, depth);
+    drawScreenDarkeningOverlay(resource->intensity, ot, depth);
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/text/text_sequence", func_800A1774);
