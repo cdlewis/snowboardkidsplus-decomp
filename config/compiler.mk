@@ -101,6 +101,7 @@ UNIT_REORDER_src/menu/mode_transitions.c := 0
 UNIT_CCFLAGS_src/menu/mode_transitions.c += --rdata-section=updateTitleLogoTask:.rodata.title_logo
 UNIT_CCFLAGS_src/menu/mode_transitions.c += --rdata-section=updatePlayerModeSelectionTask:.rodata.player_mode_selection
 UNIT_REORDER_src/race/ui/race_panels.c := 0
+UNIT_CCFLAGS_src/race/ui/race_hud_modes.c += --rdata-section=updateCurrentPlayerCameraTask:.rodata.player_camera_modes
 UNIT_REORDER_src/menu/record_screens.c := 0
 UNIT_REORDER_src/race/player/player_results.c := 0
 UNIT_REORDER_src/race/camera/race_camera.c := 0

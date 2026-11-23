@@ -175,7 +175,7 @@ void initPlayerCameraAndTarget(u16 index) {
 
 void initPlayerZeroTask(void) {
     initPlayerCameraAndTarget(0);
-    setCurrentTaskCallback(func_8003EE70);
+    setCurrentTaskCallback(updateCurrentPlayerCameraTask);
 }
 
 void initCurrentPlayerCameraTask(void) {
@@ -189,7 +189,7 @@ void initCurrentPlayerCameraTask(void) {
         } else {
             D_8013AFAA |= 0x800;
         }
-        setCurrentTaskCallback(func_8003EE70);
+        setCurrentTaskCallback(updateCurrentPlayerCameraTask);
     } else {
         D_8013AE88->data1A = 64;
         initPlayerCameraAndTarget(D_8013AE88->data18);
@@ -260,7 +260,7 @@ void updateRaceIntroCameraTask(void) {
             D_8013AFE4 = 0;
             D_8013B1AB = 0;
         }
-        setCurrentTaskCallback(func_8003EE70);
+        setCurrentTaskCallback(updateCurrentPlayerCameraTask);
     }
 }
 

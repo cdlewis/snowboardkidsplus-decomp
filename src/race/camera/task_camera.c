@@ -25,7 +25,7 @@ void updateTaskViewAndCheckPlayerLimit(void) {
     renderCurrentCameraPlayersAndUpdateSound();
     if (D_8013B55E != 0) {
         if (D_8013AE88->data18 < D_8013AFCD) {
-            setCurrentTaskCallback(func_8003EE70);
+            setCurrentTaskCallback(updateCurrentPlayerCameraTask);
             return;
         }
         deleteCurrentTaskSubtree();

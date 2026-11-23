@@ -39,5 +39,6 @@ s32 getNearestCameraManhattanDistance(s32 x, s32 y, s32 z);
 void initializeTaskPlayerCamera(void);
 void initPlayerZeroTask(void);
 void initCurrentPlayerCameraTask(void);
+void updateCurrentPlayerCameraTask(void);
 
 typedef char PlayerCameraSizeCheck[(sizeof(PlayerCamera) == 0x1C) ? 1 : -1];

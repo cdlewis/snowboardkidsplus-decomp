@@ -2481,6 +2481,7 @@ slideInPlayerNumberDisplayTask = 0x80034A48; // type:func
 slideInSlidingNumberDisplayTask = 0x8003539C; // type:func
 
 updateCurrentPlayerCameraTarget = 0x8003ED6C; // type:func
+updateCurrentPlayerCameraTask = 0x8003EE70; // type:func
 gPlayerCameraViews = 0x801241A8; // size:0x40
 
 animateRegisteredTexturePairTask = 0x800757E0; // type:func

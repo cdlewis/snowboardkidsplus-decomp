@@ -20,6 +20,10 @@ extern s16 D_8013AFCE __attribute__((section(".data")));
 extern u16 D_8013AF78 __attribute__((section(".data")));
 extern u8 D_8013AFCD __attribute__((section(".data")));
 extern u32 D_8013AFE4 __attribute__((section(".data")));
+extern u8 D_8013AFD6 __attribute__((section(".data")));
+extern u8 D_8013AFD3 __attribute__((section(".data")));
+extern GameTask *D_8013AE88 __attribute__((section(".data")));
+extern u16 D_8013AFAA __attribute__((section(".data")));
 
 /* Full-width Shift-JIS labels used by the race HUD. */
 const char gAttackTimeLimitLabel[24] __attribute__((section(".rodata.trick_attack_labels"), aligned(4))) =
@@ -42,13 +46,11 @@ void drawSplitScreenTrickAttackHud(s16 player);
 void drawScoreAttackHud(void);
 void drawSplitScreenScoreAttackHud(s16 player);
 
-/* DECOMP_ATTEMPT: inline 1125/1135 */
-#ifdef NON_MATCHING
 #define CAMERA D_801241E8[D_8013AE88->data18]
 #define PLAYER gRacePlayers[D_8013AE88->data18]
 #define VIEW gPlayerCameraViews[D_8013AE88->data18]
 
-void func_8003EE70(void) {
+void updateCurrentPlayerCameraTask(void) {
     PlayerCamera *shiftedCameras;
     u16 updateIndex;
     s32 cameraValue;
@@ -74,7 +76,6 @@ void func_8003EE70(void) {
         s16 previousRegion;
         PlayerCamera *cameras;
         GsRVIEW2 *views;
-        PlayerCamera *regionCameras;
 
         if (!(D_8013AFAA & 0xC00)) {
             CAMERA.unk10 = -320;
@@ -280,9 +281,11 @@ void func_8003EE70(void) {
         VIEW.vpx = cameraValue / 256;
         VIEW.vpy = CAMERA.y / 256 - 120;
         VIEW.vpz = CAMERA.z / 256;
-        updateIndex = D_8013AE88->data18;
+        updatePlayerCameraAngles(D_8013AE88->data18);
+        goto updateTarget;
     updateAngles:
         updatePlayerCameraAngles(updateIndex);
+    updateTarget:
         updateCurrentPlayerCameraTarget();
         break;
     case 9:
@@ -309,9 +312,6 @@ void func_8003EE70(void) {
 #undef CAMERA
 #undef PLAYER
 #undef VIEW
-#else
-INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud_modes", func_8003EE70);
-#endif
 
 void addFourWordGpuPacket(GpuPacket4 *source, GsOT *ot, u16 depth) {
     GpuPacket4 *packet = (GpuPacket4 *)GsGetWorkBase();

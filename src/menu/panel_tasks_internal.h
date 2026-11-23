@@ -222,7 +222,6 @@ void updateMode11SelectionMenuTask(void);
 void startUnlockResourceLoad(void);
 void prepareUnlockSelectionResume(void);
 void renderCurrentCameraPlayersAndUpdateSound(void);
-void func_8003EE70(void);
 void updateTaskViewAndCheckPlayerLimit(void);
 
 void initializeCountedGroupedSelectionBoundsTask(void);
