@@ -176,7 +176,6 @@ extern u8 D_8013B562;
 extern u8 D_8013AF3A __attribute__((section(".data")));
 
 void updateBoardPurchaseMenuTask(void);
-void func_800187B8(u8 voice);
 
 void updateRegisteredDetailedTextPanelTask(void);
 void drawRegisteredTextPanelTask(void);

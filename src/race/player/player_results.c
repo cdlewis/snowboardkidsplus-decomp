@@ -337,7 +337,7 @@ void updateCurrentPlayerSound(void) {
             gRacePlayers[D_8013AE88->data18].soundVoice = playOwnedSoundEffect(D_8013AE88->data18, 1, gRacePlayers[D_8013AE88->data18].unk96E, 0x20);
             gRacePlayers[D_8013AE88->data18].unk970 = gRacePlayers[D_8013AE88->data18].unk96E;
         } else if (gRacePlayers[D_8013AE88->data18].unk970 != gRacePlayers[D_8013AE88->data18].unk96E) {
-            func_800187B8(gRacePlayers[D_8013AE88->data18].soundVoice);
+            stopOwnedSoundVoice(gRacePlayers[D_8013AE88->data18].soundVoice);
             gRacePlayers[D_8013AE88->data18].soundVoice = playOwnedSoundEffect(D_8013AE88->data18, 1, gRacePlayers[D_8013AE88->data18].unk96E, 0x20);
             gRacePlayers[D_8013AE88->data18].unk970 = gRacePlayers[D_8013AE88->data18].unk96E;
         }
@@ -346,7 +346,7 @@ void updateCurrentPlayerSound(void) {
         SsUtChangePitch(gRacePlayers[D_8013AE88->data18].soundVoice, 1, gRacePlayers[D_8013AE88->data18].unk96E & 255, gRacePlayers[D_8013AE88->data18].unk96E >> 8, fine, -semitone, fine);
         SsUtSetVVol(gRacePlayers[D_8013AE88->data18].soundVoice, gRacePlayers[D_8013AE88->data18].unk96C, gRacePlayers[D_8013AE88->data18].unk96C);
     } else if (gRacePlayers[D_8013AE88->data18].soundVoice != 0xFF) {
-        func_800187B8(gRacePlayers[D_8013AE88->data18].soundVoice);
+        stopOwnedSoundVoice(gRacePlayers[D_8013AE88->data18].soundVoice);
         gRacePlayers[D_8013AE88->data18].soundVoice = 0xFF;
     }
 }
@@ -357,7 +357,7 @@ void stopPlayerSound(u16 playerIndex) {
 
     player->unk96C = 0;
     if (player->soundVoice != 0xFF) {
-        func_800187B8(player->soundVoice);
+        stopOwnedSoundVoice(player->soundVoice);
         player->soundVoice = 0xFF;
         player->unk96E = 0xFFFF;
         player->unk970 = 0xFFFF;

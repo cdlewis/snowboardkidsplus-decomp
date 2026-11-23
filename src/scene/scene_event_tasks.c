@@ -562,7 +562,7 @@ void processSceneSoundEvent(SceneEvent *entry) {
             for (i = 0; i < 8; i++) {
                 slot = &gSceneSoundSlots[i];
                 if (slot->voice != 0xFF && slot->soundKey == soundKey) {
-                    func_800187B8(slot->voice);
+                    stopOwnedSoundVoice(slot->voice);
                     slot->voice = 0xFF;
                     slot->soundKey = 0;
                     break;
@@ -578,7 +578,7 @@ void stopSceneSoundVoices(void) {
     s16 i;
     for (i = 0; i < 8; i++) {
         if (gSceneSoundSlots[i].voice != 0xFF) {
-            func_800187B8(gSceneSoundSlots[i].voice);
+            stopOwnedSoundVoice(gSceneSoundSlots[i].voice);
             gSceneSoundSlots[i].voice = 0xFF;
             gSceneSoundSlots[i].soundKey = 0;
         }

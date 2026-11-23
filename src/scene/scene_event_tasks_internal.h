@@ -59,7 +59,6 @@ extern char D_8001232C[];
 extern s8 D_8013B5C4[];
 extern char D_8013B5C8[];
 
-void func_800187B8(u8 voice);
 int printf(const char *format, ...);
 
 void startUnlockNotification(s16 index);

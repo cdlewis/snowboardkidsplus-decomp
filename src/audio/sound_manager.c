@@ -347,15 +347,10 @@ void stopMatchingSoundVoice(u8 owner, u8 bank, u16 note) {
     }
 }
 
-/* DECOMP_ATTEMPT: inline 17/19 */
-#ifdef NON_MATCHING
-void func_800187B8(u8 voice) {
+void stopOwnedSoundVoice(u8 voice) {
     SsUtKeyOffV(voice);
     gSoundVoiceRecords[voice - 12].owner = 0xFF;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/audio/sound_manager", func_800187B8);
-#endif
 
 void playPlayerPositionalSoundEffect(u8 playerIndex, u8 bank, u16 programAndTone, s16 volume) {
     u16 note;
