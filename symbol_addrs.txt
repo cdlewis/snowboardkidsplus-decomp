@@ -159,6 +159,7 @@ drawFixedSpriteAndBottomBarTask = 0x8003597C; // type:func
 addFourWordGpuPacket = 0x8004002C; // type:func
 addOneWordGpuPacket = 0x800400C4; // type:func
 addTexturedSpritePacket = 0x80040140; // type:func
+drawRacePlacementSprite = 0x800401DC; // type:func
 initializeGameOptionTask = 0x8001B778; // type:func
 slideOutPlayerNumberDisplayTask = 0x80034928; // type:func
 updateControllers = 0x80015924; // type:func

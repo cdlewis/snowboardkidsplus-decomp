@@ -340,15 +340,13 @@ void addTexturedSpritePacket(TexturedSpritePacket *source, GsOT *ot, u16 depth) 
     func_800BF2C8((u32)(packet + 1));
 }
 
-/* DECOMP_ATTEMPT: inline 22/24 */
-#ifdef NON_MATCHING
-void func_800401DC(s16 x, s16 y, s16 index, GsOT *ot, u16 depth) {
-    u32 z = (u16)depth;
-    func_8006C998(x, y, index + 0x1D4, ((const u8 *)&gMenuSpritePaletteGroups)[index], -1, ot, z);
+void drawRacePlacementSprite(s16 x, s16 y, s16 placement, GsOT *ot, u16 depth) {
+    u32 packetDepth = (u16)depth;
+
+    /* Fourth place uses the byte immediately after the first palette group. */
+    func_8006C998(x, y, placement + 0x1D4, ((const u8 *)&gMenuSpritePaletteGroups)[placement],
+                  -1, ot, packetDepth);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud_modes", func_800401DC);
-#endif
 
 void drawMenuKindSprite(s16 x, s16 y, s16 kind, s32 frame, GsOT *ot, u16 depth) {
     s32 frameIndex = frame;

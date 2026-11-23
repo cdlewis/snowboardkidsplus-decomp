@@ -863,7 +863,7 @@ void drawResultDisplayLabels(ResultDisplayResource *resource) {
     func_8006C998((s16)(-104 - gResultLabelXOffsets[resource->unk08]), 6,
                   resource->unk08 + 382, gResultLabelPalettes[resource->unk08], -1,
                   &D_800EBFF0[D_8013AF78], 1);
-    func_800401DC(-66, -12, resource->unk06, &D_800EBFF0[D_8013AF78], 1);
+    drawRacePlacementSprite(-66, -12, resource->unk06, &D_800EBFF0[D_8013AF78], 1);
     func_8006C998(-34, 4, resource->unk06 + 393, gResultIconPalettes[resource->unk06], -1,
                   &D_800EBFF0[D_8013AF78], 1);
 }
@@ -1131,7 +1131,7 @@ void drawPlayerResultIcons(TaskFadeResource *resource) {
 
     setSpriteColor(brightness, brightness, brightness);
     if (resource->playerOrder[0] != -1) {
-        func_800401DC(-136, -80, 0, &D_800EBFF0[D_8013AF78], 1);
+        drawRacePlacementSprite(-136, -80, 0, &D_800EBFF0[D_8013AF78], 1);
         func_8006C998(-104, -64, 0x189, gResultIconPalettes[0], -1,
                      &D_800EBFF0[D_8013AF78], 1);
         func_8006C998(-84, -80, gRacePlayers[resource->playerOrder[0]].characterId + 0x1EC,
@@ -1139,7 +1139,7 @@ void drawPlayerResultIcons(TaskFadeResource *resource) {
         func_8006C998(-48, -66, 0x1B1, 3, -1, &D_800EBFF0[D_8013AF78], 1);
     }
     if (resource->playerOrder[1] != -1) {
-        func_800401DC(8, -48, 1, &D_800EBFF0[D_8013AF78], 1);
+        drawRacePlacementSprite(8, -48, 1, &D_800EBFF0[D_8013AF78], 1);
         func_8006C998(40, -32, 0x18A, gResultIconPalettes[1], -1,
                      &D_800EBFF0[D_8013AF78], 1);
         func_8006C998(60, -48, gRacePlayers[resource->playerOrder[1]].characterId + 0x1EC,
@@ -1147,7 +1147,7 @@ void drawPlayerResultIcons(TaskFadeResource *resource) {
         func_8006C998(96, -34, 0x1B1, 3, -1, &D_800EBFF0[D_8013AF78], 1);
     }
     if (resource->playerOrder[2] != -1) {
-        func_800401DC(-136, -16, 2, &D_800EBFF0[D_8013AF78], 1);
+        drawRacePlacementSprite(-136, -16, 2, &D_800EBFF0[D_8013AF78], 1);
         func_8006C998(-104, 0, 0x18B, gResultIconPalettes[2], -1,
                      &D_800EBFF0[D_8013AF78], 1);
         func_8006C998(-84, -16, gRacePlayers[resource->playerOrder[2]].characterId + 0x1EC,
@@ -1155,7 +1155,7 @@ void drawPlayerResultIcons(TaskFadeResource *resource) {
         func_8006C998(-48, -2, 0x1B1, 3, -1, &D_800EBFF0[D_8013AF78], 1);
     }
     if (resource->playerOrder[3] != -1) {
-        func_800401DC(8, 16, 3, &D_800EBFF0[D_8013AF78], 1);
+        drawRacePlacementSprite(8, 16, 3, &D_800EBFF0[D_8013AF78], 1);
         func_8006C998(40, 32, 0x18C, gResultIconPalettes[3], -1,
                      &D_800EBFF0[D_8013AF78], 1);
         func_8006C998(60, 16, gRacePlayers[resource->playerOrder[3]].characterId + 0x1EC,

@@ -589,7 +589,7 @@ void waitResultDisplayTask(void);
 void func_8002BC2C(void);
 void func_8002B820(void);
 void drawResultDisplayLabels(ResultDisplayResource *resource);
-void func_800401DC(s16 x, s16 y, s16 kind, GsOT *ot, u16 depth);
+void drawRacePlacementSprite(s16 x, s16 y, s16 placement, GsOT *ot, u16 depth);
 void drawResultPrizeLabels(ResultDisplayResource *resource);
 void drawFirstPlayerResultCounterAndIcon(ResultDisplayResource *resource);
 void drawMenuTimeWithBrightness(MenuTimeResource *resource);
