@@ -41,8 +41,9 @@ extern char gCourseCoinTotalFormat[] __attribute__((section(".data")));
 extern char gCourseCoinCountMarker[] __attribute__((section(".data")));
 extern char gCourseCoinCountFormat[] __attribute__((section(".data")));
 
+void func_8004054C(s32 x, s32 y, GsOT *ot, u16 depth);
 void func_80041554(void);
-void func_80041890(void);
+void drawSplitScreenCourseProgressHud(void);
 void func_800418F4(s16 player);
 void drawSplitScreenTrickAttackHud(s16 player);
 void drawScoreAttackHud(void);
@@ -648,7 +649,7 @@ void updateRaceHud(void) {
                     gRacePlayers[player].unk942--;
                 }
             }
-            func_80041890();
+            drawSplitScreenCourseProgressHud();
             func_800418F4(0);
             func_800418F4(1);
             break;
@@ -843,16 +844,12 @@ void func_80041554(void) {
 INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud_modes", func_80041554);
 #endif
 
-/* DECOMP_ATTEMPT: inline 23/25 */
-#ifdef NON_MATCHING
-void func_80041890(void) {
+void drawSplitScreenCourseProgressHud(void) {
     GsOT *ot = &D_800EBFF0[D_8013AF78];
+
     setSpriteColor(128, 128, 128);
-    return func_8004054C(81, -68, ot, 1);
+    func_8004054C(81, -68, ot, 1);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud_modes", func_80041890);
-#endif
 
 /* DECOMP_ATTEMPT: inline 302/307 */
 #ifdef NON_MATCHING

@@ -3772,6 +3772,7 @@ D_8013B1A8 = 0x8013B1A8; // size:0x2
 
 initializeRaceRulesAndCounters = 0x80040A60; // type:func
 updateRaceHud = 0x80040D5C; // type:func
+drawSplitScreenCourseProgressHud = 0x80041890; // type:func
 
 D_80124248 = 0x80124248; // type:RaceTime size:0x28 defined:true
 D_8012429C = 0x8012429C; // size:0xC defined:true
