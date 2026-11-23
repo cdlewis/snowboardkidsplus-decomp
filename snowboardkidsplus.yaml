@@ -246,6 +246,7 @@ segments:
       - [0x3AC54, c, race/course/course_geometry]
       - [0x3DB30, c, graphics/course_rendering]
       - [0x42D30, c, graphics/model_renderer]
+      - [0x491F0, hasm, graphics/course_resource_read_stub]
       - [0x49278, c, race/course/course_objects]
       - [0x50334, c, graphics/primitive_draw]
       - [0x51530, c, graphics/tim_archive]

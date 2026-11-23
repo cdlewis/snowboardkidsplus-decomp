@@ -1681,6 +1681,3 @@ void func_80058844(u32 *orderingTable, const FastTmdScratchpad *scratch, u32 dep
 #else
 INCLUDE_ASM("asm/nonmatchings/graphics/model_renderer", func_80058844);
 #endif
-
-/* DECOMP_ATTEMPT: unattempted */
-INCLUDE_ASM("asm/nonmatchings/graphics/model_renderer", func_800589F0);
