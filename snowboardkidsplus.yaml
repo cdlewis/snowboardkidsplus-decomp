@@ -1016,10 +1016,12 @@ segments:
       - [0x12BA60, data, scanline_copy_rects_tail]
       - {start: 0x12BA68, type: .data, name: graphics/course_rendering, linker_section: .data.course_model_texture_window}
       - [0x12BA70, data]
+      - {start: 0x12BA84, type: .data, name: race/course/course_objects, linker_section: .data.object_visual_frames}
       - {start: 0x12BA94, type: .data, name: race/course/course_objects, linker_section: .data.interaction_visual_frame, linker_section_order: .data}
       - [0x12BA9C, data, interaction_visual_frame_tail]
       - {start: 0x12BAA4, type: .data, name: race/course/course_objects, linker_section: .data.placed_object_visual_frame}
-      - [0x12BAAC, data, placed_object_visual_frame_tail]
+      - {start: 0x12BAAC, type: .data, name: race/course/course_objects, linker_section: .data.object_visual_frames_by_type}
+      - [0x12BAB4, data, object_visual_state]
       - {start: 0x12BAC4, type: .sdata, name: race/course/course_objects, linker_section: .sdata.interaction_visual_placements, linker_section_order: .data}
       - {start: 0x12BAC8, type: .sdata, name: race/course/course_objects, linker_section: .sdata.course_visual_frames, linker_section_order: .data}
       - [0x12BACC, data, 12BACC]

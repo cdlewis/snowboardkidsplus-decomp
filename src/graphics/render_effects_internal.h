@@ -933,7 +933,7 @@ void func_8006479C(void);
 void func_800654B4(void);
 void func_80066474(void);
 void resolvePlayerRegionCollision(RacePlayer *player, PlayerCollisionRegion *region);
-void func_8005B460(void);
+void updateObjectVisualTask(void);
 void updateInteractionVisualTask(void);
 void updateCourseVisualTask(void);
 void drawSubdivisionTriangle(TriangleScratchVertex *first, TriangleScratchVertex *second,

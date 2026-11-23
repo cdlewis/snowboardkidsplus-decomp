@@ -68,11 +68,19 @@ extern u32 *D_8013AF70 __attribute__((section(".data")));
 extern u32 *D_8013AF74 __attribute__((section(".data")));
 
 extern s16 D_8013B1D4 __attribute__((section(".data.finish_slot_state")));
+extern u8 D_8013B2B7, D_8013B2B8;
 
 u8 gCpuSpeedModesSoloFirst[4] __attribute__((section(".data.cpu_speed_modes"))) = { 1, 0, 2, 0 };
 u8 gCpuSpeedModesSoloSecond[4] __attribute__((section(".data.cpu_speed_modes"))) = { 0, 1, 2, 0 };
 u8 gCpuSpeedModesSoloThird[4] __attribute__((section(".data.cpu_speed_modes"))) = { 0, 1, 2, 0 };
 u8 gCpuSpeedModesSoloFourth[4] __attribute__((section(".data.cpu_speed_modes"))) = { 0, 2, 1, 0 };
+
+TaskVisualFrame gObjectVisualFrameType8 __attribute__((section(".data.object_visual_frames"))) = {
+    0x00, 0x00, 0x40, 0x80, 0x19, 0x7828
+};
+TaskVisualFrame gObjectVisualFrameType9 __attribute__((section(".data.object_visual_frames"))) = {
+    0x40, 0x00, 0x40, 0x80, 0x19, 0x7868
+};
 
 TaskVisualFrame gInteractionVisualFrame __attribute__((section(".data.interaction_visual_frame"))) = {
     0xC0, 0x20, 0x20, 0x20, 0x1C, 0x3D7F
@@ -210,6 +218,11 @@ u32 gAlternateObjectSortSavedStackPointer
 TaskVisualFrame gPlacedObjectVisualFrame
     __attribute__((section(".data.placed_object_visual_frame"))) = {
     192, 0, 64, 64, 0xA, 0x3F28,
+};
+
+TaskVisualFrame *gObjectVisualFramesByType[2]
+    __attribute__((section(".data.object_visual_frames_by_type"))) = {
+    &gObjectVisualFrameType8, &gObjectVisualFrameType9,
 };
 
 TaskVisualFrame *gCourseVisualFrames
@@ -373,7 +386,6 @@ void initializeCourseObjectTask(void);
 
 extern VisualPlacement *D_801293DC[10];
 extern VisualPlacement *D_80129404[3][10];
-extern u8 D_8013B2B7, D_8013B2B8;
 
 void func_80058BD4(void) {
     u8 i;
@@ -1155,22 +1167,18 @@ void initializeObjectVisualTask(void) {
     resource->scaleX = 0x3800;
     resource->scaleY = 0x3800;
     resource->scaleZ = 0x3800;
-    setCurrentTaskCallback(func_8005B460);
+    setCurrentTaskCallback(updateObjectVisualTask);
 }
 
-/* DECOMP_ATTEMPT: inline 92/107 */
-#ifdef NON_MATCHING
-extern TaskVisualFrame D_8013B284[1];
-extern TaskVisualFrame *D_8013B28C[];
-
-void func_8005B460(void) {
+void updateObjectVisualTask(void) {
     TaskVisualResource *resource;
     u8 i;
+
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
     resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
-    prepareTaskVisualQuad(resource, D_8013B284, 0);
+    prepareTaskVisualQuad(resource, &gObjectVisualFrameType8, 0);
     for (i = D_8013B2B7; i < D_8013B2B7 + D_8013B2B8; i++) {
         if (isPointWithinCameraForwardRange(D_8013B2BC[i].x, D_8013B2BC[i].z, (s16)getRenderCameraIndex())) {
             resource->coordinate.coord.t[0] = D_8013B2BC[i].x;
@@ -1186,13 +1194,10 @@ void func_8005B460(void) {
                     resolvePlayerCollisionsWithCylinder(&resource->position, 0x2000, 0x12000, 2);
                 }
             }
-            drawPreparedTaskVisualQuad(resource, D_8013B28C[D_8013B2BC[i].unk01], 0);
+            drawPreparedTaskVisualQuad(resource, gObjectVisualFramesByType[D_8013B2BC[i].unk01 - 8], 0);
         }
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/course/course_objects", func_8005B460);
-#endif
 
 void initializeInteractionVisualTask(void) {
     TaskVisualResource *resource;
