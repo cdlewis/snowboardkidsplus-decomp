@@ -193,7 +193,7 @@ void func_8003EE70(void) {
 
         cameras = D_801241E8;
         views = gPlayerCameraViews;
-        height = func_8004A764(cameras[D_8013AE88->data18].unk18,
+        height = getCourseHeightAtPoint(cameras[D_8013AE88->data18].unk18,
                               views[D_8013AE88->data18].vpx, views[D_8013AE88->data18].vpz);
         if (cameras[D_8013AE88->data18].unk16 != 7) {
             if (height - 120 < views[D_8013AE88->data18].vpy) {

@@ -149,7 +149,7 @@ void clampPlayerCameraHeight(u16 playerIndex) {
     GsRVIEW2 *view = &views[playerIndex];
     s32 height;
     camera->unk18 = getAdjacentGeometryRegionForPoint(camera->unk18, view->vpx, view->vpz);
-    height = func_8004A764(camera->unk18, view->vpx, view->vpz);
+    height = getCourseHeightAtPoint(camera->unk18, view->vpx, view->vpz);
     if (height - 120 < view->vpy) {
         view->vpy = height - 120;
         camera->y = height << 8;
@@ -198,7 +198,7 @@ void initCurrentPlayerCameraTask(void) {
         views[D_8013AE88->data18].vpz += 2560;
         cameras = D_801241E8;
         cameras[D_8013AE88->data18].unk18 = getAdjacentGeometryRegionForPoint(cameras[D_8013AE88->data18].unk18, views[D_8013AE88->data18].vpx, views[D_8013AE88->data18].vpz);
-        views[D_8013AE88->data18].vpy = func_8004A764(cameras[D_8013AE88->data18].unk18, views[D_8013AE88->data18].vpx, views[D_8013AE88->data18].vpz) - 120;
+        views[D_8013AE88->data18].vpy = getCourseHeightAtPoint(cameras[D_8013AE88->data18].unk18, views[D_8013AE88->data18].vpx, views[D_8013AE88->data18].vpz) - 120;
         cameras[D_8013AE88->data18].x = views[D_8013AE88->data18].vpx << 8;
         cameras[D_8013AE88->data18].y = views[D_8013AE88->data18].vpy << 8;
         cameras[D_8013AE88->data18].z = views[D_8013AE88->data18].vpz << 8;
@@ -219,7 +219,7 @@ void updateRaceIntroCameraTask(void) {
         cameras[D_8013AE88->data18].unk18 = getAdjacentGeometryRegionForPoint(
             cameras[D_8013AE88->data18].unk18,
             views[D_8013AE88->data18].vpx, views[D_8013AE88->data18].vpz);
-        views[D_8013AE88->data18].vpy = func_8004A764(
+        views[D_8013AE88->data18].vpy = getCourseHeightAtPoint(
             cameras[D_8013AE88->data18].unk18,
             views[D_8013AE88->data18].vpx, views[D_8013AE88->data18].vpz) - 120;
         cameras[D_8013AE88->data18].y = (views[D_8013AE88->data18].vpy + 120) << 8;

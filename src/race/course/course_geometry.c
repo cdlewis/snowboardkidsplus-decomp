@@ -76,46 +76,74 @@ void selectGeometryRecord(s16 index) {
     D_8013B208 = &vertices[D_8013B1F0[index].vertexIndices[2] * 3];
 }
 
-/* DECOMP_ATTEMPT: inline 114/207 */
-#ifdef NON_MATCHING
-typedef struct Region { s16 unk00[10]; s16 first, last; s16 unk18[2]; } Region;
-
-typedef struct Vertex { s16 x,y,z; } Vertex;
-
-typedef struct Triangle { u16 vertices[3]; u8 unk6, skipFirstEdge; s16 unk8,unkA; } Triangle;
-
-s32 func_8004A764(s16 index, s32 x, s32 z) {
+s32 getCourseHeightAtPoint(s16 index, s32 x, s32 z) {
     s16 i;
-    Triangle *triangle;
-    Vertex *a, *b, *c;
-    s32 dyC, dzB, dzC, dyB, dxB, dxC;
-    for (i = ((Region *)D_8013B1F4)[index].first; i < ((Region *)D_8013B1F4)[index].last + 1; i++) {
-        triangle = &((Triangle *)D_8013B1F0)[i];
-        if (!triangle->skipFirstEdge) {
-            b = &((Vertex *)D_8013B1EC)[triangle->vertices[1]];
-            a = &((Vertex *)D_8013B1EC)[triangle->vertices[0]];
-            if ((b->x-a->x)*(z/5-a->z) - (b->z-a->z)*(x/5-a->x) > 0) continue;
+    CourseGeometryVertex *triangleVertices;
+
+    for (i = ((GeometryRegion *)D_8013B1F4)[index].firstRecord;
+         i < ((GeometryRegion *)D_8013B1F4)[index].lastRecord + 1; i++) {
+        SelectedRecord *records = D_8013B1F0;
+
+        if (records[i].skipFirstEdge == 0) {
+            CourseGeometryVertex *vertices = (CourseGeometryVertex *)D_8013B1EC;
+            s32 bi = records[i].vertexIndices[1];
+            s32 ai = records[i].vertexIndices[0];
+
+            if ((vertices[bi].x - vertices[ai].x) * (z / 5 - vertices[ai].z) -
+                (vertices[bi].z - vertices[ai].z) * (x / 5 - vertices[ai].x) > 0) {
+                continue;
+            }
         }
-        c = &((Vertex *)D_8013B1EC)[triangle->vertices[2]];
-        b = &((Vertex *)D_8013B1EC)[triangle->vertices[1]];
-        if ((c->x-b->x)*(z/5-b->z) - (c->z-b->z)*(x/5-b->x) > 0) continue;
+        {
+            CourseGeometryVertex *vertices = (CourseGeometryVertex *)D_8013B1EC;
+            s32 bi = records[i].vertexIndices[2];
+            s32 ai = records[i].vertexIndices[1];
+
+            if ((vertices[bi].x - vertices[ai].x) * (z / 5 - vertices[ai].z) -
+                (vertices[bi].z - vertices[ai].z) * (x / 5 - vertices[ai].x) > 0) {
+                continue;
+            }
+        }
         selectGeometryRecord(i);
-        c = &((Vertex *)D_8013B1EC)[((Triangle *)D_8013B1F0)[i].vertices[2]];
-        a = &((Vertex *)D_8013B1EC)[((Triangle *)D_8013B1F0)[i].vertices[0]];
-        b = &((Vertex *)D_8013B1EC)[((Triangle *)D_8013B1F0)[i].vertices[1]];
-        dyC = c->y-a->y;
-        dzB = a->z-b->z;
-        dzC = a->z-c->z;
-        dyB = b->y-a->y;
-        dxB = b->x-a->x;
-        dxC = c->x-a->x;
-        return -(((dxC*dyB-dyC*dxB)*(z-a->z*5) - (dyC*dzB-dzC*dyB)*(x-a->x*5))/(dzC*dxB-dxC*dzB)+a->y*5);
+        {
+            s32 dyC, dzB, dzC, dyB, dxB, dxC;
+            s32 yz1, yz2, zx1, xy1, xy2, zx2;
+            s32 ci, ai, bi;
+            SelectedRecord *selected = D_8013B1F0;
+
+            ci = selected[i].vertexIndices[2];
+            triangleVertices = (CourseGeometryVertex *)D_8013B1EC;
+            ai = selected[i].vertexIndices[0];
+            bi = selected[i].vertexIndices[1];
+
+            /* Use the triangle normal to solve for the height at (x, z). */
+            dyC = triangleVertices[ci].y - triangleVertices[ai].y;
+            dzB = triangleVertices[ai].z - triangleVertices[bi].z;
+            yz1 = dyC * dzB;
+            dzC = triangleVertices[ai].z - triangleVertices[ci].z;
+            dyB = triangleVertices[bi].y - triangleVertices[ai].y;
+            yz2 = dzC * dyB;
+            {
+                s32 ax = triangleVertices[ai].x;
+                dxB = triangleVertices[bi].x - ax;
+            }
+            zx1 = dzC * dxB;
+            dxC = triangleVertices[ci].x - triangleVertices[ai].x;
+            xy1 = dxC * dyB;
+            xy2 = dyC * dxB;
+            zx2 = dxC * dzB;
+            {
+                s32 pointZ = z - triangleVertices[ai].z * 5;
+                s32 alongZ = (xy1 - xy2) * pointZ;
+                s32 pointX = x - triangleVertices[ai].x * 5;
+                s32 alongX = (yz1 - yz2) * pointX;
+                s32 denominator = zx1 - zx2;
+                return -((alongZ - alongX) / denominator + triangleVertices[ai].y * 5);
+            }
+        }
     }
     return 0x800000;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/course/course_geometry", func_8004A764);
-#endif
 
 u8 getCourseSurfaceAtPoint(s16 index, s32 x, s32 z) {
     s32 i;

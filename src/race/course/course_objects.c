@@ -1356,7 +1356,7 @@ void initializePlacedObjectTask(void) {
     resource->groundCoordinate.coord.t[0] = D_8013B2BC[D_8013AE88->data18].x;
     resource->groundCoordinate.coord.t[2] = D_8013B2BC[D_8013AE88->data18].z;
     resource->groundCoordinate.coord.t[1] = D_8013B2BC[D_8013AE88->data18].y =
-        func_8004A764(resource->geometryIndex, resource->groundCoordinate.coord.t[0],
+        getCourseHeightAtPoint(resource->geometryIndex, resource->groundCoordinate.coord.t[0],
                       resource->groundCoordinate.coord.t[2]);
     resource->position.x = resource->groundCoordinate.coord.t[0] << 8;
     resource->position.y = resource->groundCoordinate.coord.t[1] << 8;
@@ -1717,7 +1717,7 @@ void updateProximityParticleTask(void) {
             if (resource->velocityY > 0) {
                 resource->geometryIndex = getAdjacentGeometryRegionForPoint(resource->geometryIndex,
                     resource->coordinate.coord.t[0], resource->coordinate.coord.t[2]);
-                groundY = func_8004A764(resource->geometryIndex, resource->coordinate.coord.t[0],
+                groundY = getCourseHeightAtPoint(resource->geometryIndex, resource->coordinate.coord.t[0],
                     resource->coordinate.coord.t[2]) - 0x10;
                 if (resource->coordinate.coord.t[1] > groundY) {
                     if (!D_8013AE88->data18 || !getCourseSurfaceAtPoint(resource->geometryIndex,
@@ -1786,7 +1786,7 @@ void initializeMovingVisualTask(void) {
     resource->bounceCount = 0x400;
     resource->groundY = 0;
     resource->unkC4 = getAdjacentGeometryRegionForPoint(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8);
-    resource->position.y = func_8004A764(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8) << 8;
+    resource->position.y = getCourseHeightAtPoint(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8) << 8;
     resource->coordinate.coord.t[0] = resource->position.x >> 8;
     resource->coordinate.coord.t[1] = resource->position.y >> 8;
     resource->coordinate.coord.t[2] = resource->position.z >> 8;
@@ -1835,7 +1835,7 @@ void func_8005D394(void) {
             resource->position.z += rcos(resource->velocityY) * resource->bounceCount / 0x1000;
             resource->unkC4 = getAdjacentGeometryRegionForPoint(resource->unkC4,
                 resource->position.x >> 8, resource->position.z >> 8);
-            resource->position.y = func_8004A764(resource->unkC4,
+            resource->position.y = getCourseHeightAtPoint(resource->unkC4,
                 resource->position.x >> 8, resource->position.z >> 8) << 8;
 
             if (resource->groundY) {
@@ -2051,7 +2051,7 @@ void initializeCollectibleTask(void) {
     resource->rotation.vz = 0;
     resource->coordinate.coord.t[0] = D_8013B2C0[D_8013AE88->data18].x;
     resource->coordinate.coord.t[2] = D_8013B2C0[D_8013AE88->data18].z;
-    height = func_8004A764(resource->geometryIndex, resource->coordinate.coord.t[0], resource->coordinate.coord.t[2]);
+    height = getCourseHeightAtPoint(resource->geometryIndex, resource->coordinate.coord.t[0], resource->coordinate.coord.t[2]);
     D_8013B2C0[D_8013AE88->data18].y = height;
     resource->coordinate.coord.t[1] = height;
     resource->position.x = resource->coordinate.coord.t[0] << 8;
@@ -2111,7 +2111,7 @@ void initializeFallingTaskObject(void) {
     resource->coordinate.coord.t[1] = resource->position.y >> 8;
     resource->coordinate.coord.t[2] = resource->position.z >> 8;
     resource->verticalVelocity = -0xA00;
-    resource->groundHeight = func_8004A764(resource->geometryIndex, resource->position.x >> 8, resource->position.z >> 8) << 8;
+    resource->groundHeight = getCourseHeightAtPoint(resource->geometryIndex, resource->position.x >> 8, resource->position.z >> 8) << 8;
     computeSelectedTriangleAngles(&resource->groundPitch, &resource->groundRoll);
     setCurrentTaskCallback(updateFallingTaskObject);
 }
@@ -2188,7 +2188,7 @@ void initializeOrbitingTaskObject(void) {
     resource->geometryIndex = gOrbitingTaskPlacements[D_8013AE88->data18].geometryIndex;
     resource->groundCoordinate.coord.t[0] = gOrbitingTaskPlacements[D_8013AE88->data18].x;
     resource->groundCoordinate.coord.t[2] = gOrbitingTaskPlacements[D_8013AE88->data18].z;
-    resource->groundCoordinate.coord.t[1] = func_8004A764(resource->geometryIndex,
+    resource->groundCoordinate.coord.t[1] = getCourseHeightAtPoint(resource->geometryIndex,
         resource->groundCoordinate.coord.t[0], resource->groundCoordinate.coord.t[2]);
     computeSelectedTriangleAngles(&resource->groundRotation.vx, &resource->groundRotation.vz);
     resource->groundRotation.vy = 0;
@@ -2236,7 +2236,7 @@ void updateOrbitingObstacleTask(void) {
         resource->groundCoordinate.coord.t[2] =
             gOrbitingTaskPlacements[D_8013AE88->data18].z
             + rcos(resource->phase) * gOrbitingTaskPlacements[D_8013AE88->data18].radius / 4096;
-        resource->groundCoordinate.coord.t[1] = func_8004A764(resource->geometryIndex,
+        resource->groundCoordinate.coord.t[1] = getCourseHeightAtPoint(resource->geometryIndex,
             resource->groundCoordinate.coord.t[0], resource->groundCoordinate.coord.t[2]);
         resource->position.x = resource->groundCoordinate.coord.t[0] << 8;
         resource->position.y = resource->groundCoordinate.coord.t[1] << 8;
@@ -2304,7 +2304,7 @@ void initializeCourseUnlockScene(void) {
         + vertices[region->vertices[2]].x + vertices[region->vertices[3]].x) / 4) * 5;
     D_80129C60[26].coord.t[2] = ((vertices[region->vertices[0]].z + vertices[region->vertices[1]].z
         + vertices[region->vertices[2]].z + vertices[region->vertices[3]].z) / 4) * 5;
-    D_80129C60[26].coord.t[1] = func_8004A764(index,
+    D_80129C60[26].coord.t[1] = getCourseHeightAtPoint(index,
         D_80129C60[26].coord.t[0], D_80129C60[26].coord.t[2]);
     D_8012A5C0[26].vz = 0;
     D_8012A5C0[26].vx = 0;

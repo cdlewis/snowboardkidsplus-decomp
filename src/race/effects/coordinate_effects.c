@@ -180,7 +180,7 @@ void initializeExpandingCoordinateEffectTask(void) {
     resource->parent.coord.t[1] = y;
     resource->parent.coord.t[2] = z;
     playPositionalSoundEffect(resource->position.x, resource->position.y, resource->position.z, 1, 0x101, 0x20);
-    func_8004A764(index, x, z);
+    getCourseHeightAtPoint(index, x, z);
     computeSelectedTriangleAngles(&resource->pitch, &resource->yaw);
     resource->unkCA = 0;
     D_8013AE88->data1A = 45;
@@ -258,7 +258,7 @@ void initializePlayerState23CoordinateEffectTask(void) {
     resource->position.x = players[D_8013AE88->data18].x;
     resource->position.y = players[D_8013AE88->data18].y;
     resource->position.z = players[D_8013AE88->data18].z;
-    func_8004A764(resource->selectedIndex, resource->position.x >> 8, resource->position.z >> 8);
+    getCourseHeightAtPoint(resource->selectedIndex, resource->position.x >> 8, resource->position.z >> 8);
     computeSelectedTriangleAngles(&resource->pitch, &resource->yaw);
     resource->unkCA = 0;
     resource->scale.vx = resource->scale.vy = resource->scale.vz = 0;
@@ -707,7 +707,7 @@ void updateHomingTaskVisualMovement(TaskVisualResource *resource, VECTOR *histor
     resource->position.y += resource->velocityY;
     resource->position.z += D_800EB22C.vz;
     resource->unkC4 = getAdjacentGeometryRegionForPoint(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8);
-    ground = func_8004A764(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8) << 8;
+    ground = getCourseHeightAtPoint(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8) << 8;
     if (resource->position.y > ground) resource->position.y = ground;
     resource->velocityY = resource->position.y - oldY + 0x1900;
 }
@@ -992,7 +992,7 @@ void initializeBouncingTaskVisual(void) {
     resource->position.z = resource->coordinate.coord.t[2] << 8;
     resource->unkC4 = getAdjacentGeometryRegionForPoint(players[D_8013AE88->data18].unk92E, players[D_8013AE88->data18].x >> 8, players[D_8013AE88->data18].z >> 8);
     resource->velocityY = -0xA00;
-    resource->groundY = func_8004A764(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8) << 8;
+    resource->groundY = getCourseHeightAtPoint(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8) << 8;
     resource->bounceCount = 0;
     playPlayerSoundEffect(D_8013AE88->data18, 1, 2, 0x20);
     setCurrentTaskCallback(updateBouncingTaskVisual);
@@ -1112,7 +1112,7 @@ void updateDualResource5100EffectTask(void) {
         resource->position.y += resource->velocityY;
         resource->position.z += D_800EB22C.vz;
         resource->unkC4 = getAdjacentGeometryRegionForPoint(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8);
-        ground = func_8004A764(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8) << 8;
+        ground = getCourseHeightAtPoint(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8) << 8;
         if (resource->position.y > ground) {
             resource->position.y = ground;
         }
@@ -1226,7 +1226,7 @@ void updateVisualTrailTask(void) {
         resource->position.y += resource->velocityY;
         resource->position.z += D_800EB22C.vz;
         resource->geometryIndex = getAdjacentGeometryRegionForPoint(resource->geometryIndex, resource->position.x >> 8, resource->position.z >> 8);
-        ground = func_8004A764(resource->geometryIndex, resource->position.x >> 8, resource->position.z >> 8) << 8;
+        ground = getCourseHeightAtPoint(resource->geometryIndex, resource->position.x >> 8, resource->position.z >> 8) << 8;
         if (resource->position.y > ground) {
             resource->position.y = ground;
         }

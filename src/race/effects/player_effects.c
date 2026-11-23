@@ -1557,7 +1557,7 @@ void drawPlayerShadowTask(void) {
     GsInitCoordinate2(0, &scratch->coordinate);
     scratch->coordinate.coord.t[0] = player->model.effect.effectMatrix180.t[0];
     scratch->coordinate.coord.t[2] = player->model.effect.effectMatrix180.t[2];
-    scratch->coordinate.coord.t[1] = func_8004A764(player->unk92E,
+    scratch->coordinate.coord.t[1] = getCourseHeightAtPoint(player->unk92E,
         scratch->coordinate.coord.t[0], scratch->coordinate.coord.t[2]);
     computeSelectedTriangleAngles(&scratch->rotation.vx, &scratch->rotation.vz);
     scratch->rotation.vy = 0;
@@ -2348,9 +2348,9 @@ void func_80066474(void) {
         second->positions[0].components[i] += player->model.effect.effectMatrix180.t[i];
     }
     scratch->flags = (s16)getAdjacentGeometryRegionForPoint(player->unk92E, first->positions[0].point.x, first->positions[0].point.z);
-    first->positions[0].point.y = func_8004A764((s16)(u16)scratch->flags, first->positions[0].point.x, first->positions[0].point.z);
+    first->positions[0].point.y = getCourseHeightAtPoint((s16)(u16)scratch->flags, first->positions[0].point.x, first->positions[0].point.z);
     scratch->flags = (s16)getAdjacentGeometryRegionForPoint(player->unk92E, second->positions[0].point.x, second->positions[0].point.z);
-    second->positions[0].point.y = func_8004A764((s16)(u16)scratch->flags, second->positions[0].point.x, second->positions[0].point.z);
+    second->positions[0].point.y = getCourseHeightAtPoint((s16)(u16)scratch->flags, second->positions[0].point.x, second->positions[0].point.z);
 
     GsInitCoordinate2(0, &scratch->coordinate);
     scratch->offset.vx = scratch->offset.vy = scratch->offset.vz = 0;
@@ -2876,7 +2876,7 @@ void createPlayerRingEffectTask(s32 playerIndex) {
         for (i = 0; i < 3; i++) {
             resource->position[i] = player->worldCoordinate.coord.t[i];
         }
-        resource->position[1] = func_8004A764(player->unk92E, resource->position[0], resource->position[2]);
+        resource->position[1] = getCourseHeightAtPoint(player->unk92E, resource->position[0], resource->position[2]);
         for (i = 0; i < 6; i++) {
             resource->rotations[i].vy = 0;
             resource->rotations[i].vx = 0;

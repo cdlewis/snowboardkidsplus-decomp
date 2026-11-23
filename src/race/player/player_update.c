@@ -1346,7 +1346,7 @@ void initializeCurrentPlayerModelAndHeight(void) {
     } else {
         D_8013B0D8->unk0B6 = D_8013B0D8->unk110 - 0x400;
     }
-    D_8013B0D8->y = D_8013B0D8->unk054 = func_8004A764(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8) << 8;
+    D_8013B0D8->y = D_8013B0D8->unk054 = getCourseHeightAtPoint(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8) << 8;
     updateCurrentPlayerGroundContact();
     startCurrentPlayerAnimation(1, 1);
     setCurrentTaskCallback(updateCurrentPlayerAndResetState);
@@ -3509,7 +3509,7 @@ void updateCurrentPlayerTimedEffect(void) {
         D_8013B0D8->unk0B8 = 0;
         D_8013B0D8->unk0B4 = 0;
         D_8013B0D8->unk0B6 = D_8013B0D8->unk110 - 0x400;
-        D_8013B0D8->y = func_8004A764(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8) << 8;
+        D_8013B0D8->y = getCourseHeightAtPoint(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8) << 8;
         /* Preserve the fourth word of the position snapshot. */
         *(VECTOR *)&D_8013B0D8->unk050 = *(VECTOR *)&D_8013B0D8->x;
         D_8013B0D8->unk128 &= 0xFFFBDBFF;
@@ -4214,7 +4214,7 @@ void updateCurrentPlayerState30AnimationAndHeight(void) {
     D_8013B0D8->unk946 = 0;
     if (processCurrentPlayerActionRequests(0)) {
         D_8013B0D8->unk92E = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8);
-        D_8013B0D8->y = func_8004A764(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8) << 8;
+        D_8013B0D8->y = getCourseHeightAtPoint(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8) << 8;
     }
 }
 
@@ -4643,7 +4643,7 @@ s16 resolveCurrentPlayerTerrainContact(void) {
 
     region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8);
     D_8013B0D8->unk92E = region;
-    groundY = func_8004A764(region, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8) << 8;
+    groundY = getCourseHeightAtPoint(region, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8) << 8;
     if (groundY < D_8013B0D8->y) {
         copySelectedRecordToCurrentPlayer();
         D_8013B0D8->unk11E = D_8013B0D8->unk118 = D_8013B0D8->unk116;
@@ -4668,9 +4668,9 @@ s16 resolveCurrentPlayerTerrainContact(void) {
         dx = (sinYaw * probeDistance) / 4096;
         dz = (cosYaw * probeDistance) / 4096;
         region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, (D_8013B0D8->x >> 8) + dx, (D_8013B0D8->z >> 8) + dz);
-        forwardY = func_8004A764(region, (D_8013B0D8->x >> 8) + dx, (D_8013B0D8->z >> 8) + dz) << 8;
+        forwardY = getCourseHeightAtPoint(region, (D_8013B0D8->x >> 8) + dx, (D_8013B0D8->z >> 8) + dz) << 8;
         region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, (D_8013B0D8->x >> 8) - dx, (D_8013B0D8->z >> 8) - dz);
-        rearY = func_8004A764(region, (D_8013B0D8->x >> 8) - dx, (D_8013B0D8->z >> 8) - dz) << 8;
+        rearY = getCourseHeightAtPoint(region, (D_8013B0D8->x >> 8) - dx, (D_8013B0D8->z >> 8) - dz) << 8;
         y = D_8013B0D8->y;
         if (forwardY < y || rearY < y) {
             if (forwardY < y && rearY < y) {
@@ -4723,7 +4723,7 @@ s32 updateCurrentPlayerGroundContact(void) {
     if (processCurrentPlayerActionRequests(0) >= 2) {
         region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8);
         D_8013B0D8->unk92E = region;
-        D_8013B0D8->y = func_8004A764(region, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8) << 8;
+        D_8013B0D8->y = getCourseHeightAtPoint(region, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8) << 8;
         D_8013B0D8->worldCoordinate.coord.t[0] = D_8013B0D8->x >> 8;
         D_8013B0D8->worldCoordinate.coord.t[1] = D_8013B0D8->y >> 8;
         D_8013B0D8->worldCoordinate.coord.t[2] = D_8013B0D8->z >> 8;
@@ -4733,7 +4733,7 @@ s32 updateCurrentPlayerGroundContact(void) {
 
     region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8);
     D_8013B0D8->unk92E = region;
-    groundY = func_8004A764(region, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8) << 8;
+    groundY = getCourseHeightAtPoint(region, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8) << 8;
     copySelectedRecordToCurrentPlayer();
 
     if (groundY > D_8013B0D8->y + 0x400) {
@@ -4769,12 +4769,12 @@ s32 updateCurrentPlayerGroundContact(void) {
         dz = cosYaw * probeDistance / 4096;
 
         region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, (D_8013B0D8->x >> 8) + dx, (D_8013B0D8->z >> 8) + dz);
-        forwardY = func_8004A764(region, (D_8013B0D8->x >> 8) + dx, (D_8013B0D8->z >> 8) + dz) << 8;
+        forwardY = getCourseHeightAtPoint(region, (D_8013B0D8->x >> 8) + dx, (D_8013B0D8->z >> 8) + dz) << 8;
         forwardRecord = D_8013B1FE;
         computeSelectedTriangleNormal(D_8013AF88);
 
         region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, (D_8013B0D8->x >> 8) - dx, (D_8013B0D8->z >> 8) - dz);
-        rearY = func_8004A764(region, (D_8013B0D8->x >> 8) - dx, (D_8013B0D8->z >> 8) - dz) << 8;
+        rearY = getCourseHeightAtPoint(region, (D_8013B0D8->x >> 8) - dx, (D_8013B0D8->z >> 8) - dz) << 8;
         computeSelectedTriangleNormal(D_8013AF8C);
 
         if (forwardRecord == D_8013B1FE) {
@@ -4836,7 +4836,7 @@ s32 snapCurrentPlayerToTerrain(void) {
     if (processCurrentPlayerActionRequests(0)) {
         region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8);
         D_8013B0D8->unk92E = region;
-        D_8013B0D8->y = func_8004A764(region, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8) << 8;
+        D_8013B0D8->y = getCourseHeightAtPoint(region, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8) << 8;
         D_8013B0D8->worldCoordinate.coord.t[0] = D_8013B0D8->x >> 8;
         D_8013B0D8->worldCoordinate.coord.t[1] = D_8013B0D8->y >> 8;
         D_8013B0D8->worldCoordinate.coord.t[2] = D_8013B0D8->z >> 8;
@@ -4845,7 +4845,7 @@ s32 snapCurrentPlayerToTerrain(void) {
 
     region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8);
     D_8013B0D8->unk92E = region;
-    D_8013B0D8->y = func_8004A764(region, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8) << 8;
+    D_8013B0D8->y = getCourseHeightAtPoint(region, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8) << 8;
     copySelectedRecordToCurrentPlayer();
 
     /* Probe both ends of two axes angled 45 degrees from the heading. */
@@ -4860,22 +4860,22 @@ s32 snapCurrentPlayerToTerrain(void) {
 
     region = getAdjacentGeometryRegionForPoint(
         D_8013B0D8->unk92E, (D_8013B0D8->x >> 8) + firstX, (D_8013B0D8->z >> 8) + firstZ);
-    heights[0] = func_8004A764(region, (D_8013B0D8->x >> 8) + firstX, (D_8013B0D8->z >> 8) + firstZ) << 8;
+    heights[0] = getCourseHeightAtPoint(region, (D_8013B0D8->x >> 8) + firstX, (D_8013B0D8->z >> 8) + firstZ) << 8;
     records[0] = D_8013B1FE;
 
     region = getAdjacentGeometryRegionForPoint(
         D_8013B0D8->unk92E, (D_8013B0D8->x >> 8) - firstX, (D_8013B0D8->z >> 8) - firstZ);
-    heights[1] = func_8004A764(region, (D_8013B0D8->x >> 8) - firstX, (D_8013B0D8->z >> 8) - firstZ) << 8;
+    heights[1] = getCourseHeightAtPoint(region, (D_8013B0D8->x >> 8) - firstX, (D_8013B0D8->z >> 8) - firstZ) << 8;
     records[1] = D_8013B1FE;
 
     region = getAdjacentGeometryRegionForPoint(
         D_8013B0D8->unk92E, (D_8013B0D8->x >> 8) + secondX, (D_8013B0D8->z >> 8) + secondZ);
-    heights[2] = func_8004A764(region, (D_8013B0D8->x >> 8) + secondX, (D_8013B0D8->z >> 8) + secondZ) << 8;
+    heights[2] = getCourseHeightAtPoint(region, (D_8013B0D8->x >> 8) + secondX, (D_8013B0D8->z >> 8) + secondZ) << 8;
     records[2] = D_8013B1FE;
 
     region = getAdjacentGeometryRegionForPoint(
         D_8013B0D8->unk92E, (D_8013B0D8->x >> 8) - secondX, (D_8013B0D8->z >> 8) - secondZ);
-    heights[3] = func_8004A764(region, (D_8013B0D8->x >> 8) - secondX, (D_8013B0D8->z >> 8) - secondZ) << 8;
+    heights[3] = getCourseHeightAtPoint(region, (D_8013B0D8->x >> 8) - secondX, (D_8013B0D8->z >> 8) - secondZ) << 8;
     records[3] = D_8013B1FE;
 
     D_8013B0D8->unk118 = D_8013B0D8->unk11E;
