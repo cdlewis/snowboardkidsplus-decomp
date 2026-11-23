@@ -564,10 +564,10 @@ typedef struct SelectedStateRecord {
     s32 unk10;
 } SelectedStateRecord;
 typedef struct PlayerPositionTrailResource {
-    s32 positions[3][3];
-    s32 unk24[3][3];
-    u8 unk48[6];
-    s16 unk4E;
+    s32 leftPositions[3][3];
+    s32 rightPositions[3][3];
+    s16 angles[3];
+    s16 inactive;
     u8 pad50[0xB0];
 } PlayerPositionTrailResource;
 
@@ -952,7 +952,7 @@ void drawTrickRingTask(void);
 void drawTrickSparkRingTask(void);
 void updateRadialEffectTask(void);
 void emitRadialEffectTask(void);
-void func_80066D18(void);
+void updatePlayerPositionTrailTask(void);
 void updatePlayerRingEffectTask(void);
 void drawQuadAnimationTask(void);
 

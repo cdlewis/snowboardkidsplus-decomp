@@ -184,6 +184,21 @@ typedef struct PlayerParticleTrailScratch {
     long flags;
 } PlayerParticleTrailScratch;
 
+typedef struct PlayerPositionTrailScratch {
+    GsCOORDINATE2 coordinate;
+    POLY_FT4 quad;
+    SVECTOR rotation;
+    VECTOR scale;
+    long depth;
+    long cue, flags;
+    s32 size;
+    s32 shade;
+    union {
+        SVECTOR vector;
+        s16 components[4];
+    } offset;
+} PlayerPositionTrailScratch;
+
 extern s16 gFrameCounter __attribute__((section(".data")));
 extern s16 D_8013AFCE __attribute__((section(".data")));
 extern u32 *D_8013AF6C __attribute__((section(".data")));
@@ -511,6 +526,12 @@ SVECTOR gPlayerPairedQuadVertices[4]
 VECTOR gPlayerPairedQuadOffsets[2]
     __attribute__((section(".data.player_paired_quad_offsets"))) = {
     {-50, 0, 0, 0}, {50, 0, 0, 0}
+};
+
+SVECTOR gPlayerPositionTrailVertices[4]
+    __attribute__((section(".data.player_position_trail_vertices"))) = {
+    {-20, -20, 0, 0}, {20, -20, 0, 0},
+    {-20, 20, 0, 0}, {20, 20, 0, 0},
 };
 
 SVECTOR gPlayerTripleQuadOffsets[3]
@@ -2450,31 +2471,13 @@ void createPlayerTrailTask(s32 playerIndex) {
     D_8013AE8C->data18 = playerIndex;
 }
 
-/* DECOMP_ATTEMPT: inline 558/578 */
-#ifdef NON_MATCHING
-typedef struct PlayerPositionTrailScratch {
-    GsCOORDINATE2 coordinate;
-    POLY_FT4 quad;
-    SVECTOR rotation;
-    VECTOR scale;
-    long depth;
-    long cue, flags;
-    s32 size;
-    s32 shade;
-    union {
-        SVECTOR vector;
-        s16 components[4];
-    } offset;
-} PlayerPositionTrailScratch;
-
-extern SVECTOR D_8012C9F4[4];
-
-void func_80066D18(void) {
+void updatePlayerPositionTrailTask(void) {
     PlayerPositionTrailResource *resource;
     RacePlayer *player;
     POLY_FT4 *packet;
     PlayerPositionTrailScratch *scratch;
     s32 i, j;
+    s32 trailScale;
     u16 state;
     s16 lateral;
 
@@ -2490,53 +2493,53 @@ void func_80066D18(void) {
         return;
     }
 
-    if (resource->unk4E) {
+    if (resource->inactive) {
         for (i = 0; i < 3; i++) {
             for (j = 0; j < 3; j++) {
-                resource->positions[i][j] = player->worldCoordinate.coord.t[j];
+                resource->leftPositions[i][j] = player->worldCoordinate.coord.t[j];
             }
             for (j = 0; j < 3; j++) {
-                resource->unk24[i][j] = player->worldCoordinate.coord.t[j];
+                resource->rightPositions[i][j] = player->worldCoordinate.coord.t[j];
             }
         }
     }
     if (player->unk0BC < 0x400) {
-        resource->unk4E = 1;
+        resource->inactive = 1;
     }
-    if (!resource->unk4E) {
+    if (!resource->inactive) {
         if (player->unk128 & 0x677DA21) {
-            resource->unk4E = 1;
+            resource->inactive = 1;
         }
     } else {
         if (!(player->unk128 & 0x677DA21)) {
-            resource->unk4E = 0;
+            resource->inactive = 0;
         }
     }
     state = player->unk96E;
     if (state != 0 && state != 0x801 && state != 0x200) {
-        resource->unk4E = 1;
+        resource->inactive = 1;
     }
     if (player->unk128 & 8) {
-        resource->unk4E = 0;
+        resource->inactive = 0;
     }
     if (player->unk128 & 0x100) {
-        resource->unk4E = 1;
+        resource->inactive = 1;
     }
-    if (resource->unk4E) {
+    if (resource->inactive) {
         return;
     }
 
     scratch->quad.tag = TEXTURED_QUAD_PACKET_WORDS << 24;
-    setcode(&scratch->quad, POLY_FT4_CODE | 2);
+    setcode(&scratch->quad, POLY_FT4_CODE | SEMI_TRANSPARENT_FLAG);
     setUV4(&scratch->quad, 0, 64, 63, 64, 0, 127, 63, 127);
     scratch->quad.clut = getClut(880, 248);
     scratch->quad.tpage = getTPage(0, 1, 704, 0);
     if (D_8013AFD3 == 0) {
         for (i = 2; i > 0; i--) {
             for (j = 0; j < 3; j++) {
-                resource->positions[i][j] = resource->positions[i - 1][j];
-                resource->unk24[i][j] = resource->unk24[i - 1][j];
-                ((s16 *)resource->unk48)[i] = ((s16 *)resource->unk48)[i - 1];
+                resource->leftPositions[i][j] = resource->leftPositions[i - 1][j];
+                resource->rightPositions[i][j] = resource->rightPositions[i - 1][j];
+                resource->angles[i] = resource->angles[i - 1];
             }
         }
         lateral = -randomNextLinear() % 40;
@@ -2546,7 +2549,7 @@ void func_80066D18(void) {
         ApplyMatrixSV(&player->model.effect.effectMatrix180, &scratch->offset.vector,
             &scratch->offset.vector);
         for (j = 0; j < 3; j++) {
-            resource->positions[0][j] = player->model.effect.effectMatrix180.t[j] +
+            resource->leftPositions[0][j] = player->model.effect.effectMatrix180.t[j] +
                 scratch->offset.components[j];
         }
 
@@ -2555,10 +2558,10 @@ void func_80066D18(void) {
         ApplyMatrixSV(&player->model.effect.effectMatrix180, &scratch->offset.vector,
             &scratch->offset.vector);
         for (j = 0; j < 3; j++) {
-            resource->unk24[0][j] = player->model.effect.effectMatrix180.t[j] +
+            resource->rightPositions[0][j] = player->model.effect.effectMatrix180.t[j] +
                 scratch->offset.components[j];
         }
-        ((s16 *)resource->unk48)[0] = randomNextLinear() % 4096;
+        resource->angles[0] = randomNextLinear() % 4096;
     }
 
     GsInitCoordinate2(0, &scratch->coordinate);
@@ -2569,13 +2572,13 @@ void func_80066D18(void) {
     }
     scratch->shade = scratch->size / 64;
     for (i = 0; i < 3; i++) {
-        scratch->rotation.vz = ((s16 *)resource->unk48)[i];
+        scratch->rotation.vz = resource->angles[i];
         RotMatrix(&scratch->rotation, &scratch->coordinate.coord);
-        scratch->scale.vx = scratch->scale.vy = scratch->scale.vz =
-            ((i << 10) + 2048) + *(volatile s32 *)&scratch->size;
+        trailScale = (i << 10) + 2048;
+        scratch->scale.vx = scratch->scale.vy = scratch->scale.vz = scratch->size + trailScale;
         ScaleMatrix(&scratch->coordinate.coord, &scratch->scale);
         for (j = 0; j < 3; j++) {
-            scratch->coordinate.coord.t[j] = resource->positions[i][j];
+            scratch->coordinate.coord.t[j] = resource->leftPositions[i][j];
         }
         GsGetLs(&scratch->coordinate, &scratch->coordinate.workm);
         for (j = 0; j < 3; j++) {
@@ -2583,7 +2586,8 @@ void func_80066D18(void) {
         }
         GsSetLsMatrix(&scratch->coordinate.coord);
         scratch->depth = RotTransPers4(
-            &D_8012C9F4[0], &D_8012C9F4[1], &D_8012C9F4[2], &D_8012C9F4[3],
+            &gPlayerPositionTrailVertices[0], &gPlayerPositionTrailVertices[1],
+            &gPlayerPositionTrailVertices[2], &gPlayerPositionTrailVertices[3],
             (long *)&scratch->quad.x0, (long *)&scratch->quad.x1,
             (long *)&scratch->quad.x2, (long *)&scratch->quad.x3,
             &scratch->cue, &scratch->flags);
@@ -2591,20 +2595,20 @@ void func_80066D18(void) {
             scratch->shade - (scratch->shade * i) / 3;
         *packet = scratch->quad;
         scratch->depth -= 4;
-        if (!(scratch->flags & 0x7FFBE000) && scratch->depth >= 0 &&
+        if (!(scratch->flags & PAIRED_QUAD_PROJECTION_FLAGS) && scratch->depth >= 0 &&
                 scratch->depth < 4096) {
-            addPrim(&D_8013AF6C[((*(volatile long *)&scratch->depth >> 2)) - 4], packet);
+            addPrim(&D_8013AF6C[(scratch->depth >> 2) - 4], packet);
         }
         packet++;
     }
     for (i = 0; i < 3; i++) {
-        scratch->rotation.vz = ((s16 *)resource->unk48)[i];
+        scratch->rotation.vz = resource->angles[i];
         RotMatrix(&scratch->rotation, &scratch->coordinate.coord);
         scratch->scale.vx = scratch->scale.vy = scratch->scale.vz =
             scratch->size + (i << 10);
         ScaleMatrix(&scratch->coordinate.coord, &scratch->scale);
         for (j = 0; j < 3; j++) {
-            scratch->coordinate.coord.t[j] = resource->unk24[i][j];
+            scratch->coordinate.coord.t[j] = resource->rightPositions[i][j];
         }
         GsGetLs(&scratch->coordinate, &scratch->coordinate.workm);
         for (j = 0; j < 3; j++) {
@@ -2612,7 +2616,8 @@ void func_80066D18(void) {
         }
         GsSetLsMatrix(&scratch->coordinate.coord);
         scratch->depth = RotTransPers4(
-            &D_8012C9F4[0], &D_8012C9F4[1], &D_8012C9F4[2], &D_8012C9F4[3],
+            &gPlayerPositionTrailVertices[0], &gPlayerPositionTrailVertices[1],
+            &gPlayerPositionTrailVertices[2], &gPlayerPositionTrailVertices[3],
             (long *)&scratch->quad.x0, (long *)&scratch->quad.x1,
             (long *)&scratch->quad.x2, (long *)&scratch->quad.x3,
             &scratch->cue, &scratch->flags);
@@ -2620,7 +2625,7 @@ void func_80066D18(void) {
             scratch->shade - (scratch->shade * i) / 3;
         *packet = scratch->quad;
         scratch->depth -= 4;
-        if (!(scratch->flags & 0x7FFBE000) && scratch->depth >= 0 &&
+        if (!(scratch->flags & PAIRED_QUAD_PROJECTION_FLAGS) && scratch->depth >= 0 &&
                 scratch->depth < 4096) {
             addPrim(&D_8013AF6C[(scratch->depth >> 2)], packet);
         }
@@ -2628,9 +2633,6 @@ void func_80066D18(void) {
     }
     GsOUT_PACKET_P = (u32)packet;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_80066D18);
-#endif
 
 void createPlayerPositionTrailTask(s32 playerIndex) {
     RacePlayer *player;
@@ -2638,16 +2640,16 @@ void createPlayerPositionTrailTask(s32 playerIndex) {
     s32 i, j;
 
     player = &gRacePlayers[playerIndex];
-    createChildTaskForParentWithReserve(D_8013B304, func_80066D18);
+    createChildTaskForParentWithReserve(D_8013B304, updatePlayerPositionTrailTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     D_8013AE8C->data18 = playerIndex;
     resource = (PlayerPositionTrailResource *)&D_800D9504[D_8013AE8C->resource14];
     for (i = 0; i < 3; i++) {
         for (j = 0; j < 3; j++) {
-            resource->positions[i][j] = player->worldCoordinate.coord.t[j];
+            resource->leftPositions[i][j] = player->worldCoordinate.coord.t[j];
         }
     }
-    resource->unk4E = 1;
+    resource->inactive = 1;
 }
 
 /* DECOMP_ATTEMPT: inline 263/269 */
