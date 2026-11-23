@@ -36,6 +36,7 @@ extern u16 D_8013AF78 __attribute__((section(".data")));
 extern u8 D_8013AFD3 __attribute__((section(".data")));
 extern GameTask *D_8013AE88 __attribute__((section(".data")));
 extern GameTask *D_8013AE8C __attribute__((section(".data")));
+extern RECT gWritePixelRect __attribute__((section(".sdata.write_pixel_rect")));
 
 void drawLayeredBackgroundAndSetFog(s16 playerIndex);
 void func_8004E718(s16 playerIndex);
@@ -1039,28 +1040,21 @@ void readVramPixelColor(s32 x, s32 y, TextureColor *out) {
     out->stp = pixel >> 15;
 }
 
-/* DECOMP_ATTEMPT: inline 24/26 */
-#ifdef NON_MATCHING
-extern RECT D_8013B248 __attribute__((section(".sdata")));
-
-void func_8005162C(s32 x, s32 y, u32 r, u32 g, u32 b, u32 stp) {
+void writeVramPixelColor(s32 x, s32 y, u32 r, u32 g, u32 b, u32 stp) {
     u16 color;
     u32 rgb = (r & 0xF8) >> 3;
     u32 alpha = stp & 1;
     u32 green = (g & 0xF8) << 2;
     u32 blue;
-    D_8013B248.x = x;
-    D_8013B248.y = y;
+    gWritePixelRect.x = x;
+    gWritePixelRect.y = y;
     rgb |= green;
     blue = (b & 0xF8) << 7;
     rgb |= blue;
     alpha <<= 15;
     color = rgb | alpha;
-    LoadImage(&D_8013B248, (u32 *)&color);
+    LoadImage(&gWritePixelRect, (u32 *)&color);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/graphics/course_rendering", func_8005162C);
-#endif
 
 void unpackPsxColor(u32 color, UnpackedPsxColor *out) {
     out->r = color & 0x1F;
@@ -1086,7 +1080,7 @@ u32 packTextureColor(TextureColor *color) {
 void func_80051700(void) {
     s32 i;
     for (i = 0; i < 0x40; i++) {
-        func_8005162C((s16)(i + 704), 0x90, 0xE0, 0xE0, 0xE8, 0);
+        writeVramPixelColor((s16)(i + 704), 0x90, 0xE0, 0xE0, 0xE8, 0);
     }
 }
 #else
