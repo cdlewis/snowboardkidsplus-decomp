@@ -25,6 +25,8 @@ typedef struct TextSequenceEntry {
 
 extern u8 D_8013AFD8 __attribute__((section(".data")));
 extern s16 D_8013AFCE __attribute__((section(".data")));
+extern u16 D_8013AF78 __attribute__((section(".data")));
+extern u16 D_8013AF7A __attribute__((section(".data")));
 extern u16 D_8013AF7C __attribute__((section(".data")));
 extern s16 D_8013AF80 __attribute__((section(".data")));
 extern u8 D_8013AFCD __attribute__((section(".data")));
@@ -65,6 +67,12 @@ TimedSequenceEntry gTextSequenceAdvancePromptFrames[2]
     {0x00030231, 10},
     {0x00030232, 10},
 };
+
+const u16 gTextSequenceNumberLabel[] __attribute__((section(".data.text_sequence_number_label"), aligned(4))) = {
+    0x0036, 0x0056, 0x006C, 0x0158, 0x0058, 0x0070, 0x0073, 0x8020, 0x0036, 0x0000,
+};
+
+static void drawTextSequence(TextSequenceResource *resource);
 
 void initializeTextSequenceTask(void) {
     TextSequenceResource *resource;
@@ -165,7 +173,7 @@ void updateTextSequenceTask(void) {
         }
         break;
     }
-    func_800A1774(resource);
+    drawTextSequence(resource);
 }
 
 void animateTextSequenceExitTask(void) {
@@ -204,7 +212,7 @@ void animateTextSequenceExitTask(void) {
         queueCdCommand(D_80124164[D_8013AFCE], 0);
         deleteCurrentTaskSubtree();
     } else {
-        func_800A1774(resource);
+        drawTextSequence(resource);
     }
 }
 
@@ -229,7 +237,7 @@ void advanceModeAfterTextSequenceFadeTask(void) {
         }
         break;
     }
-    func_800A1774(resource);
+    drawTextSequence(resource);
 }
 
 void queueModeIndexedSectorRead(s16 mode, s16 index) {
@@ -294,13 +302,10 @@ void parseLoadedTextSequence(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: inline 366/395 */
-#ifdef NON_MATCHING
-extern u16 D_801327B0[];
-
-void func_800A1774(TextSequenceResource *resource) {
-    s32 x, y, bodyX, bodyY, labelY;
-    s32 depth = 6;
+static void drawTextSequence(TextSequenceResource *resource) {
+    s32 bodyX, bodyY;
+    s16 x, y, labelY;
+    u16 depth = 6;
     GsOT *ot = &D_800EBFF0[D_8013AF78];
 
     setSpriteColor(128, 128, 128);
@@ -309,9 +314,9 @@ void func_800A1774(TextSequenceResource *resource) {
     y = resource->y / 4096;
     labelY = y;
     if (resource->mode == 1 && resource->unk0A < 9) {
-        func_8006EF30((s16)x, (s16)labelY, 30, resource->headerText, 12, 1, ot, depth);
-        func_8006EF30(-72, (labelY = (s16)(labelY - 24)), 30, D_801327B0, 13, 1, ot, depth);
-        drawDecimalNumber16(40, labelY, 1, 0, resource->unk0A + 1, 13, 1, ot, depth);
+        func_8006EF30((s16)x, (s16)labelY, 30, resource->headerText, 12, 1, ot, 6);
+        func_8006EF30(-72, (labelY = (s16)(labelY - 24)), 30, gTextSequenceNumberLabel, 13, 1, ot, 6);
+        drawDecimalNumber16(40, labelY, 1, 0, resource->unk0A + 1, 13, 1, ot, 6);
     } else if (resource->mode == 2) {
         u16 index = resource->unk0A;
         if (index < 5) {
@@ -325,17 +330,17 @@ void func_800A1774(TextSequenceResource *resource) {
     bodyX = resource->bodyX / 4096;
     bodyY = resource->displacement / 4096;
     drawLimitedWrappedGlyphText16x16(bodyX + 8, bodyY + 4, (s16)(resource->progress >> 8), 16,
-                                     resource->bodyText, 15, 1, ot, depth);
+                                     resource->bodyText, 15, 1, ot, (u16)depth);
     drawDefaultTexturedPanel(bodyX, bodyY, 272, 74, 5, 0, ot, depth);
 
     drawSpriteByIndexWithBlend((u16)-136 - (u32)resource->unk3A / 3, (u16)-96 - (u32)resource->unk3A / 2,
-                  0x198, 0, -1, ot, (depth | 1));
+                              0x198, 0, -1, ot, (depth | 1));
     drawSpriteByIndexWithBlend(120 + (u32)resource->unk3A / 3, (u16)-96 - (u32)resource->unk3A / 2,
-                  0x199, 0, -1, ot, (depth | 1));
+                              0x199, 0, -1, ot, (depth | 1));
     drawSpriteByIndexWithBlend((u16)-136 - (u32)resource->unk3A / 3, (u32)resource->unk3A / 2,
-                  0x19A, 0, -1, ot, (depth | 1));
+                              0x19A, 0, -1, ot, (depth | 1));
     drawSpriteByIndexWithBlend(120 + (u32)resource->unk3A / 3, (u32)resource->unk3A / 2,
-                  0x19B, 0, -1, ot, (depth | 1));
+                              0x19B, 0, -1, ot, (depth | 1));
 
     func_8007240C(-D_8013AF7A / 2, -D_8013AF7C / 2 - (u32)resource->unk3A / 2,
                   D_8013AF7A, -96 - (-D_8013AF7C / 2), 0, 0, 0, -1, ot, (depth | 1));
@@ -347,6 +352,3 @@ void func_800A1774(TextSequenceResource *resource) {
                   D_8013AF7A, (u32)D_8013AF7C / 2, 0, 0, 0, -1, ot, (depth | 1));
     drawScreenDarkeningOverlay(resource->intensity, ot, depth);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/text/text_sequence", func_800A1774);
-#endif
