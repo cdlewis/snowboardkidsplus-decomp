@@ -66,5 +66,7 @@ void func_80014D60(u16 controller);
 void updateControllerActuators(u16 controller);
 void updateControllers(void);
 
+void initializeControllerInputPlayback(u16 controller);
+
 /* Apply the current recorded input and advance its repeat counter. */
 void playbackControllerInput(u16 controller);

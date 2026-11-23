@@ -387,17 +387,12 @@ void func_80015A30(u16 controller) {
 INCLUDE_ASM("asm/nonmatchings/io/controller_input", func_80015A30);
 #endif
 
-/* DECOMP_ATTEMPT: inline 23/25 */
-#ifdef NON_MATCHING
-void func_80015C94(u16 controller) {
+void initializeControllerInputPlayback(u16 controller) {
     *(controller + D_8013AED4) = ((ControllerInputRecord (*)[256])D_800E959C)[controller];
     *(controller + D_8013AEDC) = 1;
     *(controller + D_8013AEE0) = (*(controller + D_8013AED4))[1].repeatCount;
     D_8013AEE4 = 1;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/io/controller_input", func_80015C94);
-#endif
 
 void playbackControllerInput(u16 controller) {
     u8 *counter;
