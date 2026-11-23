@@ -482,6 +482,8 @@ void updateCurrentPlayerState30TaskUntilStopped(void);
 s32 updateCurrentPlayerGroundContact(void);
 void updateCurrentPlayerState12MotionAndTimer(void);
 s16 resolveCurrentPlayerTerrainContact(void);
+s16 markPlayerNearSelectedRecord(s16 playerIndex);
+void awardCurrentPlayerTrickRewards(void);
 
 TaskCallback gCurrentPlayerTaskPhaseCallbacks[8]
     __attribute__((section(".data.player_task_phases"))) = {
@@ -925,7 +927,7 @@ void initializeCurrentPlayerDefaultState(void) {
     D_8013B0D8->unk08C = 0;
     D_8013B0D8->unk128 |= 0x200;
     clearCurrentPlayerTaskState();
-    setCurrentTaskCallback(func_80021B20);
+    setCurrentTaskCallback(updateCurrentPlayerAirborneTricks);
 }
 
 void initializeCurrentPlayerState22(void) {
@@ -939,7 +941,7 @@ void initializeCurrentPlayerState22(void) {
     } else {
         D_8013B0D8->animationFlags |= 4;
     }
-    setCurrentTaskCallback(func_80021B20);
+    setCurrentTaskCallback(updateCurrentPlayerAirborneTricks);
 }
 
 void initializeCurrentPlayerState2(void) {
@@ -1919,75 +1921,53 @@ advanceCharge:
     }
 }
 
-/* DECOMP_ATTEMPT: object 2306/2412 */
-#ifdef NON_MATCHING
-void awardCurrentPlayerTrickRewards(void);
-
-s16 markPlayerNearSelectedRecord(s16 playerIndex);
-void dispatchCurrentPlayerDirectionalAnimation(void);
-
-void func_80021B20(void) {
+void updateCurrentPlayerAirborneTricks(void) {
     RacePlayer *rotationPlayer;
     RacePlayer *rollPlayer;
     s32 rotation;
-    s32 rotationPhase;
     RacePlayer *motionPlayer;
     RacePlayer *pitchPlayer;
-    s32 sp20;
-    s32 sp24;
-    u16 temp_a0;
+    struct {
+        s32 x;
+        s32 z;
+    } steeringTarget;
+    RacePlayer *steeringPlayer;
+    s16 steeringRegion;
+    s32 *targetZ;
+    s16 heading;
+    s32 temp_a0;
     s16 temp_a0_5;
-    s16 temp_s0_5;
+    s16 terrainContact;
     s16 temp_v0;
     s16 temp_v0_2;
-    s16 temp_v1_12;
+    s16 landingSpeed;
     s16 temp_v1_9;
-    s16 var_v0_26;
-    s16 var_v0_7;
-    s16 var_v1;
+    RacePlayer *spinPlayer;
     s32 temp_a0_3;
     s32 temp_s0;
     s32 temp_s0_2;
     s32 temp_s0_3;
     s32 temp_s0_4;
-    s32 temp_v0_10;
-    s32 temp_v0_13;
-    s32 temp_v0_17;
     s32 temp_v0_33;
     s32 temp_v0_34;
-    s32 temp_v0_35;
-    s32 temp_v0_6;
-    s32 temp_v1_13;
+    s32 landingSurface;
     s32 var_v0_10;
     s32 var_v0_11;
-    s32 phaseIncrement;
+    RacePlayer *phasePlayer;
+    GameTask *phaseTask;
+    s32 nextPhase;
+    RacePlayer *dispatchPlayer;
+    u32 landingState;
     s32 var_v0_13;
-    s32 var_v0_14;
-    s32 var_v0_15;
-    s32 var_v0_16;
-    s32 var_v0_17;
-    s32 var_v0_18;
     s32 var_v0_19;
     s32 var_v0_20;
     s32 var_v0_21;
-    s32 var_v0_22;
-    s32 var_v0_23;
     s32 var_v0_24;
-    s32 var_v0_25;
     s32 var_v0_27;
-    s32 var_v0_28;
     s32 var_v0_4;
     s32 var_v0_5;
     s32 var_v0_6;
-    s32 var_v0_8;
     s32 var_v0_9;
-    s32 var_v1_4;
-    s32 var_v1_5;
-    s32 var_v1_6;
-    s32 var_v1_7;
-    s32 var_v1_9;
-    u16 temp_a0_2;
-    u16 temp_a0_4;
     u16 temp_v0_11;
     u16 temp_v0_12;
     u16 temp_v0_14;
@@ -2010,14 +1990,13 @@ void func_80021B20(void) {
     u16 temp_v0_32;
     u16 temp_v0_36;
     s16 temp_v0_37;
-    u16 temp_v0_3;
+    u16 trickState;
     u16 temp_v0_4;
     u16 temp_v0_5;
     u16 temp_v0_7;
     u16 temp_v0_8;
     u16 temp_v0_9;
     u16 temp_v1;
-    u16 temp_v1_10;
     u16 temp_v1_2;
     u16 temp_v1_3;
     u16 temp_v1_4;
@@ -2025,11 +2004,9 @@ void func_80021B20(void) {
     u16 temp_v1_6;
     u16 temp_v1_7;
     u16 temp_v1_8;
-    u16 var_v1_8;
     u32 temp_a1;
     u32 temp_v1_11;
-    u8 var_a0;
-    void (*var_v0_29)();
+    TaskCallback nextStateCallback;
 
     prepareCurrentPlayerFrame();
     if (D_8013B0D8->unk008 != 0) {
@@ -2071,25 +2048,30 @@ block_11:
     D_8013B0D8->unk0B6 = (u16) D_8013B0D8->unk0B6 + 0x18;
     goto block_20;
 block_13:
-    getCourseSteeringTarget(D_8013B0D8->unk92E, (s32) D_8013B0D8->x >> 8, (s32) D_8013B0D8->z >> 8, &sp20, &sp24, (u16) ((s8) D_8013B0D8->unk025[3] & 0xFFFF), (u16) (s32) D_8013AE88->data18);
-    temp_a0 = (getXZHeading(D_8013B0D8->x, D_8013B0D8->z, (s32)((u32)sp20 << 8), (s32)((u32)sp24 << 8)) - D_8013B0D8->unk110) & 0xFFF;
-    var_v1 = temp_a0;
+    steeringPlayer = D_8013B0D8;
+    targetZ = &steeringTarget.z;
+    steeringRegion = steeringPlayer->unk92E;
+    getCourseSteeringTarget(steeringRegion, steeringPlayer->x >> 8, steeringPlayer->z >> 8, &steeringTarget.x, targetZ, (s8)steeringPlayer->unk025[3], (u16) (s32) D_8013AE88->data18);
+    heading = getXZHeading(D_8013B0D8->x, D_8013B0D8->z, steeringTarget.x << 8, steeringTarget.z << 8);
+    heading -= D_8013B0D8->unk110;
+    temp_a0 = heading & 0xFFF;
+    heading = temp_a0;
     if (temp_a0 < 0x801) {
         goto block_15;
     }
-    var_v1 = temp_a0 | 0xF000;
+    heading = temp_a0 | 0xF000;
 block_15:
-    if (var_v1 < 0x21) {
+    if (heading < 0x21) {
         goto block_17;
     }
-    var_v1 = 0x20;
+    heading = 0x20;
 block_17:
-    if (var_v1 >= -0x20) {
+    if (heading >= -0x20) {
         goto block_19;
     }
-    var_v1 = -0x20;
+    heading = -0x20;
 block_19:
-    D_8013B0D8->unk0B6 = (u16) D_8013B0D8->unk0B6 + var_v1;
+    D_8013B0D8->unk0B6 = (u16) D_8013B0D8->unk0B6 + heading;
 block_20:
     if (D_8013B0D8->unk0C8 >= 9) {
         goto block_22;
@@ -2137,930 +2119,898 @@ block_33:
     }
     playCurrentPlayerSoundEffect(5);
 block_35:
-    temp_v0_3 = D_8013B0D8->unk12C;
-    switch (temp_v0_3) {
-case 0xD:
-    rollPlayer = D_8013B0D8;
-    if (rollPlayer->unk128 & 0x400) {
-        goto block_41;
-    }
-    D_8013B0D8->modelRotation.vz = rsin(D_8013B0D8->unk08C);
-    goto block_42;
-case 0xF:
-    rollPlayer = D_8013B0D8;
-    if (!(rollPlayer->unk128 & 0x400)) {
-        goto block_41;
-    }
-    D_8013B0D8->modelRotation.vz = rsin(D_8013B0D8->unk08C);
-    goto block_42;
+    trickState = D_8013B0D8->unk12C;
+    switch (trickState) {
+    case 0xD:
+        rollPlayer = D_8013B0D8;
+        if (rollPlayer->unk128 & 0x400) {
+            goto block_41;
+        }
+        D_8013B0D8->modelRotation.vz = rsin(D_8013B0D8->unk08C);
+        goto block_42;
+    case 0xF:
+        rollPlayer = D_8013B0D8;
+        if (!(rollPlayer->unk128 & 0x400)) {
+            goto block_41;
+        }
+        D_8013B0D8->modelRotation.vz = rsin(D_8013B0D8->unk08C);
+        goto block_42;
 block_41:
-    D_8013B0D8->modelRotation.vz = -rsin(rollPlayer->unk08C);
+        D_8013B0D8->modelRotation.vz = -rsin(rollPlayer->unk08C);
 block_42:
-    D_8013B0D8->unk08C += 0x20;
-    goto block_317;
-case 0x10:
-    rotation = rsin(D_8013B0D8->unk08C);
-    rotationPlayer = D_8013B0D8;
-    rotationPhase = rotationPlayer->unk08C;
-    rotationPlayer->modelRotation.vy = rotation;
-    goto block_45;
-case 0x11:
-    rotation = -rsin(D_8013B0D8->unk08C);
-    rotationPlayer = D_8013B0D8;
-    rotationPhase = rotationPlayer->unk08C;
-    rotationPlayer->modelRotation.vy = rotation;
-block_45:
-    rotationPlayer->unk08C = rotationPhase + 0x1E;
-    goto block_317;
-case 0x12:
-    if (!(D_8013B0D8->unk128 & 0x400)) {
-        goto block_48;
-    }
-    var_v0_4 = -rsin(D_8013B0D8->unk08C);
-    D_8013B0D8->modelRotation.vz = (s16) var_v0_4;
-    goto block_49;
+        D_8013B0D8->unk08C += 0x20;
+        goto block_317;
+    case 0x10:
+        rotation = rsin(D_8013B0D8->unk08C);
+        rotationPlayer = D_8013B0D8;
+        rotationPlayer->modelRotation.vy = rotation;
+        rotationPlayer->unk08C += 30;
+        break;
+    case 0x11:
+        rotation = -rsin(D_8013B0D8->unk08C);
+        rotationPlayer = D_8013B0D8;
+        rotationPlayer->modelRotation.vy = rotation;
+        rotationPlayer->unk08C += 30;
+        break;
+    case 0x12:
+        if (!(D_8013B0D8->unk128 & 0x400)) {
+            goto block_48;
+        }
+        var_v0_4 = -rsin(D_8013B0D8->unk08C);
+        D_8013B0D8->modelRotation.vz = (s16) var_v0_4;
+        goto block_49;
 block_48:
-    var_v0_4 = rsin(D_8013B0D8->unk08C);
-    D_8013B0D8->modelRotation.vz = (s16) var_v0_4;
+        var_v0_4 = rsin(D_8013B0D8->unk08C);
+        D_8013B0D8->modelRotation.vz = (s16) var_v0_4;
 block_49:
-    rotation = rsin(D_8013B0D8->unk08C);
-    rotationPlayer = D_8013B0D8;
-    rotationPhase = rotationPlayer->unk08C;
-    rotationPlayer->modelRotation.vy = rotation;
-    goto block_60;
-case 0x13:
-    rollPlayer = D_8013B0D8;
-    if (rollPlayer->unk128 & 0x400) {
-        goto block_58;
-    }
-    D_8013B0D8->modelRotation.vz = rsin(D_8013B0D8->unk08C);
-    goto block_59;
-case 0x14:
-    if (!(D_8013B0D8->unk128 & 0x400)) {
-        goto block_54;
-    }
-    D_8013B0D8->modelRotation.vz = rsin(D_8013B0D8->unk08C);
-    goto block_55;
+        rotation = rsin(D_8013B0D8->unk08C);
+        rotationPlayer = D_8013B0D8;
+        rotationPlayer->modelRotation.vy = rotation;
+        rotationPlayer->unk08C += 26;
+        break;
+    case 0x13:
+        rollPlayer = D_8013B0D8;
+        if (rollPlayer->unk128 & 0x400) {
+            goto block_58;
+        }
+        D_8013B0D8->modelRotation.vz = rsin(D_8013B0D8->unk08C);
+        goto block_59;
+    case 0x14:
+        if (!(D_8013B0D8->unk128 & 0x400)) {
+            goto block_54;
+        }
+        D_8013B0D8->modelRotation.vz = rsin(D_8013B0D8->unk08C);
+        goto block_55;
 block_54:
-    D_8013B0D8->modelRotation.vz = -rsin(D_8013B0D8->unk08C);
+        D_8013B0D8->modelRotation.vz = -rsin(D_8013B0D8->unk08C);
 block_55:
-    rotation = rsin(D_8013B0D8->unk08C);
-    rotationPlayer = D_8013B0D8;
-    rotationPhase = rotationPlayer->unk08C;
-    rotationPlayer->modelRotation.vy = rotation;
-    goto block_60;
-case 0x15:
-    rollPlayer = D_8013B0D8;
-    if (!(rollPlayer->unk128 & 0x400)) {
-        goto block_58;
-    }
-    D_8013B0D8->modelRotation.vz = rsin(D_8013B0D8->unk08C);
-    goto block_59;
+        rotation = rsin(D_8013B0D8->unk08C);
+        rotationPlayer = D_8013B0D8;
+        rotationPlayer->modelRotation.vy = rotation;
+        rotationPlayer->unk08C += 26;
+        break;
+    case 0x15:
+        rollPlayer = D_8013B0D8;
+        if (!(rollPlayer->unk128 & 0x400)) {
+            goto block_58;
+        }
+        D_8013B0D8->modelRotation.vz = rsin(D_8013B0D8->unk08C);
+        goto block_59;
 block_58:
-    D_8013B0D8->modelRotation.vz = -rsin(rollPlayer->unk08C);
+        D_8013B0D8->modelRotation.vz = -rsin(rollPlayer->unk08C);
 block_59:
-    rotation = -rsin(D_8013B0D8->unk08C);
-    rotationPlayer = D_8013B0D8;
-    rotationPhase = rotationPlayer->unk08C;
-    rotationPlayer->modelRotation.vy = rotation;
-block_60:
-    rotationPlayer->unk08C = rotationPhase + 0x1A;
-    goto block_317;
-case 0x1F:
-    D_8013B0D8->modelRotation.vy = -rsin(D_8013B0D8->unk08C) * 2;
-    D_8013B0D8->unk08C += 0x16;
-    temp_v0_4 = D_8013AE88->data1C + 1;
-    D_8013AE88->data1C = temp_v0_4;
-    if ((temp_v0_4 & 0xFFFF) != 1) {
-        goto block_63;
-    }
-    startCurrentPlayerAnimation(0x1AU, 2U);
+        rotation = -rsin(D_8013B0D8->unk08C);
+        rotationPlayer = D_8013B0D8;
+        rotationPlayer->modelRotation.vy = rotation;
+        rotationPlayer->unk08C += 26;
+        break;
+    case 0x1F:
+        D_8013B0D8->modelRotation.vy = -rsin(D_8013B0D8->unk08C) * 2;
+        D_8013B0D8->unk08C += 0x16;
+        temp_v0_4 = D_8013AE88->data1C + 1;
+        D_8013AE88->data1C = temp_v0_4;
+        if ((temp_v0_4 & 0xFFFF) != 1) {
+            goto block_63;
+        }
+        startCurrentPlayerAnimation(0x1AU, 2U);
 block_63:
-    if (D_8013AE88->data1C != 8) {
-        goto block_65;
-    }
-    startCurrentPlayerAnimation(0x1BU, 2U);
+        if (D_8013AE88->data1C != 8) {
+            goto block_65;
+        }
+        startCurrentPlayerAnimation(0x1BU, 2U);
 block_65:
-    if (D_8013AE88->data1C != 0xF) {
-        goto block_67;
-    }
-    startCurrentPlayerAnimation(0x20U, 2U);
+        if (D_8013AE88->data1C != 0xF) {
+            goto block_67;
+        }
+        startCurrentPlayerAnimation(0x20U, 2U);
 block_67:
-    if (D_8013AE88->data1C != 0x1E) {
+        if (D_8013AE88->data1C != 0x1E) {
+            goto block_317;
+        }
+        startCurrentPlayerAnimation(0x21, 2U);
         goto block_317;
-    }
-    startCurrentPlayerAnimation(0x21, 2U);
-    goto block_317;
-case 0x29:
-    if (!(D_8013B0D8->unk128 & 0x400)) {
-        goto block_71;
-    }
-    var_v0_5 = -rsin(D_8013B0D8->unk08C);
-    goto block_72;
+    case 0x29:
+        if (!(D_8013B0D8->unk128 & 0x400)) {
+            goto block_71;
+        }
+        var_v0_5 = -rsin(D_8013B0D8->unk08C);
+        goto block_72;
 block_71:
-    var_v0_5 = rsin(D_8013B0D8->unk08C);
+        var_v0_5 = rsin(D_8013B0D8->unk08C);
 block_72:
-    D_8013B0D8->modelRotation.vz = var_v0_5 * 2;
-    goto block_286;
-case 0x2A:
-    if (!(D_8013B0D8->unk128 & 0x400)) {
-        goto block_75;
-    }
-    var_v0_6 = -rsin(D_8013B0D8->unk08C);
-    D_8013B0D8->modelRotation.vx = var_v0_6 * 2;
-    goto block_76;
+        D_8013B0D8->modelRotation.vz = var_v0_5 * 2;
+        goto block_286;
+    case 0x2A:
+        if (!(D_8013B0D8->unk128 & 0x400)) {
+            goto block_75;
+        }
+        var_v0_6 = -rsin(D_8013B0D8->unk08C);
+        D_8013B0D8->modelRotation.vx = var_v0_6 * 2;
+        goto block_76;
 block_75:
-    var_v0_6 = rsin(D_8013B0D8->unk08C);
-    D_8013B0D8->modelRotation.vx = var_v0_6 * 2;
+        var_v0_6 = rsin(D_8013B0D8->unk08C);
+        D_8013B0D8->modelRotation.vx = var_v0_6 * 2;
 block_76:
-    goto block_286;
-case 0x2B:
-    D_8013B0D8->modelRotation.vy = rsin(D_8013B0D8->unk08C) * 4;
-    D_8013B0D8->unk08C += 0x14;
-    if (D_8013AE88->data1C < 8) {
-        D_8013B0D8->modelRotation.vz = D_8013AE88->data1C * 128;
-    } else if (D_8013AE88->data1C >= 0x23) {
-        D_8013B0D8->modelRotation.vz = (0x32 - D_8013AE88->data1C) * 64;
-    } else {
-        D_8013B0D8->modelRotation.vz = 0x380;
-    }
-    if (D_8013B0D8->unk128 & 0x400) {
-        D_8013B0D8->modelRotation.vz = -D_8013B0D8->modelRotation.vz;
-    }
-    temp_v1 = D_8013AE88->data1C;
-    if (temp_v1 >= 0x32U) {
+        goto block_286;
+    case 0x2B:
+        D_8013B0D8->modelRotation.vy = rsin(D_8013B0D8->unk08C) * 4;
+        D_8013B0D8->unk08C += 0x14;
+        if (D_8013AE88->data1C < 8) {
+            D_8013B0D8->modelRotation.vz = D_8013AE88->data1C * 128;
+        } else if (D_8013AE88->data1C >= 0x23) {
+            D_8013B0D8->modelRotation.vz = (0x32 - D_8013AE88->data1C) * 64;
+        } else {
+            D_8013B0D8->modelRotation.vz = 0x380;
+        }
+        if (D_8013B0D8->unk128 & 0x400) {
+            D_8013B0D8->modelRotation.vz = -D_8013B0D8->modelRotation.vz;
+        }
+        temp_v1 = D_8013AE88->data1C;
+        if (temp_v1 >= 0x32U) {
+            goto block_317;
+        }
+        D_8013AE88->data1C = temp_v1 + 1;
         goto block_317;
-    }
-    D_8013AE88->data1C = temp_v1 + 1;
-    goto block_317;
-case 0x20:
-    D_8013B0D8->unk08C += 0x13;
-    temp_v0_5 = D_8013AE88->data1C + 1;
-    D_8013AE88->data1C = temp_v0_5;
-    if ((temp_v0_5 & 0xFFFF) != 1) {
+    case 0x20:
+        D_8013B0D8->unk08C += 0x13;
+        temp_v0_5 = D_8013AE88->data1C + 1;
+        D_8013AE88->data1C = temp_v0_5;
+        if ((temp_v0_5 & 0xFFFF) != 1) {
+            goto block_317;
+        }
+        startCurrentPlayerAnimation(0x24, 2U);
         goto block_317;
-    }
-    startCurrentPlayerAnimation(0x24, 2U);
-    goto block_317;
-case 0x21:
-    if (!(D_8013B0D8->unk128 & 0x400)) {
-        goto block_90;
-    }
-    var_v0_8 = rsin(D_8013B0D8->unk08C);
-    var_v1_4 = var_v0_8 * 2;
-    goto block_91;
+    case 0x21:
+        if (!(D_8013B0D8->unk128 & 0x400)) {
+            goto block_90;
+        }
+        D_8013B0D8->modelRotation.vz = rsin(D_8013B0D8->unk08C) * 3;
+        goto block_91;
 block_90:
-    temp_v0_6 = rsin(D_8013B0D8->unk08C);
-    var_v0_8 = -temp_v0_6;
-    var_v1_4 = var_v0_8 * 2;
+        D_8013B0D8->modelRotation.vz = -rsin(D_8013B0D8->unk08C) * 3;
 block_91:
-    D_8013B0D8->modelRotation.vz = var_v1_4 + var_v0_8;
-    D_8013B0D8->modelRotation.vy = -(s16) D_8013AE88->data1C;
-    temp_v1_2 = D_8013AE88->data1C;
-    if (temp_v1_2 == 0x1000) {
-        goto block_93;
-    }
-    D_8013AE88->data1C = temp_v1_2 + 0x80;
+        D_8013B0D8->modelRotation.vy = -(s16) D_8013AE88->data1C;
+        temp_v1_2 = D_8013AE88->data1C;
+        if (temp_v1_2 == 0x1000) {
+            goto block_93;
+        }
+        D_8013AE88->data1C = temp_v1_2 + 0x80;
 block_93:
-    D_8013B0D8->unk08C += 0x11;
-    goto block_317;
-case 0x22:
-    if (!(D_8013B0D8->unk128 & 0x400)) {
-        goto block_96;
-    }
-    var_v0_9 = -rsin(D_8013B0D8->unk08C);
-    D_8013B0D8->modelRotation.vz = (s16) var_v0_9;
-    goto block_97;
+        D_8013B0D8->unk08C += 0x11;
+        goto block_317;
+    case 0x22:
+        if (!(D_8013B0D8->unk128 & 0x400)) {
+            goto block_96;
+        }
+        var_v0_9 = -rsin(D_8013B0D8->unk08C);
+        D_8013B0D8->modelRotation.vz = (s16) var_v0_9;
+        goto block_97;
 block_96:
-    var_v0_9 = rsin(D_8013B0D8->unk08C);
-    D_8013B0D8->modelRotation.vz = (s16) var_v0_9;
+        var_v0_9 = rsin(D_8013B0D8->unk08C);
+        D_8013B0D8->modelRotation.vz = (s16) var_v0_9;
 block_97:
-    D_8013B0D8->modelRotation.vy = rsin(D_8013B0D8->unk08C) * 4;
-    D_8013B0D8->unk08C += 0x15;
-    goto block_317;
-case 0x2C:
-    D_8013B0D8->modelRotation.vy = -rsin(D_8013B0D8->unk08C) * 2;
-    D_8013B0D8->unk08C += 0x16;
-    temp_v0_7 = D_8013AE88->data1C + 1;
-    D_8013AE88->data1C = temp_v0_7;
-    if ((temp_v0_7 & 0xFFFF) != 1) {
-        goto block_100;
-    }
-    startCurrentPlayerAnimation(0x1CU, 2U);
+        D_8013B0D8->modelRotation.vy = rsin(D_8013B0D8->unk08C) * 4;
+        D_8013B0D8->unk08C += 0x15;
+        goto block_317;
+    case 0x2C:
+        D_8013B0D8->modelRotation.vy = -rsin(D_8013B0D8->unk08C) * 2;
+        D_8013B0D8->unk08C += 0x16;
+        temp_v0_7 = D_8013AE88->data1C + 1;
+        D_8013AE88->data1C = temp_v0_7;
+        if ((temp_v0_7 & 0xFFFF) != 1) {
+            goto block_100;
+        }
+        startCurrentPlayerAnimation(0x1CU, 2U);
 block_100:
-    if (D_8013AE88->data1C == 8) {
-        startCurrentPlayerAnimation(0x1D, 2);
-    }
-    goto block_305;
-case 0x2D:
-    if (!(D_8013B0D8->unk128 & 0x400)) {
-        goto block_104;
-    }
-    var_v0_10 = -rsin(D_8013B0D8->unk08C);
-    D_8013B0D8->modelRotation.vz = var_v0_10 * 2;
-    goto block_105;
+        if (D_8013AE88->data1C == 8) {
+            startCurrentPlayerAnimation(0x1D, 2);
+        }
+        goto block_305;
+    case 0x2D:
+        if (!(D_8013B0D8->unk128 & 0x400)) {
+            goto block_104;
+        }
+        var_v0_10 = -rsin(D_8013B0D8->unk08C);
+        D_8013B0D8->modelRotation.vz = var_v0_10 * 2;
+        goto block_105;
 block_104:
-    var_v0_10 = rsin(D_8013B0D8->unk08C);
-    D_8013B0D8->modelRotation.vz = var_v0_10 * 2;
+        var_v0_10 = rsin(D_8013B0D8->unk08C);
+        D_8013B0D8->modelRotation.vz = var_v0_10 * 2;
 block_105:
-    if ((u16) D_8013AE88->data1C >= 0x19U) {
-        goto block_107;
-    }
-    var_v0_11 = -rsin(D_8013B0D8->unk08C);
-    D_8013B0D8->modelRotation.vy = var_v0_11 * 2;
-    goto block_108;
+        if ((u16) D_8013AE88->data1C >= 0x19U) {
+            goto block_107;
+        }
+        var_v0_11 = -rsin(D_8013B0D8->unk08C);
+        D_8013B0D8->modelRotation.vy = var_v0_11 * 2;
+        goto block_108;
 block_107:
-    var_v0_11 = rsin(D_8013B0D8->unk08C);
-    D_8013B0D8->modelRotation.vy = var_v0_11 * 2;
+        var_v0_11 = rsin(D_8013B0D8->unk08C);
+        D_8013B0D8->modelRotation.vy = var_v0_11 * 2;
 block_108:
-    phaseIncrement = 0x14;
-    goto block_316;
-case 0x2E:
-    D_8013B0D8->modelRotation.vy = -rsin(D_8013B0D8->unk08C) * 5;
-    D_8013B0D8->unk08C += 0x14;
-    temp_v0_8 = D_8013AE88->data1C + 1;
-    D_8013AE88->data1C = temp_v0_8;
-    if ((temp_v0_8 & 0xFFFF) != 1) {
-        goto block_111;
-    }
-    startCurrentPlayerAnimation(0x20U, 2U);
+        phasePlayer = D_8013B0D8;
+        nextPhase = phasePlayer->unk08C + 0x14;
+        phaseTask = D_8013AE88;
+        goto block_316;
+    case 0x2E:
+        D_8013B0D8->modelRotation.vy = -rsin(D_8013B0D8->unk08C) * 5;
+        D_8013B0D8->unk08C += 0x14;
+        temp_v0_8 = D_8013AE88->data1C + 1;
+        D_8013AE88->data1C = temp_v0_8;
+        if ((temp_v0_8 & 0xFFFF) != 1) {
+            goto block_111;
+        }
+        startCurrentPlayerAnimation(0x20U, 2U);
 block_111:
-    if (D_8013AE88->data1C != 0x28) {
+        if (D_8013AE88->data1C != 0x28) {
+            goto block_317;
+        }
+        startCurrentPlayerAnimation(0x21, 2U);
         goto block_317;
-    }
-    startCurrentPlayerAnimation(0x21, 2U);
-    goto block_317;
-case 0x23:
-    if (!(D_8013B0D8->unk128 & 0x400)) {
-        goto block_115;
-    }
-    var_v0_13 = -rsin(D_8013B0D8->unk08C);
-    D_8013B0D8->modelRotation.vx = var_v0_13 * 2;
-    goto block_116;
+    case 0x23:
+        if (!(D_8013B0D8->unk128 & 0x400)) {
+            goto block_115;
+        }
+        var_v0_13 = -rsin(D_8013B0D8->unk08C);
+        D_8013B0D8->modelRotation.vx = var_v0_13 * 2;
+        goto block_116;
 block_115:
-    var_v0_13 = rsin(D_8013B0D8->unk08C);
-    D_8013B0D8->modelRotation.vx = var_v0_13 * 2;
+        var_v0_13 = rsin(D_8013B0D8->unk08C);
+        D_8013B0D8->modelRotation.vx = var_v0_13 * 2;
 block_116:
-    D_8013B0D8->unk08C += 0x16;
-    temp_v0_9 = D_8013AE88->data1C + 1;
-    D_8013AE88->data1C = temp_v0_9;
-    if ((temp_v0_9 & 0xFFFF) != 1) {
-        goto block_118;
-    }
-    startCurrentPlayerAnimation(0x1AU, 2U);
+        D_8013B0D8->unk08C += 0x16;
+        temp_v0_9 = D_8013AE88->data1C + 1;
+        D_8013AE88->data1C = temp_v0_9;
+        if ((temp_v0_9 & 0xFFFF) != 1) {
+            goto block_118;
+        }
+        startCurrentPlayerAnimation(0x1AU, 2U);
 block_118:
-    if (D_8013AE88->data1C != 0x1E) {
+        if (D_8013AE88->data1C != 0x1E) {
+            goto block_317;
+        }
+        startCurrentPlayerAnimation(0x1B, 2U);
         goto block_317;
-    }
-    startCurrentPlayerAnimation(0x1B, 2U);
-    goto block_317;
-case 0x24:
-    if (!(D_8013B0D8->unk128 & 0x400)) {
-        goto block_122;
-    }
-    var_v0_14 = rsin(D_8013B0D8->unk08C);
-    var_v1_5 = var_v0_14 * 2;
-    goto block_123;
+    case 0x24:
+        if (!(D_8013B0D8->unk128 & 0x400)) {
+            goto block_122;
+        }
+        D_8013B0D8->modelRotation.vy = rsin(D_8013B0D8->unk08C) * 3;
+        goto block_123;
 block_122:
-    temp_v0_10 = rsin(D_8013B0D8->unk08C);
-    var_v0_14 = -temp_v0_10;
-    var_v1_5 = temp_v0_10 * -2;
+        D_8013B0D8->modelRotation.vy = -rsin(D_8013B0D8->unk08C) * 3;
 block_123:
-    D_8013B0D8->modelRotation.vy = var_v1_5 + var_v0_14;
-    D_8013B0D8->unk08C += 0x15;
-    temp_v0_11 = D_8013AE88->data1C + 1;
-    D_8013AE88->data1C = temp_v0_11;
-    if ((temp_v0_11 & 0xFFFF) != 1) {
-        goto block_125;
-    }
-    startCurrentPlayerAnimation(0x1AU, 2U);
+        D_8013B0D8->unk08C += 0x15;
+        temp_v0_11 = D_8013AE88->data1C + 1;
+        D_8013AE88->data1C = temp_v0_11;
+        if ((temp_v0_11 & 0xFFFF) != 1) {
+            goto block_125;
+        }
+        startCurrentPlayerAnimation(0x1AU, 2U);
 block_125:
-    if (D_8013AE88->data1C != 0x1E) {
+        if (D_8013AE88->data1C != 0x1E) {
+            goto block_317;
+        }
+        startCurrentPlayerAnimation(0x1B, 2U);
         goto block_317;
-    }
-    startCurrentPlayerAnimation(0x1B, 2U);
-    goto block_317;
-case 0x2F:
-    D_8013B0D8->modelRotation.vy = rsin(D_8013B0D8->unk08C) * 2;
-    D_8013B0D8->unk08C += 0x16;
-    temp_v0_12 = D_8013AE88->data1C + 1;
-    D_8013AE88->data1C = temp_v0_12;
-    if ((temp_v0_12 & 0xFFFF) != 1) {
-        goto block_129;
-    }
-    startCurrentPlayerAnimation(0x1CU, 2U);
+    case 0x2F:
+        D_8013B0D8->modelRotation.vy = rsin(D_8013B0D8->unk08C) * 2;
+        D_8013B0D8->unk08C += 0x16;
+        temp_v0_12 = D_8013AE88->data1C + 1;
+        D_8013AE88->data1C = temp_v0_12;
+        if ((temp_v0_12 & 0xFFFF) != 1) {
+            goto block_129;
+        }
+        startCurrentPlayerAnimation(0x1CU, 2U);
 block_129:
-    if (D_8013AE88->data1C != 8) {
-        goto block_131;
-    }
-    startCurrentPlayerAnimation(0x1DU, 2U);
+        if (D_8013AE88->data1C != 8) {
+            goto block_131;
+        }
+        startCurrentPlayerAnimation(0x1DU, 2U);
 block_131:
-    if (D_8013AE88->data1C != 0xF) {
-        goto block_133;
-    }
-    startCurrentPlayerAnimation(0x1AU, 2U);
+        if (D_8013AE88->data1C != 0xF) {
+            goto block_133;
+        }
+        startCurrentPlayerAnimation(0x1AU, 2U);
 block_133:
-    if (D_8013AE88->data1C != 0x1E) {
+        if (D_8013AE88->data1C != 0x1E) {
+            goto block_317;
+        }
+        startCurrentPlayerAnimation(0x1B, 2U);
         goto block_317;
-    }
-    startCurrentPlayerAnimation(0x1B, 2U);
-    goto block_317;
-case 0x30:
-    if (!(D_8013B0D8->unk128 & 0x400)) {
-        goto block_137;
-    }
-    var_v0_15 = rsin(D_8013B0D8->unk08C);
-    var_v1_6 = var_v0_15 * 2;
-    goto block_138;
+    case 0x30:
+        if (!(D_8013B0D8->unk128 & 0x400)) {
+            goto block_137;
+        }
+        D_8013B0D8->modelRotation.vz = rsin(D_8013B0D8->unk08C) * 3;
+        goto block_138;
 block_137:
-    temp_v0_13 = rsin(D_8013B0D8->unk08C);
-    var_v0_15 = -temp_v0_13;
-    var_v1_6 = var_v0_15 * 2;
+        D_8013B0D8->modelRotation.vz = -rsin(D_8013B0D8->unk08C) * 3;
 block_138:
-    D_8013B0D8->modelRotation.vz = var_v1_6 + var_v0_15;
-    D_8013B0D8->unk08C += 0x16;
-    temp_v1_3 = D_8013AE88->data1C;
-    if (temp_v1_3 >= 0x2DU) {
-        goto block_140;
-    }
-    D_8013AE88->data1C = temp_v1_3 + 1;
+        D_8013B0D8->unk08C += 0x16;
+        temp_v1_3 = D_8013AE88->data1C;
+        if (temp_v1_3 >= 0x2DU) {
+            goto block_140;
+        }
+        D_8013AE88->data1C = temp_v1_3 + 1;
 block_140:
-    D_8013B0D8->modelRotation.vy = (D_8013AE88->data1C << 0xC) / 45;
-    if (D_8013AE88->data1C != 1) {
-        goto block_142;
-    }
-    startCurrentPlayerAnimation(0x1AU, 2U);
+        D_8013B0D8->modelRotation.vy = (D_8013AE88->data1C << 0xC) / 45;
+        if (D_8013AE88->data1C != 1) {
+            goto block_142;
+        }
+        startCurrentPlayerAnimation(0x1AU, 2U);
 block_142:
-    if (D_8013AE88->data1C != 0x1E) {
+        if (D_8013AE88->data1C != 0x1E) {
+            goto block_317;
+        }
+        startCurrentPlayerAnimation(0x1B, 2U);
         goto block_317;
-    }
-    startCurrentPlayerAnimation(0x1B, 2U);
-    goto block_317;
-case 0x31:
-    if (!(D_8013B0D8->unk128 & 0x400)) {
-        goto block_146;
-    }
-    var_v0_16 = -rsin(D_8013B0D8->unk08C);
-    D_8013B0D8->modelRotation.vz = var_v0_16 * 3;
-    goto block_147;
-block_146:
-    var_v0_16 = rsin(D_8013B0D8->unk08C);
-    D_8013B0D8->modelRotation.vz = var_v0_16 * 3;
-block_147:
-    goto block_225;
-case 0x25:
-    if (!(D_8013B0D8->unk128 & 0x400)) {
-        goto block_150;
-    }
-    var_v0_17 = rsin(D_8013B0D8->unk08C);
-    goto block_151;
+    case 0x31:
+        if (D_8013B0D8->unk128 & 0x400) {
+            D_8013B0D8->modelRotation.vz = -rsin(D_8013B0D8->unk08C) * 3;
+        } else {
+            D_8013B0D8->modelRotation.vz = rsin(D_8013B0D8->unk08C) * 3;
+        }
+        D_8013B0D8->unk08C += 0x12;
+        break;
+    case 0x25:
+        if (!(D_8013B0D8->unk128 & 0x400)) {
+            goto block_150;
+        }
+        D_8013B0D8->modelRotation.vx = rsin(D_8013B0D8->unk08C) * 2;
+        goto block_151;
 block_150:
-    var_v0_17 = -rsin(D_8013B0D8->unk08C);
+        D_8013B0D8->modelRotation.vx = -rsin(D_8013B0D8->unk08C) * 2;
 block_151:
-    D_8013B0D8->modelRotation.vx = var_v0_17 * 2;
-    D_8013B0D8->unk08C += 0x16;
-    temp_v0_14 = D_8013AE88->data1C;
-    D_8013AE88->data1C = temp_v0_14 + 1;
-    if ((u32) (temp_v0_14 - 8) >= 0xBU) {
-        goto block_154;
-    }
-    temp_v1_4 = D_8013AE88->data1E;
-    if (temp_v1_4 == 0xFC00) {
-        goto block_154;
-    }
-    D_8013AE88->data1E = temp_v1_4 - 0x80;
+        D_8013B0D8->unk08C += 0x16;
+        temp_v0_14 = D_8013AE88->data1C;
+        D_8013AE88->data1C = temp_v0_14 + 1;
+        if ((u32) (temp_v0_14 - 8) >= 0xBU) {
+            goto block_154;
+        }
+        temp_v1_4 = D_8013AE88->data1E;
+        if (temp_v1_4 == 0xFC00) {
+            goto block_154;
+        }
+        D_8013AE88->data1E = temp_v1_4 - 0x80;
 block_154:
-    if ((u16) D_8013AE88->data1C < 0x1FU) {
-        goto block_157;
-    }
-    temp_v0_15 = D_8013AE88->data1E;
-    if (temp_v0_15 == 0) {
-        goto block_157;
-    }
-    D_8013AE88->data1E = temp_v0_15 + 0x80;
+        if ((u16) D_8013AE88->data1C < 0x1FU) {
+            goto block_157;
+        }
+        temp_v0_15 = D_8013AE88->data1E;
+        if (temp_v0_15 == 0) {
+            goto block_157;
+        }
+        D_8013AE88->data1E = temp_v0_15 + 0x80;
 block_157:
-    D_8013B0D8->modelRotation.vy = -(s16) D_8013AE88->data1E;
-    if (D_8013AE88->data1C != 1) {
-        goto block_159;
-    }
-    startCurrentPlayerAnimation(0x24U, 2U);
+        D_8013B0D8->modelRotation.vy = -(s16) D_8013AE88->data1E;
+        if (D_8013AE88->data1C != 1) {
+            goto block_159;
+        }
+        startCurrentPlayerAnimation(0x24U, 2U);
 block_159:
-    if (D_8013AE88->data1C != 0xC) {
-        goto block_161;
-    }
-    startCurrentPlayerAnimation(0x1AU, 2U);
+        if (D_8013AE88->data1C != 0xC) {
+            goto block_161;
+        }
+        startCurrentPlayerAnimation(0x1AU, 2U);
 block_161:
-    if (D_8013AE88->data1C != 0x1E) {
+        if (D_8013AE88->data1C != 0x1E) {
+            goto block_317;
+        }
+        startCurrentPlayerAnimation(0x1B, 2U);
         goto block_317;
-    }
-    startCurrentPlayerAnimation(0x1B, 2U);
-    goto block_317;
-case 0x32:
-    D_8013B0D8->modelRotation.vy = -rsin(D_8013B0D8->unk08C) * 2;
-    D_8013B0D8->unk08C += 0x16;
-    temp_v0_16 = D_8013AE88->data1C + 1;
-    D_8013AE88->data1C = temp_v0_16;
-    if ((temp_v0_16 & 0xFFFF) != 1) {
-        goto block_165;
-    }
-    startCurrentPlayerAnimation(0x1EU, 2U);
+    case 0x32:
+        D_8013B0D8->modelRotation.vy = -rsin(D_8013B0D8->unk08C) * 2;
+        D_8013B0D8->unk08C += 0x16;
+        temp_v0_16 = D_8013AE88->data1C + 1;
+        D_8013AE88->data1C = temp_v0_16;
+        if ((temp_v0_16 & 0xFFFF) != 1) {
+            goto block_165;
+        }
+        startCurrentPlayerAnimation(0x1EU, 2U);
 block_165:
-    if (D_8013AE88->data1C != 8) {
-        goto block_167;
-    }
-    startCurrentPlayerAnimation(0x1FU, 2U);
+        if (D_8013AE88->data1C != 8) {
+            goto block_167;
+        }
+        startCurrentPlayerAnimation(0x1FU, 2U);
 block_167:
-    if (D_8013AE88->data1C != 0xF) {
-        goto block_169;
-    }
-    startCurrentPlayerAnimation(0x1CU, 2U);
+        if (D_8013AE88->data1C != 0xF) {
+            goto block_169;
+        }
+        startCurrentPlayerAnimation(0x1CU, 2U);
 block_169:
-    if (D_8013AE88->data1C != 0x1E) {
+        if (D_8013AE88->data1C != 0x1E) {
+            goto block_317;
+        }
+        startCurrentPlayerAnimation(0x1D, 2U);
         goto block_317;
-    }
-    startCurrentPlayerAnimation(0x1D, 2U);
-    goto block_317;
-case 0x33:
-    if (!(D_8013B0D8->unk128 & 0x400)) {
-        goto block_173;
-    }
-    var_v0_18 = rsin(D_8013B0D8->unk08C);
-    var_v1_7 = var_v0_18 * 2;
-    goto block_174;
+    case 0x33:
+        if (!(D_8013B0D8->unk128 & 0x400)) {
+            goto block_173;
+        }
+        D_8013B0D8->modelRotation.vx = rsin(D_8013B0D8->unk08C) * 3;
+        goto block_174;
 block_173:
-    temp_v0_17 = rsin(D_8013B0D8->unk08C);
-    var_v0_18 = -temp_v0_17;
-    var_v1_7 = var_v0_18 * 2;
+        D_8013B0D8->modelRotation.vx = -rsin(D_8013B0D8->unk08C) * 3;
 block_174:
-    D_8013B0D8->modelRotation.vx = var_v1_7 + var_v0_18;
-    D_8013B0D8->unk08C += 0x14;
-    temp_v0_18 = D_8013AE88->data1C;
-    D_8013AE88->data1C = temp_v0_18 + 1;
-    if ((u32) (temp_v0_18 - 8) >= 0xBU) {
-        goto block_177;
-    }
-    temp_v1_5 = D_8013AE88->data1E;
-    if (temp_v1_5 == 0x400) {
-        goto block_177;
-    }
-    D_8013AE88->data1E = temp_v1_5 + 0x80;
+        D_8013B0D8->unk08C += 0x14;
+        temp_v0_18 = D_8013AE88->data1C;
+        D_8013AE88->data1C = temp_v0_18 + 1;
+        if ((u32) (temp_v0_18 - 8) >= 0xBU) {
+            goto block_177;
+        }
+        temp_v1_5 = D_8013AE88->data1E;
+        if (temp_v1_5 == 0x400) {
+            goto block_177;
+        }
+        D_8013AE88->data1E = temp_v1_5 + 0x80;
 block_177:
-    if ((u16) D_8013AE88->data1C < 0x1FU) {
-        goto block_180;
-    }
-    temp_v0_19 = D_8013AE88->data1E;
-    if (temp_v0_19 == 0) {
-        goto block_180;
-    }
-    D_8013AE88->data1E = temp_v0_19 - 0x80;
+        if ((u16) D_8013AE88->data1C < 0x1FU) {
+            goto block_180;
+        }
+        temp_v0_19 = D_8013AE88->data1E;
+        if (temp_v0_19 == 0) {
+            goto block_180;
+        }
+        D_8013AE88->data1E = temp_v0_19 - 0x80;
 block_180:
-    D_8013B0D8->modelRotation.vy = -(s16) D_8013AE88->data1E;
-    if (D_8013AE88->data1C != 1) {
-        goto block_182;
-    }
-    startCurrentPlayerAnimation(0x24U, 2U);
+        D_8013B0D8->modelRotation.vy = -(s16) D_8013AE88->data1E;
+        if (D_8013AE88->data1C != 1) {
+            goto block_182;
+        }
+        startCurrentPlayerAnimation(0x24U, 2U);
 block_182:
-    if (D_8013AE88->data1C != 0xC) {
-        goto block_184;
-    }
-    startCurrentPlayerAnimation(0x1AU, 2U);
+        if (D_8013AE88->data1C != 0xC) {
+            goto block_184;
+        }
+        startCurrentPlayerAnimation(0x1AU, 2U);
 block_184:
-    if (D_8013AE88->data1C != 0x1E) {
+        if (D_8013AE88->data1C != 0x1E) {
+            goto block_317;
+        }
+        startCurrentPlayerAnimation(0x1B, 2U);
         goto block_317;
-    }
-    startCurrentPlayerAnimation(0x1B, 2U);
-    goto block_317;
-case 0x34:
-    D_8013B0D8->modelRotation.vy = -rsin(D_8013B0D8->unk08C) * 3;
-    D_8013B0D8->unk08C += 0x16;
-    temp_v0_20 = D_8013AE88->data1C + 1;
-    D_8013AE88->data1C = temp_v0_20;
-    if ((temp_v0_20 & 0xFFFF) != 1) {
-        goto block_188;
-    }
-    startCurrentPlayerAnimation(0x20U, 2U);
+    case 0x34:
+        D_8013B0D8->modelRotation.vy = -rsin(D_8013B0D8->unk08C) * 3;
+        D_8013B0D8->unk08C += 0x16;
+        temp_v0_20 = D_8013AE88->data1C + 1;
+        D_8013AE88->data1C = temp_v0_20;
+        if ((temp_v0_20 & 0xFFFF) != 1) {
+            goto block_188;
+        }
+        startCurrentPlayerAnimation(0x20U, 2U);
 block_188:
-    if (D_8013AE88->data1C != 0x1E) {
+        if (D_8013AE88->data1C != 0x1E) {
+            goto block_317;
+        }
+        startCurrentPlayerAnimation(0x21, 2U);
         goto block_317;
-    }
-    startCurrentPlayerAnimation(0x21, 2U);
-    goto block_317;
-case 0x26:
-    D_8013B0D8->unk08C += 0x16;
-    temp_v0_21 = D_8013AE88->data1C + 1;
-    D_8013AE88->data1C = temp_v0_21;
-    if ((temp_v0_21 & 0xFFFF) != 1) {
+    case 0x26:
+        D_8013B0D8->unk08C += 0x16;
+        temp_v0_21 = D_8013AE88->data1C + 1;
+        D_8013AE88->data1C = temp_v0_21;
+        if ((temp_v0_21 & 0xFFFF) != 1) {
+            goto block_317;
+        }
+        startCurrentPlayerAnimation(0x25, 2U);
         goto block_317;
-    }
-    startCurrentPlayerAnimation(0x25, 2U);
-    goto block_317;
-case 0x35:
-    D_8013B0D8->modelRotation.vy = -rsin(D_8013B0D8->unk08C) * 2;
-    D_8013B0D8->unk08C += 0x16;
-    temp_v0_22 = D_8013AE88->data1C + 1;
-    D_8013AE88->data1C = temp_v0_22;
-    if ((temp_v0_22 & 0xFFFF) != 1) {
-        goto block_194;
-    }
-    startCurrentPlayerAnimation(0x1EU, 2U);
+    case 0x35:
+        D_8013B0D8->modelRotation.vy = -rsin(D_8013B0D8->unk08C) * 2;
+        D_8013B0D8->unk08C += 0x16;
+        temp_v0_22 = D_8013AE88->data1C + 1;
+        D_8013AE88->data1C = temp_v0_22;
+        if ((temp_v0_22 & 0xFFFF) != 1) {
+            goto block_194;
+        }
+        startCurrentPlayerAnimation(0x1EU, 2U);
 block_194:
-    if (D_8013AE88->data1C != 8) {
-        goto block_196;
-    }
-    startCurrentPlayerAnimation(0x1FU, 2U);
+        if (D_8013AE88->data1C != 8) {
+            goto block_196;
+        }
+        startCurrentPlayerAnimation(0x1FU, 2U);
 block_196:
-    if (D_8013AE88->data1C != 0xF) {
-        goto block_198;
-    }
-    startCurrentPlayerAnimation(0x20U, 2U);
+        if (D_8013AE88->data1C != 0xF) {
+            goto block_198;
+        }
+        startCurrentPlayerAnimation(0x20U, 2U);
 block_198:
-    if (D_8013AE88->data1C != 0x1E) {
+        if (D_8013AE88->data1C != 0x1E) {
+            goto block_317;
+        }
+        startCurrentPlayerAnimation(0x21, 2U);
         goto block_317;
-    }
-    startCurrentPlayerAnimation(0x21, 2U);
-    goto block_317;
-case 0x36:
-    D_8013B0D8->unk08C += 0x14;
-    temp_v0_23 = D_8013AE88->data1C + 1;
-    D_8013AE88->data1C = temp_v0_23;
-    if ((temp_v0_23 & 0xFFFF) != 1) {
+    case 0x36:
+        D_8013B0D8->unk08C += 0x14;
+        temp_v0_23 = D_8013AE88->data1C + 1;
+        D_8013AE88->data1C = temp_v0_23;
+        if ((temp_v0_23 & 0xFFFF) != 1) {
+            goto block_317;
+        }
+        startCurrentPlayerAnimation(0x24, 2U);
         goto block_317;
-    }
-    startCurrentPlayerAnimation(0x24, 2U);
-    goto block_317;
-case 0x3D:
-    D_8013B0D8->modelRotation.vy = -rsin(D_8013B0D8->unk08C) * 2;
-    D_8013B0D8->unk08C += 0x16;
-    temp_v0_24 = D_8013AE88->data1C + 1;
-    D_8013AE88->data1C = temp_v0_24;
-    if ((temp_v0_24 & 0xFFFF) != 1) {
-        goto block_204;
-    }
-    startCurrentPlayerAnimation(0x1AU, 2U);
+    case 0x3D:
+        D_8013B0D8->modelRotation.vy = -rsin(D_8013B0D8->unk08C) * 2;
+        D_8013B0D8->unk08C += 0x16;
+        temp_v0_24 = D_8013AE88->data1C + 1;
+        D_8013AE88->data1C = temp_v0_24;
+        if ((temp_v0_24 & 0xFFFF) != 1) {
+            goto block_204;
+        }
+        startCurrentPlayerAnimation(0x1AU, 2U);
 block_204:
-    if (D_8013AE88->data1C != 8) {
-        goto block_206;
-    }
-    startCurrentPlayerAnimation(0x1BU, 2U);
+        if (D_8013AE88->data1C != 8) {
+            goto block_206;
+        }
+        startCurrentPlayerAnimation(0x1BU, 2U);
 block_206:
-    if (D_8013AE88->data1C != 0xF) {
-        goto block_208;
-    }
-    startCurrentPlayerAnimation(0x1CU, 2U);
+        if (D_8013AE88->data1C != 0xF) {
+            goto block_208;
+        }
+        startCurrentPlayerAnimation(0x1CU, 2U);
 block_208:
-    if (D_8013AE88->data1C != 0x1E) {
+        if (D_8013AE88->data1C != 0x1E) {
+            goto block_317;
+        }
+        startCurrentPlayerAnimation(0x1D, 2U);
         goto block_317;
-    }
-    startCurrentPlayerAnimation(0x1D, 2U);
-    goto block_317;
-case 0x3E:
-    temp_a0_3 = D_8013B0D8->unk08C;
-    if (temp_a0_3 >= 0x200) {
-        goto block_212;
-    }
-    var_v0_19 = -rsin(temp_a0_3);
-    D_8013B0D8->modelRotation.vy = var_v0_19 * 2;
-    goto block_213;
+    case 0x3E:
+        temp_a0_3 = D_8013B0D8->unk08C;
+        if (temp_a0_3 >= 0x200) {
+            goto block_212;
+        }
+        var_v0_19 = -rsin(temp_a0_3);
+        D_8013B0D8->modelRotation.vy = var_v0_19 * 2;
+        goto block_213;
 block_212:
-    var_v0_19 = rsin(temp_a0_3);
-    D_8013B0D8->modelRotation.vy = var_v0_19 * 2;
+        var_v0_19 = rsin(temp_a0_3);
+        D_8013B0D8->modelRotation.vy = var_v0_19 * 2;
 block_213:
-    D_8013B0D8->unk08C += 0x14;
-    temp_v0_25 = D_8013AE88->data1C + 1;
-    D_8013AE88->data1C = temp_v0_25;
-    if ((temp_v0_25 & 0xFFFF) != 1) {
-        goto block_215;
-    }
-    startCurrentPlayerAnimation(0x1CU, 2U);
+        D_8013B0D8->unk08C += 0x14;
+        temp_v0_25 = D_8013AE88->data1C + 1;
+        D_8013AE88->data1C = temp_v0_25;
+        if ((temp_v0_25 & 0xFFFF) != 1) {
+            goto block_215;
+        }
+        startCurrentPlayerAnimation(0x1CU, 2U);
 block_215:
-    if (D_8013AE88->data1C != 8) {
-        goto block_217;
-    }
-    startCurrentPlayerAnimation(0x1DU, 2U);
+        if (D_8013AE88->data1C != 8) {
+            goto block_217;
+        }
+        startCurrentPlayerAnimation(0x1DU, 2U);
 block_217:
-    if (D_8013AE88->data1C != 0xF) {
-        goto block_219;
-    }
-    startCurrentPlayerAnimation(0x1AU, 2U);
+        if (D_8013AE88->data1C != 0xF) {
+            goto block_219;
+        }
+        startCurrentPlayerAnimation(0x1AU, 2U);
 block_219:
-    if (D_8013AE88->data1C != 0x1E) {
+        if (D_8013AE88->data1C != 0x1E) {
+            goto block_317;
+        }
+        startCurrentPlayerAnimation(0x1B, 2U);
         goto block_317;
-    }
-    startCurrentPlayerAnimation(0x1B, 2U);
-    goto block_317;
-case 0x3F:
-    if (!(D_8013B0D8->unk128 & 0x400)) {
-        goto block_223;
-    }
-    var_v0_20 = -rsin(D_8013B0D8->unk08C);
-    D_8013B0D8->modelRotation.vz = (s16) var_v0_20;
-    goto block_224;
+    case 0x3F:
+        if (!(D_8013B0D8->unk128 & 0x400)) {
+            goto block_223;
+        }
+        var_v0_20 = -rsin(D_8013B0D8->unk08C);
+        D_8013B0D8->modelRotation.vz = (s16) var_v0_20;
+        goto block_224;
 block_223:
-    var_v0_20 = rsin(D_8013B0D8->unk08C);
-    D_8013B0D8->modelRotation.vz = (s16) var_v0_20;
+        var_v0_20 = rsin(D_8013B0D8->unk08C);
+        D_8013B0D8->modelRotation.vz = (s16) var_v0_20;
 block_224:
-block_225:
-    D_8013B0D8->unk08C += 0x12;
-    goto block_317;
-case 0x40:
-    if (!(D_8013B0D8->unk128 & 0x400)) {
-        goto block_228;
-    }
-    var_v0_21 = -rsin(D_8013B0D8->unk08C);
-    D_8013B0D8->modelRotation.vz = (s16) var_v0_21;
-    goto block_229;
+        D_8013B0D8->unk08C += 0x12;
+        goto block_317;
+    case 0x40:
+        if (!(D_8013B0D8->unk128 & 0x400)) {
+            goto block_228;
+        }
+        var_v0_21 = -rsin(D_8013B0D8->unk08C);
+        D_8013B0D8->modelRotation.vz = (s16) var_v0_21;
+        goto block_229;
 block_228:
-    var_v0_21 = rsin(D_8013B0D8->unk08C);
-    D_8013B0D8->modelRotation.vz = (s16) var_v0_21;
+        var_v0_21 = rsin(D_8013B0D8->unk08C);
+        D_8013B0D8->modelRotation.vz = (s16) var_v0_21;
 block_229:
-    D_8013B0D8->modelRotation.vy = rsin(D_8013B0D8->unk08C) * 5;
-    D_8013B0D8->unk08C += 0x11;
-    goto block_317;
-case 0x41:
-    D_8013B0D8->modelRotation.vy = rsin(D_8013B0D8->unk08C) * 2;
-    D_8013B0D8->unk08C += 0x16;
-    temp_v0_26 = D_8013AE88->data1C + 1;
-    D_8013AE88->data1C = temp_v0_26;
-    if ((temp_v0_26 & 0xFFFF) != 1) {
-        goto block_232;
-    }
-    startCurrentPlayerAnimation(0x1CU, 2U);
+        D_8013B0D8->modelRotation.vy = rsin(D_8013B0D8->unk08C) * 5;
+        D_8013B0D8->unk08C += 0x11;
+        goto block_317;
+    case 0x41:
+        D_8013B0D8->modelRotation.vy = rsin(D_8013B0D8->unk08C) * 2;
+        D_8013B0D8->unk08C += 0x16;
+        temp_v0_26 = D_8013AE88->data1C + 1;
+        D_8013AE88->data1C = temp_v0_26;
+        if ((temp_v0_26 & 0xFFFF) != 1) {
+            goto block_232;
+        }
+        startCurrentPlayerAnimation(0x1CU, 2U);
 block_232:
-    if (D_8013AE88->data1C != 8) {
-        goto block_234;
-    }
-    startCurrentPlayerAnimation(0x1DU, 2U);
+        if (D_8013AE88->data1C != 8) {
+            goto block_234;
+        }
+        startCurrentPlayerAnimation(0x1DU, 2U);
 block_234:
-    if (D_8013AE88->data1C != 0xF) {
-        goto block_236;
-    }
-    startCurrentPlayerAnimation(0x1AU, 2U);
+        if (D_8013AE88->data1C != 0xF) {
+            goto block_236;
+        }
+        startCurrentPlayerAnimation(0x1AU, 2U);
 block_236:
-    if (D_8013AE88->data1C != 0x1E) {
+        if (D_8013AE88->data1C != 0x1E) {
+            goto block_317;
+        }
+        startCurrentPlayerAnimation(0x1B, 2U);
         goto block_317;
-    }
-    startCurrentPlayerAnimation(0x1B, 2U);
-    goto block_317;
-case 0x42:
-    D_8013B0D8->modelRotation.vy = rsin(D_8013B0D8->unk08C);
-    D_8013B0D8->unk08C += 0x16;
-    temp_v0_27 = D_8013AE88->data1C + 1;
-    D_8013AE88->data1C = temp_v0_27;
-    if ((temp_v0_27 & 0xFFFF) != 1) {
-        goto block_240;
-    }
-    startCurrentPlayerAnimation(0x24U, 2U);
+    case 0x42:
+        D_8013B0D8->modelRotation.vy = rsin(D_8013B0D8->unk08C);
+        D_8013B0D8->unk08C += 0x16;
+        temp_v0_27 = D_8013AE88->data1C + 1;
+        D_8013AE88->data1C = temp_v0_27;
+        if ((temp_v0_27 & 0xFFFF) != 1) {
+            goto block_240;
+        }
+        startCurrentPlayerAnimation(0x24U, 2U);
 block_240:
-    if (D_8013AE88->data1C != 0x1E) {
+        if (D_8013AE88->data1C != 0x1E) {
+            goto block_317;
+        }
+        startCurrentPlayerAnimation(0x25, 2U);
         goto block_317;
-    }
-    startCurrentPlayerAnimation(0x25, 2U);
-    goto block_317;
-case 0x43:
-    D_8013B0D8->modelRotation.vy = rsin(D_8013B0D8->unk08C) * 5;
-    D_8013B0D8->unk08C += 0x14;
-    temp_v0_28 = D_8013AE88->data1C + 1;
-    D_8013AE88->data1C = temp_v0_28;
-    if ((temp_v0_28 & 0xFFFF) != 1) {
-        goto block_244;
-    }
-    startCurrentPlayerAnimation(0x1EU, 2U);
+    case 0x43:
+        D_8013B0D8->modelRotation.vy = rsin(D_8013B0D8->unk08C) * 5;
+        D_8013B0D8->unk08C += 0x14;
+        temp_v0_28 = D_8013AE88->data1C + 1;
+        D_8013AE88->data1C = temp_v0_28;
+        if ((temp_v0_28 & 0xFFFF) != 1) {
+            goto block_244;
+        }
+        startCurrentPlayerAnimation(0x1EU, 2U);
 block_244:
-    var_v1_8 = D_8013AE88->data1C;
-    var_v0_22 = 0x23;
-    goto block_308;
-case 0x44:
-    if (!(D_8013B0D8->unk128 & 0x400)) {
-        goto block_247;
-    }
-    var_v0_23 = rsin(D_8013B0D8->unk08C);
-    goto block_248;
+        if (D_8013AE88->data1C == 0x23) {
+            startCurrentPlayerAnimation(0x1F, 2);
+        }
+        goto block_317;
+    case 0x44:
+        if (!(D_8013B0D8->unk128 & 0x400)) {
+            goto block_247;
+        }
+        D_8013B0D8->modelRotation.vx = rsin(D_8013B0D8->unk08C) * 4;
+        goto block_248;
 block_247:
-    var_v0_23 = -rsin(D_8013B0D8->unk08C);
+        D_8013B0D8->modelRotation.vx = -rsin(D_8013B0D8->unk08C) * 4;
 block_248:
-    D_8013B0D8->modelRotation.vx = var_v0_23 * 4;
-    D_8013B0D8->unk08C += 0x12;
-    temp_v0_29 = D_8013AE88->data1C + 1;
-    D_8013AE88->data1C = temp_v0_29;
-    if ((temp_v0_29 & 0xFFFF) != 1) {
-        goto block_250;
-    }
-    startCurrentPlayerAnimation(0x26U, 2U);
+        D_8013B0D8->unk08C += 0x12;
+        temp_v0_29 = D_8013AE88->data1C + 1;
+        D_8013AE88->data1C = temp_v0_29;
+        if ((temp_v0_29 & 0xFFFF) != 1) {
+            goto block_250;
+        }
+        startCurrentPlayerAnimation(0x26U, 2U);
 block_250:
-    if (D_8013AE88->data1C != 0x2D) {
+        if (D_8013AE88->data1C != 0x2D) {
+            goto block_317;
+        }
+        startCurrentPlayerAnimation(0x27, 2U);
         goto block_317;
-    }
-    startCurrentPlayerAnimation(0x27, 2U);
-    goto block_317;
-case 0x3A:
-    D_8013B0D8->modelRotation.vy = -rsin(D_8013B0D8->unk08C) * 2;
-    D_8013B0D8->unk08C += 0x14;
-    temp_v0_30 = D_8013AE88->data1C + 1;
-    D_8013AE88->data1C = temp_v0_30;
-    if ((temp_v0_30 & 0xFFFF) != 1) {
-        goto block_254;
-    }
-    startCurrentPlayerAnimation(0x24U, 2U);
+    case 0x3A:
+        D_8013B0D8->modelRotation.vy = -rsin(D_8013B0D8->unk08C) * 2;
+        D_8013B0D8->unk08C += 0x14;
+        temp_v0_30 = D_8013AE88->data1C + 1;
+        D_8013AE88->data1C = temp_v0_30;
+        if ((temp_v0_30 & 0xFFFF) != 1) {
+            goto block_254;
+        }
+        startCurrentPlayerAnimation(0x24U, 2U);
 block_254:
-    if (D_8013AE88->data1C != 0x28) {
+        if (D_8013AE88->data1C != 0x28) {
+            goto block_317;
+        }
+        startCurrentPlayerAnimation(0x25, 2U);
         goto block_317;
-    }
-    startCurrentPlayerAnimation(0x25, 2U);
-    goto block_317;
-case 0x3B:
-    D_8013B0D8->unk08C += 0x12;
-    temp_v0_31 = D_8013AE88->data1C + 1;
-    D_8013AE88->data1C = temp_v0_31;
-    if ((temp_v0_31 & 0xFFFF) != 1) {
+    case 0x3B:
+        D_8013B0D8->unk08C += 0x12;
+        temp_v0_31 = D_8013AE88->data1C + 1;
+        D_8013AE88->data1C = temp_v0_31;
+        if ((temp_v0_31 & 0xFFFF) != 1) {
+            goto block_317;
+        }
+        startCurrentPlayerAnimation(0x26, 2U);
         goto block_317;
-    }
-    startCurrentPlayerAnimation(0x26, 2U);
-    goto block_317;
-case 0x3C:
-    D_8013B0D8->modelRotation.vy = -rsin(D_8013B0D8->unk08C) * 2;
-    D_8013B0D8->unk08C += 0x16;
-    temp_v0_32 = D_8013AE88->data1C + 1;
-    D_8013AE88->data1C = temp_v0_32;
-    if ((temp_v0_32 & 0xFFFF) != 1) {
-        goto block_260;
-    }
-    startCurrentPlayerAnimation(0x1AU, 2U);
+    case 0x3C:
+        D_8013B0D8->modelRotation.vy = -rsin(D_8013B0D8->unk08C) * 2;
+        D_8013B0D8->unk08C += 0x16;
+        temp_v0_32 = D_8013AE88->data1C + 1;
+        D_8013AE88->data1C = temp_v0_32;
+        if ((temp_v0_32 & 0xFFFF) != 1) {
+            goto block_260;
+        }
+        startCurrentPlayerAnimation(0x1AU, 2U);
 block_260:
-    if (D_8013AE88->data1C != 8) {
-        goto block_262;
-    }
-    startCurrentPlayerAnimation(0x1BU, 2U);
+        if (D_8013AE88->data1C != 8) {
+            goto block_262;
+        }
+        startCurrentPlayerAnimation(0x1BU, 2U);
 block_262:
-    if (D_8013AE88->data1C != 0xF) {
-        goto block_264;
-    }
-    startCurrentPlayerAnimation(0x1CU, 2U);
+        if (D_8013AE88->data1C != 0xF) {
+            goto block_264;
+        }
+        startCurrentPlayerAnimation(0x1CU, 2U);
 block_264:
-    if (D_8013AE88->data1C != 0x1E) {
+        if (D_8013AE88->data1C != 0x1E) {
+            goto block_317;
+        }
+        startCurrentPlayerAnimation(0x1D, 2U);
         goto block_317;
-    }
-    startCurrentPlayerAnimation(0x1D, 2U);
-    goto block_317;
-case 0x27:
-    temp_v1_6 = D_8013AE88->data1C;
-    if (temp_v1_6 == 0) {
-        goto block_269;
-    }
-    if (temp_v1_6 == 1) {
-        goto block_274;
-    }
-    goto block_317;
+    case 0x27:
+        temp_v1_6 = D_8013AE88->data1C;
+        if (temp_v1_6 == 0) {
+            goto block_269;
+        }
+        if (temp_v1_6 == 1) {
+            goto block_274;
+        }
+        goto block_317;
 block_269:
-    if (!(D_8013B0D8->unk128 & 0x400)) {
-        goto block_271;
-    }
-    var_v0_24 = -rsin(D_8013B0D8->unk08C * 2);
-    D_8013B0D8->modelRotation.vz = (s16) var_v0_24;
-    goto block_272;
+        if (!(D_8013B0D8->unk128 & 0x400)) {
+            goto block_271;
+        }
+        var_v0_24 = -rsin(D_8013B0D8->unk08C * 2);
+        D_8013B0D8->modelRotation.vz = (s16) var_v0_24;
+        goto block_272;
 block_271:
-    var_v0_24 = rsin(D_8013B0D8->unk08C * 2);
-    D_8013B0D8->modelRotation.vz = (s16) var_v0_24;
+        var_v0_24 = rsin(D_8013B0D8->unk08C * 2);
+        D_8013B0D8->modelRotation.vz = (s16) var_v0_24;
 block_272:
-    temp_v0_33 = D_8013B0D8->unk08C + 0x19;
-    D_8013B0D8->unk08C = temp_v0_33;
-    if (temp_v0_33 < 0x201) {
+        temp_v0_33 = D_8013B0D8->unk08C + 0x19;
+        D_8013B0D8->unk08C = temp_v0_33;
+        if (temp_v0_33 < 0x201) {
+            goto block_317;
+        }
+        D_8013B0D8->unk08C = 0x200;
+        D_8013AE88->data1E = 0;
+        D_8013AE88->data1C += 1;
         goto block_317;
-    }
-    D_8013B0D8->unk08C = 0x200;
-    D_8013AE88->data1E = 0;
-    D_8013AE88->data1C += 1;
-    goto block_317;
 block_274:
-    D_8013B0D8->modelRotation.vy = rsin((D_8013B0D8->unk08C - 0x200) * 2) * -2;
-    if (!(D_8013B0D8->unk128 & 0x400)) {
-        goto block_276;
-    }
-    D_8013B0D8->modelRotation.vz = (s16) D_8013AE88->data1E;
-    goto block_277;
+        D_8013B0D8->modelRotation.vy = -rsin((D_8013B0D8->unk08C - 0x200) * 2) * 2;
+        if (!(D_8013B0D8->unk128 & 0x400)) {
+            goto block_276;
+        }
+        D_8013B0D8->modelRotation.vz = (s16) D_8013AE88->data1E;
+        goto block_277;
 block_276:
-    D_8013B0D8->modelRotation.vz = -(s16) D_8013AE88->data1E;
+        D_8013B0D8->modelRotation.vz = -(s16) D_8013AE88->data1E;
 block_277:
-    temp_v0_34 = D_8013B0D8->unk08C + 0x10;
-    D_8013B0D8->unk08C = temp_v0_34;
-    if (temp_v0_34 < 0x401) {
-        goto block_279;
-    }
-    D_8013B0D8->unk08C = 0x400;
+        temp_v0_34 = D_8013B0D8->unk08C + 0x10;
+        D_8013B0D8->unk08C = temp_v0_34;
+        if (temp_v0_34 < 0x401) {
+            goto block_279;
+        }
+        D_8013B0D8->unk08C = 0x400;
 block_279:
-    temp_v1_7 = D_8013AE88->data1E;
-    if (temp_v1_7 == 0x1000) {
+        temp_v1_7 = D_8013AE88->data1E;
+        if (temp_v1_7 == 0x1000) {
+            goto block_317;
+        }
+        D_8013AE88->data1E = temp_v1_7 + 0x80;
         goto block_317;
-    }
-    D_8013AE88->data1E = temp_v1_7 + 0x80;
-    goto block_317;
-case 0x38:
-    D_8013B0D8->modelRotation.vy = -rsin(D_8013B0D8->unk08C) * 5;
-    D_8013B0D8->unk08C += 0x14;
-    goto block_317;
-case 0x39:
-    if (!(D_8013B0D8->unk128 & 0x400)) {
-        goto block_284;
-    }
-    var_v0_25 = rsin(D_8013B0D8->unk08C);
-    var_v1_9 = var_v0_25 * 4;
-    goto block_285;
+    case 0x38:
+        D_8013B0D8->modelRotation.vy = -rsin(D_8013B0D8->unk08C) * 5;
+        D_8013B0D8->unk08C += 0x14;
+        goto block_317;
+    case 0x39:
+        if (!(D_8013B0D8->unk128 & 0x400)) {
+            goto block_284;
+        }
+        D_8013B0D8->modelRotation.vz = rsin(D_8013B0D8->unk08C) * 5;
+        goto block_285;
 block_284:
-    temp_v0_35 = rsin(D_8013B0D8->unk08C);
-    var_v0_25 = -temp_v0_35;
-    var_v1_9 = var_v0_25 * 4;
+        D_8013B0D8->modelRotation.vz = -rsin(D_8013B0D8->unk08C) * 5;
 block_285:
-    D_8013B0D8->modelRotation.vz = var_v1_9 + var_v0_25;
 block_286:
-    D_8013B0D8->unk08C += 0x14;
-    goto block_317;
-case 0x37:
-case 0x45:
-    D_8013B0D8->modelRotation.vy = -rsin(D_8013B0D8->unk08C) * 2;
-    D_8013B0D8->unk08C += 0x16;
-    goto block_317;
-case 0x46:
-    D_8013B0D8->modelRotation.vy = rsin(D_8013B0D8->unk08C) * 2;
-    if (D_8013AE88->data1C < 8) {
-        D_8013B0D8->modelRotation.vz = D_8013AE88->data1C * 256;
-    } else if (D_8013AE88->data1C >= 0x22) {
-        D_8013B0D8->modelRotation.vz = D_8013AE88->data1C * 128 - 0x880;
-    } else {
-        D_8013B0D8->modelRotation.vz = 0x800;
-    }
-    D_8013B0D8->unk08C += 0x14;
-    temp_v1_8 = D_8013AE88->data1C;
-    if (temp_v1_8 >= 0x32U) {
+        D_8013B0D8->unk08C += 0x14;
         goto block_317;
-    }
-    D_8013AE88->data1C = temp_v1_8 + 1;
-    goto block_317;
-case 0x47:
-    D_8013B0D8->modelRotation.vy = rsin(D_8013B0D8->unk08C) * 4;
-    if ((u16) D_8013AE88->data1C >= 0x14U) {
-        goto block_298;
-    }
-    if (D_8013B0D8->unk128 & 0x400) {
-        goto block_300;
-    }
-    var_v0_27 = rsin(D_8013B0D8->unk08C);
-    goto block_301;
+    case 0x37:
+    case 0x45:
+        D_8013B0D8->modelRotation.vy = -rsin(D_8013B0D8->unk08C) * 2;
+        D_8013B0D8->unk08C += 0x16;
+        goto block_317;
+    case 0x46:
+        D_8013B0D8->modelRotation.vy = rsin(D_8013B0D8->unk08C) * 2;
+        if (D_8013AE88->data1C < 8) {
+            D_8013B0D8->modelRotation.vz = D_8013AE88->data1C * 256;
+        } else if (D_8013AE88->data1C >= 0x22) {
+            D_8013B0D8->modelRotation.vz = D_8013AE88->data1C * 128 - 0x880;
+        } else {
+            D_8013B0D8->modelRotation.vz = 0x800;
+        }
+        D_8013B0D8->unk08C += 0x14;
+        temp_v1_8 = D_8013AE88->data1C;
+        if (temp_v1_8 >= 0x32U) {
+            goto block_317;
+        }
+        D_8013AE88->data1C = temp_v1_8 + 1;
+        goto block_317;
+    case 0x47:
+        var_v0_27 = rsin(D_8013B0D8->unk08C) * 4;
+        spinPlayer = D_8013B0D8;
+        spinPlayer->modelRotation.vy = var_v0_27;
+        if ((u16) D_8013AE88->data1C >= 0x14U) {
+            goto block_298;
+        }
+        if (spinPlayer->unk128 & 0x400) {
+            goto block_300;
+        }
+        D_8013B0D8->modelRotation.vz = rsin(spinPlayer->unk08C) * 2;
+        goto block_301;
 block_298:
-    if (!(D_8013B0D8->unk128 & 0x400)) {
-        goto block_300;
-    }
-    var_v0_27 = rsin(D_8013B0D8->unk08C);
-    goto block_301;
+        if (!(spinPlayer->unk128 & 0x400)) {
+            goto block_300;
+        }
+        D_8013B0D8->modelRotation.vz = rsin(spinPlayer->unk08C) * 2;
+        goto block_301;
 block_300:
-    var_v0_27 = -rsin(D_8013B0D8->unk08C);
+        D_8013B0D8->modelRotation.vz = -rsin(spinPlayer->unk08C) * 2;
 block_301:
-    D_8013B0D8->modelRotation.vz = var_v0_27 * 2;
-    D_8013B0D8->unk08C += 0x14;
-    temp_v0_36 = D_8013AE88->data1C + 1;
-    D_8013AE88->data1C = temp_v0_36;
-    if ((temp_v0_36 & 0xFFFF) != 1) {
-        goto block_303;
-    }
-    startCurrentPlayerAnimation(0x20U, 2U);
+        D_8013B0D8->unk08C += 0x14;
+        temp_v0_36 = D_8013AE88->data1C + 1;
+        D_8013AE88->data1C = temp_v0_36;
+        if ((temp_v0_36 & 0xFFFF) != 1) {
+            goto block_303;
+        }
+        startCurrentPlayerAnimation(0x20U, 2U);
 block_303:
-    if (D_8013AE88->data1C == 8) {
-        startCurrentPlayerAnimation(0x21, 2);
-    }
+        if (D_8013AE88->data1C == 8) {
+            startCurrentPlayerAnimation(0x21, 2);
+        }
 block_305:
-    if (D_8013AE88->data1C != 0xF) {
-        goto block_307;
-    }
-    startCurrentPlayerAnimation(0x1EU, 2U);
+        if (D_8013AE88->data1C != 0xF) {
+            goto block_307;
+        }
+        startCurrentPlayerAnimation(0x1EU, 2U);
 block_307:
-    var_v1_8 = D_8013AE88->data1C;
-    var_v0_22 = 0x1E;
-block_308:
-    var_a0 = 0x1F;
-    if (var_v1_8 != var_v0_22) {
+        if (D_8013AE88->data1C == 0x1E) {
+            startCurrentPlayerAnimation(0x1F, 2);
+        }
         goto block_317;
-    }
-block_309:
-    startCurrentPlayerAnimation(var_a0, 2U);
-    goto block_317;
-case 0x48:
-    D_8013B0D8->modelRotation.vy = rsin(D_8013B0D8->unk08C) * 6;
-    if (!(D_8013B0D8->unk128 & 0x400)) {
-        goto block_312;
-    }
-    var_v0_28 = -rsin(D_8013B0D8->unk08C);
-    goto block_313;
+    case 0x48:
+        D_8013B0D8->modelRotation.vy = rsin(D_8013B0D8->unk08C) * 6;
+        if (!(D_8013B0D8->unk128 & 0x400)) {
+            goto block_312;
+        }
+        D_8013B0D8->modelRotation.vz = -rsin(D_8013B0D8->unk08C) * 6;
+        goto block_313;
 block_312:
-    var_v0_28 = rsin(D_8013B0D8->unk08C);
+        D_8013B0D8->modelRotation.vz = rsin(D_8013B0D8->unk08C) * 6;
 block_313:
-    D_8013B0D8->modelRotation.vz = var_v0_28 * 6;
-    if (!((u16) D_8013B0D8->modelRotation.vz & 0x1000)) {
-        goto block_315;
-    }
-    D_8013B0D8->modelRotation.vy = -(s16) (u16) D_8013B0D8->modelRotation.vy;
+        if (!((u16) D_8013B0D8->modelRotation.vz & 0x1000)) {
+            goto block_315;
+        }
+        D_8013B0D8->modelRotation.vy = -(s16) (u16) D_8013B0D8->modelRotation.vy;
 block_315:
-    phaseIncrement = 0x11;
+        phasePlayer = D_8013B0D8;
+        nextPhase = phasePlayer->unk08C + 0x11;
+        phaseTask = D_8013AE88;
 block_316:
-    D_8013B0D8->unk08C += phaseIncrement;
-    D_8013AE88->data1C += 1;
+        phasePlayer->unk08C = nextPhase;
+        phaseTask->data1C += 1;
     }
 block_317:
     temp_v0_37 = D_8013B0D8->modelRotation.vz;
@@ -3114,23 +3064,25 @@ block_330:
     }
 block_333:
     markPlayerNearSelectedRecord((s16) D_8013AE88->data18);
-    temp_s0_5 = resolveCurrentPlayerTerrainContact();
+    terrainContact = resolveCurrentPlayerTerrainContact();
     updateCurrentPlayerAnimation();
     if (D_8013B0E4 < 2) {
         goto block_335;
     }
     D_8013B0D8->unk965 = 0;
-    D_8013B0D8->unk0C8 = 0;
-    goto block_358;
+    dispatchPlayer = D_8013B0D8;
+    dispatchPlayer->unk0C8 = 0;
+    nextStateCallback = currentPlayerStateCallbacks[dispatchPlayer->unk12C];
+    goto block_359;
 block_335:
-    temp_v1_10 = D_8013B0D8->unk12C;
-    if (temp_v1_10 != 0x1D) {
+    landingState = D_8013B0D8->unk12C;
+    if ((u16)landingState != 0x1D) {
         goto block_337;
     }
-    var_v0_29 = currentPlayerStateCallbacks[temp_v1_10];
-    goto block_359;
+    currentPlayerStateCallbacks[landingState]();
+    return;
 block_337:
-    if (temp_s0_5 == 0) {
+    if (terrainContact == 0) {
         goto block_360;
     }
     temp_v1_11 = D_8013B0D8->unk128;
@@ -3145,11 +3097,11 @@ block_337:
     playCurrentPlayerSoundEffect(2);
     goto block_357;
 block_340:
-    temp_v1_12 = D_8013B0D8->unk062;
-    if (temp_v1_12 < 0x1000) {
+    landingSpeed = D_8013B0D8->unk062;
+    if (landingSpeed < 0x1000) {
         queuePlayerControllerEffect(D_8013AE88->data18, 0xB);
         playPlayerSoundEffect(D_8013AE88->data18, 1, 0xB01, 0x10);
-    } else if (temp_v1_12 < 0x3000) {
+    } else if (landingSpeed < 0x3000) {
         queuePlayerControllerEffect(D_8013AE88->data18, 0xA);
         playPlayerSoundEffect(D_8013AE88->data18, 1, 0xB01, 0x18);
     } else {
@@ -3157,35 +3109,35 @@ block_340:
         playPlayerSoundEffect(D_8013AE88->data18, 1, 0xB01, 0x20);
     }
     startCurrentPlayerAnimation(0U, 2U);
-    temp_v1_13 = getCourseSurfaceAtPoint(D_8013B0D8->unk92E, (s32) D_8013B0D8->x >> 8, (s32) D_8013B0D8->z >> 8) & 0xFF;
-    if (temp_v1_13 == 3) {
+    landingSurface = getCourseSurfaceAtPoint(D_8013B0D8->unk92E, (s32) D_8013B0D8->x >> 8, (s32) D_8013B0D8->z >> 8) & 0xFF;
+    if (landingSurface == 3) {
         goto block_354;
     }
-    if (temp_v1_13 == 6) {
+    if (landingSurface == 6) {
         goto block_354;
     }
-    if (temp_v1_13 == 7) {
+    if (landingSurface == 7) {
         goto block_354;
     }
-    if (temp_v1_13 == 8) {
+    if (landingSurface == 8) {
         goto block_354;
     }
-    if (temp_v1_13 == 0xC) {
+    if (landingSurface == 0xC) {
         goto block_354;
     }
-    if (temp_v1_13 == 0xE) {
+    if (landingSurface == 0xE) {
         goto block_354;
     }
-    if (temp_v1_13 == 0xF) {
+    if (landingSurface == 0xF) {
         goto block_354;
     }
-    if (temp_v1_13 == 0x10) {
+    if (landingSurface == 0x10) {
         goto block_354;
     }
     createPlayerTripleQuadEffectTask((s32) D_8013AE88->data18);
     awardCurrentPlayerTrickRewards();
 block_354:
-    if (tryStartPlayerSelectedRecordTransition((s16) D_8013AE88->data18) == 0) {
+    if ((s16)tryStartPlayerSelectedRecordTransition((s16) D_8013AE88->data18) == 0) {
         goto block_356;
     }
     D_8013B0D8->unk12C = 7;
@@ -3193,16 +3145,13 @@ block_354:
 block_356:
     D_8013B0D8->unk12C = 0;
 block_357:
-block_358:
-    var_v0_29 = currentPlayerStateCallbacks[D_8013B0D8->unk12C];
+    dispatchPlayer = D_8013B0D8;
+    nextStateCallback = currentPlayerStateCallbacks[dispatchPlayer->unk12C];
 block_359:
-    var_v0_29();
+    nextStateCallback();
 block_360:
     return;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_80021B20);
-#endif
 
 void updateCurrentPlayerState29MotionAndAnimation(void) {
     RacePlayer *player;

@@ -37,7 +37,7 @@ void func_80020018(void);
 
 void updateCurrentPlayerTimedMotion(void);
 
-void func_80021B20(void);
+void updateCurrentPlayerAirborneTricks(void);
 
 void updateCurrentPlayerChargeAndLaunch(void);
 

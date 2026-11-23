@@ -3065,6 +3065,7 @@ D_8013B560 = 0x8013B560; // size:0x2
 
 updateCurrentPlayerAndResetState = 0x800204D8; // type:func
 updateCurrentPlayerRiding = 0x800205B8; // type:func
+updateCurrentPlayerAirborneTricks = 0x80021B20; // type:func
 
 drawSlidingDisplaySprite = 0x80034090; // type:func
 
