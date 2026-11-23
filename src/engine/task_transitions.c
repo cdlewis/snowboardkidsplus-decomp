@@ -195,7 +195,6 @@ void animateAlternatingVramRow(void);
 void initializeRaceTaskState(void);
 void updateActiveRaceTask(void);
 void finishRaceTransitionAfterCountdown(void);
-void func_80015A30(u16 controller);
 void func_8001C9F0(void);
 s16 func_8008C290(s16 characterId, s16 finishPosition);
 void func_8005EBC4(void);
@@ -741,7 +740,7 @@ void updateActiveRaceTask(void) {
         }
 
         if (D_8013AFE2 == 2 && (D_8013AEE4 & 2)) {
-            func_80015A30(0);
+            recordControllerInput(0);
         }
         D_8013AE88->data18 = 60;
         setCurrentTaskCallback(finishRaceTransitionAfterCountdown);
@@ -778,13 +777,13 @@ void updateActiveRaceTask(void) {
         goto pause;
     }
     if (D_8013AFE2 == 2 && (D_8013AEE4 & 2)) {
-        func_80015A30(0);
+        recordControllerInput(0);
     }
     if (D_8013AFD7) {
         if (D_8013AEE4 & 2) {
             if (gFrameCounter < RACE_DEMO_FRAME_LIMIT) {
                 drawStretchedDebugText(4, 4, gRaceVsyncDebugFormat, gFrameCounter);
-                func_80015A30(0);
+                recordControllerInput(0);
                 return;
             }
         } else if (gFrameCounter < RACE_DEMO_FRAME_LIMIT &&
@@ -810,7 +809,7 @@ pause:
 
 void finishRaceTransitionAfterCountdown(void) {
     s16 i;
-    if (D_8013AFE2 == 2 && (D_8013AEE4 & 2)) func_80015A30(0);
+    if (D_8013AFE2 == 2 && (D_8013AEE4 & 2)) recordControllerInput(0);
     if (--D_8013AE88->data18 == 0) {
         D_8013B1A8 = 0;
         D_8013AFE4 |= 8;

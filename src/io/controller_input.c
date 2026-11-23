@@ -342,18 +342,22 @@ void initializeControllerInputRecording(u16 controller) {
     D_8013AED4[controller]->pressedButtons = 0xFFFF;
     D_8013AEDC[controller] = 1;
 }
-/* DECOMP_ATTEMPT: inline 152/153 */
-#ifdef NON_MATCHING
-void func_80015A30(u16 controller) {
+
+void recordControllerInput(u16 controller) {
+    ControllerInputRecord *records = D_8013AED4[controller];
     ControllerInputRecord *previous;
-    previous = D_8013AED4[controller] + D_8013AEDC[controller] + -1;
+
+    previous = (ControllerInputRecord *)(D_8013AEDC[controller] * sizeof(*records) +
+                                        (u32)records) - 1;
     if (previous->buttons == D_8013AEEC[controller] &&
         previous->pressedButtons == D_8013AEE8[controller] &&
         (s8)previous->horizontal == D_8013AEF8[controller] &&
         (s8)previous->vertical == D_8013AEFC[controller] &&
         previous->repeatCount < 255) {
         previous->repeatCount++;
-        if (!D_8013AFD7) captureSelectedPlayerStates();
+        if (!D_8013AFD7) {
+            captureSelectedPlayerStates();
+        }
     } else {
         D_8013AED4[controller][D_8013AEDC[controller]].repeatCount = 0;
         D_8013AED4[controller][D_8013AEDC[controller]].horizontal = D_8013AEF8[controller];
@@ -372,14 +376,14 @@ void func_80015A30(u16 controller) {
                 D_8013AEDC[controller]--;
             }
         } else {
-            if (D_8013AEDC[controller] + 1 >= 0x900U) D_8013AEE4 = 8;
-            else captureSelectedPlayerStates();
+            if (D_8013AEDC[controller] + 1 >= 0x900U) {
+                D_8013AEE4 = 8;
+            } else {
+                captureSelectedPlayerStates();
+            }
         }
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/io/controller_input", func_80015A30);
-#endif
 
 void initializeControllerInputPlayback(u16 controller) {
     *(controller + D_8013AED4) = ((ControllerInputRecord (*)[256])D_800E959C)[controller];

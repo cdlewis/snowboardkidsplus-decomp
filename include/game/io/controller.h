@@ -67,6 +67,7 @@ void updateControllerActuators(u16 controller);
 void updateControllers(void);
 
 void initializeControllerInputRecording(u16 controller);
+void recordControllerInput(u16 controller);
 void initializeControllerInputPlayback(u16 controller);
 
 /* Apply the current recorded input and advance its repeat counter. */
