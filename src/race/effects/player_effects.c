@@ -1346,8 +1346,11 @@ void drawTriangleBurstTask(void) {
             (long *)&screen[0], (long *)&screen[1], (long *)&screen[2], (long *)&scratch->cue, (long *)&scratch->flags);
         scratch->depth = depth;
         if (scratch->flags >= 0 && depth >= 0 && depth < 4096) {
-            func_8005FE7C(D_8013AF6C + (depth >> 2), screen[0].x, screen[0].y, screen[1].x, screen[1].y, screen[2].x, screen[2].y,
-                10, getClut(640, 250), 128, 128, 191, 128, 128, 191, 255, 255, 255, 128, 128, 128, 64, 64, 64);
+            addGouraudTexturedTriangle(D_8013AF6C + (depth >> 2),
+                                       screen[0].x, screen[0].y, screen[1].x, screen[1].y,
+                                       screen[2].x, screen[2].y, 10, getClut(640, 250),
+                                       128, 128, 191, 128, 128, 191,
+                                       255, 255, 255, 128, 128, 128, 64, 64, 64);
         }
         if (!D_8013AFD3) {
             resource->positions[i].vx += resource->velocities[i].vx;

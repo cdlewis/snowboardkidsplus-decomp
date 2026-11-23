@@ -1227,8 +1227,8 @@ void drawTexturedFrameStyle9(s16 x, s16 y, s16 w, s16 h, s16 palette,
 void drawStyle20DTexturedPanel(s16 x, s16 y, s16 w, s16 h, s16 clutOffset,
                               s16 blendMode, GsOT *ot, u16 depth);
 
-void func_8005FE7C(u32 *orderingTable, s32 x0, s32 y0, s32 x1, s32 y1,
-                  s32 x2, s32 y2, u8 tpage, s32 clut,
-                  s32 u0, s32 v0, s32 u1, s32 v1, s32 u2, s32 v2,
-                  s32 r0, s32 g0, s32 b0, s32 r1, s32 g1, s32 b1,
-                  s32 r2, s32 g2, s32 b2);
+void addGouraudTexturedTriangle(u32 *orderingTable, s16 x0, s16 y0, s16 x1, s16 y1,
+                               s16 x2, s16 y2, u8 tpage, s16 clut,
+                               u8 u0, u8 v0, u8 u1, u8 v1, u8 u2, u8 v2,
+                               u8 r0, u8 g0, u8 b0, u8 r1, u8 g1, u8 b1,
+                               u8 r2, u8 g2, u8 b2);
