@@ -56,7 +56,7 @@ void createRegisteredDetailedTextPanelTask(s16 x, s16 y, s16 textX, s16 textY,
 void createRegisteredTripletTask(s32 x, s32 y, s32 offsetX, s32 offsetY,
                                  ByteTriplet *records, u8 *indices, s32 depth, s32 index);
 void createRegisteredMovingPanelTask(u16 mode, const s16 *values, s16 x, s16 y,
-                                     s16 x2, s16 y2, s16 x3, s16 y3,
+                                     s16 spacingX, s16 spacingY, s16 targetX, s16 targetY,
                                      s32 depth, s32 index);
 void createRegisteredTexturePairTask(s16 x, s16 y, const u8 *mapping, s32 mode,
                                      s32 unused, u16 arg5, s32 depth, s32 index);

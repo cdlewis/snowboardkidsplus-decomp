@@ -149,12 +149,23 @@ typedef struct ValuePanelResource {
     s16 *values;
 } ValuePanelResource;
 
-typedef struct RegisteredSelectionPanelResource {
-    u8 unk00[0x2C];
-    s16 x, y, x2, y2, x3, y3;
+typedef struct MovingPanelState {
+    s16 highlight;
+    s16 selection;
+    s16 respondingControllers;
+    s16 closing;
+} MovingPanelState;
+
+typedef struct MovingPanelResource {
+    Movement2D movement;
+    u8 color[3];
+    u8 pad2B;
+    s16 x, y;
+    s16 spacingX, spacingY;
+    s16 targetX, targetY;
     s16 values[6];
     u16 mode;
-} RegisteredSelectionPanelResource;
+} MovingPanelResource;
 
 typedef struct AnimatedSpriteResource {
     s16 frame;
@@ -284,7 +295,7 @@ void stopSecondaryDisplayTask(void);
 void drawSecondaryDisplayTask(void);
 void initTimedSequence(TimedSequence *sequence, const TimedSequenceEntry *entries, s16 index, s16 count);
 void updateCountdownTask(void);
-void func_8007649C(void);
+void updateRegisteredMovingPanelTask(void);
 void updateInputTimedSpriteTask(void);
 void updateTimedSequence(TimedSequence *sequence);
 void updateTimedSpriteB5Task(void);
@@ -2307,22 +2318,22 @@ void updateCountdownTask(void) {
 }
 
 void createRegisteredMovingPanelTask(u16 mode, const s16 *values, s16 x, s16 y,
-                                     s16 x2, s16 y2, s16 x3, s16 y3, s32 depth, s32 index) {
-    RegisteredSelectionPanelResource *resource;
+                                     s16 spacingX, s16 spacingY, s16 targetX, s16 targetY, s32 depth, s32 index) {
+    MovingPanelResource *resource;
     ValuePanelEntry *entry;
-    createChildTaskWithReserve(func_8007649C);
+    createChildTaskWithReserve(updateRegisteredMovingPanelTask);
     D_8013AE8C->data18 = 0;
     D_8013AE8C->data1A = mode & 0xFF;
     D_8013AE8C->data1C = depth;
     D_8013AE8C->data1E = index;
     D_8013AE8C->resource14 = allocateTaskResource();
-    resource = (RegisteredSelectionPanelResource *)&D_800D9504[D_8013AE8C->resource14];
+    resource = (MovingPanelResource *)&D_800D9504[D_8013AE8C->resource14];
     resource->x = x;
     resource->y = y;
-    resource->x2 = x2;
-    resource->y2 = y2;
-    resource->x3 = x3;
-    resource->y3 = y3;
+    resource->spacingX = spacingX;
+    resource->spacingY = spacingY;
+    resource->targetX = targetX;
+    resource->targetY = targetY;
     resource->values[0] = values[0];
     resource->values[1] = values[1];
     resource->values[2] = values[2];
@@ -2347,27 +2358,7 @@ void createRegisteredMovingPanelTask(u16 mode, const s16 *values, s16 x, s16 y,
     entry->task = D_8013AE8C;
 }
 
-/* DECOMP_ATTEMPT: inline 424/481 */
-#ifdef NON_MATCHING
-typedef struct MovingPanelState {
-    s16 highlight;
-    s16 selection;
-    s16 respondingControllers;
-    s16 closing;
-} MovingPanelState;
-
-typedef struct MovingPanelResource {
-    Movement2D movement;
-    u8 color[3];
-    u8 pad2B;
-    s16 x, y;
-    s16 spacingX, spacingY;
-    s16 targetX, targetY;
-    s16 values[6];
-    u16 mode;
-} MovingPanelResource;
-
-void func_8007649C(void) {
+void updateRegisteredMovingPanelTask(void) {
     MovingPanelResource *panel;
     MovingPanelState *state;
     ValuePanelEntry *entry;
@@ -2378,19 +2369,27 @@ void func_8007649C(void) {
     s32 color;
 
     input = 0;
-    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
     panel = (MovingPanelResource *)&D_800D9504[D_8013AE88->resource14];
-    if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
+    if (D_8013AE88->resource16 == 0xFFFF) {
+        while (1) {}
+    }
     state = (MovingPanelState *)&D_800D9504[D_8013AE88->resource16];
 
     if ((u16)(D_8013AE88->data1E % 10U) == 0) {
         ValuePanelEntry *table;
-        if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
+        if (D_8013AE98->resource14 == 0xFFFF) {
+            while (1) {}
+        }
         table = (ValuePanelEntry *)&D_800D9504[D_8013AE98->resource14];
         entry = table + D_8013AE88->data1E / 10U;
     } else {
         ValuePanelEntry *table;
-        if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
+        if (D_8013AE98->resource16 == 0xFFFF) {
+            while (1) {}
+        }
         table = (ValuePanelEntry *)&D_800D9504[D_8013AE98->resource16];
         entry = table + D_8013AE88->data1E / 10U;
     }
@@ -2402,14 +2401,17 @@ void func_8007649C(void) {
         state->highlight = 0;
         state->selection = panel->mode;
         state->closing = 0;
-        goto advance;
+        entry->active = -1;
+        entry->flags++;
+        break;
     case 2:
         if (updateMovement2D(&panel->movement) == 0) {
             configureColorCycleTask(1, 0, 128, 8, 0);
             D_8013AE88->data18 = 0;
             state->highlight = 1;
             state->respondingControllers = 0;
-            goto advance;
+            entry->active = -1;
+            entry->flags++;
         }
         break;
     case 3:
@@ -2419,14 +2421,26 @@ void func_8007649C(void) {
             state->highlight = 2;
             D_8013AE88->data18 = ready;
         }
-        if (D_8013AE88->data1A & 1) input |= D_8013AEE8[0];
-        if (D_8013AE88->data1A & 2) input |= D_8013AEE8[1];
+        if (D_8013AE88->data1A & 1) {
+            input |= D_8013AEE8[0];
+        }
+        if (D_8013AE88->data1A & 2) {
+            input |= D_8013AEE8[1];
+        }
 
         selection = state->selection;
-        if (input & 0x1000) selection--;
-        if (input & 0x4000) selection++;
-        if (selection < 0) selection = 0;
-        if (selection >= 2) selection = 1;
+        if (input & 0x1000) {
+            selection--;
+        }
+        if (input & 0x4000) {
+            selection++;
+        }
+        if (selection < 0) {
+            selection = 0;
+        }
+        if (selection >= 2) {
+            selection = 1;
+        }
         if (state->selection != selection) {
             state->selection = selection;
             playSoundEffect(0, 0x100, 32);
@@ -2456,24 +2470,27 @@ void func_8007649C(void) {
         if (state->closing == 1) {
             configureMovement2D(&panel->movement, panel->x << 12, panel->y << 12, 0x8000, 0x8000, -1000);
             state->highlight = 0;
-            goto advance;
-        }
-        break;
-    case 4:
-        if (updateMovement2D(&panel->movement) == 0) {
-advance:
             entry->active = -1;
             entry->flags++;
         }
         break;
+    case 4:
+        if (updateMovement2D(&panel->movement) == 0) {
+            entry->active = -1;
+            entry->flags++;
+        }
+        break;
+    /* Separate cleanup arms reproduce the original register allocation. */
     default:
-finish:
         entry->active = state->selection;
         entry->flags = state->respondingControllers;
         deleteCurrentTaskSubtree();
         return;
     case 99:
-        goto finish;
+        entry->active = state->selection;
+        entry->flags = state->respondingControllers;
+        deleteCurrentTaskSubtree();
+        return;
     }
 
     x = panel->movement.x / 4096;
@@ -2500,9 +2517,6 @@ finish:
     drawSpriteByIndexWithBlend(x + panel->spacingX, y + panel->spacingY, panel->values[2], panel->values[3], -1,
                  &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_8007649C);
-#endif
 
 void createInputTimedSpriteTask(s32 x, s32 y, const TimedSequenceEntry *entries, s32 count,
     s32 controllers, u32 acceptMask, u32 cancelMask, s32 depth, s32 index) {
