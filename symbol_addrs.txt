@@ -3678,6 +3678,8 @@ gPlayerState30Animation22Countdowns = 0x80120AA4; // size:0xC defined:true
 drawMovingLineTask = 0x8004F46C; // type:func
 
 initializeMovingVisualTask = 0x8005D1B0; // type:func
+updateMovingVisualTask = 0x8005D394; // type:func
+gMovingVisualFrames = 0x80129764; // size:0x200 defined:true
 gMovingVisualPlacements = 0x80129964; // size:0xB4
 
 updateCpuRacerSpeedControl = 0x8005EFA0; // type:func

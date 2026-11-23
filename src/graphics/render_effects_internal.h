@@ -919,7 +919,7 @@ extern s32 D_8013B660;
 
 
 void updateProximityEmitterTask(void);
-void func_8005D394(void);
+void updateMovingVisualTask(void);
 void updateFallingTaskObject(void);
 
 void emitProjectedGouraudTriangle(TriangleScratchVertex *);
