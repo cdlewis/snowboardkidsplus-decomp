@@ -2860,6 +2860,7 @@ createAnimatedSpriteTask = 0x80077390; // type:func
 initializeFlagSelectedDualResourceTask = 0x8009F158; // type:func
 updateFlagSelectedMenuTask = 0x8009F224; // type:func
 
+markPlayerNearSelectedRecord = 0x80029E6C; // type:func
 assignCurrentPlayerFinishSlot = 0x80029EE4; // type:func
 
 tickMenuSoundDelayStage0Task = 0x80039144; // type:func

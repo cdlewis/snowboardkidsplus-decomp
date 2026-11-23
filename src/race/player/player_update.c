@@ -1923,7 +1923,7 @@ advanceCharge:
 #ifdef NON_MATCHING
 void awardCurrentPlayerTrickRewards(void);
 
-s16 func_80029E6C(s16 playerIndex);
+s16 markPlayerNearSelectedRecord(s16 playerIndex);
 void dispatchCurrentPlayerDirectionalAnimation(void);
 
 void func_80021B20(void) {
@@ -3113,7 +3113,7 @@ block_330:
         createPlayerPairedQuadEffectTask(D_8013AE88->data18, 1);
     }
 block_333:
-    func_80029E6C((s16) D_8013AE88->data18);
+    markPlayerNearSelectedRecord((s16) D_8013AE88->data18);
     temp_s0_5 = resolveCurrentPlayerTerrainContact();
     updateCurrentPlayerAnimation();
     if (D_8013B0E4 < 2) {
@@ -5182,20 +5182,14 @@ s16 func_80029DD0(s16 playerIndex) {
 INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_80029DD0);
 #endif
 
-/* DECOMP_ATTEMPT: inline 25/30 */
-#ifdef NON_MATCHING
-s16 func_80029E6C(s16 playerIndex) {
-    switch (isPlayerNearSelectedRecord(playerIndex)) {
-    case 0:
-        return 0;
-    default:
+s16 markPlayerNearSelectedRecord(s16 playerIndex) {
+    if (isPlayerNearSelectedRecord(playerIndex)) {
         gRacePlayers[playerIndex].unk128 |= 0x1000;
-        return 1;
+    } else {
+        return 0;
     }
+    return 1;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_80029E6C);
-#endif
 
 void assignCurrentPlayerFinishSlot(s32 value) {
     RacePlayer *player = currentPlayerAbsolute;
