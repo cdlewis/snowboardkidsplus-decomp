@@ -34,7 +34,30 @@ typedef struct QuadSubdivisionScratchpad {
     u8 textured, gouraud;
 } QuadSubdivisionScratchpad;
 
+#ifdef NON_MATCHING
+typedef struct FastTmdScratchpad {
+    u32 command;
+    s32 winding;
+    u32 reserved08[6];
+    u32 colors[4];
+    u32 screen[4];
+    u32 uv[4];
+} FastTmdScratchpad;
+
+enum {
+    FAST_TMD_TEXTURED = 0x04,
+    FAST_TMD_QUAD = 0x08,
+    FAST_TMD_GOURAUD = 0x10
+};
+#endif
+
 extern u32 GsOUT_PACKET_P __attribute__((section(".data")));
+
+#ifdef NON_MATCHING
+/* The assembly path passes renderer state between these routines in registers. */
+void func_80058664(u32 *orderingTable, const TmdObject *object);
+void func_80058844(u32 *orderingTable, const FastTmdScratchpad *scratch, u32 depth);
+#endif
 
 void emitProjectedFlatTriangle(TriangleScratchVertex *vertices) {
     TriangleScratchpad *scratch = TRIANGLE_SCRATCHPAD;
@@ -1558,14 +1581,106 @@ void func_80058560(u32 *orderingTable, const u32 *packet) {
 INCLUDE_ASM("asm/nonmatchings/graphics/model_renderer", func_80058560);
 #endif
 
-/* DECOMP_ATTEMPT: unattempted */
+/* DECOMP_ATTEMPT: inline 4/42 */
+#ifdef NON_MATCHING
+void func_800585BC(u32 *orderingTable, const TmdObject *object) {
+    func_80058664(orderingTable, object);
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/graphics/model_renderer", func_800585BC);
+#endif
 
-/* DECOMP_ATTEMPT: unattempted */
+/* DECOMP_ATTEMPT: inline 26/120 */
+#ifdef NON_MATCHING
+void func_80058664(u32 *orderingTable, const TmdObject *object) {
+    const SVECTOR *vertices = object->vertices;
+    const u32 *primitive = (const u32 *)object->primitives;
+    u32 remaining = object->primitiveCount;
+    FastTmdScratchpad *scratch = (FastTmdScratchpad *)getScratchAddr(0);
+
+    do {
+        u32 header = *primitive++;
+        u32 mode = header >> 24;
+        u32 vertexCount = 3 + ((mode & FAST_TMD_QUAD) >> 3);
+        u32 colorCount = (mode & FAST_TMD_GOURAUD) ? vertexCount : 1;
+        const s16 *indices;
+        u32 depth;
+        u32 *out;
+        u32 count;
+
+        scratch->command = header & 0xFE000000;
+        if (mode & FAST_TMD_TEXTURED) {
+            out = scratch->uv;
+            count = vertexCount;
+            do {
+                *out++ = *primitive++;
+            } while (--count);
+        }
+        out = scratch->colors;
+        count = colorCount;
+        do {
+            *out++ = *primitive++;
+        } while (--count);
+
+        indices = (const s16 *)primitive;
+        gte_ldv0(&vertices[indices[0]]);
+        gte_ldv1(&vertices[indices[1]]);
+        gte_ldv2(&vertices[indices[2]]);
+        gte_rtpt();
+        gte_stsxy3(&scratch->screen[0], &scratch->screen[1], &scratch->screen[2]);
+        gte_nclip();
+        gte_stopz(&scratch->winding);
+
+        /* Only the quad path updates OTZ before packet emission. */
+        if (mode & FAST_TMD_QUAD) {
+            gte_avsz3();
+            gte_ldv0(&vertices[indices[3]]);
+            gte_rtps();
+            gte_stsxy(&scratch->screen[3]);
+            gte_avsz4();
+        }
+        /* Three vertex indices and their padding occupy two words, as do four indices. */
+        primitive = (const u32 *)(indices + 4);
+
+        gte_stotz(&depth);
+        if (scratch->winding >= 0) {
+            func_80058844(orderingTable, scratch, depth);
+        }
+    } while (--remaining);
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/graphics/model_renderer", func_80058664);
+#endif
 
-/* DECOMP_ATTEMPT: unattempted */
+/* DECOMP_ATTEMPT: inline 4/107 */
+#ifdef NON_MATCHING
+void func_80058844(u32 *orderingTable, const FastTmdScratchpad *scratch, u32 depth) {
+    u32 mode = scratch->command >> 24;
+    u32 vertexCount = (mode & FAST_TMD_QUAD) ? 4 : 3;
+    u32 *packet = (u32 *)GsOUT_PACKET_P;
+    u32 *out = packet + 1;
+    u32 *entry = &orderingTable[(s32)depth >> 2];
+    u32 i;
+
+    *out++ = getaddr(&scratch->colors[0]) | scratch->command;
+    for (i = 0; i < vertexCount; i++) {
+        if (i != 0 && (mode & FAST_TMD_GOURAUD)) {
+            *out++ = scratch->colors[i];
+        }
+        *out++ = scratch->screen[i];
+        if (mode & FAST_TMD_TEXTURED) {
+            *out++ = scratch->uv[i];
+        }
+    }
+    GsOUT_PACKET_P = (u32)out;
+
+    setlen(packet, out - packet - 1);
+    setlen(entry, 0);
+    addPrim(entry, packet);
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/graphics/model_renderer", func_80058844);
+#endif
 
 /* DECOMP_ATTEMPT: unattempted */
 INCLUDE_ASM("asm/nonmatchings/graphics/model_renderer", func_800589F0);
