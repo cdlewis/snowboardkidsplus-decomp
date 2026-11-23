@@ -31,6 +31,7 @@ s16 SsVabOpenHeadSticky(u8 *address, s16 id, u32 start);
 s16 SsVabFakeHead(u8 *address, s16 id, u32 start);
 s16 SsVabTransBody(u8 *body, s16 id);
 s16 SsVabTransCompleted(s16 immediate);
+void SsVabClose(s16 id);
 
 void SsStart(void);
 void SsEnd(void);

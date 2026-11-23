@@ -99,7 +99,7 @@ void closeMusicSequence(void) {
     if (gMusicSequenceActive) {
         SsSeqStop(gMusicSequenceId);
         SsSeqClose(gMusicSequenceId);
-        func_800180F4(2);
+        closeSoundBank(2);
         gMusicSequenceActive = 0;
     }
 }
@@ -180,23 +180,17 @@ void endSoundSystem(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: inline 20/22 */
-#ifdef NON_MATCHING
-void SsVabClose(s16 id);
+void closeSoundBank(s16 bankId) {
+    s8 *loaded;
 
-void func_800180F4(s16 id) {
-    s8 *open;
     if (gSoundSystemActive) {
-        open = &gSoundBankLoaded[id];
-        if (*open) {
-            SsVabClose(id);
-            *open = 0;
+        loaded = &gSoundBankLoaded[bankId];
+        if (*loaded) {
+            SsVabClose(bankId);
+            *loaded = 0;
         }
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/audio/sound_manager", func_800180F4);
-#endif
 
 void stopAllSoundVoices(void) {
     SsUtAllKeyOff(0);
@@ -207,7 +201,7 @@ void closeAllSoundBanks(void) {
 
     stopAllSoundVoices();
     for (bank = 0; (u8)bank < 9; bank++) {
-        func_800180F4((u8)bank);
+        closeSoundBank((u8)bank);
     }
 }
 

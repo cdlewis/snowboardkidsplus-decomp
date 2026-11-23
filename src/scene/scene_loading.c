@@ -96,13 +96,13 @@ void initializeScenePlaybackResourcesTask(void) {
     queueCdSectorCommand(0, DAT_MODE11_RESOURCE_07CD_SECTOR, DAT_MODE11_RESOURCE_07CD_SECTOR_COUNT, DAT_SCRATCH, 0);
     queueCdSectorCommand(3, DAT_MODE11_RESOURCE_0801_SECTOR, DAT_MODE11_RESOURCE_0801_SECTOR_COUNT, DAT_SOUND_HEADER_0, 0);
     if (sSceneSoundBankSectors[D_8013AF3A].bodySectorCount > 0) {
-        func_800180F4(1);
+        closeSoundBank(1);
         queueCdSectorCommand(0, sSceneSoundBankSectors[D_8013AF3A].bodySector,
                              sSceneSoundBankSectors[D_8013AF3A].bodySectorCount, DAT_SCRATCH, 0);
         queueCdSectorCommand(4, sSceneSoundBankSectors[D_8013AF3A].headerSector,
                              sSceneSoundBankSectors[D_8013AF3A].headerSectorCount, DAT_SOUND_HEADER_1, 0);
     }
-    func_800180F4(2);
+    closeSoundBank(2);
     queueCdSectorCommand(0, DAT_ENTRY_154_SECTOR, DAT_ENTRY_154_SECTOR_COUNT, DAT_SCRATCH, 0);
     queueCdSectorCommand(5, DAT_ENTRY_155_SECTOR, DAT_ENTRY_155_SECTOR_COUNT, DAT_SOUND_HEADER_2, 0);
     queueCdSectorCommand(9, DAT_ENTRY_153_SECTOR, DAT_ENTRY_153_SECTOR_COUNT, DAT_MUSIC_SEQUENCE, 0);

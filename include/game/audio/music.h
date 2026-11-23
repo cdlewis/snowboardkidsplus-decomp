@@ -22,7 +22,7 @@ void updateMusicSequenceFade(void);
 void setMusicSequenceEnabled(s16 enabled);
 void stopMusicSequence(void);
 void loadSoundBank(s16 bankId, u8 *header, u8 *body);
-void func_800180F4(s16 bankId);
+void closeSoundBank(s16 bankId);
 void stopAllSoundVoices(void);
 void closeAllSoundBanks(void);
 void openMusicSequence(s16 bankId, u32 *sequence);

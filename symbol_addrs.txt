@@ -1271,6 +1271,7 @@ resumeMusicSequence = 0x80017FB4; // type:func
 initPrimitiveTemplates = 0x8006BDDC; // type:func
 endSoundSystem = 0x800180C8; // type:func
 startSoundSystem = 0x80018084; // type:func
+closeSoundBank = 0x800180F4; // type:func
 stopAllSoundVoices = 0x8001814C; // type:func
 closeAllSoundBanks = 0x8001816C; // type:func
 gSoundSystemActive = 0x8013AF28; // size:0x1 defined:true

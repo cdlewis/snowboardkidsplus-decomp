@@ -263,10 +263,10 @@ void prepareRaceResourcesIfSelectionChanged(void) {
     configureTaskStateTransition(1, 0, 30);
     setSecondaryDisplayTaskMode(1);
     if (D_8013B560 != D_8013AFCE) {
-        func_800180F4(2);
-        func_800180F4(3);
-        func_800180F4(4);
-        func_800180F4(5);
+        closeSoundBank(2);
+        closeSoundBank(3);
+        closeSoundBank(4);
+        closeSoundBank(5);
         queueStartupSectorReads();
         setCurrentTaskCallback(preparePlayerResourcesTask);
         D_8013AE88->unk10 |= 2;

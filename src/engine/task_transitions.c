@@ -524,7 +524,7 @@ void queueRaceStartupResourcesTask(void) {
 
     queueCourseResourceSectorReads();
     closeMusicSequence();
-    func_800180F4(1);
+    closeSoundBank(1);
     queueCdSectorCommand(0, DAT_ENTRY_125_SECTOR, DAT_ENTRY_125_SECTOR_COUNT, DAT_SCRATCH, 0);
     queueCdSectorCommand(4, DAT_ENTRY_126_SECTOR, DAT_ENTRY_126_SECTOR_COUNT,
         RACE_SOUND_HEADER, 0);

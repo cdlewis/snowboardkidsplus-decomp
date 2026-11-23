@@ -103,10 +103,10 @@ void initializeControllerPlaybackRaceTask(void) {
     setCurrentTaskCallback(initializeRaceTaskState);
     queueCdSectorCommand(0, gControllerPlaybackEntries[D_8013AFD9].sector, gControllerPlaybackEntries[D_8013AFD9].count, D_800E959C, 0);
     if (selectionMenuRecordAbsolute != D_8013AFCE) {
-        func_800180F4(2);
-        func_800180F4(3);
-        func_800180F4(4);
-        func_800180F4(5);
+        closeSoundBank(2);
+        closeSoundBank(3);
+        closeSoundBank(4);
+        closeSoundBank(5);
         queuePlayerResourceReadsAndUploadTextures();
     }
     D_8013AE88->unk10 |= 2;
