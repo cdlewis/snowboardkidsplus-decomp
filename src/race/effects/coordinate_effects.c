@@ -548,32 +548,37 @@ void updatePlayerCoordinateEffectTask(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: inline 117/120 */
-#ifdef NON_MATCHING
-s16 func_80046228(Position3D *position, s32 radius, s16 facing, s16 excludedPlayer, s16 *bearing) {
+s32 findNearestHomingTargetPlayer(const Position3D *position, s32 radius, s16 facing, s16 excludedPlayer, s16 *bearing) {
     s32 dx, dy, dz, distance;
-    s32 angle;
+    s16 angle;
     RacePlayer *player;
     RacePlayer *players;
     s32 i;
     s32 nearest = radius + 0x1000;
     s32 result = -1;
-    facing &= 0x7FFF;
+
     for (i = 0; i < D_8013AFD2; i++) {
         players = gRacePlayers;
         player = &players[i];
-        if (i != excludedPlayer && player->surfaceState.fields.unk134 == 0 && !(player->unk128 & 0x402000) && player->isActive) {
+        if (i != excludedPlayer && player->surfaceState.fields.unk134 == 0
+            && !(player->unk128 & 0x402000) && player->isActive) {
             dx = player->x - position->x;
-            if (dx < 0) dx = -dx;
+            if (dx < 0) {
+                dx = -dx;
+            }
             if (dx < radius) {
                 dy = player->unk074 - position->y;
-                if (dy < 0) dy = -dy;
+                if (dy < 0) {
+                    dy = -dy;
+                }
                 if (dy < radius) {
                     dz = player->z - position->z;
-                    if (dz < 0) dz = -dz;
+                    if (dz < 0) {
+                        dz = -dz;
+                    }
                     if (dz < radius) {
                         angle = getXZHeading(position->x, position->z, player->x, player->z);
-                        if (((angle - facing + 0x380) & 0xFFF) < 0x700) {
+                        if (((s16)(angle - facing + 0x380) & 0xFFF) < 0x700) {
                             distance = SquareRoot0(dx * dx + dz * dz);
                             if (distance < radius && distance < nearest) {
                                 result = i;
@@ -586,11 +591,9 @@ s16 func_80046228(Position3D *position, s32 radius, s16 facing, s16 excludedPlay
             }
         }
     }
+
     return result;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/effects/coordinate_effects", func_80046228);
-#endif
 
 void initializePlayerVisualHistory(TaskVisualResource *resource, VECTOR *vectors, s32 value, s32 scale) {
     RacePlayer *players;
@@ -687,7 +690,7 @@ void updateHomingTaskVisualMovement(TaskVisualResource *resource, VECTOR *histor
     entry->vz = resource->position.z;
     history += D_8013AE88->data1A;
     history->pad = 1;
-    player = func_80046228(&resource->position, distance, resource->unkD8, D_8013AE88->data18, &angle);
+    player = (s16)findNearestHomingTargetPlayer(&resource->position, distance, resource->unkD8, D_8013AE88->data18, &angle);
     resource->unkE0 = player;
     if (player != -1) {
         gRacePlayers[player].unk946 = 1;
