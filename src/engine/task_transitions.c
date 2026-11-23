@@ -197,7 +197,6 @@ void initializeRaceTaskState(void);
 void updateActiveRaceTask(void);
 void finishRaceTransitionAfterCountdown(void);
 void func_8001C9F0(void);
-s16 func_8008C290(s16 characterId, s16 finishPosition);
 void processTaskWhenFlagAFAABit7Set(void);
 
 void runMovieAndGameLoop(void) {
@@ -1040,7 +1039,7 @@ void finishRaceExitAfterCountdown(void) {
         if (!D_8013AFD7 && !D_8013B1AA && !D_8013B1AB && !D_8013AFE2 && D_8013AFCD == 1) {
             player = &gRacePlayers[0];
             if (player->unk935 < 3) {
-                unlockTier = func_8008C290(player->characterId, player->unk935);
+                unlockTier = updateRaceUnlockProgress(player->characterId, player->unk935);
                 transitionIndex = unlockTier;
                 switch (transitionIndex) {
                 case 1:

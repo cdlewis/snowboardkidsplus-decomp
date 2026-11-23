@@ -69,6 +69,8 @@ s16 getSaveRecordFlagPair(s16 recordIndex, s16 maskIndex, s16 pairIndex);
 
 void setSaveRecordFlagPair(s16 recordIndex, s16 maskIndex, s16 pairIndex, s16 value);
 
+s16 updateRaceUnlockProgress(s16 characterId, s16 finishPosition);
+
 s32 hasStateGridFlag(SaveRecord *state, s16 row, s16 column);
 
 s32 getPlayerRecordFlagMode(s16 index);

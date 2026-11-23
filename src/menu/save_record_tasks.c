@@ -29,6 +29,7 @@ typedef struct SaveMenuResource {
 } SaveMenuResource;
 
 extern u16 D_8013AF78 __attribute__((section(".data")));
+extern s16 D_8013AFCE __attribute__((section(".data")));
 extern u32 gGameOptionFlags __attribute__((section(".data")));
 extern u8 D_8013AFCD __attribute__((section(".data")));
 extern GameTask *D_8013AE88 __attribute__((section(".data")));
@@ -840,53 +841,53 @@ void rebuildCombinedStateMask(SaveRecord *state) {
     }
 }
 
-/* DECOMP_ATTEMPT: inline 129/131 */
-#ifdef NON_MATCHING
-extern s16 D_8013AFCE __attribute__((section(".data")));
-
-s16 func_8008C290(s16 maskIndex, s16 place) {
-    s16 savedMask = maskIndex;
-    s16 result;
-    s16 pair;
-    s16 value;
+s16 updateRaceUnlockProgress(s16 characterId, s16 finishPosition) {
+    s16 savedCharacterId = characterId;
+    s16 unlockTier;
+    s16 coursePair;
+    s16 finishRating;
     s16 i;
-    s16 recordIndex;
-    if (place >= 4) return 0;
-    result = 0;
-    pair = D_8012D478[D_8013AFCE];
-    value = 3 - place;
-    if (getSaveRecordFlagPair(0, maskIndex, pair) < value) {
-        setSaveRecordFlagPair(0, maskIndex, pair, value);
-        switch (getSaveRecordMaskTier(0, maskIndex)) {
+    s16 recordIndex = 0;
+
+    if (finishPosition >= 4) {
+        return 0;
+    }
+    unlockTier = 0;
+    coursePair = D_8012D478[D_8013AFCE];
+    finishRating = 3 - finishPosition;
+    if (getSaveRecordFlagPair(recordIndex, characterId, coursePair) < finishRating) {
+        setSaveRecordFlagPair(recordIndex, characterId, coursePair, finishRating);
+        switch (getSaveRecordMaskTier(recordIndex, characterId)) {
         case 2:
-            if (value == 3 && pair == 7) result = 3;
+            if (finishRating == 3 && coursePair == 7) {
+                unlockTier = 3;
+            }
             break;
         case 1:
-            if (value == 3 && pair == 6) result = 2;
+            if (finishRating == 3 && coursePair == 6) {
+                unlockTier = 2;
+            }
             break;
         case 0:
-            result = 1;
-            recordIndex = 0;
+            unlockTier = 1;
             for (i = 0; i < 6; i++) {
-                if (getSaveRecordFlagPair(recordIndex, maskIndex, i) < 3) {
-                    result = 0;
+                if (getSaveRecordFlagPair(recordIndex, characterId, i) < 3) {
+                    unlockTier = 0;
                     break;
                 }
             }
             break;
         }
     }
-    if (value == 3 && pair == 8) result = 4;
-    if (result != 0) setSaveRecordMaskTier(0, savedMask, result);
-    {
-        u8 padding[8];
-        copySaveRecordAndMergeFlags();
+    if (finishRating == 3 && coursePair == 8) {
+        unlockTier = 4;
     }
-    return result;
+    if (unlockTier != 0) {
+        setSaveRecordMaskTier(recordIndex, savedCharacterId, unlockTier);
+    }
+    copySaveRecordAndMergeFlags();
+    return unlockTier;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/menu/save_record_tasks", func_8008C290);
-#endif
 
 u32 getGlobalFlagMask(s16 bitIndex) {
     return gMergedSaveRecord.flags & (1U << bitIndex);
