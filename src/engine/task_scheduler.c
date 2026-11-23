@@ -41,8 +41,6 @@ TaskCallback gInitialTaskCallbacks[6] __attribute__((section(".data.initial_task
     armSavedStateRestoreOnFlag3,
 };
 
-void func_800147B8(TaskCallback callback);
-
 void initializeTaskScheduler(void) {
     u16 i;
     for (i = 0; i < 6; i++) {
@@ -77,9 +75,7 @@ void initializeTaskScheduler(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: inline 30/32 */
-#ifdef NON_MATCHING
-void func_800147B8(TaskCallback callback) {
+void insertChildTaskFromFreeList(TaskCallback callback) {
     GameTask *next;
     D_8013AEB4--;
     D_8013AE8C = D_8013AE9C;
@@ -99,16 +95,13 @@ void func_800147B8(TaskCallback callback) {
     D_8013AE8C->resource16 = 0xFFFF;
     D_8013AE8C->resource14 = 0xFFFF;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/engine/task_scheduler", func_800147B8);
-#endif
 
 s32 createChildTask(TaskCallback callback) {
     if (D_8013AEB4 == 0) {
         D_8013AE8C = D_8013AEA0;
         return 0;
     }
-    func_800147B8(callback);
+    insertChildTaskFromFreeList(callback);
     return 1;
 }
 
@@ -117,7 +110,7 @@ s32 createChildTaskWithReserve(TaskCallback callback) {
         D_8013AE8C = D_8013AEA0;
         return 0;
     }
-    func_800147B8(callback);
+    insertChildTaskFromFreeList(callback);
     return 1;
 }
 
@@ -128,7 +121,7 @@ s32 tryCreateChildTaskWith20SlotsReserved(TaskCallback callback) {
         return 0;
     }
 
-    func_800147B8(callback);
+    insertChildTaskFromFreeList(callback);
     return 1;
 }
 
