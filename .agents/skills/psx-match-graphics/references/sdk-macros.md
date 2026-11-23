@@ -39,7 +39,9 @@ Important distinctions:
 ## GTE: calls, leaf inlines, and composites
 
 Types and library API declarations: `lib/psyq-sdk/4.2/INCLUDE/LIBGTE.H`.
-Project port, including established inlines: `include/psx/libgte.h`.
+Project header: `include/psx/libgte.h` includes the SDK's `INLINE_C.H`
+directly and adapts the used DMPSX command placeholders to GNU assembler
+mnemonics.
 
 | Source header | Purpose and useful search names |
 | --- | --- |

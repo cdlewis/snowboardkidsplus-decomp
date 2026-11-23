@@ -50,11 +50,11 @@ store independently. For GTE sequences, inspect composite and leaf inline macros
 before writing arithmetic or assembly. Preserve real library calls when call
 targets and ABI establish them; uppercase APIs and lowercase macros can differ.
 
-An SDK macro missing from `include/psx/` is a header gap, not evidence of
-handwritten code. Port the relevant definition into its canonical project header
-with source/version attribution and compatible types. Preserve argument
-evaluation, widths, masks, clobbers, and hazards. Do not silently replace an SDK
-macro's semantics or import an entire foreign header.
+Check definitions inherited from the pinned SDK headers before adding a macro.
+Use compatible SDK definitions directly. For definitions that need adaptation,
+such as GTE commands that use DMPSX placeholders, keep the adaptation in the
+canonical project header and document the source and toolchain difference.
+Preserve argument evaluation, widths, masks, clobbers, and hazards.
 
 ### What rebuts the presumption
 
