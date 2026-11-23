@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate m2c / decomp.me context from a function's owning C unit."""
+"""Generate declaration-only m2c / decomp.me context from a function's C unit."""
 
 import argparse
 import re
@@ -10,6 +10,13 @@ from pathlib import Path
 
 import build
 from decomp import INCLUDE, ROOT, uncomment
+
+C_TOKEN = re.compile(r'''"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|\w+|\S''')
+C_DELIMITERS = {"(": ")", "[": "]", "{": "}"}
+OLD_STYLE_PARAMETERS = re.compile(
+    r"\(\s*[A-Za-z_]\w*(?:\s*,\s*[A-Za-z_]\w*)*\s*\)\s*"
+    r"(?!(?:asm|__asm|__asm__)\b)[A-Za-z_]\w*"
+)
 
 
 def find_unit(function, requested_unit=None):
@@ -24,7 +31,7 @@ def find_unit(function, requested_unit=None):
     else:
         sources = sorted((ROOT / "src").rglob("*.c"))
     definition = re.compile(r"^[^\n;{}#]*\b" + re.escape(function)
-                            + r"\s*\([^;{}]*\)\s*\{", re.M)
+                            + r"\s*\([^;{}]*\)\s*(?:[A-Za-z_][^;{}]*;\s*)*\{", re.M)
     matches = []
     for source in sources:
         text = uncomment(source.read_text())
@@ -38,8 +45,64 @@ def find_unit(function, requested_unit=None):
     return matches[0]
 
 
+def strip_implementations(source):
+    """Preserve preprocessed declarations, including struct, union, and enum bodies."""
+    output = []
+    start = 0
+    declaration_start = 0
+    delimiters = []
+    previous = ""
+    old_style = None
+    in_initializer = False
+    in_function = False
+    for token in C_TOKEN.finditer(source):
+        value = token[0]
+        if not delimiters:
+            if in_initializer and value in (",", ";"):
+                start = token.start()
+                in_initializer = False
+            elif not in_initializer:
+                # With attributes removed, a top-level brace after a
+                # declarator's closing parenthesis opens a function body.
+                if value == "{" and previous == ")":
+                    output.extend((source[start:token.start()].rstrip(), ";"))
+                    in_function = True
+                elif value == "{" and previous == ";" and old_style is not None:
+                    # K&R definitions put parameter declarations before the body.
+                    name, signature_start, parameters_start = old_style
+                    output.append(source[start:signature_start])
+                    prototype = rf"\b{re.escape(name)}\s*\([^;{{}}]*\)\s*;"
+                    if not re.search(prototype, "".join(output)):
+                        output.extend((source[signature_start:parameters_start], "();"))
+                    in_function = True
+                elif value == "=":
+                    output.append(source[start:token.start()].rstrip())
+                    in_initializer = True
+                elif value == "(" and OLD_STYLE_PARAMETERS.match(source, token.start()):
+                    old_style = (previous, declaration_start, token.start())
+
+            if value == ";":
+                declaration_start = token.end()
+
+        if value in C_DELIMITERS:
+            delimiters.append(C_DELIMITERS[value])
+        elif delimiters and value == delimiters[-1]:
+            delimiters.pop()
+            if in_function and not delimiters:
+                start = token.end()
+                declaration_start = start
+                in_function = False
+                old_style = None
+        previous = value
+
+    if delimiters or in_initializer:
+        raise ValueError("unclosed declaration or implementation in preprocessed C")
+    output.append(source[start:])
+    return "".join(output)
+
+
 def generate_context(source):
-    """Keep project macros and declarations, without assembly or attributes."""
+    """Keep project macros and declarations for m2c's type lookup."""
     with tempfile.TemporaryDirectory(prefix="skp-m2ctx-") as temporary:
         includes = Path(temporary)
         # Context needs only the no-op M2CTX forms, even before split generation
@@ -52,13 +115,13 @@ def generate_context(source):
         stock = subprocess.check_output(command + ["-dM", "-x", "c", "-"],
                                         cwd=ROOT, input="", text=True)
         macros = subprocess.check_output(command + ["-dM", str(source)], cwd=ROOT, text=True)
-        declarations = subprocess.check_output(command + [str(source)], cwd=ROOT, text=True)
+        preprocessed = subprocess.check_output(command + [str(source)], cwd=ROOT, text=True)
         predefined = set(stock.splitlines())
         # -dM preserves unexpanded macro bodies, including storage annotations.
         # Those annotation macros are unnecessary in already-expanded C.
         project_macros = [line for line in macros.splitlines()
                           if line not in predefined and "__attribute__" not in line]
-        return "\n".join(project_macros) + "\n\n" + declarations
+        return "\n".join(project_macros) + "\n\n" + strip_implementations(preprocessed)
 
 
 def main():
