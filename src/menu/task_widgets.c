@@ -2,6 +2,7 @@
 #include "game/save/save_data.h"
 #include "game/engine/game_options.h"
 #include "game/engine/byte_search.h"
+#include "game/io/cd_queue.h"
 #include "game/io/controller.h"
 #include "game/io/controller_effects.h"
 #include "game/graphics/graphics.h"
@@ -175,6 +176,11 @@ extern s16 gFrameCounter __attribute__((section(".data")));
 extern u16 D_8013AF78 __attribute__((section(".data")));
 extern u8 D_8013AFCD __attribute__((section(".data")));
 extern u8 D_8013AFD3 __attribute__((section(".data")));
+extern u8 D_8013AFE2 __attribute__((section(".data")));
+extern u8 D_8013B3A8 __attribute__((section(".data")));
+extern u8 D_8013B3A9 __attribute__((section(".data")));
+extern u8 D_8013B3AA __attribute__((section(".data")));
+extern u8 D_8013B3AB __attribute__((section(".data")));
 extern GameTask *D_8013AE88 __attribute__((section(".data")));
 extern GameTask *D_8013AE8C __attribute__((section(".data")));
 extern GameTask *D_8013AE98 __attribute__((section(".data")));
@@ -283,8 +289,10 @@ void updateInputTimedSpriteTask(void);
 void updateTimedSequence(TimedSequence *sequence);
 void updateTimedSpriteB5Task(void);
 void updateValueTransitionTask(void);
-void func_80077770(void);
+void updateCharacterSelectionTask(void);
 s32 findCharacterSelectionIndex(s16 character);
+void createDualSelectionSequenceTask(s16 x, s16 y, s32 depth, s32 index);
+void drawTextMessagePanel(void);
 void func_80078140(void);
 void updatePlayerPanelTask(void);
 void updatePlayerCharacterSelection(s16 playerIndex, SelectionEntry *entries);
@@ -2697,12 +2705,160 @@ void initializeDualResourceSequenceTask(void) {
         while (1) {}
     }
     D_8013AE88->resource16 = allocateTaskResource();
-    setCurrentTaskCallback(func_80077770);
+    setCurrentTaskCallback(updateCharacterSelectionTask);
     D_8013AE88->unk10 |= 2;
 }
 
-/* DECOMP_ATTEMPT: unattempted */
-INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80077770);
+void updateCharacterSelectionTask(void) {
+    SelectionEntry *selection;
+    ValuePanelEntry *panels;
+    RacePlayer *players;
+    s32 i;
+
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
+    selection = (SelectionEntry *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) {
+        while (1) {}
+    }
+    panels = (ValuePanelEntry *)&D_800D9504[D_8013AE88->resource16];
+
+    switch (D_8013AE88->data18) {
+    case 1:
+        setMusicSequenceEnabled(1);
+        configureTaskStateTransition(11, 0, 30);
+        setSecondaryDisplayTaskMode(0);
+        setTaskBackgroundMode(2, -0x1000, 0x1000);
+        uploadBufferedTexturePair();
+        drawTextMessagePanel();
+
+        players = gRacePlayers;
+        selection[0].unk00 = 0;
+        selection[0].previous = selection[0].selected = findCharacterSelectionIndex(players[0].unk009);
+        selection[0].unk06 = 0;
+        if (D_8013AFCD == 2) {
+            selection[1].unk00 = 0;
+            selection[1].previous = selection[1].selected = findCharacterSelectionIndex(players[1].unk009);
+            selection[1].unk06 = 0;
+        } else {
+            selection[1].unk00 = -1;
+            selection[1].selected = -1;
+            selection[1].previous = -1;
+            selection[1].unk06 = 1;
+        }
+
+        createDualSelectionSequenceTask(-234, -100, 5, 21);
+        configureMovement2D((Movement2D *)&D_800D9504[panels[2].task->resource14],
+                            -144 * 4096, -100 * 4096, 15 * 4096, 0, 0);
+        createPlayerPanelTask(1, -68, 184, 5, 41);
+        configureMovement2D((Movement2D *)&D_800D9504[panels[4].task->resource14],
+                            -68 * 4096, 4 * 4096, 0, -30 * 4096, 0);
+        createPlayerPanelTask(0, -68, -280, 5, 31);
+        configureMovement2D((Movement2D *)&D_800D9504[panels[3].task->resource14],
+                            -68 * 4096, -100 * 4096, 0, 30 * 4096, 0);
+        configureColorCycleTask(2, 64, 128, 4, 0);
+        D_8013AE88->data18 = 3;
+        break;
+
+    case 3:
+        drawTextMessagePanel();
+        if (panels[2].active || panels[3].active || panels[4].active) {
+            break;
+        }
+        for (i = 0; i < 2; i++) {
+            if (selection[i].unk00 >= 0) {
+                selection[i].unk00 = 1;
+            }
+        }
+        D_8013B3A8 = 64;
+        D_8013B3A9 = 64;
+        D_8013B3AA = 64;
+        D_8013B3AB = 8;
+        /* Fall through. */
+    case 4:
+        for (i = 0; i < 2; i++) {
+            if (selection[i].unk00 >= 0) {
+                selection[i].unk00 = 2;
+                panels[3 + i].flags = 2;
+            }
+        }
+        D_8013AE88->data18 = 5;
+        break;
+
+    case 5:
+        for (i = 0; i < 2; i++) {
+            if (selection[i].unk00 > 0 && selection[i].unk06 > 0) {
+                selection[i].unk00 = 3;
+            }
+        }
+        for (i = 0; i < 2; i++) {
+            if (selection[i].unk06 < 0 && selection[i].unk00 >= 0) {
+                selection[i].unk06 = 0;
+                selection[i].unk00 = 2;
+                panels[3 + i].flags = 2;
+            }
+        }
+
+        if (selection[0].unk00 >= 0 && selection[0].unk06 > 0 && (D_8013AEE8[0] & 0x40)) {
+            selection[0].unk06 = 0;
+            playSoundEffect(0, 0, 32);
+        }
+        if (selection[1].unk00 >= 0 && selection[1].unk06 > 0 && (D_8013AEE8[1] & 0x40)) {
+            selection[1].unk06 = 0;
+            playSoundEffect(0, 0, 32);
+        }
+
+        if (selection[0].unk06 != 0 && selection[1].unk06 != 0 &&
+            panels[3].active == 0 && panels[4].active == 0) {
+            createValuePanelTask(-120, -48, (s16 *)selection, 2, 51);
+            D_8013AE88->data18 = 6;
+        }
+        break;
+
+    case 6:
+        if (panels[5].active) {
+            break;
+        }
+        if (selection[0].unk06 != 1 || selection[1].unk06 != 1) {
+            D_8013AE88->data18 = 5;
+            for (i = 0; i < 2; i++) {
+                if (selection[i].unk00 >= 0 && selection[i].unk06 != 1) {
+                    selection[i].unk00 = 2;
+                    selection[i].unk06 = 0;
+                }
+            }
+            configureColorCycleTask(2, 64, 128, 4, 0);
+        } else {
+            D_8013AE98->data18 = 6;
+            D_8013AFE2 = 0;
+            queueMenuResourceReads((s16)D_8013AE98->data18);
+            D_8013AE88->data18 = 7;
+        }
+        break;
+
+    case 7:
+        configureMovement2D((Movement2D *)&D_800D9504[panels[2].task->resource14],
+                            -234 * 4096, -100 * 4096, -15 * 4096, 0, 0);
+        configureMovement2D((Movement2D *)&D_800D9504[panels[3].task->resource14],
+                            -68 * 4096, -280 * 4096, 0, -30 * 4096, 0);
+        configureMovement2D((Movement2D *)&D_800D9504[panels[4].task->resource14],
+                            -68 * 4096, 184 * 4096, 0, 30 * 4096, 0);
+        goto advance;
+
+    case 8:
+        if (panels[2].active == 0 && panels[3].active == 0 && panels[4].active == 0) {
+advance:
+            D_8013AE88->data18++;
+        }
+        break;
+
+    default:
+        D_8013AE98->data1C--;
+        deleteCurrentTaskSubtree();
+        break;
+    }
+}
 
 s32 findCharacterSelectionIndex(s16 character) {
     s32 result = -1;
@@ -2759,10 +2915,6 @@ void createDualSelectionSequenceTask(s16 x, s16 y, s32 depth, s32 index) {
 
 /* DECOMP_ATTEMPT: inline 463/511 */
 #ifdef NON_MATCHING
-extern u8 D_8013B3A8 __attribute__((section(".data")));
-extern u8 D_8013B3A9 __attribute__((section(".data")));
-extern u8 D_8013B3AA __attribute__((section(".data")));
-
 void func_80078140(void) {
     Movement2D *movement;
     TimedSequence *sequences;

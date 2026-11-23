@@ -128,6 +128,7 @@ UNIT_CCFLAGS_src/menu/panel_tasks.c += --rdata-section=updateBoardSelectionMenuT
 UNIT_CCFLAGS_src/menu/panel_tasks.c += --rdata-section=updateBoardSelectionDetailsMenuTask:.rodata.board_selection_details
 UNIT_CCFLAGS_src/menu/panel_tasks.c += --rdata-section=updateBoardPurchaseMenuTask:.rodata.board_purchase_menu
 UNIT_CCFLAGS_src/menu/task_widgets.c += --rdata-section=cycleSaveRecordUnlockFlags:.rodata.save_record_unlock_flags
+UNIT_CCFLAGS_src/menu/task_widgets.c += --rdata-section=updateCharacterSelectionTask:.rodata.character_selection
 UNIT_CCFLAGS_src/menu/resource_tasks.c += --rdata-section=updateMainTailSelectionMenuTask:.rodata.main_tail_selection
 UNIT_CCFLAGS_src/menu/resource_tasks.c += --rdata-section=updateSelectionIndexedMenuTask:.rodata.selection_indexed_menu
 UNIT_CCFLAGS_src/menu/resource_tasks.c += --rdata-section=updateModeDependentRecordsMenuTask:.rodata.records_menu
