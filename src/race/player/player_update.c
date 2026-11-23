@@ -467,7 +467,7 @@ u32 gPlayerGroundContactSavedStackPointer
     __attribute__((section(".sdata.player_ground_contact_saved_stack"))) = 0;
 
 void updateCurrentPlayerState24MotionAndScale(void);
-void func_80024288(void);
+void updateCurrentPlayerState3MotionAndSteering(void);
 void updateCurrentPlayerTimedEffect(void);
 void updateCurrentPlayerRiding(void);
 s16 tryStartPlayerSelectedRecordTransition(s16 playerIndex);
@@ -969,7 +969,7 @@ void initializeCurrentPlayerState3(void) {
     D_8013B0D8->unk050 = D_8013B0D8->x - D_8013B0D8->unk060;
     D_8013B0D8->unk058 = D_8013B0D8->z - D_8013B0D8->unk064;
     queuePlayerControllerEffect(D_8013AE88->data18, 8);
-    setCurrentTaskCallback(func_80024288);
+    setCurrentTaskCallback(updateCurrentPlayerState3MotionAndSteering);
 }
 
 void initializeCurrentPlayerState4(void) {
@@ -3244,18 +3244,12 @@ void updateCurrentPlayerState29MotionAndAnimation(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: inline 191/207 */
-#ifdef NON_MATCHING
-void prepareCurrentPlayerFrame(void);
-s16 resolveCurrentPlayerTerrainContact(void);
-
-void func_80024288(void) {
+void updateCurrentPlayerState3MotionAndSteering(void) {
     RacePlayer *player;
     RacePlayer *airbornePlayer;
     RacePlayer *movingPlayer;
     RacePlayer *steeringPlayer;
     RacePlayer *animatedPlayer;
-    SelectedCourseRecord *course;
     s32 velocity;
     s16 angle;
     s16 delta;
@@ -3297,13 +3291,13 @@ void func_80024288(void) {
         airbornePlayer->unk064 -= velocity;
     }
 
-    D_8013B0D8->x += D_8013B0D8->unk060;
-    D_8013B0D8->y += D_8013B0D8->unk062;
-    D_8013B0D8->z += D_8013B0D8->unk064;
-    course = &D_80123D80[D_8013AFCE];
     movingPlayer = D_8013B0D8;
-    if (movingPlayer->unk92E == (s16)course->unk00 && !(movingPlayer->unk128 & 0x40)) {
-        angle = getXZHeading(movingPlayer->x, movingPlayer->z, course->unk40[0], course->unk40[1]);
+    movingPlayer->x += movingPlayer->unk060;
+    movingPlayer->y += movingPlayer->unk062;
+    movingPlayer->z += movingPlayer->unk064;
+    if (movingPlayer->unk92E == (s16)D_80123D80[D_8013AFCE].unk00 && !(movingPlayer->unk128 & 0x40)) {
+        angle = getXZHeading(movingPlayer->x, movingPlayer->z,
+                             D_80123D80[D_8013AFCE].unk40[0], D_80123D80[D_8013AFCE].unk40[1]);
         steeringPlayer = D_8013B0D8;
         if (steeringPlayer->unk128 & 0x400) {
             angle += 0x800;
@@ -3347,9 +3341,6 @@ void func_80024288(void) {
     }
     callCurrentPlayerStateCallbackIfDifferent(3);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_80024288);
-#endif
 
 void updateCurrentPlayerState4MotionAndLanding(void) {
     RacePlayer *player;

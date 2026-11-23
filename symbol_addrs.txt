@@ -3652,6 +3652,7 @@ gResultValueMultiplierLabel = 0x8013B124; // size:0x4
 gPlayerNumberSuffixLabel = 0x8013B128; // size:0x4
 gComputerPlayerLabel = 0x8013B12C; // size:0x4
 
+updateCurrentPlayerState3MotionAndSteering = 0x80024288; // type:func
 updateCurrentPlayerState4MotionAndLanding = 0x800245C4; // type:func
 
 updateSelectedPlayerPlaybackTask = 0x8001D678; // type:func
