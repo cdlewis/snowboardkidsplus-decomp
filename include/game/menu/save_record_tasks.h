@@ -1,5 +1,5 @@
 #pragma once
 
 void initializeSaveRecordTask(void);
-void func_80089EC0(void);
+void initializeMemoryCardSaveMenuTask(void);
 void updateMemoryCardSaveMenuTask(void);

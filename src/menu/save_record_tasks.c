@@ -14,6 +14,8 @@
 #include "game/race/player/race_player.h"
 #include "game/save/save_data.h"
 
+#define MEMORY_CARD_SAVE_BUFFER ((SaveRecord *)0x801E4000)
+
 typedef struct SaveMenuResource {
     u8 unk00[4];
     s16 command04;
@@ -214,7 +216,7 @@ void updateStateValueHistoryTask(void) {
             D_8013AE88->data18 = 0;
             break;
         }
-        if ((s16)startMemoryCardSaveStatusTask((void *)0x801E4000, 0x810) == 1)
+        if ((s16)startMemoryCardSaveStatusTask(MEMORY_CARD_SAVE_BUFFER, 0x810) == 1)
             D_8013BE30.unk_0E[D_8013BE30.activeIndex] = 0;
         break;
     }
@@ -235,36 +237,36 @@ void startStateValueHistoryTask(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: inline 100/102 */
-#ifdef NON_MATCHING
-typedef struct SaveTaskResource { u8 unk00[12]; u16 unk0C; } SaveTaskResource;
+void initializeMemoryCardSaveMenuTask(void) {
+    SaveMenuResource *menu;
+    SaveRecord *destination;
+    GameTask *task;
 
-void updateMemoryCardSaveMenuTask(void);
+    D_8013AE88->data18 = 0;
+    D_8013AE88->data1A = 0;
+    D_8013AE98->data1C++;
 
-void func_80089EC0(void) {
- SaveTaskResource *resource;
- SaveRecord *destination;
- D_8013AE88->data18 = 0;
- D_8013AE88->data1A = 0;
- D_8013AE98->data1C++;
- if (D_8013AE88->resource14 != 0xFFFF) { while (1) {} }
- D_8013AE88->resource14 = allocateTaskResource();
- resource = (SaveTaskResource *)&D_800D9504[D_8013AE88->resource14];
- if (D_8013AE88->resource16 != 0xFFFF) { while (1) {} }
- D_8013AE88->resource16 = allocateTaskResource();
- resource->unk0C = 0;
- prepareSaveRecordForWrite(&gPlayerSaveRecords[0]);
- destination = (SaveRecord *)0x801E4000;
- *destination++ = gPlayerSaveRecords[0];
- *destination = gPlayerSaveRecords[0];
- startStateValueHistoryTask();
- setCurrentTaskCallback(updateMemoryCardSaveMenuTask);
- { GameTask *task = D_8013AE88; task->unk10 = task->unk10 | 2; }
- return;
+    if (D_8013AE88->resource14 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource14 = allocateTaskResource();
+    menu = (SaveMenuResource *)&D_800D9504[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 != 0xFFFF) {
+        while (1) {}
+    }
+    D_8013AE88->resource16 = allocateTaskResource();
+    menu->command0C = 0;
+
+    prepareSaveRecordForWrite(&gPlayerSaveRecords[0]);
+    destination = MEMORY_CARD_SAVE_BUFFER;
+    *destination++ = gPlayerSaveRecords[0];
+    *destination = gPlayerSaveRecords[0];
+
+    startStateValueHistoryTask();
+    setCurrentTaskCallback(updateMemoryCardSaveMenuTask);
+    task = D_8013AE88;
+    task->unk10 |= 2;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/menu/save_record_tasks", func_80089EC0);
-#endif
 
 void updateMemoryCardSaveMenuTask(void) {
     SaveMenuResource *primary;

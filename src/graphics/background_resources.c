@@ -208,7 +208,7 @@ void dispatchBackgroundMenuTask(void) {
             createChildTaskWithReserve(initializeCountedFourBoundsTask);
             return;
         case 15:
-            createChildTaskWithReserve(func_80089EC0);
+            createChildTaskWithReserve(initializeMemoryCardSaveMenuTask);
             return;
         case 20:
         case 21:
