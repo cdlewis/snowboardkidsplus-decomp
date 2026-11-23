@@ -1770,22 +1770,12 @@ void func_80081AC8(s32 index, GameTask *task, s32 x, s32 y, s32 speedX, s32 spee
 INCLUDE_ASM("asm/nonmatchings/menu/course_selection_tasks", func_80081AC8);
 #endif
 
-/* DECOMP_ATTEMPT: inline 18/20 */
-#ifdef NON_MATCHING
-typedef struct TaskResourceEntry {
-    GameTask *task;
-    s32 unk04;
-} TaskResourceEntry;
-
-void func_80081BAC(s32 index, GameTask *task, s32 x, s32 y) {
-    TaskResourceEntry *entries = (TaskResourceEntry *)&D_800D9504[task->resource16];
+void initRegisteredChildMovement(s32 index, GameTask *task, s32 x, s32 y) {
+    RegisteredTaskEntry *entries = (RegisteredTaskEntry *)&D_800D9504[task->resource16];
     GameTask *child = entries[index].task;
     Movement2D *movement = (Movement2D *)&D_800D9504[child->resource16];
     initMovement2D(movement, x, y);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/menu/course_selection_tasks", func_80081BAC);
-#endif
 
 static inline RegisteredTaskEntry *getRegisteredTripletEntry(u16 resource, s32 index) {
     RegisteredTaskEntry *entries = (RegisteredTaskEntry *)&D_800D9504[resource];
