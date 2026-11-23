@@ -1416,7 +1416,7 @@ void updateCurrentPlayerRiding(void) {
 
     if (D_8013B0D8->unk008 ||
         (D_8013B0D8->unk92E == (s16)D_80123D80[D_8013AFCE].unk00 &&
-         func_8008C670(D_8013AE88->data18))) {
+         (s16)getModeFilteredAutoPilotFlag(D_8013AE88->data18))) {
         autoPlayer = D_8013B0D8;
         getCourseSteeringTarget(autoPlayer->unk92E, autoPlayer->x >> 8, autoPlayer->z >> 8,
                       &targetX, &targetZ, (s8)autoPlayer->unk025[3], D_8013AE88->data18);
@@ -1578,7 +1578,7 @@ applySteering:
 
     if (D_8013B0D8->unk008 ||
         (D_8013B0D8->unk92E == (s16)D_80123D80[D_8013AFCE].unk00 &&
-         func_8008C670(D_8013AE88->data18))) {
+         (s16)getModeFilteredAutoPilotFlag(D_8013AE88->data18))) {
         /* The same autopilot condition above supplies this correction. */
         D_8013B0D8->unk0B6 += headingStep;
     } else {
@@ -1650,7 +1650,7 @@ applySteering:
     if (itemPlayer->animationIndex != D_800EB09C[itemPlayer->characterId][0]) {
         if (itemPlayer->unk008 ||
             (itemPlayer->unk92E == (s16)D_80123D80[D_8013AFCE].unk00 &&
-             func_8008C670(D_8013AE88->data18))) {
+             (s16)getModeFilteredAutoPilotFlag(D_8013AE88->data18))) {
             autoItemPlayer = D_8013B0D8;
             if (autoItemPlayer->unk950) {
                 autoItemPlayer->unk951 = 1;
@@ -1736,7 +1736,7 @@ void updateCurrentPlayerChargeAndLaunch(void) {
     push = 0;
     player = D_8013B0D8;
     if (!player->unk008 && player->unk92E == (s16)D_80123D80[D_8013AFCE].unk00 &&
-        func_8008C670((s16)D_8013AE88->data18)) {
+        (s16)getModeFilteredAutoPilotFlag(D_8013AE88->data18)) {
         drawAutoPilotLabelTask();
     }
     player = D_8013B0D8;
@@ -1784,7 +1784,7 @@ advanceCharge:
     if (D_8013B0D8->unk13C < 6) {
         if (!D_8013B0D8->unk008 &&
             (D_8013B0D8->unk92E != (s16)D_80123D80[D_8013AFCE].unk00 ||
-             !func_8008C670((s16)D_8013AE88->data18))) {
+             !(s16)getModeFilteredAutoPilotFlag(D_8013AE88->data18))) {
             if (!(D_8013AEEC[D_8013AE88->data18] & 0x40)) {
                 D_8013B0D8->unk128 &= ~0x10;
             }
@@ -1794,7 +1794,7 @@ advanceCharge:
     } else if (D_8013B0D8->unk128 & 0x10) {
         if (!D_8013B0D8->unk008 &&
             (D_8013B0D8->unk92E != (s16)D_80123D80[D_8013AFCE].unk00 ||
-             !func_8008C670((s16)D_8013AE88->data18))) {
+             !(s16)getModeFilteredAutoPilotFlag(D_8013AE88->data18))) {
             if (!(D_8013AEEC[D_8013AE88->data18] & 0x40)) {
                 D_8013B0D8->unk128 &= ~0x10;
             }
@@ -2038,7 +2038,7 @@ void func_80021B20(void) {
     if (D_8013B0D8->unk92E != (s16) D_80123D80[D_8013AFCE].unk00) {
         goto block_4;
     }
-    if (func_8008C670((s16) D_8013AE88->data18) == 0) {
+    if ((s16)getModeFilteredAutoPilotFlag(D_8013AE88->data18) == 0) {
         goto block_4;
     }
     drawAutoPilotLabelTask();
@@ -2056,7 +2056,7 @@ block_4:
     if (D_8013B0D8->unk92E != (s16) D_80123D80[D_8013AFCE].unk00) {
         goto block_9;
     }
-    if (func_8008C670((s16) D_8013AE88->data18) != 0) {
+    if ((s16)getModeFilteredAutoPilotFlag(D_8013AE88->data18) != 0) {
         goto block_13;
     }
 block_9:

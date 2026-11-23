@@ -373,6 +373,7 @@ gSaveRecordPushAnyButtonText = 0x801306BC; // size:0x20 defined:true
 getStereoSoundFlag = 0x8008C630; // type:func
 getGameOptionFlag0 = 0x8008C640; // type:func
 getPlayerOptionFlag = 0x8008C650; // type:func
+getModeFilteredAutoPilotFlag = 0x8008C670; // type:func
 getUnlockNotificationFlag = 0x8008C6BC; // type:func
 setUnlockNotificationFlag = 0x8008C6DC; // type:func
 drawUnlockNotificationMenu = 0x800A4C28; // type:func

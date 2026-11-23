@@ -31,6 +31,7 @@ s32 getModeFilteredGameOptionFlag2(void);
 /* State overrides return 0 or 1; otherwise returns the raw option bit 1 mask. */
 s32 getStateAdjustedGameOptionFlag1(void);
 s32 getPlayerOptionFlag(s16 playerIndex);
+s32 getModeFilteredAutoPilotFlag(s16 playerIndex);
 
 /* The unlock-message launcher (startUnlockNotification) tests and sets this mask to
  * avoid repeating notifications. The boolean wrapper aliases index 11 to 10.
@@ -44,5 +45,3 @@ extern u8 gameOptionPlayerModeAbsolute __attribute__((section(".data")));
 
 extern s16 D_80124164[];
 extern s16 D_8013B1A8 __attribute__((section(".data")));
-
-s16 func_8008C670(s16 playerIndex);
