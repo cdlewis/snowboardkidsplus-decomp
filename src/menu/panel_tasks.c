@@ -1244,7 +1244,7 @@ void updateGroupedSelectionBoundsTask(void) {
         if (CHILDREN_READY(entries)) {
             moveTaskChildrenWithSpacing(0, entries[0].task, -0x7C000, -0x60000, 0x1E000, 0x1E000, 1);
             configureMovement2D(CHILD_MOVEMENT(entries[1]), -0x88000, 0x8000, 0x1E000, 0x1E000, 5);
-            func_80081AC8(0, entries[2].task, 0x40000, 0, 0x1E000, 0x1E000, 5);
+            configureRegisteredChildMovement(0, entries[2].task, 0x40000, 0, 0x1E000, 0x1E000, 5);
             configureMovement2D(CHILD_MOVEMENT(entries[3]), -0x8000, -0x48000, 0x1E000, 0x1E000, 5);
             configureMovement2D(CHILD_MOVEMENT(entries[4]), -0x74000, 0x30000, 0x1E000, 0x1E000, 5);
             D_8013AE88->data18 = 3;
@@ -1346,8 +1346,8 @@ startExit:
             moveTaskChildrenWithSpacing(0, entries[0].task, -0x130000, -0x60000, 0x1E000, 0x1E000, -1000);
             entries[0].command = 23;
             configureMovement2D(CHILD_MOVEMENT(entries[1]), -0x13C000, 0x8000, 0x1E000, 0x1E000, -1000);
-            func_80081AC8(0, entries[2].task, 0xF4000, 0, 0x1E000, 0, -1000);
-            func_80081AC8(1, entries[2].task, 0xF4000, 0, 0x1E000, 0, -1000);
+            configureRegisteredChildMovement(0, entries[2].task, 0xF4000, 0, 0x1E000, 0, -1000);
+            configureRegisteredChildMovement(1, entries[2].task, 0xF4000, 0, 0x1E000, 0, -1000);
             configureMovement2D(CHILD_MOVEMENT(entries[3]), 0xAC000, -0x48000, 0x1E000, 0x1E000, -1000);
             configureMovement2D(CHILD_MOVEMENT(entries[4]), -0x128000, 0x30000, 0x1E000, 0x1E000, -1000);
             D_8013AE88->data18 = 7;
@@ -1712,8 +1712,8 @@ showSelection:
         configureTaskGridMovement(0, parentPanels[0].task, -0x1BC000, -0x60000, 0x1E000, 0x1E000, -1000);
         configureMovement2D((Movement2D *)&D_800D9504[parentPanels[1].task->resource14],
                             -0x1C8000, 0x8000, 0x1E000, 0x1E000, -1000);
-        func_80081AC8(0, parentPanels[2].task, 0x180000, 0, 0x1E000, 0, -1000);
-        func_80081AC8(1, parentPanels[2].task, 0x180000, 0, 0x1E000, 0, -1000);
+        configureRegisteredChildMovement(0, parentPanels[2].task, 0x180000, 0, 0x1E000, 0, -1000);
+        configureRegisteredChildMovement(1, parentPanels[2].task, 0x180000, 0, 0x1E000, 0, -1000);
         configureMovement2D((Movement2D *)&D_800D9504[parentPanels[3].task->resource14],
                             0x138000, -0x48000, 0x1E000, 0x1E000, -1000);
         configureMovement2D((Movement2D *)&D_800D9504[parentPanels[4].task->resource14],
@@ -1958,7 +1958,7 @@ void updateBoardSelectionMenuTask(void) {
             moveTaskChildrenWithSpacing(0, entries[0].task, -0x7C000, -0x60000, 0x1E000, 0x1E000, 1);
             configureMovement2D((Movement2D *)&D_800D9504[entries[1].task->resource14],
                                 -0x88000, 0x8000, 0x1E000, 0x1E000, 5);
-            func_80081AC8(0, entries[2].task, 0x40000, 0, 0x1E000, 0x1E000, 5);
+            configureRegisteredChildMovement(0, entries[2].task, 0x40000, 0, 0x1E000, 0x1E000, 5);
             configureMovement2D((Movement2D *)&D_800D9504[entries[3].task->resource14],
                                 -0x8000, -0x48000, 0x1E000, 0x1E000, 5);
             configureMovement2D((Movement2D *)&D_800D9504[entries[4].task->resource14],
@@ -2065,8 +2065,8 @@ beginExit:
             entries[0].command = 23;
             configureMovement2D((Movement2D *)&D_800D9504[entries[1].task->resource14],
                                 -0x13C000, 0x8000, 0x1E000, 0x1E000, -1000);
-            func_80081AC8(0, entries[2].task, 0xF4000, 0, 0x1E000, 0, -1000);
-            func_80081AC8(1, entries[2].task, 0xF4000, 0, 0x1E000, 0, -1000);
+            configureRegisteredChildMovement(0, entries[2].task, 0xF4000, 0, 0x1E000, 0, -1000);
+            configureRegisteredChildMovement(1, entries[2].task, 0xF4000, 0, 0x1E000, 0, -1000);
             configureMovement2D((Movement2D *)&D_800D9504[entries[3].task->resource14],
                                 0xAC000, -0x48000, 0x1E000, 0x1E000, -1000);
             configureMovement2D((Movement2D *)&D_800D9504[entries[4].task->resource14],
@@ -2327,8 +2327,8 @@ showSelection:
         configureMovement2D(TASK_POSITION(panels[2].task), -0xB4000, 0, 0x1E000, 0x1E000, -1000);
         configureTaskGridMovement(0, parentPanels[0].task, -0x130000, -0x60000, 0x1E000, 0x1E000, -1000);
         configureMovement2D(TASK_POSITION(parentPanels[1].task), -0x13C000, 0x8000, 0x1E000, 0x1E000, -1000);
-        func_80081AC8(0, parentPanels[2].task, 0xF4000, 0, 0x1E000, 0, -1000);
-        func_80081AC8(1, parentPanels[2].task, 0xF4000, 0, 0x1E000, 0, -1000);
+        configureRegisteredChildMovement(0, parentPanels[2].task, 0xF4000, 0, 0x1E000, 0, -1000);
+        configureRegisteredChildMovement(1, parentPanels[2].task, 0xF4000, 0, 0x1E000, 0, -1000);
         configureMovement2D(TASK_POSITION(parentPanels[3].task), 0xAC000, -0x48000, 0x1E000, 0x1E000, -1000);
         configureMovement2D(TASK_POSITION(parentPanels[4].task), -0x128000, 0x30000, 0x1E000, 0x1E000, -1000);
         D_8013AE88->data18 = 8;
@@ -2605,8 +2605,8 @@ void func_80093A54(void)
         moveTaskChildrenWithSpacing(0, entries[2].task, -0x130000, -0x60000, 0x1E000, 0x1E000, -1000);
         entries[2].command = 23;
         configureMovement2D(CHILD_MOVEMENT(entries[3]), 0xB4000, 0x40000, 0x1E000, 0x1E000, -1000);
-        func_80081AC8(0, entries[0].task, 0xF4000, 0, 0x1E000, 0, -1000);
-        func_80081AC8(1, entries[0].task, 0xF4000, 0, 0x1E000, 0, -1000);
+        configureRegisteredChildMovement(0, entries[0].task, 0xF4000, 0, 0x1E000, 0, -1000);
+        configureRegisteredChildMovement(1, entries[0].task, 0xF4000, 0, 0x1E000, 0, -1000);
         configureMovement2D(CHILD_MOVEMENT(entries[1]), 0xAC000, -0x48000, 0x1E000, 0x1E000, -1000);
         D_8013AE88->data18 = 6;
         break;

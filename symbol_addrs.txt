@@ -3354,6 +3354,7 @@ isPointWithinCameraForwardRange = 0x8005143C; // type:func
 drawSemiTransparentTextureRectUV = 0x8007219C; // type:func
 
 updateRegisteredPlayerModels = 0x800816D8; // type:func
+configureRegisteredChildMovement = 0x80081AC8; // type:func
 initRegisteredChildMovement = 0x80081BAC; // type:func
 updateRegisteredPlayerModelTask = 0x80082CE0; // type:func
 gMenuPlayerModelYaw = 0x8013B6B4; // size:0x4 defined:true

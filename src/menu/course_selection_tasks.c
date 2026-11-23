@@ -1034,7 +1034,7 @@ void updatePlayerGroupedCourseSelectionTask(void) {
             panels[3].flags == 0 && panels[4].flags == 0) {
             moveTaskChildrenWithSpacing(0, panels[0].task, -0x7C000, -0x60000, 0x1E000, 0x1E000, 1);
             configureMovement2D((Movement2D *)&D_800D9504[panels[1].task->resource14], -0x88000, 0x8000, 0x1E000, 0x1E000, 5);
-            func_80081AC8(0, panels[2].task, 0x40000, 0, 0x1E000, 0x1E000, 5);
+            configureRegisteredChildMovement(0, panels[2].task, 0x40000, 0, 0x1E000, 0x1E000, 5);
             configureMovement2D((Movement2D *)&D_800D9504[panels[3].task->resource14], -0x8000, -0x48000, 0x1E000, 0x1E000, 5);
             configureMovement2D((Movement2D *)&D_800D9504[panels[4].task->resource14], -0x74000, 0x30000, 0x1E000, 0x1E000, 5);
             D_8013AE88->data18 = 3;
@@ -1144,8 +1144,8 @@ void updatePlayerGroupedCourseSelectionTask(void) {
             moveTaskChildrenWithSpacing(0, panels[0].task, -0x130000, -0x60000, 0x1E000, 0x1E000, -1000);
             panels[0].command = 23;
             configureMovement2D((Movement2D *)&D_800D9504[panels[1].task->resource14], -0x13C000, 0x8000, 0x1E000, 0x1E000, -1000);
-            func_80081AC8(0, panels[2].task, 0xF4000, 0, 0x1E000, 0, -1000);
-            func_80081AC8(1, panels[2].task, 0xF4000, 0, 0x1E000, 0, -1000);
+            configureRegisteredChildMovement(0, panels[2].task, 0xF4000, 0, 0x1E000, 0, -1000);
+            configureRegisteredChildMovement(1, panels[2].task, 0xF4000, 0, 0x1E000, 0, -1000);
             configureMovement2D((Movement2D *)&D_800D9504[panels[3].task->resource14], 0xAC000, -0x48000, 0x1E000, 0x1E000, -1000);
             configureMovement2D((Movement2D *)&D_800D9504[panels[4].task->resource14], -0x128000, 0x30000, 0x1E000, 0x1E000, -1000);
             D_8013AE88->data18 = 6;
@@ -1340,8 +1340,8 @@ void updateRecordFlagSelectionMenuTask(void) {
             configureMovement2D((Movement2D *)&D_800D9504[panels[1].task->resource14], -0x13C000, 0x8000, 0x1E000, 0x1E000, -1000);
             configureTaskGridMovement(0, parentPanels[0].task, -0x130000, -0x60000, 0x1E000, 0x1E000, -1000);
             configureMovement2D((Movement2D *)&D_800D9504[parentPanels[1].task->resource14], -0x13C000, 0x8000, 0x1E000, 0x1E000, -1000);
-            func_80081AC8(0, parentPanels[2].task, 0xF4000, 0, 0x1E000, 0, -1000);
-            func_80081AC8(1, parentPanels[2].task, 0xF4000, 0, 0x1E000, 0, -1000);
+            configureRegisteredChildMovement(0, parentPanels[2].task, 0xF4000, 0, 0x1E000, 0, -1000);
+            configureRegisteredChildMovement(1, parentPanels[2].task, 0xF4000, 0, 0x1E000, 0, -1000);
             configureMovement2D((Movement2D *)&D_800D9504[parentPanels[3].task->resource14], 0xAC000, -0x48000, 0x1E000, 0x1E000, -1000);
             configureMovement2D((Movement2D *)&D_800D9504[parentPanels[4].task->resource14], -0x128000, 0x30000, 0x1E000, 0x1E000, -1000);
             D_8013AE88->data18 = 8;
@@ -1755,29 +1755,17 @@ commandChildren:
     entry->flags |= children[1].flags;
 }
 
-/* DECOMP_ATTEMPT: inline 55/57 */
-#ifdef NON_MATCHING
-typedef struct IndexedTaskEntry {
-    GameTask *task;
-    u16 unk04;
-    u16 unk06;
-} IndexedTaskEntry;
-
-void configureMovement2D(Movement2D *movement, s32 x, s32 y, s32 speedX, s32 speedY, s32 delay);
-
-void func_80081AC8(s32 index, GameTask *task, s32 x, s32 y, s32 speedX, s32 speedY, s32 delay) {
-    IndexedTaskEntry *entries;
+void configureRegisteredChildMovement(s32 index, GameTask *task, s32 x, s32 y, s32 stepX, s32 stepY, s32 delay) {
+    RegisteredTaskEntry *entries;
     Movement2D *movement;
+
     initMovement2D((Movement2D *)&D_800D9504[task->resource14], x, y);
-    entries = (IndexedTaskEntry *)&D_800D9504[task->resource16];
+    entries = (RegisteredTaskEntry *)&D_800D9504[task->resource16];
     movement = (Movement2D *)&D_800D9504[entries[index].task->resource16];
-    x = speedX ? x : movement->x;
-    y = speedY ? y : movement->y;
-    configureMovement2D(movement, x, y, speedX, speedY, delay);
+    x = stepX ? x : movement->x;
+    y = stepY ? y : movement->y;
+    configureMovement2D(movement, x, y, stepX, stepY, delay);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/menu/course_selection_tasks", func_80081AC8);
-#endif
 
 void initRegisteredChildMovement(s32 index, GameTask *task, s32 x, s32 y) {
     RegisteredTaskEntry *entries = (RegisteredTaskEntry *)&D_800D9504[task->resource16];
@@ -2677,7 +2665,7 @@ void updatePlayerGroupedSelectionTask(void) {
     case 4:
         if (panels[0].flags == 0) {
             moveTaskChildrenWithSpacing(0, panels[1].task, -0x80000, (player * 104 - 72) * 4096, 0x1E000, 0x1E000, 1);
-            func_80081AC8(0, panels[2].task, 0x68000, (player * 142 - 60) * 4096, 0x1E000, 0x1E000, 5);
+            configureRegisteredChildMovement(0, panels[2].task, 0x68000, (player * 142 - 60) * 4096, 0x1E000, 0x1E000, 5);
             D_8013AE88->data18 = 5;
         }
         break;
@@ -2771,8 +2759,8 @@ void updatePlayerGroupedSelectionTask(void) {
         if (gPlayerGroupedSelectionStates[player] == 5) {
             moveTaskChildrenWithSpacing(0, panels[1].task, -0x134000, (player * 104 - 72) * 4096, 0x1E000, 0x1E000, -1000);
             panels[1].command = 23;
-            func_80081AC8(0, panels[2].task, 0x11C000, (player * 142 - 60) * 4096, 0x1E000, 0, -1000);
-            func_80081AC8(1, panels[2].task, 0x11C000, (player * 142 - 60) * 4096, 0x1E000, 0, -1000);
+            configureRegisteredChildMovement(0, panels[2].task, 0x11C000, (player * 142 - 60) * 4096, 0x1E000, 0, -1000);
+            configureRegisteredChildMovement(1, panels[2].task, 0x11C000, (player * 142 - 60) * 4096, 0x1E000, 0, -1000);
             panels[3].command = 20;
             panels[0].command = 20;
             configureColorCycleTask(2, 0, 128, 8, player);
@@ -3052,8 +3040,8 @@ void func_800857C4(void) {
             children[1].command = 99;
             moveTaskChildrenWithSpacing(0, panels[1].task, -0x134000, (player * 104 - 72) * 4096,
                                         0x1E000, 0x1E000, -1000);
-            func_80081AC8(0, panels[2].task, 0x11C000, (player * 142 - 60) * 4096, 0x1E000, 0, -1000);
-            func_80081AC8(1, panels[2].task, 0x11C000, (player * 142 - 60) * 4096, 0x1E000, 0, -1000);
+            configureRegisteredChildMovement(0, panels[2].task, 0x11C000, (player * 142 - 60) * 4096, 0x1E000, 0, -1000);
+            configureRegisteredChildMovement(1, panels[2].task, 0x11C000, (player * 142 - 60) * 4096, 0x1E000, 0, -1000);
             panels[3].command = 20;
             panels[0].command = 20;
             configureColorCycleTask(2, 0, 128, 8, player);

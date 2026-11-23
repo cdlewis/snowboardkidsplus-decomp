@@ -44,7 +44,7 @@ void markSecondaryTaskAndClearReference(void);
 void createPlayerPanelTask(s16 player, s16 x, s16 y, s32 depth, s32 index);
 void createValuePanelTask(s16 x, s16 y, s16 *values, s32 depth, s32 index);
 void createPaletteRotationTask(s32 x, s32 y, s32 first, s32 last, s32 steps, s32 interval, s32 index);
-void func_80081AC8(s32 index, GameTask *task, s32 x, s32 y, s32 stepX, s32 stepY, s32 delay);
+void configureRegisteredChildMovement(s32 index, GameTask *task, s32 x, s32 y, s32 stepX, s32 stepY, s32 delay);
 void createRegisteredPanelTask(s32 mode, s32 value, s16 x, s16 y, s16 depth, s32 index);
 void createRegisteredTextPanelTask(s16 x, s16 y, const u16 **texts,
                                    const u8 *mapping, s32 depth, s32 index);
