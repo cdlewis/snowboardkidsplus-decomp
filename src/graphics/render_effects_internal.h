@@ -1003,7 +1003,7 @@ void startPlayerShadowTask(s32 playerIndex);
 s32 startDelayedEightEntryEffectTask(s32 playerIndex);
 void createPlayerTrailTask(s32 playerIndex);
 void startPlayerTurnTripleQuadEffectTask(s32 playerIndex);
-void func_800688C0(s32 playerIndex);
+void createPlayerParticleTrailTask(s32 playerIndex);
 
 void initializeProximityParticleTask(void);
 void updateProximityParticleTask(void);

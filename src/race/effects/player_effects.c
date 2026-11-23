@@ -149,6 +149,7 @@ typedef struct PlayerParticleTrailResource {
     s32 positions[10][3];
     s16 ages[10];
     s16 angles[10];
+    s32 unkA0;
 } PlayerParticleTrailResource;
 
 typedef struct PlayerParticleTrailScratch {
@@ -626,7 +627,7 @@ void startRacePlayerTasks(void) {
         startDelayedEightEntryEffectTask(playerIndex);
         createPlayerTrailTask(playerIndex);
         startPlayerTurnTripleQuadEffectTask(playerIndex);
-        func_800688C0(playerIndex);
+        createPlayerParticleTrailTask(playerIndex);
     }
 }
 
@@ -641,7 +642,7 @@ void initializeRacePlayerEffects(void) {
         do {
             startPlayerShadowTask(playerIndex);
             createPlayerPositionTrailTask(playerIndex);
-            func_800688C0(playerIndex);
+            createPlayerParticleTrailTask(playerIndex);
         } while (++playerIndex < D_8013AFD2);
     } else {
         for (playerIndex = 0; playerIndex < D_8013AFD2; playerIndex++) {
@@ -649,7 +650,7 @@ void initializeRacePlayerEffects(void) {
             startDelayedEightEntryEffectTask(playerIndex);
             createPlayerTrailTask(playerIndex);
             startPlayerTurnTripleQuadEffectTask(playerIndex);
-            func_800688C0(playerIndex);
+            createPlayerParticleTrailTask(playerIndex);
         }
     }
     if (D_8013AFCE == 6) {
@@ -2982,43 +2983,26 @@ void updatePlayerParticleTrailTask(void) {
     GsOUT_PACKET_P = (u32)packet;
 }
 
-/* DECOMP_ATTEMPT: inline 69/75 */
-#ifdef NON_MATCHING
-typedef struct PlayerParticleTrailWithTail {
-    PlayerParticleTrailResource trail;
-    s32 unkA0;
-} PlayerParticleTrailWithTail;
-
-void updatePlayerParticleTrailTask(void);
-
-void func_800688C0(s32 playerIndex) {
+void createPlayerParticleTrailTask(s32 playerIndex) {
     RacePlayer *player;
-    PlayerParticleTrailWithTail *resource;
+    PlayerParticleTrailResource *resource;
     s32 i;
-    s32 *position;
     s32 j;
 
     player = &gRacePlayers[playerIndex];
     createChildTaskForParentWithReserve(D_8013B304, updatePlayerParticleTrailTask);
     D_8013AE8C->resource14 = allocateTaskResource();
-    resource = (PlayerParticleTrailWithTail *)&D_800D9504[D_8013AE8C->resource14];
-    position = resource->trail.positions[0];
-    i = 0;
-    do {
+    resource = (PlayerParticleTrailResource *)&D_800D9504[D_8013AE8C->resource14];
+    for (i = 0; i < 10; i++) {
         for (j = 0; j < 3; j++) {
-            position[j] = player->worldCoordinate.coord.t[j];
+            resource->positions[i][j] = player->worldCoordinate.coord.t[j];
         }
-        resource->trail.ages[i] = 10;
-        resource->trail.angles[i] = randomNextLinear() % 4096;
-        position += 3;
-        i++;
-    } while ((s32)position < (s32)&resource->trail.positions[10]);
+        resource->ages[i] = 10;
+        resource->angles[i] = randomNextLinear() % 4096;
+    }
     resource->unkA0 = 0;
     D_8013AE8C->data18 = playerIndex;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_800688C0);
-#endif
 
 void beginPlayerTripleQuadEffectTask(void) {
     setCurrentTaskCallback(func_800676FC);
