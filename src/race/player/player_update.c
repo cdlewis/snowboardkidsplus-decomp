@@ -3223,7 +3223,7 @@ void updateCurrentPlayerState29MotionAndAnimation(void) {
     clampVectorToCurrentPlayerLimit(&D_800EB22C);
     D_8013B0D8->unk060 = D_800EB22C.vx;
     D_8013B0D8->unk064 = D_800EB22C.vz;
-    func_8002AE38(0, (s16)D_8013B0D8->unk0A6, (s16)D_8013B0D8->unk0A8, (s16)D_8013B0D8->unk0AA);
+    updateCurrentPlayerSlopeVelocityWithoutBoost(0, (s16)D_8013B0D8->unk0A6, (s16)D_8013B0D8->unk0A8, (s16)D_8013B0D8->unk0AA);
     D_8013B0D8->x += D_8013B0D8->unk060;
     D_8013B0D8->y += D_8013B0D8->unk062;
     D_8013B0D8->z += D_8013B0D8->unk064;
@@ -3269,7 +3269,7 @@ void func_80024288(void) {
     if (!(player->unk128 & 1)) {
         player->unk128 &= ~0x200;
         player->unk09E = 0x280;
-        func_8002AE38(0, 0x80, 0x80, 0x80);
+        updateCurrentPlayerSlopeVelocityWithoutBoost(0, 0x80, 0x80, 0x80);
     } else {
         player->unk128 |= 0x200;
         player->unk062 += 0x1C0;
@@ -3367,7 +3367,7 @@ void updateCurrentPlayerState4MotionAndLanding(void) {
         D_8013B0D8->unk064 -= D_8013B0D8->unk064 / 15;
     } else {
         player->unk09E = player->unk09A;
-        func_8002AE38(0, 0xC0, 0xC0, 0xC0);
+        updateCurrentPlayerSlopeVelocityWithoutBoost(0, 0xC0, 0xC0, 0xC0);
     }
     D_8013B0D8->x += D_8013B0D8->unk060;
     D_8013B0D8->y += D_8013B0D8->unk062;
@@ -3398,7 +3398,7 @@ void updateCurrentPlayerState5MotionAndTimer(void) {
     prepareCurrentPlayerFrame();
     smoothAndScaleCurrentPlayerInput(0, 0);
     if (!(D_8013B0D8->unk128 & 1)) {
-        func_8002AE38(0, 0x100, 0x100, 0x100);
+        updateCurrentPlayerSlopeVelocityWithoutBoost(0, 0x100, 0x100, 0x100);
     }
     motion = D_8013B0D8;
     motion->unk09E = 0x280;
@@ -4136,7 +4136,7 @@ updateAnimation:
         animationPlayer->animationIndex != D_800EB09C[animationPlayer->characterId][5]) {
         updateCurrentPlayerAnimation();
     }
-    func_8002AE38(0, 0x200, 0x180, 0x180);
+    updateCurrentPlayerSlopeVelocityWithoutBoost(0, 0x200, 0x180, 0x180);
     movingPlayer = D_8013B0D8;
     movingPlayer->x += movingPlayer->unk060;
     movingPlayer->y += movingPlayer->unk062;
@@ -4324,7 +4324,7 @@ void updateCurrentPlayerState11Motion(void) {
     D_8013B0D8->unk064 = D_800EB22C.vz;
     if (!(D_8013B0D8->unk128 & 1)) {
         D_8013B0D8->unk09E = D_8013B0D8->unk09C;
-        func_8002AE38(0, 0x100, 0x100, 0x100);
+        updateCurrentPlayerSlopeVelocityWithoutBoost(0, 0x100, 0x100, 0x100);
     } else {
         D_8013B0D8->unk060 -= D_8013B0D8->unk060 / 16;
         D_8013B0D8->unk062 += D_8013B0D8->unk09C;
@@ -4358,7 +4358,7 @@ void updateCurrentPlayerState10Movement(void) {
     }
     D_8013B0D8->unk130 = 0x2000;
     D_8013B0D8->unk09E = D_8013B0D8->unk09A;
-    func_8002AE38(0, 0, 0, 0);
+    updateCurrentPlayerSlopeVelocityWithoutBoost(0, 0, 0, 0);
     D_8013B0D8->x += D_8013B0D8->unk060;
     D_8013B0D8->y += D_8013B0D8->unk062;
     D_8013B0D8->z += D_8013B0D8->unk064;
@@ -4392,7 +4392,7 @@ void updateCurrentPlayerTimedMotion(void) {
         smoothAndScaleCurrentPlayerInput(0x400, 0);
         D_8013B0D8->unk09E = 0x280;
         D_8013B0D8->unk128 &= ~0x200;
-        func_8002AE38(0, 0, 0, 0);
+        updateCurrentPlayerSlopeVelocityWithoutBoost(0, 0, 0, 0);
     } else {
         D_8013B0D8->unk062 += D_8013B0D8->unk09C;
         if (D_8013B0D8->unk062 > 0x7800) {
@@ -4442,7 +4442,7 @@ void updateCurrentPlayerState12MotionAndTimer(void) {
     player = D_8013B0D8;
     if (!(player->unk128 & 1)) {
         player->unk09E = 0x280;
-        func_8002AE38(0, 0x180, 0x180, 0x180);
+        updateCurrentPlayerSlopeVelocityWithoutBoost(0, 0x180, 0x180, 0x180);
         D_8013B0D8->x += D_8013B0D8->unk060;
         D_8013B0D8->y += D_8013B0D8->unk062;
         D_8013B0D8->z += D_8013B0D8->unk064;

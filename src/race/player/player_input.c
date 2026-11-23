@@ -175,17 +175,9 @@ void updateCurrentPlayerSlopeVelocity(s32 push, s32 boost, s32 lateralDrag, s32 
     currentPlayerAbsolute->unk064 = currentPlayerAbsolute->unk064 * pitchCos / 4096;
 }
 
-/* DECOMP_ATTEMPT: inline 12/14 */
-#ifdef NON_MATCHING
-void updateCurrentPlayerSlopeVelocity(s32 acceleration, s32 forwardAcceleration, s32 lateralDrag,
-                   s32 forwardDrag, s32 backwardDrag);
-
-void func_8002AE38(s32 acceleration, s32 lateralDrag, s32 forwardDrag, s32 backwardDrag) {
-    updateCurrentPlayerSlopeVelocity(acceleration, 0, lateralDrag, forwardDrag, backwardDrag);
+void updateCurrentPlayerSlopeVelocityWithoutBoost(s32 push, s32 lateralDrag, s32 forwardDrag, s32 reverseDrag) {
+    updateCurrentPlayerSlopeVelocity(push, 0, lateralDrag, forwardDrag, reverseDrag);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/player/player_input", func_8002AE38);
-#endif
 
 void prepareCurrentPlayerFrame(void) {
     s32 x, y, z;

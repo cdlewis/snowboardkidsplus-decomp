@@ -250,7 +250,7 @@ void copySelectedRecordToCurrentPlayer(void);
 s16 smoothAndScaleCurrentPlayerInput(s32 magnitude, s16 input);
 void clampCurrentPlayerHorizontalVector(VECTOR *vector);
 void clampVectorToCurrentPlayerLimit(VECTOR *vector);
-void func_8002AE38(s32, s32, s32, s32);
+void updateCurrentPlayerSlopeVelocityWithoutBoost(s32 push, s32 lateralDrag, s32 forwardDrag, s32 reverseDrag);
 void updateCurrentPlayerSlopeVelocity(s32 push, s32 boost, s32 lateralDrag, s32 forwardDrag, s32 reverseDrag);
 
 s32 checkCurrentPlayerFlags43040OrAngleRange(void);
