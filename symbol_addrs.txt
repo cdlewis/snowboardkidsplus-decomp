@@ -2089,6 +2089,7 @@ gPlayerCourseProgressTablePadding = 0x80010658; // size:0x4 defined:true
 gPlayerProjectileUseTablePadding = 0x800106E0; // size:0x4 defined:true
 arePositionsWithinXZRange = 0x8002BF3C; // type:func
 resolvePlayerCollisionsWithCylinder = 0x8002BF88; // type:func
+resolvePlayerCylinderCollisionsBySpeed = 0x8002C2D8; // type:func
 pushPlayerOutOfCylinder = 0x8002C520; // type:func
 
 resetUnlockMenuAnimation = 0x800A3CE0; // type:func

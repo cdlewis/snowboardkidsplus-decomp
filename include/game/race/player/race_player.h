@@ -323,6 +323,8 @@ extern s16 D_8013B1D4;
 u16 arePositionsWithinXZRange(const Position3D *a, const Position3D *b, s32 threshold);
 u16 pushPlayerOutOfCylinder(const Position3D *position, s32 radius, s32 height, s16 playerIndex);
 void resolvePlayerCollisionsWithCylinder(const Position3D *position, s32 radius, s32 height, s32 flags);
+s32 resolvePlayerCylinderCollisionsBySpeed(const Position3D *position, s32 radius, s32 height,
+    s32 speedThreshold, u16 flags);
 
 void updatePlayerTimerTask(void);
 void startRacePlayerTasks(void);

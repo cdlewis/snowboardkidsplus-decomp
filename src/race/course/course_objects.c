@@ -1796,7 +1796,6 @@ void initializeMovingVisualTask(void) {
 /* DECOMP_ATTEMPT: inline 289/293 */
 #ifdef NON_MATCHING
 extern TaskVisualFrame D_80129764[8][8];
-void func_8002C2D8(Position3D *position, s32 radius, s32 height, s32 strength, u16 flags);
 
 void func_8005D394(void) {
     TaskVisualResource *resource;
@@ -1856,7 +1855,7 @@ void func_8005D394(void) {
                 resource->groundY ^= 1;
             }
 
-            func_8002C2D8(&resource->position, 0x1000, 0xC00, 0x1000, 4);
+            resolvePlayerCylinderCollisionsBySpeed(&resource->position, 0x1000, 0xC00, 0x1000, 4);
             resource->unkD8 = (resource->unkD8 + resource->unkE0) & 0xFFFF;
             if (resource->unkD8 == 0) {
                 switch ((u8)((u8)randomNextSecondary() % 3U)) {

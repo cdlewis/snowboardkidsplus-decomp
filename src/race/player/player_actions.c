@@ -594,86 +594,70 @@ void resolvePlayerCollisionsWithCylinder(const Position3D *position, s32 radius,
     }
 }
 
-/* DECOMP_ATTEMPT: inline 128/147 */
-#ifdef NON_MATCHING
-s32 func_8002C2D8(Position3D *position, s32 radius, s32 height, s32 threshold, u16 flags)
-{
-  s16 hit = 0;
-  s32 i;
-  RacePlayer *player;
-  s32 x;
-  s32 y;
-  s32 z;
-  RacePlayer *collisionPlayer;
-  s32 range;
-  s32 verticalRange;
-  s16 angle;
-  s32 sine;
-  s32 cosine;
-  for (i = 0; i < D_8013AFD2; i++)
-  {
-    player = &gRacePlayers[i];
-    if (player->isActive && arePositionsWithinXZRange(position, (Position3D *) (&gRacePlayers[i].x), 0x18000))
-    {
-      y = position->y - player->unk074;
-      if (y < 0)
-      {
-        y = -y;
-        verticalRange = player->unk0B0 * 2;
-      }
-      else
-      {
-        verticalRange = height;
-      }
-      if (y <= verticalRange)
-      {
-        x = position->x - player->x;
-        range = radius + player->unk0AC;
-        if (x < 0)
-        {
-          x = -x;
-        }
-        if (x < range)
-        {
-          z = position->z - player->z;
-          if (z < 0)
-          {
-            z = -z;
-          }
-          if (z < range)
-          {
-            y = SquareRoot0((x * x) + (z * z));
-            collisionPlayer = player;
-            if (y < range)
-            {
-              if (player->unk0BC < threshold)
-              {
-                y -= range;
-                angle = getXZHeading(position->x, position->z, collisionPlayer->x, collisionPlayer->z);
-                sine = rsin(angle);
-                cosine = rcos(angle);
-                sine = (-sine) * y;
-                cosine *= y;
-                collisionPlayer->x += sine / 4096;
-                collisionPlayer->z -= cosine / 4096;
-              }
-              else
-              {
-                collisionPlayer->unk0E8 |= flags;
-                hit = 1;
-              }
-            }
-          }
-        }
-      }
-    }
-  }
+s32 resolvePlayerCylinderCollisionsBySpeed(const Position3D *position, s32 radius, s32 height,
+    s32 speedThreshold, u16 flags) {
+    s16 hit = 0;
+    s32 i;
+    RacePlayer *player;
+    s32 x, distance, z;
+    RacePlayer *collisionPlayer;
+    s32 range, verticalRange;
+    s16 heading;
+    s32 sine, cosine;
 
-  return hit;
+    for (i = 0; i < D_8013AFD2; i++) {
+        player = &gRacePlayers[i];
+        if (player->isActive &&
+            arePositionsWithinXZRange(position, (const Position3D *)&gRacePlayers[i].x, 0x18000)) {
+            distance = position->y - player->unk074;
+            if (distance < 0) {
+                distance = -distance;
+                verticalRange = player->unk0B0 * 2;
+            } else {
+                verticalRange = height;
+            }
+            if (distance <= verticalRange) {
+                x = position->x - player->x;
+                range = radius + player->unk0AC;
+                if (x < 0) {
+                    x = -x;
+                }
+                if (x < range) {
+                    z = position->z - player->z;
+                    if (z < 0) {
+                        z = -z;
+                    }
+                    if (z < range) {
+                        distance = SquareRoot0(x * x + z * z);
+                        collisionPlayer = player;
+                        if (distance < range) {
+                            if (player->unk0BC < speedThreshold) {
+                                distance -= range;
+                                heading = getXZHeading(position->x, position->z,
+                                    collisionPlayer->x, collisionPlayer->z);
+                                sine = rsin(heading);
+                                cosine = rcos(heading);
+                                range = (-sine * distance) / 4096;
+                                z = cosine * distance;
+                                /* Round the signed fixed-point correction toward zero. */
+                                if (z < 0) {
+                                    z += 4095;
+                                }
+                                collisionPlayer->x += range;
+                                collisionPlayer->z -= z >> 12;
+                            } else {
+                                collisionPlayer->unk0E8 |= flags;
+                                hit = 1;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return hit;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002C2D8);
-#endif
 
 u16 pushPlayerOutOfCylinder(const Position3D *position, s32 radius, s32 height, s16 playerIndex) {
     RacePlayer *player;
