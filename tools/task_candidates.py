@@ -5,10 +5,62 @@ import argparse
 import json
 import re
 import struct
+from hashlib import sha256
+from pathlib import Path
+from tempfile import NamedTemporaryFile
 
-from decomp import WORD, active_functions, require_fresh
+from decomp import ROOT, WORD, active_functions, require_fresh
 from build import get_settings
 from rank_library_functions import complexity, print_ranking, project_ranking
+
+
+SIMILAR_CACHE = ROOT / "nonmatchings/.similar-references.json"
+
+
+def similar_inputs():
+    # Source locations survive a clean regeneration of the verified build.
+    # Include sources and split inputs, rather than generated ASM timestamps.
+    paths = sorted((ROOT / "src").rglob("*.c"))
+    paths.extend(ROOT / name for name in (
+        "snowboardkidsplus.yaml", "symbol_addrs.txt", "reloc_addrs.txt",
+        "tools/task_candidates.py", "tools/rank_library_functions.py",
+        "tools/find_similar_functions.py", "tools/decomp.py",
+    ))
+    digest = sha256()
+    for path in paths:
+        stat = path.stat()
+        stamp = f"{stat.st_size}:{stat.st_mtime_ns}:{stat.st_ctime_ns}"
+        digest.update(f"{path.relative_to(ROOT)}\0{stamp}\n".encode())
+    return digest.hexdigest()
+
+
+def similar_ranking(function_name=None):
+    return project_ranking(include_game=True, include_game_references=True,
+                           minimum=0.60, function_name=function_name)
+
+
+def cache_similar_rows(inputs, rows):
+    SIMILAR_CACHE.parent.mkdir(parents=True, exist_ok=True)
+    with NamedTemporaryFile(mode="w", dir=SIMILAR_CACHE.parent, delete=False) as output:
+        temporary = Path(output.name)
+        try:
+            json.dump({"inputs": inputs, "rows": {row["name"]: row for row in rows}}, output)
+            output.close()
+            temporary.replace(SIMILAR_CACHE)
+        finally:
+            temporary.unlink(missing_ok=True)
+
+
+def similar_reference_row(function_name):
+    require_fresh()
+    try:
+        cache = json.loads(SIMILAR_CACHE.read_text())
+        if cache["inputs"] == similar_inputs():
+            return cache["rows"].get(function_name)
+    except (OSError, ValueError, KeyError, AttributeError, TypeError):
+        pass
+    rows = similar_ranking(function_name)
+    return rows[0] if rows else None
 
 
 def body_words(function):
@@ -132,10 +184,10 @@ def main():
         parser.error("--references requires decompile-similar")
 
     if args.references:
-        rows = project_ranking(include_game=True, include_game_references=True, minimum=0.60,
-                               function_name=args.references)
-        print_ranking(rows, limit=1)
-        if not rows:
+        row = similar_reference_row(args.references)
+        if row is not None:
+            print_ranking([dict(row, rank=1)], limit=1)
+        else:
             print(f"No ranked references for {args.references}.")
         return
 
@@ -145,11 +197,16 @@ def main():
     eligible = {f.name for f in functions}
 
     if args.task == "decompile-similar":
-        rows = project_ranking(include_game=True, include_game_references=True, minimum=0.60)
+        inputs = similar_inputs()
+        rows = similar_ranking()
         # Keep clear, high-scoring references first, followed by the wider queue
         # in similarity order. Nigel tracks the names across reference changes.
         rows.sort(key=lambda row: row["ambiguous"] or row["similarity"] < 0.75)
         candidates = [row["name"] for row in rows if row["name"] in eligible]
+        try:
+            cache_similar_rows(inputs, rows)
+        except OSError:
+            pass  # Candidate selection also works with a read-only scratch directory.
     elif args.task == "decompile-library":
         rows = project_ranking()
         priority = {row["name"]: index for index, row in enumerate(

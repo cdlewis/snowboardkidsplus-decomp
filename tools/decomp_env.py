@@ -10,15 +10,17 @@ import shutil
 import subprocess
 import sys
 from dataclasses import dataclass
+from itertools import islice
 from pathlib import Path
 from urllib.error import URLError
 from urllib.request import Request, urlopen
 
 import build
-from decomp import ROOT, Elf32, PsxImage, active_functions, parse_asm, require_fresh, uncomment
+from decomp import INCLUDE, ROOT, Elf32, PsxImage, active_functions, parse_asm, require_fresh, uncomment
 from match_function import owning_unit
 from m2ctx import generate_context
-from progress_attempts import inline_source
+from progress_attempts import MARKER, annotation, inline_source
+from task_candidates import similar_reference_row
 from validate_commit import verify_image
 
 TEMPLATES = ROOT / "tools/decomp-env"
@@ -181,6 +183,11 @@ def seed_source(workspace, oracle, imported_source=None):
     (workspace / "base.c").write_text(includes + (body or ""))
 
 
+def workspace_metadata(oracle):
+    return {"function": oracle.name, "unit": oracle.unit.as_posix(),
+            "address": oracle.address, "target_sha1": hashlib.sha1(oracle.data).hexdigest()}
+
+
 def bootstrap(oracle, identifier, imported_source=None):
     stem = oracle.name
     if identifier is not None:
@@ -188,8 +195,7 @@ def bootstrap(oracle, identifier, imported_source=None):
             raise ValueError("--id accepts only letters, digits, underscores, and hyphens")
         stem += "-" + identifier
     workspace = ROOT / "nonmatchings" / stem
-    metadata = {"function": oracle.name, "unit": oracle.unit.as_posix(),
-                "address": oracle.address, "target_sha1": hashlib.sha1(oracle.data).hexdigest()}
+    metadata = workspace_metadata(oracle)
     if identifier is not None and workspace.exists():
         if json.loads((workspace / "workspace.json").read_text()) != metadata:
             raise ValueError("existing workspace targets a different function or byte range; choose another --id")
@@ -213,6 +219,72 @@ def bootstrap(oracle, identifier, imported_source=None):
         shutil.rmtree(workspace)
         raise
     return workspace
+
+
+def best_archived_attempt(oracle):
+    metadata = workspace_metadata(oracle)
+    scratch = ROOT / "nonmatchings"
+    workspaces = [scratch / oracle.name, *sorted(scratch.glob(f"{oracle.name}-*"))]
+    best = None
+    for workspace in workspaces:
+        try:
+            if json.loads((workspace / "workspace.json").read_text()) != metadata:
+                continue
+            attempt = json.loads((workspace / "best.json").read_text())
+            source = (workspace / attempt["source"]).resolve()
+            if not source.is_relative_to(workspace / "attempts") or not source.is_file():
+                continue
+            digest = attempt.get("source_sha1")
+            if digest and hashlib.sha1(source.read_bytes()).hexdigest() != digest:
+                continue
+            score = attempt["exact"], attempt["instruction_similarity_percent"]
+            words = f'{attempt["matching_instruction_words"]}/{attempt["comparison_words"]}'
+            if best is None or score > best[0]:
+                best = score, source, words
+        except (OSError, ValueError, KeyError, TypeError):
+            continue
+    return best
+
+
+def print_workspace_summary(oracle, workspace, *, references=False):
+    print(f"Environment ready: {workspace.relative_to(ROOT)}", flush=True)
+    print(f"Target: {oracle.name} at 0x{oracle.address:08X}, {len(oracle.data) // 4} words in target.s")
+    source = (ROOT / oracle.unit).read_text()
+    for fallback in INCLUDE.finditer(uncomment(source, preserve_offsets=True)):
+        if fallback[2] == oracle.name:
+            line = source.count("\n", 0, fallback.start())
+            raw, inline, marker_line = annotation(source.splitlines(), line, oracle.name)
+            marker = MARKER.fullmatch(raw)
+            score = marker[1] if marker else "unrecorded"
+            location = marker_line + 1 if inline else line + 1
+            fallback_location = f", fallback at line {line + 1}" if inline else ""
+            print(f"Source: {oracle.unit}:{location} (attempt: {score}{fallback_location})")
+            break
+    else:
+        span = function_span(source, oracle.name)
+        line = source.count("\n", 0, span[0]) + 1 if span else None
+        print(f"Source: {oracle.unit}" + (f":{line}" if line else ""))
+
+    best = best_archived_attempt(oracle)
+    if best:
+        (exact, _), archived, words = best
+        print(f"Best archive: {'EXACT, ' if exact else ''}{words} words at "
+              f"{archived.relative_to(ROOT)} (remeasure before use)")
+
+    if not references:
+        return
+    row = similar_reference_row(oracle.name)
+    if row is None or (row["unit"], row["address"]) != (oracle.unit.as_posix(), oracle.address):
+        print("No ranked C references.")
+        return
+    print("Structural references" + (" (ambiguous):" if row["ambiguous"] else ":"))
+    ranked = [{"name": row["reference"], "source": row["reference_source"],
+               "line": row["reference_line"], "similarity_percent": row["similarity_percent"]},
+              *row["alternatives"]]
+    for reference in ranked:
+        source_path = Path(reference["source"]).relative_to(ROOT)
+        print(f'  {reference["similarity_percent"]:.2f}% {reference["name"]} '
+              f'{source_path}:{reference["line"]}')
 
 
 def build_attempt(workspace, source):
@@ -244,6 +316,29 @@ def record_attempt(workspace, output, record):
     if since >= 20 and not best["exact"]:
         print(f"STOP: No improvement in {since} attempts. Preserve the best attempt and report "
               "its score/source, approaches tried, remaining differences, and next strategy.", flush=True)
+
+
+def print_attempt_preview(workspace, output, report):
+    try:
+        previous = Path(json.loads((workspace / "latest.json").read_text())["output"])
+        previous_score = json.loads((previous / "result.json").read_text())["instruction_similarity_percent"]
+    except (OSError, ValueError, KeyError, TypeError):
+        previous_score = None
+    if previous_score is not None:
+        delta = report["instruction_similarity_percent"] - previous_score
+        print(f"Change from previous comparison: {delta:+.2f} percentage points")
+    if report["exact"]:
+        return
+    first = report["first_byte_difference"]
+    if first is None and report["candidate_size"] != report["target_size"]:
+        first = min(report["candidate_size"], report["target_size"])
+    if first is not None:
+        offset = first & ~3
+        print(f'First differing word: 0x{report["address"] + offset:08X} (+0x{offset:X})')
+    with (output / "diff.txt").open() as difference:
+        for line in islice(difference, 12):
+            print(line, end="")
+    print(f"Full diff: {output.relative_to(workspace) / 'diff.txt'} (./diff.sh)", flush=True)
 
 
 def compare_attempt(workspace, source):
@@ -278,8 +373,17 @@ def compare_attempt(workspace, source):
               "source": str(snapshot.relative_to(workspace)), "source_sha1": source_hash,
               "output": str(output)}
     print(f"Attempt: {label}.c", flush=True)
-    result = subprocess.run([sys.executable, str(ROOT / "tools/match_function.py"), oracle.name,
-                             str(numbered_source), "--unit", str(oracle.unit), "--output", str(output)], cwd=ROOT)
+    diagnostics = output / "compile.log"
+    with diagnostics.open("w") as log:
+        result = subprocess.run([sys.executable, str(ROOT / "tools/match_function.py"), oracle.name,
+                                 str(numbered_source), "--unit", str(oracle.unit), "--output", str(output)],
+                                cwd=ROOT, stderr=log)
+    if diagnostics.stat().st_size:
+        if result.returncode not in (0, 1):
+            with diagnostics.open(errors="replace") as log:
+                for line in islice(log, 12):
+                    print(line, end="", file=sys.stderr)
+        print(f"Full build diagnostics: {diagnostics.relative_to(workspace)}", flush=True)
     if result.returncode in (0, 1) and (output / "result.json").is_file():
         report = json.loads((output / "result.json").read_text())
         if report["source_sha1"] != source_hash:
@@ -287,6 +391,7 @@ def compare_attempt(workspace, source):
             raise ValueError("attempt source changed during compilation; score was not logged")
         record.update({key: report[key] for key in ("exact", "instruction_similarity_percent",
                                                    "matching_instruction_words", "comparison_words")})
+        print_attempt_preview(workspace, output, report)
         record_attempt(workspace, output, record)
         latest.write_text(json.dumps({"output": str(output)}, indent=2) + "\n")
         return result.returncode
@@ -301,6 +406,7 @@ def main():
     parser.add_argument("--bootstrap-only", action="store_true", help="create the workspace without launching Codex")
     parser.add_argument("--id", help="reuse nonmatchings/FUNCTION-ID without overwriting attempts")
     parser.add_argument("--unit", type=Path, help="owning repository-relative C unit if ambiguous")
+    parser.add_argument("--references", action="store_true", help="include ranked C references in the workspace summary")
     parser.add_argument("--workspace", type=Path, help=argparse.SUPPRESS)
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--build", metavar="SOURCE", help=argparse.SUPPRESS)
@@ -330,7 +436,7 @@ def main():
         imported_source = f"// Imported from https://decomp.me/scratch/{scratch}\n\n" + imported.source
     oracle = resolve_function(function, args.unit)
     workspace = bootstrap(oracle, args.id, imported_source)
-    print(f"Environment ready: {workspace.relative_to(ROOT)}", flush=True)
+    print_workspace_summary(oracle, workspace, references=args.references)
     if args.bootstrap_only:
         return 0
     codex = shutil.which("codex")

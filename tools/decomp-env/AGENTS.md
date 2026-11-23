@@ -11,7 +11,6 @@ Use the real project headers and the owning unit's compiler settings.
 
 ```sh
 ./build.sh base.c
-./diff.sh
 ```
 
 Make the minimum changes needed to compile `base.c` before measuring a baseline.
@@ -25,7 +24,9 @@ Each build archives its source under `attempts/base_N/base_N.c`, alongside linke
 target and candidate bytes, disassembly, `diff.txt`, and `result.json`. Failed
 builds also retain their source and receive an unscored log entry. Exit status
 0 means exact bytes, 1 means a mismatch, and 2 means the attempt could not be
-checked. Inspect each diff before making the next source change.
+checked. Review the score change, first differing word, and diff excerpt before
+making the next source change. Use `./diff.sh` when you need the full latest diff.
+Full build diagnostics are available in the attempt's `compile.log`.
 
 `match_log.txt` records each attempt's score, status, archived source path, and
 source hash. Each build prints the best attempt; `best.json` identifies its

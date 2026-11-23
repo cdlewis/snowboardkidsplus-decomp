@@ -2,8 +2,8 @@ candidate_source: python3 tools/task_candidates.py decompile-similar
 prompt: >-
   Decompile the function $INPUT. Follow AGENTS.md and the repo-local
   .agents/skills/psx-match-function/SKILL.md workflow. Create the workspace with
-  ./tools/codex --bootstrap-only --id $TASK_ID $INPUT. Find the matched C references
-  with python3 tools/task_candidates.py decompile-similar --references $INPUT.
+  ./tools/codex --bootstrap-only --references --id $TASK_ID $INPUT.
+  Use the source, archived attempt, and ranked C references in its summary.
   Structural similarity does not establish function identity or a byte match.
   Consider the purpose of the function and compare its assembly with the
   references. Start with any existing inline C in the owning source file.
@@ -25,7 +25,6 @@ prompt: >-
   measured implementation can be integrated, preserve the scratch attempts
   and report the blocker.
 agent: codex
-agent_flags: --config model_reasoning_effort='"xhigh"'
 accept_best_effort: true
 success_command: >-
   function_name=$CANDIDATE &&

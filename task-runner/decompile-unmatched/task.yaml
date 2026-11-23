@@ -2,7 +2,8 @@ candidate_source: python3 tools/task_candidates.py decompile-unmatched
 prompt: >-
   Decompile the function $INPUT. Follow AGENTS.md and the repo-local
   .agents/skills/psx-match-function/SKILL.md workflow. Create the
-  workspace with ./tools/codex --bootstrap-only --id $TASK_ID $INPUT. Try
+  workspace with ./tools/codex --bootstrap-only --id $TASK_ID $INPUT and
+  use its source and archived attempt summary. Try
   meaningful C source-shape changes and bounded permuter experiments when
   appropriate. Preserve useful attempts and obey tool stop instructions. Only
   integrate exact C and verify the complete executable with

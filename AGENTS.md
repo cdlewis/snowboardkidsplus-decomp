@@ -80,13 +80,17 @@ Consult the function-matching skill's local SDK references
 before inventing an implementation.
 
 Run `./tools/codex --bootstrap-only FUNCTION` and enter the printed workspace.
-Use `./build.sh base.c` and `./diff.sh` to compare attempts. Keep useful variants
+Use the printed source location, inline score, and compatible archive to orient
+your search. Pass `--references` to show ranked C reference locations. Use
+`./build.sh base.c` to compare attempts. Keep useful variants
 in separate `base_1.c`, `base_2.c`, etc. files and use real project headers.
 The build helper labels and archives each attempt under `attempts/base_N/`,
 records scores and failures in `match_log.txt`, and tracks the best archived
 source and artifacts in `best.json`. Preserve earlier attempts and never
-include another mutable candidate C file. Inspect each attempt's
-`result.json`, `diff.txt`, and disassembly. Owned data and jump tables require
+include another mutable candidate C file. Review the score change, first
+differing word, and diff excerpt printed by the helper. Inspect the archived
+`result.json` and disassembly as needed, and use `./diff.sh` for the full latest
+diff. Owned data and jump tables require
 full-unit comparisons. An isolated `EXACT` result must still pass integration.
 
 Fix types, calls, branches, and memory accesses before register allocation.

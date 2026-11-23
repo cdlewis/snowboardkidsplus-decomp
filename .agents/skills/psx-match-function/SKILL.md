@@ -30,10 +30,12 @@ Create the function's workspace:
 ./tools/codex --bootstrap-only FUNCTION
 ```
 
+Use the summary to locate the owning source and any compatible archived
+attempt. Add `--references` to show ranked C reference locations.
 Enter the printed directory. It contains `base.c`, the target assembly/object,
 preprocessed context, and build/diff helpers. Use real project headers and keep
 useful variants in separate `base_1.c`, `base_2.c`, etc. files. Run
-`./build.sh base.c` and `./diff.sh`. The build helper numbers and archives each
+`./build.sh base.c`. The build helper numbers and archives each
 attempt under `attempts/base_N/`, appends its score/status to `match_log.txt`,
 and prints the best attempt. `best.json` points to its archived source and
 artifacts; `./diff.sh` shows the latest comparison, which may differ from best.
@@ -43,8 +45,9 @@ improvement. Report the best score/source, approaches tried, remaining
 differences, and whether a different strategy is needed.
 Add `--id ID` when bootstrapping to reuse a workspace without overwriting attempts.
 
-The build helper uses the owning unit's compiler settings. Inspect each attempt's
-`result.json`, `diff.txt`, and disassembly. Fix calls, types, offsets, and control flow
+The build helper uses the owning unit's compiler settings. Review the score
+change, first differing word, and diff excerpt. Open the full diff, archived
+`result.json`, or disassembly as needed. Fix calls, types, offsets, and control flow
 before allocation and scheduling. Use meaningful C without inline assembly,
 register bindings, dummy side effects, or raw struct-offset accesses.
 
