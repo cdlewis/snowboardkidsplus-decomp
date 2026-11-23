@@ -2720,6 +2720,7 @@ updateFallingPlayerEffectTask = 0x80049404; // type:func
 
 drawRisingTexturedStripTask = 0x80068BC0; // type:func
 
+buildSplitBoardSelectionMapping = 0x800995A8; // type:func
 findLastMappedByteIndexOrZero = 0x800996F8; // type:func
 updatePlayerPaletteSelectionTask = 0x80099880; // type:func
 gPaletteSelectionMainPreviewY = 0x80131D4C; // size:0xC
@@ -3758,6 +3759,7 @@ gPerfectHitLabel = 0x80010AD4; // type:char size:0x10
 
 sortPlayerModelWithDrawArea = 0x800972B8; // type:func
 playerModelDrawAreaDepths = 0x8013B500; // size:0x8 defined:true
+gSplitBoardSelectionMapping = 0x8013B50C; // size:0x8 defined:true
 
 updateCurrentPlayerDirectionalAnimation = 0x8002E1B0; // type:func
 waitForCurrentPlayerDirectionalAnimationEnd = 0x8002E368; // type:func

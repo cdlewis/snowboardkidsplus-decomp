@@ -50,7 +50,7 @@ typedef struct ByteMappingDescriptor {
     u8 unk07;
     const u8 *textMapping;
     const u8 *textureMapping;
-    u8 unk10[4];
+    u32 unk10;
 } ByteMappingDescriptor;
 
 typedef struct SelectionItemStats {

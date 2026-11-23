@@ -110,9 +110,13 @@ const u16 gCurrentPaletteLabel[6]
     0x15F, 0x160, 0x110, 0x33, 0, 0
 };
 
+u8 gSplitBoardSelectionMapping[8]
+    __attribute__((section(".data.split_board_selection_mapping"), aligned(4))) = {0};
+
 extern u8 D_8013B4BD __attribute__((section(".data")));
 
-void func_800995A8(s16 player, s16 character, u8 spacingX, u8 spacingY, ByteMappingDescriptor *descriptor);
+void buildSplitBoardSelectionMapping(s16 playerIndex, s16 character, u8 spacingX, u8 spacingY,
+                                     ByteMappingDescriptor *menu);
 void drawPaletteSelectionPricePanel(void);
 
 void initializeCountedSplitSelectionBoundsTask(void) {
@@ -193,7 +197,7 @@ void updateSplitBoardSelectionTask(void) {
         setMusicSequenceEnabled(1);
         setSecondaryDisplayTaskMode(0);
         mapping = &descriptor;
-        func_800995A8((s16)player, character, 0, 20, mapping);
+        buildSplitBoardSelectionMapping((s16)player, character, 0, 20, mapping);
         input->selectedIndex = 0;
         input->mode = 0;
         input->previousIndex = 0;
@@ -334,7 +338,7 @@ void updateSplitBoardSelectionTask(void) {
     case 16: {
         SpacedGroupResource *group;
         mapping = &descriptor;
-        func_800995A8((s16)player, character, 0, 20, mapping);
+        buildSplitBoardSelectionMapping((s16)player, character, 0, 20, mapping);
         group = (SpacedGroupResource *)&gTaskMemoryPool[entries[0].task->resource14];
         group->data48 = descriptor.mapping;
         group->spacingX = mapping->spacingX;
@@ -540,46 +544,36 @@ void drawCurrentTaskPlayerValuePanel(void) {
                             &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
 }
 
-/* DECOMP_ATTEMPT: inline 80/85 */
-#ifdef NON_MATCHING
-extern RacePlayer gRacePlayers[];
-extern u8 D_8013B50C[];
+void buildSplitBoardSelectionMapping(s16 playerIndex, s16 character, u8 spacingX, u8 spacingY,
+                                     ByteMappingDescriptor *menu) {
+    ByteMappingDescriptor *descriptor = menu;
+    s16 board;
+    u8 equippedBoard;
 
-void func_800995A8(s16 playerIndex, s16 row, u8 spacingX, u8 spacingY, ByteMappingDescriptor *menu)
-{
-  ByteMappingDescriptor *next;
-  s16 i;
-  u8 currentColumn;
-  menu->mapping = D_8013B50C;
-  menu->spacingX = spacingX;
-  menu->spacingY = spacingY;
-  menu->count = 0;
-  currentColumn = gRacePlayers[playerIndex].unk00A[0];
-  for (i = 0; i < 5; i++)
-  {
-    next = menu;
-    if (currentColumn != i)
-    {
-      if (hasStateGridFlag(&gPlayerSaveRecords[playerIndex], row, i) == 1)
-      {
-        D_8013B50C[menu->count] = i;
-        next->textMapping = 0;
-        next->textureMapping = 0;
-        next->unk10[0] = next->unk10[1] = next->unk10[2] = next->unk10[3] = 0;
-        next->count++;
-      }
+    descriptor->mapping = gSplitBoardSelectionMapping;
+    descriptor->spacingX = spacingX;
+    descriptor->spacingY = spacingY;
+    descriptor->count = 0;
+    equippedBoard = gRacePlayers[playerIndex].unk00A[0];
+    for (board = 0; board < 5; board++) {
+        descriptor = menu;
+        if (equippedBoard != board) {
+            if (hasStateGridFlag(&gPlayerSaveRecords[playerIndex], character, board) == 1) {
+                ((u8 *)descriptor->mapping)[descriptor->count] = board;
+                descriptor->textMapping = NULL;
+                descriptor->textureMapping = NULL;
+                descriptor->unk10 = 0;
+                descriptor->count++;
+            }
+        }
     }
-  }
 
-  D_8013B50C[next->count] = 5;
-  next->textMapping = 0;
-  next->textureMapping = 0;
-  next->unk10[0] = next->unk10[1] = next->unk10[2] = next->unk10[3] = 0;
-  next->count++;
+    ((u8 *)descriptor->mapping)[descriptor->count] = 5;
+    descriptor->textMapping = NULL;
+    descriptor->textureMapping = NULL;
+    descriptor->unk10 = 0;
+    descriptor->count++;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/menu/grid_selection", func_800995A8);
-#endif
 
 s32 findLastMappedByteIndexOrZero(const ByteMappingDescriptor *descriptor, s16 value) {
     s32 result = 0;
