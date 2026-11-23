@@ -3,10 +3,6 @@
 #include "game/race/course/course_geometry.h"
 #include "psx/libgte.h"
 
-typedef struct CourseGeometryVertex {
-    s16 x, y, z;
-} CourseGeometryVertex;
-
 s32 D_8013B624 __attribute__((section(".sdata.geometry_edge_projection"))) = 0;
 
 s32 D_8013B628 __attribute__((section(".sdata.geometry_edge_projection"))) = 0;

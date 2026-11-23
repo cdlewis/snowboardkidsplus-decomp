@@ -3,6 +3,10 @@
 #include "decomp/types.h"
 #include "psx/libgte.h"
 
+typedef struct CourseGeometryVertex {
+    s16 x, y, z;
+} CourseGeometryVertex;
+
 /* Geometry entries have a 0x1C-byte stride; the origin references a vertex. */
 typedef struct GeometryPlacement {
     s16 unk00[8];

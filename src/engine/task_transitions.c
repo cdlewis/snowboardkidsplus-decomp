@@ -7,6 +7,7 @@
 #include "game/graphics/coordinate.h"
 #include "game/graphics/quad_animation.h"
 #include "game/race/camera/race_camera.h"
+#include "game/race/course/course_objects.h"
 #include "game/race/ui/race_hud.h"
 #include "game/engine/offset_archive.h"
 #include "game/audio/music.h"
@@ -197,7 +198,6 @@ void updateActiveRaceTask(void);
 void finishRaceTransitionAfterCountdown(void);
 void func_8001C9F0(void);
 s16 func_8008C290(s16 characterId, s16 finishPosition);
-void func_8005EBC4(void);
 void processTaskWhenFlagAFAABit7Set(void);
 
 void runMovieAndGameLoop(void) {
@@ -1046,7 +1046,7 @@ void finishRaceExitAfterCountdown(void) {
                 case 1:
                 case 2:
                 case 3:
-                    createChildTaskForParentWithReserve(&gGameTasks[4], func_8005EBC4);
+                    createChildTaskForParentWithReserve(&gGameTasks[4], initializeCourseUnlockScene);
                     D_8013AE8C->data18 = unlockTier;
                     D_8013AE88->data18 = 30;
                     D_8013AE88->data1A = unlockTier;

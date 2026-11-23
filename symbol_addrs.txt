@@ -2271,6 +2271,7 @@ drawCyanBackgroundAndSetFog = 0x8004EF70; // type:func
 readVramPixelColor = 0x800515A8; // type:func
 writeVramPixelColor = 0x8005162C; // type:func
 
+initializeCourseUnlockScene = 0x8005EBC4; // type:func
 updateAndDrawCurrentTaskObject = 0x8005EE64; // type:func
 copySlot26TransformToCurrentTaskObject = 0x8005EECC; // type:func
 

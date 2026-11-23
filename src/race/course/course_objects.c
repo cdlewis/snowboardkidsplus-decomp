@@ -19,6 +19,7 @@
 #include "game/menu/selected_records.h"
 #include "game/race/camera/race_camera.h"
 #include "game/race/course/course_geometry.h"
+#include "game/race/course/course_objects.h"
 #include "game/race/course/course_offset.h"
 #include "game/race/player/race_player.h"
 #include "psx/libapi.h"
@@ -62,6 +63,8 @@ extern GameTask *D_8013AE88 __attribute__((section(".data")));
 extern GameTask *D_8013AE8C __attribute__((section(".data")));
 extern GameTask *D_8013AE98 __attribute__((section(".data")));
 extern u32 D_8013AFE4 __attribute__((section(".data")));
+extern s16 *D_8013B1EC __attribute__((section(".data")));
+extern s16 *D_8013B1F4 __attribute__((section(".data")));
 
 extern VECTOR *D_8013AF8C __attribute__((section(".data")));
 extern u32 *D_8013AF70 __attribute__((section(".data")));
@@ -2286,28 +2289,47 @@ void updateOrbitingObstacleTask(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: inline 167/168 */
-#ifdef NON_MATCHING
-void func_8005EBC4(void) {
- s16 index; GeometryRegion *region; GeometryRegion *regions; s16 *vertices; s16 i;
- index = D_80123D80[D_8013AFCE].unk00;
- vertices = D_8013B1EC;
- regions = (GeometryRegion *)D_8013B1F4; region = &regions[index];
- D_80129C60[26].coord.t[0] = ((vertices[region->vertices[0]*3] + vertices[region->vertices[1]*3] + vertices[region->vertices[2]*3] + vertices[region->vertices[3]*3])/4)*5;
- D_80129C60[26].coord.t[2] = ((vertices[region->vertices[0]*3+2] + vertices[region->vertices[1]*3+2] + vertices[region->vertices[2]*3+2] + vertices[region->vertices[3]*3+2])/4)*5;
- D_80129C60[26].coord.t[1] = func_8004A764(index,D_80129C60[26].coord.t[0],D_80129C60[26].coord.t[2]);
- D_8012A5C0[26].vz = 0; D_8012A5C0[26].vx = 0;
- D_8012A5C0[26].vy = getXZHeading(D_80129C60[26].coord.t[0],D_80129C60[26].coord.t[2],(s32)D_80123D80[D_8013AFCE].unk18[10] >> 8,(s32)D_80123D80[D_8013AFCE].unk18[10] >> 8);
- createChildTaskWithReserve(copySlot26TransformToCurrentTaskObject);
- D_8013AE8C->data18 = D_8013AE88->data18 + 26; D_8013AE88->data18 = 26;
- D_801241E8[0].pitch = 0x20; D_801241E8[0].unk10 = -0x180;
- D_801241E8[0].yaw = D_8012A5C0[26].vy; D_801241E8[0].unk16 = 9;
- i=0; while (1) { if (i >= D_8013AFD2) break; gRacePlayers[i].task->callback = initializeCurrentPlayerUnlockScene; i++; }
- setCurrentTaskCallback(updateAndDrawCurrentTaskObject);
+void initializeCourseUnlockScene(void) {
+    s16 index;
+    GeometryRegion *region;
+    s32 regionOffset;
+    CourseGeometryVertex *vertices;
+    s32 headingTarget;
+    s16 i;
+
+    index = D_80123D80[D_8013AFCE].unk00;
+    vertices = (CourseGeometryVertex *)D_8013B1EC;
+    regionOffset = index * (s32)sizeof(*region);
+    region = (GeometryRegion *)(regionOffset + (u32)D_8013B1F4);
+    D_80129C60[26].coord.t[0] = ((vertices[region->vertices[0]].x + vertices[region->vertices[1]].x
+        + vertices[region->vertices[2]].x + vertices[region->vertices[3]].x) / 4) * 5;
+    D_80129C60[26].coord.t[2] = ((vertices[region->vertices[0]].z + vertices[region->vertices[1]].z
+        + vertices[region->vertices[2]].z + vertices[region->vertices[3]].z) / 4) * 5;
+    D_80129C60[26].coord.t[1] = func_8004A764(index,
+        D_80129C60[26].coord.t[0], D_80129C60[26].coord.t[2]);
+    D_8012A5C0[26].vz = 0;
+    D_8012A5C0[26].vx = 0;
+    headingTarget = (s32)D_80123D80[D_8013AFCE].unk18[10] >> 8;
+    D_8012A5C0[26].vy = getXZHeading(D_80129C60[26].coord.t[0], D_80129C60[26].coord.t[2],
+        headingTarget, headingTarget);
+
+    createChildTaskWithReserve(copySlot26TransformToCurrentTaskObject);
+    D_8013AE8C->data18 = D_8013AE88->data18 + 26;
+    D_8013AE88->data18 = 26;
+    D_801241E8[0].pitch = 0x20;
+    D_801241E8[0].unk10 = -0x180;
+    D_801241E8[0].yaw = D_8012A5C0[26].vy;
+    D_801241E8[0].unk16 = 9;
+    i = 0;
+    while (1) {
+        if (i >= D_8013AFD2) {
+            break;
+        }
+        gRacePlayers[i].task->callback = initializeCurrentPlayerUnlockScene;
+        i++;
+    }
+    setCurrentTaskCallback(updateAndDrawCurrentTaskObject);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/course/course_objects", func_8005EBC4);
-#endif
 
 void updateAndDrawCurrentTaskObject(void) {
     setCoordinateRotation(&D_8012A5C0[D_8013AE88->data18],
