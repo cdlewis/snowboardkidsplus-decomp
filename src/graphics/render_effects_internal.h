@@ -961,8 +961,6 @@ void emitRadialEffectTask(void);
 void func_80066D18(void);
 void updatePlayerRingEffectTask(void);
 void func_800659F0(void);
-extern SVECTOR D_8012A5C0[];
-extern GsCOORDINATE2 D_80129C60[];
 
 extern s32 D_8013B624 __attribute__((section(".sdata.geometry_edge_projection")));
 extern s32 D_8013B628 __attribute__((section(".sdata.geometry_edge_projection")));

@@ -359,6 +359,11 @@ u8 gPlayerTrick46Input[4][2]
     {2, 0}, {8, 0}, {2, 46}, {0, 0},
 };
 
+u8 gPlayerTrick48Input[4][2]
+    __attribute__((section(".data.player_trick_short_inputs"), aligned(4))) = {
+    {1, 0}, {8, 0}, {4, 0}, {2, 48},
+};
+
 u8 gPlayerTrick26Input[18][2]
     __attribute__((section(".data.player_trick_long_inputs"), aligned(4))) = {
     {4, 0}, {12, 0}, {8, 0}, {9, 0}, {1, 0}, {3, 0}, {2, 0}, {6, 0},
@@ -416,8 +421,10 @@ u8 gPlayerTrick49Input[8][2]
     {8, 0}, {1, 0}, {2, 0}, {4, 0}, {8, 0}, {1, 0}, {2, 0}, {4, 49},
 };
 
-/* The last pair is also addressed by func_800200F8. */
-extern u8 D_8013B0C0[4][2];
+static s16 gPlayerUnlockSceneYawOffsets[4]
+    __attribute__((section(".data.player_unlock_scene_yaw_offsets"), aligned(4))) = {
+    -0x1C0, -0x40, 0x140, 0, /* Trailing alignment halfword. */
+};
 
 static s32 gPlayerWallProbeOffsets[2]
     __attribute__((section(".data.player_wall_probe_offsets"), aligned(4))) = {
@@ -563,7 +570,7 @@ void (*currentPlayerStateCallbacks[74])(void) = {
     initializeCurrentPlayerDefaultState,
     initializeCurrentPlayerDefaultState,
     initializeCurrentPlayerDefaultState,
-    func_800200F8,
+    initializeCurrentPlayerUnlockScene,
 };
 
 void clearCurrentPlayerSequenceState(void) {
@@ -788,7 +795,7 @@ u16 readCurrentPlayerTrickInput(void) {
             if (sequenceResult != 0) {
                 direction = sequenceResult;
             }
-            sequenceResult = advanceCurrentPlayerInputSequence(D_8013B0C0, 2);
+            sequenceResult = advanceCurrentPlayerInputSequence(gPlayerTrick48Input, 2);
             if (sequenceResult != 0) {
                 direction = sequenceResult;
             }
@@ -1279,13 +1286,7 @@ void func_80020018(void) {
 INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_80020018);
 #endif
 
-/* DECOMP_ATTEMPT: inline 138/140 */
-#ifdef NON_MATCHING
-extern GsCOORDINATE2 D_80129C60[];
-extern SVECTOR D_8012A5C0[];
-extern s16 D_8013B0C6[5] __attribute__((section(".data")));
-
-void func_800200F8(void) {
+void initializeCurrentPlayerUnlockScene(void) {
     u16 angle;
     D_8013B0D8 = &gRacePlayers[D_8013AE88->data18];
     startCurrentPlayerAnimation(D_8013B0D8->unk008 == 0 ? 9 : 10, 1);
@@ -1298,12 +1299,14 @@ void func_800200F8(void) {
         D_8013B0D8->unk0B6 = D_8012A5C0[26].vy;
         D_8013AE88->data1A = 30;
     } else {
-        D_8013B0D8->x = (D_80129C60[26].coord.t[0] - rsin(D_8012A5C0[26].vy + D_8013B0C6[D_8013AE88->data18]) / 32) << 8;
+        D_8013B0D8->x = (D_80129C60[26].coord.t[0] -
+            rsin(D_8012A5C0[26].vy + gPlayerUnlockSceneYawOffsets[D_8013AE88->data18 - 1]) / 32) << 8;
         D_8013B0D8->y = D_80129C60[26].coord.t[1] << 8;
-        D_8013B0D8->z = (D_80129C60[26].coord.t[2] - rcos(D_8012A5C0[26].vy + D_8013B0C6[D_8013AE88->data18]) / 32) << 8;
+        D_8013B0D8->z = (D_80129C60[26].coord.t[2] -
+            rcos(D_8012A5C0[26].vy + gPlayerUnlockSceneYawOffsets[D_8013AE88->data18 - 1]) / 32) << 8;
         D_8013B0D8->unk0B8 = 0;
         D_8013B0D8->unk0B4 = 0;
-        angle = D_8013B0C6[D_8013AE88->data18] + 0x800;
+        angle = gPlayerUnlockSceneYawOffsets[D_8013AE88->data18 - 1] + 0x800;
         D_8013B0D8->unk0B6 = D_8012A5C0[26].vy + angle;
     }
     D_8013B0D8->unk92E = D_80123D80[D_8013AFCE].unk00;
@@ -1313,9 +1316,6 @@ void func_800200F8(void) {
     setCurrentTaskCallback(updateCurrentPlayerTaskCountdown);
     updateCurrentPlayerTaskCountdown();
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_800200F8);
-#endif
 
 s32 callCurrentPlayerStateCallbackIfDifferent(u16 state) {
     s32 result;

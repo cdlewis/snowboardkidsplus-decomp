@@ -219,6 +219,7 @@ extern RacePlayer *D_8013B0D8;
 extern RacePlayer *currentPlayerAbsolute
     __attribute__((section(".data")));
 
+void initializeCurrentPlayerUnlockScene(void);
 void updateCurrentPlayerTaskCountdown(void);
 s16 isFirstPlayerUsingCallback26D10(void);
 void clearCurrentPlayerSequenceState(void);

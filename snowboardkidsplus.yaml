@@ -975,7 +975,7 @@ segments:
       - {start: 0x12B7B0, type: .sdata, name: engine/frame_sync, linker_section: .sdata.synchronized_frame_count, linker_section_order: .data}
       - [0x12B7B4, data, 12B7B4]
       - {start: 0x12B7EC, type: .data, name: race/player/player_update, linker_section: .data.player_trick_short_inputs}
-      - [0x12B8C0, data, player_trick_input_tail]
+      - {start: 0x12B8C8, type: .data, name: race/player/player_update, linker_section: .data.player_unlock_scene_yaw_offsets}
       - {start: 0x12B8D0, type: .data, name: race/player/player_update, linker_section: .data.player_wall_probe_offsets}
       - [0x12B8D8, data, current_player_pointer]
       - {start: 0x12B8DC, type: .data, name: race/player/player_actions, linker_section: .data.player_sound_variants}

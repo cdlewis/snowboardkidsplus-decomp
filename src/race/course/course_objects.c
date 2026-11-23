@@ -2288,8 +2288,6 @@ void updateOrbitingObstacleTask(void) {
 
 /* DECOMP_ATTEMPT: inline 167/168 */
 #ifdef NON_MATCHING
-void func_800200F8(void);
-
 void func_8005EBC4(void) {
  s16 index; GeometryRegion *region; GeometryRegion *regions; s16 *vertices; s16 i;
  index = D_80123D80[D_8013AFCE].unk00;
@@ -2304,7 +2302,7 @@ void func_8005EBC4(void) {
  D_8013AE8C->data18 = D_8013AE88->data18 + 26; D_8013AE88->data18 = 26;
  D_801241E8[0].pitch = 0x20; D_801241E8[0].unk10 = -0x180;
  D_801241E8[0].yaw = D_8012A5C0[26].vy; D_801241E8[0].unk16 = 9;
- i=0; while (1) { if (i >= D_8013AFD2) break; gRacePlayers[i].task->callback = func_800200F8; i++; }
+ i=0; while (1) { if (i >= D_8013AFD2) break; gRacePlayers[i].task->callback = initializeCurrentPlayerUnlockScene; i++; }
  setCurrentTaskCallback(updateAndDrawCurrentTaskObject);
 }
 #else
