@@ -393,121 +393,91 @@ void func_8002B820(void) {
 INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002B820);
 #endif
 
-/* DECOMP_ATTEMPT: inline 84/196 */
-#ifdef NON_MATCHING
-void func_8002BC2C(void) {
+void resolveRacePlayerOverlaps(void) {
     RacePlayer *second;
-    RacePlayer *first;
     s16 heading;
     s32 shiftX;
     s32 halfZ;
     s32 halfX;
     s32 shiftZ;
-    s32 zProduct;
     s32 radius;
     s32 sinAngle;
-    s32 penetration;
-    s32 distance;
+    s32 cosAngle;
+    s32 separation;
     s32 dx;
-    s32 xProduct;
-    s32 heightDifference;
     s32 j;
     s32 i;
     s32 heightLimit;
-    s32 withinZRadius;
-    s32 secondX;
     s32 dz;
-    s32 roundedZProduct;
-    s32 secondZ;
-    u32 distanceMinusRadius;
-    u8 playerCount;
 
-    playerCount = (u8) D_8013AFD2;
-    i = 0;
-    if ((D_8013AFD2 - 1) > 0) {
-        first = gRacePlayers;
-        do {
-            j = i + 1;
-            if (j < (s8) playerCount) {
-                second = &gRacePlayers[j];
-                do {
-                    if (first->isActive && second->isActive &&
-                        !(first->unk128 & 0x200000) && !(second->unk128 & 0x200000)) {
-                        heightDifference = first->unk074 - second->unk074;
-                        if (heightDifference < 0) {
-                            heightLimit = first->unk0B0;
-                            heightDifference = -heightDifference;
-                        } else {
-                            heightLimit = second->unk0B0;
-                        }
-                        if ((heightLimit * 2) >= heightDifference) {
-                            dx = first->x - second->x;
-                            radius = first->unk0AC + second->unk0AC;
-                            if (dx < 0) {
-                                dx = -dx;
-                            }
-                            if (dx < radius) {
-                                dz = first->z - second->z;
-                                withinZRadius = dz < radius;
-                                if (dz < 0) {
-                                    dz = -dz;
-                                    withinZRadius = dz < radius;
-                                }
-                                if (withinZRadius != 0) {
-                                    distance = SquareRoot0((dx * dx) + (dz * dz));
-                                    distanceMinusRadius = distance - radius;
-                                    if (distance < radius) {
-                                        penetration = (s32) (distanceMinusRadius + (distanceMinusRadius >> 0x1F)) >> 1;
-                                        heading = getXZHeading(first->x, first->z, second->x, second->z);
-                                        sinAngle = rsin(heading);
-                                        xProduct = -sinAngle * penetration;
-                                        zProduct = rcos(heading) * penetration;
-                                        if (xProduct < 0) {
-                                            xProduct += 0xFFF;
-                                        }
-                                        roundedZProduct = zProduct;
-                                        shiftX = xProduct >> 0xC;
-                                        if (roundedZProduct < 0) {
-                                            roundedZProduct += 0xFFF;
-                                        }
-                                        shiftZ = roundedZProduct >> 0xC;
-                                        if (first->unk128 & 0x1000) {
-                                            if (!(second->unk128 & 0x1000)) {
-                                                secondX = second->x + shiftX;
-                                                secondZ = second->z - shiftZ;
-                                                goto update_second;
-                                            }
-                                        } else if (second->unk128 & 0x1000) {
-                                            first->x -= shiftX;
-                                            first->z += shiftZ;
-                                        } else {
-                                            halfX = (s32) (shiftX + ((u32) xProduct >> 0x1F)) >> 1;
-                                            first->x -= halfX;
-                                            halfZ = (s32) (shiftZ + ((u32) roundedZProduct >> 0x1F)) >> 1;
-                                            first->z += halfZ;
-                                            secondX = second->x + halfX;
-                                            secondZ = second->z - halfZ;
-update_second:
-                                            second->x = secondX;
-                                            second->z = secondZ;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    j += 1;
-                    second++;
-                } while (j < D_8013AFD2);
+    for (i = 0; i < D_8013AFD2 - 1; i++) {
+        for (j = i + 1; j < D_8013AFD2; j++) {
+            second = &gRacePlayers[j];
+            if (!gRacePlayers[i].isActive || !second->isActive ||
+                (gRacePlayers[i].unk128 & 0x200000) || (second->unk128 & 0x200000)) {
+                continue;
             }
-            i += 1;
-            first++;
-        } while (i < (D_8013AFD2 - 1));
+            separation = gRacePlayers[i].unk074 - second->unk074;
+            if (separation < 0) {
+                heightLimit = gRacePlayers[i].unk0B0;
+                separation = -separation;
+            } else {
+                heightLimit = second->unk0B0;
+            }
+            if (separation > heightLimit * 2) {
+                continue;
+            }
+
+            radius = gRacePlayers[i].unk0AC + second->unk0AC;
+            dx = gRacePlayers[i].x - second->x;
+            if (dx < 0) {
+                dx = -dx;
+            }
+            if (dx >= radius) {
+                continue;
+            }
+
+            dz = gRacePlayers[i].z - second->z;
+            if (dz < 0) {
+                dz = -dz;
+            }
+            if (dz >= radius) {
+                continue;
+            }
+
+            separation = SquareRoot0(dx * dx + dz * dz);
+            if (separation >= radius) {
+                continue;
+            }
+
+            separation = (separation - radius) / 2;
+            heading = getXZHeading(gRacePlayers[i].x, gRacePlayers[i].z, second->x, second->z);
+            sinAngle = rsin(heading);
+            cosAngle = rcos(heading);
+            shiftX = (-sinAngle * separation) / 4096;
+            shiftZ = (cosAngle * separation) / 4096;
+
+            if (gRacePlayers[i].unk128 & 0x1000) {
+                if (second->unk128 & 0x1000) {
+                    continue;
+                }
+                second->x += shiftX;
+                second->z -= shiftZ;
+            } else if (second->unk128 & 0x1000) {
+                gRacePlayers[i].x -= shiftX;
+                gRacePlayers[i].z += shiftZ;
+                continue;
+            } else {
+                halfX = shiftX / 2;
+                gRacePlayers[i].x -= halfX;
+                halfZ = shiftZ / 2;
+                gRacePlayers[i].z += halfZ;
+                second->x += halfX;
+                second->z -= halfZ;
+            }
+        }
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002BC2C);
-#endif
 
 u16 arePositionsWithinXZRange(const Position3D *a, const Position3D *b, s32 threshold) {
     s32 dx = a->x - b->x;
@@ -836,7 +806,7 @@ void updateRacePlayerFinishSlotsTask(void) {
         if (D_8013AFE2 == 1 && D_8013AFE0 == 1) {
             D_8013B1D4 = 0;
         }
-        func_8002BC2C();
+        resolveRacePlayerOverlaps();
         func_8002B820();
         for (i = 0; i < D_8013AFD2; i++) {
             currentPlayerAbsolute = &gRacePlayers[i];
