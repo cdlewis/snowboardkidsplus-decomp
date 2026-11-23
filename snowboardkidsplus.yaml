@@ -213,6 +213,7 @@ segments:
       - [0x3998, lib, libmcrd421, userfunc, .rdata]
       - [0x39B1, pad]
       - [0x39B4, c, main]
+      - [0x39BC, hasm, libsn/snmain]
       - [0x3A78, c, io/cd_queue]
       - [0x4E7C, c, engine/task_scheduler]
       - [0x5474, c, io/controller_input]

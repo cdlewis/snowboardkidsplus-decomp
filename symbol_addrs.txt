@@ -4124,3 +4124,7 @@ getMappedMenuWord = 0x80073708; // type:func
 mapMenuByteIndex = 0x8007373C; // type:func
 mapSpacedGroupIndex = 0x80073760; // type:func
 mapCourseMenuByteIndex = 0x8007E8CC; // type:func
+__SN_ENTRY_POINT = 0x800131BC; // type:func size:0xAC
+snStartupStackTops = 0x80013268; // size:0x10
+snStartupStackReserve = 0x80133784; // size:0x4
+snStartupSavedReturnAddress = 0x8013B5D8; // size:0x4
