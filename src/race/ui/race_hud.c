@@ -24,6 +24,7 @@ extern s16 gFrameCounter __attribute__((section(".data")));
 extern s16 D_8013AFCE __attribute__((section(".data")));
 extern u16 D_8013AF78 __attribute__((section(".data")));
 extern u32 gGameOptionFlags __attribute__((section(".data")));
+extern u8 D_8013AFCD __attribute__((section(".data")));
 extern u8 D_8013AFD5 __attribute__((section(".data")));
 extern u8 D_8013AFD3 __attribute__((section(".data")));
 
@@ -33,7 +34,7 @@ const char gLapTimeFormat[20] __attribute__((section(".rodata.lap_time_format"),
 
 const char gBestLapLabel[16] __attribute__((section(".rodata.best_lap_label"), aligned(4))) = "BEST LAP";
 
-void func_80043FBC(void);
+void drawRacePauseMenu(void);
 
 void drawLapTimeHud(void) {
     GsOT *ot = &D_800EBFF0[D_8013AF78];
@@ -209,7 +210,7 @@ resume:
         break;
     }
 
-    func_80043FBC();
+    drawRacePauseMenu();
 }
 
 void resetControllersAndDeleteCurrentTask(void) {
@@ -219,9 +220,7 @@ void resetControllersAndDeleteCurrentTask(void) {
     deleteCurrentTaskSubtree();
 }
 
-/* DECOMP_ATTEMPT: inline 195/198 */
-#ifdef NON_MATCHING
-void func_80043FBC(void) {
+void drawRacePauseMenu(void) {
     s16 player = D_8013AFD3 - 1;
     s16 x, y, row;
     s32 palette, sprite;
@@ -262,15 +261,12 @@ void func_80043FBC(void) {
     if (D_8013AFD5 == 4) {
         palette = 7;
     }
-    sprite = (s16)getPlayerOptionFlag(player);
-    sprite = !sprite;
-    drawSpriteByIndexWithBlend(x, y, 570 | sprite, palette, -1, &D_800EBFF0[D_8013AF78], 0);
+    sprite = getPlayerOptionFlag(player);
+    drawSpriteByIndexWithBlend(x, y, 570 | (sprite = !(s16)sprite), palette, -1,
+                               &D_800EBFF0[D_8013AF78], 0);
     setTexturedQuadColor(128, 128, 128);
     drawStyle20DTexturedPanel(-58, -58, 116, 124, 15, 0, &D_800EBFF0[D_8013AF78], 0);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud", func_80043FBC);
-#endif
 
 s16 isFirstPlayerUsingCallback26D10(void) {
     return gRacePlayers[0].task->callback == updateCurrentPlayerTaskCountdown;

@@ -1972,6 +1972,7 @@ setControllerFlag5 = 0x80014CCC; // type:func
 initializeRacePauseMenuTask = 0x80043C28; // type:func
 updateRacePauseMenu = 0x80043C5C; // type:func
 resetControllersAndDeleteCurrentTask = 0x80043F84; // type:func
+drawRacePauseMenu = 0x80043FBC; // type:func
 D_8013AF08 = 0x8013AF08; // size:0x4 defined:true
 
 clearCurrentPlayerSequenceState = 0x8001E610; // type:func
