@@ -24,6 +24,10 @@ typedef struct IndexedHalfwordRecord {
     s16 unk_04;
 } IndexedHalfwordRecord;
 
+extern u8 D_80130094[][5];
+extern u8 D_801300A0[][5];
+extern u8 D_8013B434[4];
+
 void buildRecordFlagMenuEntries(s16 index, s16 mode, s16 group, u16 arg4, u16 arg5,
                                 RecordFlagMenuEntries *out);
 s16 findIndexedHalfwordRecord(IndexedHalfwordRecord *records, u8 *indices, s16 count, s16 value);

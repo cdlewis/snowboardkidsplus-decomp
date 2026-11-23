@@ -117,6 +117,14 @@ static const u8 sMoneyPanelSelectionSpriteMapping[3]
     __attribute__((section(".data.shop_menu_selection"))) = {0, 1, 2};
 volatile u8 gShopMenuRememberedSelection __attribute__((section(".data.shop_menu_selection"))) = 0;
 
+static RecordFlagMenuEntries sShopDefaultBoardEntries
+    __attribute__((section(".data.shop_default_board_entries"))) = {
+    D_8013B434, 0, 20, 3, NULL, 0, 0
+};
+
+static const u8 sShopBoardGroupUnlockFlags[4]
+    __attribute__((section(".data.shop_board_group_unlock_flags"), aligned(4))) = {1, 0, 2, 0};
+
 static const u8 sBoardPurchaseSpriteMapping[4]
     __attribute__((section(".data.board_purchase_mappings"), aligned(4))) = {1, 2, 3, 5};
 static const u8 sBoardPurchaseFullSpriteMapping[8]
@@ -1381,17 +1389,10 @@ void initializeTaskResourcePair(void) {
         for (;;) {}
     }
     D_8013AE88->resource16 = allocateTaskResource();
-    setCurrentTaskCallback(func_80090450);
+    setCurrentTaskCallback(updateShopBoardPurchaseMenuTask);
 }
 
-/* DECOMP_ATTEMPT: inline 943/946 */
-#ifdef NON_MATCHING
-extern RecordFlagMenuEntries D_80131910;
-extern u8 D_80130094[][5];
-extern u8 D_801300A0[][5];
-extern const u8 D_8013B4E0[4];
-
-void func_80090450(void) {
+void updateShopBoardPurchaseMenuTask(void) {
     MoneyMenuSelection *parentSelection;
     RegisteredPanelSlot *parentPanels;
     MoneyMenuSelection *selection;
@@ -1455,7 +1456,7 @@ void func_80090450(void) {
                 }
                 gridMode = 1;
             } else {
-                entries = &D_80131910;
+                entries = &sShopDefaultBoardEntries;
                 gridMode = 1;
             }
             createRegisteredSpacedChildTasks(gridMode, 0xB0, 0x40, D_80131868,
@@ -1672,14 +1673,14 @@ showSelection:
                 for (i = 0; i < 3; i++) {
                     u32 flags;
                     shift = group * 3 + i;
-                    flags = records[(s16)player].flags;
+                    flags = gPlayerSaveRecords[(s16)player].flags;
                     if ((flags & (4 << shift)) == 0) {
                         groupComplete = 0;
                         break;
                     }
                 }
                 if (groupComplete) {
-                    setPairedStateIndexedFlag(D_8013B4E0[group]);
+                    setPairedStateIndexedFlag(sShopBoardGroupUnlockFlags[group]);
                 }
             }
             panels[5].task = createCountdownTask(15);
@@ -1735,9 +1736,6 @@ finish:
         break;
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/menu/panel_tasks", func_80090450);
-#endif
 
 extern char gSaveRecordMoneyPanelCurrencyLabel[]
     __attribute__((section(".data.save_record_money_panel_currency_label")));

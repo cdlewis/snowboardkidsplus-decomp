@@ -176,7 +176,7 @@ IndexedHalfwordRecord gRecordFlagMenuSpriteRecords[]
 };
 
 extern u8 D_8013B420[], D_8013B424[], D_8013B42C[];
-extern u8 D_8013B430[], D_8013B434[], D_8013B438[];
+extern u8 D_8013B430[], D_8013B438[];
 extern u8 D_8013B43C[], D_8013B440[], D_8013B448[], D_8013B44C[];
 extern u8 D_8013B450[], D_8013B454[];
 
@@ -245,8 +245,6 @@ const u32 gSaveRecordLoadPanelTablePadding
 StateValueHistory D_8013BE30 __attribute__((section(".bss.state_value_history")));
 
 extern const u16 *D_8012FC2C[10];
-extern u8 D_80130094[][5];
-extern u8 D_801300A0[][5];
 extern MenuModelSelectionPair D_8013B468[];
 extern u8 gPlayerGroupedSelectionStates[2];
 void drawClippedRegisteredTaskGridSprite(void);

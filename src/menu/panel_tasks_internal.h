@@ -194,7 +194,7 @@ void drawCurrentTaskSelectedBoardPrice(void);
 void drawCurrentTaskSelectedPlayerMoneyPanel(void);
 void func_8008DDC0(void);
 void updateMoneyPanelSelectionTask(void);
-void func_80090450(void);
+void updateShopBoardPurchaseMenuTask(void);
 void updateBoardSelectionMenuTask(void);
 void updateSplitBoardSelectionTask(void);
 void updatePlayerPaletteSelectionTask(void);

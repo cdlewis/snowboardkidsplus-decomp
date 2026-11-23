@@ -158,7 +158,7 @@ segments:
       - {start: 0x2600, type: .rodata, name: menu/panel_tasks, linker_section: .rodata.selected_board_details}
       - {start: 0x2618, type: .rodata, name: menu/panel_tasks, linker_section: .rodata.grouped_selection_bounds}
       - {start: 0x2654, type: .rodata, name: menu/panel_tasks, linker_section: .rodata.grouped_selection_bounds_padding}
-      - [0x2658, rodata]
+      - {start: 0x2658, type: .rodata, name: menu/panel_tasks, linker_section: .rodata.shop_board_purchase}
       - {start: 0x26A0, type: .rodata, name: menu/panel_tasks, linker_section: .rodata.board_level_label}
       - {start: 0x26B0, type: .rodata, name: menu/panel_tasks, linker_section: .rodata.board_selection_menu}
       - {start: 0x26F0, type: .rodata, name: menu/panel_tasks, linker_section: .rodata.board_selection_details}
@@ -858,6 +858,8 @@ segments:
       - {start: 0x12204C, type: .data, name: menu/panel_tasks, linker_section: .data.board_style_text}
       - {start: 0x12205C, type: .data, name: menu/panel_tasks, linker_section: .data.board_selection_styles}
       - [0x122068, data, board_selection_tail]
+      - {start: 0x122110, type: .data, name: menu/panel_tasks, linker_section: .data.shop_default_board_entries}
+      - [0x122124, data, board_selection_tail_remainder]
       - {start: 0x122524, type: .data, name: menu/panel_tasks, linker_section: .data.grid_model_preview_poses}
       - {start: 0x12254C, type: .data, name: menu/grid_selection, linker_section: .data.palette_selection_main_preview_y}
       - {start: 0x122558, type: .data, name: menu/panel_tasks, linker_section: .data.board_price_vertical_offsets}
@@ -1071,6 +1073,7 @@ segments:
       - [0x12BCB0, data, 12BC78_tail]
       - {start: 0x12BCB8, type: .data, name: menu/panel_tasks, linker_section: .data.shop_menu_selection}
       - [0x12BCBC, data]
+      - {start: 0x12BCE0, type: .data, name: menu/panel_tasks, linker_section: .data.shop_board_group_unlock_flags}
       - {start: 0x12BCE4, type: .data, name: menu/panel_tasks, linker_section: .data.save_record_money_panel_currency_label}
       - [0x12BCE8, data, 12BCE8]
       - {start: 0x12BCF0, type: .data, name: menu/panel_tasks, linker_section: .data.board_purchase_mappings}

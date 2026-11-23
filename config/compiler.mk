@@ -126,6 +126,7 @@ UNIT_REORDER_src/menu/task_widgets.c := 0
 UNIT_CCFLAGS_src/menu/save_record_tasks.c += --rdata-section=updateMemoryCardSaveMenuTask:.rodata.memory_card_save_menu
 UNIT_CCFLAGS_src/menu/panel_tasks.c += --rdata-section=updateShopMenuTask:.rodata.shop_menu
 UNIT_CCFLAGS_src/menu/panel_tasks.c += --rdata-section=updateMoneyPanelSelectionTask:.rodata.money_panel_selection
+UNIT_CCFLAGS_src/menu/panel_tasks.c += --rdata-section=updateShopBoardPurchaseMenuTask:.rodata.shop_board_purchase
 UNIT_CCFLAGS_src/menu/panel_tasks.c += --rdata-section=updateBoardSelectionMenuTask:.rodata.board_selection_menu
 UNIT_CCFLAGS_src/menu/panel_tasks.c += --rdata-section=updateBoardSelectionDetailsMenuTask:.rodata.board_selection_details
 UNIT_CCFLAGS_src/menu/panel_tasks.c += --rdata-section=updateBoardPurchaseMenuTask:.rodata.board_purchase_menu
