@@ -52,6 +52,7 @@ void updateDriftingFallingSpriteEffect(FallingSpriteEffect *effect);
 void updateSwayingFallingSpriteEffect(FallingSpriteEffect *effect);
 void initializeFallingSpriteEffectsTask(void);
 void waitFallingSpriteEffectsExitTask(void);
+void createFallingSpriteEffectsTasks(void);
 void drawSlidingDisplaySprite(SlidingDisplayResource *resource);
 void slideOutSlidingDisplayTask(void);
 void waitSlidingDisplayTask(void);

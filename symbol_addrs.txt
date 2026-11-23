@@ -2473,6 +2473,7 @@ updateFallingSpriteEffectsTask = 0x80033C2C; // type:func
 initializeFallingSpriteEffectsTask = 0x80033F00; // type:func
 finishFallingSpriteEffectsExitTask = 0x80033FAC; // type:func
 waitFallingSpriteEffectsExitTask = 0x80033FE8; // type:func
+createFallingSpriteEffectsTasks = 0x80034028; // type:func
 
 drawTaskTimeRecordsAndSetFlag10OnInput = 0x80039F6C; // type:func
 

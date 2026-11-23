@@ -244,27 +244,15 @@ void waitFallingSpriteEffectsExitTask(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: inline 24/26 */
-#ifdef NON_MATCHING
-void initializeFallingSpriteEffectsTask(void);
-void waitFallingSpriteEffectsExitTask(void);
-
-void func_80034028(void) {
+void createFallingSpriteEffectsTasks(void) {
     s16 i;
 
     D_8013AE88->data18 = 0;
-    i = 0;
-    while (1) {
+    for (i = 0; i < 10; i++) {
         createChildTaskWithReserve(initializeFallingSpriteEffectsTask);
-        if (++i >= 10) {
-            break;
-        }
     }
     setCurrentTaskCallback(waitFallingSpriteEffectsExitTask);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/ui/race_panels", func_80034028);
-#endif
 
 void drawSlidingDisplaySprite(SlidingDisplayResource *resource) {
     s32 x = (resource->position >> 1) - 56;
