@@ -3650,6 +3650,7 @@ updateRegisteredTripletTask = 0x80081DF0; // type:func
 gRegisteredTripletUnavailableLabel = 0x8013B45C; // size:0x4 defined:true
 
 updateCurrentPlayerTaskDecelerationSteps = 0x80025DD8; // type:func
+advanceCurrentPlayerTaskAndSetSpeed = 0x80025FAC; // type:func
 
 updateCurrentPlayerPartTransforms = 0x8001EEBC; // type:func
 

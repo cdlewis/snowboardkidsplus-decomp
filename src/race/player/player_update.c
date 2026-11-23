@@ -469,7 +469,7 @@ void func_8001596C(u16 playerIndex);
 void moveCurrentPlayerToTaskTarget(void);
 void advanceCurrentPlayerTaskOnAnimationFlag(void);
 void updateCurrentPlayerTaskDecelerationSteps(void);
-void func_80025FAC(void);
+void advanceCurrentPlayerTaskAndSetSpeed(void);
 void moveCurrentPlayerForwardUntilState22(void);
 void updateCurrentPlayerState30TaskUntilStopped(void);
 s32 updateCurrentPlayerGroundContact(void);
@@ -479,7 +479,7 @@ s16 resolveCurrentPlayerTerrainContact(void);
 TaskCallback gCurrentPlayerTaskPhaseCallbacks[8]
     __attribute__((section(".data.player_task_phases"))) = {
     moveCurrentPlayerToTaskTarget, advanceCurrentPlayerTaskOnAnimationFlag, updateCurrentPlayerTaskJumpAndSpawnCourseOffset, updateCurrentPlayerTaskDecelerationSteps,
-    func_80025FAC, advanceCurrentPlayerTaskPhaseMovement, updateCurrentPlayerTaskLapTransition, moveCurrentPlayerForwardUntilState22
+    advanceCurrentPlayerTaskAndSetSpeed, advanceCurrentPlayerTaskPhaseMovement, updateCurrentPlayerTaskLapTransition, moveCurrentPlayerForwardUntilState22
 };
 
 
@@ -3893,9 +3893,7 @@ void updateCurrentPlayerTaskDecelerationSteps(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: inline 22/26 */
-#ifdef NON_MATCHING
-void func_80025FAC(void) {
+void advanceCurrentPlayerTaskAndSetSpeed(void) {
     if (--D_8013B0D8->unk08C == 0) {
         D_8013AE88->data1A++;
         D_8013B0D8->unk08C = 19;
@@ -3906,9 +3904,6 @@ void func_80025FAC(void) {
         }
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/player/player_update", func_80025FAC);
-#endif
 
 void advanceCurrentPlayerTaskPhaseMovement(void) {
     RacePlayer *player;
