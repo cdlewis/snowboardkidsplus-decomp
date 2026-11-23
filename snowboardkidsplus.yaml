@@ -992,9 +992,7 @@ segments:
       - {start: 0x12B944, type: .data, name: menu/record_screens, linker_section: .data.stats_value_labels}
       - {start: 0x12B954, type: .data, name: race/player/player_actions, linker_section: .data.menu_sprite_palettes_prefix}
       - {start: 0x12B958, type: .data, name: race/player/player_actions, linker_section: .data.menu_sprite_palettes}
-      - {start: 0x12B96C, type: .data, name: race/ui/race_hud_modes, linker_section: .data.trick_attack_point_label}
-      - {start: 0x12B972, type: .sdata, name: race/ui/race_hud_modes, linker_section_order: .data}
-      - [0x12B974, .data, race/ui/race_hud_modes]
+      - {start: 0x12B96C, type: .sdata, name: race/ui/race_hud_modes, linker_section_order: .data}
       - {start: 0x12B980, type: .sdata, name: race/player/player_actions, linker_section_order: .data}
       - [0x12B984, data, 12B984]
       - {start: 0x12B9AC, type: .data, name: race/player/player_actions, linker_section: .data.player_dual_resource_effect_frame}

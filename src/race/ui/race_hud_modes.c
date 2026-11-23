@@ -34,20 +34,13 @@ const char gSplitScreenTimeLimitLabel[12] __attribute__((section(".rodata.trick_
 const char gTargetTimeLabel[12] __attribute__((section(".rodata.target_time_label"), aligned(4))) =
     "TARGET TIME";
 
-char gSplitScreenTrickAttackPointLabel[6] __attribute__((section(".data.trick_attack_point_label"), aligned(4))) =
-    "POINT";
-
-extern char gCourseCoinTotalFormat[] __attribute__((section(".data")));
-extern char gCourseCoinCountMarker[] __attribute__((section(".data")));
-extern char gCourseCoinCountFormat[] __attribute__((section(".data")));
-
 void func_8004054C(s32 x, s32 y, GsOT *ot, u16 depth);
 void func_80041554(void);
 void drawSplitScreenCourseProgressHud(void);
 void func_800418F4(s16 player);
 void drawSplitScreenTrickAttackHud(s16 player);
 void drawScoreAttackHud(void);
-void func_80042894(s16 player);
+void drawSplitScreenScoreAttackHud(s16 player);
 
 /* DECOMP_ATTEMPT: inline 1125/1135 */
 #ifdef NON_MATCHING
@@ -433,7 +426,6 @@ void unpackUpperWordBytes(u32 packed, UnpackedWordBytes *out) {
 #ifdef NON_MATCHING
 #include "game/graphics/draw_mode_sprite.h"
 
-
 typedef struct CourseProgressScratch {
     u32 reserved[6];
     s16 playerOrder[4];
@@ -721,8 +713,8 @@ void updateRaceHud(void) {
                     D_8013B190[1] = gRaceElapsedTime;
                 }
             }
-            func_80042894(0);
-            func_80042894(1);
+            drawSplitScreenScoreAttackHud(0);
+            drawSplitScreenScoreAttackHud(1);
             break;
         case 6:
             if (!(D_8013AFE4 & 3) && !(gRacePlayers[0].unk128 & 0x40)) {
@@ -994,7 +986,7 @@ void drawSplitScreenTrickAttackHud(s16 player) {
     }
 
     drawHudDecimalNumber8x16(104, hudY - 88, 5, 0, gRacePlayers[player].trickAttackPointTotal, 1, -1, hudOt, depth[0]);
-    drawLimitedText8x8(104, hudY - 96, 5, gSplitScreenTrickAttackPointLabel, 5, -1, hudOt, depth[0]);
+    drawLimitedText8x8(104, hudY - 96, 5, "POINT", 5, -1, hudOt, depth[0]);
     drawTransformedSpriteByIndex(135, (s16)(hudY - 24), 422, 2, -1, 0x7FFF, 0x7FFF,
                                  0x1000, 0x1000, 0, hudOt, depth[0]);
     drawTransformedSpriteByIndex(120, (s16)(hudY - 24), 419, 14, -1, 0x7FFF, 0x7FFF,
@@ -1042,27 +1034,21 @@ void drawScoreAttackHud(void) {
     drawSpriteByIndexWithBlend(-112, 64, 424, 0, -1, ot, depth);
     drawSpriteByIndexWithBlend(-136, 64, 421, 14, -1, ot, depth);
     drawHudDecimalNumber8x16(96, -80, 2, 0, gRacePlayers[0].scoreAttackPointTotal, 1, -1, ot, depth);
-    sprintf(text, gCourseCoinTotalFormat, gRacePlayers[0].scoreAttackPointTarget);
+    sprintf(text, "/%d", gRacePlayers[0].scoreAttackPointTarget);
     drawLimitedText8x8(112, -72, 10, text, 6, -1, ot, depth);
     drawSpriteByIndexWithBlend(104, -96, 432, 0, -1, ot, depth);
 }
 
-/* DECOMP_ATTEMPT: inline 321/331 */
-#ifdef NON_MATCHING
-extern volatile u16 D_8013B17A __attribute__((section(".data")));
-
-void func_80042894(s16 player) {
+void drawSplitScreenScoreAttackHud(s16 player) {
     GsOT *timeOt;
     s16 hudY;
-    u8 padding[16];
+    u8 padding[0x10]; /* Preserve the original stack frame. */
     s16 timeY;
     GsOT *hudOt = &D_800EBFF0[D_8013AF78];
     s16 palette;
     s32 iconX;
-    u16 depth;
-    const volatile u16 *depthSource = &D_8013B17A;
+    u16 depth[1] = {1};
     u16 fixedDepth = 1;
-
 
     if (player == 0) {
         timeOt = &D_800EC018[D_8013AF78];
@@ -1087,13 +1073,14 @@ void func_80042894(s16 player) {
             palette = 2;
         }
 
-        drawHudDecimalNumber8x16(-112, (timeDigitsY = timeY + 36), 2, 1, D_8013B198[player].minutes, palette, -1, timeOt, (depth = *depthSource));
+        drawHudDecimalNumber8x16(-112, (timeDigitsY = timeY + 36), 2, 1,
+                                D_8013B198[player].minutes, palette, -1, timeOt, depth[0]);
         iconX = -112;
-        drawHudDecimalNumber8x16(-88, timeDigitsY, 2, 1, D_8013B198[player].seconds, palette, -1, timeOt, depth);
-        drawHudDecimalNumber8x16(-64, timeDigitsY, 2, 1, D_8013B198[player].centiseconds >> 8, palette, -1, timeOt, depth);
-        drawSpriteByIndexWithBlend(-96, timeDigitsY, 25, palette, -1, timeOt, depth);
-        drawSpriteByIndexWithBlend(-72, timeDigitsY, 24, palette, -1, timeOt, depth);
-        drawLimitedText8x8(iconX, timeY + 28, 11, gSplitScreenTimeLimitLabel, 5, -1, timeOt, depth);
+        drawHudDecimalNumber8x16(-88, timeDigitsY, 2, 1, D_8013B198[player].seconds, palette, -1, timeOt, depth[0]);
+        drawHudDecimalNumber8x16(-64, timeDigitsY, 2, 1, D_8013B198[player].centiseconds >> 8, palette, -1, timeOt, depth[0]);
+        drawSpriteByIndexWithBlend(-96, timeDigitsY, 25, palette, -1, timeOt, depth[0]);
+        drawSpriteByIndexWithBlend(-72, timeDigitsY, 24, palette, -1, timeOt, depth[0]);
+        drawLimitedText8x8(iconX, timeY + 28, 11, gSplitScreenTimeLimitLabel, 5, -1, timeOt, depth[0]);
 
         for (i = 0; i < gRacePlayers[player].unk93C; i++) {
             drawSpriteByIndexWithBlend(iconX, -36, 445, 13, -1, timeOt, fixedDepth);
@@ -1102,23 +1089,20 @@ void func_80042894(s16 player) {
     }
 
     drawTransformedSpriteByIndex(112, (s16)(hudY - 80), 432, 0, -1, 0x7FFF, 0x7FFF,
-                                 0xC00, 0xC00, 0, hudOt, (depth = *depthSource));
-    drawLimitedText8x8(124, hudY - 76, 1, gCourseCoinCountMarker, 6, -1, hudOt, depth);
+                                 0xC00, 0xC00, 0, hudOt, depth[0]);
+    drawLimitedText8x8(124, hudY - 76, 1, "*", 6, -1, hudOt, depth[0]);
     drawHudDecimalNumber8x16(132, hudY - 84, 2, 0,
-                            gRacePlayers[player].scoreAttackPointTotal, 1, -1, hudOt, depth);
+                            gRacePlayers[player].scoreAttackPointTotal, 1, -1, hudOt, depth[0]);
     timeY = hudY - 24;
     drawTransformedSpriteByIndex(135, timeY, 424, 0, -1, 0x7FFF, 0x7FFF,
-                                 0x1000, 0x1000, 0, hudOt, depth);
+                                 0x1000, 0x1000, 0, hudOt, depth[0]);
     drawTransformedSpriteByIndex(120, timeY, 421, 14, -1, 0x7FFF, 0x7FFF,
-                                 0x1000, 0x1000, 0, hudOt, depth);
+                                 0x1000, 0x1000, 0, hudOt, depth[0]);
     if (player == 1) {
         hudY += 18;
     }
-    drawSpriteByIndexWithBlend(96, hudY - 121, 417, 12, -1, hudOt, depth);
+    drawSpriteByIndexWithBlend(96, hudY - 121, 417, 12, -1, hudOt, depth[0]);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud_modes", func_80042894);
-#endif
 
 void drawCourseCoinHud(void) {
     GsOT *ot = &D_800EBFF0[D_8013AF78];
@@ -1142,11 +1126,11 @@ void drawCourseCoinHud(void) {
     drawLimitedText8x8(50, -96, 11, gTargetTimeLabel, 7, -1, ot, 1);
 
     drawPaletteMappedIcon(-136, -96, 1, ot, 1);
-    sprintf(text, gCourseCoinCountFormat, gRacePlayers[0].collectedCourseCoinMarkerCount);
+    sprintf(text, "%d", gRacePlayers[0].collectedCourseCoinMarkerCount);
     digits = strlen(text);
-    drawLimitedText8x8(-104, -72, 1, gCourseCoinCountMarker, 6, -1, ot, 1);
+    drawLimitedText8x8(-104, -72, 1, "*", 6, -1, ot, 1);
     drawHudDecimalNumber8x16(-96, -80, digits, 0, gRacePlayers[0].collectedCourseCoinMarkerCount, 1, -1, ot, 1);
-    sprintf(text, gCourseCoinTotalFormat, gRacePlayers[0].totalCourseCoinMarkerCount);
+    sprintf(text, "/%d", gRacePlayers[0].totalCourseCoinMarkerCount);
     drawLimitedText8x8(-96 + digits * 8, -72, 10, text, 6, -1, ot, 1);
 
     drawSpriteByIndexWithBlend(-112, 64, 423, 3, -1, ot, 1);
@@ -1191,7 +1175,7 @@ void drawSplitScreenCourseCoinHud(s16 player) {
 
     drawTransformedSpriteByIndex(112, (s16)(hudY - 80), 462, 5, -1, 0x7FFF, 0x7FFF,
                                  0xC00, 0xC00, 0, hudOt, depth);
-    drawLimitedText8x8(124, hudY - 76, 1, gCourseCoinCountMarker, 6, -1, hudOt, depth);
+    drawLimitedText8x8(124, hudY - 76, 1, "*", 6, -1, hudOt, depth);
     drawHudDecimalNumber8x16(132, hudY - 84, 2, 0,
                             gRacePlayers[player].collectedCourseCoinMarkerCount, 1, -1, hudOt, depth);
     drawTransformedSpriteByIndex(135, (s16)(hudY - 24), 423, 3, -1, 0x7FFF, 0x7FFF,
@@ -1203,8 +1187,3 @@ void drawSplitScreenCourseCoinHud(s16 player) {
     }
     drawSpriteByIndexWithBlend(96, hudY - 121, 417, 12, -1, hudOt, depth);
 }
-
-char gCourseCoinTotalFormat[4] __attribute__((section(".data"), aligned(4))) = "/%d";
-char gCourseCoinCountMarker[2] __attribute__((section(".data"), aligned(4))) = "*";
-u16 D_8013B17A __attribute__((section(".data"))) = 1;
-char gCourseCoinCountFormat[4] __attribute__((section(".data"), aligned(4))) = "%d";
