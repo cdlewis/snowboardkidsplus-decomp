@@ -22,6 +22,7 @@ typedef struct SelectedCourseRecord {
 
 extern SelectedCourseRecord D_80123D80[];
 extern const u8 D_8012D46C[];
+extern u8 D_8012D478[];
 extern s16 D_8013AFCE;
 extern u16 D_8013AFD0;
 extern u8 D_8013AFDA;

@@ -98,7 +98,7 @@ typedef struct NumberPanelState {
     u16 number;
 } NumberPanelState;
 
-void func_800A53BC(void);
+void prepareNumberAdjustmentDisplayTask(void);
 void finishNumberAdjustmentTask(void);
 void drawNumberAdjustmentPanel(void);
 void startUnlockResourceLoad(void);

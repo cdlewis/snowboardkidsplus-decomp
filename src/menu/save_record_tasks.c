@@ -9,6 +9,7 @@
 #include "game/engine/task.h"
 #include "game/graphics/graphics.h"
 #include "game/menu/movement.h"
+#include "game/menu/selected_records.h"
 #include "game/race/player/player_resource_textures.h"
 #include "game/race/player/race_player.h"
 #include "game/save/save_data.h"
@@ -843,7 +844,6 @@ void rebuildCombinedStateMask(SaveRecord *state) {
 
 /* DECOMP_ATTEMPT: inline 129/131 */
 #ifdef NON_MATCHING
-extern u8 D_8012D478[];
 extern s16 D_8013AFCE __attribute__((section(".data")));
 
 s16 func_8008C290(s16 maskIndex, s16 place) {

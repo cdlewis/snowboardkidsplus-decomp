@@ -219,7 +219,6 @@ void func_800A42CC(void);
 void func_800A499C(void);
 void preparePlayerResourcesTask(void);
 void initializeRaceTaskState(void);
-void func_800A53BC(void);
 void updateMode11SelectionMenuTask(void);
 void startUnlockResourceLoad(void);
 void prepareUnlockSelectionResume(void);
