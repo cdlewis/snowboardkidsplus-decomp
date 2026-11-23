@@ -42,6 +42,8 @@ extern SaveRecord gPlayerSaveRecords[2];
 extern SaveRecord gMergedSaveRecord;
 extern SaveRecord *D_8013B484[2];
 
+void initializeSaveRecordDefaults(SaveRecord *record);
+
 u32 getGlobalFlagMask(s16 bitIndex);
 
 void updatePairedStateFlag(s16 index);

@@ -65,10 +65,9 @@ void repeatByteStore(u8 *destination, s32 value, s32 count) {
     }
 }
 
-/* DECOMP_ATTEMPT: inline 61/63 */
-#ifdef NON_MATCHING
-void func_800897D0(SaveRecord *record) {
+void initializeSaveRecordDefaults(SaveRecord *record) {
     s16 i;
+
     repeatByteStore((u8 *)record, 0, sizeof(*record));
     record->flags = 0;
     record->boardUnlockFlagsLow = 0;
@@ -90,9 +89,6 @@ void func_800897D0(SaveRecord *record) {
         i++;
     } while (i < 10);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/menu/save_record_tasks", func_800897D0);
-#endif
 
 void copyGlobalFlagState(SaveRecord *source, SaveRecord *destination) {
     s16 i;

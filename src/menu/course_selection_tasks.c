@@ -3372,14 +3372,14 @@ void initializeSaveRecordTask(void) {
         while (1) {}
     }
     D_8013AE88->resource16 = allocateTaskResource();
-    func_800897D0(gPlayerSaveRecords);
-    func_800897D0(&gPlayerSaveRecords[1]);
+    initializeSaveRecordDefaults(gPlayerSaveRecords);
+    initializeSaveRecordDefaults(&gPlayerSaveRecords[1]);
     copyGlobalFlagState(&gPlayerSaveRecords[0], &gMergedSaveRecord);
     mergeSaveRecordFlags(&gPlayerSaveRecords[1], &gMergedSaveRecord);
     D_8013B484[0] = &SAVE_RECORD_WORKSPACE[0];
     D_8013B484[1] = &SAVE_RECORD_WORKSPACE[1];
-    func_800897D0(D_8013B484[0]);
-    func_800897D0(D_8013B484[1]);
+    initializeSaveRecordDefaults(D_8013B484[0]);
+    initializeSaveRecordDefaults(D_8013B484[1]);
     for (i = 0; i < 15; i++) {
         gPlayerResourceTextureSelections.entries[0][i] = D_80123650[i];
         gPlayerResourceTextureSelections.entries[1][i] = D_80123650[i];

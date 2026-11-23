@@ -96,7 +96,6 @@ extern u8 D_8013B47C;
 extern TexturedQuadListEntry taskIndexPanelQuadsPalette0[10];
 extern TexturedQuadListEntry taskIndexPanelQuadsPalette1[10];
 
-void func_800897D0(SaveRecord *record);
 void mergeSaveRecordFlags(SaveRecord *source, SaveRecord *destination);
 void updateSaveRecordTask(void);
 void updateSelectionPrizeMenuTask(void);

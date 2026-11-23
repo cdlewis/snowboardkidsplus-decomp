@@ -1776,7 +1776,6 @@ extern u8 D_8013B4BD __attribute__((section(".data")));
 extern u8 D_8013B527 __attribute__((section(".data")));
 extern u8 D_8013B110;
 extern s16 D_8013B104;
-void func_800897D0(SaveRecord *record);
 void mergeSaveRecordFlags(SaveRecord *source, SaveRecord *destination);
 void clearHalfwordPairTable(void);
 
@@ -1786,9 +1785,9 @@ void func_8002EE0C(void) {
  SaveRecord *first = gPlayerSaveRecords;
  SaveRecord *second;
  SaveRecord *destination;
- func_800897D0(first);
+ initializeSaveRecordDefaults(first);
  second = first + 1;
- func_800897D0(second);
+ initializeSaveRecordDefaults(second);
  destination = &gMergedSaveRecord;
  copyGlobalFlagState(first, destination);
  mergeSaveRecordFlags(second, destination);
