@@ -500,23 +500,18 @@ void updateColorCycleTask(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: inline 23/26 */
-#ifdef NON_MATCHING
-s32 func_80070B64(s16 id, u8 *color) {
-    GameTask *task = *(id + D_8013BDA8);
+s32 copyColorCycleTaskColor(s16 index, u8 *color) {
+    GameTask *task = D_8013BDA8[index];
     if (task == NULL) {
         return 0;
     } else {
-        u8 *value = (u8 *)&D_800D9504[task->resource14].unk00;
-        color[0] = *value;
-        color[1] = *value;
-        color[2] = *value;
+        const ColorCycleResource *resource = (const ColorCycleResource *)&D_800D9504[task->resource14];
+        color[0] = resource->value;
+        color[1] = resource->value;
+        color[2] = resource->value;
         return 1;
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80070B64);
-#endif
 
 s32 isTaskResourceTransitionComplete(s16 index) {
     GameTask *task;
@@ -1445,7 +1440,7 @@ clearCommand:
             entry->flags |= updateMovement2D((Movement2D *)&D_800D9504[child->resource14]);
         }
     }
-    func_80070B64(0, &state->r);
+    copyColorCycleTaskColor(0, &state->r);
     if ((u32)((u16)entry->command - 1) >= 3 && entry->command != 11) {
         for (i = 0; i < state->count; i++) {
             GameTask *child = children[i].task;
@@ -2494,7 +2489,7 @@ finish:
     y = panel->movement.y / 4096;
     if (state->highlight > 0) {
         if ((u16)state->highlight == 1 || (u16)state->highlight == 2) {
-            func_80070B64(0, panel->color);
+            copyColorCycleTaskColor(0, panel->color);
             setSpriteColor(panel->color[0], panel->color[1], panel->color[2]);
         } else {
             setSpriteColor(128, 128, 128);

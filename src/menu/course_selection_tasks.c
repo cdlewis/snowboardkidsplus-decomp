@@ -3985,7 +3985,7 @@ void drawSaveRecordProgressPanel(void) {
     if (slot < D_8013AFCD) {
         if (D_8013AE88->data1A != 0) {
             if (D_8013AE88->data1A == 1 || D_8013AE88->data1A == 2) {
-                func_80070B64(slot, &D_8013B3A4);
+                copyColorCycleTaskColor(slot, &D_8013B3A4);
                 r = D_8013B3A4;
                 g = D_8013B3A5;
                 b = D_8013B3A6;

@@ -1974,6 +1974,7 @@ createResourceLoadTask = 0x8006B2B8; // type:func
 
 rebuildCombinedStateMask = 0x8008C248; // type:func
 
+copyColorCycleTaskColor = 0x80070B64; // type:func
 isTaskResourceTransitionComplete = 0x80070BCC; // type:func
 
 resetSelectedRecordStates = 0x8005F6E4; // type:func
