@@ -1023,6 +1023,7 @@ GetODE = 0x800CE1C0; // type:func defined:true
 SetTexWindow = 0x800CE1F0; // type:func defined:true
 SetDrawArea = 0x800CE228; // type:func defined:true
 drawScreenDarkeningOverlay = 0x80070C5C; // type:func
+drawScreenBrighteningOverlay = 0x80070D48; // type:func
 addDrawAreaPacket = 0x80070E34; // type:func
 SetDrawOffset = 0x800CE2A8; // type:func defined:true
 SetPriority = 0x800CE2E8; // type:func defined:true

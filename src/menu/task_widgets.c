@@ -367,7 +367,7 @@ void updateTaskStateTransition(void) {
         if (mode == 1 || mode == 2 || mode == 6 || mode == 7) {
             drawScreenDarkeningOverlay(state->unk06 >> 8, ot, D_8013AE88->data1C);
         } else if (mode == 4 || mode == 5) {
-            func_80070D48(state->unk06 >> 8, ot, drawTask->data1C);
+            drawScreenBrighteningOverlay(state->unk06 >> 8, ot, drawTask->data1C);
         }
     }
 
@@ -549,26 +549,20 @@ void drawScreenDarkeningOverlay(s32 intensity, GsOT *ot, u16 depth) {
     func_800BF2C8((u32)((DR_MODE *)packet + 1));
 }
 
-/* DECOMP_ATTEMPT: inline 58/59 */
-#ifdef NON_MATCHING
-void func_80070D48(s32 brightness, GsOT *ot, u16 depth) {
+void drawScreenBrighteningOverlay(s32 intensity, GsOT *ot, u16 depth) {
     TILE *packet = (TILE *)GsGetWorkBase();
-    DR_MODE *mode;
+    u16 tpage;
     SetTile(packet);
     setXY0(packet, -170, -130);
     setWH(packet, 340, 260);
-    setRGB0(packet, brightness, brightness, brightness);
+    setRGB0(packet, intensity, intensity, intensity);
     SetSemiTrans(packet, 1);
     AddPrim(ot->org + depth, packet);
-    mode = (DR_MODE *)++packet;
-    SetDrawMode(mode, 1, 1, GetTPage(0, 1, 0, 0), NULL);
-    AddPrim(ot->org + depth, mode);
-    mode++;
-    func_800BF2C8((u32)mode);
+    tpage = GetTPage(0, 1, 0, 0);
+    SetDrawMode((DR_MODE *)(packet + 1), 1, 1, tpage, NULL);
+    AddPrim(ot->org + depth, ++packet);
+    func_800BF2C8((u32)((DR_MODE *)packet + 1));
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80070D48);
-#endif
 
 void addDrawAreaPacket(s32 x, s32 y, s32 width, s32 height, GsOT *ot, u16 depth) {
     RECT area;

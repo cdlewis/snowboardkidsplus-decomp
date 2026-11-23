@@ -338,7 +338,7 @@ void queueOffsetScreenCopySprites(void);
 
 /* Add a full-screen semi-transparent tile to an ordering table. */
 void drawScreenDarkeningOverlay(s32 intensity, struct GsOT *ot, u16 depth);
-void func_80070D48(s32 intensity, struct GsOT *ot, u16 depth);
+void drawScreenBrighteningOverlay(s32 intensity, struct GsOT *ot, u16 depth);
 void startThreeFrameScreenBlend(void);
 
 void drawSpriteTextureRegion(s16 x, s16 y, s32 index, GsOT *ot, u16 depth);
