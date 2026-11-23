@@ -342,13 +342,13 @@ static void drawTextSequence(TextSequenceResource *resource) {
     drawSpriteByIndexWithBlend(120 + (u32)resource->unk3A / 3, (u32)resource->unk3A / 2,
                               0x19B, 0, -1, ot, (depth | 1));
 
-    func_8007240C(-D_8013AF7A / 2, -D_8013AF7C / 2 - (u32)resource->unk3A / 2,
+    addTilePacketWithBlend(-D_8013AF7A / 2, -D_8013AF7C / 2 - (u32)resource->unk3A / 2,
                   D_8013AF7A, -96 - (-D_8013AF7C / 2), 0, 0, 0, -1, ot, (depth | 1));
-    func_8007240C(-D_8013AF7A / 2 - (u32)resource->unk3A / 3, -D_8013AF7C / 2,
+    addTilePacketWithBlend(-D_8013AF7A / 2 - (u32)resource->unk3A / 3, -D_8013AF7C / 2,
                   -136 - (-D_8013AF7A / 2), D_8013AF7C, 0, 0, 0, -1, ot, (depth | 1));
-    func_8007240C(136 + (u32)resource->unk3A / 3, -D_8013AF7C / 2,
+    addTilePacketWithBlend(136 + (u32)resource->unk3A / 3, -D_8013AF7C / 2,
                   (u32)D_8013AF7A / 2 - 136, D_8013AF7C, 0, 0, 0, -1, ot, (depth | 1));
-    func_8007240C(-D_8013AF7A / 2, 16 + (u32)resource->unk3A / 2,
+    addTilePacketWithBlend(-D_8013AF7A / 2, 16 + (u32)resource->unk3A / 2,
                   D_8013AF7A, (u32)D_8013AF7C / 2, 0, 0, 0, -1, ot, (depth | 1));
     drawScreenDarkeningOverlay(resource->intensity, ot, depth);
 }

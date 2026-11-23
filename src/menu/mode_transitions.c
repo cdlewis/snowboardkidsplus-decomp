@@ -403,7 +403,7 @@ void updateTitleScreenMenuTask(void) {
                 state->selectionDelay = 450;
             }
             setSpriteColor(128, 128, 128);
-            func_8007240C(-72, 44, 144, 54, 128, 128, 128, 2, &D_800EBFF0[D_8013AF78], 4);
+            addTilePacketWithBlend(-72, 44, 144, 54, 128, 128, 128, 2, &D_800EBFF0[D_8013AF78], 4);
         } else {
             if (gFrameCounter & 8) {
                 setSpriteColor(128, 128, 128);

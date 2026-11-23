@@ -1098,10 +1098,8 @@ void addTilePacket(s32 x, s32 y, s32 width, s32 height, s32 r, s32 g, s32 b,
     func_800BF2C8((u32)(packet + 1));
 }
 
-/* DECOMP_ATTEMPT: inline 81/84 */
-#ifdef NON_MATCHING
-void func_8007240C(s16 x, s16 y, s16 width, s16 height, u8 r, u8 g, u8 b,
-                   s16 blendMode, GsOT *ot, u16 depth) {
+void addTilePacketWithBlend(s16 x, s16 y, s16 width, s16 height, u8 r, u8 g, u8 b,
+                            s16 blendMode, GsOT *ot, u16 depth) {
     TILE *packet;
     TILE *tile;
     s32 semiTrans;
@@ -1123,14 +1121,10 @@ void func_8007240C(s16 x, s16 y, s16 width, s16 height, u8 r, u8 g, u8 b,
     SetSemiTrans(packet, semiTrans);
     AddPrim(ot->org + depth, packet);
     tpage = GetTPage(0, abr, 0, 0);
-    packet++;
-    SetDrawMode((DR_MODE *)packet, 1, 1, tpage, NULL);
-    AddPrim(ot->org + depth, packet);
+    SetDrawMode((DR_MODE *)(packet + 1), 1, 1, tpage, NULL);
+    AddPrim(ot->org + depth, ++packet);
     func_800BF2C8((u32)((DR_MODE *)packet + 1));
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_8007240C);
-#endif
 
 void setMusicSequenceEnabled(s16 enabled) {
     if (enabled == 0) {

@@ -249,7 +249,7 @@ void func_800A42CC(void) {
         drawSpriteByIndexWithBlend(-56, y, D_80132854[row],
                       leftPalette, -1, &D_800EBFF0[D_8013AF78], 4);
     }
-    func_8007240C(-160, -120, 320, 240, 192, 192, 192, 2, &D_800EBFF0[D_8013AF78], 4);
+    addTilePacketWithBlend(-160, -120, 320, 240, 192, 192, 192, 2, &D_800EBFF0[D_8013AF78], 4);
     drawFullScreenTexturedBackground();
 }
 #else
@@ -435,7 +435,7 @@ void drawUnlockNotificationMenu(void) {
     }
     drawSpriteByIndexWithBlend(-64, verticalOffset + 72, 0x21C, state->selection != 12, -1,
                   &D_800EBFF0[D_8013AF78], 4);
-    func_8007240C(-160, -120, 320, 240, 192, 192, 192, 2, &D_800EBFF0[D_8013AF78], 4);
+    addTilePacketWithBlend(-160, -120, 320, 240, 192, 192, 192, 2, &D_800EBFF0[D_8013AF78], 4);
     drawFullScreenTexturedBackground();
 }
 

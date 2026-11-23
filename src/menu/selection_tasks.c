@@ -543,9 +543,9 @@ void drawPlaybackSelectionMenu(SelectionMenuState *state) {
         }
         x = i * 48;
         drawMenuKindSprite(x - 120, -28, i + 1, 1, &D_800EBFF0[D_8013AF78], 4);
-        func_8007240C(x - 122, -30, 36, 36, highlight + 128, highlight + 16, 16,
+        addTilePacketWithBlend(x - 122, -30, 36, 36, highlight + 128, highlight + 16, 16,
                       -1, &D_800EBFF0[D_8013AF78], 4);
-        func_8007240C(x - 114, -22, 36, 36, highlight / 4 + 64, 8, 8,
+        addTilePacketWithBlend(x - 114, -22, 36, 36, highlight / 4 + 64, 8, 8,
                       -1, &D_800EBFF0[D_8013AF78], 4);
     }
 
@@ -556,9 +556,9 @@ void drawPlaybackSelectionMenu(SelectionMenuState *state) {
         }
         x = i * 48;
         drawPaletteMappedIcon(x - 144, 28, i + 1, &D_800EBFF0[D_8013AF78], 4);
-        func_8007240C(x - 146, 26, 36, 36, 16, highlight + 16, highlight + 128,
+        addTilePacketWithBlend(x - 146, 26, 36, 36, 16, highlight + 16, highlight + 128,
                       -1, &D_800EBFF0[D_8013AF78], 4);
-        func_8007240C(x - 138, 34, 36, 36, 8, 8, highlight / 4 + 64,
+        addTilePacketWithBlend(x - 138, 34, 36, 36, 8, 8, highlight / 4 + 64,
                       -1, &D_800EBFF0[D_8013AF78], 4);
     }
 

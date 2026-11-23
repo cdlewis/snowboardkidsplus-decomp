@@ -888,10 +888,10 @@ void drawCurrentTaskSavedValuePanel(void) {
         drawWrappedText8x8(x + 122, y + 152, 2, PALETTE_SELECTION_CURRENCY_LABEL, 0, -1,
             ot, D_8013AE88->data1C);
         if (D_8013AE88->data1A == 1) {
-            func_8007240C(x + 68, y + 136, 68, 32, D_8013B3A4, D_8013B3A5, D_8013B3A6,
+            addTilePacketWithBlend(x + 68, y + 136, 68, 32, D_8013B3A4, D_8013B3A5, D_8013B3A6,
                 2, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         } else {
-            func_8007240C(x + 68, y + 136, 68, 32, 128, 128, 128,
+            addTilePacketWithBlend(x + 68, y + 136, 68, 32, 128, 128, 128,
                 2, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         }
     }
@@ -916,10 +916,10 @@ void drawPaletteSelectionPricePanel(void) {
             func_8006EF30((s16)(panelX - 112), (s16)(panelY + 52), 4, gCurrentPaletteLabel, 12, 1,
                          &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             if (D_8013AE88->data1A == 1) {
-                func_8007240C(panelX - 120, panelY + 48, 72, 22, D_8013B3A4, D_8013B3A5, D_8013B3A6,
+                addTilePacketWithBlend(panelX - 120, panelY + 48, 72, 22, D_8013B3A4, D_8013B3A5, D_8013B3A6,
                               2, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             } else {
-                func_8007240C(panelX - 120, panelY + 48, 72, 22, 128, 128, 128,
+                addTilePacketWithBlend(panelX - 120, panelY + 48, 72, 22, 128, 128, 128,
                               2, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             }
         } else {
@@ -928,10 +928,10 @@ void drawPaletteSelectionPricePanel(void) {
             drawWrappedText8x8(priceX + 80, priceY + 12, 2, PALETTE_SELECTION_CURRENCY_LABEL, 0, -1,
                                &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             if (D_8013AE88->data1A == 1) {
-                func_8007240C(priceX + 44, priceY + 8, 48, 16, D_8013B3A4, D_8013B3A5, D_8013B3A6,
+                addTilePacketWithBlend(priceX + 44, priceY + 8, 48, 16, D_8013B3A4, D_8013B3A5, D_8013B3A6,
                               2, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             } else {
-                func_8007240C(priceX + 44, priceY + 8, 48, 16, 128, 128, 128,
+                addTilePacketWithBlend(priceX + 44, priceY + 8, 48, 16, 128, 128, 128,
                               2, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             }
         }

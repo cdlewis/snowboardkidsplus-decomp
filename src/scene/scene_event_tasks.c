@@ -271,7 +271,7 @@ void drawSceneImageTask(void) {
     } else {
         if (D_8013B59F) {
             setSpriteColor(128, 128, 128);
-            func_8007240C(-140, 44, 280, 56, 128, 128, 128, 2, &D_800EBFF0[D_8013AF78], 8);
+            addTilePacketWithBlend(-140, 44, 280, 56, 128, 128, 128, 2, &D_800EBFF0[D_8013AF78], 8);
         }
         setSpriteColor(128, 128, 128);
         drawPagedTexturedRectangle(-160, -120, 320, 240, 149, 0x3AB0, &D_800EBFF0[D_8013AF78], 8);

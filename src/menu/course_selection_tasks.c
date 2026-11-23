@@ -893,11 +893,11 @@ void drawSelectionItemDetails(void) {
                               stats->rating, 5, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     }
     if (D_8013AE88->data1A == 1) {
-        func_8007240C(position->x / 4096 + 80, position->y / 4096 + 124, 56, 44,
+        addTilePacketWithBlend(position->x / 4096 + 80, position->y / 4096 + 124, 56, 44,
                       D_8013B3A4, D_8013B3A5, D_8013B3A6, 2,
                       &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     } else {
-        func_8007240C(position->x / 4096 + 80, position->y / 4096 + 124, 56, 44,
+        addTilePacketWithBlend(position->x / 4096 + 80, position->y / 4096 + 124, 56, 44,
                       128, 128, 128, 2, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     }
 }

@@ -289,8 +289,9 @@ void drawInclusiveTexturedQuadByIndex(s16 x, s16 y, s32 index, GsOT *ot, u16 dep
 void drawInclusiveTexturedQuadByIndexWithBlend(s16 x, s16 y, s32 index, s16 palette,
                                               s16 blendMode, GsOT *ot, u16 depth);
 void setSpriteColor(s32 r, s32 g, s32 b);
-void func_8007240C(s16 x, s16 y, s16 width, s16 height, u8 r, u8 g, u8 b,
-                   s16 blendMode, GsOT *ot, u16 depth);
+/* A negative blend mode selects opaque drawing. */
+void addTilePacketWithBlend(s16 x, s16 y, s16 width, s16 height, u8 r, u8 g, u8 b,
+                            s16 blendMode, GsOT *ot, u16 depth);
 /* A pivot of 0x7FFF selects the center of that dimension. */
 void drawTransformedSpriteByIndex(s32 x, s32 y, s32 index, s32 paletteIndex,
                                   s16 blendMode, s16 pivotX, s16 pivotY,

@@ -2860,6 +2860,7 @@ addGouraudTexturedQuad = 0x80060518; // type:func
 updateTimedSpriteSequence = 0x8006A9CC; // type:func
 
 addTilePacket = 0x80072340; // type:func
+addTilePacketWithBlend = 0x8007240C; // type:func
 
 initializeUnlockMenuResourceTask = 0x800A3C3C; // type:func
 

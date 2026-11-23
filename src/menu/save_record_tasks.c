@@ -665,7 +665,7 @@ void func_8008B178(void) {
                           0, -1, PANEL_OT, PANEL_DEPTH);
     drawWrappedDoubleByteText(position->x / 4096 + 86, position->y / 4096 - 3,
                               2, D_8013B480, 0, -1, PANEL_OT, PANEL_DEPTH);
-    func_8007240C(position->x / 4096 + 34, position->y / 4096 - 3,
+    addTilePacketWithBlend(position->x / 4096 + 34, position->y / 4096 - 3,
                   64, 16, 128, 128, 128, 2, PANEL_OT, PANEL_DEPTH);
     drawSpriteByIndexWithBlend(position->x / 4096 - 99, position->y / 4096 - 78, 110, 6, -1,
                   PANEL_OT, PANEL_DEPTH);

@@ -302,11 +302,11 @@ void drawSelectionHeaderAndMoneyPanel(void) {
     drawWrappedText8x8(position->x / 4096 + 122, position->y / 4096 + 152,
                        2, gSelectionMoneyCurrencyLabel, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     if (D_8013AE88->data1A == playerCount) {
-        func_8007240C(position->x / 4096 + 68, position->y / 4096 + 136, 68, 32,
+        addTilePacketWithBlend(position->x / 4096 + 68, position->y / 4096 + 136, 68, 32,
                       D_8013B3A4, D_8013B3A5, D_8013B3A6, 2,
                       &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     } else {
-        func_8007240C(position->x / 4096 + 68, position->y / 4096 + 136, 68, 32,
+        addTilePacketWithBlend(position->x / 4096 + 68, position->y / 4096 + 136, 68, 32,
                       128, 128, 128, 2, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     }
 }
