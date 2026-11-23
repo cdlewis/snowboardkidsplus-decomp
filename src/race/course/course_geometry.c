@@ -121,51 +121,46 @@ s32 func_8004A764(s16 index, s32 x, s32 z) {
 INCLUDE_ASM("asm/nonmatchings/race/course/course_geometry", func_8004A764);
 #endif
 
-/* DECOMP_ATTEMPT: inline 68/102 */
-#ifdef NON_MATCHING
-typedef struct Placement { s16 unk00[8]; s16 vertexIndex; u16 angle; s16 first, last; s16 unk18[2]; } Placement;
-
-typedef struct SurfaceRecord { u16 vertices[3]; u8 surface, flags; s16 unk8, unkA; } SurfaceRecord;
-
-u8 func_8004AAA0(s16 index, s32 x, s32 z) {
+u8 getCourseSurfaceAtPoint(s16 index, s32 x, s32 z) {
     s32 i;
-    SurfaceRecord *record;
-    s16 *a, *b;
-    s32 dx, dz, px, pz;
-    s16 *vertices;
-    SurfaceRecord *records;
-    u32 ai, bi;
-    for (i = ((Placement *)D_8013B1F4)[index].first; i < ((Placement *)D_8013B1F4)[index].last + 1; i++) {
-        vertices = D_8013B1EC;
-        records = (SurfaceRecord *)D_8013B1F0;
+    SelectedRecord *record;
+    CourseGeometryVertex *vertices;
+    SelectedRecord *records;
+    for (i = ((GeometryRegion *)D_8013B1F4)[index].firstRecord;
+         i < ((GeometryRegion *)D_8013B1F4)[index].lastRecord + 1; i++) {
+        vertices = (CourseGeometryVertex *)D_8013B1EC;
+        records = D_8013B1F0;
         record = &records[i];
-        if (record->flags == 0) {
-            bi = record->vertices[1];
-            ai = record->vertices[0];
-            b = vertices + bi * 3;
-            a = vertices + ai * 3;
-            dx = b[0] - a[0];
-        pz = z / 5 - a[2];
-        dz = b[2] - a[2];
-        px = x / 5 - a[0];
-        if (dx * pz - dz * px > 0) continue;
+        if (record->skipFirstEdge == 0) {
+            s32 bi = record->vertexIndices[1];
+            s32 ai = record->vertexIndices[0];
+            s32 bx = vertices[bi].x;
+            s32 ax = vertices[ai].x;
+            s32 az = vertices[ai].z;
+            s32 product = (bx - ax) * (z / 5 - az);
+            s32 pointX = x / 5 - ax;
+            s32 edgeZ = vertices[bi].z - az;
+            if (product - edgeZ * pointX > 0) {
+                continue;
+            }
         }
-        bi = record->vertices[2];
-        ai = record->vertices[1];
-        b = vertices + bi * 3;
-        a = vertices + ai * 3;
-        dx = b[0] - a[0];
-        pz = z / 5 - a[2];
-        dz = b[2] - a[2];
-        px = x / 5 - a[0];
-        if (dx * pz - dz * px > 0) continue;
-        return record->surface;
+        {
+            s32 bi = record->vertexIndices[2];
+            s32 ai = record->vertexIndices[1];
+            s32 bx = vertices[bi].x;
+            s32 ax = vertices[ai].x;
+            s32 az = vertices[ai].z;
+            s32 product = (bx - ax) * (z / 5 - az);
+            s32 pointX = x / 5 - ax;
+            s32 edgeZ = vertices[bi].z - az;
+            if (product - edgeZ * pointX > 0) {
+                continue;
+            }
+        }
+        return record->surfaceType;
     }
     return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/course/course_geometry", func_8004AAA0);
-#endif
 
 s32 getGeometryPlacementSignedDistance(s16 index, s32 x, s32 z) {
     s32 vertexIndex;

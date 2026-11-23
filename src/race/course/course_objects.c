@@ -1712,7 +1712,7 @@ void updateProximityParticleTask(void) {
                 groundY = func_8004A764(resource->geometryIndex, resource->coordinate.coord.t[0],
                     resource->coordinate.coord.t[2]) - 0x10;
                 if (resource->coordinate.coord.t[1] > groundY) {
-                    if (!D_8013AE88->data18 || !func_8004AAA0(resource->geometryIndex,
+                    if (!D_8013AE88->data18 || !getCourseSurfaceAtPoint(resource->geometryIndex,
                             resource->coordinate.coord.t[0], resource->coordinate.coord.t[2])) {
                         resource->coordinate.coord.t[1] = groundY;
                         resource->position.y = groundY << 8;

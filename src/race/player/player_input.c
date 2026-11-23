@@ -196,7 +196,7 @@ void prepareCurrentPlayerFrame(void) {
     if (currentPlayerAbsolute->unk128 & 0x201) {
         currentPlayerAbsolute->surfaceState.fields.unk136 = 0;
     } else {
-        currentPlayerAbsolute->surfaceState.fields.unk136 = func_8004AAA0(currentPlayerAbsolute->unk92E, currentPlayerAbsolute->x >> 8, currentPlayerAbsolute->z >> 8);
+        currentPlayerAbsolute->surfaceState.fields.unk136 = getCourseSurfaceAtPoint(currentPlayerAbsolute->unk92E, currentPlayerAbsolute->x >> 8, currentPlayerAbsolute->z >> 8);
     }
     if (currentPlayerAbsolute->unk128 & 0x2000000) {
         currentPlayerAbsolute->surfaceState.fields.unk136 = 11;

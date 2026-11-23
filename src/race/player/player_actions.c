@@ -1346,7 +1346,7 @@ s16 processCurrentPlayerActionRequests(s16 suppressWallAction) {
 
 s16 checkCurrentPlayerSurfaceType(void) {
     RacePlayer *player = currentPlayerAbsolute;
-    u8 surface = func_8004AAA0(player->unk92E, player->x >> 8, player->z >> 8);
+    u8 surface = getCourseSurfaceAtPoint(player->unk92E, player->x >> 8, player->z >> 8);
     if (surface == 3 || surface == 6 || surface == 7 || surface == 8 ||
         surface == 12 || surface == 14 || surface == 15 || surface == 16) {
         return 0;

@@ -3157,7 +3157,7 @@ block_340:
         playPlayerSoundEffect(D_8013AE88->data18, 1, 0xB01, 0x20);
     }
     startCurrentPlayerAnimation(0U, 2U);
-    temp_v1_13 = func_8004AAA0(D_8013B0D8->unk92E, (s32) D_8013B0D8->x >> 8, (s32) D_8013B0D8->z >> 8) & 0xFF;
+    temp_v1_13 = getCourseSurfaceAtPoint(D_8013B0D8->unk92E, (s32) D_8013B0D8->x >> 8, (s32) D_8013B0D8->z >> 8) & 0xFF;
     if (temp_v1_13 == 3) {
         goto block_354;
     }
@@ -3490,7 +3490,7 @@ void updateCurrentPlayerTimedEffect(void) {
             /* Reuse the probe counter as the output angle below. */
             angle = 0;
             do {
-                if (func_8004AAA0(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8) == 8) {
+                if (getCourseSurfaceAtPoint(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8) == 8) {
                     D_8013B0D8->unk92E++;
                     break;
                 }

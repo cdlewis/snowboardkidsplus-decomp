@@ -520,7 +520,10 @@ typedef struct FallingTaskResource {
 typedef struct GeometryRegion {
     s16 neighbors[4];
     s16 vertices[4];
-    s16 unk10[5];
+    s16 unk10[2];
+    s16 firstRecord;
+    s16 lastRecord;
+    s16 unk18;
     u16 cornerFlags;
 } GeometryRegion;
 

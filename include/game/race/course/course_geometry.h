@@ -13,7 +13,8 @@ typedef struct GeometryPlacement {
 
 typedef struct SelectedRecord {
     u16 vertexIndices[3];
-    s16 unk6;
+    u8 surfaceType;
+    u8 skipFirstEdge;
     s16 unk8;
     s16 unkA;
 } SelectedRecord;
@@ -38,7 +39,7 @@ void selectGeometryRecord(s16 index);
 void computeSelectedTriangleNormal(VECTOR *normal);
 void computeSelectedTriangleAngles(s16 *pitch, s16 *yaw);
 
-u8 func_8004AAA0(s16 index, s32 x, s32 z);
+u8 getCourseSurfaceAtPoint(s16 index, s32 x, s32 z);
 void getGeometryPlacementTransform(s16 index, s32 *x, s32 *y, s32 *z, u16 *angle);
 
 s32 getGeometryPlacementSignedDistance(s16 index, s32 x, s32 z);
