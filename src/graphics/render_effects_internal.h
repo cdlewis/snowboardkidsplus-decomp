@@ -960,7 +960,7 @@ void updateRadialEffectTask(void);
 void emitRadialEffectTask(void);
 void func_80066D18(void);
 void updatePlayerRingEffectTask(void);
-void func_800659F0(void);
+void drawQuadAnimationTask(void);
 
 extern s32 D_8013B624 __attribute__((section(".sdata.geometry_edge_projection")));
 extern s32 D_8013B628 __attribute__((section(".sdata.geometry_edge_projection")));

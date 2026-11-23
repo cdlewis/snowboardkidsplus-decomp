@@ -129,6 +129,18 @@ typedef struct PairedQuadScratchpad {
     long flags;
 } PairedQuadScratchpad;
 
+typedef struct QuadAnimationScratch {
+    GsCOORDINATE2 coordinate;
+    VECTOR scale;
+    long depth;
+    long cue;
+    long flags;
+    union {
+        const QuadAnimationFrame *volatile current;
+        const volatile QuadAnimationFrame *forScale;
+    } frame;
+} QuadAnimationScratch;
+
 typedef struct RadialEffectScratch {
     MATRIX localScreen;
     long depth;
@@ -536,6 +548,12 @@ POLY_FT4 gRightQuadShrinkPacket __attribute__((section(".data.right_quad_packet"
     0, 0, 0x77, 0x10, getTPage(0, 0, 960, 0),
     0, 0, 0x50, 0x1F, 0,
     0, 0, 0x77, 0x1F, 0
+};
+
+SVECTOR gQuadAnimationVertices[4]
+    __attribute__((section(".data.quad_animation_vertices"))) = {
+    {-20, -20, 0, 0}, {20, -20, 0, 0},
+    {-20, 20, 0, 0}, {20, 20, 0, 0},
 };
 
 QuadAnimationFrame gQuadAnimationFrames[5] __attribute__((section(".data.quad_animation"))) = {
@@ -1989,26 +2007,12 @@ void createPlayerPairedQuadEffectTask(s32 playerIndex, s32 variant) {
     D_8013AE8C->data18 = playerIndex;
 }
 
-/* DECOMP_ATTEMPT: inline 234/236 */
-#ifdef NON_MATCHING
-typedef struct QuadAnimationScratch {
-    GsCOORDINATE2 coordinate;
-    VECTOR scale;
-    long depth;
-    long cue;
-    long flags;
-    const QuadAnimationFrame *volatile frame;
-} QuadAnimationScratch;
-
-extern SVECTOR D_8012C90C[4];
-
-void func_800659F0(void) {
+void drawQuadAnimationTask(void) {
     PrimaryQuadAnimationResource *resource;
     POLY_FT4 *packet;
     QuadAnimationScratch *scratch;
     const QuadAnimationFrame *frame;
     s32 duration;
-    s32 scale;
     s32 i;
     long depth;
 
@@ -2018,7 +2022,7 @@ void func_800659F0(void) {
     scratch = (QuadAnimationScratch *)getScratchAddr(0);
     resource = (PrimaryQuadAnimationResource *)&D_800D9504[D_8013AE88->resource14];
     packet = (POLY_FT4 *)GsOUT_PACKET_P;
-    scratch->frame = frame = &resource->frames[resource->frame];
+    scratch->frame.current = frame = &resource->frames[resource->frame];
     duration = frame->duration;
     if (duration == -1) {
         deleteCurrentTaskSubtree();
@@ -2027,61 +2031,60 @@ void func_800659F0(void) {
     if (duration == -2) {
         resource->frame = 0;
         resource->elapsed = 0;
-        scratch->frame = &resource->frames[resource->frame];
+        scratch->frame.current = &resource->frames[resource->frame];
     }
     if (D_8013AFD3 == 0) {
         resource->elapsed++;
     }
-    if (resource->elapsed == scratch->frame->duration) {
+    if (resource->elapsed == scratch->frame.current->duration) {
         resource->elapsed = 0;
         resource->frame++;
     }
 
     if (isPointWithinCameraForwardRange(resource->x, resource->z, (s16)getRenderCameraIndex())) {
-        scale = ((const volatile QuadAnimationFrame *)scratch->frame)->scale;
-        scratch->scale.vx = scratch->scale.vy = scratch->scale.vz = scale;
-        GsInitCoordinate2(0, ((GsCOORDINATE2 *)getScratchAddr(0)));
+        const volatile QuadAnimationFrame *scaleFrame = scratch->frame.forScale;
+        scratch->scale.vx = scratch->scale.vy = scratch->scale.vz = scaleFrame->scale;
+        GsInitCoordinate2(NULL, (GsCOORDINATE2 *)getScratchAddr(0));
         scratch->coordinate.coord.t[0] = resource->x;
         scratch->coordinate.coord.t[1] = resource->y;
         scratch->coordinate.coord.t[2] = resource->z;
-        GsGetLs(((GsCOORDINATE2 *)getScratchAddr(0)), &((GsCOORDINATE2 *)getScratchAddr(0))->workm);
+        GsGetLs((GsCOORDINATE2 *)getScratchAddr(0), &((GsCOORDINATE2 *)getScratchAddr(0))->workm);
         for (i = 0; i < 3; i++) {
             ((GsCOORDINATE2 *)getScratchAddr(0))->coord.t[i] = ((GsCOORDINATE2 *)getScratchAddr(0))->workm.t[i];
         }
         ScaleMatrix(&scratch->coordinate.coord, &scratch->scale);
         GsSetLsMatrix(&scratch->coordinate.coord);
-        scratch->depth = RotTransPers4(&D_8012C90C[0], &D_8012C90C[1],
-            &D_8012C90C[2], &D_8012C90C[3], (long *)&packet->x0, (long *)&packet->x1,
-            (long *)&packet->x2, (long *)&packet->x3, &scratch->cue, &scratch->flags);
+        scratch->depth = RotTransPers4(
+            &gQuadAnimationVertices[0], &gQuadAnimationVertices[1],
+            &gQuadAnimationVertices[2], &gQuadAnimationVertices[3],
+            (long *)&packet->x0, (long *)&packet->x1, (long *)&packet->x2, (long *)&packet->x3,
+            &scratch->cue, &scratch->flags);
 
         packet->tag = TEXTURED_QUAD_PACKET_WORDS << 24;
-        setcode(packet, POLY_FT4_CODE | scratch->frame->blend);
-        packet->tpage = scratch->frame->tpage;
-        packet->clut = scratch->frame->clut;
-        setRGB0(packet, scratch->frame->r, scratch->frame->g, scratch->frame->b);
-        packet->u0 = scratch->frame->u;
-        frame = scratch->frame;
+        setcode(packet, POLY_FT4_CODE | scratch->frame.current->blend);
+        packet->tpage = scratch->frame.current->tpage;
+        packet->clut = scratch->frame.current->clut;
+        setRGB0(packet, scratch->frame.current->r, scratch->frame.current->g, scratch->frame.current->b);
+        packet->u0 = scratch->frame.current->u;
+        frame = scratch->frame.current;
         packet->u1 = frame->u + frame->w;
         packet->u2 = packet->u0;
         packet->u3 = packet->u1;
-        packet->v0 = scratch->frame->v;
-        packet->v1 = scratch->frame->v;
-        packet->v3 = packet->v2 = packet->v0 + scratch->frame->h;
+        packet->v0 = scratch->frame.current->v;
+        packet->v1 = scratch->frame.current->v;
+        packet->v3 = packet->v2 = packet->v0 + scratch->frame.current->h;
 
-        depth = (scratch->depth -= 10);
+        depth = scratch->depth -= 10;
         if (scratch->flags >= 0 && depth >= 0 && depth < 4096) {
             addPrim(&D_8013AF6C[scratch->depth >> 2], packet);
         }
         GsOUT_PACKET_P = (u32)(packet + 1);
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_800659F0);
-#endif
 
 GameTask *createQuadAnimationTask(u16 unusedId, VECTOR *position) {
     PrimaryQuadAnimationResource *resource;
-    createChildTaskForParentWithReserve(D_8013B304, func_800659F0);
+    createChildTaskForParentWithReserve(D_8013B304, drawQuadAnimationTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     resource = (PrimaryQuadAnimationResource *)&D_800D9504[D_8013AE8C->resource14];
     resource->x = position->vx;
@@ -2096,7 +2099,7 @@ GameTask *createQuadAnimationTask(u16 unusedId, VECTOR *position) {
 GameTask *startAlternateQuadAnimationTask(s32 unused, const PositionEffectOrigin *position) {
     QuadAnimationResource *resource;
     GameTask *task;
-    createChildTaskForParentWithReserve(D_8013B304, func_800659F0);
+    createChildTaskForParentWithReserve(D_8013B304, drawQuadAnimationTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     task = D_8013AE8C;
     resource = (QuadAnimationResource *)&D_800D9504[task->resource14];
