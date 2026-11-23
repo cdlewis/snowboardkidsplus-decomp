@@ -1075,17 +1075,13 @@ u32 packTextureColor(TextureColor *color) {
     return stp | rgb;
 }
 
-/* DECOMP_ATTEMPT: inline 18/28 */
-#ifdef NON_MATCHING
-void func_80051700(void) {
+void initializeScanlineCopySeed(void) {
+    u8 padding[0x20];
     s32 i;
     for (i = 0; i < 0x40; i++) {
         writeVramPixelColor((s16)(i + 704), 0x90, 0xE0, 0xE0, 0xE8, 0);
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/graphics/course_rendering", func_80051700);
-#endif
 
 void queueScanlineCopyPackets(void) {
     DR_MOVE *move;
@@ -1139,7 +1135,6 @@ void queueScanlineCopyPackets(void) {
 extern Position3D *D_801250EC[];
 extern u32 D_8013B658, D_8013B65C;
 extern s32 D_80124BEC[], D_80124C14[];
-extern void func_80051700(void);
 
 void func_80051A68(void) {
     u32 *model;
@@ -1182,7 +1177,7 @@ void func_80051A68(void) {
             D_80125044[i] = (TmdObject *)model;
         }
     }
-    if (D_8013AFCE == 6) func_80051700();
+    if (D_8013AFCE == 6) initializeScanlineCopySeed();
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/graphics/course_rendering", func_80051A68);
