@@ -83,6 +83,7 @@ void drawFixedSpriteAndBottomBarTask(void);
 void drawDemonstrationOverlay(void);
 void drawAutoPilotLabelTask(void);
 void checkControllerInputSequenceTask(void);
+void createControllerInputSequenceTasks(void);
 void drawResultDisplayLabels(ResultDisplayResource *resource);
 void drawResultNumberAndIcon(ResultDisplayResource *resource);
 void drawFirstPlayerResultCounterAndIcon(ResultDisplayResource *resource);

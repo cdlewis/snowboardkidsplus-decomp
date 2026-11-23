@@ -121,7 +121,6 @@ const u16 *gRegisteredPlayerModePanelTexts[3]
     gRegisteredPlayerModePanelText0, gRegisteredPlayerModePanelText1, gRegisteredPlayerModePanelText2
 };
 
-void func_80035CF8(void);
 void createTitleLogoTask(s32 depth, s32 index);
 void updateTitleLogoTask(void);
 void updatePlayerModeSelectionTask(void);
@@ -268,7 +267,7 @@ void updateTitleScreenMenuTask(void) {
 
     switch (D_8013AE88->data18) {
     case 0:
-        func_80035CF8();
+        createControllerInputSequenceTasks();
         setMusicSequenceEnabled(0);
         setSecondaryDisplayTaskMode(0);
         configureTaskStateTransition(11, 0, 30);

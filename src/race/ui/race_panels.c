@@ -833,12 +833,7 @@ void checkControllerInputSequenceTask(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: inline 23/25 */
-#ifdef NON_MATCHING
-s32 createChildTaskWithReserve(TaskCallback callback);
-void checkControllerInputSequenceTask(void);
-
-void func_80035CF8(void) {
+void createControllerInputSequenceTasks(void) {
     u8 i;
     gSaveRecordUnlockOverrideFlags = 0;
     i = 0;
@@ -849,9 +844,6 @@ void func_80035CF8(void) {
         i++;
     } while (i < 3);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/ui/race_panels", func_80035CF8);
-#endif
 
 void drawResultDisplayLabels(ResultDisplayResource *resource) {
     if (resource->brightness != 128) {
