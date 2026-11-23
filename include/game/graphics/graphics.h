@@ -429,6 +429,10 @@ void drawDoubleByteGlyph16x16(s16 x, s16 y, s16 unusedWidth, s16 unusedHeight, c
 void drawRotatedSpriteByIndex(s32 x, s32 y, s32 index, s32 paletteIndex,
                               s16 blendMode, s16 angle, GsOT *ot, u16 depth);
 
+void drawTextureRect(s16 x, s16 y, s16 width, s16 height,
+                     s16 textureDepth, s16 pageX, s16 pageY,
+                     s16 clutX, s16 clutY, GsOT *ot, u16 depth);
+
 void drawSemiTransparentTextureRect(s16 x, s16 y, s16 width, s16 height,
                                     s16 textureDepth, s16 blendMode, s16 pageX, s16 pageY,
                                     s16 clutX, s16 clutY, GsOT *ot, u16 depth);

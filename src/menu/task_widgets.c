@@ -1008,40 +1008,22 @@ s32 stepGrayscaleColor(TextureColor *color, s8 *stepPtr, u8 minimum, u8 maximum)
     return reversed;
 }
 
-/* DECOMP_ATTEMPT: inline 72/77 */
-#ifdef NON_MATCHING
-void func_80071EF8(s16 x0, s16 y0, s32 width, s32 height, s16 textureDepth, s16 textureX, s16 textureY, s16 clutX, s16 clutY, GsOT *ot, u16 depth) {
+void drawTextureRect(s16 x, s16 y, s16 width, s16 height,
+                     s16 textureDepth, s16 pageX, s16 pageY,
+                     s16 clutX, s16 clutY, GsOT *ot, u16 depth) {
     POLY_FT4 *quad = &gTexturedQuadTemplate;
-    s32 x, y;
-    s32 right;
+    s32 left, top;
+
     quad->clut = GetClut(clutX, clutY);
-    x = x0;
+    left = x;
+    top = y;
     setRGB0(quad, 128, 128, 128);
-    quad->tpage = GetTPage(textureDepth, 1, textureX, textureY);
-    y = y0;
-    quad->y0 = y;
-    quad->y1 = y;
-    right = width + x;
-    y = height + y;
-    quad->x0 = x;
-    quad->x1 = right;
-    quad->x2 = x;
-    quad->y2 = y;
-    quad->x3 = right;
-    quad->y3 = y;
-    quad->u0 = 0;
-    quad->v0 = 0;
-    quad->u1 = width;
-    quad->v1 = 0;
-    quad->u2 = 0;
-    quad->v2 = height;
-    quad->u3 = width;
-    quad->v3 = height;
+    quad->tpage = GetTPage(textureDepth, 1, pageX, pageY);
+    setXY4(quad, left, top, width + left, top,
+           left, height + top, width + left, height + top);
+    setUV4(quad, 0, 0, width, 0, 0, height, width, height);
     GsSortPoly(quad, ot, depth);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80071EF8);
-#endif
 
 void drawSemiTransparentTextureRect(s16 x, s16 y, s16 width, s16 height,
                    s16 textureDepth, s16 blendMode, s16 pageX, s16 pageY,
