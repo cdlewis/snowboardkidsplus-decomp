@@ -2275,7 +2275,10 @@ gCdVolumeFadeTimer = 0x8013B5F8; // type:s16 size:0x2
 
 findByteIndexOrZero = 0x800737A0; // type:func
 
+updateBoardReversePromptTask = 0x80033100; // type:func
 initializePlayerPromptTask = 0x80033280; // type:func
+gBoardReversePromptPalette1 = 0x80010A1C; // size:0x10 defined:true
+gBoardReversePromptPalette2 = 0x80010A2C; // size:0x10 defined:true
 
 drawTexturedFrameStyle9 = 0x80070174; // type:func
 

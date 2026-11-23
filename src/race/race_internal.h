@@ -553,7 +553,6 @@ void drawCourseModelsForView(s16 view);
 void slideOutSlidingDisplayTask(void);
 void drawSlidingDisplaySprite(SlidingDisplayResource *resource);
 void slideRaceTimeDisplayOut(void);
-void func_80033100(void);
 void updatePlayerScaledObjectTask(void);
 void updateRisingPlayerEffectTask(void);
 void updateFallingPlayerEffectTask(void);

@@ -10,6 +10,7 @@
 #include "game/graphics/graphics.h"
 #include "game/io/cd_queue.h"
 #include "game/io/controller.h"
+#include "game/io/controller_effects.h"
 #include "game/io/dat_entries.h"
 #include "game/io/dat_resources.h"
 #include "game/io/movie_stream.h"
@@ -49,11 +50,14 @@ typedef struct ModeSelectionState {
 extern s16 gFrameCounter __attribute__((section(".data")));
 extern u16 D_8013AF78 __attribute__((section(".data")));
 extern u8 D_8013AFCD __attribute__((section(".data")));
+extern u8 D_8013AFD3 __attribute__((section(".data")));
 extern GameTask *D_8013AE88 __attribute__((section(".data")));
 extern GameTask *D_8013AE8C __attribute__((section(".data")));
 extern GameTask *D_8013AE98 __attribute__((section(".data")));
 extern u32 D_8013AFE4 __attribute__((section(".data")));
 extern u8 D_8013AFD7 __attribute__((section(".data")));
+extern u8 D_8013B1AA __attribute__((section(".data")));
+extern u8 D_8013B1AB __attribute__((section(".data")));
 
 extern const u8 D_80123B50[];
 extern const u8 D_8013B0FC[];
@@ -70,6 +74,12 @@ const char gTitleScreenStartPrompt[16]
 
 const u32 gTitleMenuJumpTablePadding
     __attribute__((section(".rodata.title_menu_jump_table_padding"))) = 0;
+
+const char gBoardReversePromptPalette1[16]
+    __attribute__((section(".rodata.board_reverse_prompt"), aligned(4))) = "%1BOARD REVERSE";
+
+const char gBoardReversePromptPalette2[16]
+    __attribute__((section(".rodata.board_reverse_prompt"), aligned(4))) = "%2BOARD REVERSE";
 
 const GridSpriteEntry gTitleMenuSprites[6]
     __attribute__((section(".data.title_menu_sprites"), aligned(4))) = {
@@ -1144,42 +1154,41 @@ void beginSound601TaskSequence(void) {
     setCurrentTaskCallback(drawSound601SequenceSpriteTask);
 }
 
-/* DECOMP_ATTEMPT: inline 92/96 */
-#ifdef NON_MATCHING
-extern const char D_80010A1C[];
-extern const char D_80010A2C[];
-void drawDebugText(s32 x, s32 y, const char *format, ...);
-
-void func_80033100(void) {
+void updateBoardReversePromptTask(void) {
     GameTask *task = D_8013AE88;
     u32 flags = gRacePlayers[task->data18].unk128;
     GameTask *drawTask;
-    const char *text;
     u16 frame;
+
     if ((flags & 0x40) || D_8013B1AA) {
         deleteCurrentTaskSubtree();
     } else if (!D_8013B1AB) {
         if (flags & 0x400) {
-            if (task->data1A < 30) task->data1A++;
+            if (task->data1A < 30) {
+                task->data1A++;
+            }
         } else {
             task->data1A = 0;
         }
         task = D_8013AE88;
-        if (gRacePlayers[task->data18].unk128 & 0x1000) task->data1A = 0;
+        if (gRacePlayers[task->data18].unk128 & 0x1000) {
+            task->data1A = 0;
+        }
         if (!D_8013AFD3) {
             drawTask = D_8013AE88;
             if (drawTask->data1A >= 30) {
                 frame = gFrameCounter;
-                if (frame & 2) text = D_80010A1C;
-                else text = D_80010A2C;
-                drawDebugText((s16)(drawTask->data1C - 52), (s16)drawTask->data1E, text);
+                if (frame & 2) {
+                    drawDebugText((s16)(drawTask->data1C - 52), (s16)drawTask->data1E,
+                                  gBoardReversePromptPalette1);
+                } else {
+                    drawDebugText((s16)(drawTask->data1C - 52), (s16)drawTask->data1E,
+                                  gBoardReversePromptPalette2);
+                }
             }
         }
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/menu/mode_transitions", func_80033100);
-#endif
 
 void initializePlayerPromptTask(void) {
     if (D_8013AFCD == 1) {
@@ -1189,7 +1198,7 @@ void initializePlayerPromptTask(void) {
         D_8013AE88->data1C = -32;
         D_8013AE88->data1E = D_8013AE88->data18 * 112 - 48;
     }
-    setCurrentTaskCallback(func_80033100);
+    setCurrentTaskCallback(updateBoardReversePromptTask);
 }
 
 

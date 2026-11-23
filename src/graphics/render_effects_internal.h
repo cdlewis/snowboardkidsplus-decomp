@@ -987,7 +987,6 @@ void SetFarColor(s32 r, s32 g, s32 b);
 void SetFogNearFar(s32 near, s32 far, s32 h);
 void drawTaskObject(u16 index);
 void updateMovingTaskObject(void);
-void drawDebugText(s32 x, s32 y, const char *format, ...);
 void setTexturedQuadSemiTrans(s32 enabled);
 void func_80063B58(void);
 void drawRotatingQuadEffectTask(void);

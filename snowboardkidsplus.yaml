@@ -96,7 +96,7 @@ segments:
       - {start: 0x10BC, type: .rodata, name: menu/mode_transitions, linker_section: .rodata.title_logo}
       - [0x10F8, pad]
       - {start: 0x10FC, type: .rodata, name: menu/mode_transitions, linker_section: .rodata.player_mode_selection}
-      - [0x121C, rodata]
+      - {start: 0x121C, type: .rodata, name: menu/mode_transitions, linker_section: .rodata.board_reverse_prompt}
       - {start: 0x123C, type: .rodata, name: race/player/player_actions, linker_section: .rodata.demonstration_overlay}
       - {start: 0x1258, type: .rodata, name: race/player/player_actions, linker_section: .rodata.auto_pilot_label}
       - {start: 0x1264, type: .rodata, name: race/player/player_actions, linker_section: .rodata.result_prize_labels}

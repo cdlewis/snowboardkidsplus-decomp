@@ -37,6 +37,7 @@ void drawPlayerModeMessagePanelTask(void);
 void waitUnlockNotification0TransitionTask(void);
 void drawSound601SequenceSpriteTask(void);
 void beginSound601TaskSequence(void);
+void updateBoardReversePromptTask(void);
 void initializePlayerPromptTask(void);
 void drawGrowingSprite179Task(void);
 void drawGrowingSprite178Task(void);
