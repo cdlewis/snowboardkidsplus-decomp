@@ -2975,6 +2975,7 @@ drawPlayerSpriteAnimation = 0x80034434; // type:func
 
 processGouraudQuadPrimitive = 0x800554C4; // type:func
 
+initializeCourseObjects = 0x80058BD4; // type:func
 getRenderCameraIndex = 0x80059254; // type:func
 advanceTaskVisualFrame = 0x80059290; // type:func
 drawTaskObject = 0x800592DC; // type:func
@@ -4008,7 +4009,37 @@ gPlayerParticleHistoryVisualFrames = 0x80124324; // size:0x30 defined:true
 
 updatePickupVisualTask = 0x8005B038; // type:func
 updateInteractionVisualTask = 0x8005B6C0; // type:func
+D_801259DC = 0x801259DC; // size:0x5F0
+D_80125FCC = 0x80125FCC; // size:0x4C0
+D_8012648C = 0x8012648C; // size:0x540
+D_801269CC = 0x801269CC; // size:0x4D0
+D_80126E9C = 0x80126E9C; // size:0x3D0
+D_8012726C = 0x8012726C; // size:0x3D0
+D_8012763C = 0x8012763C; // size:0x410
+D_80127A4C = 0x80127A4C; // size:0x1C0
+D_80127C0C = 0x80127C0C; // size:0x470
+D_8012807C = 0x8012807C; // size:0x150
+D_801281CC = 0x801281CC; // size:0x150
+D_8012831C = 0x8012831C; // size:0xB0
+D_801283CC = 0x801283CC; // size:0x290
+D_8012865C = 0x8012865C; // size:0x290
+D_801288EC = 0x801288EC; // size:0x150
+D_80128A3C = 0x80128A3C; // size:0x3D0
+D_80128E0C = 0x80128E0C; // size:0x3D0
+D_801291DC = 0x801291DC; // size:0x1F0
+D_801293CC = 0x801293CC; // size:0x10
+gCourseObjectPlacements = 0x801293DC; // size:0x28 defined:true
+gCourseChallengePlacements = 0x80129404; // size:0x78 defined:true
 gPickupVisualFrames = 0x8012947C; // type:u8 size:0x30
+D_8013B2B4 = 0x8013B2B4; // size:0x1 defined:true
+D_8013B2B5 = 0x8013B2B5; // size:0x1 defined:true
+D_8013B2B6 = 0x8013B2B6; // size:0x1 defined:true
+D_8013B2B7 = 0x8013B2B7; // size:0x1 defined:true
+D_8013B2B8 = 0x8013B2B8; // size:0x1 defined:true
+D_8013B2B9 = 0x8013B2B9; // size:0x1 defined:true
+D_8013B2BA = 0x8013B2BA; // size:0x1 defined:true
+D_8013B2BC = 0x8013B2BC; // size:0x4 defined:true
+D_8013B2C0 = 0x8013B2C0; // size:0x4 defined:true
 gInteractionVisualFrame = 0x8013B294; // size:0x8 defined:true
 gInteractionVisualPlacements = 0x8013B2C4; // size:0x4 defined:true
 

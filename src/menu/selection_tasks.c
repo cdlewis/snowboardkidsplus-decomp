@@ -11,6 +11,7 @@
 #include "game/menu/selected_records.h"
 #include "game/menu/selected_sprite.h"
 #include "game/race/camera/race_camera.h"
+#include "game/race/course/course_objects.h"
 #include "game/race/player/race_player.h"
 #include "game/save/save_data.h"
 #include "psx/libgpu.h"
@@ -71,7 +72,7 @@ void initializeModeRaceTasks(void) {
     }
     createChildTaskForParent(&gGameTasks[3], initializeTaskPlayerCamera);
     D_8013AE8C->data18 = 0;
-    func_80058BD4();
+    initializeCourseObjects();
     createChildTask(updateRacePlayerFinishSlotsTask);
     for (player = D_8013AFD2 - 1; player >= 0; player--) {
         createChildTask(initializeCurrentPlayerModelAndHeight);

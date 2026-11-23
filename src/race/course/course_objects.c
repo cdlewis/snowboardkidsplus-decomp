@@ -27,6 +27,10 @@
 #include "psx/libgs.h"
 #include "psx/libgte.h"
 
+#define COURSE_PLACEMENT_LIMIT 140
+#define PLACEMENT_END 0xFF
+#define PLACEMENT_FLAG_COLLECTED 0x40
+
 typedef struct PlacedObjectBounceVisual {
     GsCOORDINATE2 coordinate;
     u8 unk50[0x24];
@@ -71,7 +75,12 @@ extern u32 *D_8013AF70 __attribute__((section(".data")));
 extern u32 *D_8013AF74 __attribute__((section(".data")));
 
 extern s16 D_8013B1D4 __attribute__((section(".data.finish_slot_state")));
-extern u8 D_8013B2B7, D_8013B2B8;
+
+extern VisualPlacement D_801259DC[], D_80125FCC[], D_8012648C[], D_801269CC[], D_80126E9C[];
+extern VisualPlacement D_8012726C[], D_8012763C[], D_80127A4C[], D_80127C0C[], D_801293CC[];
+extern VisualPlacement D_8012807C[], D_801281CC[], D_8012831C[];
+extern VisualPlacement D_801283CC[], D_8012865C[], D_801288EC[];
+extern VisualPlacement D_80128A3C[], D_80128E0C[], D_801291DC[];
 
 u8 gCpuSpeedModesSoloFirst[4] __attribute__((section(".data.cpu_speed_modes"))) = { 1, 0, 2, 0 };
 u8 gCpuSpeedModesSoloSecond[4] __attribute__((section(".data.cpu_speed_modes"))) = { 0, 1, 2, 0 };
@@ -89,6 +98,36 @@ TaskVisualFrame gInteractionVisualFrame __attribute__((section(".data.interactio
     0xC0, 0x20, 0x20, 0x20, 0x1C, 0x3D7F
 };
 VisualPlacement *gInteractionVisualPlacements __attribute__((section(".sdata.interaction_visual_placements"))) = 0;
+
+VisualPlacement *gCourseObjectPlacements[10] __attribute__((section(".data.course_object_placements"))) = {
+    D_801259DC, D_80125FCC, D_8012648C, D_801269CC, D_80126E9C,
+    D_8012726C, D_8012763C, D_801293CC, D_80127A4C, D_80127C0C,
+};
+
+VisualPlacement *gCourseChallengePlacements[3][10] __attribute__((section(".data.course_challenge_placements"))) = {
+    {
+        D_80128A3C, D_80128E0C, D_801293CC, D_801293CC, D_801293CC,
+        D_801293CC, D_801293CC, D_801293CC, D_801293CC, D_801291DC,
+    },
+    {
+        D_8012807C, D_801281CC, D_801293CC, D_801293CC, D_801293CC,
+        D_801293CC, D_801293CC, D_801293CC, D_801293CC, D_8012831C,
+    },
+    {
+        D_801283CC, D_8012865C, D_801293CC, D_801293CC, D_801293CC,
+        D_801293CC, D_801293CC, D_801293CC, D_801293CC, D_801288EC,
+    },
+};
+
+u8 D_8013B2B4 __attribute__((section(".sdata.course_object_visual_state"))) = 0;
+u8 D_8013B2B5 __attribute__((section(".sdata.course_object_visual_state"))) = 0;
+u8 D_8013B2B6 __attribute__((section(".sdata.course_object_visual_state"))) = 0;
+u8 D_8013B2B7 __attribute__((section(".sdata.course_object_visual_state"))) = 0;
+u8 D_8013B2B8 __attribute__((section(".sdata.course_object_visual_state"))) = 0;
+u8 D_8013B2B9 __attribute__((section(".sdata.course_object_visual_state"))) = 0;
+u8 D_8013B2BA __attribute__((section(".sdata.course_object_visual_state"))) = 0;
+VisualPlacement *D_8013B2BC __attribute__((section(".sdata.course_object_visual_state"))) = 0;
+VisualPlacement *D_8013B2C0 __attribute__((section(".sdata.course_object_visual_state"))) = 0;
 
 TaskVisualFrame gPickupVisualFrames[6] __attribute__((section(".data.pickup_visual_frames"), aligned(4))) = {
     {0x80, 0x98, 0x20, 0x20, 0x000D, 0x3DB9},
@@ -449,6 +488,7 @@ u8 gPlacedObjectItemChoices[4][16]
     {6, 2, 2, 2, 1, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 5},
 };
 
+void initializeCourseObjectTask(void);
 void updateCourseObjectTask(void);
 void initializeBobbingTrailEmitterTask(void);
 
@@ -465,16 +505,7 @@ void queueCourseResourceSectorReads(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: inline 403/416 */
-#ifdef NON_MATCHING
-void initializeCourseObjectTask(void);
-
-#define RACE_EXTRA_MODEL_ARCHIVE ((OffsetArchive *)0x801F3000)
-
-extern VisualPlacement *D_801293DC[10];
-extern VisualPlacement *D_80129404[3][10];
-
-void func_80058BD4(void) {
+void initializeCourseObjects(void) {
     u8 i;
     const u32 *offset;
     u16 modelCount;
@@ -489,12 +520,14 @@ void func_80058BD4(void) {
     }
 
     offset = RACE_EXTRA_MODEL_ARCHIVE->offsets;
-    modelCount = *(u16 *)&RACE_EXTRA_MODEL_ARCHIVE->count;
+    modelCount = (u16)RACE_EXTRA_MODEL_ARCHIVE->count;
     for (i = 0; i < modelCount; i++) {
         model = RACE_EXTRA_MODEL_ARCHIVE->offsets;
         model = (u32 *)((u8 *)model + *offset++);
         GsMapModelingData(model);
-        model += 2;
+        /* Skip the flags and object count to reach the TMD object table. */
+        model++;
+        model++;
         modelIndex = i;
         GsLinkObject4(model, &D_80129A80[modelIndex], 0);
         D_80129A80[modelIndex].coord2 = &D_80129C60[modelIndex];
@@ -543,13 +576,13 @@ void func_80058BD4(void) {
 
     D_8013B2B6 = D_8013B2B8 = D_8013B2BA = 0;
     D_8013B2B5 = D_8013B2B7 = D_8013B2B9 = 255;
-    D_8013B2BC = D_801293DC[D_8013AFCE];
+    D_8013B2BC = gCourseObjectPlacements[D_8013AFCE];
     i = 0;
     do {
         VisualPlacement *placements = D_8013B2BC;
         VisualPlacement *placement = (VisualPlacement *)(i * sizeof(*placement) + (u32)placements);
         s8 type = (s8)placement->unk01;
-        if ((u8)type == 255) {
+        if ((u8)type == PLACEMENT_END) {
             break;
         }
         if ((u8)type < 7) {
@@ -589,23 +622,23 @@ void func_80058BD4(void) {
             }
         }
         i++;
-    } while (i != 140);
+    } while (i != COURSE_PLACEMENT_LIMIT);
 
     if (D_8013AFE2 == 1) {
         switch (D_8013AFE0) {
         case 0:
-            gInteractionVisualPlacements = D_80129404[D_8013AFCD][D_8013AFCE];
+            gInteractionVisualPlacements = gCourseChallengePlacements[D_8013AFCD][D_8013AFCE];
             i = 0;
-            if (gInteractionVisualPlacements[0].unk01 != 255) {
+            if (gInteractionVisualPlacements[0].unk01 != PLACEMENT_END) {
                 for (;;) {
                     VisualPlacement *placements = gInteractionVisualPlacements;
                     u8 index = i;
                     VisualPlacement *placement = (VisualPlacement *)(index * sizeof(*placement) + (u32)placements);
                     u8 type = placement->unk01;
-                    if (type == 255) {
+                    if (type == PLACEMENT_END) {
                         break;
                     }
-                    placement->flags &= 0xBF;
+                    placement->flags &= ~PLACEMENT_FLAG_COLLECTED;
                     i++;
                 }
                 createChildTaskForParentWithReserve(&gGameTasks[4], initializeInteractionVisualTask);
@@ -613,9 +646,9 @@ void func_80058BD4(void) {
             break;
         case 1:
             i = 0;
-            D_8013B2C0 = (PickupPlacement *)D_80129404[0][D_8013AFCE];
+            D_8013B2C0 = gCourseChallengePlacements[0][D_8013AFCE];
             for (;;) {
-                if (((VisualPlacement *)D_8013B2C0)[i].unk01 == 255) {
+                if (D_8013B2C0[i].unk01 == PLACEMENT_END) {
                     goto createVisualTasks;
                 }
                 tryCreateChildTaskForParentWith20SlotsReserved(&gGameTasks[4], initializeCollectibleTask);
@@ -634,11 +667,6 @@ createVisualTasks:
         createChildTaskForParentWithReserve(&gGameTasks[4], initializeCourseVisualTask);
     }
 }
-
-#undef RACE_EXTRA_MODEL_ARCHIVE
-#else
-INCLUDE_ASM("asm/nonmatchings/race/course/course_objects", func_80058BD4);
-#endif
 
 u16 getRenderCameraIndex(void) {
     if (D_8013AFAA & 0x400) {
@@ -1316,10 +1344,10 @@ void updateInteractionVisualTask(void) {
     resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
     prepareTaskVisualQuad(resource, &gInteractionVisualFrame, 1);
     for (i = 0; ; i++) {
-        if (gInteractionVisualPlacements[i].unk01 == 0xFF) {
+        if (gInteractionVisualPlacements[i].unk01 == PLACEMENT_END) {
             return;
         }
-        if (!(gInteractionVisualPlacements[i].flags & 0x40)) {
+        if (!(gInteractionVisualPlacements[i].flags & PLACEMENT_FLAG_COLLECTED)) {
             if (isPositionInCameraRange(gInteractionVisualPlacements[i].x, gInteractionVisualPlacements[i].z, (s16)getRenderCameraIndex())) {
                 resource->unkC4 = gInteractionVisualPlacements[i].geometryIndex;
                 resource->coordinate.coord.t[0] = gInteractionVisualPlacements[i].x;
@@ -1345,7 +1373,7 @@ void updateInteractionVisualTask(void) {
                             }
                             queuePlayerControllerEffect(gRacePlayers[player].playerIndex, 0xD);
                             playSoundEffect(0, 0, 0x20);
-                            gInteractionVisualPlacements[i].flags |= 0x40;
+                            gInteractionVisualPlacements[i].flags |= PLACEMENT_FLAG_COLLECTED;
                             break;
                         }
                     }

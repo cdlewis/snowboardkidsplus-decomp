@@ -35,7 +35,6 @@
 
 #define RACE_SOUND_HEADER ((u8 *)0x80165800)
 #define RACE_PLAYER_SOUND_HEADERS ((u8 (*)[0x1000])0x80167000)
-#define RACE_EXTRA_RESOURCE_BUFFER ((u8 *)0x801F3000)
 #define RACE_PAUSE_START 0x0800
 #define RACE_PAUSE_RESUME_PENDING 0x80
 #define RACE_DEMO_FRAME_LIMIT 946
@@ -537,7 +536,7 @@ void queueRaceStartupResourcesTask(void) {
     queueCdSectorCommand(2, DAT_ENTRY_003_SECTOR, DAT_ENTRY_003_SECTOR_COUNT, DAT_SCRATCH, 0);
     if (D_8013AFCE != 7) {
         queueCdSectorCommand(0, DAT_ENTRY_004_SECTOR, DAT_ENTRY_004_SECTOR_COUNT,
-            RACE_EXTRA_RESOURCE_BUFFER, 0);
+            RACE_EXTRA_MODEL_ARCHIVE, 0);
     }
     if (D_8013AFD7) {
         queueCdSectorCommand(0, gRacePlaybackSectorRanges[D_8013AFD7 - 1].sector,
@@ -566,7 +565,7 @@ void initializeRacePresentationTask(void) {
     }
     createChildTaskForParent(&gGameTasks[3], initCurrentPlayerCameraTask);
     D_8013AE8C->data18 = 0;
-    func_80058BD4();
+    initializeCourseObjects();
     createChildTask(updateRacePlayerFinishSlotsTask);
     for (i = activeRacePlayerCountGp - 1; i >= 0; i--) {
         createChildTask(initializeCurrentPlayerModelAndHeight);
@@ -1130,7 +1129,7 @@ void initializeDemoPlaybackTask(void) {
     initializeRacePlayerEffects();
     createChildTaskForParent(&gGameTasks[3], initPlayerZeroTask);
     D_8013AE8C->data18 = 0;
-    func_80058BD4();
+    initializeCourseObjects();
     createChildTask(updateRacePlayerFinishSlotsTask);
     createChildTask(initializeCurrentPlayerModelAndHeight);
     D_8013AE8C->data18 = 0;

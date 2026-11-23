@@ -435,12 +435,6 @@ struct VisualPlacementHeightData {
     s16 suffix;
 };
 
-/* Collectible placements use 0x10-byte records. */
-typedef struct PickupPlacement {
-    u16 unk00;
-    s16 geometryIndex;
-    s32 x, y, z;
-} PickupPlacement;
 typedef struct MovingVisualPlacement {
     s16 geometryIndex, pad;
     s32 startX, startZ, endX, endZ;
@@ -855,7 +849,7 @@ void updatePlacedObjectTask(void);
 void updatePlacedObjectBounceTask(void);
 void updateOrbitingObstacleTask(void);
 void updatePickupVisualTask(void);
-extern PickupPlacement *D_8013B2C0;
+extern VisualPlacement *D_8013B2C0;
 
 /* Shared texture metadata remains in its original data owner. */
 extern TextureRegionSet D_8012DDA4[];
