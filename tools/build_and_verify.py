@@ -13,6 +13,7 @@ from decomp import INCLUDE, uncomment
 from validate_commit import verify_dat, verify_image
 
 ROOT = Path(__file__).resolve().parent.parent
+DEFAULT_JOBS = 8
 
 
 def check_includes(root):
@@ -25,7 +26,7 @@ def check_includes(root):
 
 
 def build_and_verify(root, *, expected=False, objects=False, non_matching=False,
-                     docs=False, incremental=False, jobs=1, verbose=False):
+                     docs=False, incremental=False, jobs=DEFAULT_JOBS, verbose=False):
     # Keep clean, split, compilation, and verification in one exclusive run.
     # The lock lives outside build/ so cleaning cannot remove it.
     with (root / ".build-and-verify.lock").open("a") as lock:
@@ -43,8 +44,8 @@ def build_and_verify(root, *, expected=False, objects=False, non_matching=False,
             generate(root)
 
 
-def _build_and_verify(root, *, expected=False, objects=False, non_matching=False,
-                      incremental=False, jobs=1, verbose=False):
+def _build_and_verify(root, *, jobs, expected=False, objects=False, non_matching=False,
+                      incremental=False, verbose=False):
     environment = dict(os.environ)
     environment.pop("NON_MATCHING", None)
 
@@ -88,7 +89,7 @@ def main():
     parser.add_argument("--non-matching", action="store_true", help="also compile partial C (requires --objects)")
     parser.add_argument("--docs", action="store_true", help="regenerate the static progress page")
     parser.add_argument("--incremental", action="store_true", help="verify without cleaning unchanged outputs")
-    parser.add_argument("--jobs", type=int, default=1, help="parallel Make jobs (default: 1)")
+    parser.add_argument("--jobs", type=int, default=DEFAULT_JOBS, help="parallel Make jobs (default: %(default)s)")
     parser.add_argument("--verbose", action="store_true", help="stream full Splat and build output")
     args = parser.parse_args()
     if args.jobs < 1:
