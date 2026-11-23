@@ -20,6 +20,9 @@ SIMILAR_CACHE = ROOT / "nonmatchings/.similar-references.json"
 DECOMPILE_DUOS = (
     ("src/graphics/sprite_draw.c", (0x8006EF30, 0x8006F248)),
 )
+# The renderer wrapper saves registers in static storage. Its two helpers
+# receive arguments in temporary registers through direct calls.
+UNMATCHED_RENDERER_ENTRY_POINTS = {0x800585BC, 0x80058664, 0x80058844}
 
 
 def duo_statuses():
@@ -242,7 +245,9 @@ def main():
         return
 
     functions = [f for f in active_functions(sdk=True)
-                 if is_c_candidate(f)]
+                 if ((args.task == "decompile-unmatched"
+                      and f.address in UNMATCHED_RENDERER_ENTRY_POINTS)
+                     or is_c_candidate(f))]
     eligible = {f.name for f in functions}
 
     if args.task == "decompile-similar":
