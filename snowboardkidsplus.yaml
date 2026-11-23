@@ -1009,6 +1009,7 @@ segments:
       - [0x12B9DC, data, 12B9DC]
       - {start: 0x12BA14, type: .data, name: unclassified/graphics_800497B8, linker_section: .data.debug_position_formats}
       - [0x12BA2C, data, debug_position_formats_tail]
+      - {start: 0x12BA38, type: .sdata, name: graphics/course_rendering, linker_section: .sdata.rotating_background_frame, linker_section_order: .data}
       - {start: 0x12BA3C, type: .sdata, name: graphics/course_rendering, linker_section: .sdata.lap_animated_background_frame, linker_section_order: .data}
       - {start: 0x12BA40, type: .data, name: graphics/vram_transfer_rects, linker_section: .data.read_pixel_rect}
       - {start: 0x12BA48, type: .sdata, name: graphics/vram_transfer_rects, linker_section: .sdata.write_pixel_rect, linker_section_order: .data}

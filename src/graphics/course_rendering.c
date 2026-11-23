@@ -41,12 +41,14 @@ extern RECT gWritePixelRect __attribute__((section(".sdata.write_pixel_rect")));
 void drawLayeredBackgroundAndSetFog(s16 playerIndex);
 void func_8004E718(s16 playerIndex);
 void func_8004EBF8(s16 playerIndex);
-void func_8004FB70(s16 playerIndex);
+void drawRotatingModelBackgroundAndSetFog(s16 playerIndex);
 void drawRipplingBackgroundAndSetFog(s16 playerIndex);
 
 TILE gLapAnimatedBackgroundTile __attribute__((section(".data.lap_animated_background_tile"))) = {
     3 << 24, 224, 224, 232, TILE_CODE, -160, -120, 320, 240,
 };
+
+static u32 sRotatingBackgroundFrame __attribute__((section(".sdata.rotating_background_frame"))) = 0;
 
 u32 gLapAnimatedBackgroundFrame __attribute__((section(".sdata.lap_animated_background_frame"))) = 0;
 
@@ -77,7 +79,7 @@ static void (*sCourseBackgroundCallbacks[10])(s16 playerIndex)
     func_8004E718,
     func_8004EBF8,
     drawCyanBackgroundAndSetFog,
-    func_8004FB70,
+    drawRotatingModelBackgroundAndSetFog,
     drawRipplingBackgroundAndSetFog,
     drawLapAnimatedBackgroundAndSetFog,
     drawSnowBackgroundAndSetFog,
@@ -704,11 +706,7 @@ void createFlickeringDotsTask(s32 playerIndex) {
     resource->frame = 0;
 }
 
-/* DECOMP_ATTEMPT: inline 323/325 */
-#ifdef NON_MATCHING
-extern u32 D_8013B238;
-
-void func_8004FB70(s16 playerIndex) {
+void drawRotatingModelBackgroundAndSetFog(s16 playerIndex) {
     GsCOORDINATE2 *coordinate = (GsCOORDINATE2 *)getScratchAddr(0);
     MATRIX *matrix = (MATRIX *)getScratchAddr(20);
     GsOT *ot;
@@ -722,8 +720,9 @@ void func_8004FB70(s16 playerIndex) {
     }
 
     x = -160 - ((D_801241E8[playerIndex].yaw >> 1) & 255);
-    y = (u32)(D_801241E8[playerIndex].pitch / 2) & 0xFFFF;
+    y = (u32)(D_801241E8[playerIndex].pitch / 2);
     horizon = y;
+    y &= 0xFFFF;
     addTexturedSprite(&D_8013AF6C[4093], getTPage(0, 0, 640, 256), getClut(656, 480),
                       (s16)x, (s16)y, 256, 96, 0, 0, 128, 128, 128);
     addTexturedSprite(&D_8013AF6C[4093], getTPage(0, 0, 640, 256), getClut(656, 480),
@@ -733,51 +732,47 @@ void func_8004FB70(s16 playerIndex) {
 
     {
         s32 right = 160;
-    if (horizon < -248) horizon = -248;
-    if (horizon > 120) horizon = 120;
-    addSemiTransparentGouraudQuadWithDrawMode(&D_8013AF6C[4094], getTPage(0, 1, 0, 0),
-        -160, (s16)(horizon + 96), right, (s16)(horizon + 96),
-        -160, (s16)(horizon + 128), right, (s16)(horizon + 128),
-        0, 24, 32, 0, 24, 32, 0, 0, 0, 0, 0, 0);
-    addFlatRectangle(&D_8013AF6C[4094], -160, (s16)(horizon + 128), 320,
-                     (s16)(-8 - horizon), 0, 0, 0);
-    addSemiTransparentGouraudQuadWithDrawMode(&D_8013AF6C[4095], getTPage(0, 1, 0, 0),
-        -160, (s16)(horizon - 120), right, (s16)(horizon - 120),
-        -160, horizon, right, horizon,
-        0, 64, 128, 0, 64, 128, 0, 24, 32, 0, 24, 32);
-    addSemiTransparentGouraudQuadWithDrawMode(&D_8013AF6C[4095], getTPage(0, 1, 0, 0),
-        -160, -120, right, -120, -160, (s16)(horizon - 120), right, (s16)(horizon - 120),
-        0, 128, 128, 0, 128, 128, 0, 64, 128, 0, 64, 128);
 
+        if ((s16)y < -248) horizon = -248;
+        if (horizon > 120) horizon = 120;
+        addSemiTransparentGouraudQuadWithDrawMode(&D_8013AF6C[4094], getTPage(0, 1, 0, 0),
+            -160, (s16)(horizon + 96), right, (s16)(horizon + 96),
+            -160, (s16)(horizon + 128), right, (s16)(horizon + 128),
+            0, 24, 32, 0, 24, 32, 0, 0, 0, 0, 0, 0);
+        addFlatRectangle(&D_8013AF6C[4094], -160, (s16)(horizon + 128), 320,
+                         (s16)(-8 - horizon), 0, 0, 0);
+        addSemiTransparentGouraudQuadWithDrawMode(&D_8013AF6C[4095], getTPage(0, 1, 0, 0),
+            -160, (s16)(horizon - 120), right, (s16)(horizon - 120),
+            -160, horizon, right, horizon,
+            0, 64, 128, 0, 64, 128, 0, 24, 32, 0, 24, 32);
+        addSemiTransparentGouraudQuadWithDrawMode(&D_8013AF6C[4095], getTPage(0, 1, 0, 0),
+            -160, -120, right, -120, -160, (s16)(horizon - 120), right, (s16)(horizon - 120),
+            0, 128, 128, 0, 128, 128, 0, 64, 128, 0, 64, 128);
     }
+
     if (isPositionInCameraRange(0x102D, 0x3395, playerIndex)) {
         GsInitCoordinate2(0, coordinate);
-        coordinate->coord.t[0] = 0x102D;
-        coordinate->coord.t[1] = 0x7F1;
-        coordinate->coord.t[2] = 0x3395;
-        RotMatrixY(-D_8013B238 * 64, &coordinate->coord);
+        setVector((VECTOR *)coordinate->coord.t, 0x102D, 0x7F1, 0x3395);
+        RotMatrixY(-sRotatingBackgroundFrame * 64, &coordinate->coord);
         GsGetLs(coordinate, matrix);
         ScaleMatrix(matrix, &D_80124BDC);
         GsSetLsMatrix(matrix);
         drawProjectedModelPrimitives(D_80125044[1], ot, 2, 1);
         if (!D_8013AFD3) {
-            D_8013B238++;
+            sRotatingBackgroundFrame++;
         }
     }
 
     if (selectedCameraOverlayModeGp) {
-        addFlatRectangleWithDrawMode(&D_8013AF6C[0], getTPage(0, 2, 0, 0), 2,
+        addFlatRectangleWithDrawMode(D_8013AF6C, getTPage(0, 2, 0, 0), SEMI_TRANSPARENT_FLAG,
                                      -160, -120, 320, 240, 24, 24, 24);
     } else {
-        addFlatRectangleWithDrawMode(&D_8013AF6C[0], getTPage(0, 2, 0, 0), 2,
+        addFlatRectangleWithDrawMode(D_8013AF6C, getTPage(0, 2, 0, 0), SEMI_TRANSPARENT_FLAG,
                                      -160, -120, 320, 240, 48, 48, 48);
     }
     SetFarColor(80, 80, 100);
     SetFogNearFar(8000, 10000, 400);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/graphics/course_rendering", func_8004FB70);
-#endif
 
 void drawRipplingBackgroundAndSetFog(s16 playerIndex) {
     s32 column, strip, offset, x, y;
