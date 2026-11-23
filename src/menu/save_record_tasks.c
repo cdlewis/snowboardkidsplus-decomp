@@ -9,6 +9,7 @@
 #include "game/engine/task.h"
 #include "game/graphics/graphics.h"
 #include "game/menu/movement.h"
+#include "game/race/player/player_resource_textures.h"
 #include "game/race/player/race_player.h"
 #include "game/save/save_data.h"
 
@@ -119,8 +120,6 @@ void copySaveRecordAndMergeFlags(void) {
 
 /* DECOMP_ATTEMPT: inline 33/36 */
 #ifdef NON_MATCHING
-#include "game/race/player/player_resource_textures.h"
-
 void func_80089A0C(SaveRecord *source, s16 index) {
     s16 i;
     for (i = 0; i < 9; i++) {
@@ -136,21 +135,15 @@ void func_80089A0C(SaveRecord *source, s16 index) {
 INCLUDE_ASM("asm/nonmatchings/menu/save_record_tasks", func_80089A0C);
 #endif
 
-/* DECOMP_ATTEMPT: inline 25/27 */
-#ifdef NON_MATCHING
-#include "game/race/player/player_resource_textures.h"
-
-void func_80089A98(SaveRecord *state) {
+void prepareSaveRecordForWrite(SaveRecord *state) {
     u32 i;
+
     for (i = 0; i < 9; i++) {
         state->resourceTextureSelections[i] = gPlayerResourceTextureSelections.entries[0][i];
     }
     state->unlockNotificationFlags = gUnlockNotificationFlags;
     state->checksum = calculateByteSum((const u8 *)state, sizeof(*state) - sizeof(state->checksum));
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/menu/save_record_tasks", func_80089A98);
-#endif
 
 u32 calculateByteSum(const u8 *data, u32 size) {
     u32 sum;
@@ -266,7 +259,7 @@ void func_80089EC0(void) {
  if (D_8013AE88->resource16 != 0xFFFF) { while (1) {} }
  D_8013AE88->resource16 = allocateTaskResource();
  resource->unk0C = 0;
- func_80089A98(&gPlayerSaveRecords[0]);
+ prepareSaveRecordForWrite(&gPlayerSaveRecords[0]);
  destination = (SaveRecord *)0x801E4000;
  *destination++ = gPlayerSaveRecords[0];
  *destination = gPlayerSaveRecords[0];
