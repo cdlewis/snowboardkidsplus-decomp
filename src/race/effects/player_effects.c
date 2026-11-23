@@ -25,6 +25,7 @@
 #include "psx/libgte.h"
 
 #define PRESENTATION_SKIP_BUTTON 0x0800
+#define PAIRED_QUAD_PROJECTION_FLAGS 0x7FFBE000
 
 /* Equal-channel color assignment for grayscale primitives. */
 #define setGray0(p, shade) ((p)->r0 = (p)->g0 = (p)->b0 = (shade))
@@ -119,6 +120,14 @@ typedef struct PlayerShadowScratch {
     long flags;
     s32 size;
 } PlayerShadowScratch;
+
+typedef struct PairedQuadScratchpad {
+    GsCOORDINATE2 coordinate;
+    u8 padding[0x20];
+    s32 depth;
+    long cue;
+    long flags;
+} PairedQuadScratchpad;
 
 typedef struct RadialEffectScratch {
     MATRIX localScreen;
@@ -479,6 +488,12 @@ SVECTOR gPlayerShadowVertices[4]
     __attribute__((section(".data.player_shadow"))) = {
     {-45, 0, -20, 0}, {45, 0, -20, 0},
     {-45, 0, 20, 0}, {45, 0, 20, 0},
+};
+
+SVECTOR gPlayerPairedQuadVertices[4]
+    __attribute__((section(".data.player_paired_quad_vertices"))) = {
+    {-10, -10, 0, 0}, {10, -10, 0, 0},
+    {-10, 10, 0, 0}, {10, 10, 0, 0},
 };
 
 VECTOR gPlayerPairedQuadOffsets[2]
@@ -1896,21 +1911,7 @@ s32 startDelayedEightEntryEffectTask(s32 playerIndex) {
     return 0;
 }
 
-/* DECOMP_ATTEMPT: inline 216/217 */
-#ifdef NON_MATCHING
-#define PAIRED_QUAD_PROJECTION_FLAGS 0x7FFBE000
-
-typedef struct PairedQuadScratchpad {
-    GsCOORDINATE2 coordinate;
-    u8 padding[0x20];
-    s32 depth;
-    long cue;
-    long flags;
-} PairedQuadScratchpad;
-
-extern SVECTOR D_8012C8CC[4];
-
-void func_800654B4(void) {
+void drawPlayerPairedQuadEffectTask(void) {
     PairedEffectResource *resource;
     RacePlayer *player;
     POLY_FT4 *packet;
@@ -1937,23 +1938,18 @@ void func_800654B4(void) {
                 scratch->coordinate.coord.t[j] = scratch->coordinate.workm.t[j];
             }
             GsSetLsMatrix(&scratch->coordinate.coord);
-            scratch->depth = RotTransPers4(&D_8012C8CC[0], &D_8012C8CC[1],
-                &D_8012C8CC[2], &D_8012C8CC[3], (long *)&packet->x0,
-                (long *)&packet->x1, (long *)&packet->x2, (long *)&packet->x3,
-                &scratch->cue, &scratch->flags) - 10;
+            scratch->depth = RotTransPers4(&gPlayerPairedQuadVertices[0], &gPlayerPairedQuadVertices[1],
+                &gPlayerPairedQuadVertices[2], &gPlayerPairedQuadVertices[3],
+                (long *)&packet->x0, (long *)&packet->x1, (long *)&packet->x2,
+                (long *)&packet->x3, &scratch->cue, &scratch->flags) - 10;
 
             packet->tag = TEXTURED_QUAD_PACKET_WORDS << 24;
-            setcode(packet, POLY_FT4_CODE | 2);
+            setcode(packet, POLY_FT4_CODE | SEMI_TRANSPARENT_FLAG);
             setRGB0(packet, 128, 128, 128);
             packet->tpage = getTPage(0, 0, 832, 256);
             packet->clut = resource->clut;
-            (setUV0(packet, 112, (resource->elapsed % 5) * 16 + 80),
-                packet->u1 = 127,
-                packet->u2 = 112,
-                packet->v1 = packet->v0,
-                packet->v2 = packet->v0 + 15,
-                packet->u3 = 127,
-                packet->v3 = packet->v1 + 15);
+            setUV4(packet, 112, (resource->elapsed % 5) * 16 + 80,
+                127, packet->v0, 112, packet->v0 + 15, 127, packet->v0 + 15);
             if (!(scratch->flags & PAIRED_QUAD_PROJECTION_FLAGS) &&
                 scratch->depth >= 0 && scratch->depth < 4096) {
                 addPrim(D_8013AF6C + (scratch->depth >> 2), packet);
@@ -1970,16 +1966,11 @@ void func_800654B4(void) {
     }
 }
 
-#undef PAIRED_QUAD_PROJECTION_FLAGS
-#else
-INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_800654B4);
-#endif
-
 void createPlayerPairedQuadEffectTask(s32 playerIndex, s32 variant) {
     PairedEffectResource *resource;
     RacePlayer *player;
     s32 i;
-    createChildTaskForParentWithReserve(D_8013B304, func_800654B4);
+    createChildTaskForParentWithReserve(D_8013B304, drawPlayerPairedQuadEffectTask);
     D_8013AE8C->resource14 = allocateTaskResource();
     player = &gRacePlayers[playerIndex];
     resource = (PairedEffectResource *)&D_800D9504[D_8013AE8C->resource14];
