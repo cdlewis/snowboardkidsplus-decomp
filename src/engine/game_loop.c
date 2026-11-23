@@ -50,7 +50,6 @@ u8 D_80100200[2][0x10000] __attribute__((section(".data.render_buffers"))) = {0}
 
 extern u32 gSynchronizedFrameCount;
 
-void func_80049CDC(void);
 void func_8001AB34(void);
 
 void runGameLoop(void) {
@@ -199,7 +198,7 @@ void initializeGameSystems(void) {
     setControllerFlag0(0U);
     setControllerFlag0(1U);
     initializeTaskScheduler();
-    func_80049CDC();
+    initDebugTextSprite();
     GsInitGraph(D_8013AF7A, D_8013AF7C, 4, 1, 0);
     GsDefDispBuff(0, 0, 0, 0x100);
     GsInit3D();

@@ -263,6 +263,7 @@ s16 advanceTaskVisualFrame(TaskVisualResource *resource);
 void setTaskVisualFrame(TaskVisualResource *resource, TaskVisualFrame *frames,
                         s32 scale);
 void unpackPsxColor(u32 color, UnpackedPsxColor *out);
+void initDebugTextSprite(void);
 void setTextPalette(s32 palette);
 void setTextGlyphPalette(u16 palette);
 void addTextCharacter(s32 x, s32 y, u32 character);

@@ -284,20 +284,16 @@ void updateSlidingVisualSequenceTask(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: inline 19/22 */
-#ifdef NON_MATCHING
-void func_80049CDC(void) {
-    initSprite(&gDebugTextSprite);
-    gDebugTextSprite.w = 8;
-    gDebugTextSprite.h = 8;
-    gDebugTextSprite.tpage = 31;
-    gDebugTextSprite.cx = 768;
-    gDebugTextSprite.cy = 240;
+void initDebugTextSprite(void) {
+    GsSPRITE *sprite = &gDebugTextSprite;
+
+    initSprite(sprite);
+    setWH(sprite, 8, 8);
+    sprite->tpage = getTPage(0, 0, 960, 256);
+    sprite->cx = 768;
+    sprite->cy = 240;
     gTextClut = 240;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/unclassified/graphics_800497B8", func_80049CDC);
-#endif
 
 void setTextPalette(s32 palette) {
     gTextClut = (u8)palette + 0xF0;
