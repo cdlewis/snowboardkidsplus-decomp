@@ -129,3 +129,20 @@ jobs:
       - name: Publish progress docs
         id: deployment
         uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
+
+      - name: Purge Cloudflare cache for progress docs
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${CLOUDFLARE_API_TOKEN:?Missing CLOUDFLARE_API_TOKEN secret}"
+          : "${CLOUDFLARE_ZONE_ID:?Missing CLOUDFLARE_ZONE_ID secret}"
+          curl --fail-with-body --silent --show-error --max-time 30 \
+            --request POST \
+            "https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE_ID}/purge_cache" \
+            --header "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+            --header "Content-Type: application/json" \
+            --data '{"prefixes":["chrislewis.au/snowboardkidsplus-decomp"]}' \
+            | jq -e '.success == true'
