@@ -284,6 +284,7 @@ void updateTimedSequence(TimedSequence *sequence);
 void updateTimedSpriteB5Task(void);
 void updateValueTransitionTask(void);
 void func_80077770(void);
+s32 findCharacterSelectionIndex(s16 character);
 void func_80078140(void);
 void updatePlayerPanelTask(void);
 void updatePlayerCharacterSelection(s16 playerIndex, SelectionEntry *entries);
@@ -2725,22 +2726,18 @@ void initializeDualResourceSequenceTask(void) {
 /* DECOMP_ATTEMPT: unattempted */
 INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80077770);
 
-/* DECOMP_ATTEMPT: inline 18/20 */
-#ifdef NON_MATCHING
-s16 func_80077E58(s16 value) {
+s32 findCharacterSelectionIndex(s16 character) {
     s32 result = -1;
     s32 i;
-    for (i = 0; i < 10; i++) {
-        if (value == D_8012D460[i]) {
+
+    for (i = result + 1; i < 10; i++) {
+        if (character == D_8012D460[i]) {
             result = i;
             break;
         }
     }
     return result;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80077E58);
-#endif
 
 void createDualSelectionSequenceTask(s16 x, s16 y, s32 depth, s32 index) {
     SelectionEntry *selection;
