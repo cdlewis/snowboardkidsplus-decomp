@@ -120,7 +120,7 @@ void updateNumberAdjustmentTask(void) {
     if (buttons & 0x40) {
         playSoundEffect(0, 0, 0x20);
         D_8013AE98->data18 = 8;
-        func_8002F394();
+        queueBackgroundTextureArchiveRead();
         D_8013AE88->data18 = 0;
         setCurrentTaskCallback(finishNumberAdjustmentTask);
     }

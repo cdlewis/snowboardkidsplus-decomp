@@ -32,6 +32,7 @@ void queueCdCommand(s16 command, s16 value);
 void stopCdAndResetRequestQueue(void);
 void queueCdStop(void);
 void queueBackgroundTextureSectorCommands(void);
+void queueBackgroundTextureArchiveRead(void);
 void queueMode11TransitionResources(void);
 void resetPendingCdRequests(void);
 void stopCdAudioPlayback(void);
