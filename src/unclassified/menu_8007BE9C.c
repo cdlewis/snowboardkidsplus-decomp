@@ -3,6 +3,7 @@
 #include "game/io/cd_queue.h"
 #include "game/graphics/graphics.h"
 #include "game/engine/game_options.h"
+#include "game/menu/menu_selection_state.h"
 #include "game/menu/movement.h"
 #include "game/race/player/race_player.h"
 #include "game/audio/music.h"
@@ -316,7 +317,7 @@ void initializeFlagSelectedCdAwareTask(void) {
     GameTask *task;
     GameTask *parent;
     D_8013AE88->data18 = 1;
-    D_8013AE88->data1A = func_8007D47C();
+    D_8013AE88->data1A = getCourseSelectionGroupIndex();
     task = D_8013AE88;
     parent = D_8013AE98;
     parent->data1C++;

@@ -962,7 +962,7 @@ void initializeFlagSelectedDualResourceTask(void) {
     GameTask *task;
     GameTask *parent;
     D_8013AE88->data18 = 0;
-    D_8013AE88->data1A = func_8007D47C();
+    D_8013AE88->data1A = getCourseSelectionGroupIndex();
     task = D_8013AE88;
     parent = D_8013AE98;
     parent->data1C++;

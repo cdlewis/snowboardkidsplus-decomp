@@ -433,28 +433,37 @@ void updateCdAwareCourseSelectionTask(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: inline 35/36 */
-#ifdef NON_MATCHING
-s32 func_8007D47C(void) {
+s32 getCourseSelectionGroupIndex(void) {
     s16 result;
+
     if (D_8013AFCD == 1) {
-        u32 mask = gPlayerSaveRecords[0].masks[gRacePlayers[0].unk009];
-        if (mask & 0x4000000) result = 3;
-        else if (mask & 0x2000000) result = 2;
-        else if (mask & 0x1000000) result = 1;
-        else result = 0;
+        u8 character = gRacePlayers[0].unk009;
+        u32 mask = gPlayerSaveRecords[0].masks[character];
+
+        if (mask & 0x04000000) {
+            result = 3;
+        } else if (mask & 0x02000000) {
+            result = 2;
+        } else if (mask & 0x01000000) {
+            result = 1;
+        } else {
+            result = 0;
+        }
     } else {
         u32 mask = gMergedSaveRecord.combinedMask;
-        if (mask & 0x4000000) result = 3;
-        else if (mask & 0x2000000) result = 2;
-        else if (mask & 0x1000000) result = 1;
-        else result = 0;
+
+        if (mask & 0x04000000) {
+            result = 3;
+        } else if (mask & 0x02000000) {
+            result = 2;
+        } else if (mask & 0x01000000) {
+            result = 1;
+        } else {
+            result = 0;
+        }
     }
     return result;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/menu/course_selection_tasks", func_8007D47C);
-#endif
 
 void initializeModeDependentDualResourceTask(void) {
     D_8013AE88->data18 = 1;

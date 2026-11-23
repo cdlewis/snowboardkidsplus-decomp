@@ -181,7 +181,6 @@ void initializeProximityEmitterTask(void);
 void initializeDelayedEightEntryEffectTask(void);
 
 void initializeFlagSelectedCdAwareTask(void);
-s32 func_8007D47C(void);
 void updateCdAwareCourseSelectionTask(void);
 
 void initializeSelectedCourseOffsetTask(void);

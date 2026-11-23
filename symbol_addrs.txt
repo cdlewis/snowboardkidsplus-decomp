@@ -2624,6 +2624,7 @@ gTimeRecordsStartPrompt = 0x800120B8; // size:0x18
 initializeSlidingVisualSequenceTask = 0x800496EC; // type:func
 createOscillatingQuadTask = 0x8004F374; // type:func
 
+getCourseSelectionGroupIndex = 0x8007D47C; // type:func
 initializeModeDependentDualResourceTask = 0x8007D50C; // type:func
 
 drawDemonstrationOverlay = 0x80035A38; // type:func
