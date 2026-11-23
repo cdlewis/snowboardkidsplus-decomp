@@ -181,9 +181,9 @@ s32 startPaletteTransition(s16 x, s16 y, u32 *pixels, u16 duration) {
     PaletteTransitionResource *resource;
     if (index != 32) {
         if ((s16)tryCreateChildTaskWith20SlotsReserved(initializePaletteTransition) != 0) {
-            D_8013AE8C->resource14 = allocateTaskResource();
+            D_8013AE8C->resource14 = allocateTaskMemoryBlock();
             task = D_8013AE8C;
-            resource = (PaletteTransitionResource *)&D_800D9504[task->resource14];
+            resource = (PaletteTransitionResource *)&gTaskMemoryPool[task->resource14];
             resource->pixels = pixels;
             task->data1C = 1;
             task->data18 = duration;
@@ -285,7 +285,7 @@ void initializePaletteTransition(void) {
     PaletteTransitionState *resource;
     u16 i;
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    resource = (PaletteTransitionState *)&D_800D9504[D_8013AE88->resource14];
+    resource = (PaletteTransitionState *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->data1C == 0) {
         for (i = 0; i < 16; i++) {
             resource->red[i] = (gSavedImageEntries[D_8013AE88->data1A].transitionPixels[i] & 0x1F) << 8;
@@ -306,7 +306,7 @@ void updatePaletteTransition(void) {
     PaletteTransitionState *resource;
     u16 i;
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    resource = (PaletteTransitionState *)&D_800D9504[D_8013AE88->resource14];
+    resource = (PaletteTransitionState *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (--D_8013AE88->data18 != 0) {
         for (i = 0; i < 16; i++) {
             resource->red[i] += resource->redStep[i];

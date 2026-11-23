@@ -89,7 +89,7 @@ extern s16 gCdVolumeFadeTarget __attribute__((section(".sdata.cd_volume_fade")))
 extern s16 gCdVolumeFadeStep __attribute__((section(".sdata.cd_volume_fade")));
 extern s16 gCdVolumeFadeTimer __attribute__((section(".sdata.cd_volume_fade_timer")));
 
-extern u16 gTaskResourceFreeBits[16] __attribute__((section(".data.task_resource_bitmap")));
+extern u16 gTaskMemoryFreeBits[16] __attribute__((section(".data.task_resource_bitmap")));
 
 extern u8 gControllerAnalogResponse[52] __attribute__((section(".data.controller_analog_response")));
 
@@ -138,8 +138,8 @@ void initializeTaskScheduler(void);
 void deletePendingTaskSubtree(void);
 void setCurrentTaskCallback(TaskCallback callback);
 void deleteCurrentTask(void);
-u32 allocateTaskResource(void);
-void releaseTaskResource(u16 resource);
+u32 allocateTaskMemoryBlock(void);
+void freeTaskMemoryBlock(u16 blockIndex);
 void setControllerFlag0(u16 controller);
 void clearControllerFlag0(u16 controller);
 void setControllerRepeatTiming(u8 initialDelay, u8 repeatInterval);

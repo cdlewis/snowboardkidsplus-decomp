@@ -24,8 +24,8 @@ void initializeUnlockMenuResourceTask(void) {
     if (D_8013AE88->resource14 != 0xFFFF) {
         for (;;) {}
     }
-    D_8013AE88->resource14 = allocateTaskResource();
-    state = (UnlockMenuState *)&D_800D9504[D_8013AE88->resource14];
+    D_8013AE88->resource14 = allocateTaskMemoryBlock();
+    state = (UnlockMenuState *)&gTaskMemoryPool[D_8013AE88->resource14];
     state->selection = 0;
     state->previousSelection = 0;
     resetUnlockMenuAnimation(state);
@@ -68,7 +68,7 @@ void updateUnlockOptionsMenuTask(void) {
     }
     exitRequested = 0;
     optionChanged = 0;
-    state = (UnlockMenuState *)&D_800D9504[D_8013AE88->resource14];
+    state = (UnlockMenuState *)&gTaskMemoryPool[D_8013AE88->resource14];
 
     if (D_8013AEE8[0] & 0x1000) {
         if (state->selection > 0) {
@@ -212,7 +212,7 @@ void func_800A42CC(void) {
         for (;;) {}
     }
 
-    state = (UnlockMenuState *)&D_800D9504[D_8013AE88->resource14];
+    state = (UnlockMenuState *)&gTaskMemoryPool[D_8013AE88->resource14];
     setSpriteColor(128, 128, 128);
     drawSpriteByIndexWithBlend(-56, -96 - state->unk3C[0] / 4096, 0x230, 2, -1,
                   &D_800EBFF0[D_8013AF78], 4);
@@ -260,7 +260,7 @@ void finishUnlockMenuTask(void) {
     UnlockMenuState *state;
     s16 i;
     if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
-    state = (UnlockMenuState *)&D_800D9504[D_8013AE88->resource14];
+    state = (UnlockMenuState *)&gTaskMemoryPool[D_8013AE88->resource14];
     func_800A42CC();
     switch (D_8013AE88->data18) {
     case 0:
@@ -305,7 +305,7 @@ void initializeUnlockMenuTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         for (;;) {}
     }
-    state = (UnlockMenuState *)&D_800D9504[D_8013AE88->resource14];
+    state = (UnlockMenuState *)&gTaskMemoryPool[D_8013AE88->resource14];
     state->selection = 0;
     state->previousSelection = 0;
     resetUnlockMenuOffsets(state);
@@ -334,7 +334,7 @@ void func_800A499C(void) {
         for (;;) {}
     }
     resource = D_8013AE88->resource14;
-    state = (UnlockMenuState *)&D_800D9504[resource];
+    state = (UnlockMenuState *)&gTaskMemoryPool[resource];
     leave = 0;
 
     if (D_8013AEE8[0] & 0x1000) {
@@ -408,7 +408,7 @@ void drawUnlockNotificationMenu(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         for (;;) {}
     }
-    state = (UnlockMenuState *)&D_800D9504[D_8013AE88->resource14];
+    state = (UnlockMenuState *)&gTaskMemoryPool[D_8013AE88->resource14];
     setSpriteColor(128, 128, 128);
     verticalOffset = state->unk3C[0] / 4096;
     drawSpriteByIndexWithBlend(-68, -96 - verticalOffset, 0x22F, 2, -1, &D_800EBFF0[D_8013AF78], 4);
@@ -464,7 +464,7 @@ void animateUnlockMenuTransition(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         for (;;) {}
     }
-    state = (UnlockMenuState *)&D_800D9504[D_8013AE88->resource14];
+    state = (UnlockMenuState *)&gTaskMemoryPool[D_8013AE88->resource14];
     drawUnlockNotificationMenu();
     switch (D_8013AE88->data18) {
     case 0:

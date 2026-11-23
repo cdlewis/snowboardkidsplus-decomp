@@ -200,7 +200,7 @@ void updateSlidingVisualSequenceTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (SlidingVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (SlidingVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (!D_8013AFD3) {
         switch (D_8013AE88->data1C) {
         case 0:

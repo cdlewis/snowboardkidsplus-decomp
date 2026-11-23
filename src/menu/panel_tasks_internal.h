@@ -282,6 +282,6 @@ void animateTextSequenceExitTask(void);
 void advanceModeAfterTextSequenceFadeTask(void);
 
 static inline RegisteredTaskEntry *getModelPreviewEntry(u32 resource, u32 index) {
-    RegisteredTaskEntry *entries = (RegisteredTaskEntry *)&D_800D9504[resource];
+    RegisteredTaskEntry *entries = (RegisteredTaskEntry *)&gTaskMemoryPool[resource];
     return &entries[(u16)(index / 10)];
 }

@@ -62,8 +62,8 @@ void initializeTaskCoordinateResource(void) {
     if (D_8013AE88->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskResource();
-    GsInitCoordinate2(0, (GsCOORDINATE2 *)&D_800D9504[D_8013AE88->resource14]);
+    D_8013AE88->resource14 = allocateTaskMemoryBlock();
+    GsInitCoordinate2(0, (GsCOORDINATE2 *)&gTaskMemoryPool[D_8013AE88->resource14]);
     D_8013AE88->data1A = 0;
     D_8013AE88->data1C = 1;
     setCurrentTaskCallback(updatePlayerFlagTaskVisual);
@@ -74,7 +74,7 @@ void updatePlayerFlagTaskVisual(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (TaskVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (gRacePlayers[D_8013AE88->data18].unk946) {
         if (!D_8013AE88->data1A) {
             resource->unkC6 = 0x600;
@@ -101,8 +101,8 @@ void initializePlayerSideVisualTask(void) {
     if (D_8013AE88->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskResource();
-    resource = (OrbitingPlayerVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    D_8013AE88->resource14 = allocateTaskMemoryBlock();
+    resource = (OrbitingPlayerVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     GsInitCoordinate2(0, &resource->coordinate);
     resource->frameLimit = 0x400;
     resource->frameStep = 0x80;
@@ -124,7 +124,7 @@ void updatePlayerSideVisualTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (OrbitingPlayerVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (OrbitingPlayerVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     D_800EB22C.vx = rsin((s16)gRacePlayers[D_8013AE88->data18].unk110) * resource->radius / 4096;
     D_800EB22C.vz = rcos((s16)gRacePlayers[D_8013AE88->data18].unk110) * resource->radius / 4096;
     resource->coordinate.coord.t[0] = gRacePlayers[D_8013AE88->data18].worldCoordinate.coord.t[0] + D_800EB22C.vx;
@@ -144,7 +144,7 @@ void updateOneShotTaskVisual(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (TaskVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     setTaskVisualFrame(resource, D_80124304, 0x2000);
     drawCameraFacingTaskVisual(resource, 1);
     if (!D_8013AFD3) {
@@ -160,13 +160,13 @@ void initializeExpandingCoordinateEffectTask(void) {
     s32 x, y, z;
     s16 index;
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    initial = (ExpandingCoordinateEffectResource *)&D_800D9504[D_8013AE88->resource14];
+    initial = (ExpandingCoordinateEffectResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     index = initial->rotation.vz;
     x = initial->coordinate.coord.t[0];
     y = initial->coordinate.coord.t[1];
     z = initial->coordinate.coord.t[2];
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    resource = (ExpandingCoordinateEffectResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (ExpandingCoordinateEffectResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     GsInitCoordinate2(0, &resource->parent);
     GsInitCoordinate2(&resource->parent, &resource->coordinate);
     resource->position.x = x << 8;
@@ -192,7 +192,7 @@ void updateExpandingCoordinateEffectTask(void) {
     ExpandingCoordinateEffectResource *resource;
     u16 i;
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    resource = (ExpandingCoordinateEffectResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (ExpandingCoordinateEffectResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (!D_8013AFD3) {
         if (D_8013AE88->data1A >= 16) {
             resource->scale.vx += 0x40;
@@ -246,8 +246,8 @@ void initializePlayerState23CoordinateEffectTask(void) {
     ExpandingCoordinateEffectResource *resource;
     RacePlayer *players;
     if (D_8013AE88->resource14 != 0xFFFF) { while (1) {} }
-    D_8013AE88->resource14 = allocateTaskResource();
-    resource = (ExpandingCoordinateEffectResource *)&D_800D9504[D_8013AE88->resource14];
+    D_8013AE88->resource14 = allocateTaskMemoryBlock();
+    resource = (ExpandingCoordinateEffectResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     GsInitCoordinate2(0, &resource->parent);
     GsInitCoordinate2(&resource->parent, &resource->coordinate);
     players = gRacePlayers;
@@ -269,7 +269,7 @@ void initializePlayerState23CoordinateEffectTask(void) {
 void updatePlayerState23CoordinateEffectTask(void) {
     ExpandingCoordinateEffectResource *resource;
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    resource = (ExpandingCoordinateEffectResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (ExpandingCoordinateEffectResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (!D_8013AFD3) {
         RacePlayer *players = gRacePlayers;
         resource->position.x = players[D_8013AE88->data18].x;
@@ -312,8 +312,8 @@ void initializeFallingRotatingObjectTask(void) {
     if (D_8013AE88->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskResource();
-    resource = (FallingObjectResource *)&D_800D9504[D_8013AE88->resource14];
+    D_8013AE88->resource14 = allocateTaskMemoryBlock();
+    resource = (FallingObjectResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     GsInitCoordinate2(0, &resource->coordinate);
     if (D_8013AE88->data1E == 0) {
         u8 random;
@@ -331,7 +331,7 @@ void initializeFallingRotatingObjectTask(void) {
         if (D_8013AE98->resource14 == 0xFFFF) {
             while (1) {}
         }
-        parent = (GsCOORDINATE2 *)&D_800D9504[D_8013AE98->resource14];
+        parent = (GsCOORDINATE2 *)&gTaskMemoryPool[D_8013AE98->resource14];
         resource->coordinate.coord.t[0] = parent->coord.t[0] + (u8)((u8)randomNextSecondary() % 96) - 48;
         resource->coordinate.coord.t[1] = parent->coord.t[1] + (u8)((u8)randomNextSecondary() % 96) - 128;
         resource->coordinate.coord.t[2] = parent->coord.t[2] + (u8)((u8)randomNextSecondary() % 96) - 48;
@@ -348,7 +348,7 @@ void initializeFallingRotatingObjectTask(void) {
 void updateFallingRotatingObjectTask(void) {
     FallingObjectResource *resource;
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    resource = (FallingObjectResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (FallingObjectResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (!D_8013AFD3) {
         if (D_8013AE88->data1A & 1) {
             resource->rotation.vx += 0x100;
@@ -381,8 +381,8 @@ void initializeScaledTaskCoordinateResource(void) {
     if (D_8013AE88->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskResource();
-    resource = (ScaledCoordinateResource *)&D_800D9504[D_8013AE88->resource14];
+    D_8013AE88->resource14 = allocateTaskMemoryBlock();
+    resource = (ScaledCoordinateResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     GsInitCoordinate2(0, &resource->coordinate);
     resource->scale.vx = resource->scale.vy = resource->scale.vz = 0xC00;
     setCurrentTaskCallback(updatePlayerScaledObjectTask);
@@ -392,7 +392,7 @@ void updatePlayerScaledObjectTask(void) {
     PlayerEffectResource *resource;
     RacePlayer *players;
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    resource = (PlayerEffectResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (PlayerEffectResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     players = gRacePlayers;
     resource->coordinate.coord.t[0] = players[D_8013AE88->data18].worldCoordinate.coord.t[0];
     resource->coordinate.coord.t[1] = players[D_8013AE88->data18].worldCoordinate.coord.t[1];
@@ -421,13 +421,13 @@ void initializePlayerParticleHistoryTask(void) {
     if (D_8013AE88->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskResource();
-    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    D_8013AE88->resource14 = allocateTaskMemoryBlock();
+    resource = (TaskVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource16 = allocateTaskResource();
-    trail = (PlayerParticleResource *)&D_800D9504[D_8013AE88->resource16];
+    D_8013AE88->resource16 = allocateTaskMemoryBlock();
+    trail = (PlayerParticleResource *)&gTaskMemoryPool[D_8013AE88->resource16];
     GsInitCoordinate2(0, &resource->coordinate);
     D_8013AE88->data1A = 0;
     D_8013AE88->data1C = 0;
@@ -449,9 +449,9 @@ void updatePlayerParticleHistoryTask(void) {
     RacePlayer *players;
     u16 i;
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (TaskVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
-    trail = (PlayerParticleResource *)&D_800D9504[D_8013AE88->resource16];
+    trail = (PlayerParticleResource *)&gTaskMemoryPool[D_8013AE88->resource16];
     if (!D_8013AFD3) {
         players = gRacePlayers;
         if (players[D_8013AE88->data18].unk12C == 0x1A) {
@@ -497,8 +497,8 @@ void initializePlayerCoordinateEffectTask(void) {
     if (D_8013AE88->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskResource();
-    resource = (PlayerEffectResource *)&D_800D9504[D_8013AE88->resource14];
+    D_8013AE88->resource14 = allocateTaskMemoryBlock();
+    resource = (PlayerEffectResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     GsInitCoordinate2(0, &resource->coordinate);
     D_8013AE88->data1A = 0;
     resource->rotation.vx = resource->rotation.vy = resource->rotation.vz = 0;
@@ -511,7 +511,7 @@ void updatePlayerCoordinateEffectTask(void) {
     PlayerEffectResource *resource;
     RacePlayer *players;
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    resource = (PlayerEffectResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (PlayerEffectResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (!D_8013AFD3) {
         players = gRacePlayers;
         if (players[D_8013AE88->data18].unk12C == 0x1B) {
@@ -730,17 +730,17 @@ void checkTaskVisualOtherPlayerCollision(TaskVisualResource *resource, s16 flags
 }
 
 void initializePlayerDualResourceEffectTask(void) {
-    TaskResourceRecord *resource;
+    TaskMemoryBlock *resource;
     if (D_8013AE88->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskResource();
-    resource = &D_800D9504[D_8013AE88->resource14];
+    D_8013AE88->resource14 = allocateTaskMemoryBlock();
+    resource = &gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource16 = allocateTaskResource();
-    initializePlayerVisualHistory((TaskVisualResource *)resource, (VECTOR *)&D_800D9504[D_8013AE88->resource16], 300, 0x5580);
+    D_8013AE88->resource16 = allocateTaskMemoryBlock();
+    initializePlayerVisualHistory((TaskVisualResource *)resource, (VECTOR *)&gTaskMemoryPool[D_8013AE88->resource16], 300, 0x5580);
     setCurrentTaskCallback(updatePlayerDualResourceEffectTask);
 }
 
@@ -751,11 +751,11 @@ void updatePlayerDualResourceEffectTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (TaskVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) {
         while (1) {}
     }
-    history = (VECTOR *)&D_800D9504[D_8013AE88->resource16];
+    history = (VECTOR *)&gTaskMemoryPool[D_8013AE88->resource16];
     if (D_8013AFD3 == 0) {
         updateHomingTaskVisualMovement(resource, history, 0x63000, 0x1C);
         getGeometryBoundaryDisplacement(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8, 2, &dx, &dz);
@@ -781,13 +781,13 @@ void initializePlayerVisualPairTask(void) {
     if (D_8013AE88->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskResource();
-    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    D_8013AE88->resource14 = allocateTaskMemoryBlock();
+    resource = (TaskVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource16 = allocateTaskResource();
-    initializePlayerVisualHistory(resource, (VECTOR *)&D_800D9504[D_8013AE88->resource16], 300, 0x5580);
+    D_8013AE88->resource16 = allocateTaskMemoryBlock();
+    initializePlayerVisualHistory(resource, (VECTOR *)&gTaskMemoryPool[D_8013AE88->resource16], 300, 0x5580);
     setCurrentTaskCallback(updatePlayerVisualPairTask);
 }
 
@@ -798,11 +798,11 @@ void updatePlayerVisualPairTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (TaskVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) {
         while (1) {}
     }
-    history = (VECTOR *)&D_800D9504[D_8013AE88->resource16];
+    history = (VECTOR *)&gTaskMemoryPool[D_8013AE88->resource16];
     if (D_8013AFD3 == 0) {
         updateHomingTaskVisualMovement(resource, history, 0x51000, 0x12);
         getGeometryBoundaryDisplacement(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8, 2, &dx, &dz);
@@ -828,13 +828,13 @@ void initializePlayerVisualPairTask5E80(void) {
     if (D_8013AE88->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskResource();
-    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    D_8013AE88->resource14 = allocateTaskMemoryBlock();
+    resource = (TaskVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource16 = allocateTaskResource();
-    initializePlayerVisualHistory(resource, (VECTOR *)&D_800D9504[D_8013AE88->resource16], 300, 0x5E80);
+    D_8013AE88->resource16 = allocateTaskMemoryBlock();
+    initializePlayerVisualHistory(resource, (VECTOR *)&gTaskMemoryPool[D_8013AE88->resource16], 300, 0x5E80);
     setCurrentTaskCallback(updatePlayerVisualPairTask5E80);
 }
 
@@ -845,11 +845,11 @@ void updatePlayerVisualPairTask5E80(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (TaskVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) {
         while (1) {}
     }
-    history = (VECTOR *)&D_800D9504[D_8013AE88->resource16];
+    history = (VECTOR *)&gTaskMemoryPool[D_8013AE88->resource16];
     if (D_8013AFD3 == 0) {
         updateHomingTaskVisualMovement(resource, history, 0x3F000, 0x18);
         getGeometryBoundaryDisplacement(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8, 2, &dx, &dz);
@@ -875,13 +875,13 @@ void initializePlayerVisualPairTask6780(void) {
     if (D_8013AE88->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskResource();
-    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    D_8013AE88->resource14 = allocateTaskMemoryBlock();
+    resource = (TaskVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource16 = allocateTaskResource();
-    initializePlayerVisualHistory(resource, (VECTOR *)&D_800D9504[D_8013AE88->resource16], 180, 0x6780);
+    D_8013AE88->resource16 = allocateTaskMemoryBlock();
+    initializePlayerVisualHistory(resource, (VECTOR *)&gTaskMemoryPool[D_8013AE88->resource16], 180, 0x6780);
     setCurrentTaskCallback(updatePlayerVisualPairTask6780);
 }
 
@@ -892,11 +892,11 @@ void updatePlayerVisualPairTask6780(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (TaskVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) {
         while (1) {}
     }
-    history = (VECTOR *)&D_800D9504[D_8013AE88->resource16];
+    history = (VECTOR *)&gTaskMemoryPool[D_8013AE88->resource16];
     if (D_8013AFD3 == 0) {
         updateHomingTaskVisualMovement(resource, history, 0x1B000, 0x1C);
         reflectVelocityAndResolveGeometryBoundary(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8, 2, &dx, &dz, &D_800EB22C.vx, &D_800EB22C.vz);
@@ -918,17 +918,17 @@ void updatePlayerVisualPairTask6780(void) {
 }
 
 void initializeDualResource4C80EffectTask(void) {
-    TaskResourceRecord *resource;
+    TaskMemoryBlock *resource;
     if (D_8013AE88->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskResource();
-    resource = &D_800D9504[D_8013AE88->resource14];
+    D_8013AE88->resource14 = allocateTaskMemoryBlock();
+    resource = &gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource16 = allocateTaskResource();
-    initializePlayerVisualHistory((TaskVisualResource *)resource, (VECTOR *)&D_800D9504[D_8013AE88->resource16], 300, 0x4C80);
+    D_8013AE88->resource16 = allocateTaskMemoryBlock();
+    initializePlayerVisualHistory((TaskVisualResource *)resource, (VECTOR *)&gTaskMemoryPool[D_8013AE88->resource16], 300, 0x4C80);
     setCurrentTaskCallback(updateDualResource4C80EffectTask);
 }
 
@@ -939,11 +939,11 @@ void updateDualResource4C80EffectTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (TaskVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) {
         while (1) {}
     }
-    history = (VECTOR *)&D_800D9504[D_8013AE88->resource16];
+    history = (VECTOR *)&gTaskMemoryPool[D_8013AE88->resource16];
     if (D_8013AFD3 == 0) {
         updateHomingTaskVisualMovement(resource, history, 0x2D000, 0x10);
         getGeometryBoundaryDisplacement(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8, 2, &dx, &dz);
@@ -968,8 +968,8 @@ void initializeBouncingTaskVisual(void) {
     TaskVisualResource *resource;
     RacePlayer *players;
     if (D_8013AE88->resource14 != 0xFFFF) { while (1) {} }
-    D_8013AE88->resource14 = allocateTaskResource();
-    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    D_8013AE88->resource14 = allocateTaskMemoryBlock();
+    resource = (TaskVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     GsInitCoordinate2(0, &resource->coordinate);
     resource->unkC6 = 0x200;
     resource->r0 = resource->g0 = resource->b0 = 0x80;
@@ -1003,7 +1003,7 @@ void updateBouncingTaskVisual(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (TaskVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (!D_8013AFD3) {
         resource->velocityY += 0x180;
         resource->position.y += resource->velocityY;
@@ -1034,7 +1034,7 @@ void updateAcceleratingTaskVisualCountdown(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (TaskVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     setTaskVisualFrame(resource, D_80124354, 0x1A00);
     drawCameraFacingTaskVisual(resource, 1);
     if (!D_8013AFD3) {
@@ -1057,17 +1057,17 @@ void updateAcceleratingTaskVisualCountdown(void) {
 }
 
 void initializeDualResource5100EffectTask(void) {
-    TaskResourceRecord *resource;
+    TaskMemoryBlock *resource;
     if (D_8013AE88->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskResource();
-    resource = &D_800D9504[D_8013AE88->resource14];
+    D_8013AE88->resource14 = allocateTaskMemoryBlock();
+    resource = &gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource16 = allocateTaskResource();
-    initializePlayerVisualHistory((TaskVisualResource *)resource, (VECTOR *)&D_800D9504[D_8013AE88->resource16], 300, 0x5100);
+    D_8013AE88->resource16 = allocateTaskMemoryBlock();
+    initializePlayerVisualHistory((TaskVisualResource *)resource, (VECTOR *)&gTaskMemoryPool[D_8013AE88->resource16], 300, 0x5100);
     D_8013AE88->data1A = 0;
     setCurrentTaskCallback(updateDualResource5100EffectTask);
 }
@@ -1082,11 +1082,11 @@ void updateDualResource5100EffectTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (TaskVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) {
         while (1) {}
     }
-    history = (VECTOR *)&D_800D9504[D_8013AE88->resource16];
+    history = (VECTOR *)&gTaskMemoryPool[D_8013AE88->resource16];
     if (D_8013AFD3 == 0) {
         {
             VECTOR *entry = &history[D_8013AE88->data1A];
@@ -1159,10 +1159,10 @@ void initializeVisualTrailTask(void) {
     VECTOR *vectors;
     u16 i;
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    resource = (TrailVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (TrailVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 != 0xFFFF) { while (1) {} }
-    D_8013AE88->resource16 = allocateTaskResource();
-    vectors = (VECTOR *)&D_800D9504[D_8013AE88->resource16];
+    D_8013AE88->resource16 = allocateTaskMemoryBlock();
+    vectors = (VECTOR *)&gTaskMemoryPool[D_8013AE88->resource16];
     resource->r0 = resource->g0 = resource->b0 = 0x80;
     resource->code = POLY_FT4_CODE;
     resource->unkC6 = 0;
@@ -1196,11 +1196,11 @@ void updateVisualTrailTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (TrailVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (TrailVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) {
         while (1) {}
     }
-    history = (VECTOR *)&D_800D9504[D_8013AE88->resource16];
+    history = (VECTOR *)&gTaskMemoryPool[D_8013AE88->resource16];
     if (D_8013AFD3 == 0) {
         {
             VECTOR *entry = &history[D_8013AE88->data1A];
@@ -1303,8 +1303,8 @@ void initializeOrbitingPlayerVisualTask(void) {
     if (D_8013AE88->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskResource();
-    resource = (OrbitingPlayerVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    D_8013AE88->resource14 = allocateTaskMemoryBlock();
+    resource = (OrbitingPlayerVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     GsInitCoordinate2(0, &resource->coordinate);
     resource->frameLimit = 0x400;
     resource->frameStep = 0x80;
@@ -1332,7 +1332,7 @@ void updateOrbitingPlayerVisualTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (OrbitingPlayerVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (OrbitingPlayerVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (!D_8013AFD3) {
         switch (D_8013AE88->data1C) {
         case 0:
@@ -1458,8 +1458,8 @@ void initializeDelayedPlayerRiseEffectTask(void) {
         if (D_8013AE88->resource14 != 0xFFFF) {
             while (1) {}
         }
-        D_8013AE88->resource14 = allocateTaskResource();
-        resource = (RisingPlayerEffectResource *)&D_800D9504[D_8013AE88->resource14];
+        D_8013AE88->resource14 = allocateTaskMemoryBlock();
+        resource = (RisingPlayerEffectResource *)&gTaskMemoryPool[D_8013AE88->resource14];
         GsInitCoordinate2(0, &resource->coordinate);
         resource->offset.x = 0;
         resource->offset.y = -64;
@@ -1479,7 +1479,7 @@ void updateRisingPlayerEffectTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (RisingPlayerEffectResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (RisingPlayerEffectResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (!D_8013AFD3) {
         resource->velocity -= 2;
         resource->offset.y += resource->velocity;
@@ -1512,7 +1512,7 @@ void updateFallingPlayerEffectTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (RisingPlayerEffectResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (RisingPlayerEffectResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (!D_8013AFD3) {
         resource->velocity += 2;
         resource->offset.y += resource->velocity;
@@ -1556,8 +1556,8 @@ void initializeSlidingVisualSequenceTask(void) {
     if (D_8013AE88->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskResource();
-    resource = (SlidingVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    D_8013AE88->resource14 = allocateTaskMemoryBlock();
+    resource = (SlidingVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     GsInitCoordinate2(0, &resource->coordinate);
     resource->r0 = resource->g0 = resource->b0 = 128;
     resource->code = POLY_FT4_CODE;

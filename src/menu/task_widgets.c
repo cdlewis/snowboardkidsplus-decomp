@@ -465,12 +465,12 @@ void configureColorCycleTask(s32 mode, s16 minimum, s16 maximum, s32 step, s16 i
                 createChildTaskForParentWithReserve(&gGameTasks[3], updateColorCycleTask);
                 task = D_8013BDA8[index] = D_8013AE8C;
                 task->data1A = index;
-                D_8013AE8C->resource14 = allocateTaskResource();
-                resource = (ColorCycleResource *)&D_800D9504[D_8013AE8C->resource14];
+                D_8013AE8C->resource14 = allocateTaskMemoryBlock();
+                resource = (ColorCycleResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
                 if (mode == 1 || mode == 3) resource->value = minimum;
                 else resource->value = maximum;
             } else {
-                resource = (ColorCycleResource *)&D_800D9504[task->resource14];
+                resource = (ColorCycleResource *)&gTaskMemoryPool[task->resource14];
                 if (mode == 1) resource->value = minimum;
                 if (mode == 2) resource->value = maximum;
             }
@@ -491,7 +491,7 @@ void configureColorCycleTask(s32 mode, s16 minimum, s16 maximum, s32 step, s16 i
 void updateColorCycleTask(void) {
     ColorCycleResource *resource;
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    resource = (ColorCycleResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (ColorCycleResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->data18 == 0) {
         D_8013BDA8[D_8013AE88->data1A] = NULL;
         deleteCurrentTaskSubtree();
@@ -524,7 +524,7 @@ s32 copyColorCycleTaskColor(s16 index, u8 *color) {
     if (task == NULL) {
         return 0;
     } else {
-        const ColorCycleResource *resource = (const ColorCycleResource *)&D_800D9504[task->resource14];
+        const ColorCycleResource *resource = (const ColorCycleResource *)&gTaskMemoryPool[task->resource14];
         color[0] = resource->value;
         color[1] = resource->value;
         color[2] = resource->value;
@@ -795,7 +795,7 @@ void setTaskBackgroundMode(s32 mode, s32 value1, s32 value2) {
     case 2:
         if (D_8013B378 != NULL) {
             if (D_8013B378->data18 == mode) {
-                existing = (ScrollingBackgroundResource *)&D_800D9504[D_8013B378->resource14];
+                existing = (ScrollingBackgroundResource *)&gTaskMemoryPool[D_8013B378->resource14];
                 existing->stepX = value1;
                 existing->stepY = value2;
                 return;
@@ -803,8 +803,8 @@ void setTaskBackgroundMode(s32 mode, s32 value1, s32 value2) {
             D_8013B378->data18 = 0;
         }
         createChildTaskForParentWithReserve(&gGameTasks[3], updateScrollingBackgroundTask);
-        D_8013AE8C->resource14 = allocateTaskResource();
-        resource = (ScrollingBackgroundResource *)&D_800D9504[D_8013AE8C->resource14];
+        D_8013AE8C->resource14 = allocateTaskMemoryBlock();
+        resource = (ScrollingBackgroundResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
         initDefaultBackground(0, -1, &resource->background, (GameBackgroundMap *)resource->map);
         resource->x = 0;
         resource->y = 0;
@@ -850,7 +850,7 @@ void updateScrollingBackgroundTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (ScrollingBackgroundResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (ScrollingBackgroundResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->data18 == 0) {
         deleteCurrentTaskSubtree();
     } else {
@@ -907,8 +907,8 @@ void setSecondaryDisplayTaskMode(s16 mode) {
         D_8013AE8C->data18 = mode;
         D_8013AE8C->data1C = 0;
         D_8013AE8C->data1E = 0;
-        D_8013AE8C->resource14 = allocateTaskResource();
-        initTimedSequence((TimedSequence *)&D_800D9504[D_8013AE8C->resource14], gSecondaryTaskSequenceEntries, 0, 6);
+        D_8013AE8C->resource14 = allocateTaskMemoryBlock();
+        initTimedSequence((TimedSequence *)&gTaskMemoryPool[D_8013AE8C->resource14], gSecondaryTaskSequenceEntries, 0, 6);
         break;
     case 0:
     default:
@@ -1163,7 +1163,7 @@ void setMusicSequenceEnabled(s16 enabled) {
 }
 
 static inline RegisteredTaskEntry *getRegisteredTaskEntry(u32 resource, s32 index) {
-    RegisteredTaskEntry *entries = (RegisteredTaskEntry *)&D_800D9504[resource];
+    RegisteredTaskEntry *entries = (RegisteredTaskEntry *)&gTaskMemoryPool[resource];
     return &entries[index / 10];
 }
 
@@ -1178,8 +1178,8 @@ void createRegisteredSpacedChildTasks(s16 mode, u32 acceptMask, u32 cancelMask,
     if (count != 0) {
         createChildTaskWithReserve(initializeSpacedChildTasks);
         D_8013AE8C->data1E = index;
-        D_8013AE8C->resource14 = allocateTaskResource();
-        state = (SpacedGroupResource *)&D_800D9504[D_8013AE8C->resource14];
+        D_8013AE8C->resource14 = allocateTaskMemoryBlock();
+        state = (SpacedGroupResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
         state->mode = mode;
         state->spacingX = spacingX;
         state->spacingY = spacingY;
@@ -1200,7 +1200,7 @@ void createRegisteredSpacedChildTasks(s16 mode, u32 acceptMask, u32 cancelMask,
         state->g = 128;
         state->b = 128;
         initMovement2D(&state->movement, x << 12, y << 12);
-        D_8013AE8C->resource16 = allocateTaskResource();
+        D_8013AE8C->resource16 = allocateTaskMemoryBlock();
         if (index % 10 == 0) {
             if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
             entry = getRegisteredTaskEntry(D_8013AE88->resource14, index);
@@ -1220,14 +1220,14 @@ void initializeSpacedChildTasks(void) {
     s32 i;
     RegisteredTaskEntry *entries;
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    state = (SpacedTaskResource *)&D_800D9504[D_8013AE88->resource14];
+    state = (SpacedTaskResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if ((u16)(D_8013AE88->data1E % 10U) == 0) {
         if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
-        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource14];
+        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource14];
         entry = &entries[D_8013AE88->data1E / 10U];
     } else {
         if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
-        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource16];
+        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource16];
         entry = &entries[D_8013AE88->data1E / 10U];
     }
     for (i = 0; i < state->count; i++) {
@@ -1249,10 +1249,10 @@ void createRegisteredSpacedChildTask(s16 childIndex, s16 x, s16 y, TaskCallback 
     D_8013AE8C->data1A = childIndex;
     D_8013AE8C->data1C = depth;
     D_8013AE8C->data1E = registrationIndex;
-    D_8013AE8C->resource14 = allocateTaskResource();
-    initMovement2D((Movement2D *)&D_800D9504[D_8013AE8C->resource14], x << 12, y << 12);
-    D_8013AE8C->resource16 = allocateTaskResource();
-    color = (ByteTriplet *)&D_800D9504[D_8013AE8C->resource16];
+    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
+    initMovement2D((Movement2D *)&gTaskMemoryPool[D_8013AE8C->resource14], x << 12, y << 12);
+    D_8013AE8C->resource16 = allocateTaskMemoryBlock();
+    color = (ByteTriplet *)&gTaskMemoryPool[D_8013AE8C->resource16];
     color->bytes[0] = 128;
     color->bytes[1] = 128;
     color->bytes[2] = 128;
@@ -1314,20 +1314,20 @@ void func_80072C54(void) {
     const SpacedGroupConfirmSound *confirm;
 
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    state = (SelectionGroupState *)&D_800D9504[D_8013AE88->resource14];
+    state = (SelectionGroupState *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
-    children = (RegisteredTaskEntry *)&D_800D9504[D_8013AE88->resource16];
+    children = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE88->resource16];
     if ((u16)(D_8013AE88->data1E % 10U) == 0) {
         if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
-        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource14];
+        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource14];
         entry = &entries[D_8013AE88->data1E / 10U];
     } else {
         if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
-        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource16];
+        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource16];
         entry = &entries[D_8013AE88->data1E / 10U];
     }
     if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
-    selection = (SpacedGroupSelection *)&D_800D9504[D_8013AE98->resource14];
+    selection = (SpacedGroupSelection *)&gTaskMemoryPool[D_8013AE98->resource14];
     state->selection.mode = selection->mode;
     state->selection.selectedIndex = selection->selectedIndex;
     state->selection.previousIndex = selection->previousIndex;
@@ -1339,12 +1339,12 @@ void func_80072C54(void) {
             GameTask *child = children[i].task;
             if (child != NULL) {
                 if (i == state->selection.selectedIndex) {
-                    color = (CVECTOR *)&D_800D9504[child->resource16];
+                    color = (CVECTOR *)&gTaskMemoryPool[child->resource16];
                     color->r = 128;
                     color->g = 128;
                     color->b = 128;
                 } else {
-                    color = (CVECTOR *)&D_800D9504[child->resource16];
+                    color = (CVECTOR *)&gTaskMemoryPool[child->resource16];
                     color->r = 64;
                     color->g = 64;
                     color->b = 64;
@@ -1356,7 +1356,7 @@ void func_80072C54(void) {
         for (i = 0; i < state->count; i++) {
             GameTask *child = children[i].task;
             if (child != NULL) {
-                color = (CVECTOR *)&D_800D9504[child->resource16];
+                color = (CVECTOR *)&gTaskMemoryPool[child->resource16];
                 color->r = 128;
                 color->g = 128;
                 color->b = 128;
@@ -1367,7 +1367,7 @@ void func_80072C54(void) {
         for (i = 0; i < state->count; i++) {
             GameTask *child = children[i].task;
             if (child != NULL) {
-                color = (CVECTOR *)&D_800D9504[child->resource16];
+                color = (CVECTOR *)&gTaskMemoryPool[child->resource16];
                 color->r = 64;
                 color->g = 64;
                 color->b = 64;
@@ -1385,7 +1385,7 @@ void func_80072C54(void) {
         if (D_8013AE88->data18 == 0) {
             GameTask *child = children[state->selection.selectedIndex].task;
             if (child != NULL) {
-                color = (CVECTOR *)&D_800D9504[child->resource16];
+                color = (CVECTOR *)&gTaskMemoryPool[child->resource16];
                 color->r = 128;
                 color->g = 128;
                 color->b = 128;
@@ -1395,7 +1395,7 @@ void func_80072C54(void) {
         if ((D_8013AE88->data18 & 1) == 0) {
             GameTask *child = children[state->selection.selectedIndex].task;
             if (child != NULL) {
-                color = (CVECTOR *)&D_800D9504[child->resource16];
+                color = (CVECTOR *)&gTaskMemoryPool[child->resource16];
                 color->r = 128;
                 color->g = 128;
                 color->b = 128;
@@ -1403,7 +1403,7 @@ void func_80072C54(void) {
         } else {
             GameTask *child = children[state->selection.selectedIndex].task;
             if (child != NULL) {
-                color = (CVECTOR *)&D_800D9504[child->resource16];
+                color = (CVECTOR *)&gTaskMemoryPool[child->resource16];
                 color->r = 64;
                 color->g = 64;
                 color->b = 64;
@@ -1439,7 +1439,7 @@ clearCommand:
     for (i = 0; i < state->count; i++) {
         GameTask *child = children[i].task;
         if (child != NULL) {
-            entry->flags |= updateMovement2D((Movement2D *)&D_800D9504[child->resource14]);
+            entry->flags |= updateMovement2D((Movement2D *)&gTaskMemoryPool[child->resource14]);
         }
     }
     copyColorCycleTaskColor(0, &state->r);
@@ -1447,7 +1447,7 @@ clearCommand:
         for (i = 0; i < state->count; i++) {
             GameTask *child = children[i].task;
             if (child != NULL) {
-                color = (CVECTOR *)&D_800D9504[child->resource16];
+                color = (CVECTOR *)&gTaskMemoryPool[child->resource16];
                 if (i == state->selection.selectedIndex) {
                     color->r = 128;
                     color->g = 128;
@@ -1550,7 +1550,7 @@ clearCommand:
     }
 
     if (state->callback3C != NULL) state->callback3C();
-    state = (SelectionGroupState *)&D_800D9504[D_8013AE88->resource14];
+    state = (SelectionGroupState *)&gTaskMemoryPool[D_8013AE88->resource14];
     selection->mode = state->selection.mode;
     selection->selectedIndex = state->selection.selectedIndex;
     selection->previousIndex = state->selection.previousIndex;
@@ -1595,7 +1595,7 @@ s16 mapMenuByteIndex(const u8 *table, s16 index) {
 
 s16 mapSpacedGroupIndex(GameTask *task, s16 index) {
     u32 resourceIndex = task->resource14;
-    const SpacedGroupResource *resource = (const SpacedGroupResource *)&D_800D9504[resourceIndex];
+    const SpacedGroupResource *resource = (const SpacedGroupResource *)&gTaskMemoryPool[resourceIndex];
     const u8 *mapping = resource->data48;
     s32 result;
 
@@ -1626,8 +1626,8 @@ void configureTaskGridMovement(s32 mode, GameTask *task, s32 x, s32 y, s32 stepX
     TaskGridState *state;
     TaskGridEntry *entries;
     s16 i, end;
-    state = (TaskGridState *)&D_800D9504[task->resource14];
-    entries = (TaskGridEntry *)&D_800D9504[task->resource16];
+    state = (TaskGridState *)&gTaskMemoryPool[task->resource14];
+    entries = (TaskGridEntry *)&gTaskMemoryPool[task->resource16];
     if (mode == 1) {
         i = state->selectedIndex;
         end = i + 1;
@@ -1637,7 +1637,7 @@ void configureTaskGridMovement(s32 mode, GameTask *task, s32 x, s32 y, s32 stepX
     }
     for (; i < end; i++) {
         if (mode == 2 && i == state->selectedIndex) continue;
-        configureMovement2D((Movement2D *)&D_800D9504[entries[i].task->resource14], x, y, stepX, stepY, delay);
+        configureMovement2D((Movement2D *)&gTaskMemoryPool[entries[i].task->resource14], x, y, stepX, stepY, delay);
     }
 }
 
@@ -1646,8 +1646,8 @@ void moveTaskChildrenWithSpacing(s32 mode, GameTask *task, s32 x, s32 y, s32 spe
     SelectedSpriteChild *children;
     s16 i, end;
     Movement2D *movement;
-    state = (ChildMovementGroup *)&D_800D9504[task->resource14];
-    children = (SelectedSpriteChild *)&D_800D9504[task->resource16];
+    state = (ChildMovementGroup *)&gTaskMemoryPool[task->resource14];
+    children = (SelectedSpriteChild *)&gTaskMemoryPool[task->resource16];
     if (mode == 1) {
         i = state->selectedIndex;
         end = i + 1;
@@ -1659,7 +1659,7 @@ void moveTaskChildrenWithSpacing(s32 mode, GameTask *task, s32 x, s32 y, s32 spe
         if (mode == 2 && i == state->selectedIndex) {
             continue;
         }
-        movement = (Movement2D *)&D_800D9504[children[i].task->resource14];
+        movement = (Movement2D *)&gTaskMemoryPool[children[i].task->resource14];
         if (delay == -1000) {
             configureMovement2D(movement, x + ((state->spacingX * i) << 12),
                            y + ((state->spacingY * i) << 12), speedX, speedY, delay);
@@ -1676,8 +1676,8 @@ void configureVerticalTaskGridMovement(s32 mode, GameTask *task, s32 x, s32 y, s
     Movement2D *movement;
     s16 i, end;
     s32 nextIndex;
-    state = (TaskGridState *)&D_800D9504[task->resource14];
-    entries = (TaskGridEntry *)&D_800D9504[task->resource16];
+    state = (TaskGridState *)&gTaskMemoryPool[task->resource14];
+    entries = (TaskGridEntry *)&gTaskMemoryPool[task->resource16];
     if (mode == 1) {
         i = state->selectedIndex;
         end = i + 1;
@@ -1687,7 +1687,7 @@ void configureVerticalTaskGridMovement(s32 mode, GameTask *task, s32 x, s32 y, s
     }
     for (; i < end; i++) {
         if (mode == 2 && i == state->selectedIndex) continue;
-        movement = (Movement2D *)&D_800D9504[entries[i].task->resource14];
+        movement = (Movement2D *)&gTaskMemoryPool[entries[i].task->resource14];
         if (delay == -1000) {
             configureMovement2D(movement, x, y + ((state->spacingY * i) << 12), stepX, stepY, delay);
         } else {
@@ -1701,8 +1701,8 @@ void initializeSpacedTaskGridPositions(s32 mode, GameTask *task, s32 x, s32 y, s
     TaskGridState *state;
     TaskGridEntry *entries;
     s16 i, end;
-    state = (TaskGridState *)&D_800D9504[task->resource14];
-    entries = (TaskGridEntry *)&D_800D9504[task->resource16];
+    state = (TaskGridState *)&gTaskMemoryPool[task->resource14];
+    entries = (TaskGridEntry *)&gTaskMemoryPool[task->resource16];
     if (mode == 1) {
         i = state->selectedIndex;
         end = i + 1;
@@ -1712,7 +1712,7 @@ void initializeSpacedTaskGridPositions(s32 mode, GameTask *task, s32 x, s32 y, s
     }
     for (; i < end; i++) {
         if (mode == 2 && i == state->selectedIndex) continue;
-        initMovement2D((Movement2D *)&D_800D9504[entries[i].task->resource14], x + spacingX * i, y + spacingY * i);
+        initMovement2D((Movement2D *)&gTaskMemoryPool[entries[i].task->resource14], x + spacingX * i, y + spacingY * i);
     }
 }
 
@@ -1724,11 +1724,11 @@ void drawSelectedTaskSprite(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    state = (SelectedSpriteResource *)&D_800D9504[D_8013AE88->resource14];
+    state = (SelectedSpriteResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) {
         while (1) {}
     }
-    children = (SelectedSpriteChild *)&D_800D9504[D_8013AE88->resource16];
+    children = (SelectedSpriteChild *)&gTaskMemoryPool[D_8013AE88->resource16];
     mode = state->mode;
     if ((s16)mode > 0) {
         if ((u32)(mode - 1) < 2) {
@@ -1736,7 +1736,7 @@ void drawSelectedTaskSprite(void) {
         } else {
             setSpriteColor(128, 128, 128);
         }
-        position = (Movement2D *)&D_800D9504[children[state->selectedIndex].task->resource14];
+        position = (Movement2D *)&gTaskMemoryPool[children[state->selectedIndex].task->resource14];
         drawSpriteByIndexWithBlend(position->x / 4096, position->y / 4096, state->sprite, 0, -1,
                      &D_800EBFF0[D_8013AF78], state->depth - 1);
     }
@@ -1750,18 +1750,18 @@ void drawRegisteredTaskGridSpriteWithColor(void) {
     RegisteredTaskEntry *entries;
     const GridSpriteEntry *sprite;
     if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
-    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    position = (Movement2D *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) { for (;;) {} }
-    color = (ByteTriplet *)&D_800D9504[D_8013AE88->resource16];
+    color = (ByteTriplet *)&gTaskMemoryPool[D_8013AE88->resource16];
     if (D_8013AE98->resource14 == 0xFFFF) { for (;;) {} }
-    parent = (GridSpriteParent *)&D_800D9504[D_8013AE98->resource14];
+    parent = (GridSpriteParent *)&gTaskMemoryPool[D_8013AE98->resource14];
     if ((u16)(D_8013AE88->data1E % 10U) == 0) {
         if (D_8013AE98->resource14 == 0xFFFF) { for (;;) {} }
-        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource14];
+        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource14];
         entry = &entries[D_8013AE88->data1E / 10U];
     } else {
         if (D_8013AE98->resource16 == 0xFFFF) { for (;;) {} }
-        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource16];
+        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource16];
         entry = &entries[D_8013AE88->data1E / 10U];
     }
     if (parent->mapping != 0) {
@@ -1793,10 +1793,10 @@ void createRegisteredTextPanelTask(s16 x, s16 y, const u16 **texts, const u8 *ma
     D_8013AE8C->data1A = 0;
     D_8013AE8C->data1C = depth;
     D_8013AE8C->data1E = index;
-    D_8013AE8C->resource14 = allocateTaskResource();
-    initMovement2D((Movement2D *)&D_800D9504[D_8013AE8C->resource14], x << 12, y << 12);
-    D_8013AE8C->resource16 = allocateTaskResource();
-    resource = (RegisteredTextResource *)&D_800D9504[D_8013AE8C->resource16];
+    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
+    initMovement2D((Movement2D *)&gTaskMemoryPool[D_8013AE8C->resource14], x << 12, y << 12);
+    D_8013AE8C->resource16 = allocateTaskMemoryBlock();
+    resource = (RegisteredTextResource *)&gTaskMemoryPool[D_8013AE8C->resource16];
     resource->texts = texts;
     resource->mapping = mapping;
     resource->text = 0;
@@ -1821,20 +1821,20 @@ void updateRegisteredTextPanelTask(void) {
     u16 mode;
 
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    movement = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    movement = (Movement2D *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
-    resource = (RegisteredTextResource *)&D_800D9504[D_8013AE88->resource16];
+    resource = (RegisteredTextResource *)&gTaskMemoryPool[D_8013AE88->resource16];
     if ((u16)(D_8013AE88->data1E % 10U) == 0) {
         if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
-        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource14];
+        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource14];
         entry = &entries[D_8013AE88->data1E / 10U];
     } else {
         if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
-        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource16];
+        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource16];
         entry = &entries[D_8013AE88->data1E / 10U];
     }
     if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
-    selection = (SelectionEntry *)&D_800D9504[D_8013AE98->resource14];
+    selection = (SelectionEntry *)&gTaskMemoryPool[D_8013AE98->resource14];
     if (selection->selected != selection->previous) {
         resource->text = 0;
     }
@@ -1897,12 +1897,12 @@ void updateRegisteredTextPanelTask(void) {
 
 void setTaskSecondaryResourceData(GameTask *task, const u16 *data) {
     u32 index = task->resource16;
-    TaskResourceRecord *resource = &D_800D9504[index];
+    TaskMemoryBlock *resource = &gTaskMemoryPool[index];
     resource->unk08 = data;
 }
 
 s16 hasTaskResource16Value(GameTask *task) {
-    TaskResourceRecord *resource = task->resource16 + D_800D9504;
+    TaskMemoryBlock *resource = task->resource16 + gTaskMemoryPool;
     return resource->unk08 != 0;
 }
 
@@ -1914,10 +1914,10 @@ void createRegisteredCallbackTask(s32 mode, s16 x, s16 y, TaskCallback callback,
     D_8013AE8C->data1A = 0;
     D_8013AE8C->data1C = value;
     D_8013AE8C->data1E = index;
-    D_8013AE8C->resource14 = allocateTaskResource();
-    initMovement2D((Movement2D *)&D_800D9504[D_8013AE8C->resource14], x << 12, y << 12);
-    D_8013AE8C->resource16 = allocateTaskResource();
-    resource = (CallbackResource *)&D_800D9504[D_8013AE8C->resource16];
+    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
+    initMovement2D((Movement2D *)&gTaskMemoryPool[D_8013AE8C->resource14], x << 12, y << 12);
+    D_8013AE8C->resource16 = allocateTaskMemoryBlock();
+    resource = (CallbackResource *)&gTaskMemoryPool[D_8013AE8C->resource16];
     resource->callback = callback;
     resource->unk04 = 0;
     if (index % 10 == 0) {
@@ -1938,16 +1938,16 @@ void updateRegisteredCallbackTask(void) {
     RegisteredTaskEntry *entry;
     RegisteredTaskEntry *entries;
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    movement = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    movement = (Movement2D *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
-    resource = (CallbackResource *)&D_800D9504[D_8013AE88->resource16];
+    resource = (CallbackResource *)&gTaskMemoryPool[D_8013AE88->resource16];
     if ((u16)(D_8013AE88->data1E % 10U) == 0) {
         if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
-        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource14];
+        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource14];
         entry = &entries[D_8013AE88->data1E / 10U];
     } else {
         if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
-        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource16];
+        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource16];
         entry = &entries[D_8013AE88->data1E / 10U];
     }
     switch (entry->command) {
@@ -1974,15 +1974,15 @@ void createRegisteredTexturePairTask(s16 x, s16 y, const u8 *mapping, s32 mode, 
     TexturePairResource *resource;
     RegisteredTaskEntry *entry;
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    parent = (TexturePairParent *)&D_800D9504[D_8013AE88->resource14];
+    parent = (TexturePairParent *)&gTaskMemoryPool[D_8013AE88->resource14];
     createChildTaskWithReserve(updateRegisteredTexturePairTask);
     D_8013AE8C->data1A = 0;
     D_8013AE8C->data1C = depth;
     D_8013AE8C->data1E = index;
-    D_8013AE8C->resource14 = allocateTaskResource();
-    initMovement2D((Movement2D *)&D_800D9504[D_8013AE8C->resource14], x << 12, y << 12);
-    D_8013AE8C->resource16 = allocateTaskResource();
-    resource = (TexturePairResource *)&D_800D9504[D_8013AE8C->resource16];
+    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
+    initMovement2D((Movement2D *)&gTaskMemoryPool[D_8013AE8C->resource14], x << 12, y << 12);
+    D_8013AE8C->resource16 = allocateTaskMemoryBlock();
+    resource = (TexturePairResource *)&gTaskMemoryPool[D_8013AE8C->resource16];
     resource->unk08 = 0;
     resource->unk0C = mode;
     resource->mapping = mapping;
@@ -2018,20 +2018,20 @@ void updateRegisteredTexturePairTask(void) {
     u8 color;
 
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    movement = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    movement = (Movement2D *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
-    resource = (TexturePairResource *)&D_800D9504[D_8013AE88->resource16];
+    resource = (TexturePairResource *)&gTaskMemoryPool[D_8013AE88->resource16];
     if ((u16)(D_8013AE88->data1E % 10U) == 0) {
         if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
-        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource14];
+        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource14];
         entry = &entries[D_8013AE88->data1E / 10U];
     } else {
         if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
-        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource16];
+        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource16];
         entry = &entries[D_8013AE88->data1E / 10U];
     }
     if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
-    parent = (TexturePairParent *)&D_800D9504[D_8013AE98->resource14];
+    parent = (TexturePairParent *)&gTaskMemoryPool[D_8013AE98->resource14];
     if (entry->command != 0) {
         entry->task = 0;
         deleteCurrentTaskSubtree();
@@ -2122,18 +2122,18 @@ void animateRegisteredTexturePairTask(void) {
     u8 color;
 
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    movement = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    movement = (Movement2D *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
-    resource = (TexturePairResource *)&D_800D9504[D_8013AE88->resource16];
+    resource = (TexturePairResource *)&gTaskMemoryPool[D_8013AE88->resource16];
     if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
-    parent = (TexturePairParent *)&D_800D9504[D_8013AE98->resource14];
+    parent = (TexturePairParent *)&gTaskMemoryPool[D_8013AE98->resource14];
     if ((u16)(D_8013AE88->data1E % 10U) == 0) {
         if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
-        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource14];
+        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource14];
         entry = &entries[D_8013AE88->data1E / 10U];
     } else {
         if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
-        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource16];
+        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource16];
         entry = &entries[D_8013AE88->data1E / 10U];
     }
     if (entry->command != 0) {
@@ -2236,8 +2236,8 @@ GameTask *createValueTransitionTask(u32 *value, u32 target, u32 step) {
     createChildTaskWithReserve(updateValueTransitionTask);
     D_8013AE8C->data18 = 0;
     D_8013AE8C->data1A = 0;
-    D_8013AE8C->resource14 = allocateTaskResource();
-    resource = (ValueTransitionResource *)&D_800D9504[D_8013AE8C->resource14];
+    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
+    resource = (ValueTransitionResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
     resource->value = value;
     resource->target = target;
     resource->step = step;
@@ -2253,7 +2253,7 @@ void updateValueTransitionTask(void) {
     ValueTransitionResource *resource;
     u32 value;
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    resource = (ValueTransitionResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (ValueTransitionResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     value = *resource->value;
     if (D_8013AE88->data18 != 0) {
         deleteCurrentTaskSubtree();
@@ -2288,25 +2288,25 @@ void updateValueTransitionTask(void) {
 
 GameTask *createCountdownTask(u32 frames) {
     GameTask *task;
-    TaskResourceRecord *resource;
+    TaskMemoryBlock *resource;
 
     createChildTaskWithReserve(updateCountdownTask);
     D_8013AE8C->data18 = 0;
     D_8013AE8C->data1A = 0;
-    D_8013AE8C->resource14 = allocateTaskResource();
+    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
     task = D_8013AE8C;
-    resource = &D_800D9504[task->resource14];
+    resource = &gTaskMemoryPool[task->resource14];
     resource->unk04 = frames;
     return task;
 }
 
 void updateCountdownTask(void) {
-    TaskResourceRecord *resource;
+    TaskMemoryBlock *resource;
 
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = &D_800D9504[D_8013AE88->resource14];
+    resource = &gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->data18 != 0) {
         deleteCurrentTaskSubtree();
     } else if (resource->unk04 != 0) {
@@ -2326,8 +2326,8 @@ void createRegisteredMovingPanelTask(u16 mode, const s16 *values, s16 x, s16 y,
     D_8013AE8C->data1A = mode & 0xFF;
     D_8013AE8C->data1C = depth;
     D_8013AE8C->data1E = index;
-    D_8013AE8C->resource14 = allocateTaskResource();
-    resource = (MovingPanelResource *)&D_800D9504[D_8013AE8C->resource14];
+    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
+    resource = (MovingPanelResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
     resource->x = x;
     resource->y = y;
     resource->spacingX = spacingX;
@@ -2341,16 +2341,16 @@ void createRegisteredMovingPanelTask(u16 mode, const s16 *values, s16 x, s16 y,
     resource->values[4] = values[4];
     resource->values[5] = values[5];
     resource->mode = (mode & 0xFFFF) >> 8;
-    D_8013AE8C->resource16 = allocateTaskResource();
+    D_8013AE8C->resource16 = allocateTaskMemoryBlock();
     if (index % 10 == 0) {
         ValuePanelEntry *table;
         if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-        table = (ValuePanelEntry *)&D_800D9504[D_8013AE88->resource14];
+        table = (ValuePanelEntry *)&gTaskMemoryPool[D_8013AE88->resource14];
         entry = table + index / 10;
     } else {
         ValuePanelEntry *table;
         if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
-        table = (ValuePanelEntry *)&D_800D9504[D_8013AE88->resource16];
+        table = (ValuePanelEntry *)&gTaskMemoryPool[D_8013AE88->resource16];
         entry = table + index / 10;
     }
     entry->flags = 1;
@@ -2372,25 +2372,25 @@ void updateRegisteredMovingPanelTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    panel = (MovingPanelResource *)&D_800D9504[D_8013AE88->resource14];
+    panel = (MovingPanelResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) {
         while (1) {}
     }
-    state = (MovingPanelState *)&D_800D9504[D_8013AE88->resource16];
+    state = (MovingPanelState *)&gTaskMemoryPool[D_8013AE88->resource16];
 
     if ((u16)(D_8013AE88->data1E % 10U) == 0) {
         ValuePanelEntry *table;
         if (D_8013AE98->resource14 == 0xFFFF) {
             while (1) {}
         }
-        table = (ValuePanelEntry *)&D_800D9504[D_8013AE98->resource14];
+        table = (ValuePanelEntry *)&gTaskMemoryPool[D_8013AE98->resource14];
         entry = table + D_8013AE88->data1E / 10U;
     } else {
         ValuePanelEntry *table;
         if (D_8013AE98->resource16 == 0xFFFF) {
             while (1) {}
         }
-        table = (ValuePanelEntry *)&D_800D9504[D_8013AE98->resource16];
+        table = (ValuePanelEntry *)&gTaskMemoryPool[D_8013AE98->resource16];
         entry = table + D_8013AE88->data1E / 10U;
     }
 
@@ -2526,8 +2526,8 @@ void createInputTimedSpriteTask(s32 x, s32 y, const TimedSequenceEntry *entries,
     createChildTaskWithReserve(updateInputTimedSpriteTask);
     D_8013AE8C->data1C = depth;
     D_8013AE8C->data1E = index;
-    D_8013AE8C->resource14 = allocateTaskResource();
-    resource = (InputTimedSpriteResource *)&D_800D9504[D_8013AE8C->resource14];
+    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
+    resource = (InputTimedSpriteResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
     resource->entries = entries;
     resource->frame = 0;
     resource->count = count;
@@ -2542,14 +2542,14 @@ void createInputTimedSpriteTask(s32 x, s32 y, const TimedSequenceEntry *entries,
         if (D_8013AE88->resource14 == 0xFFFF) {
             while (1) {}
         }
-        table = (ValuePanelEntry *)&D_800D9504[D_8013AE88->resource14];
+        table = (ValuePanelEntry *)&gTaskMemoryPool[D_8013AE88->resource14];
         entry = table + index / 10;
     } else {
         ValuePanelEntry *table;
         if (D_8013AE88->resource16 == 0xFFFF) {
             while (1) {}
         }
-        table = (ValuePanelEntry *)&D_800D9504[D_8013AE88->resource16];
+        table = (ValuePanelEntry *)&gTaskMemoryPool[D_8013AE88->resource16];
         entry = table + index / 10;
     }
     entry->flags = 0;
@@ -2564,14 +2564,14 @@ void updateInputTimedSpriteTask(void) {
     u16 input = 0;
     s16 frame;
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    state = (InputTimedSpriteResource *)&D_800D9504[D_8013AE88->resource14];
+    state = (InputTimedSpriteResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if ((u16)(D_8013AE88->data1E % 10U) == 0) {
         if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
-        entries = (ValuePanelEntry *)&D_800D9504[D_8013AE98->resource14];
+        entries = (ValuePanelEntry *)&gTaskMemoryPool[D_8013AE98->resource14];
         entry = &entries[D_8013AE88->data1E / 10U];
     } else {
         if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
-        entries = (ValuePanelEntry *)&D_800D9504[D_8013AE98->resource16];
+        entries = (ValuePanelEntry *)&gTaskMemoryPool[D_8013AE98->resource16];
         entry = &entries[D_8013AE88->data1E / 10U];
     }
     if (entry->flags == 99) {
@@ -2618,30 +2618,30 @@ void updateTimedSequence(TimedSequence *sequence) {
 
 GameTask *createTimedSpriteB5Task(s16 x, s16 y, u32 frames) {
     GameTask *task;
-    TaskResourceRecord *resource;
+    TaskMemoryBlock *resource;
     createChildTaskWithReserve(updateTimedSpriteB5Task);
     D_8013AE8C->data18 = 0;
     D_8013AE8C->data1A = 0;
-    D_8013AE8C->resource14 = allocateTaskResource();
-    initMovement2D((Movement2D *)&D_800D9504[D_8013AE8C->resource14], x << 12, y << 12);
-    D_8013AE8C->resource16 = allocateTaskResource();
+    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
+    initMovement2D((Movement2D *)&gTaskMemoryPool[D_8013AE8C->resource14], x << 12, y << 12);
+    D_8013AE8C->resource16 = allocateTaskMemoryBlock();
     task = D_8013AE8C;
-    resource = &D_800D9504[task->resource16];
+    resource = &gTaskMemoryPool[task->resource16];
     resource->unk04 = frames;
     return task;
 }
 
 void updateTimedSpriteB5Task(void) {
     Movement2D *movement;
-    TaskResourceRecord *lifetime;
+    TaskMemoryBlock *lifetime;
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    movement = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    movement = (Movement2D *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) {
         while (1) {}
     }
-    lifetime = &D_800D9504[D_8013AE88->resource16];
+    lifetime = &gTaskMemoryPool[D_8013AE88->resource16];
     if (lifetime->unk04 == 0) {
         deleteCurrentTaskSubtree();
     }
@@ -2657,11 +2657,11 @@ GameTask *createAnimatedSpriteTask(s16 x, s16 y, s16 unk02, s16 repeats, u16 dep
     createChildTaskWithReserve(updateAnimatedSpriteTask);
     D_8013AE8C->data18 = 0;
     D_8013AE8C->data1A = 0;
-    D_8013AE8C->resource14 = allocateTaskResource();
-    initMovement2D((Movement2D *)&D_800D9504[D_8013AE8C->resource14], x << 12, y << 12);
-    D_8013AE8C->resource16 = allocateTaskResource();
+    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
+    initMovement2D((Movement2D *)&gTaskMemoryPool[D_8013AE8C->resource14], x << 12, y << 12);
+    D_8013AE8C->resource16 = allocateTaskMemoryBlock();
     task = D_8013AE8C;
-    resource = (AnimatedSpriteResource *)&D_800D9504[task->resource16];
+    resource = (AnimatedSpriteResource *)&gTaskMemoryPool[task->resource16];
     resource->frame = 0;
     resource->unk02 = unk02;
     resource->depth = depth;
@@ -2675,11 +2675,11 @@ void updateAnimatedSpriteTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    movement = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    movement = (Movement2D *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) {
         while (1) {}
     }
-    sprite = (AnimatedSpriteResource *)&D_800D9504[D_8013AE88->resource16];
+    sprite = (AnimatedSpriteResource *)&gTaskMemoryPool[D_8013AE88->resource16];
     if (sprite->repeats == 0) {
         deleteCurrentTaskSubtree();
     } else {
@@ -2714,11 +2714,11 @@ void initializeDualResourceSequenceTask(void) {
     if (D_8013AE88->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskResource();
+    D_8013AE88->resource14 = allocateTaskMemoryBlock();
     if (D_8013AE88->resource16 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource16 = allocateTaskResource();
+    D_8013AE88->resource16 = allocateTaskMemoryBlock();
     setCurrentTaskCallback(updateCharacterSelectionTask);
     D_8013AE88->unk10 |= 2;
 }
@@ -2732,11 +2732,11 @@ void updateCharacterSelectionTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    selection = (SelectionEntry *)&D_800D9504[D_8013AE88->resource14];
+    selection = (SelectionEntry *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) {
         while (1) {}
     }
-    panels = (ValuePanelEntry *)&D_800D9504[D_8013AE88->resource16];
+    panels = (ValuePanelEntry *)&gTaskMemoryPool[D_8013AE88->resource16];
 
     switch (D_8013AE88->data18) {
     case 1:
@@ -2763,13 +2763,13 @@ void updateCharacterSelectionTask(void) {
         }
 
         createDualSelectionSequenceTask(-234, -100, 5, 21);
-        configureMovement2D((Movement2D *)&D_800D9504[panels[2].task->resource14],
+        configureMovement2D((Movement2D *)&gTaskMemoryPool[panels[2].task->resource14],
                             -144 * 4096, -100 * 4096, 15 * 4096, 0, 0);
         createPlayerPanelTask(1, -68, 184, 5, 41);
-        configureMovement2D((Movement2D *)&D_800D9504[panels[4].task->resource14],
+        configureMovement2D((Movement2D *)&gTaskMemoryPool[panels[4].task->resource14],
                             -68 * 4096, 4 * 4096, 0, -30 * 4096, 0);
         createPlayerPanelTask(0, -68, -280, 5, 31);
-        configureMovement2D((Movement2D *)&D_800D9504[panels[3].task->resource14],
+        configureMovement2D((Movement2D *)&gTaskMemoryPool[panels[3].task->resource14],
                             -68 * 4096, -100 * 4096, 0, 30 * 4096, 0);
         configureColorCycleTask(2, 64, 128, 4, 0);
         D_8013AE88->data18 = 3;
@@ -2852,11 +2852,11 @@ void updateCharacterSelectionTask(void) {
         break;
 
     case 7:
-        configureMovement2D((Movement2D *)&D_800D9504[panels[2].task->resource14],
+        configureMovement2D((Movement2D *)&gTaskMemoryPool[panels[2].task->resource14],
                             -234 * 4096, -100 * 4096, -15 * 4096, 0, 0);
-        configureMovement2D((Movement2D *)&D_800D9504[panels[3].task->resource14],
+        configureMovement2D((Movement2D *)&gTaskMemoryPool[panels[3].task->resource14],
                             -68 * 4096, -280 * 4096, 0, -30 * 4096, 0);
-        configureMovement2D((Movement2D *)&D_800D9504[panels[4].task->resource14],
+        configureMovement2D((Movement2D *)&gTaskMemoryPool[panels[4].task->resource14],
                             -68 * 4096, 184 * 4096, 0, 30 * 4096, 0);
         goto advance;
 
@@ -2894,15 +2894,15 @@ void createDualSelectionSequenceTask(s16 x, s16 y, s32 depth, s32 index) {
     s16 i;
     u8 type;
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    selection = (SelectionEntry *)&D_800D9504[D_8013AE88->resource14];
+    selection = (SelectionEntry *)&gTaskMemoryPool[D_8013AE88->resource14];
     createChildTaskWithReserve(func_80078140);
     D_8013AE8C->data1A = 0;
     D_8013AE8C->data1C = depth;
     D_8013AE8C->data1E = index;
-    D_8013AE8C->resource14 = allocateTaskResource();
-    initMovement2D((Movement2D *)&D_800D9504[D_8013AE8C->resource14], x << 12, y << 12);
-    D_8013AE8C->resource16 = allocateTaskResource();
-    sequences = (TimedSequence *)&D_800D9504[D_8013AE8C->resource16];
+    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
+    initMovement2D((Movement2D *)&gTaskMemoryPool[D_8013AE8C->resource14], x << 12, y << 12);
+    D_8013AE8C->resource16 = allocateTaskMemoryBlock();
+    sequences = (TimedSequence *)&gTaskMemoryPool[D_8013AE8C->resource16];
     for (i = 0; i < 2; i++) {
         type = D_8012D460[selection[i].selected];
         if (type == 3 || type == 4 || type == 8) {
@@ -2914,12 +2914,12 @@ void createDualSelectionSequenceTask(s16 x, s16 y, s32 depth, s32 index) {
     if (index % 10 == 0) {
         ValuePanelEntry *table;
         if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-        table = (ValuePanelEntry *)&D_800D9504[D_8013AE88->resource14];
+        table = (ValuePanelEntry *)&gTaskMemoryPool[D_8013AE88->resource14];
         entry = table + index / 10;
     } else {
         ValuePanelEntry *table;
         if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
-        table = (ValuePanelEntry *)&D_800D9504[D_8013AE88->resource16];
+        table = (ValuePanelEntry *)&gTaskMemoryPool[D_8013AE88->resource16];
         entry = table + index / 10;
     }
     entry->flags = 0;
@@ -2944,24 +2944,24 @@ void func_80078140(void) {
     u8 type;
 
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    movement = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    movement = (Movement2D *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
-    sequences = (TimedSequence *)&D_800D9504[D_8013AE88->resource16];
+    sequences = (TimedSequence *)&gTaskMemoryPool[D_8013AE88->resource16];
 
     if ((u16)(D_8013AE88->data1E % 10U) == 0) {
         ValuePanelEntry *entries;
         if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
-        entries = (ValuePanelEntry *)&D_800D9504[D_8013AE98->resource14];
+        entries = (ValuePanelEntry *)&gTaskMemoryPool[D_8013AE98->resource14];
         entry = &entries[D_8013AE88->data1E / 10U];
     } else {
         ValuePanelEntry *entries;
         if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
-        entries = (ValuePanelEntry *)&D_800D9504[D_8013AE98->resource16];
+        entries = (ValuePanelEntry *)&gTaskMemoryPool[D_8013AE98->resource16];
         entry = &entries[D_8013AE88->data1E / 10U];
     }
 
     if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
-    selection = (SelectionEntry *)&D_800D9504[D_8013AE98->resource14];
+    selection = (SelectionEntry *)&gTaskMemoryPool[D_8013AE98->resource14];
 
     if (entry->flags != 0) {
         deleteCurrentTaskSubtree();
@@ -3096,22 +3096,22 @@ void createPlayerPanelTask(s16 player, s16 x, s16 y, s32 depth, s32 index) {
     D_8013AE8C->data1A = player;
     D_8013AE8C->data1C = depth;
     D_8013AE8C->data1E = index;
-    D_8013AE8C->resource14 = allocateTaskResource();
-    initMovement2D((Movement2D *)&D_800D9504[D_8013AE8C->resource14], x << 12, y << 12);
-    D_8013AE8C->resource16 = allocateTaskResource();
+    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
+    initMovement2D((Movement2D *)&gTaskMemoryPool[D_8013AE8C->resource14], x << 12, y << 12);
+    D_8013AE8C->resource16 = allocateTaskMemoryBlock();
     if (index % 10 == 0) {
         ValuePanelEntry *table;
         if (D_8013AE88->resource14 == 0xFFFF) {
             while (1) {}
         }
-        table = (ValuePanelEntry *)&D_800D9504[D_8013AE88->resource14];
+        table = (ValuePanelEntry *)&gTaskMemoryPool[D_8013AE88->resource14];
         entry = table + index / 10;
     } else {
         ValuePanelEntry *table;
         if (D_8013AE88->resource16 == 0xFFFF) {
             while (1) {}
         }
-        table = (ValuePanelEntry *)&D_800D9504[D_8013AE88->resource16];
+        table = (ValuePanelEntry *)&gTaskMemoryPool[D_8013AE88->resource16];
         entry = table + index / 10;
     }
     entry->flags = 1;
@@ -3133,20 +3133,20 @@ void updatePlayerPanelTask(void) {
     s32 i;
 
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    position = (Movement2D *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
-    animation = (PlayerPanelAnimation *)&D_800D9504[D_8013AE88->resource16];
+    animation = (PlayerPanelAnimation *)&gTaskMemoryPool[D_8013AE88->resource16];
     if ((u16)(D_8013AE88->data1E % 10U) == 0) {
         if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
-        entries = (ValuePanelEntry *)&D_800D9504[D_8013AE98->resource14];
+        entries = (ValuePanelEntry *)&gTaskMemoryPool[D_8013AE98->resource14];
         panel = &entries[D_8013AE88->data1E / 10U];
     } else {
         if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
-        entries = (ValuePanelEntry *)&D_800D9504[D_8013AE98->resource16];
+        entries = (ValuePanelEntry *)&gTaskMemoryPool[D_8013AE98->resource16];
         panel = &entries[D_8013AE88->data1E / 10U];
     }
     if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
-    selections = (SelectionEntry *)&D_800D9504[D_8013AE98->resource14];
+    selections = (SelectionEntry *)&gTaskMemoryPool[D_8013AE98->resource14];
     selection = &selections[(s16)D_8013AE88->data1A];
     player = D_8013AE88->data1A;
     if (selection->selected >= 0) {
@@ -3395,8 +3395,8 @@ void createRegisteredSelectionPanelTask(s16 playerIndex, SelectionPanelRecord *r
     D_8013AE8C->data1A = playerIndex;
     D_8013AE8C->data1C = depth;
     D_8013AE8C->data1E = index;
-    D_8013AE8C->resource14 = allocateTaskResource();
-    resource = (SelectionPanelResource *)&D_800D9504[D_8013AE8C->resource14];
+    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
+    resource = (SelectionPanelResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
     resource->transitioning = 0;
     resource->record = record;
     player = playerIndex;
@@ -3411,12 +3411,12 @@ void createRegisteredSelectionPanelTask(s16 playerIndex, SelectionPanelRecord *r
     if (index % 10 == 0) {
         ValuePanelEntry *table;
         if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-        table = (ValuePanelEntry *)&D_800D9504[D_8013AE88->resource14];
+        table = (ValuePanelEntry *)&gTaskMemoryPool[D_8013AE88->resource14];
         entry = table + index / 10;
     } else {
         ValuePanelEntry *table;
         if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
-        table = (ValuePanelEntry *)&D_800D9504[D_8013AE88->resource16];
+        table = (ValuePanelEntry *)&gTaskMemoryPool[D_8013AE88->resource16];
         entry = table + index / 10;
     }
     entry->flags = 0;
@@ -3428,16 +3428,16 @@ void updateRegisteredSelectionPanelTask(void) {
     SelectionPanelResource *resource;
     Movement2D *position;
     SelectionPanelRecord *record;
-    TaskResourceRecord *slot;
+    TaskMemoryBlock *slot;
     GameTask *parent;
     s16 player;
     u8 shade;
 
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    slot = &D_800D9504[D_8013AE88->resource14];
+    slot = &gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
     parent = D_8013AE98;
-    position = (Movement2D *)&D_800D9504[parent->resource14];
+    position = (Movement2D *)&gTaskMemoryPool[parent->resource14];
     if ((u16)(D_8013AE88->data1E % 10U) == 0) {
         if (parent->resource14 == 0xFFFF) { while (1) {} }
     } else {
@@ -3530,25 +3530,25 @@ void createValuePanelTask(s16 x, s16 y, s16 *values, s32 depth, s32 index) {
     createChildTaskWithReserve(updateValuePanelTask);
     D_8013AE8C->data1C = depth;
     D_8013AE8C->data1E = index;
-    D_8013AE8C->resource14 = allocateTaskResource();
-    resource = (ValuePanelResource *)&D_800D9504[D_8013AE8C->resource14];
+    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
+    resource = (ValuePanelResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
     resource->values = values;
     resource->x = x << 12;
     resource->y = y << 12;
-    D_8013AE8C->resource16 = allocateTaskResource();
+    D_8013AE8C->resource16 = allocateTaskMemoryBlock();
     if (index % 10 == 0) {
         ValuePanelEntry *table;
         if (D_8013AE88->resource14 == 0xFFFF) {
             while (1) {}
         }
-        table = (ValuePanelEntry *)&D_800D9504[D_8013AE88->resource14];
+        table = (ValuePanelEntry *)&gTaskMemoryPool[D_8013AE88->resource14];
         entry = table + index / 10;
     } else {
         ValuePanelEntry *table;
         if (D_8013AE88->resource16 == 0xFFFF) {
             while (1) {}
         }
-        table = (ValuePanelEntry *)&D_800D9504[D_8013AE88->resource16];
+        table = (ValuePanelEntry *)&gTaskMemoryPool[D_8013AE88->resource16];
         entry = table + index / 10;
     }
     entry->flags = 1;
@@ -3568,22 +3568,22 @@ void updateValuePanelTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (ValuePanelResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (ValuePanelResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) {
         while (1) {}
     }
-    result = (ValuePanelEntry *)&D_800D9504[D_8013AE88->resource16];
+    result = (ValuePanelEntry *)&gTaskMemoryPool[D_8013AE88->resource16];
     if ((u16)(D_8013AE88->data1E % 10U) == 0) {
         if (D_8013AE98->resource14 == 0xFFFF) {
             while (1) {}
         }
-        entries = (ValuePanelEntry *)&D_800D9504[D_8013AE98->resource14];
+        entries = (ValuePanelEntry *)&gTaskMemoryPool[D_8013AE98->resource14];
         entry = &entries[D_8013AE88->data1E / 10U];
     } else {
         if (D_8013AE98->resource16 == 0xFFFF) {
             while (1) {}
         }
-        entries = (ValuePanelEntry *)&D_800D9504[D_8013AE98->resource16];
+        entries = (ValuePanelEntry *)&gTaskMemoryPool[D_8013AE98->resource16];
         entry = &entries[D_8013AE88->data1E / 10U];
     }
 
@@ -3636,7 +3636,7 @@ void updateValuePanelTask(void) {
 
 GameTask *createShrinkingSpriteTask(s16 motionEnabled, s32 spriteIndex) {
     SpriteZoomResource *resource;
-    TaskResourceRecord *resources;
+    TaskMemoryBlock *resources;
     createChildTaskWithReserve(updateShrinkingSpriteTask);
     D_8013AE8C->data18 = 1;
     D_8013AE8C->data1A = 1;
@@ -3644,12 +3644,12 @@ GameTask *createShrinkingSpriteTask(s16 motionEnabled, s32 spriteIndex) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resources = D_800D9504;
-    D_8013AE8C->resource14 = allocateTaskResource();
+    resources = gTaskMemoryPool;
+    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
     resource = (SpriteZoomResource *)&resources[D_8013AE8C->resource14];
     resource->scale.value = 0x8000;
     resource->step = 0x400;
-    D_8013AE8C->resource16 = allocateTaskResource();
+    D_8013AE8C->resource16 = allocateTaskMemoryBlock();
     (*(SpriteMotionResource *)&resources[D_8013AE8C->resource16])[0] = motionEnabled;
     return D_8013AE8C;
 }
@@ -3664,15 +3664,15 @@ void updateShrinkingSpriteTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    zoom = (SpriteZoomResource *)&D_800D9504[D_8013AE88->resource14];
+    zoom = (SpriteZoomResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) {
         while (1) {}
     }
-    motion = (SpriteMotionResource *)&D_800D9504[D_8013AE88->resource16];
+    motion = (SpriteMotionResource *)&gTaskMemoryPool[D_8013AE88->resource16];
     if (D_8013AE98->resource14 == 0xFFFF) {
         while (1) {}
     }
-    position = (Movement2D *)&D_800D9504[D_8013AE98->resource14];
+    position = (Movement2D *)&gTaskMemoryPool[D_8013AE98->resource14];
     task = D_8013AE88;
     switch (task->data18) {
     case 1:
@@ -3906,11 +3906,11 @@ void initializeDualResourceTaskAndNotifyParent(void) {
     if (task->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskResource();
+    D_8013AE88->resource14 = allocateTaskMemoryBlock();
     if (D_8013AE88->resource16 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource16 = allocateTaskResource();
+    D_8013AE88->resource16 = allocateTaskMemoryBlock();
     setCurrentTaskCallback(updateMainMenuSelectionTask);
     D_8013AE88->unk10 |= 2;
 }

@@ -30,7 +30,7 @@ u16 D_8013AEB4 __attribute__((section(".sdata.task_scheduler"))) = 0;
 
 static u16 sTaskSchedulerPadding __attribute__((section(".sdata.task_scheduler"))) = 0;
 
-u16 gTaskResourceFreeBits[16] __attribute__((section(".data.task_resource_bitmap"))) = {0};
+u16 gTaskMemoryFreeBits[16] __attribute__((section(".data.task_resource_bitmap"))) = {0};
 
 TaskCallback gInitialTaskCallbacks[6] __attribute__((section(".data.initial_task_callbacks"))) = {
     initializeGameOptionTask,
@@ -71,7 +71,7 @@ void initializeTaskScheduler(void) {
     D_8013AEA0 = &gGameTasks[199];
     D_8013AEB4 = 193;
     for (i = 0; i < 16; i++) {
-        gTaskResourceFreeBits[i] = -1;
+        gTaskMemoryFreeBits[i] = -1;
     }
 }
 
@@ -180,10 +180,10 @@ void deletePendingTaskSubtree(void) {
     while (1) {
         D_8013AEB4++;
         if (D_8013AEB0->resource14 != 0xFFFF) {
-            releaseTaskResource(D_8013AEB0->resource14);
+            freeTaskMemoryBlock(D_8013AEB0->resource14);
         }
         if (D_8013AEB0->resource16 != 0xFFFF) {
-            releaseTaskResource(D_8013AEB0->resource16);
+            freeTaskMemoryBlock(D_8013AEB0->resource16);
         }
         D_8013AEB0->unk10 = 0xFFFF;
         D_8013AEA4 = D_8013AEB0->next;
@@ -226,14 +226,14 @@ void deleteCurrentTaskWhenCdCommandQueueIdle(void) {
 
 void deleteCurrentTask(void) { deleteCurrentTaskSubtree(); }
 
-u32 allocateTaskResource(void) {
+u32 allocateTaskMemoryBlock(void) {
     u16 i, bit;
     u32 mask;
     for (i = 0; i < 16; i++) {
-        if (gTaskResourceFreeBits[i]) {
+        if (gTaskMemoryFreeBits[i]) {
             for (mask = 1, bit = 0; bit < 16; bit++) {
-                if (gTaskResourceFreeBits[i] & mask) {
-                    gTaskResourceFreeBits[i] ^= mask;
+                if (gTaskMemoryFreeBits[i] & mask) {
+                    gTaskMemoryFreeBits[i] ^= mask;
                     return i * 16 + bit;
                 }
                 mask = (u16)mask << 1;
@@ -243,8 +243,8 @@ u32 allocateTaskResource(void) {
     return 0;
 }
 
-void releaseTaskResource(u16 resource) {
-    u32 index = resource >> 4;
-    resource %= 16;
-    gTaskResourceFreeBits[index] |= 1 << resource;
+void freeTaskMemoryBlock(u16 blockIndex) {
+    u32 index = blockIndex >> 4;
+    blockIndex %= 16;
+    gTaskMemoryFreeBits[index] |= 1 << blockIndex;
 }

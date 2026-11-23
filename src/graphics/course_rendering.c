@@ -526,7 +526,7 @@ void drawOscillatingQuadTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (OscillatingQuadResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (OscillatingQuadResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     packet = (GouraudQuadPacket *)GsOUT_PACKET_P;
     cameraIndex = (s16)getRenderCameraIndex();
     scratch = (OscillatingQuadScratchpad *)getScratchAddr(0);
@@ -579,8 +579,8 @@ void drawOscillatingQuadTask(void) {
 void createOscillatingQuadTask(s32 value, VECTOR *position, s32 amplitude, s32 r, s32 g, s32 b) {
     OscillatingQuadResource *resource;
     createChildTaskForParentWithReserve(&gGameTasks[4], drawOscillatingQuadTask);
-    D_8013AE8C->resource14 = allocateTaskResource();
-    resource = (OscillatingQuadResource *)&D_800D9504[D_8013AE8C->resource14];
+    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
+    resource = (OscillatingQuadResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
     resource->unk68 = value;
     resource->r = r;
     resource->g = g;
@@ -609,7 +609,7 @@ void drawMovingLineTask(void) {
     }
     cameras = D_801241E8;
     camera = &cameras[D_8013AE88->data18];
-    resource = (MovingLineResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (MovingLineResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     yaw = -((camera->yaw & 0xFFF) << 11) / 4096;
     pitch = camera->pitch;
     line = (MovingLinePacket *)GsOUT_PACKET_P;
@@ -645,9 +645,9 @@ void drawMovingLineTask(void) {
 void createMovingLineTask(s32 index) {
     MovingLineResource *resource;
     createChildTaskForParentWithReserve(&gGameTasks[4], drawMovingLineTask);
-    D_8013AE8C->resource14 = allocateTaskResource();
+    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
     D_8013AE8C->data18 = index;
-    resource = (MovingLineResource *)&D_800D9504[D_8013AE8C->resource14];
+    resource = (MovingLineResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
     resource->x = randomNextLinear() % 320;
     resource->y = 0;
     resource->elapsed = 0;
@@ -663,7 +663,7 @@ void drawFlickeringDotsTask(void) {
     s32 yaw, pitch;
     u32 i;
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    resource = (FlickeringDotsResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (FlickeringDotsResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     packet = (TILE_1 *)GsOUT_PACKET_P;
     scratch = (TILE_1 *)getScratchAddr(0);
     if (D_8013AFAA & 0x400) {
@@ -696,9 +696,9 @@ void createFlickeringDotsTask(s32 playerIndex) {
     FlickeringDotsResource *resource;
     s32 i;
     createChildTaskForParentWithReserve(&gGameTasks[4], drawFlickeringDotsTask);
-    D_8013AE8C->resource14 = allocateTaskResource();
+    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
     D_8013AE8C->data18 = playerIndex;
-    resource = (FlickeringDotsResource *)&D_800D9504[D_8013AE8C->resource14];
+    resource = (FlickeringDotsResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
     for (i = 0; i < 25; i++) {
         resource->positions[i].x = randomNextLinear() % 320;
         resource->positions[i].y = randomNextLinear() % 120;

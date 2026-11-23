@@ -588,9 +588,9 @@ void initializeCourseObjects(void) {
         if ((u8)type < 7) {
             if ((u8)type != 5 && !((type == 2 || type == 3) && D_8013AFE2)) {
                 tryCreateChildTaskForParentWith20SlotsReserved(&gGameTasks[4], initializePlacedObjectTask);
-                D_8013AE8C->resource14 = allocateTaskResource();
+                D_8013AE8C->resource14 = allocateTaskMemoryBlock();
                 if ((u32)(D_8013B2BC[i].unk01 - 2) < 2) {
-                    D_8013AE8C->resource16 = allocateTaskResource();
+                    D_8013AE8C->resource16 = allocateTaskMemoryBlock();
                 }
                 D_8013AE8C->data18 = i;
             }
@@ -850,7 +850,7 @@ void initializeSelectedCourseOffsetTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (CourseOffsetResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (CourseOffsetResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     GsInitCoordinate2(0, &resource->coordinate);
     records = D_80123D80;
     resource->rotation.vx = 0;
@@ -878,7 +878,7 @@ void updateSelectedCourseOffsetTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (CourseOffsetResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (CourseOffsetResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (!D_8013AFD3) {
         RotMatrix(&resource->rotation, D_8013AF98);
         D_8013AF90->vx = 0;
@@ -911,7 +911,7 @@ void updatePlayerFollowingOrbitTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (CourseOffsetResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (CourseOffsetResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (!D_8013AFD3) {
         if (gRacePlayers[D_8013AE88->data18].unk12C != 7) {
             D_8013AF94->vx = -100;
@@ -945,7 +945,7 @@ void updateOrbitingTaskObject(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (CourseOffsetResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (CourseOffsetResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (!D_8013AFD3) {
         resource->rotation.vy -= 0x20;
         D_8013AF94->vx = 100;
@@ -974,7 +974,7 @@ void updateMovingTaskObject(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (CourseOffsetResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (CourseOffsetResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (!D_8013AFD3) {
         RotMatrix(&resource->rotation, D_8013AF98);
         D_8013AF90->vx = 0;
@@ -1190,8 +1190,8 @@ void initializePickupVisualTask(void) {
         if (D_8013AE88->resource14 != 0xFFFF) {
             while (1) {}
         }
-        D_8013AE88->resource14 = allocateTaskResource();
-        resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+        D_8013AE88->resource14 = allocateTaskMemoryBlock();
+        resource = (TaskVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
         GsInitCoordinate2(0, &resource->coordinate);
         resource->unkC6 = 0x600;
         resource->unkC8 = 0x80;
@@ -1214,7 +1214,7 @@ void updatePickupVisualTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (TaskVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     prepareTaskVisualQuad(resource, gPickupVisualFrames, 0);
     for (i = D_8013B2B5; i < D_8013B2B5 + D_8013B2B6; i++) {
         if (!(D_8013B2BC[i].flags & 0x40)) {
@@ -1271,8 +1271,8 @@ void initializeObjectVisualTask(void) {
     if (D_8013AE88->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskResource();
-    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    D_8013AE88->resource14 = allocateTaskMemoryBlock();
+    resource = (TaskVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     GsInitCoordinate2(0, &resource->coordinate);
     resource->unkC6 = 0x100;
     resource->r0 = resource->g0 = resource->b0 = 0x80;
@@ -1292,7 +1292,7 @@ void updateObjectVisualTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (TaskVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     prepareTaskVisualQuad(resource, &gObjectVisualFrameType8, 0);
     for (i = D_8013B2B7; i < D_8013B2B7 + D_8013B2B8; i++) {
         if (isPointWithinCameraForwardRange(D_8013B2BC[i].x, D_8013B2BC[i].z, (s16)getRenderCameraIndex())) {
@@ -1319,8 +1319,8 @@ void initializeInteractionVisualTask(void) {
     if (D_8013AE88->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskResource();
-    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    D_8013AE88->resource14 = allocateTaskMemoryBlock();
+    resource = (TaskVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     GsInitCoordinate2(0, &resource->coordinate);
     resource->unkC6 = 0x100;
     resource->r0 = resource->g0 = resource->b0 = 0x80;
@@ -1341,7 +1341,7 @@ void updateInteractionVisualTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (TaskVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     prepareTaskVisualQuad(resource, &gInteractionVisualFrame, 1);
     for (i = 0; ; i++) {
         if (gInteractionVisualPlacements[i].unk01 == PLACEMENT_END) {
@@ -1389,8 +1389,8 @@ void initializeCourseVisualTask(void) {
     if (D_8013AE88->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskResource();
-    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    D_8013AE88->resource14 = allocateTaskMemoryBlock();
+    resource = (TaskVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     GsInitCoordinate2(0, &resource->coordinate);
     if (D_8013AFCE == 2) {
         resource->r0 = resource->g0 = resource->b0 = 0x80;
@@ -1424,7 +1424,7 @@ void updateCourseVisualTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (TaskVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     prepareTaskVisualQuad(resource, gCourseVisualFrames, 0);
     for (i = D_8013B2B9; i < D_8013B2B9 + D_8013B2BA; i++) {
         if (isPointWithinCameraForwardRange(D_8013B2BC[i].x, D_8013B2BC[i].z, (s16)getRenderCameraIndex())) {
@@ -1457,7 +1457,7 @@ void initializePlacedObjectTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (PlacedObjectResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (PlacedObjectResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     GsInitCoordinate2(0, &resource->groundCoordinate);
     GsInitCoordinate2(&resource->groundCoordinate, &resource->coordinate);
     D_8013AE88->data1A = D_8013B2BC[D_8013AE88->data18].unk01;
@@ -1479,7 +1479,7 @@ void initializePlacedObjectTask(void) {
         if (D_8013AE88->resource16 == 0xFFFF) {
             while (1) {}
         }
-        visual = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource16];
+        visual = (TaskVisualResource *)&gTaskMemoryPool[D_8013AE88->resource16];
         GsInitCoordinate2(0, &visual->coordinate);
         visual->coordinate.coord.t[0] = resource->groundCoordinate.coord.t[0];
         visual->coordinate.coord.t[1] = resource->groundCoordinate.coord.t[1] - 0x50;
@@ -1512,7 +1512,7 @@ void updatePlacedObjectTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (PlacedObjectResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (PlacedObjectResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (isPositionInCameraRange(resource->groundCoordinate.coord.t[0],
                                 resource->groundCoordinate.coord.t[2], (s16)getRenderCameraIndex())) {
         if ((u32)(D_8013AE88->data1A - 2) < 2) {
@@ -1540,7 +1540,7 @@ void updatePlacedObjectTask(void) {
             if (D_8013AE88->resource16 == 0xFFFF) {
                 while (1) {}
             }
-            drawCameraFacingTaskVisual((TaskVisualResource *)&D_800D9504[D_8013AE88->resource16], 0);
+            drawCameraFacingTaskVisual((TaskVisualResource *)&gTaskMemoryPool[D_8013AE88->resource16], 0);
         }
         D_80129A80[gPlacedObjectModelIds[D_8013AE88->data1A]].coord2 = &resource->coordinate;
         setCoordinateRotation(&resource->groundRotation, &resource->groundCoordinate);
@@ -1607,7 +1607,7 @@ void updatePlacedObjectTask(void) {
                     if (D_8013AE88->resource16 == 0xFFFF) {
                         while (1) {}
                     }
-                    visual = (PlacedObjectBounceVisual *)&D_800D9504[D_8013AE88->resource16];
+                    visual = (PlacedObjectBounceVisual *)&gTaskMemoryPool[D_8013AE88->resource16];
                     visual->velocity = -0x800;
                     visual->height = -0x5000;
                     setCurrentTaskCallback(updatePlacedObjectBounceTask);
@@ -1633,9 +1633,9 @@ void updatePlacedObjectBounceTask(void) {
     PlacedObjectBounceVisual *visual;
     u16 i;
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    resource = (PlacedObjectResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (PlacedObjectResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
-    visual = (PlacedObjectBounceVisual *)&D_800D9504[D_8013AE88->resource16];
+    visual = (PlacedObjectBounceVisual *)&gTaskMemoryPool[D_8013AE88->resource16];
     if (!D_8013AFD3) {
         visual->height += visual->velocity;
         switch (D_8013AE88->data1C) {
@@ -1678,8 +1678,8 @@ void initializeBobbingTrailEmitterTask(void) {
     if (D_8013AE88->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskResource();
-    resource = (BobbingTrailEmitterResource *)&D_800D9504[D_8013AE88->resource14];
+    D_8013AE88->resource14 = allocateTaskMemoryBlock();
+    resource = (BobbingTrailEmitterResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     GsInitCoordinate2(0, &resource->coordinate);
 
     resource->geometryIndex = 0x59;
@@ -1705,7 +1705,7 @@ void updateBobbingTrailEmitterTask(void) {
     BobbingTrailEmitterResource *resource;
     EmitterTrailResource *trail;
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    resource = (BobbingTrailEmitterResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (BobbingTrailEmitterResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)getRenderCameraIndex())) {
         if (!D_8013AFD3) {
             resolvePlayerCollisionsWithCylinder(&resource->position, 0x7000, 0x18000, 2);
@@ -1720,8 +1720,8 @@ void updateBobbingTrailEmitterTask(void) {
                 playPositionalSoundEffect(resource->position.x, resource->position.y, resource->position.z, 1, 0xA00, 0x18);
                 if ((s16)tryCreateChildTaskWith20SlotsReserved(initializeVisualTrailTask) == 1) {
                     D_8013AE8C->data18 = 0xFF;
-                    D_8013AE8C->resource14 = allocateTaskResource();
-                    trail = (EmitterTrailResource *)&D_800D9504[D_8013AE8C->resource14];
+                    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
+                    trail = (EmitterTrailResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
                     GsInitCoordinate2(0, &trail->coordinate);
                     trail->geometryIndex = resource->geometryIndex;
                     trail->coordinate.coord.t[0] = resource->coordinate.coord.t[0];
@@ -1746,8 +1746,8 @@ void initializeProximityEmitterTask(void) {
     if (D_8013AE88->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskResource();
-    resource = (ProximityEmitterResource *)&D_800D9504[D_8013AE88->resource14];
+    D_8013AE88->resource14 = allocateTaskMemoryBlock();
+    resource = (ProximityEmitterResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     GsInitCoordinate2(0, &resource->coordinate);
     resource->coordinate.coord.t[0] = gProximityEmitterPlacements[D_8013AE88->data18].x;
     resource->coordinate.coord.t[1] = gProximityEmitterPlacements[D_8013AE88->data18].y;
@@ -1765,7 +1765,7 @@ void updateProximityEmitterTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (ProximityEmitterResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (ProximityEmitterResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (!D_8013AFD3) {
         if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)getRenderCameraIndex())) {
             if (--resource->countdown == 0) {
@@ -1782,10 +1782,10 @@ void initializeProximityParticleTask(void) {
     s32 xOffset, zOffset;
     s32 sine, cosine;
     if (D_8013AE88->resource14 != 0xFFFF) { while (1) {} }
-    D_8013AE88->resource14 = allocateTaskResource();
-    resource = (ProximityParticleResource *)&D_800D9504[D_8013AE88->resource14];
+    D_8013AE88->resource14 = allocateTaskMemoryBlock();
+    resource = (ProximityParticleResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
-    parent = (ProximityEmitterResource *)&D_800D9504[D_8013AE98->resource14];
+    parent = (ProximityEmitterResource *)&gTaskMemoryPool[D_8013AE98->resource14];
     GsInitCoordinate2(0, &resource->coordinate);
     resource->geometryIndex = parent->geometryIndex;
     resource->rotation.vx = 0;
@@ -1814,7 +1814,7 @@ void updateProximityParticleTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (ProximityParticleResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (ProximityParticleResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (!D_8013AFD3) {
         resource->rotation.vx += 0x40;
         resource->velocityY += resource->gravity;
@@ -1876,8 +1876,8 @@ void initializeMovingVisualTask(void) {
     if (D_8013AE88->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskResource();
-    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    D_8013AE88->resource14 = allocateTaskMemoryBlock();
+    resource = (TaskVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     GsInitCoordinate2(0, &resource->coordinate);
     resource->unkC6 = 0x800;
     resource->unkC8 = 0x80;
@@ -1916,7 +1916,7 @@ void updateMovingVisualTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (TaskVisualResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (TaskVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     cameraIndex = getRenderCameraIndex();
     if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0],
             resource->coordinate.coord.t[2], (s16)cameraIndex)) {
@@ -2148,8 +2148,8 @@ void initializeCollectibleTask(void) {
     if (D_8013AE88->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskResource();
-    resource = (PickupResource *)&D_800D9504[D_8013AE88->resource14];
+    D_8013AE88->resource14 = allocateTaskMemoryBlock();
+    resource = (PickupResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     GsInitCoordinate2(0, &resource->coordinate);
     resource->geometryIndex = D_8013B2C0[D_8013AE88->data18].geometryIndex;
     resource->rotation.vx = 0;
@@ -2175,7 +2175,7 @@ void updateCollectibleTask(void) {
     PickupResource *resource;
     u16 i;
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    resource = (PickupResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (PickupResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (isPositionInCameraRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)getRenderCameraIndex())) {
         D_80129A80[10].coord2 = &resource->coordinate;
         setCoordinateRotation(&resource->rotation, &resource->coordinate);
@@ -2202,8 +2202,8 @@ void initializeFallingTaskObject(void) {
     if (D_8013AE88->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskResource();
-    resource = (FallingTaskResource *)&D_800D9504[D_8013AE88->resource14];
+    D_8013AE88->resource14 = allocateTaskMemoryBlock();
+    resource = (FallingTaskResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     GsInitCoordinate2(0, &resource->coordinate);
     D_8013AE88->data1A = D_8013B2BC[D_8013AE88->data18].unk01;
     resource->geometryIndex = gRacePlayers[D_8013AE88->data18].unk92E;
@@ -2228,7 +2228,7 @@ void updateFallingTaskObject(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (FallingTaskResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (FallingTaskResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (!D_8013AFD3) {
         resource->verticalVelocity += 0x180;
         resource->position.y += resource->verticalVelocity;
@@ -2257,7 +2257,7 @@ void updateLandedTaskObject(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (FallingTaskResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (FallingTaskResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (!D_8013AFD3) {
         if (--D_8013AE88->data1A == 0) {
             deleteCurrentTaskSubtree();
@@ -2283,8 +2283,8 @@ void initializeOrbitingTaskObject(void) {
     if (D_8013AE88->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskResource();
-    resource = (OrbitingTaskResource *)&D_800D9504[D_8013AE88->resource14];
+    D_8013AE88->resource14 = allocateTaskMemoryBlock();
+    resource = (OrbitingTaskResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     GsInitCoordinate2(0, &resource->groundCoordinate);
     GsInitCoordinate2(&resource->groundCoordinate, &resource->coordinate);
     resource->rotation.vx = 0;
@@ -2316,7 +2316,7 @@ void updateOrbitingObstacleTask(void) {
     }
     active = 0;
     i = active;
-    resource = (OrbitingTaskResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (OrbitingTaskResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AFCD != 0) {
         do {
             if ((u32)((u16)gRacePlayers[i].unk92E - 91) < 13) {

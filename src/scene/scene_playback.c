@@ -29,7 +29,7 @@ void initializeScenePlaybackTask(void) {
     if (D_8013AE88->resource16 == 0xFFFF) {
         while (1) {}
     }
-    state = (ScenePlaybackState *)&D_800D9504[D_8013AE88->resource16];
+    state = (ScenePlaybackState *)&gTaskMemoryPool[D_8013AE88->resource16];
     state->currentEntry = findSceneEvent(0, 0);
     if (state->currentEntry == NULL) {
         state->currentEntry = findSceneEventInsertionPoint(0, 0);
@@ -63,7 +63,7 @@ void updateScenePlaybackTask(void) {
     if (D_8013AE88->resource16 == 0xFFFF) {
         while (1) {}
     }
-    state = (ScenePlaybackState *)&D_800D9504[D_8013AE88->resource16];
+    state = (ScenePlaybackState *)&gTaskMemoryPool[D_8013AE88->resource16];
     if (state->flags & 1) {
         return;
     }

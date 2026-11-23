@@ -17,6 +17,7 @@ typedef struct GameTask {
     u16 unk10;
     u8 depth;
     u8 unk13;
+    /* Task-specific indices into gTaskMemoryPool. */
     u16 resource14;
     u16 resource16;
     u16 data18;
@@ -49,8 +50,8 @@ typedef struct ByteTriplet {
     u8 bytes[3];
 } ByteTriplet;
 
-/* One set bit for each available task resource. */
-extern u16 gTaskResourceFreeBits[16];
+/* One set bit for each free block in gTaskMemoryPool. */
+extern u16 gTaskMemoryFreeBits[16];
 
 /* Scheduler storage remains in its original data object. */
 /* Some task flows address this pointer absolutely; the scheduler uses $gp. */
@@ -64,15 +65,15 @@ extern GameTask *playerSnapshotTaskGp;
 extern u32 D_8013AFE4;
 extern u32 taskTransitionFlagsAbsolute __attribute__((section(".data")));
 extern GameTask gGameTasks[200];
-/* The resource allocator supplies 256-byte records to task-specific users. */
-typedef struct TaskResourceRecord {
+/* Each pool index selects a 256-byte block interpreted by the task using it. */
+typedef struct TaskMemoryBlock {
     u32 unk00;
     u32 unk04;
     const u16 *unk08;
     u8 unk0C[0xF4];
-} TaskResourceRecord;
+} TaskMemoryBlock;
 
-extern TaskResourceRecord D_800D9504[256];
+extern TaskMemoryBlock gTaskMemoryPool[256];
 
 void initializeTaskScheduler(void);
 void initializeCollectibleTask(void);
@@ -104,8 +105,8 @@ void restoreSavedStateAndHandleFlag4(void);
 void setSecondaryDisplayTaskMode(s16 mode);
 void deleteCurrentTaskWhenCdCommandQueueIdle(void);
 void deleteCurrentTask(void);
-u32 allocateTaskResource(void);
-void releaseTaskResource(u16 resource);
+u32 allocateTaskMemoryBlock(void);
+void freeTaskMemoryBlock(u16 blockIndex);
 
 void setTaskSecondaryResourceData(GameTask *task, const u16 *data);
 
@@ -245,4 +246,4 @@ void initializeSpacedChildTasks(void);
 void initializeDemoPlaybackTask(void);
 
 typedef char GameTaskSizeCheck[(sizeof(GameTask) == 0x20) ? 1 : -1];
-typedef char TaskResourceRecordSizeCheck[(sizeof(TaskResourceRecord) == 0x100) ? 1 : -1];
+typedef char TaskMemoryBlockSizeCheck[(sizeof(TaskMemoryBlock) == 0x100) ? 1 : -1];

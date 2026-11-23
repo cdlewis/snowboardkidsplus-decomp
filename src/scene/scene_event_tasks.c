@@ -171,14 +171,14 @@ void setSceneImageEventTask(SceneEvent *entry) {
     SceneImageResource *resource;
     s16 index;
     if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
-    owner = (SceneImageOwner *)&D_800D9504[D_8013AE88->resource16];
+    owner = (SceneImageOwner *)&gTaskMemoryPool[D_8013AE88->resource16];
     if (entry == NULL || entry->resourceId == 0) {
         owner->imageTask = NULL;
         gSceneImageDisplayTask = NULL;
     } else {
         createChildTaskWithReserve(initializeSceneImageTask);
-        D_8013AE8C->resource14 = allocateTaskResource();
-        resource = (SceneImageResource *)&D_800D9504[D_8013AE8C->resource14];
+        D_8013AE8C->resource14 = allocateTaskMemoryBlock();
+        resource = (SceneImageResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
         resource->entry = entry;
         owner->imageTask = D_8013AE8C;
         if (entry->mode == 0) resource->deadline = 0;
@@ -208,9 +208,9 @@ void updateSceneImageTask(void) {
     SceneImageResource *resource;
     SceneEvent *entry;
     if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
-    owner = (SceneImageOwner *)&D_800D9504[D_8013AE98->resource16];
+    owner = (SceneImageOwner *)&gTaskMemoryPool[D_8013AE98->resource16];
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    resource = (SceneImageResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (SceneImageResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     entry = resource->entry;
     if (owner->imageTask == NULL) {
         gSceneImageDisplayTask = NULL;
@@ -283,13 +283,13 @@ void setSceneTextEventTask(SceneEvent *entry) {
     if (D_8013AE88->resource16 == 0xFFFF) {
         while (1) {}
     }
-    resource = (SceneTextTaskResource *)&D_800D9504[D_8013AE88->resource16];
+    resource = (SceneTextTaskResource *)&gTaskMemoryPool[D_8013AE88->resource16];
     if (entry == NULL) {
         resource->task = NULL;
     } else {
         createChildTaskWithReserve(updateSceneTextTask);
-        D_8013AE8C->resource14 = allocateTaskResource();
-        ((SceneTextTaskResource *)&D_800D9504[D_8013AE8C->resource14])->entry = entry;
+        D_8013AE8C->resource14 = allocateTaskMemoryBlock();
+        ((SceneTextTaskResource *)&gTaskMemoryPool[D_8013AE8C->resource14])->entry = entry;
         D_8013AE8C->data18 = 0;
         resource->task = D_8013AE8C;
     }
@@ -306,11 +306,11 @@ void updateSceneTextTask(void) {
     if (D_8013AE98->resource16 == 0xFFFF) {
         while (1) {}
     }
-    owner = (ScenePlaybackState *)&D_800D9504[D_8013AE98->resource16];
+    owner = (ScenePlaybackState *)&gTaskMemoryPool[D_8013AE98->resource16];
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (SceneTextTaskResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (SceneTextTaskResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     block = resource->block;
     ot = &D_800EBFF0[D_8013AF78];
     entry = resource->entry;
@@ -413,7 +413,7 @@ void setSceneMusicEventTask(SceneEvent *entry) {
     if (D_8013AE88->resource16 == 0xFFFF) {
         while (1) {}
     }
-    owner = (SceneMusicOwner *)&D_800D9504[D_8013AE88->resource16];
+    owner = (SceneMusicOwner *)&gTaskMemoryPool[D_8013AE88->resource16];
     if (entry == NULL) {
         owner->musicTask = NULL;
     } else if (entry->resourceId == 0) {
@@ -422,8 +422,8 @@ void setSceneMusicEventTask(SceneEvent *entry) {
     } else {
         createChildTaskWithReserve(finishSceneMusicTaskAtDeadline);
         owner->musicTask = D_8013AE8C;
-        D_8013AE8C->resource14 = allocateTaskResource();
-        resource = (SceneMusicResource *)&D_800D9504[D_8013AE8C->resource14];
+        D_8013AE8C->resource14 = allocateTaskMemoryBlock();
+        resource = (SceneMusicResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
         resource->entry = entry;
         switch (entry->mode) {
         case 0:
@@ -458,15 +458,15 @@ void setSceneMusicEventTask(SceneEvent *entry) {
 
 void finishSceneMusicTaskAtDeadline(void) {
     SceneMusicOwner *owner;
-    TaskResourceRecord *state;
+    TaskMemoryBlock *state;
     if (D_8013AE98->resource16 == 0xFFFF) {
         while (1) {}
     }
-    owner = (SceneMusicOwner *)&D_800D9504[D_8013AE98->resource16];
+    owner = (SceneMusicOwner *)&gTaskMemoryPool[D_8013AE98->resource16];
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    state = &D_800D9504[D_8013AE88->resource14];
+    state = &gTaskMemoryPool[D_8013AE88->resource14];
     if (owner->musicTask == D_8013AE88) {
         if (owner->tick < state->unk04) {
             return;
@@ -483,7 +483,7 @@ void setSceneCdAudioEventTask(SceneEvent *entry) {
     SceneCdAudioOwner *owner;
     SceneCdAudioResource *resource;
     if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
-    owner = (SceneCdAudioOwner *)&D_800D9504[D_8013AE88->resource16];
+    owner = (SceneCdAudioOwner *)&gTaskMemoryPool[D_8013AE88->resource16];
     if (entry == NULL || entry->resourceId == 0) {
         SsSetSerialVol(0, 0, 0);
         resetPendingCdRequests();
@@ -495,8 +495,8 @@ void setSceneCdAudioEventTask(SceneEvent *entry) {
         queueCdCommand(gSceneCdCommands[entry->resourceId], 1);
         createChildTaskWithReserve(updateSceneCdAudioTask);
         owner->task = D_8013AE8C;
-        D_8013AE8C->resource14 = allocateTaskResource();
-        resource = (SceneCdAudioResource *)&D_800D9504[D_8013AE8C->resource14];
+        D_8013AE8C->resource14 = allocateTaskMemoryBlock();
+        resource = (SceneCdAudioResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
         resource->entry = entry;
         resource->deadline = owner->tick + entry->duration;
     }
@@ -507,9 +507,9 @@ void updateSceneCdAudioTask(void) {
     SceneCdAudioResource *resource;
     SceneEvent *entry;
     if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
-    owner = (SceneCdAudioPlaybackOwner *)&D_800D9504[D_8013AE98->resource16];
+    owner = (SceneCdAudioPlaybackOwner *)&gTaskMemoryPool[D_8013AE98->resource16];
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    resource = (SceneCdAudioResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (SceneCdAudioResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     entry = resource->entry;
     if (owner->task == D_8013AE88) {
         if (entry->resourceId == 0) owner->task = NULL;
@@ -538,7 +538,7 @@ void processSceneSoundEvent(SceneEvent *entry) {
     s16 volume;
     s16 i;
     if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
-    owner = (ScenePlaybackState *)&D_800D9504[D_8013AE88->resource16];
+    owner = (ScenePlaybackState *)&gTaskMemoryPool[D_8013AE88->resource16];
     if (entry != NULL && entry->resourceId != 0) {
         soundKey = (entry->resourceId - 1) << 8;
         volume = 32;
@@ -591,7 +591,7 @@ void beginScenePlaybackExitTask(void) {
     if (D_8013AE88->resource16 == 0xFFFF) {
         while (1) {}
     }
-    state = (SceneExitState *)&D_800D9504[D_8013AE88->resource16];
+    state = (SceneExitState *)&gTaskMemoryPool[D_8013AE88->resource16];
     for (i = 0; i < 5; i++) {
         state->tasks[i] = NULL;
     }

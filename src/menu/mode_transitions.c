@@ -224,10 +224,10 @@ void initializeMenuTransitionResourcesTask(void) {
     MenuTransitionResource *resource;
     D_8013AE88->data18 = 0;
     if (D_8013AE88->resource14 != 0xFFFF) { while (1) {} }
-    D_8013AE88->resource14 = allocateTaskResource();
-    resource = (MenuTransitionResource *)&D_800D9504[D_8013AE88->resource14];
+    D_8013AE88->resource14 = allocateTaskMemoryBlock();
+    resource = (MenuTransitionResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 != 0xFFFF) { while (1) {} }
-    D_8013AE88->resource16 = allocateTaskResource();
+    D_8013AE88->resource16 = allocateTaskMemoryBlock();
     resource->unk0E = 0;
     setTaskBackgroundMode(0, 0, 0);
     func_8002EE0C();
@@ -268,11 +268,11 @@ void updateTitleScreenMenuTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         for (;;) {}
     }
-    state = (ModeSelectionState *)&D_800D9504[D_8013AE88->resource14];
+    state = (ModeSelectionState *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) {
         for (;;) {}
     }
-    entries = (SelectedTaskEntry *)&D_800D9504[D_8013AE88->resource16];
+    entries = (SelectedTaskEntry *)&gTaskMemoryPool[D_8013AE88->resource16];
     input = &state->input;
 
     switch (D_8013AE88->data18) {
@@ -430,8 +430,8 @@ void createTitleLogoTask(s32 depth, s32 index) {
     SelectedTaskEntry *entry;
 
     createChildTaskWithReserve(updateTitleLogoTask);
-    D_8013AE8C->resource14 = allocateTaskResource();
-    logo = (TitleLogoResource *)&D_800D9504[D_8013AE8C->resource14];
+    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
+    logo = (TitleLogoResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
     D_8013AE8C->data18 = 0;
     D_8013AE8C->data1C = depth;
     D_8013AE8C->data1E = index;
@@ -442,14 +442,14 @@ void createTitleLogoTask(s32 depth, s32 index) {
         if (D_8013AE88->resource14 == 0xFFFF) {
             while (1) {}
         }
-        entries = (SelectedTaskEntry *)&D_800D9504[D_8013AE88->resource14];
+        entries = (SelectedTaskEntry *)&gTaskMemoryPool[D_8013AE88->resource14];
         entry = entries + index / 10;
     } else {
         SelectedTaskEntry *entries;
         if (D_8013AE88->resource16 == 0xFFFF) {
             while (1) {}
         }
-        entries = (SelectedTaskEntry *)&D_800D9504[D_8013AE88->resource16];
+        entries = (SelectedTaskEntry *)&gTaskMemoryPool[D_8013AE88->resource16];
         entry = entries + index / 10;
     }
     entry->unk04 = 0;
@@ -466,18 +466,18 @@ void updateTitleLogoTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         for (;;) {}
     }
-    logo = (TitleLogoResource *)&D_800D9504[D_8013AE88->resource14];
+    logo = (TitleLogoResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if ((u16)(D_8013AE88->data1E % 10U) == 0) {
         if (D_8013AE98->resource14 == 0xFFFF) {
             for (;;) {}
         }
-        entries = (SelectedTaskEntry *)&D_800D9504[D_8013AE98->resource14];
+        entries = (SelectedTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource14];
         entry = &entries[D_8013AE88->data1E / 10U];
     } else {
         if (D_8013AE98->resource16 == 0xFFFF) {
             for (;;) {}
         }
-        entries = (SelectedTaskEntry *)&D_800D9504[D_8013AE98->resource16];
+        entries = (SelectedTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource16];
         entry = &entries[D_8013AE88->data1E / 10U];
     }
 
@@ -673,11 +673,11 @@ void drawSelectedTaskSideMarkerSprite(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (SelectedTaskSpriteResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (SelectedTaskSpriteResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) {
         while (1) {}
     }
-    entries = (SelectedTaskEntry *)&D_800D9504[D_8013AE88->resource16];
+    entries = (SelectedTaskEntry *)&gTaskMemoryPool[D_8013AE88->resource16];
     if ((s16)resource->state > 0) {
         setSpriteColor(128, 128, 128);
         selection = resource->selection;
@@ -690,7 +690,7 @@ void drawSelectedTaskSideMarkerSprite(void) {
             offset = 8;
             break;
         }
-        position = (Movement2D *)&D_800D9504[entries[selection].task->resource14];
+        position = (Movement2D *)&gTaskMemoryPool[entries[selection].task->resource14];
         drawSpriteByIndexWithBlend(position->x / 4096 + (s16)(offset - 32), position->y / 4096 - 4,
                       0x44, 0, -1, &D_800EBFF0[D_8013AF78], (u16)(resource->depth - 1));
     }
@@ -703,17 +703,17 @@ void drawRegisteredTaskGridSpriteWithDefaultBlend(void) {
     RegisteredTaskEntry *entries;
     const GridSpriteEntry *sprite;
     if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
-    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    position = (Movement2D *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) { for (;;) {} }
     if (D_8013AE98->resource14 == 0xFFFF) { for (;;) {} }
-    parent = (GridSpriteParent *)&D_800D9504[D_8013AE98->resource14];
+    parent = (GridSpriteParent *)&gTaskMemoryPool[D_8013AE98->resource14];
     if ((u16)(D_8013AE88->data1E % 10U) == 0) {
         if (D_8013AE98->resource14 == 0xFFFF) { for (;;) {} }
-        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource14];
+        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource14];
         entry = &entries[D_8013AE88->data1E / 10U];
     } else {
         if (D_8013AE98->resource16 == 0xFFFF) { for (;;) {} }
-        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource16];
+        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource16];
         entry = &entries[D_8013AE88->data1E / 10U];
     }
     if (parent->mapping != 0) {
@@ -745,8 +745,8 @@ void initializePlayerModeSelectionTask(void) {
     if (D_8013AE88->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskResource();
-    resource = (PlayerModeSelectionResource *)&D_800D9504[D_8013AE88->resource14];
+    D_8013AE88->resource14 = allocateTaskMemoryBlock();
+    resource = (PlayerModeSelectionResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     resource->unk00 = 0;
     if (gameOptionPlayerModeAbsolute == 2) {
         resource->selection = gameOptionPlayerModeAbsolute - 1;
@@ -759,7 +759,7 @@ void initializePlayerModeSelectionTask(void) {
     if (D_8013AE88->resource16 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource16 = allocateTaskResource();
+    D_8013AE88->resource16 = allocateTaskMemoryBlock();
     setCurrentTaskCallback(updatePlayerModeSelectionTask);
 }
 
@@ -771,11 +771,11 @@ void updatePlayerModeSelectionTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    selection = (PlayerModeSelectionResource *)&D_800D9504[D_8013AE88->resource14];
+    selection = (PlayerModeSelectionResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) {
         while (1) {}
     }
-    entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE88->resource16];
+    entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE88->resource16];
 
     switch (D_8013AE88->data18) {
     case 1:
@@ -800,7 +800,7 @@ void updatePlayerModeSelectionTask(void) {
         if ((s16)entries[3].flags < 0) {
             goto cancel;
         }
-        configureMovement2D((Movement2D *)&D_800D9504[entries[2].task->resource14],
+        configureMovement2D((Movement2D *)&gTaskMemoryPool[entries[2].task->resource14],
                             -0x78000, -0x60000, 0, -0x1E000, 0);
         D_8013AE88->data18++;
         break;
@@ -876,7 +876,7 @@ cancel:
         if ((s16)entries[4].flags != 0) {
             break;
         }
-        configureMovement2D((Movement2D *)&D_800D9504[entries[2].task->resource14],
+        configureMovement2D((Movement2D *)&gTaskMemoryPool[entries[2].task->resource14],
                             -0x78000, -0x20000, 0, 0x1E000, 0);
         D_8013AE88->data18 = 9;
         break;
@@ -914,21 +914,21 @@ void createRegisteredPlayerModePanelTask(s16 x, s16 y, s32 depth, s32 index) {
     createChildTaskWithReserve(updateRegisteredPlayerModePanelTask);
     D_8013AE8C->data1C = depth;
     D_8013AE8C->data1E = index;
-    D_8013AE8C->resource14 = allocateTaskResource();
-    initMovement2D((Movement2D *)&D_800D9504[D_8013AE8C->resource14], x * 4096, y * 4096);
+    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
+    initMovement2D((Movement2D *)&gTaskMemoryPool[D_8013AE8C->resource14], x * 4096, y * 4096);
     if (index % 10 == 0) {
         RegisteredTaskEntry *table;
         if (D_8013AE88->resource14 == 0xFFFF) {
             while (1) {}
         }
-        table = (RegisteredTaskEntry *)&D_800D9504[D_8013AE88->resource14];
+        table = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE88->resource14];
         entry = table + index / 10;
     } else {
         RegisteredTaskEntry *table;
         if (D_8013AE88->resource16 == 0xFFFF) {
             while (1) {}
         }
-        table = (RegisteredTaskEntry *)&D_800D9504[D_8013AE88->resource16];
+        table = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE88->resource16];
         entry = table + index / 10;
     }
     entry->command = 1;
@@ -943,17 +943,17 @@ void updateRegisteredPlayerModePanelTask(void) {
     u16 remainder;
     u16 resource;
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    position = (Movement2D *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
     remainder = D_8013AE88->data1E % 10U;
     resource = D_8013AE98->resource14;
     if (remainder == 0) {
         if (resource == 0xFFFF) { while (1) {} }
-        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource14];
+        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource14];
         entry = &entries[D_8013AE88->data1E / 10U];
     } else {
         if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
-        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource16];
+        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource16];
         entry = &entries[D_8013AE88->data1E / 10U];
     }
     if (entry->command == 99) {
@@ -980,11 +980,11 @@ void drawSelectedTaskMarkerSprite(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (SelectedTaskSpriteResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (SelectedTaskSpriteResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) {
         while (1) {}
     }
-    entries = (SelectedTaskEntry *)&D_800D9504[D_8013AE88->resource16];
+    entries = (SelectedTaskEntry *)&gTaskMemoryPool[D_8013AE88->resource16];
     state = resource->state;
     if ((s16)resource->state > 0) {
         if ((u32)(state - 1) < 2) {
@@ -992,7 +992,7 @@ void drawSelectedTaskMarkerSprite(void) {
         } else {
             setSpriteColor(128, 128, 128);
         }
-        position = (Movement2D *)&D_800D9504[entries[resource->selection].task->resource14];
+        position = (Movement2D *)&gTaskMemoryPool[entries[resource->selection].task->resource14];
         drawSpriteByIndexWithBlend(position->x / 4096 - 30, position->y / 4096 + 20,
                       0x44, 0, -1, &D_800EBFF0[D_8013AF78], (u16)(resource->depth - 1));
     }
@@ -1007,18 +1007,18 @@ void drawRegisteredTaskTexturedQuadList(void) {
     s16 texture;
     TexturedQuadListEntry *list;
     if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
-    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    position = (Movement2D *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) { for (;;) {} }
-    color = (TextureColor *)&D_800D9504[D_8013AE88->resource16];
+    color = (TextureColor *)&gTaskMemoryPool[D_8013AE88->resource16];
     if (D_8013AE98->resource14 == 0xFFFF) { for (;;) {} }
-    parent = (GridSpriteParent *)&D_800D9504[D_8013AE98->resource14];
+    parent = (GridSpriteParent *)&gTaskMemoryPool[D_8013AE98->resource14];
     if ((u16)(D_8013AE88->data1E % 10U) == 0) {
         if (D_8013AE98->resource14 == 0xFFFF) { for (;;) {} }
-        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource14];
+        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource14];
         entry = &entries[D_8013AE88->data1E / 10U];
     } else {
         if (D_8013AE98->resource16 == 0xFFFF) { for (;;) {} }
-        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource16];
+        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource16];
         entry = &entries[D_8013AE88->data1E / 10U];
     }
     if (parent->mapping != 0) {
@@ -1049,8 +1049,8 @@ void createRepeatedSoundTask(s32 sound, s32 delay, s32 interval, s32 count) {
     D_8013AE8C->data1A = interval;
     D_8013AE8C->data1C = 0;
     D_8013AE8C->data1E = count;
-    D_8013AE8C->resource14 = allocateTaskResource();
-    resource = (RepeatedSoundResource *)&D_800D9504[D_8013AE8C->resource14];
+    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
+    resource = (RepeatedSoundResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
     resource->sound = sound;
 }
 
@@ -1061,7 +1061,7 @@ void updateRepeatedSoundTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (RepeatedSoundResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (RepeatedSoundResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     sound = resource->sound;
     if (D_8013AE88->data1E == 0) {
         deleteCurrentTaskSubtree();

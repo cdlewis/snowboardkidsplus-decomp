@@ -44,11 +44,11 @@ void initializeTaskResourcePairWithOneTickTransition(void) {
     if (D_8013AE88->resource14 != 0xFFFF) {
         for (;;) {}
     }
-    D_8013AE88->resource14 = allocateTaskResource();
+    D_8013AE88->resource14 = allocateTaskMemoryBlock();
     if (D_8013AE88->resource16 != 0xFFFF) {
         for (;;) {}
     }
-    D_8013AE88->resource16 = allocateTaskResource();
+    D_8013AE88->resource16 = allocateTaskMemoryBlock();
     configureTaskStateTransition(2, 0, 1);
     setCurrentTaskCallback(updateMode11SelectionMenuTask);
     D_8013AE88->unk10 |= 2;
@@ -63,11 +63,11 @@ void updateMode11SelectionMenuTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         for (;;) {}
     }
-    selection = (Mode11MenuSelection *)&D_800D9504[D_8013AE88->resource14];
+    selection = (Mode11MenuSelection *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) {
         for (;;) {}
     }
-    entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE88->resource16];
+    entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE88->resource16];
 
     switch (D_8013AE88->data18) {
     case 0:
@@ -286,12 +286,12 @@ void initializeModeSectorReadResourcesTask(void) {
     if (D_8013AE88->resource14 != 0xFFFF) {
         for (;;) {}
     }
-    D_8013AE88->resource14 = allocateTaskResource();
-    state = (ModeSectorReadState *)&D_800D9504[D_8013AE88->resource14];
+    D_8013AE88->resource14 = allocateTaskMemoryBlock();
+    state = (ModeSectorReadState *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 != 0xFFFF) {
         for (;;) {}
     }
-    D_8013AE88->resource16 = allocateTaskResource();
+    D_8013AE88->resource16 = allocateTaskMemoryBlock();
     D_8013B55E = 0;
     if (D_8013AFD8 != 0) {
         state->mode = 1;
@@ -308,7 +308,7 @@ void queueTaskModeSectorRead(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         for (;;) {}
     }
-    state = (ModeSectorReadState *)&D_800D9504[D_8013AE88->resource14];
+    state = (ModeSectorReadState *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (state->mode == 1) {
         state->sectorIndex = D_8013AFD8 - 1;
     } else {

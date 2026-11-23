@@ -3777,8 +3777,8 @@ void updateCurrentPlayerTaskJumpAndSpawnCourseOffset(void) {
         player->unk08C = 0x20;
         createChildTaskForParentWithReserve(&gGameTasks[4], initializeSelectedCourseOffsetTask);
         D_8013AE8C->data18 = D_8013AE88->data18;
-        D_8013AE8C->resource14 = allocateTaskResource();
-        resource = (CourseOffsetResource *)&D_800D9504[D_8013AE8C->resource14];
+        D_8013AE8C->resource14 = allocateTaskMemoryBlock();
+        resource = (CourseOffsetResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
         resource->linkedTask = D_8013AE88;
         D_8013B0D8->unk128 &= ~0x20;
     }

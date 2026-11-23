@@ -76,7 +76,7 @@ void drawPaletteBurstTask(void) {
     player = &gRacePlayers[3];
     scratch = (PaletteBurstScratch *)getScratchAddr(0);
     packet = (POLY_FT4 *)GsOUT_PACKET_P;
-    resource = (PaletteBurstResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (PaletteBurstResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     /* Start with a nine-word packet and a cleared DMA link. */
     scratch->quad.tag = 9u << 24;
     setcode(&scratch->quad, POLY_FT4_CODE | 2);
@@ -138,8 +138,8 @@ void spawnPaletteBurstTask(u8 paletteIndex) {
     u8 row;
     createChildTaskForParentWithReserve(&gGameTasks[4], drawPaletteBurstTask);
     row = paletteIndex;
-    D_8013AE8C->resource14 = allocateTaskResource();
-    resource = (PaletteBurstResource *)&D_800D9504[D_8013AE8C->resource14];
+    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
+    resource = (PaletteBurstResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
     resource->x = randomNextLinear() % 4 - 2;
     resource->y = randomNextLinear() % 4 - 17;
     resource->z = randomNextLinear() % 4 - 2;

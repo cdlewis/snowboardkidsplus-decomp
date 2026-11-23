@@ -58,8 +58,8 @@ void initializeNumberAdjustmentTask(void) {
     if (D_8013AE88->resource14 != 0xFFFF) {
         for (;;) {}
     }
-    D_8013AE88->resource14 = allocateTaskResource();
-    state = (NumberAdjustmentState *)&D_800D9504[D_8013AE88->resource14];
+    D_8013AE88->resource14 = allocateTaskMemoryBlock();
+    state = (NumberAdjustmentState *)&gTaskMemoryPool[D_8013AE88->resource14];
     state->value = D_8013AFD0;
     for (i = 0; i < 3; i++) {
         state->unk20[i] = 0;
@@ -89,7 +89,7 @@ void updateNumberAdjustmentTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         for (;;) {}
     }
-    state = (NumberAdjustmentState *)&D_800D9504[D_8013AE88->resource14];
+    state = (NumberAdjustmentState *)&gTaskMemoryPool[D_8013AE88->resource14];
     buttons = D_8013AEE8[0] | D_8013AEE8[1];
     previous = state->value;
     if ((buttons & 0x1000) && state->value > 1) {
@@ -139,7 +139,7 @@ void drawNumberAdjustmentPanel(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         for (;;) {}
     }
-    state = (NumberAdjustmentState *)&D_800D9504[D_8013AE88->resource14];
+    state = (NumberAdjustmentState *)&gTaskMemoryPool[D_8013AE88->resource14];
     setSpriteColor(128, 128, 128);
     setTexturedQuadColor(128, 128, 128);
     scroll = state->unk20[0] / 4096;
@@ -175,7 +175,7 @@ void finishNumberAdjustmentTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         for (;;) {}
     }
-    state = (NumberAdjustmentState *)&D_800D9504[D_8013AE88->resource14];
+    state = (NumberAdjustmentState *)&gTaskMemoryPool[D_8013AE88->resource14];
     switch (D_8013AE88->data18) {
     case 0:
         if (state->countdown == 0) {

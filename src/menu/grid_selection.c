@@ -14,7 +14,7 @@
 #include "psx/libgs.h"
 
 #define PALETTE_SELECTION_CURRENCY_LABEL "\x82" "f"
-#define CHILD_MOVEMENT(entry, resource) ((Movement2D *)&D_800D9504[(entry).task->resource])
+#define CHILD_MOVEMENT(entry, resource) ((Movement2D *)&gTaskMemoryPool[(entry).task->resource])
 #define FIRST_FOUR_READY(entries) \
     ((s16)(entries)[0].flags == 0 && (s16)(entries)[1].flags == 0 && \
      (s16)(entries)[2].flags == 0 && (s16)(entries)[3].flags == 0)
@@ -121,9 +121,9 @@ void initializeCountedSplitSelectionBoundsTask(void) {
     D_8013AE88->data1A = 0;
     D_8013AE88->data1C = 0;
     if (D_8013AE88->resource14 != 0xFFFF) { for (;;) {} }
-    D_8013AE88->resource14 = allocateTaskResource();
+    D_8013AE88->resource14 = allocateTaskMemoryBlock();
     if (D_8013AE88->resource16 != 0xFFFF) { for (;;) {} }
-    D_8013AE88->resource16 = allocateTaskResource();
+    D_8013AE88->resource16 = allocateTaskMemoryBlock();
     setSecondaryDisplayTaskMode(2);
     {
         RECT *bounds = &D_801300B8[0];
@@ -170,9 +170,9 @@ void updateSplitBoardSelectionTask(void) {
     u8 palette;
 
     if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
-    input = (FlagSelectedMenuState *)&D_800D9504[D_8013AE88->resource14];
+    input = (FlagSelectedMenuState *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) { for (;;) {} }
-    entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE88->resource16];
+    entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE88->resource16];
     playerIndex = (s16)D_8013AE88->data1A;
     player = D_8013AE88->data1A;
     character = gRacePlayers[playerIndex].unk009;
@@ -335,7 +335,7 @@ void updateSplitBoardSelectionTask(void) {
         SpacedGroupResource *group;
         mapping = &descriptor;
         func_800995A8((s16)player, character, 0, 20, mapping);
-        group = (SpacedGroupResource *)&D_800D9504[entries[0].task->resource14];
+        group = (SpacedGroupResource *)&gTaskMemoryPool[entries[0].task->resource14];
         group->data48 = descriptor.mapping;
         group->spacingX = mapping->spacingX;
         group->spacingY = mapping->spacingY;
@@ -429,7 +429,7 @@ void updateSplitSelectionBoundsTransition(void) {
     u8 index;
     s16 height;
     if (D_8013AE88->resource16 == 0xFFFF) { for (;;) {} }
-    movement = (SplitBoundsResource *)&D_800D9504[D_8013AE88->resource16];
+    movement = (SplitBoundsResource *)&gTaskMemoryPool[D_8013AE88->resource16];
     index = gRacePlayers[(s16)D_8013AE88->data1A].unk009;
     height = D_801300B8[0].h;
     switch (D_8013AE88->data18) {
@@ -486,7 +486,7 @@ void drawCurrentTaskSpriteB7(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         for (;;) {}
     }
-    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    position = (Movement2D *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->data1A != 0) {
         drawSpriteByIndexWithBlend(position->x / 4096 + 8, position->y / 4096 - 22,
                       0xB7, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
@@ -496,7 +496,7 @@ void drawCurrentTaskSpriteB7(void) {
 void drawCurrentTaskFramedSprite20B(void) {
     Movement2D *position;
     if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
-    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    position = (Movement2D *)&gTaskMemoryPool[D_8013AE88->resource14];
     setTexturedQuadColor(128, 128, 128);
     setSpriteColor(128, 128, 128);
     drawTexturedFrameStyle9(position->x / 4096 - 140, position->y / 4096 + 8,
@@ -509,7 +509,7 @@ void drawCurrentTaskTextPanel144x48(void) {
     Movement2D *position;
     s32 x, y;
     if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
-    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    position = (Movement2D *)&gTaskMemoryPool[D_8013AE88->resource14];
     x = position->x / 4096;
     y = position->y / 4096;
     setSpriteColor(128, 128, 128);
@@ -524,7 +524,7 @@ void drawCurrentTaskPlayerValuePanel(void) {
     Movement2D *position;
     s32 x, y, value;
     if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
-    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    position = (Movement2D *)&gTaskMemoryPool[D_8013AE88->resource14];
     x = position->x / 4096;
     y = position->y / 4096;
     value = gRacePlayers[(s16)D_8013AE98->data1A].unk00A[0];
@@ -598,9 +598,9 @@ void initializeCountedFourBoundsTask(void) {
     D_8013AE88->data18 = 0;
     D_8013AE88->data1A = 0;
     if (D_8013AE88->resource14 != 0xFFFF) { for (;;) {} }
-    D_8013AE88->resource14 = allocateTaskResource();
+    D_8013AE88->resource14 = allocateTaskMemoryBlock();
     if (D_8013AE88->resource16 != 0xFFFF) { for (;;) {} }
-    D_8013AE88->resource16 = allocateTaskResource();
+    D_8013AE88->resource16 = allocateTaskMemoryBlock();
     setSecondaryDisplayTaskMode(2);
     {
         RECT *bounds = &D_801300B8[0];
@@ -645,9 +645,9 @@ void updatePlayerPaletteSelectionTask(void) {
     s32 palette;
 
     if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
-    input = (FlagSelectedMenuState *)&D_800D9504[D_8013AE88->resource14];
+    input = (FlagSelectedMenuState *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) { for (;;) {} }
-    entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE88->resource16];
+    entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE88->resource16];
     player = D_8013AE88->data1A;
     character = gRacePlayers[player].unk009;
     palette = gRacePlayers[player].unk00D;
@@ -879,7 +879,7 @@ void drawCurrentTaskSavedValuePanel(void) {
     SaveRecord *records;
     GsOT *ot;
     if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
-    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    position = (Movement2D *)&gTaskMemoryPool[D_8013AE88->resource14];
     x = position->x / 4096;
     y = position->y / 4096;
     index = D_8013AE98->data1A;
@@ -912,7 +912,7 @@ void drawPaletteSelectionPricePanel(void) {
     s32 player;
     TaskPanelSelectionValue *selection;
     if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
-    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    position = (Movement2D *)&gTaskMemoryPool[D_8013AE88->resource14];
     priceX = panelX = position->x / 4096;
     priceY = panelY = position->y / 4096;
     player = (s16)D_8013AE98->data1A;
@@ -955,14 +955,14 @@ void initializeTaskGridPositions(s32 unused, GameTask *task, s32 x, s32 y,
     s32 i;
     TaskGridState *state;
     TaskGridEntry *entry;
-    state = (TaskGridState *)&D_800D9504[task->resource14];
-    entry = (TaskGridEntry *)&D_800D9504[task->resource16];
+    state = (TaskGridState *)&gTaskMemoryPool[task->resource14];
+    entry = (TaskGridEntry *)&gTaskMemoryPool[task->resource16];
     for (i = 0; i < state->count; i++) {
         if (i < 8) {
-            initMovement2D((Movement2D *)&D_800D9504[entry[i].task->resource14],
+            initMovement2D((Movement2D *)&gTaskMemoryPool[entry[i].task->resource14],
                            x + (i % 4) * 0x20000, y + (i / 4) * 0x28000);
         } else {
-            initMovement2D((Movement2D *)&D_800D9504[entry[i].task->resource14],
+            initMovement2D((Movement2D *)&gTaskMemoryPool[entry[i].task->resource14],
                            x + 0xC000, y + 0x50000);
         }
     }
@@ -973,8 +973,8 @@ void configureFourColumnTaskGridMovement(s32 mode, GameTask *task, s32 x, s32 y,
     TaskGridEntry *entries;
     s16 i, end;
     Movement2D *movement;
-    state = (TaskGridState *)&D_800D9504[task->resource14];
-    entries = (TaskGridEntry *)&D_800D9504[task->resource16];
+    state = (TaskGridState *)&gTaskMemoryPool[task->resource14];
+    entries = (TaskGridEntry *)&gTaskMemoryPool[task->resource16];
     if (mode == 1) {
         i = state->selectedIndex;
         end = i + 1;
@@ -985,7 +985,7 @@ void configureFourColumnTaskGridMovement(s32 mode, GameTask *task, s32 x, s32 y,
     for (; i < end; i++) {
         if (mode == 2 && i == state->selectedIndex) continue;
         if (i < 8) {
-            movement = (Movement2D *)&D_800D9504[entries[i].task->resource14];
+            movement = (Movement2D *)&gTaskMemoryPool[entries[i].task->resource14];
             if (delay == -1000) {
                 configureMovement2D(movement, x + (i % 4) * 0x20000,
                                     y + (i / 4) * 0x28000, stepX, stepY, delay);
@@ -994,7 +994,7 @@ void configureFourColumnTaskGridMovement(s32 mode, GameTask *task, s32 x, s32 y,
                                     y + (i / 4) * 0x28000, stepX, stepY, delay * (i / 4));
             }
         } else {
-            movement = (Movement2D *)&D_800D9504[entries[i].task->resource14];
+            movement = (Movement2D *)&gTaskMemoryPool[entries[i].task->resource14];
             if (delay == -1000) {
                 configureMovement2D(movement, x + 0xC000, y + 0x50000, stepX, stepY, delay);
             } else {
@@ -1011,9 +1011,9 @@ void drawTaskGridSelectionMarker(void) {
     s32 mode;
     u32 colorMode;
     if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
-    state = (GridMarkerState *)&D_800D9504[D_8013AE88->resource14];
+    state = (GridMarkerState *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) { for (;;) {} }
-    entries = (TaskGridEntry *)&D_800D9504[D_8013AE88->resource16];
+    entries = (TaskGridEntry *)&gTaskMemoryPool[D_8013AE88->resource16];
     mode = (s16)state->state;
     colorMode = state->state;
     if (mode > 0) {
@@ -1022,7 +1022,7 @@ void drawTaskGridSelectionMarker(void) {
         } else {
             setSpriteColor(128, 128, 128);
         }
-        position = (Movement2D *)&D_800D9504[entries[state->selectedIndex].task->resource14];
+        position = (Movement2D *)&gTaskMemoryPool[entries[state->selectedIndex].task->resource14];
         if (state->selectedIndex < 8) {
             drawSpriteByIndexWithBlend(position->x / 4096, position->y / 4096, 0x16F, 8, -1,
                          &D_800EBFF0[D_8013AF78], (u16)(state->depth - 1));
@@ -1040,17 +1040,17 @@ void drawRegisteredTaskGridSprite(void) {
     RegisteredTaskEntry *entries;
     const GridSpriteEntry *sprite;
     if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
-    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    position = (Movement2D *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) { for (;;) {} }
     if (D_8013AE98->resource14 == 0xFFFF) { for (;;) {} }
-    parent = (GridSpriteParent *)&D_800D9504[D_8013AE98->resource14];
+    parent = (GridSpriteParent *)&gTaskMemoryPool[D_8013AE98->resource14];
     if ((u16)(D_8013AE88->data1E % 10U) == 0) {
         if (D_8013AE98->resource14 == 0xFFFF) { for (;;) {} }
-        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource14];
+        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource14];
         entry = &entries[D_8013AE88->data1E / 10U];
     } else {
         if (D_8013AE98->resource16 == 0xFFFF) { for (;;) {} }
-        entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE98->resource16];
+        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource16];
         entry = &entries[D_8013AE88->data1E / 10U];
     }
     if (parent->mapping != 0) {

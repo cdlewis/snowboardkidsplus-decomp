@@ -1968,10 +1968,11 @@ D_801208D4 = 0x801208D4; // size:0x1C defined:true
 D_801208F0 = 0x801208F0; // size:0x1C defined:true
 D_8012090C = 0x8012090C; // size:0x28 defined:true
 
-// Task resource IDs index a 256-bit availability bitmap.
-allocateTaskResource = 0x80014BAC; // type:func
-releaseTaskResource = 0x80014C40; // type:func
-gTaskResourceFreeBits = 0x800E9504; // size:0x20 defined:true
+// Task memory block indices address the pool and its 256-bit availability bitmap.
+allocateTaskMemoryBlock = 0x80014BAC; // type:func
+freeTaskMemoryBlock = 0x80014C40; // type:func
+gTaskMemoryPool = 0x800D9504; // size:0x10000
+gTaskMemoryFreeBits = 0x800E9504; // size:0x20 defined:true
 
 setControllerFlag5 = 0x80014CCC; // type:func
 initializeRacePauseMenuTask = 0x80043C28; // type:func

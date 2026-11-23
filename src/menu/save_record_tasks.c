@@ -249,12 +249,12 @@ void initializeMemoryCardSaveMenuTask(void) {
     if (D_8013AE88->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskResource();
-    menu = (SaveMenuResource *)&D_800D9504[D_8013AE88->resource14];
+    D_8013AE88->resource14 = allocateTaskMemoryBlock();
+    menu = (SaveMenuResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource16 = allocateTaskResource();
+    D_8013AE88->resource16 = allocateTaskMemoryBlock();
     menu->command0C = 0;
 
     prepareSaveRecordForWrite(&gPlayerSaveRecords[0]);
@@ -285,12 +285,12 @@ void updateMemoryCardSaveMenuTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    menu = (SaveMenuResource *)&D_800D9504[D_8013AE88->resource14];
+    menu = (SaveMenuResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) {
         while (1) {}
     }
     primary = menu;
-    input = (SaveMenuResource *)&D_800D9504[D_8013AE88->resource16];
+    input = (SaveMenuResource *)&gTaskMemoryPool[D_8013AE88->resource16];
     player = D_8013AE88->data1A;
     texture = gRacePlayers[player].unk009;
     x = -76;
@@ -654,7 +654,7 @@ void func_8008B178(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    position = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    position = (Movement2D *)&gTaskMemoryPool[D_8013AE88->resource14];
     slot = D_8013AE98->data1A;
     course = gRacePlayers[slot].unk009;
     setSpriteColor(128, 128, 128);
@@ -733,7 +733,7 @@ void drawTaskShadowedText(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (Movement2D *)&D_800D9504[D_8013AE88->resource14];
+    resource = (Movement2D *)&gTaskMemoryPool[D_8013AE88->resource14];
     x = resource->x / 4096;
     y = resource->y / 4096;
     func_8006EC84(x - 48, y + 24, 12, gTaskShadowedText, 0, -1,

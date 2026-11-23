@@ -223,12 +223,12 @@ void initializeNumberSelectionTask(void) {
     if (D_8013AE88->resource14 != 0xFFFF) {
         for (;;) {}
     }
-    D_8013AE88->resource14 = allocateTaskResource();
-    state = (NumberPanelState *)&D_800D9504[D_8013AE88->resource14];
+    D_8013AE88->resource14 = allocateTaskMemoryBlock();
+    state = (NumberPanelState *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 != 0xFFFF) {
         for (;;) {}
     }
-    D_8013AE88->resource16 = allocateTaskResource();
+    D_8013AE88->resource16 = allocateTaskMemoryBlock();
     D_8013AFD3 = 1;
     state->number = D_8013AFD8 - 1;
     D_8013AE88->data18 = 0;
@@ -248,11 +248,11 @@ void updateNumberSelectionTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         for (;;) {}
     }
-    state = (NumberPanelState *)&D_800D9504[D_8013AE88->resource14];
+    state = (NumberPanelState *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) {
         for (;;) {}
     }
-    entries = (RegisteredTaskEntry *)&D_800D9504[D_8013AE88->resource16];
+    entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE88->resource16];
 
     switch (D_8013AE88->data18) {
     case 0:
@@ -351,11 +351,11 @@ void drawOffsetSelectedTaskSprite(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    state = (SelectedSpriteResource *)&D_800D9504[D_8013AE88->resource14];
+    state = (SelectedSpriteResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) {
         while (1) {}
     }
-    children = (SelectedSpriteChild *)&D_800D9504[D_8013AE88->resource16];
+    children = (SelectedSpriteChild *)&gTaskMemoryPool[D_8013AE88->resource16];
     mode = state->mode;
     if ((s16)mode > 0) {
         if ((u32)(mode - 1) < 2) {
@@ -363,7 +363,7 @@ void drawOffsetSelectedTaskSprite(void) {
         } else {
             setSpriteColor(128, 128, 128);
         }
-        position = (Movement2D *)&D_800D9504[children[state->selectedIndex].task->resource14];
+        position = (Movement2D *)&gTaskMemoryPool[children[state->selectedIndex].task->resource14];
         drawSpriteByIndexWithBlend(position->x / 4096 - 8, position->y / 4096 + 2, state->sprite, 0, -1,
                      &D_800EBFF0[D_8013AF78], state->depth - 1);
     }
@@ -380,8 +380,8 @@ void initializeSelectionMenuTask(void) {
     if (D_8013AE88->resource14 != 0xFFFF) {
         for (;;) {}
     }
-    D_8013AE88->resource14 = allocateTaskResource();
-    state = (SelectionMenuState *)&D_800D9504[D_8013AE88->resource14];
+    D_8013AE88->resource14 = allocateTaskMemoryBlock();
+    state = (SelectionMenuState *)&gTaskMemoryPool[D_8013AE88->resource14];
     state->previousSelection = state->selection = D_8013AFD9 - 1;
     state->unk04 = 0;
     state->unk06 = 16;
@@ -406,7 +406,7 @@ void updateSelectionMenuTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         for (;;) {}
     }
-    state = (SelectionMenuState *)&D_800D9504[D_8013AE88->resource14];
+    state = (SelectionMenuState *)&gTaskMemoryPool[D_8013AE88->resource14];
     state->unk0A = 0;
 
     if (D_8013AEE8[0] & 0x8000) {
@@ -477,7 +477,7 @@ void finishSelectionMenuTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         for (;;) {}
     }
-    state = (SelectionMenuState *)&D_800D9504[D_8013AE88->resource14];
+    state = (SelectionMenuState *)&gTaskMemoryPool[D_8013AE88->resource14];
     switch (D_8013AE88->data18) {
     case 0:
         if (state->unk08 == 0) {

@@ -81,8 +81,8 @@ void initializeScenePlaybackResourcesTask(void) {
     if (D_8013AE88->resource16 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource16 = allocateTaskResource();
-    state = (ScenePlaybackState *)&D_800D9504[D_8013AE88->resource16];
+    D_8013AE88->resource16 = allocateTaskMemoryBlock();
+    state = (ScenePlaybackState *)&gTaskMemoryPool[D_8013AE88->resource16];
     resetScenePlaybackStates(NULL, (SceneChannelState *)state);
     resetSceneEventPool();
     for (i = 0; i < 5; i++) {

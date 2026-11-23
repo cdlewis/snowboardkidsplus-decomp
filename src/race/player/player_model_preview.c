@@ -110,7 +110,7 @@ void updateCurrentPlayerModelPartCoordinates(void) {
 }
 
 static inline RegisteredTaskEntry *getSignedModelPreviewEntry(u32 resource, s32 index) {
-    RegisteredTaskEntry *entries = (RegisteredTaskEntry *)&D_800D9504[resource];
+    RegisteredTaskEntry *entries = (RegisteredTaskEntry *)&gTaskMemoryPool[resource];
     return &entries[index / 10];
 }
 
@@ -130,10 +130,10 @@ void createPlayerModelPreviewTask(u16 playerIndex, u16 characterId, u16 modelSlo
     D_8013AE8C->data1A = modelSlot;
     D_8013AE8C->data1C = playerIndex;
     D_8013AE8C->data1E = index;
-    D_8013AE8C->resource14 = allocateTaskResource();
+    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
 
     currentPlayerAbsolute = &gRacePlayers[D_8013AE8C->data1C];
-    state = (ModelPreviewState *)&D_800D9504[D_8013AE8C->resource14];
+    state = (ModelPreviewState *)&gTaskMemoryPool[D_8013AE8C->resource14];
     currentPlayerAbsolute->characterId = characterId;
     {
         u32 (*sourceBuffers)[4096] = (u32 (*)[4096])DAT_GRID_MODEL_BUFFERS;
@@ -184,8 +184,8 @@ void createPlayerModelPreviewTask(u16 playerIndex, u16 characterId, u16 modelSlo
     player->unk5BC[0].z = 0;
 
     state->rotationStep = 0;
-    D_8013AE8C->resource16 = allocateTaskResource();
-    position = (Movement2D *)&D_800D9504[D_8013AE8C->resource16];
+    D_8013AE8C->resource16 = allocateTaskMemoryBlock();
+    position = (Movement2D *)&gTaskMemoryPool[D_8013AE8C->resource16];
     initMovement2D(position, x << 12, y << 12);
     position->unk08 = z;
 
@@ -207,7 +207,7 @@ void updatePlayerModelPreviewTask(void) {
     RegisteredTaskEntry *entry;
     currentPlayerAbsolute = &gRacePlayers[D_8013AE88->data1C];
     if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
-    state = (ModelPreviewState *)&D_800D9504[D_8013AE88->resource14];
+    state = (ModelPreviewState *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) { for (;;) {} }
     if ((u16)(D_8013AE88->data1E % 10) == 0) {
         if (D_8013AE98->resource14 == 0xFFFF) { for (;;) {} }

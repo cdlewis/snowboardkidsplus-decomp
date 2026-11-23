@@ -79,7 +79,7 @@ void initializeTextSequenceTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (TextSequenceResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (TextSequenceResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     resource->state = 2;
     resource->entryIndex = 0;
     resource->progress = 0;
@@ -102,11 +102,11 @@ void updateTextSequenceTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (TextSequenceResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (TextSequenceResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) {
         while (1) {}
     }
-    panel = (ValuePanelEntry *)&D_800D9504[D_8013AE88->resource16];
+    panel = (ValuePanelEntry *)&gTaskMemoryPool[D_8013AE88->resource16];
 
     switch (resource->state) {
     case 2:
@@ -183,7 +183,7 @@ void animateTextSequenceExitTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         for (;;) {}
     }
-    resource = (TextSequenceResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (TextSequenceResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     resource->velocity += 0x1000;
     resource->y -= resource->velocity;
     resource->displacement += resource->velocity;
@@ -221,7 +221,7 @@ void advanceModeAfterTextSequenceFadeTask(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         for (;;) {}
     }
-    resource = (TextSequenceResource *)&D_800D9504[D_8013AE88->resource14];
+    resource = (TextSequenceResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     switch (D_8013AE88->data18) {
     case 1:
         configureTaskStateTransition(2, 0, 30);
