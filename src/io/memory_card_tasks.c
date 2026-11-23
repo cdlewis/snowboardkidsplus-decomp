@@ -42,21 +42,23 @@ s32 pollMemoryCardWrite(void) {
     return 0;
 }
 
-/* DECOMP_ATTEMPT: inline 26/34 */
-#ifdef NON_MATCHING
-s32 MemCardFormat(s32 chan);
+s32 formatMemoryCard(void) {
+    s32 *fileCount;
 
-s32 func_8001983C(void) {
     switch (MemCardFormat(D_8013AF34)) {
-    case 1: return 1;
-    default: D_8013B600[D_8013AF38] = 0; break;
-    case 0: return 0;
-    case 2: return 2;
+    case 1:
+        return 1;
+    default:
+        fileCount = &D_8013B600[D_8013AF38];
+        *fileCount = 0;
+        /* The original returns the address of the cleared count on this path. */
+        return (s32)fileCount;
+    case 0:
+        return 0;
+    case 2:
+        return 2;
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/io/memory_card_tasks", func_8001983C);
-#endif
 
 void resetMemoryCardTaskState(void) {
     D_8013AF3E = 0;

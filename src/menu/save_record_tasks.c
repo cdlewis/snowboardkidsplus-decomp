@@ -584,7 +584,7 @@ void updateMemoryCardSaveMenuTask(void) {
             setMemoryCardChannel(0);
         else
             setMemoryCardChannel(16);
-        formatResult = func_8001983C();
+        formatResult = formatMemoryCard();
         D_8013BE30.unk_0E[menu->slot] = 5;
         if (formatResult == 0) {
             createRegisteredStaticTextPanelTask(x, y, x + 4, y + 2, D_80130460, -1, 4, 11);

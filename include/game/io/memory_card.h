@@ -36,7 +36,7 @@ s32 pollMemoryCardRead(void);
 s32 pollMemoryCardWrite(void);
 void readMemoryCardDirectory(void);
 void resetMemoryCardTaskState(void);
-s32 func_8001983C(void);
+s32 formatMemoryCard(void);
 void setMemoryCardChannel(s32 channel);
 s32 startMemoryCardReadStatusTask(void *buffer);
 s32 startMemoryCardReadTask(void);

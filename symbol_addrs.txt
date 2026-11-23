@@ -215,6 +215,7 @@ startMemoryCardReadTask = 0x80019A2C; // type:func
 startMemoryCardReadStatusTask = 0x800198EC; // type:func
 startMemoryCardSaveStatusTask = 0x80019AF4; // type:func
 startMemoryCardWriteTask = 0x80019C40; // type:func
+formatMemoryCard = 0x8001983C; // type:func
 resetMemoryCardTaskState = 0x800198B8; // type:func
 setMemoryCardChannel = 0x800198C4; // type:func
 uploadBufferedTexturePair = 0x8002F264; // type:func
