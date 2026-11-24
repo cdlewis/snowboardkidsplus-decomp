@@ -507,7 +507,6 @@ extern const char gResultGetCoinLabel[16] __attribute__((section(".rodata.result
 
 extern const char gResultTotalMoneyLabel[16] __attribute__((section(".rodata.result_prize_labels"), aligned(4)));
 
-extern u8 D_80124284[];
 extern const char gResultValueFormat[];
 extern const char gResultValueMultiplierLabel[];
 extern const char gPlayerNumberSuffixLabel[];

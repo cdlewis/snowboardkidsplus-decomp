@@ -128,7 +128,7 @@ typedef struct TaskVisualResource {
 } TaskVisualResource;
 
 /* Sprite palettes indexed by the character nibble in saved records. */
-extern u8 D_80124284[];
+extern u8 gRaceProgressMeterIconPalettes[];
 
 extern GsOT D_800EBFF0[2];
 extern GsOT D_800EC018[2];

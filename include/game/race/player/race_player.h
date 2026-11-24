@@ -192,8 +192,8 @@ struct RacePlayer {
     u8 unk964;
     s8 unk965;
     s16 unk966;
-    s16 unk968;
-    s8 unk96A;
+    s16 progressMeterPosition;
+    s8 progressMeterSquashFrame;
     u8 soundVoice;
     s16 unk96C;
     u16 unk96E;
@@ -342,5 +342,5 @@ typedef char RacePlayer_isActive_OffsetCheck[((unsigned int)&((RacePlayer *)0)->
 typedef char RacePlayer_surfaceState_OffsetCheck[((unsigned int)&((RacePlayer *)0)->surfaceState == 0x134) ? 1 : -1];
 typedef char RacePlayer_coursePlacementDistance_OffsetCheck[((unsigned int)&((RacePlayer *)0)->coursePlacementDistance == 0x930) ? 1 : -1];
 typedef char RacePlayer_unk966_OffsetCheck[((unsigned int)&((RacePlayer *)0)->unk966 == 0x966) ? 1 : -1];
-typedef char RacePlayer_unk968_OffsetCheck[((unsigned int)&((RacePlayer *)0)->unk968 == 0x968) ? 1 : -1];
-typedef char RacePlayer_unk96A_OffsetCheck[((unsigned int)&((RacePlayer *)0)->unk96A == 0x96A) ? 1 : -1];
+typedef char RacePlayer_progressMeterPosition_OffsetCheck[((unsigned int)&((RacePlayer *)0)->progressMeterPosition == 0x968) ? 1 : -1];
+typedef char RacePlayer_progressMeterSquashFrame_OffsetCheck[((unsigned int)&((RacePlayer *)0)->progressMeterSquashFrame == 0x96A) ? 1 : -1];

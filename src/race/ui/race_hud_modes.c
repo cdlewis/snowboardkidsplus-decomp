@@ -4,14 +4,26 @@
 #include "game/engine/game_options.h"
 #include "game/engine/game_task_scheduler.h"
 #include "game/engine/task.h"
+#include "game/graphics/draw_mode_sprite.h"
 #include "game/graphics/graphics.h"
 #include "game/menu/selected_records.h"
 #include "game/race/player/race_player.h"
 #include "game/race/ui/race_time.h"
 #include "game/save/save_data.h"
 #include "psx/libc.h"
+#include "psx/libetc.h"
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
+
+#define DRAW_MODE_COMMAND_HIGH 0xE100
+#define TEXTURED_SPRITE_CODE 0x64
+
+typedef struct CourseProgressScratch {
+    u32 reserved[6];
+    s16 playerOrder[4];
+    s32 progress;
+    s32 distance;
+} CourseProgressScratch;
 
 extern u8 D_8013AFD8 __attribute__((section(".data")));
 extern u8 D_8013AFD9 __attribute__((section(".data")));
@@ -26,6 +38,19 @@ extern GameTask *D_8013AE88 __attribute__((section(".data")));
 extern u16 D_8013AFAA __attribute__((section(".data")));
 
 extern u8 gRacePlacementPalettes[4] __attribute__((section(".data")));
+
+u8 gRaceProgressMeterIconUVs[10][2] __attribute__((section(".data.race_progress_icons"), aligned(4))) = {
+    {0, 80}, {0, 96}, {0, 112}, {0, 128}, {0, 144},
+    {56, 112}, {56, 96}, {56, 128}, {56, 80}, {56, 144},
+};
+
+u8 gRaceProgressMeterIconPalettes[12] __attribute__((section(".data.race_progress_icons"), aligned(4))) = {
+    8, 9, 8, 9, 8, 9, 13, 13, 8, 8,
+};
+
+u8 gRaceProgressMeterAlternatePalettes[12] __attribute__((section(".data.race_progress_icons"), aligned(4))) = {
+    0, 1, 0, 1, 0, 1, 2, 2, 0, 0,
+};
 
 /* Full-width Shift-JIS labels used by the race HUD. */
 const char gRaceRankLabel[12] __attribute__((section(".rodata.race_rank_label"), aligned(4))) =
@@ -43,7 +68,6 @@ const char gSplitScreenTimeLimitLabel[12] __attribute__((section(".rodata.trick_
 const char gTargetTimeLabel[12] __attribute__((section(".rodata.target_time_label"), aligned(4))) =
     "TARGET TIME";
 
-void func_8004054C(s32 x, s32 y, GsOT *ot, u16 depth);
 void drawSinglePlayerRaceHud(void);
 void drawSplitScreenCourseProgressHud(void);
 void drawSplitScreenRaceHud(s16 player);
@@ -427,21 +451,7 @@ void unpackUpperWordBytes(u32 packed, UnpackedWordBytes *out) {
     out->unk0 = packed;
 }
 
-/* DECOMP_ATTEMPT: inline 318/325 */
-#ifdef NON_MATCHING
-#include "game/graphics/draw_mode_sprite.h"
-
-typedef struct CourseProgressScratch {
-    u32 reserved[6];
-    s16 playerOrder[4];
-    s32 progress;
-    s32 distance;
-} CourseProgressScratch;
-
-extern u8 D_80124270[][2];
-extern u8 D_80124290[];
-
-void func_8004054C(s32 x, s32 y, GsOT *ot, u16 depth) {
+void drawRaceCourseProgressMeter(s16 x, s16 y, GsOT *ot, s32 depth) {
     CourseProgressScratch *scratch = (CourseProgressScratch *)getScratchAddr(0);
     s16 i = 0;
     s16 j;
@@ -471,68 +481,67 @@ void func_8004054C(s32 x, s32 y, GsOT *ot, u16 depth) {
     sprite.tag = 5u << 24;
     packet->tpage = getTPage(0, 0, 832, 256);
     setRGB0(packet, 128, 128, 128);
-    packet->code = 0x64;
-    packet->drawModeCode = (getTPage(0, 0, 0, 0) | 0xE100);
-    for (; j < D_8013AFD2; j++) {
-        RacePlayer *player;
-        s16 progress;
-        u8 *uv;
-        u8 character;
+    packet->code = TEXTURED_SPRITE_CODE;
+    packet->drawModeCode = DRAW_MODE_COMMAND_HIGH;
+    if (j < D_8013AFD2) {
+        do {
+            RacePlayer *player;
+            s16 progress;
+            u8 *uv;
+            u8 character;
+            s32 squashed;
 
-        i = scratch->playerOrder[j];
+            i = scratch->playerOrder[j];
+            squashed = gRacePlayers[i].unk128 & 0x200000;
+            iconSize = 16;
 
-        if ((gRacePlayers[i].unk128 & 0x200000) || gRacePlayers[i].unk96A) {
-            gRacePlayers[i].unk96A++;
-        }
-        iconSize = 16;
-        if (gRacePlayers[i].unk128 & 0x200000) {
-            if (gRacePlayers[i].unk96A > 4) {
-                gRacePlayers[i].unk96A = 4;
+            if (squashed || gRacePlayers[i].progressMeterSquashFrame) {
+                gRacePlayers[i].progressMeterSquashFrame++;
             }
-        }
-        player = &gRacePlayers[i];
-        if (player->unk96A > 5) {
-            player->unk96A = 0;
-        }
+            if ((gRacePlayers[i].unk128 & 0x200000) && gRacePlayers[i].progressMeterSquashFrame > 4) {
+                gRacePlayers[i].progressMeterSquashFrame = 4;
+            }
+            player = &gRacePlayers[i];
+            if (player->progressMeterSquashFrame > 5) {
+                player->progressMeterSquashFrame = 0;
+            }
 
-        packet->x0 = x - 4;
-        getPlayerCourseProgress(i, &scratch->progress, &scratch->distance);
-        progress = (scratch->progress << 7) / ((s16)D_80123D80[D_8013AFCE].unk00 << 3);
-        if (progress < 0) {
-            progress = 0;
-        }
-        if (progress > 128) {
-            progress = 128;
-        }
-        packet->y0 = (s16)(progress - 6) + y;
+            packet->x0 = x - 4;
+            getPlayerCourseProgress(i, &scratch->progress, &scratch->distance);
+            progress = (scratch->progress << 7) / ((s16)D_80123D80[D_8013AFCE].unk00 << 3);
+            if (progress < 0) {
+                progress = 0;
+            }
+            if (progress > 128) {
+                progress = 128;
+            }
+            packet->y0 = (s16)(progress - 6) + y;
 
-        character = player->characterId;
-        player->unk968 = progress;
-        uv = D_80124270[character];
-        if (player->unk96A > 0) {
-            if (player->unk96A < 3) {
-                packet->u0 = uv[0] + 36;
+            character = player->characterId;
+            player->progressMeterPosition = progress;
+            uv = gRaceProgressMeterIconUVs[character];
+            if (player->progressMeterSquashFrame > 0) {
+                if (player->progressMeterSquashFrame < 3) {
+                    setUV0(packet, uv[0] + 36, uv[1]);
+                    setWH(packet, 20, iconSize);
+                } else {
+                    setUV0(packet, uv[0] + 16, uv[1]);
+                    setWH(packet, 20, iconSize);
+                }
             } else {
-                packet->u0 = uv[0] + 16;
+                setUV0(packet, uv[0], uv[1]);
+                setWH(packet, iconSize, iconSize);
             }
-            packet->v0 = uv[1];
-            setWH(packet, 20, iconSize);
-        } else {
-            setUV0(packet, uv[0], uv[1]);
-            setWH(packet, iconSize, iconSize);
-        }
-        if (gRacePlayers[i].unk0FA) {
-            packet->clut = getClut(784, D_80124290[character] + 240);
-        } else {
-            packet->clut = getClut(800, D_80124284[character] + 240);
-        }
-        addTexturedSpritePacket((TexturedSpritePacket *)packet, ot, packetDepth);
+            if (gRacePlayers[i].unk0FA) {
+                packet->clut = getClut(784, gRaceProgressMeterAlternatePalettes[character] + 240);
+            } else {
+                packet->clut = getClut(800, gRaceProgressMeterIconPalettes[character] + 240);
+            }
+            addTexturedSpritePacket((TexturedSpritePacket *)packet, ot, packetDepth);
+        } while (++j < D_8013AFD2);
     }
     drawSpriteByIndexWithBlend(x, y, 0x1DE, 15, -1, ot, packetDepth);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud_modes", func_8004054C);
-#endif
 
 void initializeRaceRulesAndCounters(void) {
     RaceTime *times;
@@ -824,7 +833,7 @@ void drawSinglePlayerRaceHud(void) {
     drawHudDecimalNumber8x16(104, -96, 1, 0, player->unk934 + 1, 3, -1, ot, depth);
     drawSpriteByIndexWithBlend(116, -96, 27, 4, -1, ot, depth);
     drawHudDecimalNumber8x16(128, -96, 1, 0, selectedFinishLapCountAbsolute, 3, -1, ot, depth);
-    func_8004054C(124, -68, ot, depth);
+    drawRaceCourseProgressMeter(124, -68, ot, depth);
     frame = (s16)gFrameCounter % 12;
     drawSpriteByIndexWithBlend(120, 80, frame / 2 + 472, 7, -1, ot, depth);
     money = player->unk01C;
@@ -836,7 +845,7 @@ void drawSplitScreenCourseProgressHud(void) {
     GsOT *ot = &D_800EBFF0[D_8013AF78];
 
     setSpriteColor(128, 128, 128);
-    func_8004054C(81, -68, ot, 1);
+    drawRaceCourseProgressMeter(81, -68, ot, 1);
 }
 
 void drawSplitScreenRaceHud(s16 player) {

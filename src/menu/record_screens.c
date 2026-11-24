@@ -70,7 +70,7 @@ void drawTimeRecordRows(MenuTimeResource *resource) {
                      16, y, mode, &D_800EBFF0[D_8013AF78], 1);
         drawSpriteByIndexWithBlend(88, y,
                      (gPlayerSaveRecords[0].lapRecordIcons[D_8013AFCE][i] & 15) * 3 + 0x14A,
-                     D_80124284[gPlayerSaveRecords[0].lapRecordIcons[D_8013AFCE][i] & 15],
+                     gRaceProgressMeterIconPalettes[gPlayerSaveRecords[0].lapRecordIcons[D_8013AFCE][i] & 15],
                      -1, &D_800EBFF0[D_8013AF78], 1);
         drawSpriteByIndexWithBlend(108, y,
                      (gPlayerSaveRecords[0].lapRecordIcons[D_8013AFCE][i] >> 4) + 0x13B,
@@ -264,7 +264,7 @@ void drawCountRecordRows(TaskMemoryBlock *resource) {
         drawSpriteByIndexWithBlend(-8, y, i + 0x136, mode, -1, &D_800EBFF0[D_8013AF78], 1);
         drawHudDecimalNumber8x16(16, y, 2, 0, gPlayerSaveRecords[0].countRecordValues[D_8013AFCE][i], mode, -1, &D_800EBFF0[D_8013AF78], 1);
         drawSpriteByIndexWithBlend(70, y, (gPlayerSaveRecords[0].countRecordIcons[D_8013AFCE][i] & 15) * 3 + 0x14A,
-            D_80124284[gPlayerSaveRecords[0].countRecordIcons[D_8013AFCE][i] & 15], -1, &D_800EBFF0[D_8013AF78], 1);
+            gRaceProgressMeterIconPalettes[gPlayerSaveRecords[0].countRecordIcons[D_8013AFCE][i] & 15], -1, &D_800EBFF0[D_8013AF78], 1);
         drawSpriteByIndexWithBlend(88, y, (gPlayerSaveRecords[0].countRecordIcons[D_8013AFCE][i] >> 4) + 0x13B, 7, -1, &D_800EBFF0[D_8013AF78], 1);
         drawLimitedText8x8(32, i * 32 - 72, 3, D_8013B138, textMode, -1, &D_800EBFF0[D_8013AF78], 1);
         y += 32;
@@ -622,7 +622,7 @@ void drawTimeRecordListRows(TimeRecordListResource *resource) {
         drawSpriteByIndexWithBlend(-8, y, row + 0x136, palette, -1, &D_800EBFF0[D_8013AF78], 1);
         drawRaceTime(&gPlayerSaveRecords[0].timeRecords[D_8013AFCE][row], 16, y, palette, &D_800EBFF0[D_8013AF78], 1);
         drawSpriteByIndexWithBlend(88, y, (gPlayerSaveRecords[0].timeRecordCharacters[D_8013AFCE][row] & 15) * 3 + 0x14A,
-            D_80124284[gPlayerSaveRecords[0].timeRecordCharacters[D_8013AFCE][row] & 15], -1, &D_800EBFF0[D_8013AF78], 1);
+            gRaceProgressMeterIconPalettes[gPlayerSaveRecords[0].timeRecordCharacters[D_8013AFCE][row] & 15], -1, &D_800EBFF0[D_8013AF78], 1);
         drawSpriteByIndexWithBlend(108, y, (gPlayerSaveRecords[0].timeRecordCharacters[D_8013AFCE][row] >> 4) + 0x13B, 7, -1, &D_800EBFF0[D_8013AF78], 1);
         y += 32;
     }
@@ -1024,7 +1024,7 @@ void drawStatsRecordRows(TaskMemoryBlock *resource) {
         drawSpriteByIndexWithBlend(24, y, i + 0x136, mode, -1, &D_800EBFF0[D_8013AF78], 1);
         drawHudDecimalNumber8x16(44, y, 5, 0, gPlayerSaveRecords[0].statsRecordValues[D_8013AFCE][i], mode, -1, &D_800EBFF0[D_8013AF78], 1);
         drawSpriteByIndexWithBlend(102, y, (gPlayerSaveRecords[0].statsRecordIcons[D_8013AFCE][i] & 15) * 3 + 0x14A,
-            D_80124284[gPlayerSaveRecords[0].statsRecordIcons[D_8013AFCE][i] & 15], -1, &D_800EBFF0[D_8013AF78], 1);
+            gRaceProgressMeterIconPalettes[gPlayerSaveRecords[0].statsRecordIcons[D_8013AFCE][i] & 15], -1, &D_800EBFF0[D_8013AF78], 1);
         drawSpriteByIndexWithBlend(120, y, (gPlayerSaveRecords[0].statsRecordIcons[D_8013AFCE][i] >> 4) + 0x13B, 7, -1, &D_800EBFF0[D_8013AF78], 1);
         drawLimitedText8x8(84, y + 8, 1, gPlayerNumberSuffixLabel, textMode, -1, &D_800EBFF0[D_8013AF78], 1);
         y += 32;

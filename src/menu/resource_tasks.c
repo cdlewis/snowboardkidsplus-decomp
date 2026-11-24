@@ -850,7 +850,7 @@ void drawCurrentTaskTimeRecordsPrompt(void) {
                      x + 38, y, palette, &D_800EBFF0[D_8013AF78], 1);
         drawSpriteByIndexWithBlend(x + 106, y,
                      (gPlayerSaveRecords[0].timeRecordCharacters[D_8013AFCE][row] & 15) * 3 + 0x14A,
-                     D_80124284[gPlayerSaveRecords[0].timeRecordCharacters[D_8013AFCE][row] & 15],
+                     gRaceProgressMeterIconPalettes[gPlayerSaveRecords[0].timeRecordCharacters[D_8013AFCE][row] & 15],
                      -1, &D_800EBFF0[D_8013AF78], 1);
         drawSpriteByIndexWithBlend(x + 124, y,
                      (gPlayerSaveRecords[0].timeRecordCharacters[D_8013AFCE][row] >> 4) + 0x13B,
@@ -895,7 +895,7 @@ void drawCurrentTaskCountRecordsPrompt(void) {
         drawLimitedText8x8(x + 58, y + 8, 3, gCountRecordsHitLabel, textPalette, -1, &D_800EBFF0[D_8013AF78], 1);
         drawSpriteByIndexWithBlend(x + 106, y,
                      (gPlayerSaveRecords[0].countRecordIcons[D_8013AFCE][row] & 15) * 3 + 0x14A,
-                     D_80124284[gPlayerSaveRecords[0].countRecordIcons[D_8013AFCE][row] & 15],
+                     gRaceProgressMeterIconPalettes[gPlayerSaveRecords[0].countRecordIcons[D_8013AFCE][row] & 15],
                      -1, &D_800EBFF0[D_8013AF78], 1);
         drawSpriteByIndexWithBlend(x + 124, y,
                      (gPlayerSaveRecords[0].countRecordIcons[D_8013AFCE][row] >> 4) + 0x13B,
@@ -942,7 +942,7 @@ void drawCurrentTaskStatsRecordsPrompt(void) {
         drawLimitedText8x8(x + 78, y + 8, 1, gStatsRecordsPlayerSuffixLabel, textPalette, -1, &D_800EBFF0[D_8013AF78], 1);
         drawSpriteByIndexWithBlend(x + 106, y,
                      (gPlayerSaveRecords[0].statsRecordIcons[D_8013AFCE][row] & 15) * 3 + 0x14A,
-                     D_80124284[gPlayerSaveRecords[0].statsRecordIcons[D_8013AFCE][row] & 15],
+                     gRaceProgressMeterIconPalettes[gPlayerSaveRecords[0].statsRecordIcons[D_8013AFCE][row] & 15],
                      -1, &D_800EBFF0[D_8013AF78], 1);
         drawSpriteByIndexWithBlend(x + 124, y,
                      (gPlayerSaveRecords[0].statsRecordIcons[D_8013AFCE][row] >> 4) + 0x13B,
@@ -1343,7 +1343,7 @@ void drawCurrentTaskLapRecordsPrompt(void) {
                      x + 38, y, palette, &D_800EBFF0[D_8013AF78], 1);
         drawSpriteByIndexWithBlend(x + 106, y,
                      (gPlayerSaveRecords[0].lapRecordIcons[D_8013AFCE][row] & 15) * 3 + 0x14A,
-                     D_80124284[gPlayerSaveRecords[0].lapRecordIcons[D_8013AFCE][row] & 15],
+                     gRaceProgressMeterIconPalettes[gPlayerSaveRecords[0].lapRecordIcons[D_8013AFCE][row] & 15],
                      -1, &D_800EBFF0[D_8013AF78], 1);
         drawSpriteByIndexWithBlend(x + 124, y,
                      (gPlayerSaveRecords[0].lapRecordIcons[D_8013AFCE][row] >> 4) + 0x13B,

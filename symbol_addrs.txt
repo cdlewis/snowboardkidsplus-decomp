@@ -362,6 +362,7 @@ processCurrentPlayerActionRequests = 0x8002D3C4; // type:func
 
 // Extract bits 8-31 into a byte, byte, halfword layout.
 unpackUpperWordBytes = 0x8004052C; // type:func
+drawRaceCourseProgressMeter = 0x8004054C; // type:func
 
 // Test the word at offset 0x08 in a task's resource16 record.
 hasTaskResource16Value = 0x80074968; // type:func
@@ -3872,6 +3873,9 @@ drawSplitScreenCourseProgressHud = 0x80041890; // type:func
 drawSplitScreenRaceHud = 0x800418F4; // type:func
 
 D_80124248 = 0x80124248; // type:RaceTime size:0x28 defined:true
+gRaceProgressMeterIconUVs = 0x80124270; // size:0x14 defined:true
+gRaceProgressMeterIconPalettes = 0x80124284; // size:0xC defined:true
+gRaceProgressMeterAlternatePalettes = 0x80124290; // size:0xC defined:true
 D_8012429C = 0x8012429C; // size:0xC defined:true
 D_801242A8 = 0x801242A8; // size:0xC defined:true
 
