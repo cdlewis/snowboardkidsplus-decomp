@@ -69,8 +69,7 @@ segments:
     subsegments:
       - {start: 0x800, type: .rodata, name: io/cd_queue, linker_section: .data.cd_paths}
       - {start: 0x840, type: .rodata, name: io/cd_queue, linker_section: .data.xa_paths}
-      - [0x900, rodata, main_cd_paths_tail]
-      - [0x918, .rodata, io/cd_queue]
+      - [0x900, .rodata, io/cd_queue]
       - [0x9B8, rodata, main_cd_commands]
       - [0xB88, .rodata, io/memory_card]
       - {start: 0xB9C, type: .rodata, name: io/memory_card, linker_section: .rodata.memory_card_availability_padding}

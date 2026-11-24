@@ -118,7 +118,7 @@ extern s32 D_8013AE64 __attribute__((section(".sdata.cd_command_state")));
 extern s16 D_8013AE78 __attribute__((section(".sdata.cd_command_active")));
 
 extern TaskCallback gInitialTaskCallbacks[6] __attribute__((section(".data.initial_task_callbacks")));
-void func_80013540(void);
+void restoreCdReadModeAndResetQueues(void);
 void updateControllerAxesFromAnalog(u16 controller);
 
 void func_800131B4(void);
