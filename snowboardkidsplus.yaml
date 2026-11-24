@@ -851,6 +851,8 @@ segments:
       - [0x120EDC, data, task_index_panel_text_tail]
       - {start: 0x120F24, type: .data, name: menu/save_record_tasks, linker_section: .data.task_shadowed_text}
       - [0x120F40, data, task_shadowed_text_tail]
+      - {start: 0x120F98, type: .data, name: menu/save_record_tasks, linker_section: .data.memory_card_save_record_heading}
+      - [0x120FAC, data, memory_card_save_record_heading_tail]
       - {start: 0x12100C, type: .data, name: menu/save_record_tasks, linker_section: .data.save_records}
       - {start: 0x12181C, type: .data, name: menu/save_record_tasks, linker_section: .data.merged_save_record}
       - {start: 0x121C24, type: .data, name: menu/panel_tasks, linker_section: .data.shop_menu_sprites}
@@ -1071,6 +1073,8 @@ segments:
       - {start: 0x12BC70, type: .data, name: menu/panel_tasks, linker_section: .data.registered_panel_mode_labels}
       - {start: 0x12BC78, type: .data, name: menu/course_selection_tasks, linker_section: .data.save_record_progress_currency_label}
       - [0x12BC7C, data, 12BC7C]
+      - {start: 0x12BC80, type: .data, name: menu/save_record_tasks, linker_section: .data.memory_card_save_record_currency_label}
+      - [0x12BC84, data, 12BC84]
       - {start: 0x12BC8C, type: .data, name: menu/panel_tasks, linker_section: .data.shop_menu_mappings}
       - [0x12BC9C, data]
       - {start: 0x12BCA4, type: .data, name: menu/panel_tasks, linker_section: .data.shop_menu_destinations}

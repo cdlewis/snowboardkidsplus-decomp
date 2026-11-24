@@ -15,6 +15,8 @@
 #include "game/save/save_data.h"
 
 #define MEMORY_CARD_SAVE_BUFFER ((SaveRecord *)0x801E4000)
+#define PANEL_OT (&D_800EBFF0[D_8013AF78])
+#define PANEL_DEPTH (D_8013AE88->data1C)
 
 typedef struct SaveMenuResource {
     u8 unk00[4];
@@ -49,6 +51,11 @@ u16 gTaskShadowedText[14] __attribute__((section(".data.task_shadowed_text"))) =
     0x001F, 0x001E, 0x001E, 0x0019, 0x0018, 0, 0
 };
 
+const u16 gMemoryCardSaveRecordHeading[10]
+    __attribute__((section(".data.memory_card_save_record_heading"), aligned(4))) = {
+    0x000E, 0x000B, 0x001E, 0x000B, 0x8020, 0x001D, 0x000B, 0x0020, 0x000F, 0
+};
+
 SaveRecord gPlayerSaveRecords[2] __attribute__((section(".data.save_records"))) = {0};
 SaveRecord gMergedSaveRecord __attribute__((section(".data.merged_save_record"))) = {0};
 
@@ -56,7 +63,12 @@ extern const u16 D_801303EC[], D_80130428[];
 extern const u16 D_80130460[], D_8013047C[], D_80130578[], D_801305C4[];
 extern const u16 D_801305F0[], D_80130638[], D_80130694[], D_801306DC[];
 extern const u16 D_80130708[], D_80130740[], D_8013075C[];
-void func_8008B178(void);
+/* Incomplete arrays let the compiler schedule the address halves separately. */
+extern s8 gMemoryCardSaveRecordCurrencyLabel[]
+    __attribute__((section(".data.memory_card_save_record_currency_label")));
+extern TexturedQuadListEntry *D_8013B3C0[];
+
+void drawMemoryCardSaveRecordPanel(void);
 
 void repeatByteStore(u8 *destination, s32 value, s32 count) {
     s16 i;
@@ -305,7 +317,7 @@ void updateMemoryCardSaveMenuTask(void) {
         break;
     case 1:
         primary->busy06 = 0;
-        createRegisteredCallbackTask(0, 0, 30, func_8008B178, 6, 1);
+        createRegisteredCallbackTask(0, 0, 30, drawMemoryCardSaveRecordPanel, 6, 1);
         uploadTextureArchiveEntry(player * 128 + 576, 256, 768, 238 - player * 2, texture);
         uploadTextureArchiveEntry(320, 256, 768, 234, 11);
         goto showTitle;
@@ -631,40 +643,28 @@ void updateMemoryCardSaveMenuTask(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: inline 713/729 */
-#ifdef NON_MATCHING
-extern u8 gSelectionPanelLabelOffsets[12];
-
-#define PANEL_OT (&D_800EBFF0[D_8013AF78])
-#define PANEL_DEPTH (D_8013AE88->data1C)
-
-extern const u16 D_80130798[9];
-extern s8 D_8013B480[4] __attribute__((section(".data")));
-extern TexturedQuadListEntry *D_8013B3C0[2];
-
-void func_8008B178(void) {
+void drawMemoryCardSaveRecordPanel(void) {
     Movement2D *position;
-    s16 slot;
-    s16 course;
+    s16 player;
+    s16 character;
     s16 i;
     s16 pair;
-    s16 shade;
     SaveRecord *records;
 
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
     position = (Movement2D *)&gTaskMemoryPool[D_8013AE88->resource14];
-    slot = D_8013AE98->data1A;
-    course = gRacePlayers[slot].unk009;
+    player = D_8013AE98->data1A;
+    character = gRacePlayers[player].unk009;
     setSpriteColor(128, 128, 128);
     func_8006EF30((s16)(position->x / 4096 - 68), (s16)(position->y / 4096 - 96),
-                 9, D_80130798, 14, -1, PANEL_OT, PANEL_DEPTH);
+                 9, gMemoryCardSaveRecordHeading, 14, -1, PANEL_OT, PANEL_DEPTH);
     drawDecimalNumber8x16(position->x / 4096 + 38, position->y / 4096 - 3, 6, 0,
-                          gPlayerSaveRecords[slot].money,
+                          gPlayerSaveRecords[player].money,
                           0, -1, PANEL_OT, PANEL_DEPTH);
     drawWrappedDoubleByteText(position->x / 4096 + 86, position->y / 4096 - 3,
-                              2, D_8013B480, 0, -1, PANEL_OT, PANEL_DEPTH);
+                              2, gMemoryCardSaveRecordCurrencyLabel, 0, -1, PANEL_OT, PANEL_DEPTH);
     addTilePacketWithBlend(position->x / 4096 + 34, position->y / 4096 - 3,
                   64, 16, 128, 128, 128, 2, PANEL_OT, PANEL_DEPTH);
     drawSpriteByIndexWithBlend(position->x / 4096 - 99, position->y / 4096 - 78, 110, 6, -1,
@@ -673,59 +673,72 @@ void func_8008B178(void) {
                   PANEL_OT, PANEL_DEPTH);
     drawSpriteByIndexWithBlend(position->x / 4096 - 61, position->y / 4096 - 61, 89, 6, -1,
                   PANEL_OT, PANEL_DEPTH);
-    drawSpriteByIndexWithBlend((s8)gSelectionPanelLabelOffsets[course] + position->x / 4096 - 71,
-                  position->y / 4096 - 77, course + 254, (s16)(slot + 2), -1,
+    drawSpriteByIndexWithBlend((s8)gSelectionPanelLabelOffsets[character] + position->x / 4096 - 71,
+                  position->y / 4096 - 77, character + 254, (s16)(player + 2), -1,
                   PANEL_OT, PANEL_DEPTH);
 
     for (i = 0; i < 3; i++) {
         records = gPlayerSaveRecords;
-        if (records[slot].masks[course] & (0x1000000U << i)) {
+        if (records[player].masks[character] & (0x1000000U << i)) {
             setSpriteColor(128, 128, 128);
         } else {
             setSpriteColor(32, 32, 32);
         }
-        drawSpriteByIndexWithBlend(position->x / 4096 - 96, i * 22 + position->y / 4096 - 50,
-                      i + 18, 6, -1, PANEL_OT, PANEL_DEPTH);
+        {
+            s32 x = (s16)(position->x / 4096 - 96);
+            s32 rowOffset = i * 22;
+            s32 y = (s16)(position->y / 4096 + rowOffset - 50);
+            drawSpriteByIndexWithBlend(x, y, i + 18, 6, -1, PANEL_OT, PANEL_DEPTH);
+        }
     }
 
     for (i = 0; i < 9; i++) {
         setSpriteColor(128, 128, 128);
-        pair = getSaveRecordFlagPair(slot, course, i);
+        pair = getSaveRecordFlagPair(player, character, i);
         if (pair == 3) {
-            drawSpriteByIndexWithBlend((s16)(i % 3) * 16 + position->x / 4096 - 60,
-                          (s16)(i / 3) * 22 + position->y / 4096 - 49,
-                          i + 70, 9, -1, PANEL_OT, PANEL_DEPTH);
+            s32 columnOffset = (s16)(i % 3) * 16;
+            s32 x = (s16)(position->x / 4096 + columnOffset - 60);
+            s32 rowOffset = (s16)(i / 3) * 22;
+            s32 y = (s16)(position->y / 4096 + rowOffset - 49);
+            drawSpriteByIndexWithBlend(x, y, i + 70, 9, -1, PANEL_OT, PANEL_DEPTH);
         } else if (pair == 2) {
-            drawSpriteByIndexWithBlend((s16)(i % 3) * 16 + position->x / 4096 - 60,
-                          (s16)(i / 3) * 22 + position->y / 4096 - 49,
-                          i + 70, 10, -1, PANEL_OT, PANEL_DEPTH);
+            s32 columnOffset = (s16)(i % 3) * 16;
+            s32 x = (s16)(position->x / 4096 + columnOffset - 60);
+            s32 rowOffset = (s16)(i / 3) * 22;
+            s32 y = (s16)(position->y / 4096 + rowOffset - 49);
+            drawSpriteByIndexWithBlend(x, y, i + 70, 10, -1, PANEL_OT, PANEL_DEPTH);
         } else if (pair == 1) {
-            drawSpriteByIndexWithBlend((s16)(i % 3) * 16 + position->x / 4096 - 60,
-                          (s16)(i / 3) * 22 + position->y / 4096 - 49,
-                          i + 70, 11, -1, PANEL_OT, PANEL_DEPTH);
+            s32 columnOffset = (s16)(i % 3) * 16;
+            s32 x = (s16)(position->x / 4096 + columnOffset - 60);
+            s32 rowOffset = (s16)(i / 3) * 22;
+            s32 y = (s16)(position->y / 4096 + rowOffset - 49);
+            drawSpriteByIndexWithBlend(x, y, i + 70, 11, -1, PANEL_OT, PANEL_DEPTH);
         } else {
+            s32 columnOffset, rowOffset, x, y;
+
             setSpriteColor(32, 32, 32);
-            drawSpriteByIndexWithBlend((s16)(i % 3) * 16 + position->x / 4096 - 60,
-                          (s16)(i / 3) * 22 + position->y / 4096 - 49,
-                          69, 9, -1, PANEL_OT, PANEL_DEPTH);
+            columnOffset = (s16)(i % 3) * 16;
+            x = (s16)(position->x / 4096 + columnOffset - 60);
+            rowOffset = (s16)(i / 3) * 22;
+            y = (s16)(position->y / 4096 + rowOffset - 49);
+            drawSpriteByIndexWithBlend(x, y, 69, 9, -1, PANEL_OT, PANEL_DEPTH);
         }
     }
 
     setTexturedQuadColor(128, 128, 128);
     drawTexturedQuadList(position->x / 4096 - 104, position->y / 4096 - 80,
-                         D_8013B3C0[slot], 1, PANEL_OT, PANEL_DEPTH);
+                         D_8013B3C0[player], 1, PANEL_OT, PANEL_DEPTH);
     setSpriteColor(128, 128, 128);
     drawSpriteByIndexWithBlend(position->x / 4096 - 8, position->y / 4096 - 80,
-                  slot * 2 + 241, 0, 0, PANEL_OT, PANEL_DEPTH);
+                  player * 2 + 241, 0, 0, PANEL_OT, PANEL_DEPTH);
     drawSpriteByIndexWithBlend(position->x / 4096 - 8, position->y / 4096 - 80,
                   267, 0, -1, PANEL_OT, PANEL_DEPTH);
 }
 
-#undef PANEL_OT
-#undef PANEL_DEPTH
-#else
-INCLUDE_ASM("asm/nonmatchings/menu/save_record_tasks", func_8008B178);
-#endif
+s8 gMemoryCardSaveRecordCurrencyLabel[4]
+    __attribute__((section(".data.memory_card_save_record_currency_label"), aligned(4))) = {
+    (s8)0x82, 'f', 0, 0
+};
 
 void drawTaskShadowedText(void) {
     Movement2D *resource;

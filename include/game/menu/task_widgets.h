@@ -29,6 +29,7 @@ typedef struct ValuePanelEntry {
     s16 active;
 } ValuePanelEntry;
 
+extern u8 gSelectionPanelLabelOffsets[12];
 extern const TimedSequenceEntry D_80123840[];
 extern ByteTriplet D_8012FFFC[];
 extern u8 D_8012D460[12];

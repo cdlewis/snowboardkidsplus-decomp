@@ -3215,6 +3215,9 @@ gPlayerPairedQuadOffsets = 0x8012C8EC; // size:0x20 defined:true
 
 createInputTimedSpriteTask = 0x80076C20; // type:func
 
+drawMemoryCardSaveRecordPanel = 0x8008B178; // type:func size:0xB64
+gMemoryCardSaveRecordHeading = 0x80130798; // size:0x14
+gMemoryCardSaveRecordCurrencyLabel = 0x8013B480; // size:0x4
 drawTaskShadowedText = 0x8008BCDC; // type:func
 gTaskShadowedText = 0x80130724; // size:0x1C
 gPlayerSaveRecords = 0x8013080C; // size:0x810 defined:true allow_addend:true
