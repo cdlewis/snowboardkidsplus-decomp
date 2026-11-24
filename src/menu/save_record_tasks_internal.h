@@ -102,7 +102,7 @@ void updateSelectionPrizeMenuTask(void);
 void updatePaletteRotationTask(void);
 void updateStateValueHistoryTask(void);
 void updateMemoryCardSlotTask(void);
-void func_800857C4(void);
+void updatePlayerCourseVariantSelectionTask(void);
 void updatePlayerGroupedSelectionMenu(void);
 void updatePlayerGroupedSelectionTask(void);
 void updateRecordFlagSelectionMenuTask(void);

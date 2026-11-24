@@ -224,6 +224,11 @@ GroupedSelectionMenuDescriptor gPlayerGroupedSelectionDescriptors[6]
     {D_8013B430, 0, 16, 3, 0, NULL, NULL, D_8013B450},
 };
 
+const u16 gPlayerCourseVariantConfirmationText[10]
+    __attribute__((section(".data.player_course_variant_confirmation_text"))) = {
+    0x00D9, 0x00DA, 0x00DB, 0x00DC, 0x009D, 0x00B0, 0x009D, 0x00A1, 0x0033, 0,
+};
+
 u8 gPlayerGroupedSelectionTransitionFlags[4]
     __attribute__((section(".data.player_grouped_selection_transition_flags"))) = {0};
 
@@ -2823,24 +2828,17 @@ void initializeDualResourceTask(void) {
         while (1) {}
     }
     D_8013AE88->resource16 = allocateTaskMemoryBlock();
-    setCurrentTaskCallback(func_800857C4);
+    setCurrentTaskCallback(updatePlayerCourseVariantSelectionTask);
 }
 
-/* DECOMP_ATTEMPT: inline 852/880 */
-#ifdef NON_MATCHING
-#include "game/io/controller.h"
-
-extern const u16 D_801301B8[];
-void createRegisteredStaticTextPanelTask(s16 x, s16 y, s16 textX, s16 textY, const u16 *text,
-                   s32 mode, s32 depth, s32 index);
-
-void func_800857C4(void) {
+void updatePlayerCourseVariantSelectionTask(void) {
     CourseSelectionResource *parentStatus;
     RegisteredPanelSlot *panels;
-    register CourseSelectionResource *selection;
+    CourseSelectionResource *selection;
     RegisteredPanelSlot *children;
     RegisteredPanelSlot *parentSlot;
     RegisteredPanelSlot *slots;
+    u16 slotIndex;
     MenuSelectionState *groupedSelection;
     s16 player;
     RecordFlagMenuEntries entries;
@@ -2848,22 +2846,36 @@ void func_800857C4(void) {
     s16 mode;
     Movement2D *movement;
 
-    if (D_8013AE98->resource14 == 0xFFFF) { for (;;) {} }
+    if (D_8013AE98->resource14 == 0xFFFF) {
+        while (1) {}
+    }
     parentStatus = (CourseSelectionResource *)&gTaskMemoryPool[D_8013AE98->resource14];
-    if (D_8013AE98->resource16 == 0xFFFF) { for (;;) {} }
+    if (D_8013AE98->resource16 == 0xFFFF) {
+        while (1) {}
+    }
     panels = (RegisteredPanelSlot *)&gTaskMemoryPool[D_8013AE98->resource16];
-    if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
+    if (D_8013AE88->resource14 == 0xFFFF) {
+        while (1) {}
+    }
     selection = (CourseSelectionResource *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if (D_8013AE88->resource16 == 0xFFFF) { for (;;) {} }
+    if (D_8013AE88->resource16 == 0xFFFF) {
+        while (1) {}
+    }
     children = (RegisteredPanelSlot *)&gTaskMemoryPool[D_8013AE88->resource16];
     if ((u16)(D_8013AE88->data1E % 10U) == 0) {
-        if (D_8013AE98->resource14 == 0xFFFF) { for (;;) {} }
+        if (D_8013AE98->resource14 == 0xFFFF) {
+            while (1) {}
+        }
+        slotIndex = D_8013AE88->data1E / 10U;
         slots = (RegisteredPanelSlot *)&gTaskMemoryPool[D_8013AE98->resource14];
-        parentSlot = &slots[D_8013AE88->data1E / 10U];
+        parentSlot = &slots[slotIndex];
     } else {
-        if (D_8013AE98->resource16 == 0xFFFF) { for (;;) {} }
+        if (D_8013AE98->resource16 == 0xFFFF) {
+            while (1) {}
+        }
+        slotIndex = D_8013AE88->data1E / 10U;
         slots = (RegisteredPanelSlot *)&gTaskMemoryPool[D_8013AE98->resource16];
-        parentSlot = &slots[D_8013AE88->data1E / 10U];
+        parentSlot = &slots[slotIndex];
     }
 
     player = D_8013AE88->data1C;
@@ -2889,7 +2901,6 @@ void func_800857C4(void) {
         }
         break;
     case 3: {
-        s16 mappedIndex;
         if (panels[1].flags != 0) {
             break;
         }
@@ -2902,11 +2913,10 @@ void func_800857C4(void) {
                                          menuEntries->unk_04, menuEntries->unk_05, menuEntries->count, 237,
                                          drawSelectedTaskSprite, drawClippedRegisteredTaskGridSprite, 5, 1);
         selection->mode = 0;
-        mappedIndex = mapGroupedValueToTableIndex(groupedSelection->selection);
-        selection->selectedIndex = mappedIndex;
+        selection->selectedIndex = mapGroupedValueToTableIndex(groupedSelection->selection);
         selection->selectedIndex = findIndexedHalfwordRecord(gPlayerGroupedSelectionSprites,
                                                             entries.entries, menuEntries->count,
-                                                            mappedIndex);
+                                                            selection->selectedIndex);
         selection->previousIndex = selection->selectedIndex;
         selection->choiceResult = 0;
         D_8013AE88->data18 = 4;
@@ -2930,11 +2940,10 @@ void func_800857C4(void) {
     case 7: {
         s32 complete = isTaskResourceTransitionComplete(player);
         if (complete == 1) {
-            u8 *transitionFlag = &gPlayerGroupedSelectionTransitionFlags[player];
-            if (*transitionFlag == 0) {
+            if (gPlayerGroupedSelectionTransitionFlags[player] == 0) {
                 children[0].command = 21;
                 configureColorCycleTask(2, 64, 128, 4, player);
-                *transitionFlag = complete;
+                gPlayerGroupedSelectionTransitionFlags[player] = complete;
             }
         }
         if (panels[2].flags == 0) {
@@ -3005,13 +3014,14 @@ void func_800857C4(void) {
         }
         break;
     case 34:
-        parentStatus->choiceResult = 0;
+        selection = parentStatus;
+        selection->choiceResult = 0;
         D_8013AE98->data18 = 60;
         gPlayerGroupedSelectionStates[player] = 1;
         goto deleteTask;
     case 9:
         createRegisteredStaticTextPanelTask(-76, player * 104 - 74, -56, player * 104 - 62,
-                      D_801301B8, -1, 3, 11);
+                                            gPlayerCourseVariantConfirmationText, -1, 3, 11);
         if (gPlayerGroupedSelectionStates[0] != 3 || gPlayerGroupedSelectionStates[1] != 3) {
             if (!(D_8013AEE8[player] & 0x40)) {
                 break;
@@ -3090,9 +3100,6 @@ deleteTask:
         break;
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/menu/course_selection_tasks", func_800857C4);
-#endif
 
 void drawClippedRegisteredTaskGridSprite(void) {
     Movement2D *position;

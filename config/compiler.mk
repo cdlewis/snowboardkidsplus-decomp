@@ -145,6 +145,7 @@ UNIT_CCFLAGS_src/menu/course_selection_tasks.c += --rdata-section=updateRecordFl
 UNIT_CCFLAGS_src/menu/course_selection_tasks.c += --rdata-section=updateRegisteredPlayerModels:.rodata.registered_player_models
 UNIT_CCFLAGS_src/menu/course_selection_tasks.c += --rdata-section=updatePlayerGroupedSelectionMenu:.rodata.grouped_selection_menu
 UNIT_CCFLAGS_src/menu/course_selection_tasks.c += --rdata-section=updatePlayerGroupedSelectionTask:.rodata.player_grouped_selection
+UNIT_CCFLAGS_src/menu/course_selection_tasks.c += --rdata-section=updatePlayerCourseVariantSelectionTask:.rodata.player_course_variant_selection
 UNIT_CCFLAGS_src/menu/course_selection_tasks.c += --rdata-section=updateMemoryCardSlotTask:.rodata.memory_card_slot_task
 UNIT_CCFLAGS_src/menu/course_selection_tasks.c += --rdata-section=updateSaveRecordTask:.rodata.save_record_task
 UNIT_CCFLAGS_src/menu/course_selection_tasks.c += --rdata-section=updateSaveRecordLoadPanelTask:.rodata.save_record_load_panel

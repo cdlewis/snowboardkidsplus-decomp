@@ -139,7 +139,7 @@ segments:
       - {start: 0x2068, type: .rodata, name: menu/course_selection_tasks, linker_section: .rodata.grouped_selection_menu}
       - {start: 0x210C, type: .rodata, name: menu/course_selection_tasks, linker_section: .rodata.grouped_selection_menu_padding}
       - {start: 0x2110, type: .rodata, name: menu/course_selection_tasks, linker_section: .rodata.player_grouped_selection}
-      - [0x2230, rodata]
+      - {start: 0x2230, type: .rodata, name: menu/course_selection_tasks, linker_section: .rodata.player_course_variant_selection}
       - {start: 0x22B8, type: .rodata, name: menu/course_selection_tasks, linker_section: .rodata.memory_card_slot_task}
       - {start: 0x22EC, type: .rodata, name: menu/course_selection_tasks, linker_section: .rodata.memory_card_slot_task_padding}
       - {start: 0x22F0, type: .rodata, name: menu/course_selection_tasks, linker_section: .rodata.save_record_task}
@@ -849,7 +849,7 @@ segments:
       - {start: 0x1208D8, type: .data, name: menu/course_selection_tasks, linker_section: .data.player_grouped_selection_sprites}
       - {start: 0x12093E, type: .data, name: menu/course_selection_tasks, linker_section: .data.player_grouped_selection_sprites_padding}
       - {start: 0x120940, type: .data, name: menu/course_selection_tasks, linker_section: .data.player_grouped_selection_descriptors}
-      - [0x1209B8, data, grouped_course_menu_data_end]
+      - {start: 0x1209B8, type: .data, name: menu/course_selection_tasks, linker_section: .data.player_course_variant_confirmation_text}
       - {start: 0x1209CC, type: .data, name: menu/course_selection_tasks, linker_section: .data.task_index_panel_quads}
       - [0x120ABC, data, task_index_panel_tail]
       - {start: 0x120EBC, type: .data, name: menu/course_selection_tasks, linker_section: .data.save_record_push_any_button_text}
