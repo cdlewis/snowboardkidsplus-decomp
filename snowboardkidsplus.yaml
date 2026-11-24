@@ -820,7 +820,7 @@ segments:
       - [0x11F0E4, .data, graphics/sprite_templates]
       - {start: 0x11F0FC, type: .data, name: graphics/sprite_draw, linker_section: .data.double_byte_glyph_codes_8x8}
       - {start: 0x11F17C, type: .data, name: graphics/sprite_draw, linker_section: .data.digit_sprite16_template}
-      - [0x11F190, data, digit_sprite16_template_tail]
+      - {start: 0x11F190, type: .data, name: graphics/sprite_draw, linker_section: .data.double_byte_glyph_codes_8x16}
       - {start: 0x11F3D0, type: .data, name: graphics/sprite_draw, linker_section: .data.uppercase_glyph_metrics}
       - [0x11F404, data, uppercase_glyph_metrics_tail]
       - [0x11F900, .data, menu/task_widgets]

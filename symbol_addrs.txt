@@ -2390,6 +2390,7 @@ drawSpriteTextureRegion = 0x8006CB70; // type:func
 addSpritePacket = 0x8006CC90; // type:func
 addDrawPagePacket = 0x8006CD28; // type:func
 drawWrappedDoubleByteText = 0x8006E998; // type:func
+drawDoubleByteGlyph8x16 = 0x8006EB00; // type:func
 
 drawCurrentTaskTimeMenu = 0x80037D18; // type:func
 drawTaskTimeMenuAndSetFlag10OnInput = 0x80037D90; // type:func
@@ -4022,6 +4023,7 @@ drawHudDecimalNumber8x16 = 0x8006DFB4; // type:func
 drawDecimalNumber16 = 0x8006E2C4; // type:func
 gDoubleByteGlyphCodes8x8 = 0x8012E8FC; // size:0x80 defined:true
 gDigitSprite16Template = 0x8012E97C; // size:0x14 defined:true
+gDoubleByteGlyphCodes8x16 = 0x8012E990; // size:0x240 defined:true
 gDigitSpriteBlendBits = 0x8013B394; // size:0x8 defined:true
 drawRegisteredTaskTexturedQuadList = 0x8003288C; // type:func
 gRegisteredTaskQuadLists = 0x80123B68; // size:0x10 defined:true
