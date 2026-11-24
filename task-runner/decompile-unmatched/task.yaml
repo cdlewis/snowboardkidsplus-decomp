@@ -19,4 +19,4 @@ prompt: >-
   Commit the verified changes yourself using the tracked validation hook.
   Include the commit hash in your final report.
 agent: codex
-timeout: 20m
+timeout: 1h
