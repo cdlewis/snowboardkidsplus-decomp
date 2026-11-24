@@ -12,6 +12,7 @@
 #include "game/race/camera/race_camera.h"
 #include "game/graphics/coordinate.h"
 #include "game/race/ui/race_time.h"
+#include "game/race/ui/race_results.h"
 #include "game/menu/selected_records.h"
 #include "game/race/course/course_geometry.h"
 #include "game/graphics/graphics.h"
@@ -441,12 +442,10 @@ extern TaskVisualFrame gPlayerDualResourceEffectFrame
 extern TaskVisualFrame gPlayerVisualPair5E80Frame
     __attribute__((section(".data.player_visual_pair_5e80_frame"), aligned(4)));
 
-extern u8 D_8013B18D __attribute__((section(".data")));
 /* GP-relative views used by the race initializer. */
 extern u8 D_8013B18D_gp;
 extern s16 D_8013B1A8_gp;
 extern u8 D_8012429C[], D_801242A8[];
-extern u8 D_8013B1A0[];
 extern u8 D_8013B18C;
 extern s16 D_8013B620;
 
@@ -625,7 +624,6 @@ void waitResultFlagsInputTask(void);
 void initializeMenuTransitionResourcesTask(void);
 void waitMode2TransitionTask(void);
 
-void initializeRaceTimeComparisonPanel(void);
 void updateFallingRotatingObjectTask(void);
 
 void dispatchCurrentPlayerDirectionalAnimation(void);

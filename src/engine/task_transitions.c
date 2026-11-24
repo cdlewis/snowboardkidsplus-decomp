@@ -9,6 +9,7 @@
 #include "game/race/camera/race_camera.h"
 #include "game/race/course/course_objects.h"
 #include "game/race/ui/race_hud.h"
+#include "game/race/ui/race_results.h"
 #include "game/engine/offset_archive.h"
 #include "game/audio/music.h"
 #include "game/io/cd_queue.h"
@@ -64,6 +65,8 @@ extern GameTask *D_8013AE90 __attribute__((section(".data")));
 extern GameTask *D_8013B304 __attribute__((section(".data.player_snapshot_tasks")));
 
 extern u8 D_8013AEE4 __attribute__((section(".data")));
+extern s16 D_8013AE78 __attribute__((section(".data")));
+extern RaceTime gRaceElapsedTime __attribute__((section(".data")));
 
 const char gRaceVsyncDebugFormat[16]
     __attribute__((section(".rodata.race_vsync_debug_format"), aligned(4))) = "VSYNC=%4d";
@@ -195,7 +198,7 @@ void animateAlternatingVramRow(void);
 void initializeRaceTaskState(void);
 void updateActiveRaceTask(void);
 void finishRaceTransitionAfterCountdown(void);
-void func_8001C9F0(void);
+void dispatchPostRaceResultsTask(void);
 void processTaskWhenFlagAFAABit7Set(void);
 
 void runMovieAndGameLoop(void) {
@@ -826,23 +829,11 @@ void finishRaceTransitionAfterCountdown(void) {
                 D_8013AEE2 = D_8013AEDC[0];
             }
         }
-        setCurrentTaskCallback(func_8001C9F0);
+        setCurrentTaskCallback(dispatchPostRaceResultsTask);
     } else updateRaceHud();
 }
 
-/* DECOMP_ATTEMPT: inline 188/196 */
-#ifdef NON_MATCHING
-extern u8 D_8013B18D __attribute__((section(".data")));
-extern u8 D_8013B1A0[];
-void initializeResultDisplayTask(void);
-void initializeTaskFade(void);
-void initializeRaceResultsTask(void);
-void initializeRaceTimeComparisonPanel(void);
-void initializeTaskMenuFadeIn(void);
-void initializeTaskMenuFade(void);
-void initializeStatsMenuTask(void);
-
-void func_8001C9F0(void) {
+void dispatchPostRaceResultsTask(void) {
     u8 padding[8];
     s16 i;
     u32 score;
@@ -861,10 +852,10 @@ void func_8001C9F0(void) {
         if (D_8013AFCD == 1) {
             createChildTaskWithReserve(initializeResultDisplayTask);
             if (gRacePlayers[0].unk935 != 3) {
-                int bestPlace = ((volatile SaveRecord *)&gPlayerSaveRecords[0])->bestPlace[D_8013AFCE];
-                int nextPlace = gRacePlayers[0].unk935 + 1;
-                if (bestPlace == 0 || (bestPlace = ((volatile SaveRecord *)&gPlayerSaveRecords[0])->bestPlace[D_8013AFCE], nextPlace < bestPlace)) {
-                    ((volatile SaveRecord *)&gPlayerSaveRecords[0])->bestPlace[D_8013AFCE] = gRacePlayers[0].unk935 + 1;
+                if (gPlayerSaveRecords[0].bestPlace[D_8013AFCE] == 0) {
+                    gPlayerSaveRecords[0].bestPlace[D_8013AFCE] = gRacePlayers[0].unk935 + 1;
+                } else if (gRacePlayers[0].unk935 + 1 < gPlayerSaveRecords[0].bestPlace[D_8013AFCE]) {
+                    gPlayerSaveRecords[0].bestPlace[D_8013AFCE] = gRacePlayers[0].unk935 + 1;
                 }
                 score = gRacePlayers[0].unk01C + getSelectedCoursePrize(D_8013AFCE, gRacePlayers[0].unk935);
                 if (gPlayerSaveRecords[0].bestScore[D_8013AFCE] < score) {
@@ -915,9 +906,6 @@ void func_8001C9F0(void) {
     setControllerFlag5(1);
     setCurrentTaskCallback(begin30TickTransitionOnFlag10);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/engine/task_transitions", func_8001C9F0);
-#endif
 
 void begin30TickTransitionOnFlag10(void) {
     if (D_8013AFE4 & 0x10) {
