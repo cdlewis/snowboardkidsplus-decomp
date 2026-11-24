@@ -46,7 +46,7 @@ const char gTargetTimeLabel[12] __attribute__((section(".rodata.target_time_labe
 void func_8004054C(s32 x, s32 y, GsOT *ot, u16 depth);
 void drawSinglePlayerRaceHud(void);
 void drawSplitScreenCourseProgressHud(void);
-void func_800418F4(s16 player);
+void drawSplitScreenRaceHud(s16 player);
 void drawSplitScreenTrickAttackHud(s16 player);
 void drawScoreAttackHud(void);
 void drawSplitScreenScoreAttackHud(s16 player);
@@ -647,8 +647,8 @@ void updateRaceHud(void) {
                 }
             }
             drawSplitScreenCourseProgressHud();
-            func_800418F4(0);
-            func_800418F4(1);
+            drawSplitScreenRaceHud(0);
+            drawSplitScreenRaceHud(1);
             break;
         case 2:
             if (!(D_8013AFE4 & 3) && !(gRacePlayers[0].unk128 & 0x40)) {
@@ -839,15 +839,12 @@ void drawSplitScreenCourseProgressHud(void) {
     func_8004054C(81, -68, ot, 1);
 }
 
-/* DECOMP_ATTEMPT: inline 302/307 */
-#ifdef NON_MATCHING
-void func_800418F4(s16 player) {
+void drawSplitScreenRaceHud(s16 player) {
     GsOT *hudOt = &D_800EBFF0[D_8013AF78];
     GsOT *playerOt;
     s32 hudY;
     s32 depth;
     s16 placement;
-    s16 placementSprite;
     s16 panelOffset;
     s8 timer;
     s16 scale;
@@ -865,7 +862,7 @@ void func_800418F4(s16 player) {
     setSpriteColor(128, 128, 128);
     drawDecimalNumber16(107, hudY - 73, 1, 0, gRacePlayers[player].unk934 + 1, 8, 1, hudOt, 1);
     drawSpriteByIndexWithBlend(123, hudY - 75, 481, 8, 1, hudOt, 1);
-    drawDecimalNumber16(132, hudY - 77, 1, 0, (s16)D_8013AFD0, 8, 1, hudOt, 1);
+    drawDecimalNumber16(132, hudY - 77, 1, 0, selectedFinishLapCountAbsolute, 8, 1, hudOt, 1);
     drawSpriteByIndexWithBlend(102, hudY - 103, 416, 11, -1, hudOt, 1);
 
     depth = 1;
@@ -874,8 +871,8 @@ void func_800418F4(s16 player) {
     } else {
         placement = gRacePlayers[player].unk935;
     }
-    placementSprite = placement + 468;
-    drawSpriteByIndexWithBlend(110, hudY - 40, placementSprite, ((const u8 *)&gMenuSpritePaletteGroups)[placementSprite - 468], -1, hudOt, depth);
+    drawSpriteByIndexWithBlend(110, hudY - 40, placement + 468, gRacePlacementPalettes[placement],
+                               -1, hudOt, depth);
     drawSpriteByIndexWithBlend(102, hudY - 56, 415, 10, 0, hudOt, depth);
     if (player == 1) {
         hudY += 18;
@@ -899,9 +896,6 @@ void func_800418F4(s16 player) {
                                  moneyPalette, -1, playerOt, depth);
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud_modes", func_800418F4);
-#endif
 
 void drawTrickAttackHud(void) {
     s16 palette = 1;
