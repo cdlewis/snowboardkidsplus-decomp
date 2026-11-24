@@ -199,6 +199,14 @@ typedef struct PlayerPositionTrailScratch {
     } offset;
 } PlayerPositionTrailScratch;
 
+typedef struct PlayerTripleQuadScratch {
+    u32 pad[8];
+    VECTOR scale;
+    GsCOORDINATE2 coordinate;
+    POLY_FT4 quad;
+    long depth, cue, flags;
+} PlayerTripleQuadScratch;
+
 extern s16 gFrameCounter __attribute__((section(".data")));
 extern s16 D_8013AFCE __attribute__((section(".data")));
 extern u32 *D_8013AF6C __attribute__((section(".data")));
@@ -530,6 +538,12 @@ VECTOR gPlayerPairedQuadOffsets[2]
 
 SVECTOR gPlayerPositionTrailVertices[4]
     __attribute__((section(".data.player_position_trail_vertices"))) = {
+    {-20, -20, 0, 0}, {20, -20, 0, 0},
+    {-20, 20, 0, 0}, {20, 20, 0, 0},
+};
+
+SVECTOR gPlayerTripleQuadVertices[4]
+    __attribute__((section(".data.player_triple_quad_vertices"))) = {
     {-20, -20, 0, 0}, {20, -20, 0, 0},
     {-20, 20, 0, 0}, {20, 20, 0, 0},
 };
@@ -2633,40 +2647,27 @@ void createPlayerPositionTrailTask(s32 playerIndex) {
     resource->inactive = 1;
 }
 
-/* DECOMP_ATTEMPT: inline 263/269 */
-#ifdef NON_MATCHING
-typedef struct PlayerTurnQuadScratch {
-    u32 pad[8];
-    VECTOR scale;
-    GsCOORDINATE2 coordinate;
-    POLY_FT4 quad;
-    long depth, cue, flags;
-} PlayerTurnQuadScratch;
-
-extern SVECTOR D_8012CA14[4];
-
-void func_800676FC(void) {
-    PlayerTurnQuadScratch *scratch;
+void updatePlayerTripleQuadEffectTask(void) {
+    PlayerTripleQuadScratch *scratch;
     PlayerTripleQuadEffectResource *resource;
     RacePlayer *player;
     POLY_FT4 *packet;
-    TrailPosition *position;
-    s32 i, scale, elapsed, size;
+    s32 quadIndex;
+    s32 axis, scale, size;
 
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    scratch = (PlayerTurnQuadScratch *)getScratchAddr(0);
     resource = (PlayerTripleQuadEffectResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     packet = (POLY_FT4 *)GsOUT_PACKET_P;
     player = &gRacePlayers[D_8013AE88->data18];
+    scratch = (PlayerTripleQuadScratch *)getScratchAddr(0);
     if (isPointWithinCameraForwardRange(player->worldCoordinate.coord.t[0],
             player->worldCoordinate.coord.t[2], D_8013AE88->data18)) {
-        GsInitCoordinate2(0, &scratch->coordinate);
+        GsInitCoordinate2(NULL, &scratch->coordinate);
         RotMatrix(&resource->rotation, &scratch->coordinate.coord);
         scale = resource->elapsed * 1000 + 4096;
         size = resource->scale;
-        position = resource->positions;
         scratch->scale.vx = scratch->scale.vy = scratch->scale.vz = size + scale;
         ScaleMatrix(&scratch->coordinate.coord, &scratch->scale);
 
@@ -2677,17 +2678,17 @@ void func_800676FC(void) {
         scratch->quad.clut = getClut(880, 248);
         scratch->quad.tpage = getTPage(0, 1, 704, 0);
 
-        do {
-            for (i = 0; i < 3; i++) {
-                scratch->coordinate.coord.t[i] = ((s32 *)position)[i];
+        for (quadIndex = 0; quadIndex < 3; quadIndex++) {
+            for (axis = 0; axis < 3; axis++) {
+                scratch->coordinate.coord.t[axis] = resource->positions[quadIndex][axis];
             }
             GsGetLs(&scratch->coordinate, &scratch->coordinate.workm);
-            for (i = 0; i < 3; i++) {
-                scratch->coordinate.coord.t[i] = scratch->coordinate.workm.t[i];
+            for (axis = 0; axis < 3; axis++) {
+                scratch->coordinate.coord.t[axis] = scratch->coordinate.workm.t[axis];
             }
             GsSetLsMatrix(&scratch->coordinate.coord);
-            scratch->depth = RotTransPers4(&D_8012CA14[0], &D_8012CA14[1],
-                &D_8012CA14[2], &D_8012CA14[3],
+            scratch->depth = RotTransPers4(&gPlayerTripleQuadVertices[0], &gPlayerTripleQuadVertices[1],
+                &gPlayerTripleQuadVertices[2], &gPlayerTripleQuadVertices[3],
                 (long *)&scratch->quad.x0, (long *)&scratch->quad.x1,
                 (long *)&scratch->quad.x2, (long *)&scratch->quad.x3,
                 &scratch->cue, &scratch->flags);
@@ -2708,10 +2709,9 @@ void func_800676FC(void) {
             }
             packet++;
             if (D_8013AFD3 == 0) {
-                position->y -= 4;
+                resource->positions[quadIndex][1] -= 4;
             }
-            position++;
-        } while ((s32)position < (s32)(resource->positions + 3));
+        }
         GsOUT_PACKET_P = (u32)packet;
     }
     if (D_8013AFD3 == 0) {
@@ -2721,9 +2721,6 @@ void func_800676FC(void) {
         deleteCurrentTaskSubtree();
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_800676FC);
-#endif
 
 void emitPlayerTurnTripleQuadEffectTask(void) {
     RacePlayer *player;
@@ -2737,15 +2734,15 @@ void emitPlayerTurnTripleQuadEffectTask(void) {
     sine = rsin((s16)player->unk0BE - (s16)player->unk110);
     if (sine < 0) sine = -sine;
     if ((gFrameCounter & 3) == 0 && !(player->unk128 & 0x677DA21) && player->unk0BC >= 0x800 && sine >= 0x200) {
-        createChildTaskForParentWithReserve(D_8013B304, func_800676FC);
+        createChildTaskForParentWithReserve(D_8013B304, updatePlayerTripleQuadEffectTask);
         D_8013AE8C->resource14 = allocateTaskMemoryBlock();
         resource = (PlayerTripleQuadEffectResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
         vertex = gPlayerTripleQuadOffsets;
         for (i = 0; i < 3; i++) {
             ApplyMatrix(&player->model.effect.effectMatrix180, vertex, (VECTOR *)&resource->positions[i]);
-            resource->positions[i].x += player->worldCoordinate.coord.t[0];
-            resource->positions[i].y += player->worldCoordinate.coord.t[1];
-            resource->positions[i].z += player->worldCoordinate.coord.t[2];
+            resource->positions[i][0] += player->worldCoordinate.coord.t[0];
+            resource->positions[i][1] += player->worldCoordinate.coord.t[1];
+            resource->positions[i][2] += player->worldCoordinate.coord.t[2];
             vertex++;
         }
         resource->elapsed = 0;
@@ -2982,7 +2979,7 @@ void createPlayerParticleTrailTask(s32 playerIndex) {
 }
 
 void beginPlayerTripleQuadEffectTask(void) {
-    setCurrentTaskCallback(func_800676FC);
+    setCurrentTaskCallback(updatePlayerTripleQuadEffectTask);
 }
 
 s32 createPlayerTripleQuadEffectTask(s32 playerIndex) {
@@ -3004,9 +3001,9 @@ s32 createPlayerTripleQuadEffectTask(s32 playerIndex) {
     vertex = gPlayerTripleQuadOffsets;
     for (i = 0; i < 3; i++) {
         ApplyMatrix(&player->model.effect.effectMatrix180, vertex, (VECTOR *)&resource->positions[i]);
-        resource->positions[i].x += player->worldCoordinate.coord.t[0];
-        resource->positions[i].y += player->worldCoordinate.coord.t[1];
-        resource->positions[i].z += player->worldCoordinate.coord.t[2];
+        resource->positions[i][0] += player->worldCoordinate.coord.t[0];
+        resource->positions[i][1] += player->worldCoordinate.coord.t[1];
+        resource->positions[i][2] += player->worldCoordinate.coord.t[2];
         vertex++;
     }
     resource->elapsed = 0;

@@ -579,7 +579,7 @@ typedef struct PlayerRingEffectResource {
 } PlayerRingEffectResource;
 
 typedef struct PlayerTripleQuadEffectResource {
-    TrailPosition positions[3];
+    s32 positions[3][3];
     SVECTOR rotation;
     s32 elapsed, scale;
     u16 state;
@@ -1138,7 +1138,7 @@ GameTask *createQuadAnimationTask(u16 unusedId, VECTOR *position);
 void startPositionEffectTask(const PositionEffectOrigin *position);
 void createPlayerPositionTrailTask(s32 playerIndex);
 void createPlayerRingEffectTask(s32 playerIndex);
-void func_800676FC(void);
+void updatePlayerTripleQuadEffectTask(void);
 void emitPlayerTurnTripleQuadEffectTask(void);
 void beginPlayerTripleQuadEffectTask(void);
 s32 createPlayerTripleQuadEffectTask(s32 playerIndex);

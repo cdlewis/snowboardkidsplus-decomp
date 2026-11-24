@@ -804,7 +804,7 @@ segments:
       - {start: 0x11D12C, type: .data, name: race/effects/player_effects, linker_section: .data.quad_animation}
       - {start: 0x11D190, type: .data, name: race/effects/player_effects, linker_section: .data.alternate_quad_steps}
       - {start: 0x11D1F4, type: .data, name: race/effects/player_effects, linker_section: .data.player_position_trail_vertices}
-      - [0x11D214, data, 11D214]
+      - {start: 0x11D214, type: .data, name: race/effects/player_effects, linker_section: .data.player_triple_quad_vertices}
       - {start: 0x11D234, type: .data, name: race/effects/player_effects, linker_section: .data.player_triple_quad_offsets}
       - [0x11D24C, data, player_triple_quad_offsets_tail]
       - {start: 0x11D274, type: .data, name: race/effects/player_effects, linker_section: .data.rotating_quad_trail_vertices}

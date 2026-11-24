@@ -2812,6 +2812,7 @@ drawFirstPlayerResultNumberAndIcon = 0x800360F4; // type:func
 
 updatePlayerPositionTrailTask = 0x80066D18; // type:func
 createPlayerPositionTrailTask = 0x80067620; // type:func
+updatePlayerTripleQuadEffectTask = 0x800676FC; // type:func
 
 initializeDualResourceTaskAndResetByteState = 0x8008432C; // type:func
 updatePlayerGroupedSelectionMenu = 0x800843DC; // type:func size:0x318
@@ -3599,6 +3600,7 @@ drawSpriteMotionDisplay = 0x80034C40; // type:func
 beginPlayerTripleQuadEffectTask = 0x800689EC; // type:func
 createPlayerTripleQuadEffectTask = 0x80068A10; // type:func
 gPlayerPositionTrailVertices = 0x8012C9F4; // type:SVECTOR size:0x20 defined:true
+gPlayerTripleQuadVertices = 0x8012CA14; // type:SVECTOR size:0x20 defined:true
 gPlayerTripleQuadOffsets = 0x8012CA34; // size:0x18 defined:true
 
 initializeSaveRecordTask = 0x80087464; // type:func
