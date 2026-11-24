@@ -637,13 +637,6 @@ typedef struct ProximityEmitterResource {
     u8 unkDC[0x24];
 } ProximityEmitterResource;
 
-/* One 256-byte task resource; the remaining fields belong to the effect callbacks. */
-typedef struct PositionedEffectResource {
-    s32 unk00;
-    s32 x, y, z;
-    u8 pad[0xF0];
-} PositionedEffectResource;
-
 typedef struct RotatingEffectResource {
     s32 elapsed;
     s32 x, y, z;
@@ -980,7 +973,7 @@ void SetFogNearFar(s32 near, s32 far, s32 h);
 void drawTaskObject(u16 index);
 void updateMovingTaskObject(void);
 void setTexturedQuadSemiTrans(s32 enabled);
-void func_80063B58(void);
+void initTriangleBurstTask(void);
 void drawRotatingQuadEffectTask(void);
 void drawFullScreenSpriteTask(void);
 void updateFadingTextTask(void);

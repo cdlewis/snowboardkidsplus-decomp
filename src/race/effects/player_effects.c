@@ -1420,68 +1420,49 @@ void drawTriangleBurstTask(void) {
     if (resource->frame == 30) deleteCurrentTaskSubtree();
 }
 
-/* DECOMP_ATTEMPT: inline 128/134 */
-#ifdef NON_MATCHING
-typedef struct FragmentEffectResource {
-    s32 elapsed;
-    VECTOR origin;
-    VECTOR position[5];
-    SVECTOR velocity[5];
-    SVECTOR rotation[5];
-    u8 padB4[0x4C];
-} FragmentEffectResource;
-
-void drawTriangleBurstTask(void);
-
-void func_80063B58(void) {
-    FragmentEffectResource *resource;
+void initTriangleBurstTask(void) {
+    TriangleBurstResource *resource;
     s32 angle;
     s32 i;
-    s32 yaw;
     s32 phase;
+
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (FragmentEffectResource *)&gTaskMemoryPool[D_8013AE88->resource14];
-    resource->elapsed = 0;
+    resource = (TriangleBurstResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource->frame = 0;
     phase = randomNextLinear() % 4096;
-    angle = phase;
-    for (i = 0; i < 4;) {
-        yaw = i * 1024;
-        resource->position[i] = resource->origin;
-        resource->velocity[i].vx = rcos(angle) / 128;
-        resource->velocity[i].vz = rsin(angle) / 128;
-        resource->velocity[i].vy = -32;
-        phase = randomNextLinear() % 4096;
-        resource->rotation[i].vx = phase;
-        resource->rotation[i].vy = yaw;
-        resource->rotation[i].vz = 0;
-        i++;
-        angle += 1024;
+    for (i = 0; i < 4; i++) {
+        resource->positions[i] = resource->origin;
+        angle = phase + i * 1024;
+        resource->velocities[i].vx = rcos(angle) / 128;
+        resource->velocities[i].vz = rsin(angle) / 128;
+        resource->velocities[i].vy = -32;
+        resource->rotations[i].vx = randomNextLinear() % 4096;
+        resource->rotations[i].vy = i * 1024;
+        resource->rotations[i].vz = 0;
     }
-    angle = randomNextLinear() % 4096;
-    resource->position[4] = resource->origin;
-    resource->velocity[4].vx = rcos(angle) / 512;
-    resource->velocity[4].vz = rsin(angle) / 512;
-    resource->velocity[4].vy = -40;
-    resource->rotation[4].vx = randomNextLinear() % 4096;
-    resource->rotation[4].vy = 0;
-    resource->rotation[4].vz = 1024;
+
+    phase = randomNextLinear() % 4096;
+    resource->positions[4] = resource->origin;
+    resource->velocities[4].vx = rcos(phase) / 512;
+    resource->velocities[4].vz = rsin(phase) / 512;
+    resource->velocities[4].vy = -40;
+    resource->rotations[4].vx = randomNextLinear() % 4096;
+    resource->rotations[4].vy = 0;
+    resource->rotations[4].vz = 1024;
     setCurrentTaskCallback(drawTriangleBurstTask);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_80063B58);
-#endif
 
 void createPositionedEffectTask(s32 x, s32 y, s32 z) {
-    PositionedEffectResource *resource;
+    TriangleBurstResource *resource;
 
-    createChildTaskWithReserve(func_80063B58);
+    createChildTaskWithReserve(initTriangleBurstTask);
     D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-    resource = (PositionedEffectResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
-    resource->x = x >> 8;
-    resource->y = y >> 8;
-    resource->z = z >> 8;
+    resource = (TriangleBurstResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
+    resource->origin.vx = x >> 8;
+    resource->origin.vy = y >> 8;
+    resource->origin.vz = z >> 8;
 }
 
 void drawRotatingQuadEffectTask(void) {
