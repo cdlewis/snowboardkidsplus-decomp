@@ -310,7 +310,7 @@ void initializeUnlockMenuTask(void) {
     state->previousSelection = 0;
     resetUnlockMenuOffsets(state);
     drawUnlockNotificationMenu();
-    setCurrentTaskCallback(func_800A499C);
+    setCurrentTaskCallback(updateUnlockNotificationMenuTask);
 }
 
 void resetUnlockMenuOffsets(UnlockMenuState *state) {
@@ -323,9 +323,7 @@ void resetUnlockMenuOffsets(UnlockMenuState *state) {
     }
 }
 
-/* DECOMP_ATTEMPT: inline 161/163 */
-#ifdef NON_MATCHING
-void func_800A499C(void) {
+void updateUnlockNotificationMenuTask(void) {
     UnlockMenuState *state;
     u16 resource;
     s16 leave;
@@ -333,8 +331,11 @@ void func_800A499C(void) {
     if (D_8013AE88->resource14 == 0xFFFF) {
         for (;;) {}
     }
-    resource = D_8013AE88->resource14;
-    state = (UnlockMenuState *)&gTaskMemoryPool[resource];
+    /* The single-pass block preserves instruction ordering for the task-state lookup. */
+    do {
+        resource = D_8013AE88->resource14;
+        state = (UnlockMenuState *)&gTaskMemoryPool[resource];
+    } while (0);
     leave = 0;
 
     if (D_8013AEE8[0] & 0x1000) {
@@ -396,9 +397,6 @@ void func_800A499C(void) {
         D_8013AE88->data18 = 0;
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/menu/unlock_menu", func_800A499C);
-#endif
 
 void drawUnlockNotificationMenu(void) {
     UnlockMenuState *state;
@@ -496,7 +494,7 @@ void animateUnlockMenuTransition(void) {
 
 void resumeUnlockSelectionTask(void) {
     setSecondaryDisplayTaskMode(0);
-    setCurrentTaskCallback(func_800A499C);
+    setCurrentTaskCallback(updateUnlockNotificationMenuTask);
 }
 
 void prepareUnlockSelectionResume(void) {

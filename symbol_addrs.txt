@@ -401,6 +401,7 @@ getPlayerOptionFlag = 0x8008C650; // type:func
 getModeFilteredAutoPilotFlag = 0x8008C670; // type:func
 getUnlockNotificationFlag = 0x8008C6BC; // type:func
 setUnlockNotificationFlag = 0x8008C6DC; // type:func
+updateUnlockNotificationMenuTask = 0x800A499C; // type:func
 drawUnlockNotificationMenu = 0x800A4C28; // type:func
 hasUnlockNotificationFlag = 0x800A4F78; // type:func
 resumeUnlockSelectionTask = 0x800A51D8; // type:func
