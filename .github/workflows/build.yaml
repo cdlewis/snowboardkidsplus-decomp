@@ -61,7 +61,7 @@ jobs:
       - name: Install Python dependencies
         run: |
           python -m venv .venv
-          .venv/bin/pip install pycdlib 'splat64[mips]' 'mapfile-parser>=2.13.2,<3'
+          .venv/bin/pip install 'Pillow>=10.1' pycdlib 'splat64[mips]' 'mapfile-parser>=2.13.2,<3'
 
       - name: Install PSX compilers
         run: python tools/fetch-gcc.py
@@ -93,8 +93,8 @@ jobs:
         run: |
           set -euo pipefail
           .venv/bin/python tools/update_badges.py
-          git add README.md docs/index.html
-          if git diff --cached --quiet -- README.md docs/index.html; then
+          git add README.md docs/index.html docs/assets/progress-preview.png
+          if git diff --cached --quiet -- README.md docs/index.html docs/assets/progress-preview.png; then
             echo 'Progress badges and docs are already current.'
             exit 0
           fi

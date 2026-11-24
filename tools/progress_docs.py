@@ -4,6 +4,8 @@ import json
 from html import escape
 from string import Template
 
+from PIL import Image, ImageDraw, ImageFont
+
 from decomp import active_functions
 from progress_attempts import read_attempts
 from score_functions import complexity
@@ -20,6 +22,37 @@ def progress_card(label, matched, total, unit, extra=""):
         <meter min="0" max="{total}" value="{matched}" aria-hidden="true"></meter>
         <p>{matched:,} / {total:,} {unit}{extra}</p>
       </article>"""
+
+
+def render_preview(path, code, data, functions):
+    image = Image.new("RGB", (1200, 630), "#132741")
+    draw = ImageDraw.Draw(image)
+
+    def label(x, y, value, size, color):
+        draw.text((x, y), value, fill=color, font=ImageFont.load_default(size=size), anchor="lt")
+
+    def percentage(counts):
+        matched, total = counts
+        return f"{100 * matched / total:.2f}%"
+
+    label(60, 48, "PLAYSTATION  /  SLPS-01823", 24, "#b9dfff")
+    label(60, 95, "Snowboard Kids Plus", 64, "white")
+    label(60, 175, "Decompilation progress", 34, "#d5e7fb")
+    label(60, 270, percentage(code), 108, "white")
+    label(60, 385, "Code matched", 34, "#d5e7fb")
+    draw.rectangle((60, 443, 1139, 462), fill="#334d6d")
+    width = round(1080 * code[0] / code[1])
+    if width:
+        draw.rectangle((60, 443, 59 + width, 462), fill="#71d6c4")
+
+    label(60, 505, percentage(data), 46, "white")
+    label(60, 568, "Initialized data matched", 28, "#d5e7fb")
+    label(620, 505, f"{functions[0]:,} / {functions[1]:,}", 46, "white")
+    label(620, 568, "Functions matched", 28, "#d5e7fb")
+    image.save(path, optimize=True)
+    return (f"Snowboard Kids Plus decompilation: {percentage(code)} code matched, "
+            f"{percentage(data)} initialized data matched, "
+            f"and {functions[0]:,} of {functions[1]:,} functions matched.")
 
 
 def function_row(rank, function, attempt):
@@ -64,15 +97,20 @@ def generate(root):
 
     game = next(category["measures"] for category in report["categories"] if category["id"] == "game")
     game_percent = 100 * int(game["matched_code"]) / int(game["total_code"])
+    code = int(measures["matched_code"]), int(measures["total_code"])
+    data = data_progress(root)
     cards = "\n".join((
-        progress_card("Code matched", int(measures["matched_code"]), int(measures["total_code"]),
+        progress_card("Code matched", *code,
                       "bytes", f" · Game code {game_percent:.2f}%"),
-        progress_card("Initialized data", *data_progress(root), "bytes matched"),
+        progress_card("Initialized data", *data, "bytes matched"),
         progress_card("Functions matched", matched_functions, total_functions, "functions"),
     ))
 
     template = Template((root / "tools/progress_report.html").read_text())
-    output = template.substitute(repo=REPOSITORY, cards=cards, rows=rows, remaining=len(queue))
+    preview_alt = render_preview(root / "docs/assets/progress-preview.png", code, data,
+                                 (matched_functions, total_functions))
+    output = template.substitute(repo=REPOSITORY, cards=cards, rows=rows, remaining=len(queue),
+                                 preview_alt=escape(preview_alt))
     page = root / "docs/index.html"
     if not page.exists() or page.read_text() != output:
         page.write_text(output)
