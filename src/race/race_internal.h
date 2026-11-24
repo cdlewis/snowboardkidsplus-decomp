@@ -456,7 +456,7 @@ extern s16 D_8013B10E;
 extern s16 D_8013B0E4;
 extern u16 D_8013B0E6;
 extern s32 D_8013B0E8;
-extern u8 D_8013B0EC[];
+extern u8 gRaceOrderPlayerIds[4];
 extern TaskVisualFrame gPlayerVisualPairFrame
     __attribute__((section(".data.player_visual_pair_frame"), aligned(4)));
 
@@ -583,7 +583,7 @@ void waitResultDisplayInputTask(void);
 void waitResultNumberDisplayTask(void);
 void waitResultDisplayConfirmationTask(void);
 void waitResultDisplayTask(void);
-void func_8002B820(void);
+void updateRacePlayerRankings(void);
 void drawResultDisplayLabels(ResultDisplayResource *resource);
 void drawRacePlacementSprite(s16 x, s16 y, s16 placement, GsOT *ot, u16 depth);
 void drawResultPrizeLabels(ResultDisplayResource *resource);

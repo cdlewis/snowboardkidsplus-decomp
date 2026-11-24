@@ -992,6 +992,8 @@ segments:
       - [0x12B8D8, data, current_player_pointer]
       - {start: 0x12B8DC, type: .data, name: race/player/player_actions, linker_section: .data.player_sound_variants}
       - [0x12B8E4, data, 12B8E4]
+      - {start: 0x12B8EC, type: .sdata, name: race/player/player_actions, linker_section: .sdata.race_order_player_ids, linker_section_order: .data}
+      - [0x12B8F0, data, 12B8F0]
       - {start: 0x12B8F4, type: .data, name: menu/mode_transitions, linker_section: .data.title_menu_sprite_mapping}
       - [0x12B8FC, data, 12B8FC]
       - {start: 0x12B914, type: .data, name: race/player/player_actions, linker_section: .data.falling_paired_visual_animation}

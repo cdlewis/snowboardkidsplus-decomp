@@ -2096,6 +2096,7 @@ updateUnlockOptionsMenuTask = 0x800A3D9C; // type:func
 getPlayerCourseProgress = 0x8002B3F4; // type:func
 gPlayerCourseProgressTablePadding = 0x80010658; // size:0x4 defined:true
 gPlayerProjectileUseTablePadding = 0x800106E0; // size:0x4 defined:true
+updateRacePlayerRankings = 0x8002B820; // type:func
 resolveRacePlayerOverlaps = 0x8002BC2C; // type:func
 arePositionsWithinXZRange = 0x8002BF3C; // type:func
 resolvePlayerCollisionsWithCylinder = 0x8002BF88; // type:func
@@ -2963,6 +2964,7 @@ advanceTextLine = 0x800A60FC; // type:func
 
 // Race options; addressing aliases are in config/symbol_aliases.ld.
 D_8013AFCD = 0x8013AFCD; // size:0x1
+gRaceOrderPlayerIds = 0x8013B0EC; // size:0x4 defined:true
 D_8013AFD2 = 0x8013AFD2; // size:0x1
 initializeRaceRestartTask = 0x8001CD64; // type:func
 

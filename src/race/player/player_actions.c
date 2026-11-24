@@ -27,6 +27,8 @@ u16 gPlayerSoundVariantsA[2] __attribute__((section(".data.player_sound_variants
 
 u16 gPlayerSoundVariantsB[2] __attribute__((section(".data.player_sound_variants"))) = {0x300, 0x400};
 
+u8 gRaceOrderPlayerIds[4] __attribute__((section(".sdata.race_order_player_ids"))) = {0};
+
 const char gDemonstrationText[16]
     __attribute__((section(".rodata.demonstration_overlay"), aligned(4))) = "DEMONSTRATION";
 
@@ -315,9 +317,7 @@ void getPlayerCourseProgress(u16 playerIndex, s32 *progress, s32 *distance) {
     }
 }
 
-/* DECOMP_ATTEMPT: inline 239/260 */
-#ifdef NON_MATCHING
-void func_8002B820(void) {
+void updateRacePlayerRankings(void) {
     s8 order[4];
     s32 progress[4];
     s32 distance[4];
@@ -328,10 +328,10 @@ void func_8002B820(void) {
         return;
     }
     if (D_8013AFE4 & 1) {
-        D_8013B0EC[0] = 0;
-        D_8013B0EC[1] = 1;
-        D_8013B0EC[2] = 2;
-        D_8013B0EC[3] = 3;
+        gRaceOrderPlayerIds[0] = 0;
+        gRaceOrderPlayerIds[1] = 1;
+        gRaceOrderPlayerIds[2] = 2;
+        gRaceOrderPlayerIds[3] = 3;
         return;
     }
 
@@ -360,25 +360,33 @@ void func_8002B820(void) {
     }
 
     for (i = 0; i < D_8013AFD2 - 1; i++) {
+        RacePlayer *players = gRacePlayers;
         for (j = i + 1; j < D_8013AFD2; j++) {
             s32 firstIndex = order[i];
             RacePlayer *first = &gRacePlayers[firstIndex];
             s32 secondIndex;
             RacePlayer *second;
-            s32 secondSlot;
+            u8 secondSlot;
 
-            if (!(first->unk128 & 0x40)) {
-                secondIndex = order[j];
-                second = &gRacePlayers[secondIndex];
-                secondSlot = (u8)order[j];
-                if (!(second->unk128 & 0x40) &&
-                    (first->unk934 < second->unk934 ||
-                     (first->unk934 == second->unk934 &&
-                      (progress[firstIndex] < progress[secondIndex] ||
-                       (progress[firstIndex] == progress[secondIndex] &&
-                        distance[firstIndex] < distance[secondIndex]))))) {
+            if (players[firstIndex].unk128 & 0x40) {
+                continue;
+            }
+            secondIndex = order[j];
+            second = &gRacePlayers[secondIndex];
+            secondSlot = (u8)order[j];
+            if (!(second->unk128 & 0x40)) {
+                if (first->unk934 < second->unk934) {
                     order[i] = secondSlot;
                     order[j] = firstIndex;
+                } else if (first->unk934 == second->unk934) {
+                    if (progress[firstIndex] < progress[secondIndex]) {
+                        order[i] = secondSlot;
+                        order[j] = firstIndex;
+                    } else if (progress[firstIndex] == progress[secondIndex] &&
+                               distance[firstIndex] < distance[secondIndex]) {
+                        order[i] = secondSlot;
+                        order[j] = firstIndex;
+                    }
                 }
             }
         }
@@ -386,12 +394,9 @@ void func_8002B820(void) {
 
     for (i = 0; i < D_8013AFD2; i++) {
         gRacePlayers[order[i]].unk935 = i;
-        D_8013B0EC[i] = gRacePlayers[order[i]].playerIndex;
+        gRaceOrderPlayerIds[i] = gRacePlayers[order[i]].playerIndex;
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002B820);
-#endif
 
 void resolveRacePlayerOverlaps(void) {
     RacePlayer *second;
@@ -807,7 +812,7 @@ void updateRacePlayerFinishSlotsTask(void) {
             D_8013B1D4 = 0;
         }
         resolveRacePlayerOverlaps();
-        func_8002B820();
+        updateRacePlayerRankings();
         for (i = 0; i < D_8013AFD2; i++) {
             currentPlayerAbsolute = &gRacePlayers[i];
             assignCurrentPlayerFinishSlot(i);

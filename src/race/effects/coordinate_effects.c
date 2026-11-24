@@ -1,3 +1,7 @@
+#include "common.h"
+
+extern u8 gRaceOrderPlayerIds[] __attribute__((section(".data")));
+
 #include "../race_presentation_internal.h"
 #include "game/engine/random.h"
 #include "../race_internal.h"
@@ -1361,14 +1365,14 @@ void updateOrbitingPlayerVisualTask(void) {
                 if (roll != 0) {
                     target = 0;
                     if (D_8013AFD2 >= 4) {
-                        u32 player = D_8013B0EC[3];
+                        u32 player = gRaceOrderPlayerIds[3];
 
                         if (D_8013AE88->data18 != player) {
                             target = player;
                         }
                     }
                     if (D_8013AFD2 >= 3) {
-                        u8 *order = D_8013B0EC;
+                        u8 *order = gRaceOrderPlayerIds;
                         u8 player = order[2];
 
                         if (D_8013AE88->data18 != player && roll >= 2 &&
@@ -1377,7 +1381,7 @@ void updateOrbitingPlayerVisualTask(void) {
                         }
                     }
                     if (D_8013AFD2 >= 2) {
-                        u8 *order = D_8013B0EC;
+                        u8 *order = gRaceOrderPlayerIds;
                         u8 player = order[1];
 
                         if (D_8013AE88->data18 != player && roll >= 3 &&
@@ -1386,7 +1390,7 @@ void updateOrbitingPlayerVisualTask(void) {
                         }
                     }
                     if (D_8013AFD2 > 0) {
-                        u8 *order = D_8013B0EC;
+                        u8 *order = gRaceOrderPlayerIds;
                         u8 player = order[0];
 
                         if (D_8013AE88->data18 != player && roll >= 4 &&
