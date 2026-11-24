@@ -15,6 +15,16 @@ typedef struct DigitSpritePacket {
     u16 clut;
 } DigitSpritePacket;
 
+const s8 gDoubleByteGlyphCodes8x8[128] __attribute__((section(".data.double_byte_glyph_codes_8x8"))) =
+    "\x20\x20\x81\x49\x81\x68\x81\x94\x81\x90\x81\x93\x81\x95\x81\x66"
+    "\x81\x69\x81\x6A\x81\x96\x81\x7B\x81\x43\x81\x7C\x81\x44\x81\x5E"
+    "\x82\x4F\x82\x50\x82\x51\x82\x52\x82\x53\x82\x54\x82\x55\x82\x56"
+    "\x82\x57\x82\x58\x81\x46\x81\x47\x81\x83\x81\x81\x81\x84\x81\x48"
+    "\x81\x97\x82\x60\x82\x61\x82\x62\x82\x63\x82\x64\x82\x65\x82\x66"
+    "\x82\x67\x82\x68\x82\x69\x82\x6A\x82\x6B\x82\x6C\x82\x6D\x82\x6E"
+    "\x82\x6F\x82\x70\x82\x71\x82\x72\x82\x73\x82\x74\x82\x75\x82\x76"
+    "\x82\x77\x82\x78\x82\x79\x81\x6D\x81\x8F\x81\x6E";
+
 DigitSpritePacket gDigitSprite16Template __attribute__((section(".data.digit_sprite16_template"))) = {
     0x04000000, 0x001F, 0xE100,
     0x80, 0x80, 0x80, SPRT_16_CODE,
@@ -485,7 +495,7 @@ void drawWrappedText8x8(s16 x, s16 y, s16 columns, const char *text,
                     palette = defaultPalette;
                 }
             } else {
-                func_8006D29C(currentX, currentY, 8, 8, text, palette, blend, ot, depth);
+                drawDoubleByteGlyph8x8(currentX, currentY, 8, 8, text, palette, blend, ot, depth);
                 currentX += 8;
                 count++;
             }
@@ -494,55 +504,48 @@ void drawWrappedText8x8(s16 x, s16 y, s16 columns, const char *text,
     }
 }
 
-/* DECOMP_ATTEMPT: inline 75/96 */
-#ifdef NON_MATCHING
-extern s8 D_8012E8FC[];
-void setSpriteTemplateSemiTrans(s32 enabled);
-
-void func_8006D29C(s16 x, s16 y, s16 w, s16 h, const char *text, s16 palette, s16 blendArg, GsOT *ot, u16 depth) {
-    s32 semi;
-    u8 padding[8];
+void drawDoubleByteGlyph8x8(s16 x, s16 y, s16 width, s16 height, const char *text, s16 palette,
+                            s16 blendArg, GsOT *ot, u16 depth) {
+    s32 semiTrans;
     s16 u, v;
-    s8 *glyph;
+    const s8 *glyph;
     s32 i;
-    s32 searching;
-    s32 blend = blendArg;
+    s16 page;
+    s32 blend;
     SPRT *sprite;
-    if (blend >= 0) semi = 1;
-    else { blend = 0; semi = blend; }
-    u = -1;
-    v = -1;
-    glyph = D_8012E8FC;
+    if (blendArg >= 0) {
+        blend = blendArg;
+        semiTrans = 1;
+    } else {
+        semiTrans = blend = 0;
+    }
+    v = u = -1;
+    glyph = gDoubleByteGlyphCodes8x8;
     i = 0;
     while (1) {
-        if (!*glyph) break;
-        if (text[0] == glyph[0] && text[1] == glyph[1]) {
+        if (!*glyph) {
+            break;
+        }
+        if ((s8)text[0] == glyph[0] && (s8)text[1] == glyph[1]) {
             u = (i % 32) * 8;
             v = (i / 32) * 8;
-            searching = 0;
+            page = 0;
             break;
-        } else {
-            glyph += 2;
-            i++;
         }
+        glyph += 2;
+        i++;
     }
     if (u >= 0 && v >= 0) {
-        setSpriteTextureBlend(0, palette, blend);
-        setSpriteTemplateSemiTrans(semi);
+        setSpriteTextureBlend(page, palette, blend);
+        setSpriteTemplateSemiTrans(semiTrans);
         sprite = &gSpriteTemplate;
-        sprite->x0 = x;
-        sprite->y0 = y;
-        sprite->u0 = u;
-        sprite->v0 = v;
-        sprite->w = w;
-        sprite->h = h;
+        setXY0(sprite, x, y);
+        setUV0(sprite, u, v);
+        setWH(sprite, width, height);
         addSpritePacket(sprite, ot, depth);
-        addDrawPagePacket((DR_TPAGE *)sprite - 1, ot, depth);
+        addDrawPagePacket(&gSpritePrimitiveTemplate.drawPage, ot, depth);
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/graphics/sprite_draw", func_8006D29C);
-#endif
 
 void drawLimitedText8x8(s16 x, s16 y, s16 limit, const char *text,
                    s16 palette, s16 blend, GsOT *ot, u16 depth) {

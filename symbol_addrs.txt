@@ -3368,6 +3368,7 @@ updatePlayerResultOrder = 0x80037424; // type:func
 updateQuadTransitionSequenceTask = 0x80069E54; // type:func
 startQuadTransitionSequenceTask = 0x80069F1C; // type:func
 
+drawDoubleByteGlyph8x8 = 0x8006D29C; // type:func
 drawWrappedText8x8 = 0x8006D134; // type:func
 
 initializeScenePlaybackTask = 0x800A6548; // type:func
@@ -4019,6 +4020,7 @@ drawDecimalNumber8x16 = 0x8006D984; // type:func
 drawMenuDecimalNumber8x16 = 0x8006DC94; // type:func
 drawHudDecimalNumber8x16 = 0x8006DFB4; // type:func
 drawDecimalNumber16 = 0x8006E2C4; // type:func
+gDoubleByteGlyphCodes8x8 = 0x8012E8FC; // size:0x80 defined:true
 gDigitSprite16Template = 0x8012E97C; // size:0x14 defined:true
 gDigitSpriteBlendBits = 0x8013B394; // size:0x8 defined:true
 drawRegisteredTaskTexturedQuadList = 0x8003288C; // type:func

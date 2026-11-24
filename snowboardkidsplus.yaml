@@ -818,7 +818,7 @@ segments:
       - {start: 0x11DC98, type: .data, name: menu/task_widgets, linker_section: .data.secondary_display_label}
       - [0x11DCA4, data, secondary_display_label_tail]
       - [0x11F0E4, .data, graphics/sprite_templates]
-      - [0x11F0FC, data, 11F0FC]
+      - {start: 0x11F0FC, type: .data, name: graphics/sprite_draw, linker_section: .data.double_byte_glyph_codes_8x8}
       - {start: 0x11F17C, type: .data, name: graphics/sprite_draw, linker_section: .data.digit_sprite16_template}
       - [0x11F190, data, digit_sprite16_template_tail]
       - {start: 0x11F3D0, type: .data, name: graphics/sprite_draw, linker_section: .data.uppercase_glyph_metrics}

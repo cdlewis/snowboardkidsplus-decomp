@@ -416,7 +416,7 @@ void drawPlayerModeMessagePanelTask(void);
 
 void drawWrappedText8x8(s16 x, s16 y, s16 columns, const char *text,
                         s16 palette, s16 blend, GsOT *ot, u16 depth);
-void func_8006D29C(s16 x, s16 y, s16 width, s16 height, const char *text,
+void drawDoubleByteGlyph8x8(s16 x, s16 y, s16 width, s16 height, const char *text,
                    s16 palette, s16 blend, GsOT *ot, u16 depth);
 
 void drawWrappedText16x16(s16 x, s16 y, s16 columns, const char *text,
