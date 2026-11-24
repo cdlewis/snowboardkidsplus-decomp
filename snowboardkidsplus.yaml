@@ -760,6 +760,8 @@ segments:
       - {start: 0x114DD4, type: .data, name: unclassified/graphics_800497B8, linker_section: .data.heading_octant_angles}
       - {start: 0x1152E4, type: .data, name: unclassified/graphics_800497B8, linker_section: .data.debug_text_sprite}
       - [0x115308, data, heading_octant_angles_tail]
+      - {start: 0x1153EC, type: .data, name: graphics/course_rendering, linker_section: .data.course_model_distances}
+      - [0x11543C, data, course_model_distances_tail]
       - {start: 0x115574, type: .data, name: graphics/course_rendering, linker_section: .data.lap_animated_background_tile}
       - {start: 0x115584, type: .data, name: graphics/course_rendering, linker_section: .data.layered_background_model_positions}
       - {start: 0x1155A4, type: .data, name: graphics/course_rendering, linker_section: .data.oscillating_quad_vertices}
@@ -768,6 +770,10 @@ segments:
       - {start: 0x115614, type: .data, name: graphics/course_rendering, linker_section: .data.camera_overlay_packets}
       - {start: 0x115714, type: .data, name: graphics/course_rendering, linker_section: .data.offset_screen_copy_sprites}
       - [0x1157D4, data, offset_screen_copy_sprites_tail]
+      - {start: 0x1157F4, type: .data, name: graphics/course_rendering, linker_section: .data.course_model_coordinate}
+      - {start: 0x115844, type: .data, name: graphics/course_rendering, linker_section: .data.optional_course_models}
+      - [0x115860, data, optional_course_models_tail]
+      - {start: 0x1158EC, type: .data, name: graphics/course_rendering, linker_section: .data.course_model_position_buffers}
       - {start: 0x115914, type: .data, name: race/course/course_objects, linker_section: .data.course_sector_resources}
       - [0x1161DC, data, course_sector_resources_tail]
       - {start: 0x119BDC, type: .data, name: race/course/course_objects, linker_section: .data.course_object_placements}
@@ -1030,6 +1036,7 @@ segments:
       - [0x12BA60, data, scanline_copy_rects_tail]
       - {start: 0x12BA68, type: .data, name: graphics/course_rendering, linker_section: .data.course_model_texture_window}
       - [0x12BA70, data]
+      - {start: 0x12BA80, type: .data, name: graphics/course_rendering, linker_section: .data.course_model_positions}
       - {start: 0x12BA84, type: .data, name: race/course/course_objects, linker_section: .data.object_visual_frames}
       - {start: 0x12BA94, type: .data, name: race/course/course_objects, linker_section: .data.interaction_visual_frame, linker_section_order: .data}
       - [0x12BA9C, data, interaction_visual_frame_tail]
@@ -1122,7 +1129,8 @@ segments:
       - {start: 0x12BE1C, type: .sdata, name: race/player/player_update, linker_section: .sdata.player_ground_contact_saved_stack, linker_section_order: .data}
       - [0x12BE20, data]
       - {start: 0x12BE24, type: .sdata, name: race/course/course_geometry, linker_section: .sdata.geometry_edge_projection, linker_section_order: .data}
-      - [0x12BE54, data]
+      - {start: 0x12BE54, type: .sdata, name: graphics/course_rendering, linker_section: .sdata.course_model_state, linker_section_order: .data}
+      - [0x12BE68, data]
       - {start: 0x12BEA4, type: .sdata, name: race/course/course_objects, linker_section: .sdata.object_sort_saved_stack, linker_section_order: .data}
       - {start: 0x12BEA8, type: .sdata, name: race/course/course_objects, linker_section: .sdata.alternate_object_sort_saved_stack, linker_section_order: .data}
       - [0x12BEAC, data]
@@ -1156,6 +1164,16 @@ segments:
     section_order: [".bss"]
     subsegments:
       - {start: 0x12C000, type: .bss, name: graphics/course_rendering, linker_section: .bss.course_model_draw_mode}
+
+  - name: course_models_bss
+    type: code
+    start: 0x12C000
+    vram: 0x8013BBF8
+    align: 1
+    subalign: 1
+    section_order: [".bss"]
+    subsegments:
+      - {start: 0x12C000, type: .bss, name: graphics/course_rendering, linker_section: .bss.course_models}
 
   - name: white_pulse_palette_bss
     type: code

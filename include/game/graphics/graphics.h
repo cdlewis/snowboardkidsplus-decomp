@@ -136,7 +136,7 @@ extern GsOT D_800EC0B8[2];
 extern GsOT D_800EC090[2];
 extern GsOT D_800EC130[2];
 
-void func_80051A68(void);
+void initializeCourseModels(void);
 void initializeRacePlayerEffects(void);
 u16 getRenderCameraIndex(void);
 void drawTaskObject(u16 index);

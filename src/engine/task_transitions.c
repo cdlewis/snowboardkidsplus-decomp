@@ -559,7 +559,7 @@ void initializeRacePresentationTask(void) {
 
     setSecondaryDisplayTaskMode(0);
     if (!D_8013B1AB) {
-        func_80051A68();
+        initializeCourseModels();
     }
     initializeRacePlayerEffects();
     if (D_8013AFCD == 2) {

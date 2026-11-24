@@ -2387,9 +2387,9 @@ void updateOrbitingObstacleTask(void) {
         GsGetLs(&resource->coordinate, D_8013AF98);
         GsSetLsMatrix(D_8013AF98);
         if (getRenderCameraIndex()) {
-            drawProjectedModelPrimitives(D_80125044[0], &D_800EC0B8[D_8013AF78], 2, 1);
+            drawProjectedModelPrimitives(gOptionalCourseModels[0], &D_800EC0B8[D_8013AF78], 2, 1);
         } else {
-            drawProjectedModelPrimitives(D_80125044[0], &D_800EC018[D_8013AF78], 2, 1);
+            drawProjectedModelPrimitives(gOptionalCourseModels[0], &D_800EC018[D_8013AF78], 2, 1);
         }
     }
 }

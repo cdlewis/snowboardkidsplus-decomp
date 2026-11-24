@@ -902,7 +902,7 @@ extern ModelFlatTriangle *D_8013B680 __attribute__((section(".sdata")));
 
 extern GsOT *D_8013B670;
 extern s32 D_8013B69C;
-extern s32 D_8013B660;
+extern s32 gCourseModelCullDistance;
 
 
 void updateProximityEmitterTask(void);
@@ -1024,7 +1024,7 @@ void processGouraudQuadPrimitive(void);
 void processTexturedQuadPrimitive(void);
 void processTexturedGouraudQuadPrimitive(void);
 void func_800559F4(TmdObject *object, GsOT *ot, s32 shift, u32 flags);
-extern TmdObject *D_80125044[];
+extern TmdObject *gOptionalCourseModels[];
 void drawProjectedModelPrimitives(TmdObject *object, GsOT *ot, s32 shift, u32 flags);
 void drawProjectedIndexedFlatTriangle(void);
 void drawProjectedIndexedLitFlatTriangle(void);

@@ -60,7 +60,7 @@ void initializeModeRaceTasks(void) {
     u16 sixthHeight;
 
     if (!D_8013B562) {
-        func_80051A68();
+        initializeCourseModels();
     }
     initializeRacePlayerEffects();
     taskTransitionFlagGp = 0;

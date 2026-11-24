@@ -5,6 +5,7 @@
 #include "game/engine/game_task_scheduler.h"
 #include "game/engine/task.h"
 #include "game/graphics/graphics.h"
+#include "game/io/dat_resources.h"
 #include "game/io/controller.h"
 #include "game/io/controller_effects.h"
 #include "game/menu/selected_records.h"
@@ -155,14 +156,43 @@ RECT gCourseModelTextureWindow __attribute__((section(".data.course_model_textur
 
 DR_MODE gCourseModelDrawMode __attribute__((section(".bss.course_model_draw_mode")));
 
+s32 gCourseModelCullDistances[10] __attribute__((section(".data.course_model_distances"))) = {
+    7000, 7000, 6000, 7000, 7000, 6000, 8000, 7000, 6000, 7000,
+};
+
+s32 gCourseModelDetailDistances[10] __attribute__((section(".data.course_model_distances"))) = {
+    6000, 6000, 6000, 6000, 6000, 6000, 6000, 3000, 6000, 6000,
+};
+
+GsCOORDINATE2 gCourseModelCoordinate __attribute__((section(".data.course_model_coordinate"))) = {0};
+
+TmdObject *gOptionalCourseModels[7] __attribute__((section(".data.optional_course_models"))) = {0};
+
+Position3D *gCourseModelPositionBuffers[10] __attribute__((section(".data.course_model_position_buffers"))) = {
+    (Position3D *)gCourseMetadataBuffer, (Position3D *)gCourseMetadataBuffer,
+    (Position3D *)gCourseMetadataBuffer, (Position3D *)gCourseMetadataBuffer,
+    (Position3D *)gCourseMetadataBuffer, (Position3D *)gCourseMetadataBuffer,
+    (Position3D *)gCourseMetadataBuffer, (Position3D *)gCourseMetadataBuffer,
+    (Position3D *)gCourseMetadataBuffer, (Position3D *)gCourseMetadataBuffer,
+};
+
+Position3D *gCourseModelPositions __attribute__((section(".data.course_model_positions"))) = 0;
+
+u16 gCourseModelCounts[2] __attribute__((section(".sdata.course_model_state"))) = {0};
+
+u32 gCourseModelObjectCount __attribute__((section(".sdata.course_model_state"))) = 0;
+
+u32 gOptionalCourseModelObjectCount __attribute__((section(".sdata.course_model_state"))) = 0;
+
+s32 gCourseModelCullDistance __attribute__((section(".sdata.course_model_state"))) = 0;
+
+s32 gCourseModelDetailDistance __attribute__((section(".sdata.course_model_state"))) = 0;
+
+TmdObject *gCourseModels[100] __attribute__((section(".bss.course_models")));
+
 extern VECTOR D_80124BDC;
-extern GsCOORDINATE2 D_80124FF4;
 extern s32 D_8013AFB8 __attribute__((section(".data")));
 extern s16 D_8013B22C, D_8013B22E;
-extern Position3D *D_8013B280 __attribute__((section(".data")));
-extern u16 D_8013B654[2];
-extern s32 D_8013B664;
-extern TmdObject *D_8013BBF8[];
 
 extern u32 GsOUT_PACKET_P __attribute__((section(".data")));
 
@@ -384,7 +414,7 @@ void drawLayeredBackgroundAndSetFog(s16 playerIndex) {
         GsGetLs(coordinate, matrix);
         ScaleMatrix(matrix, &D_80124BDC);
         GsSetLsMatrix(matrix);
-        drawProjectedModelPrimitives(D_80125044[0], ot, 2, 3);
+        drawProjectedModelPrimitives(gOptionalCourseModels[0], ot, 2, 3);
     }
     if (isPointWithinCameraForwardRange(gLayeredBackgroundModelPosition1.vx, gLayeredBackgroundModelPosition1.vz, playerIndex)) {
         GsInitCoordinate2(0, coordinate);
@@ -392,7 +422,7 @@ void drawLayeredBackgroundAndSetFog(s16 playerIndex) {
         RotMatrixY(-1000, &coordinate->coord);
         GsGetLs(coordinate, matrix);
         GsSetLsMatrix(matrix);
-        drawProjectedModelPrimitives(D_80125044[1], ot, 2, 3);
+        drawProjectedModelPrimitives(gOptionalCourseModels[1], ot, 2, 3);
     }
     if (isPointWithinCameraForwardRange(gLayeredBackgroundModelPosition2.vx, gLayeredBackgroundModelPosition2.vz, playerIndex)) {
         GsInitCoordinate2(0, coordinate);
@@ -400,7 +430,7 @@ void drawLayeredBackgroundAndSetFog(s16 playerIndex) {
         RotMatrixY(600, &coordinate->coord);
         GsGetLs(coordinate, matrix);
         GsSetLsMatrix(matrix);
-        drawProjectedModelPrimitives(D_80125044[1], ot, 2, 3);
+        drawProjectedModelPrimitives(gOptionalCourseModels[1], ot, 2, 3);
     }
 
     SetFarColor(160, 160, 200);
@@ -468,7 +498,7 @@ void func_8004E718(s16 playerIndex) {
     GsGetLs(coordinate, matrix);
     ScaleMatrix(matrix, &D_80124BDC);
     GsSetLsMatrix(matrix);
-    drawProjectedModelPrimitives(D_80125044[0], ot, 2, 1);
+    drawProjectedModelPrimitives(gOptionalCourseModels[0], ot, 2, 1);
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/graphics/course_rendering", func_8004E718);
@@ -757,7 +787,7 @@ void drawRotatingModelBackgroundAndSetFog(s16 playerIndex) {
         GsGetLs(coordinate, matrix);
         ScaleMatrix(matrix, &D_80124BDC);
         GsSetLsMatrix(matrix);
-        drawProjectedModelPrimitives(D_80125044[1], ot, 2, 1);
+        drawProjectedModelPrimitives(gOptionalCourseModels[1], ot, 2, 1);
         if (!D_8013AFD3) {
             sRotatingBackgroundFrame++;
         }
@@ -847,21 +877,21 @@ void drawLapAnimatedBackgroundAndSetFog(s16 playerIndex) {
             GsGetLs(&scratch->root, &scratch->localScreen);
             ScaleMatrix(&scratch->localScreen, (VECTOR *)&gRipplingBackgroundStripData[12]);
             GsSetLsMatrix(&scratch->localScreen);
-            drawProjectedModelPrimitives(D_80125044[0], ot, 2, 1);
+            drawProjectedModelPrimitives(gOptionalCourseModels[0], ot, 2, 1);
 
             GsInitCoordinate2(&scratch->root, &scratch->child);
             RotMatrixY((-gLapAnimatedBackgroundFrame << 6) & 0xFC0, &scratch->child.coord);
             GsGetLs(&scratch->child, &scratch->localScreen);
             ScaleMatrix(&scratch->localScreen, (VECTOR *)&gRipplingBackgroundStripData[12]);
             GsSetLsMatrix(&scratch->localScreen);
-            drawProjectedModelPrimitives(D_80125044[1], ot, 2, 1);
+            drawProjectedModelPrimitives(gOptionalCourseModels[1], ot, 2, 1);
 
             GsInitCoordinate2(&scratch->root, &scratch->child);
             RotMatrixY((gLapAnimatedBackgroundFrame << 6) & 0xFC0, &scratch->child.coord);
             GsGetLs(&scratch->child, &scratch->localScreen);
             ScaleMatrix(&scratch->localScreen, (VECTOR *)&gRipplingBackgroundStripData[12]);
             GsSetLsMatrix(&scratch->localScreen);
-            drawProjectedModelPrimitives(D_80125044[2], ot, 2, 1);
+            drawProjectedModelPrimitives(gOptionalCourseModels[2], ot, 2, 1);
             break;
         case 1:
             GsInitCoordinate2(0, &scratch->root);
@@ -873,21 +903,21 @@ void drawLapAnimatedBackgroundAndSetFog(s16 playerIndex) {
             GsGetLs(&scratch->root, &scratch->localScreen);
             ScaleMatrix(&scratch->localScreen, (VECTOR *)&gRipplingBackgroundStripData[12]);
             GsSetLsMatrix(&scratch->localScreen);
-            drawProjectedModelPrimitives(D_80125044[0], ot, 2, 1);
+            drawProjectedModelPrimitives(gOptionalCourseModels[0], ot, 2, 1);
 
             GsInitCoordinate2(&scratch->root, &scratch->child);
             RotMatrixY((-gLapAnimatedBackgroundFrame << 9) & 0xE00, &scratch->child.coord);
             GsGetLs(&scratch->child, &scratch->localScreen);
             ScaleMatrix(&scratch->localScreen, (VECTOR *)&gRipplingBackgroundStripData[12]);
             GsSetLsMatrix(&scratch->localScreen);
-            drawProjectedModelPrimitives(D_80125044[1], ot, 2, 1);
+            drawProjectedModelPrimitives(gOptionalCourseModels[1], ot, 2, 1);
 
             GsInitCoordinate2(&scratch->root, &scratch->child);
             RotMatrixY((gLapAnimatedBackgroundFrame << 9) & 0xE00, &scratch->child.coord);
             GsGetLs(&scratch->child, &scratch->localScreen);
             ScaleMatrix(&scratch->localScreen, (VECTOR *)&gRipplingBackgroundStripData[12]);
             GsSetLsMatrix(&scratch->localScreen);
-            drawProjectedModelPrimitives(D_80125044[2], ot, 2, 1);
+            drawProjectedModelPrimitives(gOptionalCourseModels[2], ot, 2, 1);
             break;
         }
     }
@@ -941,25 +971,25 @@ void drawCameraCulledBackgroundAndSetFog(s16 playerIndex) {
     ScaleMatrix(matrix, &D_80124BDC);
     GsSetLsMatrix(matrix);
     if (isPositionInCameraRange(0xADA, 0xCD1, (s16)getRenderCameraIndex())) {
-        drawProjectedModelPrimitives(D_80125044[0], ot, 2, 1);
+        drawProjectedModelPrimitives(gOptionalCourseModels[0], ot, 2, 1);
     }
     if (isPositionInCameraRange(0xA61, 0x18D4, (s16)getRenderCameraIndex())) {
-        drawProjectedModelPrimitives(D_80125044[1], ot, 2, 1);
+        drawProjectedModelPrimitives(gOptionalCourseModels[1], ot, 2, 1);
     }
     if (isPositionInCameraRange(0x24E0, 0x1F11, (s16)getRenderCameraIndex())) {
-        drawProjectedModelPrimitives(D_80125044[2], ot, 2, 1);
+        drawProjectedModelPrimitives(gOptionalCourseModels[2], ot, 2, 1);
     }
     if (isPositionInCameraRange(0x47E0, 0x2B52, (s16)getRenderCameraIndex())) {
-        drawProjectedModelPrimitives(D_80125044[3], ot, 2, 1);
+        drawProjectedModelPrimitives(gOptionalCourseModels[3], ot, 2, 1);
     }
     if (isPositionInCameraRange(0x6356, 0x32B7, (s16)getRenderCameraIndex())) {
-        drawProjectedModelPrimitives(D_80125044[4], ot, 2, 1);
+        drawProjectedModelPrimitives(gOptionalCourseModels[4], ot, 2, 1);
     }
     if (isPositionInCameraRange(0x6B5E, 0x5C1C, (s16)getRenderCameraIndex())) {
-        drawProjectedModelPrimitives(D_80125044[5], ot, 2, 1);
+        drawProjectedModelPrimitives(gOptionalCourseModels[5], ot, 2, 1);
     }
     if (isPositionInCameraRange(0x6B5E, 0x5C1C, (s16)getRenderCameraIndex())) {
-        drawProjectedModelPrimitives(D_80125044[6], ot, 2, 1);
+        drawProjectedModelPrimitives(gOptionalCourseModels[6], ot, 2, 1);
     }
     SetFarColor(112, 168, 248);
     SetFogNearFar(8000, 10000, 400);
@@ -990,9 +1020,9 @@ void drawBackgroundModelsAndSetFog(s16 playerIndex) {
     GsGetLs(coordinate, matrix);
     ScaleMatrix(matrix, &D_80124BDC);
     GsSetLsMatrix(matrix);
-    drawProjectedModelPrimitives(D_80125044[0], ot, 2, 1);
-    drawProjectedModelPrimitives(D_80125044[1], ot, 2, 1);
-    drawProjectedModelPrimitives(D_80125044[2], ot, 2, 1);
+    drawProjectedModelPrimitives(gOptionalCourseModels[0], ot, 2, 1);
+    drawProjectedModelPrimitives(gOptionalCourseModels[1], ot, 2, 1);
+    drawProjectedModelPrimitives(gOptionalCourseModels[2], ot, 2, 1);
     SetFarColor(110, 110, 128);
     SetFogNearFar(8000, 10000, 400);
 }
@@ -1005,23 +1035,23 @@ s32 isPositionInCameraRange(s32 x, s32 z, s16 playerIndex) {
     s32 centerX, centerZ;
     s32 scaledX, scaledZ;
     centerX = gPlayerCameraViews[playerIndex].vpx / 256 +
-        ((D_8013B660 / 2) * rsin(D_801241E8[playerIndex].yaw)) / 4096;
+        ((gCourseModelCullDistance / 2) * rsin(D_801241E8[playerIndex].yaw)) / 4096;
     centerZ = gPlayerCameraViews[playerIndex].vpz / 256 +
-        ((D_8013B660 / 2) * rcos(D_801241E8[playerIndex].yaw)) / 4096;
+        ((gCourseModelCullDistance / 2) * rcos(D_801241E8[playerIndex].yaw)) / 4096;
     scaledX = x / 256;
     scaledZ = z / 256;
     return SquareRoot0((centerX - scaledX) * (centerX - scaledX) +
-        (centerZ - scaledZ) * (centerZ - scaledZ)) < D_8013B660;
+        (centerZ - scaledZ) * (centerZ - scaledZ)) < gCourseModelCullDistance;
 }
 
 s32 isPointWithinCameraForwardRange(s32 x, s32 z, s16 player) {
     s32 cameraX, cameraZ;
     s32 scaledX, scaledZ;
-    cameraX = gPlayerCameraViews[player].vpx / 256 + ((D_8013B660 / 2) * rsin(D_801241E8[player].yaw)) / 4096;
-    cameraZ = gPlayerCameraViews[player].vpz / 256 + ((D_8013B660 / 2) * rcos(D_801241E8[player].yaw)) / 4096;
+    cameraX = gPlayerCameraViews[player].vpx / 256 + ((gCourseModelCullDistance / 2) * rsin(D_801241E8[player].yaw)) / 4096;
+    cameraZ = gPlayerCameraViews[player].vpz / 256 + ((gCourseModelCullDistance / 2) * rcos(D_801241E8[player].yaw)) / 4096;
     scaledX = x / 256;
     scaledZ = z / 256;
-    return SquareRoot0((cameraX - scaledX) * (cameraX - scaledX) + (cameraZ - scaledZ) * (cameraZ - scaledZ)) < (D_8013B660 * 3) / 4;
+    return SquareRoot0((cameraX - scaledX) * (cameraX - scaledX) + (cameraZ - scaledZ) * (cameraZ - scaledZ)) < (gCourseModelCullDistance * 3) / 4;
 }
 
 void readVramPixelColor(s32 x, s32 y, TextureColor *out) {
@@ -1125,58 +1155,56 @@ void queueScanlineCopyPackets(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: inline 161/181 */
-#ifdef NON_MATCHING
-extern Position3D *D_801250EC[];
-extern u32 D_8013B658, D_8013B65C;
-extern s32 D_80124BEC[], D_80124C14[];
-
-void func_80051A68(void) {
+void initializeCourseModels(void) {
     u32 *model;
-    register u32 *offset;
+    u32 *offset;
     s16 i;
     Position3D *positions;
-    bindGeometryRecordData((s16 *)0x801C0000);
-    positions = D_8013B280 = D_801250EC[D_8013AFCE];
+
+    bindGeometryRecordData((s16 *)DAT_COURSE_FIRST);
+    positions = gCourseModelPositions = gCourseModelPositionBuffers[D_8013AFCE];
     for (i = 0; i < 100; i++) {
         positions[i].x *= 5;
         positions[i].y *= 5;
         positions[i].z *= 5;
     }
-    offset = (u32 *)0x801C8804;
-    D_8013B654[0] = *(u16 *)0x801C8800;
-    for (i = 0; i < D_8013B654[0]; i++) {
-        model = (u32 *)0x801C8804;
-        model = (u32 *)((u32)model + *offset);
+
+    offset = (u32 *)DAT_COURSE_SECOND;
+    gCourseModelCounts[0] = *(u16 *)offset;
+    offset++;
+    for (i = 0; i < gCourseModelCounts[0]; i++) {
+        model = ((OffsetArchive *)DAT_COURSE_SECOND)->offsets;
+        model = (u32 *)((u8 *)model + *offset);
         GsMapModelingData(model);
         model++;
-        D_8013B658 = *model++;
-        D_8013BBF8[i] = (TmdObject *)model;
+        gCourseModelObjectCount = *model++;
+        gCourseModels[i] = (TmdObject *)model;
         offset++;
-        D_8013B280[i].x /= 256;
-        D_8013B280[i].y /= 256;
-        D_8013B280[i].z /= 256;
+        gCourseModelPositions[i].x /= 256;
+        gCourseModelPositions[i].y /= 256;
+        gCourseModelPositions[i].z /= 256;
     }
-    GsInitCoordinate2(0, &D_80124FF4);
-    D_8013B660 = D_80124BEC[D_8013AFCE] / 256;
-    D_8013B664 = D_80124C14[D_8013AFCE] / 256;
+
+    GsInitCoordinate2(0, &gCourseModelCoordinate);
+    gCourseModelCullDistance = gCourseModelCullDistances[D_8013AFCE] / 256;
+    gCourseModelDetailDistance = gCourseModelDetailDistances[D_8013AFCE] / 256;
     if ((u16)gCourseOptionalResourceSectors[D_8013AFCE].sector != 0) {
-        offset = (u32 *)0x801F0804;
-        D_8013B654[1] = *(u16 *)0x801F0800;
-        for (i = 0; i < D_8013B654[1]; i++) {
-            model = (u32 *)(*offset++ + 0x801F0800);
+        offset = (u32 *)DAT_COURSE_OPTIONAL;
+        gCourseModelCounts[1] = *(u16 *)offset;
+        offset++;
+        for (i = 0; i < gCourseModelCounts[1]; i++) {
+            model = (u32 *)(DAT_COURSE_OPTIONAL + *offset++);
             model++;
             GsMapModelingData(model);
             model++;
-            D_8013B65C = *model++;
-            D_80125044[i] = (TmdObject *)model;
+            gOptionalCourseModelObjectCount = *model++;
+            gOptionalCourseModels[i] = (TmdObject *)model;
         }
     }
-    if (D_8013AFCE == 6) initializeScanlineCopySeed();
+    if (D_8013AFCE == 6) {
+        initializeScanlineCopySeed();
+    }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/graphics/course_rendering", func_80051A68);
-#endif
 
 void drawCourseModelsForView(s16 view) {
     MATRIX *matrix = (MATRIX *)getScratchAddr(0);
@@ -1211,13 +1239,13 @@ void drawCourseModelsForView(s16 view) {
     sine = rsin(camera->yaw);
     views = gPlayerCameraViews;
     cameraView = &views[view];
-    centerX = cameraView->vpx / 256 + ((D_8013B660 / 2) * sine) / 4096;
+    centerX = cameraView->vpx / 256 + ((gCourseModelCullDistance / 2) * sine) / 4096;
     cosine = rcos(camera->yaw);
-    centerZ = cameraView->vpz / 256 + ((D_8013B660 / 2) * cosine) / 4096;
+    centerZ = cameraView->vpz / 256 + ((gCourseModelCullDistance / 2) * cosine) / 4096;
     cameraX = cameraView->vpx / 256;
     cameraZ = cameraView->vpz / 256;
 
-    GsGetLs(&D_80124FF4, matrix);
+    GsGetLs(&gCourseModelCoordinate, matrix);
     ScaleMatrix(matrix, &scale);
     GsSetLsMatrix(matrix);
 
@@ -1228,23 +1256,23 @@ void drawCourseModelsForView(s16 view) {
     }
 
     i = 0;
-    models = D_8013BBF8;
+    models = gCourseModels;
     do {
         const Position3D *positions;
         s32 x, z, dx, dz;
 
-        if (i >= D_8013B654[0]) {
+        if (i >= gCourseModelCounts[0]) {
             goto queue_draw_mode;
         }
-        positions = D_8013B280;
+        positions = gCourseModelPositions;
         x = positions[i].x;
         z = positions[i].z;
         dx = centerX - x;
         dz = centerZ - z;
-        if (SquareRoot0(dx * dx + dz * dz) <= D_8013B660) {
+        if (SquareRoot0(dx * dx + dz * dz) <= gCourseModelCullDistance) {
             s32 dx = cameraX - x;
             s32 dz = cameraZ - z;
-            if (SquareRoot0(dx * dx + dz * dz) >= D_8013B664) {
+            if (SquareRoot0(dx * dx + dz * dz) >= gCourseModelDetailDistance) {
                 drawProjectedModelPrimitives(models[i], ot, 2, flags);
             } else {
                 func_800559F4(models[i], ot, 2, flags);
