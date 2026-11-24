@@ -25,7 +25,12 @@ extern u8 D_8013AFD3 __attribute__((section(".data")));
 extern GameTask *D_8013AE88 __attribute__((section(".data")));
 extern u16 D_8013AFAA __attribute__((section(".data")));
 
+extern u8 gRacePlacementPalettes[4] __attribute__((section(".data")));
+
 /* Full-width Shift-JIS labels used by the race HUD. */
+const char gRaceRankLabel[12] __attribute__((section(".rodata.race_rank_label"), aligned(4))) =
+    "\x82\x71\x82\x60\x82\x6D\x82\x6A";
+
 const char gAttackTimeLimitLabel[24] __attribute__((section(".rodata.trick_attack_labels"), aligned(4))) =
     "\x82\x73\x82\x68\x82\x6C\x82\x64  \x82\x6B\x82\x68\x82\x6C\x82\x68\x82\x73";
 
@@ -39,7 +44,7 @@ const char gTargetTimeLabel[12] __attribute__((section(".rodata.target_time_labe
     "TARGET TIME";
 
 void func_8004054C(s32 x, s32 y, GsOT *ot, u16 depth);
-void func_80041554(void);
+void drawSinglePlayerRaceHud(void);
 void drawSplitScreenCourseProgressHud(void);
 void func_800418F4(s16 player);
 void drawSplitScreenTrickAttackHud(s16 player);
@@ -624,7 +629,7 @@ void updateRaceHud(void) {
                 }
                 gRacePlayers[0].unk942--;
             }
-            func_80041554();
+            drawSinglePlayerRaceHud();
             break;
         case 1:
             for (player = 0; player < 2; player++) {
@@ -782,11 +787,7 @@ void updateRaceHud(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: inline 201/207 */
-#ifdef NON_MATCHING
-extern const char D_80010BE8[];
-
-void func_80041554(void) {
+void drawSinglePlayerRaceHud(void) {
     GsOT *ot = &D_800EC018[D_8013AF78];
     RacePlayer *player;
     s16 scale;
@@ -794,22 +795,21 @@ void func_80041554(void) {
     s32 timer;
     s16 frame;
     s32 palette;
-    s32 time;
+    s32 money;
     s32 rank;
-    u8 *rankPalettes;
     u16 depth = 1;
 
     setSpriteColor(128, 128, 128);
-    timer = (s8)gRacePlayers[0].unk936[9];
+    timer = gRacePlayers[0].unk93F;
     if (timer != 0) {
         scale = 4096 / (timer + 1);
     } else {
         scale = 0;
     }
     firstPlayer = gRacePlayers;
-    drawScaledMenuKindSprite(-32, -96, (s8)firstPlayer->unk936[8], (s8)firstPlayer->unk936[10],
+    drawScaledMenuKindSprite(-32, -96, firstPlayer->unk93E, firstPlayer->unk940,
                              scale, scale, ot, depth);
-    timer = (s8)firstPlayer->unk942;
+    timer = firstPlayer->unk942;
     if (timer != 0) {
         scale = 4096 / (timer + 1);
     } else {
@@ -818,23 +818,19 @@ void func_80041554(void) {
     player = gRacePlayers;
     drawScaledPaletteMappedIcon(0, -96, (s8)player->heldItem, scale, scale, ot, depth);
     rank = player->unk935;
-    rankPalettes = gMenuSpritePaletteGroups.unk00;
-    drawSpriteByIndexWithBlend(-136, 64, (u32)rank + 468, rankPalettes[rank], -1, ot, depth);
-    drawWrappedText8x8(-136, 54, 4, D_80010BE8, 4, -1, ot, depth);
+    drawSpriteByIndexWithBlend(-136, 64, rank + 468, gRacePlacementPalettes[rank], -1, ot, depth);
+    drawWrappedText8x8(-136, 54, 4, gRaceRankLabel, 4, -1, ot, depth);
     drawSpriteByIndexWithBlend(70, -96, 434, 3, -1, ot, depth);
     drawHudDecimalNumber8x16(104, -96, 1, 0, player->unk934 + 1, 3, -1, ot, depth);
     drawSpriteByIndexWithBlend(116, -96, 27, 4, -1, ot, depth);
-    drawHudDecimalNumber8x16(128, -96, 1, 0, (s16)D_8013AFD0, 3, -1, ot, depth);
+    drawHudDecimalNumber8x16(128, -96, 1, 0, selectedFinishLapCountAbsolute, 3, -1, ot, depth);
     func_8004054C(124, -68, ot, depth);
     frame = (s16)gFrameCounter % 12;
     drawSpriteByIndexWithBlend(120, 80, frame / 2 + 472, 7, -1, ot, depth);
-    time = player->unk01C;
-    palette = time < 100 ? 2 : 3;
-    drawHudDecimalNumber8x16(78, 80, 5, 0, time, palette, -1, ot, depth);
+    money = player->unk01C;
+    palette = money < 100 ? 2 : 3;
+    drawHudDecimalNumber8x16(78, 80, 5, 0, money, palette, -1, ot, depth);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/ui/race_hud_modes", func_80041554);
-#endif
 
 void drawSplitScreenCourseProgressHud(void) {
     GsOT *ot = &D_800EBFF0[D_8013AF78];

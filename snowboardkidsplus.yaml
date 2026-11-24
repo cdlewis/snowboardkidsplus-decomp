@@ -108,7 +108,7 @@ segments:
       - {start: 0x1360, type: .rodata, name: race/player/player_actions, linker_section: .rodata.money_labels}
       - {start: 0x1390, type: .rodata, name: menu/record_screens, linker_section: .rodata.race_comparison_labels}
       - {start: 0x13C4, type: .rodata, name: race/ui/race_hud_modes, linker_section: .rodata.player_camera_modes}
-      - [0x13E8, rodata]
+      - {start: 0x13E8, type: .rodata, name: race/ui/race_hud_modes, linker_section: .rodata.race_rank_label}
       - {start: 0x13F4, type: .rodata, name: race/ui/race_hud_modes, linker_section: .rodata.trick_attack_labels}
       - {start: 0x1424, type: .rodata, name: race/ui/race_hud, linker_section: .rodata.lap_time_label}
       - {start: 0x1430, type: .rodata, name: race/ui/race_hud, linker_section: .rodata.lap_time_format}
