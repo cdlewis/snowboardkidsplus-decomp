@@ -749,13 +749,13 @@ void drawTaskShadowedText(void) {
     resource = (Movement2D *)&gTaskMemoryPool[D_8013AE88->resource14];
     x = resource->x / 4096;
     y = resource->y / 4096;
-    func_8006EC84(x - 48, y + 24, 12, gTaskShadowedText, 0, -1,
-                  &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    drawWrappedGlyphText8x16((s16)(x - 48), (s16)(y + 24), 12, gTaskShadowedText, 0, -1,
+                             &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     setSpriteColor(0, 0, 0);
-    func_8006EC84(x - 47, y + 25, 12, gTaskShadowedText, 0, -1,
-                  &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
-    func_8006EC84(x - 46, y + 25, 12, gTaskShadowedText, 0, -1,
-                  &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    drawWrappedGlyphText8x16((s16)(x - 47), (s16)(y + 25), 12, gTaskShadowedText, 0, -1,
+                             &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    drawWrappedGlyphText8x16((s16)(x - 46), (s16)(y + 25), 12, gTaskShadowedText, 0, -1,
+                             &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
 }
 
 s16 getSaveRecordMaskTier(s16 recordIndex, s16 maskIndex) {

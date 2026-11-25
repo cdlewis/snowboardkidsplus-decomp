@@ -1080,65 +1080,78 @@ void drawDoubleByteGlyph8x16(s16 x, s16 y, s16 width, s16 height, const s8 *text
     }
 }
 
-/* DECOMP_ATTEMPT: inline 158/171 */
-#ifdef NON_MATCHING
-void func_8006EC84(s16 x, s16 y, s16 columns, const u16 *text, s16 palette, s16 blend, GsOT *ot, u16 depth) {
-    DrawModeSpritePacket *packet = (DrawModeSpritePacket *)0x1F800000;
+void drawWrappedGlyphText8x16(s32 x, s32 y, s16 columnLimit, const u16 *text,
+                             s16 palette, s16 blend, GsOT *ot, u16 depth) {
+    DrawModeSpritePacket *packet = (DrawModeSpritePacket *)getScratchAddr(0);
     DrawModeSpritePacket *out;
     s16 startX = x;
     s16 currentX;
-    s16 savedColumns = columns;
-    s16 wrapColumns = columns;
+    s16 savedColumns = columnLimit;
+    s16 column;
     s16 previous;
     u16 glyph;
+    u8 r, g, b;
+
     packet->tag = (sizeof(*packet) / sizeof(u32) - 1) << 24;
-    packet->drawModeCode = (getTPage(0, 0, 0, 0) | 0xE100);
-    packet->code = 0x64;
-    setRGB0(packet, gTexturedSpriteTemplate.r0, gTexturedSpriteTemplate.g0, gTexturedSpriteTemplate.b0);
+    packet->drawModeCode = DRAW_MODE_COMMAND_HIGH;
+    setcode((SPRT *)&packet->tpage, TEXTURED_SPRITE_CODE);
+    r = gTexturedSpriteTemplate.r0;
+    g = gTexturedSpriteTemplate.g0;
+    b = gTexturedSpriteTemplate.b0;
+    setRGB0(packet, r, g, b);
     packet->tpage = getTPage(0, 0, 960, 256);
     if (blend >= 0) {
-        packet->code = 0x64 | 2;
+        setcode((SPRT *)&packet->tpage, TEXTURED_SPRITE_CODE | SEMI_TRANSPARENT_FLAG);
         packet->tpage = (blend << 5) | getTPage(0, 0, 960, 256);
     }
     packet->clut = getClut(768, palette + 240);
-    packet->w = 8;
-    packet->h = 16;
+    setWH(packet, 8, 16);
+
     out = (DrawModeSpritePacket *)GsGetWorkBase();
     currentX = x;
-    columns = 0;
+    column = 0;
     while (*text) {
-        if (columns >= wrapColumns) { currentX = startX; y += 16; columns = 0; }
+        if (column >= columnLimit) {
+            currentX = startX;
+            y += 16;
+            column = 0;
+        }
         if (*text == 0x800A) {
-            if (previous != 2 || columns != 0) columns = savedColumns;
+            if (previous != 2 || column != 0) {
+                column = savedColumns;
+            }
             text++;
             previous = 0;
         } else if ((*text & 0xC000) == 0xC000) {
             packet->clut = getClut(768, (*text & 15) + 240);
             text++;
             previous = 1;
+        } else if (*text == 0x8020) {
+            currentX += 8;
+            column++;
+            text++;
+            previous = 2;
+            continue;
         } else {
-            if (*text == 0x8020) { currentX += 8; columns++; text++; previous = 2; continue; }
-            else {
-                *out = *packet;
-                glyph = *text - 1;
-                out->x0 = currentX;
-                out->u0 = (glyph % 32) * 8;
-                out->v0 = (glyph / 32) * 16 + 16;
-                out->y0 = y;
-                currentX += 8;
-                columns++;
-                AddPrim(&ot->org[depth], out++);
-                *out = *packet;
-                text++;
-                previous = 2;
-            }
+            DrawModeSpritePacket *glyphPacket;
+            u8 u, v;
+            *out = *packet;
+            glyph = *text - 1;
+            u = (glyph % 32) * 8;
+            v = (glyph / 32) * 16 + 16;
+            setUV0(out, u, v);
+            setXY0(out, currentX, y);
+            glyphPacket = out++;
+            currentX += 8;
+            column++;
+            AddPrim(&ot->org[depth], glyphPacket);
+            *out = *packet;
+            text++;
+            previous = 2;
         }
     }
     func_800BF2C8((u32)out);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/graphics/sprite_draw", func_8006EC84);
-#endif
 
 /* DECOMP_ATTEMPT: inline 191/198 */
 #ifdef NON_MATCHING

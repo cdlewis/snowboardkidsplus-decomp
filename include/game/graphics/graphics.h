@@ -410,7 +410,7 @@ void drawLimitedWrappedGlyphText16x16(s16 x, s16 y, s32 count, s32 columns, cons
 void drawDecimalNumber16(s16 x, s16 y, s16 count, s16 mode, s32 value,
                    s16 palette, s16 blend, GsOT *ot, u16 depth);
 
-void func_8006EC84(s16 x, s16 y, s16 columns, const u16 *text, s16 palette, s16 blend, GsOT *ot, u16 depth);
+void drawWrappedGlyphText8x16(s32 x, s32 y, s16 columnLimit, const u16 *text, s16 palette, s16 blend, GsOT *ot, u16 depth);
 void drawTaskShadowedText(void);
 void drawPlayerModeMessagePanelTask(void);
 

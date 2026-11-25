@@ -4078,11 +4078,11 @@ void drawSaveRecordPushAnyButtonPrompt(void) {
     position = (Movement2D *)&gTaskMemoryPool[D_8013AE88->resource14];
     x = position->x / 4096;
     y = position->y / 4096;
-    func_8006EC84(x + 134, y - 6, 20, gSaveRecordPushAnyButtonText, 0, -1,
-                  &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    drawWrappedGlyphText8x16((s16)(x + 134), (s16)(y - 6), 20, gSaveRecordPushAnyButtonText, 0, -1,
+                             &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     setSpriteColor(0, 0, 0);
-    func_8006EC84(x + 135, y - 5, 20, gSaveRecordPushAnyButtonText, 0, -1,
-                  &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
-    func_8006EC84(x + 136, y - 5, 20, gSaveRecordPushAnyButtonText, 0, -1,
-                  &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    drawWrappedGlyphText8x16((s16)(x + 135), (s16)(y - 5), 20, gSaveRecordPushAnyButtonText, 0, -1,
+                             &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    drawWrappedGlyphText8x16((s16)(x + 136), (s16)(y - 5), 20, gSaveRecordPushAnyButtonText, 0, -1,
+                             &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
 }

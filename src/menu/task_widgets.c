@@ -1856,14 +1856,14 @@ void updateRegisteredTextPanelTask(void) {
         }
 
         if (resource->text != 0) {
-            func_8006EC84((s16)(movement->x / 4096 + 4), (s16)(movement->y / 4096 + 4),
-                          14, resource->text, 7, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            drawWrappedGlyphText8x16((s16)(movement->x / 4096 + 4), (s16)(movement->y / 4096 + 4),
+                                     14, resource->text, 7, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         } else if (resource->texts != 0) {
             s16 textIndex = mapMenuByteIndex(resource->mapping, selection->selected);
 
-            func_8006EC84((s16)(movement->x / 4096 + 4), (s16)(movement->y / 4096 + 4),
-                          14, resource->texts[textIndex], 7, -1,
-                          &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            drawWrappedGlyphText8x16((s16)(movement->x / 4096 + 4), (s16)(movement->y / 4096 + 4),
+                                     14, resource->texts[textIndex], 7, -1,
+                                     &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         }
     }
     setTexturedQuadColor(128, 128, 128);

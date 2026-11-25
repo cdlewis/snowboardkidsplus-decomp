@@ -385,14 +385,14 @@ void drawRegisteredTextPanelTask(void) {
         deleteCurrentTaskSubtree();
     } else {
         setSpriteColor(128, 128, 128);
-        func_8006EC84(state->textX, state->textY, 18, state->text, 7, -1,
-                     &D_800EBFF0[D_8013AF78], state->depth);
+        drawWrappedGlyphText8x16(state->textX, state->textY, 18, state->text, 7, -1,
+                                 &D_800EBFF0[D_8013AF78], state->depth);
         if (state->mode == 0) {
-            func_8006EC84((s16)(state->textX + 32), state->textY, 18, &gRegisteredPanelMode0Label.glyph, 7, -1,
-                         &D_800EBFF0[D_8013AF78], state->depth);
+            drawWrappedGlyphText8x16((s16)(state->textX + 32), state->textY, 18, &gRegisteredPanelMode0Label.glyph, 7, -1,
+                                     &D_800EBFF0[D_8013AF78], state->depth);
         } else if (state->mode == 1) {
-            func_8006EC84((s16)(state->textX + 32), state->textY, 18, &gRegisteredPanelMode1Label.glyph, 7, -1,
-                         &D_800EBFF0[D_8013AF78], state->depth);
+            drawWrappedGlyphText8x16((s16)(state->textX + 32), state->textY, 18, &gRegisteredPanelMode1Label.glyph, 7, -1,
+                                     &D_800EBFF0[D_8013AF78], state->depth);
         }
         setTexturedQuadColor(128, 128, 128);
         drawDefaultTexturedPanel(state->x, state->y, 152, 40, 5, 0,
