@@ -33,7 +33,7 @@ void func_800A89F4(void);
 void func_800131B4(void);
 void initializeGameSystems(void);
 void runGameLoop(void);
-void func_8002EE0C(void);
+void initializeNewGameSaveData(void);
 void finishTaskTransitionAfterCountdown(void);
 void resetStateAndBeginResourceLoadTransition(u8 loadResources);
 void initializeRaceRestartTask(void);

@@ -53,6 +53,7 @@ void setPairedStateIndexedFlag(s16 index);
 void rebuildCombinedStateMask(SaveRecord *state);
 
 void copyGlobalFlagState(SaveRecord *source, SaveRecord *destination);
+void mergeSaveRecordFlags(SaveRecord *source, SaveRecord *destination);
 
 s32 getSaveRecordFlagGroupIndex(s16 recordIndex, s16 groupIndex);
 

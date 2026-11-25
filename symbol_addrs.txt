@@ -2843,6 +2843,9 @@ drawTaskIndexPanel = 0x8008690C; // type:func
 taskIndexPanelQuadsPalette0 = 0x801301CC; // size:0x78
 taskIndexPanelQuadsPalette1 = 0x80130244; // size:0x78
 
+gDefaultRaceRecordTimes = 0x80132204; // size:0x3C defined:true
+gDefaultLapRecordTimes = 0x8013264C; // size:0xC8 defined:true
+initializeNewGameSaveData = 0x8002EE0C; // type:func
 loadCurrentPlayerModelBlock = 0x8002ED00; // type:func
 
 initializeDualResourceTaskAndNotifyParent = 0x8007BDE0; // type:func

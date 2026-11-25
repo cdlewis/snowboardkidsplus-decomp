@@ -401,7 +401,7 @@ void initializeGameOptionTask(void) {
     D_8013B562 = 0;
     D_8013AFD7 = 0;
     D_8013AE88->data18 = 0;
-    func_8002EE0C();
+    initializeNewGameSaveData();
     resetGameOptionState();
     setCurrentTaskCallback(initializeGameOptionViewTask);
     D_8013AE88->unk10 |= 2;

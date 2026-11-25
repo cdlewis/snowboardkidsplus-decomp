@@ -96,7 +96,6 @@ extern u8 D_8013B47C;
 extern TexturedQuadListEntry taskIndexPanelQuadsPalette0[10];
 extern TexturedQuadListEntry taskIndexPanelQuadsPalette1[10];
 
-void mergeSaveRecordFlags(SaveRecord *source, SaveRecord *destination);
 void updateSaveRecordTask(void);
 void updateSelectionPrizeMenuTask(void);
 void updatePaletteRotationTask(void);
@@ -112,7 +111,6 @@ void updatePlayerGroupedCourseSelectionTask(void);
 void updateRegisteredTripletTask(void);
 void updateRegisteredPlayerModels(void);
 
-void clearHalfwordPairTable(void);
 void initializeDualResourceTaskAndClearState(void);
 void sortLitObjectWithDrawArea(GsDOBJ2 *object, u16 index, RECT *bounds);
 ByteTriplet *lookupByteTriplet(ByteTriplet *records, u8 *indices, s16 index);

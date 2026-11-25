@@ -230,7 +230,7 @@ void initializeMenuTransitionResourcesTask(void) {
     D_8013AE88->resource16 = allocateTaskMemoryBlock();
     resource->unk0E = 0;
     setTaskBackgroundMode(0, 0, 0);
-    func_8002EE0C();
+    initializeNewGameSaveData();
     if (D_8013B0F0 == 0) {
         configureTaskStateTransition(11, 0, 30);
         setSecondaryDisplayTaskMode(3);

@@ -5,6 +5,8 @@
 #include "game/audio/music.h"
 #include "game/engine/angles.h"
 #include "game/engine/task.h"
+#include "game/engine/system_runtime.h"
+#include "game/menu/save_record_tasks.h"
 #include "game/graphics/coordinate.h"
 #include "game/graphics/graphics.h"
 #include "game/io/controller.h"
@@ -22,6 +24,40 @@ extern VECTOR *D_8013AF88 __attribute__((section(".data")));
 extern GameTask *D_8013AE88 __attribute__((section(".data")));
 extern GameTask *D_8013AE8C __attribute__((section(".data")));
 extern u32 D_8013AFE4 __attribute__((section(".data")));
+
+extern u8 D_8013AFCD __attribute__((section(".data")));
+extern u16 D_8013AF7A __attribute__((section(".data")));
+extern u16 D_8013AF7C __attribute__((section(".data")));
+extern u8 D_8013AFD6 __attribute__((section(".data")));
+extern u8 D_8013AFD7 __attribute__((section(".data")));
+extern volatile u8 gShopMenuRememberedSelection __attribute__((section(".data")));
+
+extern u8 D_8013B47C __attribute__((section(".data")));
+extern u8 D_8013B4BC __attribute__((section(".data")));
+extern u8 D_8013B4BD __attribute__((section(".data")));
+extern u8 D_8013B527 __attribute__((section(".data")));
+extern u8 D_8013B110;
+
+RaceTime gDefaultRaceRecordTimes[3][5]
+    __attribute__((section(".data.default_race_record_times"), aligned(4))) = {
+    {{0, 36, 0}, {0, 42, 0}, {0, 44, 0}, {0, 48, 0}, {0, 53, 0}},
+    {{1, 58, 0}, {2, 3, 0}, {2, 11, 0}, {2, 13, 0}, {2, 21, 0}},
+    {{2, 1, 0}, {2, 6, 0}, {2, 13, 0}, {2, 18, 0}, {2, 22, 0}},
+};
+
+RaceTime gDefaultLapRecordTimes[10][5]
+    __attribute__((section(".data.default_lap_record_times"), aligned(4))) = {
+    {{2, 15, 0}, {2, 20, 0}, {2, 30, 0}, {2, 40, 0}, {2, 50, 0}},
+    {{2, 12, 0}, {2, 15, 0}, {2, 20, 0}, {2, 30, 0}, {2, 38, 0}},
+    {{1, 47, 0}, {1, 50, 0}, {1, 56, 0}, {2, 0, 0}, {2, 8, 0}},
+    {{1, 56, 0}, {2, 0, 0}, {2, 12, 0}, {2, 21, 0}, {2, 25, 0}},
+    {{1, 52, 0}, {2, 0, 0}, {2, 5, 0}, {2, 9, 0}, {2, 13, 0}},
+    {{1, 53, 0}, {1, 56, 0}, {2, 0, 0}, {2, 4, 0}, {2, 10, 0}},
+    {{1, 59, 0}, {2, 2, 0}, {2, 11, 0}, {2, 17, 0}, {2, 20, 0}},
+    {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}},
+    {{0, 28, 0}, {0, 33, 0}, {0, 36, 0}, {0, 40, 0}, {0, 42, 0}},
+    {{0, 36, 0}, {0, 40, 0}, {0, 45, 0}, {0, 50, 0}, {0, 55, 0}},
+};
 
 u16 gPlayerSoundVariantsA[2] __attribute__((section(".data.player_sound_variants"))) = {0x100, 0x200};
 
@@ -1724,106 +1760,95 @@ void loadCurrentPlayerModelBlock(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: inline 223/232 */
-#ifdef NON_MATCHING
-extern volatile u8 gShopMenuRememberedSelection;
+void initializeNewGameSaveData(void) {
+    u16 i, j;
+    SaveRecord *first = gPlayerSaveRecords;
+    SaveRecord *second;
+    SaveRecord *destination;
 
-extern RaceTime D_80132204[3][5], D_8013264C[10][5];
-extern u8 D_8013B47C __attribute__((section(".data")));
-extern u8 D_8013B4BC __attribute__((section(".data")));
-extern u8 D_8013B4BD __attribute__((section(".data")));
-extern u8 D_8013B527 __attribute__((section(".data")));
-extern u8 D_8013B110;
-extern s16 D_8013B104;
-void mergeSaveRecordFlags(SaveRecord *source, SaveRecord *destination);
-void clearHalfwordPairTable(void);
+    initializeSaveRecordDefaults(first);
+    second = first + 1;
+    initializeSaveRecordDefaults(second);
+    destination = &gMergedSaveRecord;
+    copyGlobalFlagState(first, destination);
+    mergeSaveRecordFlags(second, destination);
 
-void func_8002EE0C(void) {
- u16 i, j;
- SaveRecord *record;
- SaveRecord *first = gPlayerSaveRecords;
- SaveRecord *second;
- SaveRecord *destination;
- initializeSaveRecordDefaults(first);
- second = first + 1;
- initializeSaveRecordDefaults(second);
- destination = &gMergedSaveRecord;
- copyGlobalFlagState(first, destination);
- mergeSaveRecordFlags(second, destination);
- record = first;
- for(i=0;i<11;i++) {
-  for(j=0;j<5;j++) {
-   record->lapRecords[i][j].minutes=3;
-   record->lapRecords[i][j].seconds=59;
-   record->lapRecords[i][j].centiseconds=0;
-   record->timeRecords[i][j].minutes=3;
-   record->timeRecords[i][j].seconds=0;
-   record->timeRecords[i][j].centiseconds=0;
-   record->lapRecordIcons[i][j]=j;
-   record->countRecordValues[i][j]=0;
-   record->countRecordIcons[i][j]=j;
-   record->timeRecordCharacters[i][j]=j;
-   record->statsRecordValues[i][j]=0;
-   record->statsRecordIcons[i][j]=j;
-  }
-  record->bestLapSplitTimes[i].minutes=1;
-  record->bestLapSplitTimes[i].seconds=24;
-  record->bestLapSplitTimes[i].centiseconds=0;
-  record->bestScore[i]=0;
- }
- for(j=0;j<5;j++) {
-  gPlayerSaveRecords[0].timeRecords[9][j]=D_80132204[0][j];
-  gPlayerSaveRecords[0].timeRecords[0][j]=D_80132204[1][j];
-  gPlayerSaveRecords[0].timeRecords[1][j]=D_80132204[2][j];
- }
- for(i=0;i<10;i++) {
-  for(j=0;j<5;j++) {
-   gPlayerSaveRecords[0].lapRecords[i][j]=D_8013264C[i][j];
-  }
- }
- D_8013AFCD=1;
- D_8013AFE0=0;
- for(i=0;i<4;i++) {
-  gRacePlayers[i].unk009=i;
-  gRacePlayers[i].unk00A[0]=0;
-  gRacePlayers[i].unk00D=0;
-  gRacePlayers[i].unk00A[1]=0;
-  gRacePlayers[i].unk00A[2]=0;
-  gRacePlayers[i].money=0;
-  gRacePlayers[i].unk02A=0;
-  gRacePlayers[i].unk015[0]=0;
-  gRacePlayers[i].unk015[3]=0;
- }
- for(i=0;i<15;i++) {
-  gPlayerResourceTextureSelections.entries[0][i]=D_80123650[i];
-  gPlayerResourceTextureSelections.entries[1][i]=D_80123650[i];
- }
- D_8013AFCD=1;
- D_8013AFD2=1;
- D_8013AF7A=320;
- D_8013AF7C=240;
- D_8013B10C=-1;
- D_8013B10E=-1;
- D_8013AFCE=0;
- D_8013AFE2=0;
- D_8013AFD6=0;
- D_8013B47C=0;
- D_8013B104=0;
- gShopMenuRememberedSelection=0;
- D_8013B4BC=0;
- D_8013B4BD=0;
- D_8013B527=0;
- gRacePlayers[0].unk009=0;
- gRacePlayers[0].unk00A[0]=0;
- gRacePlayers[0].unk00D=0;
- gRacePlayers[1].unk009=6;
- gRacePlayers[1].unk00A[0]=0;
- gRacePlayers[1].unk00D=0;
- D_8013AFD7=0;
- clearHalfwordPairTable();
- D_8013B106=0;
- D_8013B110=0;
+    for (i = 0; i < 11; i++) {
+        for (j = 0; j < 5; j++) {
+            gPlayerSaveRecords[0].lapRecords[i][j].minutes = 3;
+            gPlayerSaveRecords[0].lapRecords[i][j].seconds = 59;
+            gPlayerSaveRecords[0].lapRecords[i][j].centiseconds = 0;
+            gPlayerSaveRecords[0].timeRecords[i][j].minutes = 3;
+            gPlayerSaveRecords[0].timeRecords[i][j].seconds = 0;
+            gPlayerSaveRecords[0].timeRecords[i][j].centiseconds = 0;
+            gPlayerSaveRecords[0].lapRecordIcons[i][j] = j;
+            gPlayerSaveRecords[0].countRecordValues[i][j] = 0;
+            gPlayerSaveRecords[0].countRecordIcons[i][j] = j;
+            gPlayerSaveRecords[0].timeRecordCharacters[i][j] = j;
+            gPlayerSaveRecords[0].statsRecordValues[i][j] = 0;
+            gPlayerSaveRecords[0].statsRecordIcons[i][j] = j;
+        }
+        gPlayerSaveRecords[0].bestLapSplitTimes[i].minutes = 1;
+        gPlayerSaveRecords[0].bestLapSplitTimes[i].seconds = 24;
+        gPlayerSaveRecords[0].bestLapSplitTimes[i].centiseconds = 0;
+        gPlayerSaveRecords[0].bestScore[i] = 0;
+    }
+
+    for (j = 0; j < 5; j++) {
+        gPlayerSaveRecords[0].timeRecords[9][j] = gDefaultRaceRecordTimes[0][j];
+        gPlayerSaveRecords[0].timeRecords[0][j] = gDefaultRaceRecordTimes[1][j];
+        gPlayerSaveRecords[0].timeRecords[1][j] = gDefaultRaceRecordTimes[2][j];
+    }
+
+    for (i = 0; i < 10; i++) {
+        for (j = 0; j < 5; j++) {
+            gPlayerSaveRecords[0].lapRecords[i][j] = gDefaultLapRecordTimes[i][j];
+        }
+    }
+
+    D_8013AFCD = 1;
+    D_8013AFE0 = 0;
+
+    for (i = 0; i < 4; i++) {
+        gRacePlayers[i].unk009 = i;
+        gRacePlayers[i].unk00A[0] = 0;
+        gRacePlayers[i].unk00D = 0;
+        gRacePlayers[i].unk00A[1] = 0;
+        gRacePlayers[i].unk00A[2] = 0;
+        gRacePlayers[i].money = 0;
+        gRacePlayers[i].unk02A = 0;
+        gRacePlayers[i].unk015[0] = 0;
+        gRacePlayers[i].unk015[3] = 0;
+    }
+
+    for (i = 0; i < 15; i++) {
+        gPlayerResourceTextureSelections.entries[0][i] = D_80123650[i];
+        gPlayerResourceTextureSelections.entries[1][i] = D_80123650[i];
+    }
+
+    D_8013AFCD = 1;
+    D_8013AFD2 = 1;
+    D_8013AF7A = 320;
+    D_8013AF7C = 240;
+    D_8013B10C = -1;
+    D_8013B10E = -1;
+    D_8013AFCE = 0;
+    D_8013AFE2 = 0;
+    D_8013AFD6 = 0;
+    D_8013B47C = 0;
+    D_8013B104 = 0;
+    gShopMenuRememberedSelection = 0;
+    D_8013B4BC = 0;
+    D_8013B4BD = 0;
+    D_8013B527 = 0;
+    gRacePlayers[0].unk009 = 0;
+    gRacePlayers[0].unk00A[0] = 0;
+    gRacePlayers[0].unk00D = 0;
+    gRacePlayers[1].unk009 = 6;
+    gRacePlayers[1].unk00A[0] = 0;
+    gRacePlayers[1].unk00D = 0;
+    D_8013AFD7 = 0;
+    clearHalfwordPairTable();
+    D_8013B106 = 0;
+    D_8013B110 = 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/player/player_actions", func_8002EE0C);
-#endif
