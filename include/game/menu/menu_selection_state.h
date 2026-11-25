@@ -9,6 +9,7 @@ typedef struct MenuSelectionState {
     s16 unk04;
 } MenuSelectionState;
 
+extern const u8 gMenuPlayerTextureIds[16];
 extern MenuSelectionState D_801300AC[2];
 
 s32 getCourseSelectionGroupIndex(void);

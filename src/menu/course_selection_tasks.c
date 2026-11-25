@@ -190,6 +190,11 @@ GroupedSelectionMenuDescriptor gGroupedCourseMenuDescriptors[]
     {D_8013B430, 0, 24, 4, 0, D_8013B43C, NULL, D_8013B450},
 };
 
+const u8 gMenuPlayerTextureIds[16]
+    __attribute__((section(".data.menu_player_texture_ids"), aligned(4))) = {
+    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 21, 20,
+};
+
 IndexedHalfwordRecord gPlayerGroupedSelectionSprites[17]
     __attribute__((section(".data.player_grouped_selection_sprites"), aligned(4))) = {
     {205, 0x0, 0x0},
@@ -260,7 +265,7 @@ extern const char gRegisteredTripletUnavailableLabel[];
 void updateRegisteredPlayerModelTask(void);
 void transitionRegisteredPlayerModels(void);
 void transitionRegisteredPlayerModelsUp(void);
-void func_80083C3C(void);
+void transitionRegisteredPlayerModelTexture(void);
 void createPaletteEntryCopyTask(s32 x, s32 y, s32 destination, s32 source, s32 index);
 extern const u16 D_80130308[], D_80130348[], D_801303CC[], D_8013052C[];
 extern const u16 D_8013066C[], D_801306EC[], D_80130780[];
@@ -1748,7 +1753,7 @@ commandChildren:
         break;
     case 20:
         if (alternateSelection->selection != alternateSelection->previousSelection) {
-            setCurrentTaskCallback(func_80083C3C);
+            setCurrentTaskCallback(transitionRegisteredPlayerModelTexture);
             entry->command = 1;
             entry->flags = 1;
         }
@@ -2319,11 +2324,7 @@ void updateRegisteredChildBlinkTransition(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: inline 383/390 */
-#ifdef NON_MATCHING
-extern u8 D_80130084[];
-
-void func_80083C3C(void) {
+void transitionRegisteredPlayerModelTexture(void) {
     MenuPlayerModelPosition *position;
     RegisteredTaskEntry *children;
     RegisteredTaskEntry *entry;
@@ -2333,6 +2334,7 @@ void func_80083C3C(void) {
     s16 playerIndex;
     s32 outgoingSlot;
     s32 incomingSlot;
+    RECT *bounds;
     RECT *incomingBounds;
     s16 height;
     s16 i;
@@ -2350,9 +2352,9 @@ void func_80083C3C(void) {
     }
     if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
     task = D_8013AE88;
-    selection = &D_801300AC[(s16)task->data18];
-    texture = &D_8013B468[(s16)task->data18];
     playerIndex = task->data18;
+    selection = &D_801300AC[playerIndex];
+    texture = &D_8013B468[playerIndex];
 
     if (task->data1C == 0) {
         outgoingSlot = 0;
@@ -2361,14 +2363,17 @@ void func_80083C3C(void) {
         outgoingSlot = 1;
         incomingSlot = 0;
     }
-    incomingBounds = &D_801300B8[incomingSlot];
+    bounds = D_801300B8;
+    incomingBounds = &bounds[incomingSlot];
     height = incomingBounds->h;
 
     switch (entry->command) {
     case 1: {
-        RECT *outgoingBounds = &D_801300B8[outgoingSlot];
+        RECT *outgoingBounds = &bounds[outgoingSlot];
         s16 width = 160;
         s16 top = 60;
+        s32 player;
+        u8 (*rows)[15];
         u8 *textures;
         outgoingBounds->x = width;
         outgoingBounds->y = top;
@@ -2378,9 +2383,11 @@ void func_80083C3C(void) {
         incomingBounds->y = top;
         incomingBounds->w = width;
         incomingBounds->h = 0;
-        textures = gPlayerResourceTextureSelections.entries[playerIndex];
+        player = playerIndex;
+        rows = gPlayerResourceTextureSelections.entries;
+        textures = rows[player];
         textures[selection->selection] =
-            D_80130084[texture->selection];
+            gMenuPlayerTextureIds[texture->selection];
         reloadTaskPlayerModel(children[incomingSlot].task, (s16)(incomingSlot + playerIndex * 2),
                               playerIndex, selection->selection,
                               position->x / 4096, position->y / 4096, position->z);
@@ -2391,7 +2398,7 @@ void func_80083C3C(void) {
     case 2: {
         height += 4;
         if (height <= 120) {
-            RECT *outgoingBounds = &D_801300B8[outgoingSlot];
+            RECT *outgoingBounds = &bounds[outgoingSlot];
             s16 width = 160;
             outgoingBounds->x = width;
             outgoingBounds->y = height + 60;
@@ -2442,9 +2449,6 @@ void func_80083C3C(void) {
         break;
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/menu/course_selection_tasks", func_80083C3C);
-#endif
 
 void drawTaskOffsetSpriteB8(void) {
     Movement2D *resource;
