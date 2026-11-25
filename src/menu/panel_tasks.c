@@ -722,7 +722,7 @@ void initializeAlternateCountedTaskResourcePair(void) {
 
 /* DECOMP_ATTEMPT: inline 551/555 */
 #ifdef NON_MATCHING
-extern const u8 D_801317D0[];
+extern const GridSpriteEntry D_801317D0[3];
 extern const u8 D_8013B49C[];
 extern const u8 D_8013B4B0[];
 extern u8 saveRecordMenuRememberedSelectionGp;
@@ -755,7 +755,7 @@ void func_8008DDC0(void) {
         }
         selection->previousIndex = selection->selectedIndex;
         selection->choiceResult = 0;
-        createRegisteredSpacedChildTasks(mode, 0xB0, 0x40, D_801317D0, D_8013B4B0,
+        createRegisteredSpacedChildTasks(mode, 0xB0, 0x40, (const u8 *)D_801317D0, D_8013B4B0,
                                          NULL, 0, 0, 20, -308, -80, 0, 24, 3, 176,
                                          drawSelectedTaskSprite, drawRegisteredTaskGridSpriteWithColor, 4, 1);
         createRegisteredTextPanelTask(-320, 8, sShopMenuTexts, D_8013B49C, 4, 11);
