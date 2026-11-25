@@ -78,7 +78,7 @@ def similar_inputs():
 
 def similar_ranking(function_name=None):
     return project_ranking(include_game=True, include_game_references=True,
-                           minimum=0.60, function_name=function_name)
+                           minimum=0.40, function_name=function_name)
 
 
 def cache_similar_rows(inputs, rows):
