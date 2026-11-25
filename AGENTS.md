@@ -138,7 +138,7 @@ user's requested scope.
 If a build or experiment tool explicitly instructs you to stop, stop and report
 the best score and attempt file, approaches tried, remaining differences, and
 whether a different strategy is needed. Preserve useful scratch attempts.
-Stop after 20 attempts without improvement; use the best archived source and
+Stop after 40 attempts without improvement; use the best archived source and
 score from `best.json` in the report.
 A function is complete only at 100% byte match with a green full-image gate.
 

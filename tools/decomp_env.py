@@ -313,7 +313,7 @@ def record_attempt(workspace, output, record):
     print(f'Best: {best["attempt"]}.c — {best["instruction_similarity_percent"]:.2f}% '
           f'({"EXACT" if best["exact"] else "different bytes"}); source: {best["source"]}', flush=True)
     since = sum(item["number"] > best["number"] for item in records)
-    if since >= 20 and not best["exact"]:
+    if since >= 40 and not best["exact"]:
         print(f"STOP: No improvement in {since} attempts. Preserve the best attempt and report "
               "its score/source, approaches tried, remaining differences, and next strategy.", flush=True)
 
