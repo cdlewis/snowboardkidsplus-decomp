@@ -195,18 +195,11 @@ void updateUnlockOptionsMenuTask(void) {
 extern u16 D_80132854[8];
 extern u16 D_80132864[];
 extern u16 D_80132866[];
-extern u8 D_8013B568[8];
+extern u8 D_8013B568[5];
 
 void func_800A42CC(void) {
     UnlockMenuState *state;
     s16 row;
-    s16 offset;
-    s32 palette;
-    u8 centerPalette;
-    const u16 *centerSprite;
-    s32 leftPalette;
-    s32 rightPalette;
-    s32 optionMask;
 
     if (D_8013AE88->resource14 == 0xFFFF) {
         for (;;) {}
@@ -217,27 +210,33 @@ void func_800A42CC(void) {
     drawSpriteByIndexWithBlend(-56, -96 - state->unk3C[0] / 4096, 0x230, 2, -1,
                   &D_800EBFF0[D_8013AF78], 4);
     for (row = 0; row < 5; row++) {
-        offset = state->unk04[row] / 4096;
+        s16 horizontalOffset;
+        s32 palette;
+        u8 centerPalette;
+        const u16 *centerSprite;
+        s32 leftPalette;
+        s32 rightPalette;
+
+        horizontalOffset = state->unk04[row] / 4096;
         leftPalette = 1;
         if (state->selection == row) {
             leftPalette = 3;
         }
-        drawSpriteByIndexWithBlend(-128 - offset, row * 24 - 56, D_80132854[row], leftPalette,
+        drawSpriteByIndexWithBlend(-128 - horizontalOffset, row * 24 - 56, D_80132854[row], leftPalette,
                       -1, &D_800EBFF0[D_8013AF78], 4);
 
-        optionMask = 1 << D_8013B568[row];
-        if (gGameOptionFlags & optionMask) {
+        if (gGameOptionFlags & (1U << D_8013B568[row])) {
             palette = (state->selection != row) * 4;
         } else {
             palette = 1;
         }
         centerSprite = &D_80132864[row * 2];
         centerPalette = palette;
-        drawSpriteByIndexWithBlend(offset + 32, row * 24 - 56, *centerSprite, (s16)palette,
+        drawSpriteByIndexWithBlend(horizontalOffset + 32, row * 24 - 56, *centerSprite, (s16)palette,
                       -1, &D_800EBFF0[D_8013AF78], 4);
 
         rightPalette = centerPalette == 1 ? (state->selection != row) * 4 : 1;
-        drawSpriteByIndexWithBlend(offset + 92, row * 24 - 56, D_80132866[row * 2], rightPalette,
+        drawSpriteByIndexWithBlend(horizontalOffset + 92, row * 24 - 56, D_80132866[row * 2], rightPalette,
                       -1, &D_800EBFF0[D_8013AF78], 4);
     }
 
@@ -245,9 +244,9 @@ void func_800A42CC(void) {
         s16 verticalOffset = state->unk3C[row - 5] / 4096;
         s32 rowY = row * 24;
         s16 y = (s16)rowY + (s16)(verticalOffset - 56);
-        leftPalette = state->selection != row;
+        s32 actionPalette = state->selection != row;
         drawSpriteByIndexWithBlend(-56, y, D_80132854[row],
-                      leftPalette, -1, &D_800EBFF0[D_8013AF78], 4);
+                      actionPalette, -1, &D_800EBFF0[D_8013AF78], 4);
     }
     addTilePacketWithBlend(-160, -120, 320, 240, 192, 192, 192, 2, &D_800EBFF0[D_8013AF78], 4);
     drawFullScreenTexturedBackground();
