@@ -35,9 +35,7 @@ bytes taking priority over rounded similarity. `latest.json` and `./diff.sh`
 refer to the latest successful comparison, which may differ from the best.
 Use the best attempt's archived `diff.txt` when reviewing the best result.
 
-Stop on exact bytes, an explicit build-tool stop instruction, or 20 attempts
-without improvement. Report the best score and archived source, approaches
-tried, remaining differences, and whether a different strategy is needed.
+Stop on exact bytes or an explicit build-tool stop instruction. Report the best score and archived source, approaches tried, remaining differences, and whether a different strategy is needed.
 
 ## Matching
 
