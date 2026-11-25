@@ -1153,14 +1153,14 @@ void drawWrappedGlyphText8x16(s32 x, s32 y, s16 columnLimit, const u16 *text,
     func_800BF2C8((u32)out);
 }
 
-/* DECOMP_ATTEMPT: inline 191/198 */
+/* DECOMP_ATTEMPT: inline 194/198 */
 #ifdef NON_MATCHING
-void func_8006EF30(s32 x, s32 y, s32 columnsArg, const u16 *text,
+void func_8006EF30(s32 x, s32 y, s16 columnsArg, const u16 *text,
                    s32 palette, s16 blendMode, GsOT *ot, u16 depth) {
-    struct {
-        s16 x;
-        s16 columns;
-    } wrap;
+    s16 startX;
+    s16 lineWidth;
+    s16 *origin = &startX;
+    s16 *width = &lineWidth;
     s16 column;
     s16 textureY;
     u16 glyph, code;
@@ -1178,21 +1178,21 @@ void func_8006EF30(s32 x, s32 y, s32 columnsArg, const u16 *text,
     setWH(scratch, 16, 16);
     scratch->clut = getClut(768, palette + 240);
     packet = (DrawModeSpritePacket *)GsGetWorkBase();
-    wrap.x = x;
+    *origin = x;
     code = *text;
-    wrap.columns = columns;
+    *width = columns;
 
     if (code) {
         do {
             if (column >= columns) {
-                currentX = wrap.x;
+                currentX = startX;
                 y += 16;
                 column = 0;
             }
             code = *text;
             if (code == 0x800A) {
                 if (previous != 2 || column != 0) {
-                    column = wrap.columns;
+                    column = lineWidth;
                 }
                 text++;
                 previous = 0;
