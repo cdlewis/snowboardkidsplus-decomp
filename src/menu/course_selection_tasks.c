@@ -2319,7 +2319,7 @@ void updateRegisteredChildBlinkTransition(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: inline 301/390 */
+/* DECOMP_ATTEMPT: inline 383/390 */
 #ifdef NON_MATCHING
 extern u8 D_80130084[];
 
@@ -2336,7 +2336,6 @@ void func_80083C3C(void) {
     RECT *incomingBounds;
     s16 height;
     s16 i;
-    s32 x;
 
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
     position = (MenuPlayerModelPosition *)&gTaskMemoryPool[D_8013AE88->resource14];
@@ -2351,9 +2350,9 @@ void func_80083C3C(void) {
     }
     if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
     task = D_8013AE88;
+    selection = &D_801300AC[(s16)task->data18];
+    texture = &D_8013B468[(s16)task->data18];
     playerIndex = task->data18;
-    selection = &D_801300AC[playerIndex];
-    texture = &D_8013B468[playerIndex];
 
     if (task->data1C == 0) {
         outgoingSlot = 0;
@@ -2370,15 +2369,17 @@ void func_80083C3C(void) {
         RECT *outgoingBounds = &D_801300B8[outgoingSlot];
         s16 width = 160;
         s16 top = 60;
-        outgoingBounds->y = top;
-        outgoingBounds->h = top * 2;
+        u8 *textures;
         outgoingBounds->x = width;
+        outgoingBounds->y = top;
         outgoingBounds->w = width;
-        incomingBounds->y = top;
+        outgoingBounds->h = top * 2;
         incomingBounds->x = width;
+        incomingBounds->y = top;
         incomingBounds->w = width;
         incomingBounds->h = 0;
-        gPlayerResourceTextureSelections.entries[playerIndex][selection->selection] =
+        textures = gPlayerResourceTextureSelections.entries[playerIndex];
+        textures[selection->selection] =
             D_80130084[texture->selection];
         reloadTaskPlayerModel(children[incomingSlot].task, (s16)(incomingSlot + playerIndex * 2),
                               playerIndex, selection->selection,
@@ -2388,35 +2389,24 @@ void func_80083C3C(void) {
         break;
     }
     case 2: {
-        RECT *outgoingBounds = &D_801300B8[outgoingSlot];
-        s16 width = 160;
         height += 4;
         if (height <= 120) {
+            RECT *outgoingBounds = &D_801300B8[outgoingSlot];
+            s16 width = 160;
+            outgoingBounds->x = width;
             outgoingBounds->y = height + 60;
+            outgoingBounds->w = width;
             outgoingBounds->h = 120 - height;
-            outgoingBounds->w = outgoingBounds->x = width;
+            incomingBounds->x = width;
             incomingBounds->y = 60;
-            incomingBounds->w = incomingBounds->x = width;
+            incomingBounds->w = width;
             incomingBounds->h = height;
             if ((u16)(height - 9) < 103) {
-                i = 0;
-                for (;;) {
-                    s16 frame = rand() % 5;
-                    s16 firstY = height - 68;
-                    x = i;
-                    x *= 9;
-                    x -= height - 82;
-                    x += height / 4;
-                    drawAnimatedSprite16(frame, x, firstY, 10, &D_800EBFF0[D_8013AF78], 4);
-                    {
-                        s16 secondFrame = rand() % 5;
-                        s16 secondX = x + 3;
-                        s16 secondY = height - 71;
-                        drawAnimatedSprite16(secondFrame, secondX, secondY, 10, &D_800EBFF0[D_8013AF78], 4);
-                    }
-                    if (++i >= 6) {
-                        break;
-                    }
+                for (i = 0; i < 6; i++) {
+                    drawAnimatedSprite16(rand() % 5, i * 9 - (s16)(height - 82) + height / 4, height - 68,
+                                         10, &D_800EBFF0[D_8013AF78], 4);
+                    drawAnimatedSprite16(rand() % 5, i * 9 - (s16)(height - 82) + height / 4 + 3, height - 71,
+                                         10, &D_800EBFF0[D_8013AF78], 4);
                 }
             }
         } else {
