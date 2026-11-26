@@ -4025,8 +4025,8 @@ void drawSaveRecordProgressPanel(void) {
                           &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             drawDecimalNumber16(x + 72, y + 30, 6, 0, D_8013B484[slot]->money,
                                 8, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
-            func_8006EF30((s16)(x + 168), (s16)(y + 30), 1, gSaveRecordProgressCurrencyLabel, 8, -1,
-                          &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            drawWrappedGlyphText16x16((s16)(x + 168), (s16)(y + 30), 1, gSaveRecordProgressCurrencyLabel, 8, -1,
+                                      &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         }
     } else {
         setSpriteColor(128, 128, 128);

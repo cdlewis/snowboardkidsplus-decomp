@@ -152,8 +152,8 @@ void drawNumberAdjustmentPanel(void) {
         }
         state->countdown--;
     }
-    func_8006EF30(-48, -28, 30, gNumberAdjustmentValueTexts[state->value],
-                   palette, 1, &D_800EBFF0[D_8013AF78], 4);
+    drawWrappedGlyphText16x16(-48, -28, 30, gNumberAdjustmentValueTexts[state->value],
+                              palette, 1, &D_800EBFF0[D_8013AF78], 4);
     if (state->active) {
         if (state->value > 1 && (gFrameCounter & 8)) {
             drawNumberAdjustmentArrow(0, &D_800EBFF0[D_8013AF78], 4);
@@ -162,11 +162,11 @@ void drawNumberAdjustmentPanel(void) {
             drawNumberAdjustmentArrow(1, &D_800EBFF0[D_8013AF78], 4);
         }
     }
-    func_8006EF30(-32, -28, 30, gNumberAdjustmentLabel,
-                   palette, 1, &D_800EBFF0[D_8013AF78], 4);
+    drawWrappedGlyphText16x16(-32, -28, 30, gNumberAdjustmentLabel,
+                              palette, 1, &D_800EBFF0[D_8013AF78], 4);
     drawDefaultTexturedPanel(-64, -52, 128, 64, 5, 0, &D_800EBFF0[D_8013AF78], 4);
-    func_8006EF30(-104, 34, 30, gNumberAdjustmentInstructions,
-                   15, 1, &D_800EBFF0[D_8013AF78], 4);
+    drawWrappedGlyphText16x16(-104, 34, 30, gNumberAdjustmentInstructions,
+                              15, 1, &D_800EBFF0[D_8013AF78], 4);
     drawDefaultTexturedPanel(-120, 26, 240, 64, 5, 0, &D_800EBFF0[D_8013AF78], 4);
 }
 

@@ -516,8 +516,8 @@ void drawCurrentTaskTextPanel144x48(void) {
     y = position->y / 4096;
     setSpriteColor(128, 128, 128);
     setTexturedQuadColor(128, 128, 128);
-    func_8006EF30((s16)(x + 16), (s16)(y + 12), 10, gTaskPanel144x48Text, 8, -1,
-                 &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    drawWrappedGlyphText16x16((s16)(x + 16), (s16)(y + 12), 10, gTaskPanel144x48Text, 8, -1,
+                              &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     drawDefaultTexturedPanel(x, y, 144, 48, 5, 0,
                             &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
 }
@@ -532,12 +532,12 @@ void drawCurrentTaskPlayerValuePanel(void) {
     value = gRacePlayers[(s16)D_8013AE98->data1A].unk00A[0];
     setSpriteColor(128, 128, 128);
     setTexturedQuadColor(128, 128, 128);
-    func_8006EF30((s16)(x + 8), (s16)(y + 4), 10, gTaskPlayerValuePanelLabel, 8, -1,
-                 &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    drawWrappedGlyphText16x16((s16)(x + 8), (s16)(y + 4), 10, gTaskPlayerValuePanelLabel, 8, -1,
+                              &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     drawDecimalNumber16((s16)(x + 56), (s16)(y + 4), 1, 0, value + 1, 8, -1,
                  &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
-    func_8006EF30((s16)(x + 8), (s16)(y + 20), 10, gTaskPlayerValuePanelText, 8, -1,
-                 &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    drawWrappedGlyphText16x16((s16)(x + 8), (s16)(y + 20), 10, gTaskPlayerValuePanelText, 8, -1,
+                              &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     drawDefaultTexturedPanel((s16)x, (s16)y, 144, 48, 5, 0,
                             &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
 }
@@ -911,8 +911,8 @@ void drawPaletteSelectionPricePanel(void) {
     selection = &D_8013B508[player];
     if (D_8013AE88->data1A != 0) {
         if (gRacePlayers[player].unk00D == selection->value && D_8013B517 != 0) {
-            func_8006EF30((s16)(panelX - 112), (s16)(panelY + 52), 4, gCurrentPaletteLabel, 12, 1,
-                         &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            drawWrappedGlyphText16x16((s16)(panelX - 112), (s16)(panelY + 52), 4, gCurrentPaletteLabel, 12, 1,
+                                      &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             if (D_8013AE88->data1A == 1) {
                 addTilePacketWithBlend(panelX - 120, panelY + 48, 72, 22, gMenuColorCycleColor.r, gMenuColorCycleColor.g, gMenuColorCycleColor.b,
                               2, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);

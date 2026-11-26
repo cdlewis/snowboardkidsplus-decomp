@@ -658,8 +658,8 @@ void drawMemoryCardSaveRecordPanel(void) {
     player = D_8013AE98->data1A;
     character = gRacePlayers[player].unk009;
     setSpriteColor(128, 128, 128);
-    func_8006EF30((s16)(position->x / 4096 - 68), (s16)(position->y / 4096 - 96),
-                 9, gMemoryCardSaveRecordHeading, 14, -1, PANEL_OT, PANEL_DEPTH);
+    drawWrappedGlyphText16x16((s16)(position->x / 4096 - 68), (s16)(position->y / 4096 - 96),
+                              9, gMemoryCardSaveRecordHeading, 14, -1, PANEL_OT, PANEL_DEPTH);
     drawDecimalNumber8x16(position->x / 4096 + 38, position->y / 4096 - 3, 6, 0,
                           gPlayerSaveRecords[player].money,
                           0, -1, PANEL_OT, PANEL_DEPTH);

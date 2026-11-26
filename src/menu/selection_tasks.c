@@ -533,7 +533,7 @@ void drawPlaybackSelectionMenu(SelectionMenuState *state) {
 
     setSpriteColor(128, 128, 128);
     setTexturedQuadColor(128, 128, 128);
-    func_8006EF30(-96, -88, 14, gPlaybackSelectionMenuInstructions, 13, -1, &D_800EBFF0[D_8013AF78], 4);
+    drawWrappedGlyphText16x16(-96, -88, 14, gPlaybackSelectionMenuInstructions, 13, -1, &D_800EBFF0[D_8013AF78], 4);
     drawDefaultTexturedPanel(-120, -96, 240, 48, 5, 0, &D_800EBFF0[D_8013AF78], 4);
 
     for (i = 0; i < 5; i++) {

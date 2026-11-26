@@ -314,8 +314,8 @@ static void drawTextSequence(TextSequenceResource *resource) {
     y = resource->y / 4096;
     labelY = y;
     if (resource->mode == 1 && resource->unk0A < 9) {
-        func_8006EF30((s16)x, (s16)labelY, 30, resource->headerText, 12, 1, ot, 6);
-        func_8006EF30(-72, (labelY = (s16)(labelY - 24)), 30, gTextSequenceNumberLabel, 13, 1, ot, 6);
+        drawWrappedGlyphText16x16((s16)x, (s16)labelY, 30, resource->headerText, 12, 1, ot, 6);
+        drawWrappedGlyphText16x16(-72, (labelY = (s16)(labelY - 24)), 30, gTextSequenceNumberLabel, 13, 1, ot, 6);
         drawDecimalNumber16(40, labelY, 1, 0, resource->unk0A + 1, 13, 1, ot, 6);
     } else if (resource->mode == 2) {
         u16 index = resource->unk0A;
@@ -324,7 +324,7 @@ static void drawTextSequence(TextSequenceResource *resource) {
         } else {
             drawPaletteMappedIcon(-16, y, index + (u16)-4, &D_800EBFF0[D_8013AF78], 4);
         }
-        func_8006EF30((s16)x, (s16)(y - 24), 30, resource->headerText, 12, 1, ot, depth);
+        drawWrappedGlyphText16x16((s16)x, (s16)(y - 24), 30, resource->headerText, 12, 1, ot, depth);
     }
 
     bodyX = resource->bodyX / 4096;

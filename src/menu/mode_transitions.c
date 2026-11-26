@@ -964,8 +964,8 @@ void updateRegisteredPlayerModePanelTask(void) {
         setSpriteColor(128, 128, 128);
         setTexturedQuadColor(128, 128, 128);
         D_8013AE88->data1A = D_8013AE98->data1A;
-        func_8006EF30((s16)(position->x / 4096 + 8), (s16)(position->y / 4096 + 8),
-            14, gRegisteredPlayerModePanelTexts[D_8013AE88->data1A], 8, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+        drawWrappedGlyphText16x16((s16)(position->x / 4096 + 8), (s16)(position->y / 4096 + 8),
+                                  14, gRegisteredPlayerModePanelTexts[D_8013AE88->data1A], 8, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         drawDefaultTexturedPanel((s16)(position->x / 4096), (s16)(position->y / 4096),
             240, 64, 5, 0, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     }
@@ -1096,8 +1096,8 @@ void drawPlayerModeMessagePanelTask(void) {
     }
     setSpriteColor(128, 128, 128);
     setTexturedQuadColor(128, 128, 128);
-    func_8006EF30(-112, -24, 14, gPlayerModeMessageTexts[0], 8, -1,
-                  &D_800EBFF0[D_8013AF78], 3);
+    drawWrappedGlyphText16x16(-112, -24, 14, gPlayerModeMessageTexts[0], 8, -1,
+                              &D_800EBFF0[D_8013AF78], 3);
     drawDefaultTexturedPanel(-120, -32, 240, 64, 5, 0,
                             &D_800EBFF0[D_8013AF78], 3);
 }

@@ -1153,97 +1153,101 @@ void drawWrappedGlyphText8x16(s32 x, s32 y, s16 columnLimit, const u16 *text,
     func_800BF2C8((u32)out);
 }
 
-/* DECOMP_ATTEMPT: inline 194/198 */
-#ifdef NON_MATCHING
-void func_8006EF30(s32 x, s32 y, s16 columnsArg, const u16 *text,
-                   s32 palette, s16 blendMode, GsOT *ot, u16 depth) {
-    s16 startX;
-    s16 lineWidth;
-    s16 *origin = &startX;
-    s16 *width = &lineWidth;
+void drawWrappedGlyphText16x16(s16 x, s16 y, s16 columnLimit, const u16 *text,
+                             s32 palette, s16 blendArg, GsOT *ot, u16 depthArg) {
+    enum { TOKEN_NEWLINE, TOKEN_PALETTE, TOKEN_CELL };
+    s16 currentX, currentY;
     s16 column;
     s16 textureY;
-    u16 glyph, code;
+    u16 code, glyph;
     DrawModeSpritePacket *scratch = (DrawModeSpritePacket *)getScratchAddr(0);
-    s16 previous;
     DrawModeSpritePacket *packet;
-    s16 currentX = x;
-    s16 columns = columnsArg;
+    s16 previousToken;
+    s16 columns = columnLimit;
+    s16 blendMode = blendArg;
+    u16 depth = depthArg;
+    u16 clut = getClut(768, palette + 240);
+    u8 red, green, blue;
 
-    column = 0;
     scratch->tag = (sizeof(*scratch) / sizeof(u32) - 1) << 24;
     scratch->drawModeCode = DRAW_MODE_COMMAND_HIGH;
     setcode((SPRT *)&scratch->tpage, TEXTURED_SPRITE_CODE);
-    setRGB0(scratch, gTexturedSpriteTemplate.r0, gTexturedSpriteTemplate.g0, gTexturedSpriteTemplate.b0);
+    red = gTexturedSpriteTemplate.r0;
+    green = gTexturedSpriteTemplate.g0;
+    blue = gTexturedSpriteTemplate.b0;
+    setRGB0(scratch, red, green, blue);
     setWH(scratch, 16, 16);
-    scratch->clut = getClut(768, palette + 240);
-    packet = (DrawModeSpritePacket *)GsGetWorkBase();
-    *origin = x;
-    code = *text;
-    *width = columns;
+    scratch->clut = clut;
 
-    if (code) {
-        do {
-            if (column >= columns) {
-                currentX = startX;
-                y += 16;
-                column = 0;
+    packet = (DrawModeSpritePacket *)GsGetWorkBase();
+    currentX = x;
+    currentY = y;
+    column = 0;
+    while (*text) {
+        DrawModeSpritePacket *glyphPacket;
+        u8 u, v;
+
+        if (column >= columns) {
+            currentX = x;
+            currentY += 16;
+            column = 0;
+        }
+        code = *text;
+        if (code == 0x800A) {
+            /* A newline following a full row advances only once. */
+            if (previousToken != TOKEN_CELL || column != 0) {
+                column = columnLimit;
             }
-            code = *text;
-            if (code == 0x800A) {
-                if (previous != 2 || column != 0) {
-                    column = lineWidth;
-                }
-                text++;
-                previous = 0;
-                continue;
-            }
-            if ((code & 0xC000) == 0xC000) {
-                scratch->clut = getClut(768, (code & 15) + 240);
-                text++;
-                previous = 1;
-                continue;
-            }
-            if (code == 0x8020) {
-                currentX += 16;
-                column++;
-                text++;
-                previous = 2;
-                continue;
-            }
-            glyph = code - 1;
-            if (glyph < 0x60) {
-                scratch->tpage = getTPage(0, 0, 960, 256);
-                textureY = 160;
-            } else if (glyph < 0x160) {
-                scratch->tpage = getTPage(0, 0, 896, 256);
-                textureY = 0;
-                glyph = code - 0x61;
-            } else if (glyph < 0x260) {
-                scratch->tpage = getTPage(0, 0, 768, 256);
-                textureY = 0;
-                glyph = code - 0x161;
-            }
-            if (blendMode >= 0) {
-                setSemiTrans((SPRT *)&scratch->tpage, 1);
-                scratch->tpage |= blendMode << 5;
-            }
-            *packet = *scratch;
-            setUV0(packet, (glyph % 16) * 16, textureY + (glyph / 16) * 16);
-            setXY0(packet, currentX, y);
-            AddPrim(&ot->org[depth], packet++);
+            text++;
+            previousToken = TOKEN_NEWLINE;
+            continue;
+        }
+        if ((code & 0xC000) == 0xC000) {
+            scratch->clut = getClut(768, (code & 15) + 240);
+            text++;
+            previousToken = TOKEN_PALETTE;
+            continue;
+        }
+        if (code == 0x8020) {
             currentX += 16;
             column++;
-            previous = 2;
-            *packet = *scratch;
             text++;
-        } while (*text);
+            previousToken = TOKEN_CELL;
+            continue;
+        }
+        glyph = code - 1;
+        if (glyph < 0x60) {
+            scratch->tpage = getTPage(0, 0, 960, 256);
+            textureY = 160;
+        } else if (glyph < 0x160) {
+            scratch->tpage = getTPage(0, 0, 896, 256);
+            textureY = 0;
+            glyph = code - 0x61;
+        } else if (glyph < 0x260) {
+            scratch->tpage = getTPage(0, 0, 768, 256);
+            textureY = 0;
+            glyph = code - 0x161;
+        }
+
+        if (blendMode >= 0) {
+            setSemiTrans((SPRT *)&scratch->tpage, 1);
+            scratch->tpage |= (u16)blendMode << 5;
+        }
+        *packet = *scratch;
+        u = (glyph % 16) * 16;
+        v = textureY + (glyph / 16) * 16;
+        setUV0(packet, u, v);
+        setXY0(packet, currentX, currentY);
+        glyphPacket = packet++;
+        currentX += 16;
+        column++;
+        AddPrim(&ot->org[depth], glyphPacket);
+        previousToken = TOKEN_CELL;
+        *packet = *scratch;
+        text++;
     }
     func_800BF2C8((u32)packet);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/graphics/sprite_draw", func_8006EF30);
-#endif
 
 void drawLimitedWrappedGlyphText16x16(s16 x, s16 yArg, s32 countArg, s32 columnsArg, const u16 *text,
                                        s16 palette, s32 blendArg, GsOT *ot, u32 depthArg) {

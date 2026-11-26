@@ -658,8 +658,8 @@ void drawSecondaryDisplayTask(void) {
         deleteCurrentTaskSubtree();
     } else {
         setSpriteColor(128, 128, 128);
-        func_8006EF30(36, 88, 15, gSecondaryDisplayLabel, 15, -1,
-                      &D_800EBFF0[D_8013AF78], 1);
+        drawWrappedGlyphText16x16(36, 88, 15, gSecondaryDisplayLabel, 15, -1,
+                                  &D_800EBFF0[D_8013AF78], 1);
         i = 0;
         phase = D_8013AE88->data1C;
         do {
@@ -3323,8 +3323,8 @@ void updateValuePanelTask(void) {
     }
     setSpriteColor(128, 128, 128);
     setTexturedQuadColor(128, 128, 128);
-    func_8006EF30((s16)(resource->x / 4096 + 48), (s16)(resource->y / 4096 + 16),
-                   14, gValuePanelLabel, 15, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C - 2);
+    drawWrappedGlyphText16x16((s16)(resource->x / 4096 + 48), (s16)(resource->y / 4096 + 16),
+                              14, gValuePanelLabel, 15, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C - 2);
     drawDefaultTexturedPanel((s16)(resource->x / 4096), (s16)(resource->y / 4096),
                              240, 64, 5, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C - 2);
     drawScreenDarkeningOverlay(64, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
@@ -3588,8 +3588,8 @@ void applySaveRecordUnlockOverrides(s16 index) {
 void drawTextMessagePanel(void) {
     setSpriteColor(128, 128, 128);
     setTexturedQuadColor(128, 128, 128);
-    func_8006EF30(-112, -24, 14, gTextPanelMessage, 8, -1,
-                  &D_800EBFF0[D_8013AF78], 3);
+    drawWrappedGlyphText16x16(-112, -24, 14, gTextPanelMessage, 8, -1,
+                              &D_800EBFF0[D_8013AF78], 3);
     drawDefaultTexturedPanel(-120, -32, 240, 64, 5, 0,
                             &D_800EBFF0[D_8013AF78], 3);
 }

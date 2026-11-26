@@ -394,8 +394,8 @@ void drawWrappedDoubleByteText(s16 x, s16 y, s16 columns, s8 *text,
 void drawDoubleByteGlyph8x16(s16 x, s16 y, s16 width, s16 height, const s8 *text, s16 palette,
                              s16 blend, GsOT *ot, u16 depth);
 
-void func_8006EF30(s32 x, s32 y, s16 columns, const u16 *text,
-                   s32 palette, s16 blendMode, GsOT *ot, u16 depth);
+void drawWrappedGlyphText16x16(s16 x, s16 y, s16 columns, const u16 *text,
+                             s32 palette, s16 blendMode, GsOT *ot, u16 depth);
 
 void drawLimitedWrappedGlyphText16x16(s16 x, s16 y, s32 count, s32 columns, const u16 *text,
                                        s16 palette, s32 blend, GsOT *ot, u32 depth);

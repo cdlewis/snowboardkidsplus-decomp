@@ -3096,8 +3096,8 @@ void drawCurrentTaskTextPanel(void) {
     y = position->y / 4096;
     setSpriteColor(128, 128, 128);
     setTexturedQuadColor(128, 128, 128);
-    func_8006EF30((s16)(x + 16), (s16)(y + 12), 10, gCurrentTaskPanelText,
-                 8, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    drawWrappedGlyphText16x16((s16)(x + 16), (s16)(y + 12), 10, gCurrentTaskPanelText,
+                              8, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     drawDefaultTexturedPanel(x, y, 144, 48, 5, 0,
                             &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
 }
@@ -3113,12 +3113,12 @@ void drawCurrentTaskSelectionPanel(void) {
     selection = &D_8013B508[(s16)D_8013AE98->data1A];
     setSpriteColor(128, 128, 128);
     setTexturedQuadColor(128, 128, 128);
-    func_8006EF30((s16)(x + 8), (s16)(y + 4), 10, gTaskSelectionPanelLabel,
-                 8, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    drawWrappedGlyphText16x16((s16)(x + 8), (s16)(y + 4), 10, gTaskSelectionPanelLabel,
+                              8, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     drawDecimalNumber16((s16)(x + 56), (s16)(y + 4), 1, 0, selection->value + 1,
                  8, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
-    func_8006EF30((s16)(x + 8), (s16)(y + 20), 10, gTaskSelectionPanelText,
-                 8, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    drawWrappedGlyphText16x16((s16)(x + 8), (s16)(y + 20), 10, gTaskSelectionPanelText,
+                              8, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     drawDefaultTexturedPanel(x, y, 144, 48, 5, 0,
                             &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
 }
