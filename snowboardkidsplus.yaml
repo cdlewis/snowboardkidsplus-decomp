@@ -1058,7 +1058,7 @@ segments:
       - {start: 0x12BAFC, type: .data, name: engine/linear_random_state, linker_section: .data.linear_random_state}
       - {start: 0x12BB00, type: .data, name: race/effects/player_effects, linker_section: .data.player_snapshot_tasks}
       - {start: 0x12BB08, type: .data, name: race/effects/player_effects, linker_section: .data.radial_effect_quads}
-      - [0x12BB20, data, radial_effect_quads_tail]
+      - {start: 0x12BB20, type: .data, name: race/effects/player_effects, linker_section: .data.player_turn_trail_origin}
       - {start: 0x12BB28, type: .data, name: race/effects/player_effects, linker_section: .data.color_cycle_rects}
       - [0x12BB38, data, color_cycle_rects_tail]
       - {start: 0x12BB3C, type: .data, name: race/effects/player_effects, linker_section: .data.timed_sprite_alternate_text}

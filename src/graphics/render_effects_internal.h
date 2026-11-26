@@ -335,19 +335,6 @@ typedef struct FallingParticleResource {
     s32 frame;
 } FallingParticleResource;
 
-typedef struct EightEntryEffectResource {
-    VECTOR positions[8];
-    SVECTOR rotations[8];
-    s32 values[8];
-    s32 elapsed;
-} EightEntryEffectResource;
-typedef struct EightEntryEffectSecondaryResource {
-    SVECTOR vectors[8];
-    s16 values40[8];
-    s16 values50[8];
-    u8 values60[8];
-} EightEntryEffectSecondaryResource;
-
 typedef struct FadingTextResource {
     s32 duration;
     s32 elapsed;
@@ -921,7 +908,7 @@ void emitProjectedTexturedQuad(TriangleScratchVertex *);
 void emitProjectedGouraudTexturedQuad(TriangleScratchVertex *);
 void emitProjectedGouraudTexturedTriangle(TriangleScratchVertex *);
 void drawAdaptiveTriangle(TriangleScratchVertex *vertices, s32 level);
-void func_8006479C(void);
+void updatePlayerTurnTrailTask(void);
 void drawPlayerPairedQuadEffectTask(void);
 void updatePlayerTrailTask(void);
 void resolvePlayerRegionCollision(RacePlayer *player, PlayerCollisionRegion *region);

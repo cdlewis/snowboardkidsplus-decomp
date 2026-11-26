@@ -3089,6 +3089,7 @@ sBoardPurchaseFullSpriteMapping = 0x8013B4F4; // size:0x8 defined:true
 
 prepareRaceResourcesIfSelectionChanged = 0x800A0C6C; // type:func
 
+updatePlayerTurnTrailTask = 0x8006479C; // type:func
 initializeDelayedEightEntryEffectTask = 0x80065330; // type:func
 startDelayedEightEntryEffectTask = 0x80065464; // type:func
 
@@ -3191,6 +3192,7 @@ gWhitePulsePalette = 0x8013BD88; // size:0x20 defined:true
 gRadialQuadHalfSizes = 0x8013B308; // type:u16 size:0x8 defined:true
 gRadialQuadPaletteOffsets = 0x8013B310; // type:u16 size:0x8 defined:true
 gRadialQuadShades = 0x8013B318; // type:u16 size:0x8 defined:true
+gPlayerTurnTrailOrigin = 0x8013B320; // size:0x8 defined:true
 gWhitePulsePaletteRect = 0x8013B328; // size:0x8 defined:true
 gColorCycleCaptureRect = 0x8013B330; // size:0x8 defined:true
 

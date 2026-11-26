@@ -25,6 +25,8 @@
 #include "psx/libgte.h"
 
 #define TRAIL_FACING_BACKWARD 0x400
+#define TURN_TRAIL_SAMPLES 8
+#define TURN_TRAIL_LIFETIME 32
 #define PRESENTATION_SKIP_BUTTON 0x0800
 #define PAIRED_QUAD_PROJECTION_FLAGS 0x7FFBE000
 
@@ -96,6 +98,35 @@ typedef struct TriangleBurstScratch {
 } TriangleBurstScratch;
 typedef struct ScreenPoint { s16 x, y; } ScreenPoint;
 
+
+typedef struct TurnTrailHistory {
+    VECTOR positions[TURN_TRAIL_SAMPLES];
+    SVECTOR velocities[TURN_TRAIL_SAMPLES];
+    s32 ages[TURN_TRAIL_SAMPLES];
+    s32 elapsed;
+} TurnTrailHistory;
+
+typedef struct TurnTrailEdges {
+    SVECTOR offsets[TURN_TRAIL_SAMPLES];
+    u16 tpages[TURN_TRAIL_SAMPLES];
+    u16 cluts[TURN_TRAIL_SAMPLES];
+    u8 textureU[TURN_TRAIL_SAMPLES];
+} TurnTrailEdges;
+
+typedef union TrailScreenPoint {
+    ScreenPoint xy;
+    long packed;
+} TrailScreenPoint;
+
+typedef struct TurnTrailScratch {
+    GsCOORDINATE2 coordinate;
+    TrailScreenPoint edge[TURN_TRAIL_SAMPLES], base[TURN_TRAIL_SAMPLES];
+    long depth[TURN_TRAIL_SAMPLES], flags[TURN_TRAIL_SAMPLES], cue;
+    s32 emitting, strength, side, facing;
+    SVECTOR offset;
+    u8 u[4], v[4];
+    u16 tpage, clut;
+} TurnTrailScratch;
 
 typedef struct BoardTrailScratch {
     MATRIX localScreen;
@@ -674,6 +705,9 @@ u16 gRadialQuadPaletteOffsets[4]
 
 u16 gRadialQuadShades[4]
     __attribute__((section(".data.radial_effect_quads"))) = {32, 16, 32, 16};
+
+SVECTOR gPlayerTurnTrailOrigin
+    __attribute__((section(".data.player_turn_trail_origin"), aligned(4))) = {0, 0, 0, 0};
 
 RECT gWhitePulsePaletteRect
     __attribute__((section(".data.color_cycle_rects"))) = {944, 240, 8, 1};
@@ -1655,96 +1689,68 @@ void startPlayerShadowTask(s32 playerIndex) {
     D_8013AE8C->data18 = playerIndex;
 }
 
-/* DECOMP_ATTEMPT: inline 724/741 */
-#ifdef NON_MATCHING
-typedef struct EightEntryTrailScratch {
-    GsCOORDINATE2 coordinate;
-    union {
-        long packed;
-        struct { s16 x, y; } point;
-    } displaced[8], origin[8];
-    long depth[8];
-    long flags[8];
-    long cue;
-    s32 emitting;
-    s32 strength;
-    s32 slopeSign;
-    s32 sideSign;
-    SVECTOR offset;
-    u8 u[4];
-    volatile u8 v0;
-    u8 v1, v2, v3;
-    u16 tpage;
-    u16 clut;
-} EightEntryTrailScratch;
-
-extern SVECTOR D_8013B320 __attribute__((section(".data")));
-
-void func_8006479C(void) {
-    EightEntryEffectResource *primary;
-    EightEntryEffectSecondaryResource *secondary;
-    POLY_FT3 *packet;
-    EightEntryTrailScratch *scratch;
+void updatePlayerTurnTrailTask(void) {
+    TurnTrailHistory *trail;
+    TurnTrailEdges *edge;
     RacePlayer *player;
+    POLY_FT3 *packet;
+    TurnTrailScratch *scratch;
     s32 i;
-    s32 playerIndex;
-    s32 secondaryIndex;
 
     if (D_8013AE88->resource14 == 0xFFFF) {
-        for (;;) {}
+        while (1) {}
     }
-    primary = (EightEntryEffectResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    trail = (TurnTrailHistory *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) {
-        for (;;) {}
+        while (1) {}
     }
-    secondaryIndex = D_8013AE88->resource16;
+    edge = (TurnTrailEdges *)&gTaskMemoryPool[D_8013AE88->resource16];
     packet = (POLY_FT3 *)GsOUT_PACKET_P;
-    secondary = (EightEntryEffectSecondaryResource *)&gTaskMemoryPool[secondaryIndex];
-    playerIndex = D_8013AE88->data18;
-    scratch = (EightEntryTrailScratch *)getScratchAddr(0);
+    player = &gRacePlayers[D_8013AE88->data18];
+    scratch = (TurnTrailScratch *)getScratchAddr(0);
     scratch->emitting = 0;
-    player = &gRacePlayers[playerIndex];
+
     switch (player->unk96E) {
-    case 0:
-        scratch->tpage = 0x2B;
-        scratch->clut = 0x3D37;
-        scratch->u[0] = 128;
-        scratch->v0 = 0;
-        scratch->emitting = 1;
-        break;
-    case 0x100:
-        scratch->tpage = 0xB;
-        scratch->clut = 0x3DF7;
-        scratch->u[0] = 192;
-        scratch->v0 = 0;
-        scratch->emitting = 1;
-        if (player->surfaceState.fields.unk136 != 0 && player->surfaceState.fields.unk136 != 6) {
+        case 0:
+            scratch->tpage = getTPage(0, 1, 704, 0);
+            scratch->clut = getClut(880, 244);
+            scratch->u[0] = 128;
+            scratch->v[0] = 0;
+            scratch->emitting = 1;
+            break;
+        case 0x100:
+            scratch->tpage = getTPage(0, 0, 704, 0);
+            scratch->clut = getClut(880, 247);
+            scratch->u[0] = 192;
+            scratch->v[0] = 0;
+            scratch->emitting = 1;
+            if (player->surfaceState.fields.unk136 != 0 && player->surfaceState.fields.unk136 != 6) {
+                scratch->emitting = 0;
+            }
+            break;
+        case 0x200:
+            scratch->tpage = getTPage(0, 0, 704, 0);
+            scratch->clut = getClut(880, 245);
+            scratch->u[0] = 128;
+            scratch->v[0] = 0;
+            scratch->emitting = 1;
+            break;
+        case 0x801:
+            scratch->tpage = getTPage(0, 1, 704, 0);
+            scratch->clut = getClut(880, 246);
+            scratch->u[0] = 128;
+            scratch->v[0] = 0;
+            scratch->emitting = 1;
+            break;
+        default:
+            scratch->tpage = getTPage(0, 1, 704, 0);
+            scratch->clut = getClut(880, 244);
+            scratch->u[0] = 128;
+            scratch->v[0] = 0;
             scratch->emitting = 0;
-        }
-        break;
-    case 0x200:
-        scratch->tpage = 0xB;
-        scratch->clut = 0x3D77;
-        scratch->u[0] = 128;
-        scratch->v0 = 0;
-        scratch->emitting = 1;
-        break;
-    case 0x801:
-        scratch->tpage = 0x2B;
-        scratch->clut = 0x3DB7;
-        scratch->u[0] = 128;
-        scratch->v0 = 0;
-        scratch->emitting = 1;
-        break;
-    default:
-        scratch->tpage = 0x2B;
-        scratch->clut = 0x3D37;
-        scratch->u[0] = 128;
-        scratch->v0 = 0;
-        scratch->emitting = 0;
-        break;
+            break;
     }
-    if (player->unk128 & 0x0677DA21) {
+    if (player->unk128 & 0x677DA21) {
         scratch->emitting = 0;
     }
     if (player->unk0BC < 0x800) {
@@ -1754,201 +1760,188 @@ void func_8006479C(void) {
         scratch->emitting = 0;
     }
     if (!isPointWithinCameraForwardRange(player->worldCoordinate.coord.t[0],
-            player->worldCoordinate.coord.t[2], D_8013AE88->data18)) {
+            player->worldCoordinate.coord.t[2], (s16)D_8013AE88->data18)) {
         scratch->emitting = 0;
     }
     if ((s16)player->unk92C < 0x800) {
         scratch->strength = (s16)player->unk92C - 100;
-        scratch->slopeSign = 1;
+        scratch->side = 1;
     } else {
-        scratch->strength = 3996 - (s16)player->unk92C;
-        scratch->slopeSign = -1;
+        scratch->strength = 0x1000 - (s16)player->unk92C - 100;
+        scratch->side = -1;
     }
     if (scratch->strength >= 128) {
         scratch->strength = 128;
     }
-    if (!(player->unk128 & 0x400)) {
-        scratch->sideSign = 1;
+    if (player->unk128 & TRAIL_FACING_BACKWARD) {
+        scratch->facing = -1;
     } else {
-        scratch->sideSign = -1;
+        scratch->facing = 1;
     }
 
     if (!D_8013AFD3) {
-        for (i = 7; i >= 2; i--) {
-            primary->positions[i] = primary->positions[i - 1];
-            secondary->vectors[i] = secondary->vectors[i - 1];
-            primary->rotations[i] = primary->rotations[i - 1];
-            primary->values[i] = primary->values[i - 1];
-            secondary->values40[i] = secondary->values40[i - 1];
-            secondary->values50[i] = secondary->values50[i - 1];
-            secondary->values60[i] = secondary->values60[i - 1];
+        /* Slot zero follows the board. Older samples move back from slot one. */
+        for (i = TURN_TRAIL_SAMPLES - 1; i >= 2; i--) {
+            trail->positions[i] = trail->positions[i - 1];
+            edge->offsets[i] = edge->offsets[i - 1];
+            trail->velocities[i] = trail->velocities[i - 1];
+            trail->ages[i] = trail->ages[i - 1];
+            edge->tpages[i] = edge->tpages[i - 1];
+            edge->cluts[i] = edge->cluts[i - 1];
+            edge->textureU[i] = edge->textureU[i - 1];
         }
 
-        setVector(&scratch->offset, 40 * scratch->sideSign, 0, -15 * scratch->slopeSign);
-        ApplyMatrix(&player->model.effect.effectMatrix180, &scratch->offset, &primary->positions[0]);
-        primary->positions[0].vx += player->x >> 8;
-        primary->positions[0].vy += player->y >> 8;
-        primary->positions[0].vz += player->z >> 8;
-        setVector(&secondary->vectors[0], 0, 0, 0);
-        secondary->values40[0] = scratch->tpage;
-        secondary->values50[0] = scratch->clut;
-        secondary->values60[0] = scratch->u[0];
+        setVector(&scratch->offset, scratch->facing * 40, 0, scratch->side * -15);
+        ApplyMatrix(&player->model.effect.effectMatrix180, &scratch->offset, &trail->positions[0]);
+        applyVector(&trail->positions[0], player->x >> 8, player->y >> 8, player->z >> 8, +=);
+        setVector(&edge->offsets[0], 0, 0, 0);
+        edge->tpages[0] = scratch->tpage;
+        edge->cluts[0] = scratch->clut;
+        edge->textureU[0] = scratch->u[0];
         if (!scratch->emitting) {
-            primary->values[0] = 32;
+            trail->ages[0] = TURN_TRAIL_LIFETIME;
         } else {
-            primary->values[0] = 0;
+            trail->ages[0] = 0;
         }
 
-        if (scratch->emitting && scratch->strength > 0 && !(primary->elapsed & 1)) {
-            s32 velocityX;
-
-            setVector(&scratch->offset, 40 * scratch->sideSign, 0, -15 * scratch->slopeSign);
-            ApplyMatrix(&player->model.effect.effectMatrix180, &scratch->offset, &primary->positions[1]);
-            primary->positions[1].vx += player->x >> 8;
-            primary->positions[1].vy += player->y >> 8;
-            primary->positions[1].vz += player->z >> 8;
-            setVector(&secondary->vectors[1], 0, 0, 0);
-            secondary->values40[1] = scratch->tpage;
-            secondary->values50[1] = scratch->clut;
-            secondary->values60[1] = scratch->u[0];
-            if (player->unk128 & 0x400) {
-                velocityX = scratch->strength;
+        if (scratch->emitting && scratch->strength > 0 && !(trail->elapsed & 1)) {
+            setVector(&scratch->offset, scratch->facing * 40, 0, scratch->side * -15);
+            ApplyMatrix(&player->model.effect.effectMatrix180, &scratch->offset, &trail->positions[1]);
+            applyVector(&trail->positions[1], player->x >> 8, player->y >> 8, player->z >> 8, +=);
+            setVector(&edge->offsets[1], 0, 0, 0);
+            edge->tpages[1] = scratch->tpage;
+            edge->cluts[1] = scratch->clut;
+            edge->textureU[1] = scratch->u[0];
+            if (player->unk128 & TRAIL_FACING_BACKWARD) {
+                trail->velocities[1].vx = scratch->strength / 4;
             } else {
-                velocityX = -scratch->strength;
+                trail->velocities[1].vx = -scratch->strength / 4;
             }
-            primary->rotations[1].vx = velocityX / 4;
-            primary->rotations[1].vy = 0;
-            primary->rotations[1].vz = scratch->slopeSign * scratch->strength / 4;
-            primary->values[i] = 0;
+            trail->velocities[1].vy = 0;
+            trail->velocities[1].vz = scratch->side * scratch->strength / 4;
+            trail->ages[i] = 0;
             if (D_8013AE88->data1C == 1) {
-                primary->rotations[1].vz = -32;
+                trail->velocities[1].vz = -32;
             }
-            ApplyMatrixSV(&player->model.effect.effectMatrix180, &primary->rotations[1], &primary->rotations[1]);
+            ApplyMatrixSV(&player->model.effect.effectMatrix180, &trail->velocities[1], &trail->velocities[1]);
         }
-        for (i = 1; i < 8; i++) {
-            if (primary->values[i] < 32) {
-                secondary->vectors[i].vx += primary->rotations[i].vx;
-                secondary->vectors[i].vy += primary->rotations[i].vy;
-                secondary->vectors[i].vz += primary->rotations[i].vz;
-                primary->rotations[i].vx = primary->rotations[i].vx * 3 / 4;
-                primary->rotations[i].vy += 4;
-                primary->rotations[i].vz = primary->rotations[i].vz * 3 / 4;
-                if (secondary->vectors[i].vy > 0) {
-                    secondary->vectors[i].vy = 0;
-                    primary->values[i] = 32;
+
+        for (i = 1; i < TURN_TRAIL_SAMPLES; i++) {
+            if (trail->ages[i] < TURN_TRAIL_LIFETIME) {
+                edge->offsets[i].vx += trail->velocities[i].vx;
+                edge->offsets[i].vy += trail->velocities[i].vy;
+                edge->offsets[i].vz += trail->velocities[i].vz;
+                trail->velocities[i].vx = trail->velocities[i].vx * 3 / 4;
+                trail->velocities[i].vy += 4;
+                trail->velocities[i].vz = trail->velocities[i].vz * 3 / 4;
+                if (edge->offsets[i].vy > 0) {
+                    edge->offsets[i].vy = 0;
+                    trail->ages[i] = TURN_TRAIL_LIFETIME;
                 }
-                if (primary->values[i] < 32) {
-                    primary->values[i]++;
+                if (trail->ages[i] < TURN_TRAIL_LIFETIME) {
+                    trail->ages[i]++;
                 }
             }
         }
     }
 
     GsInitCoordinate2(NULL, &scratch->coordinate);
-    for (i = 0; i < 8; i++) {
-        scratch->coordinate.coord.t[0] = primary->positions[i].vx;
-        scratch->coordinate.coord.t[1] = primary->positions[i].vy;
-        scratch->coordinate.coord.t[2] = primary->positions[i].vz;
+    for (i = 0; i < TURN_TRAIL_SAMPLES; i++) {
+        setVector((VECTOR *)scratch->coordinate.coord.t,
+            trail->positions[i].vx, trail->positions[i].vy, trail->positions[i].vz);
         GsGetLs(&scratch->coordinate, &scratch->coordinate.workm);
         GsSetLsMatrix(&scratch->coordinate.workm);
-        scratch->depth[i] = RotTransPers(&secondary->vectors[i], &scratch->displaced[i].packed,
-            &scratch->cue, &scratch->flags[i]);
-        RotTransPers(&D_8013B320, &scratch->origin[i].packed, &scratch->cue, &scratch->flags[i]);
+        scratch->depth[i] = RotTransPers(&edge->offsets[i], &scratch->edge[i].packed, &scratch->cue, &scratch->flags[i]);
+        RotTransPers(&gPlayerTurnTrailOrigin, &scratch->base[i].packed, &scratch->cue, &scratch->flags[i]);
     }
 
-    for (i = 0; i < 7; i++) {
-        if (primary->values[i] < 32 && primary->values[i + 1] < 32 &&
-            scratch->flags[i] >= 0 && scratch->depth[i] >= 0 && scratch->depth[i] < 4096 &&
-            ((u16 *)secondary->values40)[i] != 0) {
-            s32 v;
-
-            scratch->tpage = ((u16 *)secondary->values40)[i];
-            scratch->clut = secondary->values50[i];
-            v = scratch->v0;
-            scratch->u[0] = ((volatile EightEntryEffectSecondaryResource *)secondary)->values60[i];
+    for (i = 0; i < TURN_TRAIL_SAMPLES - 1; i++) {
+        if (trail->ages[i] < TURN_TRAIL_LIFETIME && trail->ages[i + 1] < TURN_TRAIL_LIFETIME &&
+            scratch->flags[i] >= 0 && scratch->depth[i] >= 0 && scratch->depth[i] < 4096 && edge->tpages[i]) {
+            scratch->tpage = edge->tpages[i];
+            scratch->clut = edge->cluts[i];
+            scratch->u[0] = edge->textureU[i];
             scratch->u[1] = scratch->u[0] + 63;
-            scratch->v3 = scratch->v2 = v + 63;
-            scratch->v1 = scratch->v0;
+            scratch->v[1] = scratch->v[0];
             scratch->u[2] = scratch->u[0];
+            scratch->v[2] = scratch->v[0] + 63;
             scratch->u[3] = scratch->u[1];
+            scratch->v[3] = scratch->v[2];
 
-            /* Initialize the DMA length and clear the link. */
-            packet->tag = (sizeof(*packet) / sizeof(u32) - 1) << 24;
-            setcode(packet, POLY_FT3_CODE);
-            setSemiTrans(packet, 1);
+            packet->tag = (sizeof(*packet) / sizeof(packet->tag) - 1) << 24;
+            setcode(packet, POLY_FT3_CODE | SEMI_TRANSPARENT_FLAG);
             packet->tpage = scratch->tpage;
             packet->clut = scratch->clut;
-            packet->g0 = packet->b0 = packet->r0 = 128;
-            setXY3(packet, scratch->displaced[i].point.x, scratch->displaced[i].point.y,
-                scratch->origin[i + 1].point.x, scratch->origin[i + 1].point.y,
-                scratch->origin[i].point.x, scratch->origin[i].point.y);
+            packet->r0 = 128;
+            packet->b0 = 128;
+            packet->g0 = 128;
+            setXY3(packet, scratch->edge[i].xy.x, scratch->edge[i].xy.y,
+                scratch->base[i + 1].xy.x, scratch->base[i + 1].xy.y,
+                scratch->base[i].xy.x, scratch->base[i].xy.y);
             packet->u0 = scratch->u[0];
             packet->u1 = scratch->u[3];
             packet->u2 = scratch->u[2];
-            packet->v0 = scratch->v0;
-            packet->v1 = scratch->v3;
-            packet->v2 = scratch->v2;
-            addPrim(&D_8013AF6C[scratch->depth[i] >> 2], packet);
+            packet->v0 = scratch->v[0];
+            packet->v1 = scratch->v[3];
+            packet->v2 = scratch->v[2];
+            addPrim(D_8013AF6C + (scratch->depth[i] >> 2), packet);
             packet++;
 
-            /* Initialize the DMA length and clear the link. */
-            packet->tag = (sizeof(*packet) / sizeof(u32) - 1) << 24;
-            setcode(packet, POLY_FT3_CODE);
-            setSemiTrans(packet, 1);
+            packet->tag = (sizeof(*packet) / sizeof(packet->tag) - 1) << 24;
+            setcode(packet, POLY_FT3_CODE | SEMI_TRANSPARENT_FLAG);
             packet->tpage = scratch->tpage;
             packet->clut = scratch->clut;
-            packet->g0 = packet->b0 = packet->r0 = 128;
-            setXY3(packet, scratch->displaced[i].point.x, scratch->displaced[i].point.y,
-                scratch->displaced[i + 1].point.x, scratch->displaced[i + 1].point.y,
-                scratch->origin[i + 1].point.x, scratch->origin[i + 1].point.y);
+            packet->r0 = 128;
+            packet->b0 = 128;
+            packet->g0 = 128;
+            setXY3(packet, scratch->edge[i].xy.x, scratch->edge[i].xy.y,
+                scratch->edge[i + 1].xy.x, scratch->edge[i + 1].xy.y,
+                scratch->base[i + 1].xy.x, scratch->base[i + 1].xy.y);
             packet->u0 = scratch->u[0];
             packet->u1 = scratch->u[1];
             packet->u2 = scratch->u[3];
-            packet->v0 = scratch->v0;
-            packet->v1 = scratch->v1;
-            packet->v2 = scratch->v3;
-            addPrim(&D_8013AF6C[scratch->depth[i] >> 2], packet);
+            packet->v0 = scratch->v[0];
+            packet->v1 = scratch->v[1];
+            packet->v2 = scratch->v[3];
+            addPrim(D_8013AF6C + (scratch->depth[i] >> 2), packet);
             packet++;
         }
     }
     GsOUT_PACKET_P = (u32)packet;
     if (!D_8013AFD3) {
-        primary->elapsed++;
+        trail->elapsed++;
     }
     if (D_8013AE88->data1A == 2) {
         deleteCurrentTaskSubtree();
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_8006479C);
-#endif
 
 void initializeDelayedEightEntryEffectTask(void) {
-    EightEntryEffectResource *primary;
-    EightEntryEffectSecondaryResource *secondary;
+    TurnTrailHistory *primary;
+    TurnTrailEdges *secondary;
     s32 i;
     if (D_8013AE88->data18 == 0) {
-        createChildTaskForParentWithReserve(D_8013B304, func_8006479C);
+        createChildTaskForParentWithReserve(D_8013B304, updatePlayerTurnTrailTask);
         D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-        primary = (EightEntryEffectResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
+        primary = (TurnTrailHistory *)&gTaskMemoryPool[D_8013AE8C->resource14];
         D_8013AE8C->resource16 = allocateTaskMemoryBlock();
-        secondary = (EightEntryEffectSecondaryResource *)&gTaskMemoryPool[D_8013AE8C->resource16];
+        secondary = (TurnTrailEdges *)&gTaskMemoryPool[D_8013AE8C->resource16];
         D_8013AE8C->data18 = D_8013AE88->data1A;
         D_8013AE8C->data1A = 0;
-        for (i = 0; i < 8; i++) {
+        for (i = 0; i < TURN_TRAIL_SAMPLES; i++) {
             primary->positions[i].vx = 0;
             primary->positions[i].vy = 0;
             primary->positions[i].vz = 0;
-            secondary->vectors[i].vx = 0;
-            secondary->vectors[i].vy = 0;
-            secondary->vectors[i].vz = 0;
-            primary->rotations[i].vx = 0;
-            primary->rotations[i].vy = 0;
-            primary->rotations[i].vz = 0;
-            secondary->values40[i] = 0;
-            secondary->values50[i] = 0;
-            secondary->values60[i] = 0;
-            primary->values[i] = 32;
+            secondary->offsets[i].vx = 0;
+            secondary->offsets[i].vy = 0;
+            secondary->offsets[i].vz = 0;
+            primary->velocities[i].vx = 0;
+            primary->velocities[i].vy = 0;
+            primary->velocities[i].vz = 0;
+            secondary->tpages[i] = 0;
+            secondary->cluts[i] = 0;
+            secondary->textureU[i] = 0;
+            primary->ages[i] = TURN_TRAIL_LIFETIME;
         }
         primary->elapsed = 0;
         deleteCurrentTaskSubtree();
