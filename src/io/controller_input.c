@@ -1,9 +1,19 @@
 #include "../engine/input_scheduler_internal.h"
 #include "game/io/controller.h"
 #include "game/io/controller_effects.h"
+#include "psx/libetc.h"
 #include "psx/libpad.h"
 
 #define CONTROLLER_INPUT_RECORDING_BUFFER ((ControllerInputRecord *)0x8017B800)
+
+enum {
+    REPEAT_UP = 2,
+    REPEAT_DOWN = 4,
+    REPEAT_LEFT = 8,
+    REPEAT_RIGHT = 16,
+    REPEAT_VERTICAL = REPEAT_UP | REPEAT_DOWN,
+    REPEAT_HORIZONTAL = REPEAT_LEFT | REPEAT_RIGHT
+};
 
 ControllerReceiveBuffer D_800E9558[2] __attribute__((section(".data.controller_receive_buffers"))) = {0};
 
@@ -39,6 +49,9 @@ u8 gControllerAnalogResponse[52] __attribute__((section(".data.controller_analog
 };
 
 u8 gControllerFlags[4] __attribute__((section(".data"))) = {0, 0, 0, 0};
+
+u8 gControllerVerticalRepeatTimers[2]
+    __attribute__((section(".sdata.controller_repeat_timing"))) = {0, 0};
 
 u8 gControllerHorizontalRepeatTimers[2]
     __attribute__((section(".sdata.controller_repeat_timing"))) = {0, 0};
@@ -88,78 +101,64 @@ s32 isControllerFlag5Clear(u16 controller) {
     return 1;
 }
 
-/* DECOMP_ATTEMPT: inline 153/155 */
-#ifdef NON_MATCHING
-enum {
-    CONTROLLER_BUTTON_UP = 0x1000,
-    CONTROLLER_BUTTON_DOWN = 0x4000,
-    CONTROLLER_BUTTON_LEFT = 0x8000,
-    CONTROLLER_BUTTON_RIGHT = 0x2000,
-};
+void updateControllerDirectionalRepeat(u16 controller) {
+    if (!gControllerFlags[controller]) {
+        return;
+    }
 
-extern u8 gControllerVerticalRepeatTimers[];
-
-#define START_DIRECTION_REPEAT(flags, otherFlags, direction, timer) \
-    do { \
-        (flags) |= (otherFlags) | (direction); \
-        (timer) = gControllerRepeatInitialDelay; \
-    } while (0)
-
-void func_80014D60(u16 controller) {
-    if (gControllerFlags[controller]) {
-        if (gControllerHeldButtons[controller] & CONTROLLER_BUTTON_UP) {
-            if (gControllerFlags[controller] & 0x2) {
-                if (--gControllerVerticalRepeatTimers[controller] == 0) {
-                    gControllerPressedButtons[controller] |= CONTROLLER_BUTTON_UP;
-                    gControllerVerticalRepeatTimers[controller] = gControllerRepeatInterval;
-                }
-            } else {
-                START_DIRECTION_REPEAT(gControllerFlags[controller], gControllerFlags[controller] & 0xF9,
-                                       0x2, gControllerVerticalRepeatTimers[controller]);
-            }
-        } else if (gControllerHeldButtons[controller] & CONTROLLER_BUTTON_DOWN) {
-            u8 flags = gControllerFlags[controller];
-            u8 otherFlags = flags & 0xF9;
-            if (flags & 0x4) {
-                if (--gControllerVerticalRepeatTimers[controller] == 0) {
-                    gControllerPressedButtons[controller] |= CONTROLLER_BUTTON_DOWN;
-                    gControllerVerticalRepeatTimers[controller] = gControllerRepeatInterval;
-                }
-            } else {
-                START_DIRECTION_REPEAT(gControllerFlags[controller], otherFlags,
-                                       0x4, gControllerVerticalRepeatTimers[controller]);
+    /* Each axis keeps its direction flags until both directions are released. */
+    if (gControllerHeldButtons[controller] & PADLup) {
+        if (gControllerFlags[controller] & REPEAT_UP) {
+            if (--gControllerVerticalRepeatTimers[controller] == 0) {
+                gControllerPressedButtons[controller] |= PADLup;
+                gControllerVerticalRepeatTimers[controller] = gControllerRepeatInterval;
             }
         } else {
-            gControllerFlags[controller] &= 0xF9;
+            gControllerFlags[controller] |=
+                (gControllerFlags[controller] & (u8)~REPEAT_VERTICAL) | REPEAT_UP;
+            gControllerVerticalRepeatTimers[controller] = gControllerRepeatInitialDelay;
         }
-        if (gControllerHeldButtons[controller] & CONTROLLER_BUTTON_LEFT) {
-            if (gControllerFlags[controller] & 0x8) {
-                if (--gControllerHorizontalRepeatTimers[controller] == 0) {
-                    gControllerPressedButtons[controller] |= CONTROLLER_BUTTON_LEFT;
-                    gControllerHorizontalRepeatTimers[controller] = gControllerRepeatInterval;
-                }
-            } else {
-                START_DIRECTION_REPEAT(gControllerFlags[controller], gControllerFlags[controller] & 0xE7,
-                                       0x8, gControllerHorizontalRepeatTimers[controller]);
-            }
-        } else if (gControllerHeldButtons[controller] & CONTROLLER_BUTTON_RIGHT) {
-            if (gControllerFlags[controller] & 0x10) {
-                if (--gControllerHorizontalRepeatTimers[controller] == 0) {
-                    gControllerPressedButtons[controller] |= CONTROLLER_BUTTON_RIGHT;
-                    gControllerHorizontalRepeatTimers[controller] = gControllerRepeatInterval;
-                }
-            } else {
-                START_DIRECTION_REPEAT(gControllerFlags[controller], gControllerFlags[controller] & 0xE7,
-                                       0x10, gControllerHorizontalRepeatTimers[controller]);
+    } else if (gControllerHeldButtons[controller] & PADLdown) {
+        if (gControllerFlags[controller] & REPEAT_DOWN) {
+            if (--gControllerVerticalRepeatTimers[controller] == 0) {
+                gControllerPressedButtons[controller] |= PADLdown;
+                gControllerVerticalRepeatTimers[controller] = gControllerRepeatInterval;
             }
         } else {
-            gControllerFlags[controller] &= 0xE7;
+            gControllerFlags[controller] |=
+                (gControllerFlags[controller] & (u8)~REPEAT_VERTICAL) | REPEAT_DOWN;
+            gControllerVerticalRepeatTimers[controller] = gControllerRepeatInitialDelay;
         }
+    } else {
+        gControllerFlags[controller] &= ~REPEAT_VERTICAL;
+    }
+
+    if (gControllerHeldButtons[controller] & PADLleft) {
+        if (gControllerFlags[controller] & REPEAT_LEFT) {
+            if (--gControllerHorizontalRepeatTimers[controller] == 0) {
+                gControllerPressedButtons[controller] |= PADLleft;
+                gControllerHorizontalRepeatTimers[controller] = gControllerRepeatInterval;
+            }
+        } else {
+            gControllerFlags[controller] |=
+                (gControllerFlags[controller] & (u8)~REPEAT_HORIZONTAL) | REPEAT_LEFT;
+            gControllerHorizontalRepeatTimers[controller] = gControllerRepeatInitialDelay;
+        }
+    } else if (gControllerHeldButtons[controller] & PADLright) {
+        if (gControllerFlags[controller] & REPEAT_RIGHT) {
+            if (--gControllerHorizontalRepeatTimers[controller] == 0) {
+                gControllerPressedButtons[controller] |= PADLright;
+                gControllerHorizontalRepeatTimers[controller] = gControllerRepeatInterval;
+            }
+        } else {
+            gControllerFlags[controller] |=
+                (gControllerFlags[controller] & (u8)~REPEAT_HORIZONTAL) | REPEAT_RIGHT;
+            gControllerHorizontalRepeatTimers[controller] = gControllerRepeatInitialDelay;
+        }
+    } else {
+        gControllerFlags[controller] &= ~REPEAT_HORIZONTAL;
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/io/controller_input", func_80014D60);
-#endif
 
 void setControllerAxesFromButtons(u16 controller) {
     if (gControllerHeldButtons[controller] & 0x2000) {
@@ -336,10 +335,10 @@ void updateControllerActuators(u16 controller) {
 
 void updateControllers(void) {
     updateControllerInput(0);
-    func_80014D60(0);
+    updateControllerDirectionalRepeat(0);
     updateControllerActuators(0);
     updateControllerInput(1);
-    func_80014D60(1);
+    updateControllerDirectionalRepeat(1);
     updateControllerActuators(1);
 }
 

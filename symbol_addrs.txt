@@ -2525,6 +2525,7 @@ waitMode2TransitionTask = 0x80030270; // type:func
 
 advanceCurrentTaskPanelTimer = 0x8003C69C; // type:func
 
+updateControllerDirectionalRepeat = 0x80014D60; // type:func
 setControllerAxesFromButtons = 0x80014FCC; // type:func
 
 updateTaskMenuFadeIn = 0x800392BC;
@@ -3021,7 +3022,7 @@ waitPlayerResultsInputTask = 0x8003763C; // type:func
 
 initializeControllers = 0x800153EC; // type:func
 D_800E9558 = 0x800E9558; // type:u8 size:0x44
-gControllerVerticalRepeatTimers = 0x8013AEBC; // type:u8 size:0x2
+gControllerVerticalRepeatTimers = 0x8013AEBC; // type:u8 size:0x2 defined:true
 gControllerPressedButtons = 0x8013AEE8; // type:u16 size:0x4
 gControllerHeldButtons = 0x8013AEEC; // type:u16 size:0x4
 D_8013AF0C = 0x8013AF0C; // type:u16 size:0x4

@@ -2,6 +2,11 @@
 
 #include "decomp/types.h"
 
+#define PADLup    (1 << 12)
+#define PADLdown  (1 << 14)
+#define PADLleft  (1 << 15)
+#define PADLright (1 << 13)
+
 /* Psy-Q LIBETC.H: word-indexed access to fixed scratchpad hardware RAM. */
 #define getScratchAddr(offset) ((u32 *)(0x1F800000 + (offset) * 4))
 

@@ -62,7 +62,7 @@ void updateControllerInput(u16 controller);
 /* Apply the analog response curve and merge directional button input. */
 void updateControllerAxesFromAnalog(u16 controller);
 
-void func_80014D60(u16 controller);
+void updateControllerDirectionalRepeat(u16 controller);
 /* Update actuator output and negotiate its controller packet alignment. */
 void updateControllerActuators(u16 controller);
 void updateControllers(void);
