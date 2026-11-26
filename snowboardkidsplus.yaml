@@ -904,7 +904,8 @@ segments:
       - {start: 0x122FC4, type: .data, name: menu/selection_tasks, linker_section: .data.playback_selection_menu_instructions}
       - {start: 0x122FF4, type: .data, name: io/controller_playback, linker_section: .data.controller_playback_entries}
       - {start: 0x12303C, type: .data, name: io/controller_playback, linker_section: .data.controller_playback_durations}
-      - [0x123054, data, 123054]
+      - {start: 0x123054, type: .data, name: menu/unlock_menu, linker_section: .data.unlock_option_labels}
+      - {start: 0x123064, type: .data, name: menu/unlock_menu, linker_section: .data.unlock_option_choices}
       - {start: 0x123078, type: .data, name: menu/unlock_menu, linker_section: .data.unlock_notification_sprites}
       - {start: 0x123094, type: .data, name: menu/number_adjustment, linker_section: .data.number_adjustment_label}
       - {start: 0x1230A0, type: .data, name: menu/number_adjustment, linker_section: .data.number_adjustment_instructions}
@@ -1112,6 +1113,8 @@ segments:
       - {start: 0x12BD58, type: .data, name: menu/selection_tasks, linker_section: .data.number_selection_mapping}
       - {start: 0x12BD5C, type: .data, name: menu/selection_tasks, linker_section: .data.number_selection_final_mapping}
       - [0x12BD5E, data, number_selection_transition_tail]
+      - [0x12BD66, pad]
+      - {start: 0x12BD68, type: .data, name: menu/unlock_menu, linker_section: .data.unlock_option_bits}
       - {start: 0x12BD6E, type: .data, name: menu/selection_tasks, linker_section: .data.number_selection_tail_padding}
       - [0x12BD70, .data, engine/game_options]
       - {start: 0x12BD78, type: .data, name: menu/number_adjustment, linker_section: .data.number_adjustment_digit_texts}

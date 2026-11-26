@@ -13,10 +13,26 @@ extern u16 D_8013AF78 __attribute__((section(".data")));
 extern GameTask *D_8013AE88 __attribute__((section(".data")));
 extern u32 D_8013AFE4 __attribute__((section(".data")));
 
+const u16 gUnlockOptionLabelSprites[8] __attribute__((section(".data.unlock_option_labels"))) = {
+    0x225, 0x226, 0x227, 0x234, 0x228, 0x229, 0x22A, 0
+};
+
+const u16 gUnlockOptionChoiceSprites[10] __attribute__((section(".data.unlock_option_choices"))) = {
+    0x223, 0x224,
+    0x22B, 0x22C,
+    0x22B, 0x22C,
+    0x22B, 0x22C,
+    0x22D, 0x22E
+};
+
 s16 gUnlockNotificationSprites[14] __attribute__((section(".data.unlock_notification_sprites"))) = {
     0x216, 0x217, 0x218, 0x219, 0x21A, 0x21B,
     0x21D, 0x21E, 0x21F, 0x220, 0x221, 0x222,
     0x21C, 0
+};
+
+const u8 gUnlockOptionBitIndices[6] __attribute__((section(".data.unlock_option_bits"))) = {
+    0, 1, 2, 4, 3, 0
 };
 
 void initializeUnlockMenuResourceTask(void) {
@@ -55,7 +71,7 @@ void runTaskResource14Update(void) {
         for (;;) {
         }
     }
-    func_800A42CC();
+    drawUnlockOptionsMenu();
 }
 
 void updateUnlockOptionsMenuTask(void) {
@@ -177,7 +193,7 @@ void updateUnlockOptionsMenuTask(void) {
         break;
     }
 
-    func_800A42CC();
+    drawUnlockOptionsMenu();
     if (exitRequested) {
         playSoundEffect(0, 0, 0x20);
         D_8013AE88->data18 = 0;
@@ -190,77 +206,59 @@ void updateUnlockOptionsMenuTask(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: inline 259/261 */
-#ifdef NON_MATCHING
-extern u16 D_80132854[8];
-extern u16 D_80132864[];
-extern u16 D_80132866[];
-extern u8 D_8013B568[5];
-
-void func_800A42CC(void) {
+void drawUnlockOptionsMenu(void) {
     UnlockMenuState *state;
     s16 row;
+    s16 offset;
+    s16 palette;
 
     if (D_8013AE88->resource14 == 0xFFFF) {
-        for (;;) {}
+        for (;;) {
+        }
     }
-
     state = (UnlockMenuState *)&gTaskMemoryPool[D_8013AE88->resource14];
     setSpriteColor(128, 128, 128);
-    drawSpriteByIndexWithBlend(-56, -96 - state->unk3C[0] / 4096, 0x230, 2, -1,
-                  &D_800EBFF0[D_8013AF78], 4);
+    offset = state->unk3C[0] / 4096;
+    drawSpriteByIndexWithBlend(-56, -96 - offset, 0x230, 2, -1, &D_800EBFF0[D_8013AF78], 4);
+
     for (row = 0; row < 5; row++) {
-        s16 horizontalOffset;
-        s32 palette;
-        u8 centerPalette;
-        const u16 *centerSprite;
-        s32 leftPalette;
-        s32 rightPalette;
-
-        horizontalOffset = state->unk04[row] / 4096;
-        leftPalette = 1;
-        if (state->selection == row) {
-            leftPalette = 3;
-        }
-        drawSpriteByIndexWithBlend(-128 - horizontalOffset, row * 24 - 56, D_80132854[row], leftPalette,
-                      -1, &D_800EBFF0[D_8013AF78], 4);
-
-        if (gGameOptionFlags & (1U << D_8013B568[row])) {
-            palette = (state->selection != row) * 4;
+        offset = state->unk04[row] / 4096;
+        palette = state->selection == row ? 3 : 1;
+        drawSpriteByIndexWithBlend(-128 - offset, row * 24 - 56, gUnlockOptionLabelSprites[row], palette,
+                                   -1, &D_800EBFF0[D_8013AF78], 4);
+        if (gGameOptionFlags & (1U << gUnlockOptionBitIndices[row])) {
+            palette = state->selection == row ? 0 : 4;
         } else {
             palette = 1;
         }
-        centerSprite = &D_80132864[row * 2];
-        centerPalette = palette;
-        drawSpriteByIndexWithBlend(horizontalOffset + 32, row * 24 - 56, *centerSprite, (s16)palette,
-                      -1, &D_800EBFF0[D_8013AF78], 4);
-
-        rightPalette = centerPalette == 1 ? (state->selection != row) * 4 : 1;
-        drawSpriteByIndexWithBlend(horizontalOffset + 92, row * 24 - 56, D_80132866[row * 2], rightPalette,
-                      -1, &D_800EBFF0[D_8013AF78], 4);
+        drawSpriteByIndexWithBlend(offset + 32, row * 24 - 56, gUnlockOptionChoiceSprites[row * 2], palette,
+                                   -1, &D_800EBFF0[D_8013AF78], 4);
+        if (palette == 1) {
+            palette = state->selection == row ? 0 : 4;
+        } else {
+            palette = 1;
+        }
+        drawSpriteByIndexWithBlend(offset + 92, row * 24 - 56, gUnlockOptionChoiceSprites[row * 2 + 1], palette,
+                                   -1, &D_800EBFF0[D_8013AF78], 4);
     }
 
     for (row = 5; row < 7; row++) {
-        s16 verticalOffset = state->unk3C[row - 5] / 4096;
-        s32 rowY = row * 24;
-        s16 y = (s16)rowY + (s16)(verticalOffset - 56);
-        s32 actionPalette = state->selection != row;
-        drawSpriteByIndexWithBlend(-56, y, D_80132854[row],
-                      actionPalette, -1, &D_800EBFF0[D_8013AF78], 4);
+        offset = state->unk3C[row - 5] / 4096;
+        palette = state->selection != row;
+        drawSpriteByIndexWithBlend(-56, row * 24 - 56 + offset, gUnlockOptionLabelSprites[row],
+                                   palette, -1, &D_800EBFF0[D_8013AF78], 4);
     }
+
     addTilePacketWithBlend(-160, -120, 320, 240, 192, 192, 192, 2, &D_800EBFF0[D_8013AF78], 4);
     drawFullScreenTexturedBackground();
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/menu/unlock_menu", func_800A42CC);
-#endif
 
 void finishUnlockMenuTask(void) {
     UnlockMenuState *state;
     s16 i;
     if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
     state = (UnlockMenuState *)&gTaskMemoryPool[D_8013AE88->resource14];
-    func_800A42CC();
+    drawUnlockOptionsMenu();
     switch (D_8013AE88->data18) {
     case 0:
         for (i = 0; i < 5; i++) {

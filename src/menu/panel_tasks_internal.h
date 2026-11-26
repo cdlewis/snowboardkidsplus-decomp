@@ -214,7 +214,6 @@ void updateModeDependentRecordsMenuTask(void);
 void updateLapRecordsMenuTask(void);
 void updateFlagSelectedMenuTask(void);
 
-void func_800A42CC(void);
 void preparePlayerResourcesTask(void);
 void initializeRaceTaskState(void);
 void updateMode11SelectionMenuTask(void);

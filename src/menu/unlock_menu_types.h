@@ -18,3 +18,4 @@ typedef char UnlockMenuStateSizeCheck[(sizeof(UnlockMenuState) == 0x100) ? 1 : -
 
 void resetUnlockMenuOffsets(UnlockMenuState *state);
 void resetUnlockMenuAnimation(UnlockMenuState *state);
+void drawUnlockOptionsMenu(void);

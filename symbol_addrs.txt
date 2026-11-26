@@ -2096,6 +2096,7 @@ copyPlayerPaletteRow = 0x8009B6A8; // type:func
 
 runTaskResource14Update = 0x800A3D5C; // type:func
 updateUnlockOptionsMenuTask = 0x800A3D9C; // type:func
+drawUnlockOptionsMenu = 0x800A42CC; // type:func
 
 getPlayerCourseProgress = 0x8002B3F4; // type:func
 gPlayerCourseProgressTablePadding = 0x80010658; // size:0x4 defined:true
@@ -3334,6 +3335,9 @@ drawNumberSelectionPanel = 0x800A29A4; // type:func
 
 updateControllerPlaybackUntilFade = 0x800A39AC; // type:func
 gControllerPlaybackDurations = 0x8013283C; // size:0x18
+gUnlockOptionLabelSprites = 0x80132854; // size:0x10
+gUnlockOptionChoiceSprites = 0x80132864; // size:0x14
+gUnlockOptionBitIndices = 0x8013B568; // size:0x6
 gUnlockNotificationSprites = 0x80132878; // size:0x1C
 gNumberAdjustmentLabel = 0x80132894; // size:0xC
 gNumberAdjustmentInstructions = 0x801328A0; // size:0x38
