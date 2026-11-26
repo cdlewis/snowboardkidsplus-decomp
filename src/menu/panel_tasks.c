@@ -25,6 +25,8 @@
                                  !*(s16 *)&(entries)[4].flags)
 #define CHILD_MOVEMENT(entry) ((Movement2D *)&gTaskMemoryPool[(entry).task->resource14])
 #define MODEL_PREVIEW_MOVEMENT(entry) ((Movement2D *)&gTaskMemoryPool[(entry).task->resource16])
+#define BOARD_SHOP_PANELS_READY(panels) \
+    (!(panels)[0].flags && !(panels)[1].flags && !(panels)[2].flags && !(panels)[3].flags)
 #define BOARD_PURCHASE_CHILDREN_READY(entries) \
     ((s16)(entries)[0].flags == 0 && (s16)(entries)[1].flags == 0 && \
      (s16)(entries)[2].flags == 0 && (s16)(entries)[4].flags == 0)
@@ -55,6 +57,12 @@ typedef struct MoneyMenuSelection {
     s16 choiceResult;
 } MoneyMenuSelection;
 
+enum BoardShopChoice {
+    BOARD_SHOP_BUY,
+    BOARD_SHOP_PAINT,
+    BOARD_SHOP_LEAVE
+};
+
 extern MenuRgbColor gMenuColorCycleColor __attribute__((section(".data")));
 extern s16 gFrameCounter __attribute__((section(".data")));
 extern u16 D_8013AF78 __attribute__((section(".data")));
@@ -62,17 +70,17 @@ extern GameTask *D_8013AE88 __attribute__((section(".data")));
 extern GameTask *D_8013AE8C __attribute__((section(".data")));
 extern GameTask *D_8013AE98 __attribute__((section(".data")));
 
+static const u32 sBoardShopModeJumpTablePadding
+    __attribute__((section(".rodata.board_shop_mode_padding"))) = 0;
+
 static const u32 sBoardSelectionDetailsJumpTablePadding
     __attribute__((section(".rodata.board_selection_details_padding"))) = 0;
 
 extern const u8 D_80131868[];
 extern GroupedSelectionDescriptor D_801318D4[];
-extern u8 D_8013B4BC __attribute__((section(".data")));
 extern volatile u8 shopMenuRememberedSelectionGp;
 extern const u8 D_801317F0[];
 extern const u8 D_8013B4A0[];
-extern const u8 D_8013B4B4[];
-extern u8 D_8013B4BD;
 extern u8 boardMenuRememberedSelectionAbsolute __attribute__((section(".data")));
 
 extern const u16 D_8013143C[], D_80131498[], D_801314FC[], D_80131548[], D_80131574[];
@@ -96,6 +104,25 @@ static const u16 *sShopMenuTexts[15] __attribute__((section(".data.shop_menu_tex
     D_8013167C, D_801316BC, D_801316E8, D_80131728, D_80131760,
 };
 
+static const GridSpriteEntry sBoardShopModeSprites[3]
+    __attribute__((section(".data.board_shop_sprites"), aligned(4))) = {
+    {0xC4, 0, {0, 0, 0}},
+    {0xC5, 0, {0, 0, 0}},
+    {0xC7, 0, {0, 0, 0}},
+};
+
+static const s8 sShopCharacterTextureIndices[12]
+    __attribute__((section(".data.board_shop_sprites"), aligned(4))) = {
+    3, 1, 4, 5, 2, 9, 8, 10, 11, 12, 0, 0,
+};
+
+static const u8 sBoardShopModeTextMapping[4]
+    __attribute__((section(".data.board_shop_mode_text_mapping"), aligned(4))) = {8, 9, 4, 0};
+static const u8 sBoardShopModeSpriteMapping[4]
+    __attribute__((section(".data.shop_submenu_mappings"), aligned(4))) = {0, 1, 2, 0};
+static const u8 sShopSubmenuTextureMapping[4]
+    __attribute__((section(".data.shop_submenu_mappings"), aligned(4))) = {0xFF, 0xFF, 6, 0};
+
 static const u8 sShopMenuSpriteMapping[4]
     __attribute__((section(".data.shop_menu_mappings"), aligned(4))) = {0, 1, 2, 3};
 static const u8 sShopMenuTextMapping[4]
@@ -114,6 +141,9 @@ static const u8 sShopMenuTextureMapping[4]
 static const u8 sMoneyPanelSelectionSpriteMapping[3]
     __attribute__((section(".data.shop_menu_selection"))) = {0, 1, 2};
 volatile u8 gShopMenuRememberedSelection __attribute__((section(".data.shop_menu_selection"))) = 0;
+
+volatile u8 gBoardShopRememberedSelection __attribute__((section(".sdata"))) = 0;
+u8 D_8013B4BD __attribute__((section(".sdata"))) = 0;
 
 static RecordFlagMenuEntries sShopDefaultBoardEntries
     __attribute__((section(".data.shop_default_board_entries"))) = {
@@ -714,23 +744,14 @@ void initializeAlternateCountedTaskResourcePair(void) {
         for (;;) {}
     }
     D_8013AE88->resource16 = allocateTaskMemoryBlock();
-    setCurrentTaskCallback(func_8008DDC0);
+    setCurrentTaskCallback(updateBoardShopModeMenuTask);
     D_8013AE88->unk10 |= 2;
 }
 
-/* DECOMP_ATTEMPT: inline 551/555 */
-#ifdef NON_MATCHING
-extern const GridSpriteEntry D_801317D0[3];
-extern const u8 D_8013B49C[];
-extern const u8 D_8013B4B0[];
-extern u8 saveRecordMenuRememberedSelectionGp;
-
-void func_8008DDC0(void) {
+void updateBoardShopModeMenuTask(void) {
     MoneyMenuSelection *selection;
-    RegisteredTaskEntry *entries;
-    s32 complete;
-    u8 padding[8];
-    s16 mode;
+    RegisteredPanelSlot *panels;
+    s16 player;
 
     if (D_8013AE88->resource14 == 0xFFFF) {
         for (;;) {}
@@ -739,162 +760,153 @@ void func_8008DDC0(void) {
     if (D_8013AE88->resource16 == 0xFFFF) {
         for (;;) {}
     }
-    entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE88->resource16];
+    panels = (RegisteredPanelSlot *)&gTaskMemoryPool[D_8013AE88->resource16];
 
+    player = 0;
     switch (D_8013AE88->data18) {
-    case 0:
-        mode = 1;
+    case 0: {
+        s16 mode = 1;
+
         setMusicSequenceEnabled(mode);
         selection->mode = 0;
-        if (saveRecordMenuRememberedSelectionGp != 0) {
-            selection->selectedIndex = saveRecordMenuRememberedSelectionGp - 1;
+        if (gBoardShopRememberedSelection) {
+            selection->selectedIndex = gBoardShopRememberedSelection - 1;
         } else {
-            selection->selectedIndex = saveRecordMenuRememberedSelectionGp;
+            selection->selectedIndex = gBoardShopRememberedSelection;
         }
         selection->previousIndex = selection->selectedIndex;
         selection->choiceResult = 0;
-        createRegisteredSpacedChildTasks(mode, 0xB0, 0x40, (const u8 *)D_801317D0, D_8013B4B0,
-                                         NULL, 0, 0, 20, -308, -80, 0, 24, 3, 176,
+        createRegisteredSpacedChildTasks(mode, 0xB0, 0x40, (const u8 *)sBoardShopModeSprites,
+                                         sBoardShopModeSpriteMapping, NULL, 0, 0, 20, -308, -80, 0, 24, 3, 176,
                                          drawSelectedTaskSprite, drawRegisteredTaskGridSpriteWithColor, 4, 1);
-        createRegisteredTextPanelTask(-320, 8, sShopMenuTexts, D_8013B49C, 4, 11);
+        createRegisteredTextPanelTask(-320, 8, sShopMenuTexts, sBoardShopModeTextMapping, 4, 11);
         createRegisteredCallbackTask(0, 172, -72, drawCurrentTaskSaveRecordMoneyPanelWithCharacterSprites, 4, 21);
-        uploadTextureArchiveEntry(320, 0, 768, 0xE9, D_801317E4[gRacePlayers[0].unk009]);
+        uploadTextureArchiveEntry(320, 0, 768, 0xE9, sShopCharacterTextureIndices[gRacePlayers[0].unk009]);
         uploadTextureArchiveEntry(320, 256, 768, 0xEA, 0);
-        createRegisteredTexturePairTask(172, -72, D_8013B4B4, 3, selection->selectedIndex, 1, 5, 31);
+        createRegisteredTexturePairTask(172, -72, sShopSubmenuTextureMapping, 3, selection->selectedIndex, 1, 5, 31);
         D_8013AE88->data18 = 2;
         break;
+    }
     case 2:
-        if ((s16)entries[0].flags == 0 && (s16)entries[1].flags == 0 &&
-            (s16)entries[2].flags == 0 && (s16)entries[3].flags == 0) {
-            moveTaskChildrenWithSpacing(0, entries[0].task, -0x80000, -0x50000, 0x1E000, 0, 1);
-            configureMovement2D((Movement2D *)&gTaskMemoryPool[entries[1].task->resource14],
-                                -0x8C000, 0x8000, 0x1E000, 0, 4);
-            if (saveRecordMenuRememberedSelectionGp == 0) {
-                s16 i;
-                s16 hasUnavailableBoards = 0;
+        if (BOARD_SHOP_PANELS_READY(panels)) {
+            moveTaskChildrenWithSpacing(0, panels[0].task, -0x80000, -0x50000, 0x1E000, 0, 1);
+            configureMovement2D(CHILD_MOVEMENT(panels[1]), -0x8C000, 0x8000, 0x1E000, 0, 4);
+            if (!gBoardShopRememberedSelection) {
+                s16 index;
+                s16 newStock = 0;
 
-                for (i = 0; i < 3; i++) {
-                    if ((gPlayerSaveRecords[0].flags & (0x800 << (i + 3))) &&
-                        !(gPlayerSaveRecords[0].flags & (0x800 << i))) {
-                        hasUnavailableBoards = 1;
+                /* Each special board has an unlock bit three places above its purchase bit. */
+                for (index = 0; index < 3; index++) {
+                    if ((gPlayerSaveRecords[player].flags & (0x800U << (index + 3))) &&
+                        !(gPlayerSaveRecords[player].flags & (0x800U << index))) {
+                        newStock = 1;
                     }
                 }
-                if (hasUnavailableBoards) {
-                    setTaskSecondaryResourceData(entries[1].task, sShopMenuTexts[10]);
+                if (newStock) {
+                    setTaskSecondaryResourceData(panels[1].task, sShopMenuTexts[10]);
                 } else {
-                    setTaskSecondaryResourceData(entries[1].task, sShopMenuTexts[5]);
+                    setTaskSecondaryResourceData(panels[1].task, sShopMenuTexts[5]);
                 }
             }
-            configureMovement2D((Movement2D *)&gTaskMemoryPool[entries[2].task->resource14],
-                                -0x8000, -0x48000, -0x1E000, 0, 4);
-            configureMovement2D((Movement2D *)&gTaskMemoryPool[entries[3].task->resource14],
-                                -0x8000, -0x48000, -0x1E000, 0, 4);
+            configureMovement2D(CHILD_MOVEMENT(panels[2]), -0x8000, -0x48000, -0x1E000, 0, 4);
+            configureMovement2D(CHILD_MOVEMENT(panels[3]), -0x8000, -0x48000, -0x1E000, 0, 4);
             D_8013AE88->data18 = 3;
         }
         break;
     case 3:
-        if ((s16)entries[0].flags == 0 && (s16)entries[1].flags == 0 &&
-            (s16)entries[2].flags == 0 && (s16)entries[3].flags == 0) {
-            entries[0].command = 20;
-            entries[1].command = 20;
-            entries[2].command = 20;
+        if (BOARD_SHOP_PANELS_READY(panels)) {
+            panels[0].command = 20;
+            panels[1].command = 20;
+            panels[2].command = 20;
             configureColorCycleTask(1, 0, 128, 8, 0);
             D_8013B41F = 0;
             D_8013AE88->data18 = 4;
         }
         break;
     case 4:
-        if (saveRecordMenuRememberedSelectionGp == 0) {
+        if (!gBoardShopRememberedSelection) {
             playSoundEffect(0, 2, 32);
         }
         D_8013AE88->data18 = 5;
         break;
     case 5:
-        complete = isTaskResourceTransitionComplete(0);
-        if (complete == 1 && D_8013B41F == 0) {
-            entries[0].command = 21;
-            entries[1].command = 22;
-            entries[2].command = 22;
+        if (isTaskResourceTransitionComplete(0) == 1 && !D_8013B41F) {
+            panels[0].command = 21;
+            panels[1].command = 22;
+            panels[2].command = 22;
             configureColorCycleTask(2, 64, 128, 4, 0);
-            D_8013B41F = complete;
+            D_8013B41F = 1;
         }
         if (selection->selectedIndex != selection->previousIndex) {
-            setTaskSecondaryResourceData(entries[1].task, NULL);
+            setTaskSecondaryResourceData(panels[1].task, NULL);
         }
-        if (selection->choiceResult != 0 && (s16)entries[0].flags == 0) {
-            if (D_8013B41F == 0) {
-                entries[0].command = 21;
-                entries[1].command = 22;
-                entries[2].command = 22;
+        if (selection->choiceResult && !panels[0].flags) {
+            if (!D_8013B41F) {
+                panels[0].command = 21;
+                panels[1].command = 22;
+                panels[2].command = 22;
                 D_8013B41F = 1;
             }
             if (selection->choiceResult < 0) {
-                goto returnToParentMenu;
-            }
-            switch (selection->selectedIndex) {
-            case 0:
-                D_8013AE98->data18 = 16;
-                break;
-            case 1:
-                D_8013AE98->data18 = 17;
-                break;
-            case 2:
-returnToParentMenu:
                 D_8013AE98->data18 = 11;
-                break;
+            } else {
+                switch (selection->selectedIndex) {
+                case BOARD_SHOP_BUY:
+                    D_8013AE98->data18 = 16;
+                    break;
+                case BOARD_SHOP_PAINT:
+                    D_8013AE98->data18 = 17;
+                    break;
+                case BOARD_SHOP_LEAVE:
+                    D_8013AE98->data18 = 11;
+                    break;
+                }
             }
             if (D_8013AE98->data18 == 11) {
-                saveRecordMenuRememberedSelectionGp = 0;
+                gBoardShopRememberedSelection = 0;
             } else {
-                saveRecordMenuRememberedSelectionGp = selection->selectedIndex + 1;
+                gBoardShopRememberedSelection = selection->selectedIndex + 1;
             }
             if (selection->choiceResult < 0) {
-                goto finishChoice;
+                D_8013AE88->data18 = 11;
+            } else {
+                D_8013AE88->data18 = 9;
             }
-            D_8013AE88->data18 = 9;
         }
         break;
-    case 9: {
-        GameTask *task = D_8013AE88;
-        entries[0].command = 10;
-        task->data18 = 10;
+    case 9:
+        panels[0].command = 10;
+        D_8013AE88->data18 = 10;
         break;
-    }
     case 10:
-        if ((s16)entries[0].flags == 0) {
-finishChoice:
+        if (!panels[0].flags) {
             D_8013AE88->data18 = 11;
         }
         break;
     case 11:
         if (D_8013AE98->data18 == 11) {
             D_8013AE88->data18 = 12;
-            break;
+        } else {
+            D_8013AE88->data18 = 6;
         }
-        goto beginExit;
+        break;
     case 12:
         playSoundEffect(0, 0x202, 32);
-beginExit:
         D_8013AE88->data18 = 6;
         break;
     case 6:
-        if ((s16)entries[0].flags == 0 && (s16)entries[1].flags == 0 &&
-            (s16)entries[2].flags == 0 && (s16)entries[3].flags == 0) {
+        if (BOARD_SHOP_PANELS_READY(panels)) {
             queueMenuResourceReads((s16)D_8013AE98->data18);
-            moveTaskChildrenWithSpacing(0, entries[0].task, -0x134000, -0x50000, 0x1E000, 0x1E000, -1000);
-            entries[0].command = 23;
-            configureMovement2D((Movement2D *)&gTaskMemoryPool[entries[1].task->resource14],
-                                -0x140000, 0x8000, -0x1E000, 0x1E000, -1000);
-            configureMovement2D((Movement2D *)&gTaskMemoryPool[entries[2].task->resource14],
-                                0xAC000, -0x48000, 0x1E000, 0x1E000, -1000);
-            configureMovement2D((Movement2D *)&gTaskMemoryPool[entries[3].task->resource14],
-                                0xAC000, -0x48000, -0x1E000, 0x1E000, -1000);
+            moveTaskChildrenWithSpacing(0, panels[0].task, -0x134000, -0x50000, 0x1E000, 0x1E000, -1000);
+            panels[0].command = 23;
+            configureMovement2D(CHILD_MOVEMENT(panels[1]), -0x140000, 0x8000, -0x1E000, 0x1E000, -1000);
+            configureMovement2D(CHILD_MOVEMENT(panels[2]), 0xAC000, -0x48000, 0x1E000, 0x1E000, -1000);
+            configureMovement2D(CHILD_MOVEMENT(panels[3]), 0xAC000, -0x48000, -0x1E000, 0x1E000, -1000);
             D_8013AE88->data18 = 7;
         }
         break;
     case 7:
-        if ((s16)entries[0].flags == 0 && (s16)entries[1].flags == 0 &&
-            (s16)entries[2].flags == 0 && (s16)entries[3].flags == 0) {
+        if (BOARD_SHOP_PANELS_READY(panels)) {
             D_8013AE88->data18 = 8;
         }
         break;
@@ -904,9 +916,6 @@ beginExit:
         break;
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/menu/panel_tasks", func_8008DDC0);
-#endif
 
 void drawCurrentTaskSaveRecordMoneyPanelWithCharacterSprites(void) {
     Movement2D *position;
@@ -941,7 +950,7 @@ void drawCurrentTaskSaveRecordMoneyPanelWithCharacterSprites(void) {
     }
 
     setSpriteColor(128, 128, 128);
-    if (D_801317E4[gRacePlayers[0].unk009] != 0) {
+    if (sShopCharacterTextureIndices[gRacePlayers[0].unk009] != 0) {
         s32 offsetX;
         s32 sprite;
 
@@ -1006,9 +1015,9 @@ void updateMoneyPanelSelectionTask(void) {
                                          drawSelectedTaskSprite, drawRegisteredTaskGridSpriteWithColor, 4, 1);
         createRegisteredTextPanelTask(-320, 8, sShopMenuTexts, D_8013B4A0, 4, 11);
         createRegisteredCallbackTask(0, 172, -72, drawCurrentTaskMoneyPanelWithCharacterSprites, 4, 21);
-        uploadTextureArchiveEntry(320, 0, 768, 0xE9, D_801317E4[gRacePlayers[0].unk009]);
+        uploadTextureArchiveEntry(320, 0, 768, 0xE9, sShopCharacterTextureIndices[gRacePlayers[0].unk009]);
         uploadTextureArchiveEntry(320, 256, 768, 0xEA, 0);
-        createRegisteredTexturePairTask(172, -72, D_8013B4B4, 3, selection->selectedIndex, 1, 5, 31);
+        createRegisteredTexturePairTask(172, -72, sShopSubmenuTextureMapping, 3, selection->selectedIndex, 1, 5, 31);
         D_8013AE88->data18 = 2;
         break;
     case 2:
@@ -1163,7 +1172,7 @@ void drawCurrentTaskMoneyPanelWithCharacterSprites(void) {
     }
 
     setSpriteColor(128, 128, 128);
-    if (D_801317E4[gRacePlayers[0].unk009] != 0) {
+    if (sShopCharacterTextureIndices[gRacePlayers[0].unk009] != 0) {
         s32 offsetX;
         s32 sprite;
 
@@ -1327,7 +1336,7 @@ void updateGroupedSelectionBoundsTask(void) {
         GameTask *task = D_8013AE88;
         descriptor = &D_801318D4[task->data1A];
         if (descriptor->mapping[input->selectedIndex] == 17) {
-            D_8013B4BC = 0;
+            boardShopRememberedSelectionAbsolute = 0;
             D_8013AE98->data18 = 11;
             playSoundEffect(0, 0x202, 32);
 startExit:
@@ -2026,7 +2035,7 @@ void updateBoardSelectionMenuTask(void) {
     case 5:
         descriptor = &D_801318D4[D_8013AE88->data1A];
         if (descriptor->mapping[selection->selectedIndex] == 17) {
-            D_8013B4BC = 0;
+            boardShopRememberedSelectionAbsolute = 0;
             D_8013AE98->data18 = 11;
             playSoundEffect(0, 0x202, 32);
 beginExit:
@@ -2048,7 +2057,7 @@ beginExit:
         D_8013AE98->data18 = 12;
         goto finishExit;
     case 12:
-        D_8013B4BC = 0;
+        boardShopRememberedSelectionAbsolute = 0;
         D_8013AE98->data18 = 11;
         playSoundEffect(0, 0x202, 32);
         D_8013AE88->data18 = 13;

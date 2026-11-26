@@ -183,7 +183,6 @@ void updateGroupedSelectionBoundsTask(void);
 void updateShopMenuTask(void);
 void drawCurrentTaskMoneyPanel(void);
 void drawCurrentTaskMoneyPanelWithCharacterSprites(void);
-extern s8 D_801317E4[];
 extern u8 D_80131804[12];
 extern u32 D_80131810[12];
 
@@ -192,7 +191,7 @@ void drawCurrentTaskSaveRecordMoneyPanelWithCharacterSprites(void);
 void drawCurrentTaskSelectedBoardDetails(void);
 void drawCurrentTaskSelectedBoardPrice(void);
 void drawCurrentTaskSelectedPlayerMoneyPanel(void);
-void func_8008DDC0(void);
+void updateBoardShopModeMenuTask(void);
 void updateMoneyPanelSelectionTask(void);
 void updateShopBoardPurchaseMenuTask(void);
 void updateBoardSelectionMenuTask(void);

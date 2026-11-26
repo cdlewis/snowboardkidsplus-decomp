@@ -12,6 +12,7 @@
 #include "game/io/controller.h"
 #include "game/io/dat_resources.h"
 #include "game/menu/selected_records.h"
+#include "game/menu/menu_selection_state.h"
 #include "game/race/course/course_geometry.h"
 #include "game/race/player/player_resource_textures.h"
 #include "game/race/player/race_player.h"
@@ -33,7 +34,6 @@ extern u8 D_8013AFD7 __attribute__((section(".data")));
 extern volatile u8 gShopMenuRememberedSelection __attribute__((section(".data")));
 
 extern u8 D_8013B47C __attribute__((section(".data")));
-extern u8 D_8013B4BC __attribute__((section(".data")));
 extern u8 D_8013B4BD __attribute__((section(".data")));
 extern u8 D_8013B527 __attribute__((section(".data")));
 extern u8 D_8013B110;
@@ -1838,7 +1838,7 @@ void initializeNewGameSaveData(void) {
     D_8013B47C = 0;
     D_8013B104 = 0;
     gShopMenuRememberedSelection = 0;
-    D_8013B4BC = 0;
+    boardShopRememberedSelectionAbsolute = 0;
     D_8013B4BD = 0;
     D_8013B527 = 0;
     gRacePlayers[0].unk009 = 0;

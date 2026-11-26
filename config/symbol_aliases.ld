@@ -15,7 +15,7 @@ geometryPlacementDataAbsolute = D_8013B1F4;
 selectionMenuRecordAbsolute = D_8013B560;
 mainTailSelectionGp = D_8013B527;
 shopMenuRememberedSelectionGp = gShopMenuRememberedSelection;
-saveRecordMenuRememberedSelectionGp = D_8013B4BC;
+boardShopRememberedSelectionAbsolute = gBoardShopRememberedSelection;
 boardMenuRememberedSelectionAbsolute = D_8013B4BD;
 taskTransitionFlagGp = D_8013B55E;
 

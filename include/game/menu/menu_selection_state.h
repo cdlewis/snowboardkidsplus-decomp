@@ -14,6 +14,10 @@ typedef struct MenuModelSelectionPair {
     s16 previousSelection;
 } MenuModelSelectionPair;
 
+/* The shop task remembers a one-based choice. Zero selects its opening greeting. */
+extern volatile u8 gBoardShopRememberedSelection;
+extern volatile u8 boardShopRememberedSelectionAbsolute __attribute__((section(".data")));
+
 extern MenuModelSelectionPair D_8013B468[];
 extern const u8 gMenuPlayerTextureIds[16];
 extern MenuSelectionState D_801300AC[2];

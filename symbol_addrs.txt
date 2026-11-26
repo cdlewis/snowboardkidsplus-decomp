@@ -2607,6 +2607,15 @@ sMoneyPanelSelectionSpriteMapping = 0x8013B4B8; // size:0x3 defined:true
 gShopMenuRememberedSelection = 0x8013B4BB; // size:0x1 defined:true
 
 initializeAlternateCountedTaskResourcePair = 0x8008DD04; // type:func
+updateBoardShopModeMenuTask = 0x8008DDC0; // type:func
+sBoardShopModeJumpTablePadding = 0x80011D90; // size:0x4 defined:true
+sBoardShopModeSprites = 0x801317D0; // size:0x12 defined:true
+sShopCharacterTextureIndices = 0x801317E4; // size:0xC defined:true
+sBoardShopModeTextMapping = 0x8013B49C; // size:0x4 defined:true
+sBoardShopModeSpriteMapping = 0x8013B4B0; // size:0x4 defined:true
+sShopSubmenuTextureMapping = 0x8013B4B4; // size:0x4 defined:true
+gBoardShopRememberedSelection = 0x8013B4BC; // size:0x1 defined:true
+D_8013B4BD = 0x8013B4BD; // size:0x1 defined:true
 
 drawCurrentTaskSaveRecordMoneyPanelWithCharacterSprites = 0x8008E66C; // type:func
 
