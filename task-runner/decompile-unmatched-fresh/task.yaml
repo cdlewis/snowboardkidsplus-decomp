@@ -1,0 +1,29 @@
+candidate_source: python3 tools/task_candidates.py decompile-unmatched
+prompt: >-
+  Decompile the function $INPUT. Follow AGENTS.md and the repo-local
+  .agents/skills/psx-match-function/SKILL.md workflow, except that this is an
+  independent attempt from scratch. Do not inspect, reuse, or compare against
+  any previous decompilation attempts for $INPUT, including inline NON_MATCHING
+  C, archived scratch workspaces, attempt logs, or earlier agent reports.
+  Create a new workspace with ./tools/codex --bootstrap-only $INPUT (without
+  --id to avoid resuming an existing workspace). Ignore the archived attempt
+  summary and do not read the seeded base.c, which may contain a prior attempt.
+  Write your own base.c using the project headers and target assembly. Use
+  only attempts and comparison results generated during this task when
+  following the matching workflow. Before writing or revising C,
+  infer what the function does from its assembly, callers, callees, and data
+  accesses. Look for an equivalent function in ../snowboardkids-decomp, since
+  Snowboard Kids Plus may reuse code from the original Snowboard Kids. Search
+  by behavior, call patterns, and data structures, since names and addresses
+  can differ between versions. If you find a likely counterpart, compare its
+  control flow and data accesses with the PSX assembly and use it as a
+  reference, adapting platform-specific details as needed. If there is no clear
+  counterpart, continue from the PSX assembly. Try
+  meaningful C source-shape changes and bounded permuter experiments when
+  appropriate. Preserve useful attempts and obey tool stop instructions. Only
+  integrate exact C and verify the complete executable with
+  ./tools/build-and-verify.sh --expected --objects before declaring a match.
+  Commit the verified changes yourself using the tracked validation hook.
+  Include the commit hash in your final report.
+agent: codex
+timeout: 1h
