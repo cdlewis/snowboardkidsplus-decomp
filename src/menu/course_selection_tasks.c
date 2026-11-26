@@ -75,11 +75,6 @@ typedef struct MenuPlayerModelPosition {
     s16 z;
 } MenuPlayerModelPosition;
 
-typedef struct MenuModelSelectionPair {
-    s16 selection;
-    s16 previousSelection;
-} MenuModelSelectionPair;
-
 typedef struct ClippedGridSpriteParent {
     u8 unk00[0x44];
     const GridSpriteEntry *sprites;
@@ -253,7 +248,6 @@ const u32 gSaveRecordLoadPanelTablePadding
 StateValueHistory D_8013BE30 __attribute__((section(".bss.state_value_history")));
 
 extern const u16 *D_8012FC2C[10];
-extern MenuModelSelectionPair D_8013B468[];
 extern u8 gPlayerGroupedSelectionStates[2];
 void drawClippedRegisteredTaskGridSprite(void);
 extern u16 gSaveRecordProgressCurrencyLabel[2];

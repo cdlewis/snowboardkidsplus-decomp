@@ -2374,51 +2374,53 @@ void initializePlayerTextureSelectionTask(void) {
 #ifdef NON_MATCHING
 #include "game/race/player/player_resource_textures.h"
 
-#define PANEL_GROUP(task) ((BoardPanelGroupResource *)&gTaskMemoryPool[(task)->resource14])
 #define ENTRY_READY(entry) ((s16)(entry).flags == 0)
-#define PREVIEW_TIM(index) ((u32 *)((u16 *)DAT_STARTUP_TEXTURES + (((s32 *)DAT_STARTUP_TEXTURES)[(s16)(D_80130084[index] + 1)] >> 1)))
 
-typedef struct BoardPanelGroupResource {
-    u8 unk00[0x48];
-    const u8 *mapping;
-} BoardPanelGroupResource;
-
-typedef struct BoardPreviewSelection {
-    s16 current, previous;
-} BoardPreviewSelection;
-
-extern const u8 D_80130084[16];
 extern const u8 D_80131924[];
 extern const u8 *D_8013B4E8[];
-extern BoardPreviewSelection D_8013B468[];
+
 void uploadTimImageAt(s16 x, s16 y, s16 clutX, s16 clutY, u32 *tim);
 
-void func_80093A54(void)
-{
+static inline u32 *getTexturePreviewTim(OffsetArchive *archive, s16 index) {
+    s16 entry = gMenuPlayerTextureIds[index] + 1;
+    s32 offset = (s32)archive->offsets[entry - 1];
+    return (u32 *)((u16 *)archive + (offset >> 1));
+}
+
+static inline SpacedGroupResource *getTexturePanelGroup(GameTask *task) {
+    return (SpacedGroupResource *)&gTaskMemoryPool[task->resource14];
+}
+
+static inline RegisteredTaskEntry *getTexturePanelEntries(TaskMemoryBlock *records, u16 resource) {
+    return (RegisteredTaskEntry *)(records + resource);
+}
+
+void func_80093A54(void) {
     FlagSelectedMenuState *input;
     RegisteredTaskEntry *entries;
     MenuSelectionState *selection;
-    BoardPreviewSelection *preview;
+    MenuModelSelectionPair *preview;
+    GameTask *task;
+    u16 resource;
+    u16 state;
     s32 complete;
     s16 index;
     u8 padding[0x20];
 
     if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
     input = (FlagSelectedMenuState *)&gTaskMemoryPool[D_8013AE88->resource14];
-    {
-        GameTask *task = D_8013AE88;
-        u16 resource = task->resource16;
-        u16 state;
-        if (resource == 0xFFFF) { for (;;) {} }
-        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[resource];
-        selection = D_801300AC;
-        state = task->data18;
-        preview = D_8013B468;
+    task = D_8013AE88;
+    resource = task->resource16;
+    if (resource == 0xFFFF) { for (;;) {} }
+    entries = getTexturePanelEntries(gTaskMemoryPool, resource);
+    selection = D_801300AC;
+    state = task->data18;
+    preview = D_8013B468;
 
-        switch (state) {
+    switch (state) {
     case 0: {
-        s16 index = findByteIndexOrZero(D_80130084,
-            *(selection->selection + gPlayerResourceTextureSelections.entries[0]), 16);
+        s16 index = findByteIndexOrZero(gMenuPlayerTextureIds,
+            gPlayerResourceTextureSelections.entries[0][selection->selection], 16);
         input->mode = 0;
         if (index >= 8) {
             input->selectedIndex = index - 8;
@@ -2432,8 +2434,8 @@ void func_80093A54(void)
             GameTask *task = D_8013AE88;
             input->choiceResult = 0;
             input->previousIndex = selected;
-            preview->current = index;
-            preview->previous = index;
+            preview->selection = index;
+            preview->previousSelection = index;
             task->data18 = 1;
         }
         break;
@@ -2445,7 +2447,7 @@ void func_80093A54(void)
             mapping, NULL, 0, 0, 20, -304, -96, 0, 20,
             10, 0x11F, drawSelectedTaskSprite, drawRegisteredTaskGridSpriteWithColor, 4, 21);
         createRegisteredCallbackTask(0, 180, 64, drawCurrentTaskFramedSpritePair16A, 3, 31);
-        uploadTimImageAt(576, 256, 768, 238, PREVIEW_TIM(preview->current));
+        uploadTimImageAt(576, 256, 768, 238, getTexturePreviewTim(DAT_STARTUP_TEXTURES, preview->selection));
         D_8013AE88->data18 = 2;
         break;
     }
@@ -2480,13 +2482,13 @@ void func_80093A54(void)
             const u8 *mapping;
             input->previousIndex = input->selectedIndex;
             child = entries[2].task;
-            mapping = PANEL_GROUP(child)->mapping;
+            mapping = getTexturePanelGroup(child)->data48;
             index = mapMenuByteIndex(mapping, input->selectedIndex) - 3;
             if ((u16)index >= 16) {
                 break;
             }
-            preview->current = index;
-            uploadTimImageAt(576, 256, 768, 238, PREVIEW_TIM(index));
+            preview->selection = index;
+            uploadTimImageAt(576, 256, 768, 238, getTexturePreviewTim(DAT_STARTUP_TEXTURES, index));
         }
         if (D_8013AEE8[0] & 0x8000) {
             D_8013AE88->data1A = D_8013AE88->data1A ? D_8013AE88->data1A - 1 : 1;
@@ -2498,16 +2500,15 @@ void func_80093A54(void)
                 D_8013B41F = 1;
             }
             if (input->choiceResult < 0) {
-                u16 state = 13;
-                D_8013AE88->data18 = state;
+                D_8013AE88->data18 = 13;
                 return;
             }
             {
                 GameTask *child = entries[2].task;
                 s16 selected = input->selectedIndex;
                 u16 resource = child->resource14;
-                BoardPanelGroupResource *group = (BoardPanelGroupResource *)&gTaskMemoryPool[resource];
-                index = mapMenuByteIndex(group->mapping, selected);
+                SpacedGroupResource *group = (SpacedGroupResource *)&gTaskMemoryPool[resource];
+                index = mapMenuByteIndex(group->data48, selected);
             }
             if (index == 0 && D_8013AE88->data1A == 0) {
                 D_8013AE88->data1A++;
@@ -2517,7 +2518,7 @@ void func_80093A54(void)
                 D_8013AE88->data18 = 10;
             } else if (index == 2) {
                 D_8013AE88->data18 = 15;
-            } else if ((u16)(index - 3) < 16 && preview->current != preview->previous) {
+            } else if ((u16)(index - 3) < 16 && preview->selection != preview->previousSelection) {
                 D_8013AE88->data1E = 20;
                 D_8013AE88->data18 = 8;
             } else {
@@ -2573,23 +2574,22 @@ void func_80093A54(void)
     }
     case 11:
         if (ENTRY_READY(entries[2])) {
-            BoardPanelGroupResource *group;
+            SpacedGroupResource *group;
             GameTask *child = entries[2].task;
-            BoardPanelGroupResource *groupBeforeMove = PANEL_GROUP(child);
-            groupBeforeMove->mapping = D_8013B4E8[D_8013AE88->data1A];
+            getTexturePanelGroup(child)->data48 = D_8013B4E8[D_8013AE88->data1A];
             moveTaskChildrenWithSpacing(0, entries[2].task, -0x80000, -0x60000, 0x1E000, 0, 1);
             child = entries[2].task;
             entries[2].command = 23;
             entries[3].command = 23;
-            group = PANEL_GROUP(child);
+            group = (SpacedGroupResource *)&gTaskMemoryPool[child->resource14];
             if (input->selectedIndex < 8) {
-                index = mapMenuByteIndex(group->mapping, input->selectedIndex);
+                index = mapMenuByteIndex(group->data48, input->selectedIndex);
             } else {
-                index = mapMenuByteIndex(group->mapping, 7);
+                index = mapMenuByteIndex(group->data48, 7);
             }
             index -= 3;
-            preview->current = index;
-            uploadTimImageAt(576, 256, 768, 238, PREVIEW_TIM(index));
+            preview->selection = index;
+            uploadTimImageAt(576, 256, 768, 238, getTexturePreviewTim(DAT_STARTUP_TEXTURES, index));
             {
                 GameTask *task = D_8013AE88;
                 input->choiceResult = 0;
@@ -2618,13 +2618,10 @@ finish:
         D_8013AE98->data18 = 18;
         deleteCurrentTaskSubtree();
         break;
-        }
     }
 }
 
-#undef PANEL_GROUP
 #undef ENTRY_READY
-#undef PREVIEW_TIM
 #else
 INCLUDE_ASM("asm/nonmatchings/menu/panel_tasks", func_80093A54);
 #endif

@@ -9,6 +9,12 @@ typedef struct MenuSelectionState {
     s16 unk04;
 } MenuSelectionState;
 
+typedef struct MenuModelSelectionPair {
+    s16 selection;
+    s16 previousSelection;
+} MenuModelSelectionPair;
+
+extern MenuModelSelectionPair D_8013B468[];
 extern const u8 gMenuPlayerTextureIds[16];
 extern MenuSelectionState D_801300AC[2];
 
