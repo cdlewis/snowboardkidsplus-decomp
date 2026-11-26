@@ -123,7 +123,7 @@ segments:
       - [0x1564, .rodata, race/effects/player_effects]
       - {start: 0x1590, type: .rodata, name: race/effects/player_effects, linker_section: .rodata.fading_text_glyph_banks}
       - {start: 0x15A0, type: .rodata, name: race/effects/player_effects, linker_section: .rodata.timed_sprite_text}
-      - [0x1A38, .rodata, menu/task_widgets]
+      - [0x1A38, .rodata, menu/transition_effects]
       - [0x1A78, rodata]
       - {start: 0x1C08, type: .rodata, name: menu/task_widgets, linker_section: .rodata.character_selection}
       - {start: 0x1C28, type: .rodata, name: menu/task_widgets, linker_section: .rodata.save_record_unlock_flags}
@@ -255,7 +255,8 @@ segments:
       - [0x51680, c, race/effects/player_effects]
       - [0x5C1FC, c, io/controller_effects]
       - [0x5C5DC, c, graphics/sprite_draw]
-      - [0x60A74, c, menu/task_widgets]
+      - [0x60A74, c, menu/transition_effects]
+      - [0x61634, c, menu/task_widgets]
       - [0x6C69C, c, unclassified/menu_8007BE9C]
       - [0x6D478, c, menu/course_selection_tasks]
       - [0x79FA4, c, menu/save_record_tasks]
@@ -1065,7 +1066,8 @@ segments:
       - [0x12BB78, data, stretched_text_tail]
       - {start: 0x12BB94, type: .data, name: graphics/sprite_draw, linker_section: .data.digit_sprite_blend_bits}
       - {start: 0x12BB9C, type: .data, name: menu/task_widgets, linker_section: .data.secondary_display_pulse_glyph}
-      - [0x12BBA4, data, digit_sprite_blend_bits_tail]
+      - {start: 0x12BBA4, type: .sdata, name: menu/transition_effects, linker_section: .sdata.menu_color_cycle, linker_section_order: .data}
+      - [0x12BBA8, data, character_selection_color]
       - {start: 0x12BBAC, type: .data, name: menu/task_widgets, linker_section: .data.texture_pair_bounce_offsets}
       - {start: 0x12BBB4, type: .sdata, name: menu/task_widgets, linker_section: .sdata.animated_sprite16_page, linker_section_order: .data}
       - [0x12BBBC, data, 12BBBC]

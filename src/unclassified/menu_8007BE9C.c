@@ -18,14 +18,12 @@ typedef struct MainMenuSelection {
     s16 choiceResult;
 } MainMenuSelection;
 
+extern MenuRgbColor gMenuColorCycleColor __attribute__((section(".data")));
 extern u16 D_8013AF78 __attribute__((section(".data")));
 extern u8 D_8013AFCD __attribute__((section(".data")));
 extern u8 D_8013AFE2 __attribute__((section(".data")));
 extern GameTask *D_8013AE88 __attribute__((section(".data")));
 extern GameTask *D_8013AE98 __attribute__((section(".data")));
-extern u8 D_8013B3A4 __attribute__((section(".data")));
-extern u8 D_8013B3A5 __attribute__((section(".data")));
-extern u8 D_8013B3A6 __attribute__((section(".data")));
 
 extern const u16 D_8012F424[], D_8012F4C8[], D_8012F5CC[], D_8012F630[];
 extern const u16 D_8012F698[], D_8012F6D4[], D_8012F70C[], D_8012F728[];
@@ -303,7 +301,7 @@ void drawSelectionHeaderAndMoneyPanel(void) {
                        2, gSelectionMoneyCurrencyLabel, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     if (D_8013AE88->data1A == playerCount) {
         addTilePacketWithBlend(position->x / 4096 + 68, position->y / 4096 + 136, 68, 32,
-                      D_8013B3A4, D_8013B3A5, D_8013B3A6, 2,
+                      gMenuColorCycleColor.r, gMenuColorCycleColor.g, gMenuColorCycleColor.b, 2,
                       &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     } else {
         addTilePacketWithBlend(position->x / 4096 + 68, position->y / 4096 + 136, 68, 32,

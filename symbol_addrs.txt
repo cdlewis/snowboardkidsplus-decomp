@@ -2690,6 +2690,7 @@ drawTimeRecordHeader = 0x80039484; // type:func
 
 drawAnimatedSprite16 = 0x800775C8; // type:func
 gAnimatedSprite16Template = 0x8012F17C; // size:0x10
+gMenuColorCycleColor = 0x8013B3A4; // size:0x3 defined:true
 gTexturePairBounceOffsets = 0x8013B3AC; // size:0x8
 gAnimatedSprite16DrawPage = 0x8013B3B4; // size:0x8
 

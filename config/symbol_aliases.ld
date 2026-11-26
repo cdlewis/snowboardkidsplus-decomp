@@ -30,8 +30,3 @@ gRacePlacementPalettes = gMenuSpritePaletteGroups;
 
 /* Shared three-byte string literal immediately preceding the grid task flag. */
 D_8013B514 = D_8013B517 - 3;
-
-/* Registered callback tasks address the shared widget colors absolutely. */
-gTaskWidgetRedAbsolute = D_8013B3A4;
-gTaskWidgetGreenAbsolute = D_8013B3A5;
-gTaskWidgetBlueAbsolute = D_8013B3A6;

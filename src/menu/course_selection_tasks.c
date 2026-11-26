@@ -97,6 +97,7 @@ typedef struct SaveRecordTaskStatus {
     s16 secondResult;
 } SaveRecordTaskStatus;
 
+extern MenuRgbColor gMenuColorCycleColor __attribute__((section(".data")));
 extern s16 D_8013AFCE __attribute__((section(".data")));
 extern u16 D_8013AF78 __attribute__((section(".data")));
 extern u8 D_8013AFCD __attribute__((section(".data")));
@@ -105,9 +106,6 @@ extern s16 D_8013B104 __attribute__((section(".data")));
 extern GameTask *D_8013AE88 __attribute__((section(".data")));
 extern GameTask *D_8013AE8C __attribute__((section(".data")));
 extern GameTask *D_8013AE98 __attribute__((section(".data")));
-extern u8 D_8013B3A4 __attribute__((section(".data")));
-extern u8 D_8013B3A5 __attribute__((section(".data")));
-extern u8 D_8013B3A6 __attribute__((section(".data")));
 
 extern u16 D_8013AFD0 __attribute__((section(".data")));
 
@@ -904,7 +902,7 @@ void drawSelectionItemDetails(void) {
     }
     if (D_8013AE88->data1A == 1) {
         addTilePacketWithBlend(position->x / 4096 + 80, position->y / 4096 + 124, 56, 44,
-                      D_8013B3A4, D_8013B3A5, D_8013B3A6, 2,
+                      gMenuColorCycleColor.r, gMenuColorCycleColor.g, gMenuColorCycleColor.b, 2,
                       &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     } else {
         addTilePacketWithBlend(position->x / 4096 + 80, position->y / 4096 + 124, 56, 44,
@@ -1894,7 +1892,7 @@ update:
         return;
     }
     if ((u32)(D_8013AE88->data1A - 1) < 2) {
-        setSpriteColor(D_8013B3A4, D_8013B3A5, D_8013B3A6);
+        setSpriteColor(gMenuColorCycleColor.r, gMenuColorCycleColor.g, gMenuColorCycleColor.b);
     } else {
         setSpriteColor(128, 128, 128);
     }
@@ -3968,10 +3966,10 @@ void drawSaveRecordProgressPanel(void) {
     if (slot < D_8013AFCD) {
         if (D_8013AE88->data1A != 0) {
             if (D_8013AE88->data1A == 1 || D_8013AE88->data1A == 2) {
-                copyColorCycleTaskColor(slot, &D_8013B3A4);
-                r = D_8013B3A4;
-                g = D_8013B3A5;
-                b = D_8013B3A6;
+                copyColorCycleTaskColor(slot, &gMenuColorCycleColor);
+                r = gMenuColorCycleColor.r;
+                g = gMenuColorCycleColor.g;
+                b = gMenuColorCycleColor.b;
             } else {
                 b = g = r = 128;
             }

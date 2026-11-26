@@ -27,13 +27,11 @@ typedef struct PaletteSelectionMapping {
     u8 padding[2];
 } PaletteSelectionMapping;
 
+extern MenuRgbColor gMenuColorCycleColor __attribute__((section(".data")));
 extern s16 gFrameCounter __attribute__((section(".data")));
 extern u16 D_8013AF78 __attribute__((section(".data")));
 extern GameTask *D_8013AE88 __attribute__((section(".data")));
 extern GameTask *D_8013AE98 __attribute__((section(".data")));
-extern u8 D_8013B3A4 __attribute__((section(".data")));
-extern u8 D_8013B3A5 __attribute__((section(".data")));
-extern u8 D_8013B3A6 __attribute__((section(".data")));
 
 const s8 gPaletteSelectionMainPreviewY[12]
     __attribute__((section(".data.palette_selection_main_preview_y"), aligned(4))) = {
@@ -888,7 +886,7 @@ void drawCurrentTaskSavedValuePanel(void) {
         drawWrappedText8x8(x + 122, y + 152, 2, PALETTE_SELECTION_CURRENCY_LABEL, 0, -1,
             ot, D_8013AE88->data1C);
         if (D_8013AE88->data1A == 1) {
-            addTilePacketWithBlend(x + 68, y + 136, 68, 32, D_8013B3A4, D_8013B3A5, D_8013B3A6,
+            addTilePacketWithBlend(x + 68, y + 136, 68, 32, gMenuColorCycleColor.r, gMenuColorCycleColor.g, gMenuColorCycleColor.b,
                 2, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         } else {
             addTilePacketWithBlend(x + 68, y + 136, 68, 32, 128, 128, 128,
@@ -916,7 +914,7 @@ void drawPaletteSelectionPricePanel(void) {
             func_8006EF30((s16)(panelX - 112), (s16)(panelY + 52), 4, gCurrentPaletteLabel, 12, 1,
                          &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             if (D_8013AE88->data1A == 1) {
-                addTilePacketWithBlend(panelX - 120, panelY + 48, 72, 22, D_8013B3A4, D_8013B3A5, D_8013B3A6,
+                addTilePacketWithBlend(panelX - 120, panelY + 48, 72, 22, gMenuColorCycleColor.r, gMenuColorCycleColor.g, gMenuColorCycleColor.b,
                               2, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             } else {
                 addTilePacketWithBlend(panelX - 120, panelY + 48, 72, 22, 128, 128, 128,
@@ -928,7 +926,7 @@ void drawPaletteSelectionPricePanel(void) {
             drawWrappedText8x8(priceX + 80, priceY + 12, 2, PALETTE_SELECTION_CURRENCY_LABEL, 0, -1,
                                &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             if (D_8013AE88->data1A == 1) {
-                addTilePacketWithBlend(priceX + 44, priceY + 8, 48, 16, D_8013B3A4, D_8013B3A5, D_8013B3A6,
+                addTilePacketWithBlend(priceX + 44, priceY + 8, 48, 16, gMenuColorCycleColor.r, gMenuColorCycleColor.g, gMenuColorCycleColor.b,
                               2, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             } else {
                 addTilePacketWithBlend(priceX + 44, priceY + 8, 48, 16, 128, 128, 128,

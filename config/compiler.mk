@@ -39,6 +39,7 @@ MAIN_GAME_UNITS := src/main.c \
     src/race/effects/player_effects.c \
     src/io/controller_effects.c \
     src/graphics/sprite_draw.c \
+    src/menu/transition_effects.c \
     src/menu/task_widgets.c \
     src/unclassified/menu_8007BE9C.c \
     src/menu/course_selection_tasks.c \
@@ -122,6 +123,7 @@ UNIT_REORDER_src/engine/linear_random_state.c := 0
 UNIT_REORDER_src/race/effects/player_effects.c := 0
 UNIT_REORDER_src/io/controller_effects.c := 0
 UNIT_REORDER_src/graphics/sprite_draw.c := 0
+UNIT_REORDER_src/menu/transition_effects.c := 0
 UNIT_REORDER_src/menu/task_widgets.c := 0
 UNIT_CCFLAGS_src/menu/save_record_tasks.c += --rdata-section=updateMemoryCardSaveMenuTask:.rodata.memory_card_save_menu
 UNIT_CCFLAGS_src/menu/panel_tasks.c += --rdata-section=updateShopMenuTask:.rodata.shop_menu

@@ -20,6 +20,7 @@ typedef struct MainTailSelectionResource {
     s16 selectedIndex;
 } MainTailSelectionResource;
 
+extern MenuRgbColor gMenuColorCycleColor __attribute__((section(".data")));
 extern s16 D_8013AFCE __attribute__((section(".data")));
 extern u16 D_8013AF78 __attribute__((section(".data")));
 extern u8 D_8013AFCD __attribute__((section(".data")));
@@ -28,9 +29,6 @@ extern s16 D_8013B104 __attribute__((section(".data")));
 extern GameTask *D_8013AE88 __attribute__((section(".data")));
 extern GameTask *D_8013AE8C __attribute__((section(".data")));
 extern GameTask *D_8013AE98 __attribute__((section(".data")));
-extern u8 D_8013B3A4 __attribute__((section(".data")));
-extern u8 D_8013B3A5 __attribute__((section(".data")));
-extern u8 D_8013B3A6 __attribute__((section(".data")));
 
 extern u16 D_8013AFD0 __attribute__((section(".data")));
 
@@ -309,7 +307,7 @@ void drawMainTailSelectionHeaderAndMoneyPanel(void) {
                        2, gMainTailMoneyCurrencyLabel, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     if (D_8013AE88->data1A == playerCount) {
         addTilePacketWithBlend(position->x / 4096 + 68, position->y / 4096 + 136, 68, 32,
-                      D_8013B3A4, D_8013B3A5, D_8013B3A6, 2,
+                      gMenuColorCycleColor.r, gMenuColorCycleColor.g, gMenuColorCycleColor.b, 2,
                       &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     } else {
         addTilePacketWithBlend(position->x / 4096 + 68, position->y / 4096 + 136, 68, 32,
@@ -818,7 +816,7 @@ void drawMainTailSelectionItemDetails(void) {
     }
     if (D_8013AE88->data1A == 1) {
         addTilePacketWithBlend(position->x / 4096 + 80, position->y / 4096 + 124, 56, 44,
-                      D_8013B3A4, D_8013B3A5, D_8013B3A6, 2,
+                      gMenuColorCycleColor.r, gMenuColorCycleColor.g, gMenuColorCycleColor.b, 2,
                       &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
     } else {
         addTilePacketWithBlend(position->x / 4096 + 80, position->y / 4096 + 124, 56, 44,

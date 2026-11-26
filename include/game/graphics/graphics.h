@@ -4,13 +4,6 @@
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
 
-extern u8 D_8013B3A4, D_8013B3A5, D_8013B3A6;
-
-/* Absolute views for task callbacks in units that also use $gp color access. */
-extern u8 gTaskWidgetRedAbsolute __attribute__((section(".data")));
-extern u8 gTaskWidgetGreenAbsolute __attribute__((section(".data")));
-extern u8 gTaskWidgetBlueAbsolute __attribute__((section(".data")));
-
 typedef struct TmdTexturedPrimitive {
     union {
         s32 code;

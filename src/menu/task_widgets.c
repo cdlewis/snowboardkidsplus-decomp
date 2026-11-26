@@ -57,10 +57,6 @@ typedef struct CallbackResource {
     u32 unk04;
 } CallbackResource;
 
-typedef struct ColorCycleResource {
-    u8 value, step, minimum, maximum;
-} ColorCycleResource;
-
 typedef struct ValueTransitionResource {
     u32 *value;
     u32 target;
@@ -158,7 +154,7 @@ typedef struct MovingPanelState {
 
 typedef struct MovingPanelResource {
     Movement2D movement;
-    u8 color[3];
+    MenuRgbColor color;
     u8 pad2B;
     s16 x, y;
     s16 spacingX, spacingY;
@@ -176,17 +172,10 @@ typedef struct AnimatedSpriteResource {
 
 typedef s16 SpriteMotionResource[128];
 
-/* Storage remains in the shared data object. */
-typedef struct TaskValueState {
-    GameTask *task;
-    u16 unk04;
-    u16 unk06;
-} TaskValueState;
-
+extern MenuRgbColor gMenuColorCycleColor __attribute__((section(".data")));
 extern s16 gFrameCounter __attribute__((section(".data")));
 extern u16 D_8013AF78 __attribute__((section(".data")));
 extern u8 D_8013AFCD __attribute__((section(".data")));
-extern u8 D_8013AFD3 __attribute__((section(".data")));
 extern u8 D_8013AFE2 __attribute__((section(".data")));
 extern u8 D_8013B3A8 __attribute__((section(".data")));
 extern u8 D_8013B3A9 __attribute__((section(".data")));
@@ -241,14 +230,11 @@ u16 gTextPanelMessage[] __attribute__((section(".data.text_panel_message"))) = {
     0x009A, 0x00CB, 0x009D, 0x0094, 0x0033, 0x0000
 };
 
-/* Storage remains in the shared data object. */
-extern TaskValueState D_8012D4A4[3];
 extern TimedSequenceEntry D_8012F18C[], D_8012F1AC[];
 extern u32 D_8013B3BC;
 extern TexturedQuadListEntry *D_8013B3C0[2];
 extern GameTask *D_8013B378;
 extern GameTask *D_8013B37C;
-extern GameTask *D_8013BDA8[4];
 
 s8 gTaskImageSourceRows[12] = {8, 1, 2, 3, 4, 5, 6, 7, 9, 0, 0, 0};
 
@@ -278,7 +264,6 @@ s8 gShrinkingSpriteOffsets[8] __attribute__((section(".data.shrinking_sprite_off
     0, 1, 0, -1, 0, 1, 0, -1
 };
 
-s16 getTaskTransitionViewportIndex(s32 id);
 void createRegisteredSpacedChildTask(s16 childIndex, s16 x, s16 y, TaskCallback callback,
                                      s32 depth, s32 registrationIndex);
 void func_80072C54(void);
@@ -290,7 +275,6 @@ void addTilePacket(s32 x, s32 y, s32 width, s32 height, s32 r, s32 g, s32 b,
 void updateScrollingBackgroundTask(void);
 void drawTaskImagesOnBlackBackground(void);
 void startSecondaryDisplayTask(void);
-void updateTaskStateTransition(void);
 void stopSecondaryDisplayTask(void);
 void drawSecondaryDisplayTask(void);
 void initTimedSequence(TimedSequence *sequence, const TimedSequenceEntry *entries, s16 index, s16 count);
@@ -315,273 +299,6 @@ void updateValuePanelTask(void);
 void updateAnimatedSpriteTask(void);
 void updateRegisteredTextPanelTask(void);
 void updateRegisteredCallbackTask(void);
-
-void configureTaskStateTransition(s32 mode, s32 id, u16 duration) {
-    TaskValueState *state;
-    s16 index;
-    index = getTaskTransitionViewportIndex(id);
-    switch (index) {
-    case 0: break;
-    case 1: id -= 0xFFC; break;
-    case 2: id -= 0x1FFC; break;
-    }
-    state = &D_8012D4A4[index];
-    if (duration == 0) state->unk04 = 0xFFFF;
-    else state->unk04 = 0xFFFF / duration;
-    switch (mode) {
-    case 1: case 2: case 4: case 5: case 6: case 7:
-    case 11: case 12: case 14: case 15:
-        createChildTaskForParentWithReserve(&gGameTasks[4], updateTaskStateTransition);
-        if (mode >= 10) D_8013AE8C->data18 = mode - 10;
-        else D_8013AE8C->data18 = mode;
-        D_8013AE8C->data1A = index;
-        D_8013AE8C->data1C = id;
-        D_8013AE8C->data1E = 1;
-        state->task = D_8013AE8C;
-        if (mode < 11) {
-            if (duration == 0) {
-                if (mode == 1 || mode == 4 || mode == 6) state->unk06 = 0xFFFF;
-                else state->unk06 = 0;
-            } else {
-                if (mode == 1 || mode == 4 || mode == 6) state->unk06 = 0xFFFF;
-                else state->unk06 = 0;
-            }
-        }
-        break;
-    case 0: case 3: case 8: case 9: case 10: case 13:
-    default: state->task = NULL; break;
-    }
-}
-
-void updateTaskStateTransition(void) {
-    u16 index = D_8013AE88->data1A;
-    TaskValueState *state = &D_8012D4A4[index];
-    GsOT *ot;
-    s16 draw;
-    GameTask *task;
-
-    if (state->task != D_8013AE88) {
-        goto end_task;
-    }
-    /* configureTaskStateTransition assigns one of the three viewport indices. */
-    switch (index) {
-    case 0:
-        ot = &D_800EBFF0[D_8013AF78];
-        draw = 1;
-        break;
-    case 1:
-        ot = &D_800EC018[D_8013AF78];
-        draw = shouldRenderPlayerView(0);
-        break;
-    case 2:
-        ot = &D_800EC0B8[D_8013AF78];
-        draw = shouldRenderPlayerView(1);
-        break;
-    }
-
-    if (draw) {
-        u16 mode;
-        GameTask *drawTask = D_8013AE88;
-        mode = drawTask->data18;
-        if (mode == 1 || mode == 2 || mode == 6 || mode == 7) {
-            drawScreenDarkeningOverlay(state->unk06 >> 8, ot, D_8013AE88->data1C);
-        } else if (mode == 4 || mode == 5) {
-            drawScreenBrighteningOverlay(state->unk06 >> 8, ot, drawTask->data1C);
-        }
-    }
-
-    if (D_8013AE88->data1E &&
-        (!D_8013AFD3 || D_8013AE88->data18 == 6 || D_8013AE88->data18 == 7)) {
-        if ((D_8013AE88->data18 == 1 || D_8013AE88->data18 == 6) && state->unk06 == 0) {
-            goto end_task;
-        }
-        task = D_8013AE88;
-        if ((task->data18 == 2 || task->data18 == 7) && state->unk06 == 0xFFFF) {
-            goto stop_transition;
-        }
-        if (D_8013AE88->data18 == 4 && state->unk06 == 0) {
-end_task:
-            deleteCurrentTaskSubtree();
-            return;
-        }
-        task = D_8013AE88;
-        if (task->data18 == 5 && state->unk06 == 0xFFFF) {
-stop_transition:
-            task->data1E = 0;
-            return;
-        }
-        if (D_8013AE88->data18 == 1 || D_8013AE88->data18 == 4 || D_8013AE88->data18 == 6) {
-            if (state->unk06 < state->unk04) {
-                state->unk06 = 0;
-            } else {
-                state->unk06 -= state->unk04;
-            }
-        }
-        if (D_8013AE88->data18 == 2 || D_8013AE88->data18 == 5 || D_8013AE88->data18 == 7) {
-            if (0xFFFF - state->unk06 < state->unk04) {
-                state->unk06 = 0xFFFF;
-            } else {
-                state->unk06 += state->unk04;
-            }
-        }
-    }
-}
-
-s16 getTaskTransitionViewportIndex(s32 id) {
-    if (id >= 0x1000 && id < 0x2000) {
-        return 1;
-    }
-    return 2 * (id >= 0x2000 && id < 0x3000);
-}
-
-s32 hasTaskStateValue6(s32 id) {
-    return D_8012D4A4[getTaskTransitionViewportIndex(id)].unk06 != 0;
-}
-
-s32 isTaskStateTransitionBelowMaximum(s32 id) {
-    return D_8012D4A4[getTaskTransitionViewportIndex(id)].unk06 < 0xFFFFu;
-}
-
-void clearColorCycleTaskReferences(void) {
-    s16 i;
-    for (i = 0; i < 4; ) {
-        D_8013BDA8[i] = NULL;
-        i = (s16)(i + 1);
-    }
-}
-
-void configureColorCycleTask(s32 mode, s16 minimum, s16 maximum, s32 step, s16 index) {
-    GameTask *task;
-    ColorCycleResource *resource;
-    s32 missing;
-    u8 low = minimum;
-    u8 high = maximum;
-    u8 rate = step;
-    if (index < 4) {
-        task = D_8013BDA8[index];
-        missing = task == NULL;
-        if (mode != 0 && (mode < 0 ? 0 : (mode < 5))) {
-            if (missing == 1) {
-                createChildTaskForParentWithReserve(&gGameTasks[3], updateColorCycleTask);
-                task = D_8013BDA8[index] = D_8013AE8C;
-                task->data1A = index;
-                D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-                resource = (ColorCycleResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
-                if (mode == 1 || mode == 3) resource->value = minimum;
-                else resource->value = maximum;
-            } else {
-                resource = (ColorCycleResource *)&gTaskMemoryPool[task->resource14];
-                if (mode == 1) resource->value = minimum;
-                if (mode == 2) resource->value = maximum;
-            }
-            task->data18 = mode;
-            if (mode == 3) task->data18 = 1;
-            if (mode == 4) task->data18 = 2;
-            task->data1E = 0;
-            resource->step = rate;
-            resource->minimum = low;
-            resource->maximum = high;
-            D_8013B3A4 = resource->value;
-            D_8013B3A5 = resource->value;
-            D_8013B3A6 = resource->value;
-        } else if (task != NULL) task->data18 = 0;
-    }
-}
-
-void updateColorCycleTask(void) {
-    ColorCycleResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    resource = (ColorCycleResource *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if (D_8013AE88->data18 == 0) {
-        D_8013BDA8[D_8013AE88->data1A] = NULL;
-        deleteCurrentTaskSubtree();
-    } else {
-        D_8013AE88->data1E = 0;
-        switch (D_8013AE88->data18) {
-        case 1:
-            if (resource->step >= resource->maximum - resource->value) {
-                resource->value = resource->maximum;
-                D_8013AE88->data1E = 1;
-                D_8013AE88->data18 = 2;
-            } else { resource->value += resource->step; }
-            break;
-        case 2:
-            if (resource->step >= resource->value - resource->minimum) {
-                resource->value = resource->minimum;
-                D_8013AE88->data1E = 1;
-                D_8013AE88->data18 = 1;
-            } else { resource->value -= resource->step; }
-            break;
-        }
-        D_8013B3A4 = resource->value;
-        D_8013B3A5 = resource->value;
-        D_8013B3A6 = resource->value;
-    }
-}
-
-s32 copyColorCycleTaskColor(s16 index, u8 *color) {
-    GameTask *task = D_8013BDA8[index];
-    if (task == NULL) {
-        return 0;
-    } else {
-        const ColorCycleResource *resource = (const ColorCycleResource *)&gTaskMemoryPool[task->resource14];
-        color[0] = resource->value;
-        color[1] = resource->value;
-        color[2] = resource->value;
-        return 1;
-    }
-}
-
-s32 isTaskResourceTransitionComplete(s16 index) {
-    GameTask *task;
-    task = *(index + D_8013BDA8);
-    if (task != NULL && task->data1E == 1) {
-        return 1;
-    }
-    return 0;
-}
-
-s32 hasColorCycleTaskReferences(void) {
-    s32 found = 0;
-    s16 i = 0;
-
-    do {
-        if (D_8013BDA8[i] != NULL) {
-            found = 1;
-        }
-    } while (++i < 4);
-    return found;
-}
-
-void drawScreenDarkeningOverlay(s32 intensity, GsOT *ot, u16 depth) {
-    TILE *packet = (TILE *)GsGetWorkBase();
-    u16 tpage;
-    SetTile(packet);
-    setXY0(packet, -170, -130);
-    setWH(packet, 340, 260);
-    setRGB0(packet, intensity, intensity, intensity);
-    SetSemiTrans(packet, 1);
-    AddPrim(ot->org + depth, packet);
-    tpage = GetTPage(0, 2, 0, 0);
-    SetDrawMode((DR_MODE *)(packet + 1), 1, 1, tpage, NULL);
-    AddPrim(ot->org + depth, ++packet);
-    func_800BF2C8((u32)((DR_MODE *)packet + 1));
-}
-
-void drawScreenBrighteningOverlay(s32 intensity, GsOT *ot, u16 depth) {
-    TILE *packet = (TILE *)GsGetWorkBase();
-    u16 tpage;
-    SetTile(packet);
-    setXY0(packet, -170, -130);
-    setWH(packet, 340, 260);
-    setRGB0(packet, intensity, intensity, intensity);
-    SetSemiTrans(packet, 1);
-    AddPrim(ot->org + depth, packet);
-    tpage = GetTPage(0, 1, 0, 0);
-    SetDrawMode((DR_MODE *)(packet + 1), 1, 1, tpage, NULL);
-    AddPrim(ot->org + depth, ++packet);
-    func_800BF2C8((u32)((DR_MODE *)packet + 1));
-}
 
 void addDrawAreaPacket(s32 x, s32 y, s32 width, s32 height, GsOT *ot, u16 depth) {
     RECT area;
@@ -1172,9 +889,9 @@ void createRegisteredSpacedChildTasks(s16 mode, u32 acceptMask, u32 cancelMask,
         state->data4C = data4C;
         state->acceptMask = acceptMask;
         state->cancelMask = cancelMask;
-        state->r = 128;
-        state->g = 128;
-        state->b = 128;
+        state->color.r = 128;
+        state->color.g = 128;
+        state->color.b = 128;
         initMovement2D(&state->movement, x << 12, y << 12);
         D_8013AE8C->resource16 = allocateTaskMemoryBlock();
         if (index % 10 == 0) {
@@ -1263,7 +980,7 @@ typedef struct SelectionGroupState {
     s8 unk5E;
     u8 unk5F;
     s16 unk60;
-    u8 r, g, b;
+    MenuRgbColor color;
 } SelectionGroupState;
 
 typedef struct SpacedGroupSounds {
@@ -1418,7 +1135,7 @@ clearCommand:
             entry->flags |= updateMovement2D((Movement2D *)&gTaskMemoryPool[child->resource14]);
         }
     }
-    copyColorCycleTaskColor(0, &state->r);
+    copyColorCycleTaskColor(0, &state->color);
     if ((u32)((u16)entry->command - 1) >= 3 && entry->command != 11) {
         for (i = 0; i < state->count; i++) {
             GameTask *child = children[i].task;
@@ -1850,7 +1567,7 @@ void updateRegisteredTextPanelTask(void) {
     mode = D_8013AE88->data1A;
     if (mode != 0) {
         if ((u32)(mode - 1) < 2) {
-            setSpriteColor(gTaskWidgetRedAbsolute, gTaskWidgetGreenAbsolute, gTaskWidgetBlueAbsolute);
+            setSpriteColor(gMenuColorCycleColor.r, gMenuColorCycleColor.g, gMenuColorCycleColor.b);
         } else {
             setSpriteColor(128, 128, 128);
         }
@@ -1937,7 +1654,7 @@ void updateRegisteredCallbackTask(void) {
     entry->flags |= updateMovement2D(movement);
     if (D_8013AE88->data1A != 0) {
         if (D_8013AE88->data1A == 1 || D_8013AE88->data1A == 2) {
-            setSpriteColor(gTaskWidgetRedAbsolute, gTaskWidgetGreenAbsolute, gTaskWidgetBlueAbsolute);
+            setSpriteColor(gMenuColorCycleColor.r, gMenuColorCycleColor.g, gMenuColorCycleColor.b);
         } else {
             setSpriteColor(128, 128, 128);
         }
@@ -2473,8 +2190,8 @@ void updateRegisteredMovingPanelTask(void) {
     y = panel->movement.y / 4096;
     if (state->highlight > 0) {
         if ((u16)state->highlight == 1 || (u16)state->highlight == 2) {
-            copyColorCycleTaskColor(0, panel->color);
-            setSpriteColor(panel->color[0], panel->color[1], panel->color[2]);
+            copyColorCycleTaskColor(0, &panel->color);
+            setSpriteColor(panel->color.r, panel->color.g, panel->color.b);
         } else {
             setSpriteColor(128, 128, 128);
         }
@@ -2987,7 +2704,7 @@ void func_80078140(void) {
             if (selection[i].unk00 == 1) {
                 setSpriteColor(D_8013B3A8, D_8013B3A9, D_8013B3AA);
             } else if (selection[i].unk00 == 2) {
-                setSpriteColor(gTaskWidgetRedAbsolute, gTaskWidgetGreenAbsolute, gTaskWidgetBlueAbsolute);
+                setSpriteColor(gMenuColorCycleColor.r, gMenuColorCycleColor.g, gMenuColorCycleColor.b);
             } else {
                 setSpriteColor(128, 128, 128);
             }

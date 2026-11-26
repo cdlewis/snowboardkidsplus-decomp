@@ -3,6 +3,10 @@
 #include "game/engine/task.h"
 #include "game/menu/movement.h"
 
+typedef struct MenuRgbColor {
+    u8 r, g, b;
+} MenuRgbColor;
+
 typedef struct SpacedGroupResource {
     Movement2D movement;
     u32 acceptMask, cancelMask;
@@ -15,7 +19,7 @@ typedef struct SpacedGroupResource {
     s8 unk5E;
     u8 unk5F;
     s16 unk60;
-    u8 r, g, b;
+    MenuRgbColor color;
 } SpacedGroupResource;
 
 typedef struct TimedSequenceEntry {
@@ -29,6 +33,7 @@ typedef struct ValuePanelEntry {
     s16 active;
 } ValuePanelEntry;
 
+extern MenuRgbColor gMenuColorCycleColor;
 extern u8 gSelectionPanelLabelOffsets[12];
 extern const TimedSequenceEntry D_80123840[];
 extern ByteTriplet D_8012FFFC[];
@@ -37,7 +42,7 @@ extern u8 D_8012D460[12];
 void createInputTimedSpriteTask(s32 x, s32 y, const TimedSequenceEntry *entries, s32 count,
                                 s32 controllers, u32 acceptMask, u32 cancelMask, s32 depth, s32 index);
 
-s32 copyColorCycleTaskColor(s16 index, u8 *color);
+s32 copyColorCycleTaskColor(s16 index, MenuRgbColor *color);
 s32 hasColorCycleTaskReferences(void);
 void createSecondaryDisplayTask(TaskCallback callback);
 void markSecondaryTaskAndClearReference(void);

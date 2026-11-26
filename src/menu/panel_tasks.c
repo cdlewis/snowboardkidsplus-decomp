@@ -55,14 +55,12 @@ typedef struct MoneyMenuSelection {
     s16 choiceResult;
 } MoneyMenuSelection;
 
+extern MenuRgbColor gMenuColorCycleColor __attribute__((section(".data")));
 extern s16 gFrameCounter __attribute__((section(".data")));
 extern u16 D_8013AF78 __attribute__((section(".data")));
 extern GameTask *D_8013AE88 __attribute__((section(".data")));
 extern GameTask *D_8013AE8C __attribute__((section(".data")));
 extern GameTask *D_8013AE98 __attribute__((section(".data")));
-extern u8 D_8013B3A4 __attribute__((section(".data")));
-extern u8 D_8013B3A5 __attribute__((section(".data")));
-extern u8 D_8013B3A6 __attribute__((section(".data")));
 
 static const u32 sBoardSelectionDetailsJumpTablePadding
     __attribute__((section(".rodata.board_selection_details_padding"))) = 0;
@@ -696,7 +694,7 @@ void drawCurrentTaskMoneyPanel(void) {
                            2, gMoneyPanelCurrencyLabel, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         if (D_8013AE88->data1A == 1) {
             addTilePacketWithBlend(position->x / 4096 + 68, position->y / 4096 + 136, 68, 32,
-                          D_8013B3A4, D_8013B3A5, D_8013B3A6, 2,
+                          gMenuColorCycleColor.r, gMenuColorCycleColor.g, gMenuColorCycleColor.b, 2,
                           &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         } else {
             addTilePacketWithBlend(position->x / 4096 + 68, position->y / 4096 + 136, 68, 32,
@@ -934,7 +932,7 @@ void drawCurrentTaskSaveRecordMoneyPanelWithCharacterSprites(void) {
                            2, gMoneyPanelCurrencyLabel, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         if (D_8013AE88->data1A == 1) {
             addTilePacketWithBlend(position->x / 4096 + 68, position->y / 4096 + 136, 68, 32,
-                          D_8013B3A4, D_8013B3A5, D_8013B3A6, 2,
+                          gMenuColorCycleColor.r, gMenuColorCycleColor.g, gMenuColorCycleColor.b, 2,
                           &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         } else {
             addTilePacketWithBlend(position->x / 4096 + 68, position->y / 4096 + 136, 68, 32,
@@ -1156,7 +1154,7 @@ void drawCurrentTaskMoneyPanelWithCharacterSprites(void) {
                            2, gMoneyPanelCurrencyLabel, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         if (D_8013AE88->data1A == 1) {
             addTilePacketWithBlend(position->x / 4096 + 68, position->y / 4096 + 136, 68, 32,
-                          D_8013B3A4, D_8013B3A5, D_8013B3A6, 2,
+                          gMenuColorCycleColor.r, gMenuColorCycleColor.g, gMenuColorCycleColor.b, 2,
                           &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         } else {
             addTilePacketWithBlend(position->x / 4096 + 68, position->y / 4096 + 136, 68, 32,
@@ -1765,7 +1763,7 @@ void drawCurrentTaskSaveRecordMoneyPanel(void) {
                            &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         if (D_8013AE88->data1A == 1) {
             addTilePacketWithBlend(position->x / 4096 + 68, position->y / 4096 + 136, 68, 32,
-                          D_8013B3A4, D_8013B3A5, D_8013B3A6, 2,
+                          gMenuColorCycleColor.r, gMenuColorCycleColor.g, gMenuColorCycleColor.b, 2,
                           &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         } else {
             addTilePacketWithBlend(position->x / 4096 + 68, position->y / 4096 + 136, 68, 32,
@@ -1883,7 +1881,7 @@ void drawCurrentTaskSelectedBoardPrice(void) {
                                &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             if (D_8013AE88->data1A == 1) {
                 addTilePacketWithBlend(position->x / 4096 - xOffset - 4, position->y / 4096 - 8,
-                              digits * 8 + 16, 16, D_8013B3A4, D_8013B3A5, D_8013B3A6, 2,
+                              digits * 8 + 16, 16, gMenuColorCycleColor.r, gMenuColorCycleColor.g, gMenuColorCycleColor.b, 2,
                               &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             } else {
                 addTilePacketWithBlend(position->x / 4096 - xOffset - 4, position->y / 4096 - 8,
@@ -2984,7 +2982,7 @@ void drawCurrentTaskSelectedPlayerMoneyPanel(void) {
                            &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         if (D_8013AE88->data1A == 1) {
             addTilePacketWithBlend(position->x / 4096 + 68, position->y / 4096 + 136, 68, 32,
-                          D_8013B3A4, D_8013B3A5, D_8013B3A6, 2,
+                          gMenuColorCycleColor.r, gMenuColorCycleColor.g, gMenuColorCycleColor.b, 2,
                           &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         } else {
             addTilePacketWithBlend(position->x / 4096 + 68, position->y / 4096 + 136, 68, 32,
@@ -3049,7 +3047,7 @@ void drawCurrentTaskBoardPrice(void) {
                                &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             if (D_8013AE88->data1A == 1) {
                 addTilePacketWithBlend(priceX - 4, priceY + 8, digits * 8 + 16, 16,
-                              D_8013B3A4, D_8013B3A5, D_8013B3A6, 2,
+                              gMenuColorCycleColor.r, gMenuColorCycleColor.g, gMenuColorCycleColor.b, 2,
                               &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
             } else {
                 addTilePacketWithBlend(priceX - 4, priceY + 8, digits * 8 + 16, 16, 128, 128, 128, 2,
