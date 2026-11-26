@@ -526,7 +526,7 @@ void func_8004EBF8(s16 playerIndex) {
         addFlatRectangle(&D_8013AF6C[4095], -160, -120, 320, (s16)(y + 120), 0, 0, 0);
     }
     addFlatRectangle(&D_8013AF6C[4095], -160, (s16)(y + 248), 320, 120, 0, 0, 16);
-    if (D_8013B20C) {
+    if (selectedCameraOverlayModeGp) {
         addFlatRectangleWithDrawMode(D_8013AF6C, getTPage(0, 2, 0, 0),
                                     SEMI_TRANSPARENT_FLAG, -160, -120, 320, 240, 24, 24, 16);
     } else {
