@@ -5,6 +5,8 @@
 #include "psx/sprite.h"
 #include "psx/libgpu.h"
 
+#define GsROTOFF (1 << 27)
+
 typedef struct { s16 vx, vy, vz, pad; } SVECTOR;
 typedef struct { VECTOR scale; SVECTOR rotate; VECTOR trans; } GsCOORD2PARAM;
 typedef struct { s16 m[3][3]; s32 t[3]; } MATRIX;
@@ -57,6 +59,28 @@ typedef struct GsOT {
     u32 *tag;
 } GsOT;
 
+typedef struct {
+    u8 u, v;
+    u16 cba, flag, tpage;
+} GsCELL;
+
+typedef struct {
+    u8 cellw, cellh;
+    u16 ncellw, ncellh;
+    GsCELL *base;
+    u16 *index;
+} GsMAP;
+
+typedef struct {
+    u32 attribute;
+    s16 x, y, w, h;
+    s16 scrollx, scrolly;
+    u8 r, g, b;
+    GsMAP *map;
+    s16 mx, my, scalex, scaley;
+    s32 rotate;
+} GsBG;
+
 typedef struct GsIMAGE {
     u32 pmode;
     s16 px, py;
@@ -70,6 +94,7 @@ typedef struct GsIMAGE {
 /* Input begins at the TIM flags word, immediately after the magic word. */
 void GsGetTimInfo(u32 *tim, GsIMAGE *image);
 void GsSortObject4(GsDOBJ2 *object, GsOT *ot, s32 shift, u32 *scratch);
+void GsSortBg(GsBG *background, GsOT *ot, u16 depth);
 void GsSortPoly(void *packet, GsOT *ot, u16 depth);
 void GsSortSprite(GsSPRITE *sprite, GsOT *ot, u16 depth);
 void GsSortFastSprite(GsSPRITE *sprite, GsOT *ot, u16 depth);

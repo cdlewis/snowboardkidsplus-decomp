@@ -55,10 +55,9 @@ void uploadTextureArchiveEntry(s16 x, s16 y, s16 clutX, s16 clutY, s32 index) {
                   (u32 *)((s16 *)archive + (offset >> 1)));
 }
 
-void initDefaultBackground(s16 mode, s16 unused, GameBackground *background,
-                           GameBackgroundMap *map) {
-    func_80071300(mode, unused, background, map,
-                  DAT_SCRATCH, DAT_BACKGROUND_MAP);
+void initDefaultBackground(s16 mode, s16 unused, GsBG *background, GsMAP *map) {
+    initTiledBackground(mode, unused, background, map,
+                        (BackgroundCellHeader *)DAT_SCRATCH, (BackgroundMapResource *)DAT_BACKGROUND_MAP);
 }
 
 void queueStartupSectorReads(void) {

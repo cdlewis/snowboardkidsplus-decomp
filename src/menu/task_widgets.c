@@ -63,18 +63,9 @@ typedef struct ValueTransitionResource {
     u32 step;
     s16 direction;
 } ValueTransitionResource;
-struct GameBackground {
-    u32 attribute;
-    s16 x, y, w, h;
-    s16 scrollX, scrollY;
-    u8 r, g, b, pad;
-    GameBackgroundMap *map;
-    s16 mx, my, scalex, scaley;
-    s32 rotate;
-};
 typedef struct ScrollingBackgroundResource {
-    GameBackground background;
-    u8 map[0x10];
+    GsBG background;
+    GsMAP map;
     s32 x, y;
     s32 stepX, stepY;
 } ScrollingBackgroundResource;
@@ -303,7 +294,6 @@ void updatePlayerPanelTask(void);
 void updatePlayerCharacterSelection(s16 playerIndex, SelectionEntry *entries);
 void createRegisteredSelectionPanelTask(s16 playerIndex, SelectionPanelRecord *record, s32 depth, s32 index);
 void updateRegisteredSelectionPanelTask(void);
-void GsSortBg(GameBackground *background, GsOT *ot, u16 depth);
 void updateShrinkingSpriteTask(void);
 void updateValuePanelTask(void);
 void updateAnimatedSpriteTask(void);
@@ -437,51 +427,38 @@ s32 updateMovement2D(Movement2D *movement) {
     return 0;
 }
 
-/* DECOMP_ATTEMPT: inline 39/44 */
-#ifdef NON_MATCHING
-struct GameBackgroundMap {
-    u8 cellw, cellh;
-    u16 ncellw, ncellh;
-    void *base;
-    u16 *index;
-};
+void initTiledBackground(s16 mode, s16 unused, GsBG *background, GsMAP *map,
+                         BackgroundCellHeader *cellHeader, BackgroundMapResource *tiles) {
+    u8 dimension;
+    u32 attribute = (mode & 3) << 24;
 
-typedef struct BackgroundTileData {
-    u32 unk00;
-    u8 ncellw, ncellh, cellw, cellh;
-    u16 index[1];
-} BackgroundTileData;
+    ++cellHeader;
+    map->ncellw = tiles->columns;
+    dimension = tiles->rows;
+    map->ncellh = dimension;
 
-void func_80071300(s16 mode, s16 unused, GameBackground *background,
-                   GameBackgroundMap *map, u8 *cells, u8 *tiles) {
-    BackgroundTileData *tileData = (BackgroundTileData *)tiles;
-    u32 attribute;
-    attribute = mode & 3;
-    cells += 8;
-    map->ncellw = tileData->ncellw;
-    map->ncellh = tileData->ncellh;
-    map->cellw = tileData->cellw;
-    tiles += 8;
-    map->cellh = tileData->cellh;
-    map->base = cells;
-    map->index = (u16 *)tiles;
-    background->r = background->g = background->b = 128;
-    background->mx = 160;
-    background->my = 120;
-    background->scalex = background->scaley = 4096;
-    background->w = 320;
-    background->attribute = attribute << 24;
-    background->h = 240;
-    background->x = 0;
-    background->y = 0;
-    background->scrollX = background->scrollY = 0;
-    background->map = map;
-    background->rotate = 0;
-    background->attribute |= 0x08000000;
+    /* The single-iteration loop keeps the cell-size loads after the grid counts. */
+    do {
+        dimension = tiles->cellWidth;
+        map->cellw = dimension;
+        map->cellh = tiles->cellHeight;
+        map->index = tiles->indices;
+        map->base = (GsCELL *)cellHeader;
+
+        background->attribute = attribute;
+        background->x = 0;
+        background->y = 0;
+        background->scrollx = background->scrolly = 0;
+        background->r = background->g = background->b = 128;
+        background->map = map;
+        background->mx = 160;
+        background->my = 120;
+        background->scalex = background->scaley = 4096;
+        background->rotate = 0;
+        setWH(background, 320, 240);
+        background->attribute |= GsROTOFF;
+    } while (0);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80071300);
-#endif
 
 void copyIndexedTaskImagesToVram(s16 index) {
     RECT rect;
@@ -532,7 +509,7 @@ void setTaskBackgroundMode(s32 mode, s32 value1, s32 value2) {
         createChildTaskForParentWithReserve(&gGameTasks[3], updateScrollingBackgroundTask);
         D_8013AE8C->resource14 = allocateTaskMemoryBlock();
         resource = (ScrollingBackgroundResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
-        initDefaultBackground(0, -1, &resource->background, (GameBackgroundMap *)resource->map);
+        initDefaultBackground(0, -1, &resource->background, &resource->map);
         resource->x = 0;
         resource->y = 0;
         resource->stepX = value1;
@@ -584,8 +561,8 @@ void updateScrollingBackgroundTask(void) {
         GsSortBg(&resource->background, &D_800EBFF0[D_8013AF78], 0xFFE);
         resource->x += resource->stepX;
         resource->y += resource->stepY;
-        resource->background.scrollX = resource->x / 4096;
-        resource->background.scrollY = resource->y / 4096;
+        resource->background.scrollx = resource->x / 4096;
+        resource->background.scrolly = resource->y / 4096;
     }
 }
 

@@ -180,8 +180,17 @@ typedef struct TextureColor {
     u8 stp; /* Low bit becomes the texture color's semi-transparency bit. */
 } TextureColor;
 
-typedef struct GameBackground GameBackground;
-typedef struct GameBackgroundMap GameBackgroundMap;
+/* GsCELL records immediately follow this header in the cell resource. */
+typedef struct BackgroundCellHeader {
+    u32 words[2];
+} BackgroundCellHeader;
+
+typedef struct BackgroundMapResource {
+    u32 header;
+    u8 columns, rows, cellWidth, cellHeight;
+    u16 indices[1];
+} BackgroundMapResource;
+
 struct GsOT;
 
 void readVramPixelColor(s32 x, s32 y, TextureColor *out);
@@ -310,11 +319,10 @@ void resetPaletteRecords(void);
 void updatePaletteRecords(void);
 void setPaletteRecordColor(u16 index, u8 r, u8 g, u8 b);
 void startPaletteCycle(u16 direction, u16 index, u8 first, u8 last, u8 interval);
-void func_80071300(s16 mode, s16 unused, GameBackground *background,
-                   GameBackgroundMap *map, u8 *cells, u8 *tiles);
+void initTiledBackground(s16 mode, s16 unused, GsBG *background, GsMAP *map,
+                         BackgroundCellHeader *cellHeader, BackgroundMapResource *tiles);
 void uploadTextureArchiveEntry(s16 x, s16 y, s16 clutX, s16 clutY, s32 index);
-void initDefaultBackground(s16 mode, s16 unused, GameBackground *background,
-                           GameBackgroundMap *map);
+void initDefaultBackground(s16 mode, s16 unused, GsBG *background, GsMAP *map);
 
 /* Upload a TIM image, optionally offsetting its pixel and CLUT positions. */
 /* The count occupies the low halfword; subsequent words are tagged byte offsets. */
