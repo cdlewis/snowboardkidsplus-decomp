@@ -83,12 +83,12 @@ const char gBoardReversePromptPalette2[16]
 
 const GridSpriteEntry gTitleMenuSprites[6]
     __attribute__((section(".data.title_menu_sprites"), aligned(4))) = {
-    {0x52, 7, {0, 0, 0}},
-    {0x53, 7, {0, 0, 0}},
-    {0x54, 7, {0, 0, 0}},
-    {0x55, 8, {0, 0, 0}},
-    {0x56, 8, {0, 0, 0}},
-    {0x57, 8, {0, 0, 0}},
+    {0x52, 7, 0, 0},
+    {0x53, 7, 0, 0},
+    {0x54, 7, 0, 0},
+    {0x55, 8, 0, 0},
+    {0x56, 8, 0, 0},
+    {0x57, 8, 0, 0},
 };
 
 const u8 gTitleMenuSpriteMapping[8]

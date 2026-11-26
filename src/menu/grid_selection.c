@@ -55,20 +55,20 @@ const s8 gPaletteSelectionPurchasePreviewY[12]
 
 const GridSpriteEntry gPaletteSelectionSprites[14]
     __attribute__((section(".data.palette_selection_sprites"), aligned(4))) = {
-    {0x170, 0, {0, 0, 0}},
-    {0x170, 1, {0, 0, 0}},
-    {0x170, 2, {0, 0, 0}},
-    {0x170, 3, {0, 0, 0}},
-    {0x170, 4, {0, 0, 0}},
-    {0x170, 5, {0, 0, 0}},
-    {0x170, 6, {0, 0, 0}},
-    {0x170, 7, {0, 0, 0}},
-    {0x170, 9, {0, 0, 0}},
-    {0x170, 10, {0, 0, 0}},
-    {0x170, 11, {0, 0, 0}},
-    {0x170, 12, {0, 0, 0}},
-    {0x170, 13, {0, 0, 0}},
-    {0xC7, 0, {0, 0, 0}},
+    {0x170, 0, 0, 0},
+    {0x170, 1, 0, 0},
+    {0x170, 2, 0, 0},
+    {0x170, 3, 0, 0},
+    {0x170, 4, 0, 0},
+    {0x170, 5, 0, 0},
+    {0x170, 6, 0, 0},
+    {0x170, 7, 0, 0},
+    {0x170, 9, 0, 0},
+    {0x170, 10, 0, 0},
+    {0x170, 11, 0, 0},
+    {0x170, 12, 0, 0},
+    {0x170, 13, 0, 0},
+    {0xC7, 0, 0, 0},
 };
 
 const PaletteSelectionMapping gPaletteSelectionSpriteMapping
@@ -338,7 +338,7 @@ void updateSplitBoardSelectionTask(void) {
         mapping = &descriptor;
         buildSplitBoardSelectionMapping((s16)player, character, 0, 20, mapping);
         group = (SpacedGroupResource *)&gTaskMemoryPool[entries[0].task->resource14];
-        group->data48 = descriptor.mapping;
+        group->mapping = descriptor.mapping;
         group->spacingX = mapping->spacingX;
         group->spacingY = mapping->spacingY;
         group->count = mapping->count;

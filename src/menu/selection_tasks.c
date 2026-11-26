@@ -595,7 +595,7 @@ const u16 gPlaybackSelectionMenuInstructions[]
 
 const NumberSelectionSpriteTable gNumberSelectionSprites
     __attribute__((section(".data.number_selection_sprite_table"), aligned(4))) = {
-    {{405, 9, {0, 0, 0}}, {406, 9, {0, 0, 0}}, {407, 9, {0, 0, 0}}},
+    {{405, 9, 0, 0}, {406, 9, 0, 0}, {407, 9, 0, 0}},
     0,
 };
 

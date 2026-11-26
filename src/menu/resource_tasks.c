@@ -46,10 +46,10 @@ extern u8 mainTailSelectionGp;
 
 const GridSpriteEntry gMainTailSelectionSprites[4]
     __attribute__((section(".data.main_tail_selection_sprites"), aligned(4))) = {
-    {0xAC, 0, {0, 0, 0}},
-    {0xAD, 0, {0, 0, 0}},
-    {0xAE, 0, {0, 0, 0}},
-    {0xAF, 0, {0, 0, 0}},
+    {0xAC, 0, 0, 0},
+    {0xAD, 0, 0, 0},
+    {0xAE, 0, 0, 0},
+    {0xAF, 0, 0, 0},
 };
 
 const u16 *gMainTailSelectionTexts[7]

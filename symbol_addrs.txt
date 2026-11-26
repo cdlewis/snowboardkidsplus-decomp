@@ -3831,6 +3831,7 @@ gHitCountMarker = 0x8013B134; // size:0x4
 
 initializeSpacedChildTasks = 0x80072864; // type:func
 createRegisteredSpacedChildTask = 0x80072A88; // type:func
+updateSpacedChildSelectionTask = 0x80072C54; // type:func
 
 // Update state 11 motion and request state 12 when its landing animation ends.
 updateCurrentPlayerState11Motion = 0x80027014; // type:func

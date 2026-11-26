@@ -22,6 +22,7 @@
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
 #include "game/menu/menu_selection_state.h"
+#include "game/menu/task_widgets.h"
 #include "game/graphics/coordinate.h"
 #include "game/engine/linear_random.h"
 #include "game/scene/scene_task_types.h"
@@ -29,13 +30,6 @@
 #include "game/menu/number_selection_types.h"
 
 #define INDEXED_SECTOR_READ_DESTINATION DAT_INDEXED_RESOURCE
-
-typedef struct FlagSelectedMenuState {
-    s16 mode;
-    s16 selectedIndex;
-    s16 previousIndex;
-    s16 choiceResult;
-} FlagSelectedMenuState;
 
 typedef struct PaletteBurstResource {
     s16 x, y, z, unk06;

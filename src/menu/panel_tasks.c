@@ -92,10 +92,10 @@ extern const s16 D_80131BE0[], D_80131C4C[], D_80131CB8[];
 
 static const GridSpriteEntry sShopMenuSprites[4]
     __attribute__((section(".data.shop_menu_sprites"), aligned(4))) = {
-    {0xD6, 0, {0, 0, 0}},
-    {0xD5, 0, {0, 0, 0}},
-    {0xD7, 0, {0, 0, 0}},
-    {0xC6, 0, {0, 0, 0}},
+    {0xD6, 0, 0, 0},
+    {0xD5, 0, 0, 0},
+    {0xD7, 0, 0, 0},
+    {0xC6, 0, 0, 0},
 };
 
 static const u16 *sShopMenuTexts[15] __attribute__((section(".data.shop_menu_texts"))) = {
@@ -106,9 +106,9 @@ static const u16 *sShopMenuTexts[15] __attribute__((section(".data.shop_menu_tex
 
 static const GridSpriteEntry sBoardShopModeSprites[3]
     __attribute__((section(".data.board_shop_sprites"), aligned(4))) = {
-    {0xC4, 0, {0, 0, 0}},
-    {0xC5, 0, {0, 0, 0}},
-    {0xC7, 0, {0, 0, 0}},
+    {0xC4, 0, 0, 0},
+    {0xC5, 0, 0, 0},
+    {0xC7, 0, 0, 0},
 };
 
 static const s8 sShopCharacterTextureIndices[12]
@@ -2491,7 +2491,7 @@ void func_80093A54(void) {
             const u8 *mapping;
             input->previousIndex = input->selectedIndex;
             child = entries[2].task;
-            mapping = getTexturePanelGroup(child)->data48;
+            mapping = getTexturePanelGroup(child)->mapping;
             index = mapMenuByteIndex(mapping, input->selectedIndex) - 3;
             if ((u16)index >= 16) {
                 break;
@@ -2517,7 +2517,7 @@ void func_80093A54(void) {
                 s16 selected = input->selectedIndex;
                 u16 resource = child->resource14;
                 SpacedGroupResource *group = (SpacedGroupResource *)&gTaskMemoryPool[resource];
-                index = mapMenuByteIndex(group->data48, selected);
+                index = mapMenuByteIndex(group->mapping, selected);
             }
             if (index == 0 && D_8013AE88->data1A == 0) {
                 D_8013AE88->data1A++;
@@ -2585,16 +2585,16 @@ void func_80093A54(void) {
         if (ENTRY_READY(entries[2])) {
             SpacedGroupResource *group;
             GameTask *child = entries[2].task;
-            getTexturePanelGroup(child)->data48 = D_8013B4E8[D_8013AE88->data1A];
+            getTexturePanelGroup(child)->mapping = D_8013B4E8[D_8013AE88->data1A];
             moveTaskChildrenWithSpacing(0, entries[2].task, -0x80000, -0x60000, 0x1E000, 0, 1);
             child = entries[2].task;
             entries[2].command = 23;
             entries[3].command = 23;
             group = (SpacedGroupResource *)&gTaskMemoryPool[child->resource14];
             if (input->selectedIndex < 8) {
-                index = mapMenuByteIndex(group->data48, input->selectedIndex);
+                index = mapMenuByteIndex(group->mapping, input->selectedIndex);
             } else {
-                index = mapMenuByteIndex(group->data48, 7);
+                index = mapMenuByteIndex(group->mapping, 7);
             }
             index -= 3;
             preview->selection = index;

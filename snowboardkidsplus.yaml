@@ -124,7 +124,7 @@ segments:
       - {start: 0x1590, type: .rodata, name: race/effects/player_effects, linker_section: .rodata.fading_text_glyph_banks}
       - {start: 0x15A0, type: .rodata, name: race/effects/player_effects, linker_section: .rodata.timed_sprite_text}
       - [0x1A38, .rodata, menu/transition_effects]
-      - [0x1A78, rodata]
+      - [0x1A78, .rodata, menu/task_widgets]
       - {start: 0x1C08, type: .rodata, name: menu/task_widgets, linker_section: .rodata.character_selection}
       - {start: 0x1C28, type: .rodata, name: menu/task_widgets, linker_section: .rodata.save_record_unlock_flags}
       - {start: 0x1C3C, type: .rodata, name: unclassified/menu_8007BE9C, linker_section: .rodata.main_menu_selection}

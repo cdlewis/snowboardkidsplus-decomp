@@ -21,7 +21,8 @@ typedef struct SelectedSpriteChild {
 typedef struct GridSpriteEntry {
     s16 sprite;
     u8 color;
-    u8 unk03[3];
+    u8 soundBank;
+    u16 programAndTone;
 } GridSpriteEntry;
 
 extern const GridSpriteEntry D_8012F798[];

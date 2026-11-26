@@ -31,12 +31,12 @@ extern const u16 D_8012F750[], D_8012F490[], D_8012F544[];
 
 const GridSpriteEntry gMainMenuSprites[6]
     __attribute__((section(".data.main_menu_sprites"), aligned(4))) = {
-    {0xA7, 0, {0, 0, 0}},
-    {0xA8, 0, {0, 0, 0}},
-    {0xA9, 0, {0, 0, 0}},
-    {0xAA, 0, {0, 0, 0}},
-    {0xAB, 0, {0, 0, 0}},
-    {0x16E, 0, {0, 0, 0}},
+    {0xA7, 0, 0, 0},
+    {0xA8, 0, 0, 0},
+    {0xA9, 0, 0, 0},
+    {0xAA, 0, 0, 0},
+    {0xAB, 0, 0, 0},
+    {0x16E, 0, 0, 0},
 };
 
 const u16 *gMainMenuTexts[11]

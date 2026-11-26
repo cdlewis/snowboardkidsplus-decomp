@@ -167,12 +167,12 @@ void updateMode11SelectionMenuTask(void) {
 
 const GridSpriteEntry gMode11SelectionSprites[6]
     __attribute__((section(".data.mode11_selection_sprites"), aligned(4))) = {
-    {400, 0, {0, 0, 0}},
-    {401, 0, {0, 0, 0}},
-    {402, 0, {0, 0, 0}},
-    {400, 2, {0, 0, 0}},
-    {401, 2, {0, 0, 0}},
-    {402, 2, {0, 0, 0}},
+    {400, 0, 0, 0},
+    {401, 0, 0, 0},
+    {402, 0, 0, 0},
+    {400, 2, 0, 0},
+    {401, 2, 0, 0},
+    {402, 2, 0, 0},
 };
 
 const u8 gMode11SelectionMapping[8]

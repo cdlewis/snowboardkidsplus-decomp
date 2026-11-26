@@ -15,9 +15,9 @@
 #include "game/race/player/race_player.h"
 #include "psx/stdlib.h"
 #include "game/engine/random.h"
+#include "psx/libetc.h"
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
-
 
 typedef struct SpacedTaskResource {
     s32 x, y;
@@ -186,6 +186,7 @@ extern GameTask *D_8013AE8C __attribute__((section(".data")));
 extern GameTask *D_8013AE98 __attribute__((section(".data")));
 
 extern s16 D_8013B106 __attribute__((section(".data")));
+extern u8 D_8013B108 __attribute__((section(".data")));
 
 const u16 gCharacterSelectionConfirmSounds[10]
     __attribute__((section(".data.character_selection_confirm_sounds"), aligned(4))) = {
@@ -275,7 +276,7 @@ s8 gShrinkingSpriteOffsets[8] __attribute__((section(".data.shrinking_sprite_off
 
 void createRegisteredSpacedChildTask(s16 childIndex, s16 x, s16 y, TaskCallback callback,
                                      s32 depth, s32 registrationIndex);
-void func_80072C54(void);
+void updateSpacedChildSelectionTask(void);
 void updateRegisteredTexturePairTask(void);
 void animateRegisteredTexturePairTask(void);
 
@@ -869,11 +870,11 @@ static inline RegisteredTaskEntry *getRegisteredTaskEntry(u32 resource, s32 inde
     return &entries[index / 10];
 }
 
-void createRegisteredSpacedChildTasks(s16 mode, u32 acceptMask, u32 cancelMask,
-                                      const u8 *data44, const u8 *data48,
-                                      const u8 *data4C, u8 arg6, s8 arg7, u8 arg8,
+void createRegisteredSpacedChildTasks(s16 controllers, u32 acceptMask, u32 cancelMask,
+                                      const u8 *itemData, const u8 *mapping,
+                                      const struct MenuNavigationSound *sounds, u8 arg6, s8 wrapSelection, u8 blinkFrames,
                                       s16 x, s16 y, s16 spacingX, s16 spacingY,
-                                      s16 count, s16 arg14, TaskCallback callback3C,
+                                      s16 count, s16 markerSprite, TaskCallback callback3C,
                                       TaskCallback callback40, s32 value, s32 index) {
     SpacedGroupResource *state;
     RegisteredTaskEntry *entry;
@@ -882,20 +883,20 @@ void createRegisteredSpacedChildTasks(s16 mode, u32 acceptMask, u32 cancelMask,
         D_8013AE8C->data1E = index;
         D_8013AE8C->resource14 = allocateTaskMemoryBlock();
         state = (SpacedGroupResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
-        state->mode = mode;
+        state->controllers = controllers;
         state->spacingX = spacingX;
         state->spacingY = spacingY;
         state->count = count;
         state->unk5C = arg6;
-        state->unk5E = arg7;
-        state->unk5D = arg8;
+        state->wrapSelection = wrapSelection;
+        state->blinkFrames = blinkFrames;
         state->value = value;
-        state->unk60 = arg14;
+        state->markerSprite = markerSprite;
         state->callback3C = callback3C;
         state->callback40 = callback40;
-        state->data44 = data44;
-        state->data48 = data48;
-        state->data4C = data4C;
+        state->itemData = itemData;
+        state->mapping = mapping;
+        state->sounds = sounds;
         state->acceptMask = acceptMask;
         state->cancelMask = cancelMask;
         state->color.r = 128;
@@ -938,7 +939,7 @@ void initializeSpacedChildTasks(void) {
                                         state->callback, state->value, i * 10 + 1);
     }
     entry->flags = 0;
-    setCurrentTaskCallback(func_80072C54);
+    setCurrentTaskCallback(updateSpacedChildSelectionTask);
 }
 
 void createRegisteredSpacedChildTask(s16 childIndex, s16 x, s16 y, TaskCallback callback,
@@ -970,187 +971,156 @@ void createRegisteredSpacedChildTask(s16 childIndex, s16 x, s16 y, TaskCallback 
     entry->task = D_8013AE8C;
 }
 
-/* DECOMP_ATTEMPT: inline 639/671 */
-#ifdef NON_MATCHING
-typedef struct SpacedGroupSelection {
-    s16 mode, selectedIndex, previousIndex, choiceResult;
-} SpacedGroupSelection;
+void updateSpacedChildSelectionTask(void) {
+    SpacedGroupResource *group;
+    FlagSelectedMenuState *parent;
+    RegisteredTaskEntry *children, *slots, *slot;
+    s16 i, next;
+    u16 pressed = 0;
+    MenuRgbColor *color;
+    const MenuNavigationSound *sound;
+    const GridSpriteEntry *item;
 
-typedef struct SelectionGroupState {
-    Movement2D movement;
-    u32 acceptMask, cancelMask;
-    SpacedGroupSelection selection;
-    u8 unk38[4];
-    TaskCallback callback3C, callback40;
-    const u8 *data44, *data48, *data4C;
-    s32 value;
-    s16 mode, spacingX, spacingY, count;
-    u8 unk5C, unk5D;
-    s8 unk5E;
-    u8 unk5F;
-    s16 unk60;
-    MenuRgbColor color;
-} SelectionGroupState;
-
-typedef struct SpacedGroupSounds {
-    u8 bank;
-    u16 programAndTone;
-} SpacedGroupSounds;
-
-typedef struct SpacedGroupConfirmSound {
-    s16 sprite;
-    u8 color;
-    u8 bank;
-    u16 programAndTone;
-} SpacedGroupConfirmSound;
-
-void func_80072C54(void) {
-    u16 input = 0;
-    SelectionGroupState *state;
-    RegisteredTaskEntry *children;
-    RegisteredTaskEntry *entry;
-    RegisteredTaskEntry *entries;
-    SpacedGroupSelection *selection;
-    s16 i;
-    CVECTOR *color;
-    const SpacedGroupConfirmSound *confirm;
-
-    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    state = (SelectionGroupState *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
+    if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
+    group = (SpacedGroupResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    if (D_8013AE88->resource16 == 0xFFFF) { for (;;) {} }
     children = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE88->resource16];
     if ((u16)(D_8013AE88->data1E % 10U) == 0) {
-        if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
-        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource14];
-        entry = &entries[D_8013AE88->data1E / 10U];
+        if (D_8013AE98->resource14 == 0xFFFF) { for (;;) {} }
+        slots = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource14];
+        slot = &slots[(u16)(D_8013AE88->data1E / 10U)];
     } else {
-        if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
-        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource16];
-        entry = &entries[D_8013AE88->data1E / 10U];
+        if (D_8013AE98->resource16 == 0xFFFF) { for (;;) {} }
+        slots = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource16];
+        slot = &slots[(u16)(D_8013AE88->data1E / 10U)];
     }
-    if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
-    selection = (SpacedGroupSelection *)&gTaskMemoryPool[D_8013AE98->resource14];
-    state->selection.mode = selection->mode;
-    state->selection.selectedIndex = selection->selectedIndex;
-    state->selection.previousIndex = selection->previousIndex;
-    state->selection.choiceResult = selection->choiceResult;
-
-    switch (entry->command) {
+    if (D_8013AE98->resource14 == 0xFFFF) { for (;;) {} }
+    parent = (FlagSelectedMenuState *)&gTaskMemoryPool[D_8013AE98->resource14];
+    group->choice.mode = parent->mode;
+    group->choice.selectedIndex = parent->selectedIndex;
+    group->choice.previousIndex = parent->previousIndex;
+    group->choice.choiceResult = parent->choiceResult;
+    switch (slot->command) {
     case 1:
-        for (i = 0; i < state->count; i++) {
-            GameTask *child = children[i].task;
-            if (child != NULL) {
-                if (i == state->selection.selectedIndex) {
-                    color = (CVECTOR *)&gTaskMemoryPool[child->resource16];
+        for (i = 0; i < group->count; i++) {
+            if (children[i].task != NULL) {
+                if (i == group->choice.selectedIndex) {
+                    color = (MenuRgbColor *)&gTaskMemoryPool[children[i].task->resource16];
                     color->r = 128;
                     color->g = 128;
                     color->b = 128;
                 } else {
-                    color = (CVECTOR *)&gTaskMemoryPool[child->resource16];
+                    color = (MenuRgbColor *)&gTaskMemoryPool[children[i].task->resource16];
                     color->r = 64;
                     color->g = 64;
                     color->b = 64;
                 }
             }
         }
-        goto clearCommand;
+        slot->command = 0;
+        slot->flags = 0;
+        break;
     case 2:
-        for (i = 0; i < state->count; i++) {
-            GameTask *child = children[i].task;
-            if (child != NULL) {
-                color = (CVECTOR *)&gTaskMemoryPool[child->resource16];
+        for (i = 0; i < group->count; i++) {
+            if (children[i].task != NULL) {
+                color = (MenuRgbColor *)&gTaskMemoryPool[children[i].task->resource16];
                 color->r = 128;
                 color->g = 128;
                 color->b = 128;
             }
         }
-        goto clearCommand;
+        slot->command = 0;
+        slot->flags = 0;
+        break;
     case 3:
-        for (i = 0; i < state->count; i++) {
-            GameTask *child = children[i].task;
-            if (child != NULL) {
-                color = (CVECTOR *)&gTaskMemoryPool[child->resource16];
+        for (i = 0; i < group->count; i++) {
+            if (children[i].task != NULL) {
+                color = (MenuRgbColor *)&gTaskMemoryPool[children[i].task->resource16];
                 color->r = 64;
                 color->g = 64;
                 color->b = 64;
             }
         }
-        goto clearCommand;
+        slot->command = 0;
+        slot->flags = 0;
+        break;
     case 10:
-        if (state->unk5D != 0) {
-            D_8013AE88->data18 = state->unk5D;
-            entry->command = 11;
-            entry->flags = 1;
+        if (group->blinkFrames != 0) {
+            D_8013AE88->data18 = group->blinkFrames;
+            slot->command = 11;
+            slot->flags = 1;
         }
         break;
     case 11:
         if (D_8013AE88->data18 == 0) {
-            GameTask *child = children[state->selection.selectedIndex].task;
-            if (child != NULL) {
-                color = (CVECTOR *)&gTaskMemoryPool[child->resource16];
+            if (children[group->choice.selectedIndex].task != NULL) {
+                color = (MenuRgbColor *)&gTaskMemoryPool[children[group->choice.selectedIndex].task->resource16];
                 color->r = 128;
                 color->g = 128;
                 color->b = 128;
             }
-            goto clearCommand;
-        }
-        if ((D_8013AE88->data18 & 1) == 0) {
-            GameTask *child = children[state->selection.selectedIndex].task;
-            if (child != NULL) {
-                color = (CVECTOR *)&gTaskMemoryPool[child->resource16];
-                color->r = 128;
-                color->g = 128;
-                color->b = 128;
-            }
+            slot->command = 0;
+            slot->flags = 0;
         } else {
-            GameTask *child = children[state->selection.selectedIndex].task;
-            if (child != NULL) {
-                color = (CVECTOR *)&gTaskMemoryPool[child->resource16];
-                color->r = 64;
-                color->g = 64;
-                color->b = 64;
+            if (D_8013AE88->data18 % 2U == 0) {
+                if (children[group->choice.selectedIndex].task != NULL) {
+                    color = (MenuRgbColor *)&gTaskMemoryPool[children[group->choice.selectedIndex].task->resource16];
+                    color->r = 128;
+                    color->g = 128;
+                    color->b = 128;
+                }
+            } else {
+                if (children[group->choice.selectedIndex].task != NULL) {
+                    color = (MenuRgbColor *)&gTaskMemoryPool[children[group->choice.selectedIndex].task->resource16];
+                    color->r = 64;
+                    color->g = 64;
+                    color->b = 64;
+                }
             }
+            D_8013AE88->data18--;
+            slot->flags = 1;
         }
-        D_8013AE88->data18--;
-        entry->flags = 1;
         break;
     case 20:
-        state->selection.mode = 1;
-        goto clearCommand;
+        group->choice.mode = 1;
+        slot->command = 0;
+        slot->flags = 0;
+        break;
     case 21:
-        state->selection.mode = 2;
-        goto clearCommand;
+        group->choice.mode = 2;
+        slot->command = 0;
+        slot->flags = 0;
+        break;
     case 22:
-        state->selection.mode = 3;
-        goto clearCommand;
+        group->choice.mode = 3;
+        slot->command = 0;
+        slot->flags = 0;
+        break;
     case 23:
-        state->selection.mode = 0;
-clearCommand:
-        entry->command = 0;
-        /* fall through */
+        group->choice.mode = 0;
+        slot->command = 0;
+        slot->flags = 0;
+        break;
     case 0:
-        entry->flags = 0;
+        slot->flags = 0;
         break;
     case 99:
     default:
-        entry->task = NULL;
+        slot->task = NULL;
         deleteCurrentTaskSubtree();
         return;
     }
-
-    for (i = 0; i < state->count; i++) {
-        GameTask *child = children[i].task;
-        if (child != NULL) {
-            entry->flags |= updateMovement2D((Movement2D *)&gTaskMemoryPool[child->resource14]);
+    for (i = 0; i < group->count; i++) {
+        if (children[i].task != NULL) {
+            slot->flags |= updateMovement2D((Movement2D *)&gTaskMemoryPool[children[i].task->resource14]);
         }
     }
-    copyColorCycleTaskColor(0, &state->color);
-    if ((u32)((u16)entry->command - 1) >= 3 && entry->command != 11) {
-        for (i = 0; i < state->count; i++) {
-            GameTask *child = children[i].task;
-            if (child != NULL) {
-                color = (CVECTOR *)&gTaskMemoryPool[child->resource16];
-                if (i == state->selection.selectedIndex) {
+    copyColorCycleTaskColor(0, &group->color);
+    if (slot->command != 1 && slot->command != 2 && slot->command != 3 && slot->command != 11) {
+        for (i = 0; i < group->count; i++) {
+            if (children[i].task != NULL) {
+                color = (MenuRgbColor *)&gTaskMemoryPool[children[i].task->resource16];
+                if (i == group->choice.selectedIndex) {
                     color->r = 128;
                     color->g = 128;
                     color->b = 128;
@@ -1162,105 +1132,126 @@ clearCommand:
             }
         }
     }
-
-    if (state->selection.choiceResult == 0 && state->selection.mode > 0) {
-        if (state->mode & 1) input |= gControllerPressedButtons[0];
-        if (state->mode & 2) input |= gControllerPressedButtons[1];
-        i = state->selection.selectedIndex;
-        if (state->unk60 >= 0) {
-            if (input & 0x1000) {
-                i--;
-                if (i < 0) {
-                    i = 0;
-                    if (state->unk5E == 1) i = state->count - 1;
+    if (group->choice.choiceResult == 0 && group->choice.mode > 0) {
+        if (group->controllers & 1) {
+            pressed |= gControllerPressedButtons[0];
+        }
+        if (group->controllers & 2) {
+            pressed |= gControllerPressedButtons[1];
+        }
+        next = group->choice.selectedIndex;
+        if (group->markerSprite >= 0) {
+            if (pressed & PADLup) {
+                if (--next < 0) {
+                    if (group->wrapSelection == 1) {
+                        next = group->count - 1;
+                    } else {
+                        next = 0;
+                    }
                 }
             }
-            if (input & 0x4000) {
-                i++;
-                if (i >= state->count) {
-                    if (state->unk5E == 1) i = 0;
-                    else i = state->count - 1;
+            if (pressed & PADLdown) {
+                if (++next >= group->count) {
+                    if (group->wrapSelection == 1) {
+                        next = 0;
+                    } else {
+                        next = group->count - 1;
+                    }
                 }
             }
         } else {
-            if (input & 0x8000) {
-                i--;
-                if (i < 0) {
-                    i = 0;
-                    if (state->unk5E == 1) i = state->count - 1;
+            if (pressed & PADLleft) {
+                if (--next < 0) {
+                    if (group->wrapSelection == 1) {
+                        next = group->count - 1;
+                    } else {
+                        next = 0;
+                    }
                 }
             }
-            if (input & 0x2000) {
-                i++;
-                if (i >= state->count) {
-                    if (state->unk5E == 1) i = 0;
-                    else i = state->count - 1;
+            if (pressed & PADLright) {
+                if (++next >= group->count) {
+                    if (group->wrapSelection == 1) {
+                        next = 0;
+                    } else {
+                        next = group->count - 1;
+                    }
                 }
             }
-            if (input & 0x1000) {
-                if (i == state->count - 1) i--;
-                else if (i >= 4) i -= 4;
-                if (i < 0) {
-                    i = 0;
-                    if (state->unk5E == 1) i = state->count - 1;
+            if (pressed & PADLup) {
+                if (next == group->count - 1) {
+                    next--;
+                } else if (next >= 4) {
+                    next -= 4;
+                }
+                if (next < 0) {
+                    if (group->wrapSelection == 1) {
+                        next = group->count - 1;
+                    } else {
+                        next = 0;
+                    }
                 }
             }
-            if (input & 0x4000) {
-                if (i < 4) {
-                    i += 4;
+            if (pressed & PADLdown) {
+                if (next >= 4 && next < group->count - 1) {
+                    next = group->count - 1;
                 } else {
-                    if (i < state->count - 1) i = state->count - 1;
-                    else i += 4;
+                    next += 4;
                 }
-                if (i >= state->count) {
-                    if (state->unk5E == 1) i = 0;
-                    else i = state->count - 1;
+                if (next >= group->count) {
+                    if (group->wrapSelection == 1) {
+                        next = 0;
+                    } else {
+                        next = group->count - 1;
+                    }
                 }
             }
         }
-        if (D_8013B108 == 3 && !isControllerInputSupported(1)) i = 0;
-        if (i != state->selection.selectedIndex) {
-            state->selection.previousIndex = state->selection.selectedIndex;
-            state->selection.selectedIndex = i;
-            if (state->data4C != NULL) {
-                const SpacedGroupSounds *sound = (const SpacedGroupSounds *)state->data4C;
+        if (D_8013B108 == 3 && isControllerInputSupported(1) == 0) {
+            next = 0;
+        }
+        if (next != group->choice.selectedIndex) {
+            group->choice.previousIndex = group->choice.selectedIndex;
+            group->choice.selectedIndex = next;
+            if (group->sounds != NULL) {
+                sound = group->sounds;
                 if (sound->bank != 0xFF) {
-                    playSoundEffect(sound->bank, sound->programAndTone, 0x20);
+                    playSoundEffect(sound->bank, sound->programAndTone, 32);
                 }
             } else {
-                playSoundEffect(0, 0x100, 0x20);
+                playSoundEffect(0, 0x100, 32);
             }
         }
-        if (input & state->acceptMask) {
-            state->selection.choiceResult = 1;
-            state->selection.mode = 3;
-            confirm = (const SpacedGroupConfirmSound *)getMappedGridSpriteEntry(
-                (const GridSpriteEntry *)state->data44, state->data48, state->selection.selectedIndex);
-            if (confirm->bank != 0xFF) playSoundEffect(confirm->bank, confirm->programAndTone, 0x20);
+        if (pressed & group->acceptMask) {
+            group->choice.choiceResult = 1;
+            group->choice.mode = 3;
+            item = getMappedGridSpriteEntry((const GridSpriteEntry *)group->itemData, group->mapping,
+                                            group->choice.selectedIndex);
+            if (item->soundBank != 0xFF) {
+                playSoundEffect(item->soundBank, item->programAndTone, 32);
+            }
         }
-        if (input & state->cancelMask) {
-            state->selection.choiceResult = -1;
-            if (state->data4C != NULL) {
-                const SpacedGroupSounds *sound = &((const SpacedGroupSounds *)state->data4C)[1];
+        if (pressed & group->cancelMask) {
+            group->choice.choiceResult = -1;
+            if (group->sounds != NULL) {
+                sound = &group->sounds[1];
                 if (sound->bank != 0xFF) {
-                    playSoundEffect(sound->bank, sound->programAndTone, 0x20);
+                    playSoundEffect(sound->bank, sound->programAndTone, 32);
                 }
             } else {
-                playSoundEffect(0, 0, 0x20);
+                playSoundEffect(0, 0, 32);
             }
         }
     }
-
-    if (state->callback3C != NULL) state->callback3C();
-    state = (SelectionGroupState *)&gTaskMemoryPool[D_8013AE88->resource14];
-    selection->mode = state->selection.mode;
-    selection->selectedIndex = state->selection.selectedIndex;
-    selection->previousIndex = state->selection.previousIndex;
-    selection->choiceResult = state->selection.choiceResult;
+    if (group->callback3C != NULL) {
+        group->callback3C();
+    }
+    group = (SpacedGroupResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    parent->mode = group->choice.mode;
+    parent->selectedIndex = group->choice.selectedIndex;
+    parent->previousIndex = group->choice.previousIndex;
+    parent->choiceResult = group->choice.choiceResult;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80072C54);
-#endif
 
 const GridSpriteEntry *getMappedGridSpriteEntry(const GridSpriteEntry *sprites,
                                               const u8 *mapping, s16 index) {
@@ -1298,7 +1289,7 @@ s16 mapMenuByteIndex(const u8 *table, s16 index) {
 s16 mapSpacedGroupIndex(GameTask *task, s16 index) {
     u32 resourceIndex = task->resource14;
     const SpacedGroupResource *resource = (const SpacedGroupResource *)&gTaskMemoryPool[resourceIndex];
-    const u8 *mapping = resource->data48;
+    const u8 *mapping = resource->mapping;
     s32 result;
 
     if (mapping == NULL) {

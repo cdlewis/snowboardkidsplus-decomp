@@ -7,18 +7,32 @@ typedef struct MenuRgbColor {
     u8 r, g, b;
 } MenuRgbColor;
 
+typedef struct FlagSelectedMenuState {
+    s16 mode;
+    s16 selectedIndex;
+    s16 previousIndex;
+    s16 choiceResult;
+} FlagSelectedMenuState;
+
+typedef struct MenuNavigationSound {
+    u8 bank;
+    u16 programAndTone;
+} MenuNavigationSound;
+
 typedef struct SpacedGroupResource {
     Movement2D movement;
     u32 acceptMask, cancelMask;
-    u8 unk30[12];
+    FlagSelectedMenuState choice;
+    u8 unk38[4];
     TaskCallback callback3C, callback40;
-    const u8 *data44, *data48, *data4C;
+    const u8 *itemData, *mapping;
+    const MenuNavigationSound *sounds;
     s32 value;
-    s16 mode, spacingX, spacingY, count;
-    u8 unk5C, unk5D;
-    s8 unk5E;
+    s16 controllers, spacingX, spacingY, count;
+    u8 unk5C, blinkFrames;
+    s8 wrapSelection;
     u8 unk5F;
-    s16 unk60;
+    s16 markerSprite;
     MenuRgbColor color;
 } SpacedGroupResource;
 
