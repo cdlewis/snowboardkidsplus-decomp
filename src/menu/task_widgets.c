@@ -204,6 +204,16 @@ TimedSequenceEntry gSecondaryTaskSequenceEntries[6]
     {0x000C0175, 6}, {0x000C0176, 6}, {0x000C0177, 6}
 };
 
+TimedSequenceEntry gCharacterPortraitSequence[4]
+    __attribute__((section(".data.character_portrait_sequences"))) = {
+    {0, 6}, {1, 6}, {2, 6}, {1, 6}
+};
+
+TimedSequenceEntry gExtendedCharacterPortraitSequence[8]
+    __attribute__((section(".data.character_portrait_sequences"))) = {
+    {0, 6}, {1, 6}, {2, 6}, {1, 6}, {2, 6}, {1, 6}, {2, 6}, {1, 6}
+};
+
 SelectionPanelStatsTable gSelectionPanelCharacterStats
     __attribute__((section(".data.selection_panel_character_stats"), aligned(4))) = {
     {
@@ -230,7 +240,6 @@ u16 gTextPanelMessage[] __attribute__((section(".data.text_panel_message"))) = {
     0x009A, 0x00CB, 0x009D, 0x0094, 0x0033, 0x0000
 };
 
-extern TimedSequenceEntry D_8012F18C[], D_8012F1AC[];
 extern u32 D_8013B3BC;
 extern TexturedQuadListEntry *D_8013B3C0[2];
 extern GameTask *D_8013B378;
@@ -288,7 +297,7 @@ void updateCharacterSelectionTask(void);
 s32 findCharacterSelectionIndex(s16 character);
 void createDualSelectionSequenceTask(s16 x, s16 y, s32 depth, s32 index);
 void drawTextMessagePanel(void);
-void func_80078140(void);
+void updateCharacterSelectionPortraitTask(void);
 void updatePlayerPanelTask(void);
 void updatePlayerCharacterSelection(s16 playerIndex, SelectionEntry *entries);
 void createRegisteredSelectionPanelTask(s16 playerIndex, SelectionPanelRecord *record, s32 depth, s32 index);
@@ -2588,7 +2597,7 @@ void createDualSelectionSequenceTask(s16 x, s16 y, s32 depth, s32 index) {
     u8 type;
     if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
     selection = (SelectionEntry *)&gTaskMemoryPool[D_8013AE88->resource14];
-    createChildTaskWithReserve(func_80078140);
+    createChildTaskWithReserve(updateCharacterSelectionPortraitTask);
     D_8013AE8C->data1A = 0;
     D_8013AE8C->data1C = depth;
     D_8013AE8C->data1E = index;
@@ -2599,9 +2608,9 @@ void createDualSelectionSequenceTask(s16 x, s16 y, s32 depth, s32 index) {
     for (i = 0; i < 2; i++) {
         type = D_8012D460[selection[i].selected];
         if (type == 3 || type == 4 || type == 8) {
-            initTimedSequence(&sequences[i], D_8012F1AC, 0, 8);
+            initTimedSequence(&sequences[i], gExtendedCharacterPortraitSequence, 0, 8);
         } else {
-            initTimedSequence(&sequences[i], D_8012F18C, 0, 4);
+            initTimedSequence(&sequences[i], gCharacterPortraitSequence, 0, 4);
         }
     }
     if (index % 10 == 0) {
@@ -2620,9 +2629,7 @@ void createDualSelectionSequenceTask(s16 x, s16 y, s32 depth, s32 index) {
     entry->task = D_8013AE8C;
 }
 
-/* DECOMP_ATTEMPT: inline 463/511 */
-#ifdef NON_MATCHING
-void func_80078140(void) {
+void updateCharacterSelectionPortraitTask(void) {
     Movement2D *movement;
     TimedSequence *sequences;
     ValuePanelEntry *entry;
@@ -2630,6 +2637,7 @@ void func_80078140(void) {
     s32 sprites[2];
     s32 yOffsets[2];
     s32 depths[2];
+    /* The original tests the incoming low bit of $fp when it skips the assignment below. */
     s32 shiftLastPortrait;
     s32 i;
     s32 xOffset;
@@ -2700,7 +2708,6 @@ void func_80078140(void) {
         if (selection[i].unk00 > 0) {
             s32 selected;
             s16 x;
-            s16 y;
             if (selection[i].unk00 == 1) {
                 setSpriteColor(D_8013B3A8, D_8013B3A9, D_8013B3AA);
             } else if (selection[i].unk00 == 2) {
@@ -2716,16 +2723,14 @@ void func_80078140(void) {
             x = xOffset + 4;
             x += selected % 2 * 32;
             x += movement->x / 4096;
-            y = selected / 2 * 32 + ((u16)yOffsets[i] + 36);
-            y += movement->y / 4096;
-            drawSpriteByIndexWithBlend(x, y,
-                          sprites[i], (s16)i, -1, &D_800EBFF0[D_8013AF78], depths[i]);
+            drawSpriteByIndexWithBlend(x, (s16)((u16)yOffsets[i] + 36 + selected / 2 * 32 + movement->y / 4096),
+                                       sprites[i], (s16)i, -1, &D_800EBFF0[D_8013AF78], depths[i]);
             if (selection[i].selected != selection[i].previous) {
                 type = D_8012D460[selection[i].selected];
                 if (type == 3 || type == 4 || type == 8) {
-                    initTimedSequence(&sequences[i], D_8012F1AC, 0, 8);
+                    initTimedSequence(&sequences[i], gExtendedCharacterPortraitSequence, 0, 8);
                 } else {
-                    initTimedSequence(&sequences[i], D_8012F18C, 0, 4);
+                    initTimedSequence(&sequences[i], gCharacterPortraitSequence, 0, 4);
                 }
             }
         }
@@ -2737,7 +2742,8 @@ void func_80078140(void) {
 
     for (i = 0; i < 10; i++) {
         s16 x;
-        s16 y;
+        s32 portraitBase;
+
         xOffset = 0;
         if (i >= 8) {
             if (!(gMergedSaveRecord.flags & (1U << (i - 8)))) {
@@ -2750,37 +2756,34 @@ void func_80078140(void) {
         if (i == selection[0].selected || i == selection[1].selected) {
             setSpriteColor(128, 128, 128);
             if (i == selection[0].selected) {
-                frame = *(const s16 *)&sequences[0].entries[sequences[0].index].unk00;
+                frame = sequences[0].index;
+                frame = (s16)sequences[0].entries[frame].unk00;
             } else {
-                frame = *(const s16 *)&sequences[1].entries[sequences[1].index].unk00;
+                frame = sequences[1].index;
+                frame = (s16)sequences[1].entries[frame].unk00;
             }
+            portraitBase = 112;
             x = xOffset + 4;
             x += i % 2 * 32;
             x += movement->x / 4096;
-            y = movement->y / 4096 + 40;
-            y = i / 2 * 32 + y;
-            drawSpriteByIndexWithBlend(x, y,
-                          D_8012D460[i] * 3 + (frame + 112), 0, -1,
-                          &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            drawSpriteByIndexWithBlend(x, (s16)(i / 2 * 32 + (s16)(movement->y / 4096 + 40)),
+                                       D_8012D460[i] * 3 + (frame + portraitBase), 0, -1,
+                                       &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         } else {
             setSpriteColor(64, 64, 64);
+            portraitBase = 112;
             x = xOffset + 4;
             x += i % 2 * 32;
             x += movement->x / 4096;
-            y = movement->y / 4096 + 40;
-            y = i / 2 * 32 + y;
-            drawSpriteByIndexWithBlend(x, y,
-                          D_8012D460[i] * 3 + 112, 0, -1,
-                          &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            drawSpriteByIndexWithBlend(x, (s16)(i / 2 * 32 + (s16)(movement->y / 4096 + 40)),
+                                       D_8012D460[i] * 3 + portraitBase, 0, -1,
+                                       &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
         }
     }
 
     updateTimedSequence(&sequences[0]);
     updateTimedSequence(&sequences[1]);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_80078140);
-#endif
 
 void createPlayerPanelTask(s16 player, s16 x, s16 y, s32 depth, s32 index) {
     ValuePanelEntry *entry;

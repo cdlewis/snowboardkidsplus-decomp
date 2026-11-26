@@ -833,7 +833,7 @@ segments:
       - {start: 0x11F90C, type: .data, name: menu/task_widgets, linker_section: .data.secondary_task_sequence}
       - [0x11F93C, .data, menu/course_selection_tasks]
       - {start: 0x11F97C, type: .data, name: menu/task_widgets, linker_section: .data.animated_sprite16}
-      - [0x11F98C, data, 11F98C]
+      - {start: 0x11F98C, type: .data, name: menu/task_widgets, linker_section: .data.character_portrait_sequences}
       - {start: 0x11F9EC, type: .data, name: menu/task_widgets, linker_section: .data.selection_panel_character_stats}
       - {start: 0x11FA0C, type: .data, name: menu/task_widgets, linker_section: .data.selection_panel_label_offsets}
       - [0x11FA18, data, 11FA18]

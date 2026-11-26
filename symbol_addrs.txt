@@ -3193,6 +3193,8 @@ moveTaskChildrenWithSpacing = 0x80073950; // type:func
 
 updateRegisteredSelectionPanelTask = 0x80079FE8;
 createValuePanelTask = 0x8007AA58;
+gCharacterPortraitSequence = 0x8012F18C; // size:0x20
+gExtendedCharacterPortraitSequence = 0x8012F1AC; // size:0x40
 gSelectionPanelCharacterStats = 0x8012F1EC; // size:0x20
 gSelectionPanelLabelOffsets = 0x8012F20C; // size:0xC
 
@@ -3696,6 +3698,7 @@ updateCurrentPlayerState10Movement = 0x800271D0; // type:func
 updateControllerInput = 0x8001553C; // type:func
 
 createDualSelectionSequenceTask = 0x80077EA4; // type:func
+updateCharacterSelectionPortraitTask = 0x80078140; // type:func
 
 findNearestHomingTargetPlayer = 0x80046228; // type:func
 initializePlayerVisualHistory = 0x80046404; // type:func
