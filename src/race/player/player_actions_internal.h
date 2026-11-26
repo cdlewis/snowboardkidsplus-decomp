@@ -126,7 +126,6 @@ void queueBackgroundTextureSectorCommands(void);
 void uploadBufferedTexturePair(void);
 void uploadTextureArchiveEntry(s16 x, s16 y, s16 clutX, s16 clutY, s32 index);
 void queueStartupSectorReads(void);
-void uploadTimImageAt(s16 x, s16 y, s16 clutX, s16 clutY, u32 *tim);
 void initializeBackgroundCameraTask(void);
 void initializeViewAndSelectTaskCallback(void);
 void beginMode2TaskSequence(void);

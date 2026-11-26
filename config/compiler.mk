@@ -132,6 +132,7 @@ UNIT_CCFLAGS_src/menu/panel_tasks.c += --rdata-section=updateMoneyPanelSelection
 UNIT_CCFLAGS_src/menu/panel_tasks.c += --rdata-section=updateShopBoardPurchaseMenuTask:.rodata.shop_board_purchase
 UNIT_CCFLAGS_src/menu/panel_tasks.c += --rdata-section=updateBoardSelectionMenuTask:.rodata.board_selection_menu
 UNIT_CCFLAGS_src/menu/panel_tasks.c += --rdata-section=updateBoardSelectionDetailsMenuTask:.rodata.board_selection_details
+UNIT_CCFLAGS_src/menu/panel_tasks.c += --rdata-section=updatePlayerTextureSelectionTask:.rodata.player_texture_selection
 UNIT_CCFLAGS_src/menu/panel_tasks.c += --rdata-section=updateBoardPurchaseMenuTask:.rodata.board_purchase_menu
 UNIT_CCFLAGS_src/menu/task_widgets.c += --rdata-section=cycleSaveRecordUnlockFlags:.rodata.save_record_unlock_flags
 UNIT_CCFLAGS_src/menu/task_widgets.c += --rdata-section=updateCharacterSelectionTask:.rodata.character_selection

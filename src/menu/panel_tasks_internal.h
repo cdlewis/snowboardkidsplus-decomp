@@ -195,6 +195,7 @@ void updateTextSequenceTask(void);
 void parseLoadedTextSequence(void);
 void updateBoardSelectionDetailsMenuTask(void);
 void initializePlayerTextureSelectionTask(void);
+void updatePlayerTextureSelectionTask(void);
 void prepareRaceResourcesIfSelectionChanged(void);
 void SetFogNearFar(s32 near, s32 far, s32 h);
 void prepareLoadedTextSequenceTask(void);

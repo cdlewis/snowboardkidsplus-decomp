@@ -2600,6 +2600,9 @@ D_80131728 = 0x80131728; // size:0x38
 D_80131760 = 0x80131760; // size:0x34
 sShopMenuTexts = 0x80131794; // size:0x3C defined:true
 sShopDefaultBoardEntries = 0x80131910; // size:0x14 defined:true
+sPlayerTextureSelectionSprites = 0x80131924; // size:0x72 defined:true
+sPlayerTextureSelectionPageItems = 0x80131998; // size:0x18 defined:true
+sPlayerTextureSelectionPages = 0x8013B4E8; // size:0x8 defined:true
 sShopBoardGroupUnlockFlags = 0x8013B4E0; // size:0x4 defined:true
 sShopMenuSpriteMapping = 0x8013B48C; // size:0x4 defined:true
 sShopMenuTextMapping = 0x8013B490; // size:0x4 defined:true
@@ -2794,6 +2797,7 @@ gRecordFlagMenuSpriteRecords = 0x8012FD60; // size:0x6C
 initializeTaskResourcesAndClearData18 = 0x800929C4; // type:func
 updateBoardSelectionDetailsMenuTask = 0x80092A50; // type:func size:0xD6C
 initializePlayerTextureSelectionTask = 0x80093A20; // type:func
+updatePlayerTextureSelectionTask = 0x80093A54; // type:func
 
 advanceCurrentPlayerTaskPhaseMovement = 0x80026010; // type:func
 updateCurrentPlayerTaskLapTransition = 0x800260E4; // type:func

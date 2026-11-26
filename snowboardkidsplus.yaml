@@ -163,7 +163,7 @@ segments:
       - {start: 0x26B0, type: .rodata, name: menu/panel_tasks, linker_section: .rodata.board_selection_menu}
       - {start: 0x26F0, type: .rodata, name: menu/panel_tasks, linker_section: .rodata.board_selection_details}
       - {start: 0x274C, type: .rodata, name: menu/panel_tasks, linker_section: .rodata.board_selection_details_padding}
-      - [0x2750, rodata]
+      - {start: 0x2750, type: .rodata, name: menu/panel_tasks, linker_section: .rodata.player_texture_selection}
       - {start: 0x2794, type: .rodata, name: menu/panel_tasks, linker_section: .rodata.board_purchase_menu}
       - {start: 0x27DC, type: .rodata, name: menu/grid_selection, linker_section: .rodata.split_board_selection}
       - [0x2840, .rodata, menu/grid_selection]
@@ -875,7 +875,10 @@ segments:
       - {start: 0x12205C, type: .data, name: menu/panel_tasks, linker_section: .data.board_selection_styles}
       - [0x122068, data, board_selection_tail]
       - {start: 0x122110, type: .data, name: menu/panel_tasks, linker_section: .data.shop_default_board_entries}
-      - [0x122124, data, board_selection_tail_remainder]
+      - {start: 0x122124, type: .data, name: menu/panel_tasks, linker_section: .data.player_texture_selection_sprites}
+      - [0x122196, pad]
+      - {start: 0x122198, type: .data, name: menu/panel_tasks, linker_section: .data.player_texture_selection_page_items}
+      - [0x1221B0, data, board_selection_tail_remainder]
       - {start: 0x122524, type: .data, name: menu/panel_tasks, linker_section: .data.grid_model_preview_poses}
       - {start: 0x12254C, type: .data, name: menu/grid_selection, linker_section: .data.palette_selection_main_preview_y}
       - {start: 0x122558, type: .data, name: menu/panel_tasks, linker_section: .data.board_price_vertical_offsets}
@@ -1102,7 +1105,7 @@ segments:
       - [0x12BCC0, data]
       - {start: 0x12BCE0, type: .data, name: menu/panel_tasks, linker_section: .data.shop_board_group_unlock_flags}
       - {start: 0x12BCE4, type: .data, name: menu/panel_tasks, linker_section: .data.save_record_money_panel_currency_label}
-      - [0x12BCE8, data, 12BCE8]
+      - {start: 0x12BCE8, type: .data, name: menu/panel_tasks, linker_section: .data.player_texture_selection_pages}
       - {start: 0x12BCF0, type: .data, name: menu/panel_tasks, linker_section: .data.board_purchase_mappings}
       - [0x12BCFC, data, board_purchase_mappings_tail]
       - {start: 0x12BD00, type: .data, name: race/player/player_model_preview, linker_section: .data.player_model_draw_area_depths}

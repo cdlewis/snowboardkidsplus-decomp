@@ -514,7 +514,6 @@ extern const char gComputerPlayerLabel[];
 extern const char D_8013B138[];
 extern RaceTime gRaceElapsedTime;
 
-void uploadTimImageAt(s16 x, s16 y, s16 clutX, s16 clutY, u32 *tim);
 void waitForBackgroundMenuTransition(void);
 void scheduleBackgroundViewAfterChildTasks(void);
 void scheduleMode2SequenceWhenCdQueueIdle(void);

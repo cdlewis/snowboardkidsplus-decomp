@@ -332,6 +332,7 @@ typedef union TimArchive {
 } TimArchive;
 
 void uploadTimArchive(TimArchive *archive, s16 *position);
+void uploadTimImageAt(s16 x, s16 y, s16 clutX, s16 clutY, u32 *tim);
 void uploadTimImageWithOffset(u32 *tim, s16 *position);
 void uploadBufferedTexturePair(void);
 /* Queue the buffered screen sprites shifted one pixel in each direction. */
