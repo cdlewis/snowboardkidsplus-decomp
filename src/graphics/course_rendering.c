@@ -40,10 +40,22 @@ extern GameTask *D_8013AE8C __attribute__((section(".data")));
 extern RECT gWritePixelRect __attribute__((section(".sdata.write_pixel_rect")));
 
 void drawLayeredBackgroundAndSetFog(s16 playerIndex);
-void func_8004E718(s16 playerIndex);
+void drawSunsetBackgroundAndSetFog(s16 playerIndex);
 void func_8004EBF8(s16 playerIndex);
 void drawRotatingModelBackgroundAndSetFog(s16 playerIndex);
 void drawRipplingBackgroundAndSetFog(s16 playerIndex);
+
+static VECTOR sBackgroundModelScale __attribute__((section(".data.background_model_scale"))) = {
+    5 * 4096, 5 * 4096, 5 * 4096, 0,
+};
+
+static POLY_G4 sSunsetBackgroundQuad __attribute__((section(".data.sunset_background_quad"))) = {
+    8 << 24,
+    111, 127, 255, POLY_G4_CODE, -160, -240,
+    111, 127, 255, 0,             159, -240,
+     31, 127, 175, 0,            -160,    0,
+     31, 127, 175, 0,             159,    0,
+};
 
 TILE gLapAnimatedBackgroundTile __attribute__((section(".data.lap_animated_background_tile"))) = {
     3 << 24, 224, 224, 232, TILE_CODE, -160, -120, 320, 240,
@@ -77,7 +89,7 @@ s16 gRipplingBackgroundStripData[20] __attribute__((section(".data.rippling_back
 static void (*sCourseBackgroundCallbacks[10])(s16 playerIndex)
     __attribute__((section(".data.course_background_callbacks"))) = {
     drawLayeredBackgroundAndSetFog,
-    func_8004E718,
+    drawSunsetBackgroundAndSetFog,
     func_8004EBF8,
     drawCyanBackgroundAndSetFog,
     drawRotatingModelBackgroundAndSetFog,
@@ -190,7 +202,6 @@ s32 gCourseModelDetailDistance __attribute__((section(".sdata.course_model_state
 
 TmdObject *gCourseModels[100] __attribute__((section(".bss.course_models")));
 
-extern VECTOR D_80124BDC;
 extern s32 D_8013AFB8 __attribute__((section(".data")));
 extern s16 D_8013B22C, D_8013B22E;
 
@@ -412,7 +423,7 @@ void drawLayeredBackgroundAndSetFog(s16 playerIndex) {
         setVector((VECTOR *)coordinate->coord.t, -0xEE39, 0x14DAC, 0xC7AA);
         RotMatrixY(512, &coordinate->coord);
         GsGetLs(coordinate, matrix);
-        ScaleMatrix(matrix, &D_80124BDC);
+        ScaleMatrix(matrix, &sBackgroundModelScale);
         GsSetLsMatrix(matrix);
         drawProjectedModelPrimitives(gOptionalCourseModels[0], ot, 2, 3);
     }
@@ -437,16 +448,14 @@ void drawLayeredBackgroundAndSetFog(s16 playerIndex) {
     SetFogNearFar(8000, 10000, 400);
 }
 
-/* DECOMP_ATTEMPT: inline 309/312 */
-#ifdef NON_MATCHING
-extern POLY_G4 D_80124C3C[];
-
-void func_8004E718(s16 playerIndex) {
+void drawSunsetBackgroundAndSetFog(s16 playerIndex) {
     GsCOORDINATE2 *coordinate = (GsCOORDINATE2 *)getScratchAddr(0);
     MATRIX *matrix = (MATRIX *)getScratchAddr(20);
     GsOT *ot;
+    PlayerCamera *cameras;
     PlayerCamera *camera;
     s16 horizon;
+    u16 segment;
     s32 r, g, b;
 
     if (playerIndex == 0) {
@@ -454,10 +463,11 @@ void func_8004E718(s16 playerIndex) {
     } else {
         ot = &D_800EC0B8[D_8013AF78];
     }
-    *(POLY_G4 *)coordinate = D_80124C3C[0];
-    camera = D_801241E8;
-    camera = playerIndex + camera;
-    rsin(camera->pitch);
+    *(POLY_G4 *)getScratchAddr(0) = sSunsetBackgroundQuad;
+    cameras = D_801241E8;
+    camera = &cameras[playerIndex];
+    /* The rsin result is discarded. Its projected height is inferred from the lens flare. */
+    horizon = 240 * rsin(camera->pitch) / 4096;
     horizon = camera->pitch / 2;
     if (horizon < -60) horizon = -60;
     if (horizon > 120) horizon = 120;
@@ -467,7 +477,8 @@ void func_8004E718(s16 playerIndex) {
     addGouraudQuad(&D_8013AF6C[4095], -160, -120, 160, -120, -160, horizon, 160, horizon,
                   255, 64, 0, 255, 64, 0, 255, 255, 128, 255, 255, 128);
 
-    if ((u32)((u16)gRacePlayers[playerIndex].unk92E - 106) < 6) {
+    segment = gRacePlayers[playerIndex].unk92E;
+    if (segment >= 106 && segment < 112) {
         r = 10;
         g = 20;
         b = 128;
@@ -496,13 +507,10 @@ void func_8004E718(s16 playerIndex) {
     SetFogNearFar(8000, 10000, 400);
     GsInitCoordinate2(0, coordinate);
     GsGetLs(coordinate, matrix);
-    ScaleMatrix(matrix, &D_80124BDC);
+    ScaleMatrix(matrix, &sBackgroundModelScale);
     GsSetLsMatrix(matrix);
     drawProjectedModelPrimitives(gOptionalCourseModels[0], ot, 2, 1);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/graphics/course_rendering", func_8004E718);
-#endif
 
 /* DECOMP_ATTEMPT: inline 219/222 */
 #ifdef NON_MATCHING
@@ -785,7 +793,7 @@ void drawRotatingModelBackgroundAndSetFog(s16 playerIndex) {
         setVector((VECTOR *)coordinate->coord.t, 0x102D, 0x7F1, 0x3395);
         RotMatrixY(-sRotatingBackgroundFrame * 64, &coordinate->coord);
         GsGetLs(coordinate, matrix);
-        ScaleMatrix(matrix, &D_80124BDC);
+        ScaleMatrix(matrix, &sBackgroundModelScale);
         GsSetLsMatrix(matrix);
         drawProjectedModelPrimitives(gOptionalCourseModels[1], ot, 2, 1);
         if (!D_8013AFD3) {
@@ -968,7 +976,7 @@ void drawCameraCulledBackgroundAndSetFog(s16 playerIndex) {
     addFlatRectangle(&D_8013AF6C[1024], -160, horizon, 320, (s16)(120 - horizon), 200, 216, 240);
     GsInitCoordinate2(0, coordinate);
     GsGetLs(coordinate, matrix);
-    ScaleMatrix(matrix, &D_80124BDC);
+    ScaleMatrix(matrix, &sBackgroundModelScale);
     GsSetLsMatrix(matrix);
     if (isPositionInCameraRange(0xADA, 0xCD1, (s16)getRenderCameraIndex())) {
         drawProjectedModelPrimitives(gOptionalCourseModels[0], ot, 2, 1);
@@ -1018,7 +1026,7 @@ void drawBackgroundModelsAndSetFog(s16 playerIndex) {
     addFlatRectangle(&D_8013AF6C[4095], -160, horizon, 320, (s16)(120 - horizon), 255, 255, 255);
     GsInitCoordinate2(0, coordinate);
     GsGetLs(coordinate, matrix);
-    ScaleMatrix(matrix, &D_80124BDC);
+    ScaleMatrix(matrix, &sBackgroundModelScale);
     GsSetLsMatrix(matrix);
     drawProjectedModelPrimitives(gOptionalCourseModels[0], ot, 2, 1);
     drawProjectedModelPrimitives(gOptionalCourseModels[1], ot, 2, 1);

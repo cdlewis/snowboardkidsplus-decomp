@@ -762,8 +762,10 @@ segments:
       - {start: 0x114DD4, type: .data, name: unclassified/graphics_800497B8, linker_section: .data.heading_octant_angles}
       - {start: 0x1152E4, type: .data, name: unclassified/graphics_800497B8, linker_section: .data.debug_text_sprite}
       - [0x115308, data, heading_octant_angles_tail]
+      - {start: 0x1153DC, type: .data, name: graphics/course_rendering, linker_section: .data.background_model_scale}
       - {start: 0x1153EC, type: .data, name: graphics/course_rendering, linker_section: .data.course_model_distances}
-      - [0x11543C, data, course_model_distances_tail]
+      - {start: 0x11543C, type: .data, name: graphics/course_rendering, linker_section: .data.sunset_background_quad}
+      - [0x115460, data, course_model_distances_tail]
       - {start: 0x115574, type: .data, name: graphics/course_rendering, linker_section: .data.lap_animated_background_tile}
       - {start: 0x115584, type: .data, name: graphics/course_rendering, linker_section: .data.layered_background_model_positions}
       - {start: 0x1155A4, type: .data, name: graphics/course_rendering, linker_section: .data.oscillating_quad_vertices}
