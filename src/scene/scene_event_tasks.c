@@ -350,7 +350,7 @@ void updateSceneTextTask(void) {
         break;
     case 1:
         if (resource->revealState == 1) {
-            if ((D_8013AEE8[0] & 0xB0) || (u32)owner->tick >= resource->deadline) {
+            if ((gControllerPressedButtons[0] & 0xB0) || (u32)owner->tick >= resource->deadline) {
                 owner->tasks[SCENE_EVENT_TEXT] = NULL;
                 if (owner->completionTick < resource->deadline) {
                     owner->completionTick = resource->deadline;
@@ -364,7 +364,7 @@ void updateSceneTextTask(void) {
             if ((resource->revealedCharacters >> 8) > block->metadata.fields.characterCount) {
                 resource->revealState = 1;
             } else {
-                if (D_8013AEEC[0] & 0xB0) {
+                if (gControllerHeldButtons[0] & 0xB0) {
                     resource->visibleCharacters += 0x200;
                     resource->revealedCharacters += 0x200;
                 } else {
@@ -516,7 +516,7 @@ void updateSceneCdAudioTask(void) {
         if (owner->task == NULL) {
             SsSetSerialVol(0, 0, 0);
             resetPendingCdRequests();
-        } else if (!(owner->flags & 2) && (D_8013AEE8[0] & 0xB0)) {
+        } else if (!(owner->flags & 2) && (gControllerPressedButtons[0] & 0xB0)) {
             SsSetSerialVol(0, 0, 0);
             resetPendingCdRequests();
             owner->task = NULL;

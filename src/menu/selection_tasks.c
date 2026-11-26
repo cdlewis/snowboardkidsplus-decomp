@@ -409,19 +409,19 @@ void updateSelectionMenuTask(void) {
     state = (SelectionMenuState *)&gTaskMemoryPool[D_8013AE88->resource14];
     state->unk0A = 0;
 
-    if (D_8013AEE8[0] & 0x8000) {
+    if (gControllerPressedButtons[0] & 0x8000) {
         selection = (u16)state->selection;
         if ((u16)(selection - 1) < 4 || (u32)(selection - 6) < 5) {
             state->selection = selection - 1;
         }
     }
-    if (D_8013AEE8[0] & 0x2000) {
+    if (gControllerPressedButtons[0] & 0x2000) {
         selection = (u16)state->selection;
         if (selection < 4 || (u32)(selection - 5) < 5) {
             state->selection = selection + 1;
         }
     }
-    if (D_8013AEE8[0] & 0x1000) {
+    if (gControllerPressedButtons[0] & 0x1000) {
         selection = (u16)state->selection;
         if ((u16)(selection - 5) < 3) {
             state->selection = selection - 5;
@@ -431,7 +431,7 @@ void updateSelectionMenuTask(void) {
             state->selection = 8;
         }
     }
-    if (D_8013AEE8[0] & 0x4000) {
+    if (gControllerPressedButtons[0] & 0x4000) {
         selection = (u16)state->selection;
         if (selection < 3) {
             state->selection = selection + 5;
@@ -441,7 +441,7 @@ void updateSelectionMenuTask(void) {
             state->selection = 11;
         }
     }
-    if (D_8013AEE8[0] & 0x40) {
+    if (gControllerPressedButtons[0] & 0x40) {
         state->unk0A = 1;
     }
     if (state->selection != state->previousSelection) {
@@ -449,12 +449,12 @@ void updateSelectionMenuTask(void) {
         state->previousSelection = state->selection;
     }
     if (state->selection == 11) {
-        if (D_8013AEE8[0] & 0xB0) {
+        if (gControllerPressedButtons[0] & 0xB0) {
             state->unk0A = 1;
             state->unk08 = 20;
         }
     } else {
-        if (D_8013AEE8[0] & 0xB0) {
+        if (gControllerPressedButtons[0] & 0xB0) {
             D_8013AFD9 = state->selection + 1;
             playSoundEffect(0, 0, 0x20);
             state->unk08 = 20;

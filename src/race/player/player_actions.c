@@ -1355,7 +1355,7 @@ s16 countCurrentPlayerInputGroups(void) {
     if (currentPlayerAbsolute->unk008) {
         return (randomNextMain() & 3) == 0;
     }
-    buttons = D_8013AEE8[D_8013AE88->data18];
+    buttons = gControllerPressedButtons[D_8013AE88->data18];
     if (buttons & 0xF000) {
         count = 1;
     }
@@ -1384,19 +1384,19 @@ void startCurrentPlayerDirectionalAnimation(void) {
     player->unk0C4 = 0;
     player->unk0C6 = 0;
     if (!player->unk008) {
-        if (D_8013AEE8[D_8013AE88->data18] & 8) {
+        if (gControllerPressedButtons[D_8013AE88->data18] & 8) {
             D_8013AE88->data1C = 8;
             player->unk0C4 = 1;
         }
-        if (D_8013AEE8[D_8013AE88->data18] & 4) {
+        if (gControllerPressedButtons[D_8013AE88->data18] & 4) {
             D_8013AE88->data1C = 4;
             currentPlayerAbsolute->unk0C4 = 3;
         }
-        if (D_8013AEE8[D_8013AE88->data18] & 1) {
+        if (gControllerPressedButtons[D_8013AE88->data18] & 1) {
             D_8013AE88->data1C = 1;
             currentPlayerAbsolute->unk0C4 = 7;
         }
-        if (D_8013AEE8[D_8013AE88->data18] & 2) {
+        if (gControllerPressedButtons[D_8013AE88->data18] & 2) {
             D_8013AE88->data1C = 2;
             currentPlayerAbsolute->unk0C4 = 5;
         }
@@ -1435,7 +1435,7 @@ void startCurrentPlayerDirectionalAnimation(void) {
 void updateCurrentPlayerDirectionalAnimation(void) {
     GameTask *task = D_8013AE88;
     RacePlayer *player;
-    if (!(D_8013AEEC[task->data18] & task->data1C)) {
+    if (!(gControllerHeldButtons[task->data18] & task->data1C)) {
         task->data1E = 1;
     }
     player = currentPlayerAbsolute;
@@ -1552,7 +1552,7 @@ void updateCurrentPlayerProjectileUse(u16 playerIndex) {
     s32 activate = 0;
 
     if (!currentPlayerAbsolute->unk008) {
-        activate = ((u8)D_8013AEE8[D_8013AE88->data18]) >> 7;
+        activate = ((u8)gControllerPressedButtons[D_8013AE88->data18]) >> 7;
     } else {
         if (currentPlayerAbsolute->projectileUseCooldown == 0) {
             currentPlayerAbsolute->projectileUseCooldown = 10;
@@ -1615,7 +1615,7 @@ tryActivation:
         case 4: {
             u8 bounce = 0;
             if (!currentPlayerAbsolute->unk008) {
-                bounce = (D_8013AEEC[playerIndex] & 0xE000) == 0x4000;
+                bounce = (gControllerHeldButtons[playerIndex] & 0xE000) == 0x4000;
             } else {
                 s32 roll = randomNextSecondary();
                 if (gPlayerProjectileBounceChoices[currentPlayerAbsolute->unk935][roll & 7]) {
@@ -1652,7 +1652,7 @@ void updateCurrentPlayerItemUse(u16 playerIndex) {
     u16 activate = 0;
 
     if (!currentPlayerAbsolute->unk008) {
-        activate = (D_8013AEE8[playerIndex] >> 5) & 1;
+        activate = (gControllerPressedButtons[playerIndex] >> 5) & 1;
     } else {
         if ((s8)currentPlayerAbsolute->itemUseCooldown != 0) {
             currentPlayerAbsolute->itemUseCooldown--;

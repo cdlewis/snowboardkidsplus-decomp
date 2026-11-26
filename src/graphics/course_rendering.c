@@ -253,12 +253,12 @@ void getCourseSteeringTarget(s16 region, s32 x, s32 z, s32 *targetX, s32 *target
 }
 
 void adjustDebugPositionAndDisplay(VECTOR *position) {
-    if (D_8013AEEC[1] & 0x1000) position->vx += 32;
-    if (D_8013AEEC[1] & 0x4000) position->vx -= 32;
-    if (D_8013AEEC[1] & 0x8000) position->vz += 32;
-    if (D_8013AEEC[1] & 0x2000) position->vz -= 32;
-    if (D_8013AEEC[1] & 8) position->vy += 32;
-    if (D_8013AEEC[1] & 2) position->vy -= 32;
+    if (gControllerHeldButtons[1] & 0x1000) position->vx += 32;
+    if (gControllerHeldButtons[1] & 0x4000) position->vx -= 32;
+    if (gControllerHeldButtons[1] & 0x8000) position->vz += 32;
+    if (gControllerHeldButtons[1] & 0x2000) position->vz -= 32;
+    if (gControllerHeldButtons[1] & 8) position->vy += 32;
+    if (gControllerHeldButtons[1] & 2) position->vy -= 32;
     drawStretchedDebugText(0, 10, gDebugPositionXFormat, position->vx);
     drawStretchedDebugText(0, 11, gDebugPositionYFormat, position->vy);
     drawStretchedDebugText(0, 12, gDebugPositionZFormat, position->vz);

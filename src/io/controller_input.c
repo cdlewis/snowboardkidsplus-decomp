@@ -15,9 +15,9 @@ static u8 sControllerInputStatePadding1 __attribute__((section(".sdata.controlle
 
 static u8 sControllerInputStatePadding2 __attribute__((section(".sdata.controller_input_state"))) = 0;
 
-u16 D_8013AEE8[2] __attribute__((section(".data.controller_input_arrays"))) = {0};
+u16 gControllerPressedButtons[2] __attribute__((section(".data.controller_input_arrays"))) = {0};
 
-u16 D_8013AEEC[2] __attribute__((section(".data.controller_input_arrays"))) = {0};
+u16 gControllerHeldButtons[2] __attribute__((section(".data.controller_input_arrays"))) = {0};
 
 s16 D_8013AEF0[2] __attribute__((section(".data.controller_input_arrays"))) = {0};
 
@@ -88,56 +88,69 @@ s32 isControllerFlag5Clear(u16 controller) {
     return 1;
 }
 
-/* DECOMP_ATTEMPT: inline 142/155 */
+/* DECOMP_ATTEMPT: inline 153/155 */
 #ifdef NON_MATCHING
-extern u8 D_8013AEBC[];
+enum {
+    CONTROLLER_BUTTON_UP = 0x1000,
+    CONTROLLER_BUTTON_DOWN = 0x4000,
+    CONTROLLER_BUTTON_LEFT = 0x8000,
+    CONTROLLER_BUTTON_RIGHT = 0x2000,
+};
+
+extern u8 gControllerVerticalRepeatTimers[];
+
+#define START_DIRECTION_REPEAT(flags, otherFlags, direction, timer) \
+    do { \
+        (flags) |= (otherFlags) | (direction); \
+        (timer) = gControllerRepeatInitialDelay; \
+    } while (0)
 
 void func_80014D60(u16 controller) {
-    u8 flags;
     if (gControllerFlags[controller]) {
-        if (D_8013AEEC[controller] & 0x1000) {
+        if (gControllerHeldButtons[controller] & CONTROLLER_BUTTON_UP) {
             if (gControllerFlags[controller] & 0x2) {
-                if (--D_8013AEBC[controller] == 0) {
-                    D_8013AEE8[controller] |= 0x1000;
-                    D_8013AEBC[controller] = gControllerRepeatInterval;
+                if (--gControllerVerticalRepeatTimers[controller] == 0) {
+                    gControllerPressedButtons[controller] |= CONTROLLER_BUTTON_UP;
+                    gControllerVerticalRepeatTimers[controller] = gControllerRepeatInterval;
                 }
             } else {
-                gControllerFlags[controller] |= (gControllerFlags[controller] & 0xF9) | 0x2;
-                D_8013AEBC[controller] = gControllerRepeatInitialDelay;
+                START_DIRECTION_REPEAT(gControllerFlags[controller], gControllerFlags[controller] & 0xF9,
+                                       0x2, gControllerVerticalRepeatTimers[controller]);
             }
-        }         else if (D_8013AEEC[controller] & 0x4000) {
-            flags = gControllerFlags[controller];
+        } else if (gControllerHeldButtons[controller] & CONTROLLER_BUTTON_DOWN) {
+            u8 flags = gControllerFlags[controller];
+            u8 otherFlags = flags & 0xF9;
             if (flags & 0x4) {
-                if (--D_8013AEBC[controller] == 0) {
-                    D_8013AEE8[controller] |= 0x4000;
-                    D_8013AEBC[controller] = gControllerRepeatInterval;
+                if (--gControllerVerticalRepeatTimers[controller] == 0) {
+                    gControllerPressedButtons[controller] |= CONTROLLER_BUTTON_DOWN;
+                    gControllerVerticalRepeatTimers[controller] = gControllerRepeatInterval;
                 }
             } else {
-                gControllerFlags[controller] |= (flags & 0xF9) | 0x4;
-                D_8013AEBC[controller] = gControllerRepeatInitialDelay;
+                START_DIRECTION_REPEAT(gControllerFlags[controller], otherFlags,
+                                       0x4, gControllerVerticalRepeatTimers[controller]);
             }
         } else {
             gControllerFlags[controller] &= 0xF9;
         }
-        if (D_8013AEEC[controller] & 0x8000) {
+        if (gControllerHeldButtons[controller] & CONTROLLER_BUTTON_LEFT) {
             if (gControllerFlags[controller] & 0x8) {
                 if (--gControllerHorizontalRepeatTimers[controller] == 0) {
-                    D_8013AEE8[controller] |= 0x8000;
+                    gControllerPressedButtons[controller] |= CONTROLLER_BUTTON_LEFT;
                     gControllerHorizontalRepeatTimers[controller] = gControllerRepeatInterval;
                 }
             } else {
-                gControllerFlags[controller] |= (gControllerFlags[controller] & 0xE7) | 0x8;
-                gControllerHorizontalRepeatTimers[controller] = gControllerRepeatInitialDelay;
+                START_DIRECTION_REPEAT(gControllerFlags[controller], gControllerFlags[controller] & 0xE7,
+                                       0x8, gControllerHorizontalRepeatTimers[controller]);
             }
-        }         else if (D_8013AEEC[controller] & 0x2000) {
+        } else if (gControllerHeldButtons[controller] & CONTROLLER_BUTTON_RIGHT) {
             if (gControllerFlags[controller] & 0x10) {
                 if (--gControllerHorizontalRepeatTimers[controller] == 0) {
-                    D_8013AEE8[controller] |= 0x2000;
+                    gControllerPressedButtons[controller] |= CONTROLLER_BUTTON_RIGHT;
                     gControllerHorizontalRepeatTimers[controller] = gControllerRepeatInterval;
                 }
             } else {
-                gControllerFlags[controller] |= (gControllerFlags[controller] & 0xE7) | 0x10;
-                gControllerHorizontalRepeatTimers[controller] = gControllerRepeatInitialDelay;
+                START_DIRECTION_REPEAT(gControllerFlags[controller], gControllerFlags[controller] & 0xE7,
+                                       0x10, gControllerHorizontalRepeatTimers[controller]);
             }
         } else {
             gControllerFlags[controller] &= 0xE7;
@@ -149,16 +162,16 @@ INCLUDE_ASM("asm/nonmatchings/io/controller_input", func_80014D60);
 #endif
 
 void setControllerAxesFromButtons(u16 controller) {
-    if (D_8013AEEC[controller] & 0x2000) {
+    if (gControllerHeldButtons[controller] & 0x2000) {
         D_8013AEF8[controller] = 31;
-    } else if (D_8013AEEC[controller] & 0x8000) {
+    } else if (gControllerHeldButtons[controller] & 0x8000) {
         D_8013AEF8[controller] = -31;
     } else {
         D_8013AEF8[controller] = 0;
     }
-    if (D_8013AEEC[controller] & 0x4000) {
+    if (gControllerHeldButtons[controller] & 0x4000) {
         D_8013AEFC[controller] = 31;
-    } else if (D_8013AEEC[controller] & 0x1000) {
+    } else if (gControllerHeldButtons[controller] & 0x1000) {
         D_8013AEFC[controller] = -31;
     } else {
         D_8013AEFC[controller] = 0;
@@ -166,14 +179,14 @@ void setControllerAxesFromButtons(u16 controller) {
 }
 
 void updateControllerAxesFromButtons(u16 controller) {
-    if (D_8013AEEC[controller] & 0x2000) {
+    if (gControllerHeldButtons[controller] & 0x2000) {
         D_8013AEF8[controller] = 31;
-    } else if (D_8013AEEC[controller] & 0x8000) {
+    } else if (gControllerHeldButtons[controller] & 0x8000) {
         D_8013AEF8[controller] = -31;
     }
-    if (D_8013AEEC[controller] & 0x4000) {
+    if (gControllerHeldButtons[controller] & 0x4000) {
         D_8013AEFC[controller] = 31;
-    } else if (D_8013AEEC[controller] & 0x1000) {
+    } else if (gControllerHeldButtons[controller] & 0x1000) {
         D_8013AEFC[controller] = -31;
     }
 }
@@ -191,10 +204,10 @@ void updateControllerAxesFromAnalog(u16 controller) {
     if (y >= 0) D_8013AEFC[controller] = (s8)gControllerAnalogResponse[y];
     else D_8013AEFC[controller] = -(s8)gControllerAnalogResponse[-y];
     updateControllerAxesFromButtons(controller);
-    if (D_8013AEF8[controller] > 26) D_8013AEEC[controller] |= 0x2000;
-    if (D_8013AEF8[controller] < -26) D_8013AEEC[controller] |= 0x8000;
-    if (D_8013AEFC[controller] > 26) D_8013AEEC[controller] |= 0x4000;
-    if (D_8013AEFC[controller] < -26) D_8013AEEC[controller] |= 0x1000;
+    if (D_8013AEF8[controller] > 26) gControllerHeldButtons[controller] |= 0x2000;
+    if (D_8013AEF8[controller] < -26) gControllerHeldButtons[controller] |= 0x8000;
+    if (D_8013AEFC[controller] > 26) gControllerHeldButtons[controller] |= 0x4000;
+    if (D_8013AEFC[controller] < -26) gControllerHeldButtons[controller] |= 0x1000;
 }
 
 void initializeControllers(void) {
@@ -203,10 +216,10 @@ void initializeControllers(void) {
     PadSetAct(0x10, &D_8013AF00[1].control, 2);
     PadStartCom();
     D_8013AF0C[0] = 0;
-    D_8013AEE8[0] = 0;
-    D_8013AEEC[0] = 0;
-    D_8013AEE8[1] = 0;
-    D_8013AEEC[1] = 0;
+    gControllerPressedButtons[0] = 0;
+    gControllerHeldButtons[0] = 0;
+    gControllerPressedButtons[1] = 0;
+    gControllerHeldButtons[1] = 0;
     D_8013AF0C[1] = 0;
     D_8013AEFC[0] = 0;
     D_8013AEF8[0] = 0;
@@ -244,10 +257,10 @@ void updateControllerInput(u16 controller) {
     ControllerReceiveBuffer *packet;
     s32 buttons;
     s32 device;
-    D_8013AF0C[controller] = D_8013AEEC[controller];
+    D_8013AF0C[controller] = gControllerHeldButtons[controller];
     if (!isControllerInputSupported(controller)) {
-        D_8013AEE8[controller] = 0;
-        D_8013AEEC[controller] = 0;
+        gControllerPressedButtons[controller] = 0;
+        gControllerHeldButtons[controller] = 0;
         D_8013AEFC[controller] = 0;
         D_8013AEF8[controller] = 0;
         return;
@@ -256,41 +269,41 @@ void updateControllerInput(u16 controller) {
     packet = buffer + controller;
     device = packet->deviceId & 0xF0;
     if (device == 0x40) {
-        D_8013AEEC[controller] = ((u8)~packet->payload[0] << 8) | (u8)~packet->payload[1];
+        gControllerHeldButtons[controller] = ((u8)~packet->payload[0] << 8) | (u8)~packet->payload[1];
         setControllerAxesFromButtons(controller);
     } else if (device == 0x70) {
-        D_8013AEEC[controller] = ((u8)~packet->payload[0] << 8) | (u8)~packet->payload[1];
+        gControllerHeldButtons[controller] = ((u8)~packet->payload[0] << 8) | (u8)~packet->payload[1];
         updateControllerAxesFromAnalog(controller);
     } else if (device == 0x50) {
-        D_8013AEEC[controller] = (u8)~packet->payload[0] << 8;
+        gControllerHeldButtons[controller] = (u8)~packet->payload[0] << 8;
         buttons = ~packet->payload[1];
         if (buttons & 1) {
-            D_8013AEEC[controller] |= 1;
+            gControllerHeldButtons[controller] |= 1;
         }
         if (buttons & 2) {
-            D_8013AEEC[controller] |= 4;
+            gControllerHeldButtons[controller] |= 4;
         }
         if (buttons & 4) {
-            D_8013AEEC[controller] |= 0x80;
+            gControllerHeldButtons[controller] |= 0x80;
         }
         if (buttons & 8) {
-            D_8013AEEC[controller] |= 0x10;
+            gControllerHeldButtons[controller] |= 0x10;
         }
         if (buttons & 0x10) {
-            D_8013AEEC[controller] |= 8;
+            gControllerHeldButtons[controller] |= 8;
         }
         if (buttons & 0x20) {
-            D_8013AEEC[controller] |= 0x20;
+            gControllerHeldButtons[controller] |= 0x20;
         }
         if (buttons & 0x40) {
-            D_8013AEEC[controller] |= 0x40;
+            gControllerHeldButtons[controller] |= 0x40;
         }
         if (buttons & 0x80) {
-            D_8013AEEC[controller] |= 2;
+            gControllerHeldButtons[controller] |= 2;
         }
         updateControllerAxesFromAnalog(controller);
     }
-    D_8013AEE8[controller] = ~D_8013AF0C[controller] & D_8013AEEC[controller];
+    gControllerPressedButtons[controller] = ~D_8013AF0C[controller] & gControllerHeldButtons[controller];
 }
 
 void updateControllerActuators(u16 controller) {
@@ -349,8 +362,8 @@ void recordControllerInput(u16 controller) {
 
     previous = (ControllerInputRecord *)(D_8013AEDC[controller] * sizeof(*records) +
                                         (u32)records) - 1;
-    if (previous->buttons == D_8013AEEC[controller] &&
-        previous->pressedButtons == D_8013AEE8[controller] &&
+    if (previous->buttons == gControllerHeldButtons[controller] &&
+        previous->pressedButtons == gControllerPressedButtons[controller] &&
         (s8)previous->horizontal == D_8013AEF8[controller] &&
         (s8)previous->vertical == D_8013AEFC[controller] &&
         previous->repeatCount < 255) {
@@ -362,8 +375,8 @@ void recordControllerInput(u16 controller) {
         D_8013AED4[controller][D_8013AEDC[controller]].repeatCount = 0;
         D_8013AED4[controller][D_8013AEDC[controller]].horizontal = D_8013AEF8[controller];
         D_8013AED4[controller][D_8013AEDC[controller]].vertical = D_8013AEFC[controller];
-        D_8013AED4[controller][D_8013AEDC[controller]].buttons = D_8013AEEC[controller] & 0xF7FF;
-        D_8013AED4[controller][D_8013AEDC[controller]].pressedButtons = D_8013AEE8[controller] & 0xF7FF;
+        D_8013AED4[controller][D_8013AEDC[controller]].buttons = gControllerHeldButtons[controller] & 0xF7FF;
+        D_8013AED4[controller][D_8013AEDC[controller]].pressedButtons = gControllerPressedButtons[controller] & 0xF7FF;
         D_8013AEDC[controller]++;
         if (D_8013AFD7) {
             if (D_8013AEDC[controller] + 1 >= 0x200U) {
@@ -394,8 +407,8 @@ void initializeControllerInputPlayback(u16 controller) {
 
 void playbackControllerInput(u16 controller) {
     u8 *counter;
-    D_8013AEEC[controller] = D_8013AED4[controller][D_8013AEDC[controller]].buttons;
-    D_8013AEE8[controller] = D_8013AED4[controller][D_8013AEDC[controller]].pressedButtons;
+    gControllerHeldButtons[controller] = D_8013AED4[controller][D_8013AEDC[controller]].buttons;
+    gControllerPressedButtons[controller] = D_8013AED4[controller][D_8013AEDC[controller]].pressedButtons;
     D_8013AEF8[controller] = (s8)D_8013AED4[controller][D_8013AEDC[controller]].horizontal;
     D_8013AEFC[controller] = (s8)D_8013AED4[controller][D_8013AEDC[controller]].vertical;
     counter = &D_8013AEE0[controller];

@@ -409,7 +409,7 @@ void updateTitleScreenMenuTask(void) {
                 setSpriteColor(128, 128, 128);
                 drawUppercaseProportionalText(-40, 62, 20, gTitleScreenStartPrompt, 2, -1, &D_800EBFF0[D_8013AF78], 4);
             }
-            if (D_8013AEE8[0] & 0x800) {
+            if (gControllerPressedButtons[0] & 0x800) {
                 playSoundEffect(0, 0, 32);
                 state->promptState = 1;
             }
@@ -481,7 +481,7 @@ void updateTitleLogoTask(void) {
         entry = &entries[D_8013AE88->data1E / 10U];
     }
 
-    if (D_8013AEE8[0] & 0x8F0) {
+    if (gControllerPressedButtons[0] & 0x8F0) {
         D_8013AE88->data18 = 7;
         if (logo->soundState == 0) {
             logo->soundState = 1;

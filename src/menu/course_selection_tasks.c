@@ -3009,14 +3009,14 @@ void updatePlayerCourseVariantSelectionTask(void) {
         createRegisteredStaticTextPanelTask(-76, player * 104 - 74, -56, player * 104 - 62,
                                             gPlayerCourseVariantConfirmationText, -1, 3, 11);
         if (gPlayerGroupedSelectionStates[0] != 3 || gPlayerGroupedSelectionStates[1] != 3) {
-            if (!(D_8013AEE8[player] & 0x40)) {
+            if (!(gControllerPressedButtons[player] & 0x40)) {
                 break;
             }
             children[0].command = 21;
             panels[2].command = 1;
             selection->choiceResult = 0;
             D_8013AE88->data18 = 7;
-            D_8013AEE8[player] = 0;
+            gControllerPressedButtons[player] = 0;
             gPlayerGroupedSelectionStates[player] = 2;
             children[1].command = 99;
             playSoundEffect(0, 0, 32);
@@ -3851,7 +3851,7 @@ void updateSaveRecordLoadPanelTask(void) {
             D_8013AE88->data18 = 33;
             break;
         }
-        if (D_8013AEE8[player]) {
+        if (gControllerPressedButtons[player]) {
             selection->choiceResult = 1;
             resources->panels[2].command = 99;
             D_8013AE88->data18 = 20;

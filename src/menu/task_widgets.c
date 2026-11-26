@@ -1164,8 +1164,8 @@ clearCommand:
     }
 
     if (state->selection.choiceResult == 0 && state->selection.mode > 0) {
-        if (state->mode & 1) input |= D_8013AEE8[0];
-        if (state->mode & 2) input |= D_8013AEE8[1];
+        if (state->mode & 1) input |= gControllerPressedButtons[0];
+        if (state->mode & 2) input |= gControllerPressedButtons[1];
         i = state->selection.selectedIndex;
         if (state->unk60 >= 0) {
             if (input & 0x1000) {
@@ -1980,7 +1980,7 @@ void updateValueTransitionTask(void) {
             }
             break;
         }
-        if (D_8013AEE8[0] != 0 || D_8013AEE8[1] != 0) {
+        if (gControllerPressedButtons[0] != 0 || gControllerPressedButtons[1] != 0) {
             value = resource->target;
             D_8013AE88->data1A = 1;
         }
@@ -2124,10 +2124,10 @@ void updateRegisteredMovingPanelTask(void) {
             D_8013AE88->data18 = ready;
         }
         if (D_8013AE88->data1A & 1) {
-            input |= D_8013AEE8[0];
+            input |= gControllerPressedButtons[0];
         }
         if (D_8013AE88->data1A & 2) {
-            input |= D_8013AEE8[1];
+            input |= gControllerPressedButtons[1];
         }
 
         selection = state->selection;
@@ -2150,10 +2150,10 @@ void updateRegisteredMovingPanelTask(void) {
         if (input & 0xB0) {
             state->closing = 1;
             playSoundEffect(0, 0, 32);
-            if ((D_8013AE88->data1A & 1) && (D_8013AEE8[0] & 0xB0)) {
+            if ((D_8013AE88->data1A & 1) && (gControllerPressedButtons[0] & 0xB0)) {
                 state->respondingControllers |= 1;
             }
-            if ((D_8013AE88->data1A & 2) && (D_8013AEE8[1] & 0xB0)) {
+            if ((D_8013AE88->data1A & 2) && (gControllerPressedButtons[1] & 0xB0)) {
                 state->respondingControllers |= 2;
             }
         }
@@ -2162,10 +2162,10 @@ void updateRegisteredMovingPanelTask(void) {
             state->highlight = 0;
             state->closing = 1;
             playSoundEffect(0, 0, 32);
-            if ((D_8013AE88->data1A & 1) && (D_8013AEE8[0] & 0x40)) {
+            if ((D_8013AE88->data1A & 1) && (gControllerPressedButtons[0] & 0x40)) {
                 state->respondingControllers |= 1;
             }
-            if ((D_8013AE88->data1A & 2) && (D_8013AEE8[1] & 0x40)) {
+            if ((D_8013AE88->data1A & 2) && (gControllerPressedButtons[1] & 0x40)) {
                 state->respondingControllers |= 2;
             }
         }
@@ -2280,8 +2280,8 @@ void updateInputTimedSpriteTask(void) {
         entry->active = 0;
         deleteCurrentTaskSubtree();
     } else {
-        if (state->controllers & 1) input |= D_8013AEE8[0];
-        if (state->controllers & 2) input |= D_8013AEE8[1];
+        if (state->controllers & 1) input |= gControllerPressedButtons[0];
+        if (state->controllers & 2) input |= gControllerPressedButtons[1];
         if (input & state->acceptMask) {
             playSoundEffect(0, 0, 32);
             entry->active = 0;
@@ -2516,11 +2516,11 @@ void updateCharacterSelectionTask(void) {
             }
         }
 
-        if (selection[0].unk00 >= 0 && selection[0].unk06 > 0 && (D_8013AEE8[0] & 0x40)) {
+        if (selection[0].unk00 >= 0 && selection[0].unk06 > 0 && (gControllerPressedButtons[0] & 0x40)) {
             selection[0].unk06 = 0;
             playSoundEffect(0, 0, 32);
         }
-        if (selection[1].unk00 >= 0 && selection[1].unk06 > 0 && (D_8013AEE8[1] & 0x40)) {
+        if (selection[1].unk00 >= 0 && selection[1].unk06 > 0 && (gControllerPressedButtons[1] & 0x40)) {
             selection[1].unk06 = 0;
             playSoundEffect(0, 0, 32);
         }
@@ -2997,7 +2997,7 @@ void updatePlayerCharacterSelection(s16 playerIndex, SelectionEntry *entries) {
     }
     previous = entry->selected;
 
-    if (D_8013AEE8[playerIndex] & 0x8000) {
+    if (gControllerPressedButtons[playerIndex] & 0x8000) {
         s16 current = *(volatile s16 *)&entry->selected;
         entry->selected = (current & 1) ? current - 1 : current + 1;
         selection = entry->selected - 8;
@@ -3005,7 +3005,7 @@ void updatePlayerCharacterSelection(s16 playerIndex, SelectionEntry *entries) {
             entry->selected = previous;
         }
     }
-    if (D_8013AEE8[playerIndex] & 0x2000) {
+    if (gControllerPressedButtons[playerIndex] & 0x2000) {
         s16 current;
         entry->selected++;
         current = *(volatile s16 *)&entry->selected;
@@ -3017,7 +3017,7 @@ void updatePlayerCharacterSelection(s16 playerIndex, SelectionEntry *entries) {
             entry->selected = previous;
         }
     }
-    if (D_8013AEE8[playerIndex] & 0x1000) {
+    if (gControllerPressedButtons[playerIndex] & 0x1000) {
         upSelection = entry->selected;
         entry->selected = upSelection - 2;
         if (entry->selected < 0) {
@@ -3028,7 +3028,7 @@ void updatePlayerCharacterSelection(s16 playerIndex, SelectionEntry *entries) {
             }
         }
     }
-    if (D_8013AEE8[playerIndex] & 0x4000) {
+    if (gControllerPressedButtons[playerIndex] & 0x4000) {
         selection = entry->selected;
         entry->selected = selection + 2;
         if ((u16)(selection - 6) < 2 && !(gMergedSaveRecord.flags & (1 << (s16)(selection - 6)))) {
@@ -3042,7 +3042,7 @@ void updatePlayerCharacterSelection(s16 playerIndex, SelectionEntry *entries) {
         entry->previous = previous;
         playSoundEffect(0, 0x100, 0x20);
     }
-    if (D_8013AEE8[playerIndex] & 0xB0) {
+    if (gControllerPressedButtons[playerIndex] & 0xB0) {
         entry->unk06 = 1;
         mapping = &D_8012D460[entry->selected];
         records = gPlayerSaveRecords;
@@ -3078,7 +3078,7 @@ void updatePlayerCharacterSelection(s16 playerIndex, SelectionEntry *entries) {
 confirm:
         playSoundEffect(1, gCharacterSelectionConfirmSounds[D_8012D460[entry->selected]], 0x20);
     }
-    if (D_8013AEE8[playerIndex] & 0x40) {
+    if (gControllerPressedButtons[playerIndex] & 0x40) {
         entry->unk06 = -1;
     }
 }
@@ -3434,9 +3434,9 @@ void func_8007B48C(s16 recordIndex, s16 maskIndex) {
     SaveRecord *state;
     SaveRecord *records;
 
-    if (D_8013AEE8[recordIndex] & 8) {
+    if (gControllerPressedButtons[recordIndex] & 8) {
         cycleSaveRecordUnlockFlags(recordIndex, maskIndex);
-    } else if (D_8013AEE8[recordIndex] & 2) {
+    } else if (gControllerPressedButtons[recordIndex] & 2) {
         if (getSaveRecordMaskTier(recordIndex, maskIndex)) {
             for (maskIndex = 0; maskIndex < 10; maskIndex++) {
                 setSaveRecordMaskTier(recordIndex, maskIndex, 4);
@@ -3477,7 +3477,7 @@ void func_8007B48C(s16 recordIndex, s16 maskIndex) {
         }
     }
 
-    if (D_8013AEE8[recordIndex] & 4) {
+    if (gControllerPressedButtons[recordIndex] & 4) {
         s32 flag;
         paired[0] = getGlobalFlagMask(0);
         paired[1] = getGlobalFlagMask(1);
@@ -3495,7 +3495,7 @@ enableSecond:
         }
         updatePairedStateFlag(flag);
     }
-    if (D_8013AEE8[recordIndex] & 1) {
+    if (gControllerPressedButtons[recordIndex] & 1) {
         if (getSaveRecordFlagPair(recordIndex, maskIndex, 0) > 0) {
             setSaveRecordFlagPair(recordIndex, maskIndex, 0, 0);
             setSaveRecordFlagPair(recordIndex, maskIndex, 1, 0);

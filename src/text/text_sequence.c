@@ -162,7 +162,7 @@ void updateTextSequenceTask(void) {
             createInputTimedSpriteTask(resource->bodyX / 4096 + 248, resource->displacement / 4096 + 52,
                                        gTextSequenceAdvancePromptFrames, 2, 1, TEXT_SEQUENCE_ADVANCE_BUTTONS, 0, 0, 1);
         } else {
-            if (D_8013AEE8[0] & TEXT_SEQUENCE_ADVANCE_BUTTONS) {
+            if (gControllerPressedButtons[0] & TEXT_SEQUENCE_ADVANCE_BUTTONS) {
                 resource->progress = resource->duration << 8;
             } else {
                 resource->progress += 127;

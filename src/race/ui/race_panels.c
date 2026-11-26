@@ -807,8 +807,8 @@ void drawAutoPilotLabelTask(void) {
 }
 
 void checkControllerInputSequenceTask(void) {
-    if (D_8013AEE8[0] != 0) {
-        if (D_8013AEE8[0] == gControllerInputSequences[D_8013AE88->data18][D_8013AE88->data1A]) {
+    if (gControllerPressedButtons[0] != 0) {
+        if (gControllerPressedButtons[0] == gControllerInputSequences[D_8013AE88->data18][D_8013AE88->data1A]) {
             D_8013AE88->data1A++;
             if (gControllerInputSequences[D_8013AE88->data18][D_8013AE88->data1A] == 0xFFFF) {
                 gSaveRecordUnlockOverrideFlags |= 1 << D_8013AE88->data18;
@@ -913,7 +913,7 @@ void waitResultFlagsInputTask(void) {
         while (1) {}
     }
     resource = (ResultDisplayResource *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if (D_8013AEE8[0] & 0xB0) {
+    if (gControllerPressedButtons[0] & 0xB0) {
         D_8013AFE4 |= 0x10;
         setCurrentTaskCallback(waitResultDisplayTaskFlagsTask);
     }
@@ -953,7 +953,7 @@ void transferResultPrizeMoneyTask(void) {
             gRacePlayers[0].unk01C = 0;
         }
     }
-    if (D_8013AEE8[0] & 0xB0) {
+    if (gControllerPressedButtons[0] & 0xB0) {
         gRacePlayers[0].money += resource->unk04;
         if (resource->unk06 != 3) {
             gRacePlayers[0].money += gRacePlayers[0].unk01C;
@@ -997,7 +997,7 @@ void waitResultDisplayInputTask(void) {
     }
     resource = (ResultDisplayResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     resource->timer--;
-    if (D_8013AEE8[0] & 0xB0) {
+    if (gControllerPressedButtons[0] & 0xB0) {
         resource->timer = 0;
     }
     if (resource->timer == 0) {
@@ -1018,7 +1018,7 @@ void waitResultDisplayConfirmationTask(void) {
     }
     resource = (ResultDisplayResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     resource->timer--;
-    if (D_8013AEE8[0] & 0xB0) {
+    if (gControllerPressedButtons[0] & 0xB0) {
         resource->timer = 0;
     }
     if (resource->timer == 0) {
@@ -1039,7 +1039,7 @@ void waitResultNumberDisplayTask(void) {
     }
     resource = (ResultDisplayResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     resource->timer--;
-    if (D_8013AEE8[0] & 0xB0) {
+    if (gControllerPressedButtons[0] & 0xB0) {
         resource->timer = 0;
     }
     if (resource->timer == 0) {
@@ -1059,7 +1059,7 @@ void waitResultDisplayTask(void) {
     }
     resource = (ResultDisplayResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     resource->timer--;
-    if (D_8013AEE8[0] & 0xB0) {
+    if (gControllerPressedButtons[0] & 0xB0) {
         resource->timer = 0;
     }
     if (resource->timer == 0) {
@@ -1231,7 +1231,7 @@ void waitPlayerResultsInputTask(void) {
     }
     resource = (TaskFadeResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     for (player = 0; player < gameOptionPlayerModeAbsolute; player++) {
-        if (D_8013AEE8[player] & 0xB0) {
+        if (gControllerPressedButtons[player] & 0xB0) {
             D_8013AFE4 |= 0x10;
             setCurrentTaskCallback(drawCurrentTaskPlayerResults);
         }

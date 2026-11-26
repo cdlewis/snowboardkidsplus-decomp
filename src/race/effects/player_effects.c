@@ -3761,7 +3761,7 @@ void updateTimedSpritePresentation(void) {
             0, 0, &D_8013B35C);
     }
 
-    if (frame == 4950 || (D_8013AEE8[0] & PRESENTATION_SKIP_BUTTON)) {
+    if (frame == 4950 || (gControllerPressedButtons[0] & PRESENTATION_SKIP_BUTTON)) {
         D_8013B36C = 1;
         D_8013AE88->data18 = 0;
         deleteCurrentTaskDescendants();

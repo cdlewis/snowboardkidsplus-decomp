@@ -70,17 +70,17 @@ void updateUnlockOptionsMenuTask(void) {
     optionChanged = 0;
     state = (UnlockMenuState *)&gTaskMemoryPool[D_8013AE88->resource14];
 
-    if (D_8013AEE8[0] & 0x1000) {
+    if (gControllerPressedButtons[0] & 0x1000) {
         if (state->selection > 0) {
             state->selection--;
         }
     }
-    if (D_8013AEE8[0] & 0x4000) {
+    if (gControllerPressedButtons[0] & 0x4000) {
         if (state->selection < 6) {
             state->selection++;
         }
     }
-    if (D_8013AEE8[0] & 0x40) {
+    if (gControllerPressedButtons[0] & 0x40) {
         exitRequested = 1;
     }
     if (state->selection != state->previousSelection) {
@@ -90,88 +90,88 @@ void updateUnlockOptionsMenuTask(void) {
 
     switch (state->selection) {
     case 0:
-        if ((D_8013AEE8[0] & 0x8000) && !(gGameOptionFlags & 0x1)) {
+        if ((gControllerPressedButtons[0] & 0x8000) && !(gGameOptionFlags & 0x1)) {
             gGameOptionFlags |= 0x1;
             optionChanged = 1;
         }
-        if ((D_8013AEE8[0] & 0x2000) && (gGameOptionFlags & 0x1)) {
+        if ((gControllerPressedButtons[0] & 0x2000) && (gGameOptionFlags & 0x1)) {
             gGameOptionFlags &= ~0x1;
             optionChanged = 1;
         }
-        if (D_8013AEE8[0] & 0xB0) {
+        if (gControllerPressedButtons[0] & 0xB0) {
             gGameOptionFlags = !(gGameOptionFlags & 0x1) ?
                 gGameOptionFlags | 0x1 : gGameOptionFlags & ~0x1;
             optionChanged = 1;
         }
         break;
     case 1:
-        if ((D_8013AEE8[0] & 0x8000) && !(gGameOptionFlags & 0x2)) {
+        if ((gControllerPressedButtons[0] & 0x8000) && !(gGameOptionFlags & 0x2)) {
             gGameOptionFlags |= 0x2;
             optionChanged = 1;
         }
-        if ((D_8013AEE8[0] & 0x2000) && (gGameOptionFlags & 0x2)) {
+        if ((gControllerPressedButtons[0] & 0x2000) && (gGameOptionFlags & 0x2)) {
             gGameOptionFlags &= ~0x2;
             optionChanged = 1;
         }
-        if (D_8013AEE8[0] & 0xB0) {
+        if (gControllerPressedButtons[0] & 0xB0) {
             gGameOptionFlags = !(gGameOptionFlags & 0x2) ?
                 gGameOptionFlags | 0x2 : gGameOptionFlags & ~0x2;
             optionChanged = 1;
         }
         break;
     case 2:
-        if ((D_8013AEE8[0] & 0x8000) && !(gGameOptionFlags & 0x4)) {
+        if ((gControllerPressedButtons[0] & 0x8000) && !(gGameOptionFlags & 0x4)) {
             gGameOptionFlags |= 0x4;
             optionChanged = 1;
         }
-        if ((D_8013AEE8[0] & 0x2000) && (gGameOptionFlags & 0x4)) {
+        if ((gControllerPressedButtons[0] & 0x2000) && (gGameOptionFlags & 0x4)) {
             gGameOptionFlags &= ~0x4;
             optionChanged = 1;
         }
-        if (D_8013AEE8[0] & 0xB0) {
+        if (gControllerPressedButtons[0] & 0xB0) {
             gGameOptionFlags = !(gGameOptionFlags & 0x4) ?
                 gGameOptionFlags | 0x4 : gGameOptionFlags & ~0x4;
             optionChanged = 1;
         }
         break;
     case 3:
-        if ((D_8013AEE8[0] & 0x8000) && !(gGameOptionFlags & 0x10)) {
+        if ((gControllerPressedButtons[0] & 0x8000) && !(gGameOptionFlags & 0x10)) {
             gGameOptionFlags |= 0x30;
             optionChanged = 1;
         }
-        if ((D_8013AEE8[0] & 0x2000) && (gGameOptionFlags & 0x10)) {
+        if ((gControllerPressedButtons[0] & 0x2000) && (gGameOptionFlags & 0x10)) {
             gGameOptionFlags &= ~0x30;
             optionChanged = 1;
         }
-        if (D_8013AEE8[0] & 0xB0) {
+        if (gControllerPressedButtons[0] & 0xB0) {
             gGameOptionFlags = !(gGameOptionFlags & 0x10) ?
                 gGameOptionFlags | 0x30 : gGameOptionFlags & ~0x30;
             optionChanged = 1;
         }
         break;
     case 4:
-        if ((D_8013AEE8[0] & 0x8000) && !(gGameOptionFlags & 0x8)) {
+        if ((gControllerPressedButtons[0] & 0x8000) && !(gGameOptionFlags & 0x8)) {
             gGameOptionFlags |= 0x8;
             optionChanged = 1;
         }
-        if ((D_8013AEE8[0] & 0x2000) && (gGameOptionFlags & 0x8)) {
+        if ((gControllerPressedButtons[0] & 0x2000) && (gGameOptionFlags & 0x8)) {
             gGameOptionFlags &= ~0x8;
             optionChanged = 1;
         }
-        if (D_8013AEE8[0] & 0xB0) {
+        if (gControllerPressedButtons[0] & 0xB0) {
             gGameOptionFlags = !(gGameOptionFlags & 0x8) ?
                 gGameOptionFlags | 0x8 : gGameOptionFlags & ~0x8;
             optionChanged = 1;
         }
         break;
     case 5:
-        if (D_8013AEE8[0] & 0xB0) {
+        if (gControllerPressedButtons[0] & 0xB0) {
             setCurrentTaskCallback(initializeUnlockMenuTask);
             optionChanged = 1;
         }
         break;
     case 6:
-        if (D_8013AEE8[0] & 0xB0) {
+        if (gControllerPressedButtons[0] & 0xB0) {
             exitRequested = 1;
         }
         break;
@@ -337,13 +337,13 @@ void updateUnlockNotificationMenuTask(void) {
     } while (0);
     leave = 0;
 
-    if (D_8013AEE8[0] & 0x1000) {
+    if (gControllerPressedButtons[0] & 0x1000) {
         u16 selection = state->selection;
         if ((u16)(selection - 1) < 5 || (u32)(selection - 7) < 6) {
             state->selection = selection - 1;
         }
     }
-    if (D_8013AEE8[0] & 0x4000) {
+    if (gControllerPressedButtons[0] & 0x4000) {
         u32 selection = (u16)state->selection;
         if (selection < 5 || (u32)(selection - 6) < 6) {
             state->selection = selection + 1;
@@ -351,19 +351,19 @@ void updateUnlockNotificationMenuTask(void) {
             state->selection = 12;
         }
     }
-    if (D_8013AEE8[0] & 0x8000) {
+    if (gControllerPressedButtons[0] & 0x8000) {
         u16 selection = state->selection;
         if ((u16)(selection - 6) < 6) {
             state->selection = selection - 6;
         }
     }
-    if (D_8013AEE8[0] & 0x2000) {
+    if (gControllerPressedButtons[0] & 0x2000) {
         u16 selection = state->selection;
         if (selection < 6) {
             state->selection = selection + 6;
         }
     }
-    if (D_8013AEE8[0] & 0x40) {
+    if (gControllerPressedButtons[0] & 0x40) {
         leave = 1;
     }
     if (state->selection != state->previousSelection) {
@@ -371,10 +371,10 @@ void updateUnlockNotificationMenuTask(void) {
         state->previousSelection = state->selection;
     }
     if (state->selection == 12) {
-        if (D_8013AEE8[0] & 0xB0) {
+        if (gControllerPressedButtons[0] & 0xB0) {
             leave = 1;
         }
-    } else if ((D_8013AEE8[0] & 0xB0) &&
+    } else if ((gControllerPressedButtons[0] & 0xB0) &&
                (s16)hasUnlockNotificationFlag(state->selection)) {
         void (*callback)(void);
         u8 selection;

@@ -72,7 +72,7 @@ void updateScenePlaybackTask(void) {
         return;
     }
     ready = 0;
-    if (D_8013AEE8[0] & 0x800) {
+    if (gControllerPressedButtons[0] & 0x800) {
         ready = 1;
     }
     entry = state->currentEntry;

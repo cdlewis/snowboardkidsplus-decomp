@@ -142,15 +142,15 @@ void updateRacePauseMenu(void) {
     s16 player = pause - 1;
     u8 resumeState;
 
-    if (D_8013AEE8[player] & PAUSE_MENU_START) {
+    if (gControllerPressedButtons[player] & PAUSE_MENU_START) {
         resumeState = pause | PAUSE_MENU_RESUME_PENDING;
         goto resume;
     }
-    if ((D_8013AEE8[player] & PAUSE_MENU_UP) && D_8013AFD5 != 0) {
+    if ((gControllerPressedButtons[player] & PAUSE_MENU_UP) && D_8013AFD5 != 0) {
         D_8013AFD5--;
         playSoundEffect(0, 0x100, 0x20);
     }
-    if (D_8013AEE8[player] & PAUSE_MENU_DOWN) {
+    if (gControllerPressedButtons[player] & PAUSE_MENU_DOWN) {
         if (D_8013AFD5 < 4) {
             D_8013AFD5++;
             playSoundEffect(0, 0x100, 0x20);
@@ -159,7 +159,7 @@ void updateRacePauseMenu(void) {
 
     switch (D_8013AFD5) {
     case 0:
-        if (D_8013AEE8[player] & PAUSE_MENU_CONFIRM) {
+        if (gControllerPressedButtons[player] & PAUSE_MENU_CONFIRM) {
             playSoundEffect(0, 0, 0x20);
             resumeState = D_8013AFD3 | PAUSE_MENU_RESUME_PENDING;
 resume:
@@ -169,7 +169,7 @@ resume:
         }
         break;
     case 1:
-        if (D_8013AEE8[player] & PAUSE_MENU_CONFIRM) {
+        if (gControllerPressedButtons[player] & PAUSE_MENU_CONFIRM) {
             playSoundEffect(0, 0, 0x20);
             D_8013B1AA = 1;
             D_8013AFD3 |= PAUSE_MENU_RESUME_PENDING;
@@ -178,7 +178,7 @@ resume:
         }
         break;
     case 2:
-        if (D_8013AEE8[player] & PAUSE_MENU_CONFIRM) {
+        if (gControllerPressedButtons[player] & PAUSE_MENU_CONFIRM) {
             playSoundEffect(0, 0, 0x20);
             D_8013B1AB = 1;
             D_8013AFD3 |= PAUSE_MENU_RESUME_PENDING;
@@ -187,7 +187,7 @@ resume:
         }
         break;
     case 3:
-        if (D_8013AEE8[player] & PAUSE_MENU_CONFIRM) {
+        if (gControllerPressedButtons[player] & PAUSE_MENU_CONFIRM) {
             playSoundEffect(0, 0, 0x20);
             if (D_8013AEC4[player]) {
                 clearControllerFlag5(player);
@@ -199,7 +199,7 @@ resume:
         }
         break;
     case 4:
-        if (D_8013AEE8[player] & PAUSE_MENU_CONFIRM) {
+        if (gControllerPressedButtons[player] & PAUSE_MENU_CONFIRM) {
             playSoundEffect(0, 0, 0x20);
             if ((s16)getPlayerOptionFlag(player)) {
                 gGameOptionFlags &= ~(0x10 << player);

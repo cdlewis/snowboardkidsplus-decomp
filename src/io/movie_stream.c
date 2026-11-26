@@ -47,7 +47,7 @@ void playMovie(s32 movieIndex) {
         startMovieCdRead(&location);
     }
     gMovieReachedEnd = 0;
-    D_8013AEEC[0] = D_8013AEEC[1] = MOVIE_SKIP_BUTTON;
+    gControllerHeldButtons[0] = gControllerHeldButtons[1] = MOVIE_SKIP_BUTTON;
     while (1) {
         updateControllers();
         DecDCTin(gMovieDecodeState.vlcBuffers[gMovieDecodeState.vlcBufferIndex], 3);
@@ -62,7 +62,7 @@ void playMovie(s32 movieIndex) {
         display.isrgb24 = 1;
         PutDispEnv(&display);
         SetDispMask(1);
-        if (gMovieReachedEnd == 1 || (D_8013AEE8[0] & MOVIE_SKIP_BUTTON)) break;
+        if (gMovieReachedEnd == 1 || (gControllerPressedButtons[0] & MOVIE_SKIP_BUTTON)) break;
         if (gMovieStartupFrames < 2) gMovieStartupFrames++;
     }
     SsSetSerialVol(0, 0, 0);

@@ -595,7 +595,7 @@ u16 readCurrentPlayerTrickInput(void) {
     if (D_8013B0D8->unk008 != 0) {
         direction = (u8)randomNextMain() & (s8)D_8013B0D8->unk952[1];
     } else {
-        buttons = D_8013AEEC[D_8013AE88->data18];
+        buttons = gControllerHeldButtons[D_8013AE88->data18];
         if (buttons & 0x1000) {
             direction = 1;
         }
@@ -1680,7 +1680,7 @@ applySteering:
             }
         } else {
             GameTask *task = D_8013AE88;
-            if (D_8013AEEC[task->data18] & 0x40) {
+            if (gControllerHeldButtons[task->data18] & 0x40) {
                 manualItemPlayer = D_8013B0D8;
                 manualItemPlayer->unk12C = 2;
                 if (manualItemPlayer->animationIndex == D_800EB09C[manualItemPlayer->characterId][6] ||
@@ -1788,7 +1788,7 @@ advanceCharge:
         if (!D_8013B0D8->unk008 &&
             (D_8013B0D8->unk92E != (s16)D_80123D80[D_8013AFCE].unk00 ||
              !(s16)getModeFilteredAutoPilotFlag(D_8013AE88->data18))) {
-            if (!(D_8013AEEC[D_8013AE88->data18] & 0x40)) {
+            if (!(gControllerHeldButtons[D_8013AE88->data18] & 0x40)) {
                 D_8013B0D8->unk128 &= ~0x10;
             }
         } else if (!D_8013B0D8->unk951) {
@@ -1798,7 +1798,7 @@ advanceCharge:
         if (!D_8013B0D8->unk008 &&
             (D_8013B0D8->unk92E != (s16)D_80123D80[D_8013AFCE].unk00 ||
              !(s16)getModeFilteredAutoPilotFlag(D_8013AE88->data18))) {
-            if (!(D_8013AEEC[D_8013AE88->data18] & 0x40)) {
+            if (!(gControllerHeldButtons[D_8013AE88->data18] & 0x40)) {
                 D_8013B0D8->unk128 &= ~0x10;
             }
         } else {
@@ -2038,12 +2038,12 @@ block_4:
         goto block_13;
     }
 block_9:
-    if (!(D_8013AEEC[D_8013AE88->data18] & 0x8000)) {
+    if (!(gControllerHeldButtons[D_8013AE88->data18] & 0x8000)) {
         goto block_11;
     }
     D_8013B0D8->unk0B6 = (u16) D_8013B0D8->unk0B6 - 0x18;
 block_11:
-    if (!(D_8013AEEC[D_8013AE88->data18] & 0x2000)) {
+    if (!(gControllerHeldButtons[D_8013AE88->data18] & 0x2000)) {
         goto block_20;
     }
     D_8013B0D8->unk0B6 = (u16) D_8013B0D8->unk0B6 + 0x18;

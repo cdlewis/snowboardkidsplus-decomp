@@ -74,8 +74,8 @@ extern u8 D_8013AEE0[];
 
 extern u8 D_8013AEE4 __attribute__((section(".sdata.controller_input_state")));
 
-extern u16 D_8013AEE8[2] __attribute__((section(".data.controller_input_arrays")));
-extern u16 D_8013AEEC[2] __attribute__((section(".data.controller_input_arrays")));
+extern u16 gControllerPressedButtons[2] __attribute__((section(".data.controller_input_arrays")));
+extern u16 gControllerHeldButtons[2] __attribute__((section(".data.controller_input_arrays")));
 extern s16 D_8013AEF0[2] __attribute__((section(".data.controller_input_arrays")));
 extern s16 D_8013AEF4[2] __attribute__((section(".data.controller_input_arrays")));
 extern s16 D_8013AEF8[2] __attribute__((section(".data.controller_input_arrays")));

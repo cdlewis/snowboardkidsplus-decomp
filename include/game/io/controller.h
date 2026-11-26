@@ -20,9 +20,10 @@ extern u8 D_800E959C[];
 
 extern u8 D_8013AEC4[];
 
-extern u16 D_8013AEE8[];
+/* Button presses this update, including generated directional repeats. */
+extern u16 gControllerPressedButtons[];
 /* Two state values; an incomplete array preserves absolute addressing. */
-extern u16 D_8013AEEC[];
+extern u16 gControllerHeldButtons[];
 extern s16 D_8013AEF8[];
 extern s16 D_8013AEFC[];
 extern s16 D_8013AEF4[];

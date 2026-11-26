@@ -754,20 +754,20 @@ void updateActiveRaceTask(void) {
         }
         if (!D_8013AFD7) {
             if (D_8013AFCD == 1) {
-                if ((D_8013AEE8[0] & RACE_PAUSE_START) || !isControllerInputSupported(0)) {
+                if ((gControllerPressedButtons[0] & RACE_PAUSE_START) || !isControllerInputSupported(0)) {
                     playSoundEffect(0, 0, 32);
                     D_8013AFD3 = 1;
                     createChildTaskForParentWithReserve(&gGameTasks[4], initializeRacePauseMenuTask);
                 }
             } else {
                 pauseRequested = 0;
-                if ((D_8013AEE8[0] & RACE_PAUSE_START) || !isControllerInputSupported(0) ||
-                    (D_8013AEE8[1] & RACE_PAUSE_START) || !isControllerInputSupported(1)) {
+                if ((gControllerPressedButtons[0] & RACE_PAUSE_START) || !isControllerInputSupported(0) ||
+                    (gControllerPressedButtons[1] & RACE_PAUSE_START) || !isControllerInputSupported(1)) {
                     pauseRequested = 1;
                 }
                 if (pauseRequested) {
                     playSoundEffect(0, 0, 32);
-                    D_8013AFD3 = ((D_8013AEE8[0] & RACE_PAUSE_START) ||
+                    D_8013AFD3 = ((gControllerPressedButtons[0] & RACE_PAUSE_START) ||
                                   !isControllerInputSupported(0)) ? 1 : 2;
                     createChildTaskForParentWithReserve(&gGameTasks[1], initializeRacePauseMenuTask);
                 }
@@ -788,7 +788,7 @@ void updateActiveRaceTask(void) {
                 return;
             }
         } else if (gFrameCounter < RACE_DEMO_FRAME_LIMIT &&
-                   !(D_8013AEE8[0] & RACE_PAUSE_START)) {
+                   !(gControllerPressedButtons[0] & RACE_PAUSE_START)) {
             goto continueDemo;
         }
         D_8013AE88->data18 = 45;
@@ -980,7 +980,7 @@ void resetStateAndBeginResourceLoadTransition(u8 requestLoad) {
 
 void startTaskTransitionWhenFlagAEE8Set(void) {
     if (D_8013AE88->data18 == 0) {
-        if (D_8013AEE8[0] & 0xB0) {
+        if (gControllerPressedButtons[0] & 0xB0) {
             D_8013AE88->data18 = 30;
             configureTaskStateTransition(2, 0, 30);
             setCurrentTaskCallback(finishTaskTransitionAfterCountdown);
@@ -1134,7 +1134,7 @@ void initializeDemoPlaybackTask(void) {
     D_8013AFAA |= 0x48;
     resetSecondaryRng();
     D_8013AFD6 = 1;
-    D_8013AFE8 = D_8013AEEC[0];
+    D_8013AFE8 = gControllerHeldButtons[0];
     initializeActiveRacePlayers();
     setControllerFlag5(0);
     setControllerFlag5(1);
@@ -1168,11 +1168,11 @@ void updateSelectedPlayerPlaybackTask(void) {
         } else buttons = 0x800;
     }
     D_8013AE88->data18++;
-    D_8013AFE8 = D_8013AEEC[0];
-    if (D_8013AEE8[0] & 0x8F0) buttons = 0x800;
+    D_8013AFE8 = gControllerHeldButtons[0];
+    if (gControllerPressedButtons[0] & 0x8F0) buttons = 0x800;
     playbackControllerInput(0);
-    D_8013AEE8[0] |= buttons;
-    if (D_8013AEDC[0] == D_8013AEE2 || (D_8013AEE8[0] & 0x800)) {
+    gControllerPressedButtons[0] |= buttons;
+    if (D_8013AEDC[0] == D_8013AEE2 || (gControllerPressedButtons[0] & 0x800)) {
         D_8013AE88->data18 = 30;
         configureTaskStateTransition(2, 0, 30);
         D_8013AEE4 = 0;
@@ -1403,7 +1403,7 @@ void armSavedStateRestoreOnFlag3(void) {
 
 void restoreSavedStateAndHandleFlag4(void) {
     if (D_8013AFD6) {
-        D_8013AEEC[0] = D_8013AFE8;
+        gControllerHeldButtons[0] = D_8013AFE8;
     }
     if (D_8013AFAA & 0x10) {
         D_8013AFAA &= ~0x18;
@@ -1461,7 +1461,7 @@ void setCoordinateRotationZYX(SVECTOR *rotation, GsCOORDINATE2 *coordinate) {
 }
 
 u16 advanceCurrentPlayerInputSequence(u8 sequence[][2], s16 slot) {
-    u8 input = D_8013AEEC[D_8013AE88->data18] >> 12;
+    u8 input = gControllerHeldButtons[D_8013AE88->data18] >> 12;
     switch (D_8013B0D8->unk0CA[slot]) {
     case 0:
         if (input != sequence[D_8013B0D8->unk0D6[slot]][0]) {

@@ -90,7 +90,7 @@ void updateNumberAdjustmentTask(void) {
         for (;;) {}
     }
     state = (NumberAdjustmentState *)&gTaskMemoryPool[D_8013AE88->resource14];
-    buttons = D_8013AEE8[0] | D_8013AEE8[1];
+    buttons = gControllerPressedButtons[0] | gControllerPressedButtons[1];
     previous = state->value;
     if ((buttons & 0x1000) && state->value > 1) {
         state->value--;

@@ -119,7 +119,7 @@ void drawTaskTimeMenuAndSetFlag10OnInput(void) {
         while (1) {}
     }
     resource = &gTaskMemoryPool[D_8013AE88->resource14];
-    if (D_8013AEE8[0] & 0xB0) {
+    if (gControllerPressedButtons[0] & 0xB0) {
         D_8013AFE4 |= 0x10;
         setCurrentTaskCallback(drawCurrentTaskTimeMenu);
     }
@@ -313,7 +313,7 @@ void drawTaskMenuAndSetFlag10OnInput(void) {
         while (1) {}
     }
     resource = &gTaskMemoryPool[D_8013AE88->resource14];
-    if (D_8013AEE8[0] & 0xB0) {
+    if (gControllerPressedButtons[0] & 0xB0) {
         D_8013AFE4 |= 0x10;
         setCurrentTaskCallback(drawCurrentTaskMenu);
     }
@@ -339,7 +339,7 @@ void updateMenuExitInputTask(void) {
         while (1) {}
     }
     resource = (TaskMenuFadeResource *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if (D_8013AEE8[0] & 0xB0) {
+    if (gControllerPressedButtons[0] & 0xB0) {
         if (resource->unk00 < 5) {
             setCurrentTaskCallback(drawTaskMenuAndSetFlag10OnInput);
         } else {
@@ -367,7 +367,7 @@ void transferHitPrizeMoneyTask(void) {
     }
     amount = resource->unk08;
     if (amount >= 8) {
-        if (!(D_8013AEE8[0] & 0xB0)) {
+        if (!(gControllerPressedButtons[0] & 0xB0)) {
             amount = 8;
         }
     }
@@ -375,7 +375,7 @@ void transferHitPrizeMoneyTask(void) {
     resource->unk08 -= amount;
     amount = resource->unk0A;
     if (amount >= 8) {
-        if (!(D_8013AEE8[0] & 0xB0)) {
+        if (!(gControllerPressedButtons[0] & 0xB0)) {
             amount = 8;
         }
     }
@@ -383,7 +383,7 @@ void transferHitPrizeMoneyTask(void) {
     resource->unk0A -= amount;
     amount = resource->unk0C;
     if (amount >= 8) {
-        if (!(D_8013AEE8[0] & 0xB0)) {
+        if (!(gControllerPressedButtons[0] & 0xB0)) {
             amount = 8;
         }
     }
@@ -687,7 +687,7 @@ void drawTaskTimeRecordsAndSetFlag10OnInput(void) {
         while (1) {}
     }
     resource = &gTaskMemoryPool[D_8013AE88->resource14];
-    if (D_8013AEE8[0] & 0xB0) {
+    if (gControllerPressedButtons[0] & 0xB0) {
         D_8013AFE4 |= 0x10;
         setCurrentTaskCallback(drawCurrentTaskTimeRecords);
     }
@@ -716,7 +716,7 @@ void updateRaceResultsExitInputTask(void) {
         while (1) {}
     }
     resource = (RaceResultsFadeResource *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if (D_8013AEE8[0] & 0xB0) {
+    if (gControllerPressedButtons[0] & 0xB0) {
         if (resource->unk00 < 5) {
             setCurrentTaskCallback(drawTaskTimeRecordsAndSetFlag10OnInput);
         } else {
@@ -743,25 +743,25 @@ void countRaceResultsMoneyTask(void) {
         resource->timer--;
     }
     amount = resource->timeBonus;
-    if (amount >= 8 && !(D_8013AEE8[0] & 0xB0)) {
+    if (amount >= 8 && !(gControllerPressedButtons[0] & 0xB0)) {
         amount = 8;
     }
     gRacePlayers[0].money += amount;
     resource->timeBonus -= amount;
     amount = resource->scoreBonus;
-    if (amount >= 8 && !(D_8013AEE8[0] & 0xB0)) {
+    if (amount >= 8 && !(gControllerPressedButtons[0] & 0xB0)) {
         amount = 8;
     }
     gRacePlayers[0].money += amount;
     resource->scoreBonus -= amount;
     amount = resource->bonusTimer;
-    if (amount >= 8 && !(D_8013AEE8[0] & 0xB0)) {
+    if (amount >= 8 && !(gControllerPressedButtons[0] & 0xB0)) {
         amount = 8;
     }
     gRacePlayers[0].money += amount;
     resource->bonusTimer -= amount;
     amount = resource->displayTimer;
-    if (amount >= 8 && !(D_8013AEE8[0] & 0xB0)) {
+    if (amount >= 8 && !(gControllerPressedButtons[0] & 0xB0)) {
         amount = 8;
     }
     gRacePlayers[0].money += amount;
@@ -1065,7 +1065,7 @@ void updateStatsMenuExitInputTask(void) {
         while (1) {}
     }
     resource = &gTaskMemoryPool[D_8013AE88->resource14];
-    if (D_8013AEE8[0] & 0xB0) {
+    if (gControllerPressedButtons[0] & 0xB0) {
         D_8013AFE4 |= 0x10;
         setCurrentTaskCallback(drawCurrentTaskStatsSelection);
     }
@@ -1092,7 +1092,7 @@ void updateStatsMenuPostCountInputTask(void) {
         while (1) {}
     }
     resource = (StatsMenuFadeResource *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if (D_8013AEE8[0] & 0xB0) {
+    if (gControllerPressedButtons[0] & 0xB0) {
         if (resource->unk00 < 5) {
             setCurrentTaskCallback(updateStatsMenuExitInputTask);
         } else {
@@ -1119,19 +1119,19 @@ void countStatsMenuMoneyTask(void) {
         resource->timer--;
     }
     amount = resource->trickPrize;
-    if (amount >= 8 && !(D_8013AEE8[0] & 0xB0)) {
+    if (amount >= 8 && !(gControllerPressedButtons[0] & 0xB0)) {
         amount = 8;
     }
     gRacePlayers[0].money += amount;
     resource->trickPrize -= amount;
     amount = resource->makeBonus;
-    if (amount >= 8 && !(D_8013AEE8[0] & 0xB0)) {
+    if (amount >= 8 && !(gControllerPressedButtons[0] & 0xB0)) {
         amount = 8;
     }
     gRacePlayers[0].money += amount;
     resource->makeBonus -= amount;
     amount = resource->completeBonus;
-    if (amount >= 8 && !(D_8013AEE8[0] & 0xB0)) {
+    if (amount >= 8 && !(gControllerPressedButtons[0] & 0xB0)) {
         amount = 8;
     }
     gRacePlayers[0].money += amount;
@@ -1372,7 +1372,7 @@ void updatePanelExitInputTask(void) {
     resource = (PanelResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (resource->timer > 0) {
         resource->timer--;
-    } else if ((D_8013AEE8[0] | D_8013AEE8[1]) & 0xB0) {
+    } else if ((gControllerPressedButtons[0] | gControllerPressedButtons[1]) & 0xB0) {
         D_8013AFE4 |= 0x10;
         setCurrentTaskCallback(drawCurrentTaskPanel);
     }

@@ -122,7 +122,7 @@ void advanceTaskWhenFlagB55ESet(void) {
 
 void updateControllerPlaybackUntilFade(void) {
     updateRaceHud();
-    if (D_8013AEE8[0] & 0x800) {
+    if (gControllerPressedButtons[0] & 0x800) {
         D_8013AE88->data18 = gControllerPlaybackDurations[D_8013AFD9];
     }
     D_8013AE88->data18++;

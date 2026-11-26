@@ -2490,7 +2490,7 @@ void func_80093A54(void) {
             preview->selection = index;
             uploadTimImageAt(576, 256, 768, 238, getTexturePreviewTim(DAT_STARTUP_TEXTURES, index));
         }
-        if (D_8013AEE8[0] & 0x8000) {
+        if (gControllerPressedButtons[0] & 0x8000) {
             D_8013AE88->data1A = D_8013AE88->data1A ? D_8013AE88->data1A - 1 : 1;
             D_8013AE88->data18 = 10;
         } else if (input->choiceResult != 0 && ENTRY_READY(entries[2])) {
