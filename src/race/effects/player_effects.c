@@ -24,6 +24,7 @@
 #include "psx/libgs.h"
 #include "psx/libgte.h"
 
+#define TRAIL_FACING_BACKWARD 0x400
 #define PRESENTATION_SKIP_BUTTON 0x0800
 #define PAIRED_QUAD_PROJECTION_FLAGS 0x7FFBE000
 
@@ -95,6 +96,24 @@ typedef struct TriangleBurstScratch {
 } TriangleBurstScratch;
 typedef struct ScreenPoint { s16 x, y; } ScreenPoint;
 
+
+typedef struct BoardTrailScratch {
+    MATRIX localScreen;
+    u8 pad20[0x20];
+    SVECTOR offset;
+    GsCOORDINATE2 coordinate;
+    union {
+        ScreenPoint point;
+        long packed;
+    } screen[4];
+    long depth[4];
+    long averageDepth, cue;
+    union {
+        s32 region;
+        long flags;
+    } result;
+    ScreenPoint uv[4];
+} BoardTrailScratch;
 
 typedef struct RotatingQuadScratch {
     SVECTOR vertices[8];
@@ -770,7 +789,7 @@ void createPlayerSnapshotTrailTask(TaskCallback callback) {
 }
 
 void drawPlayerSnapshotTrailTask(void) {
-    s32 p, flag;
+    long p, flag;
     PlayerSnapshotTrailResource *resource;
     POLY_FT4 *packet;
     MATRIX *scratch = (MATRIX *)getScratchAddr(0);
@@ -786,13 +805,13 @@ void drawPlayerSnapshotTrailTask(void) {
     GsGetLs(&resource->current, scratch);
     ScaleMatrix(scratch, &resource->currentScale);
     GsSetLsMatrix(scratch);
-    depth = RotTransPers(&gPlayerSnapshotTrailEndpoints[0], (s32 *)&packet->x0, &p, &flag);
-    depth += RotTransPers(&gPlayerSnapshotTrailEndpoints[1], (s32 *)&packet->x1, &p, &flag);
+    depth = RotTransPers(&gPlayerSnapshotTrailEndpoints[0], (long *)&packet->x0, &p, &flag);
+    depth += RotTransPers(&gPlayerSnapshotTrailEndpoints[1], (long *)&packet->x1, &p, &flag);
     GsGetLs(&resource->previous, scratch);
     ScaleMatrix(scratch, &resource->previousScale);
     GsSetLsMatrix(scratch);
-    depth += RotTransPers(&gPlayerSnapshotTrailEndpoints[0], (s32 *)&packet->x2, &p, &flag);
-    depth += RotTransPers(&gPlayerSnapshotTrailEndpoints[1], (s32 *)&packet->x3, &p, &flag);
+    depth += RotTransPers(&gPlayerSnapshotTrailEndpoints[0], (long *)&packet->x2, &p, &flag);
+    depth += RotTransPers(&gPlayerSnapshotTrailEndpoints[1], (long *)&packet->x3, &p, &flag);
     if (depth >= 0 && flag >= 0) {
         addCopiedPrimitive(&D_8013AF6C[depth >> 4], (u32 *)packet);
     }
@@ -2245,224 +2264,185 @@ void startPositionEffectTask(const PositionEffectOrigin *position) {
     *resource = *position;
 }
 
-/* DECOMP_ATTEMPT: inline 458/498 */
-#ifdef NON_MATCHING
-typedef union TrailWorldPosition {
-    TrailPosition point;
-    s32 components[3];
-} TrailWorldPosition;
-
-typedef struct TrailHistory {
-    TrailWorldPosition positions[16];
-    s32 state[16];
-} TrailHistory;
-
-typedef struct TrailScreenPoint {
-    s16 x, y;
-} TrailScreenPoint;
-
-typedef union TrailProjection {
-    TrailScreenPoint point;
-    long packed;
-} TrailProjection;
-
-typedef struct TrailTexturePoint {
-    s16 u, v;
-} TrailTexturePoint;
-
-typedef struct PlayerTrailScratch {
-    MATRIX localScreen;
-    u8 padding20[0x20];
-    SVECTOR offset;
-    GsCOORDINATE2 coordinate;
-    TrailProjection current[2];
-    TrailProjection previous[2];
-    long currentDepth[2];
-    long previousDepth[2];
-    long depth;
-    long cue;
-    long flags;
-    TrailTexturePoint uv[4];
-} PlayerTrailScratch;
-
-void func_80066474(void) {
-    TrailHistory *first;
-    TrailHistory *second;
+void updatePlayerTrailTask(void) {
+    PlayerTrailResource *left, *right;
     RacePlayer *player;
     POLY_FT4 *packet;
-    PlayerTrailScratch *scratch;
-    TrailWorldPosition *left;
-    TrailWorldPosition *right;
-    s32 i, j;
+    BoardTrailScratch *scratch;
+    s32 i, axis;
+    s32 surfaceState;
 
     if (D_8013AE88->resource14 == 0xFFFF) {
         while (1) {}
     }
-    first = (TrailHistory *)&gTaskMemoryPool[D_8013AE88->resource14];
+    left = (PlayerTrailResource *)&gTaskMemoryPool[D_8013AE88->resource14];
     if (D_8013AE88->resource16 == 0xFFFF) {
         while (1) {}
     }
-    second = (TrailHistory *)&gTaskMemoryPool[D_8013AE88->resource16];
+    right = (PlayerTrailResource *)&gTaskMemoryPool[D_8013AE88->resource16];
     player = &gRacePlayers[D_8013AE88->data18];
     packet = (POLY_FT4 *)GsOUT_PACKET_P;
-    scratch = (PlayerTrailScratch *)getScratchAddr(0);
+    scratch = (BoardTrailScratch *)getScratchAddr(0);
 
     if ((player->unk128 & 0x677DB21) && !(player->unk128 & 8)) {
-        second->state[0] = 1;
+        right->state.suppressed[0] = 1;
+        surfaceState = player->unk96E;
     } else {
-        second->state[0] = 0;
+        right->state.suppressed[0] = 0;
+        surfaceState = player->unk96E;
     }
-    if (player->unk96E != 0 && player->unk96E != 0x801 && player->unk96E != 0x200) {
-        second->state[0] = 1;
+    if (surfaceState && surfaceState != 0x801 && surfaceState != 0x200) {
+        right->state.suppressed[0] = 1;
     }
     if (player->unk128 & 8) {
-        second->state[0] = 0;
+        right->state.suppressed[0] = 0;
     }
-    if (D_8013AFD3 == 0 && (first->state[0] & 1)) {
-        for (i = 15; i > 0; i--) {
-            TrailWorldPosition *firstEnd = &first->positions[i];
-            TrailWorldPosition *secondEnd = &second->positions[i];
-            s32 *firstSource;
-            s32 *firstDest;
-            s32 *secondSource;
-            s32 *secondDest;
 
-            j = 0;
-            secondDest = secondEnd->components;
-            secondSource = (secondEnd - 1)->components;
-            firstDest = firstEnd->components;
-            firstSource = (firstEnd - 1)->components;
-            do {
-                *firstDest = *firstSource++;
-                *secondDest = *secondSource++;
-                firstDest++;
-                secondDest++;
-            } while (++j < 3);
-            second->state[i] = second->state[i - 1];
+    /* Keep the last sixteen edge pairs, sampling every other update. */
+    if (!D_8013AFD3 && (left->state.frame & 1)) {
+        for (i = PLAYER_TRAIL_SAMPLES - 1; i > 0; i--) {
+            for (axis = 0; axis < 3; axis++) {
+                left->samples.axes[i][axis] = left->samples.axes[i - 1][axis];
+                right->samples.axes[i][axis] = right->samples.axes[i - 1][axis];
+            }
+            right->state.suppressed[i] = right->state.suppressed[i - 1];
         }
     }
 
     if ((s16)player->unk0BE - (s16)player->unk110 >= 0) {
         setVector(&scratch->offset, -40, 0, -20);
-        ApplyMatrix(&player->model.effect.effectMatrix180, &scratch->offset, (VECTOR *)&first->positions[0]);
+        ApplyMatrix(&player->model.effect.effectMatrix180, &scratch->offset, (VECTOR *)left->samples.axes[0]);
         setVector(&scratch->offset, 40, 0, 20);
-        ApplyMatrix(&player->model.effect.effectMatrix180, &scratch->offset, (VECTOR *)&second->positions[0]);
+        ApplyMatrix(&player->model.effect.effectMatrix180, &scratch->offset, (VECTOR *)right->samples.axes[0]);
     } else {
         setVector(&scratch->offset, 40, 0, -20);
-        ApplyMatrix(&player->model.effect.effectMatrix180, &scratch->offset, (VECTOR *)&first->positions[0]);
+        ApplyMatrix(&player->model.effect.effectMatrix180, &scratch->offset, (VECTOR *)left->samples.axes[0]);
         setVector(&scratch->offset, -40, 0, 20);
-        ApplyMatrix(&player->model.effect.effectMatrix180, &scratch->offset, (VECTOR *)&second->positions[0]);
+        ApplyMatrix(&player->model.effect.effectMatrix180, &scratch->offset, (VECTOR *)right->samples.axes[0]);
     }
     for (i = 0; i < 3; i++) {
-        first->positions[0].components[i] += player->model.effect.effectMatrix180.t[i];
-        second->positions[0].components[i] += player->model.effect.effectMatrix180.t[i];
+        left->samples.axes[0][i] += player->model.effect.effectMatrix180.t[i];
+        right->samples.axes[0][i] += player->model.effect.effectMatrix180.t[i];
     }
-    scratch->flags = (s16)getAdjacentGeometryRegionForPoint(player->unk92E, first->positions[0].point.x, first->positions[0].point.z);
-    first->positions[0].point.y = getCourseHeightAtPoint((s16)(u16)scratch->flags, first->positions[0].point.x, first->positions[0].point.z);
-    scratch->flags = (s16)getAdjacentGeometryRegionForPoint(player->unk92E, second->positions[0].point.x, second->positions[0].point.z);
-    second->positions[0].point.y = getCourseHeightAtPoint((s16)(u16)scratch->flags, second->positions[0].point.x, second->positions[0].point.z);
+    scratch->result.region = (s16)getAdjacentGeometryRegionForPoint(player->unk92E,
+        left->samples.points[0].x, left->samples.points[0].z);
+    left->samples.points[0].y = getCourseHeightAtPoint(scratch->result.region,
+        left->samples.points[0].x, left->samples.points[0].z);
+    scratch->result.region = (s16)getAdjacentGeometryRegionForPoint(player->unk92E,
+        right->samples.points[0].x, right->samples.points[0].z);
+    right->samples.points[0].y = getCourseHeightAtPoint(scratch->result.region,
+        right->samples.points[0].x, right->samples.points[0].z);
 
-    GsInitCoordinate2(0, &scratch->coordinate);
+    /* The newest edge pair supplies the trailing vertices of the first quad. */
+    GsInitCoordinate2(NULL, &scratch->coordinate);
     scratch->offset.vx = scratch->offset.vy = scratch->offset.vz = 0;
-    for (j = 0; j < 3; j++) {
-        scratch->coordinate.coord.t[j] = first->positions[0].components[j];
+    for (axis = 0; axis < 3; axis++) {
+        scratch->coordinate.coord.t[axis] = left->samples.axes[0][axis];
     }
     GsGetLs(&scratch->coordinate, &scratch->localScreen);
     GsSetLsMatrix(&scratch->localScreen);
-    scratch->previousDepth[0] = RotTransPers(&scratch->offset, &scratch->previous[0].packed, &scratch->cue, &scratch->flags);
-    for (j = 0; j < 3; j++) {
-        scratch->coordinate.coord.t[j] = second->positions[0].components[j];
+    scratch->depth[2] = RotTransPers(&scratch->offset, &scratch->screen[2].packed,
+        &scratch->cue, &scratch->result.flags);
+    for (axis = 0; axis < 3; axis++) {
+        scratch->coordinate.coord.t[axis] = right->samples.axes[0][axis];
     }
     GsGetLs(&scratch->coordinate, &scratch->localScreen);
     GsSetLsMatrix(&scratch->localScreen);
-    scratch->previousDepth[1] = RotTransPers(&scratch->offset, &scratch->previous[1].packed, &scratch->cue, &scratch->flags);
+    scratch->depth[3] = RotTransPers(&scratch->offset, &scratch->screen[3].packed,
+        &scratch->cue, &scratch->result.flags);
 
-    if (player->unk128 & 0x400) {
-        scratch->uv[0].u = 0x40;
-        scratch->uv[2].u = 0x40;
-        scratch->uv[0].v = 0;
-        scratch->uv[1].u = 0x7F;
-        scratch->uv[1].v = 0;
-        scratch->uv[2].v = 31;
-        scratch->uv[3].u = 0x7F;
-        scratch->uv[3].v = 31;
-    } else {
-        scratch->uv[0].u = 0x7F;
-        scratch->uv[2].u = 0x7F;
-        scratch->uv[0].v = 0;
-        scratch->uv[1].u = 0x40;
-        scratch->uv[1].v = 0;
-        scratch->uv[2].v = 31;
-        scratch->uv[3].u = 0x40;
-        scratch->uv[3].v = 31;
+    switch (player->unk128 & TRAIL_FACING_BACKWARD) {
+    case TRAIL_FACING_BACKWARD:
+        scratch->uv[0].x = 64;
+        scratch->uv[0].y = 0;
+        scratch->uv[1].x = 127;
+        scratch->uv[1].y = 0;
+        scratch->uv[2].x = 64;
+        scratch->uv[2].y = 31;
+        scratch->uv[3].x = 127;
+        scratch->uv[3].y = 31;
+        break;
+    case 0:
+    default:
+        scratch->uv[0].x = 127;
+        scratch->uv[0].y = 0;
+        scratch->uv[1].x = 64;
+        scratch->uv[1].y = 0;
+        scratch->uv[2].x = 127;
+        scratch->uv[2].y = 31;
+        scratch->uv[3].x = 64;
+        scratch->uv[3].y = 31;
+        break;
     }
-    for (i = 1; i < 16; i++) {
-        packet->tag = 9u << 24;
-        setcode(packet, POLY_FT4_CODE | 2);
+
+    for (i = 1; i < PLAYER_TRAIL_SAMPLES; i++) {
+        packet->tag = TEXTURED_QUAD_PACKET_WORDS << 24;
+        setcode(packet, POLY_FT4_CODE | SEMI_TRANSPARENT_FLAG);
         packet->tpage = getTPage(0, 2, 704, 0);
         packet->clut = getClut(880, 243);
-        setUV4(packet, scratch->uv[0].u, scratch->uv[0].v, scratch->uv[1].u, scratch->uv[1].v,
-            scratch->uv[2].u, scratch->uv[2].v, scratch->uv[3].u, scratch->uv[3].v);
-        setGray0(packet, 48 - i * 48 / 15);
-        left = &first->positions[i];
-        if (!isPointWithinCameraForwardRange(left->point.x, left->point.z, (s16)getRenderCameraIndex())) {
+        setUV4(packet, scratch->uv[0].x, scratch->uv[0].y, scratch->uv[1].x, scratch->uv[1].y,
+            scratch->uv[2].x, scratch->uv[2].y, scratch->uv[3].x, scratch->uv[3].y);
+        setGray0(packet, 48 - 48 * i / (PLAYER_TRAIL_SAMPLES - 1));
+        if (!isPointWithinCameraForwardRange(left->samples.points[i].x, left->samples.points[i].z,
+                (s16)getRenderCameraIndex())) {
             continue;
         }
-        for (j = 0; j < 3; j++) {
-            scratch->coordinate.coord.t[j] = left->components[j];
+        for (axis = 0; axis < 3; axis++) {
+            scratch->coordinate.coord.t[axis] = left->samples.axes[i][axis];
         }
         GsGetLs(&scratch->coordinate, &scratch->localScreen);
         GsSetLsMatrix(&scratch->localScreen);
-        scratch->currentDepth[0] = RotTransPers(&scratch->offset, &scratch->current[0].packed, &scratch->cue, &scratch->flags);
-        right = &second->positions[i];
-        for (j = 0; j < 3; j++) {
-            scratch->coordinate.coord.t[j] = right->components[j];
+        scratch->depth[0] = RotTransPers(&scratch->offset, &scratch->screen[0].packed,
+            &scratch->cue, &scratch->result.flags);
+        for (axis = 0; axis < 3; axis++) {
+            scratch->coordinate.coord.t[axis] = right->samples.axes[i][axis];
         }
         GsGetLs(&scratch->coordinate, &scratch->localScreen);
         GsSetLsMatrix(&scratch->localScreen);
-        scratch->currentDepth[1] = RotTransPers(&scratch->offset, &scratch->current[1].packed, &scratch->cue, &scratch->flags);
-        setXY4(packet, scratch->current[0].point.x, scratch->current[0].point.y,
-            scratch->current[1].point.x, scratch->current[1].point.y,
-            scratch->previous[0].point.x, scratch->previous[0].point.y,
-            scratch->previous[1].point.x, scratch->previous[1].point.y);
-        if (player->unk128 & 0x400) {
-            if (NormalClip(scratch->previous[0].packed, scratch->previous[1].packed, scratch->current[0].packed) < 0) {
+        scratch->depth[1] = RotTransPers(&scratch->offset, &scratch->screen[1].packed,
+            &scratch->cue, &scratch->result.flags);
+        setXY4(packet,
+            scratch->screen[0].point.x, scratch->screen[0].point.y,
+            scratch->screen[1].point.x, scratch->screen[1].point.y,
+            scratch->screen[2].point.x, scratch->screen[2].point.y,
+            scratch->screen[3].point.x, scratch->screen[3].point.y);
+        if (player->unk128 & TRAIL_FACING_BACKWARD) {
+            if (NormalClip(scratch->screen[2].packed, scratch->screen[3].packed,
+                    scratch->screen[0].packed) < 0) {
                 goto advance;
             }
-        } else if (NormalClip(scratch->previous[0].packed, scratch->previous[1].packed, scratch->current[0].packed) >= 0) {
+        } else if (NormalClip(scratch->screen[2].packed, scratch->screen[3].packed,
+                scratch->screen[0].packed) >= 0) {
             goto advance;
         }
-        scratch->depth = (scratch->currentDepth[0] + scratch->currentDepth[1]) / 2;
-        if (second->state[i] == 0 && scratch->depth >= 0 && scratch->depth < 4096) {
-            addPrim(&D_8013AF70[4 + (scratch->depth >> 2)], packet);
+        scratch->averageDepth = (scratch->depth[0] + scratch->depth[1]) / 2;
+        if (!right->state.suppressed[i] && scratch->averageDepth >= 0 && scratch->averageDepth < 4096) {
+            addPrim(&D_8013AF70[(scratch->averageDepth >> 2) + 4], packet);
         }
 advance:
         packet++;
-        scratch->previous[0].point = scratch->current[0].point;
-        scratch->previous[1].point = scratch->current[1].point;
+        scratch->screen[2].point = scratch->screen[0].point;
+        scratch->screen[3].point = scratch->screen[1].point;
     }
     GsOUT_PACKET_P = (u32)packet;
-    first->state[0]++;
+    left->state.frame++;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/race/effects/player_effects", func_80066474);
-#endif
 
 void createPlayerTrailTask(s32 playerIndex) {
     PlayerTrailResource *first;
     PlayerTrailResource *second;
     s32 i;
-    createChildTaskForParentWithReserve(D_8013B304, func_80066474);
+    createChildTaskForParentWithReserve(D_8013B304, updatePlayerTrailTask);
     D_8013AE8C->resource14 = allocateTaskMemoryBlock();
     first = (PlayerTrailResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
     D_8013AE8C->resource16 = allocateTaskMemoryBlock();
     second = (PlayerTrailResource *)&gTaskMemoryPool[D_8013AE8C->resource16];
-    for (i = 0; i < 16; i++) {
-        first->positions[i].x = first->positions[i].y = first->positions[i].z = 0;
-        second->positions[i].x = second->positions[i].y = second->positions[i].z = 0;
-        second->state[i] = 0;
+    for (i = 0; i < PLAYER_TRAIL_SAMPLES; i++) {
+        first->samples.points[i].x = first->samples.points[i].y = first->samples.points[i].z = 0;
+        second->samples.points[i].x = second->samples.points[i].y = second->samples.points[i].z = 0;
+        second->state.suppressed[i] = 0;
     }
-    first->state[0] = 0;
+    first->state.frame = 0;
     D_8013AE8C->data18 = playerIndex;
 }
 

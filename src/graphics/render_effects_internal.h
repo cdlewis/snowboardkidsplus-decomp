@@ -152,13 +152,18 @@ typedef struct TexturedTriangleScratchpad {
     u8 fogEnabled;
 } TexturedTriangleScratchpad;
 
-/* Sixteen world positions followed by per-position state words. */
-typedef struct TrailPosition {
-    s32 x, y, z;
-} TrailPosition;
+#define PLAYER_TRAIL_SAMPLES 16
+
+/* Each board edge occupies one task block. Only the first edge keeps the frame counter. */
 typedef struct PlayerTrailResource {
-    TrailPosition positions[16];
-    s32 state[16];
+    union {
+        Position3D points[PLAYER_TRAIL_SAMPLES];
+        s32 axes[PLAYER_TRAIL_SAMPLES][3];
+    } samples;
+    union {
+        s32 frame;
+        s32 suppressed[PLAYER_TRAIL_SAMPLES];
+    } state;
 } PlayerTrailResource;
 
 /* Two endpoints, height bounds, and rotation; each record occupies 0x28 bytes. */
@@ -918,7 +923,7 @@ void emitProjectedGouraudTexturedTriangle(TriangleScratchVertex *);
 void drawAdaptiveTriangle(TriangleScratchVertex *vertices, s32 level);
 void func_8006479C(void);
 void drawPlayerPairedQuadEffectTask(void);
-void func_80066474(void);
+void updatePlayerTrailTask(void);
 void resolvePlayerRegionCollision(RacePlayer *player, PlayerCollisionRegion *region);
 void updateObjectVisualTask(void);
 void updateInteractionVisualTask(void);
