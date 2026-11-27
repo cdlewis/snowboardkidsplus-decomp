@@ -4415,7 +4415,7 @@ gControllerVibrationDisabled = 0x8013AEC4; // size:0x1
 gSelectedPlayerReplayEndRecordIndex = 0x8013AEE2; // size:0x2
 gReplaySavedControllerHeldButtons = 0x8013AFE8;
 
-gCoursePlayerStateRecords = 0x8012C6F4;
+gCoursePlayerStateRecords = 0x8012C6F4; // size:0x28 defined:true
 gCurrentPlayerDepthOffsetOrderingTable = 0x8013AF70;
 gCurrentPlayerAlternateLayerOrderingTable = 0x8013AF74;
 gScratchMatrix1 = 0x8013AF9C;
@@ -4614,3 +4614,15 @@ gCourse8PlayerField94CTargets3 = 0x8012BAA4; // size:0x44
 gCourse9PlayerField94CTargets0 = 0x8012BAE8; // size:0x44
 gCourse9PlayerField94CTargets2 = 0x8012BB2C; // size:0x44
 gCourse9PlayerField94CTargets3 = 0x8012BB70; // size:0x44
+
+gCourse0PlayerStateRecords = 0x8012BD94; // size:0xF0 defined:true
+gCourse1PlayerStateRecords = 0x8012BE84; // size:0xF0 defined:true
+gCourse2PlayerStateRecords = 0x8012BF74; // size:0x12C defined:true
+gCourse3PlayerStateRecords = 0x8012C0A0; // size:0x12C defined:true
+gCourse4PlayerStateRecords = 0x8012C1CC; // size:0x104 defined:true
+gCourse5PlayerStateRecords = 0x8012C2D0; // size:0x140 defined:true
+gCourse6PlayerStateRecords = 0x8012C410; // size:0xF0 defined:true
+gCourse7PlayerStateRecords = 0x8012C500; // size:0x14 defined:true
+gCourse8PlayerStateRecords = 0x8012C514; // size:0xF0 defined:true
+gCourse9PlayerStateRecords = 0x8012C604; // size:0xF0 defined:true
+D_8012C71C = 0x8012C71C; // size:0x10 defined:true
