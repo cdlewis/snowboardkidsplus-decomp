@@ -179,7 +179,7 @@ u8 gCourse4SurfaceMotionEffectTypes[28] = {
     0, 3, 1, 3, 0, 0, 0, 1, 3, 3, 1, 4, 1, 4, 3, 4, 4, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0
 };
 
-u8 D_801208D4[28] = {
+u8 gCourse3SurfaceMotionEffectTypes[28] = {
     2, 3, 1, 3, 0, 0, 2, 1, 3, 3, 1, 4, 1, 4, 3, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0
 };
 
@@ -187,8 +187,8 @@ u8 gCourse5And8SurfaceMotionEffectTypes[28] = {
     3, 3, 1, 3, 0, 0, 3, 1, 3, 3, 1, 4, 1, 4, 3, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0
 };
 
-u8 *D_8012090C[10] = {
-    gDefaultCourseSurfaceMotionEffectTypes, gDefaultCourseSurfaceMotionEffectTypes, gDefaultCourseSurfaceMotionEffectTypes, D_801208D4, gCourse4SurfaceMotionEffectTypes, gCourse5And8SurfaceMotionEffectTypes, gDefaultCourseSurfaceMotionEffectTypes, gDefaultCourseSurfaceMotionEffectTypes, gCourse5And8SurfaceMotionEffectTypes, gDefaultCourseSurfaceMotionEffectTypes
+u8 *gCourseSurfaceMotionEffectTypes[10] = {
+    gDefaultCourseSurfaceMotionEffectTypes, gDefaultCourseSurfaceMotionEffectTypes, gDefaultCourseSurfaceMotionEffectTypes, gCourse3SurfaceMotionEffectTypes, gCourse4SurfaceMotionEffectTypes, gCourse5And8SurfaceMotionEffectTypes, gDefaultCourseSurfaceMotionEffectTypes, gDefaultCourseSurfaceMotionEffectTypes, gCourse5And8SurfaceMotionEffectTypes, gDefaultCourseSurfaceMotionEffectTypes
 };
 
 
@@ -812,7 +812,7 @@ u16 readCurrentPlayerTrickInput(void) {
 }
 
 u8 readSelectedByteTable(s32 index) {
-    return D_8012090C[gSelectedCourseIndex][index];
+    return gCourseSurfaceMotionEffectTypes[gSelectedCourseIndex][index];
 }
 
 void updateCurrentPlayerMotionEffects(void) {
