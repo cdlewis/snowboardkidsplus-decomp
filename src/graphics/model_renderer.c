@@ -934,7 +934,7 @@ void processTexturedGouraudQuadPrimitive(void) {
     drawAdaptiveQuad(QUAD_SCRATCHPAD->vertices, 0);
 }
 
-void func_800559F4(TmdObject *object, GsOT *ot, s32 shift, u32 flags) {
+void drawAdaptiveModelPrimitives(TmdObject *object, GsOT *ot, s32 shift, u32 flags) {
     ProjectedModelScratchpad *scratch = (ProjectedModelScratchpad *)getScratchAddr(0);
     u32 i;
 

@@ -1013,7 +1013,7 @@ void drawIndexedFlatQuad(void);
 void processGouraudQuadPrimitive(void);
 void processTexturedQuadPrimitive(void);
 void processTexturedGouraudQuadPrimitive(void);
-void func_800559F4(TmdObject *object, GsOT *ot, s32 shift, u32 flags);
+void drawAdaptiveModelPrimitives(TmdObject *object, GsOT *ot, s32 shift, u32 flags);
 extern TmdObject *gOptionalCourseModels[];
 void drawProjectedModelPrimitives(TmdObject *object, GsOT *ot, s32 shift, u32 flags);
 void drawProjectedIndexedFlatTriangle(void);

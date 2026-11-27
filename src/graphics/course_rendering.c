@@ -1291,7 +1291,7 @@ void drawCourseModelsForView(s16 view) {
             if (SquareRoot0(dx * dx + dz * dz) >= gCourseModelDetailDistance) {
                 drawProjectedModelPrimitives(models[i], ot, 2, flags);
             } else {
-                func_800559F4(models[i], ot, 2, flags);
+                drawAdaptiveModelPrimitives(models[i], ot, 2, flags);
             }
         }
         i++;
