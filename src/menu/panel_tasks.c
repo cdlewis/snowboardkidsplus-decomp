@@ -86,11 +86,38 @@ static const u32 sBoardShopModeJumpTablePadding
 static const u32 sBoardSelectionDetailsJumpTablePadding
     __attribute__((section(".rodata.board_selection_details_padding"))) = 0;
 
-extern const u8 gBoardMenuMode0Items[4];
-extern const u8 gBoardMenuMode1Items[5];
-extern const u8 gBoardMenuMode2Items[4];
-extern const u8 gBoardMenuTextIndices[4];
-extern const u8 gExtendedBoardMenuTextIndices[5];
+const u8 gBoardMenuMode0Items[4]
+    __attribute__((section(".data.board_menu_indices"), aligned(4))) = {1, 2, 3, 17};
+
+const u8 gBoardMenuMode1Items[5]
+    __attribute__((section(".data.board_menu_indices"), aligned(4))) = {1, 2, 3, 4, 17};
+
+const u8 gBoardMenuMode1ItemsPadding0
+    __attribute__((section(".data.board_menu_indices"))) = 0;
+const u8 gBoardMenuMode1ItemsPadding1
+    __attribute__((section(".data.board_menu_indices"))) = 0;
+const u8 gBoardMenuMode1ItemsPadding2
+    __attribute__((section(".data.board_menu_indices"))) = 0;
+
+const u8 gBoardMenuMode2Items[4]
+    __attribute__((section(".data.board_menu_indices"), aligned(4))) = {5, 6, 7, 17};
+
+const u8 gBoardMenuTextIndices[4]
+    __attribute__((section(".data.board_menu_indices"), aligned(4))) = {0, 1, 2, 9};
+
+const u8 gExtendedBoardMenuTextIndices[5]
+    __attribute__((section(".data.board_menu_indices"), aligned(4))) = {0, 1, 2, 3, 9};
+
+const u8 gExtendedBoardMenuTextIndicesPadding0
+    __attribute__((section(".data.board_menu_indices"))) = 0;
+const u8 gExtendedBoardMenuTextIndicesPadding1
+    __attribute__((section(".data.board_menu_indices"))) = 0;
+const u8 gExtendedBoardMenuTextIndicesPadding2
+    __attribute__((section(".data.board_menu_indices"))) = 0;
+
+/* Unreferenced copy of the four-entry board menu text mapping. */
+const u8 D_8013B4DC[4]
+    __attribute__((section(".data.board_menu_indices"), aligned(4))) = {0, 1, 2, 9};
 
 const GridSpriteEntry gBoardMenuSprites[18]
     __attribute__((section(".data.board_menu_sprites"), aligned(4))) = {

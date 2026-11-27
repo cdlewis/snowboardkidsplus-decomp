@@ -1138,7 +1138,7 @@ segments:
       - {start: 0x12BCB8, type: .data, name: menu/panel_tasks, linker_section: .data.shop_menu_selection}
       - {start: 0x12BCBC, type: .sdata, name: menu/panel_tasks, linker_section_order: .data}
       - [0x12BCBE, pad]
-      - [0x12BCC0, data]
+      - {start: 0x12BCC0, type: .data, name: menu/panel_tasks, linker_section: .data.board_menu_indices}
       - {start: 0x12BCE0, type: .data, name: menu/panel_tasks, linker_section: .data.shop_board_group_unlock_flags}
       - {start: 0x12BCE4, type: .data, name: menu/panel_tasks, linker_section: .data.save_record_money_panel_currency_label}
       - {start: 0x12BCE8, type: .data, name: menu/panel_tasks, linker_section: .data.player_texture_selection_pages}
