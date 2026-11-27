@@ -10,6 +10,8 @@
 #include "psx/libgs.h"
 #include "psx/sprite.h"
 
+extern s8 gActiveRacePlayerCount __attribute__((section(".data")));
+
 #define HEADING_RATIO_SCALE 640
 
 #define DRAW_DEBUG_HEX_DIGITS(sprite, value, nibble, digit)                 \

@@ -16,6 +16,8 @@
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
 
+extern s8 gActiveRacePlayerCount __attribute__((section(".data")));
+
 extern s16 gFrameCounter __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u32 *gCurrentPlayerOrderingTable __attribute__((section(".data")));

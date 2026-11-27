@@ -17,6 +17,8 @@
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
 
+extern s8 gActiveRacePlayerCount __attribute__((section(".data")));
+
 typedef struct NumberSelectionSpriteTable {
     GridSpriteEntry entries[3];
     u16 padding;

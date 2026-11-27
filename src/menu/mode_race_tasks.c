@@ -11,6 +11,8 @@
 #include "game/race/player/race_player.h"
 #include "game/save/save_data.h"
 
+extern s8 gActiveRacePlayerCount __attribute__((section(".data")));
+
 typedef struct Mode11MenuSelection {
     s16 mode;
     s16 selectedIndex;

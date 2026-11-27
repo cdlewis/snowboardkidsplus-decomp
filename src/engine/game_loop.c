@@ -70,6 +70,8 @@ u8 *D_8013AFA4 __attribute__((section(".sdata.game_loop_state"))) = NULL;
 u16 D_8013AFA8 __attribute__((section(".sdata.game_loop_state"))) = 0;
 u16 gGameStateFlags __attribute__((section(".sdata.game_loop_state"))) = 0;
 
+TaskCallback gCurrentTaskCallback __attribute__((section(".sdata.current_task_callback"))) = NULL;
+
 extern u32 gSynchronizedFrameCount;
 
 void runGameLoop(void) {

@@ -16,6 +16,8 @@
 #include "psx/libsnd.h"
 #include "psx/stdlib.h"
 
+extern s8 gActiveRacePlayerCount __attribute__((section(".data")));
+
 #define ATTACK_SAVE_RECORD (&gPlayerSaveRecords[0])
 #define FULL_RACE_TIME(time) \
     ((time).centiseconds + (time).seconds * 25600 + (time).minutes * 1536000)

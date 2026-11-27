@@ -189,8 +189,33 @@ ModelTextureOffset gPlayerPartTextureOffsets[4] __attribute__((section(".data.pl
 u32 gRacePlayerSortSavedStackPointer
     __attribute__((section(".sdata.race_player_sort_saved_stack"))) = 0;
 
-extern u8 D_8013AFCC;
-extern u8 D_8013AFD4;
+/* No consumers remain for the word preceding the course-rendering gate. */
+static u32 sUnusedTransitionWord __attribute__((section(".data.unused_transition_word"))) = 0;
+
+u8 D_8013AFCC __attribute__((section(".sdata.race_transition_state"))) = 0;
+u8 gPlayerCount __attribute__((section(".sdata.race_transition_state"))) = 0;
+s16 gSelectedCourseIndex __attribute__((section(".sdata.race_transition_state"))) = 0;
+u16 gSelectedLapCount __attribute__((section(".sdata.race_transition_state"))) = 0;
+s8 gActiveRacePlayerCount __attribute__((section(".sdata.race_transition_state"))) = 0;
+u8 gRacePauseState __attribute__((section(".sdata.race_transition_state"))) = 0;
+u8 D_8013AFD4 __attribute__((section(".sdata.race_transition_state"))) = 0;
+u8 gRacePauseMenuSelection __attribute__((section(".sdata.race_transition_state"))) = 0;
+u8 gSelectedPlayerReplayActive __attribute__((section(".sdata.race_transition_state"))) = 0;
+u8 gDemoRaceIndex __attribute__((section(".sdata.race_transition_state"))) = 0;
+u8 gModeSequenceStage __attribute__((section(".sdata.race_transition_state"))) = 0;
+u8 gControllerPlaybackIndex __attribute__((section(".sdata.race_transition_state"))) = 0;
+u8 D_8013AFDA __attribute__((section(".sdata.race_transition_state"))) = 0;
+u8 gNextRaceFinishSlot __attribute__((section(".sdata.race_transition_state"))) = 0;
+static u8 sRaceFinishSlotPadding0 __attribute__((section(".sdata.race_transition_state"))) = 0;
+static u8 sRaceFinishSlotPadding1 __attribute__((section(".sdata.race_transition_state"))) = 0;
+s16 gNextSelectedRecordProgressBonus __attribute__((section(".sdata.race_transition_state"))) = 0;
+u8 gRaceRuleset __attribute__((section(".sdata.race_transition_state"))) = 0;
+u8 gRaceResultCode __attribute__((section(".sdata.race_transition_state"))) = 0;
+u8 gMainMenuSelectionIndex __attribute__((section(".sdata.race_transition_state"))) = 0;
+static u8 sMainMenuSelectionPadding __attribute__((section(".sdata.race_transition_state"))) = 0;
+u32 gTaskTransitionFlags __attribute__((section(".sdata.race_transition_state"))) = 0;
+u16 gReplaySavedControllerHeldButtons __attribute__((section(".sdata.race_transition_state"))) = 0;
+static u16 sReplayHeldButtonsPadding __attribute__((section(".sdata.race_transition_state"))) = 0;
 
 
 void initializeAlternatingVramRowTask(void);

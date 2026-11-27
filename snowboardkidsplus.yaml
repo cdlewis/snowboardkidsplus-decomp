@@ -1028,7 +1028,10 @@ segments:
       - {start: 0x12B764, type: .sdata, name: engine/game_loop, linker_section: .sdata.game_loop_state, linker_section_order: .data}
       - [0x12B7AC, .data, engine/game_task_scheduler]
       - {start: 0x12B7B0, type: .sdata, name: engine/frame_sync, linker_section: .sdata.synchronized_frame_count, linker_section_order: .data}
-      - [0x12B7B4, data, 12B7B4]
+      - {start: 0x12B7B4, type: .data, name: engine/task_transitions, linker_section: .data.unused_transition_word}
+      - {start: 0x12B7B8, type: .data, name: graphics/course_rendering, linker_section: .data.course_rendering_disabled}
+      - {start: 0x12B7C8, type: .sdata, name: engine/game_loop, linker_section: .sdata.current_task_callback, linker_section_order: .data}
+      - {start: 0x12B7CC, type: .sdata, name: engine/task_transitions, linker_section: .sdata.race_transition_state, linker_section_order: .data}
       - {start: 0x12B7EC, type: .data, name: race/player/player_update, linker_section: .data.player_trick_short_inputs}
       - {start: 0x12B8C8, type: .data, name: race/player/player_update, linker_section: .data.player_unlock_scene_yaw_offsets}
       - {start: 0x12B8D0, type: .data, name: race/player/player_update, linker_section: .data.player_wall_probe_offsets}

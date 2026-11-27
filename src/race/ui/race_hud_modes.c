@@ -15,6 +15,8 @@
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
 
+extern s8 gActiveRacePlayerCount __attribute__((section(".data")));
+
 #define DRAW_MODE_COMMAND_HIGH 0xE100
 #define TEXTURED_SPRITE_CODE 0x64
 

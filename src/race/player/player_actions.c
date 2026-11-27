@@ -21,6 +21,8 @@
 #include "psx/libgs.h"
 #include "psx/libgte.h"
 
+extern s8 gActiveRacePlayerCount __attribute__((section(".data")));
+
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern VECTOR *gScratchVector0 __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));

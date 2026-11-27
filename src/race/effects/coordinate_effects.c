@@ -19,6 +19,8 @@ extern u8 gRaceOrderPlayerIds[] __attribute__((section(".data")));
 #include "psx/libgs.h"
 #include "psx/libgte.h"
 
+extern s8 gActiveRacePlayerCount __attribute__((section(".data")));
+
 typedef union CollectionTaskResource {
     TaskVisualResource visual;
     struct {

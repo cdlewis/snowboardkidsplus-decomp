@@ -257,7 +257,10 @@ s32 gCourseModelDetailDistance __attribute__((section(".sdata.course_model_state
 
 TmdObject *gCourseModels[100] __attribute__((section(".bss.course_models")));
 
-extern s32 gCourseRenderingDisabled __attribute__((section(".data")));
+s32 gCourseRenderingDisabled __attribute__((section(".data.course_rendering_disabled"))) = 0;
+/* Unreferenced words following the rendering gate in the original data. */
+static u32 sCourseRenderingDisabledPadding[3]
+    __attribute__((section(".data.course_rendering_disabled"))) = {0};
 extern s16 gBackgroundLensFlareYawOffset, gBackgroundLensFlarePitchOffset;
 
 

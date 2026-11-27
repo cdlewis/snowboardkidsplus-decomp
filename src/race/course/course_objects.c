@@ -27,6 +27,8 @@
 #include "psx/libgs.h"
 #include "psx/libgte.h"
 
+extern s8 gActiveRacePlayerCount __attribute__((section(".data")));
+
 #define COURSE_PLACEMENT_LIMIT 140
 #define COURSE_VISUAL_FIRST_PLACEMENT_TYPE 11
 #define PLACEMENT_END 0xFF

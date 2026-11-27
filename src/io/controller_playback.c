@@ -13,6 +13,8 @@
 #include "game/race/player/race_player.h"
 #include "game/save/save_data.h"
 
+extern s8 gActiveRacePlayerCount __attribute__((section(".data")));
+
 extern u8 gModeSequenceStage __attribute__((section(".data")));
 extern u8 gControllerPlaybackIndex __attribute__((section(".data")));
 extern s16 gNextSelectedRecordProgressBonus __attribute__((section(".data")));

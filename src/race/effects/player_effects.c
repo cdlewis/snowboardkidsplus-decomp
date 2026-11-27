@@ -24,6 +24,8 @@
 #include "psx/libgs.h"
 #include "psx/libgte.h"
 
+extern s8 gActiveRacePlayerCount __attribute__((section(".data")));
+
 #define TRAIL_FACING_BACKWARD 0x400
 #define TURN_TRAIL_SAMPLES 8
 #define TURN_TRAIL_LIFETIME 32

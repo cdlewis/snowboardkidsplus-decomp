@@ -3031,13 +3031,13 @@ gSecondaryTaskSequenceEntries = 0x8012F10C; // size:0x30
 advanceTextLine = 0x800A60FC; // type:func
 
 // Race options; addressing aliases are in config/symbol_aliases.ld.
-gPlayerCount = 0x8013AFCD; // size:0x1
+gPlayerCount = 0x8013AFCD; // size:0x1 defined:true
 gRaceOrderPlayerIds = 0x8013B0EC; // size:0x4 defined:true
-gActiveRacePlayerCount = 0x8013AFD2; // size:0x1
+gActiveRacePlayerCount = 0x8013AFD2; // size:0x1 defined:true
 initializeRaceRestartTask = 0x8001CD64; // type:func
 
-gSelectedCourseIndex = 0x8013AFCE; // size:0x2
-gSelectedLapCount = 0x8013AFD0; // size:0x2
+gSelectedCourseIndex = 0x8013AFCE; // size:0x2 defined:true
+gSelectedLapCount = 0x8013AFD0; // size:0x2 defined:true
 
 createFlickeringDotsTask = 0x8004FA74; // type:func
 
@@ -3084,7 +3084,7 @@ D_8013AEF4 = 0x8013AEF4; // type:s16 size:0x4
 gControllerHorizontalAxes = 0x8013AEF8; // type:s16 size:0x4
 gControllerVerticalAxes = 0x8013AEFC; // type:s16 size:0x4
 gControllerActuatorOutputs = 0x8013AF00; // size:0x6
-gDemoRaceIndex = 0x8013AFD7; // type:u8 size:0x1
+gDemoRaceIndex = 0x8013AFD7; // type:u8 size:0x1 defined:true
 gControllerVerticalRepeatTimers = 0x8013AEBC; // type:u8 size:0x2 defined:true
 gControllerPressedButtons = 0x8013AEE8; // type:u16 size:0x4
 gControllerHeldButtons = 0x8013AEEC; // type:u16 size:0x4
@@ -4267,7 +4267,7 @@ gCurrentTask = 0x8013AE88; // size:0x4
 gCreatedTask = 0x8013AE8C; // size:0x4
 gScratchVector0 = 0x8013AF88; // size:0x4
 gScratchMatrix0 = 0x8013AF98; // size:0x4
-gTaskTransitionFlags = 0x8013AFE4; // size:0x4
+gTaskTransitionFlags = 0x8013AFE4; // size:0x4 defined:true
 gPlayerCameras = 0x801241E8; // size:0x38 defined:true
 gCurrentPlayerOrderingTable = 0x8013AF6C;
 gActiveGraphicsBuffer = 0x8013AF78;
@@ -4275,7 +4275,7 @@ gDisplayWidth = 0x8013AF7A; // size:0x2
 gDisplayHeight = 0x8013AF7C; // size:0x2
 gPlayerViewWidthReduction = 0x8013AF7E; // size:0x2
 gPlayerViewVerticalOffset = 0x8013AF80; // size:0x2
-gRacePauseState = 0x8013AFD3;
+gRacePauseState = 0x8013AFD3; // type:u8 size:0x1 defined:true
 gCourseGeometryVertexData = 0x8013B1EC;
 gGeometryProjectionBasisX = 0x8013B624;
 gGeometryProjectionBasisZ = 0x8013B628;
@@ -4346,20 +4346,20 @@ gCourseObjectCoordinates = 0x80129C60; // size:0x960
 gScratchVector1 = 0x8013AF8C;
 gScratchShortVector0 = 0x8013AF90;
 gScratchShortVector1 = 0x8013AF94;
-gMainMenuSelectionIndex = 0x8013AFE2;
+gMainMenuSelectionIndex = 0x8013AFE2; // type:u8 size:0x1 defined:true
 
 gSharedScratchVector = 0x800EB22C; // size:0x10 defined:true
-gSelectedPlayerReplayActive = 0x8013AFD6; // size:0x1
-gControllerPlaybackIndex = 0x8013AFD9; // size:0x1
+gSelectedPlayerReplayActive = 0x8013AFD6; // size:0x1 defined:true
+gControllerPlaybackIndex = 0x8013AFD9; // size:0x1 defined:true
 gGameStateFlags = 0x8013AFAA; // size:0x2
-gModeSequenceStage = 0x8013AFD8; // size:0x1
-gRaceRuleset = 0x8013AFE0; // size:0x1
+gModeSequenceStage = 0x8013AFD8; // size:0x1 defined:true
+gRaceRuleset = 0x8013AFE0; // size:0x1 defined:true
 gSelectedPlayerAction = 0x8013B0E4; // size:0x2
 
 gCourseGeometryTriangleRecords = 0x8013B1F0;
 gGeometryProjectionLength = 0x8013B62C;
 
-gRaceResultCode = 0x8013AFE1; // size:0x1
+gRaceResultCode = 0x8013AFE1; // size:0x1 defined:true
 gPlayerRaceTimes = 0x8013B190; // size:0x8
 gPlayerAttackTimeExpired = 0x8013B1A0; // size:0x2
 
@@ -4410,12 +4410,12 @@ gTaskDeletionFirst = 0x8013AEAC; // size:0x4
 gTaskDeletionCursor = 0x8013AEB0; // size:0x4
 gAvailableTaskSlots = 0x8013AEB4; // size:0x2
 
-gNextRaceFinishSlot = 0x8013AFDB;
+gNextRaceFinishSlot = 0x8013AFDB; // type:u8 size:0x1 defined:true
 gPlayerCollisionHeading = 0x8013B0E6;
 gPlayerCollisionSpeed = 0x8013B0E8;
 gSelectedGeometryVertex0 = 0x8013B200;
 
-gRacePauseMenuSelection = 0x8013AFD5; // size:0x1
+gRacePauseMenuSelection = 0x8013AFD5; // size:0x1 defined:true
 gRaceExitRequested = 0x8013B1AA; // size:0x1
 gRaceRestartRequested = 0x8013B1AB; // size:0x1
 
@@ -4435,7 +4435,7 @@ gSaveRecordConfirmationSprites = 0x801307AC; // size:0x54
 gGroupedCourseMenuTextIndices = 0x8013B43C;
 gSaveRecordSavedOrLoaded = 0x8013B47C;
 
-gNextSelectedRecordProgressBonus = 0x8013AFDE; // size:0x2
+gNextSelectedRecordProgressBonus = 0x8013AFDE; // size:0x2 defined:true
 gSelectedGeometryVertex2 = 0x8013B208; // size:0x4
 
 gTitleLogoSoundTimer = 0x8013B100;
@@ -4446,7 +4446,7 @@ gControllerVibrationDisabled = 0x8013AEC4; // size:0x2
 sControllerVibrationSettingsPadding0 = 0x8013AEC6; // size:0x2
 sControllerVibrationSettingsPadding1 = 0x8013AEC8; // size:0x4
 gSelectedPlayerReplayEndRecordIndex = 0x8013AEE2; // size:0x2
-gReplaySavedControllerHeldButtons = 0x8013AFE8;
+gReplaySavedControllerHeldButtons = 0x8013AFE8; // type:u16 size:0x2 defined:true
 
 gCoursePlayerStateRecords = 0x8012C6F4; // size:0x28 defined:true
 gCurrentPlayerDepthOffsetOrderingTable = 0x8013AF70;
@@ -4563,9 +4563,9 @@ gMoneyPanelSelectionTextMapping = 0x8013B4A0; // size:0x4
 gRaceRulesetCourseHelpTexts = 0x801325D0; // size:0x2C
 gTwoPlayerTimeAttackCourseMappingGroups = 0x80132638; // size:0x14
 
-gCurrentTaskCallback = 0x8013AFC8; // size:0x4
+gCurrentTaskCallback = 0x8013AFC8; // size:0x4 defined:true
 
-gCourseRenderingDisabled = 0x8013AFB8;
+gCourseRenderingDisabled = 0x8013AFB8; // type:s32 size:0x4 defined:true
 
 gCourseGeometryVertexCount = 0x8013B1F8; // size:0x2
 gCourseGeometryTriangleCount = 0x8013B1FA; // size:0x2
@@ -4766,3 +4766,12 @@ D_8013AF82 = 0x8013AF82; // size:0x2
 D_8013AFA0 = 0x8013AFA0; // size:0x4
 D_8013AFA4 = 0x8013AFA4; // size:0x4
 D_8013AFA8 = 0x8013AFA8; // size:0x2
+D_8013AFCC = 0x8013AFCC; // type:u8 size:0x1 defined:true
+D_8013AFD4 = 0x8013AFD4; // type:u8 size:0x1 defined:true
+D_8013AFDA = 0x8013AFDA; // type:u8 size:0x1 defined:true
+sUnusedTransitionWord = 0x8013AFB4; // type:u32 size:0x4 defined:true
+sCourseRenderingDisabledPadding = 0x8013AFBC; // type:u32 size:0xC defined:true
+sRaceFinishSlotPadding0 = 0x8013AFDC; // type:u8 size:0x1 defined:true
+sRaceFinishSlotPadding1 = 0x8013AFDD; // type:u8 size:0x1 defined:true
+sMainMenuSelectionPadding = 0x8013AFE3; // type:u8 size:0x1 defined:true
+sReplayHeldButtonsPadding = 0x8013AFEA; // type:u16 size:0x2 defined:true

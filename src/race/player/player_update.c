@@ -26,6 +26,8 @@
 #include "psx/libgs.h"
 #include "psx/libgte.h"
 
+extern s8 gActiveRacePlayerCount __attribute__((section(".data")));
+
 
 typedef struct PlayerState2Trick {
     s16 sound;

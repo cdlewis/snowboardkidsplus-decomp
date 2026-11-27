@@ -207,7 +207,7 @@ extern u8 gPlayerCharacterAnimationIndices[10][40];
 
 extern RacePlayer gRacePlayers[4];
 /* Number of participating racers, including CPU-controlled racers. */
-extern s8 gActiveRacePlayerCount __attribute__((section(".data")));
+extern s8 gActiveRacePlayerCount;
 /* GP-relative alias of gActiveRacePlayerCount. */
 extern s8 activeRacePlayerCountGp;
 /* Highest-priority accepted action request for the current player; zero is none. */
