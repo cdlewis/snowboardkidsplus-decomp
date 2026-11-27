@@ -203,7 +203,7 @@ s32 gCourseModelDetailDistance __attribute__((section(".sdata.course_model_state
 TmdObject *gCourseModels[100] __attribute__((section(".bss.course_models")));
 
 extern s32 D_8013AFB8 __attribute__((section(".data")));
-extern s16 D_8013B22C, D_8013B22E;
+extern s16 gBackgroundLensFlareYawOffset, gBackgroundLensFlarePitchOffset;
 
 
 void getCourseSteeringTarget(s16 region, s32 x, s32 z, s32 *targetX, s32 *targetZ,
@@ -294,8 +294,8 @@ void drawBackgroundLensFlare(s16 playerIndex) {
     if (yaw > 0x400 && yaw < 0xC00) {
         return;
     }
-    x = -320 * rsin(camera->yaw + D_8013B22C) / 4096;
-    if ((u16)((y = 240 * rsin(camera->pitch + D_8013B22E) / 4096) + 120) > 240) {
+    x = -320 * rsin(camera->yaw + gBackgroundLensFlareYawOffset) / 4096;
+    if ((u16)((y = 240 * rsin(camera->pitch + gBackgroundLensFlarePitchOffset) / 4096) + 120) > 240) {
         return;
     }
     if ((u16)(x + 160) > 320) {
@@ -383,8 +383,8 @@ void drawLayeredBackgroundAndSetFog(s16 playerIndex) {
     cameras = gPlayerCameras;
     camera = &cameras[playerIndex];
     if ((u16)camera->unk18 < 8) {
-        D_8013B22C = 0xF28;
-        D_8013B22E = 0xF70;
+        gBackgroundLensFlareYawOffset = 0xF28;
+        gBackgroundLensFlarePitchOffset = 0xF70;
         drawBackgroundLensFlare(playerIndex);
     }
 
@@ -760,9 +760,9 @@ void drawRotatingModelBackgroundAndSetFog(s16 playerIndex) {
     u32 y;
 
     if (playerIndex == 0) {
-        ot = &D_800EC040[gActiveGraphicsBuffer];
+        ot = &gPlayer1Layer7OrderingTables[gActiveGraphicsBuffer];
     } else {
-        ot = &D_800EC0E0[gActiveGraphicsBuffer];
+        ot = &gPlayer2Layer7OrderingTables[gActiveGraphicsBuffer];
     }
 
     x = -160 - ((gPlayerCameras[playerIndex].yaw >> 1) & 255);
@@ -828,8 +828,8 @@ void drawRipplingBackgroundAndSetFog(s16 playerIndex) {
         (u32)(segment - 41) < 9 || (u32)(segment - 125) < 4 ||
         (u32)(segment - 249) < 5 || (u32)(segment - 79) < 12 ||
         (s16)segment == 254 || (u32)(segment - 311) < 7) {
-        D_8013B22C = 0xE90;
-        D_8013B22E = 0xF60;
+        gBackgroundLensFlareYawOffset = 0xE90;
+        gBackgroundLensFlarePitchOffset = 0xF60;
         drawBackgroundLensFlare(playerIndex);
     }
 
@@ -876,9 +876,9 @@ void drawLapAnimatedBackgroundAndSetFog(s16 playerIndex) {
     GsOT *ot;
 
     if (playerIndex == 0) {
-        ot = &D_800EC040[gActiveGraphicsBuffer];
+        ot = &gPlayer1Layer7OrderingTables[gActiveGraphicsBuffer];
     } else {
-        ot = &D_800EC0E0[gActiveGraphicsBuffer];
+        ot = &gPlayer2Layer7OrderingTables[gActiveGraphicsBuffer];
     }
     addCopiedPrimitive(&gCurrentPlayerOrderingTable[2048], (u32 *)&gLapAnimatedBackgroundTile);
     if (isPositionInCameraRange(-0x152D4, 0xB540, playerIndex)) {
@@ -1018,9 +1018,9 @@ void drawBackgroundModelsAndSetFog(s16 playerIndex) {
     s16 x, y, horizon;
 
     if (playerIndex == 0) {
-        ot = &D_800EC040[gActiveGraphicsBuffer];
+        ot = &gPlayer1Layer7OrderingTables[gActiveGraphicsBuffer];
     } else {
-        ot = &D_800EC0E0[gActiveGraphicsBuffer];
+        ot = &gPlayer2Layer7OrderingTables[gActiveGraphicsBuffer];
     }
     x = -160 - ((gPlayerCameras[playerIndex].yaw >> 1) & 255);
     y = gPlayerCameras[playerIndex].pitch / 2;
@@ -1238,9 +1238,9 @@ void drawCourseModelsForView(s16 view) {
     u16 i;
 
     if (view == 0) {
-        ot = &D_800EC040[gActiveGraphicsBuffer];
+        ot = &gPlayer1Layer7OrderingTables[gActiveGraphicsBuffer];
     } else {
-        ot = &D_800EC0E0[gActiveGraphicsBuffer];
+        ot = &gPlayer2Layer7OrderingTables[gActiveGraphicsBuffer];
     }
     scale = gCourseModelScale;
     if (D_8013AFB8 != 0) {

@@ -907,9 +907,9 @@ void drawTrickTriangleRingTask(void) {
     packet = (TrickTrianglePacket *)GsOUT_PACKET_P;
     player = &gRacePlayers[gCurrentTask->data18];
     if (gCurrentTask->data18 == 0) {
-        ot = D_800EC040[gActiveGraphicsBuffer].org;
+        ot = gPlayer1Layer7OrderingTables[gActiveGraphicsBuffer].org;
     } else {
-        ot = D_800EC0E0[gActiveGraphicsBuffer].org;
+        ot = gPlayer2Layer7OrderingTables[gActiveGraphicsBuffer].org;
     }
     if (gSelectedPlayerReplayActive && player->unk0C8 < 9) {
         deleteCurrentTaskSubtree();
@@ -1019,9 +1019,9 @@ void drawTrickRingTask(void) {
     player = &gRacePlayers[gCurrentTask->data18];
     packet = (TrickRingPacket *)GsOUT_PACKET_P;
     if (gCurrentTask->data18 == 0) {
-        ot = D_800EC040[gActiveGraphicsBuffer].org;
+        ot = gPlayer1Layer7OrderingTables[gActiveGraphicsBuffer].org;
     } else {
-        ot = D_800EC0E0[gActiveGraphicsBuffer].org;
+        ot = gPlayer2Layer7OrderingTables[gActiveGraphicsBuffer].org;
     }
     if (gSelectedPlayerReplayActive && player->unk0C8 < 9) {
         deleteCurrentTaskSubtree();
@@ -1122,9 +1122,9 @@ void drawTrickSparkRingTask(void) {
     packet = (u8 *)GsOUT_PACKET_P;
     player = &gRacePlayers[gCurrentTask->data18];
     if (gCurrentTask->data18 == 0) {
-        ot = D_800EC040[gActiveGraphicsBuffer].org;
+        ot = gPlayer1Layer7OrderingTables[gActiveGraphicsBuffer].org;
     } else {
-        ot = D_800EC0E0[gActiveGraphicsBuffer].org;
+        ot = gPlayer2Layer7OrderingTables[gActiveGraphicsBuffer].org;
     }
     if (gSelectedPlayerReplayActive && player->unk0C8 < 9) {
         deleteCurrentTaskSubtree();

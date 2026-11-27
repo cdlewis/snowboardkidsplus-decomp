@@ -3555,7 +3555,7 @@ gMainOrderingTables = 0x800EBFF0; // size:0x28 defined:true
 
 gPlayer1OrderingTables = 0x800EC018; // size:0x28 defined:true
 
-D_800EC040 = 0x800EC040; // size:0x28 defined:true
+gPlayer1Layer7OrderingTables = 0x800EC040; // size:0x28 defined:true
 
 gPlayer1ModelOrderingTables = 0x800EC068; // size:0x28 defined:true
 
@@ -3563,7 +3563,7 @@ gPlayer1AlternateLayerOrderingTables = 0x800EC090; // size:0x28 defined:true
 
 gPlayer2OrderingTables = 0x800EC0B8; // size:0x28 defined:true
 
-D_800EC0E0 = 0x800EC0E0; // size:0x28 defined:true
+gPlayer2Layer7OrderingTables = 0x800EC0E0; // size:0x28 defined:true
 
 gPlayer2ModelOrderingTables = 0x800EC108; // size:0x28 defined:true
 
@@ -4373,3 +4373,6 @@ gSelectedGeometryVertex0 = 0x8013B200;
 gRacePauseMenuSelection = 0x8013AFD5; // size:0x1
 gRaceExitRequested = 0x8013B1AA; // size:0x1
 gRaceRestartRequested = 0x8013B1AB; // size:0x1
+
+gBackgroundLensFlareYawOffset = 0x8013B22C;
+gBackgroundLensFlarePitchOffset = 0x8013B22E;
