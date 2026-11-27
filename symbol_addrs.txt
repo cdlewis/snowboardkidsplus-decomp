@@ -2717,6 +2717,10 @@ drawTimeRecordHeader = 0x80039484; // type:func
 drawAnimatedSprite16 = 0x800775C8; // type:func
 gAnimatedSprite16Template = 0x8012F17C; // size:0x10
 gMenuColorCycleColor = 0x8013B3A4; // size:0x3 defined:true
+gCharacterSelectionPortraitRed = 0x8013B3A8; // type:u8 size:0x1
+gCharacterSelectionPortraitGreen = 0x8013B3A9; // type:u8 size:0x1
+gCharacterSelectionPortraitBlue = 0x8013B3AA; // type:u8 size:0x1
+gPlayerPanelQuadLists = 0x8013B3C0; // size:0x8
 gTexturePairBounceOffsets = 0x8013B3AC; // size:0x8
 gAnimatedSprite16DrawPage = 0x8013B3B4; // size:0x8
 

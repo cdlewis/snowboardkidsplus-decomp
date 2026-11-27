@@ -167,9 +167,9 @@ extern MenuRgbColor gMenuColorCycleColor __attribute__((section(".data")));
 extern s16 gFrameCounter __attribute__((section(".data")));
 extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
 extern u8 gMainMenuSelectionIndex __attribute__((section(".data")));
-extern u8 D_8013B3A8 __attribute__((section(".data")));
-extern u8 D_8013B3A9 __attribute__((section(".data")));
-extern u8 D_8013B3AA __attribute__((section(".data")));
+extern u8 gCharacterSelectionPortraitRed __attribute__((section(".data")));
+extern u8 gCharacterSelectionPortraitGreen __attribute__((section(".data")));
+extern u8 gCharacterSelectionPortraitBlue __attribute__((section(".data")));
 extern u8 D_8013B3AB __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
@@ -232,7 +232,7 @@ u16 gTextPanelMessage[] __attribute__((section(".data.text_panel_message"))) = {
 };
 
 extern u32 gTexturePairDimMask;
-extern TexturedQuadListEntry *D_8013B3C0[2];
+extern TexturedQuadListEntry *gPlayerPanelQuadLists[2];
 extern GameTask *gTaskBackgroundTask;
 extern GameTask *gSecondaryDisplayTask;
 
@@ -2455,9 +2455,9 @@ void updateCharacterSelectionTask(void) {
                 selection[i].unk00 = 1;
             }
         }
-        D_8013B3A8 = 64;
-        D_8013B3A9 = 64;
-        D_8013B3AA = 64;
+        gCharacterSelectionPortraitRed = 64;
+        gCharacterSelectionPortraitGreen = 64;
+        gCharacterSelectionPortraitBlue = 64;
         D_8013B3AB = 8;
         /* Fall through. */
     case 4:
@@ -2677,7 +2677,8 @@ void updateCharacterSelectionPortraitTask(void) {
             s32 selected;
             s16 x;
             if (selection[i].unk00 == 1) {
-                setSpriteColor(D_8013B3A8, D_8013B3A9, D_8013B3AA);
+                setSpriteColor(gCharacterSelectionPortraitRed, gCharacterSelectionPortraitGreen,
+                               gCharacterSelectionPortraitBlue);
             } else if (selection[i].unk00 == 2) {
                 setSpriteColor(gMenuColorCycleColor.r, gMenuColorCycleColor.g, gMenuColorCycleColor.b);
             } else {
@@ -2939,7 +2940,7 @@ render:
                       89, 5, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
     }
     drawTexturedQuadList((s16)(position->x / 4096), (s16)(position->y / 4096),
-                         D_8013B3C0[player], 1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                         gPlayerPanelQuadLists[player], 1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
 }
 
 void updatePlayerCharacterSelection(s16 playerIndex, SelectionEntry *entries) {

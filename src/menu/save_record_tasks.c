@@ -65,7 +65,9 @@ extern const u16 D_80130708[], D_80130740[], D_8013075C[];
 /* Incomplete arrays let the compiler schedule the address halves separately. */
 extern s8 gMemoryCardSaveRecordCurrencyLabel[]
     __attribute__((section(".data.memory_card_save_record_currency_label")));
-extern TexturedQuadListEntry *D_8013B3C0[];
+
+/* Keep the bound incomplete to preserve address scheduling in this consumer. */
+extern TexturedQuadListEntry *gPlayerPanelQuadLists[];
 
 void drawMemoryCardSaveRecordPanel(void);
 
@@ -726,7 +728,7 @@ void drawMemoryCardSaveRecordPanel(void) {
 
     setTexturedQuadColor(128, 128, 128);
     drawTexturedQuadList(position->x / 4096 - 104, position->y / 4096 - 80,
-                         D_8013B3C0[player], 1, PANEL_OT, PANEL_DEPTH);
+                         gPlayerPanelQuadLists[player], 1, PANEL_OT, PANEL_DEPTH);
     setSpriteColor(128, 128, 128);
     drawSpriteByIndexWithBlend(position->x / 4096 - 8, position->y / 4096 - 80,
                   player * 2 + 241, 0, 0, PANEL_OT, PANEL_DEPTH);
