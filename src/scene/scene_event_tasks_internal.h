@@ -54,16 +54,8 @@ extern u8 gSceneImageModeOffsets[12] __attribute__((section(".data.scene_image_s
 extern GameTask *gSceneImageDisplayTask __attribute__((section(".sdata.scene_image_display_task")));
 
 extern u8 gSelectedUnlockIndex __attribute__((section(".data")));
-extern char D_80012310[];
-extern char D_8001232C[];
 extern s8 gSceneTextColon[];
-extern char D_8013B5C8[];
-
-int printf(const char *format, ...);
 
 void startUnlockNotification(s16 index);
 void drawPagedTexturedRectangle(s16 x, s16 y, s16 width, s16 height, s16 tpage,
                    s16 clut, GsOT *ot, u16 depth);
-int readHostFile(char *path, char *buffer);
-int writePcHostFile(char *name, char *buffer, int length);
-s16 readPcHostAsset(s16 mode, char *name, void *buffer, s16 *position);

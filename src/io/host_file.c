@@ -1,7 +1,11 @@
-#include "../scene/scene_event_tasks_internal.h"
+#include "game/io/host_file.h"
 #include "game/graphics/graphics.h"
 #include "psx/libc.h"
 #include "psx/libsn.h"
+
+extern const char gPcHostOpenErrorFormat[];
+extern const char gPcHostTransferErrorFormat[];
+extern char gPcHostAssetPathFormat[];
 
 int readHostFile(char *path, char *buffer) {
     int length;
@@ -9,7 +13,7 @@ int readHostFile(char *path, char *buffer) {
 
     fd = PCopen(path, 0, 0);
     if (fd == -1) {
-        printf(D_80012310, path);
+        printf(gPcHostOpenErrorFormat, path);
     } else {
         length = PClseek(fd, 0, 2);
         PClseek(fd, 0, 0);
@@ -17,7 +21,7 @@ int readHostFile(char *path, char *buffer) {
             PCclose(fd);
             return 0;
         }
-        printf(D_8001232C, path);
+        printf(gPcHostTransferErrorFormat, path);
     }
     return -1;
 }
@@ -28,12 +32,12 @@ int writePcHostFile(char *name, char *buffer, int length) {
     if (fd == -1) {
         fd = PCcreat(name, 0);
         if (fd == -1) {
-            printf(D_80012310, name);
+            printf(gPcHostOpenErrorFormat, name);
             return -1;
         }
     }
     if (PCwrite(fd, buffer, length) != length) {
-        printf(D_8001232C, name);
+        printf(gPcHostTransferErrorFormat, name);
         return -1;
     }
     PCclose(fd);
@@ -45,7 +49,7 @@ s16 readPcHostAsset(s16 mode, char *name, void *buffer, s16 *position) {
     s16 result;
 
     if (name == NULL) return -1;
-    sprintf(path, D_8013B5C8, name);
+    sprintf(path, gPcHostAssetPathFormat, name);
     switch (mode) {
     case 0:
         result = readHostFile(path, buffer);

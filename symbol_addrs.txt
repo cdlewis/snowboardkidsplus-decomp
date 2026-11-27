@@ -4441,3 +4441,7 @@ gLapSplitTimeCaptured = 0x8013B18C; // size:0x1
 gDoubleByteGlyphCodes16x16Page1 = 0x8012ECC8; // size:0x204
 gFadingTextComplete = 0x8013B368; // size:0x4
 gTimedSpritePresentationExiting = 0x8013B36C; // size:0x4
+
+gPcHostOpenErrorFormat = 0x80012310;
+gPcHostTransferErrorFormat = 0x8001232C;
+gPcHostAssetPathFormat = 0x8013B5C8;

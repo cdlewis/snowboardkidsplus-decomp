@@ -59,12 +59,6 @@ extern s16 gMenuGridResourceId __attribute__((section(".data")));
 extern s16 gMenuTextureResourceId __attribute__((section(".data")));
 extern u8 gModeTaskTransitionState __attribute__((section(".data")));
 
-extern char D_80012310[];
-extern char D_8001232C[];
-extern char D_8013B5C8[];
-
-int printf(const char *format, ...);
-
 void initializeNumberSelectionTask(void);
 void completeModeSelectionTransitionWhenReady(void);
 void updateSelectionMenuTask(void);
