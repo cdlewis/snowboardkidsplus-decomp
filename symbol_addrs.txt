@@ -99,6 +99,7 @@ adjustDebugPositionAndDisplay = 0x8004D7F8; // type:func
 drawBackgroundLensFlare = 0x8004D93C; // type:func
 drawLayeredBackgroundAndSetFog = 0x8004E09C; // type:func
 drawSunsetBackgroundAndSetFog = 0x8004E718; // type:func
+drawNightHighwayBackgroundAndSetFog = 0x8004EBF8; // type:func
 sBackgroundModelScale = 0x80124BDC; // type:VECTOR size:0x10 defined:true
 sSunsetBackgroundQuad = 0x80124C3C; // type:POLY_G4 size:0x24 defined:true
 gLayeredBackgroundModelPosition1 = 0x80124D84; // size:0x10 defined:true

@@ -41,7 +41,7 @@ extern RECT gWritePixelRect __attribute__((section(".sdata.write_pixel_rect")));
 
 void drawLayeredBackgroundAndSetFog(s16 playerIndex);
 void drawSunsetBackgroundAndSetFog(s16 playerIndex);
-void func_8004EBF8(s16 playerIndex);
+void drawNightHighwayBackgroundAndSetFog(s16 playerIndex);
 void drawRotatingModelBackgroundAndSetFog(s16 playerIndex);
 void drawRipplingBackgroundAndSetFog(s16 playerIndex);
 
@@ -90,7 +90,7 @@ static void (*sCourseBackgroundCallbacks[10])(s16 playerIndex)
     __attribute__((section(".data.course_background_callbacks"))) = {
     drawLayeredBackgroundAndSetFog,
     drawSunsetBackgroundAndSetFog,
-    func_8004EBF8,
+    drawNightHighwayBackgroundAndSetFog,
     drawCyanBackgroundAndSetFog,
     drawRotatingModelBackgroundAndSetFog,
     drawRipplingBackgroundAndSetFog,
@@ -512,41 +512,50 @@ void drawSunsetBackgroundAndSetFog(s16 playerIndex) {
     drawProjectedModelPrimitives(gOptionalCourseModels[0], ot, 2, 1);
 }
 
-/* DECOMP_ATTEMPT: inline 219/222 */
-#ifdef NON_MATCHING
-void func_8004EBF8(s16 playerIndex) {
-    s16 x = -160 - ((D_801241E8[playerIndex].yaw >> 1) & 255);
-    s32 y = D_801241E8[playerIndex].pitch / 2;
-    s16 spriteY = y;
+void drawNightHighwayBackgroundAndSetFog(s16 playerIndex) {
+    s16 x, y;
+    s32 pitch, pitchFixed;
+    s32 scrollTerm;
+
+    scrollTerm = (u32)(u16)D_801241E8[playerIndex].yaw << 16;
+    x = -160 - ((scrollTerm >> 17) & 255);
+
+    /* Bias negative pitches by one so halving rounds toward zero. */
+    pitchFixed = (u32)(u16)D_801241E8[playerIndex].pitch << 16;
+    pitch = pitchFixed >> 16;
+    scrollTerm = (u32)pitchFixed >> 31;
+    y = (pitch + scrollTerm) >> 1;
 
     addTexturedSprite(&D_8013AF6C[4095], getTPage(0, 0, 640, 256), getClut(656, 496),
-                      x, (s16)spriteY, 256, 128, 0, 0, 128, 128, 128);
+                      x, y, 256, 128, 0, 0, 128, 128, 128);
     addTexturedSprite(&D_8013AF6C[4095], getTPage(0, 0, 640, 256), getClut(656, 496),
-                      (s16)(x + 256), (s16)spriteY, 256, 128, 0, 0, 128, 128, 128);
+                      (s16)(x + 256), y, 256, 128, 0, 0, 128, 128, 128);
     addTexturedSprite(&D_8013AF6C[4095], getTPage(0, 0, 640, 256), getClut(656, 496),
-                      (s16)(x + 512), (s16)spriteY, 256, 128, 0, 0, 128, 128, 128);
-    addGouraudQuad(&D_8013AF6C[4095], -160, (s16)(y - 120), 160, (s16)(y - 120),
-                   -160, (s16)spriteY, 160, (s16)spriteY, 0, 0, 0, 0, 0, 0, 0, 32, 80, 0, 32, 80);
-    addGouraudQuad(&D_8013AF6C[4095], -160, (s16)(y + 128), 160, (s16)(y + 128),
+                      (s16)(x + 512), y, 256, 128, 0, 0, 128, 128, 128);
+
+    addGouraudQuad(&D_8013AF6C[4095],
+                   -160, (s16)(y - 120), 160, (s16)(y - 120), -160, y, 160, y,
+                   0, 0, 0, 0, 0, 0, 0, 32, 80, 0, 32, 80);
+    addGouraudQuad(&D_8013AF6C[4095],
+                   -160, (s16)(y + 128), 160, (s16)(y + 128),
                    -160, (s16)(y + 248), 160, (s16)(y + 248),
                    0, 0, 16, 0, 0, 16, 0, 0, 16, 0, 0, 16);
-    if ((s16)spriteY > -120) {
+
+    if (y > -120) {
         addFlatRectangle(&D_8013AF6C[4095], -160, -120, 320, (s16)(y + 120), 0, 0, 0);
     }
     addFlatRectangle(&D_8013AF6C[4095], -160, (s16)(y + 248), 320, 120, 0, 0, 16);
+
     if (selectedCameraOverlayModeGp) {
-        addFlatRectangleWithDrawMode(D_8013AF6C, getTPage(0, 2, 0, 0),
-                                    SEMI_TRANSPARENT_FLAG, -160, -120, 320, 240, 24, 24, 16);
+        addFlatRectangleWithDrawMode(D_8013AF6C, getTPage(0, 2, 0, 0), SEMI_TRANSPARENT_FLAG,
+                                     -160, -120, 320, 240, 24, 24, 16);
     } else {
-        addFlatRectangleWithDrawMode(D_8013AF6C, getTPage(0, 2, 0, 0),
-                                    SEMI_TRANSPARENT_FLAG, -160, -120, 320, 240, 48, 48, 32);
+        addFlatRectangleWithDrawMode(D_8013AF6C, getTPage(0, 2, 0, 0), SEMI_TRANSPARENT_FLAG,
+                                     -160, -120, 320, 240, 48, 48, 32);
     }
     SetFarColor(32, 32, 80);
     SetFogNearFar(8000, 10000, 400);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/graphics/course_rendering", func_8004EBF8);
-#endif
 
 void drawCyanBackgroundAndSetFog(s16 playerIndex) {
     addFlatRectangle(&D_8013AF6C[4095], -160, -120, 320, 240, 0, 235, 230);
