@@ -56,7 +56,7 @@ extern u8 gControllerInputRecordState __attribute__((section(".sdata.controller_
 
 extern u16 gControllerPressedButtons[2] __attribute__((section(".data.controller_input_arrays")));
 extern u16 gControllerHeldButtons[2] __attribute__((section(".data.controller_input_arrays")));
-extern s16 D_8013AEF0[2] __attribute__((section(".data.controller_input_arrays")));
+extern s16 gControllerLegacyActuatorInputs[2] __attribute__((section(".data.controller_input_arrays")));
 extern s16 D_8013AEF4[2] __attribute__((section(".data.controller_input_arrays")));
 extern s16 gControllerHorizontalAxes[2] __attribute__((section(".data.controller_input_arrays")));
 extern s16 gControllerVerticalAxes[2] __attribute__((section(".data.controller_input_arrays")));

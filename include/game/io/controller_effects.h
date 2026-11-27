@@ -29,7 +29,8 @@ typedef struct ControllerActuatorOutput {
 
 /* Shared controller storage remains in the main controller data object. */
 extern ControllerActuatorOutput gControllerActuatorOutputs[];
-extern s16 D_8013AEF0[];
+/* Legacy actuator output is enabled when the controller input is at least 25. */
+extern s16 gControllerLegacyActuatorInputs[];
 extern u8 gRacePauseState;
 
 void updateControllerEffectSequence(u16 controller);

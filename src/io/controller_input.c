@@ -29,7 +29,7 @@ u16 gControllerPressedButtons[2] __attribute__((section(".data.controller_input_
 
 u16 gControllerHeldButtons[2] __attribute__((section(".data.controller_input_arrays"))) = {0};
 
-s16 D_8013AEF0[2] __attribute__((section(".data.controller_input_arrays"))) = {0};
+s16 gControllerLegacyActuatorInputs[2] __attribute__((section(".data.controller_input_arrays"))) = {0};
 
 s16 D_8013AEF4[2] __attribute__((section(".data.controller_input_arrays"))) = {0};
 
@@ -223,11 +223,11 @@ void initializeControllers(void) {
     gControllerVerticalAxes[0] = 0;
     gControllerHorizontalAxes[0] = 0;
     D_8013AEF4[0] = 0;
-    D_8013AEF0[0] = 0;
+    gControllerLegacyActuatorInputs[0] = 0;
     gControllerVerticalAxes[1] = 0;
     gControllerHorizontalAxes[1] = 0;
     D_8013AEF4[1] = 0;
-    D_8013AEF0[1] = 0;
+    gControllerLegacyActuatorInputs[1] = 0;
     setControllerAxesFromButtons(0);
     setControllerAxesFromButtons(1);
     resetControllerEffects();

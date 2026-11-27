@@ -158,7 +158,7 @@ void updateLegacyControllerActuators(u16 controller) {
     if (gRacePauseState) {
         gControllerActuatorOutputs[controller].control = 0x40;
         gControllerActuatorOutputs[controller].value = 0;
-    } else if (D_8013AEF0[controller] >= 25) {
+    } else if (gControllerLegacyActuatorInputs[controller] >= 25) {
         gControllerActuatorOutputs[controller].control = 0x40;
         gControllerActuatorOutputs[controller].value = 1;
     } else {
