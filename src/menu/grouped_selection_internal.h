@@ -30,7 +30,7 @@ extern u8 gDefaultBoardMenuItems[4];
 
 void buildRecordFlagMenuEntries(s16 index, s16 mode, s16 group, u16 arg4, u16 arg5,
                                 RecordFlagMenuEntries *out);
-s16 findIndexedHalfwordRecord(IndexedHalfwordRecord *records, u8 *indices, s16 count, s16 value);
+s16 findIndexedHalfwordRecord(const IndexedHalfwordRecord *records, const u8 *indices, s16 count, s16 value);
 s16 getGroupedIndexBase(s16 index);
 s16 getGroupedIndexOffset(s16 index);
 s16 getGroupedIndexOffsetPlus216(s16 index);

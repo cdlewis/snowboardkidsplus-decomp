@@ -1533,7 +1533,7 @@ void updateShopBoardPurchaseMenuTask(void) {
             createRegisteredCallbackTask(0, 0, 0, drawCurrentTaskSelectedBoardPrice, depth, 31);
             selection->mode = 0;
             selection->selectedIndex = getGroupedIndexOffsetPlus216(groupedSelection->selection);
-            value = findIndexedHalfwordRecord((IndexedHalfwordRecord *)gBoardMenuSprites, entries->entries,
+            value = findIndexedHalfwordRecord((const IndexedHalfwordRecord *)gBoardMenuSprites, entries->entries,
                 entries->count, selection->selectedIndex);
             selection->selectedIndex = value;
             selection->previousIndex = value;
@@ -2209,7 +2209,7 @@ void updateBoardSelectionDetailsMenuTask(void) {
             selection->mode = 0;
             value = getGroupedIndexOffsetPlus216(groupedSelection->selection);
             selection->selectedIndex = value;
-            value = findIndexedHalfwordRecord((IndexedHalfwordRecord *)gBoardMenuSprites, entries->entries, entries->count, value);
+            value = findIndexedHalfwordRecord((const IndexedHalfwordRecord *)gBoardMenuSprites, entries->entries, entries->count, value);
             selection->selectedIndex = value;
             selection->previousIndex = value;
             selection->choiceResult = 0;

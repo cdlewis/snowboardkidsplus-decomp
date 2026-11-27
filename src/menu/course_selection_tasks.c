@@ -1611,7 +1611,7 @@ s16 getGroupedIndexOffsetPlus216(s16 index) {
     return result;
 }
 
-s16 findIndexedHalfwordRecord(IndexedHalfwordRecord *records, u8 *indices, s16 count, s16 value) {
+s16 findIndexedHalfwordRecord(const IndexedHalfwordRecord *records, const u8 *indices, s16 count, s16 value) {
     s16 result = 0;
     s16 i;
     for (i = 0; i < count; i++) {
