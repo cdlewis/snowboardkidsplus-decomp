@@ -209,6 +209,9 @@ TexturedSpritePacket gScreenCopyMinusBuffer0[2] __attribute__((section(".data.of
      95, -120, 0, 0, 0, 64, 240}
 };
 
+/* Unreferenced zero-filled storage between the sprite packets and model coordinate. */
+u8 gCourseRenderingReserved24FD4[0x20] __attribute__((aligned(4), section(".data.course_rendering_reserved_24fd4"))) = {0};
+
 const VECTOR gCourseModelScale __attribute__((section(".rodata.course_model_scale"))) = {
     5 * 4096, 5 * 4096, 5 * 4096, 0,
 };

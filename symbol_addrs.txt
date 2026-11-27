@@ -4571,3 +4571,5 @@ sUnusedTmdVertices = 0x80124BBC; // type:SVECTOR size:0x20 defined:true
 
 gUnusedBackgroundQuads = 0x80124C60; // type:POLY_G4 size:0xD8 defined:true
 gUnusedBackgroundRectangles = 0x80124D38; // size:0x3C defined:true
+
+gCourseRenderingReserved24FD4 = 0x80124FD4; // size:0x20 defined:true
