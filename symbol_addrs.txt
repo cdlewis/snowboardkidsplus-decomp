@@ -4403,7 +4403,7 @@ gDoubleByteGlyphCodes16x16Page0 = 0x8012EC04; // size:0xC4
 gCurrentSpriteTextureRegions = 0x8013B6AC;
 
 gMemoryCardAccessInProgressText = 0x801302BC; // size:0x4C
-gSaveRecordConfirmationSprites = 0x801307AC;
+gSaveRecordConfirmationSprites = 0x801307AC; // size:0x54
 gGroupedCourseMenuTextIndices = 0x8013B43C;
 gSaveRecordSavedOrLoaded = 0x8013B47C;
 
@@ -4501,7 +4501,7 @@ gMemoryCardSaveOptionsText = 0x80130708; // size:0x1C
 gMemoryCardSaveMenuExitConfirmationText = 0x80130740; // size:0x1C
 gMemoryCardSaveConfirmationText = 0x8013075C; // size:0x14
 gMemoryCardOperationFailedText = 0x80130770; // size:0x10
-gMemoryCardSlotChoiceSprites = 0x80130800;
+gMemoryCardSlotChoiceSprites = 0x80130800; // size:0xC
 
 gDoubleByteGlyphCodes16x16Page2 = 0x8012EECC; // size:0x204
 gDoubleByteGlyphCodes16x16Page3 = 0x8012F0D0; // size:0x30

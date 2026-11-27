@@ -879,7 +879,7 @@ segments:
       - {start: 0x120F40, type: .data, name: menu/save_record_tasks, linker_section: .data.memory_card_save_confirmation_text}
       - {start: 0x120F80, type: .data, name: menu/course_selection_tasks, linker_section: .data.memory_card_loaded_record_confirmation_text}
       - {start: 0x120F98, type: .data, name: menu/save_record_tasks, linker_section: .data.memory_card_save_record_heading}
-      - [0x120FAC, data, memory_card_save_record_heading_tail]
+      - {start: 0x120FAC, type: .data, name: menu/save_record_tasks, linker_section: .data.memory_card_save_record_sprites}
       - {start: 0x12100C, type: .data, name: menu/save_record_tasks, linker_section: .data.save_records}
       - {start: 0x12181C, type: .data, name: menu/save_record_tasks, linker_section: .data.merged_save_record}
       - {start: 0x121C24, type: .data, name: menu/panel_tasks, linker_section: .data.shop_menu_sprites}

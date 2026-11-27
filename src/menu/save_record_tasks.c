@@ -233,6 +233,23 @@ const u16 gMemoryCardSaveRecordHeading[10]
     0x000E, 0x000B, 0x001E, 0x000B, 0x8020, 0x001D, 0x000B, 0x0020, 0x000F, 0
 };
 
+/* Each six-halfword configuration holds two choices and a cursor as sprite/palette pairs. */
+const u16 gSaveRecordConfirmationSprites[42]
+    __attribute__((section(".data.memory_card_save_record_sprites"), aligned(4))) = {
+    0x0125, 0, 0x0126, 0, 0x00B0, 0,
+    0x0123, 0, 0x0125, 0, 0x00B0, 0,
+    0x0125, 0, 0x0122, 0, 0x00B0, 0,
+    0x0124, 0, 0x0123, 0, 0x00B0, 0,
+    0x0125, 0, 0x0126, 0, 0x00B0, 0,
+    0x0121, 0, 0x0122, 0, 0x00B0, 0,
+    0x0121, 0, 0x0123, 0, 0x00B0, 0,
+};
+
+const u16 gMemoryCardSlotChoiceSprites[6]
+    __attribute__((section(".data.memory_card_save_record_sprites"), aligned(4))) = {
+    0x0235, 0, 0x0236, 0, 0x00B0, 0,
+};
+
 SaveRecord gPlayerSaveRecords[2] __attribute__((section(".data.save_records"))) = {0};
 SaveRecord gMergedSaveRecord __attribute__((section(".data.merged_save_record"))) = {0};
 
