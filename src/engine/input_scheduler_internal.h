@@ -125,7 +125,6 @@ void resetCdVolumeFade(void);
 void startCdVolumeFade(s16 startVolume, s16 step, s16 targetVolume, u8 interval);
 void updateCdVolumeFade(void);
 void initializeCdFiles(void);
-s32 queueCdSectorCommand(s16 command, s16 sector, s16 count, void *destination, s32 value);
 s32 isCdReading(void);
 s32 isCdCommandQueueIdle(void);
 s32 isCdRequestQueueReady(void);

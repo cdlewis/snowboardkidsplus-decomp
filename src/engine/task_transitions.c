@@ -50,11 +50,11 @@ typedef struct RacePlayerSoundSectorRanges {
 extern s16 gFrameCounter __attribute__((section(".data")));
 extern VECTOR *gScratchVector0 __attribute__((section(".data")));
 extern MATRIX *gScratchMatrix0 __attribute__((section(".data")));
-extern u16 D_8013AF7A __attribute__((section(".data")));
-extern u16 D_8013AF7C __attribute__((section(".data")));
+extern u16 gDisplayWidth __attribute__((section(".data")));
+extern u16 gDisplayHeight __attribute__((section(".data")));
 extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
-extern s16 D_8013AF7E __attribute__((section(".data")));
-extern s16 D_8013AF80 __attribute__((section(".data")));
+extern s16 gPlayerViewWidthReduction __attribute__((section(".data")));
+extern s16 gPlayerViewVerticalOffset __attribute__((section(".data")));
 extern u16 gGameStateFlags __attribute__((section(".data")));
 extern u8 D_8013B1AA __attribute__((section(".data")));
 extern u8 D_8013B1AB __attribute__((section(".data")));
@@ -280,9 +280,9 @@ void sortRacePlayerModelForView(u16 playerIndex, u16 view) {
         GsSetLsMatrix(D_800EC170[i]);
         if (!(taskTransitionFlagsAbsolute & 0x40) || i != 0) {
             if (view == 0) {
-                GsSortObject4(objects, &D_800EC068[gActiveGraphicsBuffer], 2, getScratchAddr(0));
+                GsSortObject4(objects, &gPlayer1ModelOrderingTables[gActiveGraphicsBuffer], 2, getScratchAddr(0));
             } else {
-                GsSortObject4(objects, &D_800EC108[gActiveGraphicsBuffer], 2, getScratchAddr(0));
+                GsSortObject4(objects, &gPlayer2ModelOrderingTables[gActiveGraphicsBuffer], 2, getScratchAddr(0));
             }
         }
         if (i == 0) {
@@ -582,22 +582,22 @@ void initializeRacePresentationTask(void) {
     }
 
     D_8013AFDB = 0;
-    D_800EC158[0].x = 0;
-    D_800EC158[0].y = 0;
-    D_800EC158[0].w = D_8013AF7A;
-    D_800EC158[0].h = D_8013AF7C;
+    gViewClipRects[0].x = 0;
+    gViewClipRects[0].y = 0;
+    gViewClipRects[0].w = gDisplayWidth;
+    gViewClipRects[0].h = gDisplayHeight;
 
     if (gPlayerCount == 2) {
-        D_8013AF7E = 64;
-        D_8013AF80 = D_8013AF7C / 4;
-        D_800EC158[1].x = 0;
-        D_800EC158[1].y = 0;
-        D_800EC158[1].w = D_8013AF7A - 64;
-        D_800EC158[1].h = D_8013AF7C / 2 - 1;
-        D_800EC158[2].x = 0;
-        D_800EC158[2].y = D_8013AF7C / 2 + 1;
-        D_800EC158[2].w = D_8013AF7A - 64;
-        D_800EC158[2].h = D_8013AF7C / 2 - 1;
+        gPlayerViewWidthReduction = 64;
+        gPlayerViewVerticalOffset = gDisplayHeight / 4;
+        gViewClipRects[1].x = 0;
+        gViewClipRects[1].y = 0;
+        gViewClipRects[1].w = gDisplayWidth - 64;
+        gViewClipRects[1].h = gDisplayHeight / 2 - 1;
+        gViewClipRects[2].x = 0;
+        gViewClipRects[2].y = gDisplayHeight / 2 + 1;
+        gViewClipRects[2].w = gDisplayWidth - 64;
+        gViewClipRects[2].h = gDisplayHeight / 2 - 1;
     }
 
     initializeRacePaletteCycles();
@@ -641,32 +641,32 @@ void waitThenStartSplitScreenTransition(void) {
 }
 
 void updateSplitScreenTransitionTask(void) {
-    D_8013AF7E -= 4;
+    gPlayerViewWidthReduction -= 4;
     gPlayerCameras[gCurrentTask->data18].unk10 += 16;
-    D_8013AF80 -= 4;
-    if (D_8013AF80 < 0) D_8013AF80 = 0;
+    gPlayerViewVerticalOffset -= 4;
+    if (gPlayerViewVerticalOffset < 0) gPlayerViewVerticalOffset = 0;
     if (gCurrentTask->data18 == 0) {
-        D_800EC158[1].h += 8;
-        if (D_800EC158[1].h > 240) D_800EC158[1].h = 240;
-        D_800EC158[1].w = D_8013AF7A - D_8013AF7E;
-        D_800EC158[2].y += 8;
-        D_800EC158[2].h -= 8;
-        if (D_800EC158[2].h < 0) {
-            D_800EC158[2].y = 240;
-            D_800EC158[2].h = 0;
+        gViewClipRects[1].h += 8;
+        if (gViewClipRects[1].h > 240) gViewClipRects[1].h = 240;
+        gViewClipRects[1].w = gDisplayWidth - gPlayerViewWidthReduction;
+        gViewClipRects[2].y += 8;
+        gViewClipRects[2].h -= 8;
+        if (gViewClipRects[2].h < 0) {
+            gViewClipRects[2].y = 240;
+            gViewClipRects[2].h = 0;
             gGameStateFlags |= 0x1000;
         }
     } else {
-        D_800EC158[2].y -= 8;
-        D_800EC158[2].h += 8;
-        if (D_800EC158[2].h > 240) {
-            D_800EC158[2].y = 0;
-            D_800EC158[2].h = 240;
+        gViewClipRects[2].y -= 8;
+        gViewClipRects[2].h += 8;
+        if (gViewClipRects[2].h > 240) {
+            gViewClipRects[2].y = 0;
+            gViewClipRects[2].h = 240;
         }
-        D_800EC158[2].w = D_8013AF7A - D_8013AF7E;
-        D_800EC158[1].h -= 8;
-        if (D_800EC158[1].h < 0) {
-            D_800EC158[1].h = 0;
+        gViewClipRects[2].w = gDisplayWidth - gPlayerViewWidthReduction;
+        gViewClipRects[1].h -= 8;
+        if (gViewClipRects[1].h < 0) {
+            gViewClipRects[1].h = 0;
             gGameStateFlags |= 0x5000;
         }
     }
@@ -1075,10 +1075,10 @@ void finishRaceExitAfterCountdown(void) {
                 setCurrentTaskCallback(initializeDemoPlaybackTask);
                 return;
             }
-            D_800EC158[0].x = 0;
-            D_800EC158[0].y = 0;
-            D_800EC158[0].w = D_8013AF7A;
-            D_800EC158[0].h = D_8013AF7C;
+            gViewClipRects[0].x = 0;
+            gViewClipRects[0].y = 0;
+            gViewClipRects[0].w = gDisplayWidth;
+            gViewClipRects[0].h = gDisplayHeight;
         }
         if (gPlayerCount == 2) {
             startThreeFrameScreenBlend();
@@ -1124,10 +1124,10 @@ void initializeDemoPlaybackTask(void) {
     configureTaskStateTransition(1, 0, 0);
     queueCdCommand(0, 1);
     D_8013AFDB = 0;
-    D_800EC158[0].x = 0;
-    D_800EC158[0].y = 32;
-    D_800EC158[0].w = D_8013AF7A;
-    D_800EC158[0].h = D_8013AF7C - 32;
+    gViewClipRects[0].x = 0;
+    gViewClipRects[0].y = 32;
+    gViewClipRects[0].w = gDisplayWidth;
+    gViewClipRects[0].h = gDisplayHeight - 32;
     initializeRacePaletteCycles();
     gTaskTransitionFlags = 0;
     gGameStateFlags |= 0x48;

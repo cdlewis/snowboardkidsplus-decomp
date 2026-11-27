@@ -33,13 +33,13 @@ extern GameTask *gCurrentTaskParent __attribute__((section(".data")));
 GsOT gMainOrderingTables[2] __attribute__((section(".data.render_state"))) = {0};
 GsOT gPlayer1OrderingTables[2] __attribute__((section(".data.render_state"))) = {0};
 GsOT D_800EC040[2] __attribute__((section(".data.render_state"))) = {0};
-GsOT D_800EC068[2] __attribute__((section(".data.render_state"))) = {0};
+GsOT gPlayer1ModelOrderingTables[2] __attribute__((section(".data.render_state"))) = {0};
 GsOT D_800EC090[2] __attribute__((section(".data.render_state"))) = {0};
 GsOT gPlayer2OrderingTables[2] __attribute__((section(".data.render_state"))) = {0};
 GsOT D_800EC0E0[2] __attribute__((section(".data.render_state"))) = {0};
-GsOT D_800EC108[2] __attribute__((section(".data.render_state"))) = {0};
+GsOT gPlayer2ModelOrderingTables[2] __attribute__((section(".data.render_state"))) = {0};
 GsOT D_800EC130[2] __attribute__((section(".data.render_state"))) = {0};
-RECT D_800EC158[3] __attribute__((section(".data.render_state"))) = {0};
+RECT gViewClipRects[3] __attribute__((section(".data.render_state"))) = {0};
 MATRIX *D_800EC170[16] __attribute__((section(".data.render_state"))) = {0};
 GsOT D_800EC1B0[2] __attribute__((section(".data.render_state"))) = {0};
 GsOT D_800EC1D8[2] __attribute__((section(".data.render_state"))) = {0};
@@ -70,8 +70,8 @@ void runGameLoop(void) {
             if (gGameStateFlags & 0x1000) {
                 gGameStateFlags &= 0xFBFF;
                 DrawSync(0);
-                GsSetOffset(D_8013AF7A >> 1, D_8013AF7C >> 1);
-                GsSetClip(&D_800EC158[0]);
+                GsSetOffset(gDisplayWidth >> 1, gDisplayHeight >> 1);
+                GsSetClip(&gViewClipRects[0]);
             }
             if (gGameStateFlags & 0x4000) {
                 gGameStateFlags |= 0x2000;
@@ -124,8 +124,8 @@ void runGameLoop(void) {
         updateCdCommandQueue();
         updateCdVolumeFade();
         updateMusicSequenceFade();
-        if ((GsDISPENV.disp.w != D_8013AF7A) || (GsDISPENV.disp.h != D_8013AF7C)) {
-            GsInitGraph2(D_8013AF7A, D_8013AF7C, 4, 1, 0);
+        if ((GsDISPENV.disp.w != gDisplayWidth) || (GsDISPENV.disp.h != gDisplayHeight)) {
+            GsInitGraph2(gDisplayWidth, gDisplayHeight, 4, 1, 0);
             GsDefDispBuff2(0, 0, 0, 0x100);
             GsInit3D();
         }
@@ -134,7 +134,7 @@ void runGameLoop(void) {
             updatePaletteRecords();
             GsSwapDispBuff();
             GsSortClear(0, 0, 0, &gPlayer1OrderingTables[gActiveGraphicsBuffer]);
-            GsSetClip(&D_800EC158[0]);
+            GsSetClip(&gViewClipRects[0]);
             GsDrawOt(&gPlayer1OrderingTables[gActiveGraphicsBuffer]);
             GsDrawOt(&gMainOrderingTables[gActiveGraphicsBuffer]);
         } else {
@@ -143,21 +143,21 @@ void runGameLoop(void) {
                 updatePaletteRecords();
                 GsSwapDispBuff();
                 GsSortClear(0, 0, 0, &gPlayer1OrderingTables[gActiveGraphicsBuffer]);
-                GsSetOffset((D_8013AF7A >> 1) - (D_8013AF7E / 2),
-                            (D_8013AF7C >> 1) - D_8013AF80);
-                GsSetClip(&D_800EC158[1]);
+                GsSetOffset((gDisplayWidth >> 1) - (gPlayerViewWidthReduction / 2),
+                            (gDisplayHeight >> 1) - gPlayerViewVerticalOffset);
+                GsSetClip(&gViewClipRects[1]);
                 GsDrawOt(&gPlayer1OrderingTables[gActiveGraphicsBuffer]);
                 continue;
             }
             updatePaletteRecords();
             DrawSync(0);
-            GsSetOffset((D_8013AF7A >> 1) - (D_8013AF7E / 2),
-                        ((D_8013AF7C >> 1) + D_8013AF80) - 8);
-            GsSetClip(&D_800EC158[2]);
+            GsSetOffset((gDisplayWidth >> 1) - (gPlayerViewWidthReduction / 2),
+                        ((gDisplayHeight >> 1) + gPlayerViewVerticalOffset) - 8);
+            GsSetClip(&gViewClipRects[2]);
             GsDrawOt(&gPlayer2OrderingTables[gActiveGraphicsBuffer]);
             DrawSync(0);
-            GsSetOffset(D_8013AF7A >> 1, D_8013AF7C >> 1);
-            GsSetClip(&D_800EC158[0]);
+            GsSetOffset(gDisplayWidth >> 1, gDisplayHeight >> 1);
+            GsSetClip(&gViewClipRects[0]);
             GsDrawOt(&gMainOrderingTables[gActiveGraphicsBuffer]);
         }
     }
@@ -182,8 +182,8 @@ void initializeGameSystems(void) {
         D_800EC170[matrixIndex] = &GAME_SCRATCHPAD->matrixPool[matrixIndex];
         matrixIndex += 1;
     } while (matrixIndex < 16);
-    D_8013AF7A = 0x140;
-    D_8013AF7C = 0xF0;
+    gDisplayWidth = 0x140;
+    gDisplayHeight = 0xF0;
     D_8013AF84 = 0x100;
     initializeCdFiles();
     initializeSoundSystem(0);
@@ -199,10 +199,10 @@ void initializeGameSystems(void) {
     setControllerFlag0(1U);
     initializeTaskScheduler();
     initDebugTextSprite();
-    GsInitGraph(D_8013AF7A, D_8013AF7C, 4, 1, 0);
+    GsInitGraph(gDisplayWidth, gDisplayHeight, 4, 1, 0);
     GsDefDispBuff(0, 0, 0, 0x100);
     GsInit3D();
-    clip = D_800EC158;
+    clip = gViewClipRects;
     clip->x = 0;
     clip->y = 0;
     gMainOrderingTables[1].length = 0xC;
@@ -213,8 +213,8 @@ void initializeGameSystems(void) {
     gPlayer1OrderingTables->length = 0xC;
     D_800EC040[1].length = 0xC;
     D_800EC040[0].length = 0xC;
-    D_800EC068[1].length = 0xC;
-    D_800EC068[0].length = 0xC;
+    gPlayer1ModelOrderingTables[1].length = 0xC;
+    gPlayer1ModelOrderingTables[0].length = 0xC;
     D_800EC1B0[1].length = 0xC;
     D_800EC1B0[0].length = 0xC;
     D_800EC090[1].length = 0xC;
@@ -223,8 +223,8 @@ void initializeGameSystems(void) {
     gPlayer1OrderingTables[1].org = D_800F4200 + 0x1000;
     D_800EC040[0].org = (D_800F4200 + 0x7);
     D_800EC040[1].org = (u32 *)(D_800F4200 + 0x1007);
-    D_800EC068[0].org = (D_800F4200 + 0x1);
-    D_800EC068[1].org = (u32 *)(D_800F4200 + 0x1001);
+    gPlayer1ModelOrderingTables[0].org = (D_800F4200 + 0x1);
+    gPlayer1ModelOrderingTables[1].org = (u32 *)(D_800F4200 + 0x1001);
     D_800EC1B0[0].org = (D_800F4200 + 0x3);
     D_800EC1B0[1].org = (u32 *)(D_800F4200 + 0x1003);
     D_800EC090[0].org = (D_800F4200 + 0xa);
@@ -232,11 +232,11 @@ void initializeGameSystems(void) {
     gPlayer2OrderingTables[1].length = 0xC;
     gPlayer2OrderingTables[0].length = 0xC;
     D_800EC0E0[1].length = 0xC;
-    clip->w = D_8013AF7A;
-    clip->h = D_8013AF7C;
+    clip->w = gDisplayWidth;
+    clip->h = gDisplayHeight;
     D_800EC0E0[0].length = 0xC;
-    D_800EC108[1].length = 0xC;
-    D_800EC108[0].length = 0xC;
+    gPlayer2ModelOrderingTables[1].length = 0xC;
+    gPlayer2ModelOrderingTables[0].length = 0xC;
     D_800EC1D8[1].length = 0xC;
     D_800EC1D8[0].length = 0xC;
     D_800EC130[1].length = 0xC;
@@ -245,8 +245,8 @@ void initializeGameSystems(void) {
     gPlayer2OrderingTables[1].org = D_800FC200;
     D_800EC0E0[1].org = (void *)(D_800FC200 + 0x7);
     D_800EC0E0[0].org = (D_800F4200 + 0x7);
-    D_800EC108[1].org = (void *)(D_800FC200 + 0x1);
-    D_800EC108[0].org = (D_800F4200 + 0x1);
+    gPlayer2ModelOrderingTables[1].org = (void *)(D_800FC200 + 0x1);
+    gPlayer2ModelOrderingTables[0].org = (D_800F4200 + 0x1);
     D_800EC1D8[0].org = (D_800F4200 + 0x3);
     D_800EC1D8[1].org = (void *)(D_800FC200 + 0x3);
     D_800EC130[0].org = (D_800F4200 + 0xa);

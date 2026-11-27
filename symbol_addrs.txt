@@ -3553,7 +3553,7 @@ gPlayer1OrderingTables = 0x800EC018; // size:0x28 defined:true
 
 D_800EC040 = 0x800EC040; // size:0x28 defined:true
 
-D_800EC068 = 0x800EC068; // size:0x28 defined:true
+gPlayer1ModelOrderingTables = 0x800EC068; // size:0x28 defined:true
 
 D_800EC090 = 0x800EC090; // size:0x28 defined:true
 
@@ -3561,7 +3561,7 @@ gPlayer2OrderingTables = 0x800EC0B8; // size:0x28 defined:true
 
 D_800EC0E0 = 0x800EC0E0; // size:0x28 defined:true
 
-D_800EC108 = 0x800EC108; // size:0x28 defined:true
+gPlayer2ModelOrderingTables = 0x800EC108; // size:0x28 defined:true
 
 D_800EC130 = 0x800EC130; // size:0x28 defined:true
 
@@ -3569,7 +3569,7 @@ D_800EC1B0 = 0x800EC1B0; // size:0x28 defined:true
 
 D_800EC1D8 = 0x800EC1D8; // size:0x28 defined:true
 
-D_800EC158 = 0x800EC158; // size:0x18 defined:true
+gViewClipRects = 0x800EC158; // size:0x18 defined:true
 
 D_800EC170 = 0x800EC170; // size:0x40 defined:true
 
@@ -4231,6 +4231,10 @@ gTaskTransitionFlags = 0x8013AFE4; // size:0x4
 gPlayerCameras = 0x801241E8;
 gCurrentPlayerOrderingTable = 0x8013AF6C;
 gActiveGraphicsBuffer = 0x8013AF78;
+gDisplayWidth = 0x8013AF7A; // size:0x2
+gDisplayHeight = 0x8013AF7C; // size:0x2
+gPlayerViewWidthReduction = 0x8013AF7E; // size:0x2
+gPlayerViewVerticalOffset = 0x8013AF80; // size:0x2
 gRacePauseState = 0x8013AFD3;
 gCourseGeometryVertexData = 0x8013B1EC;
 gGeometryProjectionBasisX = 0x8013B624;

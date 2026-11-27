@@ -26,11 +26,11 @@ extern u8 gModeSequenceStage __attribute__((section(".data")));
 extern u8 gControllerPlaybackIndex __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u8 D_8013AFDB __attribute__((section(".data")));
-extern u16 D_8013AF7A __attribute__((section(".data")));
-extern u16 D_8013AF7C __attribute__((section(".data")));
+extern u16 gDisplayWidth __attribute__((section(".data")));
+extern u16 gDisplayHeight __attribute__((section(".data")));
 extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
-extern s16 D_8013AF7E __attribute__((section(".data")));
-extern s16 D_8013AF80 __attribute__((section(".data")));
+extern s16 gPlayerViewWidthReduction __attribute__((section(".data")));
+extern s16 gPlayerViewVerticalOffset __attribute__((section(".data")));
 extern u8 gRacePauseState __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
@@ -81,35 +81,35 @@ void initializeModeRaceTasks(void) {
     configureTaskStateTransition(2, 0, 15);
 
     D_8013AFDB = 0;
-    clip = D_800EC158;
-    width = D_8013AF7A;
+    clip = gViewClipRects;
+    width = gDisplayWidth;
     clip[0].x = 0;
     clip[0].y = 0;
     clip[0].w = width;
     /* Preserve the separate height reads for the full and player clips. */
-    clip[0].h = *(volatile u16 *)&D_8013AF7C;
+    clip[0].h = *(volatile u16 *)&gDisplayHeight;
     if (playerCountAbsolute == 1) {
         clip[1].x = 0;
         clip[1].y = 0;
         clip[1].w = width;
-        D_8013AF7E = 0;
-        height = D_8013AF7C;
+        gPlayerViewWidthReduction = 0;
+        height = gDisplayHeight;
         clip[1].h = height / 2 + 16;
         sixthHeight = (u32)height / 6;
     } else {
-        D_8013AF7E = 0;
+        gPlayerViewWidthReduction = 0;
         clip[1].x = 0;
         clip[1].y = 0;
         clip[1].w = width;
         clip[2].x = 0;
         clip[2].w = width;
-        height = D_8013AF7C;
+        height = gDisplayHeight;
         clip[1].h = height / 2 + 16;
         clip[2].y = height / 2 + 16;
         clip[2].h = height / 2 - 16;
         sixthHeight = (u32)height / 6;
     }
-    D_8013AF80 = sixthHeight;
+    gPlayerViewVerticalOffset = sixthHeight;
     initializeRacePaletteCycles();
     player = 0;
     if (playerCountAbsolute) {

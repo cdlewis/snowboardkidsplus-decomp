@@ -26,9 +26,9 @@ typedef struct TextSequenceEntry {
 extern u8 gModeSequenceStage __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
-extern u16 D_8013AF7A __attribute__((section(".data")));
-extern u16 D_8013AF7C __attribute__((section(".data")));
-extern s16 D_8013AF80 __attribute__((section(".data")));
+extern u16 gDisplayWidth __attribute__((section(".data")));
+extern u16 gDisplayHeight __attribute__((section(".data")));
+extern s16 gPlayerViewVerticalOffset __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern u32 gTaskTransitionFlags __attribute__((section(".data")));
 
@@ -187,18 +187,18 @@ void animateTextSequenceExitTask(void) {
     resource->y -= resource->velocity;
     resource->displacement += resource->velocity;
     if (resource->intensity != 0) resource->intensity -= 4;
-    previous = D_800EC158[1].h;
-    D_800EC158[1].h = resource->displacement / 4096 - (u32)(-D_8013AF7C / 2 + 4);
-    if (D_800EC158[1].h > D_8013AF7C) D_800EC158[1].h = D_8013AF7C;
-    delta = D_800EC158[1].h - previous;
+    previous = gViewClipRects[1].h;
+    gViewClipRects[1].h = resource->displacement / 4096 - (u32)(-gDisplayHeight / 2 + 4);
+    if (gViewClipRects[1].h > gDisplayHeight) gViewClipRects[1].h = gDisplayHeight;
+    delta = gViewClipRects[1].h - previous;
     resource->unk3A += delta;
-    D_8013AF80 -= delta / 2;
-    if (D_8013AF80 < 0) D_8013AF80 = 0;
-    D_800EC158[2].y += delta;
-    D_800EC158[2].h -= delta;
-    if (D_800EC158[2].h < 0) {
-        D_800EC158[2].y = 240;
-        D_800EC158[2].h = 0;
+    gPlayerViewVerticalOffset -= delta / 2;
+    if (gPlayerViewVerticalOffset < 0) gPlayerViewVerticalOffset = 0;
+    gViewClipRects[2].y += delta;
+    gViewClipRects[2].h -= delta;
+    if (gViewClipRects[2].h < 0) {
+        gViewClipRects[2].y = 240;
+        gViewClipRects[2].h = 0;
     }
     gPlayerCameras[0].unk10 += delta * 2;
     if (gPlayerCameras[0].unk10 > -320) gPlayerCameras[0].unk10 = -320;
@@ -341,13 +341,13 @@ static void drawTextSequence(TextSequenceResource *resource) {
     drawSpriteByIndexWithBlend(120 + (u32)resource->unk3A / 3, (u32)resource->unk3A / 2,
                               0x19B, 0, -1, ot, (depth | 1));
 
-    addTilePacketWithBlend(-D_8013AF7A / 2, -D_8013AF7C / 2 - (u32)resource->unk3A / 2,
-                  D_8013AF7A, -96 - (-D_8013AF7C / 2), 0, 0, 0, -1, ot, (depth | 1));
-    addTilePacketWithBlend(-D_8013AF7A / 2 - (u32)resource->unk3A / 3, -D_8013AF7C / 2,
-                  -136 - (-D_8013AF7A / 2), D_8013AF7C, 0, 0, 0, -1, ot, (depth | 1));
-    addTilePacketWithBlend(136 + (u32)resource->unk3A / 3, -D_8013AF7C / 2,
-                  (u32)D_8013AF7A / 2 - 136, D_8013AF7C, 0, 0, 0, -1, ot, (depth | 1));
-    addTilePacketWithBlend(-D_8013AF7A / 2, 16 + (u32)resource->unk3A / 2,
-                  D_8013AF7A, (u32)D_8013AF7C / 2, 0, 0, 0, -1, ot, (depth | 1));
+    addTilePacketWithBlend(-gDisplayWidth / 2, -gDisplayHeight / 2 - (u32)resource->unk3A / 2,
+                  gDisplayWidth, -96 - (-gDisplayHeight / 2), 0, 0, 0, -1, ot, (depth | 1));
+    addTilePacketWithBlend(-gDisplayWidth / 2 - (u32)resource->unk3A / 3, -gDisplayHeight / 2,
+                  -136 - (-gDisplayWidth / 2), gDisplayHeight, 0, 0, 0, -1, ot, (depth | 1));
+    addTilePacketWithBlend(136 + (u32)resource->unk3A / 3, -gDisplayHeight / 2,
+                  (u32)gDisplayWidth / 2 - 136, gDisplayHeight, 0, 0, 0, -1, ot, (depth | 1));
+    addTilePacketWithBlend(-gDisplayWidth / 2, 16 + (u32)resource->unk3A / 2,
+                  gDisplayWidth, (u32)gDisplayHeight / 2, 0, 0, 0, -1, ot, (depth | 1));
     drawScreenDarkeningOverlay(resource->intensity, ot, depth);
 }

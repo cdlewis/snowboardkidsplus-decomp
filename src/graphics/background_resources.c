@@ -16,8 +16,8 @@
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
 
-extern u16 D_8013AF7A __attribute__((section(".data")));
-extern u16 D_8013AF7C __attribute__((section(".data")));
+extern u16 gDisplayWidth __attribute__((section(".data")));
+extern u16 gDisplayHeight __attribute__((section(".data")));
 extern u32 gGameOptionFlags __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
@@ -86,8 +86,8 @@ void uploadTimImageAt(s16 x, s16 y, s16 clutX, s16 clutY, u32 *tim) {
 }
 
 void initializeBackgroundCameraTask(void) {
-    D_8013AF7A = 320;
-    D_8013AF7C = 240;
+    gDisplayWidth = 320;
+    gDisplayHeight = 240;
     D_8013B10C = -1;
     D_8013B10E = -1;
     D_8013B106 = 0;

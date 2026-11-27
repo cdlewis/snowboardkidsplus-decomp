@@ -139,8 +139,8 @@ extern GsDOBJ2 D_80129A80[30];
 void sortLitObject(GsDOBJ2 *object);
 void sortLitObjectWithDrawArea(GsDOBJ2 *object, u16 index, RECT *bounds);
 extern u32 *gCurrentPlayerOrderingTable;
-extern u16 D_8013AF7A;
-extern u16 D_8013AF7C;
+extern u16 gDisplayWidth;
+extern u16 gDisplayHeight;
 
 void drawFixedSpriteAndBottomBarTask(void);
 extern u16 gActiveGraphicsBuffer;
@@ -445,9 +445,9 @@ void drawSemiTransparentTextureRectUV(s16 x, s16 y, s16 width, s16 height,
                                       u16 u, u16 v, s16 clutX, s16 clutY, GsOT *ot, u16 depth);
 
 /* Full-screen rectangle followed by the two animated player view rectangles. */
-extern RECT D_800EC158[3];
-extern s16 D_8013AF7E;
-extern s16 D_8013AF80;
+extern RECT gViewClipRects[3];
+extern s16 gPlayerViewWidthReduction;
+extern s16 gPlayerViewVerticalOffset;
 
 void updateSplitScreenTransitionTask(void);
 

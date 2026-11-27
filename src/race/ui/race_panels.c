@@ -19,8 +19,8 @@
 extern s16 gFrameCounter __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u32 *gCurrentPlayerOrderingTable __attribute__((section(".data")));
-extern u16 D_8013AF7A __attribute__((section(".data")));
-extern u16 D_8013AF7C __attribute__((section(".data")));
+extern u16 gDisplayWidth __attribute__((section(".data")));
+extern u16 gDisplayHeight __attribute__((section(".data")));
 extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
 extern u8 gRacePauseState __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
@@ -769,9 +769,9 @@ void initializeBouncingVisualTask(void) {
 void drawFixedSpriteAndBottomBarTask(void) {
     addTexturedSprite(gCurrentPlayerOrderingTable, 0x1C, 0x3DFE, 0x28, 0x52,
                       0x68, 0x18, 8, 0xD8, 0x80, 0x80, 0x80);
-    addFlatRectangle(gCurrentPlayerOrderingTable + 1, -(D_8013AF7A >> 1),
-                     (s16)((D_8013AF7C >> 1) - 0x20),
-                     (s16)D_8013AF7A, 0x20, 0, 0, 0);
+    addFlatRectangle(gCurrentPlayerOrderingTable + 1, -(gDisplayWidth >> 1),
+                     (s16)((gDisplayHeight >> 1) - 0x20),
+                     (s16)gDisplayWidth, 0x20, 0, 0, 0);
 }
 
 void drawDemonstrationOverlay(void) {

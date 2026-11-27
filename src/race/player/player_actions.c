@@ -27,8 +27,8 @@ extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern u32 gTaskTransitionFlags __attribute__((section(".data")));
 
-extern u16 D_8013AF7A __attribute__((section(".data")));
-extern u16 D_8013AF7C __attribute__((section(".data")));
+extern u16 gDisplayWidth __attribute__((section(".data")));
+extern u16 gDisplayHeight __attribute__((section(".data")));
 extern u8 gSelectedPlayerReplayActive __attribute__((section(".data")));
 extern u8 gDemoRaceIndex __attribute__((section(".data")));
 extern volatile u8 gShopMenuRememberedSelection __attribute__((section(".data")));
@@ -1827,8 +1827,8 @@ void initializeNewGameSaveData(void) {
 
     playerCountAbsolute = 1;
     gActiveRacePlayerCount = 1;
-    D_8013AF7A = 320;
-    D_8013AF7C = 240;
+    gDisplayWidth = 320;
+    gDisplayHeight = 240;
     D_8013B10C = -1;
     D_8013B10E = -1;
     gSelectedCourseIndex = 0;
