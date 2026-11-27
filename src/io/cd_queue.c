@@ -63,9 +63,9 @@ s32 gCdIoFlags __attribute__((section(".sdata.cd_io_flags"))) = 0;
 
 u8 gCdReadModeDelay[8] __attribute__((section(".sdata.cd_read_delay"))) = {0};
 
-u8 D_8013B5E4[8] __attribute__((section(".data.cd_sync_result"))) = {0};
+u8 gCdRequestSyncResult[8] __attribute__((section(".data.cd_sync_result"))) = {0};
 
-CdlFILE D_8013B6C8 __attribute__((section(".data.cd_search_file"))) = {0};
+CdlFILE gCdStreamSearchFile __attribute__((section(".data.cd_search_file"))) = {0};
 
 CdRequest gCdRequests[64] __attribute__((section(".data.cd_requests"))) = {0};
 
@@ -367,7 +367,7 @@ s32 queueCdSectorCommand(s16 command, s16 sector, s16 count, void *destination, 
         gCdVolumeFadeActive = 0;
     }
     entry = &gCdRequests[gCdRequestWriteIndex & 0x3F];
-    entry->unk_16 = 1;
+    entry->useDatSectors = 1;
     entry->command = command;
     entry->sector = sector;
     entry->sectorCount = count;
@@ -461,7 +461,7 @@ void updateCdRequestQueue(void) {
         gCdRequestPhase++;
         break;
     case 1:
-        status = CdSync(1, D_8013B5E4);
+        status = CdSync(1, gCdRequestSyncResult);
         if (status == 2) {
             gCdIoFlags &= ~0x04000000;
             gCdRequestPhase++;
@@ -479,7 +479,7 @@ void updateCdRequestQueue(void) {
             goto read_started;
         if (gCdRequests[index].command == 15)
             goto stream_seek;
-        if (gCdRequests[index].unk_16 != 0) {
+        if (gCdRequests[index].useDatSectors != 0) {
             gCdReadByteCount = gCdRequests[index].sectorCount << 11;
             CdIntToPos(gCdRequests[index].sector + gDatStartSector, &position);
             CdControlF(CdlSetloc, (u8 *)&position);
@@ -495,9 +495,9 @@ void updateCdRequestQueue(void) {
         gCdRequestPhase = 6;
         break;
     stream_seek:
-        while (CdSearchFile(&D_8013B6C8, gCdRequests[index].filename) == NULL) {
+        while (CdSearchFile(&gCdStreamSearchFile, gCdRequests[index].filename) == NULL) {
         }
-        CdControlF(CdlSetloc, (u8 *)&D_8013B6C8.pos);
+        CdControlF(CdlSetloc, (u8 *)&gCdStreamSearchFile.pos);
         gCdIoFlags |= 0x04000000;
         gCdRequestPhase++;
         break;

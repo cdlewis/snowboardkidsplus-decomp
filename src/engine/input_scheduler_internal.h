@@ -26,7 +26,7 @@ typedef struct CdRequest {
     s32 sector;
     s32 sectorCount;
     s16 command;
-    s16 unk_16; /* Nonzero selects sectors relative to SNB.DAT. */
+    s16 useDatSectors; /* Nonzero selects sectors relative to SNB.DAT. */
     s32 unk_18;
 } CdRequest;
 
@@ -34,8 +34,6 @@ extern CdlFILE gDatFile __attribute__((section(".data.dat_file")));
 extern s32 gDatStartSector __attribute__((section(".sdata.dat_start_sector")));
 
 extern u8 gCdReadModeDelay[8] __attribute__((section(".sdata.cd_read_delay")));
-extern u8 D_8013B5E4[8] __attribute__((section(".data.cd_sync_result")));
-extern CdlFILE D_8013B6C8 __attribute__((section(".data.cd_search_file")));
 
 extern GameTask gGameTasks[200] __attribute__((section(".data.game_tasks")));
 
