@@ -25,8 +25,8 @@ extern ControllerInputRecord *gControllerInputRecordBuffers[];
 extern u16 gControllerInputRecordIndices[];
 extern u8 gControllerPlaybackRepeatCounters[];
 
-/* Shared recording/playback buffer; storage remains in the controller data unit. */
-extern ControllerInputRecord gControllerPlaybackRecords[][256];
+extern ControllerInputRecord gControllerPlaybackRecords[2][256]
+    __attribute__((section(".data.controller_playback_records")));
 
 /* Per-controller vibration suppression settings (0 or 0x20). */
 extern u8 gControllerVibrationDisabled[];

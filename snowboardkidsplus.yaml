@@ -691,7 +691,7 @@ segments:
       - {start: 0xD9D04, type: .data, name: engine/task_scheduler, linker_section: .data.task_resource_bitmap}
       - {start: 0xD9D24, type: .data, name: io/controller_input, linker_section: .data.controller_analog_response}
       - {start: 0xD9D58, type: .data, name: io/controller_input, linker_section: .data.controller_receive_buffers}
-      - [0xD9D9C, data, D9D9C]
+      - {start: 0xD9D9C, type: .data, name: io/controller_input, linker_section: .data.controller_playback_records}
       - [0xDAD9C, .data, engine/random]
       - {start: 0xDAE9C, type: .data, name: graphics/texture_upload, linker_section: .data.saved_image_entries}
       - [0xDB89C, data, DB89C]

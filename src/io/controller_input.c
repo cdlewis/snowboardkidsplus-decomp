@@ -17,6 +17,9 @@ enum {
 
 ControllerReceiveBuffer gControllerReceiveBuffers[2] __attribute__((section(".data.controller_receive_buffers"))) = {0};
 
+ControllerInputRecord gControllerPlaybackRecords[2][256]
+    __attribute__((section(".data.controller_playback_records"))) = {0};
+
 u8 gControllerInputRecordState __attribute__((section(".sdata.controller_input_state"))) = 0;
 
 static u8 sControllerInputStatePadding0 __attribute__((section(".sdata.controller_input_state"))) = 0;
