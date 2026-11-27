@@ -4278,7 +4278,7 @@ gBoardMenuSprites = 0x80131868; // size:0x6C
 gBoardMenuSelectionDescriptors = 0x801318D4; // size:0x3C
 gTaskPanelSelectionValues = 0x8013B508; // size:0x4
 
-gSelectionPanelStatTriplets = 0x8012FFFC; // size:0x10
+gSelectionPanelStatTriplets = 0x8012FFFC; // size:0xF
 gShopBoardUnlockFlagIndices = 0x80131804; // size:0xC
 gShopBoardPrices = 0x80131810; // size:0x30
 gCharacterBoardPrices = 0x801319B0; // size:0xC8
@@ -4672,3 +4672,15 @@ gCourseMenuGroup0Mapping = 0x8013B3FC; // size:0x8
 gCourseMenuGroup1Mapping = 0x8013B404; // size:0x8
 gCourseMenuGroup0TextureMapping = 0x8013B40C; // size:0x8
 gCourseMenuGroup1TextureMapping = 0x8013B414; // size:0x8
+
+gSelectionPanelText0 = 0x8012FDCC; // size:0x3C
+gSelectionPanelText1 = 0x8012FE08; // size:0x3C
+gSelectionPanelText2 = 0x8012FE44; // size:0x34
+gSelectionPanelText3 = 0x8012FE78; // size:0x24
+gSelectionPanelText4 = 0x8012FE9C; // size:0x20
+gSelectionPanelText5 = 0x8012FEBC; // size:0x38
+gSelectionPanelText6 = 0x8012FEF4; // size:0x3C
+gSelectionPanelText7 = 0x8012FF30; // size:0x38
+gSelectionPanelText8 = 0x8012FF68; // size:0x54
+gSelectionPanelText9 = 0x8012FFBC; // size:0x18
+gSelectionPanelStatPadding = 0x8013000B; // size:0x1

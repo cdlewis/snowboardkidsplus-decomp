@@ -51,7 +51,7 @@ typedef struct ValuePanelEntry {
 extern MenuRgbColor gMenuColorCycleColor;
 extern u8 gSelectionPanelLabelOffsets[12];
 extern const TimedSequenceEntry gMenuInputPromptSequence[2];
-extern ByteTriplet gSelectionPanelStatTriplets[];
+extern ByteTriplet gSelectionPanelStatTriplets[5];
 extern u8 gCharacterMenuCharacterIndices[12];
 
 void createInputTimedSpriteTask(s32 x, s32 y, const TimedSequenceEntry *entries, s32 count,
