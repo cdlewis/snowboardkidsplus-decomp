@@ -89,10 +89,10 @@ extern const GridSpriteEntry gBoardMenuSprites[18];
 extern GroupedSelectionDescriptor gBoardMenuSelectionDescriptors[3];
 extern volatile u8 shopMenuRememberedSelectionGp;
 extern const GridSpriteEntry gMoneyPanelSelectionSprites[3];
-extern const u8 D_8013B4A0[];
+extern const u8 gMoneyPanelSelectionTextMapping[4];
 
 extern const u16 gShopBoardMenuDescriptionText[46];
-extern const u16 D_80131498[50], D_801314FC[38];
+extern const u16 gShopCharacterBoardMenuDescriptionText[50], gShopPaletteMenuDescriptionText[38];
 extern const u16 gShopExitDescriptionText[22];
 extern const u16 gShopSubmenuReturnDescriptionText[12];
 extern const u16 gShopGreetingText[12];
@@ -102,13 +102,13 @@ extern const u16 gShopBoardAlreadyOwnedText[16];
 extern const u16 gShopBoardBuyDescriptionText[40];
 extern const u16 gShopBoardPaintDescriptionText[38];
 extern const u16 gShopNewBoardStockGreetingText[32];
-extern const u16 D_801316BC[22];
-extern const u16 D_801316E8[32];
+extern const u16 gShopCharacterBoardBuyDescriptionText[22];
+extern const u16 gShopCharacterBoardEquipDescriptionText[32];
 extern const u16 gShopCharacter8BoardMenuDescriptionText[28];
 extern const u16 gShopCharacter9BoardMenuDescriptionText[26];
 
 extern const s16 gGridModelPreviewPose0And2[54], gSharedGridModelPreviewPose[54], gGridModelPreviewPose4[54];
-extern const s16 D_80131BE0[], D_80131C4C[], D_80131CB8[];
+extern const s16 gGridModelPreviewPose8[54], gGridModelPreviewPose9[54], gGridModelPreviewPose7[54];
 
 static const GridSpriteEntry sShopMenuSprites[4]
     __attribute__((section(".data.shop_menu_sprites"), aligned(4))) = {
@@ -119,9 +119,9 @@ static const GridSpriteEntry sShopMenuSprites[4]
 };
 
 static const u16 *sShopMenuTexts[15] __attribute__((section(".data.shop_menu_texts"))) = {
-    gShopBoardMenuDescriptionText, D_80131498, D_801314FC, gShopExitDescriptionText, gShopSubmenuReturnDescriptionText,
+    gShopBoardMenuDescriptionText, gShopCharacterBoardMenuDescriptionText, gShopPaletteMenuDescriptionText, gShopExitDescriptionText, gShopSubmenuReturnDescriptionText,
     gShopGreetingText, gShopInsufficientFundsText, gShopBoardAlreadyOwnedText, gShopBoardBuyDescriptionText, gShopBoardPaintDescriptionText,
-    gShopNewBoardStockGreetingText, D_801316BC, D_801316E8, gShopCharacter8BoardMenuDescriptionText, gShopCharacter9BoardMenuDescriptionText,
+    gShopNewBoardStockGreetingText, gShopCharacterBoardBuyDescriptionText, gShopCharacterBoardEquipDescriptionText, gShopCharacter8BoardMenuDescriptionText, gShopCharacter9BoardMenuDescriptionText,
 };
 
 static const GridSpriteEntry sBoardShopModeSprites[3]
@@ -216,7 +216,7 @@ static const u8 sBoardPurchaseFullSpriteMapping[8]
 const s16 *gGridModelPreviewPoses[10]
     __attribute__((section(".data.grid_model_preview_poses"))) = {
     gGridModelPreviewPose0And2, gSharedGridModelPreviewPose, gGridModelPreviewPose0And2, gSharedGridModelPreviewPose, gGridModelPreviewPose4,
-    gSharedGridModelPreviewPose, gSharedGridModelPreviewPose, D_80131CB8, D_80131BE0, D_80131C4C
+    gSharedGridModelPreviewPose, gSharedGridModelPreviewPose, gGridModelPreviewPose7, gGridModelPreviewPose8, gGridModelPreviewPose9
 };
 
 PanelModeLabel gRegisteredPanelMode0Label __attribute__((section(".data.registered_panel_mode_labels"))) = {2, 0};
@@ -1066,7 +1066,7 @@ void updateMoneyPanelSelectionTask(void) {
         createRegisteredSpacedChildTasks(mode, 0xB0, 0x40, (const u8 *)gMoneyPanelSelectionSprites, sMoneyPanelSelectionSpriteMapping,
                                          NULL, 0, 0, 20, -308, -80, 0, 24, 3, 176,
                                          drawSelectedTaskSprite, drawRegisteredTaskGridSpriteWithColor, 4, 1);
-        createRegisteredTextPanelTask(-320, 8, sShopMenuTexts, D_8013B4A0, 4, 11);
+        createRegisteredTextPanelTask(-320, 8, sShopMenuTexts, gMoneyPanelSelectionTextMapping, 4, 11);
         createRegisteredCallbackTask(0, 172, -72, drawCurrentTaskMoneyPanelWithCharacterSprites, 4, 21);
         uploadTextureArchiveEntry(320, 0, 768, 0xE9, sShopCharacterTextureIndices[gRacePlayers[0].unk009]);
         uploadTextureArchiveEntry(320, 256, 768, 0xEA, 0);
