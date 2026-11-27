@@ -190,7 +190,7 @@ TaskVisualFrame gPlayerDualResource5100EffectFrame
         168, 96, 24, 24, 13, 0x3F39
     };
 
-s16 D_8013B1D4 __attribute__((section(".data.finish_slot_state"))) = 0;
+s16 gPlayerCollectionEntryCount __attribute__((section(".data.finish_slot_state"))) = 0;
 
 const char gAutoPilotLabel[] __attribute__((section(".rodata.auto_pilot_label"), aligned(4))) = "AUTO PILOT";
 
@@ -844,7 +844,7 @@ void updateRacePlayerFinishSlotsTask(void) {
         deleteCurrentTaskSubtree();
     } else {
         if (gMainMenuSelectionIndex == 1 && gRaceRuleset == 1) {
-            D_8013B1D4 = 0;
+            gPlayerCollectionEntryCount = 0;
         }
         resolveRacePlayerOverlaps();
         updateRacePlayerRankings();

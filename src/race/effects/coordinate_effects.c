@@ -215,7 +215,7 @@ void updateExpandingCoordinateEffectTask(void) {
         gCurrentTask->data1A--;
     }
     if (isPositionInCameraRange(resource->parent.coord.t[0], resource->parent.coord.t[2], (s16)getRenderCameraIndex())) {
-        D_80129A80[15].coord2 = &resource->coordinate;
+        gTaskObjectModels[15].coord2 = &resource->coordinate;
         setCoordinateRotation((SVECTOR *)&resource->pitch, &resource->parent);
         setCoordinateRotation(&resource->rotation, &resource->coordinate);
         ScaleMatrix(&resource->coordinate.coord, &resource->scale);
@@ -289,7 +289,7 @@ void updatePlayerState23CoordinateEffectTask(void) {
         }
     }
     if (isPositionInCameraRange(resource->parent.coord.t[0], resource->parent.coord.t[2], (s16)getRenderCameraIndex())) {
-        D_80129A80[13].coord2 = &resource->coordinate;
+        gTaskObjectModels[13].coord2 = &resource->coordinate;
         setCoordinateRotation((SVECTOR *)&resource->pitch, &resource->parent);
         setCoordinateRotation(&resource->rotation, &resource->coordinate);
         ScaleMatrix(&resource->coordinate.coord, &resource->scale);
@@ -373,7 +373,7 @@ void updateFallingRotatingObjectTask(void) {
         }
     }
     if (isPositionInCameraRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)getRenderCameraIndex())) {
-        D_80129A80[gCurrentTask->data1C].coord2 = &resource->coordinate;
+        gTaskObjectModels[gCurrentTask->data1C].coord2 = &resource->coordinate;
         setCoordinateRotation(&resource->parentRotation, &resource->parent);
         setCoordinateRotation(&resource->rotation, &resource->coordinate);
         drawTaskObject(gCurrentTask->data1C);
@@ -405,7 +405,7 @@ void updatePlayerScaledObjectTask(void) {
     resource->rotation.vy = players[gCurrentTask->data18].unk0B6;
     resource->rotation.vz = players[gCurrentTask->data18].unk0B8;
     if (isPositionInCameraRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)getRenderCameraIndex())) {
-        D_80129A80[10].coord2 = &resource->coordinate;
+        gTaskObjectModels[10].coord2 = &resource->coordinate;
         setCoordinateRotation(&resource->rotation, &resource->coordinate);
         ScaleMatrix(&resource->coordinate.coord, &resource->scale);
         drawTaskObject(10);
@@ -545,7 +545,7 @@ void updatePlayerCoordinateEffectTask(void) {
         }
     }
     if (isPositionInCameraRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)getRenderCameraIndex())) {
-        D_80129A80[11].coord2 = &resource->coordinate;
+        gTaskObjectModels[11].coord2 = &resource->coordinate;
         setCoordinateRotation(&resource->rotation, &resource->coordinate);
         ScaleMatrix(&resource->coordinate.coord, &resource->scale);
         drawTaskObject(11);
@@ -1146,13 +1146,13 @@ void updateDualResource5100EffectTask(void) {
             u16 playerIndex;
             resource->unkDC--;
             /* The vector pad shares storage with the collecting player index. */
-            D_8012450C[D_8013B1D4].location.vector = ((CollectionTaskResource *)resource)->trail.position;
-            entry = &D_8012450C[D_8013B1D4];
+            gPlayerCollectionEntries[gPlayerCollectionEntryCount].location.vector = ((CollectionTaskResource *)resource)->trail.position;
+            entry = &gPlayerCollectionEntries[gPlayerCollectionEntryCount];
             playerIndex = gCurrentTask->data18;
             entry->active = &resource->unkDC;
             entry->location.player.playerIndex = playerIndex;
-            if (++D_8013B1D4 >= 10) {
-                D_8013B1D4--;
+            if (++gPlayerCollectionEntryCount >= 10) {
+                gPlayerCollectionEntryCount--;
             }
         }
     }
@@ -1504,7 +1504,7 @@ void updateRisingPlayerEffectTask(void) {
         }
     }
     if (isPositionInCameraRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)getRenderCameraIndex())) {
-        D_80129A80[12].coord2 = &resource->coordinate;
+        gTaskObjectModels[12].coord2 = &resource->coordinate;
         setCoordinateRotation(&resource->rotation, &resource->coordinate);
         ScaleMatrix(&resource->coordinate.coord, &resource->scale);
         drawTaskObject(12);
@@ -1548,7 +1548,7 @@ void updateFallingPlayerEffectTask(void) {
         resource->coordinate.coord.t[2] = gRacePlayers[gCurrentTask->data18].worldCoordinate.coord.t[2];
     }
     if (isPositionInCameraRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)getRenderCameraIndex())) {
-        D_80129A80[12].coord2 = &resource->coordinate;
+        gTaskObjectModels[12].coord2 = &resource->coordinate;
         setCoordinateRotation(&resource->rotation, &resource->coordinate);
         ScaleMatrix(&resource->coordinate.coord, &resource->scale);
         drawTaskObject(12);

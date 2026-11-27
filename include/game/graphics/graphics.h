@@ -135,7 +135,7 @@ u16 getRenderCameraIndex(void);
 void drawTaskObject(u16 index);
 void drawTaskObjectAlternateLayer(u16 index);
 
-extern GsDOBJ2 D_80129A80[30];
+extern GsDOBJ2 gTaskObjectModels[30];
 void sortLitObject(GsDOBJ2 *object);
 void sortLitObjectWithDrawArea(GsDOBJ2 *object, u16 index, RECT *bounds);
 extern u32 *gCurrentPlayerOrderingTable;

@@ -3060,7 +3060,7 @@ gControllerHeldButtons = 0x8013AEEC; // type:u16 size:0x4
 D_8013AF0C = 0x8013AF0C; // type:u16 size:0x4
 
 updateRacePlayerFinishSlotsTask = 0x8002CB8C; // type:func
-D_8013B1D4 = 0x8013B1D4; // size:0x2
+gPlayerCollectionEntryCount = 0x8013B1D4; // size:0x2
 
 waitResultDisplayInputTask = 0x800366C0; // type:func
 waitResultDisplayConfirmationTask = 0x80036790; // type:func
@@ -4132,15 +4132,15 @@ D_801288EC = 0x801288EC; // size:0x150
 D_80128A3C = 0x80128A3C; // size:0x3D0
 D_80128E0C = 0x80128E0C; // size:0x3D0
 D_801291DC = 0x801291DC; // size:0x1F0
-D_801293CC = 0x801293CC; // size:0x10
+gEmptyVisualPlacements = 0x801293CC; // size:0x10
 gCourseObjectPlacements = 0x801293DC; // size:0x28 defined:true
 gCourseChallengePlacements = 0x80129404; // size:0x78 defined:true
 gPickupVisualFrames = 0x8012947C; // type:u8 size:0x30
 D_8013B2B4 = 0x8013B2B4; // size:0x1 defined:true
 gPickupVisualPlacementStartIndex = 0x8013B2B5; // size:0x1 defined:true
 gPickupVisualPlacementCount = 0x8013B2B6; // size:0x1 defined:true
-D_8013B2B7 = 0x8013B2B7; // size:0x1 defined:true
-D_8013B2B8 = 0x8013B2B8; // size:0x1 defined:true
+gObjectVisualPlacementStartIndex = 0x8013B2B7; // size:0x1 defined:true
+gObjectVisualPlacementCount = 0x8013B2B8; // size:0x1 defined:true
 gCourseVisualPlacementStartIndex = 0x8013B2B9; // size:0x1 defined:true
 gCourseVisualPlacementCount = 0x8013B2BA; // size:0x1 defined:true
 gCurrentCourseObjectPlacements = 0x8013B2BC; // size:0x4 defined:true
@@ -4340,3 +4340,6 @@ gMenuScreenId = 0x8013B108;
 gMenuTransitionState = 0x8013B109;
 gMenuTextureResourceId = 0x8013B10C;
 gMenuGridResourceId = 0x8013B10E;
+
+gPlayerCollectionEntries = 0x8012450C;
+gTaskObjectModels = 0x80129A80;

@@ -67,7 +67,7 @@ extern TaskVisualFrame gPlayerVisualPair6780Frame
 extern TaskVisualFrame gPlayerVisualPair5E80Frame
     __attribute__((section(".data.player_visual_pair_5e80_frame"), aligned(4)));
 
-extern s16 D_8013B1D4 __attribute__((section(".data.finish_slot_state")));
+extern s16 gPlayerCollectionEntryCount __attribute__((section(".data.finish_slot_state")));
 
 extern const char gAutoPilotLabel[] __attribute__((section(".rodata.auto_pilot_label"), aligned(4)));
 

@@ -318,8 +318,8 @@ typedef struct PlayerCollectionEntry {
     } location;
 } PlayerCollectionEntry;
 
-extern PlayerCollectionEntry D_8012450C[];
-extern s16 D_8013B1D4;
+extern PlayerCollectionEntry gPlayerCollectionEntries[10];
+extern s16 gPlayerCollectionEntryCount;
 
 u16 arePositionsWithinXZRange(const Position3D *a, const Position3D *b, s32 threshold);
 u16 pushPlayerOutOfCylinder(const Position3D *position, s32 radius, s32 height, s16 playerIndex);

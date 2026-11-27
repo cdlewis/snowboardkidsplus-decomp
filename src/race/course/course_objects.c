@@ -73,10 +73,11 @@ extern VECTOR *gScratchVector1 __attribute__((section(".data")));
 extern u32 *D_8013AF70 __attribute__((section(".data")));
 extern u32 *D_8013AF74 __attribute__((section(".data")));
 
-extern s16 D_8013B1D4 __attribute__((section(".data.finish_slot_state")));
+extern s16 gPlayerCollectionEntryCount __attribute__((section(".data.finish_slot_state")));
 
 extern VisualPlacement D_801259DC[], D_80125FCC[], D_8012648C[], D_801269CC[], D_80126E9C[];
-extern VisualPlacement D_8012726C[], D_8012763C[], D_80127A4C[], D_80127C0C[], D_801293CC[];
+extern VisualPlacement D_8012726C[], D_8012763C[], D_80127A4C[], D_80127C0C[];
+extern VisualPlacement gEmptyVisualPlacements[1];
 extern VisualPlacement D_8012807C[], D_801281CC[], D_8012831C[];
 extern VisualPlacement D_801283CC[], D_8012865C[], D_801288EC[];
 extern VisualPlacement D_80128A3C[], D_80128E0C[], D_801291DC[];
@@ -100,29 +101,29 @@ VisualPlacement *gInteractionVisualPlacements __attribute__((section(".sdata.int
 
 VisualPlacement *gCourseObjectPlacements[10] __attribute__((section(".data.course_object_placements"))) = {
     D_801259DC, D_80125FCC, D_8012648C, D_801269CC, D_80126E9C,
-    D_8012726C, D_8012763C, D_801293CC, D_80127A4C, D_80127C0C,
+    D_8012726C, D_8012763C, gEmptyVisualPlacements, D_80127A4C, D_80127C0C,
 };
 
 VisualPlacement *gCourseChallengePlacements[3][10] __attribute__((section(".data.course_challenge_placements"))) = {
     {
-        D_80128A3C, D_80128E0C, D_801293CC, D_801293CC, D_801293CC,
-        D_801293CC, D_801293CC, D_801293CC, D_801293CC, D_801291DC,
+        D_80128A3C, D_80128E0C, gEmptyVisualPlacements, gEmptyVisualPlacements, gEmptyVisualPlacements,
+        gEmptyVisualPlacements, gEmptyVisualPlacements, gEmptyVisualPlacements, gEmptyVisualPlacements, D_801291DC,
     },
     {
-        D_8012807C, D_801281CC, D_801293CC, D_801293CC, D_801293CC,
-        D_801293CC, D_801293CC, D_801293CC, D_801293CC, D_8012831C,
+        D_8012807C, D_801281CC, gEmptyVisualPlacements, gEmptyVisualPlacements, gEmptyVisualPlacements,
+        gEmptyVisualPlacements, gEmptyVisualPlacements, gEmptyVisualPlacements, gEmptyVisualPlacements, D_8012831C,
     },
     {
-        D_801283CC, D_8012865C, D_801293CC, D_801293CC, D_801293CC,
-        D_801293CC, D_801293CC, D_801293CC, D_801293CC, D_801288EC,
+        D_801283CC, D_8012865C, gEmptyVisualPlacements, gEmptyVisualPlacements, gEmptyVisualPlacements,
+        gEmptyVisualPlacements, gEmptyVisualPlacements, gEmptyVisualPlacements, gEmptyVisualPlacements, D_801288EC,
     },
 };
 
 u8 D_8013B2B4 __attribute__((section(".sdata.course_object_visual_state"))) = 0;
 u8 gPickupVisualPlacementStartIndex __attribute__((section(".sdata.course_object_visual_state"))) = 0;
 u8 gPickupVisualPlacementCount __attribute__((section(".sdata.course_object_visual_state"))) = 0;
-u8 D_8013B2B7 __attribute__((section(".sdata.course_object_visual_state"))) = 0;
-u8 D_8013B2B8 __attribute__((section(".sdata.course_object_visual_state"))) = 0;
+u8 gObjectVisualPlacementStartIndex __attribute__((section(".sdata.course_object_visual_state"))) = 0;
+u8 gObjectVisualPlacementCount __attribute__((section(".sdata.course_object_visual_state"))) = 0;
 u8 gCourseVisualPlacementStartIndex __attribute__((section(".sdata.course_object_visual_state"))) = 0;
 u8 gCourseVisualPlacementCount __attribute__((section(".sdata.course_object_visual_state"))) = 0;
 VisualPlacement *gCurrentCourseObjectPlacements __attribute__((section(".sdata.course_object_visual_state"))) = 0;
@@ -528,10 +529,10 @@ void initializeCourseObjects(void) {
         model++;
         model++;
         modelIndex = i;
-        GsLinkObject4(model, &D_80129A80[modelIndex], 0);
-        D_80129A80[modelIndex].coord2 = &gCourseObjectCoordinates[modelIndex];
-        D_80129A80[modelIndex].tmd = model;
-        D_80129A80[modelIndex].attribute = 0;
+        GsLinkObject4(model, &gTaskObjectModels[modelIndex], 0);
+        gTaskObjectModels[modelIndex].coord2 = &gCourseObjectCoordinates[modelIndex];
+        gTaskObjectModels[modelIndex].tmd = model;
+        gTaskObjectModels[modelIndex].attribute = 0;
         GsInitCoordinate2(0, &gCourseObjectCoordinates[modelIndex]);
     }
 
@@ -573,8 +574,8 @@ void initializeCourseObjects(void) {
         break;
     }
 
-    gPickupVisualPlacementCount = D_8013B2B8 = gCourseVisualPlacementCount = 0;
-    gPickupVisualPlacementStartIndex = D_8013B2B7 = gCourseVisualPlacementStartIndex = 255;
+    gPickupVisualPlacementCount = gObjectVisualPlacementCount = gCourseVisualPlacementCount = 0;
+    gPickupVisualPlacementStartIndex = gObjectVisualPlacementStartIndex = gCourseVisualPlacementStartIndex = 255;
     gCurrentCourseObjectPlacements = gCourseObjectPlacements[gSelectedCourseIndex];
     i = 0;
     do {
@@ -606,10 +607,10 @@ void initializeCourseObjects(void) {
             case 8:
             case 9:
                 if (gMainMenuSelectionIndex != 1 || gRaceRuleset != 1) {
-                    if (i < D_8013B2B7) {
-                        D_8013B2B7 = i;
+                    if (i < gObjectVisualPlacementStartIndex) {
+                        gObjectVisualPlacementStartIndex = i;
                     }
-                    D_8013B2B8++;
+                    gObjectVisualPlacementCount++;
                 }
                 break;
             default:
@@ -659,7 +660,7 @@ void initializeCourseObjects(void) {
 
 createVisualTasks:
     createChildTaskForParentWithReserve(&gGameTasks[4], initializePickupVisualTask);
-    if (D_8013B2B8) {
+    if (gObjectVisualPlacementCount) {
         createChildTaskForParentWithReserve(&gGameTasks[4], initializeObjectVisualTask);
     }
     if (gCourseVisualPlacementCount) {
@@ -689,7 +690,7 @@ void drawTaskObject(u16 index) {
     GsDOBJ2 *object;
     GsDOBJ2 *objects;
     gObjectSortSavedStackPointer = SetSp((u32)getScratchAddr((sizeof(scratchpad) - sizeof(u32)) / sizeof(u32)));
-    objects = D_80129A80;
+    objects = gTaskObjectModels;
     object = &objects[index];
     GsGetLs(object->coord2, gScratchMatrix0);
     GsSetLsMatrix(gScratchMatrix0);
@@ -705,7 +706,7 @@ void drawTaskObjectAlternateLayer(u16 index) {
     GsDOBJ2 *object;
     GsDOBJ2 *objects;
     gAlternateObjectSortSavedStackPointer = SetSp((u32)getScratchAddr((sizeof(scratchpad) - sizeof(u32)) / sizeof(u32)));
-    objects = D_80129A80;
+    objects = gTaskObjectModels;
     object = &objects[index];
     GsGetLs(object->coord2, gScratchMatrix0);
     GsSetLsMatrix(gScratchMatrix0);
@@ -895,7 +896,7 @@ void updateSelectedCourseOffsetTask(void) {
     }
     if (gCurrentTask->data1E == 0) {
         if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)getRenderCameraIndex())) {
-            D_80129A80[gCurrentTask->data1C].coord2 = &resource->coordinate;
+            gTaskObjectModels[gCurrentTask->data1C].coord2 = &resource->coordinate;
             setCoordinateRotation(&resource->rotation, &resource->coordinate);
             drawTaskObject(gCurrentTask->data1C);
         }
@@ -933,7 +934,7 @@ void updatePlayerFollowingOrbitTask(void) {
         }
     }
     if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)getRenderCameraIndex())) {
-        D_80129A80[gCurrentTask->data1C].coord2 = &resource->coordinate;
+        gTaskObjectModels[gCurrentTask->data1C].coord2 = &resource->coordinate;
         setCoordinateRotation(&resource->rotation, &resource->coordinate);
         drawTaskObject(gCurrentTask->data1C);
     }
@@ -956,7 +957,7 @@ void updateOrbitingTaskObject(void) {
         resource->coordinate.coord.t[2] = resource->position.vz + gScratchVector0->vz;
     }
     if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)getRenderCameraIndex())) {
-        D_80129A80[gCurrentTask->data1C].coord2 = &resource->coordinate;
+        gTaskObjectModels[gCurrentTask->data1C].coord2 = &resource->coordinate;
         setCoordinateRotation(&resource->rotation, &resource->coordinate);
         drawTaskObject(gCurrentTask->data1C);
     }
@@ -985,7 +986,7 @@ void updateMovingTaskObject(void) {
         gCurrentTask->data1A--;
     }
     if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)getRenderCameraIndex())) {
-        D_80129A80[gCurrentTask->data1C].coord2 = &resource->coordinate;
+        gTaskObjectModels[gCurrentTask->data1C].coord2 = &resource->coordinate;
         setCoordinateRotation(&resource->rotation, &resource->coordinate);
         drawTaskObject(gCurrentTask->data1C);
     }
@@ -1293,7 +1294,7 @@ void updateObjectVisualTask(void) {
     }
     resource = (TaskVisualResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     prepareTaskVisualQuad(resource, &gObjectVisualFrameType8, 0);
-    for (i = D_8013B2B7; i < D_8013B2B7 + D_8013B2B8; i++) {
+    for (i = gObjectVisualPlacementStartIndex; i < gObjectVisualPlacementStartIndex + gObjectVisualPlacementCount; i++) {
         if (isPointWithinCameraForwardRange(gCurrentCourseObjectPlacements[i].x, gCurrentCourseObjectPlacements[i].z, (s16)getRenderCameraIndex())) {
             resource->coordinate.coord.t[0] = gCurrentCourseObjectPlacements[i].x;
             resource->coordinate.coord.t[1] = gCurrentCourseObjectPlacements[i].y;
@@ -1522,7 +1523,7 @@ void updatePlacedObjectTask(void) {
                     model = 16;
                 }
                 height = resource->groundCoordinate.coord.t[1];
-                D_80129A80[model].coord2 = &resource->coordinate;
+                gTaskObjectModels[model].coord2 = &resource->coordinate;
                 resource->groundCoordinate.coord.t[1] += -0x100 + (rsin((gFrameCounter & 31) << 7) >> 8);
                 gScratchShortVector0->vx = 0;
                 gScratchShortVector0->vy = 0;
@@ -1541,7 +1542,7 @@ void updatePlacedObjectTask(void) {
             }
             drawCameraFacingTaskVisual((TaskVisualResource *)&gTaskMemoryPool[gCurrentTask->resource16], 0);
         }
-        D_80129A80[gPlacedObjectModelIds[gCurrentTask->data1A]].coord2 = &resource->coordinate;
+        gTaskObjectModels[gPlacedObjectModelIds[gCurrentTask->data1A]].coord2 = &resource->coordinate;
         setCoordinateRotation(&resource->groundRotation, &resource->groundCoordinate);
         setCoordinateRotation(&resource->rotation, &resource->coordinate);
         if (gCurrentTask->data1A == 5) {
@@ -1730,7 +1731,7 @@ void updateBobbingTrailEmitterTask(void) {
                 }
             }
         }
-        D_80129A80[10].coord2 = &resource->coordinate;
+        gTaskObjectModels[10].coord2 = &resource->coordinate;
         setCoordinateRotation(&resource->rotation, &resource->coordinate);
         gScratchVector0->vx = 0x3000;
         gScratchVector0->vy = 0x3000;
@@ -1864,7 +1865,7 @@ void updateProximityParticleTask(void) {
                 }
             }
         }
-        D_80129A80[7].coord2 = &resource->coordinate;
+        gTaskObjectModels[7].coord2 = &resource->coordinate;
         setCoordinateRotation(&resource->rotation, &resource->coordinate);
         drawTaskObject(7);
     }
@@ -2176,15 +2177,15 @@ void updateCollectibleTask(void) {
     if (gCurrentTask->resource14 == 0xFFFF) { while (1) {} }
     resource = (PickupResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (isPositionInCameraRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)getRenderCameraIndex())) {
-        D_80129A80[10].coord2 = &resource->coordinate;
+        gTaskObjectModels[10].coord2 = &resource->coordinate;
         setCoordinateRotation(&resource->rotation, &resource->coordinate);
         drawTaskObject(10);
         if (!gRacePauseState) {
             resolvePlayerCollisionsWithCylinder(&resource->position, 0x2800, 0x8000, 2);
-            for (i = 0; i < D_8013B1D4; i++) {
-                if (arePositionsWithinXZRange(&resource->position, &D_8012450C[i].location.player.position, resource->collisionRange)) {
-                    *D_8012450C[i].active = 0;
-                    gRacePlayers[D_8012450C[i].location.player.playerIndex].scoreAttackPointTotal++;
+            for (i = 0; i < gPlayerCollectionEntryCount; i++) {
+                if (arePositionsWithinXZRange(&resource->position, &gPlayerCollectionEntries[i].location.player.position, resource->collisionRange)) {
+                    *gPlayerCollectionEntries[i].active = 0;
+                    gRacePlayers[gPlayerCollectionEntries[i].location.player.playerIndex].scoreAttackPointTotal++;
                     playSoundEffect(1, 0xF00, 0x20);
                     createNineIndexedChildTasks(0x15, 1);
                     gCurrentTask->callback = deleteCurrentTask;
@@ -2240,7 +2241,7 @@ void updateFallingTaskObject(void) {
         resource->coordinate.coord.t[1] = resource->position.y >> 8;
     }
     if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)getRenderCameraIndex())) {
-        D_80129A80[9].coord2 = &resource->coordinate;
+        gTaskObjectModels[9].coord2 = &resource->coordinate;
         setCoordinateRotation(&resource->rotation, &resource->coordinate);
         drawTaskObject(9);
     }
@@ -2270,7 +2271,7 @@ void updateLandedTaskObject(void) {
         }
     }
     if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)getRenderCameraIndex())) {
-        D_80129A80[9].coord2 = &resource->coordinate;
+        gTaskObjectModels[9].coord2 = &resource->coordinate;
         setCoordinateRotation(&resource->rotation, &resource->coordinate);
         drawTaskObject(9);
     }
