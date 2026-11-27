@@ -770,6 +770,13 @@ segments:
       - {start: 0x114DD4, type: .data, name: unclassified/graphics_800497B8, linker_section: .data.heading_octant_angles}
       - {start: 0x1152E4, type: .data, name: unclassified/graphics_800497B8, linker_section: .data.debug_text_sprite}
       - [0x115308, data, heading_octant_angles_tail]
+      - {start: 0x115328, type: .data, name: unclassified/graphics_800497B8, linker_section: .data.unused_graphics_triangle}
+      - {start: 0x11533C, type: .data, name: unclassified/graphics_800497B8, linker_section: .data.unused_tmd_flat_triangle}
+      - {start: 0x11534C, type: .data, name: unclassified/graphics_800497B8, linker_section: .data.unused_tmd_flat_quad}
+      - {start: 0x11535C, type: .data, name: unclassified/graphics_800497B8, linker_section: .data.unused_tmd_gouraud_triangle}
+      - {start: 0x115374, type: .data, name: unclassified/graphics_800497B8, linker_section: .data.unused_tmd_gouraud_quad}
+      - {start: 0x115390, type: .data, name: unclassified/graphics_800497B8, linker_section: .data.unused_tmd_textured_gouraud_quad}
+      - {start: 0x1153BC, type: .data, name: unclassified/graphics_800497B8, linker_section: .data.unused_tmd_vertices}
       - {start: 0x1153DC, type: .data, name: graphics/course_rendering, linker_section: .data.background_model_scale}
       - {start: 0x1153EC, type: .data, name: graphics/course_rendering, linker_section: .data.course_model_distances}
       - {start: 0x11543C, type: .data, name: graphics/course_rendering, linker_section: .data.sunset_background_quad}

@@ -135,3 +135,55 @@ void GsSetClip(RECT *clip);
 void GsSetOffset(s32 x, s32 y);
 void GsSortClear(s32 r, s32 g, s32 b, GsOT *ot);
 void GsSwapDispBuff(void);
+
+/* Unlit TMD primitive layouts from PSY-Q 4.2 LIBGS.H. */
+typedef struct {
+	u8  out, in, dummy, cd;
+	u8  r0, g0, b0, code;
+	u16 v0, v1;
+	u16 v2, p;
+}       TMD_P_NF3;
+
+typedef struct {
+	u8  out, in, dummy, cd;
+	u8  r0, g0, b0, code;
+	u16 v0, v1;
+	u16 v2, v3;
+}       TMD_P_NF4;
+
+typedef struct {
+	u8  out, in, dummy, cd;
+	u8  r0, g0, b0, code;
+	u8  r1, g1, b1, p1;
+	u8  r2, g2, b2, p2;
+	u16 v0, v1;
+	u16 v2, p;
+}       TMD_P_NG3;
+
+typedef struct {
+	u8  out, in, dummy, cd;
+	u8  r0, g0, b0, code;
+	u8  r1, g1, b1, p1;
+	u8  r2, g2, b2, p2;
+	u8  r3, g3, b3, p3;
+	u16 v0, v1;
+	u16 v2, v3;
+}       TMD_P_NG4;
+
+typedef struct {
+	u8  out, in, dummy, cd;
+	u8  tu0, tv0;
+	u16 clut;
+	u8  tu1, tv1;
+	u16 tpage;
+	u8  tu2, tv2;
+	u16 p0;
+	u8  tu3, tv3;
+	u16 p1;
+	u8  r0, g0, b0, p2;
+	u8  r1, g1, b1, p3;
+	u8  r2, g2, b2, p4;
+	u8  r3, g3, b3, p5;
+	u16 v0, v1;
+	u16 v2, v3;
+}       TMD_P_TNG4;

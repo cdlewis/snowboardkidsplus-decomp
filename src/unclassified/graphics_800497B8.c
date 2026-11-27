@@ -190,6 +190,50 @@ static s16 sHeadingOctantAngles[]
 
 GsSPRITE gDebugTextSprite __attribute__((section(".data.debug_text_sprite"), aligned(4))) = {0};
 
+
+static POLY_F3 sUnusedGraphicsTriangle
+    __attribute__((section(".data.unused_graphics_triangle"), aligned(4))) = {
+    4u << 24, 255, 255, 0, POLY_F3_CODE, -32, -32, 32, -32, 0, 32,
+};
+
+static TMD_P_NF3 sUnusedTmdFlatTriangle
+    __attribute__((section(".data.unused_tmd_flat_triangle"), aligned(4))) = {
+    4, 3, 1, POLY_F3_CODE | 1, 255, 0, 0, POLY_F3_CODE | 1,
+    0, 1, 2, 0,
+};
+
+static TMD_P_NF4 sUnusedTmdFlatQuad
+    __attribute__((section(".data.unused_tmd_flat_quad"), aligned(4))) = {
+    5, 3, 1, POLY_F4_CODE | 1, 255, 0, 0, POLY_FT4_CODE,
+    0, 1, 2, 3,
+};
+
+static TMD_P_NG3 sUnusedTmdGouraudTriangle
+    __attribute__((section(".data.unused_tmd_gouraud_triangle"), aligned(4))) = {
+    6, 5, 1, POLY_G3_CODE | 1, 255, 0, 0, POLY_F3_CODE | 1,
+    0, 255, 0, 0, 0, 0, 255, 0, 0, 1, 2, 0,
+};
+
+/* The stored header describes a textured quad, but the body has no UV words. */
+static TMD_P_NG4 sUnusedTmdGouraudQuad
+    __attribute__((section(".data.unused_tmd_gouraud_quad"), aligned(4))) = {
+    12, 10, 1, POLY_GT4_CODE, 255, 0, 0, POLY_G4_CODE,
+    0, 255, 0, 0, 0, 0, 255, 0, 255, 255, 0, 0, 0, 1, 2, 3,
+};
+
+static TMD_P_TNG4 sUnusedTmdTexturedGouraudQuad
+    __attribute__((section(".data.unused_tmd_textured_gouraud_quad"), aligned(4))) = {
+    12, 10, 1, POLY_GT4_CODE | 1,
+    0, 0, 0x3C39, 48, 0, 13, 0, 48, 0, 48, 48, 0,
+    255, 0, 0, POLY_G4_CODE, 0, 255, 0, 0, 0, 0, 255, 0,
+    255, 255, 0, 0, 0, 1, 2, 3,
+};
+
+static SVECTOR sUnusedTmdVertices[4]
+    __attribute__((section(".data.unused_tmd_vertices"), aligned(4))) = {
+    {-8, -8, 0, 0}, {8, -8, 0, 0}, {0, 8, 0, 0}, {16, 8, 0, 0},
+};
+
 void updateSlidingVisualSequenceTask(void) {
     SlidingVisualResource *resource;
     u16 playerIndex;
