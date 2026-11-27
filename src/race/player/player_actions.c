@@ -1531,7 +1531,7 @@ void playCurrentPlayerSoundEffect(s16 index) {
 
 void queuePlayerControllerEffect(u16 controller, s16 effect) {
     if (currentPlayerAbsolute->unk008 == 0) {
-        D_8013AF08[controller] = effect;
+        gControllerPendingEffects[controller] = effect;
     }
 }
 

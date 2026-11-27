@@ -2713,7 +2713,7 @@ s32 restoreSelectedPlayerState(void) {
             task->data1C = gSelectedPlayerTaskSnapshots[i].data1C;
             task->data1E = gSelectedPlayerTaskSnapshots[i].data1E;
             gControllerInputRecordIndices[0] = record->state;
-            D_8013AEE0[0] = gControllerInputRecordBuffers[0][gControllerInputRecordIndices[0]].repeatCount;
+            gControllerPlaybackRepeatCounters[0] = gControllerInputRecordBuffers[0][gControllerInputRecordIndices[0]].repeatCount;
             record->state = -1;
             gPlayerCameras[0].x = record->unk04;
             gPlayerCameras[0].y = record->unk08;

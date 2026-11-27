@@ -99,7 +99,7 @@ void initializeControllerPlaybackRaceTask(void) {
     configureTaskStateTransition(1, 0, 30);
     setSecondaryDisplayTaskMode(1);
     setCurrentTaskCallback(initializeRaceTaskState);
-    queueCdSectorCommand(0, gControllerPlaybackEntries[gControllerPlaybackIndex].sector, gControllerPlaybackEntries[gControllerPlaybackIndex].count, D_800E959C, 0);
+    queueCdSectorCommand(0, gControllerPlaybackEntries[gControllerPlaybackIndex].sector, gControllerPlaybackEntries[gControllerPlaybackIndex].count, gControllerPlaybackRecords, 0);
     if (selectionMenuRecordAbsolute != gSelectedCourseIndex) {
         closeSoundBank(2);
         closeSoundBank(3);

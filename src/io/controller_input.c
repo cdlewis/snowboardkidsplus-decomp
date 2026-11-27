@@ -64,7 +64,7 @@ u8 gControllerActuatorAlignment[6] __attribute__((section(".data.controller_actu
 
 static u16 sControllerActuatorAlignmentPadding __attribute__((section(".data.controller_actuator_alignment"))) = 0;
 
-s16 D_8013AF08[2] __attribute__((section(".data.controller_values"))) = {0, 0};
+s16 gControllerPendingEffects[2] __attribute__((section(".data.controller_values"))) = {0, 0};
 
 extern u8 gDemoRaceIndex __attribute__((section(".data")));
 extern u8 gControllerPlaybackIndex __attribute__((section(".data")));
@@ -83,13 +83,13 @@ void setControllerRepeatTiming(u8 initialDelay, u8 repeatInterval) {
 
 void setControllerFlag5(u16 controller) {
     gControllerFlags[controller] |= 0x20;
-    D_8013AF08[controller] = -1;
+    gControllerPendingEffects[controller] = -1;
 }
 
 void clearControllerFlag5(u16 controller) {
     u8 *flags = controller + gControllerFlags;
     *flags &= ~0x20;
-    D_8013AF08[controller] = -1;
+    gControllerPendingEffects[controller] = -1;
 }
 
 s32 isControllerFlag5Clear(u16 controller) {
@@ -214,12 +214,12 @@ void initializeControllers(void) {
     PadSetAct(0, &gControllerActuatorOutputs[0].control, 2);
     PadSetAct(0x10, &gControllerActuatorOutputs[1].control, 2);
     PadStartCom();
-    D_8013AF0C[0] = 0;
+    gControllerPreviousButtons[0] = 0;
     gControllerPressedButtons[0] = 0;
     gControllerHeldButtons[0] = 0;
     gControllerPressedButtons[1] = 0;
     gControllerHeldButtons[1] = 0;
-    D_8013AF0C[1] = 0;
+    gControllerPreviousButtons[1] = 0;
     gControllerVerticalAxes[0] = 0;
     gControllerHorizontalAxes[0] = 0;
     D_8013AEF4[0] = 0;
@@ -256,7 +256,7 @@ void updateControllerInput(u16 controller) {
     ControllerReceiveBuffer *packet;
     s32 buttons;
     s32 device;
-    D_8013AF0C[controller] = gControllerHeldButtons[controller];
+    gControllerPreviousButtons[controller] = gControllerHeldButtons[controller];
     if (!isControllerInputSupported(controller)) {
         gControllerPressedButtons[controller] = 0;
         gControllerHeldButtons[controller] = 0;
@@ -302,7 +302,7 @@ void updateControllerInput(u16 controller) {
         }
         updateControllerAxesFromAnalog(controller);
     }
-    gControllerPressedButtons[controller] = ~D_8013AF0C[controller] & gControllerHeldButtons[controller];
+    gControllerPressedButtons[controller] = ~gControllerPreviousButtons[controller] & gControllerHeldButtons[controller];
 }
 
 void updateControllerActuators(u16 controller) {
@@ -344,7 +344,7 @@ void updateControllers(void) {
 
 void initializeControllerInputRecording(u16 controller) {
     if (gDemoRaceIndex || gControllerPlaybackIndex) {
-        gControllerInputRecordBuffers[controller] = ((ControllerInputRecord (*)[256])D_800E959C)[controller];
+        gControllerInputRecordBuffers[controller] = gControllerPlaybackRecords[controller];
     } else {
         gControllerInputRecordBuffers[controller] = CONTROLLER_INPUT_RECORDING_BUFFER;
     }
@@ -398,9 +398,9 @@ void recordControllerInput(u16 controller) {
 }
 
 void initializeControllerInputPlayback(u16 controller) {
-    *(controller + gControllerInputRecordBuffers) = ((ControllerInputRecord (*)[256])D_800E959C)[controller];
+    *(controller + gControllerInputRecordBuffers) = gControllerPlaybackRecords[controller];
     *(controller + gControllerInputRecordIndices) = 1;
-    *(controller + D_8013AEE0) = (*(controller + gControllerInputRecordBuffers))[1].repeatCount;
+    *(controller + gControllerPlaybackRepeatCounters) = (*(controller + gControllerInputRecordBuffers))[1].repeatCount;
     gControllerInputRecordState = 1;
 }
 
@@ -410,7 +410,7 @@ void playbackControllerInput(u16 controller) {
     gControllerPressedButtons[controller] = gControllerInputRecordBuffers[controller][gControllerInputRecordIndices[controller]].pressedButtons;
     gControllerHorizontalAxes[controller] = (s8)gControllerInputRecordBuffers[controller][gControllerInputRecordIndices[controller]].horizontal;
     gControllerVerticalAxes[controller] = (s8)gControllerInputRecordBuffers[controller][gControllerInputRecordIndices[controller]].vertical;
-    counter = &D_8013AEE0[controller];
+    counter = &gControllerPlaybackRepeatCounters[controller];
     *counter = *counter ? *counter - 1
                         : (gControllerInputRecordIndices[controller]++,
                            gControllerInputRecordBuffers[controller][gControllerInputRecordIndices[controller]].repeatCount);

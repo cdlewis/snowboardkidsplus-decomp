@@ -1211,7 +1211,7 @@ read_tables:
   - 1
   uses:
   - command: 0
-    destination: D_800E959C
+    destination: gControllerPlaybackRecords
 - source: src/menu/panel_tasks.c
   name: gGridResourceFirstSectorRanges
   rows: 50
@@ -1303,7 +1303,7 @@ read_tables:
   - 3
   uses:
   - command: 0
-    destination: D_800E959C
+    destination: gControllerPlaybackRecords
 - source: src/scene/scene_loading.c
   name: sSceneSoundBankSectors
   rows: 12

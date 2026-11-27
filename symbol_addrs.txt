@@ -1992,7 +1992,7 @@ initializeRacePauseMenuTask = 0x80043C28; // type:func
 updateRacePauseMenu = 0x80043C5C; // type:func
 resetControllersAndDeleteCurrentTask = 0x80043F84; // type:func
 drawRacePauseMenu = 0x80043FBC; // type:func
-D_8013AF08 = 0x8013AF08; // size:0x4 defined:true
+gControllerPendingEffects = 0x8013AF08; // size:0x4 defined:true
 
 clearCurrentPlayerSequenceState = 0x8001E610; // type:func
 
@@ -3057,7 +3057,7 @@ gDemoRaceIndex = 0x8013AFD7; // type:u8 size:0x1
 gControllerVerticalRepeatTimers = 0x8013AEBC; // type:u8 size:0x2 defined:true
 gControllerPressedButtons = 0x8013AEE8; // type:u16 size:0x4
 gControllerHeldButtons = 0x8013AEEC; // type:u16 size:0x4
-D_8013AF0C = 0x8013AF0C; // type:u16 size:0x4
+gControllerPreviousButtons = 0x8013AF0C; // type:u16 size:0x4
 
 updateRacePlayerFinishSlotsTask = 0x8002CB8C; // type:func
 gPlayerCollectionEntryCount = 0x8013B1D4; // size:0x2
@@ -4376,3 +4376,6 @@ gRaceRestartRequested = 0x8013B1AB; // size:0x1
 
 gBackgroundLensFlareYawOffset = 0x8013B22C;
 gBackgroundLensFlarePitchOffset = 0x8013B22E;
+
+gControllerPlaybackRecords = 0x800E959C; // size:0x1000
+gControllerPlaybackRepeatCounters = 0x8013AEE0; // type:u8 size:0x2

@@ -11,13 +11,22 @@ typedef struct ControllerInputRecord {
     u16 pressedButtons;
 } ControllerInputRecord;
 
+typedef struct ControllerReceiveBuffer {
+    u8 status;
+    u8 deviceId;
+    u8 payload[32];
+} ControllerReceiveBuffer;
+
+extern ControllerReceiveBuffer gControllerReceiveBuffers[2]
+    __attribute__((section(".data.controller_receive_buffers")));
+
 /* Two controller slots; incomplete bounds preserve absolute addressing. */
 extern ControllerInputRecord *gControllerInputRecordBuffers[];
 extern u16 gControllerInputRecordIndices[];
-extern u8 D_8013AEE0[];
+extern u8 gControllerPlaybackRepeatCounters[];
 
 /* Shared recording/playback buffer; storage remains in the controller data unit. */
-extern u8 D_800E959C[];
+extern ControllerInputRecord gControllerPlaybackRecords[][256];
 
 extern u8 D_8013AEC4[];
 
@@ -28,7 +37,7 @@ extern u16 gControllerHeldButtons[];
 extern s16 gControllerHorizontalAxes[];
 extern s16 gControllerVerticalAxes[];
 extern s16 D_8013AEF4[];
-extern u16 D_8013AF0C[2];
+extern u16 gControllerPreviousButtons[2];
 /* Recording/playback state bits: playback 1, recording 2, complete 4, full 8. */
 extern u8 gControllerInputRecordState;
 extern u16 D_8013AEE2 __attribute__((section(".data")));
@@ -37,7 +46,7 @@ void initializeControllers(void);
 
 extern u8 gControllerFlags[4] __attribute__((section(".data")));
 
-extern s16 D_8013AF08[2] __attribute__((section(".data.controller_values")));
+extern s16 gControllerPendingEffects[2] __attribute__((section(".data.controller_values")));
 
 extern u8 gControllerHorizontalRepeatTimers[2];
 extern u8 gControllerRepeatInitialDelay;

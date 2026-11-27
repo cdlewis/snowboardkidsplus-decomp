@@ -53,14 +53,6 @@ extern u16 gCdRequestPhase;
 extern u16 gCdRequestWriteIndex;
 extern u16 gCdRequestReadIndex;
 extern s16 D_8013AE76;
-typedef struct ControllerReceiveBuffer {
-    u8 status;
-    u8 deviceId;
-    u8 payload[32];
-} ControllerReceiveBuffer;
-
-extern ControllerReceiveBuffer gControllerReceiveBuffers[2] __attribute__((section(".data.controller_receive_buffers")));
-
 extern u8 gControllerInputRecordState __attribute__((section(".sdata.controller_input_state")));
 
 extern u16 gControllerPressedButtons[2] __attribute__((section(".data.controller_input_arrays")));
@@ -91,7 +83,6 @@ extern u8 gControllerRepeatInterval __attribute__((section(".sdata.controller_re
 
 extern u8 gControllerActuatorAlignment[6] __attribute__((section(".data.controller_actuator_alignment")));
 
-extern s16 D_8013AF08[2] __attribute__((section(".data.controller_values")));
 
 extern s16 D_8013AE4A __attribute__((section(".sdata.cd_command_state")));
 

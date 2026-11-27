@@ -91,7 +91,7 @@ static ControllerEffectDefinition gControllerEffectDefinitions[] = {
 void resetControllerEffects(void) {
     s32 i;
     for (i = 0; i < 2; i++) {
-        D_8013AF08[i] = -1;
+        gControllerPendingEffects[i] = -1;
         gControllerEffectStates[i].effect = 0;
         gControllerEffectStates[i].priority = 0;
         gControllerEffectStates[i].step = 0;
@@ -111,8 +111,8 @@ void updateControllerEffectSequence(u16 controller) {
         gControllerActuatorOutputs[controller].value = 0;
         return;
     }
-    effect = D_8013AF08[controller];
-    D_8013AF08[controller] = -1;
+    effect = gControllerPendingEffects[controller];
+    gControllerPendingEffects[controller] = -1;
     changed = 0;
     if (effect >= 16) return;
     state = &gControllerEffectStates[controller];

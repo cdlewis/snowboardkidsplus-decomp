@@ -541,7 +541,7 @@ void queueRaceStartupResourcesTask(void) {
     }
     if (gDemoRaceIndex) {
         queueCdSectorCommand(0, gRacePlaybackSectorRanges[gDemoRaceIndex - 1].sector,
-            gRacePlaybackSectorRanges[gDemoRaceIndex - 1].sectorCount, D_800E959C, 0);
+            gRacePlaybackSectorRanges[gDemoRaceIndex - 1].sectorCount, gControllerPlaybackRecords, 0);
     }
     queueCdSectorCommand(0, DAT_ENTRY_010_SECTOR, DAT_ENTRY_010_SECTOR_COUNT, DAT_SCRATCH, 0);
     if (!gModeSequenceStage && !gControllerPlaybackIndex) {
@@ -916,8 +916,8 @@ void begin30TickTransitionOnFlag10(void) {
 
 void initializeRaceRestartTask(void) {
     u16 i;
-    D_8013AF08[1] = 0;
-    D_8013AF08[0] = 0;
+    gControllerPendingEffects[1] = 0;
+    gControllerPendingEffects[0] = 0;
     gTaskTransitionFlags = 1;
     stopPlayerSound(0);
     if (gPlayerCount == 2) {

@@ -1279,7 +1279,7 @@ void updatePlayerTimerTask(void) {
             if (!gRacePlayers[gCurrentTask->data18].unk008 &&
                 gControllerEffectStates[gCurrentTask->data18].effect == 13 &&
                 !(gRacePlayers[gCurrentTask->data18].unk128 & 0x2000)) {
-                D_8013AF08[gCurrentTask->data18] = 0;
+                gControllerPendingEffects[gCurrentTask->data18] = 0;
             }
             setCurrentTaskCallback(fadeOutPlayerTimerTask);
         } else if (gRacePlayers[gCurrentTask->data18].timer.unk60 < 0x1000) {
