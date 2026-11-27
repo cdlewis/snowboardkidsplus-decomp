@@ -1084,7 +1084,7 @@ segments:
       - {start: 0x12BA80, type: .data, name: graphics/course_rendering, linker_section: .data.course_model_positions}
       - {start: 0x12BA84, type: .data, name: race/course/course_objects, linker_section: .data.object_visual_frames}
       - {start: 0x12BA94, type: .data, name: race/course/course_objects, linker_section: .data.interaction_visual_frame, linker_section_order: .data}
-      - [0x12BA9C, data, interaction_visual_frame_tail]
+      - {start: 0x12BA9C, type: .data, name: race/course/course_objects, linker_section: .data.course2_visual_frames}
       - {start: 0x12BAA4, type: .data, name: race/course/course_objects, linker_section: .data.placed_object_visual_frame}
       - {start: 0x12BAAC, type: .data, name: race/course/course_objects, linker_section: .data.object_visual_frames_by_type}
       - {start: 0x12BAB4, type: .sdata, name: race/course/course_objects, linker_section: .sdata.course_object_visual_state, linker_section_order: .data}

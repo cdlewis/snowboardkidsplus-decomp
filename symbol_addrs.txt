@@ -4561,7 +4561,7 @@ gDefaultCourseVisualFrames = 0x801294AC; // size:0x10 defined:true
 gCourseVisualFramesByPlacementType = 0x8012956C; // size:0x34 defined:true
 gCoursePlayerCollisionRegions = 0x80129A18; // size:0x50
 gCoursePlayerField94CTargets = 0x8012BBB4; // size:0xA0
-gCourse2VisualFrames = 0x8013B29C;
+gCourse2VisualFrames = 0x8013B29C; // size:0x8 defined:true
 
 gMoneyPanelSelectionSprites = 0x801317F0; // size:0x12
 gMoneyPanelSelectionSpritesPadding = 0x80131802; // size:0x2

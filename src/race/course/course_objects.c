@@ -104,6 +104,10 @@ TaskVisualFrame gObjectVisualFrameType9 __attribute__((section(".data.object_vis
 TaskVisualFrame gInteractionVisualFrame __attribute__((section(".data.interaction_visual_frame"))) = {
     0xC0, 0x20, 0x20, 0x20, 0x1C, 0x3D7F
 };
+TaskVisualFrame gCourse2VisualFrames[1]
+    __attribute__((section(".data.course2_visual_frames"), aligned(4))) = {
+    {0x80, 0x00, 0x60, 0x80, 0x0017, 0x7EA8},
+};
 VisualPlacement *gInteractionVisualPlacements __attribute__((section(".sdata.interaction_visual_placements"))) = 0;
 
 VisualPlacement gCourse0ObjectPlacements[95]
