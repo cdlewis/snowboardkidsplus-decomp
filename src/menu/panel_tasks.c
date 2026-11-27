@@ -80,6 +80,9 @@ extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern GameTask *gCurrentTaskParent __attribute__((section(".data")));
 
+TaskPanelSelectionValue gTaskPanelSelectionValues[1]
+    __attribute__((section(".data.task_panel_selection_values"), aligned(4))) = {{0, 0}};
+
 static const u32 sBoardShopModeJumpTablePadding
     __attribute__((section(".rodata.board_shop_mode_padding"))) = 0;
 

@@ -4303,7 +4303,7 @@ gBoardStyleAlpineText = 0x80011DE8; // size:0xC
 gBoardStyleSpecialText = 0x80011DF4; // size:0xC
 gBoardMenuSprites = 0x80131868; // size:0x6C
 gBoardMenuSelectionDescriptors = 0x801318D4; // size:0x3C
-gTaskPanelSelectionValues = 0x8013B508; // size:0x4
+gTaskPanelSelectionValues = 0x8013B508; // size:0x4 defined:true
 
 gSelectionPanelStatTriplets = 0x8012FFFC; // size:0xF
 gShopBoardUnlockFlagIndices = 0x80131804; // size:0xC

@@ -1145,7 +1145,7 @@ segments:
       - {start: 0x12BCF0, type: .data, name: menu/panel_tasks, linker_section: .data.board_purchase_mappings}
       - {start: 0x12BCFC, type: .data, name: menu/panel_tasks, linker_section: .data.shop_currency_suffix}
       - {start: 0x12BD00, type: .data, name: race/player/player_model_preview, linker_section: .data.player_model_draw_area_depths}
-      - [0x12BD08, data, player_model_draw_area_depths_tail]
+      - {start: 0x12BD08, type: .data, name: menu/panel_tasks, linker_section: .data.task_panel_selection_values}
       - {start: 0x12BD0C, type: .data, name: menu/grid_selection, linker_section: .data.split_board_selection_mapping}
       - {start: 0x12BD14, type: .sdata, name: menu/grid_selection, linker_section: .sdata, linker_section_order: .data}
       - {start: 0x12BD18, type: .data, name: menu/resource_tasks, linker_section: .data.main_tail_selection_mapping}
