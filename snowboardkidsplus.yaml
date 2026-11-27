@@ -1158,7 +1158,7 @@ segments:
       - {start: 0x12BD50, type: .data, name: menu/mode_race_tasks, linker_section: .data.mode11_selection_mapping}
       - {start: 0x12BD58, type: .data, name: menu/selection_tasks, linker_section: .data.number_selection_mapping}
       - {start: 0x12BD5C, type: .data, name: menu/selection_tasks, linker_section: .data.number_selection_final_mapping}
-      - [0x12BD5E, data, number_selection_transition_tail]
+      - {start: 0x12BD5E, type: .sdata, name: menu/selection_tasks, linker_section: .sdata.number_selection_transition_state, linker_section_order: .data}
       - [0x12BD66, pad]
       - {start: 0x12BD68, type: .data, name: menu/unlock_menu, linker_section: .data.unlock_option_bits}
       - {start: 0x12BD6E, type: .data, name: menu/selection_tasks, linker_section: .data.number_selection_tail_padding}

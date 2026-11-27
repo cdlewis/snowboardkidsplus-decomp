@@ -3167,7 +3167,7 @@ initializeSelectionMenuTask = 0x800A2C74; // type:func
 updateSelectionMenuTask = 0x800A2D68; // type:func
 finishSelectionMenuTask = 0x800A3028; // type:func
 drawPlaybackSelectionMenu = 0x800A31C0; // type:func
-gPreviousSelectedCourseIndex = 0x8013B560; // size:0x2
+gPreviousSelectedCourseIndex = 0x8013B560; // size:0x2 defined:true
 
 updateCurrentPlayerAndResetState = 0x800204D8; // type:func
 updateCurrentPlayerRiding = 0x800205B8; // type:func
@@ -3208,7 +3208,7 @@ initializePickupVisualTask = 0x8005AF0C; // type:func
 
 initializeModeRaceTasks = 0x800A1F50; // type:func
 advanceTaskAtModeCoursePosition = 0x800A2210; // type:func
-gModeTaskTransitionState = 0x8013B55E; // size:0x1
+gModeTaskTransitionState = 0x8013B55E; // size:0x1 defined:true
 gNumberSelectionSprites = 0x8013278C; // size:0x14 defined:true
 gPlaybackSelectionMenuInstructions = 0x801327C4; // size:0x30 defined:true
 gNumberSelectionMapping = 0x8013B558; // size:0x4 defined:true
@@ -3947,7 +3947,7 @@ drawHalfStepSpriteBar = 0x8006E5E0; // type:func
 updateSceneImageTask = 0x800A6A8C; // type:func
 
 finishControllerPlaybackTransition = 0x800A3AA4; // type:func
-gReuseCourseResources = 0x8013B562; // size:0x1
+gReuseCourseResources = 0x8013B562; // size:0x1 defined:true
 
 initializeScanlineCopySeed = 0x80051700; // type:func
 queueScanlineCopyPackets = 0x80051770; // type:func
@@ -4486,7 +4486,7 @@ gSceneImageTargetVisible = 0x8013B59E; // size:0x1
 gSceneTextBackdropEnabled = 0x8013B59F; // size:0x1
 gSceneTextColon = 0x8013B5C4; // size:0x4
 
-gSelectionMenuMusicStarted = 0x8013B564; // size:0x2
+gSelectionMenuMusicStarted = 0x8013B564; // size:0x1 defined:true
 
 gPlayerModelArchiveIndices = 0x80123640; // size:0x10 defined:true
 gDefaultPlayerResourceTextureSelections = 0x80123650; // size:0xF defined:true
@@ -4816,3 +4816,7 @@ gExtendedBoardMenuTextIndicesPadding0 = 0x8013B4D9; // size:0x1 defined:true
 gExtendedBoardMenuTextIndicesPadding1 = 0x8013B4DA; // size:0x1 defined:true
 gExtendedBoardMenuTextIndicesPadding2 = 0x8013B4DB; // size:0x1 defined:true
 D_8013B4DC = 0x8013B4DC; // size:0x4 defined:true
+
+modeTaskTransitionPadding = 0x8013B55F; // size:0x1 defined:true
+courseResourceReusePadding = 0x8013B563; // size:0x1 defined:true
+selectionMenuMusicPadding = 0x8013B565; // size:0x1 defined:true

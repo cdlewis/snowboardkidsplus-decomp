@@ -606,6 +606,21 @@ const u8 gNumberSelectionMapping[4]
 const u8 gNumberSelectionFinalMapping[2]
     __attribute__((section(".data.number_selection_final_mapping"), aligned(2))) = {1, 2};
 
-/* Preserve the padding after the adjacent assembly data block. */
+u8 gModeTaskTransitionState
+    __attribute__((section(".sdata.number_selection_transition_state"), aligned(1))) = 0;
+static u8 modeTaskTransitionPadding
+    __attribute__((section(".sdata.number_selection_transition_state"), aligned(1))) = 0;
+s16 gPreviousSelectedCourseIndex
+    __attribute__((section(".sdata.number_selection_transition_state"), aligned(2))) = 0;
+u8 gReuseCourseResources
+    __attribute__((section(".sdata.number_selection_transition_state"), aligned(1))) = 0;
+static u8 courseResourceReusePadding
+    __attribute__((section(".sdata.number_selection_transition_state"), aligned(1))) = 0;
+u8 gSelectionMenuMusicStarted
+    __attribute__((section(".sdata.number_selection_transition_state"), aligned(1))) = 0;
+static u8 selectionMenuMusicPadding
+    __attribute__((section(".sdata.number_selection_transition_state"), aligned(1))) = 0;
+
+/* Preserve the padding after the unlock option bits. */
 const u16 gNumberSelectionTailPadding
     __attribute__((section(".data.number_selection_tail_padding"))) = 0;
