@@ -1,0 +1,42 @@
+candidate_source: python3 tools/data_candidates.py
+prompt: >-
+  Match the entire assembly-owned data or rodata subsegment $INPUT into C.
+  Follow AGENTS.md and .agents/skills/psx-match-data/SKILL.md. The candidate
+  identifies the section kind and ROM start offset in snowboardkidsplus.yaml,
+  not a VRAM address. Run python3 tools/data_candidates.py --details to find
+  its current name, parent segment, exclusive end offset, and size. Work on
+  every object and padding byte in this range, in original order. Start with
+  a green ./tools/build-and-verify.sh, then inspect regenerated data assembly,
+  relocations, symbol metadata, and all C and assembly consumers. Determine
+  accurate types, array dimensions, struct layouts, alignment, and ownership
+  from those consumers. For SDK data consult original SDK object symbols and
+  the local reference sources described in the function-matching skill.
+  Resolve meaningful names where evidence supports them; do not invent
+  identities or replace structured data with an opaque byte dump merely to
+  obtain a checksum. Reuse canonical headers and typed field accesses.
+  Migrate definitions into their owning C modules and convert the YAML
+  subsegment to C-owned .data or .rodata, splitting it among real owners if
+  necessary. Preserve all bytes, pointer relocations, symbol addresses,
+  storage order, explicit zeros, padding, and alignment. Shared data stays
+  with its owner. Never edit generated assembly, linker outputs, expected
+  objects, or checksum values by hand. A rodata jump table may require exact
+  matching C for its owning function; follow psx-match-function in that case
+  and preserve the original fallback until integration is exact. Do not
+  relabel assembly-owned data as C-owned without providing its definitions.
+  Verify every migrated object with python3 tools/data_diff.py SYMBOL,
+  supplying --size where needed, and run
+  python3 tools/data_diff.py --find-first-mismatch. Check all affected
+  consumers and finish with ./tools/build-and-verify.sh --expected --objects
+  --non-matching. The candidate is complete only when every byte in its
+  original range is C-owned and the complete executable passes verification.
+  If blocked, preserve useful scratch work and report the remaining ranges
+  and evidence; do not claim completion or bypass a tool stop instruction.
+  Commit verified changes yourself after running ./tools/install-git-hooks.sh
+  and passing the tracked validation hook. Report migrated objects, original
+  ROM bounds, verification results, any remaining work, and the commit hash.
+agent: codex
+success_command: >-
+  ./tools/build-and-verify.sh --expected --objects --non-matching &&
+  ./tools/install-git-hooks.sh &&
+  git add -A && git commit -m "Match data segment $CANDIDATE"
+timeout: 2h
