@@ -31,7 +31,7 @@ extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern u8 gSelectedPlayerReplayActive __attribute__((section(".data")));
 
 extern u8 gMenuScreenId __attribute__((section(".data")));
-extern u8 D_8013B564 __attribute__((section(".data")));
+extern u8 gSelectionMenuMusicStarted __attribute__((section(".data")));
 extern s16 gMenuMusicEnabled __attribute__((section(".data")));
 extern u8 gTitleMenuResourcesInitialized __attribute__((section(".data")));
 
@@ -86,7 +86,7 @@ void updateMode11SelectionMenuTask(void) {
         if ((s16)entries[1].flags == 0) {
             configureTaskStateTransition(1, 0, 30);
             queueCdCommand(3, 0);
-            D_8013B564 = 1;
+            gSelectionMenuMusicStarted = 1;
             gCurrentTask->data18 = 2;
         }
         break;
@@ -193,7 +193,7 @@ void selectTaskCallbackFromModeState(void) {
 void initializeMode1Task(void) {
     gModeSequenceStage = 1;
     gSelectedCourseIndex = -1;
-    D_8013B560 = 99;
+    gPreviousSelectedCourseIndex = 99;
     setControllerFlag5(0);
     setControllerFlag5(1);
     gTitleMenuResourcesInitialized = 0;
@@ -203,7 +203,7 @@ void initializeMode1Task(void) {
 void initializeMode1RacePlayers(void) {
     s32 i;
     s16 mode;
-    D_8013B560 = gSelectedCourseIndex;
+    gPreviousSelectedCourseIndex = gSelectedCourseIndex;
     if ((s16)gModeSequenceStage < 7 && gModeSequenceStage != 0) gSelectedCourseIndex = 0;
     else gSelectedCourseIndex = 9;
     SetFogNearFar(8000, 10000, 400);
@@ -261,7 +261,7 @@ void initializeMode1RacePlayers(void) {
 void prepareRaceResourcesIfSelectionChanged(void) {
     configureTaskStateTransition(1, 0, 30);
     setSecondaryDisplayTaskMode(1);
-    if (D_8013B560 != gSelectedCourseIndex) {
+    if (gPreviousSelectedCourseIndex != gSelectedCourseIndex) {
         closeSoundBank(2);
         closeSoundBank(3);
         closeSoundBank(4);
@@ -291,7 +291,7 @@ void initializeModeSectorReadResourcesTask(void) {
         for (;;) {}
     }
     gCurrentTask->resource16 = allocateTaskMemoryBlock();
-    D_8013B55E = 0;
+    gModeTaskTransitionState = 0;
     if (gModeSequenceStage != 0) {
         state->mode = 1;
     } else {

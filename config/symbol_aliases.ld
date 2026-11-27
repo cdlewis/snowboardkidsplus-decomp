@@ -14,12 +14,12 @@ selectedFinishLapCountAbsolute = gSelectedLapCount;
 selectedLapCountAbsolute = gSelectedLapCount;
 selectedCourseMenuItemAbsolute = gSelectedCourseMenuItem;
 geometryPlacementDataAbsolute = gCourseGeometryRegionData;
-selectionMenuRecordAbsolute = D_8013B560;
+previousSelectedCourseIndexAbsolute = gPreviousSelectedCourseIndex;
 raceRulesetMenuRememberedSelectionGp = gRaceRulesetMenuRememberedSelection;
 shopMenuRememberedSelectionGp = gShopMenuRememberedSelection;
 boardShopRememberedSelectionAbsolute = gBoardShopRememberedSelection;
 boardMenuRememberedSelectionAbsolute = gMoneyPanelRememberedSelection;
-taskTransitionFlagGp = D_8013B55E;
+modeTaskTransitionStateGp = gModeTaskTransitionState;
 
 /* GP-addressed view of the saved camera overlay selector. */
 selectedCameraOverlayModeGp = gSelectedCameraOverlayMode;

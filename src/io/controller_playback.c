@@ -50,7 +50,7 @@ s16 gControllerPlaybackDurations[12] __attribute__((section(".data.controller_pl
 void initializeControllerPlaybackRaceTask(void) {
     s32 i = 0;
     RacePlayer *player;
-    selectionMenuRecordAbsolute = gSelectedCourseIndex;
+    previousSelectedCourseIndexAbsolute = gSelectedCourseIndex;
     gSelectedCourseIndex = gControllerPlaybackEntries[gControllerPlaybackIndex].course;
     player = gRacePlayers;
     gRacePauseState = 0;
@@ -100,7 +100,7 @@ void initializeControllerPlaybackRaceTask(void) {
     setSecondaryDisplayTaskMode(1);
     setCurrentTaskCallback(initializeRaceTaskState);
     queueCdSectorCommand(0, gControllerPlaybackEntries[gControllerPlaybackIndex].sector, gControllerPlaybackEntries[gControllerPlaybackIndex].count, gControllerPlaybackRecords, 0);
-    if (selectionMenuRecordAbsolute != gSelectedCourseIndex) {
+    if (previousSelectedCourseIndexAbsolute != gSelectedCourseIndex) {
         closeSoundBank(2);
         closeSoundBank(3);
         closeSoundBank(4);
@@ -111,8 +111,8 @@ void initializeControllerPlaybackRaceTask(void) {
 }
 
 
-void advanceTaskWhenFlagB55ESet(void) {
-    if (D_8013B55E != 0) {
+void advanceControllerPlaybackWhenModeTransitionReady(void) {
+    if (gModeTaskTransitionState != 0) {
         gCurrentTask->data18 = 0;
         setCurrentTaskCallback(updateControllerPlaybackUntilFade);
     }
@@ -166,7 +166,7 @@ void finishControllerPlaybackTransition(void) {
         gCurrentTask->data18 = 2;
         break;
     case 2:
-        D_8013B564 = 0;
+        gSelectionMenuMusicStarted = 0;
         setCurrentTaskCallback(initializeGameOptionViewTask);
         gCurrentTask->unk10 |= 2;
         break;

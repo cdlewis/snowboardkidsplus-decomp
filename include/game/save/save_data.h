@@ -38,8 +38,6 @@ typedef struct SaveRecord {
 extern u8 gModeSequenceStage;
 /* Zero disables prerecorded races; other values index playback entries. */
 extern u8 gControllerPlaybackIndex;
-/* GP-relative view of the shared task transition flag at D_8013B55E. */
-extern u8 taskTransitionFlagGp;
 
 extern SaveRecord gPlayerSaveRecords[2];
 extern SaveRecord gMergedSaveRecord;

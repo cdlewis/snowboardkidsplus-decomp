@@ -203,7 +203,7 @@ void animateTextSequenceExitTask(void) {
     gPlayerCameras[0].unk10 += delta * 2;
     if (gPlayerCameras[0].unk10 > -320) gPlayerCameras[0].unk10 = -320;
     if (resource->displacement / 4096 >= 141) {
-        taskTransitionFlagGp = 1;
+        modeTaskTransitionStateGp = 1;
         gRaceHudEnabled = 1;
         playerCountAbsolute = 1;
         gTaskTransitionFlags = 0;
@@ -230,7 +230,7 @@ void advanceModeAfterTextSequenceFadeTask(void) {
         break;
     case 2:
         if (isTaskStateTransitionBelowMaximum(0) == 0) {
-            D_8013B55E = 2;
+            gModeTaskTransitionState = 2;
             gModeSequenceStage++;
             deleteCurrentTaskSubtree();
         }

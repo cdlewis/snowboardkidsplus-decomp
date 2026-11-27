@@ -22,7 +22,7 @@ void initializeTaskPlayerCamera(void) {
 
 void updateTaskViewAndCheckPlayerLimit(void) {
     renderCurrentCameraPlayersAndUpdateSound();
-    if (D_8013B55E != 0) {
+    if (gModeTaskTransitionState != 0) {
         if (gCurrentTask->data18 < playerCountAbsolute) {
             setCurrentTaskCallback(updateCurrentPlayerCameraTask);
             return;

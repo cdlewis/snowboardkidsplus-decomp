@@ -29,7 +29,15 @@ extern s16 gMenuTextureResourceId;
 extern s16 gMenuGridResourceId;
 extern u8 gTitleAttractSequenceIndex;
 extern u8 gTitleMenuSelectionIndex;
-extern u8 D_8013B564;
+/* Nonzero releases the mode's waiting playback and camera tasks. */
+extern u8 gModeTaskTransitionState;
+/* GP-relative alias of gModeTaskTransitionState. */
+extern u8 modeTaskTransitionStateGp;
+/* Course selected before the next mode race; 99 forces a resource reload. */
+extern s16 gPreviousSelectedCourseIndex;
+extern s16 previousSelectedCourseIndexAbsolute __attribute__((section(".data")));
+/* Prevents restarting XA command 3 while moving between selection menus. */
+extern u8 gSelectionMenuMusicStarted;
 
 void initializeGameOptionTask(void);
 void resetGameOptionState(void);

@@ -325,7 +325,7 @@ waitForBackgroundMenuTransition = 0x8002F5F8; // type:func
 dispatchBackgroundMenuTask = 0x8002F698; // type:func
 
 // Clear the task counter and advance its callback when the shared flag is set.
-advanceTaskWhenFlagB55ESet = 0x800A3970; // type:func
+advanceControllerPlaybackWhenModeTransitionReady = 0x800A3970; // type:func
 
 updateMainMenuSelectionTask = 0x8007BE9C; // type:func size:0x900
 
@@ -3134,7 +3134,7 @@ initializeSelectionMenuTask = 0x800A2C74; // type:func
 updateSelectionMenuTask = 0x800A2D68; // type:func
 finishSelectionMenuTask = 0x800A3028; // type:func
 drawPlaybackSelectionMenu = 0x800A31C0; // type:func
-D_8013B560 = 0x8013B560; // size:0x2
+gPreviousSelectedCourseIndex = 0x8013B560; // size:0x2
 
 updateCurrentPlayerAndResetState = 0x800204D8; // type:func
 updateCurrentPlayerRiding = 0x800205B8; // type:func
@@ -3175,7 +3175,7 @@ initializePickupVisualTask = 0x8005AF0C; // type:func
 
 initializeModeRaceTasks = 0x800A1F50; // type:func
 advanceTaskAtModeCoursePosition = 0x800A2210; // type:func
-D_8013B55E = 0x8013B55E; // size:0x1
+gModeTaskTransitionState = 0x8013B55E; // size:0x1
 gNumberSelectionSprites = 0x8013278C; // size:0x14 defined:true
 gPlaybackSelectionMenuInstructions = 0x801327C4; // size:0x30 defined:true
 gNumberSelectionMapping = 0x8013B558; // size:0x4 defined:true
@@ -4428,3 +4428,5 @@ gSceneImageTransitionDuration = 0x8013B59C; // size:0x2
 gSceneImageTargetVisible = 0x8013B59E; // size:0x1
 gSceneTextBackdropEnabled = 0x8013B59F; // size:0x1
 gSceneTextColon = 0x8013B5C4; // size:0x4
+
+gSelectionMenuMusicStarted = 0x8013B564; // size:0x2

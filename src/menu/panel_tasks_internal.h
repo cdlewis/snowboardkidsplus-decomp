@@ -119,7 +119,6 @@ typedef struct SplitSelectionBoundsConfigs {
 #include "unlock_menu_types.h"
 
 extern s16 gMenuTextureResourceId __attribute__((section(".data")));
-extern u8 D_8013B55E;
 
 extern s8 gBoardStyleTextBytes[0x38];
 extern u32 gCharacterBoardPrices[50];
@@ -159,7 +158,6 @@ extern u16 playerModelDrawAreaDepths[4] __attribute__((section(".data.player_mod
 
 extern u8 gPaletteSelectionCurrentLabelEnabled __attribute__((section(".sdata")));
 
-extern s16 D_8013B560;
 extern u8 gSelectedUnlockIndex __attribute__((section(".data")));
 
 void updateBoardPurchaseMenuTask(void);

@@ -62,7 +62,7 @@ void initializeModeRaceTasks(void) {
         initializeCourseModels();
     }
     initializeRacePlayerEffects();
-    taskTransitionFlagGp = 0;
+    modeTaskTransitionStateGp = 0;
     createChildTaskWithReserve(initializeModeSectorReadResourcesTask);
     if (playerCountAbsolute == 2) {
         gGameStateFlags |= 0x800;
@@ -122,7 +122,7 @@ void initializeModeRaceTasks(void) {
     if (gModeSequenceStage) {
         setCurrentTaskCallback(advanceTaskAtModeCoursePosition);
     } else {
-        setCurrentTaskCallback(advanceTaskWhenFlagB55ESet);
+        setCurrentTaskCallback(advanceControllerPlaybackWhenModeTransitionReady);
     }
 }
 
@@ -157,14 +157,14 @@ void advanceTaskAtModeCoursePosition(void) {
         stopPlayerSound(0);
         stopPlayerSound(1);
         startCdVolumeFade(103, 20, 0, 1);
-        taskTransitionFlagGp = 0;
+        modeTaskTransitionStateGp = 0;
         createChildTaskWithReserve(initializeNumberSelectionTask);
         setCurrentTaskCallback(completeModeSelectionTransitionWhenReady);
     }
 }
 
 void completeModeSelectionTransitionWhenReady(void) {
-    if (taskTransitionFlagGp != 0) {
+    if (modeTaskTransitionStateGp != 0) {
         gGameStateFlags = (gGameStateFlags | 0x1090) & ~0x2000;
         resetPendingCdRequests();
         resetPaletteRecords();
@@ -173,7 +173,7 @@ void completeModeSelectionTransitionWhenReady(void) {
         gGameStateFlags |= 0x48;
         switch (gModeSequenceStage) {
         case 10:
-            taskTransitionFlagGp = 0;
+            modeTaskTransitionStateGp = 0;
             createChildTaskWithReserve(initializeModeSectorReadResourcesTask);
             gCurrentTask->unk10 |= 1;
             break;
@@ -198,7 +198,7 @@ void completeModeSelectionTransitionWhenReady(void) {
 }
 
 void selectTaskBySelectedRecordMatch(void) {
-    if (D_8013B560 != gSelectedCourseIndex) {
+    if (gPreviousSelectedCourseIndex != gSelectedCourseIndex) {
         gReuseCourseResources = 0;
         setCurrentTaskCallback(queueRaceStartupResourcesTask);
     } else {
@@ -325,7 +325,7 @@ void updateNumberSelectionTask(void) {
         break;
     case 8:
     default:
-        taskTransitionFlagGp = 1;
+        modeTaskTransitionStateGp = 1;
         deleteCurrentTaskSubtree();
         return;
     }
@@ -388,12 +388,12 @@ void initializeSelectionMenuTask(void) {
     setControllerFlag5(0);
     setControllerFlag5(1);
     gSelectedCourseIndex = -1;
-    selectionMenuRecordAbsolute = 99;
+    previousSelectedCourseIndexAbsolute = 99;
     setSecondaryDisplayTaskMode(0);
     configureTaskStateTransition(1, 0, 30);
-    if (D_8013B564 == 0) {
+    if (gSelectionMenuMusicStarted == 0) {
         queueCdCommand(3, 0);
-        D_8013B564 = 1;
+        gSelectionMenuMusicStarted = 1;
     }
     setCurrentTaskCallback(updateSelectionMenuTask);
 }
