@@ -91,14 +91,19 @@ extern volatile u8 shopMenuRememberedSelectionGp;
 extern const u8 D_801317F0[];
 extern const u8 D_8013B4A0[];
 
-extern const u16 D_8013143C[46], D_80131498[50], D_801314FC[38];
+extern const u16 gShopBoardMenuDescriptionText[46];
+extern const u16 D_80131498[50], D_801314FC[38];
 extern const u16 gShopExitDescriptionText[22];
 extern const u16 gShopSubmenuReturnDescriptionText[12];
 extern const u16 gShopGreetingText[12];
 extern const u16 gShopInsufficientFundsText[14];
 extern char gShopCurrencySuffix[];
-extern const u16 D_801315C0[], D_801315E0[], D_80131630[];
-extern const u16 D_8013167C[], D_801316BC[], D_801316E8[], D_80131728[], D_80131760[];
+extern const u16 gShopBoardAlreadyOwnedText[16];
+extern const u16 gShopBoardBuyDescriptionText[40];
+extern const u16 gShopBoardPaintDescriptionText[38];
+extern const u16 gShopNewBoardStockGreetingText[32];
+extern const u16 D_801316BC[22];
+extern const u16 D_801316E8[], D_80131728[], D_80131760[];
 
 extern const s16 gGridModelPreviewPose0And2[54], gSharedGridModelPreviewPose[54], D_80131B74[];
 extern const s16 D_80131BE0[], D_80131C4C[], D_80131CB8[];
@@ -112,9 +117,9 @@ static const GridSpriteEntry sShopMenuSprites[4]
 };
 
 static const u16 *sShopMenuTexts[15] __attribute__((section(".data.shop_menu_texts"))) = {
-    D_8013143C, D_80131498, D_801314FC, gShopExitDescriptionText, gShopSubmenuReturnDescriptionText,
-    gShopGreetingText, gShopInsufficientFundsText, D_801315C0, D_801315E0, D_80131630,
-    D_8013167C, D_801316BC, D_801316E8, D_80131728, D_80131760,
+    gShopBoardMenuDescriptionText, D_80131498, D_801314FC, gShopExitDescriptionText, gShopSubmenuReturnDescriptionText,
+    gShopGreetingText, gShopInsufficientFundsText, gShopBoardAlreadyOwnedText, gShopBoardBuyDescriptionText, gShopBoardPaintDescriptionText,
+    gShopNewBoardStockGreetingText, D_801316BC, D_801316E8, D_80131728, D_80131760,
 };
 
 static const GridSpriteEntry sBoardShopModeSprites[3]
