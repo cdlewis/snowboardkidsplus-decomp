@@ -3,6 +3,19 @@
 #include "game/race/course/course_geometry.h"
 #include "psx/libgte.h"
 
+u32 D_8013B1DC[4] __attribute__((section(".data.geometry_storage"))) = {0, 0, 0, 0};
+
+CourseGeometryVertex *gCourseGeometryVertexData __attribute__((section(".sdata.course_geometry"))) = 0;
+SelectedRecord *gCourseGeometryTriangleRecords __attribute__((section(".sdata.course_geometry"))) = 0;
+GeometryRegion *gCourseGeometryRegionData __attribute__((section(".sdata.course_geometry"))) = 0;
+s16 gCourseGeometryVertexCount __attribute__((section(".sdata.course_geometry"))) = 0;
+s16 gCourseGeometryTriangleCount __attribute__((section(".sdata.course_geometry"))) = 0;
+s16 gCourseGeometryRegionCount __attribute__((section(".sdata.course_geometry"))) = 0;
+s16 gSelectedGeometryRecordIndex __attribute__((section(".sdata.course_geometry"))) = 0;
+s16 *gSelectedGeometryVertex0 __attribute__((section(".sdata.course_geometry"))) = 0;
+s16 *gSelectedGeometryVertex1 __attribute__((section(".sdata.course_geometry"))) = 0;
+s16 *gSelectedGeometryVertex2 __attribute__((section(".sdata.course_geometry"))) = 0;
+
 s32 gGeometryProjectionBasisX __attribute__((section(".sdata.geometry_edge_projection"))) = 0;
 
 s32 gGeometryProjectionBasisZ __attribute__((section(".sdata.geometry_edge_projection"))) = 0;

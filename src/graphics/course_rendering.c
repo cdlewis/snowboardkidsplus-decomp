@@ -45,6 +45,9 @@ void drawNightHighwayBackgroundAndSetFog(s16 playerIndex);
 void drawRotatingModelBackgroundAndSetFog(s16 playerIndex);
 void drawRipplingBackgroundAndSetFog(s16 playerIndex);
 
+u32 gSelectedCameraOverlayMode __attribute__((section(".data"))) = 0;
+u32 D_8013B210 __attribute__((section(".data"))) = 1;
+
 static VECTOR sBackgroundModelScale __attribute__((section(".data.background_model_scale"))) = {
     5 * 4096, 5 * 4096, 5 * 4096, 0,
 };
