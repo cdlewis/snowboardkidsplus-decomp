@@ -8,6 +8,7 @@
 #define SS_TICKVSYNC 5
 #define SS_REV_TYPE_ROOM 1
 
+void SsInit(void);
 void SsInitHot(void);
 void SsSetSerialAttr(s8 serial, s8 attr, s8 value);
 void SsSetTickMode(s32 mode);

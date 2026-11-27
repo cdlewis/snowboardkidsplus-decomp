@@ -26,7 +26,6 @@ extern u16 D_8013AFE8;
 
 int strcmp(const char *, const char *);
 
-void func_800A89F4(void);
 void func_800131B4(void);
 void initializeGameSystems(void);
 void runGameLoop(void);

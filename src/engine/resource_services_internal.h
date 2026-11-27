@@ -85,13 +85,11 @@ extern SoundVoiceRecord gSoundVoiceRecords[8] __attribute__((section(".data.soun
 extern SavedImageEntry gSavedImageEntries[32] __attribute__((section(".data.saved_image_entries")));
 extern u32 gSynchronizedFrameCount __attribute__((section(".sdata.synchronized_frame_count")));
 extern s8 gSoundSystemActive;
-extern u8 D_8013AF29;
 extern s16 gMusicSequenceId;
 extern u8 gMusicSequenceActive __attribute__((section(".sdata.music_state")));
 extern u8 gMusicFadeMode __attribute__((section(".sdata.music_state")));
 extern s16 gMusicFadeStep __attribute__((section(".sdata.music_state")));
-extern s16 D_8013AF30 __attribute__((section(".sdata.music_state")));
-extern s16 D_8013AF32 __attribute__((section(".sdata.music_state")));
+extern s16 gMusicSequenceVolume __attribute__((section(".sdata.music_state")));
 extern s32 gLinearRandomState __attribute__((section(".data.linear_random_state")));
 extern MovieDecodeState gMovieDecodeState __attribute__((section(".bss.movie_decode_state")));
 

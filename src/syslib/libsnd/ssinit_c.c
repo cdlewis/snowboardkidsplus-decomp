@@ -1,8 +1,10 @@
 #include "common.h"
+#include "psx/libsnd.h"
+#include "psx/libetc.h"
 
-extern void ResetCallback(void), SpuInit(void), _SsInit(void);
+extern void SpuInit(void), _SsInit(void);
 
-void func_800A89F4(void) {
+void SsInit(void) {
     ResetCallback();
     SpuInit();
     _SsInit();

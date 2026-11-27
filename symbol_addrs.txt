@@ -1308,7 +1308,7 @@ closeSoundBank = 0x800180F4; // type:func
 stopAllSoundVoices = 0x8001814C; // type:func
 closeAllSoundBanks = 0x8001816C; // type:func
 gSoundSystemActive = 0x8013AF28; // size:0x1 defined:true
-D_8013AF29 = 0x8013AF29; // size:0x1 defined:true
+gSoundEffectVoiceCursor = 0x8013AF29; // size:0x1 defined:true
 gMusicSequenceId = 0x8013AF2A; // size:0x2 defined:true
 gMusicSequenceActive = 0x8013AF2C; // size:0x1
 
@@ -3255,7 +3255,7 @@ initializeMode1RacePlayers = 0x800A0AA8; // type:func
 initializeSoundSystem = 0x80017C20; // type:func
 gSoundSequenceTable = 0x800EB2B8; // size:0xB0 defined:true
 D_8013AF32 = 0x8013AF32; // size:0x2 defined:true
-D_8013AF30 = 0x8013AF30; // size:0x2 defined:true
+gMusicSequenceVolume = 0x8013AF30; // size:0x2 defined:true
 
 initializeVisualTrailTask = 0x800481A8; // type:func
 updateVisualTrailTask = 0x80048340; // type:func
@@ -4353,3 +4353,5 @@ gQuadTransitionFrame = 0x8013B338; // size:0x4
 gTimedSpritePrimaryBrightness = 0x8013B35C; // size:0x4
 gTimedSpriteSecondaryBrightness = 0x8013B360; // size:0x4
 gTimedSpriteInterpolationComplete = 0x8013B364; // size:0x4
+
+SsInit = 0x800A89F4; // type:func

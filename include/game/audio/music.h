@@ -8,7 +8,7 @@ extern s16 gMenuMusicEnabled;
 extern s16 gMusicSequenceId;
 extern u8 gMusicSequenceActive;
 /* Signed volume with eight fractional bits, shared with the fade updater. */
-extern s16 D_8013AF30;
+extern s16 gMusicSequenceVolume;
 extern s8 gSoundBankLoaded[12];
 extern s8 gSoundSystemActive;
 extern u8 gMusicFadeMode;

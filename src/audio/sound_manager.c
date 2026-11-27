@@ -16,7 +16,7 @@ SoundVoiceRecord gSoundVoiceRecords[8] __attribute__((section(".data.sound_voice
 
 s8 gSoundSystemActive = 0;
 
-u8 D_8013AF29 = 0;
+u8 gSoundEffectVoiceCursor = 0;
 
 s16 gMusicSequenceId = 0;
 
@@ -26,7 +26,7 @@ u8 gMusicFadeMode __attribute__((section(".sdata.music_state"))) = 0;
 
 s16 gMusicFadeStep __attribute__((section(".sdata.music_state"))) = 0;
 
-s16 D_8013AF30 __attribute__((section(".sdata.music_state"))) = 0;
+s16 gMusicSequenceVolume __attribute__((section(".sdata.music_state"))) = 0;
 
 s16 D_8013AF32 __attribute__((section(".sdata.music_state"))) = 0;
 
@@ -52,7 +52,7 @@ void applyStereoSoundOption(void) {
 void initializeSoundSystem(s32 hot) {
     u8 i;
     if (hot == 0) {
-        func_800A89F4();
+        SsInit();
     } else {
         SsInitHot();
     }
@@ -66,7 +66,7 @@ void initializeSoundSystem(s32 hot) {
         gSoundBankLoaded[i] = 0;
     }
     gSoundSystemActive = 0;
-    D_8013AF29 = 0;
+    gSoundEffectVoiceCursor = 0;
     D_8013AF32 = 0;
     gMusicSequenceActive = 0;
     SsUtSetReverbType(SS_REV_TYPE_ROOM);
@@ -106,7 +106,7 @@ void closeMusicSequence(void) {
 
 void playMusicSequenceAtDefaultVolume(s16 repeatCount) {
     if (gMusicSequenceActive) {
-        D_8013AF30 = 0x40 << 8;
+        gMusicSequenceVolume = 0x40 << 8;
         SsSeqSetVol(gMusicSequenceId, 0x40, 0x40);
         SsSeqPlay(gMusicSequenceId, 1, repeatCount);
     }
@@ -116,7 +116,7 @@ void fadeInMusicSequence(s16 step, s16 repeatCount) {
     if (gMusicSequenceActive && gMusicFadeMode == 0) {
         gMusicFadeMode = 1;
         gMusicFadeStep = step;
-        D_8013AF30 = 0;
+        gMusicSequenceVolume = 0;
         SsSeqSetVol(gMusicSequenceId, 0, 0);
         SsSeqPlay(gMusicSequenceId, 1, repeatCount);
     }
@@ -145,20 +145,20 @@ void resumeMusicSequence(void) {
 void updateMusicSequenceFade(void) {
     if (gMusicFadeMode != 0) {
         if (gMusicFadeMode & 1) {
-            D_8013AF30 += gMusicFadeStep;
-            if (D_8013AF30 > 0x4000) {
-                D_8013AF30 = 0x4000;
+            gMusicSequenceVolume += gMusicFadeStep;
+            if (gMusicSequenceVolume > 0x4000) {
+                gMusicSequenceVolume = 0x4000;
                 gMusicFadeMode = 0;
             }
         } else {
-            D_8013AF30 -= gMusicFadeStep;
-            if (D_8013AF30 < 0) {
-                D_8013AF30 = 0;
+            gMusicSequenceVolume -= gMusicFadeStep;
+            if (gMusicSequenceVolume < 0) {
+                gMusicSequenceVolume = 0;
                 gMusicFadeMode = 0;
                 stopMusicSequence();
             }
         }
-        SsSeqSetVol(gMusicSequenceId, D_8013AF30 >> 8, D_8013AF30 >> 8);
+        SsSeqSetVol(gMusicSequenceId, gMusicSequenceVolume >> 8, gMusicSequenceVolume >> 8);
     }
 }
 
@@ -208,14 +208,14 @@ void closeAllSoundBanks(void) {
 s32 playSoundEffect(u8 bank, u16 programAndTone, s16 volume) {
     u16 note = programAndTone;
     if (gSoundBankLoaded[bank]) {
-        D_8013AF29++;
-        if ((s8)D_8013AF29 >= 12) {
-            D_8013AF29 = 0;
+        gSoundEffectVoiceCursor++;
+        if ((s8)gSoundEffectVoiceCursor >= 12) {
+            gSoundEffectVoiceCursor = 0;
         }
-        SsUtKeyOffV((s8)D_8013AF29);
-        SsUtKeyOnV((s8)D_8013AF29, bank, programAndTone & 0xFF,
+        SsUtKeyOffV((s8)gSoundEffectVoiceCursor);
+        SsUtKeyOnV((s8)gSoundEffectVoiceCursor, bank, programAndTone & 0xFF,
                    note >> 8, note >> 8, 0, volume, volume);
-        return (s8)D_8013AF29;
+        return (s8)gSoundEffectVoiceCursor;
     }
     return 0xFF;
 }
@@ -271,15 +271,15 @@ s32 playPlayerSoundEffect(u16 playerIndex, u8 bank, u16 programAndTone, s16 volu
     }
 
     if (gSoundBankLoaded[bank]) {
-        D_8013AF29++;
-        if ((s8)D_8013AF29 >= 12) {
-            D_8013AF29 = 0;
+        gSoundEffectVoiceCursor++;
+        if ((s8)gSoundEffectVoiceCursor >= 12) {
+            gSoundEffectVoiceCursor = 0;
         }
-        SsUtKeyOffV((s8)D_8013AF29);
-        SsUtKeyOnV((s8)D_8013AF29, bank, programAndTone & 0xFF,
+        SsUtKeyOffV((s8)gSoundEffectVoiceCursor);
+        SsUtKeyOnV((s8)gSoundEffectVoiceCursor, bank, programAndTone & 0xFF,
                    programAndTone >> 8, programAndTone >> 8, 0,
                    playbackVolume, playbackVolume);
-        return (s8)D_8013AF29;
+        return (s8)gSoundEffectVoiceCursor;
     }
     return 0xFF;
 }
@@ -290,14 +290,14 @@ s32 playPositionalSoundEffect(s32 x, s32 y, s32 z, u8 bank, u16 programAndTone, 
     note = programAndTone;
     if (volume == 0) return 0xFF;
     if (gSoundBankLoaded[bank]) {
-        D_8013AF29++;
-        if ((s8)D_8013AF29 >= 12) {
-            D_8013AF29 = 0;
+        gSoundEffectVoiceCursor++;
+        if ((s8)gSoundEffectVoiceCursor >= 12) {
+            gSoundEffectVoiceCursor = 0;
         }
-        SsUtKeyOffV((s8)D_8013AF29);
-        SsUtKeyOnV((s8)D_8013AF29, bank, programAndTone & 0xFF,
+        SsUtKeyOffV((s8)gSoundEffectVoiceCursor);
+        SsUtKeyOnV((s8)gSoundEffectVoiceCursor, bank, programAndTone & 0xFF,
                    note >> 8, note >> 8, 0, volume, volume);
-        return (s8)D_8013AF29;
+        return (s8)gSoundEffectVoiceCursor;
     }
     return 0xFF;
 }
