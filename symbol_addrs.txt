@@ -1549,6 +1549,7 @@ streamCdIndexRegister = 0x80134D2C; // size:0x4
 streamCdRegister1 = 0x80134D30; // size:0x4
 streamCdRegister2 = 0x80134D34; // size:0x4
 streamCdRequestRegister = 0x80134D38; // size:0x4
+streamSetMaskCdRegisterAddresses = 0x80134D8C; // size:0x10
 streamCdStatusRegister = 0x80134D9C; // defined:true
 streamDmaPriorityRegister = 0x80134DB4; // defined:true
 streamDmaInterruptRegister = 0x80134DB8; // defined:true
