@@ -50,7 +50,7 @@ extern s32 gMemoryCardChannel;
 extern u8 gMemoryCardSelectedFileType;
 extern char *gMemoryCardSelectedFileName;
 extern u8 gMemoryCardCreateFilePending[2];
-extern u8 gMemoryCardChanged[2] __attribute__((section(".bss")));
+extern u8 gMemoryCardChanged[2] __attribute__((section(".data.memory_card_changed")));
 
 void selectMemoryCardLoadFile(u8 fileType, void *destination);
 void prepareMemoryCardSave(u8 fileType, const void *source, u32 size);

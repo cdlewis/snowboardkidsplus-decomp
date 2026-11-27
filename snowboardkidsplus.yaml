@@ -1179,7 +1179,7 @@ segments:
       - {start: 0x12BE00, type: .data, name: io/memory_card, linker_section: .data.memory_card_directory_entry_counts}
       - {start: 0x12BE08, type: .data, name: io/memory_card, linker_section: .data.memory_card_poll_flags}
       - {start: 0x12BE0A, type: .data, name: io/memory_card, linker_section: .data.memory_card_accept_retry_counts}
-      - [0x12BE0C, data]
+      - {start: 0x12BE0C, type: .data, name: io/memory_card, linker_section: .data.memory_card_changed}
       - {start: 0x12BE10, type: .sdata, name: io/movie_stream, linker_section: .sdata.movie_flags, linker_section_order: .data}
       - {start: 0x12BE14, type: .sdata, name: engine/task_transitions, linker_section: .sdata.race_player_sort_saved_stack, linker_section_order: .data}
       - {start: 0x12BE18, type: .sdata, name: race/player/player_update, linker_section: .sdata.player_terrain_contact_saved_stack, linker_section_order: .data}

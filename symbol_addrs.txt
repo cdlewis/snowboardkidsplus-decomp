@@ -4334,7 +4334,8 @@ gMemoryCardSelectedFileType = 0x8013AF48; // size:0x1
 gMemoryCardSelectionPadding0 = 0x8013AF49; // size:0x1
 gMemoryCardSelectionPadding1 = 0x8013AF4A; // size:0x1
 gMemoryCardSelectionPadding2 = 0x8013AF4B; // size:0x1
-gMemoryCardChanged = 0x8013B60C;
+gMemoryCardChanged = 0x8013B60C; // size:0x2
+sMemoryCardChangedPadding = 0x8013B60E; // size:0x2
 
 gMemoryCardDirectorySearchPattern = 0x8013AF3C; // size:0x2
 

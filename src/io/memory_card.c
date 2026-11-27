@@ -155,6 +155,8 @@ s32 gMemoryCardDirectoryEntryCounts[2]
 
 u8 gMemoryCardCreateFilePending[2] __attribute__((section(".data.memory_card_poll_flags"))) = {0};
 u8 gMemoryCardAcceptRetryCounts[2] __attribute__((section(".data.memory_card_accept_retry_counts"))) = {0};
+u8 gMemoryCardChanged[2] __attribute__((section(".data.memory_card_changed"), aligned(4))) = {0, 0};
+static u16 sMemoryCardChangedPadding __attribute__((section(".data.memory_card_changed"))) = 0;
 
 void initializeMemoryCardSaveHeader(void) {
     u16 i;
