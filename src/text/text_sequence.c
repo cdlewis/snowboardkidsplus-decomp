@@ -204,7 +204,7 @@ void animateTextSequenceExitTask(void) {
     if (gPlayerCameras[0].unk10 > -320) gPlayerCameras[0].unk10 = -320;
     if (resource->displacement / 4096 >= 141) {
         taskTransitionFlagGp = 1;
-        D_8013B1A8 = 1;
+        gRaceHudEnabled = 1;
         playerCountAbsolute = 1;
         gTaskTransitionFlags = 0;
         gGameStateFlags |= 0x1000;

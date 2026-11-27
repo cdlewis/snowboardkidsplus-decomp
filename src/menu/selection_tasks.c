@@ -58,7 +58,7 @@ void initializeModeRaceTasks(void) {
     u16 height;
     u16 sixthHeight;
 
-    if (!D_8013B562) {
+    if (!gReuseCourseResources) {
         initializeCourseModels();
     }
     initializeRacePlayerEffects();
@@ -183,7 +183,7 @@ void completeModeSelectionTransitionWhenReady(void) {
             gMenuGridResourceId = -1;
             gMenuMusicEnabled = 0;
             gModeSequenceStage = 0;
-            D_8013B562 = 0;
+            gReuseCourseResources = 0;
             SetFogNearFar(5000, 6000, 400);
             setCurrentTaskCallback(scheduleMode1TaskTransition);
             gMenuScreenId = 2;
@@ -199,10 +199,10 @@ void completeModeSelectionTransitionWhenReady(void) {
 
 void selectTaskBySelectedRecordMatch(void) {
     if (D_8013B560 != gSelectedCourseIndex) {
-        D_8013B562 = 0;
+        gReuseCourseResources = 0;
         setCurrentTaskCallback(queueRaceStartupResourcesTask);
     } else {
-        D_8013B562 = 1;
+        gReuseCourseResources = 1;
         setCurrentTaskCallback(initializeModeRaceTasks);
     }
 }

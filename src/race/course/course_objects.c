@@ -2718,7 +2718,7 @@ s32 restoreSelectedPlayerState(void) {
             gPlayerCameras[0].x = record->unk04;
             gPlayerCameras[0].y = record->unk08;
             gPlayerCameras[0].z = record->unk0C;
-            D_8013B20C = record->unk10;
+            gSelectedCameraOverlayMode = record->unk10;
             gPlayerCameras[0].unk16 = 8;
             return 1;
         }

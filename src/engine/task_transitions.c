@@ -265,18 +265,18 @@ void sortRacePlayerModelForView(u16 playerIndex, u16 view) {
     }
 
     for (i = 0; i < count; i++) {
-        GsGetLs(objects[i].coord2, D_800EC170[i]);
+        GsGetLs(objects[i].coord2, gScratchModelMatrices[i]);
     }
     for (i = 0; i < count; i++, objects++) {
         if (i == 0 && currentPlayerAbsolute->unk0FE) {
-            currentPlayerAbsolute->timer.coordinate.coord = *D_800EC170[0];
+            currentPlayerAbsolute->timer.coordinate.coord = *gScratchModelMatrices[0];
         }
         if (currentPlayerAbsolute->unk128 & 0x200000) {
             gScratchVector0->vx = gScratchVector0->vz = 0x1000;
             gScratchVector0->vy = currentPlayerAbsolute->unk0F8 * 512;
-            ScaleMatrix(D_800EC170[i], gScratchVector0);
+            ScaleMatrix(gScratchModelMatrices[i], gScratchVector0);
         }
-        GsSetLsMatrix(D_800EC170[i]);
+        GsSetLsMatrix(gScratchModelMatrices[i]);
         if (!(taskTransitionFlagsAbsolute & 0x40) || i != 0) {
             if (view == 0) {
                 GsSortObject4(objects, &gPlayer1ModelOrderingTables[gActiveGraphicsBuffer], 2, getScratchAddr(0));
@@ -396,7 +396,7 @@ void initializeRacePaletteCycles(void) {
 
 void initializeGameOptionTask(void) {
     queueCdSectorCommand(2, DAT_TRANSITION_TEXTURES_SECTOR, DAT_TRANSITION_TEXTURES_SECTOR_COUNT, DAT_SCRATCH, 0);
-    D_8013B562 = 0;
+    reuseCourseResourcesAbsolute = 0;
     gDemoRaceIndex = 0;
     gCurrentTask->data18 = 0;
     initializeNewGameSaveData();
@@ -517,7 +517,7 @@ void queueRaceStartupResourcesTask(void) {
         queuePlayerResourceReadsAndUploadTextures();
         initializeActiveRacePlayers();
         initializeRaceRulesAndCounters();
-        D_8013B1A8 = 1;
+        gRaceHudEnabled = 1;
     }
 
     queueCourseResourceSectorReads();
@@ -607,12 +607,12 @@ void initializeRacePresentationTask(void) {
     gGameStateFlags |= 0x48;
     clearControllerFlag0(0);
     clearControllerFlag0(1);
-    if (gDemoRaceIndex || D_8013AEC4[0]) {
+    if (gDemoRaceIndex || gControllerVibrationDisabled[0]) {
         setControllerFlag5(0);
     } else {
         clearControllerFlag5(0);
     }
-    if (gDemoRaceIndex || D_8013AEC4[1]) {
+    if (gDemoRaceIndex || gControllerVibrationDisabled[1]) {
         setControllerFlag5(1);
     } else {
         clearControllerFlag5(1);
@@ -810,7 +810,7 @@ void finishRaceTransitionAfterCountdown(void) {
     s16 i;
     if (gMainMenuSelectionIndex == 2 && (gControllerInputRecordState & 2)) recordControllerInput(0);
     if (--gCurrentTask->data18 == 0) {
-        D_8013B1A8 = 0;
+        gRaceHudEnabled = 0;
         gTaskTransitionFlags |= 8;
         if (gPlayerCount == 1) updateAttackResultsAndRecords();
         for (i = 0; i < gPlayerCount; i++) {
@@ -824,7 +824,7 @@ void finishRaceTransitionAfterCountdown(void) {
             if (gControllerInputRecordState & 8) gControllerInputRecordState = 0;
             else {
                 gControllerInputRecordState = 4;
-                D_8013AEE2 = gControllerInputRecordIndices[0];
+                gSelectedPlayerReplayEndRecordIndex = gControllerInputRecordIndices[0];
             }
         }
         setCurrentTaskCallback(dispatchPostRaceResultsTask);
@@ -961,7 +961,7 @@ void resetStateAndBeginResourceLoadTransition(u8 requestLoad) {
     GameTask *savedTask;
     resetPendingCdRequests();
     gSelectedPlayerReplayActive = 0;
-    D_8013B20C = 0;
+    gSelectedCameraOverlayMode = 0;
     resetPaletteRecords();
     deleteCurrentTaskDescendants();
     savedTask = gCurrentTask;
@@ -993,7 +993,7 @@ void finishTaskTransitionAfterCountdown(void) {
         resetPendingCdRequests();
         gGameStateFlags |= 0x90;
         gSelectedPlayerReplayActive = 0;
-        D_8013B20C = 0;
+        gSelectedCameraOverlayMode = 0;
         gTaskTransitionFlags &= ~0x10;
         resetPaletteRecords();
         deleteCurrentTaskDescendants();
@@ -1064,7 +1064,7 @@ void finishRaceExitAfterCountdown(void) {
         resetPendingCdRequests();
         gGameStateFlags = (gGameStateFlags | 0x1090) & ~0x2000;
         gSelectedPlayerReplayActive = 0;
-        D_8013B20C = 0;
+        gSelectedCameraOverlayMode = 0;
         gTaskTransitionFlags &= ~0x10;
         resetPaletteRecords();
         deleteCurrentTaskDescendants();
@@ -1132,7 +1132,7 @@ void initializeDemoPlaybackTask(void) {
     gGameStateFlags |= 0x48;
     resetSecondaryRng();
     gSelectedPlayerReplayActive = 1;
-    D_8013AFE8 = gControllerHeldButtons[0];
+    gReplaySavedControllerHeldButtons = gControllerHeldButtons[0];
     initializeActiveRacePlayers();
     setControllerFlag5(0);
     setControllerFlag5(1);
@@ -1166,11 +1166,11 @@ void updateSelectedPlayerPlaybackTask(void) {
         } else buttons = 0x800;
     }
     gCurrentTask->data18++;
-    D_8013AFE8 = gControllerHeldButtons[0];
+    gReplaySavedControllerHeldButtons = gControllerHeldButtons[0];
     if (gControllerPressedButtons[0] & 0x8F0) buttons = 0x800;
     playbackControllerInput(0);
     gControllerPressedButtons[0] |= buttons;
-    if (gControllerInputRecordIndices[0] == D_8013AEE2 || (gControllerPressedButtons[0] & 0x800)) {
+    if (gControllerInputRecordIndices[0] == gSelectedPlayerReplayEndRecordIndex || (gControllerPressedButtons[0] & 0x800)) {
         gCurrentTask->data18 = 30;
         configureTaskStateTransition(2, 0, 30);
         gControllerInputRecordState = 0;
@@ -1401,7 +1401,7 @@ void armSavedStateRestoreOnFlag3(void) {
 
 void restoreSavedStateAndHandleFlag4(void) {
     if (gSelectedPlayerReplayActive) {
-        gControllerHeldButtons[0] = D_8013AFE8;
+        gControllerHeldButtons[0] = gReplaySavedControllerHeldButtons;
     }
     if (gGameStateFlags & 0x10) {
         gGameStateFlags &= ~0x18;
@@ -1420,7 +1420,7 @@ void initializeCurrentPlayerModelObjects(u32 *model) {
     objects = ++model;
     gCurrentRacePlayer->modelPartCount = *(u8 *)objects;
     objects = ++model;
-    if (!gRaceRestartRequested && !D_8013B562 && !selectedPlayerReplayActiveAbsolute) {
+    if (!gRaceRestartRequested && !reuseCourseResourcesAbsolute && !selectedPlayerReplayActiveAbsolute) {
         loadCurrentPlayerModelBlock();
         if (gCurrentTask->data18) {
             offsetTmdObjectTextures(0, (TmdObject *)objects, &gPlayerRootTextureOffsets[gCurrentTask->data18]);

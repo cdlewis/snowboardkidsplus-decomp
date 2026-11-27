@@ -444,7 +444,7 @@ extern TaskVisualFrame gPlayerVisualPair5E80Frame
 
 /* GP-relative views used by the race initializer. */
 extern u8 gAttackTimeExpired_gp;
-extern s16 D_8013B1A8_gp;
+extern s16 raceHudEnabledGp;
 extern u8 D_8012429C[], D_801242A8[];
 extern u8 D_8013B18C;
 extern s16 gRaceHudMode;

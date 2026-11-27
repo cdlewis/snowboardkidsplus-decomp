@@ -151,7 +151,7 @@ void finishControllerPlaybackTransition(void) {
             gGameStateFlags |= 0x48;
             queueMenuResourceReads(2);
             gMenuMusicEnabled = 0;
-            playbackTransitionByteAbsolute = 0;
+            reuseCourseResourcesAbsolute = 0;
             setControllerFlag5(0);
             setControllerFlag5(1);
             SetFogNearFar(5000, 6000, 400);

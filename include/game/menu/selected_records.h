@@ -46,7 +46,7 @@ extern u8 selectedPlayerReplayActiveAbsolute __attribute__((section(".data")));
 /* Save player 0 at selected course segments and split its recorded input run. */
 void captureSelectedPlayerStates(void);
 /* Camera-related state saved alongside selected player snapshots. */
-extern u32 D_8013B20C __attribute__((section(".data")));
+extern u32 gSelectedCameraOverlayMode __attribute__((section(".data")));
 /* GP-addressed view used when queuing the saved camera overlay. */
 extern u32 selectedCameraOverlayModeGp;
 

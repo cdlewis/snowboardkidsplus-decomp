@@ -188,12 +188,12 @@ resume:
     case 3:
         if (gControllerPressedButtons[player] & PAUSE_MENU_CONFIRM) {
             playSoundEffect(0, 0, 0x20);
-            if (D_8013AEC4[player]) {
+            if (gControllerVibrationDisabled[player]) {
                 clearControllerFlag5(player);
-                D_8013AEC4[player] = 0;
+                gControllerVibrationDisabled[player] = 0;
             } else {
                 setControllerFlag5(player);
-                D_8013AEC4[player] = 0x20;
+                gControllerVibrationDisabled[player] = 0x20;
             }
         }
         break;
@@ -251,7 +251,7 @@ void drawRacePauseMenu(void) {
         palette = 7;
     }
     x -= 28;
-    sprite = D_8013AEC4[player];
+    sprite = gControllerVibrationDisabled[player];
     sprite = sprite != 0;
     sprite += 161;
     drawSpriteByIndexWithBlend(x, y, sprite, palette, -1, &gMainOrderingTables[gActiveGraphicsBuffer], 0);

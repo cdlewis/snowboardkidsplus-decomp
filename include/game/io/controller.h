@@ -28,7 +28,8 @@ extern u8 gControllerPlaybackRepeatCounters[];
 /* Shared recording/playback buffer; storage remains in the controller data unit. */
 extern ControllerInputRecord gControllerPlaybackRecords[][256];
 
-extern u8 D_8013AEC4[];
+/* Per-controller vibration suppression settings (0 or 0x20). */
+extern u8 gControllerVibrationDisabled[];
 
 /* Button presses this update, including generated directional repeats. */
 extern u16 gControllerPressedButtons[];
@@ -40,7 +41,7 @@ extern s16 D_8013AEF4[];
 extern u16 gControllerPreviousButtons[2];
 /* Recording/playback state bits: playback 1, recording 2, complete 4, full 8. */
 extern u8 gControllerInputRecordState;
-extern u16 D_8013AEE2 __attribute__((section(".data")));
+extern u16 gSelectedPlayerReplayEndRecordIndex __attribute__((section(".data")));
 
 void initializeControllers(void);
 

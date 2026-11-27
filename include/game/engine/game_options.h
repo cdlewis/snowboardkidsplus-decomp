@@ -49,4 +49,9 @@ void startUnlockNotification(s16 index);
 extern u8 playerCountAbsolute __attribute__((section(".data")));
 
 extern s16 D_80124164[];
-extern s16 D_8013B1A8 __attribute__((section(".data")));
+extern s16 gRaceHudEnabled __attribute__((section(".data")));
+
+/* Reuse resident course and player model resources during mode transitions. */
+extern u8 gReuseCourseResources;
+/* Absolute-addressed view used by startup and playback cleanup. */
+extern u8 reuseCourseResourcesAbsolute __attribute__((section(".data")));

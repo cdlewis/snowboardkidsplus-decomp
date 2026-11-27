@@ -234,7 +234,7 @@ void updateRaceIntroCameraTask(void) {
             }
             initPlayerCameraAndTarget(gCurrentTask->data18);
             configureTaskStateTransition(4, 0, 40);
-            D_8013B1A8 = 1;
+            gRaceHudEnabled = 1;
             if (gCurrentTask->data18 == 0) {
                 tasks = gGameTasks;
                 createChildTaskForParentWithReserve(&tasks[0], beginSpriteScaleTransitionDelay);

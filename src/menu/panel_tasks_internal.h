@@ -161,7 +161,6 @@ extern u16 playerModelDrawAreaDepths[4] __attribute__((section(".data.player_mod
 extern u8 D_8013B517 __attribute__((section(".sdata")));
 
 extern s16 D_8013B560;
-extern u8 D_8013B562;
 extern u8 gSelectedUnlockIndex __attribute__((section(".data")));
 
 void updateBoardPurchaseMenuTask(void);

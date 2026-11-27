@@ -22,10 +22,10 @@ boardMenuRememberedSelectionAbsolute = gMoneyPanelRememberedSelection;
 taskTransitionFlagGp = D_8013B55E;
 
 /* GP-addressed view of the saved camera overlay selector. */
-selectedCameraOverlayModeGp = D_8013B20C;
-playbackTransitionByteAbsolute = D_8013B562;
+selectedCameraOverlayModeGp = gSelectedCameraOverlayMode;
+reuseCourseResourcesAbsolute = gReuseCourseResources;
 gAttackTimeExpired_gp = gAttackTimeExpired;
-D_8013B1A8_gp = D_8013B1A8;
+raceHudEnabledGp = gRaceHudEnabled;
 
 /* Fourth place uses the first byte of the menu kind palette group. */
 gRacePlacementPalettes = gMenuSpritePaletteGroups;

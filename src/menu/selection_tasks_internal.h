@@ -58,13 +58,9 @@ extern u16 gGameStateFlags __attribute__((section(".data")));
 extern s16 gMenuGridResourceId __attribute__((section(".data")));
 extern s16 gMenuTextureResourceId __attribute__((section(".data")));
 extern u8 D_8013B55E __attribute__((section(".data")));
-/* This transition uses $gp; the playback transition below uses absolute access. */
 
 extern s16 D_8013B560;
 extern s16 selectionMenuRecordAbsolute __attribute__((section(".data")));
-extern u8 D_8013B562;
-/* Playback cleanup addresses this shared transition byte absolutely. */
-extern u8 playbackTransitionByteAbsolute __attribute__((section(".data")));
 extern char D_80012310[];
 extern char D_8001232C[];
 extern char D_8013B5C8[];

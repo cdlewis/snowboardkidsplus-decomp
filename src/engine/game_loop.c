@@ -40,7 +40,7 @@ GsOT gPlayer2Layer7OrderingTables[2] __attribute__((section(".data.render_state"
 GsOT gPlayer2ModelOrderingTables[2] __attribute__((section(".data.render_state"))) = {0};
 GsOT gPlayer2AlternateLayerOrderingTables[2] __attribute__((section(".data.render_state"))) = {0};
 RECT gViewClipRects[3] __attribute__((section(".data.render_state"))) = {0};
-MATRIX *D_800EC170[16] __attribute__((section(".data.render_state"))) = {0};
+MATRIX *gScratchModelMatrices[16] __attribute__((section(".data.render_state"))) = {0};
 GsOT D_800EC1B0[2] __attribute__((section(".data.render_state"))) = {0};
 GsOT D_800EC1D8[2] __attribute__((section(".data.render_state"))) = {0};
 u32 D_800EC200[8192] __attribute__((section(".data.render_buffers"))) = {0};
@@ -179,7 +179,7 @@ void initializeGameSystems(void) {
     D_8013AFA4 = GAME_SCRATCHPAD->unkC0;
     matrixIndex = 0;
     do {
-        D_800EC170[matrixIndex] = &GAME_SCRATCHPAD->matrixPool[matrixIndex];
+        gScratchModelMatrices[matrixIndex] = &GAME_SCRATCHPAD->matrixPool[matrixIndex];
         matrixIndex += 1;
     } while (matrixIndex < 16);
     gDisplayWidth = 0x140;

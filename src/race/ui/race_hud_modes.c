@@ -605,7 +605,7 @@ void initializeRaceRulesAndCounters(void) {
     gRaceElapsedTime.centiseconds = 0;
     D_8013B18C = 0;
     gAttackTimeExpired_gp = 0;
-    D_8013B1A8_gp = 0;
+    raceHudEnabledGp = 0;
     flags[1] = 0;
     times = gPlayerRaceTimes;
     times[0].minutes = 0;
@@ -622,7 +622,7 @@ void updateRaceHud(void) {
     s32 distance;
     s16 player;
 
-    if (D_8013B1A8_gp) {
+    if (raceHudEnabledGp) {
         switch (gRaceHudMode) {
         case 0:
             if (gRacePlayers[0].unk93F) {
