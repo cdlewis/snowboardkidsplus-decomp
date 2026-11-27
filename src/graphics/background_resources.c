@@ -22,7 +22,7 @@ extern u32 gGameOptionFlags __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern GameTask *gCurrentTaskParent __attribute__((section(".data")));
-extern u8 D_8013AFD7 __attribute__((section(".data")));
+extern u8 gDemoRaceIndex __attribute__((section(".data")));
 
 void resetGameOptionState(void) {
     D_8013B108 = 2;
@@ -116,7 +116,7 @@ void initializeViewAndSelectTaskCallback(void) {
         D_8013AF84 = 0x100;
         initPlayerCamera(0);
         initializeDefaultSceneLighting();
-        if (D_8013AFD7 != 0) {
+        if (gDemoRaceIndex != 0) {
             goto restore;
         }
     } else {
@@ -229,7 +229,7 @@ void dispatchBackgroundMenuTask(void) {
             configureColorCycleTask(0, 0, 0, 0, 0);
             configureColorCycleTask(0, 0, 0, 0, 1);
             setMusicSequenceEnabled(0);
-            D_8013AFD7 = 0;
+            gDemoRaceIndex = 0;
             D_8013B109 = 3;
             switch (D_8013AFE2) {
             case 1:

@@ -24,7 +24,7 @@ extern u8 D_8013AFCD __attribute__((section(".data")));
 extern u8 D_8013B1AB __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern u32 gTaskTransitionFlags __attribute__((section(".data")));
-extern u8 D_8013AFD7 __attribute__((section(".data")));
+extern u8 gDemoRaceIndex __attribute__((section(".data")));
 
 void initPlayerCamera(u16 index) {
     GsRVIEW2 *view;
@@ -181,7 +181,7 @@ void initPlayerZeroTask(void) {
 void initCurrentPlayerCameraTask(void) {
     GsRVIEW2 *views;
     PlayerCamera *cameras;
-    if (D_8013AFD7 != 0) {
+    if (gDemoRaceIndex != 0) {
         gPlayerCameras[gCurrentTask->data18].unk16 = 1;
         initPlayerCameraAndTarget(gCurrentTask->data18);
         if (gCurrentTask->data18 == 0) {

@@ -2671,9 +2671,9 @@ void captureSelectedPlayerStates(void) {
         u16 inputIndex;
         if (record->state == -2) goto done;
         if (record->state == -1 && record->unk02 == gRacePlayers[0].unk92E) {
-            inputIndex = D_8013AEDC[0];
+            inputIndex = gControllerInputRecordIndices[0];
             record->state = inputIndex - 1;
-            if (D_8013AED4[0][D_8013AEDC[0]-1].repeatCount) {
+            if (gControllerInputRecordBuffers[0][gControllerInputRecordIndices[0]-1].repeatCount) {
                 record->state = inputIndex;
                 split = 1;
             }
@@ -2688,13 +2688,13 @@ void captureSelectedPlayerStates(void) {
     }
 done:
     if (split) {
-        D_8013AED4[0][D_8013AEDC[0]-1].repeatCount--;
-        D_8013AED4[0][D_8013AEDC[0]].repeatCount = 0;
-        D_8013AED4[0][D_8013AEDC[0]].horizontal = D_8013AED4[0][D_8013AEDC[0]-1].horizontal;
-        D_8013AED4[0][D_8013AEDC[0]].vertical = D_8013AED4[0][D_8013AEDC[0]-1].vertical;
-        D_8013AED4[0][D_8013AEDC[0]].buttons = D_8013AED4[0][D_8013AEDC[0]-1].buttons;
-        D_8013AED4[0][D_8013AEDC[0]].pressedButtons = D_8013AED4[0][D_8013AEDC[0]-1].pressedButtons;
-        D_8013AEDC[0]++;
+        gControllerInputRecordBuffers[0][gControllerInputRecordIndices[0]-1].repeatCount--;
+        gControllerInputRecordBuffers[0][gControllerInputRecordIndices[0]].repeatCount = 0;
+        gControllerInputRecordBuffers[0][gControllerInputRecordIndices[0]].horizontal = gControllerInputRecordBuffers[0][gControllerInputRecordIndices[0]-1].horizontal;
+        gControllerInputRecordBuffers[0][gControllerInputRecordIndices[0]].vertical = gControllerInputRecordBuffers[0][gControllerInputRecordIndices[0]-1].vertical;
+        gControllerInputRecordBuffers[0][gControllerInputRecordIndices[0]].buttons = gControllerInputRecordBuffers[0][gControllerInputRecordIndices[0]-1].buttons;
+        gControllerInputRecordBuffers[0][gControllerInputRecordIndices[0]].pressedButtons = gControllerInputRecordBuffers[0][gControllerInputRecordIndices[0]-1].pressedButtons;
+        gControllerInputRecordIndices[0]++;
     }
 }
 
@@ -2712,8 +2712,8 @@ s32 restoreSelectedPlayerState(void) {
             task->data1A = D_8013B2E4[i].data1A;
             task->data1C = D_8013B2E4[i].data1C;
             task->data1E = D_8013B2E4[i].data1E;
-            D_8013AEDC[0] = record->state;
-            D_8013AEE0[0] = D_8013AED4[0][D_8013AEDC[0]].repeatCount;
+            gControllerInputRecordIndices[0] = record->state;
+            D_8013AEE0[0] = gControllerInputRecordBuffers[0][gControllerInputRecordIndices[0]].repeatCount;
             record->state = -1;
             gPlayerCameras[0].x = record->unk04;
             gPlayerCameras[0].y = record->unk08;

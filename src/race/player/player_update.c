@@ -63,7 +63,7 @@ extern u8 D_8013AFCD __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern u32 gTaskTransitionFlags __attribute__((section(".data")));
-extern u8 D_8013AFD7 __attribute__((section(".data")));
+extern u8 gDemoRaceIndex __attribute__((section(".data")));
 extern u8 D_8013AFD6 __attribute__((section(".data")));
 
 extern VECTOR *D_8013AF8C __attribute__((section(".data")));
@@ -1360,7 +1360,7 @@ void updateCurrentPlayerAndResetState(void) {
     updateCurrentPlayerAnimation();
     if (gTaskTransitionFlags == 0) {
         if (gCurrentRacePlayer->unk008 == 0) {
-            if (D_8013AFD7 || D_8013AFD9) {
+            if (gDemoRaceIndex || D_8013AFD9) {
                 initializeControllerInputPlayback(gCurrentTask->data18);
             } else if (D_8013AFE2 == 2 && D_8013AFD6 == 0) {
                 initializeControllerInputRecording(0);
@@ -1478,8 +1478,8 @@ void updateCurrentPlayerRiding(void) {
         }
     } else {
         s16 throttle;
-        steer = -D_8013AEF8[gCurrentTask->data18];
-        throttle = D_8013AEFC[gCurrentTask->data18];
+        steer = -gControllerHorizontalAxes[gCurrentTask->data18];
+        throttle = gControllerVerticalAxes[gCurrentTask->data18];
         if (throttle == 31) {
             steer *= 3;
             if (steer > 31) {

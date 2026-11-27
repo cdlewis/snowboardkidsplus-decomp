@@ -64,7 +64,7 @@ extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern GameTask *D_8013AE90 __attribute__((section(".data")));
 extern GameTask *D_8013B304 __attribute__((section(".data.player_snapshot_tasks")));
 
-extern u8 D_8013AEE4 __attribute__((section(".data")));
+extern u8 gControllerInputRecordState __attribute__((section(".data")));
 extern s16 D_8013AE78 __attribute__((section(".data")));
 extern RaceTime gRaceElapsedTime __attribute__((section(".data")));
 
@@ -399,7 +399,7 @@ void initializeRacePaletteCycles(void) {
 void initializeGameOptionTask(void) {
     queueCdSectorCommand(2, DAT_TRANSITION_TEXTURES_SECTOR, DAT_TRANSITION_TEXTURES_SECTOR_COUNT, DAT_SCRATCH, 0);
     D_8013B562 = 0;
-    D_8013AFD7 = 0;
+    gDemoRaceIndex = 0;
     gCurrentTask->data18 = 0;
     initializeNewGameSaveData();
     resetGameOptionState();
@@ -420,8 +420,8 @@ void initializeGameOptionViewTask(void) {
 void queueRaceStartupResourcesTask(void) {
     u32 i;
 
-    if (D_8013AFD7) {
-        switch (D_8013AFD7) {
+    if (gDemoRaceIndex) {
+        switch (gDemoRaceIndex) {
         case 1:
             gSelectedCourseIndex = 9;
             D_8013AFCD = 1;
@@ -503,7 +503,7 @@ void queueRaceStartupResourcesTask(void) {
             }
             break;
         }
-        if (D_8013AFD7) {
+        if (gDemoRaceIndex) {
             D_8013AFD0 = D_80123D80[gSelectedCourseIndex].unk02;
         }
         resetGameplayRng();
@@ -541,9 +541,9 @@ void queueRaceStartupResourcesTask(void) {
         queueCdSectorCommand(0, DAT_ENTRY_004_SECTOR, DAT_ENTRY_004_SECTOR_COUNT,
             RACE_EXTRA_MODEL_ARCHIVE, 0);
     }
-    if (D_8013AFD7) {
-        queueCdSectorCommand(0, gRacePlaybackSectorRanges[D_8013AFD7 - 1].sector,
-            gRacePlaybackSectorRanges[D_8013AFD7 - 1].sectorCount, D_800E959C, 0);
+    if (gDemoRaceIndex) {
+        queueCdSectorCommand(0, gRacePlaybackSectorRanges[gDemoRaceIndex - 1].sector,
+            gRacePlaybackSectorRanges[gDemoRaceIndex - 1].sectorCount, D_800E959C, 0);
     }
     queueCdSectorCommand(0, DAT_ENTRY_010_SECTOR, DAT_ENTRY_010_SECTOR_COUNT, DAT_SCRATCH, 0);
     if (!D_8013AFD8 && !D_8013AFD9) {
@@ -576,7 +576,7 @@ void initializeRacePresentationTask(void) {
         gRacePlayers[i].task = gCreatedTask;
     }
     configureTaskStateTransition(1, 0, 15);
-    if (!D_8013AFD7) {
+    if (!gDemoRaceIndex) {
         queueCdCommand(1, 1);
     } else {
         gFrameCounter = 0;
@@ -609,12 +609,12 @@ void initializeRacePresentationTask(void) {
     D_8013AFAA |= 0x48;
     clearControllerFlag0(0);
     clearControllerFlag0(1);
-    if (D_8013AFD7 || D_8013AEC4[0]) {
+    if (gDemoRaceIndex || D_8013AEC4[0]) {
         setControllerFlag5(0);
     } else {
         clearControllerFlag5(0);
     }
-    if (D_8013AFD7 || D_8013AEC4[1]) {
+    if (gDemoRaceIndex || D_8013AEC4[1]) {
         setControllerFlag5(1);
     } else {
         clearControllerFlag5(1);
@@ -696,7 +696,7 @@ void updateActiveRaceTask(void) {
         gCurrentTask->data18 = 30;
         configureTaskStateTransition(2, 0, 30);
         if (D_8013AFE2 == 2) {
-            D_8013AEE4 = 0;
+            gControllerInputRecordState = 0;
         }
         setControllerFlag5(0);
         setControllerFlag5(1);
@@ -740,7 +740,7 @@ void updateActiveRaceTask(void) {
             }
         }
 
-        if (D_8013AFE2 == 2 && (D_8013AEE4 & 2)) {
+        if (D_8013AFE2 == 2 && (gControllerInputRecordState & 2)) {
             recordControllerInput(0);
         }
         gCurrentTask->data18 = 60;
@@ -752,7 +752,7 @@ void updateActiveRaceTask(void) {
         if (gRacePauseState) {
             goto pause;
         }
-        if (!D_8013AFD7) {
+        if (!gDemoRaceIndex) {
             if (D_8013AFCD == 1) {
                 if ((gControllerPressedButtons[0] & RACE_PAUSE_START) || !isControllerInputSupported(0)) {
                     playSoundEffect(0, 0, 32);
@@ -777,11 +777,11 @@ void updateActiveRaceTask(void) {
     if (gRacePauseState) {
         goto pause;
     }
-    if (D_8013AFE2 == 2 && (D_8013AEE4 & 2)) {
+    if (D_8013AFE2 == 2 && (gControllerInputRecordState & 2)) {
         recordControllerInput(0);
     }
-    if (D_8013AFD7) {
-        if (D_8013AEE4 & 2) {
+    if (gDemoRaceIndex) {
+        if (gControllerInputRecordState & 2) {
             if (gFrameCounter < RACE_DEMO_FRAME_LIMIT) {
                 drawStretchedDebugText(4, 4, gRaceVsyncDebugFormat, gFrameCounter);
                 recordControllerInput(0);
@@ -810,7 +810,7 @@ pause:
 
 void finishRaceTransitionAfterCountdown(void) {
     s16 i;
-    if (D_8013AFE2 == 2 && (D_8013AEE4 & 2)) recordControllerInput(0);
+    if (D_8013AFE2 == 2 && (gControllerInputRecordState & 2)) recordControllerInput(0);
     if (--gCurrentTask->data18 == 0) {
         D_8013B1A8 = 0;
         gTaskTransitionFlags |= 8;
@@ -823,10 +823,10 @@ void finishRaceTransitionAfterCountdown(void) {
             }
         }
         if (D_8013AFE2 == 2) {
-            if (D_8013AEE4 & 8) D_8013AEE4 = 0;
+            if (gControllerInputRecordState & 8) gControllerInputRecordState = 0;
             else {
-                D_8013AEE4 = 4;
-                D_8013AEE2 = D_8013AEDC[0];
+                gControllerInputRecordState = 4;
+                D_8013AEE2 = gControllerInputRecordIndices[0];
             }
         }
         setCurrentTaskCallback(dispatchPostRaceResultsTask);
@@ -1015,7 +1015,7 @@ void finishRaceExitAfterCountdown(void) {
     s16 unlockTier;
     s32 transitionIndex;
 
-    if (D_8013AFD7) {
+    if (gDemoRaceIndex) {
         playbackControllerInput(0);
     }
     if (D_8013AFD6) {
@@ -1023,7 +1023,7 @@ void finishRaceExitAfterCountdown(void) {
     }
     if (--gCurrentTask->data18 == 0) {
         stopPlayerSound(0);
-        if (!D_8013AFD7 && !D_8013B1AA && !D_8013B1AB && !D_8013AFE2 && D_8013AFCD == 1) {
+        if (!gDemoRaceIndex && !D_8013B1AA && !D_8013B1AB && !D_8013AFE2 && D_8013AFCD == 1) {
             player = &gRacePlayers[0];
             if (player->unk935 < 3) {
                 unlockTier = updateRaceUnlockProgress(player->characterId, player->unk935);
@@ -1072,7 +1072,7 @@ void finishRaceExitAfterCountdown(void) {
         deleteCurrentTaskDescendants();
 
         if (D_8013AFE2 == 2) {
-            if (D_8013AEE4 & 4) {
+            if (gControllerInputRecordState & 4) {
                 setCurrentTaskCallback(initializeDemoPlaybackTask);
                 return;
             }
@@ -1138,7 +1138,7 @@ void initializeDemoPlaybackTask(void) {
     initializeActiveRacePlayers();
     setControllerFlag5(0);
     setControllerFlag5(1);
-    D_8013AEE4 = 0;
+    gControllerInputRecordState = 0;
     gCurrentTask->data18 = 0;
     gCurrentTask->data1A = 0;
     createChildTaskWithReserve(drawFixedSpriteAndBottomBarTask);
@@ -1172,10 +1172,10 @@ void updateSelectedPlayerPlaybackTask(void) {
     if (gControllerPressedButtons[0] & 0x8F0) buttons = 0x800;
     playbackControllerInput(0);
     gControllerPressedButtons[0] |= buttons;
-    if (D_8013AEDC[0] == D_8013AEE2 || (gControllerPressedButtons[0] & 0x800)) {
+    if (gControllerInputRecordIndices[0] == D_8013AEE2 || (gControllerPressedButtons[0] & 0x800)) {
         gCurrentTask->data18 = 30;
         configureTaskStateTransition(2, 0, 30);
-        D_8013AEE4 = 0;
+        gControllerInputRecordState = 0;
         startCdVolumeFade(103, 26, 0, 1);
         setCurrentTaskCallback(finishRaceExitAfterCountdown);
     }
@@ -1215,7 +1215,7 @@ void queuePlayerResourceReadsAndUploadTextures(void) {
         queueCdSectorCommand(1, gGridResourceSecondSectorRanges[gRacePlayers[i].characterId][gRacePlayers[i].unk015[0]].sector,
             gGridResourceSecondSectorRanges[gRacePlayers[i].characterId][gRacePlayers[i].unk015[0]].sectorCount,
             DAT_SCRATCH, (s32)&D_801204D4[i]);
-        if (i < D_8013AFCD && !D_8013AFD7 && !D_8013AFD8 && !D_8013AFD9) {
+        if (i < D_8013AFCD && !gDemoRaceIndex && !D_8013AFD8 && !D_8013AFD9) {
             offset = &(DAT_STARTUP_TEXTURES)->offsets[gPlayerResourceTextureSelections.entries[i][gRacePlayers[i].unk015[1]]];
         } else {
             offset = &(DAT_STARTUP_TEXTURES)->offsets[gRacePlayers[i].unk015[2]];

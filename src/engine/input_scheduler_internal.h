@@ -69,18 +69,17 @@ typedef struct ControllerReceiveBuffer {
     u8 payload[32];
 } ControllerReceiveBuffer;
 
-extern ControllerReceiveBuffer D_800E9558[2] __attribute__((section(".data.controller_receive_buffers")));
-extern u8 D_8013AEE0[];
+extern ControllerReceiveBuffer gControllerReceiveBuffers[2] __attribute__((section(".data.controller_receive_buffers")));
 
-extern u8 D_8013AEE4 __attribute__((section(".sdata.controller_input_state")));
+extern u8 gControllerInputRecordState __attribute__((section(".sdata.controller_input_state")));
 
 extern u16 gControllerPressedButtons[2] __attribute__((section(".data.controller_input_arrays")));
 extern u16 gControllerHeldButtons[2] __attribute__((section(".data.controller_input_arrays")));
 extern s16 D_8013AEF0[2] __attribute__((section(".data.controller_input_arrays")));
 extern s16 D_8013AEF4[2] __attribute__((section(".data.controller_input_arrays")));
-extern s16 D_8013AEF8[2] __attribute__((section(".data.controller_input_arrays")));
-extern s16 D_8013AEFC[2] __attribute__((section(".data.controller_input_arrays")));
-extern ControllerActuatorOutput D_8013AF00[2] __attribute__((section(".data.controller_input_arrays")));
+extern s16 gControllerHorizontalAxes[2] __attribute__((section(".data.controller_input_arrays")));
+extern s16 gControllerVerticalAxes[2] __attribute__((section(".data.controller_input_arrays")));
+extern ControllerActuatorOutput gControllerActuatorOutputs[2] __attribute__((section(".data.controller_input_arrays")));
 
 extern u8 gCdVolumeFadeActive __attribute__((section(".sdata.cd_volume_fade")));
 extern u8 gCdVolumeFadeInterval __attribute__((section(".sdata.cd_volume_fade")));

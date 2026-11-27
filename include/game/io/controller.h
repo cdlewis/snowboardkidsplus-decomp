@@ -11,8 +11,9 @@ typedef struct ControllerInputRecord {
     u16 pressedButtons;
 } ControllerInputRecord;
 
-extern ControllerInputRecord *D_8013AED4[];
-extern u16 D_8013AEDC[];
+/* Two controller slots; incomplete bounds preserve absolute addressing. */
+extern ControllerInputRecord *gControllerInputRecordBuffers[];
+extern u16 gControllerInputRecordIndices[];
 extern u8 D_8013AEE0[];
 
 /* Shared recording/playback buffer; storage remains in the controller data unit. */
@@ -24,11 +25,12 @@ extern u8 D_8013AEC4[];
 extern u16 gControllerPressedButtons[];
 /* Two state values; an incomplete array preserves absolute addressing. */
 extern u16 gControllerHeldButtons[];
-extern s16 D_8013AEF8[];
-extern s16 D_8013AEFC[];
+extern s16 gControllerHorizontalAxes[];
+extern s16 gControllerVerticalAxes[];
 extern s16 D_8013AEF4[];
 extern u16 D_8013AF0C[2];
-extern u8 D_8013AEE4;
+/* Recording/playback state bits: playback 1, recording 2, complete 4, full 8. */
+extern u8 gControllerInputRecordState;
 extern u16 D_8013AEE2 __attribute__((section(".data")));
 
 void initializeControllers(void);

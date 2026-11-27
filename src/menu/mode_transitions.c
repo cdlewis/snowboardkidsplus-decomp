@@ -55,7 +55,7 @@ extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern GameTask *gCurrentTaskParent __attribute__((section(".data")));
 extern u32 gTaskTransitionFlags __attribute__((section(".data")));
-extern u8 D_8013AFD7 __attribute__((section(".data")));
+extern u8 gDemoRaceIndex __attribute__((section(".data")));
 extern u8 D_8013B1AA __attribute__((section(".data")));
 extern u8 D_8013B1AB __attribute__((section(".data")));
 
@@ -154,13 +154,13 @@ void dispatchMode11TransitionTask(void) {
         createChildTaskWithReserve(initializeMode1Task);
         gCurrentTask->unk10 |= 1;
         D_8013B109 = 3;
-        D_8013AFD7 = 0;
+        gDemoRaceIndex = 0;
         break;
     case 28:
         createChildTaskWithReserve(initializeSelectionMenuTask);
         gCurrentTask->unk10 |= 1;
         D_8013B109 = 3;
-        D_8013AFD7 = 0;
+        gDemoRaceIndex = 0;
         break;
     case 26:
         createChildTaskWithReserve(initializeUnlockMenuResourceTask);
@@ -326,10 +326,10 @@ void updateTitleScreenMenuTask(void) {
                     }
                     if (D_8013B10A & 1) {
                         D_8013B109 = 2;
-                        D_8013AFD7 = (D_8013B10A >> 1) + 1;
+                        gDemoRaceIndex = (D_8013B10A >> 1) + 1;
                     } else {
                         D_8013B109 = 0;
-                        D_8013AFD7 = 0;
+                        gDemoRaceIndex = 0;
                     }
                     D_8013B110 = 0;
                     D_8013B108 = 2;

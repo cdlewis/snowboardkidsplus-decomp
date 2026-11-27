@@ -30,7 +30,7 @@ extern u8 D_8013AFCD __attribute__((section(".data")));
 extern u16 D_8013AF7A __attribute__((section(".data")));
 extern u16 D_8013AF7C __attribute__((section(".data")));
 extern u8 D_8013AFD6 __attribute__((section(".data")));
-extern u8 D_8013AFD7 __attribute__((section(".data")));
+extern u8 gDemoRaceIndex __attribute__((section(".data")));
 extern volatile u8 gShopMenuRememberedSelection __attribute__((section(".data")));
 
 extern u8 D_8013B47C __attribute__((section(".data")));
@@ -1847,7 +1847,7 @@ void initializeNewGameSaveData(void) {
     gRacePlayers[1].unk009 = 6;
     gRacePlayers[1].unk00A[0] = 0;
     gRacePlayers[1].unk00D = 0;
-    D_8013AFD7 = 0;
+    gDemoRaceIndex = 0;
     clearHalfwordPairTable();
     D_8013B106 = 0;
     D_8013B110 = 0;

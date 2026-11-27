@@ -107,8 +107,8 @@ void updateControllerEffectSequence(u16 controller) {
     ControllerEffectState *state;
     ControllerEffectDefinition *definition;
     if (gRacePauseState) {
-        D_8013AF00[controller].control = 0;
-        D_8013AF00[controller].value = 0;
+        gControllerActuatorOutputs[controller].control = 0;
+        gControllerActuatorOutputs[controller].value = 0;
         return;
     }
     effect = D_8013AF08[controller];
@@ -130,8 +130,8 @@ void updateControllerEffectSequence(u16 controller) {
         }
     }
     if (state->effect == 0) {
-        D_8013AF00[controller].value = 0;
-        D_8013AF00[controller].control = 0;
+        gControllerActuatorOutputs[controller].value = 0;
+        gControllerActuatorOutputs[controller].control = 0;
         state->priority = 0;
         return;
     }
@@ -141,12 +141,12 @@ void updateControllerEffectSequence(u16 controller) {
         else state->stepEnd = state->step->duration;
         changed = 1;
     }
-    if (state->stepEnd == 0) D_8013AF00[controller].value = 0;
-    else if (state->stepEnd < 0 || changed == 1) D_8013AF00[controller].value = state->step->value;
-    else D_8013AF00[controller].value += state->step->delta;
+    if (state->stepEnd == 0) gControllerActuatorOutputs[controller].value = 0;
+    else if (state->stepEnd < 0 || changed == 1) gControllerActuatorOutputs[controller].value = state->step->value;
+    else gControllerActuatorOutputs[controller].value += state->step->delta;
     if (state->effectEnd > 0 && state->elapsed >= state->effectEnd) state->effectEnd = 0;
-    if (state->effectEnd == 0) D_8013AF00[controller].control = 0;
-    else D_8013AF00[controller].control = 1;
+    if (state->effectEnd == 0) gControllerActuatorOutputs[controller].control = 0;
+    else gControllerActuatorOutputs[controller].control = 1;
     if (state->stepEnd == 0 && state->effectEnd == 0) {
         state->effect = 0;
         state->priority = 0;
@@ -156,13 +156,13 @@ void updateControllerEffectSequence(u16 controller) {
 
 void updateLegacyControllerActuators(u16 controller) {
     if (gRacePauseState) {
-        D_8013AF00[controller].control = 0x40;
-        D_8013AF00[controller].value = 0;
+        gControllerActuatorOutputs[controller].control = 0x40;
+        gControllerActuatorOutputs[controller].value = 0;
     } else if (D_8013AEF0[controller] >= 25) {
-        D_8013AF00[controller].control = 0x40;
-        D_8013AF00[controller].value = 1;
+        gControllerActuatorOutputs[controller].control = 0x40;
+        gControllerActuatorOutputs[controller].value = 1;
     } else {
-        D_8013AF00[controller].control = 0x40;
-        D_8013AF00[controller].value = 0;
+        gControllerActuatorOutputs[controller].control = 0x40;
+        gControllerActuatorOutputs[controller].value = 0;
     }
 }
