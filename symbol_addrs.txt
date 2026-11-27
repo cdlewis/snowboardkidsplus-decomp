@@ -4650,3 +4650,6 @@ gSpriteTextureRegionsSet33 = 0x8012DD30; // size:0x74
 D_8013B380 = 0x8013B380; // size:0x8
 D_8013B388 = 0x8013B388; // size:0x4
 D_8013B38C = 0x8013B38C; // size:0x8
+
+gPlayerPanelQuadsPalette0 = 0x8012F218; // size:0xD8
+gPlayerPanelQuadsPalette1 = 0x8012F2F0; // size:0xD8

@@ -2,6 +2,7 @@
 
 #include "game/engine/task.h"
 #include "game/menu/movement.h"
+#include "game/graphics/graphics.h"
 
 typedef struct MenuRgbColor {
     u8 r, g, b;
@@ -84,3 +85,6 @@ void createRegisteredTexturePairTask(s16 x, s16 y, const u8 *mapping, s32 mode,
 
 u32 getMappedMenuWord(const u32 *entries, const u8 *remap, s16 index);
 s16 mapSpacedGroupIndex(GameTask *task, s16 index);
+
+extern struct TexturedQuadListEntry gPlayerPanelQuadsPalette0[18];
+extern struct TexturedQuadListEntry gPlayerPanelQuadsPalette1[18];

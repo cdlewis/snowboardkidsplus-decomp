@@ -855,7 +855,7 @@ segments:
       - {start: 0x11F98C, type: .data, name: menu/task_widgets, linker_section: .data.character_portrait_sequences}
       - {start: 0x11F9EC, type: .data, name: menu/task_widgets, linker_section: .data.selection_panel_character_stats}
       - {start: 0x11FA0C, type: .data, name: menu/task_widgets, linker_section: .data.selection_panel_label_offsets}
-      - [0x11FA18, data, 11FA18]
+      - {start: 0x11FA18, type: .data, name: menu/task_widgets, linker_section: .data.player_panel_quads}
       - {start: 0x11FBC8, type: .data, name: menu/task_widgets, linker_section: .data.value_panel_label}
       - {start: 0x11FBDC, type: .data, name: menu/task_widgets, linker_section: .data.text_panel_message}
       - {start: 0x11FC00, type: .data, name: unclassified/menu_8007BE9C, linker_section: .data.main_menu_sprites}
