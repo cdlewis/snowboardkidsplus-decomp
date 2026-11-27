@@ -1184,7 +1184,7 @@ segments:
       - {start: 0x12BE14, type: .sdata, name: engine/task_transitions, linker_section: .sdata.race_player_sort_saved_stack, linker_section_order: .data}
       - {start: 0x12BE18, type: .sdata, name: race/player/player_update, linker_section: .sdata.player_terrain_contact_saved_stack, linker_section_order: .data}
       - {start: 0x12BE1C, type: .sdata, name: race/player/player_update, linker_section: .sdata.player_ground_contact_saved_stack, linker_section_order: .data}
-      - [0x12BE20, data]
+      - {start: 0x12BE20, type: .sdata, name: race/ui/race_hud_modes, linker_section: .sdata.race_hud_mode, linker_section_order: .data}
       - {start: 0x12BE24, type: .sdata, name: race/course/course_geometry, linker_section: .sdata.geometry_edge_projection, linker_section_order: .data}
       - {start: 0x12BE54, type: .sdata, name: graphics/course_rendering, linker_section: .sdata.course_model_state, linker_section_order: .data}
       - [0x12BE68, data]

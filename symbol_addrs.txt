@@ -4384,7 +4384,8 @@ attackTimeExpiredPadding = 0x8013B18E; // size:0x2 defined:true
 playerRaceTimesPadding = 0x8013B1A2; // size:0x2 defined:true
 playerRaceTimesPaddingTail = 0x8013B1A4; // size:0x4 defined:true
 gPlayerAttackTimesRemaining = 0x8013B198; // size:0x8
-gRaceHudMode = 0x8013B620;
+gRaceHudMode = 0x8013B620; // size:0x2
+raceHudModePadding = 0x8013B622; // size:0x2
 
 gTitleMenuResourcesInitialized = 0x8013B0F0; // size:0x1 defined:true
 sTitleMenuResourcesInitializedPadding0 = 0x8013B0F1; // type:u8 size:0x1 defined:true

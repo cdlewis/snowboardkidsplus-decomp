@@ -43,6 +43,9 @@ static u32 playerRaceTimesPaddingTail __attribute__((section(".sdata.player_race
 
 s16 gRaceHudEnabled __attribute__((section(".data.race_hud_enabled"))) = 0;
 
+s16 gRaceHudMode __attribute__((section(".sdata.race_hud_mode"), aligned(4))) = 0;
+static u16 raceHudModePadding __attribute__((section(".sdata.race_hud_mode"))) = 0;
+
 RaceTime gCourseCoinTargetTimes[10]
     __attribute__((section(".data.course_coin_target_times"), aligned(4))) = {
         {2, 30, 0}, {2, 30, 0}, {3, 5, 0}, {3, 5, 0}, {3, 5, 0},
