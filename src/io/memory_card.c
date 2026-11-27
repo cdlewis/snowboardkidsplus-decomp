@@ -150,6 +150,9 @@ MemoryCardSaveHeader gMemoryCardSaveHeader __attribute__((section(".data.memory_
 const u32 gMemoryCardAvailabilityTablePadding
     __attribute__((section(".rodata.memory_card_availability_padding"))) = 0;
 
+s32 gMemoryCardDirectoryEntryCounts[2]
+    __attribute__((section(".data.memory_card_directory_entry_counts"), aligned(4))) = {0, 0};
+
 u8 gMemoryCardCreateFilePending[2] __attribute__((section(".data.memory_card_poll_flags"))) = {0};
 u8 gMemoryCardAcceptRetryCounts[2] __attribute__((section(".data.memory_card_accept_retry_counts"))) = {0};
 
