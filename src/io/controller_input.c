@@ -20,6 +20,18 @@ ControllerReceiveBuffer gControllerReceiveBuffers[2] __attribute__((section(".da
 ControllerInputRecord gControllerPlaybackRecords[2][256]
     __attribute__((section(".data.controller_playback_records"))) = {0};
 
+ControllerInputRecord *gControllerInputRecordBuffers[2]
+    __attribute__((section(".data.controller_recording_state"))) = {0, 0};
+
+u16 gControllerInputRecordIndices[2]
+    __attribute__((section(".data.controller_recording_state"))) = {0, 0};
+
+u8 gControllerPlaybackRepeatCounters[2]
+    __attribute__((section(".data.controller_recording_state"))) = {0, 0};
+
+u16 gSelectedPlayerReplayEndRecordIndex
+    __attribute__((section(".data.controller_recording_state"))) = 0;
+
 u8 gControllerInputRecordState __attribute__((section(".sdata.controller_input_state"))) = 0;
 
 static u8 sControllerInputStatePadding0 __attribute__((section(".sdata.controller_input_state"))) = 0;
