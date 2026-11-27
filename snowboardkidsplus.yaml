@@ -1152,7 +1152,7 @@ segments:
       - {start: 0x12BD1C, type: .data, name: menu/resource_tasks, linker_section: .data.main_tail_multiplayer_text_mapping}
       - {start: 0x12BD20, type: .data, name: menu/resource_tasks, linker_section: .data.main_tail_selection_parent_states}
       - {start: 0x12BD24, type: .data, name: menu/resource_tasks, linker_section: .data.main_tail_money_currency_label}
-      - [0x12BD28, data, 12BD18_tail]
+      - {start: 0x12BD28, type: .data, name: menu/resource_tasks, linker_section: .data.race_ruleset_course_mappings}
       - {start: 0x12BD48, type: .data, name: menu/resource_tasks, linker_section: .data.count_records_hit_label}
       - {start: 0x12BD4C, type: .data, name: menu/resource_tasks, linker_section: .data.stats_records_player_suffix}
       - {start: 0x12BD50, type: .data, name: menu/mode_race_tasks, linker_section: .data.mode11_selection_mapping}

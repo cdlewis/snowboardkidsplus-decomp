@@ -30,14 +30,6 @@ extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern GameTask *gCurrentTaskParent __attribute__((section(".data")));
 
 
-extern const u8 gRaceRulesetStandardCourseMapping[4];
-extern const u8 gRaceRulesetSpecialCourseMapping[2];
-extern const u8 gTimeAttackCourseHelpMapping[4];
-extern const u8 gTwoPlayerTimeAttackCourseHelpMapping[4];
-extern const u8 gScoreAttackCourseHelpMapping[4];
-extern const u8 gTrickAttackCourseHelpMapping[2];
-extern const u8 gRaceRulesetStandardCourseTextureMapping[4];
-extern const u8 gRaceRulesetSpecialCourseTextureMapping[2];
 extern u8 raceRulesetMenuRememberedSelectionGp;
 
 const GridSpriteEntry gMainTailSelectionSprites[4]
@@ -248,6 +240,55 @@ const u16 *gRaceRulesetCourseHelpTexts[11]
     gRaceRulesetCourseHelpText9,
     gRaceRulesetCourseHelpText10,
 };
+
+const u8 gRaceRulesetStandardCourseMapping[4]
+    __attribute__((section(".data.race_ruleset_course_mappings"), aligned(4))) = {
+    0, 1, 2, 10,
+};
+
+const u8 gRaceRulesetSpecialCourseMapping[2]
+    __attribute__((section(".data.race_ruleset_course_mappings"), aligned(4))) = {
+    9, 10,
+};
+
+static const u16 gRaceRulesetSpecialCourseMappingPadding
+    __attribute__((section(".data.race_ruleset_course_mappings"), aligned(2))) = 0;
+
+const u8 gTimeAttackCourseHelpMapping[4]
+    __attribute__((section(".data.race_ruleset_course_mappings"), aligned(4))) = {
+    0, 1, 2, 7,
+};
+
+const u8 gTwoPlayerTimeAttackCourseHelpMapping[4]
+    __attribute__((section(".data.race_ruleset_course_mappings"), aligned(4))) = {
+    8, 9, 10, 7,
+};
+
+const u8 gScoreAttackCourseHelpMapping[4]
+    __attribute__((section(".data.race_ruleset_course_mappings"), aligned(4))) = {
+    3, 4, 5, 7,
+};
+
+const u8 gTrickAttackCourseHelpMapping[2]
+    __attribute__((section(".data.race_ruleset_course_mappings"), aligned(4))) = {
+    6, 7,
+};
+
+static const u16 gTrickAttackCourseHelpMappingPadding
+    __attribute__((section(".data.race_ruleset_course_mappings"), aligned(2))) = 0;
+
+const u8 gRaceRulesetStandardCourseTextureMapping[4]
+    __attribute__((section(".data.race_ruleset_course_mappings"), aligned(4))) = {
+    0, 1, 2, 4,
+};
+
+const u8 gRaceRulesetSpecialCourseTextureMapping[2]
+    __attribute__((section(".data.race_ruleset_course_mappings"), aligned(4))) = {
+    3, 4,
+};
+
+static const u16 gRaceRulesetSpecialCourseTextureMappingPadding
+    __attribute__((section(".data.race_ruleset_course_mappings"), aligned(2))) = 0;
 
 ByteMappingDescriptor gRaceRulesetCourseMappingGroups[3]
     __attribute__((section(".data.race_ruleset_course_help"), aligned(4))) = {
