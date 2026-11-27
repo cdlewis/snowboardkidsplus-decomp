@@ -694,7 +694,8 @@ segments:
       - {start: 0xD9D9C, type: .data, name: io/controller_input, linker_section: .data.controller_playback_records}
       - [0xDAD9C, .data, engine/random]
       - {start: 0xDAE9C, type: .data, name: graphics/texture_upload, linker_section: .data.saved_image_entries}
-      - [0xDB89C, data, DB89C]
+      - {start: 0xDB89C, type: .data, name: race/player/player_animation, linker_section: .data.player_character_animation_indices}
+      - {start: 0xDBA2C, type: .data, name: race/player/player_update, linker_section: .data.shared_scratch_vector}
       - {start: 0xDBA3C, type: .data, name: race/player/player_input, linker_section: .data.player_slope_velocity_scratch}
       - {start: 0xDBA4C, type: .data, name: race/player/player_animation, linker_section: .data.player_animation_pose}
       - {start: 0xDBAAC, type: .data, name: audio/sound_manager, linker_section: .data.sound_bank_loaded}

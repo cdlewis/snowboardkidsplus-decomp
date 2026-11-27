@@ -44,6 +44,9 @@ typedef struct PlayerVariantAttributeTable {
     u16 padding;
 } PlayerVariantAttributeTable;
 
+VECTOR gSharedScratchVector
+    __attribute__((section(".data.shared_scratch_vector"), aligned(4))) = {0, 0, 0, 0};
+
 const u32 gPlayerMotionEffectsTablePadding
     __attribute__((section(".rodata.player_motion_effects_padding"))) = 0;
 

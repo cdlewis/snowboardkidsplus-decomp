@@ -1973,7 +1973,7 @@ isControllerFlag5Clear = 0x80014D3C; // type:func
 // Reads one byte from the globally selected lookup table.
 readSelectedByteTable = 0x8001EC58; // type:func
 gDefaultCourseSurfaceMotionEffectTypes = 0x8012089C; // size:0x1C defined:true
-gPlayerCharacterAnimationIndices = 0x800EB09C; // size:0x190
+gPlayerCharacterAnimationIndices = 0x800EB09C; // size:0x190 defined:true
 gCourseObjectRotations = 0x8012A5C0;
 gSelectedGeometryRecordIndex = 0x8013B1FE; // size:0x2
 gSelectedGeometryVertex1 = 0x8013B204; // size:0x4
@@ -4316,7 +4316,7 @@ gScratchShortVector0 = 0x8013AF90;
 gScratchShortVector1 = 0x8013AF94;
 gMainMenuSelectionIndex = 0x8013AFE2;
 
-gSharedScratchVector = 0x800EB22C; // size:0x10
+gSharedScratchVector = 0x800EB22C; // size:0x10 defined:true
 gSelectedPlayerReplayActive = 0x8013AFD6; // size:0x1
 gControllerPlaybackIndex = 0x8013AFD9; // size:0x1
 gGameStateFlags = 0x8013AFAA; // size:0x2
