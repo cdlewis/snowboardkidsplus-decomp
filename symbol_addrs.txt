@@ -4373,7 +4373,7 @@ gXaPositionPollCount = 0x8013AE54; // size:0x4 defined:true
 gCdCommandActive = 0x8013AE78; // size:0x2 defined:true
 
 gCourseVisualPacketData = 0x8012967C; // size:0x48 defined:true
-gSelectedPlayerTaskSnapshots = 0x8013B2E4; // size:0x4
+gSelectedPlayerTaskSnapshots = 0x8013B2E4; // size:0x4 defined:true
 
 GsSetWorkBase = 0x800BF2C8; // type:func defined:true
 gCourseCoinTargetTimes = 0x80124220; // size:0x28 defined:true
@@ -4522,7 +4522,7 @@ gCountRecordHitLabel = 0x8013B138; // type:char size:0x4
 
 gCameraYawMatrix = 0x8012A6B0; // size:0x20
 gCameraPitchYawMatrix = 0x8012A6D0; // size:0x20
-gSelectedPlayerSnapshots = 0x8013B2E8;
+gSelectedPlayerSnapshots = 0x8013B2E8; // size:0x4 defined:true
 gCourseMenuIndicesByCourse = 0x8012D478; // size:0xC
 gMemoryCardCorruptDataText = 0x80130390; // size:0x3C
 gMemoryCardUnformattedText = 0x801303EC; // size:0x3C
@@ -4788,3 +4788,7 @@ D_8013B1DC = 0x8013B1DC; // size:0x10 defined:true
 D_8013B210 = 0x8013B210; // size:0x4 defined:true
 
 sBackgroundData_8013B230 = 0x8013B230; // type:u32 size:0x8 defined:true
+
+gSelectedPlayerSnapshotsReserved3B2EC = 0x8013B2EC; // size:0x10 defined:true
+gSelectedPlayerTaskSnapshotBuffer = 0x8017AF40; // absolute:true extract:false
+gSelectedPlayerSnapshotBuffer = 0x8016F000; // absolute:true extract:false

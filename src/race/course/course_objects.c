@@ -89,6 +89,19 @@ extern u32 *gCurrentPlayerAlternateLayerOrderingTable __attribute__((section(".d
 extern s16 gPlayerCollectionEntryCount __attribute__((section(".data.finish_slot_state")));
 
 
+/* These saved states use fixed RAM outside the linked image. */
+extern TaskSnapshot gSelectedPlayerTaskSnapshotBuffer[];
+extern RacePlayer gSelectedPlayerSnapshotBuffer[];
+
+TaskSnapshot *gSelectedPlayerTaskSnapshots
+    __attribute__((section(".sdata.selected_player_snapshots"), aligned(4))) =
+        gSelectedPlayerTaskSnapshotBuffer;
+RacePlayer *gSelectedPlayerSnapshots
+    __attribute__((section(".sdata.selected_player_snapshots"), aligned(4))) =
+        gSelectedPlayerSnapshotBuffer;
+u8 gSelectedPlayerSnapshotsReserved3B2EC[16]
+    __attribute__((section(".sdata.selected_player_snapshots"), aligned(4))) = {0};
+
 u8 gCpuSpeedModesSoloFirst[4] __attribute__((section(".data.cpu_speed_modes"))) = { 1, 0, 2, 0 };
 u8 gCpuSpeedModesSoloSecond[4] __attribute__((section(".data.cpu_speed_modes"))) = { 0, 1, 2, 0 };
 u8 gCpuSpeedModesSoloThird[4] __attribute__((section(".data.cpu_speed_modes"))) = { 0, 1, 2, 0 };

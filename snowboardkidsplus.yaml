@@ -1093,7 +1093,7 @@ segments:
       - {start: 0x12BACC, type: .data, name: race/course/course_objects, linker_section: .data.course_objects_reserved_3b2cc}
       - {start: 0x12BAD0, type: .data, name: unclassified/graphics_800497B8, linker_section: .data.empty_course_triggers}
       - {start: 0x12BAD4, type: .data, name: race/course/course_objects, linker_section: .data.cpu_speed_modes}
-      - [0x12BAE4, data, empty_course_triggers_tail]
+      - {start: 0x12BAE4, type: .sdata, name: race/course/course_objects, linker_section: .sdata.selected_player_snapshots, linker_section_order: .data}
       - {start: 0x12BAFC, type: .data, name: engine/linear_random_state, linker_section: .data.linear_random_state}
       - {start: 0x12BB00, type: .data, name: race/effects/player_effects, linker_section: .data.player_snapshot_tasks}
       - {start: 0x12BB08, type: .data, name: race/effects/player_effects, linker_section: .data.radial_effect_quads}
