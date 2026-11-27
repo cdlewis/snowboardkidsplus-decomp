@@ -2109,6 +2109,7 @@ updateUnlockOptionsMenuTask = 0x800A3D9C; // type:func
 drawUnlockOptionsMenu = 0x800A42CC; // type:func
 
 getPlayerCourseProgress = 0x8002B3F4; // type:func
+gPlayerMotionEffectsTablePadding = 0x800104EC; // size:0x4 defined:true
 gPlayerCourseProgressTablePadding = 0x80010658; // size:0x4 defined:true
 gPlayerProjectileUseTablePadding = 0x800106E0; // size:0x4 defined:true
 updateRacePlayerRankings = 0x8002B820; // type:func

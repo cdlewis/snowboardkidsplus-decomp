@@ -80,7 +80,7 @@ segments:
       - [0xC7C, .rodata, engine/task_transitions]
       - {start: 0xCB0, type: .rodata, name: race/player/player_update, linker_section: .rodata.player_trick_input_dispatch}
       - [0xCD8, .rodata, race/player/player_update]
-      - [0xCEC, rodata]
+      - {start: 0xCEC, type: .rodata, name: race/player/player_update, linker_section: .rodata.player_motion_effects_padding}
       - {start: 0xCF0, type: .rodata, name: race/player/player_update, linker_section: .rodata.player_airborne_dispatch}
       - {start: 0xDE0, type: .rodata, name: race/player/player_update, linker_section: .rodata.race_player_start}
       - {start: 0xE34, type: .rodata, name: race/player/player_actions, linker_section: .rodata.player_course_progress}

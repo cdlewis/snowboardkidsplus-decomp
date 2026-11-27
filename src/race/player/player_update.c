@@ -44,6 +44,9 @@ typedef struct PlayerVariantAttributeTable {
     u16 padding;
 } PlayerVariantAttributeTable;
 
+const u32 gPlayerMotionEffectsTablePadding
+    __attribute__((section(".rodata.player_motion_effects_padding"))) = 0;
+
 extern SelectedRecord *gCourseGeometryTriangleRecords __attribute__((section(".data")));
 extern s16 gSelectedGeometryRecordIndex __attribute__((section(".data")));
 extern s16 *gSelectedGeometryVertex0 __attribute__((section(".data")));
