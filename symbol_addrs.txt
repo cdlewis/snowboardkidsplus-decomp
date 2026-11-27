@@ -4453,8 +4453,8 @@ gDoubleByteGlyphCodes16x16Page1 = 0x8012ECC8; // size:0x204
 gFadingTextComplete = 0x8013B368; // size:0x4
 gTimedSpritePresentationExiting = 0x8013B36C; // size:0x4
 
-gPcHostOpenErrorFormat = 0x80012310;
-gPcHostTransferErrorFormat = 0x8001232C;
+gPcHostOpenErrorFormat = 0x80012310; // size:0x1C
+gPcHostTransferErrorFormat = 0x8001232C; // size:0x24
 gPcHostAssetPathFormat = 0x8013B5C8;
 
 gCourseRaceMusicXaCommands = 0x80124164; // size:0x14
@@ -4542,3 +4542,14 @@ gMemoryCardPlacedObjectSaveTitlePadding = 0x800102F8; // size:0x4
 gMemoryCardTerrainCollisionSaveTitlePadding = 0x8001033C; // size:0x4
 gMemoryCardDigicomicSaveTitlePadding = 0x80010380; // size:0x4
 gMemoryCardTitleTemplatesPadding = 0x80010384; // size:0x4
+gEndingSlashLabel = 0x80012274; // size:0x10
+gEndingNancyLabel = 0x80012284; // size:0x10
+gEndingJamLabel = 0x80012294; // size:0xC
+gEndingLindaLabel = 0x800122A0; // size:0x10
+gEndingTommyLabel = 0x800122B0; // size:0x10
+gEndingNicolLabel = 0x800122C0; // size:0x10
+gEndingPamelahLabel = 0x800122D0; // size:0x10
+gEndingRubyLabel = 0x800122E0; // size:0x10
+gEndingSinobinLabel = 0x800122F0; // size:0x10
+gEndingKaedeLabel = 0x80012300; // size:0x10
+sPcHostErrorPadding = 0x80012350; // size:0x4

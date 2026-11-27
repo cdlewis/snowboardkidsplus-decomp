@@ -3,8 +3,13 @@
 #include "psx/libc.h"
 #include "psx/libsn.h"
 
-extern const char gPcHostOpenErrorFormat[];
-extern const char gPcHostTransferErrorFormat[];
+const char gPcHostOpenErrorFormat[28]
+    __attribute__((section(".rodata.host_file_errors"), aligned(4))) = "Error opening file %s\x81_n";
+const char gPcHostTransferErrorFormat[36]
+    __attribute__((section(".rodata.host_file_errors"), aligned(4))) = "Failed to read all of file %s\x81_n";
+
+static const u32 sPcHostErrorPadding
+    __attribute__((section(".rodata.host_file_errors"), aligned(4))) = 0;
 extern char gPcHostAssetPathFormat[];
 
 int readHostFile(char *path, char *buffer) {

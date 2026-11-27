@@ -179,7 +179,8 @@ segments:
       - {start: 0x2A08, type: .rodata, name: menu/mode_race_tasks, linker_section: .rodata.mode11_selection_jump_table_padding}
       - [0x2A0C, .rodata, menu/selection_tasks]
       - [0x2A58, .rodata, menu/unlock_menu]
-      - [0x2A74, rodata]
+      - {start: 0x2A74, type: .rodata, name: scene/scene_event_tasks, linker_section: .rodata.ending_labels}
+      - {start: 0x2B10, type: .rodata, name: io/host_file, linker_section: .rodata.host_file_errors}
       - [0x2B54, .rodata, scene/scene_playback]
       - {start: 0x2B68, type: .rodata, name: scene/scene_playback, linker_section: .rodata.scene_playback_padding}
       - [0x2B6C, .rodata, scene/scene_event_tasks]
