@@ -68,7 +68,8 @@ extern const u16 gMemoryCardChangedSaveConfirmationText[];
 extern const u16 gMemoryCardSaveSlotChoiceText[];
 extern const u16 gMemoryCardSaveCompleteText[];
 extern const u16 gMemoryCardSaveOptionsText[];
-extern const u16 D_80130740[], D_8013075C[];
+extern const u16 gMemoryCardSaveMenuExitConfirmationText[];
+extern const u16 gMemoryCardSaveConfirmationText[];
 /* Incomplete arrays let the compiler schedule the address halves separately. */
 extern s8 gMemoryCardSaveRecordCurrencyLabel[]
     __attribute__((section(".data.memory_card_save_record_currency_label")));
@@ -442,7 +443,7 @@ void updateMemoryCardSaveMenuTask(void) {
         gCurrentTask->data18 = 2;
         break;
     case 14:
-        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_8013075C,
+        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, gMemoryCardSaveConfirmationText,
                                               -1, enabled, 1, gSaveRecordConfirmationSprites, 4, 11);
         gCurrentTask->data18 = 15;
         break;
@@ -500,7 +501,7 @@ void updateMemoryCardSaveMenuTask(void) {
         gCurrentTask->data18 = 40;
         break;
     case 24:
-        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_80130740,
+        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, gMemoryCardSaveMenuExitConfirmationText,
                                               -1, enabled, 1, gSaveRecordConfirmationSprites, 4, 11);
         gCurrentTask->data18 = 25;
         break;
