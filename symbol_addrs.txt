@@ -4760,3 +4760,9 @@ gSceneEmptyCallbacks = 0x80132B20; // size:0x14 defined:true
 _ramsize = 0x80133788; // size:0x4
 vsyncDataPrefix = 0x8013378C; // size:0x8
 vsyncDataPadding = 0x801337A4; // size:0x8
+
+D_8013AF64 = 0x8013AF64; // size:0x8
+D_8013AF82 = 0x8013AF82; // size:0x2
+D_8013AFA0 = 0x8013AFA0; // size:0x4
+D_8013AFA4 = 0x8013AFA4; // size:0x4
+D_8013AFA8 = 0x8013AFA8; // size:0x2

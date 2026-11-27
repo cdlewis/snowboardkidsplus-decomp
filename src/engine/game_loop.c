@@ -48,6 +48,28 @@ u32 gPlayerOrderingTableTags[8192] __attribute__((section(".data.render_buffers"
 u32 gPlayer2Buffer1OrderingTableTags[4096] __attribute__((section(".data.render_buffers"))) = {0};
 PACKET gGraphicsPacketBuffers[2][0x10000] __attribute__((section(".data.render_buffers"))) = {0};
 
+u32 D_8013AF64[2] __attribute__((section(".sdata.game_loop_state"))) = {0, 2};
+u32 *gCurrentPlayerOrderingTable __attribute__((section(".sdata.game_loop_state"))) = NULL;
+u32 *gCurrentPlayerDepthOffsetOrderingTable __attribute__((section(".sdata.game_loop_state"))) = NULL;
+u32 *gCurrentPlayerAlternateLayerOrderingTable __attribute__((section(".sdata.game_loop_state"))) = NULL;
+u16 gActiveGraphicsBuffer __attribute__((section(".sdata.game_loop_state"))) = 0;
+u16 gDisplayWidth __attribute__((section(".sdata.game_loop_state"))) = 0;
+u16 gDisplayHeight __attribute__((section(".sdata.game_loop_state"))) = 0;
+s16 gPlayerViewWidthReduction __attribute__((section(".sdata.game_loop_state"))) = 0;
+s16 gPlayerViewVerticalOffset __attribute__((section(".sdata.game_loop_state"))) = 0;
+u16 D_8013AF82 __attribute__((section(".sdata.game_loop_state"))) = 0;
+s32 gProjectionDistance __attribute__((section(".sdata.game_loop_state"))) = 0;
+VECTOR *gScratchVector0 __attribute__((section(".sdata.game_loop_state"))) = NULL;
+VECTOR *gScratchVector1 __attribute__((section(".sdata.game_loop_state"))) = NULL;
+SVECTOR *gScratchShortVector0 __attribute__((section(".sdata.game_loop_state"))) = NULL;
+SVECTOR *gScratchShortVector1 __attribute__((section(".sdata.game_loop_state"))) = NULL;
+MATRIX *gScratchMatrix0 __attribute__((section(".sdata.game_loop_state"))) = NULL;
+MATRIX *gScratchMatrix1 __attribute__((section(".sdata.game_loop_state"))) = NULL;
+u8 *D_8013AFA0 __attribute__((section(".sdata.game_loop_state"))) = NULL;
+u8 *D_8013AFA4 __attribute__((section(".sdata.game_loop_state"))) = NULL;
+u16 D_8013AFA8 __attribute__((section(".sdata.game_loop_state"))) = 0;
+u16 gGameStateFlags __attribute__((section(".sdata.game_loop_state"))) = 0;
+
 extern u32 gSynchronizedFrameCount;
 
 void runGameLoop(void) {

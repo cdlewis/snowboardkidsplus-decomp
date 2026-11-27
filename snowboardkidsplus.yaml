@@ -1025,7 +1025,7 @@ segments:
       - {start: 0x12B754, type: .sdata, name: io/movie_stream, linker_section: .sdata.movie_dimensions, linker_section_order: .data}
       - {start: 0x12B758, type: .sdata, name: io/movie_stream, linker_section_order: .data}
       - {start: 0x12B760, type: .sdata, name: io/movie_stream, linker_section: .sdata.movie_index, linker_section_order: .data}
-      - [0x12B764, data]
+      - {start: 0x12B764, type: .sdata, name: engine/game_loop, linker_section: .sdata.game_loop_state, linker_section_order: .data}
       - [0x12B7AC, .data, engine/game_task_scheduler]
       - {start: 0x12B7B0, type: .sdata, name: engine/frame_sync, linker_section: .sdata.synchronized_frame_count, linker_section_order: .data}
       - [0x12B7B4, data, 12B7B4]
