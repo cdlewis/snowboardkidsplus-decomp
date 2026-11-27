@@ -62,6 +62,10 @@ u16 gPlayerSoundVariantsA[2] __attribute__((section(".data.player_sound_variants
 
 u16 gPlayerSoundVariantsB[2] __attribute__((section(".data.player_sound_variants"))) = {0x300, 0x400};
 
+s16 gSelectedPlayerAction __attribute__((section(".sdata.player_action_collision_state"))) = 0;
+u16 gPlayerCollisionHeading __attribute__((section(".sdata.player_action_collision_state"))) = 0;
+s32 gPlayerCollisionSpeed __attribute__((section(".sdata.player_action_collision_state"))) = 0;
+
 u8 gRaceOrderPlayerIds[4] __attribute__((section(".sdata.race_order_player_ids"))) = {0};
 
 const char gDemonstrationText[16]

@@ -1037,7 +1037,7 @@ segments:
       - {start: 0x12B8D0, type: .data, name: race/player/player_update, linker_section: .data.player_wall_probe_offsets}
       - {start: 0x12B8D8, type: .sdata, name: race/player/player_update, linker_section: .sdata.current_race_player, linker_section_order: .data}
       - {start: 0x12B8DC, type: .data, name: race/player/player_actions, linker_section: .data.player_sound_variants}
-      - [0x12B8E4, data, 12B8E4]
+      - {start: 0x12B8E4, type: .sdata, name: race/player/player_actions, linker_section: .sdata.player_action_collision_state, linker_section_order: .data}
       - {start: 0x12B8EC, type: .sdata, name: race/player/player_actions, linker_section: .sdata.race_order_player_ids, linker_section_order: .data}
       - [0x12B8F0, data, 12B8F0]
       - {start: 0x12B8F4, type: .data, name: menu/mode_transitions, linker_section: .data.title_menu_sprite_mapping}

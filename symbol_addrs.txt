@@ -4411,8 +4411,8 @@ gTaskDeletionCursor = 0x8013AEB0; // size:0x4
 gAvailableTaskSlots = 0x8013AEB4; // size:0x2
 
 gNextRaceFinishSlot = 0x8013AFDB; // type:u8 size:0x1 defined:true
-gPlayerCollisionHeading = 0x8013B0E6;
-gPlayerCollisionSpeed = 0x8013B0E8;
+gPlayerCollisionHeading = 0x8013B0E6; // size:0x2
+gPlayerCollisionSpeed = 0x8013B0E8; // size:0x4
 gSelectedGeometryVertex0 = 0x8013B200;
 
 gRacePauseMenuSelection = 0x8013AFD5; // size:0x1 defined:true
