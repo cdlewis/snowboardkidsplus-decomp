@@ -4283,14 +4283,18 @@ gCourseGeometryVertexData = 0x8013B1EC; // size:0x4 defined:true
 gGeometryProjectionBasisX = 0x8013B624;
 gGeometryProjectionBasisZ = 0x8013B628;
 
-// Model renderer state (storage remains in 12BE68.data).
-gAdaptiveModelSavedStackPointer = 0x8013B668;
-gProjectedModelSavedStackPointer = 0x8013B66C;
-gModelOrderingTable = 0x8013B670;
-gModelPrimitiveCursor = 0x8013B680;
-gModelVertices = 0x8013B688;
-gModelPrimitiveCount = 0x8013B68C;
-gModelDepthShift = 0x8013B69C;
+// Model renderer state.
+sModelStatePadding74 = 0x8013B674; // size:0xC defined:true
+sModelStatePadding84 = 0x8013B684; // size:0x4 defined:true
+sModelStatePadding90 = 0x8013B690; // size:0xC defined:true
+sModelStatePaddingA0 = 0x8013B6A0; // size:0x4 defined:true
+gAdaptiveModelSavedStackPointer = 0x8013B668; // size:0x4 defined:true
+gProjectedModelSavedStackPointer = 0x8013B66C; // size:0x4 defined:true
+gModelOrderingTable = 0x8013B670; // size:0x4 defined:true
+gModelPrimitiveCursor = 0x8013B680; // size:0x4 defined:true
+gModelVertices = 0x8013B688; // size:0x4 defined:true
+gModelPrimitiveCount = 0x8013B68C; // size:0x4 defined:true
+gModelDepthShift = 0x8013B69C; // size:0x4 defined:true
 
 gSelectionPanelTexts = 0x8012FFD4; // size:0x28
 gMenuSelectionStates = 0x801300AC; // size:0xC

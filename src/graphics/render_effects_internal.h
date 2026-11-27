@@ -757,7 +757,7 @@ extern CourseVisualPacketData gCourseVisualPacketData;
 #define gTaskVisualQuad (gCourseVisualPacketData.quad)
 #define gVisualPlacementHeightData (gCourseVisualPacketData.layout.heights)
 
-extern SVECTOR *gModelVertices __attribute__((section(".sdata")));
+extern SVECTOR *gModelVertices __attribute__((section(".sdata.model_renderer_state")));
 extern SVECTOR *gScratchShortVector0 __attribute__((section(".data")));
 extern MATRIX gCameraYawMatrix, gCameraPitchYawMatrix;
 typedef struct PairedEffectResource {
@@ -910,13 +910,13 @@ extern s32 gTimedSpriteSecondaryBrightness;
 extern s32 gTimedSpriteInterpolationComplete;
 extern s32 gFadingTextComplete;
 extern s32 gTimedSpritePresentationExiting;
-extern u32 gAdaptiveModelSavedStackPointer;
-extern u32 gProjectedModelSavedStackPointer;
-extern u32 gModelPrimitiveCount;
-extern void *gModelPrimitiveCursor __attribute__((section(".sdata")));
+extern u32 gAdaptiveModelSavedStackPointer __attribute__((section(".sdata.model_renderer_state")));
+extern u32 gProjectedModelSavedStackPointer __attribute__((section(".sdata.model_renderer_state")));
+extern u32 gModelPrimitiveCount __attribute__((section(".sdata.model_renderer_state")));
+extern void *gModelPrimitiveCursor __attribute__((section(".sdata.model_renderer_state")));
 
-extern GsOT *gModelOrderingTable;
-extern s32 gModelDepthShift;
+extern GsOT *gModelOrderingTable __attribute__((section(".sdata.model_renderer_state")));
+extern s32 gModelDepthShift __attribute__((section(".sdata.model_renderer_state")));
 extern s32 gCourseModelCullDistance;
 
 

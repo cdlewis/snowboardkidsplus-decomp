@@ -35,6 +35,20 @@ typedef struct QuadSubdivisionScratchpad {
 } QuadSubdivisionScratchpad;
 
 
+u32 gAdaptiveModelSavedStackPointer __attribute__((section(".sdata.model_renderer_state"))) = 0;
+u32 gProjectedModelSavedStackPointer __attribute__((section(".sdata.model_renderer_state"))) = 0;
+GsOT *gModelOrderingTable __attribute__((section(".sdata.model_renderer_state"))) = NULL;
+/* Unreferenced zero words between the renderer's live state variables. */
+static u32 sModelStatePadding74[3] __attribute__((section(".sdata.model_renderer_state"))) = {0, 0, 0};
+void *gModelPrimitiveCursor __attribute__((section(".sdata.model_renderer_state"))) = NULL;
+static u32 sModelStatePadding84 __attribute__((section(".sdata.model_renderer_state"))) = 0;
+SVECTOR *gModelVertices __attribute__((section(".sdata.model_renderer_state"))) = NULL;
+u32 gModelPrimitiveCount __attribute__((section(".sdata.model_renderer_state"))) = 0;
+static u32 sModelStatePadding90[3] __attribute__((section(".sdata.model_renderer_state"))) = {0, 0, 0};
+s32 gModelDepthShift __attribute__((section(".sdata.model_renderer_state"))) = 0;
+static u32 sModelStatePaddingA0 __attribute__((section(".sdata.model_renderer_state"))) = 0;
+
+
 void emitProjectedFlatTriangle(TriangleScratchVertex *vertices) {
     TriangleScratchpad *scratch = TRIANGLE_SCRATCHPAD;
     POLY_F3 *packet = (POLY_F3 *)GsOUT_PACKET_P;

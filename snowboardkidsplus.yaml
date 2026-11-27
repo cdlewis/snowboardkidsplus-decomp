@@ -1187,7 +1187,7 @@ segments:
       - {start: 0x12BE20, type: .sdata, name: race/ui/race_hud_modes, linker_section: .sdata.race_hud_mode, linker_section_order: .data}
       - {start: 0x12BE24, type: .sdata, name: race/course/course_geometry, linker_section: .sdata.geometry_edge_projection, linker_section_order: .data}
       - {start: 0x12BE54, type: .sdata, name: graphics/course_rendering, linker_section: .sdata.course_model_state, linker_section_order: .data}
-      - [0x12BE68, data]
+      - {start: 0x12BE68, type: .sdata, name: graphics/model_renderer, linker_section: .sdata.model_renderer_state, linker_section_order: .data}
       - {start: 0x12BEA4, type: .sdata, name: race/course/course_objects, linker_section: .sdata.object_sort_saved_stack, linker_section_order: .data}
       - {start: 0x12BEA8, type: .sdata, name: race/course/course_objects, linker_section: .sdata.alternate_object_sort_saved_stack, linker_section_order: .data}
       - [0x12BEAC, data]
