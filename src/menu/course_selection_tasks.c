@@ -172,7 +172,7 @@ extern u8 gGroupedSelectionMode5Items[4];
 extern u8 gGroupedSelectionMode4Items[4];
 extern u8 gGroupedCourseMenuTextIndices[4];
 extern u8 gExtendedGroupedCourseMenuTextIndices[5];
-extern u8 D_8013B448[];
+extern u8 gGroupedSelectionMode4TextIndices[4];
 extern u8 gDefaultBoardMenuTextIndices[4];
 extern u8 gSelectionPanelTripletIndices[4];
 extern u8 gExtendedSelectionPanelTripletIndices[5];
@@ -183,7 +183,7 @@ GroupedSelectionMenuDescriptor gGroupedCourseMenuDescriptors[]
     {gGroupedSelectionMode1Items, 0, 20, 5, 0, gExtendedGroupedCourseMenuTextIndices, NULL, gExtendedSelectionPanelTripletIndices},
     {gGroupedSelectionMode2Items, 0, 24, 4, 0, gGroupedCourseMenuTextIndices, NULL, gSelectionPanelTripletIndices},
     {gDefaultBoardMenuItems, 0, 20, 3, 0, gDefaultBoardMenuTextIndices, NULL, NULL},
-    {gGroupedSelectionMode4Items, 0, 16, 3, 0, D_8013B448, NULL, NULL},
+    {gGroupedSelectionMode4Items, 0, 16, 3, 0, gGroupedSelectionMode4TextIndices, NULL, NULL},
     {gGroupedSelectionMode5Items, 0, 24, 4, 0, gGroupedCourseMenuTextIndices, NULL, gSelectionPanelTripletIndices},
 };
 
@@ -890,7 +890,7 @@ void drawSelectionItemDetails(void) {
     if ((u16)index >= 10) {
         return;
     }
-    stats = &D_8012FCE4[index];
+    stats = &gCourseMenuItemStats[index];
     if (stats->price && stats->rating) {
         drawSpriteByIndexWithBlend(position->x / 4096 + 84, position->y / 4096 + 128,
                      0xBC, 10, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);

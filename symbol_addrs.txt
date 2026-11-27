@@ -4494,3 +4494,6 @@ gMemoryCardLoadSlotChoiceText = 0x8013066C; // size:0x28
 gExtendedGroupedCourseMenuTextIndices = 0x8013B440; // size:0x8
 gMemoryCardLoadOptionsText = 0x801306EC; // size:0x1C
 gMemoryCardLoadedRecordConfirmationText = 0x80130780; // size:0x18
+
+gCourseMenuItemStats = 0x8012FCE4;
+gGroupedSelectionMode4TextIndices = 0x8013B448;

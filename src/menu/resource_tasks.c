@@ -798,7 +798,7 @@ void drawMainTailSelectionItemDetails(void) {
     if ((u16)index >= 10) {
         return;
     }
-    stats = &D_8012FCE4[index];
+    stats = &gCourseMenuItemStats[index];
     if (stats->price && stats->rating) {
         drawSpriteByIndexWithBlend(position->x / 4096 + 84, position->y / 4096 + 128,
                      0xBC, 10, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);

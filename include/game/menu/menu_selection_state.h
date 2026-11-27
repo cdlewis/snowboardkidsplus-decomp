@@ -73,7 +73,7 @@ typedef struct SelectionItemStats {
     u16 price;
 } SelectionItemStats;
 
-extern SelectionItemStats D_8012FCE4[];
+extern SelectionItemStats gCourseMenuItemStats[];
 extern ByteMappingDescriptor gCourseMenuMappingGroups[4];
 extern const u16 *gSelectionPanelTexts[10];
 void drawRegisteredSelectionItemStatus(void);
