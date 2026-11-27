@@ -20,6 +20,7 @@ extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern u32 gTaskTransitionFlags __attribute__((section(".data")));
 
+const char gRecordLapTimeLabel[12] __attribute__((section(".rodata.record_lap_time_label"), aligned(4))) = "-LAP TIME-";
 const char gHitCountTimeOutLabel[12] __attribute__((section(".rodata.hit_count_time_out"), aligned(4))) = "TIME OUT";
 char gHitCountTotalFormat[4] __attribute__((section(".data.hit_count_labels"), aligned(4))) = "/%d";
 char gHitCountMarker[4] __attribute__((section(".data.hit_count_labels"), aligned(4))) = "*";
@@ -43,7 +44,6 @@ const char gRaceComparisonSpeedFanLabel[16] __attribute__((section(".rodata.race
 const char gRaceComparisonHitCountLabel[12] __attribute__((section(".rodata.race_comparison_labels"), aligned(4))) = "HIT COUNT";
 const char gRaceComparisonTrickPointLabel[12] __attribute__((section(".rodata.race_comparison_labels"), aligned(4))) = "TRICK POINT";
 
-extern const char gRecordLapTimeLabel[12];
 extern char gCountRecordHitLabel[4];
 extern char gRaceResultsFastLabel[];
 

@@ -4472,7 +4472,7 @@ gSelectionPrizeDescriptionTexts = 0x8012FC2C; // size:0x28
 gMemoryCardMissingRetryText = 0x80130308; // size:0x40
 gMemoryCardLoadErrorRetryText = 0x80130348; // size:0x48
 
-gRecordLapTimeLabel = 0x80010A94; // type:char
+gRecordLapTimeLabel = 0x80010A94; // type:char size:0xC
 gCountRecordHitLabel = 0x8013B138; // type:char size:0x4
 
 gCameraYawMatrix = 0x8012A6B0; // size:0x20
