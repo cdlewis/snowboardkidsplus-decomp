@@ -4518,8 +4518,8 @@ gGroupedSelectionMode4TextIndices = 0x8013B448;
 
 gPlayerModeSelectionSprites = 0x80123B50; // size:0x18
 gPlayerModeSelectionMapping = 0x8013B0FC; // size:0x4
-gDefaultCourseVisualFrames = 0x801294AC;
-gCourseVisualFramesByPlacementType = 0x80129540;
+gDefaultCourseVisualFrames = 0x801294AC; // size:0x10 defined:true
+gCourseVisualFramesByPlacementType = 0x8012956C; // size:0x34 defined:true
 gCoursePlayerCollisionRegions = 0x80129A18;
 gCoursePlayerField94CTargets = 0x8012BBB4;
 gCourse2VisualFrames = 0x8013B29C;
@@ -4574,3 +4574,15 @@ gUnusedBackgroundQuads = 0x80124C60; // type:POLY_G4 size:0xD8 defined:true
 gUnusedBackgroundRectangles = 0x80124D38; // size:0x3C defined:true
 
 gCourseRenderingReserved24FD4 = 0x80124FD4; // size:0x20 defined:true
+
+gCourseVisualFramesType12 = 0x801294BC; // size:0x10 defined:true
+gCourseVisualFramesType13 = 0x801294CC; // size:0x10 defined:true
+gCourseVisualFramesType14 = 0x801294DC; // size:0x10 defined:true
+gCourseVisualFramesType15 = 0x801294EC; // size:0x10 defined:true
+gCourseVisualFramesType16 = 0x801294FC; // size:0x10 defined:true
+gCourseVisualFramesType17 = 0x8012950C; // size:0x10 defined:true
+gCourseVisualFramesType18 = 0x8012951C; // size:0x10 defined:true
+gCourseVisualFramesType19 = 0x8012952C; // size:0x10 defined:true
+gCourseVisualFramesType20 = 0x8012953C; // size:0x10 defined:true
+gCourseVisualFramesType21 = 0x8012954C; // size:0x10 defined:true
+gCourseVisualFramesType22 = 0x8012955C; // size:0x10 defined:true

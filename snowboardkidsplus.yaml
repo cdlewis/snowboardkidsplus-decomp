@@ -798,7 +798,7 @@ segments:
       - {start: 0x119BDC, type: .data, name: race/course/course_objects, linker_section: .data.course_object_placements}
       - {start: 0x119C04, type: .data, name: race/course/course_objects, linker_section: .data.course_challenge_placements}
       - {start: 0x119C7C, type: .data, name: race/course/course_objects, linker_section: .data.pickup_visual_frames}
-      - [0x119CAC, data, pickup_visual_frames_tail]
+      - {start: 0x119CAC, type: .data, name: race/course/course_objects, linker_section: .data.course_visual_frames}
       - {start: 0x119DA0, type: .data, name: race/course/course_objects, linker_section: .data.placed_object_model_ids}
       - [0x119DB0, data, course_visual_settings]
       - {start: 0x119EA0, type: .data, name: race/course/course_objects, linker_section: .data.visual_placement_heights}

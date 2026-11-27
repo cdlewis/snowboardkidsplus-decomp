@@ -827,7 +827,6 @@ extern VisualPlacement *gInteractionVisualPlacements;
 extern VisualPlacement *gCurrentCourseObjectPlacements;
 extern u8 gCourseVisualPlacementStartIndex, gCourseVisualPlacementCount;
 /* The course lookup base precedes its valid pointer entries in shared frame data. */
-extern TaskVisualFrame *gCourseVisualFramesByPlacementType[];
 void updatePlacedObjectTask(void);
 void updatePlacedObjectBounceTask(void);
 void updateOrbitingObstacleTask(void);

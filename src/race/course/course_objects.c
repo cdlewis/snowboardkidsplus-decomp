@@ -28,6 +28,7 @@
 #include "psx/libgte.h"
 
 #define COURSE_PLACEMENT_LIMIT 140
+#define COURSE_VISUAL_FIRST_PLACEMENT_TYPE 11
 #define PLACEMENT_END 0xFF
 #define PLACEMENT_FLAG_COLLECTED 0x40
 
@@ -1137,6 +1138,95 @@ TaskVisualFrame gPickupVisualFrames[6] __attribute__((section(".data.pickup_visu
     {0xC8, 0x98, 0x08, 0x20, 0x000D, 0x3DB9},
     {0xD0, 0x98, 0x10, 0x20, 0x000D, 0x3DB9},
     {0xE0, 0x98, 0x18, 0x20, 0x000D, 0x3DB9},
+};
+
+TaskVisualFrame gDefaultCourseVisualFrames[2]
+    __attribute__((section(".data.course_visual_frames"), aligned(4))) = {
+    {0x00, 0x00, 0x40, 0x40, 0x001A, 0x7C6A},
+    {0x40, 0x00, 0x40, 0x40, 0x001A, 0x7C6A},
+};
+
+TaskVisualFrame gCourseVisualFramesType12[2]
+    __attribute__((section(".data.course_visual_frames"), aligned(4))) = {
+    {0x80, 0x00, 0x40, 0x40, 0x001A, 0x7CAA},
+    {0xC0, 0x00, 0x40, 0x40, 0x001A, 0x7CAA},
+};
+
+TaskVisualFrame gCourseVisualFramesType13[2]
+    __attribute__((section(".data.course_visual_frames"), aligned(4))) = {
+    {0x00, 0x40, 0x40, 0x40, 0x001A, 0x7CEA},
+    {0x40, 0x40, 0x40, 0x40, 0x001A, 0x7CEA},
+};
+
+TaskVisualFrame gCourseVisualFramesType14[2]
+    __attribute__((section(".data.course_visual_frames"), aligned(4))) = {
+    {0x80, 0x40, 0x40, 0x40, 0x001A, 0x7D2A},
+    {0xC0, 0x40, 0x40, 0x40, 0x001A, 0x7D2A},
+};
+
+TaskVisualFrame gCourseVisualFramesType15[2]
+    __attribute__((section(".data.course_visual_frames"), aligned(4))) = {
+    {0x00, 0x00, 0x40, 0x40, 0x001A, 0x7D6A},
+    {0x40, 0x00, 0x40, 0x40, 0x001A, 0x7D6A},
+};
+
+TaskVisualFrame gCourseVisualFramesType16[2]
+    __attribute__((section(".data.course_visual_frames"), aligned(4))) = {
+    {0x80, 0x00, 0x40, 0x40, 0x001A, 0x7DEA},
+    {0xC0, 0x00, 0x40, 0x40, 0x001A, 0x7DEA},
+};
+
+TaskVisualFrame gCourseVisualFramesType17[2]
+    __attribute__((section(".data.course_visual_frames"), aligned(4))) = {
+    {0x00, 0x40, 0x40, 0x40, 0x001A, 0x7E2A},
+    {0x40, 0x40, 0x40, 0x40, 0x001A, 0x7E2A},
+};
+
+TaskVisualFrame gCourseVisualFramesType18[2]
+    __attribute__((section(".data.course_visual_frames"), aligned(4))) = {
+    {0x80, 0x40, 0x40, 0x40, 0x001A, 0x7DAA},
+    {0xC0, 0x40, 0x40, 0x40, 0x001A, 0x7DAA},
+};
+
+TaskVisualFrame gCourseVisualFramesType19[2]
+    __attribute__((section(".data.course_visual_frames"), aligned(4))) = {
+    {0x00, 0x00, 0x40, 0x40, 0x001A, 0x7E6A},
+    {0x40, 0x00, 0x40, 0x40, 0x001A, 0x7E6A},
+};
+
+TaskVisualFrame gCourseVisualFramesType20[2]
+    __attribute__((section(".data.course_visual_frames"), aligned(4))) = {
+    {0x80, 0x00, 0x40, 0x40, 0x001A, 0x7EEA},
+    {0xC0, 0x00, 0x40, 0x40, 0x001A, 0x7EEA},
+};
+
+TaskVisualFrame gCourseVisualFramesType21[2]
+    __attribute__((section(".data.course_visual_frames"), aligned(4))) = {
+    {0x00, 0x40, 0x40, 0x40, 0x001A, 0x7F2A},
+    {0x40, 0x40, 0x40, 0x40, 0x001A, 0x7F2A},
+};
+
+TaskVisualFrame gCourseVisualFramesType22[2]
+    __attribute__((section(".data.course_visual_frames"), aligned(4))) = {
+    {0x80, 0x40, 0x40, 0x40, 0x001A, 0x7EAA},
+    {0xC0, 0x40, 0x40, 0x40, 0x001A, 0x7EAA},
+};
+
+TaskVisualFrame *gCourseVisualFramesByPlacementType[13]
+    __attribute__((section(".data.course_visual_frames"), aligned(4))) = {
+    gDefaultCourseVisualFrames,
+    gCourseVisualFramesType12,
+    gCourseVisualFramesType13,
+    gCourseVisualFramesType14,
+    gCourseVisualFramesType15,
+    gCourseVisualFramesType16,
+    gCourseVisualFramesType17,
+    gCourseVisualFramesType18,
+    gCourseVisualFramesType19,
+    gCourseVisualFramesType20,
+    gCourseVisualFramesType21,
+    gCourseVisualFramesType22,
+    gCourse2VisualFrames,
 };
 
 struct VisualPlacementHeightData gVisualPlacementHeightData __attribute__((section(".data.visual_placement_heights"))) = {
@@ -2461,7 +2551,7 @@ void updateCourseVisualTask(void) {
                 heightOffsets = gVisualPlacementHeightData.offsets;
                 resource->coordinate.coord.t[1] -= heightOffsets[height];
             }
-            drawPreparedTaskVisualQuad(resource, gCourseVisualFramesByPlacementType[gCurrentCourseObjectPlacements[i].unk01], 2);
+            drawPreparedTaskVisualQuad(resource, gCourseVisualFramesByPlacementType[gCurrentCourseObjectPlacements[i].unk01 - COURSE_VISUAL_FIRST_PLACEMENT_TYPE], 2);
         }
     }
     if (gRacePauseState == 0) {
