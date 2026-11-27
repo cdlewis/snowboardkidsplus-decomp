@@ -15,7 +15,7 @@ extern u16 gUnlockNotificationFlags __attribute__((section(".data")));
  */
 extern u32 gGameOptionFlags;
 extern u8 gPlayerCount;
-extern u8 D_8013AFE0;
+extern u8 gRaceRuleset;
 extern u8 D_8013AFE1;
 extern u8 gMainMenuSelectionIndex;
 extern u8 D_8013B108;

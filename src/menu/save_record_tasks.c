@@ -924,8 +924,8 @@ void setPairedStateIndexedFlag(s16 index) {
 }
 
 s32 getModeFilteredGameOptionFlag2(void) {
-    if (D_8013AFD8 != 0) {
-        return (u32)(D_8013AFD8 - 7) < 2;
+    if (gModeSequenceStage != 0) {
+        return (u32)(gModeSequenceStage - 7) < 2;
     }
     if (gControllerPlaybackIndex != 0) {
         return 0;
@@ -937,8 +937,8 @@ s32 getModeFilteredGameOptionFlag2(void) {
 }
 
 s32 getStateAdjustedGameOptionFlag1(void) {
-    if (D_8013AFD8 != 0) {
-        return (u32)(D_8013AFD8 - 7) < 2;
+    if (gModeSequenceStage != 0) {
+        return (u32)(gModeSequenceStage - 7) < 2;
     }
     if (gControllerPlaybackIndex != 0) {
         return 0;

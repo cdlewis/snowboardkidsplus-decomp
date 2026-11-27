@@ -50,8 +50,8 @@ typedef struct ProximityParticleResource {
     u8 unkD2[0x2E];
 } ProximityParticleResource;
 
-extern u8 D_8013AFD8 __attribute__((section(".data")));
-extern u16 D_8013AFAA __attribute__((section(".data")));
+extern u8 gModeSequenceStage __attribute__((section(".data")));
+extern u16 gGameStateFlags __attribute__((section(".data")));
 extern s16 gFrameCounter __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern VECTOR *gScratchVector0 __attribute__((section(".data")));
@@ -59,7 +59,7 @@ extern SVECTOR *gScratchShortVector1 __attribute__((section(".data")));
 extern MATRIX *gScratchMatrix0 __attribute__((section(".data")));
 extern u32 *gCurrentPlayerOrderingTable __attribute__((section(".data")));
 extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
-extern u8 D_8013AFE0 __attribute__((section(".data")));
+extern u8 gRaceRuleset __attribute__((section(".data")));
 extern u8 gMainMenuSelectionIndex __attribute__((section(".data")));
 extern u8 gRacePauseState __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
@@ -605,7 +605,7 @@ void initializeCourseObjects(void) {
                 break;
             case 8:
             case 9:
-                if (gMainMenuSelectionIndex != 1 || D_8013AFE0 != 1) {
+                if (gMainMenuSelectionIndex != 1 || gRaceRuleset != 1) {
                     if (i < D_8013B2B7) {
                         D_8013B2B7 = i;
                     }
@@ -624,7 +624,7 @@ void initializeCourseObjects(void) {
     } while (i != COURSE_PLACEMENT_LIMIT);
 
     if (gMainMenuSelectionIndex == 1) {
-        switch (D_8013AFE0) {
+        switch (gRaceRuleset) {
         case 0:
             gInteractionVisualPlacements = gCourseChallengePlacements[playerCountAbsolute][gSelectedCourseIndex];
             i = 0;
@@ -668,7 +668,7 @@ createVisualTasks:
 }
 
 u16 getRenderCameraIndex(void) {
-    if (D_8013AFAA & 0x400) {
+    if (gGameStateFlags & 0x400) {
         if (gFrameCounter & 1) {
             return 1;
         }
@@ -694,9 +694,9 @@ void drawTaskObject(u16 index) {
     GsGetLs(object->coord2, gScratchMatrix0);
     GsSetLsMatrix(gScratchMatrix0);
     if (getRenderCameraIndex()) {
-        GsSortObject4(object, &D_800EC0B8[gActiveGraphicsBuffer], 2, (u32 *)getScratchAddr(0));
+        GsSortObject4(object, &gPlayer2OrderingTables[gActiveGraphicsBuffer], 2, (u32 *)getScratchAddr(0));
     } else {
-        GsSortObject4(object, &D_800EC018[gActiveGraphicsBuffer], 2, (u32 *)getScratchAddr(0));
+        GsSortObject4(object, &gPlayer1OrderingTables[gActiveGraphicsBuffer], 2, (u32 *)getScratchAddr(0));
     }
     SetSp(gObjectSortSavedStackPointer);
 }
@@ -1592,7 +1592,7 @@ void updatePlacedObjectTask(void) {
                     } else {
                         itemPlayer = (RacePlayer *)(i * sizeof(*players) + (u32)players);
                         itemPlayer->heldItem = gPlacedObjectItemChoices[itemPlayer->unk935][randomNextObject(itemPlayer) & 15];
-                        if (D_8013AFD8) {
+                        if (gModeSequenceStage) {
                             itemPlayer->heldItem = 1;
                         }
                         if (gSelectedCourseIndex == 8 && itemPlayer->unk008 &&
@@ -2055,7 +2055,7 @@ void resolvePlayerRegionCollision(RacePlayer *player, PlayerCollisionRegion *reg
                 addPlayerCappedCounters(player->playerIndex, 300);
                 createActivePlayerSlidingNumberTask(300, player->playerIndex);
             }
-            if (gMainMenuSelectionIndex == 1 && D_8013AFE0 == 2) {
+            if (gMainMenuSelectionIndex == 1 && gRaceRuleset == 2) {
                 playSoundEffect(0, 0x501, 0x40);
                 player->trickAttackPointTotal *= 2;
                 createTrickAttackMultiplierDisplayTask(player->playerIndex);
@@ -2386,9 +2386,9 @@ void updateOrbitingObstacleTask(void) {
         GsGetLs(&resource->coordinate, gScratchMatrix0);
         GsSetLsMatrix(gScratchMatrix0);
         if (getRenderCameraIndex()) {
-            drawProjectedModelPrimitives(gOptionalCourseModels[0], &D_800EC0B8[gActiveGraphicsBuffer], 2, 1);
+            drawProjectedModelPrimitives(gOptionalCourseModels[0], &gPlayer2OrderingTables[gActiveGraphicsBuffer], 2, 1);
         } else {
-            drawProjectedModelPrimitives(gOptionalCourseModels[0], &D_800EC018[gActiveGraphicsBuffer], 2, 1);
+            drawProjectedModelPrimitives(gOptionalCourseModels[0], &gPlayer1OrderingTables[gActiveGraphicsBuffer], 2, 1);
         }
     }
 }

@@ -13,12 +13,12 @@
 #include "game/race/player/race_player.h"
 #include "game/save/save_data.h"
 
-extern u8 D_8013AFD8 __attribute__((section(".data")));
+extern u8 gModeSequenceStage __attribute__((section(".data")));
 extern u8 gControllerPlaybackIndex __attribute__((section(".data")));
 extern s16 D_8013AFDE __attribute__((section(".data")));
 extern u8 D_8013AFE1 __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
-extern u8 D_8013AFE0 __attribute__((section(".data")));
+extern u8 gRaceRuleset __attribute__((section(".data")));
 extern u8 gMainMenuSelectionIndex __attribute__((section(".data")));
 extern u8 gRacePauseState __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
@@ -56,9 +56,9 @@ void initializeControllerPlaybackRaceTask(void) {
     gRacePauseState = 0;
     gSelectedPlayerReplayActive = 0;
     D_8013AFE1 = 0;
-    D_8013AFD8 = 0;
+    gModeSequenceStage = 0;
     gMainMenuSelectionIndex = 0;
-    D_8013AFE0 = 0;
+    gRaceRuleset = 0;
     player[0].unk008 = 0;
     player[1].unk008 = 0;
     player[2].unk008 = 1;
@@ -143,12 +143,12 @@ void finishControllerPlaybackTransition(void) {
             playbackControllerInput(1);
         } else {
             stopPlayerSound(0);
-            D_8013AFAA = (D_8013AFAA | 0x1090) & ~0x2000;
+            gGameStateFlags = (gGameStateFlags | 0x1090) & ~0x2000;
             resetPendingCdRequests();
             resetPaletteRecords();
             deleteCurrentTaskDescendants();
             D_8013B10C = -1;
-            D_8013AFAA |= 0x48;
+            gGameStateFlags |= 0x48;
             queueMenuResourceReads(2);
             D_8013B106 = 0;
             playbackTransitionByteAbsolute = 0;

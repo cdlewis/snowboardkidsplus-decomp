@@ -41,7 +41,7 @@ void initPlayerCamera(u16 index) {
     initialView->vpz = 0;
     initialView->vrx = 0;
     initialView->vry = 0;
-    if (!(D_8013AFAA & 0xC00)) initialView->vrz = 320;
+    if (!(gGameStateFlags & 0xC00)) initialView->vrz = 320;
     else initialView->vrz = 576;
     views = gPlayerCameraViews;
     view = &views[index];
@@ -186,7 +186,7 @@ void initCurrentPlayerCameraTask(void) {
         if (gCurrentTask->data18 == 0) {
             queueCdCommand(D_80124164[gSelectedCourseIndex], 0);
         } else {
-            D_8013AFAA |= 0x800;
+            gGameStateFlags |= 0x800;
         }
         setCurrentTaskCallback(updateCurrentPlayerCameraTask);
     } else {
@@ -230,7 +230,7 @@ void updateRaceIntroCameraTask(void) {
         }
         if (gCurrentTask->data1A == 0) {
             if (playerCountAbsolute == 2) {
-                D_8013AFAA |= 0x800;
+                gGameStateFlags |= 0x800;
             }
             initPlayerCameraAndTarget(gCurrentTask->data18);
             configureTaskStateTransition(4, 0, 40);
@@ -245,7 +245,7 @@ void updateRaceIntroCameraTask(void) {
         }
     }
 
-    if (gCurrentTask->data18 == 0 || (D_8013AFAA & 0x400)) {
+    if (gCurrentTask->data18 == 0 || (gGameStateFlags & 0x400)) {
         renderCurrentCameraPlayersAndUpdateSound();
     }
 

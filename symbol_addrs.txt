@@ -3549,7 +3549,7 @@ initializeGameSystems = 0x8001AB3C; // type:func
 
 gMainOrderingTables = 0x800EBFF0; // size:0x28 defined:true
 
-D_800EC018 = 0x800EC018; // size:0x28 defined:true
+gPlayer1OrderingTables = 0x800EC018; // size:0x28 defined:true
 
 D_800EC040 = 0x800EC040; // size:0x28 defined:true
 
@@ -3557,7 +3557,7 @@ D_800EC068 = 0x800EC068; // size:0x28 defined:true
 
 D_800EC090 = 0x800EC090; // size:0x28 defined:true
 
-D_800EC0B8 = 0x800EC0B8; // size:0x28 defined:true
+gPlayer2OrderingTables = 0x800EC0B8; // size:0x28 defined:true
 
 D_800EC0E0 = 0x800EC0E0; // size:0x28 defined:true
 
@@ -4298,6 +4298,9 @@ gMainMenuSelectionIndex = 0x8013AFE2;
 gSharedScratchVector = 0x800EB22C; // size:0x10
 gSelectedPlayerReplayActive = 0x8013AFD6; // size:0x1
 gControllerPlaybackIndex = 0x8013AFD9; // size:0x1
+gGameStateFlags = 0x8013AFAA; // size:0x2
+gModeSequenceStage = 0x8013AFD8; // size:0x1
+gRaceRuleset = 0x8013AFE0; // size:0x1
 gSelectedPlayerAction = 0x8013B0E4; // size:0x2
 
 gCourseGeometryTriangleRecords = 0x8013B1F0;

@@ -843,7 +843,7 @@ void updateRacePlayerFinishSlotsTask(void) {
     if (gTaskTransitionFlags & 0x40) {
         deleteCurrentTaskSubtree();
     } else {
-        if (gMainMenuSelectionIndex == 1 && D_8013AFE0 == 1) {
+        if (gMainMenuSelectionIndex == 1 && gRaceRuleset == 1) {
             D_8013B1D4 = 0;
         }
         resolveRacePlayerOverlaps();
@@ -1806,7 +1806,7 @@ void initializeNewGameSaveData(void) {
     }
 
     playerCountAbsolute = 1;
-    D_8013AFE0 = 0;
+    gRaceRuleset = 0;
 
     for (i = 0; i < 4; i++) {
         gRacePlayers[i].unk009 = i;

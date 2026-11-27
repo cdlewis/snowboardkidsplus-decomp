@@ -49,7 +49,7 @@ extern s16 D_8013B1FE __attribute__((section(".data")));
 extern s16 *D_8013B200 __attribute__((section(".data")));
 extern s16 *D_8013B204 __attribute__((section(".data")));
 extern s16 *D_8013B208 __attribute__((section(".data")));
-extern u8 D_8013AFD8 __attribute__((section(".data")));
+extern u8 gModeSequenceStage __attribute__((section(".data")));
 extern u8 gControllerPlaybackIndex __attribute__((section(".data")));
 extern u8 D_8013AFE1 __attribute__((section(".data")));
 extern s16 gFrameCounter __attribute__((section(".data")));
@@ -1343,7 +1343,7 @@ void initializeCurrentPlayerModelAndHeight(void) {
     player->unk962 = -1;
     gCurrentRacePlayer = player;
     initializeCurrentPlayerModelObjects((DAT_PLAYER_MODEL_BUFFERS)[gCurrentTask->data18]);
-    if (!D_8013AFD8 && !gControllerPlaybackIndex) {
+    if (!gModeSequenceStage && !gControllerPlaybackIndex) {
         gCurrentRacePlayer->unk92E = 0;
     } else {
         gCurrentRacePlayer->unk0B6 = gCurrentRacePlayer->unk110 - 0x400;
@@ -4912,7 +4912,7 @@ void initializeCurrentRacePlayer(void) {
     } else if (gControllerPlaybackIndex) {
         currentPlayerAbsolute->unk945 = 8;
     }
-    if (gMainMenuSelectionIndex == 1 && D_8013AFE0 == 1) {
+    if (gMainMenuSelectionIndex == 1 && gRaceRuleset == 1) {
         if (playerCountAbsolute == 1) {
             currentPlayerAbsolute->unk93C = 10;
         } else {
@@ -4928,7 +4928,7 @@ void initializeCurrentRacePlayer(void) {
         gCreatedTask->data18 = currentPlayerAbsolute->playerIndex;
     }
 
-    switch (D_8013AFD8) {
+    switch (gModeSequenceStage) {
         case 1:
             *(s16 *)&currentPlayerAbsolute->unk110 = -0x57E;
             currentPlayerAbsolute->x = 0xFF6E1C30;
@@ -5197,7 +5197,7 @@ void awardCurrentPlayerTrickRewards(void) {
         }
     }
 
-    if (gMainMenuSelectionIndex == 1 && D_8013AFE0 == 2 && points != 0) {
+    if (gMainMenuSelectionIndex == 1 && gRaceRuleset == 2 && points != 0) {
         if (points > 9999) {
             points = 9999;
         }

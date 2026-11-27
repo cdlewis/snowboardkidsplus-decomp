@@ -5,7 +5,7 @@ u32 gGameOptionFlags __attribute__((section(".data"))) = 0x3E;
 u16 gUnlockNotificationFlags = 0;
 static u16 sUnlockNotificationPadding __attribute__((section(".data"))) = 0;
 
-extern u8 D_8013AFD8 __attribute__((section(".data")));
+extern u8 gModeSequenceStage __attribute__((section(".data")));
 extern u8 gMainMenuSelectionIndex __attribute__((section(".data")));
 
 s32 getStereoSoundFlag(void) {
@@ -23,7 +23,7 @@ s32 getPlayerOptionFlag(s16 playerIndex) {
 s32 getModeFilteredAutoPilotFlag(s16 playerIndex) {
     s32 result = 0;
 
-    if (D_8013AFD8 || gMainMenuSelectionIndex) {
+    if (gModeSequenceStage || gMainMenuSelectionIndex) {
         return result;
     }
     result = gGameOptionFlags & (16 << playerIndex);

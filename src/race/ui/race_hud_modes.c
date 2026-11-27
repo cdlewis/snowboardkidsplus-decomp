@@ -25,7 +25,7 @@ typedef struct CourseProgressScratch {
     s32 distance;
 } CourseProgressScratch;
 
-extern u8 D_8013AFD8 __attribute__((section(".data")));
+extern u8 gModeSequenceStage __attribute__((section(".data")));
 extern u8 gControllerPlaybackIndex __attribute__((section(".data")));
 extern s16 gFrameCounter __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
@@ -34,7 +34,7 @@ extern u32 gTaskTransitionFlags __attribute__((section(".data")));
 extern u8 gSelectedPlayerReplayActive __attribute__((section(".data")));
 extern u8 gRacePauseState __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
-extern u16 D_8013AFAA __attribute__((section(".data")));
+extern u16 gGameStateFlags __attribute__((section(".data")));
 
 extern u8 gRacePlacementPalettes[4] __attribute__((section(".data")));
 
@@ -105,7 +105,7 @@ void updateCurrentPlayerCameraTask(void) {
         PlayerCamera *cameras;
         GsRVIEW2 *views;
 
-        if (!(D_8013AFAA & 0xC00)) {
+        if (!(gGameStateFlags & 0xC00)) {
             CAMERA.unk10 = -320;
         } else {
             CAMERA.unk10 = -576;
@@ -325,10 +325,10 @@ void updateCurrentPlayerCameraTask(void) {
     }
 
     if (gCurrentTask->data18 == 0) {
-        if (D_8013AFAA & 0x2000) {
+        if (gGameStateFlags & 0x2000) {
             goto stopCamera;
         }
-    } else if (!(D_8013AFAA & 0x2400)) {
+    } else if (!(gGameStateFlags & 0x2400)) {
     stopCamera:
         stopPlayerSound(gCurrentTask->data18);
         deleteCurrentTaskSubtree();
@@ -555,7 +555,7 @@ void initializeRaceRulesAndCounters(void) {
         }
         break;
     case 1:
-        if (D_8013AFE0 == 0) {
+        if (gRaceRuleset == 0) {
             if (playerCountAbsolute == 1) {
                 D_8013B620 = 2;
             } else {
@@ -565,7 +565,7 @@ void initializeRaceRulesAndCounters(void) {
             gRacePlayers[0].totalCourseCoinMarkerCount = D_8012429C[gSelectedCourseIndex];
             gRacePlayers[1].collectedCourseCoinMarkerCount = 0;
             gRacePlayers[1].totalCourseCoinMarkerCount = D_8012429C[gSelectedCourseIndex];
-        } else if (D_8013AFE0 == 1) {
+        } else if (gRaceRuleset == 1) {
             if (playerCountAbsolute == 1) {
                 D_8013B620 = 4;
                 D_8013B184 = D_80124248[gSelectedCourseIndex];
@@ -579,7 +579,7 @@ void initializeRaceRulesAndCounters(void) {
             gRacePlayers[0].scoreAttackPointTarget = D_801242A8[gSelectedCourseIndex];
             gRacePlayers[1].scoreAttackPointTotal = 0;
             gRacePlayers[1].scoreAttackPointTarget = D_801242A8[gSelectedCourseIndex];
-        } else if (D_8013AFE0 == 2) {
+        } else if (gRaceRuleset == 2) {
             if (playerCountAbsolute == 1) {
                 D_8013B620 = 6;
                 D_8013B184 = D_8013B154;
@@ -595,7 +595,7 @@ void initializeRaceRulesAndCounters(void) {
         D_8013B620 = 8;
         break;
     }
-    if (D_8013AFD8 != 0 || gControllerPlaybackIndex != 0) {
+    if (gModeSequenceStage != 0 || gControllerPlaybackIndex != 0) {
         D_8013B620 = 9;
     }
     flags = D_8013B1A0;
@@ -796,7 +796,7 @@ void updateRaceHud(void) {
 }
 
 void drawSinglePlayerRaceHud(void) {
-    GsOT *ot = &D_800EC018[gActiveGraphicsBuffer];
+    GsOT *ot = &gPlayer1OrderingTables[gActiveGraphicsBuffer];
     RacePlayer *player;
     s16 scale;
     RacePlayer *firstPlayer;
@@ -860,10 +860,10 @@ void drawSplitScreenRaceHud(s16 player) {
     s32 moneyPalette;
 
     if (player == 0) {
-        playerOt = &D_800EC018[gActiveGraphicsBuffer];
+        playerOt = &gPlayer1OrderingTables[gActiveGraphicsBuffer];
         hudY = 0;
     } else {
-        playerOt = &D_800EC0B8[gActiveGraphicsBuffer];
+        playerOt = &gPlayer2OrderingTables[gActiveGraphicsBuffer];
         hudY = 105;
     }
 
@@ -955,11 +955,11 @@ void drawSplitScreenTrickAttackHud(s16 player) {
     u8 padding[0x10]; /* Preserve the original stack frame. */
 
     if (player == 0) {
-        timeOt = &D_800EC018[gActiveGraphicsBuffer];
+        timeOt = &gPlayer1OrderingTables[gActiveGraphicsBuffer];
         hudY = 0;
         timeY = 0;
     } else {
-        timeOt = &D_800EC0B8[gActiveGraphicsBuffer];
+        timeOt = &gPlayer2OrderingTables[gActiveGraphicsBuffer];
         hudY = 104;
         timeY = 0;
     }
@@ -1049,10 +1049,10 @@ void drawSplitScreenScoreAttackHud(s16 player) {
     u16 fixedDepth = 1;
 
     if (player == 0) {
-        timeOt = &D_800EC018[gActiveGraphicsBuffer];
+        timeOt = &gPlayer1OrderingTables[gActiveGraphicsBuffer];
         timeY = hudY = 0;
     } else {
-        timeOt = &D_800EC0B8[gActiveGraphicsBuffer];
+        timeOt = &gPlayer2OrderingTables[gActiveGraphicsBuffer];
         hudY = 104;
         timeY = 0;
     }
@@ -1144,11 +1144,11 @@ void drawSplitScreenCourseCoinHud(s16 player) {
     char text[16];
 
     if (player == 0) {
-        timeOt = &D_800EC018[gActiveGraphicsBuffer];
+        timeOt = &gPlayer1OrderingTables[gActiveGraphicsBuffer];
         hudY = 0;
         timeY = 0;
     } else {
-        timeOt = &D_800EC0B8[gActiveGraphicsBuffer];
+        timeOt = &gPlayer2OrderingTables[gActiveGraphicsBuffer];
         hudY = 104;
         timeY = 0;
     }

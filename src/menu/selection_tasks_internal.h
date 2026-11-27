@@ -54,7 +54,7 @@ extern ControllerPlaybackEntry gControllerPlaybackEntries[12] __attribute__((sec
 extern s16 gControllerPlaybackDurations[12] __attribute__((section(".data.controller_playback_durations")));
 
 extern u8 gSelectedUnlockIndex __attribute__((section(".data")));
-extern u16 D_8013AFAA __attribute__((section(".data")));
+extern u16 gGameStateFlags __attribute__((section(".data")));
 extern s16 D_8013B10E __attribute__((section(".data")));
 extern s16 D_8013B10C __attribute__((section(".data")));
 extern u8 D_8013B55E __attribute__((section(".data")));

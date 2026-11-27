@@ -79,11 +79,11 @@ void updateTaskStateTransition(void) {
         draw = 1;
         break;
     case 1:
-        ot = &D_800EC018[gActiveGraphicsBuffer];
+        ot = &gPlayer1OrderingTables[gActiveGraphicsBuffer];
         draw = shouldRenderPlayerView(0);
         break;
     case 2:
-        ot = &D_800EC0B8[gActiveGraphicsBuffer];
+        ot = &gPlayer2OrderingTables[gActiveGraphicsBuffer];
         draw = shouldRenderPlayerView(1);
         break;
     }

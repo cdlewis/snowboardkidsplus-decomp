@@ -21,7 +21,7 @@ extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern VECTOR *gScratchVector0 __attribute__((section(".data")));
 extern SVECTOR *gScratchShortVector0 __attribute__((section(".data")));
 extern MATRIX *gScratchMatrix0 __attribute__((section(".data")));
-extern u8 D_8013AFE0 __attribute__((section(".data")));
+extern u8 gRaceRuleset __attribute__((section(".data")));
 extern u8 gMainMenuSelectionIndex __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 
@@ -236,7 +236,7 @@ void prepareCurrentPlayerFrame(void) {
     }
 
     if (currentPlayerAbsolute->unk0FC != 0) {
-        if (gMainMenuSelectionIndex == 1 && D_8013AFE0 == 0) {
+        if (gMainMenuSelectionIndex == 1 && gRaceRuleset == 0) {
             currentPlayerAbsolute->unk12E += 0x1000;
         } else {
             currentPlayerAbsolute->unk12E += 0xC00;

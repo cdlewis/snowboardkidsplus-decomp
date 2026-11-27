@@ -463,9 +463,9 @@ extern TaskVisualFrame gPlayerVisualPair6780Frame
 extern TaskVisualFrame gPlayerDualResource5100EffectFrame
     __attribute__((section(".data.player_dual_resource_5100_effect_frame")));
 
-extern u16 D_8013AFAA __attribute__((section(".data")));
+extern u16 gGameStateFlags __attribute__((section(".data")));
 extern s32 D_8013AF84 __attribute__((section(".data")));
-extern u8 D_8013AFE0 __attribute__((section(".data")));
+extern u8 gRaceRuleset __attribute__((section(".data")));
 extern u8 gMainMenuSelectionIndex __attribute__((section(".data")));
 
 void updateVisualTrailTask(void);

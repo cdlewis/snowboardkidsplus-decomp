@@ -35,7 +35,7 @@ typedef struct SaveRecord {
     u32 checksum;
 } SaveRecord;
 
-extern u8 D_8013AFD8;
+extern u8 gModeSequenceStage;
 /* Zero disables prerecorded races; other values index playback entries. */
 extern u8 gControllerPlaybackIndex;
 /* GP-relative view of the shared task transition flag at D_8013B55E. */

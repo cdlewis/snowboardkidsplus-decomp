@@ -31,11 +31,11 @@ extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCurrentTaskParent __attribute__((section(".data")));
 
 GsOT gMainOrderingTables[2] __attribute__((section(".data.render_state"))) = {0};
-GsOT D_800EC018[2] __attribute__((section(".data.render_state"))) = {0};
+GsOT gPlayer1OrderingTables[2] __attribute__((section(".data.render_state"))) = {0};
 GsOT D_800EC040[2] __attribute__((section(".data.render_state"))) = {0};
 GsOT D_800EC068[2] __attribute__((section(".data.render_state"))) = {0};
 GsOT D_800EC090[2] __attribute__((section(".data.render_state"))) = {0};
-GsOT D_800EC0B8[2] __attribute__((section(".data.render_state"))) = {0};
+GsOT gPlayer2OrderingTables[2] __attribute__((section(".data.render_state"))) = {0};
 GsOT D_800EC0E0[2] __attribute__((section(".data.render_state"))) = {0};
 GsOT D_800EC108[2] __attribute__((section(".data.render_state"))) = {0};
 GsOT D_800EC130[2] __attribute__((section(".data.render_state"))) = {0};
@@ -60,40 +60,40 @@ void runGameLoop(void) {
     while (1) {
         gFrameCounter = ((u16)gFrameCounter + 1) & 0xFFF;
         updateControllers();
-        if (D_8013AFAA & 0x5800) {
+        if (gGameStateFlags & 0x5800) {
             if (gFrameCounter != 0) {
                 DrawSync(0);
             }
-            if (D_8013AFAA & 0x800) {
-                D_8013AFAA |= 0x400;
+            if (gGameStateFlags & 0x800) {
+                gGameStateFlags |= 0x400;
             }
-            if (D_8013AFAA & 0x1000) {
-                D_8013AFAA &= 0xFBFF;
+            if (gGameStateFlags & 0x1000) {
+                gGameStateFlags &= 0xFBFF;
                 DrawSync(0);
                 GsSetOffset(D_8013AF7A >> 1, D_8013AF7C >> 1);
                 GsSetClip(&D_800EC158[0]);
             }
-            if (D_8013AFAA & 0x4000) {
-                D_8013AFAA |= 0x2000;
+            if (gGameStateFlags & 0x4000) {
+                gGameStateFlags |= 0x2000;
             }
-            D_8013AFAA &= 0xA7FF;
+            gGameStateFlags &= 0xA7FF;
             gFrameCounter = (u16)gFrameCounter & 0xFFE;
         }
-        if (!(D_8013AFAA & 0x400)) {
+        if (!(gGameStateFlags & 0x400)) {
             gActiveGraphicsBuffer = GsGetActiveBuff();
         } else {
             gActiveGraphicsBuffer = (u16)gFrameCounter & 1;
         }
         func_800BF2C8((PACKET *)D_80100200[gActiveGraphicsBuffer]);
         GsClearOt(0, 0, &gMainOrderingTables[gActiveGraphicsBuffer]);
-        if (!(D_8013AFAA & 0x400) || !((u16)gFrameCounter & 1)) {
-            GsClearOt(0, 0, &D_800EC018[gActiveGraphicsBuffer]);
-            gCurrentPlayerOrderingTable = D_800EC018[gActiveGraphicsBuffer].org;
+        if (!(gGameStateFlags & 0x400) || !((u16)gFrameCounter & 1)) {
+            GsClearOt(0, 0, &gPlayer1OrderingTables[gActiveGraphicsBuffer]);
+            gCurrentPlayerOrderingTable = gPlayer1OrderingTables[gActiveGraphicsBuffer].org;
             D_8013AF70 = D_800EC1B0[gActiveGraphicsBuffer].org;
             D_8013AF74 = D_800EC090[gActiveGraphicsBuffer].org;
         } else {
-            GsClearOt(0, 0, &D_800EC0B8[gActiveGraphicsBuffer]);
-            gCurrentPlayerOrderingTable = D_800EC0B8[gActiveGraphicsBuffer].org;
+            GsClearOt(0, 0, &gPlayer2OrderingTables[gActiveGraphicsBuffer]);
+            gCurrentPlayerOrderingTable = gPlayer2OrderingTables[gActiveGraphicsBuffer].org;
             D_8013AF70 = D_800EC1D8[gActiveGraphicsBuffer].org;
             D_8013AF74 = D_800EC130[gActiveGraphicsBuffer].org;
         }
@@ -129,24 +129,24 @@ void runGameLoop(void) {
             GsDefDispBuff2(0, 0, 0, 0x100);
             GsInit3D();
         }
-        if (!(D_8013AFAA & 0x400)) {
+        if (!(gGameStateFlags & 0x400)) {
             waitForFrameHcount(0x190U);
             updatePaletteRecords();
             GsSwapDispBuff();
-            GsSortClear(0, 0, 0, &D_800EC018[gActiveGraphicsBuffer]);
+            GsSortClear(0, 0, 0, &gPlayer1OrderingTables[gActiveGraphicsBuffer]);
             GsSetClip(&D_800EC158[0]);
-            GsDrawOt(&D_800EC018[gActiveGraphicsBuffer]);
+            GsDrawOt(&gPlayer1OrderingTables[gActiveGraphicsBuffer]);
             GsDrawOt(&gMainOrderingTables[gActiveGraphicsBuffer]);
         } else {
             if (!((u16)gFrameCounter & 1)) {
                 waitForFrameHcount(0x384U);
                 updatePaletteRecords();
                 GsSwapDispBuff();
-                GsSortClear(0, 0, 0, &D_800EC018[gActiveGraphicsBuffer]);
+                GsSortClear(0, 0, 0, &gPlayer1OrderingTables[gActiveGraphicsBuffer]);
                 GsSetOffset((D_8013AF7A >> 1) - (D_8013AF7E / 2),
                             (D_8013AF7C >> 1) - D_8013AF80);
                 GsSetClip(&D_800EC158[1]);
-                GsDrawOt(&D_800EC018[gActiveGraphicsBuffer]);
+                GsDrawOt(&gPlayer1OrderingTables[gActiveGraphicsBuffer]);
                 continue;
             }
             updatePaletteRecords();
@@ -154,7 +154,7 @@ void runGameLoop(void) {
             GsSetOffset((D_8013AF7A >> 1) - (D_8013AF7E / 2),
                         ((D_8013AF7C >> 1) + D_8013AF80) - 8);
             GsSetClip(&D_800EC158[2]);
-            GsDrawOt(&D_800EC0B8[gActiveGraphicsBuffer]);
+            GsDrawOt(&gPlayer2OrderingTables[gActiveGraphicsBuffer]);
             DrawSync(0);
             GsSetOffset(D_8013AF7A >> 1, D_8013AF7C >> 1);
             GsSetClip(&D_800EC158[0]);
@@ -209,8 +209,8 @@ void initializeGameSystems(void) {
     gMainOrderingTables->length = 0xC;
     gMainOrderingTables->org = D_800EC200;
     gMainOrderingTables[1].org = D_800EC200 + 0x1000;
-    D_800EC018[1].length = 0xC;
-    D_800EC018->length = 0xC;
+    gPlayer1OrderingTables[1].length = 0xC;
+    gPlayer1OrderingTables->length = 0xC;
     D_800EC040[1].length = 0xC;
     D_800EC040[0].length = 0xC;
     D_800EC068[1].length = 0xC;
@@ -219,8 +219,8 @@ void initializeGameSystems(void) {
     D_800EC1B0[0].length = 0xC;
     D_800EC090[1].length = 0xC;
     D_800EC090[0].length = 0xC;
-    D_800EC018->org = D_800F4200;
-    D_800EC018[1].org = D_800F4200 + 0x1000;
+    gPlayer1OrderingTables->org = D_800F4200;
+    gPlayer1OrderingTables[1].org = D_800F4200 + 0x1000;
     D_800EC040[0].org = (D_800F4200 + 0x7);
     D_800EC040[1].org = (u32 *)(D_800F4200 + 0x1007);
     D_800EC068[0].org = (D_800F4200 + 0x1);
@@ -229,8 +229,8 @@ void initializeGameSystems(void) {
     D_800EC1B0[1].org = (u32 *)(D_800F4200 + 0x1003);
     D_800EC090[0].org = (D_800F4200 + 0xa);
     D_800EC090[1].org = (u32 *)(D_800F4200 + 0x100a);
-    D_800EC0B8[1].length = 0xC;
-    D_800EC0B8[0].length = 0xC;
+    gPlayer2OrderingTables[1].length = 0xC;
+    gPlayer2OrderingTables[0].length = 0xC;
     D_800EC0E0[1].length = 0xC;
     clip->w = D_8013AF7A;
     clip->h = D_8013AF7C;
@@ -241,8 +241,8 @@ void initializeGameSystems(void) {
     D_800EC1D8[0].length = 0xC;
     D_800EC130[1].length = 0xC;
     D_800EC130[0].length = 0xC;
-    D_800EC0B8[0].org = D_800F4200;
-    D_800EC0B8[1].org = D_800FC200;
+    gPlayer2OrderingTables[0].org = D_800F4200;
+    gPlayer2OrderingTables[1].org = D_800FC200;
     D_800EC0E0[1].org = (void *)(D_800FC200 + 0x7);
     D_800EC0E0[0].org = (D_800F4200 + 0x7);
     D_800EC108[1].org = (void *)(D_800FC200 + 0x1);

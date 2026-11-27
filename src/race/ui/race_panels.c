@@ -256,14 +256,14 @@ void createFallingSpriteEffectsTasks(void) {
 void drawSlidingDisplaySprite(SlidingDisplayResource *resource) {
     s32 x = (resource->position >> 1) - 56;
     if (playerCountAbsolute == 1) {
-        drawSpriteByIndexWithBlend(x, 8, 0x1DF, 6, -1, &D_800EC018[gActiveGraphicsBuffer], 1);
+        drawSpriteByIndexWithBlend(x, 8, 0x1DF, 6, -1, &gPlayer1OrderingTables[gActiveGraphicsBuffer], 1);
     } else if (gCurrentTask->data18 == 0) {
         if (shouldRenderPlayerView(0)) {
-            drawSpriteByIndexWithBlend(x, 8, 0x1DF, 6, -1, &D_800EC018[gActiveGraphicsBuffer], 1);
+            drawSpriteByIndexWithBlend(x, 8, 0x1DF, 6, -1, &gPlayer1OrderingTables[gActiveGraphicsBuffer], 1);
         }
     } else {
         if (shouldRenderPlayerView(1)) {
-            drawSpriteByIndexWithBlend(x, 8, 0x1DF, 6, -1, &D_800EC0B8[gActiveGraphicsBuffer], 1);
+            drawSpriteByIndexWithBlend(x, 8, 0x1DF, 6, -1, &gPlayer2OrderingTables[gActiveGraphicsBuffer], 1);
         }
     }
 }
@@ -335,9 +335,9 @@ void drawPlayerSpriteAnimation(SpriteAnimationResource *resource) {
         if (!shouldRenderPlayerView(resource->player)) return;
     }
     if (resource->player == 0) {
-        ot = &D_800EC018[gActiveGraphicsBuffer];
+        ot = &gPlayer1OrderingTables[gActiveGraphicsBuffer];
     } else {
-        ot = &D_800EC0B8[gActiveGraphicsBuffer];
+        ot = &gPlayer2OrderingTables[gActiveGraphicsBuffer];
     }
     setSpriteColor(128, 128, 128);
     palette = 3;
@@ -379,16 +379,16 @@ void drawPlayerNumberDisplay(PlayerNumberResource *resource) {
     setSpriteColor(128, 128, 128);
     if (playerCountAbsolute == 1) {
         visible = 1;
-        ot = &D_800EC018[gActiveGraphicsBuffer];
+        ot = &gPlayer1OrderingTables[gActiveGraphicsBuffer];
     } else if (resource->player == 0) {
         if (shouldRenderPlayerView(0)) {
             visible = 1;
-            ot = &D_800EC018[gActiveGraphicsBuffer];
+            ot = &gPlayer1OrderingTables[gActiveGraphicsBuffer];
         }
     } else {
         if (shouldRenderPlayerView(1)) {
             visible = 1;
-            ot = &D_800EC0B8[gActiveGraphicsBuffer];
+            ot = &gPlayer2OrderingTables[gActiveGraphicsBuffer];
         }
     }
     if (visible) {
@@ -458,7 +458,7 @@ void initializePlayerNumberDisplayTask(void) {
     resource->speed = 56;
     if (gMainMenuSelectionIndex == 0 && playerCountAbsolute == 2) {
         resource->x = 452;
-    } else if (gMainMenuSelectionIndex == 1 && D_8013AFE0 == 2 && playerCountAbsolute == 2) {
+    } else if (gMainMenuSelectionIndex == 1 && gRaceRuleset == 2 && playerCountAbsolute == 2) {
         resource->x = 460;
     } else {
         resource->x = 420;
@@ -483,21 +483,21 @@ void drawSpriteMotionDisplay(SpriteMotionResource *resource) {
     setSpriteColor(128, 128, 128);
     if (playerCountAbsolute == 1) {
         draw = 1;
-        ot = &D_800EC018[gActiveGraphicsBuffer];
+        ot = &gPlayer1OrderingTables[gActiveGraphicsBuffer];
     } else if (resource->variant == 0) {
         if (shouldRenderPlayerView(0)) {
             draw = 1;
-            ot = &D_800EC018[gActiveGraphicsBuffer];
+            ot = &gPlayer1OrderingTables[gActiveGraphicsBuffer];
         }
     } else {
         if (shouldRenderPlayerView(1)) {
             draw = 1;
-            ot = &D_800EC0B8[gActiveGraphicsBuffer];
+            ot = &gPlayer2OrderingTables[gActiveGraphicsBuffer];
         }
     }
     if (draw) {
         if (playerCountAbsolute == 1) {
-            if (gMainMenuSelectionIndex == 1 && D_8013AFE0 == 2) {
+            if (gMainMenuSelectionIndex == 1 && gRaceRuleset == 2) {
                 drawSpriteByIndexWithBlend(-60, resource->unk08, 0x1AB, 8, -1, ot, depth);
             } else {
                 drawSpriteByIndexWithBlend(-36, resource->unk08, 0x1AB, 8, -1, ot, depth);
@@ -581,16 +581,16 @@ void drawSlidingNumberDisplay(SlidingNumberResource *resource) {
     setSpriteColor(128, 128, 128);
     if (playerCountAbsolute == 1) {
         visible = 1;
-        ot = &D_800EC018[gActiveGraphicsBuffer];
+        ot = &gPlayer1OrderingTables[gActiveGraphicsBuffer];
     } else if (resource->player == 0) {
         if (shouldRenderPlayerView(0)) {
             visible = 1;
-            ot = &D_800EC018[gActiveGraphicsBuffer];
+            ot = &gPlayer1OrderingTables[gActiveGraphicsBuffer];
         }
     } else {
         if (shouldRenderPlayerView(1)) {
             visible = 1;
-            ot = &D_800EC0B8[gActiveGraphicsBuffer];
+            ot = &gPlayer2OrderingTables[gActiveGraphicsBuffer];
         }
     }
     if (visible) {
@@ -659,7 +659,7 @@ void initializeSlidingNumberDisplayTask(void) {
     resource->speed = 56;
     if (gMainMenuSelectionIndex == 0 && playerCountAbsolute == 2) {
         resource->x = 452;
-    } else if (gMainMenuSelectionIndex == 1 && D_8013AFE0 == 2 && playerCountAbsolute == 2) {
+    } else if (gMainMenuSelectionIndex == 1 && gRaceRuleset == 2 && playerCountAbsolute == 2) {
         resource->x = 460;
     } else {
         resource->x = 420;

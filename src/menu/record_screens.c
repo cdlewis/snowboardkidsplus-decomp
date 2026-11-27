@@ -1311,7 +1311,7 @@ void drawRaceTimeComparisonPanel(PanelResource *resource) {
             drawLimitedText8x8(-80, i * 104 - 24, 20, gHitCountTimeOutLabel, 4, -1, &gMainOrderingTables[gActiveGraphicsBuffer], 1);
         }
         if (resource->displayStage > 0) {
-            switch (D_8013AFE0) {
+            switch (gRaceRuleset) {
             case 0:
                 drawUppercaseProportionalText(8, i * 104 - 56, 20, gRaceComparisonSpeedFanLabel, 3, -1, &gMainOrderingTables[gActiveGraphicsBuffer], 1);
                 drawHudDecimalNumber8x16(64, i * 104 - 40, 2, 0, gRacePlayers[i].collectedCourseCoinMarkerCount,
@@ -1432,7 +1432,7 @@ void initializeRaceTimeComparisonPanel(void) {
         resource->resultIcon[1] = 2;
     }
     for (i = 0; i < 2; i++) {
-        switch (D_8013AFE0) {
+        switch (gRaceRuleset) {
         case 0:
             calculateRaceTimeDifference(&D_80124220[gSelectedCourseIndex], &D_8013B190[i], &resource->time[i]);
             break;

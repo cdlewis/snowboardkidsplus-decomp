@@ -267,7 +267,7 @@ extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern u32 gTaskTransitionFlags __attribute__((section(".data")));
 extern u8 gSelectedPlayerReplayActive __attribute__((section(".data")));
 
-extern u16 D_8013AFAA __attribute__((section(".data")));
+extern u16 gGameStateFlags __attribute__((section(".data")));
 extern u32 *D_8013AF70 __attribute__((section(".data")));
 
 const VECTOR gInitialRaceOscillatingQuadPosition
@@ -943,7 +943,7 @@ void drawTrickTriangleRingTask(void) {
         }
         return;
     }
-    if (D_8013AFAA & 0x400) {
+    if (gGameStateFlags & 0x400) {
         if (gCurrentTask->data18 != gActiveGraphicsBuffer) {
             goto advance;
         }
@@ -1060,7 +1060,7 @@ void drawTrickRingTask(void) {
         deleteCurrentTaskSubtree();
         return;
     }
-    if (D_8013AFAA & 0x400) {
+    if (gGameStateFlags & 0x400) {
         if (gCurrentTask->data18 != gActiveGraphicsBuffer) {
             goto advance;
         }
@@ -1133,7 +1133,7 @@ void drawTrickSparkRingTask(void) {
         *frame = 30;
     }
     /* Initialize complete DMA tags before linking the packets into the ordering table. */
-    if (D_8013AFAA & 0x400) {
+    if (gGameStateFlags & 0x400) {
         if (gCurrentTask->data18 != gActiveGraphicsBuffer) {
             goto advance;
         }
@@ -1382,7 +1382,7 @@ void drawPlayerParticlesTask(void) {
     yawOffset = -gPlayerCameras[gCurrentTask->data18].yaw;
     pitchOffset = gPlayerCameras[gCurrentTask->data18].pitch;
     for (i = 0; i < 40; i++) {
-        if (D_8013AFAA & 0x400) {
+        if (gGameStateFlags & 0x400) {
             if (gCurrentTask->data18 != (gFrameCounter & 1)) {
                 goto updatePosition;
             }

@@ -1133,14 +1133,14 @@ void finishUnlockNotification0TransitionTask(void) {
 
 void drawSound601SequenceSpriteTask(void) {
     if (playerCountAbsolute == 1) {
-        drawSpriteByIndexWithBlend(-48, -12, 0x1E0, 6, -1, &D_800EC018[gActiveGraphicsBuffer], 1);
+        drawSpriteByIndexWithBlend(-48, -12, 0x1E0, 6, -1, &gPlayer1OrderingTables[gActiveGraphicsBuffer], 1);
     } else if (gCurrentTask->data18 == 0) {
         if (shouldRenderPlayerView(0)) {
-            drawSpriteByIndexWithBlend(-40, -12, 0x1E0, 6, -1, &D_800EC018[gActiveGraphicsBuffer], 1);
+            drawSpriteByIndexWithBlend(-40, -12, 0x1E0, 6, -1, &gPlayer1OrderingTables[gActiveGraphicsBuffer], 1);
         }
     } else {
         if (shouldRenderPlayerView(1)) {
-            drawSpriteByIndexWithBlend(-40, -12, 0x1E0, 6, -1, &D_800EC0B8[gActiveGraphicsBuffer], 1);
+            drawSpriteByIndexWithBlend(-40, -12, 0x1E0, 6, -1, &gPlayer2OrderingTables[gActiveGraphicsBuffer], 1);
         }
     }
     if (gTaskTransitionFlags & 8) {

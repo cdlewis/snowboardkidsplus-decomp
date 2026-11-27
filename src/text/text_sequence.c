@@ -23,7 +23,7 @@ typedef struct TextSequenceEntry {
     u16 length;
 } TextSequenceEntry;
 
-extern u8 D_8013AFD8 __attribute__((section(".data")));
+extern u8 gModeSequenceStage __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
 extern u16 D_8013AF7A __attribute__((section(".data")));
@@ -32,7 +32,7 @@ extern s16 D_8013AF80 __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern u32 gTaskTransitionFlags __attribute__((section(".data")));
 
-extern u16 D_8013AFAA __attribute__((section(".data")));
+extern u16 gGameStateFlags __attribute__((section(".data")));
 
 ResourceSectorRange gMode1SectorRanges[10] __attribute__((section(".data.indexed_sector_ranges"))) = {
     {DAT_MODE1_TEXT_000_SECTOR, DAT_MODE1_TEXT_000_SECTOR_COUNT},
@@ -207,7 +207,7 @@ void animateTextSequenceExitTask(void) {
         D_8013B1A8 = 1;
         playerCountAbsolute = 1;
         gTaskTransitionFlags = 0;
-        D_8013AFAA |= 0x1000;
+        gGameStateFlags |= 0x1000;
         queueCdCommand(D_80124164[gSelectedCourseIndex], 0);
         deleteCurrentTaskSubtree();
     } else {
@@ -231,7 +231,7 @@ void advanceModeAfterTextSequenceFadeTask(void) {
     case 2:
         if (isTaskStateTransitionBelowMaximum(0) == 0) {
             D_8013B55E = 2;
-            D_8013AFD8++;
+            gModeSequenceStage++;
             deleteCurrentTaskSubtree();
         }
         break;

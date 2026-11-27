@@ -375,9 +375,9 @@ void drawLayeredBackgroundAndSetFog(s16 playerIndex) {
     s16 x, y, horizon;
 
     if (playerIndex == 0) {
-        ot = &D_800EC018[gActiveGraphicsBuffer];
+        ot = &gPlayer1OrderingTables[gActiveGraphicsBuffer];
     } else {
-        ot = &D_800EC0B8[gActiveGraphicsBuffer];
+        ot = &gPlayer2OrderingTables[gActiveGraphicsBuffer];
     }
 
     cameras = gPlayerCameras;
@@ -458,9 +458,9 @@ void drawSunsetBackgroundAndSetFog(s16 playerIndex) {
     s32 r, g, b;
 
     if (playerIndex == 0) {
-        ot = &D_800EC018[gActiveGraphicsBuffer];
+        ot = &gPlayer1OrderingTables[gActiveGraphicsBuffer];
     } else {
-        ot = &D_800EC0B8[gActiveGraphicsBuffer];
+        ot = &gPlayer2OrderingTables[gActiveGraphicsBuffer];
     }
     *(POLY_G4 *)getScratchAddr(0) = sSunsetBackgroundQuad;
     cameras = gPlayerCameras;
@@ -584,7 +584,7 @@ void drawOscillatingQuadTask(void) {
         setRGB1(packet, 0, 0, 0);
         packet->tpage = getTPage(0, 1, 0, 0);
         packet->drawModeCommand = DRAW_MODE_COMMAND_HIGH;
-        if (!gRacePauseState && !(D_8013AFAA & 0x400) && (gFrameCounter & 1)) {
+        if (!gRacePauseState && !(gGameStateFlags & 0x400) && (gFrameCounter & 1)) {
             setRGB2(packet, resource->r / 2, resource->g / 2, resource->b / 2);
             setRGB3(packet, resource->r / 2, resource->g / 2, resource->b / 2);
         } else {
@@ -712,7 +712,7 @@ void drawFlickeringDotsTask(void) {
     resource = (FlickeringDotsResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     packet = (TILE_1 *)GsOUT_PACKET_P;
     scratch = (TILE_1 *)getScratchAddr(0);
-    if (D_8013AFAA & 0x400) {
+    if (gGameStateFlags & 0x400) {
         if (gCurrentTask->data18 != gActiveGraphicsBuffer) return;
     } else if (gCurrentTask->data18 != 0) return;
     cameras = gPlayerCameras;

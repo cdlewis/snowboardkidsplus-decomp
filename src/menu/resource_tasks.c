@@ -23,7 +23,7 @@ typedef struct MainTailSelectionResource {
 extern MenuRgbColor gMenuColorCycleColor __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
-extern u8 D_8013AFE0 __attribute__((section(".data")));
+extern u8 gRaceRuleset __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern GameTask *gCurrentTaskParent __attribute__((section(".data")));
@@ -263,7 +263,7 @@ void updateMainTailSelectionMenuTask(void) {
         break;
     default: {
         GameTask *parent = gCurrentTaskParent;
-        D_8013AFE0 = mainTailSelectionGp - 1;
+        gRaceRuleset = mainTailSelectionGp - 1;
         parent->data1C--;
         deleteCurrentTaskSubtree();
         break;

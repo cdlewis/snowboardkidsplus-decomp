@@ -22,7 +22,7 @@ typedef struct NumberSelectionSpriteTable {
     u16 padding;
 } NumberSelectionSpriteTable;
 
-extern u8 D_8013AFD8 __attribute__((section(".data")));
+extern u8 gModeSequenceStage __attribute__((section(".data")));
 extern u8 gControllerPlaybackIndex __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u8 D_8013AFDB __attribute__((section(".data")));
@@ -65,7 +65,7 @@ void initializeModeRaceTasks(void) {
     taskTransitionFlagGp = 0;
     createChildTaskWithReserve(initializeModeSectorReadResourcesTask);
     if (playerCountAbsolute == 2) {
-        D_8013AFAA |= 0x800;
+        gGameStateFlags |= 0x800;
         createChildTaskForParent(&gGameTasks[3], initializeTaskPlayerCamera);
         gCreatedTask->data18 = 1;
     }
@@ -118,8 +118,8 @@ void initializeModeRaceTasks(void) {
             player++;
         } while (player < playerCountAbsolute);
     }
-    D_8013AFAA |= 0x48;
-    if (D_8013AFD8) {
+    gGameStateFlags |= 0x48;
+    if (gModeSequenceStage) {
         setCurrentTaskCallback(advanceTaskAtModeCoursePosition);
     } else {
         setCurrentTaskCallback(advanceTaskWhenFlagB55ESet);
@@ -129,7 +129,7 @@ void initializeModeRaceTasks(void) {
 void advanceTaskAtModeCoursePosition(void) {
     s16 reached = 0;
 
-    switch (D_8013AFD8) {
+    switch (gModeSequenceStage) {
     case 1:
         if (gRacePlayers[0].unk92E == 80) reached = 1;
         break;
@@ -165,24 +165,24 @@ void advanceTaskAtModeCoursePosition(void) {
 
 void completeModeSelectionTransitionWhenReady(void) {
     if (taskTransitionFlagGp != 0) {
-        D_8013AFAA = (D_8013AFAA | 0x1090) & ~0x2000;
+        gGameStateFlags = (gGameStateFlags | 0x1090) & ~0x2000;
         resetPendingCdRequests();
         resetPaletteRecords();
         deleteCurrentTaskDescendants();
         gRacePauseState = 0;
-        D_8013AFAA |= 0x48;
-        switch (D_8013AFD8) {
+        gGameStateFlags |= 0x48;
+        switch (gModeSequenceStage) {
         case 10:
             taskTransitionFlagGp = 0;
             createChildTaskWithReserve(initializeModeSectorReadResourcesTask);
             gCurrentTask->unk10 |= 1;
             break;
         case 11:
-            D_8013AFAA |= 0x48;
+            gGameStateFlags |= 0x48;
             D_8013B10C = -1;
             D_8013B10E = -1;
             D_8013B106 = 0;
-            D_8013AFD8 = 0;
+            gModeSequenceStage = 0;
             D_8013B562 = 0;
             SetFogNearFar(5000, 6000, 400);
             setCurrentTaskCallback(scheduleMode1TaskTransition);
@@ -229,7 +229,7 @@ void initializeNumberSelectionTask(void) {
     }
     gCurrentTask->resource16 = allocateTaskMemoryBlock();
     gRacePauseState = 1;
-    state->number = D_8013AFD8 - 1;
+    state->number = gModeSequenceStage - 1;
     gCurrentTask->data18 = 0;
     setControllerFlag5(0);
     setControllerFlag5(1);
@@ -305,11 +305,11 @@ void updateNumberSelectionTask(void) {
             selection = state->selectedIndex;
         }
         if (selection == 0) {
-            D_8013AFD8++;
+            gModeSequenceStage++;
             gCurrentTask->data18 = 6;
         } else {
             if (selection != 1) {
-                D_8013AFD8 = state->number == 8 ? D_8013AFD8 + 1 : 11;
+                gModeSequenceStage = state->number == 8 ? gModeSequenceStage + 1 : 11;
             }
             gCurrentTask->data18 = 6;
         }

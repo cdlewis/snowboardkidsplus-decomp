@@ -77,7 +77,7 @@ void updateAttackResultsAndRecords(void) {
     case 0:
         break;
     case 1:
-        if (D_8013AFE0 == 0) {
+        if (gRaceRuleset == 0) {
             if (playerCountAbsolute == 1) {
                 D_8013B190[0] = gRaceElapsedTime;
                 D_8013B1A0[0] = D_8013B18D;
@@ -139,7 +139,7 @@ void updateAttackResultsAndRecords(void) {
                     D_8013AFE1 = 2;
                 }
             }
-        } else if (D_8013AFE0 == 1) {
+        } else if (gRaceRuleset == 1) {
             if (playerCountAbsolute == 1) {
                 D_8013B1A0[0] = D_8013B18D;
             } else {
@@ -200,7 +200,7 @@ void updateAttackResultsAndRecords(void) {
                     D_8013AFE1 = 2;
                 }
             }
-        } else if (D_8013AFE0 == 2) {
+        } else if (gRaceRuleset == 2) {
             if (playerCountAbsolute == 1) {
                 D_8013B1A0[0] = D_8013B18D;
             } else {
@@ -295,7 +295,7 @@ void updateAttackResultsAndRecords(void) {
 }
 
 s16 shouldRenderPlayerView(u16 player) {
-    if (!(D_8013AFAA & 0x400) || ((gFrameCounter & 1) == player)) {
+    if (!(gGameStateFlags & 0x400) || ((gFrameCounter & 1) == player)) {
         return 1;
     }
     return 0;
@@ -306,7 +306,7 @@ void renderCurrentCameraPlayersAndUpdateSound(void) {
     if (shouldRenderPlayerView(gCurrentTask->data18)) {
         GsSetRefView2L(&gPlayerCameraViews[gCurrentTask->data18]);
         updateCameraRotationMatrices(gCurrentTask->data18);
-        if (gCurrentTask->data18 != 0 && (D_8013AFAA & 0x2000)) {
+        if (gCurrentTask->data18 != 0 && (gGameStateFlags & 0x2000)) {
             for (i = 0; i < gActiveRacePlayerCount; i++) {
                 if (isPointWithinCameraForwardRange(gRacePlayers[i].worldCoordinate.coord.t[0], gRacePlayers[i].worldCoordinate.coord.t[2], 0)) {
                     setCoordinateRotation((SVECTOR *)&gRacePlayers[i].unk0B4, &gRacePlayers[i].worldCoordinate);
