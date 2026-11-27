@@ -858,6 +858,9 @@ extern VisualPlacement *gCollectiblePlacements;
 
 /* Shared texture metadata remains in its original data owner. */
 extern TextureRegionSet gSpriteTextureRegionSets[37];
+extern TextureRegion D_8013B380[2];
+extern TextureRegion D_8013B388[1];
+extern TextureRegion D_8013B38C[2];
 extern TextureRegion *gCurrentSpriteTextureRegions;
 
 extern TaskSnapshot *gSelectedPlayerTaskSnapshots;

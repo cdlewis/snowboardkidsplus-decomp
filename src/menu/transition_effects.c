@@ -13,7 +13,10 @@ typedef struct ColorCycleResource {
     u8 value, step, minimum, maximum;
 } ColorCycleResource;
 
-extern TaskTransitionState gTaskTransitionStates[3];
+TaskTransitionState gTaskTransitionStates[3]
+    __attribute__((section(".data.task_transition_states"), aligned(4))) = {
+    {NULL, 0, 0}, {NULL, 0, 0}, {NULL, 0, 0}
+};
 extern GameTask *gColorCycleTasks[4];
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));

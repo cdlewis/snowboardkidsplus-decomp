@@ -840,7 +840,8 @@ segments:
       - {start: 0x11DC6C, type: .data, name: menu/course_selection_tasks, linker_section: .data.course_menu_indices}
       - {start: 0x11DC84, type: .data, name: menu/task_widgets, linker_section: .data.character_selection_confirm_sounds}
       - {start: 0x11DC98, type: .data, name: menu/task_widgets, linker_section: .data.secondary_display_label}
-      - [0x11DCA4, data, secondary_display_label_tail]
+      - {start: 0x11DCA4, type: .data, name: menu/transition_effects, linker_section: .data.task_transition_states}
+      - {start: 0x11DCBC, type: .data, name: graphics/sprite_draw, linker_section: .data.sprite_texture_regions}
       - [0x11F0E4, .data, graphics/sprite_templates]
       - {start: 0x11F0FC, type: .data, name: graphics/sprite_draw, linker_section: .data.double_byte_glyph_codes_8x8}
       - {start: 0x11F17C, type: .data, name: graphics/sprite_draw, linker_section: .data.digit_sprite16_template}
