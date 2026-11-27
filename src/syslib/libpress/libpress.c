@@ -5,7 +5,7 @@
 #define MDEC_DATA __attribute__((section(".data.mdec"), aligned(4)))
 #define MDEC_RODATA __attribute__((section(".rodata.mdec"), aligned(4)))
 
-u32 mdec_iq[] MDEC_DATA = {
+u32 mdec_iq[33] MDEC_DATA = {
     0x40000001, 0x13101002, 0x16161310, 0x16161616, 0x1B1A181A, 0x1A1A1B1B,
     0x1B1B1A1A, 0x1D1D1D1B, 0x1D222222, 0x1B1B1D1D, 0x20201D1D, 0x26252222,
     0x22232325, 0x28262623, 0x30302828, 0x38382E2E, 0x5345453A, 0x13101002,
@@ -13,7 +13,7 @@ u32 mdec_iq[] MDEC_DATA = {
     0x1D222222, 0x1B1B1D1D, 0x20201D1D, 0x26252222, 0x22232325, 0x28262623,
     0x30302828, 0x38382E2E, 0x5345453A};
 
-u32 mdec_coef[] MDEC_DATA = {
+u32 mdec_coef[33] MDEC_DATA = {
     0x60000000, 0x5A825A82, 0x5A825A82, 0x5A825A82, 0x5A825A82, 0x6A6D7D8A,
     0x18F8471C, 0xB8E3E707, 0x82759592, 0x30FB7641, 0x89BECF04, 0xCF0489BE,
     0x764130FB, 0xE7076A6D, 0xB8E38275, 0x7D8A471C, 0x959218F8, 0xA57D5A82,
@@ -82,8 +82,8 @@ DECDCTENV* DecDCTPutEnv(DECDCTENV* env) {
     src2 = (u32*)env->iq_c;
     for (i = 15; i != -1; i--)
         *dst2++ = *src2++;
-    MDEC_in((u32*)mdec_iq, 32);
-    MDEC_in((u32*)mdec_coef, 32);
+    MDEC_in(mdec_iq, 32);
+    MDEC_in(mdec_coef, 32);
     return env;
 }
 
@@ -132,8 +132,8 @@ void MDEC_reset(int mode) {
         MDEC_DMA_WRITE(0, chcr, 0);
         MDEC_DMA_WRITE(1, chcr, 0);
         MDEC_CONTROL(0x60000000);
-        MDEC_in((u32*)mdec_iq, 32);
-        MDEC_in((u32*)mdec_coef, 32);
+        MDEC_in(mdec_iq, 32);
+        MDEC_in(mdec_coef, 32);
         return;
     case 1:
         MDEC_CONTROL(0x80000000);
