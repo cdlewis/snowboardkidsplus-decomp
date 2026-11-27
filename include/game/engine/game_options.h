@@ -18,8 +18,12 @@ extern u8 gPlayerCount;
 extern u8 gRaceRuleset;
 extern u8 gRaceResultCode;
 extern u8 gMainMenuSelectionIndex;
-extern u8 D_8013B108;
-extern u8 D_8013B109;
+extern u8 gTitleMenuResourcesInitialized;
+extern u8 gMenuScreenId;
+extern u8 gMenuTransitionState;
+/* Resource request caches; -1 forces the next menu resource read. */
+extern s16 gMenuTextureResourceId;
+extern s16 gMenuGridResourceId;
 extern u8 D_8013B10A;
 extern u8 D_8013B564;
 

@@ -279,7 +279,7 @@ void finishUnlockMenuTask(void) {
                 setSecondaryDisplayTaskMode(3);
                 queueMode11TransitionResources();
                 queueBackgroundTextureSectorCommands();
-                D_8013B10C = -1;
+                gMenuTextureResourceId = -1;
                 queueMenuResourceReads(2);
             }
             gCurrentTask->data18 = 2;
@@ -496,7 +496,7 @@ void resumeUnlockSelectionTask(void) {
 
 void prepareUnlockSelectionResume(void) {
     setSecondaryDisplayTaskMode(3);
-    D_8013B10C = -1;
+    gMenuTextureResourceId = -1;
     queueMenuResourceReads(2);
     setCurrentTaskCallback(resumeUnlockSelectionTask);
     gCurrentTask->unk10 |= 2;

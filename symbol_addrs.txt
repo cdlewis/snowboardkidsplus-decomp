@@ -4333,3 +4333,10 @@ gCourseCoinTargetTimes = 0x80124220; // size:0x28
 gAttackTimeRemaining = 0x8013B184;
 gPlayerAttackTimesRemaining = 0x8013B198; // size:0x8
 gRaceHudMode = 0x8013B620;
+
+gTitleMenuResourcesInitialized = 0x8013B0F0;
+gMenuMusicEnabled = 0x8013B106;
+gMenuScreenId = 0x8013B108;
+gMenuTransitionState = 0x8013B109;
+gMenuTextureResourceId = 0x8013B10C;
+gMenuGridResourceId = 0x8013B10E;

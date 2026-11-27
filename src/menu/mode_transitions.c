@@ -136,11 +136,11 @@ void updatePlayerModeSelectionTask(void);
 void createRegisteredPlayerModePanelTask(s16 x, s16 y, s32 depth, s32 index);
 
 void dispatchMode11TransitionTask(void) {
-    if (D_8013B109 != 1) {
+    if (gMenuTransitionState != 1) {
         deleteCurrentTaskSubtree();
         return;
     }
-    switch (D_8013B108) {
+    switch (gMenuScreenId) {
     case 2:
         createChildTaskWithReserve(scheduleMenuTransitionResourcesTask);
         gCurrentTask->unk10 |= 1;
@@ -152,25 +152,25 @@ void dispatchMode11TransitionTask(void) {
     case 27:
         createChildTaskWithReserve(initializeMode1Task);
         gCurrentTask->unk10 |= 1;
-        D_8013B109 = 3;
+        gMenuTransitionState = 3;
         gDemoRaceIndex = 0;
         break;
     case 28:
         createChildTaskWithReserve(initializeSelectionMenuTask);
         gCurrentTask->unk10 |= 1;
-        D_8013B109 = 3;
+        gMenuTransitionState = 3;
         gDemoRaceIndex = 0;
         break;
     case 26:
         createChildTaskWithReserve(initializeUnlockMenuResourceTask);
         gCurrentTask->unk10 |= 1;
-        D_8013B108 = 2;
+        gMenuScreenId = 2;
         break;
     default:
         createChildTaskWithReserve(initializeBackgroundCameraTask);
-        gCreatedTask->data18 = D_8013B108;
+        gCreatedTask->data18 = gMenuScreenId;
         gCurrentTask->unk10 |= 1;
-        D_8013B0F0 = 0;
+        gTitleMenuResourcesInitialized = 0;
         break;
     }
 }
@@ -187,12 +187,12 @@ void dispatchGameOptionTransitionTask(void) {
     D_8013AF84 = 0x100;
     initPlayerCamera(0);
     initializeDefaultSceneLighting();
-    switch (D_8013B109) {
+    switch (gMenuTransitionState) {
     case 0:
         playMovie(2);
         resetPendingCdRequests();
-        D_8013B109 = 1;
-        D_8013B0F0 = 0;
+        gMenuTransitionState = 1;
+        gTitleMenuResourcesInitialized = 0;
         break;
     case 1:
         createChildTaskWithReserve(initializeMode11TransitionTask);
@@ -203,13 +203,13 @@ void dispatchGameOptionTransitionTask(void) {
         setSecondaryDisplayTaskMode(1);
         queueCdSectorCommand(0, DAT_STARTUP_MODELS_SECTOR, DAT_STARTUP_MODELS_SECTOR_COUNT, DAT_STARTUP_MODELS, 0);
         queueCdSectorCommand(0, DAT_STARTUP_TEXTURES_SECTOR, DAT_STARTUP_TEXTURES_SECTOR_COUNT, DAT_STARTUP_TEXTURES, 0);
-        D_8013B109 = 1;
-        D_8013B0F0 = 0;
+        gMenuTransitionState = 1;
+        gTitleMenuResourcesInitialized = 0;
         gCurrentTask->callback = deleteCurrentTaskWhenCdCommandQueueIdle;
         break;
     case 3:
-        D_8013B109 = 1;
-        D_8013B0F0 = 0;
+        gMenuTransitionState = 1;
+        gTitleMenuResourcesInitialized = 0;
         deleteCurrentTaskSubtree();
         break;
     }
@@ -230,11 +230,11 @@ void initializeMenuTransitionResourcesTask(void) {
     resource->unk0E = 0;
     setTaskBackgroundMode(0, 0, 0);
     initializeNewGameSaveData();
-    if (D_8013B0F0 == 0) {
+    if (gTitleMenuResourcesInitialized == 0) {
         configureTaskStateTransition(11, 0, 30);
         setSecondaryDisplayTaskMode(3);
         queueCdSectorCommand(2, DAT_MODE2_TEXTURES_SECTOR, DAT_MODE2_TEXTURES_SECTOR_COUNT, DAT_TEXTURE_ARCHIVE, 0);
-        D_8013B0F0 = 1;
+        gTitleMenuResourcesInitialized = 1;
         gCurrentTask->data18 = 0;
         setCurrentTaskCallback(waitMode2TransitionTask);
         gCurrentTask->unk10 |= 2;
@@ -324,14 +324,14 @@ void updateTitleScreenMenuTask(void) {
                         D_8013B10A = 0;
                     }
                     if (D_8013B10A & 1) {
-                        D_8013B109 = 2;
+                        gMenuTransitionState = 2;
                         gDemoRaceIndex = (D_8013B10A >> 1) + 1;
                     } else {
-                        D_8013B109 = 0;
+                        gMenuTransitionState = 0;
                         gDemoRaceIndex = 0;
                     }
                     D_8013B110 = 0;
-                    D_8013B108 = 2;
+                    gMenuScreenId = 2;
                     configureTaskStateTransition(2, 0, 30);
                     input->confirmed = 1;
                     gCurrentTask->data18 = 7;
@@ -355,13 +355,13 @@ void updateTitleScreenMenuTask(void) {
         }
         switch (input->selection) {
         case 0:
-            D_8013B108 = 3;
+            gMenuScreenId = 3;
             break;
         case 1:
-            D_8013B108 = 25;
+            gMenuScreenId = 25;
             break;
         case 2:
-            D_8013B108 = 26;
+            gMenuScreenId = 26;
             break;
         }
         resetPendingCdRequests();
@@ -860,7 +860,7 @@ cancel:
             break;
         }
         gCurrentTaskParent->data18 = 4;
-        D_8013B10C = -1;
+        gMenuTextureResourceId = -1;
         queueMenuResourceReads((s16)gCurrentTaskParent->data18);
         playerCountAbsolute = selection->selection + 1;
         moveTaskChildrenWithSpacing(0, entries[4].task, -0x188000, -0x10000, -0x3C000, 0, -2);
@@ -888,7 +888,7 @@ cancel:
         break;
     case 10:
         gCurrentTaskParent->data18 = 2;
-        D_8013B10C = -1;
+        gMenuTextureResourceId = -1;
         configureTaskStateTransition(2, 0, 30);
         setMusicSequenceEnabled(0);
         gCurrentTask->data18 = 11;
@@ -1116,7 +1116,7 @@ void waitUnlockNotification0TransitionTask(void) {
         gCurrentTaskParent->data18 = 5;
         configureTaskStateTransition(11, 0, 30);
         setSecondaryDisplayTaskMode(1);
-        D_8013B10C = -1;
+        gMenuTextureResourceId = -1;
         queueMode11TransitionResources();
         queueBackgroundTextureSectorCommands();
         queueMenuResourceReads((s16)gCurrentTaskParent->data18);

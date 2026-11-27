@@ -118,7 +118,7 @@ typedef struct SplitSelectionBoundsConfigs {
 
 #include "unlock_menu_types.h"
 
-extern s16 D_8013B10C __attribute__((section(".data")));
+extern s16 gMenuTextureResourceId __attribute__((section(".data")));
 extern u8 D_8013B55E;
 extern u8 D_8013B527 __attribute__((section(".data.main_tail_money_currency_label")));
 

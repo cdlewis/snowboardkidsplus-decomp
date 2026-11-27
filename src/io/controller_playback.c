@@ -24,9 +24,9 @@ extern u8 gRacePauseState __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern u8 gSelectedPlayerReplayActive __attribute__((section(".data")));
 
-extern u8 D_8013B108 __attribute__((section(".data")));
-extern u8 D_8013B109 __attribute__((section(".data")));
-extern s16 D_8013B106 __attribute__((section(".data")));
+extern u8 gMenuScreenId __attribute__((section(".data")));
+extern u8 gMenuTransitionState __attribute__((section(".data")));
+extern s16 gMenuMusicEnabled __attribute__((section(".data")));
 
 ControllerPlaybackEntry gControllerPlaybackEntries[12] __attribute__((section(".data.controller_playback_entries"))) = {
     {0, 0, 0, 0},
@@ -147,16 +147,16 @@ void finishControllerPlaybackTransition(void) {
             resetPendingCdRequests();
             resetPaletteRecords();
             deleteCurrentTaskDescendants();
-            D_8013B10C = -1;
+            gMenuTextureResourceId = -1;
             gGameStateFlags |= 0x48;
             queueMenuResourceReads(2);
-            D_8013B106 = 0;
+            gMenuMusicEnabled = 0;
             playbackTransitionByteAbsolute = 0;
             setControllerFlag5(0);
             setControllerFlag5(1);
             SetFogNearFar(5000, 6000, 400);
-            D_8013B109 = 1;
-            D_8013B108 = 28;
+            gMenuTransitionState = 1;
+            gMenuScreenId = 28;
             gCurrentTask->data18 = 1;
         }
         break;

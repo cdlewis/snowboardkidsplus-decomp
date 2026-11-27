@@ -1829,8 +1829,8 @@ void initializeNewGameSaveData(void) {
     gActiveRacePlayerCount = 1;
     gDisplayWidth = 320;
     gDisplayHeight = 240;
-    D_8013B10C = -1;
-    D_8013B10E = -1;
+    gMenuTextureResourceId = -1;
+    gMenuGridResourceId = -1;
     gSelectedCourseIndex = 0;
     gMainMenuSelectionIndex = 0;
     gSelectedPlayerReplayActive = 0;
@@ -1848,6 +1848,6 @@ void initializeNewGameSaveData(void) {
     gRacePlayers[1].unk00D = 0;
     gDemoRaceIndex = 0;
     clearHalfwordPairTable();
-    D_8013B106 = 0;
+    gMenuMusicEnabled = 0;
     D_8013B110 = 0;
 }

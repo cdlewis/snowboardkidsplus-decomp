@@ -175,8 +175,8 @@ extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern GameTask *gCurrentTaskParent __attribute__((section(".data")));
 
-extern s16 D_8013B106 __attribute__((section(".data")));
-extern u8 D_8013B108 __attribute__((section(".data")));
+extern s16 gMenuMusicEnabled __attribute__((section(".data")));
+extern u8 gMenuScreenId __attribute__((section(".data")));
 
 const u16 gCharacterSelectionConfirmSounds[10]
     __attribute__((section(".data.character_selection_confirm_sounds"), aligned(4))) = {
@@ -832,13 +832,13 @@ void addTilePacketWithBlend(s16 x, s16 y, s16 width, s16 height, u8 r, u8 g, u8 
 
 void setMusicSequenceEnabled(s16 enabled) {
     if (enabled == 0) {
-        if (D_8013B106 == 1) {
+        if (gMenuMusicEnabled == 1) {
             fadeOutMusicSequence(0x200);
-            D_8013B106 = 0;
+            gMenuMusicEnabled = 0;
         }
-    } else if (D_8013B106 == 0) {
+    } else if (gMenuMusicEnabled == 0) {
         playMusicSequenceAtDefaultVolume(0);
-        D_8013B106 = 1;
+        gMenuMusicEnabled = 1;
     }
 }
 
@@ -1184,7 +1184,7 @@ void updateSpacedChildSelectionTask(void) {
                 }
             }
         }
-        if (D_8013B108 == 3 && isControllerInputSupported(1) == 0) {
+        if (gMenuScreenId == 3 && isControllerInputSupported(1) == 0) {
             next = 0;
         }
         if (next != group->choice.selectedIndex) {

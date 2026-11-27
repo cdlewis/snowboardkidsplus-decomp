@@ -4,7 +4,7 @@
 
 /* Shared with the sequence loading and playback routines still in assembly. */
 /* Presentation tasks use absolute addressing; other callers use $gp. */
-extern s16 D_8013B106;
+extern s16 gMenuMusicEnabled;
 extern s16 gMusicSequenceId;
 extern u8 gMusicSequenceActive;
 /* Signed volume with eight fractional bits, shared with the fade updater. */

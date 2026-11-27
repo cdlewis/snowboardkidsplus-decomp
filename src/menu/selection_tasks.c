@@ -36,10 +36,10 @@ extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern GameTask *D_8013AE90 __attribute__((section(".data")));
 
-extern u8 D_8013B108 __attribute__((section(".data")));
-extern u8 D_8013B109 __attribute__((section(".data")));
-extern s16 D_8013B106 __attribute__((section(".data")));
-extern u8 D_8013B0F0 __attribute__((section(".data")));
+extern u8 gMenuScreenId __attribute__((section(".data")));
+extern u8 gMenuTransitionState __attribute__((section(".data")));
+extern s16 gMenuMusicEnabled __attribute__((section(".data")));
+extern u8 gTitleMenuResourcesInitialized __attribute__((section(".data")));
 
 u16 gSceneOneShotSoundKey __attribute__((section(".sdata.scene_sound_state"))) = 0;
 
@@ -179,14 +179,14 @@ void completeModeSelectionTransitionWhenReady(void) {
             break;
         case 11:
             gGameStateFlags |= 0x48;
-            D_8013B10C = -1;
-            D_8013B10E = -1;
-            D_8013B106 = 0;
+            gMenuTextureResourceId = -1;
+            gMenuGridResourceId = -1;
+            gMenuMusicEnabled = 0;
             gModeSequenceStage = 0;
             D_8013B562 = 0;
             SetFogNearFar(5000, 6000, 400);
             setCurrentTaskCallback(scheduleMode1TaskTransition);
-            D_8013B108 = 2;
+            gMenuScreenId = 2;
             return;
         default:
             createChildTask(initializeMode1RacePlayers);
@@ -457,7 +457,7 @@ void updateSelectionMenuTask(void) {
             gControllerPlaybackIndex = state->selection + 1;
             playSoundEffect(0, 0, 0x20);
             state->unk08 = 20;
-            D_8013B0F0 = 0;
+            gTitleMenuResourcesInitialized = 0;
             gCurrentTask->data18 = 0;
             setCurrentTaskCallback(finishSelectionMenuTask);
         }
@@ -494,8 +494,8 @@ void finishSelectionMenuTask(void) {
         configureColorCycleTask(0, 0, 0, 0, 0);
         configureColorCycleTask(0, 0, 0, 0, 1);
         if (state->unk0A != 0) {
-            D_8013B108 = 2;
-            D_8013B109 = 1;
+            gMenuScreenId = 2;
+            gMenuTransitionState = 1;
             deleteCurrentTaskSubtree();
         } else {
             queueStartupSectorReads();

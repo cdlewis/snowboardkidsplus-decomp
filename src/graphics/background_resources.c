@@ -25,8 +25,8 @@ extern GameTask *gCurrentTaskParent __attribute__((section(".data")));
 extern u8 gDemoRaceIndex __attribute__((section(".data")));
 
 void resetGameOptionState(void) {
-    D_8013B108 = 2;
-    D_8013B109 = 0;
+    gMenuScreenId = 2;
+    gMenuTransitionState = 0;
     D_8013B10A = 0;
     gGameOptionFlags = 0x3E;
 }
@@ -88,9 +88,9 @@ void uploadTimImageAt(s16 x, s16 y, s16 clutX, s16 clutY, u32 *tim) {
 void initializeBackgroundCameraTask(void) {
     gDisplayWidth = 320;
     gDisplayHeight = 240;
-    D_8013B10C = -1;
-    D_8013B10E = -1;
-    D_8013B106 = 0;
+    gMenuTextureResourceId = -1;
+    gMenuGridResourceId = -1;
+    gMenuMusicEnabled = 0;
     configureTaskStateTransition(11, 0, 30);
     setSecondaryDisplayTaskMode(1);
     queueBackgroundTextureSectorCommands();
@@ -147,7 +147,7 @@ void dispatchBackgroundMenuTask(void) {
     GameTask *task = gCurrentTask;
 
     if (task->data1C == 0) {
-        D_8013B108 = task->data18;
+        gMenuScreenId = task->data18;
         switch (task->data18) {
         case 2:
             configureColorCycleTask(0, 0, 0, 0, 0);
@@ -230,17 +230,17 @@ void dispatchBackgroundMenuTask(void) {
             configureColorCycleTask(0, 0, 0, 0, 1);
             setMusicSequenceEnabled(0);
             gDemoRaceIndex = 0;
-            D_8013B109 = 3;
+            gMenuTransitionState = 3;
             switch (gMainMenuSelectionIndex) {
             case 1:
-                D_8013B108 = 9;
+                gMenuScreenId = 9;
                 break;
             case 0:
             case 2:
-                D_8013B108 = 6;
+                gMenuScreenId = 6;
                 break;
             default:
-                D_8013B108 = 2;
+                gMenuScreenId = 2;
                 gMainMenuSelectionIndex = 0;
                 break;
             }
@@ -255,9 +255,9 @@ void dispatchBackgroundMenuTask(void) {
 
 void beginMode2SequenceAndFadeMusic(void) {
     configureTaskStateTransition(2, 0, 30);
-    if (D_8013B106 == 1) {
+    if (gMenuMusicEnabled == 1) {
         fadeOutMusicSequence(0x200);
-        D_8013B106 = 0;
+        gMenuMusicEnabled = 0;
     }
 }
 
@@ -285,39 +285,39 @@ void queueMenuResourceReads(s16 resource) {
         break;
     }
 
-    if (resource == D_8013B10C || resource == D_8013B10E) {
+    if (resource == gMenuTextureResourceId || resource == gMenuGridResourceId) {
         return;
     }
 
-    D_8013B10E = -1;
+    gMenuGridResourceId = -1;
     switch (resource) {
     case 2:
         queueCdSectorCommand(2, DAT_MODE2_TEXTURES_SECTOR, DAT_MODE2_TEXTURES_SECTOR_COUNT, DAT_TEXTURE_ARCHIVE, 0);
-        D_8013B10C = 2;
+        gMenuTextureResourceId = 2;
         break;
     case 5:
         queueCdSectorCommand(0, DAT_ENTRY_018_SECTOR, DAT_ENTRY_018_SECTOR_COUNT, DAT_TEXTURE_ARCHIVE, 0);
-        D_8013B10C = 5;
+        gMenuTextureResourceId = 5;
         break;
     case 6:
         queueCdSectorCommand(0, DAT_ENTRY_014_SECTOR, DAT_ENTRY_014_SECTOR_COUNT, DAT_TEXTURE_ARCHIVE, 0);
-        D_8013B10C = 6;
+        gMenuTextureResourceId = 6;
         break;
     case 7:
         queueCdSectorCommand(0, DAT_ENTRY_015_SECTOR, DAT_ENTRY_015_SECTOR_COUNT, DAT_TEXTURE_ARCHIVE, 0);
-        D_8013B10C = 7;
+        gMenuTextureResourceId = 7;
         break;
     case 9:
         queueCdSectorCommand(0, DAT_ENTRY_017_SECTOR, DAT_ENTRY_017_SECTOR_COUNT, DAT_TEXTURE_ARCHIVE, 0);
-        D_8013B10C = 9;
+        gMenuTextureResourceId = 9;
         break;
     case 11:
         queueCdSectorCommand(0, DAT_ENTRY_016_SECTOR, DAT_ENTRY_016_SECTOR_COUNT, DAT_TEXTURE_ARCHIVE, 0);
-        D_8013B10C = 11;
+        gMenuTextureResourceId = 11;
         break;
     case 20:
         queueCdSectorCommand(0, DAT_ENTRY_019_SECTOR, DAT_ENTRY_019_SECTOR_COUNT, DAT_TEXTURE_ARCHIVE, 0);
-        D_8013B10C = 20;
+        gMenuTextureResourceId = 20;
         break;
     case 18:
         queueGridResourceSectorReads(0, gRacePlayers[0].unk009, 0);
@@ -325,16 +325,16 @@ void queueMenuResourceReads(s16 resource) {
         queueGridResourceSectorReads(2, gRacePlayers[0].unk009, 2);
         queueGridResourceSectorReads(3, gRacePlayers[0].unk009, 3);
         queueGridResourceSectorReads(4, gRacePlayers[0].unk009, 4);
-        D_8013B10E = 18;
+        gMenuGridResourceId = 18;
         break;
     case 14:
         queueGridResourceSectorReads(0, gRacePlayers[0].unk009, gRacePlayers[0].unk00A[0]);
         queueGridResourceSectorReads(1, 10, 0);
-        D_8013B10E = 14;
+        gMenuGridResourceId = 14;
         break;
     case 23:
         queueCdSectorCommand(1, DAT_ENTRY_182_SECTOR, DAT_ENTRY_182_SECTOR_COUNT, DAT_TEXTURE_ARCHIVE, 0);
-        D_8013B10C = 23;
+        gMenuTextureResourceId = 23;
         break;
     }
 }

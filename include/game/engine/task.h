@@ -192,7 +192,6 @@ void initializeTaskResourcePairWithOneTickTransition(void);
 void initializeSelectionMenuTask(void);
 void initializeUnlockMenuResourceTask(void);
 
-extern u8 D_8013B0F0;
 
 void drawSelectedTaskSprite(void);
 

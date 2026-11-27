@@ -30,10 +30,10 @@ extern u8 gRacePauseState __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern u8 gSelectedPlayerReplayActive __attribute__((section(".data")));
 
-extern u8 D_8013B108 __attribute__((section(".data")));
+extern u8 gMenuScreenId __attribute__((section(".data")));
 extern u8 D_8013B564 __attribute__((section(".data")));
-extern s16 D_8013B106 __attribute__((section(".data")));
-extern u8 D_8013B0F0 __attribute__((section(".data")));
+extern s16 gMenuMusicEnabled __attribute__((section(".data")));
+extern u8 gTitleMenuResourcesInitialized __attribute__((section(".data")));
 
 extern const GridSpriteEntry gMode11SelectionSprites[];
 extern const u8 gMode11SelectionMapping[];
@@ -108,12 +108,12 @@ void updateMode11SelectionMenuTask(void) {
         if (selection->choiceResult != 0 && (s16)entries[1].flags == 0) {
             entries[1].command = 22;
             if (selection->choiceResult < 0) {
-                D_8013B108 = 2;
+                gMenuScreenId = 2;
                 gCurrentTask->data18 = 4;
             } else {
                 index = selection->selectedIndex;
                 if (index == 2) {
-                    D_8013B108 = index;
+                    gMenuScreenId = index;
                 }
                 gCurrentTask->data18 = 7;
             }
@@ -127,11 +127,11 @@ void updateMode11SelectionMenuTask(void) {
         if ((s16)entries[1].flags == 0) {
             if (selection->selectedIndex != 2) {
                 if (selection->selectedIndex == 0) {
-                    D_8013B108 = 27;
+                    gMenuScreenId = 27;
                 }
                 index = selection->selectedIndex;
                 if (index == 1) {
-                    D_8013B108 = 28;
+                    gMenuScreenId = 28;
                     gControllerPlaybackIndex = index;
                 }
             }
@@ -140,10 +140,10 @@ void updateMode11SelectionMenuTask(void) {
         break;
     case 4:
         configureTaskStateTransition(2, 0, 30);
-        if (D_8013B108 != 28) {
+        if (gMenuScreenId != 28) {
             startCdVolumeFade(103, 20, 0, 1);
         }
-        D_8013B106 = 0;
+        gMenuMusicEnabled = 0;
         configureColorCycleTask(0, 0, 0, 0, 0);
         gCurrentTask->data18 = 5;
         break;
@@ -196,7 +196,7 @@ void initializeMode1Task(void) {
     D_8013B560 = 99;
     setControllerFlag5(0);
     setControllerFlag5(1);
-    D_8013B0F0 = 0;
+    gTitleMenuResourcesInitialized = 0;
     setCurrentTaskCallback(initializeMode1RacePlayers);
 }
 
