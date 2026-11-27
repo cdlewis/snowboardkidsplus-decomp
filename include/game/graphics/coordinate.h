@@ -6,7 +6,7 @@
 extern VECTOR gSharedScratchVector;
 
 extern GsCOORDINATE2 gCourseObjectCoordinates[30];
-extern SVECTOR gCourseObjectRotations[];
+extern SVECTOR gCourseObjectRotations[30];
 
 extern VECTOR *gScratchVector0;
 extern VECTOR *gScratchVector1;
