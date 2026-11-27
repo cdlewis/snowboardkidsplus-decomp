@@ -225,26 +225,26 @@ void updateSceneImageTask(void) {
             switch (entry->mode) {
             case 0:
                 configureTaskStateTransition(0, 5, 0);
-                D_8013B59E = 1;
+                gSceneImageTargetVisible = 1;
                 break;
             case 1:
                 configureTaskStateTransition(1, 5, entry->duration);
-                D_8013B59E = 1;
+                gSceneImageTargetVisible = 1;
                 gSceneImageTransitionDuration = entry->duration;
                 break;
             case 2:
                 configureTaskStateTransition(2, 5, entry->duration);
-                D_8013B59E = 0;
+                gSceneImageTargetVisible = 0;
                 gSceneImageTransitionDuration = entry->duration;
                 break;
             case 3:
                 configureTaskStateTransition(4, 5, entry->duration);
-                D_8013B59E = 1;
+                gSceneImageTargetVisible = 1;
                 gSceneImageTransitionDuration = entry->duration;
                 break;
             case 4:
                 configureTaskStateTransition(5, 5, entry->duration);
-                D_8013B59E = 0;
+                gSceneImageTargetVisible = 0;
                 gSceneImageTransitionDuration = entry->duration;
                 break;
             }

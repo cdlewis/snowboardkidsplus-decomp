@@ -49,7 +49,7 @@ void initializeScenePlaybackTask(void) {
     setSecondaryDisplayTaskMode(0);
     configureTaskStateTransition(2, 5, 30);
     gSceneImageTransitionDuration = 0;
-    D_8013B59E = 0;
+    gSceneImageTargetVisible = 0;
     gSceneTextBackdropEnabled = 0;
     setCurrentTaskCallback(updateScenePlaybackTask);
 }

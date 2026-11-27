@@ -4423,5 +4423,6 @@ gXaTrackStartSector = 0x8013AE64; // size:0x4 defined:true
 gRaceRulesetCourseMappingGroups = 0x801325FC; // size:0x3C
 
 gSceneImageTransitionDuration = 0x8013B59C; // size:0x2
+gSceneImageTargetVisible = 0x8013B59E; // size:0x1
 gSceneTextBackdropEnabled = 0x8013B59F; // size:0x1
 gSceneTextColon = 0x8013B5C4; // size:0x4
