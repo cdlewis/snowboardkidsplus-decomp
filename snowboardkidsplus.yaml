@@ -960,7 +960,7 @@ segments:
       - {start: 0x1250AC, type: .data, name: syslib/libetc/intr_vb, linker_section: .data.vsync_callbacks}
       - [0x1250DC, lib, libetc, intr_dma, .data]
       - {start: 0x12510C, type: .data, name: syslib/libetc/vmode, linker_section: .data.vmode}
-      - [0x125110, data]
+      - {start: 0x12511C, type: .data, name: syslib/libcd/cdrom, linker_section: .data.cdrom_registers}
       - [0x12512C, lib, libcd, sys, .data]
       - [0x1251AC, lib, libcd, bios, .data]
       - [0x1254CC, lib, libcd, iso9660, .data]

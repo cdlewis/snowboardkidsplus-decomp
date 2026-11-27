@@ -443,6 +443,8 @@ getOffsetArchiveEntry = 0x8006A424; // type:func
 uploadTimImageAndPaletteAt = 0x8006A438; // type:func
 gLinearRandomState = 0x8013B2FC; // size:0x4 defined:true
 gVideoMode = 0x8013490C; // size:0x4 defined:true
+videoModeDataPadding = 0x80134910; // size:0xC defined:true
+cdromRegisterAddresses = 0x8013491C; // size:0x10 defined:true
 // Shared SDK state (defined by the existing data objects).
 _svm_stereo_mono = 0x8013CFA8; // size:0x2
 _svm_damper = 0x8013CF60; // size:0x2

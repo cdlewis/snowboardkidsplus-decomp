@@ -4,6 +4,9 @@
  * SetVideoMode returns the previous mode. */
 s32 gVideoMode __attribute__((section(".data.vmode"))) = 0;
 
+/* The SDK VMODE data section ends with three unused zero words. */
+u32 videoModeDataPadding[3] __attribute__((section(".data.vmode"))) = {0, 0, 0};
+
 s32 SetVideoMode(s32 mode) {
     s32 previous = gVideoMode;
     gVideoMode = mode;
