@@ -24,9 +24,15 @@ extern u8 gMainMenuSelectionIndex __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCurrentTaskParent __attribute__((section(".data")));
 
-extern const u16 D_8012F424[], D_8012F4C8[], D_8012F5CC[], D_8012F630[];
-extern const u16 D_8012F698[], D_8012F6D4[], D_8012F70C[], D_8012F728[];
-extern const u16 D_8012F750[], D_8012F490[], D_8012F544[];
+extern const u16 gMainMenuSinglePlayerRaceHelpText[54];
+extern const u16 gMainMenuMultiplayerRaceHelpText[28];
+extern const u16 gMainMenuSinglePlayerRaceRulesHelpText[62];
+extern const u16 gMainMenuMultiplayerRaceRulesHelpText[68];
+extern const u16 gMainMenuCourseSelectionHelpText[50];
+extern const u16 gMainMenuShopHelpText[52];
+extern const u16 gMainMenuSaveHelpText[30];
+extern const u16 D_8012F6D4[28];
+extern const u16 D_8012F70C[], D_8012F728[], D_8012F750[];
 
 const GridSpriteEntry gMainMenuSprites[6]
     __attribute__((section(".data.main_menu_sprites"), aligned(4))) = {
@@ -40,8 +46,14 @@ const GridSpriteEntry gMainMenuSprites[6]
 
 const u16 *gMainMenuTexts[11]
     __attribute__((section(".data.main_menu_texts"), aligned(4))) = {
-    D_8012F424, D_8012F4C8, D_8012F5CC, D_8012F630, D_8012F698, D_8012F6D4,
-    D_8012F70C, D_8012F728, D_8012F750, D_8012F490, D_8012F544,
+    gMainMenuSinglePlayerRaceHelpText,
+    gMainMenuSinglePlayerRaceRulesHelpText,
+    gMainMenuCourseSelectionHelpText,
+    gMainMenuShopHelpText,
+    gMainMenuSaveHelpText,
+    D_8012F6D4, D_8012F70C, D_8012F728, D_8012F750,
+    gMainMenuMultiplayerRaceHelpText,
+    gMainMenuMultiplayerRaceRulesHelpText,
 };
 
 const u8 gMainMenuSinglePlayerSpriteMapping[8]
