@@ -22,12 +22,12 @@ extern u8 D_8013AFD8 __attribute__((section(".data")));
 extern u8 D_8013AFD9 __attribute__((section(".data")));
 extern s16 D_8013AFDE __attribute__((section(".data")));
 extern u8 D_8013AFE1 __attribute__((section(".data")));
-extern s16 D_8013AFCE __attribute__((section(".data")));
+extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u16 D_8013AF78 __attribute__((section(".data")));
 extern u8 D_8013AFE0 __attribute__((section(".data")));
 extern u8 D_8013AFE2 __attribute__((section(".data")));
 extern u8 D_8013AFD3 __attribute__((section(".data")));
-extern GameTask *D_8013AE88 __attribute__((section(".data")));
+extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern u8 D_8013AFD6 __attribute__((section(".data")));
 
 extern u8 D_8013B108 __attribute__((section(".data")));
@@ -40,18 +40,18 @@ extern const GridSpriteEntry gMode11SelectionSprites[];
 extern const u8 gMode11SelectionMapping[];
 
 void initializeTaskResourcePairWithOneTickTransition(void) {
-    D_8013AE88->data18 = 0;
-    if (D_8013AE88->resource14 != 0xFFFF) {
+    gCurrentTask->data18 = 0;
+    if (gCurrentTask->resource14 != 0xFFFF) {
         for (;;) {}
     }
-    D_8013AE88->resource14 = allocateTaskMemoryBlock();
-    if (D_8013AE88->resource16 != 0xFFFF) {
+    gCurrentTask->resource14 = allocateTaskMemoryBlock();
+    if (gCurrentTask->resource16 != 0xFFFF) {
         for (;;) {}
     }
-    D_8013AE88->resource16 = allocateTaskMemoryBlock();
+    gCurrentTask->resource16 = allocateTaskMemoryBlock();
     configureTaskStateTransition(2, 0, 1);
     setCurrentTaskCallback(updateMode11SelectionMenuTask);
-    D_8013AE88->unk10 |= 2;
+    gCurrentTask->unk10 |= 2;
 }
 
 void updateMode11SelectionMenuTask(void) {
@@ -60,16 +60,16 @@ void updateMode11SelectionMenuTask(void) {
     s32 complete;
     s32 index;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         for (;;) {}
     }
-    selection = (Mode11MenuSelection *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if (D_8013AE88->resource16 == 0xFFFF) {
+    selection = (Mode11MenuSelection *)&gTaskMemoryPool[gCurrentTask->resource14];
+    if (gCurrentTask->resource16 == 0xFFFF) {
         for (;;) {}
     }
-    entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE88->resource16];
+    entries = (RegisteredTaskEntry *)&gTaskMemoryPool[gCurrentTask->resource16];
 
-    switch (D_8013AE88->data18) {
+    switch (gCurrentTask->data18) {
     case 0:
         setSecondaryDisplayTaskMode(0);
         selection->mode = 0;
@@ -81,14 +81,14 @@ void updateMode11SelectionMenuTask(void) {
                                          1, 0, 20, -48, -24, 0, 24, 3, 403,
                                          drawSelectedTaskSprite,
                                          drawRegisteredTaskGridSpriteWithColor, 3, 11);
-        D_8013AE88->data18 = 1;
+        gCurrentTask->data18 = 1;
         break;
     case 1:
         if ((s16)entries[1].flags == 0) {
             configureTaskStateTransition(1, 0, 30);
             queueCdCommand(3, 0);
             D_8013B564 = 1;
-            D_8013AE88->data18 = 2;
+            gCurrentTask->data18 = 2;
         }
         break;
     case 2:
@@ -96,7 +96,7 @@ void updateMode11SelectionMenuTask(void) {
             entries[1].command = 20;
             configureColorCycleTask(1, 0, 128, 8, 0);
             D_8013B41F = 0;
-            D_8013AE88->data18 = 3;
+            gCurrentTask->data18 = 3;
         }
         break;
     case 3:
@@ -110,19 +110,19 @@ void updateMode11SelectionMenuTask(void) {
             entries[1].command = 22;
             if (selection->choiceResult < 0) {
                 D_8013B108 = 2;
-                D_8013AE88->data18 = 4;
+                gCurrentTask->data18 = 4;
             } else {
                 index = selection->selectedIndex;
                 if (index == 2) {
                     D_8013B108 = index;
                 }
-                D_8013AE88->data18 = 7;
+                gCurrentTask->data18 = 7;
             }
         }
         break;
     case 7:
         entries[1].command = 10;
-        D_8013AE88->data18 = 8;
+        gCurrentTask->data18 = 8;
         break;
     case 8:
         if ((s16)entries[1].flags == 0) {
@@ -136,7 +136,7 @@ void updateMode11SelectionMenuTask(void) {
                     D_8013AFD9 = index;
                 }
             }
-            D_8013AE88->data18 = 4;
+            gCurrentTask->data18 = 4;
         }
         break;
     case 4:
@@ -146,11 +146,11 @@ void updateMode11SelectionMenuTask(void) {
         }
         D_8013B106 = 0;
         configureColorCycleTask(0, 0, 0, 0, 0);
-        D_8013AE88->data18 = 5;
+        gCurrentTask->data18 = 5;
         break;
     case 5:
         if (isTaskStateTransitionBelowMaximum(0) == 0) {
-            D_8013AE88->data18 = 6;
+            gCurrentTask->data18 = 6;
         }
         break;
     case 6:
@@ -159,7 +159,7 @@ void updateMode11SelectionMenuTask(void) {
         return;
     }
 
-    if (D_8013AE88->data18 >= 2) {
+    if (gCurrentTask->data18 >= 2) {
         drawScreenDarkeningOverlay(128, &D_800EBFF0[D_8013AF78], 4);
         drawFullScreenTexturedBackground();
     }
@@ -193,7 +193,7 @@ void selectTaskCallbackFromModeState(void) {
 
 void initializeMode1Task(void) {
     D_8013AFD8 = 1;
-    D_8013AFCE = -1;
+    gSelectedCourseIndex = -1;
     D_8013B560 = 99;
     setControllerFlag5(0);
     setControllerFlag5(1);
@@ -204,9 +204,9 @@ void initializeMode1Task(void) {
 void initializeMode1RacePlayers(void) {
     s32 i;
     s16 mode;
-    D_8013B560 = D_8013AFCE;
-    if ((s16)D_8013AFD8 < 7 && D_8013AFD8 != 0) D_8013AFCE = 0;
-    else D_8013AFCE = 9;
+    D_8013B560 = gSelectedCourseIndex;
+    if ((s16)D_8013AFD8 < 7 && D_8013AFD8 != 0) gSelectedCourseIndex = 0;
+    else gSelectedCourseIndex = 9;
     SetFogNearFar(8000, 10000, 400);
     D_8013AFD3 = 0;
     D_8013AFD6 = 0;
@@ -262,14 +262,14 @@ void initializeMode1RacePlayers(void) {
 void prepareRaceResourcesIfSelectionChanged(void) {
     configureTaskStateTransition(1, 0, 30);
     setSecondaryDisplayTaskMode(1);
-    if (D_8013B560 != D_8013AFCE) {
+    if (D_8013B560 != gSelectedCourseIndex) {
         closeSoundBank(2);
         closeSoundBank(3);
         closeSoundBank(4);
         closeSoundBank(5);
         queueStartupSectorReads();
         setCurrentTaskCallback(preparePlayerResourcesTask);
-        D_8013AE88->unk10 |= 2;
+        gCurrentTask->unk10 |= 2;
     } else {
         setCurrentTaskCallback(initializeRaceTaskState);
     }
@@ -278,20 +278,20 @@ void prepareRaceResourcesIfSelectionChanged(void) {
 void preparePlayerResourcesTask(void) {
     queuePlayerResourceReadsAndUploadTextures();
     setCurrentTaskCallback(initializeRaceTaskState);
-    D_8013AE88->unk10 |= 2;
+    gCurrentTask->unk10 |= 2;
 }
 
 void initializeModeSectorReadResourcesTask(void) {
     ModeSectorReadState *state;
-    if (D_8013AE88->resource14 != 0xFFFF) {
+    if (gCurrentTask->resource14 != 0xFFFF) {
         for (;;) {}
     }
-    D_8013AE88->resource14 = allocateTaskMemoryBlock();
-    state = (ModeSectorReadState *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if (D_8013AE88->resource16 != 0xFFFF) {
+    gCurrentTask->resource14 = allocateTaskMemoryBlock();
+    state = (ModeSectorReadState *)&gTaskMemoryPool[gCurrentTask->resource14];
+    if (gCurrentTask->resource16 != 0xFFFF) {
         for (;;) {}
     }
-    D_8013AE88->resource16 = allocateTaskMemoryBlock();
+    gCurrentTask->resource16 = allocateTaskMemoryBlock();
     D_8013B55E = 0;
     if (D_8013AFD8 != 0) {
         state->mode = 1;
@@ -305,10 +305,10 @@ void initializeModeSectorReadResourcesTask(void) {
 
 void queueTaskModeSectorRead(void) {
     ModeSectorReadState *state;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         for (;;) {}
     }
-    state = (ModeSectorReadState *)&gTaskMemoryPool[D_8013AE88->resource14];
+    state = (ModeSectorReadState *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (state->mode == 1) {
         state->sectorIndex = D_8013AFD8 - 1;
     } else {
@@ -316,7 +316,7 @@ void queueTaskModeSectorRead(void) {
     }
     queueModeIndexedSectorRead(state->mode, state->sectorIndex);
     setCurrentTaskCallback(prepareLoadedTextSequenceTask);
-    D_8013AE88->unk10 |= 2;
+    gCurrentTask->unk10 |= 2;
 }
 
 void prepareLoadedTextSequenceTask(void) {

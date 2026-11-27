@@ -5,7 +5,7 @@
 #include "game/race/player/race_player.h"
 #include "psx/libgs.h"
 
-extern VECTOR *D_8013AF88 __attribute__((section(".data")));
+extern VECTOR *gScratchVector0 __attribute__((section(".data")));
 extern SVECTOR *D_8013AF90 __attribute__((section(".data")));
 
 u8 D_80120200[16] __attribute__((section(".data.player_model_parts"))) = {
@@ -94,15 +94,15 @@ void updateCurrentPlayerModelTransforms(RacePlayer *unused) {
             D_8013AF90->vx = 0;
             D_8013AF90->vy = 0;
             D_8013AF90->vz = 0;
-            ApplyMatrix(&currentPlayerAbsolute->model.modelCoordinates[0].coord, D_8013AF90, D_8013AF88);
-            currentPlayerAbsolute->model.modelCoordinates[0].coord.t[0] = D_8013AF88->vx + currentPlayerAbsolute->unk62C[0].x;
-            currentPlayerAbsolute->model.modelCoordinates[0].coord.t[1] = D_8013AF88->vy + currentPlayerAbsolute->unk62C[0].y;
-            currentPlayerAbsolute->model.modelCoordinates[0].coord.t[2] = D_8013AF88->vz + currentPlayerAbsolute->unk62C[0].z;
+            ApplyMatrix(&currentPlayerAbsolute->model.modelCoordinates[0].coord, D_8013AF90, gScratchVector0);
+            currentPlayerAbsolute->model.modelCoordinates[0].coord.t[0] = gScratchVector0->vx + currentPlayerAbsolute->unk62C[0].x;
+            currentPlayerAbsolute->model.modelCoordinates[0].coord.t[1] = gScratchVector0->vy + currentPlayerAbsolute->unk62C[0].y;
+            currentPlayerAbsolute->model.modelCoordinates[0].coord.t[2] = gScratchVector0->vz + currentPlayerAbsolute->unk62C[0].z;
         } else {
-            ApplyMatrix(&currentPlayerAbsolute->model.modelCoordinates[parent].coord, (SVECTOR *)&currentPlayerAbsolute->unk62C[i], D_8013AF88);
-            currentPlayerAbsolute->model.modelCoordinates[i].coord.t[0] = D_8013AF88->vx + currentPlayerAbsolute->model.modelCoordinates[parent].coord.t[0];
-            currentPlayerAbsolute->model.modelCoordinates[i].coord.t[1] = D_8013AF88->vy + currentPlayerAbsolute->model.modelCoordinates[parent].coord.t[1];
-            currentPlayerAbsolute->model.modelCoordinates[i].coord.t[2] = D_8013AF88->vz + currentPlayerAbsolute->model.modelCoordinates[parent].coord.t[2];
+            ApplyMatrix(&currentPlayerAbsolute->model.modelCoordinates[parent].coord, (SVECTOR *)&currentPlayerAbsolute->unk62C[i], gScratchVector0);
+            currentPlayerAbsolute->model.modelCoordinates[i].coord.t[0] = gScratchVector0->vx + currentPlayerAbsolute->model.modelCoordinates[parent].coord.t[0];
+            currentPlayerAbsolute->model.modelCoordinates[i].coord.t[1] = gScratchVector0->vy + currentPlayerAbsolute->model.modelCoordinates[parent].coord.t[1];
+            currentPlayerAbsolute->model.modelCoordinates[i].coord.t[2] = gScratchVector0->vz + currentPlayerAbsolute->model.modelCoordinates[parent].coord.t[2];
         }
         setCoordinateRotation((SVECTOR *)&currentPlayerAbsolute->unk5BC[i], &currentPlayerAbsolute->model.modelCoordinates[i]);
     }

@@ -5,8 +5,8 @@
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
 
-extern GameTask *D_8013AE88 __attribute__((section(".data")));
-extern GameTask *D_8013AE8C __attribute__((section(".data")));
+extern GameTask *gCurrentTask __attribute__((section(".data")));
+extern GameTask *gCreatedTask __attribute__((section(".data")));
 
 SavedImageEntry gSavedImageEntries[32] __attribute__((section(".data.saved_image_entries"))) = {0};
 
@@ -181,8 +181,8 @@ s32 startPaletteTransition(s16 x, s16 y, u32 *pixels, u16 duration) {
     PaletteTransitionResource *resource;
     if (index != 32) {
         if ((s16)tryCreateChildTaskWith20SlotsReserved(initializePaletteTransition) != 0) {
-            D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-            task = D_8013AE8C;
+            gCreatedTask->resource14 = allocateTaskMemoryBlock();
+            task = gCreatedTask;
             resource = (PaletteTransitionResource *)&gTaskMemoryPool[task->resource14];
             resource->pixels = pixels;
             task->data1C = 1;
@@ -284,45 +284,45 @@ void updatePaletteRecords(void) {
 void initializePaletteTransition(void) {
     PaletteTransitionState *resource;
     u16 i;
-    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    resource = (PaletteTransitionState *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if (D_8013AE88->data1C == 0) {
+    if (gCurrentTask->resource14 == 0xFFFF) { while (1) {} }
+    resource = (PaletteTransitionState *)&gTaskMemoryPool[gCurrentTask->resource14];
+    if (gCurrentTask->data1C == 0) {
         for (i = 0; i < 16; i++) {
-            resource->red[i] = (gSavedImageEntries[D_8013AE88->data1A].transitionPixels[i] & 0x1F) << 8;
-            resource->green[i] = (gSavedImageEntries[D_8013AE88->data1A].transitionPixels[i] & 0x3E0) << 3;
-            resource->blue[i] = (gSavedImageEntries[D_8013AE88->data1A].transitionPixels[i] & 0x7C00) >> 2;
-            resource->redStep[i] = (((resource->pixels[i] & 0x1F) << 8) - (s16)resource->red[i]) / (s16)D_8013AE88->data18;
-            resource->greenStep[i] = (((resource->pixels[i] & 0x3E0) << 3) - (s16)resource->green[i]) / (s16)D_8013AE88->data18;
-            resource->blueStep[i] = (((resource->pixels[i] & 0x7C00) >> 2) - (s16)resource->blue[i]) / (s16)D_8013AE88->data18;
+            resource->red[i] = (gSavedImageEntries[gCurrentTask->data1A].transitionPixels[i] & 0x1F) << 8;
+            resource->green[i] = (gSavedImageEntries[gCurrentTask->data1A].transitionPixels[i] & 0x3E0) << 3;
+            resource->blue[i] = (gSavedImageEntries[gCurrentTask->data1A].transitionPixels[i] & 0x7C00) >> 2;
+            resource->redStep[i] = (((resource->pixels[i] & 0x1F) << 8) - (s16)resource->red[i]) / (s16)gCurrentTask->data18;
+            resource->greenStep[i] = (((resource->pixels[i] & 0x3E0) << 3) - (s16)resource->green[i]) / (s16)gCurrentTask->data18;
+            resource->blueStep[i] = (((resource->pixels[i] & 0x7C00) >> 2) - (s16)resource->blue[i]) / (s16)gCurrentTask->data18;
             resource->mask[i] = resource->pixels[i] & 0x8000;
         }
         setCurrentTaskCallback(updatePaletteTransition);
     } else {
-        D_8013AE88->data1C--;
+        gCurrentTask->data1C--;
     }
 }
 
 void updatePaletteTransition(void) {
     PaletteTransitionState *resource;
     u16 i;
-    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    resource = (PaletteTransitionState *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if (--D_8013AE88->data18 != 0) {
+    if (gCurrentTask->resource14 == 0xFFFF) { while (1) {} }
+    resource = (PaletteTransitionState *)&gTaskMemoryPool[gCurrentTask->resource14];
+    if (--gCurrentTask->data18 != 0) {
         for (i = 0; i < 16; i++) {
             resource->red[i] += resource->redStep[i];
             resource->green[i] += resource->greenStep[i];
             resource->blue[i] += resource->blueStep[i];
-            gSavedImageEntries[D_8013AE88->data1A].transitionPixels[i] =
+            gSavedImageEntries[gCurrentTask->data1A].transitionPixels[i] =
                 ((resource->red[i] & 0x1F00) >> 8) |
                 ((resource->green[i] & 0x1F00) >> 3) |
                 ((resource->blue[i] & 0x1F00) << 2) | resource->mask[i];
         }
-        gSavedImageEntries[D_8013AE88->data1A].flags |= 0x20;
+        gSavedImageEntries[gCurrentTask->data1A].flags |= 0x20;
     } else {
         for (i = 0; i < 16; i++) {
-            gSavedImageEntries[D_8013AE88->data1A].transitionPixels[i] = resource->pixels[i];
+            gSavedImageEntries[gCurrentTask->data1A].transitionPixels[i] = resource->pixels[i];
         }
-        gSavedImageEntries[D_8013AE88->data1A].flags = 0x20;
+        gSavedImageEntries[gCurrentTask->data1A].flags = 0x20;
         deleteCurrentTaskSubtree();
     }
 }

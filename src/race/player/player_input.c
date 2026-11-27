@@ -17,13 +17,13 @@ typedef struct PlayerRankSpeedAdjustment {
 
 extern SelectedRecord *D_8013B1F0 __attribute__((section(".data")));
 extern s16 D_8013B1FE __attribute__((section(".data")));
-extern s16 D_8013AFCE __attribute__((section(".data")));
-extern VECTOR *D_8013AF88 __attribute__((section(".data")));
+extern s16 gSelectedCourseIndex __attribute__((section(".data")));
+extern VECTOR *gScratchVector0 __attribute__((section(".data")));
 extern SVECTOR *D_8013AF90 __attribute__((section(".data")));
-extern MATRIX *D_8013AF98 __attribute__((section(".data")));
+extern MATRIX *gScratchMatrix0 __attribute__((section(".data")));
 extern u8 D_8013AFE0 __attribute__((section(".data")));
 extern u8 D_8013AFE2 __attribute__((section(".data")));
-extern GameTask *D_8013AE88 __attribute__((section(".data")));
+extern GameTask *gCurrentTask __attribute__((section(".data")));
 
 const PlayerRankSpeedAdjustment gPlayerRankSpeedAdjustments[4]
     __attribute__((section(".data.player_rank_speed_adjustments"))) = {
@@ -189,7 +189,7 @@ void prepareCurrentPlayerFrame(void) {
     s16 delta;
     s16 finishSegment;
 
-    initialPlayer = &gRacePlayers[D_8013AE88->data18];
+    initialPlayer = &gRacePlayers[gCurrentTask->data18];
     currentPlayerAbsolute = initialPlayer;
     initialPlayer->surfaceState.fields.unk137 = initialPlayer->surfaceState.fields.unk136;
     initialPlayer->unk938 = 0;
@@ -208,16 +208,16 @@ void prepareCurrentPlayerFrame(void) {
         D_8013AF90->vz = 0;
         angle += (surface - 17) * 512;
         D_8013AF90->vy = angle;
-        RotMatrix(D_8013AF90, D_8013AF98);
+        RotMatrix(D_8013AF90, gScratchMatrix0);
 
         D_8013AF90->vx = 0;
         D_8013AF90->vy = 0;
         D_8013AF90->vz = 384;
-        ApplyMatrix(D_8013AF98, D_8013AF90, D_8013AF88);
+        ApplyMatrix(gScratchMatrix0, D_8013AF90, gScratchVector0);
 
-        currentPlayerAbsolute->x += D_8013AF88->vx;
-        currentPlayerAbsolute->y += D_8013AF88->vy;
-        currentPlayerAbsolute->z += D_8013AF88->vz;
+        currentPlayerAbsolute->x += gScratchVector0->vx;
+        currentPlayerAbsolute->y += gScratchVector0->vy;
+        currentPlayerAbsolute->z += gScratchVector0->vz;
     }
 
     currentPlayerAbsolute->unk060 = currentPlayerAbsolute->x - currentPlayerAbsolute->unk050;
@@ -273,7 +273,7 @@ void prepareCurrentPlayerFrame(void) {
     }
 
     if (currentPlayerAbsolute->unk008 && currentPlayerAbsolute->unk934 >= selectedFinishLapCountAbsolute - 1) {
-        finishSegment = D_80123D80[D_8013AFCE].unk00;
+        finishSegment = D_80123D80[gSelectedCourseIndex].unk00;
         if (currentPlayerAbsolute->unk92E > finishSegment - 20 && currentPlayerAbsolute->unk92E < finishSegment) {
             currentPlayerAbsolute->unk12E = currentPlayerAbsolute->unk098;
         }

@@ -93,13 +93,13 @@ typedef struct SaveRecordTaskStatus {
 } SaveRecordTaskStatus;
 
 extern MenuRgbColor gMenuColorCycleColor __attribute__((section(".data")));
-extern s16 D_8013AFCE __attribute__((section(".data")));
+extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u16 D_8013AF78 __attribute__((section(".data")));
 extern u8 D_8013AFCD __attribute__((section(".data")));
 extern u8 D_8013AFE2 __attribute__((section(".data")));
 extern s16 D_8013B104 __attribute__((section(".data")));
-extern GameTask *D_8013AE88 __attribute__((section(".data")));
-extern GameTask *D_8013AE8C __attribute__((section(".data")));
+extern GameTask *gCurrentTask __attribute__((section(".data")));
+extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern GameTask *D_8013AE98 __attribute__((section(".data")));
 
 extern u16 D_8013AFD0 __attribute__((section(".data")));
@@ -275,16 +275,16 @@ void updateCdAwareCourseSelectionTask(void) {
     u16 course;
     u16 courseParameter;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         for (;;) {}
     }
-    selection = (CourseSelectionResource *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if (D_8013AE88->resource16 == 0xFFFF) {
+    selection = (CourseSelectionResource *)&gTaskMemoryPool[gCurrentTask->resource14];
+    if (gCurrentTask->resource16 == 0xFFFF) {
         for (;;) {}
     }
-    entries = (RegisteredPanelSlot *)&gTaskMemoryPool[D_8013AE88->resource16];
+    entries = (RegisteredPanelSlot *)&gTaskMemoryPool[gCurrentTask->resource16];
 
-    switch (D_8013AE88->data18) {
+    switch (gCurrentTask->data18) {
     case 1:
         setMusicSequenceEnabled(1);
         setSecondaryDisplayTaskMode(0);
@@ -293,7 +293,7 @@ void updateCdAwareCourseSelectionTask(void) {
         } else {
             mode = 3;
         }
-        group = &D_8012FD10[D_8013AE88->data1A];
+        group = &D_8012FD10[gCurrentTask->data1A];
         selection->mode = 0;
         selectedIndex = findIdentityMappedIndexOrZero(group, D_8013B104);
         selection->selectedIndex = selectedIndex;
@@ -307,7 +307,7 @@ void updateCdAwareCourseSelectionTask(void) {
         createRegisteredCallbackTask(0, 172, -72, drawSelectionItemDetails, 4, 11);
         createRegisteredTexturePairTask(172, -72, group->textureMapping,
                                         group->count, selection->selectedIndex, 1, 5, 21);
-        D_8013AE88->data18 = 3;
+        gCurrentTask->data18 = 3;
         break;
     case 3:
         if (entries[0].flags == 0 && entries[1].flags == 0 && entries[2].flags == 0) {
@@ -316,7 +316,7 @@ void updateCdAwareCourseSelectionTask(void) {
                                 -0x8000, -0x48000, 0x1E000, 0x1E000, 5);
             configureMovement2D((Movement2D *)&gTaskMemoryPool[entries[2].task->resource14],
                                 -0x8000, -0x48000, 0x1E000, 0x1E000, 5);
-            D_8013AE88->data18 = 4;
+            gCurrentTask->data18 = 4;
         }
         break;
     case 4:
@@ -325,7 +325,7 @@ void updateCdAwareCourseSelectionTask(void) {
             entries[1].command = 20;
             configureColorCycleTask(1, 0, 128, 8, 0);
             selectionMenuFadeStartedGp = 0;
-            D_8013AE88->data18 = 5;
+            gCurrentTask->data18 = 5;
         }
         break;
     case 5:
@@ -347,25 +347,25 @@ void updateCdAwareCourseSelectionTask(void) {
                 GameTask *parent = D_8013AE98;
                 D_8013B104 = 0;
                 parent->data18 = 6;
-                D_8013AE88->data18 = 7;
+                gCurrentTask->data18 = 7;
             } else {
-                D_8013AE88->data18 = 50;
+                gCurrentTask->data18 = 50;
             }
         }
         break;
     case 50: {
-        GameTask *task = D_8013AE88;
+        GameTask *task = gCurrentTask;
         entries[0].command = 10;
         task->data18 = 51;
         break;
     }
     case 51:
         if (entries[0].flags == 0) {
-            D_8013AE88->data18 = 52;
+            gCurrentTask->data18 = 52;
         }
         break;
     case 52: {
-        GameTask *task = D_8013AE88;
+        GameTask *task = gCurrentTask;
         group = &D_8012FD10[task->data1A];
         switch (group->mapping[selection->selectedIndex]) {
         case 10: {
@@ -387,8 +387,8 @@ void updateCdAwareCourseSelectionTask(void) {
             selectedIndex = D_8013B104 = mapMenuByteIndex(group->mapping, selection->selectedIndex);
             course = D_8012D46C[selectedIndex];
             courseParameter = D_80123D80[course].unk02;
-            D_8013AFCE = course;
-            D_8013AE88->data18 = 30;
+            gSelectedCourseIndex = course;
+            gCurrentTask->data18 = 30;
             D_8013AFD0 = courseParameter;
             break;
         }
@@ -396,12 +396,12 @@ void updateCdAwareCourseSelectionTask(void) {
     }
     case 30:
         createChildTaskWithReserve(initializeModeDependentDualResourceTask);
-        D_8013AE8C->data18 = 1;
-        D_8013AE88->data18 = 31;
+        gCreatedTask->data18 = 1;
+        gCurrentTask->data18 = 31;
         break;
     case 32: {
         GameTask *parent = D_8013AE98;
-        GameTask *task = D_8013AE88;
+        GameTask *task = gCurrentTask;
         parent->data18 = 8;
         task->data18 = 99;
         queueMenuResourceReads((s16)parent->data18);
@@ -409,18 +409,18 @@ void updateCdAwareCourseSelectionTask(void) {
     }
     case 40:
         moveTaskChildrenWithSpacing(0, entries[0].task, -0x84000, -0x60000, 0x1E000, 0x1E000, 0);
-        D_8013AE88->data18 = 41;
+        gCurrentTask->data18 = 41;
         break;
     case 41:
         if (entries[0].flags == 0) {
-            GameTask *task = D_8013AE88;
+            GameTask *task = gCurrentTask;
             entries[0].command = 99;
             task->data18 = 42;
         }
         break;
     case 42:
         if (entries[0].task == NULL) {
-            D_8013AE88->data18 = 2;
+            gCurrentTask->data18 = 2;
         }
         break;
     case 7:
@@ -432,16 +432,16 @@ void updateCdAwareCourseSelectionTask(void) {
                                 0xAC000, -0x48000, 0x1E000, 0x1E000, -1000);
             configureMovement2D((Movement2D *)&gTaskMemoryPool[entries[2].task->resource14],
                                 0xAC000, -0x48000, 0x1E000, 0x1E000, -1000);
-            D_8013AE88->data18 = 8;
+            gCurrentTask->data18 = 8;
         }
         break;
     case 8:
         if (entries[0].flags == 0 && entries[1].flags == 0 && entries[2].flags == 0) {
-            D_8013AE88->data18 = 9;
+            gCurrentTask->data18 = 9;
         }
         break;
     case 9:
-        D_8013AE88->data18 = 99;
+        gCurrentTask->data18 = 99;
         break;
     case 31:
         break;
@@ -485,20 +485,20 @@ s32 getCourseSelectionGroupIndex(void) {
 }
 
 void initializeModeDependentDualResourceTask(void) {
-    D_8013AE88->data18 = 1;
+    gCurrentTask->data18 = 1;
     if (D_8013AFCD == 1) {
-        D_8013AE88->data1A = 1;
+        gCurrentTask->data1A = 1;
     } else {
-        D_8013AE88->data1A = 3;
+        gCurrentTask->data1A = 3;
     }
-    if (D_8013AE88->resource14 != 0xFFFF) {
+    if (gCurrentTask->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskMemoryBlock();
-    if (D_8013AE88->resource16 != 0xFFFF) {
+    gCurrentTask->resource14 = allocateTaskMemoryBlock();
+    if (gCurrentTask->resource16 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource16 = allocateTaskMemoryBlock();
+    gCurrentTask->resource16 = allocateTaskMemoryBlock();
     setCurrentTaskCallback(updateSelectionPrizeMenuTask);
 }
 
@@ -523,7 +523,7 @@ void updateSelectionPrizeMenuTask(void) {
         for (;;) {}
     }
     parentEntries = (RegisteredPanelSlot *)&gTaskMemoryPool[D_8013AE98->resource16];
-    task = D_8013AE88;
+    task = gCurrentTask;
     if (task->resource14 == 0xFFFF) {
         for (;;) {}
     }
@@ -531,27 +531,27 @@ void updateSelectionPrizeMenuTask(void) {
     if (task->resource16 == 0xFFFF) {
         for (;;) {}
     }
-    task = D_8013AE88;
+    task = gCurrentTask;
     entries = (RegisteredPanelSlot *)&gTaskMemoryPool[task->resource16];
     selection->selectedIndex = parentSelection->selectedIndex;
 
     switch (task->data18) {
     case 1:
         moveTaskChildrenWithSpacing(2, parentEntries[0].task, -0x138000, -0x60000, 0x1E000, 0x1E000, -1000);
-        D_8013AE88->data18 = 2;
+        gCurrentTask->data18 = 2;
         break;
     case 2:
         if (parentEntries[0].flags == 0) {
             parentEntries[0].command = 23;
             configureTaskGridMovement(1, parentEntries[0].task, -0x84000, -0x60000, 0x1E000, 0x1E000, 0);
-            D_8013AE88->data18 = 3;
+            gCurrentTask->data18 = 3;
         }
         break;
     case 3:
         if (parentEntries[0].flags == 0) {
             createRegisteredCallbackTask(0, -308, -76, drawSelectionPrizeAndPlayerCounters, 3, 1);
             createRegisteredTextPanelTask(-320, -24, D_8012FC2C, NULL, 4, 11);
-            D_8013AE88->data18 = 4;
+            gCurrentTask->data18 = 4;
         }
         break;
     case 4:
@@ -560,17 +560,17 @@ void updateSelectionPrizeMenuTask(void) {
                                 -0x80000, -0x4C000, 0x1E000, 0x1E000, 0);
             configureMovement2D((Movement2D *)&gTaskMemoryPool[entries[1].task->resource14],
                                 -0x8C000, -0x18000, 0x1E000, 0x1E000, 0);
-            D_8013AE88->data18 = 5;
+            gCurrentTask->data18 = 5;
         }
         break;
     case 5:
         if (entries[0].flags == 0 || entries[1].flags == 0) {
             createPaletteRotationTask(816, 245, 1, 12, 3, 5, 91);
-            createInputTimedSpriteTask(-40, 44, D_80123840, 2, D_8013AE88->data1A, 176, 64, 3, 21);
+            createInputTimedSpriteTask(-40, 44, D_80123840, 2, gCurrentTask->data1A, 176, 64, 3, 21);
             entries[0].command = 20;
             entries[1].command = 20;
             configureColorCycleTask(1, 0, 128, 8, 0);
-            transitionTask = D_8013AE88;
+            transitionTask = gCurrentTask;
             selectionMenuFadeStartedGp = 0;
             transitionTask->data18 = 6;
         }
@@ -599,8 +599,8 @@ void updateSelectionPrizeMenuTask(void) {
                 panelValues[3] = 5;
                 panelValues[4] = 23;
                 panelValues[5] = 5;
-                createRegisteredMovingPanelTask(D_8013AE88->data1A, panelValues, -120, 32, 0, 16, -120, 64, 5, 31);
-                D_8013AE88->data18 = 8;
+                createRegisteredMovingPanelTask(gCurrentTask->data1A, panelValues, -120, 32, 0, 16, -120, 64, 5, 31);
+                gCurrentTask->data18 = 8;
             } else {
                 goto dismiss;
             }
@@ -609,10 +609,10 @@ void updateSelectionPrizeMenuTask(void) {
     case 8:
         if (entries[3].flags >= 0) {
             if (entries[3].flags == 0) {
-                D_8013AE88->data18 = 9;
+                gCurrentTask->data18 = 9;
             } else {
             dismiss:
-                D_8013AE88->data18 = 30;
+                gCurrentTask->data18 = 30;
             }
         }
         break;
@@ -622,25 +622,25 @@ void updateSelectionPrizeMenuTask(void) {
                             -0x134000, -0x4C000, 0x1E000, 0x1E000, -1000);
         configureMovement2D((Movement2D *)&gTaskMemoryPool[entries[1].task->resource14],
                             -0x140000, -0x18000, 0x1E000, 0x1E000, -1000);
-        D_8013AE88->data18 = 31;
+        gCurrentTask->data18 = 31;
         break;
     case 31:
         if (entries[0].flags == 0) {
             moveTaskChildrenWithSpacing(1, parentEntries[0].task, -0x84000, -0x60000, 0x1E000, 0x1E000, 0);
-            D_8013AE88->data18 = 32;
+            gCurrentTask->data18 = 32;
         }
         break;
     case 32:
         if (parentEntries[0].flags == 0) {
             moveTaskChildrenWithSpacing(2, parentEntries[0].task, -0x84000, -0x60000, 0x1E000, 0x1E000, 0);
-            D_8013AE88->data18 = 33;
+            gCurrentTask->data18 = 33;
         }
         break;
     case 33:
         if (parentEntries[0].flags == 0) {
             parentEntries[0].command = 20;
             configureColorCycleTask(1, 0, 128, 8, 0);
-            transitionTask = D_8013AE88;
+            transitionTask = gCurrentTask;
             selectionMenuFadeStartedGp = 0;
             transitionTask->data18 = 34;
         }
@@ -664,13 +664,13 @@ void updateSelectionPrizeMenuTask(void) {
                                 0xAC000, -0x48000, 0x1E000, 0x1E000, -1000);
             configureMovement2D((Movement2D *)&gTaskMemoryPool[parentEntries[2].task->resource14],
                                 0xAC000, -0x48000, 0x1E000, 0x1E000, -1000);
-            D_8013AE88->data18 = 10;
+            gCurrentTask->data18 = 10;
         }
         break;
     case 10:
         if (entries[0].flags == 0 && entries[1].flags == 0 && parentEntries[0].flags == 0 &&
             parentEntries[1].flags == 0 && parentEntries[2].flags == 0) {
-            D_8013AE88->data18 = 11;
+            gCurrentTask->data18 = 11;
         }
         break;
     case 11:
@@ -694,10 +694,10 @@ void createPaletteRotationTask(s32 x, s32 y, s32 first, s32 last, s32 steps, s32
     PaletteRotationResource *resource;
     PaletteRotationSlot *slot;
     createChildTaskWithReserve(updatePaletteRotationTask);
-    D_8013AE8C->data18 = 0;
-    D_8013AE8C->data1E = index;
-    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-    resource = (PaletteRotationResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
+    gCreatedTask->data18 = 0;
+    gCreatedTask->data1E = index;
+    gCreatedTask->resource14 = allocateTaskMemoryBlock();
+    resource = (PaletteRotationResource *)&gTaskMemoryPool[gCreatedTask->resource14];
     resource->rect.w = 16;
     resource->rect.x = x;
     resource->rect.y = y;
@@ -709,15 +709,15 @@ void createPaletteRotationTask(s32 x, s32 y, s32 first, s32 last, s32 steps, s32
     resource->last = last;
     resource->steps = steps;
     if (index % 10 == 0) {
-        if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-        slot = getPaletteRotationSlot(D_8013AE88->resource14, index);
+        if (gCurrentTask->resource14 == 0xFFFF) { while (1) {} }
+        slot = getPaletteRotationSlot(gCurrentTask->resource14, index);
     } else {
-        if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
-        slot = getPaletteRotationSlot(D_8013AE88->resource16, index);
+        if (gCurrentTask->resource16 == 0xFFFF) { while (1) {} }
+        slot = getPaletteRotationSlot(gCurrentTask->resource16, index);
     }
     slot->state = 1;
     slot->unk06 = 0;
-    slot->task = D_8013AE8C;
+    slot->task = gCreatedTask;
 }
 
 static inline PaletteRotationSlot *getPaletteEntrySlot(u16 resourceIndex, u16 index) {
@@ -730,14 +730,14 @@ void updatePaletteRotationTask(void) {
     PaletteRotationSlot *slot;
     s32 i, j, step;
     u16 color;
-    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    resource = (PaletteRotationResource *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if ((u16)(D_8013AE88->data1E % 10) == 0) {
+    if (gCurrentTask->resource14 == 0xFFFF) { while (1) {} }
+    resource = (PaletteRotationResource *)&gTaskMemoryPool[gCurrentTask->resource14];
+    if ((u16)(gCurrentTask->data1E % 10) == 0) {
         if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
-        slot = getPaletteEntrySlot(D_8013AE98->resource14, D_8013AE88->data1E);
+        slot = getPaletteEntrySlot(D_8013AE98->resource14, gCurrentTask->data1E);
     } else {
         if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
-        slot = getPaletteEntrySlot(D_8013AE98->resource16, D_8013AE88->data1E);
+        slot = getPaletteEntrySlot(D_8013AE98->resource16, gCurrentTask->data1E);
     }
     switch (slot->state) {
     case 1:
@@ -774,30 +774,30 @@ void drawRegisteredSelectionItemStatus(void) {
     s16 index;
     u8 character;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         for (;;) {}
     }
-    position = (Movement2D *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if (D_8013AE88->resource16 == 0xFFFF) {
+    position = (Movement2D *)&gTaskMemoryPool[gCurrentTask->resource14];
+    if (gCurrentTask->resource16 == 0xFFFF) {
         for (;;) {}
     }
-    color = (ByteTriplet *)&gTaskMemoryPool[D_8013AE88->resource16];
+    color = (ByteTriplet *)&gTaskMemoryPool[gCurrentTask->resource16];
     if (D_8013AE98->resource14 == 0xFFFF) {
         for (;;) {}
     }
     parent = (GroupedIndexResource *)&gTaskMemoryPool[D_8013AE98->resource14];
-    if ((u16)(D_8013AE88->data1E % 10U) == 0) {
+    if ((u16)(gCurrentTask->data1E % 10U) == 0) {
         if (D_8013AE98->resource14 == 0xFFFF) {
             for (;;) {}
         }
         entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource14];
-        entry = &entries[D_8013AE88->data1E / 10U];
+        entry = &entries[gCurrentTask->data1E / 10U];
     } else {
         if (D_8013AE98->resource16 == 0xFFFF) {
             for (;;) {}
         }
         entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource16];
-        entry = &entries[D_8013AE88->data1E / 10U];
+        entry = &entries[gCurrentTask->data1E / 10U];
     }
     if (parent->values != 0) {
         sprite = D_8012F798;
@@ -805,13 +805,13 @@ void drawRegisteredSelectionItemStatus(void) {
             entry->task = 0;
             deleteCurrentTaskSubtree();
         } else {
-            sprite = getMappedGridSpriteEntry(sprite, parent->values, (s16)D_8013AE88->data1A);
+            sprite = getMappedGridSpriteEntry(sprite, parent->values, (s16)gCurrentTask->data1A);
             setSpriteColor(color->bytes[0], color->bytes[1], color->bytes[2]);
             drawSpriteByIndexWithBlend(position->x / 4096, position->y / 4096, sprite->sprite,
-                sprite->color, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                sprite->color, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
             setSpriteColor(128, 128, 128);
             character = gRacePlayers[0].unk009;
-            index = mapCourseMenuByteIndex(parent->values, (s16)D_8013AE88->data1A);
+            index = mapCourseMenuByteIndex(parent->values, (s16)gCurrentTask->data1A);
             if ((u16)index < 10) {
                 if (D_8013AFCD == 1) {
                     if ((gMergedSaveRecord.masks[character] & (1U << (index * 2))) > 0) {
@@ -819,23 +819,23 @@ void drawRegisteredSelectionItemStatus(void) {
                             goto draw_base_status;
                         }
                         drawSpriteByIndexWithBlend(position->x / 4096 - 17, position->y / 4096 - 1,
-                            index + 70, 9, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                            index + 70, 9, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
                     } else if (gMergedSaveRecord.masks[character] & (2U << (index * 2))) {
                         drawSpriteByIndexWithBlend(position->x / 4096 - 17, position->y / 4096 - 1,
-                            index + 70, 10, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                            index + 70, 10, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
                     } else {
 draw_base_status:
                         if ((gMergedSaveRecord.masks[character] & (1U << (index * 2))) > 0) {
                             drawSpriteByIndexWithBlend(position->x / 4096 - 17, position->y / 4096 - 1,
-                                index + 70, 11, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                                index + 70, 11, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
                         } else {
                             drawMenuDecimalNumber8x16(position->x / 4096 - 20, position->y / 4096 + 1,
-                                2, 0, index + 1, 3, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                                2, 0, index + 1, 3, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
                         }
                     }
                 } else {
                     drawMenuDecimalNumber8x16(position->x / 4096 - 20, position->y / 4096 + 1,
-                        2, 0, index + 1, 3, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                        2, 0, index + 1, 3, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
                 }
             }
             entry->flags = 0;
@@ -863,19 +863,19 @@ void drawSelectionItemDetails(void) {
     ByteMappingDescriptor *group;
     SelectionItemStats *stats;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         for (;;) {}
     }
-    position = (Movement2D *)&gTaskMemoryPool[D_8013AE88->resource14];
+    position = (Movement2D *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (D_8013AE98->resource14 == 0xFFFF) {
         for (;;) {}
     }
     selection = (HalfwordPair *)&gTaskMemoryPool[D_8013AE98->resource14];
-    if (D_8013AE88->data1A == 0) {
+    if (gCurrentTask->data1A == 0) {
         return;
     }
     drawSpriteByIndexWithBlend(position->x / 4096 + 8, position->y / 4096 - 22,
-                 0xB3, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                 0xB3, 0, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
     group = &D_8012FD10[D_8013AE98->data1A];
     index = mapMenuByteIndex(group->mapping, selection->unk_02);
     if ((u16)index >= 10) {
@@ -884,23 +884,23 @@ void drawSelectionItemDetails(void) {
     stats = &D_8012FCE4[index];
     if (stats->price && stats->rating) {
         drawSpriteByIndexWithBlend(position->x / 4096 + 84, position->y / 4096 + 128,
-                     0xBC, 10, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                     0xBC, 10, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
         drawDecimalNumber8x8(position->x / 4096 + 88, position->y / 4096 + 136,
-                             4, 0, stats->price, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                             4, 0, stats->price, 0, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
         drawSpriteByIndexWithBlend(position->x / 4096 + 122, position->y / 4096 + 138,
-                     0xBF, 10, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                     0xBF, 10, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
         drawSpriteByIndexWithBlend(position->x / 4096 + 84, position->y / 4096 + 148,
-                     0xBE, 10, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                     0xBE, 10, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
         drawHalfStepSpriteBar(position->x / 4096 + 88, position->y / 4096 + 156,
-                              stats->rating, 5, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                              stats->rating, 5, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
     }
-    if (D_8013AE88->data1A == 1) {
+    if (gCurrentTask->data1A == 1) {
         addTilePacketWithBlend(position->x / 4096 + 80, position->y / 4096 + 124, 56, 44,
                       gMenuColorCycleColor.r, gMenuColorCycleColor.g, gMenuColorCycleColor.b, 2,
-                      &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                      &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
     } else {
         addTilePacketWithBlend(position->x / 4096 + 80, position->y / 4096 + 124, 56, 44,
-                      128, 128, 128, 2, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                      128, 128, 128, 2, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
     }
 }
 
@@ -908,38 +908,38 @@ void drawSelectionPrizeAndPlayerCounters(void) {
     Movement2D *position;
     s16 row;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         for (;;) {}
     }
-    position = (Movement2D *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if (D_8013AE88->data1A != 0) {
+    position = (Movement2D *)&gTaskMemoryPool[gCurrentTask->resource14];
+    if (gCurrentTask->data1A != 0) {
         if (D_8013AFCD == 1) {
             drawSpriteByIndexWithBlend(position->x / 4096, position->y / 4096,
-                          0xC1, 14, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                          0xC1, 14, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
             for (row = 0; row < 3; row++) {
-                s32 *prizes = D_8012FC6C[D_8013AFCE];
+                s32 *prizes = D_8012FC6C[gSelectedCourseIndex];
                 drawDecimalNumber8x8(position->x / 4096 + 48, row * 8 + (s16)(position->y / 4096 + 9),
                                      5, 0, prizes[row], 0, -1,
-                                     &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                                     &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
                 drawWrappedText8x8(position->x / 4096 + 88, row * 8 + (s16)(position->y / 4096 + 9),
-                                   2, gSelectionPrizeCurrencyLabel, 6, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                                   2, gSelectionPrizeCurrencyLabel, 6, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
             }
             drawSpriteByIndexWithBlend(position->x / 4096 + 6, position->y / 4096 + 35,
-                          0xC2, 14, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                          0xC2, 14, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
             drawDecimalNumber8x8(position->x / 4096 + 26, position->y / 4096 + 42,
-                                 5, 0, gPlayerSaveRecords[0].bestScore[D_8013AFCE],
-                                 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                                 5, 0, gPlayerSaveRecords[0].bestScore[gSelectedCourseIndex],
+                                 0, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
             drawWrappedText8x8(position->x / 4096 + 66, position->y / 4096 + 42,
-                               2, gSelectionPrizeCurrencyLabel, 6, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                               2, gSelectionPrizeCurrencyLabel, 6, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
         } else {
             drawSpriteByIndexWithBlend(position->x / 4096, position->y / 4096,
-                          0xC0, 14, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                          0xC0, 14, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
             drawMenuDecimalNumber8x16(position->x / 4096 + 64, position->y / 4096 + 19,
                                       2, 0, gRacePlayers[0].unk02A, 5, -1,
-                                      &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                                      &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
             drawMenuDecimalNumber8x16(position->x / 4096 + 64, position->y / 4096 + 35,
                                       2, 0, gRacePlayers[1].unk02A, 5, -1,
-                                      &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                                      &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
         }
     }
 }
@@ -964,7 +964,7 @@ u32 getSelectedCoursePrize(s16 unusedCourse, s16 place) {
 
     if (place >= 0 && place < 3) {
         table = D_8012FC6C;
-        row = table[D_8013AFCE];
+        row = table[gSelectedCourseIndex];
         result = row[place];
     } else {
         result = 0;
@@ -978,13 +978,13 @@ void initializeCountedPlayerGroupedSelectionBoundsTask(void) {
     if (D_8013AFCD == 2) {
         setCurrentTaskCallback(initializeDualResourceTaskAndResetByteState);
     } else {
-        D_8013AE88->data18 = 0;
-        D_8013AE88->data1A = getPlayerRecordFlagMode(0);
-        if (D_8013AE88->resource14 != 0xFFFF) { for (;;) {} }
-        D_8013AE88->resource14 = allocateTaskMemoryBlock();
-        if (D_8013AE88->resource16 != 0xFFFF) { for (;;) {} }
-        D_8013AE88->resource16 = allocateTaskMemoryBlock();
-        adjustGroupedIndexForMode(D_8013AE88->data1A, &gRacePlayers[0].unk00A[1]);
+        gCurrentTask->data18 = 0;
+        gCurrentTask->data1A = getPlayerRecordFlagMode(0);
+        if (gCurrentTask->resource14 != 0xFFFF) { for (;;) {} }
+        gCurrentTask->resource14 = allocateTaskMemoryBlock();
+        if (gCurrentTask->resource16 != 0xFFFF) { for (;;) {} }
+        gCurrentTask->resource16 = allocateTaskMemoryBlock();
+        adjustGroupedIndexForMode(gCurrentTask->data1A, &gRacePlayers[0].unk00A[1]);
         D_801300AC[0].selection = getGroupedIndexBase(gRacePlayers[0].unk00A[1]);
         if (D_801300AC[0].selection == 9) {
             D_801300AC[0].selection += getSaveRecordFlagGroupIndex(0, 0);
@@ -1010,16 +1010,16 @@ void updatePlayerGroupedCourseSelectionTask(void) {
     GroupedSelectionMenuDescriptor *descriptor;
     s32 complete;
 
-    if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
-    selection = (CourseSelectionResource *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if (D_8013AE88->resource16 == 0xFFFF) { for (;;) {} }
-    panels = (RegisteredPanelSlot *)&gTaskMemoryPool[D_8013AE88->resource16];
+    if (gCurrentTask->resource14 == 0xFFFF) { for (;;) {} }
+    selection = (CourseSelectionResource *)&gTaskMemoryPool[gCurrentTask->resource14];
+    if (gCurrentTask->resource16 == 0xFFFF) { for (;;) {} }
+    panels = (RegisteredPanelSlot *)&gTaskMemoryPool[gCurrentTask->resource16];
     groupedSelection = &D_801300AC[0];
 
-    switch (D_8013AE88->data18) {
+    switch (gCurrentTask->data18) {
     case 0:
         setMusicSequenceEnabled(1);
-        descriptor = &gGroupedCourseMenuDescriptors[D_8013AE88->data1A];
+        descriptor = &gGroupedCourseMenuDescriptors[gCurrentTask->data1A];
         createRegisteredSpacedChildTasks(1, 0xB0, 0x40, (const u8 *)gRecordFlagMenuSpriteRecords,
                                          descriptor->mapping, NULL, 0, 0, 20, -304, -96,
                                          descriptor->spacingX, descriptor->spacingY, descriptor->count, 176,
@@ -1046,7 +1046,7 @@ void updatePlayerGroupedCourseSelectionTask(void) {
         }
         selection->previousIndex = selection->selectedIndex;
         selection->choiceResult = 0;
-        D_8013AE88->data18 = 2;
+        gCurrentTask->data18 = 2;
         break;
     case 2:
         if (panels[0].flags == 0 && panels[1].flags == 0 && panels[2].flags == 0 &&
@@ -1056,7 +1056,7 @@ void updatePlayerGroupedCourseSelectionTask(void) {
             configureRegisteredChildMovement(0, panels[2].task, 0x40000, 0, 0x1E000, 0x1E000, 5);
             configureMovement2D((Movement2D *)&gTaskMemoryPool[panels[3].task->resource14], -0x8000, -0x48000, 0x1E000, 0x1E000, 5);
             configureMovement2D((Movement2D *)&gTaskMemoryPool[panels[4].task->resource14], -0x74000, 0x30000, 0x1E000, 0x1E000, 5);
-            D_8013AE88->data18 = 3;
+            gCurrentTask->data18 = 3;
         }
         break;
     case 3:
@@ -1069,7 +1069,7 @@ void updatePlayerGroupedCourseSelectionTask(void) {
             panels[4].command = 20;
             configureColorCycleTask(1, 0, 128, 8, 0);
             D_8013B41F = 0;
-            D_8013AE88->data18 = 4;
+            gCurrentTask->data18 = 4;
         }
         break;
     case 4:
@@ -1107,26 +1107,26 @@ void updatePlayerGroupedCourseSelectionTask(void) {
                 D_8013B41F = 1;
             }
             if (selection->choiceResult < 0) {
-                D_8013AE88->data18 = 14;
+                gCurrentTask->data18 = 14;
             } else {
-                descriptor = &gGroupedCourseMenuDescriptors[D_8013AE88->data1A];
+                descriptor = &gGroupedCourseMenuDescriptors[gCurrentTask->data1A];
                 if (descriptor->mapping[selection->selectedIndex] == 0) {
                     selection->choiceResult = -1;
-                    D_8013AE88->data18 = 14;
+                    gCurrentTask->data18 = 14;
                 } else {
                     panels[0].command = 10;
-                    D_8013AE88->data18 = 12;
+                    gCurrentTask->data18 = 12;
                 }
             }
         }
         break;
     case 12:
         panels[0].command = 10;
-        D_8013AE88->data18 = 13;
+        gCurrentTask->data18 = 13;
         break;
     case 13:
         if (panels[0].flags == 0) {
-            D_8013AE88->data18 = 9;
+            gCurrentTask->data18 = 9;
         }
         break;
     case 14:
@@ -1141,14 +1141,14 @@ void updatePlayerGroupedCourseSelectionTask(void) {
             D_8013AE98->data18 = 20;
             break;
         }
-        D_8013AE88->data18 = 5;
+        gCurrentTask->data18 = 5;
         break;
     case 9:
         createChildTaskWithReserve(initializeDualResourceTaskAndClearState);
-        D_8013AE8C->data18 = 1;
-        descriptor = &gGroupedCourseMenuDescriptors[D_8013AE88->data1A];
-        D_8013AE8C->data1A = mapCourseMenuByteIndex(descriptor->mapping, selection->selectedIndex);
-        D_8013AE88->data18 = 10;
+        gCreatedTask->data18 = 1;
+        descriptor = &gGroupedCourseMenuDescriptors[gCurrentTask->data1A];
+        gCreatedTask->data1A = mapCourseMenuByteIndex(descriptor->mapping, selection->selectedIndex);
+        gCurrentTask->data18 = 10;
         break;
     case 10:
         break;
@@ -1167,19 +1167,19 @@ void updatePlayerGroupedCourseSelectionTask(void) {
             configureRegisteredChildMovement(1, panels[2].task, 0xF4000, 0, 0x1E000, 0, -1000);
             configureMovement2D((Movement2D *)&gTaskMemoryPool[panels[3].task->resource14], 0xAC000, -0x48000, 0x1E000, 0x1E000, -1000);
             configureMovement2D((Movement2D *)&gTaskMemoryPool[panels[4].task->resource14], -0x128000, 0x30000, 0x1E000, 0x1E000, -1000);
-            D_8013AE88->data18 = 6;
+            gCurrentTask->data18 = 6;
         }
         break;
     case 6:
         if (panels[0].flags == 0 && panels[1].flags == 0 && panels[2].flags == 0 &&
             panels[3].flags == 0 && panels[4].flags == 0) {
 finishExit:
-            D_8013AE88->data18 = 7;
+            gCurrentTask->data18 = 7;
         }
         break;
     case 7:
         if (selection->choiceResult <= 0 || isTaskStateTransitionBelowMaximum(0) == 0) {
-            D_8013AE88->data18 = 8;
+            gCurrentTask->data18 = 8;
         }
         break;
     default:
@@ -1190,15 +1190,15 @@ finishExit:
 }
 
 void initializeDualResourceTaskAndClearState(void) {
-    D_8013AE88->data18 = 0;
-    if (D_8013AE88->resource14 != 0xFFFF) {
+    gCurrentTask->data18 = 0;
+    if (gCurrentTask->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskMemoryBlock();
-    if (D_8013AE88->resource16 != 0xFFFF) {
+    gCurrentTask->resource14 = allocateTaskMemoryBlock();
+    if (gCurrentTask->resource16 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource16 = allocateTaskMemoryBlock();
+    gCurrentTask->resource16 = allocateTaskMemoryBlock();
     setCurrentTaskCallback(updateRecordFlagSelectionMenuTask);
 }
 
@@ -1217,16 +1217,16 @@ void updateRecordFlagSelectionMenuTask(void) {
     parentSelection = (CourseSelectionResource *)&gTaskMemoryPool[D_8013AE98->resource14];
     if (D_8013AE98->resource16 == 0xFFFF) { for (;;) {} }
     parentPanels = (RegisteredPanelSlot *)&gTaskMemoryPool[D_8013AE98->resource16];
-    if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
-    selection = (CourseSelectionResource *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if (D_8013AE88->resource16 == 0xFFFF) { for (;;) {} }
-    panels = (RegisteredPanelSlot *)&gTaskMemoryPool[D_8013AE88->resource16];
+    if (gCurrentTask->resource14 == 0xFFFF) { for (;;) {} }
+    selection = (CourseSelectionResource *)&gTaskMemoryPool[gCurrentTask->resource14];
+    if (gCurrentTask->resource16 == 0xFFFF) { for (;;) {} }
+    panels = (RegisteredPanelSlot *)&gTaskMemoryPool[gCurrentTask->resource16];
     groupedSelection = &D_801300AC[0];
 
-    switch (D_8013AE88->data18) {
+    switch (gCurrentTask->data18) {
     case 0:
         moveTaskChildrenWithSpacing(2, parentPanels[0].task, -0x130000, -0x60000, 0x1E000, 0x1E000, -1000);
-        D_8013AE88->data18 = 1;
+        gCurrentTask->data18 = 1;
         break;
     case 1:
         if (parentPanels[0].flags == 0) {
@@ -1234,7 +1234,7 @@ void updateRecordFlagSelectionMenuTask(void) {
             parentPanels[1].command = 23;
             parentPanels[4].command = 23;
             configureTaskGridMovement(1, parentPanels[0].task, -0x7C000, -0x60000, 0x1E000, 0x1E000, 0);
-            D_8013AE88->data18 = 2;
+            gCurrentTask->data18 = 2;
         }
         break;
     case 2:
@@ -1253,7 +1253,7 @@ void updateRecordFlagSelectionMenuTask(void) {
             selection->selectedIndex = value;
             selection->previousIndex = value;
             selection->choiceResult = 0;
-            D_8013AE88->data18 = 3;
+            gCurrentTask->data18 = 3;
         }
         break;
     case 3:
@@ -1261,7 +1261,7 @@ void updateRecordFlagSelectionMenuTask(void) {
             initializeSpacedTaskGridPositions(0, panels[0].task, -0x74000, -0x60000, 0, 0);
             configureVerticalTaskGridMovement(0, panels[0].task, -0x74000, -0x4C000, 0x8000, 0x8000, 2);
             initMovement2D((Movement2D *)&gTaskMemoryPool[parentPanels[1].task->resource14], -0x13C000, 0x8000);
-            D_8013AE88->data18 = 4;
+            gCurrentTask->data18 = 4;
         }
         break;
     case 4:
@@ -1270,7 +1270,7 @@ void updateRecordFlagSelectionMenuTask(void) {
             panels[1].command = 20;
             configureColorCycleTask(1, 0, 128, 8, 0);
             D_8013B41F = 0;
-            D_8013AE88->data18 = 5;
+            gCurrentTask->data18 = 5;
         }
         break;
     case 5:
@@ -1286,20 +1286,20 @@ void updateRecordFlagSelectionMenuTask(void) {
                 parentPanels[2].command = 3;
             }
             if (selection->choiceResult != 0) {
-                D_8013AE88->data18 = 6;
+                gCurrentTask->data18 = 6;
             }
         }
         if (groupedSelection->selection == groupedSelection->previousSelection &&
             selection->selectedIndex != selection->previousIndex) {
             groupedSelection->previousSelection = groupedSelection->selection;
-            groupedSelection->selection = getTaskResourceAdjustedGroupedIndex(D_8013AE88->data1A, panels[0].task, selection->selectedIndex);
+            groupedSelection->selection = getTaskResourceAdjustedGroupedIndex(gCurrentTask->data1A, panels[0].task, selection->selectedIndex);
             if (groupedSelection->selection < 0) {
                 groupedSelection->selection = groupedSelection->previousSelection;
             } else {
                 parentPanels[2].command = 13;
             }
             selection->previousIndex = selection->selectedIndex;
-        } else if (D_8013AE88->data18 != 5 && D_8013B41F == 0) {
+        } else if (gCurrentTask->data18 != 5 && D_8013B41F == 0) {
             panels[0].command = 22;
             panels[1].command = 22;
             D_8013B41F = 1;
@@ -1308,29 +1308,29 @@ void updateRecordFlagSelectionMenuTask(void) {
     case 6:
         if (parentPanels[2].flags == 0 && selection->choiceResult != 0 && panels[0].flags == 0) {
             if (selection->choiceResult < 0) {
-                D_8013AE88->data18 = 10;
+                gCurrentTask->data18 = 10;
             } else {
-                gRacePlayers[0].unk00A[1] = getTaskResourceAdjustedGroupedIndex(D_8013AE88->data1A, panels[0].task, selection->selectedIndex);
-                D_8013AE88->data18 = 7;
+                gRacePlayers[0].unk00A[1] = getTaskResourceAdjustedGroupedIndex(gCurrentTask->data1A, panels[0].task, selection->selectedIndex);
+                gCurrentTask->data18 = 7;
             }
         }
         break;
     case 10:
         configureTaskGridMovement(0, panels[0].task, -0x74000, -0x60000, 0x1E000, 0x1E000, 0);
         panels[0].command = 23;
-        D_8013AE88->data18 = 11;
+        gCurrentTask->data18 = 11;
         break;
     case 11:
         if (panels[0].flags == 0) {
             initializeSpacedTaskGridPositions(0, panels[0].task, -0x128000, -0x60000, 0, 0);
             moveTaskChildrenWithSpacing(1, parentPanels[0].task, -0x7C000, -0x60000, 0x1E000, 0x1E000, 0);
-            D_8013AE88->data18 = 12;
+            gCurrentTask->data18 = 12;
         }
         break;
     case 12:
         if (parentPanels[0].flags == 0) {
             moveTaskChildrenWithSpacing(2, parentPanels[0].task, -0x7C000, -0x60000, 0x1E000, 0x1E000, 0);
-            D_8013AE88->data18 = 13;
+            gCurrentTask->data18 = 13;
         }
         break;
     case 13:
@@ -1343,7 +1343,7 @@ void updateRecordFlagSelectionMenuTask(void) {
             parentPanels[4].command = 20;
             configureColorCycleTask(1, 0, 128, 8, 0);
             D_8013B41F = 0;
-            D_8013AE88->data18 = 14;
+            gCurrentTask->data18 = 14;
         }
         break;
     case 14:
@@ -1363,7 +1363,7 @@ void updateRecordFlagSelectionMenuTask(void) {
             configureRegisteredChildMovement(1, parentPanels[2].task, 0xF4000, 0, 0x1E000, 0, -1000);
             configureMovement2D((Movement2D *)&gTaskMemoryPool[parentPanels[3].task->resource14], 0xAC000, -0x48000, 0x1E000, 0x1E000, -1000);
             configureMovement2D((Movement2D *)&gTaskMemoryPool[parentPanels[4].task->resource14], -0x128000, 0x30000, 0x1E000, 0x1E000, -1000);
-            D_8013AE88->data18 = 8;
+            gCurrentTask->data18 = 8;
         }
         break;
     case 8:
@@ -1623,37 +1623,37 @@ void createRegisteredPanelTask(s32 mode, s32 value, s16 x, s16 y, s16 depth, s32
     Movement2D *movement;
     RegisteredPanelSlot *slot;
     createChildTaskWithReserve(initRegisteredPlayerModels);
-    D_8013AE8C->data18 = mode;
-    D_8013AE8C->data1A = value;
-    D_8013AE8C->data1C = 0;
-    D_8013AE8C->data1E = index;
-    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-    movement = (Movement2D *)&gTaskMemoryPool[D_8013AE8C->resource14];
+    gCreatedTask->data18 = mode;
+    gCreatedTask->data1A = value;
+    gCreatedTask->data1C = 0;
+    gCreatedTask->data1E = index;
+    gCreatedTask->resource14 = allocateTaskMemoryBlock();
+    movement = (Movement2D *)&gTaskMemoryPool[gCreatedTask->resource14];
     initMovement2D(movement, x << 12, y << 12);
     movement->unk08 = depth;
-    D_8013AE8C->resource16 = allocateTaskMemoryBlock();
+    gCreatedTask->resource16 = allocateTaskMemoryBlock();
     if (index % 10 == 0) {
-        if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-        slot = getPanelSlot(D_8013AE88->resource14, index);
+        if (gCurrentTask->resource14 == 0xFFFF) { while (1) {} }
+        slot = getPanelSlot(gCurrentTask->resource14, index);
     } else {
-        if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
-        slot = getPanelSlot(D_8013AE88->resource16, index);
+        if (gCurrentTask->resource16 == 0xFFFF) { while (1) {} }
+        slot = getPanelSlot(gCurrentTask->resource16, index);
     }
     slot->command = 0;
     slot->flags = 1;
-    slot->task = D_8013AE8C;
+    slot->task = gCreatedTask;
 }
 
 void initRegisteredPlayerModels(void) {
     MenuPlayerModelPosition *position;
     s16 index;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     } else {
-        position = (MenuPlayerModelPosition *)&gTaskMemoryPool[D_8013AE88->resource14];
-        index = D_8013AE88->data18;
-        createRegisteredPlayerModelTask(index * 2, index, D_8013AE88->data1A,
+        position = (MenuPlayerModelPosition *)&gTaskMemoryPool[gCurrentTask->resource14];
+        index = gCurrentTask->data18;
+        createRegisteredPlayerModelTask(index * 2, index, gCurrentTask->data1A,
                                         position->x / 4096, position->y / 4096, position->z, 1);
         createRegisteredPlayerModelTask(index * 2 + 1, index, 0, 320, 240, position->z, 11);
         setCurrentTaskCallback(updateRegisteredPlayerModels);
@@ -1674,21 +1674,21 @@ void updateRegisteredPlayerModels(void) {
     u16 playerIndex;
     s16 childCommand;
 
-    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    position = (MenuPlayerModelPosition *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
-    children = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE88->resource16];
-    if ((u16)(D_8013AE88->data1E % 10) == 0) {
+    if (gCurrentTask->resource14 == 0xFFFF) { while (1) {} }
+    position = (MenuPlayerModelPosition *)&gTaskMemoryPool[gCurrentTask->resource14];
+    if (gCurrentTask->resource16 == 0xFFFF) { while (1) {} }
+    children = (RegisteredTaskEntry *)&gTaskMemoryPool[gCurrentTask->resource16];
+    if ((u16)(gCurrentTask->data1E % 10) == 0) {
         if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
-        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource14, D_8013AE88->data1E);
+        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource14, gCurrentTask->data1E);
     } else {
         if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
-        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource16, D_8013AE88->data1E);
+        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource16, gCurrentTask->data1E);
     }
     if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
-    selection = &D_801300AC[(s16)D_8013AE88->data18];
-    playerIndex = D_8013AE88->data18;
-    alternateSelection = &D_8013B468[(s16)D_8013AE88->data18];
+    selection = &D_801300AC[(s16)gCurrentTask->data18];
+    playerIndex = gCurrentTask->data18;
+    alternateSelection = &D_8013B468[(s16)gCurrentTask->data18];
 
     switch (entry->command) {
     case 0:
@@ -1733,7 +1733,7 @@ commandChildren:
         break;
     case 13:
         if (selection->selection != selection->previousSelection) {
-            u16 slot = D_8013AE88->data1C;
+            u16 slot = gCurrentTask->data1C;
             Movement2D *movement = (Movement2D *)&gTaskMemoryPool[children[slot].task->resource16];
             reloadTaskPlayerModel(children[slot].task, (s16)(slot + (s16)playerIndex * 2),
                                   playerIndex, selection->selection,
@@ -1788,27 +1788,27 @@ void createRegisteredTripletTask(s32 x, s32 y, s32 offsetX, s32 offsetY, ByteTri
     RegisteredTripletData *data;
     RegisteredTaskEntry *entry;
     createChildTaskWithReserve(updateRegisteredTripletTask);
-    D_8013AE8C->data1A = 0;
-    D_8013AE8C->data1C = depth;
-    D_8013AE8C->data1E = index;
-    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-    initMovement2D((Movement2D *)&gTaskMemoryPool[D_8013AE8C->resource14], (s16)x << 12, (s16)y << 12);
-    D_8013AE8C->resource16 = allocateTaskMemoryBlock();
-    data = (RegisteredTripletData *)&gTaskMemoryPool[D_8013AE8C->resource16];
+    gCreatedTask->data1A = 0;
+    gCreatedTask->data1C = depth;
+    gCreatedTask->data1E = index;
+    gCreatedTask->resource14 = allocateTaskMemoryBlock();
+    initMovement2D((Movement2D *)&gTaskMemoryPool[gCreatedTask->resource14], (s16)x << 12, (s16)y << 12);
+    gCreatedTask->resource16 = allocateTaskMemoryBlock();
+    data = (RegisteredTripletData *)&gTaskMemoryPool[gCreatedTask->resource16];
     data->records = records;
     data->indices = indices;
     data->offsetX = offsetX;
     data->offsetY = offsetY;
     if (index % 10 == 0) {
-        if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-        entry = getRegisteredTripletEntry(D_8013AE88->resource14, index);
+        if (gCurrentTask->resource14 == 0xFFFF) { while (1) {} }
+        entry = getRegisteredTripletEntry(gCurrentTask->resource14, index);
     } else {
-        if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
-        entry = getRegisteredTripletEntry(D_8013AE88->resource16, index);
+        if (gCurrentTask->resource16 == 0xFFFF) { while (1) {} }
+        entry = getRegisteredTripletEntry(gCurrentTask->resource16, index);
     }
     entry->command = 0;
     entry->flags = 0;
-    entry->task = D_8013AE8C;
+    entry->task = gCreatedTask;
 }
 
 void updateRegisteredTripletTask(void) {
@@ -1819,26 +1819,26 @@ void updateRegisteredTripletTask(void) {
     HalfwordPair *selection;
     ByteTriplet *values;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         for (;;) {}
     }
-    position = (Movement2D *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if (D_8013AE88->resource16 == 0xFFFF) {
+    position = (Movement2D *)&gTaskMemoryPool[gCurrentTask->resource14];
+    if (gCurrentTask->resource16 == 0xFFFF) {
         for (;;) {}
     }
-    data = (RegisteredTripletData *)&gTaskMemoryPool[D_8013AE88->resource16];
-    if ((u16)(D_8013AE88->data1E % 10U) == 0) {
+    data = (RegisteredTripletData *)&gTaskMemoryPool[gCurrentTask->resource16];
+    if ((u16)(gCurrentTask->data1E % 10U) == 0) {
         if (D_8013AE98->resource14 == 0xFFFF) {
             for (;;) {}
         }
         entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource14];
-        entry = &entries[D_8013AE88->data1E / 10U];
+        entry = &entries[gCurrentTask->data1E / 10U];
     } else {
         if (D_8013AE98->resource16 == 0xFFFF) {
             for (;;) {}
         }
         entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource16];
-        entry = &entries[D_8013AE88->data1E / 10U];
+        entry = &entries[gCurrentTask->data1E / 10U];
     }
     if (D_8013AE98->resource14 == 0xFFFF) {
         for (;;) {}
@@ -1859,16 +1859,16 @@ void updateRegisteredTripletTask(void) {
     }
 
 modeOne:
-    D_8013AE88->data1A = 1;
+    gCurrentTask->data1A = 1;
     goto clearCommand;
 modeTwo:
-    D_8013AE88->data1A = 2;
+    gCurrentTask->data1A = 2;
     goto clearCommand;
 modeThree:
-    D_8013AE88->data1A = 3;
+    gCurrentTask->data1A = 3;
     goto clearCommand;
 hide:
-    D_8013AE88->data1A = 0;
+    gCurrentTask->data1A = 0;
 clearCommand:
     entry->command = 0;
 clearFlags:
@@ -1882,10 +1882,10 @@ remove:
 
 update:
     entry->flags |= updateMovement2D(position);
-    if (D_8013AE88->data1A == 0) {
+    if (gCurrentTask->data1A == 0) {
         return;
     }
-    if ((u32)(D_8013AE88->data1A - 1) < 2) {
+    if ((u32)(gCurrentTask->data1A - 1) < 2) {
         setSpriteColor(gMenuColorCycleColor.r, gMenuColorCycleColor.g, gMenuColorCycleColor.b);
     } else {
         setSpriteColor(128, 128, 128);
@@ -1899,32 +1899,32 @@ update:
     }
 
     drawSpriteByIndexWithBlend(position->x / 4096, position->y / 4096, 30, 1, -1,
-                  &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                  &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
     drawSpriteByIndexWithBlend(position->x / 4096 + data->offsetX, position->y / 4096 + data->offsetY,
-                  31, 1, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                  31, 1, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
     drawSpriteByIndexWithBlend(data->offsetX * 2 + position->x / 4096, data->offsetY * 2 + position->y / 4096,
-                  32, 1, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                  32, 1, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
 
     if (values->bytes[0] == 255) {
         drawWrappedText8x8(position->x / 4096 + 56, position->y / 4096, 2, gRegisteredTripletUnavailableLabel,
-                           6, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                           6, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
     } else {
         drawHalfStepSpriteBar(position->x / 4096 + 56, position->y / 4096, values->bytes[0],
-                              5, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                              5, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
     }
     if (values->bytes[1] == 255) {
         drawWrappedText8x8((s16)(position->x / 4096 + 56) + data->offsetX, position->y / 4096 + data->offsetY,
-                           2, gRegisteredTripletUnavailableLabel, 6, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                           2, gRegisteredTripletUnavailableLabel, 6, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
     } else {
         drawHalfStepSpriteBar((s16)(position->x / 4096 + 56) + data->offsetX, position->y / 4096 + data->offsetY,
-                              values->bytes[1], 5, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                              values->bytes[1], 5, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
     }
     if (values->bytes[2] == 255) {
         drawWrappedText8x8(data->offsetX * 2 + (s16)(position->x / 4096 + 56), data->offsetY * 2 + position->y / 4096,
-                           2, gRegisteredTripletUnavailableLabel, 6, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                           2, gRegisteredTripletUnavailableLabel, 6, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
     } else {
         drawHalfStepSpriteBar(data->offsetX * 2 + (s16)(position->x / 4096 + 56), data->offsetY * 2 + position->y / 4096,
-                              values->bytes[2], 5, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                              values->bytes[2], 5, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
     }
 }
 
@@ -1946,18 +1946,18 @@ void createRegisteredPlayerModelTask(s16 slot, s16 selection, s16 modelIndex,
     RegisteredTaskEntry *registration;
 
     createChildTaskWithReserve(updateRegisteredPlayerModelTask);
-    D_8013AE8C->data18 = selection;
-    D_8013AE8C->data1A = modelIndex;
-    D_8013AE8C->data1C = slot;
-    D_8013AE8C->data1E = index;
-    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
+    gCreatedTask->data18 = selection;
+    gCreatedTask->data1A = modelIndex;
+    gCreatedTask->data1C = slot;
+    gCreatedTask->data1E = index;
+    gCreatedTask->resource14 = allocateTaskMemoryBlock();
     offsets = DAT_STARTUP_MODELS->offsets;
     archive = (u8 *)DAT_STARTUP_MODELS;
     buffers = DAT_PLAYER_MODEL_BLOCKS;
     i = 0;
-    resource = (MenuModelResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
-    entry = &offsets[D_80123640[D_8013AE8C->data1A]];
-    model = buffers[D_8013AE8C->data1C];
+    resource = (MenuModelResource *)&gTaskMemoryPool[gCreatedTask->resource14];
+    entry = &offsets[D_80123640[gCreatedTask->data1A]];
+    model = buffers[gCreatedTask->data1C];
     source = (u32 *)(*entry + archive);
     dest = model;
     for (; i < 512; i++) {
@@ -1966,8 +1966,8 @@ void createRegisteredPlayerModelTask(s16 slot, s16 selection, s16 modelIndex,
     entry = (u32 *)((u32)model | 4);
     GsMapModelingData(entry);
     entry += 2;
-    if (D_8013AE8C->data1C != 0) {
-        offsetTmdObjectTextures(0, (TmdObject *)entry, &gPlayerRootTextureOffsets[D_8013AE8C->data1C]);
+    if (gCreatedTask->data1C != 0) {
+        offsetTmdObjectTextures(0, (TmdObject *)entry, &gPlayerRootTextureOffsets[gCreatedTask->data1C]);
     }
     GsLinkObject4(entry, &resource->object, 0);
     GsInitCoordinate2(0, &resource->world);
@@ -1975,9 +1975,9 @@ void createRegisteredPlayerModelTask(s16 slot, s16 selection, s16 modelIndex,
     resource->object.coord2 = &resource->local;
     resource->object.attribute = 0;
     textureOffsets = DAT_STARTUP_TEXTURES->offsets;
-    entry = &textureOffsets[gPlayerResourceTextureSelections.entries[D_8013AE8C->data18][D_8013AE8C->data1A]];
+    entry = &textureOffsets[gPlayerResourceTextureSelections.entries[gCreatedTask->data18][gCreatedTask->data1A]];
     uploadTimImageWithOffset((u32 *)((u8 *)DAT_STARTUP_TEXTURES + *entry),
-                             gPlayerResourceTexturePositions[D_8013AE8C->data1C]);
+                             gPlayerResourceTexturePositions[gCreatedTask->data1C]);
     resource->world.coord.t[0] = x;
     resource->world.coord.t[1] = y;
     resource->world.coord.t[2] = z;
@@ -1992,18 +1992,18 @@ void createRegisteredPlayerModelTask(s16 slot, s16 selection, s16 modelIndex,
     resource->localRotation.vy = -0x249;
     resource->localRotation.vz = 0;
     resource->unkC2 = 0;
-    D_8013AE8C->resource16 = allocateTaskMemoryBlock();
-    initMovement2D((Movement2D *)&gTaskMemoryPool[D_8013AE8C->resource16], x << 12, y << 12);
+    gCreatedTask->resource16 = allocateTaskMemoryBlock();
+    initMovement2D((Movement2D *)&gTaskMemoryPool[gCreatedTask->resource16], x << 12, y << 12);
     if (index % 10 == 0) {
-        if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-        registration = getRegisteredTripletEntry(D_8013AE88->resource14, index);
+        if (gCurrentTask->resource14 == 0xFFFF) { while (1) {} }
+        registration = getRegisteredTripletEntry(gCurrentTask->resource14, index);
     } else {
-        if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
-        registration = getRegisteredTripletEntry(D_8013AE88->resource16, index);
+        if (gCurrentTask->resource16 == 0xFFFF) { while (1) {} }
+        registration = getRegisteredTripletEntry(gCurrentTask->resource16, index);
     }
     registration->command = 0;
     registration->flags = 1;
-    registration->task = D_8013AE8C;
+    registration->task = gCreatedTask;
 }
 
 void reloadTaskPlayerModel(GameTask *task, s16 slot, s16 selection, s16 modelIndex, s16 x, s16 y, s16 z) {
@@ -2068,17 +2068,17 @@ void updateRegisteredPlayerModelTask(void) {
     RegisteredTaskEntry *entry;
     u8 padding[16];
 
-    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    model = (MenuModelResource *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
-    movement = (Movement2D *)&gTaskMemoryPool[D_8013AE88->resource16];
+    if (gCurrentTask->resource14 == 0xFFFF) { while (1) {} }
+    model = (MenuModelResource *)&gTaskMemoryPool[gCurrentTask->resource14];
+    if (gCurrentTask->resource16 == 0xFFFF) { while (1) {} }
+    movement = (Movement2D *)&gTaskMemoryPool[gCurrentTask->resource16];
 
-    if ((u16)(D_8013AE88->data1E % 10) == 0) {
+    if ((u16)(gCurrentTask->data1E % 10) == 0) {
         if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
-        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource14, D_8013AE88->data1E);
+        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource14, gCurrentTask->data1E);
     } else {
         if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
-        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource16, D_8013AE88->data1E);
+        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource16, gCurrentTask->data1E);
     }
 
     {
@@ -2097,7 +2097,7 @@ startRotating:
     model->unkC2 = -32;
     entry->command = 0;
     entry->flags = 0;
-    if (D_8013AE88->data18 == 0) {
+    if (gCurrentTask->data18 == 0) {
         model->worldRotation.vy = gMenuPlayerModelYaw[1];
     } else {
         model->worldRotation.vy = gMenuPlayerModelYaw[0] - model->unkC2;
@@ -2128,13 +2128,13 @@ update:
     model->world.coord.t[0] = movement->x / 4096;
     model->world.coord.t[1] = movement->y / 4096;
     model->worldRotation.vy += model->unkC2;
-    gMenuPlayerModelYaw[D_8013AE88->data18] = model->worldRotation.vy;
+    gMenuPlayerModelYaw[gCurrentTask->data18] = model->worldRotation.vy;
     setCoordinateRotation(&model->worldRotation, &model->world);
     setCoordinateRotation(&model->localRotation, &model->local);
     if (model->world.coord.t[2] >= 512) {
-        sortLitObjectWithDrawArea(&model->object, D_8013AE88->data18 + 2, &D_801300B8[D_8013AE88->data18]);
+        sortLitObjectWithDrawArea(&model->object, gCurrentTask->data18 + 2, &D_801300B8[gCurrentTask->data18]);
     } else {
-        u16 index = D_8013AE88->data1C;
+        u16 index = gCurrentTask->data1C;
         sortLitObjectWithDrawArea(&model->object, index & 1, &D_801300B8[index]);
     }
 }
@@ -2170,33 +2170,33 @@ void transitionRegisteredPlayerModels(void) {
     u16 playerIndex;
     s32 command;
 
-    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    position = (MenuPlayerModelPosition *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
-    children = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE88->resource16];
-    if ((u16)(D_8013AE88->data1E % 10) == 0) {
+    if (gCurrentTask->resource14 == 0xFFFF) { while (1) {} }
+    position = (MenuPlayerModelPosition *)&gTaskMemoryPool[gCurrentTask->resource14];
+    if (gCurrentTask->resource16 == 0xFFFF) { while (1) {} }
+    children = (RegisteredTaskEntry *)&gTaskMemoryPool[gCurrentTask->resource16];
+    if ((u16)(gCurrentTask->data1E % 10) == 0) {
         if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
-        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource14, D_8013AE88->data1E);
+        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource14, gCurrentTask->data1E);
     } else {
         if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
-        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource16, D_8013AE88->data1E);
+        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource16, gCurrentTask->data1E);
     }
     if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
-    selection = &D_801300AC[(s16)D_8013AE88->data18];
-    playerIndex = D_8013AE88->data18;
+    selection = &D_801300AC[(s16)gCurrentTask->data18];
+    playerIndex = gCurrentTask->data18;
     command = entry->command;
     if (command == 1) {
         s16 incomingSlot;
         s32 outgoingSlot;
         Movement2D *movement;
-        if (D_8013AE88->data1C == 0) {
+        if (gCurrentTask->data1C == 0) {
             outgoingSlot = 0;
             incomingSlot = 1;
-            D_8013AE88->data1C = command;
+            gCurrentTask->data1C = command;
         } else {
             outgoingSlot = 1;
             incomingSlot = 0;
-            D_8013AE88->data1C = 0;
+            gCurrentTask->data1C = 0;
         }
         movement = (Movement2D *)&gTaskMemoryPool[children[incomingSlot].task->resource16];
         player = playerIndex;
@@ -2228,33 +2228,33 @@ void transitionRegisteredPlayerModelsUp(void) {
     u16 playerIndex;
     s32 command;
 
-    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    position = (MenuPlayerModelPosition *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
-    children = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE88->resource16];
-    if ((u16)(D_8013AE88->data1E % 10) == 0) {
+    if (gCurrentTask->resource14 == 0xFFFF) { while (1) {} }
+    position = (MenuPlayerModelPosition *)&gTaskMemoryPool[gCurrentTask->resource14];
+    if (gCurrentTask->resource16 == 0xFFFF) { while (1) {} }
+    children = (RegisteredTaskEntry *)&gTaskMemoryPool[gCurrentTask->resource16];
+    if ((u16)(gCurrentTask->data1E % 10) == 0) {
         if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
-        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource14, D_8013AE88->data1E);
+        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource14, gCurrentTask->data1E);
     } else {
         if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
-        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource16, D_8013AE88->data1E);
+        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource16, gCurrentTask->data1E);
     }
     if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
-    selection = &D_801300AC[(s16)D_8013AE88->data18];
-    playerIndex = D_8013AE88->data18;
+    selection = &D_801300AC[(s16)gCurrentTask->data18];
+    playerIndex = gCurrentTask->data18;
     command = entry->command;
     if (command == 1) {
         s16 incomingSlot;
         s32 outgoingSlot;
         Movement2D *movement;
-        if (D_8013AE88->data1C == 0) {
+        if (gCurrentTask->data1C == 0) {
             outgoingSlot = 0;
             incomingSlot = 1;
-            D_8013AE88->data1C = command;
+            gCurrentTask->data1C = command;
         } else {
             outgoingSlot = 1;
             incomingSlot = 0;
-            D_8013AE88->data1C = 0;
+            gCurrentTask->data1C = 0;
         }
         movement = (Movement2D *)&gTaskMemoryPool[children[incomingSlot].task->resource16];
         player = playerIndex;
@@ -2282,28 +2282,28 @@ void updateRegisteredChildBlinkTransition(void) {
     RegisteredTaskEntry *children;
     RegisteredTaskEntry *entry;
     SelectionTransitionEntry *selection;
-    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    position = (Movement2D *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
-    children = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE88->resource16];
-    if ((u16)(D_8013AE88->data1E % 10) == 0) {
+    if (gCurrentTask->resource14 == 0xFFFF) { while (1) {} }
+    position = (Movement2D *)&gTaskMemoryPool[gCurrentTask->resource14];
+    if (gCurrentTask->resource16 == 0xFFFF) { while (1) {} }
+    children = (RegisteredTaskEntry *)&gTaskMemoryPool[gCurrentTask->resource16];
+    if ((u16)(gCurrentTask->data1E % 10) == 0) {
         if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
-        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource14, D_8013AE88->data1E);
+        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource14, gCurrentTask->data1E);
     } else {
         if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
-        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource16, D_8013AE88->data1E);
+        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource16, gCurrentTask->data1E);
     }
-    selection = &((SelectionTransitionEntry *)&D_801300AC)[(s16)D_8013AE88->data18];
+    selection = &((SelectionTransitionEntry *)&D_801300AC)[(s16)gCurrentTask->data18];
     if (entry->command == 1) {
         if (selection->timer == 0) {
-            initMovement2D((Movement2D *)&gTaskMemoryPool[children[D_8013AE88->data1C].task->resource16], position->x, position->y);
+            initMovement2D((Movement2D *)&gTaskMemoryPool[children[gCurrentTask->data1C].task->resource16], position->x, position->y);
             entry->command = 0;
             entry->flags = 0;
         } else if (selection->timer > 0) {
             if (selection->timer % 2 == 0) {
-                initMovement2D((Movement2D *)&gTaskMemoryPool[children[D_8013AE88->data1C].task->resource16], position->x, position->y);
+                initMovement2D((Movement2D *)&gTaskMemoryPool[children[gCurrentTask->data1C].task->resource16], position->x, position->y);
             } else {
-                initMovement2D((Movement2D *)&gTaskMemoryPool[children[D_8013AE88->data1C].task->resource16], position->x + 0x140000, position->y);
+                initMovement2D((Movement2D *)&gTaskMemoryPool[children[gCurrentTask->data1C].task->resource16], position->x + 0x140000, position->y);
             }
             selection->timer--;
             entry->flags = 1;
@@ -2331,19 +2331,19 @@ void transitionRegisteredPlayerModelTexture(void) {
     s16 height;
     s16 i;
 
-    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    position = (MenuPlayerModelPosition *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
-    children = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE88->resource16];
-    if ((u16)(D_8013AE88->data1E % 10) == 0) {
+    if (gCurrentTask->resource14 == 0xFFFF) { while (1) {} }
+    position = (MenuPlayerModelPosition *)&gTaskMemoryPool[gCurrentTask->resource14];
+    if (gCurrentTask->resource16 == 0xFFFF) { while (1) {} }
+    children = (RegisteredTaskEntry *)&gTaskMemoryPool[gCurrentTask->resource16];
+    if ((u16)(gCurrentTask->data1E % 10) == 0) {
         if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
-        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource14, D_8013AE88->data1E);
+        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource14, gCurrentTask->data1E);
     } else {
         if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
-        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource16, D_8013AE88->data1E);
+        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource16, gCurrentTask->data1E);
     }
     if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
-    task = D_8013AE88;
+    task = gCurrentTask;
     playerIndex = task->data18;
     selection = &D_801300AC[playerIndex];
     texture = &D_8013B468[playerIndex];
@@ -2414,10 +2414,10 @@ void transitionRegisteredPlayerModelTexture(void) {
         break;
     }
     case 3:
-        if (D_8013AE88->data1C == 0) {
-            D_8013AE88->data1C = 1;
+        if (gCurrentTask->data1C == 0) {
+            gCurrentTask->data1C = 1;
         } else {
-            D_8013AE88->data1C = 0;
+            gCurrentTask->data1C = 0;
         }
         initMovement2D((Movement2D *)&gTaskMemoryPool[children[outgoingSlot].task->resource16],
                        position->x + 0x140000, position->y);
@@ -2444,51 +2444,51 @@ void transitionRegisteredPlayerModelTexture(void) {
 
 void drawTaskOffsetSpriteB8(void) {
     Movement2D *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (Movement2D *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if (D_8013AE88->data1A != 0) {
+    resource = (Movement2D *)&gTaskMemoryPool[gCurrentTask->resource14];
+    if (gCurrentTask->data1A != 0) {
         drawSpriteByIndexWithBlend(resource->x / 4096 + 8, resource->y / 4096 - 22,
-                      0xB8, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                      0xB8, 0, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
     }
 }
 
 void initializeDualResourceTaskAndResetByteState(void) {
-    D_8013AE88->data18 = 1;
+    gCurrentTask->data18 = 1;
     gPlayerGroupedSelectionStates[0] = 0;
     gPlayerGroupedSelectionStates[1] = 0;
-    if (D_8013AE88->resource14 != 0xFFFF) {
+    if (gCurrentTask->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskMemoryBlock();
-    if (D_8013AE88->resource16 != 0xFFFF) {
+    gCurrentTask->resource14 = allocateTaskMemoryBlock();
+    if (gCurrentTask->resource16 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource16 = allocateTaskMemoryBlock();
+    gCurrentTask->resource16 = allocateTaskMemoryBlock();
     setCurrentTaskCallback(updatePlayerGroupedSelectionMenu);
-    D_8013AE88->unk10 |= 2;
+    gCurrentTask->unk10 |= 2;
 }
 
 void updatePlayerGroupedSelectionMenu(void) {
     RegisteredPanelSlot *slots;
 
-    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
-    slots = (RegisteredPanelSlot *)&gTaskMemoryPool[D_8013AE88->resource16];
+    if (gCurrentTask->resource14 == 0xFFFF) { while (1) {} }
+    if (gCurrentTask->resource16 == 0xFFFF) { while (1) {} }
+    slots = (RegisteredPanelSlot *)&gTaskMemoryPool[gCurrentTask->resource16];
 
-    switch (D_8013AE88->data18) {
+    switch (gCurrentTask->data18) {
     case 1:
         setMusicSequenceEnabled(1);
         createPlayerGroupedSelectionTask(0, 1);
         createPlayerGroupedSelectionTask(1, 11);
         createPaletteEntryCopyTask(816, 240, 15, 0, 21);
         createPaletteEntryCopyTask(816, 241, 15, 0, 31);
-        D_8013AE88->data18 = 3;
+        gCurrentTask->data18 = 3;
         break;
     case 3:
         if (gPlayerGroupedSelectionStates[0] == 4 || gPlayerGroupedSelectionStates[1] == 4) {
-            D_8013AE88->data18 = 40;
+            gCurrentTask->data18 = 40;
         } else if (gPlayerGroupedSelectionStates[0] == 6 || gPlayerGroupedSelectionStates[1] == 6) {
             if (D_8013AFE2 == 0 && (s16)getGameOptionFlag0() != 0) {
                 D_8013AE98->data18 = 29;
@@ -2496,14 +2496,14 @@ void updatePlayerGroupedSelectionMenu(void) {
                 D_8013AE98->data18 = 23;
                 beginMode2SequenceAndFadeMusic();
             }
-            D_8013AE88->data18 = 9;
+            gCurrentTask->data18 = 9;
         }
         break;
     case 40:
         if (gPlayerGroupedSelectionStates[0] == 4 && gPlayerGroupedSelectionStates[1] == 4) {
             gPlayerGroupedSelectionStates[0] = 5;
             gPlayerGroupedSelectionStates[1] = 5;
-            D_8013AE88->data18 = 41;
+            gCurrentTask->data18 = 41;
         }
         break;
     case 41:
@@ -2520,12 +2520,12 @@ void updatePlayerGroupedSelectionMenu(void) {
             queueMenuResourceReads((s16)D_8013AE98->data18);
             slots[2].command = 99;
             slots[3].command = 99;
-            D_8013AE88->data18 = 99;
+            gCurrentTask->data18 = 99;
         }
         break;
     case 9:
         if (D_8013AE98->data18 != 23 || isTaskStateTransitionBelowMaximum(0) == 0) {
-            D_8013AE88->data18 = 99;
+            gCurrentTask->data18 = 99;
         }
         break;
     default:
@@ -2541,14 +2541,14 @@ void createPlayerGroupedSelectionTask(s32 player, s32 index) {
     RegisteredPanelSlot *slot;
     RECT *bounds;
     createChildTaskWithReserve(updatePlayerGroupedSelectionTask);
-    D_8013AE8C->data18 = 1;
-    D_8013AE8C->data1A = getPlayerRecordFlagMode(player + 10);
-    D_8013AE8C->data1C = player;
-    D_8013AE8C->data1E = index;
-    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-    D_8013AE8C->resource16 = allocateTaskMemoryBlock();
+    gCreatedTask->data18 = 1;
+    gCreatedTask->data1A = getPlayerRecordFlagMode(player + 10);
+    gCreatedTask->data1C = player;
+    gCreatedTask->data1E = index;
+    gCreatedTask->resource14 = allocateTaskMemoryBlock();
+    gCreatedTask->resource16 = allocateTaskMemoryBlock();
     selection = &D_801300AC[(s16)player];
-    adjustGroupedIndexForMode((s16)D_8013AE8C->data1A, &((PlayerSelectionRecord *)gRacePlayers)[(s16)player].selectionBytes[3]);
+    adjustGroupedIndexForMode((s16)gCreatedTask->data1A, &((PlayerSelectionRecord *)gRacePlayers)[(s16)player].selectionBytes[3]);
     selection->selection = getGroupedIndexBase(((PlayerSelectionRecord *)gRacePlayers)[(s16)player].selectionBytes[3]);
     if (selection->selection == 9) {
         selection->selection += getSaveRecordFlagGroupIndex(player + 10, 0);
@@ -2564,15 +2564,15 @@ void createPlayerGroupedSelectionTask(s32 player, s32 index) {
     bounds->w = 270;
     bounds->h = 87;
     if (index % 10 == 0) {
-        if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-        slot = getPanelSlot(D_8013AE88->resource14, index);
+        if (gCurrentTask->resource14 == 0xFFFF) { while (1) {} }
+        slot = getPanelSlot(gCurrentTask->resource14, index);
     } else {
-        if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
-        slot = getPanelSlot(D_8013AE88->resource16, index);
+        if (gCurrentTask->resource16 == 0xFFFF) { while (1) {} }
+        slot = getPanelSlot(gCurrentTask->resource16, index);
     }
     slot->command = 0;
     slot->flags = 1;
-    slot->task = D_8013AE8C;
+    slot->task = gCreatedTask;
 }
 
 void updatePlayerGroupedSelectionTask(void) {
@@ -2588,33 +2588,33 @@ void updatePlayerGroupedSelectionTask(void) {
     u16 slotIndex;
     RegisteredPanelSlot *slots;
 
-    if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
-    selection = (CourseSelectionResource *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if (D_8013AE88->resource16 == 0xFFFF) { for (;;) {} }
-    panels = (RegisteredPanelSlot *)&gTaskMemoryPool[D_8013AE88->resource16];
+    if (gCurrentTask->resource14 == 0xFFFF) { for (;;) {} }
+    selection = (CourseSelectionResource *)&gTaskMemoryPool[gCurrentTask->resource14];
+    if (gCurrentTask->resource16 == 0xFFFF) { for (;;) {} }
+    panels = (RegisteredPanelSlot *)&gTaskMemoryPool[gCurrentTask->resource16];
     if (D_8013AE98->resource14 == 0xFFFF) { for (;;) {} }
     parentStatus = (PlayerGroupedSelectionStatus *)&gTaskMemoryPool[D_8013AE98->resource14];
-    if ((u16)(D_8013AE88->data1E % 10U) == 0) {
+    if ((u16)(gCurrentTask->data1E % 10U) == 0) {
         if (D_8013AE98->resource14 == 0xFFFF) { for (;;) {} }
-        slotIndex = D_8013AE88->data1E / 10U;
+        slotIndex = gCurrentTask->data1E / 10U;
         slots = (RegisteredPanelSlot *)&gTaskMemoryPool[D_8013AE98->resource14];
         parentSlot = &slots[slotIndex];
     } else {
         if (D_8013AE98->resource16 == 0xFFFF) { for (;;) {} }
-        slotIndex = D_8013AE88->data1E / 10U;
+        slotIndex = gCurrentTask->data1E / 10U;
         slots = (RegisteredPanelSlot *)&gTaskMemoryPool[D_8013AE98->resource16];
         parentSlot = &slots[slotIndex];
     }
 
-    player = D_8013AE88->data1C;
+    player = gCurrentTask->data1C;
     if ((gPlayerGroupedSelectionStates[0] == 4 || gPlayerGroupedSelectionStates[1] == 4) &&
         (gPlayerGroupedSelectionStates[player] < 2 || gPlayerGroupedSelectionStates[player] > 4)) {
         gPlayerGroupedSelectionStates[player] = 4;
-        D_8013AE88->data18 = 7;
+        gCurrentTask->data18 = 7;
     }
     groupedSelection = &D_801300AC[player];
 
-    switch (D_8013AE88->data18) {
+    switch (gCurrentTask->data18) {
     case 1:
         selection->mode = 0;
         if (gRacePlayers[player].unk00A[1] < 9 && (u8)(gRacePlayers[player].unk00A[1] % 3U) == 0) {
@@ -2639,28 +2639,28 @@ void updatePlayerGroupedSelectionTask(void) {
         } else {
             createRegisteredCallbackTask(player, -316, player * 104 + 24, drawTaskIndexPanel, 6, 1);
         }
-        descriptor = &gPlayerGroupedSelectionDescriptors[D_8013AE88->data1A];
+        descriptor = &gPlayerGroupedSelectionDescriptors[gCurrentTask->data1A];
         createRegisteredSpacedChildTasks(player == 0 ? 1 : 2, 0xB0, 0x40, (const u8 *)gPlayerGroupedSelectionSprites,
                                          descriptor->mapping, NULL, 0, 0, 20, -308, player * 104 - 72,
                                          descriptor->spacingX, descriptor->spacingY, descriptor->count, 230,
                                          drawSelectedTaskSprite, drawClippedRegisteredTaskGridSprite, 4, 11);
         createRegisteredPanelTask(player, groupedSelection->selection, 284, player * 142 - 60, 544, 21);
         createRegisteredTripletTask(-64, (s16)(player * 104 - 60), 0, 16, D_8012FFFC, descriptor->tripletIndices, 3, 31);
-        D_8013AE88->data18 = 3;
+        gCurrentTask->data18 = 3;
         break;
     case 3:
         if (panels[0].flags == 0 && panels[1].flags == 0 &&
             panels[2].flags == 0 && panels[3].flags == 0) {
             configureMovement2D((Movement2D *)&gTaskMemoryPool[panels[0].task->resource14],
                                 -0x88000, (player * 104 - 96) * 4096, 0x5A000, 0x1E000, 0);
-            D_8013AE88->data18 = 4;
+            gCurrentTask->data18 = 4;
         }
         break;
     case 4:
         if (panels[0].flags == 0) {
             moveTaskChildrenWithSpacing(0, panels[1].task, -0x80000, (player * 104 - 72) * 4096, 0x1E000, 0x1E000, 1);
             configureRegisteredChildMovement(0, panels[2].task, 0x68000, (player * 142 - 60) * 4096, 0x1E000, 0x1E000, 5);
-            D_8013AE88->data18 = 5;
+            gCurrentTask->data18 = 5;
         }
         break;
     case 5:
@@ -2674,7 +2674,7 @@ void updatePlayerGroupedSelectionTask(void) {
                 configureColorCycleTask(1, 0, 128, 8, player);
                 gPlayerGroupedSelectionTransitionFlags[player] = 0;
                 parentSlot->flags = 1;
-                D_8013AE88->data18 = 6;
+                gCurrentTask->data18 = 6;
             }
         }
         break;
@@ -2715,34 +2715,34 @@ void updatePlayerGroupedSelectionTask(void) {
             }
             if (selection->choiceResult < 0) {
                 gPlayerGroupedSelectionStates[player] = 4;
-                D_8013AE88->data18 = 7;
+                gCurrentTask->data18 = 7;
                 parentSlot->flags = 1;
             } else {
-                D_8013AE88->data18 = 71;
+                gCurrentTask->data18 = 71;
             }
         }
         break;
     case 71:
         panels[1].command = 10;
-        D_8013AE88->data18 = 72;
+        gCurrentTask->data18 = 72;
         break;
     case 72:
         if (panels[1].flags == 0) {
-            D_8013AE88->data18 = 30;
+            gCurrentTask->data18 = 30;
         }
         break;
     case 30:
         createChildTaskWithReserve(initializeDualResourceTask);
-        D_8013AE8C->data18 = 1;
-        descriptor = &gPlayerGroupedSelectionDescriptors[D_8013AE88->data1A];
-        D_8013AE8C->data1A = mapCourseMenuByteIndex(descriptor->mapping, selection->selectedIndex);
-        D_8013AE8C->data1E = 41;
-        D_8013AE8C->data1C = player;
-        panels[4].task = D_8013AE8C;
+        gCreatedTask->data18 = 1;
+        descriptor = &gPlayerGroupedSelectionDescriptors[gCurrentTask->data1A];
+        gCreatedTask->data1A = mapCourseMenuByteIndex(descriptor->mapping, selection->selectedIndex);
+        gCreatedTask->data1E = 41;
+        gCreatedTask->data1C = player;
+        panels[4].task = gCreatedTask;
         panels[4].command = 0;
         panels[4].flags = 1;
         gPlayerGroupedSelectionStates[player] = 2;
-        D_8013AE88->data18 = 31;
+        gCurrentTask->data18 = 31;
         break;
     case 31:
         if (gPlayerGroupedSelectionStates[player] != 6) {
@@ -2759,7 +2759,7 @@ void updatePlayerGroupedSelectionTask(void) {
             panels[0].command = 20;
             configureColorCycleTask(2, 0, 128, 8, player);
             gPlayerGroupedSelectionTransitionFlags[player] = 0;
-            D_8013AE88->data18 = 8;
+            gCurrentTask->data18 = 8;
         }
         break;
     case 8:
@@ -2780,14 +2780,14 @@ void updatePlayerGroupedSelectionTask(void) {
                 } else {
                     configureMovement2D(movement, -0x13C000, (player * 104 + 24) * 4096, 0x5A000, 0x1E000, -1000);
                 }
-                D_8013AE88->data18 = 10;
+                gCurrentTask->data18 = 10;
             }
         }
         break;
     case 10:
         if (panels[0].flags == 0) {
 finish:
-            D_8013AE88->data18 = 99;
+            gCurrentTask->data18 = 99;
         }
         break;
     case 61:
@@ -2806,14 +2806,14 @@ finish:
 }
 
 void initializeDualResourceTask(void) {
-    if (D_8013AE88->resource14 != 0xFFFF) {
+    if (gCurrentTask->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskMemoryBlock();
-    if (D_8013AE88->resource16 != 0xFFFF) {
+    gCurrentTask->resource14 = allocateTaskMemoryBlock();
+    if (gCurrentTask->resource16 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource16 = allocateTaskMemoryBlock();
+    gCurrentTask->resource16 = allocateTaskMemoryBlock();
     setCurrentTaskCallback(updatePlayerCourseVariantSelectionTask);
 }
 
@@ -2840,50 +2840,50 @@ void updatePlayerCourseVariantSelectionTask(void) {
         while (1) {}
     }
     panels = (RegisteredPanelSlot *)&gTaskMemoryPool[D_8013AE98->resource16];
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    selection = (CourseSelectionResource *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if (D_8013AE88->resource16 == 0xFFFF) {
+    selection = (CourseSelectionResource *)&gTaskMemoryPool[gCurrentTask->resource14];
+    if (gCurrentTask->resource16 == 0xFFFF) {
         while (1) {}
     }
-    children = (RegisteredPanelSlot *)&gTaskMemoryPool[D_8013AE88->resource16];
-    if ((u16)(D_8013AE88->data1E % 10U) == 0) {
+    children = (RegisteredPanelSlot *)&gTaskMemoryPool[gCurrentTask->resource16];
+    if ((u16)(gCurrentTask->data1E % 10U) == 0) {
         if (D_8013AE98->resource14 == 0xFFFF) {
             while (1) {}
         }
-        slotIndex = D_8013AE88->data1E / 10U;
+        slotIndex = gCurrentTask->data1E / 10U;
         slots = (RegisteredPanelSlot *)&gTaskMemoryPool[D_8013AE98->resource14];
         parentSlot = &slots[slotIndex];
     } else {
         if (D_8013AE98->resource16 == 0xFFFF) {
             while (1) {}
         }
-        slotIndex = D_8013AE88->data1E / 10U;
+        slotIndex = gCurrentTask->data1E / 10U;
         slots = (RegisteredPanelSlot *)&gTaskMemoryPool[D_8013AE98->resource16];
         parentSlot = &slots[slotIndex];
     }
 
-    player = D_8013AE88->data1C;
+    player = gCurrentTask->data1C;
     groupedSelection = &D_801300AC[player];
     if ((gPlayerGroupedSelectionStates[0] == 4 || gPlayerGroupedSelectionStates[1] == 4) &&
         gPlayerGroupedSelectionStates[player] != 4) {
         gPlayerGroupedSelectionStates[player] = 4;
-        D_8013AE88->data18 = 19;
+        gCurrentTask->data18 = 19;
     }
 
-    switch (D_8013AE88->data18) {
+    switch (gCurrentTask->data18) {
     case 1:
         moveTaskChildrenWithSpacing(2, panels[1].task, -0x134000, (player * 104 - 72) * 4096,
                                     0x1E000, 0x1E000, -1000);
-        D_8013AE88->data18 = 2;
+        gCurrentTask->data18 = 2;
         break;
     case 2:
         if (panels[1].flags == 0) {
             panels[1].command = 23;
             configureTaskGridMovement(1, panels[1].task, -0x80000, (player * 104 - 72) * 4096,
                                       0x1E000, 0x1E000, 0);
-            D_8013AE88->data18 = 3;
+            gCurrentTask->data18 = 3;
         }
         break;
     case 3: {
@@ -2905,7 +2905,7 @@ void updatePlayerCourseVariantSelectionTask(void) {
                                                             selection->selectedIndex);
         selection->previousIndex = selection->selectedIndex;
         selection->choiceResult = 0;
-        D_8013AE88->data18 = 4;
+        gCurrentTask->data18 = 4;
         break;
     }
     case 4:
@@ -2913,13 +2913,13 @@ void updatePlayerCourseVariantSelectionTask(void) {
             initializeSpacedTaskGridPositions(0, children[0].task, -0x7C000, (player * 104 - 72) * 4096, 0, 0);
             configureVerticalTaskGridMovement(0, children[0].task, -0x7C000, (player * 104 - 58) * 4096,
                                               0x8000, 0x8000, 2);
-            D_8013AE88->data18 = 5;
+            gCurrentTask->data18 = 5;
         }
         break;
     case 5:
         if (children[0].flags == 0) {
             children[0].command = 21;
-            D_8013AE88->data18 = 6;
+            gCurrentTask->data18 = 6;
         }
         break;
     case 6:
@@ -2937,21 +2937,21 @@ void updatePlayerCourseVariantSelectionTask(void) {
                 panels[2].command = 3;
             }
             if (selection->choiceResult != 0) {
-                D_8013AE88->data18 = 8;
+                gCurrentTask->data18 = 8;
             }
         }
         if (groupedSelection->selection == groupedSelection->previousSelection &&
             selection->selectedIndex != selection->previousIndex) {
             groupedSelection->previousSelection = groupedSelection->selection;
             groupedSelection->selection = getTaskResourceAdjustedGroupedIndex(
-                D_8013AE88->data1A, children[0].task, selection->selectedIndex);
+                gCurrentTask->data1A, children[0].task, selection->selectedIndex);
             if (groupedSelection->selection < 0) {
                 groupedSelection->selection = groupedSelection->previousSelection;
             } else {
                 panels[2].command = 13;
             }
             selection->previousIndex = selection->selectedIndex;
-        } else if ((u32)(D_8013AE88->data18 - 6) >= 2) {
+        } else if ((u32)(gCurrentTask->data18 - 6) >= 2) {
             u8 *transitionFlag = &gPlayerGroupedSelectionTransitionFlags[player];
             if (*transitionFlag == 0) {
                 children[0].command = 22;
@@ -2963,13 +2963,13 @@ void updatePlayerCourseVariantSelectionTask(void) {
     case 8:
         if (panels[2].flags == 0 && selection->choiceResult != 0 && children[0].flags == 0) {
             if (selection->choiceResult < 0) {
-                D_8013AE88->data18 = 30;
+                gCurrentTask->data18 = 30;
             } else {
                 gRacePlayers[player].unk00A[1] = getTaskResourceAdjustedGroupedIndex(
-                    D_8013AE88->data1A, children[0].task, selection->selectedIndex);
+                    gCurrentTask->data1A, children[0].task, selection->selectedIndex);
                 parentSlot->flags = 0;
                 gPlayerGroupedSelectionStates[player] = 3;
-                D_8013AE88->data18 = 9;
+                gCurrentTask->data18 = 9;
             }
         }
         break;
@@ -2977,26 +2977,26 @@ void updatePlayerCourseVariantSelectionTask(void) {
         configureTaskGridMovement(0, children[0].task, -0x7C000, (player * 104 - 72) * 4096,
                                   0x1E000, 0x1E000, 0);
         children[0].command = 23;
-        D_8013AE88->data18 = 31;
+        gCurrentTask->data18 = 31;
         break;
     case 31:
         if (children[0].flags == 0) {
             initializeSpacedTaskGridPositions(0, children[0].task, -0x130000, (player * 104 - 72) * 4096, 0, 0);
             moveTaskChildrenWithSpacing(1, panels[1].task, -0x80000, (player * 104 - 72) * 4096, 0x1E000, 0x1E000, 0);
-            D_8013AE88->data18 = 32;
+            gCurrentTask->data18 = 32;
         }
         break;
     case 32:
         if (panels[1].flags == 0) {
             moveTaskChildrenWithSpacing(2, panels[1].task, -0x80000, (player * 104 - 72) * 4096,
                                         0x1E000, 0x1E000, 0);
-            D_8013AE88->data18 = 33;
+            gCurrentTask->data18 = 33;
         }
         break;
     case 33:
         if (panels[1].flags == 0) {
             panels[1].command = 21;
-            D_8013AE88->data18 = 34;
+            gCurrentTask->data18 = 34;
         }
         break;
     case 34:
@@ -3015,19 +3015,19 @@ void updatePlayerCourseVariantSelectionTask(void) {
             children[0].command = 21;
             panels[2].command = 1;
             selection->choiceResult = 0;
-            D_8013AE88->data18 = 7;
+            gCurrentTask->data18 = 7;
             gControllerPressedButtons[player] = 0;
             gPlayerGroupedSelectionStates[player] = 2;
             children[1].command = 99;
             playSoundEffect(0, 0, 32);
         } else {
             parentSlot->command = 20;
-            D_8013AE88->data18 = 18;
+            gCurrentTask->data18 = 18;
         }
         break;
     case 18:
         if (--parentSlot->command <= 0) {
-            D_8013AE88->data18 = 19;
+            gCurrentTask->data18 = 19;
         }
         break;
     case 10:
@@ -3045,7 +3045,7 @@ void updatePlayerCourseVariantSelectionTask(void) {
             panels[0].command = 20;
             configureColorCycleTask(2, 0, 128, 8, player);
             gPlayerGroupedSelectionTransitionFlags[player] = 0;
-            D_8013AE88->data18 = 11;
+            gCurrentTask->data18 = 11;
         }
         break;
     case 11: {
@@ -3066,14 +3066,14 @@ void updatePlayerCourseVariantSelectionTask(void) {
                 } else {
                     configureMovement2D(movement, -0x13C000, (player * 104 + 24) * 4096, 0x5A000, 0x1E000, -1000);
                 }
-                D_8013AE88->data18 = 12;
+                gCurrentTask->data18 = 12;
             }
         }
         break;
     }
     case 12:
         if (panels[0].flags == 0) {
-            D_8013AE88->data18 = 13;
+            gCurrentTask->data18 = 13;
         }
         break;
     case 13:
@@ -3096,20 +3096,20 @@ void drawClippedRegisteredTaskGridSprite(void) {
     const GridSpriteEntry *sprite;
     s16 row;
 
-    if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
-    position = (Movement2D *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if (D_8013AE88->resource16 == 0xFFFF) { for (;;) {} }
-    color = (ByteTriplet *)&gTaskMemoryPool[D_8013AE88->resource16];
+    if (gCurrentTask->resource14 == 0xFFFF) { for (;;) {} }
+    position = (Movement2D *)&gTaskMemoryPool[gCurrentTask->resource14];
+    if (gCurrentTask->resource16 == 0xFFFF) { for (;;) {} }
+    color = (ByteTriplet *)&gTaskMemoryPool[gCurrentTask->resource16];
     if (D_8013AE98->resource14 == 0xFFFF) { for (;;) {} }
     parent = (ClippedGridSpriteParent *)&gTaskMemoryPool[D_8013AE98->resource14];
-    if ((u16)(D_8013AE88->data1E % 10U) == 0) {
+    if ((u16)(gCurrentTask->data1E % 10U) == 0) {
         if (D_8013AE98->resource14 == 0xFFFF) { for (;;) {} }
         entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource14];
-        entry = &entries[D_8013AE88->data1E / 10U];
+        entry = &entries[gCurrentTask->data1E / 10U];
     } else {
         if (D_8013AE98->resource16 == 0xFFFF) { for (;;) {} }
         entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource16];
-        entry = &entries[D_8013AE88->data1E / 10U];
+        entry = &entries[gCurrentTask->data1E / 10U];
     }
     if (parent->mapping != 0) {
         if (entry->command == 99) {
@@ -3119,17 +3119,17 @@ void drawClippedRegisteredTaskGridSprite(void) {
             row = (parent->mode & 1) ^ 1;
             if (parent->alternateSprites == 1) {
                 sprite = getMappedGridSpriteEntry(parent->sprites, parent->mapping,
-                    (s16)(D_8013AE88->data1A + parent->count));
+                    (s16)(gCurrentTask->data1A + parent->count));
             } else {
                 sprite = getMappedGridSpriteEntry(parent->sprites, parent->mapping,
-                    (s16)D_8013AE88->data1A);
+                    (s16)gCurrentTask->data1A);
             }
             setSpriteColor(color->bytes[0], color->bytes[1], color->bytes[2]);
-            addDrawAreaPacket(0, 0, 320, 240, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+            addDrawAreaPacket(0, 0, 320, 240, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
             drawSpriteByIndexWithBlend((s16)(position->x / 4096), (s16)(position->y / 4096),
-                sprite->sprite, sprite->color, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                sprite->sprite, sprite->color, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
             addDrawAreaPacket(25, row * 104 + 40, 270, 94,
-                &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
             entry->flags = 0;
         }
     }
@@ -3140,23 +3140,23 @@ void drawTaskIndexPanel(void) {
     s16 index;
     TexturedQuadListEntry *list;
 
-    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    resource = (Movement2D *)&gTaskMemoryPool[D_8013AE88->resource14];
-    index = D_8013AE88->data18;
-    if (D_8013AE88->data1A != 0) {
+    if (gCurrentTask->resource14 == 0xFFFF) { while (1) {} }
+    resource = (Movement2D *)&gTaskMemoryPool[gCurrentTask->resource14];
+    index = gCurrentTask->data18;
+    if (gCurrentTask->data1A != 0) {
         drawSpriteByIndexWithBlend(resource->x / 4096 + 8, resource->y / 4096 + 80,
-                      0x133, 10, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                      0x133, 10, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
         drawSpriteByIndexWithBlend(resource->x / 4096 + 24, resource->y / 4096 + 80,
-                      0x31, 2, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                      0x31, 2, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
     }
     setSpriteColor(128, 128, 128);
     setTexturedQuadColor(128, 128, 128);
     drawDecimalNumber8x8(resource->x / 4096 + 54, resource->y / 4096 + 4,
-                  1, 0, index + 1, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                  1, 0, index + 1, 0, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
     if (index == 0) list = taskIndexPanelQuadsPalette0;
     else list = taskIndexPanelQuadsPalette1;
     drawTexturedQuadList(resource->x / 4096, resource->y / 4096, list,
-                        -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                        -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
 }
 
 s16 mapGroupedValueToTableIndex(s16 value) {
@@ -3177,10 +3177,10 @@ void createPaletteEntryCopyTask(s32 x, s32 y, s32 destination, s32 source, s32 i
     PaletteRotationSlot *slot;
 
     createChildTaskWithReserve(updatePaletteEntryTask);
-    D_8013AE8C->data18 = 0;
-    D_8013AE8C->data1E = index;
-    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-    resource = (PaletteEntryResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
+    gCreatedTask->data18 = 0;
+    gCreatedTask->data1E = index;
+    gCreatedTask->resource14 = allocateTaskMemoryBlock();
+    resource = (PaletteEntryResource *)&gTaskMemoryPool[gCreatedTask->resource14];
     resource->rect.w = 16;
     resource->rect.x = x;
     resource->rect.y = y;
@@ -3190,33 +3190,33 @@ void createPaletteEntryCopyTask(s32 x, s32 y, s32 destination, s32 source, s32 i
     resource->source = source;
 
     if (index % 10 == 0) {
-        if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-        slot = getPaletteRotationSlot(D_8013AE88->resource14, index);
+        if (gCurrentTask->resource14 == 0xFFFF) { while (1) {} }
+        slot = getPaletteRotationSlot(gCurrentTask->resource14, index);
     } else {
-        if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
-        slot = getPaletteRotationSlot(D_8013AE88->resource16, index);
+        if (gCurrentTask->resource16 == 0xFFFF) { while (1) {} }
+        slot = getPaletteRotationSlot(gCurrentTask->resource16, index);
     }
     slot->state = 1;
     slot->unk06 = 0;
-    slot->task = D_8013AE8C;
+    slot->task = gCreatedTask;
 }
 
 void updatePaletteEntryTask(void) {
     PaletteEntryResource *resource;
     PaletteRotationSlot *slot;
     s32 i;
-    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    resource = (PaletteEntryResource *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if ((u16)(D_8013AE88->data1E % 10) == 0) {
+    if (gCurrentTask->resource14 == 0xFFFF) { while (1) {} }
+    resource = (PaletteEntryResource *)&gTaskMemoryPool[gCurrentTask->resource14];
+    if ((u16)(gCurrentTask->data1E % 10) == 0) {
         if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
-        slot = getPaletteEntrySlot(D_8013AE98->resource14, D_8013AE88->data1E);
+        slot = getPaletteEntrySlot(D_8013AE98->resource14, gCurrentTask->data1E);
     } else {
         if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
-        slot = getPaletteEntrySlot(D_8013AE98->resource16, D_8013AE88->data1E);
+        slot = getPaletteEntrySlot(D_8013AE98->resource16, gCurrentTask->data1E);
     }
     switch (slot->state) {
     case 1:
-        if (++D_8013AE88->data18 >= 2) {
+        if (++gCurrentTask->data18 >= 2) {
             for (i = 0; i < 16; i++) resource->modified[i] = resource->original[i];
             resource->modified[resource->destination] = resource->original[resource->source];
             LoadImage(&resource->rect, (u32 *)resource->modified);
@@ -3241,7 +3241,7 @@ s16 hasStateValueChanged(s16 index) {
 }
 
 void updateMemoryCardSlotTask(void) {
-    switch (D_8013AE88->data18) {
+    switch (gCurrentTask->data18) {
     case 0:
         resetMemoryCardTaskState();
         if (D_8013BE30.unk_00 == 0) {
@@ -3250,7 +3250,7 @@ void updateMemoryCardSlotTask(void) {
             D_8013BE30.activeIndex = isValue16(D_8013BE30.unk_00 = 0);
         }
         setMemoryCardChannel(D_8013BE30.unk_00);
-        D_8013AE88->data18 = 1;
+        gCurrentTask->data18 = 1;
         break;
     case 1:
         if (D_8013AF3E != 7) {
@@ -3267,7 +3267,7 @@ void updateMemoryCardSlotTask(void) {
             }
             if (D_8013BE30.unk_0E[D_8013BE30.activeIndex] == 2) {
                 D_8013BE30.unk_0E[D_8013BE30.activeIndex] = 3;
-                D_8013AE88->data18 = 0;
+                gCurrentTask->data18 = 0;
             }
             break;
         case 2:
@@ -3283,7 +3283,7 @@ void updateMemoryCardSlotTask(void) {
             /* Fall through. */
         case 5:
             if (D_8013BE30.unk_0E[D_8013BE30.activeIndex] == 3) {
-                D_8013AE88->data18 = 0;
+                gCurrentTask->data18 = 0;
             } else if (D_8013BE30.unk_12[D_8013BE30.activeIndex] == 1) {
                 D_8013BE30.unk_12[D_8013BE30.activeIndex] = 0;
                 D_8013BE30.unk_0E[D_8013BE30.activeIndex] = 2;
@@ -3299,7 +3299,7 @@ void updateMemoryCardSlotTask(void) {
                     D_8013BE30.current[D_8013BE30.activeIndex] = D_8013AF3E;
                 }
                 D_8013BE30.unk_0E[D_8013BE30.activeIndex] = 1;
-                D_8013AE88->data18 = 0;
+                gCurrentTask->data18 = 0;
             }
             break;
         case 7:
@@ -3314,7 +3314,7 @@ void updateMemoryCardSlotTask(void) {
                 D_8013BE30.current[D_8013BE30.activeIndex] = D_8013AF3E;
             }
             D_8013BE30.unk_0E[D_8013BE30.activeIndex] = 1;
-            D_8013AE88->data18 = 0;
+            gCurrentTask->data18 = 0;
             break;
         }
         if ((s16)startMemoryCardReadStatusTask(MEMORY_CARD_SLOT_BUFFER_BASE +
@@ -3329,7 +3329,7 @@ void startClearedStateValueHistoryTask(void) {
     s16 i;
 
     createChildTaskWithReserve(updateMemoryCardSlotTask);
-    D_8013AE8C->data18 = 0;
+    gCreatedTask->data18 = 0;
     D_8013BE30.unk_00 = 16;
     D_8013BE30.activeIndex = 1;
     for (i = 0; i < 2; i++) {
@@ -3346,16 +3346,16 @@ void createSaveRecordSlotPanelTask(s16 slot, s32 x, s32 y, s16 depth, s32 index)
 void initializeSaveRecordTask(void) {
     s16 i;
 
-    D_8013AE88->data18 = 0;
+    gCurrentTask->data18 = 0;
     D_8013AE98->data1C++;
-    if (D_8013AE88->resource14 != 0xFFFF) {
+    if (gCurrentTask->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskMemoryBlock();
-    if (D_8013AE88->resource16 != 0xFFFF) {
+    gCurrentTask->resource14 = allocateTaskMemoryBlock();
+    if (gCurrentTask->resource16 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource16 = allocateTaskMemoryBlock();
+    gCurrentTask->resource16 = allocateTaskMemoryBlock();
     initializeSaveRecordDefaults(gPlayerSaveRecords);
     initializeSaveRecordDefaults(&gPlayerSaveRecords[1]);
     copyGlobalFlagState(&gPlayerSaveRecords[0], &gMergedSaveRecord);
@@ -3378,16 +3378,16 @@ void updateSaveRecordTask(void) {
     s16 firstResult;
     s16 secondResult;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    status = (SaveRecordTaskStatus *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if (D_8013AE88->resource16 == 0xFFFF) {
+    status = (SaveRecordTaskStatus *)&gTaskMemoryPool[gCurrentTask->resource14];
+    if (gCurrentTask->resource16 == 0xFFFF) {
         while (1) {}
     }
-    panels = (RegisteredPanelSlot *)&gTaskMemoryPool[D_8013AE88->resource16];
+    panels = (RegisteredPanelSlot *)&gTaskMemoryPool[gCurrentTask->resource16];
 
-    switch (D_8013AE88->data18) {
+    switch (gCurrentTask->data18) {
     case 0:
         setMusicSequenceEnabled(1);
         status->first.flags = 0;
@@ -3395,7 +3395,7 @@ void updateSaveRecordTask(void) {
         uploadBufferedTexturePair();
         createSaveRecordSlotPanelTask(0, -136, -96, 6, 1);
         createSaveRecordSlotPanelTask(1, -136, 8, 6, 11);
-        D_8013AE88->data18 = 2;
+        gCurrentTask->data18 = 2;
         break;
     case 2:
         if (panels[0].flags || panels[1].flags) {
@@ -3403,7 +3403,7 @@ void updateSaveRecordTask(void) {
         }
         markSecondaryTaskAndClearReference();
         panels[0].command = 3;
-        D_8013AE88->data18 = 3;
+        gCurrentTask->data18 = 3;
         break;
     case 3:
         if (panels[0].flags) {
@@ -3413,7 +3413,7 @@ void updateSaveRecordTask(void) {
             goto finish_panels;
         }
         panels[1].command = 3;
-        D_8013AE88->data18 = 4;
+        gCurrentTask->data18 = 4;
         break;
     case 4:
         if (panels[1].flags) {
@@ -3428,7 +3428,7 @@ void updateSaveRecordTask(void) {
             }
         }
     finish_panels:
-        D_8013AE88->data18 = 5;
+        gCurrentTask->data18 = 5;
         break;
     case 5:
         if ((firstResult = status->first.flags) < 0 ||
@@ -3447,12 +3447,12 @@ void updateSaveRecordTask(void) {
             }
             applyStereoSoundOption();
         }
-        D_8013AE88->data18 = 6;
+        gCurrentTask->data18 = 6;
         break;
     case 6:
         panels[0].command = 27;
         panels[1].command = 27;
-        D_8013AE88->data18 = 7;
+        gCurrentTask->data18 = 7;
         break;
     case 7:
         if (panels[0].flags || panels[1].flags) {
@@ -3460,7 +3460,7 @@ void updateSaveRecordTask(void) {
         }
         if (D_8013AE98->data18 == 30) {
             configureTaskStateTransition(2, 0, 30);
-            D_8013AE88->data18 = 8;
+            gCurrentTask->data18 = 8;
             break;
         }
         goto finish_transition;
@@ -3476,7 +3476,7 @@ void updateSaveRecordTask(void) {
             setTaskBackgroundMode(0, 0, 0);
         }
     finish_transition:
-        D_8013AE88->data18 = 9;
+        gCurrentTask->data18 = 9;
         break;
     case 9:
     default:
@@ -3497,27 +3497,27 @@ void createSaveRecordSlotPanelTask(s16 slot, s32 x, s32 y, s16 depth, s32 index)
     RegisteredPanelSlot *panel;
 
     createChildTaskWithReserve(updateSaveRecordLoadPanelTask);
-    D_8013AE8C->data18 = 0;
-    D_8013AE8C->data1A = slot;
-    D_8013AE8C->data1C = depth;
-    D_8013AE8C->data1E = index;
-    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-    initMovement2D((Movement2D *)&gTaskMemoryPool[D_8013AE8C->resource14], (s16)x * 4096, (s16)y * 4096);
-    D_8013AE8C->resource16 = allocateTaskMemoryBlock();
+    gCreatedTask->data18 = 0;
+    gCreatedTask->data1A = slot;
+    gCreatedTask->data1C = depth;
+    gCreatedTask->data1E = index;
+    gCreatedTask->resource14 = allocateTaskMemoryBlock();
+    initMovement2D((Movement2D *)&gTaskMemoryPool[gCreatedTask->resource14], (s16)x * 4096, (s16)y * 4096);
+    gCreatedTask->resource16 = allocateTaskMemoryBlock();
     if (index % 10 == 0) {
-        if (D_8013AE88->resource14 == 0xFFFF) {
+        if (gCurrentTask->resource14 == 0xFFFF) {
             while (1) {}
         }
-        panel = getPanelSlot(D_8013AE88->resource14, index);
+        panel = getPanelSlot(gCurrentTask->resource14, index);
     } else {
-        if (D_8013AE88->resource16 == 0xFFFF) {
+        if (gCurrentTask->resource16 == 0xFFFF) {
             while (1) {}
         }
-        panel = getPanelSlot(D_8013AE88->resource16, index);
+        panel = getPanelSlot(gCurrentTask->resource16, index);
     }
     panel->command = 0;
     panel->flags = 1;
-    panel->task = D_8013AE8C;
+    panel->task = gCreatedTask;
 }
 
 void updateSaveRecordLoadPanelTask(void) {
@@ -3538,35 +3538,35 @@ void updateSaveRecordLoadPanelTask(void) {
     u16 slotIndex;
     RegisteredPanelSlot *slots;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    position = (Movement2D *)&gTaskMemoryPool[D_8013AE88->resource14];
+    position = (Movement2D *)&gTaskMemoryPool[gCurrentTask->resource14];
     menu = (SavePanelPosition *)position;
-    if (D_8013AE88->resource16 == 0xFFFF) {
+    if (gCurrentTask->resource16 == 0xFFFF) {
         while (1) {}
     }
-    resources = (SavePanelResources *)&gTaskMemoryPool[D_8013AE88->resource16];
+    resources = (SavePanelResources *)&gTaskMemoryPool[gCurrentTask->resource16];
     if (D_8013AE98->resource14 == 0xFFFF) {
         while (1) {}
     }
     selections = (PlayerGroupedSelectionStatus *)&gTaskMemoryPool[D_8013AE98->resource14];
-    if ((u16)(D_8013AE88->data1E % 10U) == 0) {
+    if ((u16)(gCurrentTask->data1E % 10U) == 0) {
         if (D_8013AE98->resource14 == 0xFFFF) {
             while (1) {}
         }
-        slotIndex = D_8013AE88->data1E / 10U;
+        slotIndex = gCurrentTask->data1E / 10U;
         slots = (RegisteredPanelSlot *)&gTaskMemoryPool[D_8013AE98->resource14];
         parentPanel = &slots[slotIndex];
     } else {
         if (D_8013AE98->resource16 == 0xFFFF) {
             while (1) {}
         }
-        slotIndex = D_8013AE88->data1E / 10U;
+        slotIndex = gCurrentTask->data1E / 10U;
         slots = (RegisteredPanelSlot *)&gTaskMemoryPool[D_8013AE98->resource16];
         parentPanel = &slots[slotIndex];
     }
-    player = D_8013AE88->data1A;
+    player = gCurrentTask->data1A;
     selection = &selections[player].selection;
     color = 2;
     if (player == 0)
@@ -3574,11 +3574,11 @@ void updateSaveRecordLoadPanelTask(void) {
     x = position->x / 4096 + 60;
     y = position->y / 4096 + 22;
     if (parentPanel->command > 0) {
-        D_8013AE88->data18 = parentPanel->command;
+        gCurrentTask->data18 = parentPanel->command;
         parentPanel->command = 0;
     }
 
-    switch (D_8013AE88->data18) {
+    switch (gCurrentTask->data18) {
     case 0:
         x = position->x / 4096;
         y = position->y / 4096;
@@ -3586,15 +3586,15 @@ void updateSaveRecordLoadPanelTask(void) {
             y -= 180;
         else
             y += 180;
-        createRegisteredCallbackTask(player, x, y, drawSaveRecordProgressPanel, D_8013AE88->data1C, 1);
-        D_8013AE88->data18 = 1;
+        createRegisteredCallbackTask(player, x, y, drawSaveRecordProgressPanel, gCurrentTask->data1C, 1);
+        gCurrentTask->data18 = 1;
         break;
     case 1:
         if (resources->panels[0].flags)
             break;
         configureMovement2D((Movement2D *)&gTaskMemoryPool[resources->panels[0].task->resource14],
                             position->x, position->y, 0x1E000, 0x1E000, 0);
-        D_8013AE88->data18 = 2;
+        gCurrentTask->data18 = 2;
         break;
     case 2:
         if (resources->panels[0].flags)
@@ -3606,17 +3606,17 @@ void updateSaveRecordLoadPanelTask(void) {
     case 3:
         if (player >= D_8013AFCD) {
             selection->choiceResult = 1;
-            D_8013AE88->data18 = 26;
+            gCurrentTask->data18 = 26;
             break;
         }
         selection->choiceResult = 0;
         parentPanel->flags = 1;
-        D_8013AE88->data18 = 4;
+        gCurrentTask->data18 = 4;
         break;
     case 4:
         createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_801306EC, -1, color,
-                                              1, D_801307AC, D_8013AE88->data1C - 3, 11);
-        D_8013AE88->data18 = 5;
+                                              1, D_801307AC, gCurrentTask->data1C - 3, 11);
+        gCurrentTask->data18 = 5;
         break;
     case 5:
         accept = 1;
@@ -3625,9 +3625,9 @@ void updateSaveRecordLoadPanelTask(void) {
             break;
         if (result == accept) {
             selection->choiceResult = -1;
-            D_8013AE88->data18 = 14;
+            gCurrentTask->data18 = 14;
         } else if (result == 2) {
-            D_8013AE88->data18 = 30;
+            gCurrentTask->data18 = 30;
         } else if (result == 3) {
             goto resetRecord;
         } else {
@@ -3638,8 +3638,8 @@ void updateSaveRecordLoadPanelTask(void) {
         s32 otherPlayer = player != 0;
         createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_8013066C, -1,
                                               (otherPlayer << 8) | color, 1, D_80130800,
-                                              D_8013AE88->data1C - 3, 11);
-        D_8013AE88->data18 = 31;
+                                              gCurrentTask->data1C - 3, 11);
+        gCurrentTask->data18 = 31;
         break;
     }
     case 31:
@@ -3648,7 +3648,7 @@ void updateSaveRecordLoadPanelTask(void) {
             break;
         if (result == 1) {
         showCardOptions:
-            D_8013AE88->data18 = 4;
+            gCurrentTask->data18 = 4;
             break;
         } else if (result == 2) {
             menu->cardSlot = 0;
@@ -3656,7 +3656,7 @@ void updateSaveRecordLoadPanelTask(void) {
         } else if (result == 3) {
             goto selectSecondCard;
         }
-        D_8013AE88->data18 = 30;
+        gCurrentTask->data18 = 30;
         break;
     selectSecondCard:
         menu->cardSlot = 1;
@@ -3670,24 +3670,24 @@ void updateSaveRecordLoadPanelTask(void) {
         case 6:
             break;
         case 3:
-            createRegisteredStaticTextPanelTask(x, y, x + 4, y + 2, D_801302BC, menu->cardSlot, D_8013AE88->data1C - 3, 11);
+            createRegisteredStaticTextPanelTask(x, y, x + 4, y + 2, D_801302BC, menu->cardSlot, gCurrentTask->data1C - 3, 11);
             break;
         case 5:
-            D_8013AE88->data18 = 6;
+            gCurrentTask->data18 = 6;
             break;
         case 7:
             D_8013BE30.previous[menu->cardSlot] = D_8013BE30.current[menu->cardSlot];
-            D_8013AE88->data18 = 34;
+            gCurrentTask->data18 = 34;
             break;
         case 8:
         case 9:
         case 10:
         case 11:
-            D_8013AE88->data18 = 36;
+            gCurrentTask->data18 = 36;
             break;
         case 12:
             D_8013BE30.previous[menu->cardSlot] = D_8013BE30.current[menu->cardSlot];
-            D_8013AE88->data18 = 42;
+            gCurrentTask->data18 = 42;
             break;
         default:
             break;
@@ -3695,50 +3695,50 @@ void updateSaveRecordLoadPanelTask(void) {
         break;
     case 6:
         D_8013BE30.unk_12[menu->cardSlot] = 1;
-        createRegisteredStaticTextPanelTask(x, y, x + 4, y + 2, D_801302BC, menu->cardSlot, D_8013AE88->data1C - 3, 11);
-        D_8013AE88->data18 = 7;
+        createRegisteredStaticTextPanelTask(x, y, x + 4, y + 2, D_801302BC, menu->cardSlot, gCurrentTask->data1C - 3, 11);
+        gCurrentTask->data18 = 7;
     case 7:
         if (D_8013BE30.current[menu->cardSlot] == 7)
             goto inspectCard;
         if (D_8013BE30.unk_0E[menu->cardSlot] != 2)
             break;
-        D_8013AE88->data18 = 8;
+        gCurrentTask->data18 = 8;
     case 8:
-        createRegisteredStaticTextPanelTask(x, y, x + 4, y + 2, D_8013052C, -1, D_8013AE88->data1C - 3, 11);
-        D_8013AE88->data18 = 9;
+        createRegisteredStaticTextPanelTask(x, y, x + 4, y + 2, D_8013052C, -1, gCurrentTask->data1C - 3, 11);
+        gCurrentTask->data18 = 9;
     case 9:
         result = D_8013BE30.current[menu->cardSlot];
         if (result == 3)
             break;
         if (result == 0)
-            D_8013AE88->data18 = 13;
+            gCurrentTask->data18 = 13;
         else
-            D_8013AE88->data18 = 10;
+            gCurrentTask->data18 = 10;
         break;
     case 10:
         createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_80130770, -1, color,
-                                              1, NULL, D_8013AE88->data1C - 3, 11);
-        D_8013AE88->data18 = 11;
+                                              1, NULL, gCurrentTask->data1C - 3, 11);
+        gCurrentTask->data18 = 11;
         break;
     case 11:
         if (resources->panels[1].flags)
-            D_8013AE88->data18 = 40;
+            gCurrentTask->data18 = 40;
         break;
     case 13:
         card = (SaveRecord *)(MEMORY_CARD_SLOT_BUFFER_BASE + menu->cardSlot * MEMORY_CARD_SLOT_BUFFER_STRIDE);
         *D_8013B484[player] = *card;
-        recordTask = D_8013AE88;
+        recordTask = gCurrentTask;
         resources->panels[1].command = 99;
         goto showRecord;
     case 34:
         resources->panels[0].command = 23;
         createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_80130308, menu->cardSlot, color,
-                                              1, D_801307AC, D_8013AE88->data1C - 3, 11);
-        D_8013AE88->data18 = 35;
+                                              1, D_801307AC, gCurrentTask->data1C - 3, 11);
+        gCurrentTask->data18 = 35;
         break;
     case 35:
         if ((u32)((u16)D_8013BE30.current[menu->cardSlot] - 5) < 2) {
-            D_8013AE88->data18 = 3;
+            gCurrentTask->data18 = 3;
             break;
         }
         accept = 1;
@@ -3750,13 +3750,13 @@ void updateSaveRecordLoadPanelTask(void) {
         if (result == 2)
             goto resetRecord;
     retryUnformattedCard:
-        D_8013AE88->data18 = 30;
+        gCurrentTask->data18 = 30;
         break;
     case 36:
         createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_80130348, menu->cardSlot, color,
-                                              1, D_801307AC, D_8013AE88->data1C - 3, 11);
+                                              1, D_801307AC, gCurrentTask->data1C - 3, 11);
         resources->panels[0].command = 23;
-        D_8013AE88->data18 = 37;
+        gCurrentTask->data18 = 37;
         break;
     case 37:
         if (D_8013BE30.current[menu->cardSlot] == 7)
@@ -3770,7 +3770,7 @@ void updateSaveRecordLoadPanelTask(void) {
         if (result == 2)
             goto resetRecord;
     retryUnreadableCard:
-        D_8013AE88->data18 = 30;
+        gCurrentTask->data18 = 30;
         break;
     case 42:
         card = (SaveRecord *)(MEMORY_CARD_SLOT_BUFFER_BASE + menu->cardSlot * MEMORY_CARD_SLOT_BUFFER_STRIDE);
@@ -3783,17 +3783,17 @@ void updateSaveRecordLoadPanelTask(void) {
             }
             *D_8013B484[player] = *card;
         }
-        recordTask = D_8013AE88;
+        recordTask = gCurrentTask;
     showRecord:
         recordTask->data18 = 15;
         break;
     corruptCard:
-        D_8013AE88->data18 = 38;
+        gCurrentTask->data18 = 38;
         break;
     case 38:
         createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_80130390, menu->cardSlot, color,
-                                              1, NULL, D_8013AE88->data1C - 3, 11);
-        D_8013AE88->data18 = 39;
+                                              1, NULL, gCurrentTask->data1C - 3, 11);
+        gCurrentTask->data18 = 39;
         break;
     case 39:
         if (hasStateValueChanged(menu->cardSlot))
@@ -3802,8 +3802,8 @@ void updateSaveRecordLoadPanelTask(void) {
             break;
     case 40:
         createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_801303CC, -1, color,
-                                              1, D_801307AC, D_8013AE88->data1C - 3, 11);
-        D_8013AE88->data18 = 41;
+                                              1, D_801307AC, gCurrentTask->data1C - 3, 11);
+        gCurrentTask->data18 = 41;
         break;
     case 41:
         accept = 1;
@@ -3816,10 +3816,10 @@ void updateSaveRecordLoadPanelTask(void) {
             goto retryCardSelection;
     resetRecord:
         selection->choiceResult = accept;
-        D_8013AE88->data18 = 22;
+        gCurrentTask->data18 = 22;
         break;
     retryCardSelection:
-        D_8013AE88->data18 = 30;
+        gCurrentTask->data18 = 30;
         break;
     case 15:
         parentPanel->flags = 1;
@@ -3827,7 +3827,7 @@ void updateSaveRecordLoadPanelTask(void) {
         resources->panels[1].command = 99;
         configureColorCycleTask(1, 0, 128, 8, player);
         gPlayerGroupedSelectionTransitionFlags[player] = 0;
-        D_8013AE88->data18 = 16;
+        gCurrentTask->data18 = 16;
         break;
     case 16:
         if (isTaskResourceTransitionComplete(player) != 1)
@@ -3836,36 +3836,36 @@ void updateSaveRecordLoadPanelTask(void) {
     case 17:
         configureColorCycleTask(2, 64, 128, 4, player);
         createRegisteredCallbackTask(player, position->x / 4096, position->y / 4096,
-                                     drawSaveRecordPushAnyButtonPrompt, D_8013AE88->data1C - 3, 21);
-        D_8013AE88->data18 = 18;
+                                     drawSaveRecordPushAnyButtonPrompt, gCurrentTask->data1C - 3, 21);
+        gCurrentTask->data18 = 18;
         break;
     case 18:
         if (resources->panels[2].flags == 0) {
             resources->panels[2].command = 21;
-            D_8013AE88->data18 = 19;
+            gCurrentTask->data18 = 19;
         }
         break;
     case 19:
         if (D_8013BE30.current[menu->cardSlot] == 7) {
             resources->panels[2].command = 99;
-            D_8013AE88->data18 = 33;
+            gCurrentTask->data18 = 33;
             break;
         }
         if (gControllerPressedButtons[player]) {
             selection->choiceResult = 1;
             resources->panels[2].command = 99;
-            D_8013AE88->data18 = 20;
+            gCurrentTask->data18 = 20;
         }
         break;
     case 20:
         createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_80130780, -1, color,
-                                              1, D_801307AC, D_8013AE88->data1C - 3, 11);
-        D_8013AE88->data18 = 21;
+                                              1, D_801307AC, gCurrentTask->data1C - 3, 11);
+        gCurrentTask->data18 = 21;
         break;
     case 21:
         if (D_8013BE30.current[menu->cardSlot] == 7) {
         inspectCard:
-            D_8013AE88->data18 = 33;
+            gCurrentTask->data18 = 33;
             break;
         }
         result = resources->panels[1].flags;
@@ -3878,15 +3878,15 @@ void updateSaveRecordLoadPanelTask(void) {
             copySaveRecordAndMergeFlags();
             applyLoadedSaveRecordSettings(&gPlayerSaveRecords[player], player);
             D_8013B47C = 1;
-            D_8013AE88->data18 = 24;
+            gCurrentTask->data18 = 24;
         } else if (result == 3) {
-            task = D_8013AE88;
+            task = gCurrentTask;
             resources->panels[0].command = 23;
             task->data18 = 30;
         } else {
         drawRecord:
             resources->panels[1].command = 99;
-            D_8013AE88->data18 = 17;
+            gCurrentTask->data18 = 17;
         }
         break;
     case 22:
@@ -3895,24 +3895,24 @@ void updateSaveRecordLoadPanelTask(void) {
         resources->panels[0].command = 20;
         configureColorCycleTask(1, 0, 128, 8, player);
         gPlayerGroupedSelectionTransitionFlags[player] = 0;
-        D_8013AE88->data18 = 23;
+        gCurrentTask->data18 = 23;
         break;
     case 23:
         if (isTaskResourceTransitionComplete(player) == 1) {
             resources->panels[0].command = 22;
-            D_8013AE88->data18 = 26;
+            gCurrentTask->data18 = 26;
         }
         break;
     case 24:
         resources->countdown = createCountdownTask(15);
-        D_8013AE88->data18 = 25;
+        gCurrentTask->data18 = 25;
         break;
     case 25:
         countdownStatus = resources->countdown->data1A;
         if (countdownStatus != 1)
             break;
         resources->countdown->data18 = countdownStatus;
-        D_8013AE88->data18 = 26;
+        gCurrentTask->data18 = 26;
         break;
     case 27:
         offset = 180;
@@ -3926,11 +3926,11 @@ void updateSaveRecordLoadPanelTask(void) {
         resources->panels[4].command = 99;
         resources->command2C = 99;
         parentPanel->flags = 1;
-        D_8013AE88->data18 = 28;
+        gCurrentTask->data18 = 28;
         break;
     case 28:
         if (resources->panels[0].flags == 0)
-            D_8013AE88->data18 = 29;
+            gCurrentTask->data18 = 29;
         break;
     default:
         parentPanel->task = NULL;
@@ -3950,16 +3950,16 @@ void drawSaveRecordProgressPanel(void) {
     u8 r, g, b;
     TexturedQuadListEntry *list;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    position = (Movement2D *)&gTaskMemoryPool[D_8013AE88->resource14];
+    position = (Movement2D *)&gTaskMemoryPool[gCurrentTask->resource14];
     x = position->x / 4096;
     y = position->y / 4096;
-    slot = D_8013AE88->data18;
+    slot = gCurrentTask->data18;
     if (slot < D_8013AFCD) {
-        if (D_8013AE88->data1A != 0) {
-            if (D_8013AE88->data1A == 1 || D_8013AE88->data1A == 2) {
+        if (gCurrentTask->data1A != 0) {
+            if (gCurrentTask->data1A == 1 || gCurrentTask->data1A == 2) {
                 copyColorCycleTaskColor(slot, &gMenuColorCycleColor);
                 r = gMenuColorCycleColor.r;
                 g = gMenuColorCycleColor.g;
@@ -3988,10 +3988,10 @@ void drawSaveRecordProgressPanel(void) {
                 }
                 if (sprite >= 0) {
                     drawSpriteByIndexWithBlend(i * 32 + (s16)(x + 9), y + 54, sprite, palette, -1,
-                                  &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                                  &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
                 }
                 drawSpriteByIndexWithBlend(i * 32 + (s16)(x + 8), y + 60, 0x70 + i * 3, 0, -1,
-                              &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                              &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
             }
             for (i = 8; i < 10; i++) {
                 tier = getStateMaskTier(slot, i);
@@ -4013,25 +4013,25 @@ void drawSaveRecordProgressPanel(void) {
                 }
                 if (sprite >= 0) {
                     drawSpriteByIndexWithBlend(x + i * 32 - 55, y + 13, sprite, palette, -1,
-                                  &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                                  &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
                 }
                 if (D_8013B484[slot]->flags & (1u << (i - 8))) {
                     drawSpriteByIndexWithBlend((i - 8) * 32 + (s16)(x + 200), y + 19,
                                   0x70 + D_8012D460[i] * 3, 0, -1,
-                                  &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                                  &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
                 }
             }
             drawSpriteByIndexWithBlend(x + 72, y + 19, 0x5A, 3, -1,
-                          &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                          &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
             drawDecimalNumber16(x + 72, y + 30, 6, 0, D_8013B484[slot]->money,
-                                8, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                                8, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
             drawWrappedGlyphText16x16((s16)(x + 168), (s16)(y + 30), 1, gSaveRecordProgressCurrencyLabel, 8, -1,
-                                      &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                                      &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
         }
     } else {
         setSpriteColor(128, 128, 128);
         drawSpriteByIndexWithBlend(x + 64, y + 32, 0xB4, 1, -1,
-                      &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                      &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
     }
 
     if (slot < D_8013AFCD) {
@@ -4042,13 +4042,13 @@ void drawSaveRecordProgressPanel(void) {
         setTexturedQuadColor(64, 64, 64);
     }
     drawDecimalNumber8x8(x + 54, y + 4, 1, 0, slot + 1, 0, -1,
-                         &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                         &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
     if (slot == 0) {
         list = taskIndexPanelQuadsPalette0;
     } else {
         list = taskIndexPanelQuadsPalette1;
     }
-    drawTexturedQuadList(x, y, list, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+    drawTexturedQuadList(x, y, list, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
 }
 
 u16 gSaveRecordProgressCurrencyLabel[2]
@@ -4058,17 +4058,17 @@ void drawSaveRecordPushAnyButtonPrompt(void) {
     Movement2D *position;
     s32 x, y;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    position = (Movement2D *)&gTaskMemoryPool[D_8013AE88->resource14];
+    position = (Movement2D *)&gTaskMemoryPool[gCurrentTask->resource14];
     x = position->x / 4096;
     y = position->y / 4096;
     drawWrappedGlyphText8x16((s16)(x + 134), (s16)(y - 6), 20, gSaveRecordPushAnyButtonText, 0, -1,
-                             &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                             &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
     setSpriteColor(0, 0, 0);
     drawWrappedGlyphText8x16((s16)(x + 135), (s16)(y - 5), 20, gSaveRecordPushAnyButtonText, 0, -1,
-                             &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                             &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
     drawWrappedGlyphText8x16((s16)(x + 136), (s16)(y - 5), 20, gSaveRecordPushAnyButtonText, 0, -1,
-                             &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                             &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
 }

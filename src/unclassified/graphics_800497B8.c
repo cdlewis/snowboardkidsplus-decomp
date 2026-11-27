@@ -35,7 +35,7 @@ typedef struct SlidingVisualStep {
 
 extern u16 D_8013AF78 __attribute__((section(".data")));
 extern u8 D_8013AFD3 __attribute__((section(".data")));
-extern GameTask *D_8013AE88 __attribute__((section(".data")));
+extern GameTask *gCurrentTask __attribute__((section(".data")));
 
 ControllerEffectState gControllerEffectStates[2] = {0};
 
@@ -197,12 +197,12 @@ void updateSlidingVisualSequenceTask(void) {
     s32 amount;
     s32 counter;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (SlidingVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (SlidingVisualResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (!D_8013AFD3) {
-        switch (D_8013AE88->data1C) {
+        switch (gCurrentTask->data1C) {
         case 0:
         case 2:
             resource->offsetY += resource->velocity;
@@ -210,7 +210,7 @@ void updateSlidingVisualSequenceTask(void) {
             if (resource->offsetY >= -111) {
                 resource->offsetY = -112;
                 resource->timer = sSlidingVisualSteps[++resource->step].duration;
-                D_8013AE88->data1C++;
+                gCurrentTask->data1C++;
             }
             break;
         case 1:
@@ -218,7 +218,7 @@ void updateSlidingVisualSequenceTask(void) {
                 resource->timer = sSlidingVisualSteps[++resource->step].duration;
                 if (sSlidingVisualSteps[resource->step].event == 1) {
                     resource->velocity = -10;
-                    D_8013AE88->data1C++;
+                    gCurrentTask->data1C++;
                 }
             }
             break;
@@ -226,8 +226,8 @@ void updateSlidingVisualSequenceTask(void) {
             if (--resource->timer == 0) {
                 resource->timer = sSlidingVisualSteps[++resource->step].duration;
                 if (sSlidingVisualSteps[resource->step].event == 4) {
-                    playOwnedSoundEffect(D_8013AE88->data18, 1, 0xE01, 0x40);
-                    D_8013AE88->data1C++;
+                    playOwnedSoundEffect(gCurrentTask->data18, 1, 0xE01, 0x40);
+                    gCurrentTask->data1C++;
                 }
             }
             break;
@@ -236,7 +236,7 @@ void updateSlidingVisualSequenceTask(void) {
                 resource->timer = sSlidingVisualSteps[++resource->step].duration;
                 for (playerIndex = 0; playerIndex < D_8013AFD2; playerIndex++) {
                     player = &gRacePlayers[playerIndex];
-                    if (player->isActive && playerIndex != D_8013AE88->data18) {
+                    if (player->isActive && playerIndex != gCurrentTask->data18) {
                         counter = player->unk01C;
                         if (counter >= 166) {
                             amount = 166;
@@ -244,11 +244,11 @@ void updateSlidingVisualSequenceTask(void) {
                             amount = counter;
                         }
                         player->unk01C = counter - amount;
-                        addPlayerCappedCounters(D_8013AE88->data18, amount);
+                        addPlayerCappedCounters(gCurrentTask->data18, amount);
                     }
                 }
                 if (sSlidingVisualSteps[resource->step].event == 0) {
-                    stopMatchingSoundVoice(D_8013AE88->data18, 1, 0xE01);
+                    stopMatchingSoundVoice(gCurrentTask->data18, 1, 0xE01);
                 }
                 if (sSlidingVisualSteps[resource->step].event == 8) {
                     playSoundEffect(1, 0xF01, 0x20);
@@ -256,7 +256,7 @@ void updateSlidingVisualSequenceTask(void) {
                 if (sSlidingVisualSteps[resource->step].event == 2) {
                     playSoundEffect(1, 2, 0x20);
                     resource->velocity = 0;
-                    D_8013AE88->data1C++;
+                    gCurrentTask->data1C++;
                 }
             }
             break;
@@ -270,9 +270,9 @@ void updateSlidingVisualSequenceTask(void) {
             break;
         }
     }
-    resource->coordinate.coord.t[0] = gRacePlayers[D_8013AE88->data18].worldCoordinate.coord.t[0];
-    resource->coordinate.coord.t[1] = gRacePlayers[D_8013AE88->data18].worldCoordinate.coord.t[1] + resource->offsetY;
-    resource->coordinate.coord.t[2] = gRacePlayers[D_8013AE88->data18].worldCoordinate.coord.t[2];
+    resource->coordinate.coord.t[0] = gRacePlayers[gCurrentTask->data18].worldCoordinate.coord.t[0];
+    resource->coordinate.coord.t[1] = gRacePlayers[gCurrentTask->data18].worldCoordinate.coord.t[1] + resource->offsetY;
+    resource->coordinate.coord.t[2] = gRacePlayers[gCurrentTask->data18].worldCoordinate.coord.t[2];
     resource->framePosition = sSlidingVisualSteps[resource->step].frame << 8;
     setTaskVisualFrame((TaskVisualResource *)resource, sSlidingVisualFrames, 0x1C00);
     drawCameraFacingTaskVisual((TaskVisualResource *)resource, 1);

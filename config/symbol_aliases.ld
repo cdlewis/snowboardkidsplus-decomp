@@ -2,14 +2,14 @@
  * Separate C declarations preserve the original GP-relative/absolute loads.
  * These are linker aliases, not additional objects for Splat to extract.
  */
-currentPlayerAbsolute = D_8013B0D8;
+currentPlayerAbsolute = gCurrentRacePlayer;
 raceFinishFlagAbsolute = D_8013AFD6;
 selectionMenuFadeStartedGp = D_8013B41F;
 activeRacePlayerCountGp = D_8013AFD2;
 playerSnapshotTaskGp = D_8013B304;
 playerSnapshotTrailCountGp = gPlayerSnapshotTrailCount;
 gameOptionPlayerModeAbsolute = D_8013AFCD;
-taskTransitionFlagsAbsolute = D_8013AFE4;
+taskTransitionFlagsAbsolute = gTaskTransitionFlags;
 selectedFinishLapCountAbsolute = D_8013AFD0;
 geometryPlacementDataAbsolute = D_8013B1F4;
 selectionMenuRecordAbsolute = D_8013B560;

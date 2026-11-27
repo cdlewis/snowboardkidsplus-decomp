@@ -17,17 +17,17 @@
 #include "psx/libgs.h"
 
 extern s16 gFrameCounter __attribute__((section(".data")));
-extern s16 D_8013AFCE __attribute__((section(".data")));
+extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u32 *D_8013AF6C __attribute__((section(".data")));
 extern u16 D_8013AF7A __attribute__((section(".data")));
 extern u16 D_8013AF7C __attribute__((section(".data")));
 extern u16 D_8013AF78 __attribute__((section(".data")));
 extern u8 D_8013AFCD __attribute__((section(".data")));
 extern u8 D_8013AFD3 __attribute__((section(".data")));
-extern GameTask *D_8013AE88 __attribute__((section(".data")));
-extern GameTask *D_8013AE8C __attribute__((section(".data")));
+extern GameTask *gCurrentTask __attribute__((section(".data")));
+extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern GameTask *D_8013AE98 __attribute__((section(".data")));
-extern u32 D_8013AFE4 __attribute__((section(".data")));
+extern u32 gTaskTransitionFlags __attribute__((section(".data")));
 extern u8 D_8013AFD6 __attribute__((section(".data")));
 
 void drawSlidingRaceTimeDisplay(SlidingTimeResource *resource) {
@@ -45,10 +45,10 @@ void drawSlidingRaceTimeDisplay(SlidingTimeResource *resource) {
 
 void slideRaceTimeDisplayOut(void) {
     SlidingTimeResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (SlidingTimeResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (SlidingTimeResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->x -= resource->speed;
     resource->speed += 4;
     if (resource->speed == 56) {
@@ -61,10 +61,10 @@ void slideRaceTimeDisplayOut(void) {
 void waitSpriteMotionTask(void) {
     SlidingTimeResource *resource;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (SlidingTimeResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (SlidingTimeResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (--resource->timer == 0) {
         setCurrentTaskCallback(slideRaceTimeDisplayOut);
     }
@@ -73,10 +73,10 @@ void waitSpriteMotionTask(void) {
 
 void slideRaceTimeDisplayIn(void) {
     SlidingTimeResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (SlidingTimeResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (SlidingTimeResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->x -= resource->speed;
     resource->speed -= 4;
     if (resource->speed == 0) {
@@ -88,15 +88,15 @@ void slideRaceTimeDisplayIn(void) {
 
 void initializeRaceTimeDifferenceDisplay(void) {
     SlidingTimeResource *resource;
-    if (D_8013AE88->resource14 != 0xFFFF) {
+    if (gCurrentTask->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskMemoryBlock();
-    resource = (SlidingTimeResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    gCurrentTask->resource14 = allocateTaskMemoryBlock();
+    resource = (SlidingTimeResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->y = -44;
     resource->x = 420;
     resource->speed = 56;
-    resource->hasExtraTime = calculateRaceTimeDifference(&D_8013B188, &D_80124050[D_8013AFCE], &resource->time);
+    resource->hasExtraTime = calculateRaceTimeDifference(&D_8013B188, &D_80124050[gSelectedCourseIndex], &resource->time);
     setCurrentTaskCallback(slideRaceTimeDisplayIn);
 }
 
@@ -157,10 +157,10 @@ void updateFallingSpriteEffectsTask(void) {
     FallingSpriteEffect *effects;
     s16 i;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    effects = (FallingSpriteEffect *)&gTaskMemoryPool[D_8013AE88->resource14];
+    effects = (FallingSpriteEffect *)&gTaskMemoryPool[gCurrentTask->resource14];
     for (i = 0; i < 10; i++) {
         FallingSpriteEffect *effect = &effects[i];
         if (D_8013AE98->data18 == 0 && effect->active == 0) {
@@ -219,11 +219,11 @@ void updateFallingSpriteEffectsTask(void) {
 void initializeFallingSpriteEffectsTask(void) {
     FallingSpriteEffect *effects;
     s16 i;
-    if (D_8013AE88->resource14 != 0xFFFF) {
+    if (gCurrentTask->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskMemoryBlock();
-    effects = (FallingSpriteEffect *)&gTaskMemoryPool[D_8013AE88->resource14];
+    gCurrentTask->resource14 = allocateTaskMemoryBlock();
+    effects = (FallingSpriteEffect *)&gTaskMemoryPool[gCurrentTask->resource14];
     for (i = 0; i < 10; i++) {
         effects[i].active = 0;
     }
@@ -231,15 +231,15 @@ void initializeFallingSpriteEffectsTask(void) {
 }
 
 void finishFallingSpriteEffectsExitTask(void) {
-    D_8013AE88->data18 = 0;
-    if (!(D_8013AFE4 & 0x10)) {
+    gCurrentTask->data18 = 0;
+    if (!(gTaskTransitionFlags & 0x10)) {
         deleteCurrentTaskSubtree();
     }
 }
 
 void waitFallingSpriteEffectsExitTask(void) {
-    D_8013AE88->data18 = 0;
-    if (D_8013AFE4 & 0x10) {
+    gCurrentTask->data18 = 0;
+    if (gTaskTransitionFlags & 0x10) {
         setCurrentTaskCallback(finishFallingSpriteEffectsExitTask);
     }
 }
@@ -247,7 +247,7 @@ void waitFallingSpriteEffectsExitTask(void) {
 void createFallingSpriteEffectsTasks(void) {
     s16 i;
 
-    D_8013AE88->data18 = 0;
+    gCurrentTask->data18 = 0;
     for (i = 0; i < 10; i++) {
         createChildTaskWithReserve(initializeFallingSpriteEffectsTask);
     }
@@ -258,7 +258,7 @@ void drawSlidingDisplaySprite(SlidingDisplayResource *resource) {
     s32 x = (resource->position >> 1) - 56;
     if (gameOptionPlayerModeAbsolute == 1) {
         drawSpriteByIndexWithBlend(x, 8, 0x1DF, 6, -1, &D_800EC018[D_8013AF78], 1);
-    } else if (D_8013AE88->data18 == 0) {
+    } else if (gCurrentTask->data18 == 0) {
         if (shouldRenderPlayerView(0)) {
             drawSpriteByIndexWithBlend(x, 8, 0x1DF, 6, -1, &D_800EC018[D_8013AF78], 1);
         }
@@ -271,10 +271,10 @@ void drawSlidingDisplaySprite(SlidingDisplayResource *resource) {
 
 void slideOutSlidingDisplayTask(void) {
     SlidingDisplayResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (SlidingDisplayResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (SlidingDisplayResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->position += resource->velocity;
     resource->velocity += 4;
     if (resource->velocity == 56) {
@@ -287,10 +287,10 @@ void slideOutSlidingDisplayTask(void) {
 void waitSlidingDisplayTask(void) {
     SlidingDisplayResource *resource;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (SlidingDisplayResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (SlidingDisplayResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (--resource->timer == 0) {
         setCurrentTaskCallback(slideOutSlidingDisplayTask);
     }
@@ -299,10 +299,10 @@ void waitSlidingDisplayTask(void) {
 
 void slideInSlidingDisplayTask(void) {
     SlidingDisplayResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (SlidingDisplayResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (SlidingDisplayResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (resource->timer != 0) {
         resource->timer--;
     } else {
@@ -318,11 +318,11 @@ void slideInSlidingDisplayTask(void) {
 
 void initializeTaskMotionResource(void) {
     TaskMotionResource *resource;
-    if (D_8013AE88->resource14 != 0xFFFF) {
+    if (gCurrentTask->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskMemoryBlock();
-    resource = (TaskMotionResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    gCurrentTask->resource14 = allocateTaskMemoryBlock();
+    resource = (TaskMotionResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->velocity = 60;
     resource->position = -480;
     resource->delay = 10;
@@ -349,10 +349,10 @@ void drawPlayerSpriteAnimation(SpriteAnimationResource *resource) {
 
 void advancePlayerSpriteAnimationTask(void) {
     SpriteAnimationResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (SpriteAnimationResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (SpriteAnimationResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (++resource->frame >= 16) {
         deleteCurrentTaskSubtree();
     } else {
@@ -363,8 +363,8 @@ void advancePlayerSpriteAnimationTask(void) {
 void createPlayerSpriteAnimationTask(s32 x, s32 y, s32 player, s32 checkPlayer, u16 alternateLayer) {
     SpriteAnimationResource *resource;
     createChildTaskWithReserve(advancePlayerSpriteAnimationTask);
-    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-    resource = (SpriteAnimationResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
+    gCreatedTask->resource14 = allocateTaskMemoryBlock();
+    resource = (SpriteAnimationResource *)&gTaskMemoryPool[gCreatedTask->resource14];
     resource->x = x - 8;
     resource->y = y - 8;
     resource->player = player;
@@ -407,10 +407,10 @@ void drawPlayerNumberDisplay(PlayerNumberResource *resource) {
 
 void slideOutPlayerNumberDisplayTask(void) {
     PlayerNumberResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (PlayerNumberResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (PlayerNumberResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->x += resource->speed;
     resource->speed += 4;
     if (resource->speed >= 56) {
@@ -423,10 +423,10 @@ void slideOutPlayerNumberDisplayTask(void) {
 void waitPlayerNumberDisplayTask(void) {
     PlayerNumberResource *resource;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (PlayerNumberResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (PlayerNumberResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (--resource->timer == 0) {
         setCurrentTaskCallback(slideOutPlayerNumberDisplayTask);
     }
@@ -435,10 +435,10 @@ void waitPlayerNumberDisplayTask(void) {
 
 void slideInPlayerNumberDisplayTask(void) {
     PlayerNumberResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (PlayerNumberResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (PlayerNumberResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->x -= resource->speed;
     resource->speed -= 4;
     if (resource->speed <= 0) {
@@ -451,10 +451,10 @@ void slideInPlayerNumberDisplayTask(void) {
 
 void initializePlayerNumberDisplayTask(void) {
     PlayerNumberResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (PlayerNumberResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (PlayerNumberResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->y = -44;
     resource->speed = 56;
     if (D_8013AFE2 == 0 && D_8013AFCD == 2) {
@@ -470,8 +470,8 @@ void initializePlayerNumberDisplayTask(void) {
 void createPlayerNumberDisplayTask(s32 value, s32 showExtraValue, s32 player) {
     PlayerNumberResource *resource;
     createChildTaskWithReserve(initializePlayerNumberDisplayTask);
-    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-    resource = (PlayerNumberResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
+    gCreatedTask->resource14 = allocateTaskMemoryBlock();
+    resource = (PlayerNumberResource *)&gTaskMemoryPool[gCreatedTask->resource14];
     resource->value = value;
     resource->showExtraValue = showExtraValue;
     resource->player = player;
@@ -511,10 +511,10 @@ void drawSpriteMotionDisplay(SpriteMotionResource *resource) {
 
 void slideOutSpriteMotionTask(void) {
     SpriteMotionResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (SpriteMotionResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (SpriteMotionResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->unk04 += resource->unk14;
     resource->unk14 += 4;
     if (resource->unk14 >= 56) {
@@ -526,10 +526,10 @@ void slideOutSpriteMotionTask(void) {
 
 void waitSpriteExitMotionTask(void) {
     SpriteMotionResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (SpriteMotionResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (SpriteMotionResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (--resource->timer == 0) {
         setCurrentTaskCallback(slideOutSpriteMotionTask);
     }
@@ -538,10 +538,10 @@ void waitSpriteExitMotionTask(void) {
 
 void slideInSpriteMotionTask(void) {
     SpriteMotionResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (SpriteMotionResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (SpriteMotionResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->unk04 -= resource->unk14;
     resource->unk14 -= 4;
     if (resource->unk14 <= 0) {
@@ -554,10 +554,10 @@ void slideInSpriteMotionTask(void) {
 
 void initializeSpriteMotionTask(void) {
     SpriteMotionResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (SpriteMotionResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (SpriteMotionResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (D_8013AFCD == 1) {
         resource->unk08 = 8;
     } else {
@@ -571,8 +571,8 @@ void initializeSpriteMotionTask(void) {
 void createTrickAttackMultiplierDisplayTask(s16 playerIndex) {
     SpriteMotionResource *resource;
     createChildTaskWithReserve(initializeSpriteMotionTask);
-    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-    resource = (SpriteMotionResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
+    gCreatedTask->resource14 = allocateTaskMemoryBlock();
+    resource = (SpriteMotionResource *)&gTaskMemoryPool[gCreatedTask->resource14];
     resource->variant = playerIndex;
 }
 
@@ -604,10 +604,10 @@ void drawSlidingNumberDisplay(SlidingNumberResource *resource) {
 
 void slideOutSlidingNumberDisplayTask(void) {
     SlidingNumberResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (SlidingNumberResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (SlidingNumberResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->x += resource->speed;
     resource->speed += 4;
     if (resource->speed >= 56) {
@@ -620,10 +620,10 @@ void slideOutSlidingNumberDisplayTask(void) {
 void waitSlidingNumberDisplayTask(void) {
     SlidingNumberResource *resource;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (SlidingNumberResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (SlidingNumberResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (--resource->timer == 0) {
         setCurrentTaskCallback(slideOutSlidingNumberDisplayTask);
     }
@@ -632,10 +632,10 @@ void waitSlidingNumberDisplayTask(void) {
 
 void slideInSlidingNumberDisplayTask(void) {
     SlidingNumberResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (SlidingNumberResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (SlidingNumberResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->x -= resource->speed;
     resource->speed -= 4;
     if (resource->speed <= 0) {
@@ -648,10 +648,10 @@ void slideInSlidingNumberDisplayTask(void) {
 
 void initializeSlidingNumberDisplayTask(void) {
     SlidingNumberResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (SlidingNumberResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (SlidingNumberResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (D_8013AFCD == 1) {
         resource->y = -36;
     } else {
@@ -672,8 +672,8 @@ void createActivePlayerSlidingNumberTask(s32 value, s16 player) {
     SlidingNumberResource *resource;
     if (gRacePlayers[player].isActive != 0) {
         createChildTaskWithReserve(initializeSlidingNumberDisplayTask);
-        D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-        resource = (SlidingNumberResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
+        gCreatedTask->resource14 = allocateTaskMemoryBlock();
+        resource = (SlidingNumberResource *)&gTaskMemoryPool[gCreatedTask->resource14];
         resource->value = value;
         resource->player = player;
     }
@@ -682,14 +682,14 @@ void createActivePlayerSlidingNumberTask(s32 value, s16 player) {
 void drawFallingPairedVisualTask(void) {
     FallingVisualResource *resource;
     GsCOORDINATE2 *base;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (FallingVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if (D_8013AE88->resource16 == 0xFFFF) {
+    resource = (FallingVisualResource *)&gTaskMemoryPool[gCurrentTask->resource14];
+    if (gCurrentTask->resource16 == 0xFFFF) {
         while (1) {}
     }
-    base = (GsCOORDINATE2 *)&gTaskMemoryPool[D_8013AE88->resource16];
+    base = (GsCOORDINATE2 *)&gTaskMemoryPool[gCurrentTask->resource16];
     resource->coordinate.coord.t[0] = base->coord.t[0];
     resource->coordinate.coord.t[1] = base->coord.t[1] + (resource->height >> 8);
     resource->coordinate.coord.t[2] = base->coord.t[2];
@@ -704,10 +704,10 @@ void drawFallingPairedVisualTask(void) {
 
 void updateFallingPairedVisualTask(void) {
     FallingVisualResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (FallingVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (FallingVisualResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (!D_8013AFD3) {
         if (resource->delay > 0) {
             resource->delay--;
@@ -733,16 +733,16 @@ void updateFallingPairedVisualTask(void) {
 void initializeBouncingVisualTask(void) {
     BouncingVisualResource *resource;
     GsCOORDINATE2 *position;
-    if (D_8013AE88->resource14 != 0xFFFF) {
+    if (gCurrentTask->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskMemoryBlock();
-    resource = (BouncingVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if (D_8013AE88->resource16 != 0xFFFF) {
+    gCurrentTask->resource14 = allocateTaskMemoryBlock();
+    resource = (BouncingVisualResource *)&gTaskMemoryPool[gCurrentTask->resource14];
+    if (gCurrentTask->resource16 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource16 = allocateTaskMemoryBlock();
-    position = (GsCOORDINATE2 *)&gTaskMemoryPool[D_8013AE88->resource16];
+    gCurrentTask->resource16 = allocateTaskMemoryBlock();
+    position = (GsCOORDINATE2 *)&gTaskMemoryPool[gCurrentTask->resource16];
     GsInitCoordinate2(0, &resource->coordinate);
     resource->r0 = resource->g0 = resource->b0 = 128;
     resource->code = POLY_FT4_CODE;
@@ -792,7 +792,7 @@ void drawAutoPilotLabelTask(void) {
             drawUppercaseProportionalText(-40, -18, 20, gAutoPilotLabel,
                          (frame / 2) + 1, -1,
                          &D_800EBFF0[D_8013AF78], 3);
-        } else if (D_8013AE88->data18 == 0) {
+        } else if (gCurrentTask->data18 == 0) {
             frame = gFrameCounter & 2;
             drawUppercaseProportionalText(-72, -66, 20, gAutoPilotLabel,
                          (frame / 2) + 1, -1,
@@ -808,15 +808,15 @@ void drawAutoPilotLabelTask(void) {
 
 void checkControllerInputSequenceTask(void) {
     if (gControllerPressedButtons[0] != 0) {
-        if (gControllerPressedButtons[0] == gControllerInputSequences[D_8013AE88->data18][D_8013AE88->data1A]) {
-            D_8013AE88->data1A++;
-            if (gControllerInputSequences[D_8013AE88->data18][D_8013AE88->data1A] == 0xFFFF) {
-                gSaveRecordUnlockOverrideFlags |= 1 << D_8013AE88->data18;
+        if (gControllerPressedButtons[0] == gControllerInputSequences[gCurrentTask->data18][gCurrentTask->data1A]) {
+            gCurrentTask->data1A++;
+            if (gControllerInputSequences[gCurrentTask->data18][gCurrentTask->data1A] == 0xFFFF) {
+                gSaveRecordUnlockOverrideFlags |= 1 << gCurrentTask->data18;
                 playSoundEffect(0, 0, 0x20);
                 deleteCurrentTaskSubtree();
             }
         } else {
-            D_8013AE88->data1A = 0;
+            gCurrentTask->data1A = 0;
         }
     }
 }
@@ -827,8 +827,8 @@ void createControllerInputSequenceTasks(void) {
     i = 0;
     do {
         createChildTaskWithReserve(checkControllerInputSequenceTask);
-        D_8013AE8C->data18 = i;
-        D_8013AE8C->data1A = 0;
+        gCreatedTask->data18 = i;
+        gCreatedTask->data1A = 0;
         i++;
     } while (i < 3);
 }
@@ -893,11 +893,11 @@ void drawResultPrizeLabels(ResultDisplayResource *resource) {
 
 void waitResultDisplayTaskFlagsTask(void) {
     ResultDisplayResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (ResultDisplayResource *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if ((D_8013AFE4 & 0x50) != 0x10) {
+    resource = (ResultDisplayResource *)&gTaskMemoryPool[gCurrentTask->resource14];
+    if ((gTaskTransitionFlags & 0x50) != 0x10) {
         deleteCurrentTaskSubtree();
     }
     drawResultDisplayLabels(resource);
@@ -909,12 +909,12 @@ void waitResultDisplayTaskFlagsTask(void) {
 
 void waitResultFlagsInputTask(void) {
     ResultDisplayResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (ResultDisplayResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (ResultDisplayResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (gControllerPressedButtons[0] & 0xB0) {
-        D_8013AFE4 |= 0x10;
+        gTaskTransitionFlags |= 0x10;
         setCurrentTaskCallback(waitResultDisplayTaskFlagsTask);
     }
     drawResultDisplayLabels(resource);
@@ -927,10 +927,10 @@ void waitResultFlagsInputTask(void) {
 void transferResultPrizeMoneyTask(void) {
     ResultDisplayResource *resource;
     s32 counting = 0;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (ResultDisplayResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (ResultDisplayResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (resource->unk04 != 0) {
         counting = 1;
     }
@@ -992,10 +992,10 @@ void transferResultPrizeMoneyTask(void) {
 
 void waitResultDisplayInputTask(void) {
     ResultDisplayResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (ResultDisplayResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (ResultDisplayResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->timer--;
     if (gControllerPressedButtons[0] & 0xB0) {
         resource->timer = 0;
@@ -1013,10 +1013,10 @@ void waitResultDisplayInputTask(void) {
 
 void waitResultDisplayConfirmationTask(void) {
     ResultDisplayResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (ResultDisplayResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (ResultDisplayResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->timer--;
     if (gControllerPressedButtons[0] & 0xB0) {
         resource->timer = 0;
@@ -1034,10 +1034,10 @@ void waitResultDisplayConfirmationTask(void) {
 
 void waitResultNumberDisplayTask(void) {
     ResultDisplayResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (ResultDisplayResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (ResultDisplayResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->timer--;
     if (gControllerPressedButtons[0] & 0xB0) {
         resource->timer = 0;
@@ -1054,10 +1054,10 @@ void waitResultNumberDisplayTask(void) {
 
 void waitResultDisplayTask(void) {
     ResultDisplayResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (ResultDisplayResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (ResultDisplayResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->timer--;
     if (gControllerPressedButtons[0] & 0xB0) {
         resource->timer = 0;
@@ -1074,10 +1074,10 @@ void waitResultDisplayTask(void) {
 void fadeInResultDisplayTask(void) {
     ResultDisplayResource *resource;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (ResultDisplayResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (ResultDisplayResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->brightness += 8;
     if (resource->brightness > 128) {
         resource->timer = 20;
@@ -1090,16 +1090,16 @@ void fadeInResultDisplayTask(void) {
 
 void initializeResultDisplayTask(void) {
     ResultDisplayResource *resource;
-    if (D_8013AE88->resource14 != 0xFFFF) {
+    if (gCurrentTask->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskMemoryBlock();
-    resource = (ResultDisplayResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    gCurrentTask->resource14 = allocateTaskMemoryBlock();
+    resource = (ResultDisplayResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->brightness = 0;
     resource->unk06 = gRacePlayers[0].unk935;
     resource->unk04 = 0;
     if (resource->unk06 < 3) {
-        resource->unk04 = D_8012FC6C[D_8013AFCE][resource->unk06];
+        resource->unk04 = D_8012FC6C[gSelectedCourseIndex][resource->unk06];
     }
     gRacePlayers[0].money = gPlayerSaveRecords[0].money;
     resource->unk08 = gRacePlayers[0].characterId;
@@ -1211,11 +1211,11 @@ void updatePlayerResultOrder(TaskFadeResource *resource) {
 void drawCurrentTaskPlayerResults(void) {
     TaskFadeResource *resource;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (TaskFadeResource *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if (!(D_8013AFE4 & 0x10)) {
+    resource = (TaskFadeResource *)&gTaskMemoryPool[gCurrentTask->resource14];
+    if (!(gTaskTransitionFlags & 0x10)) {
         deleteCurrentTaskSubtree();
     }
     updatePlayerResultOrder(resource);
@@ -1226,13 +1226,13 @@ void drawCurrentTaskPlayerResults(void) {
 void waitPlayerResultsInputTask(void) {
     s32 player;
     TaskFadeResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (TaskFadeResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (TaskFadeResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     for (player = 0; player < gameOptionPlayerModeAbsolute; player++) {
         if (gControllerPressedButtons[player] & 0xB0) {
-            D_8013AFE4 |= 0x10;
+            gTaskTransitionFlags |= 0x10;
             setCurrentTaskCallback(drawCurrentTaskPlayerResults);
         }
     }
@@ -1243,10 +1243,10 @@ void waitPlayerResultsInputTask(void) {
 
 void fadeInPlayerResultsTask(void) {
     TaskFadeResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (TaskFadeResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (TaskFadeResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->brightness += 8;
     if (resource->brightness > 128) {
         resource->timer = 150;
@@ -1261,11 +1261,11 @@ void fadeInPlayerResultsTask(void) {
 void initializeTaskFade(void) {
     TaskFadeResource *resource;
 
-    if (D_8013AE88->resource14 != 0xFFFF) {
+    if (gCurrentTask->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskMemoryBlock();
-    resource = (TaskFadeResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    gCurrentTask->resource14 = allocateTaskMemoryBlock();
+    resource = (TaskFadeResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->brightness = 0;
     setCurrentTaskCallback(fadeInPlayerResultsTask);
 }

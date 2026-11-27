@@ -6,7 +6,7 @@
 #include "game/scene/scene_events.h"
 #include "game/scene/scene_task_types.h"
 
-extern GameTask *D_8013AE88 __attribute__((section(".data")));
+extern GameTask *gCurrentTask __attribute__((section(".data")));
 
 /* Preserve the zero word following the playback dispatch table. */
 static const u32 sScenePlaybackTablePadding
@@ -26,10 +26,10 @@ void initializeScenePlaybackTask(void) {
     ScenePlaybackState *state;
     s16 i;
 
-    if (D_8013AE88->resource16 == 0xFFFF) {
+    if (gCurrentTask->resource16 == 0xFFFF) {
         while (1) {}
     }
-    state = (ScenePlaybackState *)&gTaskMemoryPool[D_8013AE88->resource16];
+    state = (ScenePlaybackState *)&gTaskMemoryPool[gCurrentTask->resource16];
     state->currentEntry = findSceneEvent(0, 0);
     if (state->currentEntry == NULL) {
         state->currentEntry = findSceneEventInsertionPoint(0, 0);
@@ -60,10 +60,10 @@ void updateScenePlaybackTask(void) {
     s16 i;
     s16 ready;
 
-    if (D_8013AE88->resource16 == 0xFFFF) {
+    if (gCurrentTask->resource16 == 0xFFFF) {
         while (1) {}
     }
-    state = (ScenePlaybackState *)&gTaskMemoryPool[D_8013AE88->resource16];
+    state = (ScenePlaybackState *)&gTaskMemoryPool[gCurrentTask->resource16];
     if (state->flags & 1) {
         return;
     }

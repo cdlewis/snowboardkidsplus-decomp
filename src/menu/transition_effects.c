@@ -15,8 +15,8 @@ typedef struct ColorCycleResource {
 
 extern TaskValueState D_8012D4A4[3];
 extern GameTask *D_8013BDA8[4];
-extern GameTask *D_8013AE88 __attribute__((section(".data")));
-extern GameTask *D_8013AE8C __attribute__((section(".data")));
+extern GameTask *gCurrentTask __attribute__((section(".data")));
+extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern u16 D_8013AF78 __attribute__((section(".data")));
 extern u8 D_8013AFD3 __attribute__((section(".data")));
 
@@ -41,12 +41,12 @@ void configureTaskStateTransition(s32 mode, s32 id, u16 duration) {
     case 1: case 2: case 4: case 5: case 6: case 7:
     case 11: case 12: case 14: case 15:
         createChildTaskForParentWithReserve(&gGameTasks[4], updateTaskStateTransition);
-        if (mode >= 10) D_8013AE8C->data18 = mode - 10;
-        else D_8013AE8C->data18 = mode;
-        D_8013AE8C->data1A = index;
-        D_8013AE8C->data1C = id;
-        D_8013AE8C->data1E = 1;
-        state->task = D_8013AE8C;
+        if (mode >= 10) gCreatedTask->data18 = mode - 10;
+        else gCreatedTask->data18 = mode;
+        gCreatedTask->data1A = index;
+        gCreatedTask->data1C = id;
+        gCreatedTask->data1E = 1;
+        state->task = gCreatedTask;
         if (mode < 11) {
             if (duration == 0) {
                 if (mode == 1 || mode == 4 || mode == 6) state->unk06 = 0xFFFF;
@@ -63,13 +63,13 @@ void configureTaskStateTransition(s32 mode, s32 id, u16 duration) {
 }
 
 void updateTaskStateTransition(void) {
-    u16 index = D_8013AE88->data1A;
+    u16 index = gCurrentTask->data1A;
     TaskValueState *state = &D_8012D4A4[index];
     GsOT *ot;
     s16 draw;
     GameTask *task;
 
-    if (state->task != D_8013AE88) {
+    if (state->task != gCurrentTask) {
         goto end_task;
     }
     /* configureTaskStateTransition assigns one of the three viewport indices. */
@@ -90,43 +90,43 @@ void updateTaskStateTransition(void) {
 
     if (draw) {
         u16 mode;
-        GameTask *drawTask = D_8013AE88;
+        GameTask *drawTask = gCurrentTask;
         mode = drawTask->data18;
         if (mode == 1 || mode == 2 || mode == 6 || mode == 7) {
-            drawScreenDarkeningOverlay(state->unk06 >> 8, ot, D_8013AE88->data1C);
+            drawScreenDarkeningOverlay(state->unk06 >> 8, ot, gCurrentTask->data1C);
         } else if (mode == 4 || mode == 5) {
             drawScreenBrighteningOverlay(state->unk06 >> 8, ot, drawTask->data1C);
         }
     }
 
-    if (D_8013AE88->data1E &&
-        (!D_8013AFD3 || D_8013AE88->data18 == 6 || D_8013AE88->data18 == 7)) {
-        if ((D_8013AE88->data18 == 1 || D_8013AE88->data18 == 6) && state->unk06 == 0) {
+    if (gCurrentTask->data1E &&
+        (!D_8013AFD3 || gCurrentTask->data18 == 6 || gCurrentTask->data18 == 7)) {
+        if ((gCurrentTask->data18 == 1 || gCurrentTask->data18 == 6) && state->unk06 == 0) {
             goto end_task;
         }
-        task = D_8013AE88;
+        task = gCurrentTask;
         if ((task->data18 == 2 || task->data18 == 7) && state->unk06 == 0xFFFF) {
             goto stop_transition;
         }
-        if (D_8013AE88->data18 == 4 && state->unk06 == 0) {
+        if (gCurrentTask->data18 == 4 && state->unk06 == 0) {
 end_task:
             deleteCurrentTaskSubtree();
             return;
         }
-        task = D_8013AE88;
+        task = gCurrentTask;
         if (task->data18 == 5 && state->unk06 == 0xFFFF) {
 stop_transition:
             task->data1E = 0;
             return;
         }
-        if (D_8013AE88->data18 == 1 || D_8013AE88->data18 == 4 || D_8013AE88->data18 == 6) {
+        if (gCurrentTask->data18 == 1 || gCurrentTask->data18 == 4 || gCurrentTask->data18 == 6) {
             if (state->unk06 < state->unk04) {
                 state->unk06 = 0;
             } else {
                 state->unk06 -= state->unk04;
             }
         }
-        if (D_8013AE88->data18 == 2 || D_8013AE88->data18 == 5 || D_8013AE88->data18 == 7) {
+        if (gCurrentTask->data18 == 2 || gCurrentTask->data18 == 5 || gCurrentTask->data18 == 7) {
             if (0xFFFF - state->unk06 < state->unk04) {
                 state->unk06 = 0xFFFF;
             } else {
@@ -172,10 +172,10 @@ void configureColorCycleTask(s32 mode, s16 minimum, s16 maximum, s32 step, s16 i
         if (mode != 0 && (mode < 0 ? 0 : (mode < 5))) {
             if (missing == 1) {
                 createChildTaskForParentWithReserve(&gGameTasks[3], updateColorCycleTask);
-                task = D_8013BDA8[index] = D_8013AE8C;
+                task = D_8013BDA8[index] = gCreatedTask;
                 task->data1A = index;
-                D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-                resource = (ColorCycleResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
+                gCreatedTask->resource14 = allocateTaskMemoryBlock();
+                resource = (ColorCycleResource *)&gTaskMemoryPool[gCreatedTask->resource14];
                 if (mode == 1 || mode == 3) resource->value = minimum;
                 else resource->value = maximum;
             } else {
@@ -199,26 +199,26 @@ void configureColorCycleTask(s32 mode, s16 minimum, s16 maximum, s32 step, s16 i
 
 void updateColorCycleTask(void) {
     ColorCycleResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    resource = (ColorCycleResource *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if (D_8013AE88->data18 == 0) {
-        D_8013BDA8[D_8013AE88->data1A] = NULL;
+    if (gCurrentTask->resource14 == 0xFFFF) { while (1) {} }
+    resource = (ColorCycleResource *)&gTaskMemoryPool[gCurrentTask->resource14];
+    if (gCurrentTask->data18 == 0) {
+        D_8013BDA8[gCurrentTask->data1A] = NULL;
         deleteCurrentTaskSubtree();
     } else {
-        D_8013AE88->data1E = 0;
-        switch (D_8013AE88->data18) {
+        gCurrentTask->data1E = 0;
+        switch (gCurrentTask->data18) {
         case 1:
             if (resource->step >= resource->maximum - resource->value) {
                 resource->value = resource->maximum;
-                D_8013AE88->data1E = 1;
-                D_8013AE88->data18 = 2;
+                gCurrentTask->data1E = 1;
+                gCurrentTask->data18 = 2;
             } else { resource->value += resource->step; }
             break;
         case 2:
             if (resource->step >= resource->value - resource->minimum) {
                 resource->value = resource->minimum;
-                D_8013AE88->data1E = 1;
-                D_8013AE88->data18 = 1;
+                gCurrentTask->data1E = 1;
+                gCurrentTask->data18 = 1;
             } else { resource->value -= resource->step; }
             break;
         }

@@ -28,13 +28,13 @@ typedef struct CourseProgressScratch {
 extern u8 D_8013AFD8 __attribute__((section(".data")));
 extern u8 D_8013AFD9 __attribute__((section(".data")));
 extern s16 gFrameCounter __attribute__((section(".data")));
-extern s16 D_8013AFCE __attribute__((section(".data")));
+extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u16 D_8013AF78 __attribute__((section(".data")));
 extern u8 D_8013AFCD __attribute__((section(".data")));
-extern u32 D_8013AFE4 __attribute__((section(".data")));
+extern u32 gTaskTransitionFlags __attribute__((section(".data")));
 extern u8 D_8013AFD6 __attribute__((section(".data")));
 extern u8 D_8013AFD3 __attribute__((section(".data")));
-extern GameTask *D_8013AE88 __attribute__((section(".data")));
+extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern u16 D_8013AFAA __attribute__((section(".data")));
 
 extern u8 gRacePlacementPalettes[4] __attribute__((section(".data")));
@@ -75,9 +75,9 @@ void drawSplitScreenTrickAttackHud(s16 player);
 void drawScoreAttackHud(void);
 void drawSplitScreenScoreAttackHud(s16 player);
 
-#define CAMERA D_801241E8[D_8013AE88->data18]
-#define PLAYER gRacePlayers[D_8013AE88->data18]
-#define VIEW gPlayerCameraViews[D_8013AE88->data18]
+#define CAMERA D_801241E8[gCurrentTask->data18]
+#define PLAYER gRacePlayers[gCurrentTask->data18]
+#define VIEW gPlayerCameraViews[gCurrentTask->data18]
 
 void updateCurrentPlayerCameraTask(void) {
     PlayerCamera *shiftedCameras;
@@ -206,7 +206,7 @@ void updateCurrentPlayerCameraTask(void) {
             }
         }
 
-        updatePlayerCameraPosition(D_8013AE88->data18);
+        updatePlayerCameraPosition(gCurrentTask->data18);
         CAMERA.unk18 = PLAYER.unk92E;
         do {
             previousRegion = CAMERA.unk18;
@@ -216,42 +216,42 @@ void updateCurrentPlayerCameraTask(void) {
 
         cameras = D_801241E8;
         views = gPlayerCameraViews;
-        height = getCourseHeightAtPoint(cameras[D_8013AE88->data18].unk18,
-                              views[D_8013AE88->data18].vpx, views[D_8013AE88->data18].vpz);
-        if (cameras[D_8013AE88->data18].unk16 != 7) {
-            if (height - 120 < views[D_8013AE88->data18].vpy) {
-                views[D_8013AE88->data18].vpy = height - 120;
-                cameras[D_8013AE88->data18].y = height << 8;
-                updatePlayerCameraPitch(D_8013AE88->data18);
-                cameras[D_8013AE88->data18].unk1A |= 1;
+        height = getCourseHeightAtPoint(cameras[gCurrentTask->data18].unk18,
+                              views[gCurrentTask->data18].vpx, views[gCurrentTask->data18].vpz);
+        if (cameras[gCurrentTask->data18].unk16 != 7) {
+            if (height - 120 < views[gCurrentTask->data18].vpy) {
+                views[gCurrentTask->data18].vpy = height - 120;
+                cameras[gCurrentTask->data18].y = height << 8;
+                updatePlayerCameraPitch(gCurrentTask->data18);
+                cameras[gCurrentTask->data18].unk1A |= 1;
             } else {
-                cameras[D_8013AE88->data18].unk1A &= ~1;
+                cameras[gCurrentTask->data18].unk1A &= ~1;
             }
             VIEW.vpy += CAMERA.unk14 / 8;
         } else {
-            views[D_8013AE88->data18].vpy = D_80123D80[D_8013AFCE].unk0C / 256 - 120;
-            cameras[D_8013AE88->data18].y = (views[D_8013AE88->data18].vpy + 120) << 8;
-            updatePlayerCameraPitch(D_8013AE88->data18);
-            if (views[D_8013AE88->data18].vpy < height - 120) {
-                cameras[D_8013AE88->data18].unk16 = 1;
+            views[gCurrentTask->data18].vpy = D_80123D80[gSelectedCourseIndex].unk0C / 256 - 120;
+            cameras[gCurrentTask->data18].y = (views[gCurrentTask->data18].vpy + 120) << 8;
+            updatePlayerCameraPitch(gCurrentTask->data18);
+            if (views[gCurrentTask->data18].vpy < height - 120) {
+                cameras[gCurrentTask->data18].unk16 = 1;
             }
         }
         updateCurrentPlayerCameraTarget();
-        if (D_8013AFCD == 1 && D_8013AFCE == 7 && PLAYER.unk92E < 4) {
-            clampPlayerCameraDistance(D_8013AE88->data18);
+        if (D_8013AFCD == 1 && gSelectedCourseIndex == 7 && PLAYER.unk92E < 4) {
+            clampPlayerCameraDistance(gCurrentTask->data18);
         }
         break;
     }
     case 3: {
         SelectedCourseRecord *records = D_80123D80;
-        SelectedCourseRecord *record = &records[D_8013AFCE];
+        SelectedCourseRecord *record = &records[gSelectedCourseIndex];
         s32 dx = (s32)record->unk18[6] - CAMERA.x;
         s32 dz = (s32)record->unk18[7] - CAMERA.z;
         CAMERA.x += dx / 50;
         CAMERA.z += dz / 50;
         VIEW.vpx = CAMERA.x / 256;
         VIEW.vpz = CAMERA.z / 256;
-        updateIndex = D_8013AE88->data18;
+        updateIndex = gCurrentTask->data18;
         goto updateAngles;
     }
     case 5: {
@@ -284,33 +284,33 @@ void updateCurrentPlayerCameraTask(void) {
             }
         }
         shiftedCameras = D_801241E8;
-        if (shiftedCameras[D_8013AE88->data18].unk14 != 0) {
-            shiftedCameras[D_8013AE88->data18].unk14 -= 8;
+        if (shiftedCameras[gCurrentTask->data18].unk14 != 0) {
+            shiftedCameras[gCurrentTask->data18].unk14 -= 8;
         }
-        updateIndex = D_8013AE88->data18;
+        updateIndex = gCurrentTask->data18;
         goto updateShiftedTarget;
     }
     case 6:
         shiftedCameras = D_801241E8;
-        if (shiftedCameras[D_8013AE88->data18].unk12 < -24) {
-            shiftedCameras[D_8013AE88->data18].unk12 += 2;
+        if (shiftedCameras[gCurrentTask->data18].unk12 < -24) {
+            shiftedCameras[gCurrentTask->data18].unk12 += 2;
         }
-        if (shiftedCameras[D_8013AE88->data18].pitch > -80) {
-            shiftedCameras[D_8013AE88->data18].pitch -= 4;
+        if (shiftedCameras[gCurrentTask->data18].pitch > -80) {
+            shiftedCameras[gCurrentTask->data18].pitch -= 4;
         }
-        shiftedCameras[D_8013AE88->data18].yaw -= 8;
-        updateIndex = D_8013AE88->data18;
+        shiftedCameras[gCurrentTask->data18].yaw -= 8;
+        updateIndex = gCurrentTask->data18;
     updateShiftedTarget:
         updatePlayerCameraPosition(updateIndex);
         updateCurrentPlayerCameraTarget();
-        VIEW.vry -= (s16)(shiftedCameras[D_8013AE88->data18].unk12 / 6);
+        VIEW.vry -= (s16)(shiftedCameras[gCurrentTask->data18].unk12 / 6);
         break;
     case 8:
         cameraValue = CAMERA.x;
         VIEW.vpx = cameraValue / 256;
         VIEW.vpy = CAMERA.y / 256 - 120;
         VIEW.vpz = CAMERA.z / 256;
-        updatePlayerCameraAngles(D_8013AE88->data18);
+        updatePlayerCameraAngles(gCurrentTask->data18);
         goto updateTarget;
     updateAngles:
         updatePlayerCameraAngles(updateIndex);
@@ -318,20 +318,20 @@ void updateCurrentPlayerCameraTask(void) {
         updateCurrentPlayerCameraTarget();
         break;
     case 9:
-        updatePlayerCameraPosition(D_8013AE88->data18);
+        updatePlayerCameraPosition(gCurrentTask->data18);
         VIEW.vrx = PLAYER.worldCoordinate.coord.t[0];
         VIEW.vry = PLAYER.worldCoordinate.coord.t[1] - 60;
         VIEW.vrz = PLAYER.worldCoordinate.coord.t[2];
         break;
     }
 
-    if (D_8013AE88->data18 == 0) {
+    if (gCurrentTask->data18 == 0) {
         if (D_8013AFAA & 0x2000) {
             goto stopCamera;
         }
     } else if (!(D_8013AFAA & 0x2400)) {
     stopCamera:
-        stopPlayerSound(D_8013AE88->data18);
+        stopPlayerSound(gCurrentTask->data18);
         deleteCurrentTaskSubtree();
         return;
     }
@@ -508,7 +508,7 @@ void drawRaceCourseProgressMeter(s16 x, s16 y, GsOT *ot, s32 depth) {
 
             packet->x0 = x - 4;
             getPlayerCourseProgress(i, &scratch->progress, &scratch->distance);
-            progress = (scratch->progress << 7) / ((s16)D_80123D80[D_8013AFCE].unk00 << 3);
+            progress = (scratch->progress << 7) / ((s16)D_80123D80[gSelectedCourseIndex].unk00 << 3);
             if (progress < 0) {
                 progress = 0;
             }
@@ -563,23 +563,23 @@ void initializeRaceRulesAndCounters(void) {
                 D_8013B620 = 3;
             }
             gRacePlayers[0].collectedCourseCoinMarkerCount = 0;
-            gRacePlayers[0].totalCourseCoinMarkerCount = D_8012429C[D_8013AFCE];
+            gRacePlayers[0].totalCourseCoinMarkerCount = D_8012429C[gSelectedCourseIndex];
             gRacePlayers[1].collectedCourseCoinMarkerCount = 0;
-            gRacePlayers[1].totalCourseCoinMarkerCount = D_8012429C[D_8013AFCE];
+            gRacePlayers[1].totalCourseCoinMarkerCount = D_8012429C[gSelectedCourseIndex];
         } else if (D_8013AFE0 == 1) {
             if (D_8013AFCD == 1) {
                 D_8013B620 = 4;
-                D_8013B184 = D_80124248[D_8013AFCE];
+                D_8013B184 = D_80124248[gSelectedCourseIndex];
             } else {
                 D_8013B620 = 5;
-                D_8013B184 = D_80124248[D_8013AFCE];
-                D_8013B198[0] = D_80124248[D_8013AFCE];
-                D_8013B198[1] = D_80124248[D_8013AFCE];
+                D_8013B184 = D_80124248[gSelectedCourseIndex];
+                D_8013B198[0] = D_80124248[gSelectedCourseIndex];
+                D_8013B198[1] = D_80124248[gSelectedCourseIndex];
             }
             gRacePlayers[0].scoreAttackPointTotal = 0;
-            gRacePlayers[0].scoreAttackPointTarget = D_801242A8[D_8013AFCE];
+            gRacePlayers[0].scoreAttackPointTarget = D_801242A8[gSelectedCourseIndex];
             gRacePlayers[1].scoreAttackPointTotal = 0;
-            gRacePlayers[1].scoreAttackPointTarget = D_801242A8[D_8013AFCE];
+            gRacePlayers[1].scoreAttackPointTarget = D_801242A8[gSelectedCourseIndex];
         } else if (D_8013AFE0 == 2) {
             if (D_8013AFCD == 1) {
                 D_8013B620 = 6;
@@ -660,26 +660,26 @@ void updateRaceHud(void) {
             drawSplitScreenRaceHud(1);
             break;
         case 2:
-            if (!(D_8013AFE4 & 3) && !(gRacePlayers[0].unk128 & 0x40)) {
+            if (!(gTaskTransitionFlags & 3) && !(gRacePlayers[0].unk128 & 0x40)) {
                 advanceRaceElapsedTime();
             }
-            if (calculateRaceTimeDifference(&D_80124220[D_8013AFCE], &gRaceElapsedTime, &difference)) {
+            if (calculateRaceTimeDifference(&D_80124220[gSelectedCourseIndex], &gRaceElapsedTime, &difference)) {
                 D_8013B18D_gp = 1;
             }
             drawCourseCoinHud();
             break;
         case 3:
-            if (!(D_8013AFE4 & 3)) {
+            if (!(gTaskTransitionFlags & 3)) {
                 advanceRaceElapsedTime();
                 if (!(gRacePlayers[0].unk128 & 0x40)) {
                     D_8013B190[0] = gRaceElapsedTime;
-                    if (calculateRaceTimeDifference(&D_80124220[D_8013AFCE], &D_8013B190[0], &difference)) {
+                    if (calculateRaceTimeDifference(&D_80124220[gSelectedCourseIndex], &D_8013B190[0], &difference)) {
                         D_8013B1A0[0] = 1;
                     }
                 }
                 if (!(gRacePlayers[1].unk128 & 0x40)) {
                     D_8013B190[1] = gRaceElapsedTime;
-                    if (calculateRaceTimeDifference(&D_80124220[D_8013AFCE], &D_8013B190[1], &difference)) {
+                    if (calculateRaceTimeDifference(&D_80124220[gSelectedCourseIndex], &D_8013B190[1], &difference)) {
                         D_8013B1A0[1] = 1;
                     }
                 }
@@ -688,7 +688,7 @@ void updateRaceHud(void) {
             drawSplitScreenCourseCoinHud(1);
             break;
         case 4:
-            if (!(D_8013AFE4 & 3) && !(gRacePlayers[0].unk128 & 0x40)) {
+            if (!(gTaskTransitionFlags & 3) && !(gRacePlayers[0].unk128 & 0x40)) {
                 decrementRaceCountdown();
             }
             if (!D_8013B184.minutes) {
@@ -701,7 +701,7 @@ void updateRaceHud(void) {
             drawScoreAttackHud();
             break;
         case 5:
-            if (!(D_8013AFE4 & 3)) {
+            if (!(gTaskTransitionFlags & 3)) {
                 decrementRaceCountdown();
                 advanceRaceElapsedTime();
                 if (!(gRacePlayers[0].unk128 & 0x40)) {
@@ -731,7 +731,7 @@ void updateRaceHud(void) {
             drawSplitScreenScoreAttackHud(1);
             break;
         case 6:
-            if (!(D_8013AFE4 & 3) && !(gRacePlayers[0].unk128 & 0x40)) {
+            if (!(gTaskTransitionFlags & 3) && !(gRacePlayers[0].unk128 & 0x40)) {
                 decrementRaceCountdown();
             }
             if (!D_8013B184.minutes) {
@@ -744,7 +744,7 @@ void updateRaceHud(void) {
             drawTrickAttackHud();
             break;
         case 7:
-            if (!(D_8013AFE4 & 3)) {
+            if (!(gTaskTransitionFlags & 3)) {
                 decrementRaceCountdown();
                 advanceRaceElapsedTime();
                 if (!(gRacePlayers[0].unk128 & 0x40)) {
@@ -774,13 +774,13 @@ void updateRaceHud(void) {
             drawSplitScreenTrickAttackHud(1);
             break;
         case 8:
-            if (!(D_8013AFE4 & 3)) {
+            if (!(gTaskTransitionFlags & 3)) {
                 if (!(gRacePlayers[0].unk128 & 0x40)) {
                     advanceRaceElapsedTime();
                 }
                 if (!D_8013B18C) {
                     getPlayerCourseProgress(0, &progress, &distance);
-                    if (D_80123D80[D_8013AFCE].unk3C * 8 < progress) {
+                    if (D_80123D80[gSelectedCourseIndex].unk3C * 8 < progress) {
                         D_8013B188 = gRaceElapsedTime;
                         D_8013B18C = 1;
                         createChildTaskWithReserve(initializeRaceTimeDifferenceDisplay);
@@ -875,7 +875,7 @@ void drawSplitScreenRaceHud(s16 player) {
     drawSpriteByIndexWithBlend(102, hudY - 103, 416, 11, -1, hudOt, 1);
 
     depth = 1;
-    if (D_8013AFE4 & 1) {
+    if (gTaskTransitionFlags & 1) {
         placement = 0;
     } else {
         placement = gRacePlayers[player].unk935;
@@ -1119,8 +1119,8 @@ void drawCourseCoinHud(void) {
     drawSpriteByIndexWithBlend(112, 80, 24, 1, -1, ot, 1);
     drawLimitedText8x8(72, 71, 10, gLapTimeLabel, 5, -1, ot, 1);
 
-    sprintf(text, gLapTimeFormat, D_80124220[D_8013AFCE].minutes,
-            D_80124220[D_8013AFCE].seconds, D_80124220[D_8013AFCE].centiseconds >> 8);
+    sprintf(text, gLapTimeFormat, D_80124220[gSelectedCourseIndex].minutes,
+            D_80124220[gSelectedCourseIndex].seconds, D_80124220[gSelectedCourseIndex].centiseconds >> 8);
     drawLimitedText8x8(72, -87, 20, text, 7, -1, ot, 1);
     drawLimitedText8x8(50, -96, 11, gTargetTimeLabel, 7, -1, ot, 1);
 
@@ -1166,8 +1166,8 @@ void drawSplitScreenCourseCoinHud(s16 player) {
         drawSpriteByIndexWithBlend(-96, timeY + 36, 25, 1, -1, timeOt, 1);
         drawSpriteByIndexWithBlend(-72, timeY + 36, 24, 1, -1, timeOt, 1);
         drawLimitedText8x8(-112, timeY + 28, 10, gLapTimeLabel, 5, -1, timeOt, 1);
-        sprintf(text, gLapTimeFormat, D_80124220[D_8013AFCE].minutes,
-                D_80124220[D_8013AFCE].seconds, D_80124220[D_8013AFCE].centiseconds >> 8);
+        sprintf(text, gLapTimeFormat, D_80124220[gSelectedCourseIndex].minutes,
+                D_80124220[gSelectedCourseIndex].seconds, D_80124220[gSelectedCourseIndex].centiseconds >> 8);
         drawLimitedText8x8(-112, timeY - 28, 20, text, 7, -1, timeOt, 1);
         drawLimitedText8x8(-112, timeY - 36, 11, gTargetTimeLabel, 7, -1, timeOt, 1);
     }

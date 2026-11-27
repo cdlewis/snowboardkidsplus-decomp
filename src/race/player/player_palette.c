@@ -19,8 +19,8 @@ typedef struct PaletteBurstScratch {
 } PaletteBurstScratch;
 
 extern u16 D_8013AF78 __attribute__((section(".data")));
-extern GameTask *D_8013AE88 __attribute__((section(".data")));
-extern GameTask *D_8013AE8C __attribute__((section(".data")));
+extern GameTask *gCurrentTask __attribute__((section(".data")));
+extern GameTask *gCreatedTask __attribute__((section(".data")));
 
 extern u32 GsOUT_PACKET_P __attribute__((section(".data")));
 
@@ -69,14 +69,14 @@ void drawPaletteBurstTask(void) {
     s32 u;
     s32 brightness;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         for (;;) {}
     }
 
     player = &gRacePlayers[3];
     scratch = (PaletteBurstScratch *)getScratchAddr(0);
     packet = (POLY_FT4 *)GsOUT_PACKET_P;
-    resource = (PaletteBurstResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (PaletteBurstResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     /* Start with a nine-word packet and a cleared DMA link. */
     scratch->quad.tag = 9u << 24;
     setcode(&scratch->quad, POLY_FT4_CODE | 2);
@@ -138,8 +138,8 @@ void spawnPaletteBurstTask(u8 paletteIndex) {
     u8 row;
     createChildTaskForParentWithReserve(&gGameTasks[4], drawPaletteBurstTask);
     row = paletteIndex;
-    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-    resource = (PaletteBurstResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
+    gCreatedTask->resource14 = allocateTaskMemoryBlock();
+    resource = (PaletteBurstResource *)&gTaskMemoryPool[gCreatedTask->resource14];
     resource->x = randomNextLinear() % 4 - 2;
     resource->y = randomNextLinear() % 4 - 17;
     resource->z = randomNextLinear() % 4 - 2;

@@ -24,14 +24,14 @@ typedef struct TextSequenceEntry {
 } TextSequenceEntry;
 
 extern u8 D_8013AFD8 __attribute__((section(".data")));
-extern s16 D_8013AFCE __attribute__((section(".data")));
+extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u16 D_8013AF78 __attribute__((section(".data")));
 extern u16 D_8013AF7A __attribute__((section(".data")));
 extern u16 D_8013AF7C __attribute__((section(".data")));
 extern s16 D_8013AF80 __attribute__((section(".data")));
 extern u8 D_8013AFCD __attribute__((section(".data")));
-extern GameTask *D_8013AE88 __attribute__((section(".data")));
-extern u32 D_8013AFE4 __attribute__((section(".data")));
+extern GameTask *gCurrentTask __attribute__((section(".data")));
+extern u32 gTaskTransitionFlags __attribute__((section(".data")));
 
 extern u16 D_8013AFAA __attribute__((section(".data")));
 
@@ -76,10 +76,10 @@ static void drawTextSequence(TextSequenceResource *resource);
 
 void initializeTextSequenceTask(void) {
     TextSequenceResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (TextSequenceResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (TextSequenceResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->state = 2;
     resource->entryIndex = 0;
     resource->progress = 0;
@@ -99,14 +99,14 @@ void updateTextSequenceTask(void) {
     ValuePanelEntry *panel;
     TextSequenceEntry *entry;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (TextSequenceResource *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if (D_8013AE88->resource16 == 0xFFFF) {
+    resource = (TextSequenceResource *)&gTaskMemoryPool[gCurrentTask->resource14];
+    if (gCurrentTask->resource16 == 0xFFFF) {
         while (1) {}
     }
-    panel = (ValuePanelEntry *)&gTaskMemoryPool[D_8013AE88->resource16];
+    panel = (ValuePanelEntry *)&gTaskMemoryPool[gCurrentTask->resource16];
 
     switch (resource->state) {
     case 2:
@@ -134,7 +134,7 @@ void updateTextSequenceTask(void) {
         if (entry->kind == 2) {
             resource->velocity = 0;
             if (resource->mode == 1 && resource->unk0A == 9) {
-                D_8013AE88->data18 = 1;
+                gCurrentTask->data18 = 1;
                 setCurrentTaskCallback(advanceModeAfterTextSequenceFadeTask);
             } else {
                 startCdVolumeFade(103, 20, 0, 1);
@@ -180,10 +180,10 @@ void animateTextSequenceExitTask(void) {
     TextSequenceResource *resource;
     u16 previous;
     s16 delta;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         for (;;) {}
     }
-    resource = (TextSequenceResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (TextSequenceResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->velocity += 0x1000;
     resource->y -= resource->velocity;
     resource->displacement += resource->velocity;
@@ -207,9 +207,9 @@ void animateTextSequenceExitTask(void) {
         taskTransitionFlagGp = 1;
         D_8013B1A8 = 1;
         D_8013AFCD = 1;
-        D_8013AFE4 = 0;
+        gTaskTransitionFlags = 0;
         D_8013AFAA |= 0x1000;
-        queueCdCommand(D_80124164[D_8013AFCE], 0);
+        queueCdCommand(D_80124164[gSelectedCourseIndex], 0);
         deleteCurrentTaskSubtree();
     } else {
         drawTextSequence(resource);
@@ -218,16 +218,16 @@ void animateTextSequenceExitTask(void) {
 
 void advanceModeAfterTextSequenceFadeTask(void) {
     TextSequenceResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         for (;;) {}
     }
-    resource = (TextSequenceResource *)&gTaskMemoryPool[D_8013AE88->resource14];
-    switch (D_8013AE88->data18) {
+    resource = (TextSequenceResource *)&gTaskMemoryPool[gCurrentTask->resource14];
+    switch (gCurrentTask->data18) {
     case 1:
         configureTaskStateTransition(2, 0, 30);
         startCdVolumeFade(103, 20, 0, 1);
         resource->intensity = 0;
-        D_8013AE88->data18 = 2;
+        gCurrentTask->data18 = 2;
         break;
     case 2:
         if (isTaskStateTransitionBelowMaximum(0) == 0) {

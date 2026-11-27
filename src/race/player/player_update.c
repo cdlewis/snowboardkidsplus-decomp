@@ -53,16 +53,16 @@ extern u8 D_8013AFD8 __attribute__((section(".data")));
 extern u8 D_8013AFD9 __attribute__((section(".data")));
 extern u8 D_8013AFE1 __attribute__((section(".data")));
 extern s16 gFrameCounter __attribute__((section(".data")));
-extern s16 D_8013AFCE __attribute__((section(".data")));
+extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u8 D_8013AFDB __attribute__((section(".data")));
 extern s16 D_8013AFDE __attribute__((section(".data")));
-extern VECTOR *D_8013AF88 __attribute__((section(".data")));
+extern VECTOR *gScratchVector0 __attribute__((section(".data")));
 extern SVECTOR *D_8013AF90 __attribute__((section(".data")));
-extern MATRIX *D_8013AF98 __attribute__((section(".data")));
+extern MATRIX *gScratchMatrix0 __attribute__((section(".data")));
 extern u8 D_8013AFCD __attribute__((section(".data")));
-extern GameTask *D_8013AE88 __attribute__((section(".data")));
-extern GameTask *D_8013AE8C __attribute__((section(".data")));
-extern u32 D_8013AFE4 __attribute__((section(".data")));
+extern GameTask *gCurrentTask __attribute__((section(".data")));
+extern GameTask *gCreatedTask __attribute__((section(".data")));
+extern u32 gTaskTransitionFlags __attribute__((section(".data")));
 extern u8 D_8013AFD7 __attribute__((section(".data")));
 extern u8 D_8013AFD6 __attribute__((section(".data")));
 
@@ -578,8 +578,8 @@ void (*currentPlayerStateCallbacks[74])(void) = {
 void clearCurrentPlayerSequenceState(void) {
     s32 i;
     for (i = 0; i < 6; i++) {
-        D_8013B0D8->unk0CA[i] = 0;
-        D_8013B0D8->unk0D6[i] = 0;
+        gCurrentRacePlayer->unk0CA[i] = 0;
+        gCurrentRacePlayer->unk0D6[i] = 0;
     }
 }
 
@@ -592,10 +592,10 @@ u16 readCurrentPlayerTrickInput(void) {
     u16 sequenceResult;
     u16 buttons;
 
-    if (D_8013B0D8->unk008 != 0) {
-        direction = (u8)randomNextMain() & (s8)D_8013B0D8->unk952[1];
+    if (gCurrentRacePlayer->unk008 != 0) {
+        direction = (u8)randomNextMain() & (s8)gCurrentRacePlayer->unk952[1];
     } else {
-        buttons = gControllerHeldButtons[D_8013AE88->data18];
+        buttons = gControllerHeldButtons[gCurrentTask->data18];
         if (buttons & 0x1000) {
             direction = 1;
         }
@@ -621,7 +621,7 @@ u16 readCurrentPlayerTrickInput(void) {
             direction = 8;
         }
 
-        switch (D_8013B0D8->characterId) {
+        switch (gCurrentRacePlayer->characterId) {
         case 0:
             sequenceResult = advanceCurrentPlayerInputSequence(gPlayerTrick9Input, 0);
             if (sequenceResult != 0) {
@@ -813,7 +813,7 @@ u16 readCurrentPlayerTrickInput(void) {
 }
 
 u8 readSelectedByteTable(s32 index) {
-    return D_8012090C[D_8013AFCE][index];
+    return D_8012090C[gSelectedCourseIndex][index];
 }
 
 void updateCurrentPlayerMotionEffects(void) {
@@ -823,8 +823,8 @@ void updateCurrentPlayerMotionEffects(void) {
     RacePlayer *player;
 
     difference = (s16)(getXZHeading(0, 0,
-        D_8013B0D8->x - D_8013B0D8->unk050,
-        D_8013B0D8->z - D_8013B0D8->unk058) - D_8013B0D8->unk110) & 0xFFF;
+        gCurrentRacePlayer->x - gCurrentRacePlayer->unk050,
+        gCurrentRacePlayer->z - gCurrentRacePlayer->unk058) - gCurrentRacePlayer->unk110) & 0xFFF;
     angle = difference;
     if (difference > 0x800) {
         angle = 0x1000 - difference;
@@ -832,7 +832,7 @@ void updateCurrentPlayerMotionEffects(void) {
     if (angle > 0x400) {
         angle = 0x800 - angle;
     }
-    player = D_8013B0D8;
+    player = gCurrentRacePlayer;
     player->unk972 = angle * 3 / 2;
     player->unk96C = player->unk0BC / 768;
     if (player->unk96C != 0) {
@@ -846,34 +846,34 @@ void updateCurrentPlayerMotionEffects(void) {
             player->unk96C = 28;
         }
     }
-    switch (readSelectedByteTable(D_8013B0D8->surfaceState.fields.unk136)) {
+    switch (readSelectedByteTable(gCurrentRacePlayer->surfaceState.fields.unk136)) {
     case 0:
-        D_8013B0D8->unk96E = 0;
+        gCurrentRacePlayer->unk96E = 0;
         break;
     case 1:
-        D_8013B0D8->unk96E = 0x801;
-        D_8013B0D8->unk972 = 0;
-        D_8013B0D8->unk96C = 32;
+        gCurrentRacePlayer->unk96E = 0x801;
+        gCurrentRacePlayer->unk972 = 0;
+        gCurrentRacePlayer->unk96C = 32;
         break;
     case 2:
-        D_8013B0D8->unk96E = 0x100;
+        gCurrentRacePlayer->unk96E = 0x100;
         break;
     case 3:
-        D_8013B0D8->unk96E = 0x200;
+        gCurrentRacePlayer->unk96E = 0x200;
         break;
     case 4:
-        D_8013B0D8->unk96E = 0x100;
-        if (D_8013B0D8->surfaceState.fields.unk136 == 13) {
-            D_8013B0D8->unk96E = 0x300;
-            if (D_8013B0D8->unk96C > 10 && (gFrameCounter & 3) == 0) {
-                queuePlayerControllerEffect(D_8013AE88->data18, 15);
+        gCurrentRacePlayer->unk96E = 0x100;
+        if (gCurrentRacePlayer->surfaceState.fields.unk136 == 13) {
+            gCurrentRacePlayer->unk96E = 0x300;
+            if (gCurrentRacePlayer->unk96C > 10 && (gFrameCounter & 3) == 0) {
+                queuePlayerControllerEffect(gCurrentTask->data18, 15);
             }
         }
-        D_8013B0D8->unk972 = 0;
+        gCurrentRacePlayer->unk972 = 0;
         break;
     }
-    if (D_8013B0D8->unk128 & 0x2000000) {
-        D_8013B0D8->unk96E = 0x100;
+    if (gCurrentRacePlayer->unk128 & 0x2000000) {
+        gCurrentRacePlayer->unk96E = 0x100;
     }
 }
 
@@ -882,37 +882,37 @@ void updateCurrentPlayerPartTransforms(void) {
     u16 i;
     u8 parent;
     for (i = 0; i < 12; i++) {
-        parent = D_8013B0D8->unk13E[i];
-        RotMatrix((SVECTOR *)&D_8013B0D8->unk5BC[i], &D_8013B0D8->model.modelCoordinates[i].coord);
+        parent = gCurrentRacePlayer->unk13E[i];
+        RotMatrix((SVECTOR *)&gCurrentRacePlayer->unk5BC[i], &gCurrentRacePlayer->model.modelCoordinates[i].coord);
         if (i == 0) {
             D_8013AF90->vx = 0;
             D_8013AF90->vy = 0;
             D_8013AF90->vz = 0;
-            ApplyMatrix(&D_8013B0D8->model.modelCoordinates[0].coord, D_8013AF90, D_8013AF88);
-            D_8013B0D8->model.modelCoordinates[0].coord.t[0] = D_8013AF88->vx + D_8013B0D8->unk62C[0].x;
-            D_8013B0D8->model.modelCoordinates[0].coord.t[1] = D_8013AF88->vy + D_8013B0D8->unk62C[0].y;
-            D_8013B0D8->model.modelCoordinates[0].coord.t[2] = D_8013AF88->vz + D_8013B0D8->unk62C[0].z;
+            ApplyMatrix(&gCurrentRacePlayer->model.modelCoordinates[0].coord, D_8013AF90, gScratchVector0);
+            gCurrentRacePlayer->model.modelCoordinates[0].coord.t[0] = gScratchVector0->vx + gCurrentRacePlayer->unk62C[0].x;
+            gCurrentRacePlayer->model.modelCoordinates[0].coord.t[1] = gScratchVector0->vy + gCurrentRacePlayer->unk62C[0].y;
+            gCurrentRacePlayer->model.modelCoordinates[0].coord.t[2] = gScratchVector0->vz + gCurrentRacePlayer->unk62C[0].z;
         } else {
-            ApplyMatrix(&D_8013B0D8->model.modelCoordinates[parent].coord, (SVECTOR *)&D_8013B0D8->unk62C[i], D_8013AF88);
-            if (D_8013B0D8->unk128 & 0x200000) {
-                D_8013AF88->vy = D_8013AF88->vy * D_8013B0D8->unk0F8 / 8;
+            ApplyMatrix(&gCurrentRacePlayer->model.modelCoordinates[parent].coord, (SVECTOR *)&gCurrentRacePlayer->unk62C[i], gScratchVector0);
+            if (gCurrentRacePlayer->unk128 & 0x200000) {
+                gScratchVector0->vy = gScratchVector0->vy * gCurrentRacePlayer->unk0F8 / 8;
             }
-            D_8013B0D8->model.modelCoordinates[i].coord.t[0] = D_8013AF88->vx + D_8013B0D8->model.modelCoordinates[parent].coord.t[0];
-            D_8013B0D8->model.modelCoordinates[i].coord.t[1] = D_8013AF88->vy + D_8013B0D8->model.modelCoordinates[parent].coord.t[1];
-            D_8013B0D8->model.modelCoordinates[i].coord.t[2] = D_8013AF88->vz + D_8013B0D8->model.modelCoordinates[parent].coord.t[2];
+            gCurrentRacePlayer->model.modelCoordinates[i].coord.t[0] = gScratchVector0->vx + gCurrentRacePlayer->model.modelCoordinates[parent].coord.t[0];
+            gCurrentRacePlayer->model.modelCoordinates[i].coord.t[1] = gScratchVector0->vy + gCurrentRacePlayer->model.modelCoordinates[parent].coord.t[1];
+            gCurrentRacePlayer->model.modelCoordinates[i].coord.t[2] = gScratchVector0->vz + gCurrentRacePlayer->model.modelCoordinates[parent].coord.t[2];
         }
-        setCoordinateRotation((SVECTOR *)&D_8013B0D8->unk5BC[i], &D_8013B0D8->model.modelCoordinates[i]);
+        setCoordinateRotation((SVECTOR *)&gCurrentRacePlayer->unk5BC[i], &gCurrentRacePlayer->model.modelCoordinates[i]);
     }
 }
 
 void resetCurrentPlayerForCallback205B8(void) {
-    RacePlayer *player = D_8013B0D8;
+    RacePlayer *player = gCurrentRacePlayer;
     player->unk954 = 0;
     player->unk126 = 0;
     player->unk128 &= ~0x200;
-    D_8013B0D8->unk096 = 0;
-    if (D_8013B0D8->unk965 != 0) {
-        D_8013B0D8->unk965 = 0;
+    gCurrentRacePlayer->unk096 = 0;
+    if (gCurrentRacePlayer->unk965 != 0) {
+        gCurrentRacePlayer->unk965 = 0;
         playCurrentPlayerSoundEffect(7);
         startCurrentPlayerAnimation(0x12, 2);
     }
@@ -920,121 +920,121 @@ void resetCurrentPlayerForCallback205B8(void) {
 }
 
 void initializeCurrentPlayerDefaultState(void) {
-    if (D_8013B0D8->animationIndex != D_800EB09C[D_8013B0D8->characterId][4]) {
+    if (gCurrentRacePlayer->animationIndex != D_800EB09C[gCurrentRacePlayer->characterId][4]) {
         startCurrentPlayerAnimation(4, 2);
     }
-    D_8013B0D8->unk078 = 0;
-    D_8013B0D8->unk08C = 0;
-    D_8013B0D8->unk128 |= 0x200;
+    gCurrentRacePlayer->unk078 = 0;
+    gCurrentRacePlayer->unk08C = 0;
+    gCurrentRacePlayer->unk128 |= 0x200;
     clearCurrentPlayerTaskState();
     setCurrentTaskCallback(updateCurrentPlayerAirborneTricks);
 }
 
 void initializeCurrentPlayerState22(void) {
-    D_8013B0D8->unk078 = 0;
-    D_8013B0D8->unk128 |= 0x200;
+    gCurrentRacePlayer->unk078 = 0;
+    gCurrentRacePlayer->unk128 |= 0x200;
     clearCurrentPlayerTaskState();
-    D_8013B0D8->unk0C8 = 0;
-    if (D_8013B0D8->animationIndex == D_800EB09C[D_8013B0D8->characterId][6] ||
-        D_8013B0D8->animationIndex == D_800EB09C[D_8013B0D8->characterId][5]) {
+    gCurrentRacePlayer->unk0C8 = 0;
+    if (gCurrentRacePlayer->animationIndex == D_800EB09C[gCurrentRacePlayer->characterId][6] ||
+        gCurrentRacePlayer->animationIndex == D_800EB09C[gCurrentRacePlayer->characterId][5]) {
         startCurrentPlayerAnimation(1, 5);
     } else {
-        D_8013B0D8->animationFlags |= 4;
+        gCurrentRacePlayer->animationFlags |= 4;
     }
     setCurrentTaskCallback(updateCurrentPlayerAirborneTricks);
 }
 
 void initializeCurrentPlayerState2(void) {
-    D_8013B0D8->unk08C = 0xB84;
-    D_8013B0D8->unk128 |= 0x10;
-    if (D_8013AE88->data1A) {
+    gCurrentRacePlayer->unk08C = 0xB84;
+    gCurrentRacePlayer->unk128 |= 0x10;
+    if (gCurrentTask->data1A) {
         startCurrentPlayerAnimation(3, 6);
     } else {
         startCurrentPlayerAnimation(3, 2);
     }
     clearCurrentPlayerSequenceState();
-    D_8013B0D8->unk0C8 = 0;
-    D_8013B0D8->unk13C = 0;
+    gCurrentRacePlayer->unk0C8 = 0;
+    gCurrentRacePlayer->unk13C = 0;
     setCurrentTaskCallback(updateCurrentPlayerChargeAndLaunch);
 }
 
 void initializeCurrentPlayerState3(void) {
-    D_8013B0D8->unk128 = (D_8013B0D8->unk128 & 0xFF0C1FFB) | 0x2000;
-    if (((D_8013B0D8->unk102 - (s16)D_8013B0D8->unk110) & 0xFFF) > 0x800) {
+    gCurrentRacePlayer->unk128 = (gCurrentRacePlayer->unk128 & 0xFF0C1FFB) | 0x2000;
+    if (((gCurrentRacePlayer->unk102 - (s16)gCurrentRacePlayer->unk110) & 0xFFF) > 0x800) {
         startCurrentPlayerAnimation(0x18, 2);
     } else {
         startCurrentPlayerAnimation(0x17, 2);
     }
 
-    D_8013B0D8->unk060 = D_8013B0D8->unk104.half[0];
-    D_8013B0D8->unk064 = D_8013B0D8->unk108.half[0];
-    D_8013B0D8->unk050 = D_8013B0D8->x - D_8013B0D8->unk060;
-    D_8013B0D8->unk058 = D_8013B0D8->z - D_8013B0D8->unk064;
-    queuePlayerControllerEffect(D_8013AE88->data18, 8);
+    gCurrentRacePlayer->unk060 = gCurrentRacePlayer->unk104.half[0];
+    gCurrentRacePlayer->unk064 = gCurrentRacePlayer->unk108.half[0];
+    gCurrentRacePlayer->unk050 = gCurrentRacePlayer->x - gCurrentRacePlayer->unk060;
+    gCurrentRacePlayer->unk058 = gCurrentRacePlayer->z - gCurrentRacePlayer->unk064;
+    queuePlayerControllerEffect(gCurrentTask->data18, 8);
     setCurrentTaskCallback(updateCurrentPlayerState3MotionAndSteering);
 }
 
 void initializeCurrentPlayerState4(void) {
     startCurrentPlayerAnimation(12, 2);
-    D_8013B0D8->unk0B8 = 0;
-    D_8013B0D8->unk128 = (D_8013B0D8->unk128 & 0xFF0C1FFB) | 0x12204;
+    gCurrentRacePlayer->unk0B8 = 0;
+    gCurrentRacePlayer->unk128 = (gCurrentRacePlayer->unk128 & 0xFF0C1FFB) | 0x12204;
     smoothAndScaleCurrentPlayerInput(0, 0);
-    D_8013B0D8->unk060 = D_8013B0D8->unk104.half[0];
-    D_8013B0D8->unk062 = -0x600;
-    D_8013B0D8->unk064 = D_8013B0D8->unk108.half[0];
-    D_8013B0D8->unk078 = 0;
-    D_8013B0D8->unk050 = D_8013B0D8->x - D_8013B0D8->unk060;
-    D_8013B0D8->unk058 = D_8013B0D8->z - D_8013B0D8->unk064;
-    queuePlayerControllerEffect(D_8013AE88->data18, 4);
+    gCurrentRacePlayer->unk060 = gCurrentRacePlayer->unk104.half[0];
+    gCurrentRacePlayer->unk062 = -0x600;
+    gCurrentRacePlayer->unk064 = gCurrentRacePlayer->unk108.half[0];
+    gCurrentRacePlayer->unk078 = 0;
+    gCurrentRacePlayer->unk050 = gCurrentRacePlayer->x - gCurrentRacePlayer->unk060;
+    gCurrentRacePlayer->unk058 = gCurrentRacePlayer->z - gCurrentRacePlayer->unk064;
+    queuePlayerControllerEffect(gCurrentTask->data18, 4);
     setCurrentTaskCallback(updateCurrentPlayerState4MotionAndLanding);
 }
 
 void initializeCurrentPlayerState5(void) {
-    D_8013B0D8->unk08C = 30;
-    if (D_8013B0D8->unk128 & 0x800000) {
-        D_8013B0D8->unk08C = 90;
+    gCurrentRacePlayer->unk08C = 30;
+    if (gCurrentRacePlayer->unk128 & 0x800000) {
+        gCurrentRacePlayer->unk08C = 90;
     }
     startCurrentPlayerAnimation(13, 2);
-    D_8013B0D8->unk078 = 0;
-    D_8013B0D8->unk128 &= 0xFF0C1FFB;
-    D_8013B0D8->unk128 &= ~0x200;
-    D_8013B0D8->unk128 |= 0x12000;
-    D_8013B0D8->unk08C -= D_8013B0D8->unk08C * D_8013B0D8->unk935 / 8;
-    playPlayerSoundEffect(D_8013AE88->data18, 1, 0xB00, 0x20);
-    queuePlayerControllerEffect(D_8013AE88->data18, 9);
+    gCurrentRacePlayer->unk078 = 0;
+    gCurrentRacePlayer->unk128 &= 0xFF0C1FFB;
+    gCurrentRacePlayer->unk128 &= ~0x200;
+    gCurrentRacePlayer->unk128 |= 0x12000;
+    gCurrentRacePlayer->unk08C -= gCurrentRacePlayer->unk08C * gCurrentRacePlayer->unk935 / 8;
+    playPlayerSoundEffect(gCurrentTask->data18, 1, 0xB00, 0x20);
+    queuePlayerControllerEffect(gCurrentTask->data18, 9);
     setCurrentTaskCallback(updateCurrentPlayerState5MotionAndTimer);
 }
 
 void initializeCurrentPlayerTimedEffectState(s32 value) {
-    RacePlayer *player = D_8013B0D8;
+    RacePlayer *player = gCurrentRacePlayer;
     player->unk08C = 60;
     player->unk128 = (player->unk128 & 0xFF0C1FFB) | 0x42000;
-    D_8013AE88->data1A = 0;
-    D_8013AE88->data1C = value;
+    gCurrentTask->data1A = 0;
+    gCurrentTask->data1C = value;
     player->unk078 = 0;
     player->unk10C = player->unk92E;
     switch (player->surfaceState.fields.unk136) {
     case 6:
-        createPlayerRingEffectTask(D_8013AE88->data18);
-        playPlayerSoundEffect(D_8013AE88->data18, 1, 0xF00, 0x30);
+        createPlayerRingEffectTask(gCurrentTask->data18);
+        playPlayerSoundEffect(gCurrentTask->data18, 1, 0xF00, 0x30);
         break;
     case 7:
     case 12:
-        startPositionEffectTask((const PositionEffectOrigin *)gRacePlayers[D_8013AE88->data18].worldCoordinate.coord.t);
-        playPlayerSoundEffect(D_8013AE88->data18, 1, 1, 0x30);
+        startPositionEffectTask((const PositionEffectOrigin *)gRacePlayers[gCurrentTask->data18].worldCoordinate.coord.t);
+        playPlayerSoundEffect(gCurrentTask->data18, 1, 1, 0x30);
         break;
     case 14:
-        createPlayerRingEffectTask(D_8013AE88->data18);
+        createPlayerRingEffectTask(gCurrentTask->data18);
         break;
     }
-    D_8013B0D8->unk08C -= D_8013B0D8->unk08C * D_8013B0D8->unk935 / 8;
+    gCurrentRacePlayer->unk08C -= gCurrentRacePlayer->unk08C * gCurrentRacePlayer->unk935 / 8;
     startCurrentPlayerAnimation(16, 2);
-    queuePlayerControllerEffect(D_8013AE88->data18, 1);
-    D_8013B0D8->unk064 = 0;
-    D_8013B0D8->unk062 = 0;
-    D_8013B0D8->unk060 = 0;
-    D_8013B0D8->unk0BC = 0;
-    D_8013B0D8->unk094 = 0;
+    queuePlayerControllerEffect(gCurrentTask->data18, 1);
+    gCurrentRacePlayer->unk064 = 0;
+    gCurrentRacePlayer->unk062 = 0;
+    gCurrentRacePlayer->unk060 = 0;
+    gCurrentRacePlayer->unk0BC = 0;
+    gCurrentRacePlayer->unk094 = 0;
     setCurrentTaskCallback(updateCurrentPlayerTimedEffect);
 }
 
@@ -1048,102 +1048,102 @@ void initializeCurrentPlayerState9(void) {
 
 void resetCurrentPlayerForCallback26DAC(void) {
     RacePlayer *player;
-    if (D_8013B0D8->unk128 & 0x10000) {
+    if (gCurrentRacePlayer->unk128 & 0x10000) {
         startCurrentPlayerAnimation(8, 2);
     } else {
         startCurrentPlayerAnimation(7, 2);
     }
-    player = D_8013B0D8;
+    player = gCurrentRacePlayer;
     player->unk078 = 0x400;
     player->unk0BC = 0;
     player->unk094 = 0;
     player->unk128 &= 0xFF0C1FFB;
     player->unk128 &= ~0x200;
     player->unk128 |= 0xA000;
-    D_8013AE88->data1A = 0;
+    gCurrentTask->data1A = 0;
     setCurrentTaskCallback(updateCurrentPlayerState8Steering);
 }
 
 void initializeCurrentPlayerState10(void) {
     RacePlayer *player;
-    D_801241E8[D_8013AE88->data18].unk16 = 4;
-    player = D_8013B0D8;
+    D_801241E8[gCurrentTask->data18].unk16 = 4;
+    player = gCurrentRacePlayer;
     player->unk128 &= ~0x200;
     player->unk128 &= 0xFF0C1FFB;
     player->unk128 |= 0x6000;
     if (player->animationIndex != D_800EB09C[player->characterId][15]) {
         startCurrentPlayerAnimation(15, 1);
     }
-    D_8013B0D8->unk08C = 30;
-    D_8013B0D8->unk078 = 0;
-    queuePlayerControllerEffect(D_8013AE88->data18, 2);
+    gCurrentRacePlayer->unk08C = 30;
+    gCurrentRacePlayer->unk078 = 0;
+    queuePlayerControllerEffect(gCurrentTask->data18, 2);
     setCurrentTaskCallback(updateCurrentPlayerState10Movement);
 }
 
 void initializeCurrentPlayerState14(void) {
-    RacePlayer *player = D_8013B0D8;
+    RacePlayer *player = gCurrentRacePlayer;
     player->unk128 = (player->unk128 & 0xFF0C1FFB) | 0x6000;
     player->unk08C = 15;
     player->unk078 = 0;
     startCurrentPlayerAnimation(15, 1);
-    queuePlayerControllerEffect(D_8013AE88->data18, 5);
+    queuePlayerControllerEffect(gCurrentTask->data18, 5);
     setCurrentTaskCallback(updateCurrentPlayerTimedMotion);
 }
 
 void initializeCurrentPlayerState11(void) {
     RacePlayer *player;
     startCurrentPlayerAnimation(11, 2);
-    player = D_8013B0D8;
+    player = gCurrentRacePlayer;
     player->unk0B8 = 0;
     player->unk128 &= 0xFF0C1FFB;
     player->unk128 |= 0x22201;
     player->unk062 -= 0x800;
     smoothAndScaleCurrentPlayerInput(0, 0);
-    D_8013B0D8->unk078 = 0;
-    queuePlayerControllerEffect(D_8013AE88->data18, 9);
+    gCurrentRacePlayer->unk078 = 0;
+    queuePlayerControllerEffect(gCurrentTask->data18, 9);
     setCurrentTaskCallback(updateCurrentPlayerState11Motion);
 }
 
 void initializeCurrentPlayerState12(void) {
     startCurrentPlayerAnimation(14, 2);
-    D_8013B0D8->unk08C = 30;
-    D_8013B0D8->unk078 = 0;
-    D_8013B0D8->unk090 = 0;
-    D_8013B0D8->unk128 &= 0xFF0C1FFB;
-    D_8013B0D8->unk128 &= ~0x200;
-    D_8013B0D8->unk128 |= 0x22000;
-    D_8013B0D8->unk08C -= D_8013B0D8->unk08C * D_8013B0D8->unk935 / 8;
-    D_8013AE88->data1A = 0;
-    playPlayerSoundEffect(D_8013AE88->data18, 1, 0xB00, 0x20);
-    queuePlayerControllerEffect(D_8013AE88->data18, 4);
+    gCurrentRacePlayer->unk08C = 30;
+    gCurrentRacePlayer->unk078 = 0;
+    gCurrentRacePlayer->unk090 = 0;
+    gCurrentRacePlayer->unk128 &= 0xFF0C1FFB;
+    gCurrentRacePlayer->unk128 &= ~0x200;
+    gCurrentRacePlayer->unk128 |= 0x22000;
+    gCurrentRacePlayer->unk08C -= gCurrentRacePlayer->unk08C * gCurrentRacePlayer->unk935 / 8;
+    gCurrentTask->data1A = 0;
+    playPlayerSoundEffect(gCurrentTask->data18, 1, 0xB00, 0x20);
+    queuePlayerControllerEffect(gCurrentTask->data18, 4);
     setCurrentTaskCallback(updateCurrentPlayerState12MotionAndTimer);
 }
 
 void initializeCurrentPlayerState40(void) {
-    RacePlayer *player = D_8013B0D8;
+    RacePlayer *player = gCurrentRacePlayer;
     player->unk128 = (player->unk128 & 0xFF0C1FFB) | 0x6000;
     player->unk08C = 30;
-    D_8013B0D8->unk08C += ((u32)randomNextMain() & 0xFF) >> 4;
-    D_8013B0D8->unk078 = 0;
+    gCurrentRacePlayer->unk08C += ((u32)randomNextMain() & 0xFF) >> 4;
+    gCurrentRacePlayer->unk078 = 0;
     startCurrentPlayerAnimation(15, 1);
-    queuePlayerControllerEffect(D_8013AE88->data18, 5);
+    queuePlayerControllerEffect(gCurrentTask->data18, 5);
     setCurrentTaskCallback(updateCurrentPlayerTimedMotion);
 }
 
 void initializeCurrentPlayerState24(void) {
     RacePlayer *player;
     u16 i;
-    D_8013B0D8->unk0F8 = 1;
-    D_8013B0D8->unk128 = (D_8013B0D8->unk128 & 0xFF0C1FFB) | 0x202000;
+    gCurrentRacePlayer->unk0F8 = 1;
+    gCurrentRacePlayer->unk128 = (gCurrentRacePlayer->unk128 & 0xFF0C1FFB) | 0x202000;
     startCurrentPlayerAnimation(1, 1);
     for (i = 0; i < 12; i++) {
-        D_8013B0D8->unk5BC[i].z = 0;
-        D_8013B0D8->unk5BC[i].x = 0;
+        gCurrentRacePlayer->unk5BC[i].z = 0;
+        gCurrentRacePlayer->unk5BC[i].x = 0;
     }
     updateCurrentPlayerPartTransforms();
-    D_8013AE88->data1A = 0;
-    D_8013AE88->data1C = 0;
-    player = D_8013B0D8;
+    gCurrentTask->data1A = 0;
+    gCurrentTask->data1C = 0;
+    player = gCurrentRacePlayer;
     player->unk08C = 90;
     player->unk078 = 0;
     player->unk064 = 0;
@@ -1152,16 +1152,16 @@ void initializeCurrentPlayerState24(void) {
     player->unk0BC = 0;
     player->unk094 = 0;
     player->unk08C = 90 - (player->unk08C * player->unk935) / 8;
-    queuePlayerControllerEffect(D_8013AE88->data18, 7);
-    D_8013AF88->vx = D_8013B0D8->worldCoordinate.coord.t[0];
-    D_8013AF88->vy = D_8013B0D8->worldCoordinate.coord.t[1] - 32;
-    D_8013AF88->vz = D_8013B0D8->worldCoordinate.coord.t[2];
-    createQuadAnimationTask(D_8013AE88->data18, D_8013AF88);
+    queuePlayerControllerEffect(gCurrentTask->data18, 7);
+    gScratchVector0->vx = gCurrentRacePlayer->worldCoordinate.coord.t[0];
+    gScratchVector0->vy = gCurrentRacePlayer->worldCoordinate.coord.t[1] - 32;
+    gScratchVector0->vz = gCurrentRacePlayer->worldCoordinate.coord.t[2];
+    createQuadAnimationTask(gCurrentTask->data18, gScratchVector0);
     setCurrentTaskCallback(updateCurrentPlayerState24MotionAndScale);
 }
 
 void initializeCurrentPlayerState25(void) {
-    RacePlayer *player = D_8013B0D8;
+    RacePlayer *player = gCurrentRacePlayer;
     s32 reduction;
     player->unk08C = 240;
     reduction = player->unk935 * player->unk08C;
@@ -1169,81 +1169,81 @@ void initializeCurrentPlayerState25(void) {
     player->unk08C = 240 - reduction / 8;
     startCurrentPlayerAnimation(1, 1);
     createChildTaskForParentWithReserve(&gGameTasks[4], initializeScaledTaskCoordinateResource);
-    D_8013AE8C->data18 = D_8013AE88->data18;
-    queuePlayerControllerEffect(D_8013AE88->data18, 6);
+    gCreatedTask->data18 = gCurrentTask->data18;
+    queuePlayerControllerEffect(gCurrentTask->data18, 6);
     setCurrentTaskCallback(updateCurrentPlayerState25MotionAndTimer);
 }
 
 void resetCurrentPlayerForCallback25508(void) {
     startCurrentPlayerAnimation(15, 1);
-    D_8013B0D8->unk0B8 = 0;
-    D_8013B0D8->unk128 = (D_8013B0D8->unk128 & 0xFF0C1FFB) | 0x6204;
+    gCurrentRacePlayer->unk0B8 = 0;
+    gCurrentRacePlayer->unk128 = (gCurrentRacePlayer->unk128 & 0xFF0C1FFB) | 0x6204;
     smoothAndScaleCurrentPlayerInput(0, 0);
-    D_8013B0D8->unk078 = 0;
-    D_8013B0D8->unk062 = -0x2000;
-    D_8013B0D8->unk064 = 0;
-    D_8013B0D8->unk060 = 0;
-    D_8013B0D8->unk0BC = 0;
-    D_8013B0D8->unk094 = 0;
-    queuePlayerControllerEffect(D_8013AE88->data18, 3);
+    gCurrentRacePlayer->unk078 = 0;
+    gCurrentRacePlayer->unk062 = -0x2000;
+    gCurrentRacePlayer->unk064 = 0;
+    gCurrentRacePlayer->unk060 = 0;
+    gCurrentRacePlayer->unk0BC = 0;
+    gCurrentRacePlayer->unk094 = 0;
+    queuePlayerControllerEffect(gCurrentTask->data18, 3);
     createChildTaskForParentWithReserve(&gGameTasks[4], initializePlayerParticleHistoryTask);
-    D_8013AE8C->data18 = D_8013AE88->data18;
+    gCreatedTask->data18 = gCurrentTask->data18;
     setCurrentTaskCallback(updateCurrentPlayerVerticalMotionUntilLanding);
 }
 
 void resetCurrentPlayerForCallback255C4(void) {
     RacePlayer *player;
     startCurrentPlayerAnimation(0xB, 2);
-    player = D_8013B0D8;
+    player = gCurrentRacePlayer;
     player->unk0B8 = 0;
     player->unk078 = 0;
     player->unk062 = -0x1800;
     player->unk128 &= 0xFF0C1FFB;
     player->unk128 |= 0x822204;
-    D_8013AE88->data1C = 0;
-    queuePlayerControllerEffect(D_8013AE88->data18, 6);
+    gCurrentTask->data1C = 0;
+    queuePlayerControllerEffect(gCurrentTask->data18, 6);
     setCurrentTaskCallback(updateCurrentPlayerAirborneDragUntilLanding);
 }
 
 void initializeCurrentPlayerState23(void) {
     s32 reduction;
-    D_8013B0D8->unk128 = (D_8013B0D8->unk128 & 0xFF0C1FFB) | 0x102000;
+    gCurrentRacePlayer->unk128 = (gCurrentRacePlayer->unk128 & 0xFF0C1FFB) | 0x102000;
     startCurrentPlayerAnimation(12, 2);
-    D_8013B0D8->unk08C = 90;
-    reduction = D_8013B0D8->unk935 * D_8013B0D8->unk08C;
-    D_8013B0D8->unk08C = 90 - reduction / 8;
-    D_8013B0D8->unk078 = 0;
-    D_8013B0D8->unk064 = 0;
-    D_8013B0D8->unk062 = 0;
-    D_8013B0D8->unk060 = 0;
-    D_8013B0D8->unk0BC = 0;
-    D_8013B0D8->unk094 = 0;
+    gCurrentRacePlayer->unk08C = 90;
+    reduction = gCurrentRacePlayer->unk935 * gCurrentRacePlayer->unk08C;
+    gCurrentRacePlayer->unk08C = 90 - reduction / 8;
+    gCurrentRacePlayer->unk078 = 0;
+    gCurrentRacePlayer->unk064 = 0;
+    gCurrentRacePlayer->unk062 = 0;
+    gCurrentRacePlayer->unk060 = 0;
+    gCurrentRacePlayer->unk0BC = 0;
+    gCurrentRacePlayer->unk094 = 0;
     createChildTaskForParentWithReserve(&gGameTasks[4], initializePlayerState23CoordinateEffectTask);
-    D_8013AE8C->data18 = D_8013AE88->data18;
-    queuePlayerControllerEffect(D_8013AE88->data18, 6);
-    playPlayerSoundEffect(D_8013AE88->data18, 1, 0xD00, 0x20);
+    gCreatedTask->data18 = gCurrentTask->data18;
+    queuePlayerControllerEffect(gCurrentTask->data18, 6);
+    playPlayerSoundEffect(gCurrentTask->data18, 1, 0xD00, 0x20);
     setCurrentTaskCallback(updateCurrentPlayerState23MotionAndTimer);
 }
 
 void initializeCurrentPlayerState7(void) {
-    RacePlayer *player = D_8013B0D8;
-    D_8013AE88->data1A = 0;
+    RacePlayer *player = gCurrentRacePlayer;
+    gCurrentTask->data1A = 0;
     player->unk08C = 20;
     player->unk090 = 10;
-    player->unk126 = D_80123D80[D_8013AFCE].unk16;
+    player->unk126 = D_80123D80[gSelectedCourseIndex].unk16;
     if (player->unk128 & 0x400) {
         player->unk126 += 0x800;
     }
-    D_8013B0D8->surfaceState.fields.unk134 = 0;
-    D_8013AFE4 |= 4;
+    gCurrentRacePlayer->surfaceState.fields.unk134 = 0;
+    gTaskTransitionFlags |= 4;
     startCurrentPlayerAnimation(1, 1);
-    playPlayerSoundEffect(D_8013AE88->data18, 1, 0x401, 0x20);
+    playPlayerSoundEffect(gCurrentTask->data18, 1, 0x401, 0x20);
     setCurrentTaskCallback(updateCurrentPlayerFromTaskPhase);
 }
 
 void resetCurrentPlayerForCallback240D0(void) {
-    RacePlayer *player = D_8013B0D8;
-    GameTask *task = D_8013AE88;
+    RacePlayer *player = gCurrentRacePlayer;
+    GameTask *task = gCurrentTask;
 
     player->unk08C = 0;
     player->unk090 = 0;
@@ -1252,15 +1252,15 @@ void resetCurrentPlayerForCallback240D0(void) {
     task->data1C = 0;
     player->unk954 = 0;
     player->unk126 = 0;
-    D_8013B0D8->unk0BE = D_8013B0D8->unk138;
+    gCurrentRacePlayer->unk0BE = gCurrentRacePlayer->unk138;
     startCurrentPlayerAnimation(0x22, 2);
     setCurrentTaskCallback(updateCurrentPlayerState29MotionAndAnimation);
 }
 
 void initializeCurrentPlayerState30(void) {
     u8 padding[0x10];
-    GameTask *task = D_8013AE88;
-    RacePlayer *player = D_8013B0D8;
+    GameTask *task = gCurrentTask;
+    RacePlayer *player = gCurrentRacePlayer;
 
     task->data1A = 0;
     if (0x800 < player->unk0BC) {
@@ -1268,15 +1268,15 @@ void initializeCurrentPlayerState30(void) {
         if (player->unk128 & 0x400) {
             player->unk0BE += 0x800;
         }
-        if (D_8013B0D8->unk128 & 0x400) {
-            D_8013AE88->data1C = 0;
+        if (gCurrentRacePlayer->unk128 & 0x400) {
+            gCurrentTask->data1C = 0;
         } else {
-            D_8013AE88->data1C = 1;
+            gCurrentTask->data1C = 1;
         }
         {
-            RacePlayer *volatile *currentPlayer = &D_8013B0D8;
+            RacePlayer *volatile *currentPlayer = &gCurrentRacePlayer;
 
-            D_8013B0D8->unk0BE += 0x400;
+            gCurrentRacePlayer->unk0BE += 0x400;
             /* The single-iteration loop preserves the register allocation for the heading update. */
             do {
                 (*currentPlayer)->unk08C = 0;
@@ -1291,41 +1291,41 @@ void initializeCurrentPlayerState30(void) {
 
 void initializeCurrentPlayerUnlockScene(void) {
     u16 angle;
-    D_8013B0D8 = &gRacePlayers[D_8013AE88->data18];
-    startCurrentPlayerAnimation(D_8013B0D8->unk008 == 0 ? 9 : 10, 1);
-    if (D_8013AE88->data18 == 0) {
-        D_8013B0D8->x = D_80129C60[26].coord.t[0] << 8;
-        D_8013B0D8->y = (D_80129C60[26].coord.t[1] - 74) << 8;
-        D_8013B0D8->z = D_80129C60[26].coord.t[2] << 8;
-        D_8013B0D8->unk0B8 = 0;
-        D_8013B0D8->unk0B4 = 0;
-        D_8013B0D8->unk0B6 = D_8012A5C0[26].vy;
-        D_8013AE88->data1A = 30;
+    gCurrentRacePlayer = &gRacePlayers[gCurrentTask->data18];
+    startCurrentPlayerAnimation(gCurrentRacePlayer->unk008 == 0 ? 9 : 10, 1);
+    if (gCurrentTask->data18 == 0) {
+        gCurrentRacePlayer->x = D_80129C60[26].coord.t[0] << 8;
+        gCurrentRacePlayer->y = (D_80129C60[26].coord.t[1] - 74) << 8;
+        gCurrentRacePlayer->z = D_80129C60[26].coord.t[2] << 8;
+        gCurrentRacePlayer->unk0B8 = 0;
+        gCurrentRacePlayer->unk0B4 = 0;
+        gCurrentRacePlayer->unk0B6 = D_8012A5C0[26].vy;
+        gCurrentTask->data1A = 30;
     } else {
-        D_8013B0D8->x = (D_80129C60[26].coord.t[0] -
-            rsin(D_8012A5C0[26].vy + gPlayerUnlockSceneYawOffsets[D_8013AE88->data18 - 1]) / 32) << 8;
-        D_8013B0D8->y = D_80129C60[26].coord.t[1] << 8;
-        D_8013B0D8->z = (D_80129C60[26].coord.t[2] -
-            rcos(D_8012A5C0[26].vy + gPlayerUnlockSceneYawOffsets[D_8013AE88->data18 - 1]) / 32) << 8;
-        D_8013B0D8->unk0B8 = 0;
-        D_8013B0D8->unk0B4 = 0;
-        angle = gPlayerUnlockSceneYawOffsets[D_8013AE88->data18 - 1] + 0x800;
-        D_8013B0D8->unk0B6 = D_8012A5C0[26].vy + angle;
+        gCurrentRacePlayer->x = (D_80129C60[26].coord.t[0] -
+            rsin(D_8012A5C0[26].vy + gPlayerUnlockSceneYawOffsets[gCurrentTask->data18 - 1]) / 32) << 8;
+        gCurrentRacePlayer->y = D_80129C60[26].coord.t[1] << 8;
+        gCurrentRacePlayer->z = (D_80129C60[26].coord.t[2] -
+            rcos(D_8012A5C0[26].vy + gPlayerUnlockSceneYawOffsets[gCurrentTask->data18 - 1]) / 32) << 8;
+        gCurrentRacePlayer->unk0B8 = 0;
+        gCurrentRacePlayer->unk0B4 = 0;
+        angle = gPlayerUnlockSceneYawOffsets[gCurrentTask->data18 - 1] + 0x800;
+        gCurrentRacePlayer->unk0B6 = D_8012A5C0[26].vy + angle;
     }
-    D_8013B0D8->unk92E = D_80123D80[D_8013AFCE].unk00;
-    D_8013B0D8->surfaceState.fields.unk136 = 0;
-    D_8013B0D8->unk128 = 0;
-    D_8013B0D8->unk12C = 73;
+    gCurrentRacePlayer->unk92E = D_80123D80[gSelectedCourseIndex].unk00;
+    gCurrentRacePlayer->surfaceState.fields.unk136 = 0;
+    gCurrentRacePlayer->unk128 = 0;
+    gCurrentRacePlayer->unk12C = 73;
     setCurrentTaskCallback(updateCurrentPlayerTaskCountdown);
     updateCurrentPlayerTaskCountdown();
 }
 
 s32 callCurrentPlayerStateCallbackIfDifferent(u16 state) {
     s32 result;
-    if (D_8013B0D8->unk12C == state) {
+    if (gCurrentRacePlayer->unk12C == state) {
         result = 0;
     } else {
-        currentPlayerStateCallbacks[D_8013B0D8->unk12C]();
+        currentPlayerStateCallbacks[gCurrentRacePlayer->unk12C]();
         result = 1;
     }
     return result;
@@ -1335,21 +1335,21 @@ void initializeCurrentPlayerModelAndHeight(void) {
     RacePlayer *player;
     if (D_8013AFE2 == 0) {
         createChildTaskForParentWithReserve(&gGameTasks[4], initializeTaskCoordinateResource);
-        D_8013AE8C->data18 = D_8013AE88->data18;
+        gCreatedTask->data18 = gCurrentTask->data18;
     }
-    player = &gRacePlayers[D_8013AE88->data18];
+    player = &gRacePlayers[gCurrentTask->data18];
     player->unk0B6 = -0x400;
     player->unk0B4 = 0;
     player->unk0B8 = 0;
     player->unk962 = -1;
-    D_8013B0D8 = player;
-    initializeCurrentPlayerModelObjects((DAT_PLAYER_MODEL_BUFFERS)[D_8013AE88->data18]);
+    gCurrentRacePlayer = player;
+    initializeCurrentPlayerModelObjects((DAT_PLAYER_MODEL_BUFFERS)[gCurrentTask->data18]);
     if (!D_8013AFD8 && !D_8013AFD9) {
-        D_8013B0D8->unk92E = 0;
+        gCurrentRacePlayer->unk92E = 0;
     } else {
-        D_8013B0D8->unk0B6 = D_8013B0D8->unk110 - 0x400;
+        gCurrentRacePlayer->unk0B6 = gCurrentRacePlayer->unk110 - 0x400;
     }
-    D_8013B0D8->y = D_8013B0D8->unk054 = getCourseHeightAtPoint(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8) << 8;
+    gCurrentRacePlayer->y = gCurrentRacePlayer->unk054 = getCourseHeightAtPoint(gCurrentRacePlayer->unk92E, gCurrentRacePlayer->x >> 8, gCurrentRacePlayer->z >> 8) << 8;
     updateCurrentPlayerGroundContact();
     startCurrentPlayerAnimation(1, 1);
     setCurrentTaskCallback(updateCurrentPlayerAndResetState);
@@ -1358,16 +1358,16 @@ void initializeCurrentPlayerModelAndHeight(void) {
 void updateCurrentPlayerAndResetState(void) {
     prepareCurrentPlayerFrame();
     updateCurrentPlayerAnimation();
-    if (D_8013AFE4 == 0) {
-        if (D_8013B0D8->unk008 == 0) {
+    if (gTaskTransitionFlags == 0) {
+        if (gCurrentRacePlayer->unk008 == 0) {
             if (D_8013AFD7 || D_8013AFD9) {
-                initializeControllerInputPlayback(D_8013AE88->data18);
+                initializeControllerInputPlayback(gCurrentTask->data18);
             } else if (D_8013AFE2 == 2 && D_8013AFD6 == 0) {
                 initializeControllerInputRecording(0);
                 resetSelectedRecordStates();
             }
         }
-        D_8013B0D8->unk12C = 0;
+        gCurrentRacePlayer->unk12C = 0;
         resetCurrentPlayerForCallback205B8();
     }
 }
@@ -1404,7 +1404,7 @@ void updateCurrentPlayerRiding(void) {
     s32 targetX, targetZ;
 
     prepareCurrentPlayerFrame();
-    framePlayer = D_8013B0D8;
+    framePlayer = gCurrentRacePlayer;
     framePlayer->unk09E = framePlayer->unk09A;
     speed = framePlayer->unk094;
     if (speed >= 0) {
@@ -1417,14 +1417,14 @@ void updateCurrentPlayerRiding(void) {
         }
     }
 
-    if (D_8013B0D8->unk008 ||
-        (D_8013B0D8->unk92E == (s16)D_80123D80[D_8013AFCE].unk00 &&
-         (s16)getModeFilteredAutoPilotFlag(D_8013AE88->data18))) {
-        autoPlayer = D_8013B0D8;
+    if (gCurrentRacePlayer->unk008 ||
+        (gCurrentRacePlayer->unk92E == (s16)D_80123D80[gSelectedCourseIndex].unk00 &&
+         (s16)getModeFilteredAutoPilotFlag(gCurrentTask->data18))) {
+        autoPlayer = gCurrentRacePlayer;
         getCourseSteeringTarget(autoPlayer->unk92E, autoPlayer->x >> 8, autoPlayer->z >> 8,
-                      &targetX, &targetZ, (s8)autoPlayer->unk025[3], D_8013AE88->data18);
-        angle = getXZHeading(D_8013B0D8->x, D_8013B0D8->z, targetX << 8, targetZ << 8);
-        headingPlayer = D_8013B0D8;
+                      &targetX, &targetZ, (s8)autoPlayer->unk025[3], gCurrentTask->data18);
+        angle = getXZHeading(gCurrentRacePlayer->x, gCurrentRacePlayer->z, targetX << 8, targetZ << 8);
+        headingPlayer = gCurrentRacePlayer;
         if (headingPlayer->unk128 & 0x400) {
             angle = (angle + 0x800) & 0xFFF;
         }
@@ -1464,7 +1464,7 @@ void updateCurrentPlayerRiding(void) {
             }
             headingPlayer->unk954 = previous + steer;
         }
-        filteredPlayer = D_8013B0D8;
+        filteredPlayer = gCurrentRacePlayer;
         steer = -(s8)filteredPlayer->unk954;
         if (steer == 1) {
             steer = 0;
@@ -1478,8 +1478,8 @@ void updateCurrentPlayerRiding(void) {
         }
     } else {
         s16 throttle;
-        steer = -D_8013AEF8[D_8013AE88->data18];
-        throttle = D_8013AEFC[D_8013AE88->data18];
+        steer = -D_8013AEF8[gCurrentTask->data18];
+        throttle = D_8013AEFC[gCurrentTask->data18];
         if (throttle == 31) {
             steer *= 3;
             if (steer > 31) {
@@ -1492,14 +1492,14 @@ void updateCurrentPlayerRiding(void) {
         if (throttle > 31) {
             throttle = 31;
         }
-        manualPlayer = D_8013B0D8;
+        manualPlayer = gCurrentRacePlayer;
         manualPlayer->unk124 = throttle + 32;
         if (manualPlayer->unk124 < 31) {
             manualPlayer->unk124 = 31;
         }
     }
 
-    stancePlayer = D_8013B0D8;
+    stancePlayer = gCurrentRacePlayer;
     magnitude = speed;
     if (stancePlayer->unk094 < 0) {
         magnitude = -speed;
@@ -1507,24 +1507,24 @@ void updateCurrentPlayerRiding(void) {
     }
     if (stancePlayer->animationIndex != D_800EB09C[stancePlayer->characterId][2]) {
         const SelectedCourseRecord *records = D_80123D80;
-        s16 recordIndex = D_8013AFCE;
+        s16 recordIndex = gSelectedCourseIndex;
         course = &records[recordIndex];
         if (stancePlayer->unk92E == (s16)course->unk00 && !(stancePlayer->unk128 & 0x40)) {
             s32 offset;
             angle = getXZHeading(stancePlayer->x, stancePlayer->z, course->unk40[0], course->unk40[1]);
-            offset = (s16)(angle - D_8013B0D8->unk110 + 0x400) & 0xFFF;
+            offset = (s16)(angle - gCurrentRacePlayer->unk110 + 0x400) & 0xFFF;
             if (offset < 0x800) {
-                if (D_8013B0D8->unk128 & 0x400) {
+                if (gCurrentRacePlayer->unk128 & 0x400) {
                     goto reloadStance;
                 }
                 goto applySteering;
             }
-            if (D_8013B0D8->unk128 & 0x400) {
+            if (gCurrentRacePlayer->unk128 & 0x400) {
                 goto applySteering;
             }
             goto reloadStance;
         }
-        speedPlayer = D_8013B0D8;
+        speedPlayer = gCurrentRacePlayer;
         if (speedPlayer->unk094 > 0x80 && (speedPlayer->unk128 & 0x400)) {
             goto reverseStance;
         }
@@ -1532,7 +1532,7 @@ void updateCurrentPlayerRiding(void) {
             goto applySteering;
         }
 reloadStance:
-        speedPlayer = D_8013B0D8;
+        speedPlayer = gCurrentRacePlayer;
 reverseStance:
         speedPlayer->unk128 ^= 0x400;
         startCurrentPlayerAnimation(2, 2);
@@ -1540,7 +1540,7 @@ reverseStance:
 
 applySteering:
     angle = smoothAndScaleCurrentPlayerInput(magnitude, steer);
-    steeringPlayer = D_8013B0D8;
+    steeringPlayer = gCurrentRacePlayer;
     if (steeringPlayer->animationIndex != D_800EB09C[steeringPlayer->characterId][2] &&
         steeringPlayer->animationIndex != D_800EB09C[steeringPlayer->characterId][0]) {
         angle -= steeringPlayer->unk126;
@@ -1560,12 +1560,12 @@ applySteering:
             if ((s16)steeringPlayer->unk126 > 0) {
                 blendCurrentPlayerSteeringPose(6, (s16)steeringPlayer->unk126, 0x118);
             }
-            if ((s16)D_8013B0D8->unk126 < 0) {
-                blendCurrentPlayerSteeringPose(5, -(s16)D_8013B0D8->unk126, 0x118);
+            if ((s16)gCurrentRacePlayer->unk126 < 0) {
+                blendCurrentPlayerSteeringPose(5, -(s16)gCurrentRacePlayer->unk126, 0x118);
             }
         }
     } else {
-        centeringPlayer = D_8013B0D8;
+        centeringPlayer = gCurrentRacePlayer;
         angle = -centeringPlayer->unk126;
         if (angle > 0x30) {
             angle = 0x30;
@@ -1575,22 +1575,22 @@ applySteering:
         }
         centeringPlayer->unk126 += angle;
     }
-    if (D_8013B0D8->animationFlags & 0x10) {
+    if (gCurrentRacePlayer->animationFlags & 0x10) {
         startCurrentPlayerAnimation(1, 1);
     }
 
-    if (D_8013B0D8->unk008 ||
-        (D_8013B0D8->unk92E == (s16)D_80123D80[D_8013AFCE].unk00 &&
-         (s16)getModeFilteredAutoPilotFlag(D_8013AE88->data18))) {
+    if (gCurrentRacePlayer->unk008 ||
+        (gCurrentRacePlayer->unk92E == (s16)D_80123D80[gSelectedCourseIndex].unk00 &&
+         (s16)getModeFilteredAutoPilotFlag(gCurrentTask->data18))) {
         /* The same autopilot condition above supplies this correction. */
-        D_8013B0D8->unk0B6 += headingStep;
+        gCurrentRacePlayer->unk0B6 += headingStep;
     } else {
         s16 span;
         s16 baseScale;
         s32 turnScale;
         s32 radius;
         s32 turnRate;
-        turnPlayer = D_8013B0D8;
+        turnPlayer = gCurrentRacePlayer;
         turnRate = (-(steer << 4) * (s16)turnPlayer->unk0A0) / 256;
         span = turnPlayer->unk0A4;
         baseScale = turnPlayer->unk0A2;
@@ -1627,10 +1627,10 @@ applySteering:
         if (angle > 0x800 && angle < 0xF80) {
             angle = -0x80;
         }
-        D_8013B0D8->unk0B6 = (D_8013B0D8->unk0B6 + angle) & 0xFFF;
+        gCurrentRacePlayer->unk0B6 = (gCurrentRacePlayer->unk0B6 + angle) & 0xFFF;
     }
 
-    boostPlayer = D_8013B0D8;
+    boostPlayer = gCurrentRacePlayer;
     boost = 0;
     if (boostPlayer->unk0FC != 0) {
         boost = 0x280;
@@ -1638,50 +1638,50 @@ applySteering:
             boost = -0x280;
         }
     }
-    if (D_8013AFD9 && D_8013B0D8->unk945 == 8) {
+    if (D_8013AFD9 && gCurrentRacePlayer->unk945 == 8) {
         boost = 0x1800;
     }
-    updateCurrentPlayerSlopeVelocity(0, boost, (s16)D_8013B0D8->unk0A6,
-                                    (s16)D_8013B0D8->unk0A8, (s16)D_8013B0D8->unk0AA);
-    movingPlayer = D_8013B0D8;
+    updateCurrentPlayerSlopeVelocity(0, boost, (s16)gCurrentRacePlayer->unk0A6,
+                                    (s16)gCurrentRacePlayer->unk0A8, (s16)gCurrentRacePlayer->unk0AA);
+    movingPlayer = gCurrentRacePlayer;
     movingPlayer->x += movingPlayer->unk060;
     movingPlayer->y += movingPlayer->unk062;
     movingPlayer->z += movingPlayer->unk064;
     updateCurrentPlayerMotionEffects();
 
-    itemPlayer = D_8013B0D8;
+    itemPlayer = gCurrentRacePlayer;
     if (itemPlayer->animationIndex != D_800EB09C[itemPlayer->characterId][0]) {
         if (itemPlayer->unk008 ||
-            (itemPlayer->unk92E == (s16)D_80123D80[D_8013AFCE].unk00 &&
-             (s16)getModeFilteredAutoPilotFlag(D_8013AE88->data18))) {
-            autoItemPlayer = D_8013B0D8;
+            (itemPlayer->unk92E == (s16)D_80123D80[gSelectedCourseIndex].unk00 &&
+             (s16)getModeFilteredAutoPilotFlag(gCurrentTask->data18))) {
+            autoItemPlayer = gCurrentRacePlayer;
             if (autoItemPlayer->unk950) {
                 autoItemPlayer->unk951 = 1;
-                jumpPlayer = D_8013B0D8;
+                jumpPlayer = gCurrentRacePlayer;
                 character = jumpPlayer->characterId;
                 jumpPlayer->unk12C = 2;
                 if (jumpPlayer->animationIndex == D_800EB09C[character][6] ||
                     jumpPlayer->animationIndex == D_800EB09C[character][5]) {
-                    D_8013AE88->data1A = 1;
+                    gCurrentTask->data1A = 1;
                 } else {
-                    D_8013AE88->data1A = 0;
+                    gCurrentTask->data1A = 0;
                 }
             } else if (autoItemPlayer->unk0BC < 0xC00) {
                 autoItemPlayer->unk951 = 0;
-                lowSpeedPlayer = D_8013B0D8;
+                lowSpeedPlayer = gCurrentRacePlayer;
                 character = lowSpeedPlayer->characterId;
                 lowSpeedPlayer->unk12C = 2;
                 if (lowSpeedPlayer->animationIndex == D_800EB09C[character][6] ||
                     lowSpeedPlayer->animationIndex == D_800EB09C[character][5]) {
-                    D_8013AE88->data1A = 1;
+                    gCurrentTask->data1A = 1;
                 } else {
-                    D_8013AE88->data1A = 0;
+                    gCurrentTask->data1A = 0;
                 }
             }
         } else {
-            GameTask *task = D_8013AE88;
+            GameTask *task = gCurrentTask;
             if (gControllerHeldButtons[task->data18] & 0x40) {
-                manualItemPlayer = D_8013B0D8;
+                manualItemPlayer = gCurrentRacePlayer;
                 manualItemPlayer->unk12C = 2;
                 if (manualItemPlayer->animationIndex == D_800EB09C[manualItemPlayer->characterId][6] ||
                     manualItemPlayer->animationIndex == D_800EB09C[manualItemPlayer->characterId][5]) {
@@ -1691,28 +1691,28 @@ applySteering:
                 }
             }
         }
-        updateCurrentPlayerProjectileUse(D_8013AE88->data18);
-        updateCurrentPlayerItemUse(D_8013AE88->data18);
+        updateCurrentPlayerProjectileUse(gCurrentTask->data18);
+        updateCurrentPlayerItemUse(gCurrentTask->data18);
     }
 
-    if (D_8013B0D8->unk943) {
+    if (gCurrentRacePlayer->unk943) {
         playCurrentPlayerSoundEffect(5);
     }
     steer = updateCurrentPlayerGroundContact();
-    landingPlayer = D_8013B0D8;
+    landingPlayer = gCurrentRacePlayer;
     if (landingPlayer->animationIndex != D_800EB09C[landingPlayer->characterId][6] &&
         landingPlayer->animationIndex != D_800EB09C[landingPlayer->characterId][5]) {
         updateCurrentPlayerAnimation();
     }
     if ((u16)callCurrentPlayerStateCallbackIfDifferent(0) == 0) {
-        if (steer != 0 && D_8013B0D8->unk12C == 0) {
-            D_8013B0D8->unk12C = 0x16;
+        if (steer != 0 && gCurrentRacePlayer->unk12C == 0) {
+            gCurrentRacePlayer->unk12C = 0x16;
         } else {
-            if (D_8013B0D8->unk128 & 0x40) {
-                D_8013B0D8->unk12C = 0x1E;
+            if (gCurrentRacePlayer->unk128 & 0x40) {
+                gCurrentRacePlayer->unk12C = 0x1E;
             }
-            if (tryStartPlayerSelectedRecordTransition(D_8013AE88->data18)) {
-                D_8013B0D8->unk12C = 7;
+            if (tryStartPlayerSelectedRecordTransition(gCurrentTask->data18)) {
+                gCurrentRacePlayer->unk12C = 7;
             }
         }
         callCurrentPlayerStateCallbackIfDifferent(0);
@@ -1737,20 +1737,20 @@ void updateCurrentPlayerChargeAndLaunch(void) {
 
     prepareCurrentPlayerFrame();
     push = 0;
-    player = D_8013B0D8;
-    if (!player->unk008 && player->unk92E == (s16)D_80123D80[D_8013AFCE].unk00 &&
-        (s16)getModeFilteredAutoPilotFlag(D_8013AE88->data18)) {
+    player = gCurrentRacePlayer;
+    if (!player->unk008 && player->unk92E == (s16)D_80123D80[gSelectedCourseIndex].unk00 &&
+        (s16)getModeFilteredAutoPilotFlag(gCurrentTask->data18)) {
         drawAutoPilotLabelTask();
     }
-    player = D_8013B0D8;
+    player = gCurrentRacePlayer;
     if (player->animationIndex != D_800EB09C[player->characterId][2]) {
         u32 reversed;
         RacePlayer *counterPlayer;
-        if (player->unk92E == (s16)D_80123D80[D_8013AFCE].unk00 && !(player->unk128 & 0x40)) {
-            s16 heading = getXZHeading(player->x, player->z, D_80123D80[D_8013AFCE].unk40[0],
-                                       D_80123D80[D_8013AFCE].unk40[1]);
+        if (player->unk92E == (s16)D_80123D80[gSelectedCourseIndex].unk00 && !(player->unk128 & 0x40)) {
+            s16 heading = getXZHeading(player->x, player->z, D_80123D80[gSelectedCourseIndex].unk40[0],
+                                       D_80123D80[gSelectedCourseIndex].unk40[1]);
             s16 delta;
-            counterPlayer = D_8013B0D8;
+            counterPlayer = gCurrentRacePlayer;
             delta = heading - counterPlayer->unk110 + 0x400;
             if ((delta & 0xFFF) < 0x800) {
                 if (!(counterPlayer->unk128 & 0x400)) {
@@ -1761,65 +1761,65 @@ void updateCurrentPlayerChargeAndLaunch(void) {
             reversed = counterPlayer->unk128 & 0x400;
             goto checkReversed;
         }
-        if (D_8013B0D8->unk094 > 0x80 && (D_8013B0D8->unk128 & 0x400)) {
+        if (gCurrentRacePlayer->unk094 > 0x80 && (gCurrentRacePlayer->unk128 & 0x400)) {
             goto turn;
         }
-        if (D_8013B0D8->unk094 < -0x80) {
-            reversed = D_8013B0D8->unk128 & 0x400;
+        if (gCurrentRacePlayer->unk094 < -0x80) {
+            reversed = gCurrentRacePlayer->unk128 & 0x400;
 checkReversed:
             if (!reversed) {
 turn:
-                D_8013B0D8->unk128 ^= 0x400;
+                gCurrentRacePlayer->unk128 ^= 0x400;
                 startCurrentPlayerAnimation(2, 2);
             }
         }
-        counterPlayer = D_8013B0D8;
+        counterPlayer = gCurrentRacePlayer;
 advanceCharge:
         if (counterPlayer->unk13C < 90) {
             counterPlayer->unk13C++;
         }
     }
-    if (D_8013B0D8->animationIndex != D_800EB09C[D_8013B0D8->characterId][3] &&
-        (D_8013B0D8->animationFlags & 0x10)) {
+    if (gCurrentRacePlayer->animationIndex != D_800EB09C[gCurrentRacePlayer->characterId][3] &&
+        (gCurrentRacePlayer->animationFlags & 0x10)) {
         startCurrentPlayerAnimation(3, 2);
     }
-    updateCurrentPlayerProjectileUse(D_8013AE88->data18);
-    if (D_8013B0D8->unk13C < 6) {
-        if (!D_8013B0D8->unk008 &&
-            (D_8013B0D8->unk92E != (s16)D_80123D80[D_8013AFCE].unk00 ||
-             !(s16)getModeFilteredAutoPilotFlag(D_8013AE88->data18))) {
-            if (!(gControllerHeldButtons[D_8013AE88->data18] & 0x40)) {
-                D_8013B0D8->unk128 &= ~0x10;
+    updateCurrentPlayerProjectileUse(gCurrentTask->data18);
+    if (gCurrentRacePlayer->unk13C < 6) {
+        if (!gCurrentRacePlayer->unk008 &&
+            (gCurrentRacePlayer->unk92E != (s16)D_80123D80[gSelectedCourseIndex].unk00 ||
+             !(s16)getModeFilteredAutoPilotFlag(gCurrentTask->data18))) {
+            if (!(gControllerHeldButtons[gCurrentTask->data18] & 0x40)) {
+                gCurrentRacePlayer->unk128 &= ~0x10;
             }
-        } else if (!D_8013B0D8->unk951) {
-            D_8013B0D8->unk128 &= ~0x10;
+        } else if (!gCurrentRacePlayer->unk951) {
+            gCurrentRacePlayer->unk128 &= ~0x10;
         }
-    } else if (D_8013B0D8->unk128 & 0x10) {
-        if (!D_8013B0D8->unk008 &&
-            (D_8013B0D8->unk92E != (s16)D_80123D80[D_8013AFCE].unk00 ||
-             !(s16)getModeFilteredAutoPilotFlag(D_8013AE88->data18))) {
-            if (!(gControllerHeldButtons[D_8013AE88->data18] & 0x40)) {
-                D_8013B0D8->unk128 &= ~0x10;
+    } else if (gCurrentRacePlayer->unk128 & 0x10) {
+        if (!gCurrentRacePlayer->unk008 &&
+            (gCurrentRacePlayer->unk92E != (s16)D_80123D80[gSelectedCourseIndex].unk00 ||
+             !(s16)getModeFilteredAutoPilotFlag(gCurrentTask->data18))) {
+            if (!(gControllerHeldButtons[gCurrentTask->data18] & 0x40)) {
+                gCurrentRacePlayer->unk128 &= ~0x10;
             }
         } else {
-            chargePlayer = D_8013B0D8;
+            chargePlayer = gCurrentRacePlayer;
             chargePlayer->unk128 &= ~0x10;
             if (chargePlayer->unk951) {
                 chargePlayer->unk08C = 0xD00;
             }
         }
-        if ((D_8013B0D8->unk128 & 0x10) && D_8013B0D8->unk08C < 0xD00) {
-            D_8013B0D8->unk08C += 0x4C;
+        if ((gCurrentRacePlayer->unk128 & 0x10) && gCurrentRacePlayer->unk08C < 0xD00) {
+            gCurrentRacePlayer->unk08C += 0x4C;
         }
     }
-    smoothAndScaleCurrentPlayerInput(D_8013B0D8->unk094, 0);
-    inputPlayer = D_8013B0D8;
+    smoothAndScaleCurrentPlayerInput(gCurrentRacePlayer->unk094, 0);
+    inputPlayer = gCurrentRacePlayer;
     inputPlayer->unk09E = inputPlayer->unk09A;
     boost = 0;
     if (inputPlayer->unk0FC) {
         boost = inputPlayer->unk0FF ? -0x280 : 0x280;
     }
-    motionPlayer = D_8013B0D8;
+    motionPlayer = gCurrentRacePlayer;
     if (motionPlayer->unk13C < 6) {
         updateCurrentPlayerSlopeVelocity(0, boost, (s16)motionPlayer->unk0A6 * 2, (s16)motionPlayer->unk0A8, (s16)motionPlayer->unk0AA);
         readCurrentPlayerTrickInput();
@@ -1836,7 +1836,7 @@ advanceCharge:
                     motionPlayer->unk130 += 0x1400;
                     playCurrentPlayerSoundEffect(0);
                 }
-                if (D_8013AFCE == 7 && D_8013B0D8->unk92E == 2) {
+                if (gSelectedCourseIndex == 7 && gCurrentRacePlayer->unk92E == 2) {
                     push = -0x1100;
                 }
             } else {
@@ -1850,15 +1850,15 @@ advanceCharge:
                     motionPlayer->unk130 += 0x1400;
                     playCurrentPlayerSoundEffect(0);
                 }
-                if (D_8013AFCE == 7 && D_8013B0D8->unk92E == 2) {
+                if (gSelectedCourseIndex == 7 && gCurrentRacePlayer->unk92E == 2) {
                     push = 0x1100;
                 }
             }
         }
-        updateCurrentPlayerSlopeVelocity(push, boost, (s16)D_8013B0D8->unk0A6 * 2,
-                                         (s16)D_8013B0D8->unk0A8, (s16)D_8013B0D8->unk0AA);
+        updateCurrentPlayerSlopeVelocity(push, boost, (s16)gCurrentRacePlayer->unk0A6 * 2,
+                                         (s16)gCurrentRacePlayer->unk0A8, (s16)gCurrentRacePlayer->unk0AA);
         trick = readCurrentPlayerTrickInput();
-        launchPlayer = D_8013B0D8;
+        launchPlayer = gCurrentRacePlayer;
         if (!(launchPlayer->unk128 & 0x10)) {
             if (launchPlayer->unk08C < 0xD00) {
                 trick = 0;
@@ -1866,56 +1866,56 @@ advanceCharge:
             if (trick >= 9) {
                 launchPlayer->unk08C = 0xE00;
             }
-            D_8013B0D8->unk0C4 = 0;
+            gCurrentRacePlayer->unk0C4 = 0;
             if (trick) {
-                playPlayerSoundEffect(D_8013AE88->data18, 1, 0x501, 0x30);
+                playPlayerSoundEffect(gCurrentTask->data18, 1, 0x501, 0x30);
                 rewardTable = gPlayerLaunchTricks;
                 reward = &rewardTable[trick];
                 playCurrentPlayerSoundEffect(reward->sound);
-                trickPlayer = D_8013B0D8;
+                trickPlayer = gCurrentRacePlayer;
                 trickPlayer->unk12C = reward->state;
                 trickPlayer->unk0C8 = reward->trickIndex;
                 trickPlayer->unk128 |= 0x800;
                 if (!trickPlayer->unk008) {
                     if (trickPlayer->unk0C8 < 9) {
-                        startIndexedRenderTask(D_8013AE88->data18);
+                        startIndexedRenderTask(gCurrentTask->data18);
                     } else {
-                        startIndexedRenderTaskPair(D_8013AE88->data18);
+                        startIndexedRenderTaskPair(gCurrentTask->data18);
                     }
                 }
             } else {
-                D_8013B0D8->unk12C = 1;
-                D_8013B0D8->unk0C8 = 0;
+                gCurrentRacePlayer->unk12C = 1;
+                gCurrentRacePlayer->unk0C8 = 0;
             }
-            velocityPlayer = D_8013B0D8;
+            velocityPlayer = gCurrentRacePlayer;
             velocityPlayer->unk062 -= velocityPlayer->unk08C;
-            if (D_8013AFCE == 7 && velocityPlayer->unk92E == 2) {
+            if (gSelectedCourseIndex == 7 && velocityPlayer->unk92E == 2) {
                 velocityPlayer->unk062 -= 0x400;
             }
-            D_8013B0D8->y -= 0x1800;
-            D_8013B0D8->unk128 |= 0x200;
+            gCurrentRacePlayer->y -= 0x1800;
+            gCurrentRacePlayer->unk128 |= 0x200;
             startCurrentPlayerAnimation(4, 2);
         }
     }
-    positionPlayer = D_8013B0D8;
+    positionPlayer = gCurrentRacePlayer;
     positionPlayer->x += positionPlayer->unk060;
     positionPlayer->y += positionPlayer->unk062;
     positionPlayer->z += positionPlayer->unk064;
     updateCurrentPlayerMotionEffects();
-    if (D_8013B0D8->unk943) {
+    if (gCurrentRacePlayer->unk943) {
         playCurrentPlayerSoundEffect(5);
     }
     contact = updateCurrentPlayerGroundContact();
     updateCurrentPlayerAnimation();
     if (!(u16)callCurrentPlayerStateCallbackIfDifferent(2)) {
-        if ((u16)contact && D_8013B0D8->unk12C == 2) {
-            D_8013B0D8->unk12C = 22;
+        if ((u16)contact && gCurrentRacePlayer->unk12C == 2) {
+            gCurrentRacePlayer->unk12C = 22;
         } else {
-            if (D_8013B0D8->unk128 & 0x40) {
-                D_8013B0D8->unk12C = 30;
+            if (gCurrentRacePlayer->unk128 & 0x40) {
+                gCurrentRacePlayer->unk12C = 30;
             }
-            if (tryStartPlayerSelectedRecordTransition((s16)D_8013AE88->data18)) {
-                D_8013B0D8->unk12C = 7;
+            if (tryStartPlayerSelectedRecordTransition((s16)gCurrentTask->data18)) {
+                gCurrentRacePlayer->unk12C = 7;
             }
         }
         callCurrentPlayerStateCallbackIfDifferent(2);
@@ -2010,51 +2010,51 @@ void updateCurrentPlayerAirborneTricks(void) {
     TaskCallback nextStateCallback;
 
     prepareCurrentPlayerFrame();
-    if (D_8013B0D8->unk008 != 0) {
+    if (gCurrentRacePlayer->unk008 != 0) {
         goto block_4;
     }
-    if (D_8013B0D8->unk92E != (s16) D_80123D80[D_8013AFCE].unk00) {
+    if (gCurrentRacePlayer->unk92E != (s16) D_80123D80[gSelectedCourseIndex].unk00) {
         goto block_4;
     }
-    if ((s16)getModeFilteredAutoPilotFlag(D_8013AE88->data18) == 0) {
+    if ((s16)getModeFilteredAutoPilotFlag(gCurrentTask->data18) == 0) {
         goto block_4;
     }
     drawAutoPilotLabelTask();
 block_4:
-    if (D_8013AE88->data1A != 0) {
+    if (gCurrentTask->data1A != 0) {
         goto block_20;
     }
-    if (D_8013B0D8->unk0C8 != 0) {
+    if (gCurrentRacePlayer->unk0C8 != 0) {
         goto block_20;
     }
-    updateCurrentPlayerProjectileUse(D_8013AE88->data18);
-    if (D_8013B0D8->unk008 != 0) {
+    updateCurrentPlayerProjectileUse(gCurrentTask->data18);
+    if (gCurrentRacePlayer->unk008 != 0) {
         goto block_13;
     }
-    if (D_8013B0D8->unk92E != (s16) D_80123D80[D_8013AFCE].unk00) {
+    if (gCurrentRacePlayer->unk92E != (s16) D_80123D80[gSelectedCourseIndex].unk00) {
         goto block_9;
     }
-    if ((s16)getModeFilteredAutoPilotFlag(D_8013AE88->data18) != 0) {
+    if ((s16)getModeFilteredAutoPilotFlag(gCurrentTask->data18) != 0) {
         goto block_13;
     }
 block_9:
-    if (!(gControllerHeldButtons[D_8013AE88->data18] & 0x8000)) {
+    if (!(gControllerHeldButtons[gCurrentTask->data18] & 0x8000)) {
         goto block_11;
     }
-    D_8013B0D8->unk0B6 = (u16) D_8013B0D8->unk0B6 - 0x18;
+    gCurrentRacePlayer->unk0B6 = (u16) gCurrentRacePlayer->unk0B6 - 0x18;
 block_11:
-    if (!(gControllerHeldButtons[D_8013AE88->data18] & 0x2000)) {
+    if (!(gControllerHeldButtons[gCurrentTask->data18] & 0x2000)) {
         goto block_20;
     }
-    D_8013B0D8->unk0B6 = (u16) D_8013B0D8->unk0B6 + 0x18;
+    gCurrentRacePlayer->unk0B6 = (u16) gCurrentRacePlayer->unk0B6 + 0x18;
     goto block_20;
 block_13:
-    steeringPlayer = D_8013B0D8;
+    steeringPlayer = gCurrentRacePlayer;
     targetZ = &steeringTarget.z;
     steeringRegion = steeringPlayer->unk92E;
-    getCourseSteeringTarget(steeringRegion, steeringPlayer->x >> 8, steeringPlayer->z >> 8, &steeringTarget.x, targetZ, (s8)steeringPlayer->unk025[3], (u16) (s32) D_8013AE88->data18);
-    heading = getXZHeading(D_8013B0D8->x, D_8013B0D8->z, steeringTarget.x << 8, steeringTarget.z << 8);
-    heading -= D_8013B0D8->unk110;
+    getCourseSteeringTarget(steeringRegion, steeringPlayer->x >> 8, steeringPlayer->z >> 8, &steeringTarget.x, targetZ, (s8)steeringPlayer->unk025[3], (u16) (s32) gCurrentTask->data18);
+    heading = getXZHeading(gCurrentRacePlayer->x, gCurrentRacePlayer->z, steeringTarget.x << 8, steeringTarget.z << 8);
+    heading -= gCurrentRacePlayer->unk110;
     temp_a0 = heading & 0xFFF;
     heading = temp_a0;
     if (temp_a0 < 0x801) {
@@ -2072,15 +2072,15 @@ block_17:
     }
     heading = -0x20;
 block_19:
-    D_8013B0D8->unk0B6 = (u16) D_8013B0D8->unk0B6 + heading;
+    gCurrentRacePlayer->unk0B6 = (u16) gCurrentRacePlayer->unk0B6 + heading;
 block_20:
-    if (D_8013B0D8->unk0C8 >= 9) {
+    if (gCurrentRacePlayer->unk0C8 >= 9) {
         goto block_22;
     }
     dispatchCurrentPlayerDirectionalAnimation();
 block_22:
-    smoothAndScaleCurrentPlayerInput((s32) D_8013B0D8->unk094, 0);
-    pitchPlayer = D_8013B0D8;
+    smoothAndScaleCurrentPlayerInput((s32) gCurrentRacePlayer->unk094, 0);
+    pitchPlayer = gCurrentRacePlayer;
     temp_v0 = pitchPlayer->unk0B8 / 24;
     if (temp_v0 > 0) {
         if (temp_v0 < 4) {
@@ -2099,17 +2099,17 @@ block_22:
             pitchPlayer->unk0B8 = 0;
         }
     }
-    temp_v0_2 = (u16) D_8013B0D8->unk062 + D_8013B0D8->unk09C;
-    D_8013B0D8->unk062 = temp_v0_2;
+    temp_v0_2 = (u16) gCurrentRacePlayer->unk062 + gCurrentRacePlayer->unk09C;
+    gCurrentRacePlayer->unk062 = temp_v0_2;
     if (temp_v0_2 < 0x7801) {
         goto block_33;
     }
-    D_8013B0D8->unk062 = 0x7800;
+    gCurrentRacePlayer->unk062 = 0x7800;
 block_33:
-    D_800EB22C.vx = (s32) D_8013B0D8->unk060;
-    D_800EB22C.vz = (s32) D_8013B0D8->unk064;
+    D_800EB22C.vx = (s32) gCurrentRacePlayer->unk060;
+    D_800EB22C.vz = (s32) gCurrentRacePlayer->unk064;
     clampVectorToCurrentPlayerLimit(&D_800EB22C);
-    motionPlayer = D_8013B0D8;
+    motionPlayer = gCurrentRacePlayer;
     motionPlayer->unk060 = D_800EB22C.vx;
     motionPlayer->unk064 = D_800EB22C.vz;
     motionPlayer->x += motionPlayer->unk060;
@@ -2120,748 +2120,748 @@ block_33:
     }
     playCurrentPlayerSoundEffect(5);
 block_35:
-    trickState = D_8013B0D8->unk12C;
+    trickState = gCurrentRacePlayer->unk12C;
     switch (trickState) {
     case 0xD:
-        rollPlayer = D_8013B0D8;
+        rollPlayer = gCurrentRacePlayer;
         if (rollPlayer->unk128 & 0x400) {
             goto block_41;
         }
-        D_8013B0D8->modelRotation.vz = rsin(D_8013B0D8->unk08C);
+        gCurrentRacePlayer->modelRotation.vz = rsin(gCurrentRacePlayer->unk08C);
         goto block_42;
     case 0xF:
-        rollPlayer = D_8013B0D8;
+        rollPlayer = gCurrentRacePlayer;
         if (!(rollPlayer->unk128 & 0x400)) {
             goto block_41;
         }
-        D_8013B0D8->modelRotation.vz = rsin(D_8013B0D8->unk08C);
+        gCurrentRacePlayer->modelRotation.vz = rsin(gCurrentRacePlayer->unk08C);
         goto block_42;
 block_41:
-        D_8013B0D8->modelRotation.vz = -rsin(rollPlayer->unk08C);
+        gCurrentRacePlayer->modelRotation.vz = -rsin(rollPlayer->unk08C);
 block_42:
-        D_8013B0D8->unk08C += 0x20;
+        gCurrentRacePlayer->unk08C += 0x20;
         goto block_317;
     case 0x10:
-        rotation = rsin(D_8013B0D8->unk08C);
-        rotationPlayer = D_8013B0D8;
+        rotation = rsin(gCurrentRacePlayer->unk08C);
+        rotationPlayer = gCurrentRacePlayer;
         rotationPlayer->modelRotation.vy = rotation;
         rotationPlayer->unk08C += 30;
         break;
     case 0x11:
-        rotation = -rsin(D_8013B0D8->unk08C);
-        rotationPlayer = D_8013B0D8;
+        rotation = -rsin(gCurrentRacePlayer->unk08C);
+        rotationPlayer = gCurrentRacePlayer;
         rotationPlayer->modelRotation.vy = rotation;
         rotationPlayer->unk08C += 30;
         break;
     case 0x12:
-        if (!(D_8013B0D8->unk128 & 0x400)) {
+        if (!(gCurrentRacePlayer->unk128 & 0x400)) {
             goto block_48;
         }
-        var_v0_4 = -rsin(D_8013B0D8->unk08C);
-        D_8013B0D8->modelRotation.vz = (s16) var_v0_4;
+        var_v0_4 = -rsin(gCurrentRacePlayer->unk08C);
+        gCurrentRacePlayer->modelRotation.vz = (s16) var_v0_4;
         goto block_49;
 block_48:
-        var_v0_4 = rsin(D_8013B0D8->unk08C);
-        D_8013B0D8->modelRotation.vz = (s16) var_v0_4;
+        var_v0_4 = rsin(gCurrentRacePlayer->unk08C);
+        gCurrentRacePlayer->modelRotation.vz = (s16) var_v0_4;
 block_49:
-        rotation = rsin(D_8013B0D8->unk08C);
-        rotationPlayer = D_8013B0D8;
+        rotation = rsin(gCurrentRacePlayer->unk08C);
+        rotationPlayer = gCurrentRacePlayer;
         rotationPlayer->modelRotation.vy = rotation;
         rotationPlayer->unk08C += 26;
         break;
     case 0x13:
-        rollPlayer = D_8013B0D8;
+        rollPlayer = gCurrentRacePlayer;
         if (rollPlayer->unk128 & 0x400) {
             goto block_58;
         }
-        D_8013B0D8->modelRotation.vz = rsin(D_8013B0D8->unk08C);
+        gCurrentRacePlayer->modelRotation.vz = rsin(gCurrentRacePlayer->unk08C);
         goto block_59;
     case 0x14:
-        if (!(D_8013B0D8->unk128 & 0x400)) {
+        if (!(gCurrentRacePlayer->unk128 & 0x400)) {
             goto block_54;
         }
-        D_8013B0D8->modelRotation.vz = rsin(D_8013B0D8->unk08C);
+        gCurrentRacePlayer->modelRotation.vz = rsin(gCurrentRacePlayer->unk08C);
         goto block_55;
 block_54:
-        D_8013B0D8->modelRotation.vz = -rsin(D_8013B0D8->unk08C);
+        gCurrentRacePlayer->modelRotation.vz = -rsin(gCurrentRacePlayer->unk08C);
 block_55:
-        rotation = rsin(D_8013B0D8->unk08C);
-        rotationPlayer = D_8013B0D8;
+        rotation = rsin(gCurrentRacePlayer->unk08C);
+        rotationPlayer = gCurrentRacePlayer;
         rotationPlayer->modelRotation.vy = rotation;
         rotationPlayer->unk08C += 26;
         break;
     case 0x15:
-        rollPlayer = D_8013B0D8;
+        rollPlayer = gCurrentRacePlayer;
         if (!(rollPlayer->unk128 & 0x400)) {
             goto block_58;
         }
-        D_8013B0D8->modelRotation.vz = rsin(D_8013B0D8->unk08C);
+        gCurrentRacePlayer->modelRotation.vz = rsin(gCurrentRacePlayer->unk08C);
         goto block_59;
 block_58:
-        D_8013B0D8->modelRotation.vz = -rsin(rollPlayer->unk08C);
+        gCurrentRacePlayer->modelRotation.vz = -rsin(rollPlayer->unk08C);
 block_59:
-        rotation = -rsin(D_8013B0D8->unk08C);
-        rotationPlayer = D_8013B0D8;
+        rotation = -rsin(gCurrentRacePlayer->unk08C);
+        rotationPlayer = gCurrentRacePlayer;
         rotationPlayer->modelRotation.vy = rotation;
         rotationPlayer->unk08C += 26;
         break;
     case 0x1F:
-        D_8013B0D8->modelRotation.vy = -rsin(D_8013B0D8->unk08C) * 2;
-        D_8013B0D8->unk08C += 0x16;
-        temp_v0_4 = D_8013AE88->data1C + 1;
-        D_8013AE88->data1C = temp_v0_4;
+        gCurrentRacePlayer->modelRotation.vy = -rsin(gCurrentRacePlayer->unk08C) * 2;
+        gCurrentRacePlayer->unk08C += 0x16;
+        temp_v0_4 = gCurrentTask->data1C + 1;
+        gCurrentTask->data1C = temp_v0_4;
         if ((temp_v0_4 & 0xFFFF) != 1) {
             goto block_63;
         }
         startCurrentPlayerAnimation(0x1AU, 2U);
 block_63:
-        if (D_8013AE88->data1C != 8) {
+        if (gCurrentTask->data1C != 8) {
             goto block_65;
         }
         startCurrentPlayerAnimation(0x1BU, 2U);
 block_65:
-        if (D_8013AE88->data1C != 0xF) {
+        if (gCurrentTask->data1C != 0xF) {
             goto block_67;
         }
         startCurrentPlayerAnimation(0x20U, 2U);
 block_67:
-        if (D_8013AE88->data1C != 0x1E) {
+        if (gCurrentTask->data1C != 0x1E) {
             goto block_317;
         }
         startCurrentPlayerAnimation(0x21, 2U);
         goto block_317;
     case 0x29:
-        if (!(D_8013B0D8->unk128 & 0x400)) {
+        if (!(gCurrentRacePlayer->unk128 & 0x400)) {
             goto block_71;
         }
-        var_v0_5 = -rsin(D_8013B0D8->unk08C);
+        var_v0_5 = -rsin(gCurrentRacePlayer->unk08C);
         goto block_72;
 block_71:
-        var_v0_5 = rsin(D_8013B0D8->unk08C);
+        var_v0_5 = rsin(gCurrentRacePlayer->unk08C);
 block_72:
-        D_8013B0D8->modelRotation.vz = var_v0_5 * 2;
+        gCurrentRacePlayer->modelRotation.vz = var_v0_5 * 2;
         goto block_286;
     case 0x2A:
-        if (!(D_8013B0D8->unk128 & 0x400)) {
+        if (!(gCurrentRacePlayer->unk128 & 0x400)) {
             goto block_75;
         }
-        var_v0_6 = -rsin(D_8013B0D8->unk08C);
-        D_8013B0D8->modelRotation.vx = var_v0_6 * 2;
+        var_v0_6 = -rsin(gCurrentRacePlayer->unk08C);
+        gCurrentRacePlayer->modelRotation.vx = var_v0_6 * 2;
         goto block_76;
 block_75:
-        var_v0_6 = rsin(D_8013B0D8->unk08C);
-        D_8013B0D8->modelRotation.vx = var_v0_6 * 2;
+        var_v0_6 = rsin(gCurrentRacePlayer->unk08C);
+        gCurrentRacePlayer->modelRotation.vx = var_v0_6 * 2;
 block_76:
         goto block_286;
     case 0x2B:
-        D_8013B0D8->modelRotation.vy = rsin(D_8013B0D8->unk08C) * 4;
-        D_8013B0D8->unk08C += 0x14;
-        if (D_8013AE88->data1C < 8) {
-            D_8013B0D8->modelRotation.vz = D_8013AE88->data1C * 128;
-        } else if (D_8013AE88->data1C >= 0x23) {
-            D_8013B0D8->modelRotation.vz = (0x32 - D_8013AE88->data1C) * 64;
+        gCurrentRacePlayer->modelRotation.vy = rsin(gCurrentRacePlayer->unk08C) * 4;
+        gCurrentRacePlayer->unk08C += 0x14;
+        if (gCurrentTask->data1C < 8) {
+            gCurrentRacePlayer->modelRotation.vz = gCurrentTask->data1C * 128;
+        } else if (gCurrentTask->data1C >= 0x23) {
+            gCurrentRacePlayer->modelRotation.vz = (0x32 - gCurrentTask->data1C) * 64;
         } else {
-            D_8013B0D8->modelRotation.vz = 0x380;
+            gCurrentRacePlayer->modelRotation.vz = 0x380;
         }
-        if (D_8013B0D8->unk128 & 0x400) {
-            D_8013B0D8->modelRotation.vz = -D_8013B0D8->modelRotation.vz;
+        if (gCurrentRacePlayer->unk128 & 0x400) {
+            gCurrentRacePlayer->modelRotation.vz = -gCurrentRacePlayer->modelRotation.vz;
         }
-        temp_v1 = D_8013AE88->data1C;
+        temp_v1 = gCurrentTask->data1C;
         if (temp_v1 >= 0x32U) {
             goto block_317;
         }
-        D_8013AE88->data1C = temp_v1 + 1;
+        gCurrentTask->data1C = temp_v1 + 1;
         goto block_317;
     case 0x20:
-        D_8013B0D8->unk08C += 0x13;
-        temp_v0_5 = D_8013AE88->data1C + 1;
-        D_8013AE88->data1C = temp_v0_5;
+        gCurrentRacePlayer->unk08C += 0x13;
+        temp_v0_5 = gCurrentTask->data1C + 1;
+        gCurrentTask->data1C = temp_v0_5;
         if ((temp_v0_5 & 0xFFFF) != 1) {
             goto block_317;
         }
         startCurrentPlayerAnimation(0x24, 2U);
         goto block_317;
     case 0x21:
-        if (!(D_8013B0D8->unk128 & 0x400)) {
+        if (!(gCurrentRacePlayer->unk128 & 0x400)) {
             goto block_90;
         }
-        D_8013B0D8->modelRotation.vz = rsin(D_8013B0D8->unk08C) * 3;
+        gCurrentRacePlayer->modelRotation.vz = rsin(gCurrentRacePlayer->unk08C) * 3;
         goto block_91;
 block_90:
-        D_8013B0D8->modelRotation.vz = -rsin(D_8013B0D8->unk08C) * 3;
+        gCurrentRacePlayer->modelRotation.vz = -rsin(gCurrentRacePlayer->unk08C) * 3;
 block_91:
-        D_8013B0D8->modelRotation.vy = -(s16) D_8013AE88->data1C;
-        temp_v1_2 = D_8013AE88->data1C;
+        gCurrentRacePlayer->modelRotation.vy = -(s16) gCurrentTask->data1C;
+        temp_v1_2 = gCurrentTask->data1C;
         if (temp_v1_2 == 0x1000) {
             goto block_93;
         }
-        D_8013AE88->data1C = temp_v1_2 + 0x80;
+        gCurrentTask->data1C = temp_v1_2 + 0x80;
 block_93:
-        D_8013B0D8->unk08C += 0x11;
+        gCurrentRacePlayer->unk08C += 0x11;
         goto block_317;
     case 0x22:
-        if (!(D_8013B0D8->unk128 & 0x400)) {
+        if (!(gCurrentRacePlayer->unk128 & 0x400)) {
             goto block_96;
         }
-        var_v0_9 = -rsin(D_8013B0D8->unk08C);
-        D_8013B0D8->modelRotation.vz = (s16) var_v0_9;
+        var_v0_9 = -rsin(gCurrentRacePlayer->unk08C);
+        gCurrentRacePlayer->modelRotation.vz = (s16) var_v0_9;
         goto block_97;
 block_96:
-        var_v0_9 = rsin(D_8013B0D8->unk08C);
-        D_8013B0D8->modelRotation.vz = (s16) var_v0_9;
+        var_v0_9 = rsin(gCurrentRacePlayer->unk08C);
+        gCurrentRacePlayer->modelRotation.vz = (s16) var_v0_9;
 block_97:
-        D_8013B0D8->modelRotation.vy = rsin(D_8013B0D8->unk08C) * 4;
-        D_8013B0D8->unk08C += 0x15;
+        gCurrentRacePlayer->modelRotation.vy = rsin(gCurrentRacePlayer->unk08C) * 4;
+        gCurrentRacePlayer->unk08C += 0x15;
         goto block_317;
     case 0x2C:
-        D_8013B0D8->modelRotation.vy = -rsin(D_8013B0D8->unk08C) * 2;
-        D_8013B0D8->unk08C += 0x16;
-        temp_v0_7 = D_8013AE88->data1C + 1;
-        D_8013AE88->data1C = temp_v0_7;
+        gCurrentRacePlayer->modelRotation.vy = -rsin(gCurrentRacePlayer->unk08C) * 2;
+        gCurrentRacePlayer->unk08C += 0x16;
+        temp_v0_7 = gCurrentTask->data1C + 1;
+        gCurrentTask->data1C = temp_v0_7;
         if ((temp_v0_7 & 0xFFFF) != 1) {
             goto block_100;
         }
         startCurrentPlayerAnimation(0x1CU, 2U);
 block_100:
-        if (D_8013AE88->data1C == 8) {
+        if (gCurrentTask->data1C == 8) {
             startCurrentPlayerAnimation(0x1D, 2);
         }
         goto block_305;
     case 0x2D:
-        if (!(D_8013B0D8->unk128 & 0x400)) {
+        if (!(gCurrentRacePlayer->unk128 & 0x400)) {
             goto block_104;
         }
-        var_v0_10 = -rsin(D_8013B0D8->unk08C);
-        D_8013B0D8->modelRotation.vz = var_v0_10 * 2;
+        var_v0_10 = -rsin(gCurrentRacePlayer->unk08C);
+        gCurrentRacePlayer->modelRotation.vz = var_v0_10 * 2;
         goto block_105;
 block_104:
-        var_v0_10 = rsin(D_8013B0D8->unk08C);
-        D_8013B0D8->modelRotation.vz = var_v0_10 * 2;
+        var_v0_10 = rsin(gCurrentRacePlayer->unk08C);
+        gCurrentRacePlayer->modelRotation.vz = var_v0_10 * 2;
 block_105:
-        if ((u16) D_8013AE88->data1C >= 0x19U) {
+        if ((u16) gCurrentTask->data1C >= 0x19U) {
             goto block_107;
         }
-        var_v0_11 = -rsin(D_8013B0D8->unk08C);
-        D_8013B0D8->modelRotation.vy = var_v0_11 * 2;
+        var_v0_11 = -rsin(gCurrentRacePlayer->unk08C);
+        gCurrentRacePlayer->modelRotation.vy = var_v0_11 * 2;
         goto block_108;
 block_107:
-        var_v0_11 = rsin(D_8013B0D8->unk08C);
-        D_8013B0D8->modelRotation.vy = var_v0_11 * 2;
+        var_v0_11 = rsin(gCurrentRacePlayer->unk08C);
+        gCurrentRacePlayer->modelRotation.vy = var_v0_11 * 2;
 block_108:
-        phasePlayer = D_8013B0D8;
+        phasePlayer = gCurrentRacePlayer;
         nextPhase = phasePlayer->unk08C + 0x14;
-        phaseTask = D_8013AE88;
+        phaseTask = gCurrentTask;
         goto block_316;
     case 0x2E:
-        D_8013B0D8->modelRotation.vy = -rsin(D_8013B0D8->unk08C) * 5;
-        D_8013B0D8->unk08C += 0x14;
-        temp_v0_8 = D_8013AE88->data1C + 1;
-        D_8013AE88->data1C = temp_v0_8;
+        gCurrentRacePlayer->modelRotation.vy = -rsin(gCurrentRacePlayer->unk08C) * 5;
+        gCurrentRacePlayer->unk08C += 0x14;
+        temp_v0_8 = gCurrentTask->data1C + 1;
+        gCurrentTask->data1C = temp_v0_8;
         if ((temp_v0_8 & 0xFFFF) != 1) {
             goto block_111;
         }
         startCurrentPlayerAnimation(0x20U, 2U);
 block_111:
-        if (D_8013AE88->data1C != 0x28) {
+        if (gCurrentTask->data1C != 0x28) {
             goto block_317;
         }
         startCurrentPlayerAnimation(0x21, 2U);
         goto block_317;
     case 0x23:
-        if (!(D_8013B0D8->unk128 & 0x400)) {
+        if (!(gCurrentRacePlayer->unk128 & 0x400)) {
             goto block_115;
         }
-        var_v0_13 = -rsin(D_8013B0D8->unk08C);
-        D_8013B0D8->modelRotation.vx = var_v0_13 * 2;
+        var_v0_13 = -rsin(gCurrentRacePlayer->unk08C);
+        gCurrentRacePlayer->modelRotation.vx = var_v0_13 * 2;
         goto block_116;
 block_115:
-        var_v0_13 = rsin(D_8013B0D8->unk08C);
-        D_8013B0D8->modelRotation.vx = var_v0_13 * 2;
+        var_v0_13 = rsin(gCurrentRacePlayer->unk08C);
+        gCurrentRacePlayer->modelRotation.vx = var_v0_13 * 2;
 block_116:
-        D_8013B0D8->unk08C += 0x16;
-        temp_v0_9 = D_8013AE88->data1C + 1;
-        D_8013AE88->data1C = temp_v0_9;
+        gCurrentRacePlayer->unk08C += 0x16;
+        temp_v0_9 = gCurrentTask->data1C + 1;
+        gCurrentTask->data1C = temp_v0_9;
         if ((temp_v0_9 & 0xFFFF) != 1) {
             goto block_118;
         }
         startCurrentPlayerAnimation(0x1AU, 2U);
 block_118:
-        if (D_8013AE88->data1C != 0x1E) {
+        if (gCurrentTask->data1C != 0x1E) {
             goto block_317;
         }
         startCurrentPlayerAnimation(0x1B, 2U);
         goto block_317;
     case 0x24:
-        if (!(D_8013B0D8->unk128 & 0x400)) {
+        if (!(gCurrentRacePlayer->unk128 & 0x400)) {
             goto block_122;
         }
-        D_8013B0D8->modelRotation.vy = rsin(D_8013B0D8->unk08C) * 3;
+        gCurrentRacePlayer->modelRotation.vy = rsin(gCurrentRacePlayer->unk08C) * 3;
         goto block_123;
 block_122:
-        D_8013B0D8->modelRotation.vy = -rsin(D_8013B0D8->unk08C) * 3;
+        gCurrentRacePlayer->modelRotation.vy = -rsin(gCurrentRacePlayer->unk08C) * 3;
 block_123:
-        D_8013B0D8->unk08C += 0x15;
-        temp_v0_11 = D_8013AE88->data1C + 1;
-        D_8013AE88->data1C = temp_v0_11;
+        gCurrentRacePlayer->unk08C += 0x15;
+        temp_v0_11 = gCurrentTask->data1C + 1;
+        gCurrentTask->data1C = temp_v0_11;
         if ((temp_v0_11 & 0xFFFF) != 1) {
             goto block_125;
         }
         startCurrentPlayerAnimation(0x1AU, 2U);
 block_125:
-        if (D_8013AE88->data1C != 0x1E) {
+        if (gCurrentTask->data1C != 0x1E) {
             goto block_317;
         }
         startCurrentPlayerAnimation(0x1B, 2U);
         goto block_317;
     case 0x2F:
-        D_8013B0D8->modelRotation.vy = rsin(D_8013B0D8->unk08C) * 2;
-        D_8013B0D8->unk08C += 0x16;
-        temp_v0_12 = D_8013AE88->data1C + 1;
-        D_8013AE88->data1C = temp_v0_12;
+        gCurrentRacePlayer->modelRotation.vy = rsin(gCurrentRacePlayer->unk08C) * 2;
+        gCurrentRacePlayer->unk08C += 0x16;
+        temp_v0_12 = gCurrentTask->data1C + 1;
+        gCurrentTask->data1C = temp_v0_12;
         if ((temp_v0_12 & 0xFFFF) != 1) {
             goto block_129;
         }
         startCurrentPlayerAnimation(0x1CU, 2U);
 block_129:
-        if (D_8013AE88->data1C != 8) {
+        if (gCurrentTask->data1C != 8) {
             goto block_131;
         }
         startCurrentPlayerAnimation(0x1DU, 2U);
 block_131:
-        if (D_8013AE88->data1C != 0xF) {
+        if (gCurrentTask->data1C != 0xF) {
             goto block_133;
         }
         startCurrentPlayerAnimation(0x1AU, 2U);
 block_133:
-        if (D_8013AE88->data1C != 0x1E) {
+        if (gCurrentTask->data1C != 0x1E) {
             goto block_317;
         }
         startCurrentPlayerAnimation(0x1B, 2U);
         goto block_317;
     case 0x30:
-        if (!(D_8013B0D8->unk128 & 0x400)) {
+        if (!(gCurrentRacePlayer->unk128 & 0x400)) {
             goto block_137;
         }
-        D_8013B0D8->modelRotation.vz = rsin(D_8013B0D8->unk08C) * 3;
+        gCurrentRacePlayer->modelRotation.vz = rsin(gCurrentRacePlayer->unk08C) * 3;
         goto block_138;
 block_137:
-        D_8013B0D8->modelRotation.vz = -rsin(D_8013B0D8->unk08C) * 3;
+        gCurrentRacePlayer->modelRotation.vz = -rsin(gCurrentRacePlayer->unk08C) * 3;
 block_138:
-        D_8013B0D8->unk08C += 0x16;
-        temp_v1_3 = D_8013AE88->data1C;
+        gCurrentRacePlayer->unk08C += 0x16;
+        temp_v1_3 = gCurrentTask->data1C;
         if (temp_v1_3 >= 0x2DU) {
             goto block_140;
         }
-        D_8013AE88->data1C = temp_v1_3 + 1;
+        gCurrentTask->data1C = temp_v1_3 + 1;
 block_140:
-        D_8013B0D8->modelRotation.vy = (D_8013AE88->data1C << 0xC) / 45;
-        if (D_8013AE88->data1C != 1) {
+        gCurrentRacePlayer->modelRotation.vy = (gCurrentTask->data1C << 0xC) / 45;
+        if (gCurrentTask->data1C != 1) {
             goto block_142;
         }
         startCurrentPlayerAnimation(0x1AU, 2U);
 block_142:
-        if (D_8013AE88->data1C != 0x1E) {
+        if (gCurrentTask->data1C != 0x1E) {
             goto block_317;
         }
         startCurrentPlayerAnimation(0x1B, 2U);
         goto block_317;
     case 0x31:
-        if (D_8013B0D8->unk128 & 0x400) {
-            D_8013B0D8->modelRotation.vz = -rsin(D_8013B0D8->unk08C) * 3;
+        if (gCurrentRacePlayer->unk128 & 0x400) {
+            gCurrentRacePlayer->modelRotation.vz = -rsin(gCurrentRacePlayer->unk08C) * 3;
         } else {
-            D_8013B0D8->modelRotation.vz = rsin(D_8013B0D8->unk08C) * 3;
+            gCurrentRacePlayer->modelRotation.vz = rsin(gCurrentRacePlayer->unk08C) * 3;
         }
-        D_8013B0D8->unk08C += 0x12;
+        gCurrentRacePlayer->unk08C += 0x12;
         break;
     case 0x25:
-        if (!(D_8013B0D8->unk128 & 0x400)) {
+        if (!(gCurrentRacePlayer->unk128 & 0x400)) {
             goto block_150;
         }
-        D_8013B0D8->modelRotation.vx = rsin(D_8013B0D8->unk08C) * 2;
+        gCurrentRacePlayer->modelRotation.vx = rsin(gCurrentRacePlayer->unk08C) * 2;
         goto block_151;
 block_150:
-        D_8013B0D8->modelRotation.vx = -rsin(D_8013B0D8->unk08C) * 2;
+        gCurrentRacePlayer->modelRotation.vx = -rsin(gCurrentRacePlayer->unk08C) * 2;
 block_151:
-        D_8013B0D8->unk08C += 0x16;
-        temp_v0_14 = D_8013AE88->data1C;
-        D_8013AE88->data1C = temp_v0_14 + 1;
+        gCurrentRacePlayer->unk08C += 0x16;
+        temp_v0_14 = gCurrentTask->data1C;
+        gCurrentTask->data1C = temp_v0_14 + 1;
         if ((u32) (temp_v0_14 - 8) >= 0xBU) {
             goto block_154;
         }
-        temp_v1_4 = D_8013AE88->data1E;
+        temp_v1_4 = gCurrentTask->data1E;
         if (temp_v1_4 == 0xFC00) {
             goto block_154;
         }
-        D_8013AE88->data1E = temp_v1_4 - 0x80;
+        gCurrentTask->data1E = temp_v1_4 - 0x80;
 block_154:
-        if ((u16) D_8013AE88->data1C < 0x1FU) {
+        if ((u16) gCurrentTask->data1C < 0x1FU) {
             goto block_157;
         }
-        temp_v0_15 = D_8013AE88->data1E;
+        temp_v0_15 = gCurrentTask->data1E;
         if (temp_v0_15 == 0) {
             goto block_157;
         }
-        D_8013AE88->data1E = temp_v0_15 + 0x80;
+        gCurrentTask->data1E = temp_v0_15 + 0x80;
 block_157:
-        D_8013B0D8->modelRotation.vy = -(s16) D_8013AE88->data1E;
-        if (D_8013AE88->data1C != 1) {
+        gCurrentRacePlayer->modelRotation.vy = -(s16) gCurrentTask->data1E;
+        if (gCurrentTask->data1C != 1) {
             goto block_159;
         }
         startCurrentPlayerAnimation(0x24U, 2U);
 block_159:
-        if (D_8013AE88->data1C != 0xC) {
+        if (gCurrentTask->data1C != 0xC) {
             goto block_161;
         }
         startCurrentPlayerAnimation(0x1AU, 2U);
 block_161:
-        if (D_8013AE88->data1C != 0x1E) {
+        if (gCurrentTask->data1C != 0x1E) {
             goto block_317;
         }
         startCurrentPlayerAnimation(0x1B, 2U);
         goto block_317;
     case 0x32:
-        D_8013B0D8->modelRotation.vy = -rsin(D_8013B0D8->unk08C) * 2;
-        D_8013B0D8->unk08C += 0x16;
-        temp_v0_16 = D_8013AE88->data1C + 1;
-        D_8013AE88->data1C = temp_v0_16;
+        gCurrentRacePlayer->modelRotation.vy = -rsin(gCurrentRacePlayer->unk08C) * 2;
+        gCurrentRacePlayer->unk08C += 0x16;
+        temp_v0_16 = gCurrentTask->data1C + 1;
+        gCurrentTask->data1C = temp_v0_16;
         if ((temp_v0_16 & 0xFFFF) != 1) {
             goto block_165;
         }
         startCurrentPlayerAnimation(0x1EU, 2U);
 block_165:
-        if (D_8013AE88->data1C != 8) {
+        if (gCurrentTask->data1C != 8) {
             goto block_167;
         }
         startCurrentPlayerAnimation(0x1FU, 2U);
 block_167:
-        if (D_8013AE88->data1C != 0xF) {
+        if (gCurrentTask->data1C != 0xF) {
             goto block_169;
         }
         startCurrentPlayerAnimation(0x1CU, 2U);
 block_169:
-        if (D_8013AE88->data1C != 0x1E) {
+        if (gCurrentTask->data1C != 0x1E) {
             goto block_317;
         }
         startCurrentPlayerAnimation(0x1D, 2U);
         goto block_317;
     case 0x33:
-        if (!(D_8013B0D8->unk128 & 0x400)) {
+        if (!(gCurrentRacePlayer->unk128 & 0x400)) {
             goto block_173;
         }
-        D_8013B0D8->modelRotation.vx = rsin(D_8013B0D8->unk08C) * 3;
+        gCurrentRacePlayer->modelRotation.vx = rsin(gCurrentRacePlayer->unk08C) * 3;
         goto block_174;
 block_173:
-        D_8013B0D8->modelRotation.vx = -rsin(D_8013B0D8->unk08C) * 3;
+        gCurrentRacePlayer->modelRotation.vx = -rsin(gCurrentRacePlayer->unk08C) * 3;
 block_174:
-        D_8013B0D8->unk08C += 0x14;
-        temp_v0_18 = D_8013AE88->data1C;
-        D_8013AE88->data1C = temp_v0_18 + 1;
+        gCurrentRacePlayer->unk08C += 0x14;
+        temp_v0_18 = gCurrentTask->data1C;
+        gCurrentTask->data1C = temp_v0_18 + 1;
         if ((u32) (temp_v0_18 - 8) >= 0xBU) {
             goto block_177;
         }
-        temp_v1_5 = D_8013AE88->data1E;
+        temp_v1_5 = gCurrentTask->data1E;
         if (temp_v1_5 == 0x400) {
             goto block_177;
         }
-        D_8013AE88->data1E = temp_v1_5 + 0x80;
+        gCurrentTask->data1E = temp_v1_5 + 0x80;
 block_177:
-        if ((u16) D_8013AE88->data1C < 0x1FU) {
+        if ((u16) gCurrentTask->data1C < 0x1FU) {
             goto block_180;
         }
-        temp_v0_19 = D_8013AE88->data1E;
+        temp_v0_19 = gCurrentTask->data1E;
         if (temp_v0_19 == 0) {
             goto block_180;
         }
-        D_8013AE88->data1E = temp_v0_19 - 0x80;
+        gCurrentTask->data1E = temp_v0_19 - 0x80;
 block_180:
-        D_8013B0D8->modelRotation.vy = -(s16) D_8013AE88->data1E;
-        if (D_8013AE88->data1C != 1) {
+        gCurrentRacePlayer->modelRotation.vy = -(s16) gCurrentTask->data1E;
+        if (gCurrentTask->data1C != 1) {
             goto block_182;
         }
         startCurrentPlayerAnimation(0x24U, 2U);
 block_182:
-        if (D_8013AE88->data1C != 0xC) {
+        if (gCurrentTask->data1C != 0xC) {
             goto block_184;
         }
         startCurrentPlayerAnimation(0x1AU, 2U);
 block_184:
-        if (D_8013AE88->data1C != 0x1E) {
+        if (gCurrentTask->data1C != 0x1E) {
             goto block_317;
         }
         startCurrentPlayerAnimation(0x1B, 2U);
         goto block_317;
     case 0x34:
-        D_8013B0D8->modelRotation.vy = -rsin(D_8013B0D8->unk08C) * 3;
-        D_8013B0D8->unk08C += 0x16;
-        temp_v0_20 = D_8013AE88->data1C + 1;
-        D_8013AE88->data1C = temp_v0_20;
+        gCurrentRacePlayer->modelRotation.vy = -rsin(gCurrentRacePlayer->unk08C) * 3;
+        gCurrentRacePlayer->unk08C += 0x16;
+        temp_v0_20 = gCurrentTask->data1C + 1;
+        gCurrentTask->data1C = temp_v0_20;
         if ((temp_v0_20 & 0xFFFF) != 1) {
             goto block_188;
         }
         startCurrentPlayerAnimation(0x20U, 2U);
 block_188:
-        if (D_8013AE88->data1C != 0x1E) {
+        if (gCurrentTask->data1C != 0x1E) {
             goto block_317;
         }
         startCurrentPlayerAnimation(0x21, 2U);
         goto block_317;
     case 0x26:
-        D_8013B0D8->unk08C += 0x16;
-        temp_v0_21 = D_8013AE88->data1C + 1;
-        D_8013AE88->data1C = temp_v0_21;
+        gCurrentRacePlayer->unk08C += 0x16;
+        temp_v0_21 = gCurrentTask->data1C + 1;
+        gCurrentTask->data1C = temp_v0_21;
         if ((temp_v0_21 & 0xFFFF) != 1) {
             goto block_317;
         }
         startCurrentPlayerAnimation(0x25, 2U);
         goto block_317;
     case 0x35:
-        D_8013B0D8->modelRotation.vy = -rsin(D_8013B0D8->unk08C) * 2;
-        D_8013B0D8->unk08C += 0x16;
-        temp_v0_22 = D_8013AE88->data1C + 1;
-        D_8013AE88->data1C = temp_v0_22;
+        gCurrentRacePlayer->modelRotation.vy = -rsin(gCurrentRacePlayer->unk08C) * 2;
+        gCurrentRacePlayer->unk08C += 0x16;
+        temp_v0_22 = gCurrentTask->data1C + 1;
+        gCurrentTask->data1C = temp_v0_22;
         if ((temp_v0_22 & 0xFFFF) != 1) {
             goto block_194;
         }
         startCurrentPlayerAnimation(0x1EU, 2U);
 block_194:
-        if (D_8013AE88->data1C != 8) {
+        if (gCurrentTask->data1C != 8) {
             goto block_196;
         }
         startCurrentPlayerAnimation(0x1FU, 2U);
 block_196:
-        if (D_8013AE88->data1C != 0xF) {
+        if (gCurrentTask->data1C != 0xF) {
             goto block_198;
         }
         startCurrentPlayerAnimation(0x20U, 2U);
 block_198:
-        if (D_8013AE88->data1C != 0x1E) {
+        if (gCurrentTask->data1C != 0x1E) {
             goto block_317;
         }
         startCurrentPlayerAnimation(0x21, 2U);
         goto block_317;
     case 0x36:
-        D_8013B0D8->unk08C += 0x14;
-        temp_v0_23 = D_8013AE88->data1C + 1;
-        D_8013AE88->data1C = temp_v0_23;
+        gCurrentRacePlayer->unk08C += 0x14;
+        temp_v0_23 = gCurrentTask->data1C + 1;
+        gCurrentTask->data1C = temp_v0_23;
         if ((temp_v0_23 & 0xFFFF) != 1) {
             goto block_317;
         }
         startCurrentPlayerAnimation(0x24, 2U);
         goto block_317;
     case 0x3D:
-        D_8013B0D8->modelRotation.vy = -rsin(D_8013B0D8->unk08C) * 2;
-        D_8013B0D8->unk08C += 0x16;
-        temp_v0_24 = D_8013AE88->data1C + 1;
-        D_8013AE88->data1C = temp_v0_24;
+        gCurrentRacePlayer->modelRotation.vy = -rsin(gCurrentRacePlayer->unk08C) * 2;
+        gCurrentRacePlayer->unk08C += 0x16;
+        temp_v0_24 = gCurrentTask->data1C + 1;
+        gCurrentTask->data1C = temp_v0_24;
         if ((temp_v0_24 & 0xFFFF) != 1) {
             goto block_204;
         }
         startCurrentPlayerAnimation(0x1AU, 2U);
 block_204:
-        if (D_8013AE88->data1C != 8) {
+        if (gCurrentTask->data1C != 8) {
             goto block_206;
         }
         startCurrentPlayerAnimation(0x1BU, 2U);
 block_206:
-        if (D_8013AE88->data1C != 0xF) {
+        if (gCurrentTask->data1C != 0xF) {
             goto block_208;
         }
         startCurrentPlayerAnimation(0x1CU, 2U);
 block_208:
-        if (D_8013AE88->data1C != 0x1E) {
+        if (gCurrentTask->data1C != 0x1E) {
             goto block_317;
         }
         startCurrentPlayerAnimation(0x1D, 2U);
         goto block_317;
     case 0x3E:
-        temp_a0_3 = D_8013B0D8->unk08C;
+        temp_a0_3 = gCurrentRacePlayer->unk08C;
         if (temp_a0_3 >= 0x200) {
             goto block_212;
         }
         var_v0_19 = -rsin(temp_a0_3);
-        D_8013B0D8->modelRotation.vy = var_v0_19 * 2;
+        gCurrentRacePlayer->modelRotation.vy = var_v0_19 * 2;
         goto block_213;
 block_212:
         var_v0_19 = rsin(temp_a0_3);
-        D_8013B0D8->modelRotation.vy = var_v0_19 * 2;
+        gCurrentRacePlayer->modelRotation.vy = var_v0_19 * 2;
 block_213:
-        D_8013B0D8->unk08C += 0x14;
-        temp_v0_25 = D_8013AE88->data1C + 1;
-        D_8013AE88->data1C = temp_v0_25;
+        gCurrentRacePlayer->unk08C += 0x14;
+        temp_v0_25 = gCurrentTask->data1C + 1;
+        gCurrentTask->data1C = temp_v0_25;
         if ((temp_v0_25 & 0xFFFF) != 1) {
             goto block_215;
         }
         startCurrentPlayerAnimation(0x1CU, 2U);
 block_215:
-        if (D_8013AE88->data1C != 8) {
+        if (gCurrentTask->data1C != 8) {
             goto block_217;
         }
         startCurrentPlayerAnimation(0x1DU, 2U);
 block_217:
-        if (D_8013AE88->data1C != 0xF) {
+        if (gCurrentTask->data1C != 0xF) {
             goto block_219;
         }
         startCurrentPlayerAnimation(0x1AU, 2U);
 block_219:
-        if (D_8013AE88->data1C != 0x1E) {
+        if (gCurrentTask->data1C != 0x1E) {
             goto block_317;
         }
         startCurrentPlayerAnimation(0x1B, 2U);
         goto block_317;
     case 0x3F:
-        if (!(D_8013B0D8->unk128 & 0x400)) {
+        if (!(gCurrentRacePlayer->unk128 & 0x400)) {
             goto block_223;
         }
-        var_v0_20 = -rsin(D_8013B0D8->unk08C);
-        D_8013B0D8->modelRotation.vz = (s16) var_v0_20;
+        var_v0_20 = -rsin(gCurrentRacePlayer->unk08C);
+        gCurrentRacePlayer->modelRotation.vz = (s16) var_v0_20;
         goto block_224;
 block_223:
-        var_v0_20 = rsin(D_8013B0D8->unk08C);
-        D_8013B0D8->modelRotation.vz = (s16) var_v0_20;
+        var_v0_20 = rsin(gCurrentRacePlayer->unk08C);
+        gCurrentRacePlayer->modelRotation.vz = (s16) var_v0_20;
 block_224:
-        D_8013B0D8->unk08C += 0x12;
+        gCurrentRacePlayer->unk08C += 0x12;
         goto block_317;
     case 0x40:
-        if (!(D_8013B0D8->unk128 & 0x400)) {
+        if (!(gCurrentRacePlayer->unk128 & 0x400)) {
             goto block_228;
         }
-        var_v0_21 = -rsin(D_8013B0D8->unk08C);
-        D_8013B0D8->modelRotation.vz = (s16) var_v0_21;
+        var_v0_21 = -rsin(gCurrentRacePlayer->unk08C);
+        gCurrentRacePlayer->modelRotation.vz = (s16) var_v0_21;
         goto block_229;
 block_228:
-        var_v0_21 = rsin(D_8013B0D8->unk08C);
-        D_8013B0D8->modelRotation.vz = (s16) var_v0_21;
+        var_v0_21 = rsin(gCurrentRacePlayer->unk08C);
+        gCurrentRacePlayer->modelRotation.vz = (s16) var_v0_21;
 block_229:
-        D_8013B0D8->modelRotation.vy = rsin(D_8013B0D8->unk08C) * 5;
-        D_8013B0D8->unk08C += 0x11;
+        gCurrentRacePlayer->modelRotation.vy = rsin(gCurrentRacePlayer->unk08C) * 5;
+        gCurrentRacePlayer->unk08C += 0x11;
         goto block_317;
     case 0x41:
-        D_8013B0D8->modelRotation.vy = rsin(D_8013B0D8->unk08C) * 2;
-        D_8013B0D8->unk08C += 0x16;
-        temp_v0_26 = D_8013AE88->data1C + 1;
-        D_8013AE88->data1C = temp_v0_26;
+        gCurrentRacePlayer->modelRotation.vy = rsin(gCurrentRacePlayer->unk08C) * 2;
+        gCurrentRacePlayer->unk08C += 0x16;
+        temp_v0_26 = gCurrentTask->data1C + 1;
+        gCurrentTask->data1C = temp_v0_26;
         if ((temp_v0_26 & 0xFFFF) != 1) {
             goto block_232;
         }
         startCurrentPlayerAnimation(0x1CU, 2U);
 block_232:
-        if (D_8013AE88->data1C != 8) {
+        if (gCurrentTask->data1C != 8) {
             goto block_234;
         }
         startCurrentPlayerAnimation(0x1DU, 2U);
 block_234:
-        if (D_8013AE88->data1C != 0xF) {
+        if (gCurrentTask->data1C != 0xF) {
             goto block_236;
         }
         startCurrentPlayerAnimation(0x1AU, 2U);
 block_236:
-        if (D_8013AE88->data1C != 0x1E) {
+        if (gCurrentTask->data1C != 0x1E) {
             goto block_317;
         }
         startCurrentPlayerAnimation(0x1B, 2U);
         goto block_317;
     case 0x42:
-        D_8013B0D8->modelRotation.vy = rsin(D_8013B0D8->unk08C);
-        D_8013B0D8->unk08C += 0x16;
-        temp_v0_27 = D_8013AE88->data1C + 1;
-        D_8013AE88->data1C = temp_v0_27;
+        gCurrentRacePlayer->modelRotation.vy = rsin(gCurrentRacePlayer->unk08C);
+        gCurrentRacePlayer->unk08C += 0x16;
+        temp_v0_27 = gCurrentTask->data1C + 1;
+        gCurrentTask->data1C = temp_v0_27;
         if ((temp_v0_27 & 0xFFFF) != 1) {
             goto block_240;
         }
         startCurrentPlayerAnimation(0x24U, 2U);
 block_240:
-        if (D_8013AE88->data1C != 0x1E) {
+        if (gCurrentTask->data1C != 0x1E) {
             goto block_317;
         }
         startCurrentPlayerAnimation(0x25, 2U);
         goto block_317;
     case 0x43:
-        D_8013B0D8->modelRotation.vy = rsin(D_8013B0D8->unk08C) * 5;
-        D_8013B0D8->unk08C += 0x14;
-        temp_v0_28 = D_8013AE88->data1C + 1;
-        D_8013AE88->data1C = temp_v0_28;
+        gCurrentRacePlayer->modelRotation.vy = rsin(gCurrentRacePlayer->unk08C) * 5;
+        gCurrentRacePlayer->unk08C += 0x14;
+        temp_v0_28 = gCurrentTask->data1C + 1;
+        gCurrentTask->data1C = temp_v0_28;
         if ((temp_v0_28 & 0xFFFF) != 1) {
             goto block_244;
         }
         startCurrentPlayerAnimation(0x1EU, 2U);
 block_244:
-        if (D_8013AE88->data1C == 0x23) {
+        if (gCurrentTask->data1C == 0x23) {
             startCurrentPlayerAnimation(0x1F, 2);
         }
         goto block_317;
     case 0x44:
-        if (!(D_8013B0D8->unk128 & 0x400)) {
+        if (!(gCurrentRacePlayer->unk128 & 0x400)) {
             goto block_247;
         }
-        D_8013B0D8->modelRotation.vx = rsin(D_8013B0D8->unk08C) * 4;
+        gCurrentRacePlayer->modelRotation.vx = rsin(gCurrentRacePlayer->unk08C) * 4;
         goto block_248;
 block_247:
-        D_8013B0D8->modelRotation.vx = -rsin(D_8013B0D8->unk08C) * 4;
+        gCurrentRacePlayer->modelRotation.vx = -rsin(gCurrentRacePlayer->unk08C) * 4;
 block_248:
-        D_8013B0D8->unk08C += 0x12;
-        temp_v0_29 = D_8013AE88->data1C + 1;
-        D_8013AE88->data1C = temp_v0_29;
+        gCurrentRacePlayer->unk08C += 0x12;
+        temp_v0_29 = gCurrentTask->data1C + 1;
+        gCurrentTask->data1C = temp_v0_29;
         if ((temp_v0_29 & 0xFFFF) != 1) {
             goto block_250;
         }
         startCurrentPlayerAnimation(0x26U, 2U);
 block_250:
-        if (D_8013AE88->data1C != 0x2D) {
+        if (gCurrentTask->data1C != 0x2D) {
             goto block_317;
         }
         startCurrentPlayerAnimation(0x27, 2U);
         goto block_317;
     case 0x3A:
-        D_8013B0D8->modelRotation.vy = -rsin(D_8013B0D8->unk08C) * 2;
-        D_8013B0D8->unk08C += 0x14;
-        temp_v0_30 = D_8013AE88->data1C + 1;
-        D_8013AE88->data1C = temp_v0_30;
+        gCurrentRacePlayer->modelRotation.vy = -rsin(gCurrentRacePlayer->unk08C) * 2;
+        gCurrentRacePlayer->unk08C += 0x14;
+        temp_v0_30 = gCurrentTask->data1C + 1;
+        gCurrentTask->data1C = temp_v0_30;
         if ((temp_v0_30 & 0xFFFF) != 1) {
             goto block_254;
         }
         startCurrentPlayerAnimation(0x24U, 2U);
 block_254:
-        if (D_8013AE88->data1C != 0x28) {
+        if (gCurrentTask->data1C != 0x28) {
             goto block_317;
         }
         startCurrentPlayerAnimation(0x25, 2U);
         goto block_317;
     case 0x3B:
-        D_8013B0D8->unk08C += 0x12;
-        temp_v0_31 = D_8013AE88->data1C + 1;
-        D_8013AE88->data1C = temp_v0_31;
+        gCurrentRacePlayer->unk08C += 0x12;
+        temp_v0_31 = gCurrentTask->data1C + 1;
+        gCurrentTask->data1C = temp_v0_31;
         if ((temp_v0_31 & 0xFFFF) != 1) {
             goto block_317;
         }
         startCurrentPlayerAnimation(0x26, 2U);
         goto block_317;
     case 0x3C:
-        D_8013B0D8->modelRotation.vy = -rsin(D_8013B0D8->unk08C) * 2;
-        D_8013B0D8->unk08C += 0x16;
-        temp_v0_32 = D_8013AE88->data1C + 1;
-        D_8013AE88->data1C = temp_v0_32;
+        gCurrentRacePlayer->modelRotation.vy = -rsin(gCurrentRacePlayer->unk08C) * 2;
+        gCurrentRacePlayer->unk08C += 0x16;
+        temp_v0_32 = gCurrentTask->data1C + 1;
+        gCurrentTask->data1C = temp_v0_32;
         if ((temp_v0_32 & 0xFFFF) != 1) {
             goto block_260;
         }
         startCurrentPlayerAnimation(0x1AU, 2U);
 block_260:
-        if (D_8013AE88->data1C != 8) {
+        if (gCurrentTask->data1C != 8) {
             goto block_262;
         }
         startCurrentPlayerAnimation(0x1BU, 2U);
 block_262:
-        if (D_8013AE88->data1C != 0xF) {
+        if (gCurrentTask->data1C != 0xF) {
             goto block_264;
         }
         startCurrentPlayerAnimation(0x1CU, 2U);
 block_264:
-        if (D_8013AE88->data1C != 0x1E) {
+        if (gCurrentTask->data1C != 0x1E) {
             goto block_317;
         }
         startCurrentPlayerAnimation(0x1D, 2U);
         goto block_317;
     case 0x27:
-        temp_v1_6 = D_8013AE88->data1C;
+        temp_v1_6 = gCurrentTask->data1C;
         if (temp_v1_6 == 0) {
             goto block_269;
         }
@@ -2870,213 +2870,213 @@ block_264:
         }
         goto block_317;
 block_269:
-        if (!(D_8013B0D8->unk128 & 0x400)) {
+        if (!(gCurrentRacePlayer->unk128 & 0x400)) {
             goto block_271;
         }
-        var_v0_24 = -rsin(D_8013B0D8->unk08C * 2);
-        D_8013B0D8->modelRotation.vz = (s16) var_v0_24;
+        var_v0_24 = -rsin(gCurrentRacePlayer->unk08C * 2);
+        gCurrentRacePlayer->modelRotation.vz = (s16) var_v0_24;
         goto block_272;
 block_271:
-        var_v0_24 = rsin(D_8013B0D8->unk08C * 2);
-        D_8013B0D8->modelRotation.vz = (s16) var_v0_24;
+        var_v0_24 = rsin(gCurrentRacePlayer->unk08C * 2);
+        gCurrentRacePlayer->modelRotation.vz = (s16) var_v0_24;
 block_272:
-        temp_v0_33 = D_8013B0D8->unk08C + 0x19;
-        D_8013B0D8->unk08C = temp_v0_33;
+        temp_v0_33 = gCurrentRacePlayer->unk08C + 0x19;
+        gCurrentRacePlayer->unk08C = temp_v0_33;
         if (temp_v0_33 < 0x201) {
             goto block_317;
         }
-        D_8013B0D8->unk08C = 0x200;
-        D_8013AE88->data1E = 0;
-        D_8013AE88->data1C += 1;
+        gCurrentRacePlayer->unk08C = 0x200;
+        gCurrentTask->data1E = 0;
+        gCurrentTask->data1C += 1;
         goto block_317;
 block_274:
-        D_8013B0D8->modelRotation.vy = -rsin((D_8013B0D8->unk08C - 0x200) * 2) * 2;
-        if (!(D_8013B0D8->unk128 & 0x400)) {
+        gCurrentRacePlayer->modelRotation.vy = -rsin((gCurrentRacePlayer->unk08C - 0x200) * 2) * 2;
+        if (!(gCurrentRacePlayer->unk128 & 0x400)) {
             goto block_276;
         }
-        D_8013B0D8->modelRotation.vz = (s16) D_8013AE88->data1E;
+        gCurrentRacePlayer->modelRotation.vz = (s16) gCurrentTask->data1E;
         goto block_277;
 block_276:
-        D_8013B0D8->modelRotation.vz = -(s16) D_8013AE88->data1E;
+        gCurrentRacePlayer->modelRotation.vz = -(s16) gCurrentTask->data1E;
 block_277:
-        temp_v0_34 = D_8013B0D8->unk08C + 0x10;
-        D_8013B0D8->unk08C = temp_v0_34;
+        temp_v0_34 = gCurrentRacePlayer->unk08C + 0x10;
+        gCurrentRacePlayer->unk08C = temp_v0_34;
         if (temp_v0_34 < 0x401) {
             goto block_279;
         }
-        D_8013B0D8->unk08C = 0x400;
+        gCurrentRacePlayer->unk08C = 0x400;
 block_279:
-        temp_v1_7 = D_8013AE88->data1E;
+        temp_v1_7 = gCurrentTask->data1E;
         if (temp_v1_7 == 0x1000) {
             goto block_317;
         }
-        D_8013AE88->data1E = temp_v1_7 + 0x80;
+        gCurrentTask->data1E = temp_v1_7 + 0x80;
         goto block_317;
     case 0x38:
-        D_8013B0D8->modelRotation.vy = -rsin(D_8013B0D8->unk08C) * 5;
-        D_8013B0D8->unk08C += 0x14;
+        gCurrentRacePlayer->modelRotation.vy = -rsin(gCurrentRacePlayer->unk08C) * 5;
+        gCurrentRacePlayer->unk08C += 0x14;
         goto block_317;
     case 0x39:
-        if (!(D_8013B0D8->unk128 & 0x400)) {
+        if (!(gCurrentRacePlayer->unk128 & 0x400)) {
             goto block_284;
         }
-        D_8013B0D8->modelRotation.vz = rsin(D_8013B0D8->unk08C) * 5;
+        gCurrentRacePlayer->modelRotation.vz = rsin(gCurrentRacePlayer->unk08C) * 5;
         goto block_285;
 block_284:
-        D_8013B0D8->modelRotation.vz = -rsin(D_8013B0D8->unk08C) * 5;
+        gCurrentRacePlayer->modelRotation.vz = -rsin(gCurrentRacePlayer->unk08C) * 5;
 block_285:
 block_286:
-        D_8013B0D8->unk08C += 0x14;
+        gCurrentRacePlayer->unk08C += 0x14;
         goto block_317;
     case 0x37:
     case 0x45:
-        D_8013B0D8->modelRotation.vy = -rsin(D_8013B0D8->unk08C) * 2;
-        D_8013B0D8->unk08C += 0x16;
+        gCurrentRacePlayer->modelRotation.vy = -rsin(gCurrentRacePlayer->unk08C) * 2;
+        gCurrentRacePlayer->unk08C += 0x16;
         goto block_317;
     case 0x46:
-        D_8013B0D8->modelRotation.vy = rsin(D_8013B0D8->unk08C) * 2;
-        if (D_8013AE88->data1C < 8) {
-            D_8013B0D8->modelRotation.vz = D_8013AE88->data1C * 256;
-        } else if (D_8013AE88->data1C >= 0x22) {
-            D_8013B0D8->modelRotation.vz = D_8013AE88->data1C * 128 - 0x880;
+        gCurrentRacePlayer->modelRotation.vy = rsin(gCurrentRacePlayer->unk08C) * 2;
+        if (gCurrentTask->data1C < 8) {
+            gCurrentRacePlayer->modelRotation.vz = gCurrentTask->data1C * 256;
+        } else if (gCurrentTask->data1C >= 0x22) {
+            gCurrentRacePlayer->modelRotation.vz = gCurrentTask->data1C * 128 - 0x880;
         } else {
-            D_8013B0D8->modelRotation.vz = 0x800;
+            gCurrentRacePlayer->modelRotation.vz = 0x800;
         }
-        D_8013B0D8->unk08C += 0x14;
-        temp_v1_8 = D_8013AE88->data1C;
+        gCurrentRacePlayer->unk08C += 0x14;
+        temp_v1_8 = gCurrentTask->data1C;
         if (temp_v1_8 >= 0x32U) {
             goto block_317;
         }
-        D_8013AE88->data1C = temp_v1_8 + 1;
+        gCurrentTask->data1C = temp_v1_8 + 1;
         goto block_317;
     case 0x47:
-        var_v0_27 = rsin(D_8013B0D8->unk08C) * 4;
-        spinPlayer = D_8013B0D8;
+        var_v0_27 = rsin(gCurrentRacePlayer->unk08C) * 4;
+        spinPlayer = gCurrentRacePlayer;
         spinPlayer->modelRotation.vy = var_v0_27;
-        if ((u16) D_8013AE88->data1C >= 0x14U) {
+        if ((u16) gCurrentTask->data1C >= 0x14U) {
             goto block_298;
         }
         if (spinPlayer->unk128 & 0x400) {
             goto block_300;
         }
-        D_8013B0D8->modelRotation.vz = rsin(spinPlayer->unk08C) * 2;
+        gCurrentRacePlayer->modelRotation.vz = rsin(spinPlayer->unk08C) * 2;
         goto block_301;
 block_298:
         if (!(spinPlayer->unk128 & 0x400)) {
             goto block_300;
         }
-        D_8013B0D8->modelRotation.vz = rsin(spinPlayer->unk08C) * 2;
+        gCurrentRacePlayer->modelRotation.vz = rsin(spinPlayer->unk08C) * 2;
         goto block_301;
 block_300:
-        D_8013B0D8->modelRotation.vz = -rsin(spinPlayer->unk08C) * 2;
+        gCurrentRacePlayer->modelRotation.vz = -rsin(spinPlayer->unk08C) * 2;
 block_301:
-        D_8013B0D8->unk08C += 0x14;
-        temp_v0_36 = D_8013AE88->data1C + 1;
-        D_8013AE88->data1C = temp_v0_36;
+        gCurrentRacePlayer->unk08C += 0x14;
+        temp_v0_36 = gCurrentTask->data1C + 1;
+        gCurrentTask->data1C = temp_v0_36;
         if ((temp_v0_36 & 0xFFFF) != 1) {
             goto block_303;
         }
         startCurrentPlayerAnimation(0x20U, 2U);
 block_303:
-        if (D_8013AE88->data1C == 8) {
+        if (gCurrentTask->data1C == 8) {
             startCurrentPlayerAnimation(0x21, 2);
         }
 block_305:
-        if (D_8013AE88->data1C != 0xF) {
+        if (gCurrentTask->data1C != 0xF) {
             goto block_307;
         }
         startCurrentPlayerAnimation(0x1EU, 2U);
 block_307:
-        if (D_8013AE88->data1C == 0x1E) {
+        if (gCurrentTask->data1C == 0x1E) {
             startCurrentPlayerAnimation(0x1F, 2);
         }
         goto block_317;
     case 0x48:
-        D_8013B0D8->modelRotation.vy = rsin(D_8013B0D8->unk08C) * 6;
-        if (!(D_8013B0D8->unk128 & 0x400)) {
+        gCurrentRacePlayer->modelRotation.vy = rsin(gCurrentRacePlayer->unk08C) * 6;
+        if (!(gCurrentRacePlayer->unk128 & 0x400)) {
             goto block_312;
         }
-        D_8013B0D8->modelRotation.vz = -rsin(D_8013B0D8->unk08C) * 6;
+        gCurrentRacePlayer->modelRotation.vz = -rsin(gCurrentRacePlayer->unk08C) * 6;
         goto block_313;
 block_312:
-        D_8013B0D8->modelRotation.vz = rsin(D_8013B0D8->unk08C) * 6;
+        gCurrentRacePlayer->modelRotation.vz = rsin(gCurrentRacePlayer->unk08C) * 6;
 block_313:
-        if (!((u16) D_8013B0D8->modelRotation.vz & 0x1000)) {
+        if (!((u16) gCurrentRacePlayer->modelRotation.vz & 0x1000)) {
             goto block_315;
         }
-        D_8013B0D8->modelRotation.vy = -(s16) (u16) D_8013B0D8->modelRotation.vy;
+        gCurrentRacePlayer->modelRotation.vy = -(s16) (u16) gCurrentRacePlayer->modelRotation.vy;
 block_315:
-        phasePlayer = D_8013B0D8;
+        phasePlayer = gCurrentRacePlayer;
         nextPhase = phasePlayer->unk08C + 0x11;
-        phaseTask = D_8013AE88;
+        phaseTask = gCurrentTask;
 block_316:
         phasePlayer->unk08C = nextPhase;
         phaseTask->data1C += 1;
     }
 block_317:
-    temp_v0_37 = D_8013B0D8->modelRotation.vz;
+    temp_v0_37 = gCurrentRacePlayer->modelRotation.vz;
     if (temp_v0_37 == 0) {
         goto block_321;
     }
     temp_v1_9 = rsin(temp_v0_37 / 2) / 48;
-    D_8013B0D8->unk086 = temp_v1_9;
+    gCurrentRacePlayer->unk086 = temp_v1_9;
     if (temp_v1_9 < 0) {
-        D_8013B0D8->unk086 = -temp_v1_9;
+        gCurrentRacePlayer->unk086 = -temp_v1_9;
     }
-    temp_s0 = rsin((s32) D_8013B0D8->modelRotation.vz);
-    D_8013B0D8->unk088 = (temp_s0 * rcos((s32) (s16) D_8013B0D8->unk110)) / 393216;
-    temp_s0_2 = rsin((s32) D_8013B0D8->modelRotation.vz);
-    D_8013B0D8->unk084 = (temp_s0_2 * rsin((s32) (s16) D_8013B0D8->unk110)) / 393216;
+    temp_s0 = rsin((s32) gCurrentRacePlayer->modelRotation.vz);
+    gCurrentRacePlayer->unk088 = (temp_s0 * rcos((s32) (s16) gCurrentRacePlayer->unk110)) / 393216;
+    temp_s0_2 = rsin((s32) gCurrentRacePlayer->modelRotation.vz);
+    gCurrentRacePlayer->unk084 = (temp_s0_2 * rsin((s32) (s16) gCurrentRacePlayer->unk110)) / 393216;
 block_321:
-    temp_a0_5 = D_8013B0D8->modelRotation.vx;
+    temp_a0_5 = gCurrentRacePlayer->modelRotation.vx;
     if (temp_a0_5 == 0) {
         goto block_323;
     }
-    D_8013B0D8->unk086 = (0x1000 - rcos((s32) temp_a0_5)) / 96;
-    temp_s0_3 = rsin((s32) D_8013B0D8->modelRotation.vx);
-    D_8013B0D8->unk084 = (temp_s0_3 * rcos((s32) (s16) D_8013B0D8->unk110)) / 393216;
-    temp_s0_4 = rsin((s32) D_8013B0D8->modelRotation.vx);
-    D_8013B0D8->unk088 = (-temp_s0_4 * rsin((s32) (s16) D_8013B0D8->unk110)) / 393216;
+    gCurrentRacePlayer->unk086 = (0x1000 - rcos((s32) temp_a0_5)) / 96;
+    temp_s0_3 = rsin((s32) gCurrentRacePlayer->modelRotation.vx);
+    gCurrentRacePlayer->unk084 = (temp_s0_3 * rcos((s32) (s16) gCurrentRacePlayer->unk110)) / 393216;
+    temp_s0_4 = rsin((s32) gCurrentRacePlayer->modelRotation.vx);
+    gCurrentRacePlayer->unk088 = (-temp_s0_4 * rsin((s32) (s16) gCurrentRacePlayer->unk110)) / 393216;
 block_323:
-    if (D_8013B0D8->unk0C8 == 0) {
+    if (gCurrentRacePlayer->unk0C8 == 0) {
         goto block_333;
     }
-    if (D_8013B0D8->unk08C < 0x401) {
+    if (gCurrentRacePlayer->unk08C < 0x401) {
         goto block_326;
     }
-    D_8013B0D8->unk08C = 0x400;
+    gCurrentRacePlayer->unk08C = 0x400;
 block_326:
-    temp_a1 = D_8013B0D8->unk128;
-    D_8013B0D8->unk128 = temp_a1 | 2;
-    if (D_8013B0D8->unk08C >= 0x3D0) {
+    temp_a1 = gCurrentRacePlayer->unk128;
+    gCurrentRacePlayer->unk128 = temp_a1 | 2;
+    if (gCurrentRacePlayer->unk08C >= 0x3D0) {
         goto block_333;
     }
-    D_8013B0D8->unk128 = temp_a1 | 0x802;
-    if (D_8013B0D8->unk0C8 >= 9) {
+    gCurrentRacePlayer->unk128 = temp_a1 | 0x802;
+    if (gCurrentRacePlayer->unk0C8 >= 9) {
         goto block_330;
     }
     if ((u16)gFrameCounter & 1) {
-        createPlayerPairedQuadEffectTask(D_8013AE88->data18, 0);
+        createPlayerPairedQuadEffectTask(gCurrentTask->data18, 0);
     }
     goto block_333;
 block_330:
     if ((u16)gFrameCounter & 1) {
-        createPlayerPairedQuadEffectTask(D_8013AE88->data18, 1);
+        createPlayerPairedQuadEffectTask(gCurrentTask->data18, 1);
     }
 block_333:
-    markPlayerNearSelectedRecord((s16) D_8013AE88->data18);
+    markPlayerNearSelectedRecord((s16) gCurrentTask->data18);
     terrainContact = resolveCurrentPlayerTerrainContact();
     updateCurrentPlayerAnimation();
     if (D_8013B0E4 < 2) {
         goto block_335;
     }
-    D_8013B0D8->unk965 = 0;
-    dispatchPlayer = D_8013B0D8;
+    gCurrentRacePlayer->unk965 = 0;
+    dispatchPlayer = gCurrentRacePlayer;
     dispatchPlayer->unk0C8 = 0;
     nextStateCallback = currentPlayerStateCallbacks[dispatchPlayer->unk12C];
     goto block_359;
 block_335:
-    landingState = D_8013B0D8->unk12C;
+    landingState = gCurrentRacePlayer->unk12C;
     if ((u16)landingState != 0x1D) {
         goto block_337;
     }
@@ -3086,31 +3086,31 @@ block_337:
     if (terrainContact == 0) {
         goto block_360;
     }
-    temp_v1_11 = D_8013B0D8->unk128;
-    D_8013B0D8->unk128 = temp_v1_11 & ~0x200;
+    temp_v1_11 = gCurrentRacePlayer->unk128;
+    gCurrentRacePlayer->unk128 = temp_v1_11 & ~0x200;
     if (!(temp_v1_11 & 0x800)) {
         goto block_340;
     }
-    D_8013B0D8->trickAttackMakeCount = 0;
-    D_8013B0D8->unk965 = 0;
-    D_8013B0D8->unk0C8 = 0;
-    D_8013B0D8->unk12C = 0xE;
+    gCurrentRacePlayer->trickAttackMakeCount = 0;
+    gCurrentRacePlayer->unk965 = 0;
+    gCurrentRacePlayer->unk0C8 = 0;
+    gCurrentRacePlayer->unk12C = 0xE;
     playCurrentPlayerSoundEffect(2);
     goto block_357;
 block_340:
-    landingSpeed = D_8013B0D8->unk062;
+    landingSpeed = gCurrentRacePlayer->unk062;
     if (landingSpeed < 0x1000) {
-        queuePlayerControllerEffect(D_8013AE88->data18, 0xB);
-        playPlayerSoundEffect(D_8013AE88->data18, 1, 0xB01, 0x10);
+        queuePlayerControllerEffect(gCurrentTask->data18, 0xB);
+        playPlayerSoundEffect(gCurrentTask->data18, 1, 0xB01, 0x10);
     } else if (landingSpeed < 0x3000) {
-        queuePlayerControllerEffect(D_8013AE88->data18, 0xA);
-        playPlayerSoundEffect(D_8013AE88->data18, 1, 0xB01, 0x18);
+        queuePlayerControllerEffect(gCurrentTask->data18, 0xA);
+        playPlayerSoundEffect(gCurrentTask->data18, 1, 0xB01, 0x18);
     } else {
-        queuePlayerControllerEffect(D_8013AE88->data18, 9);
-        playPlayerSoundEffect(D_8013AE88->data18, 1, 0xB01, 0x20);
+        queuePlayerControllerEffect(gCurrentTask->data18, 9);
+        playPlayerSoundEffect(gCurrentTask->data18, 1, 0xB01, 0x20);
     }
     startCurrentPlayerAnimation(0U, 2U);
-    landingSurface = getCourseSurfaceAtPoint(D_8013B0D8->unk92E, (s32) D_8013B0D8->x >> 8, (s32) D_8013B0D8->z >> 8) & 0xFF;
+    landingSurface = getCourseSurfaceAtPoint(gCurrentRacePlayer->unk92E, (s32) gCurrentRacePlayer->x >> 8, (s32) gCurrentRacePlayer->z >> 8) & 0xFF;
     if (landingSurface == 3) {
         goto block_354;
     }
@@ -3135,18 +3135,18 @@ block_340:
     if (landingSurface == 0x10) {
         goto block_354;
     }
-    createPlayerTripleQuadEffectTask((s32) D_8013AE88->data18);
+    createPlayerTripleQuadEffectTask((s32) gCurrentTask->data18);
     awardCurrentPlayerTrickRewards();
 block_354:
-    if ((s16)tryStartPlayerSelectedRecordTransition((s16) D_8013AE88->data18) == 0) {
+    if ((s16)tryStartPlayerSelectedRecordTransition((s16) gCurrentTask->data18) == 0) {
         goto block_356;
     }
-    D_8013B0D8->unk12C = 7;
+    gCurrentRacePlayer->unk12C = 7;
     goto block_357;
 block_356:
-    D_8013B0D8->unk12C = 0;
+    gCurrentRacePlayer->unk12C = 0;
 block_357:
-    dispatchPlayer = D_8013B0D8;
+    dispatchPlayer = gCurrentRacePlayer;
     nextStateCallback = currentPlayerStateCallbacks[dispatchPlayer->unk12C];
 block_359:
     nextStateCallback();
@@ -3157,7 +3157,7 @@ block_360:
 void updateCurrentPlayerState29MotionAndAnimation(void) {
     RacePlayer *player;
     prepareCurrentPlayerFrame();
-    player = D_8013B0D8;
+    player = gCurrentRacePlayer;
     player->unk09E = player->unk09A;
     player->unk110 = player->unk138;
     player->unk112 = player->unk13A;
@@ -3165,30 +3165,30 @@ void updateCurrentPlayerState29MotionAndAnimation(void) {
         player->unk110 += 0x800;
         player->unk112 = -(player->unk112 & 0xFFF);
     }
-    D_8013B0D8->unk0B6 = D_8013B0D8->unk110 - 0x400;
-    D_8013B0D8->unk0B8 = D_8013B0D8->unk112;
+    gCurrentRacePlayer->unk0B6 = gCurrentRacePlayer->unk110 - 0x400;
+    gCurrentRacePlayer->unk0B8 = gCurrentRacePlayer->unk112;
     smoothAndScaleCurrentPlayerInput(0, 0);
-    D_800EB22C.vx = D_8013B0D8->unk060;
-    D_800EB22C.vz = D_8013B0D8->unk064;
+    D_800EB22C.vx = gCurrentRacePlayer->unk060;
+    D_800EB22C.vz = gCurrentRacePlayer->unk064;
     clampVectorToCurrentPlayerLimit(&D_800EB22C);
-    D_8013B0D8->unk060 = D_800EB22C.vx;
-    D_8013B0D8->unk064 = D_800EB22C.vz;
-    updateCurrentPlayerSlopeVelocityWithoutBoost(0, (s16)D_8013B0D8->unk0A6, (s16)D_8013B0D8->unk0A8, (s16)D_8013B0D8->unk0AA);
-    D_8013B0D8->x += D_8013B0D8->unk060;
-    D_8013B0D8->y += D_8013B0D8->unk062;
-    D_8013B0D8->z += D_8013B0D8->unk064;
+    gCurrentRacePlayer->unk060 = D_800EB22C.vx;
+    gCurrentRacePlayer->unk064 = D_800EB22C.vz;
+    updateCurrentPlayerSlopeVelocityWithoutBoost(0, (s16)gCurrentRacePlayer->unk0A6, (s16)gCurrentRacePlayer->unk0A8, (s16)gCurrentRacePlayer->unk0AA);
+    gCurrentRacePlayer->x += gCurrentRacePlayer->unk060;
+    gCurrentRacePlayer->y += gCurrentRacePlayer->unk062;
+    gCurrentRacePlayer->z += gCurrentRacePlayer->unk064;
     updateCurrentPlayerGroundContact();
     updateCurrentPlayerAnimation();
-    if (D_8013B0D8->animationFlags & 0x10) {
+    if (gCurrentRacePlayer->animationFlags & 0x10) {
         startCurrentPlayerAnimation(0x23, 1);
     }
-    D_8013B0D8->unk128 &= ~0x2000000;
+    gCurrentRacePlayer->unk128 &= ~0x2000000;
     if ((u16)callCurrentPlayerStateCallbackIfDifferent(0x1D)) {
-        if (D_8013B0D8->unk12C == 0x16) {
-            if (D_8013B0D8->unk062 < 0) {
-                D_8013B0D8->unk062 = -D_8013B0D8->unk062;
+        if (gCurrentRacePlayer->unk12C == 0x16) {
+            if (gCurrentRacePlayer->unk062 < 0) {
+                gCurrentRacePlayer->unk062 = -gCurrentRacePlayer->unk062;
             }
-            D_8013B0D8->unk92C = 0;
+            gCurrentRacePlayer->unk92C = 0;
             startCurrentPlayerAnimation(1, 1);
         }
     }
@@ -3208,7 +3208,7 @@ void updateCurrentPlayerState3MotionAndSteering(void) {
 
     prepareCurrentPlayerFrame();
     smoothAndScaleCurrentPlayerInput(0x400, 0);
-    player = D_8013B0D8;
+    player = gCurrentRacePlayer;
     player->unk130 = 0x1800;
     if (!(player->unk128 & 1)) {
         player->unk128 &= ~0x200;
@@ -3220,7 +3220,7 @@ void updateCurrentPlayerState3MotionAndSteering(void) {
         D_800EB22C.vx = player->unk060;
         D_800EB22C.vz = player->unk064;
         clampVectorToCurrentPlayerLimit(&D_800EB22C);
-        airbornePlayer = D_8013B0D8;
+        airbornePlayer = gCurrentRacePlayer;
         airbornePlayer->unk060 = D_800EB22C.vx;
         airbornePlayer->unk064 = D_800EB22C.vz;
         velocity = airbornePlayer->unk060;
@@ -3241,14 +3241,14 @@ void updateCurrentPlayerState3MotionAndSteering(void) {
         airbornePlayer->unk064 -= velocity;
     }
 
-    movingPlayer = D_8013B0D8;
+    movingPlayer = gCurrentRacePlayer;
     movingPlayer->x += movingPlayer->unk060;
     movingPlayer->y += movingPlayer->unk062;
     movingPlayer->z += movingPlayer->unk064;
-    if (movingPlayer->unk92E == (s16)D_80123D80[D_8013AFCE].unk00 && !(movingPlayer->unk128 & 0x40)) {
+    if (movingPlayer->unk92E == (s16)D_80123D80[gSelectedCourseIndex].unk00 && !(movingPlayer->unk128 & 0x40)) {
         angle = getXZHeading(movingPlayer->x, movingPlayer->z,
-                             D_80123D80[D_8013AFCE].unk40[0], D_80123D80[D_8013AFCE].unk40[1]);
-        steeringPlayer = D_8013B0D8;
+                             D_80123D80[gSelectedCourseIndex].unk40[0], D_80123D80[gSelectedCourseIndex].unk40[1]);
+        steeringPlayer = gCurrentRacePlayer;
         if (steeringPlayer->unk128 & 0x400) {
             angle += 0x800;
         }
@@ -3267,17 +3267,17 @@ void updateCurrentPlayerState3MotionAndSteering(void) {
         steeringPlayer->unk0B6 += angle;
     }
 
-    if (!(D_8013B0D8->unk128 & 1)) {
+    if (!(gCurrentRacePlayer->unk128 & 1)) {
         updateCurrentPlayerMotionEffects();
         updateCurrentPlayerGroundContact();
     } else if (resolveCurrentPlayerTerrainContact()) {
-        queuePlayerControllerEffect(D_8013AE88->data18, 0xA);
-        playPlayerSoundEffect(D_8013AE88->data18, 1, 0xB01, 0x18);
-        createPlayerTripleQuadEffectTask(D_8013AE88->data18);
+        queuePlayerControllerEffect(gCurrentTask->data18, 0xA);
+        playPlayerSoundEffect(gCurrentTask->data18, 1, 0xB01, 0x18);
+        createPlayerTripleQuadEffectTask(gCurrentTask->data18);
     }
 
     updateCurrentPlayerAnimation();
-    animatedPlayer = D_8013B0D8;
+    animatedPlayer = gCurrentRacePlayer;
     if (animatedPlayer->animationFlags & 0x10) {
         flags = animatedPlayer->unk128;
         animatedPlayer->unk128 = flags & 0xFF0C1FFB;
@@ -3295,38 +3295,38 @@ void updateCurrentPlayerState3MotionAndSteering(void) {
 void updateCurrentPlayerState4MotionAndLanding(void) {
     RacePlayer *player;
     prepareCurrentPlayerFrame();
-    player = D_8013B0D8;
+    player = gCurrentRacePlayer;
     player->unk130 = 0x1800;
     if (player->unk128 & 1) {
         D_800EB22C.vx = player->unk060;
         D_800EB22C.vz = player->unk064;
         clampVectorToCurrentPlayerLimit(&D_800EB22C);
-        D_8013B0D8->unk060 = D_800EB22C.vx;
-        D_8013B0D8->unk064 = D_800EB22C.vz;
-        D_8013B0D8->unk062 += 0x280;
-        D_8013B0D8->unk060 -= D_8013B0D8->unk060 / 15;
-        D_8013B0D8->unk064 -= D_8013B0D8->unk064 / 15;
+        gCurrentRacePlayer->unk060 = D_800EB22C.vx;
+        gCurrentRacePlayer->unk064 = D_800EB22C.vz;
+        gCurrentRacePlayer->unk062 += 0x280;
+        gCurrentRacePlayer->unk060 -= gCurrentRacePlayer->unk060 / 15;
+        gCurrentRacePlayer->unk064 -= gCurrentRacePlayer->unk064 / 15;
     } else {
         player->unk09E = player->unk09A;
         updateCurrentPlayerSlopeVelocityWithoutBoost(0, 0xC0, 0xC0, 0xC0);
     }
-    D_8013B0D8->x += D_8013B0D8->unk060;
-    D_8013B0D8->y += D_8013B0D8->unk062;
-    D_8013B0D8->z += D_8013B0D8->unk064;
-    if (!(D_8013B0D8->unk128 & 1)) {
+    gCurrentRacePlayer->x += gCurrentRacePlayer->unk060;
+    gCurrentRacePlayer->y += gCurrentRacePlayer->unk062;
+    gCurrentRacePlayer->z += gCurrentRacePlayer->unk064;
+    if (!(gCurrentRacePlayer->unk128 & 1)) {
         updateCurrentPlayerGroundContact();
     } else if (resolveCurrentPlayerTerrainContact()) {
-        queuePlayerControllerEffect(D_8013AE88->data18, 9);
-        playPlayerSoundEffect(D_8013AE88->data18, 1, 0xB01, 0x20);
-        createPlayerTripleQuadEffectTask(D_8013AE88->data18);
+        queuePlayerControllerEffect(gCurrentTask->data18, 9);
+        playPlayerSoundEffect(gCurrentTask->data18, 1, 0xB01, 0x20);
+        createPlayerTripleQuadEffectTask(gCurrentTask->data18);
     }
     updateCurrentPlayerAnimation();
-    if (D_8013B0D8->animationFlags & 0x10) {
-        if (!(D_8013B0D8->unk128 & 1)) {
+    if (gCurrentRacePlayer->animationFlags & 0x10) {
+        if (!(gCurrentRacePlayer->unk128 & 1)) {
             if (!processCurrentPlayerActionRequests(0)) {
-                D_8013B0D8->unk12C = 5;
+                gCurrentRacePlayer->unk12C = 5;
             }
-            currentPlayerStateCallbacks[D_8013B0D8->unk12C]();
+            currentPlayerStateCallbacks[gCurrentRacePlayer->unk12C]();
         }
     }
 }
@@ -3338,26 +3338,26 @@ void updateCurrentPlayerState5MotionAndTimer(void) {
     s16 input;
     prepareCurrentPlayerFrame();
     smoothAndScaleCurrentPlayerInput(0, 0);
-    if (!(D_8013B0D8->unk128 & 1)) {
+    if (!(gCurrentRacePlayer->unk128 & 1)) {
         updateCurrentPlayerSlopeVelocityWithoutBoost(0, 0x100, 0x100, 0x100);
     }
-    motion = D_8013B0D8;
+    motion = gCurrentRacePlayer;
     motion->unk09E = 0x280;
     if (motion->unk062 > 0x7800) {
         motion->unk062 = 0x7800;
     }
-    D_8013B0D8->y += D_8013B0D8->unk062;
+    gCurrentRacePlayer->y += gCurrentRacePlayer->unk062;
     updateCurrentPlayerGroundContact();
     updateCurrentPlayerAnimation();
-    player = D_8013B0D8;
+    player = gCurrentRacePlayer;
     if (!(player->unk128 & 1)) {
         input = countCurrentPlayerInputGroups();
-        D_8013B0D8->unk08C--;
-        D_8013B0D8->unk08C -= input;
-        if (D_8013B0D8->unk08C < 0) {
-            D_8013B0D8->unk08C = 0;
+        gCurrentRacePlayer->unk08C--;
+        gCurrentRacePlayer->unk08C -= input;
+        if (gCurrentRacePlayer->unk08C < 0) {
+            gCurrentRacePlayer->unk08C = 0;
         }
-        grounded = D_8013B0D8;
+        grounded = gCurrentRacePlayer;
         if (grounded->animationFlags & 0x10) {
             grounded->unk128 &= ~0x200;
             if (grounded->unk08C == 0) {
@@ -3369,8 +3369,8 @@ void updateCurrentPlayerState5MotionAndTimer(void) {
     } else {
         player->unk128 |= 0x200;
         startCurrentPlayerAnimation(13, 2);
-        if (D_8013B0D8->unk08C < 30) {
-            D_8013B0D8->unk08C = 30;
+        if (gCurrentRacePlayer->unk08C < 30) {
+            gCurrentRacePlayer->unk08C = 30;
         }
     }
     callCurrentPlayerStateCallbackIfDifferent(5);
@@ -3385,106 +3385,106 @@ void updateCurrentPlayerTimedEffect(void) {
     prepareCurrentPlayerFrame();
     updateCurrentPlayerGroundContact();
     updateCurrentPlayerAnimation();
-    if (D_8013B0D8->animationFlags & 0x10) {
+    if (gCurrentRacePlayer->animationFlags & 0x10) {
         startCurrentPlayerAnimation(17, 1);
     }
 
-    task = D_8013AE88;
+    task = gCurrentTask;
     switch (task->data1A) {
     case 0:
-        if (--D_8013B0D8->unk08C != 0) {
+        if (--gCurrentRacePlayer->unk08C != 0) {
             break;
         }
         task->data1A++;
-        D_8013B0D8->unk08C = 30;
-        if (D_8013B0D8->unk008 == 0) {
+        gCurrentRacePlayer->unk08C = 30;
+        if (gCurrentRacePlayer->unk008 == 0) {
             if (task->data18 == 0) {
-                configureTaskStateTransition(2, 0x1000, D_8013B0D8->unk08C);
+                configureTaskStateTransition(2, 0x1000, gCurrentRacePlayer->unk08C);
             } else {
-                configureTaskStateTransition(2, 0x2000, D_8013B0D8->unk08C);
+                configureTaskStateTransition(2, 0x2000, gCurrentRacePlayer->unk08C);
             }
         }
         break;
     case 1:
-        if (--D_8013B0D8->unk08C != 0) {
+        if (--gCurrentRacePlayer->unk08C != 0) {
             break;
         }
         task->data1A++;
-        D_8013B0D8->unk08C = 30;
-        if (D_8013B0D8->unk008 == 0) {
+        gCurrentRacePlayer->unk08C = 30;
+        if (gCurrentRacePlayer->unk008 == 0) {
             if (task->data18 == 0) {
-                configureTaskStateTransition(1, 0x1000, D_8013B0D8->unk08C);
+                configureTaskStateTransition(1, 0x1000, gCurrentRacePlayer->unk08C);
             } else {
-                configureTaskStateTransition(1, 0x2000, D_8013B0D8->unk08C);
+                configureTaskStateTransition(1, 0x2000, gCurrentRacePlayer->unk08C);
             }
         }
-        if (D_8013AE88->data1C == 0) {
+        if (gCurrentTask->data1C == 0) {
             for (;;) {
-                getGeometryPlacementTransform(D_8013B0D8->unk92E, &D_8013B0D8->x, &D_8013B0D8->y,
-                                              &D_8013B0D8->z, &D_8013B0D8->unk110);
+                getGeometryPlacementTransform(gCurrentRacePlayer->unk92E, &gCurrentRacePlayer->x, &gCurrentRacePlayer->y,
+                                              &gCurrentRacePlayer->z, &gCurrentRacePlayer->unk110);
                 if (checkCurrentPlayerSurfaceType()) {
                     break;
                 }
-                D_8013B0D8->unk92E--;
+                gCurrentRacePlayer->unk92E--;
             }
         } else {
             /* Reuse the probe counter as the output angle below. */
             angle = 0;
             do {
-                if (getCourseSurfaceAtPoint(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8) == 8) {
-                    D_8013B0D8->unk92E++;
+                if (getCourseSurfaceAtPoint(gCurrentRacePlayer->unk92E, gCurrentRacePlayer->x >> 8, gCurrentRacePlayer->z >> 8) == 8) {
+                    gCurrentRacePlayer->unk92E++;
                     break;
                 }
-                D_8013B0D8->unk92E++;
+                gCurrentRacePlayer->unk92E++;
                 angle++;
             } while ((s16)angle != 3);
-            getGeometryPlacementTransform(D_8013B0D8->unk92E, &D_8013B0D8->x, &D_8013B0D8->y,
-                                              &D_8013B0D8->z, &D_8013B0D8->unk110);
-            getGeometryPlacementTransform(D_8013B0D8->unk92E + 1, &nextX, &nextY, &nextZ, &angle);
-            xOffset = rcos((s16)angle) * gPlayerTimedEffectPlacementOffsets[D_8013AE88->data18];
-            D_8013B0D8->x += (nextX - D_8013B0D8->x) / 2 + xOffset / 4096;
-            zOffset = rsin((s16)angle) * gPlayerTimedEffectPlacementOffsets[D_8013AE88->data18];
-            D_8013B0D8->z += (nextZ - D_8013B0D8->z) / 2 - zOffset / 4096;
+            getGeometryPlacementTransform(gCurrentRacePlayer->unk92E, &gCurrentRacePlayer->x, &gCurrentRacePlayer->y,
+                                              &gCurrentRacePlayer->z, &gCurrentRacePlayer->unk110);
+            getGeometryPlacementTransform(gCurrentRacePlayer->unk92E + 1, &nextX, &nextY, &nextZ, &angle);
+            xOffset = rcos((s16)angle) * gPlayerTimedEffectPlacementOffsets[gCurrentTask->data18];
+            gCurrentRacePlayer->x += (nextX - gCurrentRacePlayer->x) / 2 + xOffset / 4096;
+            zOffset = rsin((s16)angle) * gPlayerTimedEffectPlacementOffsets[gCurrentTask->data18];
+            gCurrentRacePlayer->z += (nextZ - gCurrentRacePlayer->z) / 2 - zOffset / 4096;
         }
 
-        D_8013B0D8->unk0B8 = 0;
-        D_8013B0D8->unk0B4 = 0;
-        D_8013B0D8->unk0B6 = D_8013B0D8->unk110 - 0x400;
-        D_8013B0D8->y = getCourseHeightAtPoint(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8) << 8;
+        gCurrentRacePlayer->unk0B8 = 0;
+        gCurrentRacePlayer->unk0B4 = 0;
+        gCurrentRacePlayer->unk0B6 = gCurrentRacePlayer->unk110 - 0x400;
+        gCurrentRacePlayer->y = getCourseHeightAtPoint(gCurrentRacePlayer->unk92E, gCurrentRacePlayer->x >> 8, gCurrentRacePlayer->z >> 8) << 8;
         /* Preserve the fourth word of the position snapshot. */
-        *(VECTOR *)&D_8013B0D8->unk050 = *(VECTOR *)&D_8013B0D8->x;
-        D_8013B0D8->unk128 &= 0xFFFBDBFF;
+        *(VECTOR *)&gCurrentRacePlayer->unk050 = *(VECTOR *)&gCurrentRacePlayer->x;
+        gCurrentRacePlayer->unk128 &= 0xFFFBDBFF;
         smoothAndScaleCurrentPlayerInput(0, 0);
         startCurrentPlayerAnimation(1, 1);
-        if (D_8013B0D8->unk008 == 0) {
-            D_801241E8[D_8013AE88->data18].unk16 = 1;
-            D_801241E8[D_8013AE88->data18].yaw = D_8013B0D8->unk110;
-            D_801241E8[D_8013AE88->data18].pitch = -0x40;
-            updatePlayerCameraPosition(D_8013AE88->data18);
-            clampPlayerCameraHeight(D_8013AE88->data18);
+        if (gCurrentRacePlayer->unk008 == 0) {
+            D_801241E8[gCurrentTask->data18].unk16 = 1;
+            D_801241E8[gCurrentTask->data18].yaw = gCurrentRacePlayer->unk110;
+            D_801241E8[gCurrentTask->data18].pitch = -0x40;
+            updatePlayerCameraPosition(gCurrentTask->data18);
+            clampPlayerCameraHeight(gCurrentTask->data18);
         }
-        D_8013B0D8->unk078 = 0x400;
+        gCurrentRacePlayer->unk078 = 0x400;
         break;
     case 2:
-        if (--D_8013B0D8->unk08C != 0) {
+        if (--gCurrentRacePlayer->unk08C != 0) {
             break;
         }
-        if (D_8013B0D8->unk12C != 24) {
-            D_8013B0D8->unk12C = 0;
+        if (gCurrentRacePlayer->unk12C != 24) {
+            gCurrentRacePlayer->unk12C = 0;
         }
-        D_8013B0D8->unk128 &= ~8;
-        currentPlayerStateCallbacks[D_8013B0D8->unk12C]();
+        gCurrentRacePlayer->unk128 &= ~8;
+        currentPlayerStateCallbacks[gCurrentRacePlayer->unk12C]();
         return;
     }
-    if (D_8013B0D8->unk12C != 6 && D_8013B0D8->unk12C != 9) {
-        currentPlayerStateCallbacks[D_8013B0D8->unk12C]();
+    if (gCurrentRacePlayer->unk12C != 6 && gCurrentRacePlayer->unk12C != 9) {
+        currentPlayerStateCallbacks[gCurrentRacePlayer->unk12C]();
     }
 }
 
 void updateCurrentPlayerState23MotionAndTimer(void) {
     RacePlayer *player;
     prepareCurrentPlayerFrame();
-    player = D_8013B0D8;
+    player = gCurrentRacePlayer;
     if (!(player->unk128 & 1)) {
         player->unk128 &= ~0x200;
         updateCurrentPlayerGroundContact();
@@ -3494,17 +3494,17 @@ void updateCurrentPlayerState23MotionAndTimer(void) {
         if (player->unk062 > 0x7800) {
             player->unk062 = 0x7800;
         }
-        D_8013B0D8->y += D_8013B0D8->unk062;
+        gCurrentRacePlayer->y += gCurrentRacePlayer->unk062;
         resolveCurrentPlayerTerrainContact();
     }
-    D_8013B0D8->unk08C -= 1 + countCurrentPlayerInputGroups();
-    if (D_8013B0D8->unk08C < 0) {
-        D_8013B0D8->unk08C = 0;
+    gCurrentRacePlayer->unk08C -= 1 + countCurrentPlayerInputGroups();
+    if (gCurrentRacePlayer->unk08C < 0) {
+        gCurrentRacePlayer->unk08C = 0;
     }
-    if (D_8013B0D8->unk08C == 0 && D_8013B0D8->unk12C != 24) {
-        D_8013B0D8->unk12C = 4;
-        D_8013B0D8->unk108.word = 0;
-        D_8013B0D8->unk104.word = 0;
+    if (gCurrentRacePlayer->unk08C == 0 && gCurrentRacePlayer->unk12C != 24) {
+        gCurrentRacePlayer->unk12C = 4;
+        gCurrentRacePlayer->unk108.word = 0;
+        gCurrentRacePlayer->unk104.word = 0;
     }
     callCurrentPlayerStateCallbackIfDifferent(23);
 }
@@ -3516,55 +3516,55 @@ void updateCurrentPlayerState24MotionAndScale(void) {
 
     prepareCurrentPlayerFrame();
     smoothAndScaleCurrentPlayerInput(0, 0);
-    if (D_8013B0D8->unk128 & 1) {
-        D_8013B0D8->unk062 += 0x280;
-        if (D_8013B0D8->unk062 > 0x7800) {
-            D_8013B0D8->unk062 = 0x7800;
+    if (gCurrentRacePlayer->unk128 & 1) {
+        gCurrentRacePlayer->unk062 += 0x280;
+        if (gCurrentRacePlayer->unk062 > 0x7800) {
+            gCurrentRacePlayer->unk062 = 0x7800;
         }
-        D_8013B0D8->y += D_8013B0D8->unk062;
-        D_8013B0D8->unk128 |= 0x200;
+        gCurrentRacePlayer->y += gCurrentRacePlayer->unk062;
+        gCurrentRacePlayer->unk128 |= 0x200;
     } else {
-        D_8013B0D8->unk128 &= ~0x200;
+        gCurrentRacePlayer->unk128 &= ~0x200;
     }
-    if (!(D_8013B0D8->unk128 & 1)) {
+    if (!(gCurrentRacePlayer->unk128 & 1)) {
         updateCurrentPlayerGroundContact();
     } else if ((landed = resolveCurrentPlayerTerrainContact()) != 0) {
-        queuePlayerControllerEffect(D_8013AE88->data18, 9);
-        playPlayerSoundEffect(D_8013AE88->data18, 1, 0xB01, 0x20);
-        createPlayerTripleQuadEffectTask(D_8013AE88->data18);
+        queuePlayerControllerEffect(gCurrentTask->data18, 9);
+        playPlayerSoundEffect(gCurrentTask->data18, 1, 0xB01, 0x20);
+        createPlayerTripleQuadEffectTask(gCurrentTask->data18);
     }
 
-    switch (D_8013AE88->data1A) {
+    switch (gCurrentTask->data1A) {
     case 0:
-        if (D_8013B0D8->unk0F8 != 1) {
-            D_8013B0D8->unk0F8--;
+        if (gCurrentRacePlayer->unk0F8 != 1) {
+            gCurrentRacePlayer->unk0F8--;
         }
         timerStep = 1 + countCurrentPlayerInputGroups();
         if (timerStep != 1) {
-            D_8013B0D8->unk0F8 = 3;
+            gCurrentRacePlayer->unk0F8 = 3;
         }
-        D_8013B0D8->unk08C -= timerStep;
-        if (D_8013B0D8->unk08C < 0) {
-            D_8013B0D8->unk08C = 0;
+        gCurrentRacePlayer->unk08C -= timerStep;
+        if (gCurrentRacePlayer->unk08C < 0) {
+            gCurrentRacePlayer->unk08C = 0;
         }
-        if (D_8013B0D8->unk08C == 0) {
-            D_8013AE88->data1A++;
-            D_8013B0D8->unk0F8 = 1;
+        if (gCurrentRacePlayer->unk08C == 0) {
+            gCurrentTask->data1A++;
+            gCurrentRacePlayer->unk0F8 = 1;
         }
         break;
     case 1:
-        if (++D_8013B0D8->unk0F8 == 7) {
-            D_8013B0D8->unk0F8 = 2;
-            D_8013AE88->data1A++;
+        if (++gCurrentRacePlayer->unk0F8 == 7) {
+            gCurrentRacePlayer->unk0F8 = 2;
+            gCurrentTask->data1A++;
         }
         break;
     case 2:
-        if (++D_8013B0D8->unk0F8 == 8) {
-            player = D_8013B0D8;
+        if (++gCurrentRacePlayer->unk0F8 == 8) {
+            player = gCurrentRacePlayer;
             player->unk12C = 0;
             player->unk128 &= 0xFF0C1FFB;
             currentPlayerStateCallbacks[0]();
-            D_8013B0D8->unk0F6 = 60;
+            gCurrentRacePlayer->unk0F6 = 60;
             return;
         }
         break;
@@ -3574,45 +3574,45 @@ void updateCurrentPlayerState24MotionAndScale(void) {
 
 void updateCurrentPlayerState25MotionAndTimer(void) {
     prepareCurrentPlayerFrame();
-    if (!(D_8013B0D8->unk128 & 1)) {
-        D_8013B0D8->unk128 &= ~0x200;
-        smoothAndScaleCurrentPlayerInput(D_8013B0D8->unk094, 0);
-        updateCurrentPlayerSlopeVelocity(0, 0, (s16)D_8013B0D8->unk0A6, (s16)D_8013B0D8->unk0A8, (s16)D_8013B0D8->unk0AA);
-        D_8013B0D8->x += D_8013B0D8->unk060;
-        D_8013B0D8->y += D_8013B0D8->unk062;
-        D_8013B0D8->z += D_8013B0D8->unk064;
+    if (!(gCurrentRacePlayer->unk128 & 1)) {
+        gCurrentRacePlayer->unk128 &= ~0x200;
+        smoothAndScaleCurrentPlayerInput(gCurrentRacePlayer->unk094, 0);
+        updateCurrentPlayerSlopeVelocity(0, 0, (s16)gCurrentRacePlayer->unk0A6, (s16)gCurrentRacePlayer->unk0A8, (s16)gCurrentRacePlayer->unk0AA);
+        gCurrentRacePlayer->x += gCurrentRacePlayer->unk060;
+        gCurrentRacePlayer->y += gCurrentRacePlayer->unk062;
+        gCurrentRacePlayer->z += gCurrentRacePlayer->unk064;
         updateCurrentPlayerGroundContact();
     } else {
-        D_8013B0D8->unk128 |= 0x200;
-        D_800EB22C.vx = D_8013B0D8->unk060;
-        D_800EB22C.vz = D_8013B0D8->unk064;
+        gCurrentRacePlayer->unk128 |= 0x200;
+        D_800EB22C.vx = gCurrentRacePlayer->unk060;
+        D_800EB22C.vz = gCurrentRacePlayer->unk064;
         clampVectorToCurrentPlayerLimit(&D_800EB22C);
-        D_8013B0D8->unk060 = D_800EB22C.vx;
-        D_8013B0D8->unk064 = D_800EB22C.vz;
-        D_8013B0D8->unk062 += D_8013B0D8->unk09C;
-        if (D_8013B0D8->unk062 > 0x7800) {
-            D_8013B0D8->unk062 = 0x7800;
+        gCurrentRacePlayer->unk060 = D_800EB22C.vx;
+        gCurrentRacePlayer->unk064 = D_800EB22C.vz;
+        gCurrentRacePlayer->unk062 += gCurrentRacePlayer->unk09C;
+        if (gCurrentRacePlayer->unk062 > 0x7800) {
+            gCurrentRacePlayer->unk062 = 0x7800;
         }
-        D_8013B0D8->x += D_8013B0D8->unk060;
-        D_8013B0D8->y += D_8013B0D8->unk062;
-        D_8013B0D8->z += D_8013B0D8->unk064;
+        gCurrentRacePlayer->x += gCurrentRacePlayer->unk060;
+        gCurrentRacePlayer->y += gCurrentRacePlayer->unk062;
+        gCurrentRacePlayer->z += gCurrentRacePlayer->unk064;
         if (resolveCurrentPlayerTerrainContact()) {
-            queuePlayerControllerEffect(D_8013AE88->data18, 10);
-            playPlayerSoundEffect(D_8013AE88->data18, 1, 0xB01, 0x18);
-            createPlayerTripleQuadEffectTask(D_8013AE88->data18);
+            queuePlayerControllerEffect(gCurrentTask->data18, 10);
+            playPlayerSoundEffect(gCurrentTask->data18, 1, 0xB01, 0x18);
+            createPlayerTripleQuadEffectTask(gCurrentTask->data18);
         }
     }
-    D_8013B0D8->unk08C -= 1 + countCurrentPlayerInputGroups();
-    if (D_8013B0D8->unk08C < 0) {
-        D_8013B0D8->unk08C = 0;
+    gCurrentRacePlayer->unk08C -= 1 + countCurrentPlayerInputGroups();
+    if (gCurrentRacePlayer->unk08C < 0) {
+        gCurrentRacePlayer->unk08C = 0;
     }
-    if (D_8013B0D8->unk08C == 0) {
-        D_8013B0D8->unk128 &= 0xFF0C1FFB;
-        if (D_8013B0D8->unk12C != 24) {
-            if (!(D_8013B0D8->unk128 & 0x200)) {
-                D_8013B0D8->unk12C = 0;
+    if (gCurrentRacePlayer->unk08C == 0) {
+        gCurrentRacePlayer->unk128 &= 0xFF0C1FFB;
+        if (gCurrentRacePlayer->unk12C != 24) {
+            if (!(gCurrentRacePlayer->unk128 & 0x200)) {
+                gCurrentRacePlayer->unk12C = 0;
             } else {
-                D_8013B0D8->unk12C = 1;
+                gCurrentRacePlayer->unk12C = 1;
             }
         }
     }
@@ -3622,7 +3622,7 @@ void updateCurrentPlayerState25MotionAndTimer(void) {
 void updateCurrentPlayerVerticalMotionUntilLanding(void) {
     RacePlayer *player;
     prepareCurrentPlayerFrame();
-    player = D_8013B0D8;
+    player = gCurrentRacePlayer;
     player->unk062 += 0x1C0;
     player->y += player->unk062;
     player->worldCoordinate.coord.t[0] = player->x >> 8;
@@ -3630,7 +3630,7 @@ void updateCurrentPlayerVerticalMotionUntilLanding(void) {
     player->worldCoordinate.coord.t[2] = player->z >> 8;
     if (player->unk062 > 0) {
         if (resolveCurrentPlayerTerrainContact() != 0) {
-            D_8013B0D8->unk12C = 12;
+            gCurrentRacePlayer->unk12C = 12;
             currentPlayerStateCallbacks[12]();
             return;
         }
@@ -3643,29 +3643,29 @@ void updateCurrentPlayerVerticalMotionUntilLanding(void) {
 void updateCurrentPlayerAirborneDragUntilLanding(void) {
     prepareCurrentPlayerFrame();
     smoothAndScaleCurrentPlayerInput(0, 0);
-    if (D_8013B0D8->unk062 < 0) {
-        D_8013B0D8->unk062 += 0x150;
-        D_8013B0D8->unk060 -= D_8013B0D8->unk060 / 64;
-        D_8013B0D8->unk064 -= D_8013B0D8->unk064 / 64;
+    if (gCurrentRacePlayer->unk062 < 0) {
+        gCurrentRacePlayer->unk062 += 0x150;
+        gCurrentRacePlayer->unk060 -= gCurrentRacePlayer->unk060 / 64;
+        gCurrentRacePlayer->unk064 -= gCurrentRacePlayer->unk064 / 64;
     } else {
-        if (D_8013AE88->data1C == 0) {
-            D_8013AE88->data1C++;
+        if (gCurrentTask->data1C == 0) {
+            gCurrentTask->data1C++;
             createChildTaskForParentWithReserve(&gGameTasks[4], initializePlayerCoordinateEffectTask);
-            D_8013AE8C->data18 = D_8013AE88->data18;
+            gCreatedTask->data18 = gCurrentTask->data18;
         }
-        D_8013B0D8->unk0B6 += 0x40;
-        D_8013B0D8->unk062 += 0x18;
-        D_8013B0D8->unk060 -= D_8013B0D8->unk060 / 48;
-        D_8013B0D8->unk064 -= D_8013B0D8->unk064 / 48;
+        gCurrentRacePlayer->unk0B6 += 0x40;
+        gCurrentRacePlayer->unk062 += 0x18;
+        gCurrentRacePlayer->unk060 -= gCurrentRacePlayer->unk060 / 48;
+        gCurrentRacePlayer->unk064 -= gCurrentRacePlayer->unk064 / 48;
     }
-    D_8013B0D8->x += D_8013B0D8->unk060;
-    D_8013B0D8->y += D_8013B0D8->unk062;
-    D_8013B0D8->z += D_8013B0D8->unk064;
-    D_8013B0D8->worldCoordinate.coord.t[0] = D_8013B0D8->x >> 8;
-    D_8013B0D8->worldCoordinate.coord.t[1] = D_8013B0D8->y >> 8;
-    D_8013B0D8->worldCoordinate.coord.t[2] = D_8013B0D8->z >> 8;
+    gCurrentRacePlayer->x += gCurrentRacePlayer->unk060;
+    gCurrentRacePlayer->y += gCurrentRacePlayer->unk062;
+    gCurrentRacePlayer->z += gCurrentRacePlayer->unk064;
+    gCurrentRacePlayer->worldCoordinate.coord.t[0] = gCurrentRacePlayer->x >> 8;
+    gCurrentRacePlayer->worldCoordinate.coord.t[1] = gCurrentRacePlayer->y >> 8;
+    gCurrentRacePlayer->worldCoordinate.coord.t[2] = gCurrentRacePlayer->z >> 8;
     if (resolveCurrentPlayerTerrainContact() != 0) {
-        D_8013B0D8->unk12C = 8;
+        gCurrentRacePlayer->unk12C = 8;
         currentPlayerStateCallbacks[8]();
     } else {
         updateCurrentPlayerAnimation();
@@ -3676,9 +3676,9 @@ void updateCurrentPlayerFromTaskPhase(void) {
     RacePlayer *player;
     prepareCurrentPlayerFrame();
     updateCurrentPlayerAnimation();
-    gCurrentPlayerTaskPhaseCallbacks[D_8013AE88->data1A]();
-    D_8013B0D8->unk946 = 0;
-    player = D_8013B0D8;
+    gCurrentPlayerTaskPhaseCallbacks[gCurrentTask->data1A]();
+    gCurrentRacePlayer->unk946 = 0;
+    player = gCurrentRacePlayer;
     player->unk110 = player->unk0B6 + 0x400;
     player->worldCoordinate.coord.t[0] = player->x >> 8;
     player->worldCoordinate.coord.t[1] = player->y >> 8;
@@ -3689,45 +3689,45 @@ void moveCurrentPlayerToTaskTarget(void) {
     s16 angle;
     s32 difference;
     RacePlayer *player;
-    difference = (D_8013B0D8->unk126 - (u16)D_8013B0D8->unk0B6) & 0xFFF;
+    difference = (gCurrentRacePlayer->unk126 - (u16)gCurrentRacePlayer->unk0B6) & 0xFFF;
     angle = difference;
     if (difference > 0x800) {
         angle = difference | 0xF000;
     }
     smoothAndScaleCurrentPlayerInput(0x100, 0);
-    player = D_8013B0D8;
+    player = gCurrentRacePlayer;
     if (player->unk090 != 0) {
         player->unk0B6 += angle / player->unk090;
-        player->x += ((s32)D_80123D80[D_8013AFCE].unk18[0] - player->x) / player->unk090;
-        player->z += ((s32)D_80123D80[D_8013AFCE].unk18[2] - player->z) / player->unk090;
+        player->x += ((s32)D_80123D80[gSelectedCourseIndex].unk18[0] - player->x) / player->unk090;
+        player->z += ((s32)D_80123D80[gSelectedCourseIndex].unk18[2] - player->z) / player->unk090;
     }
-    player = D_8013B0D8;
+    player = gCurrentRacePlayer;
     if (--player->unk08C == 0) {
-        player->x = D_80123D80[D_8013AFCE].unk18[0];
-        player->z = D_80123D80[D_8013AFCE].unk18[2];
-        D_8013AE88->data1A++;
+        player->x = D_80123D80[gSelectedCourseIndex].unk18[0];
+        player->z = D_80123D80[gSelectedCourseIndex].unk18[2];
+        gCurrentTask->data1A++;
         player->unk08C = 0;
         startCurrentPlayerAnimation(3, 2);
-        D_801241E8[D_8013AE88->data18].unk16 = 3;
+        D_801241E8[gCurrentTask->data18].unk16 = 3;
     }
 }
 
 void advanceCurrentPlayerTaskOnAnimationFlag(void) {
     RacePlayer *player;
-    if (D_8013B0D8->animationFlags & 0x10) {
-        D_8013AE88->data1A++;
-        playPlayerSoundEffect(D_8013AE88->data18, 1, 0x601, 0x20);
-        player = D_8013B0D8;
+    if (gCurrentRacePlayer->animationFlags & 0x10) {
+        gCurrentTask->data1A++;
+        playPlayerSoundEffect(gCurrentTask->data18, 1, 0x601, 0x20);
+        player = gCurrentRacePlayer;
         player->unk0B6 = player->unk126;
-        player->x = D_80123D80[D_8013AFCE].unk18[0];
-        player->z = D_80123D80[D_8013AFCE].unk18[2];
+        player->x = D_80123D80[gSelectedCourseIndex].unk18[0];
+        player->z = D_80123D80[gSelectedCourseIndex].unk18[2];
         player->unk062 = -0xC00;
         player->unk08C = 30;
         startCurrentPlayerAnimation(4, 2);
-        if (D_8013B0D8->unk128 & 0x400) {
-            D_8013B0D8->unk090 = -0x800;
+        if (gCurrentRacePlayer->unk128 & 0x400) {
+            gCurrentRacePlayer->unk090 = -0x800;
         } else {
-            D_8013B0D8->unk090 = 0x800;
+            gCurrentRacePlayer->unk090 = 0x800;
         }
     }
 }
@@ -3737,56 +3737,56 @@ void updateCurrentPlayerTaskJumpAndSpawnCourseOffset(void) {
     RacePlayer *landingPlayer;
     CourseOffsetResource *resource;
     D_8013AF90->vx = 0;
-    D_8013AF90->vy = D_8013B0D8->unk110;
+    D_8013AF90->vy = gCurrentRacePlayer->unk110;
     D_8013AF90->vz = 0;
-    RotMatrix(D_8013AF90, D_8013AF98);
+    RotMatrix(D_8013AF90, gScratchMatrix0);
     D_8013AF90->vx = 0;
     D_8013AF90->vy = 0;
-    D_8013AF90->vz = D_8013B0D8->unk090;
-    ApplyMatrix(D_8013AF98, D_8013AF90, D_8013AF88);
-    player = D_8013B0D8;
-    player->x += D_8013AF88->vx;
-    player->z += D_8013AF88->vz;
+    D_8013AF90->vz = gCurrentRacePlayer->unk090;
+    ApplyMatrix(gScratchMatrix0, D_8013AF90, gScratchVector0);
+    player = gCurrentRacePlayer;
+    player->x += gScratchVector0->vx;
+    player->z += gScratchVector0->vz;
     D_8013AF90->vx = 0;
     D_8013AF90->vy = player->unk110;
     D_8013AF90->vz = 0;
-    RotMatrix(D_8013AF90, D_8013AF98);
+    RotMatrix(D_8013AF90, gScratchMatrix0);
     D_8013AF90->vx = 0;
     D_8013AF90->vy = 0;
-    D_8013AF90->vz = D_8013B0D8->unk090;
-    ApplyMatrix(D_8013AF98, D_8013AF90, D_8013AF88);
-    landingPlayer = D_8013B0D8;
-    landingPlayer->x += D_8013AF88->vx;
-    landingPlayer->z += D_8013AF88->vz;
+    D_8013AF90->vz = gCurrentRacePlayer->unk090;
+    ApplyMatrix(gScratchMatrix0, D_8013AF90, gScratchVector0);
+    landingPlayer = gCurrentRacePlayer;
+    landingPlayer->x += gScratchVector0->vx;
+    landingPlayer->z += gScratchVector0->vz;
     landingPlayer->unk062 += 0x140;
     landingPlayer->y += landingPlayer->unk062;
-    if (landingPlayer->unk062 > 0 && landingPlayer->y > (s32)D_80123D80[D_8013AFCE].unk18[1]) {
-        landingPlayer->y = D_80123D80[D_8013AFCE].unk18[1];
+    if (landingPlayer->unk062 > 0 && landingPlayer->y > (s32)D_80123D80[gSelectedCourseIndex].unk18[1]) {
+        landingPlayer->y = D_80123D80[gSelectedCourseIndex].unk18[1];
         if (landingPlayer->animationIndex != D_800EB09C[landingPlayer->characterId][1]) {
             startCurrentPlayerAnimation(1, 1);
-            playPlayerSoundEffect(D_8013AE88->data18, 1, 0x701, 0x20);
-            D_8013AFE4 &= ~4;
+            playPlayerSoundEffect(gCurrentTask->data18, 1, 0x701, 0x20);
+            gTaskTransitionFlags &= ~4;
         }
         updateCurrentPlayerMotionEffects();
-        D_8013B0D8->unk128 &= ~0x200;
+        gCurrentRacePlayer->unk128 &= ~0x200;
     } else {
-        D_8013B0D8->unk128 |= 0x200;
+        gCurrentRacePlayer->unk128 |= 0x200;
     }
-    player = D_8013B0D8;
+    player = gCurrentRacePlayer;
     if (--player->unk08C == 0) {
-        D_8013AE88->data1A++;
+        gCurrentTask->data1A++;
         player->unk08C = 0x20;
         createChildTaskForParentWithReserve(&gGameTasks[4], initializeSelectedCourseOffsetTask);
-        D_8013AE8C->data18 = D_8013AE88->data18;
-        D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-        resource = (CourseOffsetResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
-        resource->linkedTask = D_8013AE88;
-        D_8013B0D8->unk128 &= ~0x20;
+        gCreatedTask->data18 = gCurrentTask->data18;
+        gCreatedTask->resource14 = allocateTaskMemoryBlock();
+        resource = (CourseOffsetResource *)&gTaskMemoryPool[gCreatedTask->resource14];
+        resource->linkedTask = gCurrentTask;
+        gCurrentRacePlayer->unk128 &= ~0x20;
     }
 }
 
 void updateCurrentPlayerTaskDecelerationSteps(void) {
-    RacePlayer *player = D_8013B0D8;
+    RacePlayer *player = gCurrentRacePlayer;
     RacePlayer *firstStep;
     RacePlayer *second;
     RacePlayer *last;
@@ -3797,16 +3797,16 @@ void updateCurrentPlayerTaskDecelerationSteps(void) {
         player->unk090 += 0x20;
     }
     D_8013AF90->vx = 0;
-    D_8013AF90->vy = D_8013B0D8->unk110;
+    D_8013AF90->vy = gCurrentRacePlayer->unk110;
     D_8013AF90->vz = 0;
-    RotMatrix(D_8013AF90, D_8013AF98);
+    RotMatrix(D_8013AF90, gScratchMatrix0);
     D_8013AF90->vx = 0;
     D_8013AF90->vy = 0;
-    D_8013AF90->vz = D_8013B0D8->unk090;
-    ApplyMatrix(D_8013AF98, D_8013AF90, D_8013AF88);
-    firstStep = D_8013B0D8;
-    firstStep->x += D_8013AF88->vx;
-    firstStep->z += D_8013AF88->vz;
+    D_8013AF90->vz = gCurrentRacePlayer->unk090;
+    ApplyMatrix(gScratchMatrix0, D_8013AF90, gScratchVector0);
+    firstStep = gCurrentRacePlayer;
+    firstStep->x += gScratchVector0->vx;
+    firstStep->z += gScratchVector0->vz;
     firstStep->unk0B6 -= 0x10;
     if (firstStep->unk090 > 0) {
         firstStep->unk090 -= 0x20;
@@ -3814,34 +3814,34 @@ void updateCurrentPlayerTaskDecelerationSteps(void) {
         firstStep->unk090 += 0x20;
     }
     D_8013AF90->vx = 0;
-    D_8013AF90->vy = D_8013B0D8->unk110;
+    D_8013AF90->vy = gCurrentRacePlayer->unk110;
     D_8013AF90->vz = 0;
-    RotMatrix(D_8013AF90, D_8013AF98);
+    RotMatrix(D_8013AF90, gScratchMatrix0);
     D_8013AF90->vx = 0;
     D_8013AF90->vy = 0;
-    D_8013AF90->vz = D_8013B0D8->unk090;
-    ApplyMatrix(D_8013AF98, D_8013AF90, D_8013AF88);
-    second = D_8013B0D8;
-    second->x += D_8013AF88->vx;
-    second->z += D_8013AF88->vz;
+    D_8013AF90->vz = gCurrentRacePlayer->unk090;
+    ApplyMatrix(gScratchMatrix0, D_8013AF90, gScratchVector0);
+    second = gCurrentRacePlayer;
+    second->x += gScratchVector0->vx;
+    second->z += gScratchVector0->vz;
     updateCurrentPlayerMotionEffects();
-    if (--D_8013B0D8->unk08C == 0) {
-        D_8013AE88->data1A++;
+    if (--gCurrentRacePlayer->unk08C == 0) {
+        gCurrentTask->data1A++;
         startCurrentPlayerAnimation(25, 2);
-        last = D_8013B0D8;
+        last = gCurrentRacePlayer;
         last->unk08C = 19;
         last->unk128 |= 0x200;
     }
 }
 
 void advanceCurrentPlayerTaskAndSetSpeed(void) {
-    if (--D_8013B0D8->unk08C == 0) {
-        D_8013AE88->data1A++;
-        D_8013B0D8->unk08C = 19;
-        if (D_8013B0D8->unk128 & 0x400) {
-            D_8013B0D8->unk090 = -0x1000;
+    if (--gCurrentRacePlayer->unk08C == 0) {
+        gCurrentTask->data1A++;
+        gCurrentRacePlayer->unk08C = 19;
+        if (gCurrentRacePlayer->unk128 & 0x400) {
+            gCurrentRacePlayer->unk090 = -0x1000;
         } else {
-            D_8013B0D8->unk090 = 0x1000;
+            gCurrentRacePlayer->unk090 = 0x1000;
         }
     }
 }
@@ -3849,18 +3849,18 @@ void advanceCurrentPlayerTaskAndSetSpeed(void) {
 void advanceCurrentPlayerTaskPhaseMovement(void) {
     RacePlayer *player;
     D_8013AF90->vx = 0;
-    D_8013AF90->vy = D_8013B0D8->unk110;
+    D_8013AF90->vy = gCurrentRacePlayer->unk110;
     D_8013AF90->vz = 0;
-    RotMatrix(D_8013AF90, D_8013AF98);
+    RotMatrix(D_8013AF90, gScratchMatrix0);
     D_8013AF90->vx = 0;
     D_8013AF90->vy = 0;
-    D_8013AF90->vz = D_8013B0D8->unk090;
-    ApplyMatrix(D_8013AF98, D_8013AF90, D_8013AF88);
-    player = D_8013B0D8;
-    player->x += D_8013AF88->vx;
-    player->z += D_8013AF88->vz;
+    D_8013AF90->vz = gCurrentRacePlayer->unk090;
+    ApplyMatrix(gScratchMatrix0, D_8013AF90, gScratchVector0);
+    player = gCurrentRacePlayer;
+    player->x += gScratchVector0->vx;
+    player->z += gScratchVector0->vz;
     if (--player->unk08C == 0) {
-        D_8013AE88->data1A++;
+        gCurrentTask->data1A++;
         player->unk08C = 100;
     }
 }
@@ -3874,44 +3874,44 @@ void updateCurrentPlayerTaskLapTransition(void) {
     GameTask *task;
     s16 segment;
 
-    if (D_8013B0D8->unk090 > 0) {
-        if (D_8013B0D8->unk090 < 0x2800) {
-            D_8013B0D8->unk090 += 0x80;
+    if (gCurrentRacePlayer->unk090 > 0) {
+        if (gCurrentRacePlayer->unk090 < 0x2800) {
+            gCurrentRacePlayer->unk090 += 0x80;
         }
         D_8013AF90->vx = 0x100;
-        D_8013AF90->vy = D_8013B0D8->unk110;
+        D_8013AF90->vy = gCurrentRacePlayer->unk110;
         D_8013AF90->vz = 0;
     } else {
-        if (D_8013B0D8->unk090 >= -0x27FF) {
-            D_8013B0D8->unk090 -= 0x80;
+        if (gCurrentRacePlayer->unk090 >= -0x27FF) {
+            gCurrentRacePlayer->unk090 -= 0x80;
         }
         D_8013AF90->vx = -0x100;
-        D_8013AF90->vy = D_8013B0D8->unk110;
+        D_8013AF90->vy = gCurrentRacePlayer->unk110;
         D_8013AF90->vz = 0;
     }
-    RotMatrixYXZ(D_8013AF90, D_8013AF98);
+    RotMatrixYXZ(D_8013AF90, gScratchMatrix0);
     D_8013AF90->vx = 0;
     D_8013AF90->vy = 0;
-    D_8013AF90->vz = D_8013B0D8->unk090;
-    ApplyMatrix(D_8013AF98, D_8013AF90, D_8013AF88);
-    movingPlayer = D_8013B0D8;
-    movingPlayer->x += D_8013AF88->vx;
-    movingPlayer->y += D_8013AF88->vy;
-    movingPlayer->z += D_8013AF88->vz;
+    D_8013AF90->vz = gCurrentRacePlayer->unk090;
+    ApplyMatrix(gScratchMatrix0, D_8013AF90, gScratchVector0);
+    movingPlayer = gCurrentRacePlayer;
+    movingPlayer->x += gScratchVector0->vx;
+    movingPlayer->y += gScratchVector0->vy;
+    movingPlayer->z += gScratchVector0->vz;
     if (--movingPlayer->unk08C == 0) {
-        D_8013AE88->data1A++;
-        movingPlayer->unk0B6 = D_80123D80[D_8013AFCE].unk14;
+        gCurrentTask->data1A++;
+        movingPlayer->unk0B6 = D_80123D80[gSelectedCourseIndex].unk14;
         movingPlayer->unk110 = movingPlayer->unk0BE = movingPlayer->unk0B6 + 0x400;
         D_8013AF90->vx = 0;
         D_8013AF90->vy = movingPlayer->unk110;
         D_8013AF90->vz = 0;
-        RotMatrix(D_8013AF90, D_8013AF98);
-        D_8013AF88->vx = 0;
-        D_8013AF88->vy = 0;
-        D_8013AF88->vz = -0x28000;
-        ApplyMatrixLV(D_8013AF98, D_8013AF88, (VECTOR *)&D_8013B0D8->x);
-        course = &D_80123D80[D_8013AFCE];
-        placedPlayer = D_8013B0D8;
+        RotMatrix(D_8013AF90, gScratchMatrix0);
+        gScratchVector0->vx = 0;
+        gScratchVector0->vy = 0;
+        gScratchVector0->vz = -0x28000;
+        ApplyMatrixLV(gScratchMatrix0, gScratchVector0, (VECTOR *)&gCurrentRacePlayer->x);
+        course = &D_80123D80[gSelectedCourseIndex];
+        placedPlayer = gCurrentRacePlayer;
         placedPlayer->x += course->unk08;
         placedPlayer->y += course->unk0C - 0x2000;
         placedPlayer->z += course->unk10;
@@ -3919,34 +3919,34 @@ void updateCurrentPlayerTaskLapTransition(void) {
         placedPlayer->unk934++;
         placedPlayer->unk92E = segment;
         /* Preserve the complete four-word position vector. */
-        *(VECTOR *)&D_8013B0D8->unk050 = *(VECTOR *)&D_8013B0D8->x;
-        phasePlayer = D_8013B0D8;
+        *(VECTOR *)&gCurrentRacePlayer->unk050 = *(VECTOR *)&gCurrentRacePlayer->x;
+        phasePlayer = gCurrentRacePlayer;
         phasePlayer->unk08C = 40;
         phasePlayer->animationFlags &= ~0x10;
         phasePlayer->unk128 &= ~0x04000400;
-        if (D_8013B0D8->unk008 == 0) {
+        if (gCurrentRacePlayer->unk008 == 0) {
             PlayerCamera *cameras = D_801241E8;
-            cameras[D_8013AE88->data18].unk16 = 7;
-            task = D_8013AE88;
-            cameras[task->data18].yaw = D_8013B0D8->unk110;
+            cameras[gCurrentTask->data18].unk16 = 7;
+            task = gCurrentTask;
+            cameras[task->data18].yaw = gCurrentRacePlayer->unk110;
             cameras[task->data18].pitch = 0;
-            cameras[task->data18].unk18 = D_8013B0D8->unk92E;
+            cameras[task->data18].unk18 = gCurrentRacePlayer->unk92E;
             updatePlayerCameraPosition(task->data18);
-            clampPlayerCameraHeight(D_8013AE88->data18);
-            if (D_8013AE88->data18 == 0) {
+            clampPlayerCameraHeight(gCurrentTask->data18);
+            if (gCurrentTask->data18 == 0) {
                 configureTaskStateTransition(1, 0x1000, 60);
             } else {
                 configureTaskStateTransition(1, 0x2000, 60);
             }
-            if (D_8013B0D8->unk934 >= selectedFinishLapCountAbsolute - 1) {
+            if (gCurrentRacePlayer->unk934 >= selectedFinishLapCountAbsolute - 1) {
                 createChildTaskWithReserve(initializeTaskMotionResource);
-                D_8013AE8C->data18 = D_8013AE88->data18;
+                gCreatedTask->data18 = gCurrentTask->data18;
             }
         }
     }
-    player = D_8013B0D8;
+    player = gCurrentRacePlayer;
     if (player->unk08C == 60 && player->unk008 == 0) {
-        if (D_8013AE88->data18 == 0) {
+        if (gCurrentTask->data18 == 0) {
             configureTaskStateTransition(2, 0x1000, player->unk08C);
         } else {
             configureTaskStateTransition(2, 0x2000, player->unk08C);
@@ -3957,16 +3957,16 @@ void updateCurrentPlayerTaskLapTransition(void) {
 void moveCurrentPlayerForwardUntilState22(void) {
     RacePlayer *player;
     D_8013AF90->vx = 0;
-    D_8013AF90->vy = D_8013B0D8->unk110;
+    D_8013AF90->vy = gCurrentRacePlayer->unk110;
     D_8013AF90->vz = 0;
-    RotMatrix(D_8013AF90, D_8013AF98);
+    RotMatrix(D_8013AF90, gScratchMatrix0);
     D_8013AF90->vx = 0;
     D_8013AF90->vy = 0;
     D_8013AF90->vz = 0x1000;
-    ApplyMatrix(D_8013AF98, D_8013AF90, D_8013AF88);
-    player = D_8013B0D8;
-    player->x += D_8013AF88->vx;
-    player->z += D_8013AF88->vz;
+    ApplyMatrix(gScratchMatrix0, D_8013AF90, gScratchVector0);
+    player = gCurrentRacePlayer;
+    player->x += gScratchVector0->vx;
+    player->z += gScratchVector0->vz;
     if (--player->unk08C == 0) {
         player->unk12C = 22;
         player->unk128 = 0;
@@ -3985,22 +3985,22 @@ void moveCurrentPlayerForwardUntilState22(void) {
             player->z += player->unk064 * 4;
             break;
         }
-        D_8013B0D8->unk062 = 0;
-        D_8013B0D8->unk094 = 0;
-        D_8013B0D8->unk943 = 0;
+        gCurrentRacePlayer->unk062 = 0;
+        gCurrentRacePlayer->unk094 = 0;
+        gCurrentRacePlayer->unk943 = 0;
         startCurrentPlayerAnimation(4, 2);
-        currentPlayerStateCallbacks[D_8013B0D8->unk12C]();
+        currentPlayerStateCallbacks[gCurrentRacePlayer->unk12C]();
     }
 }
 
 void updateCurrentPlayerAndRequestState30(void) {
     RacePlayer *player;
     prepareCurrentPlayerFrame();
-    gCurrentPlayerState30TaskPhaseCallbacks[D_8013AE88->data1A]();
-    if (D_8013B0D8->unk0AC < 0x3C00) {
-        D_8013B0D8->unk0AC += 0x200;
+    gCurrentPlayerState30TaskPhaseCallbacks[gCurrentTask->data1A]();
+    if (gCurrentRacePlayer->unk0AC < 0x3C00) {
+        gCurrentRacePlayer->unk0AC += 0x200;
     }
-    player = D_8013B0D8;
+    player = gCurrentRacePlayer;
     player->unk110 = player->unk0B6 + 0x400;
     player->worldCoordinate.coord.t[0] = player->x >> 8;
     player->worldCoordinate.coord.t[1] = player->y >> 8;
@@ -4011,7 +4011,7 @@ void updateCurrentPlayerAndRequestState30(void) {
 void updateCurrentPlayerState30TaskUntilStopped(void) {
     RacePlayer *player;
     RacePlayer *steeringPlayer;
-    GameTask *task = D_8013AE88;
+    GameTask *task = gCurrentTask;
     RacePlayer *animationPlayer;
     RacePlayer *movingPlayer;
     RacePlayer *stoppedPlayer;
@@ -4020,7 +4020,7 @@ void updateCurrentPlayerState30TaskUntilStopped(void) {
     s32 difference;
 
     if (task->data1E != 0) {
-        player = D_8013B0D8;
+        player = gCurrentRacePlayer;
         difference = (player->unk0BE - player->unk110) & 0xFFF;
         turn = difference;
         if (difference > 0x800) {
@@ -4038,9 +4038,9 @@ void updateCurrentPlayerState30TaskUntilStopped(void) {
         } else {
             player->unk08C = -31;
         }
-        D_8013B0D8->unk124 = 63;
-        turn = smoothAndScaleCurrentPlayerInput(D_8013B0D8->unk0BC, (s16)D_8013B0D8->unk08C);
-        steeringPlayer = D_8013B0D8;
+        gCurrentRacePlayer->unk124 = 63;
+        turn = smoothAndScaleCurrentPlayerInput(gCurrentRacePlayer->unk0BC, (s16)gCurrentRacePlayer->unk08C);
+        steeringPlayer = gCurrentRacePlayer;
         turn -= steeringPlayer->unk126;
         if (turn > 0x30) {
             turn = 0x30;
@@ -4056,42 +4056,42 @@ void updateCurrentPlayerState30TaskUntilStopped(void) {
         } else {
             if ((s16)steeringPlayer->unk126 >= 0) {
                 blendCurrentPlayerSteeringPose(6, (s16)steeringPlayer->unk126, 0x118);
-                if ((s16)D_8013B0D8->unk126 >= 0) {
+                if ((s16)gCurrentRacePlayer->unk126 >= 0) {
                     goto updateAnimation;
                 }
             }
-            blendCurrentPlayerSteeringPose(5, -(s16)D_8013B0D8->unk126, 0x118);
+            blendCurrentPlayerSteeringPose(5, -(s16)gCurrentRacePlayer->unk126, 0x118);
         }
     } else {
         smoothAndScaleCurrentPlayerInput(0, 0);
     }
 
 updateAnimation:
-    animationPlayer = D_8013B0D8;
+    animationPlayer = gCurrentRacePlayer;
     if (animationPlayer->animationIndex != D_800EB09C[animationPlayer->characterId][6] &&
         animationPlayer->animationIndex != D_800EB09C[animationPlayer->characterId][5]) {
         updateCurrentPlayerAnimation();
     }
     updateCurrentPlayerSlopeVelocityWithoutBoost(0, 0x200, 0x180, 0x180);
-    movingPlayer = D_8013B0D8;
+    movingPlayer = gCurrentRacePlayer;
     movingPlayer->x += movingPlayer->unk060;
     movingPlayer->y += movingPlayer->unk062;
     movingPlayer->z += movingPlayer->unk064;
     updateCurrentPlayerGroundContact();
     updateCurrentPlayerMotionEffects();
 
-    stoppedPlayer = D_8013B0D8;
+    stoppedPlayer = gCurrentRacePlayer;
     if ((stoppedPlayer->unk060 | stoppedPlayer->unk064) == 0 && !(stoppedPlayer->unk128 & 1)) {
         if (stoppedPlayer->unk008 == 0) {
             PlayerCamera *cameras = D_801241E8;
-            PlayerCamera *camera = &cameras[D_8013AE88->data18];
+            PlayerCamera *camera = &cameras[gCurrentTask->data18];
             if (camera->unk16 != 6 && D_8013AFD6 == 0) {
                 camera->unk16 = 5;
             }
         }
-        finishedPlayer = D_8013B0D8;
+        finishedPlayer = gCurrentRacePlayer;
         finishedPlayer->unk128 |= 0x100;
-        D_8013AE88->data1A++;
+        gCurrentTask->data1A++;
         if (finishedPlayer->animationIndex != D_800EB09C[finishedPlayer->characterId][1]) {
             startCurrentPlayerAnimation(1, 1);
         }
@@ -4101,24 +4101,24 @@ updateAnimation:
 void advanceCurrentPlayerState30TaskOnResult(void) {
     if (D_8013AFE1 != 0) {
         if (D_8013AFE2 == 0) {
-            if (D_8013B0D8->unk935 == 0) {
-                D_8013AE88->data1C = 0;
+            if (gCurrentRacePlayer->unk935 == 0) {
+                gCurrentTask->data1C = 0;
                 startCurrentPlayerAnimation(0x13, 2);
             } else {
-                D_8013AE88->data1C = 2;
+                gCurrentTask->data1C = 2;
                 startCurrentPlayerAnimation(0x15, 2);
             }
         } else {
-            if (D_8013AE88->data18 + 1 == D_8013AFE1) {
-                D_8013AE88->data1C = 0;
+            if (gCurrentTask->data18 + 1 == D_8013AFE1) {
+                gCurrentTask->data1C = 0;
                 startCurrentPlayerAnimation(0x13, 2);
             } else {
-                D_8013AE88->data1C = 2;
+                gCurrentTask->data1C = 2;
                 startCurrentPlayerAnimation(0x15, 2);
             }
         }
-        D_8013AE88->data1A++;
-        D_8013B0D8->unk08C = 0;
+        gCurrentTask->data1A++;
+        gCurrentRacePlayer->unk08C = 0;
     } else {
         smoothAndScaleCurrentPlayerInput(0, 0);
         updateCurrentPlayerGroundContact();
@@ -4127,19 +4127,19 @@ void advanceCurrentPlayerState30TaskOnResult(void) {
 }
 
 void updateCurrentPlayerState30AnimationAndHeight(void) {
-    RacePlayer *player = D_8013B0D8;
+    RacePlayer *player = gCurrentRacePlayer;
     if (player->unk08C == 0) {
         if (player->animationFlags & 0x10) {
-            if (!(D_8013AE88->data1C & 1)) {
-                D_8013AE88->data1C++;
-                if (!(D_8013AE88->data1C & 2)) {
+            if (!(gCurrentTask->data1C & 1)) {
+                gCurrentTask->data1C++;
+                if (!(gCurrentTask->data1C & 2)) {
                     if (!D_8013AFD6) playCurrentPlayerSoundEffect(6);
                     startCurrentPlayerAnimation(0x14, 2);
                 } else {
                     startCurrentPlayerAnimation(0x16, 2);
                 }
             } else {
-                if (!(D_8013AE88->data1C & 2)) {
+                if (!(gCurrentTask->data1C & 2)) {
                     player->unk08C = gPlayerState30Animation20Countdowns[player->characterId];
                     startCurrentPlayerAnimation(0x14, 2);
                 } else {
@@ -4152,24 +4152,24 @@ void updateCurrentPlayerState30AnimationAndHeight(void) {
     } else {
         player->unk08C--;
     }
-    D_8013B0D8->unk946 = 0;
+    gCurrentRacePlayer->unk946 = 0;
     if (processCurrentPlayerActionRequests(0)) {
-        D_8013B0D8->unk92E = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8);
-        D_8013B0D8->y = getCourseHeightAtPoint(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8) << 8;
+        gCurrentRacePlayer->unk92E = getAdjacentGeometryRegionForPoint(gCurrentRacePlayer->unk92E, gCurrentRacePlayer->x >> 8, gCurrentRacePlayer->z >> 8);
+        gCurrentRacePlayer->y = getCourseHeightAtPoint(gCurrentRacePlayer->unk92E, gCurrentRacePlayer->x >> 8, gCurrentRacePlayer->z >> 8) << 8;
     }
 }
 
 void updateCurrentPlayerTaskCountdown(void) {
     RacePlayer *player;
     prepareCurrentPlayerFrame();
-    D_8013B0D8->unk946 = 0;
-    player = D_8013B0D8;
+    gCurrentRacePlayer->unk946 = 0;
+    player = gCurrentRacePlayer;
     player->worldCoordinate.coord.t[0] = player->x >> 8;
     player->worldCoordinate.coord.t[1] = player->y >> 8;
     player->worldCoordinate.coord.t[2] = player->z >> 8;
     updateCurrentPlayerAnimation();
-    if (D_8013AE88->data18 == 0) {
-        if (--D_8013AE88->data1A == 0) {
+    if (gCurrentTask->data18 == 0) {
+        if (--gCurrentTask->data1A == 0) {
             playCurrentPlayerSoundEffect(6);
         }
     }
@@ -4181,15 +4181,15 @@ void updateCurrentPlayerState8Steering(void) {
     s32 difference;
     s16 delta;
     prepareCurrentPlayerFrame();
-    if (D_8013B0D8->unk128 & 1) {
-        D_8013B0D8->unk128 |= 0x200;
+    if (gCurrentRacePlayer->unk128 & 1) {
+        gCurrentRacePlayer->unk128 |= 0x200;
     } else {
-        D_8013B0D8->unk128 &= ~0x200;
+        gCurrentRacePlayer->unk128 &= ~0x200;
     }
-    player = D_8013B0D8;
-    if (player->unk92E == (s16)D_80123D80[D_8013AFCE].unk00 && !(player->unk128 & 0x40)) {
-        angle = getXZHeading(player->x, player->z, D_80123D80[D_8013AFCE].unk40[0], D_80123D80[D_8013AFCE].unk40[1]);
-        player = D_8013B0D8;
+    player = gCurrentRacePlayer;
+    if (player->unk92E == (s16)D_80123D80[gSelectedCourseIndex].unk00 && !(player->unk128 & 0x40)) {
+        angle = getXZHeading(player->x, player->z, D_80123D80[gSelectedCourseIndex].unk40[0], D_80123D80[gSelectedCourseIndex].unk40[1]);
+        player = gCurrentRacePlayer;
         if (player->unk128 & 0x400) {
             angle += 0x800;
         }
@@ -4230,141 +4230,141 @@ void updateCurrentPlayerState8Steering(void) {
     }
 movement:
     smoothAndScaleCurrentPlayerInput(0, 0);
-    D_8013B0D8->unk09E = 0x280;
+    gCurrentRacePlayer->unk09E = 0x280;
     updateCurrentPlayerGroundContact();
     updateCurrentPlayerAnimation();
-    if (++D_8013AE88->data1A < 15) {
-        D_8013B0D8->unk128 |= 8;
+    if (++gCurrentTask->data1A < 15) {
+        gCurrentRacePlayer->unk128 |= 8;
     } else {
-        D_8013B0D8->unk128 &= ~8;
+        gCurrentRacePlayer->unk128 &= ~8;
     }
-    if (D_8013B0D8->animationFlags & 0x10) {
-        D_8013B0D8->unk962 = D_8013B0D8->unk92E;
-        D_8013B0D8->unk128 &= 0xFF0C1FFB;
-        if (D_8013B0D8->unk12C != 24) {
-            D_8013B0D8->unk12C = 0;
+    if (gCurrentRacePlayer->animationFlags & 0x10) {
+        gCurrentRacePlayer->unk962 = gCurrentRacePlayer->unk92E;
+        gCurrentRacePlayer->unk128 &= 0xFF0C1FFB;
+        if (gCurrentRacePlayer->unk12C != 24) {
+            gCurrentRacePlayer->unk12C = 0;
         }
     }
     if ((u16)callCurrentPlayerStateCallbackIfDifferent(8)) {
-        D_8013B0D8->unk128 &= ~8;
+        gCurrentRacePlayer->unk128 &= ~8;
     }
 }
 
 void updateCurrentPlayerState11Motion(void) {
     prepareCurrentPlayerFrame();
-    D_8013B0D8->unk130 = 0x1800;
-    D_800EB22C.vx = D_8013B0D8->unk060;
-    D_800EB22C.vz = D_8013B0D8->unk064;
+    gCurrentRacePlayer->unk130 = 0x1800;
+    D_800EB22C.vx = gCurrentRacePlayer->unk060;
+    D_800EB22C.vz = gCurrentRacePlayer->unk064;
     clampVectorToCurrentPlayerLimit(&D_800EB22C);
-    D_8013B0D8->unk060 = D_800EB22C.vx;
-    D_8013B0D8->unk064 = D_800EB22C.vz;
-    if (!(D_8013B0D8->unk128 & 1)) {
-        D_8013B0D8->unk09E = D_8013B0D8->unk09C;
+    gCurrentRacePlayer->unk060 = D_800EB22C.vx;
+    gCurrentRacePlayer->unk064 = D_800EB22C.vz;
+    if (!(gCurrentRacePlayer->unk128 & 1)) {
+        gCurrentRacePlayer->unk09E = gCurrentRacePlayer->unk09C;
         updateCurrentPlayerSlopeVelocityWithoutBoost(0, 0x100, 0x100, 0x100);
     } else {
-        D_8013B0D8->unk060 -= D_8013B0D8->unk060 / 16;
-        D_8013B0D8->unk062 += D_8013B0D8->unk09C;
-        if (D_8013B0D8->unk062 > 0x7800) {
-            D_8013B0D8->unk062 = 0x7800;
+        gCurrentRacePlayer->unk060 -= gCurrentRacePlayer->unk060 / 16;
+        gCurrentRacePlayer->unk062 += gCurrentRacePlayer->unk09C;
+        if (gCurrentRacePlayer->unk062 > 0x7800) {
+            gCurrentRacePlayer->unk062 = 0x7800;
         }
-        D_8013B0D8->unk064 -= D_8013B0D8->unk064 / 16;
+        gCurrentRacePlayer->unk064 -= gCurrentRacePlayer->unk064 / 16;
     }
-    D_8013B0D8->x += D_8013B0D8->unk060;
-    D_8013B0D8->y += D_8013B0D8->unk062;
-    D_8013B0D8->z += D_8013B0D8->unk064;
-    if (!(D_8013B0D8->unk128 & 1)) {
+    gCurrentRacePlayer->x += gCurrentRacePlayer->unk060;
+    gCurrentRacePlayer->y += gCurrentRacePlayer->unk062;
+    gCurrentRacePlayer->z += gCurrentRacePlayer->unk064;
+    if (!(gCurrentRacePlayer->unk128 & 1)) {
         updateCurrentPlayerGroundContact();
     } else {
         resolveCurrentPlayerTerrainContact();
     }
     updateCurrentPlayerAnimation();
-    if (!(D_8013B0D8->unk128 & 1) && (D_8013B0D8->animationFlags & 0x10)) {
-        D_8013B0D8->unk12C = 12;
+    if (!(gCurrentRacePlayer->unk128 & 1) && (gCurrentRacePlayer->animationFlags & 0x10)) {
+        gCurrentRacePlayer->unk12C = 12;
         currentPlayerStateCallbacks[12]();
     }
 }
 
 void updateCurrentPlayerState10Movement(void) {
     prepareCurrentPlayerFrame();
-    smoothAndScaleCurrentPlayerInput(D_8013B0D8->unk094, 0);
-    if (D_8013B0D8->unk062 < 0) {
-        D_8013B0D8->unk060 = 0;
-        D_8013B0D8->unk062 = 0;
-        D_8013B0D8->unk064 = 0;
+    smoothAndScaleCurrentPlayerInput(gCurrentRacePlayer->unk094, 0);
+    if (gCurrentRacePlayer->unk062 < 0) {
+        gCurrentRacePlayer->unk060 = 0;
+        gCurrentRacePlayer->unk062 = 0;
+        gCurrentRacePlayer->unk064 = 0;
     }
-    D_8013B0D8->unk130 = 0x2000;
-    D_8013B0D8->unk09E = D_8013B0D8->unk09A;
+    gCurrentRacePlayer->unk130 = 0x2000;
+    gCurrentRacePlayer->unk09E = gCurrentRacePlayer->unk09A;
     updateCurrentPlayerSlopeVelocityWithoutBoost(0, 0, 0, 0);
-    D_8013B0D8->x += D_8013B0D8->unk060;
-    D_8013B0D8->y += D_8013B0D8->unk062;
-    D_8013B0D8->z += D_8013B0D8->unk064;
-    D_8013B0D8->unk110 = getXZHeading(0, 0, D_8013B0D8->unk060, D_8013B0D8->unk064);
-    if (D_8013B0D8->unk128 & 0x400) {
-        D_8013B0D8->unk110 += 0x800;
+    gCurrentRacePlayer->x += gCurrentRacePlayer->unk060;
+    gCurrentRacePlayer->y += gCurrentRacePlayer->unk062;
+    gCurrentRacePlayer->z += gCurrentRacePlayer->unk064;
+    gCurrentRacePlayer->unk110 = getXZHeading(0, 0, gCurrentRacePlayer->unk060, gCurrentRacePlayer->unk064);
+    if (gCurrentRacePlayer->unk128 & 0x400) {
+        gCurrentRacePlayer->unk110 += 0x800;
     }
-    D_8013B0D8->unk0B6 = D_8013B0D8->unk110 - 0x400;
+    gCurrentRacePlayer->unk0B6 = gCurrentRacePlayer->unk110 - 0x400;
     snapCurrentPlayerToTerrain();
     updateCurrentPlayerAnimation();
     if (D_8013B0E4 != 0) {
-        currentPlayerStateCallbacks[D_8013B0D8->unk12C]();
-    } else if (!(D_8013B0D8->unk128 & 0x201)) {
-        if (D_8013B0D8->surfaceState.fields.unk136 != 3 && D_8013B0D8->surfaceState.fields.unk136 != 6 &&
-            D_8013B0D8->surfaceState.fields.unk136 != 12 && D_8013B0D8->surfaceState.fields.unk136 != 16 &&
-            D_8013B0D8->surfaceState.fields.unk136 != 8 && D_8013B0D8->surfaceState.fields.unk136 != 7 &&
-            D_8013B0D8->surfaceState.fields.unk136 != 14 && D_8013B0D8->surfaceState.fields.unk136 != 15) {
-            D_801241E8[D_8013AE88->data18].unk16 = 1;
+        currentPlayerStateCallbacks[gCurrentRacePlayer->unk12C]();
+    } else if (!(gCurrentRacePlayer->unk128 & 0x201)) {
+        if (gCurrentRacePlayer->surfaceState.fields.unk136 != 3 && gCurrentRacePlayer->surfaceState.fields.unk136 != 6 &&
+            gCurrentRacePlayer->surfaceState.fields.unk136 != 12 && gCurrentRacePlayer->surfaceState.fields.unk136 != 16 &&
+            gCurrentRacePlayer->surfaceState.fields.unk136 != 8 && gCurrentRacePlayer->surfaceState.fields.unk136 != 7 &&
+            gCurrentRacePlayer->surfaceState.fields.unk136 != 14 && gCurrentRacePlayer->surfaceState.fields.unk136 != 15) {
+            D_801241E8[gCurrentTask->data18].unk16 = 1;
             initializeCurrentPlayerState14();
         } else {
-            D_8013B0D8->unk96E = 0x500;
-            D_8013B0D8->unk972 = 0;
-            D_8013B0D8->unk96C = 0x20;
+            gCurrentRacePlayer->unk96E = 0x500;
+            gCurrentRacePlayer->unk972 = 0;
+            gCurrentRacePlayer->unk96C = 0x20;
         }
     }
 }
 
 void updateCurrentPlayerTimedMotion(void) {
     prepareCurrentPlayerFrame();
-    if (!(D_8013B0D8->unk128 & 1)) {
+    if (!(gCurrentRacePlayer->unk128 & 1)) {
         smoothAndScaleCurrentPlayerInput(0x400, 0);
-        D_8013B0D8->unk09E = 0x280;
-        D_8013B0D8->unk128 &= ~0x200;
+        gCurrentRacePlayer->unk09E = 0x280;
+        gCurrentRacePlayer->unk128 &= ~0x200;
         updateCurrentPlayerSlopeVelocityWithoutBoost(0, 0, 0, 0);
     } else {
-        D_8013B0D8->unk062 += D_8013B0D8->unk09C;
-        if (D_8013B0D8->unk062 > 0x7800) {
-            D_8013B0D8->unk062 = 0x7800;
+        gCurrentRacePlayer->unk062 += gCurrentRacePlayer->unk09C;
+        if (gCurrentRacePlayer->unk062 > 0x7800) {
+            gCurrentRacePlayer->unk062 = 0x7800;
         }
-        D_8013B0D8->unk128 |= 0x200;
+        gCurrentRacePlayer->unk128 |= 0x200;
     }
-    D_800EB22C.vx = D_8013B0D8->unk060;
-    D_800EB22C.vz = D_8013B0D8->unk064;
+    D_800EB22C.vx = gCurrentRacePlayer->unk060;
+    D_800EB22C.vz = gCurrentRacePlayer->unk064;
     clampVectorToCurrentPlayerLimit(&D_800EB22C);
-    D_8013B0D8->unk060 = D_800EB22C.vx;
-    D_8013B0D8->unk064 = D_800EB22C.vz;
-    D_8013B0D8->x += D_8013B0D8->unk060;
-    D_8013B0D8->y += D_8013B0D8->unk062;
-    D_8013B0D8->z += D_8013B0D8->unk064;
-    if (!(D_8013B0D8->unk128 & 1)) {
+    gCurrentRacePlayer->unk060 = D_800EB22C.vx;
+    gCurrentRacePlayer->unk064 = D_800EB22C.vz;
+    gCurrentRacePlayer->x += gCurrentRacePlayer->unk060;
+    gCurrentRacePlayer->y += gCurrentRacePlayer->unk062;
+    gCurrentRacePlayer->z += gCurrentRacePlayer->unk064;
+    if (!(gCurrentRacePlayer->unk128 & 1)) {
         updateCurrentPlayerGroundContact();
-        D_8013B0D8->unk96E = 0x500;
-        D_8013B0D8->unk972 = 0;
-        D_8013B0D8->unk96C = 0x20;
+        gCurrentRacePlayer->unk96E = 0x500;
+        gCurrentRacePlayer->unk972 = 0;
+        gCurrentRacePlayer->unk96C = 0x20;
     } else {
         resolveCurrentPlayerTerrainContact();
     }
-    D_8013B0D8->unk110 = getXZHeading(0, 0, D_8013B0D8->unk060, D_8013B0D8->unk064);
-    if (D_8013B0D8->unk128 & 0x400) {
-        D_8013B0D8->unk110 += 0x800;
+    gCurrentRacePlayer->unk110 = getXZHeading(0, 0, gCurrentRacePlayer->unk060, gCurrentRacePlayer->unk064);
+    if (gCurrentRacePlayer->unk128 & 0x400) {
+        gCurrentRacePlayer->unk110 += 0x800;
     }
-    D_8013B0D8->unk0B6 = D_8013B0D8->unk110 - 0x400;
+    gCurrentRacePlayer->unk0B6 = gCurrentRacePlayer->unk110 - 0x400;
     updateCurrentPlayerAnimation();
     if (D_8013B0E4) {
-        currentPlayerStateCallbacks[D_8013B0D8->unk12C]();
-    } else if (D_8013B0D8->unk08C == 0) {
-        D_8013B0D8->unk12C = 12;
+        currentPlayerStateCallbacks[gCurrentRacePlayer->unk12C]();
+    } else if (gCurrentRacePlayer->unk08C == 0) {
+        gCurrentRacePlayer->unk12C = 12;
         currentPlayerStateCallbacks[12]();
     } else {
-        D_8013B0D8->unk08C--;
+        gCurrentRacePlayer->unk08C--;
     }
 }
 
@@ -4375,35 +4375,35 @@ void updateCurrentPlayerState12MotionAndTimer(void) {
 
     prepareCurrentPlayerFrame();
     smoothAndScaleCurrentPlayerInput(0, 0);
-    player = D_8013B0D8;
+    player = gCurrentRacePlayer;
     if (!(player->unk128 & 1)) {
         player->unk09E = 0x280;
         updateCurrentPlayerSlopeVelocityWithoutBoost(0, 0x180, 0x180, 0x180);
-        D_8013B0D8->x += D_8013B0D8->unk060;
-        D_8013B0D8->y += D_8013B0D8->unk062;
-        D_8013B0D8->z += D_8013B0D8->unk064;
+        gCurrentRacePlayer->x += gCurrentRacePlayer->unk060;
+        gCurrentRacePlayer->y += gCurrentRacePlayer->unk062;
+        gCurrentRacePlayer->z += gCurrentRacePlayer->unk064;
         updateCurrentPlayerGroundContact();
         updateCurrentPlayerAnimation();
-        if (++D_8013AE88->data1A >= 8) {
-            D_8013B0D8->unk128 |= 8;
+        if (++gCurrentTask->data1A >= 8) {
+            gCurrentRacePlayer->unk128 |= 8;
         } else {
-            D_8013B0D8->unk128 &= ~8;
+            gCurrentRacePlayer->unk128 &= ~8;
         }
         updateCurrentPlayerMotionEffects();
-        if (D_8013B0D8->unk96E != 0x300 && D_8013B0D8->unk96E != 0x801) {
-            D_8013B0D8->unk972 = 0x400;
+        if (gCurrentRacePlayer->unk96E != 0x300 && gCurrentRacePlayer->unk96E != 0x801) {
+            gCurrentRacePlayer->unk972 = 0x400;
         }
         if (D_8013B0E4) {
-            D_8013B0D8->unk128 &= ~8;
-            currentPlayerStateCallbacks[D_8013B0D8->unk12C]();
+            gCurrentRacePlayer->unk128 &= ~8;
+            currentPlayerStateCallbacks[gCurrentRacePlayer->unk12C]();
         } else {
             input = countCurrentPlayerInputGroups();
-            D_8013B0D8->unk08C--;
-            D_8013B0D8->unk08C -= input;
-            if (D_8013B0D8->unk08C < 0) {
-                D_8013B0D8->unk08C = 0;
+            gCurrentRacePlayer->unk08C--;
+            gCurrentRacePlayer->unk08C -= input;
+            if (gCurrentRacePlayer->unk08C < 0) {
+                gCurrentRacePlayer->unk08C = 0;
             }
-            grounded = D_8013B0D8;
+            grounded = gCurrentRacePlayer;
             if (grounded->animationFlags & 0x10) {
                 grounded->unk128 &= ~0x200;
                 if (grounded->unk08C == 0) {
@@ -4418,18 +4418,18 @@ void updateCurrentPlayerState12MotionAndTimer(void) {
         if (player->unk062 > 0x7800) {
             player->unk062 = 0x7800;
         }
-        D_8013B0D8->x += D_8013B0D8->unk060;
-        D_8013B0D8->y += D_8013B0D8->unk062;
-        D_8013B0D8->z += D_8013B0D8->unk064;
+        gCurrentRacePlayer->x += gCurrentRacePlayer->unk060;
+        gCurrentRacePlayer->y += gCurrentRacePlayer->unk062;
+        gCurrentRacePlayer->z += gCurrentRacePlayer->unk064;
         if (resolveCurrentPlayerTerrainContact()) {
-            queuePlayerControllerEffect(D_8013AE88->data18, 9);
-            playPlayerSoundEffect(D_8013AE88->data18, 1, 0xB01, 0x20);
-            createPlayerTripleQuadEffectTask(D_8013AE88->data18);
+            queuePlayerControllerEffect(gCurrentTask->data18, 9);
+            playPlayerSoundEffect(gCurrentTask->data18, 1, 0xB01, 0x20);
+            createPlayerTripleQuadEffectTask(gCurrentTask->data18);
         }
-        D_8013B0D8->unk08C = 30;
-        D_8013B0D8->unk128 |= 0x200;
-        D_8013B0D8->unk090 = 7;
-        D_8013B0D8->unk128 &= ~8;
+        gCurrentRacePlayer->unk08C = 30;
+        gCurrentRacePlayer->unk128 |= 0x200;
+        gCurrentRacePlayer->unk090 = 7;
+        gCurrentRacePlayer->unk128 &= ~8;
     }
 }
 
@@ -4444,118 +4444,118 @@ void resolveCurrentPlayerWallContact(void) {
     s32 sine, cosine;
     s32 velocityX, velocityZ;
 
-    D_8013B0D8->unk943 = 0;
-    D_8013B0D8->unk965 = 0;
-    D_8013B0D8->unk946 = 0;
-    D_8013B0D8->unk0EC = D_8013B0D8->unk060;
-    D_8013B0D8->unk0F0 = D_8013B0D8->unk064;
-    D_8013B0D8->unk074 = D_8013B0D8->y + 0x1800;
-    if (D_8013B0D8->unk0F6) {
-        D_8013B0D8->unk0F6--;
+    gCurrentRacePlayer->unk943 = 0;
+    gCurrentRacePlayer->unk965 = 0;
+    gCurrentRacePlayer->unk946 = 0;
+    gCurrentRacePlayer->unk0EC = gCurrentRacePlayer->unk060;
+    gCurrentRacePlayer->unk0F0 = gCurrentRacePlayer->unk064;
+    gCurrentRacePlayer->unk074 = gCurrentRacePlayer->y + 0x1800;
+    if (gCurrentRacePlayer->unk0F6) {
+        gCurrentRacePlayer->unk0F6--;
     }
-    if (D_8013B0D8->unk0FC) {
-        D_8013B0D8->unk96E = 0x400;
-        D_8013B0D8->unk972 = 0;
-        D_8013B0D8->unk96C = 0x20;
+    if (gCurrentRacePlayer->unk0FC) {
+        gCurrentRacePlayer->unk96E = 0x400;
+        gCurrentRacePlayer->unk972 = 0;
+        gCurrentRacePlayer->unk96C = 0x20;
     }
-    if (D_8013B0D8->unk128 & 0x403040) {
-        D_8013B0D8->surfaceState.fields.unk134 = 0;
-    } else if (D_8013B0D8->surfaceState.fields.unk134) {
-        D_8013B0D8->surfaceState.fields.unk134--;
+    if (gCurrentRacePlayer->unk128 & 0x403040) {
+        gCurrentRacePlayer->surfaceState.fields.unk134 = 0;
+    } else if (gCurrentRacePlayer->surfaceState.fields.unk134) {
+        gCurrentRacePlayer->surfaceState.fields.unk134--;
     }
-    if (!(D_8013AFE4 & 1) && D_8013B0D8->unk945) {
-        D_8013B0D8->unk945--;
+    if (!(gTaskTransitionFlags & 1) && gCurrentRacePlayer->unk945) {
+        gCurrentRacePlayer->unk945--;
     }
-    if (D_8013B0D8->unk0E8) {
+    if (gCurrentRacePlayer->unk0E8) {
         return;
     }
 
-    region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8);
-    resolveGeometryBoundaryCollision(region, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8, 18, 2, &dx, &dz, &responseX, &responseZ);
+    region = getAdjacentGeometryRegionForPoint(gCurrentRacePlayer->unk92E, gCurrentRacePlayer->x >> 8, gCurrentRacePlayer->z >> 8);
+    resolveGeometryBoundaryCollision(region, gCurrentRacePlayer->x >> 8, gCurrentRacePlayer->z >> 8, 18, 2, &dx, &dz, &responseX, &responseZ);
     if (dx || dz) {
-        D_8013B0D8->x += dx << 8;
-        D_8013B0D8->z += dz << 8;
-        region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8);
+        gCurrentRacePlayer->x += dx << 8;
+        gCurrentRacePlayer->z += dz << 8;
+        region = getAdjacentGeometryRegionForPoint(gCurrentRacePlayer->unk92E, gCurrentRacePlayer->x >> 8, gCurrentRacePlayer->z >> 8);
     }
 
-    radius = (D_8013B0D8->unk128 & 0x7C000) ? 36 : 22;
-    resolveGeometryBoundaryCollision(region, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8, radius, 1, &dx, &dz,
-                  &D_8013B0D8->unk0EC, &D_8013B0D8->unk0F0);
+    radius = (gCurrentRacePlayer->unk128 & 0x7C000) ? 36 : 22;
+    resolveGeometryBoundaryCollision(region, gCurrentRacePlayer->x >> 8, gCurrentRacePlayer->z >> 8, radius, 1, &dx, &dz,
+                  &gCurrentRacePlayer->unk0EC, &gCurrentRacePlayer->unk0F0);
     if (dx || dz) {
-        D_8013B0D8->x += dx << 8;
-        D_8013B0D8->z += dz << 8;
-        D_8013B0D8->unk0E8 |= 1;
-        region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8);
+        gCurrentRacePlayer->x += dx << 8;
+        gCurrentRacePlayer->z += dz << 8;
+        gCurrentRacePlayer->unk0E8 |= 1;
+        region = getAdjacentGeometryRegionForPoint(gCurrentRacePlayer->unk92E, gCurrentRacePlayer->x >> 8, gCurrentRacePlayer->z >> 8);
     }
-    resolveGeometryBoundaryCollision(region, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8, radius, 3, &dx, &dz,
-                  &D_8013B0D8->unk0EC, &D_8013B0D8->unk0F0);
+    resolveGeometryBoundaryCollision(region, gCurrentRacePlayer->x >> 8, gCurrentRacePlayer->z >> 8, radius, 3, &dx, &dz,
+                  &gCurrentRacePlayer->unk0EC, &gCurrentRacePlayer->unk0F0);
     if (dx || dz) {
-        D_8013B0D8->x += dx << 8;
-        D_8013B0D8->z += dz << 8;
-        D_8013B0D8->unk0E8 |= 0x200;
+        gCurrentRacePlayer->x += dx << 8;
+        gCurrentRacePlayer->z += dz << 8;
+        gCurrentRacePlayer->unk0E8 |= 0x200;
     }
 
     adjusted = 0;
     /* Check both ends of the board, then retry from the corrected pose. */
     if (radius == 22) {
-        D_8013B0D8->unk10E = D_8013B0D8->unk0B4;
-        D_8013B0D8->unk110 = D_8013B0D8->unk0B6 + 0x400;
-        sine = rsin((s16)D_8013B0D8->unk110);
-        cosine = rcos((s16)D_8013B0D8->unk110);
+        gCurrentRacePlayer->unk10E = gCurrentRacePlayer->unk0B4;
+        gCurrentRacePlayer->unk110 = gCurrentRacePlayer->unk0B6 + 0x400;
+        sine = rsin((s16)gCurrentRacePlayer->unk110);
+        cosine = rcos((s16)gCurrentRacePlayer->unk110);
         for (i = 0; i < 2; i++) {
-            probes[i].vx = D_8013B0D8->x + gPlayerWallProbeOffsets[i] * sine / 4096;
-            probes[i].vz = D_8013B0D8->z + gPlayerWallProbeOffsets[i] * cosine / 4096;
-            region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, probes[i].vx >> 8, probes[i].vz >> 8);
+            probes[i].vx = gCurrentRacePlayer->x + gPlayerWallProbeOffsets[i] * sine / 4096;
+            probes[i].vz = gCurrentRacePlayer->z + gPlayerWallProbeOffsets[i] * cosine / 4096;
+            region = getAdjacentGeometryRegionForPoint(gCurrentRacePlayer->unk92E, probes[i].vx >> 8, probes[i].vz >> 8);
             resolveGeometryBoundaryCollision(region, probes[i].vx >> 8, probes[i].vz >> 8, 14, 1, &dx, &dz,
-                          &D_8013B0D8->unk0EC, &D_8013B0D8->unk0F0);
+                          &gCurrentRacePlayer->unk0EC, &gCurrentRacePlayer->unk0F0);
             if (dx || dz) {
                 adjusted = 1;
                 probes[i].vx += dx << 8;
                 probes[i].vz += dz << 8;
-                D_8013B0D8->unk0E8 |= 1;
-                region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, probes[i].vx >> 8, probes[i].vz >> 8);
+                gCurrentRacePlayer->unk0E8 |= 1;
+                region = getAdjacentGeometryRegionForPoint(gCurrentRacePlayer->unk92E, probes[i].vx >> 8, probes[i].vz >> 8);
             }
             resolveGeometryBoundaryCollision(region, probes[i].vx >> 8, probes[i].vz >> 8, 14, 3, &dx, &dz,
-                          &D_8013B0D8->unk0EC, &D_8013B0D8->unk0F0);
+                          &gCurrentRacePlayer->unk0EC, &gCurrentRacePlayer->unk0F0);
             if (dx || dz) {
                 probes[i].vx += dx << 8;
                 probes[i].vz += dz << 8;
                 adjusted = 1;
-                D_8013B0D8->unk0E8 |= 0x200;
+                gCurrentRacePlayer->unk0E8 |= 0x200;
             }
         }
 
         if (adjusted) {
-            D_8013B0D8->unk110 = getXZHeading(probes[1].vx, probes[1].vz, probes[0].vx, probes[0].vz);
-            D_8013B0D8->unk0B6 = D_8013B0D8->unk110 - 0x400;
-            D_8013B0D8->x = (probes[0].vx + probes[1].vx) / 2;
-            D_8013B0D8->z = (probes[0].vz + probes[1].vz) / 2;
-            sine = rsin((s16)D_8013B0D8->unk110);
-            cosine = rcos((s16)D_8013B0D8->unk110);
+            gCurrentRacePlayer->unk110 = getXZHeading(probes[1].vx, probes[1].vz, probes[0].vx, probes[0].vz);
+            gCurrentRacePlayer->unk0B6 = gCurrentRacePlayer->unk110 - 0x400;
+            gCurrentRacePlayer->x = (probes[0].vx + probes[1].vx) / 2;
+            gCurrentRacePlayer->z = (probes[0].vz + probes[1].vz) / 2;
+            sine = rsin((s16)gCurrentRacePlayer->unk110);
+            cosine = rcos((s16)gCurrentRacePlayer->unk110);
             for (i = 0; i < 2; i++) {
-                probes[i].vx = D_8013B0D8->x + gPlayerWallProbeOffsets[i] * sine / 4096;
-                probes[i].vz = D_8013B0D8->z + gPlayerWallProbeOffsets[i] * cosine / 4096;
-                region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, probes[i].vx >> 8, probes[i].vz >> 8);
+                probes[i].vx = gCurrentRacePlayer->x + gPlayerWallProbeOffsets[i] * sine / 4096;
+                probes[i].vz = gCurrentRacePlayer->z + gPlayerWallProbeOffsets[i] * cosine / 4096;
+                region = getAdjacentGeometryRegionForPoint(gCurrentRacePlayer->unk92E, probes[i].vx >> 8, probes[i].vz >> 8);
                 resolveGeometryBoundaryCollision(region, probes[i].vx >> 8, probes[i].vz >> 8, 14, 1, &dx, &dz,
-                              &D_8013B0D8->unk0EC, &D_8013B0D8->unk0F0);
+                              &gCurrentRacePlayer->unk0EC, &gCurrentRacePlayer->unk0F0);
                 if (dx || dz) {
-                    D_8013B0D8->x += dx << 8;
-                    D_8013B0D8->z += dz << 8;
-                    region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, probes[i].vx >> 8, probes[i].vz >> 8);
+                    gCurrentRacePlayer->x += dx << 8;
+                    gCurrentRacePlayer->z += dz << 8;
+                    region = getAdjacentGeometryRegionForPoint(gCurrentRacePlayer->unk92E, probes[i].vx >> 8, probes[i].vz >> 8);
                 }
                 resolveGeometryBoundaryCollision(region, probes[i].vx >> 8, probes[i].vz >> 8, 14, 3, &dx, &dz,
-                              &D_8013B0D8->unk0EC, &D_8013B0D8->unk0F0);
+                              &gCurrentRacePlayer->unk0EC, &gCurrentRacePlayer->unk0F0);
                 if (dx || dz) {
-                    D_8013B0D8->x += dx << 8;
-                    D_8013B0D8->z += dz << 8;
+                    gCurrentRacePlayer->x += dx << 8;
+                    gCurrentRacePlayer->z += dz << 8;
                 }
             }
         }
     }
 
-    if (D_8013B0D8->unk0E8) {
-        velocityX = D_8013B0D8->unk0EC - D_8013B0D8->unk060;
-        velocityZ = D_8013B0D8->unk0F0 - D_8013B0D8->unk064;
+    if (gCurrentRacePlayer->unk0E8) {
+        velocityX = gCurrentRacePlayer->unk0EC - gCurrentRacePlayer->unk060;
+        velocityZ = gCurrentRacePlayer->unk0F0 - gCurrentRacePlayer->unk064;
         D_8013B0E8 = SquareRoot0(velocityX * velocityX + velocityZ * velocityZ) / 2;
         D_8013B0E6 = getXZHeading(0, 0, velocityX, velocityZ);
     }
@@ -4573,64 +4573,64 @@ s16 resolveCurrentPlayerTerrainContact(void) {
     gPlayerTerrainContactSavedStackPointer = SetSp((u32)getScratchAddr((sizeof(scratchpad) - sizeof(u32)) / sizeof(u32)));
     resolveCurrentPlayerWallContact();
     if (processCurrentPlayerActionRequests(1)) {
-        region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8);
-        D_8013B0D8->unk92E = region;
-        D_8013B0D8->worldCoordinate.coord.t[0] = D_8013B0D8->x >> 8;
-        D_8013B0D8->worldCoordinate.coord.t[1] = D_8013B0D8->y >> 8;
-        D_8013B0D8->worldCoordinate.coord.t[2] = D_8013B0D8->z >> 8;
+        region = getAdjacentGeometryRegionForPoint(gCurrentRacePlayer->unk92E, gCurrentRacePlayer->x >> 8, gCurrentRacePlayer->z >> 8);
+        gCurrentRacePlayer->unk92E = region;
+        gCurrentRacePlayer->worldCoordinate.coord.t[0] = gCurrentRacePlayer->x >> 8;
+        gCurrentRacePlayer->worldCoordinate.coord.t[1] = gCurrentRacePlayer->y >> 8;
+        gCurrentRacePlayer->worldCoordinate.coord.t[2] = gCurrentRacePlayer->z >> 8;
         SetSp(gPlayerTerrainContactSavedStackPointer);
         return 0;
     }
 
-    region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8);
-    D_8013B0D8->unk92E = region;
-    groundY = getCourseHeightAtPoint(region, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8) << 8;
-    if (groundY < D_8013B0D8->y) {
+    region = getAdjacentGeometryRegionForPoint(gCurrentRacePlayer->unk92E, gCurrentRacePlayer->x >> 8, gCurrentRacePlayer->z >> 8);
+    gCurrentRacePlayer->unk92E = region;
+    groundY = getCourseHeightAtPoint(region, gCurrentRacePlayer->x >> 8, gCurrentRacePlayer->z >> 8) << 8;
+    if (groundY < gCurrentRacePlayer->y) {
         copySelectedRecordToCurrentPlayer();
-        D_8013B0D8->unk11E = D_8013B0D8->unk118 = D_8013B0D8->unk116;
-        D_8013B0D8->y = groundY;
-        D_8013B0D8->unk120 = D_8013B0D8->unk11C = D_8013B0D8->unk11A;
-        D_8013B0D8->unk128 &= ~1;
-        D_8013B0D8->worldCoordinate.coord.t[0] = D_8013B0D8->x >> 8;
-        D_8013B0D8->worldCoordinate.coord.t[1] = D_8013B0D8->y >> 8;
-        D_8013B0D8->worldCoordinate.coord.t[2] = D_8013B0D8->z >> 8;
+        gCurrentRacePlayer->unk11E = gCurrentRacePlayer->unk118 = gCurrentRacePlayer->unk116;
+        gCurrentRacePlayer->y = groundY;
+        gCurrentRacePlayer->unk120 = gCurrentRacePlayer->unk11C = gCurrentRacePlayer->unk11A;
+        gCurrentRacePlayer->unk128 &= ~1;
+        gCurrentRacePlayer->worldCoordinate.coord.t[0] = gCurrentRacePlayer->x >> 8;
+        gCurrentRacePlayer->worldCoordinate.coord.t[1] = gCurrentRacePlayer->y >> 8;
+        gCurrentRacePlayer->worldCoordinate.coord.t[2] = gCurrentRacePlayer->z >> 8;
         SetSp(gPlayerTerrainContactSavedStackPointer);
         return 1;
     }
 
-    D_8013B0D8->unk128 |= 1;
-    D_8013B0D8->worldCoordinate.coord.t[0] = (D_8013B0D8->x >> 8) - D_8013B0D8->unk084;
-    D_8013B0D8->worldCoordinate.coord.t[1] = (D_8013B0D8->y >> 8) - D_8013B0D8->unk086;
-    D_8013B0D8->worldCoordinate.coord.t[2] = (D_8013B0D8->z >> 8) - D_8013B0D8->unk088;
-    probeDistance = (rcos((s16)D_8013B0D8->unk112) * 20) / 4096;
-    if (groundY < D_8013B0D8->y + (probeDistance << 8)) {
-        sinYaw = rsin((s16)D_8013B0D8->unk110);
-        cosYaw = rcos((s16)D_8013B0D8->unk110);
+    gCurrentRacePlayer->unk128 |= 1;
+    gCurrentRacePlayer->worldCoordinate.coord.t[0] = (gCurrentRacePlayer->x >> 8) - gCurrentRacePlayer->unk084;
+    gCurrentRacePlayer->worldCoordinate.coord.t[1] = (gCurrentRacePlayer->y >> 8) - gCurrentRacePlayer->unk086;
+    gCurrentRacePlayer->worldCoordinate.coord.t[2] = (gCurrentRacePlayer->z >> 8) - gCurrentRacePlayer->unk088;
+    probeDistance = (rcos((s16)gCurrentRacePlayer->unk112) * 20) / 4096;
+    if (groundY < gCurrentRacePlayer->y + (probeDistance << 8)) {
+        sinYaw = rsin((s16)gCurrentRacePlayer->unk110);
+        cosYaw = rcos((s16)gCurrentRacePlayer->unk110);
         dx = (sinYaw * probeDistance) / 4096;
         dz = (cosYaw * probeDistance) / 4096;
-        region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, (D_8013B0D8->x >> 8) + dx, (D_8013B0D8->z >> 8) + dz);
-        forwardY = getCourseHeightAtPoint(region, (D_8013B0D8->x >> 8) + dx, (D_8013B0D8->z >> 8) + dz) << 8;
-        region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, (D_8013B0D8->x >> 8) - dx, (D_8013B0D8->z >> 8) - dz);
-        rearY = getCourseHeightAtPoint(region, (D_8013B0D8->x >> 8) - dx, (D_8013B0D8->z >> 8) - dz) << 8;
-        y = D_8013B0D8->y;
+        region = getAdjacentGeometryRegionForPoint(gCurrentRacePlayer->unk92E, (gCurrentRacePlayer->x >> 8) + dx, (gCurrentRacePlayer->z >> 8) + dz);
+        forwardY = getCourseHeightAtPoint(region, (gCurrentRacePlayer->x >> 8) + dx, (gCurrentRacePlayer->z >> 8) + dz) << 8;
+        region = getAdjacentGeometryRegionForPoint(gCurrentRacePlayer->unk92E, (gCurrentRacePlayer->x >> 8) - dx, (gCurrentRacePlayer->z >> 8) - dz);
+        rearY = getCourseHeightAtPoint(region, (gCurrentRacePlayer->x >> 8) - dx, (gCurrentRacePlayer->z >> 8) - dz) << 8;
+        y = gCurrentRacePlayer->y;
         if (forwardY < y || rearY < y) {
             if (forwardY < y && rearY < y) {
                 copySelectedRecordToCurrentPlayer();
-                D_8013B0D8->unk11E = D_8013B0D8->unk118 = D_8013B0D8->unk116;
-                D_8013B0D8->y = y;
-                D_8013B0D8->unk120 = D_8013B0D8->unk11C = D_8013B0D8->unk11A;
-                D_8013B0D8->unk128 &= ~1;
+                gCurrentRacePlayer->unk11E = gCurrentRacePlayer->unk118 = gCurrentRacePlayer->unk116;
+                gCurrentRacePlayer->y = y;
+                gCurrentRacePlayer->unk120 = gCurrentRacePlayer->unk11C = gCurrentRacePlayer->unk11A;
+                gCurrentRacePlayer->unk128 &= ~1;
                 SetSp(gPlayerTerrainContactSavedStackPointer);
                 return 1;
             }
-            if (!(D_8013B0D8->unk128 & 0x2000000)) {
+            if (!(gCurrentRacePlayer->unk128 & 0x2000000)) {
                 s16 pitch;
                 if (forwardY < y) {
                     pitch = getXZHeading(0, 0, probeDistance, (y - forwardY) >> 8);
                 } else {
                     pitch = getXZHeading(0, 0, probeDistance, (rearY - y) >> 8);
                 }
-                D_8013B0D8->unk112 = D_8013B0D8->unk0B8 = pitch - 0x400;
+                gCurrentRacePlayer->unk112 = gCurrentRacePlayer->unk0B8 = pitch - 0x400;
             }
         }
     }
@@ -4662,38 +4662,38 @@ s32 updateCurrentPlayerGroundContact(void) {
     gPlayerGroundContactSavedStackPointer = SetSp((u32)getScratchAddr((sizeof(scratchpad) - sizeof(u32)) / sizeof(u32)));
     resolveCurrentPlayerWallContact();
     if (processCurrentPlayerActionRequests(0) >= 2) {
-        region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8);
-        D_8013B0D8->unk92E = region;
-        D_8013B0D8->y = getCourseHeightAtPoint(region, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8) << 8;
-        D_8013B0D8->worldCoordinate.coord.t[0] = D_8013B0D8->x >> 8;
-        D_8013B0D8->worldCoordinate.coord.t[1] = D_8013B0D8->y >> 8;
-        D_8013B0D8->worldCoordinate.coord.t[2] = D_8013B0D8->z >> 8;
+        region = getAdjacentGeometryRegionForPoint(gCurrentRacePlayer->unk92E, gCurrentRacePlayer->x >> 8, gCurrentRacePlayer->z >> 8);
+        gCurrentRacePlayer->unk92E = region;
+        gCurrentRacePlayer->y = getCourseHeightAtPoint(region, gCurrentRacePlayer->x >> 8, gCurrentRacePlayer->z >> 8) << 8;
+        gCurrentRacePlayer->worldCoordinate.coord.t[0] = gCurrentRacePlayer->x >> 8;
+        gCurrentRacePlayer->worldCoordinate.coord.t[1] = gCurrentRacePlayer->y >> 8;
+        gCurrentRacePlayer->worldCoordinate.coord.t[2] = gCurrentRacePlayer->z >> 8;
         SetSp(gPlayerGroundContactSavedStackPointer);
         return 0;
     }
 
-    region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8);
-    D_8013B0D8->unk92E = region;
-    groundY = getCourseHeightAtPoint(region, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8) << 8;
+    region = getAdjacentGeometryRegionForPoint(gCurrentRacePlayer->unk92E, gCurrentRacePlayer->x >> 8, gCurrentRacePlayer->z >> 8);
+    gCurrentRacePlayer->unk92E = region;
+    groundY = getCourseHeightAtPoint(region, gCurrentRacePlayer->x >> 8, gCurrentRacePlayer->z >> 8) << 8;
     copySelectedRecordToCurrentPlayer();
 
-    if (groundY > D_8013B0D8->y + 0x400) {
-        s16 yawDifference = D_8013B0D8->unk116 - D_8013B0D8->unk118;
+    if (groundY > gCurrentRacePlayer->y + 0x400) {
+        s16 yawDifference = gCurrentRacePlayer->unk116 - gCurrentRacePlayer->unk118;
         if ((yawDifference > 0x400 && yawDifference < 0xC00) ||
             (yawDifference < -0x400 && yawDifference > -0xC00)) {
             s16 previousPitch;
-            if (D_8013B0D8->unk11C > 0) {
-                previousPitch = D_8013B0D8->unk11C - 0x800;
+            if (gCurrentRacePlayer->unk11C > 0) {
+                previousPitch = gCurrentRacePlayer->unk11C - 0x800;
             } else {
-                previousPitch = D_8013B0D8->unk11C + 0x800;
+                previousPitch = gCurrentRacePlayer->unk11C + 0x800;
             }
-            if (D_8013B0D8->unk11A - previousPitch > 0xA0 &&
-                D_8013B0D8->unk0BC / 16 < groundY - D_8013B0D8->y) {
+            if (gCurrentRacePlayer->unk11A - previousPitch > 0xA0 &&
+                gCurrentRacePlayer->unk0BC / 16 < groundY - gCurrentRacePlayer->y) {
                 result = 2;
             }
-        } else if (D_8013B0D8->unk062 > 0 &&
-                   D_8013B0D8->unk11A - D_8013B0D8->unk11C > 0xA0 &&
-                   D_8013B0D8->unk0BC / 16 < groundY - D_8013B0D8->y) {
+        } else if (gCurrentRacePlayer->unk062 > 0 &&
+                   gCurrentRacePlayer->unk11A - gCurrentRacePlayer->unk11C > 0xA0 &&
+                   gCurrentRacePlayer->unk0BC / 16 < groundY - gCurrentRacePlayer->y) {
             result = 1;
         }
     }
@@ -4703,61 +4703,61 @@ s32 updateCurrentPlayerGroundContact(void) {
         s32 forwardY, rearY;
         s16 forwardRecord;
 
-        sinYaw = rsin((s16)D_8013B0D8->unk110);
-        cosYaw = rcos((s16)D_8013B0D8->unk110);
-        probeDistance = rcos((s16)D_8013B0D8->unk112) * 20 / 4096;
+        sinYaw = rsin((s16)gCurrentRacePlayer->unk110);
+        cosYaw = rcos((s16)gCurrentRacePlayer->unk110);
+        probeDistance = rcos((s16)gCurrentRacePlayer->unk112) * 20 / 4096;
         dx = sinYaw * probeDistance / 4096;
         dz = cosYaw * probeDistance / 4096;
 
-        region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, (D_8013B0D8->x >> 8) + dx, (D_8013B0D8->z >> 8) + dz);
-        forwardY = getCourseHeightAtPoint(region, (D_8013B0D8->x >> 8) + dx, (D_8013B0D8->z >> 8) + dz) << 8;
+        region = getAdjacentGeometryRegionForPoint(gCurrentRacePlayer->unk92E, (gCurrentRacePlayer->x >> 8) + dx, (gCurrentRacePlayer->z >> 8) + dz);
+        forwardY = getCourseHeightAtPoint(region, (gCurrentRacePlayer->x >> 8) + dx, (gCurrentRacePlayer->z >> 8) + dz) << 8;
         forwardRecord = D_8013B1FE;
-        computeSelectedTriangleNormal(D_8013AF88);
+        computeSelectedTriangleNormal(gScratchVector0);
 
-        region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, (D_8013B0D8->x >> 8) - dx, (D_8013B0D8->z >> 8) - dz);
-        rearY = getCourseHeightAtPoint(region, (D_8013B0D8->x >> 8) - dx, (D_8013B0D8->z >> 8) - dz) << 8;
+        region = getAdjacentGeometryRegionForPoint(gCurrentRacePlayer->unk92E, (gCurrentRacePlayer->x >> 8) - dx, (gCurrentRacePlayer->z >> 8) - dz);
+        rearY = getCourseHeightAtPoint(region, (gCurrentRacePlayer->x >> 8) - dx, (gCurrentRacePlayer->z >> 8) - dz) << 8;
         computeSelectedTriangleNormal(D_8013AF8C);
 
         if (forwardRecord == D_8013B1FE) {
             s32 y;
-            D_8013B0D8->y = groundY;
-            D_8013B0D8->unk118 = D_8013B0D8->unk11E;
-            D_8013B0D8->unk11C = D_8013B0D8->unk120;
-            D_8013B0D8->unk11E = D_8013B0D8->unk116;
-            D_8013B0D8->unk120 = D_8013B0D8->unk11A;
-            D_8013B0D8->worldCoordinate.coord.t[0] = D_8013B0D8->x >> 8;
-            y = D_8013B0D8->y;
-            D_8013B0D8->worldCoordinate.coord.t[1] = y >> 8;
-            D_8013B0D8->worldCoordinate.coord.t[2] = D_8013B0D8->z >> 8;
+            gCurrentRacePlayer->y = groundY;
+            gCurrentRacePlayer->unk118 = gCurrentRacePlayer->unk11E;
+            gCurrentRacePlayer->unk11C = gCurrentRacePlayer->unk120;
+            gCurrentRacePlayer->unk11E = gCurrentRacePlayer->unk116;
+            gCurrentRacePlayer->unk120 = gCurrentRacePlayer->unk11A;
+            gCurrentRacePlayer->worldCoordinate.coord.t[0] = gCurrentRacePlayer->x >> 8;
+            y = gCurrentRacePlayer->y;
+            gCurrentRacePlayer->worldCoordinate.coord.t[1] = y >> 8;
+            gCurrentRacePlayer->worldCoordinate.coord.t[2] = gCurrentRacePlayer->z >> 8;
         } else {
-            D_8013B0D8->unk118 = D_8013B0D8->unk11E;
-            D_8013B0D8->unk11C = D_8013B0D8->unk120;
-            D_8013AF88->vx = (D_8013AF88->vx + D_8013AF8C->vx) / 2;
-            D_8013AF88->vy = (D_8013AF88->vy + D_8013AF8C->vy) / 2;
-            D_8013AF88->vz = (D_8013AF88->vz + D_8013AF8C->vz) / 2;
-            computeVectorYawAndPitch(D_8013AF88, &D_8013B0D8->unk116, &D_8013B0D8->unk11A);
-            D_8013B0D8->unk11E = averageWrappedAngle(D_8013B0D8->unk116, D_8013B0D8->unk11E);
-            D_8013B0D8->y = groundY;
-            D_8013B0D8->worldCoordinate.coord.t[1] = (((forwardY + rearY) >> 1) + groundY) >> 9;
-            D_8013B0D8->unk120 = (D_8013B0D8->unk11A + D_8013B0D8->unk11C) / 2;
-            D_8013B0D8->worldCoordinate.coord.t[0] = D_8013B0D8->x >> 8;
-            D_8013B0D8->worldCoordinate.coord.t[2] = D_8013B0D8->z >> 8;
+            gCurrentRacePlayer->unk118 = gCurrentRacePlayer->unk11E;
+            gCurrentRacePlayer->unk11C = gCurrentRacePlayer->unk120;
+            gScratchVector0->vx = (gScratchVector0->vx + D_8013AF8C->vx) / 2;
+            gScratchVector0->vy = (gScratchVector0->vy + D_8013AF8C->vy) / 2;
+            gScratchVector0->vz = (gScratchVector0->vz + D_8013AF8C->vz) / 2;
+            computeVectorYawAndPitch(gScratchVector0, &gCurrentRacePlayer->unk116, &gCurrentRacePlayer->unk11A);
+            gCurrentRacePlayer->unk11E = averageWrappedAngle(gCurrentRacePlayer->unk116, gCurrentRacePlayer->unk11E);
+            gCurrentRacePlayer->y = groundY;
+            gCurrentRacePlayer->worldCoordinate.coord.t[1] = (((forwardY + rearY) >> 1) + groundY) >> 9;
+            gCurrentRacePlayer->unk120 = (gCurrentRacePlayer->unk11A + gCurrentRacePlayer->unk11C) / 2;
+            gCurrentRacePlayer->worldCoordinate.coord.t[0] = gCurrentRacePlayer->x >> 8;
+            gCurrentRacePlayer->worldCoordinate.coord.t[2] = gCurrentRacePlayer->z >> 8;
         }
 
-        if (!(D_8013B0D8->unk128 & 0x2000000)) {
-            D_8013B0D8->unk10E = D_8013B0D8->unk0B4;
-            D_8013B0D8->unk110 = D_8013B0D8->unk0B6 + 0x400;
-            D_8013B0D8->unk112 = D_8013B0D8->unk0B8 = getXZHeading(0, 0, probeDistance * 2, (rearY - forwardY) >> 8) - 0x400;
+        if (!(gCurrentRacePlayer->unk128 & 0x2000000)) {
+            gCurrentRacePlayer->unk10E = gCurrentRacePlayer->unk0B4;
+            gCurrentRacePlayer->unk110 = gCurrentRacePlayer->unk0B6 + 0x400;
+            gCurrentRacePlayer->unk112 = gCurrentRacePlayer->unk0B8 = getXZHeading(0, 0, probeDistance * 2, (rearY - forwardY) >> 8) - 0x400;
         }
-        D_8013B0D8->unk128 &= ~1;
+        gCurrentRacePlayer->unk128 &= ~1;
     } else {
         if (result == 2) {
-            D_8013B0D8->unk062 = 0;
+            gCurrentRacePlayer->unk062 = 0;
         }
-        D_8013B0D8->worldCoordinate.coord.t[0] = D_8013B0D8->x >> 8;
-        D_8013B0D8->worldCoordinate.coord.t[1] = D_8013B0D8->y >> 8;
-        D_8013B0D8->worldCoordinate.coord.t[2] = D_8013B0D8->z >> 8;
-        D_8013B0D8->unk128 |= 1;
+        gCurrentRacePlayer->worldCoordinate.coord.t[0] = gCurrentRacePlayer->x >> 8;
+        gCurrentRacePlayer->worldCoordinate.coord.t[1] = gCurrentRacePlayer->y >> 8;
+        gCurrentRacePlayer->worldCoordinate.coord.t[2] = gCurrentRacePlayer->z >> 8;
+        gCurrentRacePlayer->unk128 |= 1;
     }
 
     SetSp(gPlayerGroundContactSavedStackPointer);
@@ -4775,68 +4775,68 @@ s32 snapCurrentPlayerToTerrain(void) {
 
     resolveCurrentPlayerWallContact();
     if (processCurrentPlayerActionRequests(0)) {
-        region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8);
-        D_8013B0D8->unk92E = region;
-        D_8013B0D8->y = getCourseHeightAtPoint(region, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8) << 8;
-        D_8013B0D8->worldCoordinate.coord.t[0] = D_8013B0D8->x >> 8;
-        D_8013B0D8->worldCoordinate.coord.t[1] = D_8013B0D8->y >> 8;
-        D_8013B0D8->worldCoordinate.coord.t[2] = D_8013B0D8->z >> 8;
+        region = getAdjacentGeometryRegionForPoint(gCurrentRacePlayer->unk92E, gCurrentRacePlayer->x >> 8, gCurrentRacePlayer->z >> 8);
+        gCurrentRacePlayer->unk92E = region;
+        gCurrentRacePlayer->y = getCourseHeightAtPoint(region, gCurrentRacePlayer->x >> 8, gCurrentRacePlayer->z >> 8) << 8;
+        gCurrentRacePlayer->worldCoordinate.coord.t[0] = gCurrentRacePlayer->x >> 8;
+        gCurrentRacePlayer->worldCoordinate.coord.t[1] = gCurrentRacePlayer->y >> 8;
+        gCurrentRacePlayer->worldCoordinate.coord.t[2] = gCurrentRacePlayer->z >> 8;
         return 0;
     }
 
-    region = getAdjacentGeometryRegionForPoint(D_8013B0D8->unk92E, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8);
-    D_8013B0D8->unk92E = region;
-    D_8013B0D8->y = getCourseHeightAtPoint(region, D_8013B0D8->x >> 8, D_8013B0D8->z >> 8) << 8;
+    region = getAdjacentGeometryRegionForPoint(gCurrentRacePlayer->unk92E, gCurrentRacePlayer->x >> 8, gCurrentRacePlayer->z >> 8);
+    gCurrentRacePlayer->unk92E = region;
+    gCurrentRacePlayer->y = getCourseHeightAtPoint(region, gCurrentRacePlayer->x >> 8, gCurrentRacePlayer->z >> 8) << 8;
     copySelectedRecordToCurrentPlayer();
 
     /* Probe both ends of two axes angled 45 degrees from the heading. */
-    firstSin = rsin((s16)D_8013B0D8->unk110 + 0x200);
-    firstCos = rcos((s16)D_8013B0D8->unk110 + 0x200);
-    secondSin = rsin((s16)D_8013B0D8->unk110 - 0x200);
-    secondCos = rcos((s16)D_8013B0D8->unk110 - 0x200);
+    firstSin = rsin((s16)gCurrentRacePlayer->unk110 + 0x200);
+    firstCos = rcos((s16)gCurrentRacePlayer->unk110 + 0x200);
+    secondSin = rsin((s16)gCurrentRacePlayer->unk110 - 0x200);
+    secondCos = rcos((s16)gCurrentRacePlayer->unk110 - 0x200);
     firstX = firstSin * 20 / 4096;
     firstZ = firstCos * 20 / 4096;
     secondX = secondSin * 20 / 4096;
     secondZ = secondCos * 20 / 4096;
 
     region = getAdjacentGeometryRegionForPoint(
-        D_8013B0D8->unk92E, (D_8013B0D8->x >> 8) + firstX, (D_8013B0D8->z >> 8) + firstZ);
-    heights[0] = getCourseHeightAtPoint(region, (D_8013B0D8->x >> 8) + firstX, (D_8013B0D8->z >> 8) + firstZ) << 8;
+        gCurrentRacePlayer->unk92E, (gCurrentRacePlayer->x >> 8) + firstX, (gCurrentRacePlayer->z >> 8) + firstZ);
+    heights[0] = getCourseHeightAtPoint(region, (gCurrentRacePlayer->x >> 8) + firstX, (gCurrentRacePlayer->z >> 8) + firstZ) << 8;
     records[0] = D_8013B1FE;
 
     region = getAdjacentGeometryRegionForPoint(
-        D_8013B0D8->unk92E, (D_8013B0D8->x >> 8) - firstX, (D_8013B0D8->z >> 8) - firstZ);
-    heights[1] = getCourseHeightAtPoint(region, (D_8013B0D8->x >> 8) - firstX, (D_8013B0D8->z >> 8) - firstZ) << 8;
+        gCurrentRacePlayer->unk92E, (gCurrentRacePlayer->x >> 8) - firstX, (gCurrentRacePlayer->z >> 8) - firstZ);
+    heights[1] = getCourseHeightAtPoint(region, (gCurrentRacePlayer->x >> 8) - firstX, (gCurrentRacePlayer->z >> 8) - firstZ) << 8;
     records[1] = D_8013B1FE;
 
     region = getAdjacentGeometryRegionForPoint(
-        D_8013B0D8->unk92E, (D_8013B0D8->x >> 8) + secondX, (D_8013B0D8->z >> 8) + secondZ);
-    heights[2] = getCourseHeightAtPoint(region, (D_8013B0D8->x >> 8) + secondX, (D_8013B0D8->z >> 8) + secondZ) << 8;
+        gCurrentRacePlayer->unk92E, (gCurrentRacePlayer->x >> 8) + secondX, (gCurrentRacePlayer->z >> 8) + secondZ);
+    heights[2] = getCourseHeightAtPoint(region, (gCurrentRacePlayer->x >> 8) + secondX, (gCurrentRacePlayer->z >> 8) + secondZ) << 8;
     records[2] = D_8013B1FE;
 
     region = getAdjacentGeometryRegionForPoint(
-        D_8013B0D8->unk92E, (D_8013B0D8->x >> 8) - secondX, (D_8013B0D8->z >> 8) - secondZ);
-    heights[3] = getCourseHeightAtPoint(region, (D_8013B0D8->x >> 8) - secondX, (D_8013B0D8->z >> 8) - secondZ) << 8;
+        gCurrentRacePlayer->unk92E, (gCurrentRacePlayer->x >> 8) - secondX, (gCurrentRacePlayer->z >> 8) - secondZ);
+    heights[3] = getCourseHeightAtPoint(region, (gCurrentRacePlayer->x >> 8) - secondX, (gCurrentRacePlayer->z >> 8) - secondZ) << 8;
     records[3] = D_8013B1FE;
 
-    D_8013B0D8->unk118 = D_8013B0D8->unk11E;
-    D_8013B0D8->unk11C = D_8013B0D8->unk120;
+    gCurrentRacePlayer->unk118 = gCurrentRacePlayer->unk11E;
+    gCurrentRacePlayer->unk11C = gCurrentRacePlayer->unk120;
     firstAngle = averageWrappedAngle(D_8013B1F0[records[0]].unk8, D_8013B1F0[records[1]].unk8);
     secondAngle = averageWrappedAngle(D_8013B1F0[records[2]].unk8, D_8013B1F0[records[3]].unk8);
-    D_8013B0D8->unk11E = averageWrappedAngle(firstAngle, secondAngle);
+    gCurrentRacePlayer->unk11E = averageWrappedAngle(firstAngle, secondAngle);
     /* The original average counts the third record twice. */
-    D_8013B0D8->unk120 = (D_8013B1F0[records[0]].unkA + D_8013B1F0[records[1]].unkA +
+    gCurrentRacePlayer->unk120 = (D_8013B1F0[records[0]].unkA + D_8013B1F0[records[1]].unkA +
                          D_8013B1F0[records[2]].unkA + D_8013B1F0[records[2]].unkA) / 4;
-    D_8013B0D8->worldCoordinate.coord.t[0] = D_8013B0D8->x >> 8;
-    D_8013B0D8->worldCoordinate.coord.t[1] = D_8013B0D8->y >> 8;
-    D_8013B0D8->worldCoordinate.coord.t[2] = D_8013B0D8->z >> 8;
-    if (!(D_8013B0D8->unk128 & 0x2000000)) {
-        D_8013B0D8->unk0B8 = 0;
-        D_8013B0D8->unk112 = 0;
-        D_8013B0D8->unk10E = D_8013B0D8->unk0B4;
-        D_8013B0D8->unk110 = D_8013B0D8->unk0B6 + 0x400;
+    gCurrentRacePlayer->worldCoordinate.coord.t[0] = gCurrentRacePlayer->x >> 8;
+    gCurrentRacePlayer->worldCoordinate.coord.t[1] = gCurrentRacePlayer->y >> 8;
+    gCurrentRacePlayer->worldCoordinate.coord.t[2] = gCurrentRacePlayer->z >> 8;
+    if (!(gCurrentRacePlayer->unk128 & 0x2000000)) {
+        gCurrentRacePlayer->unk0B8 = 0;
+        gCurrentRacePlayer->unk112 = 0;
+        gCurrentRacePlayer->unk10E = gCurrentRacePlayer->unk0B4;
+        gCurrentRacePlayer->unk110 = gCurrentRacePlayer->unk0B6 + 0x400;
     }
-    D_8013B0D8->unk128 &= ~1;
+    gCurrentRacePlayer->unk128 &= ~1;
     /* The main path falls through. The caller discards the return value. */
 }
 
@@ -4890,7 +4890,7 @@ void initializeCurrentRacePlayer(void) {
         case 3: currentPlayerAbsolute->x = 0xB400; break;
     }
 
-    currentPlayerAbsolute->z = gCoursePlayerStartZ[D_8013AFCE];
+    currentPlayerAbsolute->z = gCoursePlayerStartZ[gSelectedCourseIndex];
     /* Copy the four-word position block, including its fourth word. */
     __builtin_memcpy(&currentPlayerAbsolute->unk050, &currentPlayerAbsolute->x, sizeof(VECTOR));
     currentPlayerAbsolute->unk078 = 0x400;
@@ -4920,13 +4920,13 @@ void initializeCurrentRacePlayer(void) {
             currentPlayerAbsolute->unk93C = 5;
         }
     }
-    if (D_8013AFCE == 7 && D_8013AFCD == 1) {
+    if (gSelectedCourseIndex == 7 && D_8013AFCD == 1) {
         currentPlayerAbsolute->x = 0;
     }
     if (!currentPlayerAbsolute->unk008 && !D_8013AFD6 &&
         (s16)currentPlayerAbsolute->unk0A8 != (s16)currentPlayerAbsolute->unk0AA) {
         createChildTaskForParentWithReserve(&gGameTasks[1], initializePlayerPromptTask);
-        D_8013AE8C->data18 = currentPlayerAbsolute->playerIndex;
+        gCreatedTask->data18 = currentPlayerAbsolute->playerIndex;
     }
 
     switch (D_8013AFD8) {
@@ -5088,16 +5088,16 @@ void initializeCurrentRacePlayer(void) {
 s16 isPlayerNearSelectedRecord(s16 index) {
     s16 i;
     s32 distance;
-    if (gRacePlayers[index].unk92E != (s16)D_80123D80[D_8013AFCE].unk00) return 0;
+    if (gRacePlayers[index].unk92E != (s16)D_80123D80[gSelectedCourseIndex].unk00) return 0;
     if (gRacePlayers[index].unk128 & 0x40) return 0;
     for (i = 0; i < 4; i++) {
         if (gRacePlayers[i].isActive && gRacePlayers[i].playerIndex != index &&
             (gRacePlayers[i].unk128 & 0x20)) return 0;
     }
-    distance = gRacePlayers[index].x - D_80123D80[D_8013AFCE].unk18[0];
+    distance = gRacePlayers[index].x - D_80123D80[gSelectedCourseIndex].unk18[0];
     if (distance < 0) distance = -distance;
     if (distance > 0x6000) return 0;
-    distance = gRacePlayers[index].z - D_80123D80[D_8013AFCE].unk18[2];
+    distance = gRacePlayers[index].z - D_80123D80[gSelectedCourseIndex].unk18[2];
     if (distance < 0) distance = -distance;
     return distance <= 0x6000;
 }
@@ -5129,12 +5129,12 @@ void assignCurrentPlayerFinishSlot(s32 value) {
     RacePlayer *player = currentPlayerAbsolute;
     u32 flags = player->unk128;
     if (!(flags & 0x40) && player->unk934 >= selectedFinishLapCountAbsolute - 1 &&
-        player->unk92E == (s16)D_80123D80[D_8013AFCE].unk00 && !(flags & 0x1000)) {
+        player->unk92E == (s16)D_80123D80[gSelectedCourseIndex].unk00 && !(flags & 0x1000)) {
         player->unk128 = flags | 0x40;
         if (!D_8013AFD6) {
             if (!player->unk008) {
                 createChildTaskWithReserve(beginSound601TaskSequence);
-                D_8013AE8C->data18 = value;
+                gCreatedTask->data18 = value;
             }
             currentPlayerAbsolute->unk100[0] = D_8013AFDB;
             D_8013AFDB++;
@@ -5181,8 +5181,8 @@ void awardCurrentPlayerTrickRewards(void) {
     }
 
     if (reward != 0 && D_8013AFE2 == 0) {
-        addPlayerCappedCounters(D_8013AE88->data18, reward);
-        if (currentPlayerAbsolute->unk008 == 0 && (D_8013AFD9 == 0 || D_8013AE88->data18 == 0)) {
+        addPlayerCappedCounters(gCurrentTask->data18, reward);
+        if (currentPlayerAbsolute->unk008 == 0 && (D_8013AFD9 == 0 || gCurrentTask->data18 == 0)) {
             createActivePlayerSlidingNumberTask(reward, currentPlayerAbsolute->playerIndex);
             sound = 0x201;
             if (reward >= 100) {
@@ -5225,10 +5225,10 @@ void awardCurrentPlayerTrickRewards(void) {
         if (currentPlayerAbsolute->unk0E6 == 0x3FE) {
             currentPlayerAbsolute->unk0E6 = 0x3FF;
             currentPlayerAbsolute->trickAttackPointTotal += 300;
-            createPlayerNumberDisplayTask(points, 1, (s16)D_8013AE88->data18);
+            createPlayerNumberDisplayTask(points, 1, (s16)gCurrentTask->data18);
             sound = 0x501;
         } else {
-            createPlayerNumberDisplayTask(points, 0, (s16)D_8013AE88->data18);
+            createPlayerNumberDisplayTask(points, 0, (s16)gCurrentTask->data18);
         }
         playSoundEffect(0, sound, 0x40);
         if (currentPlayerAbsolute->trickAttackPointTotal > 9999) {

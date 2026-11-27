@@ -205,7 +205,7 @@ struct RacePlayer {
 /* Per-character animation indices; each row has the original 40-byte stride. */
 extern u8 D_800EB09C[10][40];
 
-extern RacePlayer gRacePlayers[];
+extern RacePlayer gRacePlayers[4];
 /* Shared result state; task code accesses the first word. */
 extern s8 D_8013AFD2 __attribute__((section(".data")));
 /* GP-relative alias of D_8013AFD2. */
@@ -215,7 +215,7 @@ extern u16 D_8013B0E6;
 extern s32 D_8013B0E8;
 /* Two declarations preserve the original GP-relative and absolute accesses
  * to this shared pointer. The absolute alias is resolved by the symbol map. */
-extern RacePlayer *D_8013B0D8;
+extern RacePlayer *gCurrentRacePlayer;
 extern RacePlayer *currentPlayerAbsolute
     __attribute__((section(".data")));
 

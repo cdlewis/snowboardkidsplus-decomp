@@ -6,7 +6,7 @@
 #include "psx/libgpu.h"
 #include "psx/libmcrd.h"
 
-extern s16 D_8013AFCE __attribute__((section(".data")));
+extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 
 char *gMemoryCardFileNames[5] __attribute__((section(".data.memory_card_file_names"))) = {
     D_800101B8, D_800101D0, D_800101E8, D_80010200, D_80010218
@@ -103,8 +103,8 @@ void selectMemoryCardLoadFile(u8 slot, void *destination) {
     case 1:
     case 2:
     case 3:
-        gMemoryCardFileNames[slot][18] = (D_8013AFCE / 10) | 0x30;
-        gMemoryCardFileNames[slot][19] = (D_8013AFCE % 10) | 0x30;
+        gMemoryCardFileNames[slot][18] = (gSelectedCourseIndex / 10) | 0x30;
+        gMemoryCardFileNames[slot][19] = (gSelectedCourseIndex % 10) | 0x30;
         break;
     case 4:
         gMemoryCardFileNames[4][18] = (D_8013AF3A / 10) | 0x30;

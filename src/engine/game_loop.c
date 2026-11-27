@@ -27,7 +27,7 @@ typedef struct GameScratchpad {
 
 #define GAME_SCRATCHPAD ((GameScratchpad *)getScratchAddr(0))
 
-extern GameTask *D_8013AE88 __attribute__((section(".data")));
+extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *D_8013AE98 __attribute__((section(".data")));
 
 GsOT D_800EBFF0[2] __attribute__((section(".data.render_state"))) = {0};
@@ -97,28 +97,28 @@ void runGameLoop(void) {
             D_8013AF70 = D_800EC1D8[D_8013AF78].org;
             D_8013AF74 = D_800EC130[D_8013AF78].org;
         }
-        D_8013AE88 = gGameTasks;
+        gCurrentTask = gGameTasks;
         do {
-            waitFlags = D_8013AE88->unk10;
+            waitFlags = gCurrentTask->unk10;
             if (waitFlags & 3) {
                 if ((waitFlags & 1) && !(currentTaskHasChildren() & 0xFFFF)) {
-                    D_8013AE88->unk10 &= 0xFFFE;
+                    gCurrentTask->unk10 &= 0xFFFE;
                 }
-                if ((D_8013AE88->unk10 & 2) && (isCdCommandQueueIdle() == 1)) {
-                    D_8013AE88->unk10 &= 0xFFFD;
+                if ((gCurrentTask->unk10 & 2) && (isCdCommandQueueIdle() == 1)) {
+                    gCurrentTask->unk10 &= 0xFFFD;
                 }
-                if (!(D_8013AE88->unk10 & 3)) {
+                if (!(gCurrentTask->unk10 & 3)) {
                     goto run_task;
                 }
             } else {
             run_task:
-                callback = D_8013AE88->callback;
+                callback = gCurrentTask->callback;
                 D_8013AFC8 = callback;
-                D_8013AE98 = D_8013AE88->parent;
+                D_8013AE98 = gCurrentTask->parent;
                 callback();
             }
-            nextTask = D_8013AE88->next;
-            D_8013AE88 = nextTask;
+            nextTask = gCurrentTask->next;
+            gCurrentTask = nextTask;
         } while (nextTask != NULL);
         updateCdRequestQueue();
         updateCdCommandQueue();
@@ -169,11 +169,11 @@ void initializeGameSystems(void) {
     u8 matrixIndex;
     RECT *clip;
 
-    D_8013AF88 = &GAME_SCRATCHPAD->vectors[0];
+    gScratchVector0 = &GAME_SCRATCHPAD->vectors[0];
     D_8013AF8C = &GAME_SCRATCHPAD->vectors[1];
     D_8013AF90 = &GAME_SCRATCHPAD->shortVectors[0];
     D_8013AF94 = &GAME_SCRATCHPAD->shortVectors[1];
-    D_8013AF98 = &GAME_SCRATCHPAD->matrices[0];
+    gScratchMatrix0 = &GAME_SCRATCHPAD->matrices[0];
     D_8013AF9C = &GAME_SCRATCHPAD->matrices[1];
     D_8013AFA0 = GAME_SCRATCHPAD->unk70;
     D_8013AFA4 = GAME_SCRATCHPAD->unkC0;

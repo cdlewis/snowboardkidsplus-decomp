@@ -258,14 +258,14 @@ typedef struct PlayerTripleQuadScratch {
 } PlayerTripleQuadScratch;
 
 extern s16 gFrameCounter __attribute__((section(".data")));
-extern s16 D_8013AFCE __attribute__((section(".data")));
+extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u32 *D_8013AF6C __attribute__((section(".data")));
 extern u16 D_8013AF78 __attribute__((section(".data")));
 extern u8 D_8013AFCD __attribute__((section(".data")));
 extern u8 D_8013AFD3 __attribute__((section(".data")));
-extern GameTask *D_8013AE88 __attribute__((section(".data")));
-extern GameTask *D_8013AE8C __attribute__((section(".data")));
-extern u32 D_8013AFE4 __attribute__((section(".data")));
+extern GameTask *gCurrentTask __attribute__((section(".data")));
+extern GameTask *gCreatedTask __attribute__((section(".data")));
+extern u32 gTaskTransitionFlags __attribute__((section(".data")));
 extern u8 D_8013AFD6 __attribute__((section(".data")));
 
 extern u16 D_8013AFAA __attribute__((section(".data")));
@@ -757,7 +757,7 @@ void initializeRacePlayerEffects(void) {
     VECTOR position;
 
     createChildTaskForParentWithReserve(&gGameTasks[4], updatePlayerRenderSnapshots);
-    playerSnapshotTaskGp = D_8013AE8C;
+    playerSnapshotTaskGp = gCreatedTask;
     if (D_8013AFD2 == 4) {
         playerIndex = 0;
         do {
@@ -774,12 +774,12 @@ void initializeRacePlayerEffects(void) {
             createPlayerParticleTrailTask(playerIndex);
         }
     }
-    if (D_8013AFCE == 6) {
+    if (gSelectedCourseIndex == 6) {
         for (playerIndex = 0; playerIndex < D_8013AFCD; playerIndex++) {
             createPlayerParticleTask(playerIndex);
         }
     }
-    if (D_8013AFCE == 4) {
+    if (gSelectedCourseIndex == 4) {
         position = gInitialRaceOscillatingQuadPosition;
         createOscillatingQuadTask(0, &position, 0x200, 0, 255, 0);
         position.vx = -0x198F;
@@ -809,16 +809,16 @@ void initializeRacePlayerEffects(void) {
 }
 
 void clearPlayerSnapshotTasks(void) {
-    GameTask *savedTask = D_8013AE88;
-    D_8013AE88 = playerSnapshotTaskGp;
+    GameTask *savedTask = gCurrentTask;
+    gCurrentTask = playerSnapshotTaskGp;
     deleteCurrentTaskDescendants();
-    D_8013AE88 = savedTask;
+    gCurrentTask = savedTask;
     playerSnapshotTrailCountGp = 0;
 }
 
 void createPlayerSnapshotTrailTask(TaskCallback callback) {
     createChildTaskForParentWithReserve(playerSnapshotTaskGp, callback);
-    D_8013AE8C->data18 = 0x101;
+    gCreatedTask->data18 = 0x101;
     playerSnapshotTrailCountGp++;
 }
 
@@ -828,10 +828,10 @@ void drawPlayerSnapshotTrailTask(void) {
     POLY_FT4 *packet;
     MATRIX *scratch = (MATRIX *)getScratchAddr(0);
     s32 depth;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (PlayerSnapshotTrailResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (PlayerSnapshotTrailResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     packet = &gPlayerSnapshotTrailPacket;
     packet->r0 = resource->remainingFrames * 48 / 90;
     packet->g0 = resource->remainingFrames * 32 / 90;
@@ -858,36 +858,36 @@ void drawPlayerSnapshotTrailTask(void) {
 void initializePlayerSnapshotTrailTask(void) {
     PlayerSnapshotTrailResource *resource;
     SVECTOR rotation;
-    if (D_8013AE88->resource14 != 0xFFFF) {
+    if (gCurrentTask->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskMemoryBlock();
-    resource = (PlayerSnapshotTrailResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    gCurrentTask->resource14 = allocateTaskMemoryBlock();
+    resource = (PlayerSnapshotTrailResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     GsInitCoordinate2(0, &resource->current);
     GsInitCoordinate2(0, &resource->previous);
-    rotation.vx = gPlayerRenderSnapshots[D_8013AE88->data1C].unk10;
-    rotation.vy = gPlayerRenderSnapshots[D_8013AE88->data1C].unk18 + 0x400;
-    rotation.vz = gPlayerRenderSnapshots[D_8013AE88->data1C].unk14;
+    rotation.vx = gPlayerRenderSnapshots[gCurrentTask->data1C].unk10;
+    rotation.vy = gPlayerRenderSnapshots[gCurrentTask->data1C].unk18 + 0x400;
+    rotation.vz = gPlayerRenderSnapshots[gCurrentTask->data1C].unk14;
     resource->currentScale.vx = 0x1000;
     resource->currentScale.vy = 0x1000;
-    resource->currentScale.vz = (((s16)gPlayerRenderSnapshots[D_8013AE88->data1C].unk18 &
-        (0x3FF - (s16)gPlayerRenderSnapshots[D_8013AE88->data1C].unk12) & 0x3FF) << 2) + 0x1000;
+    resource->currentScale.vz = (((s16)gPlayerRenderSnapshots[gCurrentTask->data1C].unk18 &
+        (0x3FF - (s16)gPlayerRenderSnapshots[gCurrentTask->data1C].unk12) & 0x3FF) << 2) + 0x1000;
     RotMatrix(&rotation, &resource->current.coord);
-    resource->current.coord.t[0] = gPlayerRenderSnapshots[D_8013AE88->data1C].position.vx;
-    resource->current.coord.t[1] = gPlayerRenderSnapshots[D_8013AE88->data1C].position.vy;
-    resource->current.coord.t[2] = gPlayerRenderSnapshots[D_8013AE88->data1C].position.vz;
-    rotation.vx = gPreviousPlayerRenderSnapshots[D_8013AE88->data1C].unk10;
-    rotation.vy = gPreviousPlayerRenderSnapshots[D_8013AE88->data1C].unk18 + 0x400;
-    rotation.vz = gPreviousPlayerRenderSnapshots[D_8013AE88->data1C].unk14;
+    resource->current.coord.t[0] = gPlayerRenderSnapshots[gCurrentTask->data1C].position.vx;
+    resource->current.coord.t[1] = gPlayerRenderSnapshots[gCurrentTask->data1C].position.vy;
+    resource->current.coord.t[2] = gPlayerRenderSnapshots[gCurrentTask->data1C].position.vz;
+    rotation.vx = gPreviousPlayerRenderSnapshots[gCurrentTask->data1C].unk10;
+    rotation.vy = gPreviousPlayerRenderSnapshots[gCurrentTask->data1C].unk18 + 0x400;
+    rotation.vz = gPreviousPlayerRenderSnapshots[gCurrentTask->data1C].unk14;
     resource->previousScale.vx = 0x1000;
     resource->previousScale.vy = 0x1000;
-    resource->previousScale.vz = (((s16)gPreviousPlayerRenderSnapshots[D_8013AE88->data1C].unk18 &
-        (0x3FF - (s16)gPreviousPlayerRenderSnapshots[D_8013AE88->data1C].unk12) & 0x3FF) << 2) + 0x1000;
+    resource->previousScale.vz = (((s16)gPreviousPlayerRenderSnapshots[gCurrentTask->data1C].unk18 &
+        (0x3FF - (s16)gPreviousPlayerRenderSnapshots[gCurrentTask->data1C].unk12) & 0x3FF) << 2) + 0x1000;
     RotMatrix(&rotation, &resource->previous.coord);
-    resource->previous.coord.t[0] = gPreviousPlayerRenderSnapshots[D_8013AE88->data1C].position.vx;
-    resource->previous.coord.t[1] = gPreviousPlayerRenderSnapshots[D_8013AE88->data1C].position.vy;
-    resource->previous.coord.t[2] = gPreviousPlayerRenderSnapshots[D_8013AE88->data1C].position.vz;
-    resource->remainingFrames = D_8013AE88->data1A;
+    resource->previous.coord.t[0] = gPreviousPlayerRenderSnapshots[gCurrentTask->data1C].position.vx;
+    resource->previous.coord.t[1] = gPreviousPlayerRenderSnapshots[gCurrentTask->data1C].position.vy;
+    resource->previous.coord.t[2] = gPreviousPlayerRenderSnapshots[gCurrentTask->data1C].position.vz;
+    resource->remainingFrames = gCurrentTask->data1A;
     setCurrentTaskCallback(drawPlayerSnapshotTrailTask);
 }
 
@@ -901,14 +901,14 @@ void drawTrickTriangleRingTask(void) {
     s32 angle;
     s32 nextAngle;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (TrickRingResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (TrickRingResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     scratch = (TrickTrianglePacket *)getScratchAddr(0);
     packet = (TrickTrianglePacket *)GsOUT_PACKET_P;
-    player = &gRacePlayers[D_8013AE88->data18];
-    if (D_8013AE88->data18 == 0) {
+    player = &gRacePlayers[gCurrentTask->data18];
+    if (gCurrentTask->data18 == 0) {
         ot = D_800EC040[D_8013AF78].org;
     } else {
         ot = D_800EC0E0[D_8013AF78].org;
@@ -946,12 +946,12 @@ void drawTrickTriangleRingTask(void) {
         return;
     }
     if (D_8013AFAA & 0x400) {
-        if (D_8013AE88->data18 != D_8013AF78) {
+        if (gCurrentTask->data18 != D_8013AF78) {
             goto advance;
         }
         scratch->tag = (1 + 6) << 24;
     } else {
-        if (D_8013AE88->data18 != 0) {
+        if (gCurrentTask->data18 != 0) {
             goto advance;
         }
         scratch->tag = (1 + 6) << 24;
@@ -997,9 +997,9 @@ advance:
 void startIndexedRenderTask(s32 index) {
     TaskMemoryBlock *resource;
     createChildTaskForParentWithReserve(D_8013B304, drawTrickTriangleRingTask);
-    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-    D_8013AE8C->data18 = index;
-    resource = &gTaskMemoryPool[D_8013AE8C->resource14];
+    gCreatedTask->resource14 = allocateTaskMemoryBlock();
+    gCreatedTask->data18 = index;
+    resource = &gTaskMemoryPool[gCreatedTask->resource14];
     resource->unk00 = 0;
     resource->unk04 = 0;
 }
@@ -1013,14 +1013,14 @@ void drawTrickRingTask(void) {
     s32 angle;
     s32 nextAngle;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (TrickRingResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (TrickRingResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     scratch = (TrickRingPacket *)getScratchAddr(0);
-    player = &gRacePlayers[D_8013AE88->data18];
+    player = &gRacePlayers[gCurrentTask->data18];
     packet = (TrickRingPacket *)GsOUT_PACKET_P;
-    if (D_8013AE88->data18 == 0) {
+    if (gCurrentTask->data18 == 0) {
         ot = D_800EC040[D_8013AF78].org;
     } else {
         ot = D_800EC0E0[D_8013AF78].org;
@@ -1063,10 +1063,10 @@ void drawTrickRingTask(void) {
         return;
     }
     if (D_8013AFAA & 0x400) {
-        if (D_8013AE88->data18 != D_8013AF78) {
+        if (gCurrentTask->data18 != D_8013AF78) {
             goto advance;
         }
-    } else if (D_8013AE88->data18 != 0) {
+    } else if (gCurrentTask->data18 != 0) {
         goto advance;
     }
 
@@ -1116,14 +1116,14 @@ void drawTrickSparkRingTask(void) {
     s32 edgeRadius;
     s32 edgeAngle;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    frame = (s32 *)&gTaskMemoryPool[D_8013AE88->resource14].unk00;
+    frame = (s32 *)&gTaskMemoryPool[gCurrentTask->resource14].unk00;
     scratch = (TrickSparkScratch *)getScratchAddr(0);
     packet = (u8 *)GsOUT_PACKET_P;
-    player = &gRacePlayers[D_8013AE88->data18];
-    if (D_8013AE88->data18 == 0) {
+    player = &gRacePlayers[gCurrentTask->data18];
+    if (gCurrentTask->data18 == 0) {
         ot = D_800EC040[D_8013AF78].org;
     } else {
         ot = D_800EC0E0[D_8013AF78].org;
@@ -1136,12 +1136,12 @@ void drawTrickSparkRingTask(void) {
     }
     /* Initialize complete DMA tags before linking the packets into the ordering table. */
     if (D_8013AFAA & 0x400) {
-        if (D_8013AE88->data18 != D_8013AF78) {
+        if (gCurrentTask->data18 != D_8013AF78) {
             goto advance;
         }
         scratch->ray.tag = (1 + 4) << 24;
     } else {
-        if (D_8013AE88->data18 != 0) {
+        if (gCurrentTask->data18 != 0) {
             goto advance;
         }
         scratch->ray.tag = (1 + 4) << 24;
@@ -1227,15 +1227,15 @@ advance:
 void startIndexedRenderTaskPair(s32 index) {
     TaskMemoryBlock *resource;
     createChildTaskForParentWithReserve(D_8013B304, drawTrickRingTask);
-    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-    D_8013AE8C->data18 = index;
-    resource = &gTaskMemoryPool[D_8013AE8C->resource14];
+    gCreatedTask->resource14 = allocateTaskMemoryBlock();
+    gCreatedTask->data18 = index;
+    resource = &gTaskMemoryPool[gCreatedTask->resource14];
     resource->unk00 = 0;
     resource->unk04 = 0;
     createChildTaskForParentWithReserve(D_8013B304, drawTrickSparkRingTask);
-    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-    D_8013AE8C->data18 = index;
-    resource = &gTaskMemoryPool[D_8013AE8C->resource14];
+    gCreatedTask->resource14 = allocateTaskMemoryBlock();
+    gCreatedTask->data18 = index;
+    resource = &gTaskMemoryPool[gCreatedTask->resource14];
     resource->unk00 = 0;
 }
 
@@ -1245,11 +1245,11 @@ void drawFallingParticlesTask(void) {
     SPRT_8 *packet;
     SPRT_8 *scratch;
     DR_TPAGE *page;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
     scratch = (SPRT_8 *)getScratchAddr(0);
-    resource = (FallingParticleResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (FallingParticleResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     packet = (SPRT_8 *)GsOUT_PACKET_P;
     setcode(scratch, SPRT_8_CODE);
     setRGB0(scratch, 128, 128, 128);
@@ -1278,8 +1278,8 @@ void createFallingParticleTask(void) {
     FallingParticleResource *resource;
     s32 i;
     createChildTaskForParentWithReserve(&gGameTasks[4], drawFallingParticlesTask);
-    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-    resource = (FallingParticleResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
+    gCreatedTask->resource14 = allocateTaskMemoryBlock();
+    resource = (FallingParticleResource *)&gTaskMemoryPool[gCreatedTask->resource14];
     for (i = 0; i < 40; i++) {
         resource->x[i] = randomNextLinear() % 320;
         resource->y[i] = -(randomNextLinear() % 244);
@@ -1355,13 +1355,13 @@ void drawPlayerParticlesTask(void) {
     s32 i, j;
     s32 yawOffset, pitchOffset;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
     scratch = (PlayerParticleScratch *)getScratchAddr(0);
     packet = (POLY_FT4 *)GsOUT_PACKET_P;
-    positions = (PlayerParticlePosition *)&gTaskMemoryPool[D_8013AE88->resource14];
-    player = &gRacePlayers[D_8013AE88->data18];
+    positions = (PlayerParticlePosition *)&gTaskMemoryPool[gCurrentTask->resource14];
+    player = &gRacePlayers[gCurrentTask->data18];
 
     setVector(&scratch->corners[0], -4, -4, 0);
     setVector(&scratch->corners[1], 4, -4, 0);
@@ -1381,14 +1381,14 @@ void drawPlayerParticlesTask(void) {
     scratch->localScreen = GsIDMATRIX2;
     GsSetLsMatrix(&scratch->localScreen);
 
-    yawOffset = -D_801241E8[D_8013AE88->data18].yaw;
-    pitchOffset = D_801241E8[D_8013AE88->data18].pitch;
+    yawOffset = -D_801241E8[gCurrentTask->data18].yaw;
+    pitchOffset = D_801241E8[gCurrentTask->data18].pitch;
     for (i = 0; i < 40; i++) {
         if (D_8013AFAA & 0x400) {
-            if (D_8013AE88->data18 != (gFrameCounter & 1)) {
+            if (gCurrentTask->data18 != (gFrameCounter & 1)) {
                 goto updatePosition;
             }
-        } else if (D_8013AE88->data18 != 0) {
+        } else if (gCurrentTask->data18 != 0) {
             goto updatePosition;
         }
 
@@ -1416,8 +1416,8 @@ void drawPlayerParticlesTask(void) {
     updatePosition:
         if (!D_8013AFD3) {
             s32 drift = randomNextLinear() % 16 + 8;
-            s32 sine = rsin(D_8013AE88->data1A);
-            s32 cosine = rcos(D_8013AE88->data1A * 5);
+            s32 sine = rsin(gCurrentTask->data1A);
+            s32 cosine = rcos(gCurrentTask->data1A * 5);
             positions[i].x += drift * (sine + cosine) / 8192;
             positions[i].y += 8;
             if (!D_8013AFD6) {
@@ -1427,7 +1427,7 @@ void drawPlayerParticlesTask(void) {
     }
     GsOUT_PACKET_P = (u32)packet;
     if (!D_8013AFD3) {
-        D_8013AE88->data1A++;
+        gCurrentTask->data1A++;
     }
 }
 
@@ -1435,15 +1435,15 @@ void createPlayerParticleTask(s32 playerIndex) {
     PlayerParticlePosition *position;
     s32 i;
     createChildTaskForParentWithReserve(&gGameTasks[4], drawPlayerParticlesTask);
-    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-    position = (PlayerParticlePosition *)&gTaskMemoryPool[D_8013AE8C->resource14];
+    gCreatedTask->resource14 = allocateTaskMemoryBlock();
+    position = (PlayerParticlePosition *)&gTaskMemoryPool[gCreatedTask->resource14];
     for (i = 0; i < 40; i++) {
         position[i].x = randomNextLinear() % 1024;
         position[i].y = randomNextLinear() % 512;
         position[i].z = randomNextLinear() % 1024;
     }
-    D_8013AE8C->data18 = playerIndex;
-    D_8013AE8C->data1A = 0;
+    gCreatedTask->data18 = playerIndex;
+    gCreatedTask->data1A = 0;
 }
 
 void drawTriangleBurstTask(void) {
@@ -1452,9 +1452,9 @@ void drawTriangleBurstTask(void) {
     TriangleBurstResource *resource;
     TriangleBurstScratch *scratch;
     s32 i, depth;
-    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    if (gCurrentTask->resource14 == 0xFFFF) { while (1) {} }
     scratch = (TriangleBurstScratch *)getScratchAddr(0);
-    resource = (TriangleBurstResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (TriangleBurstResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     setVector(&scratch->vertices[0], -40, -40, 0);
     setVector(&scratch->vertices[1], 40, -40, 0);
     setVector(&scratch->vertices[2], 40, 40, 0);
@@ -1493,10 +1493,10 @@ void initTriangleBurstTask(void) {
     s32 i;
     s32 phase;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (TriangleBurstResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (TriangleBurstResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->frame = 0;
     phase = randomNextLinear() % 4096;
     for (i = 0; i < 4; i++) {
@@ -1525,8 +1525,8 @@ void createPositionedEffectTask(s32 x, s32 y, s32 z) {
     TriangleBurstResource *resource;
 
     createChildTaskWithReserve(initTriangleBurstTask);
-    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-    resource = (TriangleBurstResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
+    gCreatedTask->resource14 = allocateTaskMemoryBlock();
+    resource = (TriangleBurstResource *)&gTaskMemoryPool[gCreatedTask->resource14];
     resource->origin.vx = x >> 8;
     resource->origin.vy = y >> 8;
     resource->origin.vz = z >> 8;
@@ -1537,10 +1537,10 @@ void drawRotatingQuadEffectTask(void) {
     RotatingQuadScratch *scratch;
     s32 i;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (RotatingEffectResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (RotatingEffectResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     scratch = (RotatingQuadScratch *)getScratchAddr(0);
     if (resource->elapsed <= 16) {
         scratch->textureAdvance = resource->elapsed * 63 / 16;
@@ -1618,8 +1618,8 @@ void drawRotatingQuadEffectTask(void) {
 void startRotatingQuadEffectTask(s32 variant, const VECTOR *position, s32 pitch, s32 yaw, s32 roll) {
     RotatingEffectResource *resource;
     createChildTaskWithReserve(drawRotatingQuadEffectTask);
-    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-    resource = (RotatingEffectResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
+    gCreatedTask->resource14 = allocateTaskMemoryBlock();
+    resource = (RotatingEffectResource *)&gTaskMemoryPool[gCreatedTask->resource14];
     resource->x = position->vx >> 8;
     resource->y = position->vy >> 8;
     resource->z = position->vz >> 8;
@@ -1635,7 +1635,7 @@ void startRotatingQuadEffectTask(s32 variant, const VECTOR *position, s32 pitch,
 }
 
 void drawPlayerShadowTask(void) {
-    RacePlayer *player = &gRacePlayers[D_8013AE88->data18];
+    RacePlayer *player = &gRacePlayers[gCurrentTask->data18];
     POLY_FT4 *packet = (POLY_FT4 *)GsOUT_PACKET_P;
     PlayerShadowScratch *scratch = (PlayerShadowScratch *)getScratchAddr(0);
     s32 i;
@@ -1686,7 +1686,7 @@ void drawPlayerShadowTask(void) {
 
 void startPlayerShadowTask(s32 playerIndex) {
     createChildTaskForParentWithReserve(D_8013B304, drawPlayerShadowTask);
-    D_8013AE8C->data18 = playerIndex;
+    gCreatedTask->data18 = playerIndex;
 }
 
 void updatePlayerTurnTrailTask(void) {
@@ -1697,16 +1697,16 @@ void updatePlayerTurnTrailTask(void) {
     TurnTrailScratch *scratch;
     s32 i;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    trail = (TurnTrailHistory *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if (D_8013AE88->resource16 == 0xFFFF) {
+    trail = (TurnTrailHistory *)&gTaskMemoryPool[gCurrentTask->resource14];
+    if (gCurrentTask->resource16 == 0xFFFF) {
         while (1) {}
     }
-    edge = (TurnTrailEdges *)&gTaskMemoryPool[D_8013AE88->resource16];
+    edge = (TurnTrailEdges *)&gTaskMemoryPool[gCurrentTask->resource16];
     packet = (POLY_FT3 *)GsOUT_PACKET_P;
-    player = &gRacePlayers[D_8013AE88->data18];
+    player = &gRacePlayers[gCurrentTask->data18];
     scratch = (TurnTrailScratch *)getScratchAddr(0);
     scratch->emitting = 0;
 
@@ -1760,7 +1760,7 @@ void updatePlayerTurnTrailTask(void) {
         scratch->emitting = 0;
     }
     if (!isPointWithinCameraForwardRange(player->worldCoordinate.coord.t[0],
-            player->worldCoordinate.coord.t[2], (s16)D_8013AE88->data18)) {
+            player->worldCoordinate.coord.t[2], (s16)gCurrentTask->data18)) {
         scratch->emitting = 0;
     }
     if ((s16)player->unk92C < 0x800) {
@@ -1820,7 +1820,7 @@ void updatePlayerTurnTrailTask(void) {
             trail->velocities[1].vy = 0;
             trail->velocities[1].vz = scratch->side * scratch->strength / 4;
             trail->ages[i] = 0;
-            if (D_8013AE88->data1C == 1) {
+            if (gCurrentTask->data1C == 1) {
                 trail->velocities[1].vz = -32;
             }
             ApplyMatrixSV(&player->model.effect.effectMatrix180, &trail->velocities[1], &trail->velocities[1]);
@@ -1911,7 +1911,7 @@ void updatePlayerTurnTrailTask(void) {
     if (!D_8013AFD3) {
         trail->elapsed++;
     }
-    if (D_8013AE88->data1A == 2) {
+    if (gCurrentTask->data1A == 2) {
         deleteCurrentTaskSubtree();
     }
 }
@@ -1920,14 +1920,14 @@ void initializeDelayedEightEntryEffectTask(void) {
     TurnTrailHistory *primary;
     TurnTrailEdges *secondary;
     s32 i;
-    if (D_8013AE88->data18 == 0) {
+    if (gCurrentTask->data18 == 0) {
         createChildTaskForParentWithReserve(D_8013B304, updatePlayerTurnTrailTask);
-        D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-        primary = (TurnTrailHistory *)&gTaskMemoryPool[D_8013AE8C->resource14];
-        D_8013AE8C->resource16 = allocateTaskMemoryBlock();
-        secondary = (TurnTrailEdges *)&gTaskMemoryPool[D_8013AE8C->resource16];
-        D_8013AE8C->data18 = D_8013AE88->data1A;
-        D_8013AE8C->data1A = 0;
+        gCreatedTask->resource14 = allocateTaskMemoryBlock();
+        primary = (TurnTrailHistory *)&gTaskMemoryPool[gCreatedTask->resource14];
+        gCreatedTask->resource16 = allocateTaskMemoryBlock();
+        secondary = (TurnTrailEdges *)&gTaskMemoryPool[gCreatedTask->resource16];
+        gCreatedTask->data18 = gCurrentTask->data1A;
+        gCreatedTask->data1A = 0;
         for (i = 0; i < TURN_TRAIL_SAMPLES; i++) {
             primary->positions[i].vx = 0;
             primary->positions[i].vy = 0;
@@ -1946,14 +1946,14 @@ void initializeDelayedEightEntryEffectTask(void) {
         primary->elapsed = 0;
         deleteCurrentTaskSubtree();
     } else {
-        D_8013AE88->data18--;
+        gCurrentTask->data18--;
     }
 }
 
 s32 startDelayedEightEntryEffectTask(s32 playerIndex) {
     createChildTaskForParentWithReserve(&gGameTasks[4], initializeDelayedEightEntryEffectTask);
-    D_8013AE8C->data18 = 1;
-    D_8013AE8C->data1A = playerIndex;
+    gCreatedTask->data18 = 1;
+    gCreatedTask->data1A = playerIndex;
     return 0;
 }
 
@@ -1964,12 +1964,12 @@ void drawPlayerPairedQuadEffectTask(void) {
     PairedQuadScratchpad *scratch;
     s32 i, j;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (PairedEffectResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (PairedEffectResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     packet = (POLY_FT4 *)GsOUT_PACKET_P;
-    player = &gRacePlayers[D_8013AE88->data18];
+    player = &gRacePlayers[gCurrentTask->data18];
     scratch = (PairedQuadScratchpad *)getScratchAddr(0);
     if (isPointWithinCameraForwardRange(player->worldCoordinate.coord.t[0],
             player->worldCoordinate.coord.t[2], (s16)getRenderCameraIndex())) {
@@ -2017,9 +2017,9 @@ void createPlayerPairedQuadEffectTask(s32 playerIndex, s32 variant) {
     RacePlayer *player;
     s32 i;
     createChildTaskForParentWithReserve(D_8013B304, drawPlayerPairedQuadEffectTask);
-    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
+    gCreatedTask->resource14 = allocateTaskMemoryBlock();
     player = &gRacePlayers[playerIndex];
-    resource = (PairedEffectResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
+    resource = (PairedEffectResource *)&gTaskMemoryPool[gCreatedTask->resource14];
     for (i = 0; i < 2; i++) {
         gPlayerPairedQuadOffsets[i].vz = randomNextLinear() % 40 - 20;
         ApplyMatrixLV(&player->model.effect.effectMatrix180, &gPlayerPairedQuadOffsets[i], &resource->positions[i]);
@@ -2032,7 +2032,7 @@ void createPlayerPairedQuadEffectTask(s32 playerIndex, s32 variant) {
     }
     resource->elapsed = 0;
     resource->clut = variant == 0 ? getClut(800, 250) : getClut(800, 251);
-    D_8013AE8C->data18 = playerIndex;
+    gCreatedTask->data18 = playerIndex;
 }
 
 void drawQuadAnimationTask(void) {
@@ -2044,11 +2044,11 @@ void drawQuadAnimationTask(void) {
     s32 i;
     long depth;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
     scratch = (QuadAnimationScratch *)getScratchAddr(0);
-    resource = (PrimaryQuadAnimationResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (PrimaryQuadAnimationResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     packet = (POLY_FT4 *)GsOUT_PACKET_P;
     scratch->frame.current = frame = &resource->frames[resource->frame];
     duration = frame->duration;
@@ -2113,23 +2113,23 @@ void drawQuadAnimationTask(void) {
 GameTask *createQuadAnimationTask(u16 unusedId, VECTOR *position) {
     PrimaryQuadAnimationResource *resource;
     createChildTaskForParentWithReserve(D_8013B304, drawQuadAnimationTask);
-    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-    resource = (PrimaryQuadAnimationResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
+    gCreatedTask->resource14 = allocateTaskMemoryBlock();
+    resource = (PrimaryQuadAnimationResource *)&gTaskMemoryPool[gCreatedTask->resource14];
     resource->x = position->vx;
     resource->y = position->vy;
     resource->z = position->vz;
     resource->elapsed = 0;
     resource->frame = 0;
     resource->frames = gQuadAnimationFrames;
-    return D_8013AE8C;
+    return gCreatedTask;
 }
 
 GameTask *startAlternateQuadAnimationTask(s32 unused, const PositionEffectOrigin *position) {
     QuadAnimationResource *resource;
     GameTask *task;
     createChildTaskForParentWithReserve(D_8013B304, drawQuadAnimationTask);
-    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-    task = D_8013AE8C;
+    gCreatedTask->resource14 = allocateTaskMemoryBlock();
+    task = gCreatedTask;
     resource = (QuadAnimationResource *)&gTaskMemoryPool[task->resource14];
     resource->position.x = position->x;
     resource->position.y = position->y;
@@ -2146,10 +2146,10 @@ void updateRadialEffectTask(void) {
     POLY_FT4 *packet;
     s32 i;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (RadialEffectResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (RadialEffectResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     packet = (POLY_FT4 *)GsOUT_PACKET_P;
     scratch = (RadialEffectScratch *)getScratchAddr(0);
 
@@ -2220,14 +2220,14 @@ void emitRadialEffectTask(void) {
     RadialEffectResource *resource;
     s32 i;
     s32 angle;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    origin = (PositionEffectOrigin *)&gTaskMemoryPool[D_8013AE88->resource14];
+    origin = (PositionEffectOrigin *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (D_8013AFD3 == 0 && (gFrameCounter & 3) == 0) {
         createChildTaskForParentWithReserve(D_8013B304, updateRadialEffectTask);
-        D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-        resource = (RadialEffectResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
+        gCreatedTask->resource14 = allocateTaskMemoryBlock();
+        resource = (RadialEffectResource *)&gTaskMemoryPool[gCreatedTask->resource14];
         GsInitCoordinate2(0, &resource->coordinate);
         resource->coordinate.coord.t[0] = origin->x;
         resource->coordinate.coord.t[1] = origin->y;
@@ -2242,7 +2242,7 @@ void emitRadialEffectTask(void) {
             resource->velocities[i].vy = -32;
         }
         resource->elapsed = 0;
-        if (--D_8013AE88->data18 == 0) {
+        if (--gCurrentTask->data18 == 0) {
             deleteCurrentTaskSubtree();
         }
     }
@@ -2251,9 +2251,9 @@ void emitRadialEffectTask(void) {
 void startPositionEffectTask(const PositionEffectOrigin *position) {
     PositionEffectOrigin *resource;
     createChildTaskForParentWithReserve(D_8013B304, emitRadialEffectTask);
-    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-    D_8013AE8C->data18 = 3;
-    resource = (PositionEffectOrigin *)&gTaskMemoryPool[D_8013AE8C->resource14];
+    gCreatedTask->resource14 = allocateTaskMemoryBlock();
+    gCreatedTask->data18 = 3;
+    resource = (PositionEffectOrigin *)&gTaskMemoryPool[gCreatedTask->resource14];
     *resource = *position;
 }
 
@@ -2265,15 +2265,15 @@ void updatePlayerTrailTask(void) {
     s32 i, axis;
     s32 surfaceState;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    left = (PlayerTrailResource *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if (D_8013AE88->resource16 == 0xFFFF) {
+    left = (PlayerTrailResource *)&gTaskMemoryPool[gCurrentTask->resource14];
+    if (gCurrentTask->resource16 == 0xFFFF) {
         while (1) {}
     }
-    right = (PlayerTrailResource *)&gTaskMemoryPool[D_8013AE88->resource16];
-    player = &gRacePlayers[D_8013AE88->data18];
+    right = (PlayerTrailResource *)&gTaskMemoryPool[gCurrentTask->resource16];
+    player = &gRacePlayers[gCurrentTask->data18];
     packet = (POLY_FT4 *)GsOUT_PACKET_P;
     scratch = (BoardTrailScratch *)getScratchAddr(0);
 
@@ -2426,17 +2426,17 @@ void createPlayerTrailTask(s32 playerIndex) {
     PlayerTrailResource *second;
     s32 i;
     createChildTaskForParentWithReserve(D_8013B304, updatePlayerTrailTask);
-    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-    first = (PlayerTrailResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
-    D_8013AE8C->resource16 = allocateTaskMemoryBlock();
-    second = (PlayerTrailResource *)&gTaskMemoryPool[D_8013AE8C->resource16];
+    gCreatedTask->resource14 = allocateTaskMemoryBlock();
+    first = (PlayerTrailResource *)&gTaskMemoryPool[gCreatedTask->resource14];
+    gCreatedTask->resource16 = allocateTaskMemoryBlock();
+    second = (PlayerTrailResource *)&gTaskMemoryPool[gCreatedTask->resource16];
     for (i = 0; i < PLAYER_TRAIL_SAMPLES; i++) {
         first->samples.points[i].x = first->samples.points[i].y = first->samples.points[i].z = 0;
         second->samples.points[i].x = second->samples.points[i].y = second->samples.points[i].z = 0;
         second->state.suppressed[i] = 0;
     }
     first->state.frame = 0;
-    D_8013AE8C->data18 = playerIndex;
+    gCreatedTask->data18 = playerIndex;
 }
 
 void updatePlayerPositionTrailTask(void) {
@@ -2449,12 +2449,12 @@ void updatePlayerPositionTrailTask(void) {
     u16 state;
     s16 lateral;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (PlayerPositionTrailResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (PlayerPositionTrailResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     packet = (POLY_FT4 *)GsOUT_PACKET_P;
-    player = &gRacePlayers[D_8013AE88->data18];
+    player = &gRacePlayers[gCurrentTask->data18];
     scratch = (PlayerPositionTrailScratch *)getScratchAddr(0);
     if (!isPointWithinCameraForwardRange(player->worldCoordinate.coord.t[0],
             player->worldCoordinate.coord.t[2], (s16)getRenderCameraIndex())) {
@@ -2609,9 +2609,9 @@ void createPlayerPositionTrailTask(s32 playerIndex) {
 
     player = &gRacePlayers[playerIndex];
     createChildTaskForParentWithReserve(D_8013B304, updatePlayerPositionTrailTask);
-    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-    D_8013AE8C->data18 = playerIndex;
-    resource = (PlayerPositionTrailResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
+    gCreatedTask->resource14 = allocateTaskMemoryBlock();
+    gCreatedTask->data18 = playerIndex;
+    resource = (PlayerPositionTrailResource *)&gTaskMemoryPool[gCreatedTask->resource14];
     for (i = 0; i < 3; i++) {
         for (j = 0; j < 3; j++) {
             resource->leftPositions[i][j] = player->worldCoordinate.coord.t[j];
@@ -2628,15 +2628,15 @@ void updatePlayerTripleQuadEffectTask(void) {
     s32 quadIndex;
     s32 axis, scale, size;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (PlayerTripleQuadEffectResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (PlayerTripleQuadEffectResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     packet = (POLY_FT4 *)GsOUT_PACKET_P;
-    player = &gRacePlayers[D_8013AE88->data18];
+    player = &gRacePlayers[gCurrentTask->data18];
     scratch = (PlayerTripleQuadScratch *)getScratchAddr(0);
     if (isPointWithinCameraForwardRange(player->worldCoordinate.coord.t[0],
-            player->worldCoordinate.coord.t[2], D_8013AE88->data18)) {
+            player->worldCoordinate.coord.t[2], gCurrentTask->data18)) {
         GsInitCoordinate2(NULL, &scratch->coordinate);
         RotMatrix(&resource->rotation, &scratch->coordinate.coord);
         scale = resource->elapsed * 1000 + 4096;
@@ -2700,7 +2700,7 @@ void emitPlayerTurnTripleQuadEffectTask(void) {
     PlayerTripleQuadEffectResource *resource;
     SVECTOR *vertex;
     s32 i, sine;
-    player = &gRacePlayers[D_8013AE88->data18];
+    player = &gRacePlayers[gCurrentTask->data18];
     if (D_8013AFD3 != 0) return;
     if (!isPointWithinCameraForwardRange(player->worldCoordinate.coord.t[0], player->worldCoordinate.coord.t[2], (s16)getRenderCameraIndex())) return;
     if (!(player->unk128 & 8) && player->unk96E != 0 && player->unk96E != 0x801 && player->unk96E != 0x200) return;
@@ -2708,8 +2708,8 @@ void emitPlayerTurnTripleQuadEffectTask(void) {
     if (sine < 0) sine = -sine;
     if ((gFrameCounter & 3) == 0 && !(player->unk128 & 0x677DA21) && player->unk0BC >= 0x800 && sine >= 0x200) {
         createChildTaskForParentWithReserve(D_8013B304, updatePlayerTripleQuadEffectTask);
-        D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-        resource = (PlayerTripleQuadEffectResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
+        gCreatedTask->resource14 = allocateTaskMemoryBlock();
+        resource = (PlayerTripleQuadEffectResource *)&gTaskMemoryPool[gCreatedTask->resource14];
         vertex = gPlayerTripleQuadOffsets;
         for (i = 0; i < 3; i++) {
             ApplyMatrix(&player->model.effect.effectMatrix180, vertex, (VECTOR *)&resource->positions[i]);
@@ -2725,13 +2725,13 @@ void emitPlayerTurnTripleQuadEffectTask(void) {
         resource->state = player->unk96E;
         resource->scale = rsin((s16)player->unk0BE - (s16)player->unk110);
         if (resource->scale < 0) resource->scale = -resource->scale;
-        D_8013AE8C->data18 = D_8013AE88->data18;
+        gCreatedTask->data18 = gCurrentTask->data18;
     }
 }
 
 void startPlayerTurnTripleQuadEffectTask(s32 playerIndex) {
     createChildTaskForParentWithReserve(D_8013B304, emitPlayerTurnTripleQuadEffectTask);
-    D_8013AE8C->data18 = playerIndex;
+    gCreatedTask->data18 = playerIndex;
 }
 
 void updatePlayerRingEffectTask(void) {
@@ -2742,10 +2742,10 @@ void updatePlayerRingEffectTask(void) {
     s32 scale;
     u8 shade;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (PlayerRingEffectResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (PlayerRingEffectResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     packet = (POLY_FT4 *)GsOUT_PACKET_P;
     scratch = (PlayerRingEffectScratch *)getScratchAddr(0);
     if (isPointWithinCameraForwardRange(resource->position[0], resource->position[2],
@@ -2816,10 +2816,10 @@ void createPlayerRingEffectTask(s32 playerIndex) {
     PlayerRingEffectResource *resource;
     s32 i;
     player = &gRacePlayers[playerIndex];
-    if (D_8013AFCE != 3) {
+    if (gSelectedCourseIndex != 3) {
         createChildTaskForParentWithReserve(D_8013B304, updatePlayerRingEffectTask);
-        D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-        resource = (PlayerRingEffectResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
+        gCreatedTask->resource14 = allocateTaskMemoryBlock();
+        resource = (PlayerRingEffectResource *)&gTaskMemoryPool[gCreatedTask->resource14];
         for (i = 0; i < 3; i++) {
             resource->position[i] = player->worldCoordinate.coord.t[i];
         }
@@ -2830,7 +2830,7 @@ void createPlayerRingEffectTask(s32 playerIndex) {
             resource->rotations[i].vz = randomNextLinear() % 4096;
         }
         resource->elapsed = 0;
-        D_8013AE8C->data18 = playerIndex;
+        gCreatedTask->data18 = playerIndex;
     }
 }
 
@@ -2842,12 +2842,12 @@ void updatePlayerParticleTrailTask(void) {
     s32 i, j;
     s32 shade;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
     scratch = (PlayerParticleTrailScratch *)getScratchAddr(0);
-    resource = (PlayerParticleTrailResource *)&gTaskMemoryPool[D_8013AE88->resource14];
-    player = &gRacePlayers[D_8013AE88->data18];
+    resource = (PlayerParticleTrailResource *)&gTaskMemoryPool[gCurrentTask->resource14];
+    player = &gRacePlayers[gCurrentTask->data18];
     packet = (POLY_FT4 *)GsOUT_PACKET_P;
     scratch->quad.tag = TEXTURED_QUAD_PACKET_WORDS << 24;
     setcode(&scratch->quad, POLY_FT4_CODE);
@@ -2938,8 +2938,8 @@ void createPlayerParticleTrailTask(s32 playerIndex) {
 
     player = &gRacePlayers[playerIndex];
     createChildTaskForParentWithReserve(D_8013B304, updatePlayerParticleTrailTask);
-    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-    resource = (PlayerParticleTrailResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
+    gCreatedTask->resource14 = allocateTaskMemoryBlock();
+    resource = (PlayerParticleTrailResource *)&gTaskMemoryPool[gCreatedTask->resource14];
     for (i = 0; i < 10; i++) {
         for (j = 0; j < 3; j++) {
             resource->positions[i][j] = player->worldCoordinate.coord.t[j];
@@ -2948,7 +2948,7 @@ void createPlayerParticleTrailTask(s32 playerIndex) {
         resource->angles[i] = randomNextLinear() % 4096;
     }
     resource->unkA0 = 0;
-    D_8013AE8C->data18 = playerIndex;
+    gCreatedTask->data18 = playerIndex;
 }
 
 void beginPlayerTripleQuadEffectTask(void) {
@@ -2969,8 +2969,8 @@ s32 createPlayerTripleQuadEffectTask(s32 playerIndex) {
         return 0;
     }
     createChildTaskForParentWithReserve(D_8013B304, beginPlayerTripleQuadEffectTask);
-    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-    resource = (PlayerTripleQuadEffectResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
+    gCreatedTask->resource14 = allocateTaskMemoryBlock();
+    resource = (PlayerTripleQuadEffectResource *)&gTaskMemoryPool[gCreatedTask->resource14];
     vertex = gPlayerTripleQuadOffsets;
     for (i = 0; i < 3; i++) {
         ApplyMatrix(&player->model.effect.effectMatrix180, vertex, (VECTOR *)&resource->positions[i]);
@@ -2986,7 +2986,7 @@ s32 createPlayerTripleQuadEffectTask(s32 playerIndex) {
     state = player->unk96E;
     resource->state = state;
     resource->scale = 0;
-    D_8013AE8C->data18 = playerIndex;
+    gCreatedTask->data18 = playerIndex;
     return state;
 }
 
@@ -2994,10 +2994,10 @@ void drawRisingTexturedStripTask(void) {
     POLY_FT4 *packet;
     RotatingQuadTrailResource *resource;
     s32 y;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (RotatingQuadTrailResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (RotatingQuadTrailResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     packet = (POLY_FT4 *)GsOUT_PACKET_P;
     packet->tag = 9 << 24;
     setcode(packet, POLY_FT4_CODE);
@@ -3037,11 +3037,11 @@ void drawRotatingQuadTrailTask(void) {
     RotatingQuadTrailResource *resource;
     QuadScaleScratchpad *scratch;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
     scratch = (QuadScaleScratchpad *)getScratchAddr(0);
-    resource = (RotatingQuadTrailResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (RotatingQuadTrailResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     packet = (POLY_FT4 *)GsOUT_PACKET_P;
     for (i = 7; i > 0; i--) {
         resource->angles[i] = resource->angles[i - 1];
@@ -3100,8 +3100,8 @@ void createRotatingQuadTrailTask(void) {
     s32 i;
 
     createChildTaskForParentWithReserve(&gGameTasks[4], drawRotatingQuadTrailTask);
-    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-    resource = (RotatingQuadTrailResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
+    gCreatedTask->resource14 = allocateTaskMemoryBlock();
+    resource = (RotatingQuadTrailResource *)&gTaskMemoryPool[gCreatedTask->resource14];
     resource->countdown = 30;
     for (i = 0; i < 8; i++) {
         resource->angles[i] = resource->countdown * 256;
@@ -3112,8 +3112,8 @@ void createRotatingQuadTrailTask(void) {
 void drawLoweringTexturedQuadTask(void) {
     POLY_FT4 *packet;
     ShrinkingQuadResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    resource = (ShrinkingQuadResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    if (gCurrentTask->resource14 == 0xFFFF) { while (1) {} }
+    resource = (ShrinkingQuadResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     packet = (POLY_FT4 *)GsOUT_PACKET_P;
     *packet = *resource->packet;
     packet->x0 = resource->vertices[0].x;
@@ -3136,9 +3136,9 @@ void drawShrinkingTexturedQuadTask(void) {
     POLY_FT4 *packet;
     QuadTransitionResource *resource;
     QuadScaleScratchpad *scratch;
-    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
+    if (gCurrentTask->resource14 == 0xFFFF) { while (1) {} }
     scratch = (QuadScaleScratchpad *)getScratchAddr(0);
-    resource = (QuadTransitionResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (QuadTransitionResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     packet = (POLY_FT4 *)GsOUT_PACKET_P;
     scratch->rotation.vx = scratch->rotation.vy = scratch->rotation.vz = 0;
     scratch->scale.vx = scratch->scale.vy = scratch->scale.vz = resource->frames * 1000 + 0x1000;
@@ -3168,8 +3168,8 @@ void createQuadShrinkTask(void) {
     QuadTransitionResource *resource;
 
     createChildTaskForParentWithReserve(&gGameTasks[4], drawShrinkingTexturedQuadTask);
-    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-    resource = (QuadTransitionResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
+    gCreatedTask->resource14 = allocateTaskMemoryBlock();
+    resource = (QuadTransitionResource *)&gTaskMemoryPool[gCreatedTask->resource14];
     resource->frames = 5;
     resource->vertices = gQuadShrinkVertices;
     resource->packet = &gQuadShrinkPacket;
@@ -3179,8 +3179,8 @@ void startMiddleQuadShrinkTask(void) {
     ShrinkingQuadResource *resource;
 
     createChildTaskForParentWithReserve(&gGameTasks[4], drawShrinkingTexturedQuadTask);
-    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-    resource = (ShrinkingQuadResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
+    gCreatedTask->resource14 = allocateTaskMemoryBlock();
+    resource = (ShrinkingQuadResource *)&gTaskMemoryPool[gCreatedTask->resource14];
     resource->countdown = 5;
     resource->vertices = gMiddleShrinkQuadVertices;
     resource->packet = &gMiddleShrinkQuadPacket;
@@ -3190,8 +3190,8 @@ void createRightQuadShrinkTask(void) {
     QuadTransitionResource *resource;
 
     createChildTaskForParentWithReserve(&gGameTasks[4], drawShrinkingTexturedQuadTask);
-    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-    resource = (QuadTransitionResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
+    gCreatedTask->resource14 = allocateTaskMemoryBlock();
+    resource = (QuadTransitionResource *)&gTaskMemoryPool[gCreatedTask->resource14];
     resource->frames = 5;
     resource->vertices = gRightQuadShrinkVertices;
     resource->packet = &gRightQuadShrinkPacket;
@@ -3203,10 +3203,10 @@ void drawPaletteCyclingStripTask(void) {
     s32 paletteRow;
     s32 paletteOffset;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (PaletteStripResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (PaletteStripResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     packet = (POLY_FT4 *)GsOUT_PACKET_P;
     *packet = *resource->packet;
     packet->v0 = packet->v1 = resource->textureV;
@@ -3215,7 +3215,7 @@ void drawPaletteCyclingStripTask(void) {
     packet->x1 = packet->x3 = 143;
     packet->y0 = packet->y1 = 88;
     packet->y2 = packet->y3 = 103;
-    paletteOffset = D_8013AE88->data18 * 3;
+    paletteOffset = gCurrentTask->data18 * 3;
     paletteRow = resource->frame % 3 + 242;
     packet->clut = getClut(944, paletteOffset + paletteRow);
     addPrim(D_8013AF6C, packet);
@@ -3228,10 +3228,10 @@ void drawLoweringQuadStripTask(void) {
     SlidingQuadResource *resource;
     s32 offset;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (SlidingQuadResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (SlidingQuadResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     packet = (POLY_FT4 *)GsOUT_PACKET_P;
     *packet = *resource->packet;
     packet->v0 = packet->v1 = resource->textureV;
@@ -3241,7 +3241,7 @@ void drawLoweringQuadStripTask(void) {
     offset = (resource->countdown << 6) / 10;
     packet->y0 = packet->y1 = offset + 24;
     packet->y2 = packet->y3 = offset + 39;
-    packet->clut = getClut(944, D_8013AE88->data18 * 3 + 242);
+    packet->clut = getClut(944, gCurrentTask->data18 * 3 + 242);
     addPrim(D_8013AF6C, packet);
     GsOUT_PACKET_P = (u32)(packet + 1);
     if (D_8013B338 >= 50) {
@@ -3257,10 +3257,10 @@ void drawSlidingQuadTask(void) {
     SlidingQuadResource *resource;
     s32 offset;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (SlidingQuadResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (SlidingQuadResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     packet = (POLY_FT4 *)GsOUT_PACKET_P;
     *packet = *resource->packet;
     packet->v0 = packet->v1 = resource->textureV;
@@ -3268,7 +3268,7 @@ void drawSlidingQuadTask(void) {
     offset = resource->countdown * resource->countdown;
     packet->x0 = packet->x2 = offset - 16;
     packet->x1 = packet->x3 = offset + 143;
-    packet->clut = getClut(944, D_8013AE88->data18 * 3 + 242);
+    packet->clut = getClut(944, gCurrentTask->data18 * 3 + 242);
     addPrim(D_8013AF6C, packet);
     GsOUT_PACKET_P = (u32)(packet + 1);
     if (--resource->countdown <= 0) {
@@ -3280,18 +3280,18 @@ void drawSlidingQuadTask(void) {
 void startSlidingQuadTask(s32 index) {
     SlidingQuadResource *resource;
     createChildTaskForParentWithReserve(&gGameTasks[4], drawSlidingQuadTask);
-    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-    D_8013AE8C->data18 = index;
-    resource = (SlidingQuadResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
+    gCreatedTask->resource14 = allocateTaskMemoryBlock();
+    gCreatedTask->data18 = index;
+    resource = (SlidingQuadResource *)&gTaskMemoryPool[gCreatedTask->resource14];
     resource->countdown = 10;
     resource->packet = &gSlidingQuadPacket;
     resource->textureV = (index << 4) + 32;
 }
 
 void waitThenStartPaletteColorCycle(void) {
-    if (++D_8013AE88->data1A >= 90) {
+    if (++gCurrentTask->data1A >= 90) {
         setCurrentTaskCallback(capturePaletteForColorCycle);
-        D_8013AE88->data1A = 0;
+        gCurrentTask->data1A = 0;
     }
 }
 
@@ -3299,10 +3299,10 @@ void updatePaletteWhitePulse(void) {
     s32 amount, i;
     u8 r, g, b;
 
-    if (D_8013AE88->data18 < 10) {
-        amount = D_8013AE88->data18;
-    } else if (D_8013AE88->data18 < 20) {
-        amount = 20 - D_8013AE88->data18;
+    if (gCurrentTask->data18 < 10) {
+        amount = gCurrentTask->data18;
+    } else if (gCurrentTask->data18 < 20) {
+        amount = 20 - gCurrentTask->data18;
     } else {
         amount = 0;
     }
@@ -3319,7 +3319,7 @@ void updatePaletteWhitePulse(void) {
     }
     LoadImage(&gWhitePulsePaletteRect, (u32 *)gWhitePulsePalette);
     DrawSync(0);
-    D_8013AE88->data18 = (D_8013AE88->data18 + 1) % 60;
+    gCurrentTask->data18 = (gCurrentTask->data18 + 1) % 60;
 }
 
 void capturePaletteForColorCycle(void) {
@@ -3330,8 +3330,8 @@ void capturePaletteForColorCycle(void) {
 
 void startPaletteWhitePulseTask(s32 duration) {
     createChildTaskForParentWithReserve(&gGameTasks[4], capturePaletteForColorCycle);
-    D_8013AE8C->data18 = 0;
-    D_8013AE8C->data1A = duration;
+    gCreatedTask->data18 = 0;
+    gCreatedTask->data1A = duration;
 }
 
 void updateQuadTransitionSequenceTask(void) {
@@ -3340,7 +3340,7 @@ void updateQuadTransitionSequenceTask(void) {
     if (frame == 25) createQuadShrinkTask();
     if (frame == 30) startMiddleQuadShrinkTask();
     if (frame == 35) createRightQuadShrinkTask();
-    if (frame == 40) startSlidingQuadTask(D_8013AE88->data1A);
+    if (frame == 40) startSlidingQuadTask(gCurrentTask->data1A);
     if (frame == 50) startPaletteWhitePulseTask(10);
     D_8013B338++;
     if (D_8013B338 == 100) deleteCurrentTaskSubtree();
@@ -3349,62 +3349,62 @@ void updateQuadTransitionSequenceTask(void) {
 void startQuadTransitionSequenceTask(s32 transitionIndex) {
     createChildTaskForParentWithReserve(&gGameTasks[4], updateQuadTransitionSequenceTask);
     D_8013B338 = 0;
-    D_8013AE8C->data1A = transitionIndex;
+    gCreatedTask->data1A = transitionIndex;
 }
 
 void updatePrimaryValueTransition(void) {
     s32 value;
-    value = D_8013AE88->data1C +
-        (D_8013AE88->data1E - D_8013AE88->data1C) *
-        D_8013AE88->data18 / D_8013AE88->data1A;
+    value = gCurrentTask->data1C +
+        (gCurrentTask->data1E - gCurrentTask->data1C) *
+        gCurrentTask->data18 / gCurrentTask->data1A;
     D_8013B35C = value;
-    D_8013AE88->data18++;
+    gCurrentTask->data18++;
     D_8013B364 = 0;
-    if (D_8013AE88->data18 >= D_8013AE88->data1A) {
+    if (gCurrentTask->data18 >= gCurrentTask->data1A) {
         deleteCurrentTaskSubtree();
         D_8013B364 = 1;
     }
 }
 
 void startPrimaryValueTransition(s32 duration, s32 start, s32 end) {
-    createChildTaskForParentWithReserve(D_8013AE88, updatePrimaryValueTransition);
-    D_8013AE8C->data18 = 0;
-    D_8013AE8C->data1A = duration;
-    D_8013AE8C->data1C = start;
-    D_8013AE8C->data1E = end;
+    createChildTaskForParentWithReserve(gCurrentTask, updatePrimaryValueTransition);
+    gCreatedTask->data18 = 0;
+    gCreatedTask->data1A = duration;
+    gCreatedTask->data1C = start;
+    gCreatedTask->data1E = end;
 }
 
 void updateValueInterpolationTask(void) {
     s32 step;
-    s32 start = D_8013AE88->data1C;
-    step = (D_8013AE88->data1E - start) * D_8013AE88->data18;
-    step /= D_8013AE88->data1A;
+    s32 start = gCurrentTask->data1C;
+    step = (gCurrentTask->data1E - start) * gCurrentTask->data18;
+    step /= gCurrentTask->data1A;
     D_8013B360 = start + step;
-    D_8013AE88->data18++;
+    gCurrentTask->data18++;
     D_8013B364 = 0;
-    if (D_8013AE88->data18 >= D_8013AE88->data1A) {
+    if (gCurrentTask->data18 >= gCurrentTask->data1A) {
         deleteCurrentTaskSubtree();
         D_8013B364 = 1;
     }
 }
 
 void startValueInterpolationTask(s32 duration, s32 start, s32 end) {
-    createChildTaskForParentWithReserve(D_8013AE88, updateValueInterpolationTask);
-    D_8013AE8C->data18 = 0;
-    D_8013AE8C->data1A = duration;
-    D_8013AE8C->data1C = start;
-    D_8013AE8C->data1E = end;
+    createChildTaskForParentWithReserve(gCurrentTask, updateValueInterpolationTask);
+    gCreatedTask->data18 = 0;
+    gCreatedTask->data1A = duration;
+    gCreatedTask->data1C = start;
+    gCreatedTask->data1E = end;
 }
 
 void drawFullScreenSpriteTask(void) {
     ScreenSpriteResource *resource;
     DrawModeSpritePacket *packets;
     s32 i;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
     packets = (DrawModeSpritePacket *)GsOUT_PACKET_P;
-    resource = (ScreenSpriteResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (ScreenSpriteResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     for (i = 0; i < 2; i++) {
         resource->sprites[i].r0 = resource->sprites[i].g0 = resource->sprites[i].b0 = *(const u8 *)resource->brightness;
     }
@@ -3413,7 +3413,7 @@ void drawFullScreenSpriteTask(void) {
         addPrim(&D_8013AF6C[1], &packets[i]);
     }
     GsOUT_PACKET_P = (u32)(packets + 2);
-    if (++resource->elapsed >= resource->duration || (D_8013AFE4 & 0x100)) {
+    if (++resource->elapsed >= resource->duration || (gTaskTransitionFlags & 0x100)) {
         deleteCurrentTaskSubtree();
     }
 }
@@ -3424,8 +3424,8 @@ void createFullScreenSpriteTask(s32 duration, s32 tpage, u16 clut, u16 u, u16 v,
     s32 i;
 
     createChildTaskForParentWithReserve(&gGameTasks[4], drawFullScreenSpriteTask);
-    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-    resource = (ScreenSpriteResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
+    gCreatedTask->resource14 = allocateTaskMemoryBlock();
+    resource = (ScreenSpriteResource *)&gTaskMemoryPool[gCreatedTask->resource14];
     for (i = 0; i < 2; i++) {
         resource->sprites[i].tag = (sizeof(DrawModeSpritePacket) / sizeof(u32) - 1) << 24;
         resource->sprites[i].code = TEXTURED_SPRITE_CODE | SEMI_TRANSPARENT_FLAG;
@@ -3532,10 +3532,10 @@ void drawFadingText(FadingTextResource *resource) {
 void updateFadingTextTask(void) {
     FadingTextResource *resource;
     s32 remaining;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (FadingTextResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (FadingTextResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     setSpriteColor(255, 255, 255);
     remaining = resource->elapsed;
     if (remaining < 30 || (remaining = resource->duration - remaining) < 30) {
@@ -3553,9 +3553,9 @@ void updateFadingTextTask(void) {
 
 void createFadingTextTask(s32 duration, s32 x, s32 y, const char *text, s32 palette) {
     FadingTextResource *resource;
-    createChildTaskForParentWithReserve(D_8013AE88, updateFadingTextTask);
-    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-    resource = (FadingTextResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
+    createChildTaskForParentWithReserve(gCurrentTask, updateFadingTextTask);
+    gCreatedTask->resource14 = allocateTaskMemoryBlock();
+    resource = (FadingTextResource *)&gTaskMemoryPool[gCreatedTask->resource14];
     resource->duration = duration;
     resource->elapsed = 0;
     resource->x = x;
@@ -3567,10 +3567,10 @@ void createFadingTextTask(s32 duration, s32 x, s32 y, const char *text, s32 pale
 void finishTimedSpriteSequence(void) {
     TimedSpriteSequenceResource *resource;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (TimedSpriteSequenceResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (TimedSpriteSequenceResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (--resource->duration < 0) {
         deleteCurrentTaskSubtree();
     }
@@ -3578,10 +3578,10 @@ void finishTimedSpriteSequence(void) {
 
 void updateTimedSpriteSequence(void) {
     TimedSpriteSequenceResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (TimedSpriteSequenceResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (TimedSpriteSequenceResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (resource->frame >= resource->step->frame) {
         createFadingTextTask(resource->step->duration, resource->step->x,
             resource->step->y, resource->step->text, resource->step->palette);
@@ -3596,24 +3596,24 @@ void updateTimedSpriteSequence(void) {
 
 void startTimedSpriteSequence(const TimedSpriteStep *steps) {
     TimedSpriteSequenceResource *resource;
-    createChildTaskForParentWithReserve(D_8013AE88, updateTimedSpriteSequence);
-    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-    resource = (TimedSpriteSequenceResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
+    createChildTaskForParentWithReserve(gCurrentTask, updateTimedSpriteSequence);
+    gCreatedTask->resource14 = allocateTaskMemoryBlock();
+    resource = (TimedSpriteSequenceResource *)&gTaskMemoryPool[gCreatedTask->resource14];
     resource->step = steps;
     resource->frame = 0;
 }
 
 void finishTimedSpritePresentation(void) {
-    if (D_8013AE88->data18++ >= 30) {
+    if (gCurrentTask->data18++ >= 30) {
         startCdVolumeFade(103, 20, 0, 1);
-        D_8013AFE4 |= 0x100;
+        gTaskTransitionFlags |= 0x100;
         deleteCurrentTaskDescendants();
         deleteCurrentTaskSubtree();
     }
 }
 
 void updateTimedSpritePresentation(void) {
-    s32 frame = D_8013AE88->data18;
+    s32 frame = gCurrentTask->data18;
 
     gTimedSpritePresentationFrame = frame;
     if (frame == 0) {
@@ -3736,7 +3736,7 @@ void updateTimedSpritePresentation(void) {
 
     if (frame == 4950 || (gControllerPressedButtons[0] & PRESENTATION_SKIP_BUTTON)) {
         D_8013B36C = 1;
-        D_8013AE88->data18 = 0;
+        gCurrentTask->data18 = 0;
         deleteCurrentTaskDescendants();
         startPrimaryValueTransition(30, (s16)D_8013B35C, 0);
         startValueInterpolationTask(30, (s16)D_8013B360, 0);
@@ -3744,7 +3744,7 @@ void updateTimedSpritePresentation(void) {
     } else {
         D_8013B368 = 0;
         D_8013B364 = 0;
-        D_8013AE88->data18++;
+        gCurrentTask->data18++;
     }
 }
 
@@ -3756,7 +3756,7 @@ void initializeTimedSpritePresentation(void) {
     D_8013B364 = 0;
     D_8013B368 = 0;
     D_8013B36C = 0;
-    D_8013AE88->data18 = 0;
+    gCurrentTask->data18 = 0;
     setCurrentTaskCallback(updateTimedSpritePresentation);
 }
 
@@ -3769,7 +3769,7 @@ void loadTimedSpritePresentationResources(void) {
     DrawSync(0);
     queueCdSectorCommand(0, DAT_PLAYER_ANIMATION_SECTOR, DAT_PLAYER_ANIMATION_SECTOR_COUNT, DAT_SCRATCH, 0);
     setCurrentTaskCallback(initializeTimedSpritePresentation);
-    D_8013AE88->unk10 |= 2;
+    gCurrentTask->unk10 |= 2;
 }
 
 void createResourceLoadTask(void) {

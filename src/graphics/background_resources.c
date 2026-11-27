@@ -19,8 +19,8 @@
 extern u16 D_8013AF7A __attribute__((section(".data")));
 extern u16 D_8013AF7C __attribute__((section(".data")));
 extern u32 gGameOptionFlags __attribute__((section(".data")));
-extern GameTask *D_8013AE88 __attribute__((section(".data")));
-extern GameTask *D_8013AE8C __attribute__((section(".data")));
+extern GameTask *gCurrentTask __attribute__((section(".data")));
+extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern GameTask *D_8013AE98 __attribute__((section(".data")));
 extern u8 D_8013AFD7 __attribute__((section(".data")));
 
@@ -98,21 +98,21 @@ void initializeBackgroundCameraTask(void) {
     initPlayerCamera(0);
     initializeDefaultSceneLighting();
     createChildTask(scheduleMode2SequenceWhenCdQueueIdle);
-    D_8013AE8C->data18 = D_8013AE88->data18;
-    D_8013AE8C->data1C = 0;
-    queueMenuResourceReads((s16)D_8013AE8C->data18);
-    D_8013AE88->data1E = 0;
+    gCreatedTask->data18 = gCurrentTask->data18;
+    gCreatedTask->data1C = 0;
+    queueMenuResourceReads((s16)gCreatedTask->data18);
+    gCurrentTask->data1E = 0;
     setCurrentTaskCallback(scheduleBackgroundViewAfterChildTasks);
-    D_8013AE88->unk10 |= 2;
+    gCurrentTask->unk10 |= 2;
 }
 
 void scheduleBackgroundViewAfterChildTasks(void) {
     setCurrentTaskCallback(initializeViewAndSelectTaskCallback);
-    D_8013AE88->unk10 |= 1;
+    gCurrentTask->unk10 |= 1;
 }
 
 void initializeViewAndSelectTaskCallback(void) {
-    if (D_8013AE88->data1E != 0) {
+    if (gCurrentTask->data1E != 0) {
         D_8013AF84 = 0x100;
         initPlayerCamera(0);
         initializeDefaultSceneLighting();
@@ -140,11 +140,11 @@ void beginMode2TaskSequence(void) {
 
 void scheduleMode2SequenceWhenCdQueueIdle(void) {
     setCurrentTaskCallback(beginMode2TaskSequence);
-    D_8013AE88->unk10 |= 2;
+    gCurrentTask->unk10 |= 2;
 }
 
 void dispatchBackgroundMenuTask(void) {
-    GameTask *task = D_8013AE88;
+    GameTask *task = gCurrentTask;
 
     if (task->data1C == 0) {
         D_8013B108 = task->data18;
@@ -218,7 +218,7 @@ void dispatchBackgroundMenuTask(void) {
             createChildTaskWithReserve(initializeNumberAdjustmentTask);
             return;
         case 23:
-            queueMenuResourceReads(D_8013AE88->data18);
+            queueMenuResourceReads(gCurrentTask->data18);
             if (isCdCommandQueueIdle() == 1) {
                 configureTaskStateTransition(1, 0, 30);
                 setTaskBackgroundMode(3, D_8013B104, 0);
@@ -249,7 +249,7 @@ void dispatchBackgroundMenuTask(void) {
             return;
         }
     selectFallback:
-        D_8013AE88->data18 = 24;
+        gCurrentTask->data18 = 24;
     }
 }
 

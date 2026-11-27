@@ -4,9 +4,9 @@
 
 GameTask gGameTasks[200] __attribute__((section(".data.game_tasks"))) = {0};
 
-GameTask *D_8013AE88 __attribute__((section(".sdata.task_scheduler"))) = 0;
+GameTask *gCurrentTask __attribute__((section(".sdata.task_scheduler"))) = 0;
 
-GameTask *D_8013AE8C __attribute__((section(".sdata.task_scheduler"))) = 0;
+GameTask *gCreatedTask __attribute__((section(".sdata.task_scheduler"))) = 0;
 
 GameTask *D_8013AE90 __attribute__((section(".sdata.task_scheduler"))) = 0;
 
@@ -78,27 +78,27 @@ void initializeTaskScheduler(void) {
 void insertChildTaskFromFreeList(TaskCallback callback) {
     GameTask *next;
     D_8013AEB4--;
-    D_8013AE8C = D_8013AE9C;
+    gCreatedTask = D_8013AE9C;
     D_8013AE9C = D_8013AE9C->next;
-    next = D_8013AE88->next;
-    D_8013AE8C->next = next;
+    next = gCurrentTask->next;
+    gCreatedTask->next = next;
     D_8013AEA4 = next;
     if (next != 0) {
-        next->previous = D_8013AE8C;
+        next->previous = gCreatedTask;
     }
-    D_8013AE88->next = D_8013AE8C;
-    D_8013AE8C->previous = D_8013AE88;
-    D_8013AE8C->parent = D_8013AE88;
-    D_8013AE8C->callback = callback;
-    D_8013AE8C->depth = D_8013AE88->depth + 1;
-    D_8013AE8C->unk10 = 0;
-    D_8013AE8C->resource16 = 0xFFFF;
-    D_8013AE8C->resource14 = 0xFFFF;
+    gCurrentTask->next = gCreatedTask;
+    gCreatedTask->previous = gCurrentTask;
+    gCreatedTask->parent = gCurrentTask;
+    gCreatedTask->callback = callback;
+    gCreatedTask->depth = gCurrentTask->depth + 1;
+    gCreatedTask->unk10 = 0;
+    gCreatedTask->resource16 = 0xFFFF;
+    gCreatedTask->resource14 = 0xFFFF;
 }
 
 s32 createChildTask(TaskCallback callback) {
     if (D_8013AEB4 == 0) {
-        D_8013AE8C = D_8013AEA0;
+        gCreatedTask = D_8013AEA0;
         return 0;
     }
     insertChildTaskFromFreeList(callback);
@@ -107,7 +107,7 @@ s32 createChildTask(TaskCallback callback) {
 
 s32 createChildTaskWithReserve(TaskCallback callback) {
     if (D_8013AEB4 <= 10) {
-        D_8013AE8C = D_8013AEA0;
+        gCreatedTask = D_8013AEA0;
         return 0;
     }
     insertChildTaskFromFreeList(callback);
@@ -117,7 +117,7 @@ s32 createChildTaskWithReserve(TaskCallback callback) {
 s32 tryCreateChildTaskWith20SlotsReserved(TaskCallback callback) {
     if (D_8013AEB4 <= 20) {
         /* Expose the free-list tail as the fallback task. */
-        D_8013AE8C = D_8013AEA0;
+        gCreatedTask = D_8013AEA0;
         return 0;
     }
 
@@ -126,48 +126,48 @@ s32 tryCreateChildTaskWith20SlotsReserved(TaskCallback callback) {
 }
 
 s16 createChildTaskForParent(GameTask *parent, TaskCallback callback) {
-    GameTask *previous = D_8013AE88;
+    GameTask *previous = gCurrentTask;
     s16 result;
 
-    D_8013AE88 = parent;
+    gCurrentTask = parent;
     result = createChildTask(callback);
-    D_8013AE88 = previous;
+    gCurrentTask = previous;
     return result;
 }
 
 s16 createChildTaskForParentWithReserve(GameTask *parent, TaskCallback callback) {
-    GameTask *previous = D_8013AE88;
+    GameTask *previous = gCurrentTask;
     s16 result;
 
-    D_8013AE88 = parent;
+    gCurrentTask = parent;
     result = createChildTaskWithReserve(callback);
-    D_8013AE88 = previous;
+    gCurrentTask = previous;
     return result;
 }
 
 s16 tryCreateChildTaskForParentWith20SlotsReserved(GameTask *parent, TaskCallback callback) {
-    GameTask *previous = D_8013AE88;
+    GameTask *previous = gCurrentTask;
     s16 result;
 
-    D_8013AE88 = parent;
+    gCurrentTask = parent;
     result = tryCreateChildTaskWith20SlotsReserved(callback);
-    D_8013AE88 = previous;
+    gCurrentTask = previous;
     return result;
 }
 
 void deleteCurrentTaskSubtree(void) {
-    GameTask *task = D_8013AE88;
+    GameTask *task = gCurrentTask;
 
     D_8013AEB0 = task;
     D_8013AEAC = task;
     deletePendingTaskSubtree();
     /* Resume traversal from the predecessor of the removed subtree. */
-    D_8013AE88 = D_8013AEA8;
+    gCurrentTask = D_8013AEA8;
 }
 
 void deleteCurrentTaskDescendants(void) {
     if (currentTaskHasChildren()) {
-        GameTask *firstDescendant = D_8013AE88->next;
+        GameTask *firstDescendant = gCurrentTask->next;
 
         D_8013AEB0 = firstDescendant;
         D_8013AEAC = firstDescendant;
@@ -176,7 +176,7 @@ void deleteCurrentTaskDescendants(void) {
 }
 
 void deletePendingTaskSubtree(void) {
-    u32 depth = D_8013AE88->depth;
+    u32 depth = gCurrentTask->depth;
     while (1) {
         D_8013AEB4++;
         if (D_8013AEB0->resource14 != 0xFFFF) {
@@ -204,7 +204,7 @@ void deletePendingTaskSubtree(void) {
 }
 
 u16 currentTaskHasChildren(void) {
-    GameTask *current = D_8013AE88;
+    GameTask *current = gCurrentTask;
     u16 result;
 
     D_8013AEA4 = current->next;
@@ -216,7 +216,7 @@ u16 currentTaskHasChildren(void) {
     return result;
 }
 
-void setCurrentTaskCallback(TaskCallback callback) { D_8013AE88->callback = callback; }
+void setCurrentTaskCallback(TaskCallback callback) { gCurrentTask->callback = callback; }
 
 void deleteCurrentTaskWhenCdCommandQueueIdle(void) {
     if (isCdCommandQueueIdle() == 1) {

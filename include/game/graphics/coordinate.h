@@ -8,10 +8,10 @@ extern VECTOR D_800EB22C;
 extern GsCOORDINATE2 D_80129C60[];
 extern SVECTOR D_8012A5C0[];
 
-extern VECTOR *D_8013AF88;
+extern VECTOR *gScratchVector0;
 extern SVECTOR *D_8013AF90;
 extern SVECTOR *D_8013AF94;
-extern MATRIX *D_8013AF98;
+extern MATRIX *gScratchMatrix0;
 
 void setCoordinateRotation(SVECTOR *rotation, GsCOORDINATE2 *coordinate);
 void setCoordinateRotationZYX(SVECTOR *rotation, GsCOORDINATE2 *coordinate);

@@ -15,10 +15,10 @@
 
 extern u8 D_8013AFE1 __attribute__((section(".data")));
 extern s16 gFrameCounter __attribute__((section(".data")));
-extern s16 D_8013AFCE __attribute__((section(".data")));
+extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u16 D_8013AF78 __attribute__((section(".data")));
-extern GameTask *D_8013AE88 __attribute__((section(".data")));
-extern u32 D_8013AFE4 __attribute__((section(".data")));
+extern GameTask *gCurrentTask __attribute__((section(".data")));
+extern u32 gTaskTransitionFlags __attribute__((section(".data")));
 
 const char gHitCountTimeOutLabel[12] __attribute__((section(".rodata.hit_count_time_out"), aligned(4))) = "TIME OUT";
 char gHitCountTotalFormat[4] __attribute__((section(".data.hit_count_labels"), aligned(4))) = "/%d";
@@ -66,14 +66,14 @@ void drawTimeRecordRows(MenuTimeResource *resource) {
             mode = 4;
         }
         drawSpriteByIndexWithBlend(-8, y, i + 0x136, mode, -1, &D_800EBFF0[D_8013AF78], 1);
-        drawRaceTime(&gPlayerSaveRecords[0].lapRecords[D_8013AFCE][i],
+        drawRaceTime(&gPlayerSaveRecords[0].lapRecords[gSelectedCourseIndex][i],
                      16, y, mode, &D_800EBFF0[D_8013AF78], 1);
         drawSpriteByIndexWithBlend(88, y,
-                     (gPlayerSaveRecords[0].lapRecordIcons[D_8013AFCE][i] & 15) * 3 + 0x14A,
-                     gRaceProgressMeterIconPalettes[gPlayerSaveRecords[0].lapRecordIcons[D_8013AFCE][i] & 15],
+                     (gPlayerSaveRecords[0].lapRecordIcons[gSelectedCourseIndex][i] & 15) * 3 + 0x14A,
+                     gRaceProgressMeterIconPalettes[gPlayerSaveRecords[0].lapRecordIcons[gSelectedCourseIndex][i] & 15],
                      -1, &D_800EBFF0[D_8013AF78], 1);
         drawSpriteByIndexWithBlend(108, y,
-                     (gPlayerSaveRecords[0].lapRecordIcons[D_8013AFCE][i] >> 4) + 0x13B,
+                     (gPlayerSaveRecords[0].lapRecordIcons[gSelectedCourseIndex][i] >> 4) + 0x13B,
                      7, -1, &D_800EBFF0[D_8013AF78], 1);
         y += 32;
     }
@@ -103,10 +103,10 @@ void drawLapTimeLabel(TaskMenuFadeResource *resource) {
 void drawCurrentTaskTimeMenu(void) {
     TaskMemoryBlock *resource;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = &gTaskMemoryPool[D_8013AE88->resource14];
+    resource = &gTaskMemoryPool[gCurrentTask->resource14];
     drawMenuTimeWithBrightness((MenuTimeResource *)resource);
     drawTimeRecordRows((MenuTimeResource *)resource);
     drawLapTimeLabel((TaskMenuFadeResource *)resource);
@@ -115,12 +115,12 @@ void drawCurrentTaskTimeMenu(void) {
 void drawTaskTimeMenuAndSetFlag10OnInput(void) {
     TaskMemoryBlock *resource;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = &gTaskMemoryPool[D_8013AE88->resource14];
+    resource = &gTaskMemoryPool[gCurrentTask->resource14];
     if (gControllerPressedButtons[0] & 0xB0) {
-        D_8013AFE4 |= 0x10;
+        gTaskTransitionFlags |= 0x10;
         setCurrentTaskCallback(drawCurrentTaskTimeMenu);
     }
     drawMenuTimeWithBrightness((MenuTimeResource *)resource);
@@ -131,10 +131,10 @@ void drawTaskTimeMenuAndSetFlag10OnInput(void) {
 void waitTimeMenuDisplayTask(void) {
     TaskMenuFadeResource *resource;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (TaskMenuFadeResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (TaskMenuFadeResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (--resource->timer == 0) {
         setCurrentTaskCallback(drawTaskTimeMenuAndSetFlag10OnInput);
     }
@@ -145,10 +145,10 @@ void waitTimeMenuDisplayTask(void) {
 void fadeInTimeMenuTask(void) {
     TaskMenuFadeResource *resource;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (TaskMenuFadeResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (TaskMenuFadeResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->secondaryBrightness += 8;
     if (resource->secondaryBrightness > 128) {
         resource->timer = 30;
@@ -162,10 +162,10 @@ void fadeInTimeMenuTask(void) {
 void fadeInLapTimeLabelTask(void) {
     TaskMenuFadeResource *resource;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (TaskMenuFadeResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (TaskMenuFadeResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->brightness += 8;
     if (resource->brightness > 128) {
         resource->brightness = 128;
@@ -177,11 +177,11 @@ void fadeInLapTimeLabelTask(void) {
 void initializeTaskMenuFade(void) {
     TaskMenuFadeResource *resource;
 
-    if (D_8013AE88->resource14 != 0xFFFF) {
+    if (gCurrentTask->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskMemoryBlock();
-    resource = (TaskMenuFadeResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    gCurrentTask->resource14 = allocateTaskMemoryBlock();
+    resource = (TaskMenuFadeResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->unk00 = gRacePlayers[0].unk100[0];
     resource->brightness = 0;
     resource->secondaryBrightness = 0;
@@ -262,10 +262,10 @@ void drawCountRecordRows(TaskMemoryBlock *resource) {
             textMode = 4;
         }
         drawSpriteByIndexWithBlend(-8, y, i + 0x136, mode, -1, &D_800EBFF0[D_8013AF78], 1);
-        drawHudDecimalNumber8x16(16, y, 2, 0, gPlayerSaveRecords[0].countRecordValues[D_8013AFCE][i], mode, -1, &D_800EBFF0[D_8013AF78], 1);
-        drawSpriteByIndexWithBlend(70, y, (gPlayerSaveRecords[0].countRecordIcons[D_8013AFCE][i] & 15) * 3 + 0x14A,
-            gRaceProgressMeterIconPalettes[gPlayerSaveRecords[0].countRecordIcons[D_8013AFCE][i] & 15], -1, &D_800EBFF0[D_8013AF78], 1);
-        drawSpriteByIndexWithBlend(88, y, (gPlayerSaveRecords[0].countRecordIcons[D_8013AFCE][i] >> 4) + 0x13B, 7, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawHudDecimalNumber8x16(16, y, 2, 0, gPlayerSaveRecords[0].countRecordValues[gSelectedCourseIndex][i], mode, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawSpriteByIndexWithBlend(70, y, (gPlayerSaveRecords[0].countRecordIcons[gSelectedCourseIndex][i] & 15) * 3 + 0x14A,
+            gRaceProgressMeterIconPalettes[gPlayerSaveRecords[0].countRecordIcons[gSelectedCourseIndex][i] & 15], -1, &D_800EBFF0[D_8013AF78], 1);
+        drawSpriteByIndexWithBlend(88, y, (gPlayerSaveRecords[0].countRecordIcons[gSelectedCourseIndex][i] >> 4) + 0x13B, 7, -1, &D_800EBFF0[D_8013AF78], 1);
         drawLimitedText8x8(32, i * 32 - 72, 3, D_8013B138, textMode, -1, &D_800EBFF0[D_8013AF78], 1);
         y += 32;
     }
@@ -298,10 +298,10 @@ void drawHitPrizeMoneyLabels(MenuFadeInResource *resource) {
 void drawCurrentTaskMenu(void) {
     TaskMemoryBlock *resource;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = &gTaskMemoryPool[D_8013AE88->resource14];
+    resource = &gTaskMemoryPool[gCurrentTask->resource14];
     drawHitCountPanel(resource);
     drawCountRecordRows(resource);
 }
@@ -309,12 +309,12 @@ void drawCurrentTaskMenu(void) {
 void drawTaskMenuAndSetFlag10OnInput(void) {
     TaskMemoryBlock *resource;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = &gTaskMemoryPool[D_8013AE88->resource14];
+    resource = &gTaskMemoryPool[gCurrentTask->resource14];
     if (gControllerPressedButtons[0] & 0xB0) {
-        D_8013AFE4 |= 0x10;
+        gTaskTransitionFlags |= 0x10;
         setCurrentTaskCallback(drawCurrentTaskMenu);
     }
     drawHitCountPanel(resource);
@@ -324,10 +324,10 @@ void drawTaskMenuAndSetFlag10OnInput(void) {
 void drawCurrentTaskHitPrizeMenu(void) {
     TaskMemoryBlock *resource;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = &gTaskMemoryPool[D_8013AE88->resource14];
+    resource = &gTaskMemoryPool[gCurrentTask->resource14];
     drawHitCountPanel(resource);
     drawHitPrizeMoneyValues(resource);
     drawHitPrizeMoneyLabels((MenuFadeInResource *)resource);
@@ -335,15 +335,15 @@ void drawCurrentTaskHitPrizeMenu(void) {
 
 void updateMenuExitInputTask(void) {
     TaskMenuFadeResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (TaskMenuFadeResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (TaskMenuFadeResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (gControllerPressedButtons[0] & 0xB0) {
         if (resource->unk00 < 5) {
             setCurrentTaskCallback(drawTaskMenuAndSetFlag10OnInput);
         } else {
-            D_8013AFE4 |= 0x10;
+            gTaskTransitionFlags |= 0x10;
             setCurrentTaskCallback(drawCurrentTaskHitPrizeMenu);
         }
     }
@@ -355,10 +355,10 @@ void updateMenuExitInputTask(void) {
 void transferHitPrizeMoneyTask(void) {
     MenuFadeInResource *resource;
     s32 amount;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (MenuFadeInResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (MenuFadeInResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (resource->timer == 0) {
         resource->timer = 2;
         playSoundEffect(0, 0x700, 0x20);
@@ -405,10 +405,10 @@ void transferHitPrizeMoneyTask(void) {
 
 void advanceTaskMenuCountdown(void) {
     MenuCountdownResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (MenuCountdownResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (MenuCountdownResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->unk06 = 3;
     if (--resource->timer == 0) {
         setCurrentTaskCallback(transferHitPrizeMoneyTask);
@@ -420,10 +420,10 @@ void advanceTaskMenuCountdown(void) {
 
 void resetTaskMenuCountdown(void) {
     MenuCountdownResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (MenuCountdownResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (MenuCountdownResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->unk06 = 3;
     if (--resource->timer == 0) {
         resource->timer = 10;
@@ -436,10 +436,10 @@ void resetTaskMenuCountdown(void) {
 
 void startTaskMenuCountdownAndPlaySound(void) {
     MenuCountdownResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (MenuCountdownResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (MenuCountdownResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->unk06 = 2;
     if (--resource->timer == 0) {
         playSoundEffect(0, 0x700, 0x20);
@@ -453,10 +453,10 @@ void startTaskMenuCountdownAndPlaySound(void) {
 
 void tickMenuSoundDelayStage1Task(void) {
     MenuSoundDelayResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (MenuSoundDelayResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (MenuSoundDelayResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->unk06 = 1;
     if (--resource->timer == 0) {
         playSoundEffect(0, 0x700, 0x20);
@@ -470,10 +470,10 @@ void tickMenuSoundDelayStage1Task(void) {
 
 void tickMenuSoundDelayStage0Task(void) {
     MenuSoundDelayResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (MenuSoundDelayResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (MenuSoundDelayResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->unk06 = 0;
     if (--resource->timer == 0) {
         playSoundEffect(0, 0x700, 0x20);
@@ -491,10 +491,10 @@ void tickMenuSoundDelayStage0Task(void) {
 
 void waitTaskMenuCountdownAndPlaySound(void) {
     MenuFadeInResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (MenuFadeInResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (MenuFadeInResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (--resource->timer == 0) {
         resource->timer = 20;
         playSoundEffect(0, 0x700, 0x20);
@@ -506,10 +506,10 @@ void waitTaskMenuCountdownAndPlaySound(void) {
 
 void updateTaskMenuFadeIn(void) {
     MenuFadeInResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (MenuFadeInResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (MenuFadeInResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->brightness += 8;
     if (resource->brightness != 128) {
         resource->timer = 20;
@@ -522,16 +522,16 @@ void updateTaskMenuFadeIn(void) {
 
 void initializeTaskMenuFadeIn(void) {
     MenuFadeInResource *resource;
-    if (D_8013AE88->resource14 != 0xFFFF) {
+    if (gCurrentTask->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskMemoryBlock();
-    resource = (MenuFadeInResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    gCurrentTask->resource14 = allocateTaskMemoryBlock();
+    resource = (MenuFadeInResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->unk0C = 300;
     resource->brightness = 0;
     resource->unk0E = 0;
     resource->unk0A = 0;
-    if (D_8013AFCE == 9) {
+    if (gSelectedCourseIndex == 9) {
         resource->unk0C = 100;
     }
     if (D_8013B18D) {
@@ -620,10 +620,10 @@ void drawTimeRecordListRows(TimeRecordListResource *resource) {
             palette = 4;
         }
         drawSpriteByIndexWithBlend(-8, y, row + 0x136, palette, -1, &D_800EBFF0[D_8013AF78], 1);
-        drawRaceTime(&gPlayerSaveRecords[0].timeRecords[D_8013AFCE][row], 16, y, palette, &D_800EBFF0[D_8013AF78], 1);
-        drawSpriteByIndexWithBlend(88, y, (gPlayerSaveRecords[0].timeRecordCharacters[D_8013AFCE][row] & 15) * 3 + 0x14A,
-            gRaceProgressMeterIconPalettes[gPlayerSaveRecords[0].timeRecordCharacters[D_8013AFCE][row] & 15], -1, &D_800EBFF0[D_8013AF78], 1);
-        drawSpriteByIndexWithBlend(108, y, (gPlayerSaveRecords[0].timeRecordCharacters[D_8013AFCE][row] >> 4) + 0x13B, 7, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawRaceTime(&gPlayerSaveRecords[0].timeRecords[gSelectedCourseIndex][row], 16, y, palette, &D_800EBFF0[D_8013AF78], 1);
+        drawSpriteByIndexWithBlend(88, y, (gPlayerSaveRecords[0].timeRecordCharacters[gSelectedCourseIndex][row] & 15) * 3 + 0x14A,
+            gRaceProgressMeterIconPalettes[gPlayerSaveRecords[0].timeRecordCharacters[gSelectedCourseIndex][row] & 15], -1, &D_800EBFF0[D_8013AF78], 1);
+        drawSpriteByIndexWithBlend(108, y, (gPlayerSaveRecords[0].timeRecordCharacters[gSelectedCourseIndex][row] >> 4) + 0x13B, 7, -1, &D_800EBFF0[D_8013AF78], 1);
         y += 32;
     }
 }
@@ -640,8 +640,8 @@ void drawRaceResultsLabels(RaceResultsFadeResource *resource) {
 
     if (!D_8013B18D) {
         drawLimitedText8x8(-104, -31, 10, gRaceResultsTargetLabel, 7, -1, &D_800EBFF0[D_8013AF78], 1);
-        sprintf(text, gRaceResultsTargetTimeFormat, D_80124220[D_8013AFCE].minutes,
-                D_80124220[D_8013AFCE].seconds, (s8)(D_80124220[D_8013AFCE].centiseconds >> 8));
+        sprintf(text, gRaceResultsTargetTimeFormat, D_80124220[gSelectedCourseIndex].minutes,
+                D_80124220[gSelectedCourseIndex].seconds, (s8)(D_80124220[gSelectedCourseIndex].centiseconds >> 8));
         drawLimitedText8x8(-104, -22, 20, text, 7, -1, &D_800EBFF0[D_8013AF78], 1);
         drawLimitedText8x8(-104, -8, 10, gRaceResultsFastLabel, 7, -1, &D_800EBFF0[D_8013AF78], 1);
         sprintf(text, gRaceResultsTimeDifferenceFormat, resource->difference.minutes, resource->difference.seconds,
@@ -669,11 +669,11 @@ char gRaceResultsFastLabel[8] __attribute__((section(".data.race_results_fast_la
 void drawCurrentTaskTimeRecords(void) {
     TaskMemoryBlock *resource;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = &gTaskMemoryPool[D_8013AE88->resource14];
-    if (!(D_8013AFE4 & 0x10)) {
+    resource = &gTaskMemoryPool[gCurrentTask->resource14];
+    if (!(gTaskTransitionFlags & 0x10)) {
         deleteCurrentTaskSubtree();
     }
     drawTimeRecordHeader((TimeRecordHeaderResource *)resource);
@@ -683,12 +683,12 @@ void drawCurrentTaskTimeRecords(void) {
 void drawTaskTimeRecordsAndSetFlag10OnInput(void) {
     TaskMemoryBlock *resource;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = &gTaskMemoryPool[D_8013AE88->resource14];
+    resource = &gTaskMemoryPool[gCurrentTask->resource14];
     if (gControllerPressedButtons[0] & 0xB0) {
-        D_8013AFE4 |= 0x10;
+        gTaskTransitionFlags |= 0x10;
         setCurrentTaskCallback(drawCurrentTaskTimeRecords);
     }
     drawTimeRecordHeader((TimeRecordHeaderResource *)resource);
@@ -698,11 +698,11 @@ void drawTaskTimeRecordsAndSetFlag10OnInput(void) {
 void drawCurrentTaskTimeRecordDetails(void) {
     TaskMemoryBlock *resource;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = &gTaskMemoryPool[D_8013AE88->resource14];
-    if (!(D_8013AFE4 & 0x10)) {
+    resource = &gTaskMemoryPool[gCurrentTask->resource14];
+    if (!(gTaskTransitionFlags & 0x10)) {
         deleteCurrentTaskSubtree();
     }
     drawTimeRecordHeader((TimeRecordHeaderResource *)resource);
@@ -712,15 +712,15 @@ void drawCurrentTaskTimeRecordDetails(void) {
 
 void updateRaceResultsExitInputTask(void) {
     RaceResultsFadeResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (RaceResultsFadeResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (RaceResultsFadeResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (gControllerPressedButtons[0] & 0xB0) {
         if (resource->unk00 < 5) {
             setCurrentTaskCallback(drawTaskTimeRecordsAndSetFlag10OnInput);
         } else {
-            D_8013AFE4 |= 0x10;
+            gTaskTransitionFlags |= 0x10;
             setCurrentTaskCallback(drawCurrentTaskTimeRecordDetails);
         }
     }
@@ -732,10 +732,10 @@ void updateRaceResultsExitInputTask(void) {
 void countRaceResultsMoneyTask(void) {
     RaceResultsFadeResource *resource;
     s32 amount;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (RaceResultsFadeResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (RaceResultsFadeResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (resource->timer == 0) {
         resource->timer = 2;
         playSoundEffect(0, 0x700, 0x20);
@@ -783,10 +783,10 @@ void countRaceResultsMoneyTask(void) {
 void tickRaceResultsDelayTask(void) {
     RaceResultsFadeResource *resource;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (RaceResultsFadeResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (RaceResultsFadeResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->unk0A = 4;
     if (--resource->timer == 0) {
         setCurrentTaskCallback(countRaceResultsMoneyTask);
@@ -798,10 +798,10 @@ void tickRaceResultsDelayTask(void) {
 
 void updateTaskTimeRecordDetailCountdown(void) {
     TimeRecordDetailCountdownResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (TimeRecordDetailCountdownResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (TimeRecordDetailCountdownResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->unk0A = 4;
     if (--resource->timer == 0) {
         resource->timer = 10;
@@ -814,10 +814,10 @@ void updateTaskTimeRecordDetailCountdown(void) {
 
 void updateTaskTimeRecordCountdownAndPlaySound(void) {
     TimeRecordDetailCountdownResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (TimeRecordDetailCountdownResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (TimeRecordDetailCountdownResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->unk0A = 3;
     if (--resource->timer == 0) {
         playSoundEffect(0, 0x700, 0x20);
@@ -831,10 +831,10 @@ void updateTaskTimeRecordCountdownAndPlaySound(void) {
 
 void updateTaskTimeRecordCountdownPhase2AndPlaySound(void) {
     TimeRecordDetailCountdownResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (TimeRecordDetailCountdownResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (TimeRecordDetailCountdownResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->unk0A = 2;
     if (--resource->timer == 0) {
         playSoundEffect(0, 0x700, 0x20);
@@ -848,10 +848,10 @@ void updateTaskTimeRecordCountdownPhase2AndPlaySound(void) {
 
 void updateTaskTimeRecordCountdownPhase1AndPlaySound(void) {
     TimeRecordDetailCountdownResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (TimeRecordDetailCountdownResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (TimeRecordDetailCountdownResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->unk0A = 1;
     if (--resource->timer == 0) {
         playSoundEffect(0, 0x700, 0x20);
@@ -870,10 +870,10 @@ void updateTaskTimeRecordCountdownPhase1AndPlaySound(void) {
 void tickRaceResultsSoundDelayTask(void) {
     RaceResultsFadeResource *resource;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (RaceResultsFadeResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (RaceResultsFadeResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->unk0A = 0;
     if (--resource->timer == 0) {
         playSoundEffect(0, 0x700, 0x20);
@@ -887,10 +887,10 @@ void tickRaceResultsSoundDelayTask(void) {
 
 void waitTaskTimeRecordCountdownAndPlaySound(void) {
     TimeRecordDetailCountdownResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (TimeRecordDetailCountdownResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (TimeRecordDetailCountdownResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (--resource->timer == 0) {
         resource->timer = 20;
         playSoundEffect(0, 0x700, 0x20);
@@ -903,10 +903,10 @@ void waitTaskTimeRecordCountdownAndPlaySound(void) {
 void fadeInRaceResultsTask(void) {
     RaceResultsFadeResource *resource;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (RaceResultsFadeResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (RaceResultsFadeResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->brightness += 8;
     if (resource->brightness > 128) {
         resource->timer = 20;
@@ -920,19 +920,19 @@ void fadeInRaceResultsTask(void) {
 void initializeRaceResultsTask(void) {
     u8 padding[8];
     RaceResultsFadeResource *resource;
-    if (D_8013AE88->resource14 != 0xFFFF) {
+    if (gCurrentTask->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskMemoryBlock();
-    resource = (RaceResultsFadeResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    gCurrentTask->resource14 = allocateTaskMemoryBlock();
+    resource = (RaceResultsFadeResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->brightness = 0;
     resource->hasBonus = 0;
     resource->bonusTimer = 0;
     resource->displayTimer = 300;
-    if (D_8013AFCE == 9) {
+    if (gSelectedCourseIndex == 9) {
         resource->displayTimer = 100;
     }
-    calculateRaceTimeDifference(&D_80124220[D_8013AFCE], &gRaceElapsedTime, &resource->difference);
+    calculateRaceTimeDifference(&D_80124220[gSelectedCourseIndex], &gRaceElapsedTime, &resource->difference);
     if (D_8013B18D) {
         resource->timeBonus = 0;
     } else {
@@ -1022,10 +1022,10 @@ void drawStatsRecordRows(TaskMemoryBlock *resource) {
             textMode = 4;
         }
         drawSpriteByIndexWithBlend(24, y, i + 0x136, mode, -1, &D_800EBFF0[D_8013AF78], 1);
-        drawHudDecimalNumber8x16(44, y, 5, 0, gPlayerSaveRecords[0].statsRecordValues[D_8013AFCE][i], mode, -1, &D_800EBFF0[D_8013AF78], 1);
-        drawSpriteByIndexWithBlend(102, y, (gPlayerSaveRecords[0].statsRecordIcons[D_8013AFCE][i] & 15) * 3 + 0x14A,
-            gRaceProgressMeterIconPalettes[gPlayerSaveRecords[0].statsRecordIcons[D_8013AFCE][i] & 15], -1, &D_800EBFF0[D_8013AF78], 1);
-        drawSpriteByIndexWithBlend(120, y, (gPlayerSaveRecords[0].statsRecordIcons[D_8013AFCE][i] >> 4) + 0x13B, 7, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawHudDecimalNumber8x16(44, y, 5, 0, gPlayerSaveRecords[0].statsRecordValues[gSelectedCourseIndex][i], mode, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawSpriteByIndexWithBlend(102, y, (gPlayerSaveRecords[0].statsRecordIcons[gSelectedCourseIndex][i] & 15) * 3 + 0x14A,
+            gRaceProgressMeterIconPalettes[gPlayerSaveRecords[0].statsRecordIcons[gSelectedCourseIndex][i] & 15], -1, &D_800EBFF0[D_8013AF78], 1);
+        drawSpriteByIndexWithBlend(120, y, (gPlayerSaveRecords[0].statsRecordIcons[gSelectedCourseIndex][i] >> 4) + 0x13B, 7, -1, &D_800EBFF0[D_8013AF78], 1);
         drawLimitedText8x8(84, y + 8, 1, gPlayerNumberSuffixLabel, textMode, -1, &D_800EBFF0[D_8013AF78], 1);
         y += 32;
     }
@@ -1047,11 +1047,11 @@ void drawStatsMenuMoneyLabels(StatsMenuFadeResource *resource) {
 void drawCurrentTaskStatsSelection(void) {
     TaskMemoryBlock *resource;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = &gTaskMemoryPool[D_8013AE88->resource14];
-    if (!(D_8013AFE4 & 0x10)) {
+    resource = &gTaskMemoryPool[gCurrentTask->resource14];
+    if (!(gTaskTransitionFlags & 0x10)) {
         deleteCurrentTaskSubtree();
     }
     drawStatsMenuValues(resource);
@@ -1061,12 +1061,12 @@ void drawCurrentTaskStatsSelection(void) {
 void updateStatsMenuExitInputTask(void) {
     TaskMemoryBlock *resource;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = &gTaskMemoryPool[D_8013AE88->resource14];
+    resource = &gTaskMemoryPool[gCurrentTask->resource14];
     if (gControllerPressedButtons[0] & 0xB0) {
-        D_8013AFE4 |= 0x10;
+        gTaskTransitionFlags |= 0x10;
         setCurrentTaskCallback(drawCurrentTaskStatsSelection);
     }
     drawStatsMenuValues(resource);
@@ -1076,10 +1076,10 @@ void updateStatsMenuExitInputTask(void) {
 void drawCurrentTaskStatsMenu(void) {
     TaskMemoryBlock *resource;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = &gTaskMemoryPool[D_8013AE88->resource14];
+    resource = &gTaskMemoryPool[gCurrentTask->resource14];
     drawStatsMenuValues(resource);
     drawStatsMenuMoneyValues(resource);
     drawStatsMenuMoneyLabels((StatsMenuFadeResource *)resource);
@@ -1088,15 +1088,15 @@ void drawCurrentTaskStatsMenu(void) {
 void updateStatsMenuPostCountInputTask(void) {
     StatsMenuFadeResource *resource;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (StatsMenuFadeResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (StatsMenuFadeResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (gControllerPressedButtons[0] & 0xB0) {
         if (resource->unk00 < 5) {
             setCurrentTaskCallback(updateStatsMenuExitInputTask);
         } else {
-            D_8013AFE4 |= 0x10;
+            gTaskTransitionFlags |= 0x10;
             setCurrentTaskCallback(drawCurrentTaskStatsMenu);
         }
     }
@@ -1108,10 +1108,10 @@ void updateStatsMenuPostCountInputTask(void) {
 void countStatsMenuMoneyTask(void) {
     StatsMenuFadeResource *resource;
     s32 amount;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (StatsMenuFadeResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (StatsMenuFadeResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (resource->timer == 0) {
         resource->timer = 2;
         playSoundEffect(0, 0x700, 0x20);
@@ -1153,10 +1153,10 @@ void countStatsMenuMoneyTask(void) {
 void waitForStatsScoreCountTask(void) {
     StatsMenuFadeResource *resource;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (StatsMenuFadeResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (StatsMenuFadeResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->unk06 = 3;
     if (--resource->timer == 0) {
         setCurrentTaskCallback(countStatsMenuMoneyTask);
@@ -1169,10 +1169,10 @@ void waitForStatsScoreCountTask(void) {
 void waitForStatsScoreCountStartTask(void) {
     StatsMenuFadeResource *resource;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (StatsMenuFadeResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (StatsMenuFadeResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->unk06 = 3;
     if (--resource->timer == 0) {
         resource->timer = 10;
@@ -1185,10 +1185,10 @@ void waitForStatsScoreCountStartTask(void) {
 
 void startTaskStatsCountdownAndPlaySound(void) {
     MenuCountdownResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (MenuCountdownResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (MenuCountdownResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->unk06 = 2;
     if (--resource->timer == 0) {
         playSoundEffect(0, 0x700, 0x20);
@@ -1202,10 +1202,10 @@ void startTaskStatsCountdownAndPlaySound(void) {
 
 void advanceTaskStatsCountdownAndPlaySound(void) {
     MenuCountdownResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (MenuCountdownResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (MenuCountdownResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->unk06 = 1;
     if (--resource->timer == 0) {
         playSoundEffect(0, 0x700, 0x20);
@@ -1219,10 +1219,10 @@ void advanceTaskStatsCountdownAndPlaySound(void) {
 
 void resetTaskStatsCountdown(void) {
     MenuCountdownResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (MenuCountdownResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (MenuCountdownResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->unk06 = 0;
     if (--resource->timer == 0) {
         playSoundEffect(0, 0x700, 0x20);
@@ -1236,10 +1236,10 @@ void resetTaskStatsCountdown(void) {
 
 void waitTaskStatsCountdownAndPlaySound(void) {
     MenuFadeInResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (MenuFadeInResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (MenuFadeInResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (--resource->timer == 0) {
         resource->timer = 20;
         playSoundEffect(0, 0x700, 0x20);
@@ -1252,10 +1252,10 @@ void waitTaskStatsCountdownAndPlaySound(void) {
 void fadeInStatsMenuTask(void) {
     StatsMenuFadeResource *resource;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (StatsMenuFadeResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (StatsMenuFadeResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->brightness += 8;
     if (resource->brightness > 128) {
         resource->timer = 20;
@@ -1269,11 +1269,11 @@ void fadeInStatsMenuTask(void) {
 void initializeStatsMenuTask(void) {
     StatsMenuFadeResource *resource;
 
-    if (D_8013AE88->resource14 != 0xFFFF) {
+    if (gCurrentTask->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskMemoryBlock();
-    resource = (StatsMenuFadeResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    gCurrentTask->resource14 = allocateTaskMemoryBlock();
+    resource = (StatsMenuFadeResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->brightness = 0;
     resource->makeBonus = 0;
     resource->completeBonus = 300;
@@ -1353,11 +1353,11 @@ void drawRaceTimeComparisonPanel(PanelResource *resource) {
 void drawCurrentTaskPanel(void) {
     PanelResource *resource;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (PanelResource *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if (!(D_8013AFE4 & 0x10)) {
+    resource = (PanelResource *)&gTaskMemoryPool[gCurrentTask->resource14];
+    if (!(gTaskTransitionFlags & 0x10)) {
         deleteCurrentTaskSubtree();
     }
     drawRaceTimeComparisonPanel(resource);
@@ -1366,14 +1366,14 @@ void drawCurrentTaskPanel(void) {
 void updatePanelExitInputTask(void) {
     PanelResource *resource;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (PanelResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (PanelResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (resource->timer > 0) {
         resource->timer--;
     } else if ((gControllerPressedButtons[0] | gControllerPressedButtons[1]) & 0xB0) {
-        D_8013AFE4 |= 0x10;
+        gTaskTransitionFlags |= 0x10;
         setCurrentTaskCallback(drawCurrentTaskPanel);
     }
     drawRaceTimeComparisonPanel(resource);
@@ -1382,10 +1382,10 @@ void updatePanelExitInputTask(void) {
 void advanceCurrentTaskPanelTimer(void) {
     PanelResource *resource;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (PanelResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (PanelResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (--resource->timer == 20) {
         resource->displayStage = 1;
     }
@@ -1400,10 +1400,10 @@ void advanceCurrentTaskPanelTimer(void) {
 void fadeInCurrentTaskPanel(void) {
     PanelResource *resource;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (PanelResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (PanelResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->brightness += 8;
     if (resource->brightness > 128) {
         resource->timer = 40;
@@ -1416,9 +1416,9 @@ void fadeInCurrentTaskPanel(void) {
 void initializeRaceTimeComparisonPanel(void) {
     PanelResource *resource;
     s16 i;
-    if (D_8013AE88->resource14 != 0xFFFF) { while (1) {} }
-    D_8013AE88->resource14 = allocateTaskMemoryBlock();
-    resource = (PanelResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    if (gCurrentTask->resource14 != 0xFFFF) { while (1) {} }
+    gCurrentTask->resource14 = allocateTaskMemoryBlock();
+    resource = (PanelResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->brightness = 0;
     resource->displayStage = 0;
     if (D_8013AFE1 == 1) {
@@ -1434,10 +1434,10 @@ void initializeRaceTimeComparisonPanel(void) {
     for (i = 0; i < 2; i++) {
         switch (D_8013AFE0) {
         case 0:
-            calculateRaceTimeDifference(&D_80124220[D_8013AFCE], &D_8013B190[i], &resource->time[i]);
+            calculateRaceTimeDifference(&D_80124220[gSelectedCourseIndex], &D_8013B190[i], &resource->time[i]);
             break;
         case 1:
-            calculateRaceTimeDifference(&D_80124248[D_8013AFCE], &D_8013B190[i], &resource->time[i]);
+            calculateRaceTimeDifference(&D_80124248[gSelectedCourseIndex], &D_8013B190[i], &resource->time[i]);
             break;
         case 2:
             calculateRaceTimeDifference(&D_8013B154, &D_8013B190[i], &resource->time[i]);

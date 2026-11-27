@@ -26,10 +26,10 @@ GsF_LIGHT gDefaultSceneLights[3]
     __attribute__((section(".data.default_scene_lights"))) = {0};
 
 extern u8 D_8013AFE1 __attribute__((section(".data")));
-extern s16 D_8013AFCE __attribute__((section(".data")));
+extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u8 D_8013AFCD __attribute__((section(".data")));
 extern u8 D_8013AFD3 __attribute__((section(".data")));
-extern GameTask *D_8013AE88 __attribute__((section(".data")));
+extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern RaceTime gRaceElapsedTime __attribute__((section(".data")));
 extern RaceTime D_8013B188 __attribute__((section(".data")));
 extern s16 gFrameCounter __attribute__((section(".data")));
@@ -113,7 +113,7 @@ void updateAttackResultsAndRecords(void) {
             for (player = 0; player < D_8013AFCD; player++) {
                 time = FULL_RACE_TIME(D_8013B190[player]);
                 for (rank = 0; rank < 5; rank++) {
-                    recordTime = FULL_RACE_TIME(ATTACK_SAVE_RECORD->timeRecords[D_8013AFCE][rank]);
+                    recordTime = FULL_RACE_TIME(ATTACK_SAVE_RECORD->timeRecords[gSelectedCourseIndex][rank]);
                     faster = time < recordTime;
                     if (faster) {
                         break;
@@ -128,13 +128,13 @@ void updateAttackResultsAndRecords(void) {
                 rank = gRacePlayers[player].unk100[0];
                 if (rank < 5) {
                     for (row = 3; row >= rank; row--) {
-                        ATTACK_SAVE_RECORD->timeRecords[D_8013AFCE][row + 1] =
-                            ATTACK_SAVE_RECORD->timeRecords[D_8013AFCE][row];
-                        ATTACK_SAVE_RECORD->timeRecordCharacters[D_8013AFCE][row + 1] =
-                            ATTACK_SAVE_RECORD->timeRecordCharacters[D_8013AFCE][row];
+                        ATTACK_SAVE_RECORD->timeRecords[gSelectedCourseIndex][row + 1] =
+                            ATTACK_SAVE_RECORD->timeRecords[gSelectedCourseIndex][row];
+                        ATTACK_SAVE_RECORD->timeRecordCharacters[gSelectedCourseIndex][row + 1] =
+                            ATTACK_SAVE_RECORD->timeRecordCharacters[gSelectedCourseIndex][row];
                     }
-                    ATTACK_SAVE_RECORD->timeRecords[D_8013AFCE][rank] = D_8013B190[player];
-                    ATTACK_SAVE_RECORD->timeRecordCharacters[D_8013AFCE][rank] = RECORD_ICON(gRacePlayers[player]);
+                    ATTACK_SAVE_RECORD->timeRecords[gSelectedCourseIndex][rank] = D_8013B190[player];
+                    ATTACK_SAVE_RECORD->timeRecordCharacters[gSelectedCourseIndex][rank] = RECORD_ICON(gRacePlayers[player]);
                     D_8013AFE1 = 1;
                 } else {
                     D_8013AFE1 = 2;
@@ -176,7 +176,7 @@ void updateAttackResultsAndRecords(void) {
             for (player = 0; player < D_8013AFCD; player++) {
                 for (rank = 0; rank < 5; rank++) {
                     if (gRacePlayers[player].scoreAttackPointTotal >
-                        ATTACK_SAVE_RECORD->countRecordValues[D_8013AFCE][rank]) {
+                        ATTACK_SAVE_RECORD->countRecordValues[gSelectedCourseIndex][rank]) {
                         break;
                     }
                 }
@@ -189,13 +189,13 @@ void updateAttackResultsAndRecords(void) {
                 rank = gRacePlayers[player].unk100[0];
                 if (rank < 5) {
                     for (row = 3; row >= rank; row--) {
-                        ATTACK_SAVE_RECORD->countRecordValues[D_8013AFCE][row + 1] =
-                            ATTACK_SAVE_RECORD->countRecordValues[D_8013AFCE][row];
-                        ATTACK_SAVE_RECORD->countRecordIcons[D_8013AFCE][row + 1] =
-                            ATTACK_SAVE_RECORD->countRecordIcons[D_8013AFCE][row];
+                        ATTACK_SAVE_RECORD->countRecordValues[gSelectedCourseIndex][row + 1] =
+                            ATTACK_SAVE_RECORD->countRecordValues[gSelectedCourseIndex][row];
+                        ATTACK_SAVE_RECORD->countRecordIcons[gSelectedCourseIndex][row + 1] =
+                            ATTACK_SAVE_RECORD->countRecordIcons[gSelectedCourseIndex][row];
                     }
-                    ATTACK_SAVE_RECORD->countRecordValues[D_8013AFCE][rank] = gRacePlayers[player].scoreAttackPointTotal;
-                    ATTACK_SAVE_RECORD->countRecordIcons[D_8013AFCE][rank] = RECORD_ICON(gRacePlayers[player]);
+                    ATTACK_SAVE_RECORD->countRecordValues[gSelectedCourseIndex][rank] = gRacePlayers[player].scoreAttackPointTotal;
+                    ATTACK_SAVE_RECORD->countRecordIcons[gSelectedCourseIndex][rank] = RECORD_ICON(gRacePlayers[player]);
                     D_8013AFE1 = 1;
                 } else {
                     D_8013AFE1 = 2;
@@ -237,7 +237,7 @@ void updateAttackResultsAndRecords(void) {
             for (player = 0; player < D_8013AFCD; player++) {
                 for (rank = 0; rank < 5; rank++) {
                     if (gRacePlayers[player].trickAttackPointTotal >
-                        ATTACK_SAVE_RECORD->statsRecordValues[D_8013AFCE][rank]) {
+                        ATTACK_SAVE_RECORD->statsRecordValues[gSelectedCourseIndex][rank]) {
                         break;
                     }
                 }
@@ -250,13 +250,13 @@ void updateAttackResultsAndRecords(void) {
                 rank = gRacePlayers[player].unk100[0];
                 if (rank < 5) {
                     for (row = 3; row >= rank; row--) {
-                        ATTACK_SAVE_RECORD->statsRecordValues[D_8013AFCE][row + 1] =
-                            ATTACK_SAVE_RECORD->statsRecordValues[D_8013AFCE][row];
-                        ATTACK_SAVE_RECORD->statsRecordIcons[D_8013AFCE][row + 1] =
-                            ATTACK_SAVE_RECORD->statsRecordIcons[D_8013AFCE][row];
+                        ATTACK_SAVE_RECORD->statsRecordValues[gSelectedCourseIndex][row + 1] =
+                            ATTACK_SAVE_RECORD->statsRecordValues[gSelectedCourseIndex][row];
+                        ATTACK_SAVE_RECORD->statsRecordIcons[gSelectedCourseIndex][row + 1] =
+                            ATTACK_SAVE_RECORD->statsRecordIcons[gSelectedCourseIndex][row];
                     }
-                    ATTACK_SAVE_RECORD->statsRecordValues[D_8013AFCE][rank] = gRacePlayers[player].trickAttackPointTotal;
-                    ATTACK_SAVE_RECORD->statsRecordIcons[D_8013AFCE][rank] = RECORD_ICON(gRacePlayers[player]);
+                    ATTACK_SAVE_RECORD->statsRecordValues[gSelectedCourseIndex][rank] = gRacePlayers[player].trickAttackPointTotal;
+                    ATTACK_SAVE_RECORD->statsRecordIcons[gSelectedCourseIndex][rank] = RECORD_ICON(gRacePlayers[player]);
                     D_8013AFE1 = 1;
                 } else {
                     D_8013AFE1 = 2;
@@ -267,7 +267,7 @@ void updateAttackResultsAndRecords(void) {
     case 2:
         time = FULL_RACE_TIME(gRaceElapsedTime);
         for (rank = 0; rank < 5; rank++) {
-            faster = time < FULL_RACE_TIME(ATTACK_SAVE_RECORD->lapRecords[D_8013AFCE][rank]);
+            faster = time < FULL_RACE_TIME(ATTACK_SAVE_RECORD->lapRecords[gSelectedCourseIndex][rank]);
             if (faster) {
                 break;
             }
@@ -275,15 +275,15 @@ void updateAttackResultsAndRecords(void) {
         gRacePlayers[0].unk100[0] = rank;
         if (rank < 5) {
             for (row = 3; row >= rank; row--) {
-                ATTACK_SAVE_RECORD->lapRecords[D_8013AFCE][row + 1] =
-                    ATTACK_SAVE_RECORD->lapRecords[D_8013AFCE][row];
-                ATTACK_SAVE_RECORD->lapRecordIcons[D_8013AFCE][row + 1] =
-                    ATTACK_SAVE_RECORD->lapRecordIcons[D_8013AFCE][row];
+                ATTACK_SAVE_RECORD->lapRecords[gSelectedCourseIndex][row + 1] =
+                    ATTACK_SAVE_RECORD->lapRecords[gSelectedCourseIndex][row];
+                ATTACK_SAVE_RECORD->lapRecordIcons[gSelectedCourseIndex][row + 1] =
+                    ATTACK_SAVE_RECORD->lapRecordIcons[gSelectedCourseIndex][row];
             }
-            ATTACK_SAVE_RECORD->lapRecords[D_8013AFCE][rank] = gRaceElapsedTime;
-            ATTACK_SAVE_RECORD->lapRecordIcons[D_8013AFCE][rank] = RECORD_ICON(gRacePlayers[0]);
+            ATTACK_SAVE_RECORD->lapRecords[gSelectedCourseIndex][rank] = gRaceElapsedTime;
+            ATTACK_SAVE_RECORD->lapRecordIcons[gSelectedCourseIndex][rank] = RECORD_ICON(gRacePlayers[0]);
             if (rank == 0) {
-                ATTACK_SAVE_RECORD->bestLapSplitTimes[D_8013AFCE] = D_8013B188;
+                ATTACK_SAVE_RECORD->bestLapSplitTimes[gSelectedCourseIndex] = D_8013B188;
             }
         }
         if (rank < 5) {
@@ -304,10 +304,10 @@ s16 shouldRenderPlayerView(u16 player) {
 
 void renderCurrentCameraPlayersAndUpdateSound(void) {
     u16 i;
-    if (shouldRenderPlayerView(D_8013AE88->data18)) {
-        GsSetRefView2L(&gPlayerCameraViews[D_8013AE88->data18]);
-        updateCameraRotationMatrices(D_8013AE88->data18);
-        if (D_8013AE88->data18 != 0 && (D_8013AFAA & 0x2000)) {
+    if (shouldRenderPlayerView(gCurrentTask->data18)) {
+        GsSetRefView2L(&gPlayerCameraViews[gCurrentTask->data18]);
+        updateCameraRotationMatrices(gCurrentTask->data18);
+        if (gCurrentTask->data18 != 0 && (D_8013AFAA & 0x2000)) {
             for (i = 0; i < D_8013AFD2; i++) {
                 if (isPointWithinCameraForwardRange(gRacePlayers[i].worldCoordinate.coord.t[0], gRacePlayers[i].worldCoordinate.coord.t[2], 0)) {
                     setCoordinateRotation((SVECTOR *)&gRacePlayers[i].unk0B4, &gRacePlayers[i].worldCoordinate);
@@ -318,13 +318,13 @@ void renderCurrentCameraPlayersAndUpdateSound(void) {
             drawCourseModelsForView(0);
         } else {
             for (i = 0; i < D_8013AFD2; i++) {
-                if (isPointWithinCameraForwardRange(gRacePlayers[i].worldCoordinate.coord.t[0], gRacePlayers[i].worldCoordinate.coord.t[2], D_8013AE88->data18)) {
+                if (isPointWithinCameraForwardRange(gRacePlayers[i].worldCoordinate.coord.t[0], gRacePlayers[i].worldCoordinate.coord.t[2], gCurrentTask->data18)) {
                     setCoordinateRotation((SVECTOR *)&gRacePlayers[i].unk0B4, &gRacePlayers[i].worldCoordinate);
                     setCoordinateRotationZYX(&gRacePlayers[i].modelRotation, &gRacePlayers[i].modelCoordinate);
-                    sortRacePlayerModelForView(i, D_8013AE88->data18);
+                    sortRacePlayerModelForView(i, gCurrentTask->data18);
                 }
             }
-            drawCourseModelsForView(D_8013AE88->data18);
+            drawCourseModelsForView(gCurrentTask->data18);
         }
     }
     updateCurrentPlayerSound();
@@ -334,24 +334,24 @@ void updateCurrentPlayerSound(void) {
     s32 semitone;
     s16 fine;
     if (D_8013AFD3) {
-        gRacePlayers[D_8013AE88->data18].unk96C = 0;
+        gRacePlayers[gCurrentTask->data18].unk96C = 0;
     }
-    if (gRacePlayers[D_8013AE88->data18].unk96C != 0) {
-        if (gRacePlayers[D_8013AE88->data18].soundVoice == 0xFF) {
-            gRacePlayers[D_8013AE88->data18].soundVoice = playOwnedSoundEffect(D_8013AE88->data18, 1, gRacePlayers[D_8013AE88->data18].unk96E, 0x20);
-            gRacePlayers[D_8013AE88->data18].unk970 = gRacePlayers[D_8013AE88->data18].unk96E;
-        } else if (gRacePlayers[D_8013AE88->data18].unk970 != gRacePlayers[D_8013AE88->data18].unk96E) {
-            stopOwnedSoundVoice(gRacePlayers[D_8013AE88->data18].soundVoice);
-            gRacePlayers[D_8013AE88->data18].soundVoice = playOwnedSoundEffect(D_8013AE88->data18, 1, gRacePlayers[D_8013AE88->data18].unk96E, 0x20);
-            gRacePlayers[D_8013AE88->data18].unk970 = gRacePlayers[D_8013AE88->data18].unk96E;
+    if (gRacePlayers[gCurrentTask->data18].unk96C != 0) {
+        if (gRacePlayers[gCurrentTask->data18].soundVoice == 0xFF) {
+            gRacePlayers[gCurrentTask->data18].soundVoice = playOwnedSoundEffect(gCurrentTask->data18, 1, gRacePlayers[gCurrentTask->data18].unk96E, 0x20);
+            gRacePlayers[gCurrentTask->data18].unk970 = gRacePlayers[gCurrentTask->data18].unk96E;
+        } else if (gRacePlayers[gCurrentTask->data18].unk970 != gRacePlayers[gCurrentTask->data18].unk96E) {
+            stopOwnedSoundVoice(gRacePlayers[gCurrentTask->data18].soundVoice);
+            gRacePlayers[gCurrentTask->data18].soundVoice = playOwnedSoundEffect(gCurrentTask->data18, 1, gRacePlayers[gCurrentTask->data18].unk96E, 0x20);
+            gRacePlayers[gCurrentTask->data18].unk970 = gRacePlayers[gCurrentTask->data18].unk96E;
         }
-        semitone = gRacePlayers[D_8013AE88->data18].unk972 / 128;
-        fine = 127 - gRacePlayers[D_8013AE88->data18].unk972 % 128;
-        SsUtChangePitch(gRacePlayers[D_8013AE88->data18].soundVoice, 1, gRacePlayers[D_8013AE88->data18].unk96E & 255, gRacePlayers[D_8013AE88->data18].unk96E >> 8, fine, -semitone, fine);
-        SsUtSetVVol(gRacePlayers[D_8013AE88->data18].soundVoice, gRacePlayers[D_8013AE88->data18].unk96C, gRacePlayers[D_8013AE88->data18].unk96C);
-    } else if (gRacePlayers[D_8013AE88->data18].soundVoice != 0xFF) {
-        stopOwnedSoundVoice(gRacePlayers[D_8013AE88->data18].soundVoice);
-        gRacePlayers[D_8013AE88->data18].soundVoice = 0xFF;
+        semitone = gRacePlayers[gCurrentTask->data18].unk972 / 128;
+        fine = 127 - gRacePlayers[gCurrentTask->data18].unk972 % 128;
+        SsUtChangePitch(gRacePlayers[gCurrentTask->data18].soundVoice, 1, gRacePlayers[gCurrentTask->data18].unk96E & 255, gRacePlayers[gCurrentTask->data18].unk96E >> 8, fine, -semitone, fine);
+        SsUtSetVVol(gRacePlayers[gCurrentTask->data18].soundVoice, gRacePlayers[gCurrentTask->data18].unk96C, gRacePlayers[gCurrentTask->data18].unk96C);
+    } else if (gRacePlayers[gCurrentTask->data18].soundVoice != 0xFF) {
+        stopOwnedSoundVoice(gRacePlayers[gCurrentTask->data18].soundVoice);
+        gRacePlayers[gCurrentTask->data18].soundVoice = 0xFF;
     }
 }
 

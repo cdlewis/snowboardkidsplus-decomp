@@ -42,8 +42,8 @@ extern CdlFILE D_8013B6C8 __attribute__((section(".data.cd_search_file")));
 
 extern GameTask gGameTasks[200] __attribute__((section(".data.game_tasks")));
 
-extern GameTask *D_8013AE88 __attribute__((section(".sdata.task_scheduler")));
-extern GameTask *D_8013AE8C __attribute__((section(".sdata.task_scheduler")));
+extern GameTask *gCurrentTask __attribute__((section(".sdata.task_scheduler")));
+extern GameTask *gCreatedTask __attribute__((section(".sdata.task_scheduler")));
 extern GameTask *D_8013AE90 __attribute__((section(".sdata.task_scheduler")));
 extern GameTask *D_8013AE94 __attribute__((section(".sdata.task_scheduler")));
 extern GameTask *D_8013AE98 __attribute__((section(".sdata.task_scheduler")));

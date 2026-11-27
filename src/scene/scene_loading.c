@@ -17,8 +17,8 @@ typedef struct SceneSoundBankSectors {
     s16 headerSectorCount;
 } SceneSoundBankSectors;
 
-extern GameTask *D_8013AE88 __attribute__((section(".data")));
-extern u32 D_8013AFE4 __attribute__((section(".data")));
+extern GameTask *gCurrentTask __attribute__((section(".data")));
+extern u32 gTaskTransitionFlags __attribute__((section(".data")));
 extern u8 D_8013AF3A __attribute__((section(".data")));
 
 static ResourceSectorRange sSceneTextSectors[11] __attribute__((section(".data.scene_text_sectors"))) = {
@@ -78,17 +78,17 @@ void initializeScenePlaybackResourcesTask(void) {
     ScenePlaybackState *state;
     s16 i;
 
-    if (D_8013AE88->resource16 != 0xFFFF) {
+    if (gCurrentTask->resource16 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource16 = allocateTaskMemoryBlock();
-    state = (ScenePlaybackState *)&gTaskMemoryPool[D_8013AE88->resource16];
+    gCurrentTask->resource16 = allocateTaskMemoryBlock();
+    state = (ScenePlaybackState *)&gTaskMemoryPool[gCurrentTask->resource16];
     resetScenePlaybackStates(NULL, (SceneChannelState *)state);
     resetSceneEventPool();
     for (i = 0; i < 5; i++) {
         state->tasks[i] = NULL;
     }
-    D_8013AFE4 &= ~0x200;
+    gTaskTransitionFlags &= ~0x200;
     configureTaskStateTransition(0, 0, 0);
     closeMusicSequence();
     closeAllSoundBanks();
@@ -115,5 +115,5 @@ void initializeScenePlaybackResourcesTask(void) {
 
     setSecondaryDisplayTaskMode(1);
     setCurrentTaskCallback(initializeLoadedSceneEvents);
-    D_8013AE88->unk10 |= 2;
+    gCurrentTask->unk10 |= 2;
 }

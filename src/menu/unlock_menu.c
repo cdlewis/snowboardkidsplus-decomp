@@ -10,8 +10,8 @@
 #include "unlock_menu_types.h"
 
 extern u16 D_8013AF78 __attribute__((section(".data")));
-extern GameTask *D_8013AE88 __attribute__((section(".data")));
-extern u32 D_8013AFE4 __attribute__((section(".data")));
+extern GameTask *gCurrentTask __attribute__((section(".data")));
+extern u32 gTaskTransitionFlags __attribute__((section(".data")));
 
 const u16 gUnlockOptionLabelSprites[8] __attribute__((section(".data.unlock_option_labels"))) = {
     0x225, 0x226, 0x227, 0x234, 0x228, 0x229, 0x22A, 0
@@ -37,11 +37,11 @@ const u8 gUnlockOptionBitIndices[6] __attribute__((section(".data.unlock_option_
 
 void initializeUnlockMenuResourceTask(void) {
     UnlockMenuState *state;
-    if (D_8013AE88->resource14 != 0xFFFF) {
+    if (gCurrentTask->resource14 != 0xFFFF) {
         for (;;) {}
     }
-    D_8013AE88->resource14 = allocateTaskMemoryBlock();
-    state = (UnlockMenuState *)&gTaskMemoryPool[D_8013AE88->resource14];
+    gCurrentTask->resource14 = allocateTaskMemoryBlock();
+    state = (UnlockMenuState *)&gTaskMemoryPool[gCurrentTask->resource14];
     state->selection = 0;
     state->previousSelection = 0;
     resetUnlockMenuAnimation(state);
@@ -67,7 +67,7 @@ void resetUnlockMenuAnimation(UnlockMenuState *state) {
 }
 
 void runTaskResource14Update(void) {
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         for (;;) {
         }
     }
@@ -79,12 +79,12 @@ void updateUnlockOptionsMenuTask(void) {
     s16 exitRequested;
     s16 optionChanged;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         for (;;) {}
     }
     exitRequested = 0;
     optionChanged = 0;
-    state = (UnlockMenuState *)&gTaskMemoryPool[D_8013AE88->resource14];
+    state = (UnlockMenuState *)&gTaskMemoryPool[gCurrentTask->resource14];
 
     if (gControllerPressedButtons[0] & 0x1000) {
         if (state->selection > 0) {
@@ -196,7 +196,7 @@ void updateUnlockOptionsMenuTask(void) {
     drawUnlockOptionsMenu();
     if (exitRequested) {
         playSoundEffect(0, 0, 0x20);
-        D_8013AE88->data18 = 0;
+        gCurrentTask->data18 = 0;
         setCurrentTaskCallback(finishUnlockMenuTask);
     } else if (optionChanged) {
         playSoundEffect(0, 0, 0x20);
@@ -212,11 +212,11 @@ void drawUnlockOptionsMenu(void) {
     s16 offset;
     s16 palette;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         for (;;) {
         }
     }
-    state = (UnlockMenuState *)&gTaskMemoryPool[D_8013AE88->resource14];
+    state = (UnlockMenuState *)&gTaskMemoryPool[gCurrentTask->resource14];
     setSpriteColor(128, 128, 128);
     offset = state->unk3C[0] / 4096;
     drawSpriteByIndexWithBlend(-56, -96 - offset, 0x230, 2, -1, &D_800EBFF0[D_8013AF78], 4);
@@ -256,16 +256,16 @@ void drawUnlockOptionsMenu(void) {
 void finishUnlockMenuTask(void) {
     UnlockMenuState *state;
     s16 i;
-    if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
-    state = (UnlockMenuState *)&gTaskMemoryPool[D_8013AE88->resource14];
+    if (gCurrentTask->resource14 == 0xFFFF) { for (;;) {} }
+    state = (UnlockMenuState *)&gTaskMemoryPool[gCurrentTask->resource14];
     drawUnlockOptionsMenu();
-    switch (D_8013AE88->data18) {
+    switch (gCurrentTask->data18) {
     case 0:
         for (i = 0; i < 5; i++) {
             state->unk58[i] = 0;
             state->unk20[i] = 0;
         }
-        D_8013AE88->data18 = 1;
+        gCurrentTask->data18 = 1;
         break;
     case 1:
         for (i = 0; i < 5; i++) {
@@ -282,13 +282,13 @@ void finishUnlockMenuTask(void) {
                 D_8013B10C = -1;
                 queueMenuResourceReads(2);
             }
-            D_8013AE88->data18 = 2;
+            gCurrentTask->data18 = 2;
         }
         break;
     case 2:
         if (isCdCommandQueueIdle() == 1) {
             configureTaskStateTransition(2, 0, 10);
-            D_8013AE88->data18 = 3;
+            gCurrentTask->data18 = 3;
         }
         break;
     case 3:
@@ -299,10 +299,10 @@ void finishUnlockMenuTask(void) {
 
 void initializeUnlockMenuTask(void) {
     UnlockMenuState *state;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         for (;;) {}
     }
-    state = (UnlockMenuState *)&gTaskMemoryPool[D_8013AE88->resource14];
+    state = (UnlockMenuState *)&gTaskMemoryPool[gCurrentTask->resource14];
     state->selection = 0;
     state->previousSelection = 0;
     resetUnlockMenuOffsets(state);
@@ -325,12 +325,12 @@ void updateUnlockNotificationMenuTask(void) {
     u16 resource;
     s16 leave;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         for (;;) {}
     }
     /* The single-pass block preserves instruction ordering for the task-state lookup. */
     do {
-        resource = D_8013AE88->resource14;
+        resource = gCurrentTask->resource14;
         state = (UnlockMenuState *)&gTaskMemoryPool[resource];
     } while (0);
     leave = 0;
@@ -382,7 +382,7 @@ void updateUnlockNotificationMenuTask(void) {
         selection = state->selection;
         state->unk8C = 1;
         D_8013AF3A = selection;
-        D_8013AE88->data18 = 15;
+        gCurrentTask->data18 = 15;
         setCurrentTaskCallback(callback);
     }
 
@@ -391,7 +391,7 @@ void updateUnlockNotificationMenuTask(void) {
         playSoundEffect(0, 0, 0x20);
         deleteCurrentTaskDescendants();
         setCurrentTaskCallback(animateUnlockMenuTransition);
-        D_8013AE88->data18 = 0;
+        gCurrentTask->data18 = 0;
     }
 }
 
@@ -400,10 +400,10 @@ void drawUnlockNotificationMenu(void) {
     s16 row;
     s16 verticalOffset;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         for (;;) {}
     }
-    state = (UnlockMenuState *)&gTaskMemoryPool[D_8013AE88->resource14];
+    state = (UnlockMenuState *)&gTaskMemoryPool[gCurrentTask->resource14];
     setSpriteColor(128, 128, 128);
     verticalOffset = state->unk3C[0] / 4096;
     drawSpriteByIndexWithBlend(-68, -96 - verticalOffset, 0x22F, 2, -1, &D_800EBFF0[D_8013AF78], 4);
@@ -442,32 +442,32 @@ s32 hasUnlockNotificationFlag(s16 index) {
 }
 
 void startUnlockActionAfterCountdown(void) {
-    if (--D_8013AE88->data18 == 0) {
+    if (--gCurrentTask->data18 == 0) {
         if (D_8013AF3A < 11) {
             createChildTaskWithReserve(initializeScenePlaybackResourcesTask);
         } else {
             createChildTaskWithReserve(startUnlockResourceLoad);
         }
         setCurrentTaskCallback(prepareUnlockSelectionResume);
-        D_8013AE88->unk10 |= 1;
+        gCurrentTask->unk10 |= 1;
     }
 }
 
 void animateUnlockMenuTransition(void) {
     UnlockMenuState *state;
     s16 i;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         for (;;) {}
     }
-    state = (UnlockMenuState *)&gTaskMemoryPool[D_8013AE88->resource14];
+    state = (UnlockMenuState *)&gTaskMemoryPool[gCurrentTask->resource14];
     drawUnlockNotificationMenu();
-    switch (D_8013AE88->data18) {
+    switch (gCurrentTask->data18) {
     case 0:
         for (i = 0; i < 6; i++) {
             state->unk58[i] = 0;
             state->unk20[i] = 0;
         }
-        D_8013AE88->data18 = 1;
+        gCurrentTask->data18 = 1;
         break;
     case 1:
         for (i = 0; i < 6; i++) {
@@ -477,7 +477,7 @@ void animateUnlockMenuTransition(void) {
             state->unk3C[i] += state->unk58[i];
         }
         if (state->unk04[0] > 0x168000) {
-            D_8013AE88->data18 = 2;
+            gCurrentTask->data18 = 2;
         }
         break;
     case 2:
@@ -499,18 +499,18 @@ void prepareUnlockSelectionResume(void) {
     D_8013B10C = -1;
     queueMenuResourceReads(2);
     setCurrentTaskCallback(resumeUnlockSelectionTask);
-    D_8013AE88->unk10 |= 2;
+    gCurrentTask->unk10 |= 2;
 }
 
 void finishUnlockPresentationTask(void) {
-    if (D_8013AFE4 & 0x100) {
+    if (gTaskTransitionFlags & 0x100) {
         deleteCurrentTaskSubtree();
     }
 }
 
 void startUnlockResourceLoad(void) {
     resetPendingCdRequests();
-    D_8013AFE4 &= ~0x100;
+    gTaskTransitionFlags &= ~0x100;
     createResourceLoadTask();
     setCurrentTaskCallback(finishUnlockPresentationTask);
 }

@@ -53,20 +53,20 @@ typedef struct ProximityParticleResource {
 extern u8 D_8013AFD8 __attribute__((section(".data")));
 extern u16 D_8013AFAA __attribute__((section(".data")));
 extern s16 gFrameCounter __attribute__((section(".data")));
-extern s16 D_8013AFCE __attribute__((section(".data")));
-extern VECTOR *D_8013AF88 __attribute__((section(".data")));
+extern s16 gSelectedCourseIndex __attribute__((section(".data")));
+extern VECTOR *gScratchVector0 __attribute__((section(".data")));
 extern SVECTOR *D_8013AF94 __attribute__((section(".data")));
-extern MATRIX *D_8013AF98 __attribute__((section(".data")));
+extern MATRIX *gScratchMatrix0 __attribute__((section(".data")));
 extern u32 *D_8013AF6C __attribute__((section(".data")));
 extern u16 D_8013AF78 __attribute__((section(".data")));
 extern u8 D_8013AFCD __attribute__((section(".data")));
 extern u8 D_8013AFE0 __attribute__((section(".data")));
 extern u8 D_8013AFE2 __attribute__((section(".data")));
 extern u8 D_8013AFD3 __attribute__((section(".data")));
-extern GameTask *D_8013AE88 __attribute__((section(".data")));
-extern GameTask *D_8013AE8C __attribute__((section(".data")));
+extern GameTask *gCurrentTask __attribute__((section(".data")));
+extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern GameTask *D_8013AE98 __attribute__((section(".data")));
-extern u32 D_8013AFE4 __attribute__((section(".data")));
+extern u32 gTaskTransitionFlags __attribute__((section(".data")));
 extern s16 *D_8013B1EC __attribute__((section(".data")));
 extern s16 *D_8013B1F4 __attribute__((section(".data")));
 
@@ -493,14 +493,14 @@ void updateCourseObjectTask(void);
 void initializeBobbingTrailEmitterTask(void);
 
 void queueCourseResourceSectorReads(void) {
-    queueCdSectorCommand(0, gCourseResourceSectors[D_8013AFCE][0].sector, gCourseResourceSectors[D_8013AFCE][0].count, DAT_COURSE_FIRST, 0);
-    queueCdSectorCommand(0, gCourseResourceSectors[D_8013AFCE][1].sector, gCourseResourceSectors[D_8013AFCE][1].count, DAT_COURSE_SECOND, 0);
-    queueCdSectorCommand(2, gCourseResourceSectors[D_8013AFCE][2].sector, gCourseResourceSectors[D_8013AFCE][2].count, DAT_SCRATCH, 0);
-    queueCdSectorCommand(0, gCourseMetadataSectors[D_8013AFCE].sector, gCourseMetadataSectors[D_8013AFCE].count, gCourseMetadataBuffer, 0);
-    if ((u16)gCourseOptionalResourceSectors[D_8013AFCE].sector != 0) {
-        queueCdSectorCommand(0, gCourseOptionalResourceSectors[D_8013AFCE].sector, gCourseOptionalResourceSectors[D_8013AFCE].count, DAT_COURSE_OPTIONAL, 0);
+    queueCdSectorCommand(0, gCourseResourceSectors[gSelectedCourseIndex][0].sector, gCourseResourceSectors[gSelectedCourseIndex][0].count, DAT_COURSE_FIRST, 0);
+    queueCdSectorCommand(0, gCourseResourceSectors[gSelectedCourseIndex][1].sector, gCourseResourceSectors[gSelectedCourseIndex][1].count, DAT_COURSE_SECOND, 0);
+    queueCdSectorCommand(2, gCourseResourceSectors[gSelectedCourseIndex][2].sector, gCourseResourceSectors[gSelectedCourseIndex][2].count, DAT_SCRATCH, 0);
+    queueCdSectorCommand(0, gCourseMetadataSectors[gSelectedCourseIndex].sector, gCourseMetadataSectors[gSelectedCourseIndex].count, gCourseMetadataBuffer, 0);
+    if ((u16)gCourseOptionalResourceSectors[gSelectedCourseIndex].sector != 0) {
+        queueCdSectorCommand(0, gCourseOptionalResourceSectors[gSelectedCourseIndex].sector, gCourseOptionalResourceSectors[gSelectedCourseIndex].count, DAT_COURSE_OPTIONAL, 0);
     }
-    if (D_8013AFCE == 6) {
+    if (gSelectedCourseIndex == 6) {
         queueCdSectorCommand(16, DAT_COURSE_IMAGE_SECTOR, DAT_COURSE_IMAGE_SECTOR_COUNT, DAT_SCRATCH, 0);
     }
 }
@@ -513,9 +513,9 @@ void initializeCourseObjects(void) {
     s16 modelIndex;
     s32 course;
 
-    if (D_8013AFCE == 7) {
+    if (gSelectedCourseIndex == 7) {
         createChildTaskForParentWithReserve(&gGameTasks[3], updateActivePlayerRegionCollisions);
-        D_8013AE8C->data18 = 1;
+        gCreatedTask->data18 = 1;
         return;
     }
 
@@ -538,45 +538,45 @@ void initializeCourseObjects(void) {
 
     for (i = 0; i < 4; i++) {
         createChildTaskForParentWithReserve(&gGameTasks[4], initializeCourseObjectTask);
-        D_8013AE8C->data18 = i;
+        gCreatedTask->data18 = i;
     }
 
-    course = D_8013AFCE;
+    course = gSelectedCourseIndex;
     switch (course) {
     case 1:
         if (D_8013AFE2 == 0) {
             createChildTaskForParentWithReserve(&gGameTasks[4], initializeBobbingTrailEmitterTask);
         }
         createChildTaskForParentWithReserve(&gGameTasks[4], initializeProximityEmitterTask);
-        D_8013AE8C->data18 = 0;
+        gCreatedTask->data18 = 0;
         createChildTaskForParentWithReserve(&gGameTasks[4], initializeProximityEmitterTask);
-        D_8013AE8C->data18 = course;
+        gCreatedTask->data18 = course;
         createChildTaskForParentWithReserve(&gGameTasks[3], updateActivePlayerRegionCollisions);
-        D_8013AE8C->data18 = 0;
+        gCreatedTask->data18 = 0;
         for (i = 0; i < 9; i++) {
             createChildTaskForParentWithReserve(&gGameTasks[4], initializeMovingVisualTask);
-            D_8013AE8C->data18 = i;
+            gCreatedTask->data18 = i;
         }
         break;
     case 4:
         for (i = 0; i < 3; i++) {
             createChildTaskForParentWithReserve(&gGameTasks[4], initializeOrbitingTaskObject);
-            D_8013AE8C->data18 = 0;
-            D_8013AE8C->data1A = 3;
-            D_8013AE8C->data1C = i;
+            gCreatedTask->data18 = 0;
+            gCreatedTask->data1A = 3;
+            gCreatedTask->data1C = i;
         }
         for (i = 0; i < 4; i++) {
             createChildTaskForParentWithReserve(&gGameTasks[4], initializeOrbitingTaskObject);
-            D_8013AE8C->data18 = 1;
-            D_8013AE8C->data1A = 4;
-            D_8013AE8C->data1C = i;
+            gCreatedTask->data18 = 1;
+            gCreatedTask->data1A = 4;
+            gCreatedTask->data1C = i;
         }
         break;
     }
 
     D_8013B2B6 = D_8013B2B8 = D_8013B2BA = 0;
     D_8013B2B5 = D_8013B2B7 = D_8013B2B9 = 255;
-    D_8013B2BC = gCourseObjectPlacements[D_8013AFCE];
+    D_8013B2BC = gCourseObjectPlacements[gSelectedCourseIndex];
     i = 0;
     do {
         VisualPlacement *placements = D_8013B2BC;
@@ -588,11 +588,11 @@ void initializeCourseObjects(void) {
         if ((u8)type < 7) {
             if ((u8)type != 5 && !((type == 2 || type == 3) && D_8013AFE2)) {
                 tryCreateChildTaskForParentWith20SlotsReserved(&gGameTasks[4], initializePlacedObjectTask);
-                D_8013AE8C->resource14 = allocateTaskMemoryBlock();
+                gCreatedTask->resource14 = allocateTaskMemoryBlock();
                 if ((u32)(D_8013B2BC[i].unk01 - 2) < 2) {
-                    D_8013AE8C->resource16 = allocateTaskMemoryBlock();
+                    gCreatedTask->resource16 = allocateTaskMemoryBlock();
                 }
-                D_8013AE8C->data18 = i;
+                gCreatedTask->data18 = i;
             }
         } else {
             switch (placement->unk01) {
@@ -627,7 +627,7 @@ void initializeCourseObjects(void) {
     if (D_8013AFE2 == 1) {
         switch (D_8013AFE0) {
         case 0:
-            gInteractionVisualPlacements = gCourseChallengePlacements[D_8013AFCD][D_8013AFCE];
+            gInteractionVisualPlacements = gCourseChallengePlacements[D_8013AFCD][gSelectedCourseIndex];
             i = 0;
             if (gInteractionVisualPlacements[0].unk01 != PLACEMENT_END) {
                 for (;;) {
@@ -646,13 +646,13 @@ void initializeCourseObjects(void) {
             break;
         case 1:
             i = 0;
-            D_8013B2C0 = gCourseChallengePlacements[0][D_8013AFCE];
+            D_8013B2C0 = gCourseChallengePlacements[0][gSelectedCourseIndex];
             for (;;) {
                 if (D_8013B2C0[i].unk01 == PLACEMENT_END) {
                     goto createVisualTasks;
                 }
                 tryCreateChildTaskForParentWith20SlotsReserved(&gGameTasks[4], initializeCollectibleTask);
-                D_8013AE8C->data18 = i;
+                gCreatedTask->data18 = i;
                 i++;
             }
         }
@@ -692,8 +692,8 @@ void drawTaskObject(u16 index) {
     gObjectSortSavedStackPointer = SetSp((u32)getScratchAddr((sizeof(scratchpad) - sizeof(u32)) / sizeof(u32)));
     objects = D_80129A80;
     object = &objects[index];
-    GsGetLs(object->coord2, D_8013AF98);
-    GsSetLsMatrix(D_8013AF98);
+    GsGetLs(object->coord2, gScratchMatrix0);
+    GsSetLsMatrix(gScratchMatrix0);
     if (getRenderCameraIndex()) {
         GsSortObject4(object, &D_800EC0B8[D_8013AF78], 2, (u32 *)getScratchAddr(0));
     } else {
@@ -708,8 +708,8 @@ void drawTaskObjectAlternateLayer(u16 index) {
     gAlternateObjectSortSavedStackPointer = SetSp((u32)getScratchAddr((sizeof(scratchpad) - sizeof(u32)) / sizeof(u32)));
     objects = D_80129A80;
     object = &objects[index];
-    GsGetLs(object->coord2, D_8013AF98);
-    GsSetLsMatrix(D_8013AF98);
+    GsGetLs(object->coord2, gScratchMatrix0);
+    GsSetLsMatrix(gScratchMatrix0);
     if (getRenderCameraIndex()) {
         GsSortObject4(object, &D_800EC130[D_8013AF78], 2, (u32 *)getScratchAddr(0));
     } else {
@@ -719,67 +719,67 @@ void drawTaskObjectAlternateLayer(u16 index) {
 }
 
 void initializeCourseObjectTask(void) {
-    if (D_8013AFCE == 8 && D_8013AE88->data18 == 0) {
-        D_8013AE88->data18 = 24;
+    if (gSelectedCourseIndex == 8 && gCurrentTask->data18 == 0) {
+        gCurrentTask->data18 = 24;
     }
 
-    switch (D_8013AE88->data18) {
+    switch (gCurrentTask->data18) {
     case 0:
     case 24:
-        D_8012A5C0[D_8013AE88->data18].vy = D_80123D80[D_8013AFCE].unk16;
-        D_8013AE88->data1C = 0x418;
-        D_8013AE88->data1E = 0x240;
+        D_8012A5C0[gCurrentTask->data18].vy = D_80123D80[gSelectedCourseIndex].unk16;
+        gCurrentTask->data1C = 0x418;
+        gCurrentTask->data1E = 0x240;
         D_8013AF90->vx = 0;
-        D_8013AF90->vy = D_8012A5C0[D_8013AE88->data18].vy + D_8013AE88->data1C;
+        D_8013AF90->vy = D_8012A5C0[gCurrentTask->data18].vy + gCurrentTask->data1C;
         D_8013AF90->vz = 0;
         D_8013AF94->vx = 0;
         D_8013AF94->vy = 0;
-        D_8013AF94->vz = D_8013AE88->data1E;
-        RotMatrix(D_8013AF90, D_8013AF98);
-        ApplyMatrix(D_8013AF98, D_8013AF94, D_8013AF88);
-        D_80129C60[D_8013AE88->data18].coord.t[0] =
-            ((s32)D_80123D80[D_8013AFCE].unk18[0] >> 8) + D_8013AF88->vx;
-        D_80129C60[D_8013AE88->data18].coord.t[1] = ((s32)D_80123D80[D_8013AFCE].unk18[1] >> 8);
-        D_80129C60[D_8013AE88->data18].coord.t[2] =
-            ((s32)D_80123D80[D_8013AFCE].unk18[2] >> 8) + D_8013AF88->vz;
+        D_8013AF94->vz = gCurrentTask->data1E;
+        RotMatrix(D_8013AF90, gScratchMatrix0);
+        ApplyMatrix(gScratchMatrix0, D_8013AF94, gScratchVector0);
+        D_80129C60[gCurrentTask->data18].coord.t[0] =
+            ((s32)D_80123D80[gSelectedCourseIndex].unk18[0] >> 8) + gScratchVector0->vx;
+        D_80129C60[gCurrentTask->data18].coord.t[1] = ((s32)D_80123D80[gSelectedCourseIndex].unk18[1] >> 8);
+        D_80129C60[gCurrentTask->data18].coord.t[2] =
+            ((s32)D_80123D80[gSelectedCourseIndex].unk18[2] >> 8) + gScratchVector0->vz;
         break;
     case 1:
     case 2:
-        D_8013AE88->data1A = 0;
-        D_8012A5C0[D_8013AE88->data18].vy = D_80123D80[D_8013AFCE].unk16 + 0x400;
-        D_8013AE88->data1C = 0x128;
-        D_8013AE88->data1E = 0xA0;
+        gCurrentTask->data1A = 0;
+        D_8012A5C0[gCurrentTask->data18].vy = D_80123D80[gSelectedCourseIndex].unk16 + 0x400;
+        gCurrentTask->data1C = 0x128;
+        gCurrentTask->data1E = 0xA0;
         D_8013AF90->vx = 0;
-        D_8013AF90->vy = D_8012A5C0[D_8013AE88->data18].vy + D_8013AE88->data1C;
+        D_8013AF90->vy = D_8012A5C0[gCurrentTask->data18].vy + gCurrentTask->data1C;
         D_8013AF90->vz = 0;
         D_8013AF94->vx = 0;
         D_8013AF94->vy = 0;
-        D_8013AF94->vz = D_8013AE88->data1E;
-        RotMatrix(D_8013AF90, D_8013AF98);
-        ApplyMatrix(D_8013AF98, D_8013AF94, D_8013AF88);
-        D_80129C60[D_8013AE88->data18].coord.t[0] =
-            ((s32)D_80123D80[D_8013AFCE].unk18[0] >> 8) + D_8013AF88->vx;
-        D_80129C60[D_8013AE88->data18].coord.t[1] = ((s32)D_80123D80[D_8013AFCE].unk18[1] >> 8);
-        D_80129C60[D_8013AE88->data18].coord.t[2] =
-            ((s32)D_80123D80[D_8013AFCE].unk18[2] >> 8) + D_8013AF88->vz;
+        D_8013AF94->vz = gCurrentTask->data1E;
+        RotMatrix(D_8013AF90, gScratchMatrix0);
+        ApplyMatrix(gScratchMatrix0, D_8013AF94, gScratchVector0);
+        D_80129C60[gCurrentTask->data18].coord.t[0] =
+            ((s32)D_80123D80[gSelectedCourseIndex].unk18[0] >> 8) + gScratchVector0->vx;
+        D_80129C60[gCurrentTask->data18].coord.t[1] = ((s32)D_80123D80[gSelectedCourseIndex].unk18[1] >> 8);
+        D_80129C60[gCurrentTask->data18].coord.t[2] =
+            ((s32)D_80123D80[gSelectedCourseIndex].unk18[2] >> 8) + gScratchVector0->vz;
         break;
     case 3:
-        D_8012A5C0[D_8013AE88->data18].vy = D_80123D80[D_8013AFCE].unk14 + 0x400;
-        D_8013AE88->data1C = 0x280;
-        D_8013AE88->data1E = -0x78;
+        D_8012A5C0[gCurrentTask->data18].vy = D_80123D80[gSelectedCourseIndex].unk14 + 0x400;
+        gCurrentTask->data1C = 0x280;
+        gCurrentTask->data1E = -0x78;
         D_8013AF90->vx = 0;
-        D_8013AF90->vy = D_8012A5C0[D_8013AE88->data18].vy + D_8013AE88->data1C;
+        D_8013AF90->vy = D_8012A5C0[gCurrentTask->data18].vy + gCurrentTask->data1C;
         D_8013AF90->vz = 0;
         D_8013AF94->vx = 0;
         D_8013AF94->vy = 0;
-        D_8013AF94->vz = D_8013AE88->data1E;
-        RotMatrix(D_8013AF90, D_8013AF98);
-        ApplyMatrix(D_8013AF98, D_8013AF94, D_8013AF88);
-        D_80129C60[D_8013AE88->data18].coord.t[0] =
-            (D_80123D80[D_8013AFCE].unk08 >> 8) + D_8013AF88->vx;
-        D_80129C60[D_8013AE88->data18].coord.t[1] = (D_80123D80[D_8013AFCE].unk0C >> 8) - 8;
-        D_80129C60[D_8013AE88->data18].coord.t[2] =
-            (D_80123D80[D_8013AFCE].unk10 >> 8) + D_8013AF88->vz;
+        D_8013AF94->vz = gCurrentTask->data1E;
+        RotMatrix(D_8013AF90, gScratchMatrix0);
+        ApplyMatrix(gScratchMatrix0, D_8013AF94, gScratchVector0);
+        D_80129C60[gCurrentTask->data18].coord.t[0] =
+            (D_80123D80[gSelectedCourseIndex].unk08 >> 8) + gScratchVector0->vx;
+        D_80129C60[gCurrentTask->data18].coord.t[1] = (D_80123D80[gSelectedCourseIndex].unk0C >> 8) - 8;
+        D_80129C60[gCurrentTask->data18].coord.t[2] =
+            (D_80123D80[gSelectedCourseIndex].unk10 >> 8) + gScratchVector0->vz;
         break;
     }
 
@@ -795,23 +795,23 @@ void updateCourseObjectTask(void) {
     s16 cameraIndex;
     u16 objectIndex;
 
-    if (!D_8013AFD3 && D_8013AE88->data18 == 2) {
-        if (D_8013AFE4 & 4) {
-            if (D_8013AE88->data1A != 0x400) {
-                if (D_8013AE88->data1A == 0) {
+    if (!D_8013AFD3 && gCurrentTask->data18 == 2) {
+        if (gTaskTransitionFlags & 4) {
+            if (gCurrentTask->data1A != 0x400) {
+                if (gCurrentTask->data1A == 0) {
                     rect.x = 640;
                     rect.y = 247;
                     rect.w = 16;
                     rect.h = 1;
                     MoveImage(&rect, 640, 246);
                 }
-                D_8013AE88->data1A += 0x80;
-                D_8012A5C0[D_8013AE88->data18].vy += 0x80;
+                gCurrentTask->data1A += 0x80;
+                D_8012A5C0[gCurrentTask->data18].vy += 0x80;
             }
-        } else if (D_8013AE88->data1A != 0) {
-            D_8013AE88->data1A -= 0x80;
-            D_8012A5C0[D_8013AE88->data18].vy -= 0x80;
-            if (D_8013AE88->data1A == 0) {
+        } else if (gCurrentTask->data1A != 0) {
+            gCurrentTask->data1A -= 0x80;
+            D_8012A5C0[gCurrentTask->data18].vy -= 0x80;
+            if (gCurrentTask->data1A == 0) {
                 rect.x = 640;
                 rect.y = 255;
                 rect.w = 16;
@@ -821,84 +821,84 @@ void updateCourseObjectTask(void) {
         }
     }
 
-    if (D_8013AFCE != 9 && D_8013AE88->data18 == 3) {
+    if (gSelectedCourseIndex != 9 && gCurrentTask->data18 == 3) {
         players = gRacePlayers;
         cameraPlayer = &players[getRenderCameraIndex()];
         records = D_80123D80;
-        if (cameraPlayer->unk92E < records[D_8013AFCE].objectFirstSegment) {
+        if (cameraPlayer->unk92E < records[gSelectedCourseIndex].objectFirstSegment) {
             return;
         }
-        if (players[getRenderCameraIndex()].unk92E > records[D_8013AFCE].objectLastSegment) {
+        if (players[getRenderCameraIndex()].unk92E > records[gSelectedCourseIndex].objectLastSegment) {
             return;
         }
     }
 
     cameraIndex = getRenderCameraIndex();
     coordinates = D_80129C60;
-    objectIndex = D_8013AE88->data18;
+    objectIndex = gCurrentTask->data18;
     if (isPositionInCameraRange(coordinates[objectIndex].coord.t[0],
                                 coordinates[objectIndex].coord.t[2], cameraIndex)) {
-        objectIndex = D_8013AE88->data18;
+        objectIndex = gCurrentTask->data18;
         setCoordinateRotation(&D_8012A5C0[objectIndex], &coordinates[objectIndex]);
-        drawTaskObjectAlternateLayer(D_8013AE88->data18);
+        drawTaskObjectAlternateLayer(gCurrentTask->data18);
     }
 }
 
 void initializeSelectedCourseOffsetTask(void) {
     CourseOffsetResource *resource;
     SelectedCourseRecord *records;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (CourseOffsetResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (CourseOffsetResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     GsInitCoordinate2(0, &resource->coordinate);
     records = D_80123D80;
     resource->rotation.vx = 0;
-    resource->rotation.vy = records[D_8013AFCE].unk16;
+    resource->rotation.vy = records[gSelectedCourseIndex].unk16;
     resource->rotation.vz = 0;
     D_8013AF94->vx = 0;
     D_8013AF94->vy = 0;
     D_8013AF94->vz = -0x330;
-    RotMatrix(&resource->rotation, D_8013AF98);
-    ApplyMatrix(D_8013AF98, D_8013AF94, D_8013AF88);
-    resource->position.vx = records[D_8013AFCE].unk18[3] + (D_8013AF88->vx << 8);
-    resource->position.vy = records[D_8013AFCE].unk18[4];
-    resource->position.vz = records[D_8013AFCE].unk18[5] + (D_8013AF88->vz << 8);
-    if (D_8013AFCE != 8) {
-        D_8013AE88->data1C = 4;
+    RotMatrix(&resource->rotation, gScratchMatrix0);
+    ApplyMatrix(gScratchMatrix0, D_8013AF94, gScratchVector0);
+    resource->position.vx = records[gSelectedCourseIndex].unk18[3] + (gScratchVector0->vx << 8);
+    resource->position.vy = records[gSelectedCourseIndex].unk18[4];
+    resource->position.vz = records[gSelectedCourseIndex].unk18[5] + (gScratchVector0->vz << 8);
+    if (gSelectedCourseIndex != 8) {
+        gCurrentTask->data1C = 4;
     } else {
-        D_8013AE88->data1C = 0x19;
+        gCurrentTask->data1C = 0x19;
     }
-    D_8013AE88->data1E = 0x16;
+    gCurrentTask->data1E = 0x16;
     setCurrentTaskCallback(updateSelectedCourseOffsetTask);
 }
 
 void updateSelectedCourseOffsetTask(void) {
     CourseOffsetResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (CourseOffsetResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (CourseOffsetResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (!D_8013AFD3) {
-        RotMatrix(&resource->rotation, D_8013AF98);
+        RotMatrix(&resource->rotation, gScratchMatrix0);
         D_8013AF90->vx = 0;
         D_8013AF90->vy = 0;
         D_8013AF90->vz = 0x1000;
-        ApplyMatrix(D_8013AF98, D_8013AF90, D_8013AF88);
-        resource->position.vx += D_8013AF88->vx;
-        resource->position.vz += D_8013AF88->vz;
+        ApplyMatrix(gScratchMatrix0, D_8013AF90, gScratchVector0);
+        resource->position.vx += gScratchVector0->vx;
+        resource->position.vz += gScratchVector0->vz;
         resource->coordinate.coord.t[0] = resource->position.vx >> 8;
         resource->coordinate.coord.t[1] = resource->position.vy >> 8;
         resource->coordinate.coord.t[2] = resource->position.vz >> 8;
-        if (D_8013AE88->data1E != 0) {
-            D_8013AE88->data1E--;
+        if (gCurrentTask->data1E != 0) {
+            gCurrentTask->data1E--;
         }
     }
-    if (D_8013AE88->data1E == 0) {
+    if (gCurrentTask->data1E == 0) {
         if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)getRenderCameraIndex())) {
-            D_80129A80[D_8013AE88->data1C].coord2 = &resource->coordinate;
+            D_80129A80[gCurrentTask->data1C].coord2 = &resource->coordinate;
             setCoordinateRotation(&resource->rotation, &resource->coordinate);
-            drawTaskObject(D_8013AE88->data1C);
+            drawTaskObject(gCurrentTask->data1C);
         }
     }
     if (resource->linkedTask->data1A == 6) {
@@ -908,62 +908,62 @@ void updateSelectedCourseOffsetTask(void) {
 
 void updatePlayerFollowingOrbitTask(void) {
     CourseOffsetResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (CourseOffsetResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (CourseOffsetResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (!D_8013AFD3) {
-        if (gRacePlayers[D_8013AE88->data18].unk12C != 7) {
+        if (gRacePlayers[gCurrentTask->data18].unk12C != 7) {
             D_8013AF94->vx = -100;
             D_8013AF94->vy = 0;
             D_8013AF94->vz = 0;
-            RotMatrix(&resource->rotation, D_8013AF98);
-            ApplyMatrix(D_8013AF98, D_8013AF94, D_8013AF88);
-            resource->position.vx = resource->coordinate.coord.t[0] + D_8013AF88->vx;
-            resource->position.vz = resource->coordinate.coord.t[2] + D_8013AF88->vz;
-            D_8013AE88->data1A = 0x40;
+            RotMatrix(&resource->rotation, gScratchMatrix0);
+            ApplyMatrix(gScratchMatrix0, D_8013AF94, gScratchVector0);
+            resource->position.vx = resource->coordinate.coord.t[0] + gScratchVector0->vx;
+            resource->position.vz = resource->coordinate.coord.t[2] + gScratchVector0->vz;
+            gCurrentTask->data1A = 0x40;
             setCurrentTaskCallback(updateOrbitingTaskObject);
             updateOrbitingTaskObject();
             return;
         }
-        resource->coordinate.coord.t[0] = gRacePlayers[D_8013AE88->data18].worldCoordinate.coord.t[0];
-        resource->coordinate.coord.t[1] = gRacePlayers[D_8013AE88->data18].worldCoordinate.coord.t[1];
-        resource->coordinate.coord.t[2] = gRacePlayers[D_8013AE88->data18].worldCoordinate.coord.t[2];
+        resource->coordinate.coord.t[0] = gRacePlayers[gCurrentTask->data18].worldCoordinate.coord.t[0];
+        resource->coordinate.coord.t[1] = gRacePlayers[gCurrentTask->data18].worldCoordinate.coord.t[1];
+        resource->coordinate.coord.t[2] = gRacePlayers[gCurrentTask->data18].worldCoordinate.coord.t[2];
         if (resource->linkedTask->data1A == 7) {
-            resource->rotation.vy = gRacePlayers[D_8013AE88->data18].unk110;
+            resource->rotation.vy = gRacePlayers[gCurrentTask->data18].unk110;
         }
     }
     if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)getRenderCameraIndex())) {
-        D_80129A80[D_8013AE88->data1C].coord2 = &resource->coordinate;
+        D_80129A80[gCurrentTask->data1C].coord2 = &resource->coordinate;
         setCoordinateRotation(&resource->rotation, &resource->coordinate);
-        drawTaskObject(D_8013AE88->data1C);
+        drawTaskObject(gCurrentTask->data1C);
     }
 }
 
 void updateOrbitingTaskObject(void) {
     CourseOffsetResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (CourseOffsetResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (CourseOffsetResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (!D_8013AFD3) {
         resource->rotation.vy -= 0x20;
         D_8013AF94->vx = 100;
         D_8013AF94->vy = 0;
         D_8013AF94->vz = 0;
-        RotMatrix(&resource->rotation, D_8013AF98);
-        ApplyMatrix(D_8013AF98, D_8013AF94, D_8013AF88);
-        resource->coordinate.coord.t[0] = resource->position.vx + D_8013AF88->vx;
-        resource->coordinate.coord.t[2] = resource->position.vz + D_8013AF88->vz;
+        RotMatrix(&resource->rotation, gScratchMatrix0);
+        ApplyMatrix(gScratchMatrix0, D_8013AF94, gScratchVector0);
+        resource->coordinate.coord.t[0] = resource->position.vx + gScratchVector0->vx;
+        resource->coordinate.coord.t[2] = resource->position.vz + gScratchVector0->vz;
     }
     if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)getRenderCameraIndex())) {
-        D_80129A80[D_8013AE88->data1C].coord2 = &resource->coordinate;
+        D_80129A80[gCurrentTask->data1C].coord2 = &resource->coordinate;
         setCoordinateRotation(&resource->rotation, &resource->coordinate);
-        drawTaskObject(D_8013AE88->data1C);
+        drawTaskObject(gCurrentTask->data1C);
     }
     if (!D_8013AFD3) {
-        if (--D_8013AE88->data1A == 0) {
-            D_8013AE88->data1A = 0x40;
+        if (--gCurrentTask->data1A == 0) {
+            gCurrentTask->data1A = 0x40;
             setCurrentTaskCallback(updateMovingTaskObject);
         }
     }
@@ -971,26 +971,26 @@ void updateOrbitingTaskObject(void) {
 
 void updateMovingTaskObject(void) {
     CourseOffsetResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (CourseOffsetResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (CourseOffsetResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (!D_8013AFD3) {
-        RotMatrix(&resource->rotation, D_8013AF98);
+        RotMatrix(&resource->rotation, gScratchMatrix0);
         D_8013AF90->vx = 0;
         D_8013AF90->vy = 0;
         D_8013AF90->vz = 8;
-        ApplyMatrix(D_8013AF98, D_8013AF90, D_8013AF88);
-        resource->coordinate.coord.t[0] += D_8013AF88->vx;
-        resource->coordinate.coord.t[2] += D_8013AF88->vz;
-        D_8013AE88->data1A--;
+        ApplyMatrix(gScratchMatrix0, D_8013AF90, gScratchVector0);
+        resource->coordinate.coord.t[0] += gScratchVector0->vx;
+        resource->coordinate.coord.t[2] += gScratchVector0->vz;
+        gCurrentTask->data1A--;
     }
     if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)getRenderCameraIndex())) {
-        D_80129A80[D_8013AE88->data1C].coord2 = &resource->coordinate;
+        D_80129A80[gCurrentTask->data1C].coord2 = &resource->coordinate;
         setCoordinateRotation(&resource->rotation, &resource->coordinate);
-        drawTaskObject(D_8013AE88->data1C);
+        drawTaskObject(gCurrentTask->data1C);
     }
-    if (D_8013AE88->data1A == 0) {
+    if (gCurrentTask->data1A == 0) {
         deleteCurrentTaskSubtree();
     }
 }
@@ -1072,13 +1072,13 @@ void drawPreparedTaskVisualQuad(TaskVisualResource *resource, TaskVisualFrame *f
         resource->vertices[3].z = 0;
     }
 
-    *D_8013AF98 = *D_8013AF9C;
+    *gScratchMatrix0 = *D_8013AF9C;
     for (i = 0; i < 4; i++) {
-        ApplyMatrixSV(D_8013AF98, (SVECTOR *)&resource->vertices[i], (SVECTOR *)&resource->transformedVertices[i]);
+        ApplyMatrixSV(gScratchMatrix0, (SVECTOR *)&resource->vertices[i], (SVECTOR *)&resource->transformedVertices[i]);
     }
     resource->coordinate.flg = 0;
-    GsGetLs(&resource->coordinate, D_8013AF98);
-    GsSetLsMatrix(D_8013AF98);
+    GsGetLs(&resource->coordinate, gScratchMatrix0);
+    GsSetLsMatrix(gScratchMatrix0);
 
     poly = &D_8012967C;
     poly->u0 = resource->frame->u;
@@ -1149,14 +1149,14 @@ void drawCameraFacingTaskVisual(TaskVisualResource *resource, u8 mode) {
         D_8013AF90->vy = D_801241E8[getRenderCameraIndex()].yaw;
         D_8013AF90->vz = 0;
     }
-    RotMatrixYXZ(D_8013AF90, D_8013AF98);
-    ScaleMatrix(D_8013AF98, (VECTOR *)&resource->scaleX);
+    RotMatrixYXZ(D_8013AF90, gScratchMatrix0);
+    ScaleMatrix(gScratchMatrix0, (VECTOR *)&resource->scaleX);
     for (i = 0; i < 4; i++) {
-        ApplyMatrixSV(D_8013AF98, (SVECTOR *)&resource->vertices[i], (SVECTOR *)&resource->transformedVertices[i]);
+        ApplyMatrixSV(gScratchMatrix0, (SVECTOR *)&resource->vertices[i], (SVECTOR *)&resource->transformedVertices[i]);
     }
     resource->coordinate.flg = 0;
-    GsGetLs(&resource->coordinate, D_8013AF98);
-    GsSetLsMatrix(D_8013AF98);
+    GsGetLs(&resource->coordinate, gScratchMatrix0);
+    GsSetLsMatrix(gScratchMatrix0);
     poly = &D_8012967C;
     poly->u0 = resource->frame->u;
     poly->v0 = resource->frame->v;
@@ -1187,11 +1187,11 @@ void initializePickupVisualTask(void) {
                 D_8013B2BC[i].flags &= 0xBF;
             }
         }
-        if (D_8013AE88->resource14 != 0xFFFF) {
+        if (gCurrentTask->resource14 != 0xFFFF) {
             while (1) {}
         }
-        D_8013AE88->resource14 = allocateTaskMemoryBlock();
-        resource = (TaskVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+        gCurrentTask->resource14 = allocateTaskMemoryBlock();
+        resource = (TaskVisualResource *)&gTaskMemoryPool[gCurrentTask->resource14];
         GsInitCoordinate2(0, &resource->coordinate);
         resource->unkC6 = 0x600;
         resource->unkC8 = 0x80;
@@ -1211,10 +1211,10 @@ void updatePickupVisualTask(void) {
     s32 height;
     s16 *heightOffsets;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (TaskVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (TaskVisualResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     prepareTaskVisualQuad(resource, gPickupVisualFrames, 0);
     for (i = D_8013B2B5; i < D_8013B2B5 + D_8013B2B6; i++) {
         if (!(D_8013B2BC[i].flags & 0x40)) {
@@ -1268,11 +1268,11 @@ void updatePickupVisualTask(void) {
 
 void initializeObjectVisualTask(void) {
     TaskVisualResource *resource;
-    if (D_8013AE88->resource14 != 0xFFFF) {
+    if (gCurrentTask->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskMemoryBlock();
-    resource = (TaskVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    gCurrentTask->resource14 = allocateTaskMemoryBlock();
+    resource = (TaskVisualResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     GsInitCoordinate2(0, &resource->coordinate);
     resource->unkC6 = 0x100;
     resource->r0 = resource->g0 = resource->b0 = 0x80;
@@ -1289,10 +1289,10 @@ void updateObjectVisualTask(void) {
     TaskVisualResource *resource;
     u8 i;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (TaskVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (TaskVisualResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     prepareTaskVisualQuad(resource, &gObjectVisualFrameType8, 0);
     for (i = D_8013B2B7; i < D_8013B2B7 + D_8013B2B8; i++) {
         if (isPointWithinCameraForwardRange(D_8013B2BC[i].x, D_8013B2BC[i].z, (s16)getRenderCameraIndex())) {
@@ -1316,11 +1316,11 @@ void updateObjectVisualTask(void) {
 
 void initializeInteractionVisualTask(void) {
     TaskVisualResource *resource;
-    if (D_8013AE88->resource14 != 0xFFFF) {
+    if (gCurrentTask->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskMemoryBlock();
-    resource = (TaskVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    gCurrentTask->resource14 = allocateTaskMemoryBlock();
+    resource = (TaskVisualResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     GsInitCoordinate2(0, &resource->coordinate);
     resource->unkC6 = 0x100;
     resource->r0 = resource->g0 = resource->b0 = 0x80;
@@ -1338,10 +1338,10 @@ void updateInteractionVisualTask(void) {
     u8 i, player;
     s32 height;
     s16 *heightOffsets;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (TaskVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (TaskVisualResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     prepareTaskVisualQuad(resource, &gInteractionVisualFrame, 1);
     for (i = 0; ; i++) {
         if (gInteractionVisualPlacements[i].unk01 == PLACEMENT_END) {
@@ -1386,13 +1386,13 @@ void updateInteractionVisualTask(void) {
 
 void initializeCourseVisualTask(void) {
     TaskVisualResource *resource;
-    if (D_8013AE88->resource14 != 0xFFFF) {
+    if (gCurrentTask->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskMemoryBlock();
-    resource = (TaskVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    gCurrentTask->resource14 = allocateTaskMemoryBlock();
+    resource = (TaskVisualResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     GsInitCoordinate2(0, &resource->coordinate);
-    if (D_8013AFCE == 2) {
+    if (gSelectedCourseIndex == 2) {
         resource->r0 = resource->g0 = resource->b0 = 0x80;
         resource->code = POLY_FT4_CODE;
         resource->scaleX = 0x6000;
@@ -1421,10 +1421,10 @@ void updateCourseVisualTask(void) {
     u8 i;
     s32 height;
     s16 *heightOffsets;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (TaskVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (TaskVisualResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     prepareTaskVisualQuad(resource, gCourseVisualFrames, 0);
     for (i = D_8013B2B9; i < D_8013B2B9 + D_8013B2BA; i++) {
         if (isPointWithinCameraForwardRange(D_8013B2BC[i].x, D_8013B2BC[i].z, (s16)getRenderCameraIndex())) {
@@ -1440,7 +1440,7 @@ void updateCourseVisualTask(void) {
         }
     }
     if (D_8013AFD3 == 0) {
-        if (D_8013AFCE == 9) resource->framePosition += resource->unkC8;
+        if (gSelectedCourseIndex == 9) resource->framePosition += resource->unkC8;
         if (resource->framePosition >= resource->unkC6) resource->framePosition &= 0xFF;
     }
 }
@@ -1449,25 +1449,25 @@ void initializePlacedObjectTask(void) {
     PlacedObjectResource *resource;
     TaskVisualResource *visual;
     if ((s16)getStateAdjustedGameOptionFlag1() == 0) {
-        if ((u32)(D_8013B2BC[D_8013AE88->data18].unk01 - 2) < 2) {
+        if ((u32)(D_8013B2BC[gCurrentTask->data18].unk01 - 2) < 2) {
             deleteCurrentTaskSubtree();
             return;
         }
     }
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (PlacedObjectResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (PlacedObjectResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     GsInitCoordinate2(0, &resource->groundCoordinate);
     GsInitCoordinate2(&resource->groundCoordinate, &resource->coordinate);
-    D_8013AE88->data1A = D_8013B2BC[D_8013AE88->data18].unk01;
-    resource->geometryIndex = D_8013B2BC[D_8013AE88->data18].geometryIndex;
+    gCurrentTask->data1A = D_8013B2BC[gCurrentTask->data18].unk01;
+    resource->geometryIndex = D_8013B2BC[gCurrentTask->data18].geometryIndex;
     resource->rotation.vx = 0;
     resource->rotation.vy = ((GeometryPlacement *)geometryPlacementDataAbsolute)[resource->geometryIndex].angle;
     resource->rotation.vz = 0;
-    resource->groundCoordinate.coord.t[0] = D_8013B2BC[D_8013AE88->data18].x;
-    resource->groundCoordinate.coord.t[2] = D_8013B2BC[D_8013AE88->data18].z;
-    resource->groundCoordinate.coord.t[1] = D_8013B2BC[D_8013AE88->data18].y =
+    resource->groundCoordinate.coord.t[0] = D_8013B2BC[gCurrentTask->data18].x;
+    resource->groundCoordinate.coord.t[2] = D_8013B2BC[gCurrentTask->data18].z;
+    resource->groundCoordinate.coord.t[1] = D_8013B2BC[gCurrentTask->data18].y =
         getCourseHeightAtPoint(resource->geometryIndex, resource->groundCoordinate.coord.t[0],
                       resource->groundCoordinate.coord.t[2]);
     resource->position.x = resource->groundCoordinate.coord.t[0] << 8;
@@ -1475,11 +1475,11 @@ void initializePlacedObjectTask(void) {
     resource->position.z = resource->groundCoordinate.coord.t[2] << 8;
     computeSelectedTriangleAngles(&resource->groundRotation.vx, &resource->groundRotation.vz);
     resource->groundRotation.vy = 0;
-    if ((u32)(D_8013AE88->data1A - 2) < 2) {
-        if (D_8013AE88->resource16 == 0xFFFF) {
+    if ((u32)(gCurrentTask->data1A - 2) < 2) {
+        if (gCurrentTask->resource16 == 0xFFFF) {
             while (1) {}
         }
-        visual = (TaskVisualResource *)&gTaskMemoryPool[D_8013AE88->resource16];
+        visual = (TaskVisualResource *)&gTaskMemoryPool[gCurrentTask->resource16];
         GsInitCoordinate2(0, &visual->coordinate);
         visual->coordinate.coord.t[0] = resource->groundCoordinate.coord.t[0];
         visual->coordinate.coord.t[1] = resource->groundCoordinate.coord.t[1] - 0x50;
@@ -1509,15 +1509,15 @@ void updatePlacedObjectTask(void) {
     u8 reward;
     u8 uses;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (PlacedObjectResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (PlacedObjectResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (isPositionInCameraRange(resource->groundCoordinate.coord.t[0],
                                 resource->groundCoordinate.coord.t[2], (s16)getRenderCameraIndex())) {
-        if ((u32)(D_8013AE88->data1A - 2) < 2) {
+        if ((u32)(gCurrentTask->data1A - 2) < 2) {
             if (gRacePlayers[getRenderCameraIndex()].unk01C >= 100) {
-                if (D_8013AE88->data1A == 2) {
+                if (gCurrentTask->data1A == 2) {
                     model = 17;
                 } else {
                     model = 16;
@@ -1530,31 +1530,31 @@ void updatePlacedObjectTask(void) {
                 D_8013AF90->vz = 0;
                 setCoordinateRotation(D_8013AF90, &resource->groundCoordinate);
                 setCoordinateRotation(&resource->rotation, &resource->coordinate);
-                D_8013AF88->vx = 0x2000;
-                D_8013AF88->vy = 0x2000;
-                D_8013AF88->vz = 0x2000;
-                ScaleMatrix(&resource->coordinate.coord, D_8013AF88);
+                gScratchVector0->vx = 0x2000;
+                gScratchVector0->vy = 0x2000;
+                gScratchVector0->vz = 0x2000;
+                ScaleMatrix(&resource->coordinate.coord, gScratchVector0);
                 drawTaskObject(model);
                 resource->groundCoordinate.coord.t[1] = height;
             }
-            if (D_8013AE88->resource16 == 0xFFFF) {
+            if (gCurrentTask->resource16 == 0xFFFF) {
                 while (1) {}
             }
-            drawCameraFacingTaskVisual((TaskVisualResource *)&gTaskMemoryPool[D_8013AE88->resource16], 0);
+            drawCameraFacingTaskVisual((TaskVisualResource *)&gTaskMemoryPool[gCurrentTask->resource16], 0);
         }
-        D_80129A80[gPlacedObjectModelIds[D_8013AE88->data1A]].coord2 = &resource->coordinate;
+        D_80129A80[gPlacedObjectModelIds[gCurrentTask->data1A]].coord2 = &resource->coordinate;
         setCoordinateRotation(&resource->groundRotation, &resource->groundCoordinate);
         setCoordinateRotation(&resource->rotation, &resource->coordinate);
-        if (D_8013AE88->data1A == 5) {
-            D_8013AF88->vx = 0x3000;
-            D_8013AF88->vy = 0x3000;
-            D_8013AF88->vz = 0x3000;
-            ScaleMatrix(&resource->coordinate.coord, D_8013AF88);
+        if (gCurrentTask->data1A == 5) {
+            gScratchVector0->vx = 0x3000;
+            gScratchVector0->vy = 0x3000;
+            gScratchVector0->vz = 0x3000;
+            ScaleMatrix(&resource->coordinate.coord, gScratchVector0);
         }
-        drawTaskObject(gPlacedObjectModelIds[D_8013AE88->data1A]);
+        drawTaskObject(gPlacedObjectModelIds[gCurrentTask->data1A]);
     }
     if (!D_8013AFD3) {
-        switch (D_8013AE88->data1A) {
+        switch (gCurrentTask->data1A) {
         case 0:
             resolvePlayerCollisionsWithCylinder(&resource->position, 0x6000, 0x10000, 2);
             break;
@@ -1584,7 +1584,7 @@ void updatePlacedObjectTask(void) {
                         buyer->unk01C = balance - 100;
                     }
                     playPlayerSoundEffect(i, 1, 0x901, 0x20);
-                    if (D_8013AE88->data1A == 2) {
+                    if (gCurrentTask->data1A == 2) {
                         player = (RacePlayer *)(i * sizeof(*players) + (u32)players);
                         reward = gPlacedObjectEffectChoices[player->unk935][randomNextObject(player) & 15];
                         player->unk940 = 3;
@@ -1596,18 +1596,18 @@ void updatePlacedObjectTask(void) {
                         if (D_8013AFD8) {
                             itemPlayer->heldItem = 1;
                         }
-                        if (D_8013AFCE == 8 && itemPlayer->unk008 &&
+                        if (gSelectedCourseIndex == 8 && itemPlayer->unk008 &&
                             (s8)itemPlayer->heldItem == uses && (u8)randomNextMain()) {
                             itemPlayer->heldItem = 6;
                         }
                         players[i].unk942 = 4;
                     }
                     createPositionedEffectTask(resource->position.x, resource->position.y, resource->position.z);
-                    D_8013AE88->data1C = 0;
-                    if (D_8013AE88->resource16 == 0xFFFF) {
+                    gCurrentTask->data1C = 0;
+                    if (gCurrentTask->resource16 == 0xFFFF) {
                         while (1) {}
                     }
-                    visual = (PlacedObjectBounceVisual *)&gTaskMemoryPool[D_8013AE88->resource16];
+                    visual = (PlacedObjectBounceVisual *)&gTaskMemoryPool[gCurrentTask->resource16];
                     visual->velocity = -0x800;
                     visual->height = -0x5000;
                     setCurrentTaskCallback(updatePlacedObjectBounceTask);
@@ -1632,35 +1632,35 @@ void updatePlacedObjectBounceTask(void) {
     PlacedObjectResource *resource;
     PlacedObjectBounceVisual *visual;
     u16 i;
-    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    resource = (PlacedObjectResource *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if (D_8013AE88->resource16 == 0xFFFF) { while (1) {} }
-    visual = (PlacedObjectBounceVisual *)&gTaskMemoryPool[D_8013AE88->resource16];
+    if (gCurrentTask->resource14 == 0xFFFF) { while (1) {} }
+    resource = (PlacedObjectResource *)&gTaskMemoryPool[gCurrentTask->resource14];
+    if (gCurrentTask->resource16 == 0xFFFF) { while (1) {} }
+    visual = (PlacedObjectBounceVisual *)&gTaskMemoryPool[gCurrentTask->resource16];
     if (!D_8013AFD3) {
         visual->height += visual->velocity;
-        switch (D_8013AE88->data1C) {
+        switch (gCurrentTask->data1C) {
         case 0: case 1:
             visual->velocity += 0x140;
             if (visual->height >= 0) {
                 visual->height = 0;
-                if (D_8013AE88->data1C == 0) visual->velocity = -0x600;
-                else { visual->velocity = 0; D_8013AE88->data1E = 4; }
-                D_8013AE88->data1C++;
+                if (gCurrentTask->data1C == 0) visual->velocity = -0x600;
+                else { visual->velocity = 0; gCurrentTask->data1E = 4; }
+                gCurrentTask->data1C++;
             }
             break;
         case 2:
-            if (--D_8013AE88->data1E == 0) {
+            if (--gCurrentTask->data1E == 0) {
                 visual->velocity = -0x500;
-                startRotatingQuadEffectTask(D_8013AE88->data1A - 2, (VECTOR *)&resource->position, resource->groundRotation.vx, resource->rotation.vy, resource->groundRotation.vz);
-                D_8013AE88->data1E = 16;
-                D_8013AE88->data1C++;
+                startRotatingQuadEffectTask(gCurrentTask->data1A - 2, (VECTOR *)&resource->position, resource->groundRotation.vx, resource->rotation.vy, resource->groundRotation.vz);
+                gCurrentTask->data1E = 16;
+                gCurrentTask->data1C++;
             }
             break;
         case 3:
-            if (--D_8013AE88->data1E == 0) D_8013AE88->data1C++;
+            if (--gCurrentTask->data1E == 0) gCurrentTask->data1C++;
             break;
         }
-        if (D_8013AE88->data1C != 0 || visual->velocity > 0) {
+        if (gCurrentTask->data1C != 0 || visual->velocity > 0) {
             for (i = 0; i < D_8013AFD2; i++) {
                 pushPlayerOutOfCylinder(&resource->position, 0x3000, 0x6000, (s16)i);
             }
@@ -1668,18 +1668,18 @@ void updatePlacedObjectBounceTask(void) {
     }
     visual->coordinate.coord.t[1] = resource->groundCoordinate.coord.t[1] + (visual->height >> 8);
     drawCameraFacingTaskVisual((TaskVisualResource *)visual, 0);
-    if (D_8013AE88->data1C == 4) setCurrentTaskCallback(updatePlacedObjectTask);
+    if (gCurrentTask->data1C == 4) setCurrentTaskCallback(updatePlacedObjectTask);
 }
 
 void initializeBobbingTrailEmitterTask(void) {
     BobbingTrailEmitterResource *resource;
     u16 angle;
 
-    if (D_8013AE88->resource14 != 0xFFFF) {
+    if (gCurrentTask->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskMemoryBlock();
-    resource = (BobbingTrailEmitterResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    gCurrentTask->resource14 = allocateTaskMemoryBlock();
+    resource = (BobbingTrailEmitterResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     GsInitCoordinate2(0, &resource->coordinate);
 
     resource->geometryIndex = 0x59;
@@ -1704,8 +1704,8 @@ void initializeBobbingTrailEmitterTask(void) {
 void updateBobbingTrailEmitterTask(void) {
     BobbingTrailEmitterResource *resource;
     EmitterTrailResource *trail;
-    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    resource = (BobbingTrailEmitterResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    if (gCurrentTask->resource14 == 0xFFFF) { while (1) {} }
+    resource = (BobbingTrailEmitterResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)getRenderCameraIndex())) {
         if (!D_8013AFD3) {
             resolvePlayerCollisionsWithCylinder(&resource->position, 0x7000, 0x18000, 2);
@@ -1719,9 +1719,9 @@ void updateBobbingTrailEmitterTask(void) {
                 resource->countdown = 15;
                 playPositionalSoundEffect(resource->position.x, resource->position.y, resource->position.z, 1, 0xA00, 0x18);
                 if ((s16)tryCreateChildTaskWith20SlotsReserved(initializeVisualTrailTask) == 1) {
-                    D_8013AE8C->data18 = 0xFF;
-                    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-                    trail = (EmitterTrailResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
+                    gCreatedTask->data18 = 0xFF;
+                    gCreatedTask->resource14 = allocateTaskMemoryBlock();
+                    trail = (EmitterTrailResource *)&gTaskMemoryPool[gCreatedTask->resource14];
                     GsInitCoordinate2(0, &trail->coordinate);
                     trail->geometryIndex = resource->geometryIndex;
                     trail->coordinate.coord.t[0] = resource->coordinate.coord.t[0];
@@ -1733,26 +1733,26 @@ void updateBobbingTrailEmitterTask(void) {
         }
         D_80129A80[10].coord2 = &resource->coordinate;
         setCoordinateRotation(&resource->rotation, &resource->coordinate);
-        D_8013AF88->vx = 0x3000;
-        D_8013AF88->vy = 0x3000;
-        D_8013AF88->vz = 0x3000;
-        ScaleMatrix(&resource->coordinate.coord, D_8013AF88);
+        gScratchVector0->vx = 0x3000;
+        gScratchVector0->vy = 0x3000;
+        gScratchVector0->vz = 0x3000;
+        ScaleMatrix(&resource->coordinate.coord, gScratchVector0);
         drawTaskObject(10);
     }
 }
 
 void initializeProximityEmitterTask(void) {
     ProximityEmitterResource *resource;
-    if (D_8013AE88->resource14 != 0xFFFF) {
+    if (gCurrentTask->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskMemoryBlock();
-    resource = (ProximityEmitterResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    gCurrentTask->resource14 = allocateTaskMemoryBlock();
+    resource = (ProximityEmitterResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     GsInitCoordinate2(0, &resource->coordinate);
-    resource->coordinate.coord.t[0] = gProximityEmitterPlacements[D_8013AE88->data18].x;
-    resource->coordinate.coord.t[1] = gProximityEmitterPlacements[D_8013AE88->data18].y;
-    resource->coordinate.coord.t[2] = gProximityEmitterPlacements[D_8013AE88->data18].z;
-    resource->geometryIndex = gProximityEmitterPlacements[D_8013AE88->data18].geometryIndex;
+    resource->coordinate.coord.t[0] = gProximityEmitterPlacements[gCurrentTask->data18].x;
+    resource->coordinate.coord.t[1] = gProximityEmitterPlacements[gCurrentTask->data18].y;
+    resource->coordinate.coord.t[2] = gProximityEmitterPlacements[gCurrentTask->data18].z;
+    resource->geometryIndex = gProximityEmitterPlacements[gCurrentTask->data18].geometryIndex;
     resource->unkC0 = 0;
     resource->angle = ((GeometryPlacement *)geometryPlacementDataAbsolute)[resource->geometryIndex].angle + 0x400;
     resource->unkC4 = 0;
@@ -1762,10 +1762,10 @@ void initializeProximityEmitterTask(void) {
 
 void updateProximityEmitterTask(void) {
     ProximityEmitterResource *resource;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (ProximityEmitterResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (ProximityEmitterResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (!D_8013AFD3) {
         if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)getRenderCameraIndex())) {
             if (--resource->countdown == 0) {
@@ -1781,9 +1781,9 @@ void initializeProximityParticleTask(void) {
     ProximityEmitterResource *parent;
     s32 xOffset, zOffset;
     s32 sine, cosine;
-    if (D_8013AE88->resource14 != 0xFFFF) { while (1) {} }
-    D_8013AE88->resource14 = allocateTaskMemoryBlock();
-    resource = (ProximityParticleResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    if (gCurrentTask->resource14 != 0xFFFF) { while (1) {} }
+    gCurrentTask->resource14 = allocateTaskMemoryBlock();
+    resource = (ProximityParticleResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
     parent = (ProximityEmitterResource *)&gTaskMemoryPool[D_8013AE98->resource14];
     GsInitCoordinate2(0, &resource->coordinate);
@@ -1802,8 +1802,8 @@ void initializeProximityParticleTask(void) {
     resource->velocityZ = (cosine * 2560) / 4096;
     resource->velocityY = -4096;
     resource->gravity = 80;
-    D_8013AE88->data18 = 0;
-    D_8013AE88->data1A = 90;
+    gCurrentTask->data18 = 0;
+    gCurrentTask->data1A = 90;
     setCurrentTaskCallback(updateProximityParticleTask);
 }
 
@@ -1811,10 +1811,10 @@ void updateProximityParticleTask(void) {
     ProximityParticleResource *resource;
     s32 groundY;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (ProximityParticleResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (ProximityParticleResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (!D_8013AFD3) {
         resource->rotation.vx += 0x40;
         resource->velocityY += resource->gravity;
@@ -1825,22 +1825,22 @@ void updateProximityParticleTask(void) {
         resource->coordinate.coord.t[1] = resource->position.y >> 8;
         resource->coordinate.coord.t[2] = resource->position.z >> 8;
 
-        if (D_8013AE88->data1A == 0) {
+        if (gCurrentTask->data1A == 0) {
             if (resource->velocityY > 0) {
                 resource->geometryIndex = getAdjacentGeometryRegionForPoint(resource->geometryIndex,
                     resource->coordinate.coord.t[0], resource->coordinate.coord.t[2]);
                 groundY = getCourseHeightAtPoint(resource->geometryIndex, resource->coordinate.coord.t[0],
                     resource->coordinate.coord.t[2]) - 0x10;
                 if (resource->coordinate.coord.t[1] > groundY) {
-                    if (!D_8013AE88->data18 || !getCourseSurfaceAtPoint(resource->geometryIndex,
+                    if (!gCurrentTask->data18 || !getCourseSurfaceAtPoint(resource->geometryIndex,
                             resource->coordinate.coord.t[0], resource->coordinate.coord.t[2])) {
                         resource->coordinate.coord.t[1] = groundY;
                         resource->position.y = groundY << 8;
                         resource->velocityY = -(resource->velocityY * 3 / 5);
                         playPositionalSoundEffect(resource->position.x, resource->position.y,
                             resource->position.z, 1, 0xA01, 0x20);
-                        D_8013AE88->data18 = 1;
-                        D_8013AE88->data1C = 6;
+                        gCurrentTask->data18 = 1;
+                        gCurrentTask->data1C = 6;
                     } else {
                         deleteCurrentTaskSubtree();
                         return;
@@ -1848,7 +1848,7 @@ void updateProximityParticleTask(void) {
                 }
             }
         } else {
-            D_8013AE88->data1A--;
+            gCurrentTask->data1A--;
         }
     }
 
@@ -1858,10 +1858,10 @@ void updateProximityParticleTask(void) {
             if (resource->velocityY > 0) {
                 addPlayerFlagsWithinRadius(&resource->position, 0x5C00, 0x20);
             }
-            if (D_8013AE88->data18) {
-                if (D_8013AE88->data1C) {
+            if (gCurrentTask->data18) {
+                if (gCurrentTask->data1C) {
                     resolvePlayerCollisionsWithCylinder(&resource->position, 0x4000, 0x6000, 2);
-                    D_8013AE88->data1C--;
+                    gCurrentTask->data1C--;
                 }
             }
         }
@@ -1873,11 +1873,11 @@ void updateProximityParticleTask(void) {
 
 void initializeMovingVisualTask(void) {
     TaskVisualResource *resource;
-    if (D_8013AE88->resource14 != 0xFFFF) {
+    if (gCurrentTask->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskMemoryBlock();
-    resource = (TaskVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    gCurrentTask->resource14 = allocateTaskMemoryBlock();
+    resource = (TaskVisualResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     GsInitCoordinate2(0, &resource->coordinate);
     resource->unkC6 = 0x800;
     resource->unkC8 = 0x80;
@@ -1887,11 +1887,11 @@ void initializeMovingVisualTask(void) {
     resource->scaleX = 0x1000;
     resource->scaleY = 0x1000;
     resource->scaleZ = 0x1000;
-    resource->unkC4 = gMovingVisualPlacements[D_8013AE88->data18].geometryIndex;
-    resource->position.x = gMovingVisualPlacements[D_8013AE88->data18].startX;
-    resource->position.z = gMovingVisualPlacements[D_8013AE88->data18].startZ;
+    resource->unkC4 = gMovingVisualPlacements[gCurrentTask->data18].geometryIndex;
+    resource->position.x = gMovingVisualPlacements[gCurrentTask->data18].startX;
+    resource->position.z = gMovingVisualPlacements[gCurrentTask->data18].startZ;
     resource->velocityY = getXZHeading(resource->position.x, resource->position.z,
-        gMovingVisualPlacements[D_8013AE88->data18].endX, gMovingVisualPlacements[D_8013AE88->data18].endZ);
+        gMovingVisualPlacements[gCurrentTask->data18].endX, gMovingVisualPlacements[gCurrentTask->data18].endZ);
     resource->unkDC = 0x10;
     resource->unkE0 = 0x80;
     resource->unkD8 = 0;
@@ -1913,22 +1913,22 @@ void updateMovingVisualTask(void) {
     s16 turn;
     s32 dx, dz;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (TaskVisualResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (TaskVisualResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     cameraIndex = getRenderCameraIndex();
     if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0],
             resource->coordinate.coord.t[2], (s16)cameraIndex)) {
         if (!D_8013AFD3) {
             if (resource->groundY) {
                 turn = getXZHeading(resource->position.x, resource->position.z,
-                    gMovingVisualPlacements[D_8013AE88->data18].startX,
-                    gMovingVisualPlacements[D_8013AE88->data18].startZ);
+                    gMovingVisualPlacements[gCurrentTask->data18].startX,
+                    gMovingVisualPlacements[gCurrentTask->data18].startZ);
             } else {
                 turn = getXZHeading(resource->position.x, resource->position.z,
-                    gMovingVisualPlacements[D_8013AE88->data18].endX,
-                    gMovingVisualPlacements[D_8013AE88->data18].endZ);
+                    gMovingVisualPlacements[gCurrentTask->data18].endX,
+                    gMovingVisualPlacements[gCurrentTask->data18].endZ);
             }
             turn = (turn - resource->velocityY) & 0xFFF;
             if (turn > 0x800) {
@@ -1949,11 +1949,11 @@ void updateMovingVisualTask(void) {
                 resource->position.x >> 8, resource->position.z >> 8) << 8;
 
             if (resource->groundY) {
-                dx = resource->position.x - gMovingVisualPlacements[D_8013AE88->data18].startX;
-                dz = resource->position.z - gMovingVisualPlacements[D_8013AE88->data18].startZ;
+                dx = resource->position.x - gMovingVisualPlacements[gCurrentTask->data18].startX;
+                dz = resource->position.z - gMovingVisualPlacements[gCurrentTask->data18].startZ;
             } else {
-                dx = resource->position.x - gMovingVisualPlacements[D_8013AE88->data18].endX;
-                dz = resource->position.z - gMovingVisualPlacements[D_8013AE88->data18].endZ;
+                dx = resource->position.x - gMovingVisualPlacements[gCurrentTask->data18].endX;
+                dz = resource->position.z - gMovingVisualPlacements[gCurrentTask->data18].endZ;
             }
             if (dx < 0) {
                 dx = -dx;
@@ -2019,33 +2019,33 @@ void resolvePlayerRegionCollision(RacePlayer *player, PlayerCollisionRegion *reg
         D_8013AF90->vx = region->pitch;
         D_8013AF90->vy = -region->yaw;
         D_8013AF90->vz = 0;
-        RotMatrixYXZ(D_8013AF90, D_8013AF98);
-        D_8013AF88->vx = player->x - region->endpoints[0].position.x;
-        D_8013AF88->vy = 0;
-        D_8013AF88->vz = player->z - region->endpoints[0].position.z;
-        ApplyMatrixLV(D_8013AF98, D_8013AF88, D_8013AF8C);
+        RotMatrixYXZ(D_8013AF90, gScratchMatrix0);
+        gScratchVector0->vx = player->x - region->endpoints[0].position.x;
+        gScratchVector0->vy = 0;
+        gScratchVector0->vz = player->z - region->endpoints[0].position.z;
+        ApplyMatrixLV(gScratchMatrix0, gScratchVector0, D_8013AF8C);
         if (D_8013AF8C->vx != 0) {
             D_8013AF90->vx = 0;
             D_8013AF90->vy = region->yaw;
             D_8013AF90->vz = 0;
-            RotMatrix(D_8013AF90, D_8013AF98);
+            RotMatrix(D_8013AF90, gScratchMatrix0);
             D_8013AF90->vx = -D_8013AF8C->vx;
             D_8013AF90->vy = 0;
             D_8013AF90->vz = 0;
-            ApplyMatrix(D_8013AF98, D_8013AF90, D_8013AF88);
-            player->x += D_8013AF88->vx;
-            player->z += D_8013AF88->vz;
+            ApplyMatrix(gScratchMatrix0, D_8013AF90, gScratchVector0);
+            player->x += gScratchVector0->vx;
+            player->z += gScratchVector0->vz;
         }
         D_8013AF90->vx = region->pitch;
         D_8013AF90->vy = -region->yaw;
         D_8013AF90->vz = 0;
-        RotMatrixYXZ(D_8013AF90, D_8013AF98);
+        RotMatrixYXZ(D_8013AF90, gScratchMatrix0);
         dx = (player->x - region->endpoints[0].position.x) >> 5;
         dz = (player->z - region->endpoints[0].position.z) >> 5;
-        D_8013AF88->vx = 0;
-        D_8013AF88->vy = 0;
-        D_8013AF88->vz = SquareRoot0(dx * dx + dz * dz) << 5;
-        ApplyMatrixLV(D_8013AF98, D_8013AF88, D_8013AF8C);
+        gScratchVector0->vx = 0;
+        gScratchVector0->vy = 0;
+        gScratchVector0->vz = SquareRoot0(dx * dx + dz * dz) << 5;
+        ApplyMatrixLV(gScratchMatrix0, gScratchVector0, D_8013AF8C);
         slopeHeight = D_8013AF8C->vy + 0x3000;
         player->y = region->endpoints[0].position.y - slopeHeight;
         courseHeight = player->unk92E;
@@ -2073,11 +2073,11 @@ void resolvePlayerRegionCollision(RacePlayer *player, PlayerCollisionRegion *reg
         D_8013AF90->vx = region->pitch;
         D_8013AF90->vy = -region->yaw;
         D_8013AF90->vz = 0;
-        RotMatrixYXZ(D_8013AF90, D_8013AF98);
-        D_8013AF88->vx = player->x - region->endpoints[0].position.x;
-        D_8013AF88->vy = player->y - region->endpoints[0].position.y - 0x2800;
-        D_8013AF88->vz = player->z - region->endpoints[0].position.z;
-        ApplyMatrixLV(D_8013AF98, D_8013AF88, D_8013AF8C);
+        RotMatrixYXZ(D_8013AF90, gScratchMatrix0);
+        gScratchVector0->vx = player->x - region->endpoints[0].position.x;
+        gScratchVector0->vy = player->y - region->endpoints[0].position.y - 0x2800;
+        gScratchVector0->vz = player->z - region->endpoints[0].position.z;
+        ApplyMatrixLV(gScratchMatrix0, gScratchVector0, D_8013AF8C);
         localX = D_8013AF8C->vx;
         if (localX < -0x1C00 - player->unk0AC || localX > player->unk0AC + 0x1C00) {
             return;
@@ -2113,13 +2113,13 @@ void resolvePlayerRegionCollision(RacePlayer *player, PlayerCollisionRegion *reg
             D_8013AF90->vx = 0;
             D_8013AF90->vy = region->yaw;
             D_8013AF90->vz = 0;
-            RotMatrix(D_8013AF90, D_8013AF98);
+            RotMatrix(D_8013AF90, gScratchMatrix0);
             D_8013AF90->vx = correction;
             D_8013AF90->vy = 0;
             D_8013AF90->vz = 0;
-            ApplyMatrix(D_8013AF98, D_8013AF90, D_8013AF88);
-            player->x += D_8013AF88->vx;
-            player->z += D_8013AF88->vz;
+            ApplyMatrix(gScratchMatrix0, D_8013AF90, gScratchVector0);
+            player->x += gScratchVector0->vx;
+            player->z += gScratchVector0->vz;
         }
     }
 }
@@ -2130,7 +2130,7 @@ void updateActivePlayerRegionCollisions(void) {
     RacePlayer *players;
     if (!D_8013AFD3) {
         i = 0;
-        region = &D_80129A18[D_8013AE88->data18];
+        region = &D_80129A18[gCurrentTask->data18];
         players = gRacePlayers;
         do {
             if (players[i].isActive != 0) {
@@ -2145,20 +2145,20 @@ void initializeCollectibleTask(void) {
     PickupResource *resource;
     s32 height;
     s16 *heightOffsets;
-    if (D_8013AE88->resource14 != 0xFFFF) {
+    if (gCurrentTask->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskMemoryBlock();
-    resource = (PickupResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    gCurrentTask->resource14 = allocateTaskMemoryBlock();
+    resource = (PickupResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     GsInitCoordinate2(0, &resource->coordinate);
-    resource->geometryIndex = D_8013B2C0[D_8013AE88->data18].geometryIndex;
+    resource->geometryIndex = D_8013B2C0[gCurrentTask->data18].geometryIndex;
     resource->rotation.vx = 0;
     resource->rotation.vy = ((GeometryPlacement *)geometryPlacementDataAbsolute)[resource->geometryIndex].angle;
     resource->rotation.vz = 0;
-    resource->coordinate.coord.t[0] = D_8013B2C0[D_8013AE88->data18].x;
-    resource->coordinate.coord.t[2] = D_8013B2C0[D_8013AE88->data18].z;
+    resource->coordinate.coord.t[0] = D_8013B2C0[gCurrentTask->data18].x;
+    resource->coordinate.coord.t[2] = D_8013B2C0[gCurrentTask->data18].z;
     height = getCourseHeightAtPoint(resource->geometryIndex, resource->coordinate.coord.t[0], resource->coordinate.coord.t[2]);
-    D_8013B2C0[D_8013AE88->data18].y = height;
+    D_8013B2C0[gCurrentTask->data18].y = height;
     resource->coordinate.coord.t[1] = height;
     resource->position.x = resource->coordinate.coord.t[0] << 8;
     resource->position.y = resource->coordinate.coord.t[1] << 8;
@@ -2174,8 +2174,8 @@ void initializeCollectibleTask(void) {
 void updateCollectibleTask(void) {
     PickupResource *resource;
     u16 i;
-    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    resource = (PickupResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    if (gCurrentTask->resource14 == 0xFFFF) { while (1) {} }
+    resource = (PickupResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (isPositionInCameraRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)getRenderCameraIndex())) {
         D_80129A80[10].coord2 = &resource->coordinate;
         setCoordinateRotation(&resource->rotation, &resource->coordinate);
@@ -2188,8 +2188,8 @@ void updateCollectibleTask(void) {
                     gRacePlayers[D_8012450C[i].location.player.playerIndex].scoreAttackPointTotal++;
                     playSoundEffect(1, 0xF00, 0x20);
                     createNineIndexedChildTasks(0x15, 1);
-                    D_8013AE88->callback = deleteCurrentTask;
-                    D_8013AE88->unk10 |= 1;
+                    gCurrentTask->callback = deleteCurrentTask;
+                    gCurrentTask->unk10 |= 1;
                     break;
                 }
             }
@@ -2199,20 +2199,20 @@ void updateCollectibleTask(void) {
 
 void initializeFallingTaskObject(void) {
     FallingTaskResource *resource;
-    if (D_8013AE88->resource14 != 0xFFFF) {
+    if (gCurrentTask->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskMemoryBlock();
-    resource = (FallingTaskResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    gCurrentTask->resource14 = allocateTaskMemoryBlock();
+    resource = (FallingTaskResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     GsInitCoordinate2(0, &resource->coordinate);
-    D_8013AE88->data1A = D_8013B2BC[D_8013AE88->data18].unk01;
-    resource->geometryIndex = gRacePlayers[D_8013AE88->data18].unk92E;
+    gCurrentTask->data1A = D_8013B2BC[gCurrentTask->data18].unk01;
+    resource->geometryIndex = gRacePlayers[gCurrentTask->data18].unk92E;
     resource->rotation.vx = 0;
     resource->rotation.vy = 0;
     resource->rotation.vz = 0;
-    resource->position.x = gRacePlayers[D_8013AE88->data18].x;
-    resource->position.y = gRacePlayers[D_8013AE88->data18].y - 0x2000;
-    resource->position.z = gRacePlayers[D_8013AE88->data18].z;
+    resource->position.x = gRacePlayers[gCurrentTask->data18].x;
+    resource->position.y = gRacePlayers[gCurrentTask->data18].y - 0x2000;
+    resource->position.z = gRacePlayers[gCurrentTask->data18].z;
     resource->coordinate.coord.t[0] = resource->position.x >> 8;
     resource->coordinate.coord.t[1] = resource->position.y >> 8;
     resource->coordinate.coord.t[2] = resource->position.z >> 8;
@@ -2225,10 +2225,10 @@ void initializeFallingTaskObject(void) {
 void updateFallingTaskObject(void) {
     FallingTaskResource *resource;
     u8 landed = 0;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (FallingTaskResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (FallingTaskResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (!D_8013AFD3) {
         resource->verticalVelocity += 0x180;
         resource->position.y += resource->verticalVelocity;
@@ -2246,7 +2246,7 @@ void updateFallingTaskObject(void) {
         drawTaskObject(9);
     }
     if (landed) {
-        D_8013AE88->data1A = 0x708;
+        gCurrentTask->data1A = 0x708;
         setCurrentTaskCallback(updateLandedTaskObject);
     }
 }
@@ -2254,12 +2254,12 @@ void updateFallingTaskObject(void) {
 void updateLandedTaskObject(void) {
     FallingTaskResource *resource;
     u16 i;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (FallingTaskResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (FallingTaskResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (!D_8013AFD3) {
-        if (--D_8013AE88->data1A == 0) {
+        if (--gCurrentTask->data1A == 0) {
             deleteCurrentTaskSubtree();
             return;
         }
@@ -2280,20 +2280,20 @@ void updateLandedTaskObject(void) {
 void initializeOrbitingTaskObject(void) {
     OrbitingTaskResource *resource;
     u16 i;
-    if (D_8013AE88->resource14 != 0xFFFF) {
+    if (gCurrentTask->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskMemoryBlock();
-    resource = (OrbitingTaskResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    gCurrentTask->resource14 = allocateTaskMemoryBlock();
+    resource = (OrbitingTaskResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     GsInitCoordinate2(0, &resource->groundCoordinate);
     GsInitCoordinate2(&resource->groundCoordinate, &resource->coordinate);
     resource->rotation.vx = 0;
     resource->rotation.vy = 0;
     resource->rotation.vz = 0;
-    resource->phase = (0x1000 / D_8013AE88->data1A) * D_8013AE88->data1C;
-    resource->geometryIndex = gOrbitingTaskPlacements[D_8013AE88->data18].geometryIndex;
-    resource->groundCoordinate.coord.t[0] = gOrbitingTaskPlacements[D_8013AE88->data18].x;
-    resource->groundCoordinate.coord.t[2] = gOrbitingTaskPlacements[D_8013AE88->data18].z;
+    resource->phase = (0x1000 / gCurrentTask->data1A) * gCurrentTask->data1C;
+    resource->geometryIndex = gOrbitingTaskPlacements[gCurrentTask->data18].geometryIndex;
+    resource->groundCoordinate.coord.t[0] = gOrbitingTaskPlacements[gCurrentTask->data18].x;
+    resource->groundCoordinate.coord.t[2] = gOrbitingTaskPlacements[gCurrentTask->data18].z;
     resource->groundCoordinate.coord.t[1] = getCourseHeightAtPoint(resource->geometryIndex,
         resource->groundCoordinate.coord.t[0], resource->groundCoordinate.coord.t[2]);
     computeSelectedTriangleAngles(&resource->groundRotation.vx, &resource->groundRotation.vz);
@@ -2311,12 +2311,12 @@ void updateOrbitingObstacleTask(void) {
     s32 x, y, z;
     u16 trackHeading;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
     active = 0;
     i = active;
-    resource = (OrbitingTaskResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (OrbitingTaskResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (D_8013AFCD != 0) {
         do {
             if ((u32)((u16)gRacePlayers[i].unk92E - 91) < 13) {
@@ -2329,7 +2329,7 @@ void updateOrbitingObstacleTask(void) {
         return;
     }
     if (!D_8013AFD3) {
-        if (D_8013AE88->data18 == 0) {
+        if (gCurrentTask->data18 == 0) {
             resource->phase += 24;
             resource->rotation.vy += 96;
         } else {
@@ -2337,11 +2337,11 @@ void updateOrbitingObstacleTask(void) {
             resource->rotation.vy -= 96;
         }
         resource->groundCoordinate.coord.t[0] =
-            gOrbitingTaskPlacements[D_8013AE88->data18].x
-            + rsin(resource->phase) * gOrbitingTaskPlacements[D_8013AE88->data18].radius / 4096;
+            gOrbitingTaskPlacements[gCurrentTask->data18].x
+            + rsin(resource->phase) * gOrbitingTaskPlacements[gCurrentTask->data18].radius / 4096;
         resource->groundCoordinate.coord.t[2] =
-            gOrbitingTaskPlacements[D_8013AE88->data18].z
-            + rcos(resource->phase) * gOrbitingTaskPlacements[D_8013AE88->data18].radius / 4096;
+            gOrbitingTaskPlacements[gCurrentTask->data18].z
+            + rcos(resource->phase) * gOrbitingTaskPlacements[gCurrentTask->data18].radius / 4096;
         resource->groundCoordinate.coord.t[1] = getCourseHeightAtPoint(resource->geometryIndex,
             resource->groundCoordinate.coord.t[0], resource->groundCoordinate.coord.t[2]);
         resource->position.x = resource->groundCoordinate.coord.t[0] << 8;
@@ -2384,8 +2384,8 @@ void updateOrbitingObstacleTask(void) {
         resource->groundCoordinate.coord.t[2], (s16)getRenderCameraIndex())) {
         setCoordinateRotation(&resource->groundRotation, &resource->groundCoordinate);
         setCoordinateRotation(&resource->rotation, &resource->coordinate);
-        GsGetLs(&resource->coordinate, D_8013AF98);
-        GsSetLsMatrix(D_8013AF98);
+        GsGetLs(&resource->coordinate, gScratchMatrix0);
+        GsSetLsMatrix(gScratchMatrix0);
         if (getRenderCameraIndex()) {
             drawProjectedModelPrimitives(gOptionalCourseModels[0], &D_800EC0B8[D_8013AF78], 2, 1);
         } else {
@@ -2402,7 +2402,7 @@ void initializeCourseUnlockScene(void) {
     s32 headingTarget;
     s16 i;
 
-    index = D_80123D80[D_8013AFCE].unk00;
+    index = D_80123D80[gSelectedCourseIndex].unk00;
     vertices = (CourseGeometryVertex *)D_8013B1EC;
     regionOffset = index * (s32)sizeof(*region);
     region = (GeometryRegion *)(regionOffset + (u32)D_8013B1F4);
@@ -2414,13 +2414,13 @@ void initializeCourseUnlockScene(void) {
         D_80129C60[26].coord.t[0], D_80129C60[26].coord.t[2]);
     D_8012A5C0[26].vz = 0;
     D_8012A5C0[26].vx = 0;
-    headingTarget = (s32)D_80123D80[D_8013AFCE].unk18[10] >> 8;
+    headingTarget = (s32)D_80123D80[gSelectedCourseIndex].unk18[10] >> 8;
     D_8012A5C0[26].vy = getXZHeading(D_80129C60[26].coord.t[0], D_80129C60[26].coord.t[2],
         headingTarget, headingTarget);
 
     createChildTaskWithReserve(copySlot26TransformToCurrentTaskObject);
-    D_8013AE8C->data18 = D_8013AE88->data18 + 26;
-    D_8013AE88->data18 = 26;
+    gCreatedTask->data18 = gCurrentTask->data18 + 26;
+    gCurrentTask->data18 = 26;
     D_801241E8[0].pitch = 0x20;
     D_801241E8[0].unk10 = -0x180;
     D_801241E8[0].yaw = D_8012A5C0[26].vy;
@@ -2437,18 +2437,18 @@ void initializeCourseUnlockScene(void) {
 }
 
 void updateAndDrawCurrentTaskObject(void) {
-    setCoordinateRotation(&D_8012A5C0[D_8013AE88->data18],
-                          &D_80129C60[D_8013AE88->data18]);
-    drawTaskObject(D_8013AE88->data18);
+    setCoordinateRotation(&D_8012A5C0[gCurrentTask->data18],
+                          &D_80129C60[gCurrentTask->data18]);
+    drawTaskObject(gCurrentTask->data18);
 }
 
 void copySlot26TransformToCurrentTaskObject(void) {
-    D_80129C60[D_8013AE88->data18].coord.t[0] = D_80129C60[26].coord.t[0];
-    D_80129C60[D_8013AE88->data18].coord.t[1] = D_80129C60[26].coord.t[1];
-    D_80129C60[D_8013AE88->data18].coord.t[2] = D_80129C60[26].coord.t[2];
-    D_8012A5C0[D_8013AE88->data18].vx = D_8012A5C0[26].vx;
-    D_8012A5C0[D_8013AE88->data18].vy = D_8012A5C0[26].vy;
-    D_8012A5C0[D_8013AE88->data18].vz = D_8012A5C0[26].vz;
+    D_80129C60[gCurrentTask->data18].coord.t[0] = D_80129C60[26].coord.t[0];
+    D_80129C60[gCurrentTask->data18].coord.t[1] = D_80129C60[26].coord.t[1];
+    D_80129C60[gCurrentTask->data18].coord.t[2] = D_80129C60[26].coord.t[2];
+    D_8012A5C0[gCurrentTask->data18].vx = D_8012A5C0[26].vx;
+    D_8012A5C0[gCurrentTask->data18].vy = D_8012A5C0[26].vy;
+    D_8012A5C0[gCurrentTask->data18].vz = D_8012A5C0[26].vz;
     setCurrentTaskCallback(updateAndDrawCurrentTaskObject);
 }
 
@@ -2611,7 +2611,7 @@ void updateCurrentPlayerCourseTrigger(void) {
     s32 mask;
     if (currentPlayerAbsolute->unk128 & 0x1000) currentPlayerAbsolute->unk948 = 0;
     currentPlayerAbsolute->unk950 = 0;
-    record = gCourseTriggers[D_8013AFCE];
+    record = gCourseTriggers[gSelectedCourseIndex];
     for (;; record++, i++) {
         if (record->geometryIndex == -1) return;
         mask = 1 << i;
@@ -2638,7 +2638,7 @@ s32 updatePlayerField94CFromSelectedTable(u16 tableIndex, s16 sampleIndex,
     s32 delta;
     RacePlayer *player;
 
-    delta = D_8012BBB4[D_8013AFCE][tableIndex][sampleIndex] * 20;
+    delta = D_8012BBB4[gSelectedCourseIndex][tableIndex][sampleIndex] * 20;
     player = &gRacePlayers[playerIndex];
     delta -= player->unk94C;
     if (delta > 30) {
@@ -2651,7 +2651,7 @@ s32 updatePlayerField94CFromSelectedTable(u16 tableIndex, s16 sampleIndex,
 }
 
 void resetSelectedRecordStates(void) {
-    SelectedStateRecord *record = D_8012C6F4[D_8013AFCE];
+    SelectedStateRecord *record = D_8012C6F4[gSelectedCourseIndex];
 
     for (;;) {
         if (record->state == -2) {
@@ -2665,7 +2665,7 @@ void resetSelectedRecordStates(void) {
 void captureSelectedPlayerStates(void) {
     s8 split = 0;
     s32 i = 0;
-    SelectedStateRecord *record = D_8012C6F4[D_8013AFCE];
+    SelectedStateRecord *record = D_8012C6F4[gSelectedCourseIndex];
     for (;; record++, i++) {
         GameTask *task;
         u16 inputIndex;
@@ -2700,7 +2700,7 @@ done:
 
 s32 restoreSelectedPlayerState(void) {
     s32 i = 0;
-    SelectedStateRecord *record = D_8012C6F4[D_8013AFCE];
+    SelectedStateRecord *record = D_8012C6F4[gSelectedCourseIndex];
     for (;;) {
         if (record->state == -2) return 0;
         if (record->state != -1) {
@@ -2728,7 +2728,7 @@ s32 restoreSelectedPlayerState(void) {
 }
 
 s32 hasCapturedSelectedPlayerState(void) {
-    const SelectedStateRecord *record = D_8012C6F4[D_8013AFCE];
+    const SelectedStateRecord *record = D_8012C6F4[gSelectedCourseIndex];
 
     for (;; record++) {
         if (record->state == -2) {

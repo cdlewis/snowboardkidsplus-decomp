@@ -22,7 +22,7 @@ extern MenuRgbColor gMenuColorCycleColor __attribute__((section(".data")));
 extern u16 D_8013AF78 __attribute__((section(".data")));
 extern u8 D_8013AFCD __attribute__((section(".data")));
 extern u8 D_8013AFE2 __attribute__((section(".data")));
-extern GameTask *D_8013AE88 __attribute__((section(".data")));
+extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *D_8013AE98 __attribute__((section(".data")));
 
 extern const u16 D_8012F424[], D_8012F4C8[], D_8012F5CC[], D_8012F630[];
@@ -65,22 +65,22 @@ void updateMainMenuSelectionTask(void) {
     s32 mode;
     s32 complete;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         for (;;) {}
     }
-    selection = (MainMenuSelection *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if (D_8013AE88->resource16 == 0xFFFF) {
+    selection = (MainMenuSelection *)&gTaskMemoryPool[gCurrentTask->resource14];
+    if (gCurrentTask->resource16 == 0xFFFF) {
         for (;;) {}
     }
-    entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE88->resource16];
+    entries = (RegisteredTaskEntry *)&gTaskMemoryPool[gCurrentTask->resource16];
 
-    switch (D_8013AE88->data18) {
+    switch (gCurrentTask->data18) {
     case 0:
         setMusicSequenceEnabled(1);
         configureTaskStateTransition(11, 0, 30);
         setTaskBackgroundMode(2, -4096, 4096);
         setSecondaryDisplayTaskMode(0);
-        D_8013AE88->data18 = 1;
+        gCurrentTask->data18 = 1;
         break;
     case 1:
         if (hasTaskStateValue6(0) == 0) {
@@ -113,18 +113,18 @@ void updateMainMenuSelectionTask(void) {
             if (playerCount == 1) {
                 if (gRacePlayers[0].unk009 == 8 || gRacePlayers[0].unk009 == 9) {
                     createRegisteredTextPanelTask(-320, 8, gMainMenuTexts, gMainMenuSinglePlayerTextMapping, 4, 11);
-                    D_8013AE88->data1A = 2;
+                    gCurrentTask->data1A = 2;
                 } else {
                     createRegisteredTextPanelTask(-320, 8, gMainMenuTexts, gMainMenuSinglePlayerTextMapping, 4, 11);
-                    D_8013AE88->data1A = playerCount;
+                    gCurrentTask->data1A = playerCount;
                 }
             } else {
                 createRegisteredTextPanelTask(-320, 8, gMainMenuTexts, gMainMenuMultiplayerTextMapping, 4, 11);
-                D_8013AE88->data1A = 3;
+                gCurrentTask->data1A = 3;
             }
             createRegisteredCallbackTask(0, 172, -72, drawSelectionHeaderAndMoneyPanel, 4, 21);
             createRegisteredTexturePairTask(172, -72, NULL, 5, selection->selectedIndex, 0, 5, 31);
-            D_8013AE88->data18 = 2;
+            gCurrentTask->data18 = 2;
         }
         break;
     case 2:
@@ -137,7 +137,7 @@ void updateMainMenuSelectionTask(void) {
                                 -0x8000, -0x48000, -0x1E000, 0, 7);
             configureMovement2D((Movement2D *)&gTaskMemoryPool[entries[3].task->resource14],
                                 -0x8000, -0x48000, -0x1E000, 0, 7);
-            D_8013AE88->data18 = 3;
+            gCurrentTask->data18 = 3;
         }
         break;
     case 3:
@@ -149,7 +149,7 @@ void updateMainMenuSelectionTask(void) {
             entries[1].command = 20;
             entries[2].command = 20;
             configureColorCycleTask(1, 0, 128, 8, 0);
-            task = D_8013AE88;
+            task = gCurrentTask;
             D_8013B41F = 0;
             task->data18 = 4;
         }
@@ -172,7 +172,7 @@ void updateMainMenuSelectionTask(void) {
         if (selection->choiceResult > 0) {
             s32 selected = gMainMenuSinglePlayerSpriteMapping[selection->selectedIndex];
 
-            if (D_8013AE88->data1A == 3 && (selected == 2 || selected == 3)) {
+            if (gCurrentTask->data1A == 3 && (selected == 2 || selected == 3)) {
                 selection->choiceResult = 0;
                 entries[0].command = 21;
                 entries[1].command = 22;
@@ -189,7 +189,7 @@ void updateMainMenuSelectionTask(void) {
         }
         if (selection->choiceResult < 0) {
             GameTask *parent = D_8013AE98;
-            GameTask *task = D_8013AE88;
+            GameTask *task = gCurrentTask;
 
             parent->data18 = 5;
             task->data18 = 5;
@@ -199,20 +199,20 @@ void updateMainMenuSelectionTask(void) {
             GameTask *task;
 
             parent->data18 = *parentState;
-            task = D_8013AE88;
+            task = gCurrentTask;
             entries[0].command = 22;
             task->data18 = 9;
         }
         break;
     case 9: {
-        GameTask *task = D_8013AE88;
+        GameTask *task = gCurrentTask;
         entries[0].command = 10;
         task->data18 = 10;
         break;
     }
     case 10:
         if ((s16)entries[0].flags == 0) {
-            D_8013AE88->data18 = 5;
+            gCurrentTask->data18 = 5;
         }
         break;
     case 5:
@@ -227,7 +227,7 @@ void updateMainMenuSelectionTask(void) {
                                 0xAC000, -0x48000, 0x1E000, 0x1E000, -1000);
             configureMovement2D((Movement2D *)&gTaskMemoryPool[entries[3].task->resource14],
                                 0xAC000, -0x48000, 0x1E000, 0x1E000, -1000);
-            D_8013AE88->data18 = 6;
+            gCurrentTask->data18 = 6;
         }
         break;
     case 6:
@@ -238,21 +238,21 @@ void updateMainMenuSelectionTask(void) {
             if (parent->data18 != 15) {
                 goto finish;
             }
-            if (D_8013AE88->data1A == 3) {
+            if (gCurrentTask->data1A == 3) {
                 parent->data18 = 2;
             }
             configureTaskStateTransition(2, 0, 30);
-            D_8013AE88->data18 = 7;
+            gCurrentTask->data18 = 7;
         }
         break;
     case 7:
         if (isTaskStateTransitionBelowMaximum(0) == 0) {
-            if (D_8013AE88->data1A == 3) {
+            if (gCurrentTask->data1A == 3) {
                 configureTaskStateTransition(1, 0, 30);
                 setSecondaryDisplayTaskMode(1);
             }
         finish:
-            D_8013AE88->data18 = 8;
+            gCurrentTask->data18 = 8;
         }
         break;
     default:
@@ -280,32 +280,32 @@ void drawSelectionHeaderAndMoneyPanel(void) {
     Movement2D *position;
     u8 playerCount;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         for (;;) {}
     }
-    position = (Movement2D *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if (D_8013AE88->data1A == 0) {
+    position = (Movement2D *)&gTaskMemoryPool[gCurrentTask->resource14];
+    if (gCurrentTask->data1A == 0) {
         return;
     }
     drawSpriteByIndexWithBlend(position->x / 4096 + 8, position->y / 4096 - 22,
-                 0xB1, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                 0xB1, 0, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
     playerCount = D_8013AFCD;
     if (playerCount != 1) {
         return;
     }
     drawSpriteByIndexWithBlend(position->x / 4096 + 74, position->y / 4096 + 140,
-                 0xBD, 10, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                 0xBD, 10, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
     drawDecimalNumber8x8(position->x / 4096 + 74, position->y / 4096 + 152,
-                         6, 0, gPlayerSaveRecords[0].money, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                         6, 0, gPlayerSaveRecords[0].money, 0, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
     drawWrappedText8x8(position->x / 4096 + 122, position->y / 4096 + 152,
-                       2, gSelectionMoneyCurrencyLabel, 0, -1, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
-    if (D_8013AE88->data1A == playerCount) {
+                       2, gSelectionMoneyCurrencyLabel, 0, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+    if (gCurrentTask->data1A == playerCount) {
         addTilePacketWithBlend(position->x / 4096 + 68, position->y / 4096 + 136, 68, 32,
                       gMenuColorCycleColor.r, gMenuColorCycleColor.g, gMenuColorCycleColor.b, 2,
-                      &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                      &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
     } else {
         addTilePacketWithBlend(position->x / 4096 + 68, position->y / 4096 + 136, 68, 32,
-                      128, 128, 128, 2, &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                      128, 128, 128, 2, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
     }
 }
 
@@ -314,22 +314,22 @@ char gSelectionMoneyCurrencyLabel[4] __attribute__((section(".data.selection_mon
 void initializeFlagSelectedCdAwareTask(void) {
     GameTask *task;
     GameTask *parent;
-    D_8013AE88->data18 = 1;
-    D_8013AE88->data1A = getCourseSelectionGroupIndex();
-    task = D_8013AE88;
+    gCurrentTask->data18 = 1;
+    gCurrentTask->data1A = getCourseSelectionGroupIndex();
+    task = gCurrentTask;
     parent = D_8013AE98;
     parent->data1C++;
     if (task->resource14 != 0xFFFF) {
         for (;;) {}
     }
-    D_8013AE88->resource14 = allocateTaskMemoryBlock();
-    if (D_8013AE88->resource16 != 0xFFFF) {
+    gCurrentTask->resource14 = allocateTaskMemoryBlock();
+    if (gCurrentTask->resource16 != 0xFFFF) {
         for (;;) {}
     }
-    D_8013AE88->resource16 = allocateTaskMemoryBlock();
+    gCurrentTask->resource16 = allocateTaskMemoryBlock();
     if (isCdCommandQueueIdle() != 1) {
         setSecondaryDisplayTaskMode(2);
     }
     setCurrentTaskCallback(updateCdAwareCourseSelectionTask);
-    D_8013AE88->unk10 |= 2;
+    gCurrentTask->unk10 |= 2;
 }

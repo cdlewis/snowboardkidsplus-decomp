@@ -21,7 +21,7 @@
 #define PAUSE_MENU_RESUME_PENDING 0x80
 
 extern s16 gFrameCounter __attribute__((section(".data")));
-extern s16 D_8013AFCE __attribute__((section(".data")));
+extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u16 D_8013AF78 __attribute__((section(".data")));
 extern u32 gGameOptionFlags __attribute__((section(".data")));
 extern u8 D_8013AFCD __attribute__((section(".data")));
@@ -47,7 +47,7 @@ void drawLapTimeHud(void) {
     drawSpriteByIndexWithBlend(88,80,25,1,-1,ot,1);
     drawSpriteByIndexWithBlend(112,80,24,1,-1,ot,1);
     drawLimitedText8x8(72,71,10,gLapTimeLabel,5,-1,ot,1);
-    sprintf(text,gLapTimeFormat,gPlayerSaveRecords[0].lapRecords[D_8013AFCE][0].minutes,gPlayerSaveRecords[0].lapRecords[D_8013AFCE][0].seconds,gPlayerSaveRecords[0].lapRecords[D_8013AFCE][0].centiseconds >> 8);
+    sprintf(text,gLapTimeFormat,gPlayerSaveRecords[0].lapRecords[gSelectedCourseIndex][0].minutes,gPlayerSaveRecords[0].lapRecords[gSelectedCourseIndex][0].seconds,gPlayerSaveRecords[0].lapRecords[gSelectedCourseIndex][0].centiseconds >> 8);
     drawLimitedText8x8(72,-88,20,text,7,-1,ot,1);
     drawLimitedText8x8(72,-97,10,gBestLapLabel,7,-1,ot,1);
     icon = (s8)gRacePlayers[0].heldItem;

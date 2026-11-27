@@ -17,12 +17,12 @@ extern u8 D_8013AFD8 __attribute__((section(".data")));
 extern u8 D_8013AFD9 __attribute__((section(".data")));
 extern s16 D_8013AFDE __attribute__((section(".data")));
 extern u8 D_8013AFE1 __attribute__((section(".data")));
-extern s16 D_8013AFCE __attribute__((section(".data")));
+extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u8 D_8013AFCD __attribute__((section(".data")));
 extern u8 D_8013AFE0 __attribute__((section(".data")));
 extern u8 D_8013AFE2 __attribute__((section(".data")));
 extern u8 D_8013AFD3 __attribute__((section(".data")));
-extern GameTask *D_8013AE88 __attribute__((section(".data")));
+extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern u8 D_8013AFD6 __attribute__((section(".data")));
 
 extern u8 D_8013B108 __attribute__((section(".data")));
@@ -52,8 +52,8 @@ s16 gControllerPlaybackDurations[12] __attribute__((section(".data.controller_pl
 void initializeControllerPlaybackRaceTask(void) {
     s32 i = 0;
     RacePlayer *player;
-    selectionMenuRecordAbsolute = D_8013AFCE;
-    D_8013AFCE = gControllerPlaybackEntries[D_8013AFD9].course;
+    selectionMenuRecordAbsolute = gSelectedCourseIndex;
+    gSelectedCourseIndex = gControllerPlaybackEntries[D_8013AFD9].course;
     player = gRacePlayers;
     D_8013AFD3 = 0;
     D_8013AFD6 = 0;
@@ -102,20 +102,20 @@ void initializeControllerPlaybackRaceTask(void) {
     setSecondaryDisplayTaskMode(1);
     setCurrentTaskCallback(initializeRaceTaskState);
     queueCdSectorCommand(0, gControllerPlaybackEntries[D_8013AFD9].sector, gControllerPlaybackEntries[D_8013AFD9].count, D_800E959C, 0);
-    if (selectionMenuRecordAbsolute != D_8013AFCE) {
+    if (selectionMenuRecordAbsolute != gSelectedCourseIndex) {
         closeSoundBank(2);
         closeSoundBank(3);
         closeSoundBank(4);
         closeSoundBank(5);
         queuePlayerResourceReadsAndUploadTextures();
     }
-    D_8013AE88->unk10 |= 2;
+    gCurrentTask->unk10 |= 2;
 }
 
 
 void advanceTaskWhenFlagB55ESet(void) {
     if (D_8013B55E != 0) {
-        D_8013AE88->data18 = 0;
+        gCurrentTask->data18 = 0;
         setCurrentTaskCallback(updateControllerPlaybackUntilFade);
     }
 }
@@ -123,13 +123,13 @@ void advanceTaskWhenFlagB55ESet(void) {
 void updateControllerPlaybackUntilFade(void) {
     updateRaceHud();
     if (gControllerPressedButtons[0] & 0x800) {
-        D_8013AE88->data18 = gControllerPlaybackDurations[D_8013AFD9];
+        gCurrentTask->data18 = gControllerPlaybackDurations[D_8013AFD9];
     }
-    D_8013AE88->data18++;
-    if (gControllerPlaybackDurations[D_8013AFD9] <= D_8013AE88->data18) {
+    gCurrentTask->data18++;
+    if (gControllerPlaybackDurations[D_8013AFD9] <= gCurrentTask->data18) {
         configureTaskStateTransition(2, 0, 30);
         startCdVolumeFade(103, 20, 0, 1);
-        D_8013AE88->data18 = 0;
+        gCurrentTask->data18 = 0;
         setCurrentTaskCallback(finishControllerPlaybackTransition);
     } else {
         playbackControllerInput(0);
@@ -138,7 +138,7 @@ void updateControllerPlaybackUntilFade(void) {
 }
 
 void finishControllerPlaybackTransition(void) {
-    switch (D_8013AE88->data18) {
+    switch (gCurrentTask->data18) {
     case 0:
         if (isTaskStateTransitionBelowMaximum(0)) {
             playbackControllerInput(0);
@@ -159,18 +159,18 @@ void finishControllerPlaybackTransition(void) {
             SetFogNearFar(5000, 6000, 400);
             D_8013B109 = 1;
             D_8013B108 = 28;
-            D_8013AE88->data18 = 1;
+            gCurrentTask->data18 = 1;
         }
         break;
     case 1:
         setSecondaryDisplayTaskMode(1);
         configureTaskStateTransition(1, 0, 30);
-        D_8013AE88->data18 = 2;
+        gCurrentTask->data18 = 2;
         break;
     case 2:
         D_8013B564 = 0;
         setCurrentTaskCallback(initializeGameOptionViewTask);
-        D_8013AE88->unk10 |= 2;
+        gCurrentTask->unk10 |= 2;
         break;
     }
 }

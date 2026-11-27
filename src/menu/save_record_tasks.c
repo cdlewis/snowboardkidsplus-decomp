@@ -16,7 +16,7 @@
 
 #define MEMORY_CARD_SAVE_BUFFER ((SaveRecord *)0x801E4000)
 #define PANEL_OT (&D_800EBFF0[D_8013AF78])
-#define PANEL_DEPTH (D_8013AE88->data1C)
+#define PANEL_DEPTH (gCurrentTask->data1C)
 
 typedef struct SaveMenuResource {
     u8 unk00[4];
@@ -31,11 +31,11 @@ typedef struct SaveMenuResource {
 } SaveMenuResource;
 
 extern u16 D_8013AF78 __attribute__((section(".data")));
-extern s16 D_8013AFCE __attribute__((section(".data")));
+extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u32 gGameOptionFlags __attribute__((section(".data")));
 extern u8 D_8013AFCD __attribute__((section(".data")));
-extern GameTask *D_8013AE88 __attribute__((section(".data")));
-extern GameTask *D_8013AE8C __attribute__((section(".data")));
+extern GameTask *gCurrentTask __attribute__((section(".data")));
+extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern GameTask *D_8013AE98 __attribute__((section(".data")));
 
 extern s16 D_8013AF3E __attribute__((section(".data")));
@@ -165,7 +165,7 @@ u32 calculateByteSum(const u8 *data, u32 size) {
 }
 
 void updateStateValueHistoryTask(void) {
-    switch (D_8013AE88->data18) {
+    switch (gCurrentTask->data18) {
     case 0:
         resetMemoryCardTaskState();
         if (D_8013BE30.unk_00 == 0) {
@@ -174,7 +174,7 @@ void updateStateValueHistoryTask(void) {
             D_8013BE30.activeIndex = isValue16(D_8013BE30.unk_00 = 0);
         }
         setMemoryCardChannel(D_8013BE30.unk_00);
-        D_8013AE88->data18 = 1;
+        gCurrentTask->data18 = 1;
         break;
     case 1:
         if (D_8013AF3E == 7)
@@ -213,7 +213,7 @@ void updateStateValueHistoryTask(void) {
                 return;
             } else {
                 D_8013BE30.unk_0E[D_8013BE30.activeIndex] = 1;
-                D_8013AE88->data18 = 0;
+                gCurrentTask->data18 = 0;
             }
             break;
         case 7:
@@ -225,7 +225,7 @@ void updateStateValueHistoryTask(void) {
                 D_8013BE30.current[D_8013BE30.activeIndex];
             D_8013BE30.current[D_8013BE30.activeIndex] = D_8013AF3E;
             D_8013BE30.unk_0E[D_8013BE30.activeIndex] = 1;
-            D_8013AE88->data18 = 0;
+            gCurrentTask->data18 = 0;
             break;
         }
         if ((s16)startMemoryCardSaveStatusTask(MEMORY_CARD_SAVE_BUFFER, 0x810) == 1)
@@ -237,7 +237,7 @@ void updateStateValueHistoryTask(void) {
 void startStateValueHistoryTask(void) {
     s16 i;
     createChildTaskWithReserve(updateStateValueHistoryTask);
-    D_8013AE8C->data18 = 0;
+    gCreatedTask->data18 = 0;
     D_8013BE30.unk_00 = 16;
     D_8013BE30.activeIndex = 1;
     for (i = 0; i < 2; i++) {
@@ -254,19 +254,19 @@ void initializeMemoryCardSaveMenuTask(void) {
     SaveRecord *destination;
     GameTask *task;
 
-    D_8013AE88->data18 = 0;
-    D_8013AE88->data1A = 0;
+    gCurrentTask->data18 = 0;
+    gCurrentTask->data1A = 0;
     D_8013AE98->data1C++;
 
-    if (D_8013AE88->resource14 != 0xFFFF) {
+    if (gCurrentTask->resource14 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource14 = allocateTaskMemoryBlock();
-    menu = (SaveMenuResource *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if (D_8013AE88->resource16 != 0xFFFF) {
+    gCurrentTask->resource14 = allocateTaskMemoryBlock();
+    menu = (SaveMenuResource *)&gTaskMemoryPool[gCurrentTask->resource14];
+    if (gCurrentTask->resource16 != 0xFFFF) {
         while (1) {}
     }
-    D_8013AE88->resource16 = allocateTaskMemoryBlock();
+    gCurrentTask->resource16 = allocateTaskMemoryBlock();
     menu->command0C = 0;
 
     prepareSaveRecordForWrite(&gPlayerSaveRecords[0]);
@@ -276,7 +276,7 @@ void initializeMemoryCardSaveMenuTask(void) {
 
     startStateValueHistoryTask();
     setCurrentTaskCallback(updateMemoryCardSaveMenuTask);
-    task = D_8013AE88;
+    task = gCurrentTask;
     task->unk10 |= 2;
 }
 
@@ -294,26 +294,26 @@ void updateMemoryCardSaveMenuTask(void) {
     s16 status;
     s32 formatResult;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    menu = (SaveMenuResource *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if (D_8013AE88->resource16 == 0xFFFF) {
+    menu = (SaveMenuResource *)&gTaskMemoryPool[gCurrentTask->resource14];
+    if (gCurrentTask->resource16 == 0xFFFF) {
         while (1) {}
     }
     primary = menu;
-    input = (SaveMenuResource *)&gTaskMemoryPool[D_8013AE88->resource16];
-    player = D_8013AE88->data1A;
+    input = (SaveMenuResource *)&gTaskMemoryPool[gCurrentTask->resource16];
+    player = gCurrentTask->data1A;
     texture = gRacePlayers[player].unk009;
     x = -76;
     y = -30;
 
     enabled = 1;
-    switch (D_8013AE88->data18) {
+    switch (gCurrentTask->data18) {
     case 0:
         setMusicSequenceEnabled(1);
         configureTaskStateTransition(1, 0, 30);
-        D_8013AE88->data18 = 1;
+        gCurrentTask->data18 = 1;
         break;
     case 1:
         primary->busy06 = 0;
@@ -323,7 +323,7 @@ void updateMemoryCardSaveMenuTask(void) {
         goto showTitle;
     case 2:
         createRegisteredCallbackTask(0, 0, 30, drawTaskShadowedText, 4, 11);
-        D_8013AE88->data18 = 3;
+        gCurrentTask->data18 = 3;
         break;
     case 3:
         if (input->busy06 || input->result0E)
@@ -332,30 +332,30 @@ void updateMemoryCardSaveMenuTask(void) {
         input->command0C = 21;
         configureColorCycleTask(2, 64, 128, 4, 0);
         createInputTimedSpriteTask(-16, 54, D_80123840, 2, 1, 176, 64, 4, 31);
-        D_8013AE88->data18 = 5;
+        gCurrentTask->data18 = 5;
         break;
     case 5:
         if (input->result1E > 0)
             break;
         if (input->result1E < 0) {
-            D_8013AE88->data18 = 39;
+            gCurrentTask->data18 = 39;
         } else {
             input->command0C = 99;
-            D_8013AE88->data18 = 9;
+            gCurrentTask->data18 = 9;
             break;
         }
         break;
     case 6:
         createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_80130694,
                                               -1, enabled, 1, D_80130800, 4, 11);
-        D_8013AE88->data18 = 7;
+        gCurrentTask->data18 = 7;
         break;
     case 7:
         status = input->result0E;
         if (status == 0)
             break;
         if (status == 1) {
-            D_8013AE88->data18 = 9;
+            gCurrentTask->data18 = 9;
             break;
         }
         if (status == 2) {
@@ -379,43 +379,43 @@ void updateMemoryCardSaveMenuTask(void) {
             D_8013BE30.previous[menu->slot] = D_8013BE30.current[menu->slot];
             if (D_8013BE30.unk_16[menu->slot] == 1)
                 goto showSaveConfirmation;
-            D_8013AE88->data18 = 26;
+            gCurrentTask->data18 = 26;
             D_8013BE30.unk_16[menu->slot] = 1;
             break;
         case 11: {
             s16 slot = menu->slot;
             D_8013BE30.previous[slot] = D_8013BE30.current[slot];
-            D_8013AE88->data18 = 16;
+            gCurrentTask->data18 = 16;
             break;
         }
         case 5:
         showSaveConfirmation:
-            D_8013AE88->data18 = 14;
+            gCurrentTask->data18 = 14;
             break;
         case 7:
             D_8013BE30.previous[menu->slot] = D_8013BE30.current[menu->slot];
-            D_8013AE88->data18 = 28;
+            gCurrentTask->data18 = 28;
             break;
         case 8:
         case 12:
-            D_8013AE88->data18 = 24;
+            gCurrentTask->data18 = 24;
             createRegisteredStaticTextPanelTask(x, y, x + 4, y + 2, D_80130390, player, 4, 11);
             D_8013BE30.previous[menu->slot] = D_8013BE30.current[menu->slot];
             break;
         case 9:
             D_8013BE30.previous[menu->slot] = D_8013BE30.current[menu->slot];
-            D_8013AE88->data18 = 32;
+            gCurrentTask->data18 = 32;
             break;
         case 10:
             D_8013BE30.previous[menu->slot] = D_8013BE30.current[menu->slot];
-            D_8013AE88->data18 = 30;
+            gCurrentTask->data18 = 30;
             break;
         }
         break;
     case 9:
         createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_80130708,
                                               -1, (u16)menu->command0C | enabled, 1, D_801307AC, 4, 11);
-        D_8013AE88->data18 = 10;
+        gCurrentTask->data18 = 10;
         break;
     case 10:
         menu->command0C = 0;
@@ -428,15 +428,15 @@ void updateMemoryCardSaveMenuTask(void) {
             goto selectSlot;
         if (status == 3)
             goto showRetry;
-        D_8013AE88->data18 = 9;
+        gCurrentTask->data18 = 9;
         break;
     showTitle:
-        D_8013AE88->data18 = 2;
+        gCurrentTask->data18 = 2;
         break;
     case 14:
         createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_8013075C,
                                               -1, enabled, 1, D_801307AC, 4, 11);
-        D_8013AE88->data18 = 15;
+        gCurrentTask->data18 = 15;
         break;
     case 15:
         if (D_8013BE30.current[menu->slot] == 7)
@@ -452,19 +452,19 @@ void updateMemoryCardSaveMenuTask(void) {
     case 16:
         D_8013BE30.unk_12[menu->slot] = 3;
         createRegisteredStaticTextPanelTask(x, y, x + 4, y + 2, D_80130578, -1, 4, 11);
-        D_8013AE88->data18 = 17;
+        gCurrentTask->data18 = 17;
         break;
     case 17:
         if (D_8013BE30.current[menu->slot] == 7)
             goto showSaveFailure;
         if (D_8013BE30.unk_0E[menu->slot] == 6)
-            D_8013AE88->data18 = 18;
+            gCurrentTask->data18 = 18;
         break;
     case 18:
         D_8013AF3E = 5;
         D_8013BE30.unk_12[menu->slot] = 4;
         startMemoryCardWriteTask();
-        D_8013AE88->data18 = 19;
+        gCurrentTask->data18 = 19;
         break;
     case 19:
         status = D_8013BE30.current[menu->slot];
@@ -474,46 +474,46 @@ void updateMemoryCardSaveMenuTask(void) {
             break;
         if (status == 0 || status == 5) {
             createRegisteredStaticTextPanelTask(x, y, x + 20, y + 12, D_801306DC, -1, 4, 11);
-            D_8013AE88->data18 = (D_8013B47C = 1, 22);
+            gCurrentTask->data18 = (D_8013B47C = 1, 22);
             break;
         }
         D_8013BE30.unk_0E[D_8013BE30.activeIndex] = 7;
     showSaveFailure:
-        D_8013AE88->data18 = 20;
+        gCurrentTask->data18 = 20;
         break;
     case 20:
         createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_80130770,
                                               -1, enabled, 1, 0, 4, 11);
-        D_8013AE88->data18 = 21;
+        gCurrentTask->data18 = 21;
         break;
     case 22:
         D_8013AE98->data18 = 2;
         fadeOutMusicSequence(512);
-        D_8013AE88->data18 = 40;
+        gCurrentTask->data18 = 40;
         break;
     case 24:
         createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_80130740,
                                               -1, enabled, 1, D_801307AC, 4, 11);
-        D_8013AE88->data18 = 25;
+        gCurrentTask->data18 = 25;
         break;
     case 25:
         status = input->result0E;
         if (status == 0)
             break;
         if (status == 1) {
-            D_8013AE88->data18 = 9;
+            gCurrentTask->data18 = 9;
             break;
         }
         if (status != 2) {
-            D_8013AE88->data18 = 9;
+            gCurrentTask->data18 = 9;
             break;
         }
-        D_8013AE88->data18 = 22;
+        gCurrentTask->data18 = 22;
         break;
     case 26:
         createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_80130638,
                                               -1, enabled, 1, D_801307AC, 4, 11);
-        D_8013AE88->data18 = 27;
+        gCurrentTask->data18 = 27;
         break;
     case 27:
         if (D_8013BE30.current[menu->slot] == 7)
@@ -526,25 +526,25 @@ void updateMemoryCardSaveMenuTask(void) {
         if (status == 2)
             goto startSave;
     selectSlot:
-        D_8013AE88->data18 = 6;
+        gCurrentTask->data18 = 6;
         break;
     case 28:
         createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_801305C4,
                                               menu->slot, enabled, 1, 0, 4, 11);
-        D_8013AE88->data18 = 29;
+        gCurrentTask->data18 = 29;
         break;
     case 29:
         if (hasStateValueChanged(menu->slot)) {
-            D_8013AE88->data18 = 9;
+            gCurrentTask->data18 = 9;
         } else if (input->result0E) {
             menu->command0C = 0x100;
-            D_8013AE88->data18 = 24;
+            gCurrentTask->data18 = 24;
         }
         break;
     case 30:
         createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_801305F0,
                                               menu->slot, enabled, 1, 0, 4, 11);
-        D_8013AE88->data18 = 31;
+        gCurrentTask->data18 = 31;
         break;
     case 31:
         if (hasStateValueChanged(menu->slot))
@@ -553,7 +553,7 @@ void updateMemoryCardSaveMenuTask(void) {
     case 32:
         createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_801303EC,
                                               menu->slot, enabled, 1, 0, 4, 11);
-        D_8013AE88->data18 = 33;
+        gCurrentTask->data18 = 33;
         break;
     case 33:
         if (D_8013BE30.current[menu->slot] == 7)
@@ -562,12 +562,12 @@ void updateMemoryCardSaveMenuTask(void) {
             break;
         createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_80130428,
                                               menu->slot, enabled | 0x100, 1, D_801307AC, 4, 11);
-        D_8013AE88->data18 = 34;
+        gCurrentTask->data18 = 34;
         break;
     case 34:
         if (D_8013BE30.current[menu->slot] == 7) {
     checkCard:
-            D_8013AE88->data18 = 8;
+            gCurrentTask->data18 = 8;
             break;
         }
         status = input->result0E;
@@ -577,12 +577,12 @@ void updateMemoryCardSaveMenuTask(void) {
             goto showRetry;
         if (status != 2)
             goto showRetry;
-        D_8013AE88->data18 = 35;
+        gCurrentTask->data18 = 35;
         break;
     case 35:
         createRegisteredStaticTextPanelTask(x, y, x + 4, y + 2, D_801302BC, menu->slot, 4, 11);
         D_8013BE30.unk_12[menu->slot] = 2;
-        D_8013AE88->data18 = 36;
+        gCurrentTask->data18 = 36;
         break;
     case 36:
         if (D_8013BE30.current[menu->slot] == 7)
@@ -600,20 +600,20 @@ void updateMemoryCardSaveMenuTask(void) {
             createRegisteredStaticTextPanelTask(x, y, x + 4, y + 2, D_80130460, -1, 4, 11);
             D_8013BE30.unk_12[menu->slot] = 3;
     startSave:
-            D_8013AE88->data18 = 16;
+            gCurrentTask->data18 = 16;
             break;
         }
         if (formatResult < 0)
             break;
         if (formatResult < 3) {
     showFormatFailure:
-            D_8013AE88->data18 = 37;
+            gCurrentTask->data18 = 37;
         }
         break;
     case 37:
         createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_8013047C,
                                               -1, enabled, 1, 0, 4, 11);
-        D_8013AE88->data18 = 38;
+        gCurrentTask->data18 = 38;
         break;
     case 21:
     case 38:
@@ -621,7 +621,7 @@ void updateMemoryCardSaveMenuTask(void) {
         if (!input->result0E)
             break;
     showRetry:
-        D_8013AE88->data18 = 24;
+        gCurrentTask->data18 = 24;
         break;
     case 39:
         D_8013AE98->data18 = 6;
@@ -629,11 +629,11 @@ void updateMemoryCardSaveMenuTask(void) {
     case 40:
         queueMenuResourceReads(D_8013AE98->data18);
         configureTaskStateTransition(2, 0, 30);
-        D_8013AE88->data18 = 41;
+        gCurrentTask->data18 = 41;
         break;
     case 41:
         if (isTaskStateTransitionBelowMaximum(0) == 0)
-            D_8013AE88->data18 = 42;
+            gCurrentTask->data18 = 42;
         break;
     case 42:
     default:
@@ -651,10 +651,10 @@ void drawMemoryCardSaveRecordPanel(void) {
     s16 pair;
     SaveRecord *records;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    position = (Movement2D *)&gTaskMemoryPool[D_8013AE88->resource14];
+    position = (Movement2D *)&gTaskMemoryPool[gCurrentTask->resource14];
     player = D_8013AE98->data1A;
     character = gRacePlayers[player].unk009;
     setSpriteColor(128, 128, 128);
@@ -743,19 +743,19 @@ s8 gMemoryCardSaveRecordCurrencyLabel[4]
 void drawTaskShadowedText(void) {
     Movement2D *resource;
     s32 x, y;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (Movement2D *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (Movement2D *)&gTaskMemoryPool[gCurrentTask->resource14];
     x = resource->x / 4096;
     y = resource->y / 4096;
     drawWrappedGlyphText8x16((s16)(x - 48), (s16)(y + 24), 12, gTaskShadowedText, 0, -1,
-                             &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                             &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
     setSpriteColor(0, 0, 0);
     drawWrappedGlyphText8x16((s16)(x - 47), (s16)(y + 25), 12, gTaskShadowedText, 0, -1,
-                             &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                             &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
     drawWrappedGlyphText8x16((s16)(x - 46), (s16)(y + 25), 12, gTaskShadowedText, 0, -1,
-                             &D_800EBFF0[D_8013AF78], D_8013AE88->data1C);
+                             &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
 }
 
 s16 getSaveRecordMaskTier(s16 recordIndex, s16 maskIndex) {
@@ -865,7 +865,7 @@ s16 updateRaceUnlockProgress(s16 characterId, s16 finishPosition) {
         return 0;
     }
     unlockTier = 0;
-    coursePair = D_8012D478[D_8013AFCE];
+    coursePair = D_8012D478[gSelectedCourseIndex];
     finishRating = 3 - finishPosition;
     if (getSaveRecordFlagPair(recordIndex, characterId, coursePair) < finishRating) {
         setSaveRecordFlagPair(recordIndex, characterId, coursePair, finishRating);

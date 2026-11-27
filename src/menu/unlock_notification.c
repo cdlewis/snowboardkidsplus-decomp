@@ -8,16 +8,16 @@
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
 
-extern u32 D_8013AFE4 __attribute__((section(".data")));
+extern u32 gTaskTransitionFlags __attribute__((section(".data")));
 
 void startUnlockNotification(s16 index) {
     if ((u16)index < 11 && (s16)getUnlockNotificationFlag(index) == 0) {
         D_8013AF3A = index;
-        D_8013AFE4 &= ~0x200;
+        gTaskTransitionFlags &= ~0x200;
         setUnlockNotificationFlag(index);
         createChildTaskWithReserve(initializeScenePlaybackResourcesTask);
     } else {
-        D_8013AFE4 |= 0x200;
+        gTaskTransitionFlags |= 0x200;
     }
 }
 

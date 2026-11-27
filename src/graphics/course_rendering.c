@@ -31,12 +31,12 @@ typedef struct AnimatedBackgroundScratchpad {
 } AnimatedBackgroundScratchpad;
 
 extern s16 gFrameCounter __attribute__((section(".data")));
-extern s16 D_8013AFCE __attribute__((section(".data")));
+extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u32 *D_8013AF6C __attribute__((section(".data")));
 extern u16 D_8013AF78 __attribute__((section(".data")));
 extern u8 D_8013AFD3 __attribute__((section(".data")));
-extern GameTask *D_8013AE88 __attribute__((section(".data")));
-extern GameTask *D_8013AE8C __attribute__((section(".data")));
+extern GameTask *gCurrentTask __attribute__((section(".data")));
+extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern RECT gWritePixelRect __attribute__((section(".sdata.write_pixel_rect")));
 
 void drawLayeredBackgroundAndSetFog(s16 playerIndex);
@@ -217,7 +217,7 @@ void getCourseSteeringTarget(s16 region, s32 x, s32 z, s32 *targetX, s32 *target
     SelectedCourseRecord *course;
     SelectedCourseRecord *courses = D_80123D80;
 
-    if (region != (s16)courses[D_8013AFCE].unk00) {
+    if (region != (s16)courses[gSelectedCourseIndex].unk00) {
         D_8013B624 = rsin(-(s16)((GeometryPlacement *)D_8013B1F4)[region].angle);
         cosine = rcos(-(s16)((GeometryPlacement *)D_8013B1F4)[region].angle);
         vertexIndex = ((GeometryPlacement *)D_8013B1F4)[region].vertexIndex;
@@ -226,9 +226,9 @@ void getCourseSteeringTarget(s16 region, s32 x, s32 z, s32 *targetX, s32 *target
         D_8013B628 = cosine;
         dz = (-D_8013B624 * dx + cosine * dz) / 4096;
 
-        course = &courses[D_8013AFCE];
+        course = &courses[gSelectedCourseIndex];
         if ((region >= course->objectFirstSegment && region <= course->objectLastSegment) ||
-            (D_8013AFCE == 3 && (u16)(region - 285) < 2)) {
+            (gSelectedCourseIndex == 3 && (u16)(region - 285) < 2)) {
             dz -= 960;
             *targetX = -D_8013B624 * dz / 4096;
             *targetZ = D_8013B628 * dz / 4096;
@@ -258,8 +258,8 @@ void getCourseSteeringTarget(s16 region, s32 x, s32 z, s32 *targetX, s32 *target
         *targetX += D_8013B1EC[((GeometryPlacement *)D_8013B1F4)[nextRegion].vertexIndex * 3] * 5;
         *targetZ += D_8013B1EC[((GeometryPlacement *)D_8013B1F4)[nextRegion].vertexIndex * 3 + 2] * 5;
     } else {
-        *targetX = (s32)courses[D_8013AFCE].unk18[0] >> 8;
-        *targetZ = (s32)courses[D_8013AFCE].unk18[2] >> 8;
+        *targetX = (s32)courses[gSelectedCourseIndex].unk18[0] >> 8;
+        *targetZ = (s32)courses[gSelectedCourseIndex].unk18[2] >> 8;
     }
 }
 
@@ -570,10 +570,10 @@ void drawOscillatingQuadTask(void) {
     s32 i;
     s16 cameraIndex;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    resource = (OscillatingQuadResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    resource = (OscillatingQuadResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     packet = (GouraudQuadPacket *)GsOUT_PACKET_P;
     cameraIndex = (s16)getRenderCameraIndex();
     scratch = (OscillatingQuadScratchpad *)getScratchAddr(0);
@@ -626,8 +626,8 @@ void drawOscillatingQuadTask(void) {
 void createOscillatingQuadTask(s32 value, VECTOR *position, s32 amplitude, s32 r, s32 g, s32 b) {
     OscillatingQuadResource *resource;
     createChildTaskForParentWithReserve(&gGameTasks[4], drawOscillatingQuadTask);
-    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-    resource = (OscillatingQuadResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
+    gCreatedTask->resource14 = allocateTaskMemoryBlock();
+    resource = (OscillatingQuadResource *)&gTaskMemoryPool[gCreatedTask->resource14];
     resource->unk68 = value;
     resource->r = r;
     resource->g = g;
@@ -651,12 +651,12 @@ void drawMovingLineTask(void) {
     u32 brightness;
     s32 yaw;
     s16 pitch;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
     cameras = D_801241E8;
-    camera = &cameras[D_8013AE88->data18];
-    resource = (MovingLineResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    camera = &cameras[gCurrentTask->data18];
+    resource = (MovingLineResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     yaw = -((camera->yaw & 0xFFF) << 11) / 4096;
     pitch = camera->pitch;
     line = (MovingLinePacket *)GsOUT_PACKET_P;
@@ -692,9 +692,9 @@ void drawMovingLineTask(void) {
 void createMovingLineTask(s32 index) {
     MovingLineResource *resource;
     createChildTaskForParentWithReserve(&gGameTasks[4], drawMovingLineTask);
-    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-    D_8013AE8C->data18 = index;
-    resource = (MovingLineResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
+    gCreatedTask->resource14 = allocateTaskMemoryBlock();
+    gCreatedTask->data18 = index;
+    resource = (MovingLineResource *)&gTaskMemoryPool[gCreatedTask->resource14];
     resource->x = randomNextLinear() % 320;
     resource->y = 0;
     resource->elapsed = 0;
@@ -709,15 +709,15 @@ void drawFlickeringDotsTask(void) {
     PlayerCamera *cameras;
     s32 yaw, pitch;
     u32 i;
-    if (D_8013AE88->resource14 == 0xFFFF) { while (1) {} }
-    resource = (FlickeringDotsResource *)&gTaskMemoryPool[D_8013AE88->resource14];
+    if (gCurrentTask->resource14 == 0xFFFF) { while (1) {} }
+    resource = (FlickeringDotsResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     packet = (TILE_1 *)GsOUT_PACKET_P;
     scratch = (TILE_1 *)getScratchAddr(0);
     if (D_8013AFAA & 0x400) {
-        if (D_8013AE88->data18 != D_8013AF78) return;
-    } else if (D_8013AE88->data18 != 0) return;
+        if (gCurrentTask->data18 != D_8013AF78) return;
+    } else if (gCurrentTask->data18 != 0) return;
     cameras = D_801241E8;
-    camera = &cameras[D_8013AE88->data18];
+    camera = &cameras[gCurrentTask->data18];
     yaw = -((camera->yaw & 0xFFF) << 11) / 4096;
     pitch = camera->pitch / 2;
     scratch->tag = 2 << 24;
@@ -734,7 +734,7 @@ void drawFlickeringDotsTask(void) {
     GsOUT_PACKET_P = (u32)packet;
     if (!D_8013AFD3) {
         if ((++resource->frame & 15) == 0 && (randomNextLinear() & 15) == 0) {
-            createMovingLineTask(D_8013AE88->data18);
+            createMovingLineTask(gCurrentTask->data18);
         }
     }
 }
@@ -743,9 +743,9 @@ void createFlickeringDotsTask(s32 playerIndex) {
     FlickeringDotsResource *resource;
     s32 i;
     createChildTaskForParentWithReserve(&gGameTasks[4], drawFlickeringDotsTask);
-    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
-    D_8013AE8C->data18 = playerIndex;
-    resource = (FlickeringDotsResource *)&gTaskMemoryPool[D_8013AE8C->resource14];
+    gCreatedTask->resource14 = allocateTaskMemoryBlock();
+    gCreatedTask->data18 = playerIndex;
+    resource = (FlickeringDotsResource *)&gTaskMemoryPool[gCreatedTask->resource14];
     for (i = 0; i < 25; i++) {
         resource->positions[i].x = randomNextLinear() % 320;
         resource->positions[i].y = randomNextLinear() % 120;
@@ -1045,7 +1045,7 @@ void drawBackgroundModelsAndSetFog(s16 playerIndex) {
 }
 
 void drawCourseBackgroundForView(s16 view) {
-    sCourseBackgroundCallbacks[D_8013AFCE](view);
+    sCourseBackgroundCallbacks[gSelectedCourseIndex](view);
 }
 
 s32 isPositionInCameraRange(s32 x, s32 z, s16 playerIndex) {
@@ -1179,7 +1179,7 @@ void initializeCourseModels(void) {
     Position3D *positions;
 
     bindGeometryRecordData((s16 *)DAT_COURSE_FIRST);
-    positions = gCourseModelPositions = gCourseModelPositionBuffers[D_8013AFCE];
+    positions = gCourseModelPositions = gCourseModelPositionBuffers[gSelectedCourseIndex];
     for (i = 0; i < 100; i++) {
         positions[i].x *= 5;
         positions[i].y *= 5;
@@ -1203,9 +1203,9 @@ void initializeCourseModels(void) {
     }
 
     GsInitCoordinate2(0, &gCourseModelCoordinate);
-    gCourseModelCullDistance = gCourseModelCullDistances[D_8013AFCE] / 256;
-    gCourseModelDetailDistance = gCourseModelDetailDistances[D_8013AFCE] / 256;
-    if ((u16)gCourseOptionalResourceSectors[D_8013AFCE].sector != 0) {
+    gCourseModelCullDistance = gCourseModelCullDistances[gSelectedCourseIndex] / 256;
+    gCourseModelDetailDistance = gCourseModelDetailDistances[gSelectedCourseIndex] / 256;
+    if ((u16)gCourseOptionalResourceSectors[gSelectedCourseIndex].sector != 0) {
         offset = (u32 *)DAT_COURSE_OPTIONAL;
         gCourseModelCounts[1] = *(u16 *)offset;
         offset++;
@@ -1218,7 +1218,7 @@ void initializeCourseModels(void) {
             gOptionalCourseModels[i] = (TmdObject *)model;
         }
     }
-    if (D_8013AFCE == 6) {
+    if (gSelectedCourseIndex == 6) {
         initializeScanlineCopySeed();
     }
 }
@@ -1248,7 +1248,7 @@ void drawCourseModelsForView(s16 view) {
         return;
     }
     drawCourseBackgroundForView(view);
-    if (D_8013AFCE == 6) {
+    if (gSelectedCourseIndex == 6) {
         queueScanlineCopyPackets();
     }
     cameras = D_801241E8;
@@ -1266,7 +1266,7 @@ void drawCourseModelsForView(s16 view) {
     ScaleMatrix(matrix, &scale);
     GsSetLsMatrix(matrix);
 
-    if (D_8013AFCE == 6) {
+    if (gSelectedCourseIndex == 6) {
         flags = 1;
     } else {
         flags = 3;

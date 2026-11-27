@@ -20,11 +20,11 @@
 #include "psx/libgs.h"
 #include "psx/libgte.h"
 
-extern s16 D_8013AFCE __attribute__((section(".data")));
-extern VECTOR *D_8013AF88 __attribute__((section(".data")));
-extern GameTask *D_8013AE88 __attribute__((section(".data")));
-extern GameTask *D_8013AE8C __attribute__((section(".data")));
-extern u32 D_8013AFE4 __attribute__((section(".data")));
+extern s16 gSelectedCourseIndex __attribute__((section(".data")));
+extern VECTOR *gScratchVector0 __attribute__((section(".data")));
+extern GameTask *gCurrentTask __attribute__((section(".data")));
+extern GameTask *gCreatedTask __attribute__((section(".data")));
+extern u32 gTaskTransitionFlags __attribute__((section(".data")));
 
 extern u8 D_8013AFCD __attribute__((section(".data")));
 extern u16 D_8013AF7A __attribute__((section(".data")));
@@ -265,7 +265,7 @@ void getPlayerCourseProgress(u16 playerIndex, s32 *progress, s32 *distance) {
     *distance = player->coursePlacementDistance;
 
     /* Remap course segments onto a common progress scale for race placement. */
-    switch (D_8013AFCE) {
+    switch (gSelectedCourseIndex) {
     case 0:
         if (*progress >= 0x580) {
             *progress = 0x598 - *progress;
@@ -363,7 +363,7 @@ void updateRacePlayerRankings(void) {
     if (D_8013AFE2 == 2) {
         return;
     }
-    if (D_8013AFE4 & 1) {
+    if (gTaskTransitionFlags & 1) {
         gRaceOrderPlayerIds[0] = 0;
         gRaceOrderPlayerIds[1] = 1;
         gRaceOrderPlayerIds[2] = 2;
@@ -841,7 +841,7 @@ void addPlayerFlagsWithinRadius(const Position3D *position, s32 radius, u16 flag
 
 void updateRacePlayerFinishSlotsTask(void) {
     u16 i;
-    if (D_8013AFE4 & 0x40) {
+    if (gTaskTransitionFlags & 0x40) {
         deleteCurrentTaskSubtree();
     } else {
         if (D_8013AFE2 == 1 && D_8013AFE0 == 1) {
@@ -1227,7 +1227,7 @@ s16 processCurrentPlayerActionRequests(s16 suppressWallAction) {
 
     switch ((s16)(D_8013B0E4 - 1)) {
         case 7 - 1:
-            playPlayerSoundEffect(D_8013AE88->data18, 0, 0x302, 0x40);
+            playPlayerSoundEffect(gCurrentTask->data18, 0, 0x302, 0x40);
             /* fall through */
         case 6 - 1:
             if (D_8013B0E4 != 7) {
@@ -1237,20 +1237,20 @@ s16 processCurrentPlayerActionRequests(s16 suppressWallAction) {
             currentPlayerAbsolute->unk102 = D_8013B0E6;
             currentPlayerAbsolute->unk104.word = currentPlayerAbsolute->unk0EC;
             currentPlayerAbsolute->unk108.word = currentPlayerAbsolute->unk0F0;
-            playPlayerSoundEffect(D_8013AE88->data18, 1, 0x201, 0x20);
-            D_8013AF88->vx = currentPlayerAbsolute->worldCoordinate.coord.t[0];
-            D_8013AF88->vy = currentPlayerAbsolute->worldCoordinate.coord.t[1] - 48;
-            D_8013AF88->vz = currentPlayerAbsolute->worldCoordinate.coord.t[2];
-            startAlternateQuadAnimationTask(D_8013AE88->data18, (const PositionEffectOrigin *)D_8013AF88);
+            playPlayerSoundEffect(gCurrentTask->data18, 1, 0x201, 0x20);
+            gScratchVector0->vx = currentPlayerAbsolute->worldCoordinate.coord.t[0];
+            gScratchVector0->vy = currentPlayerAbsolute->worldCoordinate.coord.t[1] - 48;
+            gScratchVector0->vz = currentPlayerAbsolute->worldCoordinate.coord.t[2];
+            startAlternateQuadAnimationTask(gCurrentTask->data18, (const PositionEffectOrigin *)gScratchVector0);
             break;
         case 9 - 1:
             playCurrentPlayerSoundEffect(2);
             currentPlayerAbsolute->unk12C = 14;
-            playPlayerSoundEffect(D_8013AE88->data18, 1, 0x201, 0x20);
-            D_8013AF88->vx = currentPlayerAbsolute->worldCoordinate.coord.t[0];
-            D_8013AF88->vy = currentPlayerAbsolute->worldCoordinate.coord.t[1] - 48;
-            D_8013AF88->vz = currentPlayerAbsolute->worldCoordinate.coord.t[2];
-            startAlternateQuadAnimationTask(D_8013AE88->data18, (const PositionEffectOrigin *)D_8013AF88);
+            playPlayerSoundEffect(gCurrentTask->data18, 1, 0x201, 0x20);
+            gScratchVector0->vx = currentPlayerAbsolute->worldCoordinate.coord.t[0];
+            gScratchVector0->vy = currentPlayerAbsolute->worldCoordinate.coord.t[1] - 48;
+            gScratchVector0->vz = currentPlayerAbsolute->worldCoordinate.coord.t[2];
+            startAlternateQuadAnimationTask(gCurrentTask->data18, (const PositionEffectOrigin *)gScratchVector0);
             break;
         case 10 - 1:
             playCurrentPlayerSoundEffect(2);
@@ -1265,11 +1265,11 @@ s16 processCurrentPlayerActionRequests(s16 suppressWallAction) {
             currentPlayerAbsolute->unk102 = D_8013B0E6;
             currentPlayerAbsolute->unk104.word = currentPlayerAbsolute->unk0EC;
             currentPlayerAbsolute->unk108.word = currentPlayerAbsolute->unk0F0;
-            playPlayerSoundEffect(D_8013AE88->data18, 1, 0x201, 0x20);
-            D_8013AF88->vx = currentPlayerAbsolute->worldCoordinate.coord.t[0];
-            D_8013AF88->vy = currentPlayerAbsolute->worldCoordinate.coord.t[1] - 48;
-            D_8013AF88->vz = currentPlayerAbsolute->worldCoordinate.coord.t[2];
-            startAlternateQuadAnimationTask(D_8013AE88->data18, (const PositionEffectOrigin *)D_8013AF88);
+            playPlayerSoundEffect(gCurrentTask->data18, 1, 0x201, 0x20);
+            gScratchVector0->vx = currentPlayerAbsolute->worldCoordinate.coord.t[0];
+            gScratchVector0->vy = currentPlayerAbsolute->worldCoordinate.coord.t[1] - 48;
+            gScratchVector0->vz = currentPlayerAbsolute->worldCoordinate.coord.t[2];
+            startAlternateQuadAnimationTask(gCurrentTask->data18, (const PositionEffectOrigin *)gScratchVector0);
             break;
         case 3 - 1:
             playCurrentPlayerSoundEffect(2);
@@ -1355,7 +1355,7 @@ s16 countCurrentPlayerInputGroups(void) {
     if (currentPlayerAbsolute->unk008) {
         return (randomNextMain() & 3) == 0;
     }
-    buttons = gControllerPressedButtons[D_8013AE88->data18];
+    buttons = gControllerPressedButtons[gCurrentTask->data18];
     if (buttons & 0xF000) {
         count = 1;
     }
@@ -1366,7 +1366,7 @@ s16 countCurrentPlayerInputGroups(void) {
 }
 
 void clearCurrentPlayerTaskState(void) {
-    GameTask *task = D_8013AE88;
+    GameTask *task = gCurrentTask;
     RacePlayer *player = currentPlayerAbsolute;
 
     task->data1A = 0;
@@ -1376,7 +1376,7 @@ void clearCurrentPlayerTaskState(void) {
 }
 
 void dispatchCurrentPlayerDirectionalAnimation(void) {
-    gCurrentPlayerDirectionalAnimationCallbacks[D_8013AE88->data1A]();
+    gCurrentPlayerDirectionalAnimationCallbacks[gCurrentTask->data1A]();
 }
 
 void startCurrentPlayerDirectionalAnimation(void) {
@@ -1384,46 +1384,46 @@ void startCurrentPlayerDirectionalAnimation(void) {
     player->unk0C4 = 0;
     player->unk0C6 = 0;
     if (!player->unk008) {
-        if (gControllerPressedButtons[D_8013AE88->data18] & 8) {
-            D_8013AE88->data1C = 8;
+        if (gControllerPressedButtons[gCurrentTask->data18] & 8) {
+            gCurrentTask->data1C = 8;
             player->unk0C4 = 1;
         }
-        if (gControllerPressedButtons[D_8013AE88->data18] & 4) {
-            D_8013AE88->data1C = 4;
+        if (gControllerPressedButtons[gCurrentTask->data18] & 4) {
+            gCurrentTask->data1C = 4;
             currentPlayerAbsolute->unk0C4 = 3;
         }
-        if (gControllerPressedButtons[D_8013AE88->data18] & 1) {
-            D_8013AE88->data1C = 1;
+        if (gControllerPressedButtons[gCurrentTask->data18] & 1) {
+            gCurrentTask->data1C = 1;
             currentPlayerAbsolute->unk0C4 = 7;
         }
-        if (gControllerPressedButtons[D_8013AE88->data18] & 2) {
-            D_8013AE88->data1C = 2;
+        if (gControllerPressedButtons[gCurrentTask->data18] & 2) {
+            gCurrentTask->data1C = 2;
             currentPlayerAbsolute->unk0C4 = 5;
         }
-        if (D_8013AE88->data1C) {
+        if (gCurrentTask->data1C) {
             if ((s16)currentPlayerAbsolute->unk0C2 < 6) {
                 currentPlayerAbsolute->unk0C4++;
             }
-            D_8013AE88->data1A++;
+            gCurrentTask->data1A++;
             if (currentPlayerAbsolute->unk128 & 0x400) {
-                if (D_8013AE88->data1C & 8) {
+                if (gCurrentTask->data1C & 8) {
                     startCurrentPlayerAnimation(0x1C, 2);
                 }
-                if (D_8013AE88->data1C & 4) {
+                if (gCurrentTask->data1C & 4) {
                     startCurrentPlayerAnimation(0x1A, 2);
                 }
             } else {
-                if (D_8013AE88->data1C & 8) {
+                if (gCurrentTask->data1C & 8) {
                     startCurrentPlayerAnimation(0x1A, 2);
                 }
-                if (D_8013AE88->data1C & 4) {
+                if (gCurrentTask->data1C & 4) {
                     startCurrentPlayerAnimation(0x1C, 2);
                 }
             }
-            if (D_8013AE88->data1C & 1) {
+            if (gCurrentTask->data1C & 1) {
                 startCurrentPlayerAnimation(0x1E, 2);
             }
-            if (D_8013AE88->data1C & 2) {
+            if (gCurrentTask->data1C & 2) {
                 startCurrentPlayerAnimation(0x20, 2);
             }
             currentPlayerAbsolute->unk128 |= 0x800;
@@ -1433,35 +1433,35 @@ void startCurrentPlayerDirectionalAnimation(void) {
 }
 
 void updateCurrentPlayerDirectionalAnimation(void) {
-    GameTask *task = D_8013AE88;
+    GameTask *task = gCurrentTask;
     RacePlayer *player;
     if (!(gControllerHeldButtons[task->data18] & task->data1C)) {
         task->data1E = 1;
     }
     player = currentPlayerAbsolute;
     if (player->animationFlags & 0x10) {
-        GameTask *animationTask = D_8013AE88;
+        GameTask *animationTask = gCurrentTask;
         if (animationTask->data1E) {
             animationTask->data1A++;
             if (player->unk128 & 0x400) {
                 if (animationTask->data1C & 8) {
                     startCurrentPlayerAnimation(0x1D, 2);
                 }
-                if (D_8013AE88->data1C & 4) {
+                if (gCurrentTask->data1C & 4) {
                     startCurrentPlayerAnimation(0x1B, 2);
                 }
             } else {
                 if (animationTask->data1C & 8) {
                     startCurrentPlayerAnimation(0x1B, 2);
                 }
-                if (D_8013AE88->data1C & 4) {
+                if (gCurrentTask->data1C & 4) {
                     startCurrentPlayerAnimation(0x1D, 2);
                 }
             }
-            if (D_8013AE88->data1C & 1) {
+            if (gCurrentTask->data1C & 1) {
                 startCurrentPlayerAnimation(0x1F, 2);
             }
-            if (D_8013AE88->data1C & 2) {
+            if (gCurrentTask->data1C & 2) {
                 startCurrentPlayerAnimation(0x21, 2);
             }
         } else {
@@ -1473,7 +1473,7 @@ void updateCurrentPlayerDirectionalAnimation(void) {
 
 void waitForCurrentPlayerDirectionalAnimationEnd(void) {
     if (currentPlayerAbsolute->animationFlags & 0x10) {
-        D_8013AE88->data1A++;
+        gCurrentTask->data1A++;
     } else {
         currentPlayerAbsolute->unk128 |= 0x800;
     }
@@ -1503,29 +1503,29 @@ void addPlayerCappedCounters(u16 playerIndex, s32 amount) {
 void playCurrentPlayerSoundEffect(s16 index) {
     switch (index) {
     case 0:
-        playPlayerPositionalSoundEffect(D_8013AE88->data18, D_8013AE88->data18 + 2, 0, 64);
+        playPlayerPositionalSoundEffect(gCurrentTask->data18, gCurrentTask->data18 + 2, 0, 64);
         break;
     case 1:
-        playPlayerPositionalSoundEffect(D_8013AE88->data18, D_8013AE88->data18 + 2, gPlayerSoundVariantsA[randomNextMain() & 1], 64);
+        playPlayerPositionalSoundEffect(gCurrentTask->data18, gCurrentTask->data18 + 2, gPlayerSoundVariantsA[randomNextMain() & 1], 64);
         break;
     case 2:
-        playPlayerPositionalSoundEffect(D_8013AE88->data18, D_8013AE88->data18 + 2, gPlayerSoundVariantsB[randomNextMain() & 1], 64);
+        playPlayerPositionalSoundEffect(gCurrentTask->data18, gCurrentTask->data18 + 2, gPlayerSoundVariantsB[randomNextMain() & 1], 64);
         break;
     case 3:
-        playPlayerSoundEffectWithVolumeFloor(D_8013AE88->data18, D_8013AE88->data18 + 2,
+        playPlayerSoundEffectWithVolumeFloor(gCurrentTask->data18, gCurrentTask->data18 + 2,
                                             gPlayerSoundVariantsB[randomNextMain() & 1], 64);
         break;
     case 4:
-        playPlayerPositionalSoundEffect(D_8013AE88->data18, D_8013AE88->data18 + 2, 0x500, 64);
+        playPlayerPositionalSoundEffect(gCurrentTask->data18, gCurrentTask->data18 + 2, 0x500, 64);
         break;
     case 5:
-        playPlayerPositionalSoundEffect(D_8013AE88->data18, D_8013AE88->data18 + 2, 0x600, 64);
+        playPlayerPositionalSoundEffect(gCurrentTask->data18, gCurrentTask->data18 + 2, 0x600, 64);
         break;
     case 6:
-        playPlayerPositionalSoundEffect(D_8013AE88->data18, D_8013AE88->data18 + 2, 0x700, 64);
+        playPlayerPositionalSoundEffect(gCurrentTask->data18, gCurrentTask->data18 + 2, 0x700, 64);
         break;
     case 7:
-        playPlayerPositionalSoundEffect(D_8013AE88->data18, D_8013AE88->data18 + 2, 0x800, 64);
+        playPlayerPositionalSoundEffect(gCurrentTask->data18, gCurrentTask->data18 + 2, 0x800, 64);
         break;
     }
 }
@@ -1544,7 +1544,7 @@ void startPlayerTimerTask(RacePlayer *player) {
         player->unk0FF = 0;
     }
     createChildTaskForParentWithReserve(player->task, initPlayerTimerTask);
-    D_8013AE8C->data18 = player->playerIndex;
+    gCreatedTask->data18 = player->playerIndex;
 }
 
 
@@ -1552,7 +1552,7 @@ void updateCurrentPlayerProjectileUse(u16 playerIndex) {
     s32 activate = 0;
 
     if (!currentPlayerAbsolute->unk008) {
-        activate = ((u8)gControllerPressedButtons[D_8013AE88->data18]) >> 7;
+        activate = ((u8)gControllerPressedButtons[gCurrentTask->data18]) >> 7;
     } else {
         if (currentPlayerAbsolute->projectileUseCooldown == 0) {
             currentPlayerAbsolute->projectileUseCooldown = 10;
@@ -1632,7 +1632,7 @@ tryActivation:
         default:
             goto clearEmptyEffect;
         }
-        D_8013AE8C->data18 = playerIndex;
+        gCreatedTask->data18 = playerIndex;
         currentPlayerAbsolute->unk940--;
 
     clearEmptyEffect:
@@ -1643,7 +1643,7 @@ tryActivation:
 
     if (currentPlayerAbsolute->unk93C) {
         createChildTaskForParentWithReserve(&gGameTasks[4], initializeDualResource5100EffectTask);
-        D_8013AE8C->data18 = playerIndex;
+        gCreatedTask->data18 = playerIndex;
         currentPlayerAbsolute->unk93C--;
     }
 }
@@ -1681,7 +1681,7 @@ void updateCurrentPlayerItemUse(u16 playerIndex) {
         goto clearItem;
     case 1:
         tryCreateChildTaskForParentWith20SlotsReserved(&gGameTasks[4], initializeOrbitingPlayerVisualTask);
-        D_8013AE8C->data18 = playerIndex;
+        gCreatedTask->data18 = playerIndex;
         currentPlayerAbsolute->heldItem = 0;
         return;
     case 2: {
@@ -1693,22 +1693,22 @@ void updateCurrentPlayerItemUse(u16 playerIndex) {
                 createChildTaskForParentWithReserve(&gGameTasks[4], initializeDelayedPlayerRiseEffectTask);
                 delay = count * 3;
                 count++;
-                D_8013AE8C->data18 = index;
-                D_8013AE8C->data1A = playerIndex;
-                D_8013AE8C->data1C = delay;
+                gCreatedTask->data18 = index;
+                gCreatedTask->data1A = playerIndex;
+                gCreatedTask->data1C = delay;
             }
         }
         goto clearItem;
     }
     case 3:
         tryCreateChildTaskForParentWith20SlotsReserved(&gGameTasks[4], initializeFallingTaskObject);
-        D_8013AE8C->data18 = playerIndex;
-        playPlayerSoundEffect(D_8013AE88->data18, 1, 2, 32);
+        gCreatedTask->data18 = playerIndex;
+        playPlayerSoundEffect(gCurrentTask->data18, 1, 2, 32);
         goto clearItem;
     case 4:
         if (!currentPlayerAbsolute->unk008) {
             tryCreateChildTaskForParentWith20SlotsReserved(&gGameTasks[4], initializeSlidingVisualSequenceTask);
-            D_8013AE8C->data18 = playerIndex;
+            gCreatedTask->data18 = playerIndex;
         }
     clearItem:
         currentPlayerAbsolute->heldItem = 0;
@@ -1718,7 +1718,7 @@ void updateCurrentPlayerItemUse(u16 playerIndex) {
         if (player->surfaceState.fields.unk134 == 0) {
             player->heldItem = 0;
             player->surfaceState.fields.unk134 = 180;
-            playPlayerSoundEffect(D_8013AE88->data18, 1, 0xE00, 32);
+            playPlayerSoundEffect(gCurrentTask->data18, 1, 0xE00, 32);
         }
         return;
     }
@@ -1732,7 +1732,7 @@ void loadCurrentPlayerModelBlock(void) {
     u8 *archive = (u8 *)DAT_STARTUP_MODELS;
     u32 (*buffers)[512] = DAT_PLAYER_MODEL_BLOCKS;
     u32 i = 0;
-    u16 player = D_8013AE88->data18;
+    u16 player = gCurrentTask->data18;
     u32 *dest;
     u32 offset;
     u32 *source;
@@ -1749,7 +1749,7 @@ void loadCurrentPlayerModelBlock(void) {
         u32 (*largeBuffers)[4096] = DAT_PLAYER_MODEL_BUFFERS;
         i = 3;
         dest = model;
-        model = largeBuffers[D_8013AE88->data18];
+        model = largeBuffers[gCurrentTask->data18];
         {
             u32 *secondSource = dest + 3;
             dest = model + 3;
@@ -1832,7 +1832,7 @@ void initializeNewGameSaveData(void) {
     D_8013AF7C = 240;
     D_8013B10C = -1;
     D_8013B10E = -1;
-    D_8013AFCE = 0;
+    gSelectedCourseIndex = 0;
     D_8013AFE2 = 0;
     D_8013AFD6 = 0;
     D_8013B47C = 0;

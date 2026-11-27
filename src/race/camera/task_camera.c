@@ -5,30 +5,30 @@
 #include "game/race/player/race_player.h"
 
 extern u8 D_8013AFCD __attribute__((section(".data")));
-extern GameTask *D_8013AE88 __attribute__((section(".data")));
+extern GameTask *gCurrentTask __attribute__((section(".data")));
 
 void initializeTaskPlayerCamera(void) {
     PlayerCamera *cameras;
-    currentPlayerAbsolute = &gRacePlayers[D_8013AE88->data18];
-    initPlayerCameraAndTarget(D_8013AE88->data18);
+    currentPlayerAbsolute = &gRacePlayers[gCurrentTask->data18];
+    initPlayerCameraAndTarget(gCurrentTask->data18);
     cameras = D_801241E8;
-    cameras[D_8013AE88->data18].yaw = currentPlayerAbsolute->unk110;
-    cameras[D_8013AE88->data18].pitch = 0;
-    cameras[D_8013AE88->data18].unk18 = currentPlayerAbsolute->unk92E;
-    updatePlayerCameraPosition(D_8013AE88->data18);
-    clampPlayerCameraHeight(D_8013AE88->data18);
-    cameras[D_8013AE88->data18].unk10 = -0x230;
+    cameras[gCurrentTask->data18].yaw = currentPlayerAbsolute->unk110;
+    cameras[gCurrentTask->data18].pitch = 0;
+    cameras[gCurrentTask->data18].unk18 = currentPlayerAbsolute->unk92E;
+    updatePlayerCameraPosition(gCurrentTask->data18);
+    clampPlayerCameraHeight(gCurrentTask->data18);
+    cameras[gCurrentTask->data18].unk10 = -0x230;
     setCurrentTaskCallback(updateTaskViewAndCheckPlayerLimit);
 }
 
 void updateTaskViewAndCheckPlayerLimit(void) {
     renderCurrentCameraPlayersAndUpdateSound();
     if (D_8013B55E != 0) {
-        if (D_8013AE88->data18 < D_8013AFCD) {
+        if (gCurrentTask->data18 < D_8013AFCD) {
             setCurrentTaskCallback(updateCurrentPlayerCameraTask);
             return;
         }
         deleteCurrentTaskSubtree();
     }
-    updatePlayerCameraPosition(D_8013AE88->data18);
+    updatePlayerCameraPosition(gCurrentTask->data18);
 }

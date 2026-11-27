@@ -12,10 +12,10 @@
 
 extern s16 gFrameCounter __attribute__((section(".data")));
 extern u16 D_8013AF78 __attribute__((section(".data")));
-extern GameTask *D_8013AE88 __attribute__((section(".data")));
+extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *D_8013AE98 __attribute__((section(".data")));
 
-extern s16 D_8013AFCE __attribute__((section(".data")));
+extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u16 D_8013AFD0 __attribute__((section(".data")));
 
 const u16 gNumberAdjustmentLabel[]
@@ -55,11 +55,11 @@ void initializeNumberAdjustmentTask(void) {
     NumberAdjustmentState *state;
     s16 i;
     D_8013AE98->data1C++;
-    if (D_8013AE88->resource14 != 0xFFFF) {
+    if (gCurrentTask->resource14 != 0xFFFF) {
         for (;;) {}
     }
-    D_8013AE88->resource14 = allocateTaskMemoryBlock();
-    state = (NumberAdjustmentState *)&gTaskMemoryPool[D_8013AE88->resource14];
+    gCurrentTask->resource14 = allocateTaskMemoryBlock();
+    state = (NumberAdjustmentState *)&gTaskMemoryPool[gCurrentTask->resource14];
     state->value = D_8013AFD0;
     for (i = 0; i < 3; i++) {
         state->unk20[i] = 0;
@@ -68,7 +68,7 @@ void initializeNumberAdjustmentTask(void) {
     state->active = 1;
     queueMenuResourceReads(0x17);
     setCurrentTaskCallback(prepareNumberAdjustmentDisplayTask);
-    D_8013AE88->unk10 |= 2;
+    gCurrentTask->unk10 |= 2;
 }
 
 void prepareNumberAdjustmentDisplayTask(void) {
@@ -77,7 +77,7 @@ void prepareNumberAdjustmentDisplayTask(void) {
 
     setTaskBackgroundMode(2, -0x1000, 0x1000);
     setSecondaryDisplayTaskMode(0);
-    index = D_8012D478[D_8013AFCE];
+    index = D_8012D478[gSelectedCourseIndex];
     copyIndexedTaskImagesToVram(index);
     setCurrentTaskCallback(updateNumberAdjustmentTask);
 }
@@ -86,10 +86,10 @@ void updateNumberAdjustmentTask(void) {
     NumberAdjustmentState *state;
     s16 previous;
     u16 buttons;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         for (;;) {}
     }
-    state = (NumberAdjustmentState *)&gTaskMemoryPool[D_8013AE88->resource14];
+    state = (NumberAdjustmentState *)&gTaskMemoryPool[gCurrentTask->resource14];
     buttons = gControllerPressedButtons[0] | gControllerPressedButtons[1];
     previous = state->value;
     if ((buttons & 0x1000) && state->value > 1) {
@@ -107,14 +107,14 @@ void updateNumberAdjustmentTask(void) {
         state->countdown = 20;
         state->active = 0;
         D_8013AE98->data18 = 0x17;
-        D_8013AE88->data18 = 0;
+        gCurrentTask->data18 = 0;
         setCurrentTaskCallback(finishNumberAdjustmentTask);
     }
     if (buttons & 0x40) {
         playSoundEffect(0, 0, 0x20);
         D_8013AE98->data18 = 8;
         queueBackgroundTextureArchiveRead();
-        D_8013AE88->data18 = 0;
+        gCurrentTask->data18 = 0;
         setCurrentTaskCallback(finishNumberAdjustmentTask);
     }
     drawNumberAdjustmentPanel();
@@ -136,10 +136,10 @@ void drawNumberAdjustmentPanel(void) {
     s32 scroll;
     s32 palette;
 
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         for (;;) {}
     }
-    state = (NumberAdjustmentState *)&gTaskMemoryPool[D_8013AE88->resource14];
+    state = (NumberAdjustmentState *)&gTaskMemoryPool[gCurrentTask->resource14];
     setSpriteColor(128, 128, 128);
     setTexturedQuadColor(128, 128, 128);
     scroll = state->unk20[0] / 4096;
@@ -172,18 +172,18 @@ void drawNumberAdjustmentPanel(void) {
 
 void finishNumberAdjustmentTask(void) {
     NumberAdjustmentState *state;
-    if (D_8013AE88->resource14 == 0xFFFF) {
+    if (gCurrentTask->resource14 == 0xFFFF) {
         for (;;) {}
     }
-    state = (NumberAdjustmentState *)&gTaskMemoryPool[D_8013AE88->resource14];
-    switch (D_8013AE88->data18) {
+    state = (NumberAdjustmentState *)&gTaskMemoryPool[gCurrentTask->resource14];
+    switch (gCurrentTask->data18) {
     case 0:
         if (state->countdown == 0) {
             if (D_8013AE98->data18 == 0x17) {
                 beginMode2SequenceAndFadeMusic();
-                D_8013AE88->data18 = 1;
+                gCurrentTask->data18 = 1;
             } else {
-                D_8013AE88->data18 = 2;
+                gCurrentTask->data18 = 2;
             }
         }
         break;

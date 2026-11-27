@@ -55,14 +55,14 @@ extern u16 gTaskMemoryFreeBits[16];
 
 /* Scheduler storage remains in its original data object. */
 /* Some task flows address this pointer absolutely; the scheduler uses $gp. */
-extern GameTask *D_8013AE88;
-extern GameTask *D_8013AE8C;
+extern GameTask *gCurrentTask;
+extern GameTask *gCreatedTask;
 extern GameTask *D_8013AE98;
 extern GameTask *D_8013B304;
 /* GP-relative alias for the player snapshot task pointer. */
 extern GameTask *playerSnapshotTaskGp;
 /* Task transition flags consumed by the main presentation flow. */
-extern u32 D_8013AFE4;
+extern u32 gTaskTransitionFlags;
 extern u32 taskTransitionFlagsAbsolute __attribute__((section(".data")));
 extern GameTask gGameTasks[200];
 /* Each pool index selects a 256-byte block interpreted by the task using it. */
@@ -87,7 +87,7 @@ void armTaskCleanupOnFlagAFAABit6(void);
 void armTaskCallbackResetOnFlag3(void);
 void armSavedStateRestoreOnFlag3(void);
 
-/* Creates a child of the current task. On exhaustion, the free-list tail is the fallback in D_8013AE8C. */
+/* Creates a child of the current task. On exhaustion, the free-list tail is the fallback in gCreatedTask. */
 s32 createChildTask(TaskCallback callback);
 /* Leaves ten free task slots in reserve and uses the same fallback as createChildTask. */
 s32 createChildTaskWithReserve(TaskCallback callback);

@@ -11,11 +11,11 @@
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
 
-extern VECTOR *D_8013AF88 __attribute__((section(".data")));
+extern VECTOR *gScratchVector0 __attribute__((section(".data")));
 extern SVECTOR *D_8013AF90 __attribute__((section(".data")));
 extern u16 D_8013AF78 __attribute__((section(".data")));
-extern GameTask *D_8013AE88 __attribute__((section(".data")));
-extern GameTask *D_8013AE8C __attribute__((section(".data")));
+extern GameTask *gCurrentTask __attribute__((section(".data")));
+extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern GameTask *D_8013AE98 __attribute__((section(".data")));
 
 u16 playerModelDrawAreaDepths[4] __attribute__((section(".data.player_model_draw_area_depths"))) = {
@@ -95,10 +95,10 @@ void updateCurrentPlayerModelPartCoordinates(void) {
             D_8013AF90->vx = 0;
             D_8013AF90->vy = 0;
             D_8013AF90->vz = 0;
-            ApplyMatrix(&currentPlayerAbsolute->model.modelCoordinates[0].coord, D_8013AF90, D_8013AF88);
-            currentPlayerAbsolute->model.modelCoordinates[0].coord.t[0] = D_8013AF88->vx + currentPlayerAbsolute->unk62C[0].x;
-            currentPlayerAbsolute->model.modelCoordinates[0].coord.t[1] = D_8013AF88->vy + currentPlayerAbsolute->unk62C[0].y;
-            currentPlayerAbsolute->model.modelCoordinates[0].coord.t[2] = D_8013AF88->vz + currentPlayerAbsolute->unk62C[0].z;
+            ApplyMatrix(&currentPlayerAbsolute->model.modelCoordinates[0].coord, D_8013AF90, gScratchVector0);
+            currentPlayerAbsolute->model.modelCoordinates[0].coord.t[0] = gScratchVector0->vx + currentPlayerAbsolute->unk62C[0].x;
+            currentPlayerAbsolute->model.modelCoordinates[0].coord.t[1] = gScratchVector0->vy + currentPlayerAbsolute->unk62C[0].y;
+            currentPlayerAbsolute->model.modelCoordinates[0].coord.t[2] = gScratchVector0->vz + currentPlayerAbsolute->unk62C[0].z;
         } else {
             ApplyMatrix(&currentPlayerAbsolute->model.modelCoordinates[parent].coord, (SVECTOR *)&currentPlayerAbsolute->unk62C[i], &D_800EB22C);
             currentPlayerAbsolute->model.modelCoordinates[i].coord.t[0] = D_800EB22C.vx + currentPlayerAbsolute->model.modelCoordinates[parent].coord.t[0];
@@ -126,27 +126,27 @@ void createPlayerModelPreviewTask(u16 playerIndex, u16 characterId, u16 modelSlo
     RegisteredTaskEntry *entry;
 
     createChildTaskWithReserve(updatePlayerModelPreviewTask);
-    D_8013AE8C->data18 = 0;
-    D_8013AE8C->data1A = modelSlot;
-    D_8013AE8C->data1C = playerIndex;
-    D_8013AE8C->data1E = index;
-    D_8013AE8C->resource14 = allocateTaskMemoryBlock();
+    gCreatedTask->data18 = 0;
+    gCreatedTask->data1A = modelSlot;
+    gCreatedTask->data1C = playerIndex;
+    gCreatedTask->data1E = index;
+    gCreatedTask->resource14 = allocateTaskMemoryBlock();
 
-    currentPlayerAbsolute = &gRacePlayers[D_8013AE8C->data1C];
-    state = (ModelPreviewState *)&gTaskMemoryPool[D_8013AE8C->resource14];
+    currentPlayerAbsolute = &gRacePlayers[gCreatedTask->data1C];
+    state = (ModelPreviewState *)&gTaskMemoryPool[gCreatedTask->resource14];
     currentPlayerAbsolute->characterId = characterId;
     {
         u32 (*sourceBuffers)[4096] = (u32 (*)[4096])DAT_GRID_MODEL_BUFFERS;
         u32 (*destinationBuffers)[4096] = DAT_PLAYER_MODEL_BUFFERS;
 
-        destination = destinationBuffers[D_8013AE8C->data1C];
-        source = sourceBuffers[D_8013AE8C->data1A];
+        destination = destinationBuffers[gCreatedTask->data1C];
+        source = sourceBuffers[gCreatedTask->data1A];
     }
     for (; i < 4096; i++) {
         *destination++ = *source++;
     }
 
-    model = DAT_PLAYER_MODEL_BUFFERS[D_8013AE8C->data1C];
+    model = DAT_PLAYER_MODEL_BUFFERS[gCreatedTask->data1C];
     model++;
     GsMapModelingData(model);
     model++;
@@ -184,37 +184,37 @@ void createPlayerModelPreviewTask(u16 playerIndex, u16 characterId, u16 modelSlo
     player->unk5BC[0].z = 0;
 
     state->rotationStep = 0;
-    D_8013AE8C->resource16 = allocateTaskMemoryBlock();
-    position = (Movement2D *)&gTaskMemoryPool[D_8013AE8C->resource16];
+    gCreatedTask->resource16 = allocateTaskMemoryBlock();
+    position = (Movement2D *)&gTaskMemoryPool[gCreatedTask->resource16];
     initMovement2D(position, x << 12, y << 12);
     position->unk08 = z;
 
     if (index % 10 == 0) {
-        if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
-        entry = getSignedModelPreviewEntry(D_8013AE88->resource14, index);
+        if (gCurrentTask->resource14 == 0xFFFF) { for (;;) {} }
+        entry = getSignedModelPreviewEntry(gCurrentTask->resource14, index);
     } else {
-        if (D_8013AE88->resource16 == 0xFFFF) { for (;;) {} }
-        entry = getSignedModelPreviewEntry(D_8013AE88->resource16, index);
+        if (gCurrentTask->resource16 == 0xFFFF) { for (;;) {} }
+        entry = getSignedModelPreviewEntry(gCurrentTask->resource16, index);
     }
     entry->command = 0;
     entry->flags = 10;
-    entry->task = D_8013AE8C;
+    entry->task = gCreatedTask;
 }
 
 void updatePlayerModelPreviewTask(void) {
     u8 padding[0x10];
     ModelPreviewState *state;
     RegisteredTaskEntry *entry;
-    currentPlayerAbsolute = &gRacePlayers[D_8013AE88->data1C];
-    if (D_8013AE88->resource14 == 0xFFFF) { for (;;) {} }
-    state = (ModelPreviewState *)&gTaskMemoryPool[D_8013AE88->resource14];
-    if (D_8013AE88->resource16 == 0xFFFF) { for (;;) {} }
-    if ((u16)(D_8013AE88->data1E % 10) == 0) {
+    currentPlayerAbsolute = &gRacePlayers[gCurrentTask->data1C];
+    if (gCurrentTask->resource14 == 0xFFFF) { for (;;) {} }
+    state = (ModelPreviewState *)&gTaskMemoryPool[gCurrentTask->resource14];
+    if (gCurrentTask->resource16 == 0xFFFF) { for (;;) {} }
+    if ((u16)(gCurrentTask->data1E % 10) == 0) {
         if (D_8013AE98->resource14 == 0xFFFF) { for (;;) {} }
-        entry = getModelPreviewEntry(D_8013AE98->resource14, D_8013AE88->data1E);
+        entry = getModelPreviewEntry(D_8013AE98->resource14, gCurrentTask->data1E);
     } else {
         if (D_8013AE98->resource16 == 0xFFFF) { for (;;) {} }
-        entry = getModelPreviewEntry(D_8013AE98->resource16, D_8013AE88->data1E);
+        entry = getModelPreviewEntry(D_8013AE98->resource16, gCurrentTask->data1E);
     }
     switch (entry->command) {
     case 1: state->rotationStep = 64; entry->flags = 0; break;
@@ -230,5 +230,5 @@ void updatePlayerModelPreviewTask(void) {
     setCoordinateRotation((SVECTOR *)&currentPlayerAbsolute->unk0B4, &currentPlayerAbsolute->worldCoordinate);
     setCoordinateRotation(&currentPlayerAbsolute->modelRotation, &currentPlayerAbsolute->modelCoordinate);
     setCoordinateRotation((SVECTOR *)currentPlayerAbsolute->unk5BC, currentPlayerAbsolute->model.modelCoordinates);
-    sortPlayerModelWithDrawArea(D_8013AE88->data1C, 0, &D_801300B8[D_8013AE88->data1C]);
+    sortPlayerModelWithDrawArea(gCurrentTask->data1C, 0, &D_801300B8[gCurrentTask->data1C]);
 }
