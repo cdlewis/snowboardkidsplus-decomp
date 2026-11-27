@@ -866,7 +866,7 @@ segments:
       - {start: 0x1205CC, type: .data, name: menu/course_selection_tasks, linker_section: .data.selection_panel_data}
       - {start: 0x12080C, type: .data, name: menu/course_selection_tasks, linker_section: .data.grouped_course_menu_descriptors}
       - {start: 0x120884, type: .data, name: menu/course_selection_tasks, linker_section: .data.menu_player_texture_ids}
-      - [0x120894, data, grouped_course_menu_data_tail]
+      - {start: 0x120894, type: .data, name: menu/course_selection_tasks, linker_section: .data.grouped_course_menu_state}
       - {start: 0x1208D8, type: .data, name: menu/course_selection_tasks, linker_section: .data.player_grouped_selection_sprites}
       - {start: 0x12093E, type: .data, name: menu/course_selection_tasks, linker_section: .data.player_grouped_selection_sprites_padding}
       - {start: 0x120940, type: .data, name: menu/course_selection_tasks, linker_section: .data.player_grouped_selection_descriptors}

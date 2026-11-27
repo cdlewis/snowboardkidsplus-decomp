@@ -4289,8 +4289,8 @@ gCourseMenuSpriteEntries = 0x8012F798; // size:0x54
 gCourseMenuMappingGroups = 0x8012FD10; // size:0x50
 gSelectedCourseMenuItem = 0x8013B104;
 
-gRecordFlagMenuItemBuffers = 0x80130094;
-gRecordFlagMenuTextIndexBuffers = 0x801300A0;
+gRecordFlagMenuItemBuffers = 0x80130094; // size:0xA
+gRecordFlagMenuTextIndexBuffers = 0x801300A0; // size:0xA
 gBoardMenuSpriteEntries = 0x80131A78;
 gDefaultBoardMenuItems = 0x8013B434;
 gMenuPlayerTextureSelections = 0x8013B468;
@@ -4684,3 +4684,6 @@ gSelectionPanelText7 = 0x8012FF30; // size:0x38
 gSelectionPanelText8 = 0x8012FF68; // size:0x54
 gSelectionPanelText9 = 0x8012FFBC; // size:0x18
 gSelectionPanelStatPadding = 0x8013000B; // size:0x1
+
+gRecordFlagMenuItemBuffersPadding = 0x8013009E; // size:0x2
+gRecordFlagMenuTextIndexBuffersPadding = 0x801300AA; // size:0x2

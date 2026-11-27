@@ -503,6 +503,24 @@ const u8 gMenuPlayerTextureIds[16]
     0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 21, 20,
 };
 
+u8 gRecordFlagMenuItemBuffers[2][5]
+    __attribute__((section(".data.grouped_course_menu_state"), aligned(4))) = {{0}};
+
+u16 gRecordFlagMenuItemBuffersPadding
+    __attribute__((section(".data.grouped_course_menu_state"))) = 0;
+
+u8 gRecordFlagMenuTextIndexBuffers[2][5]
+    __attribute__((section(".data.grouped_course_menu_state"), aligned(4))) = {{0}};
+
+u16 gRecordFlagMenuTextIndexBuffersPadding
+    __attribute__((section(".data.grouped_course_menu_state"))) = 0;
+
+MenuSelectionState gMenuSelectionStates[2]
+    __attribute__((section(".data.grouped_course_menu_state"), aligned(4))) = {{0}};
+
+RECT gMenuModelDrawAreas[4]
+    __attribute__((section(".data.grouped_course_menu_state"), aligned(4))) = {{0}};
+
 IndexedHalfwordRecord gPlayerGroupedSelectionSprites[17]
     __attribute__((section(".data.player_grouped_selection_sprites"), aligned(4))) = {
     {205, 0x0, 0x0},
