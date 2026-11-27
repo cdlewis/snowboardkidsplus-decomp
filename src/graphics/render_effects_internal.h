@@ -738,7 +738,7 @@ extern SVECTOR *gModelVertices __attribute__((section(".sdata")));
 extern SVECTOR *gScratchShortVector0 __attribute__((section(".data")));
 extern MATRIX D_8012A6B0, D_8012A6D0;
 extern MATRIX *D_8013AF9C __attribute__((section(".data")));
-extern POLY_FT4 D_8012967C;
+extern POLY_FT4 gTaskVisualQuad;
 typedef struct PairedEffectResource {
     u8 unk00[0x20];
     VECTOR positions[2];
@@ -823,24 +823,24 @@ extern RECT gScanlineSeedRect __attribute__((section(".data.scanline_copy_rects"
 
 /* Shared collision regions remain in player_camera_state_tail. */
 extern PlayerCollisionRegion D_80129A18[2];
-extern u8 D_8013B2B5, D_8013B2B6;
+extern u8 gPickupVisualPlacementStartIndex, gPickupVisualPlacementCount;
 extern TaskVisualFrame gInteractionVisualFrame;
 extern VisualPlacement *gInteractionVisualPlacements;
-extern VisualPlacement *D_8013B2BC;
-extern u8 D_8013B2B9, D_8013B2BA;
+extern VisualPlacement *gCurrentCourseObjectPlacements;
+extern u8 gCourseVisualPlacementStartIndex, gCourseVisualPlacementCount;
 /* The course lookup base precedes its valid pointer entries in shared frame data. */
 extern TaskVisualFrame *D_80129540[];
 void updatePlacedObjectTask(void);
 void updatePlacedObjectBounceTask(void);
 void updateOrbitingObstacleTask(void);
 void updatePickupVisualTask(void);
-extern VisualPlacement *D_8013B2C0;
+extern VisualPlacement *gCollectiblePlacements;
 
 /* Shared texture metadata remains in its original data owner. */
 extern TextureRegionSet D_8012DDA4[];
 extern TextureRegion *D_8013B6AC;
 
-extern TaskSnapshot *D_8013B2E4;
+extern TaskSnapshot *gSelectedPlayerTaskSnapshots;
 extern RacePlayer *D_8013B2E8;
 extern SelectedStateRecord *D_8012C6F4[];
 extern TaskVisualFrame gPlacedObjectVisualFrame
