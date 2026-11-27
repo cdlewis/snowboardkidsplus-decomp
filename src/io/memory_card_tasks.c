@@ -9,22 +9,22 @@ u32 gMemoryCardSaveBufferSize = 0;
 
 s32 pollMemoryCardWrite(void) {
     s32 command, result;
-    D_8013B60C[D_8013AF38] = 0;
-    if (D_8013B608[D_8013AF38] == 1) {
-        switch (MemCardCreateFile(D_8013AF34, D_8013AF40, (s8)gMemoryCardSaveHeader.blockCount)) {
+    D_8013B60C[gMemoryCardPortIndex] = 0;
+    if (D_8013B608[gMemoryCardPortIndex] == 1) {
+        switch (MemCardCreateFile(gMemoryCardChannel, gMemoryCardSelectedFileName, (s8)gMemoryCardSaveHeader.blockCount)) {
         case 0: readMemoryCardDirectory();
-            D_8013B608[D_8013AF38] = 0; break;
+            D_8013B608[gMemoryCardPortIndex] = 0; break;
         case 1: return 2;
         case 2: return 3;
         case 4: return 4;
-        case 6: D_8013B608[D_8013AF38] = 0; break;
+        case 6: D_8013B608[gMemoryCardPortIndex] = 0; break;
         case 7: return 5;
         default: return 0;
         }
     }
     switch (MemCardSync(1, &command, &result)) {
     case -1:
-        MemCardWriteFile(D_8013AF34, D_8013AF40, &gMemoryCardSaveHeader, 0, gMemoryCardSaveCapacities[D_8013AF48]);
+        MemCardWriteFile(gMemoryCardChannel, gMemoryCardSelectedFileName, &gMemoryCardSaveHeader, 0, gMemoryCardSaveCapacities[D_8013AF48]);
         break;
     case 0: break;
     case 1:
@@ -33,8 +33,8 @@ s32 pollMemoryCardWrite(void) {
             case 0: return 1;
             case 1: return 2;
             case 2: return 3;
-            case 3: MemCardAccept(D_8013AF34);
-            case 5: D_8013B608[D_8013AF38] = 1; break;
+            case 3: MemCardAccept(gMemoryCardChannel);
+            case 5: D_8013B608[gMemoryCardPortIndex] = 1; break;
             }
         }
         break;
@@ -45,11 +45,11 @@ s32 pollMemoryCardWrite(void) {
 s32 formatMemoryCard(void) {
     s32 *fileCount;
 
-    switch (MemCardFormat(D_8013AF34)) {
+    switch (MemCardFormat(gMemoryCardChannel)) {
     case 1:
         return 1;
     default:
-        fileCount = &D_8013B600[D_8013AF38];
+        fileCount = &gMemoryCardDirectoryEntryCounts[gMemoryCardPortIndex];
         *fileCount = 0;
         /* The original returns the address of the cleared count on this path. */
         return (s32)fileCount;
@@ -65,13 +65,13 @@ void resetMemoryCardTaskState(void) {
 }
 
 void setMemoryCardChannel(s32 channel) {
-    D_8013AF34 = channel;
+    gMemoryCardChannel = channel;
     switch (channel) {
     case 0x10:
-        D_8013AF38 = 1;
+        gMemoryCardPortIndex = 1;
         break;
     default:
-        D_8013AF38 = 0;
+        gMemoryCardPortIndex = 0;
         break;
     }
 }

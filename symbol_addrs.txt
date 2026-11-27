@@ -4271,3 +4271,11 @@ gRecordFlagMenuTextIndexBuffers = 0x801300A0;
 gBoardMenuSpriteEntries = 0x80131A78;
 gDefaultBoardMenuItems = 0x8013B434;
 gMenuPlayerTextureSelections = 0x8013B468;
+
+// Memory-card selection and directory state.
+gMemoryCardChannel = 0x8013AF34;
+gMemoryCardPortIndex = 0x8013AF38;
+gSelectedUnlockIndex = 0x8013AF3A;
+gMemoryCardSelectedFileName = 0x8013AF40;
+gMemoryCardDirectoryEntryCounts = 0x8013B600;
+gMemoryCardDirectoryEntries = 0x8013B700;

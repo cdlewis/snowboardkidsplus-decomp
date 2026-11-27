@@ -2,6 +2,7 @@
 
 #include "psx/libgpu.h"
 #include "psx/libetc.h"
+#include "psx/libc.h"
 
 /* Shared cache and dispatch storage are initialized by the GPU setup and
  * environment submission functions, which still use their original assembly.
@@ -36,7 +37,6 @@ typedef struct GpuVtable {
 
 extern GpuInfo GEnv;
 extern GpuVtable *gGpuDispatch;
-void *memcpy(void *destination, const void *source, u32 size);
 s32 _getctl(s32 index);
 u32 gpuGetMode(s32 dfe, s32 dtd, u16 tpage);
 u32 gpuGetClipStart(s16 x, s16 y);

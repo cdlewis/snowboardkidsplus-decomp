@@ -12,7 +12,7 @@ extern u32 gTaskTransitionFlags __attribute__((section(".data")));
 
 void startUnlockNotification(s16 index) {
     if ((u16)index < 11 && (s16)getUnlockNotificationFlag(index) == 0) {
-        D_8013AF3A = index;
+        gSelectedUnlockIndex = index;
         gTaskTransitionFlags &= ~0x200;
         setUnlockNotificationFlag(index);
         createChildTaskWithReserve(initializeScenePlaybackResourcesTask);

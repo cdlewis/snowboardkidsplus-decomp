@@ -3,6 +3,7 @@
 #include "game/io/memory_card.h"
 #include "game/menu/selected_records.h"
 #include "game/save/save_data.h"
+#include "game/scene/scene_events.h"
 #include "psx/libgpu.h"
 #include "psx/libmcrd.h"
 
@@ -80,7 +81,7 @@ void prepareMemoryCardSave(u8 slot, void *source, u32 size) {
     u8 blocks;
     u32 i;
     u32 checksum;
-    D_8013AF40 = gMemoryCardFileNames[slot];
+    gMemoryCardSelectedFileName = gMemoryCardFileNames[slot];
     blocks = gMemoryCardSaveCapacities[slot] / 8192;
     if (gMemoryCardSaveCapacities[slot] % 8192) blocks++;
     gMemoryCardSaveHeader.blockCount = blocks;
@@ -107,13 +108,13 @@ void selectMemoryCardLoadFile(u8 slot, void *destination) {
         gMemoryCardFileNames[slot][19] = (gSelectedCourseIndex % 10) | 0x30;
         break;
     case 4:
-        gMemoryCardFileNames[4][18] = (D_8013AF3A / 10) | 0x30;
-        gMemoryCardFileNames[4][19] = (D_8013AF3A % 10) | 0x30;
+        gMemoryCardFileNames[4][18] = (gSelectedUnlockIndex / 10) | 0x30;
+        gMemoryCardFileNames[4][19] = (gSelectedUnlockIndex % 10) | 0x30;
         break;
     }
     gMemoryCardLoadDestination = destination;
     D_8013AF48 = slot;
-    D_8013AF40 = gMemoryCardFileNames[slot];
+    gMemoryCardSelectedFileName = gMemoryCardFileNames[slot];
 }
 
 s16 validateAndCopyMemoryCardSave(void) {
@@ -137,14 +138,14 @@ s16 validateAndCopyMemoryCardSave(void) {
 }
 
 void readMemoryCardDirectory(void) {
-    MemCardGetDirentry(D_8013AF34, D_8013AF3C, D_8013B700[D_8013AF38],
-                       &D_8013B600[D_8013AF38], 0, 15);
+    MemCardGetDirentry(gMemoryCardChannel, D_8013AF3C, gMemoryCardDirectoryEntries[gMemoryCardPortIndex],
+                       &gMemoryCardDirectoryEntryCounts[gMemoryCardPortIndex], 0, 15);
 }
 
 s32 memoryCardFileExists(void) {
     s32 i;
-    for (i = 0; i < D_8013B600[D_8013AF38]; i++) {
-        if (strcmp(D_8013B700[D_8013AF38][i].name, D_8013AF40) == 0) {
+    for (i = 0; i < gMemoryCardDirectoryEntryCounts[gMemoryCardPortIndex]; i++) {
+        if (strcmp(gMemoryCardDirectoryEntries[gMemoryCardPortIndex][i].name, gMemoryCardSelectedFileName) == 0) {
             return 1;
         }
     }
@@ -157,8 +158,8 @@ s32 memoryCardIsFullWithoutSelectedFile(void) {
     s32 size;
     s32 wholeBlocks;
     s32 total;
-    for (; i < D_8013B600[D_8013AF38]; i++) {
-        size = D_8013B700[D_8013AF38][i].size;
+    for (; i < gMemoryCardDirectoryEntryCounts[gMemoryCardPortIndex]; i++) {
+        size = gMemoryCardDirectoryEntries[gMemoryCardPortIndex][i].size;
         wholeBlocks = size / 8192;
         total = blocks + ((size % 8192 ? 1 : 0) + wholeBlocks);
         blocks = total;
@@ -166,8 +167,8 @@ s32 memoryCardIsFullWithoutSelectedFile(void) {
     if (blocks < 15) {
         return 0;
     }
-    for (i = 0; i < D_8013B600[D_8013AF38]; i++) {
-        if (strcmp(D_8013B700[D_8013AF38][i].name, D_8013AF40) == 0) {
+    for (i = 0; i < gMemoryCardDirectoryEntryCounts[gMemoryCardPortIndex]; i++) {
+        if (strcmp(gMemoryCardDirectoryEntries[gMemoryCardPortIndex][i].name, gMemoryCardSelectedFileName) == 0) {
             return 0;
         }
     }
@@ -176,7 +177,7 @@ s32 memoryCardIsFullWithoutSelectedFile(void) {
 
 s32 tryAcceptMemoryCard(void) {
     if (MemCardSync(1, 0, 0) == -1) {
-        MemCardAccept(D_8013AF34);
+        MemCardAccept(gMemoryCardChannel);
         return 1;
     }
     return 0;
@@ -186,11 +187,11 @@ s32 pollMemoryCardAvailability(void) {
     s32 command;
     s32 result;
 
-    D_8013B608[D_8013AF38] = 1;
+    D_8013B608[gMemoryCardPortIndex] = 1;
     switch (MemCardSync(1, &command, &result)) {
     case -1:
-        MemCardExist(D_8013AF34);
-        gMemoryCardAcceptRetryCounts[D_8013AF38] = 0;
+        MemCardExist(gMemoryCardChannel);
+        gMemoryCardAcceptRetryCounts[gMemoryCardPortIndex] = 0;
         break;
     case 0:
         return 0;
@@ -215,13 +216,13 @@ s32 pollMemoryCardAvailability(void) {
                 if (!(s16)memoryCardFileExists()) {
                     return 8;
                 }
-                if (D_8013B60C[D_8013AF38]) {
+                if (D_8013B60C[gMemoryCardPortIndex]) {
                     return 2;
                 }
                 return 1;
             newCard:
-                D_8013B60C[D_8013AF38] = 1;
-                MemCardAccept(D_8013AF34);
+                D_8013B60C[gMemoryCardPortIndex] = 1;
+                MemCardAccept(gMemoryCardChannel);
                 return 5;
             }
             return 3;
@@ -234,14 +235,14 @@ s32 pollMemoryCardAvailability(void) {
                 if (!(s16)memoryCardFileExists()) {
                     return 8;
                 }
-                if (D_8013B60C[D_8013AF38]) {
+                if (D_8013B60C[gMemoryCardPortIndex]) {
                     return 2;
                 }
                 return 1;
             case 1:
                 return 3;
             case 3:
-                D_8013B60C[D_8013AF38] = 1;
+                D_8013B60C[gMemoryCardPortIndex] = 1;
                 readMemoryCardDirectory();
                 if ((s16)memoryCardIsFullWithoutSelectedFile()) {
                     return 7;
@@ -249,7 +250,7 @@ s32 pollMemoryCardAvailability(void) {
                 if (!(s16)memoryCardFileExists()) {
                     return 8;
                 }
-                if (D_8013B60C[D_8013AF38]) {
+                if (D_8013B60C[gMemoryCardPortIndex]) {
                     return 2;
                 }
                 return 1;
@@ -257,13 +258,13 @@ s32 pollMemoryCardAvailability(void) {
             unformattedCard:
                 return 4;
             case 4:
-                if (gMemoryCardAcceptRetryCounts[D_8013AF38] < 10) {
-                    gMemoryCardAcceptRetryCounts[D_8013AF38]++;
-                    MemCardAccept(D_8013AF34);
+                if (gMemoryCardAcceptRetryCounts[gMemoryCardPortIndex] < 10) {
+                    gMemoryCardAcceptRetryCounts[gMemoryCardPortIndex]++;
+                    MemCardAccept(gMemoryCardChannel);
                     return 5;
                 }
-                gMemoryCardAcceptRetryCounts[D_8013AF38] = 0;
-                D_8013B600[D_8013AF38] = 0;
+                gMemoryCardAcceptRetryCounts[gMemoryCardPortIndex] = 0;
+                gMemoryCardDirectoryEntryCounts[gMemoryCardPortIndex] = 0;
                 return 6;
             }
             break;

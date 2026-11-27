@@ -5,6 +5,7 @@
 #include "psx/libcd.h"
 #include "psx/libgpu.h"
 #include "psx/libmcrd.h"
+#include "psx/libc.h"
 
 #include "game/io/movie_stream.h"
 
@@ -14,8 +15,6 @@ extern s16 *D_801203C4[10];
 
 
 extern char D_8013AF3C[];
-extern s32 D_8013B600[2];
-extern struct DIRENTRY D_8013B700[2][15];
 extern s16 D_8013AF3E;
 extern u16 D_8013AFAA;
 extern u8 D_8013B562 __attribute__((section(".data")));
@@ -25,8 +24,6 @@ extern u8 D_8013AFE2;
 extern u8 D_8013B1AA;
 extern u8 D_8013B1AB;
 extern u16 D_8013AFE8;
-extern void *gMemoryCardLoadDestination;
-extern u8 D_8013AF3A;
 
 int strcmp(const char *, const char *);
 
@@ -40,7 +37,6 @@ void resetStateAndBeginResourceLoadTransition(u8 loadResources);
 void initializeRaceRestartTask(void);
 void initializeRacePresentationTask(void);
 void updateThreeFrameScreenBlend(void);
-void *memcpy(void *destination, const void *source, unsigned int size);
 void initializePaletteTransition(void);
 void updatePaletteTransition(void);
 void selectMemoryCardLoadFile(u8 slot, void *destination);

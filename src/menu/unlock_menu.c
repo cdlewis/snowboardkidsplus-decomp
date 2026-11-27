@@ -381,7 +381,7 @@ void updateUnlockNotificationMenuTask(void) {
         callback = startUnlockActionAfterCountdown;
         selection = state->selection;
         state->unk8C = 1;
-        D_8013AF3A = selection;
+        gSelectedUnlockIndex = selection;
         gCurrentTask->data18 = 15;
         setCurrentTaskCallback(callback);
     }
@@ -443,7 +443,7 @@ s32 hasUnlockNotificationFlag(s16 index) {
 
 void startUnlockActionAfterCountdown(void) {
     if (--gCurrentTask->data18 == 0) {
-        if (D_8013AF3A < 11) {
+        if (gSelectedUnlockIndex < 11) {
             createChildTaskWithReserve(initializeScenePlaybackResourcesTask);
         } else {
             createChildTaskWithReserve(startUnlockResourceLoad);

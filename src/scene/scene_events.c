@@ -150,7 +150,7 @@ void initializeSceneEvent(SceneEvent *entry, u32 tick, u16 type) {
     entry->type = type;
     entry->tick = tick;
     if (type == SCENE_EVENT_CD_AUDIO) {
-        entry->resourceId = gSceneCdAudioDefaultResources[D_8013AF3A];
+        entry->resourceId = gSceneCdAudioDefaultResources[gSelectedUnlockIndex];
     } else {
         entry->resourceId = 0;
     }

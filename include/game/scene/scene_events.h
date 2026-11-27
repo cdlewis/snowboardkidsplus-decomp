@@ -24,6 +24,7 @@ typedef struct SceneEvent {
     u16 parameter14; /* Volume/repeats for audio; text reveal interval for text. */
     u16 unk16;
 } SceneEvent;
+extern u8 gSelectedUnlockIndex;
 extern SceneEvent *gFreeSceneEvents;
 extern SceneEvent *gActiveSceneEvents;
 extern s16 D_8013B59C;

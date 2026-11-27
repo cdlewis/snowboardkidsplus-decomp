@@ -53,7 +53,7 @@ extern u8 gSceneImageModeOffsets[12] __attribute__((section(".data.scene_image_s
 
 extern GameTask *gSceneImageDisplayTask __attribute__((section(".sdata.scene_image_display_task")));
 
-extern u8 D_8013AF3A __attribute__((section(".data")));
+extern u8 gSelectedUnlockIndex __attribute__((section(".data")));
 extern char D_80012310[];
 extern char D_8001232C[];
 extern s8 D_8013B5C4[];

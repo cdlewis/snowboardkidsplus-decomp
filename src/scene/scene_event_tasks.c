@@ -186,7 +186,7 @@ void setSceneImageEventTask(SceneEvent *entry) {
         owner->flags |= 1;
         if (entry->resourceId != owner->imageId) {
             owner->imageId = entry->resourceId;
-            index = gSceneImageModeOffsets[D_8013AF3A] + entry->resourceId - 1;
+            index = gSceneImageModeOffsets[gSelectedUnlockIndex] + entry->resourceId - 1;
             resetPendingCdRequests();
             queueCdSectorCommand(0, gSceneImageSectorRanges[index].sector, gSceneImageSectorRanges[index].count, DAT_SCENE_IMAGE, 0);
         }
