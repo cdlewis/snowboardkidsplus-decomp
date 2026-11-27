@@ -111,6 +111,26 @@ const GridSpriteEntry gCourseMenuSpriteEntries[14]
     {166, 0, 0, 0},
 };
 
+const u8 gCourseMenuGroup0Mapping[8]
+    __attribute__((section(".data.course_menu_group_mappings"), aligned(4))) = {
+    0, 1, 2, 3, 4, 5, 10, 0,
+};
+
+const u8 gCourseMenuGroup1Mapping[8]
+    __attribute__((section(".data.course_menu_group_mappings"), aligned(4))) = {
+    0, 1, 2, 3, 4, 5, 6, 10,
+};
+
+const u8 gCourseMenuGroup0TextureMapping[8]
+    __attribute__((section(".data.course_menu_group_mappings"), aligned(4))) = {
+    0, 1, 2, 3, 4, 5, 10, 0,
+};
+
+const u8 gCourseMenuGroup1TextureMapping[8]
+    __attribute__((section(".data.course_menu_group_mappings"), aligned(4))) = {
+    0, 1, 2, 3, 4, 5, 6, 10,
+};
+
 const u8 gCourseMenuGroup2Mapping[12]
     __attribute__((section(".data.course_menu_data"), aligned(4))) = {
     0, 1, 2, 3, 4, 5, 6, 7, 10, 0, 0, 0,
