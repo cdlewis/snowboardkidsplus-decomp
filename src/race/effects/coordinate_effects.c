@@ -32,6 +32,14 @@ extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern GameTask *gCurrentTaskParent __attribute__((section(".data")));
 
+TaskVisualFrame gOneShotTaskVisualFrames[4]
+    __attribute__((section(".data.one_shot_task_visual_frames"), aligned(4))) = {
+        {0x80, 0x78, 32, 32, 0xD, 0x3D39},
+        {0xA0, 0x78, 32, 32, 0xD, 0x3D39},
+        {0xC0, 0x78, 32, 32, 0xD, 0x3D39},
+        {0xE0, 0x78, 32, 32, 0xD, 0x3D39}
+    };
+
 TaskVisualFrame gPlayerParticleHistoryVisualFrames[6]
     __attribute__((section(".data.player_particle_history_visual_frames"), aligned(4))) = {
         {0x30, 0x28, 32, 32, 0xD, 0x3D79},
