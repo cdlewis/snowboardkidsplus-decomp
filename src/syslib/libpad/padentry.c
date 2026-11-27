@@ -1,6 +1,10 @@
 #include "common.h"
 #include "libpad_private.h"
 
+/* Preserve the unused tail of PADENTRY's original 0x20-byte .rdata section. */
+const u32 padEntryRodataPadding[2]
+    __attribute__((section(".rodata.padentry_padding"), aligned(8))) = {0, 0};
+
 extern int _padChkVsync(void);
 extern void _padStartCom(void);
 extern void _padStopCom(void);

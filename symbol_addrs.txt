@@ -4553,3 +4553,4 @@ gEndingRubyLabel = 0x800122E0; // size:0x10
 gEndingSinobinLabel = 0x800122F0; // size:0x10
 gEndingKaedeLabel = 0x80012300; // size:0x10
 sPcHostErrorPadding = 0x80012350; // size:0x4
+padEntryRodataPadding = 0x80013018; // size:0x8

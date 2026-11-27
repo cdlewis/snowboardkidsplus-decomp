@@ -209,7 +209,7 @@ segments:
       - {start: 0x36D0, type: .rodata, name: syslib/libpress/libpress, linker_section: .rodata.mdec}
       - [0x3720, lib, libc, sprintf, .rdata]
       - [0x3800, .rodata, syslib/libpad/padentry]
-      - [0x3818, rodata]
+      - {start: 0x3818, type: .rodata, name: syslib/libpad/padentry, linker_section: .rodata.padentry_padding}
       - [0x3820, lib, libmcrd421, libmcrd, .rdata]
       - [0x3996, pad]
       - [0x3998, lib, libmcrd421, userfunc, .rdata]
