@@ -2933,11 +2933,11 @@ gPlayerRenderIdentityMatrix = 0x8012C80C; // size:0x20 defined:true
 
 selectMemoryCardLoadFile = 0x80018D80; // type:func
 gMemoryCardFileNames = 0x800EB528; // size:0x14 defined:true
-gMemoryCardGameFileName = 0x800101B8;
-gMemoryCardGhostFileName = 0x800101D0;
-gMemoryCardPlacedObjectFileName = 0x800101E8;
-gMemoryCardTerrainCollisionFileName = 0x80010200;
-gMemoryCardDigicomicFileName = 0x80010218;
+gMemoryCardGameFileName = 0x800101B8; // size:0x18
+gMemoryCardGhostFileName = 0x800101D0; // size:0x18
+gMemoryCardPlacedObjectFileName = 0x800101E8; // size:0x18
+gMemoryCardTerrainCollisionFileName = 0x80010200; // size:0x18
+gMemoryCardDigicomicFileName = 0x80010218; // size:0x18
 
 updateSwayingFallingSpriteEffect = 0x80033B5C; // type:func
 
@@ -4531,3 +4531,10 @@ gCourseRenderingDisabled = 0x8013AFB8;
 gCourseGeometryVertexCount = 0x8013B1F8; // size:0x2
 gCourseGeometryTriangleCount = 0x8013B1FA; // size:0x2
 gCourseGeometryRegionCount = 0x8013B1FC; // size:0x2
+
+gMemoryCardGameSaveTitlePadding = 0x80010270; // size:0x4
+gMemoryCardGhostSaveTitlePadding = 0x800102B4; // size:0x4
+gMemoryCardPlacedObjectSaveTitlePadding = 0x800102F8; // size:0x4
+gMemoryCardTerrainCollisionSaveTitlePadding = 0x8001033C; // size:0x4
+gMemoryCardDigicomicSaveTitlePadding = 0x80010380; // size:0x4
+gMemoryCardTitleTemplatesPadding = 0x80010384; // size:0x4

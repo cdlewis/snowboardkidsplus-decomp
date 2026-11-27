@@ -9,6 +9,64 @@
 
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 
+char gMemoryCardGameFileName[24] __attribute__((section(".data.memory_card_file_templates"), aligned(4))) = "BISLPS-01823-SKP_GAM";
+
+char gMemoryCardGhostFileName[24] __attribute__((section(".data.memory_card_file_templates"), aligned(4))) = "BISLPS-01823-SKP_G00";
+
+char gMemoryCardPlacedObjectFileName[24] __attribute__((section(".data.memory_card_file_templates"), aligned(4))) = "BISLPS-01823-SKP_S00";
+
+char gMemoryCardTerrainCollisionFileName[24] __attribute__((section(".data.memory_card_file_templates"), aligned(4))) = "BISLPS-01823-SKP_H00";
+
+char gMemoryCardDigicomicFileName[24] __attribute__((section(".data.memory_card_file_templates"), aligned(4))) = "BISLPS-01823-SKP_D00";
+
+/* Card titles contain 32 full-width Shift-JIS characters without a terminator. */
+MemoryCardSaveTitle gMemoryCardGameSaveTitle __attribute__((section(".data.memory_card_title_templates"), aligned(4))) = {
+    "\x82\x72\x82\x8E\x82\x8F\x82\x82\x82\x8F\x82\x97\x82\x6A\x82\x89"
+    "\x82\x84\x82\x93\x82\x6F\x82\x8C\x82\x95\x82\x93\x81\x40\x81\x69"
+    "\x83\x51\x81\x5B\x83\x80\x83\x66\x81\x7C\x83\x5E\x81\x6A\x81\x40"
+    "\x81\x40\x81\x40\x81\x40\x81\x40\x81\x40\x81\x40\x81\x40\x81\x40"
+};
+
+const u32 gMemoryCardGameSaveTitlePadding __attribute__((section(".data.memory_card_title_templates"))) = 0;
+
+MemoryCardSaveTitle gMemoryCardGhostSaveTitle __attribute__((section(".data.memory_card_title_templates"), aligned(4))) = {
+    "\x82\x72\x82\x8E\x82\x8F\x82\x82\x82\x8F\x82\x97\x82\x6A\x82\x89"
+    "\x82\x84\x82\x93\x82\x6F\x82\x8C\x82\x95\x82\x93\x81\x40\x81\x69"
+    "\x83\x53\x81\x5B\x83\x58\x83\x67\x83\x66\x81\x7C\x83\x5E\x81\x6A"
+    "\x81\x40\x82\x72\x82\x73\x82\x60\x82\x66\x82\x64\x82\x4F\x82\x4F"
+};
+
+const u32 gMemoryCardGhostSaveTitlePadding __attribute__((section(".data.memory_card_title_templates"))) = 0;
+
+MemoryCardSaveTitle gMemoryCardPlacedObjectSaveTitle __attribute__((section(".data.memory_card_title_templates"), aligned(4))) = {
+    "\x82\x72\x82\x8E\x82\x8F\x82\x82\x82\x8F\x82\x97\x82\x6A\x82\x89"
+    "\x82\x84\x82\x93\x82\x6F\x82\x8C\x82\x95\x82\x93\x81\x40\x81\x69"
+    "\x90\xDD\x92\x75\x95\xA8\x82\xCC\x83\x66\x81\x5B\x83\x5E\x81\x6A"
+    "\x81\x40\x82\x72\x82\x73\x82\x60\x82\x66\x82\x64\x82\x4F\x82\x4F"
+};
+
+const u32 gMemoryCardPlacedObjectSaveTitlePadding __attribute__((section(".data.memory_card_title_templates"))) = 0;
+
+MemoryCardSaveTitle gMemoryCardTerrainCollisionSaveTitle __attribute__((section(".data.memory_card_title_templates"), aligned(4))) = {
+    "\x82\x72\x82\x8E\x82\x8F\x82\x82\x82\x8F\x82\x97\x82\x6A\x82\x89"
+    "\x82\x84\x82\x93\x82\x6F\x82\x8C\x82\x95\x82\x93\x81\x40\x81\x69"
+    "\x93\x79\x92\x6E\x93\x96\x82\xE8\x83\x66\x81\x7C\x83\x5E\x81\x6A"
+    "\x81\x40\x82\x72\x82\x73\x82\x60\x82\x66\x82\x64\x82\x4F\x82\x4F"
+};
+
+const u32 gMemoryCardTerrainCollisionSaveTitlePadding __attribute__((section(".data.memory_card_title_templates"))) = 0;
+
+MemoryCardSaveTitle gMemoryCardDigicomicSaveTitle __attribute__((section(".data.memory_card_title_templates"), aligned(4))) = {
+    "\x82\x72\x82\x8E\x82\x8F\x82\x82\x82\x8F\x82\x97\x82\x6A\x82\x89"
+    "\x82\x84\x82\x93\x82\x6F\x82\x8C\x82\x95\x82\x93\x81\x40\x81\x69"
+    "\x83\x66\x83\x57\x83\x52\x83\x7E\x83\x66\x81\x7C\x83\x5E\x81\x6A"
+    "\x81\x40\x82\x72\x82\x73\x82\x60\x82\x66\x82\x64\x82\x4F\x82\x4F"
+};
+
+const u32 gMemoryCardDigicomicSaveTitlePadding __attribute__((section(".data.memory_card_title_templates"))) = 0;
+
+const u32 gMemoryCardTitleTemplatesPadding __attribute__((section(".data.memory_card_title_templates"))) = 0;
+
 char *gMemoryCardFileNames[5] __attribute__((section(".data.memory_card_file_names"))) = {
     gMemoryCardGameFileName, gMemoryCardGhostFileName, gMemoryCardPlacedObjectFileName, gMemoryCardTerrainCollisionFileName, gMemoryCardDigicomicFileName
 };
