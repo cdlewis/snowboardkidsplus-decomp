@@ -69,7 +69,7 @@ typedef struct HalfwordPair {
 
 
 typedef struct StateValueHistory {
-    s32 unk_00;
+    s32 channel;
     s16 activeIndex;
     s16 current[2];
     s16 previous[2];
@@ -84,7 +84,7 @@ extern HalfwordPair D_8012F13C[16] __attribute__((section(".data")));
 
 extern u16 gTaskShadowedText[14] __attribute__((section(".data.task_shadowed_text")));
 
-extern StateValueHistory D_8013BE30 __attribute__((section(".bss.state_value_history")));
+extern StateValueHistory gMemoryCardSlotHistory __attribute__((section(".bss.state_value_history")));
 extern u8 D_8013AFD8 __attribute__((section(".data")));
 extern u8 D_8013AFD9 __attribute__((section(".data")));
 extern u8 D_8013B47C;

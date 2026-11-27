@@ -14,7 +14,7 @@ extern u8 D_80120210[16];
 extern s16 *D_801203C4[10];
 
 
-extern s16 D_8013AF3E;
+extern s16 gMemoryCardTaskState;
 extern u16 D_8013AFAA;
 extern u8 D_8013B562 __attribute__((section(".data")));
 extern s16 gSelectedCourseMenuItem;

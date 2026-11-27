@@ -37,7 +37,7 @@ extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern GameTask *gCurrentTaskParent __attribute__((section(".data")));
 
-extern s16 D_8013AF3E __attribute__((section(".data")));
+extern s16 gMemoryCardTaskState __attribute__((section(".data")));
 
 const u32 gStateValueHistoryPadding
     __attribute__((section(".rodata.state_value_history_padding"))) = 0;
@@ -167,51 +167,51 @@ void updateStateValueHistoryTask(void) {
     switch (gCurrentTask->data18) {
     case 0:
         resetMemoryCardTaskState();
-        if (D_8013BE30.unk_00 == 0) {
-            D_8013BE30.activeIndex = isValue16(D_8013BE30.unk_00 = 16);
+        if (gMemoryCardSlotHistory.channel == 0) {
+            gMemoryCardSlotHistory.activeIndex = isValue16(gMemoryCardSlotHistory.channel = 16);
         } else {
-            D_8013BE30.activeIndex = isValue16(D_8013BE30.unk_00 = 0);
+            gMemoryCardSlotHistory.activeIndex = isValue16(gMemoryCardSlotHistory.channel = 0);
         }
-        setMemoryCardChannel(D_8013BE30.unk_00);
+        setMemoryCardChannel(gMemoryCardSlotHistory.channel);
         gCurrentTask->data18 = 1;
         break;
     case 1:
-        if (D_8013AF3E == 7)
-            D_8013BE30.unk_16[D_8013BE30.activeIndex] = 0;
-        switch (D_8013AF3E) {
+        if (gMemoryCardTaskState == 7)
+            gMemoryCardSlotHistory.unk_16[gMemoryCardSlotHistory.activeIndex] = 0;
+        switch (gMemoryCardTaskState) {
         case 0:
-            if (D_8013BE30.unk_12[D_8013BE30.activeIndex] == 2) {
-                D_8013BE30.unk_12[D_8013BE30.activeIndex] = 0;
-                D_8013BE30.unk_0E[D_8013BE30.activeIndex] = 4;
+            if (gMemoryCardSlotHistory.unk_12[gMemoryCardSlotHistory.activeIndex] == 2) {
+                gMemoryCardSlotHistory.unk_12[gMemoryCardSlotHistory.activeIndex] = 0;
+                gMemoryCardSlotHistory.unk_0E[gMemoryCardSlotHistory.activeIndex] = 4;
                 return;
             }
-            if (D_8013BE30.unk_12[D_8013BE30.activeIndex] == 4) {
-                D_8013BE30.unk_12[D_8013BE30.activeIndex] = 0;
-                D_8013BE30.unk_0E[D_8013BE30.activeIndex] = 7;
-                D_8013BE30.previous[D_8013BE30.activeIndex] =
-                    D_8013BE30.current[D_8013BE30.activeIndex];
-                D_8013BE30.current[D_8013BE30.activeIndex] = D_8013AF3E;
+            if (gMemoryCardSlotHistory.unk_12[gMemoryCardSlotHistory.activeIndex] == 4) {
+                gMemoryCardSlotHistory.unk_12[gMemoryCardSlotHistory.activeIndex] = 0;
+                gMemoryCardSlotHistory.unk_0E[gMemoryCardSlotHistory.activeIndex] = 7;
+                gMemoryCardSlotHistory.previous[gMemoryCardSlotHistory.activeIndex] =
+                    gMemoryCardSlotHistory.current[gMemoryCardSlotHistory.activeIndex];
+                gMemoryCardSlotHistory.current[gMemoryCardSlotHistory.activeIndex] = gMemoryCardTaskState;
                 return;
             }
             break;
         case 2:
         case 3:
         case 4:
-            D_8013BE30.previous[D_8013BE30.activeIndex] =
-                D_8013BE30.current[D_8013BE30.activeIndex];
-            D_8013BE30.current[D_8013BE30.activeIndex] = D_8013AF3E;
+            gMemoryCardSlotHistory.previous[gMemoryCardSlotHistory.activeIndex] =
+                gMemoryCardSlotHistory.current[gMemoryCardSlotHistory.activeIndex];
+            gMemoryCardSlotHistory.current[gMemoryCardSlotHistory.activeIndex] = gMemoryCardTaskState;
             break;
         case 5:
         case 6:
         case 11:
-            D_8013BE30.previous[D_8013BE30.activeIndex] =
-                D_8013BE30.current[D_8013BE30.activeIndex];
-            D_8013BE30.current[D_8013BE30.activeIndex] = D_8013AF3E;
-            if (D_8013BE30.unk_12[D_8013BE30.activeIndex] == 3) {
-                D_8013BE30.unk_0E[D_8013BE30.activeIndex] = 6;
+            gMemoryCardSlotHistory.previous[gMemoryCardSlotHistory.activeIndex] =
+                gMemoryCardSlotHistory.current[gMemoryCardSlotHistory.activeIndex];
+            gMemoryCardSlotHistory.current[gMemoryCardSlotHistory.activeIndex] = gMemoryCardTaskState;
+            if (gMemoryCardSlotHistory.unk_12[gMemoryCardSlotHistory.activeIndex] == 3) {
+                gMemoryCardSlotHistory.unk_0E[gMemoryCardSlotHistory.activeIndex] = 6;
                 return;
             } else {
-                D_8013BE30.unk_0E[D_8013BE30.activeIndex] = 1;
+                gMemoryCardSlotHistory.unk_0E[gMemoryCardSlotHistory.activeIndex] = 1;
                 gCurrentTask->data18 = 0;
             }
             break;
@@ -220,15 +220,15 @@ void updateStateValueHistoryTask(void) {
         case 9:
         case 10:
         case 12:
-            D_8013BE30.previous[D_8013BE30.activeIndex] =
-                D_8013BE30.current[D_8013BE30.activeIndex];
-            D_8013BE30.current[D_8013BE30.activeIndex] = D_8013AF3E;
-            D_8013BE30.unk_0E[D_8013BE30.activeIndex] = 1;
+            gMemoryCardSlotHistory.previous[gMemoryCardSlotHistory.activeIndex] =
+                gMemoryCardSlotHistory.current[gMemoryCardSlotHistory.activeIndex];
+            gMemoryCardSlotHistory.current[gMemoryCardSlotHistory.activeIndex] = gMemoryCardTaskState;
+            gMemoryCardSlotHistory.unk_0E[gMemoryCardSlotHistory.activeIndex] = 1;
             gCurrentTask->data18 = 0;
             break;
         }
         if ((s16)startMemoryCardSaveStatusTask(MEMORY_CARD_SAVE_BUFFER, 0x810) == 1)
-            D_8013BE30.unk_0E[D_8013BE30.activeIndex] = 0;
+            gMemoryCardSlotHistory.unk_0E[gMemoryCardSlotHistory.activeIndex] = 0;
         break;
     }
 }
@@ -237,14 +237,14 @@ void startStateValueHistoryTask(void) {
     s16 i;
     createChildTaskWithReserve(updateStateValueHistoryTask);
     gCreatedTask->data18 = 0;
-    D_8013BE30.unk_00 = 16;
-    D_8013BE30.activeIndex = 1;
+    gMemoryCardSlotHistory.channel = 16;
+    gMemoryCardSlotHistory.activeIndex = 1;
     for (i = 0; i < 2; i++) {
-        D_8013BE30.current[i] = 0;
-        D_8013BE30.previous[i] = 0;
-        D_8013BE30.unk_0E[i] = 0;
-        D_8013BE30.unk_12[i] = 0;
-        D_8013BE30.unk_16[i] = 1;
+        gMemoryCardSlotHistory.current[i] = 0;
+        gMemoryCardSlotHistory.previous[i] = 0;
+        gMemoryCardSlotHistory.unk_0E[i] = 0;
+        gMemoryCardSlotHistory.unk_12[i] = 0;
+        gMemoryCardSlotHistory.unk_16[i] = 1;
     }
 }
 
@@ -367,7 +367,7 @@ void updateMemoryCardSaveMenuTask(void) {
         }
         goto selectSlot;
     case 8:
-        switch (D_8013BE30.current[menu->slot]) {
+        switch (gMemoryCardSlotHistory.current[menu->slot]) {
         case 0:
             break;
         case 1:
@@ -375,15 +375,15 @@ void updateMemoryCardSaveMenuTask(void) {
             createRegisteredStaticTextPanelTask(x, y, x + 4, y + 2, D_801302BC, menu->slot, 4, 11);
             break;
         case 6:
-            D_8013BE30.previous[menu->slot] = D_8013BE30.current[menu->slot];
-            if (D_8013BE30.unk_16[menu->slot] == 1)
+            gMemoryCardSlotHistory.previous[menu->slot] = gMemoryCardSlotHistory.current[menu->slot];
+            if (gMemoryCardSlotHistory.unk_16[menu->slot] == 1)
                 goto showSaveConfirmation;
             gCurrentTask->data18 = 26;
-            D_8013BE30.unk_16[menu->slot] = 1;
+            gMemoryCardSlotHistory.unk_16[menu->slot] = 1;
             break;
         case 11: {
             s16 slot = menu->slot;
-            D_8013BE30.previous[slot] = D_8013BE30.current[slot];
+            gMemoryCardSlotHistory.previous[slot] = gMemoryCardSlotHistory.current[slot];
             gCurrentTask->data18 = 16;
             break;
         }
@@ -392,21 +392,21 @@ void updateMemoryCardSaveMenuTask(void) {
             gCurrentTask->data18 = 14;
             break;
         case 7:
-            D_8013BE30.previous[menu->slot] = D_8013BE30.current[menu->slot];
+            gMemoryCardSlotHistory.previous[menu->slot] = gMemoryCardSlotHistory.current[menu->slot];
             gCurrentTask->data18 = 28;
             break;
         case 8:
         case 12:
             gCurrentTask->data18 = 24;
             createRegisteredStaticTextPanelTask(x, y, x + 4, y + 2, D_80130390, player, 4, 11);
-            D_8013BE30.previous[menu->slot] = D_8013BE30.current[menu->slot];
+            gMemoryCardSlotHistory.previous[menu->slot] = gMemoryCardSlotHistory.current[menu->slot];
             break;
         case 9:
-            D_8013BE30.previous[menu->slot] = D_8013BE30.current[menu->slot];
+            gMemoryCardSlotHistory.previous[menu->slot] = gMemoryCardSlotHistory.current[menu->slot];
             gCurrentTask->data18 = 32;
             break;
         case 10:
-            D_8013BE30.previous[menu->slot] = D_8013BE30.current[menu->slot];
+            gMemoryCardSlotHistory.previous[menu->slot] = gMemoryCardSlotHistory.current[menu->slot];
             gCurrentTask->data18 = 30;
             break;
         }
@@ -438,7 +438,7 @@ void updateMemoryCardSaveMenuTask(void) {
         gCurrentTask->data18 = 15;
         break;
     case 15:
-        if (D_8013BE30.current[menu->slot] == 7)
+        if (gMemoryCardSlotHistory.current[menu->slot] == 7)
             goto checkCard;
         status = input->result0E;
         if (status == 0)
@@ -449,24 +449,24 @@ void updateMemoryCardSaveMenuTask(void) {
             goto startSave;
         goto showRetry;
     case 16:
-        D_8013BE30.unk_12[menu->slot] = 3;
+        gMemoryCardSlotHistory.unk_12[menu->slot] = 3;
         createRegisteredStaticTextPanelTask(x, y, x + 4, y + 2, D_80130578, -1, 4, 11);
         gCurrentTask->data18 = 17;
         break;
     case 17:
-        if (D_8013BE30.current[menu->slot] == 7)
+        if (gMemoryCardSlotHistory.current[menu->slot] == 7)
             goto showSaveFailure;
-        if (D_8013BE30.unk_0E[menu->slot] == 6)
+        if (gMemoryCardSlotHistory.unk_0E[menu->slot] == 6)
             gCurrentTask->data18 = 18;
         break;
     case 18:
-        D_8013AF3E = 5;
-        D_8013BE30.unk_12[menu->slot] = 4;
+        gMemoryCardTaskState = 5;
+        gMemoryCardSlotHistory.unk_12[menu->slot] = 4;
         startMemoryCardWriteTask();
         gCurrentTask->data18 = 19;
         break;
     case 19:
-        status = D_8013BE30.current[menu->slot];
+        status = gMemoryCardSlotHistory.current[menu->slot];
         if (status == 5)
             break;
         if (status == 4)
@@ -476,7 +476,7 @@ void updateMemoryCardSaveMenuTask(void) {
             gCurrentTask->data18 = (D_8013B47C = 1, 22);
             break;
         }
-        D_8013BE30.unk_0E[D_8013BE30.activeIndex] = 7;
+        gMemoryCardSlotHistory.unk_0E[gMemoryCardSlotHistory.activeIndex] = 7;
     showSaveFailure:
         gCurrentTask->data18 = 20;
         break;
@@ -515,7 +515,7 @@ void updateMemoryCardSaveMenuTask(void) {
         gCurrentTask->data18 = 27;
         break;
     case 27:
-        if (D_8013BE30.current[menu->slot] == 7)
+        if (gMemoryCardSlotHistory.current[menu->slot] == 7)
             goto checkCard;
         status = input->result0E;
         if (status == 0)
@@ -555,7 +555,7 @@ void updateMemoryCardSaveMenuTask(void) {
         gCurrentTask->data18 = 33;
         break;
     case 33:
-        if (D_8013BE30.current[menu->slot] == 7)
+        if (gMemoryCardSlotHistory.current[menu->slot] == 7)
             goto checkCard;
         if (!input->result0E)
             break;
@@ -564,7 +564,7 @@ void updateMemoryCardSaveMenuTask(void) {
         gCurrentTask->data18 = 34;
         break;
     case 34:
-        if (D_8013BE30.current[menu->slot] == 7) {
+        if (gMemoryCardSlotHistory.current[menu->slot] == 7) {
     checkCard:
             gCurrentTask->data18 = 8;
             break;
@@ -580,13 +580,13 @@ void updateMemoryCardSaveMenuTask(void) {
         break;
     case 35:
         createRegisteredStaticTextPanelTask(x, y, x + 4, y + 2, D_801302BC, menu->slot, 4, 11);
-        D_8013BE30.unk_12[menu->slot] = 2;
+        gMemoryCardSlotHistory.unk_12[menu->slot] = 2;
         gCurrentTask->data18 = 36;
         break;
     case 36:
-        if (D_8013BE30.current[menu->slot] == 7)
+        if (gMemoryCardSlotHistory.current[menu->slot] == 7)
             goto showFormatFailure;
-        if (D_8013BE30.unk_0E[menu->slot] != 4)
+        if (gMemoryCardSlotHistory.unk_0E[menu->slot] != 4)
             break;
         resetMemoryCardTaskState();
         if (menu->slot == 0)
@@ -594,10 +594,10 @@ void updateMemoryCardSaveMenuTask(void) {
         else
             setMemoryCardChannel(16);
         formatResult = formatMemoryCard();
-        D_8013BE30.unk_0E[menu->slot] = 5;
+        gMemoryCardSlotHistory.unk_0E[menu->slot] = 5;
         if (formatResult == 0) {
             createRegisteredStaticTextPanelTask(x, y, x + 4, y + 2, D_80130460, -1, 4, 11);
-            D_8013BE30.unk_12[menu->slot] = 3;
+            gMemoryCardSlotHistory.unk_12[menu->slot] = 3;
     startSave:
             gCurrentTask->data18 = 16;
             break;
@@ -791,7 +791,7 @@ s16 getStateMaskTier(s16 stateIndex, s16 maskIndex) {
     s16 i;
     u32 mask;
 
-    mask = D_8013B484[stateIndex]->masks[maskIndex];
+    mask = gWorkingSaveRecords[stateIndex]->masks[maskIndex];
     for (i = 3; i >= 0; i--) {
         if (mask & (0x1000000 << i)) {
             result = i + 1;
@@ -837,7 +837,7 @@ void setSaveRecordFlagPair(s16 recordIndex, s16 maskIndex, s16 pairIndex, s16 va
 }
 
 s32 getStateMaskPair(s16 stateIndex, s16 maskIndex, s16 pairIndex) {
-    u32 mask = D_8013B484[stateIndex]->masks[maskIndex];
+    u32 mask = gWorkingSaveRecords[stateIndex]->masks[maskIndex];
     u32 low = mask & (1 << (pairIndex * 2));
     u32 high = mask & (2 << (pairIndex * 2));
     return low && high ? 3 : high ? 2 : low ? 1 : 0;

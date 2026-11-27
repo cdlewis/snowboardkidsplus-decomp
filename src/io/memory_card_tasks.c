@@ -61,7 +61,7 @@ s32 formatMemoryCard(void) {
 }
 
 void resetMemoryCardTaskState(void) {
-    D_8013AF3E = 0;
+    gMemoryCardTaskState = 0;
 }
 
 void setMemoryCardChannel(s32 channel) {
@@ -77,9 +77,9 @@ void setMemoryCardChannel(s32 channel) {
 }
 
 s32 startMemoryCardReadStatusTask(void *buffer) {
-    if (D_8013AF3E == 0) {
+    if (gMemoryCardTaskState == 0) {
         createChildTaskWithReserve(beginMemoryCardBufferRead);
-        D_8013AF3E = 1;
+        gMemoryCardTaskState = 1;
         gMemoryCardTaskBuffer = buffer;
         return 1;
     }
@@ -95,23 +95,23 @@ void beginMemoryCardBufferRead(void) {
 
 void pollMemoryCardBufferReadTask(void) {
     switch (pollMemoryCardAvailability()) {
-    case 0: D_8013AF3E = 1; return;
-    case 5: D_8013AF3E = 2; return;
-    case 2: D_8013AF3E = 6; break;
-    case 1: D_8013AF3E = 5; break;
-    case 3: D_8013AF3E = 7; break;
-    case 4: D_8013AF3E = 8; break;
-    case 6: D_8013AF3E = 9; break;
-    case 7: D_8013AF3E = 10; break;
-    case 8: D_8013AF3E = 11; break;
+    case 0: gMemoryCardTaskState = 1; return;
+    case 5: gMemoryCardTaskState = 2; return;
+    case 2: gMemoryCardTaskState = 6; break;
+    case 1: gMemoryCardTaskState = 5; break;
+    case 3: gMemoryCardTaskState = 7; break;
+    case 4: gMemoryCardTaskState = 8; break;
+    case 6: gMemoryCardTaskState = 9; break;
+    case 7: gMemoryCardTaskState = 10; break;
+    case 8: gMemoryCardTaskState = 11; break;
     }
     deleteCurrentTaskSubtree();
 }
 
 s32 startMemoryCardReadTask(void) {
-    if (D_8013AF3E == 5) {
+    if (gMemoryCardTaskState == 5) {
         createChildTaskWithReserve(pollMemoryCardReadTask);
-        D_8013AF3E = 3;
+        gMemoryCardTaskState = 3;
         return 1;
     }
     return 0;
@@ -121,20 +121,20 @@ void pollMemoryCardReadTask(void) {
     s32 result = pollMemoryCardRead();
     if (result != 0) {
         switch (result) {
-        case 1: D_8013AF3E = 0; break;
-        case 2: D_8013AF3E = 7; break;
-        case 3: D_8013AF3E = 8; break;
-        case 4: D_8013AF3E = 11; break;
-        case 5: D_8013AF3E = 12; break;
+        case 1: gMemoryCardTaskState = 0; break;
+        case 2: gMemoryCardTaskState = 7; break;
+        case 3: gMemoryCardTaskState = 8; break;
+        case 4: gMemoryCardTaskState = 11; break;
+        case 5: gMemoryCardTaskState = 12; break;
         }
         deleteCurrentTaskSubtree();
     }
 }
 
 s32 startMemoryCardSaveStatusTask(void *buffer, u32 size) {
-    if (D_8013AF3E == 0) {
+    if (gMemoryCardTaskState == 0) {
         createChildTaskWithReserve(waitForMemoryCardAcceptTask);
-        D_8013AF3E = 1;
+        gMemoryCardTaskState = 1;
         gMemoryCardTaskBuffer = buffer;
         gMemoryCardSaveBufferSize = size;
         return 1;
@@ -151,23 +151,23 @@ void waitForMemoryCardAcceptTask(void) {
 
 void pollMemoryCardStatusTask(void) {
     switch (pollMemoryCardAvailability()) {
-    case 0: D_8013AF3E = 1; return;
-    case 5: D_8013AF3E = 2; return;
-    case 2: D_8013AF3E = 6; break;
-    case 8: D_8013AF3E = 11; break;
-    case 1: D_8013AF3E = 5; break;
-    case 3: D_8013AF3E = 7; break;
-    case 4: D_8013AF3E = 8; break;
-    case 6: D_8013AF3E = 9; break;
-    case 7: D_8013AF3E = 10; break;
+    case 0: gMemoryCardTaskState = 1; return;
+    case 5: gMemoryCardTaskState = 2; return;
+    case 2: gMemoryCardTaskState = 6; break;
+    case 8: gMemoryCardTaskState = 11; break;
+    case 1: gMemoryCardTaskState = 5; break;
+    case 3: gMemoryCardTaskState = 7; break;
+    case 4: gMemoryCardTaskState = 8; break;
+    case 6: gMemoryCardTaskState = 9; break;
+    case 7: gMemoryCardTaskState = 10; break;
     }
     deleteCurrentTaskSubtree();
 }
 
 s32 startMemoryCardWriteTask(void) {
-    if (D_8013AF3E == 5) {
+    if (gMemoryCardTaskState == 5) {
         createChildTaskWithReserve(prepareMemoryCardWriteTask);
-        D_8013AF3E = 4;
+        gMemoryCardTaskState = 4;
         return 1;
     }
     return 0;
@@ -182,11 +182,11 @@ void pollMemoryCardWriteTask(void) {
     s32 result = pollMemoryCardWrite();
     if (result != 0) {
         switch (result) {
-        case 1: D_8013AF3E = 0; break;
-        case 2: D_8013AF3E = 7; break;
-        case 3: D_8013AF3E = 8; break;
-        case 4: D_8013AF3E = 9; break;
-        case 5: D_8013AF3E = 10; break;
+        case 1: gMemoryCardTaskState = 0; break;
+        case 2: gMemoryCardTaskState = 7; break;
+        case 3: gMemoryCardTaskState = 8; break;
+        case 4: gMemoryCardTaskState = 9; break;
+        case 5: gMemoryCardTaskState = 10; break;
         }
         deleteCurrentTaskSubtree();
     }

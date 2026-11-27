@@ -42,7 +42,7 @@ extern u8 taskTransitionFlagGp;
 
 extern SaveRecord gPlayerSaveRecords[2];
 extern SaveRecord gMergedSaveRecord;
-extern SaveRecord *D_8013B484[2];
+extern SaveRecord *gWorkingSaveRecords[2];
 
 void initializeSaveRecordDefaults(SaveRecord *record);
 
