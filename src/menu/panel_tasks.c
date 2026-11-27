@@ -3419,6 +3419,9 @@ void drawCurrentTaskBoardPrice(void) {
     }
 }
 
+char gShopCurrencySuffix[4]
+    __attribute__((section(".data.shop_currency_suffix"), aligned(4))) = _("Ｇ");
+
 s32 hasStateGridFlag(SaveRecord *state, s16 row, s16 column) {
     if (row < 5) {
         if (state->boardUnlockFlagsLow & (1 << (row * 5 + column))) {
