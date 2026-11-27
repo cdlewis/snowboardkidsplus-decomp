@@ -859,7 +859,7 @@ segments:
       - {start: 0x11FBC8, type: .data, name: menu/task_widgets, linker_section: .data.value_panel_label}
       - {start: 0x11FBDC, type: .data, name: menu/task_widgets, linker_section: .data.text_panel_message}
       - {start: 0x11FC00, type: .data, name: unclassified/menu_8007BE9C, linker_section: .data.main_menu_sprites}
-      - [0x11FC24, data, main_menu_text_bodies]
+      - {start: 0x11FC24, type: .data, name: unclassified/menu_8007BE9C, linker_section: .data.main_menu_text_bodies}
       - {start: 0x11FF6C, type: .data, name: unclassified/menu_8007BE9C, linker_section: .data.main_menu_texts}
       - [0x11FF98, data, main_menu_data_tail]
       - {start: 0x120560, type: .data, name: menu/course_selection_tasks, linker_section: .data.record_flag_menu_sprites}
