@@ -1066,7 +1066,7 @@ void resetCurrentPlayerForCallback26DAC(void) {
 
 void initializeCurrentPlayerState10(void) {
     RacePlayer *player;
-    D_801241E8[gCurrentTask->data18].unk16 = 4;
+    gPlayerCameras[gCurrentTask->data18].unk16 = 4;
     player = gCurrentRacePlayer;
     player->unk128 &= ~0x200;
     player->unk128 &= 0xFF0C1FFB;
@@ -3457,9 +3457,9 @@ void updateCurrentPlayerTimedEffect(void) {
         smoothAndScaleCurrentPlayerInput(0, 0);
         startCurrentPlayerAnimation(1, 1);
         if (gCurrentRacePlayer->unk008 == 0) {
-            D_801241E8[gCurrentTask->data18].unk16 = 1;
-            D_801241E8[gCurrentTask->data18].yaw = gCurrentRacePlayer->unk110;
-            D_801241E8[gCurrentTask->data18].pitch = -0x40;
+            gPlayerCameras[gCurrentTask->data18].unk16 = 1;
+            gPlayerCameras[gCurrentTask->data18].yaw = gCurrentRacePlayer->unk110;
+            gPlayerCameras[gCurrentTask->data18].pitch = -0x40;
             updatePlayerCameraPosition(gCurrentTask->data18);
             clampPlayerCameraHeight(gCurrentTask->data18);
         }
@@ -3708,7 +3708,7 @@ void moveCurrentPlayerToTaskTarget(void) {
         gCurrentTask->data1A++;
         player->unk08C = 0;
         startCurrentPlayerAnimation(3, 2);
-        D_801241E8[gCurrentTask->data18].unk16 = 3;
+        gPlayerCameras[gCurrentTask->data18].unk16 = 3;
     }
 }
 
@@ -3925,7 +3925,7 @@ void updateCurrentPlayerTaskLapTransition(void) {
         phasePlayer->animationFlags &= ~0x10;
         phasePlayer->unk128 &= ~0x04000400;
         if (gCurrentRacePlayer->unk008 == 0) {
-            PlayerCamera *cameras = D_801241E8;
+            PlayerCamera *cameras = gPlayerCameras;
             cameras[gCurrentTask->data18].unk16 = 7;
             task = gCurrentTask;
             cameras[task->data18].yaw = gCurrentRacePlayer->unk110;
@@ -4083,7 +4083,7 @@ updateAnimation:
     stoppedPlayer = gCurrentRacePlayer;
     if ((stoppedPlayer->unk060 | stoppedPlayer->unk064) == 0 && !(stoppedPlayer->unk128 & 1)) {
         if (stoppedPlayer->unk008 == 0) {
-            PlayerCamera *cameras = D_801241E8;
+            PlayerCamera *cameras = gPlayerCameras;
             PlayerCamera *camera = &cameras[gCurrentTask->data18];
             if (camera->unk16 != 6 && D_8013AFD6 == 0) {
                 camera->unk16 = 5;
@@ -4312,7 +4312,7 @@ void updateCurrentPlayerState10Movement(void) {
             gCurrentRacePlayer->surfaceState.fields.unk136 != 12 && gCurrentRacePlayer->surfaceState.fields.unk136 != 16 &&
             gCurrentRacePlayer->surfaceState.fields.unk136 != 8 && gCurrentRacePlayer->surfaceState.fields.unk136 != 7 &&
             gCurrentRacePlayer->surfaceState.fields.unk136 != 14 && gCurrentRacePlayer->surfaceState.fields.unk136 != 15) {
-            D_801241E8[gCurrentTask->data18].unk16 = 1;
+            gPlayerCameras[gCurrentTask->data18].unk16 = 1;
             initializeCurrentPlayerState14();
         } else {
             gCurrentRacePlayer->unk96E = 0x500;

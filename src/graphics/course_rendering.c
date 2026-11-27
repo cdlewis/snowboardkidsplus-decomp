@@ -32,9 +32,9 @@ typedef struct AnimatedBackgroundScratchpad {
 
 extern s16 gFrameCounter __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
-extern u32 *D_8013AF6C __attribute__((section(".data")));
-extern u16 D_8013AF78 __attribute__((section(".data")));
-extern u8 D_8013AFD3 __attribute__((section(".data")));
+extern u32 *gCurrentPlayerOrderingTable __attribute__((section(".data")));
+extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
+extern u8 gRacePauseState __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern RECT gWritePixelRect __attribute__((section(".sdata.write_pixel_rect")));
@@ -218,45 +218,45 @@ void getCourseSteeringTarget(s16 region, s32 x, s32 z, s32 *targetX, s32 *target
     SelectedCourseRecord *courses = D_80123D80;
 
     if (region != (s16)courses[gSelectedCourseIndex].unk00) {
-        D_8013B624 = rsin(-(s16)((GeometryPlacement *)D_8013B1F4)[region].angle);
-        cosine = rcos(-(s16)((GeometryPlacement *)D_8013B1F4)[region].angle);
-        vertexIndex = ((GeometryPlacement *)D_8013B1F4)[region].vertexIndex;
-        dx = x - D_8013B1EC[vertexIndex * 3] * 5;
-        dz = z - D_8013B1EC[vertexIndex * 3 + 2] * 5;
-        D_8013B628 = cosine;
-        dz = (-D_8013B624 * dx + cosine * dz) / 4096;
+        gGeometryProjectionBasisX = rsin(-(s16)((GeometryPlacement *)gCourseGeometryRegionData)[region].angle);
+        cosine = rcos(-(s16)((GeometryPlacement *)gCourseGeometryRegionData)[region].angle);
+        vertexIndex = ((GeometryPlacement *)gCourseGeometryRegionData)[region].vertexIndex;
+        dx = x - gCourseGeometryVertexData[vertexIndex * 3] * 5;
+        dz = z - gCourseGeometryVertexData[vertexIndex * 3 + 2] * 5;
+        gGeometryProjectionBasisZ = cosine;
+        dz = (-gGeometryProjectionBasisX * dx + cosine * dz) / 4096;
 
         course = &courses[gSelectedCourseIndex];
         if ((region >= course->objectFirstSegment && region <= course->objectLastSegment) ||
             (gSelectedCourseIndex == 3 && (u16)(region - 285) < 2)) {
             dz -= 960;
-            *targetX = -D_8013B624 * dz / 4096;
-            *targetZ = D_8013B628 * dz / 4096;
+            *targetX = -gGeometryProjectionBasisX * dz / 4096;
+            *targetZ = gGeometryProjectionBasisZ * dz / 4096;
         } else {
             dz += 960;
-            *targetX = -D_8013B624 * dz / 4096;
-            *targetZ = D_8013B628 * dz / 4096;
+            *targetX = -gGeometryProjectionBasisX * dz / 4096;
+            *targetZ = gGeometryProjectionBasisZ * dz / 4096;
         }
 
-        *targetX += D_8013B1EC[((GeometryPlacement *)D_8013B1F4)[region].vertexIndex * 3] * 5;
-        *targetZ += D_8013B1EC[((GeometryPlacement *)D_8013B1F4)[region].vertexIndex * 3 + 2] * 5;
+        *targetX += gCourseGeometryVertexData[((GeometryPlacement *)gCourseGeometryRegionData)[region].vertexIndex * 3] * 5;
+        *targetZ += gCourseGeometryVertexData[((GeometryPlacement *)gCourseGeometryRegionData)[region].vertexIndex * 3 + 2] * 5;
 
         nextRegion = getAdjacentGeometryRegionForPoint(region, *targetX, *targetZ);
-        D_8013B624 = rsin(-(s16)((GeometryPlacement *)D_8013B1F4)[nextRegion].angle);
-        D_8013B628 = rcos(-(s16)((GeometryPlacement *)D_8013B1F4)[nextRegion].angle);
-        vertexIndex = ((GeometryPlacement *)D_8013B1F4)[nextRegion].vertexIndex * 3;
-        vertices = D_8013B1EC;
+        gGeometryProjectionBasisX = rsin(-(s16)((GeometryPlacement *)gCourseGeometryRegionData)[nextRegion].angle);
+        gGeometryProjectionBasisZ = rcos(-(s16)((GeometryPlacement *)gCourseGeometryRegionData)[nextRegion].angle);
+        vertexIndex = ((GeometryPlacement *)gCourseGeometryRegionData)[nextRegion].vertexIndex * 3;
+        vertices = gCourseGeometryVertexData;
         vertexX = vertices[vertexIndex];
         vertexZ = vertices[vertexIndex + 2];
         dx = *targetX - vertexX * 5;
         dz = *targetZ - vertexZ * 5;
         forward = updatePlayerField94CFromSelectedTable(tableIndex, nextRegion, playerIndex);
 
-        lateral = (-D_8013B624 * dx + D_8013B628 * dz) / 4096;
-        *targetX = (D_8013B628 * forward + -D_8013B624 * lateral) / 4096;
-        *targetZ = (D_8013B624 * forward + D_8013B628 * lateral) / 4096;
-        *targetX += D_8013B1EC[((GeometryPlacement *)D_8013B1F4)[nextRegion].vertexIndex * 3] * 5;
-        *targetZ += D_8013B1EC[((GeometryPlacement *)D_8013B1F4)[nextRegion].vertexIndex * 3 + 2] * 5;
+        lateral = (-gGeometryProjectionBasisX * dx + gGeometryProjectionBasisZ * dz) / 4096;
+        *targetX = (gGeometryProjectionBasisZ * forward + -gGeometryProjectionBasisX * lateral) / 4096;
+        *targetZ = (gGeometryProjectionBasisX * forward + gGeometryProjectionBasisZ * lateral) / 4096;
+        *targetX += gCourseGeometryVertexData[((GeometryPlacement *)gCourseGeometryRegionData)[nextRegion].vertexIndex * 3] * 5;
+        *targetZ += gCourseGeometryVertexData[((GeometryPlacement *)gCourseGeometryRegionData)[nextRegion].vertexIndex * 3 + 2] * 5;
     } else {
         *targetX = (s32)courses[gSelectedCourseIndex].unk18[0] >> 8;
         *targetZ = (s32)courses[gSelectedCourseIndex].unk18[2] >> 8;
@@ -289,7 +289,7 @@ void drawBackgroundLensFlare(s16 playerIndex) {
     PlayerCamera *cameras;
     PlayerCamera *camera;
 
-    cameras = D_801241E8;
+    cameras = gPlayerCameras;
     camera = &cameras[playerIndex];
     yaw = camera->yaw & 0xFFF;
     if (yaw > 0x400 && yaw < 0xC00) {
@@ -332,34 +332,34 @@ void drawBackgroundLensFlare(s16 playerIndex) {
             green = 0;
         }
 
-        addSemiTransparentGouraudTriangle(D_8013AF6C, getTPage(0, 1, 0, 0),
+        addSemiTransparentGouraudTriangle(gCurrentPlayerOrderingTable, getTPage(0, 1, 0, 0),
             outerX, outerY, rightX, rightY, centerX, centerY,
             (u8)red, (u8)green, (u8)blue, 0, 0, 0, 64, 64, 64);
-        addSemiTransparentGouraudTriangle(D_8013AF6C, getTPage(0, 1, 0, 0),
+        addSemiTransparentGouraudTriangle(gCurrentPlayerOrderingTable, getTPage(0, 1, 0, 0),
             outerX, outerY, centerX, centerY, leftX, leftY,
             (u8)red, (u8)green, (u8)blue, 64, 64, 64, 0, 0, 0);
     }
 
-    addTexturedQuad(D_8013AF6C,
+    addTexturedQuad(gCurrentPlayerOrderingTable,
         (s16)(x - 32), (s16)(y - 32), (s16)(x + 32), (s16)(y - 32),
         (s16)(x - 32), (s16)(y + 32), (s16)(x + 32), (s16)(y + 32),
         SEMI_TRANSPARENT_FLAG, getTPage(0, 1, 704, 0), getClut(880, 241),
         0, 0, 63, 0, 0, 63, 63, 63, 96, 96, 96);
-    addTexturedQuad(D_8013AF6C,
+    addTexturedQuad(gCurrentPlayerOrderingTable,
         (s16)(x / 2 - 16), (s16)(y / 2 - 16), (s16)(x / 2 + 16), (s16)(y / 2 - 16),
         (s16)(x / 2 - 16), (s16)(y / 2 + 16), (s16)(x / 2 + 16), (s16)(y / 2 + 16),
         SEMI_TRANSPARENT_FLAG, getTPage(0, 1, 704, 0), getClut(880, 240),
         0, 0, 63, 0, 0, 63, 63, 63, 38, 24, 24);
-    addTexturedQuad(D_8013AF6C,
+    addTexturedQuad(gCurrentPlayerOrderingTable,
         -20, -20, 20, -20, -20, 20, 20, 20,
         SEMI_TRANSPARENT_FLAG, getTPage(0, 1, 704, 0), getClut(880, 241),
         0, 0, 63, 0, 0, 63, 63, 63, 50, 68, 50);
-    addTexturedQuad(D_8013AF6C,
+    addTexturedQuad(gCurrentPlayerOrderingTable,
         (s16)(-x / 2 - 40), (s16)(-y / 2 - 40), (s16)(-x / 2 + 40), (s16)(-y / 2 - 40),
         (s16)(-x / 2 - 40), (s16)(-y / 2 + 40), (s16)(-x / 2 + 40), (s16)(-y / 2 + 40),
         SEMI_TRANSPARENT_FLAG, getTPage(0, 1, 704, 0), getClut(880, 242),
         0, 0, 63, 0, 0, 63, 63, 63, 10, 20, 10);
-    addTexturedQuad(D_8013AF6C,
+    addTexturedQuad(gCurrentPlayerOrderingTable,
         (s16)(-x - 20), (s16)(-y - 20), (s16)(-x + 20), (s16)(-y - 20),
         (s16)(-x - 20), (s16)(-y + 20), (s16)(-x + 20), (s16)(-y + 20),
         SEMI_TRANSPARENT_FLAG, getTPage(0, 1, 704, 0), getClut(880, 240),
@@ -376,12 +376,12 @@ void drawLayeredBackgroundAndSetFog(s16 playerIndex) {
     s16 x, y, horizon;
 
     if (playerIndex == 0) {
-        ot = &D_800EC018[D_8013AF78];
+        ot = &D_800EC018[gActiveGraphicsBuffer];
     } else {
-        ot = &D_800EC0B8[D_8013AF78];
+        ot = &D_800EC0B8[gActiveGraphicsBuffer];
     }
 
-    cameras = D_801241E8;
+    cameras = gPlayerCameras;
     camera = &cameras[playerIndex];
     if ((u16)camera->unk18 < 8) {
         D_8013B22C = 0xF28;
@@ -393,30 +393,30 @@ void drawLayeredBackgroundAndSetFog(s16 playerIndex) {
     y = camera->pitch / 2;
     horizon = y - 64;
 
-    addTexturedSprite(&D_8013AF6C[1024], getTPage(0, 0, 640, 256), getClut(656, 481),
+    addTexturedSprite(&gCurrentPlayerOrderingTable[1024], getTPage(0, 0, 640, 256), getClut(656, 481),
         x, (s16)(y - 64), 256, 48, 0, 0, 128, 128, 128);
-    addTexturedSprite(&D_8013AF6C[1024], getTPage(0, 0, 640, 256), getClut(656, 480),
+    addTexturedSprite(&gCurrentPlayerOrderingTable[1024], getTPage(0, 0, 640, 256), getClut(656, 480),
         x, (s16)(y - 16), 256, 80, 0, 48, 128, 128, 128);
-    addTexturedSprite(&D_8013AF6C[1024], getTPage(0, 0, 640, 256), getClut(656, 481),
+    addTexturedSprite(&gCurrentPlayerOrderingTable[1024], getTPage(0, 0, 640, 256), getClut(656, 481),
         (s16)(x + 256), (s16)(y - 64), 256, 48, 0, 0, 128, 128, 128);
-    addTexturedSprite(&D_8013AF6C[1024], getTPage(0, 0, 640, 256), getClut(656, 480),
+    addTexturedSprite(&gCurrentPlayerOrderingTable[1024], getTPage(0, 0, 640, 256), getClut(656, 480),
         (s16)(x + 256), (s16)(y - 16), 256, 80, 0, 48, 128, 128, 128);
-    addTexturedSprite(&D_8013AF6C[1024], getTPage(0, 0, 640, 256), getClut(656, 481),
+    addTexturedSprite(&gCurrentPlayerOrderingTable[1024], getTPage(0, 0, 640, 256), getClut(656, 481),
         (s16)(x + 512), (s16)(y - 64), 256, 48, 0, 0, 128, 128, 128);
-    addTexturedSprite(&D_8013AF6C[1024], getTPage(0, 0, 640, 256), getClut(656, 480),
+    addTexturedSprite(&gCurrentPlayerOrderingTable[1024], getTPage(0, 0, 640, 256), getClut(656, 480),
         (s16)(x + 512), (s16)(y - 16), 256, 80, 0, 48, 128, 128, 128);
 
-    addGouraudQuad(&D_8013AF6C[1024],
+    addGouraudQuad(&gCurrentPlayerOrderingTable[1024],
         -160, (s16)(y - 184), 160, (s16)(y - 184), -160, (s16)(y - 64), 160, (s16)(y - 64),
         128, 255, 255, 128, 255, 255, 41, 123, 230, 0, 112, 230);
-    addGouraudQuad(&D_8013AF6C[1024],
+    addGouraudQuad(&gCurrentPlayerOrderingTable[1024],
         -160, (s16)(y + 64), 160, (s16)(y + 64), -160, (s16)(y + 184), 160, (s16)(y + 184),
         255, 255, 255, 255, 255, 255, 220, 220, 220, 220, 220, 220);
 
     if (horizon > 120) horizon = 120;
     if (horizon < -120) horizon = -120;
-    addFlatRectangle(&D_8013AF6C[1024], -160, -120, 320, (s16)(horizon + 120), 128, 255, 255);
-    addFlatRectangle(&D_8013AF6C[1024], -160, horizon, 320, (s16)(120 - horizon), 220, 220, 220);
+    addFlatRectangle(&gCurrentPlayerOrderingTable[1024], -160, -120, 320, (s16)(horizon + 120), 128, 255, 255);
+    addFlatRectangle(&gCurrentPlayerOrderingTable[1024], -160, horizon, 320, (s16)(120 - horizon), 220, 220, 220);
 
     if (isPointWithinCameraForwardRange(-0xF02D, 0xC5B6, playerIndex)) {
         GsInitCoordinate2(0, coordinate);
@@ -459,12 +459,12 @@ void drawSunsetBackgroundAndSetFog(s16 playerIndex) {
     s32 r, g, b;
 
     if (playerIndex == 0) {
-        ot = &D_800EC018[D_8013AF78];
+        ot = &D_800EC018[gActiveGraphicsBuffer];
     } else {
-        ot = &D_800EC0B8[D_8013AF78];
+        ot = &D_800EC0B8[gActiveGraphicsBuffer];
     }
     *(POLY_G4 *)getScratchAddr(0) = sSunsetBackgroundQuad;
-    cameras = D_801241E8;
+    cameras = gPlayerCameras;
     camera = &cameras[playerIndex];
     /* The rsin result is discarded. Its projected height is inferred from the lens flare. */
     horizon = 240 * rsin(camera->pitch) / 4096;
@@ -472,9 +472,9 @@ void drawSunsetBackgroundAndSetFog(s16 playerIndex) {
     if (horizon < -60) horizon = -60;
     if (horizon > 120) horizon = 120;
 
-    addGouraudQuad(&D_8013AF6C[4095], -160, -120, 160, -120, -160, horizon, 160, horizon,
+    addGouraudQuad(&gCurrentPlayerOrderingTable[4095], -160, -120, 160, -120, -160, horizon, 160, horizon,
                   255, 64, 0, 255, 64, 0, 255, 255, 128, 255, 255, 128);
-    addGouraudQuad(&D_8013AF6C[4095], -160, -120, 160, -120, -160, horizon, 160, horizon,
+    addGouraudQuad(&gCurrentPlayerOrderingTable[4095], -160, -120, 160, -120, -160, horizon, 160, horizon,
                   255, 64, 0, 255, 64, 0, 255, 255, 128, 255, 255, 128);
 
     segment = gRacePlayers[playerIndex].unk92E;
@@ -488,19 +488,19 @@ void drawSunsetBackgroundAndSetFog(s16 playerIndex) {
         b = 240;
     }
     if (horizon < 60) {
-        addGouraudQuad(&D_8013AF6C[4095], -160, horizon, 160, horizon, -160, 60, 160, 60,
+        addGouraudQuad(&gCurrentPlayerOrderingTable[4095], -160, horizon, 160, horizon, -160, 60, 160, 60,
                       255, 255, 128, 255, 255, 128, 200, 210, 240, 200, 210, 240);
-        addFlatRectangle(&D_8013AF6C[4095], -160, 60, 320, 60, r, g, b);
+        addFlatRectangle(&gCurrentPlayerOrderingTable[4095], -160, 60, 320, 60, r, g, b);
     } else {
-        addGouraudQuad(&D_8013AF6C[4095], -160, horizon, 160, horizon, -160, 120, 160, 120,
+        addGouraudQuad(&gCurrentPlayerOrderingTable[4095], -160, horizon, 160, horizon, -160, 120, 160, 120,
                       255, 255, 128, 255, 255, 128, 200, 210, 240, 200, 210, 240);
     }
 
     if (selectedCameraOverlayModeGp) {
-        addFlatRectangleWithDrawMode(D_8013AF6C, getTPage(0, 2, 0, 0), SEMI_TRANSPARENT_FLAG,
+        addFlatRectangleWithDrawMode(gCurrentPlayerOrderingTable, getTPage(0, 2, 0, 0), SEMI_TRANSPARENT_FLAG,
                                      -160, -120, 320, 240, 0, 16, 32);
     } else {
-        addFlatRectangleWithDrawMode(D_8013AF6C, getTPage(0, 2, 0, 0), SEMI_TRANSPARENT_FLAG,
+        addFlatRectangleWithDrawMode(gCurrentPlayerOrderingTable, getTPage(0, 2, 0, 0), SEMI_TRANSPARENT_FLAG,
                                      -160, -120, 320, 240, 0, 32, 64);
     }
     SetFarColor(128, 100, 80);
@@ -517,40 +517,40 @@ void drawNightHighwayBackgroundAndSetFog(s16 playerIndex) {
     s32 pitch, pitchFixed;
     s32 scrollTerm;
 
-    scrollTerm = (u32)(u16)D_801241E8[playerIndex].yaw << 16;
+    scrollTerm = (u32)(u16)gPlayerCameras[playerIndex].yaw << 16;
     x = -160 - ((scrollTerm >> 17) & 255);
 
     /* Bias negative pitches by one so halving rounds toward zero. */
-    pitchFixed = (u32)(u16)D_801241E8[playerIndex].pitch << 16;
+    pitchFixed = (u32)(u16)gPlayerCameras[playerIndex].pitch << 16;
     pitch = pitchFixed >> 16;
     scrollTerm = (u32)pitchFixed >> 31;
     y = (pitch + scrollTerm) >> 1;
 
-    addTexturedSprite(&D_8013AF6C[4095], getTPage(0, 0, 640, 256), getClut(656, 496),
+    addTexturedSprite(&gCurrentPlayerOrderingTable[4095], getTPage(0, 0, 640, 256), getClut(656, 496),
                       x, y, 256, 128, 0, 0, 128, 128, 128);
-    addTexturedSprite(&D_8013AF6C[4095], getTPage(0, 0, 640, 256), getClut(656, 496),
+    addTexturedSprite(&gCurrentPlayerOrderingTable[4095], getTPage(0, 0, 640, 256), getClut(656, 496),
                       (s16)(x + 256), y, 256, 128, 0, 0, 128, 128, 128);
-    addTexturedSprite(&D_8013AF6C[4095], getTPage(0, 0, 640, 256), getClut(656, 496),
+    addTexturedSprite(&gCurrentPlayerOrderingTable[4095], getTPage(0, 0, 640, 256), getClut(656, 496),
                       (s16)(x + 512), y, 256, 128, 0, 0, 128, 128, 128);
 
-    addGouraudQuad(&D_8013AF6C[4095],
+    addGouraudQuad(&gCurrentPlayerOrderingTable[4095],
                    -160, (s16)(y - 120), 160, (s16)(y - 120), -160, y, 160, y,
                    0, 0, 0, 0, 0, 0, 0, 32, 80, 0, 32, 80);
-    addGouraudQuad(&D_8013AF6C[4095],
+    addGouraudQuad(&gCurrentPlayerOrderingTable[4095],
                    -160, (s16)(y + 128), 160, (s16)(y + 128),
                    -160, (s16)(y + 248), 160, (s16)(y + 248),
                    0, 0, 16, 0, 0, 16, 0, 0, 16, 0, 0, 16);
 
     if (y > -120) {
-        addFlatRectangle(&D_8013AF6C[4095], -160, -120, 320, (s16)(y + 120), 0, 0, 0);
+        addFlatRectangle(&gCurrentPlayerOrderingTable[4095], -160, -120, 320, (s16)(y + 120), 0, 0, 0);
     }
-    addFlatRectangle(&D_8013AF6C[4095], -160, (s16)(y + 248), 320, 120, 0, 0, 16);
+    addFlatRectangle(&gCurrentPlayerOrderingTable[4095], -160, (s16)(y + 248), 320, 120, 0, 0, 16);
 
     if (selectedCameraOverlayModeGp) {
-        addFlatRectangleWithDrawMode(D_8013AF6C, getTPage(0, 2, 0, 0), SEMI_TRANSPARENT_FLAG,
+        addFlatRectangleWithDrawMode(gCurrentPlayerOrderingTable, getTPage(0, 2, 0, 0), SEMI_TRANSPARENT_FLAG,
                                      -160, -120, 320, 240, 24, 24, 16);
     } else {
-        addFlatRectangleWithDrawMode(D_8013AF6C, getTPage(0, 2, 0, 0), SEMI_TRANSPARENT_FLAG,
+        addFlatRectangleWithDrawMode(gCurrentPlayerOrderingTable, getTPage(0, 2, 0, 0), SEMI_TRANSPARENT_FLAG,
                                      -160, -120, 320, 240, 48, 48, 32);
     }
     SetFarColor(32, 32, 80);
@@ -558,7 +558,7 @@ void drawNightHighwayBackgroundAndSetFog(s16 playerIndex) {
 }
 
 void drawCyanBackgroundAndSetFog(s16 playerIndex) {
-    addFlatRectangle(&D_8013AF6C[4095], -160, -120, 320, 240, 0, 235, 230);
+    addFlatRectangle(&gCurrentPlayerOrderingTable[4095], -160, -120, 320, 240, 0, 235, 230);
     SetFarColor(80, 128, 104);
     SetFogNearFar(5500, 10000, 400);
 }
@@ -585,7 +585,7 @@ void drawOscillatingQuadTask(void) {
         setRGB1(packet, 0, 0, 0);
         packet->tpage = getTPage(0, 1, 0, 0);
         packet->drawModeCommand = DRAW_MODE_COMMAND_HIGH;
-        if (!D_8013AFD3 && !(D_8013AFAA & 0x400) && (gFrameCounter & 1)) {
+        if (!gRacePauseState && !(D_8013AFAA & 0x400) && (gFrameCounter & 1)) {
             setRGB2(packet, resource->r / 2, resource->g / 2, resource->b / 2);
             setRGB3(packet, resource->r / 2, resource->g / 2, resource->b / 2);
         } else {
@@ -614,10 +614,10 @@ void drawOscillatingQuadTask(void) {
             (long *)&packet->x1, (long *)&packet->x2, (long *)&packet->x3,
             &scratch->cue, &scratch->flags);
         if (!(scratch->flags & 0x7FFBE000) && scratch->depth >= 0 && scratch->depth < 4096) {
-            addPrim(&D_8013AF6C[scratch->depth >> 2], packet);
+            addPrim(&gCurrentPlayerOrderingTable[scratch->depth >> 2], packet);
         }
         GsOUT_PACKET_P = (u32)(packet + 1);
-        if (!D_8013AFD3) {
+        if (!gRacePauseState) {
             resource->elapsed++;
         }
     }
@@ -654,7 +654,7 @@ void drawMovingLineTask(void) {
     if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
-    cameras = D_801241E8;
+    cameras = gPlayerCameras;
     camera = &cameras[gCurrentTask->data18];
     resource = (MovingLineResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     yaw = -((camera->yaw & 0xFFF) << 11) / 4096;
@@ -678,9 +678,9 @@ void drawMovingLineTask(void) {
     }
     line->b0 = brightness / 2;
     line->r0 = line->g0 = brightness * 255 / 256;
-    addPrim(&D_8013AF6C[4094], line);
+    addPrim(&gCurrentPlayerOrderingTable[4094], line);
     GsOUT_PACKET_P = (u32)(line + 1);
-    if (!D_8013AFD3) {
+    if (!gRacePauseState) {
         resource->x -= 8;
         resource->y += 4;
         if (++resource->elapsed == resource->duration) {
@@ -714,9 +714,9 @@ void drawFlickeringDotsTask(void) {
     packet = (TILE_1 *)GsOUT_PACKET_P;
     scratch = (TILE_1 *)getScratchAddr(0);
     if (D_8013AFAA & 0x400) {
-        if (gCurrentTask->data18 != D_8013AF78) return;
+        if (gCurrentTask->data18 != gActiveGraphicsBuffer) return;
     } else if (gCurrentTask->data18 != 0) return;
-    cameras = D_801241E8;
+    cameras = gPlayerCameras;
     camera = &cameras[gCurrentTask->data18];
     yaw = -((camera->yaw & 0xFFF) << 11) / 4096;
     pitch = camera->pitch / 2;
@@ -728,11 +728,11 @@ void drawFlickeringDotsTask(void) {
         scratch->r0 = scratch->g0 = rcos(randomLinearFromValue(i * 211) + (resource->frame << 7)) / 64 - 65;
         scratch->b0 = scratch->r0 / 2;
         *packet = *scratch;
-        addPrim(&D_8013AF6C[4094], packet);
+        addPrim(&gCurrentPlayerOrderingTable[4094], packet);
         packet++;
     }
     GsOUT_PACKET_P = (u32)packet;
-    if (!D_8013AFD3) {
+    if (!gRacePauseState) {
         if ((++resource->frame & 15) == 0 && (randomNextLinear() & 15) == 0) {
             createMovingLineTask(gCurrentTask->data18);
         }
@@ -761,20 +761,20 @@ void drawRotatingModelBackgroundAndSetFog(s16 playerIndex) {
     u32 y;
 
     if (playerIndex == 0) {
-        ot = &D_800EC040[D_8013AF78];
+        ot = &D_800EC040[gActiveGraphicsBuffer];
     } else {
-        ot = &D_800EC0E0[D_8013AF78];
+        ot = &D_800EC0E0[gActiveGraphicsBuffer];
     }
 
-    x = -160 - ((D_801241E8[playerIndex].yaw >> 1) & 255);
-    y = (u32)(D_801241E8[playerIndex].pitch / 2);
+    x = -160 - ((gPlayerCameras[playerIndex].yaw >> 1) & 255);
+    y = (u32)(gPlayerCameras[playerIndex].pitch / 2);
     horizon = y;
     y &= 0xFFFF;
-    addTexturedSprite(&D_8013AF6C[4093], getTPage(0, 0, 640, 256), getClut(656, 480),
+    addTexturedSprite(&gCurrentPlayerOrderingTable[4093], getTPage(0, 0, 640, 256), getClut(656, 480),
                       (s16)x, (s16)y, 256, 96, 0, 0, 128, 128, 128);
-    addTexturedSprite(&D_8013AF6C[4093], getTPage(0, 0, 640, 256), getClut(656, 480),
+    addTexturedSprite(&gCurrentPlayerOrderingTable[4093], getTPage(0, 0, 640, 256), getClut(656, 480),
                       (s16)(x + 256), (s16)y, 256, 96, 0, 0, 128, 128, 128);
-    addTexturedSprite(&D_8013AF6C[4093], getTPage(0, 0, 640, 256), getClut(656, 480),
+    addTexturedSprite(&gCurrentPlayerOrderingTable[4093], getTPage(0, 0, 640, 256), getClut(656, 480),
                       (s16)(x + 512), (s16)y, 256, 96, 0, 0, 128, 128, 128);
 
     {
@@ -782,17 +782,17 @@ void drawRotatingModelBackgroundAndSetFog(s16 playerIndex) {
 
         if ((s16)y < -248) horizon = -248;
         if (horizon > 120) horizon = 120;
-        addSemiTransparentGouraudQuadWithDrawMode(&D_8013AF6C[4094], getTPage(0, 1, 0, 0),
+        addSemiTransparentGouraudQuadWithDrawMode(&gCurrentPlayerOrderingTable[4094], getTPage(0, 1, 0, 0),
             -160, (s16)(horizon + 96), right, (s16)(horizon + 96),
             -160, (s16)(horizon + 128), right, (s16)(horizon + 128),
             0, 24, 32, 0, 24, 32, 0, 0, 0, 0, 0, 0);
-        addFlatRectangle(&D_8013AF6C[4094], -160, (s16)(horizon + 128), 320,
+        addFlatRectangle(&gCurrentPlayerOrderingTable[4094], -160, (s16)(horizon + 128), 320,
                          (s16)(-8 - horizon), 0, 0, 0);
-        addSemiTransparentGouraudQuadWithDrawMode(&D_8013AF6C[4095], getTPage(0, 1, 0, 0),
+        addSemiTransparentGouraudQuadWithDrawMode(&gCurrentPlayerOrderingTable[4095], getTPage(0, 1, 0, 0),
             -160, (s16)(horizon - 120), right, (s16)(horizon - 120),
             -160, horizon, right, horizon,
             0, 64, 128, 0, 64, 128, 0, 24, 32, 0, 24, 32);
-        addSemiTransparentGouraudQuadWithDrawMode(&D_8013AF6C[4095], getTPage(0, 1, 0, 0),
+        addSemiTransparentGouraudQuadWithDrawMode(&gCurrentPlayerOrderingTable[4095], getTPage(0, 1, 0, 0),
             -160, -120, right, -120, -160, (s16)(horizon - 120), right, (s16)(horizon - 120),
             0, 128, 128, 0, 128, 128, 0, 64, 128, 0, 64, 128);
     }
@@ -805,16 +805,16 @@ void drawRotatingModelBackgroundAndSetFog(s16 playerIndex) {
         ScaleMatrix(matrix, &sBackgroundModelScale);
         GsSetLsMatrix(matrix);
         drawProjectedModelPrimitives(gOptionalCourseModels[1], ot, 2, 1);
-        if (!D_8013AFD3) {
+        if (!gRacePauseState) {
             sRotatingBackgroundFrame++;
         }
     }
 
     if (selectedCameraOverlayModeGp) {
-        addFlatRectangleWithDrawMode(D_8013AF6C, getTPage(0, 2, 0, 0), SEMI_TRANSPARENT_FLAG,
+        addFlatRectangleWithDrawMode(gCurrentPlayerOrderingTable, getTPage(0, 2, 0, 0), SEMI_TRANSPARENT_FLAG,
                                      -160, -120, 320, 240, 24, 24, 24);
     } else {
-        addFlatRectangleWithDrawMode(D_8013AF6C, getTPage(0, 2, 0, 0), SEMI_TRANSPARENT_FLAG,
+        addFlatRectangleWithDrawMode(gCurrentPlayerOrderingTable, getTPage(0, 2, 0, 0), SEMI_TRANSPARENT_FLAG,
                                      -160, -120, 320, 240, 48, 48, 48);
     }
     SetFarColor(80, 80, 100);
@@ -823,7 +823,7 @@ void drawRotatingModelBackgroundAndSetFog(s16 playerIndex) {
 
 void drawRipplingBackgroundAndSetFog(s16 playerIndex) {
     s32 column, strip, offset, x, y;
-    u32 segment = (u16)D_801241E8[playerIndex].unk18;
+    u32 segment = (u16)gPlayerCameras[playerIndex].unk18;
 
     if (segment < 2 || (u32)(segment - 10) < 10 ||
         (u32)(segment - 41) < 9 || (u32)(segment - 125) < 4 ||
@@ -834,7 +834,7 @@ void drawRipplingBackgroundAndSetFog(s16 playerIndex) {
         drawBackgroundLensFlare(playerIndex);
     }
 
-    if (!D_8013AFD3) {
+    if (!gRacePauseState) {
         for (column = 0; column < 11; column++) {
             gRipplingBackgroundStripData[column] = gRipplingBackgroundStripData[column + 1];
         }
@@ -847,13 +847,13 @@ void drawRipplingBackgroundAndSetFog(s16 playerIndex) {
         }
     }
 
-    x = -160 - ((D_801241E8[playerIndex].yaw >> 1) & 255);
-    y = D_801241E8[playerIndex].pitch / 4 - 64;
+    x = -160 - ((gPlayerCameras[playerIndex].yaw >> 1) & 255);
+    y = gPlayerCameras[playerIndex].pitch / 4 - 64;
     /* The bottom edge of the last strip uses the halfword following the offsets. */
     for (column = 0; column < 3; column++, x += 256) {
         strip = offset = 0;
         for (strip = 0; strip < 12; strip++, offset += 8) {
-            addTexturedQuad(&D_8013AF6C[4094],
+            addTexturedQuad(&gCurrentPlayerOrderingTable[4094],
                 (s16)(x + gRipplingBackgroundStripData[strip]), (s16)(y + offset),
                 (s16)(x + gRipplingBackgroundStripData[strip] + 256), (s16)(y + offset),
                 (s16)(x + gRipplingBackgroundStripData[strip + 1]), (s16)(y + offset + 8),
@@ -866,8 +866,8 @@ void drawRipplingBackgroundAndSetFog(s16 playerIndex) {
 
     if (y < -120) y = -120;
     if (y > 120) y = 120;
-    addFlatRectangle(&D_8013AF6C[4095], -160, -120, 320, (s16)(y + 120), 72, 184, 248);
-    addFlatRectangle(&D_8013AF6C[4095], -160, (s16)y, 320, (s16)(120 - y), 232, 208, 144);
+    addFlatRectangle(&gCurrentPlayerOrderingTable[4095], -160, -120, 320, (s16)(y + 120), 72, 184, 248);
+    addFlatRectangle(&gCurrentPlayerOrderingTable[4095], -160, (s16)y, 320, (s16)(120 - y), 232, 208, 144);
     SetFarColor(112, 100, 80);
     SetFogNearFar(8000, 10000, 400);
 }
@@ -877,11 +877,11 @@ void drawLapAnimatedBackgroundAndSetFog(s16 playerIndex) {
     GsOT *ot;
 
     if (playerIndex == 0) {
-        ot = &D_800EC040[D_8013AF78];
+        ot = &D_800EC040[gActiveGraphicsBuffer];
     } else {
-        ot = &D_800EC0E0[D_8013AF78];
+        ot = &D_800EC0E0[gActiveGraphicsBuffer];
     }
-    addCopiedPrimitive(&D_8013AF6C[2048], (u32 *)&gLapAnimatedBackgroundTile);
+    addCopiedPrimitive(&gCurrentPlayerOrderingTable[2048], (u32 *)&gLapAnimatedBackgroundTile);
     if (isPositionInCameraRange(-0x152D4, 0xB540, playerIndex)) {
         switch (gRacePlayers[playerIndex].unk934) {
         case 0:
@@ -947,17 +947,17 @@ void drawLapAnimatedBackgroundAndSetFog(s16 playerIndex) {
 void drawSnowBackgroundAndSetFog(s16 playerIndex) {
     s16 y;
     s16 x;
-    y = D_801241E8[playerIndex].pitch / 2;
-    x = -160 - ((D_801241E8[playerIndex].yaw >> 1) & 255);
+    y = gPlayerCameras[playerIndex].pitch / 2;
+    x = -160 - ((gPlayerCameras[playerIndex].yaw >> 1) & 255);
     if (y > 240) y = 240;
-    addTexturedSprite(&D_8013AF6C[1024], 26, 0x7C29, x, y, 256, 64, 0, 0, 128, 128, 128);
-    addTexturedSprite(&D_8013AF6C[1024], 26, 0x7C29, (s16)(x + 256), y, 256, 64, 0, 0, 128, 128, 128);
-    addTexturedSprite(&D_8013AF6C[1024], 26, 0x7C29, (s16)(x + 512), y, 256, 64, 0, 0, 128, 128, 128);
+    addTexturedSprite(&gCurrentPlayerOrderingTable[1024], 26, 0x7C29, x, y, 256, 64, 0, 0, 128, 128, 128);
+    addTexturedSprite(&gCurrentPlayerOrderingTable[1024], 26, 0x7C29, (s16)(x + 256), y, 256, 64, 0, 0, 128, 128, 128);
+    addTexturedSprite(&gCurrentPlayerOrderingTable[1024], 26, 0x7C29, (s16)(x + 512), y, 256, 64, 0, 0, 128, 128, 128);
     if (y >= -119) {
-        addFlatRectangle(&D_8013AF6C[1024], -160, -120, 320, (s16)(y + 120), 0, 168, 248);
+        addFlatRectangle(&gCurrentPlayerOrderingTable[1024], -160, -120, 320, (s16)(y + 120), 0, 168, 248);
     }
     if (y < -120) y = -184;
-    addFlatRectangle(&D_8013AF6C[1024], -160, (s16)(y + 64), 320, (s16)(120 - y), 248, 248, 248);
+    addFlatRectangle(&gCurrentPlayerOrderingTable[1024], -160, (s16)(y + 64), 320, (s16)(120 - y), 248, 248, 248);
     SetFarColor(248, 248, 248);
     SetFogNearFar(8000, 10000, 400);
 }
@@ -969,20 +969,20 @@ void drawCameraCulledBackgroundAndSetFog(s16 playerIndex) {
     s16 x, y, horizon;
 
     if (playerIndex == 0) {
-        ot = &D_800EC090[D_8013AF78];
+        ot = &D_800EC090[gActiveGraphicsBuffer];
     } else {
-        ot = &D_800EC130[D_8013AF78];
+        ot = &D_800EC130[gActiveGraphicsBuffer];
     }
-    x = -160 - ((D_801241E8[playerIndex].yaw >> 1) & 255);
-    y = D_801241E8[playerIndex].pitch / 4;
+    x = -160 - ((gPlayerCameras[playerIndex].yaw >> 1) & 255);
+    y = gPlayerCameras[playerIndex].pitch / 4;
     horizon = y;
-    addTexturedSprite(&D_8013AF6C[512], 26, 0x7C29, x, y, 256, 64, 0, 0, 128, 128, 128);
-    addTexturedSprite(&D_8013AF6C[512], 26, 0x7C29, (s16)(x + 256), y, 256, 64, 0, 0, 128, 128, 128);
-    addTexturedSprite(&D_8013AF6C[512], 26, 0x7C29, (s16)(x + 512), y, 256, 64, 0, 0, 128, 128, 128);
+    addTexturedSprite(&gCurrentPlayerOrderingTable[512], 26, 0x7C29, x, y, 256, 64, 0, 0, 128, 128, 128);
+    addTexturedSprite(&gCurrentPlayerOrderingTable[512], 26, 0x7C29, (s16)(x + 256), y, 256, 64, 0, 0, 128, 128, 128);
+    addTexturedSprite(&gCurrentPlayerOrderingTable[512], 26, 0x7C29, (s16)(x + 512), y, 256, 64, 0, 0, 128, 128, 128);
     if (horizon < -120) horizon = -120;
     if (horizon > 120) horizon = 120;
-    addFlatRectangle(&D_8013AF6C[1024], -160, -120, 320, (s16)(horizon + 120), 112, 168, 248);
-    addFlatRectangle(&D_8013AF6C[1024], -160, horizon, 320, (s16)(120 - horizon), 200, 216, 240);
+    addFlatRectangle(&gCurrentPlayerOrderingTable[1024], -160, -120, 320, (s16)(horizon + 120), 112, 168, 248);
+    addFlatRectangle(&gCurrentPlayerOrderingTable[1024], -160, horizon, 320, (s16)(120 - horizon), 200, 216, 240);
     GsInitCoordinate2(0, coordinate);
     GsGetLs(coordinate, matrix);
     ScaleMatrix(matrix, &sBackgroundModelScale);
@@ -1019,20 +1019,20 @@ void drawBackgroundModelsAndSetFog(s16 playerIndex) {
     s16 x, y, horizon;
 
     if (playerIndex == 0) {
-        ot = &D_800EC040[D_8013AF78];
+        ot = &D_800EC040[gActiveGraphicsBuffer];
     } else {
-        ot = &D_800EC0E0[D_8013AF78];
+        ot = &D_800EC0E0[gActiveGraphicsBuffer];
     }
-    x = -160 - ((D_801241E8[playerIndex].yaw >> 1) & 255);
-    y = D_801241E8[playerIndex].pitch / 2;
+    x = -160 - ((gPlayerCameras[playerIndex].yaw >> 1) & 255);
+    y = gPlayerCameras[playerIndex].pitch / 2;
     horizon = y;
-    addTexturedSprite(&D_8013AF6C[512], 26, 0x7C2A, x, y, 256, 64, 0, 128, 128, 128, 128);
-    addTexturedSprite(&D_8013AF6C[512], 26, 0x7C2A, (s16)(x + 256), y, 256, 64, 0, 128, 128, 128, 128);
-    addTexturedSprite(&D_8013AF6C[512], 26, 0x7C2A, (s16)(x + 512), y, 256, 64, 0, 128, 128, 128, 128);
+    addTexturedSprite(&gCurrentPlayerOrderingTable[512], 26, 0x7C2A, x, y, 256, 64, 0, 128, 128, 128, 128);
+    addTexturedSprite(&gCurrentPlayerOrderingTable[512], 26, 0x7C2A, (s16)(x + 256), y, 256, 64, 0, 128, 128, 128, 128);
+    addTexturedSprite(&gCurrentPlayerOrderingTable[512], 26, 0x7C2A, (s16)(x + 512), y, 256, 64, 0, 128, 128, 128, 128);
     if (horizon < -120) horizon = -120;
     if (horizon > 120) horizon = 120;
-    addFlatRectangle(&D_8013AF6C[4095], -160, -120, 320, (s16)(horizon + 120), 0, 120, 240);
-    addFlatRectangle(&D_8013AF6C[4095], -160, horizon, 320, (s16)(120 - horizon), 255, 255, 255);
+    addFlatRectangle(&gCurrentPlayerOrderingTable[4095], -160, -120, 320, (s16)(horizon + 120), 0, 120, 240);
+    addFlatRectangle(&gCurrentPlayerOrderingTable[4095], -160, horizon, 320, (s16)(120 - horizon), 255, 255, 255);
     GsInitCoordinate2(0, coordinate);
     GsGetLs(coordinate, matrix);
     ScaleMatrix(matrix, &sBackgroundModelScale);
@@ -1052,9 +1052,9 @@ s32 isPositionInCameraRange(s32 x, s32 z, s16 playerIndex) {
     s32 centerX, centerZ;
     s32 scaledX, scaledZ;
     centerX = gPlayerCameraViews[playerIndex].vpx / 256 +
-        ((gCourseModelCullDistance / 2) * rsin(D_801241E8[playerIndex].yaw)) / 4096;
+        ((gCourseModelCullDistance / 2) * rsin(gPlayerCameras[playerIndex].yaw)) / 4096;
     centerZ = gPlayerCameraViews[playerIndex].vpz / 256 +
-        ((gCourseModelCullDistance / 2) * rcos(D_801241E8[playerIndex].yaw)) / 4096;
+        ((gCourseModelCullDistance / 2) * rcos(gPlayerCameras[playerIndex].yaw)) / 4096;
     scaledX = x / 256;
     scaledZ = z / 256;
     return SquareRoot0((centerX - scaledX) * (centerX - scaledX) +
@@ -1064,8 +1064,8 @@ s32 isPositionInCameraRange(s32 x, s32 z, s16 playerIndex) {
 s32 isPointWithinCameraForwardRange(s32 x, s32 z, s16 player) {
     s32 cameraX, cameraZ;
     s32 scaledX, scaledZ;
-    cameraX = gPlayerCameraViews[player].vpx / 256 + ((gCourseModelCullDistance / 2) * rsin(D_801241E8[player].yaw)) / 4096;
-    cameraZ = gPlayerCameraViews[player].vpz / 256 + ((gCourseModelCullDistance / 2) * rcos(D_801241E8[player].yaw)) / 4096;
+    cameraX = gPlayerCameraViews[player].vpx / 256 + ((gCourseModelCullDistance / 2) * rsin(gPlayerCameras[player].yaw)) / 4096;
+    cameraZ = gPlayerCameraViews[player].vpz / 256 + ((gCourseModelCullDistance / 2) * rcos(gPlayerCameras[player].yaw)) / 4096;
     scaledX = x / 256;
     scaledZ = z / 256;
     return SquareRoot0((cameraX - scaledX) * (cameraX - scaledX) + (cameraZ - scaledZ) * (cameraZ - scaledZ)) < (gCourseModelCullDistance * 3) / 4;
@@ -1133,7 +1133,7 @@ void queueScanlineCopyPackets(void) {
     move = (DR_MOVE *)GsOUT_PACKET_P;
     for (y = 256; y < 512; y += 16) {
         SetDrawMove(move, &gScanlineSeedRect, 640, y);
-        addPrim(&D_8013AF6C[4095], move);
+        addPrim(&gCurrentPlayerOrderingTable[4095], move);
         move += 2;
     }
     GsOUT_PACKET_P = (u32)move;
@@ -1142,7 +1142,7 @@ void queueScanlineCopyPackets(void) {
         for (i = 0; i < 15; i++) {
             depth = (i * 200) / 15 + 150;
             SetDrawStp(stp, 1);
-            addPrim(&D_8013AF6C[depth], stp);
+            addPrim(&gCurrentPlayerOrderingTable[depth], stp);
             stp++;
         }
         GsOUT_PACKET_P = (u32)stp;
@@ -1154,7 +1154,7 @@ void queueScanlineCopyPackets(void) {
         depth = (i * 200) / 15 + 150;
         for (; y < 512; y += 16) {
             SetDrawMove(move, &gScanlineCopyRect, 640, y);
-            addPrim(&D_8013AF6C[depth], move);
+            addPrim(&gCurrentPlayerOrderingTable[depth], move);
             gScanlineCopyRect.y += 16;
             move++;
         }
@@ -1165,7 +1165,7 @@ void queueScanlineCopyPackets(void) {
         for (i = 0; i < 15; i++) {
             depth = (i * 200) / 15 + 150;
             SetDrawStp(stp, 0);
-            addPrim(&D_8013AF6C[depth], stp);
+            addPrim(&gCurrentPlayerOrderingTable[depth], stp);
             stp++;
         }
         GsOUT_PACKET_P = (u32)stp;
@@ -1239,9 +1239,9 @@ void drawCourseModelsForView(s16 view) {
     u16 i;
 
     if (view == 0) {
-        ot = &D_800EC040[D_8013AF78];
+        ot = &D_800EC040[gActiveGraphicsBuffer];
     } else {
-        ot = &D_800EC0E0[D_8013AF78];
+        ot = &D_800EC0E0[gActiveGraphicsBuffer];
     }
     scale = gCourseModelScale;
     if (D_8013AFB8 != 0) {
@@ -1251,7 +1251,7 @@ void drawCourseModelsForView(s16 view) {
     if (gSelectedCourseIndex == 6) {
         queueScanlineCopyPackets();
     }
-    cameras = D_801241E8;
+    cameras = gPlayerCameras;
     camera = &cameras[view];
     sine = rsin(camera->yaw);
     views = gPlayerCameraViews;
@@ -1300,7 +1300,7 @@ void drawCourseModelsForView(s16 view) {
 
 queue_draw_mode:
     SetDrawMode(&gCourseModelDrawMode, 0, 1, 0, &gCourseModelTextureWindow);
-    addPrim(&D_8013AF6C[4095], &gCourseModelDrawMode);
+    addPrim(&gCurrentPlayerOrderingTable[4095], &gCourseModelDrawMode);
     if (selectedCameraOverlayModeGp) {
         queueSelectedCameraOverlayPackets();
     }
@@ -1310,46 +1310,46 @@ void queueSelectedCameraOverlayPackets(void) {
     DR_STP *packet;
     switch (selectedCameraOverlayModeGp) {
     case 1:
-        if (D_8013AF78) {
-            addPrim(&D_8013AF6C[2], &gCameraOverlaySpritesBuffer1[0]);
-            addPrim(&D_8013AF6C[2], &gCameraOverlaySpritesBuffer1[1]);
+        if (gActiveGraphicsBuffer) {
+            addPrim(&gCurrentPlayerOrderingTable[2], &gCameraOverlaySpritesBuffer1[0]);
+            addPrim(&gCurrentPlayerOrderingTable[2], &gCameraOverlaySpritesBuffer1[1]);
         } else {
-            addPrim(&D_8013AF6C[2], &gCameraOverlaySpritesBuffer0[0]);
-            addPrim(&D_8013AF6C[2], &gCameraOverlaySpritesBuffer0[1]);
+            addPrim(&gCurrentPlayerOrderingTable[2], &gCameraOverlaySpritesBuffer0[0]);
+            addPrim(&gCurrentPlayerOrderingTable[2], &gCameraOverlaySpritesBuffer0[1]);
         }
         break;
     case 2:
-        if (D_8013AF78) {
-            addPrim(&D_8013AF6C[2], &gCameraOverlayQuadsBuffer1[1]);
-            addPrim(&D_8013AF6C[2], &gCameraOverlayQuadsBuffer1[0]);
+        if (gActiveGraphicsBuffer) {
+            addPrim(&gCurrentPlayerOrderingTable[2], &gCameraOverlayQuadsBuffer1[1]);
+            addPrim(&gCurrentPlayerOrderingTable[2], &gCameraOverlayQuadsBuffer1[0]);
         } else {
-            addPrim(&D_8013AF6C[2], &gCameraOverlayQuadsBuffer0[1]);
-            addPrim(&D_8013AF6C[2], &gCameraOverlayQuadsBuffer0[0]);
+            addPrim(&gCurrentPlayerOrderingTable[2], &gCameraOverlayQuadsBuffer0[1]);
+            addPrim(&gCurrentPlayerOrderingTable[2], &gCameraOverlayQuadsBuffer0[0]);
         }
         break;
     }
     packet = (DR_STP *)GsOUT_PACKET_P;
     SetDrawStp(packet, 1);
-    addPrim(&D_8013AF6C[4095], packet);
+    addPrim(&gCurrentPlayerOrderingTable[4095], packet);
     GsOUT_PACKET_P = (u32)(packet + 1);
 }
 
 void queueOffsetScreenCopySprites(void) {
     DR_STP *packet;
-    if (D_8013AF78) {
-        addPrim(&D_8013AF6C[2], &gScreenCopyPlusBuffer1[0]);
-        addPrim(&D_8013AF6C[2], &gScreenCopyPlusBuffer1[1]);
-        addPrim(&D_8013AF6C[2], &gScreenCopyMinusBuffer1[0]);
-        addPrim(&D_8013AF6C[2], &gScreenCopyMinusBuffer1[1]);
+    if (gActiveGraphicsBuffer) {
+        addPrim(&gCurrentPlayerOrderingTable[2], &gScreenCopyPlusBuffer1[0]);
+        addPrim(&gCurrentPlayerOrderingTable[2], &gScreenCopyPlusBuffer1[1]);
+        addPrim(&gCurrentPlayerOrderingTable[2], &gScreenCopyMinusBuffer1[0]);
+        addPrim(&gCurrentPlayerOrderingTable[2], &gScreenCopyMinusBuffer1[1]);
     } else {
-        addPrim(&D_8013AF6C[2], &gScreenCopyPlusBuffer0[0]);
-        addPrim(&D_8013AF6C[2], &gScreenCopyPlusBuffer0[1]);
-        addPrim(&D_8013AF6C[2], &gScreenCopyMinusBuffer0[0]);
-        addPrim(&D_8013AF6C[2], &gScreenCopyMinusBuffer0[1]);
+        addPrim(&gCurrentPlayerOrderingTable[2], &gScreenCopyPlusBuffer0[0]);
+        addPrim(&gCurrentPlayerOrderingTable[2], &gScreenCopyPlusBuffer0[1]);
+        addPrim(&gCurrentPlayerOrderingTable[2], &gScreenCopyMinusBuffer0[0]);
+        addPrim(&gCurrentPlayerOrderingTable[2], &gScreenCopyMinusBuffer0[1]);
     }
     packet = (DR_STP *)GsOUT_PACKET_P;
     SetDrawStp(packet, 1);
-    addPrim(&D_8013AF6C[4095], packet);
+    addPrim(&gCurrentPlayerOrderingTable[4095], packet);
     GsOUT_PACKET_P = (u32)(packet + 1);
 }
 

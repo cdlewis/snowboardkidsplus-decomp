@@ -22,11 +22,11 @@
 
 extern s16 gFrameCounter __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
-extern u16 D_8013AF78 __attribute__((section(".data")));
+extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
 extern u32 gGameOptionFlags __attribute__((section(".data")));
 extern u8 D_8013AFCD __attribute__((section(".data")));
 extern u8 D_8013AFD5 __attribute__((section(".data")));
-extern u8 D_8013AFD3 __attribute__((section(".data")));
+extern u8 gRacePauseState __attribute__((section(".data")));
 
 const char gLapTimeLabel[12] __attribute__((section(".rodata.lap_time_label"), aligned(4))) = "LAP TIME";
 
@@ -37,7 +37,7 @@ const char gBestLapLabel[16] __attribute__((section(".rodata.best_lap_label"), a
 void drawRacePauseMenu(void);
 
 void drawLapTimeHud(void) {
-    GsOT *ot = &D_800EBFF0[D_8013AF78];
+    GsOT *ot = &D_800EBFF0[gActiveGraphicsBuffer];
     char text[16];
     s32 icon;
     setSpriteColor(128,128,128);
@@ -57,7 +57,7 @@ void drawLapTimeHud(void) {
 }
 
 void drawFirstPlayerStatusHud(void) {
-    GsOT *ot = &D_800EBFF0[D_8013AF78];
+    GsOT *ot = &D_800EBFF0[gActiveGraphicsBuffer];
     RacePlayer *player;
     s16 frame;
     s32 palette;
@@ -74,7 +74,7 @@ void drawFirstPlayerStatusHud(void) {
 }
 
 void advanceRaceElapsedTime(void) {
-    if (!D_8013AFD3) {
+    if (!gRacePauseState) {
         gRaceElapsedTime.centiseconds += 0x358;
         if (gRaceElapsedTime.centiseconds > 0x6400) {
             gRaceElapsedTime.centiseconds = 0;
@@ -93,7 +93,7 @@ void advanceRaceElapsedTime(void) {
 }
 
 void decrementRaceCountdown(void) {
-    if (D_8013AFD3 == 0) {
+    if (gRacePauseState == 0) {
         D_8013B184.centiseconds -= 0x358;
         if (D_8013B184.centiseconds < 0) {
             D_8013B184.centiseconds = 0x60F8;
@@ -138,7 +138,7 @@ void initializeRacePauseMenuTask(void) {
 }
 
 void updateRacePauseMenu(void) {
-    u8 pause = D_8013AFD3;
+    u8 pause = gRacePauseState;
     s16 player = pause - 1;
     u8 resumeState;
 
@@ -161,9 +161,9 @@ void updateRacePauseMenu(void) {
     case 0:
         if (gControllerPressedButtons[player] & PAUSE_MENU_CONFIRM) {
             playSoundEffect(0, 0, 0x20);
-            resumeState = D_8013AFD3 | PAUSE_MENU_RESUME_PENDING;
+            resumeState = gRacePauseState | PAUSE_MENU_RESUME_PENDING;
 resume:
-            D_8013AFD3 = resumeState;
+            gRacePauseState = resumeState;
             deleteCurrentTaskSubtree();
             return;
         }
@@ -172,7 +172,7 @@ resume:
         if (gControllerPressedButtons[player] & PAUSE_MENU_CONFIRM) {
             playSoundEffect(0, 0, 0x20);
             D_8013B1AA = 1;
-            D_8013AFD3 |= PAUSE_MENU_RESUME_PENDING;
+            gRacePauseState |= PAUSE_MENU_RESUME_PENDING;
             resetControllersAndDeleteCurrentTask();
             return;
         }
@@ -181,7 +181,7 @@ resume:
         if (gControllerPressedButtons[player] & PAUSE_MENU_CONFIRM) {
             playSoundEffect(0, 0, 0x20);
             D_8013B1AB = 1;
-            D_8013AFD3 |= PAUSE_MENU_RESUME_PENDING;
+            gRacePauseState |= PAUSE_MENU_RESUME_PENDING;
             resetControllersAndDeleteCurrentTask();
             return;
         }
@@ -221,20 +221,20 @@ void resetControllersAndDeleteCurrentTask(void) {
 }
 
 void drawRacePauseMenu(void) {
-    s16 player = D_8013AFD3 - 1;
+    s16 player = gRacePauseState - 1;
     s16 x, y, row;
     s32 palette, sprite;
 
     setSpriteColor(128, 128, 128);
     if (D_8013AFCD == 2 && (gFrameCounter & 8)) {
         if (player == 0) {
-            drawSpriteByIndexWithBlend(-53, -48, 490, 13, 0, &D_800EBFF0[D_8013AF78], 0);
+            drawSpriteByIndexWithBlend(-53, -48, 490, 13, 0, &D_800EBFF0[gActiveGraphicsBuffer], 0);
         } else {
-            drawSpriteByIndexWithBlend(29, -48, 491, 14, 0, &D_800EBFF0[D_8013AF78], 0);
+            drawSpriteByIndexWithBlend(29, -48, 491, 14, 0, &D_800EBFF0[gActiveGraphicsBuffer], 0);
         }
     }
 
-    drawSpriteByIndexWithBlend(-27, -41, 399, 5, -1, &D_800EBFF0[D_8013AF78], 0);
+    drawSpriteByIndexWithBlend(-27, -41, 399, 5, -1, &D_800EBFF0[gActiveGraphicsBuffer], 0);
     y = -20;
     row = 0;
     x = -20;
@@ -243,7 +243,7 @@ void drawRacePauseMenu(void) {
         if (row == D_8013AFD5) {
             palette = 7;
         }
-        drawSpriteByIndexWithBlend(x - 28, y, 412 + row, palette, -1, &D_800EBFF0[D_8013AF78], 0);
+        drawSpriteByIndexWithBlend(x - 28, y, 412 + row, palette, -1, &D_800EBFF0[gActiveGraphicsBuffer], 0);
         y += 14;
     }
 
@@ -255,7 +255,7 @@ void drawRacePauseMenu(void) {
     sprite = D_8013AEC4[player];
     sprite = sprite != 0;
     sprite += 161;
-    drawSpriteByIndexWithBlend(x, y, sprite, palette, -1, &D_800EBFF0[D_8013AF78], 0);
+    drawSpriteByIndexWithBlend(x, y, sprite, palette, -1, &D_800EBFF0[gActiveGraphicsBuffer], 0);
     palette = 6;
     y += 14;
     if (D_8013AFD5 == 4) {
@@ -263,9 +263,9 @@ void drawRacePauseMenu(void) {
     }
     sprite = getPlayerOptionFlag(player);
     drawSpriteByIndexWithBlend(x, y, 570 | (sprite = !(s16)sprite), palette, -1,
-                               &D_800EBFF0[D_8013AF78], 0);
+                               &D_800EBFF0[gActiveGraphicsBuffer], 0);
     setTexturedQuadColor(128, 128, 128);
-    drawStyle20DTexturedPanel(-58, -58, 116, 124, 15, 0, &D_800EBFF0[D_8013AF78], 0);
+    drawStyle20DTexturedPanel(-58, -58, 116, 124, 15, 0, &D_800EBFF0[gActiveGraphicsBuffer], 0);
 }
 
 s16 isFirstPlayerUsingCallback26D10(void) {

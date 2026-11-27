@@ -19,7 +19,7 @@ typedef struct MainMenuSelection {
 } MainMenuSelection;
 
 extern MenuRgbColor gMenuColorCycleColor __attribute__((section(".data")));
-extern u16 D_8013AF78 __attribute__((section(".data")));
+extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
 extern u8 D_8013AFCD __attribute__((section(".data")));
 extern u8 D_8013AFE2 __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
@@ -288,24 +288,24 @@ void drawSelectionHeaderAndMoneyPanel(void) {
         return;
     }
     drawSpriteByIndexWithBlend(position->x / 4096 + 8, position->y / 4096 - 22,
-                 0xB1, 0, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                 0xB1, 0, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
     playerCount = D_8013AFCD;
     if (playerCount != 1) {
         return;
     }
     drawSpriteByIndexWithBlend(position->x / 4096 + 74, position->y / 4096 + 140,
-                 0xBD, 10, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                 0xBD, 10, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
     drawDecimalNumber8x8(position->x / 4096 + 74, position->y / 4096 + 152,
-                         6, 0, gPlayerSaveRecords[0].money, 0, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                         6, 0, gPlayerSaveRecords[0].money, 0, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
     drawWrappedText8x8(position->x / 4096 + 122, position->y / 4096 + 152,
-                       2, gSelectionMoneyCurrencyLabel, 0, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                       2, gSelectionMoneyCurrencyLabel, 0, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
     if (gCurrentTask->data1A == playerCount) {
         addTilePacketWithBlend(position->x / 4096 + 68, position->y / 4096 + 136, 68, 32,
                       gMenuColorCycleColor.r, gMenuColorCycleColor.g, gMenuColorCycleColor.b, 2,
-                      &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                      &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
     } else {
         addTilePacketWithBlend(position->x / 4096 + 68, position->y / 4096 + 136, 68, 32,
-                      128, 128, 128, 2, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                      128, 128, 128, 2, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
     }
 }
 

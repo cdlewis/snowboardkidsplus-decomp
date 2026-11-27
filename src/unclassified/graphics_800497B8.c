@@ -22,7 +22,7 @@
         }                                                                   \
         (sprite)->u = ((digit) & 0x1F) * 8;                                 \
         (sprite)->v = (((digit) & 0xE0) >> 3) & ~7;                         \
-        GsSortFastSprite((sprite), &D_800EBFF0[D_8013AF78], 0);             \
+        GsSortFastSprite((sprite), &D_800EBFF0[gActiveGraphicsBuffer], 0);             \
         (sprite)->x += 8;                                                   \
     } while (--(nibble) >= 0)
 
@@ -33,8 +33,8 @@ typedef struct SlidingVisualStep {
     u8 upperFrame;
 } SlidingVisualStep;
 
-extern u16 D_8013AF78 __attribute__((section(".data")));
-extern u8 D_8013AFD3 __attribute__((section(".data")));
+extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
+extern u8 gRacePauseState __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 
 ControllerEffectState gControllerEffectStates[2] = {0};
@@ -201,7 +201,7 @@ void updateSlidingVisualSequenceTask(void) {
         while (1) {}
     }
     resource = (SlidingVisualResource *)&gTaskMemoryPool[gCurrentTask->resource14];
-    if (!D_8013AFD3) {
+    if (!gRacePauseState) {
         switch (gCurrentTask->data1C) {
         case 0:
         case 2:
@@ -344,7 +344,7 @@ void drawDebugText(s32 x, s32 y, const char *format, ...) {
                 const s8 *cursor = (const s8 *)format;
                 sprite->u = ((u8)*cursor & 0x1F) * 8;
                 sprite->v = ((*cursor & 0xE0) >> 3) & ~7;
-                GsSortFastSprite(sprite, &D_800EBFF0[D_8013AF78], 0);
+                GsSortFastSprite(sprite, &D_800EBFF0[gActiveGraphicsBuffer], 0);
                 sprite->x += 8;
                 format++;
                 break;

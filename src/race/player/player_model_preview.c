@@ -13,7 +13,7 @@
 
 extern VECTOR *gScratchVector0 __attribute__((section(".data")));
 extern SVECTOR *D_8013AF90 __attribute__((section(".data")));
-extern u16 D_8013AF78 __attribute__((section(".data")));
+extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern GameTask *D_8013AE98 __attribute__((section(".data")));
@@ -35,12 +35,12 @@ void sortPlayerModelWithDrawArea(u16 playerIndex, u16 depthIndex, RECT *bounds) 
         GsSetLightMatrix(&matrix);
         GsGetLs(object->coord2, &matrix);
         GsSetLsMatrix(&matrix);
-        GsSortObject4(object, &D_800EBFF0[D_8013AF78], depthIndex, (u32 *)getScratchAddr(0));
+        GsSortObject4(object, &D_800EBFF0[gActiveGraphicsBuffer], depthIndex, (u32 *)getScratchAddr(0));
     }
     if (bounds->w >= 0 && bounds->h >= 0) {
         addDrawAreaPacket(bounds->x, bounds->y, bounds->w, bounds->h,
-                         &D_800EBFF0[D_8013AF78], playerModelDrawAreaDepths[depthIndex]);
-        addDrawAreaPacket(0, 0, 320, 240, &D_800EBFF0[D_8013AF78], 14);
+                         &D_800EBFF0[gActiveGraphicsBuffer], playerModelDrawAreaDepths[depthIndex]);
+        addDrawAreaPacket(0, 0, 320, 240, &D_800EBFF0[gActiveGraphicsBuffer], 14);
     }
 }
 

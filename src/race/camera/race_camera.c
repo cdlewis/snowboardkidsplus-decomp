@@ -46,7 +46,7 @@ void initPlayerCamera(u16 index) {
     else initialView->vrz = 576;
     views = gPlayerCameraViews;
     view = &views[index];
-    cameras = D_801241E8;
+    cameras = gPlayerCameras;
     camera = &cameras[index];
     players = gRacePlayers;
     view->rz = 0;
@@ -61,7 +61,7 @@ void initPlayerCamera(u16 index) {
 }
 
 void updatePlayerCameraPosition(u16 index) {
-    PlayerCamera *cameras = D_801241E8;
+    PlayerCamera *cameras = gPlayerCameras;
     PlayerCamera *camera = &cameras[index];
     RacePlayer *players;
     RacePlayer *player;
@@ -89,7 +89,7 @@ void updatePlayerCameraPosition(u16 index) {
 void updatePlayerCameraPitch(u16 playerIndex) {
     RacePlayer *players = gRacePlayers;
     RacePlayer *player = &players[playerIndex];
-    PlayerCamera *cameras = D_801241E8;
+    PlayerCamera *cameras = gPlayerCameras;
     PlayerCamera *camera = &cameras[playerIndex];
     s32 x = (player->x - camera->x) / 8;
     s32 y = (player->y - camera->y) / 8;
@@ -103,11 +103,11 @@ void updatePlayerCameraPitch(u16 playerIndex) {
         x /= 2;
         z /= 2;
     }
-    D_801241E8[playerIndex].pitch = getXZHeading(0, 0, SquareRoot0(x * x + z * z), y / scale) - 0x400;
+    gPlayerCameras[playerIndex].pitch = getXZHeading(0, 0, SquareRoot0(x * x + z * z), y / scale) - 0x400;
 }
 
 void updatePlayerCameraAngles(u16 playerIndex) {
-    PlayerCamera *cameras = D_801241E8;
+    PlayerCamera *cameras = gPlayerCameras;
     PlayerCamera *camera = &cameras[playerIndex];
     RacePlayer *players = gRacePlayers;
     RacePlayer *player = &players[playerIndex];
@@ -126,7 +126,7 @@ void clampPlayerCameraDistance(u16 playerIndex) {
     PlayerCamera *camera;
     distance = SquareRoot0(distance * distance + dy * dy);
     if (distance < 320) {
-        cameras = D_801241E8;
+        cameras = gPlayerCameras;
         camera = &cameras[playerIndex];
         D_8013AF90->vx = camera->pitch & 0xFFF;
         D_8013AF90->vy = camera->yaw & 0xFFF;
@@ -143,7 +143,7 @@ void clampPlayerCameraDistance(u16 playerIndex) {
 }
 
 void clampPlayerCameraHeight(u16 playerIndex) {
-    PlayerCamera *cameras = D_801241E8;
+    PlayerCamera *cameras = gPlayerCameras;
     PlayerCamera *camera = &cameras[playerIndex];
     GsRVIEW2 *views = gPlayerCameraViews;
     GsRVIEW2 *view = &views[playerIndex];
@@ -162,7 +162,7 @@ void initPlayerCameraAndTarget(u16 index) {
     RacePlayer *players;
     PlayerCamera *cameras;
     initPlayerCamera(index);
-    cameras = D_801241E8;
+    cameras = gPlayerCameras;
     cameras[index].unk18 = 0;
     updatePlayerCameraPosition(index);
     clampPlayerCameraHeight(index);
@@ -182,7 +182,7 @@ void initCurrentPlayerCameraTask(void) {
     GsRVIEW2 *views;
     PlayerCamera *cameras;
     if (D_8013AFD7 != 0) {
-        D_801241E8[gCurrentTask->data18].unk16 = 1;
+        gPlayerCameras[gCurrentTask->data18].unk16 = 1;
         initPlayerCameraAndTarget(gCurrentTask->data18);
         if (gCurrentTask->data18 == 0) {
             queueCdCommand(D_80124164[gSelectedCourseIndex], 0);
@@ -196,7 +196,7 @@ void initCurrentPlayerCameraTask(void) {
         views = gPlayerCameraViews;
         views[gCurrentTask->data18].vpx = 0;
         views[gCurrentTask->data18].vpz += 2560;
-        cameras = D_801241E8;
+        cameras = gPlayerCameras;
         cameras[gCurrentTask->data18].unk18 = getAdjacentGeometryRegionForPoint(cameras[gCurrentTask->data18].unk18, views[gCurrentTask->data18].vpx, views[gCurrentTask->data18].vpz);
         views[gCurrentTask->data18].vpy = getCourseHeightAtPoint(cameras[gCurrentTask->data18].unk18, views[gCurrentTask->data18].vpx, views[gCurrentTask->data18].vpz) - 120;
         cameras[gCurrentTask->data18].x = views[gCurrentTask->data18].vpx << 8;
@@ -215,7 +215,7 @@ void updateRaceIntroCameraTask(void) {
     if ((--gCurrentTask->data1A & 0x8000) == 0) {
         views = gPlayerCameraViews;
         views[gCurrentTask->data18].vpz -= 40;
-        cameras = D_801241E8;
+        cameras = gPlayerCameras;
         cameras[gCurrentTask->data18].unk18 = getAdjacentGeometryRegionForPoint(
             cameras[gCurrentTask->data18].unk18,
             views[gCurrentTask->data18].vpx, views[gCurrentTask->data18].vpz);
@@ -268,6 +268,6 @@ void updateCurrentPlayerCameraTarget(void) {
     GsRVIEW2 *targets = gPlayerCameraViews;
     RacePlayer *players = gRacePlayers;
     targets[gCurrentTask->data18].vrx = players[gCurrentTask->data18].worldCoordinate.coord.t[0] + players[gCurrentTask->data18].unk084;
-    targets[gCurrentTask->data18].vry = players[gCurrentTask->data18].worldCoordinate.coord.t[1] + (s16)(D_801241E8[gCurrentTask->data18].unk14 / 8 - 120) + players[gCurrentTask->data18].unk086;
+    targets[gCurrentTask->data18].vry = players[gCurrentTask->data18].worldCoordinate.coord.t[1] + (s16)(gPlayerCameras[gCurrentTask->data18].unk14 / 8 - 120) + players[gCurrentTask->data18].unk086;
     targets[gCurrentTask->data18].vrz = players[gCurrentTask->data18].worldCoordinate.coord.t[2] + players[gCurrentTask->data18].unk088;
 }

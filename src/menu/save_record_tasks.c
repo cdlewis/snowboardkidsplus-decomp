@@ -15,7 +15,7 @@
 #include "game/save/save_data.h"
 
 #define MEMORY_CARD_SAVE_BUFFER ((SaveRecord *)0x801E4000)
-#define PANEL_OT (&D_800EBFF0[D_8013AF78])
+#define PANEL_OT (&D_800EBFF0[gActiveGraphicsBuffer])
 #define PANEL_DEPTH (gCurrentTask->data1C)
 
 typedef struct SaveMenuResource {
@@ -30,7 +30,7 @@ typedef struct SaveMenuResource {
     s16 result1E;
 } SaveMenuResource;
 
-extern u16 D_8013AF78 __attribute__((section(".data")));
+extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u32 gGameOptionFlags __attribute__((section(".data")));
 extern u8 D_8013AFCD __attribute__((section(".data")));
@@ -750,12 +750,12 @@ void drawTaskShadowedText(void) {
     x = resource->x / 4096;
     y = resource->y / 4096;
     drawWrappedGlyphText8x16((s16)(x - 48), (s16)(y + 24), 12, gTaskShadowedText, 0, -1,
-                             &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                             &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
     setSpriteColor(0, 0, 0);
     drawWrappedGlyphText8x16((s16)(x - 47), (s16)(y + 25), 12, gTaskShadowedText, 0, -1,
-                             &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                             &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
     drawWrappedGlyphText8x16((s16)(x - 46), (s16)(y + 25), 12, gTaskShadowedText, 0, -1,
-                             &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                             &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
 }
 
 s16 getSaveRecordMaskTier(s16 recordIndex, s16 maskIndex) {

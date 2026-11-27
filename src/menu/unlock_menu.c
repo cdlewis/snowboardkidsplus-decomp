@@ -9,7 +9,7 @@
 #include "game/scene/scene_events.h"
 #include "unlock_menu_types.h"
 
-extern u16 D_8013AF78 __attribute__((section(".data")));
+extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern u32 gTaskTransitionFlags __attribute__((section(".data")));
 
@@ -219,37 +219,37 @@ void drawUnlockOptionsMenu(void) {
     state = (UnlockMenuState *)&gTaskMemoryPool[gCurrentTask->resource14];
     setSpriteColor(128, 128, 128);
     offset = state->unk3C[0] / 4096;
-    drawSpriteByIndexWithBlend(-56, -96 - offset, 0x230, 2, -1, &D_800EBFF0[D_8013AF78], 4);
+    drawSpriteByIndexWithBlend(-56, -96 - offset, 0x230, 2, -1, &D_800EBFF0[gActiveGraphicsBuffer], 4);
 
     for (row = 0; row < 5; row++) {
         offset = state->unk04[row] / 4096;
         palette = state->selection == row ? 3 : 1;
         drawSpriteByIndexWithBlend(-128 - offset, row * 24 - 56, gUnlockOptionLabelSprites[row], palette,
-                                   -1, &D_800EBFF0[D_8013AF78], 4);
+                                   -1, &D_800EBFF0[gActiveGraphicsBuffer], 4);
         if (gGameOptionFlags & (1U << gUnlockOptionBitIndices[row])) {
             palette = state->selection == row ? 0 : 4;
         } else {
             palette = 1;
         }
         drawSpriteByIndexWithBlend(offset + 32, row * 24 - 56, gUnlockOptionChoiceSprites[row * 2], palette,
-                                   -1, &D_800EBFF0[D_8013AF78], 4);
+                                   -1, &D_800EBFF0[gActiveGraphicsBuffer], 4);
         if (palette == 1) {
             palette = state->selection == row ? 0 : 4;
         } else {
             palette = 1;
         }
         drawSpriteByIndexWithBlend(offset + 92, row * 24 - 56, gUnlockOptionChoiceSprites[row * 2 + 1], palette,
-                                   -1, &D_800EBFF0[D_8013AF78], 4);
+                                   -1, &D_800EBFF0[gActiveGraphicsBuffer], 4);
     }
 
     for (row = 5; row < 7; row++) {
         offset = state->unk3C[row - 5] / 4096;
         palette = state->selection != row;
         drawSpriteByIndexWithBlend(-56, row * 24 - 56 + offset, gUnlockOptionLabelSprites[row],
-                                   palette, -1, &D_800EBFF0[D_8013AF78], 4);
+                                   palette, -1, &D_800EBFF0[gActiveGraphicsBuffer], 4);
     }
 
-    addTilePacketWithBlend(-160, -120, 320, 240, 192, 192, 192, 2, &D_800EBFF0[D_8013AF78], 4);
+    addTilePacketWithBlend(-160, -120, 320, 240, 192, 192, 192, 2, &D_800EBFF0[gActiveGraphicsBuffer], 4);
     drawFullScreenTexturedBackground();
 }
 
@@ -406,7 +406,7 @@ void drawUnlockNotificationMenu(void) {
     state = (UnlockMenuState *)&gTaskMemoryPool[gCurrentTask->resource14];
     setSpriteColor(128, 128, 128);
     verticalOffset = state->unk3C[0] / 4096;
-    drawSpriteByIndexWithBlend(-68, -96 - verticalOffset, 0x22F, 2, -1, &D_800EBFF0[D_8013AF78], 4);
+    drawSpriteByIndexWithBlend(-68, -96 - verticalOffset, 0x22F, 2, -1, &D_800EBFF0[gActiveGraphicsBuffer], 4);
     for (row = 0; row < 6; row++) {
         s16 sprite;
         s16 rightIndex;
@@ -418,7 +418,7 @@ void drawUnlockNotificationMenu(void) {
             sprite = 0x233;
         }
         drawSpriteByIndexWithBlend(-136 - horizontalOffset, row * 20 - 56, sprite,
-                      state->selection != row, -1, &D_800EBFF0[D_8013AF78], 4);
+                      state->selection != row, -1, &D_800EBFF0[gActiveGraphicsBuffer], 4);
         rightIndex = row + 6;
         if ((s16)hasUnlockNotificationFlag(rightIndex)) {
             sprite = gUnlockNotificationSprites[rightIndex];
@@ -426,11 +426,11 @@ void drawUnlockNotificationMenu(void) {
             sprite = 0x233;
         }
         drawSpriteByIndexWithBlend(horizontalOffset + 8, row * 20 - 56, sprite,
-                      state->selection != rightIndex, -1, &D_800EBFF0[D_8013AF78], 4);
+                      state->selection != rightIndex, -1, &D_800EBFF0[gActiveGraphicsBuffer], 4);
     }
     drawSpriteByIndexWithBlend(-64, verticalOffset + 72, 0x21C, state->selection != 12, -1,
-                  &D_800EBFF0[D_8013AF78], 4);
-    addTilePacketWithBlend(-160, -120, 320, 240, 192, 192, 192, 2, &D_800EBFF0[D_8013AF78], 4);
+                  &D_800EBFF0[gActiveGraphicsBuffer], 4);
+    addTilePacketWithBlend(-160, -120, 320, 240, 192, 192, 192, 2, &D_800EBFF0[gActiveGraphicsBuffer], 4);
     drawFullScreenTexturedBackground();
 }
 

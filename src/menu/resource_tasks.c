@@ -22,7 +22,7 @@ typedef struct MainTailSelectionResource {
 
 extern MenuRgbColor gMenuColorCycleColor __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
-extern u16 D_8013AF78 __attribute__((section(".data")));
+extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
 extern u8 D_8013AFCD __attribute__((section(".data")));
 extern u8 D_8013AFE0 __attribute__((section(".data")));
 extern s16 D_8013B104 __attribute__((section(".data")));
@@ -291,7 +291,7 @@ void drawMainTailSelectionHeaderAndMoneyPanel(void) {
         return;
     }
     drawSpriteByIndexWithBlend(position->x / 4096 + 8, position->y / 4096 - 22,
-                 0xB2, 0, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                 0xB2, 0, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
     playerCount = D_8013AFCD;
     if (playerCount != 1) {
         return;
@@ -300,18 +300,18 @@ void drawMainTailSelectionHeaderAndMoneyPanel(void) {
         return;
     }
     drawSpriteByIndexWithBlend(position->x / 4096 + 74, position->y / 4096 + 140,
-                 0xBD, 10, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                 0xBD, 10, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
     drawDecimalNumber8x8(position->x / 4096 + 74, position->y / 4096 + 152,
-                         6, 0, gPlayerSaveRecords[0].money, 0, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                         6, 0, gPlayerSaveRecords[0].money, 0, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
     drawWrappedText8x8(position->x / 4096 + 122, position->y / 4096 + 152,
-                       2, gMainTailMoneyCurrencyLabel, 0, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                       2, gMainTailMoneyCurrencyLabel, 0, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
     if (gCurrentTask->data1A == playerCount) {
         addTilePacketWithBlend(position->x / 4096 + 68, position->y / 4096 + 136, 68, 32,
                       gMenuColorCycleColor.r, gMenuColorCycleColor.g, gMenuColorCycleColor.b, 2,
-                      &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                      &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
     } else {
         addTilePacketWithBlend(position->x / 4096 + 68, position->y / 4096 + 136, 68, 32,
-                      128, 128, 128, 2, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                      128, 128, 128, 2, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
     }
 }
 
@@ -764,12 +764,12 @@ void drawRegisteredTaskGridSpriteWithNumber(void) {
                 (s16)gCurrentTask->data1A);
             setSpriteColor(color->bytes[0], color->bytes[1], color->bytes[2]);
             drawSpriteByIndexWithBlend((s16)(position->x / 4096), (s16)(position->y / 4096),
-                sprite->sprite, sprite->color, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                sprite->sprite, sprite->color, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
             mappedIndex = mapMenuByteIndex(parent->mapping, (s16)gCurrentTask->data1A);
             setSpriteColor(128, 128, 128);
             if (mappedIndex < 10) {
                 drawMenuDecimalNumber8x16(position->x / 4096 - 17, position->y / 4096 + 1,
-                    2, 0, gCurrentTask->data1A + 1, 3, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                    2, 0, gCurrentTask->data1A + 1, 3, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
             }
             entry->flags = 0;
         }
@@ -795,7 +795,7 @@ void drawMainTailSelectionItemDetails(void) {
         return;
     }
     drawSpriteByIndexWithBlend(position->x / 4096 + 8, position->y / 4096 - 22,
-                 0xB3, 0, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                 0xB3, 0, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
     group = &D_801325FC[D_8013AE98->data1A];
     index = mapMenuByteIndex(group->mapping, selection->selectedIndex);
     if ((u16)index >= 10) {
@@ -804,23 +804,23 @@ void drawMainTailSelectionItemDetails(void) {
     stats = &D_8012FCE4[index];
     if (stats->price && stats->rating) {
         drawSpriteByIndexWithBlend(position->x / 4096 + 84, position->y / 4096 + 128,
-                     0xBC, 10, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                     0xBC, 10, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
         drawDecimalNumber8x8(position->x / 4096 + 88, position->y / 4096 + 136,
-                             4, 0, stats->price, 0, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                             4, 0, stats->price, 0, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
         drawSpriteByIndexWithBlend(position->x / 4096 + 122, position->y / 4096 + 138,
-                     0xBF, 10, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                     0xBF, 10, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
         drawSpriteByIndexWithBlend(position->x / 4096 + 84, position->y / 4096 + 148,
-                     0xBE, 10, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                     0xBE, 10, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
         drawHalfStepSpriteBar(position->x / 4096 + 88, position->y / 4096 + 156,
-                              stats->rating, 5, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                              stats->rating, 5, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
     }
     if (gCurrentTask->data1A == 1) {
         addTilePacketWithBlend(position->x / 4096 + 80, position->y / 4096 + 124, 56, 44,
                       gMenuColorCycleColor.r, gMenuColorCycleColor.g, gMenuColorCycleColor.b, 2,
-                      &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                      &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
     } else {
         addTilePacketWithBlend(position->x / 4096 + 80, position->y / 4096 + 124, 56, 44,
-                      128, 128, 128, 2, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                      128, 128, 128, 2, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
     }
 }
 
@@ -843,23 +843,23 @@ void drawCurrentTaskTimeRecordsPrompt(void) {
         } else {
             palette = 4;
         }
-        drawSpriteByIndexWithBlend(x + 18, y, row + 0x136, palette, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawSpriteByIndexWithBlend(x + 18, y, row + 0x136, palette, -1, &D_800EBFF0[gActiveGraphicsBuffer], 1);
         drawRaceTime(&gPlayerSaveRecords[0].timeRecords[gSelectedCourseIndex][row],
-                     x + 38, y, palette, &D_800EBFF0[D_8013AF78], 1);
+                     x + 38, y, palette, &D_800EBFF0[gActiveGraphicsBuffer], 1);
         drawSpriteByIndexWithBlend(x + 106, y,
                      (gPlayerSaveRecords[0].timeRecordCharacters[gSelectedCourseIndex][row] & 15) * 3 + 0x14A,
                      gRaceProgressMeterIconPalettes[gPlayerSaveRecords[0].timeRecordCharacters[gSelectedCourseIndex][row] & 15],
-                     -1, &D_800EBFF0[D_8013AF78], 1);
+                     -1, &D_800EBFF0[gActiveGraphicsBuffer], 1);
         drawSpriteByIndexWithBlend(x + 124, y,
                      (gPlayerSaveRecords[0].timeRecordCharacters[gSelectedCourseIndex][row] >> 4) + 0x13B,
-                     7, -1, &D_800EBFF0[D_8013AF78], 1);
+                     7, -1, &D_800EBFF0[gActiveGraphicsBuffer], 1);
         y += 20;
     }
     drawWrappedDoubleByteText(position->x / 4096 + 28, position->y / 4096 + 164, 14,
-                              (s8 *)gTimeRecordsStartPrompt, 7, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                              (s8 *)gTimeRecordsStartPrompt, 7, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
     setTexturedQuadColor(128, 128, 128);
     drawDefaultTexturedPanel(position->x / 4096 + 24, position->y / 4096 + 160, 120, 24,
-                             5, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                             5, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
 }
 
 /* Keep the array incomplete at the call site for absolute address scheduling. */
@@ -886,25 +886,25 @@ void drawCurrentTaskCountRecordsPrompt(void) {
             palette = 4;
             textPalette = 4;
         }
-        drawSpriteByIndexWithBlend(x + 18, y, row + 0x136, palette, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawSpriteByIndexWithBlend(x + 18, y, row + 0x136, palette, -1, &D_800EBFF0[gActiveGraphicsBuffer], 1);
         drawHudDecimalNumber8x16(x + 38, y, 2, 0,
                                 gPlayerSaveRecords[0].countRecordValues[gSelectedCourseIndex][row],
-                                palette, -1, &D_800EBFF0[D_8013AF78], 1);
-        drawLimitedText8x8(x + 58, y + 8, 3, gCountRecordsHitLabel, textPalette, -1, &D_800EBFF0[D_8013AF78], 1);
+                                palette, -1, &D_800EBFF0[gActiveGraphicsBuffer], 1);
+        drawLimitedText8x8(x + 58, y + 8, 3, gCountRecordsHitLabel, textPalette, -1, &D_800EBFF0[gActiveGraphicsBuffer], 1);
         drawSpriteByIndexWithBlend(x + 106, y,
                      (gPlayerSaveRecords[0].countRecordIcons[gSelectedCourseIndex][row] & 15) * 3 + 0x14A,
                      gRaceProgressMeterIconPalettes[gPlayerSaveRecords[0].countRecordIcons[gSelectedCourseIndex][row] & 15],
-                     -1, &D_800EBFF0[D_8013AF78], 1);
+                     -1, &D_800EBFF0[gActiveGraphicsBuffer], 1);
         drawSpriteByIndexWithBlend(x + 124, y,
                      (gPlayerSaveRecords[0].countRecordIcons[gSelectedCourseIndex][row] >> 4) + 0x13B,
-                     7, -1, &D_800EBFF0[D_8013AF78], 1);
+                     7, -1, &D_800EBFF0[gActiveGraphicsBuffer], 1);
         y += 20;
     }
     drawWrappedDoubleByteText(position->x / 4096 + 28, position->y / 4096 + 164, 14,
-                              (s8 *)gTimeRecordsStartPrompt, 7, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                              (s8 *)gTimeRecordsStartPrompt, 7, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
     setTexturedQuadColor(128, 128, 128);
     drawDefaultTexturedPanel(position->x / 4096 + 24, position->y / 4096 + 160, 120, 24,
-                             5, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                             5, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
 }
 
 char gCountRecordsHitLabel[4] __attribute__((section(".data.count_records_hit_label"), aligned(4))) = "HIT";
@@ -933,25 +933,25 @@ void drawCurrentTaskStatsRecordsPrompt(void) {
             palette = 4;
             textPalette = 4;
         }
-        drawSpriteByIndexWithBlend(x + 18, y, row + 0x136, palette, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawSpriteByIndexWithBlend(x + 18, y, row + 0x136, palette, -1, &D_800EBFF0[gActiveGraphicsBuffer], 1);
         drawHudDecimalNumber8x16(x + 34, y, 5, 0,
                                 gPlayerSaveRecords[0].statsRecordValues[gSelectedCourseIndex][row],
-                                palette, -1, &D_800EBFF0[D_8013AF78], 1);
-        drawLimitedText8x8(x + 78, y + 8, 1, gStatsRecordsPlayerSuffixLabel, textPalette, -1, &D_800EBFF0[D_8013AF78], 1);
+                                palette, -1, &D_800EBFF0[gActiveGraphicsBuffer], 1);
+        drawLimitedText8x8(x + 78, y + 8, 1, gStatsRecordsPlayerSuffixLabel, textPalette, -1, &D_800EBFF0[gActiveGraphicsBuffer], 1);
         drawSpriteByIndexWithBlend(x + 106, y,
                      (gPlayerSaveRecords[0].statsRecordIcons[gSelectedCourseIndex][row] & 15) * 3 + 0x14A,
                      gRaceProgressMeterIconPalettes[gPlayerSaveRecords[0].statsRecordIcons[gSelectedCourseIndex][row] & 15],
-                     -1, &D_800EBFF0[D_8013AF78], 1);
+                     -1, &D_800EBFF0[gActiveGraphicsBuffer], 1);
         drawSpriteByIndexWithBlend(x + 124, y,
                      (gPlayerSaveRecords[0].statsRecordIcons[gSelectedCourseIndex][row] >> 4) + 0x13B,
-                     7, -1, &D_800EBFF0[D_8013AF78], 1);
+                     7, -1, &D_800EBFF0[gActiveGraphicsBuffer], 1);
         y += 20;
     }
     drawWrappedDoubleByteText(position->x / 4096 + 28, position->y / 4096 + 164, 14,
-                              (s8 *)gTimeRecordsStartPrompt, 7, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                              (s8 *)gTimeRecordsStartPrompt, 7, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
     setTexturedQuadColor(128, 128, 128);
     drawDefaultTexturedPanel(position->x / 4096 + 24, position->y / 4096 + 160, 120, 24,
-                             5, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                             5, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
 }
 
 const char gStatsRecordsPlayerSuffixLabel[4] __attribute__((section(".data.stats_records_player_suffix"), aligned(4))) = "P";
@@ -1336,23 +1336,23 @@ void drawCurrentTaskLapRecordsPrompt(void) {
         } else {
             palette = 4;
         }
-        drawSpriteByIndexWithBlend(x + 18, y, row + 0x136, palette, -1, &D_800EBFF0[D_8013AF78], 1);
+        drawSpriteByIndexWithBlend(x + 18, y, row + 0x136, palette, -1, &D_800EBFF0[gActiveGraphicsBuffer], 1);
         drawRaceTime(&gPlayerSaveRecords[0].lapRecords[gSelectedCourseIndex][row],
-                     x + 38, y, palette, &D_800EBFF0[D_8013AF78], 1);
+                     x + 38, y, palette, &D_800EBFF0[gActiveGraphicsBuffer], 1);
         drawSpriteByIndexWithBlend(x + 106, y,
                      (gPlayerSaveRecords[0].lapRecordIcons[gSelectedCourseIndex][row] & 15) * 3 + 0x14A,
                      gRaceProgressMeterIconPalettes[gPlayerSaveRecords[0].lapRecordIcons[gSelectedCourseIndex][row] & 15],
-                     -1, &D_800EBFF0[D_8013AF78], 1);
+                     -1, &D_800EBFF0[gActiveGraphicsBuffer], 1);
         drawSpriteByIndexWithBlend(x + 124, y,
                      (gPlayerSaveRecords[0].lapRecordIcons[gSelectedCourseIndex][row] >> 4) + 0x13B,
-                     7, -1, &D_800EBFF0[D_8013AF78], 1);
+                     7, -1, &D_800EBFF0[gActiveGraphicsBuffer], 1);
         y += 20;
     }
     drawWrappedDoubleByteText(position->x / 4096 + 28, position->y / 4096 + 164, 14,
-                              (s8 *)gLapRecordsStartPrompt, 7, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                              (s8 *)gLapRecordsStartPrompt, 7, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
     setTexturedQuadColor(128, 128, 128);
     drawDefaultTexturedPanel(position->x / 4096 + 24, position->y / 4096 + 160, 120, 24,
-                             5, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                             5, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
 }
 
 s16 findIdentityMappedIndexOrZero(ByteMappingDescriptor *descriptor, s16 value) {

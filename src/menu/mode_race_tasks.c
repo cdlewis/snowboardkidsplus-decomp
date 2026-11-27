@@ -23,10 +23,10 @@ extern u8 D_8013AFD9 __attribute__((section(".data")));
 extern s16 D_8013AFDE __attribute__((section(".data")));
 extern u8 D_8013AFE1 __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
-extern u16 D_8013AF78 __attribute__((section(".data")));
+extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
 extern u8 D_8013AFE0 __attribute__((section(".data")));
 extern u8 D_8013AFE2 __attribute__((section(".data")));
-extern u8 D_8013AFD3 __attribute__((section(".data")));
+extern u8 gRacePauseState __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern u8 D_8013AFD6 __attribute__((section(".data")));
 
@@ -160,7 +160,7 @@ void updateMode11SelectionMenuTask(void) {
     }
 
     if (gCurrentTask->data18 >= 2) {
-        drawScreenDarkeningOverlay(128, &D_800EBFF0[D_8013AF78], 4);
+        drawScreenDarkeningOverlay(128, &D_800EBFF0[gActiveGraphicsBuffer], 4);
         drawFullScreenTexturedBackground();
     }
 }
@@ -208,7 +208,7 @@ void initializeMode1RacePlayers(void) {
     if ((s16)D_8013AFD8 < 7 && D_8013AFD8 != 0) gSelectedCourseIndex = 0;
     else gSelectedCourseIndex = 9;
     SetFogNearFar(8000, 10000, 400);
-    D_8013AFD3 = 0;
+    gRacePauseState = 0;
     D_8013AFD6 = 0;
     D_8013AFE1 = 0;
     D_8013AFD9 = 0;

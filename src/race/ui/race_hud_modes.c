@@ -29,11 +29,11 @@ extern u8 D_8013AFD8 __attribute__((section(".data")));
 extern u8 D_8013AFD9 __attribute__((section(".data")));
 extern s16 gFrameCounter __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
-extern u16 D_8013AF78 __attribute__((section(".data")));
+extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
 extern u8 D_8013AFCD __attribute__((section(".data")));
 extern u32 gTaskTransitionFlags __attribute__((section(".data")));
 extern u8 D_8013AFD6 __attribute__((section(".data")));
-extern u8 D_8013AFD3 __attribute__((section(".data")));
+extern u8 gRacePauseState __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern u16 D_8013AFAA __attribute__((section(".data")));
 
@@ -75,7 +75,7 @@ void drawSplitScreenTrickAttackHud(s16 player);
 void drawScoreAttackHud(void);
 void drawSplitScreenScoreAttackHud(s16 player);
 
-#define CAMERA D_801241E8[gCurrentTask->data18]
+#define CAMERA gPlayerCameras[gCurrentTask->data18]
 #define PLAYER gRacePlayers[gCurrentTask->data18]
 #define VIEW gPlayerCameraViews[gCurrentTask->data18]
 
@@ -84,13 +84,13 @@ void updateCurrentPlayerCameraTask(void) {
     u16 updateIndex;
     s32 cameraValue;
     if (D_8013AFD6 == 0) {
-        if (D_8013AFD3 != 0) {
+        if (gRacePauseState != 0) {
             if (CAMERA.unk16 != 0) {
                 CAMERA.unk17 = CAMERA.unk16;
                 CAMERA.unk16 = 0;
             }
         }
-        if (D_8013AFD3 == 0) {
+        if (gRacePauseState == 0) {
             if (CAMERA.unk16 == 0) {
                 CAMERA.unk16 = CAMERA.unk17;
             }
@@ -214,7 +214,7 @@ void updateCurrentPlayerCameraTask(void) {
                 previousRegion, VIEW.vpx, VIEW.vpz);
         } while (previousRegion != CAMERA.unk18);
 
-        cameras = D_801241E8;
+        cameras = gPlayerCameras;
         views = gPlayerCameraViews;
         height = getCourseHeightAtPoint(cameras[gCurrentTask->data18].unk18,
                               views[gCurrentTask->data18].vpx, views[gCurrentTask->data18].vpz);
@@ -283,7 +283,7 @@ void updateCurrentPlayerCameraTask(void) {
                 CAMERA.unk12 = -64;
             }
         }
-        shiftedCameras = D_801241E8;
+        shiftedCameras = gPlayerCameras;
         if (shiftedCameras[gCurrentTask->data18].unk14 != 0) {
             shiftedCameras[gCurrentTask->data18].unk14 -= 8;
         }
@@ -291,7 +291,7 @@ void updateCurrentPlayerCameraTask(void) {
         goto updateShiftedTarget;
     }
     case 6:
-        shiftedCameras = D_801241E8;
+        shiftedCameras = gPlayerCameras;
         if (shiftedCameras[gCurrentTask->data18].unk12 < -24) {
             shiftedCameras[gCurrentTask->data18].unk12 += 2;
         }
@@ -797,7 +797,7 @@ void updateRaceHud(void) {
 }
 
 void drawSinglePlayerRaceHud(void) {
-    GsOT *ot = &D_800EC018[D_8013AF78];
+    GsOT *ot = &D_800EC018[gActiveGraphicsBuffer];
     RacePlayer *player;
     s16 scale;
     RacePlayer *firstPlayer;
@@ -842,14 +842,14 @@ void drawSinglePlayerRaceHud(void) {
 }
 
 void drawSplitScreenCourseProgressHud(void) {
-    GsOT *ot = &D_800EBFF0[D_8013AF78];
+    GsOT *ot = &D_800EBFF0[gActiveGraphicsBuffer];
 
     setSpriteColor(128, 128, 128);
     drawRaceCourseProgressMeter(81, -68, ot, 1);
 }
 
 void drawSplitScreenRaceHud(s16 player) {
-    GsOT *hudOt = &D_800EBFF0[D_8013AF78];
+    GsOT *hudOt = &D_800EBFF0[gActiveGraphicsBuffer];
     GsOT *playerOt;
     s32 hudY;
     s32 depth;
@@ -861,10 +861,10 @@ void drawSplitScreenRaceHud(s16 player) {
     s32 moneyPalette;
 
     if (player == 0) {
-        playerOt = &D_800EC018[D_8013AF78];
+        playerOt = &D_800EC018[gActiveGraphicsBuffer];
         hudY = 0;
     } else {
-        playerOt = &D_800EC0B8[D_8013AF78];
+        playerOt = &D_800EC0B8[gActiveGraphicsBuffer];
         hudY = 105;
     }
 
@@ -908,7 +908,7 @@ void drawSplitScreenRaceHud(s16 player) {
 
 void drawTrickAttackHud(void) {
     s16 palette = 1;
-    GsOT *ot = &D_800EBFF0[D_8013AF78];
+    GsOT *ot = &D_800EBFF0[gActiveGraphicsBuffer];
     u16 depth = palette;
     s16 x;
     s16 i;
@@ -947,7 +947,7 @@ void drawTrickAttackHud(void) {
 }
 
 void drawSplitScreenTrickAttackHud(s16 player) {
-    GsOT *hudOt = &D_800EBFF0[D_8013AF78];
+    GsOT *hudOt = &D_800EBFF0[gActiveGraphicsBuffer];
     GsOT *timeOt;
     s32 hudY;
     s16 timeY;
@@ -956,11 +956,11 @@ void drawSplitScreenTrickAttackHud(s16 player) {
     u8 padding[0x10]; /* Preserve the original stack frame. */
 
     if (player == 0) {
-        timeOt = &D_800EC018[D_8013AF78];
+        timeOt = &D_800EC018[gActiveGraphicsBuffer];
         hudY = 0;
         timeY = 0;
     } else {
-        timeOt = &D_800EC0B8[D_8013AF78];
+        timeOt = &D_800EC0B8[gActiveGraphicsBuffer];
         hudY = 104;
         timeY = 0;
     }
@@ -998,7 +998,7 @@ void drawSplitScreenTrickAttackHud(s16 player) {
 
 void drawScoreAttackHud(void) {
     s16 palette = 1;
-    GsOT *ot = &D_800EBFF0[D_8013AF78];
+    GsOT *ot = &D_800EBFF0[gActiveGraphicsBuffer];
     u16 depth = palette;
     s32 xOffset;
     s16 i;
@@ -1043,17 +1043,17 @@ void drawSplitScreenScoreAttackHud(s16 player) {
     s16 hudY;
     u8 padding[0x10]; /* Preserve the original stack frame. */
     s16 timeY;
-    GsOT *hudOt = &D_800EBFF0[D_8013AF78];
+    GsOT *hudOt = &D_800EBFF0[gActiveGraphicsBuffer];
     s16 palette;
     s32 iconX;
     u16 depth[1] = {1};
     u16 fixedDepth = 1;
 
     if (player == 0) {
-        timeOt = &D_800EC018[D_8013AF78];
+        timeOt = &D_800EC018[gActiveGraphicsBuffer];
         timeY = hudY = 0;
     } else {
-        timeOt = &D_800EC0B8[D_8013AF78];
+        timeOt = &D_800EC0B8[gActiveGraphicsBuffer];
         hudY = 104;
         timeY = 0;
     }
@@ -1104,7 +1104,7 @@ void drawSplitScreenScoreAttackHud(s16 player) {
 }
 
 void drawCourseCoinHud(void) {
-    GsOT *ot = &D_800EBFF0[D_8013AF78];
+    GsOT *ot = &D_800EBFF0[gActiveGraphicsBuffer];
     char text[16];
     s16 digits;
 
@@ -1137,7 +1137,7 @@ void drawCourseCoinHud(void) {
 }
 
 void drawSplitScreenCourseCoinHud(s16 player) {
-    GsOT *hudOt = &D_800EBFF0[D_8013AF78];
+    GsOT *hudOt = &D_800EBFF0[gActiveGraphicsBuffer];
     GsOT *timeOt;
     s32 hudY;
     s16 timeY;
@@ -1145,11 +1145,11 @@ void drawSplitScreenCourseCoinHud(s16 player) {
     char text[16];
 
     if (player == 0) {
-        timeOt = &D_800EC018[D_8013AF78];
+        timeOt = &D_800EC018[gActiveGraphicsBuffer];
         hudY = 0;
         timeY = 0;
     } else {
-        timeOt = &D_800EC0B8[D_8013AF78];
+        timeOt = &D_800EC0B8[gActiveGraphicsBuffer];
         hudY = 104;
         timeY = 0;
     }

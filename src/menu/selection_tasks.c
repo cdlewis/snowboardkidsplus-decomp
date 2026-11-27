@@ -28,11 +28,11 @@ extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u8 D_8013AFDB __attribute__((section(".data")));
 extern u16 D_8013AF7A __attribute__((section(".data")));
 extern u16 D_8013AF7C __attribute__((section(".data")));
-extern u16 D_8013AF78 __attribute__((section(".data")));
+extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
 extern s16 D_8013AF7E __attribute__((section(".data")));
 extern s16 D_8013AF80 __attribute__((section(".data")));
 extern u8 D_8013AFCD __attribute__((section(".data")));
-extern u8 D_8013AFD3 __attribute__((section(".data")));
+extern u8 gRacePauseState __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern GameTask *D_8013AE90 __attribute__((section(".data")));
@@ -170,7 +170,7 @@ void completeModeSelectionTransitionWhenReady(void) {
         resetPendingCdRequests();
         resetPaletteRecords();
         deleteCurrentTaskDescendants();
-        D_8013AFD3 = 0;
+        gRacePauseState = 0;
         D_8013AFAA |= 0x48;
         switch (D_8013AFD8) {
         case 10:
@@ -229,7 +229,7 @@ void initializeNumberSelectionTask(void) {
         for (;;) {}
     }
     gCurrentTask->resource16 = allocateTaskMemoryBlock();
-    D_8013AFD3 = 1;
+    gRacePauseState = 1;
     state->number = D_8013AFD8 - 1;
     gCurrentTask->data18 = 0;
     setControllerFlag5(0);
@@ -334,7 +334,7 @@ void updateNumberSelectionTask(void) {
 }
 
 void drawNumberSelectionPanel(NumberPanelState *state) {
-    GsOT *ot = &D_800EBFF0[D_8013AF78];
+    GsOT *ot = &D_800EBFF0[gActiveGraphicsBuffer];
     setSpriteColor(128, 128, 128);
     setTexturedQuadColor(128, 128, 128);
     drawDecimalNumber8x16(23, -39, 1, 0, state->number + 1, 5, -1, ot, 2);
@@ -365,12 +365,12 @@ void drawOffsetSelectedTaskSprite(void) {
         }
         position = (Movement2D *)&gTaskMemoryPool[children[state->selectedIndex].task->resource14];
         drawSpriteByIndexWithBlend(position->x / 4096 - 8, position->y / 4096 + 2, state->sprite, 0, -1,
-                     &D_800EBFF0[D_8013AF78], state->depth - 1);
+                     &D_800EBFF0[gActiveGraphicsBuffer], state->depth - 1);
     }
 }
 
 void skipRemainingRaceTasksDuringNumberSelection(void) {
-    if (D_8013AFD3) {
+    if (gRacePauseState) {
         gCurrentTask = D_8013AE90->previous;
     }
 }
@@ -533,8 +533,8 @@ void drawPlaybackSelectionMenu(SelectionMenuState *state) {
 
     setSpriteColor(128, 128, 128);
     setTexturedQuadColor(128, 128, 128);
-    drawWrappedGlyphText16x16(-96, -88, 14, gPlaybackSelectionMenuInstructions, 13, -1, &D_800EBFF0[D_8013AF78], 4);
-    drawDefaultTexturedPanel(-120, -96, 240, 48, 5, 0, &D_800EBFF0[D_8013AF78], 4);
+    drawWrappedGlyphText16x16(-96, -88, 14, gPlaybackSelectionMenuInstructions, 13, -1, &D_800EBFF0[gActiveGraphicsBuffer], 4);
+    drawDefaultTexturedPanel(-120, -96, 240, 48, 5, 0, &D_800EBFF0[gActiveGraphicsBuffer], 4);
 
     for (i = 0; i < 5; i++) {
         highlight = 0;
@@ -542,11 +542,11 @@ void drawPlaybackSelectionMenu(SelectionMenuState *state) {
             highlight = state->unk04;
         }
         x = i * 48;
-        drawMenuKindSprite(x - 120, -28, i + 1, 1, &D_800EBFF0[D_8013AF78], 4);
+        drawMenuKindSprite(x - 120, -28, i + 1, 1, &D_800EBFF0[gActiveGraphicsBuffer], 4);
         addTilePacketWithBlend(x - 122, -30, 36, 36, highlight + 128, highlight + 16, 16,
-                      -1, &D_800EBFF0[D_8013AF78], 4);
+                      -1, &D_800EBFF0[gActiveGraphicsBuffer], 4);
         addTilePacketWithBlend(x - 114, -22, 36, 36, highlight / 4 + 64, 8, 8,
-                      -1, &D_800EBFF0[D_8013AF78], 4);
+                      -1, &D_800EBFF0[gActiveGraphicsBuffer], 4);
     }
 
     for (i = 0; i < 6; i++) {
@@ -555,17 +555,17 @@ void drawPlaybackSelectionMenu(SelectionMenuState *state) {
             highlight = state->unk04;
         }
         x = i * 48;
-        drawPaletteMappedIcon(x - 144, 28, i + 1, &D_800EBFF0[D_8013AF78], 4);
+        drawPaletteMappedIcon(x - 144, 28, i + 1, &D_800EBFF0[gActiveGraphicsBuffer], 4);
         addTilePacketWithBlend(x - 146, 26, 36, 36, 16, highlight + 16, highlight + 128,
-                      -1, &D_800EBFF0[D_8013AF78], 4);
+                      -1, &D_800EBFF0[gActiveGraphicsBuffer], 4);
         addTilePacketWithBlend(x - 138, 34, 36, 36, 8, 8, highlight / 4 + 64,
-                      -1, &D_800EBFF0[D_8013AF78], 4);
+                      -1, &D_800EBFF0[gActiveGraphicsBuffer], 4);
     }
 
     if (state->selection == 11) {
         highlight = state->unk04 + 32;
         setSpriteColor((u8)highlight, (u8)highlight, (u8)highlight);
-        drawSpriteByIndexWithBlend(-56, 84, 403, 0, -1, &D_800EBFF0[D_8013AF78], 4);
+        drawSpriteByIndexWithBlend(-56, 84, 403, 0, -1, &D_800EBFF0[gActiveGraphicsBuffer], 4);
         highlight = 0;
         if (state->unk06 > 0) {
             state->unk06 = 8;
@@ -581,8 +581,8 @@ void drawPlaybackSelectionMenu(SelectionMenuState *state) {
         }
     }
     setSpriteColor(128, 128, 128);
-    drawSpriteByIndexWithBlend(-56, 84, 402, highlight, -1, &D_800EBFF0[D_8013AF78], 4);
-    drawScreenDarkeningOverlay(128, &D_800EBFF0[D_8013AF78], 4);
+    drawSpriteByIndexWithBlend(-56, 84, 402, highlight, -1, &D_800EBFF0[gActiveGraphicsBuffer], 4);
+    drawScreenDarkeningOverlay(128, &D_800EBFF0[gActiveGraphicsBuffer], 4);
     drawFullScreenTexturedBackground();
 }
 

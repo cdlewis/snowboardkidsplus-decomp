@@ -23,9 +23,11 @@ typedef struct SelectedRecord {
     s16 unkA;
 } SelectedRecord;
 
-extern s16 *D_8013B1EC;
+/* Packed XYZ halfwords, three per vertex. */
+extern s16 *gCourseGeometryVertexData;
 extern SelectedRecord *D_8013B1F0;
-extern s16 *D_8013B1F4;
+/* 0x1C-byte region records, also viewed as GeometryPlacement entries. */
+extern s16 *gCourseGeometryRegionData;
 extern s16 D_8013B1F8;
 extern s16 D_8013B1FA;
 extern s16 D_8013B1FC;
@@ -33,6 +35,9 @@ extern s16 D_8013B1FE;
 extern s16 *D_8013B200;
 extern s16 *D_8013B204;
 extern s16 *D_8013B208;
+
+extern s32 gGeometryProjectionBasisX __attribute__((section(".sdata.geometry_edge_projection")));
+extern s32 gGeometryProjectionBasisZ __attribute__((section(".sdata.geometry_edge_projection")));
 
 
 /* Absolute-addressed view of the placement data used by task effects. */

@@ -74,7 +74,7 @@ enum PlayerTextureMenuItem {
 
 extern MenuRgbColor gMenuColorCycleColor __attribute__((section(".data")));
 extern s16 gFrameCounter __attribute__((section(".data")));
-extern u16 D_8013AF78 __attribute__((section(".data")));
+extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern GameTask *D_8013AE98 __attribute__((section(".data")));
@@ -456,17 +456,17 @@ void drawRegisteredTextPanelTask(void) {
     } else {
         setSpriteColor(128, 128, 128);
         drawWrappedGlyphText8x16(state->textX, state->textY, 18, state->text, 7, -1,
-                                 &D_800EBFF0[D_8013AF78], state->depth);
+                                 &D_800EBFF0[gActiveGraphicsBuffer], state->depth);
         if (state->mode == 0) {
             drawWrappedGlyphText8x16((s16)(state->textX + 32), state->textY, 18, &gRegisteredPanelMode0Label.glyph, 7, -1,
-                                     &D_800EBFF0[D_8013AF78], state->depth);
+                                     &D_800EBFF0[gActiveGraphicsBuffer], state->depth);
         } else if (state->mode == 1) {
             drawWrappedGlyphText8x16((s16)(state->textX + 32), state->textY, 18, &gRegisteredPanelMode1Label.glyph, 7, -1,
-                                     &D_800EBFF0[D_8013AF78], state->depth);
+                                     &D_800EBFF0[gActiveGraphicsBuffer], state->depth);
         }
         setTexturedQuadColor(128, 128, 128);
         drawDefaultTexturedPanel(state->x, state->y, 152, 40, 5, 0,
-                                &D_800EBFF0[D_8013AF78], state->depth);
+                                &D_800EBFF0[gActiveGraphicsBuffer], state->depth);
     }
 }
 
@@ -757,20 +757,20 @@ void drawCurrentTaskMoneyPanel(void) {
     position = (Movement2D *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (gCurrentTask->data1A != 0) {
         drawSpriteByIndexWithBlend(position->x / 4096 + 32, position->y / 4096 - 22,
-                     0xB6, 0, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                     0xB6, 0, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
         drawSpriteByIndexWithBlend(position->x / 4096 + 74, position->y / 4096 + 140,
-                     0xBD, 10, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                     0xBD, 10, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
         drawDecimalNumber8x8(position->x / 4096 + 74, position->y / 4096 + 152,
-                             6, 0, gPlayerSaveRecords[0].money, 0, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                             6, 0, gPlayerSaveRecords[0].money, 0, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
         drawWrappedText8x8(position->x / 4096 + 122, position->y / 4096 + 152,
-                           2, gMoneyPanelCurrencyLabel, 0, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                           2, gMoneyPanelCurrencyLabel, 0, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
         if (gCurrentTask->data1A == 1) {
             addTilePacketWithBlend(position->x / 4096 + 68, position->y / 4096 + 136, 68, 32,
                           gMenuColorCycleColor.r, gMenuColorCycleColor.g, gMenuColorCycleColor.b, 2,
-                          &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                          &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
         } else {
             addTilePacketWithBlend(position->x / 4096 + 68, position->y / 4096 + 136, 68, 32,
-                          128, 128, 128, 2, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                          128, 128, 128, 2, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
         }
     }
 }
@@ -968,26 +968,26 @@ void drawCurrentTaskSaveRecordMoneyPanelWithCharacterSprites(void) {
     recordIndex = gCurrentTask->data18;
     if (gCurrentTask->data1A != 0) {
         drawSpriteByIndexWithBlend(position->x / 4096 + 8, position->y / 4096 - 22,
-                     0xB9, 0, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                     0xB9, 0, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
         drawSpriteByIndexWithBlend(position->x / 4096 + 74, position->y / 4096 + 140,
-                     0xBD, 10, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                     0xBD, 10, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
         {
             s32 amountX = (s16)(position->x / 4096 + 74);
             s32 amountY = (s16)(position->y / 4096 + 152);
             SaveRecord *records = gPlayerSaveRecords;
             drawDecimalNumber8x8(amountX, amountY, 6, 0,
                                  records[(s16)recordIndex].money,
-                                 0, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                                 0, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
         }
         drawWrappedText8x8(position->x / 4096 + 122, position->y / 4096 + 152,
-                           2, gMoneyPanelCurrencyLabel, 0, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                           2, gMoneyPanelCurrencyLabel, 0, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
         if (gCurrentTask->data1A == 1) {
             addTilePacketWithBlend(position->x / 4096 + 68, position->y / 4096 + 136, 68, 32,
                           gMenuColorCycleColor.r, gMenuColorCycleColor.g, gMenuColorCycleColor.b, 2,
-                          &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                          &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
         } else {
             addTilePacketWithBlend(position->x / 4096 + 68, position->y / 4096 + 136, 68, 32,
-                          128, 128, 128, 2, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                          128, 128, 128, 2, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
         }
     }
 
@@ -1004,10 +1004,10 @@ void drawCurrentTaskSaveRecordMoneyPanelWithCharacterSprites(void) {
             sprite = 0x169;
         }
         drawSpriteByIndexWithBlend(offsetX + position->x / 4096, position->y / 4096,
-                      sprite, 0, 0, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C + 2);
+                      sprite, 0, 0, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C + 2);
     }
     drawSpriteByIndexWithBlend(position->x / 4096, position->y / 4096,
-                  0x168, 0, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C + 2);
+                  0x168, 0, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C + 2);
 }
 
 void initializeCountedTaskResourcePairEC50(void) {
@@ -1196,20 +1196,20 @@ void drawCurrentTaskMoneyPanelWithCharacterSprites(void) {
     position = (Movement2D *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (gCurrentTask->data1A != 0) {
         drawSpriteByIndexWithBlend(position->x / 4096 + 8, position->y / 4096 - 22,
-                     0xB7, 0, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                     0xB7, 0, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
         drawSpriteByIndexWithBlend(position->x / 4096 + 74, position->y / 4096 + 140,
-                     0xBD, 10, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                     0xBD, 10, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
         drawDecimalNumber8x8(position->x / 4096 + 74, position->y / 4096 + 152,
-                             6, 0, gPlayerSaveRecords[0].money, 0, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                             6, 0, gPlayerSaveRecords[0].money, 0, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
         drawWrappedText8x8(position->x / 4096 + 122, position->y / 4096 + 152,
-                           2, gMoneyPanelCurrencyLabel, 0, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                           2, gMoneyPanelCurrencyLabel, 0, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
         if (gCurrentTask->data1A == 1) {
             addTilePacketWithBlend(position->x / 4096 + 68, position->y / 4096 + 136, 68, 32,
                           gMenuColorCycleColor.r, gMenuColorCycleColor.g, gMenuColorCycleColor.b, 2,
-                          &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                          &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
         } else {
             addTilePacketWithBlend(position->x / 4096 + 68, position->y / 4096 + 136, 68, 32,
-                          128, 128, 128, 2, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                          128, 128, 128, 2, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
         }
     }
 
@@ -1226,10 +1226,10 @@ void drawCurrentTaskMoneyPanelWithCharacterSprites(void) {
             sprite = 0x169;
         }
         drawSpriteByIndexWithBlend(offsetX + position->x / 4096, position->y / 4096,
-                      sprite, 0, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C + 2);
+                      sprite, 0, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C + 2);
     }
     drawSpriteByIndexWithBlend(position->x / 4096, position->y / 4096,
-                  0x168, 0, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C + 2);
+                  0x168, 0, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C + 2);
 }
 
 char gMoneyPanelCurrencyLabel[4] __attribute__((section(".data"), aligned(4))) = "\x82" "f";
@@ -1798,27 +1798,27 @@ void drawCurrentTaskSaveRecordMoneyPanel(void) {
     recordIndex = gCurrentTask->data18;
     if (gCurrentTask->data1A != 0) {
         drawSpriteByIndexWithBlend(position->x / 4096 + 8, position->y / 4096 - 22,
-                     0xB9, 0, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                     0xB9, 0, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
         drawSpriteByIndexWithBlend(position->x / 4096 + 74, position->y / 4096 + 140,
-                     0xBD, 10, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                     0xBD, 10, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
         {
             s32 amountX = (s16)(position->x / 4096 + 74);
             s32 amountY = (s16)(position->y / 4096 + 152);
             SaveRecord *records = gPlayerSaveRecords;
             drawDecimalNumber8x8(amountX, amountY, 6, 0,
                                  records[(s16)recordIndex].money,
-                                 0, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                                 0, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
         }
         drawWrappedText8x8(position->x / 4096 + 122, position->y / 4096 + 152,
                            2, gSaveRecordMoneyPanelCurrencyLabel, 0, -1,
-                           &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                           &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
         if (gCurrentTask->data1A == 1) {
             addTilePacketWithBlend(position->x / 4096 + 68, position->y / 4096 + 136, 68, 32,
                           gMenuColorCycleColor.r, gMenuColorCycleColor.g, gMenuColorCycleColor.b, 2,
-                          &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                          &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
         } else {
             addTilePacketWithBlend(position->x / 4096 + 68, position->y / 4096 + 136, 68, 32,
-                          128, 128, 128, 2, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                          128, 128, 128, 2, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
         }
     }
 }
@@ -1845,13 +1845,13 @@ void drawCurrentTaskSelectedBoardDetails(void) {
             priceOffset = 0;
             drawWrappedDoubleByteText(position->x / 4096 - 104, position->y / 4096 + 8,
                 10, gBoardStyleText[textIndex], 6, -1,
-                &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
             drawWrappedDoubleByteText(position->x / 4096 - 104, position->y / 4096 + 24,
                 10, (s8 *)gSelectedBoardLevelLabel, 6, -1,
-                &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
             drawDecimalNumber8x16(position->x / 4096 - 64, position->y / 4096 + 24,
                 1, 0, gBoardSelectionLevels[entry->index], 6, -1,
-                &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
         }
         if (price == 0) {
             s32 x = (s16)(position->x / 4096 - 104);
@@ -1859,7 +1859,7 @@ void drawCurrentTaskSelectedBoardDetails(void) {
             s32 textOffset = priceOffset + 8;
             drawWrappedDoubleByteText(x, y + textOffset + 32,
                 10, (s8 *)gSelectedBoardPricePlaceholder, 6, -1,
-                &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
         } else {
             u32 remaining = price;
             s32 count = 0;
@@ -1877,7 +1877,7 @@ void drawCurrentTaskSelectedBoardDetails(void) {
                 s32 y = position->y / 4096;
                 textOffset = priceOffset + 8;
                 drawDecimalNumber8x16(x, y + textOffset + 32,
-                    digits, 0, price, 6, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                    digits, 0, price, 6, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
             }
             {
                 s32 x = position->x / 4096;
@@ -1885,7 +1885,7 @@ void drawCurrentTaskSelectedBoardDetails(void) {
                 drawWrappedDoubleByteText(x + currencyOffset,
                     position->y / 4096 + textOffset + 32,
                     1, (s8 *)gSaveRecordMoneyPanelCurrencyLabel, 6, -1,
-                    &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                    &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
             }
         }
     }
@@ -1909,7 +1909,7 @@ void drawCurrentTaskSelectedBoardPrice(void) {
         SaveRecord *records = gPlayerSaveRecords;
         if (records[player].flags & (4U << flagIndex)) {
             drawSpriteByIndexWithBlend(position->x / 4096 + 36, position->y / 4096 - 8, 0xC3, 15, -1,
-                         &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                         &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
         } else {
             u32 remaining = price;
             s16 digits = 0;
@@ -1926,18 +1926,18 @@ void drawCurrentTaskSelectedBoardPrice(void) {
             x = position->x / 4096;
             xOffset = digits * 4 - 64;
             drawDecimalNumber8x8(x - xOffset, position->y / 4096 - 4,
-                                 digits, 0, price, 0, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                                 digits, 0, price, 0, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
             drawWrappedText8x8(position->x / 4096 - xOffset + digits * 8, position->y / 4096 - 4,
                                2, gSaveRecordMoneyPanelCurrencyLabel, 0, -1,
-                               &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                               &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
             if (gCurrentTask->data1A == 1) {
                 addTilePacketWithBlend(position->x / 4096 - xOffset - 4, position->y / 4096 - 8,
                               digits * 8 + 16, 16, gMenuColorCycleColor.r, gMenuColorCycleColor.g, gMenuColorCycleColor.b, 2,
-                              &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                              &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
             } else {
                 addTilePacketWithBlend(position->x / 4096 - xOffset - 4, position->y / 4096 - 8,
                               digits * 8 + 16, 16, 128, 128, 128, 2,
-                              &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                              &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
             }
         }
     }
@@ -2406,12 +2406,12 @@ void drawCurrentTaskBoardStyleAndLevel(void) {
         textIndex = gBoardSelectionStyles[entry->index];
         drawWrappedDoubleByteText(position->x / 4096 - 104, position->y / 4096 + 8,
             10, gBoardStyleText[textIndex], 6, -1,
-            &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+            &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
         drawWrappedDoubleByteText(position->x / 4096 - 104, position->y / 4096 + 24,
-            10, (s8 *)gBoardLevelLabel, 6, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+            10, (s8 *)gBoardLevelLabel, 6, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
         drawDecimalNumber8x16(position->x / 4096 - 64, position->y / 4096 + 24,
             1, 0, gBoardSelectionLevels[entry->index], 6, -1,
-            &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+            &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
     }
 }
 
@@ -2637,7 +2637,7 @@ void drawCurrentTaskSpriteBA(void) {
     position = (Movement2D *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (gCurrentTask->data1A != 0) {
         drawSpriteByIndexWithBlend(position->x / 4096 + 8, position->y / 4096 - 22,
-                      0xBA, 0, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                      0xBA, 0, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
     }
 }
 
@@ -2647,13 +2647,13 @@ void drawCurrentTaskFramedSpritePair16A(void) {
     position = (Movement2D *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (gCurrentTask->data1A != 0) {
         drawSpriteByIndexWithBlend(position->x / 4096, position->y / 4096,
-                      0x16A, 0, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                      0x16A, 0, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
         drawSpriteByIndexWithBlend(position->x / 4096 + 64, position->y / 4096,
-                      0x16B, 0, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                      0x16B, 0, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
     }
     setTexturedQuadColor(128, 128, 128);
     drawTexturedFrameStyle9(position->x / 4096 - 4, position->y / 4096 - 4,
-                           136, 36, 5, 1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C - 1);
+                           136, 36, 5, 1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C - 1);
 }
 
 void initializeCountedDisplayBoundsTask(void) {
@@ -2966,27 +2966,27 @@ void drawCurrentTaskSelectedPlayerMoneyPanel(void) {
     recordIndex = D_8013AE98->data1A;
     if (gCurrentTask->data1A != 0) {
         drawSpriteByIndexWithBlend(position->x / 4096 + 8, position->y / 4096 - 22,
-                     0xB7, 0, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                     0xB7, 0, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
         drawSpriteByIndexWithBlend(position->x / 4096 + 74, position->y / 4096 + 140,
-                     0xBD, 10, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                     0xBD, 10, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
         {
             s32 amountX = (s16)(position->x / 4096 + 74);
             s32 amountY = (s16)(position->y / 4096 + 152);
             SaveRecord *records = gPlayerSaveRecords;
             drawDecimalNumber8x8(amountX, amountY, 6, 0,
                                  records[(s16)recordIndex].money,
-                                 0, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                                 0, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
         }
         drawWrappedText8x8(position->x / 4096 + 122, position->y / 4096 + 152,
                            2, D_8013B4FC, 0, -1,
-                           &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                           &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
         if (gCurrentTask->data1A == 1) {
             addTilePacketWithBlend(position->x / 4096 + 68, position->y / 4096 + 136, 68, 32,
                           gMenuColorCycleColor.r, gMenuColorCycleColor.g, gMenuColorCycleColor.b, 2,
-                          &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                          &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
         } else {
             addTilePacketWithBlend(position->x / 4096 + 68, position->y / 4096 + 136, 68, 32,
-                          128, 128, 128, 2, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                          128, 128, 128, 2, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
         }
     }
 }
@@ -3028,7 +3028,7 @@ void drawCurrentTaskBoardPrice(void) {
         price = D_801319B0[character * 5 + column];
         if (hasStateGridFlag(record, character, column) == 1) {
             drawSpriteByIndexWithBlend(x + 36, y + 8, 0xC3, 15, -1,
-                          &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                          &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
         } else {
             remaining = price;
             digits = 0;
@@ -3042,16 +3042,16 @@ void drawCurrentTaskBoardPrice(void) {
             halfWidth = digits * 4;
             priceX -= halfWidth - 64;
             drawDecimalNumber8x8(priceX, priceY + 12, digits, 0, price, 0, -1,
-                                 &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                                 &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
             drawWrappedText8x8(priceX + digits * 8, priceY + 12, 2, D_8013B4FC, 0, -1,
-                               &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                               &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
             if (gCurrentTask->data1A == 1) {
                 addTilePacketWithBlend(priceX - 4, priceY + 8, digits * 8 + 16, 16,
                               gMenuColorCycleColor.r, gMenuColorCycleColor.g, gMenuColorCycleColor.b, 2,
-                              &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                              &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
             } else {
                 addTilePacketWithBlend(priceX - 4, priceY + 8, digits * 8 + 16, 16, 128, 128, 128, 2,
-                              &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                              &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
             }
         }
     }
@@ -3085,9 +3085,9 @@ void drawCurrentTaskFramedSprite20C(void) {
     setTexturedQuadColor(128, 128, 128);
     setSpriteColor(128, 128, 128);
     drawTexturedFrameStyle9(position->x / 4096 - 140, position->y / 4096 + 8,
-                           128, 92, 5, 1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                           128, 92, 5, 1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
     drawSpriteByIndexWithBlend(position->x / 4096 - 136, position->y / 4096 + 12,
-                  0x20C, 1, 0, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                  0x20C, 1, 0, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
 }
 
 void drawCurrentTaskTextPanel(void) {
@@ -3100,9 +3100,9 @@ void drawCurrentTaskTextPanel(void) {
     setSpriteColor(128, 128, 128);
     setTexturedQuadColor(128, 128, 128);
     drawWrappedGlyphText16x16((s16)(x + 16), (s16)(y + 12), 10, gCurrentTaskPanelText,
-                              8, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                              8, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
     drawDefaultTexturedPanel(x, y, 144, 48, 5, 0,
-                            &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                            &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
 }
 
 void drawCurrentTaskSelectionPanel(void) {
@@ -3117,13 +3117,13 @@ void drawCurrentTaskSelectionPanel(void) {
     setSpriteColor(128, 128, 128);
     setTexturedQuadColor(128, 128, 128);
     drawWrappedGlyphText16x16((s16)(x + 8), (s16)(y + 4), 10, gTaskSelectionPanelLabel,
-                              8, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                              8, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
     drawDecimalNumber16((s16)(x + 56), (s16)(y + 4), 1, 0, selection->value + 1,
-                 8, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                 8, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
     drawWrappedGlyphText16x16((s16)(x + 8), (s16)(y + 20), 10, gTaskSelectionPanelText,
-                              8, -1, &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                              8, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
     drawDefaultTexturedPanel(x, y, 144, 48, 5, 0,
-                            &D_800EBFF0[D_8013AF78], gCurrentTask->data1C);
+                            &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
 }
 
 void queueGridResourceSectorReads(s16 slot, s16 row, s16 column) {

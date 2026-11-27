@@ -21,7 +21,7 @@ extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u8 D_8013AFCD __attribute__((section(".data")));
 extern u8 D_8013AFE0 __attribute__((section(".data")));
 extern u8 D_8013AFE2 __attribute__((section(".data")));
-extern u8 D_8013AFD3 __attribute__((section(".data")));
+extern u8 gRacePauseState __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern u8 D_8013AFD6 __attribute__((section(".data")));
 
@@ -55,7 +55,7 @@ void initializeControllerPlaybackRaceTask(void) {
     selectionMenuRecordAbsolute = gSelectedCourseIndex;
     gSelectedCourseIndex = gControllerPlaybackEntries[D_8013AFD9].course;
     player = gRacePlayers;
-    D_8013AFD3 = 0;
+    gRacePauseState = 0;
     D_8013AFD6 = 0;
     D_8013AFE1 = 0;
     D_8013AFD8 = 0;

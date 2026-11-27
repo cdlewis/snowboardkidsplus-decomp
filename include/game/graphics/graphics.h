@@ -138,12 +138,12 @@ void drawTaskObjectAlternateLayer(u16 index);
 extern GsDOBJ2 D_80129A80[30];
 void sortLitObject(GsDOBJ2 *object);
 void sortLitObjectWithDrawArea(GsDOBJ2 *object, u16 index, RECT *bounds);
-extern u32 *D_8013AF6C;
+extern u32 *gCurrentPlayerOrderingTable;
 extern u16 D_8013AF7A;
 extern u16 D_8013AF7C;
 
 void drawFixedSpriteAndBottomBarTask(void);
-extern u16 D_8013AF78;
+extern u16 gActiveGraphicsBuffer;
 
 extern POLY_FT4 gTexturedQuadTemplate;
 typedef struct SpritePrimitiveTemplate {

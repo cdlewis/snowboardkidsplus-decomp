@@ -941,8 +941,6 @@ void updatePlayerPositionTrailTask(void);
 void updatePlayerRingEffectTask(void);
 void drawQuadAnimationTask(void);
 
-extern s32 D_8013B624 __attribute__((section(".sdata.geometry_edge_projection")));
-extern s32 D_8013B628 __attribute__((section(".sdata.geometry_edge_projection")));
 extern s32 D_8013B62C __attribute__((section(".sdata.geometry_edge_projection")));
 
 extern s32 D_8013B630 __attribute__((section(".sdata.geometry_edge_projection")));

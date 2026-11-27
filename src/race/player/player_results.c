@@ -28,7 +28,7 @@ GsF_LIGHT gDefaultSceneLights[3]
 extern u8 D_8013AFE1 __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u8 D_8013AFCD __attribute__((section(".data")));
-extern u8 D_8013AFD3 __attribute__((section(".data")));
+extern u8 gRacePauseState __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern RaceTime gRaceElapsedTime __attribute__((section(".data")));
 extern RaceTime D_8013B188 __attribute__((section(".data")));
@@ -333,7 +333,7 @@ void renderCurrentCameraPlayersAndUpdateSound(void) {
 void updateCurrentPlayerSound(void) {
     s32 semitone;
     s16 fine;
-    if (D_8013AFD3) {
+    if (gRacePauseState) {
         gRacePlayers[gCurrentTask->data18].unk96C = 0;
     }
     if (gRacePlayers[gCurrentTask->data18].unk96C != 0) {

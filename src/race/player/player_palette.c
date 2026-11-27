@@ -18,7 +18,7 @@ typedef struct PaletteBurstScratch {
     long flags;
 } PaletteBurstScratch;
 
-extern u16 D_8013AF78 __attribute__((section(".data")));
+extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
 
@@ -115,14 +115,14 @@ void drawPaletteBurstTask(void) {
     *packet = scratch->quad;
     packet->tpage = getTPage(0, 1, 896, 0);
     packet->clut = getClut(832, 248);
-    addPrim(D_800EBFF0[D_8013AF78].org, packet);
+    addPrim(D_800EBFF0[gActiveGraphicsBuffer].org, packet);
     packet++;
 
     scratch->quad.r0 = scratch->quad.g0 = scratch->quad.b0 = brightness;
     *packet = scratch->quad;
     packet->tpage = getTPage(0, 2, 896, 0);
     packet->clut = getClut(832, 249);
-    addPrim(D_800EBFF0[D_8013AF78].org, packet);
+    addPrim(D_800EBFF0[gActiveGraphicsBuffer].org, packet);
     packet++;
     GsOUT_PACKET_P = (u32)packet;
 

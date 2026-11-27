@@ -9,7 +9,7 @@ typedef struct ControllerEffectDefinition {
     s32 duration;
 } ControllerEffectDefinition;
 
-extern u8 D_8013AFD3 __attribute__((section(".data")));
+extern u8 gRacePauseState __attribute__((section(".data")));
 
 static ControllerEffectStep gControllerEffectSteps0[] = {
     {200, -20, {0, 0}, 10},
@@ -106,7 +106,7 @@ void updateControllerEffectSequence(u16 controller) {
     s32 changed;
     ControllerEffectState *state;
     ControllerEffectDefinition *definition;
-    if (D_8013AFD3) {
+    if (gRacePauseState) {
         D_8013AF00[controller].control = 0;
         D_8013AF00[controller].value = 0;
         return;
@@ -155,7 +155,7 @@ void updateControllerEffectSequence(u16 controller) {
 }
 
 void updateLegacyControllerActuators(u16 controller) {
-    if (D_8013AFD3) {
+    if (gRacePauseState) {
         D_8013AF00[controller].control = 0x40;
         D_8013AF00[controller].value = 0;
     } else if (D_8013AEF0[controller] >= 25) {

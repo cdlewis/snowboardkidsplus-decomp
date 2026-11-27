@@ -17,8 +17,8 @@ extern TaskValueState D_8012D4A4[3];
 extern GameTask *D_8013BDA8[4];
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
-extern u16 D_8013AF78 __attribute__((section(".data")));
-extern u8 D_8013AFD3 __attribute__((section(".data")));
+extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
+extern u8 gRacePauseState __attribute__((section(".data")));
 
 MenuRgbColor gMenuColorCycleColor __attribute__((section(".sdata.menu_color_cycle"), aligned(4))) = {0, 0, 0};
 
@@ -75,15 +75,15 @@ void updateTaskStateTransition(void) {
     /* configureTaskStateTransition assigns one of the three viewport indices. */
     switch (index) {
     case 0:
-        ot = &D_800EBFF0[D_8013AF78];
+        ot = &D_800EBFF0[gActiveGraphicsBuffer];
         draw = 1;
         break;
     case 1:
-        ot = &D_800EC018[D_8013AF78];
+        ot = &D_800EC018[gActiveGraphicsBuffer];
         draw = shouldRenderPlayerView(0);
         break;
     case 2:
-        ot = &D_800EC0B8[D_8013AF78];
+        ot = &D_800EC0B8[gActiveGraphicsBuffer];
         draw = shouldRenderPlayerView(1);
         break;
     }
@@ -100,7 +100,7 @@ void updateTaskStateTransition(void) {
     }
 
     if (gCurrentTask->data1E &&
-        (!D_8013AFD3 || gCurrentTask->data18 == 6 || gCurrentTask->data18 == 7)) {
+        (!gRacePauseState || gCurrentTask->data18 == 6 || gCurrentTask->data18 == 7)) {
         if ((gCurrentTask->data18 == 1 || gCurrentTask->data18 == 6) && state->unk06 == 0) {
             goto end_task;
         }

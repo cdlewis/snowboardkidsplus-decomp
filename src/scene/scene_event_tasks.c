@@ -15,7 +15,7 @@
 #include "psx/libgs.h"
 #include "psx/libsnd.h"
 
-extern u16 D_8013AF78 __attribute__((section(".data")));
+extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern GameTask *D_8013AE98 __attribute__((section(".data")));
@@ -271,10 +271,10 @@ void drawSceneImageTask(void) {
     } else {
         if (D_8013B59F) {
             setSpriteColor(128, 128, 128);
-            addTilePacketWithBlend(-140, 44, 280, 56, 128, 128, 128, 2, &D_800EBFF0[D_8013AF78], 8);
+            addTilePacketWithBlend(-140, 44, 280, 56, 128, 128, 128, 2, &D_800EBFF0[gActiveGraphicsBuffer], 8);
         }
         setSpriteColor(128, 128, 128);
-        drawPagedTexturedRectangle(-160, -120, 320, 240, 149, 0x3AB0, &D_800EBFF0[D_8013AF78], 8);
+        drawPagedTexturedRectangle(-160, -120, 320, 240, 149, 0x3AB0, &D_800EBFF0[gActiveGraphicsBuffer], 8);
     }
 }
 
@@ -312,7 +312,7 @@ void updateSceneTextTask(void) {
     }
     resource = (SceneTextTaskResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     block = resource->block;
-    ot = &D_800EBFF0[D_8013AF78];
+    ot = &D_800EBFF0[gActiveGraphicsBuffer];
     entry = resource->entry;
     depth = 6;
     if (owner->tasks[SCENE_EVENT_TEXT] != gCurrentTask) {

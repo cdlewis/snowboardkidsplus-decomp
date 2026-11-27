@@ -27,7 +27,7 @@ typedef union CollectionTaskResource {
     } trail;
 } CollectionTaskResource;
 
-extern u8 D_8013AFD3 __attribute__((section(".data")));
+extern u8 gRacePauseState __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern GameTask *D_8013AE98 __attribute__((section(".data")));
@@ -51,7 +51,7 @@ static TaskVisualFrame sOrbitingPlayerVisualFrames[4]
     };
 
 void drawPlayerFlagTaskVisual(TaskVisualResource *resource) {
-    PlayerCamera *cameras = D_801241E8;
+    PlayerCamera *cameras = gPlayerCameras;
     D_800EB22C.vx = rcos(-cameras[getRenderCameraIndex()].yaw) * 40 / 4096;
     D_800EB22C.vz = rsin(-cameras[getRenderCameraIndex()].yaw) * 40 / 4096;
     resource->coordinate.coord.t[0] = gRacePlayers[gCurrentTask->data18].worldCoordinate.coord.t[0] + D_800EB22C.vx;
@@ -136,7 +136,7 @@ void updatePlayerSideVisualTask(void) {
     resource->coordinate.coord.t[2] = gRacePlayers[gCurrentTask->data18].worldCoordinate.coord.t[2] + D_800EB22C.vz;
     setTaskVisualFrame((TaskVisualResource *)resource, gPlayerSideVisualFrames, 0x2000);
     drawCameraFacingTaskVisual((TaskVisualResource *)resource, 1);
-    if (!D_8013AFD3) {
+    if (!gRacePauseState) {
         if (!advanceTaskVisualFrame((TaskVisualResource *)resource)) {
             deleteCurrentTaskSubtree();
         }
@@ -151,7 +151,7 @@ void updateOneShotTaskVisual(void) {
     resource = (TaskVisualResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     setTaskVisualFrame(resource, D_80124304, 0x2000);
     drawCameraFacingTaskVisual(resource, 1);
-    if (!D_8013AFD3) {
+    if (!gRacePauseState) {
         if (!advanceTaskVisualFrame(resource)) {
             deleteCurrentTaskSubtree();
         }
@@ -197,7 +197,7 @@ void updateExpandingCoordinateEffectTask(void) {
     u16 i;
     if (gCurrentTask->resource14 == 0xFFFF) { while (1) {} }
     resource = (ExpandingCoordinateEffectResource *)&gTaskMemoryPool[gCurrentTask->resource14];
-    if (!D_8013AFD3) {
+    if (!gRacePauseState) {
         if (gCurrentTask->data1A >= 16) {
             resource->scale.vx += 0x40;
             resource->scale.vy += 0x40;
@@ -274,7 +274,7 @@ void updatePlayerState23CoordinateEffectTask(void) {
     ExpandingCoordinateEffectResource *resource;
     if (gCurrentTask->resource14 == 0xFFFF) { while (1) {} }
     resource = (ExpandingCoordinateEffectResource *)&gTaskMemoryPool[gCurrentTask->resource14];
-    if (!D_8013AFD3) {
+    if (!gRacePauseState) {
         RacePlayer *players = gRacePlayers;
         resource->position.x = players[gCurrentTask->data18].x;
         resource->position.y = players[gCurrentTask->data18].y;
@@ -295,7 +295,7 @@ void updatePlayerState23CoordinateEffectTask(void) {
         ScaleMatrix(&resource->coordinate.coord, &resource->scale);
         drawTaskObject(13);
     }
-    if (!D_8013AFD3) {
+    if (!gRacePauseState) {
         RacePlayer *players = gRacePlayers;
         if (players[gCurrentTask->data18].unk12C != 0x17) {
             players[gCurrentTask->data18].isActive = 1;
@@ -353,7 +353,7 @@ void updateFallingRotatingObjectTask(void) {
     FallingObjectResource *resource;
     if (gCurrentTask->resource14 == 0xFFFF) { while (1) {} }
     resource = (FallingObjectResource *)&gTaskMemoryPool[gCurrentTask->resource14];
-    if (!D_8013AFD3) {
+    if (!gRacePauseState) {
         if (gCurrentTask->data1A & 1) {
             resource->rotation.vx += 0x100;
             resource->rotation.vy += 0x100;
@@ -456,7 +456,7 @@ void updatePlayerParticleHistoryTask(void) {
     resource = (TaskVisualResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (gCurrentTask->resource16 == 0xFFFF) { while (1) {} }
     trail = (PlayerParticleResource *)&gTaskMemoryPool[gCurrentTask->resource16];
-    if (!D_8013AFD3) {
+    if (!gRacePauseState) {
         players = gRacePlayers;
         if (players[gCurrentTask->data18].unk12C == 0x1A) {
             gCurrentTask->data1A++;
@@ -486,7 +486,7 @@ void updatePlayerParticleHistoryTask(void) {
             resource->coordinate.coord.t[0] = trail->entries[i].position.x;
             resource->coordinate.coord.t[1] = trail->entries[i].position.y;
             resource->coordinate.coord.t[2] = trail->entries[i].position.z;
-            if (!D_8013AFD3) {
+            if (!gRacePauseState) {
                 trail->entries[i].position.y -= 2;
                 trail->entries[i].framePosition += 0x80;
             }
@@ -516,7 +516,7 @@ void updatePlayerCoordinateEffectTask(void) {
     RacePlayer *players;
     if (gCurrentTask->resource14 == 0xFFFF) { while (1) {} }
     resource = (PlayerEffectResource *)&gTaskMemoryPool[gCurrentTask->resource14];
-    if (!D_8013AFD3) {
+    if (!gRacePauseState) {
         players = gRacePlayers;
         if (players[gCurrentTask->data18].unk12C == 0x1B) {
             resource->coordinate.coord.t[0] = players[gCurrentTask->data18].worldCoordinate.coord.t[0];
@@ -672,7 +672,7 @@ void drawTaskVisualPositionHistory(TaskVisualResource *resource, VECTOR *history
             drawPreparedTaskVisualQuad(resource, frames, 0);
         }
     }
-    if (D_8013AFD3 == 0) {
+    if (gRacePauseState == 0) {
         gCurrentTask->data1A = (gCurrentTask->data1A + 1) & 3;
     }
 }
@@ -760,7 +760,7 @@ void updatePlayerDualResourceEffectTask(void) {
         while (1) {}
     }
     history = (VECTOR *)&gTaskMemoryPool[gCurrentTask->resource16];
-    if (D_8013AFD3 == 0) {
+    if (gRacePauseState == 0) {
         updateHomingTaskVisualMovement(resource, history, 0x63000, 0x1C);
         getGeometryBoundaryDisplacement(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8, 2, &dx, &dz);
         if (dx != 0 || dz != 0) {
@@ -770,7 +770,7 @@ void updatePlayerDualResourceEffectTask(void) {
         }
     }
     drawTaskVisualPositionHistory(resource, history, &gPlayerDualResourceEffectFrame);
-    if (D_8013AFD3 == 0) {
+    if (gRacePauseState == 0) {
         checkTaskVisualOtherPlayerCollision(resource, 8);
         if (resource->unkDC == 0) {
             resetTaskVisualState(resource);
@@ -807,7 +807,7 @@ void updatePlayerVisualPairTask(void) {
         while (1) {}
     }
     history = (VECTOR *)&gTaskMemoryPool[gCurrentTask->resource16];
-    if (D_8013AFD3 == 0) {
+    if (gRacePauseState == 0) {
         updateHomingTaskVisualMovement(resource, history, 0x51000, 0x12);
         getGeometryBoundaryDisplacement(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8, 2, &dx, &dz);
         if (dx != 0 || dz != 0) {
@@ -817,7 +817,7 @@ void updatePlayerVisualPairTask(void) {
         }
     }
     drawTaskVisualPositionHistory(resource, history, &gPlayerVisualPairFrame);
-    if (D_8013AFD3 == 0) {
+    if (gRacePauseState == 0) {
         checkTaskVisualOtherPlayerCollision(resource, 0x100);
         if (resource->unkDC == 0) {
             resetTaskVisualState(resource);
@@ -854,7 +854,7 @@ void updatePlayerVisualPairTask5E80(void) {
         while (1) {}
     }
     history = (VECTOR *)&gTaskMemoryPool[gCurrentTask->resource16];
-    if (D_8013AFD3 == 0) {
+    if (gRacePauseState == 0) {
         updateHomingTaskVisualMovement(resource, history, 0x3F000, 0x18);
         getGeometryBoundaryDisplacement(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8, 2, &dx, &dz);
         if (dx != 0 || dz != 0) {
@@ -864,7 +864,7 @@ void updatePlayerVisualPairTask5E80(void) {
         }
     }
     drawTaskVisualPositionHistory(resource, history, &gPlayerVisualPair5E80Frame);
-    if (D_8013AFD3 == 0) {
+    if (gRacePauseState == 0) {
         checkTaskVisualOtherPlayerCollision(resource, 0x10);
         if (resource->unkDC == 0) {
             resetTaskVisualState(resource);
@@ -901,7 +901,7 @@ void updatePlayerVisualPairTask6780(void) {
         while (1) {}
     }
     history = (VECTOR *)&gTaskMemoryPool[gCurrentTask->resource16];
-    if (D_8013AFD3 == 0) {
+    if (gRacePauseState == 0) {
         updateHomingTaskVisualMovement(resource, history, 0x1B000, 0x1C);
         reflectVelocityAndResolveGeometryBoundary(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8, 2, &dx, &dz, &D_800EB22C.vx, &D_800EB22C.vz);
         if (dx != 0 || dz != 0) {
@@ -911,7 +911,7 @@ void updatePlayerVisualPairTask6780(void) {
         }
     }
     drawTaskVisualPositionHistory(resource, history, &gPlayerVisualPair6780Frame);
-    if (D_8013AFD3 == 0) {
+    if (gRacePauseState == 0) {
         checkTaskVisualOtherPlayerCollision(resource, 0x40);
         if (resource->unkDC == 0) {
             resetTaskVisualState(resource);
@@ -948,7 +948,7 @@ void updateDualResource4C80EffectTask(void) {
         while (1) {}
     }
     history = (VECTOR *)&gTaskMemoryPool[gCurrentTask->resource16];
-    if (D_8013AFD3 == 0) {
+    if (gRacePauseState == 0) {
         updateHomingTaskVisualMovement(resource, history, 0x2D000, 0x10);
         getGeometryBoundaryDisplacement(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8, 2, &dx, &dz);
         if (dx != 0 || dz != 0) {
@@ -958,7 +958,7 @@ void updateDualResource4C80EffectTask(void) {
         }
     }
     drawTaskVisualPositionHistory(resource, history, D_80124354);
-    if (D_8013AFD3 == 0) {
+    if (gRacePauseState == 0) {
         checkTaskVisualOtherPlayerCollision(resource, 0x80);
         if (resource->unkDC == 0) {
             initializeExpandingCoordinateEffectTask();
@@ -1008,7 +1008,7 @@ void updateBouncingTaskVisual(void) {
         while (1) {}
     }
     resource = (TaskVisualResource *)&gTaskMemoryPool[gCurrentTask->resource14];
-    if (!D_8013AFD3) {
+    if (!gRacePauseState) {
         resource->velocityY += 0x180;
         resource->position.y += resource->velocityY;
         if (resource->velocityY > 0 && resource->position.y > resource->groundY) {
@@ -1027,7 +1027,7 @@ void updateBouncingTaskVisual(void) {
     }
     setTaskVisualFrame(resource, D_80124354, 0x1A00);
     drawCameraFacingTaskVisual(resource, 1);
-    if (!D_8013AFD3 && resource->bounceCount == 2) {
+    if (!gRacePauseState && resource->bounceCount == 2) {
         resource->unkDC = 30;
         setCurrentTaskCallback(updateAcceleratingTaskVisualCountdown);
     }
@@ -1041,7 +1041,7 @@ void updateAcceleratingTaskVisualCountdown(void) {
     resource = (TaskVisualResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     setTaskVisualFrame(resource, D_80124354, 0x1A00);
     drawCameraFacingTaskVisual(resource, 1);
-    if (!D_8013AFD3) {
+    if (!gRacePauseState) {
         if (resource->unkDC >= 5) {
             resource->unkC8 += 8;
             if (resource->unkC8 > 0x80) {
@@ -1091,7 +1091,7 @@ void updateDualResource5100EffectTask(void) {
         while (1) {}
     }
     history = (VECTOR *)&gTaskMemoryPool[gCurrentTask->resource16];
-    if (D_8013AFD3 == 0) {
+    if (gRacePauseState == 0) {
         {
             VECTOR *entry = &history[gCurrentTask->data1A];
             entry->vx = resource->position.x;
@@ -1129,7 +1129,7 @@ void updateDualResource5100EffectTask(void) {
         }
     }
     drawTaskVisualPositionHistory(resource, history, &gPlayerDualResource5100EffectFrame);
-    if (D_8013AFD3 == 0) {
+    if (gRacePauseState == 0) {
         for (i = 0; i < D_8013AFD2; i++) {
             if (i != gCurrentTask->data18 &&
                 addPlayerFlagsIfWithinRadius(&resource->position, 0x1000, 0x4000, i) != 0) {
@@ -1205,7 +1205,7 @@ void updateVisualTrailTask(void) {
         while (1) {}
     }
     history = (VECTOR *)&gTaskMemoryPool[gCurrentTask->resource16];
-    if (D_8013AFD3 == 0) {
+    if (gRacePauseState == 0) {
         {
             VECTOR *entry = &history[gCurrentTask->data1A];
             entry->vx = resource->position.x;
@@ -1243,7 +1243,7 @@ void updateVisualTrailTask(void) {
         }
     }
     drawTaskVisualPositionHistory((TaskVisualResource *)resource, history, &gPlayerVisualPair6780Frame);
-    if (D_8013AFD3 == 0) {
+    if (gRacePauseState == 0) {
         for (i = 0; i < D_8013AFD2; i++) {
             if (addPlayerFlagsIfWithinRadius(&resource->position, 0x1000, 0x2000, i) != 0) {
                 resource->lifetime = 0;
@@ -1268,7 +1268,7 @@ void initPlayerTimerTask(void) {
 }
 
 void updatePlayerTimerTask(void) {
-    if (!D_8013AFD3) {
+    if (!gRacePauseState) {
         if (gRacePlayers[gCurrentTask->data18].unk128 & 0x3040) {
             gRacePlayers[gCurrentTask->data18].unk0FC = 0;
         }
@@ -1289,7 +1289,7 @@ void updatePlayerTimerTask(void) {
 }
 
 void fadeOutPlayerTimerTask(void) {
-    if (!D_8013AFD3) {
+    if (!gRacePauseState) {
         if (gRacePlayers[gCurrentTask->data18].unk0FC == 0) {
             gRacePlayers[gCurrentTask->data18].timer.unk60 -= 0x200;
             if (gRacePlayers[gCurrentTask->data18].timer.unk60 > 0) {
@@ -1337,7 +1337,7 @@ void updateOrbitingPlayerVisualTask(void) {
         while (1) {}
     }
     resource = (OrbitingPlayerVisualResource *)&gTaskMemoryPool[gCurrentTask->resource14];
-    if (!D_8013AFD3) {
+    if (!gRacePauseState) {
         switch (gCurrentTask->data1C) {
         case 0:
             resource->offset.y -= 4;
@@ -1441,7 +1441,7 @@ void updateOrbitingPlayerVisualTask(void) {
             break;
         }
         cameraIndex = getRenderCameraIndex();
-        cameras = D_801241E8;
+        cameras = gPlayerCameras;
         resource->offset.x = rsin(cameras[cameraIndex].yaw + resource->angle) * resource->radius / 4096;
         resource->offset.z = rcos(cameras[getRenderCameraIndex()].yaw + resource->angle) * resource->radius / 4096;
         resource->coordinate.coord.t[0] = gRacePlayers[gCurrentTask->data18].worldCoordinate.coord.t[0] + resource->offset.x;
@@ -1484,7 +1484,7 @@ void updateRisingPlayerEffectTask(void) {
         while (1) {}
     }
     resource = (RisingPlayerEffectResource *)&gTaskMemoryPool[gCurrentTask->resource14];
-    if (!D_8013AFD3) {
+    if (!gRacePauseState) {
         resource->velocity -= 2;
         resource->offset.y += resource->velocity;
         if (resource->offset.y < -320) {
@@ -1517,7 +1517,7 @@ void updateFallingPlayerEffectTask(void) {
         while (1) {}
     }
     resource = (RisingPlayerEffectResource *)&gTaskMemoryPool[gCurrentTask->resource14];
-    if (!D_8013AFD3) {
+    if (!gRacePauseState) {
         resource->velocity += 2;
         resource->offset.y += resource->velocity;
         switch (gCurrentTask->data1C) {

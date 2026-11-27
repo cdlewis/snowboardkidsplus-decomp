@@ -80,22 +80,22 @@ void runGameLoop(void) {
             gFrameCounter = (u16)gFrameCounter & 0xFFE;
         }
         if (!(D_8013AFAA & 0x400)) {
-            D_8013AF78 = GsGetActiveBuff();
+            gActiveGraphicsBuffer = GsGetActiveBuff();
         } else {
-            D_8013AF78 = (u16)gFrameCounter & 1;
+            gActiveGraphicsBuffer = (u16)gFrameCounter & 1;
         }
-        func_800BF2C8((u32)D_80100200[D_8013AF78]);
-        GsClearOt(0, 0, &D_800EBFF0[D_8013AF78]);
+        func_800BF2C8((u32)D_80100200[gActiveGraphicsBuffer]);
+        GsClearOt(0, 0, &D_800EBFF0[gActiveGraphicsBuffer]);
         if (!(D_8013AFAA & 0x400) || !((u16)gFrameCounter & 1)) {
-            GsClearOt(0, 0, &D_800EC018[D_8013AF78]);
-            D_8013AF6C = D_800EC018[D_8013AF78].org;
-            D_8013AF70 = D_800EC1B0[D_8013AF78].org;
-            D_8013AF74 = D_800EC090[D_8013AF78].org;
+            GsClearOt(0, 0, &D_800EC018[gActiveGraphicsBuffer]);
+            gCurrentPlayerOrderingTable = D_800EC018[gActiveGraphicsBuffer].org;
+            D_8013AF70 = D_800EC1B0[gActiveGraphicsBuffer].org;
+            D_8013AF74 = D_800EC090[gActiveGraphicsBuffer].org;
         } else {
-            GsClearOt(0, 0, &D_800EC0B8[D_8013AF78]);
-            D_8013AF6C = D_800EC0B8[D_8013AF78].org;
-            D_8013AF70 = D_800EC1D8[D_8013AF78].org;
-            D_8013AF74 = D_800EC130[D_8013AF78].org;
+            GsClearOt(0, 0, &D_800EC0B8[gActiveGraphicsBuffer]);
+            gCurrentPlayerOrderingTable = D_800EC0B8[gActiveGraphicsBuffer].org;
+            D_8013AF70 = D_800EC1D8[gActiveGraphicsBuffer].org;
+            D_8013AF74 = D_800EC130[gActiveGraphicsBuffer].org;
         }
         gCurrentTask = gGameTasks;
         do {
@@ -133,20 +133,20 @@ void runGameLoop(void) {
             waitForFrameHcount(0x190U);
             updatePaletteRecords();
             GsSwapDispBuff();
-            GsSortClear(0, 0, 0, &D_800EC018[D_8013AF78]);
+            GsSortClear(0, 0, 0, &D_800EC018[gActiveGraphicsBuffer]);
             GsSetClip(&D_800EC158[0]);
-            GsDrawOt(&D_800EC018[D_8013AF78]);
-            GsDrawOt(&D_800EBFF0[D_8013AF78]);
+            GsDrawOt(&D_800EC018[gActiveGraphicsBuffer]);
+            GsDrawOt(&D_800EBFF0[gActiveGraphicsBuffer]);
         } else {
             if (!((u16)gFrameCounter & 1)) {
                 waitForFrameHcount(0x384U);
                 updatePaletteRecords();
                 GsSwapDispBuff();
-                GsSortClear(0, 0, 0, &D_800EC018[D_8013AF78]);
+                GsSortClear(0, 0, 0, &D_800EC018[gActiveGraphicsBuffer]);
                 GsSetOffset((D_8013AF7A >> 1) - (D_8013AF7E / 2),
                             (D_8013AF7C >> 1) - D_8013AF80);
                 GsSetClip(&D_800EC158[1]);
-                GsDrawOt(&D_800EC018[D_8013AF78]);
+                GsDrawOt(&D_800EC018[gActiveGraphicsBuffer]);
                 continue;
             }
             updatePaletteRecords();
@@ -154,11 +154,11 @@ void runGameLoop(void) {
             GsSetOffset((D_8013AF7A >> 1) - (D_8013AF7E / 2),
                         ((D_8013AF7C >> 1) + D_8013AF80) - 8);
             GsSetClip(&D_800EC158[2]);
-            GsDrawOt(&D_800EC0B8[D_8013AF78]);
+            GsDrawOt(&D_800EC0B8[gActiveGraphicsBuffer]);
             DrawSync(0);
             GsSetOffset(D_8013AF7A >> 1, D_8013AF7C >> 1);
             GsSetClip(&D_800EC158[0]);
-            GsDrawOt(&D_800EBFF0[D_8013AF78]);
+            GsDrawOt(&D_800EBFF0[gActiveGraphicsBuffer]);
         }
     }
 }

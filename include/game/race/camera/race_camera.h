@@ -13,7 +13,7 @@ typedef struct PlayerCamera {
     s16 unk1A;
 } PlayerCamera;
 
-extern PlayerCamera D_801241E8[];
+extern PlayerCamera gPlayerCameras[2];
 extern GsRVIEW2 gPlayerCameraViews[2];
 
 /* X/Z are fixed point with eight fractional bits. */

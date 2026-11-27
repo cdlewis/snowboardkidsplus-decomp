@@ -25,7 +25,7 @@ typedef struct TextSequenceEntry {
 
 extern u8 D_8013AFD8 __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
-extern u16 D_8013AF78 __attribute__((section(".data")));
+extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
 extern u16 D_8013AF7A __attribute__((section(".data")));
 extern u16 D_8013AF7C __attribute__((section(".data")));
 extern s16 D_8013AF80 __attribute__((section(".data")));
@@ -201,8 +201,8 @@ void animateTextSequenceExitTask(void) {
         D_800EC158[2].y = 240;
         D_800EC158[2].h = 0;
     }
-    D_801241E8[0].unk10 += delta * 2;
-    if (D_801241E8[0].unk10 > -320) D_801241E8[0].unk10 = -320;
+    gPlayerCameras[0].unk10 += delta * 2;
+    if (gPlayerCameras[0].unk10 > -320) gPlayerCameras[0].unk10 = -320;
     if (resource->displacement / 4096 >= 141) {
         taskTransitionFlagGp = 1;
         D_8013B1A8 = 1;
@@ -306,7 +306,7 @@ static void drawTextSequence(TextSequenceResource *resource) {
     s32 bodyX, bodyY;
     s16 x, y, labelY;
     u16 depth = 6;
-    GsOT *ot = &D_800EBFF0[D_8013AF78];
+    GsOT *ot = &D_800EBFF0[gActiveGraphicsBuffer];
 
     setSpriteColor(128, 128, 128);
     setTexturedQuadColor(128, 128, 128);
@@ -320,9 +320,9 @@ static void drawTextSequence(TextSequenceResource *resource) {
     } else if (resource->mode == 2) {
         u16 index = resource->unk0A;
         if (index < 5) {
-            drawMenuKindSprite(-16, y, index + 1, 1, &D_800EBFF0[D_8013AF78], 4);
+            drawMenuKindSprite(-16, y, index + 1, 1, &D_800EBFF0[gActiveGraphicsBuffer], 4);
         } else {
-            drawPaletteMappedIcon(-16, y, index + (u16)-4, &D_800EBFF0[D_8013AF78], 4);
+            drawPaletteMappedIcon(-16, y, index + (u16)-4, &D_800EBFF0[gActiveGraphicsBuffer], 4);
         }
         drawWrappedGlyphText16x16((s16)x, (s16)(y - 24), 30, resource->headerText, 12, 1, ot, depth);
     }

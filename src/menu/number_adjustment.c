@@ -11,7 +11,7 @@
 #include "psx/libgs.h"
 
 extern s16 gFrameCounter __attribute__((section(".data")));
-extern u16 D_8013AF78 __attribute__((section(".data")));
+extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *D_8013AE98 __attribute__((section(".data")));
 
@@ -143,9 +143,9 @@ void drawNumberAdjustmentPanel(void) {
     setSpriteColor(128, 128, 128);
     setTexturedQuadColor(128, 128, 128);
     scroll = state->unk20[0] / 4096;
-    drawSpriteByIndexWithBlend(-76, scroll - 91, 296, 0, -1, &D_800EBFF0[D_8013AF78], 4);
+    drawSpriteByIndexWithBlend(-76, scroll - 91, 296, 0, -1, &D_800EBFF0[gActiveGraphicsBuffer], 4);
     palette = 13;
-    drawSpriteByIndexWithBlend(-84, scroll - 96, 295, 1, -1, &D_800EBFF0[D_8013AF78], 4);
+    drawSpriteByIndexWithBlend(-84, scroll - 96, 295, 1, -1, &D_800EBFF0[gActiveGraphicsBuffer], 4);
     if (state->countdown > 0) {
         if (state->countdown & 1) {
             palette = 8;
@@ -153,21 +153,21 @@ void drawNumberAdjustmentPanel(void) {
         state->countdown--;
     }
     drawWrappedGlyphText16x16(-48, -28, 30, gNumberAdjustmentValueTexts[state->value],
-                              palette, 1, &D_800EBFF0[D_8013AF78], 4);
+                              palette, 1, &D_800EBFF0[gActiveGraphicsBuffer], 4);
     if (state->active) {
         if (state->value > 1 && (gFrameCounter & 8)) {
-            drawNumberAdjustmentArrow(0, &D_800EBFF0[D_8013AF78], 4);
+            drawNumberAdjustmentArrow(0, &D_800EBFF0[gActiveGraphicsBuffer], 4);
         }
         if (state->value < 9 && (gFrameCounter & 8)) {
-            drawNumberAdjustmentArrow(1, &D_800EBFF0[D_8013AF78], 4);
+            drawNumberAdjustmentArrow(1, &D_800EBFF0[gActiveGraphicsBuffer], 4);
         }
     }
     drawWrappedGlyphText16x16(-32, -28, 30, gNumberAdjustmentLabel,
-                              palette, 1, &D_800EBFF0[D_8013AF78], 4);
-    drawDefaultTexturedPanel(-64, -52, 128, 64, 5, 0, &D_800EBFF0[D_8013AF78], 4);
+                              palette, 1, &D_800EBFF0[gActiveGraphicsBuffer], 4);
+    drawDefaultTexturedPanel(-64, -52, 128, 64, 5, 0, &D_800EBFF0[gActiveGraphicsBuffer], 4);
     drawWrappedGlyphText16x16(-104, 34, 30, gNumberAdjustmentInstructions,
-                              15, 1, &D_800EBFF0[D_8013AF78], 4);
-    drawDefaultTexturedPanel(-120, 26, 240, 64, 5, 0, &D_800EBFF0[D_8013AF78], 4);
+                              15, 1, &D_800EBFF0[gActiveGraphicsBuffer], 4);
+    drawDefaultTexturedPanel(-120, 26, 240, 64, 5, 0, &D_800EBFF0[gActiveGraphicsBuffer], 4);
 }
 
 void finishNumberAdjustmentTask(void) {

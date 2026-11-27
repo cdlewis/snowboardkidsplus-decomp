@@ -259,10 +259,10 @@ typedef struct PlayerTripleQuadScratch {
 
 extern s16 gFrameCounter __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
-extern u32 *D_8013AF6C __attribute__((section(".data")));
-extern u16 D_8013AF78 __attribute__((section(".data")));
+extern u32 *gCurrentPlayerOrderingTable __attribute__((section(".data")));
+extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
 extern u8 D_8013AFCD __attribute__((section(".data")));
-extern u8 D_8013AFD3 __attribute__((section(".data")));
+extern u8 gRacePauseState __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern u32 gTaskTransitionFlags __attribute__((section(".data")));
@@ -847,7 +847,7 @@ void drawPlayerSnapshotTrailTask(void) {
     depth += RotTransPers(&gPlayerSnapshotTrailEndpoints[0], (long *)&packet->x2, &p, &flag);
     depth += RotTransPers(&gPlayerSnapshotTrailEndpoints[1], (long *)&packet->x3, &p, &flag);
     if (depth >= 0 && flag >= 0) {
-        addCopiedPrimitive(&D_8013AF6C[depth >> 4], (u32 *)packet);
+        addCopiedPrimitive(&gCurrentPlayerOrderingTable[depth >> 4], (u32 *)packet);
     }
     if (--resource->remainingFrames == -1 || gPlayerSnapshotTrailPacket.y0 > 160) {
         deleteCurrentTaskSubtree();
@@ -909,9 +909,9 @@ void drawTrickTriangleRingTask(void) {
     packet = (TrickTrianglePacket *)GsOUT_PACKET_P;
     player = &gRacePlayers[gCurrentTask->data18];
     if (gCurrentTask->data18 == 0) {
-        ot = D_800EC040[D_8013AF78].org;
+        ot = D_800EC040[gActiveGraphicsBuffer].org;
     } else {
-        ot = D_800EC0E0[D_8013AF78].org;
+        ot = D_800EC0E0[gActiveGraphicsBuffer].org;
     }
     if (D_8013AFD6 && player->unk0C8 < 9) {
         deleteCurrentTaskSubtree();
@@ -946,7 +946,7 @@ void drawTrickTriangleRingTask(void) {
         return;
     }
     if (D_8013AFAA & 0x400) {
-        if (gCurrentTask->data18 != D_8013AF78) {
+        if (gCurrentTask->data18 != gActiveGraphicsBuffer) {
             goto advance;
         }
         scratch->tag = (1 + 6) << 24;
@@ -989,7 +989,7 @@ void drawTrickTriangleRingTask(void) {
     GsOUT_PACKET_P = (u32)packet;
 
 advance:
-    if (!D_8013AFD3) {
+    if (!gRacePauseState) {
         resource->frame++;
     }
 }
@@ -1021,9 +1021,9 @@ void drawTrickRingTask(void) {
     player = &gRacePlayers[gCurrentTask->data18];
     packet = (TrickRingPacket *)GsOUT_PACKET_P;
     if (gCurrentTask->data18 == 0) {
-        ot = D_800EC040[D_8013AF78].org;
+        ot = D_800EC040[gActiveGraphicsBuffer].org;
     } else {
-        ot = D_800EC0E0[D_8013AF78].org;
+        ot = D_800EC0E0[gActiveGraphicsBuffer].org;
     }
     if (D_8013AFD6 && player->unk0C8 < 9) {
         deleteCurrentTaskSubtree();
@@ -1063,7 +1063,7 @@ void drawTrickRingTask(void) {
         return;
     }
     if (D_8013AFAA & 0x400) {
-        if (gCurrentTask->data18 != D_8013AF78) {
+        if (gCurrentTask->data18 != gActiveGraphicsBuffer) {
             goto advance;
         }
     } else if (gCurrentTask->data18 != 0) {
@@ -1094,7 +1094,7 @@ void drawTrickRingTask(void) {
     GsOUT_PACKET_P = (u32)packet;
 
 advance:
-    if (!D_8013AFD3) {
+    if (!gRacePauseState) {
         resource->frame++;
     }
     if (resource->frame >= 31) {
@@ -1124,9 +1124,9 @@ void drawTrickSparkRingTask(void) {
     packet = (u8 *)GsOUT_PACKET_P;
     player = &gRacePlayers[gCurrentTask->data18];
     if (gCurrentTask->data18 == 0) {
-        ot = D_800EC040[D_8013AF78].org;
+        ot = D_800EC040[gActiveGraphicsBuffer].org;
     } else {
-        ot = D_800EC0E0[D_8013AF78].org;
+        ot = D_800EC0E0[gActiveGraphicsBuffer].org;
     }
     if (D_8013AFD6 && player->unk0C8 < 9) {
         deleteCurrentTaskSubtree();
@@ -1136,7 +1136,7 @@ void drawTrickSparkRingTask(void) {
     }
     /* Initialize complete DMA tags before linking the packets into the ordering table. */
     if (D_8013AFAA & 0x400) {
-        if (gCurrentTask->data18 != D_8013AF78) {
+        if (gCurrentTask->data18 != gActiveGraphicsBuffer) {
             goto advance;
         }
         scratch->ray.tag = (1 + 4) << 24;
@@ -1216,7 +1216,7 @@ void drawTrickSparkRingTask(void) {
     GsOUT_PACKET_P = (u32)packet;
 
 advance:
-    if (!D_8013AFD3) {
+    if (!gRacePauseState) {
         ++*frame;
     }
     if (*frame >= 41) {
@@ -1261,15 +1261,15 @@ void drawFallingParticlesTask(void) {
         if (resource->y[i] >= 240) resource->y[i] = -4;
         scratch->u0 = (((u8)resource->frame + i) & 3) * 8 + 216U;
         scratch->clut = getClut(992, 240 + i % 5);
-        scratch->tag = (3 << 24) | getaddr(D_8013AF6C);
+        scratch->tag = (3 << 24) | getaddr(gCurrentPlayerOrderingTable);
         *packet = *scratch;
-        setaddr(D_8013AF6C, packet);
+        setaddr(gCurrentPlayerOrderingTable, packet);
         packet++;
     }
     page = (DR_TPAGE *)packet;
     setlen(page, 1);
     page->code[0] = ((u32)DRAW_MODE_COMMAND_HIGH << 16) | getTPage(0, 0, 768, 256);
-    addPrim(D_8013AF6C, page);
+    addPrim(gCurrentPlayerOrderingTable, page);
     GsOUT_PACKET_P = (u32)(page + 1);
     resource->frame++;
 }
@@ -1320,10 +1320,10 @@ void drawRadialTriangleAndQuadEffect(void) {
             blue = 16;
         }
 
-        addSemiTransparentGouraudTriangle(D_8013AF6C, getTPage(0, 1, 0, 0), x, y,
+        addSemiTransparentGouraudTriangle(gCurrentPlayerOrderingTable, getTPage(0, 1, 0, 0), x, y,
             rightX, rightY, centerX, centerY, (u8)red, (u8)green, (u8)blue,
             0, 0, 0, 64, 64, 64);
-        addSemiTransparentGouraudTriangle(D_8013AF6C, getTPage(0, 1, 0, 0), x, y,
+        addSemiTransparentGouraudTriangle(gCurrentPlayerOrderingTable, getTPage(0, 1, 0, 0), x, y,
             centerX, centerY, leftX, leftY, (u8)red, (u8)green, (u8)blue,
             64, 64, 64, 0, 0, 0);
         angle += 256;
@@ -1335,7 +1335,7 @@ void drawRadialTriangleAndQuadEffect(void) {
         s16 centerY = i * 32;
         s16 centerX = -centerY;
 
-        addTexturedQuad(D_8013AF6C, (s16)(centerX - halfSize), (s16)(centerY - halfSize),
+        addTexturedQuad(gCurrentPlayerOrderingTable, (s16)(centerX - halfSize), (s16)(centerY - halfSize),
             (s16)(halfSize + centerX), (s16)(centerY - halfSize),
             (s16)(centerX - halfSize), (s16)(halfSize + centerY),
             (s16)(halfSize + centerX), (s16)(halfSize + centerY),
@@ -1381,8 +1381,8 @@ void drawPlayerParticlesTask(void) {
     scratch->localScreen = GsIDMATRIX2;
     GsSetLsMatrix(&scratch->localScreen);
 
-    yawOffset = -D_801241E8[gCurrentTask->data18].yaw;
-    pitchOffset = D_801241E8[gCurrentTask->data18].pitch;
+    yawOffset = -gPlayerCameras[gCurrentTask->data18].yaw;
+    pitchOffset = gPlayerCameras[gCurrentTask->data18].pitch;
     for (i = 0; i < 40; i++) {
         if (D_8013AFAA & 0x400) {
             if (gCurrentTask->data18 != (gFrameCounter & 1)) {
@@ -1409,12 +1409,12 @@ void drawPlayerParticlesTask(void) {
             &scratch->cue, &scratch->flags);
         if (!(scratch->flags & 0x7FFBE000) && scratch->depth >= 0 && scratch->depth < 4096) {
             *packet = scratch->quad;
-            addPrim(&D_8013AF6C[10], packet);
+            addPrim(&gCurrentPlayerOrderingTable[10], packet);
             packet++;
         }
 
     updatePosition:
-        if (!D_8013AFD3) {
+        if (!gRacePauseState) {
             s32 drift = randomNextLinear() % 16 + 8;
             s32 sine = rsin(gCurrentTask->data1A);
             s32 cosine = rcos(gCurrentTask->data1A * 5);
@@ -1426,7 +1426,7 @@ void drawPlayerParticlesTask(void) {
         }
     }
     GsOUT_PACKET_P = (u32)packet;
-    if (!D_8013AFD3) {
+    if (!gRacePauseState) {
         gCurrentTask->data1A++;
     }
 }
@@ -1468,13 +1468,13 @@ void drawTriangleBurstTask(void) {
             (long *)&screen[0], (long *)&screen[1], (long *)&screen[2], (long *)&scratch->cue, (long *)&scratch->flags);
         scratch->depth = depth;
         if (scratch->flags >= 0 && depth >= 0 && depth < 4096) {
-            addGouraudTexturedTriangle(D_8013AF6C + (depth >> 2),
+            addGouraudTexturedTriangle(gCurrentPlayerOrderingTable + (depth >> 2),
                                        screen[0].x, screen[0].y, screen[1].x, screen[1].y,
                                        screen[2].x, screen[2].y, 10, getClut(640, 250),
                                        128, 128, 191, 128, 128, 191,
                                        255, 255, 255, 128, 128, 128, 64, 64, 64);
         }
-        if (!D_8013AFD3) {
+        if (!gRacePauseState) {
             resource->positions[i].vx += resource->velocities[i].vx;
             resource->positions[i].vy += resource->velocities[i].vy;
             resource->positions[i].vz += resource->velocities[i].vz;
@@ -1483,7 +1483,7 @@ void drawTriangleBurstTask(void) {
             resource->rotations[i].vz += 0x155;
         }
     }
-    if (!D_8013AFD3) resource->frame++;
+    if (!gRacePauseState) resource->frame++;
     if (resource->frame == 30) deleteCurrentTaskSubtree();
 }
 
@@ -1545,7 +1545,7 @@ void drawRotatingQuadEffectTask(void) {
     if (resource->elapsed <= 16) {
         scratch->textureAdvance = resource->elapsed * 63 / 16;
         scratch->displacement = resource->elapsed * 5;
-        if (!D_8013AFD3) {
+        if (!gRacePauseState) {
             resource->elapsed++;
         }
     } else {
@@ -1579,7 +1579,7 @@ void drawRotatingQuadEffectTask(void) {
     if (scratch->flags >= 0 &&
         NormalClip(scratch->screen[0].packed, scratch->screen[1].packed, scratch->screen[2].packed) >= 0 &&
         scratch->depth >= 0 && scratch->depth < 4096) {
-        addGouraudTexturedQuad(D_8013AF6C + (scratch->depth >> 2),
+        addGouraudTexturedQuad(gCurrentPlayerOrderingTable + (scratch->depth >> 2),
             scratch->screen[0].point.x, scratch->screen[0].point.y,
             scratch->screen[1].point.x, scratch->screen[1].point.y,
             scratch->screen[2].point.x, scratch->screen[2].point.y,
@@ -1601,7 +1601,7 @@ void drawRotatingQuadEffectTask(void) {
         if (scratch->flags >= 0 &&
             NormalClip(scratch->screen[0].packed, scratch->screen[1].packed, scratch->screen[2].packed) >= 0 &&
             scratch->depth >= 0 && scratch->depth < 4096) {
-            addGouraudTexturedQuad(D_8013AF6C + (scratch->depth >> 2),
+            addGouraudTexturedQuad(gCurrentPlayerOrderingTable + (scratch->depth >> 2),
                 scratch->screen[0].point.x, scratch->screen[0].point.y,
                 scratch->screen[1].point.x, scratch->screen[1].point.y,
                 scratch->screen[2].point.x, scratch->screen[2].point.y,
@@ -1779,7 +1779,7 @@ void updatePlayerTurnTrailTask(void) {
         scratch->facing = 1;
     }
 
-    if (!D_8013AFD3) {
+    if (!gRacePauseState) {
         /* Slot zero follows the board. Older samples move back from slot one. */
         for (i = TURN_TRAIL_SAMPLES - 1; i >= 2; i--) {
             trail->positions[i] = trail->positions[i - 1];
@@ -1884,7 +1884,7 @@ void updatePlayerTurnTrailTask(void) {
             packet->v0 = scratch->v[0];
             packet->v1 = scratch->v[3];
             packet->v2 = scratch->v[2];
-            addPrim(D_8013AF6C + (scratch->depth[i] >> 2), packet);
+            addPrim(gCurrentPlayerOrderingTable + (scratch->depth[i] >> 2), packet);
             packet++;
 
             packet->tag = (sizeof(*packet) / sizeof(packet->tag) - 1) << 24;
@@ -1903,12 +1903,12 @@ void updatePlayerTurnTrailTask(void) {
             packet->v0 = scratch->v[0];
             packet->v1 = scratch->v[1];
             packet->v2 = scratch->v[3];
-            addPrim(D_8013AF6C + (scratch->depth[i] >> 2), packet);
+            addPrim(gCurrentPlayerOrderingTable + (scratch->depth[i] >> 2), packet);
             packet++;
         }
     }
     GsOUT_PACKET_P = (u32)packet;
-    if (!D_8013AFD3) {
+    if (!gRacePauseState) {
         trail->elapsed++;
     }
     if (gCurrentTask->data1A == 2) {
@@ -1998,13 +1998,13 @@ void drawPlayerPairedQuadEffectTask(void) {
                 127, packet->v0, 112, packet->v0 + 15, 127, packet->v0 + 15);
             if (!(scratch->flags & PAIRED_QUAD_PROJECTION_FLAGS) &&
                 scratch->depth >= 0 && scratch->depth < 4096) {
-                addPrim(D_8013AF6C + (scratch->depth >> 2), packet);
+                addPrim(gCurrentPlayerOrderingTable + (scratch->depth >> 2), packet);
             }
             packet++;
         }
         GsOUT_PACKET_P = (u32)packet;
     }
-    if (!D_8013AFD3) {
+    if (!gRacePauseState) {
         resource->elapsed++;
     }
     if (resource->elapsed == 10) {
@@ -2061,7 +2061,7 @@ void drawQuadAnimationTask(void) {
         resource->elapsed = 0;
         scratch->frame.current = &resource->frames[resource->frame];
     }
-    if (D_8013AFD3 == 0) {
+    if (gRacePauseState == 0) {
         resource->elapsed++;
     }
     if (resource->elapsed == scratch->frame.current->duration) {
@@ -2104,7 +2104,7 @@ void drawQuadAnimationTask(void) {
 
         depth = scratch->depth -= 10;
         if (scratch->flags >= 0 && depth >= 0 && depth < 4096) {
-            addPrim(&D_8013AF6C[scratch->depth >> 2], packet);
+            addPrim(&gCurrentPlayerOrderingTable[scratch->depth >> 2], packet);
         }
         GsOUT_PACKET_P = (u32)(packet + 1);
     }
@@ -2153,7 +2153,7 @@ void updateRadialEffectTask(void) {
     packet = (POLY_FT4 *)GsOUT_PACKET_P;
     scratch = (RadialEffectScratch *)getScratchAddr(0);
 
-    if (D_8013AFD3 == 0) {
+    if (gRacePauseState == 0) {
         for (i = 0; i < 6; i++) {
             resource->positions[i].vx += resource->velocities[i].vx;
             resource->positions[i].vy += resource->velocities[i].vy;
@@ -2203,7 +2203,7 @@ void updateRadialEffectTask(void) {
                     (long *)&packet->x3, &scratch->cue, &scratch->flags);
             }
             if (*(volatile long *)&scratch->flags >= 0 && scratch->depth >= 0 && scratch->depth < 4096) {
-                addPrim(&D_8013AF6C[scratch->depth >> 2], packet);
+                addPrim(&gCurrentPlayerOrderingTable[scratch->depth >> 2], packet);
             }
             packet++;
         }
@@ -2224,7 +2224,7 @@ void emitRadialEffectTask(void) {
         while (1) {}
     }
     origin = (PositionEffectOrigin *)&gTaskMemoryPool[gCurrentTask->resource14];
-    if (D_8013AFD3 == 0 && (gFrameCounter & 3) == 0) {
+    if (gRacePauseState == 0 && (gFrameCounter & 3) == 0) {
         createChildTaskForParentWithReserve(D_8013B304, updateRadialEffectTask);
         gCreatedTask->resource14 = allocateTaskMemoryBlock();
         resource = (RadialEffectResource *)&gTaskMemoryPool[gCreatedTask->resource14];
@@ -2292,7 +2292,7 @@ void updatePlayerTrailTask(void) {
     }
 
     /* Keep the last sixteen edge pairs, sampling every other update. */
-    if (!D_8013AFD3 && (left->state.frame & 1)) {
+    if (!gRacePauseState && (left->state.frame & 1)) {
         for (i = PLAYER_TRAIL_SAMPLES - 1; i > 0; i--) {
             for (axis = 0; axis < 3; axis++) {
                 left->samples.axes[i][axis] = left->samples.axes[i - 1][axis];
@@ -2502,7 +2502,7 @@ void updatePlayerPositionTrailTask(void) {
     setUV4(&scratch->quad, 0, 64, 63, 64, 0, 127, 63, 127);
     scratch->quad.clut = getClut(880, 248);
     scratch->quad.tpage = getTPage(0, 1, 704, 0);
-    if (D_8013AFD3 == 0) {
+    if (gRacePauseState == 0) {
         for (i = 2; i > 0; i--) {
             for (j = 0; j < 3; j++) {
                 resource->leftPositions[i][j] = resource->leftPositions[i - 1][j];
@@ -2565,7 +2565,7 @@ void updatePlayerPositionTrailTask(void) {
         scratch->depth -= 4;
         if (!(scratch->flags & PAIRED_QUAD_PROJECTION_FLAGS) && scratch->depth >= 0 &&
                 scratch->depth < 4096) {
-            addPrim(&D_8013AF6C[(scratch->depth >> 2) - 4], packet);
+            addPrim(&gCurrentPlayerOrderingTable[(scratch->depth >> 2) - 4], packet);
         }
         packet++;
     }
@@ -2595,7 +2595,7 @@ void updatePlayerPositionTrailTask(void) {
         scratch->depth -= 4;
         if (!(scratch->flags & PAIRED_QUAD_PROJECTION_FLAGS) && scratch->depth >= 0 &&
                 scratch->depth < 4096) {
-            addPrim(&D_8013AF6C[(scratch->depth >> 2)], packet);
+            addPrim(&gCurrentPlayerOrderingTable[(scratch->depth >> 2)], packet);
         }
         packet++;
     }
@@ -2678,16 +2678,16 @@ void updatePlayerTripleQuadEffectTask(void) {
 
             *packet = scratch->quad;
             if (!(scratch->flags & 0x7FFBE000) && scratch->depth >= 0 && scratch->depth < 4096) {
-                addPrim(&D_8013AF6C[scratch->depth >> 2], packet);
+                addPrim(&gCurrentPlayerOrderingTable[scratch->depth >> 2], packet);
             }
             packet++;
-            if (D_8013AFD3 == 0) {
+            if (gRacePauseState == 0) {
                 resource->positions[quadIndex][1] -= 4;
             }
         }
         GsOUT_PACKET_P = (u32)packet;
     }
-    if (D_8013AFD3 == 0) {
+    if (gRacePauseState == 0) {
         resource->elapsed++;
     }
     if (resource->elapsed >= 8) {
@@ -2701,7 +2701,7 @@ void emitPlayerTurnTripleQuadEffectTask(void) {
     SVECTOR *vertex;
     s32 i, sine;
     player = &gRacePlayers[gCurrentTask->data18];
-    if (D_8013AFD3 != 0) return;
+    if (gRacePauseState != 0) return;
     if (!isPointWithinCameraForwardRange(player->worldCoordinate.coord.t[0], player->worldCoordinate.coord.t[2], (s16)getRenderCameraIndex())) return;
     if (!(player->unk128 & 8) && player->unk96E != 0 && player->unk96E != 0x801 && player->unk96E != 0x200) return;
     sine = rsin((s16)player->unk0BE - (s16)player->unk110);
@@ -2794,15 +2794,15 @@ void updatePlayerRingEffectTask(void) {
                 &scratch->cue, &scratch->flags);
             *packet = scratch->quad;
             if (!(scratch->flags & 0x7FFBE000) && scratch->depth >= 0 && scratch->depth < 4096) {
-                addPrim(&D_8013AF6C[scratch->depth >> 2], packet);
+                addPrim(&gCurrentPlayerOrderingTable[scratch->depth >> 2], packet);
             }
             packet++;
         }
         GsOUT_PACKET_P = (u32)packet;
     }
-    if (D_8013AFD3 == 0) {
+    if (gRacePauseState == 0) {
         resource->position[1] += (-rcos((resource->elapsed << 11) / 20) * 10) / 4096;
-        if (D_8013AFD3 == 0) {
+        if (gRacePauseState == 0) {
             resource->elapsed++;
         }
     }
@@ -2860,7 +2860,7 @@ void updatePlayerParticleTrailTask(void) {
     setVector(&scratch->vertices[2], 20, -20, 0);
     setVector(&scratch->vertices[3], 20, 20, 0);
 
-    if (D_8013AFD3 == 0) {
+    if (gRacePauseState == 0) {
         for (j = 9; j > 0; j--) {
             s32 x;
             s32 *current;
@@ -2916,10 +2916,10 @@ void updatePlayerParticleTrailTask(void) {
                 &scratch->cue, &scratch->flags);
             if (!(scratch->flags & 0x7FFBE000) && scratch->depth >= 0 && scratch->depth < 4096) {
                 *packet = scratch->quad;
-                addPrim(&D_8013AF6C[scratch->depth >> 2], packet);
+                addPrim(&gCurrentPlayerOrderingTable[scratch->depth >> 2], packet);
             }
             packet++;
-            if (D_8013AFD3 == 0) {
+            if (gRacePauseState == 0) {
                 resource->positions[i][1] -= 2;
                 if (resource->ages[i] < 11) {
                     resource->ages[i]++;
@@ -3021,7 +3021,7 @@ void drawRisingTexturedStripTask(void) {
     packet->y0 = y;
     packet->y3 = y + 15;
     packet->y2 = y + 15;
-    addPrim(D_8013AF6C, packet);
+    addPrim(gCurrentPlayerOrderingTable, packet);
     GsOUT_PACKET_P = (u32)(packet + 1);
     if (D_8013B338 >= 50) {
         if (++resource->countdown > 10) {
@@ -3085,7 +3085,7 @@ void drawRotatingQuadTrailTask(void) {
             scratch->vertices[1].vx, scratch->vertices[1].vy,
             scratch->vertices[2].vx, scratch->vertices[2].vy,
             scratch->vertices[3].vx, scratch->vertices[3].vy);
-        addPrim(D_8013AF6C, packet);
+        addPrim(gCurrentPlayerOrderingTable, packet);
         packet++;
     }
     GsOUT_PACKET_P = (u32)packet;
@@ -3124,7 +3124,7 @@ void drawLoweringTexturedQuadTask(void) {
     packet->y2 = resource->vertices[2].y + (resource->countdown << 6) / 10;
     packet->x3 = resource->vertices[3].x;
     packet->y3 = resource->vertices[3].y + (resource->countdown << 6) / 10;
-    addPrim(D_8013AF6C, packet);
+    addPrim(gCurrentPlayerOrderingTable, packet);
     GsOUT_PACKET_P = (u32)(packet + 1);
     if (D_8013B338 >= 50) {
         if (++resource->countdown > 10) { resource->countdown = 10; }
@@ -3156,7 +3156,7 @@ void drawShrinkingTexturedQuadTask(void) {
     packet->y2 = scratch->vertices[2].vy;
     packet->x3 = scratch->vertices[3].vx;
     packet->y3 = scratch->vertices[3].vy;
-    addPrim(D_8013AF6C, packet);
+    addPrim(gCurrentPlayerOrderingTable, packet);
     GsOUT_PACKET_P = (u32)(packet + 1);
     if (--resource->frames <= 0) {
         setCurrentTaskCallback(drawLoweringTexturedQuadTask);
@@ -3218,7 +3218,7 @@ void drawPaletteCyclingStripTask(void) {
     paletteOffset = gCurrentTask->data18 * 3;
     paletteRow = resource->frame % 3 + 242;
     packet->clut = getClut(944, paletteOffset + paletteRow);
-    addPrim(D_8013AF6C, packet);
+    addPrim(gCurrentPlayerOrderingTable, packet);
     GsOUT_PACKET_P = (u32)(packet + 1);
     resource->frame++;
 }
@@ -3242,7 +3242,7 @@ void drawLoweringQuadStripTask(void) {
     packet->y0 = packet->y1 = offset + 24;
     packet->y2 = packet->y3 = offset + 39;
     packet->clut = getClut(944, gCurrentTask->data18 * 3 + 242);
-    addPrim(D_8013AF6C, packet);
+    addPrim(gCurrentPlayerOrderingTable, packet);
     GsOUT_PACKET_P = (u32)(packet + 1);
     if (D_8013B338 >= 50) {
         if (++resource->countdown > 10) {
@@ -3269,7 +3269,7 @@ void drawSlidingQuadTask(void) {
     packet->x0 = packet->x2 = offset - 16;
     packet->x1 = packet->x3 = offset + 143;
     packet->clut = getClut(944, gCurrentTask->data18 * 3 + 242);
-    addPrim(D_8013AF6C, packet);
+    addPrim(gCurrentPlayerOrderingTable, packet);
     GsOUT_PACKET_P = (u32)(packet + 1);
     if (--resource->countdown <= 0) {
         setCurrentTaskCallback(drawLoweringQuadStripTask);
@@ -3410,7 +3410,7 @@ void drawFullScreenSpriteTask(void) {
     }
     for (i = 0; i < 2; i++) {
         packets[i] = resource->sprites[i];
-        addPrim(&D_8013AF6C[1], &packets[i]);
+        addPrim(&gCurrentPlayerOrderingTable[1], &packets[i]);
     }
     GsOUT_PACKET_P = (u32)(packets + 2);
     if (++resource->elapsed >= resource->duration || (gTaskTransitionFlags & 0x100)) {
@@ -3511,12 +3511,12 @@ void drawFadingText(FadingTextResource *resource) {
                     }
                     *packet = *scratch;
                     packet->tpage |= getTPage(0, 1, 0, 0);
-                    addPrim(&D_8013AF6C[0], packet);
+                    addPrim(&gCurrentPlayerOrderingTable[0], packet);
                     packet++;
                     *packet = *scratch;
                     packet->clut = getClut(768, 248);
                     packet->tpage |= getTPage(0, 2, 0, 0);
-                    addPrim(&D_8013AF6C[0], packet);
+                    addPrim(&gCurrentPlayerOrderingTable[0], packet);
                     packet++;
                     goto nextCharacter;
                 }
@@ -3786,7 +3786,7 @@ void addTextCharacter(s32 x, s32 y, u32 character) {
     setXY0(sprite, x, y);
     sprite->tag = (sizeof(SPRT_8) / sizeof(u32) - 1) << 24;
     sprite->clut = getClut(0x300, gTextGlyphPalette + 0xF0);
-    addPrim(D_8013AF6C, sprite);
+    addPrim(gCurrentPlayerOrderingTable, sprite);
     GsOUT_PACKET_P = (u32)(sprite + 1);
 }
 
@@ -3815,7 +3815,7 @@ void addStretchedTextCharacter(s32 x, s32 y, s32 width, u32 character) {
     quad->v2 = quad->v0 + 7;
     quad->u3 = quad->u0 + 7;
     quad->v3 = quad->v0 + 7;
-    addPrim(D_8013AF6C, quad);
+    addPrim(gCurrentPlayerOrderingTable, quad);
     GsOUT_PACKET_P = (u32)(quad + 1);
 }
 
@@ -3942,7 +3942,7 @@ void drawStretchedDebugText(s32 x, s32 y, const char *format, ...) {
 
     page = (DR_TPAGE *)GsOUT_PACKET_P;
     setDrawTPage(page, 0, 0, getTPage(0, 0, 960, 256));
-    addPrim(D_8013AF6C, page);
+    addPrim(gCurrentPlayerOrderingTable, page);
     GsOUT_PACKET_P = (u32)(page + 1);
 }
 

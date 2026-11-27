@@ -223,7 +223,7 @@ s32 playSoundEffect(u8 bank, u16 programAndTone, s16 volume) {
 s32 getNearestCameraManhattanDistance(s32 x, s32 y, s32 z) {
     s32 dx, dy, dz;
     s32 distance, other;
-    PlayerCamera *cameras = D_801241E8;
+    PlayerCamera *cameras = gPlayerCameras;
     dx = x - cameras[0].x;
     if (dx < 0) dx = -dx;
     dy = y - cameras[0].y;

@@ -11,7 +11,7 @@ void initializeTaskPlayerCamera(void) {
     PlayerCamera *cameras;
     currentPlayerAbsolute = &gRacePlayers[gCurrentTask->data18];
     initPlayerCameraAndTarget(gCurrentTask->data18);
-    cameras = D_801241E8;
+    cameras = gPlayerCameras;
     cameras[gCurrentTask->data18].yaw = currentPlayerAbsolute->unk110;
     cameras[gCurrentTask->data18].pitch = 0;
     cameras[gCurrentTask->data18].unk18 = currentPlayerAbsolute->unk92E;

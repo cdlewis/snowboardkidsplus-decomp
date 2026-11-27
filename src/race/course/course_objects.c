@@ -57,18 +57,18 @@ extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern VECTOR *gScratchVector0 __attribute__((section(".data")));
 extern SVECTOR *D_8013AF94 __attribute__((section(".data")));
 extern MATRIX *gScratchMatrix0 __attribute__((section(".data")));
-extern u32 *D_8013AF6C __attribute__((section(".data")));
-extern u16 D_8013AF78 __attribute__((section(".data")));
+extern u32 *gCurrentPlayerOrderingTable __attribute__((section(".data")));
+extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
 extern u8 D_8013AFCD __attribute__((section(".data")));
 extern u8 D_8013AFE0 __attribute__((section(".data")));
 extern u8 D_8013AFE2 __attribute__((section(".data")));
-extern u8 D_8013AFD3 __attribute__((section(".data")));
+extern u8 gRacePauseState __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern GameTask *D_8013AE98 __attribute__((section(".data")));
 extern u32 gTaskTransitionFlags __attribute__((section(".data")));
-extern s16 *D_8013B1EC __attribute__((section(".data")));
-extern s16 *D_8013B1F4 __attribute__((section(".data")));
+extern s16 *gCourseGeometryVertexData __attribute__((section(".data")));
+extern s16 *gCourseGeometryRegionData __attribute__((section(".data")));
 
 extern VECTOR *D_8013AF8C __attribute__((section(".data")));
 extern u32 *D_8013AF70 __attribute__((section(".data")));
@@ -695,9 +695,9 @@ void drawTaskObject(u16 index) {
     GsGetLs(object->coord2, gScratchMatrix0);
     GsSetLsMatrix(gScratchMatrix0);
     if (getRenderCameraIndex()) {
-        GsSortObject4(object, &D_800EC0B8[D_8013AF78], 2, (u32 *)getScratchAddr(0));
+        GsSortObject4(object, &D_800EC0B8[gActiveGraphicsBuffer], 2, (u32 *)getScratchAddr(0));
     } else {
-        GsSortObject4(object, &D_800EC018[D_8013AF78], 2, (u32 *)getScratchAddr(0));
+        GsSortObject4(object, &D_800EC018[gActiveGraphicsBuffer], 2, (u32 *)getScratchAddr(0));
     }
     SetSp(gObjectSortSavedStackPointer);
 }
@@ -711,9 +711,9 @@ void drawTaskObjectAlternateLayer(u16 index) {
     GsGetLs(object->coord2, gScratchMatrix0);
     GsSetLsMatrix(gScratchMatrix0);
     if (getRenderCameraIndex()) {
-        GsSortObject4(object, &D_800EC130[D_8013AF78], 2, (u32 *)getScratchAddr(0));
+        GsSortObject4(object, &D_800EC130[gActiveGraphicsBuffer], 2, (u32 *)getScratchAddr(0));
     } else {
-        GsSortObject4(object, &D_800EC090[D_8013AF78], 2, (u32 *)getScratchAddr(0));
+        GsSortObject4(object, &D_800EC090[gActiveGraphicsBuffer], 2, (u32 *)getScratchAddr(0));
     }
     SetSp(gAlternateObjectSortSavedStackPointer);
 }
@@ -795,7 +795,7 @@ void updateCourseObjectTask(void) {
     s16 cameraIndex;
     u16 objectIndex;
 
-    if (!D_8013AFD3 && gCurrentTask->data18 == 2) {
+    if (!gRacePauseState && gCurrentTask->data18 == 2) {
         if (gTaskTransitionFlags & 4) {
             if (gCurrentTask->data1A != 0x400) {
                 if (gCurrentTask->data1A == 0) {
@@ -879,7 +879,7 @@ void updateSelectedCourseOffsetTask(void) {
         while (1) {}
     }
     resource = (CourseOffsetResource *)&gTaskMemoryPool[gCurrentTask->resource14];
-    if (!D_8013AFD3) {
+    if (!gRacePauseState) {
         RotMatrix(&resource->rotation, gScratchMatrix0);
         D_8013AF90->vx = 0;
         D_8013AF90->vy = 0;
@@ -912,7 +912,7 @@ void updatePlayerFollowingOrbitTask(void) {
         while (1) {}
     }
     resource = (CourseOffsetResource *)&gTaskMemoryPool[gCurrentTask->resource14];
-    if (!D_8013AFD3) {
+    if (!gRacePauseState) {
         if (gRacePlayers[gCurrentTask->data18].unk12C != 7) {
             D_8013AF94->vx = -100;
             D_8013AF94->vy = 0;
@@ -946,7 +946,7 @@ void updateOrbitingTaskObject(void) {
         while (1) {}
     }
     resource = (CourseOffsetResource *)&gTaskMemoryPool[gCurrentTask->resource14];
-    if (!D_8013AFD3) {
+    if (!gRacePauseState) {
         resource->rotation.vy -= 0x20;
         D_8013AF94->vx = 100;
         D_8013AF94->vy = 0;
@@ -961,7 +961,7 @@ void updateOrbitingTaskObject(void) {
         setCoordinateRotation(&resource->rotation, &resource->coordinate);
         drawTaskObject(gCurrentTask->data1C);
     }
-    if (!D_8013AFD3) {
+    if (!gRacePauseState) {
         if (--gCurrentTask->data1A == 0) {
             gCurrentTask->data1A = 0x40;
             setCurrentTaskCallback(updateMovingTaskObject);
@@ -975,7 +975,7 @@ void updateMovingTaskObject(void) {
         while (1) {}
     }
     resource = (CourseOffsetResource *)&gTaskMemoryPool[gCurrentTask->resource14];
-    if (!D_8013AFD3) {
+    if (!gRacePauseState) {
         RotMatrix(&resource->rotation, gScratchMatrix0);
         D_8013AF90->vx = 0;
         D_8013AF90->vy = 0;
@@ -1010,7 +1010,7 @@ void computeSelectedTriangleAngles(s16 *pitch, s16 *yaw) {
 }
 
 void updateCameraRotationMatrices(u16 playerIndex) {
-    PlayerCamera *cameras = D_801241E8;
+    PlayerCamera *cameras = gPlayerCameras;
     D_8013AF90->vx = 0;
     D_8013AF90->vy = cameras[playerIndex].yaw;
     D_8013AF90->vz = 0;
@@ -1102,7 +1102,7 @@ void drawPreparedTaskVisualQuad(TaskVisualResource *resource, TaskVisualFrame *f
     if (depth >= 0 && flags >= 0) {
         switch (mode) {
         case 0:
-            addCopiedPrimitive(&D_8013AF6C[depth >> 2], (u32 *)poly);
+            addCopiedPrimitive(&gCurrentPlayerOrderingTable[depth >> 2], (u32 *)poly);
             break;
         case 1:
             addCopiedPrimitive(&D_8013AF70[depth >> 2], (u32 *)poly);
@@ -1142,11 +1142,11 @@ void drawCameraFacingTaskVisual(TaskVisualResource *resource, u8 mode) {
     long depth;
     if (mode == 0) {
         D_8013AF90->vx = 0;
-        D_8013AF90->vy = D_801241E8[getRenderCameraIndex()].yaw;
+        D_8013AF90->vy = gPlayerCameras[getRenderCameraIndex()].yaw;
         D_8013AF90->vz = 0;
     } else {
-        D_8013AF90->vx = D_801241E8[getRenderCameraIndex()].pitch;
-        D_8013AF90->vy = D_801241E8[getRenderCameraIndex()].yaw;
+        D_8013AF90->vx = gPlayerCameras[getRenderCameraIndex()].pitch;
+        D_8013AF90->vy = gPlayerCameras[getRenderCameraIndex()].yaw;
         D_8013AF90->vz = 0;
     }
     RotMatrixYXZ(D_8013AF90, gScratchMatrix0);
@@ -1172,7 +1172,7 @@ void drawCameraFacingTaskVisual(TaskVisualResource *resource, u8 mode) {
     poly->clut = resource->frame->clut;
     depth = RotTransPers4((SVECTOR *)&resource->transformedVertices[0], (SVECTOR *)&resource->transformedVertices[1], (SVECTOR *)&resource->transformedVertices[2], (SVECTOR *)&resource->transformedVertices[3], (long *)&poly->x0, (long *)&poly->x1, (long *)&poly->x2, (long *)&poly->x3, &depthCue, &flags);
     if (depth >= 0 && flags >= 0) {
-        addCopiedPrimitive(&D_8013AF6C[depth >> 2], (u32 *)poly);
+        addCopiedPrimitive(&gCurrentPlayerOrderingTable[depth >> 2], (u32 *)poly);
     }
 }
 
@@ -1230,7 +1230,7 @@ void updatePickupVisualTask(void) {
                 heightOffsets = gVisualPlacementHeightData.offsets;
                 resource->coordinate.coord.t[1] -= heightOffsets[height];
             }
-            if (D_8013AFD3 == 0) {
+            if (gRacePauseState == 0) {
                 player = 0;
                 resource->position.x = resource->coordinate.coord.t[0] << 8;
                 resource->position.y = resource->coordinate.coord.t[1] << 8;
@@ -1299,7 +1299,7 @@ void updateObjectVisualTask(void) {
             resource->coordinate.coord.t[0] = D_8013B2BC[i].x;
             resource->coordinate.coord.t[1] = D_8013B2BC[i].y;
             resource->coordinate.coord.t[2] = D_8013B2BC[i].z;
-            if (D_8013AFD3 == 0) {
+            if (gRacePauseState == 0) {
                 resource->position.x = resource->coordinate.coord.t[0] << 8;
                 resource->position.y = resource->coordinate.coord.t[1] << 8;
                 resource->position.z = resource->coordinate.coord.t[2] << 8;
@@ -1359,7 +1359,7 @@ void updateInteractionVisualTask(void) {
                     resource->coordinate.coord.t[1] -= heightOffsets[height];
                 }
                 player = 0;
-                if (D_8013AFD3 == 0) {
+                if (gRacePauseState == 0) {
                     resource->position.x = resource->coordinate.coord.t[0] << 8;
                     resource->position.y = resource->coordinate.coord.t[1] << 8;
                     resource->position.z = resource->coordinate.coord.t[2] << 8;
@@ -1439,7 +1439,7 @@ void updateCourseVisualTask(void) {
             drawPreparedTaskVisualQuad(resource, D_80129540[D_8013B2BC[i].unk01], 2);
         }
     }
-    if (D_8013AFD3 == 0) {
+    if (gRacePauseState == 0) {
         if (gSelectedCourseIndex == 9) resource->framePosition += resource->unkC8;
         if (resource->framePosition >= resource->unkC6) resource->framePosition &= 0xFF;
     }
@@ -1553,7 +1553,7 @@ void updatePlacedObjectTask(void) {
         }
         drawTaskObject(gPlacedObjectModelIds[gCurrentTask->data1A]);
     }
-    if (!D_8013AFD3) {
+    if (!gRacePauseState) {
         switch (gCurrentTask->data1A) {
         case 0:
             resolvePlayerCollisionsWithCylinder(&resource->position, 0x6000, 0x10000, 2);
@@ -1636,7 +1636,7 @@ void updatePlacedObjectBounceTask(void) {
     resource = (PlacedObjectResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (gCurrentTask->resource16 == 0xFFFF) { while (1) {} }
     visual = (PlacedObjectBounceVisual *)&gTaskMemoryPool[gCurrentTask->resource16];
-    if (!D_8013AFD3) {
+    if (!gRacePauseState) {
         visual->height += visual->velocity;
         switch (gCurrentTask->data1C) {
         case 0: case 1:
@@ -1707,7 +1707,7 @@ void updateBobbingTrailEmitterTask(void) {
     if (gCurrentTask->resource14 == 0xFFFF) { while (1) {} }
     resource = (BobbingTrailEmitterResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)getRenderCameraIndex())) {
-        if (!D_8013AFD3) {
+        if (!gRacePauseState) {
             resolvePlayerCollisionsWithCylinder(&resource->position, 0x7000, 0x18000, 2);
             resource->heading.value += resource->headingStep;
             if (resource->heading.halves.low > resource->baseHeading.halves.low + 0x140) resource->headingStep = -8;
@@ -1766,7 +1766,7 @@ void updateProximityEmitterTask(void) {
         while (1) {}
     }
     resource = (ProximityEmitterResource *)&gTaskMemoryPool[gCurrentTask->resource14];
-    if (!D_8013AFD3) {
+    if (!gRacePauseState) {
         if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0], resource->coordinate.coord.t[2], (s16)getRenderCameraIndex())) {
             if (--resource->countdown == 0) {
                 resource->countdown = 0x20;
@@ -1815,7 +1815,7 @@ void updateProximityParticleTask(void) {
         while (1) {}
     }
     resource = (ProximityParticleResource *)&gTaskMemoryPool[gCurrentTask->resource14];
-    if (!D_8013AFD3) {
+    if (!gRacePauseState) {
         resource->rotation.vx += 0x40;
         resource->velocityY += resource->gravity;
         resource->position.x += resource->velocityX;
@@ -1854,7 +1854,7 @@ void updateProximityParticleTask(void) {
 
     if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0],
             resource->coordinate.coord.t[2], (s16)getRenderCameraIndex())) {
-        if (!D_8013AFD3) {
+        if (!gRacePauseState) {
             if (resource->velocityY > 0) {
                 addPlayerFlagsWithinRadius(&resource->position, 0x5C00, 0x20);
             }
@@ -1920,7 +1920,7 @@ void updateMovingVisualTask(void) {
     cameraIndex = getRenderCameraIndex();
     if (isPointWithinCameraForwardRange(resource->coordinate.coord.t[0],
             resource->coordinate.coord.t[2], (s16)cameraIndex)) {
-        if (!D_8013AFD3) {
+        if (!gRacePauseState) {
             if (resource->groundY) {
                 turn = getXZHeading(resource->position.x, resource->position.z,
                     gMovingVisualPlacements[gCurrentTask->data18].startX,
@@ -2000,7 +2000,7 @@ void updateMovingVisualTask(void) {
 
         prepareTaskVisualQuad(resource, gMovingVisualFrames[0], 0);
         drawPreparedTaskVisualQuad(resource,
-            gMovingVisualFrames[((resource->velocityY - D_801241E8[cameraIndex].yaw + 0x100) & 0xFFF) / 0x200], 0);
+            gMovingVisualFrames[((resource->velocityY - gPlayerCameras[cameraIndex].yaw + 0x100) & 0xFFF) / 0x200], 0);
     }
 }
 
@@ -2011,7 +2011,7 @@ void resolvePlayerRegionCollision(RacePlayer *player, PlayerCollisionRegion *reg
     s16 height;
     s32 courseHeight, slopeHeight;
 
-    if (D_8013AFD3) {
+    if (gRacePauseState) {
         return;
     }
     if (player->unk12C == 0x1D) {
@@ -2128,7 +2128,7 @@ void updateActivePlayerRegionCollisions(void) {
     u16 i;
     PlayerCollisionRegion *region;
     RacePlayer *players;
-    if (!D_8013AFD3) {
+    if (!gRacePauseState) {
         i = 0;
         region = &D_80129A18[gCurrentTask->data18];
         players = gRacePlayers;
@@ -2180,7 +2180,7 @@ void updateCollectibleTask(void) {
         D_80129A80[10].coord2 = &resource->coordinate;
         setCoordinateRotation(&resource->rotation, &resource->coordinate);
         drawTaskObject(10);
-        if (!D_8013AFD3) {
+        if (!gRacePauseState) {
             resolvePlayerCollisionsWithCylinder(&resource->position, 0x2800, 0x8000, 2);
             for (i = 0; i < D_8013B1D4; i++) {
                 if (arePositionsWithinXZRange(&resource->position, &D_8012450C[i].location.player.position, resource->collisionRange)) {
@@ -2229,7 +2229,7 @@ void updateFallingTaskObject(void) {
         while (1) {}
     }
     resource = (FallingTaskResource *)&gTaskMemoryPool[gCurrentTask->resource14];
-    if (!D_8013AFD3) {
+    if (!gRacePauseState) {
         resource->verticalVelocity += 0x180;
         resource->position.y += resource->verticalVelocity;
         if (resource->position.y > resource->groundHeight) {
@@ -2258,7 +2258,7 @@ void updateLandedTaskObject(void) {
         while (1) {}
     }
     resource = (FallingTaskResource *)&gTaskMemoryPool[gCurrentTask->resource14];
-    if (!D_8013AFD3) {
+    if (!gRacePauseState) {
         if (--gCurrentTask->data1A == 0) {
             deleteCurrentTaskSubtree();
             return;
@@ -2328,7 +2328,7 @@ void updateOrbitingObstacleTask(void) {
     if (!active) {
         return;
     }
-    if (!D_8013AFD3) {
+    if (!gRacePauseState) {
         if (gCurrentTask->data18 == 0) {
             resource->phase += 24;
             resource->rotation.vy += 96;
@@ -2387,9 +2387,9 @@ void updateOrbitingObstacleTask(void) {
         GsGetLs(&resource->coordinate, gScratchMatrix0);
         GsSetLsMatrix(gScratchMatrix0);
         if (getRenderCameraIndex()) {
-            drawProjectedModelPrimitives(gOptionalCourseModels[0], &D_800EC0B8[D_8013AF78], 2, 1);
+            drawProjectedModelPrimitives(gOptionalCourseModels[0], &D_800EC0B8[gActiveGraphicsBuffer], 2, 1);
         } else {
-            drawProjectedModelPrimitives(gOptionalCourseModels[0], &D_800EC018[D_8013AF78], 2, 1);
+            drawProjectedModelPrimitives(gOptionalCourseModels[0], &D_800EC018[gActiveGraphicsBuffer], 2, 1);
         }
     }
 }
@@ -2403,9 +2403,9 @@ void initializeCourseUnlockScene(void) {
     s16 i;
 
     index = D_80123D80[gSelectedCourseIndex].unk00;
-    vertices = (CourseGeometryVertex *)D_8013B1EC;
+    vertices = (CourseGeometryVertex *)gCourseGeometryVertexData;
     regionOffset = index * (s32)sizeof(*region);
-    region = (GeometryRegion *)(regionOffset + (u32)D_8013B1F4);
+    region = (GeometryRegion *)(regionOffset + (u32)gCourseGeometryRegionData);
     D_80129C60[26].coord.t[0] = ((vertices[region->vertices[0]].x + vertices[region->vertices[1]].x
         + vertices[region->vertices[2]].x + vertices[region->vertices[3]].x) / 4) * 5;
     D_80129C60[26].coord.t[2] = ((vertices[region->vertices[0]].z + vertices[region->vertices[1]].z
@@ -2421,10 +2421,10 @@ void initializeCourseUnlockScene(void) {
     createChildTaskWithReserve(copySlot26TransformToCurrentTaskObject);
     gCreatedTask->data18 = gCurrentTask->data18 + 26;
     gCurrentTask->data18 = 26;
-    D_801241E8[0].pitch = 0x20;
-    D_801241E8[0].unk10 = -0x180;
-    D_801241E8[0].yaw = D_8012A5C0[26].vy;
-    D_801241E8[0].unk16 = 9;
+    gPlayerCameras[0].pitch = 0x20;
+    gPlayerCameras[0].unk10 = -0x180;
+    gPlayerCameras[0].yaw = D_8012A5C0[26].vy;
+    gPlayerCameras[0].unk16 = 9;
     i = 0;
     while (1) {
         if (i >= D_8013AFD2) {
@@ -2715,11 +2715,11 @@ s32 restoreSelectedPlayerState(void) {
             D_8013AEDC[0] = record->state;
             D_8013AEE0[0] = D_8013AED4[0][D_8013AEDC[0]].repeatCount;
             record->state = -1;
-            D_801241E8[0].x = record->unk04;
-            D_801241E8[0].y = record->unk08;
-            D_801241E8[0].z = record->unk0C;
+            gPlayerCameras[0].x = record->unk04;
+            gPlayerCameras[0].y = record->unk08;
+            gPlayerCameras[0].z = record->unk0C;
             D_8013B20C = record->unk10;
-            D_801241E8[0].unk16 = 8;
+            gPlayerCameras[0].unk16 = 8;
             return 1;
         }
         record++;

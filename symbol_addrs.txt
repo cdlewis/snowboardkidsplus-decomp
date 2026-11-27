@@ -3016,7 +3016,7 @@ initializeCurrentPlayerState23 = 0x8001FDEC; // type:func
 
 emitProjectedFlatQuad = 0x80052C1C; // type:func
 
-D_8013B1F4 = 0x8013B1F4;
+gCourseGeometryRegionData = 0x8013B1F4;
 initializeProximityEmitterTask = 0x8005CB08; // type:func
 gProximityEmitterPlacements = 0x80129744; // size:0x20
 
@@ -4220,3 +4220,10 @@ gCreatedTask = 0x8013AE8C; // size:0x4
 gScratchVector0 = 0x8013AF88; // size:0x4
 gScratchMatrix0 = 0x8013AF98; // size:0x4
 gTaskTransitionFlags = 0x8013AFE4; // size:0x4
+gPlayerCameras = 0x801241E8;
+gCurrentPlayerOrderingTable = 0x8013AF6C;
+gActiveGraphicsBuffer = 0x8013AF78;
+gRacePauseState = 0x8013AFD3;
+gCourseGeometryVertexData = 0x8013B1EC;
+gGeometryProjectionBasisX = 0x8013B624;
+gGeometryProjectionBasisZ = 0x8013B628;

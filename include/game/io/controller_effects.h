@@ -29,7 +29,7 @@ typedef struct ControllerActuatorOutput {
 /* Shared controller storage remains in the main controller data object. */
 extern ControllerActuatorOutput D_8013AF00[];
 extern s16 D_8013AEF0[];
-extern u8 D_8013AFD3;
+extern u8 gRacePauseState;
 
 void updateControllerEffectSequence(u16 controller);
 void updateLegacyControllerActuators(u16 controller);
