@@ -1119,7 +1119,7 @@ segments:
       - {start: 0x12BBF8, type: .data, name: unclassified/menu_8007BE9C, linker_section: .data.selection_money_currency_label}
       - {start: 0x12BBFC, type: .data, name: menu/course_selection_tasks, linker_section: .data.course_menu_group_mappings}
       - {start: 0x12BC1C, type: .data, name: menu/course_selection_tasks, linker_section: .data.selection_prize_currency_label}
-      - [0x12BC20, data, selection_prize_currency_label_tail]
+      - {start: 0x12BC20, type: .data, name: menu/course_selection_tasks, linker_section: .data.grouped_selection_indices}
       - {start: 0x12BC5C, type: .data, name: menu/course_selection_tasks, linker_section: .data.registered_triplet_unavailable_label}
       - {start: 0x12BC60, type: .data, name: menu/course_selection_tasks, linker_section: .data.lit_object_draw_area_depths}
       - [0x12BC68, data, 12BC68]

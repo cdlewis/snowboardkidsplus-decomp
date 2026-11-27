@@ -497,15 +497,62 @@ ByteTriplet gSelectionPanelStatTriplets[5]
 u8 gSelectionPanelStatPadding
     __attribute__((section(".data.selection_panel_data"))) = 0;
 
-extern u8 gGroupedSelectionMode0Items[4];
-extern u8 gGroupedSelectionMode1Items[5];
-extern u8 gGroupedSelectionMode2Items[4];
-extern u8 gGroupedSelectionMode5Items[4];
-extern u8 gGroupedSelectionMode4Items[4];
-extern u8 gGroupedCourseMenuTextIndices[4];
-extern u8 gExtendedGroupedCourseMenuTextIndices[5];
-extern u8 gGroupedSelectionMode4TextIndices[4];
-extern u8 gDefaultBoardMenuTextIndices[4];
+u8 gGroupedSelectionMode0Items[4]
+    __attribute__((section(".data.grouped_selection_indices"), aligned(4))) = {1, 2, 3, 0};
+
+u8 gGroupedSelectionMode1Items[5]
+    __attribute__((section(".data.grouped_selection_indices"), aligned(4))) = {1, 2, 3, 4, 0};
+
+u8 gGroupedSelectionMode1ItemsPadding0
+    __attribute__((section(".data.grouped_selection_indices"))) = 0;
+u8 gGroupedSelectionMode1ItemsPadding1
+    __attribute__((section(".data.grouped_selection_indices"))) = 0;
+u8 gGroupedSelectionMode1ItemsPadding2
+    __attribute__((section(".data.grouped_selection_indices"))) = 0;
+
+u8 gGroupedSelectionMode2Items[4]
+    __attribute__((section(".data.grouped_selection_indices"), aligned(4))) = {5, 6, 7, 0};
+
+u8 gGroupedSelectionMode5Items[4]
+    __attribute__((section(".data.grouped_selection_indices"), aligned(4))) = {14, 15, 16, 0};
+
+u8 gDefaultBoardMenuItems[4]
+    __attribute__((section(".data.grouped_selection_indices"), aligned(4))) = {8, 9, 10, 0};
+
+u8 gGroupedSelectionMode4Items[4]
+    __attribute__((section(".data.grouped_selection_indices"), aligned(4))) = {11, 12, 13, 0};
+
+u8 gGroupedCourseMenuTextIndices[4]
+    __attribute__((section(".data.grouped_selection_indices"), aligned(4))) = {0, 1, 2, 4};
+
+u8 gExtendedGroupedCourseMenuTextIndices[5]
+    __attribute__((section(".data.grouped_selection_indices"), aligned(4))) = {0, 1, 2, 3, 4};
+
+u8 gExtendedGroupedCourseMenuTextIndicesPadding0
+    __attribute__((section(".data.grouped_selection_indices"))) = 0;
+u8 gExtendedGroupedCourseMenuTextIndicesPadding1
+    __attribute__((section(".data.grouped_selection_indices"))) = 0;
+u8 gExtendedGroupedCourseMenuTextIndicesPadding2
+    __attribute__((section(".data.grouped_selection_indices"))) = 0;
+
+u8 gGroupedSelectionMode4TextIndices[4]
+    __attribute__((section(".data.grouped_selection_indices"), aligned(4))) = {5, 6, 7, 0};
+
+u8 gDefaultBoardMenuTextIndices[4]
+    __attribute__((section(".data.grouped_selection_indices"), aligned(4))) = {8, 8, 8, 0};
+
+u8 gSelectionPanelTripletIndices[4]
+    __attribute__((section(".data.grouped_selection_indices"), aligned(4))) = {1, 2, 3, 0};
+
+u8 gExtendedSelectionPanelTripletIndices[5]
+    __attribute__((section(".data.grouped_selection_indices"), aligned(4))) = {1, 2, 3, 4, 0};
+
+u8 gExtendedSelectionPanelTripletIndicesPadding0
+    __attribute__((section(".data.grouped_selection_indices"))) = 0;
+u8 gExtendedSelectionPanelTripletIndicesPadding1
+    __attribute__((section(".data.grouped_selection_indices"))) = 0;
+u8 gExtendedSelectionPanelTripletIndicesPadding2
+    __attribute__((section(".data.grouped_selection_indices"))) = 0;
 
 GroupedSelectionMenuDescriptor gGroupedCourseMenuDescriptors[]
     __attribute__((section(".data.grouped_course_menu_descriptors"))) = {

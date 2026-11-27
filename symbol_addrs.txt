@@ -4319,7 +4319,7 @@ gSelectedCourseMenuItem = 0x8013B104; // size:0x2
 gRecordFlagMenuItemBuffers = 0x80130094; // size:0xA
 gRecordFlagMenuTextIndexBuffers = 0x801300A0; // size:0xA
 gBoardMenuSpriteEntries = 0x80131A78; // size:0x24 defined:true
-gDefaultBoardMenuItems = 0x8013B434;
+gDefaultBoardMenuItems = 0x8013B434; // size:0x4
 gMenuPlayerTextureSelections = 0x8013B468;
 
 // Memory-card selection and directory state.
@@ -4340,7 +4340,7 @@ gMemoryCardDirectorySearchPattern = 0x8013AF3C; // size:0x2
 
 gMemoryCardTaskState = 0x8013AF3E; // size:0x2
 gWorkingSaveRecords = 0x8013B484;
-gSelectionPanelTripletIndices = 0x8013B450;
+gSelectionPanelTripletIndices = 0x8013B450; // size:0x4
 
 gUnreferencedQuadLists = 0x80123C90; // size:0xF0
 gSelectedCourseRecords = 0x80123D80; // size:0x2D0
@@ -4441,7 +4441,7 @@ gCurrentSpriteTextureRegions = 0x8013B6AC;
 
 gMemoryCardAccessInProgressText = 0x801302BC; // size:0x4C
 gSaveRecordConfirmationSprites = 0x801307AC; // size:0x54
-gGroupedCourseMenuTextIndices = 0x8013B43C;
+gGroupedCourseMenuTextIndices = 0x8013B43C; // size:0x4
 gSaveRecordSavedOrLoaded = 0x8013B47C;
 
 gNextSelectedRecordProgressBonus = 0x8013AFDE; // size:0x2 defined:true
@@ -4506,13 +4506,13 @@ gOneShotTaskVisualFrames = 0x80124304; // size:0x20 defined:true
 gPlayerProjectileVisualFrames = 0x80124354; // size:0x10 defined:true
 
 // Grouped selection item mappings and panel indices.
-gGroupedSelectionMode0Items = 0x8013B420;
-gGroupedSelectionMode1Items = 0x8013B424;
-gGroupedSelectionMode2Items = 0x8013B42C;
-gGroupedSelectionMode5Items = 0x8013B430;
-gGroupedSelectionMode4Items = 0x8013B438;
-gDefaultBoardMenuTextIndices = 0x8013B44C;
-gExtendedSelectionPanelTripletIndices = 0x8013B454;
+gGroupedSelectionMode0Items = 0x8013B420; // size:0x4
+gGroupedSelectionMode1Items = 0x8013B424; // size:0x5
+gGroupedSelectionMode2Items = 0x8013B42C; // size:0x4
+gGroupedSelectionMode5Items = 0x8013B430; // size:0x4
+gGroupedSelectionMode4Items = 0x8013B438; // size:0x4
+gDefaultBoardMenuTextIndices = 0x8013B44C; // size:0x4
+gExtendedSelectionPanelTripletIndices = 0x8013B454; // size:0x5
 
 gSelectionPrizeDescriptionTexts = 0x8012FC2C; // size:0x28
 gMemoryCardMissingRetryText = 0x80130308; // size:0x40
@@ -4549,12 +4549,12 @@ gMemoryCardLoadRetryConfirmationText = 0x801303CC; // size:0x20
 gMemoryCardLoadInProgressText = 0x8013052C; // size:0x4C
 gMemoryCardLoadSlotChoiceText = 0x8013066C; // size:0x28
 
-gExtendedGroupedCourseMenuTextIndices = 0x8013B440; // size:0x8
+gExtendedGroupedCourseMenuTextIndices = 0x8013B440; // size:0x5
 gMemoryCardLoadOptionsText = 0x801306EC; // size:0x1C
 gMemoryCardLoadedRecordConfirmationText = 0x80130780; // size:0x18
 
 gCourseMenuItemStats = 0x8012FCE4; // size:0x2C
-gGroupedSelectionMode4TextIndices = 0x8013B448;
+gGroupedSelectionMode4TextIndices = 0x8013B448; // size:0x4
 
 gPlayerModeSelectionSprites = 0x80123B50; // size:0x18
 gPlayerModeSelectionMapping = 0x8013B0FC; // size:0x4
@@ -4793,3 +4793,12 @@ sBackgroundData_8013B230 = 0x8013B230; // type:u32 size:0x8 defined:true
 gSelectedPlayerSnapshotsReserved3B2EC = 0x8013B2EC; // size:0x10 defined:true
 gSelectedPlayerTaskSnapshotBuffer = 0x8017AF40; // absolute:true extract:false
 gSelectedPlayerSnapshotBuffer = 0x8016F000; // absolute:true extract:false
+gGroupedSelectionMode1ItemsPadding0 = 0x8013B429; // size:0x1
+gGroupedSelectionMode1ItemsPadding1 = 0x8013B42A; // size:0x1
+gGroupedSelectionMode1ItemsPadding2 = 0x8013B42B; // size:0x1
+gExtendedGroupedCourseMenuTextIndicesPadding0 = 0x8013B445; // size:0x1
+gExtendedGroupedCourseMenuTextIndicesPadding1 = 0x8013B446; // size:0x1
+gExtendedGroupedCourseMenuTextIndicesPadding2 = 0x8013B447; // size:0x1
+gExtendedSelectionPanelTripletIndicesPadding0 = 0x8013B459; // size:0x1
+gExtendedSelectionPanelTripletIndicesPadding1 = 0x8013B45A; // size:0x1
+gExtendedSelectionPanelTripletIndicesPadding2 = 0x8013B45B; // size:0x1
