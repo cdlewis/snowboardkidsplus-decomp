@@ -4442,7 +4442,10 @@ gCurrentSpriteTextureRegions = 0x8013B6AC;
 gMemoryCardAccessInProgressText = 0x801302BC; // size:0x4C
 gSaveRecordConfirmationSprites = 0x801307AC; // size:0x54
 gGroupedCourseMenuTextIndices = 0x8013B43C; // size:0x4
-gSaveRecordSavedOrLoaded = 0x8013B47C;
+gSaveRecordSavedOrLoaded = 0x8013B47C; // size:0x1
+gSaveRecordSavedOrLoadedPadding0 = 0x8013B47D; // size:0x1
+gSaveRecordSavedOrLoadedPadding1 = 0x8013B47E; // size:0x1
+gSaveRecordSavedOrLoadedPadding2 = 0x8013B47F; // size:0x1
 
 gNextSelectedRecordProgressBonus = 0x8013AFDE; // size:0x2 defined:true
 gSelectedGeometryVertex2 = 0x8013B208; // size:0x4 defined:true

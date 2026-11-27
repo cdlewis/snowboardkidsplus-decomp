@@ -1126,7 +1126,7 @@ segments:
       - {start: 0x12BC6C, type: .data, name: menu/course_selection_tasks, linker_section: .data.player_grouped_selection_transition_flags}
       - {start: 0x12BC70, type: .data, name: menu/panel_tasks, linker_section: .data.registered_panel_mode_labels}
       - {start: 0x12BC78, type: .data, name: menu/course_selection_tasks, linker_section: .data.save_record_progress_currency_label}
-      - [0x12BC7C, data, 12BC7C]
+      - {start: 0x12BC7C, type: .data, name: menu/save_record_tasks, linker_section: .sdata.save_record_saved_or_loaded}
       - {start: 0x12BC80, type: .data, name: menu/save_record_tasks, linker_section: .data.memory_card_save_record_currency_label}
       - [0x12BC84, data, 12BC84]
       - {start: 0x12BC8C, type: .data, name: menu/panel_tasks, linker_section: .data.shop_menu_mappings}

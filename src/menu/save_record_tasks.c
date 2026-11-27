@@ -31,6 +31,17 @@ typedef struct SaveMenuResource {
     s16 result1E;
 } SaveMenuResource;
 
+u8 gSaveRecordSavedOrLoaded
+    __attribute__((section(".sdata.save_record_saved_or_loaded"), aligned(4))) = 0;
+
+u8 gSaveRecordSavedOrLoadedPadding0
+    __attribute__((section(".sdata.save_record_saved_or_loaded"))) = 0;
+
+u8 gSaveRecordSavedOrLoadedPadding1
+    __attribute__((section(".sdata.save_record_saved_or_loaded"))) = 0;
+
+u8 gSaveRecordSavedOrLoadedPadding2
+    __attribute__((section(".sdata.save_record_saved_or_loaded"))) = 0;
 
 const u16 gMemoryCardAccessInProgressText[38]
     __attribute__((section(".data.memory_card_menu_text"), aligned(4))) = {
