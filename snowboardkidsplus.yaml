@@ -896,7 +896,7 @@ segments:
       - {start: 0x122124, type: .data, name: menu/panel_tasks, linker_section: .data.player_texture_selection_sprites}
       - [0x122196, pad]
       - {start: 0x122198, type: .data, name: menu/panel_tasks, linker_section: .data.player_texture_selection_page_items}
-      - [0x1221B0, data, board_selection_tail_remainder]
+      - {start: 0x1221B0, type: .data, name: menu/panel_tasks, linker_section: .data.board_selection_tables}
       - {start: 0x122524, type: .data, name: menu/panel_tasks, linker_section: .data.grid_model_preview_poses}
       - {start: 0x12254C, type: .data, name: menu/grid_selection, linker_section: .data.palette_selection_main_preview_y}
       - {start: 0x122558, type: .data, name: menu/panel_tasks, linker_section: .data.board_price_vertical_offsets}

@@ -115,9 +115,6 @@ extern const u8 gMoneyPanelSelectionTextMapping[4];
 
 extern char gShopCurrencySuffix[];
 
-extern const s16 gGridModelPreviewPose0And2[54], gSharedGridModelPreviewPose[54], gGridModelPreviewPose4[54];
-extern const s16 gGridModelPreviewPose8[54], gGridModelPreviewPose9[54], gGridModelPreviewPose7[54];
-
 static const GridSpriteEntry sShopMenuSprites[4]
     __attribute__((section(".data.shop_menu_sprites"), aligned(4))) = {
     {0xD6, 0, 0, 0},
@@ -357,6 +354,165 @@ static const u8 sBoardPurchaseSpriteMapping[4]
     __attribute__((section(".data.board_purchase_mappings"), aligned(4))) = {1, 2, 3, 5};
 static const u8 sBoardPurchaseFullSpriteMapping[8]
     __attribute__((section(".data.board_purchase_mappings"), aligned(4))) = {1, 2, 3, 4, 5, 0, 0, 0};
+
+/* Five board prices per character, indexed by character * 5 + board. */
+u32 gCharacterBoardPrices[50]
+    __attribute__((section(".data.board_selection_tables"), aligned(4))) = {
+    0, 15000, 20000, 25000, 30000,
+    0, 15000, 20000, 25000, 3000,
+    0, 15000, 20000, 25000, 35000,
+    0, 15000, 20000, 25000, 40000,
+    0, 15000, 20000, 25000, 3000,
+    0, 15000, 20000, 25000, 40000,
+    0, 15000, 20000, 25000, 35000,
+    0, 15000, 20000, 25000, 15,
+    0, 15000, 20000, 25000, 500,
+    0, 15000, 20000, 25000, 25000,
+};
+
+const GridSpriteEntry gBoardMenuSpriteEntries[6]
+    __attribute__((section(".data.board_selection_tables"), aligned(4))) = {
+    {200, 0, 0, 0},
+    {201, 0, 0, 0},
+    {202, 0, 0, 0},
+    {203, 0, 0, 0},
+    {204, 0, 0, 0},
+    {199, 0, 0, 0},
+};
+
+/* Pose streams contain 14 rotation triples, two scaled translation triples,
+ * and two final-part translation triples, as consumed by loadCurrentPlayerModelPose. */
+const s16 gGridModelPreviewPose0And2[54]
+    __attribute__((section(".data.board_selection_tables"), aligned(4))) = {
+    0, -1024, 0,
+    0, -1024, 0,
+    562, -964, 679,
+    912, -933, 1021,
+    1093, -1008, 987,
+    1131, -908, 1017,
+    -1024, -955, -1024,
+    1024, -864, 1024,
+    320, -959, 716,
+    320, -959, 716,
+    1727, -959, 1331,
+    1727, -959, 1331,
+    0, -910, 0,
+    2048, -910, 2048,
+    0, 0, 0,
+    10, -160, 0,
+    0, 0, 0,
+    -3, 0, 0,
+};
+
+const s16 gSharedGridModelPreviewPose[54]
+    __attribute__((section(".data.board_selection_tables"), aligned(4))) = {
+    0, -1024, 0,
+    0, -1024, 0,
+    -2008, -908, -1916,
+    1363, -844, 1470,
+    -39, -908, -131,
+    684, -844, 577,
+    -1024, -853, -1024,
+    1024, -876, 1024,
+    594, -960, 820,
+    594, -960, 1355,
+    1453, -960, 1227,
+    1453, -960, 692,
+    2048, -967, 2048,
+    0, -967, 0,
+    0, 0, 0,
+    12, -158, 0,
+    3, 1, 0,
+    -5, 1, 0,
+};
+
+const s16 gGridModelPreviewPose4[54]
+    __attribute__((section(".data.board_selection_tables"), aligned(4))) = {
+    0, -1024, 0,
+    0, -1024, 0,
+    -1177, -922, -1023,
+    870, -784, 1023,
+    -870, -922, -1023,
+    1177, -784, 1023,
+    -1023, -989, -1023,
+    1024, -1001, 1024,
+    410, -933, 863,
+    410, -933, 749,
+    1637, -933, 1184,
+    1637, -933, 1298,
+    0, -910, 0,
+    2048, -910, 2048,
+    0, 0, 0,
+    8, -193, 0,
+    0, 5, -5,
+    0, 5, -5,
+};
+
+const s16 gGridModelPreviewPose8[54]
+    __attribute__((section(".data.board_selection_tables"), aligned(4))) = {
+    0, -1024, 0,
+    -1024, -796, -1024,
+    567, -929, 691,
+    740, -835, 861,
+    1480, -929, 1356,
+    1307, -835, 1186,
+    -1024, -796, -1024,
+    1753, -462, 1822,
+    -1328, -30, -1038,
+    483, 729, 541,
+    -719, -30, -1009,
+    933, 709, -1832,
+    0, -978, 0,
+    2048, -978, 2048,
+    0, 0, 0,
+    12, -156, 0,
+    -2, 3, 0,
+    0, 3, 0,
+};
+
+const s16 gGridModelPreviewPose9[54]
+    __attribute__((section(".data.board_selection_tables"), aligned(4))) = {
+    0, -1024, 0,
+    -1024, -796, -1024,
+    567, -929, 691,
+    740, -835, 861,
+    1480, -929, 1356,
+    1307, -835, 1186,
+    -1024, -796, -1024,
+    1753, -462, 1822,
+    -1328, -30, -1038,
+    483, 729, 541,
+    -719, -30, -1009,
+    933, 709, -1832,
+    0, -978, 0,
+    2048, -978, 2048,
+    0, 0, 0,
+    12, -156, 0,
+    2, 2, 0,
+    -3, 2, 0,
+};
+
+const s16 gGridModelPreviewPose7[54]
+    __attribute__((section(".data.board_selection_tables"), aligned(4))) = {
+    0, -1024, 0,
+    0, -1024, 0,
+    -1069, -964, -1077,
+    796, -597, 1005,
+    -1392, -961, -1387,
+    1344, -596, 1098,
+    -1024, -682, -1024,
+    1023, -910, 1023,
+    -694, 901, -795,
+    -694, 901, -1933,
+    -943, 912, -1568,
+    -943, 912, -430,
+    0, -967, 0,
+    2048, -967, 2048,
+    0, 0, 0,
+    24, -189, 0,
+    5, 0, 0,
+    -7, 0, 0,
+};
 
 const s16 *gGridModelPreviewPoses[10]
     __attribute__((section(".data.grid_model_preview_poses"))) = {

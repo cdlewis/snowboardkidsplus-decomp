@@ -2377,12 +2377,12 @@ drawCurrentTaskBoardPrice = 0x80095A58; // type:func
 createGridModelPreviewTask = 0x80096590; // type:func
 reloadGridModelPreview = 0x80096AB0; // type:func
 updateGridModelPreviewTask = 0x80096EC8; // type:func
-gGridModelPreviewPose0And2 = 0x80131A9C; // size:0x6C
-gSharedGridModelPreviewPose = 0x80131B08; // size:0x6C
-gGridModelPreviewPose4 = 0x80131B74; // size:0x6C
-gGridModelPreviewPose8 = 0x80131BE0; // size:0x6C
-gGridModelPreviewPose9 = 0x80131C4C; // size:0x6C
-gGridModelPreviewPose7 = 0x80131CB8; // size:0x6C
+gGridModelPreviewPose0And2 = 0x80131A9C; // size:0x6C defined:true
+gSharedGridModelPreviewPose = 0x80131B08; // size:0x6C defined:true
+gGridModelPreviewPose4 = 0x80131B74; // size:0x6C defined:true
+gGridModelPreviewPose8 = 0x80131BE0; // size:0x6C defined:true
+gGridModelPreviewPose9 = 0x80131C4C; // size:0x6C defined:true
+gGridModelPreviewPose7 = 0x80131CB8; // size:0x6C defined:true
 gGridModelPreviewPoses = 0x80131D24; // size:0x28 defined:true
 sBoardPriceVerticalOffsets = 0x80131D58; // size:0xC defined:true
 hasStateGridFlag = 0x80095E24; // type:func
@@ -4281,7 +4281,7 @@ gTaskPanelSelectionValues = 0x8013B508; // size:0x4
 gSelectionPanelStatTriplets = 0x8012FFFC; // size:0xF
 gShopBoardUnlockFlagIndices = 0x80131804; // size:0xC
 gShopBoardPrices = 0x80131810; // size:0x30
-gCharacterBoardPrices = 0x801319B0; // size:0xC8
+gCharacterBoardPrices = 0x801319B0; // size:0xC8 defined:true
 
 gMenuInputPromptSequence = 0x80123840; // size:0x10
 gCourseMenuCourseIndices = 0x8012D46C; // size:0xC
@@ -4291,7 +4291,7 @@ gSelectedCourseMenuItem = 0x8013B104;
 
 gRecordFlagMenuItemBuffers = 0x80130094; // size:0xA
 gRecordFlagMenuTextIndexBuffers = 0x801300A0; // size:0xA
-gBoardMenuSpriteEntries = 0x80131A78;
+gBoardMenuSpriteEntries = 0x80131A78; // size:0x24 defined:true
 gDefaultBoardMenuItems = 0x8013B434;
 gMenuPlayerTextureSelections = 0x8013B468;
 
