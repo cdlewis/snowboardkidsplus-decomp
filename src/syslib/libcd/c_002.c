@@ -1,4 +1,13 @@
 #include "common.h"
+
+/* Retained by the SDK object although StClearRing does not access them. */
+volatile u8 *streamClearCdRegisterAddresses[4] __attribute__((section(".data.stream_clear_registers"))) = {
+    (volatile u8 *)0x1F801800,
+    (volatile u8 *)0x1F801801,
+    (volatile u8 *)0x1F801802,
+    (volatile u8 *)0x1F801803,
+};
+
 extern s32 StRingIdx3, StRingIdx2, StRingIdx1, StFinalSector;
 extern s32 StCdIntrFlag, Stframe_no;
 extern s16 Stsector_offset;

@@ -965,7 +965,8 @@ segments:
       - [0x1251AC, lib, libcd, bios, .data]
       - [0x1254CC, lib, libcd, iso9660, .data]
       - [0x1254DC, lib, libcd, cdread, .data]
-      - [0x12551C, data]
+      - {start: 0x12551C, type: .data, name: syslib/libcd/c_002, linker_section: .data.stream_clear_registers}
+      - {start: 0x12552C, type: .data, name: syslib/libcd/c_003, linker_section: .data.stream_unset_registers}
       - [0x12553C, lib, libcd, c_004, .data]
       - [0x12554C, data]
       - [0x12557C, lib, libcd, c_009, .data]
