@@ -61,7 +61,6 @@ extern u8 D_8013B1AB __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern GameTask *D_8013AE90 __attribute__((section(".data")));
-extern GameTask *D_8013B304 __attribute__((section(".data.player_snapshot_tasks")));
 
 extern u8 gControllerInputRecordState __attribute__((section(".data")));
 extern s16 gCdCommandActive __attribute__((section(".data")));
@@ -966,7 +965,7 @@ void resetStateAndBeginResourceLoadTransition(u8 requestLoad) {
     resetPaletteRecords();
     deleteCurrentTaskDescendants();
     savedTask = gCurrentTask;
-    gCurrentTask = D_8013B304;
+    gCurrentTask = gPlayerSnapshotTask;
     deleteCurrentTaskDescendants();
     gCurrentTask = savedTask;
     gGameStateFlags |= 0x90;
@@ -1039,7 +1038,7 @@ void finishRaceExitAfterCountdown(void) {
                     gTaskTransitionFlags |= 0x40;
                     queueCdCommand(7, 0);
                     savedTask = gCurrentTask;
-                    gCurrentTask = D_8013B304;
+                    gCurrentTask = gPlayerSnapshotTask;
                     deleteCurrentTaskDescendants();
                     gCurrentTask = savedTask;
                     startQuadTransitionSequenceTask(transitionIndex - 1);
@@ -1150,7 +1149,7 @@ void updateSelectedPlayerPlaybackTask(void) {
     if (gSelectedPlayerRestoreFrames[gCurrentTask->data1A] == gCurrentTask->data18) {
         stopPlayerSound(0);
         savedTask = gCurrentTask;
-        gCurrentTask = D_8013B304;
+        gCurrentTask = gPlayerSnapshotTask;
         deleteCurrentTaskDescendants();
         gCurrentTask = savedTask;
         startRacePlayerTasks();

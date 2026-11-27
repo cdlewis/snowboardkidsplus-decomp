@@ -4012,7 +4012,7 @@ clearPlayerSnapshotTasks = 0x800612BC; // type:func
 createPlayerSnapshotTrailTask = 0x80061304; // type:func
 drawPlayerSnapshotTrailTask = 0x80061348; // type:func
 gPlayerSnapshotTrailCount = 0x8013B300; // size:0x4 defined:true
-D_8013B304 = 0x8013B304; // size:0x4 defined:true
+gPlayerSnapshotTask = 0x8013B304; // size:0x4 defined:true
 gPlayerSnapshotTrailPacket = 0x8012C82C; // size:0x28 defined:true
 gPlayerSnapshotTrailEndpoints = 0x8012C854; // size:0x10 defined:true
 gPlayerShadowPacket = 0x8012C884; // size:0x28 defined:true
@@ -4348,3 +4348,8 @@ gCharacterMenuCharacterIndices = 0x8012D460; // size:0xC
 gTaskBackgroundTask = 0x8013B378; // size:0x4
 gSecondaryDisplayTask = 0x8013B37C; // size:0x4
 gTexturePairDimMask = 0x8013B3BC; // size:0x4
+
+gQuadTransitionFrame = 0x8013B338; // size:0x4
+gTimedSpritePrimaryBrightness = 0x8013B35C; // size:0x4
+gTimedSpriteSecondaryBrightness = 0x8013B360; // size:0x4
+gTimedSpriteInterpolationComplete = 0x8013B364; // size:0x4

@@ -881,10 +881,10 @@ extern RECT gWhitePulsePaletteRect
     __attribute__((section(".data.color_cycle_rects")));
 extern RECT gColorCycleCaptureRect
     __attribute__((section(".data.color_cycle_rects")));
-extern s32 D_8013B338;
-extern s32 D_8013B35C;
-extern s32 D_8013B360;
-extern s32 D_8013B364;
+extern s32 gQuadTransitionFrame;
+extern s32 gTimedSpritePrimaryBrightness;
+extern s32 gTimedSpriteSecondaryBrightness;
+extern s32 gTimedSpriteInterpolationComplete;
 extern s32 D_8013B368;
 extern s32 D_8013B36C;
 extern u32 gAdaptiveModelSavedStackPointer;

@@ -58,7 +58,8 @@ extern u16 gTaskMemoryFreeBits[16];
 extern GameTask *gCurrentTask;
 extern GameTask *gCreatedTask;
 extern GameTask *gCurrentTaskParent;
-extern GameTask *D_8013B304;
+extern GameTask *gPlayerSnapshotTask
+    __attribute__((section(".data.player_snapshot_tasks")));
 /* GP-relative alias for the player snapshot task pointer. */
 extern GameTask *playerSnapshotTaskGp;
 /* Task transition flags consumed by the main presentation flow. */

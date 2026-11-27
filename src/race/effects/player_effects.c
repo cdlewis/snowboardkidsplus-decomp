@@ -691,7 +691,7 @@ PaletteColor gCapturedColorCyclePalette[16]
 
 s32 gPlayerSnapshotTrailCount __attribute__((section(".data.player_snapshot_tasks"))) = 0;
 
-GameTask *D_8013B304 __attribute__((section(".data.player_snapshot_tasks"))) = 0;
+GameTask *gPlayerSnapshotTask __attribute__((section(".data.player_snapshot_tasks"))) = 0;
 
 u16 gWhitePulsePalette[16]
     __attribute__((section(".bss.white_pulse_palette"), aligned(4)));
@@ -994,7 +994,7 @@ advance:
 
 void startIndexedRenderTask(s32 index) {
     TaskMemoryBlock *resource;
-    createChildTaskForParentWithReserve(D_8013B304, drawTrickTriangleRingTask);
+    createChildTaskForParentWithReserve(gPlayerSnapshotTask, drawTrickTriangleRingTask);
     gCreatedTask->resource14 = allocateTaskMemoryBlock();
     gCreatedTask->data18 = index;
     resource = &gTaskMemoryPool[gCreatedTask->resource14];
@@ -1224,13 +1224,13 @@ advance:
 
 void startIndexedRenderTaskPair(s32 index) {
     TaskMemoryBlock *resource;
-    createChildTaskForParentWithReserve(D_8013B304, drawTrickRingTask);
+    createChildTaskForParentWithReserve(gPlayerSnapshotTask, drawTrickRingTask);
     gCreatedTask->resource14 = allocateTaskMemoryBlock();
     gCreatedTask->data18 = index;
     resource = &gTaskMemoryPool[gCreatedTask->resource14];
     resource->unk00 = 0;
     resource->unk04 = 0;
-    createChildTaskForParentWithReserve(D_8013B304, drawTrickSparkRingTask);
+    createChildTaskForParentWithReserve(gPlayerSnapshotTask, drawTrickSparkRingTask);
     gCreatedTask->resource14 = allocateTaskMemoryBlock();
     gCreatedTask->data18 = index;
     resource = &gTaskMemoryPool[gCreatedTask->resource14];
@@ -1683,7 +1683,7 @@ void drawPlayerShadowTask(void) {
 }
 
 void startPlayerShadowTask(s32 playerIndex) {
-    createChildTaskForParentWithReserve(D_8013B304, drawPlayerShadowTask);
+    createChildTaskForParentWithReserve(gPlayerSnapshotTask, drawPlayerShadowTask);
     gCreatedTask->data18 = playerIndex;
 }
 
@@ -1919,7 +1919,7 @@ void initializeDelayedEightEntryEffectTask(void) {
     TurnTrailEdges *secondary;
     s32 i;
     if (gCurrentTask->data18 == 0) {
-        createChildTaskForParentWithReserve(D_8013B304, updatePlayerTurnTrailTask);
+        createChildTaskForParentWithReserve(gPlayerSnapshotTask, updatePlayerTurnTrailTask);
         gCreatedTask->resource14 = allocateTaskMemoryBlock();
         primary = (TurnTrailHistory *)&gTaskMemoryPool[gCreatedTask->resource14];
         gCreatedTask->resource16 = allocateTaskMemoryBlock();
@@ -2014,7 +2014,7 @@ void createPlayerPairedQuadEffectTask(s32 playerIndex, s32 variant) {
     PairedEffectResource *resource;
     RacePlayer *player;
     s32 i;
-    createChildTaskForParentWithReserve(D_8013B304, drawPlayerPairedQuadEffectTask);
+    createChildTaskForParentWithReserve(gPlayerSnapshotTask, drawPlayerPairedQuadEffectTask);
     gCreatedTask->resource14 = allocateTaskMemoryBlock();
     player = &gRacePlayers[playerIndex];
     resource = (PairedEffectResource *)&gTaskMemoryPool[gCreatedTask->resource14];
@@ -2110,7 +2110,7 @@ void drawQuadAnimationTask(void) {
 
 GameTask *createQuadAnimationTask(u16 unusedId, VECTOR *position) {
     PrimaryQuadAnimationResource *resource;
-    createChildTaskForParentWithReserve(D_8013B304, drawQuadAnimationTask);
+    createChildTaskForParentWithReserve(gPlayerSnapshotTask, drawQuadAnimationTask);
     gCreatedTask->resource14 = allocateTaskMemoryBlock();
     resource = (PrimaryQuadAnimationResource *)&gTaskMemoryPool[gCreatedTask->resource14];
     resource->x = position->vx;
@@ -2125,7 +2125,7 @@ GameTask *createQuadAnimationTask(u16 unusedId, VECTOR *position) {
 GameTask *startAlternateQuadAnimationTask(s32 unused, const PositionEffectOrigin *position) {
     QuadAnimationResource *resource;
     GameTask *task;
-    createChildTaskForParentWithReserve(D_8013B304, drawQuadAnimationTask);
+    createChildTaskForParentWithReserve(gPlayerSnapshotTask, drawQuadAnimationTask);
     gCreatedTask->resource14 = allocateTaskMemoryBlock();
     task = gCreatedTask;
     resource = (QuadAnimationResource *)&gTaskMemoryPool[task->resource14];
@@ -2223,7 +2223,7 @@ void emitRadialEffectTask(void) {
     }
     origin = (PositionEffectOrigin *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (gRacePauseState == 0 && (gFrameCounter & 3) == 0) {
-        createChildTaskForParentWithReserve(D_8013B304, updateRadialEffectTask);
+        createChildTaskForParentWithReserve(gPlayerSnapshotTask, updateRadialEffectTask);
         gCreatedTask->resource14 = allocateTaskMemoryBlock();
         resource = (RadialEffectResource *)&gTaskMemoryPool[gCreatedTask->resource14];
         GsInitCoordinate2(0, &resource->coordinate);
@@ -2248,7 +2248,7 @@ void emitRadialEffectTask(void) {
 
 void startPositionEffectTask(const PositionEffectOrigin *position) {
     PositionEffectOrigin *resource;
-    createChildTaskForParentWithReserve(D_8013B304, emitRadialEffectTask);
+    createChildTaskForParentWithReserve(gPlayerSnapshotTask, emitRadialEffectTask);
     gCreatedTask->resource14 = allocateTaskMemoryBlock();
     gCreatedTask->data18 = 3;
     resource = (PositionEffectOrigin *)&gTaskMemoryPool[gCreatedTask->resource14];
@@ -2423,7 +2423,7 @@ void createPlayerTrailTask(s32 playerIndex) {
     PlayerTrailResource *first;
     PlayerTrailResource *second;
     s32 i;
-    createChildTaskForParentWithReserve(D_8013B304, updatePlayerTrailTask);
+    createChildTaskForParentWithReserve(gPlayerSnapshotTask, updatePlayerTrailTask);
     gCreatedTask->resource14 = allocateTaskMemoryBlock();
     first = (PlayerTrailResource *)&gTaskMemoryPool[gCreatedTask->resource14];
     gCreatedTask->resource16 = allocateTaskMemoryBlock();
@@ -2606,7 +2606,7 @@ void createPlayerPositionTrailTask(s32 playerIndex) {
     s32 i, j;
 
     player = &gRacePlayers[playerIndex];
-    createChildTaskForParentWithReserve(D_8013B304, updatePlayerPositionTrailTask);
+    createChildTaskForParentWithReserve(gPlayerSnapshotTask, updatePlayerPositionTrailTask);
     gCreatedTask->resource14 = allocateTaskMemoryBlock();
     gCreatedTask->data18 = playerIndex;
     resource = (PlayerPositionTrailResource *)&gTaskMemoryPool[gCreatedTask->resource14];
@@ -2705,7 +2705,7 @@ void emitPlayerTurnTripleQuadEffectTask(void) {
     sine = rsin((s16)player->unk0BE - (s16)player->unk110);
     if (sine < 0) sine = -sine;
     if ((gFrameCounter & 3) == 0 && !(player->unk128 & 0x677DA21) && player->unk0BC >= 0x800 && sine >= 0x200) {
-        createChildTaskForParentWithReserve(D_8013B304, updatePlayerTripleQuadEffectTask);
+        createChildTaskForParentWithReserve(gPlayerSnapshotTask, updatePlayerTripleQuadEffectTask);
         gCreatedTask->resource14 = allocateTaskMemoryBlock();
         resource = (PlayerTripleQuadEffectResource *)&gTaskMemoryPool[gCreatedTask->resource14];
         vertex = gPlayerTripleQuadOffsets;
@@ -2728,7 +2728,7 @@ void emitPlayerTurnTripleQuadEffectTask(void) {
 }
 
 void startPlayerTurnTripleQuadEffectTask(s32 playerIndex) {
-    createChildTaskForParentWithReserve(D_8013B304, emitPlayerTurnTripleQuadEffectTask);
+    createChildTaskForParentWithReserve(gPlayerSnapshotTask, emitPlayerTurnTripleQuadEffectTask);
     gCreatedTask->data18 = playerIndex;
 }
 
@@ -2815,7 +2815,7 @@ void createPlayerRingEffectTask(s32 playerIndex) {
     s32 i;
     player = &gRacePlayers[playerIndex];
     if (gSelectedCourseIndex != 3) {
-        createChildTaskForParentWithReserve(D_8013B304, updatePlayerRingEffectTask);
+        createChildTaskForParentWithReserve(gPlayerSnapshotTask, updatePlayerRingEffectTask);
         gCreatedTask->resource14 = allocateTaskMemoryBlock();
         resource = (PlayerRingEffectResource *)&gTaskMemoryPool[gCreatedTask->resource14];
         for (i = 0; i < 3; i++) {
@@ -2935,7 +2935,7 @@ void createPlayerParticleTrailTask(s32 playerIndex) {
     s32 j;
 
     player = &gRacePlayers[playerIndex];
-    createChildTaskForParentWithReserve(D_8013B304, updatePlayerParticleTrailTask);
+    createChildTaskForParentWithReserve(gPlayerSnapshotTask, updatePlayerParticleTrailTask);
     gCreatedTask->resource14 = allocateTaskMemoryBlock();
     resource = (PlayerParticleTrailResource *)&gTaskMemoryPool[gCreatedTask->resource14];
     for (i = 0; i < 10; i++) {
@@ -2966,7 +2966,7 @@ s32 createPlayerTripleQuadEffectTask(s32 playerIndex) {
     if (!(player->unk128 & 8) && player->unk96E != 0 && player->unk96E != 0x801 && player->unk96E != 0x200) {
         return 0;
     }
-    createChildTaskForParentWithReserve(D_8013B304, beginPlayerTripleQuadEffectTask);
+    createChildTaskForParentWithReserve(gPlayerSnapshotTask, beginPlayerTripleQuadEffectTask);
     gCreatedTask->resource14 = allocateTaskMemoryBlock();
     resource = (PlayerTripleQuadEffectResource *)&gTaskMemoryPool[gCreatedTask->resource14];
     vertex = gPlayerTripleQuadOffsets;
@@ -3021,7 +3021,7 @@ void drawRisingTexturedStripTask(void) {
     packet->y2 = y + 15;
     addPrim(gCurrentPlayerOrderingTable, packet);
     GsOUT_PACKET_P = (PACKET *)(packet + 1);
-    if (D_8013B338 >= 50) {
+    if (gQuadTransitionFrame >= 50) {
         if (++resource->countdown > 10) {
             resource->countdown = 10;
         }
@@ -3124,7 +3124,7 @@ void drawLoweringTexturedQuadTask(void) {
     packet->y3 = resource->vertices[3].y + (resource->countdown << 6) / 10;
     addPrim(gCurrentPlayerOrderingTable, packet);
     GsOUT_PACKET_P = (PACKET *)(packet + 1);
-    if (D_8013B338 >= 50) {
+    if (gQuadTransitionFrame >= 50) {
         if (++resource->countdown > 10) { resource->countdown = 10; }
     }
 }
@@ -3242,7 +3242,7 @@ void drawLoweringQuadStripTask(void) {
     packet->clut = getClut(944, gCurrentTask->data18 * 3 + 242);
     addPrim(gCurrentPlayerOrderingTable, packet);
     GsOUT_PACKET_P = (PACKET *)(packet + 1);
-    if (D_8013B338 >= 50) {
+    if (gQuadTransitionFrame >= 50) {
         if (++resource->countdown > 10) {
             setCurrentTaskCallback(drawPaletteCyclingStripTask);
             resource->countdown = 0;
@@ -3333,20 +3333,20 @@ void startPaletteWhitePulseTask(s32 duration) {
 }
 
 void updateQuadTransitionSequenceTask(void) {
-    s32 frame = D_8013B338;
+    s32 frame = gQuadTransitionFrame;
     if (frame == 0) createRotatingQuadTrailTask();
     if (frame == 25) createQuadShrinkTask();
     if (frame == 30) startMiddleQuadShrinkTask();
     if (frame == 35) createRightQuadShrinkTask();
     if (frame == 40) startSlidingQuadTask(gCurrentTask->data1A);
     if (frame == 50) startPaletteWhitePulseTask(10);
-    D_8013B338++;
-    if (D_8013B338 == 100) deleteCurrentTaskSubtree();
+    gQuadTransitionFrame++;
+    if (gQuadTransitionFrame == 100) deleteCurrentTaskSubtree();
 }
 
 void startQuadTransitionSequenceTask(s32 transitionIndex) {
     createChildTaskForParentWithReserve(&gGameTasks[4], updateQuadTransitionSequenceTask);
-    D_8013B338 = 0;
+    gQuadTransitionFrame = 0;
     gCreatedTask->data1A = transitionIndex;
 }
 
@@ -3355,12 +3355,12 @@ void updatePrimaryValueTransition(void) {
     value = gCurrentTask->data1C +
         (gCurrentTask->data1E - gCurrentTask->data1C) *
         gCurrentTask->data18 / gCurrentTask->data1A;
-    D_8013B35C = value;
+    gTimedSpritePrimaryBrightness = value;
     gCurrentTask->data18++;
-    D_8013B364 = 0;
+    gTimedSpriteInterpolationComplete = 0;
     if (gCurrentTask->data18 >= gCurrentTask->data1A) {
         deleteCurrentTaskSubtree();
-        D_8013B364 = 1;
+        gTimedSpriteInterpolationComplete = 1;
     }
 }
 
@@ -3377,12 +3377,12 @@ void updateValueInterpolationTask(void) {
     s32 start = gCurrentTask->data1C;
     step = (gCurrentTask->data1E - start) * gCurrentTask->data18;
     step /= gCurrentTask->data1A;
-    D_8013B360 = start + step;
+    gTimedSpriteSecondaryBrightness = start + step;
     gCurrentTask->data18++;
-    D_8013B364 = 0;
+    gTimedSpriteInterpolationComplete = 0;
     if (gCurrentTask->data18 >= gCurrentTask->data1A) {
         deleteCurrentTaskSubtree();
-        D_8013B364 = 1;
+        gTimedSpriteInterpolationComplete = 1;
     }
 }
 
@@ -3617,7 +3617,7 @@ void updateTimedSpritePresentation(void) {
     if (frame == 0) {
         startValueInterpolationTask(15, 0, 64);
         createFullScreenSpriteTask(120, getTPage(1, 1, 320, 256), getClut(320, 496),
-            0, 0, &D_8013B360);
+            0, 0, &gTimedSpriteSecondaryBrightness);
     }
     if (frame == 75) {
         startValueInterpolationTask(14, 64, 255);
@@ -3626,7 +3626,7 @@ void updateTimedSpritePresentation(void) {
         startValueInterpolationTask(30, 255, 0);
         startPrimaryValueTransition(30, 0, 128);
         createFullScreenSpriteTask(1410, getTPage(1, 1, 320, 0), getClut(320, 240),
-            0, 0, &D_8013B35C);
+            0, 0, &gTimedSpritePrimaryBrightness);
     }
     if (frame == 180) {
         startPrimaryValueTransition(30, 128, 64);
@@ -3643,7 +3643,7 @@ void updateTimedSpritePresentation(void) {
         uploadTimImageAndPaletteAt(getOffsetArchiveEntry(DAT_ANIMATION_ARCHIVE, 0),
             320, 256, 320, 496);
         createFullScreenSpriteTask(660, getTPage(1, 1, 320, 256), getClut(320, 496),
-            0, 0, &D_8013B360);
+            0, 0, &gTimedSpriteSecondaryBrightness);
     }
     if (frame == 1530) {
         startValueInterpolationTask(30, 128, 64);
@@ -3658,7 +3658,7 @@ void updateTimedSpritePresentation(void) {
         uploadTimImageAndPaletteAt(getOffsetArchiveEntry(DAT_ANIMATION_ARCHIVE, 1),
             320, 0, 320, 240);
         createFullScreenSpriteTask(600, getTPage(1, 1, 320, 0), getClut(320, 240),
-            0, 0, &D_8013B35C);
+            0, 0, &gTimedSpritePrimaryBrightness);
     }
     if (frame == 2130) {
         startPrimaryValueTransition(30, 128, 64);
@@ -3673,7 +3673,7 @@ void updateTimedSpritePresentation(void) {
         uploadTimImageAndPaletteAt(getOffsetArchiveEntry(DAT_ANIMATION_ARCHIVE, 2),
             320, 256, 320, 496);
         createFullScreenSpriteTask(780, getTPage(1, 1, 320, 256), getClut(320, 496),
-            0, 0, &D_8013B360);
+            0, 0, &gTimedSpriteSecondaryBrightness);
     }
     if (frame == 2670) {
         startValueInterpolationTask(30, 128, 64);
@@ -3694,7 +3694,7 @@ void updateTimedSpritePresentation(void) {
         uploadTimImageAndPaletteAt(getOffsetArchiveEntry(DAT_ANIMATION_ARCHIVE, 3),
             320, 0, 320, 240);
         createFullScreenSpriteTask(390, getTPage(1, 1, 320, 0), getClut(320, 240),
-            0, 0, &D_8013B35C);
+            0, 0, &gTimedSpritePrimaryBrightness);
     }
     if (frame == 3390) {
         startPrimaryValueTransition(30, 128, 64);
@@ -3709,7 +3709,7 @@ void updateTimedSpritePresentation(void) {
         uploadTimImageAndPaletteAt(getOffsetArchiveEntry(DAT_ANIMATION_ARCHIVE, 4),
             320, 256, 320, 496);
         createFullScreenSpriteTask(1230, getTPage(1, 1, 320, 256), getClut(320, 496),
-            0, 0, &D_8013B360);
+            0, 0, &gTimedSpriteSecondaryBrightness);
     }
     if (frame == 3720) {
         startValueInterpolationTask(30, 128, 64);
@@ -3729,19 +3729,19 @@ void updateTimedSpritePresentation(void) {
         uploadTimImageAndPaletteAt(getOffsetArchiveEntry(DAT_ANIMATION_ARCHIVE, 5),
             320, 0, 320, 240);
         createFullScreenSpriteTask(300, getTPage(1, 1, 320, 0), getClut(320, 240),
-            0, 0, &D_8013B35C);
+            0, 0, &gTimedSpritePrimaryBrightness);
     }
 
     if (frame == 4950 || (gControllerPressedButtons[0] & PRESENTATION_SKIP_BUTTON)) {
         D_8013B36C = 1;
         gCurrentTask->data18 = 0;
         deleteCurrentTaskDescendants();
-        startPrimaryValueTransition(30, (s16)D_8013B35C, 0);
-        startValueInterpolationTask(30, (s16)D_8013B360, 0);
+        startPrimaryValueTransition(30, (s16)gTimedSpritePrimaryBrightness, 0);
+        startValueInterpolationTask(30, (s16)gTimedSpriteSecondaryBrightness, 0);
         setCurrentTaskCallback(finishTimedSpritePresentation);
     } else {
         D_8013B368 = 0;
-        D_8013B364 = 0;
+        gTimedSpriteInterpolationComplete = 0;
         gCurrentTask->data18++;
     }
 }
@@ -3749,9 +3749,9 @@ void updateTimedSpritePresentation(void) {
 void initializeTimedSpritePresentation(void) {
     setSecondaryDisplayTaskMode(0);
     queueCdCommand(6, 1);
-    D_8013B35C = 0;
-    D_8013B360 = 0;
-    D_8013B364 = 0;
+    gTimedSpritePrimaryBrightness = 0;
+    gTimedSpriteSecondaryBrightness = 0;
+    gTimedSpriteInterpolationComplete = 0;
     D_8013B368 = 0;
     D_8013B36C = 0;
     gCurrentTask->data18 = 0;
