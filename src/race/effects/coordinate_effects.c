@@ -50,6 +50,12 @@ TaskVisualFrame gPlayerParticleHistoryVisualFrames[6]
         {0xD0, 0x28, 32, 32, 0xD, 0x3D79}
     };
 
+TaskVisualFrame gPlayerProjectileVisualFrames[2]
+    __attribute__((section(".data.player_projectile_visual_frames"), aligned(4))) = {
+        {0x90, 0x60, 24, 24, 0xD, 0x3EF9},
+        {0x90, 0x60, 24, 24, 0xD, 0x3F39}
+    };
+
 static TaskVisualFrame sOrbitingPlayerVisualFrames[4]
     __attribute__((section(".data.orbiting_player_visual_frames"), aligned(4))) = {
         {0x00, 0x78, 32, 32, 0xD, 0x3CF9},

@@ -762,7 +762,7 @@ segments:
       - {start: 0x114AE4, type: .data, name: race/player/player_actions, linker_section: .data.player_side_visual_frames}
       - {start: 0x114B04, type: .data, name: race/effects/coordinate_effects, linker_section: .data.one_shot_task_visual_frames}
       - {start: 0x114B24, type: .data, name: race/effects/coordinate_effects, linker_section: .data.player_particle_history_visual_frames}
-      - [0x114B54, data, player_particle_history_visual_frames_tail]
+      - {start: 0x114B54, type: .data, name: race/effects/coordinate_effects, linker_section: .data.player_projectile_visual_frames}
       - {start: 0x114B64, type: .data, name: race/effects/coordinate_effects, linker_section: .data.orbiting_player_visual_frames}
       - {start: 0x114B84, type: .data, name: unclassified/graphics_800497B8, linker_section: .data.sliding_visual_frames}
       - {start: 0x114C84, type: .data, name: unclassified/graphics_800497B8, linker_section: .data.sliding_visual_steps}
