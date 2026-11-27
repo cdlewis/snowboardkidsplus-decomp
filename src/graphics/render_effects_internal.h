@@ -842,8 +842,8 @@ extern RECT gReadPixelRect;
 extern RECT gScanlineCopyRect;
 extern RECT gScanlineSeedRect __attribute__((section(".data.scanline_copy_rects")));
 
-/* Two 0x28-byte collision regions remain in moving_visual_placements_tail. */
-extern PlayerCollisionRegion gCoursePlayerCollisionRegions[2];
+extern PlayerCollisionRegion gCoursePlayerCollisionRegions[2]
+    __attribute__((section(".data.course_player_collision_regions")));
 extern u8 gPickupVisualPlacementStartIndex, gPickupVisualPlacementCount;
 extern TaskVisualFrame gInteractionVisualFrame;
 extern VisualPlacement *gInteractionVisualPlacements;

@@ -4519,7 +4519,7 @@ gPlayerModeSelectionSprites = 0x80123B50; // size:0x18
 gPlayerModeSelectionMapping = 0x8013B0FC; // size:0x4
 gDefaultCourseVisualFrames = 0x801294AC; // size:0x10 defined:true
 gCourseVisualFramesByPlacementType = 0x8012956C; // size:0x34 defined:true
-gCoursePlayerCollisionRegions = 0x80129A18;
+gCoursePlayerCollisionRegions = 0x80129A18; // size:0x50
 gCoursePlayerField94CTargets = 0x8012BBB4;
 gCourse2VisualFrames = 0x8013B29C;
 

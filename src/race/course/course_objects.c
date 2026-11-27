@@ -1455,6 +1455,20 @@ MovingVisualPlacement gMovingVisualPlacements[9]
     {24, 0, -2426136, 5658860, -2373948, 5250364},
 };
 
+PlayerCollisionRegion gCoursePlayerCollisionRegions[2]
+    __attribute__((section(".data.course_player_collision_regions"))) = {
+    {
+        {{{0x00543800, 0x009DE900, 0x00B00400}, 0},
+         {{0x00523000, 0x009FF800, 0x00BB8500}, 0}},
+        66, 68, 112, -115,
+    },
+    {
+        {{{-0x001C9D00, 0x00339500, 0x00522600}, 0},
+         {{-0x0025B200, 0x00349E00, 0x00522600}, 0}},
+        35, 37, 70, -1024,
+    },
+};
+
 OrbitingTaskPlacement gOrbitingTaskPlacements[2]
     __attribute__((section(".data.orbiting_task_placements"))) = {
     {99, 640, 23253, 42781},
