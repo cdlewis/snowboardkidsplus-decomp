@@ -1355,8 +1355,8 @@ sSpuAllocatorPadding = 0x80132EF0; // size:0x4 defined:true
 // PSY-Q 4.2: LIBSPU.LIB/S_RMP0.OBJ
 _spu_rev_startaddr = 0x80132EF4; // size:0x28
 sSpuReverbStartAddressPadding = 0x80132F1C; // size:0x8 defined:true
-// PSY-Q 4.7: LIBSPU.LIB/S_CRWA.OBJ
-_spu_zerobuf = 0x80132F44;
+// PSY-Q 4.2: LIBSPU.LIB/ZEROBUF.OBJ
+_spu_zerobuf = 0x80132F44; // size:0x400
 // PSY-Q 4.7: LIBCD.LIB/ISO9660.OBJ
 CD_nopen = 0x801349CC; // defined:true
 // PSY-Q 4.7: LIBGTE.LIB/MSC01.OBJ
@@ -1712,7 +1712,9 @@ D_80132E6E = 0x80132E6E; // defined:true
 D_80132E78 = 0x80132E78; // defined:true
 spu_tsa_padding = 0x80132E9E; // defined:true
 D_80132F3C = 0x80132F3C; // defined:true
-_spu_rev_param = 0x80133344;
+// PSY-Q 4.2: LIBSPU.LIB/S_RMP2.OBJ
+_spu_rev_param = 0x80133344; // size:0x2A8
+sSpuReverbPresetPadding = 0x801335EC; // size:0x8
 D_80133808 = 0x80133808; // defined:true
 D_80133834 = 0x80133834; // defined:true
 D_80133840 = 0x80133840; // defined:true

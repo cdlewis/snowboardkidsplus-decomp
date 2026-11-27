@@ -78,6 +78,49 @@ typedef struct {
     u32 addr, size;
 } SPU_MALLOC;
 
+typedef struct {
+    u16 m_dAPF1;
+    u16 m_dAPF2;
+    s16 m_vIIR;
+    s16 m_vCOMB1;
+    s16 m_vCOMB2;
+    s16 m_vCOMB3;
+    s16 m_vCOMB4;
+    s16 m_vWALL;
+    s16 m_vAPF1;
+    s16 m_vAPF2;
+    u16 m_mLSAME;
+    u16 m_mRSAME;
+    u16 m_mLCOMB1;
+    u16 m_mRCOMB1;
+    u16 m_mLCOMB2;
+    u16 m_mRCOMB2;
+    u16 m_dLSAME;
+    u16 m_dRSAME;
+    u16 m_mLDIFF;
+    u16 m_mRDIFF;
+    u16 m_mLCOMB3;
+    u16 m_mRCOMB3;
+    u16 m_mLCOMB4;
+    u16 m_mRCOMB4;
+    u16 m_dLDIFF;
+    u16 m_dRDIFF;
+    u16 m_mLAPF1;
+    u16 m_mRAPF1;
+    u16 m_mLAPF2;
+    u16 m_mRAPF2;
+    s16 m_vLIN;
+    s16 m_vRIN;
+} ReverbRegisters;
+
+typedef struct {
+    u32 m_Mask;
+    ReverbRegisters m_Regs;
+} ReverbPreset;
+
+extern s8 _spu_zerobuf[1024];
+extern ReverbPreset _spu_rev_param[10];
+
 extern union SpuUnion *_spu_RXX;
 extern u16 _spu_tsa;
 extern u32 _spu_FsetRXXa(s32, u32);

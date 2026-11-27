@@ -951,7 +951,8 @@ segments:
       - {start: 0x1236E4, type: .data, name: syslib/libspu/s_m_init, linker_section: .data.spu_allocator}
       - {start: 0x1236F4, type: .data, name: syslib/libspu/s_rmp0, linker_section: .data.spu_reverb_start_addresses}
       - [0x123724, lib, libsnd, ssstart, .data]
-      - [0x123744, data]
+      - {start: 0x123744, type: .data, name: syslib/libspu/zerobuf, linker_section: .data.spu_zero_buffer}
+      - {start: 0x123B44, type: .data, name: syslib/libspu/s_rmp2, linker_section: .data.spu_reverb_presets}
       - [0x123DF4, lib, libsnd, vm_n2p, .data]
       - [0x123F84, data]
       - [0x123FAC, lib, libetc, intr, .data]
