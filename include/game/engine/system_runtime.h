@@ -39,7 +39,6 @@ void initializeRacePresentationTask(void);
 void updateThreeFrameScreenBlend(void);
 void initializePaletteTransition(void);
 void updatePaletteTransition(void);
-void selectMemoryCardLoadFile(u8 slot, void *destination);
 void pollMemoryCardBufferReadTask(void);
 void waitThenStartSplitScreenTransition(void);
 void initializeDefaultSceneLighting(void);

@@ -10,7 +10,7 @@
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 
 char *gMemoryCardFileNames[5] __attribute__((section(".data.memory_card_file_names"))) = {
-    D_800101B8, D_800101D0, D_800101E8, D_80010200, D_80010218
+    gMemoryCardGameFileName, gMemoryCardGhostFileName, D_800101E8, D_80010200, D_80010218
 };
 
 MemoryCardSaveTitle *gMemoryCardSaveTitles[5] __attribute__((section(".data.memory_card_tables"))) = {
@@ -26,7 +26,7 @@ MemoryCardSaveHeader gMemoryCardSaveHeader __attribute__((section(".data.memory_
 const u32 gMemoryCardAvailabilityTablePadding
     __attribute__((section(".rodata.memory_card_availability_padding"))) = 0;
 
-u8 D_8013B608[2] __attribute__((section(".data.memory_card_poll_flags"))) = {0};
+u8 gMemoryCardCreateFilePending[2] __attribute__((section(".data.memory_card_poll_flags"))) = {0};
 u8 gMemoryCardAcceptRetryCounts[2] __attribute__((section(".data.memory_card_accept_retry_counts"))) = {0};
 
 void initializeMemoryCardSaveHeader(void) {
@@ -96,7 +96,7 @@ void prepareMemoryCardSave(u8 slot, void *source, u32 size) {
     gMemoryCardSaveHeader.version = 0;
     for (; i < size; i++) checksum += gMemoryCardSaveHeader.payload[i];
     gMemoryCardSaveHeader.checksum = checksum;
-    D_8013AF48 = slot;
+    gMemoryCardSelectedFileType = slot;
 }
 
 void selectMemoryCardLoadFile(u8 slot, void *destination) {
@@ -113,7 +113,7 @@ void selectMemoryCardLoadFile(u8 slot, void *destination) {
         break;
     }
     gMemoryCardLoadDestination = destination;
-    D_8013AF48 = slot;
+    gMemoryCardSelectedFileType = slot;
     gMemoryCardSelectedFileName = gMemoryCardFileNames[slot];
 }
 
@@ -187,7 +187,7 @@ s32 pollMemoryCardAvailability(void) {
     s32 command;
     s32 result;
 
-    D_8013B608[gMemoryCardPortIndex] = 1;
+    gMemoryCardCreateFilePending[gMemoryCardPortIndex] = 1;
     switch (MemCardSync(1, &command, &result)) {
     case -1:
         MemCardExist(gMemoryCardChannel);
@@ -216,12 +216,12 @@ s32 pollMemoryCardAvailability(void) {
                 if (!(s16)memoryCardFileExists()) {
                     return 8;
                 }
-                if (D_8013B60C[gMemoryCardPortIndex]) {
+                if (gMemoryCardChanged[gMemoryCardPortIndex]) {
                     return 2;
                 }
                 return 1;
             newCard:
-                D_8013B60C[gMemoryCardPortIndex] = 1;
+                gMemoryCardChanged[gMemoryCardPortIndex] = 1;
                 MemCardAccept(gMemoryCardChannel);
                 return 5;
             }
@@ -235,14 +235,14 @@ s32 pollMemoryCardAvailability(void) {
                 if (!(s16)memoryCardFileExists()) {
                     return 8;
                 }
-                if (D_8013B60C[gMemoryCardPortIndex]) {
+                if (gMemoryCardChanged[gMemoryCardPortIndex]) {
                     return 2;
                 }
                 return 1;
             case 1:
                 return 3;
             case 3:
-                D_8013B60C[gMemoryCardPortIndex] = 1;
+                gMemoryCardChanged[gMemoryCardPortIndex] = 1;
                 readMemoryCardDirectory();
                 if ((s16)memoryCardIsFullWithoutSelectedFile()) {
                     return 7;
@@ -250,7 +250,7 @@ s32 pollMemoryCardAvailability(void) {
                 if (!(s16)memoryCardFileExists()) {
                     return 8;
                 }
-                if (D_8013B60C[gMemoryCardPortIndex]) {
+                if (gMemoryCardChanged[gMemoryCardPortIndex]) {
                     return 2;
                 }
                 return 1;

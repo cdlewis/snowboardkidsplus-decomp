@@ -3,11 +3,11 @@
 
 s32 pollMemoryCardRead(void) {
     s32 command, result;
-    D_8013B608[gMemoryCardPortIndex] = 0;
-    D_8013B60C[gMemoryCardPortIndex] = 0;
+    gMemoryCardCreateFilePending[gMemoryCardPortIndex] = 0;
+    gMemoryCardChanged[gMemoryCardPortIndex] = 0;
     switch (MemCardSync(1, &command, &result)) {
     case -1:
-        MemCardReadFile(gMemoryCardChannel, gMemoryCardSelectedFileName, &gMemoryCardSaveHeader, 0, gMemoryCardSaveCapacities[D_8013AF48]);
+        MemCardReadFile(gMemoryCardChannel, gMemoryCardSelectedFileName, &gMemoryCardSaveHeader, 0, gMemoryCardSaveCapacities[gMemoryCardSelectedFileType]);
         break;
     case 0: break;
     case 1:

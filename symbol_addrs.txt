@@ -2145,7 +2145,7 @@ tryAcceptMemoryCard = 0x80019244; // type:func
 
 pollMemoryCardAvailability = 0x80019288; // type:func
 gMemoryCardAvailabilityTablePadding = 0x8001039C; // size:0x4 defined:true
-D_8013B608 = 0x8013B608; // size:0x2 defined:true
+gMemoryCardCreateFilePending = 0x8013B608; // size:0x2 defined:true
 gMemoryCardAcceptRetryCounts = 0x8013B60A; // size:0x2 defined:true
 waitForMemoryCardAcceptTask = 0x80019B54; // type:func
 
@@ -2924,8 +2924,8 @@ gPlayerRenderIdentityMatrix = 0x8012C80C; // size:0x20 defined:true
 
 selectMemoryCardLoadFile = 0x80018D80; // type:func
 gMemoryCardFileNames = 0x800EB528; // size:0x14 defined:true
-D_800101B8 = 0x800101B8;
-D_800101D0 = 0x800101D0;
+gMemoryCardGameFileName = 0x800101B8;
+gMemoryCardGhostFileName = 0x800101D0;
 D_800101E8 = 0x800101E8;
 D_80010200 = 0x80010200;
 D_80010218 = 0x80010218;
@@ -4279,3 +4279,5 @@ gSelectedUnlockIndex = 0x8013AF3A;
 gMemoryCardSelectedFileName = 0x8013AF40;
 gMemoryCardDirectoryEntryCounts = 0x8013B600;
 gMemoryCardDirectoryEntries = 0x8013B700;
+gMemoryCardSelectedFileType = 0x8013AF48;
+gMemoryCardChanged = 0x8013B60C;

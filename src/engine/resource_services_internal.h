@@ -57,8 +57,8 @@ typedef struct SavedImageEntry {
     u16 transitionPixels[16];
 } SavedImageEntry;
 
-extern char D_800101B8[];
-extern char D_800101D0[];
+extern char gMemoryCardGameFileName[];
+extern char gMemoryCardGhostFileName[];
 extern char D_800101E8[];
 extern char D_80010200[];
 extern char D_80010218[];
@@ -98,8 +98,6 @@ extern s8 gSoundBankLoaded[12] __attribute__((section(".data.sound_bank_loaded")
 extern char gSoundSequenceTable[0xB0] __attribute__((section(".data.sound_sequence_table"), aligned(4)));
 
 extern SoundVoiceRecord gSoundVoiceRecords[8] __attribute__((section(".data.sound_voice_records")));
-
-extern MemoryCardSaveHeader gMemoryCardSaveHeader __attribute__((section(".data.memory_card_save_header")));
 
 extern SavedImageEntry gSavedImageEntries[32] __attribute__((section(".data.saved_image_entries")));
 extern u32 gSynchronizedFrameCount __attribute__((section(".sdata.synchronized_frame_count")));
@@ -153,7 +151,6 @@ void stopMatchingSoundVoice(u8 owner, u8 bank, u16 note);
 void playPlayerPositionalSoundEffect(u8 playerIndex, u8 bank, u16 programAndTone, s16 volume);
 void initializeMemoryCardSaveHeader(void);
 void captureMemoryCardSaveIcon(void);
-void selectMemoryCardLoadFile(u8 slot, void *destination);
 s16 validateAndCopyMemoryCardSave(void);
 void readMemoryCardDirectory(void);
 s32 memoryCardFileExists(void);

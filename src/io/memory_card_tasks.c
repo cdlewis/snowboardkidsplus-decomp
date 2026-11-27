@@ -9,22 +9,22 @@ u32 gMemoryCardSaveBufferSize = 0;
 
 s32 pollMemoryCardWrite(void) {
     s32 command, result;
-    D_8013B60C[gMemoryCardPortIndex] = 0;
-    if (D_8013B608[gMemoryCardPortIndex] == 1) {
+    gMemoryCardChanged[gMemoryCardPortIndex] = 0;
+    if (gMemoryCardCreateFilePending[gMemoryCardPortIndex] == 1) {
         switch (MemCardCreateFile(gMemoryCardChannel, gMemoryCardSelectedFileName, (s8)gMemoryCardSaveHeader.blockCount)) {
         case 0: readMemoryCardDirectory();
-            D_8013B608[gMemoryCardPortIndex] = 0; break;
+            gMemoryCardCreateFilePending[gMemoryCardPortIndex] = 0; break;
         case 1: return 2;
         case 2: return 3;
         case 4: return 4;
-        case 6: D_8013B608[gMemoryCardPortIndex] = 0; break;
+        case 6: gMemoryCardCreateFilePending[gMemoryCardPortIndex] = 0; break;
         case 7: return 5;
         default: return 0;
         }
     }
     switch (MemCardSync(1, &command, &result)) {
     case -1:
-        MemCardWriteFile(gMemoryCardChannel, gMemoryCardSelectedFileName, &gMemoryCardSaveHeader, 0, gMemoryCardSaveCapacities[D_8013AF48]);
+        MemCardWriteFile(gMemoryCardChannel, gMemoryCardSelectedFileName, &gMemoryCardSaveHeader, 0, gMemoryCardSaveCapacities[gMemoryCardSelectedFileType]);
         break;
     case 0: break;
     case 1:
@@ -34,7 +34,7 @@ s32 pollMemoryCardWrite(void) {
             case 1: return 2;
             case 2: return 3;
             case 3: MemCardAccept(gMemoryCardChannel);
-            case 5: D_8013B608[gMemoryCardPortIndex] = 1; break;
+            case 5: gMemoryCardCreateFilePending[gMemoryCardPortIndex] = 1; break;
             }
         }
         break;
