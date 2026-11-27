@@ -49,6 +49,9 @@ typedef struct PlayerVariantAttributeTable {
 RacePlayer gRacePlayers[4]
     __attribute__((section(".data.race_players"), aligned(4))) = {0};
 
+RacePlayer *gCurrentRacePlayer
+    __attribute__((section(".sdata.current_race_player"), aligned(4))) = NULL;
+
 VECTOR gSharedScratchVector
     __attribute__((section(".data.shared_scratch_vector"), aligned(4))) = {0, 0, 0, 0};
 

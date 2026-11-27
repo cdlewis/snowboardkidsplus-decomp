@@ -1035,7 +1035,7 @@ segments:
       - {start: 0x12B7EC, type: .data, name: race/player/player_update, linker_section: .data.player_trick_short_inputs}
       - {start: 0x12B8C8, type: .data, name: race/player/player_update, linker_section: .data.player_unlock_scene_yaw_offsets}
       - {start: 0x12B8D0, type: .data, name: race/player/player_update, linker_section: .data.player_wall_probe_offsets}
-      - [0x12B8D8, data, current_player_pointer]
+      - {start: 0x12B8D8, type: .sdata, name: race/player/player_update, linker_section: .sdata.current_race_player, linker_section_order: .data}
       - {start: 0x12B8DC, type: .data, name: race/player/player_actions, linker_section: .data.player_sound_variants}
       - [0x12B8E4, data, 12B8E4]
       - {start: 0x12B8EC, type: .sdata, name: race/player/player_actions, linker_section: .sdata.race_order_player_ids, linker_section_order: .data}
