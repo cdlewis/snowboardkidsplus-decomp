@@ -222,7 +222,7 @@ TaskCallback gCurrentPlayerDirectionalAnimationCallbacks[4]
         startCurrentPlayerDirectionalAnimation,
         updateCurrentPlayerDirectionalAnimation,
         waitForCurrentPlayerDirectionalAnimationEnd,
-        func_8002E3C0
+        idleCurrentPlayerDirectionalAnimation
     };
 
 u8 gPlayerProjectileBounceChoices[4][8]
@@ -1476,7 +1476,7 @@ void waitForCurrentPlayerDirectionalAnimationEnd(void) {
     }
 }
 
-void func_8002E3C0(void) {
+void idleCurrentPlayerDirectionalAnimation(void) {
 }
 
 void addPlayerCappedCounters(u16 playerIndex, s32 amount) {

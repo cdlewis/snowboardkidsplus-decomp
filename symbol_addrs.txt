@@ -3849,6 +3849,7 @@ playerModelDrawAreaDepths = 0x8013B500; // size:0x8 defined:true
 gSplitBoardSelectionMapping = 0x8013B50C; // size:0x8 defined:true
 
 updateCurrentPlayerDirectionalAnimation = 0x8002E1B0; // type:func
+idleCurrentPlayerDirectionalAnimation = 0x8002E3C0; // type:func
 waitForCurrentPlayerDirectionalAnimationEnd = 0x8002E368; // type:func
 
 drawHitCountPanel = 0x80038090; // type:func

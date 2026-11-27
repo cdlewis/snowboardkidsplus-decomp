@@ -104,7 +104,7 @@ void clearCurrentPlayerTaskState(void);
 void startCurrentPlayerDirectionalAnimation(void);
 void updateCurrentPlayerDirectionalAnimation(void);
 void waitForCurrentPlayerDirectionalAnimationEnd(void);
-void func_8002E3C0(void);
+void idleCurrentPlayerDirectionalAnimation(void);
 void addPlayerCappedCounters(u16 playerIndex, s32 amount);
 void playCurrentPlayerSoundEffect(s16 index);
 void startPlayerTimerTask(RacePlayer *player);
