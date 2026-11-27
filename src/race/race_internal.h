@@ -467,7 +467,7 @@ extern TaskVisualFrame gPlayerDualResource5100EffectFrame
 extern u16 D_8013AFAA __attribute__((section(".data")));
 extern s32 D_8013AF84 __attribute__((section(".data")));
 extern u8 D_8013AFE0 __attribute__((section(".data")));
-extern u8 D_8013AFE2 __attribute__((section(".data")));
+extern u8 gMainMenuSelectionIndex __attribute__((section(".data")));
 
 void updateVisualTrailTask(void);
 void updateOrbitingPlayerVisualTask(void);

@@ -17,8 +17,8 @@
 
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern VECTOR *gScratchVector0 __attribute__((section(".data")));
-extern SVECTOR *D_8013AF90 __attribute__((section(".data")));
-extern SVECTOR *D_8013AF94 __attribute__((section(".data")));
+extern SVECTOR *gScratchShortVector0 __attribute__((section(".data")));
+extern SVECTOR *gScratchShortVector1 __attribute__((section(".data")));
 extern MATRIX *gScratchMatrix0 __attribute__((section(".data")));
 extern u8 D_8013B1AB __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
@@ -66,13 +66,13 @@ void updatePlayerCameraPosition(u16 index) {
     RacePlayer *player;
     GsRVIEW2 *views;
     GsRVIEW2 *view;
-    RotMatrixYXZ((D_8013AF90->vx = camera->pitch & 0xFFF,
-                  D_8013AF90->vy = camera->yaw & 0xFFF,
-                  D_8013AF90->vz = 0, D_8013AF90), gScratchMatrix0);
-    D_8013AF94->vx = 0;
-    D_8013AF94->vy = 0;
-    D_8013AF94->vz = camera->unk10 - camera->unk12 + camera->unk14;
-    ApplyMatrix(gScratchMatrix0, D_8013AF94, gScratchVector0);
+    RotMatrixYXZ((gScratchShortVector0->vx = camera->pitch & 0xFFF,
+                  gScratchShortVector0->vy = camera->yaw & 0xFFF,
+                  gScratchShortVector0->vz = 0, gScratchShortVector0), gScratchMatrix0);
+    gScratchShortVector1->vx = 0;
+    gScratchShortVector1->vy = 0;
+    gScratchShortVector1->vz = camera->unk10 - camera->unk12 + camera->unk14;
+    ApplyMatrix(gScratchMatrix0, gScratchShortVector1, gScratchVector0);
     players = gRacePlayers;
     player = &players[index];
     camera->x = player->x + (gScratchVector0->vx << 8);
@@ -127,14 +127,14 @@ void clampPlayerCameraDistance(u16 playerIndex) {
     if (distance < 320) {
         cameras = gPlayerCameras;
         camera = &cameras[playerIndex];
-        D_8013AF90->vx = camera->pitch & 0xFFF;
-        D_8013AF90->vy = camera->yaw & 0xFFF;
-        D_8013AF90->vz = 0;
-        RotMatrixYXZ(D_8013AF90, gScratchMatrix0);
-        D_8013AF94->vx = 0;
-        D_8013AF94->vy = 0;
-        D_8013AF94->vz = -320;
-        ApplyMatrix(gScratchMatrix0, D_8013AF94, gScratchVector0);
+        gScratchShortVector0->vx = camera->pitch & 0xFFF;
+        gScratchShortVector0->vy = camera->yaw & 0xFFF;
+        gScratchShortVector0->vz = 0;
+        RotMatrixYXZ(gScratchShortVector0, gScratchMatrix0);
+        gScratchShortVector1->vx = 0;
+        gScratchShortVector1->vy = 0;
+        gScratchShortVector1->vz = -320;
+        ApplyMatrix(gScratchMatrix0, gScratchShortVector1, gScratchVector0);
         view->vpx = view->vrx + gScratchVector0->vx;
         view->vpy = view->vry + gScratchVector0->vy;
         view->vpz = view->vrz + gScratchVector0->vz;

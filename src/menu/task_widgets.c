@@ -166,7 +166,7 @@ typedef s16 SpriteMotionResource[128];
 extern MenuRgbColor gMenuColorCycleColor __attribute__((section(".data")));
 extern s16 gFrameCounter __attribute__((section(".data")));
 extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
-extern u8 D_8013AFE2 __attribute__((section(".data")));
+extern u8 gMainMenuSelectionIndex __attribute__((section(".data")));
 extern u8 D_8013B3A8 __attribute__((section(".data")));
 extern u8 D_8013B3A9 __attribute__((section(".data")));
 extern u8 D_8013B3AA __attribute__((section(".data")));
@@ -2515,7 +2515,7 @@ void updateCharacterSelectionTask(void) {
             configureColorCycleTask(2, 64, 128, 4, 0);
         } else {
             gCurrentTaskParent->data18 = 6;
-            D_8013AFE2 = 0;
+            gMainMenuSelectionIndex = 0;
             queueMenuResourceReads((s16)gCurrentTaskParent->data18);
             gCurrentTask->data18 = 7;
         }

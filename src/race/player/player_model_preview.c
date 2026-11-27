@@ -12,7 +12,7 @@
 #include "psx/libgs.h"
 
 extern VECTOR *gScratchVector0 __attribute__((section(".data")));
-extern SVECTOR *D_8013AF90 __attribute__((section(".data")));
+extern SVECTOR *gScratchShortVector0 __attribute__((section(".data")));
 extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
@@ -92,10 +92,10 @@ void updateCurrentPlayerModelPartCoordinates(void) {
         parent = currentPlayerAbsolute->unk13E[i];
         RotMatrix((SVECTOR *)&currentPlayerAbsolute->unk5BC[i], &currentPlayerAbsolute->model.modelCoordinates[i].coord);
         if (i == 0) {
-            D_8013AF90->vx = 0;
-            D_8013AF90->vy = 0;
-            D_8013AF90->vz = 0;
-            ApplyMatrix(&currentPlayerAbsolute->model.modelCoordinates[0].coord, D_8013AF90, gScratchVector0);
+            gScratchShortVector0->vx = 0;
+            gScratchShortVector0->vy = 0;
+            gScratchShortVector0->vz = 0;
+            ApplyMatrix(&currentPlayerAbsolute->model.modelCoordinates[0].coord, gScratchShortVector0, gScratchVector0);
             currentPlayerAbsolute->model.modelCoordinates[0].coord.t[0] = gScratchVector0->vx + currentPlayerAbsolute->unk62C[0].x;
             currentPlayerAbsolute->model.modelCoordinates[0].coord.t[1] = gScratchVector0->vy + currentPlayerAbsolute->unk62C[0].y;
             currentPlayerAbsolute->model.modelCoordinates[0].coord.t[2] = gScratchVector0->vz + currentPlayerAbsolute->unk62C[0].z;

@@ -228,7 +228,7 @@ void updateCurrentPlayerCameraTask(void) {
             }
             VIEW.vpy += CAMERA.unk14 / 8;
         } else {
-            views[gCurrentTask->data18].vpy = D_80123D80[gSelectedCourseIndex].unk0C / 256 - 120;
+            views[gCurrentTask->data18].vpy = gSelectedCourseRecords[gSelectedCourseIndex].unk0C / 256 - 120;
             cameras[gCurrentTask->data18].y = (views[gCurrentTask->data18].vpy + 120) << 8;
             updatePlayerCameraPitch(gCurrentTask->data18);
             if (views[gCurrentTask->data18].vpy < height - 120) {
@@ -242,7 +242,7 @@ void updateCurrentPlayerCameraTask(void) {
         break;
     }
     case 3: {
-        SelectedCourseRecord *records = D_80123D80;
+        SelectedCourseRecord *records = gSelectedCourseRecords;
         SelectedCourseRecord *record = &records[gSelectedCourseIndex];
         s32 dx = (s32)record->unk18[6] - CAMERA.x;
         s32 dz = (s32)record->unk18[7] - CAMERA.z;
@@ -507,7 +507,7 @@ void drawRaceCourseProgressMeter(s16 x, s16 y, GsOT *ot, s32 depth) {
 
             packet->x0 = x - 4;
             getPlayerCourseProgress(i, &scratch->progress, &scratch->distance);
-            progress = (scratch->progress << 7) / ((s16)D_80123D80[gSelectedCourseIndex].unk00 << 3);
+            progress = (scratch->progress << 7) / ((s16)gSelectedCourseRecords[gSelectedCourseIndex].unk00 << 3);
             if (progress < 0) {
                 progress = 0;
             }
@@ -546,7 +546,7 @@ void initializeRaceRulesAndCounters(void) {
     RaceTime *times;
     u8 *flags;
     D_8013B620 = -1;
-    switch (D_8013AFE2) {
+    switch (gMainMenuSelectionIndex) {
     case 0:
         if (playerCountAbsolute == 1) {
             D_8013B620 = 0;
@@ -779,7 +779,7 @@ void updateRaceHud(void) {
                 }
                 if (!D_8013B18C) {
                     getPlayerCourseProgress(0, &progress, &distance);
-                    if (D_80123D80[gSelectedCourseIndex].unk3C * 8 < progress) {
+                    if (gSelectedCourseRecords[gSelectedCourseIndex].unk3C * 8 < progress) {
                         D_8013B188 = gRaceElapsedTime;
                         D_8013B18C = 1;
                         createChildTaskWithReserve(initializeRaceTimeDifferenceDisplay);

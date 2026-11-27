@@ -231,7 +231,7 @@ void dispatchBackgroundMenuTask(void) {
             setMusicSequenceEnabled(0);
             gDemoRaceIndex = 0;
             D_8013B109 = 3;
-            switch (D_8013AFE2) {
+            switch (gMainMenuSelectionIndex) {
             case 1:
                 D_8013B108 = 9;
                 break;
@@ -241,7 +241,7 @@ void dispatchBackgroundMenuTask(void) {
                 break;
             default:
                 D_8013B108 = 2;
-                D_8013AFE2 = 0;
+                gMainMenuSelectionIndex = 0;
                 break;
             }
             gCurrentTaskParent->data1E = 1;

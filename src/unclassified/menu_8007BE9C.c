@@ -20,7 +20,7 @@ typedef struct MainMenuSelection {
 
 extern MenuRgbColor gMenuColorCycleColor __attribute__((section(".data")));
 extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
-extern u8 D_8013AFE2 __attribute__((section(".data")));
+extern u8 gMainMenuSelectionIndex __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCurrentTaskParent __attribute__((section(".data")));
 
@@ -163,7 +163,7 @@ void updateMainMenuSelectionTask(void) {
             gSelectionMenuFadeStarted = complete;
         }
         if (selection->selectedIndex >= 0) {
-            D_8013AFE2 = selection->selectedIndex;
+            gMainMenuSelectionIndex = selection->selectedIndex;
         }
         if (selection->choiceResult == 0 || (s16)entries[0].flags != 0) {
             break;
@@ -193,7 +193,7 @@ void updateMainMenuSelectionTask(void) {
             parent->data18 = 5;
             task->data18 = 5;
         } else {
-            const u8 *parentState = &gMainMenuParentStates[D_8013AFE2];
+            const u8 *parentState = &gMainMenuParentStates[gMainMenuSelectionIndex];
             GameTask *parent = gCurrentTaskParent;
             GameTask *task;
 
@@ -262,13 +262,13 @@ void updateMainMenuSelectionTask(void) {
 }
 
 s32 getValidatedSelectionIndex(void) {
-    switch (D_8013AFE2) {
+    switch (gMainMenuSelectionIndex) {
     case 0:
     case 1:
     case 2:
     case 3:
     case 4:
-        return D_8013AFE2;
+        return gMainMenuSelectionIndex;
     }
     return 0;
 }

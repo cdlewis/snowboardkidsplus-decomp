@@ -1,10 +1,9 @@
 #pragma once
-#include "psx/libgs.h"
+#include "game/graphics/coordinate.h"
 #include "psx/libgpu.h"
 
 void initializeGameSystems(void);
 void runGameLoop(void);
-extern SVECTOR *D_8013AF94;
 extern MATRIX *D_8013AF9C;
 extern u8 *D_8013AFA0, *D_8013AFA4;
 extern s32 D_8013AF84;
@@ -15,7 +14,6 @@ extern MATRIX *D_800EC170[16];
 extern u32 D_800EC200[8192], D_800F4200[8192], D_800FC200[4096];
 extern u8 D_80100200[2][0x10000];
 
-extern VECTOR *D_8013AF8C;
 extern u16 D_8013AFAA;
 extern u32 *D_8013AF70;
 extern u32 *D_8013AF74;

@@ -20,7 +20,7 @@ typedef struct SelectedCourseRecord {
     u32 unk40[2];
 } SelectedCourseRecord;
 
-extern SelectedCourseRecord D_80123D80[];
+extern SelectedCourseRecord gSelectedCourseRecords[10];
 extern const u8 gCourseMenuCourseIndices[];
 extern u8 D_8012D478[];
 extern s16 gSelectedCourseIndex;

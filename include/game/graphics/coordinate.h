@@ -5,12 +5,13 @@
 /* Shared direction scratch vector used by visual effects. */
 extern VECTOR D_800EB22C;
 
-extern GsCOORDINATE2 D_80129C60[];
+extern GsCOORDINATE2 gCourseObjectCoordinates[30];
 extern SVECTOR D_8012A5C0[];
 
 extern VECTOR *gScratchVector0;
-extern SVECTOR *D_8013AF90;
-extern SVECTOR *D_8013AF94;
+extern VECTOR *gScratchVector1;
+extern SVECTOR *gScratchShortVector0;
+extern SVECTOR *gScratchShortVector1;
 extern MATRIX *gScratchMatrix0;
 
 void setCoordinateRotation(SVECTOR *rotation, GsCOORDINATE2 *coordinate);

@@ -73,7 +73,7 @@ void updateAttackResultsAndRecords(void) {
     s32 recordTime;
     s32 faster;
 
-    switch (D_8013AFE2) {
+    switch (gMainMenuSelectionIndex) {
     case 0:
         break;
     case 1:

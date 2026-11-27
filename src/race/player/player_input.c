@@ -19,10 +19,10 @@ extern SelectedRecord *D_8013B1F0 __attribute__((section(".data")));
 extern s16 D_8013B1FE __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern VECTOR *gScratchVector0 __attribute__((section(".data")));
-extern SVECTOR *D_8013AF90 __attribute__((section(".data")));
+extern SVECTOR *gScratchShortVector0 __attribute__((section(".data")));
 extern MATRIX *gScratchMatrix0 __attribute__((section(".data")));
 extern u8 D_8013AFE0 __attribute__((section(".data")));
-extern u8 D_8013AFE2 __attribute__((section(".data")));
+extern u8 gMainMenuSelectionIndex __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 
 const PlayerRankSpeedAdjustment gPlayerRankSpeedAdjustments[4]
@@ -204,16 +204,16 @@ void prepareCurrentPlayerFrame(void) {
     if ((u32)((u8)currentPlayerAbsolute->surfaceState.fields.unk136 - 17) < 8 && !(currentPlayerAbsolute->unk128 & 0x200)) {
         getGeometryPlacementTransform(currentPlayerAbsolute->unk92E, &x, &y, &z, &angle);
         surface = currentPlayerAbsolute->surfaceState.fields.unk136;
-        D_8013AF90->vx = 0;
-        D_8013AF90->vz = 0;
+        gScratchShortVector0->vx = 0;
+        gScratchShortVector0->vz = 0;
         angle += (surface - 17) * 512;
-        D_8013AF90->vy = angle;
-        RotMatrix(D_8013AF90, gScratchMatrix0);
+        gScratchShortVector0->vy = angle;
+        RotMatrix(gScratchShortVector0, gScratchMatrix0);
 
-        D_8013AF90->vx = 0;
-        D_8013AF90->vy = 0;
-        D_8013AF90->vz = 384;
-        ApplyMatrix(gScratchMatrix0, D_8013AF90, gScratchVector0);
+        gScratchShortVector0->vx = 0;
+        gScratchShortVector0->vy = 0;
+        gScratchShortVector0->vz = 384;
+        ApplyMatrix(gScratchMatrix0, gScratchShortVector0, gScratchVector0);
 
         currentPlayerAbsolute->x += gScratchVector0->vx;
         currentPlayerAbsolute->y += gScratchVector0->vy;
@@ -236,7 +236,7 @@ void prepareCurrentPlayerFrame(void) {
     }
 
     if (currentPlayerAbsolute->unk0FC != 0) {
-        if (D_8013AFE2 == 1 && D_8013AFE0 == 0) {
+        if (gMainMenuSelectionIndex == 1 && D_8013AFE0 == 0) {
             currentPlayerAbsolute->unk12E += 0x1000;
         } else {
             currentPlayerAbsolute->unk12E += 0xC00;
@@ -273,7 +273,7 @@ void prepareCurrentPlayerFrame(void) {
     }
 
     if (currentPlayerAbsolute->unk008 && currentPlayerAbsolute->unk934 >= selectedFinishLapCountAbsolute - 1) {
-        finishSegment = D_80123D80[gSelectedCourseIndex].unk00;
+        finishSegment = gSelectedCourseRecords[gSelectedCourseIndex].unk00;
         if (currentPlayerAbsolute->unk92E > finishSegment - 20 && currentPlayerAbsolute->unk92E < finishSegment) {
             currentPlayerAbsolute->unk12E = currentPlayerAbsolute->unk098;
         }

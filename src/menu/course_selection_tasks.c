@@ -95,7 +95,7 @@ typedef struct SaveRecordTaskStatus {
 extern MenuRgbColor gMenuColorCycleColor __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
-extern u8 D_8013AFE2 __attribute__((section(".data")));
+extern u8 gMainMenuSelectionIndex __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern GameTask *gCurrentTaskParent __attribute__((section(".data")));
@@ -384,7 +384,7 @@ void updateCdAwareCourseSelectionTask(void) {
         default:
             selectedIndex = selectedCourseMenuItemAbsolute = mapMenuByteIndex(group->mapping, selection->selectedIndex);
             course = gCourseMenuCourseIndices[selectedIndex];
-            courseParameter = D_80123D80[course].unk02;
+            courseParameter = gSelectedCourseRecords[course].unk02;
             gSelectedCourseIndex = course;
             gCurrentTask->data18 = 30;
             selectedLapCountAbsolute = courseParameter;
@@ -1128,7 +1128,7 @@ void updatePlayerGroupedCourseSelectionTask(void) {
         }
         break;
     case 14:
-        switch (D_8013AFE2) {
+        switch (gMainMenuSelectionIndex) {
         case 0:
             gCurrentTaskParent->data18 = 7;
             break;
@@ -2488,7 +2488,7 @@ void updatePlayerGroupedSelectionMenu(void) {
         if (gPlayerGroupedSelectionStates[0] == 4 || gPlayerGroupedSelectionStates[1] == 4) {
             gCurrentTask->data18 = 40;
         } else if (gPlayerGroupedSelectionStates[0] == 6 || gPlayerGroupedSelectionStates[1] == 6) {
-            if (D_8013AFE2 == 0 && (s16)getGameOptionFlag0() != 0) {
+            if (gMainMenuSelectionIndex == 0 && (s16)getGameOptionFlag0() != 0) {
                 gCurrentTaskParent->data18 = 29;
             } else {
                 gCurrentTaskParent->data18 = 23;
@@ -2506,7 +2506,7 @@ void updatePlayerGroupedSelectionMenu(void) {
         break;
     case 41:
         if (gPlayerGroupedSelectionStates[0] == 6 || gPlayerGroupedSelectionStates[1] == 6) {
-            switch (D_8013AFE2) {
+            switch (gMainMenuSelectionIndex) {
             case 0:
             case 2:
                 gCurrentTaskParent->data18 = 7;

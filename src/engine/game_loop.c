@@ -170,9 +170,9 @@ void initializeGameSystems(void) {
     RECT *clip;
 
     gScratchVector0 = &GAME_SCRATCHPAD->vectors[0];
-    D_8013AF8C = &GAME_SCRATCHPAD->vectors[1];
-    D_8013AF90 = &GAME_SCRATCHPAD->shortVectors[0];
-    D_8013AF94 = &GAME_SCRATCHPAD->shortVectors[1];
+    gScratchVector1 = &GAME_SCRATCHPAD->vectors[1];
+    gScratchShortVector0 = &GAME_SCRATCHPAD->shortVectors[0];
+    gScratchShortVector1 = &GAME_SCRATCHPAD->shortVectors[1];
     gScratchMatrix0 = &GAME_SCRATCHPAD->matrices[0];
     D_8013AF9C = &GAME_SCRATCHPAD->matrices[1];
     D_8013AFA0 = GAME_SCRATCHPAD->unk70;

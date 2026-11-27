@@ -424,7 +424,7 @@ void queueRaceStartupResourcesTask(void) {
         case 1:
             gSelectedCourseIndex = 9;
             gPlayerCount = 1;
-            D_8013AFE2 = 0;
+            gMainMenuSelectionIndex = 0;
             activeRacePlayerCountGp = 4;
             for (i = 0; i < 4; i++) {
                 RacePlayer *player = &gRacePlayers[i];
@@ -447,7 +447,7 @@ void queueRaceStartupResourcesTask(void) {
             }
             break;
         case 2:
-            D_8013AFE2 = 1;
+            gMainMenuSelectionIndex = 1;
             D_8013AFE0 = 0;
             gSelectedCourseIndex = 0;
             gPlayerCount = 1;
@@ -457,7 +457,7 @@ void queueRaceStartupResourcesTask(void) {
             gRacePlayers[0].isActive = 1;
             break;
         case 3:
-            D_8013AFE2 = 1;
+            gMainMenuSelectionIndex = 1;
             D_8013AFE0 = 1;
             gSelectedCourseIndex = 1;
             gPlayerCount = 1;
@@ -467,7 +467,7 @@ void queueRaceStartupResourcesTask(void) {
             gRacePlayers[0].isActive = 1;
             break;
         case 4:
-            D_8013AFE2 = 1;
+            gMainMenuSelectionIndex = 1;
             D_8013AFE0 = 2;
             gSelectedCourseIndex = 7;
             gPlayerCount = 1;
@@ -479,7 +479,7 @@ void queueRaceStartupResourcesTask(void) {
         case 5:
             gSelectedCourseIndex = 3;
             gPlayerCount = 2;
-            D_8013AFE2 = 0;
+            gMainMenuSelectionIndex = 0;
             activeRacePlayerCountGp = 4;
             for (i = 0; i < 4; i++) {
                 RacePlayer *player = &gRacePlayers[i];
@@ -503,7 +503,7 @@ void queueRaceStartupResourcesTask(void) {
             break;
         }
         if (gDemoRaceIndex) {
-            gSelectedLapCount = D_80123D80[gSelectedCourseIndex].unk02;
+            gSelectedLapCount = gSelectedCourseRecords[gSelectedCourseIndex].unk02;
         }
         resetGameplayRng();
         gRacePauseState = 0;
@@ -694,7 +694,7 @@ void updateActiveRaceTask(void) {
     if (D_8013B1AA) {
         gCurrentTask->data18 = 30;
         configureTaskStateTransition(2, 0, 30);
-        if (D_8013AFE2 == 2) {
+        if (gMainMenuSelectionIndex == 2) {
             gControllerInputRecordState = 0;
         }
         setControllerFlag5(0);
@@ -713,7 +713,7 @@ void updateActiveRaceTask(void) {
     }
     if (finishedCount == gPlayerCount) {
         queueCdCommand(2, 1);
-        if (D_8013AFE2 == 0) {
+        if (gMainMenuSelectionIndex == 0) {
             if (gPlayerCount == 2) {
                 if (!(gRacePlayers[0].unk100[0] | gRacePlayers[1].unk100[0])) {
                     return;
@@ -739,7 +739,7 @@ void updateActiveRaceTask(void) {
             }
         }
 
-        if (D_8013AFE2 == 2 && (gControllerInputRecordState & 2)) {
+        if (gMainMenuSelectionIndex == 2 && (gControllerInputRecordState & 2)) {
             recordControllerInput(0);
         }
         gCurrentTask->data18 = 60;
@@ -776,7 +776,7 @@ void updateActiveRaceTask(void) {
     if (gRacePauseState) {
         goto pause;
     }
-    if (D_8013AFE2 == 2 && (gControllerInputRecordState & 2)) {
+    if (gMainMenuSelectionIndex == 2 && (gControllerInputRecordState & 2)) {
         recordControllerInput(0);
     }
     if (gDemoRaceIndex) {
@@ -809,7 +809,7 @@ pause:
 
 void finishRaceTransitionAfterCountdown(void) {
     s16 i;
-    if (D_8013AFE2 == 2 && (gControllerInputRecordState & 2)) recordControllerInput(0);
+    if (gMainMenuSelectionIndex == 2 && (gControllerInputRecordState & 2)) recordControllerInput(0);
     if (--gCurrentTask->data18 == 0) {
         D_8013B1A8 = 0;
         gTaskTransitionFlags |= 8;
@@ -821,7 +821,7 @@ void finishRaceTransitionAfterCountdown(void) {
                 break;
             }
         }
-        if (D_8013AFE2 == 2) {
+        if (gMainMenuSelectionIndex == 2) {
             if (gControllerInputRecordState & 8) gControllerInputRecordState = 0;
             else {
                 gControllerInputRecordState = 4;
@@ -846,7 +846,7 @@ void dispatchPostRaceResultsTask(void) {
     } else {
         gPlayerCameras[1].unk16 = 6;
     }
-    switch (D_8013AFE2) {
+    switch (gMainMenuSelectionIndex) {
     case 0:
         if (gPlayerCount == 1) {
             createChildTaskWithReserve(initializeResultDisplayTask);
@@ -1022,7 +1022,7 @@ void finishRaceExitAfterCountdown(void) {
     }
     if (--gCurrentTask->data18 == 0) {
         stopPlayerSound(0);
-        if (!gDemoRaceIndex && !D_8013B1AA && !D_8013B1AB && !D_8013AFE2 && gPlayerCount == 1) {
+        if (!gDemoRaceIndex && !D_8013B1AA && !D_8013B1AB && !gMainMenuSelectionIndex && gPlayerCount == 1) {
             player = &gRacePlayers[0];
             if (player->unk935 < 3) {
                 unlockTier = updateRaceUnlockProgress(player->characterId, player->unk935);
@@ -1070,7 +1070,7 @@ void finishRaceExitAfterCountdown(void) {
         resetPaletteRecords();
         deleteCurrentTaskDescendants();
 
-        if (D_8013AFE2 == 2) {
+        if (gMainMenuSelectionIndex == 2) {
             if (gControllerInputRecordState & 4) {
                 setCurrentTaskCallback(initializeDemoPlaybackTask);
                 return;
@@ -1298,7 +1298,7 @@ selectRandom:
         }
     }
 
-    if (D_8013AFE2 == 0) {
+    if (gMainMenuSelectionIndex == 0) {
         s8 active = 1;
         for (i = 4; --i >= 0;) {
             gRacePlayers[i].isActive = active;
@@ -1350,7 +1350,7 @@ selectRandom:
 
 void initializeRaceTaskState(void) {
     gTaskTransitionFlags = 1;
-    if (D_8013AFE2 == 2) {
+    if (gMainMenuSelectionIndex == 2) {
         resetSecondaryRng();
     }
     initializeActiveRacePlayers();
@@ -1359,8 +1359,8 @@ void initializeRaceTaskState(void) {
 }
 
 void initializeSelectedCourseTransition(void) {
-    gSelectedLapCount = D_80123D80[gSelectedCourseIndex].unk02;
-    if (D_8013AFE2 != 0 || gPlayerCount == 1 || D_8013AFDA == 0) {
+    gSelectedLapCount = gSelectedCourseRecords[gSelectedCourseIndex].unk02;
+    if (gMainMenuSelectionIndex != 0 || gPlayerCount == 1 || D_8013AFDA == 0) {
         configureTaskStateTransition(1, 0, 30);
         setTaskBackgroundMode(3, selectedCourseMenuItemAbsolute, 0);
         setCurrentTaskCallback(prepareRacePlayersAndQueueResources);

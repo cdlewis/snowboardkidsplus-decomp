@@ -55,12 +55,12 @@ extern u16 D_8013AFAA __attribute__((section(".data")));
 extern s16 gFrameCounter __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern VECTOR *gScratchVector0 __attribute__((section(".data")));
-extern SVECTOR *D_8013AF94 __attribute__((section(".data")));
+extern SVECTOR *gScratchShortVector1 __attribute__((section(".data")));
 extern MATRIX *gScratchMatrix0 __attribute__((section(".data")));
 extern u32 *gCurrentPlayerOrderingTable __attribute__((section(".data")));
 extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
 extern u8 D_8013AFE0 __attribute__((section(".data")));
-extern u8 D_8013AFE2 __attribute__((section(".data")));
+extern u8 gMainMenuSelectionIndex __attribute__((section(".data")));
 extern u8 gRacePauseState __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
@@ -69,7 +69,7 @@ extern u32 gTaskTransitionFlags __attribute__((section(".data")));
 extern s16 *gCourseGeometryVertexData __attribute__((section(".data")));
 extern s16 *gCourseGeometryRegionData __attribute__((section(".data")));
 
-extern VECTOR *D_8013AF8C __attribute__((section(".data")));
+extern VECTOR *gScratchVector1 __attribute__((section(".data")));
 extern u32 *D_8013AF70 __attribute__((section(".data")));
 extern u32 *D_8013AF74 __attribute__((section(".data")));
 
@@ -529,10 +529,10 @@ void initializeCourseObjects(void) {
         model++;
         modelIndex = i;
         GsLinkObject4(model, &D_80129A80[modelIndex], 0);
-        D_80129A80[modelIndex].coord2 = &D_80129C60[modelIndex];
+        D_80129A80[modelIndex].coord2 = &gCourseObjectCoordinates[modelIndex];
         D_80129A80[modelIndex].tmd = model;
         D_80129A80[modelIndex].attribute = 0;
-        GsInitCoordinate2(0, &D_80129C60[modelIndex]);
+        GsInitCoordinate2(0, &gCourseObjectCoordinates[modelIndex]);
     }
 
     for (i = 0; i < 4; i++) {
@@ -543,7 +543,7 @@ void initializeCourseObjects(void) {
     course = gSelectedCourseIndex;
     switch (course) {
     case 1:
-        if (D_8013AFE2 == 0) {
+        if (gMainMenuSelectionIndex == 0) {
             createChildTaskForParentWithReserve(&gGameTasks[4], initializeBobbingTrailEmitterTask);
         }
         createChildTaskForParentWithReserve(&gGameTasks[4], initializeProximityEmitterTask);
@@ -585,7 +585,7 @@ void initializeCourseObjects(void) {
             break;
         }
         if ((u8)type < 7) {
-            if ((u8)type != 5 && !((type == 2 || type == 3) && D_8013AFE2)) {
+            if ((u8)type != 5 && !((type == 2 || type == 3) && gMainMenuSelectionIndex)) {
                 tryCreateChildTaskForParentWith20SlotsReserved(&gGameTasks[4], initializePlacedObjectTask);
                 gCreatedTask->resource14 = allocateTaskMemoryBlock();
                 if ((u32)(D_8013B2BC[i].unk01 - 2) < 2) {
@@ -596,7 +596,7 @@ void initializeCourseObjects(void) {
         } else {
             switch (placement->unk01) {
             case 7:
-                if (D_8013AFE2 == 0) {
+                if (gMainMenuSelectionIndex == 0) {
                     if (i < D_8013B2B5) {
                         D_8013B2B5 = i;
                     }
@@ -605,7 +605,7 @@ void initializeCourseObjects(void) {
                 break;
             case 8:
             case 9:
-                if (D_8013AFE2 != 1 || D_8013AFE0 != 1) {
+                if (gMainMenuSelectionIndex != 1 || D_8013AFE0 != 1) {
                     if (i < D_8013B2B7) {
                         D_8013B2B7 = i;
                     }
@@ -623,7 +623,7 @@ void initializeCourseObjects(void) {
         i++;
     } while (i != COURSE_PLACEMENT_LIMIT);
 
-    if (D_8013AFE2 == 1) {
+    if (gMainMenuSelectionIndex == 1) {
         switch (D_8013AFE0) {
         case 0:
             gInteractionVisualPlacements = gCourseChallengePlacements[playerCountAbsolute][gSelectedCourseIndex];
@@ -725,60 +725,60 @@ void initializeCourseObjectTask(void) {
     switch (gCurrentTask->data18) {
     case 0:
     case 24:
-        D_8012A5C0[gCurrentTask->data18].vy = D_80123D80[gSelectedCourseIndex].unk16;
+        D_8012A5C0[gCurrentTask->data18].vy = gSelectedCourseRecords[gSelectedCourseIndex].unk16;
         gCurrentTask->data1C = 0x418;
         gCurrentTask->data1E = 0x240;
-        D_8013AF90->vx = 0;
-        D_8013AF90->vy = D_8012A5C0[gCurrentTask->data18].vy + gCurrentTask->data1C;
-        D_8013AF90->vz = 0;
-        D_8013AF94->vx = 0;
-        D_8013AF94->vy = 0;
-        D_8013AF94->vz = gCurrentTask->data1E;
-        RotMatrix(D_8013AF90, gScratchMatrix0);
-        ApplyMatrix(gScratchMatrix0, D_8013AF94, gScratchVector0);
-        D_80129C60[gCurrentTask->data18].coord.t[0] =
-            ((s32)D_80123D80[gSelectedCourseIndex].unk18[0] >> 8) + gScratchVector0->vx;
-        D_80129C60[gCurrentTask->data18].coord.t[1] = ((s32)D_80123D80[gSelectedCourseIndex].unk18[1] >> 8);
-        D_80129C60[gCurrentTask->data18].coord.t[2] =
-            ((s32)D_80123D80[gSelectedCourseIndex].unk18[2] >> 8) + gScratchVector0->vz;
+        gScratchShortVector0->vx = 0;
+        gScratchShortVector0->vy = D_8012A5C0[gCurrentTask->data18].vy + gCurrentTask->data1C;
+        gScratchShortVector0->vz = 0;
+        gScratchShortVector1->vx = 0;
+        gScratchShortVector1->vy = 0;
+        gScratchShortVector1->vz = gCurrentTask->data1E;
+        RotMatrix(gScratchShortVector0, gScratchMatrix0);
+        ApplyMatrix(gScratchMatrix0, gScratchShortVector1, gScratchVector0);
+        gCourseObjectCoordinates[gCurrentTask->data18].coord.t[0] =
+            ((s32)gSelectedCourseRecords[gSelectedCourseIndex].unk18[0] >> 8) + gScratchVector0->vx;
+        gCourseObjectCoordinates[gCurrentTask->data18].coord.t[1] = ((s32)gSelectedCourseRecords[gSelectedCourseIndex].unk18[1] >> 8);
+        gCourseObjectCoordinates[gCurrentTask->data18].coord.t[2] =
+            ((s32)gSelectedCourseRecords[gSelectedCourseIndex].unk18[2] >> 8) + gScratchVector0->vz;
         break;
     case 1:
     case 2:
         gCurrentTask->data1A = 0;
-        D_8012A5C0[gCurrentTask->data18].vy = D_80123D80[gSelectedCourseIndex].unk16 + 0x400;
+        D_8012A5C0[gCurrentTask->data18].vy = gSelectedCourseRecords[gSelectedCourseIndex].unk16 + 0x400;
         gCurrentTask->data1C = 0x128;
         gCurrentTask->data1E = 0xA0;
-        D_8013AF90->vx = 0;
-        D_8013AF90->vy = D_8012A5C0[gCurrentTask->data18].vy + gCurrentTask->data1C;
-        D_8013AF90->vz = 0;
-        D_8013AF94->vx = 0;
-        D_8013AF94->vy = 0;
-        D_8013AF94->vz = gCurrentTask->data1E;
-        RotMatrix(D_8013AF90, gScratchMatrix0);
-        ApplyMatrix(gScratchMatrix0, D_8013AF94, gScratchVector0);
-        D_80129C60[gCurrentTask->data18].coord.t[0] =
-            ((s32)D_80123D80[gSelectedCourseIndex].unk18[0] >> 8) + gScratchVector0->vx;
-        D_80129C60[gCurrentTask->data18].coord.t[1] = ((s32)D_80123D80[gSelectedCourseIndex].unk18[1] >> 8);
-        D_80129C60[gCurrentTask->data18].coord.t[2] =
-            ((s32)D_80123D80[gSelectedCourseIndex].unk18[2] >> 8) + gScratchVector0->vz;
+        gScratchShortVector0->vx = 0;
+        gScratchShortVector0->vy = D_8012A5C0[gCurrentTask->data18].vy + gCurrentTask->data1C;
+        gScratchShortVector0->vz = 0;
+        gScratchShortVector1->vx = 0;
+        gScratchShortVector1->vy = 0;
+        gScratchShortVector1->vz = gCurrentTask->data1E;
+        RotMatrix(gScratchShortVector0, gScratchMatrix0);
+        ApplyMatrix(gScratchMatrix0, gScratchShortVector1, gScratchVector0);
+        gCourseObjectCoordinates[gCurrentTask->data18].coord.t[0] =
+            ((s32)gSelectedCourseRecords[gSelectedCourseIndex].unk18[0] >> 8) + gScratchVector0->vx;
+        gCourseObjectCoordinates[gCurrentTask->data18].coord.t[1] = ((s32)gSelectedCourseRecords[gSelectedCourseIndex].unk18[1] >> 8);
+        gCourseObjectCoordinates[gCurrentTask->data18].coord.t[2] =
+            ((s32)gSelectedCourseRecords[gSelectedCourseIndex].unk18[2] >> 8) + gScratchVector0->vz;
         break;
     case 3:
-        D_8012A5C0[gCurrentTask->data18].vy = D_80123D80[gSelectedCourseIndex].unk14 + 0x400;
+        D_8012A5C0[gCurrentTask->data18].vy = gSelectedCourseRecords[gSelectedCourseIndex].unk14 + 0x400;
         gCurrentTask->data1C = 0x280;
         gCurrentTask->data1E = -0x78;
-        D_8013AF90->vx = 0;
-        D_8013AF90->vy = D_8012A5C0[gCurrentTask->data18].vy + gCurrentTask->data1C;
-        D_8013AF90->vz = 0;
-        D_8013AF94->vx = 0;
-        D_8013AF94->vy = 0;
-        D_8013AF94->vz = gCurrentTask->data1E;
-        RotMatrix(D_8013AF90, gScratchMatrix0);
-        ApplyMatrix(gScratchMatrix0, D_8013AF94, gScratchVector0);
-        D_80129C60[gCurrentTask->data18].coord.t[0] =
-            (D_80123D80[gSelectedCourseIndex].unk08 >> 8) + gScratchVector0->vx;
-        D_80129C60[gCurrentTask->data18].coord.t[1] = (D_80123D80[gSelectedCourseIndex].unk0C >> 8) - 8;
-        D_80129C60[gCurrentTask->data18].coord.t[2] =
-            (D_80123D80[gSelectedCourseIndex].unk10 >> 8) + gScratchVector0->vz;
+        gScratchShortVector0->vx = 0;
+        gScratchShortVector0->vy = D_8012A5C0[gCurrentTask->data18].vy + gCurrentTask->data1C;
+        gScratchShortVector0->vz = 0;
+        gScratchShortVector1->vx = 0;
+        gScratchShortVector1->vy = 0;
+        gScratchShortVector1->vz = gCurrentTask->data1E;
+        RotMatrix(gScratchShortVector0, gScratchMatrix0);
+        ApplyMatrix(gScratchMatrix0, gScratchShortVector1, gScratchVector0);
+        gCourseObjectCoordinates[gCurrentTask->data18].coord.t[0] =
+            (gSelectedCourseRecords[gSelectedCourseIndex].unk08 >> 8) + gScratchVector0->vx;
+        gCourseObjectCoordinates[gCurrentTask->data18].coord.t[1] = (gSelectedCourseRecords[gSelectedCourseIndex].unk0C >> 8) - 8;
+        gCourseObjectCoordinates[gCurrentTask->data18].coord.t[2] =
+            (gSelectedCourseRecords[gSelectedCourseIndex].unk10 >> 8) + gScratchVector0->vz;
         break;
     }
 
@@ -823,7 +823,7 @@ void updateCourseObjectTask(void) {
     if (gSelectedCourseIndex != 9 && gCurrentTask->data18 == 3) {
         players = gRacePlayers;
         cameraPlayer = &players[getRenderCameraIndex()];
-        records = D_80123D80;
+        records = gSelectedCourseRecords;
         if (cameraPlayer->unk92E < records[gSelectedCourseIndex].objectFirstSegment) {
             return;
         }
@@ -833,7 +833,7 @@ void updateCourseObjectTask(void) {
     }
 
     cameraIndex = getRenderCameraIndex();
-    coordinates = D_80129C60;
+    coordinates = gCourseObjectCoordinates;
     objectIndex = gCurrentTask->data18;
     if (isPositionInCameraRange(coordinates[objectIndex].coord.t[0],
                                 coordinates[objectIndex].coord.t[2], cameraIndex)) {
@@ -851,15 +851,15 @@ void initializeSelectedCourseOffsetTask(void) {
     }
     resource = (CourseOffsetResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     GsInitCoordinate2(0, &resource->coordinate);
-    records = D_80123D80;
+    records = gSelectedCourseRecords;
     resource->rotation.vx = 0;
     resource->rotation.vy = records[gSelectedCourseIndex].unk16;
     resource->rotation.vz = 0;
-    D_8013AF94->vx = 0;
-    D_8013AF94->vy = 0;
-    D_8013AF94->vz = -0x330;
+    gScratchShortVector1->vx = 0;
+    gScratchShortVector1->vy = 0;
+    gScratchShortVector1->vz = -0x330;
     RotMatrix(&resource->rotation, gScratchMatrix0);
-    ApplyMatrix(gScratchMatrix0, D_8013AF94, gScratchVector0);
+    ApplyMatrix(gScratchMatrix0, gScratchShortVector1, gScratchVector0);
     resource->position.vx = records[gSelectedCourseIndex].unk18[3] + (gScratchVector0->vx << 8);
     resource->position.vy = records[gSelectedCourseIndex].unk18[4];
     resource->position.vz = records[gSelectedCourseIndex].unk18[5] + (gScratchVector0->vz << 8);
@@ -880,10 +880,10 @@ void updateSelectedCourseOffsetTask(void) {
     resource = (CourseOffsetResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (!gRacePauseState) {
         RotMatrix(&resource->rotation, gScratchMatrix0);
-        D_8013AF90->vx = 0;
-        D_8013AF90->vy = 0;
-        D_8013AF90->vz = 0x1000;
-        ApplyMatrix(gScratchMatrix0, D_8013AF90, gScratchVector0);
+        gScratchShortVector0->vx = 0;
+        gScratchShortVector0->vy = 0;
+        gScratchShortVector0->vz = 0x1000;
+        ApplyMatrix(gScratchMatrix0, gScratchShortVector0, gScratchVector0);
         resource->position.vx += gScratchVector0->vx;
         resource->position.vz += gScratchVector0->vz;
         resource->coordinate.coord.t[0] = resource->position.vx >> 8;
@@ -913,11 +913,11 @@ void updatePlayerFollowingOrbitTask(void) {
     resource = (CourseOffsetResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (!gRacePauseState) {
         if (gRacePlayers[gCurrentTask->data18].unk12C != 7) {
-            D_8013AF94->vx = -100;
-            D_8013AF94->vy = 0;
-            D_8013AF94->vz = 0;
+            gScratchShortVector1->vx = -100;
+            gScratchShortVector1->vy = 0;
+            gScratchShortVector1->vz = 0;
             RotMatrix(&resource->rotation, gScratchMatrix0);
-            ApplyMatrix(gScratchMatrix0, D_8013AF94, gScratchVector0);
+            ApplyMatrix(gScratchMatrix0, gScratchShortVector1, gScratchVector0);
             resource->position.vx = resource->coordinate.coord.t[0] + gScratchVector0->vx;
             resource->position.vz = resource->coordinate.coord.t[2] + gScratchVector0->vz;
             gCurrentTask->data1A = 0x40;
@@ -947,11 +947,11 @@ void updateOrbitingTaskObject(void) {
     resource = (CourseOffsetResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (!gRacePauseState) {
         resource->rotation.vy -= 0x20;
-        D_8013AF94->vx = 100;
-        D_8013AF94->vy = 0;
-        D_8013AF94->vz = 0;
+        gScratchShortVector1->vx = 100;
+        gScratchShortVector1->vy = 0;
+        gScratchShortVector1->vz = 0;
         RotMatrix(&resource->rotation, gScratchMatrix0);
-        ApplyMatrix(gScratchMatrix0, D_8013AF94, gScratchVector0);
+        ApplyMatrix(gScratchMatrix0, gScratchShortVector1, gScratchVector0);
         resource->coordinate.coord.t[0] = resource->position.vx + gScratchVector0->vx;
         resource->coordinate.coord.t[2] = resource->position.vz + gScratchVector0->vz;
     }
@@ -976,10 +976,10 @@ void updateMovingTaskObject(void) {
     resource = (CourseOffsetResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (!gRacePauseState) {
         RotMatrix(&resource->rotation, gScratchMatrix0);
-        D_8013AF90->vx = 0;
-        D_8013AF90->vy = 0;
-        D_8013AF90->vz = 8;
-        ApplyMatrix(gScratchMatrix0, D_8013AF90, gScratchVector0);
+        gScratchShortVector0->vx = 0;
+        gScratchShortVector0->vy = 0;
+        gScratchShortVector0->vz = 8;
+        ApplyMatrix(gScratchMatrix0, gScratchShortVector0, gScratchVector0);
         resource->coordinate.coord.t[0] += gScratchVector0->vx;
         resource->coordinate.coord.t[2] += gScratchVector0->vz;
         gCurrentTask->data1A--;
@@ -1010,14 +1010,14 @@ void computeSelectedTriangleAngles(s16 *pitch, s16 *yaw) {
 
 void updateCameraRotationMatrices(u16 playerIndex) {
     PlayerCamera *cameras = gPlayerCameras;
-    D_8013AF90->vx = 0;
-    D_8013AF90->vy = cameras[playerIndex].yaw;
-    D_8013AF90->vz = 0;
-    RotMatrix(D_8013AF90, &D_8012A6B0);
-    D_8013AF90->vx = cameras[getRenderCameraIndex()].pitch;
-    D_8013AF90->vy = cameras[getRenderCameraIndex()].yaw;
-    D_8013AF90->vz = 0;
-    RotMatrixYXZ(D_8013AF90, &D_8012A6D0);
+    gScratchShortVector0->vx = 0;
+    gScratchShortVector0->vy = cameras[playerIndex].yaw;
+    gScratchShortVector0->vz = 0;
+    RotMatrix(gScratchShortVector0, &D_8012A6B0);
+    gScratchShortVector0->vx = cameras[getRenderCameraIndex()].pitch;
+    gScratchShortVector0->vy = cameras[getRenderCameraIndex()].yaw;
+    gScratchShortVector0->vz = 0;
+    RotMatrixYXZ(gScratchShortVector0, &D_8012A6D0);
 }
 
 
@@ -1140,15 +1140,15 @@ void drawCameraFacingTaskVisual(TaskVisualResource *resource, u8 mode) {
     long depthCue, flags;
     long depth;
     if (mode == 0) {
-        D_8013AF90->vx = 0;
-        D_8013AF90->vy = gPlayerCameras[getRenderCameraIndex()].yaw;
-        D_8013AF90->vz = 0;
+        gScratchShortVector0->vx = 0;
+        gScratchShortVector0->vy = gPlayerCameras[getRenderCameraIndex()].yaw;
+        gScratchShortVector0->vz = 0;
     } else {
-        D_8013AF90->vx = gPlayerCameras[getRenderCameraIndex()].pitch;
-        D_8013AF90->vy = gPlayerCameras[getRenderCameraIndex()].yaw;
-        D_8013AF90->vz = 0;
+        gScratchShortVector0->vx = gPlayerCameras[getRenderCameraIndex()].pitch;
+        gScratchShortVector0->vy = gPlayerCameras[getRenderCameraIndex()].yaw;
+        gScratchShortVector0->vz = 0;
     }
-    RotMatrixYXZ(D_8013AF90, gScratchMatrix0);
+    RotMatrixYXZ(gScratchShortVector0, gScratchMatrix0);
     ScaleMatrix(gScratchMatrix0, (VECTOR *)&resource->scaleX);
     for (i = 0; i < 4; i++) {
         ApplyMatrixSV(gScratchMatrix0, (SVECTOR *)&resource->vertices[i], (SVECTOR *)&resource->transformedVertices[i]);
@@ -1524,10 +1524,10 @@ void updatePlacedObjectTask(void) {
                 height = resource->groundCoordinate.coord.t[1];
                 D_80129A80[model].coord2 = &resource->coordinate;
                 resource->groundCoordinate.coord.t[1] += -0x100 + (rsin((gFrameCounter & 31) << 7) >> 8);
-                D_8013AF90->vx = 0;
-                D_8013AF90->vy = 0;
-                D_8013AF90->vz = 0;
-                setCoordinateRotation(D_8013AF90, &resource->groundCoordinate);
+                gScratchShortVector0->vx = 0;
+                gScratchShortVector0->vy = 0;
+                gScratchShortVector0->vz = 0;
+                setCoordinateRotation(gScratchShortVector0, &resource->groundCoordinate);
                 setCoordinateRotation(&resource->rotation, &resource->coordinate);
                 gScratchVector0->vx = 0x2000;
                 gScratchVector0->vy = 0x2000;
@@ -2015,47 +2015,47 @@ void resolvePlayerRegionCollision(RacePlayer *player, PlayerCollisionRegion *reg
     }
     if (player->unk12C == 0x1D) {
         player->unk128 |= 0x2000000;
-        D_8013AF90->vx = region->pitch;
-        D_8013AF90->vy = -region->yaw;
-        D_8013AF90->vz = 0;
-        RotMatrixYXZ(D_8013AF90, gScratchMatrix0);
+        gScratchShortVector0->vx = region->pitch;
+        gScratchShortVector0->vy = -region->yaw;
+        gScratchShortVector0->vz = 0;
+        RotMatrixYXZ(gScratchShortVector0, gScratchMatrix0);
         gScratchVector0->vx = player->x - region->endpoints[0].position.x;
         gScratchVector0->vy = 0;
         gScratchVector0->vz = player->z - region->endpoints[0].position.z;
-        ApplyMatrixLV(gScratchMatrix0, gScratchVector0, D_8013AF8C);
-        if (D_8013AF8C->vx != 0) {
-            D_8013AF90->vx = 0;
-            D_8013AF90->vy = region->yaw;
-            D_8013AF90->vz = 0;
-            RotMatrix(D_8013AF90, gScratchMatrix0);
-            D_8013AF90->vx = -D_8013AF8C->vx;
-            D_8013AF90->vy = 0;
-            D_8013AF90->vz = 0;
-            ApplyMatrix(gScratchMatrix0, D_8013AF90, gScratchVector0);
+        ApplyMatrixLV(gScratchMatrix0, gScratchVector0, gScratchVector1);
+        if (gScratchVector1->vx != 0) {
+            gScratchShortVector0->vx = 0;
+            gScratchShortVector0->vy = region->yaw;
+            gScratchShortVector0->vz = 0;
+            RotMatrix(gScratchShortVector0, gScratchMatrix0);
+            gScratchShortVector0->vx = -gScratchVector1->vx;
+            gScratchShortVector0->vy = 0;
+            gScratchShortVector0->vz = 0;
+            ApplyMatrix(gScratchMatrix0, gScratchShortVector0, gScratchVector0);
             player->x += gScratchVector0->vx;
             player->z += gScratchVector0->vz;
         }
-        D_8013AF90->vx = region->pitch;
-        D_8013AF90->vy = -region->yaw;
-        D_8013AF90->vz = 0;
-        RotMatrixYXZ(D_8013AF90, gScratchMatrix0);
+        gScratchShortVector0->vx = region->pitch;
+        gScratchShortVector0->vy = -region->yaw;
+        gScratchShortVector0->vz = 0;
+        RotMatrixYXZ(gScratchShortVector0, gScratchMatrix0);
         dx = (player->x - region->endpoints[0].position.x) >> 5;
         dz = (player->z - region->endpoints[0].position.z) >> 5;
         gScratchVector0->vx = 0;
         gScratchVector0->vy = 0;
         gScratchVector0->vz = SquareRoot0(dx * dx + dz * dz) << 5;
-        ApplyMatrixLV(gScratchMatrix0, gScratchVector0, D_8013AF8C);
-        slopeHeight = D_8013AF8C->vy + 0x3000;
+        ApplyMatrixLV(gScratchMatrix0, gScratchVector0, gScratchVector1);
+        slopeHeight = gScratchVector1->vy + 0x3000;
         player->y = region->endpoints[0].position.y - slopeHeight;
         courseHeight = player->unk92E;
         player->worldCoordinate.coord.t[1] = player->y >> 8;
         if (region->maxHeight < courseHeight) {
-            if (D_8013AFE2 == 0) {
+            if (gMainMenuSelectionIndex == 0) {
                 playSoundEffect(0, 0x501, 0x40);
                 addPlayerCappedCounters(player->playerIndex, 300);
                 createActivePlayerSlidingNumberTask(300, player->playerIndex);
             }
-            if (D_8013AFE2 == 1 && D_8013AFE0 == 2) {
+            if (gMainMenuSelectionIndex == 1 && D_8013AFE0 == 2) {
                 playSoundEffect(0, 0x501, 0x40);
                 player->trickAttackPointTotal *= 2;
                 createTrickAttackMultiplierDisplayTask(player->playerIndex);
@@ -2069,19 +2069,19 @@ void resolvePlayerRegionCollision(RacePlayer *player, PlayerCollisionRegion *reg
         if (height < region->minHeight || height > region->maxHeight) {
             return;
         }
-        D_8013AF90->vx = region->pitch;
-        D_8013AF90->vy = -region->yaw;
-        D_8013AF90->vz = 0;
-        RotMatrixYXZ(D_8013AF90, gScratchMatrix0);
+        gScratchShortVector0->vx = region->pitch;
+        gScratchShortVector0->vy = -region->yaw;
+        gScratchShortVector0->vz = 0;
+        RotMatrixYXZ(gScratchShortVector0, gScratchMatrix0);
         gScratchVector0->vx = player->x - region->endpoints[0].position.x;
         gScratchVector0->vy = player->y - region->endpoints[0].position.y - 0x2800;
         gScratchVector0->vz = player->z - region->endpoints[0].position.z;
-        ApplyMatrixLV(gScratchMatrix0, gScratchVector0, D_8013AF8C);
-        localX = D_8013AF8C->vx;
+        ApplyMatrixLV(gScratchMatrix0, gScratchVector0, gScratchVector1);
+        localX = gScratchVector1->vx;
         if (localX < -0x1C00 - player->unk0AC || localX > player->unk0AC + 0x1C00) {
             return;
         }
-        localY = D_8013AF8C->vy;
+        localY = gScratchVector1->vy;
         if (localY > 0) {
             return;
         }
@@ -2097,7 +2097,7 @@ void resolvePlayerRegionCollision(RacePlayer *player, PlayerCollisionRegion *reg
             player->unk13A = region->pitch;
             return;
         }
-        lateral = D_8013AF8C->vx;
+        lateral = gScratchVector1->vx;
         correction = 0;
         if (lateral >= 0) {
             s32 margin = player->unk0AC;
@@ -2109,14 +2109,14 @@ void resolvePlayerRegionCollision(RacePlayer *player, PlayerCollisionRegion *reg
             correction = -(player->unk0AC + 0x1C00) - lateral;
         }
         if (correction != 0) {
-            D_8013AF90->vx = 0;
-            D_8013AF90->vy = region->yaw;
-            D_8013AF90->vz = 0;
-            RotMatrix(D_8013AF90, gScratchMatrix0);
-            D_8013AF90->vx = correction;
-            D_8013AF90->vy = 0;
-            D_8013AF90->vz = 0;
-            ApplyMatrix(gScratchMatrix0, D_8013AF90, gScratchVector0);
+            gScratchShortVector0->vx = 0;
+            gScratchShortVector0->vy = region->yaw;
+            gScratchShortVector0->vz = 0;
+            RotMatrix(gScratchShortVector0, gScratchMatrix0);
+            gScratchShortVector0->vx = correction;
+            gScratchShortVector0->vy = 0;
+            gScratchShortVector0->vz = 0;
+            ApplyMatrix(gScratchMatrix0, gScratchShortVector0, gScratchVector0);
             player->x += gScratchVector0->vx;
             player->z += gScratchVector0->vz;
         }
@@ -2401,20 +2401,20 @@ void initializeCourseUnlockScene(void) {
     s32 headingTarget;
     s16 i;
 
-    index = D_80123D80[gSelectedCourseIndex].unk00;
+    index = gSelectedCourseRecords[gSelectedCourseIndex].unk00;
     vertices = (CourseGeometryVertex *)gCourseGeometryVertexData;
     regionOffset = index * (s32)sizeof(*region);
     region = (GeometryRegion *)(regionOffset + (u32)gCourseGeometryRegionData);
-    D_80129C60[26].coord.t[0] = ((vertices[region->vertices[0]].x + vertices[region->vertices[1]].x
+    gCourseObjectCoordinates[26].coord.t[0] = ((vertices[region->vertices[0]].x + vertices[region->vertices[1]].x
         + vertices[region->vertices[2]].x + vertices[region->vertices[3]].x) / 4) * 5;
-    D_80129C60[26].coord.t[2] = ((vertices[region->vertices[0]].z + vertices[region->vertices[1]].z
+    gCourseObjectCoordinates[26].coord.t[2] = ((vertices[region->vertices[0]].z + vertices[region->vertices[1]].z
         + vertices[region->vertices[2]].z + vertices[region->vertices[3]].z) / 4) * 5;
-    D_80129C60[26].coord.t[1] = getCourseHeightAtPoint(index,
-        D_80129C60[26].coord.t[0], D_80129C60[26].coord.t[2]);
+    gCourseObjectCoordinates[26].coord.t[1] = getCourseHeightAtPoint(index,
+        gCourseObjectCoordinates[26].coord.t[0], gCourseObjectCoordinates[26].coord.t[2]);
     D_8012A5C0[26].vz = 0;
     D_8012A5C0[26].vx = 0;
-    headingTarget = (s32)D_80123D80[gSelectedCourseIndex].unk18[10] >> 8;
-    D_8012A5C0[26].vy = getXZHeading(D_80129C60[26].coord.t[0], D_80129C60[26].coord.t[2],
+    headingTarget = (s32)gSelectedCourseRecords[gSelectedCourseIndex].unk18[10] >> 8;
+    D_8012A5C0[26].vy = getXZHeading(gCourseObjectCoordinates[26].coord.t[0], gCourseObjectCoordinates[26].coord.t[2],
         headingTarget, headingTarget);
 
     createChildTaskWithReserve(copySlot26TransformToCurrentTaskObject);
@@ -2437,14 +2437,14 @@ void initializeCourseUnlockScene(void) {
 
 void updateAndDrawCurrentTaskObject(void) {
     setCoordinateRotation(&D_8012A5C0[gCurrentTask->data18],
-                          &D_80129C60[gCurrentTask->data18]);
+                          &gCourseObjectCoordinates[gCurrentTask->data18]);
     drawTaskObject(gCurrentTask->data18);
 }
 
 void copySlot26TransformToCurrentTaskObject(void) {
-    D_80129C60[gCurrentTask->data18].coord.t[0] = D_80129C60[26].coord.t[0];
-    D_80129C60[gCurrentTask->data18].coord.t[1] = D_80129C60[26].coord.t[1];
-    D_80129C60[gCurrentTask->data18].coord.t[2] = D_80129C60[26].coord.t[2];
+    gCourseObjectCoordinates[gCurrentTask->data18].coord.t[0] = gCourseObjectCoordinates[26].coord.t[0];
+    gCourseObjectCoordinates[gCurrentTask->data18].coord.t[1] = gCourseObjectCoordinates[26].coord.t[1];
+    gCourseObjectCoordinates[gCurrentTask->data18].coord.t[2] = gCourseObjectCoordinates[26].coord.t[2];
     D_8012A5C0[gCurrentTask->data18].vx = D_8012A5C0[26].vx;
     D_8012A5C0[gCurrentTask->data18].vy = D_8012A5C0[26].vy;
     D_8012A5C0[gCurrentTask->data18].vz = D_8012A5C0[26].vz;
@@ -2457,7 +2457,7 @@ void updateCpuRacerSpeedControl(void) {
     u8 playerMode;
     s32 order[4];
 
-    if (D_8013AFE2) {
+    if (gMainMenuSelectionIndex) {
         return;
     }
 

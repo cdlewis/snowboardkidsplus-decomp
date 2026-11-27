@@ -456,9 +456,9 @@ void initializePlayerNumberDisplayTask(void) {
     resource = (PlayerNumberResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->y = -44;
     resource->speed = 56;
-    if (D_8013AFE2 == 0 && playerCountAbsolute == 2) {
+    if (gMainMenuSelectionIndex == 0 && playerCountAbsolute == 2) {
         resource->x = 452;
-    } else if (D_8013AFE2 == 1 && D_8013AFE0 == 2 && playerCountAbsolute == 2) {
+    } else if (gMainMenuSelectionIndex == 1 && D_8013AFE0 == 2 && playerCountAbsolute == 2) {
         resource->x = 460;
     } else {
         resource->x = 420;
@@ -497,7 +497,7 @@ void drawSpriteMotionDisplay(SpriteMotionResource *resource) {
     }
     if (draw) {
         if (playerCountAbsolute == 1) {
-            if (D_8013AFE2 == 1 && D_8013AFE0 == 2) {
+            if (gMainMenuSelectionIndex == 1 && D_8013AFE0 == 2) {
                 drawSpriteByIndexWithBlend(-60, resource->unk08, 0x1AB, 8, -1, ot, depth);
             } else {
                 drawSpriteByIndexWithBlend(-36, resource->unk08, 0x1AB, 8, -1, ot, depth);
@@ -657,9 +657,9 @@ void initializeSlidingNumberDisplayTask(void) {
         resource->y = -22;
     }
     resource->speed = 56;
-    if (D_8013AFE2 == 0 && playerCountAbsolute == 2) {
+    if (gMainMenuSelectionIndex == 0 && playerCountAbsolute == 2) {
         resource->x = 452;
-    } else if (D_8013AFE2 == 1 && D_8013AFE0 == 2 && playerCountAbsolute == 2) {
+    } else if (gMainMenuSelectionIndex == 1 && D_8013AFE0 == 2 && playerCountAbsolute == 2) {
         resource->x = 460;
     } else {
         resource->x = 420;

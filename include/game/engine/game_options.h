@@ -17,7 +17,7 @@ extern u32 gGameOptionFlags;
 extern u8 gPlayerCount;
 extern u8 D_8013AFE0;
 extern u8 D_8013AFE1;
-extern u8 D_8013AFE2;
+extern u8 gMainMenuSelectionIndex;
 extern u8 D_8013B108;
 extern u8 D_8013B109;
 extern u8 D_8013B10A;

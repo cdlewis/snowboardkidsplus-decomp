@@ -735,7 +735,7 @@ extern TexturedSpritePacket gScreenCopyMinusBuffer0[2] __attribute__((section(".
 extern struct VisualPlacementHeightData gVisualPlacementHeightData __attribute__((section(".data.visual_placement_heights")));
 
 extern SVECTOR *gModelVertices __attribute__((section(".sdata")));
-extern SVECTOR *D_8013AF90 __attribute__((section(".data")));
+extern SVECTOR *gScratchShortVector0 __attribute__((section(".data")));
 extern MATRIX D_8012A6B0, D_8012A6D0;
 extern MATRIX *D_8013AF9C __attribute__((section(".data")));
 extern POLY_FT4 D_8012967C;

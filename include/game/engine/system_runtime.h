@@ -1,6 +1,7 @@
 #pragma once
 
 #include "game/io/memory_card.h"
+#include "game/engine/game_options.h"
 #include "game/engine/task.h"
 #include "psx/libcd.h"
 #include "psx/libgpu.h"
@@ -19,7 +20,6 @@ extern u16 D_8013AFAA;
 extern u8 D_8013B562 __attribute__((section(".data")));
 extern s16 gSelectedCourseMenuItem;
 extern s16 selectedCourseMenuItemAbsolute __attribute__((section(".data")));
-extern u8 D_8013AFE2;
 extern u8 D_8013B1AA;
 extern u8 D_8013B1AB;
 extern u16 D_8013AFE8;

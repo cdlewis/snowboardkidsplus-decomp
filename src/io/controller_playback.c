@@ -19,7 +19,7 @@ extern s16 D_8013AFDE __attribute__((section(".data")));
 extern u8 D_8013AFE1 __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u8 D_8013AFE0 __attribute__((section(".data")));
-extern u8 D_8013AFE2 __attribute__((section(".data")));
+extern u8 gMainMenuSelectionIndex __attribute__((section(".data")));
 extern u8 gRacePauseState __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern u8 D_8013AFD6 __attribute__((section(".data")));
@@ -57,7 +57,7 @@ void initializeControllerPlaybackRaceTask(void) {
     D_8013AFD6 = 0;
     D_8013AFE1 = 0;
     D_8013AFD8 = 0;
-    D_8013AFE2 = 0;
+    gMainMenuSelectionIndex = 0;
     D_8013AFE0 = 0;
     player[0].unk008 = 0;
     player[1].unk008 = 0;

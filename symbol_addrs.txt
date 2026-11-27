@@ -4287,3 +4287,10 @@ gMemoryCardDirectorySearchPattern = 0x8013AF3C; // size:0x2
 gMemoryCardTaskState = 0x8013AF3E;
 gWorkingSaveRecords = 0x8013B484;
 gSelectionPanelTripletIndices = 0x8013B450;
+
+gSelectedCourseRecords = 0x80123D80;
+gCourseObjectCoordinates = 0x80129C60;
+gScratchVector1 = 0x8013AF8C;
+gScratchShortVector0 = 0x8013AF90;
+gScratchShortVector1 = 0x8013AF94;
+gMainMenuSelectionIndex = 0x8013AFE2;

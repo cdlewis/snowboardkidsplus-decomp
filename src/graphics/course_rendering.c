@@ -214,7 +214,7 @@ void getCourseSteeringTarget(s16 region, s32 x, s32 z, s32 *targetX, s32 *target
     s32 vertexIndex;
     s16 *vertices;
     SelectedCourseRecord *course;
-    SelectedCourseRecord *courses = D_80123D80;
+    SelectedCourseRecord *courses = gSelectedCourseRecords;
 
     if (region != (s16)courses[gSelectedCourseIndex].unk00) {
         gGeometryProjectionBasisX = rsin(-(s16)((GeometryPlacement *)gCourseGeometryRegionData)[region].angle);

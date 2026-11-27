@@ -359,7 +359,7 @@ void updateRacePlayerRankings(void) {
     s32 i, j;
     RacePlayer *player;
 
-    if (D_8013AFE2 == 2) {
+    if (gMainMenuSelectionIndex == 2) {
         return;
     }
     if (gTaskTransitionFlags & 1) {
@@ -843,7 +843,7 @@ void updateRacePlayerFinishSlotsTask(void) {
     if (gTaskTransitionFlags & 0x40) {
         deleteCurrentTaskSubtree();
     } else {
-        if (D_8013AFE2 == 1 && D_8013AFE0 == 1) {
+        if (gMainMenuSelectionIndex == 1 && D_8013AFE0 == 1) {
             D_8013B1D4 = 0;
         }
         resolveRacePlayerOverlaps();
@@ -1832,7 +1832,7 @@ void initializeNewGameSaveData(void) {
     D_8013B10C = -1;
     D_8013B10E = -1;
     gSelectedCourseIndex = 0;
-    D_8013AFE2 = 0;
+    gMainMenuSelectionIndex = 0;
     D_8013AFD6 = 0;
     D_8013B47C = 0;
     gSelectedCourseMenuItem = 0;

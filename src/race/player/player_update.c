@@ -57,7 +57,7 @@ extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u8 D_8013AFDB __attribute__((section(".data")));
 extern s16 D_8013AFDE __attribute__((section(".data")));
 extern VECTOR *gScratchVector0 __attribute__((section(".data")));
-extern SVECTOR *D_8013AF90 __attribute__((section(".data")));
+extern SVECTOR *gScratchShortVector0 __attribute__((section(".data")));
 extern MATRIX *gScratchMatrix0 __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
@@ -65,7 +65,7 @@ extern u32 gTaskTransitionFlags __attribute__((section(".data")));
 extern u8 gDemoRaceIndex __attribute__((section(".data")));
 extern u8 D_8013AFD6 __attribute__((section(".data")));
 
-extern VECTOR *D_8013AF8C __attribute__((section(".data")));
+extern VECTOR *gScratchVector1 __attribute__((section(".data")));
 
 extern s16 D_8013B0E4 __attribute__((section(".data")));
 extern u16 D_8013B0E6 __attribute__((section(".data")));
@@ -884,10 +884,10 @@ void updateCurrentPlayerPartTransforms(void) {
         parent = gCurrentRacePlayer->unk13E[i];
         RotMatrix((SVECTOR *)&gCurrentRacePlayer->unk5BC[i], &gCurrentRacePlayer->model.modelCoordinates[i].coord);
         if (i == 0) {
-            D_8013AF90->vx = 0;
-            D_8013AF90->vy = 0;
-            D_8013AF90->vz = 0;
-            ApplyMatrix(&gCurrentRacePlayer->model.modelCoordinates[0].coord, D_8013AF90, gScratchVector0);
+            gScratchShortVector0->vx = 0;
+            gScratchShortVector0->vy = 0;
+            gScratchShortVector0->vz = 0;
+            ApplyMatrix(&gCurrentRacePlayer->model.modelCoordinates[0].coord, gScratchShortVector0, gScratchVector0);
             gCurrentRacePlayer->model.modelCoordinates[0].coord.t[0] = gScratchVector0->vx + gCurrentRacePlayer->unk62C[0].x;
             gCurrentRacePlayer->model.modelCoordinates[0].coord.t[1] = gScratchVector0->vy + gCurrentRacePlayer->unk62C[0].y;
             gCurrentRacePlayer->model.modelCoordinates[0].coord.t[2] = gScratchVector0->vz + gCurrentRacePlayer->unk62C[0].z;
@@ -1229,7 +1229,7 @@ void initializeCurrentPlayerState7(void) {
     gCurrentTask->data1A = 0;
     player->unk08C = 20;
     player->unk090 = 10;
-    player->unk126 = D_80123D80[gSelectedCourseIndex].unk16;
+    player->unk126 = gSelectedCourseRecords[gSelectedCourseIndex].unk16;
     if (player->unk128 & 0x400) {
         player->unk126 += 0x800;
     }
@@ -1293,25 +1293,25 @@ void initializeCurrentPlayerUnlockScene(void) {
     gCurrentRacePlayer = &gRacePlayers[gCurrentTask->data18];
     startCurrentPlayerAnimation(gCurrentRacePlayer->unk008 == 0 ? 9 : 10, 1);
     if (gCurrentTask->data18 == 0) {
-        gCurrentRacePlayer->x = D_80129C60[26].coord.t[0] << 8;
-        gCurrentRacePlayer->y = (D_80129C60[26].coord.t[1] - 74) << 8;
-        gCurrentRacePlayer->z = D_80129C60[26].coord.t[2] << 8;
+        gCurrentRacePlayer->x = gCourseObjectCoordinates[26].coord.t[0] << 8;
+        gCurrentRacePlayer->y = (gCourseObjectCoordinates[26].coord.t[1] - 74) << 8;
+        gCurrentRacePlayer->z = gCourseObjectCoordinates[26].coord.t[2] << 8;
         gCurrentRacePlayer->unk0B8 = 0;
         gCurrentRacePlayer->unk0B4 = 0;
         gCurrentRacePlayer->unk0B6 = D_8012A5C0[26].vy;
         gCurrentTask->data1A = 30;
     } else {
-        gCurrentRacePlayer->x = (D_80129C60[26].coord.t[0] -
+        gCurrentRacePlayer->x = (gCourseObjectCoordinates[26].coord.t[0] -
             rsin(D_8012A5C0[26].vy + gPlayerUnlockSceneYawOffsets[gCurrentTask->data18 - 1]) / 32) << 8;
-        gCurrentRacePlayer->y = D_80129C60[26].coord.t[1] << 8;
-        gCurrentRacePlayer->z = (D_80129C60[26].coord.t[2] -
+        gCurrentRacePlayer->y = gCourseObjectCoordinates[26].coord.t[1] << 8;
+        gCurrentRacePlayer->z = (gCourseObjectCoordinates[26].coord.t[2] -
             rcos(D_8012A5C0[26].vy + gPlayerUnlockSceneYawOffsets[gCurrentTask->data18 - 1]) / 32) << 8;
         gCurrentRacePlayer->unk0B8 = 0;
         gCurrentRacePlayer->unk0B4 = 0;
         angle = gPlayerUnlockSceneYawOffsets[gCurrentTask->data18 - 1] + 0x800;
         gCurrentRacePlayer->unk0B6 = D_8012A5C0[26].vy + angle;
     }
-    gCurrentRacePlayer->unk92E = D_80123D80[gSelectedCourseIndex].unk00;
+    gCurrentRacePlayer->unk92E = gSelectedCourseRecords[gSelectedCourseIndex].unk00;
     gCurrentRacePlayer->surfaceState.fields.unk136 = 0;
     gCurrentRacePlayer->unk128 = 0;
     gCurrentRacePlayer->unk12C = 73;
@@ -1332,7 +1332,7 @@ s32 callCurrentPlayerStateCallbackIfDifferent(u16 state) {
 
 void initializeCurrentPlayerModelAndHeight(void) {
     RacePlayer *player;
-    if (D_8013AFE2 == 0) {
+    if (gMainMenuSelectionIndex == 0) {
         createChildTaskForParentWithReserve(&gGameTasks[4], initializeTaskCoordinateResource);
         gCreatedTask->data18 = gCurrentTask->data18;
     }
@@ -1361,7 +1361,7 @@ void updateCurrentPlayerAndResetState(void) {
         if (gCurrentRacePlayer->unk008 == 0) {
             if (gDemoRaceIndex || D_8013AFD9) {
                 initializeControllerInputPlayback(gCurrentTask->data18);
-            } else if (D_8013AFE2 == 2 && D_8013AFD6 == 0) {
+            } else if (gMainMenuSelectionIndex == 2 && D_8013AFD6 == 0) {
                 initializeControllerInputRecording(0);
                 resetSelectedRecordStates();
             }
@@ -1417,7 +1417,7 @@ void updateCurrentPlayerRiding(void) {
     }
 
     if (gCurrentRacePlayer->unk008 ||
-        (gCurrentRacePlayer->unk92E == (s16)D_80123D80[gSelectedCourseIndex].unk00 &&
+        (gCurrentRacePlayer->unk92E == (s16)gSelectedCourseRecords[gSelectedCourseIndex].unk00 &&
          (s16)getModeFilteredAutoPilotFlag(gCurrentTask->data18))) {
         autoPlayer = gCurrentRacePlayer;
         getCourseSteeringTarget(autoPlayer->unk92E, autoPlayer->x >> 8, autoPlayer->z >> 8,
@@ -1505,7 +1505,7 @@ void updateCurrentPlayerRiding(void) {
         steer = -steer;
     }
     if (stancePlayer->animationIndex != D_800EB09C[stancePlayer->characterId][2]) {
-        const SelectedCourseRecord *records = D_80123D80;
+        const SelectedCourseRecord *records = gSelectedCourseRecords;
         s16 recordIndex = gSelectedCourseIndex;
         course = &records[recordIndex];
         if (stancePlayer->unk92E == (s16)course->unk00 && !(stancePlayer->unk128 & 0x40)) {
@@ -1579,7 +1579,7 @@ applySteering:
     }
 
     if (gCurrentRacePlayer->unk008 ||
-        (gCurrentRacePlayer->unk92E == (s16)D_80123D80[gSelectedCourseIndex].unk00 &&
+        (gCurrentRacePlayer->unk92E == (s16)gSelectedCourseRecords[gSelectedCourseIndex].unk00 &&
          (s16)getModeFilteredAutoPilotFlag(gCurrentTask->data18))) {
         /* The same autopilot condition above supplies this correction. */
         gCurrentRacePlayer->unk0B6 += headingStep;
@@ -1651,7 +1651,7 @@ applySteering:
     itemPlayer = gCurrentRacePlayer;
     if (itemPlayer->animationIndex != D_800EB09C[itemPlayer->characterId][0]) {
         if (itemPlayer->unk008 ||
-            (itemPlayer->unk92E == (s16)D_80123D80[gSelectedCourseIndex].unk00 &&
+            (itemPlayer->unk92E == (s16)gSelectedCourseRecords[gSelectedCourseIndex].unk00 &&
              (s16)getModeFilteredAutoPilotFlag(gCurrentTask->data18))) {
             autoItemPlayer = gCurrentRacePlayer;
             if (autoItemPlayer->unk950) {
@@ -1737,7 +1737,7 @@ void updateCurrentPlayerChargeAndLaunch(void) {
     prepareCurrentPlayerFrame();
     push = 0;
     player = gCurrentRacePlayer;
-    if (!player->unk008 && player->unk92E == (s16)D_80123D80[gSelectedCourseIndex].unk00 &&
+    if (!player->unk008 && player->unk92E == (s16)gSelectedCourseRecords[gSelectedCourseIndex].unk00 &&
         (s16)getModeFilteredAutoPilotFlag(gCurrentTask->data18)) {
         drawAutoPilotLabelTask();
     }
@@ -1745,9 +1745,9 @@ void updateCurrentPlayerChargeAndLaunch(void) {
     if (player->animationIndex != D_800EB09C[player->characterId][2]) {
         u32 reversed;
         RacePlayer *counterPlayer;
-        if (player->unk92E == (s16)D_80123D80[gSelectedCourseIndex].unk00 && !(player->unk128 & 0x40)) {
-            s16 heading = getXZHeading(player->x, player->z, D_80123D80[gSelectedCourseIndex].unk40[0],
-                                       D_80123D80[gSelectedCourseIndex].unk40[1]);
+        if (player->unk92E == (s16)gSelectedCourseRecords[gSelectedCourseIndex].unk00 && !(player->unk128 & 0x40)) {
+            s16 heading = getXZHeading(player->x, player->z, gSelectedCourseRecords[gSelectedCourseIndex].unk40[0],
+                                       gSelectedCourseRecords[gSelectedCourseIndex].unk40[1]);
             s16 delta;
             counterPlayer = gCurrentRacePlayer;
             delta = heading - counterPlayer->unk110 + 0x400;
@@ -1785,7 +1785,7 @@ advanceCharge:
     updateCurrentPlayerProjectileUse(gCurrentTask->data18);
     if (gCurrentRacePlayer->unk13C < 6) {
         if (!gCurrentRacePlayer->unk008 &&
-            (gCurrentRacePlayer->unk92E != (s16)D_80123D80[gSelectedCourseIndex].unk00 ||
+            (gCurrentRacePlayer->unk92E != (s16)gSelectedCourseRecords[gSelectedCourseIndex].unk00 ||
              !(s16)getModeFilteredAutoPilotFlag(gCurrentTask->data18))) {
             if (!(gControllerHeldButtons[gCurrentTask->data18] & 0x40)) {
                 gCurrentRacePlayer->unk128 &= ~0x10;
@@ -1795,7 +1795,7 @@ advanceCharge:
         }
     } else if (gCurrentRacePlayer->unk128 & 0x10) {
         if (!gCurrentRacePlayer->unk008 &&
-            (gCurrentRacePlayer->unk92E != (s16)D_80123D80[gSelectedCourseIndex].unk00 ||
+            (gCurrentRacePlayer->unk92E != (s16)gSelectedCourseRecords[gSelectedCourseIndex].unk00 ||
              !(s16)getModeFilteredAutoPilotFlag(gCurrentTask->data18))) {
             if (!(gControllerHeldButtons[gCurrentTask->data18] & 0x40)) {
                 gCurrentRacePlayer->unk128 &= ~0x10;
@@ -2012,7 +2012,7 @@ void updateCurrentPlayerAirborneTricks(void) {
     if (gCurrentRacePlayer->unk008 != 0) {
         goto block_4;
     }
-    if (gCurrentRacePlayer->unk92E != (s16) D_80123D80[gSelectedCourseIndex].unk00) {
+    if (gCurrentRacePlayer->unk92E != (s16) gSelectedCourseRecords[gSelectedCourseIndex].unk00) {
         goto block_4;
     }
     if ((s16)getModeFilteredAutoPilotFlag(gCurrentTask->data18) == 0) {
@@ -2030,7 +2030,7 @@ block_4:
     if (gCurrentRacePlayer->unk008 != 0) {
         goto block_13;
     }
-    if (gCurrentRacePlayer->unk92E != (s16) D_80123D80[gSelectedCourseIndex].unk00) {
+    if (gCurrentRacePlayer->unk92E != (s16) gSelectedCourseRecords[gSelectedCourseIndex].unk00) {
         goto block_9;
     }
     if ((s16)getModeFilteredAutoPilotFlag(gCurrentTask->data18) != 0) {
@@ -3244,9 +3244,9 @@ void updateCurrentPlayerState3MotionAndSteering(void) {
     movingPlayer->x += movingPlayer->unk060;
     movingPlayer->y += movingPlayer->unk062;
     movingPlayer->z += movingPlayer->unk064;
-    if (movingPlayer->unk92E == (s16)D_80123D80[gSelectedCourseIndex].unk00 && !(movingPlayer->unk128 & 0x40)) {
+    if (movingPlayer->unk92E == (s16)gSelectedCourseRecords[gSelectedCourseIndex].unk00 && !(movingPlayer->unk128 & 0x40)) {
         angle = getXZHeading(movingPlayer->x, movingPlayer->z,
-                             D_80123D80[gSelectedCourseIndex].unk40[0], D_80123D80[gSelectedCourseIndex].unk40[1]);
+                             gSelectedCourseRecords[gSelectedCourseIndex].unk40[0], gSelectedCourseRecords[gSelectedCourseIndex].unk40[1]);
         steeringPlayer = gCurrentRacePlayer;
         if (steeringPlayer->unk128 & 0x400) {
             angle += 0x800;
@@ -3697,13 +3697,13 @@ void moveCurrentPlayerToTaskTarget(void) {
     player = gCurrentRacePlayer;
     if (player->unk090 != 0) {
         player->unk0B6 += angle / player->unk090;
-        player->x += ((s32)D_80123D80[gSelectedCourseIndex].unk18[0] - player->x) / player->unk090;
-        player->z += ((s32)D_80123D80[gSelectedCourseIndex].unk18[2] - player->z) / player->unk090;
+        player->x += ((s32)gSelectedCourseRecords[gSelectedCourseIndex].unk18[0] - player->x) / player->unk090;
+        player->z += ((s32)gSelectedCourseRecords[gSelectedCourseIndex].unk18[2] - player->z) / player->unk090;
     }
     player = gCurrentRacePlayer;
     if (--player->unk08C == 0) {
-        player->x = D_80123D80[gSelectedCourseIndex].unk18[0];
-        player->z = D_80123D80[gSelectedCourseIndex].unk18[2];
+        player->x = gSelectedCourseRecords[gSelectedCourseIndex].unk18[0];
+        player->z = gSelectedCourseRecords[gSelectedCourseIndex].unk18[2];
         gCurrentTask->data1A++;
         player->unk08C = 0;
         startCurrentPlayerAnimation(3, 2);
@@ -3718,8 +3718,8 @@ void advanceCurrentPlayerTaskOnAnimationFlag(void) {
         playPlayerSoundEffect(gCurrentTask->data18, 1, 0x601, 0x20);
         player = gCurrentRacePlayer;
         player->unk0B6 = player->unk126;
-        player->x = D_80123D80[gSelectedCourseIndex].unk18[0];
-        player->z = D_80123D80[gSelectedCourseIndex].unk18[2];
+        player->x = gSelectedCourseRecords[gSelectedCourseIndex].unk18[0];
+        player->z = gSelectedCourseRecords[gSelectedCourseIndex].unk18[2];
         player->unk062 = -0xC00;
         player->unk08C = 30;
         startCurrentPlayerAnimation(4, 2);
@@ -3735,32 +3735,32 @@ void updateCurrentPlayerTaskJumpAndSpawnCourseOffset(void) {
     RacePlayer *player;
     RacePlayer *landingPlayer;
     CourseOffsetResource *resource;
-    D_8013AF90->vx = 0;
-    D_8013AF90->vy = gCurrentRacePlayer->unk110;
-    D_8013AF90->vz = 0;
-    RotMatrix(D_8013AF90, gScratchMatrix0);
-    D_8013AF90->vx = 0;
-    D_8013AF90->vy = 0;
-    D_8013AF90->vz = gCurrentRacePlayer->unk090;
-    ApplyMatrix(gScratchMatrix0, D_8013AF90, gScratchVector0);
+    gScratchShortVector0->vx = 0;
+    gScratchShortVector0->vy = gCurrentRacePlayer->unk110;
+    gScratchShortVector0->vz = 0;
+    RotMatrix(gScratchShortVector0, gScratchMatrix0);
+    gScratchShortVector0->vx = 0;
+    gScratchShortVector0->vy = 0;
+    gScratchShortVector0->vz = gCurrentRacePlayer->unk090;
+    ApplyMatrix(gScratchMatrix0, gScratchShortVector0, gScratchVector0);
     player = gCurrentRacePlayer;
     player->x += gScratchVector0->vx;
     player->z += gScratchVector0->vz;
-    D_8013AF90->vx = 0;
-    D_8013AF90->vy = player->unk110;
-    D_8013AF90->vz = 0;
-    RotMatrix(D_8013AF90, gScratchMatrix0);
-    D_8013AF90->vx = 0;
-    D_8013AF90->vy = 0;
-    D_8013AF90->vz = gCurrentRacePlayer->unk090;
-    ApplyMatrix(gScratchMatrix0, D_8013AF90, gScratchVector0);
+    gScratchShortVector0->vx = 0;
+    gScratchShortVector0->vy = player->unk110;
+    gScratchShortVector0->vz = 0;
+    RotMatrix(gScratchShortVector0, gScratchMatrix0);
+    gScratchShortVector0->vx = 0;
+    gScratchShortVector0->vy = 0;
+    gScratchShortVector0->vz = gCurrentRacePlayer->unk090;
+    ApplyMatrix(gScratchMatrix0, gScratchShortVector0, gScratchVector0);
     landingPlayer = gCurrentRacePlayer;
     landingPlayer->x += gScratchVector0->vx;
     landingPlayer->z += gScratchVector0->vz;
     landingPlayer->unk062 += 0x140;
     landingPlayer->y += landingPlayer->unk062;
-    if (landingPlayer->unk062 > 0 && landingPlayer->y > (s32)D_80123D80[gSelectedCourseIndex].unk18[1]) {
-        landingPlayer->y = D_80123D80[gSelectedCourseIndex].unk18[1];
+    if (landingPlayer->unk062 > 0 && landingPlayer->y > (s32)gSelectedCourseRecords[gSelectedCourseIndex].unk18[1]) {
+        landingPlayer->y = gSelectedCourseRecords[gSelectedCourseIndex].unk18[1];
         if (landingPlayer->animationIndex != D_800EB09C[landingPlayer->characterId][1]) {
             startCurrentPlayerAnimation(1, 1);
             playPlayerSoundEffect(gCurrentTask->data18, 1, 0x701, 0x20);
@@ -3795,14 +3795,14 @@ void updateCurrentPlayerTaskDecelerationSteps(void) {
     } else {
         player->unk090 += 0x20;
     }
-    D_8013AF90->vx = 0;
-    D_8013AF90->vy = gCurrentRacePlayer->unk110;
-    D_8013AF90->vz = 0;
-    RotMatrix(D_8013AF90, gScratchMatrix0);
-    D_8013AF90->vx = 0;
-    D_8013AF90->vy = 0;
-    D_8013AF90->vz = gCurrentRacePlayer->unk090;
-    ApplyMatrix(gScratchMatrix0, D_8013AF90, gScratchVector0);
+    gScratchShortVector0->vx = 0;
+    gScratchShortVector0->vy = gCurrentRacePlayer->unk110;
+    gScratchShortVector0->vz = 0;
+    RotMatrix(gScratchShortVector0, gScratchMatrix0);
+    gScratchShortVector0->vx = 0;
+    gScratchShortVector0->vy = 0;
+    gScratchShortVector0->vz = gCurrentRacePlayer->unk090;
+    ApplyMatrix(gScratchMatrix0, gScratchShortVector0, gScratchVector0);
     firstStep = gCurrentRacePlayer;
     firstStep->x += gScratchVector0->vx;
     firstStep->z += gScratchVector0->vz;
@@ -3812,14 +3812,14 @@ void updateCurrentPlayerTaskDecelerationSteps(void) {
     } else {
         firstStep->unk090 += 0x20;
     }
-    D_8013AF90->vx = 0;
-    D_8013AF90->vy = gCurrentRacePlayer->unk110;
-    D_8013AF90->vz = 0;
-    RotMatrix(D_8013AF90, gScratchMatrix0);
-    D_8013AF90->vx = 0;
-    D_8013AF90->vy = 0;
-    D_8013AF90->vz = gCurrentRacePlayer->unk090;
-    ApplyMatrix(gScratchMatrix0, D_8013AF90, gScratchVector0);
+    gScratchShortVector0->vx = 0;
+    gScratchShortVector0->vy = gCurrentRacePlayer->unk110;
+    gScratchShortVector0->vz = 0;
+    RotMatrix(gScratchShortVector0, gScratchMatrix0);
+    gScratchShortVector0->vx = 0;
+    gScratchShortVector0->vy = 0;
+    gScratchShortVector0->vz = gCurrentRacePlayer->unk090;
+    ApplyMatrix(gScratchMatrix0, gScratchShortVector0, gScratchVector0);
     second = gCurrentRacePlayer;
     second->x += gScratchVector0->vx;
     second->z += gScratchVector0->vz;
@@ -3847,14 +3847,14 @@ void advanceCurrentPlayerTaskAndSetSpeed(void) {
 
 void advanceCurrentPlayerTaskPhaseMovement(void) {
     RacePlayer *player;
-    D_8013AF90->vx = 0;
-    D_8013AF90->vy = gCurrentRacePlayer->unk110;
-    D_8013AF90->vz = 0;
-    RotMatrix(D_8013AF90, gScratchMatrix0);
-    D_8013AF90->vx = 0;
-    D_8013AF90->vy = 0;
-    D_8013AF90->vz = gCurrentRacePlayer->unk090;
-    ApplyMatrix(gScratchMatrix0, D_8013AF90, gScratchVector0);
+    gScratchShortVector0->vx = 0;
+    gScratchShortVector0->vy = gCurrentRacePlayer->unk110;
+    gScratchShortVector0->vz = 0;
+    RotMatrix(gScratchShortVector0, gScratchMatrix0);
+    gScratchShortVector0->vx = 0;
+    gScratchShortVector0->vy = 0;
+    gScratchShortVector0->vz = gCurrentRacePlayer->unk090;
+    ApplyMatrix(gScratchMatrix0, gScratchShortVector0, gScratchVector0);
     player = gCurrentRacePlayer;
     player->x += gScratchVector0->vx;
     player->z += gScratchVector0->vz;
@@ -3877,39 +3877,39 @@ void updateCurrentPlayerTaskLapTransition(void) {
         if (gCurrentRacePlayer->unk090 < 0x2800) {
             gCurrentRacePlayer->unk090 += 0x80;
         }
-        D_8013AF90->vx = 0x100;
-        D_8013AF90->vy = gCurrentRacePlayer->unk110;
-        D_8013AF90->vz = 0;
+        gScratchShortVector0->vx = 0x100;
+        gScratchShortVector0->vy = gCurrentRacePlayer->unk110;
+        gScratchShortVector0->vz = 0;
     } else {
         if (gCurrentRacePlayer->unk090 >= -0x27FF) {
             gCurrentRacePlayer->unk090 -= 0x80;
         }
-        D_8013AF90->vx = -0x100;
-        D_8013AF90->vy = gCurrentRacePlayer->unk110;
-        D_8013AF90->vz = 0;
+        gScratchShortVector0->vx = -0x100;
+        gScratchShortVector0->vy = gCurrentRacePlayer->unk110;
+        gScratchShortVector0->vz = 0;
     }
-    RotMatrixYXZ(D_8013AF90, gScratchMatrix0);
-    D_8013AF90->vx = 0;
-    D_8013AF90->vy = 0;
-    D_8013AF90->vz = gCurrentRacePlayer->unk090;
-    ApplyMatrix(gScratchMatrix0, D_8013AF90, gScratchVector0);
+    RotMatrixYXZ(gScratchShortVector0, gScratchMatrix0);
+    gScratchShortVector0->vx = 0;
+    gScratchShortVector0->vy = 0;
+    gScratchShortVector0->vz = gCurrentRacePlayer->unk090;
+    ApplyMatrix(gScratchMatrix0, gScratchShortVector0, gScratchVector0);
     movingPlayer = gCurrentRacePlayer;
     movingPlayer->x += gScratchVector0->vx;
     movingPlayer->y += gScratchVector0->vy;
     movingPlayer->z += gScratchVector0->vz;
     if (--movingPlayer->unk08C == 0) {
         gCurrentTask->data1A++;
-        movingPlayer->unk0B6 = D_80123D80[gSelectedCourseIndex].unk14;
+        movingPlayer->unk0B6 = gSelectedCourseRecords[gSelectedCourseIndex].unk14;
         movingPlayer->unk110 = movingPlayer->unk0BE = movingPlayer->unk0B6 + 0x400;
-        D_8013AF90->vx = 0;
-        D_8013AF90->vy = movingPlayer->unk110;
-        D_8013AF90->vz = 0;
-        RotMatrix(D_8013AF90, gScratchMatrix0);
+        gScratchShortVector0->vx = 0;
+        gScratchShortVector0->vy = movingPlayer->unk110;
+        gScratchShortVector0->vz = 0;
+        RotMatrix(gScratchShortVector0, gScratchMatrix0);
         gScratchVector0->vx = 0;
         gScratchVector0->vy = 0;
         gScratchVector0->vz = -0x28000;
         ApplyMatrixLV(gScratchMatrix0, gScratchVector0, (VECTOR *)&gCurrentRacePlayer->x);
-        course = &D_80123D80[gSelectedCourseIndex];
+        course = &gSelectedCourseRecords[gSelectedCourseIndex];
         placedPlayer = gCurrentRacePlayer;
         placedPlayer->x += course->unk08;
         placedPlayer->y += course->unk0C - 0x2000;
@@ -3955,14 +3955,14 @@ void updateCurrentPlayerTaskLapTransition(void) {
 
 void moveCurrentPlayerForwardUntilState22(void) {
     RacePlayer *player;
-    D_8013AF90->vx = 0;
-    D_8013AF90->vy = gCurrentRacePlayer->unk110;
-    D_8013AF90->vz = 0;
-    RotMatrix(D_8013AF90, gScratchMatrix0);
-    D_8013AF90->vx = 0;
-    D_8013AF90->vy = 0;
-    D_8013AF90->vz = 0x1000;
-    ApplyMatrix(gScratchMatrix0, D_8013AF90, gScratchVector0);
+    gScratchShortVector0->vx = 0;
+    gScratchShortVector0->vy = gCurrentRacePlayer->unk110;
+    gScratchShortVector0->vz = 0;
+    RotMatrix(gScratchShortVector0, gScratchMatrix0);
+    gScratchShortVector0->vx = 0;
+    gScratchShortVector0->vy = 0;
+    gScratchShortVector0->vz = 0x1000;
+    ApplyMatrix(gScratchMatrix0, gScratchShortVector0, gScratchVector0);
     player = gCurrentRacePlayer;
     player->x += gScratchVector0->vx;
     player->z += gScratchVector0->vz;
@@ -4099,7 +4099,7 @@ updateAnimation:
 
 void advanceCurrentPlayerState30TaskOnResult(void) {
     if (D_8013AFE1 != 0) {
-        if (D_8013AFE2 == 0) {
+        if (gMainMenuSelectionIndex == 0) {
             if (gCurrentRacePlayer->unk935 == 0) {
                 gCurrentTask->data1C = 0;
                 startCurrentPlayerAnimation(0x13, 2);
@@ -4186,8 +4186,8 @@ void updateCurrentPlayerState8Steering(void) {
         gCurrentRacePlayer->unk128 &= ~0x200;
     }
     player = gCurrentRacePlayer;
-    if (player->unk92E == (s16)D_80123D80[gSelectedCourseIndex].unk00 && !(player->unk128 & 0x40)) {
-        angle = getXZHeading(player->x, player->z, D_80123D80[gSelectedCourseIndex].unk40[0], D_80123D80[gSelectedCourseIndex].unk40[1]);
+    if (player->unk92E == (s16)gSelectedCourseRecords[gSelectedCourseIndex].unk00 && !(player->unk128 & 0x40)) {
+        angle = getXZHeading(player->x, player->z, gSelectedCourseRecords[gSelectedCourseIndex].unk40[0], gSelectedCourseRecords[gSelectedCourseIndex].unk40[1]);
         player = gCurrentRacePlayer;
         if (player->unk128 & 0x400) {
             angle += 0x800;
@@ -4715,7 +4715,7 @@ s32 updateCurrentPlayerGroundContact(void) {
 
         region = getAdjacentGeometryRegionForPoint(gCurrentRacePlayer->unk92E, (gCurrentRacePlayer->x >> 8) - dx, (gCurrentRacePlayer->z >> 8) - dz);
         rearY = getCourseHeightAtPoint(region, (gCurrentRacePlayer->x >> 8) - dx, (gCurrentRacePlayer->z >> 8) - dz) << 8;
-        computeSelectedTriangleNormal(D_8013AF8C);
+        computeSelectedTriangleNormal(gScratchVector1);
 
         if (forwardRecord == D_8013B1FE) {
             s32 y;
@@ -4731,9 +4731,9 @@ s32 updateCurrentPlayerGroundContact(void) {
         } else {
             gCurrentRacePlayer->unk118 = gCurrentRacePlayer->unk11E;
             gCurrentRacePlayer->unk11C = gCurrentRacePlayer->unk120;
-            gScratchVector0->vx = (gScratchVector0->vx + D_8013AF8C->vx) / 2;
-            gScratchVector0->vy = (gScratchVector0->vy + D_8013AF8C->vy) / 2;
-            gScratchVector0->vz = (gScratchVector0->vz + D_8013AF8C->vz) / 2;
+            gScratchVector0->vx = (gScratchVector0->vx + gScratchVector1->vx) / 2;
+            gScratchVector0->vy = (gScratchVector0->vy + gScratchVector1->vy) / 2;
+            gScratchVector0->vz = (gScratchVector0->vz + gScratchVector1->vz) / 2;
             computeVectorYawAndPitch(gScratchVector0, &gCurrentRacePlayer->unk116, &gCurrentRacePlayer->unk11A);
             gCurrentRacePlayer->unk11E = averageWrappedAngle(gCurrentRacePlayer->unk116, gCurrentRacePlayer->unk11E);
             gCurrentRacePlayer->y = groundY;
@@ -4904,7 +4904,7 @@ void initializeCurrentRacePlayer(void) {
             currentPlayerAbsolute->unk0A6 = 0x800;
         }
     }
-    if (D_8013AFE2 == 2) {
+    if (gMainMenuSelectionIndex == 2) {
         currentPlayerAbsolute->heldItem = 1;
     }
     if (!currentPlayerAbsolute->unk008) {
@@ -4912,7 +4912,7 @@ void initializeCurrentRacePlayer(void) {
     } else if (D_8013AFD9) {
         currentPlayerAbsolute->unk945 = 8;
     }
-    if (D_8013AFE2 == 1 && D_8013AFE0 == 1) {
+    if (gMainMenuSelectionIndex == 1 && D_8013AFE0 == 1) {
         if (playerCountAbsolute == 1) {
             currentPlayerAbsolute->unk93C = 10;
         } else {
@@ -5087,16 +5087,16 @@ void initializeCurrentRacePlayer(void) {
 s16 isPlayerNearSelectedRecord(s16 index) {
     s16 i;
     s32 distance;
-    if (gRacePlayers[index].unk92E != (s16)D_80123D80[gSelectedCourseIndex].unk00) return 0;
+    if (gRacePlayers[index].unk92E != (s16)gSelectedCourseRecords[gSelectedCourseIndex].unk00) return 0;
     if (gRacePlayers[index].unk128 & 0x40) return 0;
     for (i = 0; i < 4; i++) {
         if (gRacePlayers[i].isActive && gRacePlayers[i].playerIndex != index &&
             (gRacePlayers[i].unk128 & 0x20)) return 0;
     }
-    distance = gRacePlayers[index].x - D_80123D80[gSelectedCourseIndex].unk18[0];
+    distance = gRacePlayers[index].x - gSelectedCourseRecords[gSelectedCourseIndex].unk18[0];
     if (distance < 0) distance = -distance;
     if (distance > 0x6000) return 0;
-    distance = gRacePlayers[index].z - D_80123D80[gSelectedCourseIndex].unk18[2];
+    distance = gRacePlayers[index].z - gSelectedCourseRecords[gSelectedCourseIndex].unk18[2];
     if (distance < 0) distance = -distance;
     return distance <= 0x6000;
 }
@@ -5128,7 +5128,7 @@ void assignCurrentPlayerFinishSlot(s32 value) {
     RacePlayer *player = currentPlayerAbsolute;
     u32 flags = player->unk128;
     if (!(flags & 0x40) && player->unk934 >= selectedFinishLapCountAbsolute - 1 &&
-        player->unk92E == (s16)D_80123D80[gSelectedCourseIndex].unk00 && !(flags & 0x1000)) {
+        player->unk92E == (s16)gSelectedCourseRecords[gSelectedCourseIndex].unk00 && !(flags & 0x1000)) {
         player->unk128 = flags | 0x40;
         if (!D_8013AFD6) {
             if (!player->unk008) {
@@ -5179,7 +5179,7 @@ void awardCurrentPlayerTrickRewards(void) {
         reward += currentPlayerAbsolute->unk0C6;
     }
 
-    if (reward != 0 && D_8013AFE2 == 0) {
+    if (reward != 0 && gMainMenuSelectionIndex == 0) {
         addPlayerCappedCounters(gCurrentTask->data18, reward);
         if (currentPlayerAbsolute->unk008 == 0 && (D_8013AFD9 == 0 || gCurrentTask->data18 == 0)) {
             createActivePlayerSlidingNumberTask(reward, currentPlayerAbsolute->playerIndex);
@@ -5197,7 +5197,7 @@ void awardCurrentPlayerTrickRewards(void) {
         }
     }
 
-    if (D_8013AFE2 == 1 && D_8013AFE0 == 2 && points != 0) {
+    if (gMainMenuSelectionIndex == 1 && D_8013AFE0 == 2 && points != 0) {
         if (points > 9999) {
             points = 9999;
         }
