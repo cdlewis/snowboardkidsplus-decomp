@@ -80,10 +80,15 @@ extern VisualPlacement gCourse0ObjectPlacements[95];
 extern VisualPlacement gCourse1ObjectPlacements[76];
 extern VisualPlacement gCourse2ObjectPlacements[84];
 extern VisualPlacement gCourse3ObjectPlacements[77];
-extern VisualPlacement D_80126E9C[];
-extern VisualPlacement D_8012726C[], D_8012763C[], D_80127A4C[], D_80127C0C[];
+extern VisualPlacement gCourse4ObjectPlacements[61];
+extern VisualPlacement gCourse5ObjectPlacements[61];
+extern VisualPlacement gCourse6ObjectPlacements[65];
+extern VisualPlacement gCourse8ObjectPlacements[28];
+extern VisualPlacement gCourse9ObjectPlacements[71];
 extern VisualPlacement gEmptyVisualPlacements[1];
-extern VisualPlacement D_8012807C[], D_801281CC[], D_8012831C[];
+extern VisualPlacement gCourse0SinglePlayerInteractionPlacements[21];
+extern VisualPlacement gCourse1SinglePlayerInteractionPlacements[21];
+extern VisualPlacement gCourse9SinglePlayerInteractionPlacements[11];
 extern VisualPlacement D_801283CC[], D_8012865C[], D_801288EC[];
 extern VisualPlacement D_80128A3C[], D_80128E0C[], D_801291DC[];
 
@@ -105,8 +110,8 @@ TaskVisualFrame gInteractionVisualFrame __attribute__((section(".data.interactio
 VisualPlacement *gInteractionVisualPlacements __attribute__((section(".sdata.interaction_visual_placements"))) = 0;
 
 VisualPlacement *gCourseObjectPlacements[10] __attribute__((section(".data.course_object_placements"))) = {
-    gCourse0ObjectPlacements, gCourse1ObjectPlacements, gCourse2ObjectPlacements, gCourse3ObjectPlacements, D_80126E9C,
-    D_8012726C, D_8012763C, gEmptyVisualPlacements, D_80127A4C, D_80127C0C,
+    gCourse0ObjectPlacements, gCourse1ObjectPlacements, gCourse2ObjectPlacements, gCourse3ObjectPlacements, gCourse4ObjectPlacements,
+    gCourse5ObjectPlacements, gCourse6ObjectPlacements, gEmptyVisualPlacements, gCourse8ObjectPlacements, gCourse9ObjectPlacements,
 };
 
 VisualPlacement *gCourseChallengePlacements[3][10] __attribute__((section(".data.course_challenge_placements"))) = {
@@ -115,8 +120,10 @@ VisualPlacement *gCourseChallengePlacements[3][10] __attribute__((section(".data
         gEmptyVisualPlacements, gEmptyVisualPlacements, gEmptyVisualPlacements, gEmptyVisualPlacements, D_801291DC,
     },
     {
-        D_8012807C, D_801281CC, gEmptyVisualPlacements, gEmptyVisualPlacements, gEmptyVisualPlacements,
-        gEmptyVisualPlacements, gEmptyVisualPlacements, gEmptyVisualPlacements, gEmptyVisualPlacements, D_8012831C,
+        gCourse0SinglePlayerInteractionPlacements, gCourse1SinglePlayerInteractionPlacements,
+        gEmptyVisualPlacements, gEmptyVisualPlacements, gEmptyVisualPlacements,
+        gEmptyVisualPlacements, gEmptyVisualPlacements, gEmptyVisualPlacements, gEmptyVisualPlacements,
+        gCourse9SinglePlayerInteractionPlacements,
     },
     {
         D_801283CC, D_8012865C, gEmptyVisualPlacements, gEmptyVisualPlacements, gEmptyVisualPlacements,
