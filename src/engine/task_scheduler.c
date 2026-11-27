@@ -4,6 +4,8 @@
 
 GameTask gGameTasks[200] __attribute__((section(".data.game_tasks"))) = {0};
 
+TaskMemoryBlock gTaskMemoryPool[256] __attribute__((section(".data.task_memory_pool"))) = {0};
+
 GameTask *gCurrentTask __attribute__((section(".sdata.task_scheduler"))) = 0;
 
 GameTask *gCreatedTask __attribute__((section(".sdata.task_scheduler"))) = 0;

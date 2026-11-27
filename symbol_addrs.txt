@@ -1985,7 +1985,7 @@ gCourseSurfaceMotionEffectTypes = 0x8012090C; // size:0x28 defined:true
 // Task memory block indices address the pool and its 256-bit availability bitmap.
 allocateTaskMemoryBlock = 0x80014BAC; // type:func
 freeTaskMemoryBlock = 0x80014C40; // type:func
-gTaskMemoryPool = 0x800D9504; // size:0x10000
+gTaskMemoryPool = 0x800D9504; // size:0x10000 defined:true
 gTaskMemoryFreeBits = 0x800E9504; // size:0x20 defined:true
 
 setControllerFlag5 = 0x80014CCC; // type:func
