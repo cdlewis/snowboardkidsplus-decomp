@@ -621,7 +621,7 @@ void initializeCountedFourBoundsTask(void) {
         bounds->w = -1;
         bounds->h = -1;
     }
-    D_8013B517 = 1;
+    gPaletteSelectionCurrentLabelEnabled = 1;
     setCurrentTaskCallback(updatePlayerPaletteSelectionTask);
     gCurrentTask->unk10 |= 2;
 }
@@ -746,7 +746,7 @@ resume:
                 gCurrentTask->data18 = 9;
             } else {
                 createPlayerModelPreviewTask(3, 10, 1, 64, gPaletteSelectionPurchasePreviewY[character] - 50, 384, 51);
-                D_8013B517 = 0;
+                gPaletteSelectionCurrentLabelEnabled = 0;
                 entries[6].task = createCountdownTask(8);
                 gCurrentTask->data18 = 10;
             }
@@ -782,7 +782,7 @@ resume:
             countdown->data18 = 1;
             entries[5].command = 99;
             createTimedSpriteB5Task(16, -50, 15);
-            D_8013B517 = 1;
+            gPaletteSelectionCurrentLabelEnabled = 1;
             entries[6].task = createValueTransitionTask(
                 &gPlayerSaveRecords[player].money,
                 gPlayerSaveRecords[player].money - 500, 100);
@@ -894,7 +894,7 @@ void drawCurrentTaskSavedValuePanel(void) {
     }
 }
 
-u8 D_8013B517 __attribute__((section(".sdata"))) = 0;
+u8 gPaletteSelectionCurrentLabelEnabled __attribute__((section(".sdata"))) = 0;
 
 void drawPaletteSelectionPricePanel(void) {
     Movement2D *position;
@@ -909,7 +909,7 @@ void drawPaletteSelectionPricePanel(void) {
     player = (s16)gCurrentTaskParent->data1A;
     selection = &gTaskPanelSelectionValues[player];
     if (gCurrentTask->data1A != 0) {
-        if (gRacePlayers[player].unk00D == selection->value && D_8013B517 != 0) {
+        if (gRacePlayers[player].unk00D == selection->value && gPaletteSelectionCurrentLabelEnabled != 0) {
             drawWrappedGlyphText16x16((s16)(panelX - 112), (s16)(panelY + 52), 4, gCurrentPaletteLabel, 12, 1,
                                       &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
             if (gCurrentTask->data1A == 1) {

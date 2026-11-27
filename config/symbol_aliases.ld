@@ -31,4 +31,4 @@ raceHudEnabledGp = gRaceHudEnabled;
 gRacePlacementPalettes = gMenuSpritePaletteGroups;
 
 /* Shared three-byte string literal immediately preceding the grid task flag. */
-D_8013B514 = D_8013B517 - 3;
+D_8013B514 = gPaletteSelectionCurrentLabelEnabled - 3;

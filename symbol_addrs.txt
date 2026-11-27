@@ -3385,7 +3385,7 @@ advanceCurrentPlayerState30TaskOnResult = 0x80026AA8; // type:func
 
 initializeCountedSplitSelectionBoundsTask = 0x80097EBC; // type:func
 initializeCountedFourBoundsTask = 0x8009974C; // type:func
-D_8013B517 = 0x8013B517; // size:0x1 defined:true
+gPaletteSelectionCurrentLabelEnabled = 0x8013B517; // size:0x1 defined:true
 gMainTailSelectionMapping = 0x8013B518; // size:0x4 defined:true
 gMainTailSelectionSprites = 0x80131F08; // size:0x18 defined:true
 gSinglePlayerTimeAttackHelpText = 0x80131F20; // size:0x74

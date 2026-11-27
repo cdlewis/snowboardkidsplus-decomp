@@ -157,7 +157,7 @@ extern SplitSelectionBoundsConfigs gSplitSelectionBoundsConfigs __attribute__((s
 
 extern u16 playerModelDrawAreaDepths[4] __attribute__((section(".data.player_model_draw_area_depths")));
 
-extern u8 D_8013B517 __attribute__((section(".sdata")));
+extern u8 gPaletteSelectionCurrentLabelEnabled __attribute__((section(".sdata")));
 
 extern s16 D_8013B560;
 extern u8 gSelectedUnlockIndex __attribute__((section(".data")));
