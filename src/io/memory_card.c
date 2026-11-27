@@ -13,6 +13,16 @@ typedef struct MemoryCardIconTemplate {
     u8 frames[3][16][8];
 } MemoryCardIconTemplate;
 
+s32 gMemoryCardChannel __attribute__((section(".sdata.memory_card_channel"))) = 0;
+s16 gMemoryCardPortIndex __attribute__((section(".sdata.memory_card_channel"))) = 0;
+char gMemoryCardDirectorySearchPattern[2] __attribute__((section(".sdata.memory_card_search"), aligned(2))) = "*";
+char *gMemoryCardSelectedFileName __attribute__((section(".sdata.memory_card_selection"))) = NULL;
+void *gMemoryCardLoadDestination __attribute__((section(".sdata.memory_card_selection"))) = NULL;
+u8 gMemoryCardSelectedFileType __attribute__((section(".sdata.memory_card_selection"))) = 0;
+const u8 gMemoryCardSelectionPadding0 __attribute__((section(".sdata.memory_card_selection"))) = 0;
+const u8 gMemoryCardSelectionPadding1 __attribute__((section(".sdata.memory_card_selection"))) = 0;
+const u8 gMemoryCardSelectionPadding2 __attribute__((section(".sdata.memory_card_selection"))) = 0;
+
 MemoryCardIconTemplate gMemoryCardIconTemplate
     __attribute__((section(".data.memory_card_icon_template"), aligned(4))) = {
     {

@@ -5,6 +5,9 @@
 #include "game/scene/scene_events.h"
 #include "game/scene/scene_task_types.h"
 
+u8 gSelectedUnlockIndex __attribute__((section(".data.selected_unlock_index"))) = 0;
+const u8 gSelectedUnlockIndexPadding __attribute__((section(".data.selected_unlock_index"))) = 0;
+
 void func_800A5AD4(void);
 void func_800A5ADC(void);
 void func_800A5AE4(void);

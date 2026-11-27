@@ -4,6 +4,8 @@
 #include "game/io/memory_card.h"
 #include "psx/libmcrd.h"
 
+s16 gMemoryCardTaskState __attribute__((section(".sdata.memory_card_task_state"), aligned(2))) = 0;
+
 void *gMemoryCardTaskBuffer = NULL;
 u32 gMemoryCardSaveBufferSize = 0;
 

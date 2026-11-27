@@ -1016,7 +1016,11 @@ segments:
       - [0x12B714, data, 12B714]
       - {start: 0x12B728, type: .sdata, name: audio/sound_manager, linker_section_order: .data}
       - {start: 0x12B72C, type: .sdata, name: audio/sound_manager, linker_section: .sdata.music_state, linker_section_order: .data}
-      - [0x12B734, data, 12B734]
+      - {start: 0x12B734, type: .sdata, name: io/memory_card, linker_section: .sdata.memory_card_channel, linker_section_order: .data}
+      - {start: 0x12B73A, type: .data, name: scene/scene_events, linker_section: .data.selected_unlock_index}
+      - {start: 0x12B73C, type: .sdata, name: io/memory_card, linker_section: .sdata.memory_card_search, linker_section_order: .data}
+      - {start: 0x12B73E, type: .sdata, name: io/memory_card_tasks, linker_section: .sdata.memory_card_task_state, linker_section_order: .data}
+      - {start: 0x12B740, type: .sdata, name: io/memory_card, linker_section: .sdata.memory_card_selection, linker_section_order: .data}
       - {start: 0x12B74C, type: .sdata, name: io/memory_card_tasks, linker_section_order: .data}
       - {start: 0x12B754, type: .sdata, name: io/movie_stream, linker_section: .sdata.movie_dimensions, linker_section_order: .data}
       - {start: 0x12B758, type: .sdata, name: io/movie_stream, linker_section_order: .data}
