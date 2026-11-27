@@ -33,7 +33,7 @@ extern u8 gSelectedPlayerReplayActive __attribute__((section(".data")));
 extern u8 gDemoRaceIndex __attribute__((section(".data")));
 extern volatile u8 gShopMenuRememberedSelection __attribute__((section(".data")));
 
-extern u8 D_8013B47C __attribute__((section(".data")));
+extern u8 gSaveRecordSavedOrLoaded __attribute__((section(".data")));
 extern u8 D_8013B527 __attribute__((section(".data")));
 extern u8 D_8013B110;
 
@@ -1834,7 +1834,7 @@ void initializeNewGameSaveData(void) {
     gSelectedCourseIndex = 0;
     gMainMenuSelectionIndex = 0;
     gSelectedPlayerReplayActive = 0;
-    D_8013B47C = 0;
+    gSaveRecordSavedOrLoaded = 0;
     gSelectedCourseMenuItem = 0;
     gShopMenuRememberedSelection = 0;
     boardShopRememberedSelectionAbsolute = 0;

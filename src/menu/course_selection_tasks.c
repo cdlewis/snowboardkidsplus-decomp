@@ -167,18 +167,19 @@ IndexedHalfwordRecord gRecordFlagMenuSpriteRecords[]
 
 extern u8 D_8013B420[], D_8013B424[], D_8013B42C[];
 extern u8 D_8013B430[], D_8013B438[];
-extern u8 D_8013B43C[], D_8013B440[], D_8013B448[], D_8013B44C[];
+extern u8 gGroupedCourseMenuTextIndices[4];
+extern u8 D_8013B440[], D_8013B448[], D_8013B44C[];
 extern u8 gSelectionPanelTripletIndices[4];
 extern u8 D_8013B454[];
 
 GroupedSelectionMenuDescriptor gGroupedCourseMenuDescriptors[]
     __attribute__((section(".data.grouped_course_menu_descriptors"))) = {
-    {D_8013B420, 0, 24, 4, 0, D_8013B43C, NULL, gSelectionPanelTripletIndices},
+    {D_8013B420, 0, 24, 4, 0, gGroupedCourseMenuTextIndices, NULL, gSelectionPanelTripletIndices},
     {D_8013B424, 0, 20, 5, 0, D_8013B440, NULL, D_8013B454},
-    {D_8013B42C, 0, 24, 4, 0, D_8013B43C, NULL, gSelectionPanelTripletIndices},
+    {D_8013B42C, 0, 24, 4, 0, gGroupedCourseMenuTextIndices, NULL, gSelectionPanelTripletIndices},
     {gDefaultBoardMenuItems, 0, 20, 3, 0, D_8013B44C, NULL, NULL},
     {D_8013B438, 0, 16, 3, 0, D_8013B448, NULL, NULL},
-    {D_8013B430, 0, 24, 4, 0, D_8013B43C, NULL, gSelectionPanelTripletIndices},
+    {D_8013B430, 0, 24, 4, 0, gGroupedCourseMenuTextIndices, NULL, gSelectionPanelTripletIndices},
 };
 
 const u8 gMenuPlayerTextureIds[16]
@@ -3437,7 +3438,7 @@ void updateSaveRecordTask(void) {
             if (firstResult == 0 || secondResult == 0 || panels[0].flags || panels[1].flags) {
                 break;
             }
-            if (playerCountAbsolute == 1 && D_8013B47C == 0) {
+            if (playerCountAbsolute == 1 && gSaveRecordSavedOrLoaded == 0) {
                 gCurrentTaskParent->data18 = 30;
             } else {
                 gCurrentTaskParent->data18 = 5;
@@ -3487,7 +3488,7 @@ void updateSaveRecordTask(void) {
 void resetUnlockNotificationStateForMode2(void) {
     if (playerCountAbsolute == 2) {
         gUnlockNotificationFlags = 0;
-        D_8013B47C = 0;
+        gSaveRecordSavedOrLoaded = 0;
     }
 }
 
@@ -3613,7 +3614,7 @@ void updateSaveRecordLoadPanelTask(void) {
         break;
     case 4:
         createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_801306EC, -1, color,
-                                              1, D_801307AC, gCurrentTask->data1C - 3, 11);
+                                              1, gSaveRecordConfirmationSprites, gCurrentTask->data1C - 3, 11);
         gCurrentTask->data18 = 5;
         break;
     case 5:
@@ -3668,7 +3669,7 @@ void updateSaveRecordLoadPanelTask(void) {
         case 6:
             break;
         case 3:
-            createRegisteredStaticTextPanelTask(x, y, x + 4, y + 2, D_801302BC, menu->cardSlot, gCurrentTask->data1C - 3, 11);
+            createRegisteredStaticTextPanelTask(x, y, x + 4, y + 2, gMemoryCardAccessInProgressText, menu->cardSlot, gCurrentTask->data1C - 3, 11);
             break;
         case 5:
             gCurrentTask->data18 = 6;
@@ -3693,7 +3694,7 @@ void updateSaveRecordLoadPanelTask(void) {
         break;
     case 6:
         gMemoryCardSlotHistory.unk_12[menu->cardSlot] = 1;
-        createRegisteredStaticTextPanelTask(x, y, x + 4, y + 2, D_801302BC, menu->cardSlot, gCurrentTask->data1C - 3, 11);
+        createRegisteredStaticTextPanelTask(x, y, x + 4, y + 2, gMemoryCardAccessInProgressText, menu->cardSlot, gCurrentTask->data1C - 3, 11);
         gCurrentTask->data18 = 7;
     case 7:
         if (gMemoryCardSlotHistory.current[menu->cardSlot] == 7)
@@ -3731,7 +3732,7 @@ void updateSaveRecordLoadPanelTask(void) {
     case 34:
         resources->panels[0].command = 23;
         createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_80130308, menu->cardSlot, color,
-                                              1, D_801307AC, gCurrentTask->data1C - 3, 11);
+                                              1, gSaveRecordConfirmationSprites, gCurrentTask->data1C - 3, 11);
         gCurrentTask->data18 = 35;
         break;
     case 35:
@@ -3752,7 +3753,7 @@ void updateSaveRecordLoadPanelTask(void) {
         break;
     case 36:
         createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_80130348, menu->cardSlot, color,
-                                              1, D_801307AC, gCurrentTask->data1C - 3, 11);
+                                              1, gSaveRecordConfirmationSprites, gCurrentTask->data1C - 3, 11);
         resources->panels[0].command = 23;
         gCurrentTask->data18 = 37;
         break;
@@ -3800,7 +3801,7 @@ void updateSaveRecordLoadPanelTask(void) {
             break;
     case 40:
         createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_801303CC, -1, color,
-                                              1, D_801307AC, gCurrentTask->data1C - 3, 11);
+                                              1, gSaveRecordConfirmationSprites, gCurrentTask->data1C - 3, 11);
         gCurrentTask->data18 = 41;
         break;
     case 41:
@@ -3857,7 +3858,7 @@ void updateSaveRecordLoadPanelTask(void) {
         break;
     case 20:
         createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_80130780, -1, color,
-                                              1, D_801307AC, gCurrentTask->data1C - 3, 11);
+                                              1, gSaveRecordConfirmationSprites, gCurrentTask->data1C - 3, 11);
         gCurrentTask->data18 = 21;
         break;
     case 21:
@@ -3875,7 +3876,7 @@ void updateSaveRecordLoadPanelTask(void) {
             gPlayerSaveRecords[player] = *gWorkingSaveRecords[player];
             copySaveRecordAndMergeFlags();
             applyLoadedSaveRecordSettings(&gPlayerSaveRecords[player], player);
-            D_8013B47C = 1;
+            gSaveRecordSavedOrLoaded = 1;
             gCurrentTask->data18 = 24;
         } else if (result == 3) {
             task = gCurrentTask;

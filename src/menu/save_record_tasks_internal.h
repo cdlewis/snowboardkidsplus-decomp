@@ -87,7 +87,6 @@ extern u16 gTaskShadowedText[14] __attribute__((section(".data.task_shadowed_tex
 extern StateValueHistory gMemoryCardSlotHistory __attribute__((section(".bss.state_value_history")));
 extern u8 gModeSequenceStage __attribute__((section(".data")));
 extern u8 gControllerPlaybackIndex __attribute__((section(".data")));
-extern u8 D_8013B47C;
 extern TexturedQuadListEntry taskIndexPanelQuadsPalette0[10];
 extern TexturedQuadListEntry taskIndexPanelQuadsPalette1[10];
 
@@ -112,7 +111,9 @@ ByteTriplet *lookupByteTriplet(ByteTriplet *records, u8 *indices, s16 index);
 void updateRegisteredChildBlinkTransition(void);
 void drawTaskOffsetSpriteB8(void);
 void drawTaskIndexPanel(void);
-extern const u16 D_801302BC[], D_80130390[], D_80130770[], D_801307AC[], D_80130800[];
+extern const u16 gMemoryCardAccessInProgressText[38];
+extern const u16 gSaveRecordConfirmationSprites[];
+extern const u16 D_80130390[], D_80130770[], D_80130800[];
 
 void drawSaveRecordProgressPanel(void);
 void initializeDualResourceTask(void);

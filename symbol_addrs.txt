@@ -4384,3 +4384,8 @@ gSpriteTextureRegionSets = 0x8012DDA4; // size:0x250
 gTexturedQuadFrames = 0x8012DFF4; // size:0x8F0
 gDoubleByteGlyphCodes16x16Page0 = 0x8012EC04; // size:0xC4
 gCurrentSpriteTextureRegions = 0x8013B6AC;
+
+gMemoryCardAccessInProgressText = 0x801302BC;
+gSaveRecordConfirmationSprites = 0x801307AC;
+gGroupedCourseMenuTextIndices = 0x8013B43C;
+gSaveRecordSavedOrLoaded = 0x8013B47C;
