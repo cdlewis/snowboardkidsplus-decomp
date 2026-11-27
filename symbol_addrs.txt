@@ -2592,10 +2592,10 @@ sShopMenuSprites = 0x80131424; // size:0x18 defined:true
 D_8013143C = 0x8013143C; // size:0x5C
 D_80131498 = 0x80131498; // size:0x64
 D_801314FC = 0x801314FC; // size:0x4C
-D_80131548 = 0x80131548; // size:0x2C
-D_80131574 = 0x80131574; // size:0x18
-D_8013158C = 0x8013158C; // size:0x18
-D_801315A4 = 0x801315A4; // size:0x1C
+gShopExitDescriptionText = 0x80131548; // size:0x2C
+gShopSubmenuReturnDescriptionText = 0x80131574; // size:0x18
+gShopGreetingText = 0x8013158C; // size:0x18
+gShopInsufficientFundsText = 0x801315A4; // size:0x1C
 D_801315C0 = 0x801315C0; // size:0x20
 D_801315E0 = 0x801315E0; // size:0x50
 D_80131630 = 0x80131630; // size:0x4C
@@ -3113,6 +3113,7 @@ initializeCountedDisplayBoundsTask = 0x80094760; // type:func
 updateBoardPurchaseMenuTask = 0x8009488C; // type:func size:0xDE8
 sBoardPurchaseSpriteMapping = 0x8013B4F0; // size:0x4 defined:true
 sBoardPurchaseFullSpriteMapping = 0x8013B4F4; // size:0x8 defined:true
+gShopCurrencySuffix = 0x8013B4FC; // size:0x4
 
 prepareRaceResourcesIfSelectionChanged = 0x800A0C6C; // type:func
 

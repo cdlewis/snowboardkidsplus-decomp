@@ -91,8 +91,13 @@ extern volatile u8 shopMenuRememberedSelectionGp;
 extern const u8 D_801317F0[];
 extern const u8 D_8013B4A0[];
 
-extern const u16 D_8013143C[], D_80131498[], D_801314FC[], D_80131548[], D_80131574[];
-extern const u16 D_8013158C[], D_801315A4[], D_801315C0[], D_801315E0[], D_80131630[];
+extern const u16 D_8013143C[46], D_80131498[50], D_801314FC[38];
+extern const u16 gShopExitDescriptionText[22];
+extern const u16 gShopSubmenuReturnDescriptionText[12];
+extern const u16 gShopGreetingText[12];
+extern const u16 gShopInsufficientFundsText[14];
+extern char gShopCurrencySuffix[];
+extern const u16 D_801315C0[], D_801315E0[], D_80131630[];
 extern const u16 D_8013167C[], D_801316BC[], D_801316E8[], D_80131728[], D_80131760[];
 
 extern const s16 gGridModelPreviewPose0And2[54], gSharedGridModelPreviewPose[54], D_80131B74[];
@@ -107,8 +112,8 @@ static const GridSpriteEntry sShopMenuSprites[4]
 };
 
 static const u16 *sShopMenuTexts[15] __attribute__((section(".data.shop_menu_texts"))) = {
-    D_8013143C, D_80131498, D_801314FC, D_80131548, D_80131574,
-    D_8013158C, D_801315A4, D_801315C0, D_801315E0, D_80131630,
+    D_8013143C, D_80131498, D_801314FC, gShopExitDescriptionText, gShopSubmenuReturnDescriptionText,
+    gShopGreetingText, gShopInsufficientFundsText, D_801315C0, D_801315E0, D_80131630,
     D_8013167C, D_801316BC, D_801316E8, D_80131728, D_80131760,
 };
 
@@ -2977,7 +2982,7 @@ void drawCurrentTaskSelectedPlayerMoneyPanel(void) {
                                  0, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
         }
         drawWrappedText8x8(position->x / 4096 + 122, position->y / 4096 + 152,
-                           2, D_8013B4FC, 0, -1,
+                           2, gShopCurrencySuffix, 0, -1,
                            &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
         if (gCurrentTask->data1A == 1) {
             addTilePacketWithBlend(position->x / 4096 + 68, position->y / 4096 + 136, 68, 32,
@@ -3042,7 +3047,7 @@ void drawCurrentTaskBoardPrice(void) {
             priceX -= halfWidth - 64;
             drawDecimalNumber8x8(priceX, priceY + 12, digits, 0, price, 0, -1,
                                  &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
-            drawWrappedText8x8(priceX + digits * 8, priceY + 12, 2, D_8013B4FC, 0, -1,
+            drawWrappedText8x8(priceX + digits * 8, priceY + 12, 2, gShopCurrencySuffix, 0, -1,
                                &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
             if (gCurrentTask->data1A == 1) {
                 addTilePacketWithBlend(priceX - 4, priceY + 8, digits * 8 + 16, 16,

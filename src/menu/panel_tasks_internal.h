@@ -122,7 +122,6 @@ extern s16 gMenuTextureResourceId __attribute__((section(".data")));
 
 extern s8 gBoardStyleTextBytes[0x38];
 extern u32 gCharacterBoardPrices[50];
-extern char D_8013B4FC[];
 
 extern u8 gBoardSelectionLevels[12] __attribute__((section(".data.board_selection_levels")));
 extern s8 *gBoardStyleText[4] __attribute__((section(".data.board_style_text")));
