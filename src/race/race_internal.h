@@ -487,8 +487,6 @@ void updateFallingPairedVisualTask(void);
 s32 calculateRaceTimeDifference(const RaceTime *a, const RaceTime *b, RaceTime *difference);
 
 
-/* Only the first byte of this shared state is used by this task flow. */
-extern const char D_80010A94[];
 extern const char gAutoPilotLabel[] __attribute__((section(".rodata.auto_pilot_label"), aligned(4)));
 
 extern const char gCompleteBonusLabel[20] __attribute__((section(".rodata.complete_bonus_label"), aligned(4)));
@@ -509,7 +507,6 @@ extern const char gResultValueFormat[];
 extern const char gResultValueMultiplierLabel[];
 extern const char gPlayerNumberSuffixLabel[];
 extern const char gComputerPlayerLabel[];
-extern const char D_8013B138[];
 extern RaceTime gRaceElapsedTime;
 
 void waitForBackgroundMenuTransition(void);

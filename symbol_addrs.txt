@@ -4468,3 +4468,6 @@ gExtendedSelectionPanelTripletIndices = 0x8013B454;
 gSelectionPrizeDescriptionTexts = 0x8012FC2C; // size:0x28
 gMemoryCardMissingRetryText = 0x80130308; // size:0x40
 gMemoryCardLoadErrorRetryText = 0x80130348; // size:0x48
+
+gRecordLapTimeLabel = 0x80010A94; // type:char
+gCountRecordHitLabel = 0x8013B138; // type:char size:0x4

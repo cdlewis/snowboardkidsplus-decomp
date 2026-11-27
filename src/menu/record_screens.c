@@ -43,6 +43,8 @@ const char gRaceComparisonSpeedFanLabel[16] __attribute__((section(".rodata.race
 const char gRaceComparisonHitCountLabel[12] __attribute__((section(".rodata.race_comparison_labels"), aligned(4))) = "HIT COUNT";
 const char gRaceComparisonTrickPointLabel[12] __attribute__((section(".rodata.race_comparison_labels"), aligned(4))) = "TRICK POINT";
 
+extern const char gRecordLapTimeLabel[12];
+extern char gCountRecordHitLabel[4];
 extern char gRaceResultsFastLabel[];
 
 void drawRaceTime(const RaceTime *value, s32 x, s32 y, s16 mode, GsOT *ot, u16 depth) {
@@ -96,7 +98,7 @@ void drawLapTimeLabel(TaskMenuFadeResource *resource) {
     } else {
         setSpriteColor(128, 128, 128);
     }
-    drawLimitedText8x8(-116, -60, 20, D_80010A94, 5, -1,
+    drawLimitedText8x8(-116, -60, 20, gRecordLapTimeLabel, 5, -1,
                  &gMainOrderingTables[gActiveGraphicsBuffer], 1);
 }
 
@@ -266,7 +268,7 @@ void drawCountRecordRows(TaskMemoryBlock *resource) {
         drawSpriteByIndexWithBlend(70, y, (gPlayerSaveRecords[0].countRecordIcons[gSelectedCourseIndex][i] & 15) * 3 + 0x14A,
             gRaceProgressMeterIconPalettes[gPlayerSaveRecords[0].countRecordIcons[gSelectedCourseIndex][i] & 15], -1, &gMainOrderingTables[gActiveGraphicsBuffer], 1);
         drawSpriteByIndexWithBlend(88, y, (gPlayerSaveRecords[0].countRecordIcons[gSelectedCourseIndex][i] >> 4) + 0x13B, 7, -1, &gMainOrderingTables[gActiveGraphicsBuffer], 1);
-        drawLimitedText8x8(32, i * 32 - 72, 3, D_8013B138, textMode, -1, &gMainOrderingTables[gActiveGraphicsBuffer], 1);
+        drawLimitedText8x8(32, i * 32 - 72, 3, gCountRecordHitLabel, textMode, -1, &gMainOrderingTables[gActiveGraphicsBuffer], 1);
         y += 32;
     }
 }
@@ -555,7 +557,7 @@ void drawTimeRecordHeader(TimeRecordHeaderResource *resource) {
     } else {
         setSpriteColor(128, 128, 128);
     }
-    drawLimitedText8x8(-112, -64, 20, D_80010A94, 5, -1,
+    drawLimitedText8x8(-112, -64, 20, gRecordLapTimeLabel, 5, -1,
                  &gMainOrderingTables[gActiveGraphicsBuffer], 1);
     drawRaceTime(&gRaceElapsedTime, -104, -55, 1,
                  &gMainOrderingTables[gActiveGraphicsBuffer], 1);
