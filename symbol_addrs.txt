@@ -4281,7 +4281,7 @@ gShopBoardUnlockFlagIndices = 0x80131804; // size:0xC
 gShopBoardPrices = 0x80131810; // size:0x30
 gCharacterBoardPrices = 0x801319B0; // size:0xC8
 
-gMenuInputPromptSequence = 0x80123840;
+gMenuInputPromptSequence = 0x80123840; // size:0x10
 gCourseMenuCourseIndices = 0x8012D46C;
 gCourseMenuSpriteEntries = 0x8012F798;
 gCourseMenuMappingGroups = 0x8012FD10;

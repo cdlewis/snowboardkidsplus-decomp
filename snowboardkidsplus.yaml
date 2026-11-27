@@ -735,7 +735,9 @@ segments:
       - {start: 0x113E80, type: .data, name: race/player/player_update, linker_section: .data.player_variant_attributes}
       - {start: 0x113F90, type: .data, name: race/player/player_update, linker_section: .data.player_character_attributes}
       - {start: 0x11401C, type: .data, name: menu/mode_transitions, linker_section: .data.title_menu_sprites}
-      - [0x114040, data, player_attributes_tail]
+      - {start: 0x114040, type: .data, name: menu/task_widgets, linker_section: .data.menu_input_prompt_sequence}
+      - {start: 0x114050, type: .data, name: menu/mode_transitions, linker_section: .data.player_mode_quad_lists}
+      - {start: 0x114350, type: .data, name: menu/mode_transitions, linker_section: .data.player_mode_selection_sprites}
       - {start: 0x114368, type: .data, name: menu/mode_transitions, linker_section: .data.registered_task_quad_lists}
       - {start: 0x114378, type: .data, name: menu/mode_transitions, linker_section: .data.registered_player_mode_panel_text}
       - {start: 0x114434, type: .data, name: race/player/player_actions, linker_section: .data.player_mode_messages}

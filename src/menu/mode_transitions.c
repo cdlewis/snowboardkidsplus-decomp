@@ -58,12 +58,7 @@ extern u8 gDemoRaceIndex __attribute__((section(".data")));
 extern u8 gRaceExitRequested __attribute__((section(".data")));
 extern u8 gRaceRestartRequested __attribute__((section(".data")));
 
-extern const GridSpriteEntry gPlayerModeSelectionSprites[4];
 extern const u8 gPlayerModeSelectionMapping[4];
-extern TexturedQuadListEntry gOnePlayerModeSelectedQuads[16];
-extern TexturedQuadListEntry gTwoPlayerModeSelectedQuads[16];
-extern TexturedQuadListEntry gOnePlayerModeUnselectedQuads[16];
-extern TexturedQuadListEntry gTwoPlayerModeUnselectedQuads[16];
 
 extern s32 gTitleLogoSoundTimer;
 
@@ -92,6 +87,94 @@ const GridSpriteEntry gTitleMenuSprites[6]
 const u8 gTitleMenuSpriteMapping[8]
     __attribute__((section(".data.title_menu_sprite_mapping"), aligned(4))) = {
     0, 1, 2, 3, 4, 5,
+};
+
+TexturedQuadListEntry gOnePlayerModeSelectedQuads[16]
+    __attribute__((section(".data.player_mode_quad_lists"), aligned(4))) = {
+    {50, 2, 24, 0, 0, 0},
+    {144, 8, 64, 31, 0, 0},
+    {145, 8, 80, 31, 0, 0},
+    {146, 8, 96, 31, 0, 0},
+    {147, 8, 112, 31, 0, 0},
+    {148, 8, 128, 31, 0, 0},
+    {245, 0, 0, 16, 0, 0},
+    {246, 0, 32, 16, 128, 0},
+    {247, 0, 160, 16, 0, 0},
+    {248, 0, 0, 28, 0, 8},
+    {252, 0, 32, 28, 128, 8},
+    {253, 0, 160, 28, 0, 8},
+    {249, 0, 0, 36, 0, 0},
+    {250, 0, 32, 36, 128, 0},
+    {251, 0, 160, 36, 0, 0},
+    {0, 255, 0, 0, 0, 0},
+};
+
+TexturedQuadListEntry gOnePlayerModeUnselectedQuads[16]
+    __attribute__((section(".data.player_mode_quad_lists"), aligned(4))) = {
+    {50, 2, 32, 16, 16, 32},
+    {144, 8, 64, 31, 0, 0},
+    {145, 8, 80, 31, 0, 0},
+    {146, 8, 96, 31, 0, 0},
+    {147, 8, 112, 31, 0, 0},
+    {148, 8, 128, 31, 0, 0},
+    {245, 0, 0, 16, 0, 0},
+    {246, 0, 32, 16, 128, 0},
+    {247, 0, 160, 16, 0, 0},
+    {248, 0, 0, 28, 0, 8},
+    {252, 0, 32, 28, 128, 8},
+    {253, 0, 160, 28, 0, 8},
+    {249, 0, 0, 36, 0, 0},
+    {250, 0, 32, 36, 128, 0},
+    {251, 0, 160, 36, 0, 0},
+    {0, 255, 0, 0, 0, 0},
+};
+
+TexturedQuadListEntry gTwoPlayerModeSelectedQuads[16]
+    __attribute__((section(".data.player_mode_quad_lists"), aligned(4))) = {
+    {51, 2, 20, 0, 0, 0},
+    {144, 8, 64, 31, 0, 0},
+    {145, 8, 80, 31, 0, 0},
+    {146, 8, 96, 31, 0, 0},
+    {147, 8, 112, 31, 0, 0},
+    {148, 8, 128, 31, 0, 0},
+    {245, 1, 0, 16, 0, 0},
+    {246, 1, 32, 16, 128, 0},
+    {247, 1, 160, 16, 0, 0},
+    {248, 1, 0, 28, 0, 8},
+    {252, 1, 32, 28, 128, 8},
+    {253, 1, 160, 28, 0, 8},
+    {249, 1, 0, 36, 0, 0},
+    {250, 1, 32, 36, 128, 0},
+    {251, 1, 160, 36, 0, 0},
+    {0, 255, 0, 0, 0, 0},
+};
+
+TexturedQuadListEntry gTwoPlayerModeUnselectedQuads[16]
+    __attribute__((section(".data.player_mode_quad_lists"), aligned(4))) = {
+    {51, 2, 26, 16, 32, 32},
+    {144, 8, 64, 31, 0, 0},
+    {145, 8, 80, 31, 0, 0},
+    {146, 8, 96, 31, 0, 0},
+    {147, 8, 112, 31, 0, 0},
+    {148, 8, 128, 31, 0, 0},
+    {245, 1, 0, 16, 0, 0},
+    {246, 1, 32, 16, 128, 0},
+    {247, 1, 160, 16, 0, 0},
+    {248, 1, 0, 28, 0, 8},
+    {252, 1, 32, 28, 128, 8},
+    {253, 1, 160, 28, 0, 8},
+    {249, 1, 0, 36, 0, 0},
+    {250, 1, 32, 36, 128, 0},
+    {251, 1, 160, 36, 0, 0},
+    {0, 255, 0, 0, 0, 0},
+};
+
+const GridSpriteEntry gPlayerModeSelectionSprites[4]
+    __attribute__((section(".data.player_mode_selection_sprites"), aligned(4))) = {
+    {0, 0, 0, 0},
+    {1, 0, 0, 0},
+    {2, 0, 0, 0},
+    {3, 0, 0, 0},
 };
 
 TexturedQuadListEntry *gRegisteredTaskQuadLists[4]

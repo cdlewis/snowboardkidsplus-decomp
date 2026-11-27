@@ -189,6 +189,11 @@ const u16 gSecondaryDisplayLabel[6]
     0x006D, 0x002C, 0x007F, 0x0110, 0, 0
 };
 
+const TimedSequenceEntry gMenuInputPromptSequence[2]
+    __attribute__((section(".data.menu_input_prompt_sequence"), aligned(4))) = {
+    {0x00090040, 10}, {0x00090041, 10}
+};
+
 TimedSequenceEntry gSecondaryTaskSequenceEntries[6]
     __attribute__((section(".data.secondary_task_sequence"))) = {
     {0x000C0172, 6}, {0x000C0173, 6}, {0x000C0174, 6},
