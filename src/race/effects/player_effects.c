@@ -455,6 +455,17 @@ const TimedSpriteStep gTimedSpriteStepsAtFrame4230[]
     {-1, 0, 0, 0, NULL, 0, 0},
 };
 
+s32 gTimedSpritePrimaryBrightness
+    __attribute__((section(".sdata.timed_sprite_state"))) = 0;
+s32 gTimedSpriteSecondaryBrightness
+    __attribute__((section(".sdata.timed_sprite_state"))) = 0;
+s32 gTimedSpriteInterpolationComplete
+    __attribute__((section(".sdata.timed_sprite_state"))) = 0;
+s32 gFadingTextComplete
+    __attribute__((section(".sdata.timed_sprite_state"))) = 0;
+s32 gTimedSpritePresentationExiting
+    __attribute__((section(".sdata.timed_sprite_state"))) = 0;
+
 s32 gTimedSpritePresentationFrame
     __attribute__((section(".sdata"))) = 0;
 
