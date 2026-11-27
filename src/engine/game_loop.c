@@ -41,16 +41,14 @@ GsOT gPlayer2ModelOrderingTables[2] __attribute__((section(".data.render_state")
 GsOT gPlayer2AlternateLayerOrderingTables[2] __attribute__((section(".data.render_state"))) = {0};
 RECT gViewClipRects[3] __attribute__((section(".data.render_state"))) = {0};
 MATRIX *gScratchModelMatrices[16] __attribute__((section(".data.render_state"))) = {0};
-GsOT D_800EC1B0[2] __attribute__((section(".data.render_state"))) = {0};
-GsOT D_800EC1D8[2] __attribute__((section(".data.render_state"))) = {0};
-u32 D_800EC200[8192] __attribute__((section(".data.render_buffers"))) = {0};
+GsOT gPlayer1DepthOffsetOrderingTables[2] __attribute__((section(".data.render_state"))) = {0};
+GsOT gPlayer2DepthOffsetOrderingTables[2] __attribute__((section(".data.render_state"))) = {0};
+u32 gMainOrderingTableTags[8192] __attribute__((section(".data.render_buffers"))) = {0};
 u32 gPlayerOrderingTableTags[8192] __attribute__((section(".data.render_buffers"))) = {0};
 u32 gPlayer2Buffer1OrderingTableTags[4096] __attribute__((section(".data.render_buffers"))) = {0};
-u8 D_80100200[2][0x10000] __attribute__((section(".data.render_buffers"))) = {0};
+PACKET gGraphicsPacketBuffers[2][0x10000] __attribute__((section(".data.render_buffers"))) = {0};
 
 extern u32 gSynchronizedFrameCount;
-
-void func_8001AB34(void);
 
 void runGameLoop(void) {
     GameTask *nextTask;
@@ -84,17 +82,17 @@ void runGameLoop(void) {
         } else {
             gActiveGraphicsBuffer = (u16)gFrameCounter & 1;
         }
-        GsSetWorkBase((PACKET *)D_80100200[gActiveGraphicsBuffer]);
+        GsSetWorkBase(gGraphicsPacketBuffers[gActiveGraphicsBuffer]);
         GsClearOt(0, 0, &gMainOrderingTables[gActiveGraphicsBuffer]);
         if (!(gGameStateFlags & 0x400) || !((u16)gFrameCounter & 1)) {
             GsClearOt(0, 0, &gPlayer1OrderingTables[gActiveGraphicsBuffer]);
             gCurrentPlayerOrderingTable = gPlayer1OrderingTables[gActiveGraphicsBuffer].org;
-            gCurrentPlayerDepthOffsetOrderingTable = D_800EC1B0[gActiveGraphicsBuffer].org;
+            gCurrentPlayerDepthOffsetOrderingTable = gPlayer1DepthOffsetOrderingTables[gActiveGraphicsBuffer].org;
             gCurrentPlayerAlternateLayerOrderingTable = gPlayer1AlternateLayerOrderingTables[gActiveGraphicsBuffer].org;
         } else {
             GsClearOt(0, 0, &gPlayer2OrderingTables[gActiveGraphicsBuffer]);
             gCurrentPlayerOrderingTable = gPlayer2OrderingTables[gActiveGraphicsBuffer].org;
-            gCurrentPlayerDepthOffsetOrderingTable = D_800EC1D8[gActiveGraphicsBuffer].org;
+            gCurrentPlayerDepthOffsetOrderingTable = gPlayer2DepthOffsetOrderingTables[gActiveGraphicsBuffer].org;
             gCurrentPlayerAlternateLayerOrderingTable = gPlayer2AlternateLayerOrderingTables[gActiveGraphicsBuffer].org;
         }
         gCurrentTask = gGameTasks;
@@ -163,7 +161,7 @@ void runGameLoop(void) {
     }
 }
 
-void func_8001AB34(void) {}
+void emptyVSyncCallback(void) {}
 
 void initializeGameSystems(void) {
     u8 matrixIndex;
@@ -184,12 +182,12 @@ void initializeGameSystems(void) {
     } while (matrixIndex < 16);
     gDisplayWidth = 0x140;
     gDisplayHeight = 0xF0;
-    D_8013AF84 = 0x100;
+    gProjectionDistance = 0x100;
     initializeCdFiles();
     initializeSoundSystem(0);
     startSoundSystem();
     gSynchronizedFrameCount = 0;
-    VSyncCallback(func_8001AB34);
+    VSyncCallback(emptyVSyncCallback);
     ResetGraph(0);
     resetGameplayRng();
     resetPaletteRecords();
@@ -207,16 +205,16 @@ void initializeGameSystems(void) {
     clip->y = 0;
     gMainOrderingTables[1].length = 0xC;
     gMainOrderingTables->length = 0xC;
-    gMainOrderingTables->org = D_800EC200;
-    gMainOrderingTables[1].org = D_800EC200 + 0x1000;
+    gMainOrderingTables->org = gMainOrderingTableTags;
+    gMainOrderingTables[1].org = gMainOrderingTableTags + 0x1000;
     gPlayer1OrderingTables[1].length = 0xC;
     gPlayer1OrderingTables->length = 0xC;
     gPlayer1Layer7OrderingTables[1].length = 0xC;
     gPlayer1Layer7OrderingTables[0].length = 0xC;
     gPlayer1ModelOrderingTables[1].length = 0xC;
     gPlayer1ModelOrderingTables[0].length = 0xC;
-    D_800EC1B0[1].length = 0xC;
-    D_800EC1B0[0].length = 0xC;
+    gPlayer1DepthOffsetOrderingTables[1].length = 0xC;
+    gPlayer1DepthOffsetOrderingTables[0].length = 0xC;
     gPlayer1AlternateLayerOrderingTables[1].length = 0xC;
     gPlayer1AlternateLayerOrderingTables[0].length = 0xC;
     gPlayer1OrderingTables->org = gPlayerOrderingTableTags;
@@ -225,8 +223,8 @@ void initializeGameSystems(void) {
     gPlayer1Layer7OrderingTables[1].org = (u32 *)(gPlayerOrderingTableTags + 0x1007);
     gPlayer1ModelOrderingTables[0].org = (gPlayerOrderingTableTags + 0x1);
     gPlayer1ModelOrderingTables[1].org = (u32 *)(gPlayerOrderingTableTags + 0x1001);
-    D_800EC1B0[0].org = (gPlayerOrderingTableTags + 0x3);
-    D_800EC1B0[1].org = (u32 *)(gPlayerOrderingTableTags + 0x1003);
+    gPlayer1DepthOffsetOrderingTables[0].org = (gPlayerOrderingTableTags + 0x3);
+    gPlayer1DepthOffsetOrderingTables[1].org = (u32 *)(gPlayerOrderingTableTags + 0x1003);
     gPlayer1AlternateLayerOrderingTables[0].org = (gPlayerOrderingTableTags + 0xa);
     gPlayer1AlternateLayerOrderingTables[1].org = (u32 *)(gPlayerOrderingTableTags + 0x100a);
     gPlayer2OrderingTables[1].length = 0xC;
@@ -237,8 +235,8 @@ void initializeGameSystems(void) {
     gPlayer2Layer7OrderingTables[0].length = 0xC;
     gPlayer2ModelOrderingTables[1].length = 0xC;
     gPlayer2ModelOrderingTables[0].length = 0xC;
-    D_800EC1D8[1].length = 0xC;
-    D_800EC1D8[0].length = 0xC;
+    gPlayer2DepthOffsetOrderingTables[1].length = 0xC;
+    gPlayer2DepthOffsetOrderingTables[0].length = 0xC;
     gPlayer2AlternateLayerOrderingTables[1].length = 0xC;
     gPlayer2AlternateLayerOrderingTables[0].length = 0xC;
     gPlayer2OrderingTables[0].org = gPlayerOrderingTableTags;
@@ -247,8 +245,8 @@ void initializeGameSystems(void) {
     gPlayer2Layer7OrderingTables[0].org = (gPlayerOrderingTableTags + 0x7);
     gPlayer2ModelOrderingTables[1].org = (void *)(gPlayer2Buffer1OrderingTableTags + 0x1);
     gPlayer2ModelOrderingTables[0].org = (gPlayerOrderingTableTags + 0x1);
-    D_800EC1D8[0].org = (gPlayerOrderingTableTags + 0x3);
-    D_800EC1D8[1].org = (void *)(gPlayer2Buffer1OrderingTableTags + 0x3);
+    gPlayer2DepthOffsetOrderingTables[0].org = (gPlayerOrderingTableTags + 0x3);
+    gPlayer2DepthOffsetOrderingTables[1].org = (void *)(gPlayer2Buffer1OrderingTableTags + 0x3);
     gPlayer2AlternateLayerOrderingTables[0].org = (gPlayerOrderingTableTags + 0xa);
     gPlayer2AlternateLayerOrderingTables[1].org = (void *)(gPlayer2Buffer1OrderingTableTags + 0xa);
     initPlayerCamera(0U);

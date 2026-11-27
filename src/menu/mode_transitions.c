@@ -183,7 +183,7 @@ void initializeMode11TransitionTask(void) {
 }
 
 void dispatchGameOptionTransitionTask(void) {
-    D_8013AF84 = 0x100;
+    gProjectionDistance = 0x100;
     initPlayerCamera(0);
     initializeDefaultSceneLighting();
     switch (gMenuTransitionState) {

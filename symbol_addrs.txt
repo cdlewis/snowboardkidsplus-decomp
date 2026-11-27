@@ -3569,21 +3569,21 @@ gPlayer2ModelOrderingTables = 0x800EC108; // size:0x28 defined:true
 
 gPlayer2AlternateLayerOrderingTables = 0x800EC130; // size:0x28 defined:true
 
-D_800EC1B0 = 0x800EC1B0; // size:0x28 defined:true
+gPlayer1DepthOffsetOrderingTables = 0x800EC1B0; // size:0x28 defined:true
 
-D_800EC1D8 = 0x800EC1D8; // size:0x28 defined:true
+gPlayer2DepthOffsetOrderingTables = 0x800EC1D8; // size:0x28 defined:true
 
 gViewClipRects = 0x800EC158; // size:0x18 defined:true
 
 gScratchModelMatrices = 0x800EC170; // size:0x40 defined:true
 
-D_800EC200 = 0x800EC200; // size:0x8000 defined:true
+gMainOrderingTableTags = 0x800EC200; // size:0x8000 defined:true
 
 gPlayerOrderingTableTags = 0x800F4200; // size:0x8000 defined:true
 
 gPlayer2Buffer1OrderingTableTags = 0x800FC200; // size:0x4000 defined:true
 
-D_80100200 = 0x80100200; // size:0x20000 defined:true
+gGraphicsPacketBuffers = 0x80100200; // size:0x20000 defined:true
 
 runGameLoop = 0x8001A540; // type:func
 
@@ -4408,3 +4408,6 @@ gScratchMatrix1 = 0x8013AF9C;
 
 gTaskTransitionStates = 0x8012D4A4; // size:0x18
 gColorCycleTasks = 0x8013BDA8; // size:0x10
+
+emptyVSyncCallback = 0x8001AB34; // type:func
+gProjectionDistance = 0x8013AF84; // size:0x4

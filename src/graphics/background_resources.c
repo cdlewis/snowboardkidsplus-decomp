@@ -94,7 +94,7 @@ void initializeBackgroundCameraTask(void) {
     configureTaskStateTransition(11, 0, 30);
     setSecondaryDisplayTaskMode(1);
     queueBackgroundTextureSectorCommands();
-    D_8013AF84 = 400;
+    gProjectionDistance = 400;
     initPlayerCamera(0);
     initializeDefaultSceneLighting();
     createChildTask(scheduleMode2SequenceWhenCdQueueIdle);
@@ -113,7 +113,7 @@ void scheduleBackgroundViewAfterChildTasks(void) {
 
 void initializeViewAndSelectTaskCallback(void) {
     if (gCurrentTask->data1E != 0) {
-        D_8013AF84 = 0x100;
+        gProjectionDistance = 0x100;
         initPlayerCamera(0);
         initializeDefaultSceneLighting();
         if (gDemoRaceIndex != 0) {

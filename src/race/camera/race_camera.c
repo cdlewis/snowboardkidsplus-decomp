@@ -33,7 +33,7 @@ void initPlayerCamera(u16 index) {
     GsRVIEW2 *initialViews;
     PlayerCamera *cameras;
     RacePlayer *players;
-    GsSetProjection(D_8013AF84);
+    GsSetProjection(gProjectionDistance);
     initialViews = gPlayerCameraViews;
     initialView = &initialViews[index];
     initialView->vpx = 0;
