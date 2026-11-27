@@ -257,8 +257,8 @@ void drawTaskVisualPositionHistory(TaskVisualResource *resource, VECTOR *history
                                    TaskVisualFrame *frames);
 void drawPreparedTaskVisualQuad(TaskVisualResource *resource, TaskVisualFrame *frames, u8 mode);
 void prepareTaskVisualQuad(TaskVisualResource *resource, TaskVisualFrame *frame, u8 usePitch);
-extern TaskVisualFrame D_80124304[];
-extern TaskVisualFrame D_80124354[];
+extern TaskVisualFrame gOneShotTaskVisualFrames[4];
+extern TaskVisualFrame gPlayerProjectileVisualFrames[2];
 void drawCameraFacingTaskVisual(TaskVisualResource *resource, u8 mode);
 s16 advanceTaskVisualFrame(TaskVisualResource *resource);
 void setTaskVisualFrame(TaskVisualResource *resource, TaskVisualFrame *frames,

@@ -4448,3 +4448,6 @@ gPcHostTransferErrorFormat = 0x8001232C;
 gPcHostAssetPathFormat = 0x8013B5C8;
 
 gCourseRaceMusicXaCommands = 0x80124164; // size:0x14
+
+gOneShotTaskVisualFrames = 0x80124304; // size:0x20
+gPlayerProjectileVisualFrames = 0x80124354; // size:0x10

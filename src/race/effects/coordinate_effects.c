@@ -149,7 +149,7 @@ void updateOneShotTaskVisual(void) {
         while (1) {}
     }
     resource = (TaskVisualResource *)&gTaskMemoryPool[gCurrentTask->resource14];
-    setTaskVisualFrame(resource, D_80124304, 0x2000);
+    setTaskVisualFrame(resource, gOneShotTaskVisualFrames, 0x2000);
     drawCameraFacingTaskVisual(resource, 1);
     if (!gRacePauseState) {
         if (!advanceTaskVisualFrame(resource)) {
@@ -957,7 +957,7 @@ void updateDualResource4C80EffectTask(void) {
             resource->position.z += dz;
         }
     }
-    drawTaskVisualPositionHistory(resource, history, D_80124354);
+    drawTaskVisualPositionHistory(resource, history, gPlayerProjectileVisualFrames);
     if (gRacePauseState == 0) {
         checkTaskVisualOtherPlayerCollision(resource, 0x80);
         if (resource->unkDC == 0) {
@@ -1025,7 +1025,7 @@ void updateBouncingTaskVisual(void) {
         resource->coordinate.coord.t[1] = resource->position.y >> 8;
         resource->coordinate.coord.t[2] = resource->position.z >> 8;
     }
-    setTaskVisualFrame(resource, D_80124354, 0x1A00);
+    setTaskVisualFrame(resource, gPlayerProjectileVisualFrames, 0x1A00);
     drawCameraFacingTaskVisual(resource, 1);
     if (!gRacePauseState && resource->bounceCount == 2) {
         resource->unkDC = 30;
@@ -1039,7 +1039,7 @@ void updateAcceleratingTaskVisualCountdown(void) {
         while (1) {}
     }
     resource = (TaskVisualResource *)&gTaskMemoryPool[gCurrentTask->resource14];
-    setTaskVisualFrame(resource, D_80124354, 0x1A00);
+    setTaskVisualFrame(resource, gPlayerProjectileVisualFrames, 0x1A00);
     drawCameraFacingTaskVisual(resource, 1);
     if (!gRacePauseState) {
         if (resource->unkDC >= 5) {
