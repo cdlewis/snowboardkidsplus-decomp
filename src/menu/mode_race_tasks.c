@@ -20,7 +20,7 @@ typedef struct Mode11MenuSelection {
 
 extern u8 gModeSequenceStage __attribute__((section(".data")));
 extern u8 gControllerPlaybackIndex __attribute__((section(".data")));
-extern s16 D_8013AFDE __attribute__((section(".data")));
+extern s16 gNextSelectedRecordProgressBonus __attribute__((section(".data")));
 extern u8 gRaceResultCode __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
@@ -249,7 +249,7 @@ void initializeMode1RacePlayers(void) {
         gActiveRacePlayerCount = 4;
     }
     selectedLapCountAbsolute = 5;
-    D_8013AFDE = 100;
+    gNextSelectedRecordProgressBonus = 100;
     for (i = 0; i < 4; i++) {
         gRacePlayers[i].unk025[1] = 0;
         gRacePlayers[i].unk025[2] = 0;

@@ -1303,7 +1303,7 @@ selectRandom:
             gRacePlayers[i].isActive = active;
         }
         activeRacePlayerCountGp = i = 4;
-        D_8013AFDE = 100;
+        gNextSelectedRecordProgressBonus = 100;
     } else {
         for (i = 0; i < 4; i++) {
             if (i < gPlayerCount) {
@@ -1314,7 +1314,7 @@ selectRandom:
         }
         activeRacePlayerCountGp = gPlayerCount;
         gSelectedLapCount = 1;
-        D_8013AFDE = 100;
+        gNextSelectedRecordProgressBonus = 100;
     }
 
     for (i = 0; i < 4; i++) {

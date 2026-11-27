@@ -1976,9 +1976,9 @@ gPlayerCharacterAnimationIndices = 0x800EB09C; // size:0x190
 gCourseObjectRotations = 0x8012A5C0;
 gSelectedGeometryRecordIndex = 0x8013B1FE; // size:0x2
 gSelectedGeometryVertex1 = 0x8013B204; // size:0x4
-D_801208B8 = 0x801208B8; // size:0x1C defined:true
+gCourse4SurfaceMotionEffectTypes = 0x801208B8; // size:0x1C defined:true
 D_801208D4 = 0x801208D4; // size:0x1C defined:true
-D_801208F0 = 0x801208F0; // size:0x1C defined:true
+gCourse5And8SurfaceMotionEffectTypes = 0x801208F0; // size:0x1C defined:true
 D_8012090C = 0x8012090C; // size:0x28 defined:true
 
 // Task memory block indices address the pool and its 256-bit availability bitmap.
@@ -4389,3 +4389,6 @@ gMemoryCardAccessInProgressText = 0x801302BC;
 gSaveRecordConfirmationSprites = 0x801307AC;
 gGroupedCourseMenuTextIndices = 0x8013B43C;
 gSaveRecordSavedOrLoaded = 0x8013B47C;
+
+gNextSelectedRecordProgressBonus = 0x8013AFDE; // size:0x2
+gSelectedGeometryVertex2 = 0x8013B208; // size:0x4

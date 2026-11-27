@@ -79,7 +79,7 @@ s32 hasStateGridFlag(SaveRecord *state, s16 row, s16 column);
 
 s32 getPlayerRecordFlagMode(s16 index);
 
-extern s16 D_8013AFDE;
+extern s16 gNextSelectedRecordProgressBonus;
 
 extern u8 gSaveRecordUnlockOverrideFlags;
 

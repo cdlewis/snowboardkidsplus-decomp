@@ -15,7 +15,7 @@
 
 extern u8 gModeSequenceStage __attribute__((section(".data")));
 extern u8 gControllerPlaybackIndex __attribute__((section(".data")));
-extern s16 D_8013AFDE __attribute__((section(".data")));
+extern s16 gNextSelectedRecordProgressBonus __attribute__((section(".data")));
 extern u8 gRaceResultCode __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u8 gRaceRuleset __attribute__((section(".data")));
@@ -90,7 +90,7 @@ void initializeControllerPlaybackRaceTask(void) {
     player[3].unk01C = 0;
     gActiveRacePlayerCount = 3;
     playerCountAbsolute = 2;
-    D_8013AFDE = 100;
+    gNextSelectedRecordProgressBonus = 100;
     for (; i < 4; i++) {
         player[i].unk025[1] = 0;
         player[i].unk025[2] = 0;

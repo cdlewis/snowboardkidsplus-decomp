@@ -73,7 +73,7 @@ void selectGeometryRecord(s16 index) {
     vertices = gCourseGeometryVertexData;
     gSelectedGeometryVertex0 = &vertices[gCourseGeometryTriangleRecords[index].vertexIndices[0] * 3];
     gSelectedGeometryVertex1 = &vertices[gCourseGeometryTriangleRecords[index].vertexIndices[1] * 3];
-    D_8013B208 = &vertices[gCourseGeometryTriangleRecords[index].vertexIndices[2] * 3];
+    gSelectedGeometryVertex2 = &vertices[gCourseGeometryTriangleRecords[index].vertexIndices[2] * 3];
 }
 
 s32 getCourseHeightAtPoint(s16 index, s32 x, s32 z) {

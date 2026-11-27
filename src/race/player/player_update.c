@@ -48,14 +48,14 @@ extern SelectedRecord *gCourseGeometryTriangleRecords __attribute__((section(".d
 extern s16 gSelectedGeometryRecordIndex __attribute__((section(".data")));
 extern s16 *gSelectedGeometryVertex0 __attribute__((section(".data")));
 extern s16 *gSelectedGeometryVertex1 __attribute__((section(".data")));
-extern s16 *D_8013B208 __attribute__((section(".data")));
+extern s16 *gSelectedGeometryVertex2 __attribute__((section(".data")));
 extern u8 gModeSequenceStage __attribute__((section(".data")));
 extern u8 gControllerPlaybackIndex __attribute__((section(".data")));
 extern u8 gRaceResultCode __attribute__((section(".data")));
 extern s16 gFrameCounter __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u8 gNextRaceFinishSlot __attribute__((section(".data")));
-extern s16 D_8013AFDE __attribute__((section(".data")));
+extern s16 gNextSelectedRecordProgressBonus __attribute__((section(".data")));
 extern VECTOR *gScratchVector0 __attribute__((section(".data")));
 extern SVECTOR *gScratchShortVector0 __attribute__((section(".data")));
 extern MATRIX *gScratchMatrix0 __attribute__((section(".data")));
@@ -175,7 +175,7 @@ u8 gDefaultCourseSurfaceMotionEffectTypes[28] = {
     0, 3, 1, 3, 0, 0, 0, 1, 3, 3, 1, 4, 1, 4, 3, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0
 };
 
-u8 D_801208B8[28] = {
+u8 gCourse4SurfaceMotionEffectTypes[28] = {
     0, 3, 1, 3, 0, 0, 0, 1, 3, 3, 1, 4, 1, 4, 3, 4, 4, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0
 };
 
@@ -183,12 +183,12 @@ u8 D_801208D4[28] = {
     2, 3, 1, 3, 0, 0, 2, 1, 3, 3, 1, 4, 1, 4, 3, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0
 };
 
-u8 D_801208F0[28] = {
+u8 gCourse5And8SurfaceMotionEffectTypes[28] = {
     3, 3, 1, 3, 0, 0, 3, 1, 3, 3, 1, 4, 1, 4, 3, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0
 };
 
 u8 *D_8012090C[10] = {
-    gDefaultCourseSurfaceMotionEffectTypes, gDefaultCourseSurfaceMotionEffectTypes, gDefaultCourseSurfaceMotionEffectTypes, D_801208D4, D_801208B8, D_801208F0, gDefaultCourseSurfaceMotionEffectTypes, gDefaultCourseSurfaceMotionEffectTypes, D_801208F0, gDefaultCourseSurfaceMotionEffectTypes
+    gDefaultCourseSurfaceMotionEffectTypes, gDefaultCourseSurfaceMotionEffectTypes, gDefaultCourseSurfaceMotionEffectTypes, D_801208D4, gCourse4SurfaceMotionEffectTypes, gCourse5And8SurfaceMotionEffectTypes, gDefaultCourseSurfaceMotionEffectTypes, gDefaultCourseSurfaceMotionEffectTypes, gCourse5And8SurfaceMotionEffectTypes, gDefaultCourseSurfaceMotionEffectTypes
 };
 
 
@@ -5106,9 +5106,9 @@ s16 tryStartPlayerSelectedRecordTransition(s16 playerIndex) {
     if (isPlayerNearSelectedRecord(playerIndex)) {
         player = gRacePlayers;
         player[playerIndex].unk128 |= 0x04001020;
-        player[playerIndex].unk966 = D_8013AFDE;
-        if (D_8013AFDE != 0) {
-            D_8013AFDE--;
+        player[playerIndex].unk966 = gNextSelectedRecordProgressBonus;
+        if (gNextSelectedRecordProgressBonus != 0) {
+            gNextSelectedRecordProgressBonus--;
         }
         return 1;
     }
@@ -5242,9 +5242,9 @@ void computeSelectedTriangleNormal(VECTOR *normal) {
     first.vx = gSelectedGeometryVertex1[0] - gSelectedGeometryVertex0[0];
     first.vy = gSelectedGeometryVertex1[1] - gSelectedGeometryVertex0[1];
     first.vz = gSelectedGeometryVertex1[2] - gSelectedGeometryVertex0[2];
-    second.vx = D_8013B208[0] - gSelectedGeometryVertex1[0];
-    second.vy = D_8013B208[1] - gSelectedGeometryVertex1[1];
-    second.vz = D_8013B208[2] - gSelectedGeometryVertex1[2];
+    second.vx = gSelectedGeometryVertex2[0] - gSelectedGeometryVertex1[0];
+    second.vy = gSelectedGeometryVertex2[1] - gSelectedGeometryVertex1[1];
+    second.vz = gSelectedGeometryVertex2[2] - gSelectedGeometryVertex1[2];
     OuterProduct0(&first, &second, normal);
 }
 

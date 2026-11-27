@@ -34,7 +34,7 @@ extern s16 D_8013B1FC;
 extern s16 gSelectedGeometryRecordIndex;
 extern s16 *gSelectedGeometryVertex0;
 extern s16 *gSelectedGeometryVertex1;
-extern s16 *D_8013B208;
+extern s16 *gSelectedGeometryVertex2;
 
 extern s32 gGeometryProjectionBasisX __attribute__((section(".sdata.geometry_edge_projection")));
 extern s32 gGeometryProjectionBasisZ __attribute__((section(".sdata.geometry_edge_projection")));
