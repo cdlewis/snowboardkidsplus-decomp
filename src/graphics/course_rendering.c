@@ -264,7 +264,14 @@ s32 gCourseRenderingDisabled __attribute__((section(".data.course_rendering_disa
 /* Unreferenced words following the rendering gate in the original data. */
 static u32 sCourseRenderingDisabledPadding[3]
     __attribute__((section(".data.course_rendering_disabled"))) = {0};
-extern s16 gBackgroundLensFlareYawOffset, gBackgroundLensFlarePitchOffset;
+s16 gBackgroundLensFlareYawOffset
+    __attribute__((section(".sdata.background_lens_flare_state"))) = 0;
+s16 gBackgroundLensFlarePitchOffset
+    __attribute__((section(".sdata.background_lens_flare_state"))) = -128;
+
+/* Unreferenced words between the lens-flare angles and rotating background frame. */
+static u32 sBackgroundData_8013B230[2]
+    __attribute__((section(".sdata.background_lens_flare_state"))) = {1, 0x8FC};
 
 
 void getCourseSteeringTarget(s16 region, s32 x, s32 z, s32 *targetX, s32 *targetZ,

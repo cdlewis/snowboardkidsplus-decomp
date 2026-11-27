@@ -4425,8 +4425,8 @@ gRacePauseMenuSelection = 0x8013AFD5; // size:0x1 defined:true
 gRaceExitRequested = 0x8013B1AA; // size:0x1
 gRaceRestartRequested = 0x8013B1AB; // size:0x1
 
-gBackgroundLensFlareYawOffset = 0x8013B22C;
-gBackgroundLensFlarePitchOffset = 0x8013B22E;
+gBackgroundLensFlareYawOffset = 0x8013B22C; // type:s16 size:0x2 defined:true
+gBackgroundLensFlarePitchOffset = 0x8013B22E; // type:s16 size:0x2 defined:true
 
 gControllerPlaybackRecords = 0x800E959C; // size:0x1000 defined:true
 gControllerPlaybackRepeatCounters = 0x8013AEE0; // type:u8 size:0x2
@@ -4784,3 +4784,5 @@ sReplayHeldButtonsPadding = 0x8013AFEA; // type:u16 size:0x2 defined:true
 
 D_8013B1DC = 0x8013B1DC; // size:0x10 defined:true
 D_8013B210 = 0x8013B210; // size:0x4 defined:true
+
+sBackgroundData_8013B230 = 0x8013B230; // type:u32 size:0x8 defined:true

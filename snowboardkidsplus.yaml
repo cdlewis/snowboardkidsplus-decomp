@@ -1073,7 +1073,7 @@ segments:
       - {start: 0x12B9EC, type: .sdata, name: race/course/course_geometry, linker_section: .sdata.course_geometry, linker_section_order: .data}
       - {start: 0x12BA0C, type: .data, name: graphics/course_rendering}
       - {start: 0x12BA14, type: .data, name: unclassified/graphics_800497B8, linker_section: .data.debug_position_formats}
-      - [0x12BA2C, data, debug_position_formats_tail]
+      - {start: 0x12BA2C, type: .sdata, name: graphics/course_rendering, linker_section: .sdata.background_lens_flare_state, linker_section_order: .data}
       - {start: 0x12BA38, type: .sdata, name: graphics/course_rendering, linker_section: .sdata.rotating_background_frame, linker_section_order: .data}
       - {start: 0x12BA3C, type: .sdata, name: graphics/course_rendering, linker_section: .sdata.lap_animated_background_frame, linker_section_order: .data}
       - {start: 0x12BA40, type: .data, name: graphics/vram_transfer_rects, linker_section: .data.read_pixel_rect}
