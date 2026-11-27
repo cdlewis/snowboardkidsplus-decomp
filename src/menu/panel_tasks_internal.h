@@ -120,7 +120,6 @@ typedef struct SplitSelectionBoundsConfigs {
 
 extern s16 gMenuTextureResourceId __attribute__((section(".data")));
 extern u8 D_8013B55E;
-extern u8 D_8013B527 __attribute__((section(".data.main_tail_money_currency_label")));
 
 extern s8 gBoardStyleTextBytes[0x38];
 extern u32 gCharacterBoardPrices[50];

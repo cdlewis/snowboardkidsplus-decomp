@@ -34,7 +34,6 @@ extern u8 gDemoRaceIndex __attribute__((section(".data")));
 extern volatile u8 gShopMenuRememberedSelection __attribute__((section(".data")));
 
 extern u8 gSaveRecordSavedOrLoaded __attribute__((section(".data")));
-extern u8 D_8013B527 __attribute__((section(".data")));
 
 RaceTime gDefaultRaceRecordTimes[3][5]
     __attribute__((section(".data.default_race_record_times"), aligned(4))) = {
@@ -1838,7 +1837,7 @@ void initializeNewGameSaveData(void) {
     gShopMenuRememberedSelection = 0;
     boardShopRememberedSelectionAbsolute = 0;
     boardMenuRememberedSelectionAbsolute = 0;
-    D_8013B527 = 0;
+    gRaceRulesetMenuRememberedSelection = 0;
     gRacePlayers[0].unk009 = 0;
     gRacePlayers[0].unk00A[0] = 0;
     gRacePlayers[0].unk00D = 0;

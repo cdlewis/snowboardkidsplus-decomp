@@ -29,17 +29,17 @@ extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern GameTask *gCurrentTaskParent __attribute__((section(".data")));
 
 
-extern ByteMappingDescriptor D_801325FC[];
+extern ByteMappingDescriptor gRaceRulesetCourseMappingGroups[3];
 extern ByteMappingDescriptor D_80132638[];
 extern const u16 *D_801325D0[];
-extern const u16 D_80131F20[];
-extern const u16 D_80131F94[];
-extern const u16 D_80132004[];
-extern const u16 D_80132070[];
+extern const u16 gSinglePlayerTimeAttackHelpText[58];
+extern const u16 gSinglePlayerScoreAttackHelpText[56];
+extern const u16 gSinglePlayerTrickAttackHelpText[54];
+extern const u16 gRaceRulesetMenuBackHelpText[16];
 extern const u16 D_80132090[];
 extern const u16 D_80132104[];
 extern const u16 D_80132178[];
-extern u8 mainTailSelectionGp;
+extern u8 raceRulesetMenuRememberedSelectionGp;
 
 const GridSpriteEntry gMainTailSelectionSprites[4]
     __attribute__((section(".data.main_tail_selection_sprites"), aligned(4))) = {
@@ -51,7 +51,7 @@ const GridSpriteEntry gMainTailSelectionSprites[4]
 
 const u16 *gMainTailSelectionTexts[7]
     __attribute__((section(".data.main_tail_selection_texts"), aligned(4))) = {
-    D_80131F20, D_80131F94, D_80132004, D_80132070,
+    gSinglePlayerTimeAttackHelpText, gSinglePlayerScoreAttackHelpText, gSinglePlayerTrickAttackHelpText, gRaceRulesetMenuBackHelpText,
     D_80132090, D_80132104, D_80132178,
 };
 
@@ -141,8 +141,8 @@ void updateMainTailSelectionMenuTask(void) {
                 mode = 3;
             }
             selection->mode = 0;
-            if (mainTailSelectionGp != 0) {
-                selection->selectedIndex = mainTailSelectionGp - 1;
+            if (raceRulesetMenuRememberedSelectionGp != 0) {
+                selection->selectedIndex = raceRulesetMenuRememberedSelectionGp - 1;
             } else {
                 selection->selectedIndex = 0;
             }
@@ -200,7 +200,7 @@ void updateMainTailSelectionMenuTask(void) {
             gSelectionMenuFadeStarted = complete;
         }
         if (selection->selectedIndex >= 0) {
-            mainTailSelectionGp = selection->selectedIndex + 1;
+            raceRulesetMenuRememberedSelectionGp = selection->selectedIndex + 1;
         }
         if (selection->choiceResult != 0 && (s16)entries[0].flags == 0) {
             if (gSelectionMenuFadeStarted == 0) {
@@ -220,9 +220,9 @@ void updateMainTailSelectionMenuTask(void) {
                 gCurrentTask->data18 = 9;
             }
             if (gCurrentTaskParent->data18 == 6) {
-                mainTailSelectionGp = 0;
+                raceRulesetMenuRememberedSelectionGp = 0;
             } else {
-                mainTailSelectionGp = selection->selectedIndex + 1;
+                raceRulesetMenuRememberedSelectionGp = selection->selectedIndex + 1;
             }
         }
         break;
@@ -263,7 +263,7 @@ void updateMainTailSelectionMenuTask(void) {
         break;
     default: {
         GameTask *parent = gCurrentTaskParent;
-        gRaceRuleset = mainTailSelectionGp - 1;
+        gRaceRuleset = raceRulesetMenuRememberedSelectionGp - 1;
         parent->data1C--;
         deleteCurrentTaskSubtree();
         break;
@@ -314,15 +314,15 @@ void drawMainTailSelectionHeaderAndMoneyPanel(void) {
 
 char gMainTailMoneyCurrencyLabel[3] __attribute__((section(".data.main_tail_money_currency_label"), aligned(4))) = "\x82" "f";
 /* This byte immediately follows the three-byte currency label in the image. */
-u8 D_8013B527 __attribute__((section(".data.main_tail_money_currency_label"))) = 0;
+u8 gRaceRulesetMenuRememberedSelection __attribute__((section(".data.main_tail_money_currency_label"))) = 0;
 
 void initializeSelectionIndexedDualResourceTask(void) {
     GameTask *task = gCurrentTask;
     task->data18 = 0;
-    if (D_8013B527 != 0) {
-        task->data1A = D_8013B527 - 1;
+    if (gRaceRulesetMenuRememberedSelection != 0) {
+        task->data1A = gRaceRulesetMenuRememberedSelection - 1;
     } else {
-        task->data1A = D_8013B527;
+        task->data1A = gRaceRulesetMenuRememberedSelection;
     }
     gCurrentTaskParent->data1C++;
     if (gCurrentTask->resource14 != 0xFFFF) {
@@ -370,7 +370,7 @@ void updateSelectionIndexedMenuTask(void) {
         if (gCurrentTask->data1A == 0 && players == 2) {
             group = &D_80132638[gCurrentTask->data1A];
         } else {
-            group = &D_801325FC[gCurrentTask->data1A];
+            group = &gRaceRulesetCourseMappingGroups[gCurrentTask->data1A];
         }
         selection->mode = 0;
         selectedIndex = findIdentityMappedIndexOrZero(group, selectedCourseMenuItemAbsolute);
@@ -452,7 +452,7 @@ void updateSelectionIndexedMenuTask(void) {
         break;
     case 5: {
         GameTask *task = gCurrentTask;
-        group = &D_801325FC[task->data1A];
+        group = &gRaceRulesetCourseMappingGroups[task->data1A];
         selectedIndex = selection->selectedIndex;
         if (group->mapping[selectedIndex] == 10) {
             GameTask *parent = gCurrentTaskParent;
@@ -793,7 +793,7 @@ void drawMainTailSelectionItemDetails(void) {
     }
     drawSpriteByIndexWithBlend(position->x / 4096 + 8, position->y / 4096 - 22,
                  0xB3, 0, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
-    group = &D_801325FC[gCurrentTaskParent->data1A];
+    group = &gRaceRulesetCourseMappingGroups[gCurrentTaskParent->data1A];
     index = mapMenuByteIndex(group->mapping, selection->selectedIndex);
     if ((u16)index >= 10) {
         return;

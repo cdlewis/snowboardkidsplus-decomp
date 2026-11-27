@@ -16,6 +16,9 @@ extern u16 gUnlockNotificationFlags __attribute__((section(".data")));
 extern u32 gGameOptionFlags;
 extern u8 gPlayerCount;
 extern u8 gRaceRuleset;
+/* One-based ruleset menu choice; zero starts at the first entry. */
+extern u8 gRaceRulesetMenuRememberedSelection
+    __attribute__((section(".data.main_tail_money_currency_label")));
 extern u8 gRaceResultCode;
 extern u8 gMainMenuSelectionIndex;
 extern u8 gTitleMenuResourcesInitialized;
