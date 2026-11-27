@@ -4,6 +4,10 @@
 u32 gGameOptionFlags __attribute__((section(".data"))) = 0x3E;
 u16 gUnlockNotificationFlags = 0;
 static u16 sUnlockNotificationPadding __attribute__((section(".data"))) = 0;
+s16 gCourseRaceMusicXaCommands[10]
+    __attribute__((section(".data.course_race_music_xa_commands"))) = {
+        8, 9, 10, 11, 5, 12, 13, 15, 14, 4
+    };
 
 extern u8 gModeSequenceStage __attribute__((section(".data")));
 extern u8 gMainMenuSelectionIndex __attribute__((section(".data")));
