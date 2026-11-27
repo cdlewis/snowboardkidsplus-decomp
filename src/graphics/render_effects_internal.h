@@ -704,7 +704,8 @@ typedef struct TimedSpriteSequenceResource {
 } TimedSpriteSequenceResource;
 
 extern const s8 gDoubleByteGlyphCodes16x16Page0[196];
-extern const s8 D_8012ECC8[], D_8012EECC[], D_8012F0D0[];
+extern const s8 gDoubleByteGlyphCodes16x16Page1[0x204];
+extern const s8 D_8012EECC[], D_8012F0D0[];
 
 extern const FadingTextGlyphBanks gFadingTextGlyphBanks
     __attribute__((section(".rodata.fading_text_glyph_banks")));
@@ -885,8 +886,8 @@ extern s32 gQuadTransitionFrame;
 extern s32 gTimedSpritePrimaryBrightness;
 extern s32 gTimedSpriteSecondaryBrightness;
 extern s32 gTimedSpriteInterpolationComplete;
-extern s32 D_8013B368;
-extern s32 D_8013B36C;
+extern s32 gFadingTextComplete;
+extern s32 gTimedSpritePresentationExiting;
 extern u32 gAdaptiveModelSavedStackPointer;
 extern u32 gProjectedModelSavedStackPointer;
 extern u32 gModelPrimitiveCount;
@@ -1140,7 +1141,6 @@ void startPrimaryValueTransition(s32 duration, s32 start, s32 end);
 void startValueInterpolationTask(s32 duration, s32 start, s32 end);
 void createFullScreenSpriteTask(s32 duration, s32 tpage, u16 clut, u16 u, u16 v,
                   const s32 *brightness);
-void *getOffsetArchiveEntry(OffsetArchive *archive, s32 index);
 void uploadTimImageAndPaletteAt(u32 *tim, s32 x, s32 y, s32 clutX, s32 clutY);
 void createFadingTextTask(s32 duration, s32 x, s32 y, const char *text, s32 palette);
 void finishTimedSpriteSequence(void);

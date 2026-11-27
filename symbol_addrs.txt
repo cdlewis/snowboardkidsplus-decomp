@@ -4437,3 +4437,7 @@ gCoursePlacementPrizes = 0x8012FC6C; // size:0x78
 
 gLapSplitTime = 0x8013B188; // type:RaceTime size:0x4
 gLapSplitTimeCaptured = 0x8013B18C; // size:0x1
+
+gDoubleByteGlyphCodes16x16Page1 = 0x8012ECC8; // size:0x204
+gFadingTextComplete = 0x8013B368; // size:0x4
+gTimedSpritePresentationExiting = 0x8013B36C; // size:0x4

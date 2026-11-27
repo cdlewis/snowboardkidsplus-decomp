@@ -1429,7 +1429,7 @@ void drawDoubleByteGlyph16x16(s16 x, s16 y, s16 unusedWidth, s16 unusedHeight, c
     TextureRegionSet *texture;
 
     first = gDoubleByteGlyphCodes16x16Page0;
-    second = D_8012ECC8;
+    second = gDoubleByteGlyphCodes16x16Page1;
     third = D_8012EECC;
     offset = 0;
     /* The first two tables determine when the glyph search ends. */

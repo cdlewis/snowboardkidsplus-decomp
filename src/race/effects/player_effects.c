@@ -277,7 +277,7 @@ const VECTOR gInitialRaceOscillatingQuadPosition
 
 const FadingTextGlyphBanks gFadingTextGlyphBanks
     __attribute__((section(".rodata.fading_text_glyph_banks"))) = {
-    {gDoubleByteGlyphCodes16x16Page0, D_8012ECC8, D_8012EECC, D_8012F0D0}
+    {gDoubleByteGlyphCodes16x16Page0, gDoubleByteGlyphCodes16x16Page1, D_8012EECC, D_8012F0D0}
 };
 
 /* Shift-JIS captions with the original four-byte padding. */
@@ -3542,10 +3542,10 @@ void updateFadingTextTask(void) {
         resource->brightness = 255;
     }
     drawFadingText(resource);
-    D_8013B368 = 0;
+    gFadingTextComplete = 0;
     if (++resource->elapsed == resource->duration) {
         deleteCurrentTaskSubtree();
-        D_8013B368 = 1;
+        gFadingTextComplete = 1;
     }
 }
 
@@ -3733,14 +3733,14 @@ void updateTimedSpritePresentation(void) {
     }
 
     if (frame == 4950 || (gControllerPressedButtons[0] & PRESENTATION_SKIP_BUTTON)) {
-        D_8013B36C = 1;
+        gTimedSpritePresentationExiting = 1;
         gCurrentTask->data18 = 0;
         deleteCurrentTaskDescendants();
         startPrimaryValueTransition(30, (s16)gTimedSpritePrimaryBrightness, 0);
         startValueInterpolationTask(30, (s16)gTimedSpriteSecondaryBrightness, 0);
         setCurrentTaskCallback(finishTimedSpritePresentation);
     } else {
-        D_8013B368 = 0;
+        gFadingTextComplete = 0;
         gTimedSpriteInterpolationComplete = 0;
         gCurrentTask->data18++;
     }
@@ -3752,8 +3752,8 @@ void initializeTimedSpritePresentation(void) {
     gTimedSpritePrimaryBrightness = 0;
     gTimedSpriteSecondaryBrightness = 0;
     gTimedSpriteInterpolationComplete = 0;
-    D_8013B368 = 0;
-    D_8013B36C = 0;
+    gFadingTextComplete = 0;
+    gTimedSpritePresentationExiting = 0;
     gCurrentTask->data18 = 0;
     setCurrentTaskCallback(updateTimedSpritePresentation);
 }
