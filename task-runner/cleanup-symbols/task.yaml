@@ -1,0 +1,35 @@
+candidate_source: python3 tools/task_candidates.py cleanup-symbols
+prompt: >-
+  Review and clean up this related group of symbol addresses: $INPUT.
+  Follow AGENTS.md and .agents/skills/psx-rename-symbol/SKILL.md.
+  Start with a green ./tools/build-and-verify.sh. Resolve the current names
+  from symbol_addrs.txt and regenerated assembly (some address-based labels
+  may not yet have explicit entries). Run
+  python3 tools/task_candidates.py cleanup-symbols --symbol-details
+  for candidate reasons and C source context. Inspect the group together:
+  shared consumers, callers, declarations, definitions, assembly accesses,
+  and nearby data or functions. Infer meaningful names, accurate parameter,
+  return and global types, array shapes, or shared struct layouts where
+  evidence supports them. Reuse canonical declarations and remove redundant
+  or inconsistent ones. Preserve legitimate generic pointers and leave
+  uncertain symbols unchanged; do not invent meanings or rename merely to
+  make a candidate disappear. For SDK symbols consult the SDK references.
+  Preserve all original addresses, storage ownership, sizes, alignment,
+  attributes, calling conventions and instruction bytes. Update the symbol
+  map, source, headers, live INCLUDE_ASM names and other authored references
+  together; never edit generated assembly or linker outputs. Do not attempt
+  unrelated decompilation or data migration. Work through as many group
+  members as evidence and time allow. Verify changes with
+  ./tools/build-and-verify.sh --expected --objects --non-matching and check
+  every affected consumer and remaining reference to old names. Fix any
+  mismatches before committing. Commit verified improvements yourself using
+  ./tools/install-git-hooks.sh and the tracked validation hook. Report each
+  address with its old and new name/type, evidence, or reason for leaving
+  it unchanged, and include the commit hash if changes were made.
+agent: codex
+accept_best_effort: true
+success_command: >-
+  ./tools/build-and-verify.sh --expected --objects --non-matching &&
+  ./tools/install-git-hooks.sh &&
+  git add -A && git commit -m "Clean up related symbol names and types"
+timeout: 45m

@@ -12,6 +12,7 @@ from tempfile import NamedTemporaryFile
 from decomp import ROOT, WORD, Elf32, active_functions, require_fresh
 from build import get_settings
 from progress_attempts import MARKER, read_attempts
+from symbol_cleanup_candidates import cleanup_groups
 from rank_library_functions import complexity, print_ranking, project_ranking, source_definition
 
 
@@ -215,12 +216,14 @@ def is_c_candidate(function):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("task", choices=("decompile-similar", "decompile-unmatched",
-                                         "decompile-library", "decompile-duos"))
+                                         "decompile-library", "decompile-duos", "cleanup-symbols"))
     parser.add_argument("--limit", type=int, help="limit candidates; default: all")
     parser.add_argument("--references", metavar="FUNCTION",
                         help="show the matched C references for a decompile-similar candidate")
     parser.add_argument("--duo-status", action="store_true",
                         help="show the current source and match status for each decompile-duos member")
+    parser.add_argument("--symbol-details", action="store_true",
+                        help="show names, reasons, and source context for cleanup-symbols")
     args = parser.parse_args()
     if args.limit is not None and args.limit < 1:
         parser.error("limit must be positive")
@@ -235,6 +238,15 @@ def main():
             print_ranking([dict(row, rank=1)], limit=1)
         else:
             print(f"No ranked references for {args.references}.")
+        return
+
+    if args.symbol_details and args.task != "cleanup-symbols":
+        parser.error("--symbol-details requires cleanup-symbols")
+    if args.task == "cleanup-symbols":
+        groups = cleanup_groups()[:args.limit]
+        results = groups if args.symbol_details else [
+            [member["address"] for member in group] for group in groups]
+        print(json.dumps(results, indent=2))
         return
 
     require_fresh()
