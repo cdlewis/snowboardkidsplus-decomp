@@ -84,6 +84,16 @@ const GridSpriteEntry gTitleMenuSprites[6]
     {0x57, 8, 0, 0},
 };
 
+u8 gTitleMenuResourcesInitialized
+    __attribute__((section(".sdata.title_menu_resources_initialized"))) = 0;
+
+static u8 sTitleMenuResourcesInitializedPadding0
+    __attribute__((section(".sdata.title_menu_resources_initialized"))) = 0;
+static u8 sTitleMenuResourcesInitializedPadding1
+    __attribute__((section(".sdata.title_menu_resources_initialized"))) = 0;
+static u8 sTitleMenuResourcesInitializedPadding2
+    __attribute__((section(".sdata.title_menu_resources_initialized"))) = 0;
+
 const u8 gTitleMenuSpriteMapping[8]
     __attribute__((section(".data.title_menu_sprite_mapping"), aligned(4))) = {
     0, 1, 2, 3, 4, 5,
