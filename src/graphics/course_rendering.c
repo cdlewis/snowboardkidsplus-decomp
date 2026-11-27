@@ -232,6 +232,9 @@ GsCOORDINATE2 gCourseModelCoordinate __attribute__((section(".data.course_model_
 
 TmdObject *gOptionalCourseModels[7] __attribute__((section(".data.optional_course_models"))) = {0};
 
+/* Unreferenced zero-filled storage between optional models and position buffers. */
+u8 gCourseRenderingReserved25060[0x8C] __attribute__((aligned(4), section(".data.course_rendering_reserved_25060"))) = {0};
+
 Position3D *gCourseModelPositionBuffers[10] __attribute__((section(".data.course_model_position_buffers"))) = {
     gCourseModelPositionSector.positions, gCourseModelPositionSector.positions,
     gCourseModelPositionSector.positions, gCourseModelPositionSector.positions,

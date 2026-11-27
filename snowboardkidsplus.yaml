@@ -791,7 +791,7 @@ segments:
       - {start: 0x1157D4, type: .data, name: graphics/course_rendering, linker_section: .data.course_rendering_reserved_24fd4}
       - {start: 0x1157F4, type: .data, name: graphics/course_rendering, linker_section: .data.course_model_coordinate}
       - {start: 0x115844, type: .data, name: graphics/course_rendering, linker_section: .data.optional_course_models}
-      - [0x115860, data, optional_course_models_tail]
+      - {start: 0x115860, type: .data, name: graphics/course_rendering, linker_section: .data.course_rendering_reserved_25060}
       - {start: 0x1158EC, type: .data, name: graphics/course_rendering, linker_section: .data.course_model_position_buffers}
       - {start: 0x115914, type: .data, name: race/course/course_objects, linker_section: .data.course_sector_resources}
       - [0x1161DC, data, course_sector_resources_tail]
