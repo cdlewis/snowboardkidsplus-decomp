@@ -13,6 +13,7 @@
 #include "game/io/memory_card.h"
 #include "game/io/controller.h"
 #include "game/race/player/race_player.h"
+#include "game/race/player/player_model_parts.h"
 #include "game/engine/game_options.h"
 #include "game/menu/selected_records.h"
 #include "psx/libsnd.h"
@@ -58,21 +59,6 @@ typedef struct SavedImageEntry {
     u16 transitionPixels[16];
 } SavedImageEntry;
 
-extern u8 D_80120200[16] __attribute__((section(".data.player_model_parts")));
-
-extern u8 D_80120210[16] __attribute__((section(".data.player_model_parts")));
-
-extern s16 D_80120220[42] __attribute__((section(".data.player_model_parts")));
-
-extern s16 D_80120274[42] __attribute__((section(".data.player_model_parts")));
-
-extern s16 D_801202C8[42] __attribute__((section(".data.player_model_parts")));
-
-extern s16 D_8012031C[42] __attribute__((section(".data.player_model_parts")));
-
-extern s16 D_80120370[42] __attribute__((section(".data.player_model_parts")));
-
-extern s16 *D_801203C4[10] __attribute__((section(".data.player_model_parts")));
 extern RacePlayerVector gPlayerAnimationPose[12] __attribute__((section(".data.player_animation_pose"), aligned(4)));
 
 /* Nine bank flags with the original three trailing padding bytes. */

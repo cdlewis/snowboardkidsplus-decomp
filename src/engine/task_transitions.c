@@ -216,10 +216,10 @@ void initCurrentPlayerModelParts(void) {
     s16 *values;
     RacePlayer *player;
     for (i = 0; i < 14; i++) {
-        currentPlayerAbsolute->unk13E[i] = D_80120200[i];
-        currentPlayerAbsolute->unk14C[i] = D_80120210[i];
+        currentPlayerAbsolute->unk13E[i] = gPlayerModelPartParents[i];
+        currentPlayerAbsolute->unk14C[i] = gPlayerModelPartMirrorIndices[i];
     }
-    values = D_801203C4[currentPlayerAbsolute->characterId];
+    values = gPlayerCharacterModelPartOffsets[currentPlayerAbsolute->characterId];
     player = currentPlayerAbsolute;
     for (i = 0; i < 14; i++) {
         player->unk5BC[i].x = player->unk5BC[i].y = player->unk5BC[i].z = 0;

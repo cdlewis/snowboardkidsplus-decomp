@@ -10,11 +10,7 @@
 #include "psx/libc.h"
 
 #include "game/io/movie_stream.h"
-
-extern u8 D_80120200[16];
-extern u8 D_80120210[16];
-extern s16 *D_801203C4[10];
-
+#include "game/race/player/player_model_parts.h"
 
 extern s16 gMemoryCardTaskState;
 extern s16 gSelectedCourseMenuItem;

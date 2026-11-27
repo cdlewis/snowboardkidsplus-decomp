@@ -8,36 +8,37 @@
 extern VECTOR *gScratchVector0 __attribute__((section(".data")));
 extern SVECTOR *gScratchShortVector0 __attribute__((section(".data")));
 
-u8 D_80120200[16] __attribute__((section(".data.player_model_parts"))) = {
+u8 gPlayerModelPartParents[16] __attribute__((section(".data.player_model_parts"))) = {
     255, 0, 1, 2, 1, 4, 1, 6, 6, 8, 6, 10, 0, 0, 0, 0
 };
 
-u8 D_80120210[16] __attribute__((section(".data.player_model_parts"))) = {
+u8 gPlayerModelPartMirrorIndices[16] __attribute__((section(".data.player_model_parts"))) = {
     0, 1, 4, 5, 2, 3, 6, 7, 10, 11, 8, 9, 0, 0, 0, 0
 };
 
-s16 D_80120220[42] __attribute__((section(".data.player_model_parts"))) = {
+/* Fourteen XYZ triples; initialization reverses the Y and Z signs. */
+s16 gPlayerModelPartOffsets0[42] __attribute__((section(".data.player_model_parts"))) = {
     0, 0, 0, 0, 40, 0, -6, -3, 0, 0, -12, 0, 6, -3, 0, 0, -12, 0, 0, 3, 0, 0, 16, 0, -12, 12, 0, 0, -17, 0, 12, 12, 0, 0, -17, 0, -15, 11, 0, 15, 11, 0
 };
 
-s16 D_80120274[42] __attribute__((section(".data.player_model_parts"))) = {
+s16 gPlayerModelPartOffsets1[42] __attribute__((section(".data.player_model_parts"))) = {
     0, 0, 0, 0, 40, 0, -6, -3, 0, 0, -12, 0, 6, -3, 0, 0, -12, 0, 0, 3, 0, 0, 14, 0, -10, 12, 0, 0, -17, 0, 10, 12, 0, 0, -17, 0, -15, 11, 0, 15, 11, 0
 };
 
-s16 D_801202C8[42] __attribute__((section(".data.player_model_parts"))) = {
+s16 gPlayerModelPartOffsets2[42] __attribute__((section(".data.player_model_parts"))) = {
     0, 0, 0, 0, 50, 0, -8, -8, 0, 0, -16, 0, 8, -8, 0, 0, -16, 0, 0, 5, 0, 0, 31, 0, -24, 24, 0, 0, -28, 0, 24, 24, 0, 0, -28, 0, -17, 13, 0, 17, 13, 0
 };
 
-s16 D_8012031C[42] __attribute__((section(".data.player_model_parts"))) = {
+s16 gPlayerModelPartOffsets3[42] __attribute__((section(".data.player_model_parts"))) = {
     0, 0, 0, 0, 40, 0, -6, -3, 0, 0, -12, 0, 6, -3, 0, 0, -12, 0, 0, 3, 0, 0, 16, 0, -12, 12, 0, 0, -17, 0, 12, 12, 0, 0, -17, 0, -10, 11, 0, 10, 11, 0
 };
 
-s16 D_80120370[42] __attribute__((section(".data.player_model_parts"))) = {
+s16 gPlayerModelPartOffsets4[42] __attribute__((section(".data.player_model_parts"))) = {
     0, 0, 0, 0, 40, 0, -6, -3, 0, 0, -12, 0, 6, -3, 0, 0, -12, 0, 0, 3, 0, 0, 15, 0, -10, 12, 0, 0, -17, 0, 10, 12, 0, 0, -17, 0, -15, 11, 0, 15, 11, 0
 };
 
-s16 *D_801203C4[10] __attribute__((section(".data.player_model_parts"))) = {
-    D_80120220, D_80120274, D_80120220, D_80120370, D_801202C8, D_80120220, D_80120220, D_801202C8, D_8012031C, D_8012031C
+s16 *gPlayerCharacterModelPartOffsets[10] __attribute__((section(".data.player_model_parts"))) = {
+    gPlayerModelPartOffsets0, gPlayerModelPartOffsets1, gPlayerModelPartOffsets0, gPlayerModelPartOffsets4, gPlayerModelPartOffsets2, gPlayerModelPartOffsets0, gPlayerModelPartOffsets0, gPlayerModelPartOffsets2, gPlayerModelPartOffsets3, gPlayerModelPartOffsets3
 };
 
 RacePlayerVector gPlayerAnimationPose[12] __attribute__((section(".data.player_animation_pose"), aligned(4))) = {0};
