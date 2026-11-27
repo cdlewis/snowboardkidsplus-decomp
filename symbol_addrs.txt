@@ -1362,10 +1362,10 @@ sSpuReverbStartAddressPadding = 0x80132F1C; // size:0x8 defined:true
 _spu_zerobuf = 0x80132F44; // size:0x400
 // PSY-Q 4.7: LIBCD.LIB/ISO9660.OBJ
 CD_nopen = 0x801349CC; // defined:true
-// PSY-Q 4.7: LIBGTE.LIB/MSC01.OBJ
-SQRT = 0x801355FC;
-// PSY-Q 4.0: LIBGTE.LIB/FGO_01.OBJ
-rcossin_tbl = 0x8013577C;
+// PSY-Q 4.2: LIBGTE.LIB/SQRTBL.OBJ
+SQRT = 0x801355FC; // size:0x180
+// PSY-Q 4.2: LIBGTE.LIB/CSTBL.OBJ
+rcossin_tbl = 0x8013577C; // size:0x4000
 // PSY-Q 4.7: LIBSND.LIB/MIDICC.OBJ
 SsFCALL = 0x8013BE70; // size:0x94 defined:true
 // PSY-Q 4.7: LIBSND.LIB/SSCALL.OBJ

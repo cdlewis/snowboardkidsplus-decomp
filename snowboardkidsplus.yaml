@@ -975,7 +975,8 @@ segments:
       - {start: 0x12558C, type: .data, name: syslib/libcd/c_010, linker_section: .data.stream_set_mask_registers}
       - [0x12559C, lib, libcd, c_011, .data]
       - [0x1255EC, .data, syslib/libgte/sincos]
-      - [0x125DFC, data]
+      - [0x125DFC, .data, syslib/libgte/sqrtbl]
+      - [0x125F7C, .data, syslib/libgte/cstbl]
       - [0x129F7C, lib, libgs, 2d_bg0, .data]
       - [0x129F8C, lib, libgs, gs_001, .data]
       - [0x129F9C, lib, libgte, mtx_006, .data]
