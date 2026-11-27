@@ -800,8 +800,7 @@ segments:
       - {start: 0x119C7C, type: .data, name: race/course/course_objects, linker_section: .data.pickup_visual_frames}
       - {start: 0x119CAC, type: .data, name: race/course/course_objects, linker_section: .data.course_visual_frames}
       - {start: 0x119DA0, type: .data, name: race/course/course_objects, linker_section: .data.placed_object_model_ids}
-      - [0x119DB0, data, course_visual_settings]
-      - {start: 0x119EA0, type: .data, name: race/course/course_objects, linker_section: .data.visual_placement_heights}
+      - {start: 0x119DB0, type: .data, name: race/course/course_objects, linker_section: .data.course_visual_settings}
       - {start: 0x119EC4, type: .data, name: race/course/course_objects, linker_section: .data.placed_object_reward_choices}
       - {start: 0x119F44, type: .data, name: race/course/course_objects, linker_section: .data.proximity_emitter_placements}
       - {start: 0x119F64, type: .data, name: race/course/course_objects, linker_section: .data.moving_visual_frames}

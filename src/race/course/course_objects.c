@@ -32,6 +32,15 @@
 #define PLACEMENT_END 0xFF
 #define PLACEMENT_FLAG_COLLECTED 0x40
 
+/* Retained descriptors parallel the frame and animation settings below;
+ * no live code references this table. */
+typedef struct CourseVisualSettings {
+    TaskVisualFrame *frames;
+    u16 frameCount;
+    s16 frameStep;
+    s32 scale;
+} CourseVisualSettings;
+
 typedef struct PlacedObjectBounceVisual {
     GsCOORDINATE2 coordinate;
     u8 unk50[0x24];
@@ -1229,13 +1238,6 @@ TaskVisualFrame *gCourseVisualFramesByPlacementType[13]
     gCourse2VisualFrames,
 };
 
-struct VisualPlacementHeightData gVisualPlacementHeightData __attribute__((section(".data.visual_placement_heights"))) = {
-    0,
-    {0, 56, 88, 96, -16, -40, -64, -88,
-     -112, -136, -160, -184, -208, -232, -256, -280},
-    0
-};
-
 CourseSectorRange gCourseResourceSectors[10][3] __attribute__((section(".data.course_sector_resources"))) = {
     {
         {DAT_COURSE_0_RESOURCE_0_SECTOR, DAT_COURSE_0_RESOURCE_0_SECTOR_COUNT},
@@ -1286,6 +1288,39 @@ CourseSectorRange gCourseResourceSectors[10][3] __attribute__((section(".data.co
         {DAT_COURSE_9_RESOURCE_0_SECTOR, DAT_COURSE_9_RESOURCE_0_SECTOR_COUNT},
         {DAT_COURSE_9_RESOURCE_1_SECTOR, DAT_COURSE_9_RESOURCE_1_SECTOR_COUNT},
         {DAT_COURSE_9_RESOURCE_2_SECTOR, DAT_COURSE_9_RESOURCE_2_SECTOR_COUNT},
+    }
+};
+
+CourseVisualSettings gCourseVisualSettings[17]
+    __attribute__((section(".data.course_visual_settings"), aligned(4))) = {
+    {gPickupVisualFrames, 6, 0x80, 0x1800},
+    {&gObjectVisualFrameType8, 1, 0, 0x3800},
+    {&gObjectVisualFrameType9, 1, 0, 0x3800},
+    {&gInteractionVisualFrame, 1, 0, 0x2000},
+    {gDefaultCourseVisualFrames, 2, 0x40, 0x2000},
+    {gCourseVisualFramesType12, 2, 0x40, 0x2000},
+    {gCourseVisualFramesType13, 2, 0x40, 0x2000},
+    {gCourseVisualFramesType14, 2, 0x40, 0x2000},
+    {gCourseVisualFramesType15, 2, 0x40, 0x2000},
+    {gCourseVisualFramesType16, 2, 0x40, 0x2000},
+    {gCourseVisualFramesType17, 2, 0x40, 0x2000},
+    {gCourseVisualFramesType18, 2, 0x40, 0x2000},
+    {gCourseVisualFramesType19, 2, 0x40, 0x2000},
+    {gCourseVisualFramesType20, 2, 0x40, 0x2000},
+    {gCourseVisualFramesType21, 2, 0x40, 0x2000},
+    {gCourseVisualFramesType22, 2, 0x40, 0x2000},
+    {gCourse2VisualFrames, 1, 0, 0x4000},
+};
+
+CourseVisualPacketData gCourseVisualPacketData
+    __attribute__((section(".data.course_visual_settings"), aligned(4))) = {
+    .layout = {
+        {0x09000000, 0x80, 0x80, 0x80, POLY_FT4_CODE,
+         0, 0, 0, 0, getClut(1008, 240),
+         0, 0, 0, 0, getTPage(0, 1, 768, 256),
+         0, 0, 0, 0, 0, 0, 0},
+        {0, {0, 56, 88, 96, -16, -40, -64, -88,
+             -112, -136, -160, -184, -208, -232, -256, -280}, 0}
     }
 };
 

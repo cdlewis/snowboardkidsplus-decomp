@@ -731,12 +731,35 @@ extern TexturedSpritePacket gScreenCopyPlusBuffer0[2] __attribute__((section(".d
 extern TexturedSpritePacket gScreenCopyMinusBuffer1[2] __attribute__((section(".data.offset_screen_copy_sprites")));
 extern TexturedSpritePacket gScreenCopyMinusBuffer0[2] __attribute__((section(".data.offset_screen_copy_sprites")));
 
-extern struct VisualPlacementHeightData gVisualPlacementHeightData __attribute__((section(".data.visual_placement_heights")));
+/* The quad's final UV/padding word overlaps the height table prefix. */
+typedef union CourseVisualPacketData {
+    POLY_FT4 quad;
+    struct {
+        struct {
+            u32 tag;
+            u8 r0, g0, b0, code;
+            s16 x0, y0;
+            u8 u0, v0;
+            u16 clut;
+            s16 x1, y1;
+            u8 u1, v1;
+            u16 tpage;
+            s16 x2, y2;
+            u8 u2, v2;
+            u16 pad1;
+            s16 x3, y3;
+        } packetPrefix;
+        struct VisualPlacementHeightData heights;
+    } layout;
+} CourseVisualPacketData;
+
+extern CourseVisualPacketData gCourseVisualPacketData;
+#define gTaskVisualQuad (gCourseVisualPacketData.quad)
+#define gVisualPlacementHeightData (gCourseVisualPacketData.layout.heights)
 
 extern SVECTOR *gModelVertices __attribute__((section(".sdata")));
 extern SVECTOR *gScratchShortVector0 __attribute__((section(".data")));
 extern MATRIX gCameraYawMatrix, gCameraPitchYawMatrix;
-extern POLY_FT4 gTaskVisualQuad;
 typedef struct PairedEffectResource {
     u8 unk00[0x20];
     VECTOR positions[2];

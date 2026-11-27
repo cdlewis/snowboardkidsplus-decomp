@@ -68,7 +68,6 @@ drawProjectedIndexedTexturedQuad = 0x80057D84; // type:func
 drawPaletteBurstTask = 0x8009B700; // type:func
 gPaletteBurstVertices = 0x80131EC8; // type:SVECTOR size:0x20 defined:true
 spawnPaletteBurstTask = 0x8009BB68; // type:func
-gVisualPlacementHeightData = 0x801296A0; // size:0x24 defined:true
 updateCourseVisualTask = 0x8005BA8C; // type:func
 drawTimeRecordListRows = 0x800398F4; // type:func
 initializePlacedObjectTask = 0x8005BC70; // type:func
@@ -4341,7 +4340,7 @@ gCdCommandReadIndex = 0x8013AE50; // size:0x2 defined:true
 gXaPositionPollCount = 0x8013AE54; // size:0x4 defined:true
 gCdCommandActive = 0x8013AE78; // size:0x2 defined:true
 
-gTaskVisualQuad = 0x8012967C; // size:0x24
+gCourseVisualPacketData = 0x8012967C; // size:0x48 defined:true
 gSelectedPlayerTaskSnapshots = 0x8013B2E4; // size:0x4
 
 GsSetWorkBase = 0x800BF2C8; // type:func defined:true
@@ -4586,3 +4585,5 @@ gCourseVisualFramesType19 = 0x8012952C; // size:0x10 defined:true
 gCourseVisualFramesType20 = 0x8012953C; // size:0x10 defined:true
 gCourseVisualFramesType21 = 0x8012954C; // size:0x10 defined:true
 gCourseVisualFramesType22 = 0x8012955C; // size:0x10 defined:true
+
+gCourseVisualSettings = 0x801295B0; // size:0xCC defined:true
