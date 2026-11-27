@@ -720,7 +720,6 @@ u16 gTextGlyphPalette __attribute__((section(".sdata.stretched_text"), aligned(2
 
 extern s32 playerSnapshotTrailCountGp;
 
-extern u32 GsOUT_PACKET_P __attribute__((section(".data")));
 
 void updatePlayerRenderSnapshots(void) {
     GsCOORDINATE2 coordinate;
@@ -986,7 +985,7 @@ void drawTrickTriangleRingTask(void) {
             angle = nextAngle + gap;
         }
     } while (angle < 0x1000);
-    GsOUT_PACKET_P = (u32)packet;
+    GsOUT_PACKET_P = (PACKET *)packet;
 
 advance:
     if (!gRacePauseState) {
@@ -1091,7 +1090,7 @@ void drawTrickRingTask(void) {
         addPrim(&ot[1], packet);
         packet++;
     } while (angle < 0x1000);
-    GsOUT_PACKET_P = (u32)packet;
+    GsOUT_PACKET_P = (PACKET *)packet;
 
 advance:
     if (!gRacePauseState) {
@@ -1213,7 +1212,7 @@ void drawTrickSparkRingTask(void) {
         addPrim(ot, packet);
         packet += sizeof(POLY_FT4);
     } while (angle < 0x1000);
-    GsOUT_PACKET_P = (u32)packet;
+    GsOUT_PACKET_P = (PACKET *)packet;
 
 advance:
     if (!gRacePauseState) {
@@ -1270,7 +1269,7 @@ void drawFallingParticlesTask(void) {
     setlen(page, 1);
     page->code[0] = ((u32)DRAW_MODE_COMMAND_HIGH << 16) | getTPage(0, 0, 768, 256);
     addPrim(gCurrentPlayerOrderingTable, page);
-    GsOUT_PACKET_P = (u32)(page + 1);
+    GsOUT_PACKET_P = (PACKET *)(page + 1);
     resource->frame++;
 }
 
@@ -1425,7 +1424,7 @@ void drawPlayerParticlesTask(void) {
             }
         }
     }
-    GsOUT_PACKET_P = (u32)packet;
+    GsOUT_PACKET_P = (PACKET *)packet;
     if (!gRacePauseState) {
         gCurrentTask->data1A++;
     }
@@ -1681,7 +1680,7 @@ void drawPlayerShadowTask(void) {
     if (scratch->flags >= 0 && depth >= 0 && depth < 4096) {
         addPrim(&D_8013AF70[scratch->depth >> 2], packet);
     }
-    GsOUT_PACKET_P = (u32)(packet + 1);
+    GsOUT_PACKET_P = (PACKET *)(packet + 1);
 }
 
 void startPlayerShadowTask(s32 playerIndex) {
@@ -1907,7 +1906,7 @@ void updatePlayerTurnTrailTask(void) {
             packet++;
         }
     }
-    GsOUT_PACKET_P = (u32)packet;
+    GsOUT_PACKET_P = (PACKET *)packet;
     if (!gRacePauseState) {
         trail->elapsed++;
     }
@@ -2002,7 +2001,7 @@ void drawPlayerPairedQuadEffectTask(void) {
             }
             packet++;
         }
-        GsOUT_PACKET_P = (u32)packet;
+        GsOUT_PACKET_P = (PACKET *)packet;
     }
     if (!gRacePauseState) {
         resource->elapsed++;
@@ -2106,7 +2105,7 @@ void drawQuadAnimationTask(void) {
         if (scratch->flags >= 0 && depth >= 0 && depth < 4096) {
             addPrim(&gCurrentPlayerOrderingTable[scratch->depth >> 2], packet);
         }
-        GsOUT_PACKET_P = (u32)(packet + 1);
+        GsOUT_PACKET_P = (PACKET *)(packet + 1);
     }
 }
 
@@ -2207,7 +2206,7 @@ void updateRadialEffectTask(void) {
             }
             packet++;
         }
-        GsOUT_PACKET_P = (u32)packet;
+        GsOUT_PACKET_P = (PACKET *)packet;
     }
 
     if (resource->elapsed >= 30) {
@@ -2417,7 +2416,7 @@ advance:
         scratch->screen[2].point = scratch->screen[0].point;
         scratch->screen[3].point = scratch->screen[1].point;
     }
-    GsOUT_PACKET_P = (u32)packet;
+    GsOUT_PACKET_P = (PACKET *)packet;
     left->state.frame++;
 }
 
@@ -2599,7 +2598,7 @@ void updatePlayerPositionTrailTask(void) {
         }
         packet++;
     }
-    GsOUT_PACKET_P = (u32)packet;
+    GsOUT_PACKET_P = (PACKET *)packet;
 }
 
 void createPlayerPositionTrailTask(s32 playerIndex) {
@@ -2685,7 +2684,7 @@ void updatePlayerTripleQuadEffectTask(void) {
                 resource->positions[quadIndex][1] -= 4;
             }
         }
-        GsOUT_PACKET_P = (u32)packet;
+        GsOUT_PACKET_P = (PACKET *)packet;
     }
     if (gRacePauseState == 0) {
         resource->elapsed++;
@@ -2798,7 +2797,7 @@ void updatePlayerRingEffectTask(void) {
             }
             packet++;
         }
-        GsOUT_PACKET_P = (u32)packet;
+        GsOUT_PACKET_P = (PACKET *)packet;
     }
     if (gRacePauseState == 0) {
         resource->position[1] += (-rcos((resource->elapsed << 11) / 20) * 10) / 4096;
@@ -2927,7 +2926,7 @@ void updatePlayerParticleTrailTask(void) {
             }
         }
     }
-    GsOUT_PACKET_P = (u32)packet;
+    GsOUT_PACKET_P = (PACKET *)packet;
 }
 
 void createPlayerParticleTrailTask(s32 playerIndex) {
@@ -3022,7 +3021,7 @@ void drawRisingTexturedStripTask(void) {
     packet->y3 = y + 15;
     packet->y2 = y + 15;
     addPrim(gCurrentPlayerOrderingTable, packet);
-    GsOUT_PACKET_P = (u32)(packet + 1);
+    GsOUT_PACKET_P = (PACKET *)(packet + 1);
     if (D_8013B338 >= 50) {
         if (++resource->countdown > 10) {
             resource->countdown = 10;
@@ -3088,7 +3087,7 @@ void drawRotatingQuadTrailTask(void) {
         addPrim(gCurrentPlayerOrderingTable, packet);
         packet++;
     }
-    GsOUT_PACKET_P = (u32)packet;
+    GsOUT_PACKET_P = (PACKET *)packet;
     if (--resource->countdown < -7) {
         setCurrentTaskCallback(drawRisingTexturedStripTask);
         resource->countdown = 0;
@@ -3125,7 +3124,7 @@ void drawLoweringTexturedQuadTask(void) {
     packet->x3 = resource->vertices[3].x;
     packet->y3 = resource->vertices[3].y + (resource->countdown << 6) / 10;
     addPrim(gCurrentPlayerOrderingTable, packet);
-    GsOUT_PACKET_P = (u32)(packet + 1);
+    GsOUT_PACKET_P = (PACKET *)(packet + 1);
     if (D_8013B338 >= 50) {
         if (++resource->countdown > 10) { resource->countdown = 10; }
     }
@@ -3157,7 +3156,7 @@ void drawShrinkingTexturedQuadTask(void) {
     packet->x3 = scratch->vertices[3].vx;
     packet->y3 = scratch->vertices[3].vy;
     addPrim(gCurrentPlayerOrderingTable, packet);
-    GsOUT_PACKET_P = (u32)(packet + 1);
+    GsOUT_PACKET_P = (PACKET *)(packet + 1);
     if (--resource->frames <= 0) {
         setCurrentTaskCallback(drawLoweringTexturedQuadTask);
         resource->frames = 0;
@@ -3219,7 +3218,7 @@ void drawPaletteCyclingStripTask(void) {
     paletteRow = resource->frame % 3 + 242;
     packet->clut = getClut(944, paletteOffset + paletteRow);
     addPrim(gCurrentPlayerOrderingTable, packet);
-    GsOUT_PACKET_P = (u32)(packet + 1);
+    GsOUT_PACKET_P = (PACKET *)(packet + 1);
     resource->frame++;
 }
 
@@ -3243,7 +3242,7 @@ void drawLoweringQuadStripTask(void) {
     packet->y2 = packet->y3 = offset + 39;
     packet->clut = getClut(944, gCurrentTask->data18 * 3 + 242);
     addPrim(gCurrentPlayerOrderingTable, packet);
-    GsOUT_PACKET_P = (u32)(packet + 1);
+    GsOUT_PACKET_P = (PACKET *)(packet + 1);
     if (D_8013B338 >= 50) {
         if (++resource->countdown > 10) {
             setCurrentTaskCallback(drawPaletteCyclingStripTask);
@@ -3270,7 +3269,7 @@ void drawSlidingQuadTask(void) {
     packet->x1 = packet->x3 = offset + 143;
     packet->clut = getClut(944, gCurrentTask->data18 * 3 + 242);
     addPrim(gCurrentPlayerOrderingTable, packet);
-    GsOUT_PACKET_P = (u32)(packet + 1);
+    GsOUT_PACKET_P = (PACKET *)(packet + 1);
     if (--resource->countdown <= 0) {
         setCurrentTaskCallback(drawLoweringQuadStripTask);
         resource->countdown = 0;
@@ -3412,7 +3411,7 @@ void drawFullScreenSpriteTask(void) {
         packets[i] = resource->sprites[i];
         addPrim(&gCurrentPlayerOrderingTable[1], &packets[i]);
     }
-    GsOUT_PACKET_P = (u32)(packets + 2);
+    GsOUT_PACKET_P = (PACKET *)(packets + 2);
     if (++resource->elapsed >= resource->duration || (gTaskTransitionFlags & 0x100)) {
         deleteCurrentTaskSubtree();
     }
@@ -3526,7 +3525,7 @@ void drawFadingText(FadingTextResource *resource) {
         scratch->x0 += 16;
         text += 2;
     }
-    GsOUT_PACKET_P = (u32)packet;
+    GsOUT_PACKET_P = (PACKET *)packet;
 }
 
 void updateFadingTextTask(void) {
@@ -3787,7 +3786,7 @@ void addTextCharacter(s32 x, s32 y, u32 character) {
     sprite->tag = (sizeof(SPRT_8) / sizeof(u32) - 1) << 24;
     sprite->clut = getClut(0x300, gTextGlyphPalette + 0xF0);
     addPrim(gCurrentPlayerOrderingTable, sprite);
-    GsOUT_PACKET_P = (u32)(sprite + 1);
+    GsOUT_PACKET_P = (PACKET *)(sprite + 1);
 }
 
 void addStretchedTextCharacter(s32 x, s32 y, s32 width, u32 character) {
@@ -3816,7 +3815,7 @@ void addStretchedTextCharacter(s32 x, s32 y, s32 width, u32 character) {
     quad->u3 = quad->u0 + 7;
     quad->v3 = quad->v0 + 7;
     addPrim(gCurrentPlayerOrderingTable, quad);
-    GsOUT_PACKET_P = (u32)(quad + 1);
+    GsOUT_PACKET_P = (PACKET *)(quad + 1);
 }
 
 /* %w and %p set glyph width and palette. A digit from 1 to 9 sets the numeric field width. */
@@ -3943,7 +3942,7 @@ void drawStretchedDebugText(s32 x, s32 y, const char *format, ...) {
     page = (DR_TPAGE *)GsOUT_PACKET_P;
     setDrawTPage(page, 0, 0, getTPage(0, 0, 960, 256));
     addPrim(gCurrentPlayerOrderingTable, page);
-    GsOUT_PACKET_P = (u32)(page + 1);
+    GsOUT_PACKET_P = (PACKET *)(page + 1);
 }
 
 void setTextGlyphPalette(u16 palette) {

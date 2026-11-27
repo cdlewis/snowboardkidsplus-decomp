@@ -22,7 +22,6 @@ extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
 
-extern u32 GsOUT_PACKET_P __attribute__((section(".data")));
 
 SVECTOR gPaletteBurstVertices[4] __attribute__((section(".data.palette_burst_vertices"))) = {
     {-10, -10, 0, 0},
@@ -124,7 +123,7 @@ void drawPaletteBurstTask(void) {
     packet->clut = getClut(832, 249);
     addPrim(D_800EBFF0[gActiveGraphicsBuffer].org, packet);
     packet++;
-    GsOUT_PACKET_P = (u32)packet;
+    GsOUT_PACKET_P = (PACKET *)packet;
 
     if (++resource->age >= 9) {
         deleteCurrentTaskSubtree();

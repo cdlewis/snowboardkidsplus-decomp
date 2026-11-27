@@ -84,7 +84,7 @@ void runGameLoop(void) {
         } else {
             gActiveGraphicsBuffer = (u16)gFrameCounter & 1;
         }
-        func_800BF2C8((u32)D_80100200[gActiveGraphicsBuffer]);
+        func_800BF2C8((PACKET *)D_80100200[gActiveGraphicsBuffer]);
         GsClearOt(0, 0, &D_800EBFF0[gActiveGraphicsBuffer]);
         if (!(D_8013AFAA & 0x400) || !((u16)gFrameCounter & 1)) {
             GsClearOt(0, 0, &D_800EC018[gActiveGraphicsBuffer]);

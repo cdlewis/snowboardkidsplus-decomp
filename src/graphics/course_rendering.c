@@ -205,7 +205,6 @@ TmdObject *gCourseModels[100] __attribute__((section(".bss.course_models")));
 extern s32 D_8013AFB8 __attribute__((section(".data")));
 extern s16 D_8013B22C, D_8013B22E;
 
-extern u32 GsOUT_PACKET_P __attribute__((section(".data")));
 
 void getCourseSteeringTarget(s16 region, s32 x, s32 z, s32 *targetX, s32 *targetZ,
                              u16 tableIndex, u16 playerIndex) {
@@ -616,7 +615,7 @@ void drawOscillatingQuadTask(void) {
         if (!(scratch->flags & 0x7FFBE000) && scratch->depth >= 0 && scratch->depth < 4096) {
             addPrim(&gCurrentPlayerOrderingTable[scratch->depth >> 2], packet);
         }
-        GsOUT_PACKET_P = (u32)(packet + 1);
+        GsOUT_PACKET_P = (PACKET *)(packet + 1);
         if (!gRacePauseState) {
             resource->elapsed++;
         }
@@ -679,7 +678,7 @@ void drawMovingLineTask(void) {
     line->b0 = brightness / 2;
     line->r0 = line->g0 = brightness * 255 / 256;
     addPrim(&gCurrentPlayerOrderingTable[4094], line);
-    GsOUT_PACKET_P = (u32)(line + 1);
+    GsOUT_PACKET_P = (PACKET *)(line + 1);
     if (!gRacePauseState) {
         resource->x -= 8;
         resource->y += 4;
@@ -731,7 +730,7 @@ void drawFlickeringDotsTask(void) {
         addPrim(&gCurrentPlayerOrderingTable[4094], packet);
         packet++;
     }
-    GsOUT_PACKET_P = (u32)packet;
+    GsOUT_PACKET_P = (PACKET *)packet;
     if (!gRacePauseState) {
         if ((++resource->frame & 15) == 0 && (randomNextLinear() & 15) == 0) {
             createMovingLineTask(gCurrentTask->data18);
@@ -1136,7 +1135,7 @@ void queueScanlineCopyPackets(void) {
         addPrim(&gCurrentPlayerOrderingTable[4095], move);
         move += 2;
     }
-    GsOUT_PACKET_P = (u32)move;
+    GsOUT_PACKET_P = (PACKET *)move;
     if (selectedCameraOverlayModeGp) {
         stp = (DR_STP *)GsOUT_PACKET_P;
         for (i = 0; i < 15; i++) {
@@ -1145,7 +1144,7 @@ void queueScanlineCopyPackets(void) {
             addPrim(&gCurrentPlayerOrderingTable[depth], stp);
             stp++;
         }
-        GsOUT_PACKET_P = (u32)stp;
+        GsOUT_PACKET_P = (PACKET *)stp;
     }
     move = (DR_MOVE *)GsOUT_PACKET_P;
     for (i = 0; i < 15; i++) {
@@ -1159,7 +1158,7 @@ void queueScanlineCopyPackets(void) {
             move++;
         }
     }
-    GsOUT_PACKET_P = (u32)move;
+    GsOUT_PACKET_P = (PACKET *)move;
     if (selectedCameraOverlayModeGp) {
         stp = (DR_STP *)GsOUT_PACKET_P;
         for (i = 0; i < 15; i++) {
@@ -1168,7 +1167,7 @@ void queueScanlineCopyPackets(void) {
             addPrim(&gCurrentPlayerOrderingTable[depth], stp);
             stp++;
         }
-        GsOUT_PACKET_P = (u32)stp;
+        GsOUT_PACKET_P = (PACKET *)stp;
     }
 }
 
@@ -1331,7 +1330,7 @@ void queueSelectedCameraOverlayPackets(void) {
     packet = (DR_STP *)GsOUT_PACKET_P;
     SetDrawStp(packet, 1);
     addPrim(&gCurrentPlayerOrderingTable[4095], packet);
-    GsOUT_PACKET_P = (u32)(packet + 1);
+    GsOUT_PACKET_P = (PACKET *)(packet + 1);
 }
 
 void queueOffsetScreenCopySprites(void) {
@@ -1350,7 +1349,7 @@ void queueOffsetScreenCopySprites(void) {
     packet = (DR_STP *)GsOUT_PACKET_P;
     SetDrawStp(packet, 1);
     addPrim(&gCurrentPlayerOrderingTable[4095], packet);
-    GsOUT_PACKET_P = (u32)(packet + 1);
+    GsOUT_PACKET_P = (PACKET *)(packet + 1);
 }
 
 void drawNoProcessMessage(void) {

@@ -50,7 +50,8 @@ void GsLinkObject4(u32 *model, GsDOBJ2 *object, s32 index);
 
 void GsInitCoordinate2(GsCOORDINATE2 *super, GsCOORDINATE2 *coord);
 
-extern u32 GsOUT_PACKET_P;
+typedef u8 PACKET;
+extern PACKET *GsOUT_PACKET_P __attribute__((section(".data")));
 
 typedef struct GsOT {
     u32 length;
@@ -99,7 +100,7 @@ void GsSortPoly(void *packet, GsOT *ot, u16 depth);
 void GsSortSprite(GsSPRITE *sprite, GsOT *ot, u16 depth);
 void GsSortFastSprite(GsSPRITE *sprite, GsOT *ot, u16 depth);
 u32 *GsGetWorkBase(void);
-void func_800BF2C8(u32 value);
+void func_800BF2C8(PACKET *value);
 
 MATRIX *RotMatrix(SVECTOR *rotation, MATRIX *matrix);
 VECTOR *ApplyMatrix(MATRIX *matrix, SVECTOR *vector, VECTOR *result);

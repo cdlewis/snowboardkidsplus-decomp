@@ -4227,3 +4227,12 @@ gRacePauseState = 0x8013AFD3;
 gCourseGeometryVertexData = 0x8013B1EC;
 gGeometryProjectionBasisX = 0x8013B624;
 gGeometryProjectionBasisZ = 0x8013B628;
+
+// Model renderer state (storage remains in 12BE68.data).
+gAdaptiveModelSavedStackPointer = 0x8013B668;
+gProjectedModelSavedStackPointer = 0x8013B66C;
+gModelOrderingTable = 0x8013B670;
+gModelPrimitiveCursor = 0x8013B680;
+gModelVertices = 0x8013B688;
+gModelPrimitiveCount = 0x8013B68C;
+gModelDepthShift = 0x8013B69C;

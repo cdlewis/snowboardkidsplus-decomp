@@ -2,6 +2,6 @@
 
 #include "psx/libgs.h"
 
-void func_800BF2C8(u32 value) {
+void func_800BF2C8(PACKET *value) {
     GsOUT_PACKET_P = value;
 }

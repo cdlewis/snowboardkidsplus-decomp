@@ -3,7 +3,6 @@
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
 
-extern u32 GsOUT_PACKET_P __attribute__((section(".data")));
 
 void addCopiedPrimitive(u32 *orderingTable, u32 *packet) {
     u32 length = ((P_TAG *)packet)->len;
@@ -18,7 +17,7 @@ void addCopiedPrimitive(u32 *orderingTable, u32 *packet) {
     {
         u32 *start = (u32 *)GsOUT_PACKET_P;
 
-        GsOUT_PACKET_P = (u32)out;
+        GsOUT_PACKET_P = (PACKET *)out;
         addPrim(orderingTable, start);
     }
 }
@@ -31,7 +30,7 @@ void addFlatTriangle(u32 *orderingTable, s32 x0, s32 y0, s32 x1, s32 y1,
     setXY3(triangle, x0, y0, x1, y1, x2, y2);
     setRGB0(triangle, r, g, b);
     addPrim(orderingTable, triangle);
-    GsOUT_PACKET_P = (u32)(triangle + 1);
+    GsOUT_PACKET_P = (PACKET *)(triangle + 1);
 }
 
 void addGouraudTriangle(u32 *orderingTable, s32 x0, s32 y0, s32 x1, s32 y1,
@@ -45,7 +44,7 @@ void addGouraudTriangle(u32 *orderingTable, s32 x0, s32 y0, s32 x1, s32 y1,
     setRGB1(triangle, r1, g1, b1);
     setRGB2(triangle, r2, g2, b2);
     addPrim(orderingTable, triangle);
-    GsOUT_PACKET_P = (u32)(triangle + 1);
+    GsOUT_PACKET_P = (PACKET *)(triangle + 1);
 }
 
 void addTexturedTriangle(u32 *orderingTable, s32 x0, s32 y0, s32 x1, s32 y1,
@@ -66,7 +65,7 @@ void addTexturedTriangle(u32 *orderingTable, s32 x0, s32 y0, s32 x1, s32 y1,
     triangle->v2 = v2;
     setRGB0(triangle, r, g, b);
     addPrim(orderingTable, triangle);
-    GsOUT_PACKET_P = (u32)(triangle + 1);
+    GsOUT_PACKET_P = (PACKET *)(triangle + 1);
 }
 
 void addGouraudTexturedTriangle(u32 *orderingTable, s16 x0, s16 y0, s16 x1, s16 y1,
@@ -85,7 +84,7 @@ void addGouraudTexturedTriangle(u32 *orderingTable, s16 x0, s16 y0, s16 x1, s16 
     setRGB1(poly, r1, g1, b1);
     setRGB2(poly, r2, g2, b2);
     addPrim(orderingTable, poly);
-    GsOUT_PACKET_P = (u32)(poly + 1);
+    GsOUT_PACKET_P = (PACKET *)(poly + 1);
 }
 
 void addSemiTransparentTriangle(u32 *orderingTable, s32 tpage, s32 x0, s32 y0,
@@ -98,7 +97,7 @@ void addSemiTransparentTriangle(u32 *orderingTable, s32 tpage, s32 x0, s32 y0,
     setXY3(triangle, x0, y0, x1, y1, x2, y2);
     setRGB0(triangle, r, g, b);
     addPrim(orderingTable, triangle);
-    GsOUT_PACKET_P = (u32)(triangle + 1);
+    GsOUT_PACKET_P = (PACKET *)(triangle + 1);
 }
 
 void addSemiTransparentGouraudTriangle(u32 *orderingTable, s32 tpage, s32 x0, s32 y0,
@@ -115,7 +114,7 @@ void addSemiTransparentGouraudTriangle(u32 *orderingTable, s32 tpage, s32 x0, s3
     setRGB1(triangle, r1, g1, b1);
     setRGB2(triangle, r2, g2, b2);
     addPrim(orderingTable, triangle);
-    GsOUT_PACKET_P = (u32)(triangle + 1);
+    GsOUT_PACKET_P = (PACKET *)(triangle + 1);
 }
 
 void addFlatQuad(u32 *orderingTable, s32 x0, s32 y0, s32 x1, s32 y1,
@@ -131,7 +130,7 @@ void addFlatQuad(u32 *orderingTable, s32 x0, s32 y0, s32 x1, s32 y1,
     poly->y3 = y3;
     setRGB0(poly, r, g, b);
     addPrim(orderingTable, poly);
-    GsOUT_PACKET_P = (u32)(poly + 1);
+    GsOUT_PACKET_P = (PACKET *)(poly + 1);
 }
 
 void addGouraudQuad(u32 *orderingTable, s32 x0, s32 y0, s32 x1, s32 y1,
@@ -149,7 +148,7 @@ void addGouraudQuad(u32 *orderingTable, s32 x0, s32 y0, s32 x1, s32 y1,
     setRGB2(poly, r2, g2, b2);
     setRGB3(poly, r3, g3, b3);
     addPrim(orderingTable, poly);
-    GsOUT_PACKET_P = (u32)(poly + 1);
+    GsOUT_PACKET_P = (PACKET *)(poly + 1);
 }
 
 void addTexturedQuad(u32 *orderingTable, s32 x0, s32 y0, s32 x1, s32 y1,
@@ -174,7 +173,7 @@ void addTexturedQuad(u32 *orderingTable, s32 x0, s32 y0, s32 x1, s32 y1,
     poly->v3 = v3;
     setRGB0(poly, r, g, b);
     addPrim(orderingTable, poly);
-    GsOUT_PACKET_P = (u32)(poly + 1);
+    GsOUT_PACKET_P = (PACKET *)(poly + 1);
 }
 
 void addGouraudTexturedQuad(u32 *orderingTable, s16 x0, s16 y0, s16 x1, s16 y1,
@@ -205,7 +204,7 @@ void addGouraudTexturedQuad(u32 *orderingTable, s16 x0, s16 y0, s16 x1, s16 y1,
     setRGB3(poly, r3, g3, b3);
     poly->pad4 = 0;
     addPrim(orderingTable, poly);
-    GsOUT_PACKET_P = (u32)(poly + 1);
+    GsOUT_PACKET_P = (PACKET *)(poly + 1);
 }
 
 void addSemiTransparentFlatQuadWithDrawMode(u32 *orderingTable, s32 tpage,
@@ -224,7 +223,7 @@ void addSemiTransparentFlatQuadWithDrawMode(u32 *orderingTable, s32 tpage,
     poly->y3 = y3;
     setRGB0(poly, r, g, b);
     addPrim(orderingTable, poly);
-    GsOUT_PACKET_P = (u32)(poly + 1);
+    GsOUT_PACKET_P = (PACKET *)(poly + 1);
 }
 
 void addSemiTransparentGouraudQuadWithDrawMode(u32 *orderingTable, s32 tpage,
@@ -245,7 +244,7 @@ void addSemiTransparentGouraudQuadWithDrawMode(u32 *orderingTable, s32 tpage,
     setRGB2(poly, r2, g2, b2);
     setRGB3(poly, r3, g3, b3);
     addPrim(orderingTable, poly);
-    GsOUT_PACKET_P = (u32)(poly + 1);
+    GsOUT_PACKET_P = (PACKET *)(poly + 1);
 }
 
 void addFlatLine(u32 *orderingTable, s32 x0, s32 y0, s32 x1, s32 y1,
@@ -257,7 +256,7 @@ void addFlatLine(u32 *orderingTable, s32 x0, s32 y0, s32 x1, s32 y1,
     setXY2(line, x0, y0, x1, y1);
     setRGB0(line, r, g, b);
     addPrim(orderingTable, line);
-    GsOUT_PACKET_P = (u32)(line + 1);
+    GsOUT_PACKET_P = (PACKET *)(line + 1);
 }
 
 void addFlatPolyline4(u32 *orderingTable, s32 x0, s32 y0, s32 x1, s32 y1,
@@ -276,7 +275,7 @@ void addFlatPolyline4(u32 *orderingTable, s32 x0, s32 y0, s32 x1, s32 y1,
     line->x0 = x0;
     setRGB0(line, r, g, b);
     addPrim(orderingTable, line);
-    GsOUT_PACKET_P = (u32)(line + 1);
+    GsOUT_PACKET_P = (PACKET *)(line + 1);
 }
 
 void addFlatRectangle(u32 *orderingTable, s32 x, s32 y, s32 w, s32 h,
@@ -288,7 +287,7 @@ void addFlatRectangle(u32 *orderingTable, s32 x, s32 y, s32 w, s32 h,
     setWH(tile, w, h);
     setRGB0(tile, r, g, b);
     addPrim(orderingTable, tile);
-    GsOUT_PACKET_P = (u32)(tile + 1);
+    GsOUT_PACKET_P = (PACKET *)(tile + 1);
 }
 
 void addFlatRectangleWithDrawMode(u32 *orderingTable, s32 tpage, s32 flags,
@@ -302,7 +301,7 @@ void addFlatRectangleWithDrawMode(u32 *orderingTable, s32 tpage, s32 flags,
     setWH(tile, w, h);
     setRGB0(tile, r, g, b);
     addPrim(orderingTable, tile);
-    GsOUT_PACKET_P = (u32)(tile + 1);
+    GsOUT_PACKET_P = (PACKET *)(tile + 1);
 }
 
 void addTexturedRectangle(u32 *orderingTable, s32 clut, s32 x, s32 y,
@@ -315,7 +314,7 @@ void addTexturedRectangle(u32 *orderingTable, s32 clut, s32 x, s32 y,
     setWH(sprite, w, h);
     setRGB0(sprite, r, g, b);
     addPrim(orderingTable, sprite);
-    GsOUT_PACKET_P = (u32)(sprite + 1);
+    GsOUT_PACKET_P = (PACKET *)(sprite + 1);
 }
 
 void addTexturedSprite(u32 *orderingTable, s32 tpage, s32 clut, s32 x,
@@ -334,7 +333,7 @@ void addTexturedSprite(u32 *orderingTable, s32 tpage, s32 clut, s32 x,
     sprite->v0 = v;
     setRGB0(sprite, r, g, b);
     addPrim(orderingTable, sprite);
-    GsOUT_PACKET_P = (u32)(sprite + 1);
+    GsOUT_PACKET_P = (PACKET *)(sprite + 1);
 }
 
 /* No callers are known; only the variadic argument layout is established. */

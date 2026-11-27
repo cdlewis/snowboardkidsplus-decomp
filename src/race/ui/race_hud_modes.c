@@ -346,21 +346,21 @@ void addFourWordGpuPacket(GpuPacket4 *source, GsOT *ot, u16 depth) {
     GpuPacket4 *packet = (GpuPacket4 *)GsGetWorkBase();
     *packet = *source;
     AddPrim(&ot->org[depth], packet);
-    func_800BF2C8((u32)(packet + 1));
+    func_800BF2C8((PACKET *)(packet + 1));
 }
 
 void addOneWordGpuPacket(GpuPacket1 *source, GsOT *ot, u16 depth) {
     GpuPacket1 *packet = (GpuPacket1 *)GsGetWorkBase();
     *packet = *source;
     AddPrim(&ot->org[depth], packet);
-    func_800BF2C8((u32)(packet + 1));
+    func_800BF2C8((PACKET *)(packet + 1));
 }
 
 void addTexturedSpritePacket(TexturedSpritePacket *source, GsOT *ot, u16 depth) {
     TexturedSpritePacket *packet = (TexturedSpritePacket *)GsGetWorkBase();
     *packet = *source;
     AddPrim(&ot->org[depth], packet);
-    func_800BF2C8((u32)(packet + 1));
+    func_800BF2C8((PACKET *)(packet + 1));
 }
 
 void drawRacePlacementSprite(s16 x, s16 y, s16 placement, GsOT *ot, u16 depth) {

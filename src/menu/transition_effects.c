@@ -274,7 +274,7 @@ void drawScreenDarkeningOverlay(s32 intensity, GsOT *ot, u16 depth) {
     tpage = GetTPage(0, 2, 0, 0);
     SetDrawMode((DR_MODE *)(packet + 1), 1, 1, tpage, NULL);
     AddPrim(ot->org + depth, ++packet);
-    func_800BF2C8((u32)((DR_MODE *)packet + 1));
+    func_800BF2C8((PACKET *)((DR_MODE *)packet + 1));
 }
 
 void drawScreenBrighteningOverlay(s32 intensity, GsOT *ot, u16 depth) {
@@ -289,5 +289,5 @@ void drawScreenBrighteningOverlay(s32 intensity, GsOT *ot, u16 depth) {
     tpage = GetTPage(0, 1, 0, 0);
     SetDrawMode((DR_MODE *)(packet + 1), 1, 1, tpage, NULL);
     AddPrim(ot->org + depth, ++packet);
-    func_800BF2C8((u32)((DR_MODE *)packet + 1));
+    func_800BF2C8((PACKET *)((DR_MODE *)packet + 1));
 }
