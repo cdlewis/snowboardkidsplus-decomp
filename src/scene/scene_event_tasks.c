@@ -23,6 +23,13 @@ extern u32 gTaskTransitionFlags __attribute__((section(".data")));
 
 extern s16 gMusicSequenceId __attribute__((section(".data")));
 
+extern char gSceneOpeningLabel[];
+extern char gSceneBackgroundLabel[];
+extern char gSceneMessageLabel[];
+extern char gSceneMusicLabel[];
+extern char gSceneVoiceLabel[];
+extern char gSceneSoundEffectLabel[];
+
 const char gEndingSlashLabel[16]
     __attribute__((section(".rodata.ending_labels"), aligned(4))) = "ENDING<SLASH>";
 const char gEndingNancyLabel[16]
@@ -43,6 +50,15 @@ const char gEndingSinobinLabel[16]
     __attribute__((section(".rodata.ending_labels"), aligned(4))) = "ENDING<SINOBIN>";
 const char gEndingKaedeLabel[16]
     __attribute__((section(".rodata.ending_labels"), aligned(4))) = "ENDING<KAEDE>";
+
+const char *gSceneOpeningEndingLabels[11] __attribute__((section(".data.scene_labels"))) = {
+    gSceneOpeningLabel,
+    gEndingSlashLabel, gEndingNancyLabel, gEndingJamLabel, gEndingLindaLabel, gEndingTommyLabel, gEndingNicolLabel, gEndingPamelahLabel, gEndingRubyLabel, gEndingSinobinLabel, gEndingKaedeLabel,
+};
+
+const char *gSceneCategoryLabels[5] __attribute__((section(".data.scene_labels"))) = {
+    gSceneBackgroundLabel, gSceneMessageLabel, gSceneMusicLabel, gSceneVoiceLabel, gSceneSoundEffectLabel,
+};
 
 s16 gSceneCdCommands[230] __attribute__((section(".data.scene_cd_commands"))) = {
     0x0000, 0x0010, 0x0011, 0x0077, 0x00BE, 0x0047, 0x00A5, 0x0000, 0x00E1, 0x008E,

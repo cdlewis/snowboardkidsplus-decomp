@@ -4717,3 +4717,13 @@ gScoreAttackCourseHelpMapping = 0x8013B538; // size:0x4
 gTrickAttackCourseHelpMapping = 0x8013B53C; // size:0x4
 gRaceRulesetStandardCourseTextureMapping = 0x8013B540; // size:0x4
 gRaceRulesetSpecialCourseTextureMapping = 0x8013B544; // size:0x4
+
+gSceneOpeningLabel = 0x8013B5A0;
+gSceneBackgroundLabel = 0x8013B5A8;
+gSceneMessageLabel = 0x8013B5AC;
+gSceneMusicLabel = 0x8013B5B4;
+gSceneVoiceLabel = 0x8013B5B8;
+gSceneSoundEffectLabel = 0x8013B5C0;
+gSceneOpeningEndingLabels = 0x80132AE0; // size:0x2C defined:true
+gSceneCategoryLabels = 0x80132B0C; // size:0x14 defined:true
+gSceneEmptyCallbacks = 0x80132B20; // size:0x14 defined:true

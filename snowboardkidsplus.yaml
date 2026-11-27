@@ -937,7 +937,8 @@ segments:
       - {start: 0x1230D8, type: .data, name: menu/number_adjustment, linker_section: .data.number_adjustment_value_texts}
       - {start: 0x123100, type: .data, name: menu/panel_tasks, linker_section: .data.number_adjustment_arrow}
       - {start: 0x123114, type: .data, name: scene/scene_event_tasks, linker_section: .data.scene_cd_commands}
-      - [0x1232E0, data, scene_cd_commands_tail]
+      - {start: 0x1232E0, type: .data, name: scene/scene_event_tasks, linker_section: .data.scene_labels}
+      - {start: 0x123320, type: .data, name: scene/scene_events, linker_section: .data.scene_empty_callbacks}
       - {start: 0x123334, type: .data, name: scene/scene_loading, linker_section: .data.scene_text_sectors}
       - {start: 0x123360, type: .data, name: scene/scene_loading, linker_section: .data.scene_event_sectors}
       - {start: 0x12338C, type: .data, name: scene/scene_events, linker_section: .data.scene_cd_audio_default_resources}
