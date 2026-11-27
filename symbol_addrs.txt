@@ -1438,6 +1438,10 @@ GsIDMATRIX = 0x8013F870; // defined:true
 GsOUT_PACKET_P = 0x8013F8E8;
 // Rood Reverse: SLUS_010.40/libgte/MSC00.s
 SAVERA = 0x80139AAC; // defined:true
+GsADIVZ = 0x80139ABC; // size:0x4 defined:true
+GsADIVW = 0x80139AC0; // size:0x2 defined:true
+GsADIVH = 0x80139AC2; // size:0x2 defined:true
+gsGlobalDataPadding = 0x80139AC4; // size:0x8 defined:true
 // Rood Reverse: SLUS_010.40/libgte/PATCHGTE.s
 SAVERA2 = 0x8013F840; // defined:true
 // Rood Reverse: TITLE/TITLE.PRG/libpress/VLC_C.s

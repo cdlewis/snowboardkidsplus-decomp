@@ -125,6 +125,8 @@ void GsDefDispBuff(s32 x0, s32 y0, s32 x1, s32 y1);
 void GsInit3D(void);
 
 extern DISPENV GsDISPENV;
+extern s32 GsADIVZ;
+extern s16 GsADIVW, GsADIVH;
 extern MATRIX GsIDMATRIX2;
 void GsClearOt(u16 offset, u16 point, GsOT *ot);
 void GsDefDispBuff2(s32 x0, s32 y0, s32 x1, s32 y1);
