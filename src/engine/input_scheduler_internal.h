@@ -94,7 +94,6 @@ extern TaskCallback gInitialTaskCallbacks[6] __attribute__((section(".data.initi
 void restoreCdReadModeAndResetQueues(void);
 void updateControllerAxesFromAnalog(u16 controller);
 
-void func_800131B4(void);
 void resetCdVolumeFade(void);
 void startCdVolumeFade(s16 startVolume, s16 step, s16 targetVolume, u8 interval);
 void updateCdVolumeFade(void);

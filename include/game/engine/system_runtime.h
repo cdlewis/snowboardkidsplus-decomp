@@ -21,7 +21,7 @@ extern u16 gReplaySavedControllerHeldButtons;
 
 int strcmp(const char *, const char *);
 
-void func_800131B4(void);
+void startupNoOp(void);
 void initializeGameSystems(void);
 void runGameLoop(void);
 void initializeNewGameSaveData(void);

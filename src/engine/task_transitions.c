@@ -200,7 +200,7 @@ void dispatchPostRaceResultsTask(void);
 void processTaskWhenFlagAFAABit7Set(void);
 
 void runMovieAndGameLoop(void) {
-    func_800131B4();
+    startupNoOp();
     while (1) {
         initializeGameSystems();
         playMovie(0);

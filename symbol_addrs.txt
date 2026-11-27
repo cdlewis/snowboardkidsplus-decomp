@@ -1,3 +1,4 @@
+startupNoOp = 0x800131B4; // type:func
 prepareCurrentPlayerFrame = 0x8002AE6C; // type:func
 gPlayerRankSpeedAdjustments = 0x80123600; // size:0x10 defined:true
 awardCurrentPlayerTrickRewards = 0x80029FE4; // type:func

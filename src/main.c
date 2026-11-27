@@ -1,1 +1,3 @@
-void func_800131B4(void) {}
+#include "game/engine/system_runtime.h"
+
+void startupNoOp(void) {}
