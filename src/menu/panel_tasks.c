@@ -85,8 +85,31 @@ static const u32 sBoardShopModeJumpTablePadding
 static const u32 sBoardSelectionDetailsJumpTablePadding
     __attribute__((section(".rodata.board_selection_details_padding"))) = 0;
 
-extern const GridSpriteEntry gBoardMenuSprites[18];
-extern GroupedSelectionDescriptor gBoardMenuSelectionDescriptors[3];
+extern const u8 gBoardMenuMode0Items[4];
+extern const u8 gBoardMenuMode1Items[5];
+extern const u8 gBoardMenuMode2Items[4];
+extern const u8 gBoardMenuTextIndices[4];
+extern const u8 gExtendedBoardMenuTextIndices[5];
+
+const GridSpriteEntry gBoardMenuSprites[18]
+    __attribute__((section(".data.board_menu_sprites"), aligned(4))) = {
+    {0xCD, 0, 0, 0}, {0xCE, 0, 0, 0},
+    {0xCF, 0, 0, 0}, {0xD0, 0, 0, 0},
+    {0xD1, 0, 0, 0}, {0xD2, 0, 0, 0},
+    {0xD3, 0, 0, 0}, {0xD4, 0, 0, 0},
+    {0xD8, 0, 0, 0}, {0xD9, 0, 0, 0},
+    {0xDA, 0, 0, 0}, {0xDB, 0, 0, 0},
+    {0xDC, 0, 0, 0}, {0xDD, 0, 0, 0},
+    {0xD2, 0, 0, 0}, {0xD3, 0, 0, 0},
+    {0xD4, 0, 0, 0}, {0xC7, 0, 0, 0},
+};
+
+GroupedSelectionDescriptor gBoardMenuSelectionDescriptors[3]
+    __attribute__((section(".data.board_menu_selection_descriptors"))) = {
+    {gBoardMenuMode0Items, 0, 24, 4, 0, gBoardMenuTextIndices, 0, gSelectionPanelTripletIndices},
+    {gBoardMenuMode1Items, 0, 20, 5, 0, gExtendedBoardMenuTextIndices, 0, gExtendedSelectionPanelTripletIndices},
+    {gBoardMenuMode2Items, 0, 24, 4, 0, gBoardMenuTextIndices, 0, gSelectionPanelTripletIndices},
+};
 extern volatile u8 shopMenuRememberedSelectionGp;
 extern const u8 gMoneyPanelSelectionTextMapping[4];
 

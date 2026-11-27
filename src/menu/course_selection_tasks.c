@@ -485,8 +485,6 @@ extern u8 gGroupedCourseMenuTextIndices[4];
 extern u8 gExtendedGroupedCourseMenuTextIndices[5];
 extern u8 gGroupedSelectionMode4TextIndices[4];
 extern u8 gDefaultBoardMenuTextIndices[4];
-extern u8 gSelectionPanelTripletIndices[4];
-extern u8 gExtendedSelectionPanelTripletIndices[5];
 
 GroupedSelectionMenuDescriptor gGroupedCourseMenuDescriptors[]
     __attribute__((section(".data.grouped_course_menu_descriptors"))) = {

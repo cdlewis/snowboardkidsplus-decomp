@@ -4691,3 +4691,9 @@ gRecordFlagMenuTextIndexBuffersPadding = 0x801300AA; // size:0x2
 
 gMemoryCardText8013049C = 0x8013049C; // size:0x48
 gMemoryCardText801304E4 = 0x801304E4; // size:0x48
+
+gBoardMenuMode0Items = 0x8013B4C0; // size:0x4
+gBoardMenuMode1Items = 0x8013B4C4; // size:0x8
+gBoardMenuMode2Items = 0x8013B4CC; // size:0x4
+gBoardMenuTextIndices = 0x8013B4D0; // size:0x4
+gExtendedBoardMenuTextIndices = 0x8013B4D4; // size:0x8

@@ -890,7 +890,8 @@ segments:
       - {start: 0x122040, type: .data, name: menu/panel_tasks, linker_section: .data.board_selection_levels}
       - {start: 0x12204C, type: .data, name: menu/panel_tasks, linker_section: .data.board_style_text}
       - {start: 0x12205C, type: .data, name: menu/panel_tasks, linker_section: .data.board_selection_styles}
-      - [0x122068, data, board_selection_tail]
+      - {start: 0x122068, type: .data, name: menu/panel_tasks, linker_section: .data.board_menu_sprites}
+      - {start: 0x1220D4, type: .data, name: menu/panel_tasks, linker_section: .data.board_menu_selection_descriptors}
       - {start: 0x122110, type: .data, name: menu/panel_tasks, linker_section: .data.shop_default_board_entries}
       - {start: 0x122124, type: .data, name: menu/panel_tasks, linker_section: .data.player_texture_selection_sprites}
       - [0x122196, pad]
