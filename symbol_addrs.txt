@@ -4356,7 +4356,7 @@ gMenuTransitionState = 0x8013B109;
 gMenuTextureResourceId = 0x8013B10C;
 gMenuGridResourceId = 0x8013B10E;
 
-gPlayerCollectionEntries = 0x8012450C;
+gPlayerCollectionEntries = 0x8012450C; // size:0xC8 defined:true
 gTaskObjectModels = 0x80129A80;
 
 gCharacterMenuCharacterIndices = 0x8012D460; // size:0xC

@@ -766,7 +766,7 @@ segments:
       - {start: 0x114B64, type: .data, name: race/effects/coordinate_effects, linker_section: .data.orbiting_player_visual_frames}
       - {start: 0x114B84, type: .data, name: unclassified/graphics_800497B8, linker_section: .data.sliding_visual_frames}
       - {start: 0x114C84, type: .data, name: unclassified/graphics_800497B8, linker_section: .data.sliding_visual_steps}
-      - [0x114D0C, data, sliding_visual_steps_tail]
+      - {start: 0x114D0C, type: .data, name: race/player/player_actions, linker_section: .data.player_collection_entries}
       - {start: 0x114DD4, type: .data, name: unclassified/graphics_800497B8, linker_section: .data.heading_octant_angles}
       - {start: 0x1152E4, type: .data, name: unclassified/graphics_800497B8, linker_section: .data.debug_text_sprite}
       - [0x115308, data, heading_octant_angles_tail]
