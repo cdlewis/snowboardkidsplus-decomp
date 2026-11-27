@@ -3398,9 +3398,9 @@ gSinglePlayerTimeAttackHelpText = 0x80131F20; // size:0x74
 gSinglePlayerScoreAttackHelpText = 0x80131F94; // size:0x70
 gSinglePlayerTrickAttackHelpText = 0x80132004; // size:0x6C
 gRaceRulesetMenuBackHelpText = 0x80132070; // size:0x20
-D_80132090 = 0x80132090; // size:0x74
-D_80132104 = 0x80132104; // size:0x74
-D_80132178 = 0x80132178; // size:0x70
+gMultiplayerTimeAttackHelpText = 0x80132090; // size:0x74
+gMultiplayerScoreAttackHelpText = 0x80132104; // size:0x74
+gMultiplayerTrickAttackHelpText = 0x80132178; // size:0x70
 gMainTailSelectionTexts = 0x801321E8; // size:0x1C defined:true
 gMainTailMultiplayerTextMapping = 0x8013B51C; // size:0x4 defined:true
 gMainTailSelectionParentStates = 0x8013B520; // size:0x4 defined:true
@@ -4520,3 +4520,6 @@ gCourse2VisualFrames = 0x8013B29C;
 gMoneyPanelSelectionSprites = 0x801317F0; // size:0x14
 
 gMoneyPanelSelectionTextMapping = 0x8013B4A0; // size:0x4
+
+gRaceRulesetCourseHelpTexts = 0x801325D0; // size:0x2C
+gTwoPlayerTimeAttackCourseMappingGroups = 0x80132638; // size:0x14

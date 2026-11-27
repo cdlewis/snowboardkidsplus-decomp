@@ -30,15 +30,15 @@ extern GameTask *gCurrentTaskParent __attribute__((section(".data")));
 
 
 extern ByteMappingDescriptor gRaceRulesetCourseMappingGroups[3];
-extern ByteMappingDescriptor D_80132638[];
-extern const u16 *D_801325D0[];
+extern ByteMappingDescriptor gTwoPlayerTimeAttackCourseMappingGroups[1];
+extern const u16 *gRaceRulesetCourseHelpTexts[11];
 extern const u16 gSinglePlayerTimeAttackHelpText[58];
 extern const u16 gSinglePlayerScoreAttackHelpText[56];
 extern const u16 gSinglePlayerTrickAttackHelpText[54];
 extern const u16 gRaceRulesetMenuBackHelpText[16];
-extern const u16 D_80132090[];
-extern const u16 D_80132104[];
-extern const u16 D_80132178[];
+extern const u16 gMultiplayerTimeAttackHelpText[58];
+extern const u16 gMultiplayerScoreAttackHelpText[58];
+extern const u16 gMultiplayerTrickAttackHelpText[56];
 extern u8 raceRulesetMenuRememberedSelectionGp;
 
 const GridSpriteEntry gMainTailSelectionSprites[4]
@@ -52,7 +52,7 @@ const GridSpriteEntry gMainTailSelectionSprites[4]
 const u16 *gMainTailSelectionTexts[7]
     __attribute__((section(".data.main_tail_selection_texts"), aligned(4))) = {
     gSinglePlayerTimeAttackHelpText, gSinglePlayerScoreAttackHelpText, gSinglePlayerTrickAttackHelpText, gRaceRulesetMenuBackHelpText,
-    D_80132090, D_80132104, D_80132178,
+    gMultiplayerTimeAttackHelpText, gMultiplayerScoreAttackHelpText, gMultiplayerTrickAttackHelpText,
 };
 
 u8 gMainTailSelectionMapping[4] __attribute__((section(".data.main_tail_selection_mapping"), aligned(4))) = {
@@ -368,7 +368,7 @@ void updateSelectionIndexedMenuTask(void) {
             mode = 3;
         }
         if (gCurrentTask->data1A == 0 && players == 2) {
-            group = &D_80132638[gCurrentTask->data1A];
+            group = &gTwoPlayerTimeAttackCourseMappingGroups[gCurrentTask->data1A];
         } else {
             group = &gRaceRulesetCourseMappingGroups[gCurrentTask->data1A];
         }
@@ -382,7 +382,7 @@ void updateSelectionIndexedMenuTask(void) {
                                          -312, -88, group->spacingX, group->spacingY,
                                          group->count, 149, drawSelectedTaskSprite,
                                          drawRegisteredTaskGridSpriteWithNumber, 4, 1);
-        createRegisteredTextPanelTask(-320, 8, D_801325D0, group->textMapping, 4, 11);
+        createRegisteredTextPanelTask(-320, 8, gRaceRulesetCourseHelpTexts, group->textMapping, 4, 11);
         createRegisteredCallbackTask(0, 172, -72, drawMainTailSelectionItemDetails, 4, 21);
         createRegisteredTexturePairTask(172, -72, group->textureMapping, group->count,
                                         selection->selectedIndex, 1, 5, 31);
