@@ -495,6 +495,7 @@ gInterruptCallbackContext = 0x80133806; // size:0x2 defined:true
 gCounterInterruptStatus = 0x8013AD3C; // size:0x4 defined:true
 gRootCounters = 0x8013AD40; // size:0x4 defined:true
 gCounterInterruptMasks = 0x8013AD44; // size:0x10 defined:true
+counterDataPadding = 0x8013AD54; // size:0x8 defined:true
 _SsClose = 0x800A8684; // type:func defined:true
 SsVabOpenHeadWithMode = 0x800B4A64; // type:func defined:true
 gGpuDispatch = 0x80139C44; // size:0x4 defined:true

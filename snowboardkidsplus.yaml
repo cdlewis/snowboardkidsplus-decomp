@@ -989,7 +989,6 @@ segments:
       - [0x12A71C, lib, libpress, build, .data]
       - [0x12B52C, lib, libc, sprintf, .data]
       - {start: 0x12B53C, type: .data, name: syslib/libapi/counter, linker_section: .data.counter}
-      - [0x12B554, data]
       - [0x12B55C, lib, libpad421, padmain, .data]
       - [0x12B5DC, lib, libpad421, padif, .data]
       - [0x12B5FC, lib, libpad, padportd, .data]

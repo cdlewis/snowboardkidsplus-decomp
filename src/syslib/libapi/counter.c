@@ -6,6 +6,8 @@ volatile s32 *gCounterInterruptStatus COUNTER_DATA = (volatile s32 *)0x1F801070;
 volatile RootCounterRegisters *gRootCounters COUNTER_DATA =
     (volatile RootCounterRegisters *)0x1F801100;
 s32 gCounterInterruptMasks[4] COUNTER_DATA = {0x10, 0x20, 0x40, 1};
+/* Unreferenced tail of COUNTER.OBJ's original 0x20-byte .data section. */
+u32 counterDataPadding[2] COUNTER_DATA = {0, 0};
 
 s32 SetRCnt(s32 spec, s16 target, s32 flags) {
     s32 i = spec & 0xFFFF;
