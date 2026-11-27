@@ -4460,3 +4460,7 @@ gGroupedSelectionMode5Items = 0x8013B430;
 gGroupedSelectionMode4Items = 0x8013B438;
 gDefaultBoardMenuTextIndices = 0x8013B44C;
 gExtendedSelectionPanelTripletIndices = 0x8013B454;
+
+gSelectionPrizeDescriptionTexts = 0x8012FC2C; // size:0x28
+gMemoryCardMissingRetryText = 0x80130308; // size:0x40
+gMemoryCardLoadErrorRetryText = 0x80130348; // size:0x48

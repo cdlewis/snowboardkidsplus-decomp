@@ -143,7 +143,7 @@ const u16 gSaveRecordPushAnyButtonText[16]
 
 s16 gMenuPlayerModelYaw[2] __attribute__((section(".sdata"))) = {0};
 
-IndexedHalfwordRecord gRecordFlagMenuSpriteRecords[]
+IndexedHalfwordRecord gRecordFlagMenuSpriteRecords[18]
     __attribute__((section(".data.record_flag_menu_sprites"), aligned(4))) = {
     {205, 0, 0},
     {206, 0x100, 0x100},
@@ -250,7 +250,7 @@ const u32 gSaveRecordLoadPanelTablePadding
 
 StateValueHistory gMemoryCardSlotHistory __attribute__((section(".bss.state_value_history")));
 
-extern const u16 *D_8012FC2C[10];
+extern const u16 *gSelectionPrizeDescriptionTexts[10];
 extern u8 gPlayerGroupedSelectionStates[2];
 void drawClippedRegisteredTaskGridSprite(void);
 extern u16 gSaveRecordProgressCurrencyLabel[2];
@@ -262,7 +262,9 @@ void transitionRegisteredPlayerModels(void);
 void transitionRegisteredPlayerModelsUp(void);
 void transitionRegisteredPlayerModelTexture(void);
 void createPaletteEntryCopyTask(s32 x, s32 y, s32 destination, s32 source, s32 index);
-extern const u16 D_80130308[], D_80130348[], D_801303CC[], D_8013052C[];
+extern const u16 gMemoryCardMissingRetryText[32];
+extern const u16 gMemoryCardLoadErrorRetryText[36];
+extern const u16 D_801303CC[], D_8013052C[];
 extern const u16 D_8013066C[], D_801306EC[], D_80130780[];
 
 void updateSaveRecordLoadPanelTask(void);
@@ -553,7 +555,7 @@ void updateSelectionPrizeMenuTask(void) {
     case 3:
         if (parentEntries[0].flags == 0) {
             createRegisteredCallbackTask(0, -308, -76, drawSelectionPrizeAndPlayerCounters, 3, 1);
-            createRegisteredTextPanelTask(-320, -24, D_8012FC2C, NULL, 4, 11);
+            createRegisteredTextPanelTask(-320, -24, gSelectionPrizeDescriptionTexts, NULL, 4, 11);
             gCurrentTask->data18 = 4;
         }
         break;
@@ -3735,7 +3737,7 @@ void updateSaveRecordLoadPanelTask(void) {
         goto showRecord;
     case 34:
         resources->panels[0].command = 23;
-        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_80130308, menu->cardSlot, color,
+        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, gMemoryCardMissingRetryText, menu->cardSlot, color,
                                               1, gSaveRecordConfirmationSprites, gCurrentTask->data1C - 3, 11);
         gCurrentTask->data18 = 35;
         break;
@@ -3756,7 +3758,7 @@ void updateSaveRecordLoadPanelTask(void) {
         gCurrentTask->data18 = 30;
         break;
     case 36:
-        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_80130348, menu->cardSlot, color,
+        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, gMemoryCardLoadErrorRetryText, menu->cardSlot, color,
                                               1, gSaveRecordConfirmationSprites, gCurrentTask->data1C - 3, 11);
         resources->panels[0].command = 23;
         gCurrentTask->data18 = 37;
