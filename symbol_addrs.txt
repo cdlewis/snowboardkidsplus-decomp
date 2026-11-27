@@ -4111,10 +4111,10 @@ gDoubleByteGlyphCodes8x16 = 0x8012E990; // size:0x240 defined:true
 gDigitSpriteBlendBits = 0x8013B394; // size:0x8 defined:true
 drawRegisteredTaskTexturedQuadList = 0x8003288C; // type:func
 gRegisteredTaskQuadLists = 0x80123B68; // size:0x10 defined:true
-D_80123850 = 0x80123850; // size:0xC0
-D_80123910 = 0x80123910; // size:0xC0
-D_801239D0 = 0x801239D0; // size:0xC0
-D_80123A90 = 0x80123A90; // size:0xC0
+gOnePlayerModeSelectedQuads = 0x80123850; // size:0xC0
+gOnePlayerModeUnselectedQuads = 0x80123910; // size:0xC0
+gTwoPlayerModeSelectedQuads = 0x801239D0; // size:0xC0
+gTwoPlayerModeUnselectedQuads = 0x80123A90; // size:0xC0
 
 drawRegisteredTaskGridSpriteWithColor = 0x80073F84; // type:func
 
@@ -4498,3 +4498,6 @@ gMemoryCardLoadedRecordConfirmationText = 0x80130780; // size:0x18
 
 gCourseMenuItemStats = 0x8012FCE4;
 gGroupedSelectionMode4TextIndices = 0x8013B448;
+
+gPlayerModeSelectionSprites = 0x80123B50; // size:0x18
+gPlayerModeSelectionMapping = 0x8013B0FC; // size:0x4

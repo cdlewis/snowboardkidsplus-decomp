@@ -58,12 +58,12 @@ extern u8 gDemoRaceIndex __attribute__((section(".data")));
 extern u8 gRaceExitRequested __attribute__((section(".data")));
 extern u8 gRaceRestartRequested __attribute__((section(".data")));
 
-extern const u8 D_80123B50[];
-extern const u8 D_8013B0FC[];
-extern TexturedQuadListEntry D_80123850[16];
-extern TexturedQuadListEntry D_801239D0[16];
-extern TexturedQuadListEntry D_80123910[16];
-extern TexturedQuadListEntry D_80123A90[];
+extern const GridSpriteEntry gPlayerModeSelectionSprites[4];
+extern const u8 gPlayerModeSelectionMapping[4];
+extern TexturedQuadListEntry gOnePlayerModeSelectedQuads[16];
+extern TexturedQuadListEntry gTwoPlayerModeSelectedQuads[16];
+extern TexturedQuadListEntry gOnePlayerModeUnselectedQuads[16];
+extern TexturedQuadListEntry gTwoPlayerModeUnselectedQuads[16];
 
 extern s32 gTitleLogoSoundTimer;
 
@@ -96,7 +96,7 @@ const u8 gTitleMenuSpriteMapping[8]
 
 TexturedQuadListEntry *gRegisteredTaskQuadLists[4]
     __attribute__((section(".data.registered_task_quad_lists"))) = {
-    D_80123850, D_801239D0, D_80123910, D_80123A90
+    gOnePlayerModeSelectedQuads, gTwoPlayerModeSelectedQuads, gOnePlayerModeUnselectedQuads, gTwoPlayerModeUnselectedQuads
 };
 
 const u16 gRegisteredPlayerModePanelText0[28]
@@ -806,7 +806,7 @@ void updatePlayerModeSelectionTask(void) {
         if ((s16)entries[2].flags != 0) {
             break;
         }
-        createRegisteredSpacedChildTasks(1, 0xB0, 0x40, D_80123B50, D_8013B0FC,
+        createRegisteredSpacedChildTasks(1, 0xB0, 0x40, (const u8 *)gPlayerModeSelectionSprites, gPlayerModeSelectionMapping,
                                          0, 1, 0, 20, 248, -16, 0, 56, 2, 0,
                                          drawSelectedTaskMarkerSprite,
                                          drawRegisteredTaskTexturedQuadList, 4, 41);
