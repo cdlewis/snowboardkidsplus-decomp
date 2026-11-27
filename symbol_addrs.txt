@@ -4343,3 +4343,8 @@ gMenuGridResourceId = 0x8013B10E;
 
 gPlayerCollectionEntries = 0x8012450C;
 gTaskObjectModels = 0x80129A80;
+
+gCharacterMenuCharacterIndices = 0x8012D460; // size:0xC
+gTaskBackgroundTask = 0x8013B378; // size:0x4
+gSecondaryDisplayTask = 0x8013B37C; // size:0x4
+gTexturePairDimMask = 0x8013B3BC; // size:0x4

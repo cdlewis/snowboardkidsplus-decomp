@@ -4015,7 +4015,7 @@ void drawSaveRecordProgressPanel(void) {
                 }
                 if (gWorkingSaveRecords[slot]->flags & (1u << (i - 8))) {
                     drawSpriteByIndexWithBlend((i - 8) * 32 + (s16)(x + 200), y + 19,
-                                  0x70 + D_8012D460[i] * 3, 0, -1,
+                                  0x70 + gCharacterMenuCharacterIndices[i] * 3, 0, -1,
                                   &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
                 }
             }

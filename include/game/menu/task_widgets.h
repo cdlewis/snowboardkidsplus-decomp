@@ -51,7 +51,7 @@ extern MenuRgbColor gMenuColorCycleColor;
 extern u8 gSelectionPanelLabelOffsets[12];
 extern const TimedSequenceEntry gMenuInputPromptSequence[2];
 extern ByteTriplet gSelectionPanelStatTriplets[];
-extern u8 D_8012D460[12];
+extern u8 gCharacterMenuCharacterIndices[12];
 
 void createInputTimedSpriteTask(s32 x, s32 y, const TimedSequenceEntry *entries, s32 count,
                                 s32 controllers, u32 acceptMask, u32 cancelMask, s32 depth, s32 index);

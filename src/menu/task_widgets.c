@@ -231,10 +231,10 @@ u16 gTextPanelMessage[] __attribute__((section(".data.text_panel_message"))) = {
     0x009A, 0x00CB, 0x009D, 0x0094, 0x0033, 0x0000
 };
 
-extern u32 D_8013B3BC;
+extern u32 gTexturePairDimMask;
 extern TexturedQuadListEntry *D_8013B3C0[2];
-extern GameTask *D_8013B378;
-extern GameTask *D_8013B37C;
+extern GameTask *gTaskBackgroundTask;
+extern GameTask *gSecondaryDisplayTask;
 
 s8 gTaskImageSourceRows[12] = {8, 1, 2, 3, 4, 5, 6, 7, 9, 0, 0, 0};
 
@@ -480,7 +480,7 @@ void copyIndexedTaskImagesToVram(s16 index) {
 }
 
 void clearTaskReference(void) {
-    D_8013B378 = NULL;
+    gTaskBackgroundTask = NULL;
 }
 
 void setTaskBackgroundMode(s32 mode, s32 value1, s32 value2) {
@@ -488,23 +488,23 @@ void setTaskBackgroundMode(s32 mode, s32 value1, s32 value2) {
     ScrollingBackgroundResource *existing;
     switch (mode) {
     case 1:
-        if (D_8013B378 != NULL) {
-            if (D_8013B378->data18 == mode) return;
-            D_8013B378->data18 = 0;
+        if (gTaskBackgroundTask != NULL) {
+            if (gTaskBackgroundTask->data18 == mode) return;
+            gTaskBackgroundTask->data18 = 0;
         }
         createChildTaskForParentWithReserve(&gGameTasks[3], drawBlackScreenTask);
-        D_8013B378 = gCreatedTask;
-        D_8013B378->data18 = mode;
+        gTaskBackgroundTask = gCreatedTask;
+        gTaskBackgroundTask->data18 = mode;
         break;
     case 2:
-        if (D_8013B378 != NULL) {
-            if (D_8013B378->data18 == mode) {
-                existing = (ScrollingBackgroundResource *)&gTaskMemoryPool[D_8013B378->resource14];
+        if (gTaskBackgroundTask != NULL) {
+            if (gTaskBackgroundTask->data18 == mode) {
+                existing = (ScrollingBackgroundResource *)&gTaskMemoryPool[gTaskBackgroundTask->resource14];
                 existing->stepX = value1;
                 existing->stepY = value2;
                 return;
             }
-            D_8013B378->data18 = 0;
+            gTaskBackgroundTask->data18 = 0;
         }
         createChildTaskForParentWithReserve(&gGameTasks[3], updateScrollingBackgroundTask);
         gCreatedTask->resource14 = allocateTaskMemoryBlock();
@@ -514,27 +514,27 @@ void setTaskBackgroundMode(s32 mode, s32 value1, s32 value2) {
         resource->y = 0;
         resource->stepX = value1;
         resource->stepY = value2;
-        D_8013B378 = gCreatedTask;
-        D_8013B378->data18 = 2;
+        gTaskBackgroundTask = gCreatedTask;
+        gTaskBackgroundTask->data18 = 2;
         break;
     case 3:
-        if (D_8013B378 != NULL) {
-            if (D_8013B378->data18 == mode) return;
-            D_8013B378->data18 = 0;
+        if (gTaskBackgroundTask != NULL) {
+            if (gTaskBackgroundTask->data18 == mode) return;
+            gTaskBackgroundTask->data18 = 0;
         }
         createChildTaskForParentWithReserve(&gGameTasks[3], drawTaskImagesOnBlackBackground);
-        D_8013B378 = gCreatedTask;
-        D_8013B378->data18 = mode;
-        D_8013B378->data1A = value1;
-        D_8013B378->data1C = 0;
+        gTaskBackgroundTask = gCreatedTask;
+        gTaskBackgroundTask->data18 = mode;
+        gTaskBackgroundTask->data1A = value1;
+        gTaskBackgroundTask->data1C = 0;
         copyIndexedTaskImagesToVram(value1);
         startSecondaryDisplayTask();
         break;
     case 0:
     default:
-        if (D_8013B378 != NULL) {
-            D_8013B378->data18 = 0;
-            D_8013B378 = NULL;
+        if (gTaskBackgroundTask != NULL) {
+            gTaskBackgroundTask->data18 = 0;
+            gTaskBackgroundTask = NULL;
         }
         break;
     }
@@ -579,7 +579,7 @@ void drawTaskImagesOnBlackBackground(void) {
 }
 
 s32 hasTaskReference(void) {
-    return D_8013B378 != NULL;
+    return gTaskBackgroundTask != NULL;
 }
 
 void resetTaskControlState(void) {
@@ -597,17 +597,17 @@ void stopSecondaryDisplayTask(void) {
 }
 
 void clearSecondaryTaskReference(void) {
-    D_8013B37C = NULL;
+    gSecondaryDisplayTask = NULL;
 }
 
 void setSecondaryDisplayTaskMode(s16 mode) {
     switch (mode) {
     case 1: case 2: case 3:
-        if (D_8013B37C != NULL) {
-            D_8013B37C->data18 = 0;
+        if (gSecondaryDisplayTask != NULL) {
+            gSecondaryDisplayTask->data18 = 0;
         }
         createChildTaskForParentWithReserve(&gGameTasks[3], drawSecondaryDisplayTask);
-        D_8013B37C = gCreatedTask;
+        gSecondaryDisplayTask = gCreatedTask;
         gCreatedTask->data18 = mode;
         gCreatedTask->data1C = 0;
         gCreatedTask->data1E = 0;
@@ -616,9 +616,9 @@ void setSecondaryDisplayTaskMode(s16 mode) {
         break;
     case 0:
     default:
-        if (D_8013B37C != NULL) {
-            D_8013B37C->data18 = 0;
-            D_8013B37C = NULL;
+        if (gSecondaryDisplayTask != NULL) {
+            gSecondaryDisplayTask->data18 = 0;
+            gSecondaryDisplayTask = NULL;
         }
         break;
     }
@@ -675,13 +675,13 @@ void drawSecondaryDisplayTask(void) {
 
 void createSecondaryDisplayTask(TaskCallback callback) {
     createChildTaskForParentWithReserve(&gGameTasks[4], callback);
-    D_8013B37C = gCreatedTask;
+    gSecondaryDisplayTask = gCreatedTask;
 }
 
 void markSecondaryTaskAndClearReference(void) {
-    if (D_8013B37C != NULL) {
-        D_8013B37C->data18 = 99;
-        D_8013B37C = NULL;
+    if (gSecondaryDisplayTask != NULL) {
+        gSecondaryDisplayTask->data18 = 99;
+        gSecondaryDisplayTask = NULL;
     }
 }
 
@@ -1664,7 +1664,7 @@ void createRegisteredTexturePairTask(s16 x, s16 y, const u8 *mapping, s32 mode, 
     resource->y = 144;
     resource->unk08 = 0;
     resource->unk09 = arg5;
-    D_8013B3BC = 0;
+    gTexturePairDimMask = 0;
     if (index % 10 == 0) {
         if (gCurrentTask->resource14 == 0xFFFF) { while (1) {} }
         entry = getRegisteredTaskEntry(gCurrentTask->resource14, index);
@@ -1767,14 +1767,14 @@ void updateRegisteredTexturePairTask(void) {
 
     addDrawAreaPacket(0, 0, 320, 240, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
     if (resource->textureA < 255) {
-        color = (D_8013B3BC & (1U << resource->textureA)) ? 40 : 128;
+        color = (gTexturePairDimMask & (1U << resource->textureA)) ? 40 : 128;
         setSpriteColor(color, color, color);
         drawSpriteByIndexWithBlend((s16)(movement->x / 4096 + (s16)(resource->x - 144)),
                      (s16)(movement->y / 4096 + (s16)(resource->y - 144)), 142, 0, -1,
                      &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
     }
     if (resource->textureB < 255) {
-        color = (D_8013B3BC & (1U << resource->textureB)) ? 40 : 128;
+        color = (gTexturePairDimMask & (1U << resource->textureB)) ? 40 : 128;
         setSpriteColor(color, color, color);
         drawSpriteByIndexWithBlend((s16)(movement->x / 4096), (s16)(movement->y / 4096), 143, 0, -1,
                      &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
@@ -1885,14 +1885,14 @@ void animateRegisteredTexturePairTask(void) {
 
     addDrawAreaPacket(0, 0, 320, 240, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
     if (resource->textureA < 255) {
-        color = (D_8013B3BC & (1U << resource->textureA)) ? 40 : 128;
+        color = (gTexturePairDimMask & (1U << resource->textureA)) ? 40 : 128;
         setSpriteColor(color, color, color);
         drawSpriteByIndexWithBlend((s16)(movement->x / 4096 + (s16)(resource->x - 144)),
                      (s16)(movement->y / 4096 + (s16)(resource->y - 144)), 142, 0, -1,
                      &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
     }
     if (resource->textureB < 255) {
-        color = (D_8013B3BC & (1U << resource->textureB)) ? 40 : 128;
+        color = (gTexturePairDimMask & (1U << resource->textureB)) ? 40 : 128;
         setSpriteColor(color, color, color);
         drawSpriteByIndexWithBlend((s16)(movement->x / 4096), (s16)(movement->y / 4096), 143, 0, -1,
                      &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
@@ -2549,7 +2549,7 @@ s32 findCharacterSelectionIndex(s16 character) {
     s32 i;
 
     for (i = result + 1; i < 10; i++) {
-        if (character == D_8012D460[i]) {
+        if (character == gCharacterMenuCharacterIndices[i]) {
             result = i;
             break;
         }
@@ -2574,7 +2574,7 @@ void createDualSelectionSequenceTask(s16 x, s16 y, s32 depth, s32 index) {
     gCreatedTask->resource16 = allocateTaskMemoryBlock();
     sequences = (TimedSequence *)&gTaskMemoryPool[gCreatedTask->resource16];
     for (i = 0; i < 2; i++) {
-        type = D_8012D460[selection[i].selected];
+        type = gCharacterMenuCharacterIndices[selection[i].selected];
         if (type == 3 || type == 4 || type == 8) {
             initTimedSequence(&sequences[i], gExtendedCharacterPortraitSequence, 0, 8);
         } else {
@@ -2694,7 +2694,7 @@ void updateCharacterSelectionPortraitTask(void) {
             drawSpriteByIndexWithBlend(x, (s16)((u16)yOffsets[i] + 36 + selected / 2 * 32 + movement->y / 4096),
                                        sprites[i], (s16)i, -1, &gMainOrderingTables[gActiveGraphicsBuffer], depths[i]);
             if (selection[i].selected != selection[i].previous) {
-                type = D_8012D460[selection[i].selected];
+                type = gCharacterMenuCharacterIndices[selection[i].selected];
                 if (type == 3 || type == 4 || type == 8) {
                     initTimedSequence(&sequences[i], gExtendedCharacterPortraitSequence, 0, 8);
                 } else {
@@ -2735,7 +2735,7 @@ void updateCharacterSelectionPortraitTask(void) {
             x += i % 2 * 32;
             x += movement->x / 4096;
             drawSpriteByIndexWithBlend(x, (s16)(i / 2 * 32 + (s16)(movement->y / 4096 + 40)),
-                                       D_8012D460[i] * 3 + (frame + portraitBase), 0, -1,
+                                       gCharacterMenuCharacterIndices[i] * 3 + (frame + portraitBase), 0, -1,
                                        &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
         } else {
             setSpriteColor(64, 64, 64);
@@ -2744,7 +2744,7 @@ void updateCharacterSelectionPortraitTask(void) {
             x += i % 2 * 32;
             x += movement->x / 4096;
             drawSpriteByIndexWithBlend(x, (s16)(i / 2 * 32 + (s16)(movement->y / 4096 + 40)),
-                                       D_8012D460[i] * 3 + portraitBase, 0, -1,
+                                       gCharacterMenuCharacterIndices[i] * 3 + portraitBase, 0, -1,
                                        &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
         }
     }
@@ -2814,7 +2814,7 @@ void updatePlayerPanelTask(void) {
     selection = &selections[(s16)gCurrentTask->data1A];
     player = gCurrentTask->data1A;
     if (selection->selected >= 0) {
-        character = D_8012D460[selection->selected];
+        character = gCharacterMenuCharacterIndices[selection->selected];
     } else {
         character = 0;
     }
@@ -3012,7 +3012,7 @@ void updatePlayerCharacterSelection(s16 playerIndex, SelectionEntry *entries) {
     }
     if (gControllerPressedButtons[playerIndex] & 0xB0) {
         entry->unk06 = 1;
-        mapping = &D_8012D460[entry->selected];
+        mapping = &gCharacterMenuCharacterIndices[entry->selected];
         records = gPlayerSaveRecords;
         players = gRacePlayers;
         player = &players[playerIndex];
@@ -3044,7 +3044,7 @@ void updatePlayerCharacterSelection(s16 playerIndex, SelectionEntry *entries) {
             gRacePlayers[playerIndex].unk00D = choices[rand() % count];
         }
 confirm:
-        playSoundEffect(1, gCharacterSelectionConfirmSounds[D_8012D460[entry->selected]], 0x20);
+        playSoundEffect(1, gCharacterSelectionConfirmSounds[gCharacterMenuCharacterIndices[entry->selected]], 0x20);
     }
     if (gControllerPressedButtons[playerIndex] & 0x40) {
         entry->unk06 = -1;
@@ -3066,7 +3066,7 @@ void createRegisteredSelectionPanelTask(s16 playerIndex, SelectionPanelRecord *r
     player = playerIndex;
     if (player < playerCountAbsolute) {
         uploadTextureArchiveEntry(0x240 + (player << 7), 0x100, 0x300,
-                                  0xEE - player * 2, D_8012D460[record->selection]);
+                                  0xEE - player * 2, gCharacterMenuCharacterIndices[record->selection]);
     } else {
         uploadTextureArchiveEntry(0x240 + (player << 7), 0x100, 0x300,
                                   0xEE - player * 2, 10);
@@ -3124,8 +3124,8 @@ void updateRegisteredSelectionPanelTask(void) {
             resource->slideY = 0;
             resource->speedX = -28;
             resource->speedY = 0;
-            resource->previousTexture = D_8012D460[record->previousSelection];
-            resource->nextTexture = D_8012D460[record->selection];
+            resource->previousTexture = gCharacterMenuCharacterIndices[record->previousSelection];
+            resource->nextTexture = gCharacterMenuCharacterIndices[record->selection];
             uploadTextureArchiveEntry(576 + player * 128, 256, 768, 238 - player * 2,
                                       resource->previousTexture);
             uploadTextureArchiveEntry(640 + player * 128, 256, 768, 237 - player * 2,
@@ -3138,7 +3138,7 @@ void updateRegisteredSelectionPanelTask(void) {
                 resource->transitioning = 0;
                 record->previousSelection = record->selection;
                 uploadTextureArchiveEntry(576 + player * 128, 256, 768, 238 - player * 2,
-                                          D_8012D460[record->selection]);
+                                          gCharacterMenuCharacterIndices[record->selection]);
             }
         }
 
@@ -3164,7 +3164,7 @@ void updateRegisteredSelectionPanelTask(void) {
             addDrawAreaPacket((s16)(position->x / 4096 + 256), (s16)(position->y / 4096 + 120),
                               112, 96, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
         } else {
-            s16 character = D_8012D460[record->selection];
+            s16 character = gCharacterMenuCharacterIndices[record->selection];
             const s8 *stats = gSelectionPanelCharacterStats.values[character];
             s8 labelOffset;
 
