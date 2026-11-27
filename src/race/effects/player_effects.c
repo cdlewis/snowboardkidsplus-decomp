@@ -613,6 +613,16 @@ SVECTOR gPlayerTripleQuadOffsets[3]
     {-40, 0, 0, 0}, {40, 0, 0, 0}, {0, 0, 0, 0}
 };
 
+POLY_FT4 gRotatingQuadTrailPacket
+    __attribute__((section(".data.rotating_quad_trail_packet"))) = {
+    TEXTURED_QUAD_PACKET_WORDS << 24, 0, 0, 0,
+    TEXTURED_QUAD_CODE | SEMI_TRANSPARENT_FLAG,
+    0, 0, 0, 0, getClut(944, 240),
+    0, 0, 215, 0, getTPage(0, 0, 960, 0),
+    0, 0, 0, 15, 0,
+    0, 0, 215, 15, 0,
+};
+
 SVECTOR gRotatingQuadTrailVertices[4]
     __attribute__((section(".data.rotating_quad_trail_vertices"))) = {
     {-108, -8, 0, 0}, {108, -8, 0, 0},

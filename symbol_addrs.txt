@@ -54,6 +54,7 @@ scratchpad = 0x1F800000; // size:0x400 absolute:true extract:false
 
 drawRotatingQuadTrailTask = 0x80068D1C; // type:func
 gRotatingQuadTrailVertices = 0x8012CA74; // type:SVECTOR size:0x20 defined:true
+gRotatingQuadTrailPacket = 0x8012CA4C; // type:POLY_FT4 size:0x28 defined:true
 
 drawRegisteredTaskGridSpriteWithDefaultBlend = 0x800318C4; // type:func
 createRegisteredPlayerModelTask = 0x80082690; // type:func
