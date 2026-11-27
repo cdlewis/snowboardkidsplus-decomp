@@ -89,8 +89,12 @@ extern VisualPlacement gEmptyVisualPlacements[1];
 extern VisualPlacement gCourse0SinglePlayerInteractionPlacements[21];
 extern VisualPlacement gCourse1SinglePlayerInteractionPlacements[21];
 extern VisualPlacement gCourse9SinglePlayerInteractionPlacements[11];
-extern VisualPlacement D_801283CC[], D_8012865C[], D_801288EC[];
-extern VisualPlacement D_80128A3C[], D_80128E0C[], D_801291DC[];
+extern VisualPlacement gCourse0TwoPlayerInteractionPlacements[41];
+extern VisualPlacement gCourse1TwoPlayerInteractionPlacements[41];
+extern VisualPlacement gCourse9TwoPlayerInteractionPlacements[21];
+extern VisualPlacement gCourse0CollectiblePlacements[61];
+extern VisualPlacement gCourse1CollectiblePlacements[61];
+extern VisualPlacement gCourse9CollectiblePlacements[31];
 
 u8 gCpuSpeedModesSoloFirst[4] __attribute__((section(".data.cpu_speed_modes"))) = { 1, 0, 2, 0 };
 u8 gCpuSpeedModesSoloSecond[4] __attribute__((section(".data.cpu_speed_modes"))) = { 0, 1, 2, 0 };
@@ -116,8 +120,8 @@ VisualPlacement *gCourseObjectPlacements[10] __attribute__((section(".data.cours
 
 VisualPlacement *gCourseChallengePlacements[3][10] __attribute__((section(".data.course_challenge_placements"))) = {
     {
-        D_80128A3C, D_80128E0C, gEmptyVisualPlacements, gEmptyVisualPlacements, gEmptyVisualPlacements,
-        gEmptyVisualPlacements, gEmptyVisualPlacements, gEmptyVisualPlacements, gEmptyVisualPlacements, D_801291DC,
+        gCourse0CollectiblePlacements, gCourse1CollectiblePlacements, gEmptyVisualPlacements, gEmptyVisualPlacements, gEmptyVisualPlacements,
+        gEmptyVisualPlacements, gEmptyVisualPlacements, gEmptyVisualPlacements, gEmptyVisualPlacements, gCourse9CollectiblePlacements,
     },
     {
         gCourse0SinglePlayerInteractionPlacements, gCourse1SinglePlayerInteractionPlacements,
@@ -126,8 +130,8 @@ VisualPlacement *gCourseChallengePlacements[3][10] __attribute__((section(".data
         gCourse9SinglePlayerInteractionPlacements,
     },
     {
-        D_801283CC, D_8012865C, gEmptyVisualPlacements, gEmptyVisualPlacements, gEmptyVisualPlacements,
-        gEmptyVisualPlacements, gEmptyVisualPlacements, gEmptyVisualPlacements, gEmptyVisualPlacements, D_801288EC,
+        gCourse0TwoPlayerInteractionPlacements, gCourse1TwoPlayerInteractionPlacements, gEmptyVisualPlacements, gEmptyVisualPlacements, gEmptyVisualPlacements,
+        gEmptyVisualPlacements, gEmptyVisualPlacements, gEmptyVisualPlacements, gEmptyVisualPlacements, gCourse9TwoPlayerInteractionPlacements,
     },
 };
 
