@@ -58,6 +58,8 @@ extern u16 gTaskMemoryFreeBits[16];
 extern GameTask *gCurrentTask;
 extern GameTask *gCreatedTask;
 extern GameTask *gCurrentTaskParent;
+/* Restart traversal at the pause UI root after skipping the remaining race tasks. */
+extern GameTask *gPauseTaskResumeAnchor;
 extern GameTask *gPlayerSnapshotTask
     __attribute__((section(".data.player_snapshot_tasks")));
 /* GP-relative alias for the player snapshot task pointer. */

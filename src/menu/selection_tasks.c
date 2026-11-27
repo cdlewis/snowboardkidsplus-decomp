@@ -34,7 +34,7 @@ extern s16 gPlayerViewVerticalOffset __attribute__((section(".data")));
 extern u8 gRacePauseState __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
-extern GameTask *D_8013AE90 __attribute__((section(".data")));
+extern GameTask *gPauseTaskResumeAnchor __attribute__((section(".data")));
 
 extern u8 gMenuScreenId __attribute__((section(".data")));
 extern u8 gMenuTransitionState __attribute__((section(".data")));
@@ -370,7 +370,7 @@ void drawOffsetSelectedTaskSprite(void) {
 
 void skipRemainingRaceTasksDuringNumberSelection(void) {
     if (gRacePauseState) {
-        gCurrentTask = D_8013AE90->previous;
+        gCurrentTask = gPauseTaskResumeAnchor->previous;
     }
 }
 

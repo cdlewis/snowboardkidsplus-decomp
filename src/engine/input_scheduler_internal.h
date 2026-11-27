@@ -42,16 +42,8 @@ extern GameTask gGameTasks[200] __attribute__((section(".data.game_tasks")));
 
 extern GameTask *gCurrentTask __attribute__((section(".sdata.task_scheduler")));
 extern GameTask *gCreatedTask __attribute__((section(".sdata.task_scheduler")));
-extern GameTask *D_8013AE90 __attribute__((section(".sdata.task_scheduler")));
 extern GameTask *D_8013AE94 __attribute__((section(".sdata.task_scheduler")));
 extern GameTask *gCurrentTaskParent __attribute__((section(".sdata.task_scheduler")));
-extern GameTask *D_8013AE9C __attribute__((section(".sdata.task_scheduler")));
-extern GameTask *D_8013AEA0 __attribute__((section(".sdata.task_scheduler")));
-extern GameTask *D_8013AEA4 __attribute__((section(".sdata.task_scheduler")));
-extern GameTask *D_8013AEA8 __attribute__((section(".sdata.task_scheduler")));
-extern GameTask *D_8013AEAC __attribute__((section(".sdata.task_scheduler")));
-extern GameTask *D_8013AEB0 __attribute__((section(".sdata.task_scheduler")));
-extern u16 D_8013AEB4 __attribute__((section(".sdata.task_scheduler")));
 
 extern CdRequest gCdRequests[64] __attribute__((section(".data.cd_requests")));
 

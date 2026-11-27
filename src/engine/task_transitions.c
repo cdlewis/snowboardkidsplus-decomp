@@ -60,7 +60,7 @@ extern u8 D_8013B1AA __attribute__((section(".data")));
 extern u8 D_8013B1AB __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
-extern GameTask *D_8013AE90 __attribute__((section(".data")));
+extern GameTask *gPauseTaskResumeAnchor __attribute__((section(".data")));
 
 extern u8 gControllerInputRecordState __attribute__((section(".data")));
 extern s16 gCdCommandActive __attribute__((section(".data")));
@@ -803,7 +803,7 @@ continueDemo:
     return;
 
 pause:
-    gCurrentTask = D_8013AE90->previous;
+    gCurrentTask = gPauseTaskResumeAnchor->previous;
 }
 
 void finishRaceTransitionAfterCountdown(void) {

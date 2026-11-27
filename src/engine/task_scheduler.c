@@ -8,25 +8,25 @@ GameTask *gCurrentTask __attribute__((section(".sdata.task_scheduler"))) = 0;
 
 GameTask *gCreatedTask __attribute__((section(".sdata.task_scheduler"))) = 0;
 
-GameTask *D_8013AE90 __attribute__((section(".sdata.task_scheduler"))) = 0;
+GameTask *gPauseTaskResumeAnchor __attribute__((section(".sdata.task_scheduler"))) = 0;
 
 GameTask *D_8013AE94 __attribute__((section(".sdata.task_scheduler"))) = 0;
 
 GameTask *gCurrentTaskParent __attribute__((section(".sdata.task_scheduler"))) = 0;
 
-GameTask *D_8013AE9C __attribute__((section(".sdata.task_scheduler"))) = 0;
+GameTask *gTaskFreeListHead __attribute__((section(".sdata.task_scheduler"))) = 0;
 
-GameTask *D_8013AEA0 __attribute__((section(".sdata.task_scheduler"))) = 0;
+GameTask *gTaskFreeListTail __attribute__((section(".sdata.task_scheduler"))) = 0;
 
-GameTask *D_8013AEA4 __attribute__((section(".sdata.task_scheduler"))) = 0;
+GameTask *gTaskNextScratch __attribute__((section(".sdata.task_scheduler"))) = 0;
 
-GameTask *D_8013AEA8 __attribute__((section(".sdata.task_scheduler"))) = 0;
+GameTask *gDeletedTaskPredecessor __attribute__((section(".sdata.task_scheduler"))) = 0;
 
-GameTask *D_8013AEAC __attribute__((section(".sdata.task_scheduler"))) = 0;
+GameTask *gTaskDeletionFirst __attribute__((section(".sdata.task_scheduler"))) = 0;
 
-GameTask *D_8013AEB0 __attribute__((section(".sdata.task_scheduler"))) = 0;
+GameTask *gTaskDeletionCursor __attribute__((section(".sdata.task_scheduler"))) = 0;
 
-u16 D_8013AEB4 __attribute__((section(".sdata.task_scheduler"))) = 0;
+u16 gAvailableTaskSlots __attribute__((section(".sdata.task_scheduler"))) = 0;
 
 static u16 sTaskSchedulerPadding __attribute__((section(".sdata.task_scheduler"))) = 0;
 
@@ -55,9 +55,9 @@ void initializeTaskScheduler(void) {
     }
     gGameTasks[0].previous = 0;
     gGameTasks[5].next = 0;
-    D_8013AE90 = &gGameTasks[1];
+    gPauseTaskResumeAnchor = &gGameTasks[1];
     D_8013AE94 = &gGameTasks[2];
-    D_8013AE9C = &gGameTasks[6];
+    gTaskFreeListHead = &gGameTasks[6];
     for (i = 6; i < 200; i++) {
         gGameTasks[i].next = &gGameTasks[i + 1];
         gGameTasks[i].previous = 0;
@@ -68,8 +68,8 @@ void initializeTaskScheduler(void) {
         gGameTasks[i].resource16 = -1;
         gGameTasks[i].resource14 = -1;
     }
-    D_8013AEA0 = &gGameTasks[199];
-    D_8013AEB4 = 193;
+    gTaskFreeListTail = &gGameTasks[199];
+    gAvailableTaskSlots = 193;
     for (i = 0; i < 16; i++) {
         gTaskMemoryFreeBits[i] = -1;
     }
@@ -77,12 +77,12 @@ void initializeTaskScheduler(void) {
 
 void insertChildTaskFromFreeList(TaskCallback callback) {
     GameTask *next;
-    D_8013AEB4--;
-    gCreatedTask = D_8013AE9C;
-    D_8013AE9C = D_8013AE9C->next;
+    gAvailableTaskSlots--;
+    gCreatedTask = gTaskFreeListHead;
+    gTaskFreeListHead = gTaskFreeListHead->next;
     next = gCurrentTask->next;
     gCreatedTask->next = next;
-    D_8013AEA4 = next;
+    gTaskNextScratch = next;
     if (next != 0) {
         next->previous = gCreatedTask;
     }
@@ -97,8 +97,8 @@ void insertChildTaskFromFreeList(TaskCallback callback) {
 }
 
 s32 createChildTask(TaskCallback callback) {
-    if (D_8013AEB4 == 0) {
-        gCreatedTask = D_8013AEA0;
+    if (gAvailableTaskSlots == 0) {
+        gCreatedTask = gTaskFreeListTail;
         return 0;
     }
     insertChildTaskFromFreeList(callback);
@@ -106,8 +106,8 @@ s32 createChildTask(TaskCallback callback) {
 }
 
 s32 createChildTaskWithReserve(TaskCallback callback) {
-    if (D_8013AEB4 <= 10) {
-        gCreatedTask = D_8013AEA0;
+    if (gAvailableTaskSlots <= 10) {
+        gCreatedTask = gTaskFreeListTail;
         return 0;
     }
     insertChildTaskFromFreeList(callback);
@@ -115,9 +115,9 @@ s32 createChildTaskWithReserve(TaskCallback callback) {
 }
 
 s32 tryCreateChildTaskWith20SlotsReserved(TaskCallback callback) {
-    if (D_8013AEB4 <= 20) {
+    if (gAvailableTaskSlots <= 20) {
         /* Expose the free-list tail as the fallback task. */
-        gCreatedTask = D_8013AEA0;
+        gCreatedTask = gTaskFreeListTail;
         return 0;
     }
 
@@ -158,19 +158,19 @@ s16 tryCreateChildTaskForParentWith20SlotsReserved(GameTask *parent, TaskCallbac
 void deleteCurrentTaskSubtree(void) {
     GameTask *task = gCurrentTask;
 
-    D_8013AEB0 = task;
-    D_8013AEAC = task;
+    gTaskDeletionCursor = task;
+    gTaskDeletionFirst = task;
     deletePendingTaskSubtree();
     /* Resume traversal from the predecessor of the removed subtree. */
-    gCurrentTask = D_8013AEA8;
+    gCurrentTask = gDeletedTaskPredecessor;
 }
 
 void deleteCurrentTaskDescendants(void) {
     if (currentTaskHasChildren()) {
         GameTask *firstDescendant = gCurrentTask->next;
 
-        D_8013AEB0 = firstDescendant;
-        D_8013AEAC = firstDescendant;
+        gTaskDeletionCursor = firstDescendant;
+        gTaskDeletionFirst = firstDescendant;
         deletePendingTaskSubtree();
     }
 }
@@ -178,28 +178,28 @@ void deleteCurrentTaskDescendants(void) {
 void deletePendingTaskSubtree(void) {
     u32 depth = gCurrentTask->depth;
     while (1) {
-        D_8013AEB4++;
-        if (D_8013AEB0->resource14 != 0xFFFF) {
-            freeTaskMemoryBlock(D_8013AEB0->resource14);
+        gAvailableTaskSlots++;
+        if (gTaskDeletionCursor->resource14 != 0xFFFF) {
+            freeTaskMemoryBlock(gTaskDeletionCursor->resource14);
         }
-        if (D_8013AEB0->resource16 != 0xFFFF) {
-            freeTaskMemoryBlock(D_8013AEB0->resource16);
+        if (gTaskDeletionCursor->resource16 != 0xFFFF) {
+            freeTaskMemoryBlock(gTaskDeletionCursor->resource16);
         }
-        D_8013AEB0->unk10 = 0xFFFF;
-        D_8013AEA4 = D_8013AEB0->next;
-        if (D_8013AEA4 != 0 && D_8013AEA4->depth > depth) {
-            D_8013AEB0 = D_8013AEA4;
+        gTaskDeletionCursor->unk10 = 0xFFFF;
+        gTaskNextScratch = gTaskDeletionCursor->next;
+        if (gTaskNextScratch != 0 && gTaskNextScratch->depth > depth) {
+            gTaskDeletionCursor = gTaskNextScratch;
         } else {
             break;
         }
     }
-    D_8013AEA0->next = D_8013AEAC;
-    D_8013AEA4 = D_8013AEB0->next;
-    D_8013AEA8 = D_8013AEAC->previous;
-    D_8013AEA0 = D_8013AEB0;
-    D_8013AEA8->next = D_8013AEA4;
-    if (D_8013AEA4 != 0) {
-        D_8013AEA4->previous = D_8013AEA8;
+    gTaskFreeListTail->next = gTaskDeletionFirst;
+    gTaskNextScratch = gTaskDeletionCursor->next;
+    gDeletedTaskPredecessor = gTaskDeletionFirst->previous;
+    gTaskFreeListTail = gTaskDeletionCursor;
+    gDeletedTaskPredecessor->next = gTaskNextScratch;
+    if (gTaskNextScratch != 0) {
+        gTaskNextScratch->previous = gDeletedTaskPredecessor;
     }
 }
 
@@ -207,9 +207,9 @@ u16 currentTaskHasChildren(void) {
     GameTask *current = gCurrentTask;
     u16 result;
 
-    D_8013AEA4 = current->next;
-    if (D_8013AEA4 != NULL) {
-        result = D_8013AEA4->depth > current->depth;
+    gTaskNextScratch = current->next;
+    if (gTaskNextScratch != NULL) {
+        result = gTaskNextScratch->depth > current->depth;
     } else {
         result = 0;
     }

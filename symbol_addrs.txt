@@ -4355,3 +4355,12 @@ gTimedSpriteSecondaryBrightness = 0x8013B360; // size:0x4
 gTimedSpriteInterpolationComplete = 0x8013B364; // size:0x4
 
 SsInit = 0x800A89F4; // type:func
+
+gPauseTaskResumeAnchor = 0x8013AE90; // size:0x4
+gTaskFreeListHead = 0x8013AE9C; // size:0x4
+gTaskFreeListTail = 0x8013AEA0; // size:0x4
+gTaskNextScratch = 0x8013AEA4; // size:0x4
+gDeletedTaskPredecessor = 0x8013AEA8; // size:0x4
+gTaskDeletionFirst = 0x8013AEAC; // size:0x4
+gTaskDeletionCursor = 0x8013AEB0; // size:0x4
+gAvailableTaskSlots = 0x8013AEB4; // size:0x2
