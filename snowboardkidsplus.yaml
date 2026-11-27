@@ -847,7 +847,7 @@ segments:
       - {start: 0x11F17C, type: .data, name: graphics/sprite_draw, linker_section: .data.digit_sprite16_template}
       - {start: 0x11F190, type: .data, name: graphics/sprite_draw, linker_section: .data.double_byte_glyph_codes_8x16}
       - {start: 0x11F3D0, type: .data, name: graphics/sprite_draw, linker_section: .data.uppercase_glyph_metrics}
-      - [0x11F404, data, uppercase_glyph_metrics_tail]
+      - {start: 0x11F404, type: .data, name: graphics/sprite_draw, linker_section: .data.double_byte_glyph_codes_16x16}
       - [0x11F900, .data, menu/task_widgets]
       - {start: 0x11F90C, type: .data, name: menu/task_widgets, linker_section: .data.secondary_task_sequence}
       - [0x11F93C, .data, menu/course_selection_tasks]
