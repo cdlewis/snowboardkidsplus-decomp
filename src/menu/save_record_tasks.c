@@ -173,6 +173,22 @@ const u16 gMemoryCardSaveSlotChoiceText[20]
     0x0093, 0x0033, 0x0000, 0x0000,
 };
 
+const u16 gMemoryCardSaveCompleteText[8]
+    __attribute__((section(".data.memory_card_result_text"), aligned(4))) = {
+    0x00DB, 0x00DC, 0x009D, 0x00B0, 0x009D, 0x00A1, 0x0033, 0x0000,
+};
+
+const u16 gMemoryCardLoadOptionsText[14]
+    __attribute__((section(".data.memory_card_result_text"), aligned(4))) = {
+    0x007D, 0x002C, 0x0051, 0x00BE, 0x006C, 0x002C, 0x007E,
+    0x009D, 0x00B0, 0x009E, 0x0097, 0x0031, 0x0000, 0x0000,
+};
+
+const u16 gMemoryCardSaveOptionsText[14]
+    __attribute__((section(".data.memory_card_result_text"), aligned(4))) = {
+    0x007D, 0x002C, 0x0051, 0x00BE, 0x004F, 0x002C, 0x0081,
+    0x009D, 0x00B0, 0x009E, 0x0097, 0x0031, 0x0000, 0x0000,
+};
 
 extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
@@ -202,8 +218,6 @@ const u16 gMemoryCardSaveRecordHeading[10]
 SaveRecord gPlayerSaveRecords[2] __attribute__((section(".data.save_records"))) = {0};
 SaveRecord gMergedSaveRecord __attribute__((section(".data.merged_save_record"))) = {0};
 
-extern const u16 gMemoryCardSaveCompleteText[];
-extern const u16 gMemoryCardSaveOptionsText[];
 extern const u16 gMemoryCardSaveMenuExitConfirmationText[];
 extern const u16 gMemoryCardSaveConfirmationText[];
 /* Incomplete arrays let the compiler schedule the address halves separately. */

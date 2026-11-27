@@ -114,6 +114,7 @@ extern const u16 gMemoryCardLoadErrorRetryText[36];
 extern const u16 gMemoryCardLoadRetryConfirmationText[16];
 extern const u16 gMemoryCardLoadInProgressText[38];
 extern const u16 gMemoryCardLoadSlotChoiceText[20];
+extern const u16 gMemoryCardLoadOptionsText[14];
 
 extern const u16 gMemoryCardAccessInProgressText[38];
 extern const u16 gSaveRecordConfirmationSprites[];
