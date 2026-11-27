@@ -27,7 +27,7 @@ extern u8 gDemoRaceIndex __attribute__((section(".data")));
 void resetGameOptionState(void) {
     gMenuScreenId = 2;
     gMenuTransitionState = 0;
-    D_8013B10A = 0;
+    gTitleAttractSequenceIndex = 0;
     gGameOptionFlags = 0x3E;
 }
 

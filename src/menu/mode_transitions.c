@@ -60,13 +60,12 @@ extern u8 gRaceRestartRequested __attribute__((section(".data")));
 
 extern const u8 D_80123B50[];
 extern const u8 D_8013B0FC[];
-extern TexturedQuadListEntry D_80123850[];
-extern TexturedQuadListEntry D_801239D0[];
-extern TexturedQuadListEntry D_80123910[];
+extern TexturedQuadListEntry D_80123850[16];
+extern TexturedQuadListEntry D_801239D0[16];
+extern TexturedQuadListEntry D_80123910[16];
 extern TexturedQuadListEntry D_80123A90[];
 
-extern s32 D_8013B100;
-extern u8 D_8013B110;
+extern s32 gTitleLogoSoundTimer;
 
 const char gTitleScreenStartPrompt[16]
     __attribute__((section(".rodata.title_screen_start_prompt"), aligned(4))) = "PUSH START";
@@ -280,7 +279,7 @@ void updateTitleScreenMenuTask(void) {
         setMusicSequenceEnabled(0);
         setSecondaryDisplayTaskMode(0);
         configureTaskStateTransition(11, 0, 30);
-        D_8013B100 = 0;
+        gTitleLogoSoundTimer = 0;
         gCurrentTask->data1A = 15;
         gCurrentTask->data18 = 1;
         break;
@@ -294,7 +293,7 @@ void updateTitleScreenMenuTask(void) {
         }
         input->unk00 = 0;
         input->confirmed = 0;
-        input->previousSelection = input->selection = D_8013B110;
+        input->previousSelection = input->selection = gTitleMenuSelectionIndex;
         createRegisteredSpacedChildTasks(1, 0x8B0, 0, (const u8 *)gTitleMenuSprites, gTitleMenuSpriteMapping,
                                         0, 1, 0, 0, 316, 48, 0, 15, 3, 0,
                                         drawSelectedTaskSideMarkerSprite,
@@ -319,18 +318,18 @@ void updateTitleScreenMenuTask(void) {
             }
             if (state->idleFrames >= 1290) {
                 if (state->selectionFrames >= state->selectionDelay) {
-                    D_8013B10A++;
-                    if (D_8013B10A >= 10) {
-                        D_8013B10A = 0;
+                    gTitleAttractSequenceIndex++;
+                    if (gTitleAttractSequenceIndex >= 10) {
+                        gTitleAttractSequenceIndex = 0;
                     }
-                    if (D_8013B10A & 1) {
+                    if (gTitleAttractSequenceIndex & 1) {
                         gMenuTransitionState = 2;
-                        gDemoRaceIndex = (D_8013B10A >> 1) + 1;
+                        gDemoRaceIndex = (gTitleAttractSequenceIndex >> 1) + 1;
                     } else {
                         gMenuTransitionState = 0;
                         gDemoRaceIndex = 0;
                     }
-                    D_8013B110 = 0;
+                    gTitleMenuSelectionIndex = 0;
                     gMenuScreenId = 2;
                     configureTaskStateTransition(2, 0, 30);
                     input->confirmed = 1;
@@ -365,7 +364,7 @@ void updateTitleScreenMenuTask(void) {
             break;
         }
         resetPendingCdRequests();
-        D_8013B110 = input->selection;
+        gTitleMenuSelectionIndex = input->selection;
         gCurrentTask->data18 = 8;
         break;
     case 7:
@@ -380,9 +379,9 @@ void updateTitleScreenMenuTask(void) {
         return;
     }
 
-    if (D_8013B100 < 41) {
-        if (D_8013B100 > 0) {
-            D_8013B100++;
+    if (gTitleLogoSoundTimer < 41) {
+        if (gTitleLogoSoundTimer > 0) {
+            gTitleLogoSoundTimer++;
         }
     } else {
         countdown = gCurrentTask->data1A;
@@ -435,7 +434,7 @@ void createTitleLogoTask(s32 depth, s32 index) {
     gCreatedTask->data1C = depth;
     gCreatedTask->data1E = index;
     logo->soundState = 0;
-    D_8013B100 = 0;
+    gTitleLogoSoundTimer = 0;
     if (index % 10 == 0) {
         SelectedTaskEntry *entries;
         if (gCurrentTask->resource14 == 0xFFFF) {
@@ -632,10 +631,10 @@ void updateTitleLogoTask(void) {
     if (logo->soundState == 1) {
         playSoundEffect(1, 0xA01, 72);
         logo->soundState = 2;
-        D_8013B100 = 1;
+        gTitleLogoSoundTimer = 1;
     }
-    if (D_8013B100 > 0) {
-        D_8013B100++;
+    if (gTitleLogoSoundTimer > 0) {
+        gTitleLogoSoundTimer++;
     }
 
     logoX = logo->logoX / 4096;

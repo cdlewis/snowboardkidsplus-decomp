@@ -24,7 +24,8 @@ extern u8 gMenuTransitionState;
 /* Resource request caches; -1 forces the next menu resource read. */
 extern s16 gMenuTextureResourceId;
 extern s16 gMenuGridResourceId;
-extern u8 D_8013B10A;
+extern u8 gTitleAttractSequenceIndex;
+extern u8 gTitleMenuSelectionIndex;
 extern u8 D_8013B564;
 
 void initializeGameOptionTask(void);

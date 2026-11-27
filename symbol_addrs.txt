@@ -4392,3 +4392,7 @@ gSaveRecordSavedOrLoaded = 0x8013B47C;
 
 gNextSelectedRecordProgressBonus = 0x8013AFDE; // size:0x2
 gSelectedGeometryVertex2 = 0x8013B208; // size:0x4
+
+gTitleLogoSoundTimer = 0x8013B100;
+gTitleAttractSequenceIndex = 0x8013B10A;
+gTitleMenuSelectionIndex = 0x8013B110;

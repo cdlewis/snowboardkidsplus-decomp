@@ -35,7 +35,6 @@ extern volatile u8 gShopMenuRememberedSelection __attribute__((section(".data"))
 
 extern u8 gSaveRecordSavedOrLoaded __attribute__((section(".data")));
 extern u8 D_8013B527 __attribute__((section(".data")));
-extern u8 D_8013B110;
 
 RaceTime gDefaultRaceRecordTimes[3][5]
     __attribute__((section(".data.default_race_record_times"), aligned(4))) = {
@@ -1849,5 +1848,5 @@ void initializeNewGameSaveData(void) {
     gDemoRaceIndex = 0;
     clearHalfwordPairTable();
     gMenuMusicEnabled = 0;
-    D_8013B110 = 0;
+    gTitleMenuSelectionIndex = 0;
 }
