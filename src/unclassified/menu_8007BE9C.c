@@ -31,8 +31,10 @@ extern const u16 gMainMenuMultiplayerRaceRulesHelpText[68];
 extern const u16 gMainMenuCourseSelectionHelpText[50];
 extern const u16 gMainMenuShopHelpText[52];
 extern const u16 gMainMenuSaveHelpText[30];
-extern const u16 D_8012F6D4[28];
-extern const u16 D_8012F70C[], D_8012F728[], D_8012F750[];
+extern const u16 gMainMenuShinobinBoardUnavailableHelpText[28];
+extern const u16 gMainMenuMultiplayerShopUnavailableHelpText[14];
+extern const u16 gMainMenuMultiplayerCourseSelectionUnavailableHelpText[20];
+extern const u16 gMainMenuReturnToTitleHelpText[14];
 
 const GridSpriteEntry gMainMenuSprites[6]
     __attribute__((section(".data.main_menu_sprites"), aligned(4))) = {
@@ -51,7 +53,10 @@ const u16 *gMainMenuTexts[11]
     gMainMenuCourseSelectionHelpText,
     gMainMenuShopHelpText,
     gMainMenuSaveHelpText,
-    D_8012F6D4, D_8012F70C, D_8012F728, D_8012F750,
+    gMainMenuShinobinBoardUnavailableHelpText,
+    gMainMenuMultiplayerShopUnavailableHelpText,
+    gMainMenuMultiplayerCourseSelectionUnavailableHelpText,
+    gMainMenuReturnToTitleHelpText,
     gMainMenuMultiplayerRaceHelpText,
     gMainMenuMultiplayerRaceRulesHelpText,
 };
