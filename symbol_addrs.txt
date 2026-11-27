@@ -3116,6 +3116,7 @@ gCourseModelCoordinate = 0x80124FF4; // size:0x50 defined:true
 gOptionalCourseModels = 0x80125044; // size:0x1C defined:true
 gCourseRenderingReserved25060 = 0x80125060; // size:0x8C defined:true
 gCourseModelPositionBuffers = 0x801250EC; // size:0x28 defined:true
+gCourseRenderingReserved3B270 = 0x8013B270; // size:0x10 defined:true
 gCourseModelPositions = 0x8013B280; // size:0x4 defined:true
 gCourseModelCounts = 0x8013B654; // size:0x4 defined:true
 gCourseModelObjectCount = 0x8013B658; // size:0x4 defined:true

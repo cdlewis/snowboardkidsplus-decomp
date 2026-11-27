@@ -221,6 +221,9 @@ const VECTOR gCourseModelScale __attribute__((section(".rodata.course_model_scal
 
 RECT gCourseModelTextureWindow __attribute__((section(".data.course_model_texture_window"))) = {0};
 
+/* Unreferenced zero-filled storage between the texture window and positions pointer. */
+u8 gCourseRenderingReserved3B270[0x10] __attribute__((aligned(4), section(".data.course_rendering_reserved_3b270"))) = {0};
+
 DR_MODE gCourseModelDrawMode __attribute__((section(".bss.course_model_draw_mode")));
 
 s32 gCourseModelCullDistances[10] __attribute__((section(".data.course_model_distances"))) = {
