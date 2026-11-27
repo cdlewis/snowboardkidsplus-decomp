@@ -578,6 +578,13 @@ const u32 gMemoryCardSlotTaskTablePadding
 const u32 gSaveRecordLoadPanelTablePadding
     __attribute__((section(".rodata.save_record_load_panel_padding"))) = 0;
 
+const u16 gMemoryCardLoadedRecordConfirmationText[12]
+    __attribute__((section(".data.memory_card_loaded_record_confirmation_text"), aligned(4))) = {
+    0x009B, 0x00BB, 0x00CD, 0x00B7, 0x00BC, 0x009D,
+    0x0093, 0x00CD, 0x009E, 0x0097, 0x0031, 0x0000,
+};
+
+
 StateValueHistory gMemoryCardSlotHistory __attribute__((section(".bss.state_value_history")));
 
 extern u8 gPlayerGroupedSelectionStates[2];
@@ -591,7 +598,6 @@ void transitionRegisteredPlayerModels(void);
 void transitionRegisteredPlayerModelsUp(void);
 void transitionRegisteredPlayerModelTexture(void);
 void createPaletteEntryCopyTask(s32 x, s32 y, s32 destination, s32 source, s32 index);
-extern const u16 gMemoryCardLoadedRecordConfirmationText[12];
 
 void updateSaveRecordLoadPanelTask(void);
 void drawSaveRecordPushAnyButtonPrompt(void);

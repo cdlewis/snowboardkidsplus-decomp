@@ -4500,7 +4500,7 @@ gMemoryCardSaveCompleteText = 0x801306DC; // size:0x10
 gMemoryCardSaveOptionsText = 0x80130708; // size:0x1C
 gMemoryCardSaveMenuExitConfirmationText = 0x80130740; // size:0x1C
 gMemoryCardSaveConfirmationText = 0x8013075C; // size:0x14
-gMemoryCardOperationFailedText = 0x80130770;
+gMemoryCardOperationFailedText = 0x80130770; // size:0x10
 gMemoryCardSlotChoiceSprites = 0x80130800;
 
 gDoubleByteGlyphCodes16x16Page2 = 0x8012EECC; // size:0x204

@@ -118,7 +118,7 @@ extern const u16 gMemoryCardLoadOptionsText[14];
 
 extern const u16 gMemoryCardAccessInProgressText[38];
 extern const u16 gSaveRecordConfirmationSprites[];
-extern const u16 gMemoryCardCorruptDataText[], gMemoryCardOperationFailedText[], gMemoryCardSlotChoiceSprites[];
+extern const u16 gMemoryCardCorruptDataText[], gMemoryCardSlotChoiceSprites[];
 
 void drawSaveRecordProgressPanel(void);
 void initializeDualResourceTask(void);
