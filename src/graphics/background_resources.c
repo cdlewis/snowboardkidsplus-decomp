@@ -21,7 +21,7 @@ extern u16 D_8013AF7C __attribute__((section(".data")));
 extern u32 gGameOptionFlags __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
-extern GameTask *D_8013AE98 __attribute__((section(".data")));
+extern GameTask *gCurrentTaskParent __attribute__((section(".data")));
 extern u8 D_8013AFD7 __attribute__((section(".data")));
 
 void resetGameOptionState(void) {
@@ -244,7 +244,7 @@ void dispatchBackgroundMenuTask(void) {
                 D_8013AFE2 = 0;
                 break;
             }
-            D_8013AE98->data1E = 1;
+            gCurrentTaskParent->data1E = 1;
             deleteCurrentTaskSubtree();
             return;
         }

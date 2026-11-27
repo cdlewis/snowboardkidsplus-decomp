@@ -12,7 +12,7 @@ GameTask *D_8013AE90 __attribute__((section(".sdata.task_scheduler"))) = 0;
 
 GameTask *D_8013AE94 __attribute__((section(".sdata.task_scheduler"))) = 0;
 
-GameTask *D_8013AE98 __attribute__((section(".sdata.task_scheduler"))) = 0;
+GameTask *gCurrentTaskParent __attribute__((section(".sdata.task_scheduler"))) = 0;
 
 GameTask *D_8013AE9C __attribute__((section(".sdata.task_scheduler"))) = 0;
 

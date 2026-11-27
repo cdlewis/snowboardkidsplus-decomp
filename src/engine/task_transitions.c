@@ -1101,12 +1101,12 @@ void updateThreeFrameScreenBlend(void) {
             setCurrentTaskCallback(initializeGameOptionViewTask);
         }
     } else {
-        drawScreenDarkeningOverlay(255, &D_800EBFF0[gActiveGraphicsBuffer], 0);
+        drawScreenDarkeningOverlay(255, &gMainOrderingTables[gActiveGraphicsBuffer], 0);
     }
 }
 
 void startThreeFrameScreenBlend(void) {
-    drawScreenDarkeningOverlay(255, &D_800EBFF0[gActiveGraphicsBuffer], 0);
+    drawScreenDarkeningOverlay(255, &gMainOrderingTables[gActiveGraphicsBuffer], 0);
     gCurrentTask->data18 = 3;
     setCurrentTaskCallback(updateThreeFrameScreenBlend);
 }

@@ -15,7 +15,7 @@
 #include "game/save/save_data.h"
 
 #define MEMORY_CARD_SAVE_BUFFER ((SaveRecord *)0x801E4000)
-#define PANEL_OT (&D_800EBFF0[gActiveGraphicsBuffer])
+#define PANEL_OT (&gMainOrderingTables[gActiveGraphicsBuffer])
 #define PANEL_DEPTH (gCurrentTask->data1C)
 
 typedef struct SaveMenuResource {
@@ -36,7 +36,7 @@ extern u32 gGameOptionFlags __attribute__((section(".data")));
 extern u8 D_8013AFCD __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
-extern GameTask *D_8013AE98 __attribute__((section(".data")));
+extern GameTask *gCurrentTaskParent __attribute__((section(".data")));
 
 extern s16 D_8013AF3E __attribute__((section(".data")));
 
@@ -256,7 +256,7 @@ void initializeMemoryCardSaveMenuTask(void) {
 
     gCurrentTask->data18 = 0;
     gCurrentTask->data1A = 0;
-    D_8013AE98->data1C++;
+    gCurrentTaskParent->data1C++;
 
     if (gCurrentTask->resource14 != 0xFFFF) {
         while (1) {}
@@ -487,7 +487,7 @@ void updateMemoryCardSaveMenuTask(void) {
         gCurrentTask->data18 = 21;
         break;
     case 22:
-        D_8013AE98->data18 = 2;
+        gCurrentTaskParent->data18 = 2;
         fadeOutMusicSequence(512);
         gCurrentTask->data18 = 40;
         break;
@@ -624,10 +624,10 @@ void updateMemoryCardSaveMenuTask(void) {
         gCurrentTask->data18 = 24;
         break;
     case 39:
-        D_8013AE98->data18 = 6;
+        gCurrentTaskParent->data18 = 6;
         /* Fall through. */
     case 40:
-        queueMenuResourceReads(D_8013AE98->data18);
+        queueMenuResourceReads(gCurrentTaskParent->data18);
         configureTaskStateTransition(2, 0, 30);
         gCurrentTask->data18 = 41;
         break;
@@ -637,7 +637,7 @@ void updateMemoryCardSaveMenuTask(void) {
         break;
     case 42:
     default:
-        D_8013AE98->data1C--;
+        gCurrentTaskParent->data1C--;
         deleteCurrentTaskSubtree();
         break;
     }
@@ -655,7 +655,7 @@ void drawMemoryCardSaveRecordPanel(void) {
         while (1) {}
     }
     position = (Movement2D *)&gTaskMemoryPool[gCurrentTask->resource14];
-    player = D_8013AE98->data1A;
+    player = gCurrentTaskParent->data1A;
     character = gRacePlayers[player].unk009;
     setSpriteColor(128, 128, 128);
     drawWrappedGlyphText16x16((s16)(position->x / 4096 - 68), (s16)(position->y / 4096 - 96),
@@ -750,12 +750,12 @@ void drawTaskShadowedText(void) {
     x = resource->x / 4096;
     y = resource->y / 4096;
     drawWrappedGlyphText8x16((s16)(x - 48), (s16)(y + 24), 12, gTaskShadowedText, 0, -1,
-                             &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                             &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
     setSpriteColor(0, 0, 0);
     drawWrappedGlyphText8x16((s16)(x - 47), (s16)(y + 25), 12, gTaskShadowedText, 0, -1,
-                             &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                             &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
     drawWrappedGlyphText8x16((s16)(x - 46), (s16)(y + 25), 12, gTaskShadowedText, 0, -1,
-                             &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                             &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
 }
 
 s16 getSaveRecordMaskTier(s16 recordIndex, s16 maskIndex) {

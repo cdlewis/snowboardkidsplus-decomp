@@ -22,7 +22,7 @@
         }                                                                   \
         (sprite)->u = ((digit) & 0x1F) * 8;                                 \
         (sprite)->v = (((digit) & 0xE0) >> 3) & ~7;                         \
-        GsSortFastSprite((sprite), &D_800EBFF0[gActiveGraphicsBuffer], 0);             \
+        GsSortFastSprite((sprite), &gMainOrderingTables[gActiveGraphicsBuffer], 0);             \
         (sprite)->x += 8;                                                   \
     } while (--(nibble) >= 0)
 
@@ -344,7 +344,7 @@ void drawDebugText(s32 x, s32 y, const char *format, ...) {
                 const s8 *cursor = (const s8 *)format;
                 sprite->u = ((u8)*cursor & 0x1F) * 8;
                 sprite->v = ((*cursor & 0xE0) >> 3) & ~7;
-                GsSortFastSprite(sprite, &D_800EBFF0[gActiveGraphicsBuffer], 0);
+                GsSortFastSprite(sprite, &gMainOrderingTables[gActiveGraphicsBuffer], 0);
                 sprite->x += 8;
                 format++;
                 break;

@@ -100,7 +100,7 @@ extern u8 D_8013AFE2 __attribute__((section(".data")));
 extern s16 D_8013B104 __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
-extern GameTask *D_8013AE98 __attribute__((section(".data")));
+extern GameTask *gCurrentTaskParent __attribute__((section(".data")));
 
 extern u16 D_8013AFD0 __attribute__((section(".data")));
 
@@ -344,7 +344,7 @@ void updateCdAwareCourseSelectionTask(void) {
                 selectionMenuFadeStartedGp = 1;
             }
             if (selection->choiceResult < 0) {
-                GameTask *parent = D_8013AE98;
+                GameTask *parent = gCurrentTaskParent;
                 D_8013B104 = 0;
                 parent->data18 = 6;
                 gCurrentTask->data18 = 7;
@@ -369,7 +369,7 @@ void updateCdAwareCourseSelectionTask(void) {
         group = &D_8012FD10[task->data1A];
         switch (group->mapping[selection->selectedIndex]) {
         case 10: {
-            GameTask *parent = D_8013AE98;
+            GameTask *parent = gCurrentTaskParent;
             D_8013B104 = 0;
             parent->data18 = 6;
             task->data18 = 7;
@@ -400,7 +400,7 @@ void updateCdAwareCourseSelectionTask(void) {
         gCurrentTask->data18 = 31;
         break;
     case 32: {
-        GameTask *parent = D_8013AE98;
+        GameTask *parent = gCurrentTaskParent;
         GameTask *task = gCurrentTask;
         parent->data18 = 8;
         task->data18 = 99;
@@ -425,7 +425,7 @@ void updateCdAwareCourseSelectionTask(void) {
         break;
     case 7:
         if (entries[0].flags == 0 && entries[1].flags == 0 && entries[2].flags == 0) {
-            queueMenuResourceReads((s16)D_8013AE98->data18);
+            queueMenuResourceReads((s16)gCurrentTaskParent->data18);
             moveTaskChildrenWithSpacing(0, entries[0].task, -0x138000, -0x60000, 0x1E000, 0x1E000, -1000);
             entries[0].command = 23;
             configureMovement2D((Movement2D *)&gTaskMemoryPool[entries[1].task->resource14],
@@ -446,7 +446,7 @@ void updateCdAwareCourseSelectionTask(void) {
     case 31:
         break;
     default:
-        D_8013AE98->data1C--;
+        gCurrentTaskParent->data1C--;
         deleteCurrentTaskSubtree();
         break;
     }
@@ -514,15 +514,15 @@ void updateSelectionPrizeMenuTask(void) {
     u16 parentNextState;
     s32 complete;
 
-    if (D_8013AE98->resource14 == 0xFFFF) {
+    if (gCurrentTaskParent->resource14 == 0xFFFF) {
         for (;;) {}
     }
-    parent = D_8013AE98;
+    parent = gCurrentTaskParent;
     parentSelection = (CourseSelectionResource *)&gTaskMemoryPool[parent->resource14];
     if (parent->resource16 == 0xFFFF) {
         for (;;) {}
     }
-    parentEntries = (RegisteredPanelSlot *)&gTaskMemoryPool[D_8013AE98->resource16];
+    parentEntries = (RegisteredPanelSlot *)&gTaskMemoryPool[gCurrentTaskParent->resource16];
     task = gCurrentTask;
     if (task->resource14 == 0xFFFF) {
         for (;;) {}
@@ -646,7 +646,7 @@ void updateSelectionPrizeMenuTask(void) {
         }
         break;
     case 34:
-        resumeTask = D_8013AE98;
+        resumeTask = gCurrentTaskParent;
         parentNextState = 6;
         parentSelection->choiceResult = 0;
         goto finish;
@@ -674,7 +674,7 @@ void updateSelectionPrizeMenuTask(void) {
         }
         break;
     case 11:
-        resumeTask = D_8013AE98;
+        resumeTask = gCurrentTaskParent;
         parentNextState = 32;
     finish:
         resumeTask->data18 = parentNextState;
@@ -733,11 +733,11 @@ void updatePaletteRotationTask(void) {
     if (gCurrentTask->resource14 == 0xFFFF) { while (1) {} }
     resource = (PaletteRotationResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if ((u16)(gCurrentTask->data1E % 10) == 0) {
-        if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
-        slot = getPaletteEntrySlot(D_8013AE98->resource14, gCurrentTask->data1E);
+        if (gCurrentTaskParent->resource14 == 0xFFFF) { while (1) {} }
+        slot = getPaletteEntrySlot(gCurrentTaskParent->resource14, gCurrentTask->data1E);
     } else {
-        if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
-        slot = getPaletteEntrySlot(D_8013AE98->resource16, gCurrentTask->data1E);
+        if (gCurrentTaskParent->resource16 == 0xFFFF) { while (1) {} }
+        slot = getPaletteEntrySlot(gCurrentTaskParent->resource16, gCurrentTask->data1E);
     }
     switch (slot->state) {
     case 1:
@@ -782,21 +782,21 @@ void drawRegisteredSelectionItemStatus(void) {
         for (;;) {}
     }
     color = (ByteTriplet *)&gTaskMemoryPool[gCurrentTask->resource16];
-    if (D_8013AE98->resource14 == 0xFFFF) {
+    if (gCurrentTaskParent->resource14 == 0xFFFF) {
         for (;;) {}
     }
-    parent = (GroupedIndexResource *)&gTaskMemoryPool[D_8013AE98->resource14];
+    parent = (GroupedIndexResource *)&gTaskMemoryPool[gCurrentTaskParent->resource14];
     if ((u16)(gCurrentTask->data1E % 10U) == 0) {
-        if (D_8013AE98->resource14 == 0xFFFF) {
+        if (gCurrentTaskParent->resource14 == 0xFFFF) {
             for (;;) {}
         }
-        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource14];
+        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[gCurrentTaskParent->resource14];
         entry = &entries[gCurrentTask->data1E / 10U];
     } else {
-        if (D_8013AE98->resource16 == 0xFFFF) {
+        if (gCurrentTaskParent->resource16 == 0xFFFF) {
             for (;;) {}
         }
-        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource16];
+        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[gCurrentTaskParent->resource16];
         entry = &entries[gCurrentTask->data1E / 10U];
     }
     if (parent->values != 0) {
@@ -808,7 +808,7 @@ void drawRegisteredSelectionItemStatus(void) {
             sprite = getMappedGridSpriteEntry(sprite, parent->values, (s16)gCurrentTask->data1A);
             setSpriteColor(color->bytes[0], color->bytes[1], color->bytes[2]);
             drawSpriteByIndexWithBlend(position->x / 4096, position->y / 4096, sprite->sprite,
-                sprite->color, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                sprite->color, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
             setSpriteColor(128, 128, 128);
             character = gRacePlayers[0].unk009;
             index = mapCourseMenuByteIndex(parent->values, (s16)gCurrentTask->data1A);
@@ -819,23 +819,23 @@ void drawRegisteredSelectionItemStatus(void) {
                             goto draw_base_status;
                         }
                         drawSpriteByIndexWithBlend(position->x / 4096 - 17, position->y / 4096 - 1,
-                            index + 70, 9, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                            index + 70, 9, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
                     } else if (gMergedSaveRecord.masks[character] & (2U << (index * 2))) {
                         drawSpriteByIndexWithBlend(position->x / 4096 - 17, position->y / 4096 - 1,
-                            index + 70, 10, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                            index + 70, 10, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
                     } else {
 draw_base_status:
                         if ((gMergedSaveRecord.masks[character] & (1U << (index * 2))) > 0) {
                             drawSpriteByIndexWithBlend(position->x / 4096 - 17, position->y / 4096 - 1,
-                                index + 70, 11, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                                index + 70, 11, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
                         } else {
                             drawMenuDecimalNumber8x16(position->x / 4096 - 20, position->y / 4096 + 1,
-                                2, 0, index + 1, 3, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                                2, 0, index + 1, 3, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
                         }
                     }
                 } else {
                     drawMenuDecimalNumber8x16(position->x / 4096 - 20, position->y / 4096 + 1,
-                        2, 0, index + 1, 3, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                        2, 0, index + 1, 3, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
                 }
             }
             entry->flags = 0;
@@ -867,16 +867,16 @@ void drawSelectionItemDetails(void) {
         for (;;) {}
     }
     position = (Movement2D *)&gTaskMemoryPool[gCurrentTask->resource14];
-    if (D_8013AE98->resource14 == 0xFFFF) {
+    if (gCurrentTaskParent->resource14 == 0xFFFF) {
         for (;;) {}
     }
-    selection = (HalfwordPair *)&gTaskMemoryPool[D_8013AE98->resource14];
+    selection = (HalfwordPair *)&gTaskMemoryPool[gCurrentTaskParent->resource14];
     if (gCurrentTask->data1A == 0) {
         return;
     }
     drawSpriteByIndexWithBlend(position->x / 4096 + 8, position->y / 4096 - 22,
-                 0xB3, 0, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
-    group = &D_8012FD10[D_8013AE98->data1A];
+                 0xB3, 0, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
+    group = &D_8012FD10[gCurrentTaskParent->data1A];
     index = mapMenuByteIndex(group->mapping, selection->unk_02);
     if ((u16)index >= 10) {
         return;
@@ -884,23 +884,23 @@ void drawSelectionItemDetails(void) {
     stats = &D_8012FCE4[index];
     if (stats->price && stats->rating) {
         drawSpriteByIndexWithBlend(position->x / 4096 + 84, position->y / 4096 + 128,
-                     0xBC, 10, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                     0xBC, 10, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
         drawDecimalNumber8x8(position->x / 4096 + 88, position->y / 4096 + 136,
-                             4, 0, stats->price, 0, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                             4, 0, stats->price, 0, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
         drawSpriteByIndexWithBlend(position->x / 4096 + 122, position->y / 4096 + 138,
-                     0xBF, 10, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                     0xBF, 10, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
         drawSpriteByIndexWithBlend(position->x / 4096 + 84, position->y / 4096 + 148,
-                     0xBE, 10, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                     0xBE, 10, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
         drawHalfStepSpriteBar(position->x / 4096 + 88, position->y / 4096 + 156,
-                              stats->rating, 5, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                              stats->rating, 5, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
     }
     if (gCurrentTask->data1A == 1) {
         addTilePacketWithBlend(position->x / 4096 + 80, position->y / 4096 + 124, 56, 44,
                       gMenuColorCycleColor.r, gMenuColorCycleColor.g, gMenuColorCycleColor.b, 2,
-                      &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                      &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
     } else {
         addTilePacketWithBlend(position->x / 4096 + 80, position->y / 4096 + 124, 56, 44,
-                      128, 128, 128, 2, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                      128, 128, 128, 2, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
     }
 }
 
@@ -915,38 +915,38 @@ void drawSelectionPrizeAndPlayerCounters(void) {
     if (gCurrentTask->data1A != 0) {
         if (D_8013AFCD == 1) {
             drawSpriteByIndexWithBlend(position->x / 4096, position->y / 4096,
-                          0xC1, 14, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                          0xC1, 14, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
             for (row = 0; row < 3; row++) {
                 s32 *prizes = D_8012FC6C[gSelectedCourseIndex];
                 drawDecimalNumber8x8(position->x / 4096 + 48, row * 8 + (s16)(position->y / 4096 + 9),
                                      5, 0, prizes[row], 0, -1,
-                                     &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                                     &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
                 drawWrappedText8x8(position->x / 4096 + 88, row * 8 + (s16)(position->y / 4096 + 9),
-                                   2, gSelectionPrizeCurrencyLabel, 6, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                                   2, gSelectionPrizeCurrencyLabel, 6, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
             }
             drawSpriteByIndexWithBlend(position->x / 4096 + 6, position->y / 4096 + 35,
-                          0xC2, 14, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                          0xC2, 14, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
             drawDecimalNumber8x8(position->x / 4096 + 26, position->y / 4096 + 42,
                                  5, 0, gPlayerSaveRecords[0].bestScore[gSelectedCourseIndex],
-                                 0, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                                 0, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
             drawWrappedText8x8(position->x / 4096 + 66, position->y / 4096 + 42,
-                               2, gSelectionPrizeCurrencyLabel, 6, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                               2, gSelectionPrizeCurrencyLabel, 6, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
         } else {
             drawSpriteByIndexWithBlend(position->x / 4096, position->y / 4096,
-                          0xC0, 14, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                          0xC0, 14, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
             drawMenuDecimalNumber8x16(position->x / 4096 + 64, position->y / 4096 + 19,
                                       2, 0, gRacePlayers[0].unk02A, 5, -1,
-                                      &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                                      &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
             drawMenuDecimalNumber8x16(position->x / 4096 + 64, position->y / 4096 + 35,
                                       2, 0, gRacePlayers[1].unk02A, 5, -1,
-                                      &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                                      &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
         }
     }
 }
 
 char gSelectionPrizeCurrencyLabel[3]
     __attribute__((section(".data.selection_prize_currency_label"), aligned(4))) = "\x82" "f";
-u8 D_8013B41F __attribute__((section(".data.selection_prize_currency_label"))) = 0;
+u8 gSelectionMenuFadeStarted __attribute__((section(".data.selection_prize_currency_label"))) = 0;
 
 void clearHalfwordPairTable(void) {
     s16 i;
@@ -974,7 +974,7 @@ u32 getSelectedCoursePrize(s16 unusedCourse, s16 place) {
 
 void initializeCountedPlayerGroupedSelectionBoundsTask(void) {
     RECT *bounds;
-    D_8013AE98->data1C++;
+    gCurrentTaskParent->data1C++;
     if (D_8013AFCD == 2) {
         setCurrentTaskCallback(initializeDualResourceTaskAndResetByteState);
     } else {
@@ -985,20 +985,20 @@ void initializeCountedPlayerGroupedSelectionBoundsTask(void) {
         if (gCurrentTask->resource16 != 0xFFFF) { for (;;) {} }
         gCurrentTask->resource16 = allocateTaskMemoryBlock();
         adjustGroupedIndexForMode(gCurrentTask->data1A, &gRacePlayers[0].unk00A[1]);
-        D_801300AC[0].selection = getGroupedIndexBase(gRacePlayers[0].unk00A[1]);
-        if (D_801300AC[0].selection == 9) {
-            D_801300AC[0].selection += getSaveRecordFlagGroupIndex(0, 0);
+        gMenuSelectionStates[0].selection = getGroupedIndexBase(gRacePlayers[0].unk00A[1]);
+        if (gMenuSelectionStates[0].selection == 9) {
+            gMenuSelectionStates[0].selection += getSaveRecordFlagGroupIndex(0, 0);
         }
-        D_801300B8[0].x = 0;
-        D_801300B8[0].y = 0;
-        D_801300B8[0].w = -1;
-        D_801300B8[0].h = -1;
-        D_801300B8[1].x = 0;
-        bounds = &D_801300B8[1];
+        gMenuModelDrawAreas[0].x = 0;
+        gMenuModelDrawAreas[0].y = 0;
+        gMenuModelDrawAreas[0].w = -1;
+        gMenuModelDrawAreas[0].h = -1;
+        gMenuModelDrawAreas[1].x = 0;
+        bounds = &gMenuModelDrawAreas[1];
         bounds->y = 0;
         bounds->w = -1;
         bounds->h = -1;
-        D_801300AC[0].previousSelection = D_801300AC[0].selection;
+        gMenuSelectionStates[0].previousSelection = gMenuSelectionStates[0].selection;
         setCurrentTaskCallback(updatePlayerGroupedCourseSelectionTask);
     }
 }
@@ -1014,7 +1014,7 @@ void updatePlayerGroupedCourseSelectionTask(void) {
     selection = (CourseSelectionResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (gCurrentTask->resource16 == 0xFFFF) { for (;;) {} }
     panels = (RegisteredPanelSlot *)&gTaskMemoryPool[gCurrentTask->resource16];
-    groupedSelection = &D_801300AC[0];
+    groupedSelection = &gMenuSelectionStates[0];
 
     switch (gCurrentTask->data18) {
     case 0:
@@ -1024,7 +1024,7 @@ void updatePlayerGroupedCourseSelectionTask(void) {
                                          descriptor->mapping, NULL, 0, 0, 20, -304, -96,
                                          descriptor->spacingX, descriptor->spacingY, descriptor->count, 176,
                                          drawSelectedTaskSprite, drawRegisteredTaskGridSpriteWithColor, 4, 1);
-        createRegisteredTextPanelTask(-316, 8, D_8012FFD4, descriptor->textMapping, 4, 11);
+        createRegisteredTextPanelTask(-316, 8, gSelectionPanelTexts, descriptor->textMapping, 4, 11);
         createRegisteredPanelTask(0, groupedSelection->selection, 244, 0, 384, 21);
         createRegisteredCallbackTask(0, 172, -72, drawTaskOffsetSpriteB8, 4, 31);
         createRegisteredTripletTask(-296, 48, 0, 16, D_8012FFFC, descriptor->tripletIndices, 3, 41);
@@ -1068,19 +1068,19 @@ void updatePlayerGroupedCourseSelectionTask(void) {
             panels[3].command = 20;
             panels[4].command = 20;
             configureColorCycleTask(1, 0, 128, 8, 0);
-            D_8013B41F = 0;
+            gSelectionMenuFadeStarted = 0;
             gCurrentTask->data18 = 4;
         }
         break;
     case 4:
         complete = isTaskResourceTransitionComplete(0);
-        if (complete == 1 && D_8013B41F == 0) {
+        if (complete == 1 && gSelectionMenuFadeStarted == 0) {
             panels[0].command = 21;
             panels[1].command = 22;
             panels[3].command = 22;
             panels[4].command = 22;
             configureColorCycleTask(2, 64, 128, 4, 0);
-            D_8013B41F = complete;
+            gSelectionMenuFadeStarted = complete;
         }
         if (selection->selectedIndex != selection->previousIndex) {
             groupedSelection->previousSelection = groupedSelection->selection;
@@ -1099,12 +1099,12 @@ void updatePlayerGroupedCourseSelectionTask(void) {
             }
             selection->previousIndex = selection->selectedIndex;
         } else if (selection->choiceResult != 0 && panels[0].flags == 0) {
-            if (D_8013B41F == 0) {
+            if (gSelectionMenuFadeStarted == 0) {
                 panels[0].command = 22;
                 panels[1].command = 22;
                 panels[3].command = 22;
                 panels[4].command = 22;
-                D_8013B41F = 1;
+                gSelectionMenuFadeStarted = 1;
             }
             if (selection->choiceResult < 0) {
                 gCurrentTask->data18 = 14;
@@ -1132,13 +1132,13 @@ void updatePlayerGroupedCourseSelectionTask(void) {
     case 14:
         switch (D_8013AFE2) {
         case 0:
-            D_8013AE98->data18 = 7;
+            gCurrentTaskParent->data18 = 7;
             break;
         case 2:
-            D_8013AE98->data18 = 10;
+            gCurrentTaskParent->data18 = 10;
             break;
         case 1:
-            D_8013AE98->data18 = 20;
+            gCurrentTaskParent->data18 = 20;
             break;
         }
         gCurrentTask->data18 = 5;
@@ -1154,12 +1154,12 @@ void updatePlayerGroupedCourseSelectionTask(void) {
         break;
     case 11:
         beginMode2SequenceAndFadeMusic();
-        D_8013AE98->data18 = 23;
+        gCurrentTaskParent->data18 = 23;
         goto finishExit;
     case 5:
         if (panels[0].flags == 0 && panels[1].flags == 0 && panels[2].flags == 0 &&
             panels[3].flags == 0 && panels[4].flags == 0) {
-            queueMenuResourceReads(D_8013AE98->data18);
+            queueMenuResourceReads(gCurrentTaskParent->data18);
             moveTaskChildrenWithSpacing(0, panels[0].task, -0x130000, -0x60000, 0x1E000, 0x1E000, -1000);
             panels[0].command = 23;
             configureMovement2D((Movement2D *)&gTaskMemoryPool[panels[1].task->resource14], -0x13C000, 0x8000, 0x1E000, 0x1E000, -1000);
@@ -1183,7 +1183,7 @@ finishExit:
         }
         break;
     default:
-        D_8013AE98->data1C--;
+        gCurrentTaskParent->data1C--;
         deleteCurrentTaskSubtree();
         break;
     }
@@ -1213,15 +1213,15 @@ void updateRecordFlagSelectionMenuTask(void) {
     s32 complete;
     s16 value;
 
-    if (D_8013AE98->resource14 == 0xFFFF) { for (;;) {} }
-    parentSelection = (CourseSelectionResource *)&gTaskMemoryPool[D_8013AE98->resource14];
-    if (D_8013AE98->resource16 == 0xFFFF) { for (;;) {} }
-    parentPanels = (RegisteredPanelSlot *)&gTaskMemoryPool[D_8013AE98->resource16];
+    if (gCurrentTaskParent->resource14 == 0xFFFF) { for (;;) {} }
+    parentSelection = (CourseSelectionResource *)&gTaskMemoryPool[gCurrentTaskParent->resource14];
+    if (gCurrentTaskParent->resource16 == 0xFFFF) { for (;;) {} }
+    parentPanels = (RegisteredPanelSlot *)&gTaskMemoryPool[gCurrentTaskParent->resource16];
     if (gCurrentTask->resource14 == 0xFFFF) { for (;;) {} }
     selection = (CourseSelectionResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (gCurrentTask->resource16 == 0xFFFF) { for (;;) {} }
     panels = (RegisteredPanelSlot *)&gTaskMemoryPool[gCurrentTask->resource16];
-    groupedSelection = &D_801300AC[0];
+    groupedSelection = &gMenuSelectionStates[0];
 
     switch (gCurrentTask->data18) {
     case 0:
@@ -1240,12 +1240,12 @@ void updateRecordFlagSelectionMenuTask(void) {
     case 2:
         if (parentPanels[0].flags == 0) {
             entries = &entryStorage;
-            buildRecordFlagMenuEntries(0, D_8013AE98->data1A, parentSelection->selectedIndex, 0, 20, entries);
+            buildRecordFlagMenuEntries(0, gCurrentTaskParent->data1A, parentSelection->selectedIndex, 0, 20, entries);
             createRegisteredSpacedChildTasks(1, 0xB0, 0x40, (const u8 *)gRecordFlagMenuSpriteRecords,
                                              entries->entries, NULL, 0, 0, 20, -304, -96,
                                              entries->unk_04, entries->unk_05, entries->count, 222,
                                              drawSelectedTaskSprite, drawRegisteredTaskGridSpriteWithColor, 5, 1);
-            createRegisteredTextPanelTask(-136, 8, D_8012FFD4, entries->textIndices, 4, 11);
+            createRegisteredTextPanelTask(-136, 8, gSelectionPanelTexts, entries->textIndices, 4, 11);
             selection->mode = 0;
             value = getGroupedIndexOffsetPlus216(groupedSelection->selection);
             selection->selectedIndex = value;
@@ -1269,17 +1269,17 @@ void updateRecordFlagSelectionMenuTask(void) {
             panels[0].command = 20;
             panels[1].command = 20;
             configureColorCycleTask(1, 0, 128, 8, 0);
-            D_8013B41F = 0;
+            gSelectionMenuFadeStarted = 0;
             gCurrentTask->data18 = 5;
         }
         break;
     case 5:
         complete = isTaskResourceTransitionComplete(0);
-        if (complete == 1 && D_8013B41F == 0) {
+        if (complete == 1 && gSelectionMenuFadeStarted == 0) {
             panels[0].command = 21;
             panels[1].command = 22;
             configureColorCycleTask(2, 64, 128, 4, 0);
-            D_8013B41F = complete;
+            gSelectionMenuFadeStarted = complete;
         }
         if (parentPanels[2].flags == 0) {
             if (selection->choiceResult > 0) {
@@ -1299,10 +1299,10 @@ void updateRecordFlagSelectionMenuTask(void) {
                 parentPanels[2].command = 13;
             }
             selection->previousIndex = selection->selectedIndex;
-        } else if (gCurrentTask->data18 != 5 && D_8013B41F == 0) {
+        } else if (gCurrentTask->data18 != 5 && gSelectionMenuFadeStarted == 0) {
             panels[0].command = 22;
             panels[1].command = 22;
-            D_8013B41F = 1;
+            gSelectionMenuFadeStarted = 1;
         }
         break;
     case 6:
@@ -1342,13 +1342,13 @@ void updateRecordFlagSelectionMenuTask(void) {
             parentPanels[1].command = 20;
             parentPanels[4].command = 20;
             configureColorCycleTask(1, 0, 128, 8, 0);
-            D_8013B41F = 0;
+            gSelectionMenuFadeStarted = 0;
             gCurrentTask->data18 = 14;
         }
         break;
     case 14:
         parentSelection->choiceResult = 0;
-        D_8013AE98->data18 = 4;
+        gCurrentTaskParent->data18 = 4;
         goto finish;
     case 7:
         if (panels[0].flags == 0 && panels[1].flags == 0 &&
@@ -1370,7 +1370,7 @@ void updateRecordFlagSelectionMenuTask(void) {
         if (panels[0].flags == 0 && panels[1].flags == 0 &&
             parentPanels[0].flags == 0 && parentPanels[1].flags == 0 &&
             parentPanels[2].flags == 0 && parentPanels[3].flags == 0 && parentPanels[4].flags == 0) {
-            D_8013AE98->data18 = 11;
+            gCurrentTaskParent->data18 = 11;
             goto finish;
         }
         break;
@@ -1679,14 +1679,14 @@ void updateRegisteredPlayerModels(void) {
     if (gCurrentTask->resource16 == 0xFFFF) { while (1) {} }
     children = (RegisteredTaskEntry *)&gTaskMemoryPool[gCurrentTask->resource16];
     if ((u16)(gCurrentTask->data1E % 10) == 0) {
-        if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
-        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource14, gCurrentTask->data1E);
+        if (gCurrentTaskParent->resource14 == 0xFFFF) { while (1) {} }
+        entry = getRegisteredMenuTaskEntry(gCurrentTaskParent->resource14, gCurrentTask->data1E);
     } else {
-        if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
-        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource16, gCurrentTask->data1E);
+        if (gCurrentTaskParent->resource16 == 0xFFFF) { while (1) {} }
+        entry = getRegisteredMenuTaskEntry(gCurrentTaskParent->resource16, gCurrentTask->data1E);
     }
-    if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
-    selection = &D_801300AC[(s16)gCurrentTask->data18];
+    if (gCurrentTaskParent->resource14 == 0xFFFF) { while (1) {} }
+    selection = &gMenuSelectionStates[(s16)gCurrentTask->data18];
     playerIndex = gCurrentTask->data18;
     alternateSelection = &D_8013B468[(s16)gCurrentTask->data18];
 
@@ -1715,7 +1715,7 @@ commandChildren:
         setCurrentTaskCallback(updateRegisteredChildBlinkTransition);
         entry->command = 1;
         entry->flags = 1;
-        selection->unk04 = 20;
+        selection->blinkTimer = 20;
         break;
     case 11:
         if (selection->selection != selection->previousSelection) {
@@ -1828,22 +1828,22 @@ void updateRegisteredTripletTask(void) {
     }
     data = (RegisteredTripletData *)&gTaskMemoryPool[gCurrentTask->resource16];
     if ((u16)(gCurrentTask->data1E % 10U) == 0) {
-        if (D_8013AE98->resource14 == 0xFFFF) {
+        if (gCurrentTaskParent->resource14 == 0xFFFF) {
             for (;;) {}
         }
-        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource14];
+        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[gCurrentTaskParent->resource14];
         entry = &entries[gCurrentTask->data1E / 10U];
     } else {
-        if (D_8013AE98->resource16 == 0xFFFF) {
+        if (gCurrentTaskParent->resource16 == 0xFFFF) {
             for (;;) {}
         }
-        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource16];
+        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[gCurrentTaskParent->resource16];
         entry = &entries[gCurrentTask->data1E / 10U];
     }
-    if (D_8013AE98->resource14 == 0xFFFF) {
+    if (gCurrentTaskParent->resource14 == 0xFFFF) {
         for (;;) {}
     }
-    selection = (HalfwordPair *)&gTaskMemoryPool[D_8013AE98->resource14];
+    selection = (HalfwordPair *)&gTaskMemoryPool[gCurrentTaskParent->resource14];
 
     {
         s16 command = entry->command;
@@ -1899,32 +1899,32 @@ update:
     }
 
     drawSpriteByIndexWithBlend(position->x / 4096, position->y / 4096, 30, 1, -1,
-                  &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                  &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
     drawSpriteByIndexWithBlend(position->x / 4096 + data->offsetX, position->y / 4096 + data->offsetY,
-                  31, 1, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                  31, 1, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
     drawSpriteByIndexWithBlend(data->offsetX * 2 + position->x / 4096, data->offsetY * 2 + position->y / 4096,
-                  32, 1, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                  32, 1, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
 
     if (values->bytes[0] == 255) {
         drawWrappedText8x8(position->x / 4096 + 56, position->y / 4096, 2, gRegisteredTripletUnavailableLabel,
-                           6, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                           6, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
     } else {
         drawHalfStepSpriteBar(position->x / 4096 + 56, position->y / 4096, values->bytes[0],
-                              5, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                              5, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
     }
     if (values->bytes[1] == 255) {
         drawWrappedText8x8((s16)(position->x / 4096 + 56) + data->offsetX, position->y / 4096 + data->offsetY,
-                           2, gRegisteredTripletUnavailableLabel, 6, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                           2, gRegisteredTripletUnavailableLabel, 6, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
     } else {
         drawHalfStepSpriteBar((s16)(position->x / 4096 + 56) + data->offsetX, position->y / 4096 + data->offsetY,
-                              values->bytes[1], 5, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                              values->bytes[1], 5, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
     }
     if (values->bytes[2] == 255) {
         drawWrappedText8x8(data->offsetX * 2 + (s16)(position->x / 4096 + 56), data->offsetY * 2 + position->y / 4096,
-                           2, gRegisteredTripletUnavailableLabel, 6, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                           2, gRegisteredTripletUnavailableLabel, 6, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
     } else {
         drawHalfStepSpriteBar(data->offsetX * 2 + (s16)(position->x / 4096 + 56), data->offsetY * 2 + position->y / 4096,
-                              values->bytes[2], 5, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                              values->bytes[2], 5, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
     }
 }
 
@@ -2074,11 +2074,11 @@ void updateRegisteredPlayerModelTask(void) {
     movement = (Movement2D *)&gTaskMemoryPool[gCurrentTask->resource16];
 
     if ((u16)(gCurrentTask->data1E % 10) == 0) {
-        if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
-        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource14, gCurrentTask->data1E);
+        if (gCurrentTaskParent->resource14 == 0xFFFF) { while (1) {} }
+        entry = getRegisteredMenuTaskEntry(gCurrentTaskParent->resource14, gCurrentTask->data1E);
     } else {
-        if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
-        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource16, gCurrentTask->data1E);
+        if (gCurrentTaskParent->resource16 == 0xFFFF) { while (1) {} }
+        entry = getRegisteredMenuTaskEntry(gCurrentTaskParent->resource16, gCurrentTask->data1E);
     }
 
     {
@@ -2132,10 +2132,10 @@ update:
     setCoordinateRotation(&model->worldRotation, &model->world);
     setCoordinateRotation(&model->localRotation, &model->local);
     if (model->world.coord.t[2] >= 512) {
-        sortLitObjectWithDrawArea(&model->object, gCurrentTask->data18 + 2, &D_801300B8[gCurrentTask->data18]);
+        sortLitObjectWithDrawArea(&model->object, gCurrentTask->data18 + 2, &gMenuModelDrawAreas[gCurrentTask->data18]);
     } else {
         u16 index = gCurrentTask->data1C;
-        sortLitObjectWithDrawArea(&model->object, index & 1, &D_801300B8[index]);
+        sortLitObjectWithDrawArea(&model->object, index & 1, &gMenuModelDrawAreas[index]);
     }
 }
 
@@ -2147,12 +2147,12 @@ void sortLitObjectWithDrawArea(GsDOBJ2 *object, u16 index, RECT *bounds) {
     GsSetLsMatrix(&matrix);
     {
         u32 depthIndex = index;
-        GsSortObject4(object, &D_800EBFF0[gActiveGraphicsBuffer], (depthIndex & 1) + 1,
+        GsSortObject4(object, &gMainOrderingTables[gActiveGraphicsBuffer], (depthIndex & 1) + 1,
                       (u32 *)getScratchAddr(0));
         if (bounds->w >= 0 && bounds->h >= 0) {
             addDrawAreaPacket(bounds->x, bounds->y, bounds->w, bounds->h,
-                              &D_800EBFF0[gActiveGraphicsBuffer], litObjectDrawAreaDepths[depthIndex]);
-            addDrawAreaPacket(0, 0, 320, 240, &D_800EBFF0[gActiveGraphicsBuffer], 14);
+                              &gMainOrderingTables[gActiveGraphicsBuffer], litObjectDrawAreaDepths[depthIndex]);
+            addDrawAreaPacket(0, 0, 320, 240, &gMainOrderingTables[gActiveGraphicsBuffer], 14);
         }
     }
 }
@@ -2175,14 +2175,14 @@ void transitionRegisteredPlayerModels(void) {
     if (gCurrentTask->resource16 == 0xFFFF) { while (1) {} }
     children = (RegisteredTaskEntry *)&gTaskMemoryPool[gCurrentTask->resource16];
     if ((u16)(gCurrentTask->data1E % 10) == 0) {
-        if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
-        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource14, gCurrentTask->data1E);
+        if (gCurrentTaskParent->resource14 == 0xFFFF) { while (1) {} }
+        entry = getRegisteredMenuTaskEntry(gCurrentTaskParent->resource14, gCurrentTask->data1E);
     } else {
-        if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
-        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource16, gCurrentTask->data1E);
+        if (gCurrentTaskParent->resource16 == 0xFFFF) { while (1) {} }
+        entry = getRegisteredMenuTaskEntry(gCurrentTaskParent->resource16, gCurrentTask->data1E);
     }
-    if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
-    selection = &D_801300AC[(s16)gCurrentTask->data18];
+    if (gCurrentTaskParent->resource14 == 0xFFFF) { while (1) {} }
+    selection = &gMenuSelectionStates[(s16)gCurrentTask->data18];
     playerIndex = gCurrentTask->data18;
     command = entry->command;
     if (command == 1) {
@@ -2233,14 +2233,14 @@ void transitionRegisteredPlayerModelsUp(void) {
     if (gCurrentTask->resource16 == 0xFFFF) { while (1) {} }
     children = (RegisteredTaskEntry *)&gTaskMemoryPool[gCurrentTask->resource16];
     if ((u16)(gCurrentTask->data1E % 10) == 0) {
-        if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
-        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource14, gCurrentTask->data1E);
+        if (gCurrentTaskParent->resource14 == 0xFFFF) { while (1) {} }
+        entry = getRegisteredMenuTaskEntry(gCurrentTaskParent->resource14, gCurrentTask->data1E);
     } else {
-        if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
-        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource16, gCurrentTask->data1E);
+        if (gCurrentTaskParent->resource16 == 0xFFFF) { while (1) {} }
+        entry = getRegisteredMenuTaskEntry(gCurrentTaskParent->resource16, gCurrentTask->data1E);
     }
-    if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
-    selection = &D_801300AC[(s16)gCurrentTask->data18];
+    if (gCurrentTaskParent->resource14 == 0xFFFF) { while (1) {} }
+    selection = &gMenuSelectionStates[(s16)gCurrentTask->data18];
     playerIndex = gCurrentTask->data18;
     command = entry->command;
     if (command == 1) {
@@ -2281,31 +2281,31 @@ void updateRegisteredChildBlinkTransition(void) {
     Movement2D *position;
     RegisteredTaskEntry *children;
     RegisteredTaskEntry *entry;
-    SelectionTransitionEntry *selection;
+    MenuSelectionState *selection;
     if (gCurrentTask->resource14 == 0xFFFF) { while (1) {} }
     position = (Movement2D *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (gCurrentTask->resource16 == 0xFFFF) { while (1) {} }
     children = (RegisteredTaskEntry *)&gTaskMemoryPool[gCurrentTask->resource16];
     if ((u16)(gCurrentTask->data1E % 10) == 0) {
-        if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
-        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource14, gCurrentTask->data1E);
+        if (gCurrentTaskParent->resource14 == 0xFFFF) { while (1) {} }
+        entry = getRegisteredMenuTaskEntry(gCurrentTaskParent->resource14, gCurrentTask->data1E);
     } else {
-        if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
-        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource16, gCurrentTask->data1E);
+        if (gCurrentTaskParent->resource16 == 0xFFFF) { while (1) {} }
+        entry = getRegisteredMenuTaskEntry(gCurrentTaskParent->resource16, gCurrentTask->data1E);
     }
-    selection = &((SelectionTransitionEntry *)&D_801300AC)[(s16)gCurrentTask->data18];
+    selection = &gMenuSelectionStates[(s16)gCurrentTask->data18];
     if (entry->command == 1) {
-        if (selection->timer == 0) {
+        if (selection->blinkTimer == 0) {
             initMovement2D((Movement2D *)&gTaskMemoryPool[children[gCurrentTask->data1C].task->resource16], position->x, position->y);
             entry->command = 0;
             entry->flags = 0;
-        } else if (selection->timer > 0) {
-            if (selection->timer % 2 == 0) {
+        } else if (selection->blinkTimer > 0) {
+            if (selection->blinkTimer % 2 == 0) {
                 initMovement2D((Movement2D *)&gTaskMemoryPool[children[gCurrentTask->data1C].task->resource16], position->x, position->y);
             } else {
                 initMovement2D((Movement2D *)&gTaskMemoryPool[children[gCurrentTask->data1C].task->resource16], position->x + 0x140000, position->y);
             }
-            selection->timer--;
+            selection->blinkTimer--;
             entry->flags = 1;
         }
     } else {
@@ -2336,16 +2336,16 @@ void transitionRegisteredPlayerModelTexture(void) {
     if (gCurrentTask->resource16 == 0xFFFF) { while (1) {} }
     children = (RegisteredTaskEntry *)&gTaskMemoryPool[gCurrentTask->resource16];
     if ((u16)(gCurrentTask->data1E % 10) == 0) {
-        if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
-        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource14, gCurrentTask->data1E);
+        if (gCurrentTaskParent->resource14 == 0xFFFF) { while (1) {} }
+        entry = getRegisteredMenuTaskEntry(gCurrentTaskParent->resource14, gCurrentTask->data1E);
     } else {
-        if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
-        entry = getRegisteredMenuTaskEntry(D_8013AE98->resource16, gCurrentTask->data1E);
+        if (gCurrentTaskParent->resource16 == 0xFFFF) { while (1) {} }
+        entry = getRegisteredMenuTaskEntry(gCurrentTaskParent->resource16, gCurrentTask->data1E);
     }
-    if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
+    if (gCurrentTaskParent->resource14 == 0xFFFF) { while (1) {} }
     task = gCurrentTask;
     playerIndex = task->data18;
-    selection = &D_801300AC[playerIndex];
+    selection = &gMenuSelectionStates[playerIndex];
     texture = &D_8013B468[playerIndex];
 
     if (task->data1C == 0) {
@@ -2355,7 +2355,7 @@ void transitionRegisteredPlayerModelTexture(void) {
         outgoingSlot = 1;
         incomingSlot = 0;
     }
-    bounds = D_801300B8;
+    bounds = gMenuModelDrawAreas;
     incomingBounds = &bounds[incomingSlot];
     height = incomingBounds->h;
 
@@ -2403,9 +2403,9 @@ void transitionRegisteredPlayerModelTexture(void) {
             if ((u16)(height - 9) < 103) {
                 for (i = 0; i < 6; i++) {
                     drawAnimatedSprite16(rand() % 5, i * 9 - (s16)(height - 82) + height / 4, height - 68,
-                                         10, &D_800EBFF0[gActiveGraphicsBuffer], 4);
+                                         10, &gMainOrderingTables[gActiveGraphicsBuffer], 4);
                     drawAnimatedSprite16(rand() % 5, i * 9 - (s16)(height - 82) + height / 4 + 3, height - 71,
-                                         10, &D_800EBFF0[gActiveGraphicsBuffer], 4);
+                                         10, &gMainOrderingTables[gActiveGraphicsBuffer], 4);
                 }
             }
         } else {
@@ -2421,14 +2421,14 @@ void transitionRegisteredPlayerModelTexture(void) {
         }
         initMovement2D((Movement2D *)&gTaskMemoryPool[children[outgoingSlot].task->resource16],
                        position->x + 0x140000, position->y);
-        D_801300B8[outgoingSlot].x = 0;
-        D_801300B8[outgoingSlot].y = 0;
-        D_801300B8[outgoingSlot].w = -1;
-        D_801300B8[outgoingSlot].h = -1;
-        D_801300B8[incomingSlot].x = 0;
-        D_801300B8[incomingSlot].y = 0;
-        D_801300B8[incomingSlot].w = -1;
-        D_801300B8[incomingSlot].h = -1;
+        gMenuModelDrawAreas[outgoingSlot].x = 0;
+        gMenuModelDrawAreas[outgoingSlot].y = 0;
+        gMenuModelDrawAreas[outgoingSlot].w = -1;
+        gMenuModelDrawAreas[outgoingSlot].h = -1;
+        gMenuModelDrawAreas[incomingSlot].x = 0;
+        gMenuModelDrawAreas[incomingSlot].y = 0;
+        gMenuModelDrawAreas[incomingSlot].w = -1;
+        gMenuModelDrawAreas[incomingSlot].h = -1;
         entry->command = 0;
         entry->flags = 0;
         texture->previousSelection = texture->selection;
@@ -2450,7 +2450,7 @@ void drawTaskOffsetSpriteB8(void) {
     resource = (Movement2D *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (gCurrentTask->data1A != 0) {
         drawSpriteByIndexWithBlend(resource->x / 4096 + 8, resource->y / 4096 - 22,
-                      0xB8, 0, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                      0xB8, 0, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
     }
 }
 
@@ -2491,9 +2491,9 @@ void updatePlayerGroupedSelectionMenu(void) {
             gCurrentTask->data18 = 40;
         } else if (gPlayerGroupedSelectionStates[0] == 6 || gPlayerGroupedSelectionStates[1] == 6) {
             if (D_8013AFE2 == 0 && (s16)getGameOptionFlag0() != 0) {
-                D_8013AE98->data18 = 29;
+                gCurrentTaskParent->data18 = 29;
             } else {
-                D_8013AE98->data18 = 23;
+                gCurrentTaskParent->data18 = 23;
                 beginMode2SequenceAndFadeMusic();
             }
             gCurrentTask->data18 = 9;
@@ -2511,26 +2511,26 @@ void updatePlayerGroupedSelectionMenu(void) {
             switch (D_8013AFE2) {
             case 0:
             case 2:
-                D_8013AE98->data18 = 7;
+                gCurrentTaskParent->data18 = 7;
                 break;
             case 1:
-                D_8013AE98->data18 = 20;
+                gCurrentTaskParent->data18 = 20;
                 break;
             }
-            queueMenuResourceReads((s16)D_8013AE98->data18);
+            queueMenuResourceReads((s16)gCurrentTaskParent->data18);
             slots[2].command = 99;
             slots[3].command = 99;
             gCurrentTask->data18 = 99;
         }
         break;
     case 9:
-        if (D_8013AE98->data18 != 23 || isTaskStateTransitionBelowMaximum(0) == 0) {
+        if (gCurrentTaskParent->data18 != 23 || isTaskStateTransitionBelowMaximum(0) == 0) {
             gCurrentTask->data18 = 99;
         }
         break;
     default:
-        queueMenuResourceReads((s16)D_8013AE98->data18);
-        D_8013AE98->data1C--;
+        queueMenuResourceReads((s16)gCurrentTaskParent->data18);
+        gCurrentTaskParent->data1C--;
         deleteCurrentTaskSubtree();
         break;
     }
@@ -2547,19 +2547,19 @@ void createPlayerGroupedSelectionTask(s32 player, s32 index) {
     gCreatedTask->data1E = index;
     gCreatedTask->resource14 = allocateTaskMemoryBlock();
     gCreatedTask->resource16 = allocateTaskMemoryBlock();
-    selection = &D_801300AC[(s16)player];
+    selection = &gMenuSelectionStates[(s16)player];
     adjustGroupedIndexForMode((s16)gCreatedTask->data1A, &((PlayerSelectionRecord *)gRacePlayers)[(s16)player].selectionBytes[3]);
     selection->selection = getGroupedIndexBase(((PlayerSelectionRecord *)gRacePlayers)[(s16)player].selectionBytes[3]);
     if (selection->selection == 9) {
         selection->selection += getSaveRecordFlagGroupIndex(player + 10, 0);
     }
     selection->previousSelection = selection->selection;
-    D_801300B8[0].x = 25;
-    D_801300B8[0].y = 32;
-    D_801300B8[0].w = 270;
-    D_801300B8[0].h = 87;
-    D_801300B8[1].x = 25;
-    bounds = &D_801300B8[1];
+    gMenuModelDrawAreas[0].x = 25;
+    gMenuModelDrawAreas[0].y = 32;
+    gMenuModelDrawAreas[0].w = 270;
+    gMenuModelDrawAreas[0].h = 87;
+    gMenuModelDrawAreas[1].x = 25;
+    bounds = &gMenuModelDrawAreas[1];
     bounds->y = 136;
     bounds->w = 270;
     bounds->h = 87;
@@ -2592,17 +2592,17 @@ void updatePlayerGroupedSelectionTask(void) {
     selection = (CourseSelectionResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (gCurrentTask->resource16 == 0xFFFF) { for (;;) {} }
     panels = (RegisteredPanelSlot *)&gTaskMemoryPool[gCurrentTask->resource16];
-    if (D_8013AE98->resource14 == 0xFFFF) { for (;;) {} }
-    parentStatus = (PlayerGroupedSelectionStatus *)&gTaskMemoryPool[D_8013AE98->resource14];
+    if (gCurrentTaskParent->resource14 == 0xFFFF) { for (;;) {} }
+    parentStatus = (PlayerGroupedSelectionStatus *)&gTaskMemoryPool[gCurrentTaskParent->resource14];
     if ((u16)(gCurrentTask->data1E % 10U) == 0) {
-        if (D_8013AE98->resource14 == 0xFFFF) { for (;;) {} }
+        if (gCurrentTaskParent->resource14 == 0xFFFF) { for (;;) {} }
         slotIndex = gCurrentTask->data1E / 10U;
-        slots = (RegisteredPanelSlot *)&gTaskMemoryPool[D_8013AE98->resource14];
+        slots = (RegisteredPanelSlot *)&gTaskMemoryPool[gCurrentTaskParent->resource14];
         parentSlot = &slots[slotIndex];
     } else {
-        if (D_8013AE98->resource16 == 0xFFFF) { for (;;) {} }
+        if (gCurrentTaskParent->resource16 == 0xFFFF) { for (;;) {} }
         slotIndex = gCurrentTask->data1E / 10U;
-        slots = (RegisteredPanelSlot *)&gTaskMemoryPool[D_8013AE98->resource16];
+        slots = (RegisteredPanelSlot *)&gTaskMemoryPool[gCurrentTaskParent->resource16];
         parentSlot = &slots[slotIndex];
     }
 
@@ -2612,7 +2612,7 @@ void updatePlayerGroupedSelectionTask(void) {
         gPlayerGroupedSelectionStates[player] = 4;
         gCurrentTask->data18 = 7;
     }
-    groupedSelection = &D_801300AC[player];
+    groupedSelection = &gMenuSelectionStates[player];
 
     switch (gCurrentTask->data18) {
     case 1:
@@ -2832,14 +2832,14 @@ void updatePlayerCourseVariantSelectionTask(void) {
     s16 mode;
     Movement2D *movement;
 
-    if (D_8013AE98->resource14 == 0xFFFF) {
+    if (gCurrentTaskParent->resource14 == 0xFFFF) {
         while (1) {}
     }
-    parentStatus = (CourseSelectionResource *)&gTaskMemoryPool[D_8013AE98->resource14];
-    if (D_8013AE98->resource16 == 0xFFFF) {
+    parentStatus = (CourseSelectionResource *)&gTaskMemoryPool[gCurrentTaskParent->resource14];
+    if (gCurrentTaskParent->resource16 == 0xFFFF) {
         while (1) {}
     }
-    panels = (RegisteredPanelSlot *)&gTaskMemoryPool[D_8013AE98->resource16];
+    panels = (RegisteredPanelSlot *)&gTaskMemoryPool[gCurrentTaskParent->resource16];
     if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
@@ -2849,23 +2849,23 @@ void updatePlayerCourseVariantSelectionTask(void) {
     }
     children = (RegisteredPanelSlot *)&gTaskMemoryPool[gCurrentTask->resource16];
     if ((u16)(gCurrentTask->data1E % 10U) == 0) {
-        if (D_8013AE98->resource14 == 0xFFFF) {
+        if (gCurrentTaskParent->resource14 == 0xFFFF) {
             while (1) {}
         }
         slotIndex = gCurrentTask->data1E / 10U;
-        slots = (RegisteredPanelSlot *)&gTaskMemoryPool[D_8013AE98->resource14];
+        slots = (RegisteredPanelSlot *)&gTaskMemoryPool[gCurrentTaskParent->resource14];
         parentSlot = &slots[slotIndex];
     } else {
-        if (D_8013AE98->resource16 == 0xFFFF) {
+        if (gCurrentTaskParent->resource16 == 0xFFFF) {
             while (1) {}
         }
         slotIndex = gCurrentTask->data1E / 10U;
-        slots = (RegisteredPanelSlot *)&gTaskMemoryPool[D_8013AE98->resource16];
+        slots = (RegisteredPanelSlot *)&gTaskMemoryPool[gCurrentTaskParent->resource16];
         parentSlot = &slots[slotIndex];
     }
 
     player = gCurrentTask->data1C;
-    groupedSelection = &D_801300AC[player];
+    groupedSelection = &gMenuSelectionStates[player];
     if ((gPlayerGroupedSelectionStates[0] == 4 || gPlayerGroupedSelectionStates[1] == 4) &&
         gPlayerGroupedSelectionStates[player] != 4) {
         gPlayerGroupedSelectionStates[player] = 4;
@@ -2892,7 +2892,7 @@ void updatePlayerCourseVariantSelectionTask(void) {
         }
         mode = player == 0 ? 1 : 2;
         menuEntries = &entries;
-        buildRecordFlagMenuEntries(player + 10, D_8013AE98->data1A, parentStatus->selectedIndex,
+        buildRecordFlagMenuEntries(player + 10, gCurrentTaskParent->data1A, parentStatus->selectedIndex,
                                    0, 14, menuEntries);
         createRegisteredSpacedChildTasks(mode, 0xB0, 0x40, (const u8 *)gPlayerGroupedSelectionSprites,
                                          entries.entries, NULL, 0, 0, 20, -444, player * 104 - 72,
@@ -3002,7 +3002,7 @@ void updatePlayerCourseVariantSelectionTask(void) {
     case 34:
         selection = parentStatus;
         selection->choiceResult = 0;
-        D_8013AE98->data18 = 60;
+        gCurrentTaskParent->data18 = 60;
         gPlayerGroupedSelectionStates[player] = 1;
         goto deleteTask;
     case 9:
@@ -3100,15 +3100,15 @@ void drawClippedRegisteredTaskGridSprite(void) {
     position = (Movement2D *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (gCurrentTask->resource16 == 0xFFFF) { for (;;) {} }
     color = (ByteTriplet *)&gTaskMemoryPool[gCurrentTask->resource16];
-    if (D_8013AE98->resource14 == 0xFFFF) { for (;;) {} }
-    parent = (ClippedGridSpriteParent *)&gTaskMemoryPool[D_8013AE98->resource14];
+    if (gCurrentTaskParent->resource14 == 0xFFFF) { for (;;) {} }
+    parent = (ClippedGridSpriteParent *)&gTaskMemoryPool[gCurrentTaskParent->resource14];
     if ((u16)(gCurrentTask->data1E % 10U) == 0) {
-        if (D_8013AE98->resource14 == 0xFFFF) { for (;;) {} }
-        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource14];
+        if (gCurrentTaskParent->resource14 == 0xFFFF) { for (;;) {} }
+        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[gCurrentTaskParent->resource14];
         entry = &entries[gCurrentTask->data1E / 10U];
     } else {
-        if (D_8013AE98->resource16 == 0xFFFF) { for (;;) {} }
-        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource16];
+        if (gCurrentTaskParent->resource16 == 0xFFFF) { for (;;) {} }
+        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[gCurrentTaskParent->resource16];
         entry = &entries[gCurrentTask->data1E / 10U];
     }
     if (parent->mapping != 0) {
@@ -3125,11 +3125,11 @@ void drawClippedRegisteredTaskGridSprite(void) {
                     (s16)gCurrentTask->data1A);
             }
             setSpriteColor(color->bytes[0], color->bytes[1], color->bytes[2]);
-            addDrawAreaPacket(0, 0, 320, 240, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+            addDrawAreaPacket(0, 0, 320, 240, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
             drawSpriteByIndexWithBlend((s16)(position->x / 4096), (s16)(position->y / 4096),
-                sprite->sprite, sprite->color, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                sprite->sprite, sprite->color, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
             addDrawAreaPacket(25, row * 104 + 40, 270, 94,
-                &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
             entry->flags = 0;
         }
     }
@@ -3145,18 +3145,18 @@ void drawTaskIndexPanel(void) {
     index = gCurrentTask->data18;
     if (gCurrentTask->data1A != 0) {
         drawSpriteByIndexWithBlend(resource->x / 4096 + 8, resource->y / 4096 + 80,
-                      0x133, 10, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                      0x133, 10, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
         drawSpriteByIndexWithBlend(resource->x / 4096 + 24, resource->y / 4096 + 80,
-                      0x31, 2, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                      0x31, 2, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
     }
     setSpriteColor(128, 128, 128);
     setTexturedQuadColor(128, 128, 128);
     drawDecimalNumber8x8(resource->x / 4096 + 54, resource->y / 4096 + 4,
-                  1, 0, index + 1, 0, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                  1, 0, index + 1, 0, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
     if (index == 0) list = taskIndexPanelQuadsPalette0;
     else list = taskIndexPanelQuadsPalette1;
     drawTexturedQuadList(resource->x / 4096, resource->y / 4096, list,
-                        -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                        -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
 }
 
 s16 mapGroupedValueToTableIndex(s16 value) {
@@ -3208,11 +3208,11 @@ void updatePaletteEntryTask(void) {
     if (gCurrentTask->resource14 == 0xFFFF) { while (1) {} }
     resource = (PaletteEntryResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if ((u16)(gCurrentTask->data1E % 10) == 0) {
-        if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
-        slot = getPaletteEntrySlot(D_8013AE98->resource14, gCurrentTask->data1E);
+        if (gCurrentTaskParent->resource14 == 0xFFFF) { while (1) {} }
+        slot = getPaletteEntrySlot(gCurrentTaskParent->resource14, gCurrentTask->data1E);
     } else {
-        if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
-        slot = getPaletteEntrySlot(D_8013AE98->resource16, gCurrentTask->data1E);
+        if (gCurrentTaskParent->resource16 == 0xFFFF) { while (1) {} }
+        slot = getPaletteEntrySlot(gCurrentTaskParent->resource16, gCurrentTask->data1E);
     }
     switch (slot->state) {
     case 1:
@@ -3347,7 +3347,7 @@ void initializeSaveRecordTask(void) {
     s16 i;
 
     gCurrentTask->data18 = 0;
-    D_8013AE98->data1C++;
+    gCurrentTaskParent->data1C++;
     if (gCurrentTask->resource14 != 0xFFFF) {
         while (1) {}
     }
@@ -3433,16 +3433,16 @@ void updateSaveRecordTask(void) {
     case 5:
         if ((firstResult = status->first.flags) < 0 ||
             (secondResult = status->secondResult) < 0) {
-            D_8013AE98->data18 = 3;
+            gCurrentTaskParent->data18 = 3;
             resetUnlockNotificationStateForMode2();
         } else {
             if (firstResult == 0 || secondResult == 0 || panels[0].flags || panels[1].flags) {
                 break;
             }
             if (D_8013AFCD == 1 && D_8013B47C == 0) {
-                D_8013AE98->data18 = 30;
+                gCurrentTaskParent->data18 = 30;
             } else {
-                D_8013AE98->data18 = 5;
+                gCurrentTaskParent->data18 = 5;
                 queueMenuResourceReads(5);
             }
             applyStereoSoundOption();
@@ -3458,7 +3458,7 @@ void updateSaveRecordTask(void) {
         if (panels[0].flags || panels[1].flags) {
             break;
         }
-        if (D_8013AE98->data18 == 30) {
+        if (gCurrentTaskParent->data18 == 30) {
             configureTaskStateTransition(2, 0, 30);
             gCurrentTask->data18 = 8;
             break;
@@ -3466,7 +3466,7 @@ void updateSaveRecordTask(void) {
         goto finish_transition;
     case 8:
         if (D_8013AFCD == 2) {
-            D_8013AE98->data18 = 5;
+            gCurrentTaskParent->data18 = 5;
             queueMenuResourceReads(5);
         } else {
             if (isTaskStateTransitionBelowMaximum(0) != 0) {
@@ -3480,7 +3480,7 @@ void updateSaveRecordTask(void) {
         break;
     case 9:
     default:
-        D_8013AE98->data1C--;
+        gCurrentTaskParent->data1C--;
         deleteCurrentTaskSubtree();
         break;
     }
@@ -3547,23 +3547,23 @@ void updateSaveRecordLoadPanelTask(void) {
         while (1) {}
     }
     resources = (SavePanelResources *)&gTaskMemoryPool[gCurrentTask->resource16];
-    if (D_8013AE98->resource14 == 0xFFFF) {
+    if (gCurrentTaskParent->resource14 == 0xFFFF) {
         while (1) {}
     }
-    selections = (PlayerGroupedSelectionStatus *)&gTaskMemoryPool[D_8013AE98->resource14];
+    selections = (PlayerGroupedSelectionStatus *)&gTaskMemoryPool[gCurrentTaskParent->resource14];
     if ((u16)(gCurrentTask->data1E % 10U) == 0) {
-        if (D_8013AE98->resource14 == 0xFFFF) {
+        if (gCurrentTaskParent->resource14 == 0xFFFF) {
             while (1) {}
         }
         slotIndex = gCurrentTask->data1E / 10U;
-        slots = (RegisteredPanelSlot *)&gTaskMemoryPool[D_8013AE98->resource14];
+        slots = (RegisteredPanelSlot *)&gTaskMemoryPool[gCurrentTaskParent->resource14];
         parentPanel = &slots[slotIndex];
     } else {
-        if (D_8013AE98->resource16 == 0xFFFF) {
+        if (gCurrentTaskParent->resource16 == 0xFFFF) {
             while (1) {}
         }
         slotIndex = gCurrentTask->data1E / 10U;
-        slots = (RegisteredPanelSlot *)&gTaskMemoryPool[D_8013AE98->resource16];
+        slots = (RegisteredPanelSlot *)&gTaskMemoryPool[gCurrentTaskParent->resource16];
         parentPanel = &slots[slotIndex];
     }
     player = gCurrentTask->data1A;
@@ -3988,10 +3988,10 @@ void drawSaveRecordProgressPanel(void) {
                 }
                 if (sprite >= 0) {
                     drawSpriteByIndexWithBlend(i * 32 + (s16)(x + 9), y + 54, sprite, palette, -1,
-                                  &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                                  &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
                 }
                 drawSpriteByIndexWithBlend(i * 32 + (s16)(x + 8), y + 60, 0x70 + i * 3, 0, -1,
-                              &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                              &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
             }
             for (i = 8; i < 10; i++) {
                 tier = getStateMaskTier(slot, i);
@@ -4013,25 +4013,25 @@ void drawSaveRecordProgressPanel(void) {
                 }
                 if (sprite >= 0) {
                     drawSpriteByIndexWithBlend(x + i * 32 - 55, y + 13, sprite, palette, -1,
-                                  &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                                  &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
                 }
                 if (D_8013B484[slot]->flags & (1u << (i - 8))) {
                     drawSpriteByIndexWithBlend((i - 8) * 32 + (s16)(x + 200), y + 19,
                                   0x70 + D_8012D460[i] * 3, 0, -1,
-                                  &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                                  &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
                 }
             }
             drawSpriteByIndexWithBlend(x + 72, y + 19, 0x5A, 3, -1,
-                          &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                          &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
             drawDecimalNumber16(x + 72, y + 30, 6, 0, D_8013B484[slot]->money,
-                                8, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                                8, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
             drawWrappedGlyphText16x16((s16)(x + 168), (s16)(y + 30), 1, gSaveRecordProgressCurrencyLabel, 8, -1,
-                                      &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                                      &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
         }
     } else {
         setSpriteColor(128, 128, 128);
         drawSpriteByIndexWithBlend(x + 64, y + 32, 0xB4, 1, -1,
-                      &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                      &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
     }
 
     if (slot < D_8013AFCD) {
@@ -4042,13 +4042,13 @@ void drawSaveRecordProgressPanel(void) {
         setTexturedQuadColor(64, 64, 64);
     }
     drawDecimalNumber8x8(x + 54, y + 4, 1, 0, slot + 1, 0, -1,
-                         &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                         &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
     if (slot == 0) {
         list = taskIndexPanelQuadsPalette0;
     } else {
         list = taskIndexPanelQuadsPalette1;
     }
-    drawTexturedQuadList(x, y, list, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+    drawTexturedQuadList(x, y, list, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
 }
 
 u16 gSaveRecordProgressCurrencyLabel[2]
@@ -4065,10 +4065,10 @@ void drawSaveRecordPushAnyButtonPrompt(void) {
     x = position->x / 4096;
     y = position->y / 4096;
     drawWrappedGlyphText8x16((s16)(x + 134), (s16)(y - 6), 20, gSaveRecordPushAnyButtonText, 0, -1,
-                             &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                             &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
     setSpriteColor(0, 0, 0);
     drawWrappedGlyphText8x16((s16)(x + 135), (s16)(y - 5), 20, gSaveRecordPushAnyButtonText, 0, -1,
-                             &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                             &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
     drawWrappedGlyphText8x16((s16)(x + 136), (s16)(y - 5), 20, gSaveRecordPushAnyButtonText, 0, -1,
-                             &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                             &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
 }

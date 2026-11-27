@@ -16,7 +16,7 @@ extern SVECTOR *D_8013AF90 __attribute__((section(".data")));
 extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
-extern GameTask *D_8013AE98 __attribute__((section(".data")));
+extern GameTask *gCurrentTaskParent __attribute__((section(".data")));
 
 u16 playerModelDrawAreaDepths[4] __attribute__((section(".data.player_model_draw_area_depths"))) = {
     0x70, 0x40, 0x20, 0
@@ -35,12 +35,12 @@ void sortPlayerModelWithDrawArea(u16 playerIndex, u16 depthIndex, RECT *bounds) 
         GsSetLightMatrix(&matrix);
         GsGetLs(object->coord2, &matrix);
         GsSetLsMatrix(&matrix);
-        GsSortObject4(object, &D_800EBFF0[gActiveGraphicsBuffer], depthIndex, (u32 *)getScratchAddr(0));
+        GsSortObject4(object, &gMainOrderingTables[gActiveGraphicsBuffer], depthIndex, (u32 *)getScratchAddr(0));
     }
     if (bounds->w >= 0 && bounds->h >= 0) {
         addDrawAreaPacket(bounds->x, bounds->y, bounds->w, bounds->h,
-                         &D_800EBFF0[gActiveGraphicsBuffer], playerModelDrawAreaDepths[depthIndex]);
-        addDrawAreaPacket(0, 0, 320, 240, &D_800EBFF0[gActiveGraphicsBuffer], 14);
+                         &gMainOrderingTables[gActiveGraphicsBuffer], playerModelDrawAreaDepths[depthIndex]);
+        addDrawAreaPacket(0, 0, 320, 240, &gMainOrderingTables[gActiveGraphicsBuffer], 14);
     }
 }
 
@@ -210,11 +210,11 @@ void updatePlayerModelPreviewTask(void) {
     state = (ModelPreviewState *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (gCurrentTask->resource16 == 0xFFFF) { for (;;) {} }
     if ((u16)(gCurrentTask->data1E % 10) == 0) {
-        if (D_8013AE98->resource14 == 0xFFFF) { for (;;) {} }
-        entry = getModelPreviewEntry(D_8013AE98->resource14, gCurrentTask->data1E);
+        if (gCurrentTaskParent->resource14 == 0xFFFF) { for (;;) {} }
+        entry = getModelPreviewEntry(gCurrentTaskParent->resource14, gCurrentTask->data1E);
     } else {
-        if (D_8013AE98->resource16 == 0xFFFF) { for (;;) {} }
-        entry = getModelPreviewEntry(D_8013AE98->resource16, gCurrentTask->data1E);
+        if (gCurrentTaskParent->resource16 == 0xFFFF) { for (;;) {} }
+        entry = getModelPreviewEntry(gCurrentTaskParent->resource16, gCurrentTask->data1E);
     }
     switch (entry->command) {
     case 1: state->rotationStep = 64; entry->flags = 0; break;
@@ -230,5 +230,5 @@ void updatePlayerModelPreviewTask(void) {
     setCoordinateRotation((SVECTOR *)&currentPlayerAbsolute->unk0B4, &currentPlayerAbsolute->worldCoordinate);
     setCoordinateRotation(&currentPlayerAbsolute->modelRotation, &currentPlayerAbsolute->modelCoordinate);
     setCoordinateRotation((SVECTOR *)currentPlayerAbsolute->unk5BC, currentPlayerAbsolute->model.modelCoordinates);
-    sortPlayerModelWithDrawArea(gCurrentTask->data1C, 0, &D_801300B8[gCurrentTask->data1C]);
+    sortPlayerModelWithDrawArea(gCurrentTask->data1C, 0, &gMenuModelDrawAreas[gCurrentTask->data1C]);
 }

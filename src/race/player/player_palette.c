@@ -114,14 +114,14 @@ void drawPaletteBurstTask(void) {
     *packet = scratch->quad;
     packet->tpage = getTPage(0, 1, 896, 0);
     packet->clut = getClut(832, 248);
-    addPrim(D_800EBFF0[gActiveGraphicsBuffer].org, packet);
+    addPrim(gMainOrderingTables[gActiveGraphicsBuffer].org, packet);
     packet++;
 
     scratch->quad.r0 = scratch->quad.g0 = scratch->quad.b0 = brightness;
     *packet = scratch->quad;
     packet->tpage = getTPage(0, 2, 896, 0);
     packet->clut = getClut(832, 249);
-    addPrim(D_800EBFF0[gActiveGraphicsBuffer].org, packet);
+    addPrim(gMainOrderingTables[gActiveGraphicsBuffer].org, packet);
     packet++;
     GsOUT_PACKET_P = (PACKET *)packet;
 

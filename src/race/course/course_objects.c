@@ -65,7 +65,7 @@ extern u8 D_8013AFE2 __attribute__((section(".data")));
 extern u8 gRacePauseState __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
-extern GameTask *D_8013AE98 __attribute__((section(".data")));
+extern GameTask *gCurrentTaskParent __attribute__((section(".data")));
 extern u32 gTaskTransitionFlags __attribute__((section(".data")));
 extern s16 *gCourseGeometryVertexData __attribute__((section(".data")));
 extern s16 *gCourseGeometryRegionData __attribute__((section(".data")));
@@ -1784,8 +1784,8 @@ void initializeProximityParticleTask(void) {
     if (gCurrentTask->resource14 != 0xFFFF) { while (1) {} }
     gCurrentTask->resource14 = allocateTaskMemoryBlock();
     resource = (ProximityParticleResource *)&gTaskMemoryPool[gCurrentTask->resource14];
-    if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
-    parent = (ProximityEmitterResource *)&gTaskMemoryPool[D_8013AE98->resource14];
+    if (gCurrentTaskParent->resource14 == 0xFFFF) { while (1) {} }
+    parent = (ProximityEmitterResource *)&gTaskMemoryPool[gCurrentTaskParent->resource14];
     GsInitCoordinate2(0, &resource->coordinate);
     resource->geometryIndex = parent->geometryIndex;
     resource->rotation.vx = 0;

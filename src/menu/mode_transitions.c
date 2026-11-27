@@ -53,7 +53,7 @@ extern u8 D_8013AFCD __attribute__((section(".data")));
 extern u8 gRacePauseState __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
-extern GameTask *D_8013AE98 __attribute__((section(".data")));
+extern GameTask *gCurrentTaskParent __attribute__((section(".data")));
 extern u32 gTaskTransitionFlags __attribute__((section(".data")));
 extern u8 D_8013AFD7 __attribute__((section(".data")));
 extern u8 D_8013B1AA __attribute__((section(".data")));
@@ -403,18 +403,18 @@ void updateTitleScreenMenuTask(void) {
                 state->selectionDelay = 450;
             }
             setSpriteColor(128, 128, 128);
-            addTilePacketWithBlend(-72, 44, 144, 54, 128, 128, 128, 2, &D_800EBFF0[gActiveGraphicsBuffer], 4);
+            addTilePacketWithBlend(-72, 44, 144, 54, 128, 128, 128, 2, &gMainOrderingTables[gActiveGraphicsBuffer], 4);
         } else {
             if (gFrameCounter & 8) {
                 setSpriteColor(128, 128, 128);
-                drawUppercaseProportionalText(-40, 62, 20, gTitleScreenStartPrompt, 2, -1, &D_800EBFF0[gActiveGraphicsBuffer], 4);
+                drawUppercaseProportionalText(-40, 62, 20, gTitleScreenStartPrompt, 2, -1, &gMainOrderingTables[gActiveGraphicsBuffer], 4);
             }
             if (gControllerPressedButtons[0] & 0x800) {
                 playSoundEffect(0, 0, 32);
                 state->promptState = 1;
             }
         }
-        drawSpriteByIndexWithBlend(-72, 96, 53, 10, -1, &D_800EBFF0[gActiveGraphicsBuffer], 4);
+        drawSpriteByIndexWithBlend(-72, 96, 53, 10, -1, &gMainOrderingTables[gActiveGraphicsBuffer], 4);
     }
     drawFullScreenTexturedBackground();
 }
@@ -422,7 +422,7 @@ void updateTitleScreenMenuTask(void) {
 void drawFullScreenTexturedBackground(void) {
     setSpriteColor(128, 128, 128);
     drawPagedTexturedRectangle(-160, -120, 320, 240, 0x85, 0x39F0,
-                  &D_800EBFF0[gActiveGraphicsBuffer], 0xFFF);
+                  &gMainOrderingTables[gActiveGraphicsBuffer], 0xFFF);
 }
 
 void createTitleLogoTask(s32 depth, s32 index) {
@@ -468,16 +468,16 @@ void updateTitleLogoTask(void) {
     }
     logo = (TitleLogoResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if ((u16)(gCurrentTask->data1E % 10U) == 0) {
-        if (D_8013AE98->resource14 == 0xFFFF) {
+        if (gCurrentTaskParent->resource14 == 0xFFFF) {
             for (;;) {}
         }
-        entries = (SelectedTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource14];
+        entries = (SelectedTaskEntry *)&gTaskMemoryPool[gCurrentTaskParent->resource14];
         entry = &entries[gCurrentTask->data1E / 10U];
     } else {
-        if (D_8013AE98->resource16 == 0xFFFF) {
+        if (gCurrentTaskParent->resource16 == 0xFFFF) {
             for (;;) {}
         }
-        entries = (SelectedTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource16];
+        entries = (SelectedTaskEntry *)&gTaskMemoryPool[gCurrentTaskParent->resource16];
         entry = &entries[gCurrentTask->data1E / 10U];
     }
 
@@ -646,20 +646,20 @@ void updateTitleLogoTask(void) {
     if (logo->flash == 1) {
         setSpriteColor(logo->brightness, logo->brightness, logo->brightness);
         drawTransformedSpriteByIndex((s16)subtitleX, (s16)subtitleY, 0x1BA, 0, logo->blendMode,
-                                    0, 32, logo->subtitleScaleX, logo->subtitleScaleY, 0, &D_800EBFF0[gActiveGraphicsBuffer], 4);
+                                    0, 32, logo->subtitleScaleX, logo->subtitleScaleY, 0, &gMainOrderingTables[gActiveGraphicsBuffer], 4);
         drawTransformedSpriteByIndex((s16)logoX, (s16)logoY, 0x1BB, 0, logo->blendMode,
-                                    0, 72, logo->logoScaleX, logo->logoScaleY, 0, &D_800EBFF0[gActiveGraphicsBuffer], 4);
+                                    0, 72, logo->logoScaleX, logo->logoScaleY, 0, &gMainOrderingTables[gActiveGraphicsBuffer], 4);
     }
     setSpriteColor(128, 128, 128);
     drawTransformedSpriteByIndex((s16)subtitleX, (s16)subtitleY, 0x1BA, 0, -1,
-                                0, 32, logo->subtitleScaleX, logo->subtitleScaleY, 0, &D_800EBFF0[gActiveGraphicsBuffer], 4);
+                                0, 32, logo->subtitleScaleX, logo->subtitleScaleY, 0, &gMainOrderingTables[gActiveGraphicsBuffer], 4);
     drawTransformedSpriteByIndex((s16)logoX, (s16)logoY, 0x1BB, 0, -1,
-                                0, 72, logo->logoScaleX, logo->logoScaleY, 0, &D_800EBFF0[gActiveGraphicsBuffer], 4);
+                                0, 72, logo->logoScaleX, logo->logoScaleY, 0, &gMainOrderingTables[gActiveGraphicsBuffer], 4);
     if (logo->flash == 1) {
         setSpriteColor(logo->brightness, logo->brightness, logo->brightness);
-        drawSpriteByIndexWithBlend((s16)logoX, (s16)(logoY - 72), 0x1B7, 0, 1, &D_800EBFF0[gActiveGraphicsBuffer], 4);
-        drawSpriteByIndexWithBlend((s16)(logoX + 128), (s16)(logoY - 72), 0x1B8, 0, 1, &D_800EBFF0[gActiveGraphicsBuffer], 4);
-        drawSpriteByIndexWithBlend((s16)(logoX + 256), (s16)(logoY - 72), 0x1B9, 0, 1, &D_800EBFF0[gActiveGraphicsBuffer], 4);
+        drawSpriteByIndexWithBlend((s16)logoX, (s16)(logoY - 72), 0x1B7, 0, 1, &gMainOrderingTables[gActiveGraphicsBuffer], 4);
+        drawSpriteByIndexWithBlend((s16)(logoX + 128), (s16)(logoY - 72), 0x1B8, 0, 1, &gMainOrderingTables[gActiveGraphicsBuffer], 4);
+        drawSpriteByIndexWithBlend((s16)(logoX + 256), (s16)(logoY - 72), 0x1B9, 0, 1, &gMainOrderingTables[gActiveGraphicsBuffer], 4);
     }
 }
 
@@ -692,7 +692,7 @@ void drawSelectedTaskSideMarkerSprite(void) {
         }
         position = (Movement2D *)&gTaskMemoryPool[entries[selection].task->resource14];
         drawSpriteByIndexWithBlend(position->x / 4096 + (s16)(offset - 32), position->y / 4096 - 4,
-                      0x44, 0, -1, &D_800EBFF0[gActiveGraphicsBuffer], (u16)(resource->depth - 1));
+                      0x44, 0, -1, &gMainOrderingTables[gActiveGraphicsBuffer], (u16)(resource->depth - 1));
     }
 }
 
@@ -705,15 +705,15 @@ void drawRegisteredTaskGridSpriteWithDefaultBlend(void) {
     if (gCurrentTask->resource14 == 0xFFFF) { for (;;) {} }
     position = (Movement2D *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (gCurrentTask->resource16 == 0xFFFF) { for (;;) {} }
-    if (D_8013AE98->resource14 == 0xFFFF) { for (;;) {} }
-    parent = (GridSpriteParent *)&gTaskMemoryPool[D_8013AE98->resource14];
+    if (gCurrentTaskParent->resource14 == 0xFFFF) { for (;;) {} }
+    parent = (GridSpriteParent *)&gTaskMemoryPool[gCurrentTaskParent->resource14];
     if ((u16)(gCurrentTask->data1E % 10U) == 0) {
-        if (D_8013AE98->resource14 == 0xFFFF) { for (;;) {} }
-        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource14];
+        if (gCurrentTaskParent->resource14 == 0xFFFF) { for (;;) {} }
+        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[gCurrentTaskParent->resource14];
         entry = &entries[gCurrentTask->data1E / 10U];
     } else {
-        if (D_8013AE98->resource16 == 0xFFFF) { for (;;) {} }
-        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource16];
+        if (gCurrentTaskParent->resource16 == 0xFFFF) { for (;;) {} }
+        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[gCurrentTaskParent->resource16];
         entry = &entries[gCurrentTask->data1E / 10U];
     }
     if (parent->mapping != 0) {
@@ -730,7 +730,7 @@ void drawRegisteredTaskGridSpriteWithDefaultBlend(void) {
             }
             setSpriteColor(128, 128, 128);
             drawSpriteByIndexWithBlend((s16)(position->x / 4096), (s16)(position->y / 4096),
-                sprite->sprite, sprite->color, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                sprite->sprite, sprite->color, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
             entry->flags = 0;
         }
     }
@@ -741,7 +741,7 @@ void initializePlayerModeSelectionTask(void) {
 
     gCurrentTask->data18 = 1;
     gCurrentTask->data1A = 0;
-    D_8013AE98->data1C++;
+    gCurrentTaskParent->data1C++;
     if (gCurrentTask->resource14 != 0xFFFF) {
         while (1) {}
     }
@@ -829,15 +829,15 @@ void updatePlayerModeSelectionTask(void) {
         }
         entries[4].command = 20;
         configureColorCycleTask(1, 0, 128, 8, 0);
-        D_8013B41F = 0;
+        gSelectionMenuFadeStarted = 0;
         gCurrentTask->data18 = 7;
         break;
     case 7:
         gCurrentTask->data1A = selection->selection + 1;
         ready = isTaskResourceTransitionComplete(0);
-        if (ready == 1 && D_8013B41F == 0) {
+        if (ready == 1 && gSelectionMenuFadeStarted == 0) {
             entries[4].command = 22;
-            D_8013B41F = ready;
+            gSelectionMenuFadeStarted = ready;
         }
         if ((s16)selection->unk06 > 0) {
             entries[4].command = 10;
@@ -851,18 +851,18 @@ void updatePlayerModeSelectionTask(void) {
         if ((s16)selection->unk06 == 0 || (s16)entries[4].flags != 0) {
             break;
         }
-        if (D_8013B41F == 0) {
+        if (gSelectionMenuFadeStarted == 0) {
             entries[4].command = 22;
-            D_8013B41F = 1;
+            gSelectionMenuFadeStarted = 1;
         }
         if ((s16)selection->unk06 < 0) {
 cancel:
             gCurrentTask->data18 = 10;
             break;
         }
-        D_8013AE98->data18 = 4;
+        gCurrentTaskParent->data18 = 4;
         D_8013B10C = -1;
-        queueMenuResourceReads((s16)D_8013AE98->data18);
+        queueMenuResourceReads((s16)gCurrentTaskParent->data18);
         D_8013AFCD = selection->selection + 1;
         moveTaskChildrenWithSpacing(0, entries[4].task, -0x188000, -0x10000, -0x3C000, 0, -2);
         entries[4].command = 23;
@@ -888,7 +888,7 @@ cancel:
         gCurrentTask->data18 = 99;
         break;
     case 10:
-        D_8013AE98->data18 = 2;
+        gCurrentTaskParent->data18 = 2;
         D_8013B10C = -1;
         configureTaskStateTransition(2, 0, 30);
         setMusicSequenceEnabled(0);
@@ -902,7 +902,7 @@ cancel:
         setSecondaryDisplayTaskMode(1);
         /* fall through */
     default:
-        D_8013AE98->data1C--;
+        gCurrentTaskParent->data1C--;
         deleteCurrentTaskSubtree();
         break;
     }
@@ -944,16 +944,16 @@ void updateRegisteredPlayerModePanelTask(void) {
     u16 resource;
     if (gCurrentTask->resource14 == 0xFFFF) { while (1) {} }
     position = (Movement2D *)&gTaskMemoryPool[gCurrentTask->resource14];
-    if (D_8013AE98->resource14 == 0xFFFF) { while (1) {} }
+    if (gCurrentTaskParent->resource14 == 0xFFFF) { while (1) {} }
     remainder = gCurrentTask->data1E % 10U;
-    resource = D_8013AE98->resource14;
+    resource = gCurrentTaskParent->resource14;
     if (remainder == 0) {
         if (resource == 0xFFFF) { while (1) {} }
-        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource14];
+        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[gCurrentTaskParent->resource14];
         entry = &entries[gCurrentTask->data1E / 10U];
     } else {
-        if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
-        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource16];
+        if (gCurrentTaskParent->resource16 == 0xFFFF) { while (1) {} }
+        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[gCurrentTaskParent->resource16];
         entry = &entries[gCurrentTask->data1E / 10U];
     }
     if (entry->command == 99) {
@@ -963,11 +963,11 @@ void updateRegisteredPlayerModePanelTask(void) {
         entry->flags = updateMovement2D(position);
         setSpriteColor(128, 128, 128);
         setTexturedQuadColor(128, 128, 128);
-        gCurrentTask->data1A = D_8013AE98->data1A;
+        gCurrentTask->data1A = gCurrentTaskParent->data1A;
         drawWrappedGlyphText16x16((s16)(position->x / 4096 + 8), (s16)(position->y / 4096 + 8),
-                                  14, gRegisteredPlayerModePanelTexts[gCurrentTask->data1A], 8, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                                  14, gRegisteredPlayerModePanelTexts[gCurrentTask->data1A], 8, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
         drawDefaultTexturedPanel((s16)(position->x / 4096), (s16)(position->y / 4096),
-            240, 64, 5, 0, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+            240, 64, 5, 0, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
     }
 }
 
@@ -994,7 +994,7 @@ void drawSelectedTaskMarkerSprite(void) {
         }
         position = (Movement2D *)&gTaskMemoryPool[entries[resource->selection].task->resource14];
         drawSpriteByIndexWithBlend(position->x / 4096 - 30, position->y / 4096 + 20,
-                      0x44, 0, -1, &D_800EBFF0[gActiveGraphicsBuffer], (u16)(resource->depth - 1));
+                      0x44, 0, -1, &gMainOrderingTables[gActiveGraphicsBuffer], (u16)(resource->depth - 1));
     }
 }
 
@@ -1010,15 +1010,15 @@ void drawRegisteredTaskTexturedQuadList(void) {
     position = (Movement2D *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (gCurrentTask->resource16 == 0xFFFF) { for (;;) {} }
     color = (TextureColor *)&gTaskMemoryPool[gCurrentTask->resource16];
-    if (D_8013AE98->resource14 == 0xFFFF) { for (;;) {} }
-    parent = (GridSpriteParent *)&gTaskMemoryPool[D_8013AE98->resource14];
+    if (gCurrentTaskParent->resource14 == 0xFFFF) { for (;;) {} }
+    parent = (GridSpriteParent *)&gTaskMemoryPool[gCurrentTaskParent->resource14];
     if ((u16)(gCurrentTask->data1E % 10U) == 0) {
-        if (D_8013AE98->resource14 == 0xFFFF) { for (;;) {} }
-        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource14];
+        if (gCurrentTaskParent->resource14 == 0xFFFF) { for (;;) {} }
+        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[gCurrentTaskParent->resource14];
         entry = &entries[gCurrentTask->data1E / 10U];
     } else {
-        if (D_8013AE98->resource16 == 0xFFFF) { for (;;) {} }
-        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[D_8013AE98->resource16];
+        if (gCurrentTaskParent->resource16 == 0xFFFF) { for (;;) {} }
+        entries = (RegisteredTaskEntry *)&gTaskMemoryPool[gCurrentTaskParent->resource16];
         entry = &entries[gCurrentTask->data1E / 10U];
     }
     if (parent->mapping != 0) {
@@ -1035,7 +1035,7 @@ void drawRegisteredTaskTexturedQuadList(void) {
             }
             list = gRegisteredTaskQuadLists[texture];
             drawTexturedQuadList((s16)(position->x / 4096), (s16)(position->y / 4096),
-                list, 1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                list, 1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
             entry->flags = 0;
         }
     }
@@ -1097,14 +1097,14 @@ void drawPlayerModeMessagePanelTask(void) {
     setSpriteColor(128, 128, 128);
     setTexturedQuadColor(128, 128, 128);
     drawWrappedGlyphText16x16(-112, -24, 14, gPlayerModeMessageTexts[0], 8, -1,
-                              &D_800EBFF0[gActiveGraphicsBuffer], 3);
+                              &gMainOrderingTables[gActiveGraphicsBuffer], 3);
     drawDefaultTexturedPanel(-120, -32, 240, 64, 5, 0,
-                            &D_800EBFF0[gActiveGraphicsBuffer], 3);
+                            &gMainOrderingTables[gActiveGraphicsBuffer], 3);
 }
 
 void startUnlockNotification0Task(void) {
     GameTask *task = gCurrentTask;
-    GameTask *parent = D_8013AE98;
+    GameTask *parent = gCurrentTaskParent;
 
     task->data18 = 1;
     parent->data1C++;
@@ -1114,13 +1114,13 @@ void startUnlockNotification0Task(void) {
 
 void waitUnlockNotification0TransitionTask(void) {
     if (gTaskTransitionFlags & 0x200) {
-        D_8013AE98->data18 = 5;
+        gCurrentTaskParent->data18 = 5;
         configureTaskStateTransition(11, 0, 30);
         setSecondaryDisplayTaskMode(1);
         D_8013B10C = -1;
         queueMode11TransitionResources();
         queueBackgroundTextureSectorCommands();
-        queueMenuResourceReads((s16)D_8013AE98->data18);
+        queueMenuResourceReads((s16)gCurrentTaskParent->data18);
         setCurrentTaskCallback(finishUnlockNotification0TransitionTask);
         gCurrentTask->unk10 |= 2;
     }
@@ -1128,7 +1128,7 @@ void waitUnlockNotification0TransitionTask(void) {
 
 void finishUnlockNotification0TransitionTask(void) {
     configureTaskStateTransition(2, 0, 30);
-    D_8013AE98->data1C--;
+    gCurrentTaskParent->data1C--;
     deleteCurrentTaskSubtree();
 }
 
@@ -1216,7 +1216,7 @@ void drawGrowingSprite179Task(void) {
     setSpriteColor(128, 128, 128);
     drawTransformedSpriteByIndex((s16)gCurrentTask->data18, 0, 0x179, 6, -1,
         0x7FFF, 0x7FFF, (s16)gCurrentTask->data1C,
-        (s16)gCurrentTask->data1C, 0, &D_800EBFF0[gActiveGraphicsBuffer], 1);
+        (s16)gCurrentTask->data1C, 0, &gMainOrderingTables[gActiveGraphicsBuffer], 1);
 }
 
 void drawGrowingSprite178Task(void) {
@@ -1236,7 +1236,7 @@ void drawGrowingSprite178Task(void) {
     setSpriteColor(128, 128, 128);
     drawTransformedSpriteByIndex((s16)gCurrentTask->data18, 0, 0x178, 6, -1,
         0x7FFF, 0x7FFF, (s16)gCurrentTask->data1C,
-        (s16)gCurrentTask->data1C, 0, &D_800EBFF0[gActiveGraphicsBuffer], 1);
+        (s16)gCurrentTask->data1C, 0, &gMainOrderingTables[gActiveGraphicsBuffer], 1);
 }
 
 void waitThenStartSpriteScaleTransition(void) {

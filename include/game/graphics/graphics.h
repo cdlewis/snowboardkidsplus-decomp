@@ -123,7 +123,7 @@ typedef struct TaskVisualResource {
 /* Sprite palettes indexed by the character nibble in saved records. */
 extern u8 gRaceProgressMeterIconPalettes[];
 
-extern GsOT D_800EBFF0[2];
+extern GsOT gMainOrderingTables[2];
 extern GsOT D_800EC018[2];
 extern GsOT D_800EC0B8[2];
 extern GsOT D_800EC090[2];

@@ -57,7 +57,7 @@ extern u16 gTaskMemoryFreeBits[16];
 /* Some task flows address this pointer absolutely; the scheduler uses $gp. */
 extern GameTask *gCurrentTask;
 extern GameTask *gCreatedTask;
-extern GameTask *D_8013AE98;
+extern GameTask *gCurrentTaskParent;
 extern GameTask *D_8013B304;
 /* GP-relative alias for the player snapshot task pointer. */
 extern GameTask *playerSnapshotTaskGp;
@@ -215,7 +215,7 @@ void configureVerticalTaskGridMovement(s32 mode, GameTask *task, s32 x, s32 y,
 void initializeSpacedTaskGridPositions(s32 mode, GameTask *task, s32 x, s32 y,
                                  s32 spacingX, s32 spacingY);
 
-extern u8 D_8013B41F __attribute__((section(".data")));
+extern u8 gSelectionMenuFadeStarted __attribute__((section(".data")));
 extern u8 selectionMenuFadeStartedGp;
 void configureColorCycleTask(s32 mode, s16 minimum, s16 maximum, s32 step, s16 index);
 void updateColorCycleTask(void);

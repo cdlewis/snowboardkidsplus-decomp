@@ -4,7 +4,7 @@
  */
 currentPlayerAbsolute = gCurrentRacePlayer;
 raceFinishFlagAbsolute = D_8013AFD6;
-selectionMenuFadeStartedGp = D_8013B41F;
+selectionMenuFadeStartedGp = gSelectionMenuFadeStarted;
 activeRacePlayerCountGp = D_8013AFD2;
 playerSnapshotTaskGp = D_8013B304;
 playerSnapshotTrailCountGp = gPlayerSnapshotTrailCount;

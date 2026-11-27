@@ -23,7 +23,7 @@ extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
 extern u8 D_8013AFCD __attribute__((section(".data")));
 extern u8 D_8013AFE2 __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
-extern GameTask *D_8013AE98 __attribute__((section(".data")));
+extern GameTask *gCurrentTaskParent __attribute__((section(".data")));
 
 extern const u16 D_8012F424[], D_8012F4C8[], D_8012F5CC[], D_8012F630[];
 extern const u16 D_8012F698[], D_8012F6D4[], D_8012F70C[], D_8012F728[];
@@ -150,18 +150,18 @@ void updateMainMenuSelectionTask(void) {
             entries[2].command = 20;
             configureColorCycleTask(1, 0, 128, 8, 0);
             task = gCurrentTask;
-            D_8013B41F = 0;
+            gSelectionMenuFadeStarted = 0;
             task->data18 = 4;
         }
         break;
     case 4:
         complete = isTaskResourceTransitionComplete(0);
-        if (complete == 1 && D_8013B41F == 0) {
+        if (complete == 1 && gSelectionMenuFadeStarted == 0) {
             entries[0].command = 21;
             entries[1].command = 22;
             entries[2].command = 22;
             configureColorCycleTask(2, 64, 128, 4, 0);
-            D_8013B41F = complete;
+            gSelectionMenuFadeStarted = complete;
         }
         if (selection->selectedIndex >= 0) {
             D_8013AFE2 = selection->selectedIndex;
@@ -178,24 +178,24 @@ void updateMainMenuSelectionTask(void) {
                 entries[1].command = 22;
                 entries[2].command = 22;
                 configureColorCycleTask(2, 64, 128, 4, 0);
-                D_8013B41F = 1;
+                gSelectionMenuFadeStarted = 1;
                 break;
             }
         }
-        if (D_8013B41F == 0) {
+        if (gSelectionMenuFadeStarted == 0) {
             entries[1].command = 22;
             entries[2].command = 22;
-            D_8013B41F = 1;
+            gSelectionMenuFadeStarted = 1;
         }
         if (selection->choiceResult < 0) {
-            GameTask *parent = D_8013AE98;
+            GameTask *parent = gCurrentTaskParent;
             GameTask *task = gCurrentTask;
 
             parent->data18 = 5;
             task->data18 = 5;
         } else {
             const u8 *parentState = &gMainMenuParentStates[D_8013AFE2];
-            GameTask *parent = D_8013AE98;
+            GameTask *parent = gCurrentTaskParent;
             GameTask *task;
 
             parent->data18 = *parentState;
@@ -218,7 +218,7 @@ void updateMainMenuSelectionTask(void) {
     case 5:
         if ((s16)entries[0].flags == 0 && (s16)entries[1].flags == 0 &&
             (s16)entries[2].flags == 0 && (s16)entries[3].flags == 0) {
-            queueMenuResourceReads((s16)D_8013AE98->data18);
+            queueMenuResourceReads((s16)gCurrentTaskParent->data18);
             moveTaskChildrenWithSpacing(0, entries[0].task, -0x134000, -0x60000, 0x1E000, 0x1E000, -1000);
             entries[0].command = 23;
             configureMovement2D((Movement2D *)&gTaskMemoryPool[entries[1].task->resource14],
@@ -233,7 +233,7 @@ void updateMainMenuSelectionTask(void) {
     case 6:
         if ((s16)entries[0].flags == 0 && (s16)entries[1].flags == 0 &&
             (s16)entries[2].flags == 0 && (s16)entries[3].flags == 0) {
-            GameTask *parent = D_8013AE98;
+            GameTask *parent = gCurrentTaskParent;
 
             if (parent->data18 != 15) {
                 goto finish;
@@ -256,7 +256,7 @@ void updateMainMenuSelectionTask(void) {
         }
         break;
     default:
-        D_8013AE98->data1C--;
+        gCurrentTaskParent->data1C--;
         deleteCurrentTaskSubtree();
         break;
     }
@@ -288,24 +288,24 @@ void drawSelectionHeaderAndMoneyPanel(void) {
         return;
     }
     drawSpriteByIndexWithBlend(position->x / 4096 + 8, position->y / 4096 - 22,
-                 0xB1, 0, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                 0xB1, 0, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
     playerCount = D_8013AFCD;
     if (playerCount != 1) {
         return;
     }
     drawSpriteByIndexWithBlend(position->x / 4096 + 74, position->y / 4096 + 140,
-                 0xBD, 10, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                 0xBD, 10, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
     drawDecimalNumber8x8(position->x / 4096 + 74, position->y / 4096 + 152,
-                         6, 0, gPlayerSaveRecords[0].money, 0, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                         6, 0, gPlayerSaveRecords[0].money, 0, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
     drawWrappedText8x8(position->x / 4096 + 122, position->y / 4096 + 152,
-                       2, gSelectionMoneyCurrencyLabel, 0, -1, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                       2, gSelectionMoneyCurrencyLabel, 0, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
     if (gCurrentTask->data1A == playerCount) {
         addTilePacketWithBlend(position->x / 4096 + 68, position->y / 4096 + 136, 68, 32,
                       gMenuColorCycleColor.r, gMenuColorCycleColor.g, gMenuColorCycleColor.b, 2,
-                      &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                      &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
     } else {
         addTilePacketWithBlend(position->x / 4096 + 68, position->y / 4096 + 136, 68, 32,
-                      128, 128, 128, 2, &D_800EBFF0[gActiveGraphicsBuffer], gCurrentTask->data1C);
+                      128, 128, 128, 2, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
     }
 }
 
@@ -317,7 +317,7 @@ void initializeFlagSelectedCdAwareTask(void) {
     gCurrentTask->data18 = 1;
     gCurrentTask->data1A = getCourseSelectionGroupIndex();
     task = gCurrentTask;
-    parent = D_8013AE98;
+    parent = gCurrentTaskParent;
     parent->data1C++;
     if (task->resource14 != 0xFFFF) {
         for (;;) {}

@@ -67,11 +67,6 @@ typedef struct HalfwordPair {
     s16 unk_02;
 } HalfwordPair;
 
-typedef struct SelectionTransitionEntry {
-    s16 selection;
-    s16 previousSelection;
-    s16 timer;
-} SelectionTransitionEntry;
 
 typedef struct StateValueHistory {
     s32 unk_00;

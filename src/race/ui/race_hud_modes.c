@@ -842,14 +842,14 @@ void drawSinglePlayerRaceHud(void) {
 }
 
 void drawSplitScreenCourseProgressHud(void) {
-    GsOT *ot = &D_800EBFF0[gActiveGraphicsBuffer];
+    GsOT *ot = &gMainOrderingTables[gActiveGraphicsBuffer];
 
     setSpriteColor(128, 128, 128);
     drawRaceCourseProgressMeter(81, -68, ot, 1);
 }
 
 void drawSplitScreenRaceHud(s16 player) {
-    GsOT *hudOt = &D_800EBFF0[gActiveGraphicsBuffer];
+    GsOT *hudOt = &gMainOrderingTables[gActiveGraphicsBuffer];
     GsOT *playerOt;
     s32 hudY;
     s32 depth;
@@ -908,7 +908,7 @@ void drawSplitScreenRaceHud(s16 player) {
 
 void drawTrickAttackHud(void) {
     s16 palette = 1;
-    GsOT *ot = &D_800EBFF0[gActiveGraphicsBuffer];
+    GsOT *ot = &gMainOrderingTables[gActiveGraphicsBuffer];
     u16 depth = palette;
     s16 x;
     s16 i;
@@ -947,7 +947,7 @@ void drawTrickAttackHud(void) {
 }
 
 void drawSplitScreenTrickAttackHud(s16 player) {
-    GsOT *hudOt = &D_800EBFF0[gActiveGraphicsBuffer];
+    GsOT *hudOt = &gMainOrderingTables[gActiveGraphicsBuffer];
     GsOT *timeOt;
     s32 hudY;
     s16 timeY;
@@ -998,7 +998,7 @@ void drawSplitScreenTrickAttackHud(s16 player) {
 
 void drawScoreAttackHud(void) {
     s16 palette = 1;
-    GsOT *ot = &D_800EBFF0[gActiveGraphicsBuffer];
+    GsOT *ot = &gMainOrderingTables[gActiveGraphicsBuffer];
     u16 depth = palette;
     s32 xOffset;
     s16 i;
@@ -1043,7 +1043,7 @@ void drawSplitScreenScoreAttackHud(s16 player) {
     s16 hudY;
     u8 padding[0x10]; /* Preserve the original stack frame. */
     s16 timeY;
-    GsOT *hudOt = &D_800EBFF0[gActiveGraphicsBuffer];
+    GsOT *hudOt = &gMainOrderingTables[gActiveGraphicsBuffer];
     s16 palette;
     s32 iconX;
     u16 depth[1] = {1};
@@ -1104,7 +1104,7 @@ void drawSplitScreenScoreAttackHud(s16 player) {
 }
 
 void drawCourseCoinHud(void) {
-    GsOT *ot = &D_800EBFF0[gActiveGraphicsBuffer];
+    GsOT *ot = &gMainOrderingTables[gActiveGraphicsBuffer];
     char text[16];
     s16 digits;
 
@@ -1137,7 +1137,7 @@ void drawCourseCoinHud(void) {
 }
 
 void drawSplitScreenCourseCoinHud(s16 player) {
-    GsOT *hudOt = &D_800EBFF0[gActiveGraphicsBuffer];
+    GsOT *hudOt = &gMainOrderingTables[gActiveGraphicsBuffer];
     GsOT *timeOt;
     s32 hudY;
     s16 timeY;

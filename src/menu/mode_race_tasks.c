@@ -95,16 +95,16 @@ void updateMode11SelectionMenuTask(void) {
         if (hasTaskStateValue6(0) == 0) {
             entries[1].command = 20;
             configureColorCycleTask(1, 0, 128, 8, 0);
-            D_8013B41F = 0;
+            gSelectionMenuFadeStarted = 0;
             gCurrentTask->data18 = 3;
         }
         break;
     case 3:
         complete = isTaskResourceTransitionComplete(0);
-        if (complete == 1 && D_8013B41F == 0) {
+        if (complete == 1 && gSelectionMenuFadeStarted == 0) {
             entries[1].command = 21;
             configureColorCycleTask(2, 64, 128, 4, 0);
-            D_8013B41F = complete;
+            gSelectionMenuFadeStarted = complete;
         }
         if (selection->choiceResult != 0 && (s16)entries[1].flags == 0) {
             entries[1].command = 22;
@@ -160,7 +160,7 @@ void updateMode11SelectionMenuTask(void) {
     }
 
     if (gCurrentTask->data18 >= 2) {
-        drawScreenDarkeningOverlay(128, &D_800EBFF0[gActiveGraphicsBuffer], 4);
+        drawScreenDarkeningOverlay(128, &gMainOrderingTables[gActiveGraphicsBuffer], 4);
         drawFullScreenTexturedBackground();
     }
 }

@@ -13,7 +13,7 @@
 extern s16 gFrameCounter __attribute__((section(".data")));
 extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
-extern GameTask *D_8013AE98 __attribute__((section(".data")));
+extern GameTask *gCurrentTaskParent __attribute__((section(".data")));
 
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u16 D_8013AFD0 __attribute__((section(".data")));
@@ -54,7 +54,7 @@ const u16 *gNumberAdjustmentValueTexts[10]
 void initializeNumberAdjustmentTask(void) {
     NumberAdjustmentState *state;
     s16 i;
-    D_8013AE98->data1C++;
+    gCurrentTaskParent->data1C++;
     if (gCurrentTask->resource14 != 0xFFFF) {
         for (;;) {}
     }
@@ -106,13 +106,13 @@ void updateNumberAdjustmentTask(void) {
         D_8013AFD0 = state->value;
         state->countdown = 20;
         state->active = 0;
-        D_8013AE98->data18 = 0x17;
+        gCurrentTaskParent->data18 = 0x17;
         gCurrentTask->data18 = 0;
         setCurrentTaskCallback(finishNumberAdjustmentTask);
     }
     if (buttons & 0x40) {
         playSoundEffect(0, 0, 0x20);
-        D_8013AE98->data18 = 8;
+        gCurrentTaskParent->data18 = 8;
         queueBackgroundTextureArchiveRead();
         gCurrentTask->data18 = 0;
         setCurrentTaskCallback(finishNumberAdjustmentTask);
@@ -143,9 +143,9 @@ void drawNumberAdjustmentPanel(void) {
     setSpriteColor(128, 128, 128);
     setTexturedQuadColor(128, 128, 128);
     scroll = state->unk20[0] / 4096;
-    drawSpriteByIndexWithBlend(-76, scroll - 91, 296, 0, -1, &D_800EBFF0[gActiveGraphicsBuffer], 4);
+    drawSpriteByIndexWithBlend(-76, scroll - 91, 296, 0, -1, &gMainOrderingTables[gActiveGraphicsBuffer], 4);
     palette = 13;
-    drawSpriteByIndexWithBlend(-84, scroll - 96, 295, 1, -1, &D_800EBFF0[gActiveGraphicsBuffer], 4);
+    drawSpriteByIndexWithBlend(-84, scroll - 96, 295, 1, -1, &gMainOrderingTables[gActiveGraphicsBuffer], 4);
     if (state->countdown > 0) {
         if (state->countdown & 1) {
             palette = 8;
@@ -153,21 +153,21 @@ void drawNumberAdjustmentPanel(void) {
         state->countdown--;
     }
     drawWrappedGlyphText16x16(-48, -28, 30, gNumberAdjustmentValueTexts[state->value],
-                              palette, 1, &D_800EBFF0[gActiveGraphicsBuffer], 4);
+                              palette, 1, &gMainOrderingTables[gActiveGraphicsBuffer], 4);
     if (state->active) {
         if (state->value > 1 && (gFrameCounter & 8)) {
-            drawNumberAdjustmentArrow(0, &D_800EBFF0[gActiveGraphicsBuffer], 4);
+            drawNumberAdjustmentArrow(0, &gMainOrderingTables[gActiveGraphicsBuffer], 4);
         }
         if (state->value < 9 && (gFrameCounter & 8)) {
-            drawNumberAdjustmentArrow(1, &D_800EBFF0[gActiveGraphicsBuffer], 4);
+            drawNumberAdjustmentArrow(1, &gMainOrderingTables[gActiveGraphicsBuffer], 4);
         }
     }
     drawWrappedGlyphText16x16(-32, -28, 30, gNumberAdjustmentLabel,
-                              palette, 1, &D_800EBFF0[gActiveGraphicsBuffer], 4);
-    drawDefaultTexturedPanel(-64, -52, 128, 64, 5, 0, &D_800EBFF0[gActiveGraphicsBuffer], 4);
+                              palette, 1, &gMainOrderingTables[gActiveGraphicsBuffer], 4);
+    drawDefaultTexturedPanel(-64, -52, 128, 64, 5, 0, &gMainOrderingTables[gActiveGraphicsBuffer], 4);
     drawWrappedGlyphText16x16(-104, 34, 30, gNumberAdjustmentInstructions,
-                              15, 1, &D_800EBFF0[gActiveGraphicsBuffer], 4);
-    drawDefaultTexturedPanel(-120, 26, 240, 64, 5, 0, &D_800EBFF0[gActiveGraphicsBuffer], 4);
+                              15, 1, &gMainOrderingTables[gActiveGraphicsBuffer], 4);
+    drawDefaultTexturedPanel(-120, 26, 240, 64, 5, 0, &gMainOrderingTables[gActiveGraphicsBuffer], 4);
 }
 
 void finishNumberAdjustmentTask(void) {
@@ -179,7 +179,7 @@ void finishNumberAdjustmentTask(void) {
     switch (gCurrentTask->data18) {
     case 0:
         if (state->countdown == 0) {
-            if (D_8013AE98->data18 == 0x17) {
+            if (gCurrentTaskParent->data18 == 0x17) {
                 beginMode2SequenceAndFadeMusic();
                 gCurrentTask->data18 = 1;
             } else {
@@ -190,7 +190,7 @@ void finishNumberAdjustmentTask(void) {
     case 1:
         if (isTaskStateTransitionBelowMaximum(0) != 0) break;
     case 2:
-        D_8013AE98->data1C--;
+        gCurrentTaskParent->data1C--;
         deleteCurrentTaskSubtree();
         return;
     }

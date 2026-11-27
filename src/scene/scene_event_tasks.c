@@ -18,7 +18,7 @@
 extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
-extern GameTask *D_8013AE98 __attribute__((section(".data")));
+extern GameTask *gCurrentTaskParent __attribute__((section(".data")));
 extern u32 gTaskTransitionFlags __attribute__((section(".data")));
 
 extern s16 gMusicSequenceId __attribute__((section(".data")));
@@ -194,7 +194,7 @@ void setSceneImageEventTask(SceneEvent *entry) {
 }
 
 void initializeSceneImageTask(void) {
-    if (D_8013AE98->resource16 == 0xFFFF) {
+    if (gCurrentTaskParent->resource16 == 0xFFFF) {
         while (1) {
         }
     }
@@ -207,8 +207,8 @@ void updateSceneImageTask(void) {
     SceneImageOwner *owner;
     SceneImageResource *resource;
     SceneEvent *entry;
-    if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
-    owner = (SceneImageOwner *)&gTaskMemoryPool[D_8013AE98->resource16];
+    if (gCurrentTaskParent->resource16 == 0xFFFF) { while (1) {} }
+    owner = (SceneImageOwner *)&gTaskMemoryPool[gCurrentTaskParent->resource16];
     if (gCurrentTask->resource14 == 0xFFFF) { while (1) {} }
     resource = (SceneImageResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     entry = resource->entry;
@@ -271,10 +271,10 @@ void drawSceneImageTask(void) {
     } else {
         if (D_8013B59F) {
             setSpriteColor(128, 128, 128);
-            addTilePacketWithBlend(-140, 44, 280, 56, 128, 128, 128, 2, &D_800EBFF0[gActiveGraphicsBuffer], 8);
+            addTilePacketWithBlend(-140, 44, 280, 56, 128, 128, 128, 2, &gMainOrderingTables[gActiveGraphicsBuffer], 8);
         }
         setSpriteColor(128, 128, 128);
-        drawPagedTexturedRectangle(-160, -120, 320, 240, 149, 0x3AB0, &D_800EBFF0[gActiveGraphicsBuffer], 8);
+        drawPagedTexturedRectangle(-160, -120, 320, 240, 149, 0x3AB0, &gMainOrderingTables[gActiveGraphicsBuffer], 8);
     }
 }
 
@@ -303,16 +303,16 @@ void updateSceneTextTask(void) {
     GsOT *ot;
     u16 depth;
 
-    if (D_8013AE98->resource16 == 0xFFFF) {
+    if (gCurrentTaskParent->resource16 == 0xFFFF) {
         while (1) {}
     }
-    owner = (ScenePlaybackState *)&gTaskMemoryPool[D_8013AE98->resource16];
+    owner = (ScenePlaybackState *)&gTaskMemoryPool[gCurrentTaskParent->resource16];
     if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
     resource = (SceneTextTaskResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     block = resource->block;
-    ot = &D_800EBFF0[gActiveGraphicsBuffer];
+    ot = &gMainOrderingTables[gActiveGraphicsBuffer];
     entry = resource->entry;
     depth = 6;
     if (owner->tasks[SCENE_EVENT_TEXT] != gCurrentTask) {
@@ -459,10 +459,10 @@ void setSceneMusicEventTask(SceneEvent *entry) {
 void finishSceneMusicTaskAtDeadline(void) {
     SceneMusicOwner *owner;
     TaskMemoryBlock *state;
-    if (D_8013AE98->resource16 == 0xFFFF) {
+    if (gCurrentTaskParent->resource16 == 0xFFFF) {
         while (1) {}
     }
-    owner = (SceneMusicOwner *)&gTaskMemoryPool[D_8013AE98->resource16];
+    owner = (SceneMusicOwner *)&gTaskMemoryPool[gCurrentTaskParent->resource16];
     if (gCurrentTask->resource14 == 0xFFFF) {
         while (1) {}
     }
@@ -506,8 +506,8 @@ void updateSceneCdAudioTask(void) {
     SceneCdAudioPlaybackOwner *owner;
     SceneCdAudioResource *resource;
     SceneEvent *entry;
-    if (D_8013AE98->resource16 == 0xFFFF) { while (1) {} }
-    owner = (SceneCdAudioPlaybackOwner *)&gTaskMemoryPool[D_8013AE98->resource16];
+    if (gCurrentTaskParent->resource16 == 0xFFFF) { while (1) {} }
+    owner = (SceneCdAudioPlaybackOwner *)&gTaskMemoryPool[gCurrentTaskParent->resource16];
     if (gCurrentTask->resource14 == 0xFFFF) { while (1) {} }
     resource = (SceneCdAudioResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     entry = resource->entry;

@@ -37,7 +37,7 @@ const char gBestLapLabel[16] __attribute__((section(".rodata.best_lap_label"), a
 void drawRacePauseMenu(void);
 
 void drawLapTimeHud(void) {
-    GsOT *ot = &D_800EBFF0[gActiveGraphicsBuffer];
+    GsOT *ot = &gMainOrderingTables[gActiveGraphicsBuffer];
     char text[16];
     s32 icon;
     setSpriteColor(128,128,128);
@@ -57,7 +57,7 @@ void drawLapTimeHud(void) {
 }
 
 void drawFirstPlayerStatusHud(void) {
-    GsOT *ot = &D_800EBFF0[gActiveGraphicsBuffer];
+    GsOT *ot = &gMainOrderingTables[gActiveGraphicsBuffer];
     RacePlayer *player;
     s16 frame;
     s32 palette;
@@ -228,13 +228,13 @@ void drawRacePauseMenu(void) {
     setSpriteColor(128, 128, 128);
     if (D_8013AFCD == 2 && (gFrameCounter & 8)) {
         if (player == 0) {
-            drawSpriteByIndexWithBlend(-53, -48, 490, 13, 0, &D_800EBFF0[gActiveGraphicsBuffer], 0);
+            drawSpriteByIndexWithBlend(-53, -48, 490, 13, 0, &gMainOrderingTables[gActiveGraphicsBuffer], 0);
         } else {
-            drawSpriteByIndexWithBlend(29, -48, 491, 14, 0, &D_800EBFF0[gActiveGraphicsBuffer], 0);
+            drawSpriteByIndexWithBlend(29, -48, 491, 14, 0, &gMainOrderingTables[gActiveGraphicsBuffer], 0);
         }
     }
 
-    drawSpriteByIndexWithBlend(-27, -41, 399, 5, -1, &D_800EBFF0[gActiveGraphicsBuffer], 0);
+    drawSpriteByIndexWithBlend(-27, -41, 399, 5, -1, &gMainOrderingTables[gActiveGraphicsBuffer], 0);
     y = -20;
     row = 0;
     x = -20;
@@ -243,7 +243,7 @@ void drawRacePauseMenu(void) {
         if (row == D_8013AFD5) {
             palette = 7;
         }
-        drawSpriteByIndexWithBlend(x - 28, y, 412 + row, palette, -1, &D_800EBFF0[gActiveGraphicsBuffer], 0);
+        drawSpriteByIndexWithBlend(x - 28, y, 412 + row, palette, -1, &gMainOrderingTables[gActiveGraphicsBuffer], 0);
         y += 14;
     }
 
@@ -255,7 +255,7 @@ void drawRacePauseMenu(void) {
     sprite = D_8013AEC4[player];
     sprite = sprite != 0;
     sprite += 161;
-    drawSpriteByIndexWithBlend(x, y, sprite, palette, -1, &D_800EBFF0[gActiveGraphicsBuffer], 0);
+    drawSpriteByIndexWithBlend(x, y, sprite, palette, -1, &gMainOrderingTables[gActiveGraphicsBuffer], 0);
     palette = 6;
     y += 14;
     if (D_8013AFD5 == 4) {
@@ -263,9 +263,9 @@ void drawRacePauseMenu(void) {
     }
     sprite = getPlayerOptionFlag(player);
     drawSpriteByIndexWithBlend(x, y, 570 | (sprite = !(s16)sprite), palette, -1,
-                               &D_800EBFF0[gActiveGraphicsBuffer], 0);
+                               &gMainOrderingTables[gActiveGraphicsBuffer], 0);
     setTexturedQuadColor(128, 128, 128);
-    drawStyle20DTexturedPanel(-58, -58, 116, 124, 15, 0, &D_800EBFF0[gActiveGraphicsBuffer], 0);
+    drawStyle20DTexturedPanel(-58, -58, 116, 124, 15, 0, &gMainOrderingTables[gActiveGraphicsBuffer], 0);
 }
 
 s16 isFirstPlayerUsingCallback26D10(void) {

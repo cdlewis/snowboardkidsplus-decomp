@@ -42,11 +42,6 @@ typedef struct ModelPreviewState {
     u16 rotationStep;
 } ModelPreviewState;
 
-typedef struct SelectionDisplayEntry {
-    s16 index;
-    s16 unk02;
-    s16 unk04;
-} SelectionDisplayEntry;
 
 typedef struct GridMarkerState {
     u8 unk00[0x30];

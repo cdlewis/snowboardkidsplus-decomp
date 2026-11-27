@@ -28,9 +28,9 @@ typedef struct GameScratchpad {
 #define GAME_SCRATCHPAD ((GameScratchpad *)getScratchAddr(0))
 
 extern GameTask *gCurrentTask __attribute__((section(".data")));
-extern GameTask *D_8013AE98 __attribute__((section(".data")));
+extern GameTask *gCurrentTaskParent __attribute__((section(".data")));
 
-GsOT D_800EBFF0[2] __attribute__((section(".data.render_state"))) = {0};
+GsOT gMainOrderingTables[2] __attribute__((section(".data.render_state"))) = {0};
 GsOT D_800EC018[2] __attribute__((section(".data.render_state"))) = {0};
 GsOT D_800EC040[2] __attribute__((section(".data.render_state"))) = {0};
 GsOT D_800EC068[2] __attribute__((section(".data.render_state"))) = {0};
@@ -85,7 +85,7 @@ void runGameLoop(void) {
             gActiveGraphicsBuffer = (u16)gFrameCounter & 1;
         }
         func_800BF2C8((PACKET *)D_80100200[gActiveGraphicsBuffer]);
-        GsClearOt(0, 0, &D_800EBFF0[gActiveGraphicsBuffer]);
+        GsClearOt(0, 0, &gMainOrderingTables[gActiveGraphicsBuffer]);
         if (!(D_8013AFAA & 0x400) || !((u16)gFrameCounter & 1)) {
             GsClearOt(0, 0, &D_800EC018[gActiveGraphicsBuffer]);
             gCurrentPlayerOrderingTable = D_800EC018[gActiveGraphicsBuffer].org;
@@ -114,7 +114,7 @@ void runGameLoop(void) {
             run_task:
                 callback = gCurrentTask->callback;
                 D_8013AFC8 = callback;
-                D_8013AE98 = gCurrentTask->parent;
+                gCurrentTaskParent = gCurrentTask->parent;
                 callback();
             }
             nextTask = gCurrentTask->next;
@@ -136,7 +136,7 @@ void runGameLoop(void) {
             GsSortClear(0, 0, 0, &D_800EC018[gActiveGraphicsBuffer]);
             GsSetClip(&D_800EC158[0]);
             GsDrawOt(&D_800EC018[gActiveGraphicsBuffer]);
-            GsDrawOt(&D_800EBFF0[gActiveGraphicsBuffer]);
+            GsDrawOt(&gMainOrderingTables[gActiveGraphicsBuffer]);
         } else {
             if (!((u16)gFrameCounter & 1)) {
                 waitForFrameHcount(0x384U);
@@ -158,7 +158,7 @@ void runGameLoop(void) {
             DrawSync(0);
             GsSetOffset(D_8013AF7A >> 1, D_8013AF7C >> 1);
             GsSetClip(&D_800EC158[0]);
-            GsDrawOt(&D_800EBFF0[gActiveGraphicsBuffer]);
+            GsDrawOt(&gMainOrderingTables[gActiveGraphicsBuffer]);
         }
     }
 }
@@ -205,10 +205,10 @@ void initializeGameSystems(void) {
     clip = D_800EC158;
     clip->x = 0;
     clip->y = 0;
-    D_800EBFF0[1].length = 0xC;
-    D_800EBFF0->length = 0xC;
-    D_800EBFF0->org = D_800EC200;
-    D_800EBFF0[1].org = D_800EC200 + 0x1000;
+    gMainOrderingTables[1].length = 0xC;
+    gMainOrderingTables->length = 0xC;
+    gMainOrderingTables->org = D_800EC200;
+    gMainOrderingTables[1].org = D_800EC200 + 0x1000;
     D_800EC018[1].length = 0xC;
     D_800EC018->length = 0xC;
     D_800EC040[1].length = 0xC;

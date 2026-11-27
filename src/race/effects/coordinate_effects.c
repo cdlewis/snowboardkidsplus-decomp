@@ -30,7 +30,7 @@ typedef union CollectionTaskResource {
 extern u8 gRacePauseState __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
-extern GameTask *D_8013AE98 __attribute__((section(".data")));
+extern GameTask *gCurrentTaskParent __attribute__((section(".data")));
 
 TaskVisualFrame gPlayerParticleHistoryVisualFrames[6]
     __attribute__((section(".data.player_particle_history_visual_frames"), aligned(4))) = {
@@ -332,10 +332,10 @@ void initializeFallingRotatingObjectTask(void) {
     } else {
         GsCOORDINATE2 *parent;
 
-        if (D_8013AE98->resource14 == 0xFFFF) {
+        if (gCurrentTaskParent->resource14 == 0xFFFF) {
             while (1) {}
         }
-        parent = (GsCOORDINATE2 *)&gTaskMemoryPool[D_8013AE98->resource14];
+        parent = (GsCOORDINATE2 *)&gTaskMemoryPool[gCurrentTaskParent->resource14];
         resource->coordinate.coord.t[0] = parent->coord.t[0] + (u8)((u8)randomNextSecondary() % 96) - 48;
         resource->coordinate.coord.t[1] = parent->coord.t[1] + (u8)((u8)randomNextSecondary() % 96) - 128;
         resource->coordinate.coord.t[2] = parent->coord.t[2] + (u8)((u8)randomNextSecondary() % 96) - 48;

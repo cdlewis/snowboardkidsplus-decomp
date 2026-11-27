@@ -3540,7 +3540,7 @@ gDatStartSector = 0x8013B5FC; // size:0x4 defined:true
 
 initializeGameSystems = 0x8001AB3C; // type:func
 
-D_800EBFF0 = 0x800EBFF0; // size:0x28 defined:true
+gMainOrderingTables = 0x800EBFF0; // size:0x28 defined:true
 
 D_800EC018 = 0x800EC018; // size:0x28 defined:true
 
@@ -4044,7 +4044,7 @@ gMainMenuMultiplayerTextMapping = 0x8013B3E8; // size:0x8 defined:true
 gMainMenuParentStates = 0x8013B3F0; // size:0x8 defined:true
 gSelectionMoneyCurrencyLabel = 0x8013B3F8; // size:0x4
 gSelectionPrizeCurrencyLabel = 0x8013B41C; // size:0x3
-D_8013B41F = 0x8013B41F; // size:0x1
+gSelectionMenuFadeStarted = 0x8013B41F; // size:0x1
 gMoneyPanelCurrencyLabel = 0x8013B4AC; // size:0x4
 drawCurrentTaskSaveRecordMoneyPanel = 0x80091318; // type:func
 drawCurrentTaskSelectedBoardPrice = 0x80091B80; // type:func
@@ -4236,3 +4236,8 @@ gModelPrimitiveCursor = 0x8013B680;
 gModelVertices = 0x8013B688;
 gModelPrimitiveCount = 0x8013B68C;
 gModelDepthShift = 0x8013B69C;
+
+gSelectionPanelTexts = 0x8012FFD4; // size:0x28
+gMenuSelectionStates = 0x801300AC; // size:0xC
+gMenuModelDrawAreas = 0x801300B8; // size:0x20
+gCurrentTaskParent = 0x8013AE98; // size:0x4

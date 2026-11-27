@@ -75,7 +75,7 @@ void updateTaskStateTransition(void) {
     /* configureTaskStateTransition assigns one of the three viewport indices. */
     switch (index) {
     case 0:
-        ot = &D_800EBFF0[gActiveGraphicsBuffer];
+        ot = &gMainOrderingTables[gActiveGraphicsBuffer];
         draw = 1;
         break;
     case 1:

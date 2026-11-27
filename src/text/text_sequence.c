@@ -306,7 +306,7 @@ static void drawTextSequence(TextSequenceResource *resource) {
     s32 bodyX, bodyY;
     s16 x, y, labelY;
     u16 depth = 6;
-    GsOT *ot = &D_800EBFF0[gActiveGraphicsBuffer];
+    GsOT *ot = &gMainOrderingTables[gActiveGraphicsBuffer];
 
     setSpriteColor(128, 128, 128);
     setTexturedQuadColor(128, 128, 128);
@@ -320,9 +320,9 @@ static void drawTextSequence(TextSequenceResource *resource) {
     } else if (resource->mode == 2) {
         u16 index = resource->unk0A;
         if (index < 5) {
-            drawMenuKindSprite(-16, y, index + 1, 1, &D_800EBFF0[gActiveGraphicsBuffer], 4);
+            drawMenuKindSprite(-16, y, index + 1, 1, &gMainOrderingTables[gActiveGraphicsBuffer], 4);
         } else {
-            drawPaletteMappedIcon(-16, y, index + (u16)-4, &D_800EBFF0[gActiveGraphicsBuffer], 4);
+            drawPaletteMappedIcon(-16, y, index + (u16)-4, &gMainOrderingTables[gActiveGraphicsBuffer], 4);
         }
         drawWrappedGlyphText16x16((s16)x, (s16)(y - 24), 30, resource->headerText, 12, 1, ot, depth);
     }
