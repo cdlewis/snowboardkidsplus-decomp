@@ -22,6 +22,24 @@ typedef struct MemoryCardSaveHeader {
     u8 payload[0x870];
 } MemoryCardSaveHeader;
 
+extern char gMemoryCardGameFileName[];
+extern char gMemoryCardGhostFileName[];
+extern char gMemoryCardPlacedObjectFileName[];
+extern char gMemoryCardTerrainCollisionFileName[];
+extern char D_80010218[];
+
+extern char *gMemoryCardFileNames[5] __attribute__((section(".data.memory_card_file_names")));
+
+extern MemoryCardSaveTitle gMemoryCardGameSaveTitle;
+extern MemoryCardSaveTitle gMemoryCardGhostSaveTitle;
+extern MemoryCardSaveTitle D_800102B8;
+extern MemoryCardSaveTitle D_800102FC;
+extern MemoryCardSaveTitle D_80010340;
+
+extern MemoryCardSaveTitle *gMemoryCardSaveTitles[5] __attribute__((section(".data.memory_card_tables")));
+
+extern u32 gMemoryCardSaveCapacities[5] __attribute__((section(".data.memory_card_tables")));
+
 extern MemoryCardSaveHeader gMemoryCardSaveHeader __attribute__((section(".data.memory_card_save_header")));
 extern void *gMemoryCardLoadDestination;
 extern s32 gMemoryCardDirectoryEntryCounts[2];
@@ -32,7 +50,6 @@ extern u8 gMemoryCardSelectedFileType;
 extern char *gMemoryCardSelectedFileName;
 extern u8 gMemoryCardCreateFilePending[2];
 extern u8 gMemoryCardChanged[2] __attribute__((section(".bss")));
-extern u32 gMemoryCardSaveCapacities[5];
 
 void selectMemoryCardLoadFile(u8 slot, void *destination);
 void prepareMemoryCardSave(u8 slot, void *source, u32 size);

@@ -10,6 +10,7 @@
 #include "game/audio/music.h"
 #include "game/save/save_data.h"
 #include "game/io/cd_queue.h"
+#include "game/io/memory_card.h"
 #include "game/io/controller.h"
 #include "game/race/player/race_player.h"
 #include "game/engine/game_options.h"
@@ -56,24 +57,6 @@ typedef struct SavedImageEntry {
     u16 pixels[16];
     u16 transitionPixels[16];
 } SavedImageEntry;
-
-extern char gMemoryCardGameFileName[];
-extern char gMemoryCardGhostFileName[];
-extern char D_800101E8[];
-extern char D_80010200[];
-extern char D_80010218[];
-
-extern char *gMemoryCardFileNames[5] __attribute__((section(".data.memory_card_file_names")));
-
-extern MemoryCardSaveTitle D_80010230;
-extern MemoryCardSaveTitle D_80010274;
-extern MemoryCardSaveTitle D_800102B8;
-extern MemoryCardSaveTitle D_800102FC;
-extern MemoryCardSaveTitle D_80010340;
-
-extern MemoryCardSaveTitle *gMemoryCardSaveTitles[5] __attribute__((section(".data.memory_card_tables")));
-
-extern u32 gMemoryCardSaveCapacities[5] __attribute__((section(".data.memory_card_tables")));
 
 extern u8 D_80120200[16] __attribute__((section(".data.player_model_parts")));
 

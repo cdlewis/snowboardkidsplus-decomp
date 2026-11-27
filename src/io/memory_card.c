@@ -10,11 +10,11 @@
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 
 char *gMemoryCardFileNames[5] __attribute__((section(".data.memory_card_file_names"))) = {
-    gMemoryCardGameFileName, gMemoryCardGhostFileName, D_800101E8, D_80010200, D_80010218
+    gMemoryCardGameFileName, gMemoryCardGhostFileName, gMemoryCardPlacedObjectFileName, gMemoryCardTerrainCollisionFileName, D_80010218
 };
 
 MemoryCardSaveTitle *gMemoryCardSaveTitles[5] __attribute__((section(".data.memory_card_tables"))) = {
-    &D_80010230, &D_80010274, &D_800102B8, &D_800102FC, &D_80010340
+    &gMemoryCardGameSaveTitle, &gMemoryCardGhostSaveTitle, &D_800102B8, &D_800102FC, &D_80010340
 };
 
 u32 gMemoryCardSaveCapacities[5] __attribute__((section(".data.memory_card_tables"))) = {
