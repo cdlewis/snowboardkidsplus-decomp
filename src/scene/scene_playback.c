@@ -48,9 +48,9 @@ void initializeScenePlaybackTask(void) {
     }
     setSecondaryDisplayTaskMode(0);
     configureTaskStateTransition(2, 5, 30);
-    D_8013B59C = 0;
+    gSceneImageTransitionDuration = 0;
     D_8013B59E = 0;
-    D_8013B59F = 0;
+    gSceneTextBackdropEnabled = 0;
     setCurrentTaskCallback(updateScenePlaybackTask);
 }
 

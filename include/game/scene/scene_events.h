@@ -27,9 +27,9 @@ typedef struct SceneEvent {
 extern u8 gSelectedUnlockIndex;
 extern SceneEvent *gFreeSceneEvents;
 extern SceneEvent *gActiveSceneEvents;
-extern s16 D_8013B59C;
+extern s16 gSceneImageTransitionDuration;
 extern u8 D_8013B59E;
-extern u8 D_8013B59F;
+extern u8 gSceneTextBackdropEnabled;
 
 void resetSceneEventPool(void);
 void initializeSceneEvent(SceneEvent *entry, u32 tick, u16 type);

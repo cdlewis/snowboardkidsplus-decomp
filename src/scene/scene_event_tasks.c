@@ -221,7 +221,7 @@ void updateSceneImageTask(void) {
         case 0:
             owner->flags &= ~1;
             uploadTimImageAt(320, 256, 768, 234, DAT_SCENE_IMAGE);
-            D_8013B59C = 0;
+            gSceneImageTransitionDuration = 0;
             switch (entry->mode) {
             case 0:
                 configureTaskStateTransition(0, 5, 0);
@@ -230,22 +230,22 @@ void updateSceneImageTask(void) {
             case 1:
                 configureTaskStateTransition(1, 5, entry->duration);
                 D_8013B59E = 1;
-                D_8013B59C = entry->duration;
+                gSceneImageTransitionDuration = entry->duration;
                 break;
             case 2:
                 configureTaskStateTransition(2, 5, entry->duration);
                 D_8013B59E = 0;
-                D_8013B59C = entry->duration;
+                gSceneImageTransitionDuration = entry->duration;
                 break;
             case 3:
                 configureTaskStateTransition(4, 5, entry->duration);
                 D_8013B59E = 1;
-                D_8013B59C = entry->duration;
+                gSceneImageTransitionDuration = entry->duration;
                 break;
             case 4:
                 configureTaskStateTransition(5, 5, entry->duration);
                 D_8013B59E = 0;
-                D_8013B59C = entry->duration;
+                gSceneImageTransitionDuration = entry->duration;
                 break;
             }
             createChildTaskForParentWithReserve(&gGameTasks[4], drawSceneImageTask);
@@ -269,7 +269,7 @@ void drawSceneImageTask(void) {
     if (gSceneImageDisplayTask != gCurrentTask) {
         deleteCurrentTaskSubtree();
     } else {
-        if (D_8013B59F) {
+        if (gSceneTextBackdropEnabled) {
             setSpriteColor(128, 128, 128);
             addTilePacketWithBlend(-140, 44, 280, 56, 128, 128, 128, 2, &gMainOrderingTables[gActiveGraphicsBuffer], 8);
         }
@@ -320,10 +320,10 @@ void updateSceneTextTask(void) {
         return;
     }
     if (entry->resourceId == 0) {
-        if (D_8013B59F) {
-            D_8013B59F = 0;
+        if (gSceneTextBackdropEnabled) {
+            gSceneTextBackdropEnabled = 0;
         } else {
-            D_8013B59F = 1;
+            gSceneTextBackdropEnabled = 1;
         }
         owner->tasks[SCENE_EVENT_TEXT] = NULL;
         deleteCurrentTaskSubtree();
@@ -382,20 +382,20 @@ void updateSceneTextTask(void) {
 
     setSpriteColor(128, 128, 128);
     if (block->metadata.fields.unk06 != 0) {
-        drawWrappedDoubleByteText(-96, 48, 1, D_8013B5C4, 2, -1, ot, depth);
+        drawWrappedDoubleByteText(-96, 48, 1, gSceneTextColon, 2, -1, ot, depth);
         drawSpriteByIndexWithBlend(-136, 48, block->metadata.fields.unk06 + 502,
                       block->metadata.fields.unk07 + 14, 1, ot, depth);
     }
     if (block->metadata.fields.unk08 != 0) {
         if (block->metadata.fields.unk08 != 17) {
-            drawWrappedDoubleByteText(-96, 64, 1, D_8013B5C4, 2, -1, ot, depth);
+            drawWrappedDoubleByteText(-96, 64, 1, gSceneTextColon, 2, -1, ot, depth);
         }
         drawSpriteByIndexWithBlend(-136, 64, block->metadata.fields.unk08 + 502,
                       block->metadata.fields.unk09 + 14, 1, ot, depth);
     }
     if (block->metadata.fields.unk0A != 0) {
         if (block->metadata.fields.unk0A != 17) {
-            drawWrappedDoubleByteText(-96, 80, 1, D_8013B5C4, 2, -1, ot, depth);
+            drawWrappedDoubleByteText(-96, 80, 1, gSceneTextColon, 2, -1, ot, depth);
         }
         drawSpriteByIndexWithBlend(-136, 80, block->metadata.fields.unk0A + 502,
                       block->metadata.fields.unk0B + 14, 1, ot, depth);
