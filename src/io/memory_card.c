@@ -77,17 +77,17 @@ void captureMemoryCardSaveIcon(void) {
     StoreImage(&iconRect, (u32 *)gMemoryCardSaveHeader.icons);
 }
 
-void prepareMemoryCardSave(u8 slot, void *source, u32 size) {
+void prepareMemoryCardSave(u8 fileType, const void *source, u32 size) {
     u8 blocks;
     u32 i;
     u32 checksum;
-    gMemoryCardSelectedFileName = gMemoryCardFileNames[slot];
-    blocks = gMemoryCardSaveCapacities[slot] / 8192;
-    if (gMemoryCardSaveCapacities[slot] % 8192) blocks++;
+    gMemoryCardSelectedFileName = gMemoryCardFileNames[fileType];
+    blocks = gMemoryCardSaveCapacities[fileType] / 8192;
+    if (gMemoryCardSaveCapacities[fileType] % 8192) blocks++;
     gMemoryCardSaveHeader.blockCount = blocks;
-    gMemoryCardSaveHeader.title = *gMemoryCardSaveTitles[slot];
+    gMemoryCardSaveHeader.title = *gMemoryCardSaveTitles[fileType];
     memcpy(gMemoryCardSaveHeader.payload, source, size);
-    for (i = size; i < gMemoryCardSaveCapacities[slot] - 0x210; i++) {
+    for (i = size; i < gMemoryCardSaveCapacities[fileType] - 0x210; i++) {
         gMemoryCardSaveHeader.payload[i] = 0;
     }
     i = 0;
@@ -96,16 +96,16 @@ void prepareMemoryCardSave(u8 slot, void *source, u32 size) {
     gMemoryCardSaveHeader.version = 0;
     for (; i < size; i++) checksum += gMemoryCardSaveHeader.payload[i];
     gMemoryCardSaveHeader.checksum = checksum;
-    gMemoryCardSelectedFileType = slot;
+    gMemoryCardSelectedFileType = fileType;
 }
 
-void selectMemoryCardLoadFile(u8 slot, void *destination) {
-    switch (slot) {
+void selectMemoryCardLoadFile(u8 fileType, void *destination) {
+    switch (fileType) {
     case 1:
     case 2:
     case 3:
-        gMemoryCardFileNames[slot][18] = (gSelectedCourseIndex / 10) | 0x30;
-        gMemoryCardFileNames[slot][19] = (gSelectedCourseIndex % 10) | 0x30;
+        gMemoryCardFileNames[fileType][18] = (gSelectedCourseIndex / 10) | 0x30;
+        gMemoryCardFileNames[fileType][19] = (gSelectedCourseIndex % 10) | 0x30;
         break;
     case 4:
         gMemoryCardFileNames[4][18] = (gSelectedUnlockIndex / 10) | 0x30;
@@ -113,8 +113,8 @@ void selectMemoryCardLoadFile(u8 slot, void *destination) {
         break;
     }
     gMemoryCardLoadDestination = destination;
-    gMemoryCardSelectedFileType = slot;
-    gMemoryCardSelectedFileName = gMemoryCardFileNames[slot];
+    gMemoryCardSelectedFileType = fileType;
+    gMemoryCardSelectedFileName = gMemoryCardFileNames[fileType];
 }
 
 s16 validateAndCopyMemoryCardSave(void) {

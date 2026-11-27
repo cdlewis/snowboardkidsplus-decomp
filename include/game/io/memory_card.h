@@ -52,8 +52,8 @@ extern char *gMemoryCardSelectedFileName;
 extern u8 gMemoryCardCreateFilePending[2];
 extern u8 gMemoryCardChanged[2] __attribute__((section(".bss")));
 
-void selectMemoryCardLoadFile(u8 slot, void *destination);
-void prepareMemoryCardSave(u8 slot, void *source, u32 size);
+void selectMemoryCardLoadFile(u8 fileType, void *destination);
+void prepareMemoryCardSave(u8 fileType, const void *source, u32 size);
 s16 validateAndCopyMemoryCardSave(void);
 s32 pollMemoryCardRead(void);
 s32 pollMemoryCardWrite(void);
