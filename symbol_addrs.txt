@@ -4443,7 +4443,8 @@ gControllerPlaybackRepeatCounters = 0x8013AEE0; // type:u8 size:0x2
 gSpriteTextureRegionSets = 0x8012DDA4; // size:0x250
 gTexturedQuadFrames = 0x8012DFF4; // size:0x8F0
 gDoubleByteGlyphCodes16x16Page0 = 0x8012EC04; // size:0xC4
-gCurrentSpriteTextureRegions = 0x8013B6AC;
+gCurrentSpriteTextureRegions = 0x8013B6AC; // size:0x4 defined:true
+gCurrentSpriteTextureRegionsPadding = 0x8013B6B0; // size:0x4 defined:true
 
 gMemoryCardAccessInProgressText = 0x801302BC; // size:0x4C
 gSaveRecordConfirmationSprites = 0x801307AC; // size:0x54

@@ -16,6 +16,12 @@ typedef struct DigitSpritePacket {
     u16 clut;
 } DigitSpritePacket;
 
+TextureRegion *gCurrentSpriteTextureRegions
+    __attribute__((section(".sdata.current_sprite_texture_regions"))) = 0;
+
+const u8 gCurrentSpriteTextureRegionsPadding[4]
+    __attribute__((section(".data.current_sprite_texture_regions_padding"))) = {0};
+
 TextureRegion gSpriteTextureRegionsSet32[2]
     __attribute__((section(".data.small_sprite_texture_regions"), aligned(4))) = {
     {0, 0, 255, 104},

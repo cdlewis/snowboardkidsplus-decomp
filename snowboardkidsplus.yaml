@@ -1190,7 +1190,8 @@ segments:
       - {start: 0x12BE68, type: .sdata, name: graphics/model_renderer, linker_section: .sdata.model_renderer_state, linker_section_order: .data}
       - {start: 0x12BEA4, type: .sdata, name: race/course/course_objects, linker_section: .sdata.object_sort_saved_stack, linker_section_order: .data}
       - {start: 0x12BEA8, type: .sdata, name: race/course/course_objects, linker_section: .sdata.alternate_object_sort_saved_stack, linker_section_order: .data}
-      - [0x12BEAC, data]
+      - {start: 0x12BEAC, type: .sdata, name: graphics/sprite_draw, linker_section: .sdata.current_sprite_texture_regions, linker_section_order: .data}
+      - {start: 0x12BEB0, type: .data, name: graphics/sprite_draw, linker_section: .data.current_sprite_texture_regions_padding}
       - {start: 0x12BEB4, type: .sdata, name: menu/course_selection_tasks, linker_section_order: .data}
       - {start: 0x12BEB8, type: .sdata, name: menu/grouped_selection_state, linker_section: .sdata.player_grouped_selection_states, linker_section_order: .data}
       - {start: 0x12BEBA, type: .data, name: menu/grouped_selection_state, linker_section: .data.player_grouped_selection_states_padding}
