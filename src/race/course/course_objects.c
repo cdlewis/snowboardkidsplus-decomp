@@ -67,7 +67,7 @@ extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern GameTask *gCurrentTaskParent __attribute__((section(".data")));
 extern u32 gTaskTransitionFlags __attribute__((section(".data")));
-extern s16 *gCourseGeometryVertexData __attribute__((section(".data")));
+extern CourseGeometryVertex *gCourseGeometryVertexData __attribute__((section(".data")));
 extern s16 *gCourseGeometryRegionData __attribute__((section(".data")));
 
 extern VECTOR *gScratchVector1 __attribute__((section(".data")));
@@ -2419,7 +2419,7 @@ void initializeCourseUnlockScene(void) {
     s16 i;
 
     index = gSelectedCourseRecords[gSelectedCourseIndex].unk00;
-    vertices = (CourseGeometryVertex *)gCourseGeometryVertexData;
+    vertices = gCourseGeometryVertexData;
     regionOffset = index * (s32)sizeof(*region);
     region = (GeometryRegion *)(regionOffset + (u32)gCourseGeometryRegionData);
     gCourseObjectCoordinates[26].coord.t[0] = ((vertices[region->vertices[0]].x + vertices[region->vertices[1]].x

@@ -4525,3 +4525,5 @@ gRaceRulesetCourseHelpTexts = 0x801325D0; // size:0x2C
 gTwoPlayerTimeAttackCourseMappingGroups = 0x80132638; // size:0x14
 
 gCurrentTaskCallback = 0x8013AFC8; // size:0x4
+
+gCourseRenderingDisabled = 0x8013AFB8;

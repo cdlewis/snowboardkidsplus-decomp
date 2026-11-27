@@ -31,7 +31,7 @@ void bindGeometryRecordData(s16 *data) {
     s16 count;
 
     count = *data++;
-    gCourseGeometryVertexData = data;
+    gCourseGeometryVertexData = (CourseGeometryVertex *)data;
     /* Section lengths wrap as signed 16-bit halfword counts. */
     data += (s16)(count * 3);
     D_8013B1F8 = count;
@@ -48,14 +48,14 @@ s32 getAdjacentGeometryRegionForPoint(s16 index, s32 x, s32 z) {
     s32 z0, z1, z2, z3;
     s16 neighbor;
 
-    x0 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[0] * 3] * 5;
-    x1 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[1] * 3] * 5;
-    x2 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[2] * 3] * 5;
-    x3 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[3] * 3] * 5;
-    z0 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[0] * 3 + 2] * 5;
-    z1 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[1] * 3 + 2] * 5;
-    z2 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[2] * 3 + 2] * 5;
-    z3 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[3] * 3 + 2] * 5;
+    x0 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[0]].x * 5;
+    x1 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[1]].x * 5;
+    x2 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[2]].x * 5;
+    x3 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[3]].x * 5;
+    z0 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[0]].z * 5;
+    z1 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[1]].z * 5;
+    z2 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[2]].z * 5;
+    z3 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[3]].z * 5;
     neighbor = ((GeometryRegion *)gCourseGeometryRegionData)[index].neighbors[0];
     if (neighbor >= 0 && (x0 - x1) * (z - z1) - (z0 - z1) * (x - x1) > 0) return neighbor;
     neighbor = ((GeometryRegion *)gCourseGeometryRegionData)[index].neighbors[1];
@@ -70,7 +70,7 @@ s32 getAdjacentGeometryRegionForPoint(s16 index, s32 x, s32 z) {
 void selectGeometryRecord(s16 index) {
     s16 *vertices;
     gSelectedGeometryRecordIndex = index;
-    vertices = gCourseGeometryVertexData;
+    vertices = (s16 *)gCourseGeometryVertexData;
     gSelectedGeometryVertex0 = &vertices[gCourseGeometryTriangleRecords[index].vertexIndices[0] * 3];
     gSelectedGeometryVertex1 = &vertices[gCourseGeometryTriangleRecords[index].vertexIndices[1] * 3];
     gSelectedGeometryVertex2 = &vertices[gCourseGeometryTriangleRecords[index].vertexIndices[2] * 3];
@@ -85,7 +85,7 @@ s32 getCourseHeightAtPoint(s16 index, s32 x, s32 z) {
         SelectedRecord *records = gCourseGeometryTriangleRecords;
 
         if (records[i].skipFirstEdge == 0) {
-            CourseGeometryVertex *vertices = (CourseGeometryVertex *)gCourseGeometryVertexData;
+            CourseGeometryVertex *vertices = gCourseGeometryVertexData;
             s32 bi = records[i].vertexIndices[1];
             s32 ai = records[i].vertexIndices[0];
 
@@ -95,7 +95,7 @@ s32 getCourseHeightAtPoint(s16 index, s32 x, s32 z) {
             }
         }
         {
-            CourseGeometryVertex *vertices = (CourseGeometryVertex *)gCourseGeometryVertexData;
+            CourseGeometryVertex *vertices = gCourseGeometryVertexData;
             s32 bi = records[i].vertexIndices[2];
             s32 ai = records[i].vertexIndices[1];
 
@@ -112,7 +112,7 @@ s32 getCourseHeightAtPoint(s16 index, s32 x, s32 z) {
             SelectedRecord *selected = gCourseGeometryTriangleRecords;
 
             ci = selected[i].vertexIndices[2];
-            triangleVertices = (CourseGeometryVertex *)gCourseGeometryVertexData;
+            triangleVertices = gCourseGeometryVertexData;
             ai = selected[i].vertexIndices[0];
             bi = selected[i].vertexIndices[1];
 
@@ -152,7 +152,7 @@ u8 getCourseSurfaceAtPoint(s16 index, s32 x, s32 z) {
     SelectedRecord *records;
     for (i = ((GeometryRegion *)gCourseGeometryRegionData)[index].firstRecord;
          i < ((GeometryRegion *)gCourseGeometryRegionData)[index].lastRecord + 1; i++) {
-        vertices = (CourseGeometryVertex *)gCourseGeometryVertexData;
+        vertices = gCourseGeometryVertexData;
         records = gCourseGeometryTriangleRecords;
         record = &records[i];
         if (record->skipFirstEdge == 0) {
@@ -190,18 +190,18 @@ s32 getGeometryPlacementSignedDistance(s16 index, s32 x, s32 z) {
     s32 vertexIndex;
     s32 dx, dz;
     s32 sine, cosine;
-    vertexIndex = ((GeometryPlacement *)gCourseGeometryRegionData)[index].vertexIndex * 3;
-    dx = x - gCourseGeometryVertexData[vertexIndex] * 5;
-    dz = z - gCourseGeometryVertexData[vertexIndex + 2] * 5;
+    vertexIndex = ((GeometryPlacement *)gCourseGeometryRegionData)[index].vertexIndex;
+    dx = x - gCourseGeometryVertexData[vertexIndex].x * 5;
+    dz = z - gCourseGeometryVertexData[vertexIndex].z * 5;
     sine = rsin((s16)((GeometryPlacement *)gCourseGeometryRegionData)[index].angle);
     cosine = rcos((s16)((GeometryPlacement *)gCourseGeometryRegionData)[index].angle);
     return (-sine * dx + cosine * -dz) / 4096;
 }
 
 void getGeometryPlacementTransform(s16 index, s32 *x, s32 *y, s32 *z, u16 *angle) {
-    *x = gCourseGeometryVertexData[((GeometryPlacement *)gCourseGeometryRegionData)[index].vertexIndex * 3] * 1280;
-    *y = gCourseGeometryVertexData[((GeometryPlacement *)gCourseGeometryRegionData)[index].vertexIndex * 3 + 1] * 1280;
-    *z = gCourseGeometryVertexData[((GeometryPlacement *)gCourseGeometryRegionData)[index].vertexIndex * 3 + 2] * 1280;
+    *x = gCourseGeometryVertexData[((GeometryPlacement *)gCourseGeometryRegionData)[index].vertexIndex].x * 1280;
+    *y = gCourseGeometryVertexData[((GeometryPlacement *)gCourseGeometryRegionData)[index].vertexIndex].y * 1280;
+    *z = gCourseGeometryVertexData[((GeometryPlacement *)gCourseGeometryRegionData)[index].vertexIndex].z * 1280;
     *angle = ((GeometryPlacement *)gCourseGeometryRegionData)[index].angle;
 }
 
@@ -240,14 +240,14 @@ void resolveGeometryBoundaryCollision(s16 index, s32 x, s32 z, s32 radius, s32 m
 
     gGeometryResolvedX = x;
     gGeometryResolvedZ = z;
-    x0 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[0] * 3] * 5;
-    x1 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[1] * 3] * 5;
-    x2 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[2] * 3] * 5;
-    x3 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[3] * 3] * 5;
-    z0 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[0] * 3 + 2] * 5;
-    z1 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[1] * 3 + 2] * 5;
-    z2 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[2] * 3 + 2] * 5;
-    z3 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[3] * 3 + 2] * 5;
+    x0 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[0]].x * 5;
+    x1 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[1]].x * 5;
+    x2 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[2]].x * 5;
+    x3 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[3]].x * 5;
+    z0 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[0]].z * 5;
+    z1 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[1]].z * 5;
+    z2 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[2]].z * 5;
+    z3 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[3]].z * 5;
 
     if (((GeometryRegion *)gCourseGeometryRegionData)[index].neighbors[0] == wallType) {
         gGeometryEdgeDeltaX = x1 - x0;
@@ -377,7 +377,7 @@ void reflectVelocityAndResolveGeometryBoundary(s16 index, s32 x, s32 z, s32 radi
     s32 z0, z1, z2, z3;
     s32 along, distance, edgeLength, basisX, basisZ;
     s32 cornerLength, tangent, normal;
-    CourseGeometryVertex *vertices = (CourseGeometryVertex *)gCourseGeometryVertexData;
+    CourseGeometryVertex *vertices = gCourseGeometryVertexData;
 
     gGeometryResolvedX = x;
     gGeometryResolvedZ = z;
@@ -528,14 +528,14 @@ void getGeometryBoundaryDisplacement(s16 index, s32 x, s32 z, s32 radius, s32 *d
 
     gGeometryResolvedX = x;
     gGeometryResolvedZ = z;
-    x0 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[0] * 3] * 5;
-    x1 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[1] * 3] * 5;
-    x2 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[2] * 3] * 5;
-    x3 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[3] * 3] * 5;
-    z0 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[0] * 3 + 2] * 5;
-    z1 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[1] * 3 + 2] * 5;
-    z2 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[2] * 3 + 2] * 5;
-    z3 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[3] * 3 + 2] * 5;
+    x0 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[0]].x * 5;
+    x1 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[1]].x * 5;
+    x2 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[2]].x * 5;
+    x3 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[3]].x * 5;
+    z0 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[0]].z * 5;
+    z1 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[1]].z * 5;
+    z2 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[2]].z * 5;
+    z3 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[3]].z * 5;
 
     if (((GeometryRegion *)gCourseGeometryRegionData)[index].neighbors[0] < 0) {
         gGeometryEdgeDeltaX = x1 - x0;

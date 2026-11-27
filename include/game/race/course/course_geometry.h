@@ -23,8 +23,8 @@ typedef struct SelectedRecord {
     s16 unkA;
 } SelectedRecord;
 
-/* Packed XYZ halfwords, three per vertex. */
-extern s16 *gCourseGeometryVertexData;
+/* Packed XYZ halfwords, six bytes per vertex. */
+extern CourseGeometryVertex *gCourseGeometryVertexData;
 extern SelectedRecord *gCourseGeometryTriangleRecords;
 /* 0x1C-byte region records, also viewed as GeometryPlacement entries. */
 extern s16 *gCourseGeometryRegionData;

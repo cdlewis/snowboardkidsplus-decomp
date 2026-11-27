@@ -202,7 +202,7 @@ s32 gCourseModelDetailDistance __attribute__((section(".sdata.course_model_state
 
 TmdObject *gCourseModels[100] __attribute__((section(".bss.course_models")));
 
-extern s32 D_8013AFB8 __attribute__((section(".data")));
+extern s32 gCourseRenderingDisabled __attribute__((section(".data")));
 extern s16 gBackgroundLensFlareYawOffset, gBackgroundLensFlarePitchOffset;
 
 
@@ -220,8 +220,8 @@ void getCourseSteeringTarget(s16 region, s32 x, s32 z, s32 *targetX, s32 *target
         gGeometryProjectionBasisX = rsin(-(s16)((GeometryPlacement *)gCourseGeometryRegionData)[region].angle);
         cosine = rcos(-(s16)((GeometryPlacement *)gCourseGeometryRegionData)[region].angle);
         vertexIndex = ((GeometryPlacement *)gCourseGeometryRegionData)[region].vertexIndex;
-        dx = x - gCourseGeometryVertexData[vertexIndex * 3] * 5;
-        dz = z - gCourseGeometryVertexData[vertexIndex * 3 + 2] * 5;
+        dx = x - gCourseGeometryVertexData[vertexIndex].x * 5;
+        dz = z - gCourseGeometryVertexData[vertexIndex].z * 5;
         gGeometryProjectionBasisZ = cosine;
         dz = (-gGeometryProjectionBasisX * dx + cosine * dz) / 4096;
 
@@ -237,14 +237,14 @@ void getCourseSteeringTarget(s16 region, s32 x, s32 z, s32 *targetX, s32 *target
             *targetZ = gGeometryProjectionBasisZ * dz / 4096;
         }
 
-        *targetX += gCourseGeometryVertexData[((GeometryPlacement *)gCourseGeometryRegionData)[region].vertexIndex * 3] * 5;
-        *targetZ += gCourseGeometryVertexData[((GeometryPlacement *)gCourseGeometryRegionData)[region].vertexIndex * 3 + 2] * 5;
+        *targetX += gCourseGeometryVertexData[((GeometryPlacement *)gCourseGeometryRegionData)[region].vertexIndex].x * 5;
+        *targetZ += gCourseGeometryVertexData[((GeometryPlacement *)gCourseGeometryRegionData)[region].vertexIndex].z * 5;
 
         nextRegion = getAdjacentGeometryRegionForPoint(region, *targetX, *targetZ);
         gGeometryProjectionBasisX = rsin(-(s16)((GeometryPlacement *)gCourseGeometryRegionData)[nextRegion].angle);
         gGeometryProjectionBasisZ = rcos(-(s16)((GeometryPlacement *)gCourseGeometryRegionData)[nextRegion].angle);
         vertexIndex = ((GeometryPlacement *)gCourseGeometryRegionData)[nextRegion].vertexIndex * 3;
-        vertices = gCourseGeometryVertexData;
+        vertices = (s16 *)gCourseGeometryVertexData;
         vertexX = vertices[vertexIndex];
         vertexZ = vertices[vertexIndex + 2];
         dx = *targetX - vertexX * 5;
@@ -254,8 +254,8 @@ void getCourseSteeringTarget(s16 region, s32 x, s32 z, s32 *targetX, s32 *target
         lateral = (-gGeometryProjectionBasisX * dx + gGeometryProjectionBasisZ * dz) / 4096;
         *targetX = (gGeometryProjectionBasisZ * forward + -gGeometryProjectionBasisX * lateral) / 4096;
         *targetZ = (gGeometryProjectionBasisX * forward + gGeometryProjectionBasisZ * lateral) / 4096;
-        *targetX += gCourseGeometryVertexData[((GeometryPlacement *)gCourseGeometryRegionData)[nextRegion].vertexIndex * 3] * 5;
-        *targetZ += gCourseGeometryVertexData[((GeometryPlacement *)gCourseGeometryRegionData)[nextRegion].vertexIndex * 3 + 2] * 5;
+        *targetX += gCourseGeometryVertexData[((GeometryPlacement *)gCourseGeometryRegionData)[nextRegion].vertexIndex].x * 5;
+        *targetZ += gCourseGeometryVertexData[((GeometryPlacement *)gCourseGeometryRegionData)[nextRegion].vertexIndex].z * 5;
     } else {
         *targetX = (s32)courses[gSelectedCourseIndex].unk18[0] >> 8;
         *targetZ = (s32)courses[gSelectedCourseIndex].unk18[2] >> 8;
@@ -1243,7 +1243,7 @@ void drawCourseModelsForView(s16 view) {
         ot = &gPlayer2Layer7OrderingTables[gActiveGraphicsBuffer];
     }
     scale = gCourseModelScale;
-    if (D_8013AFB8 != 0) {
+    if (gCourseRenderingDisabled != 0) {
         return;
     }
     drawCourseBackgroundForView(view);
