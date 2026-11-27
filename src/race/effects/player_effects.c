@@ -558,6 +558,17 @@ SVECTOR gPlayerSnapshotTrailEndpoints[2]
     {0, 0, -20, 0}, {0, 0, 20, 0},
 };
 
+/* Unreferenced duplicate endpoints and scale beside the snapshot trail data. */
+SVECTOR D_8012C864[2]
+    __attribute__((section(".data.player_snapshot_trail_tail"))) = {
+    {0, 0, -20, 0}, {0, 0, 20, 0},
+};
+
+VECTOR D_8012C874
+    __attribute__((section(".data.player_snapshot_trail_tail"))) = {
+    0x2000, 0x2000, 0x2000, 0,
+};
+
 POLY_FT4 gPlayerShadowPacket
     __attribute__((section(".data.player_shadow"))) = {
     TEXTURED_QUAD_PACKET_WORDS << 24, 48, 48, 48,

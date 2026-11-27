@@ -4025,6 +4025,8 @@ gPlayerSnapshotTrailCount = 0x8013B300; // size:0x4 defined:true
 gPlayerSnapshotTask = 0x8013B304; // size:0x4 defined:true
 gPlayerSnapshotTrailPacket = 0x8012C82C; // size:0x28 defined:true
 gPlayerSnapshotTrailEndpoints = 0x8012C854; // size:0x10 defined:true
+D_8012C864 = 0x8012C864; // size:0x10 defined:true
+D_8012C874 = 0x8012C874; // size:0x10 defined:true
 gPlayerShadowPacket = 0x8012C884; // size:0x28 defined:true
 gPlayerShadowVertices = 0x8012C8AC; // size:0x20 defined:true
 
