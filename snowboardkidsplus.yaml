@@ -1112,7 +1112,8 @@ segments:
       - {start: 0x12BBA8, type: .data, name: menu/task_widgets, linker_section: .data.character_selection_color}
       - {start: 0x12BBAC, type: .data, name: menu/task_widgets, linker_section: .data.texture_pair_bounce_offsets}
       - {start: 0x12BBB4, type: .sdata, name: menu/task_widgets, linker_section: .sdata.animated_sprite16_page, linker_section_order: .data}
-      - [0x12BBBC, data, 12BBBC]
+      - {start: 0x12BBBC, type: .sdata, name: menu/task_widget_data, linker_section: .sdata.texture_pair_dim_mask, linker_section_order: .data}
+      - {start: 0x12BBC0, type: .data, name: menu/task_widget_data, linker_section: .data.player_panel_quad_lists}
       - {start: 0x12BBC8, type: .data, name: menu/task_widgets, linker_section: .data.shrinking_sprite_offsets}
       - {start: 0x12BBD0, type: .data, name: unclassified/menu_8007BE9C, linker_section: .data.main_menu_mappings}
       - {start: 0x12BBF8, type: .data, name: unclassified/menu_8007BE9C, linker_section: .data.selection_money_currency_label}

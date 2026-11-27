@@ -2745,7 +2745,7 @@ gCharacterSelectionPortraitRed = 0x8013B3A8; // type:u8 size:0x1 defined:true
 gCharacterSelectionPortraitGreen = 0x8013B3A9; // type:u8 size:0x1 defined:true
 gCharacterSelectionPortraitBlue = 0x8013B3AA; // type:u8 size:0x1 defined:true
 D_8013B3AB = 0x8013B3AB; // type:u8 size:0x1 defined:true
-gPlayerPanelQuadLists = 0x8013B3C0; // size:0x8
+gPlayerPanelQuadLists = 0x8013B3C0; // size:0x8 defined:true
 gTexturePairBounceOffsets = 0x8013B3AC; // size:0x8
 gAnimatedSprite16DrawPage = 0x8013B3B4; // size:0x8
 
@@ -4401,7 +4401,7 @@ gTaskObjectModels = 0x80129A80; // size:0x1E0
 gCharacterMenuCharacterIndices = 0x8012D460; // size:0xC
 gTaskBackgroundTask = 0x8013B378; // size:0x4 defined:true
 gSecondaryDisplayTask = 0x8013B37C; // size:0x4 defined:true
-gTexturePairDimMask = 0x8013B3BC; // size:0x4
+gTexturePairDimMask = 0x8013B3BC; // type:u32 size:0x4 defined:true
 
 gQuadTransitionFrame = 0x8013B338; // size:0x4
 gTimedSpritePrimaryBrightness = 0x8013B35C; // type:s32 size:0x4 defined:true

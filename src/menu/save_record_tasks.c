@@ -3,6 +3,7 @@
 #include "game/io/cd_queue.h"
 #include "game/io/memory_card.h"
 #include "game/menu/task_widgets.h"
+#include "task_widget_data.h"
 #include "game/audio/music.h"
 #include "game/engine/game_options.h"
 #include "game/engine/system_runtime.h"
@@ -256,9 +257,6 @@ SaveRecord gMergedSaveRecord __attribute__((section(".data.merged_save_record"))
 /* Incomplete arrays let the compiler schedule the address halves separately. */
 extern s8 gMemoryCardSaveRecordCurrencyLabel[]
     __attribute__((section(".data.memory_card_save_record_currency_label")));
-
-/* Keep the bound incomplete to preserve address scheduling in this consumer. */
-extern TexturedQuadListEntry *gPlayerPanelQuadLists[];
 
 void drawMemoryCardSaveRecordPanel(void);
 
