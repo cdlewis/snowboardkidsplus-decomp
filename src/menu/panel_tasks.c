@@ -1287,7 +1287,7 @@ void updateGroupedSelectionBoundsTask(void) {
         createRegisteredTextPanelTask(-316, 8, gSelectionPanelTexts, descriptor->label, 4, 11);
         createRegisteredPanelTask(0, selection->selection, 244, 0, 384, 21);
         createRegisteredCallbackTask(0, 172, -72, drawCurrentTaskSaveRecordMoneyPanel, 4, 31);
-        createRegisteredTripletTask(-296, 48, 0, 16, D_8012FFFC, descriptor->tripletIndices, 3, 41);
+        createRegisteredTripletTask(-296, 48, 0, 16, gSelectionPanelStatTriplets, descriptor->tripletIndices, 3, 41);
         task = gCurrentTask;
         input->mode = 0;
         input->selectedIndex = 0;
@@ -1645,7 +1645,7 @@ void updateShopBoardPurchaseMenuTask(void) {
         goto finish;
     case 14: {
         s16 board = groupedSelection->selection;
-        u8 flagIndex = D_80131804[board];
+        u8 flagIndex = gShopBoardUnlockFlagIndices[board];
         SaveRecord *record = &gPlayerSaveRecords[recordIndex];
 
         if (record->flags & (4U << flagIndex)) {
@@ -1657,7 +1657,7 @@ void updateShopBoardPurchaseMenuTask(void) {
             parentPanels[2].command = 1;
             selection->choiceResult = 0;
             task->data18 = 5;
-        } else if ((price = D_80131810[board], record->money < price)) {
+        } else if ((price = gShopBoardPrices[board], record->money < price)) {
             setTaskSecondaryResourceData(panels[1].task, sShopMenuTexts[6]);
             panels[0].command = 21;
             parentPanels[2].command = 1;
@@ -1686,7 +1686,7 @@ showSelection:
                 s16 board = groupedSelection->selection;
 
                 target = *balance;
-                price = D_80131810[board];
+                price = gShopBoardPrices[board];
                 target -= price;
                 transition = createValueTransitionTask(balance, target, 100);
                 task = gCurrentTask;
@@ -1714,7 +1714,7 @@ showSelection:
             group = 0;
             player = 0;
             transition->data18 = 1;
-            flagIndex = D_80131804[groupedSelection->selection];
+            flagIndex = gShopBoardUnlockFlagIndices[groupedSelection->selection];
             record[recordIndex].flags |= 4U << flagIndex;
             for (; group < 3; group++) {
                 groupComplete = 1;
@@ -1836,7 +1836,7 @@ void drawCurrentTaskSelectedBoardDetails(void) {
     entry = &gMenuSelectionStates[(s16)gCurrentTask->data18];
     if (gCurrentTask->data1A != 0) {
         s16 board = entry->selection;
-        u32 price = D_80131810[board];
+        u32 price = gShopBoardPrices[board];
         s32 priceOffset = 4;
 
         if (board < 9) {
@@ -1903,8 +1903,8 @@ void drawCurrentTaskSelectedBoardPrice(void) {
     entry = &gMenuSelectionStates[player];
     if (gCurrentTask->data1A != 0) {
         s16 board = entry->selection;
-        u8 flagIndex = D_80131804[board];
-        u32 price = D_80131810[board];
+        u8 flagIndex = gShopBoardUnlockFlagIndices[board];
+        u32 price = gShopBoardPrices[board];
         SaveRecord *records = gPlayerSaveRecords;
         if (records[player].flags & (4U << flagIndex)) {
             drawSpriteByIndexWithBlend(position->x / 4096 + 36, position->y / 4096 - 8, 0xC3, 15, -1,
@@ -1990,7 +1990,7 @@ void updateBoardSelectionMenuTask(void) {
         createRegisteredTextPanelTask(-316, 8, gSelectionPanelTexts, descriptor->label, 4, 11);
         createRegisteredPanelTask(0, groupedSelection->selection, 244, 0, 384, 21);
         createRegisteredCallbackTask(0, 172, -72, drawCurrentTaskSpriteBA, 4, 31);
-        createRegisteredTripletTask(-296, 48, 0, 16, D_8012FFFC, descriptor->tripletIndices, 3, 41);
+        createRegisteredTripletTask(-296, 48, 0, 16, gSelectionPanelStatTriplets, descriptor->tripletIndices, 3, 41);
         selection->mode = 0;
         selection->selectedIndex = 0;
         selection->previousIndex = 0;
@@ -2848,7 +2848,7 @@ leave:
         s16 boardCharacter = character;
         if (hasStateGridFlag(record, boardCharacter, selection->value) == 1) {
             gCurrentTask->data18 = 17;
-        } else if ((price = D_801319B0[boardCharacter * 5 + selection->value]) > record->money) {
+        } else if ((price = gCharacterBoardPrices[boardCharacter * 5 + selection->value]) > record->money) {
             playSoundEffect(0, 0x302, 32);
             gCurrentTask->data18 = 17;
         } else {
@@ -2871,7 +2871,7 @@ leave:
             if ((s16)entries[11].flags != 0) {
                 gCurrentTask->data18 = 17;
             } else {
-                price = D_801319B0[character * 5 + selection->value];
+                price = gCharacterBoardPrices[character * 5 + selection->value];
                 entries[12].task = createValueTransitionTask(
                     &gPlayerSaveRecords[(s16)player].money,
                     gPlayerSaveRecords[(s16)player].money - price, 100);
@@ -3024,7 +3024,7 @@ void drawCurrentTaskBoardPrice(void) {
         SaveRecord *record = gPlayerSaveRecords + player;
         s16 column = selection->value;
 
-        price = D_801319B0[character * 5 + column];
+        price = gCharacterBoardPrices[character * 5 + column];
         if (hasStateGridFlag(record, character, column) == 1) {
             drawSpriteByIndexWithBlend(x + 36, y + 8, 0xC3, 15, -1,
                           &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
@@ -3201,7 +3201,7 @@ void createGridModelPreviewTask(s16 playerIndex, s16 character, s16 modelSlot, s
         attributePlayer->modelObjects[0].attribute |= GS_MODEL_OBJECT_HIDDEN;
     }
     uploadTimImageWithOffset(((u32 (*)[4096])DAT_GRID_TEXTURE_BUFFERS)[gCreatedTask->data1A],
-                             (s16 *)&D_801204D4[gCreatedTask->data1C]);
+                             (s16 *)&gPlayerTextureOrigins[gCreatedTask->data1C]);
 
     positionPlayer = currentPlayerAbsolute;
     positionPlayer->modelCoordinate.coord.t[0] = x;
@@ -3298,7 +3298,7 @@ void reloadGridModelPreview(GameTask *task, s16 character, s16 modelSlot, s16 pa
         attributePlayer->modelObjects[0].attribute |= GS_MODEL_OBJECT_HIDDEN;
     }
     uploadTimImageWithOffset(((u32 (*)[4096])DAT_GRID_TEXTURE_BUFFERS)[task->data1A],
-                             (s16 *)&D_801204D4[task->data1C]);
+                             (s16 *)&gPlayerTextureOrigins[task->data1C]);
 
     positionPlayer = currentPlayerAbsolute;
     positionPlayer->modelCoordinate.coord.t[0] = x;

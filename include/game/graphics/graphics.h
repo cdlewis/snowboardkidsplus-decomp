@@ -40,7 +40,7 @@ typedef struct PlayerTextureOrigin {
     s16 x, y;
 } PlayerTextureOrigin;
 
-extern PlayerTextureOrigin D_801204D4[4];
+extern PlayerTextureOrigin gPlayerTextureOrigins[4];
 extern POLY_F3 gNumberAdjustmentArrow;
 
 /* A DMA packet containing one GPU command word. */

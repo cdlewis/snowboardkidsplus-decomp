@@ -34,7 +34,7 @@ u32 gPlayerPaletteTransitionPixels[8] __attribute__((section(".data.player_palet
 
 void copyPlayerPaletteRowWithTransition(s16 playerIndex, s32 unused, s32 paletteRow, u16 mode) {
     RECT rect;
-    PlayerTextureOrigin *origin = &D_801204D4[playerIndex];
+    PlayerTextureOrigin *origin = &gPlayerTextureOrigins[playerIndex];
     if (mode == 0) {
         rect.x = origin->x + 0x210;
         rect.y = origin->y + (s16)(paletteRow + 0x70);

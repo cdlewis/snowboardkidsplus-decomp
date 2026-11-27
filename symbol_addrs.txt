@@ -2772,7 +2772,7 @@ gRacePlaybackSectorRanges = 0x8012043C; // size:0x14 defined:true
 D_80120484 = 0x80120484; // size:0xC defined:true
 gRaceStartupPlayerPresets1 = 0x80120490; // size:0xC defined:true
 gRaceStartupPlayerPresets5 = 0x8012049C; // size:0xC defined:true
-D_801204D4 = 0x801204D4; // size:0x10
+gPlayerTextureOrigins = 0x801204D4; // size:0x10
 initializeScaledTaskCoordinateResource = 0x80045868; // type:func
 
 updateValueInterpolationTask = 0x8006A07C; // type:func
@@ -4253,3 +4253,8 @@ gBoardStyleTextBytes = 0x80011DC8; // size:0x38
 gBoardMenuSprites = 0x80131868; // size:0x6C
 gBoardMenuSelectionDescriptors = 0x801318D4; // size:0x3C
 gTaskPanelSelectionValues = 0x8013B508; // size:0x4
+
+gSelectionPanelStatTriplets = 0x8012FFFC; // size:0x10
+gShopBoardUnlockFlagIndices = 0x80131804; // size:0xC
+gShopBoardPrices = 0x80131810; // size:0x30
+gCharacterBoardPrices = 0x801319B0; // size:0xC8

@@ -123,7 +123,7 @@ extern u8 D_8013B55E;
 extern u8 D_8013B527 __attribute__((section(".data.main_tail_money_currency_label")));
 
 extern s8 gBoardStyleTextBytes[0x38];
-extern u32 D_801319B0[50];
+extern u32 gCharacterBoardPrices[50];
 extern char D_8013B4FC[];
 
 extern u8 gBoardSelectionLevels[12] __attribute__((section(".data.board_selection_levels")));
@@ -172,8 +172,8 @@ void updateGroupedSelectionBoundsTask(void);
 void updateShopMenuTask(void);
 void drawCurrentTaskMoneyPanel(void);
 void drawCurrentTaskMoneyPanelWithCharacterSprites(void);
-extern u8 D_80131804[12];
-extern u32 D_80131810[12];
+extern u8 gShopBoardUnlockFlagIndices[12];
+extern u32 gShopBoardPrices[12];
 
 void drawCurrentTaskSaveRecordMoneyPanel(void);
 void drawCurrentTaskSaveRecordMoneyPanelWithCharacterSprites(void);

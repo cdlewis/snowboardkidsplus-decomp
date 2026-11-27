@@ -1214,7 +1214,7 @@ void queuePlayerResourceReadsAndUploadTextures(void) {
             (u8 *)DAT_PLAYER_MODEL_BUFFERS[i], 0);
         queueCdSectorCommand(1, gGridResourceSecondSectorRanges[gRacePlayers[i].characterId][gRacePlayers[i].unk015[0]].sector,
             gGridResourceSecondSectorRanges[gRacePlayers[i].characterId][gRacePlayers[i].unk015[0]].sectorCount,
-            DAT_SCRATCH, (s32)&D_801204D4[i]);
+            DAT_SCRATCH, (s32)&gPlayerTextureOrigins[i]);
         if (i < D_8013AFCD && !gDemoRaceIndex && !D_8013AFD8 && !D_8013AFD9) {
             offset = &(DAT_STARTUP_TEXTURES)->offsets[gPlayerResourceTextureSelections.entries[i][gRacePlayers[i].unk015[1]]];
         } else {

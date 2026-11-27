@@ -1027,7 +1027,7 @@ void updatePlayerGroupedCourseSelectionTask(void) {
         createRegisteredTextPanelTask(-316, 8, gSelectionPanelTexts, descriptor->textMapping, 4, 11);
         createRegisteredPanelTask(0, groupedSelection->selection, 244, 0, 384, 21);
         createRegisteredCallbackTask(0, 172, -72, drawTaskOffsetSpriteB8, 4, 31);
-        createRegisteredTripletTask(-296, 48, 0, 16, D_8012FFFC, descriptor->tripletIndices, 3, 41);
+        createRegisteredTripletTask(-296, 48, 0, 16, gSelectionPanelStatTriplets, descriptor->tripletIndices, 3, 41);
         selection->mode = 0;
         if (gRacePlayers[0].unk00A[1] < 9 && (u8)(gRacePlayers[0].unk00A[1] % 3) == 0) {
             selection->selectedIndex = 0;
@@ -2645,7 +2645,7 @@ void updatePlayerGroupedSelectionTask(void) {
                                          descriptor->spacingX, descriptor->spacingY, descriptor->count, 230,
                                          drawSelectedTaskSprite, drawClippedRegisteredTaskGridSprite, 4, 11);
         createRegisteredPanelTask(player, groupedSelection->selection, 284, player * 142 - 60, 544, 21);
-        createRegisteredTripletTask(-64, (s16)(player * 104 - 60), 0, 16, D_8012FFFC, descriptor->tripletIndices, 3, 31);
+        createRegisteredTripletTask(-64, (s16)(player * 104 - 60), 0, 16, gSelectionPanelStatTriplets, descriptor->tripletIndices, 3, 31);
         gCurrentTask->data18 = 3;
         break;
     case 3:
