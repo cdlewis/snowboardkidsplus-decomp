@@ -958,7 +958,6 @@ segments:
       - {start: 0x123F8C, type: .data, name: syslib/libetc/vsync, linker_section: .data.vsync}
       - [0x123FAC, lib, libetc, intr, .data]
       - {start: 0x1250AC, type: .data, name: syslib/libetc/intr_vb, linker_section: .data.vsync_callbacks}
-      - [0x1250D4, data, 1250D4]
       - [0x1250DC, lib, libetc, intr_dma, .data]
       - {start: 0x12510C, type: .data, name: syslib/libetc/vmode, linker_section: .data.vmode}
       - [0x125110, data]

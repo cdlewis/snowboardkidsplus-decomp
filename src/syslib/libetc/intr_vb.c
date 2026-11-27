@@ -6,6 +6,8 @@
 DmaCallback vsync_cb[8] VSYNC_DATA = {0};
 s32 Vcount VSYNC_DATA = 0;
 volatile u32 *gVSyncCounterMode VSYNC_DATA = (volatile u32 *)0x1F801114;
+/* Preserve the unreferenced tail of the SDK object's 0x30-byte data section. */
+static u32 vsyncCallbackDataPadding[2] VSYNC_DATA = {0, 0};
 
 extern void VSync_memclr(s32 *, int);
 extern void trapIntrVSync(void);

@@ -1273,6 +1273,7 @@ cdTimeoutMessage = 0x800126FC; // type:asciz defined:true
 cdTimeoutStateFormat = 0x8001270C; // type:asciz defined:true
 cdDataSyncOperationName = 0x80012804; // type:asciz defined:true
 gVSyncCounterMode = 0x801348D0; // size:0x4
+vsyncCallbackDataPadding = 0x801348D4; // size:0x8
 trapIntrDMA = 0x800B5FF4; // type:func defined:true
 setIntrDMA = 0x800B6174; // type:func defined:true
 gDMAInterruptControl = 0x801348DC; // size:0x4 defined:true
