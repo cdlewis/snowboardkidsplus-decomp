@@ -994,7 +994,7 @@ segments:
       - [0x12B5FC, lib, libpad, padportd, .data]
       - [0x12B60C, lib, libmcrd421, libmcrd, .data]
       - [0x12B624, lib, libmcrd421, userfunc, .data]
-      - [0x12B628, data]
+      - {start: 0x12B628, type: .data, name: syslib/libcard/init, linker_section: .data.card_init}
       - [0x12B638, lib, libapi, pad, .data]
       - {start: 0x12B648, type: .sdata, name: io/cd_queue, linker_section: .sdata.cd_command_state, linker_section_order: .data}
       - {start: 0x12B668, type: .sdata, name: io/cd_queue, linker_section: .sdata.cd_read_state, linker_section_order: .data}

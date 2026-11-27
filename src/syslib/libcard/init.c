@@ -1,5 +1,10 @@
 #include "common.h"
 
+/* Unnamed, unreferenced words from LIBCARD INIT.OBJ's .data section. */
+u32 cardInitData[4] __attribute__((section(".data.card_init"), aligned(8))) = {
+    0x21037350, 0x004237AD, 0, 0
+};
+
 extern void ChangeClearPAD(int), EnterCriticalSection(void), ExitCriticalSection(void);
 extern int ReadInitPadFlag(void);
 extern void InitCARD2(int), _copy_memcard_patch(void), _patch_card(void), _patch_card2(void);

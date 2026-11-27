@@ -585,6 +585,7 @@ SsStart2 = 0x800AC734; // type:func defined:true
 _SsSeqCalledTbyT_1per2 = 0x800AC7A0; // type:func defined:true
 SsSeqCalledTbyT = 0x800AC7F4; // type:func defined:true
 _snd_seq_tick_env = 0x80132F24; // size:0x18 defined:true
+cardInitData = 0x8013AE28; // type:u32 size:0x10 defined:true
 is_pad_init = 0x8013AE38; // size:0x4 defined:true
 pad_data_port = 0x8013AE3C; // size:0x4 defined:true
 pad_interrupt_status = 0x8013AE40; // size:0x4 defined:true
