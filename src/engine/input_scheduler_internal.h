@@ -27,7 +27,7 @@ typedef struct CdRequest {
     s32 sectorCount;
     s16 command;
     s16 useDatSectors; /* Nonzero selects sectors relative to SNB.DAT. */
-    s32 unk_18;
+    s16 *textureOffset; /* Optional x/y offset for TIM uploads. */
 } CdRequest;
 
 extern CdlFILE gDatFile __attribute__((section(".data.dat_file")));

@@ -360,7 +360,7 @@ void restoreCdReadModeAndResetQueues(void) {
     }
 }
 
-s32 queueCdSectorCommand(s16 command, s16 sector, s16 count, void *destination, s32 value) {
+s32 queueCdSectorCommand(s16 command, s16 sector, s16 count, void *destination, s16 *textureOffset) {
     CdRequest *entry;
     if (gCdVolumeFadeActive) {
         resetPendingCdRequests();
@@ -373,7 +373,7 @@ s32 queueCdSectorCommand(s16 command, s16 sector, s16 count, void *destination, 
     entry->sectorCount = count;
     entry->destination = destination;
     gCdRequestWriteIndex &= 0x3F;
-    entry->unk_18 = value;
+    entry->textureOffset = textureOffset;
     gCdRequestWriteIndex++;
     return 1;
 }
@@ -546,10 +546,10 @@ void updateCdRequestQueue(void) {
             break;
         case 1:
             uploadTimImageWithOffset(gCdRequests[index].destination,
-                                     (s16 *)gCdRequests[index].unk_18);
+                                     gCdRequests[index].textureOffset);
             break;
         case 2:
-            uploadTimArchive(gCdRequests[index].destination, (s16 *)gCdRequests[index].unk_18);
+            uploadTimArchive(gCdRequests[index].destination, gCdRequests[index].textureOffset);
             break;
         case 3:
             loadSoundBank(0, gCdRequests[index].destination, DAT_SCRATCH);

@@ -25,7 +25,7 @@ extern u16 gCdCommandReadIndex;
 extern s32 gXaPositionPollCount;
 
 s32 isCdCommandQueueIdle(void);
-s32 queueCdSectorCommand(s16 command, s16 sector, s16 count, void *destination, s32 value);
+s32 queueCdSectorCommand(s16 command, s16 sector, s16 count, void *destination, s16 *textureOffset);
 void queueGridResourceSectorReads(s16 slot, s16 row, s16 column);
 void queueMenuResourceReads(s16 resource);
 void queueStartupSectorReads(void);
