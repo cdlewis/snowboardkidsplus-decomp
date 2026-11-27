@@ -46,7 +46,7 @@ typedef struct PlayerVariantAttributeTable {
 
 extern SelectedRecord *gCourseGeometryTriangleRecords __attribute__((section(".data")));
 extern s16 gSelectedGeometryRecordIndex __attribute__((section(".data")));
-extern s16 *D_8013B200 __attribute__((section(".data")));
+extern s16 *gSelectedGeometryVertex0 __attribute__((section(".data")));
 extern s16 *gSelectedGeometryVertex1 __attribute__((section(".data")));
 extern s16 *D_8013B208 __attribute__((section(".data")));
 extern u8 gModeSequenceStage __attribute__((section(".data")));
@@ -54,7 +54,7 @@ extern u8 gControllerPlaybackIndex __attribute__((section(".data")));
 extern u8 gRaceResultCode __attribute__((section(".data")));
 extern s16 gFrameCounter __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
-extern u8 D_8013AFDB __attribute__((section(".data")));
+extern u8 gNextRaceFinishSlot __attribute__((section(".data")));
 extern s16 D_8013AFDE __attribute__((section(".data")));
 extern VECTOR *gScratchVector0 __attribute__((section(".data")));
 extern SVECTOR *gScratchShortVector0 __attribute__((section(".data")));
@@ -68,8 +68,8 @@ extern u8 gSelectedPlayerReplayActive __attribute__((section(".data")));
 extern VECTOR *gScratchVector1 __attribute__((section(".data")));
 
 extern s16 gSelectedPlayerAction __attribute__((section(".data")));
-extern u16 D_8013B0E6 __attribute__((section(".data")));
-extern s32 D_8013B0E8 __attribute__((section(".data")));
+extern u16 gPlayerCollisionHeading __attribute__((section(".data")));
+extern s32 gPlayerCollisionSpeed __attribute__((section(".data")));
 
 PlayerVariantAttributeTable gPlayerVariantAttributes
     __attribute__((section(".data.player_variant_attributes"), aligned(4))) = {
@@ -4555,8 +4555,8 @@ void resolveCurrentPlayerWallContact(void) {
     if (gCurrentRacePlayer->unk0E8) {
         velocityX = gCurrentRacePlayer->unk0EC - gCurrentRacePlayer->unk060;
         velocityZ = gCurrentRacePlayer->unk0F0 - gCurrentRacePlayer->unk064;
-        D_8013B0E8 = SquareRoot0(velocityX * velocityX + velocityZ * velocityZ) / 2;
-        D_8013B0E6 = getXZHeading(0, 0, velocityX, velocityZ);
+        gPlayerCollisionSpeed = SquareRoot0(velocityX * velocityX + velocityZ * velocityZ) / 2;
+        gPlayerCollisionHeading = getXZHeading(0, 0, velocityX, velocityZ);
     }
 }
 
@@ -5135,8 +5135,8 @@ void assignCurrentPlayerFinishSlot(s32 value) {
                 createChildTaskWithReserve(beginSound601TaskSequence);
                 gCreatedTask->data18 = value;
             }
-            currentPlayerAbsolute->unk100[0] = D_8013AFDB;
-            D_8013AFDB++;
+            currentPlayerAbsolute->unk100[0] = gNextRaceFinishSlot;
+            gNextRaceFinishSlot++;
         }
     }
 }
@@ -5239,9 +5239,9 @@ void awardCurrentPlayerTrickRewards(void) {
 void computeSelectedTriangleNormal(VECTOR *normal) {
     VECTOR first, second;
 
-    first.vx = gSelectedGeometryVertex1[0] - D_8013B200[0];
-    first.vy = gSelectedGeometryVertex1[1] - D_8013B200[1];
-    first.vz = gSelectedGeometryVertex1[2] - D_8013B200[2];
+    first.vx = gSelectedGeometryVertex1[0] - gSelectedGeometryVertex0[0];
+    first.vy = gSelectedGeometryVertex1[1] - gSelectedGeometryVertex0[1];
+    first.vz = gSelectedGeometryVertex1[2] - gSelectedGeometryVertex0[2];
     second.vx = D_8013B208[0] - gSelectedGeometryVertex1[0];
     second.vy = D_8013B208[1] - gSelectedGeometryVertex1[1];
     second.vz = D_8013B208[2] - gSelectedGeometryVertex1[2];

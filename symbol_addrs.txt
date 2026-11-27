@@ -4364,3 +4364,8 @@ gDeletedTaskPredecessor = 0x8013AEA8; // size:0x4
 gTaskDeletionFirst = 0x8013AEAC; // size:0x4
 gTaskDeletionCursor = 0x8013AEB0; // size:0x4
 gAvailableTaskSlots = 0x8013AEB4; // size:0x2
+
+gNextRaceFinishSlot = 0x8013AFDB;
+gPlayerCollisionHeading = 0x8013B0E6;
+gPlayerCollisionSpeed = 0x8013B0E8;
+gSelectedGeometryVertex0 = 0x8013B200;

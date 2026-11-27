@@ -212,8 +212,10 @@ extern s8 gActiveRacePlayerCount __attribute__((section(".data")));
 extern s8 activeRacePlayerCountGp;
 /* Highest-priority accepted action request for the current player; zero is none. */
 extern s16 gSelectedPlayerAction;
-extern u16 D_8013B0E6;
-extern s32 D_8013B0E8;
+/* Shared collision response used by the player action requests. */
+extern u16 gPlayerCollisionHeading;
+/* Half the response velocity magnitude, or half the cylinder-hit speed. */
+extern s32 gPlayerCollisionSpeed;
 /* Two declarations preserve the original GP-relative and absolute accesses
  * to this shared pointer. The absolute alias is resolved by the symbol map. */
 extern RacePlayer *gCurrentRacePlayer;

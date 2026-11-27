@@ -580,7 +580,7 @@ void initializeRacePresentationTask(void) {
         gFrameCounter = 0;
     }
 
-    D_8013AFDB = 0;
+    gNextRaceFinishSlot = 0;
     gViewClipRects[0].x = 0;
     gViewClipRects[0].y = 0;
     gViewClipRects[0].w = gDisplayWidth;
@@ -1122,7 +1122,7 @@ void initializeDemoPlaybackTask(void) {
     gRacePlayers[0].task = gCreatedTask;
     configureTaskStateTransition(1, 0, 0);
     queueCdCommand(0, 1);
-    D_8013AFDB = 0;
+    gNextRaceFinishSlot = 0;
     gViewClipRects[0].x = 0;
     gViewClipRects[0].y = 32;
     gViewClipRects[0].w = gDisplayWidth;

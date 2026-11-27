@@ -450,8 +450,6 @@ extern u8 D_8013B18C;
 extern s16 gRaceHudMode;
 
 
-extern u16 D_8013B0E6;
-extern s32 D_8013B0E8;
 extern u8 gRaceOrderPlayerIds[4];
 extern TaskVisualFrame gPlayerVisualPairFrame
     __attribute__((section(".data.player_visual_pair_frame"), aligned(4)));

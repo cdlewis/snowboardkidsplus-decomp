@@ -71,7 +71,7 @@ void selectGeometryRecord(s16 index) {
     s16 *vertices;
     gSelectedGeometryRecordIndex = index;
     vertices = gCourseGeometryVertexData;
-    D_8013B200 = &vertices[gCourseGeometryTriangleRecords[index].vertexIndices[0] * 3];
+    gSelectedGeometryVertex0 = &vertices[gCourseGeometryTriangleRecords[index].vertexIndices[0] * 3];
     gSelectedGeometryVertex1 = &vertices[gCourseGeometryTriangleRecords[index].vertexIndices[1] * 3];
     D_8013B208 = &vertices[gCourseGeometryTriangleRecords[index].vertexIndices[2] * 3];
 }

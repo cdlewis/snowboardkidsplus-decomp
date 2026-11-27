@@ -25,7 +25,7 @@ typedef struct NumberSelectionSpriteTable {
 extern u8 gModeSequenceStage __attribute__((section(".data")));
 extern u8 gControllerPlaybackIndex __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
-extern u8 D_8013AFDB __attribute__((section(".data")));
+extern u8 gNextRaceFinishSlot __attribute__((section(".data")));
 extern u16 gDisplayWidth __attribute__((section(".data")));
 extern u16 gDisplayHeight __attribute__((section(".data")));
 extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
@@ -80,7 +80,7 @@ void initializeModeRaceTasks(void) {
     }
     configureTaskStateTransition(2, 0, 15);
 
-    D_8013AFDB = 0;
+    gNextRaceFinishSlot = 0;
     clip = gViewClipRects;
     width = gDisplayWidth;
     clip[0].x = 0;

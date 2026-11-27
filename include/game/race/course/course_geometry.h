@@ -32,7 +32,7 @@ extern s16 D_8013B1F8;
 extern s16 D_8013B1FA;
 extern s16 D_8013B1FC;
 extern s16 gSelectedGeometryRecordIndex;
-extern s16 *D_8013B200;
+extern s16 *gSelectedGeometryVertex0;
 extern s16 *gSelectedGeometryVertex1;
 extern s16 *D_8013B208;
 

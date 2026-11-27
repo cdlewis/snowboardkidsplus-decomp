@@ -583,9 +583,9 @@ void resolvePlayerCollisionsWithCylinder(const Position3D *position, s32 radius,
             continue;
         }
         distance -= range;
-        D_8013B0E6 = getXZHeading(position->x, position->z, player->x, player->z);
-        sine = rsin((s16)D_8013B0E6);
-        cosine = rcos((s16)D_8013B0E6);
+        gPlayerCollisionHeading = getXZHeading(position->x, position->z, player->x, player->z);
+        sine = rsin((s16)gPlayerCollisionHeading);
+        cosine = rcos((s16)gPlayerCollisionHeading);
 
         correctionX = (-sine * distance) / 4096;
         correctionZ = (cosine * distance) / 4096;
@@ -599,7 +599,7 @@ void resolvePlayerCollisionsWithCylinder(const Position3D *position, s32 radius,
         }
         player->unk0EC = -(cosine * tangent + sine * normal) / 4096;
         player->unk0F0 = -(-sine * tangent + cosine * normal) / 4096;
-        D_8013B0E8 = player->unk0BC / 2;
+        gPlayerCollisionSpeed = player->unk0BC / 2;
         player->unk0E8 |= hitFlags;
     }
 }
@@ -864,13 +864,13 @@ s32 requestCurrentPlayerAction6(void) {
         return 1;
     }
     if (!(player->unk128 & 0x400000)) {
-        difference = D_8013B0E6 - player->unk110;
+        difference = gPlayerCollisionHeading - player->unk110;
         angle = difference;
         if (!(player->unk128 & 0x400)) {
             angle += 0x800;
         }
         angle = (angle + 0x200) & 0xFFF;
-        if (D_8013B0E8 < 0xC00 || angle > 0x400) {
+        if (gPlayerCollisionSpeed < 0xC00 || angle > 0x400) {
             return 1;
         }
     }
@@ -889,13 +889,13 @@ s32 requestCurrentPlayerAction6NarrowAngle(void) {
         return 1;
     }
     if (!(player->unk128 & 0x400000)) {
-        difference = D_8013B0E6 - player->unk110;
+        difference = gPlayerCollisionHeading - player->unk110;
         angle = difference;
         if (!(player->unk128 & 0x400)) {
             angle += 0x800;
         }
         angle = (angle + 0x180) & 0xFFF;
-        if (D_8013B0E8 < 0xC00 || angle > 0x300) {
+        if (gPlayerCollisionSpeed < 0xC00 || angle > 0x300) {
             return 1;
         }
     }
@@ -914,13 +914,13 @@ s32 requestCurrentPlayerAction7(void) {
         return 1;
     }
     if (!(player->unk128 & 0x400000)) {
-        difference = D_8013B0E6 - player->unk110;
+        difference = gPlayerCollisionHeading - player->unk110;
         angle = difference;
         if (!(player->unk128 & 0x400)) {
             angle += 0x800;
         }
         angle = (angle + 0x200) & 0xFFF;
-        if (D_8013B0E8 < 0xC00 || angle > 0x400) {
+        if (gPlayerCollisionSpeed < 0xC00 || angle > 0x400) {
             return 1;
         }
     }
@@ -1028,7 +1028,7 @@ s32 checkCurrentPlayerFlags43040OrAngleRange(void) {
     if (player->unk128 & 0x43040) {
         return 1;
     }
-    difference = D_8013B0E6 - player->unk110;
+    difference = gPlayerCollisionHeading - player->unk110;
     if (player->unk128 & 0x400) {
         angle = difference;
     } else {
@@ -1036,7 +1036,7 @@ s32 checkCurrentPlayerFlags43040OrAngleRange(void) {
         angle += difference;
     }
     angle = (angle + 0x400) & 0xFFF;
-    if ((D_8013B0E8 < 0x500) || (angle > 0x800)) {
+    if ((gPlayerCollisionSpeed < 0x500) || (angle > 0x800)) {
         return 1;
     }
     if (gSelectedPlayerAction < 2) {
@@ -1233,7 +1233,7 @@ s16 processCurrentPlayerActionRequests(s16 suppressWallAction) {
                 playCurrentPlayerSoundEffect(2);
             }
             currentPlayerAbsolute->unk12C = 4;
-            currentPlayerAbsolute->unk102 = D_8013B0E6;
+            currentPlayerAbsolute->unk102 = gPlayerCollisionHeading;
             currentPlayerAbsolute->unk104.word = currentPlayerAbsolute->unk0EC;
             currentPlayerAbsolute->unk108.word = currentPlayerAbsolute->unk0F0;
             playPlayerSoundEffect(gCurrentTask->data18, 1, 0x201, 0x20);
@@ -1254,14 +1254,14 @@ s16 processCurrentPlayerActionRequests(s16 suppressWallAction) {
         case 10 - 1:
             playCurrentPlayerSoundEffect(2);
             currentPlayerAbsolute->unk12C = 14;
-            currentPlayerAbsolute->unk102 = D_8013B0E6;
+            currentPlayerAbsolute->unk102 = gPlayerCollisionHeading;
             currentPlayerAbsolute->unk104.word = currentPlayerAbsolute->unk0EC;
             currentPlayerAbsolute->unk108.word = currentPlayerAbsolute->unk0F0;
             break;
         case 2 - 1:
             playCurrentPlayerSoundEffect(2);
             currentPlayerAbsolute->unk12C = 3;
-            currentPlayerAbsolute->unk102 = D_8013B0E6;
+            currentPlayerAbsolute->unk102 = gPlayerCollisionHeading;
             currentPlayerAbsolute->unk104.word = currentPlayerAbsolute->unk0EC;
             currentPlayerAbsolute->unk108.word = currentPlayerAbsolute->unk0F0;
             playPlayerSoundEffect(gCurrentTask->data18, 1, 0x201, 0x20);
