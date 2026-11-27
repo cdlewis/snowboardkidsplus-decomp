@@ -14,7 +14,7 @@
 #include "game/save/save_data.h"
 
 extern u8 D_8013AFD8 __attribute__((section(".data")));
-extern u8 D_8013AFD9 __attribute__((section(".data")));
+extern u8 gControllerPlaybackIndex __attribute__((section(".data")));
 extern s16 D_8013AFDE __attribute__((section(".data")));
 extern u8 D_8013AFE1 __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
@@ -22,7 +22,7 @@ extern u8 D_8013AFE0 __attribute__((section(".data")));
 extern u8 gMainMenuSelectionIndex __attribute__((section(".data")));
 extern u8 gRacePauseState __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
-extern u8 D_8013AFD6 __attribute__((section(".data")));
+extern u8 gSelectedPlayerReplayActive __attribute__((section(".data")));
 
 extern u8 D_8013B108 __attribute__((section(".data")));
 extern u8 D_8013B109 __attribute__((section(".data")));
@@ -51,10 +51,10 @@ void initializeControllerPlaybackRaceTask(void) {
     s32 i = 0;
     RacePlayer *player;
     selectionMenuRecordAbsolute = gSelectedCourseIndex;
-    gSelectedCourseIndex = gControllerPlaybackEntries[D_8013AFD9].course;
+    gSelectedCourseIndex = gControllerPlaybackEntries[gControllerPlaybackIndex].course;
     player = gRacePlayers;
     gRacePauseState = 0;
-    D_8013AFD6 = 0;
+    gSelectedPlayerReplayActive = 0;
     D_8013AFE1 = 0;
     D_8013AFD8 = 0;
     gMainMenuSelectionIndex = 0;
@@ -88,7 +88,7 @@ void initializeControllerPlaybackRaceTask(void) {
     player[1].unk01C = 0;
     player[2].unk01C = 0;
     player[3].unk01C = 0;
-    D_8013AFD2 = 3;
+    gActiveRacePlayerCount = 3;
     playerCountAbsolute = 2;
     D_8013AFDE = 100;
     for (; i < 4; i++) {
@@ -99,7 +99,7 @@ void initializeControllerPlaybackRaceTask(void) {
     configureTaskStateTransition(1, 0, 30);
     setSecondaryDisplayTaskMode(1);
     setCurrentTaskCallback(initializeRaceTaskState);
-    queueCdSectorCommand(0, gControllerPlaybackEntries[D_8013AFD9].sector, gControllerPlaybackEntries[D_8013AFD9].count, D_800E959C, 0);
+    queueCdSectorCommand(0, gControllerPlaybackEntries[gControllerPlaybackIndex].sector, gControllerPlaybackEntries[gControllerPlaybackIndex].count, D_800E959C, 0);
     if (selectionMenuRecordAbsolute != gSelectedCourseIndex) {
         closeSoundBank(2);
         closeSoundBank(3);
@@ -121,10 +121,10 @@ void advanceTaskWhenFlagB55ESet(void) {
 void updateControllerPlaybackUntilFade(void) {
     updateRaceHud();
     if (gControllerPressedButtons[0] & 0x800) {
-        gCurrentTask->data18 = gControllerPlaybackDurations[D_8013AFD9];
+        gCurrentTask->data18 = gControllerPlaybackDurations[gControllerPlaybackIndex];
     }
     gCurrentTask->data18++;
-    if (gControllerPlaybackDurations[D_8013AFD9] <= gCurrentTask->data18) {
+    if (gControllerPlaybackDurations[gControllerPlaybackIndex] <= gCurrentTask->data18) {
         configureTaskStateTransition(2, 0, 30);
         startCdVolumeFade(103, 20, 0, 1);
         gCurrentTask->data18 = 0;

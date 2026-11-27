@@ -27,7 +27,7 @@ extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern GameTask *gCurrentTaskParent __attribute__((section(".data")));
 extern u32 gTaskTransitionFlags __attribute__((section(".data")));
-extern u8 D_8013AFD6 __attribute__((section(".data")));
+extern u8 gSelectedPlayerReplayActive __attribute__((section(".data")));
 
 void drawSlidingRaceTimeDisplay(SlidingTimeResource *resource) {
     u8 padding[0x20];
@@ -747,7 +747,7 @@ void initializeBouncingVisualTask(void) {
     resource->code = POLY_FT4_CODE;
     resource->timer = 0;
     resource->framePosition = 0;
-    if (D_8013AFD2 == 1) {
+    if (gActiveRacePlayerCount == 1) {
         position->coord.t[0] = gRacePlayers[0].worldCoordinate.coord.t[0];
     } else {
         position->coord.t[0] = 0;
@@ -784,7 +784,7 @@ void drawDemonstrationOverlay(void) {
 
 void drawAutoPilotLabelTask(void) {
     s32 frame;
-    if (!(currentPlayerAbsolute->unk128 & 0x40) && !D_8013AFD6) {
+    if (!(currentPlayerAbsolute->unk128 & 0x40) && !gSelectedPlayerReplayActive) {
         setSpriteColor(128, 128, 128);
         if (playerCountAbsolute == 1) {
             frame = gFrameCounter & 2;
@@ -1187,11 +1187,11 @@ void drawPlayerResultRows(TaskFadeResource *resource) {
 void updatePlayerResultOrder(TaskFadeResource *resource) {
     s32 i, j;
     s32 temp;
-    for (i = 0; i < D_8013AFD2; i++) {
+    for (i = 0; i < gActiveRacePlayerCount; i++) {
         resource->playerOrder[i] = i;
     }
-    for (i = 0; i < D_8013AFD2 - 1; i++) {
-        for (j = i + 1; j < D_8013AFD2; j++) {
+    for (i = 0; i < gActiveRacePlayerCount - 1; i++) {
+        for (j = i + 1; j < gActiveRacePlayerCount; j++) {
             if (gRacePlayers[resource->playerOrder[i]].unk935 >
                 gRacePlayers[resource->playerOrder[j]].unk935) {
                 temp = resource->playerOrder[i];

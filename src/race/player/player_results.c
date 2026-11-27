@@ -307,7 +307,7 @@ void renderCurrentCameraPlayersAndUpdateSound(void) {
         GsSetRefView2L(&gPlayerCameraViews[gCurrentTask->data18]);
         updateCameraRotationMatrices(gCurrentTask->data18);
         if (gCurrentTask->data18 != 0 && (D_8013AFAA & 0x2000)) {
-            for (i = 0; i < D_8013AFD2; i++) {
+            for (i = 0; i < gActiveRacePlayerCount; i++) {
                 if (isPointWithinCameraForwardRange(gRacePlayers[i].worldCoordinate.coord.t[0], gRacePlayers[i].worldCoordinate.coord.t[2], 0)) {
                     setCoordinateRotation((SVECTOR *)&gRacePlayers[i].unk0B4, &gRacePlayers[i].worldCoordinate);
                     setCoordinateRotationZYX(&gRacePlayers[i].modelRotation, &gRacePlayers[i].modelCoordinate);
@@ -316,7 +316,7 @@ void renderCurrentCameraPlayersAndUpdateSound(void) {
             }
             drawCourseModelsForView(0);
         } else {
-            for (i = 0; i < D_8013AFD2; i++) {
+            for (i = 0; i < gActiveRacePlayerCount; i++) {
                 if (isPointWithinCameraForwardRange(gRacePlayers[i].worldCoordinate.coord.t[0], gRacePlayers[i].worldCoordinate.coord.t[2], gCurrentTask->data18)) {
                     setCoordinateRotation((SVECTOR *)&gRacePlayers[i].unk0B4, &gRacePlayers[i].worldCoordinate);
                     setCoordinateRotationZYX(&gRacePlayers[i].modelRotation, &gRacePlayers[i].modelCoordinate);

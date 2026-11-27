@@ -26,12 +26,12 @@ typedef struct CourseProgressScratch {
 } CourseProgressScratch;
 
 extern u8 D_8013AFD8 __attribute__((section(".data")));
-extern u8 D_8013AFD9 __attribute__((section(".data")));
+extern u8 gControllerPlaybackIndex __attribute__((section(".data")));
 extern s16 gFrameCounter __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
 extern u32 gTaskTransitionFlags __attribute__((section(".data")));
-extern u8 D_8013AFD6 __attribute__((section(".data")));
+extern u8 gSelectedPlayerReplayActive __attribute__((section(".data")));
 extern u8 gRacePauseState __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern u16 D_8013AFAA __attribute__((section(".data")));
@@ -82,7 +82,7 @@ void updateCurrentPlayerCameraTask(void) {
     PlayerCamera *shiftedCameras;
     u16 updateIndex;
     s32 cameraValue;
-    if (D_8013AFD6 == 0) {
+    if (gSelectedPlayerReplayActive == 0) {
         if (gRacePauseState != 0) {
             if (CAMERA.unk16 != 0) {
                 CAMERA.unk17 = CAMERA.unk16;
@@ -464,8 +464,8 @@ void drawRaceCourseProgressMeter(s16 x, s16 y, GsOT *ot, s32 depth) {
     scratch->playerOrder[2] = 2;
     scratch->playerOrder[3] = 3;
     packetDepth = depth;
-    for (; i < D_8013AFD2 - 1; i++) {
-        for (j = i + 1; j < D_8013AFD2; j++) {
+    for (; i < gActiveRacePlayerCount - 1; i++) {
+        for (j = i + 1; j < gActiveRacePlayerCount; j++) {
             if (gRacePlayers[scratch->playerOrder[i]].unk935 >
                 gRacePlayers[scratch->playerOrder[j]].unk935) {
                 s16 swap = scratch->playerOrder[i];
@@ -482,7 +482,7 @@ void drawRaceCourseProgressMeter(s16 x, s16 y, GsOT *ot, s32 depth) {
     setRGB0(packet, 128, 128, 128);
     packet->code = TEXTURED_SPRITE_CODE;
     packet->drawModeCode = DRAW_MODE_COMMAND_HIGH;
-    if (j < D_8013AFD2) {
+    if (j < gActiveRacePlayerCount) {
         do {
             RacePlayer *player;
             s16 progress;
@@ -537,7 +537,7 @@ void drawRaceCourseProgressMeter(s16 x, s16 y, GsOT *ot, s32 depth) {
                 packet->clut = getClut(800, gRaceProgressMeterIconPalettes[character] + 240);
             }
             addTexturedSpritePacket((TexturedSpritePacket *)packet, ot, packetDepth);
-        } while (++j < D_8013AFD2);
+        } while (++j < gActiveRacePlayerCount);
     }
     drawSpriteByIndexWithBlend(x, y, 0x1DE, 15, -1, ot, packetDepth);
 }
@@ -595,7 +595,7 @@ void initializeRaceRulesAndCounters(void) {
         D_8013B620 = 8;
         break;
     }
-    if (D_8013AFD8 != 0 || D_8013AFD9 != 0) {
+    if (D_8013AFD8 != 0 || gControllerPlaybackIndex != 0) {
         D_8013B620 = 9;
     }
     flags = D_8013B1A0;

@@ -927,7 +927,7 @@ s32 getModeFilteredGameOptionFlag2(void) {
     if (D_8013AFD8 != 0) {
         return (u32)(D_8013AFD8 - 7) < 2;
     }
-    if (D_8013AFD9 != 0) {
+    if (gControllerPlaybackIndex != 0) {
         return 0;
     }
     if (playerCountAbsolute < 2) {
@@ -940,7 +940,7 @@ s32 getStateAdjustedGameOptionFlag1(void) {
     if (D_8013AFD8 != 0) {
         return (u32)(D_8013AFD8 - 7) < 2;
     }
-    if (D_8013AFD9 != 0) {
+    if (gControllerPlaybackIndex != 0) {
         return 0;
     }
     if (playerCountAbsolute < 2) {

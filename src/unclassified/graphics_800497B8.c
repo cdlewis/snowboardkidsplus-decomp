@@ -234,7 +234,7 @@ void updateSlidingVisualSequenceTask(void) {
         case 4:
             if (--resource->timer == 0) {
                 resource->timer = sSlidingVisualSteps[++resource->step].duration;
-                for (playerIndex = 0; playerIndex < D_8013AFD2; playerIndex++) {
+                for (playerIndex = 0; playerIndex < gActiveRacePlayerCount; playerIndex++) {
                     player = &gRacePlayers[playerIndex];
                     if (player->isActive && playerIndex != gCurrentTask->data18) {
                         counter = player->unk01C;

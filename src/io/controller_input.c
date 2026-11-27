@@ -67,7 +67,7 @@ static u16 sControllerActuatorAlignmentPadding __attribute__((section(".data.con
 s16 D_8013AF08[2] __attribute__((section(".data.controller_values"))) = {0, 0};
 
 extern u8 gDemoRaceIndex __attribute__((section(".data")));
-extern u8 D_8013AFD9 __attribute__((section(".data")));
+extern u8 gControllerPlaybackIndex __attribute__((section(".data")));
 
 void setControllerFlag0(u16 controller) { gControllerFlags[controller] |= 1; }
 
@@ -343,7 +343,7 @@ void updateControllers(void) {
 }
 
 void initializeControllerInputRecording(u16 controller) {
-    if (gDemoRaceIndex || D_8013AFD9) {
+    if (gDemoRaceIndex || gControllerPlaybackIndex) {
         gControllerInputRecordBuffers[controller] = ((ControllerInputRecord (*)[256])D_800E959C)[controller];
     } else {
         gControllerInputRecordBuffers[controller] = CONTROLLER_INPUT_RECORDING_BUFFER;
@@ -382,7 +382,7 @@ void recordControllerInput(u16 controller) {
                 gControllerInputRecordState = 8;
                 gControllerInputRecordIndices[controller]--;
             }
-        } else if (D_8013AFD9) {
+        } else if (gControllerPlaybackIndex) {
             if (gControllerInputRecordIndices[controller] + 1 >= 0x100U) {
                 gControllerInputRecordState = 8;
                 gControllerInputRecordIndices[controller]--;

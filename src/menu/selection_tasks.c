@@ -23,7 +23,7 @@ typedef struct NumberSelectionSpriteTable {
 } NumberSelectionSpriteTable;
 
 extern u8 D_8013AFD8 __attribute__((section(".data")));
-extern u8 D_8013AFD9 __attribute__((section(".data")));
+extern u8 gControllerPlaybackIndex __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u8 D_8013AFDB __attribute__((section(".data")));
 extern u16 D_8013AF7A __attribute__((section(".data")));
@@ -73,7 +73,7 @@ void initializeModeRaceTasks(void) {
     gCreatedTask->data18 = 0;
     initializeCourseObjects();
     createChildTask(updateRacePlayerFinishSlotsTask);
-    for (player = D_8013AFD2 - 1; player >= 0; player--) {
+    for (player = gActiveRacePlayerCount - 1; player >= 0; player--) {
         createChildTask(initializeCurrentPlayerModelAndHeight);
         gCreatedTask->data18 = player;
         gRacePlayers[player].task = gCreatedTask;
@@ -381,7 +381,7 @@ void initializeSelectionMenuTask(void) {
     }
     gCurrentTask->resource14 = allocateTaskMemoryBlock();
     state = (SelectionMenuState *)&gTaskMemoryPool[gCurrentTask->resource14];
-    state->previousSelection = state->selection = D_8013AFD9 - 1;
+    state->previousSelection = state->selection = gControllerPlaybackIndex - 1;
     state->unk04 = 0;
     state->unk06 = 16;
     state->unk08 = 0;
@@ -454,7 +454,7 @@ void updateSelectionMenuTask(void) {
         }
     } else {
         if (gControllerPressedButtons[0] & 0xB0) {
-            D_8013AFD9 = state->selection + 1;
+            gControllerPlaybackIndex = state->selection + 1;
             playSoundEffect(0, 0, 0x20);
             state->unk08 = 20;
             D_8013B0F0 = 0;
@@ -465,7 +465,7 @@ void updateSelectionMenuTask(void) {
     drawPlaybackSelectionMenu(state);
     if (state->unk0A) {
         playSoundEffect(0, 0, 0x20);
-        D_8013AFD9 = 0;
+        gControllerPlaybackIndex = 0;
         gCurrentTask->data18 = 0;
         setCurrentTaskCallback(finishSelectionMenuTask);
     }

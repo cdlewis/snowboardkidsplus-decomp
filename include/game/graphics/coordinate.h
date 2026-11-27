@@ -2,8 +2,8 @@
 
 #include "psx/libgs.h"
 
-/* Shared direction scratch vector used by visual effects. */
-extern VECTOR D_800EB22C;
+/* Shared scratch storage for transformed positions and movement directions. */
+extern VECTOR gSharedScratchVector;
 
 extern GsCOORDINATE2 gCourseObjectCoordinates[30];
 extern SVECTOR D_8012A5C0[];

@@ -3,9 +3,9 @@
  * These are linker aliases, not additional objects for Splat to extract.
  */
 currentPlayerAbsolute = gCurrentRacePlayer;
-raceFinishFlagAbsolute = D_8013AFD6;
+selectedPlayerReplayActiveAbsolute = gSelectedPlayerReplayActive;
 selectionMenuFadeStartedGp = gSelectionMenuFadeStarted;
-activeRacePlayerCountGp = D_8013AFD2;
+activeRacePlayerCountGp = gActiveRacePlayerCount;
 playerSnapshotTaskGp = D_8013B304;
 playerSnapshotTrailCountGp = gPlayerSnapshotTrailCount;
 playerCountAbsolute = gPlayerCount;

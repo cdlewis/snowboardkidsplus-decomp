@@ -29,7 +29,7 @@ extern u32 gTaskTransitionFlags __attribute__((section(".data")));
 
 extern u16 D_8013AF7A __attribute__((section(".data")));
 extern u16 D_8013AF7C __attribute__((section(".data")));
-extern u8 D_8013AFD6 __attribute__((section(".data")));
+extern u8 gSelectedPlayerReplayActive __attribute__((section(".data")));
 extern u8 gDemoRaceIndex __attribute__((section(".data")));
 extern volatile u8 gShopMenuRememberedSelection __attribute__((section(".data")));
 
@@ -374,7 +374,7 @@ void updateRacePlayerRankings(void) {
     order[1] = 1;
     order[2] = 2;
     order[3] = 3;
-    for (i = 0; i < D_8013AFD2; i++) {
+    for (i = 0; i < gActiveRacePlayerCount; i++) {
         player = &gRacePlayers[i];
         player->coursePlacementDistance =
             -getGeometryPlacementSignedDistance(player->unk92E, player->x >> 8, player->z >> 8);
@@ -384,8 +384,8 @@ void updateRacePlayerRankings(void) {
         }
     }
 
-    for (i = 0; i < D_8013AFD2 - 1; i++) {
-        for (j = i + 1; j < D_8013AFD2; j++) {
+    for (i = 0; i < gActiveRacePlayerCount - 1; i++) {
+        for (j = i + 1; j < gActiveRacePlayerCount; j++) {
             if (gRacePlayers[order[i]].unk935 > gRacePlayers[order[j]].unk935) {
                 s32 slot = order[i];
                 order[i] = order[j];
@@ -394,9 +394,9 @@ void updateRacePlayerRankings(void) {
         }
     }
 
-    for (i = 0; i < D_8013AFD2 - 1; i++) {
+    for (i = 0; i < gActiveRacePlayerCount - 1; i++) {
         RacePlayer *players = gRacePlayers;
-        for (j = i + 1; j < D_8013AFD2; j++) {
+        for (j = i + 1; j < gActiveRacePlayerCount; j++) {
             s32 firstIndex = order[i];
             RacePlayer *first = &gRacePlayers[firstIndex];
             s32 secondIndex;
@@ -427,7 +427,7 @@ void updateRacePlayerRankings(void) {
         }
     }
 
-    for (i = 0; i < D_8013AFD2; i++) {
+    for (i = 0; i < gActiveRacePlayerCount; i++) {
         gRacePlayers[order[i]].unk935 = i;
         gRaceOrderPlayerIds[i] = gRacePlayers[order[i]].playerIndex;
     }
@@ -450,8 +450,8 @@ void resolveRacePlayerOverlaps(void) {
     s32 heightLimit;
     s32 dz;
 
-    for (i = 0; i < D_8013AFD2 - 1; i++) {
-        for (j = i + 1; j < D_8013AFD2; j++) {
+    for (i = 0; i < gActiveRacePlayerCount - 1; i++) {
+        for (j = i + 1; j < gActiveRacePlayerCount; j++) {
             second = &gRacePlayers[j];
             if (!gRacePlayers[i].isActive || !second->isActive ||
                 (gRacePlayers[i].unk128 & 0x200000) || (second->unk128 & 0x200000)) {
@@ -539,7 +539,7 @@ void resolvePlayerCollisionsWithCylinder(const Position3D *position, s32 radius,
     u16 i;
     u16 hitFlags = flags;
 
-    for (i = 0; i < D_8013AFD2; i++) {
+    for (i = 0; i < gActiveRacePlayerCount; i++) {
         RacePlayer *player = &gRacePlayers[i];
         s32 distance, verticalRange, x, z, range;
         s32 sine, cosine, tangent, normal;
@@ -615,7 +615,7 @@ s32 resolvePlayerCylinderCollisionsBySpeed(const Position3D *position, s32 radiu
     s16 heading;
     s32 sine, cosine;
 
-    for (i = 0; i < D_8013AFD2; i++) {
+    for (i = 0; i < gActiveRacePlayerCount; i++) {
         player = &gRacePlayers[i];
         if (player->isActive &&
             arePositionsWithinXZRange(position, (const Position3D *)&gRacePlayers[i].x, 0x18000)) {
@@ -848,7 +848,7 @@ void updateRacePlayerFinishSlotsTask(void) {
         }
         resolveRacePlayerOverlaps();
         updateRacePlayerRankings();
-        for (i = 0; i < D_8013AFD2; i++) {
+        for (i = 0; i < gActiveRacePlayerCount; i++) {
             currentPlayerAbsolute = &gRacePlayers[i];
             assignCurrentPlayerFinishSlot(i);
         }
@@ -874,8 +874,8 @@ s32 requestCurrentPlayerAction6(void) {
             return 1;
         }
     }
-    if (D_8013B0E4 < 6) {
-        D_8013B0E4 = 6;
+    if (gSelectedPlayerAction < 6) {
+        gSelectedPlayerAction = 6;
     }
     return 0;
 }
@@ -899,8 +899,8 @@ s32 requestCurrentPlayerAction6NarrowAngle(void) {
             return 1;
         }
     }
-    if (D_8013B0E4 < 6) {
-        D_8013B0E4 = 6;
+    if (gSelectedPlayerAction < 6) {
+        gSelectedPlayerAction = 6;
     }
     return 0;
 }
@@ -924,8 +924,8 @@ s32 requestCurrentPlayerAction7(void) {
             return 1;
         }
     }
-    if (D_8013B0E4 < 7) {
-        D_8013B0E4 = 7;
+    if (gSelectedPlayerAction < 7) {
+        gSelectedPlayerAction = 7;
     }
     return 0;
 }
@@ -935,8 +935,8 @@ s32 requestPlayerAction8(void) {
     if (currentPlayerAbsolute->unk128 & 0x37D000) {
         result = 1;
     } else {
-        if (D_8013B0E4 < 8) {
-            D_8013B0E4 = 8;
+        if (gSelectedPlayerAction < 8) {
+            gSelectedPlayerAction = 8;
         }
         result = 0;
     }
@@ -948,8 +948,8 @@ s32 requestPlayerAction12(void) {
     if (currentPlayerAbsolute->unk128 & 0x77D000) {
         result = 1;
     } else {
-        if (D_8013B0E4 < 12) {
-            D_8013B0E4 = 12;
+        if (gSelectedPlayerAction < 12) {
+            gSelectedPlayerAction = 12;
         }
         result = 0;
     }
@@ -960,15 +960,15 @@ s32 requestPlayerAction11(void) {
     if (currentPlayerAbsolute->unk128 & 0x77D000) {
         return 1;
     }
-    if (D_8013B0E4 < 11) {
-        D_8013B0E4 = 11;
+    if (gSelectedPlayerAction < 11) {
+        gSelectedPlayerAction = 11;
     }
     return 0;
 }
 
 s32 requestPlayerAction13(void) {
     if (currentPlayerAbsolute->unk128 & 0x77D000) return 1;
-    if (D_8013B0E4 < 13) D_8013B0E4 = 13;
+    if (gSelectedPlayerAction < 13) gSelectedPlayerAction = 13;
     return 0;
 }
 
@@ -977,8 +977,8 @@ s32 requestPlayerAction14(void) {
     if (currentPlayerAbsolute->unk128 & 0x77D000) {
         result = 1;
     } else {
-        if (D_8013B0E4 < 14) {
-            D_8013B0E4 = 14;
+        if (gSelectedPlayerAction < 14) {
+            gSelectedPlayerAction = 14;
         }
         result = 0;
     }
@@ -989,8 +989,8 @@ s32 requestPlayerAction3(void) {
     if (currentPlayerAbsolute->unk128 & 0x77D000) {
         return 1;
     }
-    if (D_8013B0E4 < 3) {
-        D_8013B0E4 = 3;
+    if (gSelectedPlayerAction < 3) {
+        gSelectedPlayerAction = 3;
     }
     return 0;
 }
@@ -999,8 +999,8 @@ s32 requestPlayerAction9(void) {
     u32 flags = currentPlayerAbsolute->unk128;
     if (!(flags & 0x43000)) {
         if (flags & 0x800) {
-            if (D_8013B0E4 < 9) {
-                D_8013B0E4 = 9;
+            if (gSelectedPlayerAction < 9) {
+                gSelectedPlayerAction = 9;
             }
             return 0;
         }
@@ -1012,8 +1012,8 @@ s32 requestPlayerAction10(void) {
     u32 flags = currentPlayerAbsolute->unk128;
     if (!(flags & 0x43000)) {
         if (flags & 0x800) {
-            if (D_8013B0E4 < 10) {
-                D_8013B0E4 = 10;
+            if (gSelectedPlayerAction < 10) {
+                gSelectedPlayerAction = 10;
             }
             return 0;
         }
@@ -1039,8 +1039,8 @@ s32 checkCurrentPlayerFlags43040OrAngleRange(void) {
     if ((D_8013B0E8 < 0x500) || (angle > 0x800)) {
         return 1;
     }
-    if (D_8013B0E4 < 2) {
-        D_8013B0E4 = 2;
+    if (gSelectedPlayerAction < 2) {
+        gSelectedPlayerAction = 2;
     }
     return 0;
 }
@@ -1050,8 +1050,8 @@ s32 requestPlayerAction1(void) {
     if (currentPlayerAbsolute->unk128 & 0x43000) {
         result = 1;
     } else {
-        if (D_8013B0E4 <= 0) {
-            D_8013B0E4 = 1;
+        if (gSelectedPlayerAction <= 0) {
+            gSelectedPlayerAction = 1;
         }
         result = 0;
     }
@@ -1063,8 +1063,8 @@ s32 checkCurrentPlayerFlags345001(void) {
     if (player->unk12C != 14 && (player->unk128 & 0x345001)) {
         return 1;
     }
-    if (D_8013B0E4 < 15) {
-        D_8013B0E4 = 15;
+    if (gSelectedPlayerAction < 15) {
+        gSelectedPlayerAction = 15;
     }
     return 0;
 }
@@ -1073,8 +1073,8 @@ s32 requestPlayerAction16(void) {
     if (currentPlayerAbsolute->unk128 & 0x775000) {
         return 1;
     } else {
-        if (D_8013B0E4 < 16) {
-            D_8013B0E4 = 16;
+        if (gSelectedPlayerAction < 16) {
+            gSelectedPlayerAction = 16;
         }
         return 0;
     }
@@ -1092,8 +1092,8 @@ s32 requestCurrentPlayerAction17(void) {
     if (player->surfaceState.fields.unk134 != 0) {
         return 1;
     }
-    if (D_8013B0E4 < 17) {
-        D_8013B0E4 = 17;
+    if (gSelectedPlayerAction < 17) {
+        gSelectedPlayerAction = 17;
     }
     return 0;
 }
@@ -1106,8 +1106,8 @@ s32 checkCurrentPlayerFlags275000OrField134(void) {
     if (player->surfaceState.fields.unk134) {
         return 1;
     }
-    if (D_8013B0E4 < 18) {
-        D_8013B0E4 = 18;
+    if (gSelectedPlayerAction < 18) {
+        gSelectedPlayerAction = 18;
     }
     return 0;
 }
@@ -1116,8 +1116,8 @@ s32 requestPlayerAction4(void) {
     if (currentPlayerAbsolute->unk128 & 0x775000) {
         return 1;
     }
-    if (D_8013B0E4 < 4) {
-        D_8013B0E4 = 4;
+    if (gSelectedPlayerAction < 4) {
+        gSelectedPlayerAction = 4;
     }
     return 0;
 }
@@ -1126,8 +1126,8 @@ s32 requestPlayerAction5(void) {
     if (currentPlayerAbsolute->unk128 & 0x775000) {
         return 1;
     }
-    if (D_8013B0E4 < 5) {
-        D_8013B0E4 = 5;
+    if (gSelectedPlayerAction < 5) {
+        gSelectedPlayerAction = 5;
     }
     return 0;
 }
@@ -1136,8 +1136,8 @@ s32 requestPlayerAction19(void) {
     if (currentPlayerAbsolute->unk128 & 0x41001) {
         return 1;
     }
-    if (D_8013B0E4 < 19) {
-        D_8013B0E4 = 19;
+    if (gSelectedPlayerAction < 19) {
+        gSelectedPlayerAction = 19;
     }
     return 0;
 }
@@ -1146,8 +1146,8 @@ s32 requestPlayerAction20(void) {
     if (currentPlayerAbsolute->unk128 & 0x41001) {
         return 1;
     } else {
-        if (D_8013B0E4 < 20) {
-            D_8013B0E4 = 20;
+        if (gSelectedPlayerAction < 20) {
+            gSelectedPlayerAction = 20;
         }
         return 0;
     }
@@ -1156,7 +1156,7 @@ s32 requestPlayerAction20(void) {
 s16 processCurrentPlayerActionRequests(s16 suppressWallAction) {
     u16 pending = currentPlayerAbsolute->unk0E8;
 
-    D_8013B0E4 = 0;
+    gSelectedPlayerAction = 0;
     if (pending) {
         if ((pending & 0x200) && !suppressWallAction) {
             currentPlayerAbsolute->unk0E8 = pending | 1;
@@ -1217,19 +1217,19 @@ s16 processCurrentPlayerActionRequests(s16 suppressWallAction) {
         requestPlayerAction20();
     }
 
-    if (!D_8013B0E4) {
+    if (!gSelectedPlayerAction) {
         return 0;
     }
     if (currentPlayerAbsolute->unk128 & 0x800) {
         currentPlayerAbsolute->trickAttackMakeCount = 0;
     }
 
-    switch ((s16)(D_8013B0E4 - 1)) {
+    switch ((s16)(gSelectedPlayerAction - 1)) {
         case 7 - 1:
             playPlayerSoundEffect(gCurrentTask->data18, 0, 0x302, 0x40);
             /* fall through */
         case 6 - 1:
-            if (D_8013B0E4 != 7) {
+            if (gSelectedPlayerAction != 7) {
                 playCurrentPlayerSoundEffect(2);
             }
             currentPlayerAbsolute->unk12C = 4;
@@ -1306,7 +1306,7 @@ s16 processCurrentPlayerActionRequests(s16 suppressWallAction) {
             break;
         case 17 - 1:
         case 18 - 1:
-            if (D_8013B0E4 == 18) {
+            if (gSelectedPlayerAction == 18) {
                 playCurrentPlayerSoundEffect(gRacePlayers[currentPlayerAbsolute->unk0F4 & 3].unk008 ? 2 : 3);
             } else {
                 playCurrentPlayerSoundEffect(2);
@@ -1335,7 +1335,7 @@ s16 processCurrentPlayerActionRequests(s16 suppressWallAction) {
             break;
     }
 
-    return D_8013B0E4;
+    return gSelectedPlayerAction;
 }
 
 s16 checkCurrentPlayerSurfaceType(void) {
@@ -1574,7 +1574,7 @@ void updateCurrentPlayerProjectileUse(u16 playerIndex) {
 
             /* CPU players check for a nearby human in their forward arc. */
             activate = i;
-            for (; i < D_8013AFD2; i++) {
+            for (; i < gActiveRacePlayerCount; i++) {
                 if (!gRacePlayers[i].unk008) {
                     s32 dx = gRacePlayers[i].x - currentPlayerAbsolute->x;
                     s32 dz = gRacePlayers[i].z - currentPlayerAbsolute->z;
@@ -1686,7 +1686,7 @@ void updateCurrentPlayerItemUse(u16 playerIndex) {
     case 2: {
         u16 count = 0;
         u16 index;
-        for (index = 0; index < D_8013AFD2; index++) {
+        for (index = 0; index < gActiveRacePlayerCount; index++) {
             if (index != playerIndex) {
                 s32 delay;
                 createChildTaskForParentWithReserve(&gGameTasks[4], initializeDelayedPlayerRiseEffectTask);
@@ -1826,14 +1826,14 @@ void initializeNewGameSaveData(void) {
     }
 
     playerCountAbsolute = 1;
-    D_8013AFD2 = 1;
+    gActiveRacePlayerCount = 1;
     D_8013AF7A = 320;
     D_8013AF7C = 240;
     D_8013B10C = -1;
     D_8013B10E = -1;
     gSelectedCourseIndex = 0;
     gMainMenuSelectionIndex = 0;
-    D_8013AFD6 = 0;
+    gSelectedPlayerReplayActive = 0;
     D_8013B47C = 0;
     gSelectedCourseMenuItem = 0;
     gShopMenuRememberedSelection = 0;

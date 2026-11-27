@@ -19,7 +19,7 @@ typedef struct Mode11MenuSelection {
 } Mode11MenuSelection;
 
 extern u8 D_8013AFD8 __attribute__((section(".data")));
-extern u8 D_8013AFD9 __attribute__((section(".data")));
+extern u8 gControllerPlaybackIndex __attribute__((section(".data")));
 extern s16 D_8013AFDE __attribute__((section(".data")));
 extern u8 D_8013AFE1 __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
@@ -28,7 +28,7 @@ extern u8 D_8013AFE0 __attribute__((section(".data")));
 extern u8 gMainMenuSelectionIndex __attribute__((section(".data")));
 extern u8 gRacePauseState __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
-extern u8 D_8013AFD6 __attribute__((section(".data")));
+extern u8 gSelectedPlayerReplayActive __attribute__((section(".data")));
 
 extern u8 D_8013B108 __attribute__((section(".data")));
 extern u8 D_8013B564 __attribute__((section(".data")));
@@ -132,7 +132,7 @@ void updateMode11SelectionMenuTask(void) {
                 index = selection->selectedIndex;
                 if (index == 1) {
                     D_8013B108 = 28;
-                    D_8013AFD9 = index;
+                    gControllerPlaybackIndex = index;
                 }
             }
             gCurrentTask->data18 = 4;
@@ -185,7 +185,7 @@ const u32 gMode11SelectionJumpTablePadding
 void selectTaskCallbackFromModeState(void) {
     if (D_8013AFD8 != 0) {
         setCurrentTaskCallback(initializeMode1RacePlayers);
-    } else if (D_8013AFD9 != 0) {
+    } else if (gControllerPlaybackIndex != 0) {
         setCurrentTaskCallback(initializeControllerPlaybackRaceTask);
     }
 }
@@ -208,9 +208,9 @@ void initializeMode1RacePlayers(void) {
     else gSelectedCourseIndex = 9;
     SetFogNearFar(8000, 10000, 400);
     gRacePauseState = 0;
-    D_8013AFD6 = 0;
+    gSelectedPlayerReplayActive = 0;
     D_8013AFE1 = 0;
-    D_8013AFD9 = 0;
+    gControllerPlaybackIndex = 0;
     gMainMenuSelectionIndex = 0;
     D_8013AFE0 = 0;
     gRacePlayers[0].unk008 = 0;
@@ -240,13 +240,13 @@ void initializeMode1RacePlayers(void) {
         gRacePlayers[1].isActive = 0;
         gRacePlayers[2].isActive = 0;
         gRacePlayers[3].isActive = 0;
-        D_8013AFD2 = 1;
+        gActiveRacePlayerCount = 1;
     } else {
         gRacePlayers[0].isActive = 1;
         gRacePlayers[1].isActive = 1;
         gRacePlayers[2].isActive = 1;
         gRacePlayers[3].isActive = 1;
-        D_8013AFD2 = 4;
+        gActiveRacePlayerCount = 4;
     }
     selectedLapCountAbsolute = 5;
     D_8013AFDE = 100;
@@ -311,7 +311,7 @@ void queueTaskModeSectorRead(void) {
     if (state->mode == 1) {
         state->sectorIndex = D_8013AFD8 - 1;
     } else {
-        state->sectorIndex = D_8013AFD9 - 1;
+        state->sectorIndex = gControllerPlaybackIndex - 1;
     }
     queueModeIndexedSectorRead(state->mode, state->sectorIndex);
     setCurrentTaskCallback(prepareLoadedTextSequenceTask);

@@ -50,7 +50,7 @@ extern s16 *D_8013B200 __attribute__((section(".data")));
 extern s16 *D_8013B204 __attribute__((section(".data")));
 extern s16 *D_8013B208 __attribute__((section(".data")));
 extern u8 D_8013AFD8 __attribute__((section(".data")));
-extern u8 D_8013AFD9 __attribute__((section(".data")));
+extern u8 gControllerPlaybackIndex __attribute__((section(".data")));
 extern u8 D_8013AFE1 __attribute__((section(".data")));
 extern s16 gFrameCounter __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
@@ -63,11 +63,11 @@ extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern u32 gTaskTransitionFlags __attribute__((section(".data")));
 extern u8 gDemoRaceIndex __attribute__((section(".data")));
-extern u8 D_8013AFD6 __attribute__((section(".data")));
+extern u8 gSelectedPlayerReplayActive __attribute__((section(".data")));
 
 extern VECTOR *gScratchVector1 __attribute__((section(".data")));
 
-extern s16 D_8013B0E4 __attribute__((section(".data")));
+extern s16 gSelectedPlayerAction __attribute__((section(".data")));
 extern u16 D_8013B0E6 __attribute__((section(".data")));
 extern s32 D_8013B0E8 __attribute__((section(".data")));
 
@@ -1343,7 +1343,7 @@ void initializeCurrentPlayerModelAndHeight(void) {
     player->unk962 = -1;
     gCurrentRacePlayer = player;
     initializeCurrentPlayerModelObjects((DAT_PLAYER_MODEL_BUFFERS)[gCurrentTask->data18]);
-    if (!D_8013AFD8 && !D_8013AFD9) {
+    if (!D_8013AFD8 && !gControllerPlaybackIndex) {
         gCurrentRacePlayer->unk92E = 0;
     } else {
         gCurrentRacePlayer->unk0B6 = gCurrentRacePlayer->unk110 - 0x400;
@@ -1359,9 +1359,9 @@ void updateCurrentPlayerAndResetState(void) {
     updateCurrentPlayerAnimation();
     if (gTaskTransitionFlags == 0) {
         if (gCurrentRacePlayer->unk008 == 0) {
-            if (gDemoRaceIndex || D_8013AFD9) {
+            if (gDemoRaceIndex || gControllerPlaybackIndex) {
                 initializeControllerInputPlayback(gCurrentTask->data18);
-            } else if (gMainMenuSelectionIndex == 2 && D_8013AFD6 == 0) {
+            } else if (gMainMenuSelectionIndex == 2 && gSelectedPlayerReplayActive == 0) {
                 initializeControllerInputRecording(0);
                 resetSelectedRecordStates();
             }
@@ -1637,7 +1637,7 @@ applySteering:
             boost = -0x280;
         }
     }
-    if (D_8013AFD9 && gCurrentRacePlayer->unk945 == 8) {
+    if (gControllerPlaybackIndex && gCurrentRacePlayer->unk945 == 8) {
         boost = 0x1800;
     }
     updateCurrentPlayerSlopeVelocity(0, boost, (s16)gCurrentRacePlayer->unk0A6,
@@ -2105,12 +2105,12 @@ block_22:
     }
     gCurrentRacePlayer->unk062 = 0x7800;
 block_33:
-    D_800EB22C.vx = (s32) gCurrentRacePlayer->unk060;
-    D_800EB22C.vz = (s32) gCurrentRacePlayer->unk064;
-    clampVectorToCurrentPlayerLimit(&D_800EB22C);
+    gSharedScratchVector.vx = (s32) gCurrentRacePlayer->unk060;
+    gSharedScratchVector.vz = (s32) gCurrentRacePlayer->unk064;
+    clampVectorToCurrentPlayerLimit(&gSharedScratchVector);
     motionPlayer = gCurrentRacePlayer;
-    motionPlayer->unk060 = D_800EB22C.vx;
-    motionPlayer->unk064 = D_800EB22C.vz;
+    motionPlayer->unk060 = gSharedScratchVector.vx;
+    motionPlayer->unk064 = gSharedScratchVector.vz;
     motionPlayer->x += motionPlayer->unk060;
     motionPlayer->y += motionPlayer->unk062;
     motionPlayer->z += motionPlayer->unk064;
@@ -3066,7 +3066,7 @@ block_333:
     markPlayerNearSelectedRecord((s16) gCurrentTask->data18);
     terrainContact = resolveCurrentPlayerTerrainContact();
     updateCurrentPlayerAnimation();
-    if (D_8013B0E4 < 2) {
+    if (gSelectedPlayerAction < 2) {
         goto block_335;
     }
     gCurrentRacePlayer->unk965 = 0;
@@ -3167,11 +3167,11 @@ void updateCurrentPlayerState29MotionAndAnimation(void) {
     gCurrentRacePlayer->unk0B6 = gCurrentRacePlayer->unk110 - 0x400;
     gCurrentRacePlayer->unk0B8 = gCurrentRacePlayer->unk112;
     smoothAndScaleCurrentPlayerInput(0, 0);
-    D_800EB22C.vx = gCurrentRacePlayer->unk060;
-    D_800EB22C.vz = gCurrentRacePlayer->unk064;
-    clampVectorToCurrentPlayerLimit(&D_800EB22C);
-    gCurrentRacePlayer->unk060 = D_800EB22C.vx;
-    gCurrentRacePlayer->unk064 = D_800EB22C.vz;
+    gSharedScratchVector.vx = gCurrentRacePlayer->unk060;
+    gSharedScratchVector.vz = gCurrentRacePlayer->unk064;
+    clampVectorToCurrentPlayerLimit(&gSharedScratchVector);
+    gCurrentRacePlayer->unk060 = gSharedScratchVector.vx;
+    gCurrentRacePlayer->unk064 = gSharedScratchVector.vz;
     updateCurrentPlayerSlopeVelocityWithoutBoost(0, (s16)gCurrentRacePlayer->unk0A6, (s16)gCurrentRacePlayer->unk0A8, (s16)gCurrentRacePlayer->unk0AA);
     gCurrentRacePlayer->x += gCurrentRacePlayer->unk060;
     gCurrentRacePlayer->y += gCurrentRacePlayer->unk062;
@@ -3216,12 +3216,12 @@ void updateCurrentPlayerState3MotionAndSteering(void) {
     } else {
         player->unk128 |= 0x200;
         player->unk062 += 0x1C0;
-        D_800EB22C.vx = player->unk060;
-        D_800EB22C.vz = player->unk064;
-        clampVectorToCurrentPlayerLimit(&D_800EB22C);
+        gSharedScratchVector.vx = player->unk060;
+        gSharedScratchVector.vz = player->unk064;
+        clampVectorToCurrentPlayerLimit(&gSharedScratchVector);
         airbornePlayer = gCurrentRacePlayer;
-        airbornePlayer->unk060 = D_800EB22C.vx;
-        airbornePlayer->unk064 = D_800EB22C.vz;
+        airbornePlayer->unk060 = gSharedScratchVector.vx;
+        airbornePlayer->unk064 = gSharedScratchVector.vz;
         velocity = airbornePlayer->unk060;
         if (velocity > 0x80) {
             velocity = 0x80;
@@ -3297,11 +3297,11 @@ void updateCurrentPlayerState4MotionAndLanding(void) {
     player = gCurrentRacePlayer;
     player->unk130 = 0x1800;
     if (player->unk128 & 1) {
-        D_800EB22C.vx = player->unk060;
-        D_800EB22C.vz = player->unk064;
-        clampVectorToCurrentPlayerLimit(&D_800EB22C);
-        gCurrentRacePlayer->unk060 = D_800EB22C.vx;
-        gCurrentRacePlayer->unk064 = D_800EB22C.vz;
+        gSharedScratchVector.vx = player->unk060;
+        gSharedScratchVector.vz = player->unk064;
+        clampVectorToCurrentPlayerLimit(&gSharedScratchVector);
+        gCurrentRacePlayer->unk060 = gSharedScratchVector.vx;
+        gCurrentRacePlayer->unk064 = gSharedScratchVector.vz;
         gCurrentRacePlayer->unk062 += 0x280;
         gCurrentRacePlayer->unk060 -= gCurrentRacePlayer->unk060 / 15;
         gCurrentRacePlayer->unk064 -= gCurrentRacePlayer->unk064 / 15;
@@ -3583,11 +3583,11 @@ void updateCurrentPlayerState25MotionAndTimer(void) {
         updateCurrentPlayerGroundContact();
     } else {
         gCurrentRacePlayer->unk128 |= 0x200;
-        D_800EB22C.vx = gCurrentRacePlayer->unk060;
-        D_800EB22C.vz = gCurrentRacePlayer->unk064;
-        clampVectorToCurrentPlayerLimit(&D_800EB22C);
-        gCurrentRacePlayer->unk060 = D_800EB22C.vx;
-        gCurrentRacePlayer->unk064 = D_800EB22C.vz;
+        gSharedScratchVector.vx = gCurrentRacePlayer->unk060;
+        gSharedScratchVector.vz = gCurrentRacePlayer->unk064;
+        clampVectorToCurrentPlayerLimit(&gSharedScratchVector);
+        gCurrentRacePlayer->unk060 = gSharedScratchVector.vx;
+        gCurrentRacePlayer->unk064 = gSharedScratchVector.vz;
         gCurrentRacePlayer->unk062 += gCurrentRacePlayer->unk09C;
         if (gCurrentRacePlayer->unk062 > 0x7800) {
             gCurrentRacePlayer->unk062 = 0x7800;
@@ -4084,7 +4084,7 @@ updateAnimation:
         if (stoppedPlayer->unk008 == 0) {
             PlayerCamera *cameras = gPlayerCameras;
             PlayerCamera *camera = &cameras[gCurrentTask->data18];
-            if (camera->unk16 != 6 && D_8013AFD6 == 0) {
+            if (camera->unk16 != 6 && gSelectedPlayerReplayActive == 0) {
                 camera->unk16 = 5;
             }
         }
@@ -4132,7 +4132,7 @@ void updateCurrentPlayerState30AnimationAndHeight(void) {
             if (!(gCurrentTask->data1C & 1)) {
                 gCurrentTask->data1C++;
                 if (!(gCurrentTask->data1C & 2)) {
-                    if (!D_8013AFD6) playCurrentPlayerSoundEffect(6);
+                    if (!gSelectedPlayerReplayActive) playCurrentPlayerSoundEffect(6);
                     startCurrentPlayerAnimation(0x14, 2);
                 } else {
                     startCurrentPlayerAnimation(0x16, 2);
@@ -4252,11 +4252,11 @@ movement:
 void updateCurrentPlayerState11Motion(void) {
     prepareCurrentPlayerFrame();
     gCurrentRacePlayer->unk130 = 0x1800;
-    D_800EB22C.vx = gCurrentRacePlayer->unk060;
-    D_800EB22C.vz = gCurrentRacePlayer->unk064;
-    clampVectorToCurrentPlayerLimit(&D_800EB22C);
-    gCurrentRacePlayer->unk060 = D_800EB22C.vx;
-    gCurrentRacePlayer->unk064 = D_800EB22C.vz;
+    gSharedScratchVector.vx = gCurrentRacePlayer->unk060;
+    gSharedScratchVector.vz = gCurrentRacePlayer->unk064;
+    clampVectorToCurrentPlayerLimit(&gSharedScratchVector);
+    gCurrentRacePlayer->unk060 = gSharedScratchVector.vx;
+    gCurrentRacePlayer->unk064 = gSharedScratchVector.vz;
     if (!(gCurrentRacePlayer->unk128 & 1)) {
         gCurrentRacePlayer->unk09E = gCurrentRacePlayer->unk09C;
         updateCurrentPlayerSlopeVelocityWithoutBoost(0, 0x100, 0x100, 0x100);
@@ -4304,7 +4304,7 @@ void updateCurrentPlayerState10Movement(void) {
     gCurrentRacePlayer->unk0B6 = gCurrentRacePlayer->unk110 - 0x400;
     snapCurrentPlayerToTerrain();
     updateCurrentPlayerAnimation();
-    if (D_8013B0E4 != 0) {
+    if (gSelectedPlayerAction != 0) {
         currentPlayerStateCallbacks[gCurrentRacePlayer->unk12C]();
     } else if (!(gCurrentRacePlayer->unk128 & 0x201)) {
         if (gCurrentRacePlayer->surfaceState.fields.unk136 != 3 && gCurrentRacePlayer->surfaceState.fields.unk136 != 6 &&
@@ -4335,11 +4335,11 @@ void updateCurrentPlayerTimedMotion(void) {
         }
         gCurrentRacePlayer->unk128 |= 0x200;
     }
-    D_800EB22C.vx = gCurrentRacePlayer->unk060;
-    D_800EB22C.vz = gCurrentRacePlayer->unk064;
-    clampVectorToCurrentPlayerLimit(&D_800EB22C);
-    gCurrentRacePlayer->unk060 = D_800EB22C.vx;
-    gCurrentRacePlayer->unk064 = D_800EB22C.vz;
+    gSharedScratchVector.vx = gCurrentRacePlayer->unk060;
+    gSharedScratchVector.vz = gCurrentRacePlayer->unk064;
+    clampVectorToCurrentPlayerLimit(&gSharedScratchVector);
+    gCurrentRacePlayer->unk060 = gSharedScratchVector.vx;
+    gCurrentRacePlayer->unk064 = gSharedScratchVector.vz;
     gCurrentRacePlayer->x += gCurrentRacePlayer->unk060;
     gCurrentRacePlayer->y += gCurrentRacePlayer->unk062;
     gCurrentRacePlayer->z += gCurrentRacePlayer->unk064;
@@ -4357,7 +4357,7 @@ void updateCurrentPlayerTimedMotion(void) {
     }
     gCurrentRacePlayer->unk0B6 = gCurrentRacePlayer->unk110 - 0x400;
     updateCurrentPlayerAnimation();
-    if (D_8013B0E4) {
+    if (gSelectedPlayerAction) {
         currentPlayerStateCallbacks[gCurrentRacePlayer->unk12C]();
     } else if (gCurrentRacePlayer->unk08C == 0) {
         gCurrentRacePlayer->unk12C = 12;
@@ -4392,7 +4392,7 @@ void updateCurrentPlayerState12MotionAndTimer(void) {
         if (gCurrentRacePlayer->unk96E != 0x300 && gCurrentRacePlayer->unk96E != 0x801) {
             gCurrentRacePlayer->unk972 = 0x400;
         }
-        if (D_8013B0E4) {
+        if (gSelectedPlayerAction) {
             gCurrentRacePlayer->unk128 &= ~8;
             currentPlayerStateCallbacks[gCurrentRacePlayer->unk12C]();
         } else {
@@ -4841,7 +4841,7 @@ s32 snapCurrentPlayerToTerrain(void) {
 
 void initializeActiveRacePlayers(void) {
     u16 i;
-    for (i = 0; i < D_8013AFD2; i++) {
+    for (i = 0; i < gActiveRacePlayerCount; i++) {
         RacePlayer *player = &gRacePlayers[i];
         player->playerIndex = i;
         if (player->isActive) {
@@ -4909,7 +4909,7 @@ void initializeCurrentRacePlayer(void) {
     }
     if (!currentPlayerAbsolute->unk008) {
         currentPlayerAbsolute->unk945 = 8;
-    } else if (D_8013AFD9) {
+    } else if (gControllerPlaybackIndex) {
         currentPlayerAbsolute->unk945 = 8;
     }
     if (gMainMenuSelectionIndex == 1 && D_8013AFE0 == 1) {
@@ -4922,7 +4922,7 @@ void initializeCurrentRacePlayer(void) {
     if (gSelectedCourseIndex == 7 && playerCountAbsolute == 1) {
         currentPlayerAbsolute->x = 0;
     }
-    if (!currentPlayerAbsolute->unk008 && !D_8013AFD6 &&
+    if (!currentPlayerAbsolute->unk008 && !gSelectedPlayerReplayActive &&
         (s16)currentPlayerAbsolute->unk0A8 != (s16)currentPlayerAbsolute->unk0AA) {
         createChildTaskForParentWithReserve(&gGameTasks[1], initializePlayerPromptTask);
         gCreatedTask->data18 = currentPlayerAbsolute->playerIndex;
@@ -5014,7 +5014,7 @@ void initializeCurrentRacePlayer(void) {
             break;
     }
 
-    switch (D_8013AFD9) {
+    switch (gControllerPlaybackIndex) {
         case 1:
             currentPlayerAbsolute->unk93E = 1;
             currentPlayerAbsolute->unk940 = 3;
@@ -5063,19 +5063,19 @@ void initializeCurrentRacePlayer(void) {
             break;
     }
 
-    if (D_8013AFD9) {
+    if (gControllerPlaybackIndex) {
         if (currentPlayerAbsolute->playerIndex >= 2) {
             currentPlayerAbsolute->heldItem = 0;
             currentPlayerAbsolute->unk93E = 0;
             currentPlayerAbsolute->unk940 = 0;
         }
-        currentPlayerAbsolute->x = (gPlaybackPlayerStartPlacements[(D_8013AFD9 - 1) * 4 +
+        currentPlayerAbsolute->x = (gPlaybackPlayerStartPlacements[(gControllerPlaybackIndex - 1) * 4 +
                                                   currentPlayerAbsolute->playerIndex].position.vx / 256) * 4;
-        currentPlayerAbsolute->z = (-gPlaybackPlayerStartPlacements[(D_8013AFD9 - 1) * 4 +
+        currentPlayerAbsolute->z = (-gPlaybackPlayerStartPlacements[(gControllerPlaybackIndex - 1) * 4 +
                                                   currentPlayerAbsolute->playerIndex].position.vz / 256) * 4;
-        currentPlayerAbsolute->unk110 = -gPlaybackPlayerStartPlacements[(D_8013AFD9 - 1) * 4 +
+        currentPlayerAbsolute->unk110 = -gPlaybackPlayerStartPlacements[(gControllerPlaybackIndex - 1) * 4 +
                                                   currentPlayerAbsolute->playerIndex].heading;
-        currentPlayerAbsolute->unk92E = gPlaybackPlayerStartPlacements[(D_8013AFD9 - 1) * 4 +
+        currentPlayerAbsolute->unk92E = gPlaybackPlayerStartPlacements[(gControllerPlaybackIndex - 1) * 4 +
                                                   currentPlayerAbsolute->playerIndex].recordIndex;
     }
 
@@ -5130,7 +5130,7 @@ void assignCurrentPlayerFinishSlot(s32 value) {
     if (!(flags & 0x40) && player->unk934 >= selectedFinishLapCountAbsolute - 1 &&
         player->unk92E == (s16)gSelectedCourseRecords[gSelectedCourseIndex].unk00 && !(flags & 0x1000)) {
         player->unk128 = flags | 0x40;
-        if (!D_8013AFD6) {
+        if (!gSelectedPlayerReplayActive) {
             if (!player->unk008) {
                 createChildTaskWithReserve(beginSound601TaskSequence);
                 gCreatedTask->data18 = value;
@@ -5181,7 +5181,7 @@ void awardCurrentPlayerTrickRewards(void) {
 
     if (reward != 0 && gMainMenuSelectionIndex == 0) {
         addPlayerCappedCounters(gCurrentTask->data18, reward);
-        if (currentPlayerAbsolute->unk008 == 0 && (D_8013AFD9 == 0 || gCurrentTask->data18 == 0)) {
+        if (currentPlayerAbsolute->unk008 == 0 && (gControllerPlaybackIndex == 0 || gCurrentTask->data18 == 0)) {
             createActivePlayerSlidingNumberTask(reward, currentPlayerAbsolute->playerIndex);
             sound = 0x201;
             if (reward >= 100) {

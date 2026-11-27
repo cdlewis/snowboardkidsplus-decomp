@@ -3000,7 +3000,7 @@ advanceTextLine = 0x800A60FC; // type:func
 // Race options; addressing aliases are in config/symbol_aliases.ld.
 gPlayerCount = 0x8013AFCD; // size:0x1
 gRaceOrderPlayerIds = 0x8013B0EC; // size:0x4 defined:true
-D_8013AFD2 = 0x8013AFD2; // size:0x1
+gActiveRacePlayerCount = 0x8013AFD2; // size:0x1
 initializeRaceRestartTask = 0x8001CD64; // type:func
 
 gSelectedCourseIndex = 0x8013AFCE; // size:0x2
@@ -4294,3 +4294,8 @@ gScratchVector1 = 0x8013AF8C;
 gScratchShortVector0 = 0x8013AF90;
 gScratchShortVector1 = 0x8013AF94;
 gMainMenuSelectionIndex = 0x8013AFE2;
+
+gSharedScratchVector = 0x800EB22C; // size:0x10
+gSelectedPlayerReplayActive = 0x8013AFD6; // size:0x1
+gControllerPlaybackIndex = 0x8013AFD9; // size:0x1
+gSelectedPlayerAction = 0x8013B0E4; // size:0x2

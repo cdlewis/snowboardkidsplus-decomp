@@ -30,7 +30,8 @@ extern u8 D_8013AFDA;
 extern s32 D_8012FC6C[10][3];
 
 extern u8 D_8013AFDB;
-extern u8 D_8013AFD6;
+/* Playback of the captured player run, with saved-state restoration. */
+extern u8 gSelectedPlayerReplayActive;
 
 u32 getSelectedCoursePrize(s16 unusedCourse, s16 place);
 void resetSelectedRecordStates(void);
@@ -39,7 +40,8 @@ s32 updatePlayerField94CFromSelectedTable(u16 tableIndex, s16 sampleIndex,
 
 /* Race finish comparisons and HUD draws use signed halfword loads. */
 extern s16 selectedFinishLapCountAbsolute __attribute__((section(".data")));
-extern u8 raceFinishFlagAbsolute __attribute__((section(".data")));
+/* Absolute-addressed alias of gSelectedPlayerReplayActive. */
+extern u8 selectedPlayerReplayActiveAbsolute __attribute__((section(".data")));
 
 /* Save player 0 at selected course segments and split its recorded input run. */
 void captureSelectedPlayerStates(void);

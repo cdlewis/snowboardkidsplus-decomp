@@ -100,10 +100,10 @@ void updateCurrentPlayerModelPartCoordinates(void) {
             currentPlayerAbsolute->model.modelCoordinates[0].coord.t[1] = gScratchVector0->vy + currentPlayerAbsolute->unk62C[0].y;
             currentPlayerAbsolute->model.modelCoordinates[0].coord.t[2] = gScratchVector0->vz + currentPlayerAbsolute->unk62C[0].z;
         } else {
-            ApplyMatrix(&currentPlayerAbsolute->model.modelCoordinates[parent].coord, (SVECTOR *)&currentPlayerAbsolute->unk62C[i], &D_800EB22C);
-            currentPlayerAbsolute->model.modelCoordinates[i].coord.t[0] = D_800EB22C.vx + currentPlayerAbsolute->model.modelCoordinates[parent].coord.t[0];
-            currentPlayerAbsolute->model.modelCoordinates[i].coord.t[1] = D_800EB22C.vy + currentPlayerAbsolute->model.modelCoordinates[parent].coord.t[1];
-            currentPlayerAbsolute->model.modelCoordinates[i].coord.t[2] = D_800EB22C.vz + currentPlayerAbsolute->model.modelCoordinates[parent].coord.t[2];
+            ApplyMatrix(&currentPlayerAbsolute->model.modelCoordinates[parent].coord, (SVECTOR *)&currentPlayerAbsolute->unk62C[i], &gSharedScratchVector);
+            currentPlayerAbsolute->model.modelCoordinates[i].coord.t[0] = gSharedScratchVector.vx + currentPlayerAbsolute->model.modelCoordinates[parent].coord.t[0];
+            currentPlayerAbsolute->model.modelCoordinates[i].coord.t[1] = gSharedScratchVector.vy + currentPlayerAbsolute->model.modelCoordinates[parent].coord.t[1];
+            currentPlayerAbsolute->model.modelCoordinates[i].coord.t[2] = gSharedScratchVector.vz + currentPlayerAbsolute->model.modelCoordinates[parent].coord.t[2];
         }
         setCoordinateRotation((SVECTOR *)&currentPlayerAbsolute->unk5BC[i], &currentPlayerAbsolute->model.modelCoordinates[i]);
     }

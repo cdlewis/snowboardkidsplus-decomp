@@ -52,11 +52,11 @@ static TaskVisualFrame sOrbitingPlayerVisualFrames[4]
 
 void drawPlayerFlagTaskVisual(TaskVisualResource *resource) {
     PlayerCamera *cameras = gPlayerCameras;
-    D_800EB22C.vx = rcos(-cameras[getRenderCameraIndex()].yaw) * 40 / 4096;
-    D_800EB22C.vz = rsin(-cameras[getRenderCameraIndex()].yaw) * 40 / 4096;
-    resource->coordinate.coord.t[0] = gRacePlayers[gCurrentTask->data18].worldCoordinate.coord.t[0] + D_800EB22C.vx;
+    gSharedScratchVector.vx = rcos(-cameras[getRenderCameraIndex()].yaw) * 40 / 4096;
+    gSharedScratchVector.vz = rsin(-cameras[getRenderCameraIndex()].yaw) * 40 / 4096;
+    resource->coordinate.coord.t[0] = gRacePlayers[gCurrentTask->data18].worldCoordinate.coord.t[0] + gSharedScratchVector.vx;
     resource->coordinate.coord.t[1] = gRacePlayers[gCurrentTask->data18].worldCoordinate.coord.t[1] - 80;
-    resource->coordinate.coord.t[2] = gRacePlayers[gCurrentTask->data18].worldCoordinate.coord.t[2] + D_800EB22C.vz;
+    resource->coordinate.coord.t[2] = gRacePlayers[gCurrentTask->data18].worldCoordinate.coord.t[2] + gSharedScratchVector.vz;
     setTaskVisualFrame(resource, gPlayerFlagVisualFrames, 0x1800);
     drawCameraFacingTaskVisual(resource, 1);
     advanceTaskVisualFrame(resource);
@@ -129,11 +129,11 @@ void updatePlayerSideVisualTask(void) {
         while (1) {}
     }
     resource = (OrbitingPlayerVisualResource *)&gTaskMemoryPool[gCurrentTask->resource14];
-    D_800EB22C.vx = rsin((s16)gRacePlayers[gCurrentTask->data18].unk110) * resource->radius / 4096;
-    D_800EB22C.vz = rcos((s16)gRacePlayers[gCurrentTask->data18].unk110) * resource->radius / 4096;
-    resource->coordinate.coord.t[0] = gRacePlayers[gCurrentTask->data18].worldCoordinate.coord.t[0] + D_800EB22C.vx;
+    gSharedScratchVector.vx = rsin((s16)gRacePlayers[gCurrentTask->data18].unk110) * resource->radius / 4096;
+    gSharedScratchVector.vz = rcos((s16)gRacePlayers[gCurrentTask->data18].unk110) * resource->radius / 4096;
+    resource->coordinate.coord.t[0] = gRacePlayers[gCurrentTask->data18].worldCoordinate.coord.t[0] + gSharedScratchVector.vx;
     resource->coordinate.coord.t[1] = gRacePlayers[gCurrentTask->data18].worldCoordinate.coord.t[1] - 18;
-    resource->coordinate.coord.t[2] = gRacePlayers[gCurrentTask->data18].worldCoordinate.coord.t[2] + D_800EB22C.vz;
+    resource->coordinate.coord.t[2] = gRacePlayers[gCurrentTask->data18].worldCoordinate.coord.t[2] + gSharedScratchVector.vz;
     setTaskVisualFrame((TaskVisualResource *)resource, gPlayerSideVisualFrames, 0x2000);
     drawCameraFacingTaskVisual((TaskVisualResource *)resource, 1);
     if (!gRacePauseState) {
@@ -202,7 +202,7 @@ void updateExpandingCoordinateEffectTask(void) {
             resource->scale.vx += 0x40;
             resource->scale.vy += 0x40;
             resource->scale.vz += 0x40;
-            for (i = 0; i < D_8013AFD2; i++) {
+            for (i = 0; i < gActiveRacePlayerCount; i++) {
                 addPlayerFlagsIfWithinRadius(&resource->position, resource->scale.vx * 24, 0x80, i);
                 gRacePlayers[i].unk0F4 = gCurrentTask->data18;
             }
@@ -561,7 +561,7 @@ s32 findNearestHomingTargetPlayer(const Position3D *position, s32 radius, s16 fa
     s32 nearest = radius + 0x1000;
     s32 result = -1;
 
-    for (i = 0; i < D_8013AFD2; i++) {
+    for (i = 0; i < gActiveRacePlayerCount; i++) {
         players = gRacePlayers;
         player = &players[i];
         if (i != excludedPlayer && player->surfaceState.fields.unk134 == 0
@@ -704,12 +704,12 @@ void updateHomingTaskVisualMovement(TaskVisualResource *resource, VECTOR *histor
         if (angle < -(s16)maxTurn) angle = -maxTurn;
         resource->unkD8 += angle;
     }
-    D_800EB22C.vx = rsin(resource->unkD8) * resource->groundY / 4096;
-    D_800EB22C.vz = rcos(resource->unkD8) * resource->groundY / 4096;
+    gSharedScratchVector.vx = rsin(resource->unkD8) * resource->groundY / 4096;
+    gSharedScratchVector.vz = rcos(resource->unkD8) * resource->groundY / 4096;
     oldY = resource->position.y;
-    resource->position.x += D_800EB22C.vx;
+    resource->position.x += gSharedScratchVector.vx;
     resource->position.y += resource->velocityY;
-    resource->position.z += D_800EB22C.vz;
+    resource->position.z += gSharedScratchVector.vz;
     resource->unkC4 = getAdjacentGeometryRegionForPoint(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8);
     ground = getCourseHeightAtPoint(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8) << 8;
     if (resource->position.y > ground) resource->position.y = ground;
@@ -719,7 +719,7 @@ void updateHomingTaskVisualMovement(TaskVisualResource *resource, VECTOR *histor
 void checkTaskVisualOtherPlayerCollision(TaskVisualResource *resource, s16 flags) {
     u16 i;
     RacePlayer *player;
-    for (i = 0; i < D_8013AFD2; i++) {
+    for (i = 0; i < gActiveRacePlayerCount; i++) {
         if (i != gCurrentTask->data18) {
             player = &gRacePlayers[i];
             if (player->unk946 != 0) {
@@ -903,11 +903,11 @@ void updatePlayerVisualPairTask6780(void) {
     history = (VECTOR *)&gTaskMemoryPool[gCurrentTask->resource16];
     if (gRacePauseState == 0) {
         updateHomingTaskVisualMovement(resource, history, 0x1B000, 0x1C);
-        reflectVelocityAndResolveGeometryBoundary(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8, 2, &dx, &dz, &D_800EB22C.vx, &D_800EB22C.vz);
+        reflectVelocityAndResolveGeometryBoundary(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8, 2, &dx, &dz, &gSharedScratchVector.vx, &gSharedScratchVector.vz);
         if (dx != 0 || dz != 0) {
             resource->position.x += dx;
             resource->position.z += dz;
-            resource->unkD8 = getXZHeading(0, 0, D_800EB22C.vx, D_800EB22C.vz);
+            resource->unkD8 = getXZHeading(0, 0, gSharedScratchVector.vx, gSharedScratchVector.vz);
         }
     }
     drawTaskVisualPositionHistory(resource, history, &gPlayerVisualPair6780Frame);
@@ -985,12 +985,12 @@ void initializeBouncingTaskVisual(void) {
     } else {
         resource->unkD8 = (s16)gRacePlayers[gCurrentTask->data18].unk110 + 0x800;
     }
-    D_800EB22C.vx = rsin(resource->unkD8) / 64;
-    D_800EB22C.vz = rcos(resource->unkD8) / 64;
+    gSharedScratchVector.vx = rsin(resource->unkD8) / 64;
+    gSharedScratchVector.vz = rcos(resource->unkD8) / 64;
     players = gRacePlayers;
-    resource->coordinate.coord.t[0] = players[gCurrentTask->data18].worldCoordinate.coord.t[0] + D_800EB22C.vx;
+    resource->coordinate.coord.t[0] = players[gCurrentTask->data18].worldCoordinate.coord.t[0] + gSharedScratchVector.vx;
     resource->coordinate.coord.t[1] = players[gCurrentTask->data18].worldCoordinate.coord.t[1] - 18;
-    resource->coordinate.coord.t[2] = players[gCurrentTask->data18].worldCoordinate.coord.t[2] + D_800EB22C.vz;
+    resource->coordinate.coord.t[2] = players[gCurrentTask->data18].worldCoordinate.coord.t[2] + gSharedScratchVector.vz;
     resource->position.x = resource->coordinate.coord.t[0] << 8;
     resource->position.y = resource->coordinate.coord.t[1] << 8;
     resource->position.z = resource->coordinate.coord.t[2] << 8;
@@ -1109,12 +1109,12 @@ void updateDualResource5100EffectTask(void) {
             entry->pad = 1;
         }
 
-        D_800EB22C.vx = rsin(resource->unkD8) * resource->groundY / 4096;
-        D_800EB22C.vz = rcos(resource->unkD8) * resource->groundY / 4096;
+        gSharedScratchVector.vx = rsin(resource->unkD8) * resource->groundY / 4096;
+        gSharedScratchVector.vz = rcos(resource->unkD8) * resource->groundY / 4096;
         oldY = resource->position.y;
-        resource->position.x += D_800EB22C.vx;
+        resource->position.x += gSharedScratchVector.vx;
         resource->position.y += resource->velocityY;
-        resource->position.z += D_800EB22C.vz;
+        resource->position.z += gSharedScratchVector.vz;
         resource->unkC4 = getAdjacentGeometryRegionForPoint(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8);
         ground = getCourseHeightAtPoint(resource->unkC4, resource->position.x >> 8, resource->position.z >> 8) << 8;
         if (resource->position.y > ground) {
@@ -1130,7 +1130,7 @@ void updateDualResource5100EffectTask(void) {
     }
     drawTaskVisualPositionHistory(resource, history, &gPlayerDualResource5100EffectFrame);
     if (gRacePauseState == 0) {
-        for (i = 0; i < D_8013AFD2; i++) {
+        for (i = 0; i < gActiveRacePlayerCount; i++) {
             if (i != gCurrentTask->data18 &&
                 addPlayerFlagsIfWithinRadius(&resource->position, 0x1000, 0x4000, i) != 0) {
                 gRacePlayers[i].unk0F4 = gCurrentTask->data18;
@@ -1172,8 +1172,8 @@ void initializeVisualTrailTask(void) {
     resource->unkC6 = 0;
     resource->unkC8 = 0;
     resource->framePosition = 0;
-    D_800EB22C.vx = rsin(resource->angle) / 64;
-    D_800EB22C.vz = rcos(resource->angle) / 64;
+    gSharedScratchVector.vx = rsin(resource->angle) / 64;
+    gSharedScratchVector.vz = rcos(resource->angle) / 64;
     resource->lifetime = 60;
     resource->horizontalSpeed = 0x6780;
     resource->velocityY = 0;
@@ -1223,28 +1223,28 @@ void updateVisualTrailTask(void) {
             entry->pad = 1;
         }
 
-        D_800EB22C.vx = rsin(resource->angle) * resource->horizontalSpeed / 4096;
-        D_800EB22C.vz = rcos(resource->angle) * resource->horizontalSpeed / 4096;
+        gSharedScratchVector.vx = rsin(resource->angle) * resource->horizontalSpeed / 4096;
+        gSharedScratchVector.vz = rcos(resource->angle) * resource->horizontalSpeed / 4096;
         oldY = resource->position.y;
-        resource->position.x += D_800EB22C.vx;
+        resource->position.x += gSharedScratchVector.vx;
         resource->position.y += resource->velocityY;
-        resource->position.z += D_800EB22C.vz;
+        resource->position.z += gSharedScratchVector.vz;
         resource->geometryIndex = getAdjacentGeometryRegionForPoint(resource->geometryIndex, resource->position.x >> 8, resource->position.z >> 8);
         ground = getCourseHeightAtPoint(resource->geometryIndex, resource->position.x >> 8, resource->position.z >> 8) << 8;
         if (resource->position.y > ground) {
             resource->position.y = ground;
         }
         resource->velocityY = resource->position.y - oldY + 0x1900;
-        reflectVelocityAndResolveGeometryBoundary(resource->geometryIndex, resource->position.x >> 8, resource->position.z >> 8, 2, &dx, &dz, &D_800EB22C.vx, &D_800EB22C.vz);
+        reflectVelocityAndResolveGeometryBoundary(resource->geometryIndex, resource->position.x >> 8, resource->position.z >> 8, 2, &dx, &dz, &gSharedScratchVector.vx, &gSharedScratchVector.vz);
         if (dx != 0 || dz != 0) {
             resource->position.x += dx;
             resource->position.z += dz;
-            resource->angle = getXZHeading(0, 0, D_800EB22C.vx, D_800EB22C.vz);
+            resource->angle = getXZHeading(0, 0, gSharedScratchVector.vx, gSharedScratchVector.vz);
         }
     }
     drawTaskVisualPositionHistory((TaskVisualResource *)resource, history, &gPlayerVisualPair6780Frame);
     if (gRacePauseState == 0) {
-        for (i = 0; i < D_8013AFD2; i++) {
+        for (i = 0; i < gActiveRacePlayerCount; i++) {
             if (addPlayerFlagsIfWithinRadius(&resource->position, 0x1000, 0x2000, i) != 0) {
                 resource->lifetime = 0;
                 break;
@@ -1364,14 +1364,14 @@ void updateOrbitingPlayerVisualTask(void) {
                 roll = randomNextMain() & 0xFF;
                 if (roll != 0) {
                     target = 0;
-                    if (D_8013AFD2 >= 4) {
+                    if (gActiveRacePlayerCount >= 4) {
                         u32 player = gRaceOrderPlayerIds[3];
 
                         if (gCurrentTask->data18 != player) {
                             target = player;
                         }
                     }
-                    if (D_8013AFD2 >= 3) {
+                    if (gActiveRacePlayerCount >= 3) {
                         u8 *order = gRaceOrderPlayerIds;
                         u8 player = order[2];
 
@@ -1380,7 +1380,7 @@ void updateOrbitingPlayerVisualTask(void) {
                             target = player;
                         }
                     }
-                    if (D_8013AFD2 >= 2) {
+                    if (gActiveRacePlayerCount >= 2) {
                         u8 *order = gRaceOrderPlayerIds;
                         u8 player = order[1];
 
@@ -1389,7 +1389,7 @@ void updateOrbitingPlayerVisualTask(void) {
                             target = player;
                         }
                     }
-                    if (D_8013AFD2 > 0) {
+                    if (gActiveRacePlayerCount > 0) {
                         u8 *order = gRaceOrderPlayerIds;
                         u8 player = order[0];
 

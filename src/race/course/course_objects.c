@@ -1234,7 +1234,7 @@ void updatePickupVisualTask(void) {
                 resource->position.x = resource->coordinate.coord.t[0] << 8;
                 resource->position.y = resource->coordinate.coord.t[1] << 8;
                 resource->position.z = resource->coordinate.coord.t[2] << 8;
-                for (; player < D_8013AFD2; player++) {
+                for (; player < gActiveRacePlayerCount; player++) {
                     if (isPositionWithinPlayerCollisionRange(&resource->position, 0x1A00, 0x3800, player)) {
                         addPlayerCappedCounters(player, 100);
                         playPlayerSoundEffect(player, 0, 0x700, 0x20);
@@ -1246,7 +1246,7 @@ void updatePickupVisualTask(void) {
             drawPreparedTaskVisualQuad(resource, gPickupVisualFrames, 1);
         } else {
             nearby = 0;
-            for (player = 0; player < D_8013AFD2; player++) {
+            for (player = 0; player < gActiveRacePlayerCount; player++) {
                 resource->position.x = D_8013B2BC[i].x << 8;
                 resource->position.z = D_8013B2BC[i].z << 8;
                 nearby = arePositionsWithinXZRange(&resource->position, (const Position3D *)&gRacePlayers[player].x, 0x80000);
@@ -1558,7 +1558,7 @@ void updatePlacedObjectTask(void) {
             resolvePlayerCollisionsWithCylinder(&resource->position, 0x6000, 0x10000, 2);
             break;
         case 1:
-            for (i = 0; i < D_8013AFD2; i++) {
+            for (i = 0; i < gActiveRacePlayerCount; i++) {
                 addPlayerFlagsIfWithinRadius(&resource->position, 0xC00, 4, i);
             }
             break;
@@ -1569,7 +1569,7 @@ void updatePlacedObjectTask(void) {
             players = gRacePlayers;
             uses = 4;
         check_player:
-            if (i < D_8013AFD2) {
+            if (i < gActiveRacePlayerCount) {
                 if (isPositionWithinPlayerCollisionRange(&resource->position, 0x2FC0, 0x5C00, (s16)i)) {
                     buyer = (RacePlayer *)(i * sizeof(*players) + (u32)players);
                     balance = buyer->unk01C;
@@ -1660,7 +1660,7 @@ void updatePlacedObjectBounceTask(void) {
             break;
         }
         if (gCurrentTask->data1C != 0 || visual->velocity > 0) {
-            for (i = 0; i < D_8013AFD2; i++) {
+            for (i = 0; i < gActiveRacePlayerCount; i++) {
                 pushPlayerOutOfCylinder(&resource->position, 0x3000, 0x6000, (s16)i);
             }
         }
@@ -2262,7 +2262,7 @@ void updateLandedTaskObject(void) {
             deleteCurrentTaskSubtree();
             return;
         }
-        for (i = 0; i < D_8013AFD2; i++) {
+        for (i = 0; i < gActiveRacePlayerCount; i++) {
             if (addPlayerFlagsIfWithinRadius(&resource->position, 0xC00, 4, i)) {
                 deleteCurrentTaskSubtree();
                 return;
@@ -2297,7 +2297,7 @@ void initializeOrbitingTaskObject(void) {
         resource->groundCoordinate.coord.t[0], resource->groundCoordinate.coord.t[2]);
     computeSelectedTriangleAngles(&resource->groundRotation.vx, &resource->groundRotation.vz);
     resource->groundRotation.vy = 0;
-    for (i = 0; i < D_8013AFD2; i++) {
+    for (i = 0; i < gActiveRacePlayerCount; i++) {
         resource->playerCooldowns[i] = 0;
     }
     setCurrentTaskCallback(updateOrbitingObstacleTask);
@@ -2346,7 +2346,7 @@ void updateOrbitingObstacleTask(void) {
         resource->position.x = resource->groundCoordinate.coord.t[0] << 8;
         resource->position.y = resource->groundCoordinate.coord.t[1] << 8;
         resource->position.z = resource->groundCoordinate.coord.t[2] << 8;
-        for (i = 0; i < D_8013AFD2; i++) {
+        for (i = 0; i < gActiveRacePlayerCount; i++) {
             if (resource->playerCooldowns[i] == 0) {
                 if (pushPlayerOutOfCylinder(&resource->position, 0x9000, 0x8000, i)) {
                     s16 heading, delta, limit;
@@ -2426,7 +2426,7 @@ void initializeCourseUnlockScene(void) {
     gPlayerCameras[0].unk16 = 9;
     i = 0;
     while (1) {
-        if (i >= D_8013AFD2) {
+        if (i >= gActiveRacePlayerCount) {
             break;
         }
         gRacePlayers[i].task->callback = initializeCurrentPlayerUnlockScene;
@@ -2568,7 +2568,7 @@ setTargetPlayer:
         }
     }
 
-    for (i = 0; i < D_8013AFD2; i++) {
+    for (i = 0; i < gActiveRacePlayerCount; i++) {
         RacePlayer *player = &gRacePlayers[i];
         if (player->unk008) {
             switch (player->speedControlMode) {

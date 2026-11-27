@@ -452,7 +452,6 @@ extern s16 D_8013B620;
 extern s16 D_8013B10C;
 extern s16 D_8013B10E;
 
-extern s16 D_8013B0E4;
 extern u16 D_8013B0E6;
 extern s32 D_8013B0E8;
 extern u8 gRaceOrderPlayerIds[4];

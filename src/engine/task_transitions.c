@@ -509,10 +509,10 @@ void queueRaceStartupResourcesTask(void) {
         gRacePauseState = 0;
         D_8013AFD4 = 0;
         D_8013AFD5 = 0;
-        D_8013AFD6 = 0;
+        gSelectedPlayerReplayActive = 0;
         D_8013AFE1 = 0;
         D_8013AFD8 = 0;
-        D_8013AFD9 = 0;
+        gControllerPlaybackIndex = 0;
         D_8013AFCC = 0;
         gTaskTransitionFlags = 0;
         queuePlayerResourceReadsAndUploadTextures();
@@ -545,7 +545,7 @@ void queueRaceStartupResourcesTask(void) {
             gRacePlaybackSectorRanges[gDemoRaceIndex - 1].sectorCount, D_800E959C, 0);
     }
     queueCdSectorCommand(0, DAT_ENTRY_010_SECTOR, DAT_ENTRY_010_SECTOR_COUNT, DAT_SCRATCH, 0);
-    if (!D_8013AFD8 && !D_8013AFD9) {
+    if (!D_8013AFD8 && !gControllerPlaybackIndex) {
         setCurrentTaskCallback(initializeRacePresentationTask);
     } else {
         setCurrentTaskCallback(initializeModeRaceTasks);
@@ -961,7 +961,7 @@ void beginResourceLoadOrUnlockNotification(void) {
 void resetStateAndBeginResourceLoadTransition(u8 requestLoad) {
     GameTask *savedTask;
     resetPendingCdRequests();
-    D_8013AFD6 = 0;
+    gSelectedPlayerReplayActive = 0;
     D_8013B20C = 0;
     resetPaletteRecords();
     deleteCurrentTaskDescendants();
@@ -993,7 +993,7 @@ void finishTaskTransitionAfterCountdown(void) {
     if (gCurrentTask->data18 == 0) {
         resetPendingCdRequests();
         D_8013AFAA |= 0x90;
-        D_8013AFD6 = 0;
+        gSelectedPlayerReplayActive = 0;
         D_8013B20C = 0;
         gTaskTransitionFlags &= ~0x10;
         resetPaletteRecords();
@@ -1017,7 +1017,7 @@ void finishRaceExitAfterCountdown(void) {
     if (gDemoRaceIndex) {
         playbackControllerInput(0);
     }
-    if (D_8013AFD6) {
+    if (gSelectedPlayerReplayActive) {
         playbackControllerInput(0);
     }
     if (--gCurrentTask->data18 == 0) {
@@ -1064,7 +1064,7 @@ void finishRaceExitAfterCountdown(void) {
         D_8013B1AA = 0;
         resetPendingCdRequests();
         D_8013AFAA = (D_8013AFAA | 0x1090) & ~0x2000;
-        D_8013AFD6 = 0;
+        gSelectedPlayerReplayActive = 0;
         D_8013B20C = 0;
         gTaskTransitionFlags &= ~0x10;
         resetPaletteRecords();
@@ -1132,7 +1132,7 @@ void initializeDemoPlaybackTask(void) {
     gTaskTransitionFlags = 0;
     D_8013AFAA |= 0x48;
     resetSecondaryRng();
-    D_8013AFD6 = 1;
+    gSelectedPlayerReplayActive = 1;
     D_8013AFE8 = gControllerHeldButtons[0];
     initializeActiveRacePlayers();
     setControllerFlag5(0);
@@ -1214,7 +1214,7 @@ void queuePlayerResourceReadsAndUploadTextures(void) {
         queueCdSectorCommand(1, gGridResourceSecondSectorRanges[gRacePlayers[i].characterId][gRacePlayers[i].unk015[0]].sector,
             gGridResourceSecondSectorRanges[gRacePlayers[i].characterId][gRacePlayers[i].unk015[0]].sectorCount,
             DAT_SCRATCH, (s32)&gPlayerTextureOrigins[i]);
-        if (i < gPlayerCount && !gDemoRaceIndex && !D_8013AFD8 && !D_8013AFD9) {
+        if (i < gPlayerCount && !gDemoRaceIndex && !D_8013AFD8 && !gControllerPlaybackIndex) {
             offset = &(DAT_STARTUP_TEXTURES)->offsets[gPlayerResourceTextureSelections.entries[i][gRacePlayers[i].unk015[1]]];
         } else {
             offset = &(DAT_STARTUP_TEXTURES)->offsets[gRacePlayers[i].unk015[2]];
@@ -1233,10 +1233,10 @@ void prepareRacePlayersAndQueueResources(void) {
     gRacePauseState = 0;
     D_8013AFD4 = 0;
     D_8013AFD5 = 0;
-    D_8013AFD6 = 0;
+    gSelectedPlayerReplayActive = 0;
     D_8013AFE1 = 0;
     D_8013AFD8 = 0;
-    D_8013AFD9 = 0;
+    gControllerPlaybackIndex = 0;
     D_8013AFCC = 0;
     for (i = 0; i < 4; i++) {
         if (i < gPlayerCount) {
@@ -1401,7 +1401,7 @@ void armSavedStateRestoreOnFlag3(void) {
 }
 
 void restoreSavedStateAndHandleFlag4(void) {
-    if (D_8013AFD6) {
+    if (gSelectedPlayerReplayActive) {
         gControllerHeldButtons[0] = D_8013AFE8;
     }
     if (D_8013AFAA & 0x10) {
@@ -1421,7 +1421,7 @@ void initializeCurrentPlayerModelObjects(u32 *model) {
     objects = ++model;
     gCurrentRacePlayer->modelPartCount = *(u8 *)objects;
     objects = ++model;
-    if (!D_8013B1AB && !D_8013B562 && !raceFinishFlagAbsolute) {
+    if (!D_8013B1AB && !D_8013B562 && !selectedPlayerReplayActiveAbsolute) {
         loadCurrentPlayerModelBlock();
         if (gCurrentTask->data18) {
             offsetTmdObjectTextures(0, (TmdObject *)objects, &gPlayerRootTextureOffsets[gCurrentTask->data18]);

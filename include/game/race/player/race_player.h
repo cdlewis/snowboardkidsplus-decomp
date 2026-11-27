@@ -206,11 +206,12 @@ struct RacePlayer {
 extern u8 D_800EB09C[10][40];
 
 extern RacePlayer gRacePlayers[4];
-/* Shared result state; task code accesses the first word. */
-extern s8 D_8013AFD2 __attribute__((section(".data")));
-/* GP-relative alias of D_8013AFD2. */
+/* Number of participating racers, including CPU-controlled racers. */
+extern s8 gActiveRacePlayerCount __attribute__((section(".data")));
+/* GP-relative alias of gActiveRacePlayerCount. */
 extern s8 activeRacePlayerCountGp;
-extern s16 D_8013B0E4;
+/* Highest-priority accepted action request for the current player; zero is none. */
+extern s16 gSelectedPlayerAction;
 extern u16 D_8013B0E6;
 extern s32 D_8013B0E8;
 /* Two declarations preserve the original GP-relative and absolute accesses

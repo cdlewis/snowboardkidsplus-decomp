@@ -86,7 +86,7 @@ extern u16 gTaskShadowedText[14] __attribute__((section(".data.task_shadowed_tex
 
 extern StateValueHistory gMemoryCardSlotHistory __attribute__((section(".bss.state_value_history")));
 extern u8 D_8013AFD8 __attribute__((section(".data")));
-extern u8 D_8013AFD9 __attribute__((section(".data")));
+extern u8 gControllerPlaybackIndex __attribute__((section(".data")));
 extern u8 D_8013B47C;
 extern TexturedQuadListEntry taskIndexPanelQuadsPalette0[10];
 extern TexturedQuadListEntry taskIndexPanelQuadsPalette1[10];

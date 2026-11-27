@@ -265,7 +265,7 @@ extern u8 gRacePauseState __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern u32 gTaskTransitionFlags __attribute__((section(".data")));
-extern u8 D_8013AFD6 __attribute__((section(".data")));
+extern u8 gSelectedPlayerReplayActive __attribute__((section(".data")));
 
 extern u16 D_8013AFAA __attribute__((section(".data")));
 extern u32 *D_8013AF70 __attribute__((section(".data")));
@@ -741,7 +741,7 @@ void updatePlayerRenderSnapshots(void) {
 
 void startRacePlayerTasks(void) {
     s32 playerIndex;
-    for (playerIndex = 0; playerIndex < D_8013AFD2; playerIndex++) {
+    for (playerIndex = 0; playerIndex < gActiveRacePlayerCount; playerIndex++) {
         startPlayerShadowTask(playerIndex);
         startDelayedEightEntryEffectTask(playerIndex);
         createPlayerTrailTask(playerIndex);
@@ -756,15 +756,15 @@ void initializeRacePlayerEffects(void) {
 
     createChildTaskForParentWithReserve(&gGameTasks[4], updatePlayerRenderSnapshots);
     playerSnapshotTaskGp = gCreatedTask;
-    if (D_8013AFD2 == 4) {
+    if (gActiveRacePlayerCount == 4) {
         playerIndex = 0;
         do {
             startPlayerShadowTask(playerIndex);
             createPlayerPositionTrailTask(playerIndex);
             createPlayerParticleTrailTask(playerIndex);
-        } while (++playerIndex < D_8013AFD2);
+        } while (++playerIndex < gActiveRacePlayerCount);
     } else {
-        for (playerIndex = 0; playerIndex < D_8013AFD2; playerIndex++) {
+        for (playerIndex = 0; playerIndex < gActiveRacePlayerCount; playerIndex++) {
             startPlayerShadowTask(playerIndex);
             startDelayedEightEntryEffectTask(playerIndex);
             createPlayerTrailTask(playerIndex);
@@ -911,7 +911,7 @@ void drawTrickTriangleRingTask(void) {
     } else {
         ot = D_800EC0E0[gActiveGraphicsBuffer].org;
     }
-    if (D_8013AFD6 && player->unk0C8 < 9) {
+    if (gSelectedPlayerReplayActive && player->unk0C8 < 9) {
         deleteCurrentTaskSubtree();
     }
     switch (resource->state) {
@@ -1023,7 +1023,7 @@ void drawTrickRingTask(void) {
     } else {
         ot = D_800EC0E0[gActiveGraphicsBuffer].org;
     }
-    if (D_8013AFD6 && player->unk0C8 < 9) {
+    if (gSelectedPlayerReplayActive && player->unk0C8 < 9) {
         deleteCurrentTaskSubtree();
     }
     switch (resource->state) {
@@ -1126,7 +1126,7 @@ void drawTrickSparkRingTask(void) {
     } else {
         ot = D_800EC0E0[gActiveGraphicsBuffer].org;
     }
-    if (D_8013AFD6 && player->unk0C8 < 9) {
+    if (gSelectedPlayerReplayActive && player->unk0C8 < 9) {
         deleteCurrentTaskSubtree();
     }
     if (player->unk0C8 < 9 && *frame < 30) {
@@ -1418,7 +1418,7 @@ void drawPlayerParticlesTask(void) {
             s32 cosine = rcos(gCurrentTask->data1A * 5);
             positions[i].x += drift * (sine + cosine) / 8192;
             positions[i].y += 8;
-            if (!D_8013AFD6) {
+            if (!gSelectedPlayerReplayActive) {
                 positions[i].z -= player->unk0BC / 256;
             }
         }
