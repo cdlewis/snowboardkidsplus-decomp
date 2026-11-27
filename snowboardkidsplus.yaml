@@ -713,7 +713,7 @@ segments:
       - {start: 0x110C50, type: .data, name: engine/task_transitions, linker_section: .data.course_race_setup}
       - {start: 0x110CA8, type: .data, name: engine/task_transitions, linker_section: .data.selected_player_restore_frames}
       - {start: 0x110CC4, type: .data, name: engine/task_transitions, linker_section: .data.player_resource_texture_positions}
-      - [0x110CD4, data, player_texture_origins]
+      - {start: 0x110CD4, type: .data, name: engine/task_transitions, linker_section: .data.player_texture_origins}
       - {start: 0x110CE4, type: .data, name: menu/panel_tasks, linker_section: .data.grid_resource_sector_ranges}
       - {start: 0x110E74, type: .data, name: engine/task_transitions, linker_section: .data.player_model_texture_offsets}
       - {start: 0x110EA4, type: .data, name: race/player/player_update, linker_section: .data.player_trick_long_inputs}

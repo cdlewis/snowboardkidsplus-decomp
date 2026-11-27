@@ -165,6 +165,11 @@ s16 gPlayerResourceTexturePositions[4][2] __attribute__((section(".data.player_r
     {0, 0}, {16, 0}, {32, 0}, {48, 0}
 };
 
+PlayerTextureOrigin gPlayerTextureOrigins[4]
+    __attribute__((section(".data.player_texture_origins"), aligned(4))) = {
+    {0, 0}, {0, 128}, {64, 0}, {64, 128}
+};
+
 PlayerResourceTextureSelections gPlayerResourceTextureSelections __attribute__((section(".data.player_resource_texture_selections"))) = {
     {
         {0, 6, 1, 4, 3, 8, 5, 11, 13, 14, 15, 16, 17, 18, 19},

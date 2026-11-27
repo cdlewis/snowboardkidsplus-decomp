@@ -2782,7 +2782,7 @@ gRacePlaybackSectorRanges = 0x8012043C; // size:0x14 defined:true
 gCourseCpuItemUseThresholds = 0x80120484; // size:0xC defined:true
 gRaceStartupPlayerPresets1 = 0x80120490; // size:0xC defined:true
 gRaceStartupPlayerPresets5 = 0x8012049C; // size:0xC defined:true
-gPlayerTextureOrigins = 0x801204D4; // size:0x10
+gPlayerTextureOrigins = 0x801204D4; // size:0x10 defined:true
 initializeScaledTaskCoordinateResource = 0x80045868; // type:func
 
 updateValueInterpolationTask = 0x8006A07C; // type:func
