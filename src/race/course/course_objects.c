@@ -76,7 +76,11 @@ extern u32 *gCurrentPlayerAlternateLayerOrderingTable __attribute__((section(".d
 
 extern s16 gPlayerCollectionEntryCount __attribute__((section(".data.finish_slot_state")));
 
-extern VisualPlacement D_801259DC[], D_80125FCC[], D_8012648C[], D_801269CC[], D_80126E9C[];
+extern VisualPlacement gCourse0ObjectPlacements[95];
+extern VisualPlacement gCourse1ObjectPlacements[76];
+extern VisualPlacement gCourse2ObjectPlacements[84];
+extern VisualPlacement gCourse3ObjectPlacements[77];
+extern VisualPlacement D_80126E9C[];
 extern VisualPlacement D_8012726C[], D_8012763C[], D_80127A4C[], D_80127C0C[];
 extern VisualPlacement gEmptyVisualPlacements[1];
 extern VisualPlacement D_8012807C[], D_801281CC[], D_8012831C[];
@@ -101,7 +105,7 @@ TaskVisualFrame gInteractionVisualFrame __attribute__((section(".data.interactio
 VisualPlacement *gInteractionVisualPlacements __attribute__((section(".sdata.interaction_visual_placements"))) = 0;
 
 VisualPlacement *gCourseObjectPlacements[10] __attribute__((section(".data.course_object_placements"))) = {
-    D_801259DC, D_80125FCC, D_8012648C, D_801269CC, D_80126E9C,
+    gCourse0ObjectPlacements, gCourse1ObjectPlacements, gCourse2ObjectPlacements, gCourse3ObjectPlacements, D_80126E9C,
     D_8012726C, D_8012763C, gEmptyVisualPlacements, D_80127A4C, D_80127C0C,
 };
 
@@ -1015,19 +1019,19 @@ void updateCameraRotationMatrices(u16 playerIndex) {
     gScratchShortVector0->vx = 0;
     gScratchShortVector0->vy = cameras[playerIndex].yaw;
     gScratchShortVector0->vz = 0;
-    RotMatrix(gScratchShortVector0, &D_8012A6B0);
+    RotMatrix(gScratchShortVector0, &gCameraYawMatrix);
     gScratchShortVector0->vx = cameras[getRenderCameraIndex()].pitch;
     gScratchShortVector0->vy = cameras[getRenderCameraIndex()].yaw;
     gScratchShortVector0->vz = 0;
-    RotMatrixYXZ(gScratchShortVector0, &D_8012A6D0);
+    RotMatrixYXZ(gScratchShortVector0, &gCameraPitchYawMatrix);
 }
 
 
 void prepareTaskVisualQuad(TaskVisualResource *resource, TaskVisualFrame *frame, u8 usePitch) {
     if (usePitch == 0) {
-        *gScratchMatrix1 = D_8012A6B0;
+        *gScratchMatrix1 = gCameraYawMatrix;
     } else {
-        *gScratchMatrix1 = D_8012A6D0;
+        *gScratchMatrix1 = gCameraPitchYawMatrix;
     }
     resource->frame = frame;
     ScaleMatrix(gScratchMatrix1, (VECTOR *)&resource->scaleX);
@@ -2678,7 +2682,7 @@ void captureSelectedPlayerStates(void) {
                 record->state = inputIndex;
                 split = 1;
             }
-            D_8013B2E8[i] = gRacePlayers[0];
+            gSelectedPlayerSnapshots[i] = gRacePlayers[0];
             task = gRacePlayers[0].task;
             gSelectedPlayerTaskSnapshots[i].callback = task->callback;
             gSelectedPlayerTaskSnapshots[i].data18 = task->data18;
@@ -2706,7 +2710,7 @@ s32 restoreSelectedPlayerState(void) {
         if (record->state == -2) return 0;
         if (record->state != -1) {
             GameTask *task = gRacePlayers[0].task;
-            gRacePlayers[0] = D_8013B2E8[i];
+            gRacePlayers[0] = gSelectedPlayerSnapshots[i];
             gRacePlayers[0].task = task;
             task->callback = gSelectedPlayerTaskSnapshots[i].callback;
             task->data18 = gSelectedPlayerTaskSnapshots[i].data18;

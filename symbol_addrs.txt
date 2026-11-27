@@ -4122,10 +4122,10 @@ gPlayerParticleHistoryVisualFrames = 0x80124324; // size:0x30 defined:true
 
 updatePickupVisualTask = 0x8005B038; // type:func
 updateInteractionVisualTask = 0x8005B6C0; // type:func
-D_801259DC = 0x801259DC; // size:0x5F0
-D_80125FCC = 0x80125FCC; // size:0x4C0
-D_8012648C = 0x8012648C; // size:0x540
-D_801269CC = 0x801269CC; // size:0x4D0
+gCourse0ObjectPlacements = 0x801259DC; // size:0x5F0
+gCourse1ObjectPlacements = 0x80125FCC; // size:0x4C0
+gCourse2ObjectPlacements = 0x8012648C; // size:0x540
+gCourse3ObjectPlacements = 0x801269CC; // size:0x4D0
 D_80126E9C = 0x80126E9C; // size:0x3D0
 D_8012726C = 0x8012726C; // size:0x3D0
 D_8012763C = 0x8012763C; // size:0x410
@@ -4472,3 +4472,7 @@ gMemoryCardLoadErrorRetryText = 0x80130348; // size:0x48
 
 gRecordLapTimeLabel = 0x80010A94; // type:char
 gCountRecordHitLabel = 0x8013B138; // type:char size:0x4
+
+gCameraYawMatrix = 0x8012A6B0; // size:0x20
+gCameraPitchYawMatrix = 0x8012A6D0; // size:0x20
+gSelectedPlayerSnapshots = 0x8013B2E8;
