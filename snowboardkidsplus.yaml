@@ -1056,7 +1056,10 @@ segments:
       - {start: 0x12B958, type: .data, name: race/player/player_actions, linker_section: .data.menu_sprite_palettes}
       - {start: 0x12B96C, type: .sdata, name: race/ui/race_hud_modes, linker_section_order: .data}
       - {start: 0x12B980, type: .sdata, name: race/player/player_actions, linker_section_order: .data}
-      - [0x12B984, data, 12B984]
+      - {start: 0x12B984, type: .sdata, name: race/ui/race_hud_modes, linker_section: .sdata.attack_race_times, linker_section_order: .data}
+      - {start: 0x12B990, type: .sdata, name: race/ui/race_hud_modes, linker_section: .sdata.player_race_times, linker_section_order: .data}
+      - {start: 0x12B9A8, type: .data, name: race/ui/race_hud_modes, linker_section: .data.race_hud_enabled}
+      - {start: 0x12B9AA, type: .sdata, name: race/ui/race_hud, linker_section: .sdata.race_pause_requests, linker_section_order: .data}
       - {start: 0x12B9AC, type: .data, name: race/player/player_actions, linker_section: .data.player_dual_resource_effect_frame}
       - {start: 0x12B9B4, type: .data, name: race/player/player_actions, linker_section: .data.player_visual_pair_frame}
       - {start: 0x12B9BC, type: .data, name: race/player/player_actions, linker_section: .data.player_visual_pair_5e80_frame}

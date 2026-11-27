@@ -4375,7 +4375,10 @@ gSelectedPlayerTaskSnapshots = 0x8013B2E4; // size:0x4
 
 GsSetWorkBase = 0x800BF2C8; // type:func defined:true
 gCourseCoinTargetTimes = 0x80124220; // size:0x28 defined:true
-gAttackTimeRemaining = 0x8013B184;
+gAttackTimeRemaining = 0x8013B184; // type:RaceTime size:0x4
+attackTimeExpiredPadding = 0x8013B18E; // size:0x2 defined:true
+playerRaceTimesPadding = 0x8013B1A2; // size:0x2 defined:true
+playerRaceTimesPaddingTail = 0x8013B1A4; // size:0x4 defined:true
 gPlayerAttackTimesRemaining = 0x8013B198; // size:0x8
 gRaceHudMode = 0x8013B620;
 

@@ -27,6 +27,21 @@ typedef struct CourseProgressScratch {
     s32 distance;
 } CourseProgressScratch;
 
+RaceTime gAttackTimeRemaining __attribute__((section(".sdata.attack_race_times"), aligned(4))) = {0, 0, 0};
+RaceTime gLapSplitTime __attribute__((section(".sdata.attack_race_times"))) = {0, 0, 0};
+u8 gLapSplitTimeCaptured __attribute__((section(".sdata.attack_race_times"))) = 0;
+
+u8 gAttackTimeExpired __attribute__((section(".sdata.attack_race_times"))) = 0;
+static u16 attackTimeExpiredPadding __attribute__((section(".sdata.attack_race_times"))) = 0;
+
+RaceTime gPlayerRaceTimes[2] __attribute__((section(".sdata.player_race_times"), aligned(4))) = {{0, 0, 0}, {0, 0, 0}};
+RaceTime gPlayerAttackTimesRemaining[2] __attribute__((section(".sdata.player_race_times"))) = {{0, 0, 0}, {0, 0, 0}};
+u8 gPlayerAttackTimeExpired[2] __attribute__((section(".sdata.player_race_times"))) = {0, 0};
+static u16 playerRaceTimesPadding __attribute__((section(".sdata.player_race_times"))) = 0;
+static u32 playerRaceTimesPaddingTail __attribute__((section(".sdata.player_race_times"))) = 0;
+
+s16 gRaceHudEnabled __attribute__((section(".data.race_hud_enabled"))) = 0;
+
 RaceTime gCourseCoinTargetTimes[10]
     __attribute__((section(".data.course_coin_target_times"), aligned(4))) = {
         {2, 30, 0}, {2, 30, 0}, {3, 5, 0}, {3, 5, 0}, {3, 5, 0},

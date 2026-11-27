@@ -27,6 +27,9 @@ extern u32 gGameOptionFlags __attribute__((section(".data")));
 extern u8 gRacePauseMenuSelection __attribute__((section(".data")));
 extern u8 gRacePauseState __attribute__((section(".data")));
 
+u8 gRaceExitRequested __attribute__((section(".sdata.race_pause_requests"))) = 0;
+u8 gRaceRestartRequested __attribute__((section(".sdata.race_pause_requests"))) = 0;
+
 const char gLapTimeLabel[12] __attribute__((section(".rodata.lap_time_label"), aligned(4))) = "LAP TIME";
 
 const char gLapTimeFormat[20] __attribute__((section(".rodata.lap_time_format"), aligned(4))) = "%2.2d'%2.2d\"%2.2d";
