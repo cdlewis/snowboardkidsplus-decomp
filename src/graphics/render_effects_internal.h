@@ -823,15 +823,15 @@ extern RECT gReadPixelRect;
 extern RECT gScanlineCopyRect;
 extern RECT gScanlineSeedRect __attribute__((section(".data.scanline_copy_rects")));
 
-/* Shared collision regions remain in player_camera_state_tail. */
-extern PlayerCollisionRegion D_80129A18[2];
+/* Two 0x28-byte collision regions remain in moving_visual_placements_tail. */
+extern PlayerCollisionRegion gCoursePlayerCollisionRegions[2];
 extern u8 gPickupVisualPlacementStartIndex, gPickupVisualPlacementCount;
 extern TaskVisualFrame gInteractionVisualFrame;
 extern VisualPlacement *gInteractionVisualPlacements;
 extern VisualPlacement *gCurrentCourseObjectPlacements;
 extern u8 gCourseVisualPlacementStartIndex, gCourseVisualPlacementCount;
 /* The course lookup base precedes its valid pointer entries in shared frame data. */
-extern TaskVisualFrame *D_80129540[];
+extern TaskVisualFrame *gCourseVisualFramesByPlacementType[];
 void updatePlacedObjectTask(void);
 void updatePlacedObjectBounceTask(void);
 void updateOrbitingObstacleTask(void);
@@ -874,7 +874,7 @@ extern CourseTriggerRecord gEmptyCourseTriggers[]
 extern CourseTriggerRecord *gCourseTriggers[]
     __attribute__((section(".data.course_triggers")));
 
-extern s8 *D_8012BBB4[][4];
+extern s8 *gCoursePlayerField94CTargets[10][4];
 extern PaletteColor gCapturedColorCyclePalette[16]
     __attribute__((section(".data.color_cycle_palette"), aligned(4)));
 extern u16 gWhitePulsePalette[16]

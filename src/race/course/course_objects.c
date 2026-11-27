@@ -1417,7 +1417,7 @@ void initializeCourseVisualTask(void) {
         resource->unkC6 = 0;
         resource->unkC8 = 0;
         resource->framePosition = 0;
-        gCourseVisualFrames = D_8013B29C;
+        gCourseVisualFrames = gCourse2VisualFrames;
     } else {
         resource->unkC6 = 0x200;
         resource->unkC8 = 0x40;
@@ -1427,7 +1427,7 @@ void initializeCourseVisualTask(void) {
         resource->scaleY = 0x2000;
         resource->scaleZ = 0x2000;
         resource->framePosition = 0;
-        gCourseVisualFrames = D_801294AC;
+        gCourseVisualFrames = gDefaultCourseVisualFrames;
     }
     setCurrentTaskCallback(updateCourseVisualTask);
 }
@@ -1452,7 +1452,7 @@ void updateCourseVisualTask(void) {
                 heightOffsets = gVisualPlacementHeightData.offsets;
                 resource->coordinate.coord.t[1] -= heightOffsets[height];
             }
-            drawPreparedTaskVisualQuad(resource, D_80129540[gCurrentCourseObjectPlacements[i].unk01], 2);
+            drawPreparedTaskVisualQuad(resource, gCourseVisualFramesByPlacementType[gCurrentCourseObjectPlacements[i].unk01], 2);
         }
     }
     if (gRacePauseState == 0) {
@@ -2146,7 +2146,7 @@ void updateActivePlayerRegionCollisions(void) {
     RacePlayer *players;
     if (!gRacePauseState) {
         i = 0;
-        region = &D_80129A18[gCurrentTask->data18];
+        region = &gCoursePlayerCollisionRegions[gCurrentTask->data18];
         players = gRacePlayers;
         do {
             if (players[i].isActive != 0) {
@@ -2654,7 +2654,7 @@ s32 updatePlayerField94CFromSelectedTable(u16 tableIndex, s16 sampleIndex,
     s32 delta;
     RacePlayer *player;
 
-    delta = D_8012BBB4[gSelectedCourseIndex][tableIndex][sampleIndex] * 20;
+    delta = gCoursePlayerField94CTargets[gSelectedCourseIndex][tableIndex][sampleIndex] * 20;
     player = &gRacePlayers[playerIndex];
     delta -= player->unk94C;
     if (delta > 30) {

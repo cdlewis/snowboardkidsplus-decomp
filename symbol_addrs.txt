@@ -4501,3 +4501,8 @@ gGroupedSelectionMode4TextIndices = 0x8013B448;
 
 gPlayerModeSelectionSprites = 0x80123B50; // size:0x18
 gPlayerModeSelectionMapping = 0x8013B0FC; // size:0x4
+gDefaultCourseVisualFrames = 0x801294AC;
+gCourseVisualFramesByPlacementType = 0x80129540;
+gCoursePlayerCollisionRegions = 0x80129A18;
+gCoursePlayerField94CTargets = 0x8012BBB4;
+gCourse2VisualFrames = 0x8013B29C;
