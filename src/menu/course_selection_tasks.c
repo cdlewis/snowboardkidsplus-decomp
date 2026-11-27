@@ -175,7 +175,7 @@ GroupedSelectionMenuDescriptor gGroupedCourseMenuDescriptors[]
     {D_8013B420, 0, 24, 4, 0, D_8013B43C, NULL, D_8013B450},
     {D_8013B424, 0, 20, 5, 0, D_8013B440, NULL, D_8013B454},
     {D_8013B42C, 0, 24, 4, 0, D_8013B43C, NULL, D_8013B450},
-    {D_8013B434, 0, 20, 3, 0, D_8013B44C, NULL, NULL},
+    {gDefaultBoardMenuItems, 0, 20, 3, 0, D_8013B44C, NULL, NULL},
     {D_8013B438, 0, 16, 3, 0, D_8013B448, NULL, NULL},
     {D_8013B430, 0, 24, 4, 0, D_8013B43C, NULL, D_8013B450},
 };
@@ -214,7 +214,7 @@ GroupedSelectionMenuDescriptor gPlayerGroupedSelectionDescriptors[6]
     {D_8013B420, 0, 16, 3, 0, NULL, NULL, D_8013B450},
     {D_8013B424, 0, 14, 4, 0, NULL, NULL, D_8013B454},
     {D_8013B42C, 0, 16, 3, 0, NULL, NULL, D_8013B450},
-    {D_8013B434, 0, 14, 3, 0, NULL, NULL, NULL},
+    {gDefaultBoardMenuItems, 0, 14, 3, 0, NULL, NULL, NULL},
     {D_8013B438, 0, 14, 3, 0, NULL, NULL, NULL},
     {D_8013B430, 0, 16, 3, 0, NULL, NULL, D_8013B450},
 };
@@ -1415,7 +1415,7 @@ void buildRecordFlagMenuEntries(s16 index, s16 mode, s16 group, u16 arg4, u16 ar
     switch (mode) {
     case 2:
     case 5:
-        out->entries = D_80130094[index];
+        out->entries = gRecordFlagMenuItemBuffers[index];
         out->entries[0] = 8;
         out->count = 1;
         out->textIndices = D_8013B44C;
@@ -1425,9 +1425,9 @@ void buildRecordFlagMenuEntries(s16 index, s16 mode, s16 group, u16 arg4, u16 ar
         if (group != 3) {
             goto standardGroups;
         }
-        out->entries = D_80130094[index];
+        out->entries = gRecordFlagMenuItemBuffers[index];
         out->count = 0;
-        out->textIndices = D_801300A0[index];
+        out->textIndices = gRecordFlagMenuTextIndexBuffers[index];
         out->unk_10 = 0;
         for (i = 0; i < 3; i++) {
             if (record->flags & (0x800 << i)) {
@@ -1440,9 +1440,9 @@ void buildRecordFlagMenuEntries(s16 index, s16 mode, s16 group, u16 arg4, u16 ar
     case 0:
 standardGroups:
         if (group < 3) {
-            out->entries = D_80130094[index];
+            out->entries = gRecordFlagMenuItemBuffers[index];
             out->count = 0;
-            out->textIndices = D_801300A0[index];
+            out->textIndices = gRecordFlagMenuTextIndexBuffers[index];
             out->unk_10 = 0;
             if (group == 0) {
                 for (i = 0; i < 3; i++) {
@@ -1685,7 +1685,7 @@ void updateRegisteredPlayerModels(void) {
     if (gCurrentTaskParent->resource14 == 0xFFFF) { while (1) {} }
     selection = &gMenuSelectionStates[(s16)gCurrentTask->data18];
     playerIndex = gCurrentTask->data18;
-    alternateSelection = &D_8013B468[(s16)gCurrentTask->data18];
+    alternateSelection = &gMenuPlayerTextureSelections[(s16)gCurrentTask->data18];
 
     switch (entry->command) {
     case 0:
@@ -2343,7 +2343,7 @@ void transitionRegisteredPlayerModelTexture(void) {
     task = gCurrentTask;
     playerIndex = task->data18;
     selection = &gMenuSelectionStates[playerIndex];
-    texture = &D_8013B468[playerIndex];
+    texture = &gMenuPlayerTextureSelections[playerIndex];
 
     if (task->data1C == 0) {
         outgoingSlot = 0;

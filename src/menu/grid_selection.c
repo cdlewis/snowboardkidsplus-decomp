@@ -206,7 +206,7 @@ void updateSplitBoardSelectionTask(void) {
             selection->value = gRacePlayers[(s16)player].unk00A[0];
         }
         selection->unk02 = selection->value;
-        createRegisteredSpacedChildTasks(gridMode, 0xB0, 0x40, (const u8 *)D_80131A78, mapping->mapping,
+        createRegisteredSpacedChildTasks(gridMode, 0xB0, 0x40, (const u8 *)gBoardMenuSpriteEntries, mapping->mapping,
                                          NULL, 0, 0, 20, -304, -96, mapping->spacingX,
                                          mapping->spacingY, mapping->count, 0xB0,
                                          drawSelectedTaskSprite, drawRegisteredTaskGridSpriteWithColor, 4, gridIndex);

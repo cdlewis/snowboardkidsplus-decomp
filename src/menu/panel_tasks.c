@@ -95,7 +95,7 @@ extern const u16 D_8013143C[], D_80131498[], D_801314FC[], D_80131548[], D_80131
 extern const u16 D_8013158C[], D_801315A4[], D_801315C0[], D_801315E0[], D_80131630[];
 extern const u16 D_8013167C[], D_801316BC[], D_801316E8[], D_80131728[], D_80131760[];
 
-extern const s16 D_80131A9C[], gSharedGridModelPreviewPose[54], D_80131B74[];
+extern const s16 gGridModelPreviewPose0And2[54], gSharedGridModelPreviewPose[54], D_80131B74[];
 extern const s16 D_80131BE0[], D_80131C4C[], D_80131CB8[];
 
 static const GridSpriteEntry sShopMenuSprites[4]
@@ -190,7 +190,7 @@ static const u8 *const sPlayerTextureSelectionPages[2]
 
 static RecordFlagMenuEntries sShopDefaultBoardEntries
     __attribute__((section(".data.shop_default_board_entries"))) = {
-    D_8013B434, 0, 20, 3, NULL, 0, 0
+    gDefaultBoardMenuItems, 0, 20, 3, NULL, 0, 0
 };
 
 static const u8 sShopBoardGroupUnlockFlags[4]
@@ -203,7 +203,7 @@ static const u8 sBoardPurchaseFullSpriteMapping[8]
 
 const s16 *gGridModelPreviewPoses[10]
     __attribute__((section(".data.grid_model_preview_poses"))) = {
-    D_80131A9C, gSharedGridModelPreviewPose, D_80131A9C, gSharedGridModelPreviewPose, D_80131B74,
+    gGridModelPreviewPose0And2, gSharedGridModelPreviewPose, gGridModelPreviewPose0And2, gSharedGridModelPreviewPose, D_80131B74,
     gSharedGridModelPreviewPose, gSharedGridModelPreviewPose, D_80131CB8, D_80131BE0, D_80131C4C
 };
 
@@ -1491,9 +1491,9 @@ void updateShopBoardPurchaseMenuTask(void) {
                 record = &gPlayerSaveRecords[0];
                 entries->unk_05 = 20;
                 entries->unk_04 = 0;
-                entries->entries = D_80130094[0];
+                entries->entries = gRecordFlagMenuItemBuffers[0];
                 entries->count = 0;
-                entries->textIndices = D_801300A0[0];
+                entries->textIndices = gRecordFlagMenuTextIndexBuffers[0];
                 entries->unk_10 = 0;
                 for (; i < 3; i++) {
                     if (record->flags & (0x800U << (i + 3))) {
@@ -2443,7 +2443,7 @@ void updatePlayerTextureSelectionTask(void) {
     if (gCurrentTask->resource16 == 0xFFFF) { for (;;) {} }
     panels = (RegisteredPanelSlot *)&gTaskMemoryPool[gCurrentTask->resource16];
     board = &gMenuSelectionStates[0];
-    texture = &D_8013B468[0];
+    texture = &gMenuPlayerTextureSelections[0];
 
     switch (gCurrentTask->data18) {
     case 0: {
@@ -2744,7 +2744,7 @@ void updateBoardPurchaseMenuTask(void) {
             mapping = sBoardPurchaseSpriteMapping;
             count = 4;
         }
-        createRegisteredSpacedChildTasks(1, 0xB0, 0x40, (const u8 *)D_80131A78, mapping,
+        createRegisteredSpacedChildTasks(1, 0xB0, 0x40, (const u8 *)gBoardMenuSpriteEntries, mapping,
                                          NULL, 0, 0, 20, -304, -96, 0, 20, count, 0xB0,
                                          drawSelectedTaskSprite, drawRegisteredTaskGridSpriteWithColor, 4, 1);
         createRegisteredCallbackTask(0, 172, -72, drawCurrentTaskSelectedPlayerMoneyPanel, 4, 11);

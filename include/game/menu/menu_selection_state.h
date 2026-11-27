@@ -22,7 +22,7 @@ extern volatile u8 boardShopRememberedSelectionAbsolute __attribute__((section("
 extern u8 gMoneyPanelRememberedSelection;
 extern u8 boardMenuRememberedSelectionAbsolute __attribute__((section(".data")));
 
-extern MenuModelSelectionPair D_8013B468[];
+extern MenuModelSelectionPair gMenuPlayerTextureSelections[];
 extern const u8 gMenuPlayerTextureIds[16];
 extern MenuSelectionState gMenuSelectionStates[2];
 

@@ -24,9 +24,9 @@ typedef struct IndexedHalfwordRecord {
     s16 unk_04;
 } IndexedHalfwordRecord;
 
-extern u8 D_80130094[][5];
-extern u8 D_801300A0[][5];
-extern u8 D_8013B434[4];
+extern u8 gRecordFlagMenuItemBuffers[][5];
+extern u8 gRecordFlagMenuTextIndexBuffers[][5];
+extern u8 gDefaultBoardMenuItems[4];
 
 void buildRecordFlagMenuEntries(s16 index, s16 mode, s16 group, u16 arg4, u16 arg5,
                                 RecordFlagMenuEntries *out);
