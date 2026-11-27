@@ -4192,7 +4192,6 @@ gMovieReachedEnd = 0x8013B610; // size:0x1 defined:true
 gMovieStartupFrames = 0x8013B611; // size:0x1 defined:true
 gPlayerTerrainContactSavedStackPointer = 0x8013B618; // type:u32 size:0x4
 gPlayerGroundContactSavedStackPointer = 0x8013B61C; // type:u32 size:0x4
-gPlayerTimerModelObject = 0x80129B60; // size:0x10
 gRacePlayerSortSavedStackPointer = 0x8013B614; // type:u32 size:0x4
 gRaceComparisonLapTimeLabel = 0x80010B90; // size:0xC defined:true
 gRaceComparisonSpeedFanLabel = 0x80010B9C; // size:0x10 defined:true
@@ -4357,7 +4356,7 @@ gMenuTextureResourceId = 0x8013B10C;
 gMenuGridResourceId = 0x8013B10E;
 
 gPlayerCollectionEntries = 0x8012450C; // size:0xC8 defined:true
-gTaskObjectModels = 0x80129A80;
+gTaskObjectModels = 0x80129A80; // size:0x1E0
 
 gCharacterMenuCharacterIndices = 0x8012D460; // size:0xC
 gTaskBackgroundTask = 0x8013B378; // size:0x4

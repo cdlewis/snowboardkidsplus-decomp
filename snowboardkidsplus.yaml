@@ -807,9 +807,8 @@ segments:
       - {start: 0x11A164, type: .data, name: race/course/course_objects, linker_section: .data.moving_visual_placements}
       - {start: 0x11A218, type: .data, name: race/course/course_objects, linker_section: .data.course_player_collision_regions}
       - {start: 0x11A268, type: .data, name: race/course/course_objects, linker_section: .data.orbiting_task_placements}
-      - [0x11A280, data, orbiting_task_placements_tail]
-      - {start: 0x11A360, type: .data, name: engine/task_transitions, linker_section: .data.player_timer_model_object}
-      - [0x11A370, data, player_timer_model_object_tail]
+      - {start: 0x11A280, type: .data, name: race/course/course_objects, linker_section: .data.task_object_models}
+      - [0x11A460, data, course_object_coordinates_tail]
       - {start: 0x11C454, type: .data, name: race/course/course_objects, linker_section: .data.course_triggers}
       - [0x11C594, data, course_triggers_tail]
       - {start: 0x11CF2C, type: .data, name: race/effects/player_effects, linker_section: .data.player_render_snapshots}

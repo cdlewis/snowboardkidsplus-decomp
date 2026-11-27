@@ -1475,6 +1475,9 @@ OrbitingTaskPlacement gOrbitingTaskPlacements[2]
     {99, 832, 22656, 45410},
 };
 
+GsDOBJ2 gTaskObjectModels[30]
+    __attribute__((section(".data.task_object_models"))) = {0};
+
 u32 gObjectSortSavedStackPointer
     __attribute__((section(".sdata.object_sort_saved_stack"))) = 0;
 

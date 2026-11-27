@@ -186,9 +186,6 @@ ModelTextureOffset gPlayerPartTextureOffsets[4] __attribute__((section(".data.pl
     {0, 0, 0}, {0, 0x8000, 0x2000}, {1, 0, 4}, {1, 0x8000, 0x2004}
 };
 
-GsDOBJ2 gPlayerTimerModelObject
-    __attribute__((section(".data.player_timer_model_object"))) = {0};
-
 u32 gRacePlayerSortSavedStackPointer
     __attribute__((section(".sdata.race_player_sort_saved_stack"))) = 0;
 
@@ -315,9 +312,9 @@ void sortRacePlayerModelForView(u16 playerIndex, u16 view) {
                 ScaleMatrix(&currentPlayerAbsolute->timer.coordinate.coord, gScratchVector0);
                 GsSetLsMatrix(&currentPlayerAbsolute->timer.coordinate.coord);
                 if (view == 0) {
-                    GsSortObject4(&gPlayerTimerModelObject, &gPlayer1OrderingTables[gActiveGraphicsBuffer], 2, getScratchAddr(0));
+                    GsSortObject4(&gTaskObjectModels[14], &gPlayer1OrderingTables[gActiveGraphicsBuffer], 2, getScratchAddr(0));
                 } else {
-                    GsSortObject4(&gPlayerTimerModelObject, &gPlayer2OrderingTables[gActiveGraphicsBuffer], 2, getScratchAddr(0));
+                    GsSortObject4(&gTaskObjectModels[14], &gPlayer2OrderingTables[gActiveGraphicsBuffer], 2, getScratchAddr(0));
                 }
             }
         }
