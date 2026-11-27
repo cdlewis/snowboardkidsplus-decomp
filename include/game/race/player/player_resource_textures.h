@@ -8,7 +8,7 @@ typedef struct PlayerResourceTextureSelections {
 } PlayerResourceTextureSelections;
 
 extern PlayerResourceTextureSelections gPlayerResourceTextureSelections;
-extern u8 D_80123650[15];
+extern u8 gDefaultPlayerResourceTextureSelections[15];
 
-extern u8 D_80123640[];
+extern u8 gPlayerModelArchiveIndices[16];
 extern s16 gPlayerResourceTexturePositions[4][2];

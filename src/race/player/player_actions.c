@@ -1734,7 +1734,7 @@ void loadCurrentPlayerModelBlock(void) {
     u32 offset;
     u32 *source;
     u32 *model;
-    offset = offsets[D_80123640[gRacePlayers[player].unk015[1]]];
+    offset = offsets[gPlayerModelArchiveIndices[gRacePlayers[player].unk015[1]]];
     model = buffers[player];
     source = (u32 *)(offset + archive);
     dest = model;
@@ -1819,8 +1819,8 @@ void initializeNewGameSaveData(void) {
     }
 
     for (i = 0; i < 15; i++) {
-        gPlayerResourceTextureSelections.entries[0][i] = D_80123650[i];
-        gPlayerResourceTextureSelections.entries[1][i] = D_80123650[i];
+        gPlayerResourceTextureSelections.entries[0][i] = gDefaultPlayerResourceTextureSelections[i];
+        gPlayerResourceTextureSelections.entries[1][i] = gDefaultPlayerResourceTextureSelections[i];
     }
 
     playerCountAbsolute = 1;

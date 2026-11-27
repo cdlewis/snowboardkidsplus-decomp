@@ -27,7 +27,7 @@ extern s16 gSelectedCourseIndex;
 extern u16 gSelectedLapCount;
 extern u16 selectedLapCountAbsolute __attribute__((section(".data")));
 extern u8 D_8013AFDA;
-extern s32 D_8012FC6C[10][3];
+extern s32 gCoursePlacementPrizes[10][3];
 
 extern u8 gNextRaceFinishSlot;
 /* Playback of the captured player run, with saved-state restoration. */

@@ -916,7 +916,7 @@ void drawSelectionPrizeAndPlayerCounters(void) {
             drawSpriteByIndexWithBlend(position->x / 4096, position->y / 4096,
                           0xC1, 14, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
             for (row = 0; row < 3; row++) {
-                s32 *prizes = D_8012FC6C[gSelectedCourseIndex];
+                s32 *prizes = gCoursePlacementPrizes[gSelectedCourseIndex];
                 drawDecimalNumber8x8(position->x / 4096 + 48, row * 8 + (s16)(position->y / 4096 + 9),
                                      5, 0, prizes[row], 0, -1,
                                      &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
@@ -962,7 +962,7 @@ u32 getSelectedCoursePrize(s16 unusedCourse, s16 place) {
     s32 *row;
 
     if (place >= 0 && place < 3) {
-        table = D_8012FC6C;
+        table = gCoursePlacementPrizes;
         row = table[gSelectedCourseIndex];
         result = row[place];
     } else {
@@ -1955,7 +1955,7 @@ void createRegisteredPlayerModelTask(s16 slot, s16 selection, s16 modelIndex,
     buffers = DAT_PLAYER_MODEL_BLOCKS;
     i = 0;
     resource = (MenuModelResource *)&gTaskMemoryPool[gCreatedTask->resource14];
-    entry = &offsets[D_80123640[gCreatedTask->data1A]];
+    entry = &offsets[gPlayerModelArchiveIndices[gCreatedTask->data1A]];
     model = buffers[gCreatedTask->data1C];
     source = (u32 *)(*entry + archive);
     dest = model;
@@ -2026,7 +2026,7 @@ void reloadTaskPlayerModel(GameTask *task, s16 slot, s16 selection, s16 modelInd
     archive = (u8 *)DAT_STARTUP_MODELS;
     buffers = DAT_PLAYER_MODEL_BLOCKS;
     i = 0;
-    entry = &offsets[D_80123640[task->data1A]];
+    entry = &offsets[gPlayerModelArchiveIndices[task->data1A]];
     source = (u32 *)(*entry + archive);
     model = buffers[task->data1C];
     dest = model;
@@ -3364,8 +3364,8 @@ void initializeSaveRecordTask(void) {
     initializeSaveRecordDefaults(gWorkingSaveRecords[0]);
     initializeSaveRecordDefaults(gWorkingSaveRecords[1]);
     for (i = 0; i < 15; i++) {
-        gPlayerResourceTextureSelections.entries[0][i] = D_80123650[i];
-        gPlayerResourceTextureSelections.entries[1][i] = D_80123650[i];
+        gPlayerResourceTextureSelections.entries[0][i] = gDefaultPlayerResourceTextureSelections[i];
+        gPlayerResourceTextureSelections.entries[1][i] = gDefaultPlayerResourceTextureSelections[i];
     }
     startClearedStateValueHistoryTask();
     setCurrentTaskCallback(updateSaveRecordTask);

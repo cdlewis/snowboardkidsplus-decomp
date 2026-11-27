@@ -1098,7 +1098,7 @@ void initializeResultDisplayTask(void) {
     resource->unk06 = gRacePlayers[0].unk935;
     resource->unk04 = 0;
     if (resource->unk06 < 3) {
-        resource->unk04 = D_8012FC6C[gSelectedCourseIndex][resource->unk06];
+        resource->unk04 = gCoursePlacementPrizes[gSelectedCourseIndex][resource->unk06];
     }
     gRacePlayers[0].money = gPlayerSaveRecords[0].money;
     resource->unk08 = gRacePlayers[0].characterId;

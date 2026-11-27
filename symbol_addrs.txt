@@ -4430,3 +4430,7 @@ gSceneTextBackdropEnabled = 0x8013B59F; // size:0x1
 gSceneTextColon = 0x8013B5C4; // size:0x4
 
 gSelectionMenuMusicStarted = 0x8013B564; // size:0x2
+
+gPlayerModelArchiveIndices = 0x80123640; // size:0x10
+gDefaultPlayerResourceTextureSelections = 0x80123650; // size:0x10
+gCoursePlacementPrizes = 0x8012FC6C; // size:0x78
