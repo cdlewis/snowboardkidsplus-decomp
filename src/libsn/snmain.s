@@ -36,8 +36,8 @@ glabel __SN_ENTRY_POINT
     addiu   $a0, $a0, %lo(sdk_libapi_chclrpad_bss_BSS_END)
     sll     $a0, $a0, 3
     srl     $a0, $a0, 3
-    lui     $v1, %hi(snStartupStackReserve)
-    lw      $v1, %lo(snStartupStackReserve)($v1)
+    lui     $v1, %hi(_stacksize)
+    lw      $v1, %lo(_stacksize)($v1)
     nop
     subu    $a1, $v0, $v1
     subu    $a1, $a1, $a0

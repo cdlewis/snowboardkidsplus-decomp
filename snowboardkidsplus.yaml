@@ -954,7 +954,8 @@ segments:
       - {start: 0x123744, type: .data, name: syslib/libspu/zerobuf, linker_section: .data.spu_zero_buffer}
       - {start: 0x123B44, type: .data, name: syslib/libspu/s_rmp2, linker_section: .data.spu_reverb_presets}
       - [0x123DF4, lib, libsnd, vm_n2p, .data]
-      - [0x123F84, data]
+      - {start: 0x123F84, type: .data, name: libsn/sndef, linker_section: .data.sn_defaults}
+      - {start: 0x123F8C, type: .data, name: syslib/libetc/vsync, linker_section: .data.vsync}
       - [0x123FAC, lib, libetc, intr, .data]
       - {start: 0x1250AC, type: .data, name: syslib/libetc/intr_vb, linker_section: .data.vsync_callbacks}
       - [0x1250D4, data, 1250D4]

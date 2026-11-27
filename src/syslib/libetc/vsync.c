@@ -1,10 +1,16 @@
 #include "common.h"
 
+#define VSYNC_DATA __attribute__((section(".data.vsync"), aligned(4)))
+
 const char vsyncTimeoutMessage[16] __attribute__((aligned(8))) = "VSync: timeout\n";
 
-extern volatile u32 *vsyncGpuStatusRegister, *vsyncCounter1Register;
-extern volatile int Hcount;
-extern int prevVcount;
+/* The SDK object retains these unreferenced words before its register pointers. */
+static u32 vsyncDataPrefix[2] VSYNC_DATA = {0x21067350, 0x004238AD};
+volatile u32 *vsyncGpuStatusRegister VSYNC_DATA = (volatile u32 *)0x1F801814;
+volatile u32 *vsyncCounter1Register VSYNC_DATA = (volatile u32 *)0x1F801110;
+volatile int Hcount VSYNC_DATA = 0;
+int prevVcount VSYNC_DATA = 0;
+static u32 vsyncDataPadding[2] VSYNC_DATA = {0, 0};
 extern volatile int Vcount;
 extern int puts(const char *);
 extern void ChangeClearPAD(int), ChangeClearRCnt(int, int);

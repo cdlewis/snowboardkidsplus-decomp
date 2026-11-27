@@ -4244,7 +4244,7 @@ mapSpacedGroupIndex = 0x80073760; // type:func
 mapCourseMenuByteIndex = 0x8007E8CC; // type:func
 __SN_ENTRY_POINT = 0x800131BC; // type:func size:0xAC
 snStartupStackTops = 0x80013268; // size:0x10
-snStartupStackReserve = 0x80133784; // size:0x4
+_stacksize = 0x80133784; // size:0x4
 snStartupSavedReturnAddress = 0x8013B5D8; // size:0x4
 gCurrentTask = 0x8013AE88; // size:0x4
 gCreatedTask = 0x8013AE8C; // size:0x4
@@ -4733,3 +4733,7 @@ gSceneSoundEffectLabel = 0x8013B5C0;
 gSceneOpeningEndingLabels = 0x80132AE0; // size:0x2C defined:true
 gSceneCategoryLabels = 0x80132B0C; // size:0x14 defined:true
 gSceneEmptyCallbacks = 0x80132B20; // size:0x14 defined:true
+
+_ramsize = 0x80133788; // size:0x4
+vsyncDataPrefix = 0x8013378C; // size:0x8
+vsyncDataPadding = 0x801337A4; // size:0x8
