@@ -1041,7 +1041,10 @@ segments:
       - {start: 0x12B8EC, type: .sdata, name: race/player/player_actions, linker_section: .sdata.race_order_player_ids, linker_section_order: .data}
       - {start: 0x12B8F0, type: .sdata, name: menu/mode_transitions, linker_section: .sdata.title_menu_resources_initialized, linker_section_order: .data}
       - {start: 0x12B8F4, type: .data, name: menu/mode_transitions, linker_section: .data.title_menu_sprite_mapping}
-      - [0x12B8FC, data, 12B8FC]
+      - {start: 0x12B8FC, type: .data, name: menu/mode_transitions, linker_section: .data.player_mode_selection_mapping}
+      - {start: 0x12B900, type: .sdata, name: menu/mode_transitions, linker_section: .sdata.title_menu_state, linker_section_order: .data}
+      - {start: 0x12B90C, type: .sdata, name: graphics/background_resources, linker_section: .sdata.menu_resource_ids, linker_section_order: .data}
+      - {start: 0x12B910, type: .sdata, name: menu/mode_transitions, linker_section: .sdata.title_menu_selection, linker_section_order: .data}
       - {start: 0x12B914, type: .data, name: race/player/player_actions, linker_section: .data.falling_paired_visual_animation}
       - {start: 0x12B91A, type: .data, name: menu/task_widgets, linker_section: .data.save_record_unlock_override_flags}
       - {start: 0x12B91C, type: .data, name: race/player/player_actions, linker_section: .data.result_icon_palettes}

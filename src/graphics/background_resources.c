@@ -16,6 +16,9 @@
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
 
+s16 gMenuTextureResourceId __attribute__((section(".sdata.menu_resource_ids"))) = 0;
+s16 gMenuGridResourceId __attribute__((section(".sdata.menu_resource_ids"))) = 0;
+
 extern u16 gDisplayWidth __attribute__((section(".data")));
 extern u16 gDisplayHeight __attribute__((section(".data")));
 extern u32 gGameOptionFlags __attribute__((section(".data")));

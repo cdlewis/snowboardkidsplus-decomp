@@ -58,10 +58,6 @@ extern u8 gDemoRaceIndex __attribute__((section(".data")));
 extern u8 gRaceExitRequested __attribute__((section(".data")));
 extern u8 gRaceRestartRequested __attribute__((section(".data")));
 
-extern const u8 gPlayerModeSelectionMapping[4];
-
-extern s32 gTitleLogoSoundTimer;
-
 const char gTitleScreenStartPrompt[16]
     __attribute__((section(".rodata.title_screen_start_prompt"), aligned(4))) = "PUSH START";
 
@@ -98,6 +94,22 @@ const u8 gTitleMenuSpriteMapping[8]
     __attribute__((section(".data.title_menu_sprite_mapping"), aligned(4))) = {
     0, 1, 2, 3, 4, 5,
 };
+
+const u8 gPlayerModeSelectionMapping[4]
+    __attribute__((section(".data.player_mode_selection_mapping"), aligned(4))) = {0, 1, 2, 3};
+
+s32 gTitleLogoSoundTimer __attribute__((section(".sdata.title_menu_state"))) = 0;
+s16 gSelectedCourseMenuItem __attribute__((section(".sdata.title_menu_state"))) = 0;
+s16 gMenuMusicEnabled __attribute__((section(".sdata.title_menu_state"))) = 0;
+u8 gMenuScreenId __attribute__((section(".sdata.title_menu_state"))) = 0;
+u8 gMenuTransitionState __attribute__((section(".sdata.title_menu_state"))) = 0;
+u8 gTitleAttractSequenceIndex __attribute__((section(".sdata.title_menu_state"))) = 0;
+static u8 sTitleMenuStatePadding __attribute__((section(".sdata.title_menu_state"))) = 0;
+
+u8 gTitleMenuSelectionIndex __attribute__((section(".sdata.title_menu_selection"))) = 0;
+static u8 sTitleMenuSelectionPadding0 __attribute__((section(".sdata.title_menu_selection"))) = 0;
+static u8 sTitleMenuSelectionPadding1 __attribute__((section(".sdata.title_menu_selection"))) = 0;
+static u8 sTitleMenuSelectionPadding2 __attribute__((section(".sdata.title_menu_selection"))) = 0;
 
 /* Two unreferenced lists using the renderer's palette-255 terminator. */
 TexturedQuadListEntry gUnreferencedQuadLists[2][10]
