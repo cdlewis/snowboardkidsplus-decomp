@@ -277,7 +277,7 @@ const VECTOR gInitialRaceOscillatingQuadPosition
 
 const FadingTextGlyphBanks gFadingTextGlyphBanks
     __attribute__((section(".rodata.fading_text_glyph_banks"))) = {
-    {gDoubleByteGlyphCodes16x16Page0, gDoubleByteGlyphCodes16x16Page1, D_8012EECC, D_8012F0D0}
+    {gDoubleByteGlyphCodes16x16Page0, gDoubleByteGlyphCodes16x16Page1, gDoubleByteGlyphCodes16x16Page2, gDoubleByteGlyphCodes16x16Page3}
 };
 
 /* Shift-JIS captions with the original four-byte padding. */

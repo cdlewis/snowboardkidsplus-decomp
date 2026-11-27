@@ -705,7 +705,8 @@ typedef struct TimedSpriteSequenceResource {
 
 extern const s8 gDoubleByteGlyphCodes16x16Page0[196];
 extern const s8 gDoubleByteGlyphCodes16x16Page1[0x204];
-extern const s8 D_8012EECC[], D_8012F0D0[];
+extern const s8 gDoubleByteGlyphCodes16x16Page2[0x204];
+extern const s8 gDoubleByteGlyphCodes16x16Page3[0x30];
 
 extern const FadingTextGlyphBanks gFadingTextGlyphBanks
     __attribute__((section(".rodata.fading_text_glyph_banks")));

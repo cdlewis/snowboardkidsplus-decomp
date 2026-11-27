@@ -4483,3 +4483,6 @@ gMemoryCardFormatConfirmationText = 0x80130428;
 gMemoryCardFormatCompleteText = 0x80130460;
 gMemoryCardOperationFailedText = 0x80130770;
 gMemoryCardSlotChoiceSprites = 0x80130800;
+
+gDoubleByteGlyphCodes16x16Page2 = 0x8012EECC; // size:0x204
+gDoubleByteGlyphCodes16x16Page3 = 0x8012F0D0; // size:0x30
