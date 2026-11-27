@@ -171,7 +171,8 @@ extern u8 gGroupedSelectionMode2Items[4];
 extern u8 gGroupedSelectionMode5Items[4];
 extern u8 gGroupedSelectionMode4Items[4];
 extern u8 gGroupedCourseMenuTextIndices[4];
-extern u8 D_8013B440[], D_8013B448[];
+extern u8 gExtendedGroupedCourseMenuTextIndices[5];
+extern u8 D_8013B448[];
 extern u8 gDefaultBoardMenuTextIndices[4];
 extern u8 gSelectionPanelTripletIndices[4];
 extern u8 gExtendedSelectionPanelTripletIndices[5];
@@ -179,7 +180,7 @@ extern u8 gExtendedSelectionPanelTripletIndices[5];
 GroupedSelectionMenuDescriptor gGroupedCourseMenuDescriptors[]
     __attribute__((section(".data.grouped_course_menu_descriptors"))) = {
     {gGroupedSelectionMode0Items, 0, 24, 4, 0, gGroupedCourseMenuTextIndices, NULL, gSelectionPanelTripletIndices},
-    {gGroupedSelectionMode1Items, 0, 20, 5, 0, D_8013B440, NULL, gExtendedSelectionPanelTripletIndices},
+    {gGroupedSelectionMode1Items, 0, 20, 5, 0, gExtendedGroupedCourseMenuTextIndices, NULL, gExtendedSelectionPanelTripletIndices},
     {gGroupedSelectionMode2Items, 0, 24, 4, 0, gGroupedCourseMenuTextIndices, NULL, gSelectionPanelTripletIndices},
     {gDefaultBoardMenuItems, 0, 20, 3, 0, gDefaultBoardMenuTextIndices, NULL, NULL},
     {gGroupedSelectionMode4Items, 0, 16, 3, 0, D_8013B448, NULL, NULL},
@@ -267,7 +268,8 @@ extern const u16 gMemoryCardLoadErrorRetryText[36];
 extern const u16 gMemoryCardLoadRetryConfirmationText[16];
 extern const u16 gMemoryCardLoadInProgressText[38];
 extern const u16 gMemoryCardLoadSlotChoiceText[20];
-extern const u16 D_801306EC[], D_80130780[];
+extern const u16 gMemoryCardLoadOptionsText[13];
+extern const u16 gMemoryCardLoadedRecordConfirmationText[12];
 
 void updateSaveRecordLoadPanelTask(void);
 void drawSaveRecordPushAnyButtonPrompt(void);
@@ -3621,7 +3623,7 @@ void updateSaveRecordLoadPanelTask(void) {
         gCurrentTask->data18 = 4;
         break;
     case 4:
-        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_801306EC, -1, color,
+        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, gMemoryCardLoadOptionsText, -1, color,
                                               1, gSaveRecordConfirmationSprites, gCurrentTask->data1C - 3, 11);
         gCurrentTask->data18 = 5;
         break;
@@ -3865,7 +3867,7 @@ void updateSaveRecordLoadPanelTask(void) {
         }
         break;
     case 20:
-        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_80130780, -1, color,
+        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, gMemoryCardLoadedRecordConfirmationText, -1, color,
                                               1, gSaveRecordConfirmationSprites, gCurrentTask->data1C - 3, 11);
         gCurrentTask->data18 = 21;
         break;
