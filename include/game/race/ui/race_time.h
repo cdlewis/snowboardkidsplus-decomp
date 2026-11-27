@@ -16,7 +16,7 @@ extern RaceTime gPlayerAttackTimesRemaining[];
 extern RaceTime gScoreAttackTimeLimits[];
 extern RaceTime gRaceElapsedTime;
 extern RaceTime gLapSplitTime;
-extern RaceTime D_80124050[];
+extern RaceTime gCourseSplitReferenceTimes[10];
 extern RaceTime gCourseCoinTargetTimes[];
 
 struct GsOT;

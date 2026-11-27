@@ -29,6 +29,12 @@ extern GameTask *gCurrentTaskParent __attribute__((section(".data")));
 extern u32 gTaskTransitionFlags __attribute__((section(".data")));
 extern u8 gSelectedPlayerReplayActive __attribute__((section(".data")));
 
+RaceTime gCourseSplitReferenceTimes[10]
+    __attribute__((section(".data.course_split_reference_times"), aligned(4))) = {
+    {1, 15, 0}, {1, 4, 0}, {0, 50, 0}, {1, 21, 0}, {1, 7, 0},
+    {0, 50, 0}, {0, 56, 0}, {0, 0, 0}, {0, 18, 0}, {0, 20, 0}
+};
+
 void drawSlidingRaceTimeDisplay(SlidingTimeResource *resource) {
     u8 padding[0x20];
     GsOT *ot = &gMainOrderingTables[gActiveGraphicsBuffer];
@@ -95,7 +101,7 @@ void initializeRaceTimeDifferenceDisplay(void) {
     resource->y = -44;
     resource->x = 420;
     resource->speed = 56;
-    resource->hasExtraTime = calculateRaceTimeDifference(&gLapSplitTime, &D_80124050[gSelectedCourseIndex], &resource->time);
+    resource->hasExtraTime = calculateRaceTimeDifference(&gLapSplitTime, &gCourseSplitReferenceTimes[gSelectedCourseIndex], &resource->time);
     setCurrentTaskCallback(slideRaceTimeDisplayIn);
 }
 

@@ -743,7 +743,9 @@ segments:
       - {start: 0x114434, type: .data, name: race/player/player_actions, linker_section: .data.player_mode_messages}
       - {start: 0x11447C, type: .data, name: menu/mode_transitions, linker_section: .data.registered_player_mode_panel_texts}
       - {start: 0x114488, type: .data, name: race/player/player_actions, linker_section: .data.player_mode_message_texts}
-      - [0x114490, data, player_mode_message_texts_tail]
+      - {start: 0x114490, type: .data, name: menu/mode_transitions, linker_section: .data.unreferenced_quad_lists}
+      - {start: 0x114580, type: .data, name: race/course/course_objects, linker_section: .data.selected_course_records}
+      - {start: 0x114850, type: .data, name: race/ui/race_panels, linker_section: .data.course_split_reference_times}
       - {start: 0x114878, type: .data, name: race/player/player_actions, linker_section: .data.falling_paired_visual_frames}
       - {start: 0x1148B0, type: .data, name: race/player/player_actions, linker_section: .data.controller_input_sequences}
       - {start: 0x11494C, type: .data, name: race/player/player_actions, linker_section: .data.result_label_tables}

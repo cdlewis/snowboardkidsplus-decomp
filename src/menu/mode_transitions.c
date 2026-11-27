@@ -89,6 +89,35 @@ const u8 gTitleMenuSpriteMapping[8]
     0, 1, 2, 3, 4, 5,
 };
 
+/* Two unreferenced lists using the renderer's palette-255 terminator. */
+TexturedQuadListEntry gUnreferencedQuadLists[2][10]
+    __attribute__((section(".data.unreferenced_quad_lists"), aligned(4))) = {
+    {
+        {33, 0, 0, 0, 0, 0},
+        {34, 0, 72, 0, 176, 0},
+        {35, 0, 248, 0, 0, 0},
+        {36, 0, 0, 16, 0, 72},
+        {37, 0, 72, 16, 176, 72},
+        {38, 0, 248, 16, 0, 72},
+        {39, 0, 0, 88, 0, 0},
+        {40, 0, 72, 88, 176, 0},
+        {41, 0, 248, 88, 0, 0},
+        {0, 255, 0, 0, 0, 0},
+    },
+    {
+        {33, 1, 0, 0, 0, 0},
+        {34, 1, 72, 0, 176, 0},
+        {35, 1, 248, 0, 0, 0},
+        {36, 1, 0, 16, 0, 72},
+        {37, 1, 72, 16, 176, 72},
+        {38, 1, 248, 16, 0, 72},
+        {39, 1, 0, 88, 0, 0},
+        {40, 1, 72, 88, 176, 0},
+        {41, 1, 248, 88, 0, 0},
+        {0, 255, 0, 0, 0, 0},
+    },
+};
+
 TexturedQuadListEntry gOnePlayerModeSelectedQuads[16]
     __attribute__((section(".data.player_mode_quad_lists"), aligned(4))) = {
     {50, 2, 24, 0, 0, 0},
