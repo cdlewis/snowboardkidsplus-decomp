@@ -4451,3 +4451,12 @@ gCourseRaceMusicXaCommands = 0x80124164; // size:0x14
 
 gOneShotTaskVisualFrames = 0x80124304; // size:0x20
 gPlayerProjectileVisualFrames = 0x80124354; // size:0x10
+
+// Grouped selection item mappings and panel indices.
+gGroupedSelectionMode0Items = 0x8013B420;
+gGroupedSelectionMode1Items = 0x8013B424;
+gGroupedSelectionMode2Items = 0x8013B42C;
+gGroupedSelectionMode5Items = 0x8013B430;
+gGroupedSelectionMode4Items = 0x8013B438;
+gDefaultBoardMenuTextIndices = 0x8013B44C;
+gExtendedSelectionPanelTripletIndices = 0x8013B454;

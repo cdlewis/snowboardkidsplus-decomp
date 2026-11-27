@@ -165,21 +165,25 @@ IndexedHalfwordRecord gRecordFlagMenuSpriteRecords[]
     {199, 0, 0},
 };
 
-extern u8 D_8013B420[], D_8013B424[], D_8013B42C[];
-extern u8 D_8013B430[], D_8013B438[];
+extern u8 gGroupedSelectionMode0Items[4];
+extern u8 gGroupedSelectionMode1Items[5];
+extern u8 gGroupedSelectionMode2Items[4];
+extern u8 gGroupedSelectionMode5Items[4];
+extern u8 gGroupedSelectionMode4Items[4];
 extern u8 gGroupedCourseMenuTextIndices[4];
-extern u8 D_8013B440[], D_8013B448[], D_8013B44C[];
+extern u8 D_8013B440[], D_8013B448[];
+extern u8 gDefaultBoardMenuTextIndices[4];
 extern u8 gSelectionPanelTripletIndices[4];
-extern u8 D_8013B454[];
+extern u8 gExtendedSelectionPanelTripletIndices[5];
 
 GroupedSelectionMenuDescriptor gGroupedCourseMenuDescriptors[]
     __attribute__((section(".data.grouped_course_menu_descriptors"))) = {
-    {D_8013B420, 0, 24, 4, 0, gGroupedCourseMenuTextIndices, NULL, gSelectionPanelTripletIndices},
-    {D_8013B424, 0, 20, 5, 0, D_8013B440, NULL, D_8013B454},
-    {D_8013B42C, 0, 24, 4, 0, gGroupedCourseMenuTextIndices, NULL, gSelectionPanelTripletIndices},
-    {gDefaultBoardMenuItems, 0, 20, 3, 0, D_8013B44C, NULL, NULL},
-    {D_8013B438, 0, 16, 3, 0, D_8013B448, NULL, NULL},
-    {D_8013B430, 0, 24, 4, 0, gGroupedCourseMenuTextIndices, NULL, gSelectionPanelTripletIndices},
+    {gGroupedSelectionMode0Items, 0, 24, 4, 0, gGroupedCourseMenuTextIndices, NULL, gSelectionPanelTripletIndices},
+    {gGroupedSelectionMode1Items, 0, 20, 5, 0, D_8013B440, NULL, gExtendedSelectionPanelTripletIndices},
+    {gGroupedSelectionMode2Items, 0, 24, 4, 0, gGroupedCourseMenuTextIndices, NULL, gSelectionPanelTripletIndices},
+    {gDefaultBoardMenuItems, 0, 20, 3, 0, gDefaultBoardMenuTextIndices, NULL, NULL},
+    {gGroupedSelectionMode4Items, 0, 16, 3, 0, D_8013B448, NULL, NULL},
+    {gGroupedSelectionMode5Items, 0, 24, 4, 0, gGroupedCourseMenuTextIndices, NULL, gSelectionPanelTripletIndices},
 };
 
 const u8 gMenuPlayerTextureIds[16]
@@ -213,12 +217,12 @@ const u16 gPlayerGroupedSelectionSpritesPadding
 
 GroupedSelectionMenuDescriptor gPlayerGroupedSelectionDescriptors[6]
     __attribute__((section(".data.player_grouped_selection_descriptors"))) = {
-    {D_8013B420, 0, 16, 3, 0, NULL, NULL, gSelectionPanelTripletIndices},
-    {D_8013B424, 0, 14, 4, 0, NULL, NULL, D_8013B454},
-    {D_8013B42C, 0, 16, 3, 0, NULL, NULL, gSelectionPanelTripletIndices},
+    {gGroupedSelectionMode0Items, 0, 16, 3, 0, NULL, NULL, gSelectionPanelTripletIndices},
+    {gGroupedSelectionMode1Items, 0, 14, 4, 0, NULL, NULL, gExtendedSelectionPanelTripletIndices},
+    {gGroupedSelectionMode2Items, 0, 16, 3, 0, NULL, NULL, gSelectionPanelTripletIndices},
     {gDefaultBoardMenuItems, 0, 14, 3, 0, NULL, NULL, NULL},
-    {D_8013B438, 0, 14, 3, 0, NULL, NULL, NULL},
-    {D_8013B430, 0, 16, 3, 0, NULL, NULL, gSelectionPanelTripletIndices},
+    {gGroupedSelectionMode4Items, 0, 14, 3, 0, NULL, NULL, NULL},
+    {gGroupedSelectionMode5Items, 0, 16, 3, 0, NULL, NULL, gSelectionPanelTripletIndices},
 };
 
 const u16 gPlayerCourseVariantConfirmationText[10]
@@ -1420,7 +1424,7 @@ void buildRecordFlagMenuEntries(s16 index, s16 mode, s16 group, u16 arg4, u16 ar
         out->entries = gRecordFlagMenuItemBuffers[index];
         out->entries[0] = 8;
         out->count = 1;
-        out->textIndices = D_8013B44C;
+        out->textIndices = gDefaultBoardMenuTextIndices;
         out->unk_10 = 0;
         return;
     case 1:
