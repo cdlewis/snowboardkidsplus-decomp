@@ -4568,3 +4568,6 @@ sUnusedTmdGouraudTriangle = 0x80124B5C; // type:TMD_P_NG3 size:0x18 defined:true
 sUnusedTmdGouraudQuad = 0x80124B74; // type:TMD_P_NG4 size:0x1C defined:true
 sUnusedTmdTexturedGouraudQuad = 0x80124B90; // type:TMD_P_TNG4 size:0x2C defined:true
 sUnusedTmdVertices = 0x80124BBC; // type:SVECTOR size:0x20 defined:true
+
+gUnusedBackgroundQuads = 0x80124C60; // type:POLY_G4 size:0xD8 defined:true
+gUnusedBackgroundRectangles = 0x80124D38; // size:0x3C defined:true

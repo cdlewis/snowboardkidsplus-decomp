@@ -57,6 +57,55 @@ static POLY_G4 sSunsetBackgroundQuad __attribute__((section(".data.sunset_backgr
      31, 127, 175, 0,             159,    0,
 };
 
+/* Unreferenced background packet templates retained in their original order. */
+POLY_G4 gUnusedBackgroundQuads[6] __attribute__((section(".data.unused_background_packets"))) = {
+    {8 << 24,
+     111, 127, 255, POLY_G4_CODE, -160, -240,
+     111, 127, 255, 0, 159, -240,
+     31, 127, 175, 0, -160, 0,
+     31, 127, 175, 0, 159, 0,
+    },
+    {8 << 24,
+     64, 0, 127, POLY_G4_CODE, -160, -240,
+     128, 48, 0, 0, 159, -240,
+     255, 255, 0, 0, -160, 0,
+     255, 255, 112, 0, 159, 0,
+    },
+    {8 << 24,
+     0, 0, 15, POLY_G4_CODE, -160, -240,
+     0, 0, 15, 0, 159, -240,
+     0, 0, 127, 0, -160, 0,
+     0, 0, 127, 0, 159, 0,
+    },
+    {8 << 24,
+     31, 127, 175, POLY_G4_CODE, -160, 0,
+     31, 127, 175, 0, 159, 0,
+     255, 255, 255, 0, -160, 239,
+     255, 255, 255, 0, 159, 239,
+    },
+    {8 << 24,
+     255, 255, 0, POLY_G4_CODE, -160, 0,
+     255, 255, 112, 0, 159, 0,
+     255, 255, 255, 0, -160, 239,
+     255, 255, 255, 0, 159, 239,
+    },
+    {8 << 24,
+     15, 15, 127, POLY_G4_CODE, -160, 0,
+     15, 15, 127, 0, 159, 0,
+     15, 63, 255, 0, -160, 239,
+     15, 63, 255, 0, 159, 239,
+    },
+};
+
+FlatRectanglePacket gUnusedBackgroundRectangles[3] __attribute__((section(".data.unused_background_packets"))) = {
+    {4 << 24, getTPage(0, 1, 0, 0), DRAW_MODE_COMMAND_HIGH,
+     0, 0, 0, FLAT_RECTANGLE_CODE | SEMI_TRANSPARENT_FLAG, -160, -120, 320, 240},
+    {4 << 24, getTPage(0, 2, 0, 0), DRAW_MODE_COMMAND_HIGH,
+     0, 32, 64, FLAT_RECTANGLE_CODE | SEMI_TRANSPARENT_FLAG, -160, -120, 320, 240},
+    {4 << 24, getTPage(0, 2, 0, 0), DRAW_MODE_COMMAND_HIGH,
+     64, 32, 16, FLAT_RECTANGLE_CODE | SEMI_TRANSPARENT_FLAG, -160, -120, 320, 240},
+};
+
 TILE gLapAnimatedBackgroundTile __attribute__((section(".data.lap_animated_background_tile"))) = {
     3 << 24, 224, 224, 232, TILE_CODE, -160, -120, 320, 240,
 };
