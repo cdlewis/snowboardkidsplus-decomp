@@ -4242,7 +4242,7 @@ gCreatedTask = 0x8013AE8C; // size:0x4
 gScratchVector0 = 0x8013AF88; // size:0x4
 gScratchMatrix0 = 0x8013AF98; // size:0x4
 gTaskTransitionFlags = 0x8013AFE4; // size:0x4
-gPlayerCameras = 0x801241E8;
+gPlayerCameras = 0x801241E8; // size:0x38 defined:true
 gCurrentPlayerOrderingTable = 0x8013AF6C;
 gActiveGraphicsBuffer = 0x8013AF78;
 gDisplayWidth = 0x8013AF7A; // size:0x2
@@ -4344,7 +4344,7 @@ gTaskVisualQuad = 0x8012967C; // size:0x24
 gSelectedPlayerTaskSnapshots = 0x8013B2E4; // size:0x4
 
 GsSetWorkBase = 0x800BF2C8; // type:func defined:true
-gCourseCoinTargetTimes = 0x80124220; // size:0x28
+gCourseCoinTargetTimes = 0x80124220; // size:0x28 defined:true
 gAttackTimeRemaining = 0x8013B184;
 gPlayerAttackTimesRemaining = 0x8013B198; // size:0x8
 gRaceHudMode = 0x8013B620;

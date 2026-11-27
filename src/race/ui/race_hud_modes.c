@@ -25,6 +25,12 @@ typedef struct CourseProgressScratch {
     s32 distance;
 } CourseProgressScratch;
 
+RaceTime gCourseCoinTargetTimes[10]
+    __attribute__((section(".data.course_coin_target_times"), aligned(4))) = {
+        {2, 30, 0}, {2, 30, 0}, {3, 5, 0}, {3, 5, 0}, {3, 5, 0},
+        {3, 5, 0}, {3, 5, 0}, {3, 5, 0}, {1, 0, 0}, {1, 0, 0}
+    };
+
 extern u8 gModeSequenceStage __attribute__((section(".data")));
 extern u8 gControllerPlaybackIndex __attribute__((section(".data")));
 extern s16 gFrameCounter __attribute__((section(".data")));

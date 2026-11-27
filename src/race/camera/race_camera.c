@@ -15,6 +15,9 @@
 #include "psx/libgs.h"
 #include "psx/libgte.h"
 
+PlayerCamera gPlayerCameras[2]
+    __attribute__((section(".data.player_cameras"), aligned(4))) = {0};
+
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern VECTOR *gScratchVector0 __attribute__((section(".data")));
 extern SVECTOR *gScratchShortVector0 __attribute__((section(".data")));

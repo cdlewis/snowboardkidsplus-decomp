@@ -752,7 +752,8 @@ segments:
       - {start: 0x114964, type: .data, name: engine/game_options, linker_section: .data.course_race_music_xa_commands}
       - {start: 0x114978, type: .data, name: race/player/player_results, linker_section: .data.default_scene_lights}
       - {start: 0x1149A8, type: .data, name: race/player/player_actions, linker_section: .data.player_camera_views}
-      - [0x1149E8, data, player_camera_state_tail]
+      - {start: 0x1149E8, type: .data, name: race/camera/race_camera, linker_section: .data.player_cameras}
+      - {start: 0x114A20, type: .data, name: race/ui/race_hud_modes, linker_section: .data.course_coin_target_times}
       - {start: 0x114A48, type: .data, name: race/player/player_actions, linker_section: .data.course_hit_time_limits}
       - {start: 0x114A70, type: .data, name: race/ui/race_hud_modes, linker_section: .data.race_progress_icons}
       - {start: 0x114A9C, type: .data, name: race/player/player_actions, linker_section: .data.course_count_targets}

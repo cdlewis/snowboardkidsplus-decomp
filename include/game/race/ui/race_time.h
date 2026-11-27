@@ -17,7 +17,7 @@ extern RaceTime gScoreAttackTimeLimits[];
 extern RaceTime gRaceElapsedTime;
 extern RaceTime gLapSplitTime;
 extern RaceTime gCourseSplitReferenceTimes[10];
-extern RaceTime gCourseCoinTargetTimes[];
+extern RaceTime gCourseCoinTargetTimes[10];
 
 struct GsOT;
 void drawRaceTime(const RaceTime *value, s32 x, s32 y, s16 mode, struct GsOT *ot, u16 depth);
