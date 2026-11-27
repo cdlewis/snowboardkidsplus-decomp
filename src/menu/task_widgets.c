@@ -295,6 +295,7 @@ void updatePlayerCharacterSelection(s16 playerIndex, SelectionEntry *entries);
 void createRegisteredSelectionPanelTask(s16 playerIndex, SelectionPanelRecord *record, s32 depth, s32 index);
 void updateRegisteredSelectionPanelTask(void);
 void updateShrinkingSpriteTask(void);
+void cycleSaveRecordUnlockFlags(s16 recordIndex, s16 maskIndex);
 void updateValuePanelTask(void);
 void updateAnimatedSpriteTask(void);
 void updateRegisteredTextPanelTask(void);
@@ -3392,50 +3393,48 @@ void updateShrinkingSpriteTask(void) {
     }
 }
 
-/* DECOMP_ATTEMPT: inline 235/257 */
-#ifdef NON_MATCHING
-void cycleSaveRecordUnlockFlags(s16 recordIndex, s16 maskIndex);
-
-void func_8007B48C(s16 recordIndex, s16 maskIndex) {
+void handleSaveRecordUnlockInput(s16 recordIndex, s16 characterIndex) {
     s16 row;
-    s16 paired[2];
-    SaveRecord *state;
-    SaveRecord *records;
+    s16 pairedFlags[2];
+    u32 unlockFlags;
 
-    if (gControllerPressedButtons[recordIndex] & 8) {
-        cycleSaveRecordUnlockFlags(recordIndex, maskIndex);
-    } else if (gControllerPressedButtons[recordIndex] & 2) {
-        if (getSaveRecordMaskTier(recordIndex, maskIndex)) {
-            for (maskIndex = 0; maskIndex < 10; maskIndex++) {
-                setSaveRecordMaskTier(recordIndex, maskIndex, 4);
-                cycleSaveRecordUnlockFlags(recordIndex, maskIndex);
+    if (gControllerPressedButtons[recordIndex] & PADR1) {
+        cycleSaveRecordUnlockFlags(recordIndex, characterIndex);
+    } else if (gControllerPressedButtons[recordIndex] & PADR2) {
+        if (getSaveRecordMaskTier(recordIndex, characterIndex)) {
+            for (characterIndex = 0; characterIndex < 10; characterIndex++) {
+                setSaveRecordMaskTier(recordIndex, characterIndex, 4);
+                cycleSaveRecordUnlockFlags(recordIndex, characterIndex);
             }
         } else {
-            for (maskIndex = 0; maskIndex < 10; maskIndex++) {
-                setSaveRecordMaskTier(recordIndex, maskIndex, 4);
-                cycleSaveRecordUnlockFlags(recordIndex, maskIndex);
-                cycleSaveRecordUnlockFlags(recordIndex, maskIndex);
-                cycleSaveRecordUnlockFlags(recordIndex, maskIndex);
-                cycleSaveRecordUnlockFlags(recordIndex, maskIndex);
-                cycleSaveRecordUnlockFlags(recordIndex, maskIndex);
-                cycleSaveRecordUnlockFlags(recordIndex, maskIndex);
+            for (characterIndex = 0; characterIndex < 10; characterIndex++) {
+                setSaveRecordMaskTier(recordIndex, characterIndex, 4);
+                cycleSaveRecordUnlockFlags(recordIndex, characterIndex);
+                cycleSaveRecordUnlockFlags(recordIndex, characterIndex);
+                cycleSaveRecordUnlockFlags(recordIndex, characterIndex);
+                cycleSaveRecordUnlockFlags(recordIndex, characterIndex);
+                cycleSaveRecordUnlockFlags(recordIndex, characterIndex);
+                cycleSaveRecordUnlockFlags(recordIndex, characterIndex);
             }
         }
 
-        records = gPlayerSaveRecords;
-        state = &records[recordIndex];
-        /* Diagnose the original read of the row register before initialization. */
-        state->masks[maskIndex] |= 0x1000000U << row;
-        state->flags = 0x3FFF;
+        /* Both loops leave characterIndex on the combined mask. The original
+         * reads row before initialization here, then rebuilds the mask below. */
+        gPlayerSaveRecords[recordIndex].masks[characterIndex] |= 0x1000000U << row;
+        gPlayerSaveRecords[recordIndex].flags = 0x3FFF;
         for (row = 0; row < 5; row++) {
-            state->boardUnlockFlagsLow |= 1U << (row * 5 + 1);
-            state->boardUnlockFlagsHigh |= 1U << (row * 5 + 1);
-            state->boardUnlockFlagsLow |= 1U << (row * 5 + 2);
-            state->boardUnlockFlagsHigh |= 1U << (row * 5 + 2);
-            state->boardUnlockFlagsLow |= 1U << (row * 5 + 3);
-            state->boardUnlockFlagsLow |= 1U << (row * 5 + 4);
-            state->boardUnlockFlagsHigh |= 1U << (row * 5 + 3);
-            state->boardUnlockFlagsHigh |= 1U << (row * 5 + 4);
+            SaveRecord *record = &gPlayerSaveRecords[recordIndex];
+            s32 firstBoard = row * 5;
+
+            record->boardUnlockFlagsLow |= 1U << (firstBoard + 1);
+            record->boardUnlockFlagsHigh |= 1U << (firstBoard + 1);
+            record->boardUnlockFlagsLow |= 1U << (firstBoard + 2);
+            record->boardUnlockFlagsHigh |= 1U << (firstBoard + 2);
+            record->boardUnlockFlagsLow |= 1U << (firstBoard + 3);
+            unlockFlags = record->boardUnlockFlagsHigh | (1U << (firstBoard + 3));
+            record->boardUnlockFlagsHigh = unlockFlags;
+            record->boardUnlockFlagsLow |= 1U << (firstBoard + 4);
+            record->boardUnlockFlagsHigh |= 1U << (firstBoard + 4);
         }
         gPlayerSaveRecords[recordIndex].money = 999999;
         rebuildCombinedStateMask(&gPlayerSaveRecords[recordIndex]);
@@ -3445,39 +3444,31 @@ void func_8007B48C(s16 recordIndex, s16 maskIndex) {
         }
     }
 
-    if (gControllerPressedButtons[recordIndex] & 4) {
-        s32 flag;
-        paired[0] = getGlobalFlagMask(0);
-        paired[1] = getGlobalFlagMask(1);
-        if (paired[0]) {
-            if (!paired[1]) {
-                goto enableSecond;
-            }
-            flag = -1;
+    if (gControllerPressedButtons[recordIndex] & PADL1) {
+        unlockFlags = getGlobalFlagMask(0);
+        pairedFlags[0] = unlockFlags;
+        pairedFlags[1] = getGlobalFlagMask(1);
+        if (pairedFlags[0] && pairedFlags[1]) {
+            updatePairedStateFlag(-1);
+        } else if (pairedFlags[1]) {
+            updatePairedStateFlag(0);
         } else {
-            flag = 0;
-            if (!paired[1]) {
-enableSecond:
-                flag = 1;
-            }
+            updatePairedStateFlag(1);
         }
-        updatePairedStateFlag(flag);
     }
-    if (gControllerPressedButtons[recordIndex] & 1) {
-        if (getSaveRecordFlagPair(recordIndex, maskIndex, 0) > 0) {
-            setSaveRecordFlagPair(recordIndex, maskIndex, 0, 0);
-            setSaveRecordFlagPair(recordIndex, maskIndex, 1, 0);
-            setSaveRecordFlagPair(recordIndex, maskIndex, 2, 0);
+
+    if (gControllerPressedButtons[recordIndex] & PADL2) {
+        if (getSaveRecordFlagPair(recordIndex, characterIndex, 0) > 0) {
+            setSaveRecordFlagPair(recordIndex, characterIndex, 0, 0);
+            setSaveRecordFlagPair(recordIndex, characterIndex, 1, 0);
+            setSaveRecordFlagPair(recordIndex, characterIndex, 2, 0);
         } else {
-            setSaveRecordFlagPair(recordIndex, maskIndex, 0, 3);
-            setSaveRecordFlagPair(recordIndex, maskIndex, 1, 2);
-            setSaveRecordFlagPair(recordIndex, maskIndex, 2, 1);
+            setSaveRecordFlagPair(recordIndex, characterIndex, 0, 3);
+            setSaveRecordFlagPair(recordIndex, characterIndex, 1, 2);
+            setSaveRecordFlagPair(recordIndex, characterIndex, 2, 1);
         }
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/menu/task_widgets", func_8007B48C);
-#endif
 
 void cycleSaveRecordUnlockFlags(s16 recordIndex, s16 maskIndex) {
     s16 pairIndex;

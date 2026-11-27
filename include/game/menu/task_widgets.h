@@ -61,6 +61,7 @@ s32 hasColorCycleTaskReferences(void);
 void createSecondaryDisplayTask(TaskCallback callback);
 void markSecondaryTaskAndClearReference(void);
 
+void handleSaveRecordUnlockInput(s16 recordIndex, s16 characterIndex);
 void createPlayerPanelTask(s16 player, s16 x, s16 y, s32 depth, s32 index);
 void createValuePanelTask(s16 x, s16 y, s16 *values, s32 depth, s32 index);
 void createPaletteRotationTask(s32 x, s32 y, s32 first, s32 last, s32 steps, s32 interval, s32 index);

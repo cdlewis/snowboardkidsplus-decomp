@@ -469,7 +469,7 @@ s32 getCourseSelectionGroupIndex(void) {
             result = 0;
         }
     } else {
-        u32 mask = gMergedSaveRecord.combinedMask;
+        u32 mask = gMergedSaveRecord.masks[SAVE_RECORD_COMBINED_MASK_INDEX];
 
         if (mask & 0x04000000) {
             result = 3;

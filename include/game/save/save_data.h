@@ -3,6 +3,8 @@
 #include "common.h"
 #include "game/race/ui/race_time.h"
 
+enum { SAVE_RECORD_COMBINED_MASK_INDEX = 10 };
+
 typedef struct SaveRecord {
     u8 resourceTextureSelections[9];
     u8 unk_009[3];
@@ -20,8 +22,8 @@ typedef struct SaveRecord {
     u8 timeRecordCharacters[11][5];
     u8 unk_3A9[3];
     u32 flags;
-    u32 masks[10];
-    u32 combinedMask;
+    /* Ten character masks followed by their bitwise union. */
+    u32 masks[SAVE_RECORD_COMBINED_MASK_INDEX + 1];
     u32 boardUnlockFlagsLow;
     u32 boardUnlockFlagsHigh;
     u32 money;

@@ -88,7 +88,7 @@ void initializeSaveRecordDefaults(SaveRecord *record) {
     for (i = 0; i < 10; i++) {
         record->masks[i] = 0;
     }
-    record->combinedMask = 0;
+    record->masks[SAVE_RECORD_COMBINED_MASK_INDEX] = 0;
     record->boardUnlockFlagsHigh = 0;
     for (i = 0; i < 5; i++) {
         record->boardUnlockFlagsLow |= 1 << (i * 5);
@@ -111,7 +111,7 @@ void copyGlobalFlagState(SaveRecord *source, SaveRecord *destination) {
     for (i = 0; i < 10; i++) {
         i[destination->masks] = i[source->masks];
     }
-    destination->combinedMask = source->combinedMask;
+    destination->masks[SAVE_RECORD_COMBINED_MASK_INDEX] = source->masks[SAVE_RECORD_COMBINED_MASK_INDEX];
     destination->money = source->money;
 }
 
@@ -121,7 +121,7 @@ void mergeSaveRecordFlags(SaveRecord *source, SaveRecord *destination) {
     for (i = 0; i < 10; i++) {
         i[destination->masks] |= i[source->masks];
     }
-    destination->combinedMask |= source->combinedMask;
+    destination->masks[SAVE_RECORD_COMBINED_MASK_INDEX] |= source->masks[SAVE_RECORD_COMBINED_MASK_INDEX];
 }
 
 void copySaveRecordAndMergeFlags(void) {
@@ -847,9 +847,9 @@ s32 getStateMaskPair(s16 stateIndex, s16 maskIndex, s16 pairIndex) {
 void rebuildCombinedStateMask(SaveRecord *state) {
     s16 i;
 
-    state->combinedMask = 0;
+    state->masks[SAVE_RECORD_COMBINED_MASK_INDEX] = 0;
     for (i = 0; i < 10; i++) {
-        state->combinedMask |= i[state->masks];
+        state->masks[SAVE_RECORD_COMBINED_MASK_INDEX] |= i[state->masks];
     }
 }
 

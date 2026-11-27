@@ -2,6 +2,10 @@
 
 #include "decomp/types.h"
 
+#define PADL1     (1 << 2)
+#define PADL2     (1 << 0)
+#define PADR1     (1 << 3)
+#define PADR2     (1 << 1)
 #define PADLup    (1 << 12)
 #define PADLdown  (1 << 14)
 #define PADLleft  (1 << 15)

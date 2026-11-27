@@ -3803,6 +3803,7 @@ initializeOrbitingTaskObject = 0x8005E578; // type:func
 updateOrbitingObstacleTask = 0x8005E728; // type:func
 gOrbitingTaskPlacements = 0x80129A68; // size:0x18
 
+handleSaveRecordUnlockInput = 0x8007B48C; // type:func
 cycleSaveRecordUnlockFlags = 0x8007B890; // type:func
 applySaveRecordUnlockOverrides = 0x8007BBAC; // type:func
 
