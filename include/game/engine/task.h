@@ -4,7 +4,7 @@
 
 typedef void (*TaskCallback)(void);
 
-extern TaskCallback D_8013AFC8;
+extern TaskCallback gCurrentTaskCallback;
 void dispatchGameOptionTransitionTask(void);
 void beginMode2SequenceAndFadeMusic(void);
 

@@ -111,7 +111,7 @@ void runGameLoop(void) {
             } else {
             run_task:
                 callback = gCurrentTask->callback;
-                D_8013AFC8 = callback;
+                gCurrentTaskCallback = callback;
                 gCurrentTaskParent = gCurrentTask->parent;
                 callback();
             }
