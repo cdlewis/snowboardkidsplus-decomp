@@ -85,18 +85,17 @@ static const u32 sBoardShopModeJumpTablePadding
 static const u32 sBoardSelectionDetailsJumpTablePadding
     __attribute__((section(".rodata.board_selection_details_padding"))) = 0;
 
-extern const u8 D_80131868[];
-extern GroupedSelectionDescriptor D_801318D4[];
+extern const GridSpriteEntry gBoardMenuSprites[18];
+extern GroupedSelectionDescriptor gBoardMenuSelectionDescriptors[3];
 extern volatile u8 shopMenuRememberedSelectionGp;
 extern const u8 D_801317F0[];
 extern const u8 D_8013B4A0[];
-extern u8 boardMenuRememberedSelectionAbsolute __attribute__((section(".data")));
 
 extern const u16 D_8013143C[], D_80131498[], D_801314FC[], D_80131548[], D_80131574[];
 extern const u16 D_8013158C[], D_801315A4[], D_801315C0[], D_801315E0[], D_80131630[];
 extern const u16 D_8013167C[], D_801316BC[], D_801316E8[], D_80131728[], D_80131760[];
 
-extern const s16 D_80131A9C[], D_80131B08[], D_80131B74[];
+extern const s16 D_80131A9C[], gSharedGridModelPreviewPose[54], D_80131B74[];
 extern const s16 D_80131BE0[], D_80131C4C[], D_80131CB8[];
 
 static const GridSpriteEntry sShopMenuSprites[4]
@@ -152,7 +151,7 @@ static const u8 sMoneyPanelSelectionSpriteMapping[3]
 volatile u8 gShopMenuRememberedSelection __attribute__((section(".data.shop_menu_selection"))) = 0;
 
 volatile u8 gBoardShopRememberedSelection __attribute__((section(".sdata"))) = 0;
-u8 D_8013B4BD __attribute__((section(".sdata"))) = 0;
+u8 gMoneyPanelRememberedSelection __attribute__((section(".sdata"))) = 0;
 
 static const GridSpriteEntry sPlayerTextureSelectionSprites[19]
     __attribute__((section(".data.player_texture_selection_sprites"), aligned(4))) = {
@@ -204,8 +203,8 @@ static const u8 sBoardPurchaseFullSpriteMapping[8]
 
 const s16 *gGridModelPreviewPoses[10]
     __attribute__((section(".data.grid_model_preview_poses"))) = {
-    D_80131A9C, D_80131B08, D_80131A9C, D_80131B08, D_80131B74,
-    D_80131B08, D_80131B08, D_80131CB8, D_80131BE0, D_80131C4C
+    D_80131A9C, gSharedGridModelPreviewPose, D_80131A9C, gSharedGridModelPreviewPose, D_80131B74,
+    gSharedGridModelPreviewPose, gSharedGridModelPreviewPose, D_80131CB8, D_80131BE0, D_80131C4C
 };
 
 PanelModeLabel gRegisteredPanelMode0Label __attribute__((section(".data.registered_panel_mode_labels"))) = {2, 0};
@@ -216,7 +215,7 @@ u8 gBoardSelectionLevels[12] __attribute__((section(".data.board_selection_level
 };
 
 s8 *gBoardStyleText[4] __attribute__((section(".data.board_style_text"))) = {
-    D_80011DC8, D_80011DC8 + 0x10, D_80011DC8 + 0x20, D_80011DC8 + 0x2C
+    gBoardStyleTextBytes, gBoardStyleTextBytes + 0x10, gBoardStyleTextBytes + 0x20, gBoardStyleTextBytes + 0x2C
 };
 
 u8 gBoardSelectionStyles[12] __attribute__((section(".data.board_selection_styles"))) = {
@@ -1045,8 +1044,8 @@ void updateMoneyPanelSelectionTask(void) {
         mode = 1;
         setMusicSequenceEnabled(mode);
         selection->mode = 0;
-        if (D_8013B4BD != 0) {
-            selection->selectedIndex = D_8013B4BD - 1;
+        if (gMoneyPanelRememberedSelection != 0) {
+            selection->selectedIndex = gMoneyPanelRememberedSelection - 1;
         } else {
             selection->selectedIndex = 0;
         }
@@ -1068,7 +1067,7 @@ void updateMoneyPanelSelectionTask(void) {
             moveTaskChildrenWithSpacing(0, entries[0].task, -0x80000, -0x50000, 0x1E000, 0, 1);
             configureMovement2D((Movement2D *)&gTaskMemoryPool[entries[1].task->resource14],
                                 -0x8C000, 0x8000, 0x1E000, 0, 4);
-            if (D_8013B4BD == 0) {
+            if (gMoneyPanelRememberedSelection == 0) {
                 setTaskSecondaryResourceData(entries[1].task, sShopMenuTexts[5]);
             }
             configureMovement2D((Movement2D *)&gTaskMemoryPool[entries[2].task->resource14],
@@ -1090,7 +1089,7 @@ void updateMoneyPanelSelectionTask(void) {
         }
         break;
     case 4:
-        if (D_8013B4BD == 0) {
+        if (gMoneyPanelRememberedSelection == 0) {
             playSoundEffect(0, 2, 32);
         }
         gCurrentTask->data18 = 5;
@@ -1130,9 +1129,9 @@ returnToParentMenu:
                 break;
             }
             if (gCurrentTaskParent->data18 == 11) {
-                D_8013B4BD = 0;
+                gMoneyPanelRememberedSelection = 0;
             } else {
-                D_8013B4BD = selection->selectedIndex + 1;
+                gMoneyPanelRememberedSelection = selection->selectedIndex + 1;
             }
             if (selection->choiceResult < 0) {
                 goto finishChoice;
@@ -1280,8 +1279,8 @@ void updateGroupedSelectionBoundsTask(void) {
     case 0: {
         GameTask *task;
         setMusicSequenceEnabled(1);
-        descriptor = &D_801318D4[gCurrentTask->data1A];
-        createRegisteredSpacedChildTasks(1, 0xB0, 0x40, D_80131868, descriptor->mapping,
+        descriptor = &gBoardMenuSelectionDescriptors[gCurrentTask->data1A];
+        createRegisteredSpacedChildTasks(1, 0xB0, 0x40, (const u8 *)gBoardMenuSprites, descriptor->mapping,
                                         NULL, 0, 0, 20, -304, -96, descriptor->spacingX,
                                         descriptor->spacingY, descriptor->count, 0xB0,
                                         drawSelectedTaskSprite, drawRegisteredTaskGridSpriteWithColor, 4, 1);
@@ -1376,7 +1375,7 @@ void updateGroupedSelectionBoundsTask(void) {
         break;
     case 5: {
         GameTask *task = gCurrentTask;
-        descriptor = &D_801318D4[task->data1A];
+        descriptor = &gBoardMenuSelectionDescriptors[task->data1A];
         if (descriptor->mapping[input->selectedIndex] == 17) {
             boardShopRememberedSelectionAbsolute = 0;
             gCurrentTaskParent->data18 = 11;
@@ -1391,7 +1390,7 @@ startExit:
     case 9:
         createChildTaskWithReserve(initializeTaskResourcePair);
         gCreatedTask->data18 = 0;
-        descriptor = &D_801318D4[gCurrentTask->data1A];
+        descriptor = &gBoardMenuSelectionDescriptors[gCurrentTask->data1A];
         gCreatedTask->data1A = mapCourseMenuByteIndex(descriptor->mapping, input->selectedIndex);
         gCurrentTask->data18 = 10;
         break;
@@ -1508,7 +1507,7 @@ void updateShopBoardPurchaseMenuTask(void) {
                 entries = &sShopDefaultBoardEntries;
                 gridMode = 1;
             }
-            createRegisteredSpacedChildTasks(gridMode, 0xB0, 0x40, D_80131868,
+            createRegisteredSpacedChildTasks(gridMode, 0xB0, 0x40, (const u8 *)gBoardMenuSprites,
                                              entries->entries, NULL, 0, 0, 0, -444, -96,
                                              entries->unk_04, entries->unk_05, entries->count, 222,
                                              drawSelectedTaskSprite, drawRegisteredTaskGridSpriteWithColor, 5, 1);
@@ -1522,7 +1521,7 @@ void updateShopBoardPurchaseMenuTask(void) {
             createRegisteredCallbackTask(0, 0, 0, drawCurrentTaskSelectedBoardPrice, depth, 31);
             selection->mode = 0;
             selection->selectedIndex = getGroupedIndexOffsetPlus216(groupedSelection->selection);
-            value = findIndexedHalfwordRecord((IndexedHalfwordRecord *)D_80131868, entries->entries,
+            value = findIndexedHalfwordRecord((IndexedHalfwordRecord *)gBoardMenuSprites, entries->entries,
                 entries->count, selection->selectedIndex);
             selection->selectedIndex = value;
             selection->previousIndex = value;
@@ -1982,8 +1981,8 @@ void updateBoardSelectionMenuTask(void) {
     switch (gCurrentTask->data18) {
     case 0:
         setMusicSequenceEnabled(1);
-        descriptor = &D_801318D4[gCurrentTask->data1A];
-        createRegisteredSpacedChildTasks(1, 0xB0, 0x40, D_80131868,
+        descriptor = &gBoardMenuSelectionDescriptors[gCurrentTask->data1A];
+        createRegisteredSpacedChildTasks(1, 0xB0, 0x40, (const u8 *)gBoardMenuSprites,
                                          descriptor->mapping, NULL, 0, 0, 20, -304, -96,
                                          descriptor->spacingX, descriptor->spacingY,
                                          descriptor->count, 176,
@@ -2075,7 +2074,7 @@ void updateBoardSelectionMenuTask(void) {
         }
         break;
     case 5:
-        descriptor = &D_801318D4[gCurrentTask->data1A];
+        descriptor = &gBoardMenuSelectionDescriptors[gCurrentTask->data1A];
         if (descriptor->mapping[selection->selectedIndex] == 17) {
             boardShopRememberedSelectionAbsolute = 0;
             gCurrentTaskParent->data18 = 11;
@@ -2089,7 +2088,7 @@ beginExit:
     case 9:
         createChildTaskWithReserve(initializeTaskResourcesAndClearData18);
         gCreatedTask->data18 = 0;
-        descriptor = &D_801318D4[gCurrentTask->data1A];
+        descriptor = &gBoardMenuSelectionDescriptors[gCurrentTask->data1A];
         gCreatedTask->data1A = mapCourseMenuByteIndex(descriptor->mapping, selection->selectedIndex);
         gCurrentTask->data18 = 10;
         break;
@@ -2189,7 +2188,7 @@ void updateBoardSelectionDetailsMenuTask(void) {
         if (parentPanels[0].flags == 0) {
             entries = &entryStorage;
             buildRecordFlagMenuEntries(0, gCurrentTaskParent->data1A, parentSelection->selectedIndex, 0, 20, entries);
-            createRegisteredSpacedChildTasks(1, 0xB0, 0x40, D_80131868,
+            createRegisteredSpacedChildTasks(1, 0xB0, 0x40, (const u8 *)gBoardMenuSprites,
                                              entries->entries, NULL, 0, 0, 20, -304, -96,
                                              entries->unk_04, entries->unk_05, entries->count, 222,
                                              drawSelectedTaskSprite, drawRegisteredTaskGridSpriteWithColor, 5, 1);
@@ -2198,7 +2197,7 @@ void updateBoardSelectionDetailsMenuTask(void) {
             selection->mode = 0;
             value = getGroupedIndexOffsetPlus216(groupedSelection->selection);
             selection->selectedIndex = value;
-            value = findIndexedHalfwordRecord((IndexedHalfwordRecord *)D_80131868, entries->entries, entries->count, value);
+            value = findIndexedHalfwordRecord((IndexedHalfwordRecord *)gBoardMenuSprites, entries->entries, entries->count, value);
             selection->selectedIndex = value;
             selection->previousIndex = value;
             selection->choiceResult = 0;
@@ -2711,7 +2710,7 @@ void updateBoardPurchaseMenuTask(void) {
     player = gCurrentTask->data1A;
     character = gRacePlayers[playerIndex].unk009;
     palette = gRacePlayers[playerIndex].unk00D;
-    selection = &D_8013B508[playerIndex];
+    selection = &gTaskPanelSelectionValues[playerIndex];
 
     switch (gCurrentTask->data18) {
     case 0: {
@@ -3009,7 +3008,7 @@ void drawCurrentTaskBoardPrice(void) {
     position = (Movement2D *)&gTaskMemoryPool[gCurrentTask->resource14];
     player = gCurrentTaskParent->data1A;
     character = gRacePlayers[player].unk009;
-    selection = &D_8013B508[player];
+    selection = &gTaskPanelSelectionValues[player];
     x = position->x / 4096;
     priceX = x;
     fixedY = position->y;
@@ -3113,7 +3112,7 @@ void drawCurrentTaskSelectionPanel(void) {
     position = (Movement2D *)&gTaskMemoryPool[gCurrentTask->resource14];
     x = position->x / 4096;
     y = position->y / 4096;
-    selection = &D_8013B508[(s16)gCurrentTaskParent->data1A];
+    selection = &gTaskPanelSelectionValues[(s16)gCurrentTaskParent->data1A];
     setSpriteColor(128, 128, 128);
     setTexturedQuadColor(128, 128, 128);
     drawWrappedGlyphText16x16((s16)(x + 8), (s16)(y + 4), 10, gTaskSelectionPanelLabel,
@@ -3324,7 +3323,7 @@ void updateGridModelPreviewTask(void) {
     RegisteredTaskEntry *entry;
 
     currentPlayerAbsolute = &gRacePlayers[gCurrentTask->data1C];
-    selection = &D_8013B508[(s16)gCurrentTaskParent->data1A];
+    selection = &gTaskPanelSelectionValues[(s16)gCurrentTaskParent->data1A];
     if (gCurrentTask->resource14 == 0xFFFF) { for (;;) {} }
     state = (GridModelPreviewState *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (gCurrentTask->resource16 == 0xFFFF) { for (;;) {} }

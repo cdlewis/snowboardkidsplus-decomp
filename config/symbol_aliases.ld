@@ -16,7 +16,7 @@ selectionMenuRecordAbsolute = D_8013B560;
 mainTailSelectionGp = D_8013B527;
 shopMenuRememberedSelectionGp = gShopMenuRememberedSelection;
 boardShopRememberedSelectionAbsolute = gBoardShopRememberedSelection;
-boardMenuRememberedSelectionAbsolute = D_8013B4BD;
+boardMenuRememberedSelectionAbsolute = gMoneyPanelRememberedSelection;
 taskTransitionFlagGp = D_8013B55E;
 
 /* GP-addressed view of the saved camera overlay selector. */

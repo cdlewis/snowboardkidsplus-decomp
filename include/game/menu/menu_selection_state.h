@@ -18,6 +18,10 @@ typedef struct MenuModelSelectionPair {
 extern volatile u8 gBoardShopRememberedSelection;
 extern volatile u8 boardShopRememberedSelectionAbsolute __attribute__((section(".data")));
 
+/* Zero opens the greeting; other values remember a one-based menu choice. */
+extern u8 gMoneyPanelRememberedSelection;
+extern u8 boardMenuRememberedSelectionAbsolute __attribute__((section(".data")));
+
 extern MenuModelSelectionPair D_8013B468[];
 extern const u8 gMenuPlayerTextureIds[16];
 extern MenuSelectionState gMenuSelectionStates[2];
@@ -50,7 +54,7 @@ typedef struct TaskPanelSelectionValue {
     s16 unk02;
 } TaskPanelSelectionValue;
 
-extern TaskPanelSelectionValue D_8013B508[];
+extern TaskPanelSelectionValue gTaskPanelSelectionValues[];
 void drawCurrentTaskSelectionPanel(void);
 
 typedef struct ByteMappingDescriptor {

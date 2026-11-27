@@ -2372,7 +2372,7 @@ createGridModelPreviewTask = 0x80096590; // type:func
 reloadGridModelPreview = 0x80096AB0; // type:func
 updateGridModelPreviewTask = 0x80096EC8; // type:func
 D_80131A9C = 0x80131A9C; // size:0x6C
-D_80131B08 = 0x80131B08; // size:0x6C
+gSharedGridModelPreviewPose = 0x80131B08; // size:0x6C
 D_80131B74 = 0x80131B74; // size:0x6C
 D_80131BE0 = 0x80131BE0; // size:0x6C
 D_80131C4C = 0x80131C4C; // size:0x6C
@@ -2623,7 +2623,7 @@ sBoardShopModeTextMapping = 0x8013B49C; // size:0x4 defined:true
 sBoardShopModeSpriteMapping = 0x8013B4B0; // size:0x4 defined:true
 sShopSubmenuTextureMapping = 0x8013B4B4; // size:0x4 defined:true
 gBoardShopRememberedSelection = 0x8013B4BC; // size:0x1 defined:true
-D_8013B4BD = 0x8013B4BD; // size:0x1 defined:true
+gMoneyPanelRememberedSelection = 0x8013B4BD; // size:0x1 defined:true
 
 drawCurrentTaskSaveRecordMoneyPanelWithCharacterSprites = 0x8008E66C; // type:func
 
@@ -4248,3 +4248,8 @@ gSelectionPanelTexts = 0x8012FFD4; // size:0x28
 gMenuSelectionStates = 0x801300AC; // size:0xC
 gMenuModelDrawAreas = 0x801300B8; // size:0x20
 gCurrentTaskParent = 0x8013AE98; // size:0x4
+
+gBoardStyleTextBytes = 0x80011DC8; // size:0x38
+gBoardMenuSprites = 0x80131868; // size:0x6C
+gBoardMenuSelectionDescriptors = 0x801318D4; // size:0x3C
+gTaskPanelSelectionValues = 0x8013B508; // size:0x4

@@ -34,7 +34,6 @@ extern u8 gDemoRaceIndex __attribute__((section(".data")));
 extern volatile u8 gShopMenuRememberedSelection __attribute__((section(".data")));
 
 extern u8 D_8013B47C __attribute__((section(".data")));
-extern u8 D_8013B4BD __attribute__((section(".data")));
 extern u8 D_8013B527 __attribute__((section(".data")));
 extern u8 D_8013B110;
 
@@ -1839,7 +1838,7 @@ void initializeNewGameSaveData(void) {
     D_8013B104 = 0;
     gShopMenuRememberedSelection = 0;
     boardShopRememberedSelectionAbsolute = 0;
-    D_8013B4BD = 0;
+    boardMenuRememberedSelectionAbsolute = 0;
     D_8013B527 = 0;
     gRacePlayers[0].unk009 = 0;
     gRacePlayers[0].unk00A[0] = 0;

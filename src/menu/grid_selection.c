@@ -111,7 +111,6 @@ const u16 gCurrentPaletteLabel[6]
 u8 gSplitBoardSelectionMapping[8]
     __attribute__((section(".data.split_board_selection_mapping"), aligned(4))) = {0};
 
-extern u8 D_8013B4BD __attribute__((section(".data")));
 
 void buildSplitBoardSelectionMapping(s16 playerIndex, s16 character, u8 spacingX, u8 spacingY,
                                      ByteMappingDescriptor *menu);
@@ -179,7 +178,7 @@ void updateSplitBoardSelectionTask(void) {
     player = gCurrentTask->data1A;
     character = gRacePlayers[playerIndex].unk009;
     palette = gRacePlayers[playerIndex].unk00D;
-    selection = &D_8013B508[playerIndex];
+    selection = &gTaskPanelSelectionValues[playerIndex];
 
     switch (gCurrentTask->data18) {
     case 0: {
@@ -288,7 +287,7 @@ void updateSplitBoardSelectionTask(void) {
                 goto exitSelection;
             }
             if (mapSpacedGroupIndex(entries[0].task, input->selectedIndex) == 5) {
-                D_8013B4BD = 0;
+                boardMenuRememberedSelectionAbsolute = 0;
                 gCurrentTaskParent->data18 = 11;
                 playSoundEffect(0, 0x202, 32);
                 gCurrentTask->data18 = 22;
@@ -643,7 +642,7 @@ void updatePlayerPaletteSelectionTask(void) {
     player = gCurrentTask->data1A;
     character = gRacePlayers[player].unk009;
     palette = gRacePlayers[player].unk00D;
-    selection = &D_8013B508[player];
+    selection = &gTaskPanelSelectionValues[player];
 
     switch (gCurrentTask->data18) {
     case 0: {
@@ -908,7 +907,7 @@ void drawPaletteSelectionPricePanel(void) {
     priceX = panelX = position->x / 4096;
     priceY = panelY = position->y / 4096;
     player = (s16)gCurrentTaskParent->data1A;
-    selection = &D_8013B508[player];
+    selection = &gTaskPanelSelectionValues[player];
     if (gCurrentTask->data1A != 0) {
         if (gRacePlayers[player].unk00D == selection->value && D_8013B517 != 0) {
             drawWrappedGlyphText16x16((s16)(panelX - 112), (s16)(panelY + 52), 4, gCurrentPaletteLabel, 12, 1,
