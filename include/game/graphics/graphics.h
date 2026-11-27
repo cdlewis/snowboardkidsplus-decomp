@@ -126,8 +126,8 @@ extern u8 gRaceProgressMeterIconPalettes[];
 extern GsOT gMainOrderingTables[2];
 extern GsOT gPlayer1OrderingTables[2];
 extern GsOT gPlayer2OrderingTables[2];
-extern GsOT D_800EC090[2];
-extern GsOT D_800EC130[2];
+extern GsOT gPlayer1AlternateLayerOrderingTables[2];
+extern GsOT gPlayer2AlternateLayerOrderingTables[2];
 
 void initializeCourseModels(void);
 void initializeRacePlayerEffects(void);

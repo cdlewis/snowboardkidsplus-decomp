@@ -968,9 +968,9 @@ void drawCameraCulledBackgroundAndSetFog(s16 playerIndex) {
     s16 x, y, horizon;
 
     if (playerIndex == 0) {
-        ot = &D_800EC090[gActiveGraphicsBuffer];
+        ot = &gPlayer1AlternateLayerOrderingTables[gActiveGraphicsBuffer];
     } else {
-        ot = &D_800EC130[gActiveGraphicsBuffer];
+        ot = &gPlayer2AlternateLayerOrderingTables[gActiveGraphicsBuffer];
     }
     x = -160 - ((gPlayerCameras[playerIndex].yaw >> 1) & 255);
     y = gPlayerCameras[playerIndex].pitch / 4;

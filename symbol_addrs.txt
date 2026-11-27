@@ -3559,7 +3559,7 @@ D_800EC040 = 0x800EC040; // size:0x28 defined:true
 
 gPlayer1ModelOrderingTables = 0x800EC068; // size:0x28 defined:true
 
-D_800EC090 = 0x800EC090; // size:0x28 defined:true
+gPlayer1AlternateLayerOrderingTables = 0x800EC090; // size:0x28 defined:true
 
 gPlayer2OrderingTables = 0x800EC0B8; // size:0x28 defined:true
 
@@ -3567,7 +3567,7 @@ D_800EC0E0 = 0x800EC0E0; // size:0x28 defined:true
 
 gPlayer2ModelOrderingTables = 0x800EC108; // size:0x28 defined:true
 
-D_800EC130 = 0x800EC130; // size:0x28 defined:true
+gPlayer2AlternateLayerOrderingTables = 0x800EC130; // size:0x28 defined:true
 
 D_800EC1B0 = 0x800EC1B0; // size:0x28 defined:true
 
@@ -3579,9 +3579,9 @@ D_800EC170 = 0x800EC170; // size:0x40 defined:true
 
 D_800EC200 = 0x800EC200; // size:0x8000 defined:true
 
-D_800F4200 = 0x800F4200; // size:0x8000 defined:true
+gPlayerOrderingTableTags = 0x800F4200; // size:0x8000 defined:true
 
-D_800FC200 = 0x800FC200; // size:0x4000 defined:true
+gPlayer2Buffer1OrderingTableTags = 0x800FC200; // size:0x4000 defined:true
 
 D_80100200 = 0x80100200; // size:0x20000 defined:true
 

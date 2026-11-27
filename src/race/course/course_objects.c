@@ -711,9 +711,9 @@ void drawTaskObjectAlternateLayer(u16 index) {
     GsGetLs(object->coord2, gScratchMatrix0);
     GsSetLsMatrix(gScratchMatrix0);
     if (getRenderCameraIndex()) {
-        GsSortObject4(object, &D_800EC130[gActiveGraphicsBuffer], 2, (u32 *)getScratchAddr(0));
+        GsSortObject4(object, &gPlayer2AlternateLayerOrderingTables[gActiveGraphicsBuffer], 2, (u32 *)getScratchAddr(0));
     } else {
-        GsSortObject4(object, &D_800EC090[gActiveGraphicsBuffer], 2, (u32 *)getScratchAddr(0));
+        GsSortObject4(object, &gPlayer1AlternateLayerOrderingTables[gActiveGraphicsBuffer], 2, (u32 *)getScratchAddr(0));
     }
     SetSp(gAlternateObjectSortSavedStackPointer);
 }
