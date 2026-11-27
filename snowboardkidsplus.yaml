@@ -1079,7 +1079,6 @@ segments:
       - {start: 0x12BA40, type: .data, name: graphics/vram_transfer_rects, linker_section: .data.read_pixel_rect}
       - {start: 0x12BA48, type: .sdata, name: graphics/vram_transfer_rects, linker_section: .sdata.write_pixel_rect, linker_section_order: .data}
       - {start: 0x12BA50, type: .data, name: graphics/vram_transfer_rects, linker_section: .data.scanline_copy_rects}
-      - [0x12BA60, data, scanline_copy_rects_tail]
       - {start: 0x12BA68, type: .data, name: graphics/course_rendering, linker_section: .data.course_model_texture_window}
       - [0x12BA70, data]
       - {start: 0x12BA80, type: .data, name: graphics/course_rendering, linker_section: .data.course_model_positions}
