@@ -1350,8 +1350,11 @@ _spu_mem_mode_unit = 0x80132EB0; // defined:true
 _spu_mem_mode_unitM = 0x80132EB4; // defined:true
 // PSY-Q 4.7: LIBSPU.LIB/SPU.OBJ
 _spu_IRQCallback = 0x80132EC0; // defined:true
-// PSY-Q 4.7: LIBSPU.LIB/S_INI.OBJ
-_spu_rev_startaddr = 0x80132EF4;
+// Unnamed trailing padding in PSY-Q 4.2 LIBSPU.LIB/S_M.OBJ.
+sSpuAllocatorPadding = 0x80132EF0; // size:0x4 defined:true
+// PSY-Q 4.2: LIBSPU.LIB/S_RMP0.OBJ
+_spu_rev_startaddr = 0x80132EF4; // size:0x28
+sSpuReverbStartAddressPadding = 0x80132F1C; // size:0x8 defined:true
 // PSY-Q 4.7: LIBSPU.LIB/S_CRWA.OBJ
 _spu_zerobuf = 0x80132F44;
 // PSY-Q 4.7: LIBCD.LIB/ISO9660.OBJ

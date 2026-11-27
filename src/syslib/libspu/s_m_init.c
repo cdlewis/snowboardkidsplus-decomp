@@ -4,6 +4,8 @@
 s32 _spu_AllocBlockNum ALLOC_DATA = 0;
 s32 _spu_AllocLastNum ALLOC_DATA = 0;
 SPU_MALLOC *_spu_memList ALLOC_DATA = NULL;
+/* S_M's data section ends with an unreferenced zero word. */
+static u32 sSpuAllocatorPadding ALLOC_DATA = 0;
 
 s32 SpuInitMalloc(s32 num, char* top) {
     if (num > 0) {

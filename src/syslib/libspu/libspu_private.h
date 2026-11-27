@@ -84,6 +84,7 @@ extern u32 _spu_FsetRXXa(s32, u32);
 extern s32 _spu_mem_mode_plus;
 extern s32 _spu_AllocBlockNum, _spu_AllocLastNum;
 extern SPU_MALLOC *_spu_memList;
+extern s32 _spu_rev_startaddr[10];
 #define SPURV(n, field) (((SPU_VOICE_REG *)_spu_RXX)[n].field)
 
 s32 _SpuIsInAllocateArea(u32 address);
