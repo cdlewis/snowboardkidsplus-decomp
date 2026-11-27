@@ -916,7 +916,7 @@ segments:
       - {start: 0x1226C8, type: .data, name: race/player/player_palette, linker_section: .data.palette_burst_vertices}
       - {start: 0x1226E8, type: .data, name: race/player/player_palette, linker_section: .data.player_palette_transition_pixels}
       - {start: 0x122708, type: .data, name: menu/resource_tasks, linker_section: .data.main_tail_selection_sprites}
-      - [0x122720, data, main_tail_selection_text_strings]
+      - {start: 0x122720, type: .data, name: menu/resource_tasks, linker_section: .data.main_tail_selection_text_strings}
       - {start: 0x1229E8, type: .data, name: menu/resource_tasks, linker_section: .data.main_tail_selection_texts}
       - {start: 0x122A04, type: .data, name: race/player/player_actions, linker_section: .data.default_race_record_times}
       - [0x122A40, data, player_palette_transition_tail]
