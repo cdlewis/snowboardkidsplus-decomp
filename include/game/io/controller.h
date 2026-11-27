@@ -29,6 +29,7 @@ extern ControllerInputRecord gControllerPlaybackRecords[2][256]
     __attribute__((section(".data.controller_playback_records")));
 
 /* Per-controller vibration suppression settings (0 or 0x20). */
+/* Two controller slots; incomplete bounds preserve absolute addressing. */
 extern u8 gControllerVibrationDisabled[];
 
 /* Button presses this update, including generated directional repeats. */

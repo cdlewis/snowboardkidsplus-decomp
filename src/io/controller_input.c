@@ -63,6 +63,15 @@ u8 gControllerRepeatInitialDelay __attribute__((section(".sdata.controller_repea
 
 u8 gControllerRepeatInterval __attribute__((section(".sdata.controller_repeat_timing"))) = 2;
 
+u8 gControllerVibrationDisabled[2]
+    __attribute__((section(".data.controller_vibration_settings"))) = {0, 0};
+
+static u16 sControllerVibrationSettingsPadding0
+    __attribute__((section(".data.controller_vibration_settings"))) = 0;
+
+static u32 sControllerVibrationSettingsPadding1
+    __attribute__((section(".data.controller_vibration_settings"))) = 0;
+
 u8 gControllerActuatorAlignment[6] __attribute__((section(".data.controller_actuator_alignment"))) = {0, 1, 0xFF, 0xFF, 0xFF, 0xFF};
 
 static u16 sControllerActuatorAlignmentPadding __attribute__((section(".data.controller_actuator_alignment"))) = 0;

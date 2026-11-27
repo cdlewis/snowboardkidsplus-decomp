@@ -4438,7 +4438,9 @@ gTitleLogoSoundTimer = 0x8013B100;
 gTitleAttractSequenceIndex = 0x8013B10A;
 gTitleMenuSelectionIndex = 0x8013B110;
 
-gControllerVibrationDisabled = 0x8013AEC4; // size:0x1
+gControllerVibrationDisabled = 0x8013AEC4; // size:0x2
+sControllerVibrationSettingsPadding0 = 0x8013AEC6; // size:0x2
+sControllerVibrationSettingsPadding1 = 0x8013AEC8; // size:0x4
 gSelectedPlayerReplayEndRecordIndex = 0x8013AEE2; // size:0x2
 gReplaySavedControllerHeldButtons = 0x8013AFE8;
 
