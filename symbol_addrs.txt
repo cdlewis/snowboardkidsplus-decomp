@@ -4405,3 +4405,6 @@ gCoursePlayerStateRecords = 0x8012C6F4;
 gCurrentPlayerDepthOffsetOrderingTable = 0x8013AF70;
 gCurrentPlayerAlternateLayerOrderingTable = 0x8013AF74;
 gScratchMatrix1 = 0x8013AF9C;
+
+gTaskTransitionStates = 0x8012D4A4; // size:0x18
+gColorCycleTasks = 0x8013BDA8; // size:0x10

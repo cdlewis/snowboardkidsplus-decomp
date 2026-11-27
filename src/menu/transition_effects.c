@@ -3,18 +3,18 @@
 #include "game/menu/task_widgets.h"
 #include "game/race/player/race_player.h"
 
-typedef struct TaskValueState {
+typedef struct TaskTransitionState {
     GameTask *task;
-    u16 unk04;
-    u16 unk06;
-} TaskValueState;
+    u16 step;
+    u16 intensity;
+} TaskTransitionState;
 
 typedef struct ColorCycleResource {
     u8 value, step, minimum, maximum;
 } ColorCycleResource;
 
-extern TaskValueState D_8012D4A4[3];
-extern GameTask *D_8013BDA8[4];
+extern TaskTransitionState gTaskTransitionStates[3];
+extern GameTask *gColorCycleTasks[4];
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
@@ -26,7 +26,7 @@ s16 getTaskTransitionViewportIndex(s32 id);
 void updateTaskStateTransition(void);
 
 void configureTaskStateTransition(s32 mode, s32 id, u16 duration) {
-    TaskValueState *state;
+    TaskTransitionState *state;
     s16 index;
     index = getTaskTransitionViewportIndex(id);
     switch (index) {
@@ -34,9 +34,9 @@ void configureTaskStateTransition(s32 mode, s32 id, u16 duration) {
     case 1: id -= 0xFFC; break;
     case 2: id -= 0x1FFC; break;
     }
-    state = &D_8012D4A4[index];
-    if (duration == 0) state->unk04 = 0xFFFF;
-    else state->unk04 = 0xFFFF / duration;
+    state = &gTaskTransitionStates[index];
+    if (duration == 0) state->step = 0xFFFF;
+    else state->step = 0xFFFF / duration;
     switch (mode) {
     case 1: case 2: case 4: case 5: case 6: case 7:
     case 11: case 12: case 14: case 15:
@@ -49,11 +49,11 @@ void configureTaskStateTransition(s32 mode, s32 id, u16 duration) {
         state->task = gCreatedTask;
         if (mode < 11) {
             if (duration == 0) {
-                if (mode == 1 || mode == 4 || mode == 6) state->unk06 = 0xFFFF;
-                else state->unk06 = 0;
+                if (mode == 1 || mode == 4 || mode == 6) state->intensity = 0xFFFF;
+                else state->intensity = 0;
             } else {
-                if (mode == 1 || mode == 4 || mode == 6) state->unk06 = 0xFFFF;
-                else state->unk06 = 0;
+                if (mode == 1 || mode == 4 || mode == 6) state->intensity = 0xFFFF;
+                else state->intensity = 0;
             }
         }
         break;
@@ -64,7 +64,7 @@ void configureTaskStateTransition(s32 mode, s32 id, u16 duration) {
 
 void updateTaskStateTransition(void) {
     u16 index = gCurrentTask->data1A;
-    TaskValueState *state = &D_8012D4A4[index];
+    TaskTransitionState *state = &gTaskTransitionStates[index];
     GsOT *ot;
     s16 draw;
     GameTask *task;
@@ -93,44 +93,44 @@ void updateTaskStateTransition(void) {
         GameTask *drawTask = gCurrentTask;
         mode = drawTask->data18;
         if (mode == 1 || mode == 2 || mode == 6 || mode == 7) {
-            drawScreenDarkeningOverlay(state->unk06 >> 8, ot, gCurrentTask->data1C);
+            drawScreenDarkeningOverlay(state->intensity >> 8, ot, gCurrentTask->data1C);
         } else if (mode == 4 || mode == 5) {
-            drawScreenBrighteningOverlay(state->unk06 >> 8, ot, drawTask->data1C);
+            drawScreenBrighteningOverlay(state->intensity >> 8, ot, drawTask->data1C);
         }
     }
 
     if (gCurrentTask->data1E &&
         (!gRacePauseState || gCurrentTask->data18 == 6 || gCurrentTask->data18 == 7)) {
-        if ((gCurrentTask->data18 == 1 || gCurrentTask->data18 == 6) && state->unk06 == 0) {
+        if ((gCurrentTask->data18 == 1 || gCurrentTask->data18 == 6) && state->intensity == 0) {
             goto end_task;
         }
         task = gCurrentTask;
-        if ((task->data18 == 2 || task->data18 == 7) && state->unk06 == 0xFFFF) {
+        if ((task->data18 == 2 || task->data18 == 7) && state->intensity == 0xFFFF) {
             goto stop_transition;
         }
-        if (gCurrentTask->data18 == 4 && state->unk06 == 0) {
+        if (gCurrentTask->data18 == 4 && state->intensity == 0) {
 end_task:
             deleteCurrentTaskSubtree();
             return;
         }
         task = gCurrentTask;
-        if (task->data18 == 5 && state->unk06 == 0xFFFF) {
+        if (task->data18 == 5 && state->intensity == 0xFFFF) {
 stop_transition:
             task->data1E = 0;
             return;
         }
         if (gCurrentTask->data18 == 1 || gCurrentTask->data18 == 4 || gCurrentTask->data18 == 6) {
-            if (state->unk06 < state->unk04) {
-                state->unk06 = 0;
+            if (state->intensity < state->step) {
+                state->intensity = 0;
             } else {
-                state->unk06 -= state->unk04;
+                state->intensity -= state->step;
             }
         }
         if (gCurrentTask->data18 == 2 || gCurrentTask->data18 == 5 || gCurrentTask->data18 == 7) {
-            if (0xFFFF - state->unk06 < state->unk04) {
-                state->unk06 = 0xFFFF;
+            if (0xFFFF - state->intensity < state->step) {
+                state->intensity = 0xFFFF;
             } else {
-                state->unk06 += state->unk04;
+                state->intensity += state->step;
             }
         }
     }
@@ -144,17 +144,17 @@ s16 getTaskTransitionViewportIndex(s32 id) {
 }
 
 s32 hasTaskStateValue6(s32 id) {
-    return D_8012D4A4[getTaskTransitionViewportIndex(id)].unk06 != 0;
+    return gTaskTransitionStates[getTaskTransitionViewportIndex(id)].intensity != 0;
 }
 
 s32 isTaskStateTransitionBelowMaximum(s32 id) {
-    return D_8012D4A4[getTaskTransitionViewportIndex(id)].unk06 < 0xFFFFu;
+    return gTaskTransitionStates[getTaskTransitionViewportIndex(id)].intensity < 0xFFFFu;
 }
 
 void clearColorCycleTaskReferences(void) {
     s16 i;
     for (i = 0; i < 4; ) {
-        D_8013BDA8[i] = NULL;
+        gColorCycleTasks[i] = NULL;
         i = (s16)(i + 1);
     }
 }
@@ -167,12 +167,12 @@ void configureColorCycleTask(s32 mode, s16 minimum, s16 maximum, s32 step, s16 i
     u8 high = maximum;
     u8 rate = step;
     if (index < 4) {
-        task = D_8013BDA8[index];
+        task = gColorCycleTasks[index];
         missing = task == NULL;
         if (mode != 0 && (mode < 0 ? 0 : (mode < 5))) {
             if (missing == 1) {
                 createChildTaskForParentWithReserve(&gGameTasks[3], updateColorCycleTask);
-                task = D_8013BDA8[index] = gCreatedTask;
+                task = gColorCycleTasks[index] = gCreatedTask;
                 task->data1A = index;
                 gCreatedTask->resource14 = allocateTaskMemoryBlock();
                 resource = (ColorCycleResource *)&gTaskMemoryPool[gCreatedTask->resource14];
@@ -202,7 +202,7 @@ void updateColorCycleTask(void) {
     if (gCurrentTask->resource14 == 0xFFFF) { while (1) {} }
     resource = (ColorCycleResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (gCurrentTask->data18 == 0) {
-        D_8013BDA8[gCurrentTask->data1A] = NULL;
+        gColorCycleTasks[gCurrentTask->data1A] = NULL;
         deleteCurrentTaskSubtree();
     } else {
         gCurrentTask->data1E = 0;
@@ -229,7 +229,7 @@ void updateColorCycleTask(void) {
 }
 
 s32 copyColorCycleTaskColor(s16 index, MenuRgbColor *color) {
-    GameTask *task = D_8013BDA8[index];
+    GameTask *task = gColorCycleTasks[index];
     if (task == NULL) {
         return 0;
     } else {
@@ -243,7 +243,7 @@ s32 copyColorCycleTaskColor(s16 index, MenuRgbColor *color) {
 
 s32 isTaskResourceTransitionComplete(s16 index) {
     GameTask *task;
-    task = *(index + D_8013BDA8);
+    task = *(index + gColorCycleTasks);
     if (task != NULL && task->data1E == 1) {
         return 1;
     }
@@ -255,7 +255,7 @@ s32 hasColorCycleTaskReferences(void) {
     s16 i = 0;
 
     do {
-        if (D_8013BDA8[i] != NULL) {
+        if (gColorCycleTasks[i] != NULL) {
             found = 1;
         }
     } while (++i < 4);
