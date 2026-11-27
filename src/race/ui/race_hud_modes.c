@@ -1,3 +1,4 @@
+#include "text_encoding.h"
 #include "../race_presentation_internal.h"
 #include "game/race/ui/race_hud.h"
 #include "../race_internal.h"
@@ -76,13 +77,13 @@ u8 gRaceProgressMeterAlternatePalettes[12] __attribute__((section(".data.race_pr
 
 /* Full-width Shift-JIS labels used by the race HUD. */
 const char gRaceRankLabel[12] __attribute__((section(".rodata.race_rank_label"), aligned(4))) =
-    "\x82\x71\x82\x60\x82\x6D\x82\x6A";
+    _("ＲＡＮＫ");
 
 const char gAttackTimeLimitLabel[24] __attribute__((section(".rodata.trick_attack_labels"), aligned(4))) =
-    "\x82\x73\x82\x68\x82\x6C\x82\x64  \x82\x6B\x82\x68\x82\x6C\x82\x68\x82\x73";
+    _("ＴＩＭＥ  ＬＩＭＩＴ");
 
 const char gTrickAttackPointLabel[12] __attribute__((section(".rodata.trick_attack_labels"), aligned(4))) =
-    "\x82\x6F\x82\x6E\x82\x68\x82\x6D\x82\x73";
+    _("ＰＯＩＮＴ");
 
 const char gSplitScreenTimeLimitLabel[12] __attribute__((section(".rodata.trick_attack_labels"), aligned(4))) =
     "TIME LIMIT";

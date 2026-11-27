@@ -1,3 +1,4 @@
+#include "text_encoding.h"
 #include "game/menu/save_record_tasks.h"
 #include "psx/libetc.h"
 #include "save_record_tasks_internal.h"
@@ -1280,7 +1281,7 @@ void drawSelectionPrizeAndPlayerCounters(void) {
 }
 
 char gSelectionPrizeCurrencyLabel[3]
-    __attribute__((section(".data.selection_prize_currency_label"), aligned(4))) = "\x82" "f";
+    __attribute__((section(".data.selection_prize_currency_label"), aligned(4))) = _("Ｇ");
 u8 gSelectionMenuFadeStarted __attribute__((section(".data.selection_prize_currency_label"))) = 0;
 
 void clearHalfwordPairTable(void) {
@@ -2264,7 +2265,7 @@ update:
 }
 
 const char gRegisteredTripletUnavailableLabel[4]
-    __attribute__((section(".data.registered_triplet_unavailable_label"), aligned(4))) = "\x81\x48";
+    __attribute__((section(".data.registered_triplet_unavailable_label"), aligned(4))) = _("？");
 
 void createRegisteredPlayerModelTask(s16 slot, s16 selection, s16 modelIndex,
                                      s16 x, s16 y, s16 z, s32 index) {

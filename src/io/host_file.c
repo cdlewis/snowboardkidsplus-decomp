@@ -1,12 +1,13 @@
+#include "text_encoding.h"
 #include "game/io/host_file.h"
 #include "game/graphics/graphics.h"
 #include "psx/libc.h"
 #include "psx/libsn.h"
 
 const char gPcHostOpenErrorFormat[28]
-    __attribute__((section(".rodata.host_file_errors"), aligned(4))) = "Error opening file %s\x81_n";
+    __attribute__((section(".rodata.host_file_errors"), aligned(4))) = _("Error opening file %s＼n");
 const char gPcHostTransferErrorFormat[36]
-    __attribute__((section(".rodata.host_file_errors"), aligned(4))) = "Failed to read all of file %s\x81_n";
+    __attribute__((section(".rodata.host_file_errors"), aligned(4))) = _("Failed to read all of file %s＼n");
 
 static const u32 sPcHostErrorPadding
     __attribute__((section(".rodata.host_file_errors"), aligned(4))) = 0;

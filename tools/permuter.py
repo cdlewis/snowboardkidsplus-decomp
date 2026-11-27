@@ -146,6 +146,8 @@ def prepare(args, permuter, scratch):
                 psyq(compiler, scratch_dir, "-E", "-P", "-DPERMUTER", "code.c", stdout=preprocessed)
     else:
         subprocess.run([*cpp, "-o", str(base)], cwd=ROOT, check=True)
+    from textconv import convert
+    base.write_text(convert(base.read_text()))
     subprocess.run([sys.executable, str(permuter / "strip_other_fns.py"),
                     str(base), oracle.name], check=True)
     shutil.copyfile(workspace / "target.o", experiment / "target.o")

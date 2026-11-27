@@ -116,6 +116,8 @@ def generate_context(source):
                                         cwd=ROOT, input="", text=True)
         macros = subprocess.check_output(command + ["-dM", str(source)], cwd=ROOT, text=True)
         preprocessed = subprocess.check_output(command + [str(source)], cwd=ROOT, text=True)
+        from textconv import convert
+        preprocessed = convert(preprocessed)
         predefined = set(stock.splitlines())
         # -dM preserves unexpanded macro bodies, including storage annotations.
         # Those annotation macros are unnecessary in already-expanded C.

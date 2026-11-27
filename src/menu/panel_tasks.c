@@ -1,3 +1,4 @@
+#include "text_encoding.h"
 #include "panel_tasks_internal.h"
 #include "game/menu/task_widgets.h"
 #include "game/menu/selected_sprite.h"
@@ -1565,7 +1566,7 @@ void drawCurrentTaskMoneyPanelWithCharacterSprites(void) {
                   0x168, 0, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C + 2);
 }
 
-char gMoneyPanelCurrencyLabel[4] __attribute__((section(".data"), aligned(4))) = "\x82" "f";
+char gMoneyPanelCurrencyLabel[4] __attribute__((section(".data"), aligned(4))) = _("Ｇ");
 
 void initializeCountedGroupedSelectionBoundsTask(void) {
     RECT *bounds;
@@ -2157,7 +2158,7 @@ void drawCurrentTaskSaveRecordMoneyPanel(void) {
 }
 
 char gSaveRecordMoneyPanelCurrencyLabel[4]
-    __attribute__((section(".data.save_record_money_panel_currency_label"), aligned(4))) = "\x82" "f";
+    __attribute__((section(".data.save_record_money_panel_currency_label"), aligned(4))) = _("Ｇ");
 
 void drawCurrentTaskSelectedBoardDetails(void) {
     Movement2D *position;

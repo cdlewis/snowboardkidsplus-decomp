@@ -165,10 +165,11 @@ endef
 $(foreach library,$(SDK_NAMES),$(eval $(call sdk_archive_rule,$(library))))
 
 define c_rule
-$(call unit_output,$(1)).i: $(call unit_source,$(1)) Makefile config/compiler.mk $(BUILD_DIR)/.config build/include/game/io/dat_entries.h
+$(call unit_output,$(1)).i: $(call unit_source,$(1)) Makefile config/compiler.mk tools/textconv.py $(BUILD_DIR)/.config build/include/game/io/dat_entries.h
 	@mkdir -p $$(@D)
 	$(PRINTF) "[$(GREEN)   c    $(NO_COL)]  $(call unit_source,$(1))\n"
 	$(CPP) $(CPP_FLAGS) -I$(ROOT)/$(dir $(1)) -MMD -MP -MT $$@ -MF $(call unit_output,$(1)).d $(abspath $(call unit_source,$(1))) -o $$@
+	$(PY) tools/textconv.py $$@
 
 $(call unit_output,$(1)).base.s: $(call unit_output,$(1)).i $(call cc1_dependencies,$(call unit_cc1,$(1)))
 	$(call unit_cc1,$(1)) $(call unit_ccflags,$(1)) $$< -o $$@

@@ -1,3 +1,4 @@
+#include "text_encoding.h"
 #include "common.h"
 #include "game/engine/task.h"
 #include "game/io/cd_queue.h"
@@ -415,7 +416,7 @@ void drawSelectionHeaderAndMoneyPanel(void) {
     }
 }
 
-char gSelectionMoneyCurrencyLabel[4] __attribute__((section(".data.selection_money_currency_label"), aligned(4))) = "\x82" "f";
+char gSelectionMoneyCurrencyLabel[4] __attribute__((section(".data.selection_money_currency_label"), aligned(4))) = _("Ｇ");
 
 void initializeFlagSelectedCdAwareTask(void) {
     GameTask *task;

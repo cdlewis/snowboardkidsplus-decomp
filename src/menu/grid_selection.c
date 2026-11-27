@@ -1,3 +1,4 @@
+#include "text_encoding.h"
 #include "panel_tasks_internal.h"
 #include "game/menu/selected_sprite.h"
 #include "game/menu/task_widgets.h"
@@ -13,7 +14,7 @@
 #include "psx/libgpu.h"
 #include "psx/libgs.h"
 
-#define PALETTE_SELECTION_CURRENCY_LABEL "\x82" "f"
+#define PALETTE_SELECTION_CURRENCY_LABEL _("Ｇ")
 #define CHILD_MOVEMENT(entry, resource) ((Movement2D *)&gTaskMemoryPool[(entry).task->resource])
 #define FIRST_FOUR_READY(entries) \
     ((s16)(entries)[0].flags == 0 && (s16)(entries)[1].flags == 0 && \

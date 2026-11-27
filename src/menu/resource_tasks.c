@@ -1,3 +1,4 @@
+#include "text_encoding.h"
 #include "panel_tasks_internal.h"
 #include "game/menu/selected_sprite.h"
 #include "game/menu/task_widgets.h"
@@ -517,7 +518,7 @@ void drawMainTailSelectionHeaderAndMoneyPanel(void) {
     }
 }
 
-char gMainTailMoneyCurrencyLabel[3] __attribute__((section(".data.main_tail_money_currency_label"), aligned(4))) = "\x82" "f";
+char gMainTailMoneyCurrencyLabel[3] __attribute__((section(".data.main_tail_money_currency_label"), aligned(4))) = _("Ｇ");
 /* This byte immediately follows the three-byte currency label in the image. */
 u8 gRaceRulesetMenuRememberedSelection __attribute__((section(".data.main_tail_money_currency_label"))) = 0;
 
