@@ -74,7 +74,7 @@ typedef struct SelectionItemStats {
 } SelectionItemStats;
 
 extern SelectionItemStats D_8012FCE4[];
-extern ByteMappingDescriptor D_8012FD10[];
+extern ByteMappingDescriptor gCourseMenuMappingGroups[4];
 extern const u16 *gSelectionPanelTexts[10];
 void drawRegisteredSelectionItemStatus(void);
 void drawSelectionItemDetails(void);

@@ -1,3 +1,4 @@
+#include "game/engine/game_options.h"
 #include "player_actions_internal.h"
 #include "game/engine/random.h"
 #include "game/graphics/quad_animation.h"
@@ -26,7 +27,6 @@ extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern u32 gTaskTransitionFlags __attribute__((section(".data")));
 
-extern u8 D_8013AFCD __attribute__((section(".data")));
 extern u16 D_8013AF7A __attribute__((section(".data")));
 extern u16 D_8013AF7C __attribute__((section(".data")));
 extern u8 D_8013AFD6 __attribute__((section(".data")));
@@ -1805,7 +1805,7 @@ void initializeNewGameSaveData(void) {
         }
     }
 
-    D_8013AFCD = 1;
+    playerCountAbsolute = 1;
     D_8013AFE0 = 0;
 
     for (i = 0; i < 4; i++) {
@@ -1825,7 +1825,7 @@ void initializeNewGameSaveData(void) {
         gPlayerResourceTextureSelections.entries[1][i] = D_80123650[i];
     }
 
-    D_8013AFCD = 1;
+    playerCountAbsolute = 1;
     D_8013AFD2 = 1;
     D_8013AF7A = 320;
     D_8013AF7C = 240;
@@ -1835,7 +1835,7 @@ void initializeNewGameSaveData(void) {
     D_8013AFE2 = 0;
     D_8013AFD6 = 0;
     D_8013B47C = 0;
-    D_8013B104 = 0;
+    gSelectedCourseMenuItem = 0;
     gShopMenuRememberedSelection = 0;
     boardShopRememberedSelectionAbsolute = 0;
     boardMenuRememberedSelectionAbsolute = 0;

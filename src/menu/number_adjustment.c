@@ -16,7 +16,6 @@ extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCurrentTaskParent __attribute__((section(".data")));
 
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
-extern u16 D_8013AFD0 __attribute__((section(".data")));
 
 const u16 gNumberAdjustmentLabel[]
     __attribute__((section(".data.number_adjustment_label"))) = {
@@ -60,7 +59,7 @@ void initializeNumberAdjustmentTask(void) {
     }
     gCurrentTask->resource14 = allocateTaskMemoryBlock();
     state = (NumberAdjustmentState *)&gTaskMemoryPool[gCurrentTask->resource14];
-    state->value = D_8013AFD0;
+    state->value = selectedLapCountAbsolute;
     for (i = 0; i < 3; i++) {
         state->unk20[i] = 0;
         state->unk2C[i] = 0;
@@ -103,7 +102,7 @@ void updateNumberAdjustmentTask(void) {
     }
     if (buttons & 0xB0) {
         playSoundEffect(0, 0, 0x20);
-        D_8013AFD0 = state->value;
+        selectedLapCountAbsolute = state->value;
         state->countdown = 20;
         state->active = 0;
         gCurrentTaskParent->data18 = 0x17;

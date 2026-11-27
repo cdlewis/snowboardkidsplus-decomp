@@ -49,7 +49,6 @@ typedef struct ModeSelectionState {
 
 extern s16 gFrameCounter __attribute__((section(".data")));
 extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
-extern u8 D_8013AFCD __attribute__((section(".data")));
 extern u8 gRacePauseState __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
@@ -748,8 +747,8 @@ void initializePlayerModeSelectionTask(void) {
     gCurrentTask->resource14 = allocateTaskMemoryBlock();
     resource = (PlayerModeSelectionResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->unk00 = 0;
-    if (gameOptionPlayerModeAbsolute == 2) {
-        resource->selection = gameOptionPlayerModeAbsolute - 1;
+    if (playerCountAbsolute == 2) {
+        resource->selection = playerCountAbsolute - 1;
     } else {
         resource->selection = 0;
     }
@@ -790,7 +789,7 @@ void updatePlayerModeSelectionTask(void) {
         if (hasTaskStateValue6(0)) {
             break;
         }
-        createInputTimedSpriteTask(96, -8, D_80123840, 2, 1, 0xB0, 0x40, 3, 31);
+        createInputTimedSpriteTask(96, -8, gMenuInputPromptSequence, 2, 1, 0xB0, 0x40, 3, 31);
         gCurrentTask->data18 = 3;
         break;
     case 3:
@@ -863,7 +862,7 @@ cancel:
         gCurrentTaskParent->data18 = 4;
         D_8013B10C = -1;
         queueMenuResourceReads((s16)gCurrentTaskParent->data18);
-        D_8013AFCD = selection->selection + 1;
+        playerCountAbsolute = selection->selection + 1;
         moveTaskChildrenWithSpacing(0, entries[4].task, -0x188000, -0x10000, -0x3C000, 0, -2);
         entries[4].command = 23;
         createRepeatedSoundTask(1, 2, 6, 2);
@@ -1133,7 +1132,7 @@ void finishUnlockNotification0TransitionTask(void) {
 }
 
 void drawSound601SequenceSpriteTask(void) {
-    if (gameOptionPlayerModeAbsolute == 1) {
+    if (playerCountAbsolute == 1) {
         drawSpriteByIndexWithBlend(-48, -12, 0x1E0, 6, -1, &D_800EC018[gActiveGraphicsBuffer], 1);
     } else if (gCurrentTask->data18 == 0) {
         if (shouldRenderPlayerView(0)) {
@@ -1191,7 +1190,7 @@ void updateBoardReversePromptTask(void) {
 }
 
 void initializePlayerPromptTask(void) {
-    if (D_8013AFCD == 1) {
+    if (playerCountAbsolute == 1) {
         gCurrentTask->data1C = 0;
         gCurrentTask->data1E = 0;
     } else {
@@ -1251,7 +1250,7 @@ void waitThenStartSpriteScaleTransition(void) {
 }
 
 void beginSpriteScaleTransitionDelay(void) {
-    if (D_8013AFCD == 1) {
+    if (playerCountAbsolute == 1) {
         gCurrentTask->data18 = 0;
     } else {
         gCurrentTask->data18 = -30;

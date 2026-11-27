@@ -18,7 +18,6 @@ extern u8 D_8013AFD9 __attribute__((section(".data")));
 extern s16 D_8013AFDE __attribute__((section(".data")));
 extern u8 D_8013AFE1 __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
-extern u8 D_8013AFCD __attribute__((section(".data")));
 extern u8 D_8013AFE0 __attribute__((section(".data")));
 extern u8 D_8013AFE2 __attribute__((section(".data")));
 extern u8 gRacePauseState __attribute__((section(".data")));
@@ -28,7 +27,6 @@ extern u8 D_8013AFD6 __attribute__((section(".data")));
 extern u8 D_8013B108 __attribute__((section(".data")));
 extern u8 D_8013B109 __attribute__((section(".data")));
 extern s16 D_8013B106 __attribute__((section(".data")));
-extern u16 D_8013AFD0 __attribute__((section(".data")));
 
 ControllerPlaybackEntry gControllerPlaybackEntries[12] __attribute__((section(".data.controller_playback_entries"))) = {
     {0, 0, 0, 0},
@@ -85,13 +83,13 @@ void initializeControllerPlaybackRaceTask(void) {
     player[1].isActive = 1;
     player[2].isActive = 1;
     player[3].isActive = 1;
-    D_8013AFD0 = 5;
+    selectedLapCountAbsolute = 5;
     player[0].unk01C = 0;
     player[1].unk01C = 0;
     player[2].unk01C = 0;
     player[3].unk01C = 0;
     D_8013AFD2 = 3;
-    D_8013AFCD = 2;
+    playerCountAbsolute = 2;
     D_8013AFDE = 100;
     for (; i < 4; i++) {
         player[i].unk025[1] = 0;

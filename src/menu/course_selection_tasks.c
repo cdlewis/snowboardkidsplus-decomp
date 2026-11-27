@@ -95,14 +95,11 @@ typedef struct SaveRecordTaskStatus {
 extern MenuRgbColor gMenuColorCycleColor __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
-extern u8 D_8013AFCD __attribute__((section(".data")));
 extern u8 D_8013AFE2 __attribute__((section(".data")));
-extern s16 D_8013B104 __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern GameTask *gCurrentTaskParent __attribute__((section(".data")));
 
-extern u16 D_8013AFD0 __attribute__((section(".data")));
 
 extern s16 D_8013AF3E __attribute__((section(".data")));
 
@@ -288,18 +285,18 @@ void updateCdAwareCourseSelectionTask(void) {
     case 1:
         setMusicSequenceEnabled(1);
         setSecondaryDisplayTaskMode(0);
-        if (D_8013AFCD == 1) {
+        if (playerCountAbsolute == 1) {
             mode = 1;
         } else {
             mode = 3;
         }
-        group = &D_8012FD10[gCurrentTask->data1A];
+        group = &gCourseMenuMappingGroups[gCurrentTask->data1A];
         selection->mode = 0;
-        selectedIndex = findIdentityMappedIndexOrZero(group, D_8013B104);
+        selectedIndex = findIdentityMappedIndexOrZero(group, selectedCourseMenuItemAbsolute);
         selection->selectedIndex = selectedIndex;
         selection->previousIndex = selectedIndex;
         selection->choiceResult = 0;
-        createRegisteredSpacedChildTasks(mode, 0xB0, 0x40, (const u8 *)D_8012F798,
+        createRegisteredSpacedChildTasks(mode, 0xB0, 0x40, (const u8 *)gCourseMenuSpriteEntries,
                                          group->mapping, NULL, 0, 0, 20,
                                          -312, -96, group->spacingX, group->spacingY,
                                          group->count, 149, drawSelectedTaskSprite,
@@ -345,7 +342,7 @@ void updateCdAwareCourseSelectionTask(void) {
             }
             if (selection->choiceResult < 0) {
                 GameTask *parent = gCurrentTaskParent;
-                D_8013B104 = 0;
+                selectedCourseMenuItemAbsolute = 0;
                 parent->data18 = 6;
                 gCurrentTask->data18 = 7;
             } else {
@@ -366,11 +363,11 @@ void updateCdAwareCourseSelectionTask(void) {
         break;
     case 52: {
         GameTask *task = gCurrentTask;
-        group = &D_8012FD10[task->data1A];
+        group = &gCourseMenuMappingGroups[task->data1A];
         switch (group->mapping[selection->selectedIndex]) {
         case 10: {
             GameTask *parent = gCurrentTaskParent;
-            D_8013B104 = 0;
+            selectedCourseMenuItemAbsolute = 0;
             parent->data18 = 6;
             task->data18 = 7;
             break;
@@ -384,12 +381,12 @@ void updateCdAwareCourseSelectionTask(void) {
             task->data18 = 40;
             break;
         default:
-            selectedIndex = D_8013B104 = mapMenuByteIndex(group->mapping, selection->selectedIndex);
-            course = D_8012D46C[selectedIndex];
+            selectedIndex = selectedCourseMenuItemAbsolute = mapMenuByteIndex(group->mapping, selection->selectedIndex);
+            course = gCourseMenuCourseIndices[selectedIndex];
             courseParameter = D_80123D80[course].unk02;
             gSelectedCourseIndex = course;
             gCurrentTask->data18 = 30;
-            D_8013AFD0 = courseParameter;
+            selectedLapCountAbsolute = courseParameter;
             break;
         }
         break;
@@ -455,7 +452,7 @@ void updateCdAwareCourseSelectionTask(void) {
 s32 getCourseSelectionGroupIndex(void) {
     s16 result;
 
-    if (D_8013AFCD == 1) {
+    if (playerCountAbsolute == 1) {
         u8 character = gRacePlayers[0].unk009;
         u32 mask = gPlayerSaveRecords[0].masks[character];
 
@@ -486,7 +483,7 @@ s32 getCourseSelectionGroupIndex(void) {
 
 void initializeModeDependentDualResourceTask(void) {
     gCurrentTask->data18 = 1;
-    if (D_8013AFCD == 1) {
+    if (playerCountAbsolute == 1) {
         gCurrentTask->data1A = 1;
     } else {
         gCurrentTask->data1A = 3;
@@ -566,7 +563,7 @@ void updateSelectionPrizeMenuTask(void) {
     case 5:
         if (entries[0].flags == 0 || entries[1].flags == 0) {
             createPaletteRotationTask(816, 245, 1, 12, 3, 5, 91);
-            createInputTimedSpriteTask(-40, 44, D_80123840, 2, gCurrentTask->data1A, 176, 64, 3, 21);
+            createInputTimedSpriteTask(-40, 44, gMenuInputPromptSequence, 2, gCurrentTask->data1A, 176, 64, 3, 21);
             entries[0].command = 20;
             entries[1].command = 20;
             configureColorCycleTask(1, 0, 128, 8, 0);
@@ -800,7 +797,7 @@ void drawRegisteredSelectionItemStatus(void) {
         entry = &entries[gCurrentTask->data1E / 10U];
     }
     if (parent->values != 0) {
-        sprite = D_8012F798;
+        sprite = gCourseMenuSpriteEntries;
         if (entry->command == 99) {
             entry->task = 0;
             deleteCurrentTaskSubtree();
@@ -813,7 +810,7 @@ void drawRegisteredSelectionItemStatus(void) {
             character = gRacePlayers[0].unk009;
             index = mapCourseMenuByteIndex(parent->values, (s16)gCurrentTask->data1A);
             if ((u16)index < 10) {
-                if (D_8013AFCD == 1) {
+                if (playerCountAbsolute == 1) {
                     if ((gMergedSaveRecord.masks[character] & (1U << (index * 2))) > 0) {
                         if (!(gMergedSaveRecord.masks[character] & (2U << (index * 2)))) {
                             goto draw_base_status;
@@ -876,7 +873,7 @@ void drawSelectionItemDetails(void) {
     }
     drawSpriteByIndexWithBlend(position->x / 4096 + 8, position->y / 4096 - 22,
                  0xB3, 0, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
-    group = &D_8012FD10[gCurrentTaskParent->data1A];
+    group = &gCourseMenuMappingGroups[gCurrentTaskParent->data1A];
     index = mapMenuByteIndex(group->mapping, selection->unk_02);
     if ((u16)index >= 10) {
         return;
@@ -913,7 +910,7 @@ void drawSelectionPrizeAndPlayerCounters(void) {
     }
     position = (Movement2D *)&gTaskMemoryPool[gCurrentTask->resource14];
     if (gCurrentTask->data1A != 0) {
-        if (D_8013AFCD == 1) {
+        if (playerCountAbsolute == 1) {
             drawSpriteByIndexWithBlend(position->x / 4096, position->y / 4096,
                           0xC1, 14, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
             for (row = 0; row < 3; row++) {
@@ -975,7 +972,7 @@ u32 getSelectedCoursePrize(s16 unusedCourse, s16 place) {
 void initializeCountedPlayerGroupedSelectionBoundsTask(void) {
     RECT *bounds;
     gCurrentTaskParent->data1C++;
-    if (D_8013AFCD == 2) {
+    if (playerCountAbsolute == 2) {
         setCurrentTaskCallback(initializeDualResourceTaskAndResetByteState);
     } else {
         gCurrentTask->data18 = 0;
@@ -3439,7 +3436,7 @@ void updateSaveRecordTask(void) {
             if (firstResult == 0 || secondResult == 0 || panels[0].flags || panels[1].flags) {
                 break;
             }
-            if (D_8013AFCD == 1 && D_8013B47C == 0) {
+            if (playerCountAbsolute == 1 && D_8013B47C == 0) {
                 gCurrentTaskParent->data18 = 30;
             } else {
                 gCurrentTaskParent->data18 = 5;
@@ -3465,7 +3462,7 @@ void updateSaveRecordTask(void) {
         }
         goto finish_transition;
     case 8:
-        if (D_8013AFCD == 2) {
+        if (playerCountAbsolute == 2) {
             gCurrentTaskParent->data18 = 5;
             queueMenuResourceReads(5);
         } else {
@@ -3487,7 +3484,7 @@ void updateSaveRecordTask(void) {
 }
 
 void resetUnlockNotificationStateForMode2(void) {
-    if (D_8013AFCD == 2) {
+    if (playerCountAbsolute == 2) {
         gUnlockNotificationFlags = 0;
         D_8013B47C = 0;
     }
@@ -3604,7 +3601,7 @@ void updateSaveRecordLoadPanelTask(void) {
         parentPanel->flags = 0;
         break;
     case 3:
-        if (player >= D_8013AFCD) {
+        if (player >= playerCountAbsolute) {
             selection->choiceResult = 1;
             gCurrentTask->data18 = 26;
             break;
@@ -3957,7 +3954,7 @@ void drawSaveRecordProgressPanel(void) {
     x = position->x / 4096;
     y = position->y / 4096;
     slot = gCurrentTask->data18;
-    if (slot < D_8013AFCD) {
+    if (slot < playerCountAbsolute) {
         if (gCurrentTask->data1A != 0) {
             if (gCurrentTask->data1A == 1 || gCurrentTask->data1A == 2) {
                 copyColorCycleTaskColor(slot, &gMenuColorCycleColor);
@@ -4034,7 +4031,7 @@ void drawSaveRecordProgressPanel(void) {
                       &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
     }
 
-    if (slot < D_8013AFCD) {
+    if (slot < playerCountAbsolute) {
         setSpriteColor(128, 128, 128);
         setTexturedQuadColor(128, 128, 128);
     } else {

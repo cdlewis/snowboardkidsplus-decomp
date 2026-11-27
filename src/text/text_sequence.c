@@ -29,7 +29,6 @@ extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
 extern u16 D_8013AF7A __attribute__((section(".data")));
 extern u16 D_8013AF7C __attribute__((section(".data")));
 extern s16 D_8013AF80 __attribute__((section(".data")));
-extern u8 D_8013AFCD __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern u32 gTaskTransitionFlags __attribute__((section(".data")));
 
@@ -206,7 +205,7 @@ void animateTextSequenceExitTask(void) {
     if (resource->displacement / 4096 >= 141) {
         taskTransitionFlagGp = 1;
         D_8013B1A8 = 1;
-        D_8013AFCD = 1;
+        playerCountAbsolute = 1;
         gTaskTransitionFlags = 0;
         D_8013AFAA |= 0x1000;
         queueCdCommand(D_80124164[gSelectedCourseIndex], 0);

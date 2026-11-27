@@ -34,7 +34,6 @@ extern u8 D_8013B108 __attribute__((section(".data")));
 extern u8 D_8013B564 __attribute__((section(".data")));
 extern s16 D_8013B106 __attribute__((section(".data")));
 extern u8 D_8013B0F0 __attribute__((section(".data")));
-extern u16 D_8013AFD0 __attribute__((section(".data")));
 
 extern const GridSpriteEntry gMode11SelectionSprites[];
 extern const u8 gMode11SelectionMapping[];
@@ -234,7 +233,7 @@ void initializeMode1RacePlayers(void) {
     gRacePlayers[1].unk025[3] = 1;
     gRacePlayers[2].unk025[3] = 2;
     gRacePlayers[3].unk025[3] = 3;
-    gameOptionPlayerModeAbsolute = 2;
+    playerCountAbsolute = 2;
     mode = D_8013AFD8;
     if (mode != 0 && (mode < 7 || mode == 9)) {
         gRacePlayers[0].isActive = 1;
@@ -249,7 +248,7 @@ void initializeMode1RacePlayers(void) {
         gRacePlayers[3].isActive = 1;
         D_8013AFD2 = 4;
     }
-    D_8013AFD0 = 5;
+    selectedLapCountAbsolute = 5;
     D_8013AFDE = 100;
     for (i = 0; i < 4; i++) {
         gRacePlayers[i].unk025[1] = 0;

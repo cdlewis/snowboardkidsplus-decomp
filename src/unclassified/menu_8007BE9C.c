@@ -20,7 +20,6 @@ typedef struct MainMenuSelection {
 
 extern MenuRgbColor gMenuColorCycleColor __attribute__((section(".data")));
 extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
-extern u8 D_8013AFCD __attribute__((section(".data")));
 extern u8 D_8013AFE2 __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCurrentTaskParent __attribute__((section(".data")));
@@ -87,7 +86,7 @@ void updateMainMenuSelectionTask(void) {
             s32 singlePlayer = 1;
             u8 playerCount;
 
-            if (D_8013AFCD == singlePlayer) {
+            if (playerCountAbsolute == singlePlayer) {
                 mode = singlePlayer;
             } else {
                 mode = 3;
@@ -96,7 +95,7 @@ void updateMainMenuSelectionTask(void) {
             selection->selectedIndex = getValidatedSelectionIndex();
             selection->previousIndex = selection->selectedIndex;
             selection->choiceResult = 0;
-            if (D_8013AFCD == singlePlayer) {
+            if (playerCountAbsolute == singlePlayer) {
                 createRegisteredSpacedChildTasks(mode, 0xB0, 0x40, (const u8 *)gMainMenuSprites,
                                                  gMainMenuSinglePlayerSpriteMapping, NULL, 0, 0, 20,
                                                  -308, -96, 0, 20, 5, 0xB0,
@@ -109,7 +108,7 @@ void updateMainMenuSelectionTask(void) {
                                                  drawSelectedTaskSprite, drawRegisteredTaskGridSpriteWithColor,
                                                  4, singlePlayer);
             }
-            playerCount = D_8013AFCD;
+            playerCount = playerCountAbsolute;
             if (playerCount == 1) {
                 if (gRacePlayers[0].unk009 == 8 || gRacePlayers[0].unk009 == 9) {
                     createRegisteredTextPanelTask(-320, 8, gMainMenuTexts, gMainMenuSinglePlayerTextMapping, 4, 11);
@@ -289,7 +288,7 @@ void drawSelectionHeaderAndMoneyPanel(void) {
     }
     drawSpriteByIndexWithBlend(position->x / 4096 + 8, position->y / 4096 - 22,
                  0xB1, 0, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
-    playerCount = D_8013AFCD;
+    playerCount = playerCountAbsolute;
     if (playerCount != 1) {
         return;
     }

@@ -231,7 +231,7 @@ s32 getNearestCameraManhattanDistance(s32 x, s32 y, s32 z) {
     dz = z - cameras[0].z;
     if (dz < 0) dz = -dz;
     distance = (dx + dy + dz) >> 8;
-    if (gameOptionPlayerModeAbsolute == 2) {
+    if (playerCountAbsolute == 2) {
         dx = x - cameras[1].x;
         if (dx < 0) dx = -dx;
         dy = y - cameras[1].y;

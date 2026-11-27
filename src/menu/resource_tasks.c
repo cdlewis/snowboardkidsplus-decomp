@@ -23,14 +23,11 @@ typedef struct MainTailSelectionResource {
 extern MenuRgbColor gMenuColorCycleColor __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
-extern u8 D_8013AFCD __attribute__((section(".data")));
 extern u8 D_8013AFE0 __attribute__((section(".data")));
-extern s16 D_8013B104 __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern GameTask *gCurrentTaskParent __attribute__((section(".data")));
 
-extern u16 D_8013AFD0 __attribute__((section(".data")));
 
 extern ByteMappingDescriptor D_801325FC[];
 extern ByteMappingDescriptor D_80132638[];
@@ -138,7 +135,7 @@ void updateMainTailSelectionMenuTask(void) {
         break;
     case 1:
         if (hasTaskStateValue6(0) == 0) {
-            if (D_8013AFCD == 1) {
+            if (playerCountAbsolute == 1) {
                 mode = 1;
             } else {
                 mode = 3;
@@ -151,12 +148,12 @@ void updateMainTailSelectionMenuTask(void) {
             }
             selection->previousIndex = selection->selectedIndex;
             selection->choiceResult = 0;
-            D_8013B104 = 0;
+            selectedCourseMenuItemAbsolute = 0;
             createRegisteredSpacedChildTasks(mode, 0xB0, 0x40, (const u8 *)gMainTailSelectionSprites,
                                              gMainTailSelectionMapping, NULL, 0, 0, 20,
                                              -308, -96, 0, 24, 4, 0xB0,
                                              drawSelectedTaskSprite, drawRegisteredTaskGridSpriteWithColor, 4, 1);
-            if (D_8013AFCD == 1) {
+            if (playerCountAbsolute == 1) {
                 createRegisteredTextPanelTask(-320, 8, gMainTailSelectionTexts, NULL, 4, 11);
             } else {
                 createRegisteredTextPanelTask(-320, 8, gMainTailSelectionTexts, gMainTailMultiplayerTextMapping, 4, 11);
@@ -292,7 +289,7 @@ void drawMainTailSelectionHeaderAndMoneyPanel(void) {
     }
     drawSpriteByIndexWithBlend(position->x / 4096 + 8, position->y / 4096 - 22,
                  0xB2, 0, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
-    playerCount = D_8013AFCD;
+    playerCount = playerCountAbsolute;
     if (playerCount != 1) {
         return;
     }
@@ -364,7 +361,7 @@ void updateSelectionIndexedMenuTask(void) {
     switch (gCurrentTask->data18) {
     case 0:
         setMusicSequenceEnabled(1);
-        players = D_8013AFCD;
+        players = playerCountAbsolute;
         if (players == 1) {
             mode = 1;
         } else {
@@ -376,11 +373,11 @@ void updateSelectionIndexedMenuTask(void) {
             group = &D_801325FC[gCurrentTask->data1A];
         }
         selection->mode = 0;
-        selectedIndex = findIdentityMappedIndexOrZero(group, D_8013B104);
+        selectedIndex = findIdentityMappedIndexOrZero(group, selectedCourseMenuItemAbsolute);
         selection->selectedIndex = selectedIndex;
         selection->previousIndex = selectedIndex;
         selection->choiceResult = 0;
-        createRegisteredSpacedChildTasks(mode, 0xB0, 0x40, (const u8 *)D_8012F798,
+        createRegisteredSpacedChildTasks(mode, 0xB0, 0x40, (const u8 *)gCourseMenuSpriteEntries,
                                          group->mapping, NULL, 0, 0, 20,
                                          -312, -88, group->spacingX, group->spacingY,
                                          group->count, 149, drawSelectedTaskSprite,
@@ -459,15 +456,15 @@ void updateSelectionIndexedMenuTask(void) {
         selectedIndex = selection->selectedIndex;
         if (group->mapping[selectedIndex] == 10) {
             GameTask *parent = gCurrentTaskParent;
-            D_8013B104 = 0;
+            selectedCourseMenuItemAbsolute = 0;
             parent->data18 = 9;
             task->data18 = 6;
         } else {
-            selectedIndex = D_8013B104 = mapMenuByteIndex(group->mapping, selectedIndex);
-            course = D_8012D46C[selectedIndex];
-            D_8013AFD0 = 1;
+            selectedIndex = selectedCourseMenuItemAbsolute = mapMenuByteIndex(group->mapping, selectedIndex);
+            course = gCourseMenuCourseIndices[selectedIndex];
+            selectedLapCountAbsolute = 1;
             gSelectedCourseIndex = course;
-            if (D_8013AFCD == 1) {
+            if (playerCountAbsolute == 1) {
                 gCurrentTask->data18 = 9;
             } else {
                 nextState = 8;
@@ -523,7 +520,7 @@ void updateSelectionIndexedMenuTask(void) {
 
 void initializeModeDependentTaskResourcePair(void) {
     gCurrentTask->data18 = 0;
-    if (D_8013AFCD == 1) {
+    if (playerCountAbsolute == 1) {
         gCurrentTask->data1A = 1;
     } else {
         gCurrentTask->data1A = 3;
@@ -611,7 +608,7 @@ void updateModeDependentRecordsMenuTask(void) {
         break;
     case 4:
         if ((s16)entries[0].flags == 0) {
-            createInputTimedSpriteTask(-40, 44, D_80123840, 2, gCurrentTask->data1A, 0xB0, 0x40, 3, 11);
+            createInputTimedSpriteTask(-40, 44, gMenuInputPromptSequence, 2, gCurrentTask->data1A, 0xB0, 0x40, 3, 11);
             entries[0].command = 20;
             configureColorCycleTask(1, 0, 128, 8, 0);
             transitionTask = gCurrentTask;
@@ -1000,18 +997,18 @@ void updateFlagSelectedMenuTask(void) {
     switch (gCurrentTask->data18) {
     case 0:
         setMusicSequenceEnabled(1);
-        if (D_8013AFCD == 1) {
+        if (playerCountAbsolute == 1) {
             mode = 1;
         } else {
             mode = 3;
         }
-        group = &D_8012FD10[gCurrentTask->data1A];
+        group = &gCourseMenuMappingGroups[gCurrentTask->data1A];
         selection->mode = 0;
-        selectedIndex = findIdentityMappedIndexOrZero(group, D_8013B104);
+        selectedIndex = findIdentityMappedIndexOrZero(group, selectedCourseMenuItemAbsolute);
         selection->selectedIndex = selectedIndex;
         selection->previousIndex = selectedIndex;
         selection->choiceResult = 0;
-        createRegisteredSpacedChildTasks(mode, 0xB0, 0x40, (const u8 *)D_8012F798,
+        createRegisteredSpacedChildTasks(mode, 0xB0, 0x40, (const u8 *)gCourseMenuSpriteEntries,
                                          group->mapping, NULL, 0, 0, 20,
                                          -308, -96, group->spacingX, group->spacingY,
                                          group->count, 149, drawSelectedTaskSprite,
@@ -1024,7 +1021,7 @@ void updateFlagSelectedMenuTask(void) {
     case 2:
         if (*(s16 *)&entries[0].flags == 0 && *(s16 *)&entries[1].flags == 0 &&
             *(s16 *)&entries[2].flags == 0) {
-            group = &D_8012FD10[gCurrentTask->data1A];
+            group = &gCourseMenuMappingGroups[gCurrentTask->data1A];
             moveTaskChildrenWithSpacing(0, entries[0].task, -0x80000, -0x60000, 0x1E000, 0, 1);
             configureMovement2D((Movement2D *)&gTaskMemoryPool[entries[1].task->resource14],
                                 -0x8000, -0x48000, 0x1E000, 0, group->count);
@@ -1079,17 +1076,17 @@ void updateFlagSelectedMenuTask(void) {
         break;
     case 5:
         selectionTask = gCurrentTask;
-        group = &D_8012FD10[selectionTask->data1A];
+        group = &gCourseMenuMappingGroups[selectionTask->data1A];
         selectedIndex = selection->selectedIndex;
         if (group->mapping[selectedIndex] == 10) {
             GameTask *menuParent = gCurrentTaskParent;
-            D_8013B104 = 0;
+            selectedCourseMenuItemAbsolute = 0;
             menuParent->data18 = 6;
             selectionTask->data18 = 6;
         } else {
-            selectedIndex = D_8013B104 = mapMenuByteIndex(group->mapping, selectedIndex);
-            value = D_8012D46C[selectedIndex];
-            D_8013AFD0 = 1;
+            selectedIndex = selectedCourseMenuItemAbsolute = mapMenuByteIndex(group->mapping, selectedIndex);
+            value = gCourseMenuCourseIndices[selectedIndex];
+            selectedLapCountAbsolute = 1;
             gSelectedCourseIndex = value;
             task = gCurrentTask;
             task->data18 = 10;
@@ -1138,7 +1135,7 @@ void updateFlagSelectedMenuTask(void) {
 void initializeModeDependentTailResourcePairTask(void) {
     GameTask *task = gCurrentTask;
     task->data18 = 0;
-    if (D_8013AFCD == 1) {
+    if (playerCountAbsolute == 1) {
         task->data1A = 1;
     } else {
         task->data1A = 3;
@@ -1215,7 +1212,7 @@ void updateLapRecordsMenuTask(void) {
         break;
     case 4:
         if ((s16)entries[0].flags == 0) {
-            createInputTimedSpriteTask(-36, 36, D_80123840, 2, gCurrentTask->data1A, 0xB0, 0x40, 3, 11);
+            createInputTimedSpriteTask(-36, 36, gMenuInputPromptSequence, 2, gCurrentTask->data1A, 0xB0, 0x40, 3, 11);
             entries[0].command = 20;
             configureColorCycleTask(1, 0, 128, 8, 0);
             transitionTask = gCurrentTask;

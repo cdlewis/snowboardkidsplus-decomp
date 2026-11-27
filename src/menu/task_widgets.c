@@ -166,7 +166,6 @@ typedef s16 SpriteMotionResource[128];
 extern MenuRgbColor gMenuColorCycleColor __attribute__((section(".data")));
 extern s16 gFrameCounter __attribute__((section(".data")));
 extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
-extern u8 D_8013AFCD __attribute__((section(".data")));
 extern u8 D_8013AFE2 __attribute__((section(".data")));
 extern u8 D_8013B3A8 __attribute__((section(".data")));
 extern u8 D_8013B3A9 __attribute__((section(".data")));
@@ -2422,7 +2421,7 @@ void updateCharacterSelectionTask(void) {
         selection[0].unk00 = 0;
         selection[0].previous = selection[0].selected = findCharacterSelectionIndex(players[0].unk009);
         selection[0].unk06 = 0;
-        if (D_8013AFCD == 2) {
+        if (playerCountAbsolute == 2) {
             selection[1].unk00 = 0;
             selection[1].previous = selection[1].selected = findCharacterSelectionIndex(players[1].unk009);
             selection[1].unk06 = 0;
@@ -2873,7 +2872,7 @@ remove:
 render:
     panel->active |= updateMovement2D(position);
     i = 0;
-    if (player < D_8013AFCD) {
+    if (player < playerCountAbsolute) {
         for (; i < 3; i++) {
             SaveRecord *records = gPlayerSaveRecords;
             if (records[player].masks[character] & (0x1000000U << i)) {
@@ -2917,7 +2916,7 @@ render:
         drawSpriteByIndexWithBlend((s16)(position->x / 4096 + 48), (s16)(position->y / 4096 + 32),
                       180, 1, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);
     }
-    if (player < D_8013AFCD) {
+    if (player < playerCountAbsolute) {
         setTexturedQuadColor(0x80, 0x80, 0x80);
         setSpriteColor(0x80, 0x80, 0x80);
     } else {
@@ -3020,7 +3019,7 @@ void updatePlayerCharacterSelection(s16 playerIndex, SelectionEntry *entries) {
         player->unk009 = *mapping;
         player->unk00A[0] = records[playerIndex].boardSelections[player->unk009];
         player->unk00D = records[playerIndex].paletteSelections[player->unk009];
-        if (D_8013AFCD != 2 || other->unk00 < 0 || other->unk06 != 1 ||
+        if (playerCountAbsolute != 2 || other->unk00 < 0 || other->unk06 != 1 ||
             gRacePlayers[0].unk009 != gRacePlayers[1].unk009) {
             goto confirm;
         }
@@ -3065,7 +3064,7 @@ void createRegisteredSelectionPanelTask(s16 playerIndex, SelectionPanelRecord *r
     resource->transitioning = 0;
     resource->record = record;
     player = playerIndex;
-    if (player < D_8013AFCD) {
+    if (player < playerCountAbsolute) {
         uploadTextureArchiveEntry(0x240 + (player << 7), 0x100, 0x300,
                                   0xEE - player * 2, D_8012D460[record->selection]);
     } else {
@@ -3114,7 +3113,7 @@ void updateRegisteredSelectionPanelTask(void) {
     record = resource->record;
     shade = 128;
     setSpriteColor(shade, shade, shade);
-    if (player >= D_8013AFCD) {
+    if (player >= playerCountAbsolute) {
         setSpriteColor(64, 64, 64);
         drawSpriteByIndexWithBlend((s16)(position->x / 4096 + 96), (s16)(position->y / 4096),
                      241 + player * 2, 0, -1, &gMainOrderingTables[gActiveGraphicsBuffer], gCurrentTask->data1C);

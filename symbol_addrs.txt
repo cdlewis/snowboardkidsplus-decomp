@@ -2998,13 +2998,13 @@ gSecondaryTaskSequenceEntries = 0x8012F10C; // size:0x30
 advanceTextLine = 0x800A60FC; // type:func
 
 // Race options; addressing aliases are in config/symbol_aliases.ld.
-D_8013AFCD = 0x8013AFCD; // size:0x1
+gPlayerCount = 0x8013AFCD; // size:0x1
 gRaceOrderPlayerIds = 0x8013B0EC; // size:0x4 defined:true
 D_8013AFD2 = 0x8013AFD2; // size:0x1
 initializeRaceRestartTask = 0x8001CD64; // type:func
 
 gSelectedCourseIndex = 0x8013AFCE; // size:0x2
-D_8013AFD0 = 0x8013AFD0; // size:0x2
+gSelectedLapCount = 0x8013AFD0; // size:0x2
 
 createFlickeringDotsTask = 0x8004FA74; // type:func
 
@@ -4258,3 +4258,9 @@ gSelectionPanelStatTriplets = 0x8012FFFC; // size:0x10
 gShopBoardUnlockFlagIndices = 0x80131804; // size:0xC
 gShopBoardPrices = 0x80131810; // size:0x30
 gCharacterBoardPrices = 0x801319B0; // size:0xC8
+
+gMenuInputPromptSequence = 0x80123840;
+gCourseMenuCourseIndices = 0x8012D46C;
+gCourseMenuSpriteEntries = 0x8012F798;
+gCourseMenuMappingGroups = 0x8012FD10;
+gSelectedCourseMenuItem = 0x8013B104;

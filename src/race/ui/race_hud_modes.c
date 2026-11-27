@@ -30,7 +30,6 @@ extern u8 D_8013AFD9 __attribute__((section(".data")));
 extern s16 gFrameCounter __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
-extern u8 D_8013AFCD __attribute__((section(".data")));
 extern u32 gTaskTransitionFlags __attribute__((section(".data")));
 extern u8 D_8013AFD6 __attribute__((section(".data")));
 extern u8 gRacePauseState __attribute__((section(".data")));
@@ -119,7 +118,7 @@ void updateCurrentPlayerCameraTask(void) {
             s32 scale;
 
             CAMERA.yaw = getXZHeading(CAMERA.x, CAMERA.z, PLAYER.x, PLAYER.z);
-            if (D_8013AFCD == 1 && PLAYER.unk0BC > 4096) {
+            if (playerCountAbsolute == 1 && PLAYER.unk0BC > 4096) {
                 s32 delta = ((u16)CAMERA.yaw - PLAYER.unk0BE) & 0xFFF;
                 if ((u32)(delta + 16) > 32) {
                     s16 step;
@@ -237,7 +236,7 @@ void updateCurrentPlayerCameraTask(void) {
             }
         }
         updateCurrentPlayerCameraTarget();
-        if (D_8013AFCD == 1 && gSelectedCourseIndex == 7 && PLAYER.unk92E < 4) {
+        if (playerCountAbsolute == 1 && gSelectedCourseIndex == 7 && PLAYER.unk92E < 4) {
             clampPlayerCameraDistance(gCurrentTask->data18);
         }
         break;
@@ -549,7 +548,7 @@ void initializeRaceRulesAndCounters(void) {
     D_8013B620 = -1;
     switch (D_8013AFE2) {
     case 0:
-        if (D_8013AFCD == 1) {
+        if (playerCountAbsolute == 1) {
             D_8013B620 = 0;
         } else {
             D_8013B620 = 1;
@@ -557,7 +556,7 @@ void initializeRaceRulesAndCounters(void) {
         break;
     case 1:
         if (D_8013AFE0 == 0) {
-            if (D_8013AFCD == 1) {
+            if (playerCountAbsolute == 1) {
                 D_8013B620 = 2;
             } else {
                 D_8013B620 = 3;
@@ -567,7 +566,7 @@ void initializeRaceRulesAndCounters(void) {
             gRacePlayers[1].collectedCourseCoinMarkerCount = 0;
             gRacePlayers[1].totalCourseCoinMarkerCount = D_8012429C[gSelectedCourseIndex];
         } else if (D_8013AFE0 == 1) {
-            if (D_8013AFCD == 1) {
+            if (playerCountAbsolute == 1) {
                 D_8013B620 = 4;
                 D_8013B184 = D_80124248[gSelectedCourseIndex];
             } else {
@@ -581,7 +580,7 @@ void initializeRaceRulesAndCounters(void) {
             gRacePlayers[1].scoreAttackPointTotal = 0;
             gRacePlayers[1].scoreAttackPointTarget = D_801242A8[gSelectedCourseIndex];
         } else if (D_8013AFE0 == 2) {
-            if (D_8013AFCD == 1) {
+            if (playerCountAbsolute == 1) {
                 D_8013B620 = 6;
                 D_8013B184 = D_8013B154;
             } else {

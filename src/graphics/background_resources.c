@@ -221,7 +221,7 @@ void dispatchBackgroundMenuTask(void) {
             queueMenuResourceReads(gCurrentTask->data18);
             if (isCdCommandQueueIdle() == 1) {
                 configureTaskStateTransition(1, 0, 30);
-                setTaskBackgroundMode(3, D_8013B104, 0);
+                setTaskBackgroundMode(3, gSelectedCourseMenuItem, 0);
                 goto selectFallback;
             }
             return;

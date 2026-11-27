@@ -20,7 +20,6 @@ extern VECTOR *gScratchVector0 __attribute__((section(".data")));
 extern SVECTOR *D_8013AF90 __attribute__((section(".data")));
 extern SVECTOR *D_8013AF94 __attribute__((section(".data")));
 extern MATRIX *gScratchMatrix0 __attribute__((section(".data")));
-extern u8 D_8013AFCD __attribute__((section(".data")));
 extern u8 D_8013B1AB __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern u32 gTaskTransitionFlags __attribute__((section(".data")));
@@ -230,7 +229,7 @@ void updateRaceIntroCameraTask(void) {
             configureTaskStateTransition(5, 0, 15);
         }
         if (gCurrentTask->data1A == 0) {
-            if (D_8013AFCD == 2) {
+            if (playerCountAbsolute == 2) {
                 D_8013AFAA |= 0x800;
             }
             initPlayerCameraAndTarget(gCurrentTask->data18);

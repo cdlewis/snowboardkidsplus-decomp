@@ -25,7 +25,7 @@ typedef struct GridSpriteEntry {
     u16 programAndTone;
 } GridSpriteEntry;
 
-extern const GridSpriteEntry D_8012F798[];
+extern const GridSpriteEntry gCourseMenuSpriteEntries[14];
 extern const GridSpriteEntry D_80131A78[6];
 
 typedef struct GridSpriteParent {

@@ -14,7 +14,7 @@ extern u16 gUnlockNotificationFlags __attribute__((section(".data")));
  * The per-player option occupies bit (4 + playerIndex).
  */
 extern u32 gGameOptionFlags;
-extern u8 D_8013AFCD;
+extern u8 gPlayerCount;
 extern u8 D_8013AFE0;
 extern u8 D_8013AFE1;
 extern u8 D_8013AFE2;
@@ -41,7 +41,7 @@ void setUnlockNotificationFlag(s16 index);
 s32 hasUnlockNotificationFlag(s16 index);
 void startUnlockNotification(s16 index);
 
-extern u8 gameOptionPlayerModeAbsolute __attribute__((section(".data")));
+extern u8 playerCountAbsolute __attribute__((section(".data")));
 
 extern s16 D_80124164[];
 extern s16 D_8013B1A8 __attribute__((section(".data")));

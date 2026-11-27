@@ -59,7 +59,6 @@ extern s16 D_8013AFDE __attribute__((section(".data")));
 extern VECTOR *gScratchVector0 __attribute__((section(".data")));
 extern SVECTOR *D_8013AF90 __attribute__((section(".data")));
 extern MATRIX *gScratchMatrix0 __attribute__((section(".data")));
-extern u8 D_8013AFCD __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern u32 gTaskTransitionFlags __attribute__((section(".data")));
@@ -4914,13 +4913,13 @@ void initializeCurrentRacePlayer(void) {
         currentPlayerAbsolute->unk945 = 8;
     }
     if (D_8013AFE2 == 1 && D_8013AFE0 == 1) {
-        if (D_8013AFCD == 1) {
+        if (playerCountAbsolute == 1) {
             currentPlayerAbsolute->unk93C = 10;
         } else {
             currentPlayerAbsolute->unk93C = 5;
         }
     }
-    if (gSelectedCourseIndex == 7 && D_8013AFCD == 1) {
+    if (gSelectedCourseIndex == 7 && playerCountAbsolute == 1) {
         currentPlayerAbsolute->x = 0;
     }
     if (!currentPlayerAbsolute->unk008 && !D_8013AFD6 &&

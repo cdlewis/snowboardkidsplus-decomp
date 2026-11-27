@@ -27,7 +27,6 @@ GsF_LIGHT gDefaultSceneLights[3]
 
 extern u8 D_8013AFE1 __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
-extern u8 D_8013AFCD __attribute__((section(".data")));
 extern u8 gRacePauseState __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern RaceTime gRaceElapsedTime __attribute__((section(".data")));
@@ -79,7 +78,7 @@ void updateAttackResultsAndRecords(void) {
         break;
     case 1:
         if (D_8013AFE0 == 0) {
-            if (D_8013AFCD == 1) {
+            if (playerCountAbsolute == 1) {
                 D_8013B190[0] = gRaceElapsedTime;
                 D_8013B1A0[0] = D_8013B18D;
             } else {
@@ -110,7 +109,7 @@ void updateAttackResultsAndRecords(void) {
                 return;
             }
 
-            for (player = 0; player < D_8013AFCD; player++) {
+            for (player = 0; player < playerCountAbsolute; player++) {
                 time = FULL_RACE_TIME(D_8013B190[player]);
                 for (rank = 0; rank < 5; rank++) {
                     recordTime = FULL_RACE_TIME(ATTACK_SAVE_RECORD->timeRecords[gSelectedCourseIndex][rank]);
@@ -124,7 +123,7 @@ void updateAttackResultsAndRecords(void) {
                 }
                 gRacePlayers[player].unk100[0] = rank;
             }
-            for (player = 0; player < D_8013AFCD; player++) {
+            for (player = 0; player < playerCountAbsolute; player++) {
                 rank = gRacePlayers[player].unk100[0];
                 if (rank < 5) {
                     for (row = 3; row >= rank; row--) {
@@ -141,7 +140,7 @@ void updateAttackResultsAndRecords(void) {
                 }
             }
         } else if (D_8013AFE0 == 1) {
-            if (D_8013AFCD == 1) {
+            if (playerCountAbsolute == 1) {
                 D_8013B1A0[0] = D_8013B18D;
             } else {
                 if (gRacePlayers[0].scoreAttackPointTotal > gRacePlayers[1].scoreAttackPointTotal) {
@@ -173,7 +172,7 @@ void updateAttackResultsAndRecords(void) {
                 return;
             }
 
-            for (player = 0; player < D_8013AFCD; player++) {
+            for (player = 0; player < playerCountAbsolute; player++) {
                 for (rank = 0; rank < 5; rank++) {
                     if (gRacePlayers[player].scoreAttackPointTotal >
                         ATTACK_SAVE_RECORD->countRecordValues[gSelectedCourseIndex][rank]) {
@@ -185,7 +184,7 @@ void updateAttackResultsAndRecords(void) {
                 }
                 gRacePlayers[player].unk100[0] = rank;
             }
-            for (player = 0; player < D_8013AFCD; player++) {
+            for (player = 0; player < playerCountAbsolute; player++) {
                 rank = gRacePlayers[player].unk100[0];
                 if (rank < 5) {
                     for (row = 3; row >= rank; row--) {
@@ -202,7 +201,7 @@ void updateAttackResultsAndRecords(void) {
                 }
             }
         } else if (D_8013AFE0 == 2) {
-            if (D_8013AFCD == 1) {
+            if (playerCountAbsolute == 1) {
                 D_8013B1A0[0] = D_8013B18D;
             } else {
                 if (gRacePlayers[0].trickAttackPointTotal > gRacePlayers[1].trickAttackPointTotal) {
@@ -234,7 +233,7 @@ void updateAttackResultsAndRecords(void) {
                 return;
             }
 
-            for (player = 0; player < D_8013AFCD; player++) {
+            for (player = 0; player < playerCountAbsolute; player++) {
                 for (rank = 0; rank < 5; rank++) {
                     if (gRacePlayers[player].trickAttackPointTotal >
                         ATTACK_SAVE_RECORD->statsRecordValues[gSelectedCourseIndex][rank]) {
@@ -246,7 +245,7 @@ void updateAttackResultsAndRecords(void) {
                 }
                 gRacePlayers[player].unk100[0] = rank;
             }
-            for (player = 0; player < D_8013AFCD; player++) {
+            for (player = 0; player < playerCountAbsolute; player++) {
                 rank = gRacePlayers[player].unk100[0];
                 if (rank < 5) {
                     for (row = 3; row >= rank; row--) {

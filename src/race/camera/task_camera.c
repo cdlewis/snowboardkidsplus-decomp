@@ -4,7 +4,6 @@
 #include "game/race/camera/race_camera.h"
 #include "game/race/player/race_player.h"
 
-extern u8 D_8013AFCD __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 
 void initializeTaskPlayerCamera(void) {
@@ -24,7 +23,7 @@ void initializeTaskPlayerCamera(void) {
 void updateTaskViewAndCheckPlayerLimit(void) {
     renderCurrentCameraPlayersAndUpdateSound();
     if (D_8013B55E != 0) {
-        if (gCurrentTask->data18 < D_8013AFCD) {
+        if (gCurrentTask->data18 < playerCountAbsolute) {
             setCurrentTaskCallback(updateCurrentPlayerCameraTask);
             return;
         }

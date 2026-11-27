@@ -59,7 +59,6 @@ extern SVECTOR *D_8013AF94 __attribute__((section(".data")));
 extern MATRIX *gScratchMatrix0 __attribute__((section(".data")));
 extern u32 *gCurrentPlayerOrderingTable __attribute__((section(".data")));
 extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
-extern u8 D_8013AFCD __attribute__((section(".data")));
 extern u8 D_8013AFE0 __attribute__((section(".data")));
 extern u8 D_8013AFE2 __attribute__((section(".data")));
 extern u8 gRacePauseState __attribute__((section(".data")));
@@ -627,7 +626,7 @@ void initializeCourseObjects(void) {
     if (D_8013AFE2 == 1) {
         switch (D_8013AFE0) {
         case 0:
-            gInteractionVisualPlacements = gCourseChallengePlacements[D_8013AFCD][gSelectedCourseIndex];
+            gInteractionVisualPlacements = gCourseChallengePlacements[playerCountAbsolute][gSelectedCourseIndex];
             i = 0;
             if (gInteractionVisualPlacements[0].unk01 != PLACEMENT_END) {
                 for (;;) {
@@ -1363,7 +1362,7 @@ void updateInteractionVisualTask(void) {
                     resource->position.x = resource->coordinate.coord.t[0] << 8;
                     resource->position.y = resource->coordinate.coord.t[1] << 8;
                     resource->position.z = resource->coordinate.coord.t[2] << 8;
-                    for (; player < D_8013AFCD; player++) {
+                    for (; player < playerCountAbsolute; player++) {
                         if (isPositionWithinPlayerCollisionRange(&resource->position, 0x1C00, 0x5000, player)) {
                             gRacePlayers[player].collectedCourseCoinMarkerCount++;
                             if (gRacePlayers[player].unk0FC != 0) {
@@ -2163,7 +2162,7 @@ void initializeCollectibleTask(void) {
     resource->position.x = resource->coordinate.coord.t[0] << 8;
     resource->position.y = resource->coordinate.coord.t[1] << 8;
     resource->position.z = resource->coordinate.coord.t[2] << 8;
-    if (gameOptionPlayerModeAbsolute == 1) {
+    if (playerCountAbsolute == 1) {
         resource->collisionRange = 0x2C00;
     } else {
         resource->collisionRange = 0x3400;
@@ -2317,13 +2316,13 @@ void updateOrbitingObstacleTask(void) {
     active = 0;
     i = active;
     resource = (OrbitingTaskResource *)&gTaskMemoryPool[gCurrentTask->resource14];
-    if (D_8013AFCD != 0) {
+    if (playerCountAbsolute != 0) {
         do {
             if ((u32)((u16)gRacePlayers[i].unk92E - 91) < 13) {
                 active |= 1;
             }
             i++;
-        } while (i < D_8013AFCD);
+        } while (i < playerCountAbsolute);
     }
     if (!active) {
         return;
@@ -2479,7 +2478,7 @@ void updateCpuRacerSpeedControl(void) {
     }
 
     i = 3;
-    playerMode = D_8013AFCD;
+    playerMode = playerCountAbsolute;
     secondMode = 2;
     firstMode = 1;
     if (playerMode == firstMode) {

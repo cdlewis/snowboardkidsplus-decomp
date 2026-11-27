@@ -49,7 +49,7 @@ typedef struct ValuePanelEntry {
 
 extern MenuRgbColor gMenuColorCycleColor;
 extern u8 gSelectionPanelLabelOffsets[12];
-extern const TimedSequenceEntry D_80123840[];
+extern const TimedSequenceEntry gMenuInputPromptSequence[2];
 extern ByteTriplet gSelectionPanelStatTriplets[];
 extern u8 D_8012D460[12];
 

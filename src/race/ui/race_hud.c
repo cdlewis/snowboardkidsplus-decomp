@@ -24,7 +24,6 @@ extern s16 gFrameCounter __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
 extern u32 gGameOptionFlags __attribute__((section(".data")));
-extern u8 D_8013AFCD __attribute__((section(".data")));
 extern u8 D_8013AFD5 __attribute__((section(".data")));
 extern u8 gRacePauseState __attribute__((section(".data")));
 
@@ -226,7 +225,7 @@ void drawRacePauseMenu(void) {
     s32 palette, sprite;
 
     setSpriteColor(128, 128, 128);
-    if (D_8013AFCD == 2 && (gFrameCounter & 8)) {
+    if (playerCountAbsolute == 2 && (gFrameCounter & 8)) {
         if (player == 0) {
             drawSpriteByIndexWithBlend(-53, -48, 490, 13, 0, &gMainOrderingTables[gActiveGraphicsBuffer], 0);
         } else {

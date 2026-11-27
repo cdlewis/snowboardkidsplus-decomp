@@ -33,7 +33,6 @@ typedef struct SaveMenuResource {
 extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u32 gGameOptionFlags __attribute__((section(".data")));
-extern u8 D_8013AFCD __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern GameTask *gCurrentTaskParent __attribute__((section(".data")));
@@ -136,7 +135,7 @@ void applyLoadedSaveRecordSettings(SaveRecord *source, s16 index) {
     for (; i < 9; i++) {
         gPlayerResourceTextureSelections.entries[playerIndex][i] = source->resourceTextureSelections[i];
     }
-    if (D_8013AFCD == 1) {
+    if (playerCountAbsolute == 1) {
         *(volatile u16 *)&gUnlockNotificationFlags = source->unlockNotificationFlags;
     } else {
         *(volatile u16 *)&gUnlockNotificationFlags = 0;
@@ -331,7 +330,7 @@ void updateMemoryCardSaveMenuTask(void) {
         input->command04 = 22;
         input->command0C = 21;
         configureColorCycleTask(2, 64, 128, 4, 0);
-        createInputTimedSpriteTask(-16, 54, D_80123840, 2, 1, 176, 64, 4, 31);
+        createInputTimedSpriteTask(-16, 54, gMenuInputPromptSequence, 2, 1, 176, 64, 4, 31);
         gCurrentTask->data18 = 5;
         break;
     case 5:
@@ -931,7 +930,7 @@ s32 getModeFilteredGameOptionFlag2(void) {
     if (D_8013AFD9 != 0) {
         return 0;
     }
-    if (D_8013AFCD < 2) {
+    if (playerCountAbsolute < 2) {
         return 1;
     }
     return gGameOptionFlags & 4;
@@ -944,7 +943,7 @@ s32 getStateAdjustedGameOptionFlag1(void) {
     if (D_8013AFD9 != 0) {
         return 0;
     }
-    if (D_8013AFCD < 2) {
+    if (playerCountAbsolute < 2) {
         return 1;
     }
     return gGameOptionFlags & 2;

@@ -21,10 +21,11 @@ typedef struct SelectedCourseRecord {
 } SelectedCourseRecord;
 
 extern SelectedCourseRecord D_80123D80[];
-extern const u8 D_8012D46C[];
+extern const u8 gCourseMenuCourseIndices[];
 extern u8 D_8012D478[];
 extern s16 gSelectedCourseIndex;
-extern u16 D_8013AFD0;
+extern u16 gSelectedLapCount;
+extern u16 selectedLapCountAbsolute __attribute__((section(".data")));
 extern u8 D_8013AFDA;
 extern s32 D_8012FC6C[10][3];
 
@@ -36,6 +37,7 @@ void resetSelectedRecordStates(void);
 s32 updatePlayerField94CFromSelectedTable(u16 tableIndex, s16 sampleIndex,
                                           u16 playerIndex);
 
+/* Race finish comparisons and HUD draws use signed halfword loads. */
 extern s16 selectedFinishLapCountAbsolute __attribute__((section(".data")));
 extern u8 raceFinishFlagAbsolute __attribute__((section(".data")));
 

@@ -261,7 +261,6 @@ extern s16 gFrameCounter __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u32 *gCurrentPlayerOrderingTable __attribute__((section(".data")));
 extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
-extern u8 D_8013AFCD __attribute__((section(".data")));
 extern u8 gRacePauseState __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
@@ -774,7 +773,7 @@ void initializeRacePlayerEffects(void) {
         }
     }
     if (gSelectedCourseIndex == 6) {
-        for (playerIndex = 0; playerIndex < D_8013AFCD; playerIndex++) {
+        for (playerIndex = 0; playerIndex < playerCountAbsolute; playerIndex++) {
             createPlayerParticleTask(playerIndex);
         }
     }
@@ -801,7 +800,7 @@ void initializeRacePlayerEffects(void) {
         position.vy = 0xB5C2;
         position.vz = 0x17110;
         createOscillatingQuadTask(0, &position, 0x200, 0, 255, 0);
-        for (playerIndex = 0; playerIndex < D_8013AFCD; playerIndex++) {
+        for (playerIndex = 0; playerIndex < playerCountAbsolute; playerIndex++) {
             createFlickeringDotsTask(playerIndex);
         }
     }

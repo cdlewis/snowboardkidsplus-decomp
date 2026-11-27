@@ -22,7 +22,6 @@ extern u32 *gCurrentPlayerOrderingTable __attribute__((section(".data")));
 extern u16 D_8013AF7A __attribute__((section(".data")));
 extern u16 D_8013AF7C __attribute__((section(".data")));
 extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
-extern u8 D_8013AFCD __attribute__((section(".data")));
 extern u8 gRacePauseState __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
@@ -256,7 +255,7 @@ void createFallingSpriteEffectsTasks(void) {
 
 void drawSlidingDisplaySprite(SlidingDisplayResource *resource) {
     s32 x = (resource->position >> 1) - 56;
-    if (gameOptionPlayerModeAbsolute == 1) {
+    if (playerCountAbsolute == 1) {
         drawSpriteByIndexWithBlend(x, 8, 0x1DF, 6, -1, &D_800EC018[gActiveGraphicsBuffer], 1);
     } else if (gCurrentTask->data18 == 0) {
         if (shouldRenderPlayerView(0)) {
@@ -378,7 +377,7 @@ void drawPlayerNumberDisplay(PlayerNumberResource *resource) {
     s16 visible = 0;
     GsOT *ot;
     setSpriteColor(128, 128, 128);
-    if (D_8013AFCD == 1) {
+    if (playerCountAbsolute == 1) {
         visible = 1;
         ot = &D_800EC018[gActiveGraphicsBuffer];
     } else if (resource->player == 0) {
@@ -457,9 +456,9 @@ void initializePlayerNumberDisplayTask(void) {
     resource = (PlayerNumberResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->y = -44;
     resource->speed = 56;
-    if (D_8013AFE2 == 0 && D_8013AFCD == 2) {
+    if (D_8013AFE2 == 0 && playerCountAbsolute == 2) {
         resource->x = 452;
-    } else if (D_8013AFE2 == 1 && D_8013AFE0 == 2 && D_8013AFCD == 2) {
+    } else if (D_8013AFE2 == 1 && D_8013AFE0 == 2 && playerCountAbsolute == 2) {
         resource->x = 460;
     } else {
         resource->x = 420;
@@ -482,7 +481,7 @@ void drawSpriteMotionDisplay(SpriteMotionResource *resource) {
     GsOT *ot;
     s16 depth = 1;
     setSpriteColor(128, 128, 128);
-    if (D_8013AFCD == 1) {
+    if (playerCountAbsolute == 1) {
         draw = 1;
         ot = &D_800EC018[gActiveGraphicsBuffer];
     } else if (resource->variant == 0) {
@@ -497,7 +496,7 @@ void drawSpriteMotionDisplay(SpriteMotionResource *resource) {
         }
     }
     if (draw) {
-        if (D_8013AFCD == 1) {
+        if (playerCountAbsolute == 1) {
             if (D_8013AFE2 == 1 && D_8013AFE0 == 2) {
                 drawSpriteByIndexWithBlend(-60, resource->unk08, 0x1AB, 8, -1, ot, depth);
             } else {
@@ -558,7 +557,7 @@ void initializeSpriteMotionTask(void) {
         while (1) {}
     }
     resource = (SpriteMotionResource *)&gTaskMemoryPool[gCurrentTask->resource14];
-    if (D_8013AFCD == 1) {
+    if (playerCountAbsolute == 1) {
         resource->unk08 = 8;
     } else {
         resource->unk08 = -8;
@@ -580,7 +579,7 @@ void drawSlidingNumberDisplay(SlidingNumberResource *resource) {
     s16 visible = 0;
     GsOT *ot;
     setSpriteColor(128, 128, 128);
-    if (D_8013AFCD == 1) {
+    if (playerCountAbsolute == 1) {
         visible = 1;
         ot = &D_800EC018[gActiveGraphicsBuffer];
     } else if (resource->player == 0) {
@@ -652,15 +651,15 @@ void initializeSlidingNumberDisplayTask(void) {
         while (1) {}
     }
     resource = (SlidingNumberResource *)&gTaskMemoryPool[gCurrentTask->resource14];
-    if (D_8013AFCD == 1) {
+    if (playerCountAbsolute == 1) {
         resource->y = -36;
     } else {
         resource->y = -22;
     }
     resource->speed = 56;
-    if (D_8013AFE2 == 0 && D_8013AFCD == 2) {
+    if (D_8013AFE2 == 0 && playerCountAbsolute == 2) {
         resource->x = 452;
-    } else if (D_8013AFE2 == 1 && D_8013AFE0 == 2 && D_8013AFCD == 2) {
+    } else if (D_8013AFE2 == 1 && D_8013AFE0 == 2 && playerCountAbsolute == 2) {
         resource->x = 460;
     } else {
         resource->x = 420;
@@ -787,7 +786,7 @@ void drawAutoPilotLabelTask(void) {
     s32 frame;
     if (!(currentPlayerAbsolute->unk128 & 0x40) && !D_8013AFD6) {
         setSpriteColor(128, 128, 128);
-        if (D_8013AFCD == 1) {
+        if (playerCountAbsolute == 1) {
             frame = gFrameCounter & 2;
             drawUppercaseProportionalText(-40, -18, 20, gAutoPilotLabel,
                          (frame / 2) + 1, -1,
@@ -1230,7 +1229,7 @@ void waitPlayerResultsInputTask(void) {
         while (1) {}
     }
     resource = (TaskFadeResource *)&gTaskMemoryPool[gCurrentTask->resource14];
-    for (player = 0; player < gameOptionPlayerModeAbsolute; player++) {
+    for (player = 0; player < playerCountAbsolute; player++) {
         if (gControllerPressedButtons[player] & 0xB0) {
             gTaskTransitionFlags |= 0x10;
             setCurrentTaskCallback(drawCurrentTaskPlayerResults);

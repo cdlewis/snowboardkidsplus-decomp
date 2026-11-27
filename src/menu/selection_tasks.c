@@ -31,7 +31,6 @@ extern u16 D_8013AF7C __attribute__((section(".data")));
 extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
 extern s16 D_8013AF7E __attribute__((section(".data")));
 extern s16 D_8013AF80 __attribute__((section(".data")));
-extern u8 D_8013AFCD __attribute__((section(".data")));
 extern u8 gRacePauseState __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
@@ -65,7 +64,7 @@ void initializeModeRaceTasks(void) {
     initializeRacePlayerEffects();
     taskTransitionFlagGp = 0;
     createChildTaskWithReserve(initializeModeSectorReadResourcesTask);
-    if (D_8013AFCD == 2) {
+    if (playerCountAbsolute == 2) {
         D_8013AFAA |= 0x800;
         createChildTaskForParent(&gGameTasks[3], initializeTaskPlayerCamera);
         gCreatedTask->data18 = 1;
@@ -89,7 +88,7 @@ void initializeModeRaceTasks(void) {
     clip[0].w = width;
     /* Preserve the separate height reads for the full and player clips. */
     clip[0].h = *(volatile u16 *)&D_8013AF7C;
-    if (D_8013AFCD == 1) {
+    if (playerCountAbsolute == 1) {
         clip[1].x = 0;
         clip[1].y = 0;
         clip[1].w = width;
@@ -113,11 +112,11 @@ void initializeModeRaceTasks(void) {
     D_8013AF80 = sixthHeight;
     initializeRacePaletteCycles();
     player = 0;
-    if (D_8013AFCD) {
+    if (playerCountAbsolute) {
         do {
             copyPlayerPaletteRow(player);
             player++;
-        } while (player < D_8013AFCD);
+        } while (player < playerCountAbsolute);
     }
     D_8013AFAA |= 0x48;
     if (D_8013AFD8) {

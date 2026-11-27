@@ -536,7 +536,7 @@ void updateRegisteredDetailedTextPanelTask(void) {
                 gCurrentTask->data18 = 3;
             } else {
                 createInputTimedSpriteTask(state->x + 132, state->y + 18,
-                                           D_80123840, 2, (u8)state->color,
+                                           gMenuInputPromptSequence, 2, (u8)state->color,
                                            0xB0, 0x40, state->depth, 11);
                 gCurrentTask->data18 = 1;
             }
