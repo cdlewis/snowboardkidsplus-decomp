@@ -167,10 +167,6 @@ extern MenuRgbColor gMenuColorCycleColor __attribute__((section(".data")));
 extern s16 gFrameCounter __attribute__((section(".data")));
 extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
 extern u8 gMainMenuSelectionIndex __attribute__((section(".data")));
-extern u8 gCharacterSelectionPortraitRed __attribute__((section(".data")));
-extern u8 gCharacterSelectionPortraitGreen __attribute__((section(".data")));
-extern u8 gCharacterSelectionPortraitBlue __attribute__((section(".data")));
-extern u8 D_8013B3AB __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern GameTask *gCurrentTaskParent __attribute__((section(".data")));
@@ -257,6 +253,15 @@ SPRT_16 gAnimatedSprite16Template __attribute__((section(".data.animated_sprite1
     0x03000000, 0x80, 0x80, 0x80, SPRT_16_CODE,
     0, 0, 0x70, 0x50, 0x3EB2
 };
+u8 gCharacterSelectionPortraitRed
+    __attribute__((section(".data.character_selection_color"))) = 0;
+u8 gCharacterSelectionPortraitGreen
+    __attribute__((section(".data.character_selection_color"))) = 0;
+u8 gCharacterSelectionPortraitBlue
+    __attribute__((section(".data.character_selection_color"))) = 0;
+u8 D_8013B3AB
+    __attribute__((section(".data.character_selection_color"))) = 0;
+
 s8 gSecondaryDisplayPulseGlyph[8]
     __attribute__((section(".data.secondary_display_pulse_glyph"), aligned(4))) = {
     (s8)0x81, 0x44, 0, 0, 0, 0, 0, 0

@@ -1109,7 +1109,7 @@ segments:
       - {start: 0x12BB94, type: .data, name: graphics/sprite_draw, linker_section: .data.digit_sprite_blend_bits}
       - {start: 0x12BB9C, type: .data, name: menu/task_widgets, linker_section: .data.secondary_display_pulse_glyph}
       - {start: 0x12BBA4, type: .sdata, name: menu/transition_effects, linker_section: .sdata.menu_color_cycle, linker_section_order: .data}
-      - [0x12BBA8, data, character_selection_color]
+      - {start: 0x12BBA8, type: .data, name: menu/task_widgets, linker_section: .data.character_selection_color}
       - {start: 0x12BBAC, type: .data, name: menu/task_widgets, linker_section: .data.texture_pair_bounce_offsets}
       - {start: 0x12BBB4, type: .sdata, name: menu/task_widgets, linker_section: .sdata.animated_sprite16_page, linker_section_order: .data}
       - [0x12BBBC, data, 12BBBC]
