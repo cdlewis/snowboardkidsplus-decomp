@@ -85,6 +85,12 @@ const PaletteSelectionMapping gPaletteSelectionSpriteMapping
     {2, 10, 6, 0, 1, 9, 8, 4, 13},
 }, {0, 0}};
 
+/* Unreferenced copy of the glyph sequence in gCurrentPaletteLabel. */
+const u16 gUnusedPaletteLabel[6]
+    __attribute__((section(".data.unused_palette_label"), aligned(4))) = {
+    0x15F, 0x160, 0x110, 0x33, 0, 0
+};
+
 const u16 gTaskPanel144x48Text[8] __attribute__((section(".data.task_panel_144x48_text"))) = {
     0xF4, 0xC1, 0x96, 0xB1, 0x9F, 0x98, 0x31, 0
 };

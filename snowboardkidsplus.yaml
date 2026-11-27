@@ -903,7 +903,7 @@ segments:
       - {start: 0x122564, type: .data, name: menu/panel_tasks, linker_section: .data.current_task_panel_text}
       - {start: 0x122574, type: .data, name: menu/panel_tasks, linker_section: .data.task_selection_panel_text}
       - {start: 0x122590, type: .data, name: menu/grid_selection, linker_section: .data.split_selection_bounds_configs}
-      - [0x1225B0, data, 1225B0]
+      - {start: 0x1225B0, type: .data, name: menu/grid_selection, linker_section: .data.unused_palette_label}
       - {start: 0x1225BC, type: .data, name: menu/grid_selection, linker_section: .data.task_panel_144x48_text}
       - {start: 0x1225CC, type: .data, name: menu/grid_selection, linker_section: .data.task_player_value_panel_label}
       - {start: 0x1225D8, type: .data, name: menu/grid_selection, linker_section: .data.task_player_value_panel_text}
