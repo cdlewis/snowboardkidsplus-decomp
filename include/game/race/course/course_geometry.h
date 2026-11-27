@@ -7,6 +7,17 @@ typedef struct CourseGeometryVertex {
     s16 x, y, z;
 } CourseGeometryVertex;
 
+/* Four edge neighbors and corner indices in a 0x1C-byte region record. */
+typedef struct GeometryRegion {
+    s16 neighbors[4];
+    s16 vertices[4];
+    s16 unk10[2];
+    s16 firstRecord;
+    s16 lastRecord;
+    s16 unk18;
+    u16 cornerFlags;
+} GeometryRegion;
+
 /* Geometry entries have a 0x1C-byte stride; the origin references a vertex. */
 typedef struct GeometryPlacement {
     s16 unk00[8];
@@ -26,11 +37,10 @@ typedef struct SelectedRecord {
 /* Packed XYZ halfwords, six bytes per vertex. */
 extern CourseGeometryVertex *gCourseGeometryVertexData;
 extern SelectedRecord *gCourseGeometryTriangleRecords;
-/* 0x1C-byte region records, also viewed as GeometryPlacement entries. */
-extern s16 *gCourseGeometryRegionData;
-extern s16 D_8013B1F8;
-extern s16 D_8013B1FA;
-extern s16 D_8013B1FC;
+extern GeometryRegion *gCourseGeometryRegionData;
+extern s16 gCourseGeometryVertexCount;
+extern s16 gCourseGeometryTriangleCount;
+extern s16 gCourseGeometryRegionCount;
 extern s16 gSelectedGeometryRecordIndex;
 extern s16 *gSelectedGeometryVertex0;
 extern s16 *gSelectedGeometryVertex1;

@@ -34,13 +34,13 @@ void bindGeometryRecordData(s16 *data) {
     gCourseGeometryVertexData = (CourseGeometryVertex *)data;
     /* Section lengths wrap as signed 16-bit halfword counts. */
     data += (s16)(count * 3);
-    D_8013B1F8 = count;
+    gCourseGeometryVertexCount = count;
     count = *data++;
     gCourseGeometryTriangleRecords = (SelectedRecord *)data;
     data += (s16)(count * 6);
-    D_8013B1FA = count;
-    D_8013B1FC = *data++;
-    gCourseGeometryRegionData = data;
+    gCourseGeometryTriangleCount = count;
+    gCourseGeometryRegionCount = *data++;
+    gCourseGeometryRegionData = (GeometryRegion *)data;
 }
 
 s32 getAdjacentGeometryRegionForPoint(s16 index, s32 x, s32 z) {
@@ -48,21 +48,21 @@ s32 getAdjacentGeometryRegionForPoint(s16 index, s32 x, s32 z) {
     s32 z0, z1, z2, z3;
     s16 neighbor;
 
-    x0 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[0]].x * 5;
-    x1 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[1]].x * 5;
-    x2 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[2]].x * 5;
-    x3 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[3]].x * 5;
-    z0 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[0]].z * 5;
-    z1 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[1]].z * 5;
-    z2 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[2]].z * 5;
-    z3 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[3]].z * 5;
-    neighbor = ((GeometryRegion *)gCourseGeometryRegionData)[index].neighbors[0];
+    x0 = gCourseGeometryVertexData[gCourseGeometryRegionData[index].vertices[0]].x * 5;
+    x1 = gCourseGeometryVertexData[gCourseGeometryRegionData[index].vertices[1]].x * 5;
+    x2 = gCourseGeometryVertexData[gCourseGeometryRegionData[index].vertices[2]].x * 5;
+    x3 = gCourseGeometryVertexData[gCourseGeometryRegionData[index].vertices[3]].x * 5;
+    z0 = gCourseGeometryVertexData[gCourseGeometryRegionData[index].vertices[0]].z * 5;
+    z1 = gCourseGeometryVertexData[gCourseGeometryRegionData[index].vertices[1]].z * 5;
+    z2 = gCourseGeometryVertexData[gCourseGeometryRegionData[index].vertices[2]].z * 5;
+    z3 = gCourseGeometryVertexData[gCourseGeometryRegionData[index].vertices[3]].z * 5;
+    neighbor = gCourseGeometryRegionData[index].neighbors[0];
     if (neighbor >= 0 && (x0 - x1) * (z - z1) - (z0 - z1) * (x - x1) > 0) return neighbor;
-    neighbor = ((GeometryRegion *)gCourseGeometryRegionData)[index].neighbors[1];
+    neighbor = gCourseGeometryRegionData[index].neighbors[1];
     if (neighbor >= 0 && (x3 - x2) * (z - z2) - (z3 - z2) * (x - x2) > 0) return neighbor;
-    neighbor = ((GeometryRegion *)gCourseGeometryRegionData)[index].neighbors[3];
+    neighbor = gCourseGeometryRegionData[index].neighbors[3];
     if (neighbor >= 0 && (x2 - x0) * (z - z0) - (z2 - z0) * (x - x0) > 0) return neighbor;
-    neighbor = ((GeometryRegion *)gCourseGeometryRegionData)[index].neighbors[2];
+    neighbor = gCourseGeometryRegionData[index].neighbors[2];
     if (neighbor >= 0 && (x1 - x3) * (z - z3) - (z1 - z3) * (x - x3) > 0) return neighbor;
     return index;
 }
@@ -80,8 +80,8 @@ s32 getCourseHeightAtPoint(s16 index, s32 x, s32 z) {
     s16 i;
     CourseGeometryVertex *triangleVertices;
 
-    for (i = ((GeometryRegion *)gCourseGeometryRegionData)[index].firstRecord;
-         i < ((GeometryRegion *)gCourseGeometryRegionData)[index].lastRecord + 1; i++) {
+    for (i = gCourseGeometryRegionData[index].firstRecord;
+         i < gCourseGeometryRegionData[index].lastRecord + 1; i++) {
         SelectedRecord *records = gCourseGeometryTriangleRecords;
 
         if (records[i].skipFirstEdge == 0) {
@@ -150,8 +150,8 @@ u8 getCourseSurfaceAtPoint(s16 index, s32 x, s32 z) {
     SelectedRecord *record;
     CourseGeometryVertex *vertices;
     SelectedRecord *records;
-    for (i = ((GeometryRegion *)gCourseGeometryRegionData)[index].firstRecord;
-         i < ((GeometryRegion *)gCourseGeometryRegionData)[index].lastRecord + 1; i++) {
+    for (i = gCourseGeometryRegionData[index].firstRecord;
+         i < gCourseGeometryRegionData[index].lastRecord + 1; i++) {
         vertices = gCourseGeometryVertexData;
         records = gCourseGeometryTriangleRecords;
         record = &records[i];
@@ -240,16 +240,16 @@ void resolveGeometryBoundaryCollision(s16 index, s32 x, s32 z, s32 radius, s32 m
 
     gGeometryResolvedX = x;
     gGeometryResolvedZ = z;
-    x0 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[0]].x * 5;
-    x1 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[1]].x * 5;
-    x2 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[2]].x * 5;
-    x3 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[3]].x * 5;
-    z0 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[0]].z * 5;
-    z1 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[1]].z * 5;
-    z2 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[2]].z * 5;
-    z3 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[3]].z * 5;
+    x0 = gCourseGeometryVertexData[gCourseGeometryRegionData[index].vertices[0]].x * 5;
+    x1 = gCourseGeometryVertexData[gCourseGeometryRegionData[index].vertices[1]].x * 5;
+    x2 = gCourseGeometryVertexData[gCourseGeometryRegionData[index].vertices[2]].x * 5;
+    x3 = gCourseGeometryVertexData[gCourseGeometryRegionData[index].vertices[3]].x * 5;
+    z0 = gCourseGeometryVertexData[gCourseGeometryRegionData[index].vertices[0]].z * 5;
+    z1 = gCourseGeometryVertexData[gCourseGeometryRegionData[index].vertices[1]].z * 5;
+    z2 = gCourseGeometryVertexData[gCourseGeometryRegionData[index].vertices[2]].z * 5;
+    z3 = gCourseGeometryVertexData[gCourseGeometryRegionData[index].vertices[3]].z * 5;
 
-    if (((GeometryRegion *)gCourseGeometryRegionData)[index].neighbors[0] == wallType) {
+    if (gCourseGeometryRegionData[index].neighbors[0] == wallType) {
         gGeometryEdgeDeltaX = x1 - x0;
         gGeometryEdgeDeltaZOrCorrection = z1 - z0;
         gGeometryProjectionOffsetX = x - x0;
@@ -257,7 +257,7 @@ void resolveGeometryBoundaryCollision(s16 index, s32 x, s32 z, s32 radius, s32 m
         reflectVelocityAndEnforceGeometryEdgeDistance(velocityX, velocityZ, radius);
     }
 
-    if (((GeometryRegion *)gCourseGeometryRegionData)[index].neighbors[1] == wallType) {
+    if (gCourseGeometryRegionData[index].neighbors[1] == wallType) {
         gGeometryEdgeDeltaX = x2 - x3;
         gGeometryEdgeDeltaZOrCorrection = z2 - z3;
         gGeometryProjectionOffsetX = gGeometryResolvedX - x3;
@@ -266,7 +266,7 @@ void resolveGeometryBoundaryCollision(s16 index, s32 x, s32 z, s32 radius, s32 m
     }
 
     /* Flagged side-edge corners use radial distance beyond the endpoints. */
-    if (((GeometryRegion *)gCourseGeometryRegionData)[index].neighbors[2] == wallType) {
+    if (gCourseGeometryRegionData[index].neighbors[2] == wallType) {
         gGeometryEdgeDeltaX = x3 - x1;
         gGeometryEdgeDeltaZOrCorrection = z3 - z1;
         gGeometryProjectionOffsetX = gGeometryResolvedX - x1;
@@ -279,7 +279,7 @@ void resolveGeometryBoundaryCollision(s16 index, s32 x, s32 z, s32 radius, s32 m
         tangent = (nz * gGeometryProjectionOffsetX + nx * gGeometryProjectionOffsetZOrDistance) / 4096;
         normal = (-nx * gGeometryProjectionOffsetX + nz * gGeometryProjectionOffsetZOrDistance) / 4096;
         edgeLength = (nz * gGeometryEdgeDeltaX + nx * gGeometryEdgeDeltaZOrCorrection) / 4096;
-        if ((((GeometryRegion *)gCourseGeometryRegionData)[index].cornerFlags & 2) && tangent < 0) {
+        if ((gCourseGeometryRegionData[index].cornerFlags & 2) && tangent < 0) {
             tangent = gGeometryResolvedX - x1;
             normal = gGeometryResolvedZ - z1;
             length = SquareRoot0(tangent * tangent + normal * normal);
@@ -290,7 +290,7 @@ void resolveGeometryBoundaryCollision(s16 index, s32 x, s32 z, s32 radius, s32 m
                 gGeometryResolvedX = tangent + x1;
                 gGeometryResolvedZ = normal + z1;
             }
-        } else if ((((GeometryRegion *)gCourseGeometryRegionData)[index].cornerFlags & 8) && edgeLength < tangent) {
+        } else if ((gCourseGeometryRegionData[index].cornerFlags & 8) && edgeLength < tangent) {
             tangent = gGeometryResolvedX - x3;
             normal = gGeometryResolvedZ - z3;
             length = SquareRoot0(tangent * tangent + normal * normal);
@@ -316,7 +316,7 @@ void resolveGeometryBoundaryCollision(s16 index, s32 x, s32 z, s32 radius, s32 m
         }
     }
 
-    if (((GeometryRegion *)gCourseGeometryRegionData)[index].neighbors[3] == wallType) {
+    if (gCourseGeometryRegionData[index].neighbors[3] == wallType) {
         gGeometryEdgeDeltaX = x0 - x2;
         gGeometryEdgeDeltaZOrCorrection = z0 - z2;
         gGeometryProjectionOffsetX = gGeometryResolvedX - x2;
@@ -329,7 +329,7 @@ void resolveGeometryBoundaryCollision(s16 index, s32 x, s32 z, s32 radius, s32 m
         tangent = (nz * gGeometryProjectionOffsetX + nx * gGeometryProjectionOffsetZOrDistance) / 4096;
         normal = (-nx * gGeometryProjectionOffsetX + nz * gGeometryProjectionOffsetZOrDistance) / 4096;
         edgeLength = (nz * gGeometryEdgeDeltaX + nx * gGeometryEdgeDeltaZOrCorrection) / 4096;
-        if ((((GeometryRegion *)gCourseGeometryRegionData)[index].cornerFlags & 4) && tangent < 0) {
+        if ((gCourseGeometryRegionData[index].cornerFlags & 4) && tangent < 0) {
             tangent = gGeometryResolvedX - x2;
             normal = gGeometryResolvedZ - z2;
             length = SquareRoot0(tangent * tangent + normal * normal);
@@ -340,7 +340,7 @@ void resolveGeometryBoundaryCollision(s16 index, s32 x, s32 z, s32 radius, s32 m
                 gGeometryResolvedX = tangent + x2;
                 gGeometryResolvedZ = normal + z2;
             }
-        } else if ((((GeometryRegion *)gCourseGeometryRegionData)[index].cornerFlags & 1) && edgeLength < tangent) {
+        } else if ((gCourseGeometryRegionData[index].cornerFlags & 1) && edgeLength < tangent) {
             tangent = gGeometryResolvedX - x0;
             normal = gGeometryResolvedZ - z0;
             length = SquareRoot0(tangent * tangent + normal * normal);
@@ -381,23 +381,23 @@ void reflectVelocityAndResolveGeometryBoundary(s16 index, s32 x, s32 z, s32 radi
 
     gGeometryResolvedX = x;
     gGeometryResolvedZ = z;
-    x0 = vertices[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[0]].x * 5;
-    x1 = vertices[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[1]].x * 5;
-    x2 = vertices[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[2]].x * 5;
-    x3 = vertices[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[3]].x * 5;
-    z0 = vertices[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[0]].z * 5;
-    z1 = vertices[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[1]].z * 5;
-    z2 = vertices[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[2]].z * 5;
-    z3 = vertices[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[3]].z * 5;
+    x0 = vertices[gCourseGeometryRegionData[index].vertices[0]].x * 5;
+    x1 = vertices[gCourseGeometryRegionData[index].vertices[1]].x * 5;
+    x2 = vertices[gCourseGeometryRegionData[index].vertices[2]].x * 5;
+    x3 = vertices[gCourseGeometryRegionData[index].vertices[3]].x * 5;
+    z0 = vertices[gCourseGeometryRegionData[index].vertices[0]].z * 5;
+    z1 = vertices[gCourseGeometryRegionData[index].vertices[1]].z * 5;
+    z2 = vertices[gCourseGeometryRegionData[index].vertices[2]].z * 5;
+    z3 = vertices[gCourseGeometryRegionData[index].vertices[3]].z * 5;
 
-    if (((GeometryRegion *)gCourseGeometryRegionData)[index].neighbors[0] < 0) {
+    if (gCourseGeometryRegionData[index].neighbors[0] < 0) {
         gGeometryEdgeDeltaX = x1 - x0;
         gGeometryEdgeDeltaZOrCorrection = z1 - z0;
         gGeometryProjectionOffsetX = x - x0;
         gGeometryProjectionOffsetZOrDistance = z - z0;
         reflectVelocityAndEnforceGeometryEdgeDistance(directionX, directionZ, radius);
     }
-    if (((GeometryRegion *)gCourseGeometryRegionData)[index].neighbors[1] < 0) {
+    if (gCourseGeometryRegionData[index].neighbors[1] < 0) {
         gGeometryEdgeDeltaX = x2 - x3;
         gGeometryEdgeDeltaZOrCorrection = z2 - z3;
         gGeometryProjectionOffsetX = gGeometryResolvedX - x3;
@@ -405,7 +405,7 @@ void reflectVelocityAndResolveGeometryBoundary(s16 index, s32 x, s32 z, s32 radi
         reflectVelocityAndEnforceGeometryEdgeDistance(directionX, directionZ, radius);
     }
 
-    if (((GeometryRegion *)gCourseGeometryRegionData)[index].neighbors[2] < 0) {
+    if (gCourseGeometryRegionData[index].neighbors[2] < 0) {
         gGeometryEdgeDeltaX = x3 - x1;
         gGeometryEdgeDeltaZOrCorrection = z3 - z1;
         gGeometryProjectionOffsetX = gGeometryResolvedX - x1;
@@ -418,7 +418,7 @@ void reflectVelocityAndResolveGeometryBoundary(s16 index, s32 x, s32 z, s32 radi
         along = (basisZ * gGeometryProjectionOffsetX + basisX * gGeometryProjectionOffsetZOrDistance) / 4096;
         distance = (-basisX * gGeometryProjectionOffsetX + basisZ * gGeometryProjectionOffsetZOrDistance) / 4096;
         edgeLength = (basisZ * gGeometryEdgeDeltaX + basisX * gGeometryEdgeDeltaZOrCorrection) / 4096;
-        if ((((GeometryRegion *)gCourseGeometryRegionData)[index].cornerFlags & (1 << 1)) && along < 0) {
+        if ((gCourseGeometryRegionData[index].cornerFlags & (1 << 1)) && along < 0) {
             along = gGeometryResolvedX - x1;
             distance = gGeometryResolvedZ - z1;
             cornerLength = SquareRoot0(along * along + distance * distance);
@@ -429,7 +429,7 @@ void reflectVelocityAndResolveGeometryBoundary(s16 index, s32 x, s32 z, s32 radi
                 gGeometryResolvedX = along + x1;
                 gGeometryResolvedZ = distance + z1;
             }
-        } else if ((((GeometryRegion *)gCourseGeometryRegionData)[index].cornerFlags & (1 << 3)) && edgeLength < along) {
+        } else if ((gCourseGeometryRegionData[index].cornerFlags & (1 << 3)) && edgeLength < along) {
             along = gGeometryResolvedX - x3;
             distance = gGeometryResolvedZ - z3;
             cornerLength = SquareRoot0(along * along + distance * distance);
@@ -454,7 +454,7 @@ void reflectVelocityAndResolveGeometryBoundary(s16 index, s32 x, s32 z, s32 radi
         }
     }
 
-    if (((GeometryRegion *)gCourseGeometryRegionData)[index].neighbors[3] < 0) {
+    if (gCourseGeometryRegionData[index].neighbors[3] < 0) {
         gGeometryEdgeDeltaX = x0 - x2;
         gGeometryEdgeDeltaZOrCorrection = z0 - z2;
         gGeometryProjectionOffsetX = gGeometryResolvedX - x2;
@@ -467,7 +467,7 @@ void reflectVelocityAndResolveGeometryBoundary(s16 index, s32 x, s32 z, s32 radi
         along = (basisZ * gGeometryProjectionOffsetX + basisX * gGeometryProjectionOffsetZOrDistance) / 4096;
         distance = (-basisX * gGeometryProjectionOffsetX + basisZ * gGeometryProjectionOffsetZOrDistance) / 4096;
         edgeLength = (basisZ * gGeometryEdgeDeltaX + basisX * gGeometryEdgeDeltaZOrCorrection) / 4096;
-        if ((((GeometryRegion *)gCourseGeometryRegionData)[index].cornerFlags & (1 << 2)) && along < 0) {
+        if ((gCourseGeometryRegionData[index].cornerFlags & (1 << 2)) && along < 0) {
             along = gGeometryResolvedX - x2;
             distance = gGeometryResolvedZ - z2;
             cornerLength = SquareRoot0(along * along + distance * distance);
@@ -478,7 +478,7 @@ void reflectVelocityAndResolveGeometryBoundary(s16 index, s32 x, s32 z, s32 radi
                 gGeometryResolvedX = along + x2;
                 gGeometryResolvedZ = distance + z2;
             }
-        } else if ((((GeometryRegion *)gCourseGeometryRegionData)[index].cornerFlags & (1 << 0)) && edgeLength < along) {
+        } else if ((gCourseGeometryRegionData[index].cornerFlags & (1 << 0)) && edgeLength < along) {
             along = gGeometryResolvedX - x0;
             distance = gGeometryResolvedZ - z0;
             cornerLength = SquareRoot0(along * along + distance * distance);
@@ -528,16 +528,16 @@ void getGeometryBoundaryDisplacement(s16 index, s32 x, s32 z, s32 radius, s32 *d
 
     gGeometryResolvedX = x;
     gGeometryResolvedZ = z;
-    x0 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[0]].x * 5;
-    x1 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[1]].x * 5;
-    x2 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[2]].x * 5;
-    x3 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[3]].x * 5;
-    z0 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[0]].z * 5;
-    z1 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[1]].z * 5;
-    z2 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[2]].z * 5;
-    z3 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[3]].z * 5;
+    x0 = gCourseGeometryVertexData[gCourseGeometryRegionData[index].vertices[0]].x * 5;
+    x1 = gCourseGeometryVertexData[gCourseGeometryRegionData[index].vertices[1]].x * 5;
+    x2 = gCourseGeometryVertexData[gCourseGeometryRegionData[index].vertices[2]].x * 5;
+    x3 = gCourseGeometryVertexData[gCourseGeometryRegionData[index].vertices[3]].x * 5;
+    z0 = gCourseGeometryVertexData[gCourseGeometryRegionData[index].vertices[0]].z * 5;
+    z1 = gCourseGeometryVertexData[gCourseGeometryRegionData[index].vertices[1]].z * 5;
+    z2 = gCourseGeometryVertexData[gCourseGeometryRegionData[index].vertices[2]].z * 5;
+    z3 = gCourseGeometryVertexData[gCourseGeometryRegionData[index].vertices[3]].z * 5;
 
-    if (((GeometryRegion *)gCourseGeometryRegionData)[index].neighbors[0] < 0) {
+    if (gCourseGeometryRegionData[index].neighbors[0] < 0) {
         gGeometryEdgeDeltaX = x1 - x0;
         gGeometryEdgeDeltaZOrCorrection = z1 - z0;
         gGeometryProjectionOffsetX = x - x0;
@@ -545,7 +545,7 @@ void getGeometryBoundaryDisplacement(s16 index, s32 x, s32 z, s32 radius, s32 *d
         enforceGeometryEdgeDistance(radius);
     }
 
-    if (((GeometryRegion *)gCourseGeometryRegionData)[index].neighbors[1] < 0) {
+    if (gCourseGeometryRegionData[index].neighbors[1] < 0) {
         gGeometryEdgeDeltaX = x2 - x3;
         gGeometryEdgeDeltaZOrCorrection = z2 - z3;
         gGeometryProjectionOffsetX = gGeometryResolvedX - x3;
@@ -554,7 +554,7 @@ void getGeometryBoundaryDisplacement(s16 index, s32 x, s32 z, s32 radius, s32 *d
     }
 
     /* Flagged side-edge corners use radial distance beyond the endpoints. */
-    if (((GeometryRegion *)gCourseGeometryRegionData)[index].neighbors[2] < 0) {
+    if (gCourseGeometryRegionData[index].neighbors[2] < 0) {
         gGeometryEdgeDeltaX = x3 - x1;
         gGeometryEdgeDeltaZOrCorrection = z3 - z1;
         gGeometryProjectionOffsetX = gGeometryResolvedX - x1;
@@ -565,7 +565,7 @@ void getGeometryBoundaryDisplacement(s16 index, s32 x, s32 z, s32 radius, s32 *d
         tangent = (nz * gGeometryProjectionOffsetX + nx * gGeometryProjectionOffsetZOrDistance) / 4096;
         normal = (-nx * gGeometryProjectionOffsetX + nz * gGeometryProjectionOffsetZOrDistance) / 4096;
         edgeLength = (nz * gGeometryEdgeDeltaX + nx * gGeometryEdgeDeltaZOrCorrection) / 4096;
-        if ((((GeometryRegion *)gCourseGeometryRegionData)[index].cornerFlags & 2) && tangent < 0) {
+        if ((gCourseGeometryRegionData[index].cornerFlags & 2) && tangent < 0) {
             tangent = gGeometryResolvedX - x1;
             normal = gGeometryResolvedZ - z1;
             length = SquareRoot0(tangent * tangent + normal * normal);
@@ -575,7 +575,7 @@ void getGeometryBoundaryDisplacement(s16 index, s32 x, s32 z, s32 radius, s32 *d
                 gGeometryResolvedX = tangent + x1;
                 gGeometryResolvedZ = normal + z1;
             }
-        } else if ((((GeometryRegion *)gCourseGeometryRegionData)[index].cornerFlags & 8) && edgeLength < tangent) {
+        } else if ((gCourseGeometryRegionData[index].cornerFlags & 8) && edgeLength < tangent) {
             tangent = gGeometryResolvedX - x3;
             normal = gGeometryResolvedZ - z3;
             length = SquareRoot0(tangent * tangent + normal * normal);
@@ -592,7 +592,7 @@ void getGeometryBoundaryDisplacement(s16 index, s32 x, s32 z, s32 radius, s32 *d
         }
     }
 
-    if (((GeometryRegion *)gCourseGeometryRegionData)[index].neighbors[3] < 0) {
+    if (gCourseGeometryRegionData[index].neighbors[3] < 0) {
         gGeometryEdgeDeltaX = x0 - x2;
         gGeometryEdgeDeltaZOrCorrection = z0 - z2;
         gGeometryProjectionOffsetX = gGeometryResolvedX - x2;
@@ -603,7 +603,7 @@ void getGeometryBoundaryDisplacement(s16 index, s32 x, s32 z, s32 radius, s32 *d
         tangent = (nz * gGeometryProjectionOffsetX + nx * gGeometryProjectionOffsetZOrDistance) / 4096;
         normal = (-nx * gGeometryProjectionOffsetX + nz * gGeometryProjectionOffsetZOrDistance) / 4096;
         edgeLength = (nz * gGeometryEdgeDeltaX + nx * gGeometryEdgeDeltaZOrCorrection) / 4096;
-        if ((((GeometryRegion *)gCourseGeometryRegionData)[index].cornerFlags & 4) && tangent < 0) {
+        if ((gCourseGeometryRegionData[index].cornerFlags & 4) && tangent < 0) {
             tangent = gGeometryResolvedX - x2;
             normal = gGeometryResolvedZ - z2;
             length = SquareRoot0(tangent * tangent + normal * normal);
@@ -613,7 +613,7 @@ void getGeometryBoundaryDisplacement(s16 index, s32 x, s32 z, s32 radius, s32 *d
                 gGeometryResolvedX = tangent + x2;
                 gGeometryResolvedZ = normal + z2;
             }
-        } else if ((((GeometryRegion *)gCourseGeometryRegionData)[index].cornerFlags & 1) && edgeLength < tangent) {
+        } else if ((gCourseGeometryRegionData[index].cornerFlags & 1) && edgeLength < tangent) {
             tangent = gGeometryResolvedX - x0;
             normal = gGeometryResolvedZ - z0;
             length = SquareRoot0(tangent * tangent + normal * normal);

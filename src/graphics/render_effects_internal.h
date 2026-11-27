@@ -502,16 +502,6 @@ typedef struct FallingTaskResource {
     s16 geometryIndex, groundPitch, groundRoll, unkD6;
     s32 verticalVelocity, groundHeight;
 } FallingTaskResource;
-/* Four edge neighbors and corner indices in a 0x1C-byte region record. */
-typedef struct GeometryRegion {
-    s16 neighbors[4];
-    s16 vertices[4];
-    s16 unk10[2];
-    s16 firstRecord;
-    s16 lastRecord;
-    s16 unk18;
-    u16 cornerFlags;
-} GeometryRegion;
 
 typedef struct TextureRegion {
     u8 u, v, w, h;

@@ -4527,3 +4527,7 @@ gTwoPlayerTimeAttackCourseMappingGroups = 0x80132638; // size:0x14
 gCurrentTaskCallback = 0x8013AFC8; // size:0x4
 
 gCourseRenderingDisabled = 0x8013AFB8;
+
+gCourseGeometryVertexCount = 0x8013B1F8; // size:0x2
+gCourseGeometryTriangleCount = 0x8013B1FA; // size:0x2
+gCourseGeometryRegionCount = 0x8013B1FC; // size:0x2

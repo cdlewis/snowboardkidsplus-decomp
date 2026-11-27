@@ -68,7 +68,7 @@ extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern GameTask *gCurrentTaskParent __attribute__((section(".data")));
 extern u32 gTaskTransitionFlags __attribute__((section(".data")));
 extern CourseGeometryVertex *gCourseGeometryVertexData __attribute__((section(".data")));
-extern s16 *gCourseGeometryRegionData __attribute__((section(".data")));
+extern GeometryRegion *gCourseGeometryRegionData __attribute__((section(".data")));
 
 extern VECTOR *gScratchVector1 __attribute__((section(".data")));
 extern u32 *gCurrentPlayerDepthOffsetOrderingTable __attribute__((section(".data")));
