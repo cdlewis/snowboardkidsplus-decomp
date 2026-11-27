@@ -703,7 +703,8 @@ typedef struct TimedSpriteSequenceResource {
     u8 pad0C[0xF4];
 } TimedSpriteSequenceResource;
 
-extern const s8 D_8012EC04[], D_8012ECC8[], D_8012EECC[], D_8012F0D0[];
+extern const s8 gDoubleByteGlyphCodes16x16Page0[196];
+extern const s8 D_8012ECC8[], D_8012EECC[], D_8012F0D0[];
 
 extern const FadingTextGlyphBanks gFadingTextGlyphBanks
     __attribute__((section(".rodata.fading_text_glyph_banks")));
@@ -837,8 +838,8 @@ void updatePickupVisualTask(void);
 extern VisualPlacement *gCollectiblePlacements;
 
 /* Shared texture metadata remains in its original data owner. */
-extern TextureRegionSet D_8012DDA4[];
-extern TextureRegion *D_8013B6AC;
+extern TextureRegionSet gSpriteTextureRegionSets[37];
+extern TextureRegion *gCurrentSpriteTextureRegions;
 
 extern TaskSnapshot *gSelectedPlayerTaskSnapshots;
 extern RacePlayer *D_8013B2E8;

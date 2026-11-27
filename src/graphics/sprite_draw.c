@@ -95,11 +95,11 @@ void initTexturedQuadTemplate(void) {
 }
 
 void setTexturedQuadTexture(s32 index, s32 palette) {
-    TextureRegionSet *texture = &D_8012DDA4[index];
+    TextureRegionSet *texture = &gSpriteTextureRegionSets[index];
     POLY_FT4 *quad = &gTexturedQuadTemplate;
     quad->tpage = GetTPage(texture->depth, 1, texture->x, texture->y);
     quad->clut = GetClut(texture->clutX, texture->clutY + palette);
-    D_8013B6AC = texture->regions;
+    gCurrentSpriteTextureRegions = texture->regions;
 }
 
 void setTexturedQuadColor(s32 r, s32 g, s32 b) {
@@ -112,7 +112,7 @@ void setTexturedQuadSemiTrans(s32 enabled) {
 
 void drawTexturedQuad(s16 x, s16 y, s32 index, GsOT *ot, u16 depth) {
     POLY_FT4 *quad = &gTexturedQuadTemplate;
-    TextureRegion *region = &D_8013B6AC[index];
+    TextureRegion *region = &gCurrentSpriteTextureRegions[index];
     quad->x0 = x;
     quad->y0 = y;
     quad->x1 = x + region->w;
@@ -146,7 +146,7 @@ void drawStretchedTexturedQuad(s16 x, s16 y, s16 width, s16 height, s32 index, G
     quad->x1 = right;
     quad->x2 = x;
     quad->x3 = right;
-    region = &D_8013B6AC[index];
+    region = &gCurrentSpriteTextureRegions[index];
     quad->u0 = region->u;
     quad->v0 = region->v;
     quad->u1 = region->u + region->w;
@@ -159,7 +159,7 @@ void drawStretchedTexturedQuad(s16 x, s16 y, s16 width, s16 height, s32 index, G
 }
 
 void drawTexturedQuadByIndex(s16 x, s16 y, s32 index, GsOT *ot, u16 depth) {
-    TexturedQuadFrame *frame = &D_8012DFF4[index];
+    TexturedQuadFrame *frame = &gTexturedQuadFrames[index];
 
     setTexturedQuadTexture(frame->textureIndex, 0);
     drawTexturedQuad(x, y, frame->frameIndex, ot, depth);
@@ -177,7 +177,7 @@ void drawTexturedQuadByIndexWithBlend(s16 x, s16 y, s32 index, s16 palette, s16 
         blend = 0;
         semiTrans = 0;
     }
-    frame = &D_8012DFF4[index];
+    frame = &gTexturedQuadFrames[index];
     setTexturedQuadTextureBlend(frame->textureIndex, palette, blend);
     setTexturedQuadSemiTrans(semiTrans);
     drawTexturedQuad(x, y, frame->frameIndex, ot, depth);
@@ -195,10 +195,10 @@ void drawStretchedTexturedQuadByIndexWithBlend(s16 x, s16 y, s16 width, s16 heig
         blend = 0;
         semiTrans = 0;
     }
-    frame = &D_8012DFF4[index];
+    frame = &gTexturedQuadFrames[index];
     setTexturedQuadTextureBlend(frame->textureIndex, palette, blend);
     setTexturedQuadSemiTrans(semiTrans);
-    region = &D_8013B6AC[frame->frameIndex];
+    region = &gCurrentSpriteTextureRegions[frame->frameIndex];
     if (width == 0) width = region->w;
     if (height == 0) height = region->h;
     drawStretchedTexturedQuad(x, y, width, height, frame->frameIndex, ot, depth);
@@ -225,10 +225,10 @@ void drawSkewedTexturedQuadByIndexWithBlend(s16 x, s16 y, s16 width, s16 height,
         blend = 0;
         semiTrans = 0;
     }
-    frame = &D_8012DFF4[index];
+    frame = &gTexturedQuadFrames[index];
     setTexturedQuadTextureBlend(frame->textureIndex, palette, blend);
     setTexturedQuadSemiTrans(semiTrans);
-    region = &D_8013B6AC[frame->frameIndex];
+    region = &gCurrentSpriteTextureRegions[frame->frameIndex];
     if (width == 0) width = region->w;
     if (height == 0) height = region->h;
     quad = &gTexturedQuadTemplate;
@@ -261,7 +261,7 @@ void drawSkewedTexturedQuadByIndexWithBlend(s16 x, s16 y, s16 width, s16 height,
 
 void drawInclusiveTexturedQuad(s16 x, s16 y, s32 index, GsOT *ot, u16 depth) {
     POLY_FT4 *quad = &gTexturedQuadTemplate;
-    TextureRegion *region = &D_8013B6AC[index];
+    TextureRegion *region = &gCurrentSpriteTextureRegions[index];
     u16 extent;
 
     /* Inclusive edges use a wrapping 16-bit decrement of each dimension. */
@@ -289,7 +289,7 @@ void drawInclusiveTexturedQuad(s16 x, s16 y, s32 index, GsOT *ot, u16 depth) {
 }
 
 void drawInclusiveTexturedQuadByIndex(s16 x, s16 y, s32 index, GsOT *ot, u16 depth) {
-    TexturedQuadFrame *frame = &D_8012DFF4[index];
+    TexturedQuadFrame *frame = &gTexturedQuadFrames[index];
 
     setTexturedQuadTexture(frame->textureIndex, 0);
     drawInclusiveTexturedQuad(x, y, frame->frameIndex, ot, depth);
@@ -308,7 +308,7 @@ void drawInclusiveTexturedQuadByIndexWithBlend(s16 x, s16 y, s32 index, s16 pale
         blend = 0;
         semiTrans = 0;
     }
-    frame = &D_8012DFF4[index];
+    frame = &gTexturedQuadFrames[index];
     setTexturedQuadTextureBlend(frame->textureIndex, palette, blend);
     setTexturedQuadSemiTrans(semiTrans);
     drawInclusiveTexturedQuad(x, y, frame->frameIndex, ot, depth);
@@ -322,12 +322,12 @@ void initSpritePrimitiveTemplate(void) {
 }
 
 void setSpriteTextureBlend(s32 index, s32 palette, s32 blend) {
-    TextureRegionSet *texture = &D_8012DDA4[index];
+    TextureRegionSet *texture = &gSpriteTextureRegionSets[index];
     SpritePrimitiveTemplate *sprite = &gSpritePrimitiveTemplate;
     SetDrawTPage(&sprite->drawPage, 1, 1,
                  GetTPage(texture->depth, blend, texture->x, texture->y));
     sprite->sprite.clut = GetClut(texture->clutX, texture->clutY + palette);
-    D_8013B6AC = texture->regions;
+    gCurrentSpriteTextureRegions = texture->regions;
 }
 
 void setSpriteColor(s32 r, s32 g, s32 b) {
@@ -347,8 +347,8 @@ s32 index, blendMode;
 GsOT *ot;
 u16 depth;
 {
-    TexturedQuadFrame *frame = &D_8012DFF4[index];
-    TextureRegionSet *texture = &D_8012DDA4[frame->textureIndex];
+    TexturedQuadFrame *frame = &gTexturedQuadFrames[index];
+    TextureRegionSet *texture = &gSpriteTextureRegionSets[frame->textureIndex];
     TextureRegion *region = &texture->regions[frame->frameIndex];
     DrawModeSpritePacket *sprite = (DrawModeSpritePacket *)GsGetWorkBase();
 
@@ -385,7 +385,7 @@ void drawSpriteTextureRegion(s16 x, s16 y, s32 index, GsOT *ot, u16 depth) {
     DR_TPAGE *page;
     TextureRegion *region;
     *sprite = gSpritePrimitiveTemplate.sprite;
-    region = &D_8013B6AC[index];
+    region = &gCurrentSpriteTextureRegions[index];
     sprite->x0 = x;
     sprite->y0 = y;
     sprite->u0 = region->u;
@@ -428,8 +428,8 @@ void drawRotatedSpriteByIndex(s32 x, s32 y, s32 index, s32 paletteIndex, s16 ble
         blend = 0;
         transparent = 0;
     }
-    frame = &D_8012DFF4[index];
-    texture = &D_8012DDA4[frame->textureIndex];
+    frame = &gTexturedQuadFrames[index];
+    texture = &gSpriteTextureRegionSets[frame->textureIndex];
     region = &texture->regions[frame->frameIndex];
     sprite = &gRotatedSpriteTemplate;
     sprite->attribute = 0;
@@ -473,8 +473,8 @@ void drawTransformedSpriteByIndex(s32 x, s32 y, s32 index, s32 paletteIndex, s16
         transparent = 0;
     }
     sprite = &gRotatedSpriteTemplate;
-    frame = &D_8012DFF4[index];
-    texture = &D_8012DDA4[frame->textureIndex];
+    frame = &gTexturedQuadFrames[index];
+    texture = &gSpriteTextureRegionSets[frame->textureIndex];
     region = &texture->regions[frame->frameIndex];
     sprite->attribute = 0;
     sprite->attribute |= texture->depth << 24;
@@ -1428,7 +1428,7 @@ void drawDoubleByteGlyph16x16(s16 x, s16 y, s16 unusedWidth, s16 unusedHeight, c
     DrawModeSpritePacket *packet;
     TextureRegionSet *texture;
 
-    first = D_8012EC04;
+    first = gDoubleByteGlyphCodes16x16Page0;
     second = D_8012ECC8;
     third = D_8012EECC;
     offset = 0;
@@ -1474,7 +1474,7 @@ void drawDoubleByteGlyph16x16(s16 x, s16 y, s16 unusedWidth, s16 unusedHeight, c
         packet->tag = (sizeof(*packet) / sizeof(u32) - 1) << 24;
         packet->drawModeCode = DRAW_MODE_COMMAND_HIGH;
         setRGB0(packet, gTexturedSpriteTemplate.r0, gTexturedSpriteTemplate.g0, gTexturedSpriteTemplate.b0);
-        texture = &D_8012DDA4[page];
+        texture = &gSpriteTextureRegionSets[page];
         if (blend >= 0) {
             s16 textureDepth = texture->depth;
             s16 ty = texture->y;
@@ -1533,11 +1533,11 @@ void drawLimitedWrappedText16x16(s16 x, s16 y, s16 limit, s16 columns, const cha
 }
 
 void setTexturedQuadTextureBlend(s32 index, s32 palette, s32 blend) {
-    TextureRegionSet *texture = &D_8012DDA4[index];
+    TextureRegionSet *texture = &gSpriteTextureRegionSets[index];
     POLY_FT4 *quad = &gTexturedQuadTemplate;
     quad->tpage = GetTPage(texture->depth, blend, texture->x, texture->y);
     quad->clut = GetClut(texture->clutX, texture->clutY + palette);
-    D_8013B6AC = texture->regions;
+    gCurrentSpriteTextureRegions = texture->regions;
 }
 
 void drawTexturedPanel(s16 x, s16 y, s16 w, s16 h, s16 borderW, s16 borderH,
@@ -1552,7 +1552,7 @@ void drawTexturedPanel(s16 x, s16 y, s16 w, s16 h, s16 borderW, s16 borderH,
         blend = 0;
         semiTrans = 0;
     }
-    entry = &D_8012DFF4[style];
+    entry = &gTexturedQuadFrames[style];
     frame = entry->frameIndex;
     setTexturedQuadTextureBlend(entry->textureIndex, palette, blend);
     setTexturedQuadSemiTrans(semiTrans);

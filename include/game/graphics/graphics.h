@@ -85,7 +85,7 @@ typedef struct TexturedQuadListEntry {
     s16 width, height;
 } TexturedQuadListEntry;
 
-extern TexturedQuadFrame D_8012DFF4[];
+extern TexturedQuadFrame gTexturedQuadFrames[572];
 
 typedef struct Position3D {
     s32 x, y, z;
