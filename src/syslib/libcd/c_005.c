@@ -1,4 +1,14 @@
 #include "common.h"
+
+/* Unnamed register pointers retained by this SDK object without references. */
+volatile u8 *streamSetStreamCdRegisterAddresses[4]
+    __attribute__((section(".data.stream_set_stream_registers"), aligned(4))) = {
+    (volatile u8 *)0x1F801800,
+    (volatile u8 *)0x1F801801,
+    (volatile u8 *)0x1F801802,
+    (volatile u8 *)0x1F801803,
+};
+
 extern void StSetMask(u32 mask, u32 start, u32 end);
 extern s32 StEmu_Addr, StRgb24, CChannel, StCHANNEL, Stframe_no;
 extern s16 Stsector_offset;

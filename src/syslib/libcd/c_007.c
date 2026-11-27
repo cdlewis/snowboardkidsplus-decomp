@@ -1,8 +1,19 @@
 #include "common.h"
+
 typedef struct {
     u16 id, type, sector_count, nsectors;
     u8 remaining[24];
 } StHEADER;
+
+/* Unnamed register pointers retained by this SDK object without references. */
+volatile u8 *streamFreeRingCdRegisterAddresses[4]
+    __attribute__((section(".data.stream_free_ring_registers"), aligned(4))) = {
+    (volatile u8 *)0x1F801800,
+    (volatile u8 *)0x1F801801,
+    (volatile u8 *)0x1F801802,
+    (volatile u8 *)0x1F801803,
+};
+
 extern u8 *StRingAddr;
 extern s32 StRingSize, StRingIdx3;
 u32 StFreeRing(u32 *base) {

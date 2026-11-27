@@ -1470,6 +1470,9 @@ _qin = 0x80139D74; // defined:true
 _qout = 0x80139D78; // defined:true
 
 // Private SDK symbols named from reference implementations, contents and consumers.
+streamSetStreamCdRegisterAddresses = 0x80134D4C; // size:0x10
+streamFreeRingCdRegisterAddresses = 0x80134D5C; // size:0x10
+streamInitRingCdRegisterAddresses = 0x80134D6C; // size:0x10
 spuTimeoutFormat = 0x80012380; // defined:true
 spuResetWaitName = 0x80012390; // defined:true
 spuWriteReadyWaitName = 0x800123A0; // defined:true

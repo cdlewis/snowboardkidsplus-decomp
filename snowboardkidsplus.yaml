@@ -968,7 +968,9 @@ segments:
       - {start: 0x12551C, type: .data, name: syslib/libcd/c_002, linker_section: .data.stream_clear_registers}
       - {start: 0x12552C, type: .data, name: syslib/libcd/c_003, linker_section: .data.stream_unset_registers}
       - [0x12553C, lib, libcd, c_004, .data]
-      - [0x12554C, data]
+      - {start: 0x12554C, type: .data, name: syslib/libcd/c_005, linker_section: .data.stream_set_stream_registers}
+      - {start: 0x12555C, type: .data, name: syslib/libcd/c_007, linker_section: .data.stream_free_ring_registers}
+      - {start: 0x12556C, type: .data, name: syslib/libcd/c_008, linker_section: .data.stream_init_ring_registers}
       - [0x12557C, lib, libcd, c_009, .data]
       - [0x12558C, data]
       - [0x12559C, lib, libcd, c_011, .data]
