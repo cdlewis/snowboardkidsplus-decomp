@@ -1099,7 +1099,7 @@ segments:
       - {start: 0x12BB08, type: .data, name: race/effects/player_effects, linker_section: .data.radial_effect_quads}
       - {start: 0x12BB20, type: .data, name: race/effects/player_effects, linker_section: .data.player_turn_trail_origin}
       - {start: 0x12BB28, type: .data, name: race/effects/player_effects, linker_section: .data.color_cycle_rects}
-      - [0x12BB38, data, color_cycle_rects_tail]
+      - {start: 0x12BB38, type: .sdata, name: race/effects/player_effects, linker_section: .sdata.quad_transition_frame, linker_section_order: .data}
       - {start: 0x12BB3C, type: .data, name: race/effects/player_effects, linker_section: .data.timed_sprite_alternate_text}
       - [0x12BB5C, data, timed_sprite_state]
       - {start: 0x12BB70, type: .sdata, name: race/effects/player_effects, linker_section_order: .data}

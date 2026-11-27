@@ -659,6 +659,9 @@ RECT gWhitePulsePaletteRect
 RECT gColorCycleCaptureRect
     __attribute__((section(".data.color_cycle_rects"))) = {944, 240, 8, 1};
 
+s32 gQuadTransitionFrame
+    __attribute__((section(".sdata.quad_transition_frame"), aligned(4))) = 0;
+
 u16 gStretchedTextWidth __attribute__((section(".sdata.stretched_text"), aligned(2))) = 8;
 u16 gTextGlyphPalette __attribute__((section(".sdata.stretched_text"), aligned(2))) = 0;
 
