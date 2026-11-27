@@ -933,11 +933,6 @@ void updatePlayerPositionTrailTask(void);
 void updatePlayerRingEffectTask(void);
 void drawQuadAnimationTask(void);
 
-
-extern s32 D_8013B634 __attribute__((section(".sdata.geometry_edge_projection")));
-extern s32 D_8013B640 __attribute__((section(".sdata.geometry_edge_projection")));
-extern s32 D_8013B64C __attribute__((section(".sdata.geometry_edge_projection")));
-
 extern const char gNoProcessMessage[16];
 
 void drawOscillatingQuadTask(void);

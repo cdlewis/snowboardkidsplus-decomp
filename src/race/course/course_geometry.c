@@ -68,12 +68,12 @@ s32 getAdjacentGeometryRegionForPoint(s16 index, s32 x, s32 z) {
 }
 
 void selectGeometryRecord(s16 index) {
-    s16 *vertices;
+    CourseGeometryVertex *vertices;
     gSelectedGeometryRecordIndex = index;
-    vertices = (s16 *)gCourseGeometryVertexData;
-    gSelectedGeometryVertex0 = &vertices[gCourseGeometryTriangleRecords[index].vertexIndices[0] * 3];
-    gSelectedGeometryVertex1 = &vertices[gCourseGeometryTriangleRecords[index].vertexIndices[1] * 3];
-    gSelectedGeometryVertex2 = &vertices[gCourseGeometryTriangleRecords[index].vertexIndices[2] * 3];
+    vertices = gCourseGeometryVertexData;
+    gSelectedGeometryVertex0 = &vertices[gCourseGeometryTriangleRecords[index].vertexIndices[0]].x;
+    gSelectedGeometryVertex1 = &vertices[gCourseGeometryTriangleRecords[index].vertexIndices[1]].x;
+    gSelectedGeometryVertex2 = &vertices[gCourseGeometryTriangleRecords[index].vertexIndices[2]].x;
 }
 
 s32 getCourseHeightAtPoint(s16 index, s32 x, s32 z) {
