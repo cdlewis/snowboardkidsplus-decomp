@@ -24,6 +24,7 @@ const char gRecordLapTimeLabel[12] __attribute__((section(".rodata.record_lap_ti
 const char gHitCountTimeOutLabel[12] __attribute__((section(".rodata.hit_count_time_out"), aligned(4))) = "TIME OUT";
 char gHitCountTotalFormat[4] __attribute__((section(".data.hit_count_labels"), aligned(4))) = "/%d";
 char gHitCountMarker[4] __attribute__((section(".data.hit_count_labels"), aligned(4))) = "*";
+char gCountRecordHitLabel[4] __attribute__((section(".data.hit_count_labels"), aligned(4))) = "HIT";
 char gStatsTrickLabel[8] __attribute__((section(".data.stats_value_labels"), aligned(4))) = "-TRICK-";
 char gStatsMakeLabel[8] __attribute__((section(".data.stats_value_labels"), aligned(4))) = "-MAKE-";
 
@@ -44,7 +45,6 @@ const char gRaceComparisonSpeedFanLabel[16] __attribute__((section(".rodata.race
 const char gRaceComparisonHitCountLabel[12] __attribute__((section(".rodata.race_comparison_labels"), aligned(4))) = "HIT COUNT";
 const char gRaceComparisonTrickPointLabel[12] __attribute__((section(".rodata.race_comparison_labels"), aligned(4))) = "TRICK POINT";
 
-extern char gCountRecordHitLabel[4];
 extern char gRaceResultsFastLabel[];
 
 void drawRaceTime(const RaceTime *value, s32 x, s32 y, s16 mode, GsOT *ot, u16 depth) {

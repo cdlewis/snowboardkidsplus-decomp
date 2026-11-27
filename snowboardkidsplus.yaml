@@ -1050,7 +1050,6 @@ segments:
       - {start: 0x12B91C, type: .data, name: race/player/player_actions, linker_section: .data.result_icon_palettes}
       - {start: 0x12B920, type: .data, name: race/player/player_actions, linker_section: .data.result_row_labels}
       - {start: 0x12B930, type: .data, name: menu/record_screens, linker_section: .data.hit_count_labels}
-      - [0x12B938, data, hit_count_labels_tail]
       - {start: 0x12B93C, type: .data, name: menu/record_screens, linker_section: .data.race_results_fast_label}
       - {start: 0x12B944, type: .data, name: menu/record_screens, linker_section: .data.stats_value_labels}
       - {start: 0x12B954, type: .data, name: race/player/player_actions, linker_section: .data.menu_sprite_palettes_prefix}
