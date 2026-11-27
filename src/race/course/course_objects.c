@@ -1982,6 +1982,10 @@ TaskVisualFrame *gObjectVisualFramesByType[2]
 TaskVisualFrame *gCourseVisualFrames
     __attribute__((section(".sdata.course_visual_frames"))) = 0;
 
+/* Unreferenced storage following the course-object visual globals. */
+u8 gCourseObjectsReserved3B2CC[4]
+    __attribute__((section(".data.course_objects_reserved_3b2cc"), aligned(4))) = {0};
+
 CourseTriggerRecord gCourse0Triggers[]
     __attribute__((section(".data.course_triggers"), aligned(4))) = {
     {49, 7, 0},
