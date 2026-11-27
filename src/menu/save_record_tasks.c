@@ -59,9 +59,16 @@ SaveRecord gPlayerSaveRecords[2] __attribute__((section(".data.save_records"))) 
 SaveRecord gMergedSaveRecord __attribute__((section(".data.merged_save_record"))) = {0};
 
 extern const u16 gMemoryCardUnformattedText[], gMemoryCardFormatConfirmationText[];
-extern const u16 gMemoryCardFormatCompleteText[], D_8013047C[], D_80130578[], D_801305C4[];
-extern const u16 D_801305F0[], D_80130638[], D_80130694[], D_801306DC[];
-extern const u16 D_80130708[], D_80130740[], D_8013075C[];
+extern const u16 gMemoryCardFormatCompleteText[];
+extern const u16 gMemoryCardFormatFailedText[];
+extern const u16 gMemoryCardSaveInProgressText[];
+extern const u16 gMemoryCardMissingText[];
+extern const u16 gMemoryCardFullText[];
+extern const u16 gMemoryCardChangedSaveConfirmationText[];
+extern const u16 gMemoryCardSaveSlotChoiceText[];
+extern const u16 gMemoryCardSaveCompleteText[];
+extern const u16 gMemoryCardSaveOptionsText[];
+extern const u16 D_80130740[], D_8013075C[];
 /* Incomplete arrays let the compiler schedule the address halves separately. */
 extern s8 gMemoryCardSaveRecordCurrencyLabel[]
     __attribute__((section(".data.memory_card_save_record_currency_label")));
@@ -347,7 +354,7 @@ void updateMemoryCardSaveMenuTask(void) {
         }
         break;
     case 6:
-        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_80130694,
+        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, gMemoryCardSaveSlotChoiceText,
                                               -1, enabled, 1, gMemoryCardSlotChoiceSprites, 4, 11);
         gCurrentTask->data18 = 7;
         break;
@@ -414,7 +421,7 @@ void updateMemoryCardSaveMenuTask(void) {
         }
         break;
     case 9:
-        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_80130708,
+        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, gMemoryCardSaveOptionsText,
                                               -1, (u16)menu->command0C | enabled, 1, gSaveRecordConfirmationSprites, 4, 11);
         gCurrentTask->data18 = 10;
         break;
@@ -452,7 +459,7 @@ void updateMemoryCardSaveMenuTask(void) {
         goto showRetry;
     case 16:
         gMemoryCardSlotHistory.unk_12[menu->slot] = 3;
-        createRegisteredStaticTextPanelTask(x, y, x + 4, y + 2, D_80130578, -1, 4, 11);
+        createRegisteredStaticTextPanelTask(x, y, x + 4, y + 2, gMemoryCardSaveInProgressText, -1, 4, 11);
         gCurrentTask->data18 = 17;
         break;
     case 17:
@@ -474,7 +481,7 @@ void updateMemoryCardSaveMenuTask(void) {
         if (status == 4)
             break;
         if (status == 0 || status == 5) {
-            createRegisteredStaticTextPanelTask(x, y, x + 20, y + 12, D_801306DC, -1, 4, 11);
+            createRegisteredStaticTextPanelTask(x, y, x + 20, y + 12, gMemoryCardSaveCompleteText, -1, 4, 11);
             gCurrentTask->data18 = (gSaveRecordSavedOrLoaded = 1, 22);
             break;
         }
@@ -512,7 +519,7 @@ void updateMemoryCardSaveMenuTask(void) {
         gCurrentTask->data18 = 22;
         break;
     case 26:
-        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_80130638,
+        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, gMemoryCardChangedSaveConfirmationText,
                                               -1, enabled, 1, gSaveRecordConfirmationSprites, 4, 11);
         gCurrentTask->data18 = 27;
         break;
@@ -530,7 +537,7 @@ void updateMemoryCardSaveMenuTask(void) {
         gCurrentTask->data18 = 6;
         break;
     case 28:
-        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_801305C4,
+        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, gMemoryCardMissingText,
                                               menu->slot, enabled, 1, 0, 4, 11);
         gCurrentTask->data18 = 29;
         break;
@@ -543,7 +550,7 @@ void updateMemoryCardSaveMenuTask(void) {
         }
         break;
     case 30:
-        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_801305F0,
+        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, gMemoryCardFullText,
                                               menu->slot, enabled, 1, 0, 4, 11);
         gCurrentTask->data18 = 31;
         break;
@@ -612,7 +619,7 @@ void updateMemoryCardSaveMenuTask(void) {
         }
         break;
     case 37:
-        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_8013047C,
+        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, gMemoryCardFormatFailedText,
                                               -1, enabled, 1, 0, 4, 11);
         gCurrentTask->data18 = 38;
         break;

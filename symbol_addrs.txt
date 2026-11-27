@@ -4482,6 +4482,14 @@ gMemoryCardCorruptDataText = 0x80130390;
 gMemoryCardUnformattedText = 0x801303EC;
 gMemoryCardFormatConfirmationText = 0x80130428;
 gMemoryCardFormatCompleteText = 0x80130460;
+gMemoryCardFormatFailedText = 0x8013047C;
+gMemoryCardSaveInProgressText = 0x80130578;
+gMemoryCardMissingText = 0x801305C4;
+gMemoryCardFullText = 0x801305F0;
+gMemoryCardChangedSaveConfirmationText = 0x80130638;
+gMemoryCardSaveSlotChoiceText = 0x80130694;
+gMemoryCardSaveCompleteText = 0x801306DC;
+gMemoryCardSaveOptionsText = 0x80130708;
 gMemoryCardOperationFailedText = 0x80130770;
 gMemoryCardSlotChoiceSprites = 0x80130800;
 
