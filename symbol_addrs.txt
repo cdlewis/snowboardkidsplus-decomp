@@ -3524,7 +3524,7 @@ createRegisteredCallbackTask = 0x80074988; // type:func
 updatePlayerDualResourceEffectTask = 0x80046CB4; // type:func
 gPlayerDualResourceEffectFrame = 0x8013B1AC; // size:0x8 defined:true
 
-D_8013B154 = 0x8013B154; // type:RaceTime size:0x4 defined:true
+gTrickAttackTimeLimit = 0x8013B154; // type:RaceTime size:0x4 defined:true
 
 
 
@@ -3922,7 +3922,7 @@ drawSinglePlayerRaceHud = 0x80041554; // type:func
 drawSplitScreenCourseProgressHud = 0x80041890; // type:func
 drawSplitScreenRaceHud = 0x800418F4; // type:func
 
-D_80124248 = 0x80124248; // type:RaceTime size:0x28 defined:true
+gScoreAttackTimeLimits = 0x80124248; // type:RaceTime size:0x28 defined:true
 gRaceProgressMeterIconUVs = 0x80124270; // size:0x14 defined:true
 gRaceProgressMeterIconPalettes = 0x80124284; // size:0xC defined:true
 gRaceProgressMeterAlternatePalettes = 0x80124290; // size:0xC defined:true
@@ -4323,3 +4323,9 @@ gCdCommandActive = 0x8013AE78; // size:0x2 defined:true
 
 gTaskVisualQuad = 0x8012967C; // size:0x24
 gSelectedPlayerTaskSnapshots = 0x8013B2E4; // size:0x4
+
+GsSetWorkBase = 0x800BF2C8; // type:func defined:true
+gCourseCoinTargetTimes = 0x80124220; // size:0x28
+gAttackTimeRemaining = 0x8013B184;
+gPlayerAttackTimesRemaining = 0x8013B198; // size:0x8
+gRaceHudMode = 0x8013B620;

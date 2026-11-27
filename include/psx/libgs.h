@@ -100,7 +100,7 @@ void GsSortPoly(void *packet, GsOT *ot, u16 depth);
 void GsSortSprite(GsSPRITE *sprite, GsOT *ot, u16 depth);
 void GsSortFastSprite(GsSPRITE *sprite, GsOT *ot, u16 depth);
 u32 *GsGetWorkBase(void);
-void func_800BF2C8(PACKET *value);
+void GsSetWorkBase(PACKET *value);
 
 MATRIX *RotMatrix(SVECTOR *rotation, MATRIX *matrix);
 VECTOR *ApplyMatrix(MATRIX *matrix, SVECTOR *vector, VECTOR *result);

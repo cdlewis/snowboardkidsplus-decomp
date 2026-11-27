@@ -93,17 +93,17 @@ void advanceRaceElapsedTime(void) {
 
 void decrementRaceCountdown(void) {
     if (gRacePauseState == 0) {
-        D_8013B184.centiseconds -= 0x358;
-        if (D_8013B184.centiseconds < 0) {
-            D_8013B184.centiseconds = 0x60F8;
-            D_8013B184.seconds--;
-            if (D_8013B184.seconds < 0) {
-                D_8013B184.seconds = 59;
-                D_8013B184.minutes--;
-                if (D_8013B184.minutes < 0) {
-                    D_8013B184.centiseconds = 0;
-                    D_8013B184.seconds = 0;
-                    D_8013B184.minutes = 0;
+        gAttackTimeRemaining.centiseconds -= 0x358;
+        if (gAttackTimeRemaining.centiseconds < 0) {
+            gAttackTimeRemaining.centiseconds = 0x60F8;
+            gAttackTimeRemaining.seconds--;
+            if (gAttackTimeRemaining.seconds < 0) {
+                gAttackTimeRemaining.seconds = 59;
+                gAttackTimeRemaining.minutes--;
+                if (gAttackTimeRemaining.minutes < 0) {
+                    gAttackTimeRemaining.centiseconds = 0;
+                    gAttackTimeRemaining.seconds = 0;
+                    gAttackTimeRemaining.minutes = 0;
                 }
             }
         }

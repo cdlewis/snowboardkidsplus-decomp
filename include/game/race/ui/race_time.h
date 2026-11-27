@@ -9,15 +9,15 @@ typedef struct RaceTime {
     s16 centiseconds;
 } RaceTime;
 
-extern RaceTime D_8013B154;
-extern RaceTime D_8013B184;
+extern RaceTime gTrickAttackTimeLimit;
+extern RaceTime gAttackTimeRemaining;
 extern RaceTime gPlayerRaceTimes[];
-extern RaceTime D_8013B198[];
-extern RaceTime D_80124248[];
+extern RaceTime gPlayerAttackTimesRemaining[];
+extern RaceTime gScoreAttackTimeLimits[];
 extern RaceTime gRaceElapsedTime;
 extern RaceTime D_8013B188;
 extern RaceTime D_80124050[];
-extern RaceTime D_80124220[];
+extern RaceTime gCourseCoinTargetTimes[];
 
 struct GsOT;
 void drawRaceTime(const RaceTime *value, s32 x, s32 y, s16 mode, struct GsOT *ot, u16 depth);

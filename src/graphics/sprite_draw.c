@@ -377,7 +377,7 @@ u16 depth;
     setUV0(sprite, region->u, region->v);
     setWH(sprite, region->w, region->h);
     AddPrim(&ot->org[depth], sprite);
-    func_800BF2C8((PACKET *)(sprite + 1));
+    GsSetWorkBase((PACKET *)(sprite + 1));
 }
 
 void drawSpriteTextureRegion(s16 x, s16 y, s32 index, GsOT *ot, u16 depth) {
@@ -396,21 +396,21 @@ void drawSpriteTextureRegion(s16 x, s16 y, s32 index, GsOT *ot, u16 depth) {
     page = (DR_TPAGE *)sprite;
     *page = gSpritePrimitiveTemplate.drawPage;
     AddPrim(&ot->org[depth], page);
-    func_800BF2C8((PACKET *)(page + 1));
+    GsSetWorkBase((PACKET *)(page + 1));
 }
 
 void addSpritePacket(SPRT *source, GsOT *ot, u16 depth) {
     SPRT *packet = (SPRT *)GsGetWorkBase();
     *packet = *source;
     AddPrim(&ot->org[depth], packet);
-    func_800BF2C8((PACKET *)(packet + 1));
+    GsSetWorkBase((PACKET *)(packet + 1));
 }
 
 void addDrawPagePacket(DR_TPAGE *source, GsOT *ot, u16 depth) {
     DR_TPAGE *packet = (DR_TPAGE *)GsGetWorkBase();
     *packet = *source;
     AddPrim(&ot->org[depth], packet);
-    func_800BF2C8((PACKET *)(packet + 1));
+    GsSetWorkBase((PACKET *)(packet + 1));
 }
 
 void drawRotatedSpriteByIndex(s32 x, s32 y, s32 index, s32 paletteIndex, s16 blendMode, s16 angle, GsOT *ot, u16 depth) {
@@ -693,7 +693,7 @@ void drawDecimalNumber8x8(s16 x, s16 y, s16 digits, s16 zeroFill, s32 value,
         page = (DR_TPAGE *)packet;
         *page = gSpritePrimitiveTemplate.drawPage;
         AddPrim(&ot->org[depth], page);
-        func_800BF2C8((PACKET *)(page + 1));
+        GsSetWorkBase((PACKET *)(page + 1));
     }
 }
 
@@ -758,7 +758,7 @@ void drawDecimalNumber8x16(s16 x, s16 y, s16 digits, s16 zeroFill, s32 value,
         page = (DR_TPAGE *)packet;
         *page = gSpritePrimitiveTemplate.drawPage;
         AddPrim(&ot->org[depth], page);
-        func_800BF2C8((PACKET *)(page + 1));
+        GsSetWorkBase((PACKET *)(page + 1));
     }
 }
 
@@ -823,7 +823,7 @@ void drawMenuDecimalNumber8x16(s16 x, s16 y, s16 digits, s16 zeroFill, s32 value
         page = (DR_TPAGE *)packet;
         *page = gSpritePrimitiveTemplate.drawPage;
         AddPrim(&ot->org[depth], page);
-        func_800BF2C8((PACKET *)(page + 1));
+        GsSetWorkBase((PACKET *)(page + 1));
     }
 }
 
@@ -889,7 +889,7 @@ void drawHudDecimalNumber8x16(s16 x, s16 y, s16 digits, s16 zeroFill, s32 value,
         page = (DR_TPAGE *)packet;
         *page = gSpritePrimitiveTemplate.drawPage;
         AddPrim(&ot->org[depth], page);
-        func_800BF2C8((PACKET *)(page + 1));
+        GsSetWorkBase((PACKET *)(page + 1));
     }
 }
 
@@ -942,7 +942,7 @@ void drawDecimalNumber16(s16 x, s16 y, s16 count, s16 mode, s32 value,
                 digit.x0 -= 16;
             }
         }
-        func_800BF2C8((PACKET *)packet);
+        GsSetWorkBase((PACKET *)packet);
     }
 }
 
@@ -986,7 +986,7 @@ void drawHalfStepSpriteBar(s16 x, s16 y, s16 count, s16 palette, s16 blend, GsOT
         page = (DR_TPAGE *)packet;
         *page = gSpritePrimitiveTemplate.drawPage;
         AddPrim(&ot->org[depth], page);
-        func_800BF2C8((PACKET *)(page + 1));
+        GsSetWorkBase((PACKET *)(page + 1));
     }
 }
 
@@ -1150,7 +1150,7 @@ void drawWrappedGlyphText8x16(s32 x, s32 y, s16 columnLimit, const u16 *text,
             previous = 2;
         }
     }
-    func_800BF2C8((PACKET *)out);
+    GsSetWorkBase((PACKET *)out);
 }
 
 void drawWrappedGlyphText16x16(s16 x, s16 y, s16 columnLimit, const u16 *text,
@@ -1246,7 +1246,7 @@ void drawWrappedGlyphText16x16(s16 x, s16 y, s16 columnLimit, const u16 *text,
         *packet = *scratch;
         text++;
     }
-    func_800BF2C8((PACKET *)packet);
+    GsSetWorkBase((PACKET *)packet);
 }
 
 void drawLimitedWrappedGlyphText16x16(s16 x, s16 yArg, s32 countArg, s32 columnsArg, const u16 *text,
@@ -1346,7 +1346,7 @@ void drawLimitedWrappedGlyphText16x16(s16 x, s16 yArg, s32 countArg, s32 columns
         *packet = *scratch;
         text++;
     }
-    func_800BF2C8((PACKET *)packet);
+    GsSetWorkBase((PACKET *)packet);
 }
 
 void drawUppercaseProportionalText(s16 x, s16 y, s16 count, const char *text, s16 palette,
@@ -1495,7 +1495,7 @@ void drawDoubleByteGlyph16x16(s16 x, s16 y, s16 unusedWidth, s16 unusedHeight, c
         setWH(packet, 16, 16);
         packet->clut = clut;
         AddPrim(&ot->org[depth], packet);
-        func_800BF2C8((PACKET *)(packet + 1));
+        GsSetWorkBase((PACKET *)(packet + 1));
     }
 }
 

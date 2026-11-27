@@ -310,7 +310,7 @@ void addDrawAreaPacket(s32 x, s32 y, s32 width, s32 height, GsOT *ot, u16 depth)
     area.y = y + ((gActiveGraphicsBuffer ^ 1) << 8);
     SetDrawArea(packet, &area);
     AddPrim(ot->org + depth, packet);
-    func_800BF2C8((PACKET *)(packet + 1));
+    GsSetWorkBase((PACKET *)(packet + 1));
 }
 
 void initMovement2D(Movement2D *movement, s32 x, s32 y) {
@@ -799,7 +799,7 @@ void addTilePacket(s32 x, s32 y, s32 width, s32 height, s32 r, s32 g, s32 b,
     setWH(packet, width, height);
     setRGB0(packet, r, g, b);
     AddPrim(ot->org + depth, packet);
-    func_800BF2C8((PACKET *)(packet + 1));
+    GsSetWorkBase((PACKET *)(packet + 1));
 }
 
 void addTilePacketWithBlend(s16 x, s16 y, s16 width, s16 height, u8 r, u8 g, u8 b,
@@ -827,7 +827,7 @@ void addTilePacketWithBlend(s16 x, s16 y, s16 width, s16 height, u8 r, u8 g, u8 
     tpage = GetTPage(0, abr, 0, 0);
     SetDrawMode((DR_MODE *)(packet + 1), 1, 1, tpage, NULL);
     AddPrim(ot->org + depth, ++packet);
-    func_800BF2C8((PACKET *)((DR_MODE *)packet + 1));
+    GsSetWorkBase((PACKET *)((DR_MODE *)packet + 1));
 }
 
 void setMusicSequenceEnabled(s16 enabled) {
@@ -2375,7 +2375,7 @@ void drawAnimatedSprite16(s16 frame, s16 x, s16 y, s16 unused, GsOT *ot, u16 dep
     packet++;
     *(DR_TPAGE *)packet = gAnimatedSprite16DrawPage;
     AddPrim(&ot->org[depth], packet);
-    func_800BF2C8((PACKET *)((DR_TPAGE *)packet + 1));
+    GsSetWorkBase((PACKET *)((DR_TPAGE *)packet + 1));
 }
 
 void initializeDualResourceSequenceTask(void) {

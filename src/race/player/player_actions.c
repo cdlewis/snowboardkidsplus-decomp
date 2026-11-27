@@ -91,7 +91,7 @@ TaskVisualFrame gPlayerSideVisualFrames[4]
 GsRVIEW2 gPlayerCameraViews[2]
     __attribute__((section(".data.player_camera_views"))) = {0};
 
-RaceTime D_8013B154
+RaceTime gTrickAttackTimeLimit
     __attribute__((section(".data.menu_sprite_palettes_prefix"), aligned(4))) = {3, 0, 0};
 
 MenuSpritePaletteGroups gMenuSpritePaletteGroups
@@ -101,7 +101,7 @@ MenuSpritePaletteGroups gMenuSpritePaletteGroups
         {0, 5, 0, 1, 4, 0, 5, 0, 0}
     };
 
-RaceTime D_80124248[10]
+RaceTime gScoreAttackTimeLimits[10]
     __attribute__((section(".data.course_hit_time_limits"), aligned(4))) = {
         {3, 0, 0}, {3, 0, 0}, {3, 0, 0}, {3, 0, 0}, {3, 0, 0},
         {3, 0, 0}, {3, 0, 0}, {3, 0, 0}, {1, 0, 0}, {1, 30, 0}

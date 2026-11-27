@@ -21,14 +21,8 @@ extern TaskVisualFrame gPlayerSideVisualFrames[4]
 extern GsRVIEW2 gPlayerCameraViews[2]
     __attribute__((section(".data.player_camera_views")));
 
-extern RaceTime D_8013B154
-    __attribute__((section(".data.menu_sprite_palettes_prefix"), aligned(4)));
-
 extern MenuSpritePaletteGroups gMenuSpritePaletteGroups
     __attribute__((section(".data.menu_sprite_palettes"), aligned(4)));
-
-extern RaceTime D_80124248[10]
-    __attribute__((section(".data.course_hit_time_limits"), aligned(4)));
 
 extern u8 D_8012429C[12]
     __attribute__((section(".data.course_count_targets"), aligned(4)));

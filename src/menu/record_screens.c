@@ -640,8 +640,8 @@ void drawRaceResultsLabels(RaceResultsFadeResource *resource) {
 
     if (!gAttackTimeExpired) {
         drawLimitedText8x8(-104, -31, 10, gRaceResultsTargetLabel, 7, -1, &gMainOrderingTables[gActiveGraphicsBuffer], 1);
-        sprintf(text, gRaceResultsTargetTimeFormat, D_80124220[gSelectedCourseIndex].minutes,
-                D_80124220[gSelectedCourseIndex].seconds, (s8)(D_80124220[gSelectedCourseIndex].centiseconds >> 8));
+        sprintf(text, gRaceResultsTargetTimeFormat, gCourseCoinTargetTimes[gSelectedCourseIndex].minutes,
+                gCourseCoinTargetTimes[gSelectedCourseIndex].seconds, (s8)(gCourseCoinTargetTimes[gSelectedCourseIndex].centiseconds >> 8));
         drawLimitedText8x8(-104, -22, 20, text, 7, -1, &gMainOrderingTables[gActiveGraphicsBuffer], 1);
         drawLimitedText8x8(-104, -8, 10, gRaceResultsFastLabel, 7, -1, &gMainOrderingTables[gActiveGraphicsBuffer], 1);
         sprintf(text, gRaceResultsTimeDifferenceFormat, resource->difference.minutes, resource->difference.seconds,
@@ -932,7 +932,7 @@ void initializeRaceResultsTask(void) {
     if (gSelectedCourseIndex == 9) {
         resource->displayTimer = 100;
     }
-    calculateRaceTimeDifference(&D_80124220[gSelectedCourseIndex], &gRaceElapsedTime, &resource->difference);
+    calculateRaceTimeDifference(&gCourseCoinTargetTimes[gSelectedCourseIndex], &gRaceElapsedTime, &resource->difference);
     if (gAttackTimeExpired) {
         resource->timeBonus = 0;
     } else {
@@ -1434,13 +1434,13 @@ void initializeRaceTimeComparisonPanel(void) {
     for (i = 0; i < 2; i++) {
         switch (gRaceRuleset) {
         case 0:
-            calculateRaceTimeDifference(&D_80124220[gSelectedCourseIndex], &gPlayerRaceTimes[i], &resource->time[i]);
+            calculateRaceTimeDifference(&gCourseCoinTargetTimes[gSelectedCourseIndex], &gPlayerRaceTimes[i], &resource->time[i]);
             break;
         case 1:
-            calculateRaceTimeDifference(&D_80124248[gSelectedCourseIndex], &gPlayerRaceTimes[i], &resource->time[i]);
+            calculateRaceTimeDifference(&gScoreAttackTimeLimits[gSelectedCourseIndex], &gPlayerRaceTimes[i], &resource->time[i]);
             break;
         case 2:
-            calculateRaceTimeDifference(&D_8013B154, &gPlayerRaceTimes[i], &resource->time[i]);
+            calculateRaceTimeDifference(&gTrickAttackTimeLimit, &gPlayerRaceTimes[i], &resource->time[i]);
             break;
         }
     }

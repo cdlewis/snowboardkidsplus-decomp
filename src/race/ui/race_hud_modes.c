@@ -345,21 +345,21 @@ void addFourWordGpuPacket(GpuPacket4 *source, GsOT *ot, u16 depth) {
     GpuPacket4 *packet = (GpuPacket4 *)GsGetWorkBase();
     *packet = *source;
     AddPrim(&ot->org[depth], packet);
-    func_800BF2C8((PACKET *)(packet + 1));
+    GsSetWorkBase((PACKET *)(packet + 1));
 }
 
 void addOneWordGpuPacket(GpuPacket1 *source, GsOT *ot, u16 depth) {
     GpuPacket1 *packet = (GpuPacket1 *)GsGetWorkBase();
     *packet = *source;
     AddPrim(&ot->org[depth], packet);
-    func_800BF2C8((PACKET *)(packet + 1));
+    GsSetWorkBase((PACKET *)(packet + 1));
 }
 
 void addTexturedSpritePacket(TexturedSpritePacket *source, GsOT *ot, u16 depth) {
     TexturedSpritePacket *packet = (TexturedSpritePacket *)GsGetWorkBase();
     *packet = *source;
     AddPrim(&ot->org[depth], packet);
-    func_800BF2C8((PACKET *)(packet + 1));
+    GsSetWorkBase((PACKET *)(packet + 1));
 }
 
 void drawRacePlacementSprite(s16 x, s16 y, s16 placement, GsOT *ot, u16 depth) {
@@ -545,21 +545,21 @@ void drawRaceCourseProgressMeter(s16 x, s16 y, GsOT *ot, s32 depth) {
 void initializeRaceRulesAndCounters(void) {
     RaceTime *times;
     u8 *flags;
-    D_8013B620 = -1;
+    gRaceHudMode = -1;
     switch (gMainMenuSelectionIndex) {
     case 0:
         if (playerCountAbsolute == 1) {
-            D_8013B620 = 0;
+            gRaceHudMode = 0;
         } else {
-            D_8013B620 = 1;
+            gRaceHudMode = 1;
         }
         break;
     case 1:
         if (gRaceRuleset == 0) {
             if (playerCountAbsolute == 1) {
-                D_8013B620 = 2;
+                gRaceHudMode = 2;
             } else {
-                D_8013B620 = 3;
+                gRaceHudMode = 3;
             }
             gRacePlayers[0].collectedCourseCoinMarkerCount = 0;
             gRacePlayers[0].totalCourseCoinMarkerCount = D_8012429C[gSelectedCourseIndex];
@@ -567,13 +567,13 @@ void initializeRaceRulesAndCounters(void) {
             gRacePlayers[1].totalCourseCoinMarkerCount = D_8012429C[gSelectedCourseIndex];
         } else if (gRaceRuleset == 1) {
             if (playerCountAbsolute == 1) {
-                D_8013B620 = 4;
-                D_8013B184 = D_80124248[gSelectedCourseIndex];
+                gRaceHudMode = 4;
+                gAttackTimeRemaining = gScoreAttackTimeLimits[gSelectedCourseIndex];
             } else {
-                D_8013B620 = 5;
-                D_8013B184 = D_80124248[gSelectedCourseIndex];
-                D_8013B198[0] = D_80124248[gSelectedCourseIndex];
-                D_8013B198[1] = D_80124248[gSelectedCourseIndex];
+                gRaceHudMode = 5;
+                gAttackTimeRemaining = gScoreAttackTimeLimits[gSelectedCourseIndex];
+                gPlayerAttackTimesRemaining[0] = gScoreAttackTimeLimits[gSelectedCourseIndex];
+                gPlayerAttackTimesRemaining[1] = gScoreAttackTimeLimits[gSelectedCourseIndex];
             }
             gRacePlayers[0].scoreAttackPointTotal = 0;
             gRacePlayers[0].scoreAttackPointTarget = D_801242A8[gSelectedCourseIndex];
@@ -581,22 +581,22 @@ void initializeRaceRulesAndCounters(void) {
             gRacePlayers[1].scoreAttackPointTarget = D_801242A8[gSelectedCourseIndex];
         } else if (gRaceRuleset == 2) {
             if (playerCountAbsolute == 1) {
-                D_8013B620 = 6;
-                D_8013B184 = D_8013B154;
+                gRaceHudMode = 6;
+                gAttackTimeRemaining = gTrickAttackTimeLimit;
             } else {
-                D_8013B620 = 7;
-                D_8013B184 = D_8013B154;
-                D_8013B198[0] = D_8013B154;
-                D_8013B198[1] = D_8013B154;
+                gRaceHudMode = 7;
+                gAttackTimeRemaining = gTrickAttackTimeLimit;
+                gPlayerAttackTimesRemaining[0] = gTrickAttackTimeLimit;
+                gPlayerAttackTimesRemaining[1] = gTrickAttackTimeLimit;
             }
         }
         break;
     case 2:
-        D_8013B620 = 8;
+        gRaceHudMode = 8;
         break;
     }
     if (gModeSequenceStage != 0 || gControllerPlaybackIndex != 0) {
-        D_8013B620 = 9;
+        gRaceHudMode = 9;
     }
     flags = gPlayerAttackTimeExpired;
     flags[0] = 0;
@@ -623,7 +623,7 @@ void updateRaceHud(void) {
     s16 player;
 
     if (D_8013B1A8_gp) {
-        switch (D_8013B620) {
+        switch (gRaceHudMode) {
         case 0:
             if (gRacePlayers[0].unk93F) {
                 if (gRacePlayers[0].unk93F == 4) {
@@ -662,7 +662,7 @@ void updateRaceHud(void) {
             if (!(gTaskTransitionFlags & 3) && !(gRacePlayers[0].unk128 & 0x40)) {
                 advanceRaceElapsedTime();
             }
-            if (calculateRaceTimeDifference(&D_80124220[gSelectedCourseIndex], &gRaceElapsedTime, &difference)) {
+            if (calculateRaceTimeDifference(&gCourseCoinTargetTimes[gSelectedCourseIndex], &gRaceElapsedTime, &difference)) {
                 gAttackTimeExpired_gp = 1;
             }
             drawCourseCoinHud();
@@ -672,13 +672,13 @@ void updateRaceHud(void) {
                 advanceRaceElapsedTime();
                 if (!(gRacePlayers[0].unk128 & 0x40)) {
                     gPlayerRaceTimes[0] = gRaceElapsedTime;
-                    if (calculateRaceTimeDifference(&D_80124220[gSelectedCourseIndex], &gPlayerRaceTimes[0], &difference)) {
+                    if (calculateRaceTimeDifference(&gCourseCoinTargetTimes[gSelectedCourseIndex], &gPlayerRaceTimes[0], &difference)) {
                         gPlayerAttackTimeExpired[0] = 1;
                     }
                 }
                 if (!(gRacePlayers[1].unk128 & 0x40)) {
                     gPlayerRaceTimes[1] = gRaceElapsedTime;
-                    if (calculateRaceTimeDifference(&D_80124220[gSelectedCourseIndex], &gPlayerRaceTimes[1], &difference)) {
+                    if (calculateRaceTimeDifference(&gCourseCoinTargetTimes[gSelectedCourseIndex], &gPlayerRaceTimes[1], &difference)) {
                         gPlayerAttackTimeExpired[1] = 1;
                     }
                 }
@@ -690,9 +690,9 @@ void updateRaceHud(void) {
             if (!(gTaskTransitionFlags & 3) && !(gRacePlayers[0].unk128 & 0x40)) {
                 decrementRaceCountdown();
             }
-            if (!D_8013B184.minutes) {
-                if (!D_8013B184.seconds) {
-                    if (!D_8013B184.centiseconds) {
+            if (!gAttackTimeRemaining.minutes) {
+                if (!gAttackTimeRemaining.seconds) {
+                    if (!gAttackTimeRemaining.centiseconds) {
                         gAttackTimeExpired_gp = 1;
                     }
                 }
@@ -704,10 +704,10 @@ void updateRaceHud(void) {
                 decrementRaceCountdown();
                 advanceRaceElapsedTime();
                 if (!(gRacePlayers[0].unk128 & 0x40)) {
-                    D_8013B198[0] = D_8013B184;
-                    if (!D_8013B198[0].minutes) {
-                        if (!D_8013B198[0].seconds) {
-                            if (!D_8013B198[0].centiseconds) {
+                    gPlayerAttackTimesRemaining[0] = gAttackTimeRemaining;
+                    if (!gPlayerAttackTimesRemaining[0].minutes) {
+                        if (!gPlayerAttackTimesRemaining[0].seconds) {
+                            if (!gPlayerAttackTimesRemaining[0].centiseconds) {
                                 gPlayerAttackTimeExpired[0] = 1;
                             }
                         }
@@ -715,10 +715,10 @@ void updateRaceHud(void) {
                     gPlayerRaceTimes[0] = gRaceElapsedTime;
                 }
                 if (!(gRacePlayers[1].unk128 & 0x40)) {
-                    D_8013B198[1] = D_8013B184;
-                    if (!D_8013B198[1].minutes) {
-                        if (!D_8013B198[1].seconds) {
-                            if (!D_8013B198[1].centiseconds) {
+                    gPlayerAttackTimesRemaining[1] = gAttackTimeRemaining;
+                    if (!gPlayerAttackTimesRemaining[1].minutes) {
+                        if (!gPlayerAttackTimesRemaining[1].seconds) {
+                            if (!gPlayerAttackTimesRemaining[1].centiseconds) {
                                 gPlayerAttackTimeExpired[1] = 1;
                             }
                         }
@@ -733,9 +733,9 @@ void updateRaceHud(void) {
             if (!(gTaskTransitionFlags & 3) && !(gRacePlayers[0].unk128 & 0x40)) {
                 decrementRaceCountdown();
             }
-            if (!D_8013B184.minutes) {
-                if (!D_8013B184.seconds) {
-                    if (!D_8013B184.centiseconds) {
+            if (!gAttackTimeRemaining.minutes) {
+                if (!gAttackTimeRemaining.seconds) {
+                    if (!gAttackTimeRemaining.centiseconds) {
                         gAttackTimeExpired_gp = 1;
                     }
                 }
@@ -747,10 +747,10 @@ void updateRaceHud(void) {
                 decrementRaceCountdown();
                 advanceRaceElapsedTime();
                 if (!(gRacePlayers[0].unk128 & 0x40)) {
-                    D_8013B198[0] = D_8013B184;
-                    if (!D_8013B198[0].minutes) {
-                        if (!D_8013B198[0].seconds) {
-                            if (!D_8013B198[0].centiseconds) {
+                    gPlayerAttackTimesRemaining[0] = gAttackTimeRemaining;
+                    if (!gPlayerAttackTimesRemaining[0].minutes) {
+                        if (!gPlayerAttackTimesRemaining[0].seconds) {
+                            if (!gPlayerAttackTimesRemaining[0].centiseconds) {
                                 gPlayerAttackTimeExpired[0] = 1;
                             }
                         }
@@ -758,10 +758,10 @@ void updateRaceHud(void) {
                     gPlayerRaceTimes[0] = gRaceElapsedTime;
                 }
                 if (!(gRacePlayers[1].unk128 & 0x40)) {
-                    D_8013B198[1] = D_8013B184;
-                    if (!D_8013B198[1].minutes) {
-                        if (!D_8013B198[1].seconds) {
-                            if (!D_8013B198[1].centiseconds) {
+                    gPlayerAttackTimesRemaining[1] = gAttackTimeRemaining;
+                    if (!gPlayerAttackTimesRemaining[1].minutes) {
+                        if (!gPlayerAttackTimesRemaining[1].seconds) {
+                            if (!gPlayerAttackTimesRemaining[1].centiseconds) {
                                 gPlayerAttackTimeExpired[1] = 1;
                             }
                         }
@@ -912,7 +912,7 @@ void drawTrickAttackHud(void) {
     s16 x;
     s16 i;
 
-    if (D_8013B184.minutes == 0 && D_8013B184.seconds < 10 && (gFrameCounter & 1)) {
+    if (gAttackTimeRemaining.minutes == 0 && gAttackTimeRemaining.seconds < 10 && (gFrameCounter & 1)) {
         palette = 2;
     }
 
@@ -921,9 +921,9 @@ void drawTrickAttackHud(void) {
         drawSpriteByIndexWithBlend(64, 84, 398, 5, -1, ot, depth);
         palette = 2;
     }
-    drawHudDecimalNumber8x16(64, 80, 2, 1, D_8013B184.minutes, palette, -1, ot, depth);
-    drawHudDecimalNumber8x16(88, 80, 2, 1, D_8013B184.seconds, palette, -1, ot, depth);
-    drawHudDecimalNumber8x16(112, 80, 2, 1, D_8013B184.centiseconds >> 8, palette, -1, ot, depth);
+    drawHudDecimalNumber8x16(64, 80, 2, 1, gAttackTimeRemaining.minutes, palette, -1, ot, depth);
+    drawHudDecimalNumber8x16(88, 80, 2, 1, gAttackTimeRemaining.seconds, palette, -1, ot, depth);
+    drawHudDecimalNumber8x16(112, 80, 2, 1, gAttackTimeRemaining.centiseconds >> 8, palette, -1, ot, depth);
     drawSpriteByIndexWithBlend(80, 80, 25, palette, -1, ot, depth);
     drawSpriteByIndexWithBlend(104, 80, 24, palette, -1, ot, depth);
     drawWrappedText8x8(56, 71, 10, gAttackTimeLimitLabel, 5, -1, ot, depth);
@@ -965,7 +965,7 @@ void drawSplitScreenTrickAttackHud(s16 player) {
     }
 
     palette = 1;
-    if (D_8013B198[player].minutes == 0 && D_8013B198[player].seconds < 10 && ((gFrameCounter >> 1) & 1)) {
+    if (gPlayerAttackTimesRemaining[player].minutes == 0 && gPlayerAttackTimesRemaining[player].seconds < 10 && ((gFrameCounter >> 1) & 1)) {
         palette = 2;
     }
 
@@ -975,9 +975,9 @@ void drawSplitScreenTrickAttackHud(s16 player) {
             drawSpriteByIndexWithBlend(-112, timeY + 39, 398, 5, -1, timeOt, depth[0]);
             palette = 2;
         }
-        drawHudDecimalNumber8x16(-112, timeY + 36, 2, 1, D_8013B198[player].minutes, palette, -1, timeOt, depth[0]);
-        drawHudDecimalNumber8x16(-88, timeY + 36, 2, 1, D_8013B198[player].seconds, palette, -1, timeOt, depth[0]);
-        drawHudDecimalNumber8x16(-64, timeY + 36, 2, 1, D_8013B198[player].centiseconds >> 8, palette, -1, timeOt, depth[0]);
+        drawHudDecimalNumber8x16(-112, timeY + 36, 2, 1, gPlayerAttackTimesRemaining[player].minutes, palette, -1, timeOt, depth[0]);
+        drawHudDecimalNumber8x16(-88, timeY + 36, 2, 1, gPlayerAttackTimesRemaining[player].seconds, palette, -1, timeOt, depth[0]);
+        drawHudDecimalNumber8x16(-64, timeY + 36, 2, 1, gPlayerAttackTimesRemaining[player].centiseconds >> 8, palette, -1, timeOt, depth[0]);
         drawSpriteByIndexWithBlend(-96, timeY + 36, 25, palette, -1, timeOt, depth[0]);
         drawSpriteByIndexWithBlend(-72, timeY + 36, 24, palette, -1, timeOt, depth[0]);
         drawLimitedText8x8(-112, timeY + 28, 11, gSplitScreenTimeLimitLabel, 5, -1, timeOt, depth[0]);
@@ -1003,7 +1003,7 @@ void drawScoreAttackHud(void) {
     s16 i;
     char text[16];
 
-    if (D_8013B184.minutes == 0 && D_8013B184.seconds < 10 && (gFrameCounter & 1)) {
+    if (gAttackTimeRemaining.minutes == 0 && gAttackTimeRemaining.seconds < 10 && (gFrameCounter & 1)) {
         palette = 2;
     }
 
@@ -1012,9 +1012,9 @@ void drawScoreAttackHud(void) {
         drawSpriteByIndexWithBlend(64, 84, 398, 5, -1, ot, depth);
         palette = 2;
     }
-    drawHudDecimalNumber8x16(64, 80, 2, 1, D_8013B184.minutes, palette, -1, ot, depth);
-    drawHudDecimalNumber8x16(88, 80, 2, 1, D_8013B184.seconds, palette, -1, ot, depth);
-    drawHudDecimalNumber8x16(112, 80, 2, 1, D_8013B184.centiseconds >> 8, palette, -1, ot, depth);
+    drawHudDecimalNumber8x16(64, 80, 2, 1, gAttackTimeRemaining.minutes, palette, -1, ot, depth);
+    drawHudDecimalNumber8x16(88, 80, 2, 1, gAttackTimeRemaining.seconds, palette, -1, ot, depth);
+    drawHudDecimalNumber8x16(112, 80, 2, 1, gAttackTimeRemaining.centiseconds >> 8, palette, -1, ot, depth);
     drawSpriteByIndexWithBlend(80, 80, 25, palette, -1, ot, depth);
     drawSpriteByIndexWithBlend(104, 80, 24, palette, -1, ot, depth);
     drawWrappedText8x8(56, 71, 10, gAttackTimeLimitLabel, 5, -1, ot, depth);
@@ -1057,7 +1057,7 @@ void drawSplitScreenScoreAttackHud(s16 player) {
         timeY = 0;
     }
     palette = 1;
-    if (D_8013B198[player].minutes == 0 && D_8013B198[player].seconds < 10 &&
+    if (gPlayerAttackTimesRemaining[player].minutes == 0 && gPlayerAttackTimesRemaining[player].seconds < 10 &&
         ((gFrameCounter >> 1) & 1)) {
         palette = 2;
     }
@@ -1072,10 +1072,10 @@ void drawSplitScreenScoreAttackHud(s16 player) {
         }
 
         drawHudDecimalNumber8x16(-112, (timeDigitsY = timeY + 36), 2, 1,
-                                D_8013B198[player].minutes, palette, -1, timeOt, depth[0]);
+                                gPlayerAttackTimesRemaining[player].minutes, palette, -1, timeOt, depth[0]);
         iconX = -112;
-        drawHudDecimalNumber8x16(-88, timeDigitsY, 2, 1, D_8013B198[player].seconds, palette, -1, timeOt, depth[0]);
-        drawHudDecimalNumber8x16(-64, timeDigitsY, 2, 1, D_8013B198[player].centiseconds >> 8, palette, -1, timeOt, depth[0]);
+        drawHudDecimalNumber8x16(-88, timeDigitsY, 2, 1, gPlayerAttackTimesRemaining[player].seconds, palette, -1, timeOt, depth[0]);
+        drawHudDecimalNumber8x16(-64, timeDigitsY, 2, 1, gPlayerAttackTimesRemaining[player].centiseconds >> 8, palette, -1, timeOt, depth[0]);
         drawSpriteByIndexWithBlend(-96, timeDigitsY, 25, palette, -1, timeOt, depth[0]);
         drawSpriteByIndexWithBlend(-72, timeDigitsY, 24, palette, -1, timeOt, depth[0]);
         drawLimitedText8x8(iconX, timeY + 28, 11, gSplitScreenTimeLimitLabel, 5, -1, timeOt, depth[0]);
@@ -1118,8 +1118,8 @@ void drawCourseCoinHud(void) {
     drawSpriteByIndexWithBlend(112, 80, 24, 1, -1, ot, 1);
     drawLimitedText8x8(72, 71, 10, gLapTimeLabel, 5, -1, ot, 1);
 
-    sprintf(text, gLapTimeFormat, D_80124220[gSelectedCourseIndex].minutes,
-            D_80124220[gSelectedCourseIndex].seconds, D_80124220[gSelectedCourseIndex].centiseconds >> 8);
+    sprintf(text, gLapTimeFormat, gCourseCoinTargetTimes[gSelectedCourseIndex].minutes,
+            gCourseCoinTargetTimes[gSelectedCourseIndex].seconds, gCourseCoinTargetTimes[gSelectedCourseIndex].centiseconds >> 8);
     drawLimitedText8x8(72, -87, 20, text, 7, -1, ot, 1);
     drawLimitedText8x8(50, -96, 11, gTargetTimeLabel, 7, -1, ot, 1);
 
@@ -1165,8 +1165,8 @@ void drawSplitScreenCourseCoinHud(s16 player) {
         drawSpriteByIndexWithBlend(-96, timeY + 36, 25, 1, -1, timeOt, 1);
         drawSpriteByIndexWithBlend(-72, timeY + 36, 24, 1, -1, timeOt, 1);
         drawLimitedText8x8(-112, timeY + 28, 10, gLapTimeLabel, 5, -1, timeOt, 1);
-        sprintf(text, gLapTimeFormat, D_80124220[gSelectedCourseIndex].minutes,
-                D_80124220[gSelectedCourseIndex].seconds, D_80124220[gSelectedCourseIndex].centiseconds >> 8);
+        sprintf(text, gLapTimeFormat, gCourseCoinTargetTimes[gSelectedCourseIndex].minutes,
+                gCourseCoinTargetTimes[gSelectedCourseIndex].seconds, gCourseCoinTargetTimes[gSelectedCourseIndex].centiseconds >> 8);
         drawLimitedText8x8(-112, timeY - 28, 20, text, 7, -1, timeOt, 1);
         drawLimitedText8x8(-112, timeY - 36, 11, gTargetTimeLabel, 7, -1, timeOt, 1);
     }
