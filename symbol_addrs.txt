@@ -4398,8 +4398,8 @@ gPlayerCollectionEntries = 0x8012450C; // size:0xC8 defined:true
 gTaskObjectModels = 0x80129A80; // size:0x1E0
 
 gCharacterMenuCharacterIndices = 0x8012D460; // size:0xC
-gTaskBackgroundTask = 0x8013B378; // size:0x4
-gSecondaryDisplayTask = 0x8013B37C; // size:0x4
+gTaskBackgroundTask = 0x8013B378; // size:0x4 defined:true
+gSecondaryDisplayTask = 0x8013B37C; // size:0x4 defined:true
 gTexturePairDimMask = 0x8013B3BC; // size:0x4
 
 gQuadTransitionFrame = 0x8013B338; // size:0x4
@@ -4686,9 +4686,9 @@ gSpriteTextureRegionsSet28 = 0x8012DB1C; // size:0x28
 gSpriteTextureRegionsSet23_25 = 0x8012DB44; // size:0x118
 gSpriteTextureRegionsSet24_36 = 0x8012DC5C; // size:0xD4
 gSpriteTextureRegionsSet33 = 0x8012DD30; // size:0x74
-D_8013B380 = 0x8013B380; // size:0x8
-D_8013B388 = 0x8013B388; // size:0x4
-D_8013B38C = 0x8013B38C; // size:0x8
+gSpriteTextureRegionsSet32 = 0x8013B380; // size:0x8 defined:true
+gSpriteTextureRegionsSet12_13_14_15_16 = 0x8013B388; // size:0x4 defined:true
+gSpriteTextureRegionsSet20_21 = 0x8013B38C; // size:0x8 defined:true
 
 gPlayerPanelQuadsPalette0 = 0x8012F218; // size:0xD8
 gPlayerPanelQuadsPalette1 = 0x8012F2F0; // size:0xD8

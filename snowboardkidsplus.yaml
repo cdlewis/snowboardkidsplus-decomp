@@ -1104,7 +1104,8 @@ segments:
       - {start: 0x12BB5C, type: .sdata, name: race/effects/player_effects, linker_section: .sdata.timed_sprite_state, linker_section_order: .data}
       - {start: 0x12BB70, type: .sdata, name: race/effects/player_effects, linker_section_order: .data}
       - {start: 0x12BB74, type: .sdata, name: race/effects/player_effects, linker_section: .sdata.stretched_text, linker_section_order: .data}
-      - [0x12BB78, data, stretched_text_tail]
+      - {start: 0x12BB78, type: .sdata, name: menu/task_widgets, linker_section: .sdata.background_display_tasks, linker_section_order: .data}
+      - {start: 0x12BB80, type: .data, name: graphics/sprite_draw, linker_section: .data.small_sprite_texture_regions}
       - {start: 0x12BB94, type: .data, name: graphics/sprite_draw, linker_section: .data.digit_sprite_blend_bits}
       - {start: 0x12BB9C, type: .data, name: menu/task_widgets, linker_section: .data.secondary_display_pulse_glyph}
       - {start: 0x12BBA4, type: .sdata, name: menu/transition_effects, linker_section: .sdata.menu_color_cycle, linker_section_order: .data}

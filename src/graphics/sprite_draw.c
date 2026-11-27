@@ -16,6 +16,23 @@ typedef struct DigitSpritePacket {
     u16 clut;
 } DigitSpritePacket;
 
+TextureRegion gSpriteTextureRegionsSet32[2]
+    __attribute__((section(".data.small_sprite_texture_regions"), aligned(4))) = {
+    {0, 0, 255, 104},
+    {0, 104, 128, 104},
+};
+
+TextureRegion gSpriteTextureRegionsSet12_13_14_15_16[1]
+    __attribute__((section(".data.small_sprite_texture_regions"), aligned(4))) = {
+    {0, 0, 112, 96},
+};
+
+TextureRegion gSpriteTextureRegionsSet20_21[2]
+    __attribute__((section(".data.small_sprite_texture_regions"), aligned(4))) = {
+    {0, 0, 64, 28},
+    {0, 28, 64, 28},
+};
+
 TextureRegion gSpriteTextureRegionsSet30_31[4]
     __attribute__((section(".data.sprite_texture_regions"), aligned(4))) = {
     {0, 0, 128, 104},
@@ -672,16 +689,16 @@ TextureRegionSet gSpriteTextureRegionSets[37]
     {896, 0, gSpriteTextureRegionsSet9, 0, 832, 240, 0},
     {768, 0, gSpriteTextureRegionsSet10, 0, 848, 240, 0},
     {704, 0, gSpriteTextureRegionsSet11, 0, 848, 240, 0},
-    {576, 256, D_8013B388, 1, 768, 238, 0},
-    {640, 256, D_8013B388, 1, 768, 237, 0},
-    {704, 256, D_8013B388, 1, 768, 236, 0},
-    {768, 256, D_8013B388, 1, 768, 235, 0},
-    {320, 256, D_8013B388, 1, 768, 234, 0},
+    {576, 256, gSpriteTextureRegionsSet12_13_14_15_16, 1, 768, 238, 0},
+    {640, 256, gSpriteTextureRegionsSet12_13_14_15_16, 1, 768, 237, 0},
+    {704, 256, gSpriteTextureRegionsSet12_13_14_15_16, 1, 768, 236, 0},
+    {768, 256, gSpriteTextureRegionsSet12_13_14_15_16, 1, 768, 235, 0},
+    {320, 256, gSpriteTextureRegionsSet12_13_14_15_16, 1, 768, 234, 0},
     {384, 0, gSpriteTextureRegionsSet17, 0, 864, 240, 0},
     {320, 256, gSpriteTextureRegionsSet6_7_18_19, 1, 768, 234, 0},
     {320, 0, gSpriteTextureRegionsSet6_7_18_19, 1, 768, 233, 0},
-    {576, 256, D_8013B38C, 0, 768, 238, 0},
-    {704, 256, D_8013B38C, 0, 768, 237, 0},
+    {576, 256, gSpriteTextureRegionsSet20_21, 0, 768, 238, 0},
+    {704, 256, gSpriteTextureRegionsSet20_21, 0, 768, 237, 0},
     {960, 0, gSpriteTextureRegionsSet3_22, 0, 1008, 240, 0},
     {768, 256, gSpriteTextureRegionsSet23_25, 0, 992, 240, 0},
     {704, 256, gSpriteTextureRegionsSet24_36, 0, 976, 240, 0},
@@ -692,7 +709,7 @@ TextureRegionSet gSpriteTextureRegionSets[37]
     {768, 256, NULL, 0, 768, 240, 0},
     {320, 256, gSpriteTextureRegionsSet30_31, 1, 768, 234, 0},
     {320, 256, gSpriteTextureRegionsSet30_31, 1, 768, 232, 0},
-    {448, 256, D_8013B380, 1, 768, 233, 0},
+    {448, 256, gSpriteTextureRegionsSet32, 1, 768, 233, 0},
     {640, 256, gSpriteTextureRegionsSet33, 0, 928, 240, 0},
     {832, 256, gSpriteTextureRegionsSet2_26_34_35, 0, 784, 240, 0},
     {832, 256, gSpriteTextureRegionsSet2_26_34_35, 0, 768, 240, 0},

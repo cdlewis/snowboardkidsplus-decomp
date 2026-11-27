@@ -243,8 +243,10 @@ u16 gTextPanelMessage[] __attribute__((section(".data.text_panel_message"))) = {
 
 extern u32 gTexturePairDimMask;
 extern TexturedQuadListEntry *gPlayerPanelQuadLists[2];
-extern GameTask *gTaskBackgroundTask;
-extern GameTask *gSecondaryDisplayTask;
+GameTask *gTaskBackgroundTask
+    __attribute__((section(".sdata.background_display_tasks"))) = NULL;
+GameTask *gSecondaryDisplayTask
+    __attribute__((section(".sdata.background_display_tasks"))) = NULL;
 
 s8 gTaskImageSourceRows[12] = {8, 1, 2, 3, 4, 5, 6, 7, 9, 0, 0, 0};
 
