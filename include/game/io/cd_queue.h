@@ -14,13 +14,15 @@ extern ResourceSectorRange gGridResourceSecondSectorRanges[10][5];
 void queuePlayerResourceReadsAndUploadTextures(void);
 
 /* Shared CD state remains in the original data owner. */
-extern s16 D_8013AE78;
-extern s16 D_8013AE4C;
+extern u16 gCdCommandPhase;
+extern s16 gCdCommandActive;
+extern s16 gCdActiveCommand;
 extern u16 gCdRequestPhase;
 extern u16 gCdRequestReadIndex;
 extern u16 gCdRequestWriteIndex;
-extern u16 D_8013AE4E;
-extern u16 D_8013AE50;
+extern u16 gCdCommandWriteIndex;
+extern u16 gCdCommandReadIndex;
+extern s32 gXaPositionPollCount;
 
 s32 isCdCommandQueueIdle(void);
 s32 queueCdSectorCommand(s16 command, s16 sector, s16 count, void *destination, s32 value);
@@ -63,6 +65,6 @@ extern s32 gDatStartSector;
 
 void updateCdRequestQueue(void);
 void updateCdCommandQueue(void);
-extern u16 D_8013AE68;
+extern u16 gCdStreamingFlags;
 extern s32 D_8013AE6C;
-extern s32 D_8013AE7C;
+extern s32 gCdIoFlags;

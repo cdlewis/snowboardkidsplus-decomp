@@ -53,13 +53,13 @@ CdlFILE gDatFile __attribute__((section(".data.dat_file"))) = {0};
 
 s32 gDatStartSector __attribute__((section(".sdata.dat_start_sector"))) = 0;
 
-u16 D_8013AE68 __attribute__((section(".sdata.cd_read_state"))) = 0;
+u16 gCdStreamingFlags __attribute__((section(".sdata.cd_read_state"))) = 0;
 
 static u16 sCdReadStatePadding __attribute__((section(".sdata.cd_read_state"))) = 0;
 
 s32 D_8013AE6C __attribute__((section(".sdata.cd_read_state"))) = 0;
 
-s32 D_8013AE7C __attribute__((section(".sdata.cd_io_flags"))) = 0;
+s32 gCdIoFlags __attribute__((section(".sdata.cd_io_flags"))) = 0;
 
 u8 D_8013B5DC[8] __attribute__((section(".sdata.cd_read_delay"))) = {0};
 
@@ -85,19 +85,19 @@ s16 gCdVolumeFadeTimer __attribute__((section(".sdata.cd_volume_fade_timer"))) =
 
 static u16 sCdVolumeFadeTimerPadding __attribute__((section(".sdata.cd_volume_fade_timer"))) = 0;
 
-u16 D_8013AE48 __attribute__((section(".sdata.cd_command_state"))) = 0;
+u16 gCdCommandPhase __attribute__((section(".sdata.cd_command_state"))) = 0;
 
 s16 D_8013AE4A __attribute__((section(".sdata.cd_command_state"))) = 0;
 
-s16 D_8013AE4C __attribute__((section(".sdata.cd_command_state"))) = 0;
+s16 gCdActiveCommand __attribute__((section(".sdata.cd_command_state"))) = 0;
 
-u16 D_8013AE4E __attribute__((section(".sdata.cd_command_state"))) = 0;
+u16 gCdCommandWriteIndex __attribute__((section(".sdata.cd_command_state"))) = 0;
 
-u16 D_8013AE50 __attribute__((section(".sdata.cd_command_state"))) = 0;
+u16 gCdCommandReadIndex __attribute__((section(".sdata.cd_command_state"))) = 0;
 
 static u16 sCdCommandStatePadding __attribute__((section(".sdata.cd_command_state"))) = 0;
 
-s32 D_8013AE54 __attribute__((section(".sdata.cd_command_state"))) = 0;
+s32 gXaPositionPollCount __attribute__((section(".sdata.cd_command_state"))) = 0;
 
 s32 D_8013AE58 __attribute__((section(".sdata.cd_command_state"))) = 0;
 
@@ -107,7 +107,7 @@ s32 D_8013AE60 __attribute__((section(".sdata.cd_command_state"))) = 0;
 
 s32 D_8013AE64 __attribute__((section(".sdata.cd_command_state"))) = 0;
 
-s16 D_8013AE78 __attribute__((section(".sdata.cd_command_active"))) = 0;
+s16 gCdCommandActive __attribute__((section(".sdata.cd_command_active"))) = 0;
 
 static u16 sCdCommandActivePadding __attribute__((section(".sdata.cd_command_active"))) = 0;
 
@@ -254,10 +254,10 @@ void initializeCdFiles(void) {
     gCdRequestWriteIndex = 0;
     D_8013AE76 = 0;
     gCdRequestPhase = 0;
-    D_8013AE68 = 0;
-    D_8013AE50 = 0;
-    D_8013AE4E = 0;
-    D_8013AE78 = 0;
+    gCdStreamingFlags = 0;
+    gCdCommandReadIndex = 0;
+    gCdCommandWriteIndex = 0;
+    gCdCommandActive = 0;
     resetCdCommandState();
     do {
 
@@ -296,9 +296,9 @@ void restoreCdReadModeAndResetQueues(void) {
     s32 delay;
     s32 status;
 
-    if (D_8013AE7C & CD_READ_PENDING) {
+    if (gCdIoFlags & CD_READ_PENDING) {
         CdReadSync(0, result);
-        D_8013AE7C &= ~CD_READ_PENDING;
+        gCdIoFlags &= ~CD_READ_PENDING;
     }
     startCdVolumeFade(0, 1, 0, 1);
     gCdVolumeFadeActive = 0;
@@ -308,12 +308,12 @@ void restoreCdReadModeAndResetQueues(void) {
         switch (phase) {
         case 0:
             if (CdSync(1, result) != 0) {
-                D_8013AE7C &= ~CD_CONTROL_PENDING;
+                gCdIoFlags &= ~CD_CONTROL_PENDING;
                 phase++;
             }
             break;
         case 1:
-            if (!(D_8013AE68 & CD_XA_ACTIVE)) {
+            if (!(gCdStreamingFlags & CD_XA_ACTIVE)) {
                 phase = 3;
             } else {
                 CdControlF(CdlPause, NULL);
@@ -331,7 +331,7 @@ void restoreCdReadModeAndResetQueues(void) {
             break;
         case 3:
             result[0] = CdlModeSpeed;
-            D_8013AE68 &= ~CD_XA_ACTIVE;
+            gCdStreamingFlags &= ~CD_XA_ACTIVE;
             CdControlF(CdlSetmode, result);
             delay = 3;
             phase++;
@@ -352,9 +352,9 @@ void restoreCdReadModeAndResetQueues(void) {
             gCdRequestReadIndex = 0;
             gCdRequestWriteIndex = 0;
             gCdRequestPhase = 0;
-            D_8013AE50 = 0;
-            D_8013AE4E = 0;
-            D_8013AE78 = 0;
+            gCdCommandReadIndex = 0;
+            gCdCommandWriteIndex = 0;
+            gCdCommandActive = 0;
             return;
         }
     }
@@ -381,7 +381,7 @@ s32 queueCdSectorCommand(s16 command, s16 sector, s16 count, void *destination, 
 s32 isCdReading(void) {
     u8 result[8];
 
-    if (D_8013AE78) {
+    if (gCdCommandActive) {
         CdControlB(CdlNop, 0, result);
         if (result[0] & CdlStatRead) {
             return 1;
@@ -391,7 +391,7 @@ s32 isCdReading(void) {
 }
 
 s32 isCdCommandQueueIdle(void) {
-    if (D_8013AE78 == 0 || D_8013AE4C == -1) {
+    if (gCdCommandActive == 0 || gCdActiveCommand == -1) {
         if (gCdRequestPhase == 0) {
             gCdRequestReadIndex &= 0x3F;
             gCdRequestWriteIndex &= 0x3F;
@@ -445,8 +445,8 @@ void updateCdRequestQueue(void) {
     gCdRequestWriteIndex = writeIndex;
     if (index == writeIndex)
         return;
-    if (D_8013AE78 != 0) {
-        if (D_8013AE4C == -1)
+    if (gCdCommandActive != 0) {
+        if (gCdActiveCommand == -1)
             return;
         restoreCdReadModeAndResetQueues();
     }
@@ -457,17 +457,17 @@ void updateCdRequestQueue(void) {
         result[0] = CdlModeSpeed;
         CdControlF(CdlSetmode, result);
         D_8013B5DC[0] = 3;
-        D_8013AE7C |= 0x04000000;
+        gCdIoFlags |= 0x04000000;
         gCdRequestPhase++;
         break;
     case 1:
         status = CdSync(1, D_8013B5E4);
         if (status == 2) {
-            D_8013AE7C &= ~0x04000000;
+            gCdIoFlags &= ~0x04000000;
             gCdRequestPhase++;
         } else if (status == 5) {
             gCdRequestPhase = 0;
-            D_8013AE7C &= ~0x04000000;
+            gCdIoFlags &= ~0x04000000;
         }
         break;
     case 2:
@@ -483,11 +483,11 @@ void updateCdRequestQueue(void) {
             D_8013AE6C = gCdRequests[index].sectorCount << 11;
             CdIntToPos(gCdRequests[index].sector + gDatStartSector, &position);
             CdControlF(CdlSetloc, (u8 *)&position);
-            D_8013AE7C |= 0x04000000;
+            gCdIoFlags |= 0x04000000;
             gCdRequestPhase++;
             break;
         }
-        D_8013AE7C |= 0x02000000;
+        gCdIoFlags |= 0x02000000;
         do {
             D_8013AE6C = CdReadFile(gCdRequests[index].filename, gCdRequests[index].destination, 0);
         } while (D_8013AE6C == 0);
@@ -498,7 +498,7 @@ void updateCdRequestQueue(void) {
         while (CdSearchFile(&D_8013B6C8, gCdRequests[index].filename) == NULL) {
         }
         CdControlF(CdlSetloc, (u8 *)&D_8013B6C8.pos);
-        D_8013AE7C |= 0x04000000;
+        gCdIoFlags |= 0x04000000;
         gCdRequestPhase++;
         break;
     case 3:
@@ -507,21 +507,21 @@ void updateCdRequestQueue(void) {
     case 4:
         status = CdSync(1, result);
         if (status == 2) {
-            D_8013AE7C &= ~0x04000000;
+            gCdIoFlags &= ~0x04000000;
             gCdRequestPhase++;
         } else if (status == 5) {
             gCdRequestPhase = 0;
-            D_8013AE7C &= ~0x04000000;
+            gCdIoFlags &= ~0x04000000;
         }
         break;
     case 5:
         if (gCdRequests[index].command != 15) {
-            D_8013AE7C |= 0x02000000;
+            gCdIoFlags |= 0x02000000;
             if (CdRead(gCdRequests[index].sectorCount, gCdRequests[index].destination,
                        CdlModeSpeed))
                 gCdRequestPhase++;
         } else {
-            D_8013AE68 |= 1;
+            gCdStreamingFlags |= 1;
             if (CdRead2(0x1E0))
                 gCdRequestPhase = 7;
         }
@@ -530,11 +530,11 @@ void updateCdRequestQueue(void) {
         readStatus = CdReadSync(1, result);
         if (readStatus == 0) {
             gCdRequestPhase = 7;
-            D_8013AE7C &= ~0x02000000;
+            gCdIoFlags &= ~0x02000000;
         }
         if (readStatus == -1) {
             gCdRequestPhase = 0;
-            D_8013AE7C &= ~0x02000000;
+            gCdIoFlags &= ~0x02000000;
         }
         break;
     case 7:
@@ -577,56 +577,56 @@ void updateCdRequestQueue(void) {
             break;
         }
         gCdRequestPhase = 0;
-        D_8013AE7C &= ~0x04000000;
+        gCdIoFlags &= ~0x04000000;
         gCdRequestReadIndex++;
         break;
     }
 }
 
 void queueCdCommand(s16 command, s16 value) {
-    s32 index = D_8013AE4E & 7;
-    D_8013AE4E = index;
+    s32 index = gCdCommandWriteIndex & 7;
+    gCdCommandWriteIndex = index;
     if (command == -1) {
-        if (D_8013AE78 != 0 && D_8013AE4C == -1)
+        if (gCdCommandActive != 0 && gCdActiveCommand == -1)
             return;
         gCdVolumeFadeActive = 0;
         gCdRequestReadIndex = 0;
         gCdRequestWriteIndex = 0;
         gCdRequestPhase = 0;
-        D_8013AE50 = 0;
-        D_8013AE4E = 0;
-        D_8013AE4C = -1;
-        D_8013AE48 = 0;
-        D_8013AE78 = 1;
+        gCdCommandReadIndex = 0;
+        gCdCommandWriteIndex = 0;
+        gCdActiveCommand = -1;
+        gCdCommandPhase = 0;
+        gCdCommandActive = 1;
     } else {
         SsSetSerialVol(0, 103, 103);
         gCdCommands[index].command = command;
         gCdCommands[index].value = value;
-        D_8013AE4E++;
+        gCdCommandWriteIndex++;
     }
 }
 
 void resetCdCommandState(void) {
-    D_8013AE78 = 0;
-    D_8013AE50 = 0;
-    D_8013AE4E = 0;
-    D_8013AE48 = 0;
+    gCdCommandActive = 0;
+    gCdCommandReadIndex = 0;
+    gCdCommandWriteIndex = 0;
+    gCdCommandPhase = 0;
     D_8013AE64 = 0;
     D_8013AE60 = 0;
     D_8013AE5C = 0;
     D_8013AE58 = 0;
-    D_8013AE54 = 0;
-    D_8013AE4C = 0;
+    gXaPositionPollCount = 0;
+    gCdActiveCommand = 0;
     D_8013AE4A = 0;
 }
 
 void resetPendingCdRequests(void) {
-    if (D_8013AE78 != 0) {
-        D_8013AE50 &= 7;
-        D_8013AE4E &= 7;
-        if (D_8013AE50 != D_8013AE4E) {
-            D_8013AE50 = 0;
-            D_8013AE4E = 0;
+    if (gCdCommandActive != 0) {
+        gCdCommandReadIndex &= 7;
+        gCdCommandWriteIndex &= 7;
+        if (gCdCommandReadIndex != gCdCommandWriteIndex) {
+            gCdCommandReadIndex = 0;
+            gCdCommandWriteIndex = 0;
         }
         queueCdCommand(-1, 0);
     }
@@ -635,14 +635,14 @@ void resetPendingCdRequests(void) {
 void stopCdAudioPlayback(void) {
     startCdVolumeFade(0, 1, 0, 1);
     gCdVolumeFadeActive = 0;
-    if (D_8013AE78 != 0) {
-        D_8013AE50 &= 7;
-        D_8013AE4E &= 7;
-        if (D_8013AE50 != D_8013AE4E) {
-            D_8013AE50 = 0;
-            D_8013AE4E = 0;
+    if (gCdCommandActive != 0) {
+        gCdCommandReadIndex &= 7;
+        gCdCommandWriteIndex &= 7;
+        if (gCdCommandReadIndex != gCdCommandWriteIndex) {
+            gCdCommandReadIndex = 0;
+            gCdCommandWriteIndex = 0;
         }
-        D_8013AE78 = 0;
+        gCdCommandActive = 0;
         restoreCdReadModeAndResetQueues();
     }
 }
@@ -664,36 +664,36 @@ void updateCdCommandQueue(void) {
         clear--;
     } while (i >= 0);
 
-    readIndex = D_8013AE50 & 7;
-    writeIndex = D_8013AE4E & 7;
-    D_8013AE50 = readIndex;
-    D_8013AE4E = writeIndex;
+    readIndex = gCdCommandReadIndex & 7;
+    writeIndex = gCdCommandWriteIndex & 7;
+    gCdCommandReadIndex = readIndex;
+    gCdCommandWriteIndex = writeIndex;
     if (readIndex != writeIndex) {
         CdCommand *commands = gCdCommands;
         s16 command, value;
 
-        D_8013AE50 = readIndex + 1;
+        gCdCommandReadIndex = readIndex + 1;
         command = commands[readIndex].command;
         value = commands[readIndex].value;
-        D_8013AE48 = 0;
-        D_8013AE78 = 1;
-        D_8013AE4C = command;
+        gCdCommandPhase = 0;
+        gCdCommandActive = 1;
+        gCdActiveCommand = command;
         D_8013AE4A = value;
     }
 
-    if (D_8013AE78 == 0)
+    if (gCdCommandActive == 0)
         return;
-    activeCommand = D_8013AE4C;
+    activeCommand = gCdActiveCommand;
     if (activeCommand != -1) {
-        switch (D_8013AE48) {
+        switch (gCdCommandPhase) {
         case 0:
             if (CdSync(1, result.bytes) != 0) {
-                if (!(D_8013AE68 & CD_XA_ACTIVE)) {
-                    D_8013AE48++;
+                if (!(gCdStreamingFlags & CD_XA_ACTIVE)) {
+                    gCdCommandPhase++;
                 } else {
                     CdControlF(CdlPause, NULL);
-                    D_8013AE7C |= CD_CONTROL_PENDING;
-                    D_8013AE48++;
+                    gCdIoFlags |= CD_CONTROL_PENDING;
+                    gCdCommandPhase++;
                 }
             }
             break;
@@ -701,33 +701,33 @@ void updateCdCommandQueue(void) {
             status = CdSync(1, result.bytes);
             if (status == CD_COMPLETE) {
                 result.bytes[0] = CdlModeSpeed;
-                D_8013AE68 &= ~CD_XA_ACTIVE;
+                gCdStreamingFlags &= ~CD_XA_ACTIVE;
                 CdControlF(CdlSetmode, result.bytes);
                 sXaModeDelay[0] = 4;
-                D_8013AE7C |= CD_CONTROL_PENDING;
-                D_8013AE48++;
+                gCdIoFlags |= CD_CONTROL_PENDING;
+                gCdCommandPhase++;
             } else if (status == CD_DISK_ERROR) {
-                D_8013AE48 = 0;
-                D_8013AE7C &= ~CD_CONTROL_PENDING;
+                gCdCommandPhase = 0;
+                gCdIoFlags &= ~CD_CONTROL_PENDING;
             }
             break;
         case 2:
             status = CdSync(1, result.bytes);
             if (status == CD_COMPLETE)
-                D_8013AE48++;
+                gCdCommandPhase++;
             if (status == CD_DISK_ERROR) {
-                D_8013AE48 = 0;
-                D_8013AE7C &= ~CD_CONTROL_PENDING;
+                gCdCommandPhase = 0;
+                gCdIoFlags &= ~CD_CONTROL_PENDING;
             }
             break;
         case 3:
             sXaModeDelay[0]--;
             if ((s8)sXaModeDelay[0] > 0)
                 break;
-            if (D_8013AE4C < 16)
-                fileIndex = D_8013AE4C / 8;
+            if (gCdActiveCommand < 16)
+                fileIndex = gCdActiveCommand / 8;
             else
-                fileIndex = (D_8013AE4C - 16) / 32 + 2;
+                fileIndex = (gCdActiveCommand - 16) / 32 + 2;
             pathIndex = fileIndex;
             paths = sXaPaths;
             path = paths + pathIndex;
@@ -737,58 +737,58 @@ void updateCdCommandQueue(void) {
             D_8013AE64 = sector;
             D_8013AE5C = sector;
             D_8013AE58 = 0;
-            D_8013AE60 = sector + sXaTrackSectorLengths[D_8013AE4C];
+            D_8013AE60 = sector + sXaTrackSectorLengths[gCdActiveCommand];
             CdIntToPos(sector, &sXaSeekPosition);
             CdControlF(CdlSetloc, (u8 *)&sXaSeekPosition);
-            D_8013AE7C |= CD_CONTROL_PENDING;
-            D_8013AE48++;
+            gCdIoFlags |= CD_CONTROL_PENDING;
+            gCdCommandPhase++;
             break;
         case 4:
             status = CdSync(1, result.bytes);
             if (status == CD_COMPLETE) {
-                D_8013AE48++;
-                D_8013AE7C |= CD_CONTROL_PENDING;
+                gCdCommandPhase++;
+                gCdIoFlags |= CD_CONTROL_PENDING;
             } else if (status == CD_DISK_ERROR) {
-                D_8013AE48 = 0;
-                D_8013AE7C &= ~CD_CONTROL_PENDING;
+                gCdCommandPhase = 0;
+                gCdIoFlags &= ~CD_CONTROL_PENDING;
             }
             break;
         case 5:
             status = CdSync(1, result.bytes);
             if (status == CD_COMPLETE) {
-                D_8013AE7C &= ~CD_CONTROL_PENDING;
-                D_8013AE48++;
+                gCdIoFlags &= ~CD_CONTROL_PENDING;
+                gCdCommandPhase++;
             } else if (status == CD_DISK_ERROR) {
-                D_8013AE48 = 0;
-                D_8013AE7C &= ~CD_CONTROL_PENDING;
+                gCdCommandPhase = 0;
+                gCdIoFlags &= ~CD_CONTROL_PENDING;
             }
             break;
         case 6:
             sXaFilter.file = 1;
-            if (D_8013AE4C < 16)
-                sXaFilter.channel = D_8013AE4C & 7;
+            if (gCdActiveCommand < 16)
+                sXaFilter.channel = gCdActiveCommand & 7;
             else
-                sXaFilter.channel = (D_8013AE4C - 16) & 31;
+                sXaFilter.channel = (gCdActiveCommand - 16) & 31;
             CdControlF(CD_SET_FILTER, (u8 *)&sXaFilter);
-            D_8013AE7C |= CD_CONTROL_PENDING;
-            D_8013AE48++;
+            gCdIoFlags |= CD_CONTROL_PENDING;
+            gCdCommandPhase++;
             break;
         case 7:
             status = CdSync(1, result.bytes);
             if (status == CD_COMPLETE) {
-                D_8013AE7C &= ~CD_CONTROL_PENDING;
-                D_8013AE48++;
+                gCdIoFlags &= ~CD_CONTROL_PENDING;
+                gCdCommandPhase++;
             } else if (status == CD_DISK_ERROR) {
-                D_8013AE48 = 0;
-                D_8013AE7C &= ~CD_CONTROL_PENDING;
+                gCdCommandPhase = 0;
+                gCdIoFlags &= ~CD_CONTROL_PENDING;
             }
             break;
         case 8:
-            D_8013AE68 |= CD_XA_ACTIVE;
+            gCdStreamingFlags |= CD_XA_ACTIVE;
             if (CdRead2(CdlModeSpeed | CdlModeRT | CdlModeSize1 | CD_XA_FILTER_MODE) == 1) {
-                D_8013AE54 = 0;
+                gXaPositionPollCount = 0;
                 gSynchronizedFrameCount = 1;
-                D_8013AE48++;
+                gCdCommandPhase++;
             }
             break;
         case 9:
@@ -796,89 +796,89 @@ void updateCdCommandQueue(void) {
                 break;
             status = CdSync(1, result.bytes);
             if (status == CD_DISK_ERROR) {
-                D_8013AE7C &= ~CD_CONTROL_PENDING;
-                D_8013AE48++;
+                gCdIoFlags &= ~CD_CONTROL_PENDING;
+                gCdCommandPhase++;
                 break;
             }
             if (status == CD_COMPLETE) {
                 if (D_8013AE5C > D_8013AE60 || D_8013AE5C < D_8013AE64) {
                     if (D_8013AE4A == 0) {
-                        D_8013AE48++;
+                        gCdCommandPhase++;
                     } else {
-                        D_8013AE48 = 0;
-                        D_8013AE4C = -1;
+                        gCdCommandPhase = 0;
+                        gCdActiveCommand = -1;
                     }
                     break;
                 }
-                if (D_8013AE54 >= 6 && CdLastCom() == CD_GET_LOCATION) {
+                if (gXaPositionPollCount >= 6 && CdLastCom() == CD_GET_LOCATION) {
                     sector = CdPosToInt(&result.getLocation.position);
                     if (sector > 0)
                         D_8013AE5C = sector;
                 }
                 CdControlF(CD_GET_LOCATION, NULL);
-                D_8013AE7C |= CD_CONTROL_PENDING;
+                gCdIoFlags |= CD_CONTROL_PENDING;
             }
-            D_8013AE54++;
+            gXaPositionPollCount++;
             break;
         case 10:
             CdControlF(CdlPause, NULL);
-            D_8013AE7C |= CD_CONTROL_PENDING;
-            D_8013AE48++;
+            gCdIoFlags |= CD_CONTROL_PENDING;
+            gCdCommandPhase++;
             break;
         case 11:
             status = CdSync(1, result.bytes);
             if (status == CD_COMPLETE) {
-                D_8013AE54 = 0;
-                D_8013AE48 = 0;
-                D_8013AE7C &= ~CD_CONTROL_PENDING;
-                D_8013AE68 &= ~CD_XA_ACTIVE;
+                gXaPositionPollCount = 0;
+                gCdCommandPhase = 0;
+                gCdIoFlags &= ~CD_CONTROL_PENDING;
+                gCdStreamingFlags &= ~CD_XA_ACTIVE;
             } else if (status == CD_DISK_ERROR) {
-                D_8013AE48 = 10;
-                D_8013AE7C &= ~CD_CONTROL_PENDING;
+                gCdCommandPhase = 10;
+                gCdIoFlags &= ~CD_CONTROL_PENDING;
             }
             break;
         }
     } else {
-        switch (D_8013AE48) {
+        switch (gCdCommandPhase) {
         case 0:
-            if (D_8013AE7C & CD_READ_PENDING) {
+            if (gCdIoFlags & CD_READ_PENDING) {
                 readStatus = CdReadSync(1, result.bytes);
                 if (readStatus == 0) {
-                    D_8013AE7C &= ~CD_READ_PENDING;
-                    D_8013AE7C &= ~CD_CONTROL_PENDING;
-                    D_8013AE48++;
+                    gCdIoFlags &= ~CD_READ_PENDING;
+                    gCdIoFlags &= ~CD_CONTROL_PENDING;
+                    gCdCommandPhase++;
                 }
                 if (readStatus == activeCommand) {
-                    D_8013AE7C &= ~CD_READ_PENDING;
-                    D_8013AE7C &= ~CD_CONTROL_PENDING;
-                    D_8013AE48++;
+                    gCdIoFlags &= ~CD_READ_PENDING;
+                    gCdIoFlags &= ~CD_CONTROL_PENDING;
+                    gCdCommandPhase++;
                 }
                 break;
             }
-            D_8013AE48 = 1;
+            gCdCommandPhase = 1;
             /* fallthrough */
         case 1:
-            if (!(D_8013AE68 & CD_XA_ACTIVE)) {
-                D_8013AE78 = 0;
+            if (!(gCdStreamingFlags & CD_XA_ACTIVE)) {
+                gCdCommandActive = 0;
             } else if (CdSync(1, result.bytes) != 0) {
-                D_8013AE7C &= ~CD_CONTROL_PENDING;
-                D_8013AE48++;
+                gCdIoFlags &= ~CD_CONTROL_PENDING;
+                gCdCommandPhase++;
             }
             break;
         case 2:
             CdControlF(CdlPause, NULL);
-            D_8013AE7C |= CD_CONTROL_PENDING;
-            D_8013AE48++;
+            gCdIoFlags |= CD_CONTROL_PENDING;
+            gCdCommandPhase++;
             break;
         case 3:
             status = CdSync(1, result.bytes);
             if (status == CD_COMPLETE) {
-                D_8013AE78 = 0;
-                D_8013AE7C &= ~CD_CONTROL_PENDING;
-                D_8013AE68 &= ~CD_XA_ACTIVE;
+                gCdCommandActive = 0;
+                gCdIoFlags &= ~CD_CONTROL_PENDING;
+                gCdStreamingFlags &= ~CD_XA_ACTIVE;
             } else if (status == CD_DISK_ERROR) {
-                D_8013AE48 = 0;
-                D_8013AE7C &= ~CD_CONTROL_PENDING;
+                gCdCommandPhase = 0;
+                gCdIoFlags &= ~CD_CONTROL_PENDING;
             }
             break;
         }

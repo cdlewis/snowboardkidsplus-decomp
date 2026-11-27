@@ -64,7 +64,7 @@ extern GameTask *D_8013AE90 __attribute__((section(".data")));
 extern GameTask *D_8013B304 __attribute__((section(".data.player_snapshot_tasks")));
 
 extern u8 gControllerInputRecordState __attribute__((section(".data")));
-extern s16 D_8013AE78 __attribute__((section(".data")));
+extern s16 gCdCommandActive __attribute__((section(".data")));
 extern RaceTime gRaceElapsedTime __attribute__((section(".data")));
 
 const char gRaceVsyncDebugFormat[16]
@@ -837,7 +837,7 @@ void dispatchPostRaceResultsTask(void) {
     s16 i;
     u32 score;
 
-    if (D_8013AE78 != 0) {
+    if (gCdCommandActive != 0) {
         return;
     }
     queueCdCommand(3, 0);

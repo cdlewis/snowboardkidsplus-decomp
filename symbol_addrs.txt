@@ -3586,11 +3586,11 @@ runGameLoop = 0x8001A540; // type:func
 updateCdCommandQueue = 0x80013F98; // type:func size:0x6E4
 updateCdRequestQueue = 0x800138AC; // type:func
 
-D_8013AE68 = 0x8013AE68; // size:0x2 defined:true
+gCdStreamingFlags = 0x8013AE68; // size:0x2 defined:true
 
 D_8013AE6C = 0x8013AE6C; // size:0x4 defined:true
 
-D_8013AE7C = 0x8013AE7C; // size:0x4 defined:true
+gCdIoFlags = 0x8013AE7C; // size:0x4 defined:true
 
 D_8013B5DC = 0x8013B5DC; // size:0x8 defined:true
 
@@ -4313,3 +4313,10 @@ gGeometryProjectionLength = 0x8013B62C;
 gRaceResultCode = 0x8013AFE1; // size:0x1
 gPlayerRaceTimes = 0x8013B190; // size:0x8
 gPlayerAttackTimeExpired = 0x8013B1A0; // size:0x2
+
+gCdCommandPhase = 0x8013AE48; // size:0x2 defined:true
+gCdActiveCommand = 0x8013AE4C; // size:0x2 defined:true
+gCdCommandWriteIndex = 0x8013AE4E; // size:0x2 defined:true
+gCdCommandReadIndex = 0x8013AE50; // size:0x2 defined:true
+gXaPositionPollCount = 0x8013AE54; // size:0x4 defined:true
+gCdCommandActive = 0x8013AE78; // size:0x2 defined:true
