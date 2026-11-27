@@ -3139,15 +3139,15 @@ drawSlidingDisplaySprite = 0x80034090; // type:func
 reflectVelocityAndResolveGeometryBoundary = 0x8004BC3C; // type:func
 enforceGeometryEdgeDistance = 0x8004C81C; // type:func
 getGeometryBoundaryDisplacement = 0x8004C968; // type:func
-D_8013B630 = 0x8013B630; // size:0x4
+gGeometryProjectionOffsetX = 0x8013B630; // size:0x4
 D_8013B634 = 0x8013B634; // size:0x4
-D_8013B638 = 0x8013B638; // size:0x4
-D_8013B63C = 0x8013B63C; // size:0x4
+gGeometryProjectionOffsetZOrDistance = 0x8013B638; // size:0x4
+gGeometryEdgeDeltaX = 0x8013B63C; // size:0x4
 D_8013B640 = 0x8013B640; // size:0x4
-D_8013B644 = 0x8013B644; // size:0x4
-D_8013B648 = 0x8013B648; // size:0x4
+gGeometryEdgeDeltaZOrCorrection = 0x8013B644; // size:0x4
+gGeometryResolvedX = 0x8013B648; // size:0x4
 D_8013B64C = 0x8013B64C; // size:0x4
-D_8013B650 = 0x8013B650; // size:0x4
+gGeometryResolvedZ = 0x8013B650; // size:0x4
 
 updateTimedSpriteB5Task = 0x8007724C; // type:func
 
@@ -4299,3 +4299,6 @@ gSharedScratchVector = 0x800EB22C; // size:0x10
 gSelectedPlayerReplayActive = 0x8013AFD6; // size:0x1
 gControllerPlaybackIndex = 0x8013AFD9; // size:0x1
 gSelectedPlayerAction = 0x8013B0E4; // size:0x2
+
+gCourseGeometryTriangleRecords = 0x8013B1F0;
+gGeometryProjectionLength = 0x8013B62C;

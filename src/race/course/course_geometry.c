@@ -7,25 +7,25 @@ s32 gGeometryProjectionBasisX __attribute__((section(".sdata.geometry_edge_proje
 
 s32 gGeometryProjectionBasisZ __attribute__((section(".sdata.geometry_edge_projection"))) = 0;
 
-s32 D_8013B62C __attribute__((section(".sdata.geometry_edge_projection"))) = 0;
+s32 gGeometryProjectionLength __attribute__((section(".sdata.geometry_edge_projection"))) = 0;
 
-s32 D_8013B630 __attribute__((section(".sdata.geometry_edge_projection"))) = 0;
+s32 gGeometryProjectionOffsetX __attribute__((section(".sdata.geometry_edge_projection"))) = 0;
 
 s32 D_8013B634 __attribute__((section(".sdata.geometry_edge_projection"))) = 0;
 
-s32 D_8013B638 __attribute__((section(".sdata.geometry_edge_projection"))) = 0;
+s32 gGeometryProjectionOffsetZOrDistance __attribute__((section(".sdata.geometry_edge_projection"))) = 0;
 
-s32 D_8013B63C __attribute__((section(".sdata.geometry_edge_projection"))) = 0;
+s32 gGeometryEdgeDeltaX __attribute__((section(".sdata.geometry_edge_projection"))) = 0;
 
 s32 D_8013B640 __attribute__((section(".sdata.geometry_edge_projection"))) = 0;
 
-s32 D_8013B644 __attribute__((section(".sdata.geometry_edge_projection"))) = 0;
+s32 gGeometryEdgeDeltaZOrCorrection __attribute__((section(".sdata.geometry_edge_projection"))) = 0;
 
-s32 D_8013B648 __attribute__((section(".sdata.geometry_edge_projection"))) = 0;
+s32 gGeometryResolvedX __attribute__((section(".sdata.geometry_edge_projection"))) = 0;
 
 s32 D_8013B64C __attribute__((section(".sdata.geometry_edge_projection"))) = 0;
 
-s32 D_8013B650 __attribute__((section(".sdata.geometry_edge_projection"))) = 0;
+s32 gGeometryResolvedZ __attribute__((section(".sdata.geometry_edge_projection"))) = 0;
 
 void bindGeometryRecordData(s16 *data) {
     s16 count;
@@ -36,7 +36,7 @@ void bindGeometryRecordData(s16 *data) {
     data += (s16)(count * 3);
     D_8013B1F8 = count;
     count = *data++;
-    D_8013B1F0 = (SelectedRecord *)data;
+    gCourseGeometryTriangleRecords = (SelectedRecord *)data;
     data += (s16)(count * 6);
     D_8013B1FA = count;
     D_8013B1FC = *data++;
@@ -71,9 +71,9 @@ void selectGeometryRecord(s16 index) {
     s16 *vertices;
     D_8013B1FE = index;
     vertices = gCourseGeometryVertexData;
-    D_8013B200 = &vertices[D_8013B1F0[index].vertexIndices[0] * 3];
-    D_8013B204 = &vertices[D_8013B1F0[index].vertexIndices[1] * 3];
-    D_8013B208 = &vertices[D_8013B1F0[index].vertexIndices[2] * 3];
+    D_8013B200 = &vertices[gCourseGeometryTriangleRecords[index].vertexIndices[0] * 3];
+    D_8013B204 = &vertices[gCourseGeometryTriangleRecords[index].vertexIndices[1] * 3];
+    D_8013B208 = &vertices[gCourseGeometryTriangleRecords[index].vertexIndices[2] * 3];
 }
 
 s32 getCourseHeightAtPoint(s16 index, s32 x, s32 z) {
@@ -82,7 +82,7 @@ s32 getCourseHeightAtPoint(s16 index, s32 x, s32 z) {
 
     for (i = ((GeometryRegion *)gCourseGeometryRegionData)[index].firstRecord;
          i < ((GeometryRegion *)gCourseGeometryRegionData)[index].lastRecord + 1; i++) {
-        SelectedRecord *records = D_8013B1F0;
+        SelectedRecord *records = gCourseGeometryTriangleRecords;
 
         if (records[i].skipFirstEdge == 0) {
             CourseGeometryVertex *vertices = (CourseGeometryVertex *)gCourseGeometryVertexData;
@@ -109,7 +109,7 @@ s32 getCourseHeightAtPoint(s16 index, s32 x, s32 z) {
             s32 dyC, dzB, dzC, dyB, dxB, dxC;
             s32 yz1, yz2, zx1, xy1, xy2, zx2;
             s32 ci, ai, bi;
-            SelectedRecord *selected = D_8013B1F0;
+            SelectedRecord *selected = gCourseGeometryTriangleRecords;
 
             ci = selected[i].vertexIndices[2];
             triangleVertices = (CourseGeometryVertex *)gCourseGeometryVertexData;
@@ -153,7 +153,7 @@ u8 getCourseSurfaceAtPoint(s16 index, s32 x, s32 z) {
     for (i = ((GeometryRegion *)gCourseGeometryRegionData)[index].firstRecord;
          i < ((GeometryRegion *)gCourseGeometryRegionData)[index].lastRecord + 1; i++) {
         vertices = (CourseGeometryVertex *)gCourseGeometryVertexData;
-        records = D_8013B1F0;
+        records = gCourseGeometryTriangleRecords;
         record = &records[i];
         if (record->skipFirstEdge == 0) {
             s32 bi = record->vertexIndices[1];
@@ -208,15 +208,15 @@ void getGeometryPlacementTransform(s16 index, s32 *x, s32 *y, s32 *z, u16 *angle
 void reflectVelocityAndEnforceGeometryEdgeDistance(s32 *velocityX, s32 *velocityZ, s32 limit) {
     s32 length, nx, nz, perpendicularX;
     s32 tangent, normal;
-    length = SquareRoot0(D_8013B63C * D_8013B63C + D_8013B644 * D_8013B644);
-    nx = (D_8013B644 << 12) / length;
-    nz = (D_8013B63C << 12) / length;
-    D_8013B62C = length;
+    length = SquareRoot0(gGeometryEdgeDeltaX * gGeometryEdgeDeltaX + gGeometryEdgeDeltaZOrCorrection * gGeometryEdgeDeltaZOrCorrection);
+    nx = (gGeometryEdgeDeltaZOrCorrection << 12) / length;
+    nz = (gGeometryEdgeDeltaX << 12) / length;
+    gGeometryProjectionLength = length;
     gGeometryProjectionBasisX = nx;
     gGeometryProjectionBasisZ = nz;
     perpendicularX = -nx;
-    D_8013B638 = (perpendicularX * D_8013B630 + nz * D_8013B638) / 4096;
-    if (D_8013B638 < limit) {
+    gGeometryProjectionOffsetZOrDistance = (perpendicularX * gGeometryProjectionOffsetX + nz * gGeometryProjectionOffsetZOrDistance) / 4096;
+    if (gGeometryProjectionOffsetZOrDistance < limit) {
         tangent = (nz * *velocityX + nx * *velocityZ) / 4096;
         normal = (perpendicularX * *velocityX + nz * *velocityZ) / 4096;
         if (normal < 0) {
@@ -224,9 +224,9 @@ void reflectVelocityAndEnforceGeometryEdgeDistance(s32 *velocityX, s32 *velocity
             *velocityX = (nz * tangent - nx * normal) / 4096;
             *velocityZ = (gGeometryProjectionBasisX * tangent + gGeometryProjectionBasisZ * normal) / 4096;
         }
-        D_8013B644 = limit - D_8013B638;
-        D_8013B648 += -gGeometryProjectionBasisX * D_8013B644 / 4096;
-        D_8013B650 += gGeometryProjectionBasisZ * D_8013B644 / 4096;
+        gGeometryEdgeDeltaZOrCorrection = limit - gGeometryProjectionOffsetZOrDistance;
+        gGeometryResolvedX += -gGeometryProjectionBasisX * gGeometryEdgeDeltaZOrCorrection / 4096;
+        gGeometryResolvedZ += gGeometryProjectionBasisZ * gGeometryEdgeDeltaZOrCorrection / 4096;
     }
 }
 
@@ -238,8 +238,8 @@ void resolveGeometryBoundaryCollision(s16 index, s32 x, s32 z, s32 radius, s32 m
     s32 z0, z1, z2, z3;
     s32 nx, nz, tangent, normal, length, edgeLength;
 
-    D_8013B648 = x;
-    D_8013B650 = z;
+    gGeometryResolvedX = x;
+    gGeometryResolvedZ = z;
     x0 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[0] * 3] * 5;
     x1 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[1] * 3] * 5;
     x2 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[2] * 3] * 5;
@@ -250,56 +250,56 @@ void resolveGeometryBoundaryCollision(s16 index, s32 x, s32 z, s32 radius, s32 m
     z3 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[3] * 3 + 2] * 5;
 
     if (((GeometryRegion *)gCourseGeometryRegionData)[index].neighbors[0] == wallType) {
-        D_8013B63C = x1 - x0;
-        D_8013B644 = z1 - z0;
-        D_8013B630 = x - x0;
-        D_8013B638 = z - z0;
+        gGeometryEdgeDeltaX = x1 - x0;
+        gGeometryEdgeDeltaZOrCorrection = z1 - z0;
+        gGeometryProjectionOffsetX = x - x0;
+        gGeometryProjectionOffsetZOrDistance = z - z0;
         reflectVelocityAndEnforceGeometryEdgeDistance(velocityX, velocityZ, radius);
     }
 
     if (((GeometryRegion *)gCourseGeometryRegionData)[index].neighbors[1] == wallType) {
-        D_8013B63C = x2 - x3;
-        D_8013B644 = z2 - z3;
-        D_8013B630 = D_8013B648 - x3;
-        D_8013B638 = D_8013B650 - z3;
+        gGeometryEdgeDeltaX = x2 - x3;
+        gGeometryEdgeDeltaZOrCorrection = z2 - z3;
+        gGeometryProjectionOffsetX = gGeometryResolvedX - x3;
+        gGeometryProjectionOffsetZOrDistance = gGeometryResolvedZ - z3;
         reflectVelocityAndEnforceGeometryEdgeDistance(velocityX, velocityZ, radius);
     }
 
     /* Flagged side-edge corners use radial distance beyond the endpoints. */
     if (((GeometryRegion *)gCourseGeometryRegionData)[index].neighbors[2] == wallType) {
-        D_8013B63C = x3 - x1;
-        D_8013B644 = z3 - z1;
-        D_8013B630 = D_8013B648 - x1;
-        D_8013B638 = D_8013B650 - z1;
-        D_8013B62C = SquareRoot0(D_8013B63C * D_8013B63C + D_8013B644 * D_8013B644);
-        nx = (D_8013B644 << 12) / D_8013B62C;
-        nz = (D_8013B63C << 12) / D_8013B62C;
+        gGeometryEdgeDeltaX = x3 - x1;
+        gGeometryEdgeDeltaZOrCorrection = z3 - z1;
+        gGeometryProjectionOffsetX = gGeometryResolvedX - x1;
+        gGeometryProjectionOffsetZOrDistance = gGeometryResolvedZ - z1;
+        gGeometryProjectionLength = SquareRoot0(gGeometryEdgeDeltaX * gGeometryEdgeDeltaX + gGeometryEdgeDeltaZOrCorrection * gGeometryEdgeDeltaZOrCorrection);
+        nx = (gGeometryEdgeDeltaZOrCorrection << 12) / gGeometryProjectionLength;
+        nz = (gGeometryEdgeDeltaX << 12) / gGeometryProjectionLength;
         gGeometryProjectionBasisX = nx;
         gGeometryProjectionBasisZ = nz;
-        tangent = (nz * D_8013B630 + nx * D_8013B638) / 4096;
-        normal = (-nx * D_8013B630 + nz * D_8013B638) / 4096;
-        edgeLength = (nz * D_8013B63C + nx * D_8013B644) / 4096;
+        tangent = (nz * gGeometryProjectionOffsetX + nx * gGeometryProjectionOffsetZOrDistance) / 4096;
+        normal = (-nx * gGeometryProjectionOffsetX + nz * gGeometryProjectionOffsetZOrDistance) / 4096;
+        edgeLength = (nz * gGeometryEdgeDeltaX + nx * gGeometryEdgeDeltaZOrCorrection) / 4096;
         if ((((GeometryRegion *)gCourseGeometryRegionData)[index].cornerFlags & 2) && tangent < 0) {
-            tangent = D_8013B648 - x1;
-            normal = D_8013B650 - z1;
+            tangent = gGeometryResolvedX - x1;
+            normal = gGeometryResolvedZ - z1;
             length = SquareRoot0(tangent * tangent + normal * normal);
-            D_8013B62C = length;
+            gGeometryProjectionLength = length;
             if (length < -radius) {
                 tangent = tangent * -radius / length;
                 normal = normal * -radius / length;
-                D_8013B648 = tangent + x1;
-                D_8013B650 = normal + z1;
+                gGeometryResolvedX = tangent + x1;
+                gGeometryResolvedZ = normal + z1;
             }
         } else if ((((GeometryRegion *)gCourseGeometryRegionData)[index].cornerFlags & 8) && edgeLength < tangent) {
-            tangent = D_8013B648 - x3;
-            normal = D_8013B650 - z3;
+            tangent = gGeometryResolvedX - x3;
+            normal = gGeometryResolvedZ - z3;
             length = SquareRoot0(tangent * tangent + normal * normal);
-            D_8013B62C = length;
+            gGeometryProjectionLength = length;
             if (length < -radius) {
                 tangent = tangent * -radius / length;
                 normal = normal * -radius / length;
-                D_8013B648 = tangent + x3;
-                D_8013B650 = normal + z3;
+                gGeometryResolvedX = tangent + x3;
+                gGeometryResolvedZ = normal + z3;
             }
         } else if (normal < radius) {
             s32 velocityTangent, velocityNormal;
@@ -310,46 +310,46 @@ void resolveGeometryBoundaryCollision(s16 index, s32 x, s32 z, s32 radius, s32 m
                 *velocityX = (gGeometryProjectionBasisZ * velocityTangent - gGeometryProjectionBasisX * velocityNormal) / 4096;
                 *velocityZ = (gGeometryProjectionBasisX * velocityTangent + gGeometryProjectionBasisZ * velocityNormal) / 4096;
             }
-            D_8013B644 = radius - normal;
-            D_8013B648 += -gGeometryProjectionBasisX * D_8013B644 / 4096;
-            D_8013B650 += gGeometryProjectionBasisZ * D_8013B644 / 4096;
+            gGeometryEdgeDeltaZOrCorrection = radius - normal;
+            gGeometryResolvedX += -gGeometryProjectionBasisX * gGeometryEdgeDeltaZOrCorrection / 4096;
+            gGeometryResolvedZ += gGeometryProjectionBasisZ * gGeometryEdgeDeltaZOrCorrection / 4096;
         }
     }
 
     if (((GeometryRegion *)gCourseGeometryRegionData)[index].neighbors[3] == wallType) {
-        D_8013B63C = x0 - x2;
-        D_8013B644 = z0 - z2;
-        D_8013B630 = D_8013B648 - x2;
-        D_8013B638 = D_8013B650 - z2;
-        D_8013B62C = SquareRoot0(D_8013B63C * D_8013B63C + D_8013B644 * D_8013B644);
-        nx = (D_8013B644 << 12) / D_8013B62C;
-        nz = (D_8013B63C << 12) / D_8013B62C;
+        gGeometryEdgeDeltaX = x0 - x2;
+        gGeometryEdgeDeltaZOrCorrection = z0 - z2;
+        gGeometryProjectionOffsetX = gGeometryResolvedX - x2;
+        gGeometryProjectionOffsetZOrDistance = gGeometryResolvedZ - z2;
+        gGeometryProjectionLength = SquareRoot0(gGeometryEdgeDeltaX * gGeometryEdgeDeltaX + gGeometryEdgeDeltaZOrCorrection * gGeometryEdgeDeltaZOrCorrection);
+        nx = (gGeometryEdgeDeltaZOrCorrection << 12) / gGeometryProjectionLength;
+        nz = (gGeometryEdgeDeltaX << 12) / gGeometryProjectionLength;
         gGeometryProjectionBasisX = nx;
         gGeometryProjectionBasisZ = nz;
-        tangent = (nz * D_8013B630 + nx * D_8013B638) / 4096;
-        normal = (-nx * D_8013B630 + nz * D_8013B638) / 4096;
-        edgeLength = (nz * D_8013B63C + nx * D_8013B644) / 4096;
+        tangent = (nz * gGeometryProjectionOffsetX + nx * gGeometryProjectionOffsetZOrDistance) / 4096;
+        normal = (-nx * gGeometryProjectionOffsetX + nz * gGeometryProjectionOffsetZOrDistance) / 4096;
+        edgeLength = (nz * gGeometryEdgeDeltaX + nx * gGeometryEdgeDeltaZOrCorrection) / 4096;
         if ((((GeometryRegion *)gCourseGeometryRegionData)[index].cornerFlags & 4) && tangent < 0) {
-            tangent = D_8013B648 - x2;
-            normal = D_8013B650 - z2;
+            tangent = gGeometryResolvedX - x2;
+            normal = gGeometryResolvedZ - z2;
             length = SquareRoot0(tangent * tangent + normal * normal);
-            D_8013B62C = length;
+            gGeometryProjectionLength = length;
             if (length < -radius) {
                 tangent = tangent * -radius / length;
                 normal = normal * -radius / length;
-                D_8013B648 = tangent + x2;
-                D_8013B650 = normal + z2;
+                gGeometryResolvedX = tangent + x2;
+                gGeometryResolvedZ = normal + z2;
             }
         } else if ((((GeometryRegion *)gCourseGeometryRegionData)[index].cornerFlags & 1) && edgeLength < tangent) {
-            tangent = D_8013B648 - x0;
-            normal = D_8013B650 - z0;
+            tangent = gGeometryResolvedX - x0;
+            normal = gGeometryResolvedZ - z0;
             length = SquareRoot0(tangent * tangent + normal * normal);
-            D_8013B62C = length;
+            gGeometryProjectionLength = length;
             if (length < -radius) {
                 tangent = tangent * -radius / length;
                 normal = normal * -radius / length;
-                D_8013B648 = tangent + x0;
-                D_8013B650 = normal + z0;
+                gGeometryResolvedX = tangent + x0;
+                gGeometryResolvedZ = normal + z0;
             }
         } else if (normal < radius) {
             s32 velocityTangent, velocityNormal;
@@ -360,14 +360,14 @@ void resolveGeometryBoundaryCollision(s16 index, s32 x, s32 z, s32 radius, s32 m
                 *velocityX = (gGeometryProjectionBasisZ * velocityTangent - gGeometryProjectionBasisX * velocityNormal) / 4096;
                 *velocityZ = (gGeometryProjectionBasisX * velocityTangent + gGeometryProjectionBasisZ * velocityNormal) / 4096;
             }
-            D_8013B644 = radius - normal;
-            D_8013B648 += -gGeometryProjectionBasisX * D_8013B644 / 4096;
-            D_8013B650 += gGeometryProjectionBasisZ * D_8013B644 / 4096;
+            gGeometryEdgeDeltaZOrCorrection = radius - normal;
+            gGeometryResolvedX += -gGeometryProjectionBasisX * gGeometryEdgeDeltaZOrCorrection / 4096;
+            gGeometryResolvedZ += gGeometryProjectionBasisZ * gGeometryEdgeDeltaZOrCorrection / 4096;
         }
     }
 
-    *displacementX = D_8013B648 - x;
-    *displacementZ = D_8013B650 - z;
+    *displacementX = gGeometryResolvedX - x;
+    *displacementZ = gGeometryResolvedZ - z;
 }
 
 void reflectVelocityAndResolveGeometryBoundary(s16 index, s32 x, s32 z, s32 radius,
@@ -379,8 +379,8 @@ void reflectVelocityAndResolveGeometryBoundary(s16 index, s32 x, s32 z, s32 radi
     s32 cornerLength, tangent, normal;
     CourseGeometryVertex *vertices = (CourseGeometryVertex *)gCourseGeometryVertexData;
 
-    D_8013B648 = x;
-    D_8013B650 = z;
+    gGeometryResolvedX = x;
+    gGeometryResolvedZ = z;
     x0 = vertices[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[0]].x * 5;
     x1 = vertices[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[1]].x * 5;
     x2 = vertices[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[2]].x * 5;
@@ -391,54 +391,54 @@ void reflectVelocityAndResolveGeometryBoundary(s16 index, s32 x, s32 z, s32 radi
     z3 = vertices[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[3]].z * 5;
 
     if (((GeometryRegion *)gCourseGeometryRegionData)[index].neighbors[0] < 0) {
-        D_8013B63C = x1 - x0;
-        D_8013B644 = z1 - z0;
-        D_8013B630 = x - x0;
-        D_8013B638 = z - z0;
+        gGeometryEdgeDeltaX = x1 - x0;
+        gGeometryEdgeDeltaZOrCorrection = z1 - z0;
+        gGeometryProjectionOffsetX = x - x0;
+        gGeometryProjectionOffsetZOrDistance = z - z0;
         reflectVelocityAndEnforceGeometryEdgeDistance(directionX, directionZ, radius);
     }
     if (((GeometryRegion *)gCourseGeometryRegionData)[index].neighbors[1] < 0) {
-        D_8013B63C = x2 - x3;
-        D_8013B644 = z2 - z3;
-        D_8013B630 = D_8013B648 - x3;
-        D_8013B638 = D_8013B650 - z3;
+        gGeometryEdgeDeltaX = x2 - x3;
+        gGeometryEdgeDeltaZOrCorrection = z2 - z3;
+        gGeometryProjectionOffsetX = gGeometryResolvedX - x3;
+        gGeometryProjectionOffsetZOrDistance = gGeometryResolvedZ - z3;
         reflectVelocityAndEnforceGeometryEdgeDistance(directionX, directionZ, radius);
     }
 
     if (((GeometryRegion *)gCourseGeometryRegionData)[index].neighbors[2] < 0) {
-        D_8013B63C = x3 - x1;
-        D_8013B644 = z3 - z1;
-        D_8013B630 = D_8013B648 - x1;
-        D_8013B638 = D_8013B650 - z1;
-        D_8013B62C = SquareRoot0(D_8013B63C * D_8013B63C + D_8013B644 * D_8013B644);
-        basisX = (D_8013B644 << 12) / D_8013B62C;
-        basisZ = (D_8013B63C << 12) / D_8013B62C;
+        gGeometryEdgeDeltaX = x3 - x1;
+        gGeometryEdgeDeltaZOrCorrection = z3 - z1;
+        gGeometryProjectionOffsetX = gGeometryResolvedX - x1;
+        gGeometryProjectionOffsetZOrDistance = gGeometryResolvedZ - z1;
+        gGeometryProjectionLength = SquareRoot0(gGeometryEdgeDeltaX * gGeometryEdgeDeltaX + gGeometryEdgeDeltaZOrCorrection * gGeometryEdgeDeltaZOrCorrection);
+        basisX = (gGeometryEdgeDeltaZOrCorrection << 12) / gGeometryProjectionLength;
+        basisZ = (gGeometryEdgeDeltaX << 12) / gGeometryProjectionLength;
         gGeometryProjectionBasisX = basisX;
         gGeometryProjectionBasisZ = basisZ;
-        along = (basisZ * D_8013B630 + basisX * D_8013B638) / 4096;
-        distance = (-basisX * D_8013B630 + basisZ * D_8013B638) / 4096;
-        edgeLength = (basisZ * D_8013B63C + basisX * D_8013B644) / 4096;
+        along = (basisZ * gGeometryProjectionOffsetX + basisX * gGeometryProjectionOffsetZOrDistance) / 4096;
+        distance = (-basisX * gGeometryProjectionOffsetX + basisZ * gGeometryProjectionOffsetZOrDistance) / 4096;
+        edgeLength = (basisZ * gGeometryEdgeDeltaX + basisX * gGeometryEdgeDeltaZOrCorrection) / 4096;
         if ((((GeometryRegion *)gCourseGeometryRegionData)[index].cornerFlags & (1 << 1)) && along < 0) {
-            along = D_8013B648 - x1;
-            distance = D_8013B650 - z1;
+            along = gGeometryResolvedX - x1;
+            distance = gGeometryResolvedZ - z1;
             cornerLength = SquareRoot0(along * along + distance * distance);
-            D_8013B62C = cornerLength;
+            gGeometryProjectionLength = cornerLength;
             if (cornerLength < -radius) {
                 along = along * -radius / cornerLength;
                 distance = distance * -radius / cornerLength;
-                D_8013B648 = along + x1;
-                D_8013B650 = distance + z1;
+                gGeometryResolvedX = along + x1;
+                gGeometryResolvedZ = distance + z1;
             }
         } else if ((((GeometryRegion *)gCourseGeometryRegionData)[index].cornerFlags & (1 << 3)) && edgeLength < along) {
-            along = D_8013B648 - x3;
-            distance = D_8013B650 - z3;
+            along = gGeometryResolvedX - x3;
+            distance = gGeometryResolvedZ - z3;
             cornerLength = SquareRoot0(along * along + distance * distance);
-            D_8013B62C = cornerLength;
+            gGeometryProjectionLength = cornerLength;
             if (cornerLength < -radius) {
                 along = along * -radius / cornerLength;
                 distance = distance * -radius / cornerLength;
-                D_8013B648 = along + x3;
-                D_8013B650 = distance + z3;
+                gGeometryResolvedX = along + x3;
+                gGeometryResolvedZ = distance + z3;
             }
         } else if (distance < radius) {
             tangent = (gGeometryProjectionBasisZ * *directionX + gGeometryProjectionBasisX * *directionZ) / 4096;
@@ -448,46 +448,46 @@ void reflectVelocityAndResolveGeometryBoundary(s16 index, s32 x, s32 z, s32 radi
                 *directionX = (gGeometryProjectionBasisZ * tangent - gGeometryProjectionBasisX * normal) / 4096;
                 *directionZ = (gGeometryProjectionBasisX * tangent + gGeometryProjectionBasisZ * normal) / 4096;
             }
-            D_8013B644 = radius - distance;
-            D_8013B648 += -gGeometryProjectionBasisX * D_8013B644 / 4096;
-            D_8013B650 += gGeometryProjectionBasisZ * D_8013B644 / 4096;
+            gGeometryEdgeDeltaZOrCorrection = radius - distance;
+            gGeometryResolvedX += -gGeometryProjectionBasisX * gGeometryEdgeDeltaZOrCorrection / 4096;
+            gGeometryResolvedZ += gGeometryProjectionBasisZ * gGeometryEdgeDeltaZOrCorrection / 4096;
         }
     }
 
     if (((GeometryRegion *)gCourseGeometryRegionData)[index].neighbors[3] < 0) {
-        D_8013B63C = x0 - x2;
-        D_8013B644 = z0 - z2;
-        D_8013B630 = D_8013B648 - x2;
-        D_8013B638 = D_8013B650 - z2;
-        D_8013B62C = SquareRoot0(D_8013B63C * D_8013B63C + D_8013B644 * D_8013B644);
-        basisX = (D_8013B644 << 12) / D_8013B62C;
-        basisZ = (D_8013B63C << 12) / D_8013B62C;
+        gGeometryEdgeDeltaX = x0 - x2;
+        gGeometryEdgeDeltaZOrCorrection = z0 - z2;
+        gGeometryProjectionOffsetX = gGeometryResolvedX - x2;
+        gGeometryProjectionOffsetZOrDistance = gGeometryResolvedZ - z2;
+        gGeometryProjectionLength = SquareRoot0(gGeometryEdgeDeltaX * gGeometryEdgeDeltaX + gGeometryEdgeDeltaZOrCorrection * gGeometryEdgeDeltaZOrCorrection);
+        basisX = (gGeometryEdgeDeltaZOrCorrection << 12) / gGeometryProjectionLength;
+        basisZ = (gGeometryEdgeDeltaX << 12) / gGeometryProjectionLength;
         gGeometryProjectionBasisX = basisX;
         gGeometryProjectionBasisZ = basisZ;
-        along = (basisZ * D_8013B630 + basisX * D_8013B638) / 4096;
-        distance = (-basisX * D_8013B630 + basisZ * D_8013B638) / 4096;
-        edgeLength = (basisZ * D_8013B63C + basisX * D_8013B644) / 4096;
+        along = (basisZ * gGeometryProjectionOffsetX + basisX * gGeometryProjectionOffsetZOrDistance) / 4096;
+        distance = (-basisX * gGeometryProjectionOffsetX + basisZ * gGeometryProjectionOffsetZOrDistance) / 4096;
+        edgeLength = (basisZ * gGeometryEdgeDeltaX + basisX * gGeometryEdgeDeltaZOrCorrection) / 4096;
         if ((((GeometryRegion *)gCourseGeometryRegionData)[index].cornerFlags & (1 << 2)) && along < 0) {
-            along = D_8013B648 - x2;
-            distance = D_8013B650 - z2;
+            along = gGeometryResolvedX - x2;
+            distance = gGeometryResolvedZ - z2;
             cornerLength = SquareRoot0(along * along + distance * distance);
-            D_8013B62C = cornerLength;
+            gGeometryProjectionLength = cornerLength;
             if (cornerLength < -radius) {
                 along = along * -radius / cornerLength;
                 distance = distance * -radius / cornerLength;
-                D_8013B648 = along + x2;
-                D_8013B650 = distance + z2;
+                gGeometryResolvedX = along + x2;
+                gGeometryResolvedZ = distance + z2;
             }
         } else if ((((GeometryRegion *)gCourseGeometryRegionData)[index].cornerFlags & (1 << 0)) && edgeLength < along) {
-            along = D_8013B648 - x0;
-            distance = D_8013B650 - z0;
+            along = gGeometryResolvedX - x0;
+            distance = gGeometryResolvedZ - z0;
             cornerLength = SquareRoot0(along * along + distance * distance);
-            D_8013B62C = cornerLength;
+            gGeometryProjectionLength = cornerLength;
             if (cornerLength < -radius) {
                 along = along * -radius / cornerLength;
                 distance = distance * -radius / cornerLength;
-                D_8013B648 = along + x0;
-                D_8013B650 = distance + z0;
+                gGeometryResolvedX = along + x0;
+                gGeometryResolvedZ = distance + z0;
             }
         } else if (distance < radius) {
             tangent = (gGeometryProjectionBasisZ * *directionX + gGeometryProjectionBasisX * *directionZ) / 4096;
@@ -497,27 +497,27 @@ void reflectVelocityAndResolveGeometryBoundary(s16 index, s32 x, s32 z, s32 radi
                 *directionX = (gGeometryProjectionBasisZ * tangent - gGeometryProjectionBasisX * normal) / 4096;
                 *directionZ = (gGeometryProjectionBasisX * tangent + gGeometryProjectionBasisZ * normal) / 4096;
             }
-            D_8013B644 = radius - distance;
-            D_8013B648 += -gGeometryProjectionBasisX * D_8013B644 / 4096;
-            D_8013B650 += gGeometryProjectionBasisZ * D_8013B644 / 4096;
+            gGeometryEdgeDeltaZOrCorrection = radius - distance;
+            gGeometryResolvedX += -gGeometryProjectionBasisX * gGeometryEdgeDeltaZOrCorrection / 4096;
+            gGeometryResolvedZ += gGeometryProjectionBasisZ * gGeometryEdgeDeltaZOrCorrection / 4096;
         }
     }
 
-    *displacementX = D_8013B648 - x;
-    *displacementZ = D_8013B650 - z;
+    *displacementX = gGeometryResolvedX - x;
+    *displacementZ = gGeometryResolvedZ - z;
 }
 
 void enforceGeometryEdgeDistance(s32 limit) {
     s32 length, nx, nz, perpendicularX;
-    length = SquareRoot0(D_8013B63C * D_8013B63C + D_8013B644 * D_8013B644);
-    nx = (D_8013B644 << 12) / length;
-    nz = (D_8013B63C << 12) / length;
+    length = SquareRoot0(gGeometryEdgeDeltaX * gGeometryEdgeDeltaX + gGeometryEdgeDeltaZOrCorrection * gGeometryEdgeDeltaZOrCorrection);
+    nx = (gGeometryEdgeDeltaZOrCorrection << 12) / length;
+    nz = (gGeometryEdgeDeltaX << 12) / length;
     perpendicularX = -nx;
-    D_8013B638 = (perpendicularX * D_8013B630 + nz * D_8013B638) / 4096;
-    if (D_8013B638 < limit) {
-        D_8013B644 = limit - D_8013B638;
-        D_8013B648 += perpendicularX * D_8013B644 / 4096;
-        D_8013B650 += nz * D_8013B644 / 4096;
+    gGeometryProjectionOffsetZOrDistance = (perpendicularX * gGeometryProjectionOffsetX + nz * gGeometryProjectionOffsetZOrDistance) / 4096;
+    if (gGeometryProjectionOffsetZOrDistance < limit) {
+        gGeometryEdgeDeltaZOrCorrection = limit - gGeometryProjectionOffsetZOrDistance;
+        gGeometryResolvedX += perpendicularX * gGeometryEdgeDeltaZOrCorrection / 4096;
+        gGeometryResolvedZ += nz * gGeometryEdgeDeltaZOrCorrection / 4096;
     }
 }
 
@@ -526,8 +526,8 @@ void getGeometryBoundaryDisplacement(s16 index, s32 x, s32 z, s32 radius, s32 *d
     s32 z0, z1, z2, z3;
     s32 nx, nz, tangent, normal, length, edgeLength;
 
-    D_8013B648 = x;
-    D_8013B650 = z;
+    gGeometryResolvedX = x;
+    gGeometryResolvedZ = z;
     x0 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[0] * 3] * 5;
     x1 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[1] * 3] * 5;
     x2 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[2] * 3] * 5;
@@ -538,98 +538,98 @@ void getGeometryBoundaryDisplacement(s16 index, s32 x, s32 z, s32 radius, s32 *d
     z3 = gCourseGeometryVertexData[((GeometryRegion *)gCourseGeometryRegionData)[index].vertices[3] * 3 + 2] * 5;
 
     if (((GeometryRegion *)gCourseGeometryRegionData)[index].neighbors[0] < 0) {
-        D_8013B63C = x1 - x0;
-        D_8013B644 = z1 - z0;
-        D_8013B630 = x - x0;
-        D_8013B638 = z - z0;
+        gGeometryEdgeDeltaX = x1 - x0;
+        gGeometryEdgeDeltaZOrCorrection = z1 - z0;
+        gGeometryProjectionOffsetX = x - x0;
+        gGeometryProjectionOffsetZOrDistance = z - z0;
         enforceGeometryEdgeDistance(radius);
     }
 
     if (((GeometryRegion *)gCourseGeometryRegionData)[index].neighbors[1] < 0) {
-        D_8013B63C = x2 - x3;
-        D_8013B644 = z2 - z3;
-        D_8013B630 = D_8013B648 - x3;
-        D_8013B638 = D_8013B650 - z3;
+        gGeometryEdgeDeltaX = x2 - x3;
+        gGeometryEdgeDeltaZOrCorrection = z2 - z3;
+        gGeometryProjectionOffsetX = gGeometryResolvedX - x3;
+        gGeometryProjectionOffsetZOrDistance = gGeometryResolvedZ - z3;
         enforceGeometryEdgeDistance(radius);
     }
 
     /* Flagged side-edge corners use radial distance beyond the endpoints. */
     if (((GeometryRegion *)gCourseGeometryRegionData)[index].neighbors[2] < 0) {
-        D_8013B63C = x3 - x1;
-        D_8013B644 = z3 - z1;
-        D_8013B630 = D_8013B648 - x1;
-        D_8013B638 = D_8013B650 - z1;
-        length = SquareRoot0(D_8013B63C * D_8013B63C + D_8013B644 * D_8013B644);
-        nx = (D_8013B644 << 12) / length;
-        nz = (D_8013B63C << 12) / length;
-        tangent = (nz * D_8013B630 + nx * D_8013B638) / 4096;
-        normal = (-nx * D_8013B630 + nz * D_8013B638) / 4096;
-        edgeLength = (nz * D_8013B63C + nx * D_8013B644) / 4096;
+        gGeometryEdgeDeltaX = x3 - x1;
+        gGeometryEdgeDeltaZOrCorrection = z3 - z1;
+        gGeometryProjectionOffsetX = gGeometryResolvedX - x1;
+        gGeometryProjectionOffsetZOrDistance = gGeometryResolvedZ - z1;
+        length = SquareRoot0(gGeometryEdgeDeltaX * gGeometryEdgeDeltaX + gGeometryEdgeDeltaZOrCorrection * gGeometryEdgeDeltaZOrCorrection);
+        nx = (gGeometryEdgeDeltaZOrCorrection << 12) / length;
+        nz = (gGeometryEdgeDeltaX << 12) / length;
+        tangent = (nz * gGeometryProjectionOffsetX + nx * gGeometryProjectionOffsetZOrDistance) / 4096;
+        normal = (-nx * gGeometryProjectionOffsetX + nz * gGeometryProjectionOffsetZOrDistance) / 4096;
+        edgeLength = (nz * gGeometryEdgeDeltaX + nx * gGeometryEdgeDeltaZOrCorrection) / 4096;
         if ((((GeometryRegion *)gCourseGeometryRegionData)[index].cornerFlags & 2) && tangent < 0) {
-            tangent = D_8013B648 - x1;
-            normal = D_8013B650 - z1;
+            tangent = gGeometryResolvedX - x1;
+            normal = gGeometryResolvedZ - z1;
             length = SquareRoot0(tangent * tangent + normal * normal);
             if (length < -radius) {
                 tangent = tangent * -radius / length;
                 normal = normal * -radius / length;
-                D_8013B648 = tangent + x1;
-                D_8013B650 = normal + z1;
+                gGeometryResolvedX = tangent + x1;
+                gGeometryResolvedZ = normal + z1;
             }
         } else if ((((GeometryRegion *)gCourseGeometryRegionData)[index].cornerFlags & 8) && edgeLength < tangent) {
-            tangent = D_8013B648 - x3;
-            normal = D_8013B650 - z3;
+            tangent = gGeometryResolvedX - x3;
+            normal = gGeometryResolvedZ - z3;
             length = SquareRoot0(tangent * tangent + normal * normal);
             if (length < -radius) {
                 tangent = tangent * -radius / length;
                 normal = normal * -radius / length;
-                D_8013B648 = tangent + x3;
-                D_8013B650 = normal + z3;
+                gGeometryResolvedX = tangent + x3;
+                gGeometryResolvedZ = normal + z3;
             }
         } else if (normal < radius) {
-            D_8013B644 = radius - normal;
-            D_8013B648 += -nx * D_8013B644 / 4096;
-            D_8013B650 += nz * D_8013B644 / 4096;
+            gGeometryEdgeDeltaZOrCorrection = radius - normal;
+            gGeometryResolvedX += -nx * gGeometryEdgeDeltaZOrCorrection / 4096;
+            gGeometryResolvedZ += nz * gGeometryEdgeDeltaZOrCorrection / 4096;
         }
     }
 
     if (((GeometryRegion *)gCourseGeometryRegionData)[index].neighbors[3] < 0) {
-        D_8013B63C = x0 - x2;
-        D_8013B644 = z0 - z2;
-        D_8013B630 = D_8013B648 - x2;
-        D_8013B638 = D_8013B650 - z2;
-        length = SquareRoot0(D_8013B63C * D_8013B63C + D_8013B644 * D_8013B644);
-        nx = (D_8013B644 << 12) / length;
-        nz = (D_8013B63C << 12) / length;
-        tangent = (nz * D_8013B630 + nx * D_8013B638) / 4096;
-        normal = (-nx * D_8013B630 + nz * D_8013B638) / 4096;
-        edgeLength = (nz * D_8013B63C + nx * D_8013B644) / 4096;
+        gGeometryEdgeDeltaX = x0 - x2;
+        gGeometryEdgeDeltaZOrCorrection = z0 - z2;
+        gGeometryProjectionOffsetX = gGeometryResolvedX - x2;
+        gGeometryProjectionOffsetZOrDistance = gGeometryResolvedZ - z2;
+        length = SquareRoot0(gGeometryEdgeDeltaX * gGeometryEdgeDeltaX + gGeometryEdgeDeltaZOrCorrection * gGeometryEdgeDeltaZOrCorrection);
+        nx = (gGeometryEdgeDeltaZOrCorrection << 12) / length;
+        nz = (gGeometryEdgeDeltaX << 12) / length;
+        tangent = (nz * gGeometryProjectionOffsetX + nx * gGeometryProjectionOffsetZOrDistance) / 4096;
+        normal = (-nx * gGeometryProjectionOffsetX + nz * gGeometryProjectionOffsetZOrDistance) / 4096;
+        edgeLength = (nz * gGeometryEdgeDeltaX + nx * gGeometryEdgeDeltaZOrCorrection) / 4096;
         if ((((GeometryRegion *)gCourseGeometryRegionData)[index].cornerFlags & 4) && tangent < 0) {
-            tangent = D_8013B648 - x2;
-            normal = D_8013B650 - z2;
+            tangent = gGeometryResolvedX - x2;
+            normal = gGeometryResolvedZ - z2;
             length = SquareRoot0(tangent * tangent + normal * normal);
             if (length < -radius) {
                 tangent = tangent * -radius / length;
                 normal = normal * -radius / length;
-                D_8013B648 = tangent + x2;
-                D_8013B650 = normal + z2;
+                gGeometryResolvedX = tangent + x2;
+                gGeometryResolvedZ = normal + z2;
             }
         } else if ((((GeometryRegion *)gCourseGeometryRegionData)[index].cornerFlags & 1) && edgeLength < tangent) {
-            tangent = D_8013B648 - x0;
-            normal = D_8013B650 - z0;
+            tangent = gGeometryResolvedX - x0;
+            normal = gGeometryResolvedZ - z0;
             length = SquareRoot0(tangent * tangent + normal * normal);
             if (length < -radius) {
                 tangent = tangent * -radius / length;
                 normal = normal * -radius / length;
-                D_8013B648 = tangent + x0;
-                D_8013B650 = normal + z0;
+                gGeometryResolvedX = tangent + x0;
+                gGeometryResolvedZ = normal + z0;
             }
         } else if (normal < radius) {
-            D_8013B644 = radius - normal;
-            D_8013B648 += -nx * D_8013B644 / 4096;
-            D_8013B650 += nz * D_8013B644 / 4096;
+            gGeometryEdgeDeltaZOrCorrection = radius - normal;
+            gGeometryResolvedX += -nx * gGeometryEdgeDeltaZOrCorrection / 4096;
+            gGeometryResolvedZ += nz * gGeometryEdgeDeltaZOrCorrection / 4096;
         }
     }
 
-    *displacementX = D_8013B648 - x;
-    *displacementZ = D_8013B650 - z;
+    *displacementX = gGeometryResolvedX - x;
+    *displacementZ = gGeometryResolvedZ - z;
 }

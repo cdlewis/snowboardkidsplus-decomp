@@ -941,17 +941,10 @@ void updatePlayerPositionTrailTask(void);
 void updatePlayerRingEffectTask(void);
 void drawQuadAnimationTask(void);
 
-extern s32 D_8013B62C __attribute__((section(".sdata.geometry_edge_projection")));
 
-extern s32 D_8013B630 __attribute__((section(".sdata.geometry_edge_projection")));
 extern s32 D_8013B634 __attribute__((section(".sdata.geometry_edge_projection")));
-extern s32 D_8013B638 __attribute__((section(".sdata.geometry_edge_projection")));
-extern s32 D_8013B63C __attribute__((section(".sdata.geometry_edge_projection")));
 extern s32 D_8013B640 __attribute__((section(".sdata.geometry_edge_projection")));
-extern s32 D_8013B644 __attribute__((section(".sdata.geometry_edge_projection")));
-extern s32 D_8013B648 __attribute__((section(".sdata.geometry_edge_projection")));
 extern s32 D_8013B64C __attribute__((section(".sdata.geometry_edge_projection")));
-extern s32 D_8013B650 __attribute__((section(".sdata.geometry_edge_projection")));
 
 extern const char gNoProcessMessage[16];
 

@@ -44,7 +44,7 @@ typedef struct PlayerVariantAttributeTable {
     u16 padding;
 } PlayerVariantAttributeTable;
 
-extern SelectedRecord *D_8013B1F0 __attribute__((section(".data")));
+extern SelectedRecord *gCourseGeometryTriangleRecords __attribute__((section(".data")));
 extern s16 D_8013B1FE __attribute__((section(".data")));
 extern s16 *D_8013B200 __attribute__((section(".data")));
 extern s16 *D_8013B204 __attribute__((section(".data")));
@@ -4820,12 +4820,12 @@ s32 snapCurrentPlayerToTerrain(void) {
 
     gCurrentRacePlayer->unk118 = gCurrentRacePlayer->unk11E;
     gCurrentRacePlayer->unk11C = gCurrentRacePlayer->unk120;
-    firstAngle = averageWrappedAngle(D_8013B1F0[records[0]].unk8, D_8013B1F0[records[1]].unk8);
-    secondAngle = averageWrappedAngle(D_8013B1F0[records[2]].unk8, D_8013B1F0[records[3]].unk8);
+    firstAngle = averageWrappedAngle(gCourseGeometryTriangleRecords[records[0]].unk8, gCourseGeometryTriangleRecords[records[1]].unk8);
+    secondAngle = averageWrappedAngle(gCourseGeometryTriangleRecords[records[2]].unk8, gCourseGeometryTriangleRecords[records[3]].unk8);
     gCurrentRacePlayer->unk11E = averageWrappedAngle(firstAngle, secondAngle);
     /* The original average counts the third record twice. */
-    gCurrentRacePlayer->unk120 = (D_8013B1F0[records[0]].unkA + D_8013B1F0[records[1]].unkA +
-                         D_8013B1F0[records[2]].unkA + D_8013B1F0[records[2]].unkA) / 4;
+    gCurrentRacePlayer->unk120 = (gCourseGeometryTriangleRecords[records[0]].unkA + gCourseGeometryTriangleRecords[records[1]].unkA +
+                         gCourseGeometryTriangleRecords[records[2]].unkA + gCourseGeometryTriangleRecords[records[2]].unkA) / 4;
     gCurrentRacePlayer->worldCoordinate.coord.t[0] = gCurrentRacePlayer->x >> 8;
     gCurrentRacePlayer->worldCoordinate.coord.t[1] = gCurrentRacePlayer->y >> 8;
     gCurrentRacePlayer->worldCoordinate.coord.t[2] = gCurrentRacePlayer->z >> 8;
