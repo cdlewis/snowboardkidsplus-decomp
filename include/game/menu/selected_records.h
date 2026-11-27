@@ -21,9 +21,9 @@ typedef struct SelectedCourseRecord {
 } SelectedCourseRecord;
 
 extern SelectedCourseRecord gSelectedCourseRecords[10];
-extern const u8 gCourseMenuCourseIndices[];
+extern const u8 gCourseMenuCourseIndices[12];
 /* Inverse of gCourseMenuCourseIndices, also used for saved course flag pairs. */
-extern const u8 gCourseMenuIndicesByCourse[];
+extern const u8 gCourseMenuIndicesByCourse[12];
 extern s16 gSelectedCourseIndex;
 extern u16 gSelectedLapCount;
 extern u16 selectedLapCountAbsolute __attribute__((section(".data")));

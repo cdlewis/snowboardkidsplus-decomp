@@ -178,6 +178,11 @@ extern GameTask *gCurrentTaskParent __attribute__((section(".data")));
 extern s16 gMenuMusicEnabled __attribute__((section(".data")));
 extern u8 gMenuScreenId __attribute__((section(".data")));
 
+u8 gCharacterMenuCharacterIndices[12]
+    __attribute__((section(".data.character_menu_character_indices"), aligned(4))) = {
+        0, 6, 1, 2, 3, 5, 4, 7, 8, 9, 0, 0
+    };
+
 const u16 gCharacterSelectionConfirmSounds[10]
     __attribute__((section(".data.character_selection_confirm_sounds"), aligned(4))) = {
     0x0001, 0x0101, 0x0201, 0x0301, 0x0401,

@@ -103,6 +103,16 @@ extern GameTask *gCurrentTaskParent __attribute__((section(".data")));
 
 extern s16 gMemoryCardTaskState __attribute__((section(".data")));
 
+const u8 gCourseMenuCourseIndices[12]
+    __attribute__((section(".data.course_menu_indices"), aligned(4))) = {
+        9, 0, 1, 2, 3, 4, 5, 6, 8, 7, 0, 0
+    };
+
+const u8 gCourseMenuIndicesByCourse[12]
+    __attribute__((section(".data.course_menu_indices"), aligned(4))) = {
+        1, 2, 3, 4, 5, 6, 7, 9, 8, 0, 0, 0
+    };
+
 u16 litObjectDrawAreaDepths[4] __attribute__((section(".data.lit_object_draw_area_depths"))) = {
     0x30, 0x20, 0x50, 0x3E
 };
