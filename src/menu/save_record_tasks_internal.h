@@ -109,6 +109,12 @@ ByteTriplet *lookupByteTriplet(ByteTriplet *records, u8 *indices, s16 index);
 void updateRegisteredChildBlinkTransition(void);
 void drawTaskOffsetSpriteB8(void);
 void drawTaskIndexPanel(void);
+extern const u16 gMemoryCardMissingRetryText[32];
+extern const u16 gMemoryCardLoadErrorRetryText[36];
+extern const u16 gMemoryCardLoadRetryConfirmationText[16];
+extern const u16 gMemoryCardLoadInProgressText[38];
+extern const u16 gMemoryCardLoadSlotChoiceText[20];
+
 extern const u16 gMemoryCardAccessInProgressText[38];
 extern const u16 gSaveRecordConfirmationSprites[];
 extern const u16 gMemoryCardCorruptDataText[], gMemoryCardOperationFailedText[], gMemoryCardSlotChoiceSprites[];

@@ -872,7 +872,7 @@ segments:
       - {start: 0x120940, type: .data, name: menu/course_selection_tasks, linker_section: .data.player_grouped_selection_descriptors}
       - {start: 0x1209B8, type: .data, name: menu/course_selection_tasks, linker_section: .data.player_course_variant_confirmation_text}
       - {start: 0x1209CC, type: .data, name: menu/course_selection_tasks, linker_section: .data.task_index_panel_quads}
-      - [0x120ABC, data, task_index_panel_tail]
+      - {start: 0x120ABC, type: .data, name: menu/save_record_tasks, linker_section: .data.memory_card_menu_text}
       - {start: 0x120EBC, type: .data, name: menu/course_selection_tasks, linker_section: .data.save_record_push_any_button_text}
       - [0x120EDC, data, task_index_panel_text_tail]
       - {start: 0x120F24, type: .data, name: menu/save_record_tasks, linker_section: .data.task_shadowed_text}

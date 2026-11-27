@@ -591,11 +591,6 @@ void transitionRegisteredPlayerModels(void);
 void transitionRegisteredPlayerModelsUp(void);
 void transitionRegisteredPlayerModelTexture(void);
 void createPaletteEntryCopyTask(s32 x, s32 y, s32 destination, s32 source, s32 index);
-extern const u16 gMemoryCardMissingRetryText[32];
-extern const u16 gMemoryCardLoadErrorRetryText[36];
-extern const u16 gMemoryCardLoadRetryConfirmationText[16];
-extern const u16 gMemoryCardLoadInProgressText[38];
-extern const u16 gMemoryCardLoadSlotChoiceText[20];
 extern const u16 gMemoryCardLoadOptionsText[13];
 extern const u16 gMemoryCardLoadedRecordConfirmationText[12];
 
