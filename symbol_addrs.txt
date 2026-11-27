@@ -2928,7 +2928,7 @@ gMemoryCardGameFileName = 0x800101B8;
 gMemoryCardGhostFileName = 0x800101D0;
 gMemoryCardPlacedObjectFileName = 0x800101E8;
 gMemoryCardTerrainCollisionFileName = 0x80010200;
-D_80010218 = 0x80010218;
+gMemoryCardDigicomicFileName = 0x80010218;
 
 updateSwayingFallingSpriteEffect = 0x80033B5C; // type:func
 
@@ -3497,9 +3497,9 @@ gMemoryCardSaveTitles = 0x800EB53C; // size:0x14
 gMemoryCardSaveCapacities = 0x800EB550; // size:0x14
 gMemoryCardGameSaveTitle = 0x80010230; // size:0x40
 gMemoryCardGhostSaveTitle = 0x80010274; // size:0x40
-D_800102B8 = 0x800102B8; // size:0x40
-D_800102FC = 0x800102FC; // size:0x40
-D_80010340 = 0x80010340; // size:0x40
+gMemoryCardPlacedObjectSaveTitle = 0x800102B8; // size:0x40
+gMemoryCardTerrainCollisionSaveTitle = 0x800102FC; // size:0x40
+gMemoryCardDigicomicSaveTitle = 0x80010340; // size:0x40
 
 moveCurrentPlayerForwardUntilState22 = 0x80026500; // type:func
 
@@ -4281,3 +4281,5 @@ gMemoryCardDirectoryEntryCounts = 0x8013B600;
 gMemoryCardDirectoryEntries = 0x8013B700;
 gMemoryCardSelectedFileType = 0x8013AF48;
 gMemoryCardChanged = 0x8013B60C;
+
+gMemoryCardDirectorySearchPattern = 0x8013AF3C; // size:0x2

@@ -10,11 +10,11 @@
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 
 char *gMemoryCardFileNames[5] __attribute__((section(".data.memory_card_file_names"))) = {
-    gMemoryCardGameFileName, gMemoryCardGhostFileName, gMemoryCardPlacedObjectFileName, gMemoryCardTerrainCollisionFileName, D_80010218
+    gMemoryCardGameFileName, gMemoryCardGhostFileName, gMemoryCardPlacedObjectFileName, gMemoryCardTerrainCollisionFileName, gMemoryCardDigicomicFileName
 };
 
 MemoryCardSaveTitle *gMemoryCardSaveTitles[5] __attribute__((section(".data.memory_card_tables"))) = {
-    &gMemoryCardGameSaveTitle, &gMemoryCardGhostSaveTitle, &D_800102B8, &D_800102FC, &D_80010340
+    &gMemoryCardGameSaveTitle, &gMemoryCardGhostSaveTitle, &gMemoryCardPlacedObjectSaveTitle, &gMemoryCardTerrainCollisionSaveTitle, &gMemoryCardDigicomicSaveTitle
 };
 
 u32 gMemoryCardSaveCapacities[5] __attribute__((section(".data.memory_card_tables"))) = {
@@ -138,7 +138,7 @@ s16 validateAndCopyMemoryCardSave(void) {
 }
 
 void readMemoryCardDirectory(void) {
-    MemCardGetDirentry(gMemoryCardChannel, D_8013AF3C, gMemoryCardDirectoryEntries[gMemoryCardPortIndex],
+    MemCardGetDirentry(gMemoryCardChannel, gMemoryCardDirectorySearchPattern, gMemoryCardDirectoryEntries[gMemoryCardPortIndex],
                        &gMemoryCardDirectoryEntryCounts[gMemoryCardPortIndex], 0, 15);
 }
 

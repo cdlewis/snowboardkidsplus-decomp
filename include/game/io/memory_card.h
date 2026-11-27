@@ -26,21 +26,22 @@ extern char gMemoryCardGameFileName[];
 extern char gMemoryCardGhostFileName[];
 extern char gMemoryCardPlacedObjectFileName[];
 extern char gMemoryCardTerrainCollisionFileName[];
-extern char D_80010218[];
+extern char gMemoryCardDigicomicFileName[];
 
 extern char *gMemoryCardFileNames[5] __attribute__((section(".data.memory_card_file_names")));
 
 extern MemoryCardSaveTitle gMemoryCardGameSaveTitle;
 extern MemoryCardSaveTitle gMemoryCardGhostSaveTitle;
-extern MemoryCardSaveTitle D_800102B8;
-extern MemoryCardSaveTitle D_800102FC;
-extern MemoryCardSaveTitle D_80010340;
+extern MemoryCardSaveTitle gMemoryCardPlacedObjectSaveTitle;
+extern MemoryCardSaveTitle gMemoryCardTerrainCollisionSaveTitle;
+extern MemoryCardSaveTitle gMemoryCardDigicomicSaveTitle;
 
 extern MemoryCardSaveTitle *gMemoryCardSaveTitles[5] __attribute__((section(".data.memory_card_tables")));
 
 extern u32 gMemoryCardSaveCapacities[5] __attribute__((section(".data.memory_card_tables")));
 
 extern MemoryCardSaveHeader gMemoryCardSaveHeader __attribute__((section(".data.memory_card_save_header")));
+extern char gMemoryCardDirectorySearchPattern[];
 extern void *gMemoryCardLoadDestination;
 extern s32 gMemoryCardDirectoryEntryCounts[2];
 extern struct DIRENTRY gMemoryCardDirectoryEntries[2][15];
