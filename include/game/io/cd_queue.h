@@ -66,5 +66,5 @@ extern s32 gDatStartSector;
 void updateCdRequestQueue(void);
 void updateCdCommandQueue(void);
 extern u16 gCdStreamingFlags;
-extern s32 D_8013AE6C;
+extern s32 gCdReadByteCount __attribute__((section(".sdata.cd_read_state")));
 extern s32 gCdIoFlags;

@@ -33,8 +33,7 @@ typedef struct CdRequest {
 extern CdlFILE gDatFile __attribute__((section(".data.dat_file")));
 extern s32 gDatStartSector __attribute__((section(".sdata.dat_start_sector")));
 
-extern s32 D_8013AE6C __attribute__((section(".sdata.cd_read_state")));
-extern u8 D_8013B5DC[8] __attribute__((section(".sdata.cd_read_delay")));
+extern u8 gCdReadModeDelay[8] __attribute__((section(".sdata.cd_read_delay")));
 extern u8 D_8013B5E4[8] __attribute__((section(".data.cd_sync_result")));
 extern CdlFILE D_8013B6C8 __attribute__((section(".data.cd_search_file")));
 
@@ -52,7 +51,7 @@ extern CdCommand gCdCommands[8] __attribute__((section(".data.cd_commands")));
 extern u16 gCdRequestPhase;
 extern u16 gCdRequestWriteIndex;
 extern u16 gCdRequestReadIndex;
-extern s16 D_8013AE76;
+extern s16 gCdRequestQueuePaused;
 extern u8 gControllerInputRecordState __attribute__((section(".sdata.controller_input_state")));
 
 extern u16 gControllerPressedButtons[2] __attribute__((section(".data.controller_input_arrays")));
@@ -84,12 +83,12 @@ extern u8 gControllerRepeatInterval __attribute__((section(".sdata.controller_re
 extern u8 gControllerActuatorAlignment[6] __attribute__((section(".data.controller_actuator_alignment")));
 
 
-extern s16 D_8013AE4A __attribute__((section(".sdata.cd_command_state")));
+extern s16 gXaStopAtTrackEnd __attribute__((section(".sdata.cd_command_state")));
 
 extern s32 D_8013AE58 __attribute__((section(".sdata.cd_command_state")));
-extern s32 D_8013AE5C __attribute__((section(".sdata.cd_command_state")));
-extern s32 D_8013AE60 __attribute__((section(".sdata.cd_command_state")));
-extern s32 D_8013AE64 __attribute__((section(".sdata.cd_command_state")));
+extern s32 gXaCurrentSector __attribute__((section(".sdata.cd_command_state")));
+extern s32 gXaTrackEndSector __attribute__((section(".sdata.cd_command_state")));
+extern s32 gXaTrackStartSector __attribute__((section(".sdata.cd_command_state")));
 
 extern TaskCallback gInitialTaskCallbacks[6] __attribute__((section(".data.initial_task_callbacks")));
 void restoreCdReadModeAndResetQueues(void);

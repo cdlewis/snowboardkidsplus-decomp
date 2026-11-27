@@ -219,7 +219,7 @@ gCdRequests = 0x800D7484; // size:0x700 defined:true
 gCdRequestPhase = 0x8013AE70; // size:0x2 defined:true
 gCdRequestWriteIndex = 0x8013AE72; // size:0x2 defined:true
 gCdRequestReadIndex = 0x8013AE74; // size:0x2 defined:true
-D_8013AE76 = 0x8013AE76; // size:0x2 defined:true
+gCdRequestQueuePaused = 0x8013AE76; // size:0x2 defined:true
 
 waitThenStartSpriteScaleTransition = 0x80033528; // type:func
 beginSpriteScaleTransitionDelay = 0x80033580; // type:func
@@ -3592,11 +3592,11 @@ updateCdRequestQueue = 0x800138AC; // type:func
 
 gCdStreamingFlags = 0x8013AE68; // size:0x2 defined:true
 
-D_8013AE6C = 0x8013AE6C; // size:0x4 defined:true
+gCdReadByteCount = 0x8013AE6C; // size:0x4 defined:true
 
 gCdIoFlags = 0x8013AE7C; // size:0x4 defined:true
 
-D_8013B5DC = 0x8013B5DC; // size:0x8 defined:true
+gCdReadModeDelay = 0x8013B5DC; // size:0x8 defined:true
 
 D_8013B5E4 = 0x8013B5E4; // size:0x8 defined:true
 
@@ -4411,3 +4411,11 @@ gColorCycleTasks = 0x8013BDA8; // size:0x10
 
 emptyVSyncCallback = 0x8001AB34; // type:func
 gProjectionDistance = 0x8013AF84; // size:0x4
+
+gXaStopAtTrackEnd = 0x8013AE4A; // size:0x2 defined:true
+
+gXaCurrentSector = 0x8013AE5C; // size:0x4 defined:true
+
+gXaTrackEndSector = 0x8013AE60; // size:0x4 defined:true
+
+gXaTrackStartSector = 0x8013AE64; // size:0x4 defined:true
