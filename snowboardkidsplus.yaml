@@ -701,7 +701,7 @@ segments:
       - {start: 0xDBAAC, type: .data, name: audio/sound_manager, linker_section: .data.sound_bank_loaded}
       - {start: 0xDBAB8, type: .data, name: audio/sound_manager, linker_section: .data.sound_sequence_table}
       - {start: 0xDBB68, type: .data, name: audio/sound_manager, linker_section: .data.sound_voice_records}
-      - [0xDBB88, data, DBB88]
+      - {start: 0xDBB88, type: .data, name: io/memory_card, linker_section: .data.memory_card_icon_template}
       - {start: 0xDBD28, type: .data, name: io/memory_card, linker_section: .data.memory_card_file_names}
       - {start: 0xDBD3C, type: .data, name: io/memory_card, linker_section: .data.memory_card_tables}
       - {start: 0xDBD64, type: .data, name: io/memory_card, linker_section: .data.memory_card_save_header}
