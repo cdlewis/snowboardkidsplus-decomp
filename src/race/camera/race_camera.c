@@ -184,7 +184,7 @@ void initCurrentPlayerCameraTask(void) {
         gPlayerCameras[gCurrentTask->data18].unk16 = 1;
         initPlayerCameraAndTarget(gCurrentTask->data18);
         if (gCurrentTask->data18 == 0) {
-            queueCdCommand(D_80124164[gSelectedCourseIndex], 0);
+            queueCdCommand(gCourseRaceMusicXaCommands[gSelectedCourseIndex], 0);
         } else {
             gGameStateFlags |= 0x800;
         }
@@ -254,7 +254,7 @@ void updateRaceIntroCameraTask(void) {
     }
     if (gCurrentTask->data1A == (u16)-104) {
         if (gCurrentTask->data18 == 0) {
-            queueCdCommand(D_80124164[gSelectedCourseIndex], 0);
+            queueCdCommand(gCourseRaceMusicXaCommands[gSelectedCourseIndex], 0);
             playSoundEffect(0, 0x101, 32);
             gTaskTransitionFlags = 0;
             gRaceRestartRequested = 0;

@@ -59,7 +59,8 @@ void startUnlockNotification(s16 index);
 
 extern u8 playerCountAbsolute __attribute__((section(".data")));
 
-extern s16 D_80124164[];
+/* XA playback command selected by course when the race begins. */
+extern s16 gCourseRaceMusicXaCommands[10];
 extern s16 gRaceHudEnabled __attribute__((section(".data")));
 
 /* Reuse resident course and player model resources during mode transitions. */

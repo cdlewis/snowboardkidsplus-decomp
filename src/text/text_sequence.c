@@ -208,7 +208,7 @@ void animateTextSequenceExitTask(void) {
         playerCountAbsolute = 1;
         gTaskTransitionFlags = 0;
         gGameStateFlags |= 0x1000;
-        queueCdCommand(D_80124164[gSelectedCourseIndex], 0);
+        queueCdCommand(gCourseRaceMusicXaCommands[gSelectedCourseIndex], 0);
         deleteCurrentTaskSubtree();
     } else {
         drawTextSequence(resource);
