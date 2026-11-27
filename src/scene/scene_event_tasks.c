@@ -23,12 +23,17 @@ extern u32 gTaskTransitionFlags __attribute__((section(".data")));
 
 extern s16 gMusicSequenceId __attribute__((section(".data")));
 
-extern char gSceneOpeningLabel[];
-extern char gSceneBackgroundLabel[];
-extern char gSceneMessageLabel[];
-extern char gSceneMusicLabel[];
-extern char gSceneVoiceLabel[];
-extern char gSceneSoundEffectLabel[];
+s16 gSceneImageTransitionDuration __attribute__((section(".sdata.scene_display_flags"))) = 0;
+u8 gSceneImageTargetVisible __attribute__((section(".sdata.scene_display_flags"))) = 0;
+u8 gSceneTextBackdropEnabled __attribute__((section(".sdata.scene_display_flags"))) = 0;
+
+char gSceneOpeningLabel[8] __attribute__((section(".data.scene_short_labels"), aligned(4))) = "OPENING";
+char gSceneBackgroundLabel[4] __attribute__((section(".data.scene_short_labels"), aligned(4))) = "BG";
+char gSceneMessageLabel[8] __attribute__((section(".data.scene_short_labels"), aligned(4))) = "MESS";
+char gSceneMusicLabel[4] __attribute__((section(".data.scene_short_labels"), aligned(4))) = "BGM";
+char gSceneVoiceLabel[8] __attribute__((section(".data.scene_short_labels"), aligned(4))) = "VOICE";
+char gSceneSoundEffectLabel[4] __attribute__((section(".data.scene_short_labels"), aligned(4))) = "SE";
+s8 gSceneTextColon[4] __attribute__((section(".data.scene_short_labels"), aligned(4))) = {0x81, 0x46, 0, 0};
 
 const char gEndingSlashLabel[16]
     __attribute__((section(".rodata.ending_labels"), aligned(4))) = "ENDING<SLASH>";

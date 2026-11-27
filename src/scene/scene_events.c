@@ -5,6 +5,9 @@
 #include "game/scene/scene_events.h"
 #include "game/scene/scene_task_types.h"
 
+SceneEvent *gFreeSceneEvents __attribute__((section(".sdata.scene_event_lists"))) = NULL;
+SceneEvent *gActiveSceneEvents __attribute__((section(".sdata.scene_event_lists"))) = NULL;
+
 u8 gSelectedUnlockIndex __attribute__((section(".data.selected_unlock_index"))) = 0;
 const u8 gSelectedUnlockIndexPadding __attribute__((section(".data.selected_unlock_index"))) = 0;
 

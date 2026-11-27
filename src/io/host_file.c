@@ -11,7 +11,8 @@ const char gPcHostTransferErrorFormat[36]
 
 static const u32 sPcHostErrorPadding
     __attribute__((section(".rodata.host_file_errors"), aligned(4))) = 0;
-extern char gPcHostAssetPathFormat[];
+char gPcHostAssetPathFormat[8]
+    __attribute__((section(".data.pc_host_asset_path_format"), aligned(4))) = "aaa\\%s";
 
 int readHostFile(char *path, char *buffer) {
     int length;

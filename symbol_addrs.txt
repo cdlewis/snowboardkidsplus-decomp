@@ -4265,7 +4265,7 @@ mapCourseMenuByteIndex = 0x8007E8CC; // type:func
 __SN_ENTRY_POINT = 0x800131BC; // type:func size:0xAC
 snStartupStackTops = 0x80013268; // size:0x10
 _stacksize = 0x80133784; // size:0x4
-snStartupSavedReturnAddress = 0x8013B5D8; // size:0x4
+snStartupSavedReturnAddress = 0x8013B5D8; // type:u32 size:0x4 defined:true
 gCurrentTask = 0x8013AE88; // size:0x4
 gCreatedTask = 0x8013AE8C; // size:0x4
 gScratchVector0 = 0x8013AF88; // size:0x4
@@ -4481,10 +4481,10 @@ gXaTrackStartSector = 0x8013AE64; // size:0x4 defined:true
 
 gRaceRulesetCourseMappingGroups = 0x801325FC; // size:0x3C
 
-gSceneImageTransitionDuration = 0x8013B59C; // size:0x2
-gSceneImageTargetVisible = 0x8013B59E; // size:0x1
-gSceneTextBackdropEnabled = 0x8013B59F; // size:0x1
-gSceneTextColon = 0x8013B5C4; // size:0x4
+gSceneImageTransitionDuration = 0x8013B59C; // type:s16 size:0x2 defined:true
+gSceneImageTargetVisible = 0x8013B59E; // type:u8 size:0x1 defined:true
+gSceneTextBackdropEnabled = 0x8013B59F; // type:u8 size:0x1 defined:true
+gSceneTextColon = 0x8013B5C4; // size:0x4 defined:true
 
 gSelectionMenuMusicStarted = 0x8013B564; // size:0x1 defined:true
 
@@ -4501,7 +4501,7 @@ gTimedSpritePresentationExiting = 0x8013B36C; // type:s32 size:0x4 defined:true
 
 gPcHostOpenErrorFormat = 0x80012310; // size:0x1C
 gPcHostTransferErrorFormat = 0x8001232C; // size:0x24
-gPcHostAssetPathFormat = 0x8013B5C8;
+gPcHostAssetPathFormat = 0x8013B5C8; // size:0x8 defined:true
 
 gCourseRaceMusicXaCommands = 0x80124164; // size:0x14
 
@@ -4762,12 +4762,12 @@ gRaceRulesetStandardCourseTextureMapping = 0x8013B540; // size:0x4 defined:true
 gRaceRulesetSpecialCourseTextureMapping = 0x8013B544; // size:0x2 defined:true
 gRaceRulesetSpecialCourseTextureMappingPadding = 0x8013B546; // size:0x2 defined:true
 
-gSceneOpeningLabel = 0x8013B5A0;
-gSceneBackgroundLabel = 0x8013B5A8;
-gSceneMessageLabel = 0x8013B5AC;
-gSceneMusicLabel = 0x8013B5B4;
-gSceneVoiceLabel = 0x8013B5B8;
-gSceneSoundEffectLabel = 0x8013B5C0;
+gSceneOpeningLabel = 0x8013B5A0; // size:0x8 defined:true
+gSceneBackgroundLabel = 0x8013B5A8; // size:0x4 defined:true
+gSceneMessageLabel = 0x8013B5AC; // size:0x8 defined:true
+gSceneMusicLabel = 0x8013B5B4; // size:0x4 defined:true
+gSceneVoiceLabel = 0x8013B5B8; // size:0x8 defined:true
+gSceneSoundEffectLabel = 0x8013B5C0; // size:0x4 defined:true
 gSceneOpeningEndingLabels = 0x80132AE0; // size:0x2C defined:true
 gSceneCategoryLabels = 0x80132B0C; // size:0x14 defined:true
 gSceneEmptyCallbacks = 0x80132B20; // size:0x14 defined:true
