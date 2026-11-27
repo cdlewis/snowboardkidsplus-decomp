@@ -738,7 +738,6 @@ extern struct VisualPlacementHeightData gVisualPlacementHeightData __attribute__
 extern SVECTOR *gModelVertices __attribute__((section(".sdata")));
 extern SVECTOR *gScratchShortVector0 __attribute__((section(".data")));
 extern MATRIX D_8012A6B0, D_8012A6D0;
-extern MATRIX *D_8013AF9C __attribute__((section(".data")));
 extern POLY_FT4 gTaskVisualQuad;
 typedef struct PairedEffectResource {
     u8 unk00[0x20];
@@ -843,7 +842,7 @@ extern TextureRegion *gCurrentSpriteTextureRegions;
 
 extern TaskSnapshot *gSelectedPlayerTaskSnapshots;
 extern RacePlayer *D_8013B2E8;
-extern SelectedStateRecord *D_8012C6F4[];
+extern SelectedStateRecord *gCoursePlayerStateRecords[10];
 extern TaskVisualFrame gPlacedObjectVisualFrame
     __attribute__((section(".data.placed_object_visual_frame")));
 

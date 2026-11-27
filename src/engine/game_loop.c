@@ -89,13 +89,13 @@ void runGameLoop(void) {
         if (!(gGameStateFlags & 0x400) || !((u16)gFrameCounter & 1)) {
             GsClearOt(0, 0, &gPlayer1OrderingTables[gActiveGraphicsBuffer]);
             gCurrentPlayerOrderingTable = gPlayer1OrderingTables[gActiveGraphicsBuffer].org;
-            D_8013AF70 = D_800EC1B0[gActiveGraphicsBuffer].org;
-            D_8013AF74 = gPlayer1AlternateLayerOrderingTables[gActiveGraphicsBuffer].org;
+            gCurrentPlayerDepthOffsetOrderingTable = D_800EC1B0[gActiveGraphicsBuffer].org;
+            gCurrentPlayerAlternateLayerOrderingTable = gPlayer1AlternateLayerOrderingTables[gActiveGraphicsBuffer].org;
         } else {
             GsClearOt(0, 0, &gPlayer2OrderingTables[gActiveGraphicsBuffer]);
             gCurrentPlayerOrderingTable = gPlayer2OrderingTables[gActiveGraphicsBuffer].org;
-            D_8013AF70 = D_800EC1D8[gActiveGraphicsBuffer].org;
-            D_8013AF74 = gPlayer2AlternateLayerOrderingTables[gActiveGraphicsBuffer].org;
+            gCurrentPlayerDepthOffsetOrderingTable = D_800EC1D8[gActiveGraphicsBuffer].org;
+            gCurrentPlayerAlternateLayerOrderingTable = gPlayer2AlternateLayerOrderingTables[gActiveGraphicsBuffer].org;
         }
         gCurrentTask = gGameTasks;
         do {
@@ -174,7 +174,7 @@ void initializeGameSystems(void) {
     gScratchShortVector0 = &GAME_SCRATCHPAD->shortVectors[0];
     gScratchShortVector1 = &GAME_SCRATCHPAD->shortVectors[1];
     gScratchMatrix0 = &GAME_SCRATCHPAD->matrices[0];
-    D_8013AF9C = &GAME_SCRATCHPAD->matrices[1];
+    gScratchMatrix1 = &GAME_SCRATCHPAD->matrices[1];
     D_8013AFA0 = GAME_SCRATCHPAD->unk70;
     D_8013AFA4 = GAME_SCRATCHPAD->unkC0;
     matrixIndex = 0;

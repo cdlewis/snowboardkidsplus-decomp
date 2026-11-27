@@ -57,6 +57,7 @@ extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern VECTOR *gScratchVector0 __attribute__((section(".data")));
 extern SVECTOR *gScratchShortVector1 __attribute__((section(".data")));
 extern MATRIX *gScratchMatrix0 __attribute__((section(".data")));
+extern MATRIX *gScratchMatrix1 __attribute__((section(".data")));
 extern u32 *gCurrentPlayerOrderingTable __attribute__((section(".data")));
 extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
 extern u8 gRaceRuleset __attribute__((section(".data")));
@@ -70,8 +71,8 @@ extern s16 *gCourseGeometryVertexData __attribute__((section(".data")));
 extern s16 *gCourseGeometryRegionData __attribute__((section(".data")));
 
 extern VECTOR *gScratchVector1 __attribute__((section(".data")));
-extern u32 *D_8013AF70 __attribute__((section(".data")));
-extern u32 *D_8013AF74 __attribute__((section(".data")));
+extern u32 *gCurrentPlayerDepthOffsetOrderingTable __attribute__((section(".data")));
+extern u32 *gCurrentPlayerAlternateLayerOrderingTable __attribute__((section(".data")));
 
 extern s16 gPlayerCollectionEntryCount __attribute__((section(".data.finish_slot_state")));
 
@@ -1024,12 +1025,12 @@ void updateCameraRotationMatrices(u16 playerIndex) {
 
 void prepareTaskVisualQuad(TaskVisualResource *resource, TaskVisualFrame *frame, u8 usePitch) {
     if (usePitch == 0) {
-        *D_8013AF9C = D_8012A6B0;
+        *gScratchMatrix1 = D_8012A6B0;
     } else {
-        *D_8013AF9C = D_8012A6D0;
+        *gScratchMatrix1 = D_8012A6D0;
     }
     resource->frame = frame;
-    ScaleMatrix(D_8013AF9C, (VECTOR *)&resource->scaleX);
+    ScaleMatrix(gScratchMatrix1, (VECTOR *)&resource->scaleX);
     gTaskVisualQuad.r0 = resource->r0;
     gTaskVisualQuad.g0 = resource->g0;
     gTaskVisualQuad.b0 = resource->b0;
@@ -1072,7 +1073,7 @@ void drawPreparedTaskVisualQuad(TaskVisualResource *resource, TaskVisualFrame *f
         resource->vertices[3].z = 0;
     }
 
-    *gScratchMatrix0 = *D_8013AF9C;
+    *gScratchMatrix0 = *gScratchMatrix1;
     for (i = 0; i < 4; i++) {
         ApplyMatrixSV(gScratchMatrix0, (SVECTOR *)&resource->vertices[i], (SVECTOR *)&resource->transformedVertices[i]);
     }
@@ -1105,10 +1106,10 @@ void drawPreparedTaskVisualQuad(TaskVisualResource *resource, TaskVisualFrame *f
             addCopiedPrimitive(&gCurrentPlayerOrderingTable[depth >> 2], (u32 *)poly);
             break;
         case 1:
-            addCopiedPrimitive(&D_8013AF70[depth >> 2], (u32 *)poly);
+            addCopiedPrimitive(&gCurrentPlayerDepthOffsetOrderingTable[depth >> 2], (u32 *)poly);
             break;
         case 2:
-            addCopiedPrimitive(&D_8013AF74[depth >> 2], (u32 *)poly);
+            addCopiedPrimitive(&gCurrentPlayerAlternateLayerOrderingTable[depth >> 2], (u32 *)poly);
             break;
         }
     }
@@ -2651,7 +2652,7 @@ s32 updatePlayerField94CFromSelectedTable(u16 tableIndex, s16 sampleIndex,
 }
 
 void resetSelectedRecordStates(void) {
-    SelectedStateRecord *record = D_8012C6F4[gSelectedCourseIndex];
+    SelectedStateRecord *record = gCoursePlayerStateRecords[gSelectedCourseIndex];
 
     for (;;) {
         if (record->state == -2) {
@@ -2665,7 +2666,7 @@ void resetSelectedRecordStates(void) {
 void captureSelectedPlayerStates(void) {
     s8 split = 0;
     s32 i = 0;
-    SelectedStateRecord *record = D_8012C6F4[gSelectedCourseIndex];
+    SelectedStateRecord *record = gCoursePlayerStateRecords[gSelectedCourseIndex];
     for (;; record++, i++) {
         GameTask *task;
         u16 inputIndex;
@@ -2700,7 +2701,7 @@ done:
 
 s32 restoreSelectedPlayerState(void) {
     s32 i = 0;
-    SelectedStateRecord *record = D_8012C6F4[gSelectedCourseIndex];
+    SelectedStateRecord *record = gCoursePlayerStateRecords[gSelectedCourseIndex];
     for (;;) {
         if (record->state == -2) return 0;
         if (record->state != -1) {
@@ -2728,7 +2729,7 @@ s32 restoreSelectedPlayerState(void) {
 }
 
 s32 hasCapturedSelectedPlayerState(void) {
-    const SelectedStateRecord *record = D_8012C6F4[gSelectedCourseIndex];
+    const SelectedStateRecord *record = gCoursePlayerStateRecords[gSelectedCourseIndex];
 
     for (;; record++) {
         if (record->state == -2) {

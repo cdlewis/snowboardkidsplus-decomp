@@ -13,6 +13,7 @@ extern VECTOR *gScratchVector1;
 extern SVECTOR *gScratchShortVector0;
 extern SVECTOR *gScratchShortVector1;
 extern MATRIX *gScratchMatrix0;
+extern MATRIX *gScratchMatrix1;
 
 void setCoordinateRotation(SVECTOR *rotation, GsCOORDINATE2 *coordinate);
 void setCoordinateRotationZYX(SVECTOR *rotation, GsCOORDINATE2 *coordinate);

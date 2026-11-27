@@ -268,7 +268,7 @@ extern u32 gTaskTransitionFlags __attribute__((section(".data")));
 extern u8 gSelectedPlayerReplayActive __attribute__((section(".data")));
 
 extern u16 gGameStateFlags __attribute__((section(".data")));
-extern u32 *D_8013AF70 __attribute__((section(".data")));
+extern u32 *gCurrentPlayerDepthOffsetOrderingTable __attribute__((section(".data")));
 
 const VECTOR gInitialRaceOscillatingQuadPosition
     __attribute__((section(".rodata.race_oscillating_quad_position"))) = {
@@ -1677,7 +1677,7 @@ void drawPlayerShadowTask(void) {
         &scratch->cue, &scratch->flags);
     scratch->depth = depth;
     if (scratch->flags >= 0 && depth >= 0 && depth < 4096) {
-        addPrim(&D_8013AF70[scratch->depth >> 2], packet);
+        addPrim(&gCurrentPlayerDepthOffsetOrderingTable[scratch->depth >> 2], packet);
     }
     GsOUT_PACKET_P = (PACKET *)(packet + 1);
 }
@@ -2408,7 +2408,7 @@ void updatePlayerTrailTask(void) {
         }
         scratch->averageDepth = (scratch->depth[0] + scratch->depth[1]) / 2;
         if (!right->state.suppressed[i] && scratch->averageDepth >= 0 && scratch->averageDepth < 4096) {
-            addPrim(&D_8013AF70[(scratch->averageDepth >> 2) + 4], packet);
+            addPrim(&gCurrentPlayerDepthOffsetOrderingTable[(scratch->averageDepth >> 2) + 4], packet);
         }
 advance:
         packet++;

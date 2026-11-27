@@ -4400,3 +4400,8 @@ gTitleMenuSelectionIndex = 0x8013B110;
 gControllerVibrationDisabled = 0x8013AEC4; // size:0x1
 gSelectedPlayerReplayEndRecordIndex = 0x8013AEE2; // size:0x2
 gReplaySavedControllerHeldButtons = 0x8013AFE8;
+
+gCoursePlayerStateRecords = 0x8012C6F4;
+gCurrentPlayerDepthOffsetOrderingTable = 0x8013AF70;
+gCurrentPlayerAlternateLayerOrderingTable = 0x8013AF74;
+gScratchMatrix1 = 0x8013AF9C;
