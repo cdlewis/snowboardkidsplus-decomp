@@ -484,6 +484,7 @@ mdec_d3_chcr = 0x80139ED8; // size:0x4 defined:true
 mdec0 = 0x80139EDC; // size:0x4 defined:true
 mdec1 = 0x80139EE0; // size:0x4 defined:true
 mdec_d_pcr = 0x80139EE4; // size:0x4 defined:true
+sMdecDataPadding = 0x80139EE8; // size:0x4 defined:true
 sMdecResetError = 0x80012ED0; // size:0x1A defined:true
 sMdecInSyncName = 0x80012EEC; // size:0xD defined:true
 sMdecOutSyncName = 0x80012EFC; // size:0xE defined:true

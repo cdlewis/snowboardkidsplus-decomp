@@ -39,6 +39,9 @@ volatile u32 *mdec0 MDEC_DATA = (volatile u32 *)0x1F801820;
 volatile u32 *mdec1 MDEC_DATA = (volatile u32 *)0x1F801824;
 volatile u32 *mdec_d_pcr MDEC_DATA = (volatile u32 *)0x1F8010F0;
 
+/* Preserve the original LIBPRESS object's trailing data alignment word. */
+static u32 sMdecDataPadding MDEC_DATA = 0;
+
 /* The first string's alignment also preserves the original rodata tail padding. */
 const char sMdecResetError[] __attribute__((section(".rodata.mdec"), aligned(8))) =
     "MDEC_rest:bad option(%d)\n";

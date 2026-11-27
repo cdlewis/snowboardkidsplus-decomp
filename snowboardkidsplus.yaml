@@ -985,7 +985,6 @@ segments:
       - [0x12A2CC, lib, libgs, objt2, .data]
       - [0x12A3FC, lib, libgpu, sys, .data]
       - {start: 0x12A59C, type: .data, name: syslib/libpress/libpress, linker_section: .data.mdec}
-      - [0x12A6E8, data]
       - [0x12A6EC, lib, libpress, vlc_c, .data]
       - [0x12A71C, lib, libpress, build, .data]
       - [0x12B52C, lib, libc, sprintf, .data]
