@@ -562,9 +562,9 @@ void initializeRaceRulesAndCounters(void) {
                 gRaceHudMode = 3;
             }
             gRacePlayers[0].collectedCourseCoinMarkerCount = 0;
-            gRacePlayers[0].totalCourseCoinMarkerCount = D_8012429C[gSelectedCourseIndex];
+            gRacePlayers[0].totalCourseCoinMarkerCount = gCourseCoinMarkerTargets[gSelectedCourseIndex];
             gRacePlayers[1].collectedCourseCoinMarkerCount = 0;
-            gRacePlayers[1].totalCourseCoinMarkerCount = D_8012429C[gSelectedCourseIndex];
+            gRacePlayers[1].totalCourseCoinMarkerCount = gCourseCoinMarkerTargets[gSelectedCourseIndex];
         } else if (gRaceRuleset == 1) {
             if (playerCountAbsolute == 1) {
                 gRaceHudMode = 4;
@@ -576,9 +576,9 @@ void initializeRaceRulesAndCounters(void) {
                 gPlayerAttackTimesRemaining[1] = gScoreAttackTimeLimits[gSelectedCourseIndex];
             }
             gRacePlayers[0].scoreAttackPointTotal = 0;
-            gRacePlayers[0].scoreAttackPointTarget = D_801242A8[gSelectedCourseIndex];
+            gRacePlayers[0].scoreAttackPointTarget = gCourseScoreAttackPointTargets[gSelectedCourseIndex];
             gRacePlayers[1].scoreAttackPointTotal = 0;
-            gRacePlayers[1].scoreAttackPointTarget = D_801242A8[gSelectedCourseIndex];
+            gRacePlayers[1].scoreAttackPointTarget = gCourseScoreAttackPointTargets[gSelectedCourseIndex];
         } else if (gRaceRuleset == 2) {
             if (playerCountAbsolute == 1) {
                 gRaceHudMode = 6;
@@ -603,7 +603,7 @@ void initializeRaceRulesAndCounters(void) {
     gRaceElapsedTime.minutes = 0;
     gRaceElapsedTime.seconds = 0;
     gRaceElapsedTime.centiseconds = 0;
-    D_8013B18C = 0;
+    gLapSplitTimeCaptured = 0;
     gAttackTimeExpired_gp = 0;
     raceHudEnabledGp = 0;
     flags[1] = 0;
@@ -777,11 +777,11 @@ void updateRaceHud(void) {
                 if (!(gRacePlayers[0].unk128 & 0x40)) {
                     advanceRaceElapsedTime();
                 }
-                if (!D_8013B18C) {
+                if (!gLapSplitTimeCaptured) {
                     getPlayerCourseProgress(0, &progress, &distance);
                     if (gSelectedCourseRecords[gSelectedCourseIndex].unk3C * 8 < progress) {
-                        D_8013B188 = gRaceElapsedTime;
-                        D_8013B18C = 1;
+                        gLapSplitTime = gRaceElapsedTime;
+                        gLapSplitTimeCaptured = 1;
                         createChildTaskWithReserve(initializeRaceTimeDifferenceDisplay);
                     }
                 }

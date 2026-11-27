@@ -445,8 +445,11 @@ extern TaskVisualFrame gPlayerVisualPair5E80Frame
 /* GP-relative views used by the race initializer. */
 extern u8 gAttackTimeExpired_gp;
 extern s16 raceHudEnabledGp;
-extern u8 D_8012429C[], D_801242A8[];
-extern u8 D_8013B18C;
+extern u8 gCourseCoinMarkerTargets[12]
+    __attribute__((section(".data.course_count_targets"), aligned(4)));
+extern u8 gCourseScoreAttackPointTargets[12]
+    __attribute__((section(".data.course_hit_targets"), aligned(4)));
+extern u8 gLapSplitTimeCaptured;
 extern s16 gRaceHudMode;
 
 

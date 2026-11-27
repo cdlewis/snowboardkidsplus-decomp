@@ -30,7 +30,7 @@ extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u8 gRacePauseState __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern RaceTime gRaceElapsedTime __attribute__((section(".data")));
-extern RaceTime D_8013B188 __attribute__((section(".data")));
+extern RaceTime gLapSplitTime __attribute__((section(".data")));
 extern s16 gFrameCounter __attribute__((section(".data")));
 
 s16 compareRaceTimes(const RaceTime *a, const RaceTime *b) {
@@ -282,7 +282,7 @@ void updateAttackResultsAndRecords(void) {
             ATTACK_SAVE_RECORD->lapRecords[gSelectedCourseIndex][rank] = gRaceElapsedTime;
             ATTACK_SAVE_RECORD->lapRecordIcons[gSelectedCourseIndex][rank] = RECORD_ICON(gRacePlayers[0]);
             if (rank == 0) {
-                ATTACK_SAVE_RECORD->bestLapSplitTimes[gSelectedCourseIndex] = D_8013B188;
+                ATTACK_SAVE_RECORD->bestLapSplitTimes[gSelectedCourseIndex] = gLapSplitTime;
             }
         }
         if (rank < 5) {

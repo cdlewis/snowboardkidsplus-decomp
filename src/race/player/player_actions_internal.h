@@ -24,12 +24,6 @@ extern GsRVIEW2 gPlayerCameraViews[2]
 extern MenuSpritePaletteGroups gMenuSpritePaletteGroups
     __attribute__((section(".data.menu_sprite_palettes"), aligned(4)));
 
-extern u8 D_8012429C[12]
-    __attribute__((section(".data.course_count_targets"), aligned(4)));
-
-extern u8 D_801242A8[12]
-    __attribute__((section(".data.course_hit_targets"), aligned(4)));
-
 /* Each input sequence ends with 0xFFFF. */
 extern u16 gControllerInputSequences[3][26]
     __attribute__((section(".data.controller_input_sequences")));

@@ -95,7 +95,7 @@ void initializeRaceTimeDifferenceDisplay(void) {
     resource->y = -44;
     resource->x = 420;
     resource->speed = 56;
-    resource->hasExtraTime = calculateRaceTimeDifference(&D_8013B188, &D_80124050[gSelectedCourseIndex], &resource->time);
+    resource->hasExtraTime = calculateRaceTimeDifference(&gLapSplitTime, &D_80124050[gSelectedCourseIndex], &resource->time);
     setCurrentTaskCallback(slideRaceTimeDisplayIn);
 }
 

@@ -105,12 +105,12 @@ RaceTime gScoreAttackTimeLimits[10]
         {3, 0, 0}, {3, 0, 0}, {3, 0, 0}, {1, 0, 0}, {1, 30, 0}
     };
 
-u8 D_8012429C[12]
+u8 gCourseCoinMarkerTargets[12]
     __attribute__((section(".data.course_count_targets"), aligned(4))) = {
         20, 20, 0, 0, 0, 0, 0, 0, 0, 10, 0, 0
     };
 
-u8 D_801242A8[12]
+u8 gCourseScoreAttackPointTargets[12]
     __attribute__((section(".data.course_hit_targets"), aligned(4))) = {
         60, 60, 0, 0, 0, 0, 0, 0, 0, 30, 0, 0
     };
