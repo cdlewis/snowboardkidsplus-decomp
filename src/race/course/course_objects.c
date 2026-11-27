@@ -240,7 +240,7 @@ CourseSectorRange gCourseOptionalResourceSectors[10] __attribute__((section(".da
     {DAT_COURSE_OPTIONAL_009_SECTOR, DAT_COURSE_OPTIONAL_009_SECTOR_COUNT}
 };
 
-u8 gCourseMetadataBuffer[0x800] __attribute__((section(".data.course_sector_resources"), aligned(4))) = {0};
+CourseModelPositionSector gCourseModelPositionSector __attribute__((section(".data.course_sector_resources"), aligned(4))) = {0};
 
 EmitterPlacement gProximityEmitterPlacements[2]
     __attribute__((section(".data.proximity_emitter_placements"))) = {
@@ -512,7 +512,7 @@ void queueCourseResourceSectorReads(void) {
     queueCdSectorCommand(0, gCourseResourceSectors[gSelectedCourseIndex][0].sector, gCourseResourceSectors[gSelectedCourseIndex][0].count, DAT_COURSE_FIRST, 0);
     queueCdSectorCommand(0, gCourseResourceSectors[gSelectedCourseIndex][1].sector, gCourseResourceSectors[gSelectedCourseIndex][1].count, DAT_COURSE_SECOND, 0);
     queueCdSectorCommand(2, gCourseResourceSectors[gSelectedCourseIndex][2].sector, gCourseResourceSectors[gSelectedCourseIndex][2].count, DAT_SCRATCH, 0);
-    queueCdSectorCommand(0, gCourseMetadataSectors[gSelectedCourseIndex].sector, gCourseMetadataSectors[gSelectedCourseIndex].count, gCourseMetadataBuffer, 0);
+    queueCdSectorCommand(0, gCourseMetadataSectors[gSelectedCourseIndex].sector, gCourseMetadataSectors[gSelectedCourseIndex].count, &gCourseModelPositionSector, 0);
     if ((u16)gCourseOptionalResourceSectors[gSelectedCourseIndex].sector != 0) {
         queueCdSectorCommand(0, gCourseOptionalResourceSectors[gSelectedCourseIndex].sector, gCourseOptionalResourceSectors[gSelectedCourseIndex].count, DAT_COURSE_OPTIONAL, 0);
     }

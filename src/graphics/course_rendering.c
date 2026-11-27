@@ -181,11 +181,11 @@ GsCOORDINATE2 gCourseModelCoordinate __attribute__((section(".data.course_model_
 TmdObject *gOptionalCourseModels[7] __attribute__((section(".data.optional_course_models"))) = {0};
 
 Position3D *gCourseModelPositionBuffers[10] __attribute__((section(".data.course_model_position_buffers"))) = {
-    (Position3D *)gCourseMetadataBuffer, (Position3D *)gCourseMetadataBuffer,
-    (Position3D *)gCourseMetadataBuffer, (Position3D *)gCourseMetadataBuffer,
-    (Position3D *)gCourseMetadataBuffer, (Position3D *)gCourseMetadataBuffer,
-    (Position3D *)gCourseMetadataBuffer, (Position3D *)gCourseMetadataBuffer,
-    (Position3D *)gCourseMetadataBuffer, (Position3D *)gCourseMetadataBuffer,
+    gCourseModelPositionSector.positions, gCourseModelPositionSector.positions,
+    gCourseModelPositionSector.positions, gCourseModelPositionSector.positions,
+    gCourseModelPositionSector.positions, gCourseModelPositionSector.positions,
+    gCourseModelPositionSector.positions, gCourseModelPositionSector.positions,
+    gCourseModelPositionSector.positions, gCourseModelPositionSector.positions,
 };
 
 Position3D *gCourseModelPositions __attribute__((section(".data.course_model_positions"))) = 0;

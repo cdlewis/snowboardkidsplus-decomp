@@ -58,6 +58,12 @@ typedef struct CourseTriggerRecord {
 
 typedef struct CourseSectorRange { s16 sector, count; } CourseSectorRange;
 
+/* Model positions occupy the start of a full CD sector. */
+typedef struct CourseModelPositionSector {
+    Position3D positions[100];
+    u8 unk4B0[0x350];
+} CourseModelPositionSector;
+
 typedef struct TriangleColor { u8 r, g, b, code; } TriangleColor;
 typedef struct GouraudTrianglePrimitive {
     u32 command;
@@ -711,7 +717,7 @@ extern CourseSectorRange gCourseMetadataSectors[10] __attribute__((section(".dat
 
 extern CourseSectorRange gCourseOptionalResourceSectors[10] __attribute__((section(".data.course_sector_resources")));
 
-extern u8 gCourseMetadataBuffer[0x800] __attribute__((section(".data.course_sector_resources"), aligned(4)));
+extern CourseModelPositionSector gCourseModelPositionSector __attribute__((section(".data.course_sector_resources"), aligned(4)));
 
 /* Screen copies selected by the saved camera state. */
 extern TexturedSpritePacket gCameraOverlaySpritesBuffer0[2] __attribute__((section(".data.camera_overlay_packets")));

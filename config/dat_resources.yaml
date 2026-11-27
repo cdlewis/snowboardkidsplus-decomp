@@ -1258,7 +1258,7 @@ read_tables:
   - 1
   uses:
   - command: 0
-    destination: gCourseMetadataBuffer
+    destination: gCourseModelPositionSector
 - source: src/race/course/course_objects.c
   name: gCourseOptionalResourceSectors
   rows: 10
