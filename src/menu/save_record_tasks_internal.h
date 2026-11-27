@@ -111,7 +111,7 @@ void drawTaskOffsetSpriteB8(void);
 void drawTaskIndexPanel(void);
 extern const u16 gMemoryCardAccessInProgressText[38];
 extern const u16 gSaveRecordConfirmationSprites[];
-extern const u16 D_80130390[], D_80130770[], D_80130800[];
+extern const u16 gMemoryCardCorruptDataText[], gMemoryCardOperationFailedText[], gMemoryCardSlotChoiceSprites[];
 
 void drawSaveRecordProgressPanel(void);
 void initializeDualResourceTask(void);

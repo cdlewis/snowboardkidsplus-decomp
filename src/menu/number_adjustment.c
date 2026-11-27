@@ -76,7 +76,7 @@ void prepareNumberAdjustmentDisplayTask(void) {
 
     setTaskBackgroundMode(2, -0x1000, 0x1000);
     setSecondaryDisplayTaskMode(0);
-    index = D_8012D478[gSelectedCourseIndex];
+    index = gCourseMenuIndicesByCourse[gSelectedCourseIndex];
     copyIndexedTaskImagesToVram(index);
     setCurrentTaskCallback(updateNumberAdjustmentTask);
 }

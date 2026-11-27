@@ -3642,7 +3642,7 @@ void updateSaveRecordLoadPanelTask(void) {
     case 30: {
         s32 otherPlayer = player != 0;
         createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_8013066C, -1,
-                                              (otherPlayer << 8) | color, 1, D_80130800,
+                                              (otherPlayer << 8) | color, 1, gMemoryCardSlotChoiceSprites,
                                               gCurrentTask->data1C - 3, 11);
         gCurrentTask->data18 = 31;
         break;
@@ -3721,7 +3721,7 @@ void updateSaveRecordLoadPanelTask(void) {
             gCurrentTask->data18 = 10;
         break;
     case 10:
-        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_80130770, -1, color,
+        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, gMemoryCardOperationFailedText, -1, color,
                                               1, NULL, gCurrentTask->data1C - 3, 11);
         gCurrentTask->data18 = 11;
         break;
@@ -3796,7 +3796,7 @@ void updateSaveRecordLoadPanelTask(void) {
         gCurrentTask->data18 = 38;
         break;
     case 38:
-        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_80130390, menu->cardSlot, color,
+        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, gMemoryCardCorruptDataText, menu->cardSlot, color,
                                               1, NULL, gCurrentTask->data1C - 3, 11);
         gCurrentTask->data18 = 39;
         break;

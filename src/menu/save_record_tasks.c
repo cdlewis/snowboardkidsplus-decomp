@@ -58,8 +58,8 @@ const u16 gMemoryCardSaveRecordHeading[10]
 SaveRecord gPlayerSaveRecords[2] __attribute__((section(".data.save_records"))) = {0};
 SaveRecord gMergedSaveRecord __attribute__((section(".data.merged_save_record"))) = {0};
 
-extern const u16 D_801303EC[], D_80130428[];
-extern const u16 D_80130460[], D_8013047C[], D_80130578[], D_801305C4[];
+extern const u16 gMemoryCardUnformattedText[], gMemoryCardFormatConfirmationText[];
+extern const u16 gMemoryCardFormatCompleteText[], D_8013047C[], D_80130578[], D_801305C4[];
 extern const u16 D_801305F0[], D_80130638[], D_80130694[], D_801306DC[];
 extern const u16 D_80130708[], D_80130740[], D_8013075C[];
 /* Incomplete arrays let the compiler schedule the address halves separately. */
@@ -348,7 +348,7 @@ void updateMemoryCardSaveMenuTask(void) {
         break;
     case 6:
         createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_80130694,
-                                              -1, enabled, 1, D_80130800, 4, 11);
+                                              -1, enabled, 1, gMemoryCardSlotChoiceSprites, 4, 11);
         gCurrentTask->data18 = 7;
         break;
     case 7:
@@ -400,7 +400,7 @@ void updateMemoryCardSaveMenuTask(void) {
         case 8:
         case 12:
             gCurrentTask->data18 = 24;
-            createRegisteredStaticTextPanelTask(x, y, x + 4, y + 2, D_80130390, player, 4, 11);
+            createRegisteredStaticTextPanelTask(x, y, x + 4, y + 2, gMemoryCardCorruptDataText, player, 4, 11);
             gMemoryCardSlotHistory.previous[menu->slot] = gMemoryCardSlotHistory.current[menu->slot];
             break;
         case 9:
@@ -483,7 +483,7 @@ void updateMemoryCardSaveMenuTask(void) {
         gCurrentTask->data18 = 20;
         break;
     case 20:
-        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_80130770,
+        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, gMemoryCardOperationFailedText,
                                               -1, enabled, 1, 0, 4, 11);
         gCurrentTask->data18 = 21;
         break;
@@ -552,7 +552,7 @@ void updateMemoryCardSaveMenuTask(void) {
             goto checkCard;
         goto waitForPanel;
     case 32:
-        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_801303EC,
+        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, gMemoryCardUnformattedText,
                                               menu->slot, enabled, 1, 0, 4, 11);
         gCurrentTask->data18 = 33;
         break;
@@ -561,7 +561,7 @@ void updateMemoryCardSaveMenuTask(void) {
             goto checkCard;
         if (!input->result0E)
             break;
-        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_80130428,
+        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, gMemoryCardFormatConfirmationText,
                                               menu->slot, enabled | 0x100, 1, gSaveRecordConfirmationSprites, 4, 11);
         gCurrentTask->data18 = 34;
         break;
@@ -598,7 +598,7 @@ void updateMemoryCardSaveMenuTask(void) {
         formatResult = formatMemoryCard();
         gMemoryCardSlotHistory.unk_0E[menu->slot] = 5;
         if (formatResult == 0) {
-            createRegisteredStaticTextPanelTask(x, y, x + 4, y + 2, D_80130460, -1, 4, 11);
+            createRegisteredStaticTextPanelTask(x, y, x + 4, y + 2, gMemoryCardFormatCompleteText, -1, 4, 11);
             gMemoryCardSlotHistory.unk_12[menu->slot] = 3;
     startSave:
             gCurrentTask->data18 = 16;
@@ -866,7 +866,7 @@ s16 updateRaceUnlockProgress(s16 characterId, s16 finishPosition) {
         return 0;
     }
     unlockTier = 0;
-    coursePair = D_8012D478[gSelectedCourseIndex];
+    coursePair = gCourseMenuIndicesByCourse[gSelectedCourseIndex];
     finishRating = 3 - finishPosition;
     if (getSaveRecordFlagPair(recordIndex, characterId, coursePair) < finishRating) {
         setSaveRecordFlagPair(recordIndex, characterId, coursePair, finishRating);
