@@ -4570,7 +4570,7 @@ gCourse2VisualFrames = 0x8013B29C; // size:0x8 defined:true
 gMoneyPanelSelectionSprites = 0x801317F0; // size:0x12
 gMoneyPanelSelectionSpritesPadding = 0x80131802; // size:0x2
 
-gMoneyPanelSelectionTextMapping = 0x8013B4A0; // size:0x4
+gMoneyPanelSelectionTextMapping = 0x8013B4A0; // size:0x4 defined:true
 
 gRaceRulesetCourseHelpTexts = 0x801325D0; // size:0x2C
 gTwoPlayerTimeAttackCourseMappingGroups = 0x80132638; // size:0x14

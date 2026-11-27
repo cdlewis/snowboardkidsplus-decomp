@@ -1131,7 +1131,7 @@ segments:
       - {start: 0x12BC84, type: .sdata, name: menu/course_selection_tasks, linker_section: .sdata.working_save_records, linker_section_order: .data}
       - {start: 0x12BC8C, type: .data, name: menu/panel_tasks, linker_section: .data.shop_menu_mappings}
       - {start: 0x12BC9C, type: .data, name: menu/panel_tasks, linker_section: .data.board_shop_mode_text_mapping}
-      - [0x12BCA0, data]
+      - {start: 0x12BCA0, type: .data, name: menu/panel_tasks, linker_section: .data.money_panel_selection_text_mapping}
       - {start: 0x12BCA4, type: .data, name: menu/panel_tasks, linker_section: .data.shop_menu_destinations}
       - [0x12BCAC, .data, menu/panel_tasks]
       - {start: 0x12BCB0, type: .data, name: menu/panel_tasks, linker_section: .data.shop_submenu_mappings}

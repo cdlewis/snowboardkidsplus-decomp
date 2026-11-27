@@ -112,7 +112,6 @@ GroupedSelectionDescriptor gBoardMenuSelectionDescriptors[3]
     {gBoardMenuMode2Items, 0, 24, 4, 0, gBoardMenuTextIndices, 0, gSelectionPanelTripletIndices},
 };
 extern volatile u8 shopMenuRememberedSelectionGp;
-extern const u8 gMoneyPanelSelectionTextMapping[4];
 
 extern char gShopCurrencySuffix[];
 
@@ -281,6 +280,8 @@ u32 gShopBoardPrices[12]
 
 static const u8 sBoardShopModeTextMapping[4]
     __attribute__((section(".data.board_shop_mode_text_mapping"), aligned(4))) = {8, 9, 4, 0};
+const u8 gMoneyPanelSelectionTextMapping[4]
+    __attribute__((section(".data.money_panel_selection_text_mapping"), aligned(4))) = {11, 12, 4, 0};
 static const u8 sBoardShopModeSpriteMapping[4]
     __attribute__((section(".data.shop_submenu_mappings"), aligned(4))) = {0, 1, 2, 0};
 static const u8 sShopSubmenuTextureMapping[4]
