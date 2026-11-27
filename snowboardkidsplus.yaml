@@ -190,7 +190,7 @@ segments:
       - [0x2C40, lib, libspu, s_sca, .rdata]
       - [0x2C80, lib, libsnd, sstick, .rdata]
       - [0x2CA0, lib, libspu, s_sva, .rdata]
-      - [0x2CE0, rodata, syslib/libetc/vsync]
+      - [0x2CE0, .rodata, syslib/libetc/vsync]
       - [0x2CF0, lib, libetc, intr, .rdata]
       - [0x2D60, lib, libetc, intr_dma, .rdata]
       - {start: 0x2D90, type: .rodata, name: syslib/libcd/event, linker_section: .rodata.cdinit}

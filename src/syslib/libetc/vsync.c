@@ -1,10 +1,11 @@
 #include "common.h"
 
+const char vsyncTimeoutMessage[16] __attribute__((aligned(8))) = "VSync: timeout\n";
+
 extern volatile u32 *vsyncGpuStatusRegister, *vsyncCounter1Register;
 extern volatile int Hcount;
 extern int prevVcount;
 extern volatile int Vcount;
-extern const char vsyncTimeoutMessage[];
 extern int puts(const char *);
 extern void ChangeClearPAD(int), ChangeClearRCnt(int, int);
 extern void func_800B5730(int, int);
