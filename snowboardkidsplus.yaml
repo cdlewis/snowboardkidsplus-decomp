@@ -861,7 +861,7 @@ segments:
       - {start: 0x11FC00, type: .data, name: unclassified/menu_8007BE9C, linker_section: .data.main_menu_sprites}
       - {start: 0x11FC24, type: .data, name: unclassified/menu_8007BE9C, linker_section: .data.main_menu_text_bodies}
       - {start: 0x11FF6C, type: .data, name: unclassified/menu_8007BE9C, linker_section: .data.main_menu_texts}
-      - [0x11FF98, data, main_menu_data_tail]
+      - {start: 0x11FF98, type: .data, name: menu/course_selection_tasks, linker_section: .data.course_menu_data}
       - {start: 0x120560, type: .data, name: menu/course_selection_tasks, linker_section: .data.record_flag_menu_sprites}
       - [0x1205CC, data, record_flag_menu_data_tail]
       - {start: 0x12080C, type: .data, name: menu/course_selection_tasks, linker_section: .data.grouped_course_menu_descriptors}

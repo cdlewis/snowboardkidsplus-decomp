@@ -4285,8 +4285,8 @@ gCharacterBoardPrices = 0x801319B0; // size:0xC8
 
 gMenuInputPromptSequence = 0x80123840; // size:0x10
 gCourseMenuCourseIndices = 0x8012D46C; // size:0xC
-gCourseMenuSpriteEntries = 0x8012F798;
-gCourseMenuMappingGroups = 0x8012FD10;
+gCourseMenuSpriteEntries = 0x8012F798; // size:0x54
+gCourseMenuMappingGroups = 0x8012FD10; // size:0x50
 gSelectedCourseMenuItem = 0x8013B104;
 
 gRecordFlagMenuItemBuffers = 0x80130094;
@@ -4514,7 +4514,7 @@ gExtendedGroupedCourseMenuTextIndices = 0x8013B440; // size:0x8
 gMemoryCardLoadOptionsText = 0x801306EC; // size:0x1C
 gMemoryCardLoadedRecordConfirmationText = 0x80130780; // size:0x18
 
-gCourseMenuItemStats = 0x8012FCE4;
+gCourseMenuItemStats = 0x8012FCE4; // size:0x2C
 gGroupedSelectionMode4TextIndices = 0x8013B448;
 
 gPlayerModeSelectionSprites = 0x80123B50; // size:0x18
@@ -4653,3 +4653,22 @@ D_8013B38C = 0x8013B38C; // size:0x8
 
 gPlayerPanelQuadsPalette0 = 0x8012F218; // size:0xD8
 gPlayerPanelQuadsPalette1 = 0x8012F2F0; // size:0xD8
+
+gCourseMenuGroup2Mapping = 0x8012F7EC; // size:0xC
+gCourseMenuGroup3Mapping = 0x8012F7F8; // size:0xC
+gCourseMenuGroup2TextureMapping = 0x8012FC54; // size:0xC
+gCourseMenuGroup3TextureMapping = 0x8012FC60; // size:0xC
+gSelectionPrizeDescriptionText0 = 0x8012F804; // size:0x40
+gSelectionPrizeDescriptionText1 = 0x8012F844; // size:0x84
+gSelectionPrizeDescriptionText2 = 0x8012F8C8; // size:0x7C
+gSelectionPrizeDescriptionText3 = 0x8012F944; // size:0x8C
+gSelectionPrizeDescriptionText4 = 0x8012F9D0; // size:0x88
+gSelectionPrizeDescriptionText5 = 0x8012FA58; // size:0x68
+gSelectionPrizeDescriptionText6 = 0x8012FAC0; // size:0x80
+gSelectionPrizeDescriptionText7 = 0x8012FB40; // size:0x7C
+gSelectionPrizeDescriptionText8 = 0x8012FBBC; // size:0x50
+gSelectionPrizeDescriptionText9 = 0x8012FC0C; // size:0x20
+gCourseMenuGroup0Mapping = 0x8013B3FC; // size:0x8
+gCourseMenuGroup1Mapping = 0x8013B404; // size:0x8
+gCourseMenuGroup0TextureMapping = 0x8013B40C; // size:0x8
+gCourseMenuGroup1TextureMapping = 0x8013B414; // size:0x8

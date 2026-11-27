@@ -79,3 +79,9 @@ extern const u16 *gSelectionPanelTexts[10];
 void drawRegisteredSelectionItemStatus(void);
 void drawSelectionItemDetails(void);
 void drawSelectionPrizeAndPlayerCounters(void);
+
+extern const u8 gCourseMenuGroup0Mapping[8];
+extern const u8 gCourseMenuGroup1Mapping[8];
+extern const u8 gCourseMenuGroup0TextureMapping[8];
+extern const u8 gCourseMenuGroup1TextureMapping[8];
+extern const u16 *gSelectionPrizeDescriptionTexts[10];
