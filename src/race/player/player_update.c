@@ -51,7 +51,7 @@ extern s16 *D_8013B204 __attribute__((section(".data")));
 extern s16 *D_8013B208 __attribute__((section(".data")));
 extern u8 gModeSequenceStage __attribute__((section(".data")));
 extern u8 gControllerPlaybackIndex __attribute__((section(".data")));
-extern u8 D_8013AFE1 __attribute__((section(".data")));
+extern u8 gRaceResultCode __attribute__((section(".data")));
 extern s16 gFrameCounter __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u8 D_8013AFDB __attribute__((section(".data")));
@@ -4098,7 +4098,7 @@ updateAnimation:
 }
 
 void advanceCurrentPlayerState30TaskOnResult(void) {
-    if (D_8013AFE1 != 0) {
+    if (gRaceResultCode != 0) {
         if (gMainMenuSelectionIndex == 0) {
             if (gCurrentRacePlayer->unk935 == 0) {
                 gCurrentTask->data1C = 0;
@@ -4108,7 +4108,7 @@ void advanceCurrentPlayerState30TaskOnResult(void) {
                 startCurrentPlayerAnimation(0x15, 2);
             }
         } else {
-            if (gCurrentTask->data18 + 1 == D_8013AFE1) {
+            if (gCurrentTask->data18 + 1 == gRaceResultCode) {
                 gCurrentTask->data1C = 0;
                 startCurrentPlayerAnimation(0x13, 2);
             } else {

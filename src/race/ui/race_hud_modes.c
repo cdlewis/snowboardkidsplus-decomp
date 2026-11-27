@@ -598,16 +598,16 @@ void initializeRaceRulesAndCounters(void) {
     if (gModeSequenceStage != 0 || gControllerPlaybackIndex != 0) {
         D_8013B620 = 9;
     }
-    flags = D_8013B1A0;
+    flags = gPlayerAttackTimeExpired;
     flags[0] = 0;
     gRaceElapsedTime.minutes = 0;
     gRaceElapsedTime.seconds = 0;
     gRaceElapsedTime.centiseconds = 0;
     D_8013B18C = 0;
-    D_8013B18D_gp = 0;
+    gAttackTimeExpired_gp = 0;
     D_8013B1A8_gp = 0;
     flags[1] = 0;
-    times = D_8013B190;
+    times = gPlayerRaceTimes;
     times[0].minutes = 0;
     times[0].seconds = 0;
     times[0].centiseconds = 0;
@@ -663,7 +663,7 @@ void updateRaceHud(void) {
                 advanceRaceElapsedTime();
             }
             if (calculateRaceTimeDifference(&D_80124220[gSelectedCourseIndex], &gRaceElapsedTime, &difference)) {
-                D_8013B18D_gp = 1;
+                gAttackTimeExpired_gp = 1;
             }
             drawCourseCoinHud();
             break;
@@ -671,15 +671,15 @@ void updateRaceHud(void) {
             if (!(gTaskTransitionFlags & 3)) {
                 advanceRaceElapsedTime();
                 if (!(gRacePlayers[0].unk128 & 0x40)) {
-                    D_8013B190[0] = gRaceElapsedTime;
-                    if (calculateRaceTimeDifference(&D_80124220[gSelectedCourseIndex], &D_8013B190[0], &difference)) {
-                        D_8013B1A0[0] = 1;
+                    gPlayerRaceTimes[0] = gRaceElapsedTime;
+                    if (calculateRaceTimeDifference(&D_80124220[gSelectedCourseIndex], &gPlayerRaceTimes[0], &difference)) {
+                        gPlayerAttackTimeExpired[0] = 1;
                     }
                 }
                 if (!(gRacePlayers[1].unk128 & 0x40)) {
-                    D_8013B190[1] = gRaceElapsedTime;
-                    if (calculateRaceTimeDifference(&D_80124220[gSelectedCourseIndex], &D_8013B190[1], &difference)) {
-                        D_8013B1A0[1] = 1;
+                    gPlayerRaceTimes[1] = gRaceElapsedTime;
+                    if (calculateRaceTimeDifference(&D_80124220[gSelectedCourseIndex], &gPlayerRaceTimes[1], &difference)) {
+                        gPlayerAttackTimeExpired[1] = 1;
                     }
                 }
             }
@@ -693,7 +693,7 @@ void updateRaceHud(void) {
             if (!D_8013B184.minutes) {
                 if (!D_8013B184.seconds) {
                     if (!D_8013B184.centiseconds) {
-                        D_8013B18D_gp = 1;
+                        gAttackTimeExpired_gp = 1;
                     }
                 }
             }
@@ -708,22 +708,22 @@ void updateRaceHud(void) {
                     if (!D_8013B198[0].minutes) {
                         if (!D_8013B198[0].seconds) {
                             if (!D_8013B198[0].centiseconds) {
-                                D_8013B1A0[0] = 1;
+                                gPlayerAttackTimeExpired[0] = 1;
                             }
                         }
                     }
-                    D_8013B190[0] = gRaceElapsedTime;
+                    gPlayerRaceTimes[0] = gRaceElapsedTime;
                 }
                 if (!(gRacePlayers[1].unk128 & 0x40)) {
                     D_8013B198[1] = D_8013B184;
                     if (!D_8013B198[1].minutes) {
                         if (!D_8013B198[1].seconds) {
                             if (!D_8013B198[1].centiseconds) {
-                                D_8013B1A0[1] = 1;
+                                gPlayerAttackTimeExpired[1] = 1;
                             }
                         }
                     }
-                    D_8013B190[1] = gRaceElapsedTime;
+                    gPlayerRaceTimes[1] = gRaceElapsedTime;
                 }
             }
             drawSplitScreenScoreAttackHud(0);
@@ -736,7 +736,7 @@ void updateRaceHud(void) {
             if (!D_8013B184.minutes) {
                 if (!D_8013B184.seconds) {
                     if (!D_8013B184.centiseconds) {
-                        D_8013B18D_gp = 1;
+                        gAttackTimeExpired_gp = 1;
                     }
                 }
             }
@@ -751,22 +751,22 @@ void updateRaceHud(void) {
                     if (!D_8013B198[0].minutes) {
                         if (!D_8013B198[0].seconds) {
                             if (!D_8013B198[0].centiseconds) {
-                                D_8013B1A0[0] = 1;
+                                gPlayerAttackTimeExpired[0] = 1;
                             }
                         }
                     }
-                    D_8013B190[0] = gRaceElapsedTime;
+                    gPlayerRaceTimes[0] = gRaceElapsedTime;
                 }
                 if (!(gRacePlayers[1].unk128 & 0x40)) {
                     D_8013B198[1] = D_8013B184;
                     if (!D_8013B198[1].minutes) {
                         if (!D_8013B198[1].seconds) {
                             if (!D_8013B198[1].centiseconds) {
-                                D_8013B1A0[1] = 1;
+                                gPlayerAttackTimeExpired[1] = 1;
                             }
                         }
                     }
-                    D_8013B190[1] = gRaceElapsedTime;
+                    gPlayerRaceTimes[1] = gRaceElapsedTime;
                 }
             }
             drawSplitScreenTrickAttackHud(0);
@@ -917,7 +917,7 @@ void drawTrickAttackHud(void) {
     }
 
     setSpriteColor(128, 128, 128);
-    if (D_8013B18D_gp) {
+    if (gAttackTimeExpired_gp) {
         drawSpriteByIndexWithBlend(64, 84, 398, 5, -1, ot, depth);
         palette = 2;
     }
@@ -971,7 +971,7 @@ void drawSplitScreenTrickAttackHud(s16 player) {
 
     setSpriteColor(128, 128, 128);
     if (shouldRenderPlayerView(player)) {
-        if (D_8013B1A0[player]) {
+        if (gPlayerAttackTimeExpired[player]) {
             drawSpriteByIndexWithBlend(-112, timeY + 39, 398, 5, -1, timeOt, depth[0]);
             palette = 2;
         }
@@ -1008,7 +1008,7 @@ void drawScoreAttackHud(void) {
     }
 
     setSpriteColor(128, 128, 128);
-    if (D_8013B18D_gp) {
+    if (gAttackTimeExpired_gp) {
         drawSpriteByIndexWithBlend(64, 84, 398, 5, -1, ot, depth);
         palette = 2;
     }
@@ -1066,7 +1066,7 @@ void drawSplitScreenScoreAttackHud(s16 player) {
     if (shouldRenderPlayerView(player)) {
         s16 i;
         s16 timeDigitsY;
-        if (D_8013B1A0[player]) {
+        if (gPlayerAttackTimeExpired[player]) {
             drawSpriteByIndexWithBlend(-112, timeY + 39, 398, 5, -1, timeOt, fixedDepth);
             palette = 2;
         }
@@ -1108,7 +1108,7 @@ void drawCourseCoinHud(void) {
     s16 digits;
 
     setSpriteColor(128, 128, 128);
-    if (D_8013B18D_gp) {
+    if (gAttackTimeExpired_gp) {
         drawSpriteByIndexWithBlend(72, 84, 398, 5, -1, ot, 1);
     }
     drawHudDecimalNumber8x16(72, 80, 2, 1, gRaceElapsedTime.minutes, 1, -1, ot, 1);
@@ -1156,12 +1156,12 @@ void drawSplitScreenCourseCoinHud(s16 player) {
     depth = 1;
     setSpriteColor(128, 128, 128);
     if (shouldRenderPlayerView(player)) {
-        if (D_8013B1A0[player]) {
+        if (gPlayerAttackTimeExpired[player]) {
             drawSpriteByIndexWithBlend(-112, timeY + 39, 398, 5, -1, timeOt, 1);
         }
-        drawHudDecimalNumber8x16(-112, timeY + 36, 2, 1, D_8013B190[player].minutes, 1, -1, timeOt, 1);
-        drawHudDecimalNumber8x16(-88, timeY + 36, 2, 1, D_8013B190[player].seconds, 1, -1, timeOt, 1);
-        drawHudDecimalNumber8x16(-64, timeY + 36, 2, 1, D_8013B190[player].centiseconds >> 8, 1, -1, timeOt, 1);
+        drawHudDecimalNumber8x16(-112, timeY + 36, 2, 1, gPlayerRaceTimes[player].minutes, 1, -1, timeOt, 1);
+        drawHudDecimalNumber8x16(-88, timeY + 36, 2, 1, gPlayerRaceTimes[player].seconds, 1, -1, timeOt, 1);
+        drawHudDecimalNumber8x16(-64, timeY + 36, 2, 1, gPlayerRaceTimes[player].centiseconds >> 8, 1, -1, timeOt, 1);
         drawSpriteByIndexWithBlend(-96, timeY + 36, 25, 1, -1, timeOt, 1);
         drawSpriteByIndexWithBlend(-72, timeY + 36, 24, 1, -1, timeOt, 1);
         drawLimitedText8x8(-112, timeY + 28, 10, gLapTimeLabel, 5, -1, timeOt, 1);

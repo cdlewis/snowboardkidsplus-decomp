@@ -21,7 +21,7 @@ typedef struct Mode11MenuSelection {
 extern u8 gModeSequenceStage __attribute__((section(".data")));
 extern u8 gControllerPlaybackIndex __attribute__((section(".data")));
 extern s16 D_8013AFDE __attribute__((section(".data")));
-extern u8 D_8013AFE1 __attribute__((section(".data")));
+extern u8 gRaceResultCode __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
 extern u8 gRaceRuleset __attribute__((section(".data")));
@@ -209,7 +209,7 @@ void initializeMode1RacePlayers(void) {
     SetFogNearFar(8000, 10000, 400);
     gRacePauseState = 0;
     gSelectedPlayerReplayActive = 0;
-    D_8013AFE1 = 0;
+    gRaceResultCode = 0;
     gControllerPlaybackIndex = 0;
     gMainMenuSelectionIndex = 0;
     gRaceRuleset = 0;

@@ -25,7 +25,7 @@
 GsF_LIGHT gDefaultSceneLights[3]
     __attribute__((section(".data.default_scene_lights"))) = {0};
 
-extern u8 D_8013AFE1 __attribute__((section(".data")));
+extern u8 gRaceResultCode __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u8 gRacePauseState __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
@@ -79,38 +79,38 @@ void updateAttackResultsAndRecords(void) {
     case 1:
         if (gRaceRuleset == 0) {
             if (playerCountAbsolute == 1) {
-                D_8013B190[0] = gRaceElapsedTime;
-                D_8013B1A0[0] = D_8013B18D;
+                gPlayerRaceTimes[0] = gRaceElapsedTime;
+                gPlayerAttackTimeExpired[0] = gAttackTimeExpired;
             } else {
-                comparison = compareRaceTimes(&D_8013B190[0], &D_8013B190[1]);
+                comparison = compareRaceTimes(&gPlayerRaceTimes[0], &gPlayerRaceTimes[1]);
                 if (comparison > 0) {
-                    D_8013AFE1 = 2;
+                    gRaceResultCode = 2;
                 } else if (comparison < 0) {
-                    D_8013AFE1 = 1;
+                    gRaceResultCode = 1;
                 } else if (gRacePlayers[0].scoreAttackPointTotal > gRacePlayers[1].scoreAttackPointTotal) {
-                    D_8013AFE1 = 1;
+                    gRaceResultCode = 1;
                 } else if (gRacePlayers[0].scoreAttackPointTotal < gRacePlayers[1].scoreAttackPointTotal) {
-                    D_8013AFE1 = 2;
+                    gRaceResultCode = 2;
                 } else {
-                    D_8013AFE1 = 3;
+                    gRaceResultCode = 3;
                 }
-                assignTwoPlayerResultSlots(D_8013AFE1);
-                if (D_8013B1A0[0]) {
-                    if (!D_8013B1A0[1]) {
-                        D_8013AFE1 = 2;
+                assignTwoPlayerResultSlots(gRaceResultCode);
+                if (gPlayerAttackTimeExpired[0]) {
+                    if (!gPlayerAttackTimeExpired[1]) {
+                        gRaceResultCode = 2;
                         gRacePlayers[0].unk100[0] += 5;
                     } else {
-                        D_8013AFE1 = 3;
+                        gRaceResultCode = 3;
                     }
-                } else if (D_8013B1A0[1]) {
-                    D_8013AFE1 = 1;
+                } else if (gPlayerAttackTimeExpired[1]) {
+                    gRaceResultCode = 1;
                     gRacePlayers[1].unk100[0] += 5;
                 }
                 return;
             }
 
             for (player = 0; player < playerCountAbsolute; player++) {
-                time = FULL_RACE_TIME(D_8013B190[player]);
+                time = FULL_RACE_TIME(gPlayerRaceTimes[player]);
                 for (rank = 0; rank < 5; rank++) {
                     recordTime = FULL_RACE_TIME(ATTACK_SAVE_RECORD->timeRecords[gSelectedCourseIndex][rank]);
                     faster = time < recordTime;
@@ -118,7 +118,7 @@ void updateAttackResultsAndRecords(void) {
                         break;
                     }
                 }
-                if (D_8013B1A0[player]) {
+                if (gPlayerAttackTimeExpired[player]) {
                     rank = 5;
                 }
                 gRacePlayers[player].unk100[0] = rank;
@@ -132,41 +132,41 @@ void updateAttackResultsAndRecords(void) {
                         ATTACK_SAVE_RECORD->timeRecordCharacters[gSelectedCourseIndex][row + 1] =
                             ATTACK_SAVE_RECORD->timeRecordCharacters[gSelectedCourseIndex][row];
                     }
-                    ATTACK_SAVE_RECORD->timeRecords[gSelectedCourseIndex][rank] = D_8013B190[player];
+                    ATTACK_SAVE_RECORD->timeRecords[gSelectedCourseIndex][rank] = gPlayerRaceTimes[player];
                     ATTACK_SAVE_RECORD->timeRecordCharacters[gSelectedCourseIndex][rank] = RECORD_ICON(gRacePlayers[player]);
-                    D_8013AFE1 = 1;
+                    gRaceResultCode = 1;
                 } else {
-                    D_8013AFE1 = 2;
+                    gRaceResultCode = 2;
                 }
             }
         } else if (gRaceRuleset == 1) {
             if (playerCountAbsolute == 1) {
-                D_8013B1A0[0] = D_8013B18D;
+                gPlayerAttackTimeExpired[0] = gAttackTimeExpired;
             } else {
                 if (gRacePlayers[0].scoreAttackPointTotal > gRacePlayers[1].scoreAttackPointTotal) {
-                    D_8013AFE1 = 1;
+                    gRaceResultCode = 1;
                 } else if (gRacePlayers[0].scoreAttackPointTotal < gRacePlayers[1].scoreAttackPointTotal) {
-                    D_8013AFE1 = 2;
+                    gRaceResultCode = 2;
                 } else {
-                    comparison = compareRaceTimes(&D_8013B190[0], &D_8013B190[1]);
+                    comparison = compareRaceTimes(&gPlayerRaceTimes[0], &gPlayerRaceTimes[1]);
                     if (comparison > 0) {
-                        D_8013AFE1 = 2;
+                        gRaceResultCode = 2;
                     } else if (comparison < 0) {
-                        D_8013AFE1 = 1;
+                        gRaceResultCode = 1;
                     } else {
-                        D_8013AFE1 = 3;
+                        gRaceResultCode = 3;
                     }
                 }
-                assignTwoPlayerResultSlots(D_8013AFE1);
-                if (D_8013B1A0[0]) {
-                    if (!D_8013B1A0[1]) {
-                        D_8013AFE1 = 2;
+                assignTwoPlayerResultSlots(gRaceResultCode);
+                if (gPlayerAttackTimeExpired[0]) {
+                    if (!gPlayerAttackTimeExpired[1]) {
+                        gRaceResultCode = 2;
                         gRacePlayers[0].unk100[0] += 5;
                     } else {
-                        D_8013AFE1 = 3;
+                        gRaceResultCode = 3;
                     }
-                } else if (D_8013B1A0[1]) {
-                    D_8013AFE1 = 1;
+                } else if (gPlayerAttackTimeExpired[1]) {
+                    gRaceResultCode = 1;
                     gRacePlayers[1].unk100[0] += 5;
                 }
                 return;
@@ -179,7 +179,7 @@ void updateAttackResultsAndRecords(void) {
                         break;
                     }
                 }
-                if (D_8013B1A0[player]) {
+                if (gPlayerAttackTimeExpired[player]) {
                     rank = 5;
                 }
                 gRacePlayers[player].unk100[0] = rank;
@@ -195,39 +195,39 @@ void updateAttackResultsAndRecords(void) {
                     }
                     ATTACK_SAVE_RECORD->countRecordValues[gSelectedCourseIndex][rank] = gRacePlayers[player].scoreAttackPointTotal;
                     ATTACK_SAVE_RECORD->countRecordIcons[gSelectedCourseIndex][rank] = RECORD_ICON(gRacePlayers[player]);
-                    D_8013AFE1 = 1;
+                    gRaceResultCode = 1;
                 } else {
-                    D_8013AFE1 = 2;
+                    gRaceResultCode = 2;
                 }
             }
         } else if (gRaceRuleset == 2) {
             if (playerCountAbsolute == 1) {
-                D_8013B1A0[0] = D_8013B18D;
+                gPlayerAttackTimeExpired[0] = gAttackTimeExpired;
             } else {
                 if (gRacePlayers[0].trickAttackPointTotal > gRacePlayers[1].trickAttackPointTotal) {
-                    D_8013AFE1 = 1;
+                    gRaceResultCode = 1;
                 } else if (gRacePlayers[0].trickAttackPointTotal < gRacePlayers[1].trickAttackPointTotal) {
-                    D_8013AFE1 = 2;
+                    gRaceResultCode = 2;
                 } else {
-                    comparison = compareRaceTimes(&D_8013B190[0], &D_8013B190[1]);
+                    comparison = compareRaceTimes(&gPlayerRaceTimes[0], &gPlayerRaceTimes[1]);
                     if (comparison > 0) {
-                        D_8013AFE1 = 2;
+                        gRaceResultCode = 2;
                     } else if (comparison < 0) {
-                        D_8013AFE1 = 1;
+                        gRaceResultCode = 1;
                     } else {
-                        D_8013AFE1 = 3;
+                        gRaceResultCode = 3;
                     }
                 }
-                assignTwoPlayerResultSlots(D_8013AFE1);
-                if (D_8013B1A0[0]) {
-                    if (D_8013B1A0[1]) {
-                        D_8013AFE1 = 3;
+                assignTwoPlayerResultSlots(gRaceResultCode);
+                if (gPlayerAttackTimeExpired[0]) {
+                    if (gPlayerAttackTimeExpired[1]) {
+                        gRaceResultCode = 3;
                     } else {
-                        D_8013AFE1 = 2;
+                        gRaceResultCode = 2;
                         gRacePlayers[0].unk100[0] += 5;
                     }
-                } else if (D_8013B1A0[1]) {
-                    D_8013AFE1 = 1;
+                } else if (gPlayerAttackTimeExpired[1]) {
+                    gRaceResultCode = 1;
                     gRacePlayers[1].unk100[0] += 5;
                 }
                 return;
@@ -240,7 +240,7 @@ void updateAttackResultsAndRecords(void) {
                         break;
                     }
                 }
-                if (D_8013B1A0[player]) {
+                if (gPlayerAttackTimeExpired[player]) {
                     rank = 5;
                 }
                 gRacePlayers[player].unk100[0] = rank;
@@ -256,9 +256,9 @@ void updateAttackResultsAndRecords(void) {
                     }
                     ATTACK_SAVE_RECORD->statsRecordValues[gSelectedCourseIndex][rank] = gRacePlayers[player].trickAttackPointTotal;
                     ATTACK_SAVE_RECORD->statsRecordIcons[gSelectedCourseIndex][rank] = RECORD_ICON(gRacePlayers[player]);
-                    D_8013AFE1 = 1;
+                    gRaceResultCode = 1;
                 } else {
-                    D_8013AFE1 = 2;
+                    gRaceResultCode = 2;
                 }
             }
         }
@@ -286,9 +286,9 @@ void updateAttackResultsAndRecords(void) {
             }
         }
         if (rank < 5) {
-            D_8013AFE1 = 1;
+            gRaceResultCode = 1;
         } else {
-            D_8013AFE1 = 2;
+            gRaceResultCode = 2;
         }
         break;
     }

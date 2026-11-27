@@ -510,7 +510,7 @@ void queueRaceStartupResourcesTask(void) {
         D_8013AFD4 = 0;
         D_8013AFD5 = 0;
         gSelectedPlayerReplayActive = 0;
-        D_8013AFE1 = 0;
+        gRaceResultCode = 0;
         gModeSequenceStage = 0;
         gControllerPlaybackIndex = 0;
         D_8013AFCC = 0;
@@ -725,7 +725,7 @@ void updateActiveRaceTask(void) {
                     gCreatedTask->data18 = 1;
                 }
             }
-            D_8013AFE1 = 1;
+            gRaceResultCode = 1;
         } else if (gPlayerCount == 2) {
             if (!(gRacePlayers[0].unk100[0] | gRacePlayers[1].unk100[0])) {
                 return;
@@ -876,22 +876,22 @@ void dispatchPostRaceResultsTask(void) {
         if (gRaceRuleset == 0) {
             if (gPlayerCount == 1) {
                 createChildTaskWithReserve(initializeRaceResultsTask);
-                D_8013B190[0] = gRaceElapsedTime;
-                D_8013B1A0[0] = D_8013B18D;
+                gPlayerRaceTimes[0] = gRaceElapsedTime;
+                gPlayerAttackTimeExpired[0] = gAttackTimeExpired;
             } else {
                 createChildTaskWithReserve(initializeRaceTimeComparisonPanel);
             }
         } else if (gRaceRuleset == 1) {
             if (gPlayerCount == 1) {
                 createChildTaskWithReserve(initializeTaskMenuFadeIn);
-                D_8013B1A0[0] = D_8013B18D;
+                gPlayerAttackTimeExpired[0] = gAttackTimeExpired;
             } else {
                 createChildTaskWithReserve(initializeRaceTimeComparisonPanel);
             }
         } else if (gRaceRuleset == 2) {
             if (gPlayerCount == 1) {
                 createChildTaskWithReserve(initializeStatsMenuTask);
-                D_8013B1A0[0] = D_8013B18D;
+                gPlayerAttackTimeExpired[0] = gAttackTimeExpired;
             } else {
                 createChildTaskWithReserve(initializeRaceTimeComparisonPanel);
             }
@@ -1234,7 +1234,7 @@ void prepareRacePlayersAndQueueResources(void) {
     D_8013AFD4 = 0;
     D_8013AFD5 = 0;
     gSelectedPlayerReplayActive = 0;
-    D_8013AFE1 = 0;
+    gRaceResultCode = 0;
     gModeSequenceStage = 0;
     gControllerPlaybackIndex = 0;
     D_8013AFCC = 0;

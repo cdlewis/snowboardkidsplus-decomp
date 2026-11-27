@@ -443,7 +443,7 @@ extern TaskVisualFrame gPlayerVisualPair5E80Frame
     __attribute__((section(".data.player_visual_pair_5e80_frame"), aligned(4)));
 
 /* GP-relative views used by the race initializer. */
-extern u8 D_8013B18D_gp;
+extern u8 gAttackTimeExpired_gp;
 extern s16 D_8013B1A8_gp;
 extern u8 D_8012429C[], D_801242A8[];
 extern u8 D_8013B18C;

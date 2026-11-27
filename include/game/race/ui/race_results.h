@@ -2,8 +2,8 @@
 
 #include "decomp/types.h"
 
-extern u8 D_8013B18D __attribute__((section(".data")));
-extern u8 D_8013B1A0[];
+extern u8 gAttackTimeExpired __attribute__((section(".data")));
+extern u8 gPlayerAttackTimeExpired[];
 
 void initializeResultDisplayTask(void);
 void initializeTaskFade(void);

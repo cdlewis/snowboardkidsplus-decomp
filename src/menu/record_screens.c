@@ -13,7 +13,7 @@
 #include "psx/libc.h"
 #include "psx/libgs.h"
 
-extern u8 D_8013AFE1 __attribute__((section(".data")));
+extern u8 gRaceResultCode __attribute__((section(".data")));
 extern s16 gFrameCounter __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
@@ -200,7 +200,7 @@ void drawHitCountPanel(TaskMemoryBlock *record) {
     sprintf(text, gHitCountTotalFormat, gRacePlayers[0].scoreAttackPointTarget);
     drawLimitedText8x8(-84, -20, 1, gHitCountMarker, 6, -1, &gMainOrderingTables[gActiveGraphicsBuffer], 1);
     drawLimitedText8x8(-60, -20, 10, text, 6, -1, &gMainOrderingTables[gActiveGraphicsBuffer], 1);
-    if (D_8013B18D) {
+    if (gAttackTimeExpired) {
         drawLimitedText8x8(-104, -4, 10, gHitCountTimeOutLabel, 4, -1, &gMainOrderingTables[gActiveGraphicsBuffer], 1);
     }
     drawSpriteByIndexWithBlend(-108, -36, 432, 0, -1, &gMainOrderingTables[gActiveGraphicsBuffer], 1);
@@ -280,7 +280,7 @@ void drawHitPrizeMoneyLabels(MenuFadeInResource *resource) {
     }
     y = -80;
     if (resource->unk0E == 0) y = -60;
-    if (D_8013B18D) {
+    if (gAttackTimeExpired) {
         drawLimitedText8x8(-8, y, 20, gHitPrizeOneGoldLabel, 5, -1, &gMainOrderingTables[gActiveGraphicsBuffer], 1);
     } else {
         drawLimitedText8x8(-12, y, 20, gHitPrizeFiftyGoldLabel, 5, -1, &gMainOrderingTables[gActiveGraphicsBuffer], 1);
@@ -534,7 +534,7 @@ void initializeTaskMenuFadeIn(void) {
     if (gSelectedCourseIndex == 9) {
         resource->unk0C = 100;
     }
-    if (D_8013B18D) {
+    if (gAttackTimeExpired) {
         resource->unk08 = gRacePlayers[0].scoreAttackPointTotal;
     } else {
         resource->unk08 = gRacePlayers[0].scoreAttackPointTotal * 50;
@@ -638,7 +638,7 @@ void drawRaceResultsLabels(RaceResultsFadeResource *resource) {
         setSpriteColor(128, 128, 128);
     }
 
-    if (!D_8013B18D) {
+    if (!gAttackTimeExpired) {
         drawLimitedText8x8(-104, -31, 10, gRaceResultsTargetLabel, 7, -1, &gMainOrderingTables[gActiveGraphicsBuffer], 1);
         sprintf(text, gRaceResultsTargetTimeFormat, D_80124220[gSelectedCourseIndex].minutes,
                 D_80124220[gSelectedCourseIndex].seconds, (s8)(D_80124220[gSelectedCourseIndex].centiseconds >> 8));
@@ -933,7 +933,7 @@ void initializeRaceResultsTask(void) {
         resource->displayTimer = 100;
     }
     calculateRaceTimeDifference(&D_80124220[gSelectedCourseIndex], &gRaceElapsedTime, &resource->difference);
-    if (D_8013B18D) {
+    if (gAttackTimeExpired) {
         resource->timeBonus = 0;
     } else {
         resource->timeBonus = (resource->difference.minutes * 60 + resource->difference.seconds) * 20;
@@ -960,7 +960,7 @@ void drawStatsMenuValues(TaskMemoryBlock *record) {
     }
     drawLimitedText8x8(-104, -64, 10, gStatsTrickLabel, 6, -1, &gMainOrderingTables[gActiveGraphicsBuffer], 1);
     drawLimitedText8x8(-100, -28, 10, gStatsMakeLabel, 5, -1, &gMainOrderingTables[gActiveGraphicsBuffer], 1);
-    if (D_8013B18D) {
+    if (gAttackTimeExpired) {
         drawLimitedText8x8(-108, 8, 10, gHitCountTimeOutLabel, 4, -1, &gMainOrderingTables[gActiveGraphicsBuffer], 1);
     }
     sprintf(text, gResultValueFormat, gRacePlayers[0].trickAttackPointTotal);
@@ -1277,7 +1277,7 @@ void initializeStatsMenuTask(void) {
     resource->brightness = 0;
     resource->makeBonus = 0;
     resource->completeBonus = 300;
-    if (D_8013B18D) {
+    if (gAttackTimeExpired) {
         resource->trickPrize = 0;
         resource->makeBonus = 0;
     } else {
@@ -1301,8 +1301,8 @@ void drawRaceTimeComparisonPanel(PanelResource *resource) {
         }
         drawSpriteByIndexWithBlend(-124, i * 104 - 88, i + 490, (s16)(i + 13), 0, &gMainOrderingTables[gActiveGraphicsBuffer], 1);
         drawLimitedText8x8(-80, i * 104 - 56, 20, gRaceComparisonLapTimeLabel, 5, -1, &gMainOrderingTables[gActiveGraphicsBuffer], 1);
-        drawRaceTime(&D_8013B190[i], -80, i * 104 - 48, 1, &gMainOrderingTables[gActiveGraphicsBuffer], 1);
-        if (D_8013B1A0[i] == 0) {
+        drawRaceTime(&gPlayerRaceTimes[i], -80, i * 104 - 48, 1, &gMainOrderingTables[gActiveGraphicsBuffer], 1);
+        if (gPlayerAttackTimeExpired[i] == 0) {
             drawLimitedText8x8(-80, i * 104 - 24, 20, gRaceResultsFastLabel, 7, -1, &gMainOrderingTables[gActiveGraphicsBuffer], 1);
             sprintf(text, gRaceResultsTimeDifferenceFormat, resource->time[i].minutes,
                     resource->time[i].seconds, resource->time[i].centiseconds >> 8);
@@ -1421,10 +1421,10 @@ void initializeRaceTimeComparisonPanel(void) {
     resource = (PanelResource *)&gTaskMemoryPool[gCurrentTask->resource14];
     resource->brightness = 0;
     resource->displayStage = 0;
-    if (D_8013AFE1 == 1) {
+    if (gRaceResultCode == 1) {
         resource->resultIcon[0] = 0;
         resource->resultIcon[1] = 1;
-    } else if (D_8013AFE1 == 2) {
+    } else if (gRaceResultCode == 2) {
         resource->resultIcon[0] = 1;
         resource->resultIcon[1] = 0;
     } else {
@@ -1434,13 +1434,13 @@ void initializeRaceTimeComparisonPanel(void) {
     for (i = 0; i < 2; i++) {
         switch (gRaceRuleset) {
         case 0:
-            calculateRaceTimeDifference(&D_80124220[gSelectedCourseIndex], &D_8013B190[i], &resource->time[i]);
+            calculateRaceTimeDifference(&D_80124220[gSelectedCourseIndex], &gPlayerRaceTimes[i], &resource->time[i]);
             break;
         case 1:
-            calculateRaceTimeDifference(&D_80124248[gSelectedCourseIndex], &D_8013B190[i], &resource->time[i]);
+            calculateRaceTimeDifference(&D_80124248[gSelectedCourseIndex], &gPlayerRaceTimes[i], &resource->time[i]);
             break;
         case 2:
-            calculateRaceTimeDifference(&D_8013B154, &D_8013B190[i], &resource->time[i]);
+            calculateRaceTimeDifference(&D_8013B154, &gPlayerRaceTimes[i], &resource->time[i]);
             break;
         }
     }

@@ -3913,7 +3913,7 @@ queueScanlineCopyPackets = 0x80051770; // type:func
 gScanlineCopyRect = 0x8013B250; // size:0x8 defined:true
 gScanlineSeedRect = 0x8013B258; // size:0x8 defined:true
 
-D_8013B18D = 0x8013B18D; // size:0x1
+gAttackTimeExpired = 0x8013B18D; // size:0x1
 D_8013B1A8 = 0x8013B1A8; // size:0x2
 
 initializeRaceRulesAndCounters = 0x80040A60; // type:func
@@ -4309,3 +4309,7 @@ gSelectedPlayerAction = 0x8013B0E4; // size:0x2
 
 gCourseGeometryTriangleRecords = 0x8013B1F0;
 gGeometryProjectionLength = 0x8013B62C;
+
+gRaceResultCode = 0x8013AFE1; // size:0x1
+gPlayerRaceTimes = 0x8013B190; // size:0x8
+gPlayerAttackTimeExpired = 0x8013B1A0; // size:0x2
