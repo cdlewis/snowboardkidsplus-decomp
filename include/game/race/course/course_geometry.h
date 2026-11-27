@@ -11,20 +11,13 @@ typedef struct CourseGeometryVertex {
 typedef struct GeometryRegion {
     s16 neighbors[4];
     s16 vertices[4];
-    s16 unk10[2];
+    s16 vertexIndex;
+    u16 angle;
     s16 firstRecord;
     s16 lastRecord;
     s16 unk18;
     u16 cornerFlags;
 } GeometryRegion;
-
-/* Geometry entries have a 0x1C-byte stride; the origin references a vertex. */
-typedef struct GeometryPlacement {
-    s16 unk00[8];
-    s16 vertexIndex;
-    u16 angle;
-    s16 unk14[4];
-} GeometryPlacement;
 
 typedef struct SelectedRecord {
     u16 vertexIndices[3];
@@ -58,7 +51,7 @@ extern s32 gGeometryResolvedZ __attribute__((section(".sdata.geometry_edge_proje
 
 
 /* Absolute-addressed view of the placement data used by task effects. */
-extern s16 *geometryPlacementDataAbsolute __attribute__((section(".data")));
+extern GeometryRegion *geometryPlacementDataAbsolute __attribute__((section(".data")));
 
 void bindGeometryRecordData(s16 *data);
 void selectGeometryRecord(s16 index);

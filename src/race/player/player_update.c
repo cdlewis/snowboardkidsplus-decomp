@@ -4209,7 +4209,7 @@ void updateCurrentPlayerState8Steering(void) {
         if (player->unk008 == 0 || player->unk92E != player->unk962) {
             goto movement;
         }
-        angle = ((GeometryPlacement *)geometryPlacementDataAbsolute)[player->unk92E].angle;
+        angle = geometryPlacementDataAbsolute[player->unk92E].angle;
         if (player->unk128 & 0x400) {
             angle += 0x800;
         }

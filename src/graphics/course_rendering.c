@@ -217,9 +217,9 @@ void getCourseSteeringTarget(s16 region, s32 x, s32 z, s32 *targetX, s32 *target
     SelectedCourseRecord *courses = gSelectedCourseRecords;
 
     if (region != (s16)courses[gSelectedCourseIndex].unk00) {
-        gGeometryProjectionBasisX = rsin(-(s16)((GeometryPlacement *)gCourseGeometryRegionData)[region].angle);
-        cosine = rcos(-(s16)((GeometryPlacement *)gCourseGeometryRegionData)[region].angle);
-        vertexIndex = ((GeometryPlacement *)gCourseGeometryRegionData)[region].vertexIndex;
+        gGeometryProjectionBasisX = rsin(-(s16)gCourseGeometryRegionData[region].angle);
+        cosine = rcos(-(s16)gCourseGeometryRegionData[region].angle);
+        vertexIndex = gCourseGeometryRegionData[region].vertexIndex;
         dx = x - gCourseGeometryVertexData[vertexIndex].x * 5;
         dz = z - gCourseGeometryVertexData[vertexIndex].z * 5;
         gGeometryProjectionBasisZ = cosine;
@@ -237,13 +237,13 @@ void getCourseSteeringTarget(s16 region, s32 x, s32 z, s32 *targetX, s32 *target
             *targetZ = gGeometryProjectionBasisZ * dz / 4096;
         }
 
-        *targetX += gCourseGeometryVertexData[((GeometryPlacement *)gCourseGeometryRegionData)[region].vertexIndex].x * 5;
-        *targetZ += gCourseGeometryVertexData[((GeometryPlacement *)gCourseGeometryRegionData)[region].vertexIndex].z * 5;
+        *targetX += gCourseGeometryVertexData[gCourseGeometryRegionData[region].vertexIndex].x * 5;
+        *targetZ += gCourseGeometryVertexData[gCourseGeometryRegionData[region].vertexIndex].z * 5;
 
         nextRegion = getAdjacentGeometryRegionForPoint(region, *targetX, *targetZ);
-        gGeometryProjectionBasisX = rsin(-(s16)((GeometryPlacement *)gCourseGeometryRegionData)[nextRegion].angle);
-        gGeometryProjectionBasisZ = rcos(-(s16)((GeometryPlacement *)gCourseGeometryRegionData)[nextRegion].angle);
-        vertexIndex = ((GeometryPlacement *)gCourseGeometryRegionData)[nextRegion].vertexIndex * 3;
+        gGeometryProjectionBasisX = rsin(-(s16)gCourseGeometryRegionData[nextRegion].angle);
+        gGeometryProjectionBasisZ = rcos(-(s16)gCourseGeometryRegionData[nextRegion].angle);
+        vertexIndex = gCourseGeometryRegionData[nextRegion].vertexIndex * 3;
         vertices = (s16 *)gCourseGeometryVertexData;
         vertexX = vertices[vertexIndex];
         vertexZ = vertices[vertexIndex + 2];
@@ -254,8 +254,8 @@ void getCourseSteeringTarget(s16 region, s32 x, s32 z, s32 *targetX, s32 *target
         lateral = (-gGeometryProjectionBasisX * dx + gGeometryProjectionBasisZ * dz) / 4096;
         *targetX = (gGeometryProjectionBasisZ * forward + -gGeometryProjectionBasisX * lateral) / 4096;
         *targetZ = (gGeometryProjectionBasisX * forward + gGeometryProjectionBasisZ * lateral) / 4096;
-        *targetX += gCourseGeometryVertexData[((GeometryPlacement *)gCourseGeometryRegionData)[nextRegion].vertexIndex].x * 5;
-        *targetZ += gCourseGeometryVertexData[((GeometryPlacement *)gCourseGeometryRegionData)[nextRegion].vertexIndex].z * 5;
+        *targetX += gCourseGeometryVertexData[gCourseGeometryRegionData[nextRegion].vertexIndex].x * 5;
+        *targetZ += gCourseGeometryVertexData[gCourseGeometryRegionData[nextRegion].vertexIndex].z * 5;
     } else {
         *targetX = (s32)courses[gSelectedCourseIndex].unk18[0] >> 8;
         *targetZ = (s32)courses[gSelectedCourseIndex].unk18[2] >> 8;

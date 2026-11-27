@@ -1479,7 +1479,7 @@ void initializePlacedObjectTask(void) {
     gCurrentTask->data1A = gCurrentCourseObjectPlacements[gCurrentTask->data18].unk01;
     resource->geometryIndex = gCurrentCourseObjectPlacements[gCurrentTask->data18].geometryIndex;
     resource->rotation.vx = 0;
-    resource->rotation.vy = ((GeometryPlacement *)geometryPlacementDataAbsolute)[resource->geometryIndex].angle;
+    resource->rotation.vy = geometryPlacementDataAbsolute[resource->geometryIndex].angle;
     resource->rotation.vz = 0;
     resource->groundCoordinate.coord.t[0] = gCurrentCourseObjectPlacements[gCurrentTask->data18].x;
     resource->groundCoordinate.coord.t[2] = gCurrentCourseObjectPlacements[gCurrentTask->data18].z;
@@ -1700,7 +1700,7 @@ void initializeBobbingTrailEmitterTask(void) {
 
     resource->geometryIndex = 0x59;
     resource->rotation.vx = 0;
-    angle = ((GeometryPlacement *)geometryPlacementDataAbsolute)[resource->geometryIndex].angle;
+    angle = geometryPlacementDataAbsolute[resource->geometryIndex].angle;
     resource->rotation.vz = 0;
     resource->coordinate.coord.t[0] = 0x8AF7;
     resource->coordinate.coord.t[1] = 0xB658;
@@ -1770,7 +1770,7 @@ void initializeProximityEmitterTask(void) {
     resource->coordinate.coord.t[2] = gProximityEmitterPlacements[gCurrentTask->data18].z;
     resource->geometryIndex = gProximityEmitterPlacements[gCurrentTask->data18].geometryIndex;
     resource->unkC0 = 0;
-    resource->angle = ((GeometryPlacement *)geometryPlacementDataAbsolute)[resource->geometryIndex].angle + 0x400;
+    resource->angle = geometryPlacementDataAbsolute[resource->geometryIndex].angle + 0x400;
     resource->unkC4 = 0;
     resource->countdown = 1;
     setCurrentTaskCallback(updateProximityEmitterTask);
@@ -2169,7 +2169,7 @@ void initializeCollectibleTask(void) {
     GsInitCoordinate2(0, &resource->coordinate);
     resource->geometryIndex = gCollectiblePlacements[gCurrentTask->data18].geometryIndex;
     resource->rotation.vx = 0;
-    resource->rotation.vy = ((GeometryPlacement *)geometryPlacementDataAbsolute)[resource->geometryIndex].angle;
+    resource->rotation.vy = geometryPlacementDataAbsolute[resource->geometryIndex].angle;
     resource->rotation.vz = 0;
     resource->coordinate.coord.t[0] = gCollectiblePlacements[gCurrentTask->data18].x;
     resource->coordinate.coord.t[2] = gCollectiblePlacements[gCurrentTask->data18].z;

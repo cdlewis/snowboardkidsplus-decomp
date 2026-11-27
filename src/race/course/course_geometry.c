@@ -190,19 +190,19 @@ s32 getGeometryPlacementSignedDistance(s16 index, s32 x, s32 z) {
     s32 vertexIndex;
     s32 dx, dz;
     s32 sine, cosine;
-    vertexIndex = ((GeometryPlacement *)gCourseGeometryRegionData)[index].vertexIndex;
+    vertexIndex = gCourseGeometryRegionData[index].vertexIndex;
     dx = x - gCourseGeometryVertexData[vertexIndex].x * 5;
     dz = z - gCourseGeometryVertexData[vertexIndex].z * 5;
-    sine = rsin((s16)((GeometryPlacement *)gCourseGeometryRegionData)[index].angle);
-    cosine = rcos((s16)((GeometryPlacement *)gCourseGeometryRegionData)[index].angle);
+    sine = rsin((s16)gCourseGeometryRegionData[index].angle);
+    cosine = rcos((s16)gCourseGeometryRegionData[index].angle);
     return (-sine * dx + cosine * -dz) / 4096;
 }
 
 void getGeometryPlacementTransform(s16 index, s32 *x, s32 *y, s32 *z, u16 *angle) {
-    *x = gCourseGeometryVertexData[((GeometryPlacement *)gCourseGeometryRegionData)[index].vertexIndex].x * 1280;
-    *y = gCourseGeometryVertexData[((GeometryPlacement *)gCourseGeometryRegionData)[index].vertexIndex].y * 1280;
-    *z = gCourseGeometryVertexData[((GeometryPlacement *)gCourseGeometryRegionData)[index].vertexIndex].z * 1280;
-    *angle = ((GeometryPlacement *)gCourseGeometryRegionData)[index].angle;
+    *x = gCourseGeometryVertexData[gCourseGeometryRegionData[index].vertexIndex].x * 1280;
+    *y = gCourseGeometryVertexData[gCourseGeometryRegionData[index].vertexIndex].y * 1280;
+    *z = gCourseGeometryVertexData[gCourseGeometryRegionData[index].vertexIndex].z * 1280;
+    *angle = gCourseGeometryRegionData[index].angle;
 }
 
 void reflectVelocityAndEnforceGeometryEdgeDistance(s32 *velocityX, s32 *velocityZ, s32 limit) {
