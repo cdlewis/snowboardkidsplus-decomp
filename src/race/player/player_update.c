@@ -44,6 +44,9 @@ typedef struct PlayerVariantAttributeTable {
     u16 padding;
 } PlayerVariantAttributeTable;
 
+RacePlayer gRacePlayers[4]
+    __attribute__((section(".data.race_players"), aligned(4))) = {0};
+
 VECTOR gSharedScratchVector
     __attribute__((section(".data.shared_scratch_vector"), aligned(4))) = {0, 0, 0, 0};
 
