@@ -4486,3 +4486,7 @@ gMemoryCardSlotChoiceSprites = 0x80130800;
 
 gDoubleByteGlyphCodes16x16Page2 = 0x8012EECC; // size:0x204
 gDoubleByteGlyphCodes16x16Page3 = 0x8012F0D0; // size:0x30
+
+gMemoryCardLoadRetryConfirmationText = 0x801303CC; // size:0x20
+gMemoryCardLoadInProgressText = 0x8013052C; // size:0x4C
+gMemoryCardLoadSlotChoiceText = 0x8013066C; // size:0x28

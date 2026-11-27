@@ -264,8 +264,10 @@ void transitionRegisteredPlayerModelTexture(void);
 void createPaletteEntryCopyTask(s32 x, s32 y, s32 destination, s32 source, s32 index);
 extern const u16 gMemoryCardMissingRetryText[32];
 extern const u16 gMemoryCardLoadErrorRetryText[36];
-extern const u16 D_801303CC[], D_8013052C[];
-extern const u16 D_8013066C[], D_801306EC[], D_80130780[];
+extern const u16 gMemoryCardLoadRetryConfirmationText[16];
+extern const u16 gMemoryCardLoadInProgressText[38];
+extern const u16 gMemoryCardLoadSlotChoiceText[20];
+extern const u16 D_801306EC[], D_80130780[];
 
 void updateSaveRecordLoadPanelTask(void);
 void drawSaveRecordPushAnyButtonPrompt(void);
@@ -3641,7 +3643,7 @@ void updateSaveRecordLoadPanelTask(void) {
         break;
     case 30: {
         s32 otherPlayer = player != 0;
-        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_8013066C, -1,
+        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, gMemoryCardLoadSlotChoiceText, -1,
                                               (otherPlayer << 8) | color, 1, gMemoryCardSlotChoiceSprites,
                                               gCurrentTask->data1C - 3, 11);
         gCurrentTask->data18 = 31;
@@ -3709,7 +3711,7 @@ void updateSaveRecordLoadPanelTask(void) {
             break;
         gCurrentTask->data18 = 8;
     case 8:
-        createRegisteredStaticTextPanelTask(x, y, x + 4, y + 2, D_8013052C, -1, gCurrentTask->data1C - 3, 11);
+        createRegisteredStaticTextPanelTask(x, y, x + 4, y + 2, gMemoryCardLoadInProgressText, -1, gCurrentTask->data1C - 3, 11);
         gCurrentTask->data18 = 9;
     case 9:
         result = gMemoryCardSlotHistory.current[menu->cardSlot];
@@ -3806,7 +3808,7 @@ void updateSaveRecordLoadPanelTask(void) {
         if (resources->panels[1].flags == 0)
             break;
     case 40:
-        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, D_801303CC, -1, color,
+        createRegisteredDetailedTextPanelTask(x, y, x + 4, y + 2, gMemoryCardLoadRetryConfirmationText, -1, color,
                                               1, gSaveRecordConfirmationSprites, gCurrentTask->data1C - 3, 11);
         gCurrentTask->data18 = 41;
         break;
