@@ -233,6 +233,19 @@ u8 gPlayerProjectileBounceChoices[4][8]
         {0, 0, 0, 0, 0, 0, 0, 0}
     };
 
+u8 gPlayerModelArchiveIndices[16]
+    __attribute__((section(".data.player_model_resource_defaults"), aligned(4))) = {
+        1, 2, 0, 1, 2, 0, 1, 2, 0, 3, 4, 5, 6, 7, 8, 0
+    };
+
+u8 gDefaultPlayerResourceTextureSelections[15]
+    __attribute__((section(".data.player_model_resource_defaults"), aligned(4))) = {
+        0, 6, 1, 4, 3, 8, 5, 11, 13, 14, 15, 16, 17, 18, 19
+    };
+
+u8 gPlayerModelResourceDefaultsPadding
+    __attribute__((section(".data.player_model_resource_defaults"))) = 0;
+
 const u32 gPlayerProjectileUseTablePadding
     __attribute__((section(".rodata.player_projectile_use_padding"))) = 0;
 

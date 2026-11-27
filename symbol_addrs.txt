@@ -4442,8 +4442,8 @@ gSceneTextColon = 0x8013B5C4; // size:0x4
 
 gSelectionMenuMusicStarted = 0x8013B564; // size:0x2
 
-gPlayerModelArchiveIndices = 0x80123640; // size:0x10
-gDefaultPlayerResourceTextureSelections = 0x80123650; // size:0x10
+gPlayerModelArchiveIndices = 0x80123640; // size:0x10 defined:true
+gDefaultPlayerResourceTextureSelections = 0x80123650; // size:0xF defined:true
 gCoursePlacementPrizes = 0x8012FC6C; // size:0x78
 
 gLapSplitTime = 0x8013B188; // type:RaceTime size:0x4
@@ -4556,3 +4556,5 @@ sPcHostErrorPadding = 0x80012350; // size:0x4
 padEntryRodataPadding = 0x80013018; // size:0x8
 
 gMemoryCardIconTemplate = 0x800EB388; // size:0x1A0
+
+gPlayerModelResourceDefaultsPadding = 0x8012365F; // size:0x1 defined:true
