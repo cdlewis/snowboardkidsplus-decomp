@@ -2773,7 +2773,7 @@ gCourseOpponentCharacters = 0x80120450; // size:0x28 defined:true
 gCourseOpponentBoardSelections = 0x80120478; // size:0xC defined:true
 gRacePlayerSoundSectorRanges = 0x801203EC; // size:0x50 defined:true
 gRacePlaybackSectorRanges = 0x8012043C; // size:0x14 defined:true
-D_80120484 = 0x80120484; // size:0xC defined:true
+gCourseCpuItemUseThresholds = 0x80120484; // size:0xC defined:true
 gRaceStartupPlayerPresets1 = 0x80120490; // size:0xC defined:true
 gRaceStartupPlayerPresets5 = 0x8012049C; // size:0xC defined:true
 gPlayerTextureOrigins = 0x801204D4; // size:0x10
@@ -4369,3 +4369,7 @@ gNextRaceFinishSlot = 0x8013AFDB;
 gPlayerCollisionHeading = 0x8013B0E6;
 gPlayerCollisionSpeed = 0x8013B0E8;
 gSelectedGeometryVertex0 = 0x8013B200;
+
+gRacePauseMenuSelection = 0x8013AFD5; // size:0x1
+gRaceExitRequested = 0x8013B1AA; // size:0x1
+gRaceRestartRequested = 0x8013B1AB; // size:0x1

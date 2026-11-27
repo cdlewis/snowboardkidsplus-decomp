@@ -55,8 +55,8 @@ extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern GameTask *gCurrentTaskParent __attribute__((section(".data")));
 extern u32 gTaskTransitionFlags __attribute__((section(".data")));
 extern u8 gDemoRaceIndex __attribute__((section(".data")));
-extern u8 D_8013B1AA __attribute__((section(".data")));
-extern u8 D_8013B1AB __attribute__((section(".data")));
+extern u8 gRaceExitRequested __attribute__((section(".data")));
+extern u8 gRaceRestartRequested __attribute__((section(".data")));
 
 extern const u8 D_80123B50[];
 extern const u8 D_8013B0FC[];
@@ -1159,9 +1159,9 @@ void updateBoardReversePromptTask(void) {
     GameTask *drawTask;
     u16 frame;
 
-    if ((flags & 0x40) || D_8013B1AA) {
+    if ((flags & 0x40) || gRaceExitRequested) {
         deleteCurrentTaskSubtree();
-    } else if (!D_8013B1AB) {
+    } else if (!gRaceRestartRequested) {
         if (flags & 0x400) {
             if (task->data1A < 30) {
                 task->data1A++;

@@ -157,7 +157,7 @@ void resetStateAndBeginResourceLoadTransition(u8 requestLoad);
 /* One-based attract-mode race selection; zero selects normal play. */
 extern u8 gDemoRaceIndex;
 
-extern u8 D_8013AFD5;
+extern u8 gRacePauseMenuSelection;
 
 void prepareRacePlayersAndQueueResources(void);
 void initializeViewAndSelectTaskCallback(void);

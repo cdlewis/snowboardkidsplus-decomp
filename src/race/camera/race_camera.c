@@ -20,7 +20,7 @@ extern VECTOR *gScratchVector0 __attribute__((section(".data")));
 extern SVECTOR *gScratchShortVector0 __attribute__((section(".data")));
 extern SVECTOR *gScratchShortVector1 __attribute__((section(".data")));
 extern MATRIX *gScratchMatrix0 __attribute__((section(".data")));
-extern u8 D_8013B1AB __attribute__((section(".data")));
+extern u8 gRaceRestartRequested __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern u32 gTaskTransitionFlags __attribute__((section(".data")));
 extern u8 gDemoRaceIndex __attribute__((section(".data")));
@@ -257,7 +257,7 @@ void updateRaceIntroCameraTask(void) {
             queueCdCommand(D_80124164[gSelectedCourseIndex], 0);
             playSoundEffect(0, 0x101, 32);
             gTaskTransitionFlags = 0;
-            D_8013B1AB = 0;
+            gRaceRestartRequested = 0;
         }
         setCurrentTaskCallback(updateCurrentPlayerCameraTask);
     }

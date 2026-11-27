@@ -24,7 +24,7 @@ extern s16 gFrameCounter __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
 extern u32 gGameOptionFlags __attribute__((section(".data")));
-extern u8 D_8013AFD5 __attribute__((section(".data")));
+extern u8 gRacePauseMenuSelection __attribute__((section(".data")));
 extern u8 gRacePauseState __attribute__((section(".data")));
 
 const char gLapTimeLabel[12] __attribute__((section(".rodata.lap_time_label"), aligned(4))) = "LAP TIME";
@@ -130,9 +130,9 @@ s32 calculateRaceTimeDifference(const RaceTime *a, const RaceTime *b, RaceTime *
 }
 
 void initializeRacePauseMenuTask(void) {
-    D_8013AFD5 = 0;
-    D_8013B1AA = 0;
-    D_8013B1AB = 0;
+    gRacePauseMenuSelection = 0;
+    gRaceExitRequested = 0;
+    gRaceRestartRequested = 0;
     setCurrentTaskCallback(updateRacePauseMenu);
 }
 
@@ -145,18 +145,18 @@ void updateRacePauseMenu(void) {
         resumeState = pause | PAUSE_MENU_RESUME_PENDING;
         goto resume;
     }
-    if ((gControllerPressedButtons[player] & PAUSE_MENU_UP) && D_8013AFD5 != 0) {
-        D_8013AFD5--;
+    if ((gControllerPressedButtons[player] & PAUSE_MENU_UP) && gRacePauseMenuSelection != 0) {
+        gRacePauseMenuSelection--;
         playSoundEffect(0, 0x100, 0x20);
     }
     if (gControllerPressedButtons[player] & PAUSE_MENU_DOWN) {
-        if (D_8013AFD5 < 4) {
-            D_8013AFD5++;
+        if (gRacePauseMenuSelection < 4) {
+            gRacePauseMenuSelection++;
             playSoundEffect(0, 0x100, 0x20);
         }
     }
 
-    switch (D_8013AFD5) {
+    switch (gRacePauseMenuSelection) {
     case 0:
         if (gControllerPressedButtons[player] & PAUSE_MENU_CONFIRM) {
             playSoundEffect(0, 0, 0x20);
@@ -170,7 +170,7 @@ resume:
     case 1:
         if (gControllerPressedButtons[player] & PAUSE_MENU_CONFIRM) {
             playSoundEffect(0, 0, 0x20);
-            D_8013B1AA = 1;
+            gRaceExitRequested = 1;
             gRacePauseState |= PAUSE_MENU_RESUME_PENDING;
             resetControllersAndDeleteCurrentTask();
             return;
@@ -179,7 +179,7 @@ resume:
     case 2:
         if (gControllerPressedButtons[player] & PAUSE_MENU_CONFIRM) {
             playSoundEffect(0, 0, 0x20);
-            D_8013B1AB = 1;
+            gRaceRestartRequested = 1;
             gRacePauseState |= PAUSE_MENU_RESUME_PENDING;
             resetControllersAndDeleteCurrentTask();
             return;
@@ -239,7 +239,7 @@ void drawRacePauseMenu(void) {
     x = -20;
     for (; row < 3; row++) {
         palette = 6;
-        if (row == D_8013AFD5) {
+        if (row == gRacePauseMenuSelection) {
             palette = 7;
         }
         drawSpriteByIndexWithBlend(x - 28, y, 412 + row, palette, -1, &gMainOrderingTables[gActiveGraphicsBuffer], 0);
@@ -247,7 +247,7 @@ void drawRacePauseMenu(void) {
     }
 
     palette = 6;
-    if (D_8013AFD5 == 3) {
+    if (gRacePauseMenuSelection == 3) {
         palette = 7;
     }
     x -= 28;
@@ -257,7 +257,7 @@ void drawRacePauseMenu(void) {
     drawSpriteByIndexWithBlend(x, y, sprite, palette, -1, &gMainOrderingTables[gActiveGraphicsBuffer], 0);
     palette = 6;
     y += 14;
-    if (D_8013AFD5 == 4) {
+    if (gRacePauseMenuSelection == 4) {
         palette = 7;
     }
     sprite = getPlayerOptionFlag(player);

@@ -20,8 +20,8 @@ extern s16 gMemoryCardTaskState;
 extern u8 D_8013B562 __attribute__((section(".data")));
 extern s16 gSelectedCourseMenuItem;
 extern s16 selectedCourseMenuItemAbsolute __attribute__((section(".data")));
-extern u8 D_8013B1AA;
-extern u8 D_8013B1AB;
+extern u8 gRaceExitRequested;
+extern u8 gRaceRestartRequested;
 extern u16 D_8013AFE8;
 
 int strcmp(const char *, const char *);

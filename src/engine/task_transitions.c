@@ -56,8 +56,8 @@ extern u16 gActiveGraphicsBuffer __attribute__((section(".data")));
 extern s16 gPlayerViewWidthReduction __attribute__((section(".data")));
 extern s16 gPlayerViewVerticalOffset __attribute__((section(".data")));
 extern u16 gGameStateFlags __attribute__((section(".data")));
-extern u8 D_8013B1AA __attribute__((section(".data")));
-extern u8 D_8013B1AB __attribute__((section(".data")));
+extern u8 gRaceExitRequested __attribute__((section(".data")));
+extern u8 gRaceRestartRequested __attribute__((section(".data")));
 extern GameTask *gCurrentTask __attribute__((section(".data")));
 extern GameTask *gCreatedTask __attribute__((section(".data")));
 extern GameTask *gPauseTaskResumeAnchor __attribute__((section(".data")));
@@ -139,7 +139,7 @@ u8 gCourseOpponentBoardSelections[12] __attribute__((section(".data.course_race_
     1, 1, 4, 4, 4, 7, 7, 0, 7, 1, 0, 0,
 };
 
-u8 D_80120484[12] __attribute__((section(".data.course_race_setup"))) = {
+u8 gCourseCpuItemUseThresholds[12] __attribute__((section(".data.course_race_setup"))) = {
     20, 30, 40, 40, 60, 80, 128, 0, 255, 10, 0, 0,
 };
 
@@ -439,8 +439,8 @@ void queueRaceStartupResourcesTask(void) {
                     gRacePlayers[0].unk008 = 0;
                 } else {
                     player->unk008 = 1;
-                    player->unk02C[0] = D_80120484[gSelectedCourseIndex];
-                    player->unk02C[1] = D_80120484[gSelectedCourseIndex];
+                    player->unk02C[0] = gCourseCpuItemUseThresholds[gSelectedCourseIndex];
+                    player->unk02C[1] = gCourseCpuItemUseThresholds[gSelectedCourseIndex];
                     player->unk025[3] = i;
                 }
             }
@@ -494,8 +494,8 @@ void queueRaceStartupResourcesTask(void) {
                     gRacePlayers[0].unk008 = 0;
                 } else {
                     player->unk008 = 1;
-                    player->unk02C[0] = D_80120484[gSelectedCourseIndex];
-                    player->unk02C[1] = D_80120484[gSelectedCourseIndex];
+                    player->unk02C[0] = gCourseCpuItemUseThresholds[gSelectedCourseIndex];
+                    player->unk02C[1] = gCourseCpuItemUseThresholds[gSelectedCourseIndex];
                     player->unk025[3] = i;
                 }
             }
@@ -507,7 +507,7 @@ void queueRaceStartupResourcesTask(void) {
         resetGameplayRng();
         gRacePauseState = 0;
         D_8013AFD4 = 0;
-        D_8013AFD5 = 0;
+        gRacePauseMenuSelection = 0;
         gSelectedPlayerReplayActive = 0;
         gRaceResultCode = 0;
         gModeSequenceStage = 0;
@@ -556,7 +556,7 @@ void initializeRacePresentationTask(void) {
     s16 i;
 
     setSecondaryDisplayTaskMode(0);
-    if (!D_8013B1AB) {
+    if (!gRaceRestartRequested) {
         initializeCourseModels();
     }
     initializeRacePlayerEffects();
@@ -681,7 +681,7 @@ void updateActiveRaceTask(void) {
         gRacePauseState = 0;
     }
     updateRaceHud();
-    if (!(gTaskTransitionFlags & 1) && D_8013B1AB) {
+    if (!(gTaskTransitionFlags & 1) && gRaceRestartRequested) {
         gCurrentTask->data18 = 30;
         configureTaskStateTransition(2, 0, 30);
         setControllerFlag5(0);
@@ -690,7 +690,7 @@ void updateActiveRaceTask(void) {
         setCurrentTaskCallback(finishRaceExitAfterCountdown);
         return;
     }
-    if (D_8013B1AA) {
+    if (gRaceExitRequested) {
         gCurrentTask->data18 = 30;
         configureTaskStateTransition(2, 0, 30);
         if (gMainMenuSelectionIndex == 2) {
@@ -1021,7 +1021,7 @@ void finishRaceExitAfterCountdown(void) {
     }
     if (--gCurrentTask->data18 == 0) {
         stopPlayerSound(0);
-        if (!gDemoRaceIndex && !D_8013B1AA && !D_8013B1AB && !gMainMenuSelectionIndex && gPlayerCount == 1) {
+        if (!gDemoRaceIndex && !gRaceExitRequested && !gRaceRestartRequested && !gMainMenuSelectionIndex && gPlayerCount == 1) {
             player = &gRacePlayers[0];
             if (player->unk935 < 3) {
                 unlockTier = updateRaceUnlockProgress(player->characterId, player->unk935);
@@ -1060,7 +1060,7 @@ void finishRaceExitAfterCountdown(void) {
             }
         }
 
-        D_8013B1AA = 0;
+        gRaceExitRequested = 0;
         resetPendingCdRequests();
         gGameStateFlags = (gGameStateFlags | 0x1090) & ~0x2000;
         gSelectedPlayerReplayActive = 0;
@@ -1081,7 +1081,7 @@ void finishRaceExitAfterCountdown(void) {
         }
         if (gPlayerCount == 2) {
             startThreeFrameScreenBlend();
-        } else if (D_8013B1AB) {
+        } else if (gRaceRestartRequested) {
             setCurrentTaskCallback(initializeRaceRestartTask);
         } else {
             setCurrentTaskCallback(initializeGameOptionViewTask);
@@ -1093,7 +1093,7 @@ void finishRaceExitAfterCountdown(void) {
 
 void updateThreeFrameScreenBlend(void) {
     if (--gCurrentTask->data18 == 0) {
-        if (D_8013B1AB) {
+        if (gRaceRestartRequested) {
             setCurrentTaskCallback(initializeRaceRestartTask);
         } else {
             setCurrentTaskCallback(initializeGameOptionViewTask);
@@ -1231,7 +1231,7 @@ void prepareRacePlayersAndQueueResources(void) {
 
     gRacePauseState = 0;
     D_8013AFD4 = 0;
-    D_8013AFD5 = 0;
+    gRacePauseMenuSelection = 0;
     gSelectedPlayerReplayActive = 0;
     gRaceResultCode = 0;
     gModeSequenceStage = 0;
@@ -1243,8 +1243,8 @@ void prepareRacePlayersAndQueueResources(void) {
         } else {
             gRacePlayers[i].unk008 = 1;
         }
-        gRacePlayers[i].unk02C[0] = D_80120484[gSelectedCourseIndex];
-        gRacePlayers[i].unk02C[1] = D_80120484[gSelectedCourseIndex];
+        gRacePlayers[i].unk02C[0] = gCourseCpuItemUseThresholds[gSelectedCourseIndex];
+        gRacePlayers[i].unk02C[1] = gCourseCpuItemUseThresholds[gSelectedCourseIndex];
         if (gPlayerCount != 1) {
             gRacePlayers[i].unk02C[0] = 0;
             gRacePlayers[i].unk02C[1] = 0;
@@ -1420,7 +1420,7 @@ void initializeCurrentPlayerModelObjects(u32 *model) {
     objects = ++model;
     gCurrentRacePlayer->modelPartCount = *(u8 *)objects;
     objects = ++model;
-    if (!D_8013B1AB && !D_8013B562 && !selectedPlayerReplayActiveAbsolute) {
+    if (!gRaceRestartRequested && !D_8013B562 && !selectedPlayerReplayActiveAbsolute) {
         loadCurrentPlayerModelBlock();
         if (gCurrentTask->data18) {
             offsetTmdObjectTextures(0, (TmdObject *)objects, &gPlayerRootTextureOffsets[gCurrentTask->data18]);
