@@ -1128,7 +1128,7 @@ segments:
       - {start: 0x12BC78, type: .data, name: menu/course_selection_tasks, linker_section: .data.save_record_progress_currency_label}
       - {start: 0x12BC7C, type: .data, name: menu/save_record_tasks, linker_section: .sdata.save_record_saved_or_loaded}
       - {start: 0x12BC80, type: .data, name: menu/save_record_tasks, linker_section: .data.memory_card_save_record_currency_label}
-      - [0x12BC84, data, 12BC84]
+      - {start: 0x12BC84, type: .sdata, name: menu/course_selection_tasks, linker_section: .sdata.working_save_records, linker_section_order: .data}
       - {start: 0x12BC8C, type: .data, name: menu/panel_tasks, linker_section: .data.shop_menu_mappings}
       - {start: 0x12BC9C, type: .data, name: menu/panel_tasks, linker_section: .data.board_shop_mode_text_mapping}
       - [0x12BCA0, data]

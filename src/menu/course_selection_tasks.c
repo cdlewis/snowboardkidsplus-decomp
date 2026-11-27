@@ -93,6 +93,9 @@ typedef struct SaveRecordTaskStatus {
     s16 secondResult;
 } SaveRecordTaskStatus;
 
+SaveRecord *gWorkingSaveRecords[2]
+    __attribute__((section(".sdata.working_save_records"), aligned(4))) = {0, 0};
+
 const GridSpriteEntry gCourseMenuSpriteEntries[14]
     __attribute__((section(".data.course_menu_data"), aligned(4))) = {
     {150, 0, 0, 0},

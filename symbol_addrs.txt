@@ -4339,7 +4339,7 @@ gMemoryCardChanged = 0x8013B60C;
 gMemoryCardDirectorySearchPattern = 0x8013AF3C; // size:0x2
 
 gMemoryCardTaskState = 0x8013AF3E; // size:0x2
-gWorkingSaveRecords = 0x8013B484;
+gWorkingSaveRecords = 0x8013B484; // size:0x8 defined:true
 gSelectionPanelTripletIndices = 0x8013B450; // size:0x4
 
 gUnreferencedQuadLists = 0x80123C90; // size:0xF0
