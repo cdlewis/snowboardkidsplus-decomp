@@ -1,5 +1,10 @@
 #include "common.h"
 
+/* FERR's SDK object has an unnamed, unreferenced prefix before its error globals. */
+static u32 sMathErrorDataPrefix[2] __attribute__((section(".data.math_error"), aligned(4))) = {
+    0x210B7350, 0x004245AD,
+};
+
 s32 math_errno __attribute__((section(".data.math_error"), aligned(4))) = 0;
 s32 math_err_point __attribute__((section(".data.math_error"), aligned(4))) = 0;
 extern int DeliverEvent(u32, u32);

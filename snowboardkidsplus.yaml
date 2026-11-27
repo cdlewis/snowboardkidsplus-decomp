@@ -944,8 +944,7 @@ segments:
       - {start: 0x12338C, type: .data, name: scene/scene_events, linker_section: .data.scene_cd_audio_default_resources}
       - {start: 0x123398, type: .data, name: scene/scene_event_tasks, linker_section: .data.scene_image_sector_ranges}
       - {start: 0x123554, type: .data, name: scene/scene_loading, linker_section: .data.scene_sound_bank_sectors}
-      - [0x1235B4, data, scene_image_sector_ranges_tail]
-      - {start: 0x1235BC, type: .data, name: syslib/libmath/ferr, linker_section: .data.math_error}
+      - {start: 0x1235B4, type: .data, name: syslib/libmath/ferr, linker_section: .data.math_error}
       - [0x1235C4, lib, libsnd, ssinit, .data]
       - [0x123604, lib, libspu, s_ini, .data]
       - [0x123684, lib, libspu, spu, .data]

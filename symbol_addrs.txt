@@ -1316,6 +1316,7 @@ gMusicSequenceActive = 0x8013AF2C; // size:0x1
 // Recovered SDK data names.
 _svm_cur = 0x8013CFC0; // size:0x20
 // PSY-Q 4.7: LIBMATH.LIB/FERR.OBJ
+sMathErrorDataPrefix = 0x80132DB4; // size:0x8 defined:true
 math_errno = 0x80132DBC;
 // PSY-Q 4.7: LIBMATH.LIB/FERR.OBJ
 math_err_point = 0x80132DC0;
