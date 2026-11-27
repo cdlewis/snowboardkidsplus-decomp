@@ -88,7 +88,6 @@ static const u32 sBoardSelectionDetailsJumpTablePadding
 extern const GridSpriteEntry gBoardMenuSprites[18];
 extern GroupedSelectionDescriptor gBoardMenuSelectionDescriptors[3];
 extern volatile u8 shopMenuRememberedSelectionGp;
-extern const GridSpriteEntry gMoneyPanelSelectionSprites[3];
 extern const u8 gMoneyPanelSelectionTextMapping[4];
 
 extern char gShopCurrencySuffix[];
@@ -237,6 +236,26 @@ static const GridSpriteEntry sBoardShopModeSprites[3]
 static const s8 sShopCharacterTextureIndices[12]
     __attribute__((section(".data.board_shop_sprites"), aligned(4))) = {
     3, 1, 4, 5, 2, 9, 8, 10, 11, 12, 0, 0,
+};
+
+const GridSpriteEntry gMoneyPanelSelectionSprites[3]
+    __attribute__((section(".data.shop_menu_selection_data"), aligned(4))) = {
+    {0x134, 0, 0, 0},
+    {0x135, 0, 0, 0},
+    {0xC7, 0, 0, 0},
+};
+
+const u16 gMoneyPanelSelectionSpritesPadding
+    __attribute__((section(".data.shop_menu_selection_data"))) = 0;
+
+u8 gShopBoardUnlockFlagIndices[12]
+    __attribute__((section(".data.shop_menu_selection_data"), aligned(4))) = {
+    0, 3, 6, 1, 4, 7, 2, 5, 8, 9, 10, 11,
+};
+
+u32 gShopBoardPrices[12]
+    __attribute__((section(".data.shop_menu_selection_data"), aligned(4))) = {
+    0, 0, 0, 12000, 10000, 11000, 24000, 20000, 22000, 80000, 100000, 1000,
 };
 
 static const u8 sBoardShopModeTextMapping[4]

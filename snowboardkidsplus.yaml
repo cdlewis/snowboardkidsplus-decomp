@@ -886,7 +886,7 @@ segments:
       - {start: 0x121C3C, type: .data, name: menu/panel_tasks, linker_section: .data.shop_menu_text_bodies}
       - {start: 0x121F94, type: .data, name: menu/panel_tasks, linker_section: .data.shop_menu_texts}
       - {start: 0x121FD0, type: .data, name: menu/panel_tasks, linker_section: .data.board_shop_sprites}
-      - [0x121FF0, data, shop_menu_data_tail]
+      - {start: 0x121FF0, type: .data, name: menu/panel_tasks, linker_section: .data.shop_menu_selection_data}
       - {start: 0x122040, type: .data, name: menu/panel_tasks, linker_section: .data.board_selection_levels}
       - {start: 0x12204C, type: .data, name: menu/panel_tasks, linker_section: .data.board_style_text}
       - {start: 0x12205C, type: .data, name: menu/panel_tasks, linker_section: .data.board_selection_styles}
