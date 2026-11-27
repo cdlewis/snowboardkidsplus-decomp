@@ -336,6 +336,11 @@ u16 litObjectDrawAreaDepths[4] __attribute__((section(".data.lit_object_draw_are
     0x30, 0x20, 0x50, 0x3E
 };
 
+MenuModelSelectionPair gMenuPlayerTextureSelections[1]
+    __attribute__((section(".data.menu_player_texture_selections"), aligned(4))) = {
+    {0, 0},
+};
+
 HalfwordPair D_8012F13C[16] __attribute__((section(".data"))) = {0};
 
 TexturedQuadListEntry taskIndexPanelQuadsPalette0[10] __attribute__((section(".data.task_index_panel_quads"))) = {

@@ -1122,7 +1122,7 @@ segments:
       - {start: 0x12BC20, type: .data, name: menu/course_selection_tasks, linker_section: .data.grouped_selection_indices}
       - {start: 0x12BC5C, type: .data, name: menu/course_selection_tasks, linker_section: .data.registered_triplet_unavailable_label}
       - {start: 0x12BC60, type: .data, name: menu/course_selection_tasks, linker_section: .data.lit_object_draw_area_depths}
-      - [0x12BC68, data, 12BC68]
+      - {start: 0x12BC68, type: .data, name: menu/course_selection_tasks, linker_section: .data.menu_player_texture_selections}
       - {start: 0x12BC6C, type: .data, name: menu/course_selection_tasks, linker_section: .data.player_grouped_selection_transition_flags}
       - {start: 0x12BC70, type: .data, name: menu/panel_tasks, linker_section: .data.registered_panel_mode_labels}
       - {start: 0x12BC78, type: .data, name: menu/course_selection_tasks, linker_section: .data.save_record_progress_currency_label}
