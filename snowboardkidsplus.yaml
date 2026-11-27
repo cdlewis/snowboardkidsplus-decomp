@@ -155,7 +155,7 @@ segments:
       - {start: 0x255C, type: .rodata, name: menu/panel_tasks, linker_section: .rodata.board_shop_mode}
       - {start: 0x2590, type: .rodata, name: menu/panel_tasks, linker_section: .rodata.board_shop_mode_padding}
       - {start: 0x2594, type: .rodata, name: menu/panel_tasks, linker_section: .rodata.money_panel_selection}
-      - [0x25C8, rodata]
+      - {start: 0x25C8, type: .rodata, name: menu/panel_tasks, linker_section: .rodata.board_style_text}
       - {start: 0x2600, type: .rodata, name: menu/panel_tasks, linker_section: .rodata.selected_board_details}
       - {start: 0x2618, type: .rodata, name: menu/panel_tasks, linker_section: .rodata.grouped_selection_bounds}
       - {start: 0x2654, type: .rodata, name: menu/panel_tasks, linker_section: .rodata.grouped_selection_bounds_padding}

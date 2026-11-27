@@ -120,7 +120,6 @@ typedef struct SplitSelectionBoundsConfigs {
 
 extern s16 gMenuTextureResourceId __attribute__((section(".data")));
 
-extern s8 gBoardStyleTextBytes[0x38];
 extern u32 gCharacterBoardPrices[50];
 
 extern u8 gBoardSelectionLevels[12] __attribute__((section(".data.board_selection_levels")));

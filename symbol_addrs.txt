@@ -4268,7 +4268,10 @@ gMenuSelectionStates = 0x801300AC; // size:0xC
 gMenuModelDrawAreas = 0x801300B8; // size:0x20
 gCurrentTaskParent = 0x8013AE98; // size:0x4
 
-gBoardStyleTextBytes = 0x80011DC8; // size:0x38
+gBoardStyleFreestyleText = 0x80011DC8; // size:0x10
+gBoardStyleAllRoundText = 0x80011DD8; // size:0x10
+gBoardStyleAlpineText = 0x80011DE8; // size:0xC
+gBoardStyleSpecialText = 0x80011DF4; // size:0xC
 gBoardMenuSprites = 0x80131868; // size:0x6C
 gBoardMenuSelectionDescriptors = 0x801318D4; // size:0x3C
 gTaskPanelSelectionValues = 0x8013B508; // size:0x4

@@ -226,8 +226,29 @@ u8 gBoardSelectionLevels[12] __attribute__((section(".data.board_selection_level
     1, 1, 1, 2, 2, 2, 3, 3, 3, 1, 2, 3
 };
 
+const u8 gBoardStyleFreestyleText[16]
+    __attribute__((section(".rodata.board_style_text"), aligned(4))) = {
+    0x83, 0x74, 0x83, 0x8A, 0x81, 0x7C, 0x83, 0x58, 0x83, 0x5E, 0x83, 0x43, 0x83, 0x8B, 0, 0
+};
+
+const u8 gBoardStyleAllRoundText[16]
+    __attribute__((section(".rodata.board_style_text"), aligned(4))) = {
+    0x83, 0x49, 0x81, 0x7C, 0x83, 0x8B, 0x83, 0x89, 0x83, 0x45, 0x83, 0x93, 0x83, 0x68, 0, 0
+};
+
+const u8 gBoardStyleAlpineText[12]
+    __attribute__((section(".rodata.board_style_text"), aligned(4))) = {
+    0x83, 0x41, 0x83, 0x8B, 0x83, 0x79, 0x83, 0x93, 0, 0, 0, 0
+};
+
+const u8 gBoardStyleSpecialText[12]
+    __attribute__((section(".rodata.board_style_text"), aligned(4))) = {
+    0x83, 0x58, 0x83, 0x79, 0x83, 0x56, 0x83, 0x83, 0x83, 0x8B, 0, 0
+};
+
 s8 *gBoardStyleText[4] __attribute__((section(".data.board_style_text"))) = {
-    gBoardStyleTextBytes, gBoardStyleTextBytes + 0x10, gBoardStyleTextBytes + 0x20, gBoardStyleTextBytes + 0x2C
+    (s8 *)gBoardStyleFreestyleText, (s8 *)gBoardStyleAllRoundText,
+    (s8 *)gBoardStyleAlpineText, (s8 *)gBoardStyleSpecialText
 };
 
 u8 gBoardSelectionStyles[12] __attribute__((section(".data.board_selection_styles"))) = {
