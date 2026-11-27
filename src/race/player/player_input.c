@@ -16,7 +16,7 @@ typedef struct PlayerRankSpeedAdjustment {
 } PlayerRankSpeedAdjustment;
 
 extern SelectedRecord *gCourseGeometryTriangleRecords __attribute__((section(".data")));
-extern s16 D_8013B1FE __attribute__((section(".data")));
+extern s16 gSelectedGeometryRecordIndex __attribute__((section(".data")));
 extern s16 gSelectedCourseIndex __attribute__((section(".data")));
 extern VECTOR *gScratchVector0 __attribute__((section(".data")));
 extern SVECTOR *gScratchShortVector0 __attribute__((section(".data")));
@@ -38,8 +38,8 @@ VECTOR gPlayerSlopeVelocityScratch
 
 void copySelectedRecordToCurrentPlayer(void) {
     RacePlayer *player = currentPlayerAbsolute;
-    player->unk116 = gCourseGeometryTriangleRecords[D_8013B1FE].unk8;
-    player->unk11A = gCourseGeometryTriangleRecords[D_8013B1FE].unkA;
+    player->unk116 = gCourseGeometryTriangleRecords[gSelectedGeometryRecordIndex].unk8;
+    player->unk11A = gCourseGeometryTriangleRecords[gSelectedGeometryRecordIndex].unkA;
 }
 
 s16 smoothAndScaleCurrentPlayerInput(s32 magnitude, s16 input) {

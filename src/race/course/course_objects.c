@@ -725,11 +725,11 @@ void initializeCourseObjectTask(void) {
     switch (gCurrentTask->data18) {
     case 0:
     case 24:
-        D_8012A5C0[gCurrentTask->data18].vy = gSelectedCourseRecords[gSelectedCourseIndex].unk16;
+        gCourseObjectRotations[gCurrentTask->data18].vy = gSelectedCourseRecords[gSelectedCourseIndex].unk16;
         gCurrentTask->data1C = 0x418;
         gCurrentTask->data1E = 0x240;
         gScratchShortVector0->vx = 0;
-        gScratchShortVector0->vy = D_8012A5C0[gCurrentTask->data18].vy + gCurrentTask->data1C;
+        gScratchShortVector0->vy = gCourseObjectRotations[gCurrentTask->data18].vy + gCurrentTask->data1C;
         gScratchShortVector0->vz = 0;
         gScratchShortVector1->vx = 0;
         gScratchShortVector1->vy = 0;
@@ -745,11 +745,11 @@ void initializeCourseObjectTask(void) {
     case 1:
     case 2:
         gCurrentTask->data1A = 0;
-        D_8012A5C0[gCurrentTask->data18].vy = gSelectedCourseRecords[gSelectedCourseIndex].unk16 + 0x400;
+        gCourseObjectRotations[gCurrentTask->data18].vy = gSelectedCourseRecords[gSelectedCourseIndex].unk16 + 0x400;
         gCurrentTask->data1C = 0x128;
         gCurrentTask->data1E = 0xA0;
         gScratchShortVector0->vx = 0;
-        gScratchShortVector0->vy = D_8012A5C0[gCurrentTask->data18].vy + gCurrentTask->data1C;
+        gScratchShortVector0->vy = gCourseObjectRotations[gCurrentTask->data18].vy + gCurrentTask->data1C;
         gScratchShortVector0->vz = 0;
         gScratchShortVector1->vx = 0;
         gScratchShortVector1->vy = 0;
@@ -763,11 +763,11 @@ void initializeCourseObjectTask(void) {
             ((s32)gSelectedCourseRecords[gSelectedCourseIndex].unk18[2] >> 8) + gScratchVector0->vz;
         break;
     case 3:
-        D_8012A5C0[gCurrentTask->data18].vy = gSelectedCourseRecords[gSelectedCourseIndex].unk14 + 0x400;
+        gCourseObjectRotations[gCurrentTask->data18].vy = gSelectedCourseRecords[gSelectedCourseIndex].unk14 + 0x400;
         gCurrentTask->data1C = 0x280;
         gCurrentTask->data1E = -0x78;
         gScratchShortVector0->vx = 0;
-        gScratchShortVector0->vy = D_8012A5C0[gCurrentTask->data18].vy + gCurrentTask->data1C;
+        gScratchShortVector0->vy = gCourseObjectRotations[gCurrentTask->data18].vy + gCurrentTask->data1C;
         gScratchShortVector0->vz = 0;
         gScratchShortVector1->vx = 0;
         gScratchShortVector1->vy = 0;
@@ -805,11 +805,11 @@ void updateCourseObjectTask(void) {
                     MoveImage(&rect, 640, 246);
                 }
                 gCurrentTask->data1A += 0x80;
-                D_8012A5C0[gCurrentTask->data18].vy += 0x80;
+                gCourseObjectRotations[gCurrentTask->data18].vy += 0x80;
             }
         } else if (gCurrentTask->data1A != 0) {
             gCurrentTask->data1A -= 0x80;
-            D_8012A5C0[gCurrentTask->data18].vy -= 0x80;
+            gCourseObjectRotations[gCurrentTask->data18].vy -= 0x80;
             if (gCurrentTask->data1A == 0) {
                 rect.x = 640;
                 rect.y = 255;
@@ -838,7 +838,7 @@ void updateCourseObjectTask(void) {
     if (isPositionInCameraRange(coordinates[objectIndex].coord.t[0],
                                 coordinates[objectIndex].coord.t[2], cameraIndex)) {
         objectIndex = gCurrentTask->data18;
-        setCoordinateRotation(&D_8012A5C0[objectIndex], &coordinates[objectIndex]);
+        setCoordinateRotation(&gCourseObjectRotations[objectIndex], &coordinates[objectIndex]);
         drawTaskObjectAlternateLayer(gCurrentTask->data18);
     }
 }
@@ -2411,10 +2411,10 @@ void initializeCourseUnlockScene(void) {
         + vertices[region->vertices[2]].z + vertices[region->vertices[3]].z) / 4) * 5;
     gCourseObjectCoordinates[26].coord.t[1] = getCourseHeightAtPoint(index,
         gCourseObjectCoordinates[26].coord.t[0], gCourseObjectCoordinates[26].coord.t[2]);
-    D_8012A5C0[26].vz = 0;
-    D_8012A5C0[26].vx = 0;
+    gCourseObjectRotations[26].vz = 0;
+    gCourseObjectRotations[26].vx = 0;
     headingTarget = (s32)gSelectedCourseRecords[gSelectedCourseIndex].unk18[10] >> 8;
-    D_8012A5C0[26].vy = getXZHeading(gCourseObjectCoordinates[26].coord.t[0], gCourseObjectCoordinates[26].coord.t[2],
+    gCourseObjectRotations[26].vy = getXZHeading(gCourseObjectCoordinates[26].coord.t[0], gCourseObjectCoordinates[26].coord.t[2],
         headingTarget, headingTarget);
 
     createChildTaskWithReserve(copySlot26TransformToCurrentTaskObject);
@@ -2422,7 +2422,7 @@ void initializeCourseUnlockScene(void) {
     gCurrentTask->data18 = 26;
     gPlayerCameras[0].pitch = 0x20;
     gPlayerCameras[0].unk10 = -0x180;
-    gPlayerCameras[0].yaw = D_8012A5C0[26].vy;
+    gPlayerCameras[0].yaw = gCourseObjectRotations[26].vy;
     gPlayerCameras[0].unk16 = 9;
     i = 0;
     while (1) {
@@ -2436,7 +2436,7 @@ void initializeCourseUnlockScene(void) {
 }
 
 void updateAndDrawCurrentTaskObject(void) {
-    setCoordinateRotation(&D_8012A5C0[gCurrentTask->data18],
+    setCoordinateRotation(&gCourseObjectRotations[gCurrentTask->data18],
                           &gCourseObjectCoordinates[gCurrentTask->data18]);
     drawTaskObject(gCurrentTask->data18);
 }
@@ -2445,9 +2445,9 @@ void copySlot26TransformToCurrentTaskObject(void) {
     gCourseObjectCoordinates[gCurrentTask->data18].coord.t[0] = gCourseObjectCoordinates[26].coord.t[0];
     gCourseObjectCoordinates[gCurrentTask->data18].coord.t[1] = gCourseObjectCoordinates[26].coord.t[1];
     gCourseObjectCoordinates[gCurrentTask->data18].coord.t[2] = gCourseObjectCoordinates[26].coord.t[2];
-    D_8012A5C0[gCurrentTask->data18].vx = D_8012A5C0[26].vx;
-    D_8012A5C0[gCurrentTask->data18].vy = D_8012A5C0[26].vy;
-    D_8012A5C0[gCurrentTask->data18].vz = D_8012A5C0[26].vz;
+    gCourseObjectRotations[gCurrentTask->data18].vx = gCourseObjectRotations[26].vx;
+    gCourseObjectRotations[gCurrentTask->data18].vy = gCourseObjectRotations[26].vy;
+    gCourseObjectRotations[gCurrentTask->data18].vz = gCourseObjectRotations[26].vz;
     setCurrentTaskCallback(updateAndDrawCurrentTaskObject);
 }
 

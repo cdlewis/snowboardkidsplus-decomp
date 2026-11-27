@@ -1971,7 +1971,11 @@ isControllerFlag5Clear = 0x80014D3C; // type:func
 
 // Reads one byte from the globally selected lookup table.
 readSelectedByteTable = 0x8001EC58; // type:func
-D_8012089C = 0x8012089C; // size:0x1C defined:true
+gDefaultCourseSurfaceMotionEffectTypes = 0x8012089C; // size:0x1C defined:true
+gPlayerCharacterAnimationIndices = 0x800EB09C; // size:0x190
+gCourseObjectRotations = 0x8012A5C0;
+gSelectedGeometryRecordIndex = 0x8013B1FE; // size:0x2
+gSelectedGeometryVertex1 = 0x8013B204; // size:0x4
 D_801208B8 = 0x801208B8; // size:0x1C defined:true
 D_801208D4 = 0x801208D4; // size:0x1C defined:true
 D_801208F0 = 0x801208F0; // size:0x1C defined:true

@@ -45,7 +45,7 @@ RacePlayerVector gPlayerAnimationPose[12] __attribute__((section(".data.player_a
 void startCurrentPlayerAnimation(u8 animation, u8 mode) {
     RacePlayer *player;
     u32 *offsets = DAT_ANIMATION_ARCHIVE->offsets;
-    currentPlayerAbsolute->animationIndex = D_800EB09C[currentPlayerAbsolute->characterId][animation];
+    currentPlayerAbsolute->animationIndex = gPlayerCharacterAnimationIndices[currentPlayerAbsolute->characterId][animation];
     currentPlayerAbsolute->animationFlags = mode;
     currentPlayerAbsolute->animationStep = 0;
     player = currentPlayerAbsolute;
@@ -179,7 +179,7 @@ void blendCurrentPlayerSteeringPose(s16 animation, s32 weight, s32 scale) {
     RacePlayer *player;
     RacePlayer *blendPlayer;
     RacePlayer *output;
-    u8 index = D_800EB09C[initial->characterId][animation];
+    u8 index = gPlayerCharacterAnimationIndices[initial->characterId][animation];
     RacePlayerVector *pose;
     u16 i, j;
     s32 delta;

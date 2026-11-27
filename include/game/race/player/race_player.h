@@ -203,7 +203,7 @@ struct RacePlayer {
 };
 
 /* Per-character animation indices; each row has the original 40-byte stride. */
-extern u8 D_800EB09C[10][40];
+extern u8 gPlayerCharacterAnimationIndices[10][40];
 
 extern RacePlayer gRacePlayers[4];
 /* Number of participating racers, including CPU-controlled racers. */

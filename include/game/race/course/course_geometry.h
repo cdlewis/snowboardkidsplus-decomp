@@ -31,9 +31,9 @@ extern s16 *gCourseGeometryRegionData;
 extern s16 D_8013B1F8;
 extern s16 D_8013B1FA;
 extern s16 D_8013B1FC;
-extern s16 D_8013B1FE;
+extern s16 gSelectedGeometryRecordIndex;
 extern s16 *D_8013B200;
-extern s16 *D_8013B204;
+extern s16 *gSelectedGeometryVertex1;
 extern s16 *D_8013B208;
 
 extern s32 gGeometryProjectionBasisX __attribute__((section(".sdata.geometry_edge_projection")));

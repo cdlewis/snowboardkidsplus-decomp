@@ -45,9 +45,9 @@ typedef struct PlayerVariantAttributeTable {
 } PlayerVariantAttributeTable;
 
 extern SelectedRecord *gCourseGeometryTriangleRecords __attribute__((section(".data")));
-extern s16 D_8013B1FE __attribute__((section(".data")));
+extern s16 gSelectedGeometryRecordIndex __attribute__((section(".data")));
 extern s16 *D_8013B200 __attribute__((section(".data")));
-extern s16 *D_8013B204 __attribute__((section(".data")));
+extern s16 *gSelectedGeometryVertex1 __attribute__((section(".data")));
 extern s16 *D_8013B208 __attribute__((section(".data")));
 extern u8 gModeSequenceStage __attribute__((section(".data")));
 extern u8 gControllerPlaybackIndex __attribute__((section(".data")));
@@ -171,7 +171,7 @@ s32 gCoursePlayerStartZ[10]
     0x17800, 0x37000, 0x16000, 0xA000, 0x4A000,
 };
 
-u8 D_8012089C[28] = {
+u8 gDefaultCourseSurfaceMotionEffectTypes[28] = {
     0, 3, 1, 3, 0, 0, 0, 1, 3, 3, 1, 4, 1, 4, 3, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0
 };
 
@@ -188,7 +188,7 @@ u8 D_801208F0[28] = {
 };
 
 u8 *D_8012090C[10] = {
-    D_8012089C, D_8012089C, D_8012089C, D_801208D4, D_801208B8, D_801208F0, D_8012089C, D_8012089C, D_801208F0, D_8012089C
+    gDefaultCourseSurfaceMotionEffectTypes, gDefaultCourseSurfaceMotionEffectTypes, gDefaultCourseSurfaceMotionEffectTypes, D_801208D4, D_801208B8, D_801208F0, gDefaultCourseSurfaceMotionEffectTypes, gDefaultCourseSurfaceMotionEffectTypes, D_801208F0, gDefaultCourseSurfaceMotionEffectTypes
 };
 
 
@@ -919,7 +919,7 @@ void resetCurrentPlayerForCallback205B8(void) {
 }
 
 void initializeCurrentPlayerDefaultState(void) {
-    if (gCurrentRacePlayer->animationIndex != D_800EB09C[gCurrentRacePlayer->characterId][4]) {
+    if (gCurrentRacePlayer->animationIndex != gPlayerCharacterAnimationIndices[gCurrentRacePlayer->characterId][4]) {
         startCurrentPlayerAnimation(4, 2);
     }
     gCurrentRacePlayer->unk078 = 0;
@@ -934,8 +934,8 @@ void initializeCurrentPlayerState22(void) {
     gCurrentRacePlayer->unk128 |= 0x200;
     clearCurrentPlayerTaskState();
     gCurrentRacePlayer->unk0C8 = 0;
-    if (gCurrentRacePlayer->animationIndex == D_800EB09C[gCurrentRacePlayer->characterId][6] ||
-        gCurrentRacePlayer->animationIndex == D_800EB09C[gCurrentRacePlayer->characterId][5]) {
+    if (gCurrentRacePlayer->animationIndex == gPlayerCharacterAnimationIndices[gCurrentRacePlayer->characterId][6] ||
+        gCurrentRacePlayer->animationIndex == gPlayerCharacterAnimationIndices[gCurrentRacePlayer->characterId][5]) {
         startCurrentPlayerAnimation(1, 5);
     } else {
         gCurrentRacePlayer->animationFlags |= 4;
@@ -1070,7 +1070,7 @@ void initializeCurrentPlayerState10(void) {
     player->unk128 &= ~0x200;
     player->unk128 &= 0xFF0C1FFB;
     player->unk128 |= 0x6000;
-    if (player->animationIndex != D_800EB09C[player->characterId][15]) {
+    if (player->animationIndex != gPlayerCharacterAnimationIndices[player->characterId][15]) {
         startCurrentPlayerAnimation(15, 1);
     }
     gCurrentRacePlayer->unk08C = 30;
@@ -1298,18 +1298,18 @@ void initializeCurrentPlayerUnlockScene(void) {
         gCurrentRacePlayer->z = gCourseObjectCoordinates[26].coord.t[2] << 8;
         gCurrentRacePlayer->unk0B8 = 0;
         gCurrentRacePlayer->unk0B4 = 0;
-        gCurrentRacePlayer->unk0B6 = D_8012A5C0[26].vy;
+        gCurrentRacePlayer->unk0B6 = gCourseObjectRotations[26].vy;
         gCurrentTask->data1A = 30;
     } else {
         gCurrentRacePlayer->x = (gCourseObjectCoordinates[26].coord.t[0] -
-            rsin(D_8012A5C0[26].vy + gPlayerUnlockSceneYawOffsets[gCurrentTask->data18 - 1]) / 32) << 8;
+            rsin(gCourseObjectRotations[26].vy + gPlayerUnlockSceneYawOffsets[gCurrentTask->data18 - 1]) / 32) << 8;
         gCurrentRacePlayer->y = gCourseObjectCoordinates[26].coord.t[1] << 8;
         gCurrentRacePlayer->z = (gCourseObjectCoordinates[26].coord.t[2] -
-            rcos(D_8012A5C0[26].vy + gPlayerUnlockSceneYawOffsets[gCurrentTask->data18 - 1]) / 32) << 8;
+            rcos(gCourseObjectRotations[26].vy + gPlayerUnlockSceneYawOffsets[gCurrentTask->data18 - 1]) / 32) << 8;
         gCurrentRacePlayer->unk0B8 = 0;
         gCurrentRacePlayer->unk0B4 = 0;
         angle = gPlayerUnlockSceneYawOffsets[gCurrentTask->data18 - 1] + 0x800;
-        gCurrentRacePlayer->unk0B6 = D_8012A5C0[26].vy + angle;
+        gCurrentRacePlayer->unk0B6 = gCourseObjectRotations[26].vy + angle;
     }
     gCurrentRacePlayer->unk92E = gSelectedCourseRecords[gSelectedCourseIndex].unk00;
     gCurrentRacePlayer->surfaceState.fields.unk136 = 0;
@@ -1504,7 +1504,7 @@ void updateCurrentPlayerRiding(void) {
         magnitude = -speed;
         steer = -steer;
     }
-    if (stancePlayer->animationIndex != D_800EB09C[stancePlayer->characterId][2]) {
+    if (stancePlayer->animationIndex != gPlayerCharacterAnimationIndices[stancePlayer->characterId][2]) {
         const SelectedCourseRecord *records = gSelectedCourseRecords;
         s16 recordIndex = gSelectedCourseIndex;
         course = &records[recordIndex];
@@ -1540,8 +1540,8 @@ reverseStance:
 applySteering:
     angle = smoothAndScaleCurrentPlayerInput(magnitude, steer);
     steeringPlayer = gCurrentRacePlayer;
-    if (steeringPlayer->animationIndex != D_800EB09C[steeringPlayer->characterId][2] &&
-        steeringPlayer->animationIndex != D_800EB09C[steeringPlayer->characterId][0]) {
+    if (steeringPlayer->animationIndex != gPlayerCharacterAnimationIndices[steeringPlayer->characterId][2] &&
+        steeringPlayer->animationIndex != gPlayerCharacterAnimationIndices[steeringPlayer->characterId][0]) {
         angle -= steeringPlayer->unk126;
         if (angle > 0x30) {
             angle = 0x30;
@@ -1551,8 +1551,8 @@ applySteering:
         }
         steeringPlayer->unk126 += angle;
         if ((s16)steeringPlayer->unk126 == 0) {
-            if (steeringPlayer->animationIndex != D_800EB09C[steeringPlayer->characterId][0x12] &&
-                steeringPlayer->animationIndex != D_800EB09C[steeringPlayer->characterId][1]) {
+            if (steeringPlayer->animationIndex != gPlayerCharacterAnimationIndices[steeringPlayer->characterId][0x12] &&
+                steeringPlayer->animationIndex != gPlayerCharacterAnimationIndices[steeringPlayer->characterId][1]) {
                 startCurrentPlayerAnimation(1, 1);
             }
         } else {
@@ -1649,7 +1649,7 @@ applySteering:
     updateCurrentPlayerMotionEffects();
 
     itemPlayer = gCurrentRacePlayer;
-    if (itemPlayer->animationIndex != D_800EB09C[itemPlayer->characterId][0]) {
+    if (itemPlayer->animationIndex != gPlayerCharacterAnimationIndices[itemPlayer->characterId][0]) {
         if (itemPlayer->unk008 ||
             (itemPlayer->unk92E == (s16)gSelectedCourseRecords[gSelectedCourseIndex].unk00 &&
              (s16)getModeFilteredAutoPilotFlag(gCurrentTask->data18))) {
@@ -1659,8 +1659,8 @@ applySteering:
                 jumpPlayer = gCurrentRacePlayer;
                 character = jumpPlayer->characterId;
                 jumpPlayer->unk12C = 2;
-                if (jumpPlayer->animationIndex == D_800EB09C[character][6] ||
-                    jumpPlayer->animationIndex == D_800EB09C[character][5]) {
+                if (jumpPlayer->animationIndex == gPlayerCharacterAnimationIndices[character][6] ||
+                    jumpPlayer->animationIndex == gPlayerCharacterAnimationIndices[character][5]) {
                     gCurrentTask->data1A = 1;
                 } else {
                     gCurrentTask->data1A = 0;
@@ -1670,8 +1670,8 @@ applySteering:
                 lowSpeedPlayer = gCurrentRacePlayer;
                 character = lowSpeedPlayer->characterId;
                 lowSpeedPlayer->unk12C = 2;
-                if (lowSpeedPlayer->animationIndex == D_800EB09C[character][6] ||
-                    lowSpeedPlayer->animationIndex == D_800EB09C[character][5]) {
+                if (lowSpeedPlayer->animationIndex == gPlayerCharacterAnimationIndices[character][6] ||
+                    lowSpeedPlayer->animationIndex == gPlayerCharacterAnimationIndices[character][5]) {
                     gCurrentTask->data1A = 1;
                 } else {
                     gCurrentTask->data1A = 0;
@@ -1682,8 +1682,8 @@ applySteering:
             if (gControllerHeldButtons[task->data18] & 0x40) {
                 manualItemPlayer = gCurrentRacePlayer;
                 manualItemPlayer->unk12C = 2;
-                if (manualItemPlayer->animationIndex == D_800EB09C[manualItemPlayer->characterId][6] ||
-                    manualItemPlayer->animationIndex == D_800EB09C[manualItemPlayer->characterId][5]) {
+                if (manualItemPlayer->animationIndex == gPlayerCharacterAnimationIndices[manualItemPlayer->characterId][6] ||
+                    manualItemPlayer->animationIndex == gPlayerCharacterAnimationIndices[manualItemPlayer->characterId][5]) {
                     task->data1A = 1;
                 } else {
                     task->data1A = 0;
@@ -1699,8 +1699,8 @@ applySteering:
     }
     steer = updateCurrentPlayerGroundContact();
     landingPlayer = gCurrentRacePlayer;
-    if (landingPlayer->animationIndex != D_800EB09C[landingPlayer->characterId][6] &&
-        landingPlayer->animationIndex != D_800EB09C[landingPlayer->characterId][5]) {
+    if (landingPlayer->animationIndex != gPlayerCharacterAnimationIndices[landingPlayer->characterId][6] &&
+        landingPlayer->animationIndex != gPlayerCharacterAnimationIndices[landingPlayer->characterId][5]) {
         updateCurrentPlayerAnimation();
     }
     if ((u16)callCurrentPlayerStateCallbackIfDifferent(0) == 0) {
@@ -1742,7 +1742,7 @@ void updateCurrentPlayerChargeAndLaunch(void) {
         drawAutoPilotLabelTask();
     }
     player = gCurrentRacePlayer;
-    if (player->animationIndex != D_800EB09C[player->characterId][2]) {
+    if (player->animationIndex != gPlayerCharacterAnimationIndices[player->characterId][2]) {
         u32 reversed;
         RacePlayer *counterPlayer;
         if (player->unk92E == (s16)gSelectedCourseRecords[gSelectedCourseIndex].unk00 && !(player->unk128 & 0x40)) {
@@ -1778,7 +1778,7 @@ advanceCharge:
             counterPlayer->unk13C++;
         }
     }
-    if (gCurrentRacePlayer->animationIndex != D_800EB09C[gCurrentRacePlayer->characterId][3] &&
+    if (gCurrentRacePlayer->animationIndex != gPlayerCharacterAnimationIndices[gCurrentRacePlayer->characterId][3] &&
         (gCurrentRacePlayer->animationFlags & 0x10)) {
         startCurrentPlayerAnimation(3, 2);
     }
@@ -3761,7 +3761,7 @@ void updateCurrentPlayerTaskJumpAndSpawnCourseOffset(void) {
     landingPlayer->y += landingPlayer->unk062;
     if (landingPlayer->unk062 > 0 && landingPlayer->y > (s32)gSelectedCourseRecords[gSelectedCourseIndex].unk18[1]) {
         landingPlayer->y = gSelectedCourseRecords[gSelectedCourseIndex].unk18[1];
-        if (landingPlayer->animationIndex != D_800EB09C[landingPlayer->characterId][1]) {
+        if (landingPlayer->animationIndex != gPlayerCharacterAnimationIndices[landingPlayer->characterId][1]) {
             startCurrentPlayerAnimation(1, 1);
             playPlayerSoundEffect(gCurrentTask->data18, 1, 0x701, 0x20);
             gTaskTransitionFlags &= ~4;
@@ -4049,7 +4049,7 @@ void updateCurrentPlayerState30TaskUntilStopped(void) {
         }
         steeringPlayer->unk126 += turn;
         if ((s16)steeringPlayer->unk126 == 0) {
-            if (steeringPlayer->animationIndex != D_800EB09C[steeringPlayer->characterId][1]) {
+            if (steeringPlayer->animationIndex != gPlayerCharacterAnimationIndices[steeringPlayer->characterId][1]) {
                 startCurrentPlayerAnimation(1, 1);
             }
         } else {
@@ -4067,8 +4067,8 @@ void updateCurrentPlayerState30TaskUntilStopped(void) {
 
 updateAnimation:
     animationPlayer = gCurrentRacePlayer;
-    if (animationPlayer->animationIndex != D_800EB09C[animationPlayer->characterId][6] &&
-        animationPlayer->animationIndex != D_800EB09C[animationPlayer->characterId][5]) {
+    if (animationPlayer->animationIndex != gPlayerCharacterAnimationIndices[animationPlayer->characterId][6] &&
+        animationPlayer->animationIndex != gPlayerCharacterAnimationIndices[animationPlayer->characterId][5]) {
         updateCurrentPlayerAnimation();
     }
     updateCurrentPlayerSlopeVelocityWithoutBoost(0, 0x200, 0x180, 0x180);
@@ -4091,7 +4091,7 @@ updateAnimation:
         finishedPlayer = gCurrentRacePlayer;
         finishedPlayer->unk128 |= 0x100;
         gCurrentTask->data1A++;
-        if (finishedPlayer->animationIndex != D_800EB09C[finishedPlayer->characterId][1]) {
+        if (finishedPlayer->animationIndex != gPlayerCharacterAnimationIndices[finishedPlayer->characterId][1]) {
             startCurrentPlayerAnimation(1, 1);
         }
     }
@@ -4710,14 +4710,14 @@ s32 updateCurrentPlayerGroundContact(void) {
 
         region = getAdjacentGeometryRegionForPoint(gCurrentRacePlayer->unk92E, (gCurrentRacePlayer->x >> 8) + dx, (gCurrentRacePlayer->z >> 8) + dz);
         forwardY = getCourseHeightAtPoint(region, (gCurrentRacePlayer->x >> 8) + dx, (gCurrentRacePlayer->z >> 8) + dz) << 8;
-        forwardRecord = D_8013B1FE;
+        forwardRecord = gSelectedGeometryRecordIndex;
         computeSelectedTriangleNormal(gScratchVector0);
 
         region = getAdjacentGeometryRegionForPoint(gCurrentRacePlayer->unk92E, (gCurrentRacePlayer->x >> 8) - dx, (gCurrentRacePlayer->z >> 8) - dz);
         rearY = getCourseHeightAtPoint(region, (gCurrentRacePlayer->x >> 8) - dx, (gCurrentRacePlayer->z >> 8) - dz) << 8;
         computeSelectedTriangleNormal(gScratchVector1);
 
-        if (forwardRecord == D_8013B1FE) {
+        if (forwardRecord == gSelectedGeometryRecordIndex) {
             s32 y;
             gCurrentRacePlayer->y = groundY;
             gCurrentRacePlayer->unk118 = gCurrentRacePlayer->unk11E;
@@ -4801,22 +4801,22 @@ s32 snapCurrentPlayerToTerrain(void) {
     region = getAdjacentGeometryRegionForPoint(
         gCurrentRacePlayer->unk92E, (gCurrentRacePlayer->x >> 8) + firstX, (gCurrentRacePlayer->z >> 8) + firstZ);
     heights[0] = getCourseHeightAtPoint(region, (gCurrentRacePlayer->x >> 8) + firstX, (gCurrentRacePlayer->z >> 8) + firstZ) << 8;
-    records[0] = D_8013B1FE;
+    records[0] = gSelectedGeometryRecordIndex;
 
     region = getAdjacentGeometryRegionForPoint(
         gCurrentRacePlayer->unk92E, (gCurrentRacePlayer->x >> 8) - firstX, (gCurrentRacePlayer->z >> 8) - firstZ);
     heights[1] = getCourseHeightAtPoint(region, (gCurrentRacePlayer->x >> 8) - firstX, (gCurrentRacePlayer->z >> 8) - firstZ) << 8;
-    records[1] = D_8013B1FE;
+    records[1] = gSelectedGeometryRecordIndex;
 
     region = getAdjacentGeometryRegionForPoint(
         gCurrentRacePlayer->unk92E, (gCurrentRacePlayer->x >> 8) + secondX, (gCurrentRacePlayer->z >> 8) + secondZ);
     heights[2] = getCourseHeightAtPoint(region, (gCurrentRacePlayer->x >> 8) + secondX, (gCurrentRacePlayer->z >> 8) + secondZ) << 8;
-    records[2] = D_8013B1FE;
+    records[2] = gSelectedGeometryRecordIndex;
 
     region = getAdjacentGeometryRegionForPoint(
         gCurrentRacePlayer->unk92E, (gCurrentRacePlayer->x >> 8) - secondX, (gCurrentRacePlayer->z >> 8) - secondZ);
     heights[3] = getCourseHeightAtPoint(region, (gCurrentRacePlayer->x >> 8) - secondX, (gCurrentRacePlayer->z >> 8) - secondZ) << 8;
-    records[3] = D_8013B1FE;
+    records[3] = gSelectedGeometryRecordIndex;
 
     gCurrentRacePlayer->unk118 = gCurrentRacePlayer->unk11E;
     gCurrentRacePlayer->unk11C = gCurrentRacePlayer->unk120;
@@ -5239,12 +5239,12 @@ void awardCurrentPlayerTrickRewards(void) {
 void computeSelectedTriangleNormal(VECTOR *normal) {
     VECTOR first, second;
 
-    first.vx = D_8013B204[0] - D_8013B200[0];
-    first.vy = D_8013B204[1] - D_8013B200[1];
-    first.vz = D_8013B204[2] - D_8013B200[2];
-    second.vx = D_8013B208[0] - D_8013B204[0];
-    second.vy = D_8013B208[1] - D_8013B204[1];
-    second.vz = D_8013B208[2] - D_8013B204[2];
+    first.vx = gSelectedGeometryVertex1[0] - D_8013B200[0];
+    first.vy = gSelectedGeometryVertex1[1] - D_8013B200[1];
+    first.vz = gSelectedGeometryVertex1[2] - D_8013B200[2];
+    second.vx = D_8013B208[0] - gSelectedGeometryVertex1[0];
+    second.vy = D_8013B208[1] - gSelectedGeometryVertex1[1];
+    second.vz = D_8013B208[2] - gSelectedGeometryVertex1[2];
     OuterProduct0(&first, &second, normal);
 }
 
